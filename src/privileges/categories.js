@@ -103,9 +103,7 @@ module.exports = function (privileges) {
 
 		cids = _.uniq(cids);
 		const results = await privileges.categories.getBase(privilege, cids, uid);
-		return cids.filter(function (cid, index) {
-			return !!cid && !results.categories[index].disabled && (results.allowedTo[index] || results.isAdmin);
-		});
+		return cids.filter((cid, index) => !!cid && !results.categories[index].disabled && (results.allowedTo[index] || results.isAdmin));
 	};
 
 	privileges.categories.getBase = async function (privilege, cids, uid) {

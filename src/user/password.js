@@ -23,7 +23,7 @@ module.exports = function (User) {
 			hashedPassword = '';
 		}
 
-		await User.isPasswordValid(password, 0);
+		User.isPasswordValid(password);
 		await User.auth.logAttempt(uid, ip);
 		const ok = await Password.compare(password, hashedPassword);
 		if (ok) {

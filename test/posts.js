@@ -1060,23 +1060,29 @@ describe('Post\'s', function () {
 	});
 
 	describe('upload methods', function () {
-		var pid;
+		let pid;
+		let purgePid;
 
-		before(function (done) {
+		before(async () => {
 			// Create stub files for testing
 			['abracadabra.png', 'shazam.jpg', 'whoa.gif', 'amazeballs.jpg', 'wut.txt', 'test.bmp']
 				.forEach(filename => fs.closeSync(fs.openSync(path.join(nconf.get('upload_path'), 'files', filename), 'w')));
 
-			topics.post({
+			const topicPostData = await topics.post({
 				uid: 1,
 				cid: 1,
 				title: 'topic with some images',
 				content: 'here is an image [alt text](/assets/uploads/files/abracadabra.png) and another [alt text](/assets/uploads/files/shazam.jpg)',
-			}, function (err, topicPostData) {
-				assert.ifError(err);
-				pid = topicPostData.postData.pid;
-				done();
 			});
+			pid = topicPostData.postData.pid;
+
+			const purgePostData = await topics.post({
+				uid: 1,
+				cid: 1,
+				title: 'topic with some images, to be purged',
+				content: 'here is an image [alt text](/assets/uploads/files/whoa.gif) and another [alt text](/assets/uploads/files/amazeballs.jpg)',
+			});
+			purgePid = purgePostData.postData.pid;
 		});
 
 		describe('.sync()', function () {
@@ -1223,6 +1229,31 @@ describe('Post\'s', function () {
 					assert.strictEqual(false, uploads.includes('wut.txt'));
 					done();
 				});
+			});
+		});
+
+		describe('.dissociateAll()', () => {
+			it('should remove all images from a post\'s maintained list of uploads', async () => {
+				await posts.uploads.dissociateAll(pid);
+				const uploads = await posts.uploads.list(pid);
+
+				assert.equal(uploads.length, 0);
+			});
+		});
+
+		describe('Dissociation on purge', () => {
+			it('should not dissociate images on post deletion', async () => {
+				await posts.delete(purgePid, 1);
+				const uploads = await posts.uploads.list(purgePid);
+
+				assert.equal(uploads.length, 2);
+			});
+
+			it('should dissociate images on post purge', async () => {
+				await posts.purge(purgePid, 1);
+				const uploads = await posts.uploads.list(purgePid);
+
+				assert.equal(uploads.length, 0);
 			});
 		});
 	});

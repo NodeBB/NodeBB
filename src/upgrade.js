@@ -27,12 +27,9 @@ Upgrade.getAll = function (callback) {
 			// Sort the upgrade scripts based on version
 			var versionA;
 			var versionB;
-			setImmediate(next, null, files.filter(function (file) {
-				return path.basename(file) !== 'TEMPLATE';
-			}).sort(function (a, b) {
-				versionA = path.dirname(a).split('/').pop();
-				versionB = path.dirname(b).split('/').pop();
-
+			setImmediate(next, null, files.filter(file => path.basename(file) !== 'TEMPLATE').sort(function (a, b) {
+				versionA = path.dirname(a).split(path.sep).pop();
+				versionB = path.dirname(b).split(path.sep).pop();
 				var semverCompare = semver.compare(versionA, versionB);
 				if (semverCompare) {
 					return semverCompare;

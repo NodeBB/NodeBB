@@ -18,6 +18,7 @@
     "last_reply_time": "Laatste antwoord",
     "reply-as-topic": "Reageren als onderwerp",
     "guest-login-reply": "Aanmelden om te reageren",
+    "login-to-view": "🔒 Log in to view",
     "edit": "Aanpassen",
     "delete": "Verwijderen",
     "purge": "Opschonen",
@@ -133,5 +134,6 @@
     "diffs.no-revisions-description": "Dit bericht heeft <strong>%1</strong> revisies.",
     "diffs.current-revision": "Huidige revisie",
     "diffs.original-revision": "Oorspronkelijke revisie",
-    "timeago_later": "%1 later"
+    "timeago_later": "%1 later",
+    "timeago_earlier": "%1 earlier"
 }

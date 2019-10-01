@@ -3,10 +3,10 @@
 
 const util = require('util');
 
-var db = require('./database');
-var utils = require('./utils');
+const db = require('./database');
+const utils = require('./utils');
 
-var DEFAULT_BATCH_SIZE = 100;
+const DEFAULT_BATCH_SIZE = 100;
 
 const sleep = util.promisify(setTimeout);
 
@@ -32,8 +32,8 @@ exports.processSortedSet = async function (setKey, process, options) {
 	// custom done condition
 	options.doneIf = typeof options.doneIf === 'function' ? options.doneIf : function () {};
 
-	var start = 0;
-	var stop = options.batch;
+	let start = 0;
+	let stop = options.batch;
 
 	if (process && process.constructor && process.constructor.name !== 'AsyncFunction') {
 		process = util.promisify(process);
@@ -66,14 +66,14 @@ exports.processArray = async function (array, process, options) {
 		throw new Error('[[error:process-not-a-function]]');
 	}
 
-	var batch = options.batch || DEFAULT_BATCH_SIZE;
-	var start = 0;
+	const batch = options.batch || DEFAULT_BATCH_SIZE;
+	let start = 0;
 	if (process && process.constructor && process.constructor.name !== 'AsyncFunction') {
 		process = util.promisify(process);
 	}
 
 	while (true) {
-		var currentBatch = array.slice(start, start + batch);
+		const currentBatch = array.slice(start, start + batch);
 
 		if (!currentBatch.length) {
 			return;
@@ -88,4 +88,5 @@ exports.processArray = async function (array, process, options) {
 		}
 	}
 };
+
 require('./promisify')(exports);

@@ -1,6 +1,5 @@
 'use strict';
 
-const async = require('async');
 const winston = require('winston');
 const _ = require('lodash');
 const Benchpress = require('benchpressjs');
@@ -52,13 +51,12 @@ async function renderWidget(widget, uid, options) {
 	if (!widget || !widget.data || (!!widget.data['hide-mobile'] && options.req.useragent.isMobile)) {
 		return;
 	}
-	let isVisible = true;
-	if (widget.data.groups.length) {
-		isVisible = await groups.isMemberOfAny(uid, widget.data.groups);
-	}
+
+	const isVisible = await checkVisibility(widget, uid);
 	if (!isVisible) {
 		return;
 	}
+
 	let config = options.res.locals.config || {};
 	if (options.res.locals.isAPI) {
 		config = await loadConfigAsync(options.req);
@@ -98,6 +96,18 @@ async function renderWidget(widget, uid, options) {
 	}
 
 	return { html: html };
+}
+
+async function checkVisibility(widget, uid) {
+	let isVisible = true;
+	let isHidden = false;
+	if (widget.data.groups.length) {
+		isVisible = await groups.isMemberOfAny(uid, widget.data.groups);
+	}
+	if (widget.data.groupsHideFrom.length) {
+		isHidden = await groups.isMemberOfAny(uid, widget.data.groupsHideFrom);
+	}
+	return isVisible && !isHidden;
 }
 
 widgets.getWidgetDataForTemplates = async function (templates) {
@@ -144,6 +154,11 @@ function parseWidgetData(data) {
 			widget.data.groups = widget.data.groups || [];
 			if (widget.data.groups && !Array.isArray(widget.data.groups)) {
 				widget.data.groups = [widget.data.groups];
+			}
+
+			widget.data.groupsHideFrom = widget.data.groupsHideFrom || [];
+			if (widget.data.groupsHideFrom && !Array.isArray(widget.data.groupsHideFrom)) {
+				widget.data.groupsHideFrom = [widget.data.groupsHideFrom];
 			}
 		}
 	});
@@ -201,7 +216,6 @@ widgets.resetTemplate = async function (template) {
 };
 
 widgets.resetTemplates = async function (templates) {
-	async.eachSeries(templates, widgets.resetTemplate);
 	for (const template of templates) {
 		/* eslint-disable no-await-in-loop */
 		await widgets.resetTemplate(template);

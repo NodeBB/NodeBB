@@ -111,7 +111,7 @@ groupsController.members = async function (req, res, next) {
 };
 
 groupsController.uploadCover = async function (req, res, next) {
-	var params = JSON.parse(req.body.params);
+	const params = JSON.parse(req.body.params);
 
 	try {
 		const isOwner = await groups.ownership.isOwner(req.uid, params.groupName);
@@ -119,7 +119,7 @@ groupsController.uploadCover = async function (req, res, next) {
 			throw new Error('[[error:no-privileges]]');
 		}
 		const image = await groups.updateCover(req.uid, {
-			file: req.files.files[0].path,
+			file: req.files.files[0],
 			groupName: params.groupName,
 		});
 		res.json([{ url: image.url }]);

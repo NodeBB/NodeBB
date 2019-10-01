@@ -1,12 +1,12 @@
 
 'use strict';
 
-var db = require('../database');
-var posts = require('../posts');
-var notifications = require('../notifications');
-var privileges = require('../privileges');
-var plugins = require('../plugins');
-var utils = require('../utils');
+const db = require('../database');
+const posts = require('../posts');
+const notifications = require('../notifications');
+const privileges = require('../privileges');
+const plugins = require('../plugins');
+const utils = require('../utils');
 
 module.exports = function (Topics) {
 	Topics.toggleFollow = async function (tid, uid) {
@@ -90,9 +90,7 @@ module.exports = function (Topics) {
 			return tids.map(() => ({ following: false, ignoring: false }));
 		}
 		const keys = [];
-		tids.forEach((tid) => {
-			keys.push('tid:' + tid + ':followers', 'tid:' + tid + ':ignorers');
-		});
+		tids.forEach(tid => keys.push('tid:' + tid + ':followers', 'tid:' + tid + ':ignorers'));
 
 		const data = await db.isMemberOfSets(keys, uid);
 
@@ -113,7 +111,7 @@ module.exports = function (Topics) {
 		if (parseInt(uid, 10) <= 0) {
 			return tids.map(() => false);
 		}
-		var keys = tids.map(tid => 'tid:' + tid + ':' + set);
+		const keys = tids.map(tid => 'tid:' + tid + ':' + set);
 		return await db.isMemberOfSets(keys, uid);
 	}
 
@@ -136,8 +134,7 @@ module.exports = function (Topics) {
 			return [];
 		}
 		const scores = await db.sortedSetScores('uid:' + uid + ':followed_tids', tids);
-		tids = tids.filter((tid, index) => tid && !!scores[index]);
-		return tids;
+		return tids.filter((tid, index) => tid && !!scores[index]);
 	};
 
 	Topics.filterNotIgnoredTids = async function (tids, uid) {
@@ -145,8 +142,7 @@ module.exports = function (Topics) {
 			return tids;
 		}
 		const scores = await db.sortedSetScores('uid:' + uid + ':ignored_tids', tids);
-		tids = tids.filter((tid, index) => tid && !scores[index]);
-		return tids;
+		return tids.filter((tid, index) => tid && !scores[index]);
 	};
 
 	Topics.notifyFollowers = async function (postData, exceptUid) {

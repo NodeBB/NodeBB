@@ -1,6 +1,6 @@
 {
 	"post-queue": "Cola de Mensajes",
-	"description": "No hay mensajes en la cola de mensajes. <br>Para habilitar esta función, vaya a <a href=\"%1\">Configuración &rarr; Mensaje &rarr; Restricciones de Mensajes</a><strong></strong>",
+	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
 	"user": "Usuario",
 	"category": "Categoría",
 	"title": "Título",

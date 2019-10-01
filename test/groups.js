@@ -38,6 +38,14 @@ describe('Groups', function () {
 					disableJoinRequests: 0,
 				}, next);
 			},
+			async () => {
+				await Groups.create({
+					name: 'PrivateNoLeave',
+					description: 'Private group',
+					private: 1,
+					disableLeave: 1,
+				});
+			},
 			function (next) {
 				// Create a new user
 				User.create({
@@ -62,8 +70,8 @@ describe('Groups', function () {
 			},
 		], function (err, results) {
 			assert.ifError(err);
-			testUid = results[3];
-			adminUid = results[4];
+			testUid = results[4];
+			adminUid = results[5];
 			Groups.join('administrators', adminUid, done);
 		});
 	});
@@ -72,7 +80,7 @@ describe('Groups', function () {
 		it('should list the groups present', function (done) {
 			Groups.getGroupsFromSet('groups:visible:createtime', 0, -1, function (err, groups) {
 				assert.ifError(err);
-				assert.equal(groups.length, 4);
+				assert.equal(groups.length, 5);
 				done();
 			});
 		});
@@ -120,7 +128,7 @@ describe('Groups', function () {
 		it('should return the groups when search query is empty', function (done) {
 			socketGroups.search({ uid: adminUid }, { query: '' }, function (err, groups) {
 				assert.ifError(err);
-				assert.equal(4, groups.length);
+				assert.equal(5, groups.length);
 				done();
 			});
 		});
@@ -730,9 +738,19 @@ describe('Groups', function () {
 		it('should fail to join if group is private and join requests are disabled', function (done) {
 			meta.config.allowPrivateGroups = 1;
 			socketGroups.join({ uid: testUid }, { groupName: 'PrivateNoJoin' }, function (err) {
-				assert.equal(err.message, '[[error:join-requests-disabled]]');
+				assert.equal(err.message, '[[error:group-join-disabled]]');
 				done();
 			});
+		});
+
+		it('should fail to leave if group is private and leave is disabled', async () => {
+			await socketGroups.join({ uid: testUid }, { groupName: 'PrivateNoLeave' });
+
+			try {
+				await socketGroups.leave({ uid: testUid }, { groupName: 'PrivateNoLeave' });
+			} catch (err) {
+				assert.equal(err.message, '[[error:group-leave-disabled]]');
+			}
 		});
 
 		it('should join if user is admin', function (done) {
@@ -1143,7 +1161,8 @@ describe('Groups', function () {
 				assert.equal(groupData.name, 'newgroup');
 				assert.equal(groupData.description, 'group created by admin');
 				assert.equal(groupData.ownerUid, adminUid);
-				assert.equal(groupData.private, true);
+				assert.equal(groupData.private, 1);
+				assert.equal(groupData.hidden, 0);
 				assert.equal(groupData.memberCount, 1);
 				done();
 			});
@@ -1278,7 +1297,10 @@ describe('Groups', function () {
 		it('should upload group cover image from file', function (done) {
 			var data = {
 				groupName: 'Test',
-				file: imagePath,
+				file: {
+					path: imagePath,
+					type: 'image/png',
+				},
 			};
 			socketGroups.cover.update({ uid: adminUid }, data, function (err, data) {
 				assert.ifError(err);
@@ -1307,6 +1329,17 @@ describe('Groups', function () {
 					assert.equal(nconf.get('relative_path') + data.url, groupData['cover:url']);
 					done();
 				});
+			});
+		});
+
+		it('should fail to upload group cover with invalid image', function (done) {
+			var data = {
+				groupName: 'Test',
+				imageData: 'data:image/svg;base64,iVBORw0KGgoAAAANSUhEUgAAABwA',
+			};
+			socketGroups.cover.update({ uid: adminUid }, data, function (err, data) {
+				assert.equal(err.message, '[[error:invalid-image]]');
+				done();
 			});
 		});
 

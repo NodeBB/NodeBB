@@ -1,7 +1,8 @@
 {
 	"global": "Глобальні",
 	"global.no-users": "Відсутні глобальні права, що стосуються користувача.",
-
+	"group-privileges": "Group Privileges",
+	"user-privileges": "User Privileges",
 	"chat": "Чат",
 	"upload-images": "Завантаження Зображень",
 	"upload-files": "Завантаження Файлів",
@@ -15,7 +16,7 @@
 	"view-groups": "View Groups",
 	"allow-local-login": "Local Login",
 	"allow-group-creation": "Group Create",
-
+	"view-users-info": "View Users Info",
 	"find-category": "Знайти Категорію",
 	"access-category": "Доступ до Категорії",
 	"access-topics": "Доступ до Тем",

@@ -30,6 +30,7 @@
 	"details.latest_posts": "Latest Posts",
 	"details.private": "Private",
 	"details.disableJoinRequests": "Disable join requests",
+	"details.disableLeave": "Disallow users from leaving the group",
 	"details.grant": "Grant/Rescind Ownership",
 	"details.kick": "Kick",
 	"details.kick_confirm": "Are you sure you want to remove this member from the group?",
@@ -59,6 +60,7 @@
 	"membership.invitation-pending": "Invitation Pending",
 	"membership.join-group": "Join Group",
 	"membership.leave-group": "Leave Group",
+	"membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
 	"membership.reject": "Reject",
 
 	"new-group.group_name": "Group Name:",

@@ -18,6 +18,7 @@
     "last_reply_time": "Last reply",
     "reply-as-topic": "Vasta teemana",
     "guest-login-reply": "Logi sisse, et vastata",
+    "login-to-view": "🔒 Log in to view",
     "edit": "Muuda",
     "delete": "Kustuta",
     "purge": "Kustuta",
@@ -133,5 +134,6 @@
     "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
     "diffs.current-revision": "current revision",
     "diffs.original-revision": "original revision",
-    "timeago_later": "%1 later"
+    "timeago_later": "%1 later",
+    "timeago_earlier": "%1 earlier"
 }

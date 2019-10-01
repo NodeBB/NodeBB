@@ -1,9 +1,11 @@
 'use strict';
 
-var utils = require('../../utils');
+const utils = require('../../utils');
 
 module.exports = function (module) {
-	var helpers = require('./helpers');
+	const helpers = require('./helpers');
+	const dbHelpers = require('../helpers');
+
 	const util = require('util');
 	const sleep = util.promisify(setTimeout);
 
@@ -36,16 +38,14 @@ module.exports = function (module) {
 		if ((start < 0 && start > stop) || (isArray && !key.length)) {
 			return [];
 		}
-
+		const query = { _key: key };
 		if (isArray) {
 			if (key.length > 1) {
-				key = { $in: key };
+				query._key = { $in: key };
 			} else {
-				key = key[0];
+				query._key = key[0];
 			}
 		}
-
-		var query = { _key: key };
 
 		if (min !== '-inf') {
 			query.score = { $gte: min };
@@ -64,37 +64,54 @@ module.exports = function (module) {
 			fields.score = 0;
 		}
 
-		var reverse = false;
+		let reverse = false;
 		if (start === 0 && stop < -1) {
 			reverse = true;
 			sort *= -1;
 			start = Math.abs(stop + 1);
 			stop = -1;
 		} else if (start < 0 && stop > start) {
-			var tmp1 = Math.abs(stop + 1);
+			const tmp1 = Math.abs(stop + 1);
 			stop = Math.abs(start + 1);
 			start = tmp1;
 		}
 
-		var limit = stop - start + 1;
+		let limit = stop - start + 1;
 		if (limit <= 0) {
 			limit = 0;
 		}
 
-		let data = await module.client.collection('objects').find(query, { projection: fields })
-			.sort({ score: sort })
-			.skip(start)
-			.limit(limit)
-			.toArray();
+		let result = [];
+		async function doQuery(_key, fields, skip, limit) {
+			return await module.client.collection('objects').find({ ...query, ...{ _key: _key } }, { projection: fields })
+				.sort({ score: sort })
+				.skip(skip)
+				.limit(limit)
+				.toArray();
+		}
+
+		if (isArray && key.length > 100) {
+			const batches = [];
+			const batch = require('../../batch');
+			const batchSize = Math.ceil(key.length / Math.ceil(key.length / 100));
+			await batch.processArray(key, async currentBatch => batches.push(currentBatch), { batch: batchSize });
+			const batchData = await Promise.all(batches.map(batch => doQuery({ $in: batch }, { _id: 0, _key: 0 }, 0, stop + 1)));
+			result = dbHelpers.mergeBatch(batchData, 0, stop, sort);
+			if (start > 0) {
+				result = result.slice(start, stop !== -1 ? stop + 1 : undefined);
+			}
+		} else {
+			result = await doQuery(query._key, fields, start, limit);
+		}
 
 		if (reverse) {
-			data.reverse();
+			result.reverse();
 		}
 		if (!withScores) {
-			data = data.map(item => item.value);
+			result = result.map(item => item.value);
 		}
 
-		return data;
+		return result;
 	}
 
 	module.getSortedSetRangeByScore = async function (key, start, count, min, max) {

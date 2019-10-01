@@ -18,6 +18,7 @@
     "last_reply_time": "Last reply",
     "reply-as-topic": "Svar som emne",
     "guest-login-reply": "Login for at svare",
+    "login-to-view": "🔒 Log in to view",
     "edit": "Rediger",
     "delete": "Slet",
     "purge": "Udrens",
@@ -133,5 +134,6 @@
     "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
     "diffs.current-revision": "current revision",
     "diffs.original-revision": "original revision",
-    "timeago_later": "%1 later"
+    "timeago_later": "%1 later",
+    "timeago_earlier": "%1 earlier"
 }

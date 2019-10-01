@@ -99,6 +99,7 @@ function addMetaTags(res, userData) {
 		{
 			name: 'title',
 			content: userData.fullname || userData.username,
+			noEscape: true,
 		},
 		{
 			name: 'description',
@@ -107,6 +108,7 @@ function addMetaTags(res, userData) {
 		{
 			property: 'og:title',
 			content: userData.fullname || userData.username,
+			noEscape: true,
 		},
 		{
 			property: 'og:description',

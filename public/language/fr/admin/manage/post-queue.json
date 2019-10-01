@@ -1,6 +1,6 @@
 {
 	"post-queue": "File d’attente des messages",
-	"description": "Il ny a aucun message dans la file d’attente<br>Pour activer cette fonctionnalité, allez dans <a href=\"%1\">Paramètres &rarr; Message &rarr; Restriction de publication</a> et activez <strong>File d’attente des messages</strong>.",
+	"description": "Aucun messages dans la file d'attente. <br> Pour activer cette fonctionnalité, accédez aux <a href=\"%1\">Paramètres &rarr; Messages &rarr; File d'attente </a> et activez <strong>la file d'attente.",
 	"user": "Utilisateur",
 	"category": "Catégorie",
 	"title": "Titre",

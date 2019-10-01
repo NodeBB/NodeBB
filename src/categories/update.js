@@ -1,17 +1,17 @@
 'use strict';
 
-var async = require('async');
+const async = require('async');
 
-var db = require('../database');
-var meta = require('../meta');
-var utils = require('../utils');
-var translator = require('../translator');
-var plugins = require('../plugins');
-var cache = require('../cache');
+const db = require('../database');
+const meta = require('../meta');
+const utils = require('../utils');
+const translator = require('../translator');
+const plugins = require('../plugins');
+const cache = require('../cache');
 
 module.exports = function (Categories) {
 	Categories.update = async function (modified) {
-		var cids = Object.keys(modified);
+		const cids = Object.keys(modified);
 		await Promise.all(cids.map(cid => updateCategory(cid, modified[cid])));
 		return cids;
 	};

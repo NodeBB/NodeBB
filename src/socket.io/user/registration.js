@@ -1,70 +1,43 @@
 'use strict';
 
-var async = require('async');
-var user = require('../../user');
-var events = require('../../events');
+const user = require('../../user');
+const events = require('../../events');
 
 module.exports = function (SocketUser) {
-	SocketUser.acceptRegistration = function (socket, data, callback) {
-		async.waterfall([
-			function (next) {
-				user.isAdminOrGlobalMod(socket.uid, next);
-			},
-			function (isAdminOrGlobalMod, next) {
-				if (!isAdminOrGlobalMod) {
-					return next(new Error('[[error:no-privileges]]'));
-				}
-
-				user.acceptRegistration(data.username, next);
-			},
-			function (uid, next) {
-				events.log({
-					type: 'registration-approved',
-					uid: socket.uid,
-					ip: socket.ip,
-					targetUid: uid,
-				});
-				next(null, uid);
-			},
-		], callback);
+	SocketUser.acceptRegistration = async function (socket, data) {
+		const isAdminOrGlobalMod = await user.isAdminOrGlobalMod(socket.uid);
+		if (!isAdminOrGlobalMod) {
+			throw new Error('[[error:no-privileges]]');
+		}
+		const uid = await user.acceptRegistration(data.username);
+		await events.log({
+			type: 'registration-approved',
+			uid: socket.uid,
+			ip: socket.ip,
+			targetUid: uid,
+		});
+		return uid;
 	};
 
-	SocketUser.rejectRegistration = function (socket, data, callback) {
-		async.waterfall([
-			function (next) {
-				user.isAdminOrGlobalMod(socket.uid, next);
-			},
-			function (isAdminOrGlobalMod, next) {
-				if (!isAdminOrGlobalMod) {
-					return next(new Error('[[error:no-privileges]]'));
-				}
-
-				user.rejectRegistration(data.username, next);
-			},
-			function (next) {
-				events.log({
-					type: 'registration-rejected',
-					uid: socket.uid,
-					ip: socket.ip,
-					username: data.username,
-				});
-				next();
-			},
-		], callback);
+	SocketUser.rejectRegistration = async function (socket, data) {
+		const isAdminOrGlobalMod = await user.isAdminOrGlobalMod(socket.uid);
+		if (!isAdminOrGlobalMod) {
+			throw new Error('[[error:no-privileges]]');
+		}
+		await user.rejectRegistration(data.username);
+		await events.log({
+			type: 'registration-rejected',
+			uid: socket.uid,
+			ip: socket.ip,
+			username: data.username,
+		});
 	};
 
-	SocketUser.deleteInvitation = function (socket, data, callback) {
-		async.waterfall([
-			function (next) {
-				user.isAdminOrGlobalMod(socket.uid, next);
-			},
-			function (isAdminOrGlobalMod, next) {
-				if (!isAdminOrGlobalMod) {
-					return next(new Error('[[error:no-privileges]]'));
-				}
-
-				user.deleteInvitation(data.invitedBy, data.email, next);
-			},
-		], callback);
+	SocketUser.deleteInvitation = async function (socket, data) {
+		const isAdminOrGlobalMod = await user.isAdminOrGlobalMod(socket.uid);
+		if (!isAdminOrGlobalMod) {
+			throw new Error('[[error:no-privileges]]');
+		}
+		await user.deleteInvitation(data.invitedBy, data.email);
 	};
 };

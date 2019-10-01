@@ -131,5 +131,5 @@ async function getTermTopics(term, uid, start, stop) {
 			topicObj.teaser.content = topicObj.teaser.content.slice(0, 255) + '...';
 		}
 	});
-	return data.topics;
+	return data.topics.filter(topic => topic && !topic.deleted);
 }

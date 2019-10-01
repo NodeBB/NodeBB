@@ -1,12 +1,12 @@
 'use strict';
 
-var async = require('async');
-var winston = require('winston');
-var nconf = require('nconf');
-var _ = require('lodash');
+const async = require('async');
+const winston = require('winston');
+const nconf = require('nconf');
+const _ = require('lodash');
 
-var cacheBuster = require('./cacheBuster');
-var meta;
+const cacheBuster = require('./cacheBuster');
+let meta;
 
 function step(target, callback) {
 	var startTime = Date.now();
@@ -134,7 +134,7 @@ function buildTargets(targets, parallel, callback) {
 	}, callback);
 }
 
-function build(targets, options, callback) {
+exports.build = function (targets, options, callback) {
 	if (!callback && typeof options === 'function') {
 		callback = options;
 		options = {};
@@ -178,17 +178,6 @@ function build(targets, options, callback) {
 
 	winston.verbose('[build] building the following targets: ' + targets.join(', '));
 
-	if (typeof callback !== 'function') {
-		callback = function (err) {
-			if (err) {
-				winston.error(err);
-				process.exit(1);
-			} else {
-				process.exit(0);
-			}
-		};
-	}
-
 	if (!targets) {
 		winston.info('[build] No valid targets supplied. Aborting.');
 		callback();
@@ -226,10 +215,10 @@ function build(targets, options, callback) {
 		winston.info('[build] Asset compilation successful. Completed in ' + totalTime + 'sec.');
 		callback();
 	});
-}
-
-exports.build = build;
+};
 
 exports.buildAll = function (callback) {
-	build(allTargets, callback);
+	exports.build(allTargets, callback);
 };
+
+require('../promisify')(exports);

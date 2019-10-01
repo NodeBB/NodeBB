@@ -18,6 +18,7 @@
     "last_reply_time": "Dernière réponse",
     "reply-as-topic": "Répondre à l'aide d'un nouveau sujet",
     "guest-login-reply": "Se connecter pour répondre",
+    "login-to-view": "🔒 Se connectez-vous pour voir",
     "edit": "Éditer",
     "delete": "Supprimer",
     "purge": "Supprimer définitivement",
@@ -133,5 +134,6 @@
     "diffs.no-revisions-description": "Cet article a <strong>%1</strong> révisions.",
     "diffs.current-revision": "Révision en cours",
     "diffs.original-revision": "Révision originale",
-    "timeago_later": "%1"
+    "timeago_later": "%1",
+    "timeago_earlier": "il y a %1"
 }

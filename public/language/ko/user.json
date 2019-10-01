@@ -124,6 +124,7 @@
     "follow_topics_you_reply_to": "내가 답글을 단 게시물을 관심 목록에 추가",
     "follow_topics_you_create": "내가 작성한 게시물을 관심 목록에 추가",
     "grouptitle": "그룹 이름",
+    "group-order-help": "Select a group and use the arrows to order titles",
     "no-group-title": "그룹 이름이 없습니다.",
     "select-skin": "스킨 선택",
     "select-homepage": "홈페이지 선택",

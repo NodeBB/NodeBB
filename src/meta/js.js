@@ -102,7 +102,7 @@ JS.scripts = {
 
 function linkIfLinux(srcPath, destPath, next) {
 	if (process.platform === 'win32') {
-		file.copyFile(srcPath, destPath, next);
+		fs.copyFile(srcPath, destPath, next);
 	} else {
 		file.link(srcPath, destPath, true, next);
 	}

@@ -57,7 +57,7 @@ UserReset.send = async function (email) {
 };
 
 UserReset.commit = async function (code, password) {
-	await user.isPasswordValid(password);
+	user.isPasswordValid(password);
 	const validated = await UserReset.validate(code);
 	if (!validated) {
 		throw new Error('[[error:reset-code-not-valid]]');

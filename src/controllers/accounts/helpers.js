@@ -31,6 +31,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID) {
 	const isAdmin = results.isAdmin;
 	const isGlobalModerator = results.isGlobalModerator;
 	const isModerator = results.isModerator;
+	const canViewInfo = results.canViewInfo;
 	const isSelf = parseInt(callerUID, 10) === parseInt(userData.uid, 10);
 
 	userData.age = Math.max(0, userData.birthday ? Math.floor((new Date().getTime() - new Date(userData.birthday).getTime()) / 31536000000) : 0);
@@ -47,7 +48,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID) {
 		userData.fullname = '';
 	}
 
-	if (isAdmin || isSelf || ((isGlobalModerator || isModerator) && !results.isTargetAdmin)) {
+	if (isAdmin || isSelf || (canViewInfo && !results.isTargetAdmin)) {
 		userData.ips = results.ips;
 	}
 
@@ -86,6 +87,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID) {
 		moderator: isModerator,
 		globalMod: isGlobalModerator,
 		admin: isAdmin,
+		canViewInfo: canViewInfo,
 	});
 
 	userData.sso = results.sso.associations;
@@ -129,6 +131,7 @@ async function getAllData(uid, callerUID) {
 		canEdit: privileges.users.canEdit(callerUID, uid),
 		canBanUser: privileges.users.canBanUser(callerUID, uid),
 		isBlocked: user.blocks.is(uid, callerUID),
+		canViewInfo: privileges.global.can('view:users:info', callerUID),
 	});
 }
 
@@ -140,9 +143,10 @@ async function getProfileMenu(uid, callerUID) {
 		visibility: {
 			self: false,
 			other: false,
-			moderator: true,
-			globalMod: true,
+			moderator: false,
+			globalMod: false,
 			admin: true,
+			canViewInfo: true,
 		},
 	}, {
 		id: 'sessions',
@@ -154,6 +158,7 @@ async function getProfileMenu(uid, callerUID) {
 			moderator: false,
 			globalMod: false,
 			admin: false,
+			canViewInfo: false,
 		},
 	}];
 
@@ -168,6 +173,7 @@ async function getProfileMenu(uid, callerUID) {
 				moderator: false,
 				globalMod: false,
 				admin: false,
+				canViewInfo: false,
 			},
 		});
 	}
@@ -202,6 +208,7 @@ function filterLinks(links, states) {
 			moderator: true,
 			globalMod: true,
 			admin: true,
+			canViewInfo: true,
 			...link.visibility };
 
 		var permit = Object.keys(states).some(function (state) {

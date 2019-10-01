@@ -69,7 +69,16 @@
 					<div class="checkbox">
 						<label>
 							<input id="group-disableJoinRequests" name="disableJoinRequests" type="checkbox"<!-- IF group.disableJoinRequests --> checked<!-- ENDIF group.disableJoinRequests -->>
-							<strong>[[admin/manage/groups:edit.disable-requests]]</strong>
+							<strong>[[admin/manage/groups:edit.disable-join]]</strong>
+						</label>
+					</div>
+				</fieldset>
+
+				<fieldset>
+					<div class="checkbox">
+						<label>
+							<input id="group-disableLeave" name="disableLeave" type="checkbox"{{{if group.disableLeave}}} checked{{{end}}}>
+							<strong>[[admin/manage/groups:edit.disable-leave]]</strong>
 						</label>
 					</div>
 				</fieldset>

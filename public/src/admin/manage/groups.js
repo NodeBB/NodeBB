@@ -31,9 +31,11 @@ define('admin/manage/groups', ['translator', 'benchpress'], function (translator
 			var submitObj = {
 				name: createGroupName.val(),
 				description: $('#create-group-desc').val(),
+				private: $('#create-group-private').is(':checked') ? 1 : 0,
+				hidden: $('#create-group-hidden').is(':checked') ? 1 : 0,
 			};
 
-			socket.emit('admin.groups.create', submitObj, function (err) {
+			socket.emit('admin.groups.create', submitObj, function (err, groupData) {
 				if (err) {
 					if (err.hasOwnProperty('message') && utils.hasLanguageKey(err.message)) {
 						err = '[[admin/manage/groups:alerts.create-failure]]';
@@ -43,7 +45,7 @@ define('admin/manage/groups', ['translator', 'benchpress'], function (translator
 					createModalError.addClass('hide');
 					createGroupName.val('');
 					createModal.on('hidden.bs.modal', function () {
-						ajaxify.refresh();
+						ajaxify.go('admin/manage/groups/' + groupData.slug);
 					});
 					createModal.modal('hide');
 				}

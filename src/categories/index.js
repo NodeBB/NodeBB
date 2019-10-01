@@ -1,16 +1,16 @@
 
 'use strict';
 
-var _ = require('lodash');
+const _ = require('lodash');
 
-var db = require('../database');
-var user = require('../user');
-var groups = require('../groups');
-var plugins = require('../plugins');
-var privileges = require('../privileges');
+const db = require('../database');
+const user = require('../user');
+const groups = require('../groups');
+const plugins = require('../plugins');
+const privileges = require('../privileges');
 const cache = require('../cache');
 
-var Categories = module.exports;
+const Categories = module.exports;
 
 require('./data')(Categories);
 require('./create')(Categories);
@@ -77,7 +77,7 @@ Categories.getAllCategories = async function (uid) {
 };
 
 Categories.getCidsByPrivilege = async function (set, uid, privilege) {
-	const cids = await Categories.getAllCidsFromSet('categories:cid');
+	const cids = await Categories.getAllCidsFromSet(set);
 	return await privileges.categories.filterCids(privilege, cids, uid);
 };
 
@@ -113,9 +113,7 @@ Categories.getModeratorUids = async function (cids) {
 	const uniqGroups = _.uniq(_.flatten(sets.groupNames));
 	const groupUids = await groups.getMembersOfGroups(uniqGroups);
 	const map = _.zipObject(uniqGroups, groupUids);
-	const moderatorUids = cids.map(function (cid, index) {
-		return _.uniq(sets.uids[index].concat(_.flatten(sets.groupNames[index].map(g => map[g]))));
-	});
+	const moderatorUids = cids.map((cid, index) => _.uniq(sets.uids[index].concat(_.flatten(sets.groupNames[index].map(g => map[g])))));
 	return moderatorUids;
 };
 
@@ -320,35 +318,54 @@ Categories.getTree = function (categories, parentCid) {
 	return tree;
 };
 
-Categories.buildForSelect = async function (uid, privilege) {
-	let categories = await Categories.getCategoriesByPrivilege('categories:cid', uid, privilege);
-	categories = Categories.getTree(categories);
-	return await Categories.buildForSelectCategories(categories);
+Categories.buildForSelect = async function (uid, privilege, fields) {
+	const cids = await Categories.getCidsByPrivilege('categories:cid', uid, privilege);
+	return await getSelectData(cids, fields);
 };
 
-Categories.buildForSelectCategories = async function (categories) {
+Categories.buildForSelectAll = async function (fields) {
+	const cids = await Categories.getAllCidsFromSet('categories:cid');
+	return await getSelectData(cids, fields);
+};
+
+async function getSelectData(cids, fields) {
+	const categoryData = await Categories.getCategoriesData(cids);
+	const tree = Categories.getTree(categoryData);
+	return Categories.buildForSelectCategories(tree, fields);
+}
+
+Categories.buildForSelectCategories = function (categories, fields) {
 	function recursive(category, categoriesData, level, depth) {
-		var bullet = level ? '&bull; ' : '';
+		const bullet = level ? '&bull; ' : '';
 		category.value = category.cid;
 		category.level = level;
 		category.text = level + bullet + category.name;
 		category.depth = depth;
 		categoriesData.push(category);
 		if (Array.isArray(category.children)) {
-			category.children.forEach(function (child) {
-				recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level, depth + 1);
-			});
+			category.children.forEach(child => recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level, depth + 1));
 		}
 	}
 
-	var categoriesData = [];
+	const categoriesData = [];
 
-	categories = categories.filter(category => category && !category.parentCid);
+	const rootCategories = categories.filter(category => category && !category.parentCid);
 
-	categories.forEach(function (category) {
-		recursive(category, categoriesData, '', 0);
-	});
-	return categoriesData;
+	rootCategories.forEach(category => recursive(category, categoriesData, '', 0));
+
+	const pickFields = [
+		'cid', 'name', 'level', 'icon',	'parentCid',
+		'color', 'bgColor', 'backgroundImage', 'imageClass',
+	];
+	fields = fields || [];
+	if (fields.includes('text') && fields.includes('value')) {
+		return categoriesData.map(category => _.pick(category, fields));
+	}
+	if (fields.length) {
+		pickFields.push(...fields);
+	}
+
+	return categoriesData.map(category => _.pick(category, pickFields));
 };
 
 Categories.async = require('../promisify')(Categories);

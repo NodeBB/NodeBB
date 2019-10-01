@@ -99,7 +99,7 @@ events.getEvents = async function (filter, start, stop, from, to) {
 				event[key] = validator.escape(String(event[key] || ''));
 			}
 		});
-		var e = utils.merge(event);
+		const e = utils.merge(event);
 		e.eid = undefined;
 		e.uid = undefined;
 		e.type = undefined;

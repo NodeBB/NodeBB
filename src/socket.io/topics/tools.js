@@ -1,127 +1,104 @@
 'use strict';
 
-var async = require('async');
-
-var topics = require('../../topics');
-var events = require('../../events');
-var privileges = require('../../privileges');
-var plugins = require('../../plugins');
-var socketHelpers = require('../helpers');
+const topics = require('../../topics');
+const events = require('../../events');
+const privileges = require('../../privileges');
+const plugins = require('../../plugins');
+const socketHelpers = require('../helpers');
 
 module.exports = function (SocketTopics) {
-	SocketTopics.loadTopicTools = function (socket, data, callback) {
+	SocketTopics.loadTopicTools = async function (socket, data) {
 		if (!socket.uid) {
-			return callback(new Error('[[error:no-privileges]]'));
+			throw new Error('[[error:no-privileges]]');
 		}
 		if (!data) {
-			return callback(new Error('[[error:invalid-data]]'));
+			throw new Error('[[error:invalid-data]]');
 		}
 
-		async.waterfall([
-			function (next) {
-				async.parallel({
-					topic: function (next) {
-						topics.getTopicData(data.tid, next);
-					},
-					privileges: function (next) {
-						privileges.topics.get(data.tid, socket.uid, next);
-					},
-				}, next);
-			},
-			function (results, next) {
-				if (!results.topic) {
-					return next(new Error('[[error:no-topic]]'));
-				}
+		const [topicData, userPrivileges] = await Promise.all([
+			topics.getTopicData(data.tid),
+			privileges.topics.get(data.tid, socket.uid),
+		]);
 
-				results.topic.privileges = results.privileges;
-				plugins.fireHook('filter:topic.thread_tools', { topic: results.topic, uid: socket.uid, tools: [] }, next);
-			},
-			function (data, next) {
-				data.topic.thread_tools = data.tools;
-				next(null, data.topic);
-			},
-		], callback);
+		if (!topicData) {
+			throw new Error('[[error:no-topic]]');
+		}
+		if (!userPrivileges['topics:read']) {
+			throw new Error('[[error:no-privileges]]');
+		}
+		topicData.privileges = userPrivileges;
+		const result = await plugins.fireHook('filter:topic.thread_tools', { topic: topicData, uid: socket.uid, tools: [] });
+		result.topic.thread_tools = result.tools;
+		return result.topic;
 	};
 
-	SocketTopics.delete = function (socket, data, callback) {
-		SocketTopics.doTopicAction('delete', 'event:topic_deleted', socket, data, callback);
+	SocketTopics.delete = async function (socket, data) {
+		await SocketTopics.doTopicAction('delete', 'event:topic_deleted', socket, data);
 	};
 
-	SocketTopics.restore = function (socket, data, callback) {
-		SocketTopics.doTopicAction('restore', 'event:topic_restored', socket, data, callback);
+	SocketTopics.restore = async function (socket, data) {
+		await SocketTopics.doTopicAction('restore', 'event:topic_restored', socket, data);
 	};
 
-	SocketTopics.purge = function (socket, data, callback) {
-		SocketTopics.doTopicAction('purge', 'event:topic_purged', socket, data, callback);
+	SocketTopics.purge = async function (socket, data) {
+		await SocketTopics.doTopicAction('purge', 'event:topic_purged', socket, data);
 	};
 
-	SocketTopics.lock = function (socket, data, callback) {
-		SocketTopics.doTopicAction('lock', 'event:topic_locked', socket, data, callback);
+	SocketTopics.lock = async function (socket, data) {
+		await SocketTopics.doTopicAction('lock', 'event:topic_locked', socket, data);
 	};
 
-	SocketTopics.unlock = function (socket, data, callback) {
-		SocketTopics.doTopicAction('unlock', 'event:topic_unlocked', socket, data, callback);
+	SocketTopics.unlock = async function (socket, data) {
+		await SocketTopics.doTopicAction('unlock', 'event:topic_unlocked', socket, data);
 	};
 
-	SocketTopics.pin = function (socket, data, callback) {
-		SocketTopics.doTopicAction('pin', 'event:topic_pinned', socket, data, callback);
+	SocketTopics.pin = async function (socket, data) {
+		await SocketTopics.doTopicAction('pin', 'event:topic_pinned', socket, data);
 	};
 
-	SocketTopics.unpin = function (socket, data, callback) {
-		SocketTopics.doTopicAction('unpin', 'event:topic_unpinned', socket, data, callback);
+	SocketTopics.unpin = async function (socket, data) {
+		await SocketTopics.doTopicAction('unpin', 'event:topic_unpinned', socket, data);
 	};
 
-	SocketTopics.doTopicAction = function (action, event, socket, data, callback) {
-		callback = callback || function () {};
+	SocketTopics.doTopicAction = async function (action, event, socket, data) {
 		if (!socket.uid) {
-			return callback(new Error('[[error:no-privileges]]'));
+			throw new Error('[[error:no-privileges]]');
 		}
 
 		if (!data || !Array.isArray(data.tids) || !data.cid) {
-			return callback(new Error('[[error:invalid-tid]]'));
+			throw new Error('[[error:invalid-tid]]');
 		}
 
 		if (typeof topics.tools[action] !== 'function') {
-			return callback();
+			return;
 		}
-
-		async.each(data.tids, function (tid, next) {
-			var title;
-			async.waterfall([
-				function (next) {
-					topics.getTopicField(tid, 'title', next);
-				},
-				function (_title, next) {
-					title = _title;
-					topics.tools[action](tid, socket.uid, next);
-				},
-				function (data, next) {
-					socketHelpers.emitToTopicAndCategory(event, data);
-					logTopicAction(action, socket, tid, title, next);
-				},
-			], next);
-		}, callback);
+		await Promise.all(data.tids.map(async function (tid) {
+			const title = await topics.getTopicField(tid, 'title');
+			const data = await topics.tools[action](tid, socket.uid);
+			socketHelpers.emitToTopicAndCategory(event, data);
+			await logTopicAction(action, socket, tid, title);
+		}));
 	};
 
-	function logTopicAction(action, socket, tid, title, callback) {
+	async function logTopicAction(action, socket, tid, title) {
 		var actionsToLog = ['delete', 'restore', 'purge'];
 		if (!actionsToLog.includes(action)) {
-			return setImmediate(callback);
+			return;
 		}
-		events.log({
+		await events.log({
 			type: 'topic-' + action,
 			uid: socket.uid,
 			ip: socket.ip,
 			tid: tid,
 			title: String(title),
-		}, callback);
+		});
 	}
 
-	SocketTopics.orderPinnedTopics = function (socket, data, callback) {
+	SocketTopics.orderPinnedTopics = async function (socket, data) {
 		if (!Array.isArray(data)) {
-			return callback(new Error('[[error:invalid-data]]'));
+			throw new Error('[[error:invalid-data]]');
 		}
 
-		topics.tools.orderPinnedTopics(socket.uid, data, callback);
+		await topics.tools.orderPinnedTopics(socket.uid, data);
 	};
 };

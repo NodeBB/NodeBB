@@ -1,13 +1,27 @@
 'use strict';
 
-var winston = require('winston');
+const winston = require('winston');
+const mime = require('mime');
 
-var file = require('../file');
-var image = require('../image');
-var meta = require('../meta');
-var db = require('../database');
+const db = require('../database');
+const file = require('../file');
+const image = require('../image');
+const meta = require('../meta');
+const plugins = require('../plugins');
 
 module.exports = function (User) {
+	User.getAllowedProfileImageExtensions = function () {
+		return User.getAllowedImageTypes().map(type => mime.getExtension(type));
+	};
+
+	User.getAllowedImageTypes = function () {
+		const allowedTypes = ['image/png', 'image/jpeg', 'image/bmp'];
+		if (plugins.hasListeners('filter:image.isFileTypeAllowed')) {
+			allowedTypes.push('image/gif');
+		}
+		return allowedTypes;
+	};
+
 	User.updateCoverPosition = async function (uid, position) {
 		// Reject anything that isn't two percentages
 		if (!/^[\d.]+%\s[\d.]+%$/.test(position)) {
@@ -29,27 +43,12 @@ module.exports = function (User) {
 				return await User.updateCoverPosition(data.uid, data.position);
 			}
 
-			if (!data.imageData && !data.file) {
-				throw new Error('[[error:invalid-data]]');
-			}
-			const size = data.file ? data.file.size : image.sizeFromBase64(data.imageData);
-			if (size > meta.config.maximumCoverImageSize * 1024) {
-				throw new Error('[[error:file-too-big, ' + meta.config.maximumCoverImageSize + ']]');
-			}
+			validateUpload(data, meta.config.maximumCoverImageSize, ['image/png', 'image/jpeg', 'image/bmp']);
 
-			if (data.file) {
-				picture.path = data.file.path;
-			} else {
-				picture.path = await image.writeImageDataToTempFile(data.imageData);
-			}
+			picture.path = await getTempPath(data);
 
-			const type = data.file ? data.file.type : image.mimeFromBase64(data.imageData);
-			if (!type || !type.match(/^image./)) {
-				throw new Error('[[error:invalid-image]]');
-			}
-
-			const extension = file.typeToExtension(type);
-			const filename = generateProfileImageFilename(data.uid, 'profilecover', extension);
+			const extension = file.typeToExtension(getMimeType(data));
+			const filename = data.uid + '-profilecover' + extension;
 			const uploadData = await image.uploadImage(filename, 'profile', picture);
 
 			await User.setUserField(data.uid, 'cover:url', uploadData.url);
@@ -77,31 +76,14 @@ module.exports = function (User) {
 				throw new Error('[[error:profile-image-uploads-disabled]]');
 			}
 
-			if (!data.imageData && !data.file) {
-				throw new Error('[[error:invalid-data]]');
-			}
+			validateUpload(data, meta.config.maximumProfileImageSize, User.getAllowedImageTypes());
 
-			const size = data.file ? data.file.size : image.sizeFromBase64(data.imageData);
-			const uploadSize = meta.config.maximumProfileImageSize;
-			if (size > uploadSize * 1024) {
-				throw new Error('[[error:file-too-big, ' + uploadSize + ']]');
-			}
-
-			const type = data.file ? data.file.type : image.mimeFromBase64(data.imageData);
-			if (!type || !type.match(/^image./)) {
-				throw new Error('[[error:invalid-image]]');
-			}
-			const extension = file.typeToExtension(type);
+			const extension = file.typeToExtension(getMimeType(data));
 			if (!extension) {
 				throw new Error('[[error:invalid-image-extension]]');
 			}
 
-			if (data.file) {
-				picture.path = data.file.path;
-			} else {
-				picture.path = await image.writeImageDataToTempFile(data.imageData);
-			}
-
+			picture.path = await getTempPath(data);
 			picture.path = await convertToPNG(picture.path, extension);
 
 			await image.resizeImage({
@@ -110,7 +92,7 @@ module.exports = function (User) {
 				height: meta.config.profileImageDimension,
 			});
 
-			const filename = generateProfileImageFilename(data.uid, 'profileavatar', extension);
+			const filename = generateProfileImageFilename(data.uid, extension);
 			const uploadedImage = await image.uploadImage(filename, 'profile', picture);
 
 			await User.setUserFields(data.uid, {
@@ -123,8 +105,34 @@ module.exports = function (User) {
 		}
 	};
 
+	function validateUpload(data, maxSize, allowedTypes) {
+		if (!data.imageData && !data.file) {
+			throw new Error('[[error:invalid-data]]');
+		}
+		const size = data.file ? data.file.size : image.sizeFromBase64(data.imageData);
+		if (size > maxSize * 1024) {
+			throw new Error('[[error:file-too-big, ' + maxSize + ']]');
+		}
+
+		const type = getMimeType(data);
+		if (!type || !allowedTypes.includes(type)) {
+			throw new Error('[[error:invalid-image]]');
+		}
+	}
+
+	function getMimeType(data) {
+		return data.file ? data.file.type : image.mimeFromBase64(data.imageData);
+	}
+
+	async function getTempPath(data) {
+		if (data.file) {
+			return data.file.path;
+		}
+		return await image.writeImageDataToTempFile(data.imageData);
+	}
+
 	async function convertToPNG(path, extension) {
-		var convertToPNG = meta.config['profile:convertProfileImageToPNG'] === 1;
+		const convertToPNG = meta.config['profile:convertProfileImageToPNG'] === 1;
 		if (!convertToPNG) {
 			return path;
 		}
@@ -133,10 +141,10 @@ module.exports = function (User) {
 		return newPath;
 	}
 
-	function generateProfileImageFilename(uid, type, extension) {
-		var keepAllVersions = meta.config['profile:keepAllUserImages'] === 1;
-		var convertToPNG = meta.config['profile:convertProfileImageToPNG'] === 1;
-		return uid + '-' + type + (keepAllVersions ? '-' + Date.now() : '') + (convertToPNG ? '.png' : extension);
+	function generateProfileImageFilename(uid, extension) {
+		const keepAllVersions = meta.config['profile:keepAllUserImages'] === 1;
+		const convertToPNG = meta.config['profile:convertProfileImageToPNG'] === 1;
+		return uid + '-profileavatar' + (keepAllVersions ? '-' + Date.now() : '') + (convertToPNG ? '.png' : extension);
 	}
 
 	User.removeCoverPicture = async function (data) {

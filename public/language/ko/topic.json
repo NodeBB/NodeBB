@@ -18,6 +18,7 @@
     "last_reply_time": "마지막 답글",
     "reply-as-topic": "게시물로 답글하기",
     "guest-login-reply": "답글을 작성하기 위해 로그인",
+    "login-to-view": "🔒 Log in to view",
     "edit": "수정",
     "delete": "삭제",
     "purge": "폐기",
@@ -133,5 +134,6 @@
     "diffs.no-revisions-description": "이 게시글에는 <strong>%1</strong>번의 수정이 있습니다.",
     "diffs.current-revision": "현재 리비젼",
     "diffs.original-revision": "원래의 리비젼",
-    "timeago_later": "%1 later"
+    "timeago_later": "%1 later",
+    "timeago_earlier": "%1 earlier"
 }

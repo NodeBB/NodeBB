@@ -21,6 +21,7 @@
 	"last_reply_time": "Last reply",
 	"reply-as-topic": "Reply as topic",
 	"guest-login-reply": "Log in to reply",
+	"login-to-view": "🔒 Log in to view",
 	"edit": "Edit",
 	"delete": "Delete",
 	"purge": "Purge",
@@ -157,5 +158,6 @@
 	"diffs.current-revision": "current revision",
 	"diffs.original-revision": "original revision",
 
-	"timeago_later": "%1 later"
+	"timeago_later": "%1 later",
+	"timeago_earlier": "%1 earlier"
 }

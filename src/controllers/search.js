@@ -84,8 +84,13 @@ async function buildCategories(uid, searchOnly) {
 	if (searchOnly) {
 		return [];
 	}
-	let categoriesData = await categories.buildForSelect(uid, 'read');
+
+	const cids = await categories.getCidsByPrivilege('categories:cid', uid, 'read');
+	let categoriesData = await categories.getCategoriesData(cids);
 	categoriesData = categoriesData.filter(category => category && !category.link);
+	categoriesData = categories.getTree(categoriesData);
+	categoriesData = categories.buildForSelectCategories(categoriesData, ['text', 'value']);
+
 	return [
 		{ value: 'all', text: '[[unread:all_categories]]' },
 		{ value: 'watched', text: '[[category:watched-categories]]' },

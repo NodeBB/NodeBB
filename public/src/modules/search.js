@@ -9,7 +9,7 @@ define('search', ['navigator', 'translator', 'storage'], function (nav, translat
 	Search.query = function (data, callback) {
 		// Detect if a tid was specified
 		var topicSearch = data.term.match(/^in:topic-([\d]+) /);
-
+		callback = callback || function () {};
 		if (!topicSearch) {
 			ajaxify.go('search?' + createQueryString(data));
 			callback();

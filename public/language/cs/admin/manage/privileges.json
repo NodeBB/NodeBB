@@ -1,7 +1,8 @@
 {
 	"global": "Všeobecné",
 	"global.no-users": "Žádné všeobecné uživatelské nastavení.",
-
+	"group-privileges": "Group Privileges",
+	"user-privileges": "User Privileges",
 	"chat": "Konverzace",
 	"upload-images": "Nahrát obrázky",
 	"upload-files": "Náhrát soubory",
@@ -15,7 +16,7 @@
 	"view-groups": "Zobrazit skupiny",
 	"allow-local-login": "Místní přihlášení",
 	"allow-group-creation": "Vytvořit skupinu",
-
+	"view-users-info": "View Users Info",
 	"find-category": "Hledat kategorii",
 	"access-category": "Přístup ke kategorii",
 	"access-topics": "Přístup k tématům",

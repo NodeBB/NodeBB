@@ -66,7 +66,11 @@ describe('rewards', function () {
 			function method(next) {
 				next(null, 1);
 			}
-			rewards.checkConditionAndRewardUser(adminUid, 'essentials/user.postcount', method, function (err, data) {
+			rewards.checkConditionAndRewardUser({
+				uid: adminUid,
+				condition: 'essentials/user.postcount',
+				method: method,
+			}, function (err, data) {
 				assert.ifError(err);
 				done();
 			});

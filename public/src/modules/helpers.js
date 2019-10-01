@@ -160,7 +160,7 @@
 	// Groups helpers
 	function membershipBtn(groupObj) {
 		if (groupObj.isMember && groupObj.name !== 'administrators') {
-			return '<button class="btn btn-danger" data-action="leave" data-group="' + groupObj.displayName + '"><i class="fa fa-times"></i> [[groups:membership.leave-group]]</button>';
+			return '<button class="btn btn-danger" data-action="leave" data-group="' + groupObj.displayName + '"' + (groupObj.disableLeave ? ' disabled' : '') + '><i class="fa fa-times"></i> [[groups:membership.leave-group]]</button>';
 		}
 
 		if (groupObj.isPending && groupObj.name !== 'administrators') {
@@ -292,7 +292,7 @@
 		classNames = classNames || '';
 
 		// Validate sizes, handle integers, otherwise fall back to `avatar-sm`
-		if (['xs', 'sm', 'md', 'lg', 'xl'].includes(size)) {
+		if (['xs', 'sm', 'sm2x', 'md', 'lg', 'xl'].includes(size)) {
 			classNames += ' avatar-' + size;
 		} else if (!isNaN(parseInt(size, 10))) {
 			styles.push('width: ' + size + 'px;', 'height: ' + size + 'px;', 'line-height: ' + size + 'px;', 'font-size: ' + (parseInt(size, 10) / 16) + 'rem;');

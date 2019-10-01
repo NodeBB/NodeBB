@@ -1,46 +1,36 @@
 
 'use strict';
 
-var async = require('async');
+const user = require('../user');
+const meta = require('../meta');
+const events = require('../events');
 
-var user = require('../user');
-var meta = require('../meta');
-var events = require('../events');
+const SocketBlacklist = module.exports;
 
-var SocketBlacklist = module.exports;
-
-SocketBlacklist.validate = function (socket, data, callback) {
-	const rules = meta.blacklist.validate(data.rules);
-	callback(null, rules);
+SocketBlacklist.validate = async function (socket, data) {
+	return meta.blacklist.validate(data.rules);
 };
 
-SocketBlacklist.save = function (socket, rules, callback) {
-	blacklist(socket, 'save', rules, callback);
+SocketBlacklist.save = async function (socket, rules) {
+	await blacklist(socket, 'save', rules);
 };
 
-SocketBlacklist.addRule = function (socket, rule, callback) {
-	blacklist(socket, 'addRule', rule, callback);
+SocketBlacklist.addRule = async function (socket, rule) {
+	await blacklist(socket, 'addRule', rule);
 };
 
-function blacklist(socket, method, rule, callback) {
-	async.waterfall([
-		function (next) {
-			user.isAdminOrGlobalMod(socket.uid, next);
-		},
-		function (isAdminOrGlobalMod, next) {
-			if (!isAdminOrGlobalMod) {
-				return callback(new Error('[[error:no-privileges]]'));
-			}
-
-			meta.blacklist[method](rule, next);
-		},
-		function (next) {
-			events.log({
-				type: 'ip-blacklist-' + method,
-				uid: socket.uid,
-				ip: socket.ip,
-				rule: rule,
-			}, next);
-		},
-	], callback);
+async function blacklist(socket, method, rule) {
+	const isAdminOrGlobalMod = await user.isAdminOrGlobalMod(socket.uid);
+	if (!isAdminOrGlobalMod) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	await meta.blacklist[method](rule);
+	await events.log({
+		type: 'ip-blacklist-' + method,
+		uid: socket.uid,
+		ip: socket.ip,
+		rule: rule,
+	});
 }
+
+require('../promisify')(SocketBlacklist);

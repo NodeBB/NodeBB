@@ -1,11 +1,13 @@
 'use strict';
 
+const validator = require('validator');
 const groups = require('../groups');
 const meta = require('../meta');
 const user = require('../user');
 const utils = require('../utils');
 const events = require('../events');
 const privileges = require('../privileges');
+const notifications = require('../notifications');
 
 const SocketGroups = module.exports;
 
@@ -43,7 +45,7 @@ SocketGroups.join = async (socket, data) => {
 	});
 
 	if (results.groupData.private && results.groupData.disableJoinRequests) {
-		throw new Error('[[error:join-requests-disabled]]');
+		throw new Error('[[error:group-join-disabled]]');
 	}
 
 	if (!results.groupData.private || results.isAdmin) {
@@ -68,7 +70,22 @@ SocketGroups.leave = async (socket, data) => {
 		throw new Error('[[error:cant-remove-self-as-admin]]');
 	}
 
+	const groupData = await groups.getGroupData(data.groupName);
+	if (groupData.disableLeave) {
+		throw new Error('[[error:group-leave-disabled]]');
+	}
+
 	await groups.leave(data.groupName, socket.uid);
+	const username = await user.getUserField(socket.uid, 'username');
+	const notification = await notifications.create({
+		type: 'group-leave',
+		bodyShort: '[[groups:membership.leave.notification_title, ' + username + ', ' + data.groupName + ']]',
+		nid: 'group:' + validator.escape(data.groupName) + ':uid:' + socket.uid + ':group-leave',
+		path: '/groups/' + utils.slugify(data.groupName),
+	});
+	const uids = await groups.getOwners(data.groupName);
+	await notifications.push(notification, uids);
+
 	logGroupEvent(socket, 'group-leave', {
 		groupName: data.groupName,
 	});

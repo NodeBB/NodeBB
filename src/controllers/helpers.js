@@ -11,7 +11,6 @@ const categories = require('../categories');
 const plugins = require('../plugins');
 const meta = require('../meta');
 const middleware = require('../middleware');
-const utils = require('../utils');
 
 const helpers = module.exports;
 
@@ -214,7 +213,7 @@ helpers.getCategories = async function (set, uid, privilege, selectedCid) {
 
 helpers.getCategoriesByStates = async function (uid, selectedCid, states) {
 	let cids = await user.getCategoriesByStates(uid, states);
-	cids = await privileges.categories.filterCids('read', cids, uid);
+	cids = await privileges.categories.filterCids('topics:read', cids, uid);
 	return await getCategoryData(cids, uid, selectedCid);
 };
 
@@ -228,14 +227,17 @@ async function getCategoryData(cids, uid, selectedCid) {
 	if (selectedCid && !Array.isArray(selectedCid)) {
 		selectedCid = [selectedCid];
 	}
-	let categoryData = await categories.getCategoriesFields(cids, ['cid', 'order', 'name', 'slug', 'icon', 'link', 'color', 'bgColor', 'parentCid', 'image', 'imageClass']);
+	const categoryFields = ['cid', 'order', 'name', 'slug', 'icon', 'link', 'color', 'bgColor', 'parentCid', 'image', 'imageClass'];
+	let categoryData = await categories.getCategoriesFields(cids, categoryFields);
 	categoryData = categoryData.filter(category => category && !category.link);
+
+	categories.getTree(categoryData);
+	const categoriesData = categories.buildForSelectCategories(categoryData);
 
 	let selectedCategory = [];
 	const selectedCids = [];
-	categoryData.forEach(function (category) {
+	categoriesData.forEach(function (category) {
 		category.selected = selectedCid ? selectedCid.includes(String(category.cid)) : false;
-		category.parentCid = category.hasOwnProperty('parentCid') && utils.isNumber(category.parentCid) ? category.parentCid : 0;
 		if (category.selected) {
 			selectedCategory.push(category);
 			selectedCids.push(category.cid);
@@ -255,22 +257,11 @@ async function getCategoryData(cids, uid, selectedCid) {
 		selectedCategory = undefined;
 	}
 
-	const categoriesData = [];
-	const tree = categories.getTree(categoryData);
-
-	tree.forEach(category => recursive(category, categoriesData, ''));
-
-	return { categories: categoriesData, selectedCategory: selectedCategory, selectedCids: selectedCids };
-}
-
-function recursive(category, categoriesData, level) {
-	category.level = level;
-	categoriesData.push(category);
-	if (Array.isArray(category.children)) {
-		category.children.forEach(function (child) {
-			recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level);
-		});
-	}
+	return {
+		categories: categoriesData,
+		selectedCategory: selectedCategory,
+		selectedCids: selectedCids,
+	};
 }
 
 helpers.getHomePageRoutes = async function (uid) {

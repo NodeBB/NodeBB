@@ -1,22 +1,22 @@
 'use strict';
 
-var async = require('async');
-var validator = require('validator');
+const async = require('async');
+const validator = require('validator');
 
-var db = require('../database');
-var meta = require('../meta');
-var emailer = require('../emailer');
-var notifications = require('../notifications');
-var groups = require('../groups');
-var utils = require('../utils');
-var plugins = require('../plugins');
+const db = require('../database');
+const meta = require('../meta');
+const emailer = require('../emailer');
+const notifications = require('../notifications');
+const groups = require('../groups');
+const utils = require('../utils');
+const plugins = require('../plugins');
 
 module.exports = function (User) {
 	User.addToApprovalQueue = async function (userData) {
 		userData.userslug = utils.slugify(userData.username);
 		await canQueue(userData);
 		const hashedPassword = await User.hashPassword(userData.password);
-		var data = {
+		const data = {
 			username: userData.username,
 			email: userData.email,
 			ip: userData.ip,

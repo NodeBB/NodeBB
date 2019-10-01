@@ -24,6 +24,21 @@ function requireSharp() {
 	return sharp;
 }
 
+image.isFileTypeAllowed = async function (path) {
+	const plugins = require('./plugins');
+	// deprecated: remove in 1.14.0
+	if (plugins.hasListeners('filter:file.isFileTypeAllowed')) {
+		return await plugins.fireHook('filter:file.isFileTypeAllowed', path);
+	}
+	if (plugins.hasListeners('filter:image.isFileTypeAllowed')) {
+		return await plugins.fireHook('filter:image.isFileTypeAllowed', path);
+	}
+	const sharp = require('sharp');
+	await sharp(path, {
+		failOnError: true,
+	}).metadata();
+};
+
 image.resizeImage = async function (data) {
 	if (plugins.hasListeners('filter:image.resize')) {
 		await plugins.fireHook('filter:image.resize', {
@@ -155,29 +170,20 @@ image.sizeFromBase64 = function (imageData) {
 	return Buffer.from(imageData.slice(imageData.indexOf('base64') + 7), 'base64').length;
 };
 
-image.uploadImage = function (filename, folder, image, callback) {
+image.uploadImage = async function (filename, folder, imageData) {
 	if (plugins.hasListeners('filter:uploadImage')) {
-		return plugins.fireHook('filter:uploadImage', {
-			image: image,
-			uid: image.uid,
-		}, callback);
+		return await plugins.fireHook('filter:uploadImage', {
+			image: imageData,
+			uid: imageData.uid,
+		});
 	}
-
-	async.waterfall([
-		function (next) {
-			file.isFileTypeAllowed(image.path, next);
-		},
-		function (next) {
-			file.saveFileToLocal(filename, folder, image.path, next);
-		},
-		function (upload, next) {
-			next(null, {
-				url: upload.url,
-				path: upload.path,
-				name: image.name,
-			});
-		},
-	], callback);
+	await image.isFileTypeAllowed(imageData.path);
+	const upload = await file.saveFileToLocal(filename, folder, imageData.path);
+	return {
+		url: upload.url,
+		path: upload.path,
+		name: imageData.name,
+	};
 };
 
 require('./promisify')(image);

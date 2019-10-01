@@ -1,265 +1,192 @@
 'use strict';
 
-var async = require('async');
-var winston = require('winston');
+const async = require('async');
+const winston = require('winston');
 
-var db = require('../../database');
-var groups = require('../../groups');
-var user = require('../../user');
-var events = require('../../events');
-var meta = require('../../meta');
-var plugins = require('../../plugins');
+const db = require('../../database');
+const groups = require('../../groups');
+const user = require('../../user');
+const events = require('../../events');
+const meta = require('../../meta');
+const plugins = require('../../plugins');
 
-var User = module.exports;
+const User = module.exports;
 
-User.makeAdmins = function (socket, uids, callback) {
+User.makeAdmins = async function (socket, uids) {
 	if (!Array.isArray(uids)) {
-		return callback(new Error('[[error:invalid-data]]'));
+		throw new Error('[[error:invalid-data]]');
 	}
-
-	async.waterfall([
-		function (next) {
-			user.getUsersFields(uids, ['banned'], next);
-		},
-		function (userData, next) {
-			for (var i = 0; i < userData.length; i += 1) {
-				if (userData[i] && userData[i].banned) {
-					return callback(new Error('[[error:cant-make-banned-users-admin]]'));
-				}
-			}
-
-			async.eachSeries(uids, function (uid, next) {
-				async.waterfall([
-					function (next) {
-						groups.join('administrators', uid, next);
-					},
-					function (next) {
-						events.log({
-							type: 'user-makeAdmin',
-							uid: socket.uid,
-							targetUid: uid,
-							ip: socket.ip,
-						}, next);
-					},
-				], next);
-			}, next);
-		},
-	], callback);
+	const userData = await user.getUsersFields(uids, ['banned']);
+	userData.forEach((userData) => {
+		if (userData && userData.banned) {
+			throw new Error('[[error:cant-make-banned-users-admin]]');
+		}
+	});
+	for (const uid of uids) {
+		/* eslint-disable no-await-in-loop */
+		await groups.join('administrators', uid);
+		await events.log({
+			type: 'user-makeAdmin',
+			uid: socket.uid,
+			targetUid: uid,
+			ip: socket.ip,
+		});
+	}
 };
 
-User.removeAdmins = function (socket, uids, callback) {
+User.removeAdmins = async function (socket, uids) {
 	if (!Array.isArray(uids)) {
-		return callback(new Error('[[error:invalid-data]]'));
+		throw new Error('[[error:invalid-data]]');
 	}
-
-	async.eachSeries(uids, function (uid, next) {
-		async.waterfall([
-			function (next) {
-				groups.getMemberCount('administrators', next);
-			},
-			function (count, next) {
-				if (count === 1) {
-					return next(new Error('[[error:cant-remove-last-admin]]'));
-				}
-
-				groups.leave('administrators', uid, next);
-			},
-			function (next) {
-				events.log({
-					type: 'user-removeAdmin',
-					uid: socket.uid,
-					targetUid: uid,
-					ip: socket.ip,
-				}, next);
-			},
-		], next);
-	}, callback);
+	for (const uid of uids) {
+		/* eslint-disable no-await-in-loop */
+		const count = await groups.getMemberCount('administrators');
+		if (count === 1) {
+			throw new Error('[[error:cant-remove-last-admin]]');
+		}
+		await groups.leave('administrators', uid);
+		await events.log({
+			type: 'user-removeAdmin',
+			uid: socket.uid,
+			targetUid: uid,
+			ip: socket.ip,
+		});
+	}
 };
 
-User.createUser = function (socket, userData, callback) {
+User.createUser = async function (socket, userData) {
 	if (!userData) {
-		return callback(new Error('[[error:invalid-data]]'));
+		throw new Error('[[error:invalid-data]]');
 	}
-	user.create(userData, callback);
+	return await user.create(userData);
 };
 
-User.resetLockouts = function (socket, uids, callback) {
+User.resetLockouts = async function (socket, uids) {
 	if (!Array.isArray(uids)) {
-		return callback(new Error('[[error:invalid-data]]'));
+		throw new Error('[[error:invalid-data]]');
 	}
-
-	async.each(uids, user.auth.resetLockout, callback);
+	await Promise.all(uids.map(uid => user.auth.resetLockout(uid)));
 };
 
-User.validateEmail = function (socket, uids, callback) {
+User.validateEmail = async function (socket, uids) {
 	if (!Array.isArray(uids)) {
-		return callback(new Error('[[error:invalid-data]]'));
+		throw new Error('[[error:invalid-data]]');
 	}
 
 	uids = uids.filter(uid => parseInt(uid, 10));
-
-	async.waterfall([
-		function (next) {
-			async.each(uids, function (uid, next) {
-				user.setUserField(uid, 'email:confirmed', 1, next);
-			}, next);
-		},
-		function (next) {
-			db.sortedSetRemove('users:notvalidated', uids, next);
-		},
-	], callback);
+	await db.setObjectField(uids.map(uid => 'user:' + uid), 'email:confirmed', 1);
+	await db.sortedSetRemove('users:notvalidated', uids);
 };
 
-User.sendValidationEmail = function (socket, uids, callback) {
+User.sendValidationEmail = async function (socket, uids) {
 	if (!Array.isArray(uids)) {
-		return callback(new Error('[[error:invalid-data]]'));
+		throw new Error('[[error:invalid-data]]');
 	}
 
 	if (!meta.config.requireEmailConfirmation) {
-		return callback(new Error('[[error:email-confirmations-are-disabled]]'));
+		throw new Error('[[error:email-confirmations-are-disabled]]');
 	}
 
-	async.eachLimit(uids, 50, function (uid, next) {
-		user.email.sendValidationEmail(uid, next);
-	}, callback);
-};
-
-User.sendPasswordResetEmail = function (socket, uids, callback) {
-	if (!Array.isArray(uids)) {
-		return callback(new Error('[[error:invalid-data]]'));
-	}
-
-	uids = uids.filter(uid => parseInt(uid, 10));
-
-	async.each(uids, function (uid, next) {
-		async.waterfall([
-			function (next) {
-				user.getUserFields(uid, ['email', 'username'], next);
-			},
-			function (userData, next) {
-				if (!userData.email) {
-					return next(new Error('[[error:user-doesnt-have-email, ' + userData.username + ']]'));
-				}
-				user.reset.send(userData.email, next);
-			},
-		], next);
-	}, callback);
-};
-
-User.forcePasswordReset = function (socket, uids, callback) {
-	if (!Array.isArray(uids)) {
-		return callback(new Error('[[error:invalid-data]]'));
-	}
-
-	uids = uids.filter(uid => parseInt(uid, 10));
-
-	async.each(uids, function (uid, next) {
-		async.waterfall([
-			function (next) {
-				user.setUserField(uid, 'passwordExpiry', Date.now(), next);
-			},
-			function (next) {
-				user.auth.revokeAllSessions(uid, next);
-			},
-		], next);
-	}, callback);
-};
-
-User.deleteUsers = function (socket, uids, callback) {
-	deleteUsers(socket, uids, function (uid, next) {
-		user.deleteAccount(uid, next);
-	}, callback);
-};
-
-User.deleteUsersAndContent = function (socket, uids, callback) {
-	deleteUsers(socket, uids, function (uid, next) {
-		user.delete(socket.uid, uid, next);
-	}, callback);
-};
-
-function deleteUsers(socket, uids, method, callback) {
-	if (!Array.isArray(uids)) {
-		return callback(new Error('[[error:invalid-data]]'));
-	}
-	async.waterfall([
-		function (next) {
-			groups.isMembers(uids, 'administrators', next);
-		},
-		function (isMembers, next) {
-			if (isMembers.includes(true)) {
-				return callback(new Error('[[error:cant-delete-other-admins]]'));
-			}
-
-			callback();
-
-			async.each(uids, function (uid, next) {
-				async.waterfall([
-					function (next) {
-						method(uid, next);
-					},
-					function (userData, next) {
-						events.log({
-							type: 'user-delete',
-							uid: socket.uid,
-							targetUid: uid,
-							ip: socket.ip,
-							username: userData.username,
-							email: userData.email,
-						}, next);
-					},
-					function (next) {
-						plugins.fireHook('action:user.delete', {
-							callerUid: socket.uid,
-							uid: uid,
-							ip: socket.ip,
-						});
-						next();
-					},
-				], next);
-			}, next);
-		},
-	], function (err) {
-		if (err) {
-			winston.error(err);
-		}
+	await async.eachLimit(uids, 50, async function (uid) {
+		await user.email.sendValidationEmail(uid);
 	});
+};
+
+User.sendPasswordResetEmail = async function (socket, uids) {
+	if (!Array.isArray(uids)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	uids = uids.filter(uid => parseInt(uid, 10));
+
+	await Promise.all(uids.map(async function (uid) {
+		const userData = await user.getUserFields(uid, ['email', 'username']);
+		if (!userData.email) {
+			throw new Error('[[error:user-doesnt-have-email, ' + userData.username + ']]');
+		}
+		await user.reset.send(userData.email);
+	}));
+};
+
+User.forcePasswordReset = async function (socket, uids) {
+	if (!Array.isArray(uids)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	uids = uids.filter(uid => parseInt(uid, 10));
+
+	await db.setObjectField(uids.map(uid => 'user:' + uid), 'passwordExpiry', Date.now());
+	await user.auth.revokeAllSessions(uids);
+};
+
+User.deleteUsers = async function (socket, uids) {
+	deleteUsers(socket, uids, async function (uid) {
+		await user.deleteAccount(uid);
+	});
+};
+
+User.deleteUsersAndContent = async function (socket, uids) {
+	deleteUsers(socket, uids, async function (uid) {
+		await user.delete(socket.uid, uid);
+	});
+};
+
+async function deleteUsers(socket, uids, method) {
+	if (!Array.isArray(uids)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	const isMembers = await groups.isMembers(uids, 'administrators');
+	if (isMembers.includes(true)) {
+		throw new Error('[[error:cant-delete-other-admins]]');
+	}
+	async function doDelete(uid) {
+		const userData = await method(uid);
+		await events.log({
+			type: 'user-delete',
+			uid: socket.uid,
+			targetUid: uid,
+			ip: socket.ip,
+			username: userData.username,
+			email: userData.email,
+		});
+		plugins.fireHook('action:user.delete', {
+			callerUid: socket.uid,
+			uid: uid,
+			ip: socket.ip,
+		});
+	}
+	try {
+		await Promise.all(uids.map(uid => doDelete(uid)));
+	} catch (err) {
+		winston.error(err);
+	}
 }
 
-User.search = function (socket, data, callback) {
-	var searchData;
-	async.waterfall([
-		function (next) {
-			user.search({
-				query: data.query,
-				searchBy: data.searchBy,
-				uid: socket.uid,
-			}, next);
-		},
-		function (_searchData, next) {
-			searchData = _searchData;
-			if (!searchData.users.length) {
-				return callback(null, searchData);
-			}
+User.search = async function (socket, data) {
+	const searchData = await user.search({
+		query: data.query,
+		searchBy: data.searchBy,
+		uid: socket.uid,
+	});
 
-			var uids = searchData.users.map(user => user && user.uid);
+	if (!searchData.users.length) {
+		return searchData;
+	}
 
-			user.getUsersFields(uids, ['email', 'flags', 'lastonline', 'joindate'], next);
-		},
-		function (userInfo, next) {
-			searchData.users.forEach(function (user, index) {
-				if (user && userInfo[index]) {
-					user.email = userInfo[index].email;
-					user.flags = userInfo[index].flags || 0;
-					user.lastonlineISO = userInfo[index].lastonlineISO;
-					user.joindateISO = userInfo[index].joindateISO;
-				}
-			});
-			next(null, searchData);
-		},
-	], callback);
+	const uids = searchData.users.map(user => user && user.uid);
+	const userInfo = await user.getUsersFields(uids, ['email', 'flags', 'lastonline', 'joindate']);
+
+	searchData.users.forEach(function (user, index) {
+		if (user && userInfo[index]) {
+			user.email = userInfo[index].email;
+			user.flags = userInfo[index].flags || 0;
+			user.lastonlineISO = userInfo[index].lastonlineISO;
+			user.joindateISO = userInfo[index].joindateISO;
+		}
+	});
+	return searchData;
 };
 
-User.restartJobs = function (socket, data, callback) {
+User.restartJobs = async function () {
 	user.startJobs();
-	callback();
 };

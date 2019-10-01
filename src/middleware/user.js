@@ -132,7 +132,7 @@ module.exports = function (middleware) {
 
 				// For the account/info page only, allow plain moderators through
 				if (/user\/.+\/info$/.test(req.path)) {
-					user.isModeratorOfAnyCategory(req.uid, next);
+					privileges.global.can('view:users:info', req.uid, next);
 				} else {
 					next(null, false);
 				}

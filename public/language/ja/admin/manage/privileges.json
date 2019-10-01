@@ -1,7 +1,8 @@
 {
 	"global": "グローバル",
 	"global.no-users": "ユーザー固有のグローバル特権はありません。",
-
+	"group-privileges": "Group Privileges",
+	"user-privileges": "User Privileges",
 	"chat": "チャット",
 	"upload-images": "画像をアップロード",
 	"upload-files": "ファイルをアップロード",
@@ -15,7 +16,7 @@
 	"view-groups": "グループを表示",
 	"allow-local-login": "ローカルログイン",
 	"allow-group-creation": "グループを作成",
-
+	"view-users-info": "View Users Info",
 	"find-category": "カテゴリを検索",
 	"access-category": "カテゴリにアクセス",
 	"access-topics": "トピックスにアクセス",

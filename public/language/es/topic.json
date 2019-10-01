@@ -18,6 +18,7 @@
     "last_reply_time": "Última respuesta",
     "reply-as-topic": "Responder como tema",
     "guest-login-reply": "Accede para responder",
+    "login-to-view": "🔒 Log in to view",
     "edit": "Editar",
     "delete": "Borrar",
     "purge": "Purgar",
@@ -133,5 +134,6 @@
     "diffs.no-revisions-description": "Este post ha tenido <strong>%1</strong> revisión(es).",
     "diffs.current-revision": "revisión actual",
     "diffs.original-revision": "revisión original",
-    "timeago_later": "%1 later"
+    "timeago_later": "%1 later",
+    "timeago_earlier": "%1 earlier"
 }

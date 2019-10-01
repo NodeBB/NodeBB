@@ -18,6 +18,7 @@
     "last_reply_time": "Trả lời cuối cùng",
     "reply-as-topic": "Trả lời dưới dạng chủ đề",
     "guest-login-reply": "Hãy đăng nhập để trả lời",
+    "login-to-view": "🔒 Log in to view",
     "edit": "Chỉnh sửa",
     "delete": "Xóa",
     "purge": "Xóa hẳn",
@@ -133,5 +134,6 @@
     "diffs.no-revisions-description": "Bài viết này có <strong>%1</strong> sửa đổi",
     "diffs.current-revision": "Bản sao lưu hiện tại",
     "diffs.original-revision": "Bản sao lưu gốc",
-    "timeago_later": "%1 sau"
+    "timeago_later": "%1 sau",
+    "timeago_earlier": "%1 earlier"
 }

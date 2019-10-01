@@ -22,7 +22,7 @@ describe('file', function () {
 
 	describe('copyFile', function () {
 		it('should copy a file', function (done) {
-			file.copyFile(tempPath, uploadPath, function (err) {
+			fs.copyFile(tempPath, uploadPath, function (err) {
 				assert.ifError(err);
 
 				assert(file.existsSync(uploadPath));
@@ -38,7 +38,7 @@ describe('file', function () {
 		it('should override an existing file', function (done) {
 			fs.writeFileSync(uploadPath, 'hsdkjhgkjsfhkgj');
 
-			file.copyFile(tempPath, uploadPath, function (err) {
+			fs.copyFile(tempPath, uploadPath, function (err) {
 				assert.ifError(err);
 
 				assert(file.existsSync(uploadPath));
@@ -52,7 +52,7 @@ describe('file', function () {
 		});
 
 		it('should error if source file does not exist', function (done) {
-			file.copyFile(tempPath + '0000000000', uploadPath, function (err) {
+			fs.copyFile(tempPath + '0000000000', uploadPath, function (err) {
 				assert(err);
 				assert.strictEqual(err.code, 'ENOENT');
 
@@ -64,7 +64,7 @@ describe('file', function () {
 			fs.writeFileSync(uploadPath, 'hsdkjhgkjsfhkgj');
 			fs.chmodSync(uploadPath, '444');
 
-			file.copyFile(tempPath, uploadPath, function (err) {
+			fs.copyFile(tempPath, uploadPath, function (err) {
 				assert(err);
 				assert(err.code === 'EPERM' || err.code === 'EACCES');
 
@@ -104,5 +104,11 @@ describe('file', function () {
 			assert(Array.isArray(data));
 			done();
 		});
+	});
+
+	it('should convert mime type to extension', function (done) {
+		assert.equal(file.typeToExtension('image/png'), '.png');
+		assert.equal(file.typeToExtension(''), '');
+		done();
 	});
 });

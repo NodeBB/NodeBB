@@ -20,16 +20,12 @@ settingsController.get = async function (req, res, next) {
 
 
 async function renderEmail(req, res) {
-	const [emails, services] = await Promise.all([
-		emailer.getTemplates(meta.config),
-		emailer.listServices(),
-	]);
+	const emails = await emailer.getTemplates(meta.config);
+
 	res.render('admin/settings/email', {
 		emails: emails,
-		sendable: emails.filter(function (email) {
-			return !email.path.includes('_plaintext') && !email.path.includes('partials');
-		}),
-		services: services,
+		sendable: emails.filter(e => !e.path.includes('_plaintext') && !e.path.includes('partials')),
+		services: emailer.listServices(),
 	});
 }
 

@@ -97,7 +97,7 @@ function onMessage(socket, payload) {
 	}
 
 	var eventName = payload.data[0];
-	var params = payload.data[1];
+	var params = typeof payload.data[1] === 'function' ? {} : payload.data[1];
 	var callback = typeof payload.data[payload.data.length - 1] === 'function' ? payload.data[payload.data.length - 1] : function () {};
 
 	if (!eventName) {

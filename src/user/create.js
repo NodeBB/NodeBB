@@ -119,7 +119,7 @@ module.exports = function (User) {
 		}
 
 		if (userData.password) {
-			await User.isPasswordValid(userData.password);
+			User.isPasswordValid(userData.password);
 		}
 
 		if (userData.email) {
@@ -130,9 +130,7 @@ module.exports = function (User) {
 		}
 	};
 
-	// this function doesnt need to be async, but there is exising code that uses it
-	// with a callback so it is marked async otherwise it breaks the callback code
-	User.isPasswordValid = async function (password, minStrength) {
+	User.isPasswordValid = function (password, minStrength) {
 		minStrength = minStrength || meta.config.minimumPasswordStrength;
 
 		// Sanity checks: Checks if defined and is string

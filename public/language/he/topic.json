@@ -18,6 +18,7 @@
     "last_reply_time": "תגובה אחרונה",
     "reply-as-topic": "הגב כנושא",
     "guest-login-reply": "התחבר כדי לפרסם תגובה",
+    "login-to-view": "🔒 Log in to view",
     "edit": "עריכה",
     "delete": "מחק",
     "purge": "מחק לצמיתות",
@@ -133,5 +134,6 @@
     "diffs.no-revisions-description": "לפוסט זה יש <strong>%1</strong>גרסאות",
     "diffs.current-revision": "current revision",
     "diffs.original-revision": "original revision",
-    "timeago_later": "%1 later"
+    "timeago_later": "%1 later",
+    "timeago_earlier": "%1 earlier"
 }

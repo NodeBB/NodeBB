@@ -591,6 +591,7 @@ app.cacheBuster = null;
 						in: 'titles',
 						searchOnly: 1,
 					};
+					$(window).trigger('action:search.quick', { data: data });
 					search.api(data, function (data) {
 						if (!data.matchCount) {
 							quickSearchResults.html('').addClass('hidden');
@@ -662,6 +663,7 @@ app.cacheBuster = null;
 			require(['search'], function (search) {
 				var data = search.getSearchPreferences();
 				data.term = input.val();
+				$(window).trigger('action:search.submit', { data: data });
 				search.query(data, function () {
 					input.val('');
 				});
