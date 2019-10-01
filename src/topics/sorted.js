@@ -75,7 +75,7 @@ module.exports = function (Topics) {
 
 	async function sortTids(tids, params) {
 		if (params.term === 'alltime' && !params.cids && params.filter !== 'watched' && !params.floatPinned) {
-			return;
+			return tids;
 		}
 		const topicData = await Topics.getTopicsFields(tids, ['tid', 'lastposttime', 'upvotes', 'downvotes', 'postcount', 'pinned']);
 		let sortFn = sortRecent;
