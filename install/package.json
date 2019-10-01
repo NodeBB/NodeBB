@@ -119,7 +119,7 @@
         "socket.io-redis": "5.2.0",
         "socketio-wildcard": "2.0.0",
         "spdx-license-list": "^6.0.0",
-        "spider-detector": "1.0.19",
+        "spider-detector": "2.0.0",
         "textcomplete": "^0.17.1",
         "textcomplete.contenteditable": "^0.1.1",
         "toobusy-js": "^0.5.1",
