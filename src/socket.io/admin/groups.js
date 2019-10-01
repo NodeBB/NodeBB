@@ -14,6 +14,8 @@ Groups.create = async function (socket, data) {
 	return await groups.create({
 		name: data.name,
 		description: data.description,
+		private: data.private,
+		hidden: data.hidden,
 		ownerUid: socket.uid,
 	});
 };
