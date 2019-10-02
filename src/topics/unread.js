@@ -90,10 +90,10 @@ module.exports = function (Topics) {
 
 		const cutoff = params.cutoff || Topics.unreadCutoff();
 
-		const [followedTids, ignoredTids, recentTids, userScores, tids_unread] = await Promise.all([
+		const [followedTids, ignoredTids, categoryTids, userScores, tids_unread] = await Promise.all([
 			getFollowedTids(params),
 			user.getIgnoredTids(params.uid, 0, -1),
-			getRecentTids(params),
+			getCategoryTids(params),
 			db.getSortedSetRevRangeByScoreWithScores('uid:' + params.uid + ':tids_read', 0, -1, '+inf', cutoff),
 			db.getSortedSetRevRangeWithScores('uid:' + params.uid + ':tids_unread', 0, -1),
 		]);
@@ -101,7 +101,7 @@ module.exports = function (Topics) {
 		const userReadTime = _.mapValues(_.keyBy(userScores, 'value'), 'score');
 		const isTopicsFollowed = _.mapValues(_.keyBy(followedTids, 'value'), 'score');
 
-		const unreadTopics = _.unionWith(recentTids, followedTids.concat(tids_unread), (a, b) => a.value === b.value)
+		const unreadTopics = _.unionWith(categoryTids, followedTids.concat(tids_unread), (a, b) => a.value === b.value)
 			.filter(t => !ignoredTids.includes(t.value) && (!userReadTime[t.value] || t.score > userReadTime[t.value]))
 			.sort((a, b) => b.score - a.score);
 
@@ -117,7 +117,7 @@ module.exports = function (Topics) {
 			uid: params.uid,
 			tids: tids,
 			blockedUids: blockedUids,
-			recentTids: recentTids,
+			recentTids: categoryTids,
 		});
 
 		const topicData = await Topics.getTopicsFields(tids, ['tid', 'cid', 'uid', 'postcount']);
@@ -168,7 +168,11 @@ module.exports = function (Topics) {
 		};
 	}
 
-	async function getRecentTids(params) {
+	async function getCategoryTids(params) {
+		if (plugins.hasListeners('filter:topics.unread.getCategoryTids')) {
+			const result = await plugins.fireHook('filter:topics.unread.getCategoryTids', { params: params, tids: [] });
+			return result.tids;
+		}
 		if (params.filter === 'watched') {
 			return [];
 		}
