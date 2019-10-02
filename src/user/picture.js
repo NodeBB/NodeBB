@@ -84,7 +84,7 @@ module.exports = function (User) {
 			}
 
 			picture.path = await getTempPath(data);
-			picture.path = await convertToPNG(picture.path, extension);
+			picture.path = await convertToPNG(picture.path);
 
 			await image.resizeImage({
 				path: picture.path,
@@ -131,12 +131,12 @@ module.exports = function (User) {
 		return await image.writeImageDataToTempFile(data.imageData);
 	}
 
-	async function convertToPNG(path, extension) {
+	async function convertToPNG(path) {
 		const convertToPNG = meta.config['profile:convertProfileImageToPNG'] === 1;
 		if (!convertToPNG) {
 			return path;
 		}
-		const newPath = await image.normalise(path, extension);
+		const newPath = await image.normalise(path);
 		file.delete(path);
 		return newPath;
 	}
