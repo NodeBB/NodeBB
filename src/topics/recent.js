@@ -1,12 +1,12 @@
 
 'use strict';
 
-var db = require('../database');
-var plugins = require('../plugins');
-var posts = require('../posts');
+const db = require('../database');
+const plugins = require('../plugins');
+const posts = require('../posts');
 
 module.exports = function (Topics) {
-	var terms = {
+	const terms = {
 		day: 86400000,
 		week: 604800000,
 		month: 2592000000,
@@ -33,12 +33,12 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getLatestTidsFromSet = async function (set, start, stop, term) {
-		var since = terms.day;
+		let since = terms.day;
 		if (terms[term]) {
 			since = terms[term];
 		}
 
-		var count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
+		const count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
 		return await db.getSortedSetRevRangeByScore(set, start, count, '+inf', Date.now() - since);
 	};
 
