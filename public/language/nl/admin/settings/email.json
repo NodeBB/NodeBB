@@ -33,8 +33,8 @@
 	"testing.select": "Selecteer E-mail Template",
 	"testing.send": "Verzend Test E-mail",
 	"testing.send-help": "De test mail zal worden verstuurd naar het email adres van de op dit moment ingelogde gebruiker.",
-	"subscriptions": "E-mail abonnementen",
-	"subscriptions.disable": "Schakel subscriber notificatie e-mails uit",
+	"subscriptions": "Email Digests",
+	"subscriptions.disable": "Disable email digests",
 	"subscriptions.hour": "Uur van Digest",
 	"subscriptions.hour-help": "Voer het nummer in dat het uur representeerd waarop scheduled email digests worden verstuurd (bv. <code>0</code> voor middernacht, <code>17</code> voor 17:00). Neem er s.v.p. notie van dat dit het uur is van de server self, dit hoeft niet exact overeen te komen met de klok van uw systeem.<br /> De tijd op de server is bij benadering: <span id=\"serverTime\"></span><br /> De volgende dagelijkse digest staat gepland om <span id=\"nextDigestTime\"></span>"
 }

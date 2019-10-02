@@ -33,8 +33,8 @@
 	"testing.select": "Оберіть шаблон листа",
 	"testing.send": "Надіслати тестового листа",
 	"testing.send-help": "Тестовий лист було направлено на адресу поточного користувача.",
-	"subscriptions": "Підписки",
-	"subscriptions.disable": "Вимкнути сповіщення підписників",
+	"subscriptions": "Email Digests",
+	"subscriptions.disable": "Disable email digests",
 	"subscriptions.hour": "Година дайджесту",
 	"subscriptions.hour-help": "Вкажіть, будь ласка, годину о котрій кожного дня буде надсилатися дайджест (наприклад <code>0</code> — це північ, а <code>17</code> — п'ята година вечора). Зверніть увагу, що година визначається згідно налаштувань сервера і може не співпадати з часом вашого комп'ютера. <br /> Приблизний час сервера: <span id=\"serverTime\"></span><br /> Наступний дайджест заплановано до відправки <span id=\"nextDigestTime\"></span>"
 }

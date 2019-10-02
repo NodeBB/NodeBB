@@ -33,8 +33,8 @@
 	"testing.select": "Izaberi šablon Email-a",
 	"testing.send": "Pošalji probni Email",
 	"testing.send-help": "Probni email će biti poslat na adresu trenutno ulogovanog korisnika",
-	"subscriptions": "Email subskripcije",
-	"subscriptions.disable": "Onemogući notifikacije o email subskripcijama",
+	"subscriptions": "Email Digests",
+	"subscriptions.disable": "Disable email digests",
 	"subscriptions.hour": "Digest Hour",
 	"subscriptions.hour-help": "Molim unesite broj koji označava satnicu kada da pošalje zakazani sažeti email (nrp. <code>0</code> za ponoć, <code>17</code> za 5:00 pm). Uzmite u obzir da će se slanje događati po satnici samog servara, i da vrlo verovatno se ne poklapa sa satnicom vašeg sistema. <br /> Trenutno vreme servera je: <span id=\"serverTime\"></span><br /> Sledeći dnevni sažeti email zakazan je za slanje u <span id=\"nextDigestTime\"></span>"
 }

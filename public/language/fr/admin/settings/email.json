@@ -33,8 +33,8 @@
 	"testing.select": "Sélectionner un modèle d'e-mail ",
 	"testing.send": "Envoyer un e-mail de test",
 	"testing.send-help": "Le test d'e-mail sera envoyé à l'adresse e-mail de l'utilisateur actuellement connecté.",
-	"subscriptions": "Abonnements d'e-mail",
-	"subscriptions.disable": "Désactiver les e-mails de notification des abonnés",
+	"subscriptions": "Actualités du forum ",
+	"subscriptions.disable": "Désactiver les actualités du forum ",
 	"subscriptions.hour": "Heure d'envoi",
 	"subscriptions.hour-help": "Veuillez entrer un nombre représentant l'heure à laquelle envoyer les emails de résumé (c'est à dire <code>0</code> pour minuit, <code>17</code> pour 5:00 pm). Gardez à l'esprit qu'il s'agit de l'heure du serveur, et peut ne pas correspondre à votre heure locale.<br /> L'heure du serveur est : <span id=\"serverTime\"></span><br /> Le prochain mail de resumé sera envoyé à <span id=\"nextDigestTime\"></span>"
 }
