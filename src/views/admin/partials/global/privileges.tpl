@@ -13,7 +13,7 @@
 						</thead>
 						<tbody>
 							<!-- BEGIN privileges.groups -->
-							<tr data-group-name="{privileges.groups.name}" data-private="<!-- IF privileges.groups.isPrivate -->1<!-- ELSE -->0<!-- ENDIF privileges.groups.isPrivate -->">
+							<tr data-group-name="{privileges.groups.nameEscaped}" data-private="<!-- IF privileges.groups.isPrivate -->1<!-- ELSE -->0<!-- ENDIF privileges.groups.isPrivate -->">
 								<td>
 									<!-- IF privileges.groups.isPrivate -->
 									<i class="fa fa-lock text-muted" title="[[admin/manage/categories:privileges.group-private]]"></i>

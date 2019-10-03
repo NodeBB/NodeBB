@@ -2,10 +2,12 @@
 'use strict';
 
 const _ = require('lodash');
+const validator = require('validator');
 
 const groups = require('../groups');
 const user = require('../user');
 const plugins = require('../plugins');
+const translator = require('../translator');
 
 const helpers = module.exports;
 
@@ -126,7 +128,8 @@ helpers.getGroupPrivileges = async function (cid, hookName, groupPrivilegeList) 
 			memberPrivs[groupPrivileges[x]] = memberSets[x].includes(member);
 		}
 		return {
-			name: member,
+			name: validator.escape(member),
+			nameEscaped: translator.escape(validator.escape(member)),
 			privileges: memberPrivs,
 			isPrivate: groupData[index] && !!groupData[index].private,
 		};

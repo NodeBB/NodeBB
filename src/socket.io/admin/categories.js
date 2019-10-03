@@ -1,6 +1,7 @@
 'use strict';
 
 const groups = require('../../groups');
+const user = require('../../user');
 const categories = require('../../categories');
 const privileges = require('../../privileges');
 const plugins = require('../../plugins');
@@ -50,6 +51,14 @@ Categories.update = async function (socket, data) {
 Categories.setPrivilege = async function (socket, data) {
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');
+	}
+	const [userExists, groupExists] = await Promise.all([
+		user.exists(data.member),
+		groups.exists(data.member),
+	]);
+
+	if (!userExists && !groupExists) {
+		throw new Error('[[error:no-user-or-group]]');
 	}
 
 	if (Array.isArray(data.privilege)) {
