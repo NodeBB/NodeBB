@@ -43,19 +43,13 @@ SocketAdmin.logs = {};
 SocketAdmin.errors = {};
 SocketAdmin.uploads = {};
 
-SocketAdmin.before = function (socket, method, data, next) {
-	async.waterfall([
-		function (next) {
-			user.isAdministrator(socket.uid, next);
-		},
-		function (isAdmin) {
-			if (isAdmin) {
-				return next();
-			}
-			winston.warn('[socket.io] Call to admin method ( ' + method + ' ) blocked (accessed by uid ' + socket.uid + ')');
-			next(new Error('[[error:no-privileges]]'));
-		},
-	], next);
+SocketAdmin.before = async function (socket, method) {
+	const isAdmin = await user.isAdministrator(socket.uid);
+	if (isAdmin) {
+		return;
+	}
+	winston.warn('[socket.io] Call to admin method ( ' + method + ' ) blocked (accessed by uid ' + socket.uid + ')');
+	throw new Error('[[error:no-privileges]]');
 };
 
 SocketAdmin.restart = function (socket, data, callback) {

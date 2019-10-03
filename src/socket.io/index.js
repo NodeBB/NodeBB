@@ -1,30 +1,29 @@
 'use strict';
 
-var os = require('os');
-var async = require('async');
-var nconf = require('nconf');
-var winston = require('winston');
-var url = require('url');
-var cookieParser = require('cookie-parser')(nconf.get('secret'));
+const os = require('os');
+const nconf = require('nconf');
+const winston = require('winston');
+const url = require('url');
+const util = require('util');
+const cookieParser = require('cookie-parser')(nconf.get('secret'));
 
-var db = require('../database');
-var user = require('../user');
-var logger = require('../logger');
-var plugins = require('../plugins');
-var ratelimit = require('../middleware/ratelimit');
+const db = require('../database');
+const user = require('../user');
+const logger = require('../logger');
+const plugins = require('../plugins');
+const ratelimit = require('../middleware/ratelimit');
 
 
-var Namespaces = {};
-var io;
+const Namespaces = {};
 
-var Sockets = module.exports;
+const Sockets = module.exports;
 
 Sockets.init = function (server) {
 	requireModules();
 
-	var SocketIO = require('socket.io');
-	var socketioWildcard = require('socketio-wildcard')();
-	io = new SocketIO({
+	const SocketIO = require('socket.io');
+	const socketioWildcard = require('socketio-wildcard')();
+	const io = new SocketIO({
 		path: nconf.get('relative_path') + '/socket.io',
 	});
 
@@ -87,26 +86,26 @@ function onConnect(socket) {
 	}
 
 	socket.join('sess_' + socket.request.signedCookies[nconf.get('sessionKey')]);
-	io.sockets.sockets[socket.id].emit('checkSession', socket.uid);
-	io.sockets.sockets[socket.id].emit('setHostname', os.hostname());
+	Sockets.server.sockets.sockets[socket.id].emit('checkSession', socket.uid);
+	Sockets.server.sockets.sockets[socket.id].emit('setHostname', os.hostname());
 }
 
-function onMessage(socket, payload) {
+async function onMessage(socket, payload) {
 	if (!payload.data.length) {
 		return winston.warn('[socket.io] Empty payload');
 	}
 
-	var eventName = payload.data[0];
-	var params = typeof payload.data[1] === 'function' ? {} : payload.data[1];
-	var callback = typeof payload.data[payload.data.length - 1] === 'function' ? payload.data[payload.data.length - 1] : function () {};
+	const eventName = payload.data[0];
+	const params = typeof payload.data[1] === 'function' ? {} : payload.data[1];
+	const callback = typeof payload.data[payload.data.length - 1] === 'function' ? payload.data[payload.data.length - 1] : function () {};
 
 	if (!eventName) {
 		return winston.warn('[socket.io] Empty method name');
 	}
 
-	var parts = eventName.toString().split('.');
-	var namespace = parts[0];
-	var methodToCall = parts.reduce(function (prev, cur) {
+	const parts = eventName.toString().split('.');
+	const namespace = parts[0];
+	const methodToCall = parts.reduce(function (prev, cur) {
 		if (prev !== null && prev[cur]) {
 			return prev[cur];
 		}
@@ -131,39 +130,25 @@ function onMessage(socket, payload) {
 		return socket.disconnect();
 	}
 
-	async.waterfall([
-		function (next) {
-			checkMaintenance(socket, next);
-		},
-		function (next) {
-			validateSession(socket, next);
-		},
-		function (next) {
-			if (Namespaces[namespace].before) {
-				Namespaces[namespace].before(socket, eventName, params, next);
-			} else {
-				next();
-			}
-		},
-		function (next) {
-			async function tryAsyncFunc(done) {
-				try {
-					const result = await methodToCall(socket, params);
-					done(null, result);
-				} catch (err) {
-					done(err);
-				}
-			}
+	try {
+		await checkMaintenance(socket);
+		await validateSession(socket);
 
-			if (methodToCall.constructor && methodToCall.constructor.name === 'AsyncFunction') {
-				tryAsyncFunc(next);
-			} else {
-				methodToCall(socket, params, next);
-			}
-		},
-	], function (err, result) {
-		callback(err ? { message: err.message } : null, result);
-	});
+		if (Namespaces[namespace].before) {
+			await Namespaces[namespace].before(socket, eventName, params);
+		}
+
+		if (methodToCall.constructor && methodToCall.constructor.name === 'AsyncFunction') {
+			const result = await methodToCall(socket, params);
+			callback(null, result);
+		} else {
+			methodToCall(socket, params, function (err, result) {
+				callback(err ? { message: err.message } : null, result);
+			});
+		}
+	} catch (err) {
+		callback({ message: err.message });
+	}
 }
 
 function requireModules() {
@@ -176,75 +161,69 @@ function requireModules() {
 	});
 }
 
-function checkMaintenance(socket, callback) {
-	var meta = require('../meta');
+async function checkMaintenance(socket) {
+	const meta = require('../meta');
 	if (!meta.config.maintenanceMode) {
-		return setImmediate(callback);
+		return;
 	}
-	user.isAdministrator(socket.uid, function (err, isAdmin) {
-		if (err || isAdmin) {
-			return callback(err);
-		}
-	});
+	const isAdmin = await user.isAdministrator(socket.uid);
+	if (isAdmin) {
+		return;
+	}
+	throw new Error('[[error:forum-maintenance]]');
 }
 
-function validateSession(socket, callback) {
+const getSessionAsync = util.promisify((sid, callback) => db.sessionStore.get(sid, (err, sessionObj) => callback(err, sessionObj || null)));
+
+async function validateSession(socket) {
 	var req = socket.request;
 	if (!req.signedCookies || !req.signedCookies[nconf.get('sessionKey')]) {
-		return callback();
+		return;
 	}
-
-	db.sessionStore.get(req.signedCookies[nconf.get('sessionKey')], function (err, sessionData) {
-		if (err || !sessionData) {
-			return callback(err || new Error('[[error:invalid-session]]'));
-		}
-
-		plugins.fireHook('static:sockets.validateSession', {
-			req: req,
-			socket: socket,
-			session: sessionData,
-		}, callback);
+	const sessionData = await getSessionAsync(req.signedCookies[nconf.get('sessionKey')]);
+	if (!sessionData) {
+		throw new Error('[[error:invalid-session]]');
+	}
+	const result = await plugins.fireHook('static:sockets.validateSession', {
+		req: req,
+		socket: socket,
+		session: sessionData,
 	});
+	return result;
 }
 
-function authorize(socket, callback) {
-	var request = socket.request;
+const cookieParserAsync = util.promisify((req, callback) => cookieParser(req, {}, err => callback(err)));
+
+async function authorize(socket, callback) {
+	const request = socket.request;
 
 	if (!request) {
 		return callback(new Error('[[error:not-authorized]]'));
 	}
 
-	async.waterfall([
-		function (next) {
-			cookieParser(request, {}, next);
-		},
-		function (next) {
-			db.sessionStore.get(request.signedCookies[nconf.get('sessionKey')], function (err, sessionData) {
-				if (err) {
-					return next(err);
-				}
-				if (sessionData && sessionData.passport && sessionData.passport.user) {
-					request.session = sessionData;
-					socket.uid = parseInt(sessionData.passport.user, 10);
-				} else {
-					socket.uid = 0;
-				}
-				next();
-			});
-		},
-	], callback);
+	await cookieParserAsync(request);
+
+	const sessionData = await getSessionAsync(request.signedCookies[nconf.get('sessionKey')]);
+	if (sessionData && sessionData.passport && sessionData.passport.user) {
+		request.session = sessionData;
+		socket.uid = parseInt(sessionData.passport.user, 10);
+	} else {
+		socket.uid = 0;
+	}
+
+	callback();
 }
 
 Sockets.in = function (room) {
-	return io.in(room);
+	return Sockets.server && Sockets.server.in(room);
 };
 
 Sockets.getUserSocketCount = function (uid) {
-	if (!io) {
+	if (!Sockets.server) {
 		return 0;
 	}
 
-	var room = io.sockets.adapter.rooms['uid_' + uid];
+	const room = Sockets.server.sockets.adapter.rooms['uid_' + uid];
 	return room ? room.length : 0;
 };
 
