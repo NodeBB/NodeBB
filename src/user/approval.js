@@ -110,6 +110,7 @@ module.exports = function (User) {
 		users = users.filter(Boolean).map(function (user, index) {
 			user.timestampISO = utils.toISOString(data[index].score);
 			user.email = validator.escape(String(user.email));
+			user.usernameEscaped = validator.escape(String(user.username));
 			delete user.hashedPassword;
 			return user;
 		});

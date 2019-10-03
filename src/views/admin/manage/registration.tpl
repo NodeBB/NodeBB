@@ -25,7 +25,7 @@
 					</thead>
 					<tbody>
 						<!-- BEGIN users -->
-						<tr data-username="{users.username}">
+						<tr data-username="{users.usernameEscaped}">
 							<td>
 								<!-- IF users.usernameSpam -->
 								<i class="fa fa-times-circle text-danger" title="[[admin/manage/registration:list.username-spam, {users.spamData.username.frequency}, {users.spamData.username.appears}, {users.spamData.username.confidence}]]"></i>
