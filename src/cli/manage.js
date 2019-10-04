@@ -94,7 +94,9 @@ function activate(plugin) {
 
 function listPlugins() {
 	async.waterfall([
-		db.init,
+		function (next) {
+			db.init(next);
+		},
 		function (next) {
 			db.getSortedSetRange('plugins:active', 0, -1, next);
 		},
@@ -109,7 +111,9 @@ function listPlugins() {
 
 function listEvents(count) {
 	async.waterfall([
-		db.init,
+		function (next) {
+			db.init(next);
+		},
 		async.apply(events.getEvents, '', 0, (count || 10) - 1),
 		function (eventData) {
 			console.log(('\nDisplaying last ' + count + ' administrative events...').bold);
@@ -143,7 +147,9 @@ function info() {
 			console.log('  database: ' + config.database);
 			next();
 		},
-		db.init,
+		function (next) {
+			db.init(next);
+		},
 		function (next) {
 			db.info(db.client, next);
 		},
