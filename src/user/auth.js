@@ -134,12 +134,10 @@ module.exports = function (User) {
 			const sessionUUIDKeys = uids.map(uid => 'uid:' + uid + ':sessionUUID:sessionId');
 			const sids = _.flatten(await db.getSortedSetRange(sessionKeys, 0, -1));
 
-			const promises = [
+			await Promise.all([
 				db.deleteAll(sessionKeys.concat(sessionUUIDKeys)),
 				...sids.map(sid => sessionStoreDestroy(sid)),
-			];
-			console.log('epic', promises);
-			await Promise.all(promises);
+			]);
 		}, { batch: 1000 });
 	};
 };

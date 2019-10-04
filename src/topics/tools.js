@@ -22,15 +22,15 @@ module.exports = function (Topics) {
 	};
 
 	async function toggleDelete(tid, uid, isDelete) {
-		const exists = await Topics.exists(tid);
-		if (!exists) {
+		const topicData = await Topics.getTopicData(tid);
+		if (!topicData) {
 			throw new Error('[[error:no-topic]]');
 		}
 		const canDelete = await privileges.topics.canDelete(tid, uid);
 		if (!canDelete) {
 			throw new Error('[[error:no-privileges]]');
 		}
-		const topicData = await Topics.getTopicFields(tid, ['tid', 'cid', 'uid', 'deleted', 'title', 'mainPid']);
+
 		if (topicData.deleted && isDelete) {
 			throw new Error('[[error:topic-already-deleted]]');
 		} else if (!topicData.deleted && !isDelete) {
@@ -61,17 +61,17 @@ module.exports = function (Topics) {
 	}
 
 	topicTools.purge = async function (tid, uid) {
-		const exists = await Topics.exists(tid);
-		if (!exists) {
+		const topicData = await Topics.getTopicData(tid);
+		if (!topicData) {
 			return;
 		}
 		const canPurge = await privileges.topics.canPurge(tid, uid);
 		if (!canPurge) {
 			throw new Error('[[error:no-privileges]]');
 		}
-		const cid = await Topics.getTopicField(tid, 'cid');
+
 		await Topics.purgePostsAndTopic(tid, uid);
-		return { tid: tid, cid: cid, uid: uid };
+		return { tid: tid, cid: topicData.cid, uid: uid };
 	};
 
 	topicTools.lock = async function (tid, uid) {
@@ -148,7 +148,7 @@ module.exports = function (Topics) {
 		const tids = data.map(topic => topic && topic.tid);
 		const topicData = await Topics.getTopicsFields(tids, ['cid']);
 
-		var uniqueCids = _.uniq(topicData.map(topicData => topicData && topicData.cid));
+		const uniqueCids = _.uniq(topicData.map(topicData => topicData && topicData.cid));
 		if (uniqueCids.length > 1 || !uniqueCids.length || !uniqueCids[0]) {
 			throw new Error('[[error:invalid-data]]');
 		}
@@ -214,7 +214,7 @@ module.exports = function (Topics) {
 				oldCid: oldCid,
 			}),
 		]);
-		var hookData = _.clone(data);
+		const hookData = _.clone(data);
 		hookData.fromCid = oldCid;
 		hookData.toCid = cid;
 		hookData.tid = tid;
