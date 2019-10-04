@@ -1,14 +1,13 @@
 'use strict';
 
-var async = require('async');
-var validator = require('validator');
-var nconf = require('nconf');
-var _ = require('lodash');
+const validator = require('validator');
+const nconf = require('nconf');
+const _ = require('lodash');
 
-var db = require('../database');
-var meta = require('../meta');
-var plugins = require('../plugins');
-var utils = require('../utils');
+const db = require('../database');
+const meta = require('../meta');
+const plugins = require('../plugins');
+const utils = require('../utils');
 
 const intFields = [
 	'uid', 'postcount', 'topiccount', 'reputation', 'profileviews',
@@ -17,13 +16,13 @@ const intFields = [
 ];
 
 module.exports = function (User) {
-	var iconBackgrounds = [
+	const iconBackgrounds = [
 		'#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3',
 		'#009688', '#1b5e20', '#33691e', '#827717', '#e65100', '#ff5722',
 		'#795548', '#607d8b',
 	];
 
-	var fieldWhitelist = [
+	const fieldWhitelist = [
 		'uid', 'username', 'userslug', 'email', 'email:confirmed', 'joindate',
 		'lastonline', 'picture', 'fullname', 'location', 'birthday', 'website',
 		'aboutme', 'signature', 'uploadedpicture', 'profileviews', 'reputation',
@@ -130,7 +129,7 @@ module.exports = function (User) {
 	};
 
 	async function modifyUserData(users, requestedFields, fieldsToRemove) {
-		users = await async.map(users, async function (user) {
+		users = await Promise.all(users.map(async function (user) {
 			if (!user) {
 				return user;
 			}
@@ -173,7 +172,7 @@ module.exports = function (User) {
 				user.status = User.getStatus(user);
 			}
 
-			for (var i = 0; i < fieldsToRemove.length; i += 1) {
+			for (let i = 0; i < fieldsToRemove.length; i += 1) {
 				user[fieldsToRemove[i]] = undefined;
 			}
 
@@ -204,7 +203,8 @@ module.exports = function (User) {
 				}
 			}
 			return user;
-		});
+		}));
+
 		return await plugins.fireHook('filter:users.get', users);
 	}
 
@@ -244,7 +244,7 @@ module.exports = function (User) {
 
 	User.setUserFields = async function (uid, data) {
 		await db.setObject('user:' + uid, data);
-		for (var field in data) {
+		for (const field in data) {
 			if (data.hasOwnProperty(field)) {
 				plugins.fireHook('action:user.set', { uid: uid, field: field, value: data[field], type: 'set' });
 			}

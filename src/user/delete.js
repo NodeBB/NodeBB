@@ -1,21 +1,21 @@
 'use strict';
 
-var async = require('async');
-var _ = require('lodash');
-var path = require('path');
-var nconf = require('nconf');
+const async = require('async');
+const _ = require('lodash');
+const path = require('path');
+const nconf = require('nconf');
 
-var db = require('../database');
-var posts = require('../posts');
-var topics = require('../topics');
-var groups = require('../groups');
-var messaging = require('../messaging');
-var plugins = require('../plugins');
-var batch = require('../batch');
-var file = require('../file');
+const db = require('../database');
+const posts = require('../posts');
+const topics = require('../topics');
+const groups = require('../groups');
+const messaging = require('../messaging');
+const plugins = require('../plugins');
+const batch = require('../batch');
+const file = require('../file');
 
 module.exports = function (User) {
-	var deletesInProgress = {};
+	const deletesInProgress = {};
 
 	User.delete = async function (callerUid, uid) {
 		if (parseInt(uid, 10) <= 0) {

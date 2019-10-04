@@ -1,12 +1,11 @@
 'use strict';
 
-var zxcvbn = require('zxcvbn');
-var db = require('../database');
-var utils = require('../utils');
-var plugins = require('../plugins');
-var groups = require('../groups');
-var meta = require('../meta');
-
+const zxcvbn = require('zxcvbn');
+const db = require('../database');
+const utils = require('../utils');
+const plugins = require('../plugins');
+const groups = require('../groups');
+const meta = require('../meta');
 
 module.exports = function (User) {
 	User.create = async function (data) {
@@ -146,7 +145,7 @@ module.exports = function (User) {
 			throw new Error('[[error:password-too-long]]');
 		}
 
-		var strength = zxcvbn(password);
+		const strength = zxcvbn(password);
 		if (strength.score < minStrength) {
 			throw new Error('[[user:weak_password]]');
 		}
