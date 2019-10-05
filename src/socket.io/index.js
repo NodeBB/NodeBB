@@ -60,6 +60,7 @@ Sockets.init = function (server) {
 
 	io.listen(server, {
 		transports: nconf.get('socket.io:transports'),
+		cookie: false,
 	});
 
 	Sockets.server = io;
