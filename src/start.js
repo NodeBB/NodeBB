@@ -1,90 +1,75 @@
 'use strict';
 
-var async = require('async');
-var nconf = require('nconf');
-var url = require('url');
-var winston = require('winston');
+const nconf = require('nconf');
+const url = require('url');
+const winston = require('winston');
 
-var start = module.exports;
+const start = module.exports;
 
-start.start = function () {
-	var db = require('./database');
+start.start = async function () {
+	const db = require('./database');
 
 	setupConfigs();
 
 	printStartupInfo();
 
 	addProcessHandlers();
+	try {
+		await db.init();
 
-	async.waterfall([
-		function (next) {
-			db.init(next);
-		},
-		function (next) {
-			var meta = require('./meta');
-			async.parallel([
-				async.apply(db.checkCompatibility),
-				async.apply(meta.configs.init),
-				function (next) {
-					if (nconf.get('dep-check') === undefined || nconf.get('dep-check') !== false) {
-						meta.dependencies.check(next);
-					} else {
-						winston.warn('[init] Dependency checking skipped!');
-						setImmediate(next);
-					}
-				},
-				function (next) {
-					require('./upgrade').check(next);
-				},
-			], function (err) {
-				next(err);
-			});
-		},
-		function (next) {
-			db.initSessionStore(next);
-		},
-		function (next) {
-			var webserver = require('./webserver');
-			require('./socket.io').init(webserver.server);
+		const meta = require('./meta');
+		await Promise.all([
+			db.checkCompatibility(),
+			meta.configs.init(),
+			require('./upgrade').check(),
+		]);
 
-			if (nconf.get('runJobs')) {
-				require('./notifications').startJobs();
-				require('./user').startJobs();
-				require('./plugins').startJobs();
-			}
-
-			webserver.listen(next);
-		},
-	], function (err) {
-		if (err) {
-			switch (err.message) {
-			case 'schema-out-of-date':
-				winston.error('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
-				winston.error('    ./nodebb upgrade');
-				break;
-			case 'dependencies-out-of-date':
-				winston.error('One or more of NodeBB\'s dependent packages are out-of-date. Please run the following command to update them:');
-				winston.error('    ./nodebb upgrade');
-				break;
-			case 'dependencies-missing':
-				winston.error('One or more of NodeBB\'s dependent packages are missing. Please run the following command to update them:');
-				winston.error('    ./nodebb upgrade');
-				break;
-			default:
-				winston.error(err);
-				break;
-			}
-
-			// Either way, bad stuff happened. Abort start.
-			process.exit();
+		if (nconf.get('dep-check') === undefined || nconf.get('dep-check') !== false) {
+			await meta.dependencies.check();
+		} else {
+			winston.warn('[init] Dependency checking skipped!');
 		}
+
+		await db.initSessionStore();
+
+		const webserver = require('./webserver');
+		require('./socket.io').init(webserver.server);
+
+		if (nconf.get('runJobs')) {
+			require('./notifications').startJobs();
+			require('./user').startJobs();
+			require('./plugins').startJobs();
+		}
+
+		await webserver.listen();
 
 		if (process.send) {
 			process.send({
 				action: 'listening',
 			});
 		}
-	});
+	} catch (err) {
+		switch (err.message) {
+		case 'schema-out-of-date':
+			winston.error('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
+			winston.error('    ./nodebb upgrade');
+			break;
+		case 'dependencies-out-of-date':
+			winston.error('One or more of NodeBB\'s dependent packages are out-of-date. Please run the following command to update them:');
+			winston.error('    ./nodebb upgrade');
+			break;
+		case 'dependencies-missing':
+			winston.error('One or more of NodeBB\'s dependent packages are missing. Please run the following command to update them:');
+			winston.error('    ./nodebb upgrade');
+			break;
+		default:
+			winston.error(err);
+			break;
+		}
+
+		// Either way, bad stuff happened. Abort start.
+		process.exit();
+	}
 };
 
 function setupConfigs() {
@@ -93,8 +78,8 @@ function setupConfigs() {
 		nconf.set('sessionKey', 'express.sid');
 	}
 	// Parse out the relative_url and other goodies from the configured URL
-	var urlObject = url.parse(nconf.get('url'));
-	var relativePath = urlObject.pathname !== '/' ? urlObject.pathname.replace(/\/+$/, '') : '';
+	const urlObject = url.parse(nconf.get('url'));
+	const relativePath = urlObject.pathname !== '/' ? urlObject.pathname.replace(/\/+$/, '') : '';
 	nconf.set('base_url', urlObject.protocol + '//' + urlObject.host);
 	nconf.set('secure', urlObject.protocol === 'https:');
 	nconf.set('use_port', !!urlObject.port);
@@ -106,8 +91,8 @@ function printStartupInfo() {
 	if (nconf.get('isPrimary') === 'true') {
 		winston.info('Initializing NodeBB v%s %s', nconf.get('version'), nconf.get('url'));
 
-		var host = nconf.get(nconf.get('database') + ':host');
-		var storeLocation = host ? 'at ' + host + (!host.includes('/') ? ':' + nconf.get(nconf.get('database') + ':port') : '') : '';
+		const host = nconf.get(nconf.get('database') + ':host');
+		const storeLocation = host ? 'at ' + host + (!host.includes('/') ? ':' + nconf.get(nconf.get('database') + ':port') : '') : '';
 
 		winston.verbose('* using %s store %s', nconf.get('database'), storeLocation);
 		winston.verbose('* using themes stored in: %s', nconf.get('themes_path'));
@@ -138,27 +123,19 @@ function restart() {
 	}
 }
 
-function shutdown(code) {
+async function shutdown(code) {
 	winston.info('[app] Shutdown (SIGTERM/SIGINT) Initialised.');
-	async.waterfall([
-		function (next) {
-			require('./webserver').destroy(next);
-		},
-		function (next) {
-			winston.info('[app] Web server closed to connections.');
-			require('./analytics').writeData(next);
-		},
-		function (next) {
-			winston.info('[app] Live analytics saved.');
-			require('./database').close(next);
-		},
-	], function (err) {
-		if (err) {
-			winston.error(err);
-			return process.exit(code || 0);
-		}
+	try {
+		await require('./webserver').destroy();
+		winston.info('[app] Web server closed to connections.');
+		await require('./analytics').writeData();
+		winston.info('[app] Live analytics saved.');
+		await require('./database').close();
 		winston.info('[app] Database connection closed.');
 		winston.info('[app] Shutdown complete.');
 		process.exit(code || 0);
-	});
+	} catch (err) {
+		winston.error(err);
+		return process.exit(code || 0);
+	}
 }

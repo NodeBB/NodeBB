@@ -9,7 +9,7 @@ if (!databaseName) {
 	process.exit();
 }
 
-var primaryDB = require('./' + databaseName);
+const primaryDB = require('./' + databaseName);
 
 primaryDB.parseIntFields = function (data, intFields, requestedFields) {
 	intFields.forEach((field) => {
@@ -19,7 +19,7 @@ primaryDB.parseIntFields = function (data, intFields, requestedFields) {
 	});
 };
 
-primaryDB.initSessionStore = function (callback) {
+primaryDB.initSessionStore = async function () {
 	const sessionStoreConfig = nconf.get('session_store') || nconf.get('redis') || nconf.get(databaseName);
 	let sessionStoreDB = primaryDB;
 
@@ -30,13 +30,7 @@ primaryDB.initSessionStore = function (callback) {
 		sessionStoreDB = require('./redis');
 	}
 
-	sessionStoreDB.createSessionStore(sessionStoreConfig, function (err, sessionStore) {
-		if (err) {
-			return callback(err);
-		}
-		primaryDB.sessionStore = sessionStore;
-		callback();
-	});
+	primaryDB.sessionStore = await sessionStoreDB.createSessionStore(sessionStoreConfig);
 };
 
 module.exports = primaryDB;
