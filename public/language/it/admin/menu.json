@@ -58,15 +58,15 @@
 	"advanced/database": "Database",
 	"advanced/events": "Events",
 	"advanced/hooks": "Hooks",
-	"advanced/logs": "Logs",
+	"advanced/logs": "Registri",
 	"advanced/errors": "Errors",
 	"advanced/cache": "Cache",
-	"development/logger": "Logger",
+	"development/logger": "Registratore",
 	"development/info": "Info",
 
 	"rebuild-and-restart-forum": "Rebuild & Restart Forum",
 	"restart-forum": "Restart Forum",
-	"logout": "Log out",
+	"logout": "Esci",
 	"view-forum": "View Forum",
 
 	"search.placeholder": "Ricerca delle impostazioni",
