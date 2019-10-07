@@ -73,24 +73,14 @@ Upgrade.appendPluginScripts = function (files, callback) {
 	], callback);
 };
 
-Upgrade.check = function (callback) {
+Upgrade.check = async function () {
 	// Throw 'schema-out-of-date' if not all upgrade scripts have run
-	async.waterfall([
-		async.apply(Upgrade.getAll),
-		function (files, next) {
-			db.getSortedSetRange('schemaLog', 0, -1, function (err, executed) {
-				if (err) {
-					return callback(err);
-				}
-
-				var remainder = files.filter(function (name) {
-					return !executed.includes(path.basename(name, '.js'));
-				});
-
-				next(remainder.length > 0 ? new Error('schema-out-of-date') : null);
-			});
-		},
-	], callback);
+	const files = await Upgrade.getAll();
+	const executed = await db.getSortedSetRange('schemaLog', 0, -1);
+	const remainder = files.filter(name => !executed.includes(path.basename(name, '.js')));
+	if (remainder.length > 0) {
+		throw new Error('schema-out-of-date');
+	}
 };
 
 Upgrade.run = function (callback) {
@@ -218,3 +208,5 @@ Upgrade.incrementProgress = function (value) {
 		process.stdout.write('    [' + (filled ? new Array(filled).join('#') : '') + new Array(unfilled).join(' ') + '] (' + this.current + '/' + (this.total || '??') + ') ' + percentage + ' ');
 	}
 };
+
+require('./promisify')(Upgrade);

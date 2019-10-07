@@ -1,21 +1,21 @@
 'use strict';
 
-var async = require('async');
-var winston = require('winston');
-var cron = require('cron').CronJob;
-var nconf = require('nconf');
-var _ = require('lodash');
+const async = require('async');
+const winston = require('winston');
+const cron = require('cron').CronJob;
+const nconf = require('nconf');
+const _ = require('lodash');
 
-var db = require('./database');
-var User = require('./user');
-var groups = require('./groups');
-var meta = require('./meta');
-var batch = require('./batch');
-var plugins = require('./plugins');
-var utils = require('./utils');
-var emailer = require('./emailer');
+const db = require('./database');
+const User = require('./user');
+const groups = require('./groups');
+const meta = require('./meta');
+const batch = require('./batch');
+const plugins = require('./plugins');
+const utils = require('./utils');
+const emailer = require('./emailer');
 
-var Notifications = module.exports;
+const Notifications = module.exports;
 
 Notifications.baseTypes = [
 	'notificationType_upvote',
@@ -97,7 +97,7 @@ Notifications.findRelated = async function (mergeIds, set) {
 	const keys = nids.map(nid => 'notifications:' + nid);
 	let sets = await db.getObjectsFields(keys, ['mergeId']);
 	sets = sets.map(set => String(set.mergeId));
-	var mergeSet = new Set(mergeIds.map(id => String(id)));
+	const mergeSet = new Set(mergeIds.map(id => String(id)));
 	return nids.filter((nid, idx) => mergeSet.has(sets[idx]));
 };
 
@@ -251,7 +251,7 @@ Notifications.markRead = async function (nid, uid) {
 };
 
 Notifications.markUnread = async function (nid, uid) {
-	if (parseInt(uid, 10) <= 0 || !nid) {
+	if (!(parseInt(uid, 10) > 0) || !nid) {
 		return;
 	}
 	const notification = await db.getObject('notifications:' + nid);
@@ -268,7 +268,7 @@ Notifications.markUnread = async function (nid, uid) {
 
 Notifications.markReadMultiple = async function (nids, uid) {
 	nids = nids.filter(Boolean);
-	if (!Array.isArray(nids) || !nids.length) {
+	if (!Array.isArray(nids) || !nids.length || !(parseInt(uid, 10) > 0)) {
 		return;
 	}
 
@@ -308,6 +308,13 @@ Notifications.prune = async function () {
 			db.sortedSetRemove('notifications', nids),
 			db.deleteAll(nids.map(nid => 'notifications:' + nid)),
 		]);
+
+		await batch.processSortedSet('users:joindate', async function (uids) {
+			await Promise.all([
+				db.sortedSetsRemoveRangeByScore(uids.map(uid => 'uid:' + uid + ':notifications:unread'), '-inf', cutoffTime),
+				db.sortedSetsRemoveRangeByScore(uids.map(uid => 'uid:' + uid + ':notifications:read'), '-inf', cutoffTime),
+			]);
+		}, { batch: 500, interval: 100 });
 	} catch (err) {
 		if (err) {
 			winston.error('Encountered error pruning notifications', err);
@@ -317,7 +324,7 @@ Notifications.prune = async function () {
 
 Notifications.merge = async function (notifications) {
 	// When passed a set of notification objects, merge any that can be merged
-	var mergeIds = [
+	const mergeIds = [
 		'notifications:upvoted_your_post_in',
 		'notifications:user_started_following_you',
 		'notifications:user_posted_to',
@@ -326,28 +333,16 @@ Notifications.merge = async function (notifications) {
 		'new_register',
 		'post-queue',
 	];
-	var isolated;
-	var differentiators;
-	var differentiator;
-	var modifyIndex;
-	var set;
 
 	notifications = mergeIds.reduce(function (notifications, mergeId) {
-		isolated = notifications.filter(function (notifObj) {
-			if (!notifObj || !notifObj.hasOwnProperty('mergeId')) {
-				return false;
-			}
-
-			return notifObj.mergeId.split('|')[0] === mergeId;
-		});
-
+		const isolated = notifications.filter(n => n && n.hasOwnProperty('mergeId') && n.mergeId.split('|')[0] === mergeId);
 		if (isolated.length <= 1) {
 			return notifications;	// Nothing to merge
 		}
 
 		// Each isolated mergeId may have multiple differentiators, so process each separately
-		differentiators = isolated.reduce(function (cur, next) {
-			differentiator = next.mergeId.split('|')[1] || 0;
+		const differentiators = isolated.reduce(function (cur, next) {
+			const differentiator = next.mergeId.split('|')[1] || 0;
 			if (!cur.includes(differentiator)) {
 				cur.push(differentiator);
 			}
@@ -356,29 +351,25 @@ Notifications.merge = async function (notifications) {
 		}, []);
 
 		differentiators.forEach(function (differentiator) {
+			let set;
 			if (differentiator === 0 && differentiators.length === 1) {
 				set = isolated;
 			} else {
-				set = isolated.filter(function (notifObj) {
-					return notifObj.mergeId === (mergeId + '|' + differentiator);
-				});
+				set = isolated.filter(n => n.mergeId === (mergeId + '|' + differentiator));
 			}
 
-			modifyIndex = notifications.indexOf(set[0]);
+			const modifyIndex = notifications.indexOf(set[0]);
 			if (modifyIndex === -1 || set.length === 1) {
 				return notifications;
 			}
 
 			switch (mergeId) {
-			// intentional fall-through
 			case 'notifications:upvoted_your_post_in':
 			case 'notifications:user_started_following_you':
 			case 'notifications:user_posted_to':
 			case 'notifications:user_flagged_post_in':
 			case 'notifications:user_flagged_user':
-				var usernames = _.uniq(set.map(function (notifObj) {
-					return notifObj && notifObj.user && notifObj.user.username;
-				}));
+				var usernames = _.uniq(set.map(notifObj => notifObj && notifObj.user && notifObj.user.username));
 				var numUsers = usernames.length;
 
 				var title = utils.decodeHTMLEntities(notifications[modifyIndex].topicTitle || '');
