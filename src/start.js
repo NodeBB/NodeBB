@@ -18,11 +18,11 @@ start.start = async function () {
 		await db.init();
 
 		const meta = require('./meta');
-		await Promise.all([
-			db.checkCompatibility(),
-			meta.configs.init(),
-			require('./upgrade').check(),
-		]);
+		await db.checkCompatibility();
+		await meta.configs.init();
+		if (nconf.get('runJobs')) {
+			await runUpgrades();
+		}
 
 		if (nconf.get('dep-check') === undefined || nconf.get('dep-check') !== false) {
 			await meta.dependencies.check();
@@ -50,10 +50,6 @@ start.start = async function () {
 		}
 	} catch (err) {
 		switch (err.message) {
-		case 'schema-out-of-date':
-			winston.error('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
-			winston.error('    ./nodebb upgrade');
-			break;
 		case 'dependencies-out-of-date':
 			winston.error('One or more of NodeBB\'s dependent packages are out-of-date. Please run the following command to update them:');
 			winston.error('    ./nodebb upgrade');
@@ -71,6 +67,19 @@ start.start = async function () {
 		process.exit();
 	}
 };
+
+async function runUpgrades() {
+	const upgrade = require('./upgrade');
+	try {
+		await upgrade.check();
+	} catch (err) {
+		if (err && err.message === 'schema-out-of-date') {
+			await upgrade.run();
+		} else {
+			throw err;
+		}
+	}
+}
 
 function setupConfigs() {
 	// nconf defaults, if not set in config
