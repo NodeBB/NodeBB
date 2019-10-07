@@ -783,7 +783,7 @@ describe('Topic\'s', function () {
 		var newTopic;
 		var replies = [];
 		var topicPids;
-		var originalBookmark = 5;
+		var originalBookmark = 6;
 		function postReply(next) {
 			topics.reply({ uid: topic.userId, content: 'test post ' + replies.length, tid: newTopic.tid }, function (err, result) {
 				assert.equal(err, null, 'was created with error');
