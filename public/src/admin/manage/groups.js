@@ -45,7 +45,7 @@ define('admin/manage/groups', ['translator', 'benchpress'], function (translator
 					createModalError.addClass('hide');
 					createGroupName.val('');
 					createModal.on('hidden.bs.modal', function () {
-						ajaxify.go('admin/manage/groups/' + groupData.slug);
+						ajaxify.go('admin/manage/groups/' + groupData.name);
 					});
 					createModal.modal('hide');
 				}
