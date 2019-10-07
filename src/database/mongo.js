@@ -158,7 +158,7 @@ mongoModule.info = async function (db) {
 
 async function getCollectionStats(db) {
 	const items = await db.listCollections().toArray();
-	return await Promise.all(items.map(collection => db.collection(collection.name).stats));
+	return await Promise.all(items.map(collection => db.collection(collection.name).stats()));
 }
 
 mongoModule.close = function (callback) {
