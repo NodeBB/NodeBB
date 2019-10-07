@@ -183,7 +183,7 @@ function install(req, res) {
 function launch(req, res) {
 	res.json({});
 	server.close();
-
+	req.setTimeout(0);
 	var child;
 
 	if (!nconf.get('launchCmd')) {
