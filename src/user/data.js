@@ -12,7 +12,7 @@ const utils = require('../utils');
 const intFields = [
 	'uid', 'postcount', 'topiccount', 'reputation', 'profileviews',
 	'banned', 'banned:expire', 'email:confirmed', 'joindate', 'lastonline', 'lastqueuetime',
-	'lastposttime', 'followingCount', 'followerCount',
+	'lastposttime', 'followingCount', 'followerCount', 'passwordExpiry',
 ];
 
 module.exports = function (User) {

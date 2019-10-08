@@ -237,8 +237,6 @@ function continueLogin(req, res, next) {
 			return helpers.noScriptErrors(req, res, info, 403);
 		}
 
-		var passwordExpiry = userData.passwordExpiry !== undefined ? parseInt(userData.passwordExpiry, 10) : null;
-
 		// Alter user cookie depending on passed-in option
 		if (req.body.remember === 'on') {
 			var duration = 1000 * 60 * 60 * 24 * meta.config.loginDays;
@@ -249,7 +247,7 @@ function continueLogin(req, res, next) {
 			req.session.cookie.expires = false;
 		}
 
-		if (passwordExpiry && passwordExpiry < Date.now()) {
+		if (userData.passwordExpiry && userData.passwordExpiry < Date.now()) {
 			winston.verbose('[auth] Triggering password reset for uid ' + userData.uid + ' due to password policy');
 			req.session.passwordExpired = true;
 

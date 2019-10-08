@@ -24,23 +24,20 @@ module.exports = function (User) {
 			email: data.email || '',
 			joindate: timestamp,
 			lastonline: timestamp,
-			picture: data.picture || '',
-			fullname: data.fullname || '',
-			location: data.location || '',
-			birthday: data.birthday || '',
-			website: '',
-			signature: '',
-			uploadedpicture: '',
-			profileviews: 0,
-			reputation: 0,
-			postcount: 0,
-			topiccount: 0,
-			lastposttime: 0,
-			banned: 0,
 			status: 'online',
-			gdpr_consent: data.gdpr_consent === true ? 1 : 0,
-			acceptTos: data.acceptTos === true ? 1 : 0,
 		};
+		['picture', 'fullname', 'location', 'birthday'].forEach((field) => {
+			if (data[field]) {
+				userData[field] = data[field];
+			}
+		});
+		if (data.gdpr_consent === true) {
+			userData.gdpr_consent = 1;
+		}
+		if (data.acceptTos === true) {
+			userData.acceptTos = 1;
+		}
+
 		const renamedUsername = await User.uniqueUsername(userData);
 		const userNameChanged = !!renamedUsername;
 		if (userNameChanged) {
