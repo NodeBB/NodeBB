@@ -51,6 +51,7 @@ editController.get = async function (req, res, next) {
 		return i1 - i2;
 	});
 	userData.groups.forEach(function (group) {
+		group.userTitle = group.userTitle || group.displayName;
 		group.selected = userData.groupTitleArray.includes(group.name);
 	});
 	userData.groupSelectSize = Math.min(10, Math.max(5, userData.groups.length + 1));

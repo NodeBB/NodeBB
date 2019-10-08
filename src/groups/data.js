@@ -99,6 +99,6 @@ function escapeGroupData(group) {
 		group.nameEncoded = encodeURIComponent(group.name);
 		group.displayName = validator.escape(String(group.name));
 		group.description = validator.escape(String(group.description || ''));
-		group.userTitle = validator.escape(String(group.userTitle || '')) || group.displayName;
+		group.userTitle = validator.escape(String(group.userTitle || ''));
 	}
 }
