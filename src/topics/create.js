@@ -33,9 +33,6 @@ module.exports = function (Topics) {
 			lastposttime: 0,
 			postcount: 0,
 			viewcount: 0,
-			locked: 0,
-			deleted: 0,
-			pinned: 0,
 		};
 		if (data.thumb) {
 			topicData.thumb = data.thumb;
