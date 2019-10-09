@@ -1461,6 +1461,14 @@ describe('Topic\'s', function () {
 				},
 			], done);
 		});
+
+		it('should not return topic as unread if topic is deleted', async function () {
+			const uid = await User.create({ username: 'regularJoe' });
+			const result = await topics.post({ uid: adminUid, title: 'deleted unread', content: 'not unread', cid: categoryObj.cid });
+			await topics.delete(result.topicData.tid, adminUid);
+			const unreadTids = await topics.getUnreadTids({ cid: 0, uid: uid });
+			assert(!unreadTids.includes(result.topicData.tid));
+		});
 	});
 
 	describe('tags', function () {

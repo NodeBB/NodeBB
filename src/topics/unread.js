@@ -120,24 +120,17 @@ module.exports = function (Topics) {
 			recentTids: categoryTids,
 		});
 
+		tids = await privileges.topics.filterTids('topics:read', tids, params.uid);
 		const topicData = await Topics.getTopicsFields(tids, ['tid', 'cid', 'uid', 'postcount']);
 		const topicCids = _.uniq(topicData.map(topic => topic.cid)).filter(Boolean);
 
-		const [categoryWatchState, readCids] = await Promise.all([
-			categories.getWatchState(topicCids, params.uid),
-			privileges.categories.filterCids('topics:read', topicCids, params.uid),
-		]);
-
-		const filterCids = params.cid && params.cid.map(String);
-		const readableCids = readCids.map(String);
+		const categoryWatchState = await categories.getWatchState(topicCids, params.uid);
 		const userCidState = _.zipObject(topicCids, categoryWatchState);
 
-		topicData.forEach(function (topic) {
-			function cidMatch() {
-				return (!filterCids || (filterCids.length && filterCids.includes(String(topic.cid)))) && readableCids.includes(String(topic.cid));
-			}
+		const filterCids = params.cid && params.cid.map(cid => parseInt(cid, 10));
 
-			if (topic && topic.cid && cidMatch() && !blockedUids.includes(topic.uid)) {
+		topicData.forEach(function (topic) {
+			if (topic && topic.cid && (!filterCids || filterCids.includes(topic.cid)) && !blockedUids.includes(topic.uid)) {
 				if (isTopicsFollowed[topic.tid] || userCidState[topic.cid] === categories.watchStates.watching) {
 					tidsByFilter[''].push(topic.tid);
 				}
