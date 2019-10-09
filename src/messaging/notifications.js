@@ -31,7 +31,9 @@ module.exports = function (Messaging) {
 			Messaging.pushUnreadCount(uid);
 			sockets.in('uid_' + uid).emit('event:chats.receive', data);
 		});
-
+		if (messageObj.system) {
+			return;
+		}
 		// Delayed notifications
 		var queueObj = Messaging.notifyQueue[fromUid + ':' + roomId];
 		if (queueObj) {
