@@ -12,12 +12,12 @@ const Meta = require('../meta');
 const cacheBuster = require('./cacheBuster');
 const defaults = require('../../install/data/defaults');
 
-var Configs = module.exports;
+const Configs = module.exports;
 
 Meta.config = {};
 
 function deserialize(config) {
-	var deserialized = {};
+	const deserialized = {};
 	Object.keys(config).forEach(function (key) {
 		const defaultType = typeof defaults[key];
 		const type = typeof config[key];
@@ -109,14 +109,31 @@ Configs.remove = async function (field) {
 };
 
 async function processConfig(data) {
+	ensurePositiveInteger(data, 'maximumUsernameLength');
+	ensurePositiveInteger(data, 'minimumUsernameLength');
+	ensurePositiveInteger(data, 'minimumPasswordLength');
+	ensurePositiveInteger(data, 'maximumAboutMeLength');
+	if (data.minimumUsernameLength > data.maximumUsernameLength) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
 	await Promise.all([
 		saveRenderedCss(data),
 		getLogoSize(data),
 	]);
 }
 
+function ensurePositiveInteger(data, field) {
+	if (data.hasOwnProperty(field)) {
+		data[field] = parseInt(data[field], 10);
+		if (!(data[field] > 0)) {
+			throw new Error('[[error:invalid-data]]');
+		}
+	}
+}
+
 function lessRender(string, callback) {
-	var less = require('less');
+	const less = require('less');
 	less.render(string, {
 		compress: true,
 		javascriptEnabled: true,
@@ -135,7 +152,7 @@ async function saveRenderedCss(data) {
 }
 
 async function getLogoSize(data) {
-	var image = require('../image');
+	const image = require('../image');
 	if (!data['brand:logo']) {
 		return;
 	}
