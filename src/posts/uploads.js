@@ -1,13 +1,14 @@
 'use strict';
 
-var async = require('async');
-var nconf = require('nconf');
-var crypto = require('crypto');
-var fs = require('fs');
-var path = require('path');
-var winston = require('winston');
+const async = require('async');
+const nconf = require('nconf');
+const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
+const winston = require('winston');
+const mime = require('mime');
 
-var db = require('../database');
+const db = require('../database');
 const image = require('../image');
 
 module.exports = function (Posts) {
@@ -114,6 +115,10 @@ module.exports = function (Posts) {
 	};
 
 	Posts.uploads.saveSize = async (filePaths) => {
+		filePaths = filePaths.filter((fileName) => {
+			const type = mime.getType(fileName);
+			return type && type.match(/image./);
+		});
 		await Promise.all(filePaths.map(async function (fileName) {
 			try {
 				const size = await image.size(path.join(pathPrefix, fileName));
