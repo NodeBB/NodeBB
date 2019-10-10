@@ -21,25 +21,24 @@
 
 require('./require-main');
 
-var nconf = require('nconf');
+const nconf = require('nconf');
 nconf.argv().env({
 	separator: '__',
 });
 
-var async = require('async');
-var winston = require('winston');
-var path = require('path');
+const winston = require('winston');
+const path = require('path');
 
-var file = require('./src/file');
+const file = require('./src/file');
 
 global.env = process.env.NODE_ENV || 'production';
 
 // Alternate configuration file support
-var	configFile = path.resolve(__dirname, nconf.any(['config', 'CONFIG']) || 'config.json');
+const	configFile = path.resolve(__dirname, nconf.any(['config', 'CONFIG']) || 'config.json');
 
-var configExists = file.existsSync(configFile) || (nconf.get('url') && nconf.get('secret') && nconf.get('database'));
+const configExists = file.existsSync(configFile) || (nconf.get('url') && nconf.get('secret') && nconf.get('database'));
 
-var prestart = require('./src/prestart');
+const prestart = require('./src/prestart');
 prestart.loadConfig(configFile);
 prestart.setupWinston();
 prestart.versionCheck();
@@ -60,23 +59,12 @@ if (nconf.get('setup') || nconf.get('install')) {
 } else if (nconf.get('upgrade')) {
 	require('./src/cli/upgrade').upgrade(true);
 } else if (nconf.get('reset')) {
-	var options = {
+	require('./src/cli/reset').reset({
 		theme: nconf.get('t'),
 		plugin: nconf.get('p'),
 		widgets: nconf.get('w'),
 		settings: nconf.get('s'),
 		all: nconf.get('a'),
-	};
-
-	async.series([
-		async.apply(require('./src/cli/reset').reset, options),
-		require('./src/meta/build').buildAll,
-	], function (err) {
-		if (err) {
-			throw err;
-		}
-
-		process.exit(0);
 	});
 } else if (nconf.get('activate')) {
 	require('./src/cli/manage').activate(nconf.get('activate'));
