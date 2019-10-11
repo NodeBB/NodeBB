@@ -6,7 +6,7 @@ const db = require('../database');
 const categories = require('../categories');
 
 module.exports = function (User) {
-	User.setCategoryWatchState = async function (uid, cid, state) {
+	User.setCategoryWatchState = async function (uid, cids, state) {
 		if (!(parseInt(uid, 10) > 0)) {
 			return;
 		}
@@ -14,11 +14,12 @@ module.exports = function (User) {
 		if (!isStateValid) {
 			throw new Error('[[error:invalid-watch-state]]');
 		}
-		const exists = await categories.exists(cid);
-		if (!exists) {
+		cids = Array.isArray(cids) ? cids : [cids];
+		const exists = await categories.exists(cids);
+		if (exists.includes(false)) {
 			throw new Error('[[error:no-category]]');
 		}
-		await db.sortedSetAdd('cid:' + cid + ':uid:watch:state', state, uid);
+		await db.sortedSetsAdd(cids.map(cid => 'cid:' + cid + ':uid:watch:state'), state, uid);
 	};
 
 	User.getCategoryWatchState = async function (uid) {
