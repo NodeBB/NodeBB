@@ -132,17 +132,16 @@ module.exports = function (Plugins) {
 		if (!Array.isArray(hookList) || !hookList.length) {
 			return;
 		}
-		await async.each(hookList, function (hookObj, next) {
+		for (const hookObj of hookList) {
 			if (typeof hookObj.method !== 'function') {
 				if (global.env === 'development') {
 					winston.warn('[plugins] Expected method for hook \'' + hook + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
 				}
-				return next();
+			} else {
+				/* eslint-disable no-await-in-loop */
+				await hookObj.method(params);
 			}
-
-			hookObj.method(params);
-			next();
-		});
+		}
 	}
 
 	async function fireStaticHook(hook, hookList, params) {

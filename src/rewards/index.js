@@ -70,10 +70,11 @@ async function checkCondition(reward, method) {
 
 async function giveRewards(uid, rewards) {
 	const rewardData = await getRewardsByRewardData(rewards);
-	await Promise.all(rewards.map(async function (reward) {
-		plugins.fireHook('action:rewards.award:' + reward.rid, { uid: uid, reward: rewardData[rewards.indexOf(reward)] });
-		await db.sortedSetIncrBy('uid:' + uid + ':rewards', 1, reward.id);
-	}));
+	for (let i = 0; i < rewards.length; i++) {
+		/* eslint-disable no-await-in-loop */
+		await plugins.fireHook('action:rewards.award:' + rewards[i].rid, { uid: uid, reward: rewardData[i] });
+		await db.sortedSetIncrBy('uid:' + uid + ':rewards', 1, rewards[i].id);
+	}
 }
 
 require('../promisify')(rewards);
