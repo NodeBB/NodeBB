@@ -592,7 +592,7 @@ describe('socket.io', function () {
 	it('should delete a single event', function (done) {
 		db.getSortedSetRevRange('events:time', 0, 0, function (err, eids) {
 			assert.ifError(err);
-			socketAdmin.deleteEvents({ uid: adminUid }, eids, function (err) {
+			events.deleteEvents(eids, function (err) {
 				assert.ifError(err);
 				db.isSortedSetMembers('events:time', eids, function (err, isMembers) {
 					assert.ifError(err);
@@ -604,7 +604,7 @@ describe('socket.io', function () {
 	});
 
 	it('should delete all events', function (done) {
-		socketAdmin.deleteAllEvents({ uid: adminUid }, {}, function (err) {
+		events.deleteAll(function (err) {
 			assert.ifError(err);
 			db.sortedSetCard('events:time', function (err, count) {
 				assert.ifError(err);
