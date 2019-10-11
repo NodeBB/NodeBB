@@ -28,7 +28,7 @@ module.exports = {
 						fields.push(field);
 					}
 				});
-				['profileviews', 'reputation', 'postcount', 'topiccount', 'lastposttime', 'banned'].forEach((field) => {
+				['profileviews', 'reputation', 'postcount', 'topiccount', 'lastposttime', 'banned', 'followerCount', 'followingCount'].forEach((field) => {
 					if (user[field] === 0) {
 						fields.push(field);
 					}
