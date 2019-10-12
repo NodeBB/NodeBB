@@ -26,6 +26,7 @@
     "reputation": "声望",
     "bookmarks": "书签",
     "watched_categories": "已关注的版块",
+    "change_all": "Change All",
     "watched": "已关注",
     "ignored": "忽略",
     "default-category-watch-state": "默认版块关注状态",

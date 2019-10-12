@@ -26,6 +26,7 @@
     "reputation": "Reputacija",
     "bookmarks": "Zabilješke",
     "watched_categories": "Watched categories",
+    "change_all": "Change All",
     "watched": "Gledano",
     "ignored": "Ignored",
     "default-category-watch-state": "Default category watch state",

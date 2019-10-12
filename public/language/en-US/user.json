@@ -26,6 +26,7 @@
     "reputation": "Reputation",
     "bookmarks": "Bookmarks",
     "watched_categories": "Watched categories",
+    "change_all": "Change All",
     "watched": "Watched",
     "ignored": "Ignored",
     "default-category-watch-state": "Default category watch state",

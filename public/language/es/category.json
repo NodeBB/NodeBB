@@ -10,7 +10,7 @@
     "watch": "Seguir",
     "ignore": "Ignorar",
     "watching": "Siguiendo",
-    "not-watching": "Not Watching",
+    "not-watching": "No siguiendo",
     "ignoring": "Ignorando",
     "watching.description": "Mostrar temas en no leídos y recientes",
     "not-watching.description": "No mostrar temas en no leído, mostrar en reciente",

@@ -2,7 +2,6 @@
 	"events": "Olaylar",
 	"no-events": "Olay yok",
 	"control-panel": "Etkinlik Kontrol Paneli",
-	"delete-events": "Olayları Sil",
 	"filters": "Filters",
 	"filters-apply": "Apply Filters",
 	"filter-type": "Event Type",

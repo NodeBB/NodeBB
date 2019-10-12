@@ -18,5 +18,13 @@
 	"alert.update-success": "Widgets actualizados con éxito",
 	"alert.clone-success": "Widgets clonados con éxito",
 
-	"error.select-clone": "Por favor selecciona una página de la cual clonar"
+	"error.select-clone": "Por favor selecciona una página de la cual clonar",
+
+	"title": "Título",
+	"title.placeholder": "Title (only shown on some containers)",
+	"container": "Container",
+	"container.placeholder": "Drag and drop a container or enter HTML here.",
+	"show-to-groups": "Show to groups",
+	"hide-from-groups": "Hide from groups",
+	"hide-on-mobile": "Ocultar en móviles"
 }

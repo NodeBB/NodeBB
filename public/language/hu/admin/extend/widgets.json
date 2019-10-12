@@ -18,5 +18,13 @@
 	"alert.update-success": "Modulok sikeresen frissítve",
 	"alert.clone-success": "Modulok sikersen klónozva",
 
-	"error.select-clone": "Kérlek válassz oldalt a klónozáshoz"
+	"error.select-clone": "Kérlek válassz oldalt a klónozáshoz",
+
+	"title": "Title",
+	"title.placeholder": "Title (only shown on some containers)",
+	"container": "Container",
+	"container.placeholder": "Drag and drop a container or enter HTML here.",
+	"show-to-groups": "Show to groups",
+	"hide-from-groups": "Hide from groups",
+	"hide-on-mobile": "Hide on mobile"
 }

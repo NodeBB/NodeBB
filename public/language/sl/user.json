@@ -26,6 +26,7 @@
     "reputation": "Naziv",
     "bookmarks": "Bookmarks",
     "watched_categories": "Watched categories",
+    "change_all": "Change All",
     "watched": "Spremljano",
     "ignored": "Ignored",
     "default-category-watch-state": "Default category watch state",

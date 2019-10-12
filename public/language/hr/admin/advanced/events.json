@@ -2,7 +2,6 @@
 	"events": "Događanja",
 	"no-events": "Nema događaja",
 	"control-panel": "Kontrolna ploča događanja",
-	"delete-events": "Obriši događanja",
 	"filters": "Filters",
 	"filters-apply": "Apply Filters",
 	"filter-type": "Event Type",
