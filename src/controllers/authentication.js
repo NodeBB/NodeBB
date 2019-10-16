@@ -371,7 +371,7 @@ authenticationController.localLogin = async function (req, username, password, n
 	const uid = await user.getUidByUserslug(userslug);
 	try {
 		const [userData, isAdminOrGlobalMod, banned, hasLoginPrivilege] = await Promise.all([
-			db.getObjectFields('user:' + uid, ['uid', 'passwordExpiry']),
+			user.getUserFields(uid, ['uid', 'passwordExpiry']),
 			user.isAdminOrGlobalMod(uid),
 			user.bans.isBanned(uid),
 			privileges.global.can('local:login', uid),
