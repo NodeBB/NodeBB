@@ -424,8 +424,8 @@ define('forum/chats', [
 								messages.scrollToBottom($('.expanded-chat ul.chat-content'));
 								if (history.pushState) {
 									history.pushState({
-										url: 'user/' + payload.userslug + '/chats/' + payload.roomId,
-									}, null, window.location.protocol + '//' + window.location.host + config.relative_path + '/user/' + payload.userslug + '/chats/' + payload.roomId);
+										url: url,
+									}, null, window.location.protocol + '//' + window.location.host + config.relative_path + '/' + url);
 								}
 							});
 						});
