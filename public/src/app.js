@@ -720,7 +720,7 @@ app.cacheBuster = null;
 	};
 
 	app.loadJQueryUI = function (callback) {
-		if (typeof $().autocomplete === 'function') {
+		if ($.ui) {
 			return callback();
 		}
 
