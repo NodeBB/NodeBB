@@ -3,7 +3,6 @@
 require('colors');
 const path = require('path');
 const winston = require('winston');
-const async = require('async');
 const fs = require('fs');
 const util = require('util');
 
@@ -123,55 +122,38 @@ async function resetThemeTo(themeId) {
 	winston.info('[reset] Theme reset to ' + themeId + ' and default skin');
 }
 
-function resetPlugin(pluginId, callback) {
-	var active = false;
+async function resetPlugin(pluginId) {
+	try {
+		const isActive = await db.isSortedSetMember('plugins:active', pluginId);
+		if (isActive) {
+			await db.sortedSetRemove('plugins:active', pluginId);
+		}
 
-	async.waterfall([
-		async.apply(db.isSortedSetMember, 'plugins:active', pluginId),
-		function (isMember, next) {
-			active = isMember;
+		await events.log({
+			type: 'plugin-deactivate',
+			text: pluginId,
+		});
 
-			if (isMember) {
-				db.sortedSetRemove('plugins:active', pluginId, next);
-			} else {
-				next();
-			}
-		},
-		function (next) {
-			events.log({
-				type: 'plugin-deactivate',
-				text: pluginId,
-			}, next);
-		},
-	], function (err) {
-		if (err) {
-			winston.error('[reset] Could not disable plugin: ' + pluginId + ' encountered error %s', err);
-		} else if (active) {
+		if (isActive) {
 			winston.info('[reset] Plugin `%s` disabled', pluginId);
 		} else {
 			winston.warn('[reset] Plugin `%s` was not active on this forum', pluginId);
 			winston.info('[reset] No action taken.');
-			err = new Error('plugin-not-active');
+			throw new Error('plugin-not-active');
 		}
-
-		callback(err);
-	});
+	} catch (err) {
+		winston.error('[reset] Could not disable plugin: ' + pluginId + ' encountered error %s', err);
+		throw err;
+	}
 }
 
-function resetPlugins(callback) {
-	db.delete('plugins:active', function (err) {
-		winston.info('[reset] All Plugins De-activated');
-		callback(err);
-	});
+async function resetPlugins() {
+	await db.delete('plugins:active');
+	winston.info('[reset] All Plugins De-activated');
 }
 
-function resetWidgets(callback) {
-	async.waterfall([
-		plugins.reload,
-		widgets.reset,
-		function (next) {
-			winston.info('[reset] All Widgets moved to Draft Zone');
-			next();
-		},
-	], callback);
+async function resetWidgets() {
+	await plugins.reload();
+	await widgets.reset();
+	winston.info('[reset] All Widgets moved to Draft Zone');
 }
