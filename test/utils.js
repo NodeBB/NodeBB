@@ -46,6 +46,12 @@ describe('Utility Methods', function () {
 		done();
 	});
 
+	it('should work if a number is passed in', function (done) {
+		var slug = utils.slugify(12345);
+		assert.strictEqual(slug, '12345');
+		done();
+	});
+
 	describe('username validation', function () {
 		it('accepts latin-1 characters', function () {
 			var username = "John\"'-. Doeäâèéë1234";

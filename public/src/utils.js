@@ -351,7 +351,7 @@
 			if (!str) {
 				return '';
 			}
-			str = str.replace(utils.trimRegex, '');
+			str = String(str).replace(utils.trimRegex, '');
 			if (utils.isLatin.test(str)) {
 				str = str.replace(utils.invalidLatinChars, '-');
 			} else {
