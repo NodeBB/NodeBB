@@ -158,9 +158,6 @@ define('autocomplete', function () {
 
 		textcomplete.on('select', function (e) {
 			handleOnSelect($element, onselect, e, { item: e.detail.searchResult.data }, uuid);
-
-			// https://github.com/yuku/textcomplete/issues/165
-			setTimeout(function () { textcomplete.dropdown.hide(); }, 100);
 		});
 
 		return textcomplete;
