@@ -143,6 +143,13 @@ define('autocomplete', function () {
 			editor = new ContentEditable(element);
 		}
 
+		var _getCursorOffset = editor.getCursorOffset;
+		editor.getCursorOffset = function () {
+			var offset = _getCursorOffset.apply(editor, arguments);
+			offset.clientTop = offset.top;
+			return offset;
+		};
+
 		// yuku-t/textcomplete inherits directionality from target element itself
 		$element.attr('dir', document.querySelector('html').getAttribute('data-dir') || 'auto');
 
