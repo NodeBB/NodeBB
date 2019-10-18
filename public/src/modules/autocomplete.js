@@ -143,6 +143,7 @@ define('autocomplete', function () {
 			editor = new ContentEditable(element);
 		}
 
+		// hack till https://github.com/yuku/textcomplete/issues/166
 		var _getCursorOffset = editor.getCursorOffset;
 		editor.getCursorOffset = function () {
 			var offset = _getCursorOffset.apply(editor, arguments);
