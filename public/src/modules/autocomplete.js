@@ -32,10 +32,10 @@ define('autocomplete', function () {
 						callback(results.filter(function (result) { return !!result; }));
 					});
 				},
-				match: /(.+)/,
+				match: /(\w+)$/,
 				index: 1,
 				replace: function (result) {
-					return result.label;
+					return result.label + ' ';
 				},
 				template: function (result) {
 					return result.label;
@@ -66,10 +66,10 @@ define('autocomplete', function () {
 						callback(results.filter(function (result) { return !!result; }));
 					});
 				},
-				match: /(.+)/,
+				match: /(\w+)$/,
 				index: 1,
 				replace: function (result) {
-					return result.label;
+					return result.label + ' ';
 				},
 				template: function (result) {
 					return result.label;
@@ -90,10 +90,10 @@ define('autocomplete', function () {
 						callback(results.filter(function (result) { return !!result; }));
 					});
 				},
-				match: /(.+)/,
+				match: /(\w+)$/,
 				index: 1,
 				replace: function (result) {
-					return result;
+					return result + ' ';
 				},
 				template: function (result) {
 					return result;
