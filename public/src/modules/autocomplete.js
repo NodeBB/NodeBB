@@ -108,7 +108,6 @@ define('autocomplete', function () {
 		var model = data.model;
 		var uuid = data.uuid;
 		var onselect = data.onselect;
-
 		if (!element || $element.data('autocomplete-uuid')) {
 			return;
 		}
@@ -116,30 +115,14 @@ define('autocomplete', function () {
 			uuid = utils.generateUUID();
 		}
 		$element.data('autocomplete-uuid', uuid);
-
 		var dropdownClass = 'autocomplete-dropdown-' + uuid;
-
-		var textcompleteStrategies = []
-			.concat(data.strategies || [])
-			.concat(modelsStrategies[model] || [])
-			.filter(function (s) { return !!s; });
-
-		var textcompleteOptions = $.extend(true, {}, {
-			dropdown: {
-				placement: 'auto',
-				style: {
-					'z-index': 20000,
-				},
-				className: dropdownClass + ' dropdown-menu textcomplete-dropdown',
-			},
-		});
+		var textcompleteStrategies = [].concat(data.strategies || []).concat(modelsStrategies[model] || []).filter(function (s) { return !!s; });
+		var textcompleteOptions = $.extend(true, {}, { dropdown: { placement: 'auto', style: { 'z-index': 20000 }, className: dropdownClass + ' dropdown-menu textcomplete-dropdown' } });
 		var editor;
 		if (element.nodeName === 'TEXTAREA' || element.nodeName === 'INPUT') {
-			var Textarea = window.Textcomplete.editors.Textarea;
-			editor = new Textarea(element);
+			editor = new window.Textcomplete.editors.Textarea(element);
 		} else if (element.nodeName === 'DIV' && element.getAttribute('contenteditable') === 'true') {
-			var ContentEditable = window.Textcomplete.editors.ContentEditable;
-			editor = new ContentEditable(element);
+			editor = new window.Textcomplete.editors.ContentEditable(element);
 		}
 		// hack till https://github.com/yuku/textcomplete/issues/166
 		var _getCursorOffset = editor.getCursorOffset;
@@ -148,13 +131,10 @@ define('autocomplete', function () {
 			offset.clientTop = offset.top;
 			return offset;
 		};
-
 		// yuku-t/textcomplete inherits directionality from target element itself
 		$element.attr('dir', document.querySelector('html').getAttribute('data-dir') || 'auto');
-
 		var textcomplete = new window.Textcomplete(editor, textcompleteOptions);
 		textcomplete.register(textcompleteStrategies);
-
 		textcomplete.on('rendered', function () {
 			if (textcomplete.dropdown.items.length) {
 				// Activate the first item by default.
@@ -164,7 +144,6 @@ define('autocomplete', function () {
 		textcomplete.on('select', function (e) {
 			handleOnSelect($element, onselect, e, { item: e.detail.searchResult.data }, uuid);
 		});
-
 		return textcomplete;
 	};
 
