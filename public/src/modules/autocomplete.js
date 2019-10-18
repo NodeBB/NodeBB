@@ -133,7 +133,6 @@ define('autocomplete', function () {
 				className: dropdownClass + ' dropdown-menu textcomplete-dropdown',
 			},
 		});
-
 		var editor;
 		if (element.nodeName === 'TEXTAREA' || element.nodeName === 'INPUT') {
 			var Textarea = window.Textcomplete.editors.Textarea;
@@ -142,7 +141,6 @@ define('autocomplete', function () {
 			var ContentEditable = window.Textcomplete.editors.ContentEditable;
 			editor = new ContentEditable(element);
 		}
-
 		// hack till https://github.com/yuku/textcomplete/issues/166
 		var _getCursorOffset = editor.getCursorOffset;
 		editor.getCursorOffset = function () {
@@ -163,7 +161,6 @@ define('autocomplete', function () {
 				textcomplete.dropdown.items[0].activate();
 			}
 		});
-
 		textcomplete.on('select', function (e) {
 			handleOnSelect($element, onselect, e, { item: e.detail.searchResult.data }, uuid);
 		});
