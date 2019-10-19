@@ -33,8 +33,8 @@
 	"testing.select": "选择电子邮件模板",
 	"testing.send": "发送测试电子邮件",
 	"testing.send-help": "测试电子邮件将被发送到当前已登录的用户的电子邮件地址。",
-	"subscriptions": "Email Digests",
-	"subscriptions.disable": "Disable email digests",
+	"subscriptions": "电子邮件摘要",
+	"subscriptions.disable": "禁用电子邮件摘要",
 	"subscriptions.hour": "摘要小时",
 	"subscriptions.hour-help": "请输入一个代表小时的数字来发送计划的电子邮件摘要 (例如，对于午夜，<code>0</code>，对于下午5:00，<code>17</code>)。 请记住，这是根据服务器本身的时间，可能与您的系统时钟不完全匹配。<br />服务器的大致时间为：<span id =\"serverTime\"></ span><br /> 下一个每日摘要被计划在<span id =\"nextDigestTime\"></span>发送"
 }

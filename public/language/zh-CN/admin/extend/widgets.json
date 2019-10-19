@@ -20,11 +20,11 @@
 
 	"error.select-clone": "请选择一个页面进行克隆",
 
-	"title": "Title",
-	"title.placeholder": "Title (only shown on some containers)",
-	"container": "Container",
-	"container.placeholder": "Drag and drop a container or enter HTML here.",
-	"show-to-groups": "Show to groups",
-	"hide-from-groups": "Hide from groups",
-	"hide-on-mobile": "Hide on mobile"
+	"title": "标题",
+	"title.placeholder": "标题（仅在部分容器显示）",
+	"container": "容器",
+	"container.placeholder": "将容器拖拽至此处或在此处输入HTML",
+	"show-to-groups": "对群组显示",
+	"hide-from-groups": "对群组隐藏",
+	"hide-on-mobile": "在移动端隐藏"
 }
