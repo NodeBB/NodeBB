@@ -100,7 +100,9 @@ function beforeBuild(targets, callback) {
 	process.stdout.write('  started'.green + '\n'.reset);
 
 	async.series([
-		db.init,
+		function (next) {
+			db.init(next);
+		},
 		function (next) {
 			meta = require('../meta');
 			meta.themes.setupPaths(next);

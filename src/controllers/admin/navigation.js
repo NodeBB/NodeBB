@@ -13,13 +13,13 @@ navigationController.get = async function (req, res) {
 	]);
 
 	allGroups.sort((a, b) => b.system - a.system);
-	const groupsData = allGroups.map(group => ({ name: group.name, displayName: group.displayName }));
 
+	admin.groups = allGroups.map(group => ({ name: group.name, displayName: group.displayName }));
 	admin.enabled.forEach(function (enabled, index) {
 		enabled.index = index;
 		enabled.selected = index === 0;
 
-		enabled.groups = groupsData.map(function (group) {
+		enabled.groups = admin.groups.map(function (group) {
 			return {
 				displayName: group.displayName,
 				selected: enabled.groups.includes(group.name),

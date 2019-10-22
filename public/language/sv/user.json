@@ -26,6 +26,7 @@
     "reputation": "Rykte",
     "bookmarks": "Bokmärken",
     "watched_categories": "Watched categories",
+    "change_all": "Change All",
     "watched": "Bevakad",
     "ignored": "Ignorerad",
     "default-category-watch-state": "Default category watch state",

@@ -1,18 +1,18 @@
 
 'use strict';
 
-var winston = require('winston');
-var validator = require('validator');
+const winston = require('winston');
+const validator = require('validator');
 
-var db = require('../database');
-var plugins = require('../plugins');
+const db = require('../database');
+const plugins = require('../plugins');
 
 module.exports = function (User) {
 	User.logIP = async function (uid, ip) {
 		if (!(parseInt(uid, 10) > 0)) {
 			return;
 		}
-		var now = Date.now();
+		const now = Date.now();
 		const bulk = [
 			['uid:' + uid + ':ip', now, ip || 'Unknown'],
 		];
@@ -29,8 +29,8 @@ module.exports = function (User) {
 
 	User.getUsersCSV = async function () {
 		winston.verbose('[user/getUsersCSV] Compiling User CSV data');
-		var csvContent = '';
-		var uids = await db.getSortedSetRange('users:joindate', 0, -1);
+		let csvContent = '';
+		const uids = await db.getSortedSetRange('users:joindate', 0, -1);
 		const data = await plugins.fireHook('filter:user.csvFields', { fields: ['uid', 'email', 'username'] });
 		const usersData = await User.getUsersFields(uids, data.fields);
 		usersData.forEach(function (user) {

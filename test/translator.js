@@ -21,6 +21,18 @@ describe('Translator shim', function () {
 				done();
 			});
 		});
+
+		it('should translate empty string properly', function (done) {
+			shim.translate('', 'en-GB', function (translated) {
+				assert.strictEqual(translated, '');
+				done();
+			});
+		});
+
+		it('should translate empty string properly', async function () {
+			const translated = await shim.translate('', 'en-GB');
+			assert.strictEqual(translated, '');
+		});
 	});
 });
 

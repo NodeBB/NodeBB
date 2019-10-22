@@ -4,6 +4,7 @@ const nconf = require('nconf');
 const validator = require('validator');
 const winston = require('winston');
 const querystring = require('querystring');
+const _ = require('lodash');
 
 const user = require('../user');
 const privileges = require('../privileges');
@@ -212,27 +213,43 @@ helpers.getCategories = async function (set, uid, privilege, selectedCid) {
 };
 
 helpers.getCategoriesByStates = async function (uid, selectedCid, states) {
-	let cids = await user.getCategoriesByStates(uid, states);
-	cids = await privileges.categories.filterCids('topics:read', cids, uid);
-	return await getCategoryData(cids, uid, selectedCid);
+	const cids = await categories.getAllCidsFromSet('categories:cid');
+	return await getCategoryData(cids, uid, selectedCid, states);
 };
 
-helpers.getWatchedCategories = async function (uid, selectedCid) {
-	let cids = await user.getWatchedCategories(uid);
-	cids = await privileges.categories.filterCids('read', cids, uid);
-	return await getCategoryData(cids, uid, selectedCid);
-};
-
-async function getCategoryData(cids, uid, selectedCid) {
+async function getCategoryData(cids, uid, selectedCid, states) {
 	if (selectedCid && !Array.isArray(selectedCid)) {
 		selectedCid = [selectedCid];
 	}
-	const categoryFields = ['cid', 'order', 'name', 'slug', 'icon', 'link', 'color', 'bgColor', 'parentCid', 'image', 'imageClass'];
-	let categoryData = await categories.getCategoriesFields(cids, categoryFields);
-	categoryData = categoryData.filter(category => category && !category.link);
+
+	states = states || [categories.watchStates.watching, categories.watchStates.notwatching];
+
+	const [allowed, watchState, categoryData, isAdmin] = await Promise.all([
+		privileges.categories.isUserAllowedTo('topics:read', cids, uid),
+		categories.getWatchState(cids, uid),
+		categories.getCategoriesData(cids),
+		user.isAdministrator(uid),
+	]);
 
 	categories.getTree(categoryData);
-	const categoriesData = categories.buildForSelectCategories(categoryData);
+
+	const cidToAllowed = _.zipObject(cids, allowed.map(allowed => isAdmin || allowed));
+	const cidToCategory = _.zipObject(cids, categoryData);
+	const cidToWatchState = _.zipObject(cids, watchState);
+
+	const visibleCategories = categoryData.filter(function (c) {
+		const hasVisibleChildren = c && Array.isArray(c.children) && c.children.some(c => c && cidToAllowed[c.cid] && states.includes(cidToWatchState[c.cid]));
+		const isCategoryVisible = c && cidToAllowed[c.cid] && !c.link && !c.disabled && states.includes(cidToWatchState[c.cid]);
+		const shouldBeRemoved = !hasVisibleChildren && !isCategoryVisible;
+
+		if (shouldBeRemoved && c && c.parent && c.parent.cid && cidToCategory[c.parent.cid]) {
+			cidToCategory[c.parent.cid].children = cidToCategory[c.parent.cid].children.filter(child => child.cid !== c.cid);
+		}
+
+		return c && !shouldBeRemoved;
+	});
+
+	const categoriesData = categories.buildForSelectCategories(visibleCategories);
 
 	let selectedCategory = [];
 	const selectedCids = [];

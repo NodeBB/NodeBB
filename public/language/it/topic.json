@@ -17,8 +17,8 @@
     "one_reply_to_this_post": "1 Risposta",
     "last_reply_time": "Ultima Risposta",
     "reply-as-topic": "Topic risposta",
-    "guest-login-reply": "Effettua il Log in per rispondere",
-    "login-to-view": "🔒 Log in to view",
+    "guest-login-reply": "Effettua l'accesso per rispondere",
+    "login-to-view": "Accedi per visualizzare",
     "edit": "Modifica",
     "delete": "Elimina",
     "purge": "Elimina definitivamente",
@@ -135,5 +135,5 @@
     "diffs.current-revision": "revisione corrente",
     "diffs.original-revision": "revisione originale",
     "timeago_later": "%1 successivo",
-    "timeago_earlier": "%1 earlier"
+    "timeago_earlier": "%1 precedente"
 }

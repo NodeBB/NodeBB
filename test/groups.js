@@ -1161,7 +1161,8 @@ describe('Groups', function () {
 				assert.equal(groupData.name, 'newgroup');
 				assert.equal(groupData.description, 'group created by admin');
 				assert.equal(groupData.ownerUid, adminUid);
-				assert.equal(groupData.private, true);
+				assert.equal(groupData.private, 1);
+				assert.equal(groupData.hidden, 0);
 				assert.equal(groupData.memberCount, 1);
 				done();
 			});

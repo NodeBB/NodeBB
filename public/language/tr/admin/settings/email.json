@@ -33,8 +33,8 @@
 	"testing.select": "E-posta Kalıbını Seç",
 	"testing.send": "Test E-postası Gönder",
 	"testing.send-help": "The test email will be sent to the currently logged in user's email address.",
-	"subscriptions": "E-posta Abonelikleri",
-	"subscriptions.disable": "Abone bildirim e-postalarını devre dışı bırak",
+	"subscriptions": "Email Digests",
+	"subscriptions.disable": "Disable email digests",
 	"subscriptions.hour": "Digest Hour",
 	"subscriptions.hour-help": "Please enter a number representing the hour to send scheduled email digests (e.g. <code>0</code> for midnight, <code>17</code> for 5:00pm). Keep in mind that this is the hour according to the server itself, and may not exactly match your system clock.<br /> The approximate server time is: <span id=\"serverTime\"></span><br /> The next daily digest is scheduled to be sent  <span id=\"nextDigestTime\"></span>"
 }

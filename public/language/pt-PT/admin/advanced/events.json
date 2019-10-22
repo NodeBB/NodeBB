@@ -2,7 +2,6 @@
 	"events": "Eventos",
 	"no-events": "Não existem eventos",
 	"control-panel": "Painel de Controlo de Eventos",
-	"delete-events": "Apagar Eventos",
 	"filters": "Filters",
 	"filters-apply": "Apply Filters",
 	"filter-type": "Event Type",

@@ -33,8 +33,8 @@
 	"testing.select": "Escolher Modelo do E-mail",
 	"testing.send": "Enviar E-mail de Teste",
 	"testing.send-help": "O e-mail de teste será enviado para o seu endereço de e-mail.",
-	"subscriptions": "Assinaturas por E-mail",
-	"subscriptions.disable": "Desativar e-mails de notificação por assinatura",
+	"subscriptions": "Email Digests",
+	"subscriptions.disable": "Disable email digests",
 	"subscriptions.hour": "Hora de Envio dos Resumos",
 	"subscriptions.hour-help": "Por favor, entre um número representando a hora para enviar os resumos agendados via e-mail (por exemplo: <code>0</code> para meia-noite, <code>17</code> para 5:00pm). Tenha em mente que esta é a hora de acordo com o servidor e pode não combinar exatamente com o relógio do seu sistema.<br /> O horário aproximado do servidor é: <span id=\"serverTime\"></span><br /> O próximo resumo diário está agendado para ser enviado <span id=\"nextDigestTime\"></span>"
 }

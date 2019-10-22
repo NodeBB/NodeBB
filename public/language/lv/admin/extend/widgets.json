@@ -18,5 +18,13 @@
 	"alert.update-success": "Veiksmīgi atjaunināti logrīki",
 	"alert.clone-success": "Veiksmīgi klonēti logrīki",
 
-	"error.select-clone": "Lūdzu, izvēlēties lapu klonēšanai"
+	"error.select-clone": "Lūdzu, izvēlēties lapu klonēšanai",
+
+	"title": "Title",
+	"title.placeholder": "Title (only shown on some containers)",
+	"container": "Container",
+	"container.placeholder": "Drag and drop a container or enter HTML here.",
+	"show-to-groups": "Show to groups",
+	"hide-from-groups": "Hide from groups",
+	"hide-on-mobile": "Hide on mobile"
 }

@@ -2,7 +2,6 @@
 	"events": "Events",
 	"no-events": "There are no events",
 	"control-panel": "Kontrol Panel for Begivenheder",
-	"delete-events": "Slet Begivenheder",
 	"filters": "Filters",
 	"filters-apply": "Apply Filters",
 	"filter-type": "Event Type",

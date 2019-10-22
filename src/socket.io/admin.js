@@ -43,19 +43,13 @@ SocketAdmin.logs = {};
 SocketAdmin.errors = {};
 SocketAdmin.uploads = {};
 
-SocketAdmin.before = function (socket, method, data, next) {
-	async.waterfall([
-		function (next) {
-			user.isAdministrator(socket.uid, next);
-		},
-		function (isAdmin) {
-			if (isAdmin) {
-				return next();
-			}
-			winston.warn('[socket.io] Call to admin method ( ' + method + ' ) blocked (accessed by uid ' + socket.uid + ')');
-			next(new Error('[[error:no-privileges]]'));
-		},
-	], next);
+SocketAdmin.before = async function (socket, method) {
+	const isAdmin = await user.isAdministrator(socket.uid);
+	if (isAdmin) {
+		return;
+	}
+	winston.warn('[socket.io] Call to admin method ( ' + method + ' ) blocked (accessed by uid ' + socket.uid + ')');
+	throw new Error('[[error:no-privileges]]');
 };
 
 SocketAdmin.restart = function (socket, data, callback) {
@@ -170,7 +164,7 @@ SocketAdmin.config.setMultiple = async function (socket, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	var changes = {};
+	const changes = {};
 	data = meta.configs.deserialize(data);
 	Object.keys(data).forEach(function (key) {
 		if (data[key] !== meta.config[key]) {
@@ -179,10 +173,9 @@ SocketAdmin.config.setMultiple = async function (socket, data) {
 		}
 	});
 	await meta.configs.setMultiple(data);
-	var setting;
-	for (var field in data) {
+	for (const field in data) {
 		if (data.hasOwnProperty(field)) {
-			setting = {
+			const setting = {
 				key: field,
 				value: data[field],
 			};
@@ -222,7 +215,7 @@ SocketAdmin.settings.clearSitemapCache = function (socket, data, callback) {
 };
 
 SocketAdmin.email.test = function (socket, data, callback) {
-	var payload = {
+	const payload = {
 		subject: '[[email:test-email.subject]]',
 	};
 
@@ -334,17 +327,9 @@ SocketAdmin.errors.clear = function (socket, data, callback) {
 	meta.errors.clear(callback);
 };
 
-SocketAdmin.deleteEvents = function (socket, eids, callback) {
-	events.deleteEvents(eids, callback);
-};
-
-SocketAdmin.deleteAllEvents = function (socket, data, callback) {
-	events.deleteAll(callback);
-};
-
 SocketAdmin.getSearchDict = async function (socket) {
 	const settings = await user.getSettings(socket.uid);
-	var lang = settings.userLang || meta.config.defaultLang || 'en-GB';
+	const lang = settings.userLang || meta.config.defaultLang || 'en-GB';
 	return await getAdminSearchDict(lang);
 };
 

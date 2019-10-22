@@ -58,9 +58,8 @@ profileController.get = async function (req, res, next) {
 
 	addMetaTags(res, userData);
 
-	userData.selectedGroup = userData.groups.filter(function (group) {
-		return group && userData.groupTitleArray.includes(group.name);
-	});
+	userData.selectedGroup = userData.groups.filter(group => group && userData.groupTitleArray.includes(group.name))
+		.sort((a, b) => userData.groupTitleArray.indexOf(a.name) - userData.groupTitleArray.indexOf(b.name));
 
 	const results = await plugins.fireHook('filter:user.account', { userData: userData, uid: req.uid });
 	res.render('account/profile', results.userData);

@@ -50,25 +50,21 @@ describe('User', function () {
 
 
 	describe('.create(), when created', function () {
-		it('should be created properly', function (done) {
-			User.create({ username: userData.username, password: userData.password, email: userData.email }, function (error, userId) {
-				assert.equal(error, null, 'was created with error');
-				assert.ok(userId);
-
-				testUid = userId;
-				done();
-			});
+		it('should be created properly', async function () {
+			testUid = await User.create({ username: userData.username, password: userData.password, email: userData.email });
+			assert.ok(testUid);
 		});
 
-		it('should be created properly', function (done) {
-			User.create({ username: 'weirdemail', email: '<h1>test</h1>@gmail.com' }, function (err, uid) {
-				assert.ifError(err);
-				User.getUserData(uid, function (err, data) {
-					assert.ifError(err);
-					assert.equal(data.email, '&lt;h1&gt;test&lt;&#x2F;h1&gt;@gmail.com');
-					done();
-				});
-			});
+		it('should be created properly', async function () {
+			const uid = await User.create({ username: 'weirdemail', email: '<h1>test</h1>@gmail.com' });
+			const data = await User.getUserData(uid);
+			assert.equal(data.email, '&lt;h1&gt;test&lt;&#x2F;h1&gt;@gmail.com');
+			assert.strictEqual(data.profileviews, 0);
+			assert.strictEqual(data.reputation, 0);
+			assert.strictEqual(data.postcount, 0);
+			assert.strictEqual(data.topiccount, 0);
+			assert.strictEqual(data.lastposttime, 0);
+			assert.strictEqual(data.banned, 0);
 		});
 
 		it('should have a valid email, if using an email', function (done) {

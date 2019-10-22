@@ -21,7 +21,6 @@
 						<!-- ENDIF events.user.picture -->
 					</a>
 					<a href="{config.relative_path}/user/{events.user.userslug}" target="_blank">{events.user.username}</a>
-					<span class="pull-right delete-event"><i class="fa fa-trash-o"></i></span>
 					<span class="pull-right">{events.timestampISO}</span>
 					<pre class="well">{events.jsonString}</pre>
 				</div>
@@ -58,13 +57,6 @@
 					</div>
 					<button type="submit" class="btn btn-primary btn-block" id="apply">[[admin/advanced/events:filters-apply]]</button>
 				</form>
-			</div>
-		</div>
-		<div class="panel panel-default">
-			<div class="panel-body">
-				<button class="btn btn-block btn-danger" data-action="clear">
-					<i class="fa fa-eraser"></i> [[admin/advanced/events:delete-events]]
-				</button>
 			</div>
 		</div>
 	</div>

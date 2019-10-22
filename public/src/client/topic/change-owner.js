@@ -30,7 +30,7 @@ define('forum/topic/change-owner', [
 			showPostsSelected();
 
 			if (postEl) {
-				postSelect.togglePostSelection(postEl, onPostToggled);
+				postSelect.togglePostSelection(postEl, postEl.attr('data-pid'));
 			}
 
 			commit.on('click', function () {

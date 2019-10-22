@@ -105,8 +105,8 @@ SocketCategories.setWatchState = async function (socket, data) {
 	if (!data || !data.cid || !data.state) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	return await ignoreOrWatch(async function (uid, cid) {
-		await user.setCategoryWatchState(uid, cid, categories.watchStates[data.state]);
+	return await ignoreOrWatch(async function (uid, cids) {
+		await user.setCategoryWatchState(uid, cids, categories.watchStates[data.state]);
 	}, socket, data);
 };
 
@@ -120,7 +120,7 @@ SocketCategories.ignore = async function (socket, data) {
 
 async function ignoreOrWatch(fn, socket, data) {
 	let targetUid = socket.uid;
-	const cids = [parseInt(data.cid, 10)];
+	const cids = Array.isArray(data.cid) ? data.cid.map(cid => parseInt(cid, 10)) : [parseInt(data.cid, 10)];
 	if (data.hasOwnProperty('uid')) {
 		targetUid = data.uid;
 	}
@@ -137,7 +137,7 @@ async function ignoreOrWatch(fn, socket, data) {
 		}
 	} while (cat);
 
-	await Promise.all(cids.map(cid => fn(targetUid, cid)));
+	await fn(targetUid, cids);
 	await topics.pushUnreadCount(targetUid);
 	return cids;
 }

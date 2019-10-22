@@ -33,8 +33,8 @@
 	"testing.select": "Atlasīt e-pasta veidni",
 	"testing.send": "Sūtīt parauga e-pastu",
 	"testing.send-help": "Testa e-pasts tiks nosūtīts uz pašlaik ielogojušā lietotāja e-pasta adresi.",
-	"subscriptions": "E-pasta abonementi",
-	"subscriptions.disable": "Atspējot abonementu paziņojumu e-pastus",
+	"subscriptions": "Email Digests",
+	"subscriptions.disable": "Disable email digests",
 	"subscriptions.hour": "Kopsavilkumu nosūtīšanas stunda",
 	"subscriptions.hour-help": "Ievadīt skaitli, kas norāda stundu, kurā nosūtītu e-pasta rakstu apkopojumu (piemēram, <code>0</code> nozīmē pusnakts, <code>17</code> nozīmē plkst.1700). Paturēt prātā, ka šī ir stunda servera laikā, un tā var neatbilst Tavam pulkstenim. Aptuvens servera laiks ir: <span id=\"serverTime\"></span><br />Nākamais ikdienas apkopojums tiks nosūtīts <span id=\"nextDigestTime\"></span>"
 }

@@ -1,16 +1,16 @@
 'use strict';
 
-var _ = require('lodash');
+const _ = require('lodash');
 
-var groups = require('../groups');
-var plugins = require('../plugins');
-var db = require('../database');
-var privileges = require('../privileges');
-var categories = require('../categories');
-var meta = require('../meta');
+const groups = require('../groups');
+const plugins = require('../plugins');
+const db = require('../database');
+const privileges = require('../privileges');
+const categories = require('../categories');
+const meta = require('../meta');
 const utils = require('../utils');
 
-var User = module.exports;
+const User = module.exports;
 
 User.email = require('./email');
 User.notifications = require('./notifications');
@@ -91,7 +91,7 @@ User.getStatus = function (userData) {
 	if (userData.uid <= 0) {
 		return 'offline';
 	}
-	var isOnline = (Date.now() - userData.lastonline) < (meta.config.onlineCutoff * 60000);
+	const isOnline = (Date.now() - userData.lastonline) < (meta.config.onlineCutoff * 60000);
 	return isOnline ? (userData.status || 'online') : 'offline';
 };
 

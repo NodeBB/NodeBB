@@ -53,7 +53,10 @@ SocketTopics.bookmark = async function (socket, data) {
 	if (!socket.uid || !data) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	await topics.setUserBookmark(data.tid, socket.uid, data.index);
+	const postcount = await topics.getTopicField(data.tid, 'postcount');
+	if (data.index > meta.config.bookmarkThreshold && postcount > meta.config.bookmarkThreshold) {
+		await topics.setUserBookmark(data.tid, socket.uid, data.index);
+	}
 };
 
 SocketTopics.createTopicFromPosts = async function (socket, data) {

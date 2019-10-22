@@ -541,7 +541,10 @@
 			}
 
 			if (!(typeof text === 'string' || text instanceof String) || text === '') {
-				return cb('');
+				if (cb) {
+					return setTimeout(cb, 0, '');
+				}
+				return '';
 			}
 
 			return Translator.create(lang).translate(text).then(function (output) {

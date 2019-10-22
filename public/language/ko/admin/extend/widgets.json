@@ -18,5 +18,13 @@
 	"alert.update-success": "성공적으로 업데이트 된 위젯",
 	"alert.clone-success": "성공적으로 위젯을 복제 했습니다",
 
-	"error.select-clone": "복제할 페이지를 선택"
+	"error.select-clone": "복제할 페이지를 선택",
+
+	"title": "Title",
+	"title.placeholder": "Title (only shown on some containers)",
+	"container": "Container",
+	"container.placeholder": "Drag and drop a container or enter HTML here.",
+	"show-to-groups": "Show to groups",
+	"hide-from-groups": "Hide from groups",
+	"hide-on-mobile": "Hide on mobile"
 }

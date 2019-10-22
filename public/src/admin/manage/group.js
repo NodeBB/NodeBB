@@ -14,6 +14,7 @@ define('admin/manage/group', [
 		var changeGroupLabelColor = $('#change-group-label-color');
 		var changeGroupTextColor = $('#change-group-text-color');
 		var groupLabelPreview = $('#group-label-preview');
+		var groupLabelPreviewText = $('#group-label-preview-text');
 
 		var groupName = ajaxify.data.group.name;
 
@@ -24,7 +25,7 @@ define('admin/manage/group', [
 		memberList.init('admin/manage/group');
 
 		changeGroupUserTitle.keyup(function () {
-			groupLabelPreview.text(changeGroupUserTitle.val());
+			groupLabelPreviewText.text(changeGroupUserTitle.val());
 		});
 
 		changeGroupLabelColor.keyup(function () {
@@ -79,7 +80,11 @@ define('admin/manage/group', [
 
 		$('#group-icon, #group-icon-label').on('click', function () {
 			iconSelect.init(groupIcon, function () {
-				$('#group-icon-preview').attr('class', 'fa fa-fw ' + (groupIcon.attr('value') || 'hidden'));
+				var newIcon = groupIcon.attr('value');
+				if (newIcon === 'fa-nbb-none') {
+					newIcon = 'hidden';
+				}
+				$('#group-icon-preview').attr('class', 'fa fa-fw ' + (newIcon || 'hidden'));
 			});
 		});
 

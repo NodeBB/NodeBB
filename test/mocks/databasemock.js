@@ -7,15 +7,15 @@
 
 require('../../require-main');
 
-var async = require('async');
-var path = require('path');
-var nconf = require('nconf');
-var url = require('url');
+const path = require('path');
+const nconf = require('nconf');
+const url = require('url');
+const util = require('util');
 
 global.env = process.env.TEST_ENV || 'production';
 
-var winston = require('winston');
-var packageInfo = require('../../package');
+const winston = require('winston');
+const packageInfo = require('../../package');
 
 winston.add(new winston.transports.Console({
 	format: winston.format.combine(
@@ -33,8 +33,8 @@ nconf.defaults({
 	relative_path: '',
 });
 
-var urlObject = url.parse(nconf.get('url'));
-var relativePath = urlObject.pathname !== '/' ? urlObject.pathname : '';
+const urlObject = url.parse(nconf.get('url'));
+const relativePath = urlObject.pathname !== '/' ? urlObject.pathname : '';
 nconf.set('relative_path', relativePath);
 
 if (!nconf.get('isCluster')) {
@@ -42,9 +42,9 @@ if (!nconf.get('isCluster')) {
 	nconf.set('isCluster', 'true');
 }
 
-var dbType = nconf.get('database');
-var testDbConfig = nconf.get('test_database');
-var productionDbConfig = nconf.get(dbType);
+const dbType = nconf.get('database');
+const testDbConfig = nconf.get('test_database');
+const productionDbConfig = nconf.get(dbType);
 
 if (!testDbConfig) {
 	const errorText = 'test_database is not defined';
@@ -100,161 +100,127 @@ nconf.set(dbType, testDbConfig);
 winston.info('database config %s', dbType, testDbConfig);
 winston.info('environment ' + global.env);
 
-var db = require('../../src/database');
+const db = require('../../src/database');
 module.exports = db;
 
-before(function (done) {
+before(async function () {
 	this.timeout(30000);
-	async.series([
-		function (next) {
-			db.init(next);
-		},
-		function (next) {
-			db.createIndices(next);
-		},
-		function (next) {
-			setupMockDefaults(next);
-		},
-		function (next) {
-			db.initSessionStore(next);
-		},
-		function (next) {
-			var meta = require('../../src/meta');
+	await db.init();
+	await db.createIndices();
+	await setupMockDefaults();
+	await db.initSessionStore();
 
-			// nconf defaults, if not set in config
-			if (!nconf.get('sessionKey')) {
-				nconf.set('sessionKey', 'express.sid');
-			}
-			// Parse out the relative_url and other goodies from the configured URL
-			var urlObject = url.parse(nconf.get('url'));
-			var relativePath = urlObject.pathname !== '/' ? urlObject.pathname : '';
-			nconf.set('base_url', urlObject.protocol + '//' + urlObject.host);
-			nconf.set('secure', urlObject.protocol === 'https:');
-			nconf.set('use_port', !!urlObject.port);
-			nconf.set('relative_path', relativePath);
-			nconf.set('port', urlObject.port || nconf.get('port') || (nconf.get('PORT_ENV_VAR') ? nconf.get(nconf.get('PORT_ENV_VAR')) : false) || 4567);
-			nconf.set('upload_path', path.join(nconf.get('base_dir'), nconf.get('upload_path')));
-			nconf.set('upload_url', '/assets/uploads');
+	const meta = require('../../src/meta');
 
-			nconf.set('core_templates_path', path.join(__dirname, '../../src/views'));
-			nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-persona/templates'));
-			nconf.set('theme_templates_path', meta.config['theme:templates'] ? path.join(nconf.get('themes_path'), meta.config['theme:id'], meta.config['theme:templates']) : nconf.get('base_templates_path'));
-			nconf.set('theme_config', path.join(nconf.get('themes_path'), 'nodebb-theme-persona', 'theme.json'));
-			nconf.set('bcrypt_rounds', 1);
+	// nconf defaults, if not set in config
+	if (!nconf.get('sessionKey')) {
+		nconf.set('sessionKey', 'express.sid');
+	}
+	// Parse out the relative_url and other goodies from the configured URL
+	const urlObject = url.parse(nconf.get('url'));
+	const relativePath = urlObject.pathname !== '/' ? urlObject.pathname : '';
+	nconf.set('base_url', urlObject.protocol + '//' + urlObject.host);
+	nconf.set('secure', urlObject.protocol === 'https:');
+	nconf.set('use_port', !!urlObject.port);
+	nconf.set('relative_path', relativePath);
+	nconf.set('port', urlObject.port || nconf.get('port') || (nconf.get('PORT_ENV_VAR') ? nconf.get(nconf.get('PORT_ENV_VAR')) : false) || 4567);
+	nconf.set('upload_path', path.join(nconf.get('base_dir'), nconf.get('upload_path')));
+	nconf.set('upload_url', '/assets/uploads');
 
-			nconf.set('version', packageInfo.version);
+	nconf.set('core_templates_path', path.join(__dirname, '../../src/views'));
+	nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-persona/templates'));
+	nconf.set('theme_templates_path', meta.config['theme:templates'] ? path.join(nconf.get('themes_path'), meta.config['theme:id'], meta.config['theme:templates']) : nconf.get('base_templates_path'));
+	nconf.set('theme_config', path.join(nconf.get('themes_path'), 'nodebb-theme-persona', 'theme.json'));
+	nconf.set('bcrypt_rounds', 1);
 
-			meta.dependencies.check(next);
-		},
-		function (next) {
-			var	webserver = require('../../src/webserver');
-			var sockets = require('../../src/socket.io');
-			sockets.init(webserver.server);
+	nconf.set('version', packageInfo.version);
 
-			require('../../src/notifications').startJobs();
-			require('../../src/user').startJobs();
+	await meta.dependencies.check();
 
-			webserver.listen(next);
-		},
-	], done);
+	const webserver = require('../../src/webserver');
+	const sockets = require('../../src/socket.io');
+	sockets.init(webserver.server);
+
+	require('../../src/notifications').startJobs();
+	require('../../src/user').startJobs();
+
+	await webserver.listen();
 
 	// Iterate over all of the test suites/contexts
 	this.test.parent.suites.forEach(function (suite) {
 		// Attach an afterAll listener that resets the defaults
-		suite.afterAll(function (done) {
-			setupMockDefaults(done);
+		suite.afterAll(async function () {
+			await setupMockDefaults();
 		});
 	});
 });
 
-function setupMockDefaults(callback) {
-	var meta = require('../../src/meta');
+async function setupMockDefaults() {
+	const meta = require('../../src/meta');
+	await db.emptydb();
 
-	async.series([
-		function (next) {
-			db.emptydb(next);
-		},
-		function (next) {
-			var groups = require('../../src/groups');
-			groups.resetCache();
-			var postCache = require('../../src/posts/cache');
-			postCache.reset();
-			var localCache = require('../../src/cache');
-			localCache.reset();
-			next();
-		},
-		function (next) {
-			winston.info('test_database flushed');
-			setupDefaultConfigs(meta, next);
-		},
-		function (next) {
-			giveDefaultGlobalPrivileges(next);
-		},
-		function (next) {
-			meta.configs.init(next);
-		},
-		function (next) {
-			meta.config.postDelay = 0;
-			meta.config.initialPostDelay = 0;
-			meta.config.newbiePostDelay = 0;
+	require('../../src/groups').resetCache();
+	require('../../src/posts/cache').reset();
+	require('../../src/cache').reset();
+	winston.info('test_database flushed');
+	await setupDefaultConfigs(meta);
+	await giveDefaultGlobalPrivileges();
+	await meta.configs.init();
+	meta.config.postDelay = 0;
+	meta.config.initialPostDelay = 0;
+	meta.config.newbiePostDelay = 0;
 
-			enableDefaultPlugins(next);
-		},
-		function (next) {
-			meta.themes.set({
-				type: 'local',
-				id: 'nodebb-theme-persona',
-			}, next);
-		},
-		function (next) {
-			var rimraf = require('rimraf');
-			rimraf('test/uploads', next);
-		},
-		function (next) {
-			var mkdirp = require('mkdirp');
-			async.eachSeries([
-				'test/uploads',
-				'test/uploads/category',
-				'test/uploads/files',
-				'test/uploads/system',
-				'test/uploads/sounds',
-				'test/uploads/profile',
-			], mkdirp, next);
-		},
-	], callback);
+	await enableDefaultPlugins();
+
+	await meta.themes.set({
+		type: 'local',
+		id: 'nodebb-theme-persona',
+	});
+
+	const rimraf = util.promisify(require('rimraf'));
+	await rimraf('test/uploads');
+
+	const mkdirp = util.promisify(require('mkdirp'));
+
+	const folders = [
+		'test/uploads',
+		'test/uploads/category',
+		'test/uploads/files',
+		'test/uploads/system',
+		'test/uploads/sounds',
+		'test/uploads/profile',
+	];
+	for (const folder of folders) {
+		/* eslint-disable no-await-in-loop */
+		await mkdirp(folder);
+	}
 }
 db.setupMockDefaults = setupMockDefaults;
 
-function setupDefaultConfigs(meta, next) {
+async function setupDefaultConfigs(meta) {
 	winston.info('Populating database with default configs, if not already set...\n');
 
-	var defaults = require(path.join(nconf.get('base_dir'), 'install/data/defaults.json'));
+	const defaults = require(path.join(nconf.get('base_dir'), 'install/data/defaults.json'));
 	defaults.eventLoopCheckEnabled = 0;
 	defaults.minimumPasswordStrength = 0;
-	meta.configs.setOnEmpty(defaults, next);
+	await meta.configs.setOnEmpty(defaults);
 }
 
-function giveDefaultGlobalPrivileges(next) {
-	var privileges = require('../../src/privileges');
-	async.waterfall([
-		function (next) {
-			privileges.global.give([
-				'chat', 'upload:post:image', 'signature', 'search:content',
-				'search:users', 'search:tags', 'local:login', 'view:users', 'view:tags', 'view:groups',
-			], 'registered-users', next);
-		},
-		function (next) {
-			privileges.global.give([
-				'view:users', 'view:tags', 'view:groups',
-			], 'guests', next);
-		},
-	], next);
+async function giveDefaultGlobalPrivileges() {
+	const privileges = require('../../src/privileges');
+	await privileges.global.give([
+		'chat', 'upload:post:image', 'signature', 'search:content',
+		'search:users', 'search:tags', 'local:login', 'view:users', 'view:tags', 'view:groups',
+	], 'registered-users');
+	await privileges.global.give([
+		'view:users', 'view:tags', 'view:groups',
+	], 'guests');
 }
 
-function enableDefaultPlugins(callback) {
+async function enableDefaultPlugins() {
 	winston.info('Enabling default plugins\n');
 
-	var defaultEnabled = [
+	const defaultEnabled = [
 		'nodebb-plugin-dbsearch',
 		'nodebb-plugin-soundpack-default',
 		'nodebb-widget-essentials',
@@ -262,9 +228,5 @@ function enableDefaultPlugins(callback) {
 
 	winston.info('[install/enableDefaultPlugins] activating default plugins', defaultEnabled);
 
-	db.sortedSetAdd('plugins:active', Object.keys(defaultEnabled), defaultEnabled, callback);
+	await db.sortedSetAdd('plugins:active', Object.keys(defaultEnabled), defaultEnabled);
 }
-
-db.activatePlugin = function (id, callback) {
-	db.sortedSetAdd('plugins:active', Date.now(), id, callback);
-};

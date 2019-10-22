@@ -14,12 +14,9 @@ module.exports = function (Groups) {
 			groupNames = [groupNames];
 		}
 
-		const [isMembers, exists] = await Promise.all([
-			Groups.isMemberOfGroups(uid, groupNames),
-			Groups.exists(groupNames),
-		]);
+		const isMembers = await Groups.isMemberOfGroups(uid, groupNames);
 
-		const groupsToLeave = groupNames.filter((groupName, index) => isMembers[index] && exists[index]);
+		const groupsToLeave = groupNames.filter((groupName, index) => isMembers[index]);
 		if (!groupsToLeave.length) {
 			return;
 		}

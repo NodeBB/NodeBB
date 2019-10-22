@@ -18,7 +18,7 @@
     "last_reply_time": "Laatste antwoord",
     "reply-as-topic": "Reageren als onderwerp",
     "guest-login-reply": "Aanmelden om te reageren",
-    "login-to-view": "🔒 Log in to view",
+    "login-to-view": "🔒 Aanmelden om te zien",
     "edit": "Aanpassen",
     "delete": "Verwijderen",
     "purge": "Opschonen",
@@ -135,5 +135,5 @@
     "diffs.current-revision": "Huidige revisie",
     "diffs.original-revision": "Oorspronkelijke revisie",
     "timeago_later": "%1 later",
-    "timeago_earlier": "%1 earlier"
+    "timeago_earlier": "%1 eerder"
 }

@@ -1,22 +1,22 @@
 'use strict';
 
-var os = require('os');
-var fs = require('fs');
-var path = require('path');
-var crypto = require('crypto');
-var async = require('async');
-var winston = require('winston');
+const os = require('os');
+const fs = require('fs');
+const path = require('path');
+const crypto = require('crypto');
+const winston = require('winston');
 const util = require('util');
 const readFileAsync = util.promisify(fs.readFile);
+const writeFileAsync = util.promisify(fs.writeFile);
 
-var file = require('./file');
-var plugins = require('./plugins');
-var meta = require('./meta');
+const file = require('./file');
+const plugins = require('./plugins');
+const meta = require('./meta');
 
-var image = module.exports;
+const image = module.exports;
 
 function requireSharp() {
-	var sharp = require('sharp');
+	const sharp = require('sharp');
 	if (os.platform() === 'win32') {
 		// https://github.com/lovell/sharp/issues/1259
 		sharp.cache(false);
@@ -67,78 +67,55 @@ image.resizeImage = async function (data) {
 	}
 };
 
-image.normalise = function (path, extension, callback) {
+image.normalise = async function (path) {
 	if (plugins.hasListeners('filter:image.normalise')) {
-		plugins.fireHook('filter:image.normalise', {
+		await plugins.fireHook('filter:image.normalise', {
 			path: path,
-		}, function (err) {
-			callback(err, path + '.png');
 		});
 	} else {
-		var sharp = requireSharp();
-		sharp(path, { failOnError: true }).png().toFile(path + '.png', function (err) {
-			callback(err, path + '.png');
-		});
+		const sharp = requireSharp();
+		await sharp(path, { failOnError: true }).png().toFile(path + '.png');
 	}
+	return path + '.png';
 };
 
-image.size = function (path, callback) {
+image.size = async function (path) {
+	let imageData;
 	if (plugins.hasListeners('filter:image.size')) {
-		plugins.fireHook('filter:image.size', {
+		imageData = await plugins.fireHook('filter:image.size', {
 			path: path,
-		}, function (err, image) {
-			callback(err, image ? { width: image.width, height: image.height } : undefined);
 		});
 	} else {
-		var sharp = requireSharp();
-		sharp(path, { failOnError: true }).metadata(function (err, metadata) {
-			callback(err, metadata ? { width: metadata.width, height: metadata.height } : undefined);
-		});
+		const sharp = requireSharp();
+		imageData = await sharp(path, { failOnError: true }).metadata();
 	}
+	return imageData ? { width: imageData.width, height: imageData.height } : undefined;
 };
 
-image.stripEXIF = function (path, callback) {
+image.stripEXIF = async function (path) {
 	if (!meta.config.stripEXIFData || path.endsWith('.gif')) {
-		return setImmediate(callback);
+		return;
 	}
-	async.waterfall([
-		function (next) {
-			fs.readFile(path, next);
-		},
-		function (buffer, next) {
-			const sharp = requireSharp();
-			const sharpImage = sharp(buffer, {
-				failOnError: true,
-			});
-			sharpImage.rotate().toFile(path, next);
-		},
-	], function (err) {
-		if (err) {
-			winston.error(err);
-		}
-		callback();
-	});
+	try {
+		const buffer = await readFileAsync(path);
+		const sharp = requireSharp();
+		await sharp(buffer, { failOnError: true }).rotate().toFile(path);
+	} catch (err) {
+		winston.error(err);
+	}
 };
 
-image.checkDimensions = function (path, callback) {
+image.checkDimensions = async function (path) {
 	const meta = require('./meta');
-	image.size(path, function (err, result) {
-		if (err) {
-			return callback(err);
-		}
+	const result = await image.size(path);
 
-		const maxWidth = meta.config.rejectImageWidth;
-		const maxHeight = meta.config.rejectImageHeight;
-		if (result.width > maxWidth || result.height > maxHeight) {
-			return callback(new Error('[[error:invalid-image-dimensions]]'));
-		}
-
-		callback();
-	});
+	if (result.width > meta.config.rejectImageWidth || result.height > meta.config.rejectImageHeight) {
+		throw new Error('[[error:invalid-image-dimensions]]');
+	}
 };
 
-image.convertImageToBase64 = function (path, callback) {
-	fs.readFile(path, 'base64', callback);
+image.convertImageToBase64 = async function (path) {
+	return await readFileAsync(path, 'base64');
 };
 
 image.mimeFromBase64 = function (imageData) {
@@ -149,21 +126,18 @@ image.extensionFromBase64 = function (imageData) {
 	return file.typeToExtension(image.mimeFromBase64(imageData));
 };
 
-image.writeImageDataToTempFile = function (imageData, callback) {
-	var filename = crypto.createHash('md5').update(imageData).digest('hex');
+image.writeImageDataToTempFile = async function (imageData) {
+	const filename = crypto.createHash('md5').update(imageData).digest('hex');
 
-	var type = image.mimeFromBase64(imageData);
-	var extension = file.typeToExtension(type);
+	const type = image.mimeFromBase64(imageData);
+	const extension = file.typeToExtension(type);
 
-	var filepath = path.join(os.tmpdir(), filename + extension);
+	const filepath = path.join(os.tmpdir(), filename + extension);
 
-	var buffer = Buffer.from(imageData.slice(imageData.indexOf('base64') + 7), 'base64');
+	const buffer = Buffer.from(imageData.slice(imageData.indexOf('base64') + 7), 'base64');
 
-	fs.writeFile(filepath, buffer, {
-		encoding: 'base64',
-	}, function (err) {
-		callback(err, filepath);
-	});
+	await writeFileAsync(filepath, buffer, { encoding: 'base64' });
+	return filepath;
 };
 
 image.sizeFromBase64 = function (imageData) {

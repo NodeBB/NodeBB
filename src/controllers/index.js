@@ -96,7 +96,7 @@ Controllers.reset = function (req, res, next) {
 };
 
 Controllers.login = function (req, res, next) {
-	var data = {};
+	var data = { loginFormEntry: [] };
 	var loginStrategies = require('../routes/authentication').getLoginStrategies();
 	var registrationType = meta.config.registrationType || 'normal';
 	var allowLoginWith = (meta.config.allowLoginWith || 'username-email');

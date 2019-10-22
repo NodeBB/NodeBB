@@ -23,6 +23,9 @@ require('./update')(Categories);
 require('./watch')(Categories);
 
 Categories.exists = async function (cid) {
+	if (Array.isArray(cid)) {
+		return await db.exists(cid.map(cid => 'category:' + cid));
+	}
 	return await db.exists('category:' + cid);
 };
 

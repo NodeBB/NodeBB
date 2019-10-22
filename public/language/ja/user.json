@@ -26,6 +26,7 @@
     "reputation": "評価",
     "bookmarks": "ブックマーク",
     "watched_categories": "ウォッチ中のカテゴリ",
+    "change_all": "Change All",
     "watched": "ウォッチ済み",
     "ignored": "無視済み",
     "default-category-watch-state": "デフォルトのカテゴリウォッチ状態",

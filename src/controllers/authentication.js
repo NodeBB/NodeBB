@@ -201,22 +201,27 @@ authenticationController.login = function (req, res, next) {
 	var loginWith = meta.config.allowLoginWith || 'username-email';
 	req.body.username = req.body.username.trim();
 
-	if (req.body.username && utils.isEmailValid(req.body.username) && loginWith.includes('email')) {
-		async.waterfall([
-			function (next) {
-				user.getUsernameByEmail(req.body.username, next);
-			},
-			function (username, next) {
-				req.body.username = username || req.body.username;
-				continueLogin(req, res, next);
-			},
-		], next);
-	} else if (loginWith.includes('username') && !validator.isEmail(req.body.username)) {
-		continueLogin(req, res, next);
-	} else {
-		var err = '[[error:wrong-login-type-' + loginWith + ']]';
-		helpers.noScriptErrors(req, res, err, 500);
-	}
+	plugins.fireHook('filter:login.check', { req: req, res: res, userData: req.body }, (err) => {
+		if (err) {
+			return helpers.noScriptErrors(req, res, err.message, 403);
+		}
+		if (req.body.username && utils.isEmailValid(req.body.username) && loginWith.includes('email')) {
+			async.waterfall([
+				function (next) {
+					user.getUsernameByEmail(req.body.username, next);
+				},
+				function (username, next) {
+					req.body.username = username || req.body.username;
+					continueLogin(req, res, next);
+				},
+			], next);
+		} else if (loginWith.includes('username') && !validator.isEmail(req.body.username)) {
+			continueLogin(req, res, next);
+		} else {
+			err = '[[error:wrong-login-type-' + loginWith + ']]';
+			helpers.noScriptErrors(req, res, err, 500);
+		}
+	});
 };
 
 function continueLogin(req, res, next) {
@@ -232,8 +237,6 @@ function continueLogin(req, res, next) {
 			return helpers.noScriptErrors(req, res, info, 403);
 		}
 
-		var passwordExpiry = userData.passwordExpiry !== undefined ? parseInt(userData.passwordExpiry, 10) : null;
-
 		// Alter user cookie depending on passed-in option
 		if (req.body.remember === 'on') {
 			var duration = 1000 * 60 * 60 * 24 * meta.config.loginDays;
@@ -244,7 +247,7 @@ function continueLogin(req, res, next) {
 			req.session.cookie.expires = false;
 		}
 
-		if (passwordExpiry && passwordExpiry < Date.now()) {
+		if (userData.passwordExpiry && userData.passwordExpiry < Date.now()) {
 			winston.verbose('[auth] Triggering password reset for uid ' + userData.uid + ' due to password policy');
 			req.session.passwordExpired = true;
 
@@ -368,7 +371,7 @@ authenticationController.localLogin = async function (req, username, password, n
 	const uid = await user.getUidByUserslug(userslug);
 	try {
 		const [userData, isAdminOrGlobalMod, banned, hasLoginPrivilege] = await Promise.all([
-			db.getObjectFields('user:' + uid, ['uid', 'passwordExpiry']),
+			user.getUserFields(uid, ['uid', 'passwordExpiry']),
 			user.isAdminOrGlobalMod(uid),
 			user.bans.isBanned(uid),
 			privileges.global.can('local:login', uid),

@@ -51,11 +51,11 @@
 
 	"section-social-auth": "Social Authentication",
 
-	"section-plugins": "Plugins",
-	"extend/plugins.install": "Install Plugins",
+	"section-plugins": "תוספים",
+	"extend/plugins.install": "תוספים מותקנים",
 
-	"section-advanced": "Advanced",
-	"advanced/database": "Database",
+	"section-advanced": "מתקדם",
+	"advanced/database": "מסד נתונים",
 	"advanced/events": "Events",
 	"advanced/hooks": "Hooks",
 	"advanced/logs": "Logs",
@@ -78,5 +78,5 @@
 	"connection-lost": "Connection to %1 has been lost, attempting to reconnect...",
 
 	"alerts.version": "Running <strong>NodeBB v%1</strong>",
-	"alerts.upgrade": "Upgrade to v%1"
+	"alerts.upgrade": "שדרג ל v%1"
 }

@@ -33,8 +33,8 @@
 	"testing.select": "電子メールテンプレートを選択",
 	"testing.send": "テスト電子メールを送信する",
 	"testing.send-help": "テスト電子メールは、現在ログインしているユーザーの電子メールアドレスに送信されます。",
-	"subscriptions": "メール購読",
-	"subscriptions.disable": "購読者の通知メールを無効にする",
+	"subscriptions": "Email Digests",
+	"subscriptions.disable": "Disable email digests",
 	"subscriptions.hour": "ダイジェストアワー",
 	"subscriptions.hour-help": "スケジュールされたメールのダイジェストを送信する時間を表す数字を入力してください(深夜は<code>0</ code>、午後5:00は<code>17</code>)これはサーバー自体に基づく時間であり、システムの時計と正確に一致しない場合があります。<span id=\"serverTime\"></ span> <br />次の日のダイジェストは<span id=\"nextDigestTime\"></span>"
 }

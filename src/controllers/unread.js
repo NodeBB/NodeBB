@@ -38,6 +38,7 @@ unreadController.get = async function (req, res, next) {
 		stop: stop,
 		filter: filter,
 		cutoff: cutoff,
+		query: req.query,
 	});
 
 	data.title = meta.config.homePageTitle || '[[pages:home]]';

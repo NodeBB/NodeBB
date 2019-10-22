@@ -1,13 +1,13 @@
 
 'use strict';
 
-var async = require('async');
+const async = require('async');
 
-var db = require('../database');
-var posts = require('../posts');
-var privileges = require('../privileges');
-var plugins = require('../plugins');
-var meta = require('../meta');
+const db = require('../database');
+const posts = require('../posts');
+const privileges = require('../privileges');
+const plugins = require('../plugins');
+const meta = require('../meta');
 
 module.exports = function (Topics) {
 	Topics.createTopicFromPosts = async function (uid, title, pids, fromTid) {
@@ -27,8 +27,8 @@ module.exports = function (Topics) {
 
 		pids.sort((a, b) => a - b);
 
-		var mainPid = pids[0];
-		var cid = await posts.getCidByPid(mainPid);
+		const mainPid = pids[0];
+		const cid = await posts.getCidByPid(mainPid);
 
 		const [postData, isAdminOrMod] = await Promise.all([
 			posts.getPostData(mainPid),
@@ -57,22 +57,20 @@ module.exports = function (Topics) {
 	};
 
 	Topics.movePostToTopic = async function (callerUid, pid, tid) {
-		var postData;
 		tid = parseInt(tid, 10);
 		const exists = await Topics.exists(tid);
 		if (!exists) {
 			throw new Error('[[error:no-topic]]');
 		}
-		const post = await posts.getPostFields(pid, ['tid', 'uid', 'timestamp', 'upvotes', 'downvotes']);
-		if (!post || !post.tid) {
+		const postData = await posts.getPostFields(pid, ['tid', 'uid', 'timestamp', 'upvotes', 'downvotes']);
+		if (!postData || !postData.tid) {
 			throw new Error('[[error:no-post]]');
 		}
 
-		if (post.tid === tid) {
+		if (postData.tid === tid) {
 			throw new Error('[[error:cant-move-to-same-topic]]');
 		}
 
-		postData = post;
 		postData.pid = pid;
 
 		await Topics.removePostFromTopic(postData.tid, postData);
