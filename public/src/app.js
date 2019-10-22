@@ -143,7 +143,9 @@ app.cacheBuster = null;
 					return translator.Translator.create().translate(render);
 				});
 			})).then(function (html) {
-				Object.values(toRender).forEach(function (element, idx) {
+				Object.keys(toRender)
+					.map(function(k) { return toRender[k]; })
+					.forEach(function (element, idx) {
 					element.html(html[idx]);
 				});
 				Unread.initUnreadTopics();
