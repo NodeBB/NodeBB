@@ -144,10 +144,10 @@ app.cacheBuster = null;
 				});
 			})).then(function (html) {
 				Object.keys(toRender)
-					.map(function(k) { return toRender[k]; })
+					.map(function (k) { return toRender[k]; })
 					.forEach(function (element, idx) {
-					element.html(html[idx]);
-				});
+						element.html(html[idx]);
+					});
 				Unread.initUnreadTopics();
 				Notifications.prepareDOM();
 				Chat.prepareDOM();
