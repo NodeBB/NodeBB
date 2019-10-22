@@ -52,7 +52,7 @@ module.exports = function (Topics) {
 		}
 		const userData = await user.getUserFields(data.uid, ['username', 'userslug']);
 		return {
-			tid: data.tid,
+			tid: data.topicData.tid,
 			cid: data.topicData.cid,
 			isDelete: data.isDelete,
 			uid: data.uid,
