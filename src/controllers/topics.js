@@ -127,7 +127,7 @@ function calculateStartStop(page, postIndex, settings) {
 }
 
 function incrementViewCount(req, tid) {
-	if (req.uid >= 0) {
+	if (req.uid >= 1) {
 		req.session.tids_viewed = req.session.tids_viewed || {};
 		if (!req.session.tids_viewed[tid] || req.session.tids_viewed[tid] < Date.now() - 3600000) {
 			topics.increaseViewCount(tid);

@@ -399,7 +399,7 @@ authenticationController.localLogin = async function (req, username, password, n
 	}
 };
 
-const regenerateAsync = util.promisify((req, callback) => req.session.regenerate(callback));
+const destroyAsync = util.promisify((req, callback) => req.session.destroy(callback));
 
 authenticationController.logout = async function (req, res, next) {
 	if (!req.loggedIn || !req.sessionID) {
@@ -412,7 +412,10 @@ authenticationController.logout = async function (req, res, next) {
 		await user.auth.revokeSession(sessionID, uid);
 		req.logout();
 
-		await regenerateAsync(req);
+		await destroyAsync(req);
+		res.clearCookie('express.sid', {
+			path: nconf.get('relative_path'),
+		});
 		req.uid = 0;
 		req.headers['x-csrf-token'] = req.csrfToken();
 

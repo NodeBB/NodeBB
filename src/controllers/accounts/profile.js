@@ -66,7 +66,7 @@ profileController.get = async function (req, res, next) {
 };
 
 async function incrementProfileViews(req, userData) {
-	if (req.uid >= 0) {
+	if (req.uid >= 1) {
 		req.session.uids_viewed = req.session.uids_viewed || {};
 
 		if (req.uid !== userData.uid && (!req.session.uids_viewed[userData.uid] || req.session.uids_viewed[userData.uid] < Date.now() - 3600000)) {
