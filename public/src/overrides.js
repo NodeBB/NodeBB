@@ -1,7 +1,7 @@
 'use strict';
 
 
-var overrides = window.overrides || {};
+overrides = window.overrides || {};
 
 if (typeof window !== 'undefined') {
 	(function ($) {
@@ -108,9 +108,12 @@ if (typeof window !== 'undefined') {
 				}
 			});
 	}());
-
+	var timeagoFn;
 	overrides.overrideTimeago = function () {
-		var timeagoFn = $.fn.timeago;
+		if (!timeagoFn) {
+			timeagoFn = $.fn.timeago;
+		}
+
 		if (parseInt(config.timeagoCutoff, 10) === 0) {
 			$.timeago.settings.cutoff = 1;
 		} else if (parseInt(config.timeagoCutoff, 10) > 0) {

@@ -27,7 +27,7 @@ define('forum/tags', ['forum/infinitescroll'], function (infinitescroll) {
 						timeoutId = 0;
 					});
 				});
-			}, 100);
+			}, 250);
 		});
 
 		infinitescroll.init(Tags.loadMoreTags);

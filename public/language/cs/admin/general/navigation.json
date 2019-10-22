@@ -5,6 +5,7 @@
 	"tooltip": "Tip:",
 	"text": "Text:",
 	"text-class": "Textová třída: <small>doporučené</small>",
+	"class": "Třída: <small>doporučené</small>",
 	"id": "ID: <small>doporučené</small>",
 
 	"properties": "Vlastnosti:",

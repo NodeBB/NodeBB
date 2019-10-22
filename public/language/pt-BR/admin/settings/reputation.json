@@ -1,14 +1,14 @@
 {
 	"reputation": "Configurações de Reputação",
 	"disable": "Desabilitar o Sistema de Reputação",
-	"disable-down-voting": "Desabilitar Baixo Votar",
+	"disable-down-voting": "Desativar a Negativação",
 	"votes-are-public": "Todos os Votos São Públicos",
-	"thresholds": "Limiares de Atividade",
+	"thresholds": "Limites às atividades",
 	"min-rep-downvote": "Reputação mínima para votar negativamente em posts",
 	"min-rep-flag": "Reputação mínima para sinalizar posts",
-	"min-rep-website": "Minimum reputation to add \"Website\" to user profile",
-	"min-rep-aboutme": "Minimum reputation to add \"About me\" to user profile",
-	"min-rep-signature": "Minimum reputation to add \"Signature\" to user profile",
-	"min-rep-profile-picture": "Minimum reputation to add \"Profile Picture\" to user profile",
-	"min-rep-cover-picture": "Minimum reputation to add \"Cover Picture\" to user profile"
+	"min-rep-website": "Reputação mínima para adicionar \"Website\" ao perfil do usuário",
+	"min-rep-aboutme": "Reputação mínima para adicionar \"Sobre mim\" ao perfil do usuário",
+	"min-rep-signature": "Reputação mínima para adicionar \"Assinatura\" ao perfil do usuário",
+	"min-rep-profile-picture": "Reputação mínima para adicionar \"Foto do Perfil\" ao perfil do usuário",
+	"min-rep-cover-picture": "Reputação mínima para adicionar \"Foto de Capa\" ao perfil do usuário"
 }

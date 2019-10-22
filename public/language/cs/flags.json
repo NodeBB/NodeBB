@@ -9,6 +9,7 @@
 	"updated": "Aktualizováno",
 	"target-purged": "Obsah, na který se toto označení vztahuje, byl vymazán a již není k dispozici.",
 
+	"graph-label": "Denní označení",
 	"quick-filters": "Rychlé filtry",
 	"filter-active": "V tomto seznamu označení je jeden nebo více aktivních filtrů",
 	"filter-reset": "Vyjmout filtry",

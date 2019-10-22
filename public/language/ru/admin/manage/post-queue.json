@@ -1,6 +1,6 @@
 {
 	"post-queue": "Очередь модерации",
-	"description": "В очереди нет сообщений. <br>Чтобы включить эту модерацию, откройте <a href=\"%1\">Настройки %rarr; Сообщения &rarr; Огрничения сообщений</a> и включите <strong>Модерация сообщений</strong>",
+	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
 	"user": "Участник",
 	"category": "Категория",
 	"title": "Название",

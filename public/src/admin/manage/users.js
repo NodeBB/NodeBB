@@ -7,10 +7,16 @@ define('admin/manage/users', ['translator', 'benchpress'], function (translator,
 	Users.init = function () {
 		var navPills = $('.nav-pills li');
 		var pathname = window.location.pathname;
-		if (!navPills.find('a[href="' + pathname + '"]').length) {
+		if (!navPills.find('a[href^="' + pathname + '"]').length) {
 			pathname = config.relative_path + '/admin/manage/users/latest';
 		}
-		navPills.removeClass('active').find('a[href="' + pathname + '"]').parent().addClass('active');
+		navPills.removeClass('active').find('a[href^="' + pathname + '"]').parent().addClass('active');
+
+		$('#results-per-page').val(ajaxify.data.resultsPerPage).on('change', function () {
+			var query = utils.params();
+			query.resultsPerPage = $('#results-per-page').val();
+			ajaxify.go(window.location.pathname + '?' + $.param(query));
+		});
 
 		function getSelectedUids() {
 			var uids = [];
@@ -171,6 +177,19 @@ define('admin/manage/users', ['translator', 'benchpress'], function (translator,
 			bootbox.confirm('[[admin/manage/users:alerts.password-reset-confirm]]', function (confirm) {
 				if (confirm) {
 					socket.emit('admin.user.sendPasswordResetEmail', uids, done('[[notifications:email-confirm-sent]]'));
+				}
+			});
+		});
+
+		$('.force-password-reset').on('click', function () {
+			var uids = getSelectedUids();
+			if (!uids.length) {
+				return;
+			}
+
+			bootbox.confirm('[[admin/manage/users:alerts.confirm-force-password-reset]]', function (confirm) {
+				if (confirm) {
+					socket.emit('admin.user.forcePasswordReset', uids, done('[[admin/manage/users:alerts.validate-force-password-reset-success]]'));
 				}
 			});
 		});

@@ -7,7 +7,8 @@
 	"online": "Na mreži",
 	"git": "git",
 	"memory": "memory",
-	"load": "učitaj",
+	"load": "system load",
+	"cpu-usage": "cpu usage",
 	"uptime": "uptime",
 
 	"registered": "Registriran",

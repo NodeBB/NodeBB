@@ -43,6 +43,7 @@
     "account/following": "Användare som %1 följer",
     "account/followers": "Användare som följer %1",
     "account/posts": "Inlägg skapade av %1",
+    "account/latest-posts": "Latest posts made by %1",
     "account/topics": "Ämnen skapade av %1 ",
     "account/groups": "%1's grupper",
     "account/watched_categories": "%1's Watched Categories",

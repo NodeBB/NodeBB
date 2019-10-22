@@ -14,6 +14,7 @@ var plugins = require('../plugins');
 var navigation = require('../navigation');
 var translator = require('../translator');
 var privileges = require('../privileges');
+var languages = require('../languages');
 var utils = require('../utils');
 
 var controllers = {
@@ -36,7 +37,7 @@ module.exports = function (middleware) {
 			function (next) {
 				async.parallel({
 					config: function (next) {
-						controllers.api.getConfig(req, res, next);
+						controllers.api.loadConfig(req, next);
 					},
 					plugins: function (next) {
 						plugins.fireHook('filter:middleware.buildHeader', { req: req, locals: res.locals }, next);
@@ -62,7 +63,7 @@ module.exports = function (middleware) {
 			'brand:logo:url': meta.config['brand:logo:url'] || '',
 			'brand:logo:alt': meta.config['brand:logo:alt'] || '',
 			'brand:logo:display': meta.config['brand:logo'] ? '' : 'hide',
-			allowRegistration: registrationType === 'normal' || registrationType === 'admin-approval' || registrationType === 'admin-approval-ip',
+			allowRegistration: registrationType === 'normal',
 			searchEnabled: plugins.hasListeners('filter:search.query'),
 			config: res.locals.config,
 			relative_path: nconf.get('relative_path'),
@@ -106,9 +107,8 @@ module.exports = function (middleware) {
 						});
 					},
 					navigation: async.apply(navigation.get, req.uid),
-					tags: async.apply(meta.tags.parse, req, data, res.locals.metaTags, res.locals.linkTags),
-					banned: async.apply(user.isBanned, req.uid),
-					banReason: async.apply(user.getBannedReason, req.uid),
+					banned: async.apply(user.bans.isBanned, req.uid),
+					banReason: async.apply(user.bans.getReason, req.uid),
 
 					unreadData: async.apply(topics.getUnreadData, { uid: req.uid }),
 					unreadChatCount: async.apply(messaging.getUnreadCount, req.uid),
@@ -139,7 +139,9 @@ module.exports = function (middleware) {
 				results.user['email:confirmed'] = results.user['email:confirmed'] === 1;
 				results.user.isEmailConfirmSent = !!results.isEmailConfirmSent;
 
-				templateValues.bootswatchSkin = parseInt(meta.config.disableCustomUserSkins, 10) !== 1 ? res.locals.config.bootswatchSkin || '' : '';
+				templateValues.bootswatchSkin = (parseInt(meta.config.disableCustomUserSkins, 10) !== 1 ? res.locals.config.bootswatchSkin : '') || meta.config.bootswatchSkin || '';
+				templateValues.config.bootswatchSkin = templateValues.bootswatchSkin || 'noskin';	// TODO remove in v1.12.0+
+
 				const unreadCounts = results.unreadData.counts;
 				var unreadCount = {
 					topic: unreadCounts[''] || 0,
@@ -177,8 +179,6 @@ module.exports = function (middleware) {
 				templateValues.browserTitle = results.browserTitle;
 				templateValues.navigation = results.navigation;
 				templateValues.unreadCount = unreadCount;
-				templateValues.metaTags = results.tags.meta;
-				templateValues.linkTags = results.tags.link;
 				templateValues.isAdmin = results.user.isAdmin;
 				templateValues.isGlobalMod = results.user.isGlobalMod;
 				templateValues.showModMenu = results.user.isAdmin || results.user.isGlobalMod || results.user.isMod;
@@ -193,11 +193,14 @@ module.exports = function (middleware) {
 				templateValues.defaultLang = meta.config.defaultLang || 'en-GB';
 				templateValues.userLang = res.locals.config.userLang;
 				templateValues.languageDirection = results.languageDirection;
-				templateValues.privateUserInfo = meta.config.privateUserInfo;
-				templateValues.privateTagListing = meta.config.privateTagListing;
 
 				templateValues.template = { name: res.locals.template };
 				templateValues.template[res.locals.template] = true;
+
+				if (data.hasOwnProperty('_header')) {
+					templateValues.metaTags = data._header.tags.meta;
+					templateValues.linkTags = data._header.tags.link;
+				}
 
 				if (req.route && req.route.path === '/') {
 					modifyTitle(templateValues);
@@ -223,11 +226,6 @@ module.exports = function (middleware) {
 		], callback);
 	};
 
-	function addTimeagoLocaleScript(scripts, userLang) {
-		var languageCode = utils.userLangToTimeagoCode(userLang);
-		scripts.push({ src: nconf.get('relative_path') + '/assets/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js' });
-	}
-
 	middleware.renderFooter = function renderFooter(req, res, data, callback) {
 		async.waterfall([
 			function (next) {
@@ -240,15 +238,33 @@ module.exports = function (middleware) {
 			function (data, next) {
 				async.parallel({
 					scripts: async.apply(plugins.fireHook, 'filter:scripts.get', []),
+					timeagoLocale: (next) => {
+						async.waterfall([
+							async.apply(languages.listCodes),
+							(languageCodes, next) => {
+								const userLang = res.locals.config.userLang;
+								const timeagoCode = utils.userLangToTimeagoCode(userLang);
+
+								if (languageCodes.includes(userLang) && languages.timeagoCodes.includes(timeagoCode)) {
+									const pathToLocaleFile = '/vendor/jquery/timeago/locales/jquery.timeago.' + timeagoCode + '.js';
+									next(null, (nconf.get('relative_path') + '/assets' + pathToLocaleFile));
+								} else {
+									next(null, false);
+								}
+							},
+						], next);
+					},
 				}, function (err, results) {
 					next(err, data, results);
 				});
 			},
 			function (data, results, next) {
+				if (results.timeagoLocale) {
+					results.scripts.push(results.timeagoLocale);
+				}
 				data.templateValues.scripts = results.scripts.map(function (script) {
 					return { src: script };
 				});
-				addTimeagoLocaleScript(data.templateValues.scripts, res.locals.config.userLang);
 
 				data.templateValues.useCustomJS = meta.config.useCustomJS;
 				data.templateValues.customJS = data.templateValues.useCustomJS ? meta.config.customJS : '';

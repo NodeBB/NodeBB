@@ -1,8 +1,8 @@
 'use strict';
 
 
-var app = window.app || {};
-var socket;
+app = window.app || {};
+socket = window.socket;
 app.isConnected = false;
 
 (function () {
@@ -154,7 +154,7 @@ app.isConnected = false;
 
 	if (
 		config.socketioOrigins &&
-		config.socketioOrigins !== '*' &&
+		config.socketioOrigins !== '*:*' &&
 		config.socketioOrigins.indexOf(location.hostname) === -1
 	) {
 		console.error(

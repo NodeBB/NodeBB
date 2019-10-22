@@ -70,6 +70,8 @@ define('forum/groups/list', ['forum/infinitescroll', 'benchpress'], function (in
 			options: {
 				sort: sortEl.val(),
 				filterHidden: true,
+				showMembers: true,
+				hideEphemeralGroups: true,
 			},
 		}, function (err, groups) {
 			if (err) {

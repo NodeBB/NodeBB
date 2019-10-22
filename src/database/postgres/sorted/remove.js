@@ -1,64 +1,55 @@
 'use strict';
 
-module.exports = function (db, module) {
-	var helpers = module.helpers.postgres;
+module.exports = function (module) {
+	var helpers = require('../helpers');
 
-	module.sortedSetRemove = function (key, value, callback) {
-		function done(err) {
-			if (callback) {
-				callback(err);
-			}
-		}
-
+	module.sortedSetRemove = async function (key, value) {
 		if (!key) {
-			return done();
+			return;
+		}
+		const isValueArray = Array.isArray(value);
+		if (!value || (isValueArray && !value.length)) {
+			return;
 		}
 
 		if (!Array.isArray(key)) {
 			key = [key];
 		}
 
-		if (!Array.isArray(value)) {
+		if (!isValueArray) {
 			value = [value];
 		}
 		value = value.map(helpers.valueToString);
-
-		db.query({
+		await module.pool.query({
 			name: 'sortedSetRemove',
 			text: `
 DELETE FROM "legacy_zset"
  WHERE "_key" = ANY($1::TEXT[])
    AND "value" = ANY($2::TEXT[])`,
 			values: [key, value],
-		}, done);
+		});
 	};
 
-	module.sortedSetsRemove = function (keys, value, callback) {
-		callback = callback || helpers.noop;
-
+	module.sortedSetsRemove = async function (keys, value) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback();
+			return;
 		}
 
 		value = helpers.valueToString(value);
 
-		db.query({
+		await module.pool.query({
 			name: 'sortedSetsRemove',
 			text: `
 DELETE FROM "legacy_zset"
  WHERE "_key" = ANY($1::TEXT[])
    AND "value" = $2::TEXT`,
 			values: [keys, value],
-		}, function (err) {
-			callback(err);
 		});
 	};
 
-	module.sortedSetsRemoveRangeByScore = function (keys, min, max, callback) {
-		callback = callback || helpers.noop;
-
+	module.sortedSetsRemoveRangeByScore = async function (keys, min, max) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback();
+			return;
 		}
 
 		if (min === '-inf') {
@@ -68,7 +59,7 @@ DELETE FROM "legacy_zset"
 			max = null;
 		}
 
-		db.query({
+		await module.pool.query({
 			name: 'sortedSetsRemoveRangeByScore',
 			text: `
 DELETE FROM "legacy_zset"
@@ -76,8 +67,29 @@ DELETE FROM "legacy_zset"
    AND ("score" >= $2::NUMERIC OR $2::NUMERIC IS NULL)
    AND ("score" <= $3::NUMERIC OR $3::NUMERIC IS NULL)`,
 			values: [keys, min, max],
-		}, function (err) {
-			callback(err);
 		});
+	};
+
+	module.sortedSetRemoveBulk = async function (data) {
+		// const keys = [];
+		// const values = [];
+
+		// data.forEach(function (item) {
+		// 	keys.push(item[0]);
+		// 	values.push(item[1]);
+		// });
+
+		const promises = data.map(item => module.sortedSetRemove(item[0], item[1]));
+		await Promise.all(promises);
+
+		// TODO
+		// 		await query({
+		// 			name: 'sortedSetRemoveBulk',
+		// 			text: `
+		// DELETE FROM "legacy_zset"
+		// SELECT k, v
+		// FROM UNNEST($1::TEXT[], $2::TEXT[]) vs(k, v)`,
+		// 			values: [keys, values],
+		// 		});
 	};
 };

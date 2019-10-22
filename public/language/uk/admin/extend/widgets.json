@@ -18,5 +18,13 @@
 	"alert.update-success": "Віджети успішно оновлено",
 	"alert.clone-success": "Віджети успішно клоновано",
 
-	"error.select-clone": "Будь ласка, виберіть сторінку для клонування з"
+	"error.select-clone": "Будь ласка, виберіть сторінку для клонування з",
+
+	"title": "Title",
+	"title.placeholder": "Title (only shown on some containers)",
+	"container": "Container",
+	"container.placeholder": "Drag and drop a container or enter HTML here.",
+	"show-to-groups": "Show to groups",
+	"hide-from-groups": "Hide from groups",
+	"hide-on-mobile": "Hide on mobile"
 }

@@ -1,163 +1,135 @@
 'use strict';
 
-var async = require('async');
-
 var db = require('../database');
 var user = require('../user');
 var utils = require('../utils');
 var plugins = require('../plugins');
 
-const intFields = ['timestamp', 'edited', 'fromuid', 'roomId', 'deleted'];
+const intFields = ['timestamp', 'edited', 'fromuid', 'roomId', 'deleted', 'system'];
 
 module.exports = function (Messaging) {
 	Messaging.newMessageCutoff = 1000 * 60 * 3;
 
-	Messaging.getMessagesFields = function (mids, fields, callback) {
+	Messaging.getMessagesFields = async (mids, fields) => {
 		if (!Array.isArray(mids) || !mids.length) {
-			return callback(null, []);
+			return [];
 		}
 
-		async.waterfall([
-			function (next) {
-				const keys = mids.map(mid => 'message:' + mid);
-				if (fields.length) {
-					db.getObjectsFields(keys, fields, next);
-				} else {
-					db.getObjects(keys, next);
+		const keys = mids.map(mid => 'message:' + mid);
+		let messages;
+		if (fields.length) {
+			messages = await db.getObjectsFields(keys, fields);
+		} else {
+			messages = await db.getObjects(keys);
+		}
+
+		messages.forEach(message => modifyMessage(message, fields));
+		return messages;
+	};
+
+	Messaging.getMessageField = async (mid, field) => {
+		const fields = await Messaging.getMessageFields(mid, [field]);
+		return fields ? fields[field] : null;
+	};
+
+	Messaging.getMessageFields = async (mid, fields) => {
+		const messages = await Messaging.getMessagesFields([mid], fields);
+		return messages ? messages[0] : null;
+	};
+
+	Messaging.setMessageField = async (mid, field, content) => {
+		await db.setObjectField('message:' + mid, field, content);
+	};
+
+	Messaging.setMessageFields = async (mid, data) => {
+		await db.setObject('message:' + mid, data);
+	};
+
+	Messaging.getMessagesData = async (mids, uid, roomId, isNew) => {
+		let messages = await Messaging.getMessagesFields(mids, []);
+		messages = await user.blocks.filter(uid, 'fromuid', messages);
+		messages = messages
+			.map(function (msg, idx) {
+				if (msg) {
+					msg.messageId = parseInt(mids[idx], 10);
+					msg.ip = undefined;
 				}
-			},
-			function (messages, next) {
-				messages.forEach(message => modifyMessage(message, fields));
-				next(null, messages);
-			},
-		], callback);
-	};
+				return msg;
+			})
+			.filter(Boolean);
 
-	Messaging.getMessageField = function (mid, field, callback) {
-		Messaging.getMessageFields(mid, [field], function (err, fields) {
-			callback(err, fields ? fields[field] : null);
+		const users = await user.getUsersFields(
+			messages.map(msg => msg && msg.fromuid),
+			['uid', 'username', 'userslug', 'picture', 'status', 'banned']
+		);
+
+		messages.forEach(function (message, index) {
+			message.fromUser = users[index];
+			message.fromUser.banned = !!message.fromUser.banned;
+			message.fromUser.deleted = message.fromuid !== message.fromUser.uid && message.fromUser.uid === 0;
+
+			var self = message.fromuid === parseInt(uid, 10);
+			message.self = self ? 1 : 0;
+
+			message.newSet = false;
+			message.roomId = String(message.roomId || roomId);
+			message.deleted = !!message.deleted;
+			message.system = !!message.system;
 		});
-	};
 
-	Messaging.getMessageFields = function (mid, fields, callback) {
-		Messaging.getMessagesFields([mid], fields, function (err, messages) {
-			callback(err, messages ? messages[0] : null);
-		});
-	};
+		messages = await Promise.all(messages.map(async (message) => {
+			if (message.system) {
+				return message;
+			}
 
-	Messaging.setMessageField = function (mid, field, content, callback) {
-		db.setObjectField('message:' + mid, field, content, callback);
-	};
+			const result = await Messaging.parse(message.content, message.fromuid, uid, roomId, isNew);
+			message.content = result;
+			message.cleanedContent = utils.stripHTMLTags(utils.decodeHTMLEntities(result));
+			return message;
+		}));
 
-	Messaging.setMessageFields = function (mid, data, callback) {
-		db.setObject('message:' + mid, data, callback);
-	};
-
-	Messaging.getMessagesData = function (mids, uid, roomId, isNew, callback) {
-		var messages;
-
-		async.waterfall([
-			function (next) {
-				Messaging.getMessagesFields(mids, [], next);
-			},
-			async.apply(user.blocks.filter, uid, 'fromuid'),
-			function (_messages, next) {
-				messages = _messages.map(function (msg, idx) {
-					if (msg) {
-						msg.messageId = parseInt(mids[idx], 10);
-						msg.ip = undefined;
-					}
-					return msg;
-				}).filter(Boolean);
-
-				const uids = messages.map(msg => msg && msg.fromuid);
-
-				user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'banned'], next);
-			},
-			function (users, next) {
-				messages.forEach(function (message, index) {
-					message.fromUser = users[index];
-					message.fromUser.banned = !!message.fromUser.banned;
-					message.fromUser.deleted = message.fromuid !== message.fromUser.uid && message.fromUser.uid === 0;
-
-					var self = message.fromuid === parseInt(uid, 10);
-					message.self = self ? 1 : 0;
-
-					message.newSet = false;
-					message.roomId = String(message.roomId || roomId);
-					message.deleted = !!message.deleted;
-				});
-
-				async.map(messages, function (message, next) {
-					Messaging.parse(message.content, message.fromuid, uid, roomId, isNew, function (err, result) {
-						if (err) {
-							return next(err);
-						}
-						message.content = result;
-						message.cleanedContent = utils.stripHTMLTags(utils.decodeHTMLEntities(result));
-						next(null, message);
-					});
-				}, next);
-			},
-			function (messages, next) {
-				if (messages.length > 1) {
-					// Add a spacer in between messages with time gaps between them
-					messages = messages.map(function (message, index) {
-						// Compare timestamps with the previous message, and check if a spacer needs to be added
-						if (index > 0 && message.timestamp > messages[index - 1].timestamp + Messaging.newMessageCutoff) {
-							// If it's been 5 minutes, this is a new set of messages
-							message.newSet = true;
-						} else if (index > 0 && message.fromuid !== messages[index - 1].fromuid) {
-							// If the previous message was from the other person, this is also a new set
-							message.newSet = true;
-						}
-
-						return message;
-					});
-
-					next(undefined, messages);
-				} else if (messages.length === 1) {
-					// For single messages, we don't know the context, so look up the previous message and compare
-					var key = 'uid:' + uid + ':chat:room:' + roomId + ':mids';
-					async.waterfall([
-						async.apply(db.sortedSetRank, key, messages[0].messageId),
-						function (index, next) {
-							// Continue only if this isn't the first message in sorted set
-							if (index > 0) {
-								db.getSortedSetRange(key, index - 1, index - 1, next);
-							} else {
-								messages[0].newSet = true;
-								return next(undefined, messages);
-							}
-						},
-						function (mid, next) {
-							Messaging.getMessageFields(mid, ['fromuid', 'timestamp'], next);
-						},
-						function (fields, next) {
-							if ((messages[0].timestamp > fields.timestamp + Messaging.newMessageCutoff) ||
-								(messages[0].fromuid !== fields.fromuid)) {
-								// If it's been 5 minutes, this is a new set of messages
-								messages[0].newSet = true;
-							}
-							next(null, messages);
-						},
-					], next);
-				} else {
-					next(null, []);
+		if (messages.length > 1) {
+			// Add a spacer in between messages with time gaps between them
+			messages = messages.map(function (message, index) {
+				// Compare timestamps with the previous message, and check if a spacer needs to be added
+				if (index > 0 && message.timestamp > messages[index - 1].timestamp + Messaging.newMessageCutoff) {
+					// If it's been 5 minutes, this is a new set of messages
+					message.newSet = true;
+				} else if (index > 0 && message.fromuid !== messages[index - 1].fromuid) {
+					// If the previous message was from the other person, this is also a new set
+					message.newSet = true;
 				}
-			},
-			function (messages, next) {
-				plugins.fireHook('filter:messaging.getMessages', {
-					messages: messages,
-					uid: uid,
-					roomId: roomId,
-					isNew: isNew,
-					mids: mids,
-				}, function (err, data) {
-					next(err, data && data.messages);
-				});
-			},
-		], callback);
+
+				return message;
+			});
+		} else if (messages.length === 1) {
+			// For single messages, we don't know the context, so look up the previous message and compare
+			var key = 'uid:' + uid + ':chat:room:' + roomId + ':mids';
+			const index = await db.sortedSetRank(key, messages[0].messageId);
+			if (index > 0) {
+				const mid = await db.getSortedSetRange(key, index - 1, index - 1);
+				const fields = await Messaging.getMessageFields(mid, ['fromuid', 'timestamp']);
+				if ((messages[0].timestamp > fields.timestamp + Messaging.newMessageCutoff) ||
+					(messages[0].fromuid !== fields.fromuid)) {
+					// If it's been 5 minutes, this is a new set of messages
+					messages[0].newSet = true;
+				}
+			} else {
+				messages[0].newSet = true;
+			}
+		} else {
+			messages = [];
+		}
+
+		const data = await plugins.fireHook('filter:messaging.getMessages', {
+			messages: messages,
+			uid: uid,
+			roomId: roomId,
+			isNew: isNew,
+			mids: mids,
+		});
+
+		return data && data.messages;
 	};
 };
 

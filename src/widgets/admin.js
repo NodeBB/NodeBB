@@ -1,101 +1,80 @@
 'use strict';
 
-var fs = require('fs');
-var path = require('path');
-var async = require('async');
-var nconf = require('nconf');
-var benchpress = require('benchpressjs');
+const fs = require('fs');
+const util = require('util');
+const readFileAsync = util.promisify(fs.readFile);
 
-var plugins = require('../plugins');
-var groups = require('../groups');
+const path = require('path');
+const nconf = require('nconf');
+const benchpress = require('benchpressjs');
 
-var admin = module.exports;
+const plugins = require('../plugins');
+const groups = require('../groups');
+const index = require('./index');
 
-admin.get = function (callback) {
-	async.parallel({
-		areas: admin.getAreas,
-		availableWidgets: getAvailableWidgets,
-	}, function (err, widgetData) {
-		if (err) {
-			return callback(err);
-		}
+const admin = module.exports;
 
-		callback(false, {
-			templates: buildTemplatesFromAreas(widgetData.areas),
-			areas: widgetData.areas,
-			availableWidgets: widgetData.availableWidgets,
-		});
-	});
+admin.get = async function () {
+	const [areas, availableWidgets] = await Promise.all([
+		admin.getAreas(),
+		getAvailableWidgets(),
+	]);
+
+	return {
+		templates: buildTemplatesFromAreas(areas),
+		areas: areas,
+		availableWidgets: availableWidgets,
+	};
 };
 
-admin.getAreas = function (callback) {
-	async.waterfall([
-		function (next) {
-			var defaultAreas = [
-				{ name: 'Global Sidebar', template: 'global', location: 'sidebar' },
-				{ name: 'Global Header', template: 'global', location: 'header' },
-				{ name: 'Global Footer', template: 'global', location: 'footer' },
+admin.getAreas = async function () {
+	const defaultAreas = [
+		{ name: 'Global Sidebar', template: 'global', location: 'sidebar' },
+		{ name: 'Global Header', template: 'global', location: 'header' },
+		{ name: 'Global Footer', template: 'global', location: 'footer' },
 
-				{ name: 'Group Page (Left)', template: 'groups/details.tpl', location: 'left' },
-				{ name: 'Group Page (Right)', template: 'groups/details.tpl', location: 'right' },
-			];
+		{ name: 'Group Page (Left)', template: 'groups/details.tpl', location: 'left' },
+		{ name: 'Group Page (Right)', template: 'groups/details.tpl', location: 'right' },
+	];
 
-			plugins.fireHook('filter:widgets.getAreas', defaultAreas, next);
-		},
-		function (areas, next) {
-			areas.push({ name: 'Draft Zone', template: 'global', location: 'drafts' });
-			async.map(areas, function (area, next) {
-				require('./index').getArea(area.template, area.location, function (err, areaData) {
-					area.data = areaData;
-					next(err, area);
-				});
-			}, next);
-		},
-	], callback);
+	const areas = await plugins.fireHook('filter:widgets.getAreas', defaultAreas);
+
+	areas.push({ name: 'Draft Zone', template: 'global', location: 'drafts' });
+	const areaData = await Promise.all(areas.map(area => index.getArea(area.template, area.location)));
+	areas.forEach((area, i) => {
+		area.data = areaData[i];
+	});
+	return areas;
 };
 
-function getAvailableWidgets(callback) {
-	async.parallel({
-		availableWidgets: function (next) {
-			plugins.fireHook('filter:widgets.getWidgets', [], next);
-		},
-		adminTemplate: function (next) {
-			renderAdminTemplate(next);
-		},
-	}, function (err, results) {
-		if (err) {
-			return callback(err);
-		}
-		results.availableWidgets.forEach(function (w) {
-			w.content += results.adminTemplate;
-		});
-		callback(null, results.availableWidgets);
+async function getAvailableWidgets() {
+	const [availableWidgets, adminTemplate] = await Promise.all([
+		plugins.fireHook('filter:widgets.getWidgets', []),
+		renderAdminTemplate(),
+	]);
+	availableWidgets.forEach(function (w) {
+		w.content += adminTemplate;
 	});
+	return availableWidgets;
 }
 
-function renderAdminTemplate(callback) {
-	async.waterfall([
-		function (next) {
-			async.parallel({
-				source: async.apply(getSource),
-				groups: async.apply(groups.getNonPrivilegeGroups, 'groups:createtime', 0, -1),
-			}, next);
-		},
-		function (results, next) {
-			results.groups.sort((a, b) => b.system - a.system);
-			benchpress.compileParse(results.source, { groups: results.groups }, next);
-		},
-	], callback);
+async function renderAdminTemplate() {
+	const [source, groupsData] = await Promise.all([
+		getSource(),
+		groups.getNonPrivilegeGroups('groups:createtime', 0, -1),
+	]);
+	groupsData.sort((a, b) => b.system - a.system);
+	return await benchpress.compileRender(source, { groups: groupsData });
 }
 
-function getSource(callback) {
-	fs.readFile(path.resolve(nconf.get('views_dir'), 'admin/partials/widget-settings.tpl'), 'utf8', callback);
+async function getSource() {
+	return await readFileAsync(path.resolve(nconf.get('views_dir'), 'admin/partials/widget-settings.tpl'), 'utf8');
 }
 
 function buildTemplatesFromAreas(areas) {
 	const templates = [];
-	var list = {};
-	var index = 0;
+	const list = {};
+	let index = 0;
 
 	areas.forEach(function (area) {
 		if (typeof list[area.template] === 'undefined') {
@@ -115,3 +94,5 @@ function buildTemplatesFromAreas(areas) {
 	});
 	return templates;
 }
+
+require('../promisify')(admin);

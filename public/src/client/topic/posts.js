@@ -8,7 +8,8 @@ define('forum/topic/posts', [
 	'forum/topic/images',
 	'navigator',
 	'components',
-], function (pagination, infinitescroll, postTools, images, navigator, components) {
+	'translator',
+], function (pagination, infinitescroll, postTools, images, navigator, components, translator) {
 	var Posts = { };
 
 	Posts.onNewPost = function (data) {
@@ -199,7 +200,7 @@ define('forum/topic/posts', [
 				components.get('topic').append(html);
 			}
 
-			infinitescroll.removeExtra($('[component="post"]'), direction, config.postsPerPage * 2);
+			infinitescroll.removeExtra($('[component="post"]'), direction, Math.max(20, config.postsPerPage * 2));
 
 			$(window).trigger('action:posts.loaded', { posts: data.posts });
 
@@ -250,12 +251,78 @@ define('forum/topic/posts', [
 	};
 
 	Posts.onTopicPageLoad = function (posts) {
+		handlePrivateUploads(posts);
 		images.wrapImagesInLinks(posts);
 		Posts.showBottomPostBar();
 		posts.find('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
-		addBlockquoteEllipses(posts.find('[component="post/content"] > blockquote > blockquote'));
+		Posts.addBlockquoteEllipses(posts);
 		hidePostToolsForDeletedPosts(posts);
+		addNecroPostMessage();
 	};
+
+	function addNecroPostMessage() {
+		var necroThreshold = 7 * 24 * 60 * 60 * 1000;
+		if (config.topicPostSort !== 'newest_to_oldest' && config.topicPostSort !== 'oldest_to_newest') {
+			return;
+		}
+
+		$('[component="post"]').each(function () {
+			var post = $(this);
+			var prev = post.prev('[component="post"]');
+			if (post.is(':has(.necro-post)') || !prev.length) {
+				return;
+			}
+			if (config.topicPostSort === 'newest_to_oldest' && parseInt(prev.attr('data-index'), 10) === 0) {
+				return;
+			}
+
+			var diff = post.attr('data-timestamp') - prev.attr('data-timestamp');
+			if (Math.abs(diff) >= necroThreshold) {
+				var suffixAgo = $.timeago.settings.strings.suffixAgo;
+				var prefixAgo = $.timeago.settings.strings.prefixAgo;
+				var suffixFromNow = $.timeago.settings.strings.suffixFromNow;
+				var prefixFromNow = $.timeago.settings.strings.prefixFromNow;
+
+				$.timeago.settings.strings.suffixAgo = '';
+				$.timeago.settings.strings.prefixAgo = '';
+				$.timeago.settings.strings.suffixFromNow = '';
+				$.timeago.settings.strings.prefixFromNow = '';
+
+				var translationText = (diff > 0 ? '[[topic:timeago_later,' : '[[topic:timeago_earlier,') + $.timeago.inWords(diff) + ']]';
+
+				$.timeago.settings.strings.suffixAgo = suffixAgo;
+				$.timeago.settings.strings.prefixAgo = prefixAgo;
+				$.timeago.settings.strings.suffixFromNow = suffixFromNow;
+				$.timeago.settings.strings.prefixFromNow = prefixFromNow;
+				app.parseAndTranslate('partials/topic/necro-post', { text: translationText }, function (html) {
+					html.prependTo(post);
+				});
+			}
+		});
+	}
+
+	function handlePrivateUploads(posts) {
+		if (app.user.uid || !ajaxify.data.privateUploads) {
+			return;
+		}
+
+		// Replace all requests for uploaded images/files with a login link
+		var loginEl = document.createElement('a');
+		loginEl.className = 'login-required';
+		loginEl.href = config.relative_path + '/login';
+
+		translator.translate('[[topic:login-to-view]]', function (translated) {
+			loginEl.appendChild(document.createTextNode(translated));
+			posts.each(function (idx, postEl) {
+				$(postEl).find('[component="post/content"] img').each(function (idx, imgEl) {
+					imgEl = $(imgEl);
+					if (imgEl.attr('src').startsWith(config.relative_path + config.upload_url)) {
+						imgEl.replaceWith(loginEl.cloneNode(true));
+					}
+				});
+			});
+		});
+	}
 
 	Posts.onNewPostsAddedToDom = function (posts) {
 		Posts.onTopicPageLoad(posts);
@@ -287,14 +354,15 @@ define('forum/topic/posts', [
 		});
 	}
 
-	function addBlockquoteEllipses(blockquotes) {
+	Posts.addBlockquoteEllipses = function (posts) {
+		var blockquotes = posts.find('[component="post/content"] > blockquote > blockquote');
 		blockquotes.each(function () {
 			var $this = $(this);
 			if ($this.find(':hidden:not(br)').length && !$this.find('.toggle').length) {
 				$this.append('<i class="fa fa-angle-down pointer toggle"></i>');
 			}
 		});
-	}
+	};
 
 	return Posts;
 });

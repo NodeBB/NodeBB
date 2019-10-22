@@ -43,6 +43,7 @@
     "account/following": "Abantu %1 akurikira",
     "account/followers": "Abantu bakurikira %1",
     "account/posts": "Ibyashyizweho na %1",
+    "account/latest-posts": "Latest posts made by %1",
     "account/topics": "Ibiganiro byatangijwe na %1",
     "account/groups": "Amatsinda ya %1",
     "account/watched_categories": "%1's Watched Categories",

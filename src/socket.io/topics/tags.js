@@ -1,67 +1,49 @@
 'use strict';
 
-var async = require('async');
-var db = require('../../database');
-var topics = require('../../topics');
-var privileges = require('../../privileges');
-var utils = require('../../utils');
+const topics = require('../../topics');
+const categories = require('../../categories');
+const privileges = require('../../privileges');
+const utils = require('../../utils');
 
 module.exports = function (SocketTopics) {
-	SocketTopics.isTagAllowed = function (socket, data, callback) {
+	SocketTopics.isTagAllowed = async function (socket, data) {
 		if (!data || !utils.isNumber(data.cid) || !data.tag) {
-			return callback(new Error('[[error:invalid-data]]'));
+			throw new Error('[[error:invalid-data]]');
 		}
-		async.waterfall([
-			function (next) {
-				db.getSortedSetRange('cid:' + data.cid + ':tag:whitelist', 0, -1, next);
-			},
-			function (tagWhitelist, next) {
-				next(null, !tagWhitelist.length || tagWhitelist.includes(data.tag));
-			},
-		], callback);
+
+		const tagWhitelist = await categories.getTagWhitelist([data.cid]);
+		return !tagWhitelist[0].length || tagWhitelist[0].includes(data.tag);
 	};
 
-	SocketTopics.autocompleteTags = function (socket, data, callback) {
-		topics.autocompleteTags(data, callback);
+	SocketTopics.autocompleteTags = async function (socket, data) {
+		return await topics.autocompleteTags(data);
 	};
 
-	SocketTopics.searchTags = function (socket, data, callback) {
-		searchTags(socket.uid, topics.searchTags, data, callback);
+	SocketTopics.searchTags = async function (socket, data) {
+		return await searchTags(socket.uid, topics.searchTags, data);
 	};
 
-	SocketTopics.searchAndLoadTags = function (socket, data, callback) {
-		searchTags(socket.uid, topics.searchAndLoadTags, data, callback);
+	SocketTopics.searchAndLoadTags = async function (socket, data) {
+		return await searchTags(socket.uid, topics.searchAndLoadTags, data);
 	};
 
-	function searchTags(uid, method, data, callback) {
-		async.waterfall([
-			function (next) {
-				privileges.global.can('search:tags', uid, next);
-			},
-			function (allowed, next) {
-				if (!allowed) {
-					return next(new Error('[[error:no-privileges]]'));
-				}
-				method(data, next);
-			},
-		], callback);
+	async function searchTags(uid, method, data) {
+		const allowed = await privileges.global.can('search:tags', uid);
+		if (!allowed) {
+			throw new Error('[[error:no-privileges]]');
+		}
+		return await method(data);
 	}
 
-	SocketTopics.loadMoreTags = function (socket, data, callback) {
+	SocketTopics.loadMoreTags = async function (socket, data) {
 		if (!data || !utils.isNumber(data.after)) {
-			return callback(new Error('[[error:invalid-data]]'));
+			throw new Error('[[error:invalid-data]]');
 		}
 
-		var start = parseInt(data.after, 10);
-		var stop = start + 99;
-		async.waterfall([
-			function (next) {
-				topics.getTags(start, stop, next);
-			},
-			function (tags, next) {
-				tags = tags.filter(Boolean);
-				next(null, { tags: tags, nextStart: stop + 1 });
-			},
-		], callback);
+		const start = parseInt(data.after, 10);
+		const stop = start + 99;
+		const tags = await topics.getTags(start, stop);
+
+		return { tags: tags.filter(Boolean), nextStart: stop + 1 };
 	};
 };

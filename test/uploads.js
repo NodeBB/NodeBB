@@ -158,14 +158,28 @@ describe('Upload Controllers', function () {
 
 		it('should fail if file is not an image', function (done) {
 			file.isFileTypeAllowed(path.join(__dirname, '../test/files/notanimage.png'), function (err) {
-				assert.equal(err.message, 'Input file is missing or of an unsupported image format');
+				assert.equal(err.message, 'Input file contains unsupported image format');
+				done();
+			});
+		});
+
+		it('should fail if file is not an image', function (done) {
+			image.isFileTypeAllowed(path.join(__dirname, '../test/files/notanimage.png'), function (err) {
+				assert.equal(err.message, 'Input file contains unsupported image format');
 				done();
 			});
 		});
 
 		it('should fail if file is not an image', function (done) {
 			image.size(path.join(__dirname, '../test/files/notanimage.png'), function (err) {
-				assert.equal(err.message, 'Input file is missing or of an unsupported image format');
+				assert.equal(err.message, 'Input file contains unsupported image format');
+				done();
+			});
+		});
+
+		it('should fail if file is missing', function (done) {
+			image.size(path.join(__dirname, '../test/files/doesnotexist.png'), function (err) {
+				assert.equal(err.message, 'Input file is missing');
 				done();
 			});
 		});
@@ -208,8 +222,22 @@ describe('Upload Controllers', function () {
 			});
 		});
 
+		it('should not allow svg uploads', function (done) {
+			socketUser.updateCover({ uid: 1 }, { uid: 1, imageData: 'data:image/svg;base64,PHN2Zy9vbmxvYWQ9YWxlcnQoMik+' }, function (err) {
+				assert.equal(err.message, '[[error:invalid-image]]');
+				done();
+			});
+		});
+
 		it('should not allow non image uploads', function (done) {
 			socketUser.uploadCroppedPicture({ uid: 1 }, { uid: 1, imageData: 'data:text/html;base64,PHN2Zy9vbmxvYWQ9YWxlcnQoMik+' }, function (err) {
+				assert.equal(err.message, '[[error:invalid-image]]');
+				done();
+			});
+		});
+
+		it('should not allow svg uploads', function (done) {
+			socketUser.uploadCroppedPicture({ uid: 1 }, { uid: 1, imageData: 'data:image/svg;base64,PHN2Zy9vbmxvYWQ9YWxlcnQoMik+' }, function (err) {
 				assert.equal(err.message, '[[error:invalid-image]]');
 				done();
 			});

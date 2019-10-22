@@ -1,271 +1,255 @@
 'use strict';
 
-module.exports = function (redisClient, module) {
-	var _ = require('lodash');
-	var utils = require('../../utils');
+module.exports = function (module) {
+	const utils = require('../../utils');
+	const helpers = require('./helpers');
+	const dbHelpers = require('../helpers');
 
-	var helpers = module.helpers.redis;
+	require('./sorted/add')(module);
+	require('./sorted/remove')(module);
+	require('./sorted/union')(module);
+	require('./sorted/intersect')(module);
 
-	require('./sorted/add')(redisClient, module);
-	require('./sorted/remove')(redisClient, module);
-	require('./sorted/union')(redisClient, module);
-	require('./sorted/intersect')(redisClient, module);
-
-	module.getSortedSetRange = function (key, start, stop, callback) {
-		sortedSetRange('zrange', key, start, stop, false, callback);
+	module.getSortedSetRange = async function (key, start, stop) {
+		return await sortedSetRange('zrange', key, start, stop, '-inf', '+inf', false);
 	};
 
-	module.getSortedSetRevRange = function (key, start, stop, callback) {
-		sortedSetRange('zrevrange', key, start, stop, false, callback);
+	module.getSortedSetRevRange = async function (key, start, stop) {
+		return await sortedSetRange('zrevrange', key, start, stop, '-inf', '+inf', false);
 	};
 
-	module.getSortedSetRangeWithScores = function (key, start, stop, callback) {
-		sortedSetRange('zrange', key, start, stop, true, callback);
+	module.getSortedSetRangeWithScores = async function (key, start, stop) {
+		return await sortedSetRange('zrange', key, start, stop, '-inf', '+inf', true);
 	};
 
-	module.getSortedSetRevRangeWithScores = function (key, start, stop, callback) {
-		sortedSetRange('zrevrange', key, start, stop, true, callback);
+	module.getSortedSetRevRangeWithScores = async function (key, start, stop) {
+		return await sortedSetRange('zrevrange', key, start, stop, '-inf', '+inf', true);
 	};
 
-	function sortedSetRange(method, key, start, stop, withScores, callback) {
+	async function sortedSetRange(method, key, start, stop, min, max, withScores) {
 		if (Array.isArray(key)) {
 			if (!key.length) {
-				return setImmediate(callback, null, []);
+				return [];
 			}
-			const batch = redisClient.batch();
-			key.forEach((key) => {
-				batch[method]([key, start, stop, 'WITHSCORES']);
-			});
-			batch.exec(function (err, data) {
-				if (err) {
-					return callback(err);
-				}
-				data = _.flatten(data);
-				var objects = [];
-				for (var i = 0; i < data.length; i += 2) {
-					objects.push({ value: data[i], score: parseFloat(data[i + 1]) });
-				}
+			const batch = module.client.batch();
+			key.forEach(key => batch[method](genParams(method, key, 0, stop, min, max, true)));
+			const data = await helpers.execBatch(batch);
 
-				objects.sort((a, b) => {
-					if (method === 'zrange') {
-						return a.score - b.score;
-					}
-					return b.score - a.score;
-				});
-				if (withScores) {
-					return callback(null, objects);
-				}
-				objects = objects.map(item => item.value);
-				callback(null, objects);
-			});
-			return;
-		}
+			const batchData = data.map(setData => helpers.zsetToObjectArray(setData));
 
-		var params = [key, start, stop];
-		if (withScores) {
-			params.push('WITHSCORES');
-		}
+			let objects = dbHelpers.mergeBatch(batchData, 0, stop, method === 'zrange' ? 1 : -1);
 
-		redisClient[method](params, function (err, data) {
-			if (err) {
-				return callback(err);
+			if (start > 0) {
+				objects = objects.slice(start, stop !== -1 ? stop + 1 : undefined);
 			}
 			if (!withScores) {
-				return callback(null, data);
+				objects = objects.map(item => item.value);
 			}
-			var objects = [];
-			for (var i = 0; i < data.length; i += 2) {
-				objects.push({ value: data[i], score: parseFloat(data[i + 1]) });
-			}
-			callback(null, objects);
-		});
+			return objects;
+		}
+
+		const params = genParams(method, key, start, stop, min, max, withScores);
+		const data = await module.client.async[method](params);
+		if (!withScores) {
+			return data;
+		}
+		const objects = helpers.zsetToObjectArray(data);
+		return objects;
 	}
 
-	module.getSortedSetRangeByScore = function (key, start, count, min, max, callback) {
-		redisClient.zrangebyscore([key, min, max, 'LIMIT', start, count], callback);
-	};
+	function genParams(method, key, start, stop, min, max, withScores) {
+		const params = {
+			zrevrange: [key, start, stop],
+			zrange: [key, start, stop],
+			zrangebyscore: [key, min, max],
+			zrevrangebyscore: [key, max, min],
+		};
+		if (withScores) {
+			params[method].push('WITHSCORES');
+		}
 
-	module.getSortedSetRevRangeByScore = function (key, start, count, max, min, callback) {
-		redisClient.zrevrangebyscore([key, max, min, 'LIMIT', start, count], callback);
-	};
-
-	module.getSortedSetRangeByScoreWithScores = function (key, start, count, min, max, callback) {
-		sortedSetRangeByScoreWithScores('zrangebyscore', key, start, count, min, max, callback);
-	};
-
-	module.getSortedSetRevRangeByScoreWithScores = function (key, start, count, max, min, callback) {
-		sortedSetRangeByScoreWithScores('zrevrangebyscore', key, start, count, max, min, callback);
-	};
-
-	function sortedSetRangeByScoreWithScores(method, key, start, count, min, max, callback) {
-		redisClient[method]([key, min, max, 'WITHSCORES', 'LIMIT', start, count], function (err, data) {
-			if (err) {
-				return callback(err);
-			}
-			var objects = [];
-			for (var i = 0; i < data.length; i += 2) {
-				objects.push({ value: data[i], score: parseFloat(data[i + 1]) });
-			}
-			callback(null, objects);
-		});
+		if (method === 'zrangebyscore' || method === 'zrevrangebyscore') {
+			const count = stop !== -1 ? stop - start + 1 : stop;
+			params[method].push('LIMIT', start, count);
+		}
+		return params[method];
 	}
 
-	module.sortedSetCount = function (key, min, max, callback) {
-		redisClient.zcount(key, min, max, callback);
+	module.getSortedSetRangeByScore = async function (key, start, count, min, max) {
+		return await sortedSetRangeByScore('zrangebyscore', key, start, count, min, max, false);
 	};
 
-	module.sortedSetCard = function (key, callback) {
-		redisClient.zcard(key, callback);
+	module.getSortedSetRevRangeByScore = async function (key, start, count, max, min) {
+		return await sortedSetRangeByScore('zrevrangebyscore', key, start, count, min, max, false);
 	};
 
-	module.sortedSetsCard = function (keys, callback) {
+	module.getSortedSetRangeByScoreWithScores = async function (key, start, count, min, max) {
+		return await sortedSetRangeByScore('zrangebyscore', key, start, count, min, max, true);
+	};
+
+	module.getSortedSetRevRangeByScoreWithScores = async function (key, start, count, max, min) {
+		return await sortedSetRangeByScore('zrevrangebyscore', key, start, count, min, max, true);
+	};
+
+	async function sortedSetRangeByScore(method, key, start, count, min, max, withScores) {
+		if (parseInt(count, 10) === 0) {
+			return [];
+		}
+		const stop = (parseInt(count, 10) === -1) ? -1 : (start + count - 1);
+		return await sortedSetRange(method, key, start, stop, min, max, withScores);
+	}
+
+	module.sortedSetCount = async function (key, min, max) {
+		return await module.client.async.zcount(key, min, max);
+	};
+
+	module.sortedSetCard = async function (key) {
+		return await module.client.async.zcard(key);
+	};
+
+	module.sortedSetsCard = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback(null, []);
+			return [];
 		}
-		var batch = redisClient.batch();
-		for (var i = 0; i < keys.length; i += 1) {
-			batch.zcard(keys[i]);
-		}
-		batch.exec(callback);
+		var batch = module.client.batch();
+		keys.forEach(k => batch.zcard(String(k)));
+		return await helpers.execBatch(batch);
 	};
 
-	module.sortedSetRank = function (key, value, callback) {
-		redisClient.zrank(key, value, callback);
+	module.sortedSetsCardSum = async function (keys) {
+		if (!keys || (Array.isArray(keys) && !keys.length)) {
+			return 0;
+		}
+		if (!Array.isArray(keys)) {
+			keys = [keys];
+		}
+		const counts = await module.sortedSetsCard(keys);
+		const sum = counts.reduce((acc, val) => acc + val, 0);
+		return sum;
 	};
 
-	module.sortedSetsRanks = function (keys, values, callback) {
-		var batch = redisClient.batch();
+	module.sortedSetRank = async function (key, value) {
+		return await module.client.async.zrank(key, value);
+	};
+
+	module.sortedSetRevRank = async function (key, value) {
+		return await module.client.async.zrevrank(key, value);
+	};
+
+	module.sortedSetsRanks = async function (keys, values) {
+		const batch = module.client.batch();
 		for (var i = 0; i < values.length; i += 1) {
-			batch.zrank(keys[i], values[i]);
+			batch.zrank(keys[i], String(values[i]));
 		}
-		batch.exec(callback);
+		return await helpers.execBatch(batch);
 	};
 
-	module.sortedSetRanks = function (key, values, callback) {
-		var batch = redisClient.batch();
+	module.sortedSetsRevRanks = async function (keys, values) {
+		const batch = module.client.batch();
 		for (var i = 0; i < values.length; i += 1) {
-			batch.zrank(key, values[i]);
+			batch.zrevrank(keys[i], String(values[i]));
 		}
-		batch.exec(callback);
+		return await helpers.execBatch(batch);
 	};
 
-	module.sortedSetRevRank = function (key, value, callback) {
-		redisClient.zrevrank(key, value, callback);
+	module.sortedSetRanks = async function (key, values) {
+		const batch = module.client.batch();
+		for (var i = 0; i < values.length; i += 1) {
+			batch.zrank(key, String(values[i]));
+		}
+		return await helpers.execBatch(batch);
 	};
 
-	module.sortedSetScore = function (key, value, callback) {
+	module.sortedSetRevRanks = async function (key, values) {
+		const batch = module.client.batch();
+		for (var i = 0; i < values.length; i += 1) {
+			batch.zrevrank(key, String(values[i]));
+		}
+		return await helpers.execBatch(batch);
+	};
+
+	module.sortedSetScore = async function (key, value) {
 		if (!key || value === undefined) {
-			return callback(null, null);
+			return null;
 		}
 
-		redisClient.zscore(key, value, function (err, score) {
-			if (err) {
-				return callback(err);
-			}
-			if (score === null) {
-				return callback(null, score);
-			}
-			callback(null, parseFloat(score));
-		});
+		const score = await module.client.async.zscore(key, value);
+		return score === null ? score : parseFloat(score);
 	};
 
-	module.sortedSetsScore = function (keys, value, callback) {
+	module.sortedSetsScore = async function (keys, value) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback(null, []);
+			return [];
 		}
-		helpers.execKeysValue(redisClient, 'batch', 'zscore', keys, value, function (err, scores) {
-			if (err) {
-				return callback(err);
-			}
-			scores = scores.map(function (d) {
-				return d === null ? d : parseFloat(d);
-			});
-			callback(null, scores);
-		});
+		const batch = module.client.batch();
+		keys.forEach(key => batch.zscore(String(key), String(value)));
+		const scores = await helpers.execBatch(batch);
+		return scores.map(d => (d === null ? d : parseFloat(d)));
 	};
 
-	module.sortedSetScores = function (key, values, callback) {
+	module.sortedSetScores = async function (key, values) {
 		if (!values.length) {
-			return setImmediate(callback, null, []);
+			return [];
 		}
-		helpers.execKeyValues(redisClient, 'batch', 'zscore', key, values, function (err, scores) {
-			if (err) {
-				return callback(err);
-			}
-			scores = scores.map(function (d) {
-				return d === null ? d : parseFloat(d);
-			});
-			callback(null, scores);
-		});
+		const batch = module.client.batch();
+		values.forEach(value => batch.zscore(String(key), String(value)));
+		const scores = await helpers.execBatch(batch);
+		return scores.map(d => (d === null ? d : parseFloat(d)));
 	};
 
-	module.isSortedSetMember = function (key, value, callback) {
-		module.sortedSetScore(key, value, function (err, score) {
-			callback(err, utils.isNumber(score));
-		});
+	module.isSortedSetMember = async function (key, value) {
+		const score = await module.sortedSetScore(key, value);
+		return utils.isNumber(score);
 	};
 
-	module.isSortedSetMembers = function (key, values, callback) {
-		helpers.execKeyValues(redisClient, 'batch', 'zscore', key, values, function (err, results) {
-			if (err) {
-				return callback(err);
-			}
-			callback(null, results.map(Boolean));
-		});
+	module.isSortedSetMembers = async function (key, values) {
+		const batch = module.client.batch();
+		values.forEach(v => batch.zscore(key, String(v)));
+		const results = await helpers.execBatch(batch);
+		return results.map(utils.isNumber);
 	};
 
-	module.isMemberOfSortedSets = function (keys, value, callback) {
+	module.isMemberOfSortedSets = async function (keys, value) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return setImmediate(callback, null, []);
+			return [];
 		}
-		helpers.execKeysValue(redisClient, 'batch', 'zscore', keys, value, function (err, results) {
-			if (err) {
-				return callback(err);
-			}
-			callback(null, results.map(Boolean));
-		});
+		const batch = module.client.batch();
+		keys.forEach(k => batch.zscore(k, String(value)));
+		const results = await helpers.execBatch(batch);
+		return results.map(utils.isNumber);
 	};
 
-	module.getSortedSetsMembers = function (keys, callback) {
+	module.getSortedSetsMembers = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return setImmediate(callback, null, []);
+			return [];
 		}
-		var batch = redisClient.batch();
-		for (var i = 0; i < keys.length; i += 1) {
-			batch.zrange(keys[i], 0, -1);
-		}
-		batch.exec(callback);
+		var batch = module.client.batch();
+		keys.forEach(k => batch.zrange(k, 0, -1));
+		return await helpers.execBatch(batch);
 	};
 
-	module.sortedSetIncrBy = function (key, increment, value, callback) {
-		callback = callback || helpers.noop;
-		redisClient.zincrby(key, increment, value, function (err, newValue) {
-			callback(err, !err ? parseFloat(newValue) : undefined);
-		});
+	module.sortedSetIncrBy = async function (key, increment, value) {
+		const newValue = await module.client.async.zincrby(key, increment, value);
+		return parseFloat(newValue);
 	};
 
-	module.getSortedSetRangeByLex = function (key, min, max, start, count, callback) {
-		sortedSetLex('zrangebylex', false, key, min, max, start, count, callback);
+	module.getSortedSetRangeByLex = async function (key, min, max, start, count) {
+		return await sortedSetLex('zrangebylex', false, key, min, max, start, count);
 	};
 
-	module.getSortedSetRevRangeByLex = function (key, max, min, start, count, callback) {
-		sortedSetLex('zrevrangebylex', true, key, max, min, start, count, callback);
+	module.getSortedSetRevRangeByLex = async function (key, max, min, start, count) {
+		return await sortedSetLex('zrevrangebylex', true, key, max, min, start, count);
 	};
 
-	module.sortedSetRemoveRangeByLex = function (key, min, max, callback) {
-		callback = callback || helpers.noop;
-		sortedSetLex('zremrangebylex', false, key, min, max, function (err) {
-			callback(err);
-		});
+	module.sortedSetRemoveRangeByLex = async function (key, min, max) {
+		await sortedSetLex('zremrangebylex', false, key, min, max);
 	};
 
-	module.sortedSetLexCount = function (key, min, max, callback) {
-		sortedSetLex('zlexcount', false, key, min, max, callback);
+	module.sortedSetLexCount = async function (key, min, max) {
+		return await sortedSetLex('zlexcount', false, key, min, max);
 	};
 
-	function sortedSetLex(method, reverse, key, min, max, start, count, callback) {
-		callback = callback || start;
-
+	async function sortedSetLex(method, reverse, key, min, max, start, count) {
 		var minmin;
 		var maxmax;
 		if (reverse) {
@@ -282,11 +266,10 @@ module.exports = function (redisClient, module) {
 		if (max !== maxmax && !max.match(/^[[(]/)) {
 			max = '[' + max;
 		}
-
+		const args = [key, min, max];
 		if (count) {
-			redisClient[method]([key, min, max, 'LIMIT', start, count], callback);
-		} else {
-			redisClient[method]([key, min, max], callback);
+			args.push('LIMIT', start, count);
 		}
+		return await module.client.async[method](args);
 	}
 };

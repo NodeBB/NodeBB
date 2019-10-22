@@ -8,7 +8,7 @@
 	"custom-js.enable": "Aktywuj własny Javascript.",
 
 	"custom-header": "Własny nagłówek",
-	"custom-header.description": "Wprowadź tutaj własny kod HTML (np. meta tagi, itp.), które będą dołączone do sekcji <code>&lt;head&gt;</code> twojego forumowego znacznika. Tagi skryptów są dozwolone, ale niezaleccane jako że zakładka <a href=\"#custom-header\" data-toggle=\"tab\">Własny Javascript</a> jest dostępna. ",
+	"custom-header.description": "Wpisz tutaj niestandardowy kod HTML (np. Metatagi, itp.), który zostanie dołączony do sekcji <code>&lt;head&gt;</code> Twojego forum. Dozwolone są tagi skryptów, ale są one odradzane, ponieważ dostępna jest <a href=\"#custom-js\" data-toggle=\"tab\">niestandardowa karta JavaScript</a>.",
 	"custom-header.enable": "Włącz własny nagłówek",
 
 	"custom-css.livereload": "Włącz dynamiczne przeładowanie",

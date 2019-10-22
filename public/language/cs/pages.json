@@ -43,6 +43,7 @@
     "account/following": "Sleduje %1 lidí",
     "account/followers": "Lidé kteří sledují %1",
     "account/posts": "Příspěvky od %1",
+    "account/latest-posts": "Poslední příspěvek od %1",
     "account/topics": "Příspěvky vytvořeny uživatelem %1",
     "account/groups": "%1's skupiny",
     "account/watched_categories": "%1's sledovaných kategorii",

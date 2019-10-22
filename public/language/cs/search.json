@@ -43,5 +43,6 @@
     "clear-preferences": "Smazat nastavení",
     "search-preferences-saved": "Hledat dle uložených nastavení",
     "search-preferences-cleared": "Hledat dle smazaných nastavení",
-    "show-results-as": "Zobrazit výsledek jako"
+    "show-results-as": "Zobrazit výsledek jako",
+    "see-more-results": "Zobrazit více výsledků (%1)"
 }

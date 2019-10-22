@@ -1,7 +1,10 @@
 'use strict';
 
-var mubsub = require('mubsub-nbb');
-var db = require('../mongo');
-var client = mubsub(db.getConnectionString(), db.getConnectionOptions());
+const mubsub = require('mubsub-nbb');
+const connection = require('./connection');
 
-module.exports = client.channel('pubsub');
+const client = mubsub(connection.getConnectionString(), connection.getConnectionOptions());
+client.on('error', err => console.error(err));
+const channel = client.channel('pubsub');
+channel.on('error', err => console.error(err));
+module.exports = channel;

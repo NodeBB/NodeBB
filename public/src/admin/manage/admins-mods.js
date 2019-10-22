@@ -89,7 +89,7 @@ define('admin/manage/admins-mods', ['translator', 'benchpress', 'autocomplete'],
 			var cid = $(ev.target).attr('data-cid');
 			socket.emit('admin.categories.setPrivilege', {
 				cid: cid,
-				privilege: ['moderate'],
+				privilege: ajaxify.data.allPrivileges,
 				set: true,
 				member: ui.item.user.uid,
 			}, function (err) {
@@ -103,7 +103,7 @@ define('admin/manage/admins-mods', ['translator', 'benchpress', 'autocomplete'],
 					return;
 				}
 
-				app.parseAndTranslate('admin/manage/admins-mods', 'globalMods', { globalMods: [ui.item.user] }, function (html) {
+				app.parseAndTranslate('admin/manage/admins-mods', 'globalMods.members', { globalMods: { members: [ui.item.user] } }, function (html) {
 					$('.moderator-area[data-cid="' + cid + '"]').prepend(html);
 					$('.no-moderator-warning[data-cid="' + cid + '"]').addClass('hidden');
 				});
@@ -120,7 +120,7 @@ define('admin/manage/admins-mods', ['translator', 'benchpress', 'autocomplete'],
 				if (confirm) {
 					socket.emit('admin.categories.setPrivilege', {
 						cid: cid,
-						privilege: ['moderate'],
+						privilege: ajaxify.data.allPrivileges,
 						set: false,
 						member: uid,
 					}, function (err) {

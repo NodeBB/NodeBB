@@ -1,23 +1,22 @@
 'use strict';
 
-var nconf = require('nconf');
-var async = require('async');
+const nconf = require('nconf');
 
-var user = require('../../user');
-var posts = require('../../posts');
-var plugins = require('../../plugins');
-var meta = require('../../meta');
-var accountHelpers = require('./helpers');
-var helpers = require('../helpers');
-var pagination = require('../../pagination');
-var messaging = require('../../messaging');
-var translator = require('../../translator');
-var utils = require('../../utils');
+const db = require('../../database');
+const user = require('../../user');
+const posts = require('../../posts');
+const categories = require('../../categories');
+const plugins = require('../../plugins');
+const meta = require('../../meta');
+const accountHelpers = require('./helpers');
+const helpers = require('../helpers');
+const messaging = require('../../messaging');
+const utils = require('../../utils');
 
-var profileController = module.exports;
+const profileController = module.exports;
 
-profileController.get = function (req, res, callback) {
-	var lowercaseSlug = req.params.userslug.toLowerCase();
+profileController.get = async function (req, res, next) {
+	const lowercaseSlug = req.params.userslug.toLowerCase();
 
 	if (req.params.userslug !== lowercaseSlug) {
 		if (res.locals.isAPI) {
@@ -26,112 +25,108 @@ profileController.get = function (req, res, callback) {
 			return res.redirect(nconf.get('relative_path') + '/user/' + lowercaseSlug);
 		}
 	}
-	var page = Math.max(1, parseInt(req.query.page, 10) || 1);
-	var itemsPerPage = 10;
-	var start = (page - 1) * itemsPerPage;
-	var stop = start + itemsPerPage - 1;
-	var userData;
-	async.waterfall([
-		function (next) {
-			accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, next);
-		},
-		function (_userData, next) {
-			if (!_userData) {
-				return callback();
-			}
-			userData = _userData;
 
-			if (req.uid >= 0) {
-				req.session.uids_viewed = req.session.uids_viewed || {};
+	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid);
+	if (!userData) {
+		return next();
+	}
 
-				if (req.uid !== userData.uid && (!req.session.uids_viewed[userData.uid] || req.session.uids_viewed[userData.uid] < Date.now() - 3600000)) {
-					user.incrementUserFieldBy(userData.uid, 'profileviews', 1);
-					req.session.uids_viewed[userData.uid] = Date.now();
-				}
-			}
+	await incrementProfileViews(req, userData);
 
-			async.parallel({
-				hasPrivateChat: function (next) {
-					messaging.hasPrivateChat(req.uid, userData.uid, next);
-				},
-				posts: function (next) {
-					posts.getPostSummariesFromSet('uid:' + userData.theirid + ':posts', req.uid, start, stop, next);
-				},
-				signature: function (next) {
-					posts.parseSignature(userData, req.uid, next);
-				},
-				aboutme: function (next) {
-					if (userData.aboutme) {
-						plugins.fireHook('filter:parse.aboutme', userData.aboutme, next);
-					} else {
-						next();
-					}
-				},
-			}, next);
-		},
-		function (results, next) {
-			if (meta.config['reputation:disabled']) {
-				delete userData.reputation;
-			}
+	const [hasPrivateChat, latestPosts, bestPosts] = await Promise.all([
+		messaging.hasPrivateChat(req.uid, userData.uid),
+		getLatestPosts(req.uid, userData),
+		getBestPosts(req.uid, userData),
+		posts.parseSignature(userData, req.uid),
+	]);
 
-			userData.posts = results.posts.posts.filter(p => p && !p.deleted);
-			userData.hasPrivateChat = results.hasPrivateChat;
-			userData.aboutme = translator.escape(results.aboutme);
-			userData.nextStart = results.posts.nextStart;
-			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username }]);
-			userData.title = userData.username;
-			userData.allowCoverPicture = !userData.isSelf || userData.reputation >= (meta.config['min:rep:cover-picture'] || 0);
-			var pageCount = Math.ceil(userData.postcount / itemsPerPage);
-			userData.pagination = pagination.create(page, pageCount, req.query);
+	if (meta.config['reputation:disabled']) {
+		delete userData.reputation;
+	}
 
-			if (!userData.profileviews) {
-				userData.profileviews = 1;
-			}
+	userData.posts = latestPosts; // for backwards compat.
+	userData.latestPosts = latestPosts;
+	userData.bestPosts = bestPosts;
+	userData.hasPrivateChat = hasPrivateChat;
+	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username }]);
+	userData.title = userData.username;
+	userData.allowCoverPicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:cover-picture'];
 
-			var plainAboutMe = userData.aboutme ? utils.stripHTMLTags(utils.decodeHTMLEntities(userData.aboutme)) : '';
+	if (!userData.profileviews) {
+		userData.profileviews = 1;
+	}
 
-			res.locals.metaTags = [
-				{
-					name: 'title',
-					content: userData.fullname || userData.username,
-				},
-				{
-					name: 'description',
-					content: plainAboutMe,
-				},
-				{
-					property: 'og:title',
-					content: userData.fullname || userData.username,
-				},
-				{
-					property: 'og:description',
-					content: plainAboutMe,
-				},
-			];
+	addMetaTags(res, userData);
 
-			if (userData.picture) {
-				res.locals.metaTags.push(
-					{
-						property: 'og:image',
-						content: userData.picture,
-						noEscape: true,
-					},
-					{
-						property: 'og:image:url',
-						content: userData.picture,
-						noEscape: true,
-					}
-				);
-			}
+	userData.selectedGroup = userData.groups.filter(group => group && userData.groupTitleArray.includes(group.name))
+		.sort((a, b) => userData.groupTitleArray.indexOf(a.name) - userData.groupTitleArray.indexOf(b.name));
 
-			userData.selectedGroup = userData.groups.filter(function (group) {
-				return group && userData.groupTitleArray.includes(group.name);
-			});
-
-			plugins.fireHook('filter:user.account', { userData: userData, uid: req.uid }, next);
-		},
-		function (results) {
-			res.render('account/profile', results.userData);
-		},
-	], callback);
+	const results = await plugins.fireHook('filter:user.account', { userData: userData, uid: req.uid });
+	res.render('account/profile', results.userData);
 };
+
+async function incrementProfileViews(req, userData) {
+	if (req.uid >= 0) {
+		req.session.uids_viewed = req.session.uids_viewed || {};
+
+		if (req.uid !== userData.uid && (!req.session.uids_viewed[userData.uid] || req.session.uids_viewed[userData.uid] < Date.now() - 3600000)) {
+			await user.incrementUserFieldBy(userData.uid, 'profileviews', 1);
+			req.session.uids_viewed[userData.uid] = Date.now();
+		}
+	}
+}
+
+async function getLatestPosts(callerUid, userData) {
+	return await getPosts(callerUid, userData, 'pids');
+}
+
+async function getBestPosts(callerUid, userData) {
+	return await getPosts(callerUid, userData, 'pids:votes');
+}
+
+async function getPosts(callerUid, userData, setSuffix) {
+	const cids = await categories.getCidsByPrivilege('categories:cid', callerUid, 'topics:read');
+	const keys = cids.map(c => 'cid:' + c + ':uid:' + userData.uid + ':' + setSuffix);
+	const pids = await db.getSortedSetRevRange(keys, 0, 9);
+	const postData = await posts.getPostSummaryByPids(pids, callerUid, { stripTags: false });
+	return postData.filter(p => p && !p.deleted);
+}
+
+function addMetaTags(res, userData) {
+	var plainAboutMe = userData.aboutme ? utils.stripHTMLTags(utils.decodeHTMLEntities(userData.aboutme)) : '';
+	res.locals.metaTags = [
+		{
+			name: 'title',
+			content: userData.fullname || userData.username,
+			noEscape: true,
+		},
+		{
+			name: 'description',
+			content: plainAboutMe,
+		},
+		{
+			property: 'og:title',
+			content: userData.fullname || userData.username,
+			noEscape: true,
+		},
+		{
+			property: 'og:description',
+			content: plainAboutMe,
+		},
+	];
+
+	if (userData.picture) {
+		res.locals.metaTags.push(
+			{
+				property: 'og:image',
+				content: userData.picture,
+				noEscape: true,
+			},
+			{
+				property: 'og:image:url',
+				content: userData.picture,
+				noEscape: true,
+			}
+		);
+	}
+}

@@ -1,8 +1,8 @@
 {
-	"home-page": "Home Page",
-	"description": "Choose what page is shown when users navigate to the root URL of your forum.",
-	"home-page-route": "Home Page Route",
-	"custom-route": "Custom Route",
-	"allow-user-home-pages": "Allow User Home Pages",
-	"home-page-title": "Title of the home page (default \"Home\")"
+	"home-page": "Pagina Iniziale",
+	"description": "Scegliere quale pagina visualizzare quando gli utenti navigano all'URL principale del forum.",
+	"home-page-route": "Percorso Pagina Iniziale",
+	"custom-route": "Percorso personalizzato",
+	"allow-user-home-pages": "Consenti Pagina Iniziale Utente",
+	"home-page-title": "Titolo della pagina iniziale (impostazione predefinita \"Home\")"
 }

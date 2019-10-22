@@ -461,6 +461,15 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 			currentGraph.units = units;
 			currentGraph.until = until;
 			currentGraph.amount = amount;
+
+			// Update the View as JSON button url
+			var apiEl = $('#view-as-json');
+			var newHref = $.param({
+				units: units,
+				until: until,
+				count: amount,
+			});
+			apiEl.attr('href', config.relative_path + '/api/admin/analytics?' + newHref);
 		});
 	}
 
@@ -556,7 +565,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 	}
 
 	function setupFullscreen() {
-		var container = document.getElementById('analytics-traffic-container');
+		var container = document.getElementById('analytics-panel');
 		var $container = $(container);
 		var btn = $container.find('.fa-expand');
 		var fsMethod;

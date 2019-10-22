@@ -1,83 +1,66 @@
 'use strict';
 
-var async = require('async');
-var validator = require('validator');
-var nconf = require('nconf');
+const validator = require('validator');
+const nconf = require('nconf');
 
-var db = require('../database');
-var plugins = require('../plugins');
-var utils = require('../utils');
+const db = require('../database');
+const plugins = require('../plugins');
+const utils = require('../utils');
 
 const intFields = [
 	'createtime', 'memberCount', 'hidden', 'system', 'private',
-	'userTitleEnabled', 'disableJoinRequests',
+	'userTitleEnabled', 'disableJoinRequests', 'disableLeave',
 ];
 
 module.exports = function (Groups) {
-	Groups.getGroupsFields = function (groupNames, fields, callback) {
+	Groups.getGroupsFields = async function (groupNames, fields) {
 		if (!Array.isArray(groupNames) || !groupNames.length) {
-			return callback(null, []);
+			return [];
 		}
 
-		var ephemeralIdx = groupNames.reduce(function (memo, cur, idx) {
+		const ephemeralIdx = groupNames.reduce(function (memo, cur, idx) {
 			if (Groups.ephemeralGroups.includes(cur)) {
 				memo.push(idx);
 			}
 			return memo;
 		}, []);
 
-		async.waterfall([
-			function (next) {
-				const keys = groupNames.map(groupName => 'group:' + groupName);
-				if (fields.length) {
-					db.getObjectsFields(keys, fields, next);
-				} else {
-					db.getObjects(keys, next);
-				}
-			},
-			function (groupData, next) {
-				if (ephemeralIdx.length) {
-					ephemeralIdx.forEach(function (idx) {
-						groupData[idx] = Groups.getEphemeralGroup(groupNames[idx]);
-					});
-				}
+		let groupData;
+		const keys = groupNames.map(groupName => 'group:' + groupName);
+		if (fields.length) {
+			groupData = await db.getObjectsFields(keys, fields);
+		} else {
+			groupData = await db.getObjects(keys);
+		}
+		if (ephemeralIdx.length) {
+			ephemeralIdx.forEach(function (idx) {
+				groupData[idx] = Groups.getEphemeralGroup(groupNames[idx]);
+			});
+		}
 
-				groupData.forEach(group => modifyGroup(group, fields));
+		groupData.forEach(group => modifyGroup(group, fields));
 
-				plugins.fireHook('filter:groups.get', { groups: groupData }, next);
-			},
-			function (results, next) {
-				next(null, results.groups);
-			},
-		], callback);
+		const results = await plugins.fireHook('filter:groups.get', { groups: groupData });
+		return results.groups;
 	};
 
-	Groups.getGroupsData = function (groupNames, callback) {
-		Groups.getGroupsFields(groupNames, [], callback);
+	Groups.getGroupsData = async function (groupNames) {
+		return await Groups.getGroupsFields(groupNames, []);
 	};
 
-	Groups.getGroupData = function (groupName, callback) {
-		Groups.getGroupsData([groupName], function (err, groupsData) {
-			callback(err, Array.isArray(groupsData) && groupsData[0] ? groupsData[0] : null);
-		});
+	Groups.getGroupData = async function (groupName) {
+		const groupsData = await Groups.getGroupsData([groupName]);
+		return Array.isArray(groupsData) && groupsData[0] ? groupsData[0] : null;
 	};
 
-	Groups.getGroupFields = function (groupName, fields, callback) {
-		Groups.getGroupsFields([groupName], fields, function (err, groups) {
-			callback(err, groups ? groups[0] : null);
-		});
+	Groups.getGroupFields = async function (groupName, fields) {
+		const groups = await Groups.getGroupsFields([groupName], fields);
+		return groups ? groups[0] : null;
 	};
 
-	Groups.setGroupField = function (groupName, field, value, callback) {
-		async.waterfall([
-			function (next) {
-				db.setObjectField('group:' + groupName, field, value, next);
-			},
-			function (next) {
-				plugins.fireHook('action:group.set', { field: field, value: value, type: 'set' });
-				next();
-			},
-		], callback);
+	Groups.setGroupField = async function (groupName, field, value) {
+		await db.setObjectField('group:' + groupName, field, value);
+		plugins.fireHook('action:group.set', { field: field, value: value, type: 'set' });
 	};
 };
 
@@ -88,6 +71,7 @@ function modifyGroup(group, fields) {
 		escapeGroupData(group);
 		group.userTitleEnabled = ([null, undefined].includes(group.userTitleEnabled)) ? 1 : group.userTitleEnabled;
 		group.labelColor = validator.escape(String(group.labelColor || '#000000'));
+		group.textColor = validator.escape(String(group.textColor || '#ffffff'));
 		group.icon = validator.escape(String(group.icon || ''));
 		group.createtimeISO = utils.toISOString(group.createtime);
 		group.private = ([null, undefined].includes(group.private)) ? 1 : group.private;
@@ -115,6 +99,6 @@ function escapeGroupData(group) {
 		group.nameEncoded = encodeURIComponent(group.name);
 		group.displayName = validator.escape(String(group.name));
 		group.description = validator.escape(String(group.description || ''));
-		group.userTitle = validator.escape(String(group.userTitle || '')) || group.displayName;
+		group.userTitle = validator.escape(String(group.userTitle || ''));
 	}
 }

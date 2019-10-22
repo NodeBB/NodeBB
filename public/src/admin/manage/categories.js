@@ -27,12 +27,20 @@ define('admin/manage/categories', [
 			var cid = $this.attr('data-cid');
 			var parentEl = $this.parents('li[data-cid="' + cid + '"]');
 			var disabled = parentEl.hasClass('disabled');
-
-			var children = parentEl.find('li[data-cid]').map(function () {
+			var childrenEls = parentEl.find('li[data-cid]');
+			var childrenCids = childrenEls.map(function () {
 				return $(this).attr('data-cid');
 			}).get();
 
-			Categories.toggle([cid].concat(children), !disabled);
+			parentEl.toggleClass('disabled', !disabled);
+			childrenEls.toggleClass('disabled', !disabled);
+
+			$this.translateText(!disabled ? '[[admin/manage/categories:enable]]' : '[[admin/manage/categories:disable]]');
+			$this.toggleClass('btn-primary', !disabled).toggleClass('btn-danger', disabled);
+			childrenEls.find('button[data-action="toggle"]').translateText(!disabled ? '[[admin/manage/categories:enable]]' : '[[admin/manage/categories:disable]]');
+			childrenEls.find('button[data-action="toggle"]').toggleClass('btn-primary', !disabled).toggleClass('btn-danger', disabled);
+
+			Categories.toggle([cid].concat(childrenCids), !disabled);
 			return false;
 		});
 
@@ -162,7 +170,6 @@ define('admin/manage/categories', [
 			if (err) {
 				return app.alertError(err.message);
 			}
-			ajaxify.refresh();
 		});
 	};
 

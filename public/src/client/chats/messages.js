@@ -64,6 +64,9 @@ define('forum/chats/messages', ['components', 'sounds', 'translator', 'benchpres
 		var element = parent.find('[component="chat/input"]');
 		parent.find('[component="chat/message/length"]').text(element.val().length);
 		parent.find('[component="chat/message/remaining"]').text(config.maximumChatMessageLength - element.val().length);
+		$(window).trigger('action:chat.updateRemainingLength', {
+			parent: parent,
+		});
 	};
 
 	messages.appendChatMessage = function (chatContentEl, data) {
@@ -94,11 +97,19 @@ define('forum/chats/messages', ['components', 'sounds', 'translator', 'benchpres
 
 
 	messages.parseMessage = function (data, callback) {
-		Benchpress.parse('partials/chats/message' + (Array.isArray(data) ? 's' : ''), {
-			messages: data,
-		}, function (html) {
+		function done(html) {
 			translator.translate(html, callback);
-		});
+		}
+
+		if (Array.isArray(data)) {
+			Benchpress.parse('partials/chats/message' + (Array.isArray(data) ? 's' : ''), {
+				messages: data,
+			}, done);
+		} else {
+			Benchpress.parse('partials/chats/' + (data.system ? 'system-message' : 'message'), {
+				messages: data,
+			}, done);
+		}
 	};
 
 

@@ -7,7 +7,8 @@
 	"online": "en ligne",
 	"git": "git",
 	"memory": "mémoire",
-	"load": "charge",
+	"load": "Charge du système",
+	"cpu-usage": "Utilisation du processeur",
 	"uptime": "disponibilité",
 
 	"registered": "Enregistré",

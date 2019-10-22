@@ -1,6 +1,7 @@
 {
 	"maintenance-mode": "Apkopes režīms",
 	"maintenance-mode.help": "Kad forums atrodas apkopes režīmā, visa piekļuve tiks novirzīta uz statisku lapu. Uz administratoriem neattiecas šī novirzīšana un viņi var piekļūt vietnei kā parasti.",
+	"maintenance-mode.status": "Maintenance Mode Status Code",
 	"maintenance-mode.message": "Apkopes paziņojums",
 	"headers": "Iezīmes",
 	"headers.allow-from": "Iestatīt ALLOW-FROM, lai atļautu NodeBB ievietot iFrame",

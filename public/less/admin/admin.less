@@ -117,20 +117,20 @@ body {
 		.box-header-font;
 	}
 
-	.panel {
+	.panel:not([data-container-html]) {
 		background-color: #FFF;
 		box-sizing: border-box;
 		border-radius: 3px;
 		box-shadow: 0px 1px 3px 0px rgba(165, 165, 165, 0.75);
 		margin-bottom: 20px;
 
-		&.panel-default .panel-heading {
+		&.panel-default >.panel-heading {
 			.acp-panel-heading;
 			background: #fefefe;
 			color: #333;
 		}
 
-		&.panel-danger .panel-heading {
+		&.panel-danger >.panel-heading {
 			.acp-panel-heading;
 		}
 	}

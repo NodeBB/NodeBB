@@ -17,6 +17,7 @@ var groups = require('../src/groups');
 var categories = require('../src/categories');
 var helpers = require('./helpers');
 var meta = require('../src/meta');
+const events = require('../src/events');
 
 var socketAdmin = require('../src/socket.io/admin');
 
@@ -123,6 +124,14 @@ describe('socket.io', function () {
 		});
 	});
 
+	it('should get more unread topics', function (done) {
+		io.emit('topics.loadMoreSortedTopics', { after: 0, count: 10, direction: 1, sort: 'unread' }, function (err, result) {
+			assert.ifError(err);
+			assert(Array.isArray(result.topics));
+			done();
+		});
+	});
+
 	it('should ban a user', function (done) {
 		var socketUser = require('../src/socket.io/user');
 		socketUser.banUsers({ uid: adminUid }, { uids: [regularUid], reason: 'spammer' }, function (err) {
@@ -131,8 +140,8 @@ describe('socket.io', function () {
 				assert.ifError(err);
 				assert(data.uid);
 				assert(data.timestamp);
-				assert(data.hasOwnProperty('expiry'));
-				assert(data.hasOwnProperty('expiry_readable'));
+				assert(data.hasOwnProperty('banned_until'));
+				assert(data.hasOwnProperty('banned_until_readable'));
 				assert.equal(data.reason, 'spammer');
 				done();
 			});
@@ -140,7 +149,7 @@ describe('socket.io', function () {
 	});
 
 	it('should return ban reason', function (done) {
-		user.getBannedReason(regularUid, function (err, reason) {
+		user.bans.getReason(regularUid, function (err, reason) {
 			assert.ifError(err);
 			assert.equal(reason, 'spammer');
 			done();
@@ -151,7 +160,7 @@ describe('socket.io', function () {
 		var socketUser = require('../src/socket.io/user');
 		socketUser.unbanUsers({ uid: adminUid }, [regularUid], function (err) {
 			assert.ifError(err);
-			user.isBanned(regularUid, function (err, isBanned) {
+			user.bans.isBanned(regularUid, function (err, isBanned) {
 				assert.ifError(err);
 				assert(!isBanned);
 				done();
@@ -181,7 +190,7 @@ describe('socket.io', function () {
 		});
 	});
 
-	describe('create/delete', function () {
+	describe('user create/delete', function () {
 		var uid;
 		it('should create a user', function (done) {
 			socketAdmin.user.createUser({ uid: adminUid }, { username: 'foo1' }, function (err, _uid) {
@@ -583,7 +592,7 @@ describe('socket.io', function () {
 	it('should delete a single event', function (done) {
 		db.getSortedSetRevRange('events:time', 0, 0, function (err, eids) {
 			assert.ifError(err);
-			socketAdmin.deleteEvents({ uid: adminUid }, eids, function (err) {
+			events.deleteEvents(eids, function (err) {
 				assert.ifError(err);
 				db.isSortedSetMembers('events:time', eids, function (err, isMembers) {
 					assert.ifError(err);
@@ -595,7 +604,7 @@ describe('socket.io', function () {
 	});
 
 	it('should delete all events', function (done) {
-		socketAdmin.deleteAllEvents({ uid: adminUid }, {}, function (err) {
+		events.deleteAll(function (err) {
 			assert.ifError(err);
 			db.sortedSetCard('events:time', function (err, count) {
 				assert.ifError(err);
@@ -632,6 +641,74 @@ describe('socket.io', function () {
 			meta.config.loggerStatus = 0;
 			meta.config.loggerIOStatus = 0;
 			done();
+		});
+	});
+
+	describe('password reset', function () {
+		const socketUser = require('../src/socket.io/user');
+
+		it('should not error on valid email', function (done) {
+			socketUser.reset.send({ uid: 0 }, 'regular@test.com', function (err) {
+				assert.ifError(err);
+
+				async.parallel({
+					count: async.apply(db.sortedSetCount.bind(db), 'reset:issueDate', 0, Date.now()),
+					event: async.apply(events.getEvents, '', 0, 0),
+				}, function (err, data) {
+					assert.ifError(err);
+					assert.strictEqual(data.count, 1);
+
+					// Event validity
+					assert.strictEqual(data.event.length, 1);
+					const event = data.event[0];
+					assert.strictEqual(event.type, 'password-reset');
+					assert.strictEqual(event.text, '[[success:success]]');
+
+					done();
+				});
+			});
+		});
+
+		it('should not generate code if rate limited', function (done) {
+			socketUser.reset.send({ uid: 0 }, 'regular@test.com', function (err) {
+				assert.ifError(err);
+
+				async.parallel({
+					count: async.apply(db.sortedSetCount.bind(db), 'reset:issueDate', 0, Date.now()),
+					event: async.apply(events.getEvents, '', 0, 0),
+				}, function (err, data) {
+					assert.ifError(err);
+					assert.strictEqual(data.count, 1);	// should still equal 1
+
+					// Event validity
+					assert.strictEqual(data.event.length, 1);
+					const event = data.event[0];
+					assert.strictEqual(event.type, 'password-reset');
+					assert.strictEqual(event.text, '[[error:reset-rate-limited]]');
+
+					done();
+				});
+			});
+		});
+
+		it('should not error on invalid email (but not generate reset code)', function (done) {
+			socketUser.reset.send({ uid: 0 }, 'irregular@test.com', function (err) {
+				assert.ifError(err);
+
+				db.sortedSetCount('reset:issueDate', 0, Date.now(), function (err, count) {
+					assert.ifError(err);
+					assert.strictEqual(count, 1);
+					done();
+				});
+			});
+		});
+
+		it('should error on no email', function (done) {
+			socketUser.reset.send({ uid: 0 }, '', function (err) {
+				assert(err instanceof Error);
+				assert.strictEqual(err.message, '[[error:invalid-data]]');
+				done();
+			});
 		});
 	});
 });

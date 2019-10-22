@@ -1,53 +1,46 @@
 'use strict';
 
-module.exports = function (db, module) {
-	var helpers = module.helpers.mongo;
+module.exports = function (module) {
+	var helpers = require('../helpers');
 
-	module.sortedSetRemove = function (key, value, callback) {
-		function done(err) {
-			callback(err);
-		}
-		callback = callback || helpers.noop;
+	module.sortedSetRemove = async function (key, value) {
 		if (!key) {
-			return callback();
+			return;
+		}
+		const isValueArray = Array.isArray(value);
+		if (!value || (isValueArray && !value.length)) {
+			return;
 		}
 
-		if (Array.isArray(value)) {
+		if (isValueArray) {
 			value = value.map(helpers.valueToString);
 		} else {
 			value = helpers.valueToString(value);
 		}
 
-		if (Array.isArray(key) && Array.isArray(value)) {
-			db.collection('objects').deleteMany({ _key: { $in: key }, value: { $in: value } }, done);
-		} else if (Array.isArray(value)) {
-			db.collection('objects').deleteMany({ _key: key, value: { $in: value } }, done);
-		} else if (Array.isArray(key)) {
-			db.collection('objects').deleteMany({ _key: { $in: key }, value: value }, done);
-		} else {
-			db.collection('objects').deleteOne({ _key: key, value: value }, done);
-		}
-	};
-
-	module.sortedSetsRemove = function (keys, value, callback) {
-		callback = callback || helpers.noop;
-		if (!Array.isArray(keys) || !keys.length) {
-			return callback();
-		}
-		value = helpers.valueToString(value);
-
-		db.collection('objects').deleteMany({ _key: { $in: keys }, value: value }, function (err) {
-			callback(err);
+		await module.client.collection('objects').deleteMany({
+			_key: Array.isArray(key) ? { $in: key } : key,
+			value: isValueArray ? { $in: value } : value,
 		});
 	};
 
-	module.sortedSetsRemoveRangeByScore = function (keys, min, max, callback) {
-		callback = callback || helpers.noop;
+	module.sortedSetsRemove = async function (keys, value) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback();
+			return;
+		}
+		value = helpers.valueToString(value);
+
+		await module.client.collection('objects').deleteMany({ _key: { $in: keys }, value: value });
+	};
+
+	module.sortedSetsRemoveRangeByScore = async function (keys, min, max) {
+		if (!Array.isArray(keys) || !keys.length) {
+			return;
 		}
 		var query = { _key: { $in: keys } };
-
+		if (keys.length === 1) {
+			query._key = keys[0];
+		}
 		if (min !== '-inf') {
 			query.score = { $gte: parseFloat(min) };
 		}
@@ -56,8 +49,15 @@ module.exports = function (db, module) {
 			query.score.$lte = parseFloat(max);
 		}
 
-		db.collection('objects').deleteMany(query, function (err) {
-			callback(err);
-		});
+		await module.client.collection('objects').deleteMany(query);
+	};
+
+	module.sortedSetRemoveBulk = async function (data) {
+		if (!Array.isArray(data) || !data.length) {
+			return;
+		}
+		var bulk = module.client.collection('objects').initializeUnorderedBulkOp();
+		data.forEach(item => bulk.find({ _key: item[0], value: String(item[1]) }).remove());
+		await bulk.execute();
 	};
 };

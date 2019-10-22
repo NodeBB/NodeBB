@@ -1,5 +1,5 @@
 {
-    "home": "Strona startowa",
+    "home": "Strona główna",
     "unread": "Nieprzeczytane tematy",
     "popular-day": "Tematy popularne dzisiaj",
     "popular-week": "Tematy popularne w tym tygodniu",
@@ -43,6 +43,7 @@
     "account/following": "Obserwowani przez %1",
     "account/followers": "Obserwujący %1",
     "account/posts": "Posty napisane przez %1",
+    "account/latest-posts": "Najnowszy post utworzony przez %1",
     "account/topics": "Tematy utworzone przez %1",
     "account/groups": "Grupy %1",
     "account/watched_categories": "Kategorie obserwowane przez %1",

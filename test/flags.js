@@ -1,7 +1,5 @@
 'use strict';
 
-/* globals require, before, after, describe, it */
-
 var assert = require('assert');
 var async = require('async');
 
@@ -451,7 +449,7 @@ describe('Flags', function () {
 					}
 
 					assert.strictEqual('[1,"this is my note"]', notes[0]);
-					done();
+					setTimeout(done, 10);
 				});
 			});
 		});

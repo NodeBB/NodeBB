@@ -43,6 +43,7 @@
     "account/following": "Особе које %1 прати",
     "account/followers": "Особе које прате %1",
     "account/posts": "Поруке од %1",
+    "account/latest-posts": "Најновије поруке од %1",
     "account/topics": "Теме од %1",
     "account/groups": "Групе корисника %1",
     "account/watched_categories": "Надгледане категорије корисника %1",

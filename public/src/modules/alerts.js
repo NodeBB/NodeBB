@@ -52,6 +52,8 @@ define('alerts', ['translator', 'components', 'benchpress'], function (translato
 							fadeOut(alert);
 						});
 				}
+
+				$(window).trigger('action:alert.new', { alert: alert, params: params });
 			});
 		});
 	}
@@ -74,6 +76,7 @@ define('alerts', ['translator', 'components', 'benchpress'], function (translato
 		translator.translate(alert.html(), function (translatedHTML) {
 			alert.children().fadeIn(100);
 			alert.html(translatedHTML);
+			$(window).trigger('action:alert.update', { alert: alert, params: params });
 		});
 
 		// Handle changes in the clickfn

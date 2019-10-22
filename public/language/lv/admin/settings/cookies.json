@@ -4,6 +4,7 @@
 	"consent.message": "Notifikācija",
 	"consent.acceptance": "Pieņemšanas paziņojums",
 	"consent.link-text": "Polises saites teksts",
+	"consent.link-url": "Policy Link URL",
 	"consent.blank-localised-default": "Atstāt tukšu, lai izmantotu noklusējuma NodeBB lokalizāciju",
 	"settings": "Iestatījumi",
 	"cookie-domain": "Sesiju sīkfailu domēns",

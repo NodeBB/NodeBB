@@ -9,6 +9,7 @@
 
 	"plugin-search": "플러그인 검색",
 	"plugin-search-placeholder": "플러그인을 검색하세요...",
+	"submit-anonymous-usage": "Submit anonymous plugin usage data.",
 	"reorder-plugins": "플러그인 작동 순서 재배열",
 	"order-active": "사용 중인 플러그인 작동 순서 배열",
 	"dev-interested": "NodeBB 플러그인을 만드는 데 관심이 있으십니까?",
@@ -29,6 +30,8 @@
 	"plugin-item.more-info": "추가적인 정보를 원하시면:",
 	"plugin-item.unknown": "알려지지 않은",
 	"plugin-item.unknown-explanation": "이 플러그인의 상태를 알 수 없습니다. 환경 설정에서 발생한 오류 때문일 수 있습니다.",
+	"plugin-item.compatible": "This plugin works on NodeBB %1",
+	"plugin-item.not-compatible": "This plugin has no compatibility data, make sure it works before installing on your production environment.",
 
 	"alert.enabled": "플러그인이 활성화됐습니다",
 	"alert.disabled": "플러그인이 비활성화됐습니다.",

@@ -1,13 +1,14 @@
 'use strict';
 
-var plugins = require('../../plugins');
+const validator = require('validator');
+const plugins = require('../../plugins');
 
-var hooksController = module.exports;
+const hooksController = module.exports;
 
 hooksController.get = function (req, res) {
-	var hooks = [];
+	const hooks = [];
 	Object.keys(plugins.loadedHooks).forEach(function (key, hookIndex) {
-		var current = {
+		const current = {
 			hookName: key,
 			methods: [],
 			index: 'hook-' + hookIndex,
@@ -18,7 +19,7 @@ hooksController.get = function (req, res) {
 			current.methods.push({
 				id: hookData.id,
 				priority: hookData.priority,
-				method: hookData.method ? hookData.method.toString() : 'No plugin function!',
+				method: hookData.method ? validator.escape(hookData.method.toString()) : 'No plugin function!',
 				index: hookIndex + '-code-' + methodIndex,
 			});
 		});

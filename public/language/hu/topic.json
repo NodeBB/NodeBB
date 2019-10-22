@@ -18,11 +18,13 @@
     "last_reply_time": "Utolsó válasz",
     "reply-as-topic": "Válasz témakörként ",
     "guest-login-reply": "Lépj be a válaszoláshoz",
+    "login-to-view": "🔒 Log in to view",
     "edit": "Szerkesztés",
     "delete": "Törlés",
     "purge": "Végleges törlés",
     "restore": "Visszaállítás",
     "move": "Áthelyezés",
+    "change-owner": "Change Owner",
     "fork": "Szétszedés",
     "link": "Hivatkozás",
     "share": "Megosztás",
@@ -64,6 +66,7 @@
     "thread_tools.move": "Témakör áthelyezése",
     "thread_tools.move-posts": "Move Posts",
     "thread_tools.move_all": "Mind áthelyezése",
+    "thread_tools.change_owner": "Change Owner",
     "thread_tools.select_category": "Kategória kiválasztása",
     "thread_tools.fork": "Témakör szétszedése",
     "thread_tools.delete": "Témakör törlése",
@@ -98,6 +101,7 @@
     "delete_posts_instruction": "Kattints a törlendő/véglegesen törlendő hozzászólásokra",
     "merge_topics_instruction": "Kattints a összevonandó témakörökre",
     "move_posts_instruction": "Click the posts you want to move",
+    "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "Add meg a témakör címét...",
     "composer.handle_placeholder": "Név",
     "composer.discard": "Elvet",
@@ -129,5 +133,7 @@
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
     "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
     "diffs.current-revision": "current revision",
-    "diffs.original-revision": "original revision"
+    "diffs.original-revision": "original revision",
+    "timeago_later": "%1 later",
+    "timeago_earlier": "%1 earlier"
 }

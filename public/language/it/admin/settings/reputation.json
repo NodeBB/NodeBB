@@ -1,14 +1,14 @@
 {
-	"reputation": "Reputation Settings",
-	"disable": "Disable Reputation System",
-	"disable-down-voting": "Disable Down Voting",
-	"votes-are-public": "All Votes Are Public",
-	"thresholds": "Activity Thresholds",
-	"min-rep-downvote": "Minimum reputation to downvote posts",
-	"min-rep-flag": "Minimum reputation to flag posts",
-	"min-rep-website": "Minimum reputation to add \"Website\" to user profile",
-	"min-rep-aboutme": "Minimum reputation to add \"About me\" to user profile",
-	"min-rep-signature": "Minimum reputation to add \"Signature\" to user profile",
-	"min-rep-profile-picture": "Minimum reputation to add \"Profile Picture\" to user profile",
-	"min-rep-cover-picture": "Minimum reputation to add \"Cover Picture\" to user profile"
+	"reputation": "Impostazioni reputazione",
+	"disable": "Disabilita sistema reputazione",
+	"disable-down-voting": "Disabilita voto negativo",
+	"votes-are-public": "Tutti i voti sono pubblici",
+	"thresholds": "Soglie di attività",
+	"min-rep-downvote": "Reputazione minima per votare negativamente i post",
+	"min-rep-flag": "Reputazione minima per segnalare i post",
+	"min-rep-website": "Reputazione minima per aggiungere \"Sito Web\" al profilo utente",
+	"min-rep-aboutme": "Reputazione minima per aggiungere \"Su di me\" al profilo utente",
+	"min-rep-signature": "Reputazione minima per aggiungere \"Firma\" al profilo utente",
+	"min-rep-profile-picture": "Reputazione minima per aggiungere \"Immagine profilo\" al profilo utente",
+	"min-rep-cover-picture": "Reputazione minima per aggiungere \"Immagine copertina\" al profilo utente"
 }

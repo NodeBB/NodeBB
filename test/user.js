@@ -5,6 +5,7 @@ var async = require('async');
 var path = require('path');
 var nconf = require('nconf');
 var request = require('request');
+var jwt = require('jsonwebtoken');
 
 var db = require('./mocks/databasemock');
 var User = require('../src/user');
@@ -49,14 +50,21 @@ describe('User', function () {
 
 
 	describe('.create(), when created', function () {
-		it('should be created properly', function (done) {
-			User.create({ username: userData.username, password: userData.password, email: userData.email }, function (error, userId) {
-				assert.equal(error, null, 'was created with error');
-				assert.ok(userId);
+		it('should be created properly', async function () {
+			testUid = await User.create({ username: userData.username, password: userData.password, email: userData.email });
+			assert.ok(testUid);
+		});
 
-				testUid = userId;
-				done();
-			});
+		it('should be created properly', async function () {
+			const uid = await User.create({ username: 'weirdemail', email: '<h1>test</h1>@gmail.com' });
+			const data = await User.getUserData(uid);
+			assert.equal(data.email, '&lt;h1&gt;test&lt;&#x2F;h1&gt;@gmail.com');
+			assert.strictEqual(data.profileviews, 0);
+			assert.strictEqual(data.reputation, 0);
+			assert.strictEqual(data.postcount, 0);
+			assert.strictEqual(data.topiccount, 0);
+			assert.strictEqual(data.lastposttime, 0);
+			assert.strictEqual(data.banned, 0);
 		});
 
 		it('should have a valid email, if using an email', function (done) {
@@ -566,6 +574,14 @@ describe('User', function () {
 			});
 		});
 
+		it('should not return password even if explicitly requested', function (done) {
+			User.getUserFields(testUid, ['password'], function (err, payload) {
+				assert.ifError(err);
+				assert(!payload.hasOwnProperty('password'));
+				done();
+			});
+		});
+
 		it('should return private data if field is whitelisted', function (done) {
 			function filterMethod(data, callback) {
 				data.whitelist.push('another_secret');
@@ -879,7 +895,7 @@ describe('User', function () {
 		it('should return error if profile image uploads disabled', function (done) {
 			meta.config.allowProfileImageUploads = 0;
 			var picture = {
-				path: path.join(nconf.get('base_dir'), 'test/files/test.png'),
+				path: path.join(nconf.get('base_dir'), 'test/files/test_copy.png'),
 				size: 7189,
 				name: 'test.png',
 				type: 'image/png',
@@ -896,7 +912,7 @@ describe('User', function () {
 		it('should return error if profile image is too big', function (done) {
 			meta.config.allowProfileImageUploads = 1;
 			var picture = {
-				path: path.join(nconf.get('base_dir'), 'test/files/test.png'),
+				path: path.join(nconf.get('base_dir'), 'test/files/test_copy.png'),
 				size: 265000,
 				name: 'test.png',
 				type: 'image/png',
@@ -913,7 +929,7 @@ describe('User', function () {
 
 		it('should return error if profile image has no mime type', function (done) {
 			var picture = {
-				path: path.join(nconf.get('base_dir'), 'test/files/test.png'),
+				path: path.join(nconf.get('base_dir'), 'test/files/test_copy.png'),
 				size: 7189,
 				name: 'test',
 			};
@@ -1102,7 +1118,7 @@ describe('User', function () {
 		it('should return the correct ban reason', function (done) {
 			async.series([
 				function (next) {
-					User.ban(testUid, 0, '', function (err) {
+					User.bans.ban(testUid, 0, '', function (err) {
 						assert.ifError(err);
 						next(err);
 					});
@@ -1118,7 +1134,7 @@ describe('User', function () {
 				},
 			], function (err) {
 				assert.ifError(err);
-				User.unban(testUid, function (err) {
+				User.bans.unban(testUid, function (err) {
 					assert.ifError(err);
 					done();
 				});
@@ -1126,28 +1142,28 @@ describe('User', function () {
 		});
 
 		it('should ban user permanently', function (done) {
-			User.ban(testUid, function (err) {
+			User.bans.ban(testUid, function (err) {
 				assert.ifError(err);
-				User.isBanned(testUid, function (err, isBanned) {
+				User.bans.isBanned(testUid, function (err, isBanned) {
 					assert.ifError(err);
 					assert.equal(isBanned, true);
-					User.unban(testUid, done);
+					User.bans.unban(testUid, done);
 				});
 			});
 		});
 
 		it('should ban user temporarily', function (done) {
-			User.ban(testUid, Date.now() + 2000, function (err) {
+			User.bans.ban(testUid, Date.now() + 2000, function (err) {
 				assert.ifError(err);
 
-				User.isBanned(testUid, function (err, isBanned) {
+				User.bans.isBanned(testUid, function (err, isBanned) {
 					assert.ifError(err);
 					assert.equal(isBanned, true);
 					setTimeout(function () {
-						User.isBanned(testUid, function (err, isBanned) {
+						User.bans.isBanned(testUid, function (err, isBanned) {
 							assert.ifError(err);
 							assert.equal(isBanned, false);
-							User.unban(testUid, done);
+							User.bans.unban(testUid, done);
 						});
 					}, 3000);
 				});
@@ -1155,7 +1171,7 @@ describe('User', function () {
 		});
 
 		it('should error if until is NaN', function (done) {
-			User.ban(testUid, 'asd', function (err) {
+			User.bans.ban(testUid, 'asd', function (err) {
 				assert.equal(err.message, '[[error:ban-expiry-missing]]');
 				done();
 			});
@@ -1257,6 +1273,9 @@ describe('User', function () {
 				function (next) {
 					User.setSetting(uid, 'dailyDigestFreq', 'day', next);
 				},
+				function (next) {
+					User.setSetting(uid, 'notificationType_test', 'notificationemail', next);
+				},
 			], done);
 		});
 
@@ -1271,6 +1290,110 @@ describe('User', function () {
 			User.digest.execute({ interval: 'month' }, function (err) {
 				assert.ifError(err);
 				done();
+			});
+		});
+
+		describe('unsubscribe via POST', function () {
+			it('should unsubscribe from digest if one-click unsubscribe is POSTed', function (done) {
+				const token = jwt.sign({
+					template: 'digest',
+					uid: uid,
+				}, nconf.get('secret'));
+
+				request({
+					method: 'post',
+					url: nconf.get('url') + '/email/unsubscribe/' + token,
+				}, function (err, res) {
+					assert.ifError(err);
+					assert.strictEqual(res.statusCode, 200);
+
+					db.getObjectField('user:' + uid + ':settings', 'dailyDigestFreq', function (err, value) {
+						assert.ifError(err);
+						assert.strictEqual(value, 'off');
+						done();
+					});
+				});
+			});
+
+			it('should unsubscribe from notifications if one-click unsubscribe is POSTed', function (done) {
+				const token = jwt.sign({
+					template: 'notification',
+					type: 'test',
+					uid: uid,
+				}, nconf.get('secret'));
+
+				request({
+					method: 'post',
+					url: nconf.get('url') + '/email/unsubscribe/' + token,
+				}, function (err, res) {
+					assert.ifError(err);
+					assert.strictEqual(res.statusCode, 200);
+
+					db.getObjectField('user:' + uid + ':settings', 'notificationType_test', function (err, value) {
+						assert.ifError(err);
+						assert.strictEqual(value, 'notification');
+						done();
+					});
+				});
+			});
+
+			it('should return errors on missing template in token', function (done) {
+				const token = jwt.sign({
+					uid: uid,
+				}, nconf.get('secret'));
+
+				request({
+					method: 'post',
+					url: nconf.get('url') + '/email/unsubscribe/' + token,
+				}, function (err, res) {
+					assert.ifError(err);
+					assert.strictEqual(res.statusCode, 404);
+					done();
+				});
+			});
+
+			it('should return errors on wrong template in token', function (done) {
+				const token = jwt.sign({
+					template: 'user',
+					uid: uid,
+				}, nconf.get('secret'));
+
+				request({
+					method: 'post',
+					url: nconf.get('url') + '/email/unsubscribe/' + token,
+				}, function (err, res) {
+					assert.ifError(err);
+					assert.strictEqual(res.statusCode, 404);
+					done();
+				});
+			});
+
+			it('should return errors on missing token', function (done) {
+				request({
+					method: 'post',
+					url: nconf.get('url') + '/email/unsubscribe/',
+				}, function (err, res) {
+					assert.ifError(err);
+					assert.strictEqual(res.statusCode, 404);
+					done();
+				});
+			});
+
+			it('should return errors on token signed with wrong secret (verify-failure)', function (done) {
+				const token = jwt.sign({
+					template: 'notification',
+					type: 'test',
+					uid: uid,
+				}, nconf.get('secret') + 'aababacaba');
+
+				request({
+					method: 'post',
+					url: nconf.get('url') + '/email/unsubscribe/' + token,
+				}, function (err, res) {
+					assert.ifError(err);
+					assert.strictEqual(res.statusCode, 403);
+					done();
+				});
 			});
 		});
 	});
@@ -1461,13 +1584,11 @@ describe('User', function () {
 	});
 
 	describe('approval queue', function () {
-		var socketAdmin = require('../src/socket.io/admin');
-
-		var oldRegistrationType;
+		var oldRegistrationApprovalType;
 		var adminUid;
 		before(function (done) {
-			oldRegistrationType = meta.config.registrationType;
-			meta.config.registrationType = 'admin-approval';
+			oldRegistrationApprovalType = meta.config.registrationApprovalType;
+			meta.config.registrationApprovalType = 'admin-approval';
 			User.create({ username: 'admin', password: '123456' }, function (err, uid) {
 				assert.ifError(err);
 				adminUid = uid;
@@ -1476,7 +1597,7 @@ describe('User', function () {
 		});
 
 		after(function (done) {
-			meta.config.registrationType = oldRegistrationType;
+			meta.config.registrationApprovalType = oldRegistrationApprovalType;
 			done();
 		});
 
@@ -1530,7 +1651,7 @@ describe('User', function () {
 		});
 
 		it('should reject user registration', function (done) {
-			socketAdmin.user.rejectRegistration({ uid: adminUid }, { username: 'rejectme' }, function (err) {
+			socketUser.rejectRegistration({ uid: adminUid }, { username: 'rejectme' }, function (err) {
 				assert.ifError(err);
 				User.getRegistrationQueue(0, -1, function (err, users) {
 					assert.ifError(err);
@@ -1549,7 +1670,7 @@ describe('User', function () {
 				gdpr_consent: true,
 			}, function (err) {
 				assert.ifError(err);
-				socketAdmin.user.acceptRegistration({ uid: adminUid }, { username: 'acceptme' }, function (err, uid) {
+				socketUser.acceptRegistration({ uid: adminUid }, { username: 'acceptme' }, function (err, uid) {
 					assert.ifError(err);
 					User.exists(uid, function (err, exists) {
 						assert.ifError(err);
@@ -1568,15 +1689,17 @@ describe('User', function () {
 	describe('invites', function () {
 		var socketUser = require('../src/socket.io/user');
 		var inviterUid;
+		var adminUid;
 
 		before(function (done) {
-			User.create({
-				username: 'inviter',
-				email: 'inviter@nodebb.org',
-			}, function (err, uid) {
+			async.parallel({
+				inviter: async.apply(User.create, { username: 'inviter', email: 'inviter@nodebb.org' }),
+				admin: async.apply(User.create, { username: 'adminInvite' }),
+			}, function (err, results) {
 				assert.ifError(err);
-				inviterUid = uid;
-				done();
+				inviterUid = results.inviter;
+				adminUid = results.admin;
+				groups.join('administrators', adminUid, done);
 			});
 		});
 
@@ -1685,8 +1808,8 @@ describe('User', function () {
 		});
 
 		it('should delete invitation', function (done) {
-			var socketAdmin = require('../src/socket.io/admin');
-			socketAdmin.user.deleteInvitation({ uid: inviterUid }, { invitedBy: 'inviter', email: 'invite1@test.com' }, function (err) {
+			var socketUser = require('../src/socket.io/user');
+			socketUser.deleteInvitation({ uid: adminUid }, { invitedBy: 'inviter', email: 'invite1@test.com' }, function (err) {
 				assert.ifError(err);
 				db.isSetMember('invitation:uid:' + inviterUid, 'invite1@test.com', function (err, isMember) {
 					assert.ifError(err);
@@ -1764,10 +1887,8 @@ describe('User', function () {
 
 	describe('user jobs', function () {
 		it('should start user jobs', function (done) {
-			User.startJobs(function (err) {
-				assert.ifError(err);
-				done();
-			});
+			User.startJobs();
+			done();
 		});
 
 		it('should stop user jobs', function (done) {

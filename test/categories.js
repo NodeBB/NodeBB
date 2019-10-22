@@ -124,7 +124,7 @@ describe('Categories', function () {
 				start: 0,
 				stop: 10,
 				uid: 0,
-				sort: 'oldest-to-newest',
+				sort: 'oldest_to_newest',
 			}, function (err, result) {
 				assert.equal(err, null);
 
@@ -144,7 +144,7 @@ describe('Categories', function () {
 				stop: 10,
 				uid: 0,
 				targetUid: 1,
-				sort: 'oldest-to-newest',
+				sort: 'oldest_to_newest',
 			}, function (err, result) {
 				assert.equal(err, null);
 				assert(Array.isArray(result.topics));
@@ -505,7 +505,7 @@ describe('Categories', function () {
 					socketCategories.setPrivilege({ uid: adminUid }, { cid: parentCid, privilege: 'groups:topics:delete', set: true, member: 'registered-users' }, next);
 				},
 				function (next) {
-					socketCategories.copyPrivilegesToChildren({ uid: adminUid }, parentCid, next);
+					socketCategories.copyPrivilegesToChildren({ uid: adminUid }, { cid: parentCid, group: '' }, next);
 				},
 				function (next) {
 					privileges.categories.can('topics:delete', child2Cid, posterUid, next);
@@ -549,7 +549,7 @@ describe('Categories', function () {
 				},
 				function (category, next) {
 					child1Cid = category.cid;
-					socketCategories.copySettingsFrom({ uid: adminUid }, { fromCid: parentCid, toCid: child1Cid }, next);
+					socketCategories.copySettingsFrom({ uid: adminUid }, { fromCid: parentCid, toCid: child1Cid, copyParent: true }, next);
 				},
 				function (destinationCategory, next) {
 					Categories.getCategoryField(child1Cid, 'description', next);
@@ -561,7 +561,7 @@ describe('Categories', function () {
 			], done);
 		});
 
-		it('should copy privileges from', function (done) {
+		it('should copy privileges from another category', function (done) {
 			var child1Cid;
 			var parentCid;
 			async.waterfall([
@@ -584,6 +584,34 @@ describe('Categories', function () {
 				},
 				function (canDelete, next) {
 					assert(canDelete);
+					next();
+				},
+			], done);
+		});
+
+		it('should copy privileges from another category for a single group', function (done) {
+			var child1Cid;
+			var parentCid;
+			async.waterfall([
+				function (next) {
+					Categories.create({ name: 'parent', description: 'copy me' }, next);
+				},
+				function (category, next) {
+					parentCid = category.cid;
+					Categories.create({ name: 'child1' }, next);
+				},
+				function (category, next) {
+					child1Cid = category.cid;
+					socketCategories.setPrivilege({ uid: adminUid }, { cid: parentCid, privilege: 'groups:topics:delete', set: true, member: 'registered-users' }, next);
+				},
+				function (next) {
+					socketCategories.copyPrivilegesFrom({ uid: adminUid }, { fromCid: parentCid, toCid: child1Cid, group: 'registered-users' }, next);
+				},
+				function (next) {
+					privileges.categories.can('topics:delete', child1Cid, 0, next);
+				},
+				function (canDelete, next) {
+					assert(!canDelete);
 					next();
 				},
 			], done);
@@ -739,10 +767,15 @@ describe('Categories', function () {
 					'search:content': false,
 					'search:users': false,
 					'search:tags': false,
+					'view:users:info': false,
 					'upload:post:image': false,
 					'upload:post:file': false,
 					signature: false,
 					'local:login': false,
+					'group:create': false,
+					'view:users': false,
+					'view:tags': false,
+					'view:groups': false,
 				});
 
 				done();
@@ -783,10 +816,15 @@ describe('Categories', function () {
 					'groups:search:content': true,
 					'groups:search:users': true,
 					'groups:search:tags': true,
+					'groups:view:users': true,
+					'groups:view:users:info': false,
+					'groups:view:tags': true,
+					'groups:view:groups': true,
 					'groups:upload:post:image': true,
 					'groups:upload:post:file': false,
 					'groups:signature': true,
 					'groups:local:login': true,
+					'groups:group:create': false,
 				});
 
 				done();
@@ -813,17 +851,34 @@ describe('Categories', function () {
 			it('should retrieve all users with moderator bit in category privilege', function (done) {
 				Categories.getModeratorUids([1, 2], function (err, uids) {
 					assert.ifError(err);
-					assert.strictEqual(2, uids.length);
-					assert.strictEqual(1, parseInt(uids[0], 10));
-					assert.strictEqual(0, uids[1].length);
+					assert.strictEqual(uids.length, 2);
+					assert(uids[0].includes('1'));
+					assert.strictEqual(uids[1].length, 0);
 					done();
 				});
+			});
+
+			it('should not fail when there are multiple groups', function (done) {
+				async.series([
+					async.apply(groups.create, { name: 'testGroup2' }),
+					async.apply(groups.join, 'cid:1:privileges:groups:moderate', 'testGroup2'),
+					async.apply(groups.join, 'testGroup2', 1),
+					function (next) {
+						Categories.getModeratorUids([1, 2], function (err, uids) {
+							assert.ifError(err);
+							assert(uids[0].includes('1'));
+							next();
+						});
+					},
+				], done);
 			});
 
 			after(function (done) {
 				async.series([
 					async.apply(groups.leave, 'cid:1:privileges:groups:moderate', 'testGroup'),
+					async.apply(groups.leave, 'cid:1:privileges:groups:moderate', 'testGroup2'),
 					async.apply(groups.destroy, 'testGroup'),
+					async.apply(groups.destroy, 'testGroup2'),
 				], done);
 			});
 		});

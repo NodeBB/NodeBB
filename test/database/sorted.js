@@ -57,6 +57,31 @@ describe('Sorted Set methods', function () {
 				});
 			});
 		});
+
+		it('should error if score is null', function (done) {
+			db.sortedSetAdd('errorScore', null, 'value1', function (err) {
+				assert.equal(err.message, '[[error:invalid-score, null]]');
+				done();
+			});
+		});
+
+		it('should error if any score is undefined', function (done) {
+			db.sortedSetAdd('errorScore', [1, undefined], ['value1', 'value2'], function (err) {
+				assert.equal(err.message, '[[error:invalid-score, undefined]]');
+				done();
+			});
+		});
+
+		it('should add null value as `null` string', function (done) {
+			db.sortedSetAdd('nullValueZSet', 1, null, function (err) {
+				assert.ifError(err);
+				db.getSortedSetRange('nullValueZSet', 0, -1, function (err, values) {
+					assert.ifError(err);
+					assert.strictEqual(values[0], 'null');
+					done();
+				});
+			});
+		});
 	});
 
 	describe('sortedSetsAdd()', function () {
@@ -64,6 +89,60 @@ describe('Sorted Set methods', function () {
 			db.sortedSetsAdd(['sorted1', 'sorted2'], 3, 'value3', function (err) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 1);
+				done();
+			});
+		});
+
+		it('should add an element to two sorted sets with different scores', function (done) {
+			db.sortedSetsAdd(['sorted1', 'sorted2'], [4, 5], 'value4', function (err) {
+				assert.ifError(err);
+				db.sortedSetsScore(['sorted1', 'sorted2'], 'value4', function (err, scores) {
+					assert.ifError(err);
+					assert.deepStrictEqual(scores, [4, 5]);
+					done();
+				});
+			});
+		});
+
+
+		it('should error if keys.length is different than scores.length', function (done) {
+			db.sortedSetsAdd(['sorted1', 'sorted2'], [4], 'value4', function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should error if score is null', function (done) {
+			db.sortedSetsAdd(['sorted1', 'sorted2'], null, 'value1', function (err) {
+				assert.equal(err.message, '[[error:invalid-score, null]]');
+				done();
+			});
+		});
+	});
+
+	describe('sortedSetAddMulti()', function () {
+		it('should add elements into multiple sorted sets with different scores', function (done) {
+			db.sortedSetAddBulk([
+				['bulk1', 1, 'item1'],
+				['bulk2', 2, 'item1'],
+				['bulk2', 3, 'item2'],
+				['bulk3', 4, 'item3'],
+			], function (err) {
+				assert.ifError(err);
+				assert.equal(arguments.length, 1);
+				db.getSortedSetRevRangeWithScores(['bulk1', 'bulk2', 'bulk3'], 0, -1, function (err, data) {
+					assert.ifError(err);
+					assert.deepStrictEqual(data, [{ value: 'item3', score: 4 },
+						{ value: 'item2', score: 3 },
+						{ value: 'item1', score: 2 },
+						{ value: 'item1', score: 1 }]);
+					done();
+				});
+			});
+		});
+		it('should not error if data is undefined', function (done) {
+			db.sortedSetAddBulk(undefined, function (err) {
+				assert.ifError(err);
 				done();
 			});
 		});
@@ -148,22 +227,50 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return duplicates if two sets have same elements', function (done) {
-			async.waterfall([
-				function (next) {
-					db.sortedSetAdd('dupezset1', [1, 2], ['value 1', 'value 2'], next);
-				},
-				function (next) {
-					db.sortedSetAdd('dupezset2', [2, 3], ['value 2', 'value 3'], next);
-				},
-				function (next) {
-					db.getSortedSetRange(['dupezset1', 'dupezset2'], 0, -1, next);
-				},
-				function (data, next) {
-					assert.deepStrictEqual(data, ['value 1', 'value 2', 'value 2', 'value 3']);
-					next();
-				},
-			], done);
+		it('should return duplicates if two sets have same elements', async function () {
+			await db.sortedSetAdd('dupezset1', [1, 2], ['value 1', 'value 2']);
+			await db.sortedSetAdd('dupezset2', [2, 3], ['value 2', 'value 3']);
+			const data = await db.getSortedSetRange(['dupezset1', 'dupezset2'], 0, -1);
+			assert.deepStrictEqual(data, ['value 1', 'value 2', 'value 2', 'value 3']);
+		});
+
+		it('should return correct number of elements', async function () {
+			await db.sortedSetAdd('dupezset3', [1, 2, 3], ['value 1', 'value 2', 'value3']);
+			await db.sortedSetAdd('dupezset4', [0, 5], ['value 0', 'value5']);
+			const data = await db.getSortedSetRevRange(['dupezset3', 'dupezset4'], 0, 1);
+			assert.deepStrictEqual(data, ['value5', 'value3']);
+		});
+
+		it('should work with big arrays (length > 100) ', async function () {
+			for (let i = 0; i < 400; i++) {
+				/* eslint-disable no-await-in-loop */
+				const bulkAdd = [];
+				for (let k = 0; k < 100; k++) {
+					bulkAdd.push(['testzset' + i, 1000000 + k + (i * 100), k + (i * 100)]);
+				}
+				await db.sortedSetAddBulk(bulkAdd);
+			}
+			const keys = [];
+			for (let i = 0; i < 400; i++) {
+				keys.push('testzset' + i);
+			}
+
+			let data = await db.getSortedSetRevRange(keys, 0, 3);
+			assert.deepStrictEqual(data, ['39999', '39998', '39997', '39996']);
+
+			data = await db.getSortedSetRevRangeWithScores(keys, 0, 3);
+			assert.deepStrictEqual(data, [
+				{ value: '39999', score: 1039999 },
+				{ value: '39998', score: 1039998 },
+				{ value: '39997', score: 1039997 },
+				{ value: '39996', score: 1039996 },
+			]);
+
+			data = await db.getSortedSetRevRange(keys, 0, -1);
+			assert.equal(data.length, 40000);
+
+			data = await db.getSortedSetRange(keys, 9998, 10002);
+			assert.deepStrictEqual(data, ['9998', '9999', '10000', '10001', '10002']);
 		});
 	});
 
@@ -287,6 +394,15 @@ describe('Sorted Set methods', function () {
 				done();
 			});
 		});
+
+		it('should work with an array of keys', async function () {
+			await db.sortedSetAddBulk([
+				['byScoreWithScoresKeys1', 1, 'value1'],
+				['byScoreWithScoresKeys2', 2, 'value2'],
+			]);
+			const data = await db.getSortedSetRevRangeByScoreWithScores(['byScoreWithScoresKeys1', 'byScoreWithScoresKeys2'], 0, -1, 5, -5);
+			assert.deepStrictEqual(data, [{ value: 'value2', score: 2 }, { value: 'value1', score: 1 }]);
+		});
 	});
 
 	describe('sortedSetCount()', function () {
@@ -341,7 +457,7 @@ describe('Sorted Set methods', function () {
 	describe('sortedSetsCard()', function () {
 		it('should return the number of elements in sorted sets', function (done) {
 			db.sortedSetsCard(['sortedSetTest1', 'sortedSetTest2', 'doesnotexist'], function (err, counts) {
-				assert.equal(err, null);
+				assert.ifError(err);
 				assert.equal(arguments.length, 2);
 				assert.deepEqual(counts, [3, 2, 0]);
 				done();
@@ -362,6 +478,44 @@ describe('Sorted Set methods', function () {
 				assert.ifError(err);
 				assert.equal(arguments.length, 2);
 				assert.deepEqual(counts, []);
+				done();
+			});
+		});
+	});
+
+	describe('sortedSetsCardSum()', function () {
+		it('should return the total number of elements in sorted sets', function (done) {
+			db.sortedSetsCardSum(['sortedSetTest1', 'sortedSetTest2', 'doesnotexist'], function (err, sum) {
+				assert.ifError(err);
+				assert.equal(arguments.length, 2);
+				assert.equal(sum, 5);
+				done();
+			});
+		});
+
+		it('should return 0 if keys is falsy', function (done) {
+			db.sortedSetsCardSum(undefined, function (err, counts) {
+				assert.ifError(err);
+				assert.equal(arguments.length, 2);
+				assert.deepEqual(counts, 0);
+				done();
+			});
+		});
+
+		it('should return 0 if keys is empty array', function (done) {
+			db.sortedSetsCardSum([], function (err, counts) {
+				assert.ifError(err);
+				assert.equal(arguments.length, 2);
+				assert.deepEqual(counts, 0);
+				done();
+			});
+		});
+
+		it('should return the total number of elements in sorted set', function (done) {
+			db.sortedSetsCardSum('sortedSetTest1', function (err, sum) {
+				assert.ifError(err);
+				assert.equal(arguments.length, 2);
+				assert.equal(sum, 3);
 				done();
 			});
 		});
@@ -472,6 +626,15 @@ describe('Sorted Set methods', function () {
 				done();
 			});
 		});
+
+		it('should return the ranks of values in a sorted set in reverse', function (done) {
+			db.sortedSetRevRanks('sortedSetTest1', ['value2', 'value1', 'value3', 'value4'], function (err, ranks) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.deepEqual(ranks, [1, 2, 0, null]);
+				done();
+			});
+		});
 	});
 
 	describe('sortedSetScore()', function () {
@@ -558,7 +721,7 @@ describe('Sorted Set methods', function () {
 		it('should return 0 if score is 0', function (done) {
 			db.sortedSetScores('zeroScore', ['value1'], function (err, scores) {
 				assert.ifError(err);
-				assert.strictEqual(0, scores[0]);
+				assert.strictEqual(scores[0], 0);
 				done();
 			});
 		});
@@ -632,7 +795,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return true if element is in sorted set with sre 0', function (done) {
+		it('should return true if element is in sorted set with score 0', function (done) {
 			db.isSortedSetMember('zeroscore', 'itemwithzeroscore', function (err, isMember) {
 				assert.ifError(err);
 				assert.strictEqual(isMember, true);
@@ -647,6 +810,15 @@ describe('Sorted Set methods', function () {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.deepEqual(isMembers, [true, true, false]);
+				done();
+			});
+		});
+
+		it('should return true if element is in sorted set with score 0', function (done) {
+			db.isSortedSetMembers('zeroscore', ['itemwithzeroscore'], function (err, isMembers) {
+				assert.ifError(err);
+				assert.equal(arguments.length, 2);
+				assert.deepEqual(isMembers, [true]);
 				done();
 			});
 		});
@@ -828,6 +1000,35 @@ describe('Sorted Set methods', function () {
 					});
 				});
 			});
+		});
+
+		it('should not remove anything if values is empty array', function (done) {
+			db.sortedSetAdd('removeNothing', [1, 2, 3], ['val1', 'val2', 'val3'], function (err) {
+				assert.ifError(err);
+				db.sortedSetRemove('removeNothing', [], function (err) {
+					assert.ifError(err);
+					db.getSortedSetRange('removeNothing', 0, -1, function (err, data) {
+						assert.ifError(err);
+						assert.deepStrictEqual(data, ['val1', 'val2', 'val3']);
+						done();
+					});
+				});
+			});
+		});
+
+		it('should do a bulk remove', async function () {
+			await db.sortedSetAddBulk([
+				['bulkRemove1', 1, 'value1'],
+				['bulkRemove1', 2, 'value2'],
+				['bulkRemove2', 3, 'value2'],
+			]);
+			await db.sortedSetRemoveBulk([
+				['bulkRemove1', 'value1'],
+				['bulkRemove1', 'value2'],
+				['bulkRemove2', 'value2'],
+			]);
+			const members = await db.getSortedSetsMembers(['bulkRemove1', 'bulkRemove2']);
+			assert.deepStrictEqual(members, [[], []]);
 		});
 	});
 

@@ -1,132 +1,103 @@
 'use strict';
 
-var path = require('path');
-var fs = require('fs');
-var rimraf = require('rimraf');
-var mkdirp = require('mkdirp');
-var async = require('async');
+const path = require('path');
+const fs = require('fs');
+const rimraf = require('rimraf');
+const mkdirp = require('mkdirp');
 
-var file = require('../file');
-var plugins = require('../plugins');
-var user = require('../user');
-var Meta = require('../meta');
+const util = require('util');
 
-var soundsPath = path.join(__dirname, '../../build/public/sounds');
-var uploadsPath = path.join(__dirname, '../../public/uploads/sounds');
+const readdirAsync = util.promisify(fs.readdir);
+const rimrafAsync = util.promisify(rimraf);
+const mkdirpAsync = util.promisify(mkdirp);
+const writeFileAsync = util.promisify(fs.writeFile);
 
-var Sounds = module.exports;
+const file = require('../file');
+const plugins = require('../plugins');
+const user = require('../user');
+const Meta = require('../meta');
 
-Sounds.addUploads = function addUploads(callback) {
-	fs.readdir(uploadsPath, function (err, files) {
-		if (err) {
-			if (err.code !== 'ENOENT') {
-				return callback(err);
-			}
+const soundsPath = path.join(__dirname, '../../build/public/sounds');
+const uploadsPath = path.join(__dirname, '../../public/uploads/sounds');
 
-			files = [];
+const Sounds = module.exports;
+
+Sounds.addUploads = async function addUploads() {
+	let files = [];
+	try {
+		files = await readdirAsync(uploadsPath);
+	} catch (err) {
+		if (err.code !== 'ENOENT') {
+			throw err;
 		}
+		files = [];
+	}
 
-		var uploadSounds = files.reduce(function (prev, fileName) {
-			var name = fileName.split('.');
-			if (!name.length || !name[0].length) {
-				return prev;
-			}
-			name = name[0];
-			name = name[0].toUpperCase() + name.slice(1);
-
-			prev[name] = fileName;
+	var uploadSounds = files.reduce(function (prev, fileName) {
+		var name = fileName.split('.');
+		if (!name.length || !name[0].length) {
 			return prev;
-		}, {});
-
-		plugins.soundpacks = plugins.soundpacks.filter(function (pack) {
-			return pack.name !== 'Uploads';
-		});
-		if (Object.keys(uploadSounds).length) {
-			plugins.soundpacks.push({
-				name: 'Uploads',
-				id: 'uploads',
-				dir: uploadsPath,
-				sounds: uploadSounds,
-			});
 		}
+		name = name[0];
+		name = name[0].toUpperCase() + name.slice(1);
 
-		callback();
-	});
+		prev[name] = fileName;
+		return prev;
+	}, {});
+
+	plugins.soundpacks = plugins.soundpacks.filter(pack => pack.name !== 'Uploads');
+
+	if (Object.keys(uploadSounds).length) {
+		plugins.soundpacks.push({
+			name: 'Uploads',
+			id: 'uploads',
+			dir: uploadsPath,
+			sounds: uploadSounds,
+		});
+	}
 };
 
-Sounds.build = function build(callback) {
-	Sounds.addUploads(function (err) {
-		if (err) {
-			return callback(err);
-		}
+Sounds.build = async function build() {
+	await Sounds.addUploads();
 
-		var map = plugins.soundpacks.map(function (pack) {
-			return Object.keys(pack.sounds).reduce(function (prev, soundName) {
-				var soundPath = pack.sounds[soundName];
-				prev[pack.name + ' | ' + soundName] = pack.id + '/' + soundPath;
-				return prev;
-			}, {});
-		});
-		map.unshift({});
-		map = Object.assign.apply(null, map);
-
-		async.series([
-			function (next) {
-				rimraf(soundsPath, next);
-			},
-			function (next) {
-				mkdirp(soundsPath, next);
-			},
-			function (cb) {
-				async.parallel([
-					function (next) {
-						fs.writeFile(path.join(soundsPath, 'fileMap.json'), JSON.stringify(map), next);
-					},
-					function (next) {
-						async.each(plugins.soundpacks, function (pack, next) {
-							file.linkDirs(pack.dir, path.join(soundsPath, pack.id), next);
-						}, next);
-					},
-				], cb);
-			},
-		], function (err) {
-			callback(err);
-		});
+	var map = plugins.soundpacks.map(function (pack) {
+		return Object.keys(pack.sounds).reduce(function (prev, soundName) {
+			var soundPath = pack.sounds[soundName];
+			prev[pack.name + ' | ' + soundName] = pack.id + '/' + soundPath;
+			return prev;
+		}, {});
 	});
+	map.unshift({});
+	map = Object.assign.apply(null, map);
+	await rimrafAsync(soundsPath);
+	await mkdirpAsync(soundsPath);
+
+	await writeFileAsync(path.join(soundsPath, 'fileMap.json'), JSON.stringify(map));
+
+	await Promise.all(plugins.soundpacks.map(pack => file.linkDirs(pack.dir, path.join(soundsPath, pack.id), false)));
 };
 
 var keys = ['chat-incoming', 'chat-outgoing', 'notification'];
 
-Sounds.getUserSoundMap = function getUserSoundMap(uid, callback) {
-	async.parallel({
-		defaultMapping: function (next) {
-			Meta.configs.getFields(keys, next);
-		},
-		userSettings: function (next) {
-			user.getSettings(uid, next);
-		},
-	}, function (err, results) {
-		if (err) {
-			return callback(err);
+Sounds.getUserSoundMap = async function getUserSoundMap(uid) {
+	const [defaultMapping, userSettings] = await Promise.all([
+		Meta.configs.getFields(keys),
+		user.getSettings(uid),
+	]);
+
+	userSettings.notification = userSettings.notificationSound;
+	userSettings['chat-incoming'] = userSettings.incomingChatSound;
+	userSettings['chat-outgoing'] = userSettings.outgoingChatSound;
+
+	const soundMapping = {};
+
+	keys.forEach(function (key) {
+		if (userSettings[key] || userSettings[key] === '') {
+			soundMapping[key] = userSettings[key] || '';
+		} else {
+			soundMapping[key] = defaultMapping[key] || '';
 		}
-
-		var userSettings = results.userSettings;
-		userSettings = {
-			notification: userSettings.notificationSound,
-			'chat-incoming': userSettings.incomingChatSound,
-			'chat-outgoing': userSettings.outgoingChatSound,
-		};
-		var defaultMapping = results.defaultMapping || {};
-		var soundMapping = {};
-
-		keys.forEach(function (key) {
-			if (userSettings[key] || userSettings[key] === '') {
-				soundMapping[key] = userSettings[key] || '';
-			} else {
-				soundMapping[key] = defaultMapping[key] || '';
-			}
-		});
-
-		callback(null, soundMapping);
 	});
+
+	return soundMapping;
 };

@@ -4,6 +4,7 @@
 	"consent.message": "Bildirim mesajı",
 	"consent.acceptance": "Onay mesajı",
 	"consent.link-text": "Politika Bağlantısı Metni",
+	"consent.link-url": "Policy Link URL",
 	"consent.blank-localised-default": "NodeBB yerelleştirilmiş varsayılanlarını kullanmak için boş bırakın",
 	"settings": "Ayarlar",
 	"cookie-domain": "Oturum çerezi alanı",

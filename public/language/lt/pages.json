@@ -43,6 +43,7 @@
     "account/following": "Vartotojas %1 seka",
     "account/followers": "Žmonės, kurie seka %1",
     "account/posts": "Pranešimai, kuriuos parašė %1",
+    "account/latest-posts": "Latest posts made by %1",
     "account/topics": "Temos, kurias sukūrė %1",
     "account/groups": "%1 Grupės",
     "account/watched_categories": "%1's Watched Categories",

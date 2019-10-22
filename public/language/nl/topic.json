@@ -18,11 +18,13 @@
     "last_reply_time": "Laatste antwoord",
     "reply-as-topic": "Reageren als onderwerp",
     "guest-login-reply": "Aanmelden om te reageren",
+    "login-to-view": "🔒 Aanmelden om te zien",
     "edit": "Aanpassen",
     "delete": "Verwijderen",
     "purge": "Opschonen",
     "restore": "Herstellen",
     "move": "Verplaatsen",
+    "change-owner": "Wijzig eigenaar",
     "fork": "Afsplitsen",
     "link": "Link",
     "share": "Delen",
@@ -64,6 +66,7 @@
     "thread_tools.move": "Onderwerp verplaatsen",
     "thread_tools.move-posts": "Verplaats berichten",
     "thread_tools.move_all": "Verplaats alles",
+    "thread_tools.change_owner": "Wijzig eigenaar",
     "thread_tools.select_category": "Selecteer categorie",
     "thread_tools.fork": "Onderwerp afsplitsen",
     "thread_tools.delete": "Onderwerp verwijderen",
@@ -98,6 +101,7 @@
     "delete_posts_instruction": "Klik op de berichten die verwijderd moeten worden",
     "merge_topics_instruction": "Klik op de onderwerpen die samengevoegd moeten worden",
     "move_posts_instruction": "Klik op de berichten die je wilt verplaatsen",
+    "change_owner_instruction": "Klik op de berichten die je wilt toewijzen aan een andere gebruiker",
     "composer.title_placeholder": "Voer hier de titel van het onderwerp in...",
     "composer.handle_placeholder": "Naam",
     "composer.discard": "Annuleren",
@@ -129,5 +133,7 @@
     "diffs.description": "Dit bericht heeft <strong>%1</strong> revisies. Klik op een revisie hieronder om het bericht te zien op dat punt in de tijd.",
     "diffs.no-revisions-description": "Dit bericht heeft <strong>%1</strong> revisies.",
     "diffs.current-revision": "Huidige revisie",
-    "diffs.original-revision": "Oorspronkelijke revisie"
+    "diffs.original-revision": "Oorspronkelijke revisie",
+    "timeago_later": "%1 later",
+    "timeago_earlier": "%1 eerder"
 }

@@ -50,6 +50,7 @@ var scripts = [
 	'public/vendor/xregexp/unicode/unicode-base.js',
 	'public/src/utils.js',
 	'public/src/installer/install.js',
+	'node_modules/zxcvbn/dist/zxcvbn.js',
 ];
 
 var installing = false;
@@ -131,6 +132,7 @@ function welcome(req, res) {
 		success: success,
 		values: req.body,
 		minimumPasswordLength: defaults.minimumPasswordLength,
+		minimumPasswordStrength: defaults.minimumPasswordStrength,
 		installing: installing,
 	});
 }
@@ -181,7 +183,7 @@ function install(req, res) {
 function launch(req, res) {
 	res.json({});
 	server.close();
-
+	req.setTimeout(0);
 	var child;
 
 	if (!nconf.get('launchCmd')) {

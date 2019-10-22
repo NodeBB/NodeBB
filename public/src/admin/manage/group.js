@@ -12,7 +12,9 @@ define('admin/manage/group', [
 		var groupIcon = $('#group-icon');
 		var changeGroupUserTitle = $('#change-group-user-title');
 		var changeGroupLabelColor = $('#change-group-label-color');
+		var changeGroupTextColor = $('#change-group-text-color');
 		var groupLabelPreview = $('#group-label-preview');
+		var groupLabelPreviewText = $('#group-label-preview-text');
 
 		var groupName = ajaxify.data.group.name;
 
@@ -23,11 +25,15 @@ define('admin/manage/group', [
 		memberList.init('admin/manage/group');
 
 		changeGroupUserTitle.keyup(function () {
-			groupLabelPreview.text(changeGroupUserTitle.val());
+			groupLabelPreviewText.text(changeGroupUserTitle.val());
 		});
 
 		changeGroupLabelColor.keyup(function () {
 			groupLabelPreview.css('background', changeGroupLabelColor.val() || '#000000');
+		});
+
+		changeGroupTextColor.keyup(function () {
+			groupLabelPreview.css('color', changeGroupTextColor.val() || '#ffffff');
 		});
 
 		$('[component="groups/members"]').on('click', '[data-action]', function () {
@@ -72,12 +78,22 @@ define('admin/manage/group', [
 			}
 		});
 
-		$('#group-icon').on('click', function () {
-			iconSelect.init(groupIcon);
+		$('#group-icon, #group-icon-label').on('click', function () {
+			iconSelect.init(groupIcon, function () {
+				var newIcon = groupIcon.attr('value');
+				if (newIcon === 'fa-nbb-none') {
+					newIcon = 'hidden';
+				}
+				$('#group-icon-preview').attr('class', 'fa fa-fw ' + (newIcon || 'hidden'));
+			});
 		});
 
 		colorpicker.enable(changeGroupLabelColor, function (hsb, hex) {
 			groupLabelPreview.css('background-color', '#' + hex);
+		});
+
+		colorpicker.enable(changeGroupTextColor, function (hsb, hex) {
+			groupLabelPreview.css('color', '#' + hex);
 		});
 
 		$('#save').on('click', function () {
@@ -89,6 +105,7 @@ define('admin/manage/group', [
 					description: $('#change-group-desc').val(),
 					icon: groupIcon.attr('value'),
 					labelColor: changeGroupLabelColor.val(),
+					textColor: changeGroupTextColor.val(),
 					userTitleEnabled: $('#group-userTitleEnabled').is(':checked'),
 					private: $('#group-private').is(':checked'),
 					hidden: $('#group-hidden').is(':checked'),
@@ -102,11 +119,11 @@ define('admin/manage/group', [
 				var newName = $('#change-group-name').val();
 
 				// If the group name changed, change url
-				if (groupName === newName) {
-					app.alertSuccess('[[admin/manage/groups:edit.save-success]]');
-				} else {
+				if (groupName !== newName) {
 					ajaxify.go('admin/manage/groups/' + encodeURIComponent(newName), undefined, true);
 				}
+
+				app.alertSuccess('[[admin/manage/groups:edit.save-success]]');
 			});
 			return false;
 		});

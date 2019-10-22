@@ -9,6 +9,7 @@
 	"updated": "Actualizado",
 	"target-purged": "El contenido al que se refiere este indicador ha sido purgado y ya no está disponible.",
 
+	"graph-label": "Daily Flags",
 	"quick-filters": "Filtros rapidos",
 	"filter-active": "Hay uno o más filtros activos en esta lista de indicadores.",
 	"filter-reset": "Quitar filtros",

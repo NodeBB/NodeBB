@@ -1,14 +1,39 @@
 'use strict';
 
-var async = require('async');
 var nconf = require('nconf');
 var url = require('url');
 var winston = require('winston');
+const sanitize = require('sanitize-html');
+const _ = require('lodash');
 
 var meta = require('../meta');
 var plugins = require('../plugins');
 var translator = require('../translator');
 var utils = require('../utils');
+
+let sanitizeConfig = {
+	allowedTags: sanitize.defaults.allowedTags.concat([
+		// Some safe-to-use tags to add
+		'span', 'a', 'pre', 'small',
+		'sup', 'sub', 'u', 'del',
+		'video', 'audio', 'iframe', 'embed',
+		'img', 'tfoot', 'h1', 'h2',
+		's', 'button', 'i',
+	]),
+	allowedAttributes: {
+		...sanitize.defaults.allowedAttributes,
+		a: ['href', 'hreflang', 'media', 'rel', 'target', 'type'],
+		img: ['alt', 'height', 'ismap', 'src', 'usemap', 'width', 'srcset'],
+		iframe: ['height', 'name', 'src', 'width'],
+		video: ['autoplay', 'controls', 'height', 'loop', 'muted', 'poster', 'preload', 'src', 'width'],
+		audio: ['autoplay', 'controls', 'loop', 'muted', 'preload', 'src'],
+		embed: ['height', 'src', 'type', 'width'],
+	},
+	globalAttributes: ['accesskey', 'class', 'contenteditable', 'dir',
+		'draggable', 'dropzone', 'hidden', 'id', 'lang', 'spellcheck', 'style',
+		'tabindex', 'title', 'translate', 'aria-expanded', 'data-*',
+	],
+};
 
 module.exports = function (Posts) {
 	Posts.urlRegex = {
@@ -21,37 +46,31 @@ module.exports = function (Posts) {
 		length: 5,
 	};
 
-	Posts.parsePost = function (postData, callback) {
+	Posts.parsePost = async function (postData) {
 		if (!postData) {
-			return setImmediate(callback, null, postData);
+			return postData;
 		}
 		postData.content = String(postData.content || '');
-		var cache = require('./cache');
-		if (postData.pid && cache.has(String(postData.pid))) {
-			postData.content = cache.get(String(postData.pid));
+		const cache = require('./cache');
+		const pid = String(postData.pid);
+		const cachedContent = cache.get(pid);
+		if (postData.pid && cachedContent !== undefined) {
+			postData.content = cachedContent;
 			cache.hits += 1;
-			return callback(null, postData);
+			return postData;
 		}
 		cache.misses += 1;
-
-		async.waterfall([
-			function (next) {
-				plugins.fireHook('filter:parse.post', { postData: postData }, next);
-			},
-			function (data, next) {
-				data.postData.content = translator.escape(data.postData.content);
-
-				if (global.env === 'production' && data.postData.pid) {
-					cache.set(String(data.postData.pid), data.postData.content);
-				}
-				next(null, data.postData);
-			},
-		], callback);
+		const data = await plugins.fireHook('filter:parse.post', { postData: postData });
+		data.postData.content = translator.escape(data.postData.content);
+		if (global.env === 'production' && data.postData.pid) {
+			cache.set(pid, data.postData.content);
+		}
+		return data.postData;
 	};
 
-	Posts.parseSignature = function (userData, uid, callback) {
+	Posts.parseSignature = async function (userData, uid) {
 		userData.signature = sanitizeSignature(userData.signature || '');
-		plugins.fireHook('filter:parse.signature', { userData: userData, uid: uid }, callback);
+		return await plugins.fireHook('filter:parse.signature', { userData: userData, uid: uid });
 	};
 
 	Posts.relativeToAbsolute = function (content, regex) {
@@ -82,6 +101,22 @@ module.exports = function (Posts) {
 		}
 
 		return content;
+	};
+
+	Posts.sanitize = function (content) {
+		return sanitize(content, {
+			allowedTags: sanitizeConfig.allowedTags, allowedAttributes: sanitizeConfig.allowedAttributes,
+		});
+	};
+
+	Posts.configureSanitize = async () => {
+		// Each allowed tags should have some common global attributes...
+		sanitizeConfig.allowedTags.forEach((tag) => {
+			sanitizeConfig.allowedAttributes[tag] = _.union(sanitizeConfig.allowedAttributes[tag], sanitizeConfig.globalAttributes);
+		});
+
+		// Some plugins might need to adjust or whitelist their own tags...
+		sanitizeConfig = await plugins.fireHook('filter:sanitize.config', sanitizeConfig);
 	};
 
 	function sanitizeSignature(signature) {

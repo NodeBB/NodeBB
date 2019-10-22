@@ -1,6 +1,5 @@
 'use strict';
 
-var async = require('async');
 var validator = require('validator');
 var _ = require('lodash');
 
@@ -19,161 +18,112 @@ module.exports = function (Posts) {
 		require('./cache').del(pid);
 	});
 
-	Posts.edit = function (data, callback) {
-		var oldContent;	// for diffing purposes
-		var postData;
-		var results;
+	Posts.edit = async function (data) {
+		const canEdit = await privileges.posts.canEdit(data.pid, data.uid);
+		if (!canEdit.flag) {
+			throw new Error(canEdit.message);
+		}
+		let postData = await Posts.getPostData(data.pid);
+		if (!postData) {
+			throw new Error('[[error:no-post]]');
+		}
 
-		async.waterfall([
-			function (next) {
-				privileges.posts.canEdit(data.pid, data.uid, next);
-			},
-			function (canEdit, next) {
-				if (!canEdit.flag) {
-					return next(new Error(canEdit.message));
-				}
-				Posts.getPostData(data.pid, next);
-			},
-			function (_postData, next) {
-				if (!_postData) {
-					return next(new Error('[[error:no-post]]'));
-				}
+		const oldContent = postData.content; // for diffing purposes
+		postData.content = data.content;
+		postData.edited = Date.now();
+		postData.editor = data.uid;
+		if (data.handle) {
+			postData.handle = data.handle;
+		}
+		const result = await plugins.fireHook('filter:post.edit', { req: data.req, post: postData, data: data, uid: data.uid });
+		postData = result.post;
 
-				postData = _postData;
-				oldContent = postData.content;
-				postData.content = data.content;
-				postData.edited = Date.now();
-				postData.editor = data.uid;
-				if (data.handle) {
-					postData.handle = data.handle;
-				}
-				plugins.fireHook('filter:post.edit', { req: data.req, post: postData, data: data, uid: data.uid }, next);
-			},
-			function (result, next) {
-				postData = result.post;
+		const [editor, topic] = await Promise.all([
+			user.getUserFields(data.uid, ['username', 'userslug']),
+			editMainPost(data, postData),
+		]);
 
-				async.parallel({
-					editor: function (next) {
-						user.getUserFields(data.uid, ['username', 'userslug'], next);
-					},
-					topic: function (next) {
-						editMainPost(data, postData, next);
-					},
-				}, next);
-			},
-			function (_results, next) {
-				results = _results;
-				Posts.setPostFields(data.pid, postData, next);
-			},
-			function (next) {
-				if (meta.config.enablePostHistory !== 1) {
-					return setImmediate(next);
-				}
+		await Posts.setPostFields(data.pid, postData);
 
-				Posts.diffs.save(data.pid, oldContent, data.content, next);
-			},
-			async.apply(Posts.uploads.sync, data.pid),
-			function (next) {
-				postData.cid = results.topic.cid;
-				postData.topic = results.topic;
-				plugins.fireHook('action:post.edit', { post: _.clone(postData), data: data, uid: data.uid });
+		if (meta.config.enablePostHistory === 1) {
+			await Posts.diffs.save(data.pid, oldContent, data.content);
+		}
+		await Posts.uploads.sync(data.pid);
 
-				require('./cache').del(String(postData.pid));
-				pubsub.publish('post:edit', String(postData.pid));
+		postData.cid = topic.cid;
+		postData.topic = topic;
+		plugins.fireHook('action:post.edit', { post: _.clone(postData), data: data, uid: data.uid });
 
-				Posts.parsePost(postData, next);
-			},
-			function (postData, next) {
-				results.post = postData;
-				next(null, results);
-			},
-		], callback);
+		require('./cache').del(String(postData.pid));
+		pubsub.publish('post:edit', String(postData.pid));
+
+		postData = await Posts.parsePost(postData);
+
+		return {
+			topic: topic,
+			editor: editor,
+			post: postData,
+		};
 	};
 
-	function editMainPost(data, postData, callback) {
-		var tid = postData.tid;
-		var title = data.title ? data.title.trim() : '';
+	async function editMainPost(data, postData) {
+		const tid = postData.tid;
+		const title = data.title ? data.title.trim() : '';
 
-		var topicData;
-		var results;
-		async.waterfall([
-			function (next) {
-				async.parallel({
-					topic: function (next) {
-						topics.getTopicFields(tid, ['cid', 'title', 'timestamp'], next);
-					},
-					isMain: function (next) {
-						Posts.isMain(data.pid, next);
-					},
-				}, next);
-			},
-			function (_results, next) {
-				results = _results;
-				if (!results.isMain) {
-					return callback(null, {
-						tid: tid,
-						cid: results.topic.cid,
-						isMainPost: false,
-						renamed: false,
-					});
-				}
+		const [topicData, isMain] = await Promise.all([
+			topics.getTopicFields(tid, ['cid', 'title', 'timestamp']),
+			Posts.isMain(data.pid),
+		]);
 
-				topicData = {
-					tid: tid,
-					cid: results.topic.cid,
-					uid: postData.uid,
-					mainPid: data.pid,
-				};
+		if (!isMain) {
+			return {
+				tid: tid,
+				cid: topicData.cid,
+				isMainPost: false,
+				renamed: false,
+			};
+		}
 
-				if (title) {
-					topicData.title = title;
-					topicData.slug = tid + '/' + (utils.slugify(title) || 'topic');
-				}
+		const newTopicData = {
+			tid: tid,
+			cid: topicData.cid,
+			uid: postData.uid,
+			mainPid: data.pid,
+		};
+		if (title) {
+			newTopicData.title = title;
+			newTopicData.slug = tid + '/' + (utils.slugify(title) || 'topic');
+		}
+		newTopicData.thumb = data.thumb || '';
 
-				topicData.thumb = data.thumb || '';
+		data.tags = data.tags || [];
 
-				data.tags = data.tags || [];
+		if (data.tags.length) {
+			const canTag = await privileges.categories.can('topics:tag', topicData.cid, data.uid);
+			if (!canTag) {
+				throw new Error('[[error:no-privileges]]');
+			}
+		}
+		const results = await plugins.fireHook('filter:topic.edit', { req: data.req, topic: newTopicData, data: data });
+		await db.setObject('topic:' + tid, results.topic);
+		await topics.updateTopicTags(tid, data.tags);
+		const tags = await topics.getTopicTagsObjects(tid);
 
-				if (!data.tags.length) {
-					return next(null, true);
-				}
-
-				privileges.categories.can('topics:tag', topicData.cid, data.uid, next);
-			},
-			function (canTag, next) {
-				if (!canTag) {
-					return next(new Error('[[error:no-privileges]]'));
-				}
-
-				plugins.fireHook('filter:topic.edit', { req: data.req, topic: topicData, data: data }, next);
-			},
-			function (results, next) {
-				db.setObject('topic:' + tid, results.topic, next);
-			},
-			function (next) {
-				topics.updateTopicTags(tid, data.tags, next);
-			},
-			function (next) {
-				topics.getTopicTagsObjects(tid, next);
-			},
-			function (tags, next) {
-				topicData.tags = data.tags;
-				topicData.oldTitle = results.topic.title;
-				topicData.timestamp = results.topic.timestamp;
-				var renamed = translator.escape(validator.escape(String(title))) !== results.topic.title;
-				plugins.fireHook('action:topic.edit', { topic: topicData, uid: data.uid });
-				next(null, {
-					tid: tid,
-					cid: topicData.cid,
-					uid: postData.uid,
-					title: validator.escape(String(title)),
-					oldTitle: results.topic.title,
-					slug: topicData.slug,
-					isMainPost: true,
-					renamed: renamed,
-					tags: tags,
-				});
-			},
-		], callback);
+		newTopicData.tags = data.tags;
+		newTopicData.oldTitle = topicData.title;
+		newTopicData.timestamp = topicData.timestamp;
+		const renamed = translator.escape(validator.escape(String(title))) !== topicData.title;
+		plugins.fireHook('action:topic.edit', { topic: newTopicData, uid: data.uid });
+		return {
+			tid: tid,
+			cid: newTopicData.cid,
+			uid: postData.uid,
+			title: validator.escape(String(title)),
+			oldTitle: topicData.title,
+			slug: newTopicData.slug,
+			isMainPost: true,
+			renamed: renamed,
+			tags: tags,
+		};
 	}
 };

@@ -4,8 +4,7 @@
 	if (typeof module === 'object' && module.exports) {
 		var winston = require('winston');
 
-
-		module.exports = factory(require('xregexp'));
+		module.exports = factory(require('xregexp'), winston);
 		module.exports.walk = function (dir, done) {
 			// DEPRECATED
 			var file = require('../../src/file');
@@ -22,9 +21,10 @@
 			return (diff[0] * 1e3) + (diff[1] / 1e6);
 		};
 	} else {
-		window.utils = factory(window.XRegExp);
+		window.utils = factory(window.XRegExp, console);
 	}
-}(function (XRegExp) {
+	// eslint-disable-next-line
+}(function (XRegExp, console) {
 	var freeze = Object.freeze || function (obj) { return obj; };
 
 	// add default escape function for escaping HTML entities
@@ -351,7 +351,7 @@
 			if (!str) {
 				return '';
 			}
-			str = str.replace(utils.trimRegex, '');
+			str = String(str).replace(utils.trimRegex, '');
 			if (utils.isLatin.test(str)) {
 				str = str.replace(utils.invalidLatinChars, '-');
 			} else {
@@ -467,6 +467,24 @@
 
 		extensionToMimeType: function (extension) {
 			return utils.extensionMimeTypeMap[extension] || '*';
+		},
+
+		isPromise: function (object) {
+			// https://stackoverflow.com/questions/27746304/how-do-i-tell-if-an-object-is-a-promise#comment97339131_27746324
+			return object && typeof object.then === 'function';
+		},
+
+		promiseParallel: function (obj) {
+			var keys = Object.keys(obj);
+			return Promise.all(
+				keys.map(function (k) { return obj[k]; })
+			).then(function (results) {
+				var data = {};
+				keys.forEach(function (k, i) {
+					data[k] = results[i];
+				});
+				return data;
+			});
 		},
 
 		isRelativeUrl: function (url) {
@@ -649,7 +667,7 @@
 			params.forEach(function (param) {
 				var val = param.split('=');
 				var key = decodeURI(val[0]);
-				var value = options.skipToType[key] ? decodeURI(val[1]) : utils.toType(decodeURI(val[1]));
+				var value = options.disableToType || options.skipToType[key] ? decodeURI(val[1]) : utils.toType(decodeURI(val[1]));
 
 				if (key) {
 					if (key.substr(-2, 2) === '[]') {
@@ -673,7 +691,9 @@
 		},
 
 		urlToLocation: function (url) {
-			return $('<a href="' + url + '" />')[0];
+			var a = document.createElement('a');
+			a.href = url;
+			return a;
 		},
 
 		// return boolean if string 'true' or string 'false', or if a parsable string which is a number

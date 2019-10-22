@@ -328,6 +328,22 @@ input[type="checkbox"],
     .transition(240ms);
   }
 
+  &:indeterminate:before {
+    content: "";
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    display: table;
+    width: 6px;
+    height: 12px;
+    border-top: 2px solid #fff;
+  }
+
+  &:indeterminate:after {
+    background-color: @brand-primary;
+    border-color: @brand-primary;
+  }
+
   &:checked:before {
     content: "";
     position: absolute;

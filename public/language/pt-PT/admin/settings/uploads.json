@@ -2,6 +2,7 @@
 	"posts": "Publicações",
 	"allow-files": "Permitir aos utilizadores carregar ficheiros normais",
 	"private": "Tornar os ficheiros enviados privados",
+	"strip-exif-data": "Strip EXIF Data",
 	"private-extensions": "File extensions to make private",
 	"private-uploads-extensions-help": "Enter comma-separated list of file extensions to make private here (e.g. <code>pdf,xls,doc</code>). An empty list means all files are private.",
 	"resize-image-width-threshold": "Resize images if they are wider than specified width",
@@ -31,7 +32,7 @@
 	"max-profile-image-size-help": "(in kibibytes, default: 256 KiB)",
 	"max-cover-image-size": "Maximum Cover Image File Size",
 	"max-cover-image-size-help": "(in kibibytes, default: 2,048 KiB)",
-	"keep-all-user-images": "Keep old versions of avatars and profile covers on the server",
+	"keep-all-user-images": "Manter versões antigas das fotos de perfil e das fotos de capa no servidor",
 	"profile-covers": "Profile Covers",
 	"default-covers": "Default Cover Images",
 	"default-covers-help": "Add comma-separated default cover images for accounts that don't have an uploaded cover image"

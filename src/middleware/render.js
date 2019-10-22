@@ -6,6 +6,7 @@ var validator = require('validator');
 var winston = require('winston');
 
 var plugins = require('../plugins');
+var meta = require('../meta');
 var translator = require('../translator');
 var widgets = require('../widgets');
 var utils = require('../utils');
@@ -48,6 +49,14 @@ module.exports = function (middleware) {
 				function (data, next) {
 					templateToRender = data.templateData.templateToRender || template;
 					plugins.fireHook('filter:middleware.render', { req: req, res: res, templateData: data.templateData }, next);
+				},
+				function parseTags(data, next) {
+					meta.tags.parse(req, data, res.locals.metaTags, res.locals.linkTags, function (err, tags) {
+						options._header = {
+							tags: tags,
+						};
+						next(err, data);
+					});
 				},
 				function (data, next) {
 					options = data.templateData;

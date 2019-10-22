@@ -1,10 +1,10 @@
 'use strict';
 
 
-var nconf = require('nconf');
-var meta = require('./meta');
+const nconf = require('nconf');
+const meta = require('./meta');
 
-var coverPhoto = module.exports;
+const coverPhoto = module.exports;
 
 coverPhoto.getDefaultGroupCover = function (groupName) {
 	return getCover('groups', groupName);
@@ -17,7 +17,7 @@ coverPhoto.getDefaultProfileCover = function (uid) {
 function getCover(type, id) {
 	const defaultCover = nconf.get('relative_path') + '/assets/images/cover-default.png';
 	if (meta.config[type + ':defaultCovers']) {
-		var covers = String(meta.config[type + ':defaultCovers']).trim().split(/[\s,]+/g);
+		const covers = String(meta.config[type + ':defaultCovers']).trim().split(/[\s,]+/g);
 		let coverPhoto = defaultCover;
 		if (!covers.length) {
 			return coverPhoto;
@@ -28,8 +28,8 @@ function getCover(type, id) {
 		} else {
 			id %= covers.length;
 		}
-		if (covers[id] && !covers[id].startsWith('http')) {
-			coverPhoto = nconf.get('relative_path') + covers[id];
+		if (covers[id]) {
+			coverPhoto = covers[id].startsWith('http') ? covers[id] : (nconf.get('relative_path') + covers[id]);
 		}
 		return coverPhoto;
 	}

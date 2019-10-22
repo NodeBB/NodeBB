@@ -4,6 +4,7 @@
 	"consent.message": "通知消息",
 	"consent.acceptance": "赞成消息",
 	"consent.link-text": "政策链接文本",
+	"consent.link-url": "政策地址链接",
 	"consent.blank-localised-default": "留空以便使用 NodeBB 本地默认值",
 	"settings": "设置",
 	"cookie-domain": "Session cookie 域名",

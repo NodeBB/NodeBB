@@ -43,6 +43,7 @@
     "account/following": "Tie, kuri %1 seko",
     "account/followers": "Tie, kuri seko %1",
     "account/posts": "Rakstījis(-jusi) %1",
+    "account/latest-posts": "Latest posts made by %1",
     "account/topics": "Tematus izveidojis(-jusi) %1",
     "account/groups": "%1 grupas",
     "account/watched_categories": "%1 novērotās kategorijas",

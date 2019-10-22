@@ -210,10 +210,10 @@ program
 	})
 	.description('List all installed plugins');
 program
-	.command('events')
-	.description('Outputs the last ten (10) administrative events recorded by NodeBB')
-	.action(function () {
-		require('./manage').listEvents();
+	.command('events [count]')
+	.description('Outputs the most recent administrative events recorded by NodeBB')
+	.action(function (count) {
+		require('./manage').listEvents(count);
 	});
 program
 	.command('info')
@@ -242,12 +242,11 @@ resetCommand
 		}
 
 		require('./reset').reset(options, function (err) {
-			if (err) { throw err; }
-			require('../meta/build').buildAll(function (err) {
-				if (err) { throw err; }
+			if (err) {
+				return process.exit(1);
+			}
 
-				process.exit();
-			});
+			process.exit(0);
 		});
 	});
 

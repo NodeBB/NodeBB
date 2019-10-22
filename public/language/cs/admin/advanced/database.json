@@ -22,6 +22,7 @@
 	"mongo.bytes-out": "Bajtů <-",
 	"mongo.num-requests": "Počet požadavků",
 	"mongo.raw-info": "Raw informace MongoDB",
+	"mongo.unauthorized": "NodeBB se nepodařilo odeslat dotaz na databázi MongoDB pro relevantní statistiky. Ujistěte se, že uživatel používající NodeBB obsahuje roly \"clusterMonitor\"  pro „admin“ databáze.",
 
 	"redis": "Redis",
 	"redis.version": "Verze Redis",

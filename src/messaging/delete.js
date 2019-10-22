@@ -1,31 +1,16 @@
 'use strict';
 
-var async = require('async');
-
 module.exports = function (Messaging) {
-	Messaging.deleteMessage = function (mid, roomId, callback) {
-		async.waterfall([
-			async.apply(Messaging.getMessageField, mid, 'deleted'),
-			function (deleted, next) {
-				if (deleted) {
-					return next(new Error('[[error:chat-deleted-already]]'));
-				}
+	Messaging.deleteMessage = async mid => await doDeleteRestore(mid, 1);
+	Messaging.restoreMessage = async mid => await doDeleteRestore(mid, 0);
 
-				Messaging.setMessageField(mid, 'deleted', 1, next);
-			},
-		], callback);
-	};
+	async function doDeleteRestore(mid, state) {
+		const field = state ? 'deleted' : 'restored';
+		const cur = await Messaging.getMessageField(mid, 'deleted');
+		if (cur === state) {
+			throw new Error('[[error:chat-' + field + '-already]]');
+		}
 
-	Messaging.restoreMessage = function (mid, roomId, callback) {
-		async.waterfall([
-			async.apply(Messaging.getMessageField, mid, 'deleted'),
-			function (deleted, next) {
-				if (!deleted) {
-					return next(new Error('[[error:chat-restored-already]]'));
-				}
-
-				Messaging.setMessageField(mid, 'deleted', 0, next);
-			},
-		], callback);
-	};
+		return await Messaging.setMessageField(mid, 'deleted', state);
+	}
 };

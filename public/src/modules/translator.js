@@ -273,6 +273,10 @@
 				return Promise.resolve(self.modules[namespace](key, args));
 			}
 
+			if (namespace && result.length === 1) {
+				return Promise.resolve('[[' + namespace + ']]');
+			}
+
 			if (namespace && !key) {
 				warn('Missing key in translation token "' + name + '"');
 				return Promise.resolve('[[' + namespace + ']]');
@@ -537,7 +541,10 @@
 			}
 
 			if (!(typeof text === 'string' || text instanceof String) || text === '') {
-				return cb('');
+				if (cb) {
+					return setTimeout(cb, 0, '');
+				}
+				return '';
 			}
 
 			return Translator.create(lang).translate(text).then(function (output) {
@@ -575,6 +582,7 @@
 		},
 
 		toggleTimeagoShorthand: function toggleTimeagoShorthand(callback) {
+			/* eslint "prefer-object-spread": "off" */
 			function toggle() {
 				var tmp = assign({}, jQuery.timeago.settings.strings);
 				jQuery.timeago.settings.strings = assign({}, adaptor.timeagoShort);
@@ -586,6 +594,10 @@
 
 			if (!adaptor.timeagoShort) {
 				var languageCode = utils.userLangToTimeagoCode(config.userLang);
+				if (!config.timeagoCodes.includes(languageCode + '-short')) {
+					languageCode = 'en';
+				}
+
 				var originalSettings = assign({}, jQuery.timeago.settings.strings);
 				jQuery.getScript(config.relative_path + '/assets/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '-short.js').done(function () {
 					adaptor.timeagoShort = assign({}, jQuery.timeago.settings.strings);

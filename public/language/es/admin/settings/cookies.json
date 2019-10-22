@@ -4,6 +4,7 @@
 	"consent.message": "Notificación de mensaje",
 	"consent.acceptance": "Mensaje de aceptación",
 	"consent.link-text": "Texto de Enlace a Política",
+	"consent.link-url": "Policy Link URL",
 	"consent.blank-localised-default": "Dejar en blanco para utilizar valores localizados por defecto de NodeBB",
 	"settings": "Configuraciones.",
 	"cookie-domain": "Dominio de cookie de sesión",

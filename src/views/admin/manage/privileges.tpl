@@ -10,8 +10,6 @@
 				<!-- IMPORT partials/category-selector.tpl -->
 			</div>
 
-			<hr />
-
 			<div class="privilege-table-container">
 				<!-- IF cid -->
 				<!-- IMPORT admin/partials/categories/privileges.tpl -->

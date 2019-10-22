@@ -1,7 +1,5 @@
 'use strict';
 
-const async = require('async');
-
 const db = require('../database');
 const user = require('../user');
 
@@ -12,69 +10,45 @@ module.exports = function (Categories) {
 		watching: 3,
 	};
 
-	Categories.isIgnored = function (cids, uid, callback) {
+	Categories.isIgnored = async function (cids, uid) {
 		if (!(parseInt(uid, 10) > 0)) {
-			return setImmediate(callback, null, cids.map(() => false));
+			return cids.map(() => false);
 		}
-		async.waterfall([
-			function (next) {
-				Categories.getWatchState(cids, uid, next);
-			},
-			function (states, next) {
-				next(null, states.map(state => state === Categories.watchStates.ignoring));
-			},
-		], callback);
+		const states = await Categories.getWatchState(cids, uid);
+		return states.map(state => state === Categories.watchStates.ignoring);
 	};
 
-	Categories.getWatchState = function (cids, uid, callback) {
+	Categories.getWatchState = async function (cids, uid) {
 		if (!(parseInt(uid, 10) > 0)) {
-			return setImmediate(callback, null, cids.map(() => Categories.watchStates.notwatching));
+			return cids.map(() => Categories.watchStates.notwatching);
 		}
 		if (!Array.isArray(cids) || !cids.length) {
-			return setImmediate(callback, null, []);
+			return [];
 		}
-		async.waterfall([
-			function (next) {
-				const keys = cids.map(cid => 'cid:' + cid + ':uid:watch:state');
-				async.parallel({
-					userSettings: async.apply(user.getSettings, uid),
-					states: async.apply(db.sortedSetsScore, keys, uid),
-				}, next);
-			},
-			function (results, next) {
-				next(null, results.states.map(state => state || Categories.watchStates[results.userSettings.categoryWatchState]));
-			},
-		], callback);
+		const keys = cids.map(cid => 'cid:' + cid + ':uid:watch:state');
+		const [userSettings, states] = await Promise.all([
+			user.getSettings(uid),
+			db.sortedSetsScore(keys, uid),
+		]);
+		return states.map(state => state || Categories.watchStates[userSettings.categoryWatchState]);
 	};
 
-	Categories.getIgnorers = function (cid, start, stop, callback) {
+	Categories.getIgnorers = async function (cid, start, stop) {
 		const count = (stop === -1) ? -1 : (stop - start + 1);
-		db.getSortedSetRevRangeByScore('cid:' + cid + ':uid:watch:state', start, count, Categories.watchStates.ignoring, Categories.watchStates.ignoring, callback);
+		return await db.getSortedSetRevRangeByScore('cid:' + cid + ':uid:watch:state', start, count, Categories.watchStates.ignoring, Categories.watchStates.ignoring);
 	};
 
-	Categories.filterIgnoringUids = function (cid, uids, callback) {
-		async.waterfall([
-			function (next) {
-				Categories.getUidsWatchStates(cid, uids, next);
-			},
-			function (states, next) {
-				const readingUids = uids.filter((uid, index) => uid && states[index] !== Categories.watchStates.ignoring);
-				next(null, readingUids);
-			},
-		], callback);
+	Categories.filterIgnoringUids = async function (cid, uids) {
+		const states = await Categories.getUidsWatchStates(cid, uids);
+		const readingUids = uids.filter((uid, index) => uid && states[index] !== Categories.watchStates.ignoring);
+		return readingUids;
 	};
 
-	Categories.getUidsWatchStates = function (cid, uids, callback) {
-		async.waterfall([
-			function (next) {
-				async.parallel({
-					userSettings: async.apply(user.getMultipleUserSettings, uids),
-					states: async.apply(db.sortedSetScores, 'cid:' + cid + ':uid:watch:state', uids),
-				}, next);
-			},
-			function (results, next) {
-				next(null, results.states.map((state, index) => state || Categories.watchStates[results.userSettings[index].categoryWatchState]));
-			},
-		], callback);
+	Categories.getUidsWatchStates = async function (cid, uids) {
+		const [userSettings, states] = await Promise.all([
+			user.getMultipleUserSettings(uids),
+			db.sortedSetScores('cid:' + cid + ':uid:watch:state', uids),
+		]);
+		return states.map((state, index) => state || Categories.watchStates[userSettings[index].categoryWatchState]);
 	};
 };

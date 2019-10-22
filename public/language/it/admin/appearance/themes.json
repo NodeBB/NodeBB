@@ -1,11 +1,11 @@
 {
-    "checking-for-installed": "Controllando se ci sono temi installati...",
-    "homepage": "Pagina Home",
-    "select-theme": "Seleziona il Tema",
-    "current-theme": "Tema Corrente",
+    "checking-for-installed": "Verifica dei temi installati.....",
+    "homepage": "Pagina Iniziale",
+    "select-theme": "Seleziona Tema",
+    "current-theme": "Tema corrente",
     "no-themes": "Nessun tema installato trovato",
-    "revert-confirm": "Sei sicuro di voler ripristinare al tema originale di NodeBB?",
-    "theme-changed": "Tema Cambiato",
-    "revert-success": "Hai correttamente ripristinato il tuo NodeBB al tema originale.",
-    "restart-to-activate": "Please rebuild and restart your NodeBB to fully activate this theme."
+    "revert-confirm": "Sei sicuro di voler ripristinare al tema predefinito di NodeBB?",
+    "theme-changed": "Tema cambiato",
+    "revert-success": "Hai correttamente ripristinato il tuo NodeBB al tema predefinito.",
+    "restart-to-activate": "Per favore, riorganizza e riavvia il tuo NodeBB per attivare completamente questo tema."
 }

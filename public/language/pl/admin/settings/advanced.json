@@ -1,8 +1,9 @@
 {
 	"maintenance-mode": "Tryb konserwacji",
 	"maintenance-mode.help": "Kiedy forum jest w trybie konserwacji, wszystkie żądania będą przekierowane do statycznej strony oczekiwania. Administratorzy nie są objęci tym przekierowaniem i mogą normalnie korzystać ze strony.",
+	"maintenance-mode.status": "Kod stanu trybu konserwacji",
 	"maintenance-mode.message": "Komunikat na ekranie konserwacji",
-	"headers": "Nagłówek",
+	"headers": "Nagłówki",
 	"headers.allow-from": "Ustaw ALLOW-FROM, aby umieścić NodeBB w ramce iFrame",
 	"headers.powered-by": "Dopasuj nagłówek \"Powered By\" wysyłany przez NodeBB",
 	"headers.acao": "Kontrola-Dostępu-Zezwól-Żródło",

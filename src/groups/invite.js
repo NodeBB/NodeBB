@@ -1,0 +1,115 @@
+'use strict';
+
+const _ = require('lodash');
+
+const db = require('../database');
+const user = require('../user');
+const utils = require('../utils');
+const plugins = require('../plugins');
+const notifications = require('../notifications');
+
+module.exports = function (Groups) {
+	Groups.requestMembership = async function (groupName, uid) {
+		await inviteOrRequestMembership(groupName, uid, 'request');
+		const username = await user.getUserField(uid, 'username');
+		const [notification, owners] = await Promise.all([
+			notifications.create({
+				type: 'group-request-membership',
+				bodyShort: '[[groups:request.notification_title, ' + username + ']]',
+				bodyLong: '[[groups:request.notification_text, ' + username + ', ' + groupName + ']]',
+				nid: 'group:' + groupName + ':uid:' + uid + ':request',
+				path: '/groups/' + utils.slugify(groupName),
+				from: uid,
+			}),
+			Groups.getOwners(groupName),
+		]);
+
+		await notifications.push(notification, owners);
+	};
+
+	Groups.acceptMembership = async function (groupName, uid) {
+		await db.setsRemove(['group:' + groupName + ':pending', 'group:' + groupName + ':invited'], uid);
+		await Groups.join(groupName, uid);
+
+		const notification = await notifications.create({
+			type: 'group-invite',
+			bodyShort: '[[groups:membership.accept.notification_title, ' + groupName + ']]',
+			nid: 'group:' + groupName + ':uid:' + uid + ':invite-accepted',
+			path: '/groups/' + utils.slugify(groupName),
+		});
+		await notifications.push(notification, [uid]);
+	};
+
+	Groups.rejectMembership = async function (groupNames, uid) {
+		if (!Array.isArray(groupNames)) {
+			groupNames = [groupNames];
+		}
+		const sets = [];
+		groupNames.forEach(groupName =>	sets.push('group:' + groupName + ':pending', 'group:' + groupName + ':invited'));
+		await db.setsRemove(sets, uid);
+	};
+
+	Groups.invite = async function (groupName, uids) {
+		uids = Array.isArray(uids) ? uids : [uids];
+		await inviteOrRequestMembership(groupName, uids, 'invite');
+
+		const notificationData = await Promise.all(uids.map(uid => notifications.create({
+			type: 'group-invite',
+			bodyShort: '[[groups:invited.notification_title, ' + groupName + ']]',
+			bodyLong: '',
+			nid: 'group:' + groupName + ':uid:' + uid + ':invite',
+			path: '/groups/' + utils.slugify(groupName),
+		})));
+
+		await Promise.all(uids.map((uid, index) => notifications.push(notificationData[index], uid)));
+	};
+
+	async function inviteOrRequestMembership(groupName, uids, type) {
+		uids = Array.isArray(uids) ? uids : [uids];
+		uids = uids.filter(uid => parseInt(uid, 10) > 0);
+		const [exists, isMember, isPending, isInvited] = await Promise.all([
+			Groups.exists(groupName),
+			Groups.isMembers(uids, groupName),
+			Groups.isPending(uids, groupName),
+			Groups.isInvited(uids, groupName),
+		]);
+
+		if (!exists) {
+			throw new Error('[[error:no-group]]');
+		}
+
+		uids = uids.filter((uid, i) => !isMember[i] && ((type === 'invite' && !isInvited[i]) || (type === 'request' && !isPending[i])));
+
+		const set = type === 'invite' ? 'group:' + groupName + ':invited' : 'group:' + groupName + ':pending';
+		await db.setAdd(set, uids);
+		const hookName = type === 'invite' ? 'action:group.inviteMember' : 'action:group.requestMembership';
+		plugins.fireHook(hookName, {
+			groupName: groupName,
+			uids: uids,
+		});
+	}
+
+	Groups.isInvited = async function (uids, groupName) {
+		return await checkInvitePending(uids, 'group:' + groupName + ':invited');
+	};
+
+	Groups.isPending = async function (uids, groupName) {
+		return await checkInvitePending(uids, 'group:' + groupName + ':pending');
+	};
+
+	async function checkInvitePending(uids, set) {
+		const isArray = Array.isArray(uids);
+		uids = isArray ? uids : [uids];
+		const checkUids = uids.filter(uid => parseInt(uid, 10) > 0);
+		const isMembers = await db.isSetMembers(set, checkUids);
+		const map = _.zipObject(checkUids, isMembers);
+		return isArray ? uids.map(uid => !!map[uid]) : !!map[uids[0]];
+	}
+
+	Groups.getPending = async function (groupName) {
+		if (!groupName) {
+			return [];
+		}
+		return await db.getSetMembers('group:' + groupName + ':pending');
+	};
+};

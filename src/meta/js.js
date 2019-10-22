@@ -17,12 +17,13 @@ JS.scripts = {
 		'node_modules/promise-polyfill/dist/polyfill.js',
 		'node_modules/jquery/dist/jquery.js',
 		'node_modules/socket.io-client/dist/socket.io.js',
+		'node_modules/textcomplete/dist/textcomplete.min.js',
+		'node_modules/textcomplete.contenteditable/dist/textcomplete.codemirror.min.js',
 		'public/vendor/jquery/timeago/jquery.timeago.js',
 		'public/vendor/jquery/js/jquery.form.min.js',
 		'public/vendor/visibility/visibility.min.js',
 		'node_modules/bootstrap/dist/js/bootstrap.js',
 		'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.min.js',
-		'public/vendor/jquery/textcomplete/jquery.textcomplete.js',
 		'public/vendor/requirejs/require.js',
 		'public/src/require-config.js',
 		'public/vendor/bootbox/bootbox.js',
@@ -101,7 +102,7 @@ JS.scripts = {
 
 function linkIfLinux(srcPath, destPath, next) {
 	if (process.platform === 'win32') {
-		file.copyFile(srcPath, destPath, next);
+		fs.copyFile(srcPath, destPath, next);
 	} else {
 		file.link(srcPath, destPath, true, next);
 	}

@@ -18,5 +18,13 @@
 	"alert.update-success": "Виджеты успешно обновлены",
 	"alert.clone-success": "Виджеты успешно скопированы",
 
-	"error.select-clone": "Пожалуйста, выберите страницу с которой копировать виджеты"
+	"error.select-clone": "Пожалуйста, выберите страницу с которой копировать виджеты",
+
+	"title": "Title",
+	"title.placeholder": "Title (only shown on some containers)",
+	"container": "Container",
+	"container.placeholder": "Drag and drop a container or enter HTML here.",
+	"show-to-groups": "Show to groups",
+	"hide-from-groups": "Hide from groups",
+	"hide-on-mobile": "Hide on mobile"
 }

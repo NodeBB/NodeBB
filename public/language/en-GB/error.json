@@ -14,6 +14,9 @@
 
 	"invalid-username": "Invalid Username",
 	"invalid-email": "Invalid Email",
+	"invalid-fullname": "Invalid Fullname",
+	"invalid-location": "Invalid Location",
+	"invalid-birthday": "Invalid Birthday",
 	"invalid-title": "Invalid title",
 	"invalid-user-data": "Invalid User Data",
 	"invalid-password": "Invalid Password",
@@ -39,6 +42,7 @@
 	"username-too-short": "Username too short",
 	"username-too-long": "Username too long",
 	"password-too-long": "Password too long",
+	"reset-rate-limited": "Too many password reset requests (rate limited)",
 
 	"user-banned": "User banned",
 	"user-banned-reason": "Sorry, this account has been banned (Reason: %1)",
@@ -116,6 +120,8 @@
 	"group-needs-owner": "This group requires at least one owner",
 	"group-already-invited": "This user has already been invited",
 	"group-already-requested": "Your membership request has already been submitted",
+	"group-join-disabled": "You are not able to join this group at this time",
+	"group-leave-disabled": "You are not able to leave this group at this time",
 
 	"post-already-deleted": "This post has already been deleted",
 	"post-already-restored": "This post has already been restored",
@@ -172,7 +178,6 @@
 
 	"no-session-found": "No login session found!",
 	"not-in-room": "User not in room",
-	"no-users-in-room": "No users in this room",
 	"cant-kick-self": "You can't kick yourself from the group",
 	"no-users-selected": "No user(s) selected",
 	"invalid-home-page-route": "Invalid home page route",

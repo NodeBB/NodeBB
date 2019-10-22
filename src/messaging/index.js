@@ -1,16 +1,15 @@
 'use strict';
 
 
-var async = require('async');
-var validator = require('validator');
+const validator = require('validator');
 
-var db = require('../database');
-var user = require('../user');
-var plugins = require('../plugins');
-var meta = require('../meta');
-var utils = require('../utils');
+const db = require('../database');
+const user = require('../user');
+const plugins = require('../plugins');
+const meta = require('../meta');
+const utils = require('../utils');
 
-var Messaging = module.exports;
+const Messaging = module.exports;
 
 require('./data')(Messaging);
 require('./create')(Messaging);
@@ -21,179 +20,126 @@ require('./unread')(Messaging);
 require('./notifications')(Messaging);
 
 
-Messaging.getMessages = function (params, callback) {
-	var uid = params.uid;
-	var roomId = params.roomId;
-	var isNew = params.isNew || false;
-	var start = params.hasOwnProperty('start') ? params.start : 0;
-	var stop = parseInt(start, 10) + ((params.count || 50) - 1);
+Messaging.getMessages = async (params) => {
+	const isNew = params.isNew || false;
+	const start = params.hasOwnProperty('start') ? params.start : 0;
+	const stop = parseInt(start, 10) + ((params.count || 50) - 1);
 
-	var indices = {};
-	async.waterfall([
-		function (next) {
-			canGet('filter:messaging.canGetMessages', params.callerUid, params.uid, next);
-		},
-		function (canGet, next) {
-			if (!canGet) {
-				return callback(null, null);
-			}
-			db.getSortedSetRevRange('uid:' + uid + ':chat:room:' + roomId + ':mids', start, stop, next);
-		},
-		function (mids, next) {
-			if (!mids.length) {
-				return callback(null, []);
-			}
+	const indices = {};
+	const ok = await canGet('filter:messaging.canGetMessages', params.callerUid, params.uid);
+	if (!ok) {
+		return;
+	}
 
-			mids.forEach(function (mid, index) {
-				indices[mid] = start + index;
-			});
+	const mids = await db.getSortedSetRevRange('uid:' + params.uid + ':chat:room:' + params.roomId + ':mids', start, stop);
+	if (!mids.length) {
+		return [];
+	}
+	mids.forEach(function (mid, index) {
+		indices[mid] = start + index;
+	});
+	mids.reverse();
 
-			mids.reverse();
+	let messageData = await Messaging.getMessagesData(mids, params.uid, params.roomId, isNew);
+	messageData.forEach(function (messageData) {
+		messageData.index = indices[messageData.messageId.toString()];
+	});
 
-			Messaging.getMessagesData(mids, uid, roomId, isNew, next);
-		},
-		function (messageData, next) {
-			messageData.forEach(function (messageData) {
-				messageData.index = indices[messageData.messageId.toString()];
-			});
+	// Filter out deleted messages unless you're the sender of said message
+	messageData = messageData.filter(function (messageData) {
+		return (!messageData.deleted || messageData.fromuid === parseInt(params.uid, 10));
+	});
 
-			// Filter out deleted messages unless you're the sender of said message
-			messageData = messageData.filter(function (messageData) {
-				return (!messageData.deleted || messageData.fromuid === parseInt(params.uid, 10));
-			});
-
-			next(null, messageData);
-		},
-	], callback);
+	return messageData;
 };
 
-function canGet(hook, callerUid, uid, callback) {
-	plugins.fireHook(hook, {
+async function canGet(hook, callerUid, uid) {
+	const data = await plugins.fireHook(hook, {
 		callerUid: callerUid,
 		uid: uid,
 		canGet: parseInt(callerUid, 10) === parseInt(uid, 10),
-	}, function (err, data) {
-		callback(err, data ? data.canGet : false);
 	});
+
+	return data ? data.canGet : false;
 }
 
-Messaging.parse = function (message, fromuid, uid, roomId, isNew, callback) {
-	plugins.fireHook('filter:parse.raw', message, function (err, parsed) {
-		if (err) {
-			return callback(err);
+Messaging.parse = async (message, fromuid, uid, roomId, isNew) => {
+	const parsed = await plugins.fireHook('filter:parse.raw', message);
+	let messageData = {
+		message: message,
+		parsed: parsed,
+		fromuid: fromuid,
+		uid: uid,
+		roomId: roomId,
+		isNew: isNew,
+		parsedMessage: parsed,
+	};
+
+	messageData = await plugins.fireHook('filter:messaging.parse', messageData);
+	return messageData ? messageData.parsedMessage : '';
+};
+
+Messaging.isNewSet = async (uid, roomId, timestamp) => {
+	const setKey = 'uid:' + uid + ':chat:room:' + roomId + ':mids';
+	const messages = await db.getSortedSetRevRangeWithScores(setKey, 0, 0);
+	if (messages && messages.length) {
+		return parseInt(timestamp, 10) > parseInt(messages[0].score, 10) + Messaging.newMessageCutoff;
+	}
+	return true;
+};
+
+Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
+	const ok = await canGet('filter:messaging.canGetRecentChats', callerUid, uid);
+	if (!ok) {
+		return null;
+	}
+
+	const roomIds = await db.getSortedSetRevRange('uid:' + uid + ':chat:rooms', start, stop);
+	const results = await utils.promiseParallel({
+		roomData: Messaging.getRoomsData(roomIds),
+		unread: db.isSortedSetMembers('uid:' + uid + ':chat:rooms:unread', roomIds),
+		users: Promise.all(roomIds.map(async (roomId) => {
+			let uids = await db.getSortedSetRevRange('chat:room:' + roomId + ':uids', 0, 9);
+			uids = uids.filter(function (value) {
+				return value && parseInt(value, 10) !== parseInt(uid, 10);
+			});
+			return await user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline']);
+		})),
+		teasers: Promise.all(roomIds.map(async roomId => Messaging.getTeaser(uid, roomId))),
+	});
+
+	results.roomData.forEach(function (room, index) {
+		if (room) {
+			room.users = results.users[index];
+			room.groupChat = room.hasOwnProperty('groupChat') ? room.groupChat : room.users.length > 2;
+			room.unread = results.unread[index];
+			room.teaser = results.teasers[index];
+
+			room.users.forEach(function (userData) {
+				if (userData && parseInt(userData.uid, 10)) {
+					userData.status = user.getStatus(userData);
+				}
+			});
+			room.users = room.users.filter(function (user) {
+				return user && parseInt(user.uid, 10);
+			});
+			room.lastUser = room.users[0];
+
+			room.usernames = Messaging.generateUsernames(room.users, uid);
 		}
+	});
 
-		var messageData = {
-			message: message,
-			parsed: parsed,
-			fromuid: fromuid,
-			uid: uid,
-			roomId: roomId,
-			isNew: isNew,
-			parsedMessage: parsed,
-		};
-
-		plugins.fireHook('filter:messaging.parse', messageData, function (err, messageData) {
-			callback(err, messageData ? messageData.parsedMessage : '');
-		});
+	results.roomData = results.roomData.filter(Boolean);
+	const ref = { rooms: results.roomData, nextStart: stop + 1 };
+	return await plugins.fireHook('filter:messaging.getRecentChats', {
+		rooms: ref.rooms,
+		nextStart: ref.nextStart,
+		uid: uid,
+		callerUid: callerUid,
 	});
 };
 
-Messaging.isNewSet = function (uid, roomId, timestamp, callback) {
-	var setKey = 'uid:' + uid + ':chat:room:' + roomId + ':mids';
-
-	async.waterfall([
-		function (next) {
-			db.getSortedSetRevRangeWithScores(setKey, 0, 0, next);
-		},
-		function (messages, next) {
-			if (messages && messages.length) {
-				next(null, parseInt(timestamp, 10) > parseInt(messages[0].score, 10) + Messaging.newMessageCutoff);
-			} else {
-				next(null, true);
-			}
-		},
-	], callback);
-};
-
-
-Messaging.getRecentChats = function (callerUid, uid, start, stop, callback) {
-	async.waterfall([
-		function (next) {
-			canGet('filter:messaging.canGetRecentChats', callerUid, uid, next);
-		},
-		function (canGet, next) {
-			if (!canGet) {
-				return callback(null, null);
-			}
-			db.getSortedSetRevRange('uid:' + uid + ':chat:rooms', start, stop, next);
-		},
-		function (roomIds, next) {
-			async.parallel({
-				roomData: function (next) {
-					Messaging.getRoomsData(roomIds, next);
-				},
-				unread: function (next) {
-					db.isSortedSetMembers('uid:' + uid + ':chat:rooms:unread', roomIds, next);
-				},
-				users: function (next) {
-					async.map(roomIds, function (roomId, next) {
-						db.getSortedSetRevRange('chat:room:' + roomId + ':uids', 0, 9, function (err, uids) {
-							if (err) {
-								return next(err);
-							}
-							uids = uids.filter(function (value) {
-								return value && parseInt(value, 10) !== parseInt(uid, 10);
-							});
-							user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline'], next);
-						});
-					}, next);
-				},
-				teasers: function (next) {
-					async.map(roomIds, function (roomId, next) {
-						Messaging.getTeaser(uid, roomId, next);
-					}, next);
-				},
-			}, next);
-		},
-		function (results, next) {
-			results.roomData.forEach(function (room, index) {
-				if (room) {
-					room.users = results.users[index];
-					room.groupChat = room.hasOwnProperty('groupChat') ? room.groupChat : room.users.length > 2;
-					room.unread = results.unread[index];
-					room.teaser = results.teasers[index];
-
-					room.users.forEach(function (userData) {
-						if (userData && parseInt(userData.uid, 10)) {
-							userData.status = user.getStatus(userData);
-						}
-					});
-					room.users = room.users.filter(function (user) {
-						return user && parseInt(user.uid, 10);
-					});
-					room.lastUser = room.users[0];
-
-					room.usernames = Messaging.generateUsernames(room.users, uid);
-				}
-			});
-
-			results.roomData = results.roomData.filter(Boolean);
-
-			next(null, { rooms: results.roomData, nextStart: stop + 1 });
-		},
-		function (ref, next) {
-			plugins.fireHook('filter:messaging.getRecentChats', {
-				rooms: ref.rooms,
-				nextStart: ref.nextStart,
-				uid: uid,
-				callerUid: callerUid,
-			}, next);
-		},
-	], callback);
-};
-
-Messaging.generateUsernames = function (users, excludeUid) {
+Messaging.generateUsernames = (users, excludeUid) => {
 	users = users.filter(function (user) {
 		return user && parseInt(user.uid, 10) !== excludeUid;
 	});
@@ -202,186 +148,149 @@ Messaging.generateUsernames = function (users, excludeUid) {
 	}).join(', ');
 };
 
-Messaging.getTeaser = function (uid, roomId, callback) {
-	var teaser;
-	async.waterfall([
-		function (next) {
-			db.getSortedSetRevRange('uid:' + uid + ':chat:room:' + roomId + ':mids', 0, 0, next);
-		},
-		function (mids, next) {
-			if (!mids || !mids.length) {
-				return next(null, null);
-			}
-			Messaging.getMessageFields(mids[0], ['fromuid', 'content', 'timestamp'], next);
-		},
-		function (teaser, next) {
-			if (!teaser) {
-				return callback();
-			}
-			user.blocks.is(teaser.fromuid, uid, function (err, blocked) {
-				if (err || blocked) {
-					return callback(err);
-				}
+Messaging.getTeaser = async (uid, roomId) => {
+	const mid = await Messaging.getLatestUndeletedMessage(uid, roomId);
+	if (!mid) {
+		return null;
+	}
+	const teaser = await Messaging.getMessageFields(mid, ['fromuid', 'content', 'timestamp']);
+	if (!teaser.fromuid) {
+		return null;
+	}
+	const blocked = await user.blocks.is(teaser.fromuid, uid);
+	if (blocked) {
+		return null;
+	}
 
-				next(null, teaser);
-			});
-		},
-		function (_teaser, next) {
-			teaser = _teaser;
-			if (!teaser) {
-				return callback();
-			}
-			if (teaser.content) {
-				teaser.content = utils.stripHTMLTags(utils.decodeHTMLEntities(teaser.content));
-				teaser.content = validator.escape(String(teaser.content));
-			}
+	teaser.user = await user.getUserFields(teaser.fromuid, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline']);
+	if (teaser.content) {
+		teaser.content = utils.stripHTMLTags(utils.decodeHTMLEntities(teaser.content));
+		teaser.content = validator.escape(String(teaser.content));
+	}
 
-			teaser.timestampISO = utils.toISOString(teaser.timestamp);
-			user.getUserFields(teaser.fromuid, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline'], next);
-		},
-		function (user, next) {
-			teaser.user = user;
-			plugins.fireHook('filter:messaging.getTeaser', { teaser: teaser }, function (err, data) {
-				next(err, data.teaser);
-			});
-		},
-	], callback);
+	const payload = await plugins.fireHook('filter:messaging.getTeaser', { teaser: teaser });
+	return payload.teaser;
 };
 
-Messaging.canMessageUser = function (uid, toUid, callback) {
+Messaging.getLatestUndeletedMessage = async (uid, roomId) => {
+	let done = false;
+	let latestMid = null;
+	let index = 0;
+	let mids;
+
+	while (!done) {
+		/* eslint-disable no-await-in-loop */
+		mids = await db.getSortedSetRevRange('uid:' + uid + ':chat:room:' + roomId + ':mids', index, index);
+		if (mids.length) {
+			const states = await Messaging.getMessageFields(mids[0], ['deleted', 'system']);
+			done = !states.deleted && !states.system;
+			if (done) {
+				latestMid = mids[0];
+			}
+			index += 1;
+		} else {
+			done = true;
+		}
+	}
+
+	return latestMid;
+};
+
+Messaging.canMessageUser = async (uid, toUid) => {
 	if (meta.config.disableChat || uid <= 0 || uid === toUid) {
-		return callback(new Error('[[error:chat-disabled]]'));
+		throw new Error('[[error:chat-disabled]]');
 	}
 
 	if (parseInt(uid, 10) === parseInt(toUid, 10)) {
-		return callback(new Error('[[error:cant-chat-with-yourself'));
+		throw new Error('[[error:cant-chat-with-yourself');
 	}
 
-	async.waterfall([
-		function (next) {
-			user.exists(toUid, next);
-		},
-		function (exists, next) {
-			if (!exists) {
-				return callback(new Error('[[error:no-user]]'));
-			}
-			user.getUserFields(uid, ['banned', 'email:confirmed'], next);
-		},
-		function (userData, next) {
-			if (userData.banned) {
-				return callback(new Error('[[error:user-banned]]'));
-			}
+	const exists = await user.exists(toUid);
+	if (!exists) {
+		throw new Error('[[error:no-user]]');
+	}
 
-			if (meta.config.requireEmailConfirmation && !userData['email:confirmed']) {
-				return callback(new Error('[[error:email-not-confirmed-chat]]'));
-			}
+	const userData = await user.getUserFields(uid, ['banned', 'email:confirmed']);
+	if (userData.banned) {
+		throw new Error('[[error:user-banned]]');
+	}
 
-			async.parallel({
-				settings: async.apply(user.getSettings, toUid),
-				isAdmin: async.apply(user.isAdministrator, uid),
-				isModerator: async.apply(user.isModeratorOfAnyCategory, uid),
-				isFollowing: async.apply(user.isFollowing, toUid, uid),
-			}, next);
-		},
-		function (results, next) {
-			if (results.settings.restrictChat && !results.isAdmin && !results.isModerator && !results.isFollowing) {
-				return next(new Error('[[error:chat-restricted]]'));
-			}
+	if (meta.config.requireEmailConfirmation && !userData['email:confirmed']) {
+		throw new Error('[[error:email-not-confirmed-chat]]');
+	}
 
-			plugins.fireHook('static:messaging.canMessageUser', {
-				uid: uid,
-				toUid: toUid,
-			}, function (err) {
-				next(err);
-			});
-		},
-	], callback);
+	const results = await utils.promiseParallel({
+		settings: user.getSettings(toUid),
+		isAdmin: user.isAdministrator(uid),
+		isModerator: user.isModeratorOfAnyCategory(uid),
+		isFollowing: user.isFollowing(toUid, uid),
+	});
+
+	if (results.settings.restrictChat && !results.isAdmin && !results.isModerator && !results.isFollowing) {
+		throw new Error('[[error:chat-restricted]]');
+	}
+
+	await plugins.fireHook('static:messaging.canMessageUser', {
+		uid: uid,
+		toUid: toUid,
+	});
 };
 
-Messaging.canMessageRoom = function (uid, roomId, callback) {
+Messaging.canMessageRoom = async (uid, roomId) => {
 	if (meta.config.disableChat || uid <= 0) {
-		return callback(new Error('[[error:chat-disabled]]'));
+		throw new Error('[[error:chat-disabled]]');
 	}
 
-	async.waterfall([
-		function (next) {
-			Messaging.isUserInRoom(uid, roomId, next);
-		},
-		function (inRoom, next) {
-			if (!inRoom) {
-				return next(new Error('[[error:not-in-room]]'));
-			}
+	const inRoom = await Messaging.isUserInRoom(uid, roomId);
+	if (!inRoom) {
+		throw new Error('[[error:not-in-room]]');
+	}
 
-			Messaging.getUserCountInRoom(roomId, next);
-		},
-		function (count, next) {
-			if (count < 2) {
-				return next(new Error('[[error:no-users-in-room]]'));
-			}
+	const userData = await user.getUserFields(uid, ['banned', 'email:confirmed']);
+	if (userData.banned) {
+		throw new Error('[[error:user-banned]]');
+	}
 
-			user.getUserFields(uid, ['banned', 'email:confirmed'], next);
-		},
-		function (userData, next) {
-			if (userData.banned) {
-				return next(new Error('[[error:user-banned]]'));
-			}
+	if (meta.config.requireEmailConfirmation && !userData['email:confirmed']) {
+		throw new Error('[[error:email-not-confirmed-chat]]');
+	}
 
-			if (meta.config.requireEmailConfirmation && !userData['email:confirmed']) {
-				return next(new Error('[[error:email-not-confirmed-chat]]'));
-			}
-
-			plugins.fireHook('static:messaging.canMessageRoom', {
-				uid: uid,
-				roomId: roomId,
-			}, function (err) {
-				next(err);
-			});
-		},
-	], callback);
+	await plugins.fireHook('static:messaging.canMessageRoom', {
+		uid: uid,
+		roomId: roomId,
+	});
 };
 
-Messaging.hasPrivateChat = function (uid, withUid, callback) {
+Messaging.hasPrivateChat = async (uid, withUid) => {
 	if (parseInt(uid, 10) === parseInt(withUid, 10)) {
-		return callback(null, 0);
+		return 0;
 	}
-	async.waterfall([
-		function (next) {
-			async.parallel({
-				myRooms: async.apply(db.getSortedSetRevRange, 'uid:' + uid + ':chat:rooms', 0, -1),
-				theirRooms: async.apply(db.getSortedSetRevRange, 'uid:' + withUid + ':chat:rooms', 0, -1),
-			}, next);
-		},
-		function (results, next) {
-			var roomIds = results.myRooms.filter(function (roomId) {
-				return roomId && results.theirRooms.includes(roomId);
-			});
 
-			if (!roomIds.length) {
-				return callback();
-			}
+	const results = await utils.promiseParallel({
+		myRooms: db.getSortedSetRevRange('uid:' + uid + ':chat:rooms', 0, -1),
+		theirRooms: db.getSortedSetRevRange('uid:' + withUid + ':chat:rooms', 0, -1),
+	});
+	const roomIds = results.myRooms.filter(function (roomId) {
+		return roomId && results.theirRooms.includes(roomId);
+	});
 
-			var index = 0;
-			var roomId = 0;
-			async.whilst(function () {
-				return index < roomIds.length && !roomId;
-			}, function (next) {
-				Messaging.getUserCountInRoom(roomIds[index], function (err, count) {
-					if (err) {
-						return next(err);
-					}
-					if (count === 2) {
-						roomId = roomIds[index];
-						next(null, roomId);
-					} else {
-						index += 1;
-						next();
-					}
-				});
-			}, function (err) {
-				next(err, roomId);
-			});
-		},
-	], callback);
+	if (!roomIds.length) {
+		return 0;
+	}
+
+	var index = 0;
+	var roomId = 0;
+	while (index < roomIds.length && !roomId) {
+		/* eslint-disable no-await-in-loop */
+		const count = await Messaging.getUserCountInRoom(roomIds[index]);
+		if (count === 2) {
+			roomId = roomIds[index];
+		} else {
+			index += 1;
+		}
+	}
+
+	return roomId;
 };
 
 Messaging.async = require('../promisify')(Messaging);

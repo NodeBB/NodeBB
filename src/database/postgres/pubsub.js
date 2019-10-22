@@ -1,15 +1,15 @@
 'use strict';
 
-var util = require('util');
-var winston = require('winston');
-var EventEmitter = require('events').EventEmitter;
-var pg = require('pg');
-var db = require('../postgres');
+const util = require('util');
+const winston = require('winston');
+const EventEmitter = require('events').EventEmitter;
+const pg = require('pg');
+const connection = require('./connection');
 
-var PubSub = function () {
-	var self = this;
+const PubSub = function () {
+	const self = this;
 
-	var subClient = new pg.Client(db.getConnectionOptions());
+	const subClient = new pg.Client(connection.getConnectionOptions());
 
 	subClient.connect(function (err) {
 		if (err) {
@@ -41,6 +41,7 @@ var PubSub = function () {
 util.inherits(PubSub, EventEmitter);
 
 PubSub.prototype.publish = function (event, data) {
+	const db = require('../postgres');
 	db.pool.query({
 		name: 'pubSubPublish',
 		text: `SELECT pg_notify('pubsub', $1::TEXT)`,

@@ -1,6 +1,7 @@
 {
 	"maintenance-mode": "维护模式",
 	"maintenance-mode.help": "当论坛处在维护模式时，所有请求将被重定向到一个静态页面。管理员不受重定向限制，并可正常访问站点。",
+	"maintenance-mode.status": "维护模式状态码",
 	"maintenance-mode.message": "维护消息",
 	"headers": "标题",
 	"headers.allow-from": "设置 ALLOW-FROM 来放置 NodeBB 于 iFrame 中",

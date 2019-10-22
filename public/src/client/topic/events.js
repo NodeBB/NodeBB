@@ -130,6 +130,7 @@ define('forum/topic/events', [
 			editedPostEl.html(translator.unescape(data.post.content));
 			editedPostEl.find('img:not(.not-responsive)').addClass('img-responsive');
 			images.wrapImagesInLinks(editedPostEl.parent());
+			posts.addBlockquoteEllipses(editedPostEl.parent());
 			editedPostEl.fadeIn(250);
 
 			var editData = {

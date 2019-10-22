@@ -268,6 +268,7 @@ Minifier.js.minifyBatch = function (scripts, fork, callback) {
 function buildCSS(data, callback) {
 	less.render(data.source, {
 		paths: data.paths,
+		javascriptEnabled: true,
 	}, function (err, lessOutput) {
 		if (err) {
 			return callback(err);

@@ -18,5 +18,13 @@
 	"alert.update-success": "Widgety zostały zaktualizowane",
 	"alert.clone-success": "Widgety zostały sklonowane",
 
-	"error.select-clone": "Proszę wybrać stronę do sklonowania"
+	"error.select-clone": "Proszę wybrać stronę do sklonowania",
+
+	"title": "Title",
+	"title.placeholder": "Title (only shown on some containers)",
+	"container": "Container",
+	"container.placeholder": "Drag and drop a container or enter HTML here.",
+	"show-to-groups": "Show to groups",
+	"hide-from-groups": "Hide from groups",
+	"hide-on-mobile": "Hide on mobile"
 }

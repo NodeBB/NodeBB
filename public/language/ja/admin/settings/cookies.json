@@ -4,6 +4,7 @@
 	"consent.message": "通知メッセージ",
 	"consent.acceptance": "メッセージを受け取る",
 	"consent.link-text": "ポリシーリンクテキスト",
+	"consent.link-url": "Policy Link URL",
 	"consent.blank-localised-default": "空白のままにして、NodeBBのローカライズされたデフォルトを使用する",
 	"settings": "設定",
 	"cookie-domain": "セッションCookieドメイン",

@@ -1,6 +1,7 @@
 {
 	"maintenance-mode": "Režim údržby",
 	"maintenance-mode.help": "Je-li fórum v režimu údržby, všechny požadavky budou přesměrovány na statickou stránku. Správci jsou vyloučeni z tohoto přesměrování a budou mít normálně zobrazené stránky.",
+	"maintenance-mode.status": "Stavový kód režimu údržby",
 	"maintenance-mode.message": "Zpráva údržby",
 	"headers": "Hlavičky",
 	"headers.allow-from": "Nastavte ALLOW-FROM pro umístění NodeBB do iFrame",

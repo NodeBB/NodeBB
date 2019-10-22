@@ -9,6 +9,7 @@
 
 	"plugin-search": "Eklenti Arama",
 	"plugin-search-placeholder": "Eklenti Ara",
+	"submit-anonymous-usage": "Submit anonymous plugin usage data.",
 	"reorder-plugins": "Eklentileri yeniden sırala",
 	"order-active": "Etkin eklentileri sırala",
 	"dev-interested": "NodeBB için eklenti yazmakla ilgilenir misiniz?",
@@ -29,6 +30,8 @@
 	"plugin-item.more-info": "Daha fazla bilgi için:",
 	"plugin-item.unknown": "Bilinmeyen",
 	"plugin-item.unknown-explanation": "Bu eklentinin durumu muhtemelen yanlış yapılandırma hatası nedeniyle belirlenemedi.",
+	"plugin-item.compatible": "This plugin works on NodeBB %1",
+	"plugin-item.not-compatible": "This plugin has no compatibility data, make sure it works before installing on your production environment.",
 
 	"alert.enabled": "Eklenti Aktif",
 	"alert.disabled": "Eklenti Devre dışı",

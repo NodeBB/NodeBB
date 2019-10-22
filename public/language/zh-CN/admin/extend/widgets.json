@@ -18,5 +18,13 @@
 	"alert.update-success": "已成功更新窗口部件",
 	"alert.clone-success": "成功克隆部件",
 
-	"error.select-clone": "请选择一个页面进行克隆"
+	"error.select-clone": "请选择一个页面进行克隆",
+
+	"title": "标题",
+	"title.placeholder": "标题（仅在部分容器显示）",
+	"container": "容器",
+	"container.placeholder": "将容器拖拽至此处或在此处输入HTML",
+	"show-to-groups": "对群组显示",
+	"hide-from-groups": "对群组隐藏",
+	"hide-on-mobile": "在移动端隐藏"
 }

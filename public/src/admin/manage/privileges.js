@@ -49,8 +49,29 @@ define('admin/manage/privileges', [
 
 		$('.privilege-table-container').on('click', '[data-action="search.user"]', Privileges.addUserToPrivilegeTable);
 		$('.privilege-table-container').on('click', '[data-action="search.group"]', Privileges.addGroupToPrivilegeTable);
-		$('.privilege-table-container').on('click', '[data-action="copyToChildren"]', Privileges.copyPrivilegesToChildren);
-		$('.privilege-table-container').on('click', '[data-action="copyPrivilegesFrom"]', Privileges.copyPrivilegesFromCategory);
+		$('.privilege-table-container').on('click', '[data-action="copyToChildren"]', function () {
+			Privileges.copyPrivilegesToChildren(cid, '');
+		});
+		$('.privilege-table-container').on('click', '[data-action="copyToChildrenGroup"]', function () {
+			var groupName = $(this).parents('[data-group-name]').attr('data-group-name');
+			Privileges.copyPrivilegesToChildren(cid, groupName);
+		});
+
+		$('.privilege-table-container').on('click', '[data-action="copyPrivilegesFrom"]', function () {
+			Privileges.copyPrivilegesFromCategory(cid, '');
+		});
+		$('.privilege-table-container').on('click', '[data-action="copyPrivilegesFromGroup"]', function () {
+			var groupName = $(this).parents('[data-group-name]').attr('data-group-name');
+			Privileges.copyPrivilegesFromCategory(cid, groupName);
+		});
+
+		$('.privilege-table-container').on('click', '[data-action="copyToAll"]', function () {
+			Privileges.copyPrivilegesToAllCategories(cid, '');
+		});
+		$('.privilege-table-container').on('click', '[data-action="copyToAllGroup"]', function () {
+			var groupName = $(this).parents('[data-group-name]').attr('data-group-name');
+			Privileges.copyPrivilegesToAllCategories(cid, groupName);
+		});
 
 		Privileges.exposeAssumedPrivileges();
 	};
@@ -85,7 +106,7 @@ define('admin/manage/privileges', [
 			}
 		});
 		for (var x = 0, numPrivs = privs.length; x < numPrivs; x += 1) {
-			var inputs = $('.privilege-table tr[data-group-name]:not([data-group-name="registered-users"],[data-group-name="guests"]) td[data-privilege="' + privs[x] + '"] input');
+			var inputs = $('.privilege-table tr[data-group-name]:not([data-group-name="registered-users"],[data-group-name="guests"],[data-group-name="spiders"]) td[data-privilege="' + privs[x] + '"] input');
 			inputs.each(function (idx, el) {
 				if (!el.checked) {
 					el.indeterminate = true;
@@ -168,23 +189,32 @@ define('admin/manage/privileges', [
 		});
 	};
 
-	Privileges.copyPrivilegesToChildren = function () {
-		socket.emit('admin.categories.copyPrivilegesToChildren', cid, function (err) {
+	Privileges.copyPrivilegesToChildren = function (cid, group) {
+		socket.emit('admin.categories.copyPrivilegesToChildren', { cid: cid, group: group }, function (err) {
 			if (err) {
 				return app.alertError(err.message);
 			}
-			app.alertSuccess('Privileges copied!');
+			app.alertSuccess('[[admin/manage/categories:privileges.copy-success]]');
 		});
 	};
 
-	Privileges.copyPrivilegesFromCategory = function () {
+	Privileges.copyPrivilegesFromCategory = function (cid, group) {
 		categorySelector.modal(ajaxify.data.categories.slice(1), function (fromCid) {
-			socket.emit('admin.categories.copyPrivilegesFrom', { toCid: cid, fromCid: fromCid }, function (err) {
+			socket.emit('admin.categories.copyPrivilegesFrom', { toCid: cid, fromCid: fromCid, group: group }, function (err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
 				ajaxify.refresh();
 			});
+		});
+	};
+
+	Privileges.copyPrivilegesToAllCategories = function (cid, group) {
+		socket.emit('admin.categories.copyPrivilegesToAllCategories', { cid: cid, group: group }, function (err) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+			app.alertSuccess('[[admin/manage/categories:privileges.copy-success]]');
 		});
 	};
 

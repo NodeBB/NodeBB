@@ -33,6 +33,10 @@
 					[[admin/settings/cookies:consent.blank-localised-default]]
 				</p>
 			</div>
+			<div class="form-group">
+				<label for="cookieConsentLinkUrl">[[admin/settings/cookies:consent.link-url]]</label>
+				<input class="form-control" id="cookieConsentLinkUrl" type="text" data-field="cookieConsentLinkUrl" />
+			</div>
 		</form>
 	</div>
 </div>

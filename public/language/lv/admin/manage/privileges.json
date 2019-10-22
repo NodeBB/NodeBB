@@ -1,7 +1,8 @@
 {
 	"global": "Globālās",
 	"global.no-users": "Nav lietotājiem īpašo globālo privilēģiju.",
-
+	"group-privileges": "Group Privileges",
+	"user-privileges": "User Privileges",
 	"chat": "Sarunāties",
 	"upload-images": "Augšupielādēt bildes",
 	"upload-files": "Augšupielādēt failus",
@@ -10,8 +11,12 @@
 	"search-content": "Meklēt saturā",
 	"search-users": "Meklēt lietotājos",
 	"search-tags": "Meklēt birkās",
+	"view-users": "View Users",
+	"view-tags": "View Tags",
+	"view-groups": "View Groups",
 	"allow-local-login": "Vietējā ielogošanās",
-
+	"allow-group-creation": "Group Create",
+	"view-users-info": "View Users Info",
 	"find-category": "Meklēt kategorijās",
 	"access-category": "Piekļūt kategorijām",
 	"access-topics": "Piekļūt tematiem",

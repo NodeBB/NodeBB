@@ -1,12 +1,12 @@
 {
 	"logger-settings": "Impostazioni del Registratore",
-	"description": "Abilitando le \"check boxes\", riceverai i registri sul tuo terminale. Se vuoi specificare un percorso, i registri verranno invece salvati in un file. Registrare l' HTTP è utile per collezionare statistiche su chi, quando, e a cosa le persone hanno accesso sul tuo forum. In più sul registrare le richieste HTTP, in combinazione con il monitoraggio redis-cli, può essere veramente utile per imparare l'interno di NodeBB",
-	"explanation": "Simply check/uncheck the logging settings to enable or disable logging on the fly. No restart needed.",
-	"enable-http": "Enable HTTP logging",
-	"enable-socket": "Enable socket.io event logging",
-	"file-path": "Percorso per i file di log",
-	"file-path-placeholder": "/path/to/log/file.log ::: lascia in bianco per loggare sul tuo terminale",
+	"description": "Abilitando le caselle di controllo, riceverai i registri sul tuo terminale. Se specifichi un percorso, i registri saranno invece salvati in un file. La registrazione HTTP è utile per raccogliere statistiche su chi, quando e quali persone accedono al tuo forum. Oltre a registrare le richieste HTTP, possiamo anche registrare gli eventi socket.io. La registrazione Socket.io, in combinazione con il monitoraggio redis-cli, può essere molto utile per l'apprendimento dell'interno di NodeBBB.",
+	"explanation": "È sufficiente selezionare/deselezionare le impostazioni di registrazione per abilitare o disabilitare la registrazione al volo. Non è necessario riavviare.",
+	"enable-http": "Abilita la registrazione HTTP",
+	"enable-socket": "Abilita la registrazione degli eventi socket.io",
+	"file-path": "Percorso del file di registro",
+	"file-path-placeholder": "/path/to/log/file.log ::: lascia vuoto per accedere al tuo terminale",
 
-	"control-panel": "Logger Control Panel",
-	"update-settings": "Update Logger Settings"
+	"control-panel": "Pannello di controllo registratore",
+	"update-settings": "Aggiornare impostazioni registratore"
 }

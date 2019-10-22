@@ -1,231 +1,193 @@
 'use strict';
 
-var fs = require('fs');
-var path = require('path');
-var async = require('async');
-var winston = require('winston');
+const fs = require('fs');
+const util = require('util');
+const path = require('path');
+const winston = require('winston');
 
-var db = require('../database');
-var file = require('../file');
+const db = require('../database');
+const file = require('../file');
 
-var Data = module.exports;
+const Data = module.exports;
 
-var basePath = path.join(__dirname, '../../');
+const basePath = path.join(__dirname, '../../');
 
-function getPluginPaths(callback) {
-	async.waterfall([
-		function (next) {
-			db.getSortedSetRange('plugins:active', 0, -1, next);
-		},
-		function (plugins, next) {
-			plugins = plugins.filter(function (plugin) {
-				return plugin && typeof plugin === 'string';
-			}).map(function (plugin) {
-				return path.join(__dirname, '../../node_modules/', plugin);
-			});
+const readFileAsync = util.promisify(fs.readFile);
+const statAsync = util.promisify(fs.stat);
 
-			async.filter(plugins, file.exists, next);
-		},
-	], callback);
+Data.getPluginPaths = async function () {
+	let plugins = await db.getSortedSetRange('plugins:active', 0, -1);
+	plugins = plugins.filter(plugin => plugin && typeof plugin === 'string')
+		.map(plugin => path.join(__dirname, '../../node_modules/', plugin));
+
+	const exists = await Promise.all(plugins.map(p => file.exists(p)));
+	return plugins.filter((p, i) => exists[i]);
+};
+
+Data.loadPluginInfo = async function (pluginPath) {
+	const [packageJson, pluginJson] = await Promise.all([
+		readFileAsync(path.join(pluginPath, 'package.json'), 'utf8'),
+		readFileAsync(path.join(pluginPath, 'plugin.json'), 'utf8'),
+	]);
+
+	let pluginData;
+	let packageData;
+	try {
+		pluginData = JSON.parse(pluginJson);
+		packageData = JSON.parse(packageJson);
+
+		pluginData.license = parseLicense(packageData);
+
+		pluginData.id = packageData.name;
+		pluginData.name = packageData.name;
+		pluginData.description = packageData.description;
+		pluginData.version = packageData.version;
+		pluginData.repository = packageData.repository;
+		pluginData.nbbpm = packageData.nbbpm;
+		pluginData.path = pluginPath;
+	} catch (err) {
+		var pluginDir = path.basename(pluginPath);
+
+		winston.error('[plugins/' + pluginDir + '] Error in plugin.json or package.json!', err);
+		throw new Error('[[error:parse-error]]');
+	}
+	return pluginData;
+};
+
+function parseLicense(packageData) {
+	try {
+		const licenseData = require('spdx-license-list/licenses/' + packageData.license);
+		return {
+			name: licenseData.name,
+			text: licenseData.licenseText,
+		};
+	} catch (e) {
+		// No license matched
+		return null;
+	}
 }
-Data.getPluginPaths = getPluginPaths;
 
-function loadPluginInfo(pluginPath, callback) {
-	async.parallel({
-		package: function (next) {
-			fs.readFile(path.join(pluginPath, 'package.json'), 'utf8', next);
-		},
-		plugin: function (next) {
-			fs.readFile(path.join(pluginPath, 'plugin.json'), 'utf8', next);
-		},
-	}, function (err, results) {
-		if (err) {
-			return callback(err);
-		}
-		var pluginData;
-		var packageData;
-		var licenseData;
-		try {
-			pluginData = JSON.parse(results.plugin);
-			packageData = JSON.parse(results.package);
-			try {
-				licenseData = require('spdx-license-list/licenses/' + packageData.license);
-				pluginData.license = {
-					name: licenseData.name,
-					text: licenseData.licenseText,
-				};
-			} catch (e) {
-				// No license matched
-				pluginData.license = null;
-			}
+Data.getActive = async function () {
+	const pluginPaths = await Data.getPluginPaths();
+	return await Promise.all(pluginPaths.map(p => Data.loadPluginInfo(p)));
+};
 
-			pluginData.id = packageData.name;
-			pluginData.name = packageData.name;
-			pluginData.description = packageData.description;
-			pluginData.version = packageData.version;
-			pluginData.repository = packageData.repository;
-			pluginData.nbbpm = packageData.nbbpm;
-			pluginData.path = pluginPath;
-		} catch (err) {
-			var pluginDir = path.basename(pluginPath);
 
-			winston.error('[plugins/' + pluginDir + '] Error in plugin.json or package.json!', err);
-			return callback(new Error('[[error:parse-error]]'));
-		}
-
-		callback(null, pluginData);
-	});
-}
-Data.loadPluginInfo = loadPluginInfo;
-
-function getAllPluginData(callback) {
-	async.waterfall([
-		function (next) {
-			getPluginPaths(next);
-		},
-		function (pluginPaths, next) {
-			async.map(pluginPaths, loadPluginInfo, next);
-		},
-	], callback);
-}
-Data.getActive = getAllPluginData;
-
-function getStaticDirectories(pluginData, callback) {
+Data.getStaticDirectories = async function (pluginData) {
 	var validMappedPath = /^[\w\-_]+$/;
 
 	if (!pluginData.staticDirs) {
-		return callback();
+		return;
 	}
 
-	var dirs = Object.keys(pluginData.staticDirs);
+	const dirs = Object.keys(pluginData.staticDirs);
 	if (!dirs.length) {
-		return callback();
+		return;
 	}
 
-	var staticDirs = {};
+	const staticDirs = {};
 
-	async.each(dirs, function (route, next) {
+	async function processDir(route) {
 		if (!validMappedPath.test(route)) {
 			winston.warn('[plugins/' + pluginData.id + '] Invalid mapped path specified: ' +
 				route + '. Path must adhere to: ' + validMappedPath.toString());
-			return next();
+			return;
 		}
 
-		var dirPath = path.join(pluginData.path, pluginData.staticDirs[route]);
-		fs.stat(dirPath, function (err, stats) {
-			if (err && err.code === 'ENOENT') {
-				winston.warn('[plugins/' + pluginData.id + '] Mapped path \'' +
-					route + ' => ' + dirPath + '\' not found.');
-				return next();
-			}
-			if (err) {
-				return next(err);
-			}
-
+		const dirPath = path.join(pluginData.path, pluginData.staticDirs[route]);
+		try {
+			const stats = await statAsync(dirPath);
 			if (!stats.isDirectory()) {
 				winston.warn('[plugins/' + pluginData.id + '] Mapped path \'' +
 					route + ' => ' + dirPath + '\' is not a directory.');
-				return next();
+				return;
 			}
 
 			staticDirs[pluginData.id + '/' + route] = dirPath;
-			next();
-		});
-	}, function (err) {
-		if (err) {
-			return callback(err);
+		} catch (err) {
+			if (err.code === 'ENOENT') {
+				winston.warn('[plugins/' + pluginData.id + '] Mapped path \'' +
+					route + ' => ' + dirPath + '\' not found.');
+				return;
+			}
+			throw err;
 		}
-		winston.verbose('[plugins] found ' + Object.keys(staticDirs).length +
-			' static directories for ' + pluginData.id);
-		callback(null, staticDirs);
-	});
-}
-Data.getStaticDirectories = getStaticDirectories;
+	}
 
-function getFiles(pluginData, type, callback) {
+	await Promise.all(dirs.map(route => processDir(route)));
+	winston.verbose('[plugins] found ' + Object.keys(staticDirs).length +
+			' static directories for ' + pluginData.id);
+	return staticDirs;
+};
+
+
+Data.getFiles = async function (pluginData, type) {
 	if (!Array.isArray(pluginData[type]) || !pluginData[type].length) {
-		return callback();
+		return;
 	}
 
 	winston.verbose('[plugins] Found ' + pluginData[type].length + ' ' + type + ' file(s) for plugin ' + pluginData.id);
 
-	var files = pluginData[type].map(function (file) {
-		return path.join(pluginData.id, file);
-	});
-
-	callback(null, files);
-}
-Data.getFiles = getFiles;
+	return pluginData[type].map(file => path.join(pluginData.id, file));
+};
 
 /**
  * With npm@3, dependencies can become flattened, and appear at the root level.
  * This method resolves these differences if it can.
  */
-function resolveModulePath(basePath, modulePath, callback) {
-	var isNodeModule = /node_modules/;
+async function resolveModulePath(basePath, modulePath) {
+	const isNodeModule = /node_modules/;
 
-	var currentPath = path.join(basePath, modulePath);
-	file.exists(currentPath, function (err, exists) {
-		if (err) {
-			return callback(err);
-		}
-		if (exists) {
-			return callback(null, currentPath);
-		}
-		if (!isNodeModule.test(modulePath)) {
-			winston.warn('[plugins] File not found: ' + currentPath + ' (Ignoring)');
-			return callback();
-		}
+	const currentPath = path.join(basePath, modulePath);
+	const exists = await file.exists(currentPath);
+	if (exists) {
+		return currentPath;
+	}
+	if (!isNodeModule.test(modulePath)) {
+		winston.warn('[plugins] File not found: ' + currentPath + ' (Ignoring)');
+		return;
+	}
 
-		var dirPath = path.dirname(basePath);
-		if (dirPath === basePath) {
-			winston.warn('[plugins] File not found: ' + currentPath + ' (Ignoring)');
-			return callback();
-		}
+	const dirPath = path.dirname(basePath);
+	if (dirPath === basePath) {
+		winston.warn('[plugins] File not found: ' + currentPath + ' (Ignoring)');
+		return;
+	}
 
-		resolveModulePath(dirPath, modulePath, callback);
-	});
+	return await resolveModulePath(dirPath, modulePath);
 }
 
-function getScripts(pluginData, target, callback) {
+
+Data.getScripts = async function getScripts(pluginData, target) {
 	target = (target === 'client') ? 'scripts' : 'acpScripts';
 
-	var input = pluginData[target];
+	const input = pluginData[target];
 	if (!Array.isArray(input) || !input.length) {
-		return callback();
+		return;
 	}
 
-	var scripts = [];
-	async.eachSeries(input, function (filePath, next) {
-		resolveModulePath(pluginData.path, filePath, function (err, modulePath) {
-			if (err) {
-				return next(err);
-			}
+	const scripts = [];
 
-			if (modulePath) {
-				scripts.push(modulePath);
-			}
-			next();
-		});
-	}, function (err) {
-		if (err) {
-			return callback(err);
+	for (const filePath of input) {
+		/* eslint-disable no-await-in-loop */
+		const modulePath = await resolveModulePath(pluginData.path, filePath);
+		if (modulePath) {
+			scripts.push(modulePath);
 		}
+	}
+	if (scripts.length) {
+		winston.verbose('[plugins] Found ' + scripts.length + ' js file(s) for plugin ' + pluginData.id);
+	}
+	return scripts;
+};
 
-		if (scripts.length) {
-			winston.verbose('[plugins] Found ' + scripts.length + ' js file(s) for plugin ' + pluginData.id);
-		}
-		callback(err, scripts);
-	});
-}
-Data.getScripts = getScripts;
 
-function getModules(pluginData, callback) {
+Data.getModules = async function getModules(pluginData) {
 	if (!pluginData.modules || !pluginData.hasOwnProperty('modules')) {
-		return callback();
+		return;
 	}
 
-	var pluginModules = pluginData.modules;
+	let pluginModules = pluginData.modules;
 
 	if (Array.isArray(pluginModules)) {
 		var strip = parseInt(pluginData.modulesStrip, 10) || 0;
@@ -243,35 +205,25 @@ function getModules(pluginData, callback) {
 		}, {});
 	}
 
-	var modules = {};
-	async.each(Object.keys(pluginModules), function (key, next) {
-		resolveModulePath(pluginData.path, pluginModules[key], function (err, modulePath) {
-			if (err) {
-				return next(err);
-			}
-
-			if (modulePath) {
-				modules[key] = path.relative(basePath, modulePath);
-			}
-			next();
-		});
-	}, function (err) {
-		if (err) {
-			return callback(err);
+	const modules = {};
+	async function processModule(key) {
+		const modulePath = await resolveModulePath(pluginData.path, pluginModules[key]);
+		if (modulePath) {
+			modules[key] = path.relative(basePath, modulePath);
 		}
+	}
 
-		var len = Object.keys(modules).length;
-		winston.verbose('[plugins] Found ' + len + ' AMD-style module(s) for plugin ' + pluginData.id);
+	await Promise.all(Object.keys(pluginModules).map(key => processModule(key)));
 
-		callback(null, modules);
-	});
-}
-Data.getModules = getModules;
+	const len = Object.keys(modules).length;
+	winston.verbose('[plugins] Found ' + len + ' AMD-style module(s) for plugin ' + pluginData.id);
+	return modules;
+};
 
-function getSoundpack(pluginData, callback) {
+Data.getSoundpack = async function getSoundpack(pluginData) {
 	var spack = pluginData.soundpack;
 	if (!spack || !spack.dir || !spack.sounds) {
-		return callback();
+		return;
 	}
 
 	var soundpack = {};
@@ -280,64 +232,49 @@ function getSoundpack(pluginData, callback) {
 	soundpack.dir = path.join(pluginData.path, spack.dir);
 	soundpack.sounds = {};
 
-	async.each(Object.keys(spack.sounds), function (name, next) {
-		var soundFile = spack.sounds[name];
-		file.exists(path.join(soundpack.dir, soundFile), function (err, exists) {
-			if (err) {
-				return next(err);
-			}
-			if (!exists) {
-				winston.warn('[plugins] Sound file not found: ' + soundFile);
-				return next();
-			}
-
-			soundpack.sounds[name] = soundFile;
-			next();
-		});
-	}, function (err) {
-		if (err) {
-			return callback(err);
+	async function processSoundPack(name) {
+		const soundFile = spack.sounds[name];
+		const exists = await file.exists(path.join(soundpack.dir, soundFile));
+		if (!exists) {
+			winston.warn('[plugins] Sound file not found: ' + soundFile);
+			return;
 		}
-
-		var len = Object.keys(soundpack.sounds).length;
-		winston.verbose('[plugins] Found ' + len + ' sound file(s) for plugin ' + pluginData.id);
-
-		callback(null, soundpack);
-	});
-}
-Data.getSoundpack = getSoundpack;
-
-function getLanguageData(pluginData, callback) {
-	if (typeof pluginData.languages !== 'string') {
-		return callback();
+		soundpack.sounds[name] = soundFile;
 	}
 
-	var pathToFolder = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages);
-	file.walk(pathToFolder, function (err, paths) {
-		if (err) {
-			return callback(err);
+	await Promise.all(Object.keys(spack.sounds).map(key => processSoundPack(key)));
+
+	const len = Object.keys(soundpack.sounds).length;
+	winston.verbose('[plugins] Found ' + len + ' sound file(s) for plugin ' + pluginData.id);
+	return soundpack;
+};
+
+Data.getLanguageData = async function getLanguageData(pluginData) {
+	if (typeof pluginData.languages !== 'string') {
+		return;
+	}
+
+	const pathToFolder = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages);
+	const paths = await file.walk(pathToFolder);
+
+	const namespaces = [];
+	const languages = [];
+
+	paths.forEach(function (p) {
+		const rel = path.relative(pathToFolder, p).split(/[/\\]/);
+		const language = rel.shift().replace('_', '-').replace('@', '-x-');
+		const namespace = rel.join('/').replace(/\.json$/, '');
+
+		if (!language || !namespace) {
+			return;
 		}
 
-		var namespaces = [];
-		var languages = [];
-
-		paths.forEach(function (p) {
-			var rel = path.relative(pathToFolder, p).split(/[/\\]/);
-			var language = rel.shift().replace('_', '-').replace('@', '-x-');
-			var namespace = rel.join('/').replace(/\.json$/, '');
-
-			if (!language || !namespace) {
-				return;
-			}
-
-			languages.push(language);
-			namespaces.push(namespace);
-		});
-
-		callback(null, {
-			languages: languages,
-			namespaces: namespaces,
-		});
+		languages.push(language);
+		namespaces.push(namespace);
 	});
-}
-Data.getLanguageData = getLanguageData;
+
+	return {
+		languages: languages,
+		namespaces: namespaces,
+	};
+};

@@ -54,3 +54,5 @@ function getLatestVersion(callback) {
 
 exports.getLatestVersion = getLatestVersion;
 exports.isPrerelease = isPrerelease;
+
+require('../promisify')(exports);

@@ -1,47 +1,46 @@
 
 'use strict';
 
-module.exports = function (redisClient, module) {
-	var helpers = module.helpers.redis;
+module.exports = function (module) {
+	var helpers = require('../helpers');
 
-	module.sortedSetRemove = function (key, value, callback) {
-		callback = callback || function () {};
-		if (!value) {
-			return callback();
+	module.sortedSetRemove = async function (key, value) {
+		if (!key) {
+			return;
 		}
-		if (!Array.isArray(value)) {
+		const isValueArray = Array.isArray(value);
+		if (!value || (isValueArray && !value.length)) {
+			return;
+		}
+		if (!isValueArray) {
 			value = [value];
 		}
 
 		if (Array.isArray(key)) {
-			var batch = redisClient.batch();
-			key.forEach(function (key) {
-				batch.zrem(key, value);
-			});
-			batch.exec(function (err) {
-				callback(err);
-			});
+			const batch = module.client.batch();
+			key.forEach(k => batch.zrem(k, value));
+			await helpers.execBatch(batch);
 		} else {
-			helpers.execKeyValues(redisClient, 'batch', 'zrem', key, value, function (err) {
-				callback(err);
-			});
+			await module.client.async.zrem(key, value);
 		}
 	};
 
-	module.sortedSetsRemove = function (keys, value, callback) {
-		helpers.execKeysValue(redisClient, 'batch', 'zrem', keys, value, function (err) {
-			callback(err);
-		});
+	module.sortedSetsRemove = async function (keys, value) {
+		await module.sortedSetRemove(keys, value);
 	};
 
-	module.sortedSetsRemoveRangeByScore = function (keys, min, max, callback) {
-		callback = callback || function () {};
-		var batch = redisClient.batch();
-		for (var i = 0; i < keys.length; i += 1) {
-			batch.zremrangebyscore(keys[i], min, max);
+	module.sortedSetsRemoveRangeByScore = async function (keys, min, max) {
+		var batch = module.client.batch();
+		keys.forEach(k => batch.zremrangebyscore(k, min, max));
+		await helpers.execBatch(batch);
+	};
+
+	module.sortedSetRemoveBulk = async function (data) {
+		if (!Array.isArray(data) || !data.length) {
+			return;
 		}
-		batch.exec(function (err) {
-			callback(err);
-		});
+		const batch = module.client.batch();
+		data.forEach(item => batch.zrem(item[0], item[1]));
+		await helpers.execBatch(batch);
 	};
 };

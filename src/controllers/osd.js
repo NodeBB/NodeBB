@@ -1,10 +1,10 @@
 'use strict';
 
-var xml = require('xml');
-var nconf = require('nconf');
+const xml = require('xml');
+const nconf = require('nconf');
 
-var plugins = require('../plugins');
-var meta = require('../meta');
+const plugins = require('../plugins');
+const meta = require('../meta');
 
 module.exports.handle = function (req, res, next) {
 	if (plugins.hasListeners('filter:search.query')) {

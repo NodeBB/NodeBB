@@ -1,15 +1,14 @@
 'use strict';
 
-var winston = require('winston');
-var async = require('async');
-var nconf = require('nconf');
-var session = require('express-session');
-var _ = require('lodash');
-var semver = require('semver');
-var dbNamespace = require('continuation-local-storage').createNamespace('postgres');
+const winston = require('winston');
+const async = require('async');
+const nconf = require('nconf');
+const session = require('express-session');
+const semver = require('semver');
 
+const connection = require('./postgres/connection');
 
-var postgresModule = module.exports;
+const postgresModule = module.exports;
 
 postgresModule.questions = [
 	{
@@ -79,22 +78,11 @@ postgresModule.getConnectionOptions = function (postgres) {
 postgresModule.init = function (callback) {
 	callback = callback || function () { };
 
-	var Pool = require('pg').Pool;
+	const Pool = require('pg').Pool;
 
-	var connOptions = postgresModule.getConnectionOptions();
+	const connOptions = connection.getConnectionOptions();
 
 	const db = new Pool(connOptions);
-
-	db.on('connect', function (client) {
-		var realQuery = client.query;
-		client.query = function () {
-			var args = Array.prototype.slice.call(arguments, 0);
-			if (dbNamespace.active && typeof args[args.length - 1] === 'function') {
-				args[args.length - 1] = dbNamespace.bind(args[args.length - 1]);
-			}
-			return realQuery.apply(client, args);
-		};
-	});
 
 	db.connect(function (err, client, release) {
 		if (err) {
@@ -103,64 +91,15 @@ postgresModule.init = function (callback) {
 		}
 
 		postgresModule.pool = db;
-		Object.defineProperty(postgresModule, 'client', {
-			get: function () {
-				return (dbNamespace.active && dbNamespace.get('db')) || db;
-			},
-			configurable: true,
-		});
-
-		var wrappedDB = {
-			connect: function () {
-				return postgresModule.pool.connect.apply(postgresModule.pool, arguments);
-			},
-			query: function () {
-				return postgresModule.client.query.apply(postgresModule.client, arguments);
-			},
-		};
+		postgresModule.client = db;
 
 		checkUpgrade(client, function (err) {
 			release();
-			if (err) {
-				return callback(err);
-			}
-
-			require('./postgres/main')(wrappedDB, postgresModule);
-			require('./postgres/hash')(wrappedDB, postgresModule);
-			require('./postgres/sets')(wrappedDB, postgresModule);
-			require('./postgres/sorted')(wrappedDB, postgresModule);
-			require('./postgres/list')(wrappedDB, postgresModule);
-			require('./postgres/transaction')(db, dbNamespace, postgresModule);
-
-			postgresModule.async = require('../promisify')(postgresModule, ['client', 'sessionStore', 'pool']);
-
-			callback();
+			callback(err);
 		});
 	});
 };
 
-postgresModule.connect = function (options, callback) {
-	var Pool = require('pg').Pool;
-
-	var connOptions = postgresModule.getConnectionOptions(options);
-
-	const db = new Pool(connOptions);
-
-	db.on('connect', function (client) {
-		var realQuery = client.query;
-		client.query = function () {
-			var args = Array.prototype.slice.call(arguments, 0);
-			if (dbNamespace.active && typeof args[args.length - 1] === 'function') {
-				args[args.length - 1] = dbNamespace.bind(args[args.length - 1]);
-			}
-			return realQuery.apply(client, args);
-		};
-	});
-
-	db.connect(function (err) {
-		callback(err, db);
-	});
-};
 
 function checkUpgrade(client, callback) {
 	client.query(`
@@ -390,7 +329,7 @@ postgresModule.createSessionStore = function (options, callback) {
 		callback(null, store);
 	}
 
-	postgresModule.connect(options, function (err, db) {
+	connection.connect(options, function (err, db) {
 		if (err) {
 			return callback(err);
 		}
@@ -461,7 +400,7 @@ postgresModule.info = function (db, callback) {
 			if (db) {
 				setImmediate(next, null, db);
 			} else {
-				postgresModule.connect(nconf.get('postgres'), next);
+				connection.connect(nconf.get('postgres'), next);
 			}
 		},
 		function (db, next) {
@@ -485,7 +424,16 @@ postgresModule.close = function (callback) {
 
 postgresModule.socketAdapter = function () {
 	var postgresAdapter = require('socket.io-adapter-postgres');
-	return postgresAdapter(postgresModule.getConnectionOptions(), {
+	return postgresAdapter(connection.getConnectionOptions(), {
 		pubClient: postgresModule.pool,
 	});
 };
+
+require('./postgres/main')(postgresModule);
+require('./postgres/hash')(postgresModule);
+require('./postgres/sets')(postgresModule);
+require('./postgres/sorted')(postgresModule);
+require('./postgres/list')(postgresModule);
+require('./postgres/transaction')(postgresModule);
+
+postgresModule.async = require('../promisify')(postgresModule, ['client', 'sessionStore', 'pool', 'transaction']);

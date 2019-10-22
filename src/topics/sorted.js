@@ -1,7 +1,6 @@
 
 'use strict';
 
-const async = require('async');
 const _ = require('lodash');
 
 const db = require('../database');
@@ -12,8 +11,8 @@ const meta = require('../meta');
 const plugins = require('../plugins');
 
 module.exports = function (Topics) {
-	Topics.getSortedTopics = function (params, callback) {
-		var data = {
+	Topics.getSortedTopics = async function (params) {
+		const data = {
 			nextStart: 0,
 			topicCount: 0,
 			topics: [],
@@ -25,90 +24,83 @@ module.exports = function (Topics) {
 		if (params.hasOwnProperty('cids') && params.cids && !Array.isArray(params.cids)) {
 			params.cids = [params.cids];
 		}
-
-		async.waterfall([
-			function (next) {
-				getTids(params, next);
-			},
-			function (tids, next) {
-				data.topicCount = tids.length;
-				data.tids = tids;
-				getTopics(tids, params, next);
-			},
-			function (topicData, next) {
-				data.topics = topicData;
-				data.nextStart = params.stop + 1;
-				next(null, data);
-			},
-		], callback);
+		data.tids = await getTids(params);
+		data.tids = await sortTids(data.tids, params);
+		data.tids = await filterTids(data.tids.slice(0, 200), params);
+		data.topicCount = data.tids.length;
+		data.topics = await getTopics(data.tids, params);
+		data.nextStart = params.stop + 1;
+		return data;
 	};
 
-	function getTids(params, callback) {
-		async.waterfall([
-			function (next) {
-				if (params.term === 'alltime') {
-					if (params.cids) {
-						getCidTids(params.cids, params.sort, next);
-					} else {
-						db.getSortedSetRevRange('topics:' + params.sort, 0, 199, next);
-					}
-				} else {
-					Topics.getLatestTidsFromSet('topics:tid', 0, -1, params.term, next);
-				}
-			},
-			function (tids, next) {
-				if (params.term !== 'alltime' || (params.cids && params.sort !== 'recent')) {
-					sortTids(tids, params, next);
-				} else {
-					next(null, tids);
-				}
-			},
-			function (tids, next) {
-				filterTids(tids, params, next);
-			},
-		], callback);
+	async function getTids(params) {
+		if (plugins.hasListeners('filter:topics.getSortedTids')) {
+			const result = await plugins.fireHook('filter:topics.getSortedTids', { params: params, tids: [] });
+			return result.tids;
+		}
+		let tids = [];
+		if (params.term !== 'alltime') {
+			tids = await Topics.getLatestTidsFromSet('topics:tid', 0, -1, params.term);
+			if (params.filter === 'watched') {
+				tids = await Topics.filterWatchedTids(tids, params.uid);
+			}
+		} else if (params.filter === 'watched') {
+			tids = await db.getSortedSetRevRange('uid:' + params.uid + ':followed_tids', 0, -1);
+		} else if (params.cids) {
+			tids = await getCidTids(params);
+		} else {
+			tids = await db.getSortedSetRevRange('topics:' + params.sort, 0, 199);
+		}
+
+		return tids;
 	}
 
-	function getCidTids(cids, sort, callback) {
+	async function getCidTids(params) {
 		const sets = [];
 		const pinnedSets = [];
-		cids.forEach(function (cid) {
-			if (sort === 'recent') {
-				sets.push('cid:' + cid + ':tids:lastposttime');
-				return;
+		params.cids.forEach(function (cid) {
+			if (params.sort === 'recent') {
+				sets.push('cid:' + cid + ':tids');
+			} else {
+				sets.push('cid:' + cid + ':tids' + (params.sort ? ':' + params.sort : ''));
 			}
-			sets.push('cid:' + cid + ':tids' + (sort ? ':' + sort : ''));
 			pinnedSets.push('cid:' + cid + ':tids:pinned');
 		});
-		async.waterfall([
-			function (next) {
-				async.parallel({
-					tids: async.apply(db.getSortedSetRevRange, sets, 0, 199),
-					pinnedTids: async.apply(db.getSortedSetRevRange, pinnedSets, 0, -1),
-				}, next);
-			},
-			function (results, next) {
-				next(null, results.pinnedTids.concat(results.tids));
-			},
-		], callback);
+		const [tids, pinnedTids] = await Promise.all([
+			db.getSortedSetRevRange(sets, 0, 199),
+			db.getSortedSetRevRange(pinnedSets, 0, -1),
+		]);
+		return pinnedTids.concat(tids);
 	}
 
-	function sortTids(tids, params, callback) {
-		async.waterfall([
-			function (next) {
-				Topics.getTopicsFields(tids, ['tid', 'lastposttime', 'upvotes', 'downvotes', 'postcount'], next);
-			},
-			function (topicData, next) {
-				var sortFn = sortRecent;
-				if (params.sort === 'posts') {
-					sortFn = sortPopular;
-				} else if (params.sort === 'votes') {
-					sortFn = sortVotes;
-				}
-				tids = topicData.sort(sortFn).map(topic => topic && topic.tid);
-				next(null, tids);
-			},
-		], callback);
+	async function sortTids(tids, params) {
+		if (params.term === 'alltime' && !params.cids && params.filter !== 'watched' && !params.floatPinned) {
+			return tids;
+		}
+		const topicData = await Topics.getTopicsFields(tids, ['tid', 'lastposttime', 'upvotes', 'downvotes', 'postcount', 'pinned']);
+		let sortFn = sortRecent;
+		if (params.sort === 'posts') {
+			sortFn = sortPopular;
+		} else if (params.sort === 'votes') {
+			sortFn = sortVotes;
+		}
+
+		if (params.floatPinned) {
+			floatPinned(topicData, sortFn);
+		} else {
+			topicData.sort(sortFn);
+		}
+
+		return topicData.map(topic => topic && topic.tid);
+	}
+
+	function floatPinned(topicData, sortFn) {
+		topicData.sort((a, b) => {
+			if (a.pinned !== b.pinned) {
+				return b.pinned - a.pinned;
+			}
+			return sortFn(a, b);
+		});
 	}
 
 	function sortRecent(a, b) {
@@ -129,71 +121,48 @@ module.exports = function (Topics) {
 		return b.viewcount - a.viewcount;
 	}
 
-	function filterTids(tids, params, callback) {
+	async function filterTids(tids, params) {
 		const filter = params.filter;
 		const uid = params.uid;
 
-		let topicData;
-		let topicCids;
-		async.waterfall([
-			function (next) {
-				if (filter === 'watched') {
-					Topics.filterWatchedTids(tids, uid, next);
-				} else if (filter === 'new') {
-					Topics.filterNewTids(tids, uid, next);
-				} else if (filter === 'unreplied') {
-					Topics.filterUnrepliedTids(tids, next);
-				} else {
-					Topics.filterNotIgnoredTids(tids, uid, next);
-				}
-			},
-			function (tids, next) {
-				privileges.topics.filterTids('read', tids, uid, next);
-			},
-			function (tids, next) {
-				Topics.getTopicsFields(tids, ['uid', 'tid', 'cid'], next);
-			},
-			function (_topicData, next) {
-				topicData = _topicData;
-				topicCids = _.uniq(topicData.map(topic => topic.cid)).filter(Boolean);
+		if (filter === 'new') {
+			tids = await Topics.filterNewTids(tids, uid);
+		} else if (filter === 'unreplied') {
+			tids = await Topics.filterUnrepliedTids(tids);
+		} else {
+			tids = await Topics.filterNotIgnoredTids(tids, uid);
+		}
 
-				async.parallel({
-					ignoredCids: function (next) {
-						if (filter === 'watched' || meta.config.disableRecentCategoryFilter) {
-							return next(null, []);
-						}
-						categories.isIgnored(topicCids, uid, next);
-					},
-					filtered: async.apply(user.blocks.filter, uid, topicData),
-				}, next);
-			},
-			function (results, next) {
-				const isCidIgnored = _.zipObject(topicCids, results.ignoredCids);
-				topicData = results.filtered;
+		tids = await privileges.topics.filterTids('topics:read', tids, uid);
+		let topicData = await Topics.getTopicsFields(tids, ['uid', 'tid', 'cid']);
+		const topicCids = _.uniq(topicData.map(topic => topic.cid)).filter(Boolean);
 
-				const cids = params.cids && params.cids.map(String);
-				tids = topicData.filter(function (topic) {
-					return topic && topic.cid && !isCidIgnored[topic.cid] && (!cids || (cids.length && cids.includes(topic.cid.toString())));
-				}).map(topic => topic.tid);
-				plugins.fireHook('filter:topics.filterSortedTids', { tids: tids, params: params }, next);
-			},
-			function (data, next) {
-				next(null, data && data.tids);
-			},
-		], callback);
+		async function getIgnoredCids() {
+			if (params.cids || filter === 'watched' || meta.config.disableRecentCategoryFilter) {
+				return [];
+			}
+			return await categories.isIgnored(topicCids, uid);
+		}
+		const [ignoredCids, filtered] = await Promise.all([
+			getIgnoredCids(),
+			user.blocks.filter(uid, topicData),
+		]);
+
+		const isCidIgnored = _.zipObject(topicCids, ignoredCids);
+		topicData = filtered;
+
+		const cids = params.cids && params.cids.map(String);
+		tids = topicData.filter(t => t && t.cid && !isCidIgnored[t.cid] && (!cids || cids.includes(String(t.cid)))).map(t => t.tid);
+
+		const result = await plugins.fireHook('filter:topics.filterSortedTids', { tids: tids, params: params });
+		return result.tids;
 	}
 
-	function getTopics(tids, params, callback) {
-		async.waterfall([
-			function (next) {
-				tids = tids.slice(params.start, params.stop !== -1 ? params.stop + 1 : undefined);
-				Topics.getTopicsByTids(tids, params.uid, next);
-			},
-			function (topicData, next) {
-				Topics.calculateTopicIndices(topicData, params.start);
-				next(null, topicData);
-			},
-		], callback);
+	async function getTopics(tids, params) {
+		tids = tids.slice(params.start, params.stop !== -1 ? params.stop + 1 : undefined);
+		const topicData = await Topics.getTopicsByTids(tids, params);
+		Topics.calculateTopicIndices(topicData, params.start);
+		return topicData;
 	}
 
 	Topics.calculateTopicIndices = function (topicData, start) {

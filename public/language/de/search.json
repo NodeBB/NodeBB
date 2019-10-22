@@ -43,5 +43,6 @@
     "clear-preferences": "Einstellungen löschen",
     "search-preferences-saved": "Sucheinstellungen gespeichert",
     "search-preferences-cleared": "Sucheinstellungen gelöscht",
-    "show-results-as": "Ergebnisse anzeigen als"
+    "show-results-as": "Ergebnisse anzeigen als",
+    "see-more-results": "Weitere Ergebnisse anzeigen (%1)"
 }

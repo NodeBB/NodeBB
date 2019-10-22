@@ -1,97 +1,65 @@
 'use strict';
 
-var async = require('async');
+const user = require('../user');
+const flags = require('../flags');
 
-var user = require('../user');
-var flags = require('../flags');
+const SocketFlags = module.exports;
 
-var SocketFlags = module.exports;
-
-SocketFlags.create = function (socket, data, callback) {
+SocketFlags.create = async function (socket, data) {
 	if (!socket.uid) {
-		return callback(new Error('[[error:not-logged-in]]'));
+		throw new Error('[[error:not-logged-in]]');
 	}
 
 	if (!data || !data.type || !data.id || !data.reason) {
-		return callback(new Error('[[error:invalid-data]]'));
+		throw new Error('[[error:invalid-data]]');
 	}
+	await flags.validate({
+		uid: socket.uid,
+		type: data.type,
+		id: data.id,
+	});
 
-	async.waterfall([
-		async.apply(flags.validate, {
-			uid: socket.uid,
-			type: data.type,
-			id: data.id,
-		}),
-		function (next) {
-			// If we got here, then no errors occurred
-			flags.create(data.type, data.id, socket.uid, data.reason, next);
-		},
-		function (flagObj, next) {
-			flags.notify(flagObj, socket.uid);
-			next(null, flagObj);
-		},
-	], callback);
+	const flagObj = await flags.create(data.type, data.id, socket.uid, data.reason);
+	await flags.notify(flagObj, socket.uid);
+	return flagObj;
 };
 
-SocketFlags.update = function (socket, data, callback) {
+SocketFlags.update = async function (socket, data) {
 	if (!data || !(data.flagId && data.data)) {
-		return callback(new Error('[[error:invalid-data]]'));
+		throw new Error('[[error:invalid-data]]');
 	}
 
-	var payload = {};
+	const allowed = await user.isPrivileged(socket.uid);
+	if (!allowed) {
+		throw new Error('[[no-privileges]]');
+	}
+	let payload = {};
+	// Translate form data into object
+	payload = data.data.reduce(function (memo, cur) {
+		memo[cur.name] = cur.value;
+		return memo;
+	}, payload);
 
-	async.waterfall([
-		function (next) {
-			async.parallel([
-				async.apply(user.isAdminOrGlobalMod, socket.uid),
-				async.apply(user.isModeratorOfAnyCategory, socket.uid),
-			], function (err, results) {
-				next(err, results[0] || results[1]);
-			});
-		},
-		function (allowed, next) {
-			if (!allowed) {
-				return next(new Error('[[no-privileges]]'));
-			}
-
-			// Translate form data into object
-			payload = data.data.reduce(function (memo, cur) {
-				memo[cur.name] = cur.value;
-				return memo;
-			}, payload);
-
-			flags.update(data.flagId, socket.uid, payload, next);
-		},
-		async.apply(flags.getHistory, data.flagId),
-	], callback);
+	await flags.update(data.flagId, socket.uid, payload);
+	return await flags.getHistory(data.flagId);
 };
 
-SocketFlags.appendNote = function (socket, data, callback) {
+SocketFlags.appendNote = async function (socket, data) {
 	if (!data || !(data.flagId && data.note)) {
-		return callback(new Error('[[error:invalid-data]]'));
+		throw new Error('[[error:invalid-data]]');
 	}
 
-	async.waterfall([
-		function (next) {
-			async.parallel([
-				async.apply(user.isAdminOrGlobalMod, socket.uid),
-				async.apply(user.isModeratorOfAnyCategory, socket.uid),
-			], function (err, results) {
-				next(err, results[0] || results[1]);
-			});
-		},
-		function (allowed, next) {
-			if (!allowed) {
-				return next(new Error('[[no-privileges]]'));
-			}
+	const allowed = await user.isPrivileged(socket.uid);
+	if (!allowed) {
+		throw new Error('[[no-privileges]]');
+	}
+	await flags.appendNote(data.flagId, socket.uid, data.note);
 
-			flags.appendNote(data.flagId, socket.uid, data.note, next);
-		},
-		function (next) {
-			async.parallel({
-				notes: async.apply(flags.getNotes, data.flagId),
-				history: async.apply(flags.getHistory, data.flagId),
-			}, next);
-		},
-	], callback);
+	const [notes, history] = await Promise.all([
+		flags.getNotes(data.flagId),
+		flags.getHistory(data.flagId),
+	]);
+	return { notes: notes, history: history };
 };
+
+require('../promisify')(SocketFlags);

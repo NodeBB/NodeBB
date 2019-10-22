@@ -20,9 +20,7 @@ function updatePackageFile() {
 	}
 
 	var defaultPackageContents = JSON.parse(fs.readFileSync(packageDefaultFilePath, 'utf8'));
-	var packageContents = Object.assign({}, oldPackageContents, defaultPackageContents, {
-		dependencies: Object.assign({}, oldPackageContents.dependencies, defaultPackageContents.dependencies),
-	});
+	var packageContents = { ...oldPackageContents, ...defaultPackageContents, dependencies: { ...oldPackageContents.dependencies, ...defaultPackageContents.dependencies } };
 
 	fs.writeFileSync(packageFilePath, JSON.stringify(packageContents, null, 2));
 }

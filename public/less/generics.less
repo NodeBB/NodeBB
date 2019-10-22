@@ -75,6 +75,8 @@
 	text-align: center;
 	color: @gray-lighter;
 	font-weight: normal;
+	vertical-align: middle;
+	overflow: hidden;	/* stops alt text from overflowing past boundaries if image does not load */
 
 	&:before {
 		content: '';
@@ -100,6 +102,12 @@
 		.user-icon-style(24px, 1.5rem);
 	}
 
+	&.avatar-sm2x {
+		width: 48px;
+		height: 48px;
+		.user-icon-style(48px, 1.5rem);
+	}
+
 	&.avatar-md {
 		width: 32px;
 		height: 32px;
@@ -112,12 +120,6 @@
 		.user-icon-style(64px, 4rem);
 	}
 
-	&.avatar-xl {
-		width: 128px;
-		height: 128px;
-		.user-icon-style(128px, 7.5rem);
-	}
-	
 	&.avatar-xl {
 		width: 128px;
 		height: 128px;
@@ -147,8 +149,16 @@
 	#cropped-image {
 		max-width: 100%;
 	}
-	
+
 	.cropper-container.cropper-bg {
 		max-width: 100%;
 	}
+}
+
+.topic .necro-post {
+	color: rgba(127,127,127,.5);
+	font-size: 1.5em;
+	margin-bottom: 20px;
+	text-align: center;
+	text-transform: uppercase;
 }

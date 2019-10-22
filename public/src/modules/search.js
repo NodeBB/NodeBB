@@ -9,7 +9,7 @@ define('search', ['navigator', 'translator', 'storage'], function (nav, translat
 	Search.query = function (data, callback) {
 		// Detect if a tid was specified
 		var topicSearch = data.term.match(/^in:topic-([\d]+) /);
-
+		callback = callback || function () {};
 		if (!topicSearch) {
 			ajaxify.go('search?' + createQueryString(data));
 			callback();
@@ -21,6 +21,16 @@ define('search', ['navigator', 'translator', 'storage'], function (nav, translat
 				Search.queryTopic(tid, cleanedTerm, callback);
 			}
 		}
+	};
+
+	Search.api = function (data, callback) {
+		var apiURL = config.relative_path + '/api/search?' + createQueryString(data);
+		data.searchOnly = undefined;
+		var searchURL = config.relative_path + '/search?' + createQueryString(data);
+		$.get(apiURL, function (result) {
+			result.url = searchURL;
+			callback(result);
+		});
 	};
 
 	function createQueryString(data) {
@@ -74,6 +84,10 @@ define('search', ['navigator', 'translator', 'storage'], function (nav, translat
 
 		if (data.showAs) {
 			query.showAs = data.showAs;
+		}
+
+		if (data.searchOnly) {
+			query.searchOnly = data.searchOnly;
 		}
 
 		$(window).trigger('action:search.createQueryString', {

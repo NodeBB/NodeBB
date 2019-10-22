@@ -3,15 +3,15 @@
 	"condition-if-users": "Se do Usuário",
 	"condition-is": "É:",
 	"condition-then": "Então:",
-	"max-claims": "Tanto de vezes que o prêmio é reivindicável",
-	"zero-infinite": "Entre 0 para infinito",
+	"max-claims": "Tanto de vezes que a recompensa é reivindicável",
+	"zero-infinite": "Use 0 para infinito",
 	"delete": "Deletar",
-	"enable": "Ligar",
-	"disable": "Desligar",
-	"control-panel": "Controle de Prêmios",
-	"new-reward": "Novo Prêmio",
+	"enable": "Ativar",
+	"disable": "Desativar",
+	"control-panel": "Controle de Recompensas",
+	"new-reward": "Nova Recompensa",
 
-	"alert.delete-success": "Prêmio removido com sucesso",
-	"alert.no-inputs-found": "Prêmio ilegal - nenhuma entrada encontrada!",
-	"alert.save-success": "Prêmios salvos com sucesso"
+	"alert.delete-success": "Recompensa excluída com sucesso",
+	"alert.no-inputs-found": "Recompensa ilegal - nenhuma entrada encontrada!",
+	"alert.save-success": "Recompensas salvas com sucesso"
 }

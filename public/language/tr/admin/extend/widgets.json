@@ -18,5 +18,13 @@
 	"alert.update-success": "Bileşenler başarıyla güncellendi",
 	"alert.clone-success": "Bileşenler başarıyla klonlandı",
 
-	"error.select-clone": "Lütfen klonlanacak bir sayfa seçin"
+	"error.select-clone": "Lütfen klonlanacak bir sayfa seçin",
+
+	"title": "Title",
+	"title.placeholder": "Title (only shown on some containers)",
+	"container": "Container",
+	"container.placeholder": "Drag and drop a container or enter HTML here.",
+	"show-to-groups": "Show to groups",
+	"hide-from-groups": "Hide from groups",
+	"hide-on-mobile": "Hide on mobile"
 }

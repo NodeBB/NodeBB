@@ -13,9 +13,8 @@ var plugins = require('../plugins');
 var meta = require('../meta');
 var user = require('../user');
 var groups = require('../groups');
-var file = require('../file');
-
 var analytics = require('../analytics');
+var privileges = require('../privileges');
 
 var controllers = {
 	api: require('./../controllers/api'),
@@ -61,11 +60,14 @@ middleware.pageView = function pageView(req, res, next) {
 	plugins.fireHook('action:middleware.pageView', { req: req });
 
 	if (req.loggedIn) {
-		user.updateLastOnlineTime(req.uid);
 		if (req.path.startsWith('/api/users') || req.path.startsWith('/users')) {
-			user.updateOnlineUsers(req.uid, next);
+			async.parallel([
+				async.apply(user.updateOnlineUsers, req.uid),
+				async.apply(user.updateLastOnlineTime, req.uid),
+			], next);
 		} else {
 			user.updateOnlineUsers(req.uid);
+			user.updateLastOnlineTime(req.uid);
 			setImmediate(next);
 		}
 	} else {
@@ -113,11 +115,12 @@ middleware.routeTouchIcon = function routeTouchIcon(req, res) {
 };
 
 middleware.privateTagListing = function privateTagListing(req, res, next) {
-	if (!req.loggedIn && meta.config.privateTagListing) {
+	privileges.global.can('view:tags', req.uid, function (err, canView) {
+		if (err || canView) {
+			return next(err);
+		}
 		controllers.helpers.notAllowed(req, res);
-	} else {
-		next();
-	}
+	});
 };
 
 middleware.exposeGroupName = function exposeGroupName(req, res, next) {
@@ -174,29 +177,6 @@ middleware.applyBlacklist = function applyBlacklist(req, res, next) {
 	});
 };
 
-middleware.processTimeagoLocales = function processTimeagoLocales(req, res, next) {
-	var fallback = !req.path.includes('-short') ? 'jquery.timeago.en.js' : 'jquery.timeago.en-short.js';
-	var localPath = path.join(__dirname, '../../public/vendor/jquery/timeago/locales', req.path);
-
-	async.waterfall([
-		function (next) {
-			file.exists(localPath, next);
-		},
-		function (exists, next) {
-			if (exists) {
-				next(null, localPath);
-			} else {
-				next(null, path.join(__dirname, '../../public/vendor/jquery/timeago/locales', fallback));
-			}
-		},
-		function (path) {
-			res.status(200).sendFile(path, {
-				maxAge: req.app.enabled('cache') ? 5184000000 : 0,
-			});
-		},
-	], next);
-};
-
 middleware.delayLoading = function delayLoading(req, res, next) {
 	// Introduces an artificial delay during load so that brute force attacks are effectively mitigated
 
@@ -239,4 +219,21 @@ middleware.trimUploadTimestamps = function trimUploadTimestamps(req, res, next) 
 	}
 
 	next();
+};
+
+middleware.validateAuth = function validateAuth(req, res, next) {
+	plugins.fireHook('static:auth.validate', {
+		user: res.locals.user,
+		strategy: res.locals.strategy,
+	}, function (err) {
+		if (err) {
+			return req.session.regenerate(function () {
+				req.uid = 0;
+				req.loggedIn = false;
+				next(err);
+			});
+		}
+
+		next();
+	});
 };

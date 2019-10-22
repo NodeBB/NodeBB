@@ -1,7 +1,8 @@
 {
 	"global": "Global",
 	"global.no-users": "Keine benutzerspezifischen globalen Berechtigungen",
-
+	"group-privileges": "Group Privileges",
+	"user-privileges": "User Privileges",
 	"chat": "Chat",
 	"upload-images": "Bilder hochladen",
 	"upload-files": "Dateien hochladen",
@@ -10,8 +11,12 @@
 	"search-content": "Inhalt durchsuchen",
 	"search-users": "Benutzersuche",
 	"search-tags": "Tags suchen",
+	"view-users": "Benutzer ansehen",
+	"view-tags": "Tags ansehen",
+	"view-groups": "Gruppen ansehen",
 	"allow-local-login": "Lokaler Login",
-
+	"allow-group-creation": "Gruppen erstellen",
+	"view-users-info": "View Users Info",
 	"find-category": "Kategorie finden",
 	"access-category": "Kategoriezutritt",
 	"access-topics": "Themenzutritt",

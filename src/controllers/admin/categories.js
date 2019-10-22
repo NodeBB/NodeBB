@@ -1,51 +1,46 @@
 'use strict';
 
-var async = require('async');
+const categories = require('../../categories');
+const analytics = require('../../analytics');
+const plugins = require('../../plugins');
+const translator = require('../../translator');
 
-var categories = require('../../categories');
-var analytics = require('../../analytics');
-var plugins = require('../../plugins');
-var translator = require('../../translator');
+const categoriesController = module.exports;
 
-var categoriesController = module.exports;
+categoriesController.get = async function (req, res, next) {
+	const [categoryData, parent, allCategories] = await Promise.all([
+		categories.getCategories([req.params.category_id], req.uid),
+		categories.getParents([req.params.category_id]),
+		categories.buildForSelectAll(['text', 'value']),
+	]);
 
-categoriesController.get = function (req, res, callback) {
-	async.waterfall([
-		function (next) {
-			async.parallel({
-				category: async.apply(categories.getCategories, [req.params.category_id], req.uid),
-				parent: async.apply(categories.getParents, [req.params.category_id]),
-				allCategories: async.apply(categories.buildForSelect, req.uid, 'read'),
-			}, next);
-		},
-		function (data, next) {
-			var category = data.category[0];
+	const category = categoryData[0];
+	if (!category) {
+		return next();
+	}
 
-			if (!category) {
-				return callback();
-			}
-			category.parent = data.parent[0];
-			data.allCategories.forEach(function (category) {
-				if (category) {
-					category.selected = parseInt(category.cid, 10) === parseInt(req.params.category_id, 10);
-				}
-			});
+	category.parent = parent[0];
+	allCategories.forEach(function (category) {
+		if (category) {
+			category.selected = parseInt(category.value, 10) === parseInt(req.params.category_id, 10);
+		}
+	});
 
-			plugins.fireHook('filter:admin.category.get', {
-				req: req,
-				res: res,
-				category: category,
-				allCategories: data.allCategories,
-			}, next);
-		},
-		function (data) {
-			data.category.name = translator.escape(String(data.category.name));
-			res.render('admin/manage/category', {
-				category: data.category,
-				allCategories: data.allCategories,
-			});
-		},
-	], callback);
+	const data = await plugins.fireHook('filter:admin.category.get', {
+		req: req,
+		res: res,
+		category: category,
+		customClasses: [],
+		allCategories: allCategories,
+	});
+	data.category.name = translator.escape(String(data.category.name));
+	data.category.description = translator.escape(String(data.category.description));
+
+	res.render('admin/manage/category', {
+		category: data.category,
+		allCategories: data.allCategories,
+		customClasses: data.customClasses,
+	});
 };
 
 categoriesController.getAll = function (req, res) {
@@ -53,16 +48,13 @@ categoriesController.getAll = function (req, res) {
 	res.render('admin/manage/categories', {});
 };
 
-categoriesController.getAnalytics = function (req, res, next) {
-	async.waterfall([
-		function (next) {
-			async.parallel({
-				name: async.apply(categories.getCategoryField, req.params.category_id, 'name'),
-				analytics: async.apply(analytics.getCategoryAnalytics, req.params.category_id),
-			}, next);
-		},
-		function (data) {
-			res.render('admin/manage/category-analytics', data);
-		},
-	], next);
+categoriesController.getAnalytics = async function (req, res) {
+	const [name, analyticsData] = await Promise.all([
+		categories.getCategoryField(req.params.category_id, 'name'),
+		analytics.getCategoryAnalytics(req.params.category_id),
+	]);
+	res.render('admin/manage/category-analytics', {
+		name: name,
+		analytics: analyticsData,
+	});
 };

@@ -7,7 +7,8 @@
 	"online": "tiešsaistē",
 	"git": "git",
 	"memory": "atmiņa",
-	"load": "slodze",
+	"load": "system load",
+	"cpu-usage": "cpu usage",
 	"uptime": "darbspējas laiks",
 
 	"registered": "Reģistrētie",

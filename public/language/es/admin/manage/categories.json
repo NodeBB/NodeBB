@@ -17,6 +17,7 @@
 	"parent-category": "Categoría Superior",
 	"optional-parent-category": "(Opcional) Categoría Superior",
 	"parent-category-none": "(Ninguna)",
+	"copy-parent": "Copy Parent",
 	"copy-settings": "Copiar Configuración Desde",
 	"optional-clone-settings": "(Opcional) Clonar Configuración De Categoría",
 	"clone-children": "Clone Children Categories And Settings",
@@ -29,12 +30,13 @@
 	"select-category": "Seleccionar Categoría",
 	"set-parent-category": "Fijar Categoría Superior",
 
-	"privileges.description": "You can configure the access control privileges for this category in this section. Privileges can be granted on a per-user or a per-group basis. Select the domain of effect from the dropdown below.",
-	"privileges.category-selector": "Configuring privileges for ",
+	"privileges.description": "Puede configurar los privilegios de control de acceso para partes del sitio en esta sección. Los privilegios se pueden otorgar por usuario o por grupo. Seleccione el dominio de efecto de la lista desplegable a continuación.",
+	"privileges.category-selector": "Configurando privilegios para",
 	"privileges.warning": "Nota: La configuracion de los privilegios toma efecto inmediataente. No es necesario guardar la categoría despué de ajustar estas configuraciones.",
 	"privileges.section-viewing": "Privilegios de Visionado",
 	"privileges.section-posting": "Privilegios de Respuesta",
 	"privileges.section-moderation": "Privilegios de Moderación",
+	"privileges.section-other": "Otro",
 	"privileges.section-user": "Usuario",
 	"privileges.search-user": "Añadir Usuario",
 	"privileges.no-users": "No hay privilegios específicos de usuario en esta categoría.",
@@ -43,7 +45,12 @@
 	"privileges.search-group": "Añadir Grupo",
 	"privileges.copy-to-children": "Copiar a categorías inferiores",
 	"privileges.copy-from-category": "Copiar de Categoría",
+	"privileges.copy-privileges-to-all-categories": "Copy to All Categories",
+	"privileges.copy-group-privileges-to-children": "Copy this group's privileges to the children of this category.",
+	"privileges.copy-group-privileges-to-all-categories": "Copy this group's privileges to all categories.",
+	"privileges.copy-group-privileges-from": "Copy this group's privileges from another category.",
 	"privileges.inherit": "Si al grupo de los <code> usuarios registrados </code> se le otorga un privilegio específico, todos los otros grupos reciben un <strong> privilegio implícito </strong>, incluso si no están definidos/asignados de forma explícita. Este privilegio implícito se te muestra por que todos los usuarios son parte del grupo de usuarios <code>usuarios registrados</code> y, por tanto, los privilegios para grupos adicionales no deben de ser garantizados explícitamente.",
+	"privileges.copy-success": "Privileges copied!",
 
 	"analytics.back": "Volver a lista de Categorías",
 	"analytics.title": "Analíticas para \"%1\" categoría",
@@ -70,5 +77,5 @@
 	"alert.group-search": "Buscar un grupo aquí...",
 	"collapse-all": "Minimizar Todo",
 	"expand-all": "Expandir Todo",
-	"disable-on-create": "Disable on create"
+	"disable-on-create": "Desactivar en crear"
 }

@@ -29,6 +29,11 @@ questions.main = [
 		default: nconf.get('secret') || utils.generateUUID(),
 	},
 	{
+		name: 'submitPluginUsage',
+		description: 'Would you like to submit anonymous plugin usage to nbbpm?',
+		default: 'yes',
+	},
+	{
 		name: 'database',
 		description: 'Which database to use',
 		default: nconf.get('database') || 'mongo',
@@ -132,7 +137,13 @@ function setupConfig(next) {
 				var allQuestions = questions.main.concat(questions.optional).concat(redisQuestions).concat(mongoQuestions).concat(postgresQuestions);
 
 				allQuestions.forEach(function (question) {
-					config[question.name] = install.values[question.name] || question.default || undefined;
+					if (install.values.hasOwnProperty(question.name)) {
+						config[question.name] = install.values[question.name];
+					} else if (question.hasOwnProperty('default')) {
+						config[question.name] = question.default;
+					} else {
+						config[question.name] = undefined;
+					}
 				});
 				setImmediate(next, null, config);
 			} else {
@@ -163,7 +174,6 @@ function completeConfigSetup(config, next) {
 	if (nconf.get('package_manager')) {
 		config.package_manager = nconf.get('package_manager');
 	}
-
 	nconf.overrides(config);
 	async.waterfall([
 		function (next) {
@@ -192,6 +202,14 @@ function completeConfigSetup(config, next) {
 
 			// ref: https://github.com/indexzero/nconf/issues/300
 			delete config.type;
+
+			var meta = require('./meta');
+			meta.configs.set('submitPluginUsage', config.submitPluginUsage === 'yes' ? 1 : 0, function (err) {
+				next(err, config);
+			});
+		},
+		function (config, next) {
+			delete config.submitPluginUsage;
 
 			install.save(config, next);
 		},
@@ -385,9 +403,23 @@ function giveGlobalPrivileges(next) {
 	var privileges = require('./privileges');
 	var defaultPrivileges = [
 		'chat', 'upload:post:image', 'signature', 'search:content',
-		'search:users', 'search:tags', 'local:login',
+		'search:users', 'search:tags', 'view:users', 'view:tags', 'view:groups',
+		'local:login',
 	];
-	privileges.global.give(defaultPrivileges, 'registered-users', next);
+	async.waterfall([
+		function (next) {
+			privileges.global.give(defaultPrivileges, 'registered-users', next);
+		},
+		function (next) {
+			privileges.global.give(defaultPrivileges.concat(['ban', 'upload:post:file', 'view:users:info']), 'Global Moderators', next);
+		},
+		function (next) {
+			privileges.global.give(['view:users', 'view:tags', 'view:groups'], 'guests', next);
+		},
+		function (next) {
+			privileges.global.give(['view:users', 'view:tags', 'view:groups'], 'spiders', next);
+		},
+	], next);
 }
 
 function createCategories(next) {
@@ -495,9 +527,7 @@ function enableDefaultPlugins(next) {
 	winston.info('[install/enableDefaultPlugins] activating default plugins', defaultEnabled);
 
 	var db = require('./database');
-	var order = defaultEnabled.map(function (plugin, index) {
-		return index;
-	});
+	var order = defaultEnabled.map((plugin, index) => index);
 	db.sortedSetAdd('plugins:active', order, defaultEnabled, next);
 }
 

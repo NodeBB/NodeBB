@@ -62,7 +62,7 @@ define('topicList', [
 
 	function findTopicListElement() {
 		return $('[component="category"]').filter(function (i, e) {
-			return !$(e).parents('[widget-area]').length;
+			return !$(e).parents('[widget-area],[data-widget-area]').length;
 		});
 	}
 

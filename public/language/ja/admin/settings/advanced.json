@@ -1,6 +1,7 @@
 {
 	"maintenance-mode": "メンテナンスモード",
 	"maintenance-mode.help": "フォーラムがメンテナンスモードの場合、すべてのリクエストは静的な一時ページにリダイレクトされます。管理者はこのリダイレクトから免除され、通常のサイトにアクセスできます。",
+	"maintenance-mode.status": "Maintenance Mode Status Code",
 	"maintenance-mode.message": "メンテナンスメッセージ",
 	"headers": "ヘッダー",
 	"headers.allow-from": "NodeBBをインラインフレーム内に配置するようALLOW-FROMを設定する",

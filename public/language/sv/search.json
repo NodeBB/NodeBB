@@ -43,5 +43,6 @@
     "clear-preferences": "Rensa inställningar",
     "search-preferences-saved": "Sökinställningar sparade",
     "search-preferences-cleared": "Sökinställningar rensade",
-    "show-results-as": "Visa resultat som"
+    "show-results-as": "Visa resultat som",
+    "see-more-results": "See more results (%1)"
 }

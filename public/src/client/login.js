@@ -69,7 +69,7 @@ define('forum/login', [], function () {
 			return false;
 		});
 
-		if ($('#content #username').attr('readonly')) {
+		if ($('#content #username').val()) {
 			$('#content #password').val('').focus();
 		} else {
 			$('#content #username').focus();

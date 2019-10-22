@@ -1,87 +1,41 @@
 
 'use strict';
 
-var async = require('async');
-var _ = require('lodash');
 
-var db = require('../database');
-var topics = require('../topics');
+const _ = require('lodash');
+
+const db = require('../database');
+const topics = require('../topics');
 
 module.exports = function (Posts) {
-	Posts.getCidByPid = function (pid, callback) {
-		async.waterfall([
-			function (next) {
-				Posts.getPostField(pid, 'tid', next);
-			},
-			function (tid, next) {
-				topics.getTopicField(tid, 'cid', next);
-			},
-		], callback);
+	Posts.getCidByPid = async function (pid) {
+		const tid = await Posts.getPostField(pid, 'tid');
+		return await topics.getTopicField(tid, 'cid');
 	};
 
-	Posts.getCidsByPids = function (pids, callback) {
-		var tids;
-		var postData;
-		async.waterfall([
-			function (next) {
-				Posts.getPostsFields(pids, ['tid'], next);
-			},
-			function (_postData, next) {
-				postData = _postData;
-				tids = _.uniq(postData.map(function (post) {
-					return post && post.tid;
-				}).filter(Boolean));
-
-				topics.getTopicsFields(tids, ['cid'], next);
-			},
-			function (topicData, next) {
-				var map = {};
-				topicData.forEach(function (topic, index) {
-					if (topic) {
-						map[tids[index]] = topic.cid;
-					}
-				});
-
-				var cids = postData.map(function (post) {
-					return map[post.tid];
-				});
-				next(null, cids);
-			},
-		], callback);
+	Posts.getCidsByPids = async function (pids) {
+		const postData = await Posts.getPostsFields(pids, ['tid']);
+		const tids = _.uniq(postData.map(post => post && post.tid).filter(Boolean));
+		const topicData = await topics.getTopicsFields(tids, ['cid']);
+		const tidToTopic = _.zipObject(tids, topicData);
+		const cids = postData.map(post => tidToTopic[post.tid].cid);
+		return cids;
 	};
 
-	Posts.filterPidsByCid = function (pids, cid, callback) {
+	Posts.filterPidsByCid = async function (pids, cid) {
 		if (!cid) {
-			return setImmediate(callback, null, pids);
+			return pids;
 		}
 
 		if (!Array.isArray(cid) || cid.length === 1) {
-			return filterPidsBySingleCid(pids, cid, callback);
+			return await filterPidsBySingleCid(pids, cid);
 		}
-
-		async.waterfall([
-			function (next) {
-				async.map(cid, function (cid, next) {
-					Posts.filterPidsByCid(pids, cid, next);
-				}, next);
-			},
-			function (pidsArr, next) {
-				next(null, _.union.apply(_, pidsArr));
-			},
-		], callback);
+		const pidsArr = await Promise.all(cid.map(c => Posts.filterPidsByCid(pids, c)));
+		return _.union.apply(_, pidsArr);
 	};
 
-	function filterPidsBySingleCid(pids, cid, callback) {
-		async.waterfall([
-			function (next) {
-				db.isSortedSetMembers('cid:' + parseInt(cid, 10) + ':pids', pids, next);
-			},
-			function (isMembers, next) {
-				pids = pids.filter(function (pid, index) {
-					return pid && isMembers[index];
-				});
-				next(null, pids);
-			},
-		], callback);
+	async function filterPidsBySingleCid(pids, cid) {
+		const isMembers = await db.isSortedSetMembers('cid:' + parseInt(cid, 10) + ':pids', pids);
+		return pids.filter((pid, index) => pid && isMembers[index]);
 	}
 };

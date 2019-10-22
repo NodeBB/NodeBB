@@ -18,11 +18,13 @@
     "last_reply_time": "Last reply",
     "reply-as-topic": "Răspunde ca subiect",
     "guest-login-reply": "Login pentru a răspunde",
+    "login-to-view": "🔒 Log in to view",
     "edit": "Editează",
     "delete": "Șterge",
     "purge": "Curăță",
     "restore": "Restaurează",
     "move": "Mută",
+    "change-owner": "Change Owner",
     "fork": "Bifurcă",
     "link": "Link",
     "share": "Distribuie",
@@ -64,6 +66,7 @@
     "thread_tools.move": "Mută Subiect",
     "thread_tools.move-posts": "Move Posts",
     "thread_tools.move_all": "Mută-le pe toate",
+    "thread_tools.change_owner": "Change Owner",
     "thread_tools.select_category": "Select Category",
     "thread_tools.fork": "Bifurcă Subiect",
     "thread_tools.delete": "Șterge Subiect",
@@ -98,6 +101,7 @@
     "delete_posts_instruction": "Click the posts you want to delete/purge",
     "merge_topics_instruction": "Click the topics you want to merge",
     "move_posts_instruction": "Click the posts you want to move",
+    "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "Introdu numele subiectului aici ...",
     "composer.handle_placeholder": "Name",
     "composer.discard": "Renunță",
@@ -129,5 +133,7 @@
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
     "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
     "diffs.current-revision": "current revision",
-    "diffs.original-revision": "original revision"
+    "diffs.original-revision": "original revision",
+    "timeago_later": "%1 later",
+    "timeago_earlier": "%1 earlier"
 }

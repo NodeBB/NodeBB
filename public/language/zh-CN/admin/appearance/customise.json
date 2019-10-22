@@ -8,7 +8,7 @@
 	"custom-js.enable": "启用自定义 Javascript",
 
 	"custom-header": "自定义 Header",
-	"custom-header.description": "在这里输入自定义的 HTML 代码 (如 JavaScript，Meta Tags 等)，这些代码会被添加到论坛的 <code>&lt;head&gt;</code> 部分。 （您可以在这里使用&lt;script&gt; 标签，但我们建议您将您的 JavaScript 写到 <a href=\"#custom-header\" data-toggle=\"tab\"> 自定义 Javascript</a> 中）",
+	"custom-header.description": "在这里输入自定义的 HTML 代码 (如 Meta Tags 等)，这些代码会被添加到论坛的 <code>&lt;head&gt;</code>部分。 您可以在这里使用 Script 标签，但我们更鼓励您将您的 JavaScript 写到 <a href=\"#custom-js\" data-toggle=\"tab\"> 自定义 Javascript </a> 中",
 	"custom-header.enable": "启用自定义 Header",
 
 	"custom-css.livereload": "启用实时重载",

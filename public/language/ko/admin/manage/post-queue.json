@@ -1,6 +1,6 @@
 {
 	"post-queue": "게시 대기열",
-	"description": "게시 대기열에 글이 없습니다. <br> 이 기능을 사용하려면 <a href=\"%1\">설정 &rarr; 글&rarr; 게시대기</a>에서<strong>게시대기</strong>를 활성화 하세요.",
+	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
 	"user": "사용자",
 	"category": "카테고리",
 	"title": "제목",

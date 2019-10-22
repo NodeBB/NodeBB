@@ -6,6 +6,6 @@
 	"max-length": "Maksymalna długość wiadomości czat",
 	"max-room-size": "Maksymalna liczba użytkowników w pokojach czatu",
 	"delay": "Czas pomiędzy wiadomościami czat (w milisekundach)",
-	"restrictions.seconds-edit-after": "Czas w sekundach, jaki musi upłynąć od wysłania wiadomości czat, by możliwa była jej edycja (0 wyłączone)",
-	"restrictions.seconds-delete-after": "Czas w sekundach, jaki musi upłynąć od wysłania wiadomości czat, by możliwe było jej usunięcie (0 wyłączone)"
+	"restrictions.seconds-edit-after": "Liczba sekund, przez które wiadomość czatu pozostanie edytowalna. (0 wyłączony)",
+	"restrictions.seconds-delete-after": "Liczba sekund, przez które wiadomość czatu pozostanie do usunięcia. (0 wyłączony)"
 }

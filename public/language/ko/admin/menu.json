@@ -21,10 +21,10 @@
 
 	"section-settings": "설정",
 	"settings/general": "일반",
-	"settings/reputation": "등급",
+	"settings/reputation": "평판",
 	"settings/email": "이메일",
 	"settings/user": "사용자",
-	"settings/group": "룹",
+	"settings/group": "그룹",
 	"settings/guest": "미가입 사용자",
 	"settings/uploads": "로드",
 	"settings/post": "글",
@@ -42,7 +42,7 @@
 	"section-appearance": "스타일",
 	"appearance/themes": "테마",
 	"appearance/skins": "스킨",
-	"appearance/customise": "사용자 정의 콘텐츠 ((HTML/JS/CSS)",
+	"appearance/customise": "사용자 정의 콘텐츠 (HTML/JS/CSS)",
 
 	"section-extend": "추가 기능",
 	"extend/plugins": "플러그인",

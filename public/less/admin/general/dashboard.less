@@ -5,25 +5,34 @@
 		max-width: 100% !important;
 	}
 
+	#analytics-panel .panel-heading i {
+		&.fa-expand {
+			display: none;
+		}
+
+		&.fa-terminal::after {
+			content: 'JSON';
+			font-family: @font-family-sans-serif;
+			font-weight: 600;
+			color: @gray-dark;
+			padding-left: .5em;
+		}
+
+		padding: .75em;
+		background-color: @gray-lighter;
+		color: @gray-base;
+		cursor: pointer;
+		.transition(all .4s);
+
+		&.active {
+			display: inline;
+		}
+	}
+
 	.graph-container {
 		padding-right: 50px;
 		position: relative;
 		background: @body-bg;
-
-		.fa-expand {
-			display: none;
-			position: absolute;
-			right: 20px;
-			padding: 5px;
-			background-color: @gray-lighter;
-			color: @gray-base;
-			cursor: pointer;
-			.transition(all .4s);
-
-			&.active {
-				display: inline;
-			}
-		}
 
 		&:hover {
 			.fa-expand {

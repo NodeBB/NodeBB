@@ -3,13 +3,11 @@
 var nconf = require('nconf');
 var winston = require('winston');
 var path = require('path');
-var async = require('async');
 var express = require('express');
 
 var meta = require('../meta');
 var controllers = require('../controllers');
 var plugins = require('../plugins');
-var user = require('../user');
 
 var accountRoutes = require('./accounts');
 var metaRoutes = require('./meta');
@@ -35,6 +33,7 @@ function mainRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/tos', middleware, [], controllers.termsOfUse);
 
 	app.post('/compose', middleware.applyCSRF, controllers.composer.post);
+	app.post('/email/unsubscribe/:token', controllers.accounts.settings.unsubscribe);
 }
 
 function modRoutes(app, middleware, controllers) {
@@ -45,6 +44,7 @@ function modRoutes(app, middleware, controllers) {
 
 function globalModRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/ip-blacklist', middleware, [], controllers.globalMods.ipBlacklist);
+	setupPageRoute(app, '/registration-queue', middleware, [], controllers.globalMods.registrationQueue);
 }
 
 function topicRoutes(app, middleware, controllers) {
@@ -75,30 +75,29 @@ function categoryRoutes(app, middleware, controllers) {
 }
 
 function userRoutes(app, middleware, controllers) {
-	var middlewares = [middleware.checkGlobalPrivacySettings];
+	var middlewares = [middleware.canViewUsers];
 
 	setupPageRoute(app, '/users', middleware, middlewares, controllers.users.index);
 }
 
 function groupRoutes(app, middleware, controllers) {
-	var middlewares = [middleware.checkGlobalPrivacySettings];
+	var middlewares = [middleware.canViewGroups];
 
 	setupPageRoute(app, '/groups', middleware, middlewares, controllers.groups.list);
 	setupPageRoute(app, '/groups/:slug', middleware, middlewares, controllers.groups.details);
 	setupPageRoute(app, '/groups/:slug/members', middleware, middlewares, controllers.groups.members);
 }
 
-module.exports = function (app, middleware, callback) {
+module.exports = async function (app, middleware) {
 	const router = express.Router();
 	router.render = function () {
 		app.render.apply(app, arguments);
 	};
-	var relativePath = nconf.get('relative_path');
 	var ensureLoggedIn = require('connect-ensure-login');
 
-	app.all(relativePath + '(/+api|/+api/*?)', middleware.prepareAPI);
-	app.all(relativePath + '(/+api/admin|/+api/admin/*?)', middleware.isAdmin);
-	app.all(relativePath + '(/+admin|/+admin/*?)', ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login?local=1'), middleware.applyCSRF, middleware.isAdmin);
+	router.all('(/+api|/+api/*?)', middleware.prepareAPI);
+	router.all('(/+api/admin|/+api/admin/*?)', middleware.isAdmin);
+	router.all('(/+admin|/+admin/*?)', ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login?local=1'), middleware.applyCSRF, middleware.isAdmin);
 
 	app.use(middleware.stripLeadingSlashes);
 
@@ -108,21 +107,14 @@ module.exports = function (app, middleware, callback) {
 	// homepage handled by `action:homepage.get:[route]`
 	setupPageRoute(router, '/', middleware, [], controllers.home.pluginHook);
 
-	async.series([
-		async.apply(plugins.reloadRoutes, router),
-		async.apply(authRoutes.reloadRoutes, router),
-		async.apply(addCoreRoutes, app, router, middleware),
-		async.apply(user.addInterstitials),
-		function (next) {
-			winston.info('Routes added');
-			next();
-		},
-	], function (err) {
-		callback(err);
-	});
+	await plugins.reloadRoutes({ router: router });
+	await authRoutes.reloadRoutes({ router: router });
+	addCoreRoutes(app, router, middleware);
+
+	winston.info('Routes added');
 };
 
-function addCoreRoutes(app, router, middleware, callback) {
+function addCoreRoutes(app, router, middleware) {
 	adminRoutes(router, middleware, controllers);
 	metaRoutes(router, middleware, controllers);
 	apiRoutes(router, middleware, controllers);
@@ -186,9 +178,7 @@ function addCoreRoutes(app, router, middleware, callback) {
 		res.redirect(relativePath + '/assets/client.css?' + meta.config['cache-buster']);
 	});
 
-	app.use(relativePath + '/assets/vendor/jquery/timeago/locales', middleware.processTimeagoLocales);
 	app.use(controllers['404'].handle404);
 	app.use(controllers.errors.handleURIErrors);
 	app.use(controllers.errors.handleErrors);
-	setImmediate(callback);
 }

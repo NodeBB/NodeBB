@@ -43,5 +43,6 @@
     "clear-preferences": "ازالة التفضيلات",
     "search-preferences-saved": "تم حفظ تفضيلات البحث",
     "search-preferences-cleared": "تم ازالة تفضيلات البحث",
-    "show-results-as": "عرض النتائج كـ"
+    "show-results-as": "عرض النتائج كـ",
+    "see-more-results": "See more results (%1)"
 }

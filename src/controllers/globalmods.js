@@ -1,22 +1,24 @@
 'use strict';
 
-var async = require('async');
+const user = require('../user');
+const adminBlacklistController = require('./admin/blacklist');
+const usersController = require('./admin/users');
 
-var user = require('../user');
-var adminBlacklistController = require('./admin/blacklist');
+const globalModsController = module.exports;
 
-var globalModsController = module.exports;
+globalModsController.ipBlacklist = async function (req, res, next) {
+	const isAdminOrGlobalMod = await user.isAdminOrGlobalMod(req.uid);
+	if (!isAdminOrGlobalMod) {
+		return next();
+	}
+	await adminBlacklistController.get(req, res);
+};
 
-globalModsController.ipBlacklist = function (req, res, next) {
-	async.waterfall([
-		function (next) {
-			user.isAdminOrGlobalMod(req.uid, next);
-		},
-		function (isAdminOrGlobalMod, next) {
-			if (!isAdminOrGlobalMod) {
-				return next();
-			}
-			adminBlacklistController.get(req, res, next);
-		},
-	], next);
+
+globalModsController.registrationQueue = async function (req, res, next) {
+	const isAdminOrGlobalMod = await user.isAdminOrGlobalMod(req.uid);
+	if (!isAdminOrGlobalMod) {
+		return next();
+	}
+	await usersController.registrationQueue(req, res);
 };

@@ -58,7 +58,10 @@
 	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/post:restrictions]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
-
+			<div class="form-group">
+				<label for="postDelay">[[admin/settings/post:restrictions.seconds-between]]</label>
+				<input id="postDelay" type="text" class="form-control" value="10" data-field="postDelay">
+			</div>
 			<div class="form-group">
 				<label for="postEditDuration">[[admin/settings/post:restrictions.seconds-edit-after]]</label>
 				<input id="postEditDuration" type="text" class="form-control" value="0" data-field="postEditDuration">
@@ -87,36 +90,53 @@
 	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/post:restrictions-new]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
-			<div class="row">
-				<div class="col-xs-6">
-					<div class="form-group">
-						<label for="newbiePostDelay">[[admin/settings/post:restrictions.seconds-between-new]]</label>
-						<input id="newbiePostDelay" type="text" class="form-control" value="120" data-field="newbiePostDelay">
-					</div>
-				</div>
-				<div class="col-xs-6">
-					<div class="form-group">
-					<label for="initialPostDelay">[[admin/settings/post:restrictions.seconds-defore-new]]</label>
-					<input id="initialPostDelay" type="text" class="form-control" value="10" data-field="initialPostDelay">
-
-					</div>
-				</div>
-			</div>
-			<div class="form-group">
-				<div class="checkbox">
-					<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-						<input class="mdl-switch__input" type="checkbox" data-field="postQueue">
-						<span class="mdl-switch__label"><strong>[[admin/settings/post:restrictions.post-queue]]</strong></span>
-					</label>
-				</div>
-				<p class="help-block">
-					[[admin/settings/post:restrictions.post-queue-help]]
-				</p>
-			</div>
-
 			<div class="form-group">
 				<label for="newbiePostDelayThreshold">[[admin/settings/post:restrictions.rep-threshold]]</label>
 				<input id="newbiePostDelayThreshold" type="text" class="form-control" value="3" data-field="newbiePostDelayThreshold">
+			</div>
+
+			<div class="form-group">
+				<label for="newbiePostDelay">[[admin/settings/post:restrictions.seconds-between-new]]</label>
+				<input id="newbiePostDelay" type="text" class="form-control" value="120" data-field="newbiePostDelay">
+			</div>
+
+			<div class="form-group">
+				<label for="initialPostDelay">[[admin/settings/post:restrictions.seconds-before-new]]</label>
+				<input id="initialPostDelay" type="text" class="form-control" value="10" data-field="initialPostDelay">
+			</div>
+
+			<div class="form-group">
+				<label for="newbiePostEditDuration">[[admin/settings/post:restrictions.seconds-edit-after]]</label>
+				<input id="newbiePostEditDuration" type="text" class="form-control" value="120" data-field="newbiePostEditDuration">
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/post:post-queue]]</div>
+	<div class="col-sm-10 col-xs-12">
+		<form>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<div class="checkbox">
+							<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+								<input class="mdl-switch__input" type="checkbox" data-field="postQueue">
+								<span class="mdl-switch__label"><strong>[[admin/settings/post:restrictions.post-queue]]</strong></span>
+							</label>
+						</div>
+						<p class="help-block">
+							[[admin/settings/post:restrictions.post-queue-help]]
+						</p>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label for="postQueueReputationThreshold">[[admin/settings/post:restrictions.post-queue-rep-threshold]]</label>
+						<input id="postQueueReputationThreshold" type="text" class="form-control" value="0" data-field="postQueueReputationThreshold">
+					</div>
+				</div>
 			</div>
 		</form>
 	</div>

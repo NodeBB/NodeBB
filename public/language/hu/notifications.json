@@ -56,6 +56,7 @@
     "notificationType_follow": "Mikor valaki elkezd követni téged",
     "notificationType_new-chat": "Mikor chat üzenetet kapsz",
     "notificationType_group-invite": "Mikor csoportmeghívást kapsz",
+    "notificationType_group-request-membership": "When someone requests to join a group you own",
     "notificationType_new-register": "Mikor valaki a regisztrációs várólistára kerül",
     "notificationType_post-queue": "Mikor egy új hozzászólás várólistára kerül",
     "notificationType_new-post-flag": "Mikor egy hozzászólás megjelölésre kerül",

@@ -20,6 +20,13 @@
 				</label>
 			</div>
 
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="stripEXIFData">
+					<span class="mdl-switch__label"><strong>[[admin/settings/uploads:strip-exif-data]]</strong></span>
+				</label>
+			</div>
+
 			<div class="form-group">
 				<label for="privateUploadsExtensions">[[admin/settings/uploads:private-extensions]]</label>
 				<input type="text" class="form-control" value="" data-field="privateUploadsExtensions" placeholder="">

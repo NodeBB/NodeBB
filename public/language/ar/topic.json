@@ -18,11 +18,13 @@
     "last_reply_time": "Last reply",
     "reply-as-topic": "رد بموضوع",
     "guest-login-reply": "يجب عليك تسجيل الدخول للرد",
+    "login-to-view": "🔒 Log in to view",
     "edit": "تعديل",
     "delete": "حذف",
     "purge": "تطهير",
     "restore": "استعادة",
     "move": "نقل",
+    "change-owner": "Change Owner",
     "fork": "فرع",
     "link": "رابط",
     "share": "نشر",
@@ -64,6 +66,7 @@
     "thread_tools.move": "نقل الموضوع",
     "thread_tools.move-posts": "Move Posts",
     "thread_tools.move_all": "نقل الكل",
+    "thread_tools.change_owner": "Change Owner",
     "thread_tools.select_category": "Select Category",
     "thread_tools.fork": "إنشاء فرع الموضوع",
     "thread_tools.delete": "حذف الموضوع",
@@ -98,6 +101,7 @@
     "delete_posts_instruction": "Click the posts you want to delete/purge",
     "merge_topics_instruction": "Click the topics you want to merge",
     "move_posts_instruction": "Click the posts you want to move",
+    "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "أدخل عنوان موضوعك هنا...",
     "composer.handle_placeholder": "اﻹسم",
     "composer.discard": "نبذ التغييرات",
@@ -129,5 +133,7 @@
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
     "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
     "diffs.current-revision": "current revision",
-    "diffs.original-revision": "original revision"
+    "diffs.original-revision": "original revision",
+    "timeago_later": "%1 later",
+    "timeago_earlier": "%1 earlier"
 }

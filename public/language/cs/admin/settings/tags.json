@@ -5,8 +5,6 @@
     "min-length": "Minimální délka značky",
     "max-length": "Maximální délka značky",
     "goto-manage": "Pro přejití na stránku správy značek, klikněte zde.",
-    "privacy": "Soukromí",
-    "list-private": "Seznam značek je soukromí",
     "related-topics": "Související témata",
     "max-related-topics": "Maximální počet zobrazených souvisejících témat (je-li podporováno motivem)"
 }

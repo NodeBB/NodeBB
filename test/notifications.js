@@ -380,6 +380,14 @@ describe('Notifications', function () {
 		});
 	});
 
+	it('should return empty array for invalid interval', function (done) {
+		user.notifications.getUnreadInterval(uid, '2 aeons', function (err, data) {
+			assert.ifError(err);
+			assert.deepEqual(data, []);
+			done();
+		});
+	});
+
 	it('should return 0 for falsy uid', function (done) {
 		user.notifications.getUnreadCount(0, function (err, count) {
 			assert.ifError(err);
@@ -442,7 +450,7 @@ describe('Notifications', function () {
 					user.notifications.getAll(uid, '', function (err, data) {
 						meta.config.welcomeNotification = '';
 						assert.ifError(err);
-						assert.notEqual(data.indexOf('welcome_' + uid), -1);
+						assert(data.includes('welcome_' + uid));
 						done();
 					});
 				}, 1100);

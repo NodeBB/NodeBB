@@ -18,11 +18,13 @@
     "last_reply_time": "คำตอบล่าสุด",
     "reply-as-topic": "ตอบโดยตั้งกระทู้ใหม่",
     "guest-login-reply": "เข้าสู่ระบบเพื่อตอบกลับ",
+    "login-to-view": "🔒 Log in to view",
     "edit": "แก้ไข",
     "delete": "ลบ",
     "purge": "ล้าง",
     "restore": "กู้",
     "move": "ย้าย",
+    "change-owner": "Change Owner",
     "fork": "แยก",
     "link": "ลิงค์",
     "share": "แชร์",
@@ -64,6 +66,7 @@
     "thread_tools.move": "ย้ายกระทู้",
     "thread_tools.move-posts": "Move Posts",
     "thread_tools.move_all": "ย้ายทั้งหมด",
+    "thread_tools.change_owner": "Change Owner",
     "thread_tools.select_category": "เลือกประเภท",
     "thread_tools.fork": "แยกกระทู้",
     "thread_tools.delete": "ลบกระทู้",
@@ -98,6 +101,7 @@
     "delete_posts_instruction": "คลิกโพสต์ที่คุณต้องการลบ/ล้าง",
     "merge_topics_instruction": "เลือกกระทู้ที่คุณต้องการรวม",
     "move_posts_instruction": "Click the posts you want to move",
+    "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "ป้อนชื่อกระทู้ของคุณที่นี่ ...",
     "composer.handle_placeholder": "ชื่อ",
     "composer.discard": "ยกเลิก",
@@ -129,5 +133,7 @@
     "diffs.description": "โพสนี้มี <strong>%1</strong> การแก้ไข คลิกที่การแก้ไขด้านล่างเพื่อดูเนื้อหาโพสต์ตามเวลาที่เลือก",
     "diffs.no-revisions-description": "โพสนี้มี <strong>%1</strong>การแก้ไข",
     "diffs.current-revision": "current revision",
-    "diffs.original-revision": "original revision"
+    "diffs.original-revision": "original revision",
+    "timeago_later": "%1 later",
+    "timeago_earlier": "%1 earlier"
 }

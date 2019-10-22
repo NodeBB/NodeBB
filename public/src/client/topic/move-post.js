@@ -24,7 +24,7 @@ define('forum/topic/move-post', ['components', 'postSelect'], function (componen
 			showPostsSelected();
 
 			if (postEl) {
-				postSelect.togglePostSelection(postEl, onPostToggled);
+				postSelect.togglePostSelection(postEl, postEl.attr('data-pid'));
 			}
 
 			moveCommit.on('click', function () {

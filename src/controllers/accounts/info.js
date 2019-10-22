@@ -1,67 +1,54 @@
 'use strict';
 
-var async = require('async');
+const db = require('../../database');
+const user = require('../../user');
+const helpers = require('../helpers');
+const accountHelpers = require('./helpers');
+const pagination = require('../../pagination');
 
-var db = require('../../database');
-var user = require('../../user');
-var helpers = require('../helpers');
-var accountHelpers = require('./helpers');
-var pagination = require('../../pagination');
+const infoController = module.exports;
 
-var infoController = module.exports;
+infoController.get = async function (req, res, next) {
+	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid);
+	if (!userData) {
+		return next();
+	}
+	const page = Math.max(1, req.query.page || 1);
+	const itemsPerPage = 10;
+	const start = (page - 1) * itemsPerPage;
+	const stop = start + itemsPerPage - 1;
 
-infoController.get = function (req, res, callback) {
-	var userData;
-	var page = Math.max(1, req.query.page || 1);
-	var itemsPerPage = 10;
+	const [history, sessions, usernames, emails, notes] = await Promise.all([
+		user.getModerationHistory(userData.uid),
+		user.auth.getSessions(userData.uid, req.sessionID),
+		user.getHistory('user:' + userData.uid + ':usernames'),
+		user.getHistory('user:' + userData.uid + ':emails'),
+		getNotes(userData, start, stop),
+	]);
 
-	async.waterfall([
-		function (next) {
-			accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, next);
-		},
-		function (_userData, next) {
-			userData = _userData;
-			if (!userData) {
-				return callback();
-			}
+	userData.history = history;
+	userData.sessions = sessions;
+	userData.usernames = usernames;
+	userData.emails = emails;
 
-			var start = (page - 1) * itemsPerPage;
-			var stop = start + itemsPerPage - 1;
-			async.parallel({
-				history: async.apply(user.getModerationHistory, userData.uid),
-				sessions: async.apply(user.auth.getSessions, userData.uid, req.sessionID),
-				usernames: async.apply(user.getHistory, 'user:' + userData.uid + ':usernames'),
-				emails: async.apply(user.getHistory, 'user:' + userData.uid + ':emails'),
-				notes: function (next) {
-					if (!userData.isAdminOrGlobalModeratorOrModerator) {
-						return setImmediate(next);
-					}
-					async.parallel({
-						notes: function (next) {
-							user.getModerationNotes(userData.uid, start, stop, next);
-						},
-						count: function (next) {
-							db.sortedSetCard('uid:' + userData.uid + ':moderation:notes', next);
-						},
-					}, next);
-				},
-			}, next);
-		},
-		function (data) {
-			userData.history = data.history;
-			userData.sessions = data.sessions;
-			userData.usernames = data.usernames;
-			userData.emails = data.emails;
+	if (userData.isAdminOrGlobalModeratorOrModerator) {
+		userData.moderationNotes = notes.notes;
+		const pageCount = Math.ceil(notes.count / itemsPerPage);
+		userData.pagination = pagination.create(page, pageCount, req.query);
+	}
+	userData.title = '[[pages:account/info]]';
+	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[user:account_info]]' }]);
 
-			if (userData.isAdminOrGlobalModeratorOrModerator) {
-				userData.moderationNotes = data.notes.notes;
-				var pageCount = Math.ceil(data.notes.count / itemsPerPage);
-				userData.pagination = pagination.create(page, pageCount, req.query);
-			}
-			userData.title = '[[pages:account/info]]';
-			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[user:account_info]]' }]);
-
-			res.render('account/info', userData);
-		},
-	], callback);
+	res.render('account/info', userData);
 };
+
+async function getNotes(userData, start, stop) {
+	if (!userData.isAdminOrGlobalModeratorOrModerator) {
+		return;
+	}
+	const [notes, count] = await Promise.all([
+		user.getModerationNotes(userData.uid, start, stop),
+		db.sortedSetCard('uid:' + userData.uid + ':moderati;on:notes'),
+	]);
+	return { notes: notes, count: count };
+}

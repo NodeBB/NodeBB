@@ -254,15 +254,15 @@ define('forum/category/tools', [
 	}
 
 	function handlePinnedTopicSort() {
-		var env = utils.findBootstrapEnvironment();
-		if (!ajaxify.data.privileges.isAdminOrMod || env === 'xs' || env === 'sm') {
+		if (!ajaxify.data.privileges.isAdminOrMod) {
 			return;
 		}
 		app.loadJQueryUI(function () {
 			var topicListEl = $('[component="category"]').filter(function (i, e) {
-				return !$(e).parents('[widget-area]').length;
+				return !$(e).parents('[widget-area],[data-widget-area]').length;
 			});
 			topicListEl.sortable({
+				handle: '[component="topic/pinned"]',
 				items: '[component="category/topic"].pinned',
 				update: function () {
 					var data = [];

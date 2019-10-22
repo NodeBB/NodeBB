@@ -61,7 +61,7 @@ define('forum/topic', [
 		addDropupHandler();
 		addRepliesHandler();
 
-		navigator.init('[component="post"]', ajaxify.data.postcount, Topic.toTop, Topic.toBottom, Topic.navigatorCallback, Topic.calculateIndex);
+		navigator.init('[component="post"]', ajaxify.data.postcount, Topic.toTop, Topic.toBottom, Topic.navigatorCallback);
 
 		handleBookmark(tid);
 
@@ -110,9 +110,7 @@ define('forum/topic', [
 			if (err) {
 				return app.alertError(err.message);
 			}
-			if (config.topicPostSort !== 'oldest_to_newest') {
-				postCount = 2;
-			}
+
 			navigator.scrollBottom(postCount - 1);
 		});
 	};
@@ -122,7 +120,7 @@ define('forum/topic', [
 		var bookmark = ajaxify.data.bookmark || storage.getItem('topic:' + tid + ':bookmark');
 		var postIndex = ajaxify.data.postIndex;
 
-		if (postIndex > 0) {
+		if (postIndex > 1) {
 			if (components.get('post/anchor', postIndex - 1).length) {
 				return navigator.scrollToPostIndex(postIndex - 1, true, 0);
 			}
@@ -199,13 +197,6 @@ define('forum/topic', [
 			app.removeAlert('bookmark');
 		}
 	}
-
-	Topic.calculateIndex = function (index, elementCount) {
-		if (index !== 1 && config.topicPostSort !== 'oldest_to_newest') {
-			return elementCount - index + 2;
-		}
-		return index;
-	};
 
 	Topic.navigatorCallback = function (index, elementCount) {
 		var path = ajaxify.removeRelativePath(window.location.pathname.slice(1));

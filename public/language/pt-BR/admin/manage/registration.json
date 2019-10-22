@@ -11,9 +11,9 @@
 	"list.ip-spam": "Frequência: %1 Aparece: %2",
 
 	"invitations": "Convites",
-	"invitations.description": "Abaixo está uma lista completa dos convites enviados. Use ctrl-f para procurar pela lista por email ou nome se usuário. <br><br>O nome de usuário será exibido à direita dos emails para usuários que aceitaram seus convites.",
+	"invitations.description": "Abaixo está uma lista completa dos convites enviados. Use CTRL + F para procurar na lista por um e-mail ou um nome de usuário. <br><br>O nome do usuário será exibido à direita dos e-mails para usuários que aceitaram seus convites.",
 	"invitations.inviter-username": "Nome de Usuário do Convidante",
-	"invitations.invitee-email": "Email do Convidado",
+	"invitations.invitee-email": "E-mail do Convidado",
 	"invitations.invitee-username": "Nome do Usuário do Convidado (se registrado)",
 
 	"invitations.confirm-delete": "Tem certeza que deseja excluir este convite?"

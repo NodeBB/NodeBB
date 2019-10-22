@@ -39,8 +39,8 @@ module.exports = {
 
 				var done = false;
 				async.whilst(
-					function () {
-						return !done;
+					function (next) {
+						next(null, !done);
 					},
 					function (next) {
 						async.waterfall([

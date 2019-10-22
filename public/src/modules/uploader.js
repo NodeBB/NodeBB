@@ -42,34 +42,38 @@ define('uploader', ['translator', 'benchpress'], function (translator, Benchpres
 	};
 
 	function onSubmit(uploadModal, fileSize, callback) {
-		function showAlert(type, message) {
-			module.hideAlerts(uploadModal);
-			if (type === 'error') {
-				uploadModal.find('#fileUploadSubmitBtn').removeClass('disabled');
-			}
-			uploadModal.find('#alert-' + type).translateText(message).removeClass('hide');
-		}
-
-		showAlert('status', '[[uploads:uploading-file]]');
+		showAlert(uploadModal, 'status', '[[uploads:uploading-file]]');
 
 		uploadModal.find('#upload-progress-bar').css('width', '0%');
 		uploadModal.find('#upload-progress-box').show().removeClass('hide');
 
 		var fileInput = uploadModal.find('#fileInput');
 		if (!fileInput.val()) {
-			return showAlert('error', '[[uploads:select-file-to-upload]]');
+			return showAlert(uploadModal, 'error', '[[uploads:select-file-to-upload]]');
 		}
 		if (!hasValidFileSize(fileInput[0], fileSize)) {
-			return showAlert('error', '[[error:file-too-big, ' + fileSize + ']]');
+			return showAlert(uploadModal, 'error', '[[error:file-too-big, ' + fileSize + ']]');
 		}
 
+		module.ajaxSubmit(uploadModal, callback);
+	}
+
+	function showAlert(uploadModal, type, message) {
+		module.hideAlerts(uploadModal);
+		if (type === 'error') {
+			uploadModal.find('#fileUploadSubmitBtn').removeClass('disabled');
+		}
+		uploadModal.find('#alert-' + type).translateText(message).removeClass('hide');
+	}
+
+	module.ajaxSubmit = function (uploadModal, callback) {
 		uploadModal.find('#uploadForm').ajaxSubmit({
 			headers: {
 				'x-csrf-token': config.csrf_token,
 			},
 			error: function (xhr) {
 				xhr = maybeParse(xhr);
-				showAlert('error', xhr.responseJSON ? (xhr.responseJSON.error || xhr.statusText) : 'error uploading, code : ' + xhr.status);
+				showAlert(uploadModal, 'error', xhr.responseJSON ? (xhr.responseJSON.error || xhr.statusText) : 'error uploading, code : ' + xhr.status);
 			},
 			uploadProgress: function (event, position, total, percent) {
 				uploadModal.find('#upload-progress-bar').css('width', percent + '%');
@@ -78,19 +82,19 @@ define('uploader', ['translator', 'benchpress'], function (translator, Benchpres
 				response = maybeParse(response);
 
 				if (response.error) {
-					return showAlert('error', response.error);
+					return showAlert(uploadModal, 'error', response.error);
 				}
 
 				callback(response[0].url);
 
-				showAlert('success', '[[uploads:upload-success]]');
+				showAlert(uploadModal, 'success', '[[uploads:upload-success]]');
 				setTimeout(function () {
 					module.hideAlerts(uploadModal);
 					uploadModal.modal('hide');
 				}, 750);
 			},
 		});
-	}
+	};
 
 	function parseModal(tplVals, callback) {
 		Benchpress.parse('partials/modals/upload_file_modal', tplVals, function (html) {

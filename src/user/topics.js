@@ -1,17 +1,16 @@
 'use strict';
 
-var async = require('async');
-var db = require('../database');
+const db = require('../database');
 
 module.exports = function (User) {
-	User.getIgnoredTids = function (uid, start, stop, callback) {
-		db.getSortedSetRevRange('uid:' + uid + ':ignored_tids', start, stop, callback);
+	User.getIgnoredTids = async function (uid, start, stop) {
+		return await db.getSortedSetRevRange('uid:' + uid + ':ignored_tids', start, stop);
 	};
 
-	User.addTopicIdToUser = function (uid, tid, timestamp, callback) {
-		async.parallel([
-			async.apply(db.sortedSetAdd, 'uid:' + uid + ':topics', timestamp, tid),
-			async.apply(User.incrementUserFieldBy, uid, 'topiccount', 1),
-		], callback);
+	User.addTopicIdToUser = async function (uid, tid, timestamp) {
+		await Promise.all([
+			db.sortedSetAdd('uid:' + uid + ':topics', timestamp, tid),
+			User.incrementUserFieldBy(uid, 'topiccount', 1),
+		]);
 	};
 };

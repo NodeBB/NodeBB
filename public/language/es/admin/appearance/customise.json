@@ -8,7 +8,7 @@
 	"custom-js.enable": "Activar Javascript personalizado",
 
 	"custom-header": "Cabezera personalizada",
-	"custom-header.description": "Introduzca su HTML personalizado aquí (ej. Meta Etiquetas, etc.), el cual se adjuntará a la sección <code>&lt;head&gt;</code> del código de su foro.",
+	"custom-header.description": "Enter custom HTML here (ex. Meta Tags, etc.), which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup. Script tags are allowed, but are discouraged, as the <a href=\"#custom-js\" data-toggle=\"tab\">Custom Javascript</a> tab is available.",
 	"custom-header.enable": "Activar cabecera personalizada",
 
 	"custom-css.livereload": "Activar Recargar en Vivo",

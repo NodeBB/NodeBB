@@ -11,6 +11,7 @@
 							<li><a href="#" class="validate-email"><i class="fa fa-fw fa-check"></i> [[admin/manage/users:validate-email]]</a></li>
 							<li><a href="#" class="send-validation-email"><i class="fa fa-fw fa-mail-forward"></i> [[admin/manage/users:send-validation-email]]</a></li>
 							<li><a href="#" class="password-reset-email"><i class="fa fa-fw fa-key"></i> [[admin/manage/users:password-reset-email]]</a></li>
+							<li><a href="#" class="force-password-reset"><i class="fa fa-fw fa-unlock-alt"></i> [[admin/manage/users:force-password-reset]]</a></li>
 							<li class="divider"></li>
 							<li><a href="#" class="ban-user"><i class="fa fa-fw fa-gavel"></i> [[admin/manage/users:ban]]</a></li>
 							<li><a href="#" class="ban-user-temporary"><i class="fa fa-fw fa-clock-o"></i>[[admin/manage/users:temp-ban]]</a></li>
@@ -32,16 +33,27 @@
 				</div>
 
 				<ul class="nav nav-pills">
-					<li><a href='{config.relative_path}/admin/manage/users/latest'>[[admin/manage/users:pills.latest]]</a></li>
-					<li><a href='{config.relative_path}/admin/manage/users/not-validated'>[[admin/manage/users:pills.unvalidated]]</a></li>
-					<li><a href='{config.relative_path}/admin/manage/users/no-posts'>[[admin/manage/users:pills.no-posts]]</a></li>
-					<li><a href='{config.relative_path}/admin/manage/users/top-posters'>[[admin/manage/users:pills.top-posters]]</a></li>
-					<li><a href='{config.relative_path}/admin/manage/users/most-reputation'>[[admin/manage/users:pills.top-rep]]</a></li>
-					<li><a href='{config.relative_path}/admin/manage/users/inactive'>[[admin/manage/users:pills.inactive]]</a></li>
-					<li><a href='{config.relative_path}/admin/manage/users/flagged'>[[admin/manage/users:pills.flagged]]</a></li>
-					<li><a href='{config.relative_path}/admin/manage/users/banned'>[[admin/manage/users:pills.banned]]</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/latest?resultsPerPage={resultsPerPage}'>[[admin/manage/users:pills.latest]]</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/not-validated?resultsPerPage={resultsPerPage}'>[[admin/manage/users:pills.unvalidated]]</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/no-posts?resultsPerPage={resultsPerPage}'>[[admin/manage/users:pills.no-posts]]</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/top-posters?resultsPerPage={resultsPerPage}'>[[admin/manage/users:pills.top-posters]]</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/most-reputation?resultsPerPage={resultsPerPage}'>[[admin/manage/users:pills.top-rep]]</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/inactive?resultsPerPage={resultsPerPage}'>[[admin/manage/users:pills.inactive]]</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/flagged?resultsPerPage={resultsPerPage}'>[[admin/manage/users:pills.flagged]]</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/banned?resultsPerPage={resultsPerPage}'>[[admin/manage/users:pills.banned]]</a></li>
 					<li><a href='{config.relative_path}/admin/manage/users/search'>[[admin/manage/users:pills.search]]</a></li>
+					<li class="pull-right">
+						<form class="form-inline">
+							<select id="results-per-page" class="form-control">
+								<option value="50">[[admin/manage/users:50-per-page]]</option>
+								<option value="100">[[admin/manage/users:100-per-page]]</option>
+								<option value="250">[[admin/manage/users:250-per-page]]</option>
+								<option value="500">[[admin/manage/users:500-per-page]]</option>
+							</select>
+						</form>
+					</li>
 				</ul>
+
 
 				<br />
 
@@ -63,9 +75,9 @@
 				</div>
 
 				<!-- IF inactive -->
-				<a href="{config.relative_path}/admin/manage/users/inactive?months=3" class="btn btn-default">[[admin/manage/users:inactive.3-months]]</a>
-				<a href="{config.relative_path}/admin/manage/users/inactive?months=6" class="btn btn-default">[[admin/manage/users:inactive.6-months]]</a>
-				<a href="{config.relative_path}/admin/manage/users/inactive?months=12" class="btn btn-default">[[admin/manage/users:inactive.12-months]]</a>
+				<a href="{config.relative_path}/admin/manage/users/inactive?months=3&resultsPerPage={resultsPerPage}" class="btn btn-default">[[admin/manage/users:inactive.3-months]]</a>
+				<a href="{config.relative_path}/admin/manage/users/inactive?months=6&resultsPerPage={resultsPerPage}" class="btn btn-default">[[admin/manage/users:inactive.6-months]]</a>
+				<a href="{config.relative_path}/admin/manage/users/inactive?months=12&resultsPerPage={resultsPerPage}" class="btn btn-default">[[admin/manage/users:inactive.12-months]]</a>
 				<!-- ENDIF inactive -->
 
 				<div class="table-responsive">

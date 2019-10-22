@@ -1,80 +1,59 @@
 'use strict';
 
-var async = require('async');
+const util = require('util');
 
-var db = require('../../database');
-var user = require('../../user');
-var helpers = require('../helpers');
-var accountHelpers = require('./helpers');
+const db = require('../../database');
+const user = require('../../user');
+const helpers = require('../helpers');
+const accountHelpers = require('./helpers');
 
-var sessionController = module.exports;
+const sessionController = module.exports;
 
-sessionController.get = function (req, res, callback) {
-	var userData;
-
-	async.waterfall([
-		function (next) {
-			accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, next);
-		},
-		function (_userData, next) {
-			userData = _userData;
-			if (!userData) {
-				return callback();
-			}
-
-			user.auth.getSessions(userData.uid, req.sessionID, next);
-		},
-		function (sessions) {
-			userData.sessions = sessions;
-
-			userData.title = '[[pages:account/sessions]]';
-			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[pages:account/sessions]]' }]);
-
-			res.render('account/sessions', userData);
-		},
-	], callback);
-};
-
-sessionController.revoke = function (req, res, next) {
-	if (!req.params.hasOwnProperty('uuid')) {
+sessionController.get = async function (req, res, next) {
+	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid);
+	if (!userData) {
 		return next();
 	}
 
-	var _id;
-	var uid = res.locals.uid;
-	async.waterfall([
-		function (next) {
-			if (!uid) {
-				return next(new Error('[[error:no-session-found]]'));
-			}
-			db.getSortedSetRange('uid:' + uid + ':sessions', 0, -1, next);
-		},
-		function (sids, done) {
-			async.eachSeries(sids, function (sid, next) {
-				db.sessionStore.get(sid, function (err, sessionObj) {
-					if (err) {
-						return next(err);
-					}
-					if (sessionObj && sessionObj.meta && sessionObj.meta.uuid === req.params.uuid) {
-						_id = sid;
-						done();
-					} else {
-						next();
-					}
-				});
-			}, next);
-		},
-		function (next) {
-			if (!_id) {
-				return next(new Error('[[error:no-session-found]]'));
-			}
+	userData.sessions = await user.auth.getSessions(userData.uid, req.sessionID);
+	userData.title = '[[pages:account/sessions]]';
+	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[pages:account/sessions]]' }]);
 
-			user.auth.revokeSession(_id, uid, next);
-		},
-	], function (err) {
-		if (err) {
-			return res.status(500).send(err.message);
+	res.render('account/sessions', userData);
+};
+
+const getSessionAsync = util.promisify(function (sid, callback) {
+	db.sessionStore.get(sid, (err, sessionObj) => callback(err, sessionObj || null));
+});
+
+sessionController.revoke = async function (req, res, next) {
+	if (!req.params.hasOwnProperty('uuid')) {
+		return next();
+	}
+	try {
+		const uid = await user.getUidByUserslug(req.params.userslug);
+		if (!uid) {
+			throw new Error('[[error:no-session-found]]');
 		}
-		return res.sendStatus(200);
-	});
+		const sids = await db.getSortedSetRange('uid:' + uid + ':sessions', 0, -1);
+		let _id;
+		for (const sid of sids) {
+			/* eslint-disable no-await-in-loop */
+			const sessionObj = await getSessionAsync(sid);
+			if (sessionObj && sessionObj.meta && sessionObj.meta.uuid === req.params.uuid) {
+				_id = sid;
+				break;
+			}
+		}
+
+		if (!_id) {
+			throw new Error('[[error:no-session-found]]');
+		}
+
+		await user.auth.revokeSession(_id, uid);
+	} catch (err) {
+		return res.status(500).send(err.message);
+	}
+
+	res.sendStatus(200);
 };

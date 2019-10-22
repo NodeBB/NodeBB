@@ -9,6 +9,7 @@
 
 	"plugin-search": "Hledat rozšíření",
 	"plugin-search-placeholder": "Hledat rozšíření…",
+	"submit-anonymous-usage": "Odeslat anonymní data o využití zásuvného modulu.",
 	"reorder-plugins": "Roztřídit rozšíření",
 	"order-active": "Pořadí aktivních rozšíření",
 	"dev-interested": "Zajímá vás psaní rozšíření pro NodeBB?",
@@ -29,6 +30,8 @@
 	"plugin-item.more-info": "Pro více informací:",
 	"plugin-item.unknown": "Neznámí",
 	"plugin-item.unknown-explanation": "Stav tohoto rozšíření nemohl být zjištěn, možná díky chybě v konfiguraci.",
+	"plugin-item.compatible": "Tento zásuvný modul funguje v NodeBB %1",
+	"plugin-item.not-compatible": "Tento zásuvný modul neobsahuje kompatibilní data. Předtím, než ho nainstalujete do vašeho prostředí, ujistěte se, že funguje správně.",
 
 	"alert.enabled": "Rozšíření povoleno",
 	"alert.disabled": "Rozšíření zakázáno",

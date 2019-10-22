@@ -1,6 +1,6 @@
 {
-	"language-settings": "Language Settings",
-	"description": "The default language determines the language settings for all users who are visiting your forum. <br />Individual users can override the default language on their account settings page.",
+	"language-settings": "Cài đặt ngôn ngữ",
+	"description": "Ngôn ngữ mặc định xác định cài đặt ngôn ngữ cho tất cả người dùng đang truy cập diễn đàn của bạn. <br />Người dùng cá nhân có thể ghi đè ngôn ngữ mặc định trên trang cài đặt tài khoản của họ",
 	"default-language": "Ngôn ngữ mặc định",
-	"auto-detect": "Auto Detect Language Setting for Guests"
+	"auto-detect": "Tự động phát hiện cài đặt ngôn ngữ cho khách"
 }

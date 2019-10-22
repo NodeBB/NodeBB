@@ -18,11 +18,13 @@
     "last_reply_time": "Paskutinis atsakymas",
     "reply-as-topic": "Reply as topic",
     "guest-login-reply": "Norėdami atsakyti, prisijunkite",
+    "login-to-view": "🔒 Log in to view",
     "edit": "Redaguoti",
     "delete": "Ištrinti",
     "purge": "Išvalyti",
     "restore": "Atkurti",
     "move": "Perkelti",
+    "change-owner": "Change Owner",
     "fork": "Išskaidyti",
     "link": "Nuoroda",
     "share": "Dalintis",
@@ -64,6 +66,7 @@
     "thread_tools.move": "Perkelti temą",
     "thread_tools.move-posts": "Move Posts",
     "thread_tools.move_all": "Perkelti visus",
+    "thread_tools.change_owner": "Change Owner",
     "thread_tools.select_category": "Select Category",
     "thread_tools.fork": "Išskaidyti temą",
     "thread_tools.delete": "Ištrinti temą",
@@ -98,6 +101,7 @@
     "delete_posts_instruction": "Click the posts you want to delete/purge",
     "merge_topics_instruction": "Click the topics you want to merge",
     "move_posts_instruction": "Click the posts you want to move",
+    "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "Įrašykite temos pavadinimą...",
     "composer.handle_placeholder": "Vardas ir pavardė",
     "composer.discard": "Atšaukti",
@@ -129,5 +133,7 @@
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
     "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
     "diffs.current-revision": "current revision",
-    "diffs.original-revision": "original revision"
+    "diffs.original-revision": "original revision",
+    "timeago_later": "%1 later",
+    "timeago_earlier": "%1 earlier"
 }

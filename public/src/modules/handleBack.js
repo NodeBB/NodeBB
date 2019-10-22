@@ -18,10 +18,12 @@ define('handleBack', [
 	function saveClickedIndex() {
 		$('[component="category"]').on('click', '[component="topic/header"]', function () {
 			var clickedIndex = $(this).parents('[data-index]').attr('data-index');
+			var windowScrollTop = $(window).scrollTop();
 			$('[component="category/topic"]').each(function (index, el) {
-				if ($(el).offset().top - $(window).scrollTop() > 0) {
+				if ($(el).offset().top - windowScrollTop > 0) {
 					storage.setItem('category:bookmark', $(el).attr('data-index'));
 					storage.setItem('category:bookmark:clicked', clickedIndex);
+					storage.setItem('category:bookmark:offset', $(el).offset().top - windowScrollTop);
 					return false;
 				}
 			});
@@ -42,10 +44,6 @@ define('handleBack', [
 			bookmarkIndex = Math.max(0, parseInt(bookmarkIndex, 10) || 0);
 			clickedIndex = Math.max(0, parseInt(clickedIndex, 10) || 0);
 
-			if (!bookmarkIndex && !clickedIndex) {
-				return;
-			}
-
 			if (config.usePagination) {
 				var page = Math.ceil((parseInt(bookmarkIndex, 10) + 1) / config.topicsPerPage);
 				if (parseInt(page, 10) !== ajaxify.data.pagination.currentPage) {
@@ -57,7 +55,7 @@ define('handleBack', [
 				}
 			} else {
 				if (bookmarkIndex === 0) {
-					handleBack.highlightTopic(clickedIndex);
+					handleBack.scrollToTopic(bookmarkIndex, clickedIndex);
 					return;
 				}
 
@@ -88,7 +86,9 @@ define('handleBack', [
 		var scrollTo = components.get('category/topic', 'index', bookmarkIndex);
 
 		if (scrollTo.length) {
-			$(window).scrollTop(scrollTo.offset().top);
+			var offset = storage.getItem('category:bookmark:offset');
+			storage.removeItem('category:bookmark:offset');
+			$(window).scrollTop(scrollTo.offset().top - offset);
 			handleBack.highlightTopic(clickedIndex);
 			navigator.update();
 		}

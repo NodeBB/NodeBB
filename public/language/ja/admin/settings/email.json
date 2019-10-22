@@ -4,6 +4,9 @@
 	"address-help": "次の電子メールアドレスは「送信者」と「返信先」の欄に受信者が表示する電子メールを指します。",
 	"from": "名前から",
 	"from-help": "メールからの名前が表示されます。",
+	"sendmail-rate-limit": "Send <em>X</em> emails...",
+	"sendmail-rate-delta": "... every <em>X</em> milliseconds",
+	"sendmail-rate-help": "Instructs the NodeBB mailer to limit the number of messages sent at once in order to not overwhelm email receiving services. These options do not apply if SMTP Transport is enabled (below).",
 
 	"smtp-transport": "SMTP Transport",
 	"smtp-transport.enabled": "Use an external email server to send emails",
@@ -30,8 +33,8 @@
 	"testing.select": "電子メールテンプレートを選択",
 	"testing.send": "テスト電子メールを送信する",
 	"testing.send-help": "テスト電子メールは、現在ログインしているユーザーの電子メールアドレスに送信されます。",
-	"subscriptions": "メール購読",
-	"subscriptions.disable": "購読者の通知メールを無効にする",
+	"subscriptions": "Email Digests",
+	"subscriptions.disable": "Disable email digests",
 	"subscriptions.hour": "ダイジェストアワー",
 	"subscriptions.hour-help": "スケジュールされたメールのダイジェストを送信する時間を表す数字を入力してください(深夜は<code>0</ code>、午後5:00は<code>17</code>)これはサーバー自体に基づく時間であり、システムの時計と正確に一致しない場合があります。<span id=\"serverTime\"></ span> <br />次の日のダイジェストは<span id=\"nextDigestTime\"></span>"
 }

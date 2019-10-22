@@ -1,197 +1,118 @@
 
 'use strict';
 
-var async = require('async');
-var _ = require('lodash');
+const _ = require('lodash');
 
-var groups = require('../groups');
-var plugins = require('../plugins');
-var helpers = require('./helpers');
+const groups = require('../groups');
+const plugins = require('../plugins');
+const helpers = require('./helpers');
 
 module.exports = function (privileges) {
 	privileges.users = {};
 
-	privileges.users.isAdministrator = function (uid, callback) {
-		if (Array.isArray(uid)) {
-			groups.isMembers(uid, 'administrators', callback);
-		} else {
-			groups.isMember(uid, 'administrators', callback);
-		}
+	privileges.users.isAdministrator = async function (uid) {
+		return await isGroupMember(uid, 'administrators');
 	};
 
-	privileges.users.isGlobalModerator = function (uid, callback) {
-		if (Array.isArray(uid)) {
-			groups.isMembers(uid, 'Global Moderators', callback);
-		} else {
-			groups.isMember(uid, 'Global Moderators', callback);
-		}
+	privileges.users.isGlobalModerator = async function (uid) {
+		return await isGroupMember(uid, 'Global Moderators');
 	};
 
-	privileges.users.isModerator = function (uid, cid, callback) {
+	async function isGroupMember(uid, groupName) {
+		return await groups[Array.isArray(uid) ? 'isMembers' : 'isMember'](uid, groupName);
+	}
+
+	privileges.users.isModerator = async function (uid, cid) {
 		if (Array.isArray(cid)) {
-			isModeratorOfCategories(cid, uid, callback);
+			return await isModeratorOfCategories(cid, uid);
 		} else if (Array.isArray(uid)) {
-			isModeratorsOfCategory(cid, uid, callback);
-		} else {
-			isModeratorOfCategory(cid, uid, callback);
+			return await isModeratorsOfCategory(cid, uid);
 		}
+		return await isModeratorOfCategory(cid, uid);
 	};
 
-	function isModeratorOfCategories(cids, uid, callback) {
+	async function isModeratorOfCategories(cids, uid) {
 		if (parseInt(uid, 10) <= 0) {
-			return filterIsModerator(cids, uid, cids.map(() => false), callback);
+			return await filterIsModerator(cids, uid, cids.map(() => false));
 		}
-		var uniqueCids;
-		async.waterfall([
-			function (next) {
-				privileges.users.isGlobalModerator(uid, next);
-			},
-			function (isGlobalModerator, next) {
-				if (isGlobalModerator) {
-					return filterIsModerator(cids, uid, cids.map(function () { return true; }), callback);
-				}
 
-				uniqueCids = _.uniq(cids);
-
-				helpers.isUserAllowedTo('moderate', uid, uniqueCids, next);
-			},
-			function (isAllowed, next) {
-				var map = {};
-
-				uniqueCids.forEach(function (cid, index) {
-					map[cid] = isAllowed[index];
-				});
-
-				var isModerator = cids.map(function (cid) {
-					return map[cid];
-				});
-
-				filterIsModerator(cids, uid, isModerator, next);
-			},
-		], callback);
-	}
-
-	function isModeratorsOfCategory(cid, uids, callback) {
-		async.waterfall([
-			function (next) {
-				async.parallel([
-					async.apply(privileges.users.isGlobalModerator, uids),
-					async.apply(groups.isMembers, uids, 'cid:' + cid + ':privileges:moderate'),
-					async.apply(groups.isMembersOfGroupList, uids, 'cid:' + cid + ':privileges:groups:moderate'),
-				], next);
-			},
-			function (checks, next) {
-				var isModerator = checks[0].map(function (isMember, idx) {
-					return isMember || checks[1][idx] || checks[2][idx];
-				});
-
-				filterIsModerator(cid, uids, isModerator, next);
-			},
-		], callback);
-	}
-
-	function isModeratorOfCategory(cid, uid, callback) {
-		if (parseInt(uid, 10) <= 0) {
-			return filterIsModerator(cid, uid, false, callback);
+		const isGlobalModerator = await privileges.users.isGlobalModerator(uid);
+		if (isGlobalModerator) {
+			return await filterIsModerator(cids, uid, cids.map(() => true));
 		}
-		async.waterfall([
-			function (next) {
-				async.parallel([
-					async.apply(privileges.users.isGlobalModerator, uid),
-					async.apply(groups.isMember, uid, 'cid:' + cid + ':privileges:moderate'),
-					async.apply(groups.isMemberOfGroupList, uid, 'cid:' + cid + ':privileges:groups:moderate'),
-				], next);
-			},
-			function (checks, next) {
-				var isModerator = checks[0] || checks[1] || checks[2];
-				filterIsModerator(cid, uid, isModerator, next);
-			},
-		], callback);
+		const uniqueCids = _.uniq(cids);
+		const isAllowed = await helpers.isUserAllowedTo('moderate', uid, uniqueCids);
+
+		const cidToIsAllowed = _.zipObject(uniqueCids, isAllowed);
+		const isModerator = cids.map(cid => cidToIsAllowed[cid]);
+		return await filterIsModerator(cids, uid, isModerator);
 	}
 
-	function filterIsModerator(cid, uid, isModerator, callback) {
-		async.waterfall([
-			function (next) {
-				plugins.fireHook('filter:user.isModerator', { uid: uid, cid: cid, isModerator: isModerator }, next);
-			},
-			function (data, next) {
-				if ((Array.isArray(uid) || Array.isArray(cid)) && !Array.isArray(data.isModerator)) {
-					return callback(new Error('filter:user.isModerator - i/o mismatch'));
-				}
-
-				next(null, data.isModerator);
-			},
-		], callback);
+	async function isModeratorsOfCategory(cid, uids) {
+		const [check1, check2, check3] = await Promise.all([
+			privileges.users.isGlobalModerator(uids),
+			groups.isMembers(uids, 'cid:' + cid + ':privileges:moderate'),
+			groups.isMembersOfGroupList(uids, 'cid:' + cid + ':privileges:groups:moderate'),
+		]);
+		const isModerator = uids.map((uid, idx) => check1[idx] || check2[idx] || check3[idx]);
+		return await filterIsModerator(cid, uids, isModerator);
 	}
 
-	privileges.users.canEdit = function (callerUid, uid, callback) {
+	async function isModeratorOfCategory(cid, uid) {
+		const result = await isModeratorOfCategories([cid], uid);
+		return result ? result[0] : false;
+	}
+
+	async function filterIsModerator(cid, uid, isModerator) {
+		const data = await plugins.fireHook('filter:user.isModerator', { uid: uid, cid: cid, isModerator: isModerator });
+		if ((Array.isArray(uid) || Array.isArray(cid)) && !Array.isArray(data.isModerator)) {
+			throw new Error('filter:user.isModerator - i/o mismatch');
+		}
+
+		return data.isModerator;
+	}
+
+	privileges.users.canEdit = async function (callerUid, uid) {
 		if (parseInt(callerUid, 10) === parseInt(uid, 10)) {
-			return process.nextTick(callback, null, true);
+			return true;
 		}
-		async.waterfall([
-			function (next) {
-				async.parallel({
-					isAdmin: function (next) {
-						privileges.users.isAdministrator(callerUid, next);
-					},
-					isGlobalMod: function (next) {
-						privileges.users.isGlobalModerator(callerUid, next);
-					},
-					isTargetAdmin: function (next) {
-						privileges.users.isAdministrator(uid, next);
-					},
-				}, next);
-			},
-			function (results, next) {
-				results.canEdit = results.isAdmin || (results.isGlobalMod && !results.isTargetAdmin);
-				results.callerUid = callerUid;
-				results.uid = uid;
-				plugins.fireHook('filter:user.canEdit', results, next);
-			},
-			function (data, next) {
-				next(null, data.canEdit);
-			},
-		], callback);
+		const [isAdmin, isGlobalMod, isTargetAdmin] = await Promise.all([
+			privileges.users.isAdministrator(callerUid),
+			privileges.users.isGlobalModerator(callerUid),
+			privileges.users.isAdministrator(uid),
+		]);
+
+		const data = await plugins.fireHook('filter:user.canEdit', {
+			isAdmin: isAdmin,
+			isGlobalMod: isGlobalMod,
+			isTargetAdmin: isTargetAdmin,
+			canEdit: isAdmin || (isGlobalMod && !isTargetAdmin),
+			callerUid: callerUid,
+			uid: uid,
+		});
+		return data.canEdit;
 	};
 
-	privileges.users.canBanUser = function (callerUid, uid, callback) {
-		async.waterfall([
-			function (next) {
-				async.parallel({
-					canBan: function (next) {
-						privileges.global.can('ban', callerUid, next);
-					},
-					isTargetAdmin: function (next) {
-						privileges.users.isAdministrator(uid, next);
-					},
-				}, next);
-			},
-			function (results, next) {
-				results.canBan = !results.isTargetAdmin && results.canBan;
-				results.callerUid = callerUid;
-				results.uid = uid;
-				plugins.fireHook('filter:user.canBanUser', results, next);
-			},
-			function (data, next) {
-				next(null, data.canBan);
-			},
-		], callback);
+	privileges.users.canBanUser = async function (callerUid, uid) {
+		const [canBan, isTargetAdmin] = await Promise.all([
+			privileges.global.can('ban', callerUid),
+			privileges.users.isAdministrator(uid),
+		]);
+
+		const data = await plugins.fireHook('filter:user.canBanUser', {
+			canBan: canBan && !isTargetAdmin,
+			callerUid: callerUid,
+			uid: uid,
+		});
+		return data.canBan;
 	};
 
-	privileges.users.hasBanPrivilege = function (uid, callback) {
-		async.waterfall([
-			function (next) {
-				privileges.global.can('ban', uid, next);
-			},
-			function (canBan, next) {
-				plugins.fireHook('filter:user.hasBanPrivilege', {
-					uid: uid,
-					canBan: canBan,
-				}, next);
-			},
-			function (data, next) {
-				next(null, data.canBan);
-			},
-		], callback);
+	privileges.users.hasBanPrivilege = async function (uid) {
+		const canBan = await privileges.global.can('ban', uid);
+		const data = await plugins.fireHook('filter:user.hasBanPrivilege', {
+			uid: uid,
+			canBan: canBan,
+		});
+		return data.canBan;
 	};
 };

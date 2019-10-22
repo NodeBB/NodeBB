@@ -236,6 +236,17 @@ describe('Key methods', function () {
 				});
 			});
 		});
+
+		it('should not error if old key does not exist', function (done) {
+			db.rename('doesnotexist', 'anotherdoesnotexist', function (err) {
+				assert.ifError(err);
+				db.exists('anotherdoesnotexist', function (err, exists) {
+					assert.ifError(err);
+					assert(!exists);
+					done();
+				});
+			});
+		});
 	});
 
 	describe('type', function () {

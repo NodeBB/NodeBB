@@ -160,3 +160,5 @@ helpers.copyFile = function (source, target, callback) {
 		}
 	}
 };
+
+require('../../src/promisify')(helpers);

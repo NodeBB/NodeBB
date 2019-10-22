@@ -1,10 +1,15 @@
 <div class="row dashboard">
 	<div class="col-lg-9">
-		<div class="panel panel-default">
-			<div class="panel-heading">[[admin/general/dashboard:forum-traffic]]</div>
+		<div class="panel panel-default" id="analytics-panel">
+			<div class="panel-heading">
+				[[admin/general/dashboard:forum-traffic]]
+				<div class="pull-right">
+					<a id="view-as-json" href="{config.relative_path}/api/admin/analytics&type=hourly"><i class="fa fa-terminal"></i></a>
+					<i class="fa fa-expand"></i>
+				</div>
+			</div>
 			<div class="panel-body">
 				<div class="graph-container" id="analytics-traffic-container">
-					<i class="fa fa-expand"></i>
 					<canvas id="analytics-traffic" width="100%" height="400"></canvas>
 				</div>
 				<hr/>
@@ -30,36 +35,47 @@
 		</div>
 
 		<div class="row">
-			<!-- BEGIN stats -->
-			<div class="col-lg-6">
-				<div class="panel panel-default stats">
-					<div class="panel-heading">{stats.name}</div>
-					<div class="panel-body">
-						<div id="unique-visitors">
-							<div class="text-center pull-left">
-								<span class="formatted-number">{stats.day}</span>
-								<div class="stat">[[admin/general/dashboard:stats.day]]</div>
-							</div>
-							<div class="text-center pull-left">
-								<span class="formatted-number">{stats.week}</span>
-								<div class="stat">[[admin/general/dashboard:stats.week]]</div>
-							</div>
-							<div class="text-center pull-left">
-								<span class="formatted-number">{stats.month}</span>
-								<div class="stat">[[admin/general/dashboard:stats.month]]</div>
-							</div>
-							<div class="text-center pull-left">
-								<span class="formatted-number">{stats.alltime}</span>
-								<div class="stat">[[admin/general/dashboard:stats.all]]</div>
-							</div>
-						</div>
-					</div>
-				</div>
+			<div class="table-responsive">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th></th>
+							<th class="text-right">[[admin/general/dashboard:stats.yesterday]]</th>
+							<th class="text-right">[[admin/general/dashboard:stats.today]]</th>
+							<th></th>
+							<th class="text-right">[[admin/general/dashboard:stats.last-week]]</th>
+							<th class="text-right">[[admin/general/dashboard:stats.this-week]]</th>
+							<th></th>
+							<th class="text-right">[[admin/general/dashboard:stats.last-month]]</th>
+							<th class="text-right">[[admin/general/dashboard:stats.this-month]]</th>
+							<th></th>
+							<th class="text-right">[[admin/general/dashboard:stats.all]]</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- BEGIN stats -->
+						<tr>
+							<td><strong>{stats.name}</strong></td>
+							<td class="text-right formatted-number">{stats.yesterday}</td>
+							<td class="text-right formatted-number">{stats.today}</td>
+							<td class="{stats.dayTextClass}"><small>{stats.dayIncrease}%</small></td>
+
+							<td class="text-right formatted-number">{stats.lastweek}</td>
+							<td class="text-right formatted-number">{stats.thisweek}</td>
+							<td class="{stats.weekTextClass}"><small>{stats.weekIncrease}%</small></td>
+
+							<td class="text-right formatted-number">{stats.lastmonth}</td>
+							<td class="text-right formatted-number">{stats.thismonth}</td>
+							<td class="{stats.monthTextClass}"><small>{stats.monthIncrease}%</small></td>
+
+							<td class="text-right formatted-number">{stats.alltime}</td>
+						</tr>
+						<!-- END stats -->
+					</tbody>
+				</table>
 			</div>
-			<!-- END stats -->
-
-
 		</div>
+
 		<div class="row">
 			<div class="col-lg-4">
 				<div class="panel panel-default">

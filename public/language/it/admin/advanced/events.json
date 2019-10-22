@@ -1,6 +1,11 @@
 {
 	"events": "Eventi",
-	"no-events": "Non ci sono Eventi",
-	"control-panel": "Pannello di controllo degli Eventi",
-	"delete-events": "Cancella gli Eventi"
+	"no-events": "Non ci sono eventi",
+	"control-panel": "Pannello di controllo eventi",
+	"filters": "Filtri",
+	"filters-apply": "Applica filtri",
+	"filter-type": "Tipo evento",
+	"filter-start": "Data d'inizio",
+	"filter-end": "Data di fine",
+	"filter-perPage": "Per pagina"
 }

@@ -56,6 +56,7 @@
     "notificationType_follow": "Lorsque quelqu'un commence à vous suivre",
     "notificationType_new-chat": "Lorsque vous recevez un message du chat ",
     "notificationType_group-invite": "Lorsque vous recevez une invitation d'un groupe",
+    "notificationType_group-request-membership": "Quand quelqu'un demande à rejoindre un groupe que vous administrez",
     "notificationType_new-register": "Lorsque quelqu'un est ajouté à la file d'attente d'inscription",
     "notificationType_post-queue": "Lorsque un nouveau message est mis en file d'attente",
     "notificationType_new-post-flag": "Lorsque un message est marqué",

@@ -9,6 +9,7 @@
 	"updated": "Nadograđeno",
 	"target-purged": "Sadržaj koji je označen zastavom je odbačen i više nije dostupan.",
 
+	"graph-label": "Daily Flags",
 	"quick-filters": "Brzi filteri",
 	"filter-active": "Postoje jedan ili više filtera aktivnih u popisu zastava",
 	"filter-reset": "Ukloni filtere",

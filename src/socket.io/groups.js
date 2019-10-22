@@ -1,348 +1,367 @@
 'use strict';
 
-var async = require('async');
+const validator = require('validator');
+const groups = require('../groups');
+const meta = require('../meta');
+const user = require('../user');
+const utils = require('../utils');
+const events = require('../events');
+const privileges = require('../privileges');
+const notifications = require('../notifications');
 
-var groups = require('../groups');
-var meta = require('../meta');
-var user = require('../user');
-var utils = require('../utils');
-var groupsController = require('../controllers/groups');
-var events = require('../events');
+const SocketGroups = module.exports;
 
-var SocketGroups = module.exports;
-
-SocketGroups.before = function (socket, method, data, next) {
+SocketGroups.before = async (socket, method, data) => {
 	if (!data) {
-		return next(new Error('[[error:invalid-data]]'));
+		throw new Error('[[error:invalid-data]]');
 	}
-	next();
 };
 
-SocketGroups.join = function (socket, data, callback) {
+SocketGroups.join = async (socket, data) => {
 	if (socket.uid <= 0) {
-		return callback(new Error('[[error:invalid-uid]]'));
+		throw new Error('[[error:invalid-uid]]');
 	}
 
 	if (data.groupName === 'administrators' || groups.isPrivilegeGroup(data.groupName)) {
-		return callback(new Error('[[error:not-allowed]]'));
+		throw new Error('[[error:not-allowed]]');
 	}
 
-	async.waterfall([
-		function (next) {
-			groups.exists(data.groupName, next);
-		},
-		function (exists, next) {
-			if (!exists) {
-				return next(new Error('[[error:no-group]]'));
-			}
-
-			if (!meta.config.allowPrivateGroups) {
-				return groups.join(data.groupName, socket.uid, callback);
-			}
-
-			async.parallel({
-				isAdmin: async.apply(user.isAdministrator, socket.uid),
-				groupData: async.apply(groups.getGroupData, data.groupName),
-			}, next);
-		},
-		function (results, next) {
-			if (results.groupData.private && results.groupData.disableJoinRequests) {
-				return next(new Error('[[error:join-requests-disabled]]'));
-			}
-
-			if (!results.groupData.private || results.isAdmin) {
-				groups.join(data.groupName, socket.uid, next);
-			} else {
-				groups.requestMembership(data.groupName, socket.uid, next);
-			}
-		},
-	], callback);
-};
-
-SocketGroups.leave = function (socket, data, callback) {
-	if (socket.uid <= 0) {
-		return callback(new Error('[[error:invalid-uid]]'));
+	const exists = await groups.exists(data.groupName);
+	if (!exists) {
+		throw new Error('[[error:no-group]]');
 	}
 
-	if (data.groupName === 'administrators') {
-		return callback(new Error('[[error:cant-remove-self-as-admin]]'));
-	}
-
-	groups.leave(data.groupName, socket.uid, callback);
-};
-
-SocketGroups.addMember = isOwner(function (socket, data, callback) {
-	if (data.groupName === 'administrators' || groups.isPrivilegeGroup(data.groupName)) {
-		return callback(new Error('[[error:not-allowed]]'));
-	}
-	groups.join(data.groupName, data.uid, callback);
-});
-
-function isOwner(next) {
-	return function (socket, data, callback) {
-		async.parallel({
-			isAdmin: async.apply(user.isAdministrator, socket.uid),
-			isGlobalModerator: async.apply(user.isGlobalModerator, socket.uid),
-			isOwner: async.apply(groups.ownership.isOwner, socket.uid, data.groupName),
-			group: async.apply(groups.getGroupData, data.groupName),
-		}, function (err, results) {
-			if (err) {
-				return callback(err);
-			}
-			var isOwner = results.isOwner || results.isAdmin || (results.isGlobalModerator && !results.group.system);
-			if (!isOwner) {
-				return callback(new Error('[[error:no-privileges]]'));
-			}
-			next(socket, data, callback);
-		});
-	};
-}
-
-function isInvited(next) {
-	return function (socket, data, callback) {
-		groups.isInvited(socket.uid, data.groupName, function (err, invited) {
-			if (err || !invited) {
-				return callback(err || new Error('[[error:not-invited]]'));
-			}
-			next(socket, data, callback);
-		});
-	};
-}
-
-SocketGroups.grant = isOwner(function (socket, data, callback) {
-	groups.ownership.grant(data.toUid, data.groupName, callback);
-});
-
-SocketGroups.rescind = isOwner(function (socket, data, callback) {
-	groups.ownership.rescind(data.toUid, data.groupName, callback);
-});
-
-SocketGroups.accept = isOwner(function (socket, data, callback) {
-	async.waterfall([
-		function (next) {
-			groups.acceptMembership(data.groupName, data.toUid, next);
-		},
-		function (next) {
-			events.log({
-				type: 'accept-membership',
-				uid: socket.uid,
-				ip: socket.ip,
-				groupName: data.groupName,
-				targetUid: data.toUid,
-			});
-			setImmediate(next);
-		},
-	], callback);
-});
-
-SocketGroups.reject = isOwner(function (socket, data, callback) {
-	async.waterfall([
-		function (next) {
-			groups.rejectMembership(data.groupName, data.toUid, next);
-		},
-		function (next) {
-			events.log({
-				type: 'reject-membership',
-				uid: socket.uid,
-				ip: socket.ip,
-				groupName: data.groupName,
-				targetUid: data.toUid,
-			});
-			setImmediate(next);
-		},
-	], callback);
-});
-
-SocketGroups.acceptAll = isOwner(function (socket, data, callback) {
-	acceptRejectAll(SocketGroups.accept, socket, data, callback);
-});
-
-SocketGroups.rejectAll = isOwner(function (socket, data, callback) {
-	acceptRejectAll(SocketGroups.reject, socket, data, callback);
-});
-
-function acceptRejectAll(method, socket, data, callback) {
-	async.waterfall([
-		function (next) {
-			groups.getPending(data.groupName, next);
-		},
-		function (uids, next) {
-			async.each(uids, function (uid, next) {
-				method(socket, { groupName: data.groupName, toUid: uid }, next);
-			}, next);
-		},
-	], callback);
-}
-
-SocketGroups.issueInvite = isOwner(function (socket, data, callback) {
-	groups.invite(data.groupName, data.toUid, callback);
-});
-
-SocketGroups.issueMassInvite = isOwner(function (socket, data, callback) {
-	if (!data || !data.usernames || !data.groupName) {
-		return callback(new Error('[[error:invalid-data]]'));
-	}
-	var usernames = String(data.usernames).split(',');
-	usernames = usernames.map(function (username) {
-		return username && username.trim();
-	});
-
-	async.waterfall([
-		function (next) {
-			user.getUidsByUsernames(usernames, next);
-		},
-		function (uids, next) {
-			uids = uids.filter(function (uid) {
-				return !!uid && parseInt(uid, 10);
-			});
-
-			async.eachSeries(uids, function (uid, next) {
-				groups.invite(data.groupName, uid, next);
-			}, next);
-		},
-	], callback);
-});
-
-SocketGroups.rescindInvite = isOwner(function (socket, data, callback) {
-	groups.rejectMembership(data.groupName, data.toUid, callback);
-});
-
-SocketGroups.acceptInvite = isInvited(function (socket, data, callback) {
-	groups.acceptMembership(data.groupName, socket.uid, callback);
-});
-
-SocketGroups.rejectInvite = isInvited(function (socket, data, callback) {
-	groups.rejectMembership(data.groupName, socket.uid, callback);
-});
-
-SocketGroups.update = isOwner(function (socket, data, callback) {
-	groups.update(data.groupName, data.values, callback);
-});
-
-
-SocketGroups.kick = isOwner(function (socket, data, callback) {
-	if (socket.uid === parseInt(data.uid, 10)) {
-		return callback(new Error('[[error:cant-kick-self]]'));
-	}
-
-	async.waterfall([
-		function (next) {
-			groups.ownership.isOwner(data.uid, data.groupName, next);
-		},
-		function (isOwner, next) {
-			groups.kick(data.uid, data.groupName, isOwner, next);
-		},
-	], callback);
-});
-
-SocketGroups.create = function (socket, data, callback) {
-	if (!socket.uid) {
-		return callback(new Error('[[error:no-privileges]]'));
-	} else if (!meta.config.allowGroupCreation) {
-		return callback(new Error('[[error:group-creation-disabled]]'));
-	} else if (groups.isPrivilegeGroup(data.name)) {
-		return callback(new Error('[[error:invalid-group-name]]'));
-	}
-
-	data.ownerUid = socket.uid;
-	groups.create(data, callback);
-};
-
-SocketGroups.delete = isOwner(function (socket, data, callback) {
-	if (data.groupName === 'administrators' ||
-		data.groupName === 'registered-users' ||
-		data.groupName === 'guests' ||
-		data.groupName === 'Global Moderators') {
-		return callback(new Error('[[error:not-allowed]]'));
-	}
-
-	groups.destroy(data.groupName, callback);
-});
-
-SocketGroups.search = function (socket, data, callback) {
-	data.options = data.options || {};
-
-	if (!data.query) {
-		var groupsPerPage = 15;
-		groupsController.getGroupsFromSet(socket.uid, data.options.sort, 0, groupsPerPage - 1, function (err, data) {
-			callback(err, !err ? data.groups : null);
+	if (!meta.config.allowPrivateGroups) {
+		await groups.join(data.groupName, socket.uid);
+		logGroupEvent(socket, 'group-join', {
+			groupName: data.groupName,
 		});
 		return;
 	}
 
-	groups.search(data.query, data.options, callback);
-};
+	const results = await utils.promiseParallel({
+		isAdmin: await user.isAdministrator(socket.uid),
+		groupData: await groups.getGroupData(data.groupName),
+	});
 
-SocketGroups.loadMore = function (socket, data, callback) {
-	if (!data.sort || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
-		return callback(new Error('[[error:invalid-data]]'));
+	if (results.groupData.private && results.groupData.disableJoinRequests) {
+		throw new Error('[[error:group-join-disabled]]');
 	}
 
-	var groupsPerPage = 9;
-	var start = parseInt(data.after, 10);
-	var stop = start + groupsPerPage - 1;
-	groupsController.getGroupsFromSet(socket.uid, data.sort, start, stop, callback);
+	if (!results.groupData.private || results.isAdmin) {
+		await groups.join(data.groupName, socket.uid);
+		logGroupEvent(socket, 'group-join', {
+			groupName: data.groupName,
+		});
+	} else {
+		await groups.requestMembership(data.groupName, socket.uid);
+		logGroupEvent(socket, 'group-request-membership', {
+			groupName: data.groupName,
+		});
+	}
 };
 
-SocketGroups.searchMembers = function (socket, data, callback) {
+SocketGroups.leave = async (socket, data) => {
+	if (socket.uid <= 0) {
+		throw new Error('[[error:invalid-uid]]');
+	}
+
+	if (data.groupName === 'administrators') {
+		throw new Error('[[error:cant-remove-self-as-admin]]');
+	}
+
+	const groupData = await groups.getGroupData(data.groupName);
+	if (groupData.disableLeave) {
+		throw new Error('[[error:group-leave-disabled]]');
+	}
+
+	await groups.leave(data.groupName, socket.uid);
+	const username = await user.getUserField(socket.uid, 'username');
+	const notification = await notifications.create({
+		type: 'group-leave',
+		bodyShort: '[[groups:membership.leave.notification_title, ' + username + ', ' + data.groupName + ']]',
+		nid: 'group:' + validator.escape(data.groupName) + ':uid:' + socket.uid + ':group-leave',
+		path: '/groups/' + utils.slugify(data.groupName),
+	});
+	const uids = await groups.getOwners(data.groupName);
+	await notifications.push(notification, uids);
+
+	logGroupEvent(socket, 'group-leave', {
+		groupName: data.groupName,
+	});
+};
+
+SocketGroups.addMember = async (socket, data) => {
+	await isOwner(socket, data);
+	if (data.groupName === 'administrators' || groups.isPrivilegeGroup(data.groupName)) {
+		throw new Error('[[error:not-allowed]]');
+	}
+	await groups.join(data.groupName, data.uid);
+	logGroupEvent(socket, 'group-add-member', {
+		groupName: data.groupName,
+		targetUid: data.uid,
+	});
+};
+
+async function isOwner(socket, data) {
+	const results = await utils.promiseParallel({
+		isAdmin: await user.isAdministrator(socket.uid),
+		isGlobalModerator: await user.isGlobalModerator(socket.uid),
+		isOwner: await groups.ownership.isOwner(socket.uid, data.groupName),
+		group: await groups.getGroupData(data.groupName),
+	});
+
+	var isOwner = results.isOwner || results.isAdmin || (results.isGlobalModerator && !results.group.system);
+	if (!isOwner) {
+		throw new Error('[[error:no-privileges]]');
+	}
+}
+
+async function isInvited(socket, data) {
+	const invited = await groups.isInvited(socket.uid, data.groupName);
+	if (!invited) {
+		throw new Error('[[error:not-invited]]');
+	}
+}
+
+SocketGroups.grant = async (socket, data) => {
+	await isOwner(socket, data);
+	await groups.ownership.grant(data.toUid, data.groupName);
+	logGroupEvent(socket, 'group-owner-grant', {
+		groupName: data.groupName,
+		targetUid: data.toUid,
+	});
+};
+
+SocketGroups.rescind = async (socket, data) => {
+	await isOwner(socket, data);
+	await groups.ownership.rescind(data.toUid, data.groupName);
+	logGroupEvent(socket, 'group-owner-rescind', {
+		groupName: data.groupName,
+		targetUid: data.toUid,
+	});
+};
+
+SocketGroups.accept = async (socket, data) => {
+	await isOwner(socket, data);
+	await groups.acceptMembership(data.groupName, data.toUid);
+	logGroupEvent(socket, 'group-accept-membership', {
+		groupName: data.groupName,
+		targetUid: data.toUid,
+	});
+};
+
+SocketGroups.reject = async (socket, data) => {
+	await isOwner(socket, data);
+	await groups.rejectMembership(data.groupName, data.toUid);
+	logGroupEvent(socket, 'group-reject-membership', {
+		groupName: data.groupName,
+		targetUid: data.toUid,
+	});
+};
+
+SocketGroups.acceptAll = async (socket, data) => {
+	await isOwner(socket, data);
+	await acceptRejectAll(SocketGroups.accept, socket, data);
+};
+
+SocketGroups.rejectAll = async (socket, data) => {
+	await isOwner(socket, data);
+	await acceptRejectAll(SocketGroups.reject, socket, data);
+};
+
+async function acceptRejectAll(method, socket, data) {
+	const uids = await groups.getPending(data.groupName);
+	await Promise.all(uids.map(async (uid) => {
+		await method(socket, { groupName: data.groupName, toUid: uid });
+	}));
+}
+
+SocketGroups.issueInvite = async (socket, data) => {
+	await isOwner(socket, data);
+	await groups.invite(data.groupName, data.toUid);
+	logGroupEvent(socket, 'group-invite', {
+		groupName: data.groupName,
+		targetUid: data.toUid,
+	});
+};
+
+SocketGroups.issueMassInvite = async (socket, data) => {
+	await isOwner(socket, data);
+	if (!data || !data.usernames || !data.groupName) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	let usernames = String(data.usernames).split(',');
+	usernames = usernames.map(username => username && username.trim());
+
+	let uids = await user.getUidsByUsernames(usernames);
+	uids = uids.filter(uid => !!uid && parseInt(uid, 10));
+
+	await groups.invite(data.groupName, uids);
+
+	for (const uid of uids) {
+		logGroupEvent(socket, 'group-invite', {
+			groupName: data.groupName,
+			targetUid: uid,
+		});
+	}
+};
+
+SocketGroups.rescindInvite = async (socket, data) => {
+	await isOwner(socket, data);
+	await groups.rejectMembership(data.groupName, data.toUid);
+};
+
+SocketGroups.acceptInvite = async (socket, data) => {
+	await isInvited(socket, data);
+	await groups.acceptMembership(data.groupName, socket.uid);
+	logGroupEvent(socket, 'group-invite-accept', {
+		groupName: data.groupName,
+	});
+};
+
+SocketGroups.rejectInvite = async (socket, data) => {
+	await isInvited(socket, data);
+	await groups.rejectMembership(data.groupName, socket.uid);
+	logGroupEvent(socket, 'group-invite-reject', {
+		groupName: data.groupName,
+	});
+};
+
+SocketGroups.update = async (socket, data) => {
+	await isOwner(socket, data);
+	await groups.update(data.groupName, data.values);
+};
+
+
+SocketGroups.kick = async (socket, data) => {
+	await isOwner(socket, data);
+	if (socket.uid === parseInt(data.uid, 10)) {
+		throw new Error('[[error:cant-kick-self]]');
+	}
+
+	const isOwnerBit = await groups.ownership.isOwner(data.uid, data.groupName);
+	await groups.kick(data.uid, data.groupName, isOwnerBit);
+	logGroupEvent(socket, 'group-kick', {
+		groupName: data.groupName,
+		targetUid: data.uid,
+	});
+};
+
+SocketGroups.create = async (socket, data) => {
+	if (!socket.uid) {
+		throw new Error('[[error:no-privileges]]');
+	} else if (groups.isPrivilegeGroup(data.name)) {
+		throw new Error('[[error:invalid-group-name]]');
+	}
+
+	const canCreate = await privileges.global.can('group:create', socket.uid);
+	if (!canCreate) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	data.ownerUid = socket.uid;
+	const groupData = await groups.create(data);
+	logGroupEvent(socket, 'group-create', {
+		groupName: data.name,
+	});
+
+	return groupData;
+};
+
+SocketGroups.delete = async (socket, data) => {
+	await isOwner(socket, data);
+	if (
+		data.groupName === 'administrators' || data.groupName === 'registered-users' ||
+		data.groupName === 'guests' || data.groupName === 'Global Moderators'
+	) {
+		throw new Error('[[error:not-allowed]]');
+	}
+
+	await groups.destroy(data.groupName);
+	logGroupEvent(socket, 'group-delete', {
+		groupName: data.groupName,
+	});
+};
+
+SocketGroups.search = async (socket, data) => {
+	data.options = data.options || {};
+
+	if (!data.query) {
+		const groupsPerPage = 15;
+		const groupData = await groups.getGroupsBySort(data.options.sort, 0, groupsPerPage - 1);
+		return groupData;
+	}
+
+	return await groups.search(data.query, data.options);
+};
+
+SocketGroups.loadMore = async (socket, data) => {
+	if (!data.sort || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	const groupsPerPage = 10;
+	const start = parseInt(data.after, 10);
+	const stop = start + groupsPerPage - 1;
+	const groupData = await groups.getGroupsBySort(data.sort, start, stop);
+	return { groups: groupData, nextStart: stop + 1 };
+};
+
+SocketGroups.searchMembers = async (socket, data) => {
 	data.uid = socket.uid;
-	groups.searchMembers(data, callback);
+	return await groups.searchMembers(data);
 };
 
-SocketGroups.loadMoreMembers = function (socket, data, callback) {
+SocketGroups.loadMoreMembers = async (socket, data) => {
 	if (!data.groupName || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
-		return callback(new Error('[[error:invalid-data]]'));
+		throw new Error('[[error:invalid-data]]');
 	}
 	data.after = parseInt(data.after, 10);
-	async.waterfall([
-		function (next) {
-			user.getUsersFromSet('group:' + data.groupName + ':members', socket.uid, data.after, data.after + 9, next);
-		},
-		function (users, next) {
-			next(null, {
-				users: users,
-				nextStart: data.after + 10,
-			});
-		},
-	], callback);
+	const users = await user.getUsersFromSet('group:' + data.groupName + ':members', socket.uid, data.after, data.after + 9);
+	return {
+		users: users,
+		nextStart: data.after + 10,
+	};
 };
 
 SocketGroups.cover = {};
 
-SocketGroups.cover.update = function (socket, data, callback) {
+SocketGroups.cover.update = async (socket, data) => {
 	if (!socket.uid) {
-		return callback(new Error('[[error:no-privileges]]'));
+		throw new Error('[[error:no-privileges]]');
 	}
 
-	async.waterfall([
-		function (next) {
-			groups.ownership.isOwner(socket.uid, data.groupName, next);
-		},
-		function (isOwner, next) {
-			if (!isOwner) {
-				return next(new Error('[[error:no-privileges]]'));
-			}
-
-			groups.updateCover(socket.uid, data, next);
-		},
-	], callback);
+	await canModifyGroup(socket.uid, data.groupName);
+	return await groups.updateCover(socket.uid, data);
 };
 
-SocketGroups.cover.remove = function (socket, data, callback) {
+SocketGroups.cover.remove = async (socket, data) => {
 	if (!socket.uid) {
-		return callback(new Error('[[error:no-privileges]]'));
+		throw new Error('[[error:no-privileges]]');
 	}
 
-	async.waterfall([
-		function (next) {
-			groups.ownership.isOwner(socket.uid, data.groupName, next);
-		},
-		function (isOwner, next) {
-			if (!isOwner) {
-				return next(new Error('[[error:no-privileges]]'));
-			}
-
-			groups.removeCover(data, next);
-		},
-	], callback);
+	await canModifyGroup(socket.uid, data.groupName);
+	await groups.removeCover(data);
 };
+
+async function canModifyGroup(uid, groupName) {
+	const results = await utils.promiseParallel({
+		isOwner: groups.ownership.isOwner(uid, groupName),
+		isAdminOrGlobalMod: user.isAdminOrGlobalMod(uid),
+	});
+
+	if (!results.isOwner && !results.isAdminOrGlobalMod) {
+		throw new Error('[[error:no-privileges]]');
+	}
+}
+
+function logGroupEvent(socket, event, additional) {
+	events.log({
+		type: event,
+		uid: socket.uid,
+		ip: socket.ip,
+		...additional,
+	});
+}
+
+require('../promisify')(SocketGroups);

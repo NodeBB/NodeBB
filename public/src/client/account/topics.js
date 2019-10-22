@@ -3,15 +3,19 @@
 
 define('forum/account/topics', ['forum/account/header', 'forum/infinitescroll'], function (header, infinitescroll) {
 	var AccountTopics = {};
+	var method;
+	var template;
 	var set;
 
 	AccountTopics.init = function () {
 		header.init();
 
-		AccountTopics.handleInfiniteScroll('account/topics', 'uid:' + ajaxify.data.theirid + ':topics');
+		AccountTopics.handleInfiniteScroll('topics.loadMoreUserTopics', 'account/topics');
 	};
 
-	AccountTopics.handleInfiniteScroll = function (_template, _set) {
+	AccountTopics.handleInfiniteScroll = function (_method, _template, _set) {
+		method = _method;
+		template = _template;
 		set = _set;
 
 		if (!config.usePagination) {
@@ -24,8 +28,9 @@ define('forum/account/topics', ['forum/account/header', 'forum/infinitescroll'],
 			return;
 		}
 
-		infinitescroll.loadMore('topics.loadMoreFromSet', {
+		infinitescroll.loadMore(method, {
 			set: set,
+			uid: ajaxify.data.theirid,
 			after: $('[component="category"]').attr('data-nextstart'),
 			count: config.topicsPerPage,
 		}, function (data, done) {
@@ -40,7 +45,7 @@ define('forum/account/topics', ['forum/account/header', 'forum/infinitescroll'],
 	}
 
 	function onTopicsLoaded(topics, callback) {
-		app.parseAndTranslate('account/topics', 'topics', { topics: topics }, function (html) {
+		app.parseAndTranslate(template, 'topics', { topics: topics }, function (html) {
 			$('[component="category"]').append(html);
 			html.find('.timeago').timeago();
 			app.createUserTooltips();
