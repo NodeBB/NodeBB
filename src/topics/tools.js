@@ -27,9 +27,8 @@ module.exports = function (Topics) {
 			throw new Error('[[error:no-topic]]');
 		}
 		const canDelete = await privileges.topics.canDelete(tid, uid);
-		const topicData = await Topics.getTopicFields(tid, ['tid', 'cid', 'uid', 'deleted', 'title', 'mainPid']);
-		const data = await plugins.fireHook('filter:topic.' + !!isDelete ? 'delete' : 'restore', {topicData: topicData, uid:uid, isDelete:isDelete, canDelete:canDelete, canRestore:canDelete});
-		if ( (!data.canDelete && data.isDelete) || (!data.canRestore && !data.isDelete)) {
+		const data = await plugins.fireHook('filter:topic.' + (!!isDelete ? 'delete' : 'restore'), {topicData: topicData, uid:uid, isDelete:isDelete, canDelete:canDelete, canRestore:canDelete});
+		if ( (!data.canDelete && data.isDelete) || (!data.canRestore && !data.isDelete) ) {
 			throw new Error('[[error:no-privileges]]');
 		}
 		if (data.topicData.deleted && data.isDelete) {
