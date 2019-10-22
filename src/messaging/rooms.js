@@ -224,7 +224,7 @@ module.exports = function (Messaging) {
 		room.messages = messages;
 		room.isOwner = parseInt(room.owner, 10) === parseInt(uid, 10);
 		room.users = users.filter(function (user) {
-			return user && parseInt(user.uid, 10) && parseInt(user.uid, 10) !== uid;
+			return user && parseInt(user.uid, 10) && parseInt(user.uid, 10) !== parseInt(uid, 10);
 		});
 		room.canReply = canReply;
 		room.groupChat = room.hasOwnProperty('groupChat') ? room.groupChat : users.length > 2;
