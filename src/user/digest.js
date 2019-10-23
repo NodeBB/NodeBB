@@ -4,6 +4,7 @@ const async = require('async');
 const winston = require('winston');
 const nconf = require('nconf');
 
+const db = require('../database');
 const batch = require('../batch');
 const meta = require('../meta');
 const user = require('../user');
@@ -96,19 +97,23 @@ Digest.send = async function (data) {
 			return topicObj;
 		});
 		emailsSent += 1;
-		emailer.send('digest', userObj.uid, {
-			subject: '[[email:digest.subject, ' + (now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate()) + ']]',
-			username: userObj.username,
-			userslug: userObj.userslug,
-			notifications: notifications,
-			recent: topicsData,
-			interval: data.interval,
-			showUnsubscribe: true,
-		}, function (err) {
-			if (err) {
-				winston.error('[user/jobs] Could not send digest email', err);
-			}
-		});
+		try {
+			await emailer.send('digest', userObj.uid, {
+				subject: '[[email:digest.subject, ' + (now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate()) + ']]',
+				username: userObj.username,
+				userslug: userObj.userslug,
+				notifications: notifications,
+				recent: topicsData,
+				interval: data.interval,
+				showUnsubscribe: true,
+			});
+		} catch (err) {
+			winston.error('[user/jobs] Could not send digest email', err);
+		}
+
+		if (data.interval !== 'alltime') {
+			await db.sortedSetAdd('digest:' + data.interval + ':byUid', now.getTime(), userObj.uid);
+		}
 	});
 	return emailsSent;
 };
