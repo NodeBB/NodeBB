@@ -49,7 +49,7 @@ module.exports = function (Topics) {
 	Topics.unreadCutoff = async function (uid) {
 		const cutoff = Date.now() - (meta.config.unreadCutoff * 86400000);
 		const data = await plugins.fireHook('filter:topics.unreadCutoff', { uid: uid, cutoff: cutoff });
-		return data.cutoff;
+		return parseInt(data.cutoff, 10);
 	};
 
 	Topics.getUnreadTids = async function (params) {
