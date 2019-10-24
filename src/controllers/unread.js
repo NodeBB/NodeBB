@@ -30,14 +30,12 @@ unreadController.get = async function (req, res, next) {
 	const page = parseInt(req.query.page, 10) || 1;
 	const start = Math.max(0, (page - 1) * userSettings.topicsPerPage);
 	const stop = start + userSettings.topicsPerPage - 1;
-	const cutoff = req.session.unreadCutoff ? req.session.unreadCutoff : topics.unreadCutoff();
 	const data = await topics.getUnreadTopics({
 		cid: cid,
 		uid: req.uid,
 		start: start,
 		stop: stop,
 		filter: filter,
-		cutoff: cutoff,
 		query: req.query,
 	});
 

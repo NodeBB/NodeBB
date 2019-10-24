@@ -46,8 +46,10 @@ module.exports = function (Topics) {
 		return unreadTopics;
 	};
 
-	Topics.unreadCutoff = function () {
-		return Date.now() - (meta.config.unreadCutoff * 86400000);
+	Topics.unreadCutoff = async function (uid) {
+		const cutoff = Date.now() - (meta.config.unreadCutoff * 86400000);
+		const data = await plugins.fireHook('filter:topics.unreadCutoff', { uid: uid, cutoff: cutoff });
+		return data.cutoff;
 	};
 
 	Topics.getUnreadTids = async function (params) {
@@ -88,13 +90,13 @@ module.exports = function (Topics) {
 			return { counts: counts, tids: [], tidsByFilter: tidsByFilter };
 		}
 
-		const cutoff = params.cutoff || Topics.unreadCutoff();
+		params.cutoff = await Topics.unreadCutoff(params.uid);
 
 		const [followedTids, ignoredTids, categoryTids, userScores, tids_unread] = await Promise.all([
 			getFollowedTids(params),
 			user.getIgnoredTids(params.uid, 0, -1),
 			getCategoryTids(params),
-			db.getSortedSetRevRangeByScoreWithScores('uid:' + params.uid + ':tids_read', 0, -1, '+inf', cutoff),
+			db.getSortedSetRevRangeByScoreWithScores('uid:' + params.uid + ':tids_read', 0, -1, '+inf', params.cutoff),
 			db.getSortedSetRevRangeWithScores('uid:' + params.uid + ':tids_unread', 0, -1),
 		]);
 
@@ -169,19 +171,16 @@ module.exports = function (Topics) {
 		if (params.filter === 'watched') {
 			return [];
 		}
-		const cutoff = params.cutoff || Topics.unreadCutoff();
 		const cids = params.cid || await user.getWatchedCategories(params.uid);
 		const keys = cids.map(cid => 'cid:' + cid + ':tids:lastposttime');
-		return await db.getSortedSetRevRangeByScoreWithScores(keys, 0, -1, '+inf', cutoff);
+		return await db.getSortedSetRevRangeByScoreWithScores(keys, 0, -1, '+inf', params.cutoff);
 	}
 
 	async function getFollowedTids(params) {
 		const tids = await db.getSortedSetRevRange('uid:' + params.uid + ':followed_tids', 0, -1);
 		const scores = await db.sortedSetScores('topics:recent', tids);
-		const cutoff = params.cutoff || Topics.unreadCutoff();
-
 		const data = tids.map((tid, index) => ({ value: tid, score: scores[index] }));
-		return data.filter(item => item.score > cutoff);
+		return data.filter(item => item.score > params.cutoff);
 	}
 
 	async function filterTidsThatHaveBlockedPosts(params) {
@@ -285,7 +284,8 @@ module.exports = function (Topics) {
 	};
 
 	Topics.markAllRead = async function (uid) {
-		const tids = await db.getSortedSetRevRangeByScore('topics:recent', 0, -1, '+inf', Topics.unreadCutoff());
+		const cutoff = await Topics.unreadCutoff(uid);
+		const tids = await db.getSortedSetRevRangeByScore('topics:recent', 0, -1, '+inf', cutoff);
 		Topics.markTopicNotificationsRead(tids, uid);
 		await Topics.markAsRead(tids, uid);
 		await db.delete('uid:' + uid + ':tids_unread');
@@ -316,7 +316,7 @@ module.exports = function (Topics) {
 			user.blocks.list(uid),
 		]);
 
-		const cutoff = Topics.unreadCutoff();
+		const cutoff = await Topics.unreadCutoff(uid);
 		const result = tids.map(function (tid, index) {
 			const read = !tids_unread[index] &&
 				(topicScores[index] < cutoff ||
