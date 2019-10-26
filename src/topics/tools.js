@@ -27,35 +27,36 @@ module.exports = function (Topics) {
 			throw new Error('[[error:no-topic]]');
 		}
 		const canDelete = await privileges.topics.canDelete(tid, uid);
-		if (!canDelete) {
+
+		const data = await plugins.fireHook(isDelete ? 'filter:topic.delete' : 'filter:topic.restore', { topicData: topicData, uid: uid, isDelete: isDelete, canDelete: canDelete, canRestore: canDelete });
+
+		if ((!data.canDelete && data.isDelete) || (!data.canRestore && !data.isDelete)) {
 			throw new Error('[[error:no-privileges]]');
 		}
-
-		if (topicData.deleted && isDelete) {
+		if (data.topicData.deleted && data.isDelete) {
 			throw new Error('[[error:topic-already-deleted]]');
-		} else if (!topicData.deleted && !isDelete) {
+		} else if (!data.topicData.deleted && !data.isDelete) {
 			throw new Error('[[error:topic-already-restored]]');
 		}
-
-		if (isDelete) {
-			await Topics.delete(tid, uid);
+		if (data.isDelete) {
+			await Topics.delete(data.topicData.tid, data.uid);
 		} else {
-			await Topics.restore(tid);
+			await Topics.restore(data.topicData.tid);
 		}
 
-		topicData.deleted = isDelete ? 1 : 0;
+		data.topicData.deleted = data.isDelete ? 1 : 0;
 
-		if (isDelete) {
-			plugins.fireHook('action:topic.delete', { topic: topicData, uid: uid });
+		if (data.isDelete) {
+			plugins.fireHook('action:topic.delete', { topic: data.topicData, uid: data.uid });
 		} else {
-			plugins.fireHook('action:topic.restore', { topic: topicData, uid: uid });
+			plugins.fireHook('action:topic.restore', { topic: data.topicData, uid: data.uid });
 		}
-		const userData = await user.getUserFields(uid, ['username', 'userslug']);
+		const userData = await user.getUserFields(data.uid, ['username', 'userslug']);
 		return {
-			tid: tid,
-			cid: topicData.cid,
-			isDelete: isDelete,
-			uid: uid,
+			tid: data.topicData.tid,
+			cid: data.topicData.cid,
+			isDelete: data.isDelete,
+			uid: data.uid,
 			user: userData,
 		};
 	}
