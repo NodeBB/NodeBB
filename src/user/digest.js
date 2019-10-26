@@ -112,10 +112,64 @@ Digest.send = async function (data) {
 		}
 
 		if (data.interval !== 'alltime') {
-			await db.sortedSetAdd('digest:' + data.interval + ':byUid', now.getTime(), userObj.uid);
+			await db.sortedSetAdd('digest:delivery', now.getTime(), userObj.uid);
 		}
 	});
 	return emailsSent;
+};
+
+Digest.getDeliveryTimes = async (query, page, perPage) => {
+	perPage = perPage || 50;
+	page = page || 1;
+	const start = (page - 1) * perPage;
+	const stop = start + perPage - 1;
+
+	// Support user search or user listing if no query
+	let uids = [];
+	if (query) {
+		return [];
+	// eslint-disable-next-line no-else-return
+	} else {
+		uids = await user.getUidsFromSet('users:joindate', start, stop);
+	}
+	if (!uids) {
+		return [];
+	}
+
+	// Grab the last time a digest was successfully delivered to these uids
+	const scores = await db.sortedSetScores('digest:delivery', uids);
+
+	// Get users' digest settings
+	let settings = await Promise.all([
+		db.isSortedSetMembers('digest:day:uids', uids),
+		db.isSortedSetMembers('digest:week:uids', uids),
+		db.isSortedSetMembers('digest:month:uids', uids),
+	]);
+	settings = settings.reduce((memo, cur, idx) => {
+		switch (idx) {
+		case 0:
+			memo = memo.map(bool => (bool === true ? 'day' : bool));
+			break;
+		case 1:
+			memo = memo.map(bool => (bool === true ? 'week' : bool));
+			break;
+		case 2:
+			memo = memo.map(bool => (bool === true ? 'month' : bool));
+			break;
+		}
+
+		memo = memo.map(bool => (bool === false ? null : bool));
+		return memo;
+	});
+
+	// Populate user data
+	const userData = await user.getUsersFields(uids, ['username', 'picture']);
+
+	return userData.map((user, idx) => {
+		user.lastDelivery = scores[idx] ? new Date(scores[idx]).toISOString() : null;
+		user.setting = settings[idx];
+		return user;
+	});
 };
 
 async function getTermTopics(term, uid, start, stop) {
