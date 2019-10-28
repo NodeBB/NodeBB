@@ -138,6 +138,16 @@
 					</div>
 				</div>
 			</div>
+			<div class="row">
+				<div class="form-group">
+					<label>[[admin/settings/post:restrictions.groups-exempt-from-post-queue]]</label>
+					<select class="form-control" multiple data-field="groupsExemptFromPostQueue">
+						<!-- BEGIN groupsExemptFromPostQueue -->
+						<option value="{groupsExemptFromPostQueue.displayName}">{groupsExemptFromPostQueue.displayName}</option>
+						<!-- END -->
+					</select>
+				</div>
+			</div>
 		</form>
 	</div>
 </div>

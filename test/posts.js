@@ -964,6 +964,7 @@ describe('Post\'s', function () {
 
 		after(function (done) {
 			meta.config.postQueue = 0;
+			meta.config.groupsExemptFromPostQueue = [];
 			done();
 		});
 
@@ -1054,6 +1055,15 @@ describe('Post\'s', function () {
 		it('should not crash if id does not exist', function (done) {
 			socketPosts.reject({ uid: globalModUid }, { id: '123123123' }, function (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');
+				done();
+			});
+		});
+
+		it('should bypass post queue if user is in exempt group', function (done) {
+			meta.config.groupsExemptFromPostQueue = ['registered-users'];
+			socketTopics.post({ uid: uid, emit: () => {} }, { title: 'should not be queued', content: 'topic content', cid: cid }, function (err, result) {
+				assert.ifError(err);
+				assert.strictEqual(result.title, 'should not be queued');
 				done();
 			});
 		});

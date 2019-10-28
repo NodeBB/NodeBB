@@ -3,6 +3,7 @@
 const meta = require('../../meta');
 const emailer = require('../../emailer');
 const notifications = require('../../notifications');
+const groups = require('../../groups');
 
 const settingsController = module.exports;
 
@@ -13,6 +14,8 @@ settingsController.get = async function (req, res, next) {
 		await renderEmail(req, res, next);
 	} else if (term === 'user') {
 		await renderUser(req, res, next);
+	} else if (term === 'post') {
+		await renderPost(req, res, next);
 	} else {
 		res.render('admin/settings/' + term);
 	}
@@ -39,5 +42,12 @@ async function renderUser(req, res) {
 	});
 	res.render('admin/settings/user', {
 		notificationSettings: notificationSettings,
+	});
+}
+
+async function renderPost(req, res) {
+	const groupData = await groups.getNonPrivilegeGroups('groups:createtime', 0, -1);
+	res.render('admin/settings/post', {
+		groupsExemptFromPostQueue: groupData,
 	});
 }
