@@ -12,6 +12,7 @@
 	"restrictions-new": "New User Restrictions",
 	"restrictions.post-queue": "Enable post queue",
 	"restrictions.post-queue-rep-threshold": "Reputation required to bypass post queue",
+	"restrictions.groups-exempt-from-post-queue": "Select groups that should be exempt from the post queue",
 	"restrictions-new.post-queue": "Enable new user restrictions",
 	"restrictions.post-queue-help": "Enabling post queue will put the posts of new users in a queue for approval",
 	"restrictions-new.post-queue-help": "Enabling new user restrictions will set restrictions on posts created by new users",

@@ -12,6 +12,7 @@
 	"restrictions-new": "Restrições a Novos Usuários",
 	"restrictions.post-queue": "Ativar enfileiramento de posts",
 	"restrictions.post-queue-rep-threshold": "Reputation required to bypass post queue",
+	"restrictions.groups-exempt-from-post-queue": "Select groups that should be exempt from the post queue",
 	"restrictions-new.post-queue": "Ativar novas restrições de usuários",
 	"restrictions.post-queue-help": "Habilitar a fila de postagens colocará as postagens de novos usuários na fila para aprovação",
 	"restrictions-new.post-queue-help": "Habilitar restrições a novos usuários irá estabelecer restrições em postagens criadas por novos usuários",
