@@ -9,6 +9,7 @@
 		<th>[[admin/manage/digest:user]]</th>
 		<th>[[admin/manage/digest:subscription]]</th>
 		<th>[[admin/manage/digest:last-delivery]]</th>
+		<th></th>
 	</thead>
 	<tbody>
 		<!-- BEGIN delivery -->
@@ -16,11 +17,12 @@
 			<td><a href="{config.relative_path}/uid/{../uid}">{buildAvatar(delivery, "sm", true)} {../username}</a></td>
 			<td>{{{if ../setting}}}{../setting}{{{else}}}<em>[[admin/manage/digest:default]]</em>{{{end}}}</td>
 			<td>{../lastDelivery}</td>
+			<td><button class="btn btn-xs btn-default" data-action="resend" data-uid="{../uid}">[[admin/manage/digest:resend]]</button></td>
 		</tr>
 		<!-- END delivery -->
 		<!-- IF !delivery.length -->
 		<tr>
-			<td colspan="2">
+			<td colspan="4">
 				<div class="alert alert-success">
 					[[admin/manage/digest:no-delivery-data]]
 				</div>
@@ -30,8 +32,19 @@
 	</tbody>
 	<tfoot>
 		<tr>
-			<td colspan="3">
+			<td colspan="4"><!-- IMPORT partials/paginator.tpl --></td>
+		</tr>
+		<tr>
+			<td colspan="4">
 				<em>[[admin/manage/digest:default-help, {default}]]</em>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="4">
+				[[admin/manage/digest:manual-run]]
+				<button class="btn btn-xs btn-default" data-action="resend-daily">[[admin/settings/user:digest-freq.daily]]</button>
+				<button class="btn btn-xs btn-default" data-action="resend-weekly">[[admin/settings/user:digest-freq.weekly]]</button>
+				<button class="btn btn-xs btn-default" data-action="resend-monthly">[[admin/settings/user:digest-freq.monthly]]</button>
 			</td>
 		</tr>
 	</tfoot>

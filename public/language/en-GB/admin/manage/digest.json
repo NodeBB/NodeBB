@@ -8,6 +8,8 @@
 	"last-delivery": "Last successful delivery",
 	"default": "System default",
 	"default-help": "<em>System default</em> means the user has not explicitly overridden the global forum setting for digests, which is currently: &quot;<strong>%1</strong>&quot;",
+	"resend": "Resend Digest",
+	"manual-run": "Manual digest run:",
 
-	"no-delivery-data": "No users have been sent a digest yet"
+	"no-delivery-data": "No delivery data found"
 }

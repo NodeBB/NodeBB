@@ -118,20 +118,9 @@ Digest.send = async function (data) {
 	return emailsSent;
 };
 
-Digest.getDeliveryTimes = async (query, page, perPage) => {
-	perPage = perPage || 50;
-	page = page || 1;
-	const start = (page - 1) * perPage;
-	const stop = start + perPage - 1;
-
-	// Support user search or user listing if no query
-	let uids = [];
-	if (query) {
-		return [];
-	// eslint-disable-next-line no-else-return
-	} else {
-		uids = await user.getUidsFromSet('users:joindate', start, stop);
-	}
+Digest.getDeliveryTimes = async (start, stop) => {
+	const count = await db.sortedSetCard('users:joindate');
+	const uids = await user.getUidsFromSet('users:joindate', start, stop);
 	if (!uids) {
 		return [];
 	}
@@ -163,13 +152,17 @@ Digest.getDeliveryTimes = async (query, page, perPage) => {
 	});
 
 	// Populate user data
-	const userData = await user.getUsersFields(uids, ['username', 'picture']);
-
-	return userData.map((user, idx) => {
+	let userData = await user.getUsersFields(uids, ['username', 'picture']);
+	userData = userData.map((user, idx) => {
 		user.lastDelivery = scores[idx] ? new Date(scores[idx]).toISOString() : null;
 		user.setting = settings[idx];
 		return user;
 	});
+
+	return {
+		users: userData,
+		count: count,
+	};
 };
 
 async function getTermTopics(term, uid, start, stop) {
