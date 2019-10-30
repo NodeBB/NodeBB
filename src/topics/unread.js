@@ -123,7 +123,7 @@ module.exports = function (Topics) {
 		});
 
 		tids = await privileges.topics.filterTids('topics:read', tids, params.uid);
-		const topicData = await Topics.getTopicsFields(tids, ['tid', 'cid', 'uid', 'postcount']);
+		const topicData = (await Topics.getTopicsFields(tids, ['tid', 'cid', 'uid', 'postcount', 'deleted'])).filter(t => !t.deleted);
 		const topicCids = _.uniq(topicData.map(topic => topic.cid)).filter(Boolean);
 
 		const categoryWatchState = await categories.getWatchState(topicCids, params.uid);
@@ -258,11 +258,12 @@ module.exports = function (Topics) {
 			return false;
 		}
 		const [topicScores, userScores] = await Promise.all([
-			db.sortedSetScores('topics:recent', tids),
+			Topics.getTopicsFields(tids, ['tid', 'lastposttime']),
 			db.sortedSetScores('uid:' + uid + ':tids_read', tids),
 		]);
 
-		tids = tids.filter((tid, index) => topicScores[index] && (!userScores[index] || userScores[index] < topicScores[index]));
+		tids = topicScores.filter((t, i) => t.lastposttime && (!userScores[i] || userScores[i] < t.lastposttime))
+			.map(t => t.tid);
 
 		if (!tids.length) {
 			return false;

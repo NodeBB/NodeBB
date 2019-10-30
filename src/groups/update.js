@@ -7,6 +7,7 @@ const utils = require('../utils');
 const db = require('../database');
 const user = require('../user');
 const batch = require('../batch');
+const meta = require('../meta');
 
 
 module.exports = function (Groups) {
@@ -164,6 +165,7 @@ module.exports = function (Groups) {
 		await updateMemberGroupTitles(oldName, newName);
 		await updateNavigationItems(oldName, newName);
 		await updateWidgets(oldName, newName);
+		await updateConfig(oldName, newName);
 		await db.setObject('group:' + oldName, { name: newName, slug: utils.slugify(newName) });
 		await db.deleteObjectField('groupslug:groupname', group.slug);
 		await db.setObjectField('groupslug:groupname', utils.slugify(newName), newName);
@@ -243,6 +245,13 @@ module.exports = function (Groups) {
 			if (area.data.length) {
 				await widgets.setArea(area);
 			}
+		}
+	}
+
+	async function updateConfig(oldName, newName) {
+		if (meta.config.groupsExemptFromPostQueue.includes(oldName)) {
+			meta.config.groupsExemptFromPostQueue.splice(meta.config.groupsExemptFromPostQueue.indexOf(oldName), 1, newName);
+			await meta.configs.set('groupsExemptFromPostQueue', meta.config.groupsExemptFromPostQueue);
 		}
 	}
 };

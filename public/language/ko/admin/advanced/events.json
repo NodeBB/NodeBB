@@ -2,10 +2,10 @@
 	"events": "이벤트",
 	"no-events": "이벤트가 없습니다",
 	"control-panel": "이벤트 제어판",
-	"filters": "Filters",
-	"filters-apply": "Apply Filters",
-	"filter-type": "Event Type",
-	"filter-start": "Start Date",
-	"filter-end": "End Date",
-	"filter-perPage": "Per Page"
+	"filters": "필터",
+	"filters-apply": "필터 적용",
+	"filter-type": "이벤트 타입",
+	"filter-start": "시작일",
+	"filter-end": "종료일",
+	"filter-perPage": "페이지 당"
 }

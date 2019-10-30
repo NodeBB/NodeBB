@@ -238,7 +238,7 @@ async function getCategoryData(cids, uid, selectedCid, states) {
 	const cidToWatchState = _.zipObject(cids, watchState);
 
 	const visibleCategories = categoryData.filter(function (c) {
-		const hasVisibleChildren = c && Array.isArray(c.children) && c.children.some(c => c && cidToAllowed[c.cid] && states.includes(cidToWatchState[c.cid]));
+		const hasVisibleChildren = checkVisibleChildren(c, cidToAllowed, cidToWatchState, states);
 		const isCategoryVisible = c && cidToAllowed[c.cid] && !c.link && !c.disabled && states.includes(cidToWatchState[c.cid]);
 		const shouldBeRemoved = !hasVisibleChildren && !isCategoryVisible;
 
@@ -279,6 +279,15 @@ async function getCategoryData(cids, uid, selectedCid, states) {
 		selectedCategory: selectedCategory,
 		selectedCids: selectedCids,
 	};
+}
+
+function checkVisibleChildren(c, cidToAllowed, cidToWatchState, states) {
+	if (!c || !Array.isArray(c.children)) {
+		return false;
+	}
+	return c.children.some(c => c && (
+		(cidToAllowed[c.cid] && states.includes(cidToWatchState[c.cid])) || checkVisibleChildren(c, cidToAllowed, cidToWatchState, states)
+	));
 }
 
 helpers.getHomePageRoutes = async function (uid) {

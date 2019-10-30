@@ -12,6 +12,7 @@
 	"restrictions-new": "新用户限制",
 	"restrictions.post-queue": "启用发帖队列",
 	"restrictions.post-queue-rep-threshold": "忽略发帖队列的威望值",
+	"restrictions.groups-exempt-from-post-queue": "Select groups that should be exempt from the post queue",
 	"restrictions-new.post-queue": "启用新用户限制",
 	"restrictions.post-queue-help": "启用发帖队列会将新用户的发帖放入审核队列",
 	"restrictions-new.post-queue-help": "启用新用户限制将对新用户创建的帖子设置限制",

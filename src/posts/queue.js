@@ -16,7 +16,8 @@ const socketHelpers = require('../socket.io/helpers');
 module.exports = function (Posts) {
 	Posts.shouldQueue = async function (uid, data) {
 		const userData = await user.getUserFields(uid, ['uid', 'reputation', 'postcount']);
-		const shouldQueue = meta.config.postQueue && (!userData.uid || userData.reputation < meta.config.postQueueReputationThreshold || userData.postcount <= 0);
+		const isMemberOfExempt = await groups.isMemberOfAny(userData.uid, meta.config.groupsExemptFromPostQueue);
+		const shouldQueue = meta.config.postQueue && !isMemberOfExempt && (!userData.uid || userData.reputation < meta.config.postQueueReputationThreshold || userData.postcount <= 0);
 		const result = await plugins.fireHook('filter:post.shouldQueue', {
 			shouldQueue: !!shouldQueue,
 			uid: uid,

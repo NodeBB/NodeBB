@@ -16,6 +16,7 @@ const Configs = module.exports;
 
 Meta.config = {};
 
+// called after data is loaded from db
 function deserialize(config) {
 	const deserialized = {};
 	Object.keys(config).forEach(function (key) {
@@ -39,6 +40,13 @@ function deserialize(config) {
 			deserialized[key] = defaults[key];
 		} else if (defaultType === 'undefined' && !isNaN(number) && isFinite(config[key])) {
 			deserialized[key] = number;
+		} else if (Array.isArray(defaults[key]) && !Array.isArray(config[key])) {
+			try {
+				deserialized[key] = JSON.parse(config[key] || '[]');
+			} catch (err) {
+				winston.error(err);
+				deserialized[key] = defaults[key];
+			}
 		} else {
 			deserialized[key] = config[key];
 		}
@@ -46,7 +54,37 @@ function deserialize(config) {
 	return deserialized;
 }
 
+// called before data is saved to db
+function serialize(config) {
+	const serialized = {};
+	Object.keys(config).forEach(function (key) {
+		const defaultType = typeof defaults[key];
+		const type = typeof config[key];
+		const number = parseFloat(config[key]);
+
+		if (defaultType === 'string' && type === 'number') {
+			serialized[key] = String(config[key]);
+		} else if (defaultType === 'number' && type === 'string') {
+			if (!isNaN(number) && isFinite(config[key])) {
+				serialized[key] = number;
+			} else {
+				serialized[key] = defaults[key];
+			}
+		} else if (config[key] === null) {
+			serialized[key] = defaults[key];
+		} else if (defaultType === 'undefined' && !isNaN(number) && isFinite(config[key])) {
+			serialized[key] = number;
+		} else if (Array.isArray(defaults[key]) && Array.isArray(config[key])) {
+			serialized[key] = JSON.stringify(config[key]);
+		} else {
+			serialized[key] = config[key];
+		}
+	});
+	return serialized;
+}
+
 Configs.deserialize = deserialize;
+Configs.serialize = serialize;
 
 Configs.init = async function () {
 	const config = await Configs.list();
@@ -92,15 +130,15 @@ Configs.set = async function (field, value) {
 };
 
 Configs.setMultiple = async function (data) {
-	data = deserialize(data);
 	await processConfig(data);
+	data = serialize(data);
 	await db.setObject('config', data);
-	updateConfig(data);
+	updateConfig(deserialize(data));
 };
 
 Configs.setOnEmpty = async function (values) {
 	const data = await db.getObject('config');
-	const config = { ...values, ...(data ? deserialize(data) : {}) };
+	const config = { ...values, ...(data ? serialize(data) : {}) };
 	await db.setObject('config', config);
 };
 

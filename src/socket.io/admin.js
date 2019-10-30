@@ -165,10 +165,11 @@ SocketAdmin.config.setMultiple = async function (socket, data) {
 	}
 
 	const changes = {};
-	data = meta.configs.deserialize(data);
-	Object.keys(data).forEach(function (key) {
-		if (data[key] !== meta.config[key]) {
-			changes[key] = data[key];
+	const newData = meta.configs.serialize(data);
+	const oldData = meta.configs.serialize(meta.config);
+	Object.keys(newData).forEach(function (key) {
+		if (newData[key] !== oldData[key]) {
+			changes[key] = newData[key];
 			changes[key + '_old'] = meta.config[key];
 		}
 	});
