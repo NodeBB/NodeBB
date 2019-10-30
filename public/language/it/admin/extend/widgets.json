@@ -20,11 +20,11 @@
 
 	"error.select-clone": "Si prega di selezionare una pagina da clonare da",
 
-	"title": "Title",
-	"title.placeholder": "Title (only shown on some containers)",
-	"container": "Container",
-	"container.placeholder": "Drag and drop a container or enter HTML here.",
-	"show-to-groups": "Show to groups",
-	"hide-from-groups": "Hide from groups",
-	"hide-on-mobile": "Hide on mobile"
+	"title": "Titolo",
+	"title.placeholder": "Titolo (indicato solo su alcuni contenitori)",
+	"container": "Contenitori",
+	"container.placeholder": "Trascina un contenitore o inserisci l'html quì.",
+	"show-to-groups": "Mostra i gruppi",
+	"hide-from-groups": "Nascondi dai gruppi",
+	"hide-on-mobile": "Nascondi su mobile"
 }
