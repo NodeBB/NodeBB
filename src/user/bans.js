@@ -78,7 +78,7 @@ module.exports = function (User) {
 	};
 
 	User.bans.filterBanned = async function (uids) {
-		const isBanned = User.bans.isBanned(uids);
+		const isBanned = await User.bans.isBanned(uids);
 		return uids.filter((uid, index) => !isBanned[index]);
 	};
 
