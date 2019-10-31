@@ -34,7 +34,7 @@ module.exports = function (Messaging) {
 
 	Messaging.addMessage = async (data) => {
 		const mid = await db.incrObjectField('global', 'nextMid');
-		const timestamp = data.timestamp || new Date().getTime();
+		const timestamp = data.timestamp || Date.now();
 		let message = {
 			content: String(data.content),
 			timestamp: timestamp,
@@ -72,6 +72,7 @@ module.exports = function (Messaging) {
 		messages[0].newSet = isNewSet;
 		messages[0].mid = mid;
 		messages[0].roomId = data.roomId;
+		plugins.fireHook('action:messaging.save', { message: messages[0], data: data });
 		return messages[0];
 	};
 
