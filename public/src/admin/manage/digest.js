@@ -9,7 +9,7 @@ define('admin/manage/digest', function () {
 			var action = this.getAttribute('data-action');
 			var uid = this.getAttribute('data-uid');
 
-			if (action.indexOf('resend-') === 0) {
+			if (action.startsWith('resend-')) {
 				var interval = action.slice(7);
 				bootbox.confirm('[[admin/manage/digest:resend-all-confirm]]', function (ok) {
 					if (ok) {

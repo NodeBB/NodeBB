@@ -29,11 +29,11 @@ Digest.execute = async function (payload) {
 		return;
 	}
 	try {
-		const count = await Digest.send({
+		await Digest.send({
 			interval: payload.interval,
 			subscribers: subscribers,
 		});
-		winston.info('[user/jobs] Digest (' + payload.interval + ') scheduling completed. ' + count + ' email(s) sent.');
+		winston.info('[user/jobs] Digest (' + payload.interval + ') scheduling completed. Sending emails; this may take some time...');
 	} catch (err) {
 		winston.error('[user/jobs] Could not send digests (' + payload.interval + ')', err);
 		throw err;
@@ -103,7 +103,7 @@ Digest.send = async function (data) {
 
 	const users = await user.getUsersFields(data.subscribers, ['uid', 'username', 'userslug', 'lastonline']);
 
-	await async.eachLimit(users, 100, async function (userObj) {
+	async.eachLimit(users, 100, async function (userObj) {
 		let [notifications, topicsData] = await Promise.all([
 			user.notifications.getUnreadInterval(userObj.uid, data.interval),
 			getTermTopics(data.interval, userObj.uid, 0, 9),
@@ -146,8 +146,9 @@ Digest.send = async function (data) {
 		if (data.interval !== 'alltime') {
 			await db.sortedSetAdd('digest:delivery', now.getTime(), userObj.uid);
 		}
+	}, function () {
+		winston.info('[user/jobs] Digest (' + data.interval + ') sending completed. ' + emailsSent + ' emails sent.');
 	});
-	return emailsSent;
 };
 
 Digest.getDeliveryTimes = async (start, stop) => {

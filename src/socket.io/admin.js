@@ -355,7 +355,7 @@ SocketAdmin.uploads.delete = function (socket, pathToFile, callback) {
 
 SocketAdmin.digest.resend = async (socket, data) => {
 	const uid = data.uid;
-	const interval = data.action.indexOf('resend-') === 0 ? data.action.slice(7) : await userDigest.getUsersInterval(uid);
+	const interval = data.action.startsWith('resend-') ? data.action.slice(7) : await userDigest.getUsersInterval(uid);
 
 	if (!interval && meta.config.dailyDigestFreq === 'off') {
 		throw new Error('[[error:digest-not-enabled]]');
