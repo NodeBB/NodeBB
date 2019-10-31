@@ -12,7 +12,7 @@
 	"restrictions-new": "Restrictions des nouveaux utilisateurs",
 	"restrictions.post-queue": "Activer la file d'attente des messages",
 	"restrictions.post-queue-rep-threshold": "Réputation requise pour contourner la file d'attente de publication",
-	"restrictions.groups-exempt-from-post-queue": "Select groups that should be exempt from the post queue",
+	"restrictions.groups-exempt-from-post-queue": "Sélectionnez les groupes qui devraient être exemptés de la file d'attente de publication",
 	"restrictions-new.post-queue": "Activer la restriction",
 	"restrictions.post-queue-help": "L'activation de la file d'attente de publication placera les messages de nouveaux utilisateurs dans une file d'attente pour approbation.",
 	"restrictions-new.post-queue-help": "L'activation de restrictions des nouveaux utilisateurs définira des restrictions sur les messages créées par de nouveaux utilisateurs.",
