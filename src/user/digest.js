@@ -40,6 +40,38 @@ Digest.execute = async function (payload) {
 	}
 };
 
+Digest.getUsersInterval = async (uids) => {
+	// Checks whether user specifies digest setting, or 'system' for system default setting
+	let single = false;
+	if (!Array.isArray(uids) && !isNaN(parseInt(uids, 10))) {
+		uids = [uids];
+		single = true;
+	}
+
+	let settings = await Promise.all([
+		db.isSortedSetMembers('digest:day:uids', uids),
+		db.isSortedSetMembers('digest:week:uids', uids),
+		db.isSortedSetMembers('digest:month:uids', uids),
+	]);
+	settings = settings.reduce((memo, cur, idx) => {
+		switch (idx) {
+		case 0:
+			memo = cur.map(bool => (bool === true ? 'day' : bool));
+			break;
+		case 1:
+			memo = cur.map(bool => (bool === true ? 'week' : bool));
+			break;
+		case 2:
+			memo = cur.map(bool => (bool === true ? 'month' : bool));
+			break;
+		}
+
+		return memo;
+	});
+
+	return single ? settings[0] : settings;
+};
+
 Digest.getSubscribers = async function (interval) {
 	var subscribers = [];
 
@@ -71,7 +103,7 @@ Digest.send = async function (data) {
 
 	const users = await user.getUsersFields(data.subscribers, ['uid', 'username', 'userslug', 'lastonline']);
 
-	async.eachLimit(users, 100, async function (userObj) {
+	await async.eachLimit(users, 100, async function (userObj) {
 		let [notifications, topicsData] = await Promise.all([
 			user.notifications.getUnreadInterval(userObj.uid, data.interval),
 			getTermTopics(data.interval, userObj.uid, 0, 9),
@@ -129,32 +161,12 @@ Digest.getDeliveryTimes = async (start, stop) => {
 	const scores = await db.sortedSetScores('digest:delivery', uids);
 
 	// Get users' digest settings
-	let settings = await Promise.all([
-		db.isSortedSetMembers('digest:day:uids', uids),
-		db.isSortedSetMembers('digest:week:uids', uids),
-		db.isSortedSetMembers('digest:month:uids', uids),
-	]);
-	settings = settings.reduce((memo, cur, idx) => {
-		switch (idx) {
-		case 0:
-			memo = memo.map(bool => (bool === true ? 'day' : bool));
-			break;
-		case 1:
-			memo = memo.map(bool => (bool === true ? 'week' : bool));
-			break;
-		case 2:
-			memo = memo.map(bool => (bool === true ? 'month' : bool));
-			break;
-		}
-
-		memo = memo.map(bool => (bool === false ? null : bool));
-		return memo;
-	});
+	const settings = await Digest.getUsersInterval(uids);
 
 	// Populate user data
 	let userData = await user.getUsersFields(uids, ['username', 'picture']);
 	userData = userData.map((user, idx) => {
-		user.lastDelivery = scores[idx] ? new Date(scores[idx]).toISOString() : null;
+		user.lastDelivery = scores[idx] ? new Date(scores[idx]).toISOString() : '[[admin/manage/digest:null]]';
 		user.setting = settings[idx];
 		return user;
 	});

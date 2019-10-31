@@ -42,6 +42,7 @@ SocketAdmin.analytics = {};
 SocketAdmin.logs = {};
 SocketAdmin.errors = {};
 SocketAdmin.uploads = {};
+SocketAdmin.digest = {};
 
 SocketAdmin.before = async function (socket, method) {
 	const isAdmin = await user.isAdministrator(socket.uid);
@@ -350,6 +351,25 @@ SocketAdmin.uploads.delete = function (socket, pathToFile, callback) {
 	}
 
 	fs.unlink(pathToFile, callback);
+};
+
+SocketAdmin.digest.resend = async (socket, data) => {
+	const uid = data.uid;
+	const interval = data.action.indexOf('resend-') === 0 ? data.action.slice(7) : await userDigest.getUsersInterval(uid);
+
+	console.log(interval);
+	if (!interval && meta.config.dailyDigestFreq === 'off') {
+		throw new Error('[[error:digest-not-enabled]]');
+	}
+
+	if (uid) {
+		await userDigest.execute({
+			interval: interval || meta.config.dailyDigestFreq,
+			subscribers: [uid],
+		});
+	} else {
+		await userDigest.execute({ interval: interval });
+	}
 };
 
 require('../promisify')(SocketAdmin);

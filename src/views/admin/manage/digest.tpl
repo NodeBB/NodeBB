@@ -42,9 +42,9 @@
 		<tr>
 			<td colspan="4">
 				[[admin/manage/digest:manual-run]]
-				<button class="btn btn-xs btn-default" data-action="resend-daily">[[admin/settings/user:digest-freq.daily]]</button>
-				<button class="btn btn-xs btn-default" data-action="resend-weekly">[[admin/settings/user:digest-freq.weekly]]</button>
-				<button class="btn btn-xs btn-default" data-action="resend-monthly">[[admin/settings/user:digest-freq.monthly]]</button>
+				<button class="btn btn-xs btn-default" data-action="resend-day">[[admin/settings/user:digest-freq.daily]]</button>
+				<button class="btn btn-xs btn-default" data-action="resend-week">[[admin/settings/user:digest-freq.weekly]]</button>
+				<button class="btn btn-xs btn-default" data-action="resend-month">[[admin/settings/user:digest-freq.monthly]]</button>
 			</td>
 		</tr>
 	</tfoot>
