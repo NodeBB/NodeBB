@@ -11,11 +11,7 @@ digestController.get = async function (req, res) {
 	const resultsPerPage = 50;
 	const start = Math.max(0, page - 1) * resultsPerPage;
 	const stop = start + resultsPerPage - 1;
-
-	const [delivery] = await Promise.all([
-		// digests.getStats(),
-		digest.getDeliveryTimes(start, stop),
-	]);
+	const delivery = await digest.getDeliveryTimes(start, stop);
 
 	const pageCount = Math.ceil(delivery.count / resultsPerPage);
 	res.render('admin/manage/digest', {
