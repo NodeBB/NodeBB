@@ -9,6 +9,7 @@ var adminController = {
 	postQueue: require('./admin/postqueue'),
 	blacklist: require('./admin/blacklist'),
 	groups: require('./admin/groups'),
+	digest: require('./admin/digest'),
 	appearance: require('./admin/appearance'),
 	extend: {
 		widgets: require('./admin/widgets'),

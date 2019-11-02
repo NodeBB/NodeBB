@@ -4,6 +4,7 @@ const async = require('async');
 const winston = require('winston');
 const nconf = require('nconf');
 
+const db = require('../database');
 const batch = require('../batch');
 const meta = require('../meta');
 const user = require('../user');
@@ -28,15 +29,47 @@ Digest.execute = async function (payload) {
 		return;
 	}
 	try {
-		const count = await Digest.send({
+		await Digest.send({
 			interval: payload.interval,
 			subscribers: subscribers,
 		});
-		winston.info('[user/jobs] Digest (' + payload.interval + ') scheduling completed. ' + count + ' email(s) sent.');
+		winston.info('[user/jobs] Digest (' + payload.interval + ') scheduling completed. Sending emails; this may take some time...');
 	} catch (err) {
 		winston.error('[user/jobs] Could not send digests (' + payload.interval + ')', err);
 		throw err;
 	}
+};
+
+Digest.getUsersInterval = async (uids) => {
+	// Checks whether user specifies digest setting, or null/false for system default setting
+	let single = false;
+	if (!Array.isArray(uids) && !isNaN(parseInt(uids, 10))) {
+		uids = [uids];
+		single = true;
+	}
+
+	let settings = await Promise.all([
+		db.isSortedSetMembers('digest:day:uids', uids),
+		db.isSortedSetMembers('digest:week:uids', uids),
+		db.isSortedSetMembers('digest:month:uids', uids),
+	]);
+	settings = settings.reduce((memo, cur, idx) => {
+		switch (idx) {
+		case 0:
+			memo = cur.map(bool => (bool === true ? 'day' : bool));
+			break;
+		case 1:
+			memo = cur.map(bool => (bool === true ? 'week' : bool));
+			break;
+		case 2:
+			memo = cur.map(bool => (bool === true ? 'month' : bool));
+			break;
+		}
+
+		return memo;
+	});
+
+	return single ? settings[0] : settings;
 };
 
 Digest.getSubscribers = async function (interval) {
@@ -99,21 +132,53 @@ Digest.send = async function (data) {
 			return topicObj;
 		});
 		emailsSent += 1;
-		emailer.send('digest', userObj.uid, {
-			subject: '[[email:digest.subject, ' + (now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate()) + ']]',
-			username: userObj.username,
-			userslug: userObj.userslug,
-			notifications: notifications,
-			recent: topicsData,
-			interval: data.interval,
-			showUnsubscribe: true,
-		}, function (err) {
-			if (err) {
-				winston.error('[user/jobs] Could not send digest email', err);
-			}
-		});
+		try {
+			await emailer.send('digest', userObj.uid, {
+				subject: '[[email:digest.subject, ' + (now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate()) + ']]',
+				username: userObj.username,
+				userslug: userObj.userslug,
+				notifications: notifications,
+				recent: topicsData,
+				interval: data.interval,
+				showUnsubscribe: true,
+			});
+		} catch (err) {
+			winston.error('[user/jobs] Could not send digest email', err);
+		}
+
+		if (data.interval !== 'alltime') {
+			await db.sortedSetAdd('digest:delivery', now.getTime(), userObj.uid);
+		}
+	}, function () {
+		winston.info('[user/jobs] Digest (' + data.interval + ') sending completed. ' + emailsSent + ' emails sent.');
 	});
-	return emailsSent;
+};
+
+Digest.getDeliveryTimes = async (start, stop) => {
+	const count = await db.sortedSetCard('users:joindate');
+	const uids = await user.getUidsFromSet('users:joindate', start, stop);
+	if (!uids) {
+		return [];
+	}
+
+	// Grab the last time a digest was successfully delivered to these uids
+	const scores = await db.sortedSetScores('digest:delivery', uids);
+
+	// Get users' digest settings
+	const settings = await Digest.getUsersInterval(uids);
+
+	// Populate user data
+	let userData = await user.getUsersFields(uids, ['username', 'picture']);
+	userData = userData.map((user, idx) => {
+		user.lastDelivery = scores[idx] ? new Date(scores[idx]).toISOString() : '[[admin/manage/digest:null]]';
+		user.setting = settings[idx];
+		return user;
+	});
+
+	return {
+		users: userData,
+		count: count,
+	};
 };
 
 async function getTermTopics(term, uid, start, stop) {

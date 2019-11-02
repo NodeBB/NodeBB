@@ -80,6 +80,7 @@ function addRoutes(router, middleware, controllers) {
 	router.get('/manage/groups/:name', middlewares, controllers.admin.groups.get);
 
 	router.get('/manage/uploads', middlewares, controllers.admin.uploads.get);
+	router.get('/manage/digest', middlewares, controllers.admin.digest.get);
 
 	router.get('/settings/:term?', middlewares, controllers.admin.settings.get);
 
