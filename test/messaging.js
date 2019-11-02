@@ -382,7 +382,7 @@ describe('Messaging Library', function () {
 							var notification = data.unread[0];
 							assert.equal(notification.bodyShort, '[[notifications:new_message_from, foo]]');
 							assert.equal(notification.nid, 'chat_' + fooUid + '_' + roomId);
-							assert.equal(notification.path, '/chats/' + roomId);
+							assert.equal(notification.path, nconf.get('relative_path') + '/chats/' + roomId);
 							done();
 						});
 					}, 1500);
