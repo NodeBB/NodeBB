@@ -41,7 +41,7 @@ Digest.execute = async function (payload) {
 };
 
 Digest.getUsersInterval = async (uids) => {
-	// Checks whether user specifies digest setting, or 'system' for system default setting
+	// Checks whether user specifies digest setting, or null/false for system default setting
 	let single = false;
 	if (!Array.isArray(uids) && !isNaN(parseInt(uids, 10))) {
 		uids = [uids];
