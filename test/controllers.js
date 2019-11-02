@@ -1300,7 +1300,7 @@ describe('Controllers', function () {
 					assert.equal(notif.bodyShort, notifData.bodyShort);
 					assert.equal(notif.bodyLong, notifData.bodyLong);
 					assert.equal(notif.pid, notifData.pid);
-					assert.equal(notif.path, notifData.path);
+					assert.equal(notif.path, nconf.get('relative_path') + notifData.path);
 					assert.equal(notif.nid, notifData.nid);
 					next();
 				},
