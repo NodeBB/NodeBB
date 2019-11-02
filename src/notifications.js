@@ -65,6 +65,9 @@ Notifications.getMultiple = async function (nids) {
 
 	notifications.forEach(function (notification, index) {
 		if (notification) {
+			if (notification.path && !notification.path.startsWith('http')) {
+				notification.path = nconf.get('relative_path') + notification.path;
+			}
 			notification.datetimeISO = utils.toISOString(notification.datetime);
 
 			if (notification.bodyLong) {
@@ -168,6 +171,7 @@ async function pushToUids(uids, notification) {
 		await async.eachLimit(uids, 3, function (uid, next) {
 			emailer.send('notification', uid, {
 				path: notification.path,
+				notification_url: notification.path.startsWith('http') ? notification.path : nconf.get('url') + notification.path,
 				subject: utils.stripHTMLTags(notification.subject || '[[notifications:new_notification]]'),
 				intro: utils.stripHTMLTags(notification.bodyShort),
 				body: notification.bodyLong || '',

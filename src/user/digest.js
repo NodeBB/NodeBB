@@ -81,9 +81,12 @@ Digest.send = async function (data) {
 			return;
 		}
 
-		notifications.forEach(function (notification) {
-			if (notification.image && !notification.image.startsWith('http')) {
-				notification.image = nconf.get('url') + notification.image;
+		notifications.forEach(function (n) {
+			if (n.image && !n.image.startsWith('http')) {
+				n.image = nconf.get('base_url') + n.image;
+			}
+			if (n.path) {
+				n.notification_url = n.path.startsWith('http') ? n.path : nconf.get('base_url') + n.path;
 			}
 		});
 
