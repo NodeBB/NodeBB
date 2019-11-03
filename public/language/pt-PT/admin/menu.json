@@ -18,6 +18,7 @@
 	"manage/groups": "Grupos",
 	"manage/ip-blacklist": "Lista Negra de IPs",
 	"manage/uploads": "Carregamentos",
+	"manage/digest": "Digests",
 
 	"section-settings": "Definições",
 	"settings/general": "Geral",

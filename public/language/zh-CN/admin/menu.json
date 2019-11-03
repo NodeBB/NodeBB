@@ -18,6 +18,7 @@
 	"manage/groups": "群组",
 	"manage/ip-blacklist": "IP 黑名单",
 	"manage/uploads": "上传",
+	"manage/digest": "Digests",
 
 	"section-settings": "设置",
 	"settings/general": "通用",

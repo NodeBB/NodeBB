@@ -33,6 +33,7 @@
     "email-confirm-failed": "Ntabwo email yawe yabashije kwemezwa. Ongera ugerageze mu bundi buryo. ",
     "confirm-email-already-sent": "Email yo kwemeza yamaze koherezwa. Tegereza iminota (umunota) %1 mbere yo kohereza indi. ",
     "sendmail-not-found": "The sendmail executable could not be found, please ensure it is installed and executable by the user running NodeBB.",
+    "digest-not-enabled": "This user does not have digests enabled, or the system default is not configured to send digests",
     "username-too-short": "Izina ni rigufi cyane",
     "username-too-long": "Izina ni rirerire cyane",
     "password-too-long": "Password too long",

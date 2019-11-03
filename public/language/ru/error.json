@@ -33,6 +33,7 @@
     "email-confirm-failed": "По техническим причинам мы не можем подтвердить ваш адрес электронной почты. Приносим вам наши извинения, пожалуйста, попробуйте позже.",
     "confirm-email-already-sent": "Сообщение для подтверждения регистрации уже выслано на ваш адрес электронной почты. Повторная отправка возможна через %1 мин.",
     "sendmail-not-found": "Не можем найти sendmail, убедитесь что он установлен и управляется NodeBB.",
+    "digest-not-enabled": "This user does not have digests enabled, or the system default is not configured to send digests",
     "username-too-short": "Слишком короткое имя пользователя",
     "username-too-long": "Имя пользователя слишком длинное",
     "password-too-long": "Пароль слишком длинный",

@@ -33,6 +33,7 @@
     "email-confirm-failed": "E-posta adresinizi doğrulayamıyoruz. Lütfen daha sonra tekrar deneyin.",
     "confirm-email-already-sent": "E-posta onayı zaten gönderilmiş, yeni bir onay göndermek için lütfen %1 dakika bekleyin.",
     "sendmail-not-found": "Sendmail yürütülemedi, lüften indirildiğinden ve NodeBB kullanıcısı tarafından uygulanabilir olduğundan emin olun.",
+    "digest-not-enabled": "This user does not have digests enabled, or the system default is not configured to send digests",
     "username-too-short": "Kullanıcı ismi çok kısa",
     "username-too-long": "Kullanıcı ismi çok uzun.",
     "password-too-long": "Parola çok uzun",

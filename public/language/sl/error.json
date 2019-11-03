@@ -33,6 +33,7 @@
     "email-confirm-failed": "Potrditev vašega e-poštnega naslova ni uspela. Prosimo, poskusite ponovno pozneje.",
     "confirm-email-already-sent": "Potrditveno e-sporočilo je že bilo poslano. Prosimo, počakajte %1 min za ponovno pošiljanje.",
     "sendmail-not-found": "Ne najdem izvršljive datoteke za pošiljanje e-pošte. Prepričajte se, da je ta nameščena in izvršljiva prek uporabnika, ki izvaja NodeBB.",
+    "digest-not-enabled": "This user does not have digests enabled, or the system default is not configured to send digests",
     "username-too-short": "Uporabniško ime je prekratko.",
     "username-too-long": "Uporabniško ime je predolgo.",
     "password-too-long": "Geslo je predolgo.",

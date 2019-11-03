@@ -18,6 +18,7 @@
 	"manage/groups": "그룹",
 	"manage/ip-blacklist": "IP 블랙리스트",
 	"manage/uploads": "업로드",
+	"manage/digest": "Digests",
 
 	"section-settings": "설정",
 	"settings/general": "일반",

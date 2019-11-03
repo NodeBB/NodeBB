@@ -18,6 +18,7 @@
 	"manage/groups": "Grupy",
 	"manage/ip-blacklist": "Czarna lista IP",
 	"manage/uploads": "Przesłane pliki",
+	"manage/digest": "Digests",
 
 	"section-settings": "Ustawienia",
 	"settings/general": "Ogólne",

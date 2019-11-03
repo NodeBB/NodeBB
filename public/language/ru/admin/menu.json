@@ -18,6 +18,7 @@
 	"manage/groups": "Группы",
 	"manage/ip-blacklist": "Блокировка IP",
 	"manage/uploads": "Загрузки",
+	"manage/digest": "Digests",
 
 	"section-settings": "Настройки",
 	"settings/general": "Главные",

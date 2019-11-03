@@ -18,6 +18,7 @@
 	"manage/groups": "Csoportok",
 	"manage/ip-blacklist": "IP tiltólista",
 	"manage/uploads": "Feltöltések",
+	"manage/digest": "Digests",
 
 	"section-settings": "Beállítások",
 	"settings/general": "Általános",

@@ -33,6 +33,7 @@
     "email-confirm-failed": "Non podemos confirmar o teu enderezo, por favor téntao de novo máis tarde.",
     "confirm-email-already-sent": "O correo de confirmación foi enviado, agarda %1 minute(s) para enviar outro.",
     "sendmail-not-found": "Non se atopa o executable \"sendmail\", por favor, asegúrate de que está instalado no teu sistema e que é accesible polo usuario que executa NodeBB. ",
+    "digest-not-enabled": "This user does not have digests enabled, or the system default is not configured to send digests",
     "username-too-short": "Nome de usuario demasiado curto",
     "username-too-long": "Nome de usuario demasiado longo.",
     "password-too-long": "Contrasinal moi longa",

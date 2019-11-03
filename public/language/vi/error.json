@@ -33,6 +33,7 @@
     "email-confirm-failed": "Chúng tôi không thể xác nhận email của bạn, vui lòng thử lại sau.",
     "confirm-email-already-sent": "Email xác nhận đã được gửi, vui lòng chờ %1 phút để yêu cầu gửi lại.",
     "sendmail-not-found": "Không tìm thấy lệnh thực thi \"sendmail\", hãy chắc chắn nó đã được cài đặt và thực thi bởi người quản trị đang vận hành NodeBB",
+    "digest-not-enabled": "This user does not have digests enabled, or the system default is not configured to send digests",
     "username-too-short": "Tên đăng nhập quá ngắn",
     "username-too-long": "Tên đăng nhập quá dài",
     "password-too-long": "Mật khẩu quá dài",

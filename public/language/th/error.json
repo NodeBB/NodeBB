@@ -33,6 +33,7 @@
     "email-confirm-failed": "เราไม่สามารถยืนยันอีเมลของคุณ ณ ขณะนี้ กรุณาลองใหม่อีกครั้งภายหลัง",
     "confirm-email-already-sent": "อีเมล์ยืนยันตัวตนถูกส่งไปยังคุณเรียบร้อยแล้ว กรุณารอ %1  นาที(s) ก่อนการตัดสินใจส่งอีกครั้ง",
     "sendmail-not-found": "ไม่พบการประมวลผลสำหรับการส่งอีเมล์ กรุณาตรวจสอบให้แน่ใจว่าได้มีการติดตั้งโปรแกรมการประมวลผลแล้วโดยผู้ใช้ที่กำลังใช้ NodeBB",
+    "digest-not-enabled": "This user does not have digests enabled, or the system default is not configured to send digests",
     "username-too-short": "ชื่อบัญชีผู้ใช้ สั้นเกินไป",
     "username-too-long": "ชื่อบัญชีผู้ใช้ ยาวเกินไป",
     "password-too-long": "รหัสผ่านยาวเกินไป",

@@ -33,6 +33,7 @@
     "email-confirm-failed": "Nismo u mogućnosti potvrditi Vaš email, pokušajte ponovno kasnije.",
     "confirm-email-already-sent": "Potvrdni email je poslan, počekajte %1 minuta za ponovni pokušaj.",
     "sendmail-not-found": "Sendmail nije pronađen, provjerite da li je instaliran?",
+    "digest-not-enabled": "This user does not have digests enabled, or the system default is not configured to send digests",
     "username-too-short": "Korisničko ime prekratko",
     "username-too-long": "Korisničko ime predugo",
     "password-too-long": "Lozinka je preduga",

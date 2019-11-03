@@ -33,6 +33,7 @@
     "email-confirm-failed": "我們無法確認你的Email，請之後再重試。",
     "confirm-email-already-sent": "確認信已寄出，請稍後 %1 分鐘才能再寄下一封。",
     "sendmail-not-found": "沒有找到sendmail可執行程序，請確認它是不是已經被安裝與可讓執行NodeBB的使用者執行的",
+    "digest-not-enabled": "This user does not have digests enabled, or the system default is not configured to send digests",
     "username-too-short": "帳號太短",
     "username-too-long": "帳號太長",
     "password-too-long": "密碼太長",

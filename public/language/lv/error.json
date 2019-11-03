@@ -33,6 +33,7 @@
     "email-confirm-failed": "Mēs nevarējām apstiprināt Tavu e-pasta adresi, lūdzu, vēlāk mēģini vēlreiz.",
     "confirm-email-already-sent": "Apstiprinājuma e-pasts ir jau nosūtīts, lūdzu, uzgaidi %1 minūti(-es), lai nosūtītu vēl vienu.",
     "sendmail-not-found": "Sendmail programmu nevarēja atrast, lūdzu, pārliecinies, ka lietotājs, kas darbojas ar NodeBB, ir to instalējis un izdarījis palaižamu.",
+    "digest-not-enabled": "This user does not have digests enabled, or the system default is not configured to send digests",
     "username-too-short": "Pārāk īss lietotājvārds",
     "username-too-long": "Pārāk garš lietotājvārds",
     "password-too-long": "Pārāk gara parole",

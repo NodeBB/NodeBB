@@ -33,6 +33,7 @@
     "email-confirm-failed": "Kami tidak dapat memastikan emel anda, sila cuba lagi nanti",
     "confirm-email-already-sent": "Pengesahan emel telah dihantar, sila tunggu %1 minit() untuk menghantar yang baru.",
     "sendmail-not-found": "The sendmail executable could not be found, please ensure it is installed and executable by the user running NodeBB.",
+    "digest-not-enabled": "This user does not have digests enabled, or the system default is not configured to send digests",
     "username-too-short": "Nama pengunna terlalu pendek",
     "username-too-long": "Nama pengunna terlalu panjang",
     "password-too-long": "Kata laluan terlalu panjang",

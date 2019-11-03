@@ -33,6 +33,7 @@
     "email-confirm-failed": "سیستم موفق به تایید ایمیل شما نشد، لطفا بعدا دوباره سعی کنید",
     "confirm-email-already-sent": "ایمیل فعال‌سازی قبلا فرستاده شده، لطفا <strong>%1</strong> دقیقه صبر کنید تا ایمیل دیگری فرستاده شود.",
     "sendmail-not-found": "اجازه ارسال رایانامه پیدا نشد، لطفا مطمئن شوید این قابلیت نصب شده و توسط کاربر مد نظر در نود‌بی‌بی قابل اجرا است.",
+    "digest-not-enabled": "This user does not have digests enabled, or the system default is not configured to send digests",
     "username-too-short": "نام کاربری خیلی کوتاه است.",
     "username-too-long": "نام کاربری بسیار طولانیست",
     "password-too-long": "کلمه عبور بسیار طولانیست",

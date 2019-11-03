@@ -33,6 +33,7 @@
     "email-confirm-failed": "Meil ei õnnestunud sinu emaili kinnitada, proovi hiljem uuesti.",
     "confirm-email-already-sent": "Kinnituskiri on juba saadetud, palun oota %1 minut(it) uue kirja saatmiseks.",
     "sendmail-not-found": "Sendmail'i käivitatavat ei leitud, palun tee kindlaks, et see on installeeritud ja on käivitatav kasutaja poolt, kes käitab NodeBB't.",
+    "digest-not-enabled": "This user does not have digests enabled, or the system default is not configured to send digests",
     "username-too-short": "Kasutajanimi on liiga lühike",
     "username-too-long": "Kasutajanimi on liiga pikk",
     "password-too-long": "Parool liiga pikk",

@@ -18,6 +18,7 @@
 	"manage/groups": "Gruplar",
 	"manage/ip-blacklist": "IP Kara Listesi",
 	"manage/uploads": "Yüklemeler",
+	"manage/digest": "Digests",
 
 	"section-settings": "Ayarlar",
 	"settings/general": "Genel",

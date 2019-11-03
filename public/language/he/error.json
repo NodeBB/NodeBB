@@ -33,6 +33,7 @@
     "email-confirm-failed": "לא הצלחנו לאשר את הדוא\"ל שלך, תנסה שוב אחר כך",
     "confirm-email-already-sent": "מייל האישור כבר נשלח, אנא המתן %1 דקות כדי לשלוח מייל נוסף.",
     "sendmail-not-found": "The sendmail executable could not be found, please ensure it is installed and executable by the user running NodeBB.",
+    "digest-not-enabled": "This user does not have digests enabled, or the system default is not configured to send digests",
     "username-too-short": "שם משתמש קצר מדי",
     "username-too-long": "שם משתמש ארוך מדי",
     "password-too-long": "הסיסמה ארוכה מדי",

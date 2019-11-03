@@ -33,6 +33,7 @@
     "email-confirm-failed": "Потврда е-поште није успела, молимо вас да покушате касније.",
     "confirm-email-already-sent": "Е-порука за потврду је већ послата, молимо вас да сачекате %1 минут(а) да бисте послали други.",
     "sendmail-not-found": "Програм за слање поште није пронађен, проверите да ли је инсталиран и покренут од стране корисника NodeBB.",
+    "digest-not-enabled": "This user does not have digests enabled, or the system default is not configured to send digests",
     "username-too-short": "Корисничко име је прекратко",
     "username-too-long": "Корисничко име је предуго",
     "password-too-long": "Шифра је предугачка.",

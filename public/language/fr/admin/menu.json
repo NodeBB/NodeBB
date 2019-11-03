@@ -18,6 +18,7 @@
 	"manage/groups": "Groupes",
 	"manage/ip-blacklist": "Liste noire d'IPs",
 	"manage/uploads": "Téléversements",
+	"manage/digest": "Digests",
 
 	"section-settings": "Réglages",
 	"settings/general": "Général",

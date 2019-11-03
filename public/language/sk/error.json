@@ -33,6 +33,7 @@
     "email-confirm-failed": "Momentálne nemôžeme overiť Váš e-mail, prosím zopakujte to neskôr.",
     "confirm-email-already-sent": "Overovací e-mail už bol odoslaný. Prosím počkajte %1 minút(y) k odoslaniu ďalšieho.",
     "sendmail-not-found": "Odoslaný spúšťač nebol nájdený, prosím uistite sa že je nainštalovaný a spustiteľný užívateľom používajúcim NodeBB.",
+    "digest-not-enabled": "This user does not have digests enabled, or the system default is not configured to send digests",
     "username-too-short": "Užívateľské meno je príliš krátke",
     "username-too-long": "Užívateľské meno je príliš dlhé",
     "password-too-long": "Heslo je príliš dlhé",

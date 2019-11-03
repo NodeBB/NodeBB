@@ -18,6 +18,7 @@
 	"manage/groups": "Групи",
 	"manage/ip-blacklist": "Чорний список IP-адрес",
 	"manage/uploads": "Завантаження",
+	"manage/digest": "Digests",
 
 	"section-settings": "Налаштування",
 	"settings/general": "Загальні",

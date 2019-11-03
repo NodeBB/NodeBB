@@ -33,6 +33,7 @@
     "email-confirm-failed": "Nemohli jsme ověřit vaši e-mailovou adresu, zkuste to později.",
     "confirm-email-already-sent": "Potvrzovací e-mail byl již odeslán. Vyčkejte %1 minut/y, chcete-li odeslat další.",
     "sendmail-not-found": "Modul pro odeslání e-mailů nebyl nalezen. Zkontrolujte prosím, zda je nainstalován a spuštěn uživatelem, který spustil NodeBB.",
+    "digest-not-enabled": "This user does not have digests enabled, or the system default is not configured to send digests",
     "username-too-short": "Uživatelské jméno je moc krátké",
     "username-too-long": "Uživatelské jméno je moc dlouhé",
     "password-too-long": "Heslo je moc dlouhé",
