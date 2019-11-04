@@ -32,8 +32,10 @@ function mainRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/reset/:code?', middleware, [middleware.delayLoading], controllers.reset);
 	setupPageRoute(app, '/tos', middleware, [], controllers.termsOfUse);
 
+	setupPageRoute(app, '/email/unsubscribe/:token', middleware, [], controllers.accounts.settings.unsubscribe);
+	app.post('/email/unsubscribe/:token', controllers.accounts.settings.unsubscribePost);
+
 	app.post('/compose', middleware.applyCSRF, controllers.composer.post);
-	app.post('/email/unsubscribe/:token', controllers.accounts.settings.unsubscribe);
 }
 
 function modRoutes(app, middleware, controllers) {

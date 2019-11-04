@@ -166,33 +166,56 @@ function addSoundSettings(userData, soundsMapping) {
 	});
 }
 
+const unsubscribable = ['digest', 'notification'];
 const jwtVerifyAsync = util.promisify(function (token, callback) {
 	jwt.verify(token, nconf.get('secret'), (err, payload) => callback(err, payload));
 });
-
-settingsController.unsubscribe = async function (req, res) {
-	if (!req.params.token) {
-		return res.sendStatus(404);
+const doUnsubscribe = async (payload) => {
+	if (payload.template === 'digest') {
+		await Promise.all([
+			user.setSetting(payload.uid, 'dailyDigestFreq', 'off'),
+			user.updateDigestSetting(payload.uid, 'off'),
+		]);
+	} else if (payload.template === 'notification') {
+		const current = await db.getObjectField('user:' + payload.uid + ':settings', 'notificationType_' + payload.type);
+		await user.setSetting(payload.uid, 'notificationType_' + payload.type, (current === 'notificationemail' ? 'notification' : 'none'));
 	}
+	return true;
+};
+
+settingsController.unsubscribe = async (req, res) => {
 	let payload;
 	try {
 		payload = await jwtVerifyAsync(req.params.token);
-		if (!payload || (payload.template !== 'notification' && payload.template !== 'digest')) {
+		if (!payload || !unsubscribable.includes(payload.template)) {
+			return;
+		}
+	} catch (err) {
+		throw new Error(err);
+	}
+
+	try {
+		await doUnsubscribe(payload);
+		res.render('unsubscribe', {
+			payload: payload,
+		});
+	} catch (err) {
+		throw new Error(err);
+	}
+};
+
+settingsController.unsubscribePost = async function (req, res) {
+	let payload;
+	try {
+		payload = await jwtVerifyAsync(req.params.token);
+		if (!payload || !unsubscribable.includes(payload.template)) {
 			return res.sendStatus(404);
 		}
 	} catch (err) {
 		return res.sendStatus(403);
 	}
 	try {
-		if (payload.template === 'digest') {
-			await Promise.all([
-				user.setSetting(payload.uid, 'dailyDigestFreq', 'off'),
-				user.updateDigestSetting(payload.uid, 'off'),
-			]);
-		} else if (payload.template === 'notification') {
-			const current = await db.getObjectField('user:' + payload.uid + ':settings', 'notificationType_' + payload.type);
-			await user.setSetting(payload.uid, 'notificationType_' + payload.type, (current === 'notificationemail' ? 'notification' : 'none'));
-		}
+		await doUnsubscribe(payload);
 		res.sendStatus(200);
 	} catch (err) {
 		winston.error('[settings/unsubscribe] One-click unsubscribe failed with error: ' + err.message);

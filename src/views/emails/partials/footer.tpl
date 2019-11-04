@@ -5,6 +5,7 @@
 						<br><br>
 						<!-- IF showUnsubscribe -->
 						[[email:notif.post.unsub.info]] <a href="{url}/uid/{uid}/settings">[[email:unsub.cta]]</a>.
+						<br />[[email:notif.post.unsub.one-click]] <a href="{unsubUrl}">[[email:unsubscribe]]</a>.
 						<!-- ENDIF showUnsubscribe -->
 						<br><br>
 					</td>
@@ -19,7 +20,7 @@
 			<![endif]-->
 		</div>
 
-    </center>
+	</center>
 </body>
 
 </html>
