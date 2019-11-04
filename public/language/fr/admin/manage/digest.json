@@ -1,21 +1,21 @@
 {
-	"lead": "A listing of digest delivery stats and times is displayed below.",
-	"disclaimer": "Please be advised that email delivery is not guaranteed, due to the nature of email technology. Many variables factor into whether an email sent to the recipient server is ultimately delivered into the user's inbox, including server reputation, blacklisted IP addresses, and whether DKIM/SPF/DMARC is configured.",
-	"disclaimer-continued": "A successful delivery means the message was sent successfully by NodeBB and acknowledged by the recipient server. It does not mean the email landed in the inbox. For best results, we recommend using a third-party email delivery service such as <a href=\"https://sendgrid.com/why-sendgrid/\">SendGrid</a>.",
+	"lead": "Une liste des statistiques des résumés envoyés est affichée ci-dessous.",
+	"disclaimer": "Veuillez noter que l'envoi par courrier électronique n'est pas garantie en raison de la nature de la technologie de messagerie. De nombreuses variables déterminent si un courrier électronique envoyé au serveur destinataire arrive dans la boîte de réception de l'utilisateur, y compris la réputation du serveur, les adresses IP figurant sur la liste noire et si DKIM / SPF / DMARC sont configurés.",
+	"disclaimer-continued": "Un envoi réussie signifie que le message a été envoyé avec succès par NodeBB et acquitté par le serveur destinataire. Cela ne signifie pas que l'e-mail a atterri dans la boîte de réception. Pour de meilleurs résultats, nous vous recommandons d'utiliser un service de messagerie tiers, tel que <a href=\"https://sendgrid.com/why-sendgrid/\">SendGrid</a>.",
 
-	"user": "User",
-	"subscription": "Subscription Type",
-	"last-delivery": "Last successful delivery",
-	"default": "System default",
-	"default-help": "<em>System default</em> means the user has not explicitly overridden the global forum setting for digests, which is currently: &quot;<strong>%1</strong>&quot;",
-	"resend": "Resend Digest",
-	"resend-all-confirm": "Are you sure you wish to mnually execute this digest run?",
-	"resent-single": "Manual digest resend completed",
-	"resent-day": "Daily digest resent",
-	"resent-week": "Weekly digest resent",
-	"resent-month": "Monthly digest resent",
-	"null": "<em>Never</em>",
-	"manual-run": "Manual digest run:",
+	"user": "Utilisateur",
+	"subscription": "Type d'abonnement",
+	"last-delivery": "Dernier envoi réussi",
+	"default": "Valeur par défaut",
+	"default-help": "<em>La valeur par défaut</em> signifie que l'utilisateur n'a pas explicitement modifié ses paramètre pour les résumés; qui sont : &quot;<strong>%1</strong>&quot;",
+	"resend": "Renvoi",
+	"resend-all-confirm": "Êtes-vous sûr de vouloir exécuter manuellement ce résumé?",
+	"resent-single": "Renvoi manuel du Résumé terminé",
+	"resent-day": "Résumé quotidienne renvoyé",
+	"resent-week": "Résumé hebdomadaire renvoyé",
+	"resent-month": "Résumé mensuel renvoyé",
+	"null": "<em>Jamais</em>",
+	"manual-run": "Lancer le résumé manuellement:",
 
-	"no-delivery-data": "No delivery data found"
+	"no-delivery-data": "Aucune donnée d'envoi trouvée"
 }
