@@ -1,5 +1,7 @@
 'use strict';
 
+const querystring = require('querystring');
+
 const posts = require('../posts');
 const privileges = require('../privileges');
 const helpers = require('./helpers');
@@ -22,7 +24,9 @@ postsController.redirectToPost = async function (req, res, next) {
 	if (!canRead) {
 		return helpers.notAllowed(req, res);
 	}
-	helpers.redirect(res, path);
+
+	const qs = querystring.stringify(req.query);
+	helpers.redirect(res, qs ? path + '?' + qs : path);
 };
 
 postsController.getRecentPosts = async function (req, res) {

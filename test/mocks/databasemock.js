@@ -169,6 +169,7 @@ async function setupMockDefaults() {
 	meta.config.postDelay = 0;
 	meta.config.initialPostDelay = 0;
 	meta.config.newbiePostDelay = 0;
+	meta.config.autoDetectLang = 0;
 
 	await enableDefaultPlugins();
 
