@@ -199,11 +199,7 @@ Emailer.send = async function (template, uid, params) {
 
 Emailer.sendToEmail = async function (template, email, language, params) {
 	const lang = language || meta.config.defaultLang || 'en-GB';
-
-	// Add some default email headers based on local configuration
-	params.headers = { 'List-Id': '<' + [template, params.uid, getHostname()].join('.') + '>',
-		'List-Unsubscribe': '<' + [nconf.get('url'), 'uid', params.uid, 'settings'].join('/') + '>',
-		...params.headers };
+	const unsubscribable = ['digest', 'notification'];
 
 	// Digests and notifications can be one-click unsubbed
 	let payload = {
@@ -211,15 +207,22 @@ Emailer.sendToEmail = async function (template, email, language, params) {
 		uid: params.uid,
 	};
 
-	if (template === 'digest' || template === 'notification') {
+	if (unsubscribable.includes(template)) {
 		if (template === 'notification') {
 			payload.type = params.notification.type;
 		}
 		payload = jwt.sign(payload, nconf.get('secret'), {
 			expiresIn: '30d',
 		});
-		params.headers['List-Unsubscribe'] = '<' + [nconf.get('url'), 'email', 'unsubscribe', payload].join('/') + '>';
-		params.headers['List-Unsubscribe-Post'] = 'List-Unsubscribe=One-Click';
+
+		const unsubUrl = [nconf.get('url'), 'email', 'unsubscribe', payload].join('/');
+		params.headers = {
+			'List-Id': '<' + [template, params.uid, getHostname()].join('.') + '>',
+			'List-Unsubscribe': '<' + unsubUrl + '>',
+			'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+			...params.headers,
+		};
+		params.unsubUrl = unsubUrl;
 	}
 
 	const result = await Plugins.fireHook('filter:email.params', {
