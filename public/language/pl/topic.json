@@ -18,7 +18,7 @@
     "last_reply_time": "Ostatnia odpowiedź",
     "reply-as-topic": "Odpowiedz, zakładając nowy temat",
     "guest-login-reply": "Zaloguj się, aby odpowiedzieć",
-    "login-to-view": "🔒 Log in to view",
+    "login-to-view": "Zaloguj się by zobaczyć",
     "edit": "Edytuj",
     "delete": "Usuń",
     "purge": "Wymaż",
@@ -135,5 +135,5 @@
     "diffs.current-revision": "wersja obecna",
     "diffs.original-revision": "pierwsza zmiana",
     "timeago_later": "%1 później",
-    "timeago_earlier": "%1 earlier"
+    "timeago_earlier": "%1 wcześniej"
 }
