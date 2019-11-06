@@ -54,6 +54,11 @@
 				</tr>
 				<!-- END groups -->
 			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="6"><br /><br /></td>
+				</tr>
+			</tfoot>
 		</table>
 
 		<!-- IMPORT partials/paginator.tpl -->
