@@ -198,7 +198,7 @@ module.exports = function (User) {
 		]);
 
 		if (meta.config.requireEmailConfirmation && newEmail) {
-			User.email.sendValidationEmail(uid, {
+			await User.email.sendValidationEmail(uid, {
 				email: newEmail,
 				subject: '[[email:email.verify-your-email.subject]]',
 				template: 'verify_email',
