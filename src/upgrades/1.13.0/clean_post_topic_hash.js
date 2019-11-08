@@ -2,8 +2,6 @@
 
 const db = require('../../database');
 const batch = require('../../batch');
-const posts = require('../../posts');
-const topics = require('../../topics');
 
 module.exports = {
 	name: 'Clean up post hash data',
@@ -20,20 +18,20 @@ async function cleanPost(progress) {
 	await batch.processSortedSet('posts:pid', async function (pids) {
 		progress.incr(pids.length);
 
-		const postData = await posts.getPostsData(pids);
+		const postData = await db.getObjects(pids.map(pid => 'post:' + pid));
 		await Promise.all(postData.map(async function (post) {
 			if (!post) {
 				return;
 			}
-			const fields = [];
-			if (post.editor === '') {
-				fields.push('editor');
+			const fieldsToDelete = [];
+			if (post.hasOwnProperty('editor') && post.editor === '') {
+				fieldsToDelete.push('editor');
 			}
-			if (post.deleted === 0) {
-				fields.push('deleted');
+			if (post.hasOwnProperty('deleted') && parseInt(post.deleted, 10) === 0) {
+				fieldsToDelete.push('deleted');
 			}
-			if (post.edited === 0) {
-				fields.push('edited');
+			if (post.hasOwnProperty('edited') && parseInt(post.edited, 10) === 0) {
+				fieldsToDelete.push('edited');
 			}
 
 			// cleanup legacy fields, these are not used anymore
@@ -44,12 +42,12 @@ async function cleanPost(progress) {
 			];
 			legacyFields.forEach((field) => {
 				if (post.hasOwnProperty(field)) {
-					fields.push(field);
+					fieldsToDelete.push(field);
 				}
 			});
 
-			if (fields.length) {
-				await db.deleteObjectFields('post:' + post.pid, fields);
+			if (fieldsToDelete.length) {
+				await db.deleteObjectFields('post:' + post.pid, fieldsToDelete);
 			}
 		}));
 	}, {
@@ -61,20 +59,20 @@ async function cleanPost(progress) {
 async function cleanTopic(progress) {
 	await batch.processSortedSet('topics:tid', async function (tids) {
 		progress.incr(tids.length);
-		const topicData = await topics.getTopicsData(tids);
+		const topicData = await db.getObjects(tids.map(tid => 'topic:' + tid));
 		await Promise.all(topicData.map(async function (topic) {
 			if (!topic) {
 				return;
 			}
-			const fields = [];
-			if (topic.deleted === 0) {
-				fields.push('deleted');
+			const fieldsToDelete = [];
+			if (topic.hasOwnProperty('deleted') && parseInt(topic.deleted, 10) === 0) {
+				fieldsToDelete.push('deleted');
 			}
-			if (topic.pinned === 0) {
-				fields.push('pinned');
+			if (topic.hasOwnProperty('pinned') && parseInt(topic.pinned, 10) === 0) {
+				fieldsToDelete.push('pinned');
 			}
-			if (topic.locked === 0) {
-				fields.push('locked');
+			if (topic.hasOwnProperty('locked') && parseInt(topic.locked, 10) === 0) {
+				fieldsToDelete.push('locked');
 			}
 
 			// cleanup legacy fields, these are not used anymore
@@ -83,12 +81,12 @@ async function cleanTopic(progress) {
 			];
 			legacyFields.forEach((field) => {
 				if (topic.hasOwnProperty(field)) {
-					fields.push(field);
+					fieldsToDelete.push(field);
 				}
 			});
 
-			if (fields.length) {
-				await db.deleteObjectFields('topic:' + topic.tid, fields);
+			if (fieldsToDelete.length) {
+				await db.deleteObjectFields('topic:' + topic.tid, fieldsToDelete);
 			}
 		}));
 	}, {
