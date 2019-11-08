@@ -75,7 +75,7 @@ postgresModule.init = function (callback) {
 
 
 async function checkUpgrade(client) {
-	var res = client.query(`
+	var res = await client.query(`
 SELECT EXISTS(SELECT *
                 FROM "information_schema"."columns"
                WHERE "table_schema" = 'public'
