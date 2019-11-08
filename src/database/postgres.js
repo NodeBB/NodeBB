@@ -85,9 +85,13 @@ SELECT EXISTS(SELECT *
                 FROM "information_schema"."columns"
                WHERE "table_schema" = 'public'
                  AND "table_name" = 'legacy_hash'
-                 AND "column_name" = '_key') b`);,
+                 AND "column_name" = '_key') b,
+       EXISTS(SELECT *
+                FROM "information_schema"."routines"
+               WHERE "routine_schema" = 'public'
+                 AND "routine_name" = 'nodebb_get_sorted_set_members') c`);
 
-	if (res.rows[0].a && res.rows[0].b) {
+	if (res.rows[0].a && res.rows[0].b && res.rows[0].c) {
 		return;
 	}
 
@@ -273,6 +277,21 @@ SELECT "_key", "type"
   FROM "legacy_object"
  WHERE "expireAt" IS NULL
     OR "expireAt" > CURRENT_TIMESTAMP`);
+		}
+
+		if (!res.rows[0].c) {
+			await client.query(`
+CREATE FUNCTION "nodebb_get_sorted_set_members"(TEXT) RETURNS TEXT[] AS $$
+    SELECT array_agg(z."value" ORDER BY z."score" ASC)
+      FROM "legacy_object_live" o
+     INNER JOIN "legacy_zset" z
+             ON o."_key" = z."_key"
+            AND o."type" = z."type"
+          WHERE o."_key" = $1
+$$ LANGUAGE sql
+STABLE
+STRICT
+PARALLEL SAFE`);
 		}
 	} catch (ex) {
 		await client.query(`ROLLBACK`);
