@@ -63,7 +63,7 @@ postgresModule.init = function (callback) {
 		postgresModule.pool = db;
 		postgresModule.client = db;
 
-		checkUpgrade(client).then(function() {
+		checkUpgrade(client).then(function () {
 			release();
 			callback(null);
 		}, function (err) {
@@ -211,7 +211,7 @@ SELECT DISTINCT "data"->>'_key',
                      ELSE NULL
                 END
   FROM "objects"`);
-			await client.query(`
+				await client.query(`
 INSERT INTO "legacy_hash" ("_key", "data")
 SELECT "data"->>'_key',
        "data" - '_key' - 'expireAt'
@@ -228,7 +228,7 @@ SELECT "data"->>'_key',
                   AND ("data" ? 'score'))
             ELSE TRUE
        END`);
-			await client.query(`
+				await client.query(`
 INSERT INTO "legacy_zset" ("_key", "value", "score")
 SELECT "data"->>'_key',
        "data"->>'value',
