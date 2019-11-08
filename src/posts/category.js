@@ -18,7 +18,7 @@ module.exports = function (Posts) {
 		const tids = _.uniq(postData.map(post => post && post.tid).filter(Boolean));
 		const topicData = await topics.getTopicsFields(tids, ['cid']);
 		const tidToTopic = _.zipObject(tids, topicData);
-		const cids = postData.map(post => tidToTopic[post.tid].cid);
+		const cids = postData.map(post => tidToTopic[post.tid] && tidToTopic[post.tid].cid);
 		return cids;
 	};
 
