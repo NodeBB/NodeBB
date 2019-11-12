@@ -33,8 +33,8 @@
 	"testing.select": "Vyberte šablonu e-mailu",
 	"testing.send": "Odeslat testovací e-mail",
 	"testing.send-help": "Testovací e-mail bude odeslán aktuálně přihlášenému uživateli na jeho e-mailovou adresu z registrace.",
-	"subscriptions": "Email Digests",
-	"subscriptions.disable": "Disable email digests",
+	"subscriptions": "E-mailové odběry",
+	"subscriptions.disable": "Zakázat e-mailové odběry",
 	"subscriptions.hour": "Hodina přehledu",
 	"subscriptions.hour-help": "Zadejte číslo odpovídající hodině, kdy mají být odeslány přehledové e-maily (tj. <code>0</code> pro půlnoc, <code>17</code> pro 5:00pm).  Mějte na paměti, že tato hodina závisí na hodinách samotného serveru a nemusí tak souhlasit se systémovými hodinami. <br />Přibližný čas serveru je: <span id=\"serverTime\"></span>.<br />Další odeslání přehledů je plánováno na <span id=\"nextDigestTime\"></span>."
 }

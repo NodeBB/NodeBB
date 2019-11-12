@@ -18,7 +18,7 @@
     "last_reply_time": "Poslední odpověď",
     "reply-as-topic": "Odpovědět jako Téma",
     "guest-login-reply": "Přihlásit se pro odpověď",
-    "login-to-view": "🔒 Log in to view",
+    "login-to-view": "Přihlásit se pro zobrazení",
     "edit": "Upravit",
     "delete": "Odstranit",
     "purge": "Vypráznit",
@@ -135,5 +135,5 @@
     "diffs.current-revision": "aktuální revize",
     "diffs.original-revision": "originální revize",
     "timeago_later": "%1 později",
-    "timeago_earlier": "%1 earlier"
+    "timeago_earlier": "%1 dříve"
 }

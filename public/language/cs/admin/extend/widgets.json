@@ -20,11 +20,11 @@
 
 	"error.select-clone": "Vyberte prosím stránku, ze které chcete klonovat",
 
-	"title": "Title",
-	"title.placeholder": "Title (only shown on some containers)",
-	"container": "Container",
-	"container.placeholder": "Drag and drop a container or enter HTML here.",
-	"show-to-groups": "Show to groups",
-	"hide-from-groups": "Hide from groups",
-	"hide-on-mobile": "Hide on mobile"
+	"title": "Titul",
+	"title.placeholder": "Titul (zobrazuje se jen v některých kontajnerech)",
+	"container": "Kontejner",
+	"container.placeholder": "Přesuňte sem kontejner nebo zadejte HTML",
+	"show-to-groups": "Zobrazit ve skupinách",
+	"hide-from-groups": "Skrýt ve skupinách",
+	"hide-on-mobile": "Skrýt na mobilu"
 }
