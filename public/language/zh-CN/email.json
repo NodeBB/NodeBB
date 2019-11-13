@@ -42,7 +42,7 @@
     "notif.test.long": "这是一个测试的通知邮件。",
     "test.text1": "这是一封测试邮件，用来验证 NodeBB 的邮件配置是否设置正确。",
     "unsub.cta": "点击这里修改这些设置",
-    "unsubscribe": "unsubscribe",
+    "unsubscribe": "退订",
     "unsub.success": "You will no longer receive emails from the <strong>%1</strong> mailing list",
     "banned.subject": "您已被封禁从 %1",
     "banned.text1": "用户 %1 已被封禁从 %2.",
