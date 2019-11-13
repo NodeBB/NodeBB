@@ -28,7 +28,7 @@ addons:
     packages:
       - g++-4.8
       - mongodb-org-server
-  postgresql: "9.5"
+  postgresql: "12"
 node_js:
   - "12"
   - "10"

@@ -463,19 +463,14 @@ SELECT o."_key" k
 		const res = await module.pool.query({
 			name: 'getSortedSetsMembers',
 			text: `
-SELECT o."_key" k,
-       array_agg(z."value" ORDER BY z."score" ASC) m
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_zset" z
-         ON o."_key" = z."_key"
-        AND o."type" = z."type"
- WHERE o."_key" = ANY($1::TEXT[])
- GROUP BY o."_key"`,
+SELECT "_key" k,
+       "nodebb_get_sorted_set_members"("_key") m
+  FROM UNNEST($1::TEXT[]) "_key";`,
 			values: [keys],
 		});
 
 		return keys.map(function (k) {
-			return (res.rows.find(r => r.k === k) || { m: [] }).m;
+			return (res.rows.find(r => r.k === k) || {}).m || [];
 		});
 	};
 
