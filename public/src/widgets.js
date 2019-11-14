@@ -24,17 +24,17 @@
 			});
 
 			if (location === 'footer' && !$('#content [widget-area="footer"],#content [data-widget-area="footer"]').length) {
-				$('#content').append($('<div class="row"><div widget-area="footer" class="col-xs-12"></div></div>'));
+				$('#content').append($('<div class="row"><div data-widget-area="footer" class="col-xs-12"></div></div>'));
 			} else if (location === 'sidebar' && !$('#content [widget-area="sidebar"],#content [data-widget-area="sidebar"]').length) {
 				if ($('[component="account/cover"]').length) {
-					$('[component="account/cover"]').nextAll().wrapAll($('<div class="row"><div class="col-lg-9 col-xs-12"></div><div widget-area="sidebar" class="col-lg-3 col-xs-12"></div></div></div>'));
+					$('[component="account/cover"]').nextAll().wrapAll($('<div class="row"><div class="col-lg-9 col-xs-12"></div><div data-widget-area="sidebar" class="col-lg-3 col-xs-12"></div></div></div>'));
 				} else if ($('[component="groups/cover"]').length) {
-					$('[component="groups/cover"]').nextAll().wrapAll($('<div class="row"><div class="col-lg-9 col-xs-12"></div><div widget-area="sidebar" class="col-lg-3 col-xs-12"></div></div></div>'));
+					$('[component="groups/cover"]').nextAll().wrapAll($('<div class="row"><div class="col-lg-9 col-xs-12"></div><div data-widget-area="sidebar" class="col-lg-3 col-xs-12"></div></div></div>'));
 				} else {
-					$('#content > *').wrapAll($('<div class="row"><div class="col-lg-9 col-xs-12"></div><div widget-area="sidebar" class="col-lg-3 col-xs-12"></div></div></div>'));
+					$('#content > *').wrapAll($('<div class="row"><div class="col-lg-9 col-xs-12"></div><div data-widget-area="sidebar" class="col-lg-3 col-xs-12"></div></div></div>'));
 				}
 			} else if (location === 'header' && !$('#content [widget-area="header"],#content [data-widget-area="header"]').length) {
-				$('#content').prepend($('<div class="row"><div widget-area="header" class="col-xs-12"></div></div>'));
+				$('#content').prepend($('<div class="row"><div data-widget-area="header" class="col-xs-12"></div></div>'));
 			}
 
 			area = $('#content [widget-area="' + location + '"],#content [data-widget-area="' + location + '"]').eq(0);
