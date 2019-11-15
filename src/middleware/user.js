@@ -201,13 +201,11 @@ module.exports = function (middleware) {
 	middleware.isAdmin = async function isAdmin(req, res, next) {
 		const isAdmin = await user.isAdministrator(req.uid);
 		if (!isAdmin) {
-			controllers.helpers.notAllowed(req, res);
-			return;
+			return controllers.helpers.notAllowed(req, res);
 		}
 		const hasPassword = await user.hasPassword(req.uid);
 		if (!hasPassword) {
-			next();
-			return;
+			return next();
 		}
 
 		const loginTime = req.session.meta ? req.session.meta.datetime : 0;
@@ -219,8 +217,7 @@ module.exports = function (middleware) {
 				req.session.meta.datetime += Math.min(300000, adminReloginDuration);
 			}
 
-			next();
-			return;
+			return next();
 		}
 
 		let returnTo = req.path;
