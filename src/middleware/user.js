@@ -237,7 +237,7 @@ module.exports = function (middleware) {
 				if (res.locals.isAPI) {
 					res.status(401).json({});
 				} else {
-					res.redirect(nconf.get('relative_path') + '/login');
+					res.redirect(nconf.get('relative_path') + '/login?local=1');
 				}
 			},
 		], next);
