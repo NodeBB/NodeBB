@@ -32,7 +32,11 @@ middleware.regexes = {
 };
 
 middleware.applyCSRF = csrf({
-	cookie: true,
+	cookie: nconf.get('url_parsed').protocol === 'https:' ? {
+		secure: true,
+		sameSite: 'Strict',
+		httpOnly: true,
+	} : true,
 });
 
 middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login');
