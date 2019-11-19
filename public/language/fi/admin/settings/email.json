@@ -1,6 +1,6 @@
 {
-	"email-settings": "Email Settings",
-	"address": "Email Address",
+	"email-settings": "Sähköpostin asetukset",
+	"address": "Sähköpostiosoitteet",
 	"address-help": "The following email address refers to the email that the recipient will see in the \"From\" and \"Reply To\" fields.",
 	"from": "From Name",
 	"from-help": "The from name to display in the email.",
@@ -33,8 +33,8 @@
 	"testing.select": "Select Email Template",
 	"testing.send": "Send Test Email",
 	"testing.send-help": "The test email will be sent to the currently logged in user's email address.",
-	"subscriptions": "Email Digests",
-	"subscriptions.disable": "Disable email digests",
+	"subscriptions": "Sähköposti koosteet",
+	"subscriptions.disable": "Poista sähköpostin koosteet käytöstä",
 	"subscriptions.hour": "Digest Hour",
 	"subscriptions.hour-help": "Please enter a number representing the hour to send scheduled email digests (e.g. <code>0</code> for midnight, <code>17</code> for 5:00pm). Keep in mind that this is the hour according to the server itself, and may not exactly match your system clock.<br /> The approximate server time is: <span id=\"serverTime\"></span><br /> The next daily digest is scheduled to be sent  <span id=\"nextDigestTime\"></span>"
 }

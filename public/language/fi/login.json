@@ -1,12 +1,12 @@
 {
-    "username-email": "Username / Email",
-    "username": "Username",
-    "email": "Email",
+    "username-email": "Käyttäjätunnus / Sähköposti",
+    "username": "Käyttäjätunnus",
+    "email": "Sähköposti",
     "remember_me": "Muista minut?",
     "forgot_password": "Unohditko salasanasi?",
     "alternative_logins": "Vaihtoehtoiset kirjautumistavat",
-    "failed_login_attempt": "Login Unsuccessful",
+    "failed_login_attempt": "Kirjautuminen epäonnistui",
     "login_successful": "Olet onnistuneesti kirjautunut sisään!",
     "dont_have_account": "Ei käyttäjätunnusta?",
-    "logged-out-due-to-inactivity": "You have been logged out of the Admin Control Panel due to inactivity"
+    "logged-out-due-to-inactivity": "Sinut on kirjattu ulos hallintapaneelista liian pitkän toimettomuuden takia."
 }

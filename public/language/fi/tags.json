@@ -1,7 +1,7 @@
 {
     "no_tag_topics": "Ei viimeisimpiä aiheita tällä tagilla.",
     "tags": "Tagit",
-    "enter_tags_here": "Enter tags here, between %1 and %2 characters each.",
+    "enter_tags_here": "Syötä tagit tähän merkkien %1 ja %2 väliin.",
     "enter_tags_here_short": "Syötä tagit...",
     "no_tags": "Ei vielä yhtään tagia."
 }
