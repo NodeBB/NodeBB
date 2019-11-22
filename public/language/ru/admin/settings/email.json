@@ -32,7 +32,7 @@
 	"testing": "Email Testing",
 	"testing.select": "Select Email Template",
 	"testing.send": "Send Test Email",
-	"testing.send-help": "The test email will be sent to the currently logged in user's email address.",
+	"testing.send-help": "Проверочное письмо будет отправлено на электронную почту пользователя, который сейчас пользуется панелью администратора.",
 	"subscriptions": "Email Digests",
 	"subscriptions.disable": "Disable email digests",
 	"subscriptions.hour": "Digest Hour",

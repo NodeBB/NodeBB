@@ -33,7 +33,7 @@
     "email-confirm-failed": "Helaas kon het e-mailadres niet bevestigd worden, probeer het later nog eens.",
     "confirm-email-already-sent": "Bevestigingsmail is zojuist al verzonden, wacht alsjeblieft %1 minuut (minuten) voordat je opnieuw een bevestigingsmail aanvraagt.",
     "sendmail-not-found": "De sendmail executable kon niet worden gevonden, zorg ervoor dat deze is geïnstalleerd en dat de gebruiker die NodeBB draait deze kan uitvoeren.",
-    "digest-not-enabled": "This user does not have digests enabled, or the system default is not configured to send digests",
+    "digest-not-enabled": "De gebruiker heeft samenvatting niet aangezet, of de systeem default is niet geconfigureerd om samenvattingen te versturen",
     "username-too-short": "Gebruikersnaam is te kort",
     "username-too-long": "Gebruikersnaam is te lang",
     "password-too-long": "Wachtwoord is te lang",

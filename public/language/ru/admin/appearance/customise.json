@@ -1,14 +1,14 @@
 {
 	"custom-css": "Пользовательский CSS/LESS",
-	"custom-css.description": "Введите собственные CSS/LESS здесь, применяемые после всех других стилей.",
+	"custom-css.description": "Добавьте собственные стили CSS/LESS. Они будут применяться в последнюю очередь, после всех остальных.",
 	"custom-css.enable": "Включить пользовательский CSS/LESS",
 
-	"custom-js": "Каcтомный Javascript",
-	"custom-js.description": "Укажите свой javascript здесь. Он будет выполнен после полной загрузки страницы.",
-	"custom-js.enable": "Включить пользовательский Javascript",
+	"custom-js": "Пользовательский JavaScript",
+	"custom-js.description": "Добавьте собственный JS-код. Он будет выполнен после полной загрузки страницы.",
+	"custom-js.enable": "Включить пользовательский JavaScript",
 
-	"custom-header": "Пользовательский Заголовок",
-	"custom-header.description": "Enter custom HTML here (ex. Meta Tags, etc.), which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup. Script tags are allowed, but are discouraged, as the <a href=\"#custom-js\" data-toggle=\"tab\">Custom Javascript</a> tab is available.",
+	"custom-header": "Пользовательский заголовок",
+	"custom-header.description": "Добавьте HTML в секцию <code>&lt;head&gt;</code> шаблонов страниц форума. Тег &lt;script&gt; использовать можно, но не рекомендуется (для этого предусмотрен раздел <a href=\"#custom-js\" data-toggle=\"tab\">Пользовательский JavaScript</a>).",
 	"custom-header.enable": "Включить Пользовательский заголовок",
 
 	"custom-css.livereload": "Включить автоматическую перезагрузку страниц",

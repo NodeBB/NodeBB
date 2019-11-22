@@ -1,7 +1,7 @@
 {
 	"section-general": "Общие",
 	"general/dashboard": "Панель управления",
-	"general/homepage": "Домашняя страница",
+	"general/homepage": "Главная страница",
 	"general/navigation": "Навигация",
 	"general/languages": "Языки",
 	"general/sounds": "Звуки",
@@ -10,11 +10,11 @@
 	"section-manage": "Управление",
 	"manage/categories": "Категории",
 	"manage/privileges": "Привилегии",
-	"manage/tags": "Теги",
+	"manage/tags": "Метки",
 	"manage/users": "Пользователи",
 	"manage/admins-mods": "Админы и Модераторы",
 	"manage/registration": "Очередь на регистрацию",
-	"manage/post-queue": "Очередь публикации",
+	"manage/post-queue": "Очередь на публикацию",
 	"manage/groups": "Группы",
 	"manage/ip-blacklist": "Блокировка IP",
 	"manage/uploads": "Загрузки",
@@ -31,18 +31,18 @@
 	"settings/post": "Сообщения",
 	"settings/chat": "Чат",
 	"settings/pagination": "Пагинация",
-	"settings/tags": "Теги",
+	"settings/tags": "Метки",
 	"settings/notifications": "Оповещения",
 	"settings/cookies": "Куки",
 	"settings/web-crawler": "Индексация",
 	"settings/sockets": "Сокеты",
 	"settings/advanced": "Продвинутые",
 
-	"settings.page-title": "%1 Настройки",
+	"settings.page-title": "Настройки %1",
 
 	"section-appearance": "Вид",
 	"appearance/themes": "Темы",
-	"appearance/skins": "Скины",
+	"appearance/skins": "Стили",
 	"appearance/customise": "Настройка контента (HTML/JS/CSS)",
 
 	"section-extend": "Расширения",
@@ -68,7 +68,7 @@
 	"rebuild-and-restart-forum": "Пересобрать и перезапустить форум",
 	"restart-forum": "Перезапустить Форум",
 	"logout": "Выйти",
-	"view-forum": "Просмотреть Форум",
+	"view-forum": "Перейти на форум",
 
 	"search.placeholder": "Поиск настроек",
 	"search.no-results": "Нет результата...",
@@ -78,6 +78,6 @@
 
 	"connection-lost": "Соединение с %1 потеряно, пытаюсь переподключиться...",
 
-	"alerts.version": "Запущена <strong>версия v%1 NodeBB</strong>",
-	"alerts.upgrade": "Обновление до v%1"
+	"alerts.version": "Вы используете <strong>NodeBB версии <span id=\"version\">%1</span></strong>",
+	"alerts.upgrade": "Обновить до v%1"
 }
