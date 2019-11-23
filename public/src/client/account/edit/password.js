@@ -76,12 +76,12 @@ define('forum/account/edit/password', ['forum/account/header', 'translator', 'zx
 					currentPassword.val('');
 					password.val('');
 					password_confirm.val('');
+					password_notify.parent().removeClass('show-success show-danger');
+					password_confirm_notify.parent().removeClass('show-success show-danger');
 					passwordsmatch = false;
 					passwordvalid = false;
 
 					if (err) {
-						onPasswordChanged();
-						onPasswordConfirmChanged();
 						return app.alertError(err.message);
 					}
 					if (parseInt(app.user.uid, 10) === parseInt(ajaxify.data.uid, 10)) {
