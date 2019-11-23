@@ -1,21 +1,21 @@
 {
-	"lead": "A listing of digest delivery stats and times is displayed below.",
-	"disclaimer": "Please be advised that email delivery is not guaranteed, due to the nature of email technology. Many variables factor into whether an email sent to the recipient server is ultimately delivered into the user's inbox, including server reputation, blacklisted IP addresses, and whether DKIM/SPF/DMARC is configured.",
-	"disclaimer-continued": "A successful delivery means the message was sent successfully by NodeBB and acknowledged by the recipient server. It does not mean the email landed in the inbox. For best results, we recommend using a third-party email delivery service such as <a href=\"https://sendgrid.com/why-sendgrid/\">SendGrid</a>.",
+	"lead": "Здесь представлен отчёт об отправке регулярных рассылок-дайджестов.",
+	"disclaimer": "Пожалуйста, имейте в в виду, что в силу специфики работы электронной почты доставку писем гарантировать невозможно. Получит пользователь рассылку или нет, зависит от множества факторов: репутации сервера, наличие или отсутствие вашего IP-адреса в чёрных списках, наличие или отсутствие настроек DKIM/SPF/DMARC и т.п.",
+	"disclaimer-continued": "Успешная доставка означает, что NodeBB отправил письмо, и оно прибыло на почтовый сервер получателя. Это ещё не значит, что пользователь увидел его во «Входящих». Для более надёжной доставки мы рекомендуем использовать специальные сторонние сервисы, например <a href=\"https://sendgrid.com/why-sendgrid/\">SendGrid</a>.",
 
-	"user": "User",
-	"subscription": "Subscription Type",
-	"last-delivery": "Last successful delivery",
-	"default": "System default",
-	"default-help": "<em>System default</em> means the user has not explicitly overridden the global forum setting for digests, which is currently: &quot;<strong>%1</strong>&quot;",
-	"resend": "Resend Digest",
-	"resend-all-confirm": "Are you sure you wish to mnually execute this digest run?",
-	"resent-single": "Manual digest resend completed",
-	"resent-day": "Daily digest resent",
-	"resent-week": "Weekly digest resent",
-	"resent-month": "Monthly digest resent",
-	"null": "<em>Never</em>",
-	"manual-run": "Manual digest run:",
+	"user": "Пользователь",
+	"subscription": "Тип подписки",
+	"last-delivery": "Последняя доставка",
+	"default": "Стандартная системная",
+	"default-help": "<em>Стандартная системная</em> означает, что пользователь не выбирал своих собственных параметров рассылки и пользуется настройками по умолчанию. В данный момент это «<strong>%1</strong>».",
+	"resend": "Отправить заново",
+	"resend-all-confirm": "Вы уверены, что хотите повторить рассылку вручную?",
+	"resent-single": "Повтор рассылки вручную завершён",
+	"resent-day": "Ежедневная рассылка отправлена повторно",
+	"resent-week": "Еженедельная рассылка отправлена повторно",
+	"resent-month": "Ежемесячная рассылка отправлена повторно",
+	"null": "<em>Никогда</em>",
+	"manual-run": "Повтор вручную:",
 
-	"no-delivery-data": "No delivery data found"
+	"no-delivery-data": "Нет данных о доставке"
 }

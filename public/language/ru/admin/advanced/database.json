@@ -22,7 +22,7 @@
 	"mongo.bytes-out": "Байт исходящих",
 	"mongo.num-requests": "Количество запросов",
 	"mongo.raw-info": "Сырые данные о MongoDB",
-	"mongo.unauthorized": "NodeBB не смог создать запрос к базе данных MongoDB соответствующей статистики. Пожалуйста убедитесь, что пользователь, используемый NodeBB имеет &quot;clusterMonitor&quot; привилегию для &quot;admin&quot; базы данных. ",
+	"mongo.unauthorized": "NodeBB не смог получить статистические данные от MongoDB. Пожалуйста, проверьте, что пользователь, от имени которого NodeBB соединяется с БД имеет привилегию «clusterMonitor» в БД «admin». ",
 
 	"redis": "Redis",
 	"redis.version": "Версия Redis",
@@ -44,7 +44,7 @@
 
 	"redis.keyspace-hits": "Количество ключевых просмотров",
 	"redis.keyspace-misses": "Количество не ключевых просмотров",
-	"redis.raw-info": "Redis необработанная информация",
+	"redis.raw-info": "Сырые данные о Redis",
 
 	"postgres": "Postgres",
 	"postgres.version": "Версия PostgreSQL",
