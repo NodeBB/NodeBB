@@ -170,10 +170,13 @@ function request(url, callback) {
 	require('request')(url, {
 		json: true,
 	}, function (err, res, body) {
-		if (res.statusCode === 404 || !body) {
-			return callback(err, {});
+		if (err) {
+			return callback(err);
 		}
-		callback(err, body);
+		if (res.statusCode === 404 || !body) {
+			return callback(null, {});
+		}
+		callback(null, body);
 	});
 }
 const requestAsync = util.promisify(request);
