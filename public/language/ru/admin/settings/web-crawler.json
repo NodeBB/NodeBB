@@ -1,10 +1,10 @@
 {
-	"crawlability-settings": "Настройки сканирования",
-	"robots-txt": "Свой Robots.txt <small>Оставьте пустым для значений по умолчанию</small>",
-	"sitemap-feed-settings": "Карта сайта & настройки ленты активности",
-	"disable-rss-feeds": "Отключить RSS ленты активности",
+	"crawlability-settings": "Настройка индексирования",
+	"robots-txt": "Пользовательский robots.txt <small>Оставьте поле пустым, чтобы использовать стандартный</small>",
+	"sitemap-feed-settings": "Карта сайта и RSS",
+	"disable-rss-feeds": "Отключить RSS",
 	"disable-sitemap-xml": "Отключить Sitemap.xml",
-	"sitemap-topics": "Количество тем для отображения в файле Sitemap",
-	"clear-sitemap-cache": "Очистить кеш sitemap",
+	"sitemap-topics": "Сколько тем указывать в карте сайта",
+	"clear-sitemap-cache": "Очистить кеш карты сайта",
 	"view-sitemap": "Посмотреть карту сайта"
 }

@@ -1,8 +1,8 @@
 {
-	"installed": "Установленные",
-	"active": "Активные",
-	"inactive": "Неактивные",
-	"out-of-date": "Устаревшие",
+	"installed": "Установлены",
+	"active": "Включены",
+	"inactive": "Отключены",
+	"out-of-date": "Устарели",
 	"none-found": "Плагины не найдены.",
 	"none-active": "Нет активных плагинов",
 	"find-plugins": "Найти плагины",
@@ -19,8 +19,8 @@
 	"order.explanation": "Плагины загружаются в указанном порядке, сверху вниз.",
 
 	"plugin-item.themes": "Темы",
-	"plugin-item.deactivate": "Деактивировать",
-	"plugin-item.activate": "Активировать",
+	"plugin-item.deactivate": "Отключить",
+	"plugin-item.activate": "Включить",
 	"plugin-item.install": "Установить",
 	"plugin-item.uninstall": "Удалить",
 	"plugin-item.settings": "Настройки",

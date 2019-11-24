@@ -40,7 +40,7 @@
 
 	"settings.page-title": "Настройки %1",
 
-	"section-appearance": "Вид",
+	"section-appearance": "Оформление",
 	"appearance/themes": "Темы",
 	"appearance/skins": "Стили",
 	"appearance/customise": "Настройка контента (HTML/JS/CSS)",
@@ -57,12 +57,12 @@
 
 	"section-advanced": "Расширенные",
 	"advanced/database": "База данных",
-	"advanced/events": "События",
+	"advanced/events": "Журнал событий",
 	"advanced/hooks": "Hooks",
-	"advanced/logs": "Логи",
-	"advanced/errors": "Ошибки",
+	"advanced/logs": "Системный журнал",
+	"advanced/errors": "Журнал ошибок",
 	"advanced/cache": "Кэш",
-	"development/logger": "Журнал событий",
+	"development/logger": "Отладочный журнал",
 	"development/info": "Инфо",
 
 	"rebuild-and-restart-forum": "Пересобрать и перезапустить форум",
