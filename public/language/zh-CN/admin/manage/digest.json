@@ -1,7 +1,7 @@
 {
 	"lead": "以下是摘要发送状态及时间列表",
 	"disclaimer": "Please be advised that email delivery is not guaranteed, due to the nature of email technology. Many variables factor into whether an email sent to the recipient server is ultimately delivered into the user's inbox, including server reputation, blacklisted IP addresses, and whether DKIM/SPF/DMARC is configured.",
-	"disclaimer-continued": "A successful delivery means the message was sent successfully by NodeBB and acknowledged by the recipient server. It does not mean the email landed in the inbox. For best results, we recommend using a third-party email delivery service such as <a href=\"https://sendgrid.com/why-sendgrid/\">SendGrid</a>.",
+	"disclaimer-continued": "成功发送意味道消息被 NodeBB 成功发送且被接收人服务器收到。但这并不等同于邮件发送到了收件箱中。为了确保消息可以准确送达，我们建议使用第三方的邮件服务，例如<a href=\"https://sendgrid.com/why-sendgrid/\">SendGrid</a>。",
 
 	"user": "用户",
 	"subscription": "订阅类型",
@@ -15,7 +15,7 @@
 	"resent-week": "Weekly digest resent",
 	"resent-month": "Monthly digest resent",
 	"null": "从不",
-	"manual-run": "Manual digest run:",
+	"manual-run": "手动运行摘要：",
 
 	"no-delivery-data": "No delivery data found"
 }
