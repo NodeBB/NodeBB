@@ -101,7 +101,7 @@ define('admin/manage/groups', ['translator', 'benchpress'], function (translator
 				}, function (html) {
 					translator.translate(html, function (html) {
 						groupsEl.find('[data-groupname]').remove();
-						groupsEl.find('tr').after(html);
+						groupsEl.find('tbody').append(html);
 					});
 				});
 			});

@@ -291,7 +291,7 @@ SocketGroups.search = async (socket, data) => {
 		const groupData = await groups.getGroupsBySort(data.options.sort, 0, groupsPerPage - 1);
 		return groupData;
 	}
-
+	data.options.filterHidden = data.options.filterHidden || !await user.isAdministrator(socket.uid);
 	return await groups.search(data.query, data.options);
 };
 
@@ -309,6 +309,13 @@ SocketGroups.loadMore = async (socket, data) => {
 
 SocketGroups.searchMembers = async (socket, data) => {
 	data.uid = socket.uid;
+	const [isOwner, isAdmin] = await Promise.all([
+		groups.ownership.isOwner(socket.uid, data.groupName),
+		user.isAdministrator(socket.uid),
+	]);
+	if (!isOwner && !isAdmin) {
+		throw new Error('[[error:no-privileges]]');
+	}
 	return await groups.searchMembers(data);
 };
 

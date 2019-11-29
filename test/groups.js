@@ -196,6 +196,15 @@ describe('Groups', function () {
 				done();
 			});
 		});
+
+		it('should not return hidden groups', async function () {
+			await Groups.create({
+				name: 'hiddenGroup',
+				hidden: '1',
+			});
+			const result = await socketGroups.search({ uid: testUid }, { query: 'hiddenGroup' });
+			assert.equal(result.length, 0);
+		});
 	});
 
 	describe('.isMember()', function () {
