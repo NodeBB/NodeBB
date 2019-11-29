@@ -63,7 +63,7 @@
 	"advanced/errors": "Журнал ошибок",
 	"advanced/cache": "Кэш",
 	"development/logger": "Отладочный журнал",
-	"development/info": "Инфо",
+	"development/info": "Сведения о системе",
 
 	"rebuild-and-restart-forum": "Пересобрать и перезапустить форум",
 	"restart-forum": "Перезапустить форум",
