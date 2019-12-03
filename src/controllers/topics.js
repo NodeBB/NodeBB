@@ -81,6 +81,7 @@ topicsController.get = async function getTopic(req, res, callback) {
 	topicData['downvote:disabled'] = meta.config['downvote:disabled'];
 	topicData['feeds:disableRSS'] = meta.config['feeds:disableRSS'];
 	topicData.bookmarkThreshold = meta.config.bookmarkThreshold;
+	topicData.necroThreshold = meta.config.necroThreshold;
 	topicData.postEditDuration = meta.config.postEditDuration;
 	topicData.postDeleteDuration = meta.config.postDeleteDuration;
 	topicData.scrollToMyPost = settings.scrollToMyPost;
