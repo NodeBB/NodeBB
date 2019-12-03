@@ -309,11 +309,12 @@ SocketGroups.loadMore = async (socket, data) => {
 
 SocketGroups.searchMembers = async (socket, data) => {
 	data.uid = socket.uid;
-	const [isOwner, isAdmin] = await Promise.all([
+	const [isOwner, isMember, isAdmin] = await Promise.all([
 		groups.ownership.isOwner(socket.uid, data.groupName),
+		groups.isMember(socket.uid, data.groupName),
 		user.isAdministrator(socket.uid),
 	]);
-	if (!isOwner && !isAdmin) {
+	if (!isOwner && !isMember && !isAdmin) {
 		throw new Error('[[error:no-privileges]]');
 	}
 	return await groups.searchMembers(data);
