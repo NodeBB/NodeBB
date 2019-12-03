@@ -1,21 +1,21 @@
 {
 	"lead": "以下是摘要发送状态及时间列表",
-	"disclaimer": "Please be advised that email delivery is not guaranteed, due to the nature of email technology. Many variables factor into whether an email sent to the recipient server is ultimately delivered into the user's inbox, including server reputation, blacklisted IP addresses, and whether DKIM/SPF/DMARC is configured.",
+	"disclaimer": "请注意，由于email技术本身的原因，邮件发送无法保证送达。有很多因素都会导致邮件无法送达用户的收件箱，比如服务拒绝，IP地址黑名单，DNS记录DKIM/SPF/DMARC类型配置。",
 	"disclaimer-continued": "成功发送意味道消息被 NodeBB 成功发送且被接收人服务器收到。但这并不等同于邮件发送到了收件箱中。为了确保消息可以准确送达，我们建议使用第三方的邮件服务，例如<a href=\"https://sendgrid.com/why-sendgrid/\">SendGrid</a>。",
 
 	"user": "用户",
 	"subscription": "订阅类型",
 	"last-delivery": "上次成功通知",
 	"default": "系统默认",
-	"default-help": "<em>System default</em> means the user has not explicitly overridden the global forum setting for digests, which is currently: &quot;<strong>%1</strong>&quot;",
+	"default-help": "<em>System default</em> 表示用户尚未明确覆盖摘要的全局论坛设置，该设置当前为： “<strong>%1</strong>“",
 	"resend": "重发摘要",
-	"resend-all-confirm": "Are you sure you wish to mnually execute this digest run?",
+	"resend-all-confirm": "您确认要手动执行这个摘要吗？",
 	"resent-single": "摘要重发操作完成",
-	"resent-day": "Daily digest resent",
-	"resent-week": "Weekly digest resent",
-	"resent-month": "Monthly digest resent",
+	"resent-day": "已发送每日摘要",
+	"resent-week": "已发送每周摘要",
+	"resent-month": "已发送每月摘要",
 	"null": "从不",
 	"manual-run": "手动运行摘要：",
 
-	"no-delivery-data": "No delivery data found"
+	"no-delivery-data": "找不到递交的数据"
 }
