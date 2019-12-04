@@ -32,6 +32,8 @@
 	"timestamp": "Дата и время",
 	"timestamp.cut-off": "Порог отсечки (в днях)",
 	"timestamp.cut-off-help": "Сначала дата и время сообщения будут отображаться в относительном виде: &laquo;3 часа назад&raquo; / &laquo;5 дней назад&raquo;, локализованным в соответствии с языковыми настройками форума. Затем формат изменится на обычный: 5 Ноября 2016 15:30. <br /><em>(Стандартная отсечка: <code>30</code>, или один месяц). Введите 0, чтобы всегда отображать обычные дату и время, или оставьте поле пустым, чтобы всегда использовать относительный вид</em>",
+	"timestamp.necro-threshold": "Necro Threshold (in days)",
+	"timestamp.necro-threshold-help": "A message will be shown between posts if the time between them is longer than the necro threshold. (Default: <code>7</code>, or one week). Set to 0 to disable.</em>",
 	"teaser": "Сообщение-анонс",
 	"teaser.last-post": "Последнее &ndash; показать последнее сообщение в теме (первое, если ответов нет).",
 	"teaser.last-reply": "Последнее &ndash; показать последнее сообщение или пометку &laquo;Ответов нет&raquo;",
