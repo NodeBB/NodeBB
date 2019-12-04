@@ -1,13 +1,12 @@
 'use strict';
 
-
-define('admin/manage/users', ['translator', 'benchpress'], function (translator, Benchpress) {
+define('admin/manage/users', ['translator', 'benchpress', 'autocomplete'], function (translator, Benchpress, autocomplete) {
 	var Users = {};
 
 	Users.init = function () {
 		var navPills = $('.nav-pills li');
 		var pathname = window.location.pathname;
-		if (!navPills.find('a[href^="' + pathname + '"]').length) {
+		if (!navPills.find('a[href^="' + pathname + '"]').length || pathname === config.relative_path + '/admin/manage/users') {
 			pathname = config.relative_path + '/admin/manage/users/latest';
 		}
 		navPills.removeClass('active').find('a[href^="' + pathname + '"]').parent().addClass('active');
@@ -59,11 +58,56 @@ define('admin/manage/users', ['translator', 'benchpress'], function (translator,
 		}
 
 		$('[component="user/select/all"]').on('click', function () {
-			if ($(this).is(':checked')) {
-				$('.users-table [component="user/select/single"]').prop('checked', true);
-			} else {
-				$('.users-table [component="user/select/single"]').prop('checked', false);
+			$('.users-table [component="user/select/single"]').prop('checked', $(this).is(':checked'));
+		});
+
+		$('.manage-groups').on('click', function () {
+			var uids = getSelectedUids();
+			if (!uids.length) {
+				app.alertError('[[error:no-users-selected]]');
+				return false;
 			}
+			socket.emit('admin.user.loadGroups', uids, function (err, data) {
+				if (err) {
+					return app.alertError(err);
+				}
+				Benchpress.parse('admin/partials/manage_user_groups', data, function (html) {
+					var modal = bootbox.dialog({
+						message: utils.escapeHTML(html),
+						title: '[[admin/manage/users:manage-groups]]',
+						onEscape: true,
+					});
+					modal.on('shown.bs.modal', function () {
+						autocomplete.group(modal.find('.group-search'), function (ev, ui) {
+							var uid = $(ev.target).attr('data-uid');
+							socket.emit('admin.groups.join', { uid: uid, groupName: ui.item.value }, function (err) {
+								if (err) {
+									return app.alertError(err);
+								}
+								ui.item.group.nameEscaped = translator.escape(ui.item.group.displayName);
+								app.parseAndTranslate('admin/partials/manage_user_groups', { users: [{ groups: [ui.item.group] }] }, function (html) {
+									$('[data-uid=' + uid + '] .group-area').append(html.find('.group-area').html());
+								});
+							});
+						});
+					});
+					modal.on('click', '.group-area a', function () {
+						modal.modal('hide');
+					});
+					modal.on('click', '.remove-group-icon', function () {
+						var groupCard = $(this).parents('[data-group-name]');
+						var groupName = groupCard.attr('data-group-name');
+						var uid = $(this).parents('[data-uid]').attr('data-uid');
+						socket.emit('admin.groups.leave', { uid: uid, groupName: groupName }, function (err) {
+							if (err) {
+								return app.alertError(err);
+							}
+							groupCard.remove();
+						});
+						return false;
+					});
+				});
+			});
 		});
 
 		$('.ban-user').on('click', function () {
@@ -321,8 +365,8 @@ define('admin/manage/users', ['translator', 'benchpress'], function (translator,
 					Benchpress.parse('admin/manage/users', 'users', data, function (html) {
 						translator.translate(html, function (html) {
 							html = $(html);
-							$('.users-table tr').not(':first').remove();
-							$('.users-table tr').first().after(html);
+							$('.users-table tbody tr').remove();
+							$('.users-table tbody').append(html);
 							html.find('.timeago').timeago();
 							$('.fa-spinner').addClass('hidden');
 

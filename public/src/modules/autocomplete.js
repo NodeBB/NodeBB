@@ -55,7 +55,12 @@ define('autocomplete', function () {
 		app.loadJQueryUI(function () {
 			input.autocomplete({
 				delay: 200,
-				select: onselect,
+				open: function () {
+					$(this).autocomplete('widget').css('z-index', 100005);
+				},
+				select: function (event, ui) {
+					handleOnSelect(input, onselect, event, ui);
+				},
 				source: function (request, response) {
 					socket.emit('groups.search', {
 						query: request.term,
@@ -63,16 +68,12 @@ define('autocomplete', function () {
 						if (err) {
 							return app.alertError(err.message);
 						}
-
 						if (results && results.length) {
 							var names = results.map(function (group) {
 								return group && {
 									label: group.name,
 									value: group.name,
-									group: {
-										name: group.name,
-										slug: group.slug,
-									},
+									group: group,
 								};
 							});
 							response(names);

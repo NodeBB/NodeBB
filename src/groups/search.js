@@ -13,7 +13,7 @@ module.exports = function (Groups) {
 		if (!options.hideEphemeralGroups) {
 			groupNames = Groups.ephemeralGroups.concat(groupNames);
 		}
-		groupNames = groupNames.filter(name => name.toLowerCase().includes(query) && name !== 'administrators' && !Groups.isPrivilegeGroup(name));
+		groupNames = groupNames.filter(name => name.toLowerCase().includes(query) && !Groups.isPrivilegeGroup(name));
 		groupNames = groupNames.slice(0, 100);
 
 		let groupsData;
