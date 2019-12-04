@@ -89,7 +89,7 @@ async function getPosts(callerUid, userData, setSuffix) {
 	const keys = cids.map(c => 'cid:' + c + ':uid:' + userData.uid + ':' + setSuffix);
 	const pids = await db.getSortedSetRevRange(keys, 0, 9);
 	const postData = await posts.getPostSummaryByPids(pids, callerUid, { stripTags: false });
-	return postData.filter(p => p && !p.deleted);
+	return postData.filter(p => p && !p.deleted && p.topic && !p.topic.deleted);
 }
 
 function addMetaTags(res, userData) {
