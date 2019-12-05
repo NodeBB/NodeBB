@@ -28,8 +28,8 @@
 	"touch-icon": "Startscherm / Aanraakpictogram",
 	"touch-icon.upload": "Uploaden",
 	"touch-icon.help": "Aangeraden grootte en formaat: 192x192, alleen PNG formaat. Als er geen touch icoon is gespecificeerd zal NodeBB terugvallen op het favicon.",
-	"outgoing-links": "Outgoing Links",
-	"outgoing-links.warning-page": "Use Outgoing Links Warning Page",
-	"search-default-sort-by": "Search default sort by",
-	"outgoing-links.whitelist": "Domains to whitelist for bypassing the warning page"
+	"outgoing-links": "Uitgaande links",
+	"outgoing-links.warning-page": "Gebruik waarschuwingspagina voor uitgaande links",
+	"search-default-sort-by": "Standaard sortering voor zoeken",
+	"outgoing-links.whitelist": "Domeinen op de whitelist voor het omzeilen van de waarschuwingspagina"
 }

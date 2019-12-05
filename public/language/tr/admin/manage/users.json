@@ -15,6 +15,8 @@
 	"delete": "Kullanıcı(ları) Sil",
 	"purge": "Kullanıcıyı(ları) ve İçeriği Sil",
 	"download-csv": "CSV İndir",
+	"manage-groups": "Manage Groups",
+	"add-group": "Add Group",
 	"invite": "Davet et",
 	"new": "Yeni Kullanıcı",
 

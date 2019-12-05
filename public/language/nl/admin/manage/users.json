@@ -15,6 +15,8 @@
 	"delete": "Verwijder gebruiker(s)",
 	"purge": "Verwijder gebruiker(s) en inhoud",
 	"download-csv": "Download CSV",
+	"manage-groups": "Manage Groups",
+	"add-group": "Add Group",
 	"invite": "Uitnodigen",
 	"new": "Nieuwe gebruiker",
 
