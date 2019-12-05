@@ -109,7 +109,7 @@
         "sanitize-html": "^1.16.3",
         "semver": "^6.0.0",
         "serve-favicon": "^2.4.5",
-        "sharp": "0.23.3",
+        "sharp": "0.23.4",
         "sitemap": "^5.0.0",
         "socket.io": "2.3.0",
         "socket.io-adapter-cluster": "^1.0.1",
