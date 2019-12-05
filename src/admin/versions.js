@@ -1,14 +1,14 @@
 'use strict';
 
-var semver = require('semver');
-var request = require('request');
+const semver = require('semver');
+const request = require('request');
 
-var meta = require('../meta');
+const meta = require('../meta');
 
-var versionCache = '';
-var versionCacheLastModified = '';
+let versionCache = '';
+let versionCacheLastModified = '';
 
-var	isPrerelease = /^v?\d+\.\d+\.\d+-.+$/;
+const isPrerelease = /^v?\d+\.\d+\.\d+-.+$/;
 
 function getLatestVersion(callback) {
 	var headers = {
