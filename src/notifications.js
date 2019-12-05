@@ -94,14 +94,18 @@ Notifications.filterExists = async function (nids) {
 };
 
 Notifications.findRelated = async function (mergeIds, set) {
+	mergeIds = mergeIds.filter(Boolean);
+	if (!mergeIds.length) {
+		return [];
+	}
 	// A related notification is one in a zset that has the same mergeId
 	const nids = await db.getSortedSetRevRange(set, 0, -1);
 
 	const keys = nids.map(nid => 'notifications:' + nid);
-	let sets = await db.getObjectsFields(keys, ['mergeId']);
-	sets = sets.map(set => String(set.mergeId));
+	const notificationData = await db.getObjectsFields(keys, ['mergeId']);
+	const notificationMergeIds = notificationData.map(notifObj => String(notifObj.mergeId));
 	const mergeSet = new Set(mergeIds.map(id => String(id)));
-	return nids.filter((nid, idx) => mergeSet.has(sets[idx]));
+	return nids.filter((nid, idx) => mergeSet.has(notificationMergeIds[idx]));
 };
 
 Notifications.create = async function (data) {
