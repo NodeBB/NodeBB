@@ -45,5 +45,3 @@ branches:
   only:
     - master
     - develop
-script:
-  - psql -c "SELECT version();"
