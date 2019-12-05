@@ -4,6 +4,11 @@ services:
   - postgresql
 before_install:
   - cp install/package.json package.json
+  - sudo apt-get update
+  - sudo apt-get --yes remove postgresql\*
+  - sudo apt-get install -y postgresql-12 postgresql-client-12
+  - sudo cp /etc/postgresql/{9.6,12}/main/pg_hba.conf
+  - sudo service postgresql restart 12
 before_script:
   - sleep 15 # wait for mongodb to be ready
   - "mongo mydb_test --eval 'db.createUser({user:\"travis\", pwd: \"test\", roles: []});'"
@@ -14,26 +19,29 @@ after_success:
   - "npm run coveralls"
 language: node_js
 sudo: false
-dist: trusty
+dist: xenial
 env:
   - CXX=g++-4.8 DB=mongodb TEST_ENV=production
   - CXX=g++-4.8 DB=mongodb TEST_ENV=development
   - CXX=g++-4.8 DB=redis TEST_ENV=production
   - CXX=g++-4.8 DB=postgres TEST_ENV=production
+  global:
+    - PGUSER=postgres
+    - PGPORT=5432
 addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
-      - mongodb-3.4-trusty
+      - mongodb-4.0-xenial
     packages:
       - g++-4.8
       - mongodb-org-server
-  postgresql: "12"
 node_js:
   - "12"
   - "10"
-  - "8"
 branches:
   only:
     - master
     - develop
+script:
+  - psql -c "SELECT version();"
