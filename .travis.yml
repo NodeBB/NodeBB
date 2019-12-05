@@ -21,13 +21,15 @@ language: node_js
 sudo: false
 dist: xenial
 env:
-  - CXX=g++-4.8 DB=mongodb TEST_ENV=production
-  - CXX=g++-4.8 DB=mongodb TEST_ENV=development
-  - CXX=g++-4.8 DB=redis TEST_ENV=production
-  - CXX=g++-4.8 DB=postgres TEST_ENV=production
   global:
     - PGUSER=postgres
     - PGPORT=5432
+    - CXX=g++-4.8
+  jobs:
+    - "DB=mongodb TEST_ENV=production"
+    - "DB=mongodb TEST_ENV=development"
+    - "DB=redis TEST_ENV=production"
+    - "DB=postgres TEST_ENV=production"
 addons:
   apt:
     sources:
