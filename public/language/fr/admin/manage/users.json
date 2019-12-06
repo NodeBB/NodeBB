@@ -15,8 +15,8 @@
 	"delete": "Supprimer les utilisateurs",
 	"purge": "Supprimer les utilisateurs ainsi que leurs contenus",
 	"download-csv": "Télécharger au format CSV",
-	"manage-groups": "Manage Groups",
-	"add-group": "Add Group",
+	"manage-groups": "Gérer les groupes",
+	"add-group": "Ajouter un groupe",
 	"invite": "Inviter",
 	"new": "Nouvel utilisateur",
 
