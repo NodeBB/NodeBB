@@ -33,6 +33,9 @@ let sanitizeConfig = {
 		'draggable', 'dropzone', 'hidden', 'id', 'lang', 'spellcheck', 'style',
 		'tabindex', 'title', 'translate', 'aria-expanded', 'data-*',
 	],
+	allowedClasses: {
+		...sanitize.defaults.allowedClasses,
+	},
 };
 
 module.exports = function (Posts) {
@@ -105,7 +108,9 @@ module.exports = function (Posts) {
 
 	Posts.sanitize = function (content) {
 		return sanitize(content, {
-			allowedTags: sanitizeConfig.allowedTags, allowedAttributes: sanitizeConfig.allowedAttributes,
+			allowedTags: sanitizeConfig.allowedTags,
+			allowedAttributes: sanitizeConfig.allowedAttributes,
+			allowedClasses: sanitizeConfig.allowedClasses,
 		});
 	};
 
