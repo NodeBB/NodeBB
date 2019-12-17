@@ -419,7 +419,7 @@ authenticationController.logout = async function (req, res, next) {
 		req.logout();
 
 		await destroyAsync(req);
-		res.clearCookie('express.sid', {
+		res.clearCookie(nconf.get('sessionKey'), {
 			path: nconf.get('relative_path'),
 		});
 		req.uid = 0;
