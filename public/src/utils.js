@@ -487,9 +487,18 @@
 			});
 		},
 
+		// https://github.com/sindresorhus/is-absolute-url
+		isAbsoluteUrlRE: /^[a-zA-Z][a-zA-Z\d+\-.]*:/,
+		isWinPathRE: /^[a-zA-Z]:\\/,
+		isAbsoluteUrl: function (url) {
+			if (utils.isWinPathRE.test(url)) {
+				return false;
+			}
+			return utils.isAbsoluteUrlRE.test(url);
+		},
+
 		isRelativeUrl: function (url) {
-			var firstChar = String(url || '').charAt(0);
-			return (firstChar === '.' || firstChar === '/');
+			return !utils.isAbsoluteUrl(url);
 		},
 
 		makeNumbersHumanReadable: function (elements) {
