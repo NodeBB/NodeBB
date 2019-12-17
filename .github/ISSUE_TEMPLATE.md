@@ -10,6 +10,8 @@
 - **NodeBB version:** 
 - **NodeBB git hash:** 
 <!-- (to find your git hash, execute `git rev-parse HEAD` from the main NodeBB directory) -->
+- **Installed NodeBB Plugins:** 
+<!-- (to find installed plugins run ./nodebb plugins) -->
 - **Database type:** mongo, redis, or postgres
 - **Database version:** 
 <!-- `mongod --version`, `redis-server --version`, or `postgres --version` -->
