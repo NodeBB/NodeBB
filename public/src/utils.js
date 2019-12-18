@@ -1,5 +1,7 @@
 'use strict';
 
+var isBrowser = false;
+
 (function (factory) {
 	if (typeof module === 'object' && module.exports) {
 		var winston = require('winston');
@@ -21,6 +23,7 @@
 			return (diff[0] * 1e3) + (diff[1] / 1e6);
 		};
 	} else {
+		isBrowser = true;
 		window.utils = factory(window.XRegExp, console);
 	}
 	// eslint-disable-next-line
@@ -487,18 +490,49 @@
 			});
 		},
 
-		// https://github.com/sindresorhus/is-absolute-url
-		isAbsoluteUrlRE: /^[a-zA-Z][a-zA-Z\d+\-.]*:/,
-		isWinPathRE: /^[a-zA-Z]:\\/,
-		isAbsoluteUrl: function (url) {
-			if (utils.isWinPathRE.test(url)) {
-				return false;
-			}
-			return utils.isAbsoluteUrlRE.test(url);
+		urlToLocation: function (url) {
+			return utils.parseUrl(url, true, true);
 		},
 
-		isRelativeUrl: function (url) {
-			return !utils.isAbsoluteUrl(url);
+		parseUrl: function (url, parseQueryString, slashesDenoteHost) {
+			if (isBrowser) {
+				var a = document.createElement('a');
+				a.href = url;
+				return a;
+			}
+			return require('url').parse(url, parseQueryString, slashesDenoteHost);
+		},
+
+		isProtocolAbsoluteUrl: function (url) {
+			url = url.replace(/^\/{3,}/, '//');
+			var a = utils.parseUrl(url, true, true);
+			if (isBrowser) {
+				return a.host !== window.location.host;
+			}
+			return !!a.host;
+		},
+
+		isProtocolRelativeUrl: function (url) {
+			return !utils.isProtocolAbsoluteUrl(url);
+		},
+
+		isSchemeAbsoluteUrl: function (url) {
+			var a = utils.parseUrl(url);
+			if (isBrowser) {
+				return a.host !== window.location.host;
+			}
+			return !!a.host;
+		},
+
+		isSchemeRelativeUrl: function (url) {
+			return !utils.isSchemeAbsoluteUrl(url);
+		},
+
+		// scheme-absolute seems to win the people's consensus
+		// https://stackoverflow.com/questions/15581445/are-protocol-relative-urls-relative-urls
+		// but protocol-absolute might be needed as well when checking is external url or not
+		isAbsoluteUrl: function (url) {
+			return utils.isSchemeAbsoluteUrl(url);
 		},
 
 		makeNumbersHumanReadable: function (elements) {
@@ -697,12 +731,6 @@
 
 		param: function (key) {
 			return this.params()[key];
-		},
-
-		urlToLocation: function (url) {
-			var a = document.createElement('a');
-			a.href = url;
-			return a;
 		},
 
 		// return boolean if string 'true' or string 'false', or if a parsable string which is a number
