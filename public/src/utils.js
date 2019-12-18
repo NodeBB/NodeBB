@@ -530,9 +530,14 @@ var isBrowser = false;
 
 		// scheme-absolute seems to win the people's consensus
 		// https://stackoverflow.com/questions/15581445/are-protocol-relative-urls-relative-urls
-		// but protocol-absolute might be needed as well when checking is external url or not
+		// BUT the behavior is different from the server and the client
+		// so we use isProtocolAbsoluteUrl()
 		isAbsoluteUrl: function (url) {
-			return utils.isSchemeAbsoluteUrl(url);
+			return utils.isProtocolAbsoluteUrl(url);
+		},
+
+		isRelativeUrl: function (url) {
+			return !utils.isAbsoluteUrl(url);
 		},
 
 		makeNumbersHumanReadable: function (elements) {
