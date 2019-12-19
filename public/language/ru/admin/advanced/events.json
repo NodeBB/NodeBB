@@ -2,10 +2,10 @@
 	"events": "События",
 	"no-events": "Нет событий",
 	"control-panel": "Панель управления событиями",
-	"filters": "Filters",
-	"filters-apply": "Apply Filters",
-	"filter-type": "Event Type",
-	"filter-start": "Start Date",
-	"filter-end": "End Date",
-	"filter-perPage": "Per Page"
+	"filters": "Фильтр",
+	"filters-apply": "Применить фильтр",
+	"filter-type": "Тип события",
+	"filter-start": "Дата начала",
+	"filter-end": "Дата окончания",
+	"filter-perPage": "Записей на страницу"
 }

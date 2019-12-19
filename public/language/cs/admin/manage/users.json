@@ -15,6 +15,8 @@
 	"delete": "Odstranit uživatele",
 	"purge": "Odstranit uživatele a obsah",
 	"download-csv": "Stáhnout jako CSV",
+	"manage-groups": "Manage Groups",
+	"add-group": "Add Group",
 	"invite": "Pozvat",
 	"new": "Nový uživatel",
 

@@ -163,6 +163,13 @@
 					[[admin/settings/post:timestamp.cut-off-help]]
 				</p>
 			</div>
+			<div class="form-group">
+				<label for="necroThreshold">[[admin/settings/post:timestamp.necro-threshold]]</label>
+				<input type="number" class="form-control" id="necroThreshold" data-field="necroThreshold"  />
+				<p class="help-block">
+					[[admin/settings/post:timestamp.necro-threshold-help]]
+				</p>
+			</div>
 		</form>
 	</div>
 </div>

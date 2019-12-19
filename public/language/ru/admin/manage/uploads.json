@@ -1,7 +1,7 @@
 {
     "upload-file": "Загрузить Файл",
-    "filename": "Имя файла",
-    "usage": "Post Usage",
+    "filename": "Название",
+    "usage": "Использ. в сообщениях",
     "orphaned": "Отделенный",
     "size/filecount": "Размер / Файлов",
     "confirm-delete": "Вы действительно хотите удалить этот файл?",

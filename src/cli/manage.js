@@ -92,21 +92,39 @@ function activate(plugin) {
 	});
 }
 
-function listPlugins() {
-	async.waterfall([
-		function (next) {
-			db.init(next);
-		},
-		function (next) {
-			db.getSortedSetRange('plugins:active', 0, -1, next);
-		},
-		function (plugins) {
-			winston.info('Active plugins: \n\t - ' + plugins.join('\n\t - '));
-			process.exit();
-		},
-	], function (err) {
-		throw err;
+async function listPlugins() {
+	await db.init();
+	const installed = await plugins.showInstalled();
+	const installedList = installed.map(plugin => plugin.name);
+	const active = await db.getSortedSetRange('plugins:active', 0, -1);
+
+	// Merge the two sets, defer to plugins in  `installed` if already present
+	let combined = installed.concat(active.reduce((memo, cur) => {
+		if (!installedList.includes(cur)) {
+			memo.push({
+				id: cur,
+				active: true,
+				installed: false,
+			});
+		}
+
+		return memo;
+	}, []));
+
+	// Alphabetical sort
+	combined = combined.sort((a, b) => (a.id > b.id ? 1 : -1));
+
+	// Pretty output
+	process.stdout.write('Active plugins:\n');
+	combined.forEach((plugin) => {
+		process.stdout.write('\t* ' + plugin.id + ' (');
+		process.stdout.write(plugin.installed ? 'installed'.green : 'not installed'.red);
+		process.stdout.write(', ');
+		process.stdout.write(plugin.active ? 'enabled'.green : 'disabled'.yellow);
+		process.stdout.write(')\n');
 	});
+
+	process.exit();
 }
 
 function listEvents(count) {

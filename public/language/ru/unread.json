@@ -2,14 +2,14 @@
     "title": "Непрочитанные темы",
     "no_unread_topics": "Нет непрочитанных тем.",
     "load_more": "Загрузить еще",
-    "mark_as_read": "Пометить прочитанным",
+    "mark_as_read": "Пометить как прочитанное",
     "selected": "Выбрано",
     "all": "Все",
-    "all_categories": "Все сообщества",
-    "topics_marked_as_read.success": "Все темы помечены как прочитанные",
+    "all_categories": "Все категории",
+    "topics_marked_as_read.success": "Все темы помечены как прочитанные!",
     "all-topics": "Все темы",
     "new-topics": "Новые темы",
-    "watched-topics": "Подписанные темы",
+    "watched-topics": "Отслеживаемые темы",
     "unreplied-topics": "Неотвеченные темы",
-    "multiple-categories-selected": "Выбрано несколько"
+    "multiple-categories-selected": "Выбрано несколько категорий"
 }

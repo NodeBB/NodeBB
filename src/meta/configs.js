@@ -138,6 +138,7 @@ Configs.setMultiple = async function (data) {
 
 Configs.setOnEmpty = async function (values) {
 	const data = await db.getObject('config');
+	values = serialize(values);
 	const config = { ...values, ...(data ? serialize(data) : {}) };
 	await db.setObject('config', config);
 };

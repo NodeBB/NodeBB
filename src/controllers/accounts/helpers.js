@@ -11,6 +11,7 @@ const meta = require('../../meta');
 const utils = require('../../utils');
 const privileges = require('../../privileges');
 const translator = require('../../translator');
+const messaging = require('../../messaging');
 
 const helpers = module.exports;
 
@@ -75,6 +76,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID) {
 	userData.canChangePassword = isAdmin || (isSelf && !meta.config['password:disableEdit']);
 	userData.isSelf = isSelf;
 	userData.isFollowing = results.isFollowing;
+	userData.hasPrivateChat = results.hasPrivateChat;
 	userData.showHidden = isSelf || isAdmin || (isGlobalModerator && !results.isTargetAdmin);
 	userData.groups = Array.isArray(results.groups) && results.groups.length ? results.groups[0] : [];
 	userData.disableSignatures = meta.config.disableSignatures === 1;
@@ -132,6 +134,7 @@ async function getAllData(uid, callerUID) {
 		canBanUser: privileges.users.canBanUser(callerUID, uid),
 		isBlocked: user.blocks.is(uid, callerUID),
 		canViewInfo: privileges.global.can('view:users:info', callerUID),
+		hasPrivateChat: messaging.hasPrivateChat(callerUID, uid),
 	});
 }
 

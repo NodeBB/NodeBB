@@ -15,6 +15,8 @@
 	"delete": "ลบผู้ใช้งาน",
 	"purge": "ลบผู้ใช้งานและเนื้อหา",
 	"download-csv": "ดาวน์โหลด CSV",
+	"manage-groups": "Manage Groups",
+	"add-group": "Add Group",
 	"invite": "เชิญ",
 	"new": "ผู้ใช้งานใหม่",
 

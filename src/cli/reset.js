@@ -84,12 +84,11 @@ exports.reset = async function (options) {
 			/* eslint-disable no-await-in-loop */
 			await task();
 		}
-		winston.info('[reset] Reset complete');
-		await require('../meta/build').buildAll();
+		winston.info('[reset] Reset complete. Please run `./nodebb build` to rebuild assets.');
 		process.exit(0);
 	} catch (err) {
 		winston.error('[reset] Errors were encountered during reset -- ' + err.message);
-		throw err;
+		process.exit(1);
 	}
 };
 

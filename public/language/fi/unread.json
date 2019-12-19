@@ -5,11 +5,11 @@
     "mark_as_read": "Merkitse luetuksi",
     "selected": "Valitut",
     "all": "Kaikki",
-    "all_categories": "All categories",
+    "all_categories": "Kaikki kategoriat",
     "topics_marked_as_read.success": "Aihe merkitty luetuksi!",
-    "all-topics": "All Topics",
-    "new-topics": "New Topics",
-    "watched-topics": "Watched Topics",
-    "unreplied-topics": "Unreplied Topics",
-    "multiple-categories-selected": "Multiple Selected"
+    "all-topics": "Kaikki aiheet",
+    "new-topics": "Uudet aiheet",
+    "watched-topics": "Seuratut aiheet",
+    "unreplied-topics": "Vastaamattomat aiheet",
+    "multiple-categories-selected": "Useita valittuna"
 }

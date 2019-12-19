@@ -119,6 +119,7 @@ before(async function () {
 	// Parse out the relative_url and other goodies from the configured URL
 	const urlObject = url.parse(nconf.get('url'));
 	const relativePath = urlObject.pathname !== '/' ? urlObject.pathname : '';
+	nconf.set('url_parsed', urlObject);
 	nconf.set('base_url', urlObject.protocol + '//' + urlObject.host);
 	nconf.set('secure', urlObject.protocol === 'https:');
 	nconf.set('use_port', !!urlObject.port);

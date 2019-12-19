@@ -15,6 +15,8 @@
 	"delete": "删除用户",
 	"purge": "删除用户和内容",
 	"download-csv": "下载CSV",
+	"manage-groups": "Manage Groups",
+	"add-group": "Add Group",
 	"invite": "邀请",
 	"new": "新建用户",
 

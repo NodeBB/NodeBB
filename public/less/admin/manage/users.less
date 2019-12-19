@@ -1,57 +1,19 @@
 .manage-users {
 	min-height: 500px;
-
-	#users-container {
-		border: 1px solid #eee;
-		padding: 0px 20px 20px;
-
-		.users-box {
-			display: inline-block;
-			margin-top: 20px;
-			text-align: center;
-			vertical-align: top;
-			white-space: nowrap;
-			text-overflow: ellipsis;
-			overflow: hidden;
-			height: auto;
-			max-width: 145px;
-			min-width: 145px;
-			padding: 1rem;
-
-			img, .user-icon {
-				.user-icon-style(80px, 4rem);
-			}
-
-			a {
-				margin-bottom:5px;
-				font-size: 12px;
-			}
-
-			.user-image {
-				position: relative;
-
-				.labels {
-					position: absolute;
-					bottom: 0px;
-					width: 100%;
-
-					span {
-						width: 100%;
-						opacity: 0.9;
-						font-size: 10px;
-						display: block;
-						border-radius: 0;
-					}
-				}
-			}
+	.search {
+		.form-control {
+			width: 100%;
 		}
+	}
+}
 
-		.ui-selected {
-			background: lighten(@brand-success, 25%);
-		}
+.page-admin-users {
+	.group-card {
+		margin: 2px;
+		padding: 2px;
+	}
 
-		.ui-selecting {
-			background: lighten(@brand-success, 40%);
-		}
+	.remove-group-icon {
+		margin-left: 5px;
 	}
 }

@@ -1,11 +1,11 @@
 {
-	"eu-consent": "Соглашение",
+	"eu-consent": "Согласие на использование cookie",
 	"consent.enabled": "Включено",
-	"consent.message": "Уведомление",
-	"consent.acceptance": "Сообщение о принятии",
-	"consent.link-text": "Ссылка на правила",
-	"consent.link-url": "Policy Link URL",
-	"consent.blank-localised-default": "Оставьте пустым чтобы использовать настройки NodeBB по умолчанию",
+	"consent.message": "Текст уведомления",
+	"consent.acceptance": "Текст сообщения о согласии",
+	"consent.link-text": "Текст ссылки на правила",
+	"consent.link-url": "URL ссылки на правила",
+	"consent.blank-localised-default": "Оставьте пустым, чтобы использовать стандартные настройки NodeBB",
 	"settings": "Настройки",
 	"cookie-domain": "Домен для cookie сессии",
 	"blank-default": "Оставьте пустым для настроек по умолчанию"

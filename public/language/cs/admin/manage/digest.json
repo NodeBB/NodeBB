@@ -1,13 +1,13 @@
 {
 	"lead": "Statistický seznam odeslaných přehledů spolu s časy je zobrazen níže.",
-	"disclaimer": "Please be advised that email delivery is not guaranteed, due to the nature of email technology. Many variables factor into whether an email sent to the recipient server is ultimately delivered into the user's inbox, including server reputation, blacklisted IP addresses, and whether DKIM/SPF/DMARC is configured.",
-	"disclaimer-continued": "A successful delivery means the message was sent successfully by NodeBB and acknowledged by the recipient server. It does not mean the email landed in the inbox. For best results, we recommend using a third-party email delivery service such as <a href=\"https://sendgrid.com/why-sendgrid/\">SendGrid</a>.",
+	"disclaimer": "Vezměte prosím na vědomí, že kvůli charakteru e-mailové technologie není zaručeno doručení e-mailu. Mnoho proměnných ovlivňuje, zda je e-mail odeslán na server příjemce, z něj doručen do doručené pošty uživatele, včetně reputace samotného serveru, IP adres na černé listině a zda je nakonfigurováno správně DKIM / SPF / DMARC.",
+	"disclaimer-continued": "Úspěšné doručení zprávy znamená, že byla úspěšně odeslána NodeBB a potvrzena serverem příjemce. Ovšem to neznamená, že e-mail byl doručen do doručené pošty uživatele. Pro dosažení nejlepších výsledků doporučujeme použít službu doručování e-mailů třetích stran, například <a href=\"https://sendgrid.com/why-sendgrid/\">SendGrid</a>.",
 
 	"user": "Uživatel",
 	"subscription": "Typ odběru",
 	"last-delivery": "Poslední úspěšné doručení",
 	"default": "Výchozí systémové",
-	"default-help": "<em>System default</em> means the user has not explicitly overridden the global forum setting for digests, which is currently: &quot;<strong>%1</strong>&quot;",
+	"default-help": "Výchozí systémové znamená, že uživatel nemůže přenastavit celkové nastavení pravidel na fóru pro odesílání přehledů, které je momentálně<strong>%1</strong>",
 	"resend": "Znovu odeslat přehled",
 	"resend-all-confirm": "Jste si jist/a, že chcete ručně spustit odeslání přehledu",
 	"resent-single": "Manuální znovu poslání přehledu bylo dokončeno",

@@ -48,28 +48,24 @@ Digest.getUsersInterval = async (uids) => {
 		single = true;
 	}
 
-	let settings = await Promise.all([
+	const settings = await Promise.all([
 		db.isSortedSetMembers('digest:day:uids', uids),
 		db.isSortedSetMembers('digest:week:uids', uids),
 		db.isSortedSetMembers('digest:month:uids', uids),
 	]);
-	settings = settings.reduce((memo, cur, idx) => {
-		switch (idx) {
-		case 0:
-			memo = cur.map(bool => (bool === true ? 'day' : bool));
-			break;
-		case 1:
-			memo = cur.map(bool => (bool === true ? 'week' : bool));
-			break;
-		case 2:
-			memo = cur.map(bool => (bool === true ? 'month' : bool));
-			break;
-		}
 
-		return memo;
+	const interval = uids.map((uid, index) => {
+		if (settings[0][index]) {
+			return 'day';
+		} else if (settings[1][index]) {
+			return 'week';
+		} else if (settings[2][index]) {
+			return 'month';
+		}
+		return false;
 	});
 
-	return single ? settings[0] : settings;
+	return single ? interval[0] : interval;
 };
 
 Digest.getSubscribers = async function (interval) {

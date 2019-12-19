@@ -1,9 +1,9 @@
 {
-    "uploading-file": "Uploading the file...",
-    "select-file-to-upload": "Select a file to upload!",
-    "upload-success": "File uploaded successfully!",
-    "maximum-file-size": "Maximum %1 kb",
-    "no-uploads-found": "No uploads found",
-    "public-uploads-info": "Uploads are public, all visitors can see them.",
-    "private-uploads-info": "Uploads are private, only logged in users can see them."
+    "uploading-file": "Lähetetään tiedostoa..",
+    "select-file-to-upload": "Valitse tiedosto lähetettäväksi!",
+    "upload-success": "Tiedoston lähetys onnistui",
+    "maximum-file-size": "Maksimi koko on %1 kt",
+    "no-uploads-found": "Lähetyksiä ei löytynyt",
+    "public-uploads-info": "Lähetettyjen tiedostojen näkyvyys on julkinen, kirjautumattomat käyttäjät voivat nähdä ne.",
+    "private-uploads-info": "Lähetettyjen tiedostojen näkyvyys on rajoitettu, vain kirjautuneet käyttäjät voivat nähdä ne."
 }

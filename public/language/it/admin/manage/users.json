@@ -15,6 +15,8 @@
 	"delete": "Rimuovi Utente(i)",
 	"purge": "Rimuovi Utente(i) e Contenuto",
 	"download-csv": "Scarica CSV",
+	"manage-groups": "Manage Groups",
+	"add-group": "Add Group",
 	"invite": "Invito",
 	"new": "Nuovo utente",
 

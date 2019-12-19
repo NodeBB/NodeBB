@@ -138,8 +138,9 @@ usersController.getUsers = async function (set, uid, query) {
 	const start = Math.max(0, page - 1) * resultsPerPage;
 	const stop = start + resultsPerPage - 1;
 
-	const [isAdminOrGlobalMod, canSearch, usersData] = await Promise.all([
-		user.isAdminOrGlobalMod(uid),
+	const [isAdmin, isGlobalMod, canSearch, usersData] = await Promise.all([
+		user.isAdministrator(uid),
+		user.isGlobalModerator(uid),
 		privileges.global.can('search:users', uid),
 		usersController.getUsersAndCount(set, uid, start, stop),
 	]);
@@ -150,7 +151,9 @@ usersController.getUsers = async function (set, uid, query) {
 		userCount: usersData.count,
 		title: setToData[set].title || '[[pages:users/latest]]',
 		breadcrumbs: helpers.buildBreadcrumbs(breadcrumbs),
-		isAdminOrGlobalMod: isAdminOrGlobalMod,
+		isAdminOrGlobalMod: isAdmin || isGlobalMod,
+		isAdmin: isAdmin,
+		isGlobalMod: isGlobalMod,
 		displayUserSearch: canSearch,
 		['section_' + (query.section || 'joindate')]: true,
 	};
@@ -181,8 +184,12 @@ async function render(req, res, data) {
 	data.maximumInvites = meta.config.maximumInvites;
 	data.inviteOnly = registrationType === 'invite-only' || registrationType === 'admin-invite-only';
 	data.adminInviteOnly = registrationType === 'admin-invite-only';
-	data['reputation:disabled'] = meta.config['reputation:disabled'];
 	data.invites = await user.getInvitesNumber(req.uid);
+	data.showInviteButton = req.loggedIn && (
+		(registrationType === 'invite-only' && (!data.maximumInvites || data.invites < data.maximumInvites)) ||
+		(registrationType === 'admin-invite-only' && data.isAdmin)
+	);
+	data['reputation:disabled'] = meta.config['reputation:disabled'];
 
 	res.append('X-Total-Count', data.userCount);
 	res.render('users', data);

@@ -74,9 +74,9 @@ SocketPosts.getTimestampByIndex = async function (socket, data) {
 	}
 	let pid;
 	if (data.index === 0) {
-		pid = topics.getTopicField(data.tid, 'mainPid');
+		pid = await topics.getTopicField(data.tid, 'mainPid');
 	} else {
-		pid = db.getSortedSetRange('tid:' + data.tid + ':posts', data.index - 1, data.index - 1);
+		pid = await db.getSortedSetRange('tid:' + data.tid + ':posts', data.index - 1, data.index - 1);
 	}
 	pid = Array.isArray(pid) ? pid[0] : pid;
 	if (!pid) {

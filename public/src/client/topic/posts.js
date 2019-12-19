@@ -261,8 +261,8 @@ define('forum/topic/posts', [
 	};
 
 	function addNecroPostMessage() {
-		var necroThreshold = 7 * 24 * 60 * 60 * 1000;
-		if (config.topicPostSort !== 'newest_to_oldest' && config.topicPostSort !== 'oldest_to_newest') {
+		var necroThreshold = ajaxify.data.necroThreshold * 24 * 60 * 60 * 1000;
+		if (!necroThreshold || (config.topicPostSort !== 'newest_to_oldest' && config.topicPostSort !== 'oldest_to_newest')) {
 			return;
 		}
 

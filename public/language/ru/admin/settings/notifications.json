@@ -1,7 +1,7 @@
 {
 	"notifications": "Уведомления",
 	"welcome-notification": "Приветственное уведомление",
-	"welcome-notification-link": "Ссылка на приветственное уведомление",
-	"welcome-notification-uid": "Приветственное уведомление пользователю (UID)",
-	"notification-alert-timeout": "Таймаут уведомления"
+	"welcome-notification-link": "Ссылка в уведомлении",
+	"welcome-notification-uid": "UID отправителя",
+	"notification-alert-timeout": "Таймаут оповещения"
 }

@@ -15,6 +15,8 @@
 	"delete": "Delete User(s)",
 	"purge": "Delete User(s) and Content",
 	"download-csv": "下載 CSV 檔案",
+	"manage-groups": "Manage Groups",
+	"add-group": "Add Group",
 	"invite": "邀請",
 	"new": "New User",
 

@@ -10,7 +10,6 @@ const plugins = require('../../plugins');
 const meta = require('../../meta');
 const accountHelpers = require('./helpers');
 const helpers = require('../helpers');
-const messaging = require('../../messaging');
 const utils = require('../../utils');
 
 const profileController = module.exports;
@@ -33,8 +32,7 @@ profileController.get = async function (req, res, next) {
 
 	await incrementProfileViews(req, userData);
 
-	const [hasPrivateChat, latestPosts, bestPosts] = await Promise.all([
-		messaging.hasPrivateChat(req.uid, userData.uid),
+	const [latestPosts, bestPosts] = await Promise.all([
 		getLatestPosts(req.uid, userData),
 		getBestPosts(req.uid, userData),
 		posts.parseSignature(userData, req.uid),
@@ -47,7 +45,6 @@ profileController.get = async function (req, res, next) {
 	userData.posts = latestPosts; // for backwards compat.
 	userData.latestPosts = latestPosts;
 	userData.bestPosts = bestPosts;
-	userData.hasPrivateChat = hasPrivateChat;
 	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username }]);
 	userData.title = userData.username;
 	userData.allowCoverPicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:cover-picture'];
@@ -89,7 +86,7 @@ async function getPosts(callerUid, userData, setSuffix) {
 	const keys = cids.map(c => 'cid:' + c + ':uid:' + userData.uid + ':' + setSuffix);
 	const pids = await db.getSortedSetRevRange(keys, 0, 9);
 	const postData = await posts.getPostSummaryByPids(pids, callerUid, { stripTags: false });
-	return postData.filter(p => p && !p.deleted);
+	return postData.filter(p => p && !p.deleted && p.topic && !p.topic.deleted);
 }
 
 function addMetaTags(res, userData) {

@@ -1,44 +1,38 @@
 'use strict';
 
-var async = require('async');
-var nconf = require('nconf');
-var meta = require('../meta');
-var user = require('../user');
+const util = require('util');
+const nconf = require('nconf');
+const meta = require('../meta');
+const user = require('../user');
 
 module.exports = function (middleware) {
-	middleware.maintenanceMode = function maintenanceMode(req, res, callback) {
+	middleware.maintenanceMode = async function maintenanceMode(req, res, next) {
 		if (!meta.config.maintenanceMode) {
-			return setImmediate(callback);
+			return setImmediate(next);
 		}
-		var url = req.url.replace(nconf.get('relative_path'), '');
 
+		const url = req.url.replace(nconf.get('relative_path'), '');
 		if (url.startsWith('/login') || url.startsWith('/api/login')) {
-			return setImmediate(callback);
+			return setImmediate(next);
 		}
-		var data;
-		async.waterfall([
-			function (next) {
-				user.isAdministrator(req.uid, next);
-			},
-			function (isAdmin, next) {
-				if (isAdmin) {
-					return callback();
-				}
-				res.status(meta.config.maintenanceModeStatus);
-				data = {
-					site_title: meta.config.title || 'NodeBB',
-					message: meta.config.maintenanceModeMessage,
-				};
 
-				if (res.locals.isAPI) {
-					return res.json(data);
-				}
+		const isAdmin = await user.isAdministrator(req.uid);
+		if (isAdmin) {
+			return setImmediate(next);
+		}
 
-				middleware.buildHeader(req, res, next);
-			},
-			function () {
-				res.render('503', data);
-			},
-		], callback);
+		res.status(meta.config.maintenanceModeStatus);
+
+		const data = {
+			site_title: meta.config.title || 'NodeBB',
+			message: meta.config.maintenanceModeMessage,
+		};
+
+		if (res.locals.isAPI) {
+			return res.json(data);
+		}
+		const buildHeaderAsync = util.promisify(middleware.buildHeader);
+		await buildHeaderAsync(req, res);
+		res.render('503', data);
 	};
 };

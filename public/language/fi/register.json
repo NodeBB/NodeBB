@@ -1,6 +1,6 @@
 {
     "register": "Rekisteröidy",
-    "cancel_registration": "Cancel Registration",
+    "cancel_registration": "Peruuta rekisteröinti",
     "help.email": "Oletuksena sähköpostiosoitettasi ei näytetä muille.",
     "help.username_restrictions": "Yksilöllisen käyttäjätunnuksen pitää olla %1-%2 merkkiä pitkä. Toiset voivat mainita sinut @<span id='yourUsername'>username</span>.",
     "help.minimum_password_length": "Salasanasi pitää olla vähintään %1 merkin mittainen.",
@@ -16,11 +16,11 @@
     "alternative_registration": "Vaihtoehtoiset rekisteröitymistavat",
     "terms_of_use": "Käyttöehdot",
     "agree_to_terms_of_use": "Hyväksyn käyttöehdot",
-    "terms_of_use_error": "You must agree to the Terms of Use",
-    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator.",
-    "interstitial.intro": "We require some additional information before we can create your account.",
-    "interstitial.errors-found": "We could not complete your registration:",
-    "gdpr_agree_data": "I consent to the collection and processing of my personal information on this website.",
-    "gdpr_agree_email": "I consent to receive digest and notification emails from this website.",
-    "gdpr_consent_denied": "You must give consent to this site to collect/process your information, and to send you emails."
+    "terms_of_use_error": "Sinun täytyy hyväksyä sopimusehdot",
+    "registration-added-to-queue": "Rekisteröintisi on lisätty listalle odottamaan hyväksyntää. Saat ilmoituksen sähköpostiisi, kun ylläpitäjä on hyväksynyt rekisteröitymisesin.",
+    "interstitial.intro": "Sivusto vaatii lisätietoja ennenkuin voi luoda tunnuksen.",
+    "interstitial.errors-found": "Rekisteröitymisesi keskeytyi",
+    "gdpr_agree_data": "Annan hyväksyntäni henkilökohtaisten tietojen keräämiseen ja prosessointiin tälle verkkosivulle.",
+    "gdpr_agree_email": "Haluan vastaanottaa viestikoosteita ja ilmoituksia tältä verkkosivulta",
+    "gdpr_consent_denied": "Sinun täytyy antaa suostumus sivustolle, jotta se voi kerätä ja tallentaa tietosi ja lähettää sinulle tarvittaessa sähköpostia."
 }

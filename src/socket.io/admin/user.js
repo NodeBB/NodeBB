@@ -9,6 +9,7 @@ const user = require('../../user');
 const events = require('../../events');
 const meta = require('../../meta');
 const plugins = require('../../plugins');
+const translator = require('../../translator');
 
 const User = module.exports;
 
@@ -189,4 +190,18 @@ User.search = async function (socket, data) {
 
 User.restartJobs = async function () {
 	user.startJobs();
+};
+
+User.loadGroups = async function (socket, uids) {
+	const [userData, groupData] = await Promise.all([
+		user.getUsersData(uids),
+		groups.getUserGroupsFromSet('groups:createtime', uids),
+	]);
+	userData.forEach((data, index) => {
+		data.groups = groupData[index].filter(group => !groups.isPrivilegeGroup(group.name));
+		data.groups.forEach((group) => {
+			group.nameEscaped = translator.escape(group.displayName);
+		});
+	});
+	return { users: userData };
 };

@@ -15,6 +15,8 @@
 	"delete": "사용자 삭제",
 	"purge": "사용자와 사용자의 컨텐츠 삭제",
 	"download-csv": "CSV 다운로드",
+	"manage-groups": "Manage Groups",
+	"add-group": "Add Group",
 	"invite": "초대",
 	"new": "새로운 사용자",
 
