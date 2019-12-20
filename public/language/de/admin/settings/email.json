@@ -33,8 +33,8 @@
 	"testing.select": "Wählen Sie die E-Mail Vorlage",
 	"testing.send": "Test-E-Mail versenden",
 	"testing.send-help": "Die Test-E-Mail wird an die E-Mail Adresse des momentan eingeloggten Nutzers geschickt.",
-	"subscriptions": "Email Digests",
-	"subscriptions.disable": "Disable email digests",
+	"subscriptions": "Email Zusammenfassungen",
+	"subscriptions.disable": "Deaktivierung der Email Zusammenfassungen",
 	"subscriptions.hour": "Sende Zeit",
 	"subscriptions.hour-help": "Bitte geben Sie eine Nummer ein, welche die Stunde repräsentiert zu welcher geplante Emails versandt werden sollen (z.B. <code>0</code> für Mitternacht, <code>17</code> für 5 Uhr Nachmittags). Beachten Sie, dass die Zeit auf der Serverzeit basiert und daher nicht umbedingt mit ihrer Systemzeit übereinstimmen muss.<br>Die ungefähre Serverzeit ist: <span id=\"serverTime\"></span><br>Die nächste tägliche Sendung ist um <span id=\"nextDigestTime\"></span> geplant"
 }

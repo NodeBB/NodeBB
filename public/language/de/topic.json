@@ -134,6 +134,6 @@
     "diffs.no-revisions-description": "Dieser Beitrag ha <strong>%1</strong> Revisionen.",
     "diffs.current-revision": "Aktuelle Revision",
     "diffs.original-revision": "Ursprüngliche Revision",
-    "timeago_later": "%1 later",
+    "timeago_later": "%1 später",
     "timeago_earlier": "%1 earlier"
 }
