@@ -488,10 +488,10 @@
 		},
 
 		urlToLocation: function (url) {
-			return utils.parseUrl(url, true, true);
+			return utils.urlParse(url, true, true);
 		},
 
-		parseUrl: function (url, parseQueryString, slashesDenoteHost) {
+		urlParse: function (url, parseQueryString, slashesDenoteHost) {
 			if (isBrowser) {
 				var a = document.createElement('a');
 				a.href = url;
@@ -502,7 +502,7 @@
 
 		isProtocolAbsoluteUrl: function (url) {
 			url = url.replace(/^\/{3,}/, '//');
-			var a = utils.parseUrl(url, true, true);
+			var a = utils.urlParse(url, true, true);
 			if (isBrowser) {
 				return a.host !== window.location.host;
 			}
