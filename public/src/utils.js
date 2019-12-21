@@ -1,12 +1,10 @@
 'use strict';
 
-var isBrowser = false;
-
 (function (factory) {
 	if (typeof module === 'object' && module.exports) {
 		var winston = require('winston');
 
-		module.exports = factory(require('xregexp'), winston);
+		module.exports = factory(require('xregexp'), winston, false);
 		module.exports.walk = function (dir, done) {
 			// DEPRECATED
 			var file = require('../../src/file');
@@ -23,11 +21,10 @@ var isBrowser = false;
 			return (diff[0] * 1e3) + (diff[1] / 1e6);
 		};
 	} else {
-		isBrowser = true;
-		window.utils = factory(window.XRegExp, console);
+		window.utils = factory(window.XRegExp, console, true);
 	}
 	// eslint-disable-next-line
-}(function (XRegExp, console) {
+}(function (XRegExp, console, isBrowser) {
 	var freeze = Object.freeze || function (obj) { return obj; };
 
 	// add default escape function for escaping HTML entities
@@ -517,7 +514,7 @@ var isBrowser = false;
 		},
 
 		isSchemeAbsoluteUrl: function (url) {
-			var a = utils.parseUrl(url);
+			var a = utils.urlParse(url);
 			if (isBrowser) {
 				return a.host !== window.location.host;
 			}
