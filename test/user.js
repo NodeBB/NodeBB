@@ -1519,7 +1519,7 @@ describe('User', function () {
 
 		it('should save user settings', function (done) {
 			var data = {
-				uid: 1,
+				uid: testUid,
 				settings: {
 					bootswatchSkin: 'default',
 					homePageRoute: 'none',
@@ -2189,6 +2189,19 @@ describe('User', function () {
 			assert.ifError(err);
 			assert(Array.isArray(data));
 			done();
+		});
+	});
+
+	it('should allow user to login even if password is weak', function (done) {
+		User.create({ username: 'weakpwd', password: '123456' }, function (err) {
+			assert.ifError(err);
+			const oldValue = meta.config.minimumPasswordStrength;
+			meta.config.minimumPasswordStrength = 3;
+			helpers.loginUser('weakpwd', '123456', function (err, jar, csrfs_token) {
+				assert.ifError(err);
+				meta.config.minimumPasswordStrength = oldValue;
+				done();
+			});
 		});
 	});
 });
