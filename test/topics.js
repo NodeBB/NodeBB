@@ -918,6 +918,16 @@ describe('Topic\'s', function () {
 			});
 		});
 
+		it('should load topic api data', function (done) {
+			request(nconf.get('url') + '/api/topic/' + topicData.slug, { json: true }, function (err, response, body) {
+				assert.ifError(err);
+				assert.equal(response.statusCode, 200);
+				assert.strictEqual(body._header.tags.meta.find(t => t.name === 'description').content, 'topic content');
+				assert.strictEqual(body._header.tags.meta.find(t => t.property === 'og:description').content, 'topic content');
+				done();
+			});
+		});
+
 		it('should 404 if post index is invalid', function (done) {
 			request(nconf.get('url') + '/topic/' + topicData.slug + '/derp', function (err, response) {
 				assert.ifError(err);

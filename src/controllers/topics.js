@@ -166,9 +166,9 @@ async function buildBreadcrumbs(topicData) {
 }
 
 async function addTags(topicData, req, res) {
-	var postAtIndex = topicData.posts.find(p => parseInt(p.index, 10) === parseInt(Math.max(0, req.params.post_index - 1), 10));
-
-	var description = '';
+	const postIndex = parseInt(req.params.post_index, 10) || 0;
+	const postAtIndex = topicData.posts.find(p => parseInt(p.index, 10) === parseInt(Math.max(0, postIndex - 1), 10));
+	let description = '';
 	if (postAtIndex && postAtIndex.content) {
 		description = utils.stripHTMLTags(utils.decodeHTMLEntities(postAtIndex.content));
 	}
@@ -329,10 +329,10 @@ topicsController.pagination = async function (req, res, callback) {
 		return helpers.notAllowed(req, res);
 	}
 
-	var postCount = topic.postcount;
-	var pageCount = Math.max(1, Math.ceil(postCount / settings.postsPerPage));
+	const postCount = topic.postcount;
+	const pageCount = Math.max(1, Math.ceil(postCount / settings.postsPerPage));
 
-	var paginationData = pagination.create(currentPage, pageCount);
+	const paginationData = pagination.create(currentPage, pageCount);
 	paginationData.rel.forEach(function (rel) {
 		rel.href = nconf.get('url') + '/topic/' + topic.slug + rel.href;
 	});
