@@ -257,6 +257,7 @@
 					</li>
 					{{{end}}}
 					{{{end}}}
+					<!-- ENDIF authentication.length -->
 					<li class="divider"></li>
 					<li data-link="1">
 						<a href="{relative_path}/admin/extend/plugins">[[admin/menu:extend/plugins.install]]</a>
