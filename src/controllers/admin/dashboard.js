@@ -8,7 +8,7 @@ const _ = require('lodash');
 const versions = require('../../admin/versions');
 const db = require('../../database');
 const meta = require('../../meta');
-const analytics = require('../../analytics').async;
+const analytics = require('../../analytics');
 const plugins = require('../../plugins');
 const user = require('../../user');
 const utils = require('../../utils');
@@ -93,7 +93,7 @@ dashboardController.getAnalytics = async (req, res, next) => {
 	}
 
 	const method = req.query.units === 'days' ? analytics.getDailyStatsForSet : analytics.getHourlyStatsForSet;
-	let payload = await Promise.all(sets.map(async set => method('analytics:' + set, until, count)));
+	let payload = await Promise.all(sets.map(set => method('analytics:' + set, until, count)));
 	payload = _.zipObject(sets, payload);
 
 	res.json({
