@@ -78,7 +78,8 @@ Groups.getGroupsBySort = async function (sort, start, stop) {
 Groups.getNonPrivilegeGroups = async function (set, start, stop) {
 	let groupNames = await db.getSortedSetRevRange(set, start, stop);
 	groupNames = groupNames.concat(Groups.ephemeralGroups).filter(groupName => !Groups.isPrivilegeGroup(groupName));
-	return await Groups.getGroupsData(groupNames);
+	const groupsData = await Groups.getGroupsData(groupNames);
+	return groupsData.filter(Boolean);
 };
 
 Groups.getGroups = async function (set, start, stop) {
