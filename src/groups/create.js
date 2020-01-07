@@ -16,7 +16,7 @@ module.exports = function (Groups) {
 		const disableLeave = parseInt(data.disableLeave, 10) === 1 ? 1 : 0;
 		const isHidden = parseInt(data.hidden, 10) === 1;
 
-		validateGroupName(data.name);
+		Groups.validateGroupName(data.name);
 
 		const exists = await meta.userOrGroupExists(data.name);
 		if (exists) {
@@ -72,9 +72,13 @@ module.exports = function (Groups) {
 			Groups.isPrivilegeGroup(data.name);
 	}
 
-	function validateGroupName(name) {
+	Groups.validateGroupName = function (name) {
 		if (!name) {
 			throw new Error('[[error:group-name-too-short]]');
+		}
+
+		if (typeof name !== 'string') {
+			throw new Error('[[error:invalid-group-name]]');
 		}
 
 		if (!Groups.isPrivilegeGroup(name) && name.length > meta.config.maximumGroupNameLength) {
@@ -88,5 +92,5 @@ module.exports = function (Groups) {
 		if (name.includes('/') || !utils.slugify(name)) {
 			throw new Error('[[error:invalid-group-name]]');
 		}
-	}
+	};
 };

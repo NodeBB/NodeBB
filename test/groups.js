@@ -9,6 +9,8 @@ var db = require('./mocks/databasemock');
 var helpers = require('./helpers');
 var Groups = require('../src/groups');
 var User = require('../src/user');
+var socketGroups = require('../src/socket.io/groups');
+var meta = require('../src/meta');
 
 describe('Groups', function () {
 	var adminUid;
@@ -361,6 +363,31 @@ describe('Groups', function () {
 		});
 
 		it('should fail if group name is invalid', function (done) {
+			Groups.create({ name: ['array/'] }, function (err) {
+				assert.equal(err.message, '[[error:invalid-group-name]]');
+				done();
+			});
+		});
+
+		it('should fail if group name is invalid', function (done) {
+			socketGroups.create({ uid: adminUid }, { name: ['test', 'administrators'] }, function (err) {
+				assert.equal(err.message, '[[error:invalid-group-name]]');
+				done();
+			});
+		});
+
+		it('should not create a system group', function (done) {
+			socketGroups.create({ uid: adminUid }, { name: 'mysystemgroup', system: true }, function (err) {
+				assert.ifError(err);
+				Groups.getGroupData('mysystemgroup', function (err, data) {
+					assert.ifError(err);
+					assert.strictEqual(data.system, 0);
+					done();
+				});
+			});
+		});
+
+		it('should fail if group name is invalid', function (done) {
 			Groups.create({ name: 'not:valid' }, function (err) {
 				assert.equal(err.message, '[[error:invalid-group-name]]');
 				done();
@@ -440,6 +467,62 @@ describe('Groups', function () {
 				name: 'administrators_fail',
 			}, function (err) {
 				assert.equal(err.message, '[[error:not-allowed-to-rename-system-group]]');
+				done();
+			});
+		});
+
+		it('should fail to rename if group name is invalid', function (done) {
+			socketGroups.update({ uid: adminUid }, { groupName: ['updateTestGroup?'], values: {} }, function (err) {
+				assert.strictEqual(err.message, '[[error:invalid-group-name]]');
+				done();
+			});
+		});
+
+		it('should fail to rename if group name is too short', function (done) {
+			socketGroups.update({ uid: adminUid }, { groupName: 'updateTestGroup?', values: { name: '' } }, function (err) {
+				assert.strictEqual(err.message, '[[error:group-name-too-short]]');
+				done();
+			});
+		});
+
+		it('should fail to rename if group name is invalid', function (done) {
+			socketGroups.update({ uid: adminUid }, { groupName: 'updateTestGroup?', values: { name: ['invalid'] } }, function (err) {
+				assert.strictEqual(err.message, '[[error:invalid-group-name]]');
+				done();
+			});
+		});
+
+		it('should fail to rename if group name is invalid', function (done) {
+			socketGroups.update({ uid: adminUid }, { groupName: 'updateTestGroup?', values: { name: 'cid:0:privileges:ban' } }, function (err) {
+				assert.strictEqual(err.message, '[[error:invalid-group-name]]');
+				done();
+			});
+		});
+
+		it('should fail to rename if group name is too long', function (done) {
+			socketGroups.update({ uid: adminUid }, { groupName: 'updateTestGroup?', values: { name: 'verylongstringverylongstringverylongstringverylongstringverylongstringverylongstringverylongstringverylongstringverylongstringverylongstringverylongstringverylongstringverylongstringverylongstringverylongstringverylongstringverylongstringverylongstringverylongstringverylongstring' } }, function (err) {
+				assert.strictEqual(err.message, '[[error:group-name-too-long]]');
+				done();
+			});
+		});
+
+		it('should fail to rename if group name is invalid', function (done) {
+			socketGroups.update({ uid: adminUid }, { groupName: 'updateTestGroup?', values: { name: 'test:test' } }, function (err) {
+				assert.strictEqual(err.message, '[[error:invalid-group-name]]');
+				done();
+			});
+		});
+
+		it('should fail to rename if group name is invalid', function (done) {
+			socketGroups.update({ uid: adminUid }, { groupName: 'updateTestGroup?', values: { name: 'another/test' } }, function (err) {
+				assert.strictEqual(err.message, '[[error:invalid-group-name]]');
+				done();
+			});
+		});
+
+		it('should fail to rename if group name is invalid', function (done) {
+			socketGroups.update({ uid: adminUid }, { groupName: 'updateTestGroup?', values: { name: '---' } }, function (err) {
+				assert.strictEqual(err.message, '[[error:invalid-group-name]]');
 				done();
 			});
 		});
@@ -536,6 +619,20 @@ describe('Groups', function () {
 					done();
 				});
 			});
+		});
+
+		it('should fail to add user to admin group', async function () {
+			const oldValue = meta.config.allowPrivateGroups;
+			try {
+				meta.config.allowPrivateGroups = false;
+				const newUid = await User.create({ username: 'newadmin' });
+				await socketGroups.join({ uid: newUid }, { groupName: ['test', 'administrators'], uid: newUid }, 1);
+				const isMember = await Groups.isMember(newUid, 'administrators');
+				assert(!isMember);
+			} catch (err) {
+				assert.strictEqual(err.message, '[[error:invalid-group-name]]');
+			}
+			meta.config.allowPrivateGroups = oldValue;
 		});
 
 		it('should fail to add user to group if group name is invalid', function (done) {
@@ -667,11 +764,7 @@ describe('Groups', function () {
 		});
 	});
 
-
 	describe('socket methods', function () {
-		var socketGroups = require('../src/socket.io/groups');
-		var meta = require('../src/meta');
-
 		it('should error if data is null', function (done) {
 			socketGroups.before({ uid: 0 }, 'groups.join', null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
@@ -1012,7 +1105,7 @@ describe('Groups', function () {
 		});
 
 		it('should fail to create group if group creation is disabled', function (done) {
-			socketGroups.create({ uid: testUid }, {}, function (err) {
+			socketGroups.create({ uid: testUid }, { name: 'avalidname' }, function (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');
 				done();
 			});
@@ -1296,7 +1389,7 @@ describe('Groups', function () {
 		it('should fail if user is not logged in or not owner', function (done) {
 			socketGroups.cover.update({ uid: 0 }, {}, function (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');
-				socketGroups.cover.update({ uid: regularUid }, {}, function (err) {
+				socketGroups.cover.update({ uid: regularUid }, { groupName: 'Test' }, function (err) {
 					assert.equal(err.message, '[[error:no-privileges]]');
 					done();
 				});

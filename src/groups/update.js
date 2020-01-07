@@ -54,7 +54,10 @@ module.exports = function (Groups) {
 			payload.disableLeave = values.disableLeave ? '1' : '0';
 		}
 
-		await checkNameChange(groupName, values.name);
+		if (values.hasOwnProperty('name')) {
+			await checkNameChange(groupName, values.name);
+		}
+
 		if (values.hasOwnProperty('private')) {
 			await updatePrivacy(groupName, values.private);
 		}
@@ -125,6 +128,10 @@ module.exports = function (Groups) {
 	}
 
 	async function checkNameChange(currentName, newName) {
+		Groups.validateGroupName(newName);
+		if (Groups.isPrivilegeGroup(newName)) {
+			throw new Error('[[error:invalid-group-name]]');
+		}
 		const currentSlug = utils.slugify(currentName);
 		const newSlug = utils.slugify(newName);
 		if (currentName === newName || currentSlug === newSlug) {

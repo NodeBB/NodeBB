@@ -22,6 +22,10 @@ SocketGroups.join = async (socket, data) => {
 		throw new Error('[[error:invalid-uid]]');
 	}
 
+	if (typeof data.groupName !== 'string') {
+		throw new Error('[[error:invalid-group-name]]');
+	}
+
 	if (data.groupName === 'administrators' || groups.isPrivilegeGroup(data.groupName)) {
 		throw new Error('[[error:not-allowed]]');
 	}
@@ -66,6 +70,10 @@ SocketGroups.leave = async (socket, data) => {
 		throw new Error('[[error:invalid-uid]]');
 	}
 
+	if (typeof data.groupName !== 'string') {
+		throw new Error('[[error:invalid-group-name]]');
+	}
+
 	if (data.groupName === 'administrators') {
 		throw new Error('[[error:cant-remove-self-as-admin]]');
 	}
@@ -104,6 +112,9 @@ SocketGroups.addMember = async (socket, data) => {
 };
 
 async function isOwner(socket, data) {
+	if (typeof data.groupName !== 'string') {
+		throw new Error('[[error:invalid-group-name]]');
+	}
 	const results = await utils.promiseParallel({
 		isAdmin: await user.isAdministrator(socket.uid),
 		isGlobalModerator: await user.isGlobalModerator(socket.uid),
@@ -118,6 +129,9 @@ async function isOwner(socket, data) {
 }
 
 async function isInvited(socket, data) {
+	if (typeof data.groupName !== 'string') {
+		throw new Error('[[error:invalid-group-name]]');
+	}
 	const invited = await groups.isInvited(socket.uid, data.groupName);
 	if (!invited) {
 		throw new Error('[[error:not-invited]]');
@@ -171,6 +185,9 @@ SocketGroups.rejectAll = async (socket, data) => {
 };
 
 async function acceptRejectAll(method, socket, data) {
+	if (typeof data.groupName !== 'string') {
+		throw new Error('[[error:invalid-group-name]]');
+	}
 	const uids = await groups.getPending(data.groupName);
 	await Promise.all(uids.map(async (uid) => {
 		await method(socket, { groupName: data.groupName, toUid: uid });
@@ -251,7 +268,7 @@ SocketGroups.kick = async (socket, data) => {
 SocketGroups.create = async (socket, data) => {
 	if (!socket.uid) {
 		throw new Error('[[error:no-privileges]]');
-	} else if (groups.isPrivilegeGroup(data.name)) {
+	} else if (typeof data.name !== 'string' || groups.isPrivilegeGroup(data.name)) {
 		throw new Error('[[error:invalid-group-name]]');
 	}
 
@@ -260,6 +277,7 @@ SocketGroups.create = async (socket, data) => {
 		throw new Error('[[error:no-privileges]]');
 	}
 	data.ownerUid = socket.uid;
+	data.system = false;
 	const groupData = await groups.create(data);
 	logGroupEvent(socket, 'group-create', {
 		groupName: data.name,
@@ -338,7 +356,6 @@ SocketGroups.cover.update = async (socket, data) => {
 	if (!socket.uid) {
 		throw new Error('[[error:no-privileges]]');
 	}
-
 	await canModifyGroup(socket.uid, data.groupName);
 	return await groups.updateCover(socket.uid, data);
 };
@@ -353,6 +370,9 @@ SocketGroups.cover.remove = async (socket, data) => {
 };
 
 async function canModifyGroup(uid, groupName) {
+	if (typeof groupName !== 'string') {
+		throw new Error('[[error:invalid-group-name]]');
+	}
 	const results = await utils.promiseParallel({
 		isOwner: groups.ownership.isOwner(uid, groupName),
 		isAdminOrGlobalMod: user.isAdminOrGlobalMod(uid),
