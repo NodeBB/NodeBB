@@ -5,6 +5,7 @@ const meta = require('../meta');
 const db = require('../database');
 const plugins = require('../plugins');
 const notifications = require('../notifications');
+const languages = require('../languages');
 
 module.exports = function (User) {
 	User.getSettings = async function (uid) {
@@ -87,6 +88,13 @@ module.exports = function (User) {
 			throw new Error('[[error:invalid-pagination-value, 2, ' + maxTopicsPerPage + ']]');
 		}
 
+		const languageCodes = await languages.listCodes();
+		if (data.userLang && !languageCodes.includes(data.userLang)) {
+			throw new Error('[[error:invalid-language]]');
+		}
+		if (data.acpLang && !languageCodes.includes(data.acpLang)) {
+			throw new Error('[[error:invalid-language]]');
+		}
 		data.userLang = data.userLang || meta.config.defaultLang;
 
 		plugins.fireHook('action:user.saveSettings', { uid: uid, settings: data });

@@ -1550,6 +1550,21 @@ describe('User', function () {
 			});
 		});
 
+		it('should error if language is invalid', function (done) {
+			var data = {
+				uid: testUid,
+				settings: {
+					userLang: '<invalid-string>',
+					topicsPerPage: '10',
+					postsPerPage: '5',
+				},
+			};
+			socketUser.saveSettings({ uid: testUid }, data, function (err) {
+				assert.equal(err.message, '[[error:invalid-language]]');
+				done();
+			});
+		});
+
 		it('should set moderation note', function (done) {
 			var adminUid;
 			async.waterfall([
