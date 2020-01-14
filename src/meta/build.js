@@ -1,5 +1,6 @@
 'use strict';
 
+const os = require('os');
 const async = require('async');
 const winston = require('winston');
 const nconf = require('nconf');
@@ -150,7 +151,14 @@ exports.build = function (targets, options, callback) {
 		targets = targets.split(',');
 	}
 
-	var parallel = !nconf.get('series') && !options.series;
+	let series = nconf.get('series') || options.series;
+	if (series === undefined) {
+		// Detect # of CPUs and select strategy as appropriate
+		winston.verbose('[build] Querying CPU core count for build strategy');
+		const cpus = os.cpus();
+		series = cpus.length < 4;
+		winston.verbose('[build] System returned ' + cpus.length + ' cores, opting for ' + (series ? 'series' : 'parallel') + ' build strategy');
+	}
 
 	targets = targets
 		// get full target name
@@ -195,14 +203,14 @@ exports.build = function (targets, options, callback) {
 				require('./minifier').maxThreads = threads - 1;
 			}
 
-			if (parallel) {
+			if (series) {
 				winston.info('[build] Building in parallel mode');
 			} else {
 				winston.info('[build] Building in series mode');
 			}
 
 			startTime = Date.now();
-			buildTargets(targets, parallel, next);
+			buildTargets(targets, !series, next);
 		},
 		function (next) {
 			totalTime = (Date.now() - startTime) / 1000;
