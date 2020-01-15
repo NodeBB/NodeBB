@@ -203,7 +203,7 @@ exports.build = function (targets, options, callback) {
 				require('./minifier').maxThreads = threads - 1;
 			}
 
-			if (series) {
+			if (!series) {
 				winston.info('[build] Building in parallel mode');
 			} else {
 				winston.info('[build] Building in series mode');
