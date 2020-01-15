@@ -163,6 +163,7 @@ module.exports = function (Posts) {
 			reduceCounters(postsByUser),
 			updateTopicPosters(postData, toUid),
 		]);
+		return postData;
 	};
 
 	async function reduceCounters(postsByUser) {
