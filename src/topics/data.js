@@ -90,6 +90,10 @@ function modifyTopic(topic, fields) {
 
 	escapeTitle(topic);
 
+	if (topic.hasOwnProperty('thumb')) {
+		topic.thumb = validator.escape(String(topic.thumb));
+	}
+
 	if (topic.hasOwnProperty('timestamp')) {
 		topic.timestampISO = utils.toISOString(topic.timestamp);
 	}
