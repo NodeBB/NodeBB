@@ -173,18 +173,16 @@ module.exports = function (SocketPosts) {
 		}
 
 		var postData = await posts.changeOwner(data.pids, data.toUid);
-		postData = postData.map(({ pid, tid, uid, cid, timestamp }) => ({ pid, tid, uid, cid, timestamp }));
-		var promises = [];
-		postData.forEach((post) => {
-			promises.push(events.log({
-				type: 'post-change-owner',
-				uid: socket.uid,
-				ip: socket.ip,
-				targetUid: data.toUid,
-				pid: post.pid,
-				originalUid: post.uid,
-			}));
-		});
-		await Promise.all(promises);
+		var logs = postData.map(({ pid, uid, cid }) => (events.log({
+			type: 'post-change-owner',
+			uid: socket.uid,
+			ip: socket.ip,
+			targetUid: data.toUid,
+			pid: pid,
+			originalUid: uid,
+			cid: cid,
+		})));
+
+		await Promise.all(logs);
 	};
 };
