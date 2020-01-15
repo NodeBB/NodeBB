@@ -172,6 +172,17 @@ module.exports = function (SocketPosts) {
 			throw new Error('[[error:no-privileges]]');
 		}
 
-		await posts.changeOwner(data.pids, data.toUid);
+		var postData = await posts.changeOwner(data.pids, data.toUid);
+		var logs = postData.map(({ pid, uid, cid }) => (events.log({
+			type: 'post-change-owner',
+			uid: socket.uid,
+			ip: socket.ip,
+			targetUid: data.toUid,
+			pid: pid,
+			originalUid: uid,
+			cid: cid,
+		})));
+
+		await Promise.all(logs);
 	};
 };
