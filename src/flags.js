@@ -384,8 +384,12 @@ Flags.update = async function (flagId, uid, changeset) {
 			if (current[prop] === changeset[prop]) {
 				delete changeset[prop];
 			} else if (prop === 'state') {
-				tasks.push(db.sortedSetAdd('flags:byState:' + changeset[prop], now, flagId));
-				tasks.push(db.sortedSetRemove('flags:byState:' + current[prop], flagId));
+				if (!Flags._constants.states.includes(changeset[prop])) {
+					delete changeset[prop];
+				} else {
+					tasks.push(db.sortedSetAdd('flags:byState:' + changeset[prop], now, flagId));
+					tasks.push(db.sortedSetRemove('flags:byState:' + current[prop], flagId));
+				}
 			} else if (prop === 'assignee') {
 				/* eslint-disable-next-line */
 				if (!await isAssignable(parseInt(changeset[prop], 10))) {

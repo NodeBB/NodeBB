@@ -353,6 +353,15 @@ describe('Flags', function () {
 
 			await Groups.leave('cid:' + category.cid + ':privileges:moderate', uid3);
 		});
+
+		it('should do nothing when you attempt to set a bogus state', async () => {
+			await Flags.update(1, uid2, {
+				state: 'hocus pocus',
+			});
+
+			const state = await db.getObjectField('flag:1', 'state');
+			assert.strictEqual('wip', state);
+		});
 	});
 
 	describe('.getTarget()', function () {
