@@ -134,6 +134,14 @@ describe('Post\'s', function () {
 		assert.strictEqual(await topics.isOwner(postResult.topicData.tid, newUid), true);
 	});
 
+	it('should fail to change owner if new owner does not exist', async function () {
+		try {
+			await posts.changeOwner([1], '9999999');
+		} catch (err) {
+			assert.strictEqual(err.message, '[[error:no-user]]');
+		}
+	});
+
 	it('should return falsy if post does not exist', function (done) {
 		posts.getPostData(9999, function (err, postData) {
 			assert.ifError(err);
