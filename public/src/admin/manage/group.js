@@ -110,6 +110,7 @@ define('admin/manage/group', [
 					private: $('#group-private').is(':checked'),
 					hidden: $('#group-hidden').is(':checked'),
 					disableJoinRequests: $('#group-disableJoinRequests').is(':checked'),
+					disableLeave: $('#group-disableLeave').is(':checked'),
 				},
 			}, function (err) {
 				if (err) {
