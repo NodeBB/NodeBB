@@ -120,7 +120,7 @@ describe('Plugins', function () {
 		});
 	});
 
-	it('should register and fire a static hook returning a promise that gets rejected with a warning only', function (done) {
+	it('should register and fire a static hook returning a promise that gets rejected with a error', function (done) {
 		function method(data) {
 			assert.equal(data.bar, 'test');
 			return new Promise(function (resolve, reject) {
@@ -129,7 +129,8 @@ describe('Plugins', function () {
 		}
 		plugins.registerHook('test-plugin', { hook: 'static:test.hook', method: method });
 		plugins.fireHook('static:test.hook', { bar: 'test' }, function (err) {
-			assert.ifError(err);
+			assert.strictEqual(err.message, 'just because');
+			plugins.unregisterHook('test-plugin', 'static:test.hook', method);
 			done();
 		});
 	});
@@ -144,6 +145,7 @@ describe('Plugins', function () {
 		plugins.registerHook('test-plugin', { hook: 'static:test.hook', method: method });
 		plugins.fireHook('static:test.hook', { bar: 'test' }, function (err) {
 			assert.ifError(err);
+			plugins.unregisterHook('test-plugin', 'static:test.hook', method);
 			done();
 		});
 	});
