@@ -48,9 +48,12 @@ describe('Upload Controllers', function () {
 			cid = results.category.cid;
 
 			topics.post({ uid: adminUid, title: 'test topic title', content: 'test topic content', cid: results.category.cid }, function (err, result) {
+				if (err) {
+					return done(err);
+				}
 				tid = result.topicData.tid;
 				pid = result.postData.pid;
-				done(err);
+				groups.join('administrators', adminUid, done);
 			});
 		});
 	});
@@ -104,6 +107,20 @@ describe('Upload Controllers', function () {
 						done();
 					});
 				});
+			});
+		});
+
+		it('should not allow deleting if path is not correct', function (done) {
+			socketUser.deleteUpload({ uid: adminUid }, { uid: regularUid, name: '../../bkconfig.json' }, function (err) {
+				assert.equal(err.message, '[[error:invalid-path]]');
+				done();
+			});
+		});
+
+		it('should not allow deleting if path is not correct', function (done) {
+			socketUser.deleteUpload({ uid: adminUid }, { uid: regularUid, name: '/files/../../bkconfig.json' }, function (err) {
+				assert.equal(err.message, '[[error:invalid-path]]');
+				done();
 			});
 		});
 
@@ -288,7 +305,7 @@ describe('Upload Controllers', function () {
 				assert.ifError(err);
 				jar = _jar;
 				csrf_token = _csrf_token;
-				groups.join('administrators', adminUid, done);
+				done();
 			});
 		});
 
