@@ -18,6 +18,10 @@ module.exports = function (User) {
 			throw new Error('[[error:no-privileges]]');
 		}
 
+		if (uploadName.startsWith('.')) {
+			throw new Error('[[error:invalid-path]]');
+		}
+
 		winston.verbose('[user/deleteUpload] Deleting ' + uploadName);
 		await Promise.all([
 			file.delete(path.join(nconf.get('upload_path'), uploadName)),
