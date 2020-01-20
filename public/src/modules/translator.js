@@ -361,7 +361,7 @@
 
 			var nodes = descendantTextNodes(element);
 			var text = nodes.map(function (node) {
-				return node.nodeValue;
+				return utils.escapeHTML(node.nodeValue);
 			}).join('  ||  ');
 
 			var attrNodes = attributes.reduce(function (prev, attr) {
