@@ -119,7 +119,10 @@ describe('Messaging Library', function () {
 				assert.equal(messages.length, 1);
 				assert.strictEqual(messages[0].system, true);
 				assert.strictEqual(messages[0].content, 'user-join');
-				done();
+				socketModules.chats.edit({ uid: fooUid }, { roomId: roomId, mid: messages[0].messageId, message: 'test' }, function (err) {
+					assert.equal(err.message, '[[error:cant-edit-chat-message]]');
+					done();
+				});
 			});
 		});
 

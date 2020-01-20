@@ -1,5 +1,7 @@
 'use strict';
 
+const validator = require('validator');
+
 var db = require('../database');
 var user = require('../user');
 var utils = require('../utils');
@@ -79,6 +81,7 @@ module.exports = function (Messaging) {
 
 		messages = await Promise.all(messages.map(async (message) => {
 			if (message.system) {
+				message.content = validator.escape(String(message.content));
 				return message;
 			}
 

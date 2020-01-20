@@ -57,10 +57,10 @@ module.exports = function (Messaging) {
 
 		const [isAdmin, messageData] = await Promise.all([
 			user.isAdministrator(uid),
-			Messaging.getMessageFields(messageId, ['fromuid', 'timestamp']),
+			Messaging.getMessageFields(messageId, ['fromuid', 'timestamp', 'system']),
 		]);
 
-		if (isAdmin) {
+		if (isAdmin && !messageData.system) {
 			return;
 		}
 		var chatConfigDuration = meta.config[durationConfig];
@@ -68,7 +68,7 @@ module.exports = function (Messaging) {
 			throw new Error('[[error:chat-' + type + '-duration-expired, ' + meta.config[durationConfig] + ']]');
 		}
 
-		if (messageData.fromuid === parseInt(uid, 10)) {
+		if (messageData.fromuid === parseInt(uid, 10) && !messageData.system) {
 			return;
 		}
 
