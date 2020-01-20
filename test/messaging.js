@@ -597,14 +597,14 @@ describe('Messaging Library', function () {
 		});
 
 		it('should fail to edit message if new content is empty string', function (done) {
-			socketModules.chats.edit({ uid: fooUid }, { mid: 5, roomId: roomId, message: ' ' }, function (err) {
+			socketModules.chats.edit({ uid: fooUid }, { mid: mid, roomId: roomId, message: ' ' }, function (err) {
 				assert.equal(err.message, '[[error:invalid-chat-message]]');
 				done();
 			});
 		});
 
 		it('should fail to edit message if not own message', function (done) {
-			socketModules.chats.edit({ uid: herpUid }, { mid: 5, roomId: roomId, message: 'message edited' }, function (err) {
+			socketModules.chats.edit({ uid: herpUid }, { mid: mid, roomId: roomId, message: 'message edited' }, function (err) {
 				assert.equal(err.message, '[[error:cant-edit-chat-message]]');
 				done();
 			});
