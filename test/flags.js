@@ -13,40 +13,30 @@ var Groups = require('../src/groups');
 var Meta = require('../src/meta');
 
 describe('Flags', function () {
-	before(function (done) {
+	let uid1;
+	let uid2;
+	let uid3;
+	let category;
+	before(async () => {
 		// Create some stuff to flag
-		async.waterfall([
-			async.apply(User.create, { username: 'testUser', password: 'abcdef', email: 'b@c.com' }),
-			function (uid, next) {
-				Categories.create({
-					name: 'test category',
-				}, function (err, category) {
-					if (err) {
-						return done(err);
-					}
+		uid1 = await User.create({ username: 'testUser', password: 'abcdef', email: 'b@c.com' });
 
-					Topics.post({
-						cid: category.cid,
-						uid: uid,
-						title: 'Topic to flag',
-						content: 'This is flaggable content',
-					}, next);
-				});
-			},
-			function (topicData, next) {
-				User.create({
-					username: 'testUser2', password: 'abcdef', email: 'c@d.com',
-				}, next);
-			},
-			function (uid, next) {
-				Groups.join('administrators', uid, next);
-			},
-			function (next) {
-				User.create({
-					username: 'unprivileged', password: 'abcdef', email: 'd@e.com',
-				}, next);
-			},
-		], done);
+		uid2 = await User.create({ username: 'testUser2', password: 'abcdef', email: 'c@d.com' });
+		await Groups.join('administrators', uid2);
+
+		category = await Categories.create({
+			name: 'test category',
+		});
+		await Topics.post({
+			cid: category.cid,
+			uid: uid1,
+			title: 'Topic to flag',
+			content: 'This is flaggable content',
+		});
+
+		uid3 = await User.create({
+			username: 'unprivileged', password: 'abcdef', email: 'd@e.com',
+		});
 	});
 
 	describe('.create()', function () {
@@ -274,9 +264,9 @@ describe('Flags', function () {
 
 	describe('.update()', function () {
 		it('should alter a flag\'s various attributes and persist them to the database', function (done) {
-			Flags.update(1, 1, {
+			Flags.update(1, uid2, {
 				state: 'wip',
-				assignee: 1,
+				assignee: uid2,
 			}, function (err) {
 				assert.ifError(err);
 				db.getObjectFields('flag:1', ['state', 'assignee'], function (err, data) {
@@ -286,7 +276,7 @@ describe('Flags', function () {
 
 					assert.strictEqual('wip', data.state);
 					assert.ok(!isNaN(parseInt(data.assignee, 10)));
-					assert.strictEqual(1, parseInt(data.assignee, 10));
+					assert.strictEqual(uid2, parseInt(data.assignee, 10));
 					done();
 				});
 			});
@@ -312,6 +302,65 @@ describe('Flags', function () {
 
 				done();
 			});
+		});
+
+		it('should allow assignment if user is an admin and do nothing otherwise', async () => {
+			await Flags.update(1, uid2, {
+				assignee: uid2,
+			});
+			let assignee = await db.getObjectField('flag:1', 'assignee');
+			assert.strictEqual(uid2, parseInt(assignee, 10));
+
+			await Flags.update(1, uid2, {
+				assignee: uid3,
+			});
+			assignee = await db.getObjectField('flag:1', 'assignee');
+			assert.strictEqual(uid2, parseInt(assignee, 10));
+		});
+
+		it('should allow assignment if user is a global mod and do nothing otherwise', async () => {
+			await Groups.join('Global Moderators', uid3);
+
+			await Flags.update(1, uid3, {
+				assignee: uid3,
+			});
+			let assignee = await db.getObjectField('flag:1', 'assignee');
+			assert.strictEqual(uid3, parseInt(assignee, 10));
+
+			await Flags.update(1, uid3, {
+				assignee: uid1,
+			});
+			assignee = await db.getObjectField('flag:1', 'assignee');
+			assert.strictEqual(uid3, parseInt(assignee, 10));
+
+			await Groups.leave('Global Moderators', uid3);
+		});
+
+		it('should allow assignment if user is a mod of the category, do nothing otherwise', async () => {
+			await Groups.join('cid:' + category.cid + ':privileges:moderate', uid3);
+
+			await Flags.update(1, uid3, {
+				assignee: uid3,
+			});
+			let assignee = await db.getObjectField('flag:1', 'assignee');
+			assert.strictEqual(uid3, parseInt(assignee, 10));
+
+			await Flags.update(1, uid3, {
+				assignee: uid1,
+			});
+			assignee = await db.getObjectField('flag:1', 'assignee');
+			assert.strictEqual(uid3, parseInt(assignee, 10));
+
+			await Groups.leave('cid:' + category.cid + ':privileges:moderate', uid3);
+		});
+
+		it('should do nothing when you attempt to set a bogus state', async () => {
+			await Flags.update(1, uid2, {
+				state: 'hocus pocus',
+			});
+
+			const state = await db.getObjectField('flag:1', 'state');
+			assert.strictEqual('wip', state);
 		});
 	});
 
