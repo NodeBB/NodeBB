@@ -116,7 +116,7 @@ describe('Messaging Library', function () {
 		it('should send a user-join system message when a chat room is created', (done) => {
 			socketModules.chats.getMessages({ uid: fooUid }, { uid: fooUid, roomId: roomId, start: 0 }, function (err, messages) {
 				assert.ifError(err);
-				assert.equal(messages.length, 1);
+				assert.equal(messages.length, 2);
 				assert.strictEqual(messages[0].system, true);
 				assert.strictEqual(messages[0].content, 'user-join');
 				socketModules.chats.edit({ uid: fooUid }, { roomId: roomId, mid: messages[0].messageId, message: 'test' }, function (err) {
@@ -201,7 +201,7 @@ describe('Messaging Library', function () {
 		it('should send a user-leave system message when a user leaves the chat room', (done) => {
 			socketModules.chats.getMessages({ uid: fooUid }, { uid: fooUid, roomId: roomId, start: 0 }, function (err, messages) {
 				assert.ifError(err);
-				assert.equal(messages.length, 3);
+				assert.equal(messages.length, 4);
 				const message = messages.pop();
 				assert.strictEqual(message.system, true);
 				assert.strictEqual(message.content, 'user-leave');
@@ -354,7 +354,7 @@ describe('Messaging Library', function () {
 					myRoomId = _roomId;
 					assert.ifError(err);
 					assert(myRoomId);
-					socketModules.chats.getRaw({ uid: bazUid }, { mid: 2 }, function (err) {
+					socketModules.chats.getRaw({ uid: bazUid }, { mid: 200 }, function (err) {
 						assert(err);
 						assert.equal(err.message, '[[error:not-allowed]]');
 						socketModules.chats.send({ uid: bazUid }, { roomId: myRoomId, message: 'admin will see this' }, function (err, message) {
