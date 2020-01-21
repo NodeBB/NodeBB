@@ -155,7 +155,7 @@ define('taskbar', ['benchpress', 'translator'], function (Benchpress, translator
 
 			var	taskbarEl = $('<li />')
 				.addClass(data.options.className)
-				.html('<a href="#"' + (data.options.image ? ' style="background-image: url(\'' + data.options.image + '\');"' : '') + '>' +
+				.html('<a href="#"' + (data.options.image ? ' style="background-image: url(\'' + data.options.image + '\'); background-size: cover;"' : '') + '>' +
 					(data.options.icon ? '<i class="fa ' + data.options.icon + '"></i> ' : '') +
 					'<span component="taskbar/title">' + title + '</span>' +
 					'</a>')
