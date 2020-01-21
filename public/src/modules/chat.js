@@ -145,7 +145,7 @@ define('chat', [
 		require(['scrollStop', 'forum/chats', 'forum/chats/messages'], function (scrollStop, Chats, ChatsMessages) {
 			app.parseAndTranslate('chat', data, function (chatModal) {
 				if (module.modalExists(data.roomId)) {
-					return callback(null);
+					return callback(module.getModal(data.roomId));
 				}
 				var uuid = utils.generateUUID();
 				var dragged = false;
