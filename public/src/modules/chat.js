@@ -70,12 +70,9 @@ define('chat', [
 				roomData.silent = true;
 				roomData.uid = app.user.uid;
 				roomData.isSelf = isSelf;
-				module.createModal(roomData, function (modal) {
+				module.createModal(roomData, function () {
 					if (!isSelf) {
 						updateTitleAndPlaySound(data.message.mid, username);
-					}
-					if (!modal) {
-						addMessageToModal(data);
 					}
 				});
 			});
@@ -87,7 +84,10 @@ define('chat', [
 		var username = data.message.fromUser.username;
 		var isSelf = data.self === 1;
 		require(['forum/chats/messages'], function (ChatsMessages) {
-			ChatsMessages.appendChatMessage(modal.find('.chat-content'), data.message);
+			// don't add if already added
+			if (!modal.find('[data-mid="' + data.message.messageId + '"]').length) {
+				ChatsMessages.appendChatMessage(modal.find('.chat-content'), data.message);
+			}
 
 			if (modal.is(':visible')) {
 				taskbar.updateActive(modal.attr('data-uuid'));
