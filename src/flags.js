@@ -251,18 +251,21 @@ Flags.create = async function (type, id, uid, reason, timestamp) {
 		timestamp = Date.now();
 		doHistoryAppend = true;
 	}
-	const [exists, targetExists, targetUid, targetCid] = await Promise.all([
+	const [flagExists, targetExists, canFlag, targetUid, targetCid] = await Promise.all([
 		// Sanity checks
 		Flags.exists(type, id, uid),
 		Flags.targetExists(type, id),
+		Flags.canFlag(type, id, uid),
 		// Extra data for zset insertion
 		Flags.getTargetUid(type, id),
 		Flags.getTargetCid(type, id),
 	]);
-	if (exists) {
+	if (flagExists) {
 		throw new Error('[[error:already-flagged]]');
 	} else if (!targetExists) {
 		throw new Error('[[error:invalid-data]]');
+	} else if (!canFlag) {
+		throw new Error('[[error:no-privileges]]');
 	}
 	const flagId = await db.incrObjectField('global', 'nextFlagId');
 
@@ -305,6 +308,16 @@ Flags.create = async function (type, id, uid, reason, timestamp) {
 
 Flags.exists = async function (type, id, uid) {
 	return await db.isSortedSetMember('flags:hash', [type, id, uid].join(':'));
+};
+
+Flags.canFlag = async function (type, id, uid) {
+	if (type === 'user') {
+		return true;
+	}
+	if (type === 'post') {
+		return await privileges.posts.can('topics:read', id, uid);
+	}
+	throw new Error('[[error:invalid-data]]');
 };
 
 Flags.getTarget = async function (type, id, uid) {
