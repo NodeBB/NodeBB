@@ -150,6 +150,19 @@ describe('Messaging Library', function () {
 			});
 		});
 
+		it('should get users in room', async function () {
+			const data = await socketModules.chats.getUsersInRoom({ uid: fooUid }, { roomId: roomId });
+			assert(Array.isArray(data) && data.length === 3);
+		});
+
+		it('should throw error if user is not in room', async function () {
+			try {
+				const data = await socketModules.chats.getUsersInRoom({ uid: 123123123 }, { roomId: roomId });
+			} catch (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+			}
+		});
+
 		it('should fail to add users to room if max is reached', function (done) {
 			meta.config.maximumUsersInChatRoom = 2;
 			socketModules.chats.addUserToRoom({ uid: fooUid }, { roomId: roomId, username: 'test' }, function (err) {

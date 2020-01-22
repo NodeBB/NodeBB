@@ -113,11 +113,14 @@ SocketModules.chats.getUsersInRoom = async function (socket, data) {
 	if (!data || !data.roomId) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const [userData, isOwner] = await Promise.all([
-		Messaging.getUsersInRoom(data.roomId, 0, -1),
+	const [isUserInRoom, isOwner, userData] = await Promise.all([
+		Messaging.isUserInRoom(socket.uid, data.roomId),
 		Messaging.isRoomOwner(socket.uid, data.roomId),
+		Messaging.getUsersInRoom(data.roomId, 0, -1),
 	]);
-
+	if (!isUserInRoom) {
+		throw new Error('[[error:no-privileges]]');
+	}
 	userData.forEach((user) => {
 		user.canKick = (parseInt(user.uid, 10) !== parseInt(socket.uid, 10)) && isOwner;
 	});
