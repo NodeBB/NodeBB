@@ -684,10 +684,10 @@ describe('Admin Controllers', function () {
 			var socketFlags = require('../src/socket.io/flags');
 			var oldValue = meta.config['min:rep:flag'];
 			meta.config['min:rep:flag'] = 0;
-			socketFlags.create({ uid: regularUid }, { id: pid, type: 'post', reason: 'spam' }, function (err, data) {
+			socketFlags.create({ uid: regularUid }, { id: pid, type: 'post', reason: 'spam' }, function (err, flagId) {
 				meta.config['min:rep:flag'] = oldValue;
 				assert.ifError(err);
-				request(nconf.get('url') + '/api/flags/' + data.flagId, { jar: moderatorJar, json: true }, function (err, res, body) {
+				request(nconf.get('url') + '/api/flags/' + flagId, { jar: moderatorJar, json: true }, function (err, res, body) {
 					assert.ifError(err);
 					assert(body);
 					assert.equal(body.reporter.username, 'regular');
