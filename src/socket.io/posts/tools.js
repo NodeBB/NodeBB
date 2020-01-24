@@ -167,7 +167,7 @@ module.exports = function (SocketPosts) {
 		if (!data || !Array.isArray(data.pids) || !data.toUid) {
 			throw new Error('[[error:invalid-data]]');
 		}
-		const isAdminOrGlobalMod = user.isAdminOrGlobalMod(socket.uid);
+		const isAdminOrGlobalMod = await user.isAdminOrGlobalMod(socket.uid);
 		if (!isAdminOrGlobalMod) {
 			throw new Error('[[error:no-privileges]]');
 		}
