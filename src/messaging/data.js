@@ -2,10 +2,10 @@
 
 const validator = require('validator');
 
-var db = require('../database');
-var user = require('../user');
-var utils = require('../utils');
-var plugins = require('../plugins');
+const db = require('../database');
+const user = require('../user');
+const utils = require('../utils');
+const plugins = require('../plugins');
 
 const intFields = ['timestamp', 'edited', 'fromuid', 'roomId', 'deleted', 'system'];
 

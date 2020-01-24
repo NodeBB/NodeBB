@@ -139,14 +139,8 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 	});
 };
 
-Messaging.generateUsernames = (users, excludeUid) => {
-	users = users.filter(function (user) {
-		return user && parseInt(user.uid, 10) !== excludeUid;
-	});
-	return users.map(function (user) {
-		return user.username;
-	}).join(', ');
-};
+Messaging.generateUsernames = (users, excludeUid) => users.filter(user => user && parseInt(user.uid, 10) !== excludeUid)
+	.map(user => user.username).join(', ');
 
 Messaging.getTeaser = async (uid, roomId) => {
 	const mid = await Messaging.getLatestUndeletedMessage(uid, roomId);

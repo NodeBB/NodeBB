@@ -1,9 +1,9 @@
 'use strict';
 
-var meta = require('../meta');
-var user = require('../user');
+const meta = require('../meta');
+const user = require('../user');
 
-var sockets = require('../socket.io');
+const sockets = require('../socket.io');
 
 
 module.exports = function (Messaging) {
@@ -63,7 +63,7 @@ module.exports = function (Messaging) {
 		if (isAdmin && !messageData.system) {
 			return;
 		}
-		var chatConfigDuration = meta.config[durationConfig];
+		const chatConfigDuration = meta.config[durationConfig];
 		if (chatConfigDuration && Date.now() - messageData.timestamp > chatConfigDuration * 1000) {
 			throw new Error('[[error:chat-' + type + '-duration-expired, ' + meta.config[durationConfig] + ']]');
 		}

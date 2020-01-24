@@ -11,6 +11,6 @@ module.exports = function (Messaging) {
 			throw new Error('[[error:chat-' + field + '-already]]');
 		}
 
-		return await Messaging.setMessageField(mid, 'deleted', state);
+		await Messaging.setMessageField(mid, 'deleted', state);
 	}
 };
