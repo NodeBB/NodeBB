@@ -596,9 +596,7 @@ describe('Flags', function () {
 
 	describe('(websockets)', function () {
 		var SocketFlags = require('../src/socket.io/flags.js');
-		var tid;
 		var pid;
-		var flag;
 
 		before(function (done) {
 			Topics.post({
@@ -607,7 +605,6 @@ describe('Flags', function () {
 				title: 'Another topic',
 				content: 'This is flaggable content',
 			}, function (err, topic) {
-				tid = topic.postData.tid;
 				pid = topic.postData.pid;
 
 				done(err);
@@ -620,8 +617,7 @@ describe('Flags', function () {
 					type: 'post',
 					id: pid,
 					reason: 'foobar',
-				}, function (err, flagObj) {
-					flag = flagObj;
+				}, function (err) {
 					assert.ifError(err);
 
 					Flags.exists('post', pid, 1, function (err, exists) {
