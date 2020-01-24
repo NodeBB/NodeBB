@@ -20,10 +20,7 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.getRoomsData = async (roomIds) => {
-		const roomData = await db.getObjects(roomIds.map(function (roomId) {
-			return 'chat:room:' + roomId;
-		}));
-
+		const roomData = await db.getObjects(roomIds.map(roomId => 'chat:room:' + roomId));
 		modifyRoomData(roomData);
 		return roomData;
 	};
@@ -193,7 +190,7 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.canReply = async (roomId, uid) => {
-		const inRoom = db.isSortedSetMember('chat:room:' + roomId + ':uids', uid);
+		const inRoom = await db.isSortedSetMember('chat:room:' + roomId + ':uids', uid);
 		const data = await plugins.fireHook('filter:messaging.canReply', { uid: uid, roomId: roomId, inRoom: inRoom, canReply: inRoom });
 		return data.canReply;
 	};
