@@ -111,6 +111,9 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.leaveRoom = async (uids, roomId) => {
+		const isInRoom = await Promise.all(uids.map(uid => Messaging.isUserInRoom(uid, roomId)));
+		uids = uids.filter((uid, index) => isInRoom[index]);
+
 		const keys = uids
 			.map(uid => 'uid:' + uid + ':chat:rooms')
 			.concat(uids.map(uid => 'uid:' + uid + ':chat:rooms:unread'));
@@ -125,6 +128,9 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.leaveRooms = async (uid, roomIds) => {
+		const isInRoom = await Promise.all(roomIds.map(roomId => Messaging.isUserInRoom(uid, roomId)));
+		roomIds = roomIds.filter((roomId, index) => isInRoom[index]);
+
 		const roomKeys = roomIds.map(roomId => 'chat:room:' + roomId + ':uids');
 		await Promise.all([
 			db.sortedSetsRemove(roomKeys, uid),

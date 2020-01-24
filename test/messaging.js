@@ -222,6 +222,15 @@ describe('Messaging Library', function () {
 			});
 		});
 
+		it('should send not a user-leave system message when a user tries to leave a room they are not in', async () => {
+			await socketModules.chats.leave({ uid: bazUid }, roomId);
+			const messages = await socketModules.chats.getMessages({ uid: fooUid }, { uid: fooUid, roomId: roomId, start: 0 });
+			assert.equal(messages.length, 4);
+			const message = messages.pop();
+			assert.strictEqual(message.system, true);
+			assert.strictEqual(message.content, 'user-leave');
+		});
+
 		it('should change owner when owner leaves room', function (done) {
 			socketModules.chats.newRoom({ uid: herpUid }, { touid: fooUid }, function (err, roomId) {
 				assert.ifError(err);
