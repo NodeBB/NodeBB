@@ -62,7 +62,7 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.isUserInRoom = async (uid, roomId) => {
-		const inRoom = db.isSortedSetMember('chat:room:' + roomId + ':uids', uid);
+		const inRoom = await db.isSortedSetMember('chat:room:' + roomId + ':uids', uid);
 		const data = await plugins.fireHook('filter:messaging.isUserInRoom', { uid: uid, roomId: roomId, inRoom: inRoom });
 		return data.inRoom;
 	};
