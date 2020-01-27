@@ -30,11 +30,8 @@ module.exports = function (User) {
 		const now = Date.now();
 		const isArray = Array.isArray(uid);
 		uid = isArray ? uid : [uid];
-		const lastonline = db.sortedSetScores('users:online', uid);
-		const isOnline = uid.map(function (uid, index) {
-			return (now - lastonline[index]) < (meta.config.onlineCutoff * 60000);
-		});
-
+		const lastonline = await db.sortedSetScores('users:online', uid);
+		const isOnline = uid.map((uid, index) => (now - lastonline[index]) < (meta.config.onlineCutoff * 60000));
 		return isArray ? isOnline : isOnline[0];
 	};
 };
