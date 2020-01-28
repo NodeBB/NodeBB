@@ -116,7 +116,7 @@ module.exports = function (privileges) {
 	};
 
 	privileges.topics.canDelete = async function (tid, uid) {
-		const topicData = await topics.getTopicFields(tid, ['cid', 'postcount']);
+		const topicData = await topics.getTopicFields(tid, ['uid', 'cid', 'postcount', 'deleterUid']);
 		const [isModerator, isAdministrator, isOwner, allowedTo] = await Promise.all([
 			user.isModerator(uid, topicData.cid),
 			user.isAdministrator(uid),
@@ -136,7 +136,8 @@ module.exports = function (privileges) {
 			throw new Error(langKey);
 		}
 
-		return allowedTo[0] && (isOwner || isModerator);
+		const deleterUid = topicData.deleterUid;
+		return allowedTo[0] && ((isOwner && (deleterUid === 0 || deleterUid === topicData.uid)) || isModerator);
 	};
 
 	privileges.topics.canEdit = async function (tid, uid) {
