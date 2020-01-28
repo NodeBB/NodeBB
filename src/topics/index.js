@@ -50,8 +50,7 @@ Topics.getTopics = async function (tids, options) {
 	}
 
 	tids = await privileges.topics.filterTids('topics:read', tids, uid);
-	const topics = await Topics.getTopicsByTids(tids, options);
-	return topics;
+	return await Topics.getTopicsByTids(tids, options);
 };
 
 Topics.getTopicsByTids = async function (tids, options) {
