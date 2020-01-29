@@ -316,8 +316,12 @@ authenticationController.doLogin = async function (req, uid) {
 };
 
 authenticationController.onSuccessfulLogin = async function (req, uid) {
-	// If already called once, return prematurely
-	if (req.res.locals.user) {
+	/*
+	 * Older code required that this method be called from within the SSO plugin.
+	 * That behaviour is no longer required, onSuccessfulLogin is now automatically
+	 * called in NodeBB core. However, if already called, return prematurely
+	 */
+	if (req.loggedIn) {
 		return true;
 	}
 
