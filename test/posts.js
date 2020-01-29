@@ -142,6 +142,14 @@ describe('Post\'s', function () {
 		}
 	});
 
+	it('should fail to change owner if user is not authorized', async function () {
+		try {
+			await socketPosts.changeOwner({ uid: voterUid }, { pids: [1, 2], toUid: voterUid });
+		} catch (err) {
+			assert.strictEqual(err.message, '[[error:no-privileges]]');
+		}
+	});
+
 	it('should return falsy if post does not exist', function (done) {
 		posts.getPostData(9999, function (err, postData) {
 			assert.ifError(err);

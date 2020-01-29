@@ -11,6 +11,7 @@ const intFields = [
 	'tid', 'cid', 'uid', 'mainPid', 'postcount',
 	'viewcount', 'deleted', 'locked', 'pinned',
 	'timestamp', 'upvotes', 'downvotes', 'lastposttime',
+	'deleterUid',
 ];
 
 module.exports = function (Topics) {

@@ -3,6 +3,7 @@
 const ipaddr = require('ipaddr.js');
 const winston = require('winston');
 const _ = require('lodash');
+const validator = require('validator');
 
 const db = require('../database');
 const pubsub = require('../pubsub');
@@ -128,7 +129,7 @@ Blacklist.validate = function (rules) {
 		}
 
 		if (!addr || whitelist.includes(rule)) {
-			invalid.push(rule);
+			invalid.push(validator.escape(rule));
 			return false;
 		}
 

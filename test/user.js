@@ -2164,10 +2164,20 @@ describe('User', function () {
 		});
 	});
 
-	it('should return offline if user is guest', function (done) {
-		var status = User.getStatus({ uid: 0 });
-		assert.strictEqual(status, 'offline');
-		done();
+	describe('status/online', function () {
+		it('should return offline if user is guest', function (done) {
+			var status = User.getStatus({ uid: 0 });
+			assert.strictEqual(status, 'offline');
+			done();
+		});
+
+		it('should return offline if user is guest', async function () {
+			assert.strictEqual(await User.isOnline(0), false);
+		});
+
+		it('should return true', async function () {
+			assert.strictEqual(await User.isOnline(testUid), true);
+		});
 	});
 
 	describe('isPrivilegedOrSelf', function () {

@@ -68,14 +68,15 @@ module.exports = function (privileges) {
 		}
 
 		const topicsData = await topics.getTopicsFields(tids, ['tid', 'cid', 'deleted']);
-		let cids = _.uniq(topicsData.map(topic => topic.cid));
+		const cids = _.uniq(topicsData.map(topic => topic.cid));
 		const results = await privileges.categories.getBase(privilege, cids, uid);
 
-		cids = cids.filter((cid, index) => !results.categories[index].disabled && (results.allowedTo[index] || results.isAdmin));
+		const allowedCids = cids.filter((cid, index) => !results.categories[index].disabled && (results.allowedTo[index] || results.isAdmin));
 
-		const cidsSet = new Set(cids);
+		const cidsSet = new Set(allowedCids);
+		const canViewDeleted = _.zipObject(cids, results.view_deleted);
 
-		tids = topicsData.filter(t => cidsSet.has(t.cid) &&	(!t.deleted || results.isAdmin)).map(t => t.tid);
+		tids = topicsData.filter(t => cidsSet.has(t.cid) &&	(!t.deleted || canViewDeleted[t.cid] || results.isAdmin)).map(t => t.tid);
 
 		const data = await plugins.fireHook('filter:privileges.topics.filter', {
 			privilege: privilege,
@@ -115,7 +116,7 @@ module.exports = function (privileges) {
 	};
 
 	privileges.topics.canDelete = async function (tid, uid) {
-		const topicData = await topics.getTopicFields(tid, ['cid', 'postcount']);
+		const topicData = await topics.getTopicFields(tid, ['uid', 'cid', 'postcount', 'deleterUid']);
 		const [isModerator, isAdministrator, isOwner, allowedTo] = await Promise.all([
 			user.isModerator(uid, topicData.cid),
 			user.isAdministrator(uid),
@@ -135,7 +136,8 @@ module.exports = function (privileges) {
 			throw new Error(langKey);
 		}
 
-		return allowedTo[0] && (isOwner || isModerator);
+		const deleterUid = topicData.deleterUid;
+		return allowedTo[0] && ((isOwner && (deleterUid === 0 || deleterUid === topicData.uid)) || isModerator);
 	};
 
 	privileges.topics.canEdit = async function (tid, uid) {
