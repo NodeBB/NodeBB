@@ -104,7 +104,7 @@
         "prompt": "^1.0.0",
         "redis": "2.8.0",
         "request": "2.88.0",
-        "rimraf": "3.0.0",
+        "rimraf": "3.0.1",
         "rss": "^1.2.2",
         "sanitize-html": "^1.16.3",
         "semver": "^7.0.0",
