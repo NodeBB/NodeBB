@@ -2,11 +2,12 @@
 
 const path = require('path');
 const fs = require('fs');
-const mkdirp = require('mkdirp');
+const util = require('util');
+let mkdirp = require('mkdirp');
+mkdirp = mkdirp.hasOwnProperty('native') ? mkdirp : util.promisify(mkdirp);
 const rimraf = require('rimraf');
 const _ = require('lodash');
 
-const util = require('util');
 const rimrafAsync = util.promisify(rimraf);
 const writeFileAsync = util.promisify(fs.writeFile);
 const readFileAsync = util.promisify(fs.readFile);

@@ -5,7 +5,14 @@ var async = require('async');
 var fs = require('fs');
 const util = require('util');
 var mkdirp = require('mkdirp');
-var mkdirpCallback = util.callbackify(mkdirp);
+var mkdirpCallback;
+if (mkdirp.hasOwnProperty('native')) {
+	mkdirpCallback = util.callbackify(mkdirp);
+} else {
+	mkdirpCallback = mkdirp;
+	mkdirp = util.promisify(mkdirp);
+}
+
 var rimraf = require('rimraf');
 
 var file = require('../file');

@@ -1,11 +1,11 @@
 'use strict';
 
-const mkdirp = require('mkdirp');
+const util = require('util');
+let mkdirp = require('mkdirp');
+mkdirp = mkdirp.hasOwnProperty('native') ? mkdirp : util.promisify(mkdirp);
 const rimraf = require('rimraf');
 const winston = require('winston');
 const path = require('path');
-
-const util = require('util');
 const fs = require('fs');
 const fsReadFile = util.promisify(fs.readFile);
 const fsWriteFile = util.promisify(fs.writeFile);
