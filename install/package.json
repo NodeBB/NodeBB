@@ -131,8 +131,8 @@
         "zxcvbn": "^4.4.2"
     },
     "devDependencies": {
-        "@commitlint/cli": "8.2.0",
-        "@commitlint/config-angular": "8.2.0",
+        "@commitlint/cli": "8.3.5",
+        "@commitlint/config-angular": "8.3.4",
         "coveralls": "3.0.9",
         "eslint": "6.7.0",
         "eslint-config-airbnb-base": "14.0.0",
