@@ -7,7 +7,6 @@ const rimraf = require('rimraf');
 const _ = require('lodash');
 
 const util = require('util');
-const mkdirpAsync = util.promisify(mkdirp);
 const rimrafAsync = util.promisify(rimraf);
 const writeFileAsync = util.promisify(fs.writeFile);
 const readFileAsync = util.promisify(fs.readFile);
@@ -46,7 +45,7 @@ async function getTranslationMetadata() {
 
 	// save a list of languages to `${buildLanguagesPath}/metadata.json`
 	// avoids readdirs later on
-	await mkdirpAsync(buildLanguagesPath);
+	await mkdirp(buildLanguagesPath);
 	const result = {
 		languages: languages,
 		namespaces: namespaces,
@@ -59,7 +58,7 @@ async function writeLanguageFile(language, namespace, translations) {
 	const dev = global.env === 'development';
 	const filePath = path.join(buildLanguagesPath, language, namespace + '.json');
 
-	await mkdirpAsync(path.dirname(filePath));
+	await mkdirp(path.dirname(filePath));
 	await writeFileAsync(filePath, JSON.stringify(translations, null, dev ? 2 : 0));
 }
 

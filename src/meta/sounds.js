@@ -9,7 +9,6 @@ const util = require('util');
 
 const readdirAsync = util.promisify(fs.readdir);
 const rimrafAsync = util.promisify(rimraf);
-const mkdirpAsync = util.promisify(mkdirp);
 const writeFileAsync = util.promisify(fs.writeFile);
 
 const file = require('../file');
@@ -70,7 +69,7 @@ Sounds.build = async function build() {
 	map.unshift({});
 	map = Object.assign.apply(null, map);
 	await rimrafAsync(soundsPath);
-	await mkdirpAsync(soundsPath);
+	await mkdirp(soundsPath);
 
 	await writeFileAsync(path.join(soundsPath, 'fileMap.json'), JSON.stringify(map));
 

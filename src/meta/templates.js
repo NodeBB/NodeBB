@@ -123,10 +123,9 @@ Templates.compileTemplate = compileTemplate;
 
 async function compile() {
 	const _rimraf = util.promisify(rimraf);
-	const _mkdirp = util.promisify(mkdirp);
 
 	await _rimraf(viewsPath);
-	await _mkdirp(viewsPath);
+	await mkdirp(viewsPath);
 
 	let files = await db.getSortedSetRange('plugins:active', 0, -1);
 	files = await getTemplateDirs(files);
@@ -137,7 +136,7 @@ async function compile() {
 		let imported = await fsReadFile(filePath, 'utf8');
 		imported = await processImports(files, name, imported);
 
-		await _mkdirp(path.join(viewsPath, path.dirname(name)));
+		await mkdirp(path.join(viewsPath, path.dirname(name)));
 
 		await fsWriteFile(path.join(viewsPath, name), imported);
 		const compiled = await Benchpress.precompile(imported, { minify: global.env !== 'development' });
