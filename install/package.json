@@ -144,7 +144,7 @@
         "lint-staged": "10.0.7",
         "mocha": "7.0.1",
         "mocha-lcov-reporter": "1.3.0",
-        "nyc": "14.1.1",
+        "nyc": "15.0.0",
         "smtp-server": "3.5.0"
     },
     "bugs": {
