@@ -375,10 +375,12 @@ async function canModifyGroup(uid, groupName) {
 	}
 	const results = await utils.promiseParallel({
 		isOwner: groups.ownership.isOwner(uid, groupName),
-		isAdminOrGlobalMod: user.isAdminOrGlobalMod(uid),
+		system: groups.getGroupField(groupName, 'system'),
+		isAdmin: user.isAdministrator(uid),
+		isGlobalMod: user.isGlobalModerator(uid),
 	});
 
-	if (!results.isOwner && !results.isAdminOrGlobalMod) {
+	if (!(results.isOwner || results.isAdmin || (results.isGlobalMod && !results.system))) {
 		throw new Error('[[error:no-privileges]]');
 	}
 }

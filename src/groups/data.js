@@ -53,6 +53,11 @@ module.exports = function (Groups) {
 		return Array.isArray(groupsData) && groupsData[0] ? groupsData[0] : null;
 	};
 
+	Groups.getGroupField = async function (groupName, field) {
+		const groupData = await Groups.getGroupFields(groupName, [field]);
+		return groupData ? groupData[field] : null;
+	};
+
 	Groups.getGroupFields = async function (groupName, fields) {
 		const groups = await Groups.getGroupsFields([groupName], fields);
 		return groups ? groups[0] : null;
