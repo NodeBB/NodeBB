@@ -321,7 +321,7 @@ authenticationController.onSuccessfulLogin = async function (req, uid) {
 	 * That behaviour is no longer required, onSuccessfulLogin is now automatically
 	 * called in NodeBB core. However, if already called, return prematurely
 	 */
-	if (req.loggedIn) {
+	if (req.loggedIn && !req.session.forceLogin) {
 		return true;
 	}
 
