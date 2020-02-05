@@ -1,3 +1,99 @@
+#### 1.13.2 (2020-02-05)
+
+##### Chores
+
+*  incrementing version number - v1.13.2 (71f4607d)
+*  bump themes (027f3f22)
+*  bump vanilla (236a1730)
+*  bump persona (82ace391)
+*  incrementing version number - v1.13.1 (cc6758a0)
+* **deps:**
+  *  update dependency eslint to v6.8.0 (#8062) (15783213)
+  *  update dependency nyc to v15 (#8094) (976e26a9)
+  *  update commitlint monorepo (#8100) (eb4a1a57)
+  *  update dependency lint-staged to v10.0.7 (#8132) (cdfbcbb9)
+  *  update dependency mocha to v7 (#8106) (b370333c)
+  *  update dependency husky to v4 (dd440ce9)
+  *  update dependency lint-staged to v10.0.1 (66992a55)
+  *  update dependency lint-staged to v10 (d74eecfb)
+
+##### Documentation Changes
+
+*  updated changelog (2edc6960)
+
+##### New Features
+
+*  add test for isOnline (66febb80)
+*  add test for change post owner (df2c7851)
+*  check flag values on save (assignee and state) (#8122) (8e5a2276)
+
+##### Bug Fixes
+
+*  admin relogin (a5ef6b53)
+*  #8135 (c35a21d7)
+*  handle mkdirp0.5->1.0x so it doesn't break upgrade (1e50616c)
+*  #8134, upgrade mkdirp to 1.0.x (87225a90)
+*  onSuccessfulLogin not working (111ed802)
+*  #8139, dont allow restore if not deleted by self (8c48f94b)
+*  use view_deleted when filtering, closes #8137 (9969dd63)
+*  escape invalid rules (d927b763)
+*  add missing await (3cca929a)
+*  missing await in SocketPosts.changeOwner (0ae1eb4f)
+*  #8133, check if user is in room before removing (23810cc6)
+*  add missing await (cd1fa27a)
+*  missing await (f799f017)
+*  dont return flag data to client (418c174d)
+*  check if user has read priv before flagging (51236df4)
+*  restrict getUsersInRoom to members (1f13ab8a)
+*  remove unused conditional, dont add dupe messages (3077eb94)
+*  tests for messaging (ecc579a2)
+*  #8127 user join system message duplicated (594cd7e1)
+*  background-size in taskbar images (106c141f)
+*  tests, was using hardcoded message id (1b08f376)
+*  typo in #8116 (8bb5e71e)
+*  build step defaults to series instead of parallel (3fac09b1)
+*  escape system message, don't allow editing system messages (6a63c1a1)
+*  escape register query param (c8fb7f92)
+*  delete upload (8c6a7954)
+*  check uploadName (153b1a0e)
+*  #8120, bubble errors from static hooks (01d1ae78)
+*  escape bootswatchSkin and homepageRoute (b0f3e48a)
+*  change owner missing await (3e525576)
+*  hsts always enabled (e3952674)
+*  escape topic.thumb (b7a57996)
+*  #8112, don't crash hook returns no data (4eb9652a)
+*  escape config.userLang/acpLang, don't allow invalid language codes (e06c1bfc)
+*  group create/join/update name validation (61da8c29)
+*  don't crash if groupData is missing (48f08627)
+*  #8105, fix export json on page load (5a8217de)
+*  #8103, fix advanced menu not displaying in ACP (52774531)
+*  meta description missing if url doesn't have post index (10989ccc)
+*  create user modal instantly closing (c1b1ee61)
+*  login with weak password (9d074731)
+*  dont check password strength on login (f6d7a24a)
+* **deps:**
+  *  update dependency connect-redis to v4.0.4 (#8143) (16ab641d)
+  *  update dependency rimraf to v3.0.1 (#8138) (726ba71c)
+  *  update dependency validator to v12.2.0 (#8136) (f07b4bfa)
+  *  update dependency nodebb-theme-persona to v10.1.34 (#8140) (6d7131fb)
+  *  update dependency nodebb-theme-persona to v10.1.31 (#8129) (c510a2c4)
+  *  update dependency mongodb to v3.5.2 (#8092) (0e49cfb9)
+  *  update dependency sharp to v0.24.0 (#8121) (16e8f496)
+  *  update dependency nodebb-plugin-composer-default to v6.3.21 (#8119) (ca10f8f0)
+  *  update dependency nodebb-widget-essentials to v4.0.18 (#8111) (df5e3a73)
+
+##### Other Changes
+
+* NodeBB/NodeBB (b959c24a)
+* //github.com/NodeBB/NodeBB (ee4304b4)
+* //github.com/NodeBB/NodeBB (bfaba895)
+*  save disableLeave (#8123) (09d55581)
+* //github.com/NodeBB/NodeBB (842916ea)
+
+##### Refactors
+
+*  messaging (30c50361)
+
 #### 1.13.1 (2019-12-19)
 
 ##### Chores
