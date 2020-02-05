@@ -23,9 +23,11 @@ describe('Topic\'s', function () {
 	var categoryObj;
 	var adminUid;
 	var adminJar;
+	var fooUid;
 
 	before(async function () {
 		adminUid = await User.create({ username: 'admin', password: '123456' });
+		fooUid = await User.create({ username: 'foo' });
 		await groups.join('administrators', adminUid);
 		adminJar = await helpers.loginUser('admin', '123456');
 
@@ -572,6 +574,21 @@ describe('Topic\'s', function () {
 				});
 			});
 		});
+
+		it('should not allow user to restore their topic if it was deleted by an admin', async function () {
+			const result = await topics.post({
+				uid: fooUid,
+				title: 'topic for restore test',
+				content: 'topic content',
+				cid: categoryObj.cid,
+			});
+			await socketTopics.delete({ uid: adminUid }, { tids: [result.topicData.tid], cid: categoryObj.cid });
+			try {
+				await socketTopics.restore({ uid: fooUid }, { tids: [result.topicData.tid], cid: categoryObj.cid });
+			} catch (err) {
+				assert.strictEqual(err.message, '[[error:no-privileges]]');
+			}
+		});
 	});
 
 	describe('order pinned topics', function () {
@@ -914,6 +931,16 @@ describe('Topic\'s', function () {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 200);
 				assert(body);
+				done();
+			});
+		});
+
+		it('should load topic api data', function (done) {
+			request(nconf.get('url') + '/api/topic/' + topicData.slug, { json: true }, function (err, response, body) {
+				assert.ifError(err);
+				assert.equal(response.statusCode, 200);
+				assert.strictEqual(body._header.tags.meta.find(t => t.name === 'description').content, 'topic content');
+				assert.strictEqual(body._header.tags.meta.find(t => t.property === 'og:description').content, 'topic content');
 				done();
 			});
 		});

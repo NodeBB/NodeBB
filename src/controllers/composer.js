@@ -22,6 +22,10 @@ exports.get = async function (req, res, callback) {
 		templateData: {},
 	});
 
+	if (!data || !data.templateData) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
 	if (data.templateData.disabled) {
 		res.render('', {
 			title: '[[modules:composer.compose]]',

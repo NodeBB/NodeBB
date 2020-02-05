@@ -21,7 +21,7 @@ SocketFlags.create = async function (socket, data) {
 
 	const flagObj = await flags.create(data.type, data.id, socket.uid, data.reason);
 	await flags.notify(flagObj, socket.uid);
-	return flagObj;
+	return flagObj.flagId;
 };
 
 SocketFlags.update = async function (socket, data) {

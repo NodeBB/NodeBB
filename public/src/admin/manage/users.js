@@ -308,6 +308,7 @@ define('admin/manage/users', ['translator', 'benchpress', 'autocomplete'], funct
 						},
 					});
 				});
+				return false;
 			});
 		}
 

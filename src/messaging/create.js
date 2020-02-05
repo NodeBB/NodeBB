@@ -1,9 +1,9 @@
 'use strict';
 
-var meta = require('../meta');
-var plugins = require('../plugins');
-var db = require('../database');
-var user = require('../user');
+const meta = require('../meta');
+const plugins = require('../plugins');
+const db = require('../database');
+const user = require('../user');
 
 module.exports = function (Messaging) {
 	Messaging.sendMessage = async (data) => {
@@ -21,7 +21,7 @@ module.exports = function (Messaging) {
 			throw new Error('[[error:invalid-chat-message]]');
 		}
 
-		const maximumChatMessageLength = (meta.config.maximumChatMessageLength || 1000);
+		const maximumChatMessageLength = meta.config.maximumChatMessageLength || 1000;
 		const data = await plugins.fireHook('filter:messaging.checkContent', { content: content });
 		content = String(data.content).trim();
 		if (!content) {

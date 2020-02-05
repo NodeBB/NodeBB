@@ -161,6 +161,13 @@
 						<i class="fa fa-files-o"></i> [[admin/manage/categories:copy-settings]]
 					</button>
 					<hr />
+					<button data-action="toggle" data-disabled="{category.disabled}" class="btn btn-sm btn-block <!-- IF category.disabled -->btn-primary<!-- ELSE -->btn-danger<!-- ENDIF category.disabled -->">
+						<!-- IF category.disabled -->
+						[[admin/manage/categories:enable]]
+						<!-- ELSE -->
+						[[admin/manage/categories:disable]]
+						<!-- ENDIF category.disabled -->
+					</button>
 					<button class="btn btn-danger btn-block purge">
 						<i class="fa fa-eraser"></i> [[admin/manage/categories:purge]]
 					</button>

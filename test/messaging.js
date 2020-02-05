@@ -116,10 +116,13 @@ describe('Messaging Library', function () {
 		it('should send a user-join system message when a chat room is created', (done) => {
 			socketModules.chats.getMessages({ uid: fooUid }, { uid: fooUid, roomId: roomId, start: 0 }, function (err, messages) {
 				assert.ifError(err);
-				assert.equal(messages.length, 1);
+				assert.equal(messages.length, 2);
 				assert.strictEqual(messages[0].system, true);
 				assert.strictEqual(messages[0].content, 'user-join');
-				done();
+				socketModules.chats.edit({ uid: fooUid }, { roomId: roomId, mid: messages[0].messageId, message: 'test' }, function (err) {
+					assert.equal(err.message, '[[error:cant-edit-chat-message]]');
+					done();
+				});
 			});
 		});
 
@@ -145,6 +148,19 @@ describe('Messaging Library', function () {
 					done();
 				});
 			});
+		});
+
+		it('should get users in room', async function () {
+			const data = await socketModules.chats.getUsersInRoom({ uid: fooUid }, { roomId: roomId });
+			assert(Array.isArray(data) && data.length === 3);
+		});
+
+		it('should throw error if user is not in room', async function () {
+			try {
+				const data = await socketModules.chats.getUsersInRoom({ uid: 123123123 }, { roomId: roomId });
+			} catch (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+			}
 		});
 
 		it('should fail to add users to room if max is reached', function (done) {
@@ -198,12 +214,21 @@ describe('Messaging Library', function () {
 		it('should send a user-leave system message when a user leaves the chat room', (done) => {
 			socketModules.chats.getMessages({ uid: fooUid }, { uid: fooUid, roomId: roomId, start: 0 }, function (err, messages) {
 				assert.ifError(err);
-				assert.equal(messages.length, 3);
+				assert.equal(messages.length, 4);
 				const message = messages.pop();
 				assert.strictEqual(message.system, true);
 				assert.strictEqual(message.content, 'user-leave');
 				done();
 			});
+		});
+
+		it('should send not a user-leave system message when a user tries to leave a room they are not in', async () => {
+			await socketModules.chats.leave({ uid: bazUid }, roomId);
+			const messages = await socketModules.chats.getMessages({ uid: fooUid }, { uid: fooUid, roomId: roomId, start: 0 });
+			assert.equal(messages.length, 4);
+			const message = messages.pop();
+			assert.strictEqual(message.system, true);
+			assert.strictEqual(message.content, 'user-leave');
 		});
 
 		it('should change owner when owner leaves room', function (done) {
@@ -351,7 +376,7 @@ describe('Messaging Library', function () {
 					myRoomId = _roomId;
 					assert.ifError(err);
 					assert(myRoomId);
-					socketModules.chats.getRaw({ uid: bazUid }, { mid: 2 }, function (err) {
+					socketModules.chats.getRaw({ uid: bazUid }, { mid: 200 }, function (err) {
 						assert(err);
 						assert.equal(err.message, '[[error:not-allowed]]');
 						socketModules.chats.send({ uid: bazUid }, { roomId: myRoomId, message: 'admin will see this' }, function (err, message) {
@@ -594,14 +619,14 @@ describe('Messaging Library', function () {
 		});
 
 		it('should fail to edit message if new content is empty string', function (done) {
-			socketModules.chats.edit({ uid: fooUid }, { mid: 5, roomId: roomId, message: ' ' }, function (err) {
+			socketModules.chats.edit({ uid: fooUid }, { mid: mid, roomId: roomId, message: ' ' }, function (err) {
 				assert.equal(err.message, '[[error:invalid-chat-message]]');
 				done();
 			});
 		});
 
 		it('should fail to edit message if not own message', function (done) {
-			socketModules.chats.edit({ uid: herpUid }, { mid: 5, roomId: roomId, message: 'message edited' }, function (err) {
+			socketModules.chats.edit({ uid: herpUid }, { mid: mid, roomId: roomId, message: 'message edited' }, function (err) {
 				assert.equal(err.message, '[[error:cant-edit-chat-message]]');
 				done();
 			});

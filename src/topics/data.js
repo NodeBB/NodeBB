@@ -11,6 +11,7 @@ const intFields = [
 	'tid', 'cid', 'uid', 'mainPid', 'postcount',
 	'viewcount', 'deleted', 'locked', 'pinned',
 	'timestamp', 'upvotes', 'downvotes', 'lastposttime',
+	'deleterUid',
 ];
 
 module.exports = function (Topics) {
@@ -89,6 +90,10 @@ function modifyTopic(topic, fields) {
 	}
 
 	escapeTitle(topic);
+
+	if (topic.hasOwnProperty('thumb')) {
+		topic.thumb = validator.escape(String(topic.thumb));
+	}
 
 	if (topic.hasOwnProperty('timestamp')) {
 		topic.timestampISO = utils.toISOString(topic.timestamp);

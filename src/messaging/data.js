@@ -1,9 +1,11 @@
 'use strict';
 
-var db = require('../database');
-var user = require('../user');
-var utils = require('../utils');
-var plugins = require('../plugins');
+const validator = require('validator');
+
+const db = require('../database');
+const user = require('../user');
+const utils = require('../utils');
+const plugins = require('../plugins');
 
 const intFields = ['timestamp', 'edited', 'fromuid', 'roomId', 'deleted', 'system'];
 
@@ -79,6 +81,7 @@ module.exports = function (Messaging) {
 
 		messages = await Promise.all(messages.map(async (message) => {
 			if (message.system) {
+				message.content = validator.escape(String(message.content));
 				return message;
 			}
 

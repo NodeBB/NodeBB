@@ -1,3 +1,74 @@
+#### 1.13.1 (2019-12-19)
+
+##### Chores
+
+*  incrementing version number - v1.13.1 (d1e0672f)
+*  incrementing version number - v1.13.0 (c38b2d23)
+* **deps:**
+  *  update dependency husky to v3.1.0 (#8046) (c3418c26)
+  *  update dependency coveralls to v3.0.9 (#8067) (0aeee144)
+  *  update dependency eslint to v6.7.0 (32cfe96f)
+  *  update dependency coveralls to v3.0.8 (#8054) (8ba26104)
+
+##### Documentation Changes
+
+*  updated changelog (94499da3)
+
+##### New Features
+
+*  better output for cli plugins list, closes #8075 (4fc69443)
+*  #5272, allow changing user groups from manage users page (05c9fe27)
+*  merge social authentication into plugins menu in ACP (f9a8ebfc)
+*  convert middleware.isAdmin to async/await (efd1e88b)
+
+##### Bug Fixes
+
+*  #8085, fix cookie name (dec157d6)
+*  #8058, fix incorrect digest setting display in ACP (1b992d82)
+*  remove select version (6a17e32d)
+*  travis config (3ae98300)
+*  travis :dog: (3731dc4e)
+*  #8078, dont mark notifications read without a mergeId (a8df6d62)
+*  #8077, show continue chat on all profile pages (7af1c873)
+*  profile showing posts from deleted topics (2679f37d)
+*  #8073, configurable necroThreshold (4d669783)
+*  allow members to search as well (b323df2f)
+*  #8069, dont show hidden groups in search (c2cd7de8)
+*  missing await (33fd4a1c)
+*  #8064, break-word on post-queue (1bda92e3)
+*  #6711 (7ed002a1)
+*  #8061, don't crash if there is a network problem (de404102)
+*  #8059, properly mark topic unread when using mark unread for all (a688aaae)
+*  #8042, dont show errors after clearing form (3811e0a3)
+*  unhandled promise rejection error on reset error (51073772)
+*  #8050, fix redirect after registration (366ad5cd)
+*  make _csrf a secure cookie if the website is using https (#8045) (0efe27b1)
+*  #8034 (0a96c923)
+*  serialize (a2545204)
+*  show login fields if user has local password (1eca5b3d)
+*  use the correct attribute name for widgets (6c404b81)
+* **deps:**
+  *  update dependency semver to v7 (483d7535)
+  *  update dependency nodebb-theme-vanilla to v11.1.12 (610ecf35)
+  *  update dependency sharp to v0.23.4 (#8076) (eb18c182)
+  *  update dependency nodebb-theme-persona to v10.1.30 (0514383a)
+  *  update dependency nodebb-plugin-markdown to v8.11.0 (702ca164)
+  *  update dependency connect-mongo to v3.2.0 (2aef7a5b)
+  *  update dependency mongodb to v3.3.5 (#8065) (68118e43)
+  *  update dependency nodebb-theme-persona to v10.1.29 (#8057) (34933091)
+  *  update dependency sharp to v0.23.3 (#8044) (6fa88823)
+  *  update dependency validator to v12.1.0 (#8055) (488ea394)
+  *  update dependency nodebb-theme-slick to v1.2.28 (#8041) (b3511f71)
+  *  update dependency nodebb-theme-vanilla to v11.1.11 (#8040) (d567c4ae)
+  *  update dependency nodebb-theme-persona to v10.1.28 (#8039) (6c87bed5)
+  *  update dependency nodebb-plugin-dbsearch to v4.0.7 (#8038) (1e2e16b4)
+
+##### Refactors
+
+*  async/await middleware (a227cbe3)
+*  change to const/let (3454a24b)
+*  shorter returns (cec00795)
+
 ### 1.13.0 (2019-11-13)
 
 ##### Chores

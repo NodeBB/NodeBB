@@ -25,6 +25,7 @@ events.types = [
 	'post-delete',
 	'post-restore',
 	'post-purge',
+	'post-change-owner',
 	'topic-delete',
 	'topic-restore',
 	'topic-purge',

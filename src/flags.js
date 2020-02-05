@@ -19,6 +19,16 @@ const utils = require('../public/src/utils');
 
 const Flags = module.exports;
 
+Flags._constants = {
+	states: ['open', 'wip', 'resolved', 'rejected'],
+	state_class: {
+		open: 'info',
+		wip: 'warning',
+		resolved: 'success',
+		rejected: 'danger',
+	},
+};
+
 Flags.init = async function () {
 	// Query plugins for custom filter strategies and merge into core filter strategies
 	function prepareSets(sets, orSets, prefix, value) {
@@ -162,13 +172,7 @@ Flags.list = async function (filters, uid) {
 				'icon:text': userObj['icon:text'],
 			},
 		};
-		const stateToLabel = {
-			open: 'info',
-			wip: 'warning',
-			resolved: 'success',
-			rejected: 'danger',
-		};
-		flagObj.labelClass = stateToLabel[flagObj.state];
+		flagObj.labelClass = Flags._constants.state_class[flagObj.state];
 
 		return Object.assign(flagObj, {
 			description: validator.escape(String(flagObj.description)),
@@ -247,18 +251,21 @@ Flags.create = async function (type, id, uid, reason, timestamp) {
 		timestamp = Date.now();
 		doHistoryAppend = true;
 	}
-	const [exists, targetExists, targetUid, targetCid] = await Promise.all([
+	const [flagExists, targetExists, canFlag, targetUid, targetCid] = await Promise.all([
 		// Sanity checks
 		Flags.exists(type, id, uid),
 		Flags.targetExists(type, id),
+		Flags.canFlag(type, id, uid),
 		// Extra data for zset insertion
 		Flags.getTargetUid(type, id),
 		Flags.getTargetCid(type, id),
 	]);
-	if (exists) {
+	if (flagExists) {
 		throw new Error('[[error:already-flagged]]');
 	} else if (!targetExists) {
 		throw new Error('[[error:invalid-data]]');
+	} else if (!canFlag) {
+		throw new Error('[[error:no-privileges]]');
 	}
 	const flagId = await db.incrObjectField('global', 'nextFlagId');
 
@@ -303,6 +310,16 @@ Flags.exists = async function (type, id, uid) {
 	return await db.isSortedSetMember('flags:hash', [type, id, uid].join(':'));
 };
 
+Flags.canFlag = async function (type, id, uid) {
+	if (type === 'user') {
+		return true;
+	}
+	if (type === 'post') {
+		return await privileges.posts.can('topics:read', id, uid);
+	}
+	throw new Error('[[error:invalid-data]]');
+};
+
 Flags.getTarget = async function (type, id, uid) {
 	if (type === 'user') {
 		const userData = await user.getUserData(id);
@@ -344,6 +361,7 @@ Flags.getTargetCid = async function (type, id) {
 };
 
 Flags.update = async function (flagId, uid, changeset) {
+	const current = await db.getObjectFields('flag:' + flagId, ['state', 'assignee', 'type', 'targetId']);
 	const now = changeset.datetime || Date.now();
 	const notifyAssignee = async function (assigneeId) {
 		if (assigneeId === '' || parseInt(uid, 10) === parseInt(assigneeId, 10)) {
@@ -359,20 +377,40 @@ Flags.update = async function (flagId, uid, changeset) {
 		});
 		await notifications.push(notifObj, [assigneeId]);
 	};
+	const isAssignable = async function (assigneeId) {
+		let allowed = false;
+		allowed = await user.isAdminOrGlobalMod(assigneeId);
 
-	// Retrieve existing flag data to compare for history-saving purposes
-	const current = await db.getObjectFields('flag:' + flagId, ['state', 'assignee']);
+		// Mods are also allowed to be assigned, if flag target is post in uid's moderated cid
+		if (!allowed && current.type === 'post') {
+			const cid = await posts.getCidByPid(current.targetId);
+			allowed = await user.isModerator(assigneeId, cid);
+		}
+
+		return allowed;
+	};
+
+	// Retrieve existing flag data to compare for history-saving/reference purposes
 	const tasks = [];
 	for (var prop in changeset) {
 		if (changeset.hasOwnProperty(prop)) {
 			if (current[prop] === changeset[prop]) {
 				delete changeset[prop];
 			} else if (prop === 'state') {
-				tasks.push(db.sortedSetAdd('flags:byState:' + changeset[prop], now, flagId));
-				tasks.push(db.sortedSetRemove('flags:byState:' + current[prop], flagId));
+				if (!Flags._constants.states.includes(changeset[prop])) {
+					delete changeset[prop];
+				} else {
+					tasks.push(db.sortedSetAdd('flags:byState:' + changeset[prop], now, flagId));
+					tasks.push(db.sortedSetRemove('flags:byState:' + current[prop], flagId));
+				}
 			} else if (prop === 'assignee') {
-				tasks.push(db.sortedSetAdd('flags:byAssignee:' + changeset[prop], now, flagId));
-				tasks.push(notifyAssignee(changeset[prop]));
+				/* eslint-disable-next-line */
+				if (!await isAssignable(parseInt(changeset[prop], 10))) {
+					delete changeset[prop];
+				} else {
+					tasks.push(db.sortedSetAdd('flags:byAssignee:' + changeset[prop], now, flagId));
+					tasks.push(notifyAssignee(changeset[prop]));
+				}
 			}
 		}
 	}

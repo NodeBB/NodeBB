@@ -398,7 +398,7 @@ app.cacheBuster = null;
 		}
 		if (registerMessage) {
 			$(document).ready(function () {
-				showAlert('register', decodeURIComponent(registerMessage));
+				showAlert('register', utils.escapeHTML(decodeURIComponent(registerMessage)));
 				registerMessage = false;
 			});
 		}

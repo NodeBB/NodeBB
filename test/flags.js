@@ -11,42 +11,33 @@ var Posts = require('../src/posts');
 var User = require('../src/user');
 var Groups = require('../src/groups');
 var Meta = require('../src/meta');
+var Privileges = require('../src/privileges');
 
 describe('Flags', function () {
-	before(function (done) {
+	let uid1;
+	let adminUid;
+	let uid3;
+	let category;
+	before(async () => {
 		// Create some stuff to flag
-		async.waterfall([
-			async.apply(User.create, { username: 'testUser', password: 'abcdef', email: 'b@c.com' }),
-			function (uid, next) {
-				Categories.create({
-					name: 'test category',
-				}, function (err, category) {
-					if (err) {
-						return done(err);
-					}
+		uid1 = await User.create({ username: 'testUser', password: 'abcdef', email: 'b@c.com' });
 
-					Topics.post({
-						cid: category.cid,
-						uid: uid,
-						title: 'Topic to flag',
-						content: 'This is flaggable content',
-					}, next);
-				});
-			},
-			function (topicData, next) {
-				User.create({
-					username: 'testUser2', password: 'abcdef', email: 'c@d.com',
-				}, next);
-			},
-			function (uid, next) {
-				Groups.join('administrators', uid, next);
-			},
-			function (next) {
-				User.create({
-					username: 'unprivileged', password: 'abcdef', email: 'd@e.com',
-				}, next);
-			},
-		], done);
+		adminUid = await User.create({ username: 'testUser2', password: 'abcdef', email: 'c@d.com' });
+		await Groups.join('administrators', adminUid);
+
+		category = await Categories.create({
+			name: 'test category',
+		});
+		await Topics.post({
+			cid: category.cid,
+			uid: uid1,
+			title: 'Topic to flag',
+			content: 'This is flaggable content',
+		});
+
+		uid3 = await User.create({
+			username: 'unprivileged', password: 'abcdef', email: 'd@e.com',
+		});
 	});
 
 	describe('.create()', function () {
@@ -274,9 +265,9 @@ describe('Flags', function () {
 
 	describe('.update()', function () {
 		it('should alter a flag\'s various attributes and persist them to the database', function (done) {
-			Flags.update(1, 1, {
+			Flags.update(1, adminUid, {
 				state: 'wip',
-				assignee: 1,
+				assignee: adminUid,
 			}, function (err) {
 				assert.ifError(err);
 				db.getObjectFields('flag:1', ['state', 'assignee'], function (err, data) {
@@ -286,7 +277,7 @@ describe('Flags', function () {
 
 					assert.strictEqual('wip', data.state);
 					assert.ok(!isNaN(parseInt(data.assignee, 10)));
-					assert.strictEqual(1, parseInt(data.assignee, 10));
+					assert.strictEqual(adminUid, parseInt(data.assignee, 10));
 					done();
 				});
 			});
@@ -312,6 +303,65 @@ describe('Flags', function () {
 
 				done();
 			});
+		});
+
+		it('should allow assignment if user is an admin and do nothing otherwise', async () => {
+			await Flags.update(1, adminUid, {
+				assignee: adminUid,
+			});
+			let assignee = await db.getObjectField('flag:1', 'assignee');
+			assert.strictEqual(adminUid, parseInt(assignee, 10));
+
+			await Flags.update(1, adminUid, {
+				assignee: uid3,
+			});
+			assignee = await db.getObjectField('flag:1', 'assignee');
+			assert.strictEqual(adminUid, parseInt(assignee, 10));
+		});
+
+		it('should allow assignment if user is a global mod and do nothing otherwise', async () => {
+			await Groups.join('Global Moderators', uid3);
+
+			await Flags.update(1, uid3, {
+				assignee: uid3,
+			});
+			let assignee = await db.getObjectField('flag:1', 'assignee');
+			assert.strictEqual(uid3, parseInt(assignee, 10));
+
+			await Flags.update(1, uid3, {
+				assignee: uid1,
+			});
+			assignee = await db.getObjectField('flag:1', 'assignee');
+			assert.strictEqual(uid3, parseInt(assignee, 10));
+
+			await Groups.leave('Global Moderators', uid3);
+		});
+
+		it('should allow assignment if user is a mod of the category, do nothing otherwise', async () => {
+			await Groups.join('cid:' + category.cid + ':privileges:moderate', uid3);
+
+			await Flags.update(1, uid3, {
+				assignee: uid3,
+			});
+			let assignee = await db.getObjectField('flag:1', 'assignee');
+			assert.strictEqual(uid3, parseInt(assignee, 10));
+
+			await Flags.update(1, uid3, {
+				assignee: uid1,
+			});
+			assignee = await db.getObjectField('flag:1', 'assignee');
+			assert.strictEqual(uid3, parseInt(assignee, 10));
+
+			await Groups.leave('cid:' + category.cid + ':privileges:moderate', uid3);
+		});
+
+		it('should do nothing when you attempt to set a bogus state', async () => {
+			await Flags.update(1, adminUid, {
+				state: 'hocus pocus',
+			});
+
+			const state = await db.getObjectField('flag:1', 'state');
+			assert.strictEqual('wip', state);
 		});
 	});
 
@@ -546,9 +596,7 @@ describe('Flags', function () {
 
 	describe('(websockets)', function () {
 		var SocketFlags = require('../src/socket.io/flags.js');
-		var tid;
 		var pid;
-		var flag;
 
 		before(function (done) {
 			Topics.post({
@@ -557,7 +605,6 @@ describe('Flags', function () {
 				title: 'Another topic',
 				content: 'This is flaggable content',
 			}, function (err, topic) {
-				tid = topic.postData.tid;
 				pid = topic.postData.pid;
 
 				done(err);
@@ -570,8 +617,7 @@ describe('Flags', function () {
 					type: 'post',
 					id: pid,
 					reason: 'foobar',
-				}, function (err, flagObj) {
-					flag = flagObj;
+				}, function (err) {
 					assert.ifError(err);
 
 					Flags.exists('post', pid, 1, function (err, exists) {
@@ -580,6 +626,23 @@ describe('Flags', function () {
 						done();
 					});
 				});
+			});
+
+			it('should not allow flagging post in private category', async function () {
+				const category = await Categories.create({ name: 'private category' });
+
+				await Privileges.categories.rescind(['topics:read'], category.cid, 'registered-users');
+				const result = await Topics.post({
+					cid: category.cid,
+					uid: adminUid,
+					title: 'private topic',
+					content: 'private post',
+				});
+				try {
+					await SocketFlags.create({ uid: uid3 }, { type: 'post', id: result.postData.pid, reason: 'foobar' });
+				} catch (err) {
+					assert.equal(err.message, '[[error:no-privileges]]');
+				}
 			});
 		});
 

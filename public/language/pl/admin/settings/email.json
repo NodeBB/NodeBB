@@ -33,8 +33,8 @@
 	"testing.select": "Wybierz szablon e-maila",
 	"testing.send": "Wyślij testowy e-mail",
 	"testing.send-help": "Testowy e-mail zostanie wysłany na adres aktualnie zalogowanego użytkownika.",
-	"subscriptions": "Email Digests",
-	"subscriptions.disable": "Disable email digests",
+	"subscriptions": "Podsumowania e-mail",
+	"subscriptions.disable": "Wyłącz podsumowania e-maili",
 	"subscriptions.hour": "Godzina podsumowania",
 	"subscriptions.hour-help": "Wprowadź liczbę odpowiadającą godzinie, o której mają być wysyłane regularne e-maile z podsumowaniem (np. <code>0</code> dla północy lub <code>17</code> dla 17:00). Pamiętaj, że godzina jest godziną serwera i nie musi zgadzać się z czasem lokalnym administratora. Przybliżony czas serwera to: <span id=\"serverTime\"></span><br /> Wysłanie kolejnego e-maila z podsumowaniem zaplanowano na <span id=\"nextDigestTime\"></span>"
 }

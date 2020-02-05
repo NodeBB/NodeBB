@@ -18,10 +18,14 @@ module.exports = function (User) {
 			throw new Error('[[error:no-privileges]]');
 		}
 
+		const finalPath = path.join(nconf.get('upload_path'), uploadName);
+		if (!finalPath.startsWith(nconf.get('upload_path'))) {
+			throw new Error('[[error:invalid-path]]');
+		}
 		winston.verbose('[user/deleteUpload] Deleting ' + uploadName);
 		await Promise.all([
-			file.delete(path.join(nconf.get('upload_path'), uploadName)),
-			file.delete(path.join(nconf.get('upload_path'), path.dirname(uploadName), path.basename(uploadName, path.extname(uploadName)) + '-resized' + path.extname(uploadName))),
+			file.delete(finalPath),
+			file.delete(file.appendToFileName(finalPath, '-resized')),
 		]);
 		await db.sortedSetRemove('uid:' + uid + ':uploads', uploadName);
 	};

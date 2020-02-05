@@ -110,6 +110,7 @@ module.exports = function (privileges) {
 		return await utils.promiseParallel({
 			categories: categories.getCategoriesFields(cids, ['disabled']),
 			allowedTo: helpers.isUserAllowedTo(privilege, uid, cids),
+			view_deleted: helpers.isUserAllowedTo('posts:view_deleted', uid, cids),
 			isAdmin: user.isAdministrator(uid),
 		});
 	};

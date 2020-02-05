@@ -11,8 +11,8 @@ var db = require('./mocks/databasemock');
 var file = require('../src/file');
 
 describe('minifier', function () {
-	before(function (done) {
-		mkdirp(path.join(__dirname, '../build/test'), done);
+	before(async function () {
+		await mkdirp(path.join(__dirname, '../build/test'));
 	});
 
 	var minifier = require('../src/meta/minifier');

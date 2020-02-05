@@ -1,9 +1,9 @@
 'use strict';
 
-var meta = require('../meta');
-var user = require('../user');
+const meta = require('../meta');
+const user = require('../user');
 
-var sockets = require('../socket.io');
+const sockets = require('../socket.io');
 
 
 module.exports = function (Messaging) {
@@ -57,18 +57,18 @@ module.exports = function (Messaging) {
 
 		const [isAdmin, messageData] = await Promise.all([
 			user.isAdministrator(uid),
-			Messaging.getMessageFields(messageId, ['fromuid', 'timestamp']),
+			Messaging.getMessageFields(messageId, ['fromuid', 'timestamp', 'system']),
 		]);
 
-		if (isAdmin) {
+		if (isAdmin && !messageData.system) {
 			return;
 		}
-		var chatConfigDuration = meta.config[durationConfig];
+		const chatConfigDuration = meta.config[durationConfig];
 		if (chatConfigDuration && Date.now() - messageData.timestamp > chatConfigDuration * 1000) {
 			throw new Error('[[error:chat-' + type + '-duration-expired, ' + meta.config[durationConfig] + ']]');
 		}
 
-		if (messageData.fromuid === parseInt(uid, 10)) {
+		if (messageData.fromuid === parseInt(uid, 10) && !messageData.system) {
 			return;
 		}
 

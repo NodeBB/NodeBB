@@ -10,7 +10,6 @@ const graceful = require('graceful-fs');
 const util = require('util');
 
 const readdirAsync = util.promisify(fs.readdir);
-const mkdirpAsync = util.promisify(mkdirp);
 const copyFileAsync = util.promisify(fs.copyFile);
 const writeFleAsync = util.promisify(fs.writeFile);
 const statAsync = util.promisify(fs.stat);
@@ -33,7 +32,7 @@ file.saveFileToLocal = async function (filename, folder, tempPath) {
 	const uploadPath = path.join(nconf.get('upload_path'), folder, filename);
 
 	winston.verbose('Saving file ' + filename + ' to : ' + uploadPath);
-	await mkdirpAsync(path.dirname(uploadPath));
+	await mkdirp(path.dirname(uploadPath));
 	await copyFileAsync(tempPath, uploadPath);
 	return {
 		url: '/assets/uploads/' + (folder ? folder + '/' : '') + filename,

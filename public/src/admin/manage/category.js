@@ -227,6 +227,22 @@ define('admin/manage/category', [
 				$('button[data-action="setParent"]').removeClass('hide');
 			});
 		});
+		$('button[data-action="toggle"]').on('click', function () {
+			var payload = {};
+			var $this = $(this);
+			var disabled = $this.attr('data-disabled') === '1';
+			payload[ajaxify.data.category.cid] = {
+				disabled: disabled ? 0 : 1,
+			};
+			socket.emit('admin.categories.update', payload, function (err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+				$this.translateText(!disabled ? '[[admin/manage/categories:enable]]' : '[[admin/manage/categories:disable]]');
+				$this.toggleClass('btn-primary', !disabled).toggleClass('btn-danger', disabled);
+				$this.attr('data-disabled', disabled ? 0 : 1);
+			});
+		});
 	};
 
 	function modified(el) {

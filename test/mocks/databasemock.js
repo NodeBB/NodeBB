@@ -182,7 +182,7 @@ async function setupMockDefaults() {
 	const rimraf = util.promisify(require('rimraf'));
 	await rimraf('test/uploads');
 
-	const mkdirp = util.promisify(require('mkdirp'));
+	const mkdirp = require('mkdirp');
 
 	const folders = [
 		'test/uploads',

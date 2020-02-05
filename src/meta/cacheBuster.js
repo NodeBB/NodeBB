@@ -5,7 +5,6 @@ const path = require('path');
 const mkdirp = require('mkdirp');
 const winston = require('winston');
 const util = require('util');
-const mkdirpAsync = util.promisify(mkdirp);
 const writeFileAsync = util.promisify(fs.writeFile);
 const readFileAsync = util.promisify(fs.readFile);
 
@@ -19,7 +18,7 @@ function generate() {
 }
 
 exports.write = async function write() {
-	await mkdirpAsync(path.dirname(filePath));
+	await mkdirp(path.dirname(filePath));
 	await writeFileAsync(filePath, generate());
 };
 

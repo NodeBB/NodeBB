@@ -20,10 +20,7 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.getRoomsData = async (roomIds) => {
-		const roomData = await db.getObjects(roomIds.map(function (roomId) {
-			return 'chat:room:' + roomId;
-		}));
-
+		const roomData = await db.getObjects(roomIds.map(roomId => 'chat:room:' + roomId));
 		modifyRoomData(roomData);
 		return roomData;
 	};
@@ -53,6 +50,7 @@ module.exports = function (Messaging) {
 			db.sortedSetAdd('chat:room:' + roomId + ':uids', now, uid),
 		]);
 		await Promise.all([
+			Messaging.addSystemMessage('user-join', uid, roomId),	// chat owner should also get the user-join system message
 			Messaging.addUsersToRoom(uid, toUids, roomId),
 			Messaging.addRoomToUsers(roomId, [uid].concat(toUids), now),
 		]);
@@ -61,7 +59,7 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.isUserInRoom = async (uid, roomId) => {
-		const inRoom = db.isSortedSetMember('chat:room:' + roomId + ':uids', uid);
+		const inRoom = await db.isSortedSetMember('chat:room:' + roomId + ':uids', uid);
 		const data = await plugins.fireHook('filter:messaging.isUserInRoom', { uid: uid, roomId: roomId, inRoom: inRoom });
 		return data.inRoom;
 	};
@@ -113,6 +111,9 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.leaveRoom = async (uids, roomId) => {
+		const isInRoom = await Promise.all(uids.map(uid => Messaging.isUserInRoom(uid, roomId)));
+		uids = uids.filter((uid, index) => isInRoom[index]);
+
 		const keys = uids
 			.map(uid => 'uid:' + uid + ':chat:rooms')
 			.concat(uids.map(uid => 'uid:' + uid + ':chat:rooms:unread'));
@@ -127,6 +128,9 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.leaveRooms = async (uid, roomIds) => {
+		const isInRoom = await Promise.all(roomIds.map(roomId => Messaging.isUserInRoom(uid, roomId)));
+		roomIds = roomIds.filter((roomId, index) => isInRoom[index]);
+
 		const roomKeys = roomIds.map(roomId => 'chat:room:' + roomId + ':uids');
 		await Promise.all([
 			db.sortedSetsRemove(roomKeys, uid),
@@ -192,7 +196,7 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.canReply = async (roomId, uid) => {
-		const inRoom = db.isSortedSetMember('chat:room:' + roomId + ':uids', uid);
+		const inRoom = await db.isSortedSetMember('chat:room:' + roomId + ':uids', uid);
 		const data = await plugins.fireHook('filter:messaging.canReply', { uid: uid, roomId: roomId, inRoom: inRoom, canReply: inRoom });
 		return data.canReply;
 	};

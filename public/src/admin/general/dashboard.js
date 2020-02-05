@@ -465,7 +465,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 			// Update the View as JSON button url
 			var apiEl = $('#view-as-json');
 			var newHref = $.param({
-				units: units,
+				units: units || 'hours',
 				until: until,
 				count: amount,
 			});

@@ -88,16 +88,17 @@ module.exports = function (privileges) {
 		cids = _.uniq(cids);
 
 		const results = await privileges.categories.getBase(privilege, cids, uid);
-		cids = cids.filter(function (cid, index) {
+		const allowedCids = cids.filter(function (cid, index) {
 			return !results.categories[index].disabled &&
 				(results.allowedTo[index] || results.isAdmin);
 		});
 
-		const cidsSet = new Set(cids);
+		const cidsSet = new Set(allowedCids);
+		const canViewDeleted = _.zipObject(cids, results.view_deleted);
 
 		pids = postData.filter(function (post) {
 			return post.topic && cidsSet.has(post.topic.cid) &&
-				((!post.topic.deleted && !post.deleted) || results.isAdmin);
+				((!post.topic.deleted && !post.deleted) || canViewDeleted[post.topic.cid] || results.isAdmin);
 		}).map(post => post.pid);
 
 		const data = await plugins.fireHook('filter:privileges.posts.filter', {

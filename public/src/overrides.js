@@ -123,14 +123,16 @@ if (typeof window !== 'undefined') {
 		$.timeago.settings.allowFuture = true;
 		var userLang = config.userLang.replace('_', '-');
 		var options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
-		var formatFn;
-		if (typeof Intl === 'undefined') {
-			formatFn = function (date) {
-				return date.toLocaleString(userLang, options);
-			};
-		} else {
-			var dtFormat = new Intl.DateTimeFormat(userLang, options);
-			formatFn = dtFormat.format;
+		var formatFn = function (date) {
+			return date.toLocaleString(userLang, options);
+		};
+		try {
+			if (typeof Intl !== 'undefined') {
+				var dtFormat = new Intl.DateTimeFormat(userLang, options);
+				formatFn = dtFormat.format;
+			}
+		} catch (err) {
+			console.error(err);
 		}
 
 		var iso;

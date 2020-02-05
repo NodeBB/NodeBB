@@ -123,7 +123,7 @@ module.exports = function (Posts) {
 	};
 
 	Posts.changeOwner = async function (pids, toUid) {
-		const exists = user.exists(toUid);
+		const exists = await user.exists(toUid);
 		if (!exists) {
 			throw new Error('[[error:no-user]]');
 		}
@@ -163,6 +163,7 @@ module.exports = function (Posts) {
 			reduceCounters(postsByUser),
 			updateTopicPosters(postData, toUid),
 		]);
+		return postData;
 	};
 
 	async function reduceCounters(postsByUser) {

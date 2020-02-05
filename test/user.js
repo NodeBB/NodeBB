@@ -1519,7 +1519,7 @@ describe('User', function () {
 
 		it('should save user settings', function (done) {
 			var data = {
-				uid: 1,
+				uid: testUid,
 				settings: {
 					bootswatchSkin: 'default',
 					homePageRoute: 'none',
@@ -1547,6 +1547,21 @@ describe('User', function () {
 					assert.equal(data.usePagination, true);
 					done();
 				});
+			});
+		});
+
+		it('should error if language is invalid', function (done) {
+			var data = {
+				uid: testUid,
+				settings: {
+					userLang: '<invalid-string>',
+					topicsPerPage: '10',
+					postsPerPage: '5',
+				},
+			};
+			socketUser.saveSettings({ uid: testUid }, data, function (err) {
+				assert.equal(err.message, '[[error:invalid-language]]');
+				done();
 			});
 		});
 
@@ -2149,10 +2164,20 @@ describe('User', function () {
 		});
 	});
 
-	it('should return offline if user is guest', function (done) {
-		var status = User.getStatus({ uid: 0 });
-		assert.strictEqual(status, 'offline');
-		done();
+	describe('status/online', function () {
+		it('should return offline if user is guest', function (done) {
+			var status = User.getStatus({ uid: 0 });
+			assert.strictEqual(status, 'offline');
+			done();
+		});
+
+		it('should return offline if user is guest', async function () {
+			assert.strictEqual(await User.isOnline(0), false);
+		});
+
+		it('should return true', async function () {
+			assert.strictEqual(await User.isOnline(testUid), true);
+		});
 	});
 
 	describe('isPrivilegedOrSelf', function () {
@@ -2189,6 +2214,19 @@ describe('User', function () {
 			assert.ifError(err);
 			assert(Array.isArray(data));
 			done();
+		});
+	});
+
+	it('should allow user to login even if password is weak', function (done) {
+		User.create({ username: 'weakpwd', password: '123456' }, function (err) {
+			assert.ifError(err);
+			const oldValue = meta.config.minimumPasswordStrength;
+			meta.config.minimumPasswordStrength = 3;
+			helpers.loginUser('weakpwd', '123456', function (err, jar, csrfs_token) {
+				assert.ifError(err);
+				meta.config.minimumPasswordStrength = oldValue;
+				done();
+			});
 		});
 	});
 });

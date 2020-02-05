@@ -127,7 +127,7 @@ module.exports = function (User) {
 	};
 
 	User.isPasswordValid = function (password, minStrength) {
-		minStrength = minStrength || meta.config.minimumPasswordStrength;
+		minStrength = (minStrength || minStrength === 0) ? minStrength : meta.config.minimumPasswordStrength;
 
 		// Sanity checks: Checks if defined and is string
 		if (!password || !utils.isPasswordValid(password)) {

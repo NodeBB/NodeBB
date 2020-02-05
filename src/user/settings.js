@@ -1,10 +1,13 @@
 
 'use strict';
 
+const validator = require('validator');
+
 const meta = require('../meta');
 const db = require('../database');
 const plugins = require('../plugins');
 const notifications = require('../notifications');
+const languages = require('../languages');
 
 module.exports = function (User) {
 	User.getSettings = async function (uid) {
@@ -55,7 +58,8 @@ module.exports = function (User) {
 		settings.upvoteNotifFreq = getSetting(settings, 'upvoteNotifFreq', 'all');
 		settings.restrictChat = parseInt(getSetting(settings, 'restrictChat', 0), 10) === 1;
 		settings.topicSearchEnabled = parseInt(getSetting(settings, 'topicSearchEnabled', 0), 10) === 1;
-		settings.bootswatchSkin = settings.bootswatchSkin || '';
+		settings.bootswatchSkin = validator.escape(String(settings.bootswatchSkin || ''));
+		settings.homePageRoute = validator.escape(String(settings.homePageRoute || ''));
 		settings.scrollToMyPost = parseInt(getSetting(settings, 'scrollToMyPost', 1), 10) === 1;
 		settings.categoryWatchState = getSetting(settings, 'categoryWatchState', 'notwatching');
 
@@ -87,6 +91,13 @@ module.exports = function (User) {
 			throw new Error('[[error:invalid-pagination-value, 2, ' + maxTopicsPerPage + ']]');
 		}
 
+		const languageCodes = await languages.listCodes();
+		if (data.userLang && !languageCodes.includes(data.userLang)) {
+			throw new Error('[[error:invalid-language]]');
+		}
+		if (data.acpLang && !languageCodes.includes(data.acpLang)) {
+			throw new Error('[[error:invalid-language]]');
+		}
 		data.userLang = data.userLang || meta.config.defaultLang;
 
 		plugins.fireHook('action:user.saveSettings', { uid: uid, settings: data });
