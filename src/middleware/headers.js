@@ -54,6 +54,11 @@ module.exports = function (middleware) {
 			headers['X-Upstream-Hostname'] = os.hostname();
 		}
 
+		// Validate session
+		if (!req.session.meta) {
+			res.clearCookie('express.sid');
+		}
+
 		for (var key in headers) {
 			if (headers.hasOwnProperty(key) && headers[key]) {
 				res.setHeader(key, headers[key]);
