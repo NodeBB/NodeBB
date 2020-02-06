@@ -11,6 +11,9 @@ module.exports = function (middleware) {
 			return setImmediate(next);
 		}
 
+		const hooksAsync = util.promisify(middleware.pluginHooks);
+		await hooksAsync(req, res);
+
 		const url = req.url.replace(nconf.get('relative_path'), '');
 		if (url.startsWith('/login') || url.startsWith('/api/login')) {
 			return setImmediate(next);
