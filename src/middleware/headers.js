@@ -3,6 +3,7 @@
 var os = require('os');
 var winston = require('winston');
 var _ = require('lodash');
+const nconf = require('nconf');
 
 var meta = require('../meta');
 var languages = require('../languages');
@@ -52,6 +53,11 @@ module.exports = function (middleware) {
 
 		if (process.env.NODE_ENV === 'development') {
 			headers['X-Upstream-Hostname'] = os.hostname();
+		}
+
+		// Validate session
+		if (!req.session.meta && !res.get('Set-Cookie')) {
+			res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
 		}
 
 		for (var key in headers) {

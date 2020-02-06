@@ -206,24 +206,9 @@ function configureBodyParser(app) {
 }
 
 function setupCookie() {
-	var ttl = meta.getSessionTTLSeconds() * 1000;
-
-	var cookie = {
-		maxAge: ttl,
-	};
-
-	if (nconf.get('cookieDomain') || meta.config.cookieDomain) {
-		cookie.domain = nconf.get('cookieDomain') || meta.config.cookieDomain;
-	}
-
-	if (nconf.get('secure')) {
-		cookie.secure = true;
-	}
-
-	var relativePath = nconf.get('relative_path');
-	if (relativePath !== '') {
-		cookie.path = relativePath;
-	}
+	const cookie = meta.configs.cookie.get();
+	const ttl = meta.getSessionTTLSeconds() * 1000;
+	cookie.maxAge = ttl;
 
 	return cookie;
 }
