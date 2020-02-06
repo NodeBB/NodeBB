@@ -3,6 +3,7 @@
 var os = require('os');
 var winston = require('winston');
 var _ = require('lodash');
+const nconf = require('nconf');
 
 var meta = require('../meta');
 var languages = require('../languages');
@@ -56,7 +57,7 @@ module.exports = function (middleware) {
 
 		// Validate session
 		if (!req.session.meta) {
-			res.clearCookie('express.sid');
+			res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
 		}
 
 		for (var key in headers) {

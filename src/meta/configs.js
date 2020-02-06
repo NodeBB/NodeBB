@@ -147,6 +147,27 @@ Configs.remove = async function (field) {
 	await db.deleteObjectField('config', field);
 };
 
+Configs.cookie = {
+	get: () => {
+		const cookie = {};
+
+		if (nconf.get('cookieDomain') || Meta.config.cookieDomain) {
+			cookie.domain = nconf.get('cookieDomain') || Meta.config.cookieDomain;
+		}
+
+		if (nconf.get('secure')) {
+			cookie.secure = true;
+		}
+
+		var relativePath = nconf.get('relative_path');
+		if (relativePath !== '') {
+			cookie.path = relativePath;
+		}
+
+		return cookie;
+	},
+};
+
 async function processConfig(data) {
 	ensurePositiveInteger(data, 'maximumUsernameLength');
 	ensurePositiveInteger(data, 'minimumUsernameLength');
