@@ -188,12 +188,12 @@ Analytics.getDailyStatsForSet = async function (set, day, numDays) {
 
 	const daysArr = [];
 	day = new Date(day);
-	day.setDate(day.getDate() + 2);	// set the date to the day after tomorrow, because getHourlyStatsForSet steps *backwards* 24 hours to sum up the values, and we also want today's values
+	day.setDate(day.getDate() + 1);	// set the date to tomorrow, because getHourlyStatsForSet steps *backwards* 24 hours to sum up the values
 	day.setHours(0, 0, 0, 0);
 
 	while (numDays > 0) {
 		/* eslint-disable no-await-in-loop */
-		const dayData = await Analytics.getHourlyStatsForSet(set, day.getTime() - (1000 * 60 * 60 * 24 * numDays), 24);
+		const dayData = await Analytics.getHourlyStatsForSet(set, day.getTime() - (1000 * 60 * 60 * 24 * (numDays - 1)), 24);
 		daysArr.push(dayData.reduce((cur, next) => cur + next));
 		numDays -= 1;
 	}
