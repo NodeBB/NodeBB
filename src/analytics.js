@@ -160,7 +160,6 @@ Analytics.getHourlyStatsForSet = async function (set, hour, numHours) {
 	}
 
 	const counts = await db.sortedSetScores(set, hoursArr);
-	console.log(hoursArr, counts);
 
 	hoursArr.forEach(function (term, index) {
 		terms[term] = parseInt(counts[index], 10) || 0;
