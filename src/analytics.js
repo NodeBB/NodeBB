@@ -160,6 +160,7 @@ Analytics.getHourlyStatsForSet = async function (set, hour, numHours) {
 	}
 
 	const counts = await db.sortedSetScores(set, hoursArr);
+	console.log(hoursArr, counts);
 
 	hoursArr.forEach(function (term, index) {
 		terms[term] = parseInt(counts[index], 10) || 0;
@@ -176,6 +177,11 @@ Analytics.getHourlyStatsForSet = async function (set, hour, numHours) {
 };
 
 Analytics.getDailyStatsForSet = async function (set, day, numDays) {
+	// Guard again accidental ommission of `analytics:` prefix
+	if (!set.startsWith('analytics:')) {
+		set = 'analytics:' + set;
+	}
+
 	const daysArr = [];
 	day = new Date(day);
 	day.setDate(day.getDate() + 1);	// set the date to tomorrow, because getHourlyStatsForSet steps *backwards* 24 hours to sum up the values
