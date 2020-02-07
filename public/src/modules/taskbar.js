@@ -200,6 +200,9 @@ define('taskbar', ['benchpress', 'translator'], function (Benchpress, translator
 
 	taskbar.update = function (module, uuid, options) {
 		var element = taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"]');
+		if (!element.length) {
+			return;
+		}
 		var data = element.data();
 
 		Object.keys(options).forEach(function (key) {
