@@ -342,6 +342,18 @@ SocketGroups.loadMoreMembers = async (socket, data) => {
 	if (!data.groupName || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
 		throw new Error('[[error:invalid-data]]');
 	}
+	const [isHidden, isAdmin, isGlobalMod] = await Promise.all([
+		groups.isHidden(data.groupName),
+		user.isAdministrator(socket.uid),
+		user.isGlobalModerator(socket.uid),
+	]);
+	if (isHidden && !isAdmin && !isGlobalMod) {
+		const isMember = await groups.isMember(socket.uid, data.groupName);
+		if (!isMember) {
+			throw new Error('[[error:no-privileges]]');
+		}
+	}
+
 	data.after = parseInt(data.after, 10);
 	const users = await user.getUsersFromSet('group:' + data.groupName + ':members', socket.uid, data.after, data.after + 9);
 	return {

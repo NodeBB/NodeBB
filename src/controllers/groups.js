@@ -33,14 +33,16 @@ groupsController.details = async function (req, res, next) {
 	if (!groupName) {
 		return next();
 	}
-	const [exists, isHidden] = await Promise.all([
+	const [exists, isHidden, isAdmin, isGlobalMod] = await Promise.all([
 		groups.exists(groupName),
 		groups.isHidden(groupName),
+		user.isAdministrator(req.uid),
+		user.isGlobalModerator(req.uid),
 	]);
 	if (!exists) {
 		return next();
 	}
-	if (isHidden) {
+	if (isHidden && !isAdmin && !isGlobalMod) {
 		const [isMember, isInvited] = await Promise.all([
 			groups.isMember(req.uid, groupName),
 			groups.isInvited(req.uid, groupName),
@@ -49,15 +51,13 @@ groupsController.details = async function (req, res, next) {
 			return next();
 		}
 	}
-	const [groupData, posts, isAdmin, isGlobalMod] = await Promise.all([
+	const [groupData, posts] = await Promise.all([
 		groups.get(groupName, {
 			uid: req.uid,
 			truncateUserList: true,
 			userListCount: 20,
 		}),
 		groups.getLatestMemberPosts(groupName, 10, req.uid),
-		user.isAdministrator(req.uid),
-		user.isGlobalModerator(req.uid),
 	]);
 	if (!groupData) {
 		return next();
