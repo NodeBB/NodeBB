@@ -154,12 +154,17 @@ Groups.getOwnersAndMembers = async function (groupName, uid, start, stop) {
 		}
 	});
 
+	let done = false;
 	let returnUsers = owners;
-	const memberStart = Math.max(0, start - ownerUids.length + 1);
-	const memberStop = memberStart + countToReturn;
-
+	let memberStart = start - ownerUids.length + 1;
+	let memberStop = memberStart + countToReturn - 1;
+	memberStart = Math.max(0, memberStart);
+	memberStop = Math.max(0, memberStop);
 	async function addMembers(start, stop) {
 		let batch = await user.getUsersFromSet('group:' + groupName + ':members', uid, start, stop);
+		if (!batch.length) {
+			done = true;
+		}
 		batch = batch.filter(user => user && user.uid && !ownerUids.includes(user.uid.toString()));
 		returnUsers = returnUsers.concat(batch);
 	}
@@ -167,9 +172,11 @@ Groups.getOwnersAndMembers = async function (groupName, uid, start, stop) {
 	if (stop === -1) {
 		await addMembers(memberStart, -1);
 	} else {
-		while (returnUsers.length < countToReturn) {
+		while (returnUsers.length < countToReturn && !done) {
 			/* eslint-disable no-await-in-loop */
 			await addMembers(memberStart, memberStop);
+			memberStart += countToReturn;
+			memberStop += countToReturn;
 		}
 	}
 
