@@ -355,7 +355,7 @@ SocketGroups.loadMoreMembers = async (socket, data) => {
 	}
 
 	data.after = parseInt(data.after, 10);
-	const users = await user.getUsersFromSet('group:' + data.groupName + ':members', socket.uid, data.after, data.after + 9);
+	const users = await groups.getOwnersAndMembers(data.groupName, socket.uid, data.after, data.after + 9);
 	return {
 		users: users,
 		nextStart: data.after + 10,

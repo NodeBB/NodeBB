@@ -145,18 +145,35 @@ Groups.getOwners = async function (groupName) {
 
 Groups.getOwnersAndMembers = async function (groupName, uid, start, stop) {
 	const ownerUids = await db.getSetMembers('group:' + groupName + ':owners');
-	const [owners, members] = await Promise.all([
-		user.getUsers(ownerUids, uid),
-		user.getUsersFromSet('group:' + groupName + ':members', uid, start, stop),
-	]);
+	const countToReturn = stop - start + 1;
+	const ownerUidsOnPage = ownerUids.slice(start, stop !== -1 ? stop + 1 : undefined);
+	const owners = await user.getUsers(ownerUidsOnPage, uid);
 	owners.forEach(function (user) {
 		if (user) {
 			user.isOwner = true;
 		}
 	});
 
-	const nonOwners = members.filter(user => user && user.uid && !ownerUids.includes(user.uid.toString()));
-	return owners.concat(nonOwners);
+	let returnUsers = owners;
+	const memberStart = Math.max(0, start - ownerUids.length + 1);
+	const memberStop = memberStart + countToReturn;
+
+	async function addMembers(start, stop) {
+		let batch = await user.getUsersFromSet('group:' + groupName + ':members', uid, start, stop);
+		batch = batch.filter(user => user && user.uid && !ownerUids.includes(user.uid.toString()));
+		returnUsers = returnUsers.concat(batch);
+	}
+
+	if (stop === -1) {
+		await addMembers(memberStart, -1);
+	} else {
+		while (returnUsers.length < countToReturn) {
+			/* eslint-disable no-await-in-loop */
+			await addMembers(memberStart, memberStop);
+		}
+	}
+
+	return countToReturn > 0 ? returnUsers.slice(0, countToReturn) : returnUsers;
 };
 
 Groups.getByGroupslug = async function (slug, options) {
