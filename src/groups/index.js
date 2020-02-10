@@ -156,7 +156,7 @@ Groups.getOwnersAndMembers = async function (groupName, uid, start, stop) {
 
 	let done = false;
 	let returnUsers = owners;
-	let memberStart = start - ownerUids.length + 1;
+	let memberStart = start - ownerUids.length;
 	let memberStop = memberStart + countToReturn - 1;
 	memberStart = Math.max(0, memberStart);
 	memberStop = Math.max(0, memberStop);
@@ -175,8 +175,8 @@ Groups.getOwnersAndMembers = async function (groupName, uid, start, stop) {
 		while (returnUsers.length < countToReturn && !done) {
 			/* eslint-disable no-await-in-loop */
 			await addMembers(memberStart, memberStop);
-			memberStart += countToReturn;
-			memberStop += countToReturn;
+			memberStart = memberStop + 1;
+			memberStop = memberStart + countToReturn - 1;
 		}
 	}
 
