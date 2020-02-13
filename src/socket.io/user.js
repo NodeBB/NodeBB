@@ -49,6 +49,9 @@ SocketUser.deleteAccount = async function (socket, data) {
 	if (isAdmin) {
 		throw new Error('[[error:cant-delete-admin]]');
 	}
+	if (meta.config.allowAccountDelete !== 1) {
+		throw new Error('[[error:no-privileges]]');
+	}
 	const userData = await user.deleteAccount(socket.uid);
 	require('./index').server.sockets.emit('event:user_status_change', { uid: socket.uid, status: 'offline' });
 
