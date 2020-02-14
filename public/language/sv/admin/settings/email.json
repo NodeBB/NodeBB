@@ -4,9 +4,9 @@
 	"address-help": "The following email address refers to the email that the recipient will see in the \"From\" and \"Reply To\" fields.",
 	"from": "From Name",
 	"from-help": "The from name to display in the email.",
-	"sendmail-rate-limit": "Send <em>X</em> emails...",
-	"sendmail-rate-delta": "... every <em>X</em> milliseconds",
-	"sendmail-rate-help": "Instructs the NodeBB mailer to limit the number of messages sent at once in order to not overwhelm email receiving services. These options do not apply if SMTP Transport is enabled (below).",
+	"sendmail-rate-limit": "Skicka <em>X</em> epostmeddelanden...",
+	"sendmail-rate-delta": "... var <em>X</em> millisekund",
+	"sendmail-rate-help": "Instruerar NodeBBs eposthanterare att begränsa antalet meddelanden som skickas samtidigt, för att inte översvämma mottagande eposttjänster. Dessa val gäller inte om SMTP Transport är aktiverat (nedan).",
 
 	"smtp-transport": "SMTP Transport",
 	"smtp-transport.enabled": "Use an external email server to send emails",
@@ -33,8 +33,8 @@
 	"testing.select": "Select Email Template",
 	"testing.send": "Send Test Email",
 	"testing.send-help": "The test email will be sent to the currently logged in user's email address.",
-	"subscriptions": "Email Digests",
-	"subscriptions.disable": "Disable email digests",
+	"subscriptions": "Epostsammandrag",
+	"subscriptions.disable": "Avaktivera epostsammandrag",
 	"subscriptions.hour": "Digest Hour",
 	"subscriptions.hour-help": "Please enter a number representing the hour to send scheduled email digests (e.g. <code>0</code> for midnight, <code>17</code> for 5:00pm). Keep in mind that this is the hour according to the server itself, and may not exactly match your system clock.<br /> The approximate server time is: <span id=\"serverTime\"></span><br /> The next daily digest is scheduled to be sent  <span id=\"nextDigestTime\"></span>"
 }
