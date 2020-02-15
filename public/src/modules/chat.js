@@ -242,7 +242,7 @@ define('chat', [
 
 				Chats.addCharactersLeftHandler(chatModal);
 				Chats.addIPHandler(chatModal);
-				ChatsMessages.onChatMessageEdit();
+				ChatsMessages.addSocketListeners();
 
 				taskbar.push('chat', chatModal.attr('data-uuid'), {
 					title: '[[modules:chat.chatting_with]] ' + (data.roomName || (data.users.length ? data.users[0].username : '')),

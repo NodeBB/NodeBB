@@ -485,7 +485,7 @@ define('forum/chats', [
 			app.updateUserStatus($('.chats-list [data-uid="' + data.uid + '"] [component="user/status"]'), data.status);
 		});
 
-		messages.onChatMessageEdit();
+		messages.addSocketListeners();
 
 		socket.on('event:chats.roomRename', function (data) {
 			var roomEl = components.get('chat/recent/room', data.roomId);

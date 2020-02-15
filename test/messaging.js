@@ -692,14 +692,9 @@ describe('Messaging Library', function () {
 		it('should not show deleted message to other users', function (done) {
 			socketModules.chats.getMessages({ uid: herpUid }, { uid: herpUid, roomId: roomId, start: 0 }, function (err, messages) {
 				assert.ifError(err);
-
-				// Reduce messages to their mids
-				var mids = messages.reduce(function (mids, cur) {
-					mids.push(cur.messageId);
-					return mids;
-				}, []);
-
-				assert(!mids.includes(mid));
+				messages.forEach(function (msg) {
+					assert(!msg.deleted || msg.content === '[[modules:chat.message-deleted]]', msg.content);
+				});
 				done();
 			});
 		});
