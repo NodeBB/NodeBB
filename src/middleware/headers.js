@@ -55,7 +55,8 @@ module.exports = function (middleware) {
 			headers['X-Upstream-Hostname'] = os.hostname();
 		}
 
-		// Validate session
+		// Ensure that the session is valid. This block guards against edge-cases where the server-side session has
+		// been deleted (but client-side cookie still exists)
 		if (req.uid > 0 && !req.session.meta && !res.get('Set-Cookie')) {
 			res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
 		}
