@@ -56,7 +56,7 @@ module.exports = function (middleware) {
 		}
 
 		// Validate session
-		if (req.uid && !req.session.meta && !res.get('Set-Cookie')) {
+		if (req.uid > 0 && !req.session.meta && !res.get('Set-Cookie')) {
 			res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
 		}
 
