@@ -134,6 +134,6 @@
     "diffs.no-revisions-description": "Ова порука има %1 корекција.",
     "diffs.current-revision": "тренутна корекција",
     "diffs.original-revision": "оригинална корекција",
-    "timeago_later": "%1 касније",
+    "timeago_later": "пре %1",
     "timeago_earlier": "%1 раније"
 }
