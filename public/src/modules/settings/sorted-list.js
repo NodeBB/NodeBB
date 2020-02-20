@@ -41,7 +41,7 @@ define('settings/sorted-list', ['benchpress', 'jqueryui'], function (benchpress)
 
 
 							var data = Settings.helper.serializeForm(form);
-							parse($container, $list, itemUUID, itemTpl, data);
+							parse($container, itemUUID, data);
 						}
 					});
 				});
@@ -55,7 +55,7 @@ define('settings/sorted-list', ['benchpress', 'jqueryui'], function (benchpress)
 						form.attr('data-sorted-list-object', key);
 						$('#content').append(form.hide());
 
-						parse($container, $list, itemUUID, itemTpl, item);
+						parse($container, itemUUID, item);
 					});
 				}
 			});
@@ -108,7 +108,10 @@ define('settings/sorted-list', ['benchpress', 'jqueryui'], function (benchpress)
 		});
 	}
 
-	function parse($container, $list, itemUUID, itemTpl, data) {
+	function parse($container, itemUUID, data) {
+		var $list = $container.find('[data-type="list"]');
+		var itemTpl = $container.attr('data-item-template');
+
 		benchpress.parse(itemTpl, data, function (itemHtml) {
 			itemHtml = $(itemHtml);
 			$list.append(itemHtml);
