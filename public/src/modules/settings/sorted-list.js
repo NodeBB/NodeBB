@@ -27,44 +27,6 @@ define('settings/sorted-list', ['benchpress', 'jqueryui'], function (benchpress)
 			var itemTpl = $container.attr('data-item-template');
 			var formTpl = $container.attr('data-form-template');
 
-			function setupRemoveButton(itemUUID) {
-				var removeBtn = $('[data-sorted-list="' + key + '"] [data-type="remove"]');
-				removeBtn.on('click', function () {
-					$('[data-sorted-list-uuid="' + itemUUID + '"]').remove();
-				});
-			}
-
-			function setupEditButton(itemUUID) {
-				var editBtn = $('[data-sorted-list-uuid="' + itemUUID + '"] [data-type="edit"]');
-				editBtn.on('click', function () {
-					var form = $('[data-sorted-list-uuid="' + itemUUID + '"][data-sorted-list-object="' + key + '"]').clone(true).show();
-
-					var modal = bootbox.confirm(form, function (save) {
-						if (save) {
-							var form = $('<form class="" data-sorted-list-uuid="' + itemUUID + '" data-sorted-list-object="' + key + '" />');
-							form.append(modal.find('form').children());
-
-							$('#content').find('[data-sorted-list-uuid="' + itemUUID + '"][data-sorted-list-object="' + key + '"]').remove();
-							$('#content').append(form.hide());
-
-
-							var data = Settings.helper.serializeForm(form);
-
-							benchpress.parse(itemTpl, data, function (itemHtml) {
-								itemHtml = $(itemHtml);
-								var oldItem = $list.find('[data-sorted-list-uuid="' + itemUUID + '"]');
-								oldItem.after(itemHtml);
-								oldItem.remove();
-								itemHtml.attr('data-sorted-list-uuid', itemUUID);
-
-								setupRemoveButton(itemUUID);
-								setupEditButton(itemUUID);
-							});
-						}
-					});
-				});
-			}
-
 			benchpress.parse(formTpl, {}, function (formHtml) {
 				var addBtn = $('[data-sorted-list="' + key + '"] [data-type="add"]');
 
@@ -79,15 +41,7 @@ define('settings/sorted-list', ['benchpress', 'jqueryui'], function (benchpress)
 
 
 							var data = Settings.helper.serializeForm(form);
-
-							benchpress.parse(itemTpl, data, function (itemHtml) {
-								itemHtml = $(itemHtml);
-								$list.append(itemHtml);
-								itemHtml.attr('data-sorted-list-uuid', itemUUID);
-
-								setupRemoveButton(itemUUID);
-								setupEditButton(itemUUID);
-							});
+							parse($container, $list, itemUUID, itemTpl, data);
 						}
 					});
 				});
@@ -101,14 +55,7 @@ define('settings/sorted-list', ['benchpress', 'jqueryui'], function (benchpress)
 						form.attr('data-sorted-list-object', key);
 						$('#content').append(form.hide());
 
-						benchpress.parse(itemTpl, item, function (itemHtml) {
-							itemHtml = $(itemHtml);
-							$list.append(itemHtml);
-							itemHtml.attr('data-sorted-list-uuid', itemUUID);
-
-							setupRemoveButton(itemUUID);
-							setupEditButton(itemUUID);
-						});
+						parse($container, $list, itemUUID, itemTpl, item);
 					});
 				}
 			});
@@ -116,6 +63,61 @@ define('settings/sorted-list', ['benchpress', 'jqueryui'], function (benchpress)
 			$list.sortable().addClass('pointer');
 		},
 	};
+
+	function setupRemoveButton($container, itemUUID) {
+		var key = $container.attr('data-sorted-list');
+
+		var removeBtn = $('[data-sorted-list="' + key + '"] [data-type="remove"]');
+		removeBtn.on('click', function () {
+			$('[data-sorted-list-uuid="' + itemUUID + '"]').remove();
+		});
+	}
+
+	function setupEditButton($container, itemUUID) {
+		var $list = $container.find('[data-type="list"]');
+		var key = $container.attr('data-sorted-list');
+		var itemTpl = $container.attr('data-item-template');
+		var editBtn = $('[data-sorted-list-uuid="' + itemUUID + '"] [data-type="edit"]');
+
+		editBtn.on('click', function () {
+			var form = $('[data-sorted-list-uuid="' + itemUUID + '"][data-sorted-list-object="' + key + '"]').clone(true).show();
+
+			var modal = bootbox.confirm(form, function (save) {
+				if (save) {
+					var form = $('<form class="" data-sorted-list-uuid="' + itemUUID + '" data-sorted-list-object="' + key + '" />');
+					form.append(modal.find('form').children());
+
+					$('#content').find('[data-sorted-list-uuid="' + itemUUID + '"][data-sorted-list-object="' + key + '"]').remove();
+					$('#content').append(form.hide());
+
+
+					var data = Settings.helper.serializeForm(form);
+
+					benchpress.parse(itemTpl, data, function (itemHtml) {
+						itemHtml = $(itemHtml);
+						var oldItem = $list.find('[data-sorted-list-uuid="' + itemUUID + '"]');
+						oldItem.after(itemHtml);
+						oldItem.remove();
+						itemHtml.attr('data-sorted-list-uuid', itemUUID);
+
+						setupRemoveButton($container, itemUUID);
+						setupEditButton($container, itemUUID);
+					});
+				}
+			});
+		});
+	}
+
+	function parse($container, $list, itemUUID, itemTpl, data) {
+		benchpress.parse(itemTpl, data, function (itemHtml) {
+			itemHtml = $(itemHtml);
+			$list.append(itemHtml);
+			itemHtml.attr('data-sorted-list-uuid', itemUUID);
+
+			setupRemoveButton($container, itemUUID);
+			setupEditButton($container, itemUUID);
+		});
+	}
 
 	return SortedList;
 });
