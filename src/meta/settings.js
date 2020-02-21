@@ -17,8 +17,8 @@ Settings.get = async function (hash) {
 		const keys = [];
 
 		data[list] = [];
-		for (const member of members) {
-			keys.push('settings:' + hash + ':sorted-list:' + list + ':' + member);
+		for (const order of members) {
+			keys.push('settings:' + hash + ':sorted-list:' + list + ':' + order);
 		}
 
 		const objects = await db.getObjects(keys);
