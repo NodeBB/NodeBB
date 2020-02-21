@@ -24,7 +24,6 @@ define('settings/sorted-list', ['benchpress', 'jqueryui'], function (benchpress)
 		get: function ($container) {
 			var $list = $container.find('[data-type="list"]');
 			var key = $container.attr('data-sorted-list');
-			var itemTpl = $container.attr('data-item-template');
 			var formTpl = $container.attr('data-form-template');
 
 			benchpress.parse(formTpl, {}, function (formHtml) {
