@@ -8,13 +8,13 @@
 
 				<div class="tag-list">
 					<!-- BEGIN tags -->
-					<div class="tag-row" data-tag="{tags.value}">
-						<div data-value="{tags.value}">
-							<span class="mdl-chip mdl-chip--contact tag-item" data-tag="{tags.value}" style="
+					<div class="tag-row" data-tag="{tags.valueEscaped}">
+						<div>
+							<span class="mdl-chip mdl-chip--contact tag-item" data-tag="{tags.valueEscaped}" style="
 								<!-- IF tags.color -->color: {tags.color};<!-- ENDIF tags.color -->
 								<!-- IF tags.bgColor -->background-color: {tags.bgColor};<!-- ENDIF tags.bgColor -->">
 							    <span class="mdl-chip__contact mdl-color--light-blue mdl-color-text--white tag-topic-count">{tags.score}</span>
-							    <span class="mdl-chip__text">{tags.value}</span>
+							    <span class="mdl-chip__text">{tags.valueEscaped}</span>
 							</span>
 						</div>
 						<div class="tag-modal hidden">
@@ -79,7 +79,7 @@
 	<div class="rename-modal hidden">
 		<div class="form-group">
 			<label for="value">[[admin/manage/tags:name]]</label>
-			<input id="value" data-name="value" value="{tags.value}" class="form-control" />
+			<input id="value" data-name="value" value="" class="form-control" />
 		</div>
 	</div>
 </div>
