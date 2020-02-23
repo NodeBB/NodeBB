@@ -12,8 +12,7 @@
 	"settings": "Kliknite <a href=\"%1\">ovdje</a> za posjetu postavki oznaka",
 	"name": "Ime oznake",
 
-	"alerts.editing-multiple": "Uređivanje više oznaka",
-	"alerts.editing-x": "Uredi \"%1\" oznake",
+	"alerts.editing": "Editing tag(s)",
 	"alerts.confirm-delete": "Želite li obrisati odabrane oznake?",
 	"alerts.update-success": "Oznake promijenjene!"
 }

@@ -12,8 +12,7 @@
 	"settings": "Kattints <a href=\"%1\">ide</a> a címke beállítások lap meglátogatásához.",
 	"name": "Címkenév",
 
-	"alerts.editing-multiple": "Több címke szerkesztése",
-	"alerts.editing-x": "\"%1\" címke szerkesztése",
+	"alerts.editing": "Editing tag(s)",
 	"alerts.confirm-delete": "Biztosan törölni akarod a kijelölt címkéket?",
 	"alerts.update-success": "Címke frissítve!"
 }

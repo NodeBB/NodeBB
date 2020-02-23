@@ -12,8 +12,7 @@
 	"settings": "Натисніть <a href=\"%1\">тут</a> щоб перейти на сторінку налаштування тегів.",
 	"name": "Назва тегу",
 
-	"alerts.editing-multiple": "Редагування декількох тегів",
-	"alerts.editing-x": "Редагування тегу \"%1\"",
+	"alerts.editing": "Editing tag(s)",
 	"alerts.confirm-delete": "Бажаєте видалити декілька тегів?",
 	"alerts.update-success": "Тег оновлено!"
 }

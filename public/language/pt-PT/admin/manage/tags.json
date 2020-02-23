@@ -12,8 +12,7 @@
 	"settings": "Click <a href=\"%1\">here</a> to visit the tag settings page.",
 	"name": "Nome da Etiqueta",
 
-	"alerts.editing-multiple": "Editar múltiplos marcadores",
-	"alerts.editing-x": "Editing \"%1\" tag",
+	"alerts.editing": "Editing tag(s)",
 	"alerts.confirm-delete": "Queres mesmo apagar os marcadores selecionados?",
 	"alerts.update-success": "Etiqueta Atualizada!"
 }
