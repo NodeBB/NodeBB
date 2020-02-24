@@ -11,7 +11,6 @@ Settings.get = async function (hash) {
 	const data = await db.getObject('settings:' + hash) || {};
 	const sortedLists = await db.getSetMembers('settings:' + hash + ':sorted-lists');
 
-
 	await Promise.all(sortedLists.map(async function (list) {
 		const members = await db.getSortedSetRange('settings:' + hash + ':sorted-list:' + list, 0, -1) || [];
 		const keys = [];
@@ -32,7 +31,7 @@ Settings.get = async function (hash) {
 
 Settings.getOne = async function (hash, field) {
 	const data = await Settings.get(hash);
-	return data[field];
+	return data[field] !== undefined ? data[field] : null;
 };
 
 Settings.set = async function (hash, values, quiet) {

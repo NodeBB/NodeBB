@@ -94,6 +94,11 @@ describe('meta', function () {
 			});
 		});
 
+		it('should return null if setting field does not exist', async function () {
+			const val = await meta.settings.getOne('some:hash', 'does not exist');
+			assert.strictEqual(val, null);
+		});
+
 		const someList = [
 			{ name: 'andrew', status: 'best' },
 			{ name: 'baris', status: 'wurst' },
