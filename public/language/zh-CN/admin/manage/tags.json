@@ -12,7 +12,7 @@
 	"settings": "点击<a href=\"%1\">此处</a> 访问话题设置页面。",
 	"name": "话题名",
 
-	"alerts.editing": "Editing tag(s)",
+	"alerts.editing": "编辑标签",
 	"alerts.confirm-delete": "是否要删除所选话题？",
 	"alerts.update-success": "话题已更新！"
 }
