@@ -74,7 +74,7 @@
         "material-design-lite": "^1.3.0",
         "mime": "^2.2.0",
         "mkdirp": "^1.0.3",
-        "mongodb": "3.5.3",
+        "mongodb": "3.5.4",
         "morgan": "^1.9.1",
         "mousetrap": "^1.6.1",
         "mubsub-nbb": "^1.5.1",
