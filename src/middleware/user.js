@@ -78,6 +78,8 @@ module.exports = function (middleware) {
 		if (!allowed) {
 			return controllers.helpers.notAllowed(req, res);
 		}
+
+		return next();
 	}
 
 	middleware.checkGlobalPrivacySettings = function checkGlobalPrivacySettings(req, res, next) {
