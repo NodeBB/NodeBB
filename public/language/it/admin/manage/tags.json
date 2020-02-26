@@ -12,7 +12,7 @@
 	"settings": "Clicca <a href=\"%1\">qui</a> per visitare la pagina impostazioni tag.",
 	"name": "Nome Tag",
 
-	"alerts.editing": "Editing tag(s)",
+	"alerts.editing": "Modifica tag(s)",
 	"alerts.confirm-delete": "Vuoi eliminare i tag selezionati?",
 	"alerts.update-success": "Tag aggiornato!"
 }
