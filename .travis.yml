@@ -23,7 +23,7 @@ dist: xenial
 env:
   global:
     - PGUSER=postgres
-    - PGPORT=5432
+    - PGPORT=5433
     - CXX=g++-4.8
   jobs:
     - "DB=mongodb TEST_ENV=production"
