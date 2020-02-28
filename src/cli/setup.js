@@ -33,7 +33,11 @@ function setup(initConfig) {
 			prestart.loadConfig(configFile);
 			next();
 		},
-		build.buildAll,
+		function (next) {
+			if (!nconf.get('no-build')) {
+				build.buildAll(next);
+			}
+		}
 	], function (err, data) {
 		// Disregard build step data
 		data = data[0];
