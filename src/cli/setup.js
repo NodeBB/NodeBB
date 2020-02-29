@@ -32,7 +32,7 @@ function setup(initConfig) {
 
 			prestart.loadConfig(configFile);
 
-			if (!nconf.get('no-build')) {
+			if (!nconf.get('skip-build')) {
 				build.buildAll(next);
 			} else {
 				setImmediate(next);
