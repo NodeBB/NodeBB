@@ -31,13 +31,13 @@ function setup(initConfig) {
 			}
 
 			prestart.loadConfig(configFile);
-			next();
-		},
-		function (next) {
+
 			if (!nconf.get('no-build')) {
 				build.buildAll(next);
+			} else {
+				setImmediate(next);
 			}
-		}
+		},
 	], function (err, data) {
 		// Disregard build step data
 		data = data[0];
