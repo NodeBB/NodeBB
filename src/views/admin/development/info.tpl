@@ -1,7 +1,7 @@
 <div class="info">
 	<div class="panel panel-default">
 		<div class="panel-heading">
-			<h3 class="panel-title">[[admin/development/info:you-are-on, {host}, {port}]]</h3>
+			<h3 class="panel-title">[[admin/development/info:you-are-on, {host}, {port}]] &bull; [[admin/development/info:ip, {ip}]]</h3>
 		</div>
 
 		<div class="panel-body">

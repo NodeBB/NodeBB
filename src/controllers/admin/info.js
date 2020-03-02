@@ -35,6 +35,7 @@ infoController.get = function (req, res) {
 			port: nconf.get('port'),
 			nodeCount: data.length,
 			timeout: timeoutMS,
+			ip: req.ip,
 		});
 	}, timeoutMS);
 };
