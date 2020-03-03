@@ -1,5 +1,6 @@
 {
-	"you-are-on": "ข้อมูล - คุณกำลังอยู่บน <strong>%1:%2</strong>",
+	"you-are-on": "You are on <strong>%1:%2</strong>",
+	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "%1 nodes ตอบสนองแล้วภายใน %2ms!",
 	"host": "host",
 	"pid": "pid",

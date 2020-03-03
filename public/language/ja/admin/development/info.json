@@ -1,5 +1,6 @@
 {
-	"you-are-on": "お知らせ - あなたは<strong>%1:%2</strong>",
+	"you-are-on": "You are on <strong>%1:%2</strong>",
+	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "％1ノードは％2ms以内に応答しました！",
 	"host": "ホスト",
 	"pid": "pid",

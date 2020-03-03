@@ -1,5 +1,6 @@
 {
-	"you-are-on": "정보 - <strong>%1:%2</strong>에 있습니다.",
+	"you-are-on": "You are on <strong>%1:%2</strong>",
+	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "%1 노드가 %2ms 내로 응답했습니다.",
 	"host": "호스트",
 	"pid": "pid",

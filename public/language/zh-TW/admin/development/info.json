@@ -1,5 +1,6 @@
 {
-	"you-are-on": "Info - 你現在在 <strong>%1:%2</strong>",
+	"you-are-on": "You are on <strong>%1:%2</strong>",
+	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "%1 nodes 在 %2ms! 內反應",
 	"host": "host",
 	"pid": "pid",
