@@ -6,6 +6,7 @@ const validator = require('validator');
 
 const db = require('../database');
 const plugins = require('../plugins');
+const batch = require('../batch');
 
 module.exports = function (User) {
 	User.logIP = async function (uid, ip) {
@@ -29,15 +30,17 @@ module.exports = function (User) {
 
 	User.getUsersCSV = async function () {
 		winston.verbose('[user/getUsersCSV] Compiling User CSV data');
-		let csvContent = '';
-		const uids = await db.getSortedSetRange('users:joindate', 0, -1);
+
 		const data = await plugins.fireHook('filter:user.csvFields', { fields: ['uid', 'email', 'username'] });
-		const usersData = await User.getUsersFields(uids, data.fields);
-		usersData.forEach(function (user) {
-			if (user) {
-				csvContent += user.email + ',' + user.username + ',' + user.uid + '\n';
-			}
-		});
+		let csvContent = data.fields.join(',') + '\n';
+		await batch.processSortedSet('users:joindate', async (uids) => {
+			const usersData = await User.getUsersFields(uids, data.fields);
+			csvContent += usersData.reduce((memo, user) => {
+				memo += user.email + ',' + user.username + ',' + user.uid + '\n';
+				return memo;
+			}, '');
+		}, {});
+
 		return csvContent;
 	};
 };
