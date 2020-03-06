@@ -15,6 +15,7 @@
 	"headers.acah": "Access-Control-Allow-Headers",
 	"hsts": "An ninh giao thông nghiêm ngặt",
 	"hsts.enabled": "Enabled HSTS (recommended)",
+	"hsts.maxAge": "HSTS Max Age",
 	"hsts.subdomains": "Include subdomains in HSTS header",
 	"hsts.preload": "Allow preloading of HSTS header",
 	"hsts.help": "If enabled, an HSTS header will be set for this site. You can elect to include subdomains and preloading flags in your header. If in doubt, you can leave these unchecked. <a href=\"%1\">More information <i class=\"fa fa-external-link\"></i></a>",
