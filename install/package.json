@@ -140,7 +140,7 @@
         "grunt": "1.0.4",
         "grunt-contrib-watch": "1.1.0",
         "husky": "4.2.2",
-        "jsdom": "16.1.0",
+        "jsdom": "16.2.1",
         "lint-staged": "10.0.7",
         "mocha": "7.1.0",
         "mocha-lcov-reporter": "1.3.0",
