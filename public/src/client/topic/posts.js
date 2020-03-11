@@ -28,6 +28,8 @@ define('forum/topic/posts', [
 
 		updatePostCounts(data.posts);
 
+		updatePostIndices(data.posts);
+
 		ajaxify.data.postcount += 1;
 		postTools.updatePostCount(ajaxify.data.postcount);
 
@@ -58,6 +60,16 @@ define('forum/topic/posts', [
 			var cmp = components.get('user/postcount', posts[i].uid);
 			cmp.html(parseInt(cmp.attr('data-postcount'), 10) + 1);
 			utils.addCommasToNumbers(cmp);
+		}
+	}
+
+	function updatePostIndices(posts) {
+		if (config.topicPostSort === 'newest_to_oldest') {
+			posts[0].index = 1;
+			components.get('post').not('[data-index=0]').each(function () {
+				var newIndex = parseInt($(this).attr('data-index'), 10) + 1;
+				$(this).attr('data-index', newIndex);
+			});
 		}
 	}
 

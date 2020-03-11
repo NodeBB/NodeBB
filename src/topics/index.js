@@ -68,6 +68,7 @@ Topics.getTopicsByTids = async function (tids, options) {
 	const cids = _.uniq(topics.map(t => t && t.cid && t.cid.toString()).filter(v => utils.isNumber(v)));
 
 	const [
+		callerSettings,
 		users,
 		userSettings,
 		categoriesData,
@@ -77,6 +78,7 @@ Topics.getTopicsByTids = async function (tids, options) {
 		teasers,
 		tags,
 	] = await Promise.all([
+		user.getSettings(uid),
 		user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status']),
 		user.getMultipleUserSettings(uids),
 		categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'image', 'imageClass', 'bgColor', 'color', 'disabled']),
@@ -95,7 +97,7 @@ Topics.getTopicsByTids = async function (tids, options) {
 
 	const usersMap = _.zipObject(uids, users);
 	const categoriesMap = _.zipObject(cids, categoriesData);
-
+	const sortOldToNew = callerSettings.topicPostSort === 'newest_to_oldest';
 	for (var i = 0; i < topics.length; i += 1) {
 		if (topics[i]) {
 			topics[i].category = categoriesMap[topics[i].cid];
@@ -106,7 +108,7 @@ Topics.getTopicsByTids = async function (tids, options) {
 			topics[i].isOwner = topics[i].uid === parseInt(uid, 10);
 			topics[i].ignored = isIgnored[i];
 			topics[i].unread = !hasRead[i] && !isIgnored[i];
-			topics[i].bookmark = bookmarks[i];
+			topics[i].bookmark = sortOldToNew ? Math.max(1, topics[i].postcount + 2 - bookmarks[i]) : bookmarks[i];
 			topics[i].unreplied = !topics[i].teaser;
 
 			topics[i].icons = [];

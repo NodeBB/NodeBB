@@ -407,6 +407,7 @@ define('admin/manage/users', ['translator', 'benchpress', 'autocomplete'], funct
 					app.alertSuccess('[[admin/manage/users:alerts.email-sent-to, ' + email + ']]');
 				});
 			});
+			return false;
 		});
 	}
 

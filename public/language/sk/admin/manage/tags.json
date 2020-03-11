@@ -12,8 +12,7 @@
 	"settings": "K prejdeniu na stránku s nastavením značiek, kliknite <a href=\"%1\">sem</a>.",
 	"name": "Názov značky",
 
-	"alerts.editing-multiple": "Úprava viacerých značiek",
-	"alerts.editing-x": "Úprava značky \"%1\"",
+	"alerts.editing": "Editing tag(s)",
 	"alerts.confirm-delete": "Chcete odstrániť vybranú značku?",
 	"alerts.update-success": "Značka bola aktualizovaná!"
 }

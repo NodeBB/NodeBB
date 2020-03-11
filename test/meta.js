@@ -93,6 +93,96 @@ describe('meta', function () {
 				});
 			});
 		});
+
+		it('should return null if setting field does not exist', async function () {
+			const val = await meta.settings.getOne('some:hash', 'does not exist');
+			assert.strictEqual(val, null);
+		});
+
+		const someList = [
+			{ name: 'andrew', status: 'best' },
+			{ name: 'baris', status: 'wurst' },
+		];
+		const anotherList = [];
+
+		it('should set setting with sorted list', function (done) {
+			socketAdmin.settings.set({ uid: fooUid }, { hash: 'another:hash', values: { foo: '1', derp: 'value', someList: someList, anotherList: anotherList } }, function (err) {
+				if (err) {
+					return done(err);
+				}
+
+				db.getObject('settings:another:hash', function (err, data) {
+					if (err) {
+						return done(err);
+					}
+
+					assert.equal(data.foo, '1');
+					assert.equal(data.derp, 'value');
+					assert.equal(data.someList, undefined);
+					assert.equal(data.anotherList, undefined);
+					done();
+				});
+			});
+		});
+
+		it('should get setting with sorted list', function (done) {
+			socketAdmin.settings.get({ uid: fooUid }, { hash: 'another:hash' }, function (err, data) {
+				assert.ifError(err);
+				assert.equal(data.foo, '1');
+				assert.equal(data.derp, 'value');
+				assert.deepEqual(data.someList, someList);
+				assert.deepEqual(data.anotherList, anotherList);
+				done();
+			});
+		});
+
+		it('should not set setting if not empty', function (done) {
+			meta.settings.setOnEmpty('some:hash', { foo: 2 }, function (err) {
+				assert.ifError(err);
+				db.getObject('settings:some:hash', function (err, data) {
+					assert.ifError(err);
+					assert.equal(data.foo, '1');
+					assert.equal(data.derp, 'value');
+					done();
+				});
+			});
+		});
+
+		it('should not set setting with sorted list if not empty', function (done) {
+			meta.settings.setOnEmpty('another:hash', { foo: anotherList }, function (err) {
+				assert.ifError(err);
+				socketAdmin.settings.get({ uid: fooUid }, { hash: 'another:hash' }, function (err, data) {
+					assert.ifError(err);
+					assert.equal(data.foo, '1');
+					assert.equal(data.derp, 'value');
+					done();
+				});
+			});
+		});
+
+		it('should set setting with sorted list if empty', function (done) {
+			meta.settings.setOnEmpty('another:hash', { empty: someList }, function (err) {
+				assert.ifError(err);
+				socketAdmin.settings.get({ uid: fooUid }, { hash: 'another:hash' }, function (err, data) {
+					assert.ifError(err);
+					assert.equal(data.foo, '1');
+					assert.equal(data.derp, 'value');
+					assert.deepEqual(data.empty, someList);
+					done();
+				});
+			});
+		});
+
+		it('should set one and get one sorted list', function (done) {
+			meta.settings.setOne('another:hash', 'someList', someList, function (err) {
+				assert.ifError(err);
+				meta.settings.getOne('another:hash', 'someList', function (err, _someList) {
+					assert.ifError(err);
+					assert.deepEqual(_someList, someList);
+					done();
+				});
+			});
+		});
 	});
 
 

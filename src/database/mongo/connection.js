@@ -45,9 +45,6 @@ connection.getConnectionOptions = function (mongo) {
 	mongo = mongo || nconf.get('mongo');
 	var connOptions = {
 		poolSize: 10,
-		reconnectTries: 3600,
-		reconnectInterval: 1000,
-		autoReconnect: true,
 		connectTimeoutMS: 90000,
 		useNewUrlParser: true,
 		useUnifiedTopology: true,

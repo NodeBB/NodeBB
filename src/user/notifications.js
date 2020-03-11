@@ -174,6 +174,7 @@ UserNotifications.sendTopicNotificationToFollowers = async function (uid, topicD
 		let title = topicData.title;
 		if (title) {
 			title = utils.decodeHTMLEntities(title);
+			title = title.replace(/,/g, '\\,');
 		}
 
 		const notifObj = await notifications.create({

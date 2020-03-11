@@ -15,6 +15,7 @@
 	"headers.acah": "Access-Control-Allow-Headers",
 	"hsts": "HTTP Strict Transport Security (HSTS)",
 	"hsts.enabled": "Iespējots HSTS (ieteicams)",
+	"hsts.maxAge": "HSTS Max Age",
 	"hsts.subdomains": "Iekļaut apakšdomēnus HSTS iezīmē",
 	"hsts.preload": "Atļaut iepriekš ielādēt HSTS iezīmi",
 	"hsts.help": "If enabled, an HSTS header will be set for this site. You can elect to include subdomains and preloading flags in your header. If in doubt, you can leave these unchecked. <a href=\"%1\">More information <i class=\"fa fa-external-link\"></i></a>",

@@ -167,6 +167,7 @@ program
 program
 	.command('setup [config]')
 	.description('Run the NodeBB setup script, or setup with an initial config')
+	.option('--skip-build', 'Run setup without building assets')
 	.action(function (initConfig) {
 		if (initConfig) {
 			try {

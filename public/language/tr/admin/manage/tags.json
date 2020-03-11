@@ -12,8 +12,7 @@
 	"settings": "Etiket yönetim sayfasını ziyaret etmek için <a href=\"%1\">buraya</a> tıklayın.",
 	"name": "Etiket Adı",
 
-	"alerts.editing-multiple": "Birden çok etiketi düzenle",
-	"alerts.editing-x": "\"% 1\" etiketi düzenleniyor",
+	"alerts.editing": "Editing tag(s)",
 	"alerts.confirm-delete": "Seçilen etiketleri gerçekten silmek istiyor musunuz?",
 	"alerts.update-success": "Etiket Güncellendi!"
 }

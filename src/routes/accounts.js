@@ -14,12 +14,12 @@ module.exports = function (app, middleware, controllers) {
 	setupPageRoute(app, '/user/:userslug/following', middleware, middlewares, controllers.accounts.follow.getFollowing);
 	setupPageRoute(app, '/user/:userslug/followers', middleware, middlewares, controllers.accounts.follow.getFollowers);
 
-	setupPageRoute(app, '/user/:userslug/categories', middleware, middlewares, controllers.accounts.categories.get);
 	setupPageRoute(app, '/user/:userslug/posts', middleware, middlewares, controllers.accounts.posts.getPosts);
 	setupPageRoute(app, '/user/:userslug/topics', middleware, middlewares, controllers.accounts.posts.getTopics);
 	setupPageRoute(app, '/user/:userslug/best', middleware, middlewares, controllers.accounts.posts.getBestPosts);
 	setupPageRoute(app, '/user/:userslug/groups', middleware, middlewares, controllers.accounts.groups.get);
 
+	setupPageRoute(app, '/user/:userslug/categories', middleware, accountMiddlewares, controllers.accounts.categories.get);
 	setupPageRoute(app, '/user/:userslug/bookmarks', middleware, accountMiddlewares, controllers.accounts.posts.getBookmarks);
 	setupPageRoute(app, '/user/:userslug/watched', middleware, accountMiddlewares, controllers.accounts.posts.getWatchedTopics);
 	setupPageRoute(app, '/user/:userslug/ignored', middleware, accountMiddlewares, controllers.accounts.posts.getIgnoredTopics);

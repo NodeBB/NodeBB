@@ -12,8 +12,7 @@
 	"settings": "태그 설정 페이지를 방문하시려면 <a href=\"%1\">클릭</a>하세요",
 	"name": "태그 이름",
 
-	"alerts.editing-multiple": "다수의 태그 수정 중",
-	"alerts.editing-x": "\"%1\" 태그 수정 중",
+	"alerts.editing": "Editing tag(s)",
 	"alerts.confirm-delete": "선택된 태그들을 삭제하시겠습니까?",
 	"alerts.update-success": "태그가 업데이트 됐습니다! "
 }

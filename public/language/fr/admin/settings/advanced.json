@@ -15,6 +15,7 @@
 	"headers.acah": "\nAccess-Control-Allow-Headers",
 	"hsts": "Strict Transport Security",
 	"hsts.enabled": "Activer HSTS  (recommandé)",
+	"hsts.maxAge": "HSTS Max Age",
 	"hsts.subdomains": "Inclure les sous-domaines dans l'en-tête HSTS",
 	"hsts.preload": "Autoriser le préchargement de l'en-tête HSTS",
 	"hsts.help": "Si activé, un en-tête HSTS sera défini pour ce site. Vous pouvez choisir d'inclure des sous-domaines et des indicateurs de préchargement dans votre en-tête. En cas de doute, ne cochez pas l'option. <a href=\"%1\">Plus d'informations<i class=\"fa fa-external-link\"></i></a>",

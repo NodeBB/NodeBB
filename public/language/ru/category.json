@@ -16,7 +16,7 @@
     "not-watching.description": "Не показывать темы из этой категории в непрочитанных, но оставить в списке недавних",
     "ignoring.description": "Не показывать темы из этой категории ни в списке непрочитанных, ни в недавних",
     "watching.message": "Вы отслеживаете обновления этой категории, включая все подкатегории",
-    "notwatching.message": "You are not watching updates from this category and all subcategories",
-    "ignoring.message": "You are now ignoring updates from this category and all subcategories",
+    "notwatching.message": "Вы более не отслеживаете обновления этой категории, включая все подкатегории",
+    "ignoring.message": "Вы игнорируете обновления этой категории, включая все подкатегории",
     "watched-categories": "Отслеживаемые категории"
 }

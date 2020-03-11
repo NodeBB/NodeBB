@@ -1,5 +1,6 @@
 {
-	"you-are-on": "Informácie - Nachádzate sa na <strong>%1:%2</strong>",
+	"you-are-on": "You are on <strong>%1:%2</strong>",
+	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "%1 väzieb odpovedalo počas %2ms.",
 	"host": "hosť",
 	"pid": "pid",

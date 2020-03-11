@@ -111,6 +111,9 @@ module.exports = function (User) {
 		if (!data.website) {
 			return;
 		}
+		if (data.website.length > 255) {
+			throw new Error('[[error:invalid-website]]');
+		}
 		await User.checkMinReputation(callerUid, data.uid, 'min:rep:website');
 	}
 
@@ -136,13 +139,13 @@ module.exports = function (User) {
 	}
 
 	function isFullnameValid(data) {
-		if (data.fullname && validator.isURL(data.fullname)) {
+		if (data.fullname && (validator.isURL(data.fullname) || data.fullname.length > 255)) {
 			throw new Error('[[error:invalid-fullname]]');
 		}
 	}
 
 	function isLocationValid(data) {
-		if (data.location && validator.isURL(data.location)) {
+		if (data.location && (validator.isURL(data.location) || data.location.length > 255)) {
 			throw new Error('[[error:invalid-location]]');
 		}
 	}
@@ -159,8 +162,27 @@ module.exports = function (User) {
 	}
 
 	function isGroupTitleValid(data) {
-		if (data.groupTitle === 'registered-users' || groups.isPrivilegeGroup(data.groupTitle)) {
-			throw new Error('[[error:invalid-group-title]]');
+		function checkTitle(title) {
+			if (title === 'registered-users' || groups.isPrivilegeGroup(title)) {
+				throw new Error('[[error:invalid-group-title]]');
+			}
+		}
+		if (!data.groupTitle) {
+			return;
+		}
+		let groupTitles = [];
+		if (validator.isJSON(data.groupTitle)) {
+			groupTitles = JSON.parse(data.groupTitle);
+			if (!Array.isArray(groupTitles)) {
+				throw new Error('[[error:invalid-group-title]]');
+			}
+			groupTitles.forEach(title => checkTitle(title));
+		} else {
+			groupTitles = [data.groupTitle];
+			checkTitle(data.groupTitle);
+		}
+		if (!meta.config.allowMultipleBadges && groupTitles.length > 1) {
+			data.groupTitle = JSON.stringify(groupTitles[0]);
 		}
 	}
 

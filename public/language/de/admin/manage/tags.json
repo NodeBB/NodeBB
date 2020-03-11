@@ -12,8 +12,7 @@
 	"settings": "Klicke <a href=\"%1\">hier</a>, um die Tag-Einstellungsseite zu öffnen.",
 	"name": "Tagname",
 
-	"alerts.editing-multiple": "Bearbeite mehrere Tags",
-	"alerts.editing-x": "Bearbeite Tag \"%1\"",
+	"alerts.editing": "Editing tag(s)",
 	"alerts.confirm-delete": "Wollen Sie die ausgewählten Tags löschen?",
 	"alerts.update-success": "Tag aktualisiert!"
 }

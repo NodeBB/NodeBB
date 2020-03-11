@@ -12,8 +12,7 @@
 	"settings": "Нажмите <a href=\"%1\">сюда</a> чтобы перейти на страницу настройки меток.",
 	"name": "Название метки",
 
-	"alerts.editing-multiple": "Редактирование нескольких меток",
-	"alerts.editing-x": "Редактирование метки \"%1\"",
+	"alerts.editing": "Editing tag(s)",
 	"alerts.confirm-delete": "Вы хотите удалить выбранные метки?",
 	"alerts.update-success": "Метка обновлена!"
 }

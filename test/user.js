@@ -1446,6 +1446,18 @@ describe('User', function () {
 			});
 		});
 
+		it('should fail to delete user if account deletion is not allowed', async function () {
+			const oldValue = meta.config.allowAccountDeletion;
+			meta.config.allowAccountDeletion = 0;
+			const uid = await User.create({ username: 'tobedeleted' });
+			try {
+				await socketUser.deleteAccount({ uid: uid }, {});
+			} catch (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+			}
+			meta.config.allowAccountDeletion = oldValue;
+		});
+
 		it('should fail if data is invalid', function (done) {
 			socketUser.emailExists({ uid: testUid }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');

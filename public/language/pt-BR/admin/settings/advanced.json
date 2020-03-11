@@ -15,6 +15,7 @@
 	"headers.acah": "Access-Control-Allow-Headers",
 	"hsts": "Strict Transport Security",
 	"hsts.enabled": "Habilitar HSTS (recomendado)",
+	"hsts.maxAge": "HSTS Max Age",
 	"hsts.subdomains": "Incluir subdomínios no cabeçalho do HSTS",
 	"hsts.preload": "Permitir pré-carregamento do cabeçalho do HSTS",
 	"hsts.help": "Se habilitado, um cabeçalho de HSTS será enviado para este site. Você pode selecionar tanto quais subdomínios deseja incluir, como quais serão as flags de pré-carregamento no seu cabeçalho. Se estiver em dúvida, você pode deixar esta opção desmarcada. <a href=\"%1\">Mais informações<i class=\"fa fa-external-link\"></i></a>",
