@@ -44,7 +44,7 @@ module.exports = function (User) {
 
 		const userData = await User.getUsers(uids, uid);
 		searchResult.timing = (process.elapsedTimeSince(startTime) / 1000).toFixed(2);
-		searchResult.users = userData;
+		searchResult.users = userData.filter(user => user && user.uid > 0);
 		return searchResult;
 	};
 
