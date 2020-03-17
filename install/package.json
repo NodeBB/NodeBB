@@ -137,7 +137,7 @@
         "eslint": "6.8.0",
         "eslint-config-airbnb-base": "14.0.0",
         "eslint-plugin-import": "2.20.1",
-        "grunt": "1.0.4",
+        "grunt": "1.1.0",
         "grunt-contrib-watch": "1.1.0",
         "husky": "4.2.3",
         "jsdom": "16.2.1",
