@@ -101,6 +101,8 @@ module.exports = function (Messaging) {
 				} else if (index > 0 && message.fromuid !== messages[index - 1].fromuid) {
 					// If the previous message was from the other person, this is also a new set
 					message.newSet = true;
+				} else if (index === 0) {
+					message.newSet = true;
 				}
 
 				return message;
