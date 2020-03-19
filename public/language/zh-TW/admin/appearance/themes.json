@@ -1,11 +1,11 @@
 {
-    "checking-for-installed": "正在載入已安裝的主題...",
+    "checking-for-installed": "正在檢查已安裝的佈景主題...",
     "homepage": "首頁",
-    "select-theme": "選擇主題",
-    "current-theme": "目前的主題",
-    "no-themes": "沒有找到任何已安裝的主題",
-    "revert-confirm": "你確定要回復預設的主題嗎？",
-    "theme-changed": "主題已更換",
-    "revert-success": "已經成功回復為預設主題。",
-    "restart-to-activate": "Please rebuild and restart your NodeBB to fully activate this theme."
+    "select-theme": "選擇佈景主題",
+    "current-theme": "當前佈景主題",
+    "no-themes": "未發現已安裝的佈景主題",
+    "revert-confirm": "確認恢復到 NodeBB 預設佈景主題？",
+    "theme-changed": "佈景主題已更改",
+    "revert-success": "已成功恢復到 NodeBB 預設佈景主題。",
+    "restart-to-activate": "請部署並重啟您的 NodeBB 以完成啟用佈景主題。"
 }

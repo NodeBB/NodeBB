@@ -1,5 +1,5 @@
 {
-	"handles": "Guest Handles",
-	"handles.enabled": "Allow guest handles",
-	"handles.enabled-help": "This option exposes a new field that allows guests to pick a name to associate with each post they make. If disabled, they will simply be called \"Guest\""
+	"handles": "訪客使用者名",
+	"handles.enabled": "允許訪客使用者名",
+	"handles.enabled-help": "這個選項將允許訪客使用一個額外的輸入框來設置發文時的使用者名，如果被禁用，僅會統一顯示為“訪客”"
 }

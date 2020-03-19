@@ -1,6 +1,6 @@
 {
 	"language-settings": "語言設定",
-	"description": "所有使用者的預設語言，使用者可以在個人設定內修改",
+	"description": "預設語言會決定所有使用者的語言設定。 <br />單一使用者可以各自在帳戶設定中覆蓋此項設定。",
 	"default-language": "預設語言",
-	"auto-detect": "使用者為訪客時，自動偵測語言設定"
+	"auto-detect": "自動檢測訪客的語言設定"
 }

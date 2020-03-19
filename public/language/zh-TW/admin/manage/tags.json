@@ -1,18 +1,18 @@
 {
-	"none": "Your forum does not have any topics with tags yet.",
-	"bg-color": "Background Colour",
-	"text-color": "Text Colour",
-	"create-modify": "Create & Modify Tags",
-	"description": "Select tags via clicking and/or dragging, use shift to select multiple.",
-	"create": "Create Tag",
-	"modify": "Modify Tags",
-	"rename": "Rename Tags",
-	"delete": "Delete Selected Tags",
-	"search": "Search for tags...",
-	"settings": "Click <a href=\"%1\">here</a> to visit the tag settings page.",
-	"name": "Tag Name",
+	"none": "您的論壇目前沒有帶有標籤的主題。",
+	"bg-color": "背景顏色",
+	"text-color": "文字顏色",
+	"create-modify": "建立或修改標籤",
+	"description": "通過點擊或拖曳選擇標籤，按住shift進行多選。",
+	"create": "建立標籤",
+	"modify": "修改標籤",
+	"rename": "重命名標籤",
+	"delete": "刪除所選標籤",
+	"search": "搜尋標籤...",
+	"settings": "點擊<a href=\"%1\">此處</a> 訪問標籤設定頁面。",
+	"name": "標籤名",
 
-	"alerts.editing": "Editing tag(s)",
-	"alerts.confirm-delete": "Do you want to delete the selected tags?",
-	"alerts.update-success": "Tag Updated!"
+	"alerts.editing": "編輯標籤",
+	"alerts.confirm-delete": "是否要刪除所選標籤？",
+	"alerts.update-success": "標籤已更新！"
 }

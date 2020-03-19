@@ -1,14 +1,14 @@
 {
-	"reputation": "Reputation Settings",
-	"disable": "Disable Reputation System",
-	"disable-down-voting": "Disable Down Voting",
-	"votes-are-public": "All Votes Are Public",
-	"thresholds": "Activity Thresholds",
-	"min-rep-downvote": "Minimum reputation to downvote posts",
-	"min-rep-flag": "Minimum reputation to flag posts",
-	"min-rep-website": "Minimum reputation to add \"Website\" to user profile",
-	"min-rep-aboutme": "Minimum reputation to add \"About me\" to user profile",
-	"min-rep-signature": "Minimum reputation to add \"Signature\" to user profile",
-	"min-rep-profile-picture": "Minimum reputation to add \"Profile Picture\" to user profile",
-	"min-rep-cover-picture": "Minimum reputation to add \"Cover Picture\" to user profile"
+	"reputation": "聲望設定",
+	"disable": "停用 聲望系統",
+	"disable-down-voting": "停用 倒讚",
+	"votes-are-public": "公開所有讚",
+	"thresholds": "操作限制",
+	"min-rep-downvote": "倒讚貼文 需要的最低聲望",
+	"min-rep-flag": "舉報貼文 需要的最低聲望",
+	"min-rep-website": "加入 個人網站 需要的最低聲望",
+	"min-rep-aboutme": "加入 個人 “關於我”頁 需要的最低聲望",
+	"min-rep-signature": "加入 簽名檔 需要的最低聲望",
+	"min-rep-profile-picture": "加入 個人頭像 需要的最低聲望",
+	"min-rep-cover-picture": "加入 個人封面圖片 需要的最低聲望"
 }

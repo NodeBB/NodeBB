@@ -1,20 +1,20 @@
 {
-	"you-are-on": "You are on <strong>%1:%2</strong>",
+	"you-are-on": "您的位址 <strong>%1:%2</strong>",
 	"ip": "IP <strong>%1</strong>",
-	"nodes-responded": "%1 nodes 在 %2ms! 內反應",
-	"host": "host",
+	"nodes-responded": "%1個節點在%2ms內響應！",
+	"host": "主機",
 	"pid": "pid",
 	"nodejs": "nodejs",
-	"online": "online",
+	"online": "在線",
 	"git": "git",
-	"memory": "memory",
+	"memory": "記憶體",
 	"load": "系統負載",
-	"cpu-usage": "CPU用量",
-	"uptime": "Uptime",
+	"cpu-usage": "CPU 使用情況",
+	"uptime": "運行時間",
 
-	"registered": "註冊",
-	"sockets": "Sockets",
+	"registered": "已註冊",
+	"sockets": "網路接口",
 	"guests": "訪客",
 
-	"info": "Info"
+	"info": "資訊"
 }

@@ -1,11 +1,11 @@
 {
 	"events": "事件",
-	"no-events": "沒有事件",
+	"no-events": "暫無事件",
 	"control-panel": "事件控制面板",
-	"filters": "Filters",
-	"filters-apply": "Apply Filters",
-	"filter-type": "Event Type",
-	"filter-start": "Start Date",
-	"filter-end": "End Date",
-	"filter-perPage": "Per Page"
+	"filters": "過濾器",
+	"filters-apply": "應用過濾器",
+	"filter-type": "事件類型",
+	"filter-start": "開始時間",
+	"filter-end": "結束時間",
+	"filter-perPage": "每頁"
 }
