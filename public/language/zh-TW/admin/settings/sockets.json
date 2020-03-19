@@ -1,6 +1,6 @@
 {
-    "reconnection": "重新連接設定",
-    "max-attempts": "最大重試次數",
-    "default-placeholder": "預設: %1",
-    "delay": "重新連接延遲時間"
+  "reconnection": "重新連線設定",
+  "max-attempts": "最大重新連線嘗試",
+  "default-placeholder": "預設：%1",
+  "delay": "重連等待時間"
 }
