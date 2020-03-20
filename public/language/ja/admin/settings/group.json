@@ -3,6 +3,7 @@
 	"private-groups": "プライベートグループ",
 	"private-groups.help": "有効の場合、グループへの参加はグループ管理人からの承認が必要です。<em>(デフォルト: 有効)</em>",
 	"private-groups.warning": "<strong>注意!</strong>このオプションが無効で、プライベートグループがある場合、自動的に公開されます。",
+	"allow-multiple-badges": "Allow Multiple Badges",
 	"allow-multiple-badges-help": "This flag can be used to allow users to select multiple group badges, requires theme support.",
 	"max-name-length": "グループ名の最大文字数",
 	"max-title-length": "Maximum Group Title Length",

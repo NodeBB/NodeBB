@@ -30,7 +30,7 @@
 	"plugin-item.more-info": "更多資訊：",
 	"plugin-item.unknown": "未知",
 	"plugin-item.unknown-explanation": "無法確認該外掛的狀態，可能由於設定錯誤造成。",
-	"plugin-item.compatible": "此外掛有1%適合NodeBB",
+	"plugin-item.compatible": "此外掛適合 NodeBB %1",
 	"plugin-item.not-compatible": "此外掛沒有相容資料，請確保在生產環境中安裝之前它可以正常工作。",
 
 	"alert.enabled": "外掛已啟用",

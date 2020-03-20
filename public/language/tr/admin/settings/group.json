@@ -3,6 +3,7 @@
 	"private-groups": "Gizli Grup",
 	"private-groups.help": "Eğer etkinse, gruba katılmak için grup sahibinin onayı gerekir. <em>(Varsayılan: Etkin)</em>",
 	"private-groups.warning": "<strong>Dikkat!</strong> Eğer bu opsiyon devre dışıysa ve özel gruplarınız varsa, onlar otomatik olarak genele dönüşecektir.",
+	"allow-multiple-badges": "Allow Multiple Badges",
 	"allow-multiple-badges-help": "Bu bayrak, kullanıcıların birden fazla grup rozetini seçmelerine izin vermek için kullanılabilir, tema desteği gerektirir.",
 	"max-name-length": "Maksimum Grup Adı Uzunluğu",
 	"max-title-length": "Maximum Group Title Length",
