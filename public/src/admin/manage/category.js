@@ -281,35 +281,40 @@ define('admin/manage/category', [
 	}
 
 	Category.launchParentSelector = function () {
-		var parents = [parseInt(ajaxify.data.category.cid, 10)];
-		var categories = ajaxify.data.allCategories.filter(function (category) {
-			var isChild = parents.includes(parseInt(category.parentCid, 10));
-			if (isChild) {
-				parents.push(parseInt(category.cid, 10));
+		socket.emit('categories.getSelectCategories', {}, function (err, allCategories) {
+			if (err) {
+				return app.alertError(err.message);
 			}
-			return category && !category.disabled && parseInt(category.cid, 10) !== parseInt(ajaxify.data.category.cid, 10) && !isChild;
-		});
-
-		categorySelector.modal(categories, function (parentCid) {
-			var payload = {};
-
-			payload[ajaxify.data.category.cid] = {
-				parentCid: parentCid,
-			};
-
-			socket.emit('admin.categories.update', payload, function (err) {
-				if (err) {
-					return app.alertError(err.message);
+			var parents = [parseInt(ajaxify.data.category.cid, 10)];
+			var categories = allCategories.filter(function (category) {
+				var isChild = parents.includes(parseInt(category.parentCid, 10));
+				if (isChild) {
+					parents.push(parseInt(category.cid, 10));
 				}
-				var parent = ajaxify.data.allCategories.filter(function (category) {
-					return category && parseInt(category.cid, 10) === parseInt(parentCid, 10);
-				});
-				parent = parent[0];
+				return category && !category.disabled && parseInt(category.cid, 10) !== parseInt(ajaxify.data.category.cid, 10) && !isChild;
+			});
 
-				$('button[data-action="removeParent"]').parent().removeClass('hide');
-				$('button[data-action="setParent"]').addClass('hide');
-				var buttonHtml = '<i class="fa ' + parent.icon + '"></i> ' + parent.name;
-				$('button[data-action="changeParent"]').html(buttonHtml).parent().removeClass('hide');
+			categorySelector.modal(categories, function (parentCid) {
+				var payload = {};
+
+				payload[ajaxify.data.category.cid] = {
+					parentCid: parentCid,
+				};
+
+				socket.emit('admin.categories.update', payload, function (err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					var parent = allCategories.filter(function (category) {
+						return category && parseInt(category.cid, 10) === parseInt(parentCid, 10);
+					});
+					parent = parent[0];
+
+					$('button[data-action="removeParent"]').parent().removeClass('hide');
+					$('button[data-action="setParent"]').addClass('hide');
+					var buttonHtml = '<i class="fa ' + parent.icon + '"></i> ' + parent.name;
+					$('button[data-action="changeParent"]').html(buttonHtml).parent().removeClass('hide');
+				});
 			});
 		});
 	};
