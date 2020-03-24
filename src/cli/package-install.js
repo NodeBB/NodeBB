@@ -32,14 +32,10 @@ function installAll() {
 	let command = 'npm install';
 	try {
 		fs.accessSync(path.join(modulesPath, 'nconf/package.json'), fs.constants.R_OK);
-		const supportedPackageManagerList = [
-			'yarn',
-			'npm',
-			'pnpm',
-			'cnpm',
-		];
+		const defaultPackageContents = JSON.parse(fs.readFileSync(packageDefaultFilePath, 'utf8'));
+		const supportedPackageManagerList = defaultPackageContents.config.supportedPackageManager; // load config from default package.json
 		const packageManager = require('nconf').get('package_manager');
-		if (packageManager in supportedPackageManagerList) {
+		if (supportedPackageManagerList.indexOf(packageManager) >= 0) {
 			switch (packageManager) {
 			case 'yarn':
 				command = 'yarn';

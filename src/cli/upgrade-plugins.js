@@ -10,17 +10,12 @@ const path = require('path');
 const nconf = require('nconf');
 
 const paths = require('./paths');
-
+const packageDefaultFile = JSON.parse(fs.readFileSync(path.join(__dirname, '../../install/package.json'), 'utf8'));// load config from default package
 const packageManager = nconf.get('package_manager');
 
-const supportedPackageManagerList = [
-	'yarn',
-	'npm',
-	'pnpm',
-	'cnpm',
-];
+const supportedPackageManagerList = packageDefaultFile.config.supportedPackageManager;
 
-let packageManagerExecutable = packageManager in supportedPackageManagerList ? packageManager : 'npm';
+let packageManagerExecutable = supportedPackageManagerList.indexOf(packageManager) >= 0 ? packageManager : 'npm';
 const packageManagerInstallArgs = packageManager === 'yarn' ? ['add'] : ['install', '--save'];
 
 if (process.platform === 'win32') {

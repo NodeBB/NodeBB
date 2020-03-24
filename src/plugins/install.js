@@ -14,14 +14,10 @@ const pubsub = require('../pubsub');
 
 const statAsync = util.promisify(fs.stat);
 
-const supportedPackageManagerList = [
-	'yarn',
-	'npm',
-	'pnpm',
-	'cnpm',
-];
+const packageDefaultFile = JSON.parse(fs.readFileSync(path.join(__dirname, '../../install/package.json'), 'utf8'));
+const supportedPackageManagerList = packageDefaultFile.config.supportedPackageManager;
 
-const packageManager = nconf.get('package_manager') in supportedPackageManagerList ? nconf.get('package_manager') : 'npm';
+const packageManager = supportedPackageManagerList.indexOf(nconf.get('package_manager')) >= 0 ? nconf.get('package_manager') : 'npm';
 let packageManagerExecutable = packageManager;
 const packageManagerCommands = {
 	yarn: {
