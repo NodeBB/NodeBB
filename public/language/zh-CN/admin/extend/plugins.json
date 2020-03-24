@@ -12,7 +12,7 @@
 	"submit-anonymous-usage": "提交匿名插件使用数据。",
 	"reorder-plugins": "重新排序插件",
 	"order-active": "排序生效插件",
-	"dev-interested": "有兴趣为NodeBB开发插件？",
+	"dev-interested": "有兴趣为 NodeBB 开发插件？",
 	"docs-info": "有关插件创作的完整文档可以在 <a target=\"_blank\" href=\"https://docs.nodebb-cn.org/development\">NodeBB 文档</a>中找到。",
 
 	"order.description": "部分插件需要在其它插件启用之后才能完美运作。",
@@ -30,7 +30,7 @@
 	"plugin-item.more-info": "更多信息：",
 	"plugin-item.unknown": "未知",
 	"plugin-item.unknown-explanation": "无法确认该插件的状态，可能由于配置错误造成。",
-	"plugin-item.compatible": "此插件有1%适合NodeBB",
+	"plugin-item.compatible": "此插件兼容 NodeBB %1",
 	"plugin-item.not-compatible": "此插件没有兼容性数据，请确保在生产环境中安装之前它可以正常工作。",
 
 	"alert.enabled": "插件已启用",

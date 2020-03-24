@@ -1,5 +1,5 @@
 {
-	"you-are-on": "You are on <strong>%1:%2</strong>",
+	"you-are-on": "你正使用 <strong>%1:%2</strong>",
 	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "%1个节点在%2ms内响应！",
 	"host": "主机",
