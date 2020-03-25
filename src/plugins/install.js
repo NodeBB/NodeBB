@@ -14,9 +14,7 @@ const pubsub = require('../pubsub');
 
 const statAsync = util.promisify(fs.stat);
 
-const packageDefaultFile = JSON.parse(fs.readFileSync(path.join(__dirname, '../../install/package.json'), 'utf8'));
-const supportedPackageManagerList = packageDefaultFile.config.supportedPackageManager;
-
+const supportedPackageManagerList = require('../cli/package-install').supportedPackageManager; // load config from src/cli/package-install.js
 const packageManager = supportedPackageManagerList.indexOf(nconf.get('package_manager')) >= 0 ? nconf.get('package_manager') : 'npm';
 let packageManagerExecutable = packageManager;
 const packageManagerCommands = {

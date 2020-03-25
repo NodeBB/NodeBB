@@ -27,13 +27,19 @@ function updatePackageFile() {
 
 exports.updatePackageFile = updatePackageFile;
 
+exports.supportedPackageManager = [
+	'npm',
+	'cnpm',
+	'pnpm',
+	'yarn',
+];
+
 function installAll() {
 	const prod = global.env !== 'development';
 	let command = 'npm install';
 	try {
 		fs.accessSync(path.join(modulesPath, 'nconf/package.json'), fs.constants.R_OK);
-		const defaultPackageContents = JSON.parse(fs.readFileSync(packageDefaultFilePath, 'utf8'));
-		const supportedPackageManagerList = defaultPackageContents.config.supportedPackageManager; // load config from default package.json
+		const supportedPackageManagerList = exports.supportedPackageManager; // load config from src/cli/package-install.js
 		const packageManager = require('nconf').get('package_manager');
 		if (supportedPackageManagerList.indexOf(packageManager) >= 0) {
 			switch (packageManager) {

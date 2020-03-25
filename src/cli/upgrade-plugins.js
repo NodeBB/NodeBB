@@ -10,10 +10,9 @@ const path = require('path');
 const nconf = require('nconf');
 
 const paths = require('./paths');
-const packageDefaultFile = JSON.parse(fs.readFileSync(path.join(__dirname, '../../install/package.json'), 'utf8'));// load config from default package
 const packageManager = nconf.get('package_manager');
 
-const supportedPackageManagerList = packageDefaultFile.config.supportedPackageManager;
+const supportedPackageManagerList = require('./package-install').supportedPackageManager; // load config from src/cli/package-install.js
 
 let packageManagerExecutable = supportedPackageManagerList.indexOf(packageManager) >= 0 ? packageManager : 'npm';
 const packageManagerInstallArgs = packageManager === 'yarn' ? ['add'] : ['install', '--save'];
