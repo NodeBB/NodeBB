@@ -156,6 +156,7 @@ async function buildBreadcrumbs(topicData) {
 		{
 			text: topicData.category.name,
 			url: nconf.get('relative_path') + '/category/' + topicData.category.slug,
+			cid: topicData.category.cid,
 		},
 		{
 			text: topicData.title,

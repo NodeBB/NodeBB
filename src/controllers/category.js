@@ -122,6 +122,7 @@ async function buildBreadcrumbs(req, categoryData) {
 		{
 			text: categoryData.name,
 			url: nconf.get('relative_path') + '/category/' + categoryData.slug,
+			cid: categoryData.cid,
 		},
 	];
 	const crumbs = await helpers.buildCategoryBreadcrumbs(categoryData.parentCid);

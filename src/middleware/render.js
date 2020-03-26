@@ -127,6 +127,13 @@ module.exports = function (middleware) {
 			parts.push('page-topic-category-' + templateData.category.cid);
 			parts.push('page-topic-category-' + utils.slugify(templateData.category.name));
 		}
+		if (templateData.breadcrumbs) {
+			templateData.breadcrumbs.forEach(function (crumb) {
+				if (crumb.hasOwnProperty('cid')) {
+					parts.push('parent-category-' + crumb.cid);
+				}
+			});
+		}
 
 		parts.push('page-status-' + res.statusCode);
 		return parts.join(' ');
