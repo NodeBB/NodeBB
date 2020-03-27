@@ -15,12 +15,7 @@ const helpers = require('../../controllers/helpers');
 module.exports = function () {
 	var app = require('express').Router();
 
-	app.post('/', middleware.authenticate, middleware.isAdmin, async (req, res) => {
-		helpers.checkRequired(['username'], req, res);
-		// if (!utils.checkRequired(['username'], req, res)) {
-		// 	return false;
-		// }
-
+	app.post('/', middleware.checkRequired.bind(null, ['username']), middleware.authenticate, middleware.isAdmin, async (req, res) => {
 		const uid = await users.create(req.body);
 		helpers.formatApiResponse(200, res, {
 			uid: uid,

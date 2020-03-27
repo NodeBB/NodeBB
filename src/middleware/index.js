@@ -237,3 +237,14 @@ middleware.validateAuth = helpers.try(async function validateAuth(req, res, next
 		next(err);
 	}
 });
+
+middleware.checkRequired = function (fields, req, res, next) {
+	// Used in API calls to ensure that necessary parameters/data values are present
+	const missing = fields.filter(field => !req.body.hasOwnProperty(field));
+
+	if (!missing.length) {
+		next();
+	}
+
+	controllers.helpers.formatApiResponse(400, res, new Error('Required parameters were missing from this API call: ' + missing.join(', ')));
+};
