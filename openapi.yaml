@@ -1,0 +1,247 @@
+openapi: 3.0.0
+info:
+  description: Standard, out-of-the-box read & write API for NodeBB v2.0+
+  version: "1.0.0"
+  title: Read/Write API
+  contact:
+    email: support@nodebb.org
+  license:
+    name: MIT
+    url: 'https://opensource.org/licenses/MIT'
+tags:
+  # - name: admins
+  #   description: Secured Admin-only calls
+  # - name: developers
+  #   description: Operations available to regular developers
+  - name: users
+    description: Account related calls (create, modify, delete, etc.)
+paths:
+  # /inventory:
+  #   get:
+  #     tags:
+  #       - developers
+  #     summary: searches inventory
+  #     operationId: searchInventory
+  #     description: |
+  #       By passing in the appropriate options, you can search for
+  #       available inventory in the system
+  #     parameters:
+  #       - in: query
+  #         name: searchString
+  #         description: pass an optional search string for looking up inventory
+  #         required: false
+  #         schema:
+  #           type: string
+  #       - in: query
+  #         name: skip
+  #         description: number of records to skip for pagination
+  #         schema:
+  #           type: integer
+  #           format: int32
+  #           minimum: 0
+  #       - in: query
+  #         name: limit
+  #         description: maximum number of records to return
+  #         schema:
+  #           type: integer
+  #           format: int32
+  #           minimum: 0
+  #           maximum: 50
+  #     responses:
+  #       '200':
+  #         description: search results matching criteria
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: array
+  #               items:
+  #                 $ref: '#/components/schemas/InventoryItem'
+  #       '400':
+  #         description: bad input parameter
+  #   post:
+  #     tags:
+  #       - admins
+  #     summary: adds an inventory item
+  #     operationId: addInventory
+  #     description: Adds an item to the system
+  #     responses:
+  #       '201':
+  #         description: item created
+  #       '400':
+  #         description: 'invalid input, object invalid'
+  #       '409':
+  #         description: an existing item already exists
+  #     requestBody:
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: '#/components/schemas/InventoryItem'
+  #       description: Inventory item to add
+  /:
+    post:
+      tags:
+        - users
+      summary: creates a user account
+      operationId: createUser
+      description: This operation creates a new user account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: If the username is taken, a number will be appended
+                password:
+                  type: string
+                email:
+                  type: string
+              required:
+                - username
+            example:
+              username: Dragon Fruit
+              password: s3cre7password
+              email: dragonfruit@example.org
+      responses:
+        '200':
+          description: user successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+components:
+  schemas:
+    # InventoryItem:
+    #   type: object
+    #   required:
+    #     - id
+    #     - name
+    #     - manufacturer
+    #     - releaseDate
+    #   properties:
+    #     id:
+    #       type: string
+    #       format: uuid
+    #       example: d290f1ee-6c54-4b01-90e6-d701748f0851
+    #     name:
+    #       type: string
+    #       example: Widget Adapter
+    #     releaseDate:
+    #       type: string
+    #       format: date-time
+    #       example: '2016-08-29T09:12:33.001Z'
+    #     manufacturer:
+    #       $ref: '#/components/schemas/Manufacturer'
+    # Manufacturer:
+    #   required:
+    #     - name
+    #   properties:
+    #     name:
+    #       type: string
+    #       example: ACME Corporation
+    #     homePage:
+    #       type: string
+    #       format: url
+    #       example: 'https://www.acme-corp.com'
+    #     phone:
+    #       type: string
+    #       example: 408-867-5309
+    #   type: object
+    User:
+      properties:
+        uid:
+          type: number
+          example: 1
+        username:
+          type: string
+          example: Dragon Fruit
+        userslug:
+          type: string
+          example: dragon-fruit
+        fullname:
+          type: string
+          example: Mr. Dragon Fruit Jr.
+        location:
+          type: string
+          example: Toronto, Canada
+        birthday:
+          type: string
+          description: A birthdate given in an ISO format parseable by the Date object
+          example: 03/27/2020
+        website:
+          type: string
+          example: https://example.org
+        aboutme:
+          type: string
+          example: |
+            This is a paragraph all about how my life got twist-turned upside-down
+            and I'd like to take a minute and sit right here,
+            to tell you all about how I because the administrator of NodeBB
+        signature:
+          type: string
+          example: |
+            This is an example signature
+            It can span multiple lines.
+        groupTitle:
+          type: string
+          example: "[\"administrators\",\"Staff\"]"
+        uploadedpicture:
+          type: string
+          example: /assets/profile/1-profileimg.png
+          description: In almost all cases, defer to "picture" instead. Use this if you need to specifically reference the picture uploaded to the forum.
+        cover:url:
+          type: string
+          example: /assets/profile/1-cover.png
+        cover:position:
+          type: string
+          example: 50.0301% 19.2464%
+        picture:
+          type: string
+          example: https://images.unsplash.com/photo-1560070094-e1f2ddec4337?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=256&h=256&q=80
+        status:
+          type: string
+          example: online
+        postcount:
+          type: number
+          example: 1000
+        topiccount:
+          type: number
+          example: 50
+        followercount:
+          type: number
+          example: 2
+        followingcount:
+          type: number
+          example: 5
+        profileviews:
+          type: number
+          example: 1000
+        reputation:
+          type: number
+          example: 100
+        email:
+          type: string
+          example: dragonfruit@example.org
+        email:confirmed:
+          type: number
+          example: 1
+        lastonline:
+          type: number
+          example: 1585337827953
+        lastposttime:
+          type: number
+          example: 1585337827953
+        flags:
+          type: number
+          example: 0
+        banned:
+          type: number
+          example: 0
+        banned:expire:
+          type: number
+          example: 1585337827953
+        joindate:
+          type: number
+          example: 1585337827953
