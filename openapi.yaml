@@ -160,6 +160,21 @@ components:
         userslug:
           type: string
           example: dragon-fruit
+        email:
+          type: string
+          example: dragonfruit@example.org
+        email:confirmed:
+          type: number
+          example: 1
+        joindate:
+          type: number
+          example: 1585337827953
+        lastonline:
+          type: number
+          example: 1585337827953
+        picture:
+          type: string
+          example: https://images.unsplash.com/photo-1560070094-e1f2ddec4337?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=256&h=256&q=80
         fullname:
           type: string
           example: Mr. Dragon Fruit Jr.
@@ -184,64 +199,72 @@ components:
           example: |
             This is an example signature
             It can span multiple lines.
-        groupTitle:
-          type: string
-          example: "[\"administrators\",\"Staff\"]"
         uploadedpicture:
           type: string
           example: /assets/profile/1-profileimg.png
           description: In almost all cases, defer to "picture" instead. Use this if you need to specifically reference the picture uploaded to the forum.
-        cover:url:
-          type: string
-          example: /assets/profile/1-cover.png
-        cover:position:
-          type: string
-          example: 50.0301% 19.2464%
-        picture:
-          type: string
-          example: https://images.unsplash.com/photo-1560070094-e1f2ddec4337?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=256&h=256&q=80
-        status:
-          type: string
-          example: online
-        postcount:
-          type: number
-          example: 1000
-        topiccount:
-          type: number
-          example: 50
-        followercount:
-          type: number
-          example: 2
-        followingcount:
-          type: number
-          example: 5
         profileviews:
           type: number
           example: 1000
         reputation:
           type: number
           example: 100
-        email:
-          type: string
-          example: dragonfruit@example.org
-        email:confirmed:
+        postcount:
           type: number
-          example: 1
-        lastonline:
+          example: 1000
+        topiccount:
           type: number
-          example: 1585337827953
+          example: 50
         lastposttime:
           type: number
           example: 1585337827953
-        flags:
-          type: number
-          example: 0
         banned:
           type: number
           example: 0
         banned:expire:
           type: number
           example: 1585337827953
-        joindate:
+        status:
+          type: string
+          example: online
+        flags:
           type: number
-          example: 1585337827953
+          example: 0
+        followercount:
+          type: number
+          example: 2
+        followingcount:
+          type: number
+          example: 5
+        cover:url:
+          type: string
+          example: /assets/profile/1-cover.png
+        cover:position:
+          type: string
+          example: 50.0301% 19.2464%
+        groupTitle:
+          type: string
+          example: "[\"administrators\",\"Staff\"]"
+        groupTitleArray:
+          type: array
+          example:
+            - administrators
+            - Staff
+        icon:text:
+          type: string
+          example: D
+        icon:bgColor:
+          type: string
+          example: "#9c27b0"
+        joindateISO:
+          type: string
+          example: 2020-03-27T20:30:36.590Z
+        lastonlineISO:
+          type: string
+          example: 2020-03-27T20:30:36.590Z
+        banned_until:
+          type: number
+          example: 0
+        banned_until_readable:
+          type: string
+          example: Not Banned

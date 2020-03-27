@@ -243,7 +243,7 @@ middleware.checkRequired = function (fields, req, res, next) {
 	const missing = fields.filter(field => !req.body.hasOwnProperty(field));
 
 	if (!missing.length) {
-		next();
+		return next();
 	}
 
 	controllers.helpers.formatApiResponse(400, res, new Error('Required parameters were missing from this API call: ' + missing.join(', ')));

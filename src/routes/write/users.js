@@ -17,9 +17,7 @@ module.exports = function () {
 
 	app.post('/', middleware.checkRequired.bind(null, ['username']), middleware.authenticate, middleware.isAdmin, async (req, res) => {
 		const uid = await users.create(req.body);
-		helpers.formatApiResponse(200, res, {
-			uid: uid,
-		});
+		helpers.formatApiResponse(200, res, await users.getUserData(uid));
 	});
 
 	// 	app.route('/:uid')
