@@ -11,7 +11,9 @@ const categories = require('../categories');
 const plugins = require('../plugins');
 const meta = require('../meta');
 const middleware = require('../middleware');
+const translator = require('../translator');
 
+const isLanguageKey = /^\[\[[\w.\-_:]+]]$/;
 const helpers = module.exports;
 
 helpers.noScriptErrors = async function (req, res, error, httpStatus) {
@@ -340,6 +342,72 @@ helpers.getHomePageRoutes = async function (uid) {
 	]);
 	const data = await plugins.fireHook('filter:homepage.get', { routes: routes });
 	return data.routes;
+};
+
+helpers.formatApiResponse = async (statusCode, res, payload) => {
+	if (statusCode === 200) {
+		res.status(200).json({
+			status: {
+				code: 'ok',
+				message: 'OK',
+			},
+			response: payload || {},
+		});
+	} else if (!payload) {
+		// Non-2xx statusCode, generate predefined error
+		res.status(statusCode).json(helpers.generateError(statusCode));
+	} else if (payload instanceof Error) {
+		if (isLanguageKey.test(payload.message)) {
+			const translated = await translator.translate(payload.message, 'en-GB');
+			res.status(statusCode).json(helpers.generateError(statusCode, translated));
+		} else {
+			res.status(statusCode).json(helpers.generateError(statusCode, payload.message));
+		}
+	}
+};
+
+helpers.generateError = (statusCode, message) => {
+	var payload = {
+		status: {
+			code: 'internal-server-error',
+			message: 'An unexpected error was encountered while attempting to service your request.',
+		},
+		response: {},
+	};
+
+	// Need to turn all these into translation strings
+	switch (statusCode) {
+	case 400:
+		payload.status.code = 'bad-request';
+		payload.status.message = message || 'Something was wrong with the request payload you passed in.';
+		break;
+
+	case 401:
+		payload.status.code = 'not-authorised';
+		payload.status.message = 'A valid login session was not found. Please log in and try again.';
+		break;
+
+	case 403:
+		payload.status.code = 'forbidden';
+		payload.status.message = 'You are not authorised to make this call';
+		break;
+
+	case 404:
+		payload.status.code = 'not-found';
+		payload.status.message = 'Invalid API call';
+		break;
+
+	case 426:
+		payload.status.code = 'upgrade-required';
+		payload.status.message = 'HTTPS is required for requests to the write api, please re-send your request via HTTPS';
+		break;
+
+	case 500:
+		payload.status.code = 'internal-server-error';
+		payload.status.message = message || payload.status.message;
+	}
+
+	return payload;
 };
 
 require('../promisify')(helpers);
