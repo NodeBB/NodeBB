@@ -353,16 +353,15 @@ define('admin/manage/users', ['translator', 'benchpress', 'autocomplete'], funct
 				password: password,
 			};
 
-			socket.emit('admin.user.createUser', user, function (err) {
-				if (err) {
-					return errorEl.translateHtml('[[admin/manage/users:alerts.error-x, ' + err.message + ']]').removeClass('hide');
-				}
-
+			$.post(config.relative_path + '/api/v1/users', user).done(function () {
 				modal.modal('hide');
 				modal.on('hidden.bs.modal', function () {
 					ajaxify.refresh();
 				});
 				app.alertSuccess('[[admin/manage/users:alerts.create-success]]');
+			}).fail(function () {
+				console.log(arguments);
+				// return errorEl.translateHtml('[[admin/manage/users:alerts.error-x, ' + err.message + ']]').removeClass('hide');
 			});
 		}
 
