@@ -1,4 +1,4 @@
-<div class="alert alert-danger hide" id="create-modal-error"></div>
+<div class="alert alert-danger d-none" id="create-modal-error"></div>
 <form>
 	<div class="form-group">
 		<label for="group-name">[[admin/manage/users:create.username]]</label>
