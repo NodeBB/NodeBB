@@ -16,8 +16,12 @@ module.exports = function () {
 	var app = require('express').Router();
 
 	app.post('/', middleware.checkRequired.bind(null, ['username']), middleware.authenticate, middleware.isAdmin, async (req, res) => {
-		const uid = await users.create(req.body);
-		helpers.formatApiResponse(200, res, await users.getUserData(uid));
+		try {
+			const uid = await users.create(req.body);
+			helpers.formatApiResponse(200, res, await users.getUserData(uid));
+		} catch (err) {
+			helpers.formatApiResponse(400, res, err);
+		}
 	});
 
 	// 	app.route('/:uid')
