@@ -38,6 +38,8 @@ Controllers['404'] = require('./404');
 Controllers.errors = require('./errors');
 Controllers.composer = require('./composer');
 
+Controllers.write = require('./write');
+
 Controllers.reset = function (req, res, next) {
 	if (meta.config['password:disableEdit']) {
 		return helpers.notAllowed(req, res);

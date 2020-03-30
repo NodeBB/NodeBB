@@ -1,9 +1,8 @@
 'use strict';
 
-const users = require('../../user');
-
 const middleware = require('../../middleware');
-const helpers = require('../../controllers/helpers');
+const controllers = require('../../controllers');
+const routeHelpers = require('../../routes/helpers');
 // 	Messaging = require.main.require('./src/messaging'),
 // 	apiMiddleware = require('./middleware'),
 // 	errorHandler = require('../../lib/errorHandler'),
@@ -13,16 +12,10 @@ const helpers = require('../../controllers/helpers');
 
 
 module.exports = function () {
-	var app = require('express').Router();
+	const router = require('express').Router();
+	const setupApiRoute = routeHelpers.setupApiRoute;
 
-	app.post('/', middleware.checkRequired.bind(null, ['username']), middleware.authenticate, middleware.isAdmin, async (req, res) => {
-		try {
-			const uid = await users.create(req.body);
-			helpers.formatApiResponse(200, res, await users.getUserData(uid));
-		} catch (err) {
-			helpers.formatApiResponse(400, res, err);
-		}
-	});
+	setupApiRoute(router, '/', middleware, [middleware.checkRequired.bind(null, ['username']), middleware.isAdmin], 'post', controllers.write.users.create);
 
 	// 	app.route('/:uid')
 	// 		.put(apiMiddleware.requireUser, apiMiddleware.exposeAdmin, function(req, res) {
@@ -170,5 +163,5 @@ module.exports = function () {
 	// 		});
 	// 	});
 
-	return app;
+	return router;
 };
