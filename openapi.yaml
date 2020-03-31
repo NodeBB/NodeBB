@@ -75,6 +75,8 @@ paths:
                 uids:
                   type: array
                   description: A collection of uids
+                  items:
+                    type: number
             example:
               uids:
                 - 1
