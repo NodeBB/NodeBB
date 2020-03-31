@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
-  description: Standard, out-of-the-box read & write API for NodeBB v2.0+
-  version: "1.0.0"
+  description: 'Standard, out-of-the-box read & write API for NodeBB v2.0+'
+  version: 31-03-2020
   title: Read/Write API
   contact:
     email: support@nodebb.org
@@ -9,80 +9,14 @@ info:
     name: MIT
     url: 'https://opensource.org/licenses/MIT'
 tags:
-  # - name: admins
-  #   description: Secured Admin-only calls
-  # - name: developers
-  #   description: Operations available to regular developers
   - name: users
-    description: Account related calls (create, modify, delete, etc.)
+    description: 'Account related calls (create, modify, delete, etc.)'
 paths:
-  # /inventory:
-  #   get:
-  #     tags:
-  #       - developers
-  #     summary: searches inventory
-  #     operationId: searchInventory
-  #     description: |
-  #       By passing in the appropriate options, you can search for
-  #       available inventory in the system
-  #     parameters:
-  #       - in: query
-  #         name: searchString
-  #         description: pass an optional search string for looking up inventory
-  #         required: false
-  #         schema:
-  #           type: string
-  #       - in: query
-  #         name: skip
-  #         description: number of records to skip for pagination
-  #         schema:
-  #           type: integer
-  #           format: int32
-  #           minimum: 0
-  #       - in: query
-  #         name: limit
-  #         description: maximum number of records to return
-  #         schema:
-  #           type: integer
-  #           format: int32
-  #           minimum: 0
-  #           maximum: 50
-  #     responses:
-  #       '200':
-  #         description: search results matching criteria
-  #         content:
-  #           application/json:
-  #             schema:
-  #               type: array
-  #               items:
-  #                 $ref: '#/components/schemas/InventoryItem'
-  #       '400':
-  #         description: bad input parameter
-  #   post:
-  #     tags:
-  #       - admins
-  #     summary: adds an inventory item
-  #     operationId: addInventory
-  #     description: Adds an item to the system
-  #     responses:
-  #       '201':
-  #         description: item created
-  #       '400':
-  #         description: 'invalid input, object invalid'
-  #       '409':
-  #         description: an existing item already exists
-  #     requestBody:
-  #       content:
-  #         application/json:
-  #           schema:
-  #             $ref: '#/components/schemas/InventoryItem'
-  #       description: Inventory item to add
   /:
     post:
       tags:
         - users
       summary: creates a user account
-      operationId: createUser
       description: This operation creates a new user account
       requestBody:
         required: true
@@ -93,7 +27,7 @@ paths:
               properties:
                 username:
                   type: string
-                  description: If the username is taken, a number will be appended
+                  description: 'If the username is taken, a number will be appended'
                 password:
                   type: string
                 email:
@@ -110,46 +44,144 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    $ref: '#/components/schemas/UserObj'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '426':
+          $ref: '#/components/responses/426'
+        '500':
+          $ref: '#/components/responses/500'
+    delete:
+      tags:
+        - users
+      summary: deletes one or more users
+      description: This operation deletes one or many user accounts, including their contributions (posts, topics, etc.)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uids:
+                  type: array
+                  description: A collection of uids
+            example:
+              uids:
+                - 1
+                - 2
+                - 3
+      responses:
+        '200':
+          description: user account(s) deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
+  '/{uid}':
+    put:
+      tags:
+        - users
+      summary: updates a user account
+      parameters:
+        - in: path
+          name: uid
+          schema:
+            type: integer
+          required: true
+          description: uid of the user to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '200':
+          description: user profile updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    $ref: '#/components/schemas/UserObj'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '426':
+          $ref: '#/components/responses/426'
+        '500':
+          $ref: '#/components/responses/500'
+    delete:
+      tags:
+        - users
+      summary: delete a single user account
+      parameters:
+        - in: path
+          name: uid
+          schema:
+            type: integer
+          required: true
+          description: uid of the user to delete
+      responses:
+        '200':
+          description: user account deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
 components:
   schemas:
-    # InventoryItem:
-    #   type: object
-    #   required:
-    #     - id
-    #     - name
-    #     - manufacturer
-    #     - releaseDate
-    #   properties:
-    #     id:
-    #       type: string
-    #       format: uuid
-    #       example: d290f1ee-6c54-4b01-90e6-d701748f0851
-    #     name:
-    #       type: string
-    #       example: Widget Adapter
-    #     releaseDate:
-    #       type: string
-    #       format: date-time
-    #       example: '2016-08-29T09:12:33.001Z'
-    #     manufacturer:
-    #       $ref: '#/components/schemas/Manufacturer'
-    # Manufacturer:
-    #   required:
-    #     - name
-    #   properties:
-    #     name:
-    #       type: string
-    #       example: ACME Corporation
-    #     homePage:
-    #       type: string
-    #       format: url
-    #       example: 'https://www.acme-corp.com'
-    #     phone:
-    #       type: string
-    #       example: 408-867-5309
-    #   type: object
-    User:
+    Status:
+      type: object
+      properties:
+        code:
+          allOf:
+            - title: Success
+              type: string
+              example: ok
+            - title: Error
+              type: string
+              example: error
+        message:
+          type: string
+          example: OK
+    Error:
+      type: object
+      properties:
+        status:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+        response:
+          type: object
+    UserObj:
       properties:
         uid:
           type: number
@@ -163,7 +195,7 @@ components:
         email:
           type: string
           example: dragonfruit@example.org
-        email:confirmed:
+        'email:confirmed':
           type: number
           example: 1
         joindate:
@@ -174,20 +206,20 @@ components:
           example: 1585337827953
         picture:
           type: string
-          example: https://images.unsplash.com/photo-1560070094-e1f2ddec4337?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=256&h=256&q=80
+          example: 'https://images.unsplash.com/photo-1560070094-e1f2ddec4337?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=256&h=256&q=80'
         fullname:
           type: string
           example: Mr. Dragon Fruit Jr.
         location:
           type: string
-          example: Toronto, Canada
+          example: 'Toronto, Canada'
         birthday:
           type: string
           description: A birthdate given in an ISO format parseable by the Date object
           example: 03/27/2020
         website:
           type: string
-          example: https://example.org
+          example: 'https://example.org'
         aboutme:
           type: string
           example: |
@@ -202,7 +234,7 @@ components:
         uploadedpicture:
           type: string
           example: /assets/profile/1-profileimg.png
-          description: In almost all cases, defer to "picture" instead. Use this if you need to specifically reference the picture uploaded to the forum.
+          description: 'In almost all cases, defer to "picture" instead. Use this if you need to specifically reference the picture uploaded to the forum.'
         profileviews:
           type: number
           example: 1000
@@ -221,7 +253,7 @@ components:
         banned:
           type: number
           example: 0
-        banned:expire:
+        'banned:expire':
           type: number
           example: 1585337827953
         status:
@@ -236,35 +268,107 @@ components:
         followingcount:
           type: number
           example: 5
-        cover:url:
+        'cover:url':
           type: string
           example: /assets/profile/1-cover.png
-        cover:position:
+        'cover:position':
           type: string
           example: 50.0301% 19.2464%
         groupTitle:
           type: string
-          example: "[\"administrators\",\"Staff\"]"
+          example: '["administrators","Staff"]'
         groupTitleArray:
           type: array
           example:
             - administrators
             - Staff
-        icon:text:
+        'icon:text':
           type: string
           example: D
-        icon:bgColor:
+        'icon:bgColor':
           type: string
-          example: "#9c27b0"
+          example: '#9c27b0'
         joindateISO:
           type: string
-          example: 2020-03-27T20:30:36.590Z
+          example: '2020-03-27T20:30:36.590Z'
         lastonlineISO:
           type: string
-          example: 2020-03-27T20:30:36.590Z
+          example: '2020-03-27T20:30:36.590Z'
         banned_until:
           type: number
           example: 0
         banned_until_readable:
           type: string
           example: Not Banned
+    UserRequest:
+      properties:
+        username:
+          type: string
+          example: Dragon Fruit
+        email:
+          type: string
+          example: dragonfruit@example.org
+        fullname:
+          type: string
+          example: Mr. Dragon Fruit Jr.
+        website:
+          type: string
+          example: 'https://example.org'
+        location:
+          type: string
+          example: 'Toronto, Canada'
+        groupTitle:
+          type: string
+          example: '["administrators","Staff"]'
+        birthday:
+          type: string
+          description: A birthdate given in an ISO format parseable by the Date object
+          example: 03/27/2020
+        signature:
+          type: string
+          example: |
+            This is an example signature
+            It can span multiple lines.
+        aboutme:
+          type: string
+          example: |
+            This is a paragraph all about how my life got twist-turned upside-down
+            and I'd like to take a minute and sit right here,
+            to tell you all about how I because the administrator of NodeBB
+  responses:
+    '400':
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    '401':
+      description: Not Authorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    '403':
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    '404':
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    '426':
+      description: Upgrade Required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    '500':
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'

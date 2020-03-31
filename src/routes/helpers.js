@@ -1,6 +1,7 @@
 'use strict';
 
-var helpers = module.exports;
+const helpers = module.exports;
+const controllerHelpers = require('../controllers/helpers');
 
 helpers.setupPageRoute = function (router, name, middleware, middlewares, controller) {
 	middlewares = [middleware.maintenanceMode, middleware.registrationComplete, middleware.pageView, middleware.pluginHooks].concat(middlewares);
@@ -15,8 +16,8 @@ helpers.setupAdminPageRoute = function (router, name, middleware, middlewares, c
 };
 
 helpers.setupApiRoute = function (router, name, middleware, middlewares, verb, controller) {
-	router[verb](name, middleware.authenticate, middlewares, helpers.tryRoute(controller, (err, res) => {
-		helpers.formatApiResponse(400, res, err);
+	router[verb](name, middlewares, helpers.tryRoute(controller, (err, res) => {
+		controllerHelpers.formatApiResponse(400, res, err);
 	}));
 };
 

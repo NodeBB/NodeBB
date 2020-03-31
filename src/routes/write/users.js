@@ -1,8 +1,11 @@
 'use strict';
 
+const router = require('express').Router();
 const middleware = require('../../middleware');
 const controllers = require('../../controllers');
-const routeHelpers = require('../../routes/helpers');
+const routeHelpers = require('../helpers');
+
+const setupApiRoute = routeHelpers.setupApiRoute;
 // 	Messaging = require.main.require('./src/messaging'),
 // 	apiMiddleware = require('./middleware'),
 // 	errorHandler = require('../../lib/errorHandler'),
@@ -10,26 +13,20 @@ const routeHelpers = require('../../routes/helpers');
 // 	utils = require('./utils'),
 // 	async = require.main.require('async');
 
+// eslint-disable-next-line no-unused-vars
+function guestRoutes() {
+	// like registration, login...
+}
 
-module.exports = function () {
-	const router = require('express').Router();
-	const setupApiRoute = routeHelpers.setupApiRoute;
+function authenticatedRoutes() {
+	const middlewares = [middleware.authenticate];
 
-	setupApiRoute(router, '/', middleware, [middleware.checkRequired.bind(null, ['username']), middleware.isAdmin], 'post', controllers.write.users.create);
+	setupApiRoute(router, '/', middleware, [...middlewares, middleware.checkRequired.bind(null, ['username']), middleware.isAdmin], 'post', controllers.write.users.create);
+	setupApiRoute(router, '/', middleware, [...middlewares, middleware.checkRequired.bind(null, ['uids']), middleware.isAdmin, middleware.exposePrivileges], 'delete', controllers.write.users.deleteMany);
+	setupApiRoute(router, '/:uid', middleware, [...middlewares], 'put', controllers.write.users.update);
+	setupApiRoute(router, '/:uid', middleware, [...middlewares, middleware.exposePrivileges], 'delete', controllers.write.users.delete);
 
 	// 	app.route('/:uid')
-	// 		.put(apiMiddleware.requireUser, apiMiddleware.exposeAdmin, function(req, res) {
-	// 			if (parseInt(req.params.uid, 10) !== parseInt(req.user.uid, 10) && !res.locals.isAdmin) {
-	// 				return errorHandler.respond(401, res);
-	// 			}
-
-	// 			// `uid` in `updateProfile` refers to calling user, not target user
-	// 			req.body.uid = req.params.uid;
-
-	// 			Users.updateProfile(req.user.uid, req.body, function(err) {
-	// 				return errorHandler.handle(err, res);
-	// 			});
-	// 		})
 	// 		.delete(apiMiddleware.requireUser, apiMiddleware.exposeAdmin, function(req, res) {
 	// 			if (parseInt(req.params.uid, 10) !== parseInt(req.user.uid, 10) && !res.locals.isAdmin) {
 	// 				return errorHandler.respond(401, res);
@@ -162,6 +159,10 @@ module.exports = function () {
 	// 			errorHandler.handle(err, res);
 	// 		});
 	// 	});
+}
+
+module.exports = function () {
+	authenticatedRoutes();
 
 	return router;
 };
