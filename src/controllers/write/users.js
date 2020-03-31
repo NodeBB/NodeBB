@@ -106,3 +106,16 @@ async function processDeletion(uid, req, res) {
 		email: userData.email,
 	});
 }
+
+Users.changePassword = async (req, res) => {
+	req.body.uid = req.params.uid;
+	await user.changePassword(req.user.uid, Object.assign(req.body, { ip: req.ip }));
+	await events.log({
+		type: 'password-change',
+		uid: req.user.uid,
+		targetUid: req.params.uid,
+		ip: req.ip,
+	});
+
+	helpers.formatApiResponse(200, res);
+};

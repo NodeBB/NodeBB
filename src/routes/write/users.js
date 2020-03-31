@@ -23,42 +23,11 @@ function authenticatedRoutes() {
 
 	setupApiRoute(router, '/', middleware, [...middlewares, middleware.checkRequired.bind(null, ['username']), middleware.isAdmin], 'post', controllers.write.users.create);
 	setupApiRoute(router, '/', middleware, [...middlewares, middleware.checkRequired.bind(null, ['uids']), middleware.isAdmin, middleware.exposePrivileges], 'delete', controllers.write.users.deleteMany);
+
 	setupApiRoute(router, '/:uid', middleware, [...middlewares], 'put', controllers.write.users.update);
 	setupApiRoute(router, '/:uid', middleware, [...middlewares, middleware.exposePrivileges], 'delete', controllers.write.users.delete);
 
-	// 	app.route('/:uid')
-	// 		.delete(apiMiddleware.requireUser, apiMiddleware.exposeAdmin, function(req, res) {
-	// 			if (parseInt(req.params.uid, 10) !== parseInt(req.user.uid, 10) && !res.locals.isAdmin) {
-	// 				return errorHandler.respond(401, res);
-	// 			}
-
-	// 			// Clear out any user tokens belonging to the to-be-deleted user
-	// 			async.waterfall([
-	// 				async.apply(auth.getTokens, req.params.uid),
-	// 				function(tokens, next) {
-	// 					async.each(tokens, function(token, next) {
-	// 						auth.revokeToken(token, 'user', next);
-	// 					}, next);
-	// 				},
-	// 				async.apply(Users.delete, req.user.uid, req.params.uid)
-	// 			], function(err) {
-	// 				return errorHandler.handle(err, res);
-	// 			});
-	// 		});
-
-	// 	app.put('/:uid/password', apiMiddleware.requireUser, apiMiddleware.exposeAdmin, function(req, res) {
-	// 		if (parseInt(req.params.uid, 10) !== parseInt(req.user.uid, 10) && !res.locals.isAdmin) {
-	// 			return errorHandler.respond(401, res);
-	// 		}
-
-	// 		Users.changePassword(req.user.uid, {
-	// 			uid: req.params.uid,
-	// 			currentPassword: req.body.current || '',
-	// 			newPassword: req.body['new'] || ''
-	// 		}, function(err) {
-	// 			errorHandler.handle(err, res);
-	// 		});
-	// 	});
+	setupApiRoute(router, '/:uid/password', middleware, [...middlewares, middleware.checkRequired.bind(null, ['newPassword'])], 'put', controllers.write.users.changePassword);
 
 	// 	app.put('/:uid/follow', apiMiddleware.requireUser, function(req, res) {
 	// 		Users.follow(req.user.uid, req.params.uid, function(err) {
