@@ -67,11 +67,22 @@ define('forum/account/edit/password', ['forum/account/header', 'translator', 'zx
 			var btn = $(this);
 			if (passwordvalid && passwordsmatch) {
 				btn.addClass('disabled').find('i').removeClass('hide');
-				socket.emit('user.changePassword', {
-					currentPassword: currentPassword.val(),
-					newPassword: password.val(),
-					uid: ajaxify.data.theirid,
-				}, function (err) {
+				$.ajax({
+					url: config.relative_path + '/api/v1/users/' + ajaxify.data.theirid + '/password',
+					method: 'put',
+					data: {
+						currentPassword: currentPassword.val(),
+						newPassword: password.val(),
+					},
+				}).done(function () {
+					if (parseInt(app.user.uid, 10) === parseInt(ajaxify.data.uid, 10)) {
+						window.location.href = config.relative_path + '/login';
+					} else {
+						ajaxify.go('user/' + ajaxify.data.userslug + '/edit');
+					}
+				}).fail(function (ev) {
+					app.alertError(ev.responseJSON.status.message);
+				}).always(function () {
 					btn.removeClass('disabled').find('i').addClass('hide');
 					currentPassword.val('');
 					password.val('');
@@ -80,15 +91,6 @@ define('forum/account/edit/password', ['forum/account/header', 'translator', 'zx
 					password_confirm_notify.parent().removeClass('show-success show-danger');
 					passwordsmatch = false;
 					passwordvalid = false;
-
-					if (err) {
-						return app.alertError(err.message);
-					}
-					if (parseInt(app.user.uid, 10) === parseInt(ajaxify.data.uid, 10)) {
-						window.location.href = config.relative_path + '/login';
-					} else {
-						ajaxify.go('user/' + ajaxify.data.userslug + '/edit');
-					}
 				});
 			} else {
 				if (!passwordsmatch) {

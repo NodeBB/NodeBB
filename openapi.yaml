@@ -155,6 +155,46 @@ paths:
                     $ref: '#/components/schemas/Status'
                   response:
                     type: object
+  '/{uid}/password':
+    put:
+      tags:
+        - users
+      summary: changes a user's password
+      parameters:
+        - in: path
+          name: uid
+          schema:
+            type: integer
+          required: true
+          description: uid of the user to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currentPassword:
+                  type: string
+                  description: test
+                  example: oldp455word
+                newPassword:
+                  type: string
+                  example: s3cre7password
+              required:
+                - newPassword
+      responses:
+        '200':
+          description: user profile updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
 components:
   schemas:
     Status:

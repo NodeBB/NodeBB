@@ -78,6 +78,8 @@ module.exports = function (SocketUser) {
 	}
 
 	SocketUser.changePassword = async function (socket, data) {
+		sockets.warnDeprecated(socket, 'PUT /api/v1/users/:uid/password');
+
 		if (!socket.uid) {
 			throw new Error('[[error:invalid-uid]]');
 		}
