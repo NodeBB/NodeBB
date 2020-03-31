@@ -349,12 +349,16 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 			response: payload || {},
 		});
 	} else if (payload instanceof Error) {
+		let message = '';
 		if (isLanguageKey.test(payload.message)) {
-			const translated = await translator.translate(payload.message, 'en-GB');
-			res.status(statusCode).json(helpers.generateError(statusCode, translated));
+			message = await translator.translate(payload.message, 'en-GB');
 		} else {
-			res.status(statusCode).json(helpers.generateError(statusCode, payload.message));
+			message = payload.message;
 		}
+
+		const returnPayload = helpers.generateError(statusCode, message);
+		returnPayload.stack = payload.stack;
+		res.status(statusCode).json(returnPayload);
 	} else if (!payload) {
 		// Non-2xx statusCode, generate predefined error
 		res.status(statusCode).json(helpers.generateError(statusCode));

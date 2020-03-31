@@ -1,11 +1,108 @@
 'use strict';
 
-const users = require('../../user');
+const user = require('../../user');
+const groups = require('../../groups');
+const privileges = require('../../privileges');
+const meta = require('../../meta');
+const events = require('../../events');
 const helpers = require('../helpers');
 
 const Users = module.exports;
 
 Users.create = async (req, res) => {
-	const uid = await users.create(req.body);
-	helpers.formatApiResponse(200, res, await users.getUserData(uid));
+	const uid = await user.create(req.body);
+	helpers.formatApiResponse(200, res, await user.getUserData(uid));
 };
+
+Users.update = async (req, res) => {
+	const oldUserData = await user.getUserFields(req.params.uid, ['email', 'username']);
+	if (!oldUserData || !oldUserData.username) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	const [isAdminOrGlobalMod, canEdit, passwordMatch] = await Promise.all([
+		user.isAdminOrGlobalMod(req.user.uid),
+		privileges.users.canEdit(req.user.uid, req.params.uid),
+		user.isPasswordCorrect(req.body.uid, req.body.password, req.ip),
+	]);
+
+	// Changing own email/username requires password confirmation
+	if (req.user.uid === req.body.uid && !passwordMatch) {
+		helpers.formatApiResponse(403, res, new Error('[[error:invalid-password]]'));
+	}
+
+	if (!canEdit) {
+		helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
+	}
+
+	if (!isAdminOrGlobalMod && meta.config['username:disableEdit']) {
+		req.body.username = oldUserData.username;
+	}
+
+	if (!isAdminOrGlobalMod && meta.config['email:disableEdit']) {
+		req.body.email = oldUserData.email;
+	}
+
+	req.body.uid = req.params.uid;	// The `uid` argument in `updateProfile` refers to calling user, not target user
+	await user.updateProfile(req.user.uid, req.body);
+	const userData = await user.getUserData(req.body.uid);
+
+	async function log(type, eventData) {
+		eventData.type = type;
+		eventData.uid = req.user.uid;
+		eventData.targetUid = req.params.uid;
+		eventData.ip = req.ip;
+		await events.log(eventData);
+	}
+
+	if (userData.email !== oldUserData.email) {
+		await log('email-change', { oldEmail: oldUserData.email, newEmail: userData.email });
+	}
+
+	if (userData.username !== oldUserData.username) {
+		await log('username-change', { oldUsername: oldUserData.username, newUsername: userData.username });
+	}
+
+	helpers.formatApiResponse(200, res, userData);
+};
+
+Users.delete = async (req, res) => {
+	processDeletion(req.params.uid, req, res);
+	helpers.formatApiResponse(200, res);
+};
+
+Users.deleteMany = async (req, res) => {
+	await canDeleteUids(req.body.uids, res);
+	await Promise.all(req.body.uids.map(uid => processDeletion(uid, req, res)));
+	helpers.formatApiResponse(200, res);
+};
+
+async function canDeleteUids(uids, res) {
+	if (!Array.isArray(uids)) {
+		helpers.formatApiResponse(400, res, new Error('[[error:invalid-data]]'));
+	}
+	const isMembers = await groups.isMembers(uids, 'administrators');
+	if (isMembers.includes(true)) {
+		helpers.formatApiResponse(403, res, new Error('[[error:cant-delete-other-admins]]'));
+	}
+}
+
+async function processDeletion(uid, req, res) {
+	const isTargetAdmin = await user.isAdministrator(uid);
+	if (!res.locals.privileges.isSelf && !res.locals.privileges.isAdmin) {
+		return helpers.formatApiResponse(403, res);
+	} else if (!res.locals.privileges.isSelf && isTargetAdmin) {
+		return helpers.formatApiResponse(403, res, new Error('[[error:cant-delete-other-admins]]'));
+	}
+
+	// TODO: clear user tokens for this uid
+	const userData = await user.delete(req.user.uid, uid);
+	await events.log({
+		type: 'user-delete',
+		uid: req.user.uid,
+		targetUid: uid,
+		ip: req.ip,
+		username: userData.username,
+		email: userData.email,
+	});
+}

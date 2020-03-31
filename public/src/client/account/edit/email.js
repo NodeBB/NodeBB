@@ -27,13 +27,15 @@ define('forum/account/edit/email', ['forum/account/header'], function (header) {
 			var btn = $(this);
 			btn.addClass('disabled').find('i').removeClass('hide');
 
-			socket.emit('user.changeUsernameEmail', userData, function (err) {
+			$.ajax({
+				url: config.relative_path + '/api/v1/users/' + userData.uid,
+				data: userData,
+				method: 'put',
+			}).done(function (res) {
 				btn.removeClass('disabled').find('i').addClass('hide');
-				if (err) {
-					return app.alertError(err.message);
-				}
-
-				ajaxify.go('user/' + ajaxify.data.userslug + '/edit');
+				ajaxify.go('user/' + res.response.userslug + '/edit');
+			}).fail(function (ev) {
+				app.alertError(ev.responseJSON.status.message);
 			});
 
 			return false;
