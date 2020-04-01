@@ -115,17 +115,18 @@ define('forum/account/header', [
 	}
 
 	function toggleFollow(type) {
-		socket.emit('user.' + type, {
-			uid: ajaxify.data.uid,
-		}, function (err) {
-			if (err) {
-				return app.alertError(err.message);
-			}
-
+		$.ajax({
+			url: config.relative_path + '/api/v1/users/' + ajaxify.data.uid + '/' + type,
+			method: type === 'follow' ? 'post' : 'delete',
+		}).done(function () {
 			components.get('account/follow').toggleClass('hide', type === 'follow');
 			components.get('account/unfollow').toggleClass('hide', type === 'unfollow');
 			app.alertSuccess('[[global:alert.' + type + ', ' + ajaxify.data.username + ']]');
+		}).fail(function (ev) {
+			console.log(ev);
+			app.alertError(ev.responseJSON.status.message);
 		});
+
 		return false;
 	}
 
