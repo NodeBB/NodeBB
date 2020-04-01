@@ -116,7 +116,7 @@ define('forum/account/header', [
 
 	function toggleFollow(type) {
 		$.ajax({
-			url: config.relative_path + '/api/v1/users/' + ajaxify.data.uid + '/' + type,
+			url: config.relative_path + '/api/v1/users/' + ajaxify.data.uid + '/follow',
 			method: type === 'follow' ? 'post' : 'delete',
 		}).done(function () {
 			components.get('account/follow').toggleClass('hide', type === 'follow');

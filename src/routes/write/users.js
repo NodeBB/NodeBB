@@ -30,7 +30,7 @@ function authenticatedRoutes() {
 	setupApiRoute(router, '/:uid/password', middleware, [...middlewares, middleware.checkRequired.bind(null, ['newPassword'])], 'put', controllers.write.users.changePassword);
 
 	setupApiRoute(router, '/:uid/follow', middleware, [...middlewares], 'post', controllers.write.users.follow);
-	setupApiRoute(router, '/:uid/unfollow', middleware, [...middlewares], 'delete', controllers.write.users.unfollow);
+	setupApiRoute(router, '/:uid/follow', middleware, [...middlewares], 'delete', controllers.write.users.unfollow);
 
 	// 	app.put('/:uid/follow', apiMiddleware.requireUser, function(req, res) {
 	// 		Users.follow(req.user.uid, req.params.uid, function(err) {
