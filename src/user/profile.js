@@ -301,6 +301,6 @@ module.exports = function (User) {
 			User.auth.revokeAllSessions(data.uid),
 		]);
 
-		plugins.fireHook('action:password.change', { uid: uid });
+		plugins.fireHook('action:password.change', { uid: uid, targetUid: data.uid });
 	};
 };
