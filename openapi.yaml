@@ -195,6 +195,53 @@ paths:
                     $ref: '#/components/schemas/Status'
                   response:
                     type: object
+  '/{uid}/follow':
+    post:
+      tags:
+        - users
+      summary: follows a user
+      parameters:
+        - in: path
+          name: uid
+          schema:
+            type: integer
+          required: true
+          description: uid of the user to follow
+      responses:
+        '200':
+          description: successfully followed user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
+    delete:
+      tags:
+        - users
+      summary: unfollows a user
+      parameters:
+        - in: path
+          name: uid
+          schema:
+            type: integer
+          required: true
+          description: uid of the user to unfollow
+      responses:
+        '200':
+          description: successfully unfollowed user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
 components:
   schemas:
     Status:
