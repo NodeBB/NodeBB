@@ -1,6 +1,7 @@
 'use strict';
 
 const validator = require('validator');
+const nconf = require('nconf');
 
 const meta = require('../meta');
 const groups = require('../groups');
@@ -29,6 +30,14 @@ groupsController.list = async function (req, res) {
 };
 
 groupsController.details = async function (req, res, next) {
+	const lowercaseSlug = req.params.slug.toLowerCase();
+	if (req.params.slug !== lowercaseSlug) {
+		if (res.locals.isAPI) {
+			req.params.slug = lowercaseSlug;
+		} else {
+			return res.redirect(nconf.get('relative_path') + '/groups/' + lowercaseSlug);
+		}
+	}
 	const groupName = await groups.getGroupNameByGroupSlug(req.params.slug);
 	if (!groupName) {
 		return next();
