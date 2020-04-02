@@ -113,8 +113,8 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID) {
 	userData['cover:position'] = validator.escape(String(userData['cover:position'] || '50% 50%'));
 	userData['username:disableEdit'] = !userData.isAdmin && meta.config['username:disableEdit'];
 	userData['email:disableEdit'] = !userData.isAdmin && meta.config['email:disableEdit'];
-
-	return userData;
+	const hookData = await plugins.fireHook('filters:helpers.getUserDataByUserSlug', { userData: userData, callerUID: callerUID });
+	return hookData.userData;
 };
 
 async function getAllData(uid, callerUID) {
