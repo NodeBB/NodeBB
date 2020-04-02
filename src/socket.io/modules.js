@@ -8,7 +8,7 @@ const notifications = require('../notifications');
 const plugins = require('../plugins');
 const Messaging = require('../messaging');
 const utils = require('../utils');
-const server = require('./');
+const server = require('./index');
 const user = require('../user');
 const privileges = require('../privileges');
 
