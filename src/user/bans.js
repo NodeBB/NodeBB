@@ -1,5 +1,10 @@
 'use strict';
 
+const winston = require('winston');
+
+const meta = require('../meta');
+const utils = require('../utils');
+const emailer = require('../emailer');
 const db = require('../database');
 
 module.exports = function (User) {
@@ -38,6 +43,22 @@ module.exports = function (User) {
 		} else {
 			await db.sortedSetRemove('users:banned:expire', uid);
 		}
+
+		// Email notification of ban
+		const username = await User.getUserField(uid, 'username');
+		const siteTitle = meta.config.title || 'NodeBB';
+		const data = {
+			subject: '[[email:banned.subject, ' + siteTitle + ']]',
+			username: username,
+			until: until ? utils.toISOString(until) : false,
+			reason: reason,
+		};
+		try {
+			await emailer.send('banned', uid, data);
+		} catch (err) {
+			winston.error('[emailer.send] ' + err.message);
+		}
+
 		return banData;
 	};
 

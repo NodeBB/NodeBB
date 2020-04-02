@@ -44,6 +44,7 @@ define('admin/manage/users', ['translator', 'benchpress', 'autocomplete'], funct
 			$('.users-table [component="user/select/single"]:checked').parents('.user-row').remove();
 		}
 
+		// use onSuccess/onFail instead
 		function done(successMessage, className, flag) {
 			return function (err) {
 				if (err) {
@@ -55,6 +56,18 @@ define('admin/manage/users', ['translator', 'benchpress', 'autocomplete'], funct
 				}
 				unselectAll();
 			};
+		}
+
+		function onSuccess(successMessage, className, flag) {
+			app.alertSuccess(successMessage);
+			if (className) {
+				update(className, flag);
+			}
+			unselectAll();
+		}
+
+		function onFail(err) {
+			app.alertError(err.message);
 		}
 
 		$('[component="user/select/all"]').on('click', function () {
@@ -119,7 +132,20 @@ define('admin/manage/users', ['translator', 'benchpress', 'autocomplete'], funct
 
 			bootbox.confirm((uids.length > 1 ? '[[admin/manage/users:alerts.confirm-ban-multi]]' : '[[admin/manage/users:alerts.confirm-ban]]'), function (confirm) {
 				if (confirm) {
-					socket.emit('user.banUsers', { uids: uids, reason: '' }, done('[[admin/manage/users:alerts.ban-success]]', '.ban', true));
+					var requests = uids.map(function (uid) {
+						return $.ajax({
+							url: config.relative_path + '/api/v1/users/' + uid + '/ban',
+							method: 'put',
+						});
+					});
+
+					$.when(requests)
+						.done(function () {
+							onSuccess('[[admin/manage/users:alerts.ban-success]]', '.ban', true);
+						})
+						.fail(function (ev) {
+							onFail(ev.responseJSON.status);
+						});
 				}
 			});
 		});
@@ -150,7 +176,24 @@ define('admin/manage/users', ['translator', 'benchpress', 'autocomplete'], funct
 									return data;
 								}, {});
 								var until = formData.length > 0 ? (Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))) : 0;
-								socket.emit('user.banUsers', { uids: uids, until: until, reason: formData.reason }, done('[[admin/manage/users:alerts.ban-success]]', '.ban', true));
+
+								var requests = uids.map(function (uid) {
+									return $.ajax({
+										url: config.relative_path + '/api/v1/users/' + uid + '/ban',
+										method: 'put',
+										data: {
+											until: until,
+											reason: formData.reason,
+										},
+									});
+								});
+
+								$.when(requests)
+									.done(function () {
+										onSuccess('[[admin/manage/users:alerts.ban-success]]', '.ban', true);
+									}).fail(function (ev) {
+										onFail(ev.responseJSON.status);
+									});
 							},
 						},
 					},
@@ -165,7 +208,19 @@ define('admin/manage/users', ['translator', 'benchpress', 'autocomplete'], funct
 				return false;	// specifically to keep the menu open
 			}
 
-			socket.emit('user.unbanUsers', uids, done('[[admin/manage/users:alerts.unban-success]]', '.ban', false));
+			var requests = uids.map(function (uid) {
+				return $.ajax({
+					url: config.relative_path + '/api/v1/users/' + uid + '/ban',
+					method: 'delete',
+				});
+			});
+
+			$.when(requests)
+				.done(function () {
+					onSuccess('[[admin/manage/users:alerts.unban-success]]', '.ban', false);
+				}).fail(function (ev) {
+					onFail(ev.responseJSON.status);
+				});
 		});
 
 		$('.reset-lockout').on('click', function () {
