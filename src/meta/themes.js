@@ -14,7 +14,7 @@ const fsReadfile = util.promisify(fs.readFile);
 
 const file = require('../file');
 const db = require('../database');
-const Meta = require('../meta');
+const Meta = require('./index');
 const events = require('../events');
 const utils = require('../../public/src/utils');
 

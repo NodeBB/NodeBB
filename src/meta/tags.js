@@ -4,7 +4,7 @@ const nconf = require('nconf');
 const winston = require('winston');
 
 const plugins = require('../plugins');
-const Meta = require('../meta');
+const Meta = require('./index');
 const utils = require('../utils');
 
 const Tags = module.exports;

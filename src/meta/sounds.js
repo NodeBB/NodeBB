@@ -15,7 +15,7 @@ const writeFileAsync = util.promisify(fs.writeFile);
 const file = require('../file');
 const plugins = require('../plugins');
 const user = require('../user');
-const Meta = require('../meta');
+const Meta = require('./index');
 
 const soundsPath = path.join(__dirname, '../../build/public/sounds');
 const uploadsPath = path.join(__dirname, '../../public/uploads/sounds');

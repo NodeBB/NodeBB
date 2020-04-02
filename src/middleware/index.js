@@ -17,7 +17,7 @@ var analytics = require('../analytics');
 var privileges = require('../privileges');
 
 var controllers = {
-	api: require('./../controllers/api'),
+	api: require('../controllers/api'),
 	helpers: require('../controllers/helpers'),
 };
 

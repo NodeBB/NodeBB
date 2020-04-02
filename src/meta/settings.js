@@ -2,7 +2,7 @@
 
 const db = require('../database');
 const plugins = require('../plugins');
-const Meta = require('../meta');
+const Meta = require('./index');
 const pubsub = require('../pubsub');
 
 const Settings = module.exports;

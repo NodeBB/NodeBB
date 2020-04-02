@@ -8,7 +8,7 @@ const util = require('util');
 
 const db = require('../database');
 const pubsub = require('../pubsub');
-const Meta = require('../meta');
+const Meta = require('./index');
 const cacheBuster = require('./cacheBuster');
 const defaults = require('../../install/data/defaults');
 

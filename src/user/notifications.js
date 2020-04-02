@@ -222,7 +222,7 @@ UserNotifications.sendNameChangeNotification = async function (uid, username) {
 };
 
 UserNotifications.pushCount = async function (uid) {
-	const websockets = require('./../socket.io');
+	const websockets = require('../socket.io');
 	const count = await UserNotifications.getUnreadCount(uid);
 	websockets.in('uid_' + uid).emit('event:notifications.updateCount', count);
 };

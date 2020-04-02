@@ -3,7 +3,7 @@
 
 var nconf = require('nconf');
 
-var user = require('../user');
+var user = require('./index');
 var utils = require('../utils');
 var plugins = require('../plugins');
 var db = require('../database');

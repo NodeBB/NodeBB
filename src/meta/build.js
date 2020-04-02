@@ -105,7 +105,7 @@ function beforeBuild(targets, callback) {
 			db.init(next);
 		},
 		function (next) {
-			meta = require('../meta');
+			meta = require('./index');
 			meta.themes.setupPaths(next);
 		},
 		function (next)	{

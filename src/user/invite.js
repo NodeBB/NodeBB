@@ -5,7 +5,7 @@ var async = require('async');
 var nconf = require('nconf');
 var validator = require('validator');
 
-var db = require('./../database');
+var db = require('../database');
 var meta = require('../meta');
 var emailer = require('../emailer');
 var translator = require('../translator');

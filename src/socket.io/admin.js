@@ -6,7 +6,7 @@ const meta = require('../meta');
 const user = require('../user');
 const events = require('../events');
 const db = require('../database');
-const websockets = require('../socket.io/index');
+const websockets = require('./index');
 const index = require('./index');
 const getAdminSearchDict = require('../admin/search').getDictionary;
 

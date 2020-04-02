@@ -3,7 +3,7 @@
 var nconf = require('nconf');
 var winston = require('winston');
 
-var user = require('../user');
+var user = require('./index');
 var utils = require('../utils');
 var batch = require('../batch');
 
