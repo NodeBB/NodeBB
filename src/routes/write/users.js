@@ -32,59 +32,8 @@ function authenticatedRoutes() {
 	setupApiRoute(router, '/:uid/follow', middleware, [...middlewares], 'post', controllers.write.users.follow);
 	setupApiRoute(router, '/:uid/follow', middleware, [...middlewares], 'delete', controllers.write.users.unfollow);
 
-	// 	app.put('/:uid/follow', apiMiddleware.requireUser, function(req, res) {
-	// 		Users.follow(req.user.uid, req.params.uid, function(err) {
-	// 			return errorHandler.handle(err, res);
-	// 		});
-	// 	});
-
-	// 	app.delete('/:uid/follow', apiMiddleware.requireUser, function(req, res) {
-	// 		Users.unfollow(req.user.uid, req.params.uid, function(err) {
-	// 			return errorHandler.handle(err, res);
-	// 		});
-	// 	});
-
-	// 	app.route('/:uid/chats')
-	// 		.post(apiMiddleware.requireUser, function(req, res) {
-	// 			if (!utils.checkRequired(['message'], req, res)) {
-	// 				return false;
-	// 			}
-
-	// 			var timestamp = parseInt(req.body.timestamp, 10) || Date.now();
-
-	// 			function addMessage(roomId) {
-	// 				Messaging.addMessage({
-	// 					uid: req.user.uid,
-	// 					roomId: roomId,
-	// 					content: req.body.message,
-	// 					timestamp: timestamp,
-	// 				}, function(err, message) {
-	// 					if (parseInt(req.body.quiet, 10) !== 1) {
-	// 						Messaging.notifyUsersInRoom(req.user.uid, roomId, message);
-	// 					}
-
-	// 					return errorHandler.handle(err, res, message);
-	// 				});
-	// 			}
-
-	// 			Messaging.canMessageUser(req.user.uid, req.params.uid, function(err) {
-	// 				if (err) {
-	// 					return errorHandler.handle(err, res);
-	// 				}
-
-	// 				if (req.body.roomId) {
-	// 					addMessage(req.body.roomId);
-	// 				} else {
-	// 					Messaging.newRoom(req.user.uid, [req.params.uid], function(err, roomId) {
-	// 						if (err) {
-	// 							return errorHandler.handle(err, res);
-	// 						}
-
-	// 						addMessage(roomId);
-	// 					});
-	// 				}
-	// 			});
-	// 		});
+	setupApiRoute(router, '/:uid/ban', middleware, [...middlewares, middleware.exposePrivileges], 'put', controllers.write.users.ban);
+	setupApiRoute(router, '/:uid/ban', middleware, [...middlewares, middleware.exposePrivileges], 'delete', controllers.write.users.unban);
 
 	// 	app.route('/:uid/ban')
 	// 		.put(apiMiddleware.requireUser, apiMiddleware.requireAdmin, function(req, res) {
@@ -131,6 +80,52 @@ function authenticatedRoutes() {
 	// 			errorHandler.handle(err, res);
 	// 		});
 	// 	});
+
+	/**
+	 * Chat routes were not migrated because chats may get refactored... also the logic is derpy
+	 * It also does not take into account multiple chats for a given user.
+	 */
+	// 	app.route('/:uid/chats')
+	// 		.post(apiMiddleware.requireUser, function(req, res) {
+	// 			if (!utils.checkRequired(['message'], req, res)) {
+	// 				return false;
+	// 			}
+
+	// 			var timestamp = parseInt(req.body.timestamp, 10) || Date.now();
+
+	// 			function addMessage(roomId) {
+	// 				Messaging.addMessage({
+	// 					uid: req.user.uid,
+	// 					roomId: roomId,
+	// 					content: req.body.message,
+	// 					timestamp: timestamp,
+	// 				}, function(err, message) {
+	// 					if (parseInt(req.body.quiet, 10) !== 1) {
+	// 						Messaging.notifyUsersInRoom(req.user.uid, roomId, message);
+	// 					}
+
+	// 					return errorHandler.handle(err, res, message);
+	// 				});
+	// 			}
+
+	// 			Messaging.canMessageUser(req.user.uid, req.params.uid, function(err) {
+	// 				if (err) {
+	// 					return errorHandler.handle(err, res);
+	// 				}
+
+	// 				if (req.body.roomId) {
+	// 					addMessage(req.body.roomId);
+	// 				} else {
+	// 					Messaging.newRoom(req.user.uid, [req.params.uid], function(err, roomId) {
+	// 						if (err) {
+	// 							return errorHandler.handle(err, res);
+	// 						}
+
+	// 						addMessage(roomId);
+	// 					});
+	// 				}
+	// 			});
+	// 		});
 }
 
 module.exports = function () {

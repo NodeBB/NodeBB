@@ -1,21 +1,18 @@
 'use strict';
 
-const winston = require('winston');
-
 const db = require('../../database');
 const user = require('../../user');
-const meta = require('../../meta');
 const websockets = require('../index');
 const events = require('../../events');
 const privileges = require('../../privileges');
 const plugins = require('../../plugins');
-const emailer = require('../../emailer');
 const translator = require('../../translator');
-const utils = require('../../../public/src/utils');
 const flags = require('../../flags');
 
 module.exports = function (SocketUser) {
 	SocketUser.banUsers = async function (socket, data) {
+		websockets.warnDeprecated(socket, 'PUT /api/v1/users/:uid/ban');
+
 		if (!data || !Array.isArray(data.uids)) {
 			throw new Error('[[error:invalid-data]]');
 		}
@@ -43,6 +40,8 @@ module.exports = function (SocketUser) {
 	};
 
 	SocketUser.unbanUsers = async function (socket, uids) {
+		websockets.warnDeprecated(socket, 'DELETE /api/v1/users/:uid/ban');
+
 		await toggleBan(socket.uid, uids, async function (uid) {
 			await user.bans.unban(uid);
 			await events.log({
@@ -76,19 +75,7 @@ module.exports = function (SocketUser) {
 		if (isAdmin) {
 			throw new Error('[[error:cant-ban-other-admins]]');
 		}
-		const username = await user.getUserField(uid, 'username');
-		const siteTitle = meta.config.title || 'NodeBB';
-		const data = {
-			subject: '[[email:banned.subject, ' + siteTitle + ']]',
-			username: username,
-			until: until ? utils.toISOString(until) : false,
-			reason: reason,
-		};
-		try {
-			await emailer.send('banned', uid, data);
-		} catch (err) {
-			winston.error('[emailer.send] ' + err.message);
-		}
+
 		const banData = await user.bans.ban(uid, until, reason);
 		await db.setObjectField('uid:' + uid + ':ban:' + banData.timestamp, 'fromUid', callerUid);
 

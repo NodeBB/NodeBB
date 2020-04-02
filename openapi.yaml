@@ -242,19 +242,74 @@ paths:
                     $ref: '#/components/schemas/Status'
                   response:
                     type: object
+  '/{uid}/ban':
+    put:
+      tags:
+        - users
+      summary: bans a user
+      parameters:
+        - in: path
+          name: uid
+          schema:
+            type: integer
+          required: true
+          description: uid of the user to ban
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                until:
+                  type: number
+                  description: UNIX timestamp of the ban expiry
+                  example: 1585775608076
+                reason:
+                  type: string
+                  example: the reason for the ban
+      responses:
+        '200':
+          description: successfully banned user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
+    delete:
+      tags:
+        - users
+      summary: unbans a user
+      parameters:
+        - in: path
+          name: uid
+          schema:
+            type: integer
+          required: true
+          description: uid of the user to unban
+      responses:
+        '200':
+          description: successfully unbanned user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
 components:
   schemas:
     Status:
       type: object
       properties:
         code:
-          allOf:
-            - title: Success
-              type: string
-              example: ok
-            - title: Error
-              type: string
-              example: error
+          type: string
+          example: ok
         message:
           type: string
           example: OK
