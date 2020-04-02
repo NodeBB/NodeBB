@@ -8,11 +8,15 @@ info:
   license:
     name: MIT
     url: 'https://opensource.org/licenses/MIT'
+servers:
+  - url: /api/v1
 tags:
   - name: users
     description: 'Account related calls (create, modify, delete, etc.)'
+  - name: categories
+    description: Administrative calls to manage categories
 paths:
-  /:
+  /users/:
     post:
       tags:
         - users
@@ -94,7 +98,7 @@ paths:
                     $ref: '#/components/schemas/Status'
                   response:
                     type: object
-  '/{uid}':
+  '/users/{uid}':
     put:
       tags:
         - users
@@ -155,7 +159,7 @@ paths:
                     $ref: '#/components/schemas/Status'
                   response:
                     type: object
-  '/{uid}/password':
+  '/users/{uid}/password':
     put:
       tags:
         - users
@@ -195,7 +199,7 @@ paths:
                     $ref: '#/components/schemas/Status'
                   response:
                     type: object
-  '/{uid}/follow':
+  '/users/{uid}/follow':
     post:
       tags:
         - users
@@ -242,7 +246,7 @@ paths:
                     $ref: '#/components/schemas/Status'
                   response:
                     type: object
-  '/{uid}/ban':
+  '/users/{uid}/ban':
     put:
       tags:
         - users
@@ -302,6 +306,65 @@ paths:
                     $ref: '#/components/schemas/Status'
                   response:
                     type: object
+  /categories/:
+    post:
+      tags:
+        - categories
+      summary: creates a category
+      description: This operation creates a new category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                parentCid:
+                  type: number
+                cloneFromCid:
+                  type: number
+                icon:
+                  type: string
+                  description: A ForkAwesome icon without the `fa-` prefix
+                bgColor:
+                  type: string
+                color:
+                  type: string
+                link:
+                  type: string
+                class:
+                  type: string
+                backgroundImage:
+                  type: string
+              required:
+                - name
+            example:
+              name: My New Category
+              description: Lorem ipsum, dolor sit amet
+              parentCid: 0
+              cloneFromCid: 0
+              icon: bullhorn
+              bgColor: '#ffffff'
+              color: '#000000'
+              link: 'https://example.org'
+              class: 'col-md-3 col-xs-6'
+              backgroundImage: '/assets/relative/path/to/image'
+      responses:
+        '200':
+          description: category successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    $ref: '#/components/schemas/CategoryObj'
 components:
   schemas:
     Status:
@@ -479,6 +542,78 @@ components:
             This is a paragraph all about how my life got twist-turned upside-down
             and I'd like to take a minute and sit right here,
             to tell you all about how I because the administrator of NodeBB
+    CategoryObj:
+      properties:
+        cid:
+          type: number
+          example: 1
+        name:
+          type: string
+          example: My New Category
+        description:
+          type: string
+          example: Lorem ipsum, dolor sit amet
+        descriptionParsed:
+          type: string
+          example: Lorem ipsum, dolor sit amet
+        icon:
+          type: string
+          example: bullhorn
+        bgColor:
+          type: string
+          example: '#ffffff'
+        color:
+          type: string
+          example: '#000000'
+        slug:
+          type: string
+          example: 1/my-new-category
+        parentCid:
+          type: number
+          example: 0
+        topic_count:
+          type: number
+          example: 0
+        post_count:
+          type: number
+          example: 0
+        disabled:
+          type: number
+          example: 0
+        order:
+          type: number
+          example: 5
+        link:
+          type: number
+          example: 'https://example.org'
+        numRecentReplies:
+          type: number
+          example: 1
+        class:
+          type: string
+          example: col-md-3 col-xs-6
+        imageClass:
+          type: string
+          example: cover
+        isSection:
+          type: number
+          example: 0
+        totalPostCount:
+          type: number
+          example: 0
+        totalTopicCount:
+          type: number
+          example: 0
+        tagWhitelist:
+          type: array
+          example:
+            - some-tag
+            - another-tag
+        unread-class:
+          type: string
+        backgroundImage:
+          type: string
+          example: '/assets/images/covers/Circuit1.png'
   responses:
     '400':
       description: Bad Request

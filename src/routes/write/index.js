@@ -24,7 +24,7 @@ Write.reload = (params) => {
 	// router.use('/groups', require('./groups')(coreMiddleware));
 	// router.use('/posts', require('./posts')(coreMiddleware));
 	// router.use('/topics', require('./topics')(coreMiddleware));
-	// router.use('/categories', require('./categories')(coreMiddleware));
+	router.use('/api/v1/categories', require('./categories')());
 	// router.use('/util', require('./util')(coreMiddleware));
 
 	router.get('/api/v1/ping', function (req, res) {

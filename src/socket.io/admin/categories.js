@@ -8,10 +8,13 @@ const categories = require('../../categories');
 const privileges = require('../../privileges');
 const plugins = require('../../plugins');
 const events = require('../../events');
+const sockets = require('..');
 
 const Categories = module.exports;
 
 Categories.create = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'POST /api/v1/categories');
+
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');
 	}

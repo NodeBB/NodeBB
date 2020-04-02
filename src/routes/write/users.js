@@ -6,12 +6,6 @@ const controllers = require('../../controllers');
 const routeHelpers = require('../helpers');
 
 const setupApiRoute = routeHelpers.setupApiRoute;
-// 	Messaging = require.main.require('./src/messaging'),
-// 	apiMiddleware = require('./middleware'),
-// 	errorHandler = require('../../lib/errorHandler'),
-// 	auth = require('../../lib/auth'),
-// 	utils = require('./utils'),
-// 	async = require.main.require('async');
 
 // eslint-disable-next-line no-unused-vars
 function guestRoutes() {
@@ -34,52 +28,6 @@ function authenticatedRoutes() {
 
 	setupApiRoute(router, '/:uid/ban', middleware, [...middlewares, middleware.exposePrivileges], 'put', controllers.write.users.ban);
 	setupApiRoute(router, '/:uid/ban', middleware, [...middlewares, middleware.exposePrivileges], 'delete', controllers.write.users.unban);
-
-	// 	app.route('/:uid/ban')
-	// 		.put(apiMiddleware.requireUser, apiMiddleware.requireAdmin, function(req, res) {
-	// 			Users.bans.ban(req.params.uid, req.body.until || 0, req.body.reason || '', function(err) {
-	// 				errorHandler.handle(err, res);
-	// 			});
-	// 		})
-	// 		.delete(apiMiddleware.requireUser, apiMiddleware.requireAdmin, function(req, res) {
-	// 			Users.bans.unban(req.params.uid, function(err) {
-	// 				errorHandler.handle(err, res);
-	// 			});
-	// 		});
-
-	// 	app.route('/:uid/tokens')
-	// 		.get(apiMiddleware.requireUser, function(req, res) {
-	// 			if (parseInt(req.params.uid, 10) !== parseInt(req.user.uid, 10)) {
-	// 				return errorHandler.respond(401, res);
-	// 			}
-
-	// 			auth.getTokens(req.params.uid, function(err, tokens) {
-	// 				return errorHandler.handle(err, res, {
-	// 					tokens: tokens
-	// 				});
-	// 			});
-	// 		})
-	// 		.post(apiMiddleware.requireUser, function(req, res) {
-	// 			if (parseInt(req.params.uid, 10) !== parseInt(req.user.uid)) {
-	// 				return errorHandler.respond(401, res);
-	// 			}
-
-	// 			auth.generateToken(req.params.uid, function(err, token) {
-	// 				return errorHandler.handle(err, res, {
-	// 					token: token
-	// 				});
-	// 			});
-	// 		});
-
-	// 	app.delete('/:uid/tokens/:token', apiMiddleware.requireUser, function(req, res) {
-	// 		if (parseInt(req.params.uid, 10) !== req.user.uid) {
-	// 			return errorHandler.respond(401, res);
-	// 		}
-
-	// 		auth.revokeToken(req.params.token, 'user', function(err) {
-	// 			errorHandler.handle(err, res);
-	// 		});
-	// 	});
 
 	/**
 	 * Chat routes were not migrated because chats may get refactored... also the logic is derpy
@@ -126,6 +74,43 @@ function authenticatedRoutes() {
 	// 				}
 	// 			});
 	// 		});
+
+	/**
+	 * Implement this later...
+	 */
+	// 	app.route('/:uid/tokens')
+	// 		.get(apiMiddleware.requireUser, function(req, res) {
+	// 			if (parseInt(req.params.uid, 10) !== parseInt(req.user.uid, 10)) {
+	// 				return errorHandler.respond(401, res);
+	// 			}
+
+	// 			auth.getTokens(req.params.uid, function(err, tokens) {
+	// 				return errorHandler.handle(err, res, {
+	// 					tokens: tokens
+	// 				});
+	// 			});
+	// 		})
+	// 		.post(apiMiddleware.requireUser, function(req, res) {
+	// 			if (parseInt(req.params.uid, 10) !== parseInt(req.user.uid)) {
+	// 				return errorHandler.respond(401, res);
+	// 			}
+
+	// 			auth.generateToken(req.params.uid, function(err, token) {
+	// 				return errorHandler.handle(err, res, {
+	// 					token: token
+	// 				});
+	// 			});
+	// 		});
+
+	// 	app.delete('/:uid/tokens/:token', apiMiddleware.requireUser, function(req, res) {
+	// 		if (parseInt(req.params.uid, 10) !== req.user.uid) {
+	// 			return errorHandler.respond(401, res);
+	// 		}
+
+	// 		auth.revokeToken(req.params.token, 'user', function(err) {
+	// 			errorHandler.handle(err, res);
+	// 		});
+	// 	});
 }
 
 module.exports = function () {
