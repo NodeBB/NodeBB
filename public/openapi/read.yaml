@@ -5,16 +5,39 @@ info:
   license:
     name: GPL-3.0
   description: >-
-    [Specification
-    JSON](https://community.nodebb.org/api/plugins/openapi-spec/spec)
+    # Introduction
 
-    base url: [https://community.nodebb.org](https://community.nodebb.org)
-
-
-    NodeBB Forum
+    The following document outlines every Read API route available via NodeBB. Unlike the write API, the v1.x API was coded organically, and is **not** strictly RESTful. These shortcomings will be addressed in the v2.x version of the API.
+tags:
+  - name: home
+    description: Routes used at the forum index only
+  - name: categories
+    description: Category hierarchy and navigation
+  - name: topics
+  - name: posts
+  - name: users
+  - name: authentication
+    description: User authentication (e.g. login/registration)
+  - name: groups
+    description: User groups
+  - name: admin
+    description: Administrative Control Panel (ACP) routing
+  - name: emails
+    description: Email utilities
+  - name: flags
+    description: Reporting of content by users
+  - name: notifications
+    description: Real-time notifications
+  - name: search
+  - name: tags
+    description: Disparate method of categorizing topics
+  - name: shorthand
+    description: Convenience and utility routes for accessing other part of the API
 paths:
   /api/:
     get:
+      tags:
+        - home
       summary: /api/
       responses:
         "200":
@@ -670,6 +693,8 @@ paths:
           description: ""
   "/api/post/{pid}/raw":
     get:
+      tags:
+        - posts
       summary: /api/post/{pid}/raw
       parameters:
         - name: pid
@@ -680,10 +705,14 @@ paths:
       responses: {}
   /api/admin:
     get:
+      tags:
+        - admin
       summary: /api/admin
       responses: {}
   /api/admin/general/dashboard:
     get:
+      tags:
+        - admin
       summary: /api/admin/general/dashboard
       responses:
         "200":
@@ -939,18 +968,26 @@ paths:
                               type: string
   /api/admin/general/languages:
     get:
+      tags:
+        - admin
       summary: /api/admin/general/languages
       responses: {}
   /api/admin/general/sounds:
     get:
+      tags:
+        - admin
       summary: /api/admin/general/sounds
       responses: {}
   /api/admin/general/navigation:
     get:
+      tags:
+        - admin
       summary: /api/admin/general/navigation
       responses: {}
   /api/admin/general/homepage:
     get:
+      tags:
+        - admin
       summary: /api/admin/general/homepage
       responses:
         "200":
@@ -1043,10 +1080,14 @@ paths:
                               type: string
   /api/admin/general/social:
     get:
+      tags:
+        - admin
       summary: /api/admin/general/social
       responses: {}
   /api/admin/manage/categories:
     get:
+      tags:
+        - admin
       summary: /api/admin/manage/categories
       responses:
         "200":
@@ -1127,6 +1168,8 @@ paths:
                               type: string
   "/api/admin/manage/categories/{category_id}":
     get:
+      tags:
+        - admin
       summary: /api/admin/manage/categories/{category_id}
       parameters:
         - name: category_id
@@ -1324,6 +1367,8 @@ paths:
                               type: string
   "/api/admin/manage/categories/{category_id}/analytics":
     get:
+      tags:
+        - admin
       summary: /api/admin/manage/categories/{category_id}/analytics
       parameters:
         - name: category_id
@@ -1431,6 +1476,8 @@ paths:
                               type: string
   "/api/admin/manage/privileges/{cid?}":
     get:
+      tags:
+        - admin
       summary: /api/admin/manage/privileges/{cid?}
       parameters:
         - name: cid?
@@ -1655,18 +1702,26 @@ paths:
                               type: string
   /api/admin/manage/tags:
     get:
+      tags:
+        - admin
       summary: /api/admin/manage/tags
       responses: {}
   /api/admin/manage/post-queue:
     get:
+      tags:
+        - admin
       summary: /api/admin/manage/post-queue
       responses: {}
   /api/admin/manage/ip-blacklist:
     get:
+      tags:
+        - admin
       summary: /api/admin/manage/ip-blacklist
       responses: {}
   /api/admin/manage/users:
     get:
+      tags:
+        - admin
       summary: /api/admin/manage/users
       responses:
         "200":
@@ -1893,6 +1948,8 @@ paths:
                               type: string
   /api/admin/manage/users/search:
     get:
+      tags:
+        - admin
       summary: /api/admin/manage/users/search
       responses:
         "200":
@@ -1978,6 +2035,8 @@ paths:
                               type: string
   /api/admin/manage/users/latest:
     get:
+      tags:
+        - admin
       summary: /api/admin/manage/users/latest
       responses:
         "200":
@@ -2204,6 +2263,8 @@ paths:
                               type: string
   /api/admin/manage/users/not-validated:
     get:
+      tags:
+        - admin
       summary: /api/admin/manage/users/not-validated
       responses:
         "200":
@@ -2430,38 +2491,56 @@ paths:
                               type: string
   /api/admin/manage/users/no-posts:
     get:
+      tags:
+        - admin
       summary: /api/admin/manage/users/no-posts
       responses: {}
   /api/admin/manage/users/top-posters:
     get:
+      tags:
+        - admin
       summary: /api/admin/manage/users/top-posters
       responses: {}
   /api/admin/manage/users/most-reputation:
     get:
+      tags:
+        - admin
       summary: /api/admin/manage/users/most-reputation
       responses: {}
   /api/admin/manage/users/inactive:
     get:
+      tags:
+        - admin
       summary: /api/admin/manage/users/inactive
       responses: {}
   /api/admin/manage/users/flagged:
     get:
+      tags:
+        - admin
       summary: /api/admin/manage/users/flagged
       responses: {}
   /api/admin/manage/users/banned:
     get:
+      tags:
+        - admin
       summary: /api/admin/manage/users/banned
       responses: {}
   /api/admin/manage/registration:
     get:
+      tags:
+        - admin
       summary: /api/admin/manage/registration
       responses: {}
   /api/admin/manage/admins-mods:
     get:
+      tags:
+        - admin
       summary: /api/admin/manage/admins-mods
       responses: {}
   /api/admin/manage/groups:
     get:
+      tags:
+        - admin
       summary: /api/admin/manage/groups
       responses:
         "200":
@@ -2662,6 +2741,8 @@ paths:
                               type: string
   "/api/admin/manage/groups/{name}":
     get:
+      tags:
+        - admin
       summary: /api/admin/manage/groups/{name}
       parameters:
         - name: name
@@ -2879,10 +2960,14 @@ paths:
                               type: string
   /api/admin/manage/uploads:
     get:
+      tags:
+        - admin
       summary: /api/admin/manage/uploads
       responses: {}
   /api/admin/manage/digest:
     get:
+      tags:
+        - admin
       summary: /api/admin/manage/digest
       responses:
         "200":
@@ -3064,6 +3149,8 @@ paths:
                               type: string
   "/api/admin/settings/{term?}":
     get:
+      tags:
+        - admin
       summary: /api/admin/settings/{term?}
       parameters:
         - name: term?
@@ -3162,6 +3249,8 @@ paths:
                               type: string
   "/api/admin/appearance/{term?}":
     get:
+      tags:
+        - admin
       summary: /api/admin/appearance/{term?}
       parameters:
         - name: term?
@@ -3248,6 +3337,8 @@ paths:
                               type: string
   /api/admin/extend/plugins:
     get:
+      tags:
+        - admin
       summary: /api/admin/extend/plugins
       responses:
         "200":
@@ -3470,6 +3561,8 @@ paths:
                               type: string
   /api/admin/extend/widgets:
     get:
+      tags:
+        - admin
       summary: /api/admin/extend/widgets
       responses:
         "200":
@@ -3647,10 +3740,14 @@ paths:
           description: ""
   /api/admin/extend/rewards:
     get:
+      tags:
+        - admin
       summary: /api/admin/extend/rewards
       responses: {}
   /api/admin/advanced/database:
     get:
+      tags:
+        - admin
       summary: /api/admin/advanced/database
       responses:
         "200":
@@ -3987,26 +4084,38 @@ paths:
                               type: string
   /api/admin/advanced/events:
     get:
+      tags:
+        - admin
       summary: /api/admin/advanced/events
       responses: {}
   /api/admin/advanced/hooks:
     get:
+      tags:
+        - admin
       summary: /api/admin/advanced/hooks
       responses: {}
   /api/admin/advanced/logs:
     get:
+      tags:
+        - admin
       summary: /api/admin/advanced/logs
       responses: {}
   /api/admin/advanced/errors:
     get:
+      tags:
+        - admin
       summary: /api/admin/advanced/errors
       responses: {}
   /api/admin/advanced/errors/export:
     get:
+      tags:
+        - admin
       summary: /api/admin/advanced/errors/export
       responses: {}
   /api/admin/advanced/cache:
     get:
+      tags:
+        - admin
       summary: /api/admin/advanced/cache
       responses:
         "200":
@@ -4159,6 +4268,8 @@ paths:
                               type: string
   /api/admin/development/logger:
     get:
+      tags:
+        - admin
       summary: /api/admin/development/logger
       responses:
         "200":
@@ -4239,50 +4350,74 @@ paths:
                               type: string
   /api/admin/development/info:
     get:
+      tags:
+        - admin
       summary: /api/admin/development/info
       responses: {}
   /api/admin/users/csv:
     get:
+      tags:
+        - admin
       summary: /api/admin/users/csv
       responses: {}
   /api/admin/analytics:
     get:
+      tags:
+        - admin
       summary: /api/admin/analytics
       responses: {}
   /api/admin/category/uploadpicture:
     post:
+      tags:
+        - admin
       summary: /api/admin/category/uploadpicture
       responses: {}
   /api/admin/uploadfavicon:
     post:
+      tags:
+        - admin
       summary: /api/admin/uploadfavicon
       responses: {}
   /api/admin/uploadTouchIcon:
     post:
+      tags:
+        - admin
       summary: /api/admin/uploadTouchIcon
       responses: {}
   /api/admin/uploadlogo:
     post:
+      tags:
+        - admin
       summary: /api/admin/uploadlogo
       responses: {}
   /api/admin/uploadOgImage:
     post:
+      tags:
+        - admin
       summary: /api/admin/uploadOgImage
       responses: {}
   /api/admin/upload/sound:
     post:
+      tags:
+        - admin
       summary: /api/admin/upload/sound
       responses: {}
   /api/admin/upload/file:
     post:
+      tags:
+        - admin
       summary: /api/admin/upload/file
       responses: {}
   /api/admin/uploadDefaultAvatar:
     post:
+      tags:
+        - admin
       summary: /api/admin/uploadDefaultAvatar
       responses: {}
   /api/config:
     get:
+      tags:
+        - home
       summary: /api/config
       responses:
         "200":
@@ -4478,6 +4613,8 @@ paths:
                         type: string
   /api/me:
     get:
+      tags:
+        - shorthand
       summary: /api/me
       responses:
         "200":
@@ -4697,6 +4834,8 @@ paths:
                 type: undefined
   "/api/user/uid/{uid}":
     get:
+      tags:
+        - users
       summary: /api/user/uid/{uid}
       parameters:
         - name: uid
@@ -4791,6 +4930,8 @@ paths:
                     type: string
   "/api/user/username/{username}":
     get:
+      tags:
+        - users
       summary: /api/user/username/{username}
       parameters:
         - name: username
@@ -4801,6 +4942,8 @@ paths:
       responses: {}
   "/api/user/email/{email}":
     get:
+      tags:
+        - users
       summary: /api/user/email/{email}
       parameters:
         - name: email
@@ -4995,6 +5138,8 @@ paths:
                     type: string
   "/api/user/uid/{userslug}/export/posts":
     get:
+      tags:
+        - users
       summary: /api/user/uid/{userslug}/export/posts
       parameters:
         - name: userslug
@@ -5005,6 +5150,8 @@ paths:
       responses: {}
   "/api/user/uid/{userslug}/export/uploads":
     get:
+      tags:
+        - users
       summary: /api/user/uid/{userslug}/export/uploads
       parameters:
         - name: userslug
@@ -5022,6 +5169,8 @@ paths:
                 type: undefined
   "/api/user/uid/{userslug}/export/profile":
     get:
+      tags:
+        - users
       summary: /api/user/uid/{userslug}/export/profile
       parameters:
         - name: userslug
@@ -5032,6 +5181,8 @@ paths:
       responses: {}
   "/api/{type}/pid/{id}":
     get:
+      tags:
+        - shorthand
       summary: /api/{type}/pid/{id}
       parameters:
         - name: type
@@ -5047,6 +5198,8 @@ paths:
       responses: {}
   "/api/{type}/tid/{id}":
     get:
+      tags:
+        - shorthand
       summary: /api/{type}/tid/{id}
       parameters:
         - name: type
@@ -5062,6 +5215,8 @@ paths:
       responses: {}
   "/api/{type}/cid/{id}":
     get:
+      tags:
+        - shorthand
       summary: /api/{type}/cid/{id}
       parameters:
         - name: type
@@ -5077,6 +5232,8 @@ paths:
       responses: {}
   "/api/categories/{cid}/moderators":
     get:
+      tags:
+        - categories
       summary: /api/categories/{cid}/moderators
       parameters:
         - name: cid
@@ -5087,6 +5244,8 @@ paths:
       responses: {}
   "/api/recent/posts/{term?}":
     get:
+      tags:
+        - topics
       summary: /api/recent/posts/{term?}
       parameters:
         - name: term?
@@ -5204,10 +5363,14 @@ paths:
                     - isMainPost
   /api/unread/total:
     get:
+      tags:
+        - posts
       summary: /api/unread/total
       responses: {}
   "/api/topic/teaser/{topic_id}":
     get:
+      tags:
+        - topics
       summary: /api/topic/teaser/{topic_id}
       parameters:
         - name: topic_id
@@ -5218,6 +5381,8 @@ paths:
       responses: {}
   "/api/topic/pagination/{topic_id}":
     get:
+      tags:
+        - topics
       summary: /api/topic/pagination/{topic_id}
       parameters:
         - name: topic_id
@@ -5300,6 +5465,8 @@ paths:
                         type: string
   /api/post/upload:
     post:
+      tags:
+        - posts
       summary: /api/post/upload
       responses:
         "200":
@@ -5357,10 +5524,14 @@ paths:
                     type: string
   /api/topic/thumb/upload:
     post:
+      tags:
+        - topics
       summary: /api/topic/thumb/upload
       responses: {}
   "/api/user/{userslug}/uploadpicture":
     post:
+      tags:
+        - users
       summary: /api/user/{userslug}/uploadpicture
       parameters:
         - name: userslug
@@ -5384,6 +5555,8 @@ paths:
                       type: string
   "/api/user/{userslug}/uploadcover":
     post:
+      tags:
+        - users
       summary: /api/user/{userslug}/uploadcover
       parameters:
         - name: userslug
@@ -5394,10 +5567,14 @@ paths:
       responses: {}
   /api/groups/uploadpicture:
     post:
+      tags:
+        - groups
       summary: /api/groups/uploadpicture
       responses: {}
   /api/login:
     get:
+      tags:
+        - authentication
       summary: /api/login
       responses:
         "200":
@@ -5536,6 +5713,8 @@ paths:
                               type: string
   /api/register:
     get:
+      tags:
+        - authentication
       summary: /api/register
       responses:
         "200":
@@ -5680,6 +5859,8 @@ paths:
           description: ""
   /api/register/complete:
     get:
+      tags:
+        - authentication
       summary: /api/register/complete
       responses:
         "200":
@@ -5860,182 +6041,10 @@ paths:
               schema:
                 type: string
                 example: Found. Redirecting to /register
-  /api/compose:
-    get:
-      summary: /api/compose
-      responses:
-        "200":
-          description: ""
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  loggedIn:
-                    type: boolean
-                  relative_path:
-                    type: string
-                  template:
-                    type: object
-                    properties:
-                      name:
-                        type: string
-                      "":
-                        type: boolean
-                  url:
-                    type: string
-                  bodyClass:
-                    type: string
-                  _header:
-                    type: object
-                    properties:
-                      tags:
-                        type: object
-                        properties:
-                          meta:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                name:
-                                  type: string
-                                content:
-                                  type: string
-                                noEscape:
-                                  type: boolean
-                                property:
-                                  type: string
-                              required:
-                                - name
-                                - content
-                                - noEscape
-                                - property
-                          link:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                rel:
-                                  type: string
-                                type:
-                                  type: string
-                                href:
-                                  type: string
-                                title:
-                                  type: string
-                                sizes:
-                                  type: string
-                              required:
-                                - rel
-                                - href
-                                - type
-                                - sizes
-                  widgets:
-                    type: object
-                    properties:
-                      footer:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            html:
-                              type: string
-  "/api/confirm/{code}":
-    get:
-      summary: /api/confirm/{code}
-      parameters:
-        - name: code
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: ""
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                  title:
-                    type: string
-                  loggedIn:
-                    type: boolean
-                  relative_path:
-                    type: string
-                  template:
-                    type: object
-                    properties:
-                      name:
-                        type: string
-                      confirm:
-                        type: boolean
-                  url:
-                    type: string
-                  bodyClass:
-                    type: string
-                  _header:
-                    type: object
-                    properties:
-                      tags:
-                        type: object
-                        properties:
-                          meta:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                name:
-                                  type: string
-                                content:
-                                  type: string
-                                noEscape:
-                                  type: boolean
-                                property:
-                                  type: string
-                              required:
-                                - name
-                                - content
-                                - noEscape
-                                - property
-                          link:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                rel:
-                                  type: string
-                                type:
-                                  type: string
-                                href:
-                                  type: string
-                                title:
-                                  type: string
-                                sizes:
-                                  type: string
-                              required:
-                                - rel
-                                - href
-                                - type
-                                - sizes
-                  widgets:
-                    type: object
-                    properties:
-                      footer:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            html:
-                              type: string
-  /api/outgoing:
-    get:
-      summary: /api/outgoing
-      responses: {}
   /api/search:
     get:
+      tags:
+        - search
       summary: /api/search
       responses:
         "200":
@@ -6330,6 +6339,8 @@ paths:
                     type: string
   "/api/reset/{code?}":
     get:
+      tags:
+        - authentication
       summary: /api/reset/{code?}
       parameters:
         - name: code?
@@ -6338,12 +6349,10 @@ paths:
           schema:
             type: string
       responses: {}
-  /api/tos:
-    get:
-      summary: /api/tos
-      responses: {}
   "/api/email/unsubscribe/{token}":
     get:
+      tags:
+        - emails
       summary: /api/email/unsubscribe/{token}
       parameters:
         - name: token
@@ -6354,6 +6363,8 @@ paths:
       responses: {}
   "/api/topic/{topic_id}/{slug}/{post_index?}":
     get:
+      tags:
+        - topics
       summary: /api/topic/{topic_id}/{slug}/{post_index?}
       parameters:
         - name: topic_id
@@ -7479,6 +7490,8 @@ paths:
                 example: Not Found
   "/api/topic/{topic_id}/{slug?}":
     get:
+      tags:
+        - topics
       summary: /api/topic/{topic_id}/{slug?}
       parameters:
         - name: topic_id
@@ -8734,6 +8747,8 @@ paths:
                 example: Not Found
   "/api/post/{pid}":
     get:
+      tags:
+        - shorthand
       summary: /api/post/{pid}
       parameters:
         - name: pid
@@ -8766,6 +8781,8 @@ paths:
                 example: Not Found
   /api/flags:
     get:
+      tags:
+        - flags
       summary: /api/flags
       responses:
         "200":
@@ -9023,6 +9040,8 @@ paths:
                               type: string
   "/api/flags/{flagId}":
     get:
+      tags:
+        - flags
       summary: /api/flags/{flagId}
       parameters:
         - name: flagId
@@ -9378,6 +9397,8 @@ paths:
                               type: string
   /api/post-queue:
     get:
+      tags:
+        - admin
       summary: /api/post-queue
       responses:
         "200":
@@ -9668,14 +9689,20 @@ paths:
                               type: string
   /api/ip-blacklist:
     get:
+      tags:
+        - admin
       summary: /api/ip-blacklist
       responses: {}
   /api/registration-queue:
     get:
+      tags:
+        - admin
       summary: /api/registration-queue
       responses: {}
   "/api/tags/{tag}":
     get:
+      tags:
+        - tags
       summary: /api/tags/{tag}
       parameters:
         - name: tag
@@ -10095,6 +10122,8 @@ paths:
           description: ""
   /api/tags:
     get:
+      tags:
+        - tags
       summary: /api/tags
       responses:
         "200":
@@ -10213,6 +10242,8 @@ paths:
                               type: string
   /api/categories:
     get:
+      tags:
+        - categories
       summary: /api/categories
       responses:
         "200":
@@ -10874,6 +10905,8 @@ paths:
           description: ""
   /api/popular:
     get:
+      tags:
+        - topics
       summary: /api/popular
       responses:
         "200":
@@ -11349,6 +11382,8 @@ paths:
                               type: string
   /api/recent:
     get:
+      tags:
+        - topics
       summary: /api/recent
       responses:
         "200":
@@ -11825,6 +11860,8 @@ paths:
                               type: string
   /api/top:
     get:
+      tags:
+        - topics
       summary: /api/top
       responses:
         "200":
@@ -12316,6 +12353,8 @@ paths:
                               type: string
   /api/unread:
     get:
+      tags:
+        - topics
       summary: /api/unread
       responses:
         "200":
@@ -12733,6 +12772,8 @@ paths:
                 type: undefined
   "/api/category/{category_id}/{slug}/{topic_index}":
     get:
+      tags:
+        - categories
       summary: /api/category/{category_id}/{slug}/{topic_index}
       parameters:
         - name: category_id
@@ -13181,6 +13222,8 @@ paths:
                               type: string
   "/api/category/{category_id}/{slug?}":
     get:
+      tags:
+        - categories
       summary: /api/category/{category_id}/{slug?}
       parameters:
         - name: category_id
@@ -13650,10 +13693,14 @@ paths:
           description: ""
   /api/me/*:
     get:
+      tags:
+        - shorthand
       summary: /api/me/*
       responses: {}
   "/api/uid/{uid*}":
     get:
+      tags:
+        - shorthand
       summary: /api/uid/{uid*}
       parameters:
         - name: uid*
@@ -13671,6 +13718,8 @@ paths:
                 type: undefined
   "/api/user/{userslug}":
     get:
+      tags:
+        - users
       summary: /api/user/{userslug}
       parameters:
         - name: userslug
@@ -15003,6 +15052,8 @@ paths:
                 example: Not Found
   "/api/user/{userslug}/following":
     get:
+      tags:
+        - users
       summary: /api/user/{userslug}/following
       parameters:
         - name: userslug
@@ -15346,6 +15397,8 @@ paths:
                               type: string
   "/api/user/{userslug}/followers":
     get:
+      tags:
+        - users
       summary: /api/user/{userslug}/followers
       parameters:
         - name: userslug
@@ -15857,6 +15910,8 @@ paths:
                               type: string
   "/api/user/{userslug}/categories":
     get:
+      tags:
+        - users
       summary: /api/user/{userslug}/categories
       parameters:
         - name: userslug
@@ -16262,6 +16317,8 @@ paths:
                               type: string
   "/api/user/{userslug}/posts":
     get:
+      tags:
+        - users
       summary: /api/user/{userslug}/posts
       parameters:
         - name: userslug
@@ -16625,6 +16682,8 @@ paths:
                               type: string
   "/api/user/{userslug}/topics":
     get:
+      tags:
+        - users
       summary: /api/user/{userslug}/topics
       parameters:
         - name: userslug
@@ -17122,6 +17181,8 @@ paths:
                               type: string
   "/api/user/{userslug}/best":
     get:
+      tags:
+        - users
       summary: /api/user/{userslug}/best
       parameters:
         - name: userslug
@@ -17531,6 +17592,8 @@ paths:
                               type: string
   "/api/user/{userslug}/groups":
     get:
+      tags:
+        - users
       summary: /api/user/{userslug}/groups
       parameters:
         - name: userslug
@@ -17831,6 +17894,8 @@ paths:
           description: ""
   "/api/user/{userslug}/bookmarks":
     get:
+      tags:
+        - users
       summary: /api/user/{userslug}/bookmarks
       parameters:
         - name: userslug
@@ -18194,6 +18259,8 @@ paths:
                               type: string
   "/api/user/{userslug}/watched":
     get:
+      tags:
+        - users
       summary: /api/user/{userslug}/watched
       parameters:
         - name: userslug
@@ -18873,6 +18940,8 @@ paths:
                               type: string
   "/api/user/{userslug}/ignored":
     get:
+      tags:
+        - users
       summary: /api/user/{userslug}/ignored
       parameters:
         - name: userslug
@@ -19239,6 +19308,8 @@ paths:
                               type: string
   "/api/user/{userslug}/upvoted":
     get:
+      tags:
+        - users
       summary: /api/user/{userslug}/upvoted
       parameters:
         - name: userslug
@@ -19249,6 +19320,8 @@ paths:
       responses: {}
   "/api/user/{userslug}/downvoted":
     get:
+      tags:
+        - users
       summary: /api/user/{userslug}/downvoted
       parameters:
         - name: userslug
@@ -19259,6 +19332,8 @@ paths:
       responses: {}
   "/api/user/{userslug}/edit":
     get:
+      tags:
+        - users
       summary: /api/user/{userslug}/edit
       parameters:
         - name: userslug
@@ -19611,6 +19686,8 @@ paths:
                     type: string
   "/api/user/{userslug}/edit/username":
     get:
+      tags:
+        - users
       summary: /api/user/{userslug}/edit/username
       parameters:
         - name: userslug
@@ -19925,6 +20002,8 @@ paths:
                     type: string
   "/api/user/{userslug}/edit/email":
     get:
+      tags:
+        - users
       summary: /api/user/{userslug}/edit/email
       parameters:
         - name: userslug
@@ -20228,6 +20307,8 @@ paths:
                               type: string
   "/api/user/{userslug}/edit/password":
     get:
+      tags:
+        - users
       summary: /api/user/{userslug}/edit/password
       parameters:
         - name: userslug
@@ -20531,6 +20612,8 @@ paths:
                               type: string
   "/api/user/{userslug}/info":
     get:
+      tags:
+        - users
       summary: /api/user/{userslug}/info
       parameters:
         - name: userslug
@@ -21036,6 +21119,8 @@ paths:
                               type: string
   "/api/user/{userslug}/settings":
     get:
+      tags:
+        - users
       summary: /api/user/{userslug}/settings
       parameters:
         - name: userslug
@@ -21767,6 +21852,8 @@ paths:
                     type: string
   "/api/user/{userslug}/uploads":
     get:
+      tags:
+        - users
       summary: /api/user/{userslug}/uploads
       parameters:
         - name: userslug
@@ -22113,6 +22200,8 @@ paths:
                               type: string
   "/api/user/{userslug}/consent":
     get:
+      tags:
+        - users
       summary: /api/user/{userslug}/consent
       parameters:
         - name: userslug
@@ -22423,6 +22512,8 @@ paths:
                               type: string
   "/api/user/{userslug}/blocks":
     get:
+      tags:
+        - users
       summary: /api/user/{userslug}/blocks
       parameters:
         - name: userslug
@@ -22768,6 +22859,8 @@ paths:
                               type: string
   "/api/user/{userslug}/sessions":
     get:
+      tags:
+        - users
       summary: /api/user/{userslug}/sessions
       parameters:
         - name: userslug
@@ -23072,6 +23165,8 @@ paths:
                               type: string
   "/api/user/{userslug}/session/{uuid}":
     delete:
+      tags:
+        - users
       summary: /api/user/{userslug}/session/{uuid}
       parameters:
         - name: userslug
@@ -23087,6 +23182,8 @@ paths:
       responses: {}
   /api/notifications:
     get:
+      tags:
+        - notifications
       summary: /api/notifications
       responses:
         "200":
@@ -23351,6 +23448,8 @@ paths:
                 type: undefined
   "/api/user/{userslug}/chats/{roomid?}":
     get:
+      tags:
+        - users
       summary: /api/user/{userslug}/chats/{roomid?}
       parameters:
         - name: userslug
@@ -24008,6 +24107,8 @@ paths:
                 example: Not Found
   "/api/chats/{roomid?}":
     get:
+      tags:
+        - shorthand
       summary: /api/chats/{roomid?}
       parameters:
         - name: roomid?
@@ -24025,6 +24126,8 @@ paths:
                 type: undefined
   /api/users:
     get:
+      tags:
+        - users
       summary: /api/users
       responses:
         "200":
@@ -24280,6 +24383,8 @@ paths:
           description: ""
   /api/groups:
     get:
+      tags:
+        - groups
       summary: /api/groups
       responses:
         "200":
@@ -24485,6 +24590,8 @@ paths:
           description: ""
   "/api/groups/{slug}":
     get:
+      tags:
+        - groups
       summary: /api/groups/{slug}
       parameters:
         - name: slug
@@ -24828,6 +24935,8 @@ paths:
                               type: string
   "/api/groups/{slug}/members":
     get:
+      tags:
+        - groups
       summary: /api/user/{userslug}/push-notifications
       parameters:
         - name: userslug
