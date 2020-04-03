@@ -64,7 +64,7 @@ module.exports = function (Topics) {
 	topicTools.purge = async function (tid, uid) {
 		const topicData = await Topics.getTopicData(tid);
 		if (!topicData) {
-			return;
+			throw new Error('[[error:no-topic]]');
 		}
 		const canPurge = await privileges.topics.canPurge(tid, uid);
 		if (!canPurge) {
