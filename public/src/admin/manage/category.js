@@ -107,17 +107,18 @@ define('admin/manage/category', [
 									});
 								}, 1000);
 
-								socket.emit('admin.categories.purge', ajaxify.data.category.cid, function (err) {
-									if (err) {
-										return app.alertError(err.message);
-									}
-
+								$.ajax({
+									url: config.relative_path + '/api/v1/categories/' + ajaxify.data.category.cid,
+									method: 'delete',
+								}).done(function () {
 									if (intervalId) {
 										clearInterval(intervalId);
 									}
 									modal.modal('hide');
 									app.alertSuccess('[[admin/manage/categories:alert.purge-success]]');
 									ajaxify.go('admin/manage/categories');
+								}).fail(function (ev) {
+									app.alertError(ev.responseJSON.status.message);
 								});
 
 								return false;
