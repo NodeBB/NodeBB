@@ -40,6 +40,8 @@ Categories.getNames = async function () {
 };
 
 Categories.purge = async function (socket, cid) {
+	sockets.warnDeprecated(socket, 'DELETE /api/v1/categories/:cid');
+
 	const name = await categories.getCategoryField(cid, 'name');
 	await categories.purge(cid, socket.uid);
 	await events.log({
