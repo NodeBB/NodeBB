@@ -357,7 +357,11 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 		}
 
 		const returnPayload = helpers.generateError(statusCode, message);
-		returnPayload.stack = payload.stack;
+
+		if (global.env === 'development') {
+			returnPayload.stack = payload.stack;
+			process.stdout.write(payload.stack);
+		}
 		res.status(statusCode).json(returnPayload);
 	} else if (!payload) {
 		// Non-2xx statusCode, generate predefined error
