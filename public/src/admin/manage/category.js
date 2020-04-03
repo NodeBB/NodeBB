@@ -8,7 +8,7 @@ define('admin/manage/category', [
 	'benchpress',
 ], function (uploader, iconSelect, colorpicker, categorySelector, Benchpress) {
 	var	Category = {};
-	var modified_categories = {};
+	var updateHash = {};
 
 	Category.init = function () {
 		$('#category-settings select').each(function () {
@@ -53,24 +53,24 @@ define('admin/manage/category', [
 				return app.alertError('[[admin/manage/categories:alert.not-enough-whitelisted-tags]]');
 			}
 
-			if (Object.keys(modified_categories).length) {
-				socket.emit('admin.categories.update', modified_categories, function (err, result) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-
-					if (result && result.length) {
-						app.flags._unsaved = false;
-						app.alert({
-							title: 'Updated Categories',
-							message: 'Category IDs ' + result.join(', ') + ' was successfully updated.',
-							type: 'success',
-							timeout: 2000,
-						});
-					}
+			var cid = ajaxify.data.category.cid;
+			$.ajax({
+				url: config.relative_path + '/api/v1/categories/' + cid,
+				method: 'put',
+				data: updateHash,
+			}).done(function (res) {
+				app.flags._unsaved = false;
+				app.alert({
+					title: 'Updated Categories',
+					message: 'Category "' + res.response.name + '" was successfully updated.',
+					type: 'success',
+					timeout: 2000,
 				});
-				modified_categories = {};
-			}
+				updateHash = {};
+			}).fail(function (ev) {
+				app.alertError(ev.responseJSON.status.message);
+			});
+
 			return false;
 		});
 
@@ -224,55 +224,51 @@ define('admin/manage/category', [
 
 		$('button[data-action="setParent"], button[data-action="changeParent"]').on('click', Category.launchParentSelector);
 		$('button[data-action="removeParent"]').on('click', function () {
-			var payload = {};
-			payload[ajaxify.data.category.cid] = {
-				parentCid: 0,
-			};
-
-			socket.emit('admin.categories.update', payload, function (err) {
-				if (err) {
-					return app.alertError(err.message);
-				}
+			$.ajax({
+				url: config.relative_path + '/api/v1/categories/' + ajaxify.data.category.cid,
+				method: 'put',
+				data: {
+					parentCid: 0,
+				},
+			}).done(function () {
 				$('button[data-action="removeParent"]').parent().addClass('hide');
 				$('button[data-action="changeParent"]').parent().addClass('hide');
 				$('button[data-action="setParent"]').removeClass('hide');
+			}).fail(function (ev) {
+				app.alertError(ev.responseJSON.status.message);
 			});
 		});
 		$('button[data-action="toggle"]').on('click', function () {
-			var payload = {};
 			var $this = $(this);
 			var disabled = $this.attr('data-disabled') === '1';
-			payload[ajaxify.data.category.cid] = {
-				disabled: disabled ? 0 : 1,
-			};
-			socket.emit('admin.categories.update', payload, function (err) {
-				if (err) {
-					return app.alertError(err.message);
-				}
+			$.ajax({
+				url: config.relative_path + '/api/v1/categories/' + ajaxify.data.category.cid,
+				method: 'put',
+				data: {
+					disabled: disabled ? 0 : 1,
+				},
+			}).done(function () {
 				$this.translateText(!disabled ? '[[admin/manage/categories:enable]]' : '[[admin/manage/categories:disable]]');
 				$this.toggleClass('btn-primary', !disabled).toggleClass('btn-danger', disabled);
 				$this.attr('data-disabled', disabled ? 0 : 1);
+			}).fail(function (ev) {
+				app.alertError(ev.responseJSON.status.message);
 			});
 		});
 	};
 
 	function modified(el) {
-		var cid = ajaxify.data.category.cid;
-
-		if (cid) {
-			var value;
-			if ($(el).is(':checkbox')) {
-				value = $(el).is(':checked') ? 1 : 0;
-			} else {
-				value = $(el).val();
-			}
-
-			modified_categories[cid] = modified_categories[cid] || {};
-			modified_categories[cid][$(el).attr('data-name')] = value;
-
-			app.flags = app.flags || {};
-			app.flags._unsaved = true;
+		var value;
+		if ($(el).is(':checkbox')) {
+			value = $(el).is(':checked') ? 1 : 0;
+		} else {
+			value = $(el).val();
 		}
+
+		updateHash[$(el).attr('data-name')] = value;
+
+		app.flags = app.flags || {};
+		app.flags._unsaved = true;
 	}
 
 	function handleTags() {
@@ -306,16 +302,13 @@ define('admin/manage/category', [
 			});
 
 			categorySelector.modal(categories, function (parentCid) {
-				var payload = {};
-
-				payload[ajaxify.data.category.cid] = {
-					parentCid: parentCid,
-				};
-
-				socket.emit('admin.categories.update', payload, function (err) {
-					if (err) {
-						return app.alertError(err.message);
-					}
+				$.ajax({
+					url: config.relative_path + '/api/v1/categories/' + ajaxify.data.category.cid,
+					method: 'put',
+					data: {
+						parentCid: parentCid,
+					},
+				}).done(function () {
 					var parent = allCategories.filter(function (category) {
 						return category && parseInt(category.cid, 10) === parseInt(parentCid, 10);
 					});
@@ -325,6 +318,8 @@ define('admin/manage/category', [
 					$('button[data-action="setParent"]').addClass('hide');
 					var buttonHtml = '<i class="fa ' + parent.icon + '"></i> ' + parent.name;
 					$('button[data-action="changeParent"]').html(buttonHtml).parent().removeClass('hide');
+				}).fail(function (ev) {
+					app.alertError(ev.responseJSON.status.message);
 				});
 			});
 		});

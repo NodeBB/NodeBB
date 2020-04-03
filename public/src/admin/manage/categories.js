@@ -195,18 +195,18 @@ define('admin/manage/categories', [
 	};
 
 	Categories.toggle = function (cids, disabled) {
-		var payload = {};
-
-		cids.forEach(function (cid) {
-			payload[cid] = {
-				disabled: disabled ? 1 : 0,
-			};
+		var requests = cids.map(function (cid) {
+			return $.ajax({
+				url: config.relative_path + '/api/v1/categories/' + cid,
+				method: 'put',
+				data: {
+					disabled: disabled ? 1 : 0,
+				},
+			});
 		});
 
-		socket.emit('admin.categories.update', payload, function (err) {
-			if (err) {
-				return app.alertError(err.message);
-			}
+		$.when(requests).fail(function (ev) {
+			app.alertError(ev.responseJSON.status.message);
 		});
 	};
 
@@ -236,7 +236,14 @@ define('admin/manage/categories', [
 			}
 
 			newCategoryId = -1;
-			socket.emit('admin.categories.update', modified);
+
+			Object.keys(modified).forEach(function (cid) {
+				$.ajax({
+					url: config.relative_path + '/api/v1/categories/' + cid,
+					method: 'put',
+					data: modified[cid],
+				});
+			});
 		}
 	}
 

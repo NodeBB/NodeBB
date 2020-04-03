@@ -51,6 +51,8 @@ Categories.purge = async function (socket, cid) {
 };
 
 Categories.update = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'PUT /api/v1/categories/:cid');
+
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');
 	}

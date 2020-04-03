@@ -3,7 +3,7 @@
 const router = require('express').Router();
 const middleware = require('../../middleware');
 const controllers = require('../../controllers');
-const routeHelpers = require('../../routes/helpers');
+const routeHelpers = require('../helpers');
 
 const setupApiRoute = routeHelpers.setupApiRoute;
 
@@ -11,26 +11,9 @@ module.exports = function () {
 	const middlewares = [middleware.authenticate];
 
 	setupApiRoute(router, '/', middleware, [...middlewares, middleware.checkRequired.bind(null, ['name'])], 'post', controllers.write.categories.create);
-
-	// app.post('/', apiMiddleware.requireUser, apiMiddleware.requireAdmin, function(req, res) {
-	// 	if (!utils.checkRequired(['name'], req, res)) {
-	// 		return false;
-	// 	}
-
-	// 	Categories.create(req.body, function(err, categoryObj) {
-	// 		return errorHandler.handle(err, res, categoryObj);
-	// 	});
-	// });
+	setupApiRoute(router, '/:cid', middleware, [...middlewares], 'put', controllers.write.categories.update);
 
 	// app.route('/:cid')
-	// 	.put(apiMiddleware.requireUser, apiMiddleware.requireAdmin, apiMiddleware.validateCid, function(req, res) {
-	// 		var payload = {};
-	// 		payload[req.params.cid] = req.body;
-
-	// 		Categories.update(payload, function(err) {
-	// 			return errorHandler.handle(err, res);
-	// 		});
-	// 	})
 	// 	.delete(apiMiddleware.requireUser, apiMiddleware.requireAdmin, apiMiddleware.validateCid, function(req, res) {
 	// 		Categories.purge(req.params.cid, req.user.uid, function(err) {
 	// 			return errorHandler.handle(err, res);
