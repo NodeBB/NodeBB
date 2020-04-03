@@ -149,11 +149,6 @@ function addCoreRoutes(app, router, middleware) {
 	];
 	var staticOptions = {
 		maxAge: app.enabled('cache') ? 5184000000 : 0,
-		setHeaders: (res, filePath) => {
-			if (filePath === path.resolve(nconf.get('upload_path'), '../openapi/read.yaml')) {
-				res.set('Access-Control-Allow-Origin', '*');
-			}
-		},
 	};
 
 	if (path.resolve(__dirname, '../../public/uploads') !== nconf.get('upload_path')) {
