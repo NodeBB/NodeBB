@@ -8,6 +8,10 @@ info:
     # Introduction
 
     The following document outlines every Read API route available via NodeBB. Unlike the write API, the v1.x API was coded organically, and is **not** strictly RESTful. These shortcomings will be addressed in the v2.x version of the API.
+
+    ## Authentication
+
+    Authentication with this API is done via cookies. A valid login session is required for API calls that pertain to operations involving a logged-in user. For example, `/api/unread` is a route showing unread topics, and is not accessible by guest users.
 tags:
   - name: home
     description: Routes used at the forum index only
@@ -38,6 +42,8 @@ paths:
     get:
       tags:
         - home
+      description: |
+        This route is used to populate the homepage of NodeBB. It is the main access point of the forum, and shows a list of categories for navigation purposes.
       summary: /api/
       responses:
         "200":
@@ -599,19 +605,6 @@ paths:
                         - index
                         - teaserPid
                         - thumb
-                  recentCards:
-                    type: object
-                    properties:
-                      title:
-                        type: string
-                      opacity:
-                        type: string
-                      textShadow:
-                        type: string
-                      enableCarousel:
-                        type: number
-                      enableCarouselPagination:
-                        type: number
                   _header:
                     type: object
                     properties:
@@ -701,8 +694,19 @@ paths:
           in: path
           required: true
           schema:
-            type: string
-      responses: {}
+            type: number
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pid:
+                    type: number
+                  content:
+                    type: string
   /api/admin:
     get:
       tags:
