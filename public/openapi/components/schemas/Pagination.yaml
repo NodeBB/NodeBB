@@ -1,0 +1,44 @@
+Pagination:
+  type: object
+  properties:
+    pagination:
+      type: object
+      properties:
+        prev:
+          type: object
+          properties:
+            page:
+              type: number
+            active:
+              type: boolean
+        next:
+          type: object
+          properties:
+            page:
+              type: number
+            active:
+              type: boolean
+        first:
+          type: object
+          properties:
+            page:
+              type: number
+            active:
+              type: boolean
+        last:
+          type: object
+          properties:
+            page:
+              type: number
+            active:
+              type: boolean
+        rel:
+          type: array
+          items: {}
+        pages:
+          type: array
+          items: {}
+        currentPage:
+          type: number
+        pageCount:
+          type: number

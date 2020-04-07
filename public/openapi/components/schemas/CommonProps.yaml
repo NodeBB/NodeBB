@@ -1,0 +1,94 @@
+CommonProps:
+  type: object
+  properties:
+    loggedIn:
+      type: boolean
+      description: true if user is logged in, false otherwise
+    relative_path:
+      type: string
+      description: |
+        if NodeBB is installed in a subfolder this becomes the path to the forum. For example if your forum url is
+        mycompany.com/community then relative_path will be /community. If your forum url is myforum.com then relative path will be empty string.
+    template:
+      type: object
+      properties:
+        name:
+          type: string
+      additionalProperties:
+        type: object
+    url:
+      type: string
+      description: base url of the current page, does not include query params
+    bodyClass:
+      type: string
+      description: the css class string that is appended to the body element
+    _header:
+      type: object
+      description: list of meta and link tags that are added to the head element
+      properties:
+        tags:
+          type: object
+          properties:
+            meta:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  content:
+                    type: string
+                  noEscape:
+                    type: boolean
+                  property:
+                    type: string
+                required:
+                  - name
+                  - content
+                  - noEscape
+                  - property
+            link:
+              type: array
+              items:
+                type: object
+                properties:
+                  rel:
+                    type: string
+                  type:
+                    type: string
+                  href:
+                    type: string
+                  title:
+                    type: string
+                  sizes:
+                    type: string
+                required:
+                  - rel
+                  - href
+                  - type
+                  - sizes
+    widgets:
+      type: object
+      description: rendered widgets
+      properties:
+        header:
+          type: array
+          items:
+            type: object
+            properties:
+              html:
+                type: string
+        sidebar:
+          type: array
+          items:
+            type: object
+            properties:
+              html:
+                type: string
+        footer:
+          type: array
+          items:
+            type: object
+            properties:
+              html:
+                type: string
