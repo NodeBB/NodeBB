@@ -9704,8 +9704,10 @@ paths:
       tags:
         - tags
       summary: /api/tags/{tag}
+      description: Returns a list of topics that are tagged with {tag}
       parameters:
         - name: tag
+          description: The tag used to retrieve the topics
           in: path
           required: true
           schema:
@@ -9720,6 +9722,7 @@ paths:
                 properties:
                   topics:
                     type: array
+                    description: An array of topics that are all tagged with {tag}
                     items:
                       type: object
                       properties:
@@ -10118,13 +10121,12 @@ paths:
                           properties:
                             html:
                               type: string
-        "304":
-          description: ""
   /api/tags:
     get:
       tags:
         - tags
       summary: /api/tags
+      description: Returns a list of tags with the most topics
       responses:
         "200":
           description: ""
@@ -10135,15 +10137,19 @@ paths:
                 properties:
                   tags:
                     type: array
+                    description: An array of tags with the most topics
                     items:
                       type: object
                       properties:
                         value:
                           type: string
+                          description: The raw tag
                         score:
                           type: number
+                          description: Number of topics tagged by this tag
                         valueEscaped:
                           type: string
+                          description: This is the escaped tag value, equal to validator.escape(value)
                         color:
                           type: string
                         bgColor:
