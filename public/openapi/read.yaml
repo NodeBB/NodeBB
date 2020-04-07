@@ -9712,6 +9712,12 @@ paths:
           required: true
           schema:
             type: string
+        - name: page
+          description: Page number used in pagination
+          in: query
+          required: false
+          schema:
+            type: number
       responses:
         "200":
           description: ""
