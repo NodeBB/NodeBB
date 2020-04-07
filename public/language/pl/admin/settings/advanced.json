@@ -15,7 +15,7 @@
 	"headers.acah": "Kontrola-Dostępu-Zezwól-Nagłówki",
 	"hsts": "Strict Transport Security",
 	"hsts.enabled": "Włączony HSTS (zalecane)",
-	"hsts.maxAge": "HSTS Max Age",
+	"hsts.maxAge": "Maksymalny wiek HSTS",
 	"hsts.subdomains": "Uwzględnij subdomeny w nagłówku HSTS",
 	"hsts.preload": "Zezwól na wstępne ładowanie nagłówka HSTS",
 	"hsts.help": "Jeśli ta opcja jest włączona, dla tej witryny zostanie ustawiony nagłówek HSTS. Możesz zdecydować, czy uwzględnić subdomeny i wstępnie ładować flagi w nagłówku. Jeśli masz wątpliwości, możesz zostawić te pola niezaznaczone. <a href=\"%1\">Więcej informacji<i class=\"fa fa-external-link\"></i></a>",
