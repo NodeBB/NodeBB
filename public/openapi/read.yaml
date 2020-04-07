@@ -10071,7 +10071,7 @@ paths:
       tags:
         - tags
       summary: /api/tags
-      description: Returns a list of tags with the most topics
+      description: Returns a list of tags sorted by the most topics
       responses:
         "200":
           description: ""
@@ -10082,7 +10082,7 @@ paths:
                 properties:
                   tags:
                     type: array
-                    description: An array of tags with the most topics
+                    description: An array of tags sorted by the most topics
                     items:
                       type: object
                       properties:
@@ -10177,10 +10177,11 @@ paths:
     get:
       tags:
         - topics
-      summary: /api/popular
+      summary: Popular Topics
+      description: Returns a list of topics sorted by most replies. In an event of a tie breaker, the topic with the most views. Can be filtered by All Time, Day, Week, or Month.
       responses:
         "200":
-          description: ""
+          description: An array of topic objects sorted by most replies and views.
           content:
             application/json:
               schema:
@@ -10603,10 +10604,11 @@ paths:
     get:
       tags:
         - topics
-      summary: /api/recent
+      summary: Recent Topics
+      description: Returns a list of topics sorted by timestamp.
       responses:
         "200":
-          description: ""
+          description: An array of topic objects sorted by timestamp.
           content:
             application/json:
               schema:
@@ -11030,10 +11032,11 @@ paths:
     get:
       tags:
         - topics
-      summary: /api/top
+      summary: Top Topics
+      description: Returns a list of topics sorted by most upvotes.
       responses:
         "200":
-          description: ""
+          description: An array of topic objects sorted by most upvotes.
           content:
             application/json:
               schema:
@@ -11476,10 +11479,11 @@ paths:
     get:
       tags:
         - topics
-      summary: /api/unread
+      summary: Unread Topics
+      description: Returns a list of the current user's unread topics, sorted by the last post's timestamp.
       responses:
         "200":
-          description: ""
+          description: An array of unread topic objects sorted by the last post's timestamp.
           content:
             application/json:
               schema:
