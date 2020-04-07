@@ -33,6 +33,73 @@ tags:
     description: Disparate method of categorizing topics
   - name: shorthand
     description: Convenience and utility routes for accessing other part of the API
+components:
+  schemas:
+    CommonProps:
+      type: object
+      properties:
+        loggedIn:
+          type: boolean
+        relative_path:
+          type: string
+        url:
+          type: string
+        bodyClass:
+          type: string
+        _header:
+          type: object
+          properties:
+            tags:
+              type: object
+              properties:
+                meta:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      content:
+                        type: string
+                      noEscape:
+                        type: boolean
+                      property:
+                        type: string
+                    required:
+                      - name
+                      - content
+                      - noEscape
+                      - property
+                link:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      rel:
+                        type: string
+                      type:
+                        type: string
+                      href:
+                        type: string
+                      title:
+                        type: string
+                      sizes:
+                        type: string
+                    required:
+                      - rel
+                      - href
+                      - type
+                      - sizes
+        widgets:
+          type: object
+          properties:
+            footer:
+              type: array
+              items:
+                type: object
+                properties:
+                  html:
+                    type: string
 paths:
   /api/:
     get:
@@ -45,469 +112,409 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  title:
-                    type: string
-                  categories:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        cid:
-                          type: number
-                        name:
-                          type: string
-                        description:
-                          type: string
-                        icon:
-                          type: string
-                        slug:
-                          type: string
-                        topic_count:
-                          type: number
-                        order:
-                          type: number
-                        bgColor:
-                          type: string
-                        link:
-                          type: string
-                        class:
-                          type: string
-                        numRecentReplies:
-                          type: number
-                        color:
-                          type: string
-                        post_count:
-                          type: number
-                        descriptionParsed:
-                          type: string
-                        parentCid:
-                          type: number
-                        disabled:
-                          type: number
-                        isSection:
-                          type: number
-                        totalPostCount:
-                          type: number
-                        totalTopicCount:
-                          type: number
-                        tagWhitelist:
-                          type: array
-                          items: {}
-                        unread-class:
-                          type: string
-                        children:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              cid:
-                                type: number
-                              name:
-                                type: string
-                              description:
-                                type: string
-                              icon:
-                                type: string
-                              slug:
-                                type: string
-                              topic_count:
-                                type: number
-                              order:
-                                type: number
-                              bgColor:
-                                type: string
-                              link:
-                                type: string
-                              class:
-                                type: string
-                              numRecentReplies:
-                                type: number
-                              color:
-                                type: string
-                              post_count:
-                                type: number
-                              parentCid:
-                                type: number
-                              disabled:
-                                type: number
-                              isSection:
-                                type: number
-                              totalPostCount:
-                                type: number
-                              totalTopicCount:
-                                type: number
-                              descriptionParsed:
-                                type: string
-                              tagWhitelist:
-                                type: array
-                                items: {}
-                              unread-class:
-                                type: string
-                              children:
-                                type: array
-                                items: {}
-                              parent:
-                                type: object
-                                properties:
-                                  link:
-                                    type: string
-                                  class:
-                                    type: string
-                                  icon:
-                                    type: string
-                                  description:
-                                    type: string
-                                  order:
-                                    type: number
-                                  topic_count:
-                                    type: number
-                                  name:
-                                    type: string
-                                  cid:
-                                    type: number
-                                  post_count:
-                                    type: number
-                                  numRecentReplies:
-                                    type: number
-                                  bgColor:
-                                    type: string
-                                  slug:
-                                    type: string
-                                  color:
-                                    type: string
-                                  disabled:
-                                    type: number
-                                  descriptionParsed:
-                                    type: string
-                                  isSection:
-                                    type: number
-                                  parentCid:
-                                    type: number
-                                  totalPostCount:
-                                    type: number
-                                  totalTopicCount:
-                                    type: number
-                                  tagWhitelist:
-                                    type: array
-                                    items: {}
-                                  unread-class:
-                                    type: string
-                                  imageClass:
-                                    type: string
-                              posts:
-                                type: array
-                                items:
-                                  type: object
-                                  properties:
-                                    pid:
-                                      type: number
-                                    timestamp:
-                                      type: number
-                                    content:
-                                      type: string
-                                    timestampISO:
-                                      type: string
-                                    user:
-                                      type: object
-                                      properties:
-                                        uid:
-                                          type: number
-                                        username:
-                                          type: string
-                                        userslug:
-                                          type: string
-                                        picture:
-                                          nullable: true
-                                          type: string
-                                        icon:text:
-                                          type: string
-                                        icon:bgColor:
-                                          type: string
-                                    index:
-                                      type: number
-                                    cid:
-                                      type: number
-                                    parentCid:
-                                      type: number
-                                    topic:
-                                      type: object
-                                      properties:
-                                        slug:
-                                          type: string
-                                        title:
-                                          type: string
-                                  required:
-                                    - pid
-                                    - timestamp
-                                    - content
-                                    - timestampISO
-                                    - user
-                                    - index
-                                    - cid
-                                    - parentCid
-                                    - topic
-                              imageClass:
-                                type: string
-                              timesClicked:
-                                type: number
-                            required:
-                              - cid
-                              - name
-                              - description
-                              - icon
-                              - bgColor
-                              - color
-                              - slug
-                              - topic_count
-                              - disabled
-                              - order
-                              - link
-                              - numRecentReplies
-                              - class
-                              - post_count
-                              - parentCid
-                              - isSection
-                              - totalPostCount
-                              - totalTopicCount
-                              - descriptionParsed
-                              - tagWhitelist
-                              - unread-class
-                              - children
-                              - parent
-                              - posts
-                              - imageClass
-                              - timesClicked
-                        posts:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              pid:
-                                type: number
-                              timestamp:
-                                type: number
-                              content:
-                                type: string
-                              timestampISO:
-                                type: string
-                              user:
-                                type: object
-                                properties:
-                                  uid:
-                                    type: number
-                                  username:
-                                    type: string
-                                  userslug:
-                                    type: string
-                                  picture:
-                                    nullable: true
-                                    type: string
-                                  icon:text:
-                                    type: string
-                                  icon:bgColor:
-                                    type: string
-                              index:
-                                type: number
-                              cid:
-                                type: number
-                              parentCid:
-                                type: number
-                              topic:
-                                type: object
-                                properties:
-                                  slug:
-                                    type: string
-                                  title:
-                                    type: string
-                            required:
-                              - pid
-                              - timestamp
-                              - content
-                              - timestampISO
-                              - user
-                              - index
-                              - cid
-                              - parentCid
-                              - topic
-                        teaser:
-                          type: object
-                          properties:
-                            url:
-                              type: string
-                            timestampISO:
-                              type: string
-                            pid:
-                              type: number
-                            topic:
-                              type: object
-                              properties:
-                                slug:
-                                  type: string
-                                title:
-                                  type: string
-                        imageClass:
-                          type: string
-                      required:
-                        - cid
-                        - name
-                        - description
-                        - icon
-                        - slug
-                        - topic_count
-                        - disabled
-                        - order
-                        - bgColor
-                        - link
-                        - class
-                        - numRecentReplies
-                        - color
-                        - post_count
-                        - parentCid
-                        - descriptionParsed
-                        - isSection
-                        - totalPostCount
-                        - totalTopicCount
-                        - tagWhitelist
-                        - unread-class
-                        - children
-                        - posts
-                        - teaser
-                        - imageClass
-                  loggedIn:
-                    type: boolean
-                  relative_path:
-                    type: string
-                  template:
-                    type: object
+                allOf:
+                  - type: object
                     properties:
-                      name:
+                      title:
                         type: string
                       categories:
-                        type: boolean
-                  url:
-                    type: string
-                  bodyClass:
-                    type: string
-                  topics:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        tid:
-                          type: number
-                        uid:
-                          type: number
-                        cid:
-                          type: number
-                        mainPid:
-                          type: number
-                        title:
-                          type: string
-                        slug:
-                          type: string
-                        timestamp:
-                          type: number
-                        lastposttime:
-                          type: number
-                        postcount:
-                          type: number
-                        viewcount:
-                          type: number
-                        deleted:
-                          type: number
-                        locked:
-                          type: number
-                        pinned:
-                          type: number
-                        upvotes:
-                          type: number
-                        downvotes:
-                          type: number
-                        titleRaw:
-                          type: string
-                        timestampISO:
-                          type: string
-                        lastposttimeISO:
-                          type: string
-                        votes:
-                          type: number
-                        category:
+                        type: array
+                        items:
                           type: object
                           properties:
                             cid:
                               type: number
                             name:
                               type: string
-                            slug:
+                            description:
                               type: string
                             icon:
                               type: string
-                            image:
-                              nullable: true
-                            imageClass:
-                              nullable: true
+                            slug:
                               type: string
+                            topic_count:
+                              type: number
+                            order:
+                              type: number
                             bgColor:
                               type: string
+                            link:
+                              type: string
+                            class:
+                              type: string
+                            numRecentReplies:
+                              type: number
                             color:
                               type: string
+                            post_count:
+                              type: number
+                            descriptionParsed:
+                              type: string
+                            parentCid:
+                              type: number
                             disabled:
                               type: number
-                        user:
+                            isSection:
+                              type: number
+                            totalPostCount:
+                              type: number
+                            totalTopicCount:
+                              type: number
+                            tagWhitelist:
+                              type: array
+                              items: {}
+                            unread-class:
+                              type: string
+                            children:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  cid:
+                                    type: number
+                                  name:
+                                    type: string
+                                  description:
+                                    type: string
+                                  icon:
+                                    type: string
+                                  slug:
+                                    type: string
+                                  topic_count:
+                                    type: number
+                                  order:
+                                    type: number
+                                  bgColor:
+                                    type: string
+                                  link:
+                                    type: string
+                                  class:
+                                    type: string
+                                  numRecentReplies:
+                                    type: number
+                                  color:
+                                    type: string
+                                  post_count:
+                                    type: number
+                                  parentCid:
+                                    type: number
+                                  disabled:
+                                    type: number
+                                  isSection:
+                                    type: number
+                                  totalPostCount:
+                                    type: number
+                                  totalTopicCount:
+                                    type: number
+                                  descriptionParsed:
+                                    type: string
+                                  tagWhitelist:
+                                    type: array
+                                    items: {}
+                                  unread-class:
+                                    type: string
+                                  children:
+                                    type: array
+                                    items: {}
+                                  parent:
+                                    type: object
+                                    properties:
+                                      link:
+                                        type: string
+                                      class:
+                                        type: string
+                                      icon:
+                                        type: string
+                                      description:
+                                        type: string
+                                      order:
+                                        type: number
+                                      topic_count:
+                                        type: number
+                                      name:
+                                        type: string
+                                      cid:
+                                        type: number
+                                      post_count:
+                                        type: number
+                                      numRecentReplies:
+                                        type: number
+                                      bgColor:
+                                        type: string
+                                      slug:
+                                        type: string
+                                      color:
+                                        type: string
+                                      disabled:
+                                        type: number
+                                      descriptionParsed:
+                                        type: string
+                                      isSection:
+                                        type: number
+                                      parentCid:
+                                        type: number
+                                      totalPostCount:
+                                        type: number
+                                      totalTopicCount:
+                                        type: number
+                                      tagWhitelist:
+                                        type: array
+                                        items: {}
+                                      unread-class:
+                                        type: string
+                                      imageClass:
+                                        type: string
+                                  posts:
+                                    type: array
+                                    items:
+                                      type: object
+                                      properties:
+                                        pid:
+                                          type: number
+                                        timestamp:
+                                          type: number
+                                        content:
+                                          type: string
+                                        timestampISO:
+                                          type: string
+                                        user:
+                                          type: object
+                                          properties:
+                                            uid:
+                                              type: number
+                                            username:
+                                              type: string
+                                            userslug:
+                                              type: string
+                                            picture:
+                                              nullable: true
+                                              type: string
+                                            icon:text:
+                                              type: string
+                                            icon:bgColor:
+                                              type: string
+                                        index:
+                                          type: number
+                                        cid:
+                                          type: number
+                                        parentCid:
+                                          type: number
+                                        topic:
+                                          type: object
+                                          properties:
+                                            slug:
+                                              type: string
+                                            title:
+                                              type: string
+                                      required:
+                                        - pid
+                                        - timestamp
+                                        - content
+                                        - timestampISO
+                                        - user
+                                        - index
+                                        - cid
+                                        - parentCid
+                                        - topic
+                                  imageClass:
+                                    type: string
+                                  timesClicked:
+                                    type: number
+                                required:
+                                  - cid
+                                  - name
+                                  - description
+                                  - icon
+                                  - bgColor
+                                  - color
+                                  - slug
+                                  - topic_count
+                                  - disabled
+                                  - order
+                                  - link
+                                  - numRecentReplies
+                                  - class
+                                  - post_count
+                                  - parentCid
+                                  - isSection
+                                  - totalPostCount
+                                  - totalTopicCount
+                                  - descriptionParsed
+                                  - tagWhitelist
+                                  - unread-class
+                                  - children
+                                  - parent
+                                  - posts
+                                  - imageClass
+                                  - timesClicked
+                            posts:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  pid:
+                                    type: number
+                                  timestamp:
+                                    type: number
+                                  content:
+                                    type: string
+                                  timestampISO:
+                                    type: string
+                                  user:
+                                    type: object
+                                    properties:
+                                      uid:
+                                        type: number
+                                      username:
+                                        type: string
+                                      userslug:
+                                        type: string
+                                      picture:
+                                        nullable: true
+                                        type: string
+                                      icon:text:
+                                        type: string
+                                      icon:bgColor:
+                                        type: string
+                                  index:
+                                    type: number
+                                  cid:
+                                    type: number
+                                  parentCid:
+                                    type: number
+                                  topic:
+                                    type: object
+                                    properties:
+                                      slug:
+                                        type: string
+                                      title:
+                                        type: string
+                                required:
+                                  - pid
+                                  - timestamp
+                                  - content
+                                  - timestampISO
+                                  - user
+                                  - index
+                                  - cid
+                                  - parentCid
+                                  - topic
+                            teaser:
+                              type: object
+                              properties:
+                                url:
+                                  type: string
+                                timestampISO:
+                                  type: string
+                                pid:
+                                  type: number
+                                topic:
+                                  type: object
+                                  properties:
+                                    slug:
+                                      type: string
+                                    title:
+                                      type: string
+                            imageClass:
+                              type: string
+                          required:
+                            - cid
+                            - name
+                            - description
+                            - icon
+                            - slug
+                            - topic_count
+                            - disabled
+                            - order
+                            - bgColor
+                            - link
+                            - class
+                            - numRecentReplies
+                            - color
+                            - post_count
+                            - parentCid
+                            - descriptionParsed
+                            - isSection
+                            - totalPostCount
+                            - totalTopicCount
+                            - tagWhitelist
+                            - unread-class
+                            - children
+                            - posts
+                            - teaser
+                            - imageClass
+                      template:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          categories:
+                            type: boolean
+                      topics:
+                        type: array
+                        items:
                           type: object
                           properties:
+                            tid:
+                              type: number
                             uid:
                               type: number
-                            username:
+                            cid:
+                              type: number
+                            mainPid:
+                              type: number
+                            title:
                               type: string
-                            userslug:
+                            slug:
                               type: string
-                            reputation:
+                            timestamp:
+                              type: number
+                            lastposttime:
                               type: number
                             postcount:
                               type: number
-                            picture:
-                              nullable: true
-                              type: string
-                            signature:
-                              nullable: true
-                              type: string
-                            banned:
+                            viewcount:
                               type: number
-                            status:
-                              type: string
-                            icon:text:
-                              type: string
-                            icon:bgColor:
-                              type: string
-                            banned_until_readable:
-                              type: string
-                            oldUid:
+                            deleted:
                               type: number
-                            groupTitle:
-                              type: string
-                            groupTitleArray:
-                              type: array
-                              items: {}
-                            fullname:
-                              type: string
-                        teaser:
-                          type: object
-                          properties:
-                            pid:
+                            locked:
                               type: number
-                            uid:
+                            pinned:
                               type: number
-                            timestamp:
+                            upvotes:
                               type: number
-                            tid:
+                            downvotes:
                               type: number
-                            content:
+                            titleRaw:
                               type: string
                             timestampISO:
                               type: string
+                            lastposttimeISO:
+                              type: string
+                            votes:
+                              type: number
+                            category:
+                              type: object
+                              properties:
+                                cid:
+                                  type: number
+                                name:
+                                  type: string
+                                slug:
+                                  type: string
+                                icon:
+                                  type: string
+                                image:
+                                  nullable: true
+                                imageClass:
+                                  nullable: true
+                                  type: string
+                                bgColor:
+                                  type: string
+                                color:
+                                  type: string
+                                disabled:
+                                  type: number
                             user:
                               type: object
                               properties:
@@ -517,178 +524,155 @@ paths:
                                   type: string
                                 userslug:
                                   type: string
+                                reputation:
+                                  type: number
+                                postcount:
+                                  type: number
                                 picture:
                                   nullable: true
+                                  type: string
+                                signature:
+                                  nullable: true
+                                  type: string
+                                banned:
+                                  type: number
+                                status:
                                   type: string
                                 icon:text:
                                   type: string
                                 icon:bgColor:
                                   type: string
-                            index:
-                              type: number
-                        tags:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              value:
-                                type: string
-                              valueEscaped:
-                                type: string
-                              color:
-                                type: string
-                              bgColor:
-                                type: string
-                              score:
-                                type: number
-                            required:
-                              - value
-                              - valueEscaped
-                              - color
-                              - bgColor
-                              - score
-                        isOwner:
-                          type: boolean
-                        ignored:
-                          type: boolean
-                        unread:
-                          type: boolean
-                        bookmark:
-                          nullable: true
-                        unreplied:
-                          type: boolean
-                        icons:
-                          type: array
-                          items: {}
-                        index:
-                          type: number
-                        thumb:
-                          type: string
-                        teaserPid:
-                          type: number
-                      required:
-                        - tid
-                        - uid
-                        - cid
-                        - mainPid
-                        - title
-                        - slug
-                        - timestamp
-                        - lastposttime
-                        - postcount
-                        - viewcount
-                        - deleted
-                        - locked
-                        - pinned
-                        - upvotes
-                        - downvotes
-                        - titleRaw
-                        - timestampISO
-                        - lastposttimeISO
-                        - votes
-                        - category
-                        - user
-                        - teaser
-                        - tags
-                        - isOwner
-                        - ignored
-                        - unread
-                        - bookmark
-                        - unreplied
-                        - icons
-                        - index
-                        - teaserPid
-                        - thumb
-                  recentCards:
-                    type: object
-                    properties:
-                      title:
-                        type: string
-                      opacity:
-                        type: string
-                      textShadow:
-                        type: string
-                      enableCarousel:
-                        type: number
-                      enableCarouselPagination:
-                        type: number
-                  _header:
-                    type: object
-                    properties:
-                      tags:
-                        type: object
-                        properties:
-                          meta:
-                            type: array
-                            items:
+                                banned_until_readable:
+                                  type: string
+                                oldUid:
+                                  type: number
+                                groupTitle:
+                                  type: string
+                                groupTitleArray:
+                                  type: array
+                                  items: {}
+                                fullname:
+                                  type: string
+                            teaser:
                               type: object
                               properties:
-                                name:
-                                  type: string
+                                pid:
+                                  type: number
+                                uid:
+                                  type: number
+                                timestamp:
+                                  type: number
+                                tid:
+                                  type: number
                                 content:
                                   type: string
-                                noEscape:
-                                  type: boolean
-                                property:
+                                timestampISO:
                                   type: string
-                              required:
-                                - name
-                                - content
-                                - noEscape
-                                - property
-                          link:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                rel:
-                                  type: string
-                                type:
-                                  type: string
-                                href:
-                                  type: string
-                                title:
-                                  type: string
-                                sizes:
-                                  type: string
-                              required:
-                                - rel
-                                - href
-                                - type
-                                - sizes
-                  widgets:
-                    type: object
-                    properties:
-                      sidebar:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            html:
+                                user:
+                                  type: object
+                                  properties:
+                                    uid:
+                                      type: number
+                                    username:
+                                      type: string
+                                    userslug:
+                                      type: string
+                                    picture:
+                                      nullable: true
+                                      type: string
+                                    icon:text:
+                                      type: string
+                                    icon:bgColor:
+                                      type: string
+                                index:
+                                  type: number
+                            tags:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  value:
+                                    type: string
+                                  valueEscaped:
+                                    type: string
+                                  color:
+                                    type: string
+                                  bgColor:
+                                    type: string
+                                  score:
+                                    type: number
+                                required:
+                                  - value
+                                  - valueEscaped
+                                  - color
+                                  - bgColor
+                                  - score
+                            isOwner:
+                              type: boolean
+                            ignored:
+                              type: boolean
+                            unread:
+                              type: boolean
+                            bookmark:
+                              nullable: true
+                            unreplied:
+                              type: boolean
+                            icons:
+                              type: array
+                              items: {}
+                            index:
+                              type: number
+                            thumb:
                               type: string
+                            teaserPid:
+                              type: number
                           required:
-                            - html
-                      header:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            html:
-                              type: string
-                      footer:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            html:
-                              type: string
-                      motd:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            html:
-                              type: string
+                            - tid
+                            - uid
+                            - cid
+                            - mainPid
+                            - title
+                            - slug
+                            - timestamp
+                            - lastposttime
+                            - postcount
+                            - viewcount
+                            - deleted
+                            - locked
+                            - pinned
+                            - upvotes
+                            - downvotes
+                            - titleRaw
+                            - timestampISO
+                            - lastposttimeISO
+                            - votes
+                            - category
+                            - user
+                            - teaser
+                            - tags
+                            - isOwner
+                            - ignored
+                            - unread
+                            - bookmark
+                            - unreplied
+                            - icons
+                            - index
+                            - teaserPid
+                            - thumb
+                      recentCards:
+                        type: object
+                        properties:
+                          title:
+                            type: string
+                          opacity:
+                            type: string
+                          textShadow:
+                            type: string
+                          enableCarousel:
+                            type: number
+                          enableCarouselPagination:
+                            type: number
+                  - $ref: '#/components/schemas/CommonProps'
         "304":
           description: ""
   "/api/post/{pid}/raw":
@@ -9724,124 +9708,79 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  topics:
-                    type: array
-                    description: An array of topics that are all tagged with {tag}
-                    items:
-                      type: object
-                      properties:
-                        tid:
-                          type: number
-                        uid:
-                          type: number
-                        cid:
-                          type: number
-                        mainPid:
-                          type: number
-                        title:
-                          type: string
-                        slug:
-                          type: string
-                        timestamp:
-                          type: number
-                        lastposttime:
-                          type: number
-                        postcount:
-                          type: number
-                        viewcount:
-                          type: number
-                        teaserPid:
-                          oneOf:
-                            - type: number
-                            - type: string
-                        deleted:
-                          type: number
-                        locked:
-                          type: number
-                        pinned:
-                          type: number
-                        upvotes:
-                          type: number
-                        downvotes:
-                          type: number
-                        titleRaw:
-                          type: string
-                        timestampISO:
-                          type: string
-                        lastposttimeISO:
-                          type: string
-                        votes:
-                          type: number
-                        category:
+                allOf:
+                  - type: object
+                    properties:
+                      topics:
+                        type: array
+                        description: An array of topics that are all tagged with {tag}
+                        items:
                           type: object
                           properties:
+                            tid:
+                              type: number
+                            uid:
+                              type: number
                             cid:
                               type: number
-                            name:
+                            mainPid:
+                              type: number
+                            title:
                               type: string
                             slug:
                               type: string
-                            icon:
-                              type: string
-                            image:
-                              nullable: true
-                            imageClass:
-                              nullable: true
-                              type: string
-                            bgColor:
-                              type: string
-                            color:
-                              type: string
-                            disabled:
+                            timestamp:
                               type: number
-                        user:
-                          type: object
-                          properties:
-                            uid:
-                              type: number
-                            username:
-                              type: string
-                            userslug:
-                              type: string
-                            reputation:
+                            lastposttime:
                               type: number
                             postcount:
                               type: number
-                            picture:
-                              nullable: true
-                              type: string
-                            signature:
-                              nullable: true
-                              type: string
-                            banned:
+                            viewcount:
                               type: number
-                            status:
-                              type: string
-                            icon:text:
-                              type: string
-                            icon:bgColor:
-                              type: string
-                            banned_until_readable:
-                              type: string
-                            fullname:
-                              type: string
-                        teaser:
-                          type: object
-                          properties:
-                            pid:
+                            teaserPid:
+                              oneOf:
+                                - type: number
+                                - type: string
+                            deleted:
                               type: number
-                            uid:
+                            locked:
                               type: number
-                            timestamp:
+                            pinned:
                               type: number
-                            tid:
+                            upvotes:
                               type: number
-                            content:
+                            downvotes:
+                              type: number
+                            titleRaw:
                               type: string
                             timestampISO:
                               type: string
+                            lastposttimeISO:
+                              type: string
+                            votes:
+                              type: number
+                            category:
+                              type: object
+                              properties:
+                                cid:
+                                  type: number
+                                name:
+                                  type: string
+                                slug:
+                                  type: string
+                                icon:
+                                  type: string
+                                image:
+                                  nullable: true
+                                imageClass:
+                                  nullable: true
+                                  type: string
+                                bgColor:
+                                  type: string
+                                color:
+                                  type: string
+                                disabled:
+                                  type: number
                             user:
                               type: object
                               properties:
@@ -9851,282 +9790,267 @@ paths:
                                   type: string
                                 userslug:
                                   type: string
+                                reputation:
+                                  type: number
+                                postcount:
+                                  type: number
                                 picture:
                                   nullable: true
+                                  type: string
+                                signature:
+                                  nullable: true
+                                  type: string
+                                banned:
+                                  type: number
+                                status:
                                   type: string
                                 icon:text:
                                   type: string
                                 icon:bgColor:
                                   type: string
-                            index:
-                              type: number
-                        tags:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              value:
-                                type: string
-                              valueEscaped:
-                                type: string
-                              color:
-                                type: string
-                              bgColor:
-                                type: string
-                              score:
-                                type: number
-                            required:
-                              - value
-                              - valueEscaped
-                              - color
-                              - bgColor
-                              - score
-                        isOwner:
-                          type: boolean
-                        ignored:
-                          type: boolean
-                        unread:
-                          type: boolean
-                        bookmark:
-                          nullable: true
-                        unreplied:
-                          type: boolean
-                        icons:
-                          type: array
-                          items: {}
-                        index:
-                          type: number
-                        thumb:
-                          type: string
-                        isQuestion:
-                          nullable: true
-                          type: number
-                        isSolved:
-                          type: number
-                      required:
-                        - tid
-                        - uid
-                        - cid
-                        - mainPid
-                        - title
-                        - slug
-                        - timestamp
-                        - lastposttime
-                        - postcount
-                        - viewcount
-                        - teaserPid
-                        - deleted
-                        - locked
-                        - pinned
-                        - upvotes
-                        - downvotes
-                        - titleRaw
-                        - timestampISO
-                        - lastposttimeISO
-                        - votes
-                        - category
-                        - user
-                        - teaser
-                        - tags
-                        - isOwner
-                        - ignored
-                        - unread
-                        - bookmark
-                        - unreplied
-                        - icons
-                        - index
-                        - thumb
-                        - isQuestion
-                        - isSolved
-                  tag:
-                    type: string
-                  breadcrumbs:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        text:
-                          type: string
-                        url:
-                          type: string
-                      required:
-                        - text
-                        - url
-                  title:
-                    type: string
-                  categories:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        cid:
-                          type: number
-                        name:
-                          type: string
-                        level:
-                          type: string
-                        icon:
-                          type: string
-                        parentCid:
-                          type: number
-                        color:
-                          type: string
-                        bgColor:
-                          type: string
-                        selected:
-                          type: boolean
-                        imageClass:
-                          type: string
-                      required:
-                        - cid
-                        - name
-                        - level
-                        - icon
-                        - parentCid
-                        - color
-                        - bgColor
-                        - selected
-                        - imageClass
-                  pagination:
-                    type: object
-                    properties:
-                      rel:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            rel:
-                              type: string
-                            href:
-                              type: string
-                      pages:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            page:
-                              type: number
-                            active:
-                              type: boolean
-                            qs:
-                              type: string
-                            separator:
-                              type: boolean
-                          required:
-                            - page
-                            - active
-                            - qs
-                      currentPage:
-                        type: number
-                      pageCount:
-                        type: number
-                      prev:
-                        type: object
-                        properties:
-                          page:
-                            type: number
-                          active:
-                            type: boolean
-                          qs:
-                            type: string
-                      next:
-                        type: object
-                        properties:
-                          page:
-                            type: number
-                          active:
-                            type: boolean
-                          qs:
-                            type: string
-                      first:
-                        type: object
-                        properties:
-                          page:
-                            type: number
-                          active:
-                            type: boolean
-                          qs:
-                            type: string
-                      last:
-                        type: object
-                        properties:
-                          page:
-                            type: number
-                          active:
-                            type: boolean
-                          qs:
-                            type: string
-                  rssFeedUrl:
-                    type: string
-                  loggedIn:
-                    type: boolean
-                  relative_path:
-                    type: string
-                  template:
-                    type: object
-                    properties:
-                      name:
-                        type: string
-                      tag:
-                        type: boolean
-                  url:
-                    type: string
-                  bodyClass:
-                    type: string
-                  _header:
-                    type: object
-                    properties:
-                      tags:
-                        type: object
-                        properties:
-                          meta:
-                            type: array
-                            items:
+                                banned_until_readable:
+                                  type: string
+                                fullname:
+                                  type: string
+                            teaser:
                               type: object
                               properties:
-                                name:
-                                  type: string
+                                pid:
+                                  type: number
+                                uid:
+                                  type: number
+                                timestamp:
+                                  type: number
+                                tid:
+                                  type: number
                                 content:
                                   type: string
-                                noEscape:
-                                  type: boolean
-                                property:
+                                timestampISO:
                                   type: string
-                              required:
-                                - name
-                                - content
-                                - noEscape
-                                - property
-                          link:
+                                user:
+                                  type: object
+                                  properties:
+                                    uid:
+                                      type: number
+                                    username:
+                                      type: string
+                                    userslug:
+                                      type: string
+                                    picture:
+                                      nullable: true
+                                      type: string
+                                    icon:text:
+                                      type: string
+                                    icon:bgColor:
+                                      type: string
+                                index:
+                                  type: number
+                            tags:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  value:
+                                    type: string
+                                  valueEscaped:
+                                    type: string
+                                  color:
+                                    type: string
+                                  bgColor:
+                                    type: string
+                                  score:
+                                    type: number
+                                required:
+                                  - value
+                                  - valueEscaped
+                                  - color
+                                  - bgColor
+                                  - score
+                            isOwner:
+                              type: boolean
+                            ignored:
+                              type: boolean
+                            unread:
+                              type: boolean
+                            bookmark:
+                              nullable: true
+                            unreplied:
+                              type: boolean
+                            icons:
+                              type: array
+                              items: {}
+                            index:
+                              type: number
+                            thumb:
+                              type: string
+                            isQuestion:
+                              nullable: true
+                              type: number
+                            isSolved:
+                              type: number
+                          required:
+                            - tid
+                            - uid
+                            - cid
+                            - mainPid
+                            - title
+                            - slug
+                            - timestamp
+                            - lastposttime
+                            - postcount
+                            - viewcount
+                            - teaserPid
+                            - deleted
+                            - locked
+                            - pinned
+                            - upvotes
+                            - downvotes
+                            - titleRaw
+                            - timestampISO
+                            - lastposttimeISO
+                            - votes
+                            - category
+                            - user
+                            - teaser
+                            - tags
+                            - isOwner
+                            - ignored
+                            - unread
+                            - bookmark
+                            - unreplied
+                            - icons
+                            - index
+                            - thumb
+                            - isQuestion
+                            - isSolved
+                      tag:
+                        type: string
+                      breadcrumbs:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            text:
+                              type: string
+                            url:
+                              type: string
+                          required:
+                            - text
+                            - url
+                      title:
+                        type: string
+                      categories:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            cid:
+                              type: number
+                            name:
+                              type: string
+                            level:
+                              type: string
+                            icon:
+                              type: string
+                            parentCid:
+                              type: number
+                            color:
+                              type: string
+                            bgColor:
+                              type: string
+                            selected:
+                              type: boolean
+                            imageClass:
+                              type: string
+                          required:
+                            - cid
+                            - name
+                            - level
+                            - icon
+                            - parentCid
+                            - color
+                            - bgColor
+                            - selected
+                            - imageClass
+                      pagination:
+                        type: object
+                        properties:
+                          rel:
                             type: array
                             items:
                               type: object
                               properties:
                                 rel:
                                   type: string
-                                type:
-                                  type: string
                                 href:
                                   type: string
-                                title:
+                          pages:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                page:
+                                  type: number
+                                active:
+                                  type: boolean
+                                qs:
                                   type: string
-                                sizes:
-                                  type: string
+                                separator:
+                                  type: boolean
                               required:
-                                - rel
-                                - href
-                                - type
-                                - sizes
-                  widgets:
-                    type: object
-                    properties:
-                      footer:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            html:
-                              type: string
+                                - page
+                                - active
+                                - qs
+                          currentPage:
+                            type: number
+                          pageCount:
+                            type: number
+                          prev:
+                            type: object
+                            properties:
+                              page:
+                                type: number
+                              active:
+                                type: boolean
+                              qs:
+                                type: string
+                          next:
+                            type: object
+                            properties:
+                              page:
+                                type: number
+                              active:
+                                type: boolean
+                              qs:
+                                type: string
+                          first:
+                            type: object
+                            properties:
+                              page:
+                                type: number
+                              active:
+                                type: boolean
+                              qs:
+                                type: string
+                          last:
+                            type: object
+                            properties:
+                              page:
+                                type: number
+                              active:
+                                type: boolean
+                              qs:
+                                type: string
+                      rssFeedUrl:
+                        type: string
+                      template:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          tag:
+                            type: boolean
+                  - $ref: '#/components/schemas/CommonProps'
   /api/tags:
     get:
       tags:
@@ -10139,119 +10063,59 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  tags:
-                    type: array
-                    description: An array of tags with the most topics
-                    items:
-                      type: object
-                      properties:
-                        value:
-                          type: string
-                          description: The raw tag
-                        score:
-                          type: number
-                          description: Number of topics tagged by this tag
-                        valueEscaped:
-                          type: string
-                          description: This is the escaped tag value, equal to validator.escape(value)
-                        color:
-                          type: string
-                        bgColor:
-                          type: string
-                      required:
-                        - value
-                        - score
-                        - valueEscaped
-                        - color
-                        - bgColor
-                  displayTagSearch:
-                    type: boolean
-                  nextStart:
-                    type: number
-                  breadcrumbs:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        text:
-                          type: string
-                        url:
-                          type: string
-                      required:
-                        - text
-                  title:
-                    type: string
-                  loggedIn:
-                    type: boolean
-                  relative_path:
-                    type: string
-                  template:
-                    type: object
+                allOf:
+                  - type: object
                     properties:
-                      name:
-                        type: string
                       tags:
+                        type: array
+                        description: An array of tags with the most topics
+                        items:
+                          type: object
+                          properties:
+                            value:
+                              type: string
+                              description: The raw tag
+                            score:
+                              type: number
+                              description: Number of topics tagged by this tag
+                            valueEscaped:
+                              type: string
+                              description: This is the escaped tag value, equal to validator.escape(value)
+                            color:
+                              type: string
+                            bgColor:
+                              type: string
+                          required:
+                            - value
+                            - score
+                            - valueEscaped
+                            - color
+                            - bgColor
+                      displayTagSearch:
                         type: boolean
-                  url:
-                    type: string
-                  bodyClass:
-                    type: string
-                  _header:
-                    type: object
-                    properties:
-                      tags:
-                        type: object
-                        properties:
-                          meta:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                name:
-                                  type: string
-                                content:
-                                  type: string
-                                noEscape:
-                                  type: boolean
-                                property:
-                                  type: string
-                              required:
-                                - name
-                                - content
-                                - noEscape
-                                - property
-                          link:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                rel:
-                                  type: string
-                                type:
-                                  type: string
-                                href:
-                                  type: string
-                                title:
-                                  type: string
-                                sizes:
-                                  type: string
-                              required:
-                                - rel
-                                - href
-                                - type
-                                - sizes
-                  widgets:
-                    type: object
-                    properties:
-                      footer:
+                      nextStart:
+                        type: number
+                      breadcrumbs:
                         type: array
                         items:
                           type: object
                           properties:
-                            html:
+                            text:
                               type: string
+                            url:
+                              type: string
+                          required:
+                            - text
+                      template:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          tags:
+                            type: boolean
+                      title:
+                        type: string
+                  - $ref: '#/components/schemas/CommonProps'
   /api/categories:
     get:
       tags:
