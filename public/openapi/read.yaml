@@ -50,6 +50,13 @@ components:
           description: |
             if NodeBB is installed in a subfolder this becomes the path to the forum. For example if your forum url is
             mycompany.com/community then relative_path will be /community. If your forum url is myforum.com then relative path will be empty string.
+        template:
+          type: object
+          properties:
+            name:
+              type: string
+          additionalProperties:
+            type: object
         url:
           type: string
           description: base url of the current page, does not include query params
@@ -591,7 +598,6 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/CommonProps'
                   - type: object
                     properties:
                       title:
@@ -886,13 +892,6 @@ paths:
                                       type: string
                             imageClass:
                               type: string
-                      template:
-                        type: object
-                        properties:
-                          name:
-                            type: string
-                          categories:
-                            type: boolean
                       topics:
                         type: array
                         items:
@@ -1085,8 +1084,7 @@ paths:
                               type: string
                             teaserPid:
                               type: number
-        "304":
-          description: ""
+                  - $ref: '#/components/schemas/CommonProps'
   "/api/post/{pid}/raw":
     get:
       tags:
@@ -12725,13 +12723,6 @@ paths:
                               type: string
                             cover:thumb:url:
                               type: string
-                      template:
-                        type: object
-                        properties:
-                          name:
-                            type: string
-                          account/profile:
-                            type: boolean
                   - $ref: '#/components/schemas/CommonProps'
   "/api/user/{userslug}/following":
     get:
@@ -12814,13 +12805,6 @@ paths:
                               type: string
                             administrator:
                               type: boolean
-                      template:
-                        type: object
-                        properties:
-                          name:
-                            type: string
-                          account/following:
-                            type: boolean
                   - $ref: '#/components/schemas/Breadcrumbs'
                   - $ref: '#/components/schemas/Pagination'
                   - $ref: '#/components/schemas/CommonProps'
@@ -12905,13 +12889,6 @@ paths:
                               type: string
                             administrator:
                               type: boolean
-                      template:
-                        type: object
-                        properties:
-                          name:
-                            type: string
-                          account/followers:
-                            type: boolean
                   - $ref: '#/components/schemas/Pagination'
                   - $ref: '#/components/schemas/Breadcrumbs'
                   - $ref: '#/components/schemas/CommonProps'
@@ -13023,13 +13000,6 @@ paths:
                               type: string
                             selected:
                               type: boolean
-                      template:
-                        type: object
-                        properties:
-                          name:
-                            type: string
-                          account/posts:
-                            type: boolean
                   - $ref: '#/components/schemas/Pagination'
                   - $ref: '#/components/schemas/Breadcrumbs'
                   - $ref: '#/components/schemas/CommonProps'
@@ -13362,65 +13332,6 @@ paths:
                               type: string
                             selected:
                               type: boolean
-                      loggedIn:
-                        type: boolean
-                      relative_path:
-                        type: string
-                      template:
-                        type: object
-                        properties:
-                          name:
-                            type: string
-                          account/topics:
-                            type: boolean
-                      url:
-                        type: string
-                      bodyClass:
-                        type: string
-                      _header:
-                        type: object
-                        properties:
-                          tags:
-                            type: object
-                            properties:
-                              meta:
-                                type: array
-                                items:
-                                  type: object
-                                  properties:
-                                    name:
-                                      type: string
-                                    content:
-                                      type: string
-                                    noEscape:
-                                      type: boolean
-                                    property:
-                                      type: string
-                              link:
-                                type: array
-                                items:
-                                  type: object
-                                  properties:
-                                    rel:
-                                      type: string
-                                    type:
-                                      type: string
-                                    href:
-                                      type: string
-                                    title:
-                                      type: string
-                                    sizes:
-                                      type: string
-                      widgets:
-                        type: object
-                        properties:
-                          footer:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                html:
-                                  type: string
                   - $ref: '#/components/schemas/CommonProps'
   "/api/user/{userslug}/best":
     get:
@@ -13563,13 +13474,6 @@ paths:
                               type: string
                             selected:
                               type: boolean
-                      template:
-                        type: object
-                        properties:
-                          name:
-                            type: string
-                          account/best:
-                            type: boolean
                   - $ref: '#/components/schemas/Pagination'
                   - $ref: '#/components/schemas/Breadcrumbs'
                   - $ref: '#/components/schemas/CommonProps'
@@ -14327,65 +14231,6 @@ paths:
                               type: string
                             selected:
                               type: boolean
-                      loggedIn:
-                        type: boolean
-                      relative_path:
-                        type: string
-                      template:
-                        type: object
-                        properties:
-                          name:
-                            type: string
-                          account/watched:
-                            type: boolean
-                      url:
-                        type: string
-                      bodyClass:
-                        type: string
-                      _header:
-                        type: object
-                        properties:
-                          tags:
-                            type: object
-                            properties:
-                              meta:
-                                type: array
-                                items:
-                                  type: object
-                                  properties:
-                                    name:
-                                      type: string
-                                    content:
-                                      type: string
-                                    noEscape:
-                                      type: boolean
-                                    property:
-                                      type: string
-                              link:
-                                type: array
-                                items:
-                                  type: object
-                                  properties:
-                                    rel:
-                                      type: string
-                                    type:
-                                      type: string
-                                    href:
-                                      type: string
-                                    title:
-                                      type: string
-                                    sizes:
-                                      type: string
-                      widgets:
-                        type: object
-                        properties:
-                          footer:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                html:
-                                  type: string
                   - $ref: '#/components/schemas/Breadcrumbs'
                   - $ref: '#/components/schemas/CommonProps'
   "/api/user/{userslug}/ignored":
@@ -14431,13 +14276,6 @@ paths:
                               type: string
                             selected:
                               type: boolean
-                      template:
-                        type: object
-                        properties:
-                          name:
-                            type: string
-                          account/ignored:
-                            type: boolean
                   - $ref: '#/components/schemas/Pagination'
                   - $ref: '#/components/schemas/Breadcrumbs'
                   - $ref: '#/components/schemas/CommonProps'
@@ -14521,13 +14359,6 @@ paths:
                       editButtons:
                         type: array
                         items: {}
-                      template:
-                        type: object
-                        properties:
-                          name:
-                            type: string
-                          account/edit:
-                            type: boolean
                   - $ref: '#/components/schemas/Breadcrumbs'
                   - $ref: '#/components/schemas/CommonProps'
   "/api/user/{userslug}/edit/username":
@@ -14555,13 +14386,6 @@ paths:
                         type: boolean
                       title:
                         type: string
-                      template:
-                        type: object
-                        properties:
-                          name:
-                            type: string
-                          account/edit/username:
-                            type: boolean
                   - $ref: '#/components/schemas/Breadcrumbs'
                   - $ref: '#/components/schemas/CommonProps'
   "/api/user/{userslug}/edit/email":
@@ -14589,13 +14413,6 @@ paths:
                         type: boolean
                       title:
                         type: string
-                      template:
-                        type: object
-                        properties:
-                          name:
-                            type: string
-                          account/edit/email:
-                            type: boolean
                   - $ref: '#/components/schemas/Breadcrumbs'
                   - $ref: '#/components/schemas/CommonProps'
   "/api/user/{userslug}/edit/password":
@@ -14627,13 +14444,6 @@ paths:
                         type: number
                       title:
                         type: string
-                      template:
-                        type: object
-                        properties:
-                          name:
-                            type: string
-                          account/edit/password:
-                            type: boolean
                   - $ref: '#/components/schemas/Breadcrumbs'
                   - $ref: '#/components/schemas/CommonProps'
   "/api/user/{userslug}/info":
@@ -14731,13 +14541,6 @@ paths:
                         items: {}
                       title:
                         type: string
-                      template:
-                        type: object
-                        properties:
-                          name:
-                            type: string
-                          account/info:
-                            type: boolean
                   - $ref: '#/components/schemas/Pagination'
                   - $ref: '#/components/schemas/Breadcrumbs'
                   - $ref: '#/components/schemas/CommonProps'
@@ -15046,13 +14849,6 @@ paths:
                         type: number
                       title:
                         type: string
-                      template:
-                        type: object
-                        properties:
-                          name:
-                            type: string
-                          account/settings:
-                            type: boolean
                   - $ref: '#/components/schemas/Breadcrumbs'
                   - $ref: '#/components/schemas/CommonProps'
   "/api/user/{userslug}/uploads":
@@ -15083,13 +14879,6 @@ paths:
                         type: boolean
                       title:
                         type: string
-                      template:
-                        type: object
-                        properties:
-                          name:
-                            type: string
-                          account/uploads:
-                            type: boolean
                   - $ref: '#/components/schemas/Pagination'
                   - $ref: '#/components/schemas/Breadcrumbs'
                   - $ref: '#/components/schemas/CommonProps'
@@ -15125,13 +14914,6 @@ paths:
                             type: boolean
                       title:
                         type: string
-                      template:
-                        type: object
-                        properties:
-                          name:
-                            type: string
-                          account/consent:
-                            type: boolean
                   - $ref: '#/components/schemas/Breadcrumbs'
                   - $ref: '#/components/schemas/CommonProps'
   "/api/user/{userslug}/blocks":
@@ -15160,13 +14942,6 @@ paths:
                         items: {}
                       title:
                         type: string
-                      template:
-                        type: object
-                        properties:
-                          name:
-                            type: string
-                          account/blocks:
-                            type: boolean
                   - $ref: '#/components/schemas/Pagination'
                   - $ref: '#/components/schemas/Breadcrumbs'
                   - $ref: '#/components/schemas/CommonProps'
@@ -15189,7 +14964,6 @@ paths:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/UserObjectFull'
-                  - $ref: '#/components/schemas/CommonProps'
                   - type: object
                     properties:
                       sessions:
@@ -15206,13 +14980,7 @@ paths:
                               type: string
                             url:
                               type: string
-                      template:
-                        type: object
-                        properties:
-                          name:
-                            type: string
-                          account/sessions:
-                            type: boolean
+                  - $ref: '#/components/schemas/CommonProps'
   "/api/user/{userslug}/session/{uuid}":
     delete:
       tags:
