@@ -42,8 +42,10 @@ paths:
     get:
       tags:
         - home
-      description: |
-        This route is used to populate the homepage of NodeBB. It is the main access point of the forum, and shows a list of categories for navigation purposes.
+      description: >
+        This route is used to populate the homepage of NodeBB. It is the main
+        access point of the forum, and shows a list of categories for navigation
+        purposes.
       summary: /api/
       responses:
         "200":
@@ -94,7 +96,8 @@ paths:
                               type: string
                             parentCid:
                               type: number
-                              description: The category identifier for the category that is the immediate ancestor of the current category
+                              description: The category identifier for the category that is the immediate
+                                ancestor of the current category
                             disabled:
                               type: number
                             isSection:
@@ -146,7 +149,8 @@ paths:
                                     description: The number of posts in the category
                                   parentCid:
                                     type: number
-                                    description: The category identifier for the category that is the immediate ancestor of the current category
+                                    description: The category identifier for the category that is the immediate
+                                      ancestor of the current category
                                   disabled:
                                     type: number
                                   isSection:
@@ -207,7 +211,8 @@ paths:
                                         type: number
                                       parentCid:
                                         type: number
-                                        description: The category identifier for the category that is the immediate ancestor of the current category
+                                        description: The category identifier for the category that is the immediate
+                                          ancestor of the current category
                                       totalPostCount:
                                         type: number
                                         description: The number of posts in the category
@@ -246,16 +251,22 @@ paths:
                                               description: A friendly name for a given user account
                                             userslug:
                                               type: string
-                                              description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                              description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                                removed, etc.)
                                             picture:
                                               nullable: true
                                               type: string
                                             icon:text:
                                               type: string
-                                              description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                              description: A single-letter representation of a username. This is used in the
+                                                auto-generated icon given to
+                                                users without an avatar
                                             icon:bgColor:
                                               type: string
-                                              description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                              description: A six-character hexadecimal colour code assigned to the user. This
+                                                value is used in conjunction
+                                                with `icon:text` for the user's
+                                                auto-generated icon
                                               example: "#f44336"
                                         index:
                                           type: number
@@ -264,7 +275,8 @@ paths:
                                           description: A category identifier
                                         parentCid:
                                           type: number
-                                          description: The category identifier for the category that is the immediate ancestor of the current category
+                                          description: The category identifier for the category that is the immediate
+                                            ancestor of the current category
                                         topic:
                                           type: object
                                           properties:
@@ -301,16 +313,22 @@ paths:
                                         description: A friendly name for a given user account
                                       userslug:
                                         type: string
-                                        description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                        description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                          removed, etc.)
                                       picture:
                                         nullable: true
                                         type: string
                                       icon:text:
                                         type: string
-                                        description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                        description: A single-letter representation of a username. This is used in the
+                                          auto-generated icon given to users
+                                          without an avatar
                                       icon:bgColor:
                                         type: string
-                                        description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                        description: A six-character hexadecimal colour code assigned to the user. This
+                                          value is used in conjunction with
+                                          `icon:text` for the user's
+                                          auto-generated icon
                                         example: "#f44336"
                                   index:
                                     type: number
@@ -319,7 +337,8 @@ paths:
                                     description: A category identifier
                                   parentCid:
                                     type: number
-                                    description: The category identifier for the category that is the immediate ancestor of the current category
+                                    description: The category identifier for the category that is the immediate
+                                      ancestor of the current category
                                   topic:
                                     type: object
                                     properties:
@@ -362,7 +381,8 @@ paths:
                               description: A category identifier
                             mainPid:
                               type: number
-                              description: The post id of the first post in this topic (also called the "original post")
+                              description: The post id of the first post in this topic (also called the
+                                "original post")
                             title:
                               type: string
                             slug:
@@ -381,7 +401,8 @@ paths:
                               type: number
                             pinned:
                               type: number
-                              description: Whether or not this particular topic is pinned to the top of the category
+                              description: Whether or not this particular topic is pinned to the top of the
+                                category
                             upvotes:
                               type: number
                             downvotes:
@@ -429,7 +450,8 @@ paths:
                                   description: A friendly name for a given user account
                                 userslug:
                                   type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
                                 reputation:
                                   type: number
                                 postcount:
@@ -446,10 +468,15 @@ paths:
                                   type: string
                                 icon:text:
                                   type: string
-                                  description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
                                 icon:bgColor:
                                   type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
                                   example: "#f44336"
                                 banned_until_readable:
                                   type: string
@@ -491,16 +518,22 @@ paths:
                                       description: A friendly name for a given user account
                                     userslug:
                                       type: string
-                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                        removed, etc.)
                                     picture:
                                       nullable: true
                                       type: string
                                     icon:text:
                                       type: string
-                                      description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                      description: A single-letter representation of a username. This is used in the
+                                        auto-generated icon given to users
+                                        without an avatar
                                     icon:bgColor:
                                       type: string
-                                      description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                      description: A six-character hexadecimal colour code assigned to the user. This
+                                        value is used in conjunction with
+                                        `icon:text` for the user's
+                                        auto-generated icon
                                       example: "#f44336"
                                 index:
                                   type: number
@@ -538,7 +571,7 @@ paths:
                               type: string
                             teaserPid:
                               type: number
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/post/{pid}/raw":
     get:
       tags:
@@ -653,11 +686,11 @@ paths:
                           timestamp:
                             type: number
                           user:
-                            $ref: 'components/schemas/UserObject.yaml#/UserObject'
+                            $ref: components/schemas/UserObject.yaml#/UserObject
                           timestampISO:
                             type: string
                             description: An ISO 8601 formatted date string (complementing `timestamp`)
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/general/languages:
     get:
       tags:
@@ -699,7 +732,7 @@ paths:
                               type: string
                             name:
                               type: string
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/general/social:
     get:
       tags:
@@ -717,7 +750,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/admin/manage/categories/{category_id}":
     get:
       tags:
@@ -758,7 +791,8 @@ paths:
                             type: string
                           parentCid:
                             type: number
-                            description: The category identifier for the category that is the immediate ancestor of the current category
+                            description: The category identifier for the category that is the immediate
+                              ancestor of the current category
                           topic_count:
                             type: number
                             description: The number of topics in the category
@@ -814,7 +848,8 @@ paths:
                                 type: string
                               parentCid:
                                 type: number
-                                description: The category identifier for the category that is the immediate ancestor of the current category
+                                description: The category identifier for the category that is the immediate
+                                  ancestor of the current category
                               topic_count:
                                 type: number
                                 description: The number of topics in the category
@@ -857,7 +892,7 @@ paths:
                       customClasses:
                         type: array
                         items: {}
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/admin/manage/categories/{category_id}/analytics":
     get:
       tags:
@@ -899,7 +934,7 @@ paths:
                             type: array
                             items:
                               type: number
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/admin/manage/privileges/{cid?}":
     get:
       tags:
@@ -1013,7 +1048,8 @@ paths:
                               type: string
                             parentCid:
                               type: number
-                              description: The category identifier for the category that is the immediate ancestor of the current category
+                              description: The category identifier for the category that is the immediate
+                                ancestor of the current category
                             color:
                               type: string
                             bgColor:
@@ -1034,7 +1070,8 @@ paths:
                             type: string
                           parentCid:
                             type: number
-                            description: The category identifier for the category that is the immediate ancestor of the current category
+                            description: The category identifier for the category that is the immediate
+                              ancestor of the current category
                           color:
                             type: string
                           bgColor:
@@ -1044,7 +1081,7 @@ paths:
                       cid:
                         type: number
                         description: A category identifier
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/manage/tags:
     get:
       tags:
@@ -1080,7 +1117,7 @@ paths:
                       users:
                         type: array
                         items:
-                          $ref: 'components/schemas/UserObject.yaml#/UserObject'
+                          $ref: components/schemas/UserObject.yaml#/UserObject
                       page:
                         type: number
                       pageCount:
@@ -1162,7 +1199,7 @@ paths:
                         type: boolean
                       adminInviteOnly:
                         type: boolean
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/manage/users/search:
     get:
       tags:
@@ -1182,7 +1219,7 @@ paths:
                       users:
                         type: array
                         items: {}
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/manage/users/latest:
     get:
       tags:
@@ -1200,7 +1237,7 @@ paths:
                       users:
                         type: array
                         items:
-                          $ref: 'components/schemas/UserObject.yaml#/UserObject'
+                          $ref: components/schemas/UserObject.yaml#/UserObject
                       page:
                         type: number
                       pageCount:
@@ -1282,7 +1319,7 @@ paths:
                         type: boolean
                       adminInviteOnly:
                         type: boolean
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/manage/users/not-validated:
     get:
       tags:
@@ -1300,7 +1337,7 @@ paths:
                       users:
                         type: array
                         items:
-                          $ref: 'components/schemas/UserObject.yaml#/UserObject'
+                          $ref: components/schemas/UserObject.yaml#/UserObject
                       page:
                         type: number
                       pageCount:
@@ -1382,7 +1419,7 @@ paths:
                         type: boolean
                       adminInviteOnly:
                         type: boolean
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/manage/users/no-posts:
     get:
       tags:
@@ -1541,7 +1578,7 @@ paths:
                             type: number
                       yourid:
                         type: number
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/admin/manage/groups/{name}":
     get:
       tags:
@@ -1613,7 +1650,7 @@ paths:
                             type: array
                             items:
                               allOf:
-                                - $ref: 'components/schemas/UserObject.yaml#/UserObject'
+                                - $ref: components/schemas/UserObject.yaml#/UserObject
                                 - type: object
                                   properties:
                                     isOwner:
@@ -1651,7 +1688,7 @@ paths:
                         type: number
                       maximumGroupTitleLength:
                         type: number
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/manage/uploads:
     get:
       tags:
@@ -1690,10 +1727,14 @@ paths:
                               description: A user identifier
                             icon:text:
                               type: string
-                              description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                              description: A single-letter representation of a username. This is used in the
+                                auto-generated icon given to users without an
+                                avatar
                             icon:bgColor:
                               type: string
-                              description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                              description: A six-character hexadecimal colour code assigned to the user. This
+                                value is used in conjunction with `icon:text`
+                                for the user's auto-generated icon
                               example: "#f44336"
                             lastDelivery:
                               type: string
@@ -1766,9 +1807,8 @@ paths:
                                 type: boolean
                               qs:
                                 type: string
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/admin/settings/{term?}":
-  # TODO: The responses seem totally wrong here, maybe use additionalProperties
     get:
       tags:
         - admin
@@ -1797,7 +1837,7 @@ paths:
                               type: string
                             label:
                               type: string
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/admin/appearance/{term?}":
     get:
       tags:
@@ -1815,7 +1855,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/extend/plugins:
     get:
       tags:
@@ -1934,7 +1974,7 @@ paths:
                         type: number
                       version:
                         type: string
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/extend/widgets:
     get:
       tags:
@@ -2025,7 +2065,7 @@ paths:
                               type: string
                             content:
                               type: string
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/extend/rewards:
     get:
       tags:
@@ -2410,7 +2450,7 @@ paths:
                             type: string
                           hitRatio:
                             type: string
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/development/logger:
     get:
       tags:
@@ -2422,7 +2462,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/development/info:
     get:
       tags:
@@ -2688,7 +2728,6 @@ paths:
                       style:
                         type: string
   /api/me:
-    # This is confusing -- /me redirect to user profile, but /api/me doesn't?
     get:
       tags:
         - shorthand
@@ -2699,7 +2738,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: 'components/schemas/UserObject.yaml#/UserObjectFull'
+                $ref: components/schemas/UserObject.yaml#/UserObjectFull
   "/api/user/uid/{uid}":
     get:
       tags:
@@ -2717,7 +2756,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: 'components/schemas/UserObject.yaml#/UserObject'
+                $ref: components/schemas/UserObject.yaml#/UserObject
   "/api/user/username/{username}":
     get:
       tags:
@@ -2735,7 +2774,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: 'components/schemas/UserObject.yaml#/UserObject'
+                $ref: components/schemas/UserObject.yaml#/UserObject
   "/api/user/email/{email}":
     get:
       tags:
@@ -2753,7 +2792,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: 'components/schemas/UserObject.yaml#/UserObject'
+                $ref: components/schemas/UserObject.yaml#/UserObject
   "/api/user/uid/{userslug}/export/posts":
     get:
       tags:
@@ -2853,13 +2892,17 @@ paths:
       tags:
         - categories
       summary: Get a list of categories
-      description: |
-        This route retrieve the list of categories currently available to the accessing user. It doesn't necessarily mean that the user can *enter* the category, as that is a separate privilege. Specifically, this route will return all categories that grant the calling user the "Find Category" privilege.
+      description: >
+        This route retrieve the list of categories currently available to the
+        accessing user. It doesn't necessarily mean that the user can *enter*
+        the category, as that is a separate privilege. Specifically, this route
+        will return all categories that grant the calling user the "Find
+        Category" privilege.
+
 
         Subcategories are also returned, nested under a category's `children` property.
       responses:
         "200":
-          # TODO: Likely, this can be allOf'd with a category data schema... especially since a child category is the same thing *headexplosion*
           description: A list of category objectscurrently available to the accessing user
           content:
             application/json:
@@ -2909,7 +2952,8 @@ paths:
                               type: string
                             parentCid:
                               type: number
-                              description: The category identifier for the category that is the immediate ancestor of the current category
+                              description: The category identifier for the category that is the immediate
+                                ancestor of the current category
                             disabled:
                               type: number
                             isSection:
@@ -2961,7 +3005,8 @@ paths:
                                     description: The number of posts in the category
                                   parentCid:
                                     type: number
-                                    description: The category identifier for the category that is the immediate ancestor of the current category
+                                    description: The category identifier for the category that is the immediate
+                                      ancestor of the current category
                                   disabled:
                                     type: number
                                   isSection:
@@ -3022,7 +3067,8 @@ paths:
                                         type: number
                                       parentCid:
                                         type: number
-                                        description: The category identifier for the category that is the immediate ancestor of the current category
+                                        description: The category identifier for the category that is the immediate
+                                          ancestor of the current category
                                       totalPostCount:
                                         type: number
                                         description: The number of posts in the category
@@ -3061,16 +3107,22 @@ paths:
                                               description: A friendly name for a given user account
                                             userslug:
                                               type: string
-                                              description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                              description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                                removed, etc.)
                                             picture:
                                               nullable: true
                                               type: string
                                             icon:text:
                                               type: string
-                                              description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                              description: A single-letter representation of a username. This is used in the
+                                                auto-generated icon given to
+                                                users without an avatar
                                             icon:bgColor:
                                               type: string
-                                              description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                              description: A six-character hexadecimal colour code assigned to the user. This
+                                                value is used in conjunction
+                                                with `icon:text` for the user's
+                                                auto-generated icon
                                               example: "#f44336"
                                         index:
                                           type: number
@@ -3079,7 +3131,8 @@ paths:
                                           description: A category identifier
                                         parentCid:
                                           type: number
-                                          description: The category identifier for the category that is the immediate ancestor of the current category
+                                          description: The category identifier for the category that is the immediate
+                                            ancestor of the current category
                                         topic:
                                           type: object
                                           properties:
@@ -3116,16 +3169,22 @@ paths:
                                         description: A friendly name for a given user account
                                       userslug:
                                         type: string
-                                        description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                        description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                          removed, etc.)
                                       picture:
                                         nullable: true
                                         type: string
                                       icon:text:
                                         type: string
-                                        description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                        description: A single-letter representation of a username. This is used in the
+                                          auto-generated icon given to users
+                                          without an avatar
                                       icon:bgColor:
                                         type: string
-                                        description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                        description: A six-character hexadecimal colour code assigned to the user. This
+                                          value is used in conjunction with
+                                          `icon:text` for the user's
+                                          auto-generated icon
                                         example: "#f44336"
                                   index:
                                     type: number
@@ -3134,7 +3193,8 @@ paths:
                                     description: A category identifier
                                   parentCid:
                                     type: number
-                                    description: The category identifier for the category that is the immediate ancestor of the current category
+                                    description: The category identifier for the category that is the immediate
+                                      ancestor of the current category
                                   topic:
                                     type: object
                                     properties:
@@ -3186,7 +3246,8 @@ paths:
                               description: A category identifier
                             mainPid:
                               type: number
-                              description: The post id of the first post in this topic (also called the "original post")
+                              description: The post id of the first post in this topic (also called the
+                                "original post")
                             title:
                               type: string
                             slug:
@@ -3211,7 +3272,8 @@ paths:
                               type: number
                             pinned:
                               type: number
-                              description: Whether or not this particular topic is pinned to the top of the category
+                              description: Whether or not this particular topic is pinned to the top of the
+                                category
                             titleRaw:
                               type: string
                             timestampISO:
@@ -3257,7 +3319,8 @@ paths:
                                   type: string
                                 userslug:
                                   type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
                                 reputation:
                                   type: number
                                 postcount:
@@ -3274,10 +3337,15 @@ paths:
                                   type: string
                                 icon:text:
                                   type: string
-                                  description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
                                 icon:bgColor:
                                   type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
                                   example: "#f44336"
                                 banned_until_readable:
                                   type: string
@@ -3310,16 +3378,22 @@ paths:
                                       description: A friendly name for a given user account
                                     userslug:
                                       type: string
-                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                        removed, etc.)
                                     picture:
                                       nullable: true
                                       type: string
                                     icon:text:
                                       type: string
-                                      description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                      description: A single-letter representation of a username. This is used in the
+                                        auto-generated icon given to users
+                                        without an avatar
                                     icon:bgColor:
                                       type: string
-                                      description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                      description: A six-character hexadecimal colour code assigned to the user. This
+                                        value is used in conjunction with
+                                        `icon:text` for the user's
+                                        auto-generated icon
                                       example: "#f44336"
                                 index:
                                   type: number
@@ -3357,14 +3431,16 @@ paths:
                               type: string
                             isQuestion:
                               nullable: true
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/categories/{cid}/moderators":
     get:
       tags:
         - categories
       summary: Get mods for a category
-      description: |
-        This route returns an array of uids that correspond to the moderators for the category in question.
+      description: >
+        This route returns an array of uids that correspond to the moderators
+        for the category in question.
+
 
         **Warning**: This route doesn't seem to be used in NodeBB core, so it may be at risk of removal.
       parameters:
@@ -3376,7 +3452,7 @@ paths:
             type: number
       responses:
         "200":
-          description: "An array of moderators for the requested category"
+          description: An array of moderators for the requested category
           content:
             application/json:
               schema:
@@ -3444,7 +3520,8 @@ paths:
                           description: A friendly name for a given user account
                         userslug:
                           type: string
-                          description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                          description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                            removed, etc.)
                         picture:
                           nullable: true
                           type: string
@@ -3452,10 +3529,13 @@ paths:
                           type: string
                         icon:text:
                           type: string
-                          description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                          description: A single-letter representation of a username. This is used in the
+                            auto-generated icon given to users without an avatar
                         icon:bgColor:
                           type: string
-                          description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                          description: A six-character hexadecimal colour code assigned to the user. This
+                            value is used in conjunction with `icon:text` for
+                            the user's auto-generated icon
                           example: "#f44336"
                     topic:
                       type: object
@@ -3479,7 +3559,8 @@ paths:
                           type: number
                         mainPid:
                           type: number
-                          description: The post id of the first post in this topic (also called the "original post")
+                          description: The post id of the first post in this topic (also called the
+                            "original post")
                         titleRaw:
                           type: string
                     category:
@@ -3496,7 +3577,8 @@ paths:
                           type: string
                         parentCid:
                           type: number
-                          description: The category identifier for the category that is the immediate ancestor of the current category
+                          description: The category identifier for the category that is the immediate
+                            ancestor of the current category
                         bgColor:
                           type: string
                         color:
@@ -3567,7 +3649,6 @@ paths:
                           type: string
                   currentPage:
                     type: number
-
                   pageCount:
                     type: number
                   prev:
@@ -3769,7 +3850,7 @@ paths:
                         type: boolean
                       allowLocalLogin:
                         type: boolean
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/register:
     get:
       tags:
@@ -3835,7 +3916,7 @@ paths:
                               type: string
                       title:
                         type: string
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/register/complete:
     get:
       tags:
@@ -3859,7 +3940,7 @@ paths:
                         type: array
                         items:
                           type: string
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/search:
     get:
       tags:
@@ -3913,17 +3994,23 @@ paths:
                                   description: A friendly name for a given user account
                                 userslug:
                                   type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
                                 picture:
                                   nullable: true
                                 status:
                                   type: string
                                 icon:text:
                                   type: string
-                                  description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
                                 icon:bgColor:
                                   type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
                                   example: "#f44336"
                             topic:
                               type: object
@@ -3947,7 +4034,8 @@ paths:
                                   type: number
                                 mainPid:
                                   type: number
-                                  description: The post id of the first post in this topic (also called the "original post")
+                                  description: The post id of the first post in this topic (also called the
+                                    "original post")
                                 titleRaw:
                                   type: string
                             category:
@@ -3964,7 +4052,8 @@ paths:
                                   type: string
                                 parentCid:
                                   type: number
-                                  description: The category identifier for the category that is the immediate ancestor of the current category
+                                  description: The category identifier for the category that is the immediate
+                                    ancestor of the current category
                                 bgColor:
                                   type: string
                                 color:
@@ -4061,7 +4150,7 @@ paths:
                         type: string
                       searchDefaultSortBy:
                         type: string
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/reset/{code?}":
     get:
       tags:
@@ -4127,7 +4216,8 @@ paths:
                         description: A category identifier
                       mainPid:
                         type: number
-                        description: The post id of the first post in this topic (also called the "original post")
+                        description: The post id of the first post in this topic (also called the
+                          "original post")
                       title:
                         type: string
                       slug:
@@ -4152,7 +4242,8 @@ paths:
                         type: number
                       pinned:
                         type: number
-                        description: Whether or not this particular topic is pinned to the top of the category
+                        description: Whether or not this particular topic is pinned to the top of the
+                          category
                       titleRaw:
                         type: string
                       timestampISO:
@@ -4224,7 +4315,8 @@ paths:
                                   description: A friendly name for a given user account
                                 userslug:
                                   type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
                                 reputation:
                                   type: number
                                 postcount:
@@ -4252,10 +4344,15 @@ paths:
                                     type: string
                                 icon:text:
                                   type: string
-                                  description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
                                 icon:bgColor:
                                   type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
                                   example: "#f44336"
                                 lastonlineISO:
                                   type: string
@@ -4355,7 +4452,8 @@ paths:
                             type: number
                           parentCid:
                             type: number
-                            description: The category identifier for the category that is the immediate ancestor of the current category
+                            description: The category identifier for the category that is the immediate
+                              ancestor of the current category
                           totalPostCount:
                             type: number
                             description: The number of posts in the category
@@ -4545,7 +4643,7 @@ paths:
                                 type: boolean
                               qs:
                                 type: string
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/topic/{topic_id}/{slug?}":
     get:
       tags:
@@ -4582,7 +4680,8 @@ paths:
                         description: A category identifier
                       mainPid:
                         type: number
-                        description: The post id of the first post in this topic (also called the "original post")
+                        description: The post id of the first post in this topic (also called the
+                          "original post")
                       title:
                         type: string
                       slug:
@@ -4607,7 +4706,8 @@ paths:
                         type: number
                       pinned:
                         type: number
-                        description: Whether or not this particular topic is pinned to the top of the category
+                        description: Whether or not this particular topic is pinned to the top of the
+                          category
                       titleRaw:
                         type: string
                       timestampISO:
@@ -4647,7 +4747,8 @@ paths:
                                   description: A friendly name for a given user account
                                 userslug:
                                   type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
                               nullable: true
                               type: object
                             votes:
@@ -4688,15 +4789,21 @@ paths:
                                         description: A friendly name for a given user account
                                       userslug:
                                         type: string
-                                        description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                        description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                          removed, etc.)
                                       picture:
                                         nullable: true
                                       icon:text:
                                         type: string
-                                        description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                        description: A single-letter representation of a username. This is used in the
+                                          auto-generated icon given to users
+                                          without an avatar
                                       icon:bgColor:
                                         type: string
-                                        description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                        description: A six-character hexadecimal colour code assigned to the user. This
+                                          value is used in conjunction with
+                                          `icon:text` for the user's
+                                          auto-generated icon
                                         example: "#f44336"
                                       administrator:
                                         type: boolean
@@ -4733,7 +4840,8 @@ paths:
                                   type: string
                                 userslug:
                                   type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
                                 reputation:
                                   type: number
                                 postcount:
@@ -4762,10 +4870,15 @@ paths:
                                     type: string
                                 icon:text:
                                   type: string
-                                  description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
                                 icon:bgColor:
                                   type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
                                   example: "#f44336"
                                 lastonlineISO:
                                   type: string
@@ -4859,7 +4972,8 @@ paths:
                             type: number
                           parentCid:
                             type: number
-                            description: The category identifier for the category that is the immediate ancestor of the current category
+                            description: The category identifier for the category that is the immediate
+                              ancestor of the current category
                           totalPostCount:
                             type: number
                             description: The number of posts in the category
@@ -5062,12 +5176,16 @@ paths:
                             type: string
                           icon:text:
                             type: string
-                            description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                            description: A single-letter representation of a username. This is used in the
+                              auto-generated icon given to users without an
+                              avatar
                           icon:bgColor:
                             type: string
-                            description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                            description: A six-character hexadecimal colour code assigned to the user. This
+                              value is used in conjunction with `icon:text` for
+                              the user's auto-generated icon
                             example: "#f44336"
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/post/{pid}":
     get:
       tags:
@@ -5149,11 +5267,16 @@ paths:
                                   type: string
                                 icon:bgColor:
                                   type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
                                   example: "#f44336"
                                 icon:text:
                                   type: string
-                                  description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
                             labelClass:
                               type: string
                             target_readable:
@@ -5281,7 +5404,7 @@ paths:
                                 type: boolean
                               qs:
                                 type: string
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/flags/{flagId}":
     get:
       tags:
@@ -5349,7 +5472,8 @@ paths:
                                   description: A friendly name for a given user account
                                 userslug:
                                   type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
                                 picture:
                                   nullable: true
                                 uid:
@@ -5357,10 +5481,15 @@ paths:
                                   description: A user identifier
                                 icon:text:
                                   type: string
-                                  description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
                                 icon:bgColor:
                                   type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
                                   example: "#f44336"
                       notes:
                         type: array
@@ -5373,7 +5502,8 @@ paths:
                             description: A friendly name for a given user account
                           userslug:
                             type: string
-                            description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                            description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                              removed, etc.)
                           picture:
                             nullable: true
                           reputation:
@@ -5383,17 +5513,21 @@ paths:
                             description: A user identifier
                           icon:text:
                             type: string
-                            description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                            description: A single-letter representation of a username. This is used in the
+                              auto-generated icon given to users without an
+                              avatar
                           icon:bgColor:
                             type: string
-                            description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                            description: A six-character hexadecimal colour code assigned to the user. This
+                              value is used in conjunction with `icon:text` for
+                              the user's auto-generated icon
                             example: "#f44336"
                       type_path:
                         type: string
                       assignees:
                         type: array
                         items:
-                          $ref: 'components/schemas/UserObject.yaml#/UserObject'
+                          $ref: components/schemas/UserObject.yaml#/UserObject
                       type_bool:
                         type: object
                         properties:
@@ -5409,7 +5543,7 @@ paths:
                         type: object
                         additionalProperties:
                           type: string
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/post-queue:
     get:
       tags:
@@ -5528,7 +5662,8 @@ paths:
                                   description: A friendly name for a given user account
                                 userslug:
                                   type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
                                 picture:
                                   nullable: true
                                   type: string
@@ -5537,10 +5672,15 @@ paths:
                                   description: A user identifier
                                 icon:text:
                                   type: string
-                                  description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
                                 icon:bgColor:
                                   type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
                                   example: "#f44336"
                             topic:
                               type: object
@@ -5573,7 +5713,8 @@ paths:
                                   type: string
                                 parentCid:
                                   type: number
-                                  description: The category identifier for the category that is the immediate ancestor of the current category
+                                  description: The category identifier for the category that is the immediate
+                                    ancestor of the current category
                                 topic_count:
                                   type: number
                                   description: The number of topics in the category
@@ -5643,7 +5784,7 @@ paths:
                             type: number
                           pageCount:
                             type: number
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/ip-blacklist:
     get:
       tags:
@@ -5701,7 +5842,8 @@ paths:
                               description: A category identifier
                             mainPid:
                               type: number
-                              description: The post id of the first post in this topic (also called the "original post")
+                              description: The post id of the first post in this topic (also called the
+                                "original post")
                             title:
                               type: string
                             slug:
@@ -5724,7 +5866,8 @@ paths:
                               type: number
                             pinned:
                               type: number
-                              description: Whether or not this particular topic is pinned to the top of the category
+                              description: Whether or not this particular topic is pinned to the top of the
+                                category
                             upvotes:
                               type: number
                             downvotes:
@@ -5772,7 +5915,8 @@ paths:
                                   description: A friendly name for a given user account
                                 userslug:
                                   type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
                                 reputation:
                                   type: number
                                 postcount:
@@ -5789,10 +5933,15 @@ paths:
                                   type: string
                                 icon:text:
                                   type: string
-                                  description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
                                 icon:bgColor:
                                   type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
                                   example: "#f44336"
                                 banned_until_readable:
                                   type: string
@@ -5827,16 +5976,22 @@ paths:
                                       description: A friendly name for a given user account
                                     userslug:
                                       type: string
-                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                        removed, etc.)
                                     picture:
                                       nullable: true
                                       type: string
                                     icon:text:
                                       type: string
-                                      description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                      description: A single-letter representation of a username. This is used in the
+                                        auto-generated icon given to users
+                                        without an avatar
                                     icon:bgColor:
                                       type: string
-                                      description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                      description: A six-character hexadecimal colour code assigned to the user. This
+                                        value is used in conjunction with
+                                        `icon:text` for the user's
+                                        auto-generated icon
                                       example: "#f44336"
                                 index:
                                   type: number
@@ -5906,7 +6061,8 @@ paths:
                               type: string
                             parentCid:
                               type: number
-                              description: The category identifier for the category that is the immediate ancestor of the current category
+                              description: The category identifier for the category that is the immediate
+                                ancestor of the current category
                             color:
                               type: string
                             bgColor:
@@ -5982,7 +6138,7 @@ paths:
                                 type: string
                       rssFeedUrl:
                         type: string
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/tags:
     get:
       tags:
@@ -6032,13 +6188,15 @@ paths:
                               type: string
                       title:
                         type: string
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/popular:
     get:
       tags:
         - topics
       summary: Popular Topics
-      description: Returns a list of topics sorted by most replies. In an event of a tie breaker, the topic with the most views. Can be filtered by All Time, Day, Week, or Month.
+      description: Returns a list of topics sorted by most replies. In an event of a
+        tie breaker, the topic with the most views. Can be filtered by All Time,
+        Day, Week, or Month.
       responses:
         "200":
           description: An array of topic objects sorted by most replies and views.
@@ -6080,12 +6238,14 @@ paths:
                               type: number
                             pinned:
                               type: number
-                              description: Whether or not this particular topic is pinned to the top of the category
+                              description: Whether or not this particular topic is pinned to the top of the
+                                category
                             thumb:
                               type: string
                             mainPid:
                               type: number
-                              description: The post id of the first post in this topic (also called the "original post")
+                              description: The post id of the first post in this topic (also called the
+                                "original post")
                             teaserPid:
                               oneOf:
                                 - type: number
@@ -6142,7 +6302,8 @@ paths:
                                   type: string
                                 userslug:
                                   type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
                                 reputation:
                                   type: number
                                 postcount:
@@ -6159,10 +6320,15 @@ paths:
                                   type: string
                                 icon:text:
                                   type: string
-                                  description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
                                 icon:bgColor:
                                   type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
                                   example: "#f44336"
                                 banned_until_readable:
                                   type: string
@@ -6195,16 +6361,22 @@ paths:
                                       description: A friendly name for a given user account
                                     userslug:
                                       type: string
-                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                        removed, etc.)
                                     picture:
                                       nullable: true
                                       type: string
                                     icon:text:
                                       type: string
-                                      description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                      description: A single-letter representation of a username. This is used in the
+                                        auto-generated icon given to users
+                                        without an avatar
                                     icon:bgColor:
                                       type: string
-                                      description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                      description: A six-character hexadecimal colour code assigned to the user. This
+                                        value is used in conjunction with
+                                        `icon:text` for the user's
+                                        auto-generated icon
                                       example: "#f44336"
                                 index:
                                   type: number
@@ -6260,7 +6432,8 @@ paths:
                               type: string
                             parentCid:
                               type: number
-                              description: The category identifier for the category that is the immediate ancestor of the current category
+                              description: The category identifier for the category that is the immediate
+                                ancestor of the current category
                             color:
                               type: string
                             bgColor:
@@ -6402,7 +6575,7 @@ paths:
                               type: string
                             url:
                               type: string
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/recent:
     get:
       tags:
@@ -6438,7 +6611,8 @@ paths:
                               description: A category identifier
                             mainPid:
                               type: number
-                              description: The post id of the first post in this topic (also called the "original post")
+                              description: The post id of the first post in this topic (also called the
+                                "original post")
                             title:
                               type: string
                             slug:
@@ -6463,7 +6637,8 @@ paths:
                               type: number
                             pinned:
                               type: number
-                              description: Whether or not this particular topic is pinned to the top of the category
+                              description: Whether or not this particular topic is pinned to the top of the
+                                category
                             titleRaw:
                               type: string
                             timestampISO:
@@ -6509,7 +6684,8 @@ paths:
                                   type: string
                                 userslug:
                                   type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
                                 reputation:
                                   type: number
                                 postcount:
@@ -6526,10 +6702,15 @@ paths:
                                   type: string
                                 icon:text:
                                   type: string
-                                  description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
                                 icon:bgColor:
                                   type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
                                   example: "#f44336"
                                 banned_until_readable:
                                   type: string
@@ -6562,16 +6743,22 @@ paths:
                                       description: A friendly name for a given user account
                                     userslug:
                                       type: string
-                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                        removed, etc.)
                                     picture:
                                       nullable: true
                                       type: string
                                     icon:text:
                                       type: string
-                                      description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                      description: A single-letter representation of a username. This is used in the
+                                        auto-generated icon given to users
+                                        without an avatar
                                     icon:bgColor:
                                       type: string
-                                      description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                      description: A six-character hexadecimal colour code assigned to the user. This
+                                        value is used in conjunction with
+                                        `icon:text` for the user's
+                                        auto-generated icon
                                       example: "#f44336"
                                 index:
                                   type: number
@@ -6631,7 +6818,8 @@ paths:
                               type: string
                             parentCid:
                               type: number
-                              description: The category identifier for the category that is the immediate ancestor of the current category
+                              description: The category identifier for the category that is the immediate
+                                ancestor of the current category
                             color:
                               type: string
                             bgColor:
@@ -6773,7 +6961,7 @@ paths:
                               type: string
                             url:
                               type: string
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/top:
     get:
       tags:
@@ -6809,7 +6997,8 @@ paths:
                               description: A category identifier
                             mainPid:
                               type: number
-                              description: The post id of the first post in this topic (also called the "original post")
+                              description: The post id of the first post in this topic (also called the
+                                "original post")
                             title:
                               type: string
                             slug:
@@ -6834,7 +7023,8 @@ paths:
                               type: number
                             pinned:
                               type: number
-                              description: Whether or not this particular topic is pinned to the top of the category
+                              description: Whether or not this particular topic is pinned to the top of the
+                                category
                             titleRaw:
                               type: string
                             timestampISO:
@@ -6877,7 +7067,8 @@ paths:
                                   description: A friendly name for a given user account
                                 userslug:
                                   type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
                                 reputation:
                                   type: number
                                 postcount:
@@ -6894,10 +7085,15 @@ paths:
                                   type: string
                                 icon:text:
                                   type: string
-                                  description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
                                 icon:bgColor:
                                   type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
                                   example: "#f44336"
                                 banned_until_readable:
                                   type: string
@@ -6932,16 +7128,22 @@ paths:
                                       description: A friendly name for a given user account
                                     userslug:
                                       type: string
-                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                        removed, etc.)
                                     picture:
                                       nullable: true
                                       type: string
                                     icon:text:
                                       type: string
-                                      description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                      description: A single-letter representation of a username. This is used in the
+                                        auto-generated icon given to users
+                                        without an avatar
                                     icon:bgColor:
                                       type: string
-                                      description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                      description: A six-character hexadecimal colour code assigned to the user. This
+                                        value is used in conjunction with
+                                        `icon:text` for the user's
+                                        auto-generated icon
                                       example: "#f44336"
                                 index:
                                   type: number
@@ -6999,7 +7201,8 @@ paths:
                               type: string
                             parentCid:
                               type: number
-                              description: The category identifier for the category that is the immediate ancestor of the current category
+                              description: The category identifier for the category that is the immediate
+                                ancestor of the current category
                             color:
                               type: string
                             bgColor:
@@ -7024,7 +7227,8 @@ paths:
                             type: string
                           parentCid:
                             type: number
-                            description: The category identifier for the category that is the immediate ancestor of the current category
+                            description: The category identifier for the category that is the immediate
+                              ancestor of the current category
                           color:
                             type: string
                           bgColor:
@@ -7163,14 +7367,14 @@ paths:
                               type: string
                             url:
                               type: string
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/unread:
     get:
       tags:
         - topics
       summary: Unread Topics
-      description: Returns a list of the current user's unread topics, sorted by the last post's timestamp.
-      # TODO: querystring params?
+      description: Returns a list of the current user's unread topics, sorted by the
+        last post's timestamp.
       responses:
         "200":
           description: An array of unread topic objects sorted by the last post's timestamp.
@@ -7200,7 +7404,8 @@ paths:
                               description: A category identifier
                             mainPid:
                               type: number
-                              description: The post id of the first post in this topic (also called the "original post")
+                              description: The post id of the first post in this topic (also called the
+                                "original post")
                             title:
                               type: string
                             slug:
@@ -7225,7 +7430,8 @@ paths:
                               type: number
                             pinned:
                               type: number
-                              description: Whether or not this particular topic is pinned to the top of the category
+                              description: Whether or not this particular topic is pinned to the top of the
+                                category
                             titleRaw:
                               type: string
                             timestampISO:
@@ -7271,7 +7477,8 @@ paths:
                                   type: string
                                 userslug:
                                   type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
                                 reputation:
                                   type: number
                                 postcount:
@@ -7288,10 +7495,15 @@ paths:
                                   type: string
                                 icon:text:
                                   type: string
-                                  description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
                                 icon:bgColor:
                                   type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
                                   example: "#f44336"
                                 banned_until_readable:
                                   type: string
@@ -7324,16 +7536,22 @@ paths:
                                       description: A friendly name for a given user account
                                     userslug:
                                       type: string
-                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                        removed, etc.)
                                     picture:
                                       nullable: true
                                       type: string
                                     icon:text:
                                       type: string
-                                      description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                      description: A single-letter representation of a username. This is used in the
+                                        auto-generated icon given to users
+                                        without an avatar
                                     icon:bgColor:
                                       type: string
-                                      description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                      description: A six-character hexadecimal colour code assigned to the user. This
+                                        value is used in conjunction with
+                                        `icon:text` for the user's
+                                        auto-generated icon
                                       example: "#f44336"
                                 index:
                                   type: number
@@ -7432,7 +7650,8 @@ paths:
                               type: string
                             parentCid:
                               type: number
-                              description: The category identifier for the category that is the immediate ancestor of the current category
+                              description: The category identifier for the category that is the immediate
+                                ancestor of the current category
                             color:
                               type: string
                             bgColor:
@@ -7479,7 +7698,7 @@ paths:
                             type: boolean
                           filter:
                             type: string
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/category/{category_id}/{slug}/{topic_index}":
     get:
       tags:
@@ -7541,7 +7760,8 @@ paths:
                         type: string
                       parentCid:
                         type: number
-                        description: The category identifier for the category that is the immediate ancestor of the current category
+                        description: The category identifier for the category that is the immediate
+                          ancestor of the current category
                       disabled:
                         type: number
                       isSection:
@@ -7592,7 +7812,8 @@ paths:
                               type: string
                             mainPid:
                               type: number
-                              description: The post id of the first post in this topic (also called the "original post")
+                              description: The post id of the first post in this topic (also called the
+                                "original post")
                             upvotes:
                               type: number
                             downvotes:
@@ -7603,7 +7824,8 @@ paths:
                               type: number
                             pinned:
                               type: number
-                              description: Whether or not this particular topic is pinned to the top of the category
+                              description: Whether or not this particular topic is pinned to the top of the
+                                category
                             titleRaw:
                               type: string
                             timestampISO:
@@ -7646,7 +7868,8 @@ paths:
                                   description: A friendly name for a given user account
                                 userslug:
                                   type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
                                 reputation:
                                   type: number
                                 postcount:
@@ -7663,10 +7886,15 @@ paths:
                                   type: string
                                 icon:text:
                                   type: string
-                                  description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
                                 icon:bgColor:
                                   type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
                                   example: "#f44336"
                                 banned_until_readable:
                                   type: string
@@ -7701,16 +7929,22 @@ paths:
                                       description: A friendly name for a given user account
                                     userslug:
                                       type: string
-                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                        removed, etc.)
                                     picture:
                                       nullable: true
                                       type: string
                                     icon:text:
                                       type: string
-                                      description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                      description: A single-letter representation of a username. This is used in the
+                                        auto-generated icon given to users
+                                        without an avatar
                                     icon:bgColor:
                                       type: string
-                                      description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                      description: A six-character hexadecimal colour code assigned to the user. This
+                                        value is used in conjunction with
+                                        `icon:text` for the user's
+                                        auto-generated icon
                                       example: "#f44336"
                                 index:
                                   type: number
@@ -7848,7 +8082,7 @@ paths:
                                 type: boolean
                               qs:
                                 type: string
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/category/{category_id}/{slug?}":
     get:
       tags:
@@ -7907,7 +8141,8 @@ paths:
                         type: string
                       parentCid:
                         type: number
-                        description: The category identifier for the category that is the immediate ancestor of the current category
+                        description: The category identifier for the category that is the immediate
+                          ancestor of the current category
                       disabled:
                         type: number
                       isSection:
@@ -7954,12 +8189,14 @@ paths:
                               type: number
                             pinned:
                               type: number
-                              description: Whether or not this particular topic is pinned to the top of the category
+                              description: Whether or not this particular topic is pinned to the top of the
+                                category
                             thumb:
                               type: string
                             mainPid:
                               type: number
-                              description: The post id of the first post in this topic (also called the "original post")
+                              description: The post id of the first post in this topic (also called the
+                                "original post")
                             teaserPid:
                               type: number
                             upvotes:
@@ -8014,7 +8251,8 @@ paths:
                                   type: string
                                 userslug:
                                   type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
                                 reputation:
                                   type: number
                                 postcount:
@@ -8031,10 +8269,15 @@ paths:
                                   type: string
                                 icon:text:
                                   type: string
-                                  description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
                                 icon:bgColor:
                                   type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
                                   example: "#f44336"
                                 banned_until_readable:
                                   type: string
@@ -8067,16 +8310,22 @@ paths:
                                       description: A friendly name for a given user account
                                     userslug:
                                       type: string
-                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                        removed, etc.)
                                     picture:
                                       nullable: true
                                       type: string
                                     icon:text:
                                       type: string
-                                      description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                      description: A single-letter representation of a username. This is used in the
+                                        auto-generated icon given to users
+                                        without an avatar
                                     icon:bgColor:
                                       type: string
-                                      description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                      description: A six-character hexadecimal colour code assigned to the user. This
+                                        value is used in conjunction with
+                                        `icon:text` for the user's
+                                        auto-generated icon
                                       example: "#f44336"
                                 index:
                                   type: number
@@ -8228,7 +8477,7 @@ paths:
                                 type: boolean
                               qs:
                                 type: string
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/me/*:
     get:
       tags:
@@ -8272,7 +8521,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: 'components/schemas/UserObject.yaml#/UserObjectFull'
+                  - $ref: components/schemas/UserObject.yaml#/UserObjectFull
                   - type: object
                     properties:
                       posts:
@@ -8314,17 +8563,23 @@ paths:
                                   description: A friendly name for a given user account
                                 userslug:
                                   type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
                                 picture:
                                   type: string
                                 status:
                                   type: string
                                 icon:text:
                                   type: string
-                                  description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
                                 icon:bgColor:
                                   type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
                                   example: "#f44336"
                             topic:
                               type: object
@@ -8348,7 +8603,8 @@ paths:
                                   type: number
                                 mainPid:
                                   type: number
-                                  description: The post id of the first post in this topic (also called the "original post")
+                                  description: The post id of the first post in this topic (also called the
+                                    "original post")
                                 titleRaw:
                                   type: string
                             category:
@@ -8365,7 +8621,8 @@ paths:
                                   type: string
                                 parentCid:
                                   type: number
-                                  description: The category identifier for the category that is the immediate ancestor of the current category
+                                  description: The category identifier for the category that is the immediate
+                                    ancestor of the current category
                                 bgColor:
                                   type: string
                                 color:
@@ -8415,17 +8672,23 @@ paths:
                                   description: A friendly name for a given user account
                                 userslug:
                                   type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
                                 picture:
                                   type: string
                                 status:
                                   type: string
                                 icon:text:
                                   type: string
-                                  description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
                                 icon:bgColor:
                                   type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
                                   example: "#f44336"
                             topic:
                               type: object
@@ -8449,7 +8712,8 @@ paths:
                                   type: number
                                 mainPid:
                                   type: number
-                                  description: The post id of the first post in this topic (also called the "original post")
+                                  description: The post id of the first post in this topic (also called the
+                                    "original post")
                                 titleRaw:
                                   type: string
                             category:
@@ -8466,7 +8730,8 @@ paths:
                                   type: string
                                 parentCid:
                                   type: number
-                                  description: The category identifier for the category that is the immediate ancestor of the current category
+                                  description: The category identifier for the category that is the immediate
+                                    ancestor of the current category
                                 bgColor:
                                   type: string
                                 color:
@@ -8516,17 +8781,23 @@ paths:
                                   description: A friendly name for a given user account
                                 userslug:
                                   type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
                                 picture:
                                   type: string
                                 status:
                                   type: string
                                 icon:text:
                                   type: string
-                                  description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
                                 icon:bgColor:
                                   type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
                                   example: "#f44336"
                             topic:
                               type: object
@@ -8550,7 +8821,8 @@ paths:
                                   type: number
                                 mainPid:
                                   type: number
-                                  description: The post id of the first post in this topic (also called the "original post")
+                                  description: The post id of the first post in this topic (also called the
+                                    "original post")
                                 titleRaw:
                                   type: string
                             category:
@@ -8567,7 +8839,8 @@ paths:
                                   type: string
                                 parentCid:
                                   type: number
-                                  description: The category identifier for the category that is the immediate ancestor of the current category
+                                  description: The category identifier for the category that is the immediate
+                                    ancestor of the current category
                                 bgColor:
                                   type: string
                                 color:
@@ -8645,7 +8918,7 @@ paths:
                               type: string
                             cover:thumb:url:
                               type: string
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/following":
     get:
       tags:
@@ -8668,7 +8941,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: 'components/schemas/UserObject.yaml#/UserObjectFull'
+                  - $ref: components/schemas/UserObject.yaml#/UserObjectFull
                   - type: object
                     properties:
                       title:
@@ -8686,7 +8959,8 @@ paths:
                               description: A friendly name for a given user account
                             userslug:
                               type: string
-                              description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                              description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                removed, etc.)
                             picture:
                               nullable: true
                               type: string
@@ -8709,13 +8983,18 @@ paths:
                               type: number
                             joindate:
                               type: number
-                              description: A UNIX timestamp representing the moment the user's account was created
+                              description: A UNIX timestamp representing the moment the user's account was
+                                created
                             icon:text:
                               type: string
-                              description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                              description: A single-letter representation of a username. This is used in the
+                                auto-generated icon given to users without an
+                                avatar
                             icon:bgColor:
                               type: string
-                              description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                              description: A six-character hexadecimal colour code assigned to the user. This
+                                value is used in conjunction with `icon:text`
+                                for the user's auto-generated icon
                               example: "#f44336"
                             joindateISO:
                               type: string
@@ -8727,9 +9006,9 @@ paths:
                               type: string
                             administrator:
                               type: boolean
-                  - $ref: 'components/schemas/Breadcrumbs.yaml#/Breadcrumbs'
-                  - $ref: 'components/schemas/Pagination.yaml#/Pagination'
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/followers":
     get:
       tags:
@@ -8752,7 +9031,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: 'components/schemas/UserObject.yaml#/UserObjectFull'
+                  - $ref: components/schemas/UserObject.yaml#/UserObjectFull
                   - type: object
                     properties:
                       title:
@@ -8770,7 +9049,8 @@ paths:
                               description: A friendly name for a given user account
                             userslug:
                               type: string
-                              description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                              description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                removed, etc.)
                             picture:
                               nullable: true
                               type: string
@@ -8793,13 +9073,18 @@ paths:
                               type: number
                             joindate:
                               type: number
-                              description: A UNIX timestamp representing the moment the user's account was created
+                              description: A UNIX timestamp representing the moment the user's account was
+                                created
                             icon:text:
                               type: string
-                              description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                              description: A single-letter representation of a username. This is used in the
+                                auto-generated icon given to users without an
+                                avatar
                             icon:bgColor:
                               type: string
-                              description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                              description: A six-character hexadecimal colour code assigned to the user. This
+                                value is used in conjunction with `icon:text`
+                                for the user's auto-generated icon
                               example: "#f44336"
                             joindateISO:
                               type: string
@@ -8811,9 +9096,9 @@ paths:
                               type: string
                             administrator:
                               type: boolean
-                  - $ref: 'components/schemas/Pagination.yaml#/Pagination'
-                  - $ref: 'components/schemas/Breadcrumbs.yaml#/Breadcrumbs'
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/categories":
     get:
       tags:
@@ -8832,7 +9117,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: 'components/schemas/UserObject.yaml#/UserObjectFull'
+                  - $ref: components/schemas/UserObject.yaml#/UserObjectFull
                   - type: object
                     properties:
                       categories:
@@ -8851,7 +9136,8 @@ paths:
                               type: string
                             parentCid:
                               type: number
-                              description: The category identifier for the category that is the immediate ancestor of the current category
+                              description: The category identifier for the category that is the immediate
+                                ancestor of the current category
                             color:
                               type: string
                             bgColor:
@@ -8872,7 +9158,7 @@ paths:
                               type: string
                       title:
                         type: string
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/posts":
     get:
       tags:
@@ -8891,7 +9177,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: 'components/schemas/UserObject.yaml#/UserObjectFull'
+                  - $ref: components/schemas/UserObject.yaml#/UserObjectFull
                   - type: object
                     properties:
                       posts:
@@ -8916,9 +9202,9 @@ paths:
                               type: string
                             selected:
                               type: boolean
-                  - $ref: 'components/schemas/Pagination.yaml#/Pagination'
-                  - $ref: 'components/schemas/Breadcrumbs.yaml#/Breadcrumbs'
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/topics":
     get:
       tags:
@@ -8937,7 +9223,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: 'components/schemas/UserObject.yaml#/UserObject'
+                  - $ref: components/schemas/UserObject.yaml#/UserObject
                   - type: object
                     properties:
                       age:
@@ -9041,7 +9327,8 @@ paths:
                               type: string
                             mainPid:
                               type: number
-                              description: The post id of the first post in this topic (also called the "original post")
+                              description: The post id of the first post in this topic (also called the
+                                "original post")
                             teaserPid:
                               type: number
                             upvotes:
@@ -9054,7 +9341,8 @@ paths:
                               type: number
                             pinned:
                               type: number
-                              description: Whether or not this particular topic is pinned to the top of the category
+                              description: Whether or not this particular topic is pinned to the top of the
+                                category
                             titleRaw:
                               type: string
                             timestampISO:
@@ -9097,7 +9385,8 @@ paths:
                                   description: A friendly name for a given user account
                                 userslug:
                                   type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
                                 reputation:
                                   type: number
                                 postcount:
@@ -9112,10 +9401,15 @@ paths:
                                   type: string
                                 icon:text:
                                   type: string
-                                  description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
                                 icon:bgColor:
                                   type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
                                   example: "#f44336"
                                 banned_until_readable:
                                   type: string
@@ -9148,16 +9442,22 @@ paths:
                                       description: A friendly name for a given user account
                                     userslug:
                                       type: string
-                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                        removed, etc.)
                                     picture:
                                       nullable: true
                                       type: string
                                     icon:text:
                                       type: string
-                                      description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                      description: A single-letter representation of a username. This is used in the
+                                        auto-generated icon given to users
+                                        without an avatar
                                     icon:bgColor:
                                       type: string
-                                      description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                      description: A six-character hexadecimal colour code assigned to the user. This
+                                        value is used in conjunction with
+                                        `icon:text` for the user's
+                                        auto-generated icon
                                       example: "#f44336"
                                 index:
                                   type: number
@@ -9248,7 +9548,7 @@ paths:
                               type: string
                             selected:
                               type: boolean
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/best":
     get:
       tags:
@@ -9267,7 +9567,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: 'components/schemas/UserObject.yaml#/UserObjectFull'
+                  - $ref: components/schemas/UserObject.yaml#/UserObjectFull
                   - type: object
                     properties:
                       posts:
@@ -9309,17 +9609,23 @@ paths:
                                   description: A friendly name for a given user account
                                 userslug:
                                   type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
                                 picture:
                                   nullable: true
                                 status:
                                   type: string
                                 icon:text:
                                   type: string
-                                  description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
                                 icon:bgColor:
                                   type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
                                   example: "#f44336"
                             topic:
                               type: object
@@ -9343,7 +9649,8 @@ paths:
                                   type: number
                                 mainPid:
                                   type: number
-                                  description: The post id of the first post in this topic (also called the "original post")
+                                  description: The post id of the first post in this topic (also called the
+                                    "original post")
                                 titleRaw:
                                   type: string
                             category:
@@ -9360,7 +9667,8 @@ paths:
                                   type: string
                                 parentCid:
                                   type: number
-                                  description: The category identifier for the category that is the immediate ancestor of the current category
+                                  description: The category identifier for the category that is the immediate
+                                    ancestor of the current category
                                 bgColor:
                                   type: string
                                 color:
@@ -9390,9 +9698,9 @@ paths:
                               type: string
                             selected:
                               type: boolean
-                  - $ref: 'components/schemas/Pagination.yaml#/Pagination'
-                  - $ref: 'components/schemas/Breadcrumbs.yaml#/Breadcrumbs'
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/groups":
     get:
       tags:
@@ -9411,7 +9719,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: 'components/schemas/UserObject.yaml#/UserObjectFull'
+                  - $ref: components/schemas/UserObject.yaml#/UserObjectFull
                   - type: object
                     properties:
                       title:
@@ -9443,7 +9751,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: 'components/schemas/UserObject.yaml#/UserObject'
+                  - $ref: components/schemas/UserObject.yaml#/UserObject
                   - type: object
                     properties:
                       age:
@@ -9622,7 +9930,7 @@ paths:
                               type: string
                             selected:
                               type: boolean
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/watched":
     get:
       tags:
@@ -9641,7 +9949,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: 'components/schemas/UserObject.yaml#/UserObject'
+                  - $ref: components/schemas/UserObject.yaml#/UserObject
                   - type: object
                     properties:
                       aboutmeParsed:
@@ -9820,7 +10128,8 @@ paths:
                               description: A category identifier
                             mainPid:
                               type: number
-                              description: The post id of the first post in this topic (also called the "original post")
+                              description: The post id of the first post in this topic (also called the
+                                "original post")
                             title:
                               type: string
                             slug:
@@ -9847,7 +10156,8 @@ paths:
                               type: number
                             pinned:
                               type: number
-                              description: Whether or not this particular topic is pinned to the top of the category
+                              description: Whether or not this particular topic is pinned to the top of the
+                                category
                             deleterUid:
                               type: number
                             titleRaw:
@@ -9894,7 +10204,8 @@ paths:
                                   description: A friendly name for a given user account
                                 userslug:
                                   type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
                                 reputation:
                                   type: number
                                 postcount:
@@ -9910,10 +10221,15 @@ paths:
                                   type: string
                                 icon:text:
                                   type: string
-                                  description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
                                 icon:bgColor:
                                   type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
                                   example: "#f44336"
                                 banned_until_readable:
                                   type: string
@@ -9948,16 +10264,22 @@ paths:
                                       description: A friendly name for a given user account
                                     userslug:
                                       type: string
-                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                        removed, etc.)
                                     picture:
                                       nullable: true
                                       type: string
                                     icon:text:
                                       type: string
-                                      description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                      description: A single-letter representation of a username. This is used in the
+                                        auto-generated icon given to users
+                                        without an avatar
                                     icon:bgColor:
                                       type: string
-                                      description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                      description: A six-character hexadecimal colour code assigned to the user. This
+                                        value is used in conjunction with
+                                        `icon:text` for the user's
+                                        auto-generated icon
                                       example: "#f44336"
                                 index:
                                   type: number
@@ -10089,8 +10411,8 @@ paths:
                               type: string
                             selected:
                               type: boolean
-                  - $ref: 'components/schemas/Breadcrumbs.yaml#/Breadcrumbs'
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/ignored":
     get:
       tags:
@@ -10109,7 +10431,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: 'components/schemas/UserObject.yaml#/UserObjectFull'
+                  - $ref: components/schemas/UserObject.yaml#/UserObjectFull
                   - type: object
                     properties:
                       topics:
@@ -10134,9 +10456,9 @@ paths:
                               type: string
                             selected:
                               type: boolean
-                  - $ref: 'components/schemas/Pagination.yaml#/Pagination'
-                  - $ref: 'components/schemas/Breadcrumbs.yaml#/Breadcrumbs'
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/upvoted":
     get:
       tags:
@@ -10179,7 +10501,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: 'components/schemas/UserObject.yaml#/UserObjectFull'
+                  - $ref: components/schemas/UserObject.yaml#/UserObjectFull
                   - type: object
                     properties:
                       maximumSignatureLength:
@@ -10217,8 +10539,8 @@ paths:
                       editButtons:
                         type: array
                         items: {}
-                  - $ref: 'components/schemas/Breadcrumbs.yaml#/Breadcrumbs'
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/edit/username":
     get:
       tags:
@@ -10237,15 +10559,15 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: 'components/schemas/UserObject.yaml#/UserObjectFull'
+                  - $ref: components/schemas/UserObject.yaml#/UserObjectFull
                   - type: object
                     properties:
                       hasPassword:
                         type: boolean
                       title:
                         type: string
-                  - $ref: 'components/schemas/Breadcrumbs.yaml#/Breadcrumbs'
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/edit/email":
     get:
       tags:
@@ -10264,15 +10586,15 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: 'components/schemas/UserObject.yaml#/UserObjectFull'
+                  - $ref: components/schemas/UserObject.yaml#/UserObjectFull
                   - type: object
                     properties:
                       hasPassword:
                         type: boolean
                       title:
                         type: string
-                  - $ref: 'components/schemas/Breadcrumbs.yaml#/Breadcrumbs'
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/edit/password":
     get:
       tags:
@@ -10291,7 +10613,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: 'components/schemas/UserObject.yaml#/UserObjectFull'
+                  - $ref: components/schemas/UserObject.yaml#/UserObjectFull
                   - type: object
                     properties:
                       hasPassword:
@@ -10302,8 +10624,8 @@ paths:
                         type: number
                       title:
                         type: string
-                  - $ref: 'components/schemas/Breadcrumbs.yaml#/Breadcrumbs'
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/info":
     get:
       tags:
@@ -10322,7 +10644,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: 'components/schemas/UserObject.yaml#/UserObjectFull'
+                  - $ref: components/schemas/UserObject.yaml#/UserObjectFull
                   - type: object
                     properties:
                       history:
@@ -10399,9 +10721,9 @@ paths:
                         items: {}
                       title:
                         type: string
-                  - $ref: 'components/schemas/Pagination.yaml#/Pagination'
-                  - $ref: 'components/schemas/Breadcrumbs.yaml#/Breadcrumbs'
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/settings":
     get:
       tags:
@@ -10420,7 +10742,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: 'components/schemas/UserObject.yaml#/UserObjectFull'
+                  - $ref: components/schemas/UserObject.yaml#/UserObjectFull
                   - type: object
                     properties:
                       settings:
@@ -10707,8 +11029,8 @@ paths:
                         type: number
                       title:
                         type: string
-                  - $ref: 'components/schemas/Breadcrumbs.yaml#/Breadcrumbs'
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/uploads":
     get:
       tags:
@@ -10727,7 +11049,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: 'components/schemas/UserObject.yaml#/UserObjectFull'
+                  - $ref: components/schemas/UserObject.yaml#/UserObjectFull
                   - type: object
                     properties:
                       uploads:
@@ -10737,9 +11059,9 @@ paths:
                         type: boolean
                       title:
                         type: string
-                  - $ref: 'components/schemas/Pagination.yaml#/Pagination'
-                  - $ref: 'components/schemas/Breadcrumbs.yaml#/Breadcrumbs'
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/consent":
     get:
       tags:
@@ -10758,7 +11080,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: 'components/schemas/UserObject.yaml#/UserObjectFull'
+                  - $ref: components/schemas/UserObject.yaml#/UserObjectFull
                   - type: object
                     properties:
                       gdpr_consent:
@@ -10772,8 +11094,8 @@ paths:
                             type: boolean
                       title:
                         type: string
-                  - $ref: 'components/schemas/Breadcrumbs.yaml#/Breadcrumbs'
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/blocks":
     get:
       tags:
@@ -10792,7 +11114,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: 'components/schemas/UserObject.yaml#/UserObjectFull'
+                  - $ref: components/schemas/UserObject.yaml#/UserObjectFull
                   - type: object
                     properties:
                       users:
@@ -10800,9 +11122,9 @@ paths:
                         items: {}
                       title:
                         type: string
-                  - $ref: 'components/schemas/Pagination.yaml#/Pagination'
-                  - $ref: 'components/schemas/Breadcrumbs.yaml#/Breadcrumbs'
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/sessions":
     get:
       tags:
@@ -10821,7 +11143,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: 'components/schemas/UserObject.yaml#/UserObjectFull'
+                  - $ref: components/schemas/UserObject.yaml#/UserObjectFull
                   - type: object
                     properties:
                       sessions:
@@ -10838,7 +11160,7 @@ paths:
                               type: string
                             url:
                               type: string
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/session/{uuid}":
     delete:
       tags:
@@ -10912,7 +11234,8 @@ paths:
                                   description: A friendly name for a given user account
                                 userslug:
                                   type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
                                 picture:
                                   type: string
                                 uid:
@@ -10920,10 +11243,15 @@ paths:
                                   description: A user identifier
                                 icon:text:
                                   type: string
-                                  description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
                                 icon:bgColor:
                                   type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
                                   example: "#f44336"
                             image:
                               type: string
@@ -11025,7 +11353,7 @@ paths:
                               type: string
                             url:
                               type: string
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/chats/{roomid?}":
     get:
       tags:
@@ -11094,7 +11422,8 @@ paths:
                                   description: A friendly name for a given user account
                                 userslug:
                                   type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
                                 picture:
                                   type: string
                                 status:
@@ -11103,10 +11432,15 @@ paths:
                                   type: boolean
                                 icon:text:
                                   type: string
-                                  description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
                                 icon:bgColor:
                                   type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
                                   example: "#f44336"
                                 banned_until_readable:
                                   type: string
@@ -11139,10 +11473,14 @@ paths:
                               type: string
                             icon:text:
                               type: string
-                              description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                              description: A single-letter representation of a username. This is used in the
+                                auto-generated icon given to users without an
+                                avatar
                             icon:bgColor:
                               type: string
-                              description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                              description: A six-character hexadecimal colour code assigned to the user. This
+                                value is used in conjunction with `icon:text`
+                                for the user's auto-generated icon
                               example: "#f44336"
                             isOwner:
                               type: boolean
@@ -11186,7 +11524,8 @@ paths:
                                     description: A friendly name for a given user account
                                   userslug:
                                     type: string
-                                    description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                    description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                      removed, etc.)
                                   picture:
                                     nullable: true
                                     type: string
@@ -11196,10 +11535,15 @@ paths:
                                     type: number
                                   icon:text:
                                     type: string
-                                    description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                    description: A single-letter representation of a username. This is used in the
+                                      auto-generated icon given to users without
+                                      an avatar
                                   icon:bgColor:
                                     type: string
-                                    description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                    description: A six-character hexadecimal colour code assigned to the user. This
+                                      value is used in conjunction with
+                                      `icon:text` for the user's auto-generated
+                                      icon
                                     example: "#f44336"
                                   lastonlineISO:
                                     type: string
@@ -11230,7 +11574,8 @@ paths:
                                       description: A friendly name for a given user account
                                     userslug:
                                       type: string
-                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                        removed, etc.)
                                     picture:
                                       nullable: true
                                       type: string
@@ -11240,10 +11585,15 @@ paths:
                                       type: number
                                     icon:text:
                                       type: string
-                                      description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                      description: A single-letter representation of a username. This is used in the
+                                        auto-generated icon given to users
+                                        without an avatar
                                     icon:bgColor:
                                       type: string
-                                      description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                      description: A six-character hexadecimal colour code assigned to the user. This
+                                        value is used in conjunction with
+                                        `icon:text` for the user's
+                                        auto-generated icon
                                       example: "#f44336"
                                     lastonlineISO:
                                       type: string
@@ -11258,7 +11608,8 @@ paths:
                                   description: A friendly name for a given user account
                                 userslug:
                                   type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
                                 picture:
                                   nullable: true
                                   type: string
@@ -11268,10 +11619,15 @@ paths:
                                   type: number
                                 icon:text:
                                   type: string
-                                  description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
                                 icon:bgColor:
                                   type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
                                   example: "#f44336"
                                 lastonlineISO:
                                   type: string
@@ -11286,10 +11642,11 @@ paths:
                         description: A user identifier
                       userslug:
                         type: string
-                        description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                        description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                          removed, etc.)
                       canViewInfo:
                         type: boolean
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/chats/{roomid?}":
     get:
       tags:
@@ -11336,7 +11693,8 @@ paths:
                               description: A friendly name for a given user account
                             userslug:
                               type: string
-                              description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                              description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                removed, etc.)
                             picture:
                               nullable: true
                               type: string
@@ -11359,13 +11717,18 @@ paths:
                               type: number
                             joindate:
                               type: number
-                              description: A UNIX timestamp representing the moment the user's account was created
+                              description: A UNIX timestamp representing the moment the user's account was
+                                created
                             icon:text:
                               type: string
-                              description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                              description: A single-letter representation of a username. This is used in the
+                                auto-generated icon given to users without an
+                                avatar
                             icon:bgColor:
                               type: string
-                              description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                              description: A six-character hexadecimal colour code assigned to the user. This
+                                value is used in conjunction with `icon:text`
+                                for the user's auto-generated icon
                               example: "#f44336"
                             joindateISO:
                               type: string
@@ -11477,7 +11840,7 @@ paths:
                         type: boolean
                       reputation:disabled:
                         type: number
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/groups:
     get:
       tags:
@@ -11559,13 +11922,19 @@ paths:
                                     type: string
                                   userslug:
                                     type: string
-                                    description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                    description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                      removed, etc.)
                                   icon:text:
                                     type: string
-                                    description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                    description: A single-letter representation of a username. This is used in the
+                                      auto-generated icon given to users without
+                                      an avatar
                                   icon:bgColor:
                                     type: string
-                                    description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                    description: A six-character hexadecimal colour code assigned to the user. This
+                                      value is used in conjunction with
+                                      `icon:text` for the user's auto-generated
+                                      icon
                                     example: "#f44336"
                             truncated:
                               type: boolean
@@ -11586,7 +11955,7 @@ paths:
                               type: string
                             url:
                               type: string
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/groups/{slug}":
     get:
       tags:
@@ -11671,7 +12040,8 @@ paths:
                                   description: A friendly name for a given user account
                                 userslug:
                                   type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
                                 picture:
                                   type: string
                                 status:
@@ -11694,13 +12064,19 @@ paths:
                                   type: number
                                 joindate:
                                   type: number
-                                  description: A UNIX timestamp representing the moment the user's account was created
+                                  description: A UNIX timestamp representing the moment the user's account was
+                                    created
                                 icon:text:
                                   type: string
-                                  description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
                                 icon:bgColor:
                                   type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
                                   example: "#f44336"
                                 joindateISO:
                                   type: string
@@ -11769,17 +12145,23 @@ paths:
                                   description: A friendly name for a given user account
                                 userslug:
                                   type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
                                 picture:
                                   type: string
                                 status:
                                   type: string
                                 icon:text:
                                   type: string
-                                  description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
                                 icon:bgColor:
                                   type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
                                   example: "#f44336"
                             topic:
                               type: object
@@ -11803,7 +12185,8 @@ paths:
                                   type: number
                                 mainPid:
                                   type: number
-                                  description: The post id of the first post in this topic (also called the "original post")
+                                  description: The post id of the first post in this topic (also called the
+                                    "original post")
                                 titleRaw:
                                   type: string
                             category:
@@ -11820,7 +12203,8 @@ paths:
                                   type: string
                                 parentCid:
                                   type: number
-                                  description: The category identifier for the category that is the immediate ancestor of the current category
+                                  description: The category identifier for the category that is the immediate
+                                    ancestor of the current category
                                 bgColor:
                                   type: string
                                 color:
@@ -11847,7 +12231,7 @@ paths:
                               type: string
                             url:
                               type: string
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/groups/{slug}/members":
     get:
       tags:
@@ -11870,7 +12254,6 @@ paths:
                     properties:
                       users:
                         type: array
-                        # TODO: Fix this, should have a user data object here....
-                  - $ref: 'components/schemas/Pagination.yaml#/Pagination'
-                  - $ref: 'components/schemas/Breadcrumbs.yaml#/Breadcrumbs'
-                  - $ref: 'components/schemas/CommonProps.yaml#/CommonProps'
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
