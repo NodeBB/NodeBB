@@ -2925,15 +2925,6 @@ paths:
                                       type: string
                             imageClass:
                               type: string
-                      breadcrumbs:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            text:
-                              type: string
-                            url:
-                              type: string
                       topics:
                         type: array
                         items:
@@ -3135,6 +3126,7 @@ paths:
                               type: string
                             isQuestion:
                               nullable: true
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/categories/{cid}/moderators":
     get:
@@ -3536,21 +3528,13 @@ paths:
                         type: boolean
                       allowLoginWith:
                         type: string
-                      breadcrumbs:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            text:
-                              type: string
-                            url:
-                              type: string
                       title:
                         type: string
                       allowPasswordReset:
                         type: boolean
                       allowLocalLogin:
                         type: boolean
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/register:
     get:
@@ -3595,15 +3579,6 @@ paths:
                         type: number
                       minimumPasswordStrength:
                         type: number
-                      breadcrumbs:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            text:
-                              type: string
-                            url:
-                              type: string
                       regFormEntry:
                         type: array
                         items:
@@ -3617,6 +3592,7 @@ paths:
                               type: string
                       title:
                         type: string
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/register/complete:
     get:
@@ -3791,15 +3767,6 @@ paths:
                               type: string
                       categoriesCount:
                         type: number
-                      breadcrumbs:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            text:
-                              type: string
-                            url:
-                              type: string
                       expandSearch:
                         type: boolean
                       showAsPosts:
@@ -3811,6 +3778,7 @@ paths:
                       searchDefaultSortBy:
                         type: string
                   - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/reset/{code?}":
     get:
@@ -4168,15 +4136,6 @@ paths:
                       icons:
                         type: array
                         items: {}
-                      breadcrumbs:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            text:
-                              type: string
-                            url:
-                              type: string
                       privileges:
                         type: object
                         properties:
@@ -4242,6 +4201,7 @@ paths:
                       postIndex:
                         type: number
                   - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/topic/{topic_id}/{slug?}":
     get:
@@ -4626,15 +4586,6 @@ paths:
                       icons:
                         type: array
                         items: {}
-                      breadcrumbs:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            text:
-                              type: string
-                            url:
-                              type: string
                       privileges:
                         type: object
                         properties:
@@ -4722,6 +4673,7 @@ paths:
                               the user's auto-generated icon
                             example: "#f44336"
                   - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/post/{pid}":
     get:
@@ -5467,15 +5419,6 @@ paths:
                               type: number
                       tag:
                         type: string
-                      breadcrumbs:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            text:
-                              type: string
-                            url:
-                              type: string
                       title:
                         type: string
                       categories:
@@ -5507,6 +5450,7 @@ paths:
                       rssFeedUrl:
                         type: string
                   - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/tags:
     get:
@@ -5546,17 +5490,9 @@ paths:
                         type: boolean
                       nextStart:
                         type: number
-                      breadcrumbs:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            text:
-                              type: string
-                            url:
-                              type: string
                       title:
                         type: string
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/popular:
     get:
@@ -5870,16 +5806,8 @@ paths:
                             type: boolean
                           term:
                             type: string
-                      breadcrumbs:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            text:
-                              type: string
-                            url:
-                              type: string
                   - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/recent:
     get:
@@ -6192,16 +6120,8 @@ paths:
                             type: boolean
                           term:
                             type: string
-                      breadcrumbs:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            text:
-                              type: string
-                            url:
-                              type: string
                   - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/top:
     get:
@@ -6534,16 +6454,8 @@ paths:
                             type: boolean
                           term:
                             type: string
-                      breadcrumbs:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            text:
-                              type: string
-                            url:
-                              type: string
                   - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/unread:
     get:
@@ -6801,15 +6713,6 @@ paths:
                       selectedCids:
                         type: array
                         items: {}
-                      breadcrumbs:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            text:
-                              type: string
-                            url:
-                              type: string
                       filters:
                         type: array
                         items:
@@ -6835,6 +6738,7 @@ paths:
                           filter:
                             type: string
                   - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/category/{category_id}/{slug}/{topic_index}":
     get:
@@ -7113,15 +7017,6 @@ paths:
                         type: boolean
                       isIgnored:
                         type: boolean
-                      breadcrumbs:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            text:
-                              type: string
-                            url:
-                              type: string
                       title:
                         type: string
                       privileges:
@@ -7155,6 +7050,7 @@ paths:
                       reputation:disabled:
                         type: number
                   - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/category/{category_id}/{slug?}":
     get:
@@ -7444,15 +7340,6 @@ paths:
                         type: boolean
                       isIgnored:
                         type: boolean
-                      breadcrumbs:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            text:
-                              type: string
-                            url:
-                              type: string
                       title:
                         type: string
                       privileges:
@@ -7486,6 +7373,7 @@ paths:
                       reputation:disabled:
                         type: number
                   - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/me/*:
     get:
@@ -7863,15 +7751,6 @@ paths:
                               type: boolean
                       hasPrivateChat:
                         type: number
-                      breadcrumbs:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            text:
-                              type: string
-                            url:
-                              type: string
                       title:
                         type: string
                       allowCoverPicture:
@@ -7927,6 +7806,7 @@ paths:
                               type: string
                             cover:thumb:url:
                               type: string
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/following":
     get:
@@ -8494,15 +8374,6 @@ paths:
                         type: string
                       title:
                         type: string
-                      breadcrumbs:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            text:
-                              type: string
-                            url:
-                              type: string
                       showSort:
                         type: boolean
                       sortOptions:
@@ -8517,6 +8388,7 @@ paths:
                             selected:
                               type: boolean
                   - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/best":
     get:
@@ -8836,15 +8708,6 @@ paths:
                         type: string
                       title:
                         type: string
-                      breadcrumbs:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            text:
-                              type: string
-                            url:
-                              type: string
                       showSort:
                         type: boolean
                       sortOptions:
@@ -8859,6 +8722,7 @@ paths:
                             selected:
                               type: boolean
                   - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/watched":
     get:
@@ -9255,15 +9119,6 @@ paths:
                         type: string
                       title:
                         type: string
-                      breadcrumbs:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            text:
-                              type: string
-                            url:
-                              type: string
                       showSort:
                         type: boolean
                       sortOptions:
@@ -9279,6 +9134,7 @@ paths:
                               type: boolean
                   - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/ignored":
     get:
@@ -10018,15 +9874,7 @@ paths:
                         items: {}
                       title:
                         type: string
-                      breadcrumbs:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            text:
-                              type: string
-                            url:
-                              type: string
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/session/{uuid}":
     delete:
@@ -10170,16 +10018,8 @@ paths:
                             type: boolean
                       title:
                         type: string
-                      breadcrumbs:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            text:
-                              type: string
-                            url:
-                              type: string
                   - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/chats/{roomid?}":
     get:
@@ -10571,15 +10411,6 @@ paths:
                         type: number
                       title:
                         type: string
-                      breadcrumbs:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            text:
-                              type: string
-                            url:
-                              type: string
                       isAdminOrGlobalMod:
                         type: boolean
                       isAdmin:
@@ -10603,6 +10434,7 @@ paths:
                       reputation:disabled:
                         type: number
                   - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/groups:
     get:
@@ -10709,15 +10541,7 @@ paths:
                         type: number
                       title:
                         type: string
-                      breadcrumbs:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            text:
-                              type: string
-                            url:
-                              type: string
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/groups/{slug}":
     get:
@@ -10985,15 +10809,7 @@ paths:
                         type: boolean
                       allowPrivateGroups:
                         type: number
-                      breadcrumbs:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            text:
-                              type: string
-                            url:
-                              type: string
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/groups/{slug}/members":
     get:
