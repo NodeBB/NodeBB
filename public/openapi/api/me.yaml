@@ -1,13 +1,12 @@
-
-    # This is confusing -- /me redirect to user profile, but /api/me doesn't?
-    get:
-      tags:
-        - shorthand
-      summary: /api/me
-      responses:
-        "200":
-          description: ""
-          content:
-            application/json:
-              schema:
-                $ref: '../components/schemas/UserObject.yaml#/UserObjectFull'
+# This is confusing -- /me redirect to user profile, but /api/me doesn't?
+get:
+  tags:
+    - shorthand
+  summary: /api/me
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/UserObject.yaml#/UserObjectFull'

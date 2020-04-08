@@ -1,6 +1,5 @@
-
-    post:
-      tags:
-        - groups
-      summary: /api/groups/uploadpicture
-      responses: {}
+post:
+  tags:
+    - groups
+  summary: /api/groups/uploadpicture
+  responses: {}

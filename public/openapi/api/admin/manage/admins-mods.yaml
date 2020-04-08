@@ -1,6 +1,5 @@
-
-    get:
-      tags:
-        - admin
-      summary: /api/admin/manage/admins-mods
-      responses: {}
+get:
+  tags:
+    - admin
+  summary: /api/admin/manage/admins-mods
+  responses: {}

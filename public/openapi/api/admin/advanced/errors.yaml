@@ -1,6 +1,5 @@
-
-    get:
-      tags:
-        - admin
-      summary: /api/admin/advanced/errors
-      responses: {}
+get:
+  tags:
+    - admin
+  summary: /api/admin/advanced/errors
+  responses: {}

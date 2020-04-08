@@ -1,87 +1,86 @@
-
-    get:
-      tags:
-        - admin
-      summary: /api/admin/advanced/cache
-      responses:
-        "200":
-          description: ""
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - type: object
+get:
+  tags:
+    - admin
+  summary: /api/admin/advanced/cache
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  postCache:
+                    type: object
                     properties:
-                      postCache:
-                        type: object
-                        properties:
-                          length:
-                            type: number
-                          max:
-                            type: number
-                          itemCount:
-                            type: number
-                          percentFull:
-                            type: string
-                          avgPostSize:
-                            type: number
-                          hits:
-                            type: string
-                          misses:
-                            type: string
-                          hitRatio:
-                            type: string
-                      groupCache:
-                        type: object
-                        properties:
-                          length:
-                            type: number
-                          max:
-                            type: number
-                          itemCount:
-                            type: number
-                          percentFull:
-                            type: string
-                          hits:
-                            type: string
-                          misses:
-                            type: string
-                          hitRatio:
-                            type: string
-                      localCache:
-                        type: object
-                        properties:
-                          length:
-                            type: number
-                          max:
-                            type: number
-                          itemCount:
-                            type: number
-                          percentFull:
-                            type: string
-                          dump:
-                            type: boolean
-                          hits:
-                            type: string
-                          misses:
-                            type: string
-                          hitRatio:
-                            type: string
-                      objectCache:
-                        type: object
-                        properties:
-                          length:
-                            type: number
-                          max:
-                            type: number
-                          itemCount:
-                            type: number
-                          percentFull:
-                            type: string
-                          hits:
-                            type: string
-                          misses:
-                            type: string
-                          hitRatio:
-                            type: string
-                  - $ref: '../../../components/schemas/CommonProps.yaml#/CommonProps'
+                      length:
+                        type: number
+                      max:
+                        type: number
+                      itemCount:
+                        type: number
+                      percentFull:
+                        type: string
+                      avgPostSize:
+                        type: number
+                      hits:
+                        type: string
+                      misses:
+                        type: string
+                      hitRatio:
+                        type: string
+                  groupCache:
+                    type: object
+                    properties:
+                      length:
+                        type: number
+                      max:
+                        type: number
+                      itemCount:
+                        type: number
+                      percentFull:
+                        type: string
+                      hits:
+                        type: string
+                      misses:
+                        type: string
+                      hitRatio:
+                        type: string
+                  localCache:
+                    type: object
+                    properties:
+                      length:
+                        type: number
+                      max:
+                        type: number
+                      itemCount:
+                        type: number
+                      percentFull:
+                        type: string
+                      dump:
+                        type: boolean
+                      hits:
+                        type: string
+                      misses:
+                        type: string
+                      hitRatio:
+                        type: string
+                  objectCache:
+                    type: object
+                    properties:
+                      length:
+                        type: number
+                      max:
+                        type: number
+                      itemCount:
+                        type: number
+                      percentFull:
+                        type: string
+                      hits:
+                        type: string
+                      misses:
+                        type: string
+                      hitRatio:
+                        type: string
+              - $ref: '../../../components/schemas/CommonProps.yaml#/CommonProps'

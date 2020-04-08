@@ -1,6 +1,5 @@
-
-    post:
-      tags:
-        - topics
-      summary: /api/topic/thumb/upload
-      responses: {}
+post:
+  tags:
+    - topics
+  summary: /api/topic/thumb/upload
+  responses: {}

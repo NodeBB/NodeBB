@@ -1,109 +1,108 @@
-
-    get:
-      tags:
-        - admin
-      summary: /api/admin/manage/digest
-      responses:
-        "200":
-          description: ""
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - type: object
+get:
+  tags:
+    - admin
+  summary: /api/admin/manage/digest
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  title:
+                    type: string
+                  delivery:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        username:
+                          type: string
+                          description: A friendly name for a given user account
+                        picture:
+                          nullable: true
+                          type: string
+                        uid:
+                          type: number
+                          description: A user identifier
+                        icon:text:
+                          type: string
+                          description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                        icon:bgColor:
+                          type: string
+                          description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                          example: "#f44336"
+                        lastDelivery:
+                          type: string
+                        setting:
+                          type: boolean
+                  default:
+                    type: string
+                  pagination:
+                    type: object
                     properties:
-                      title:
-                        type: string
-                      delivery:
+                      rel:
                         type: array
                         items:
                           type: object
                           properties:
-                            username:
+                            rel:
                               type: string
-                              description: A friendly name for a given user account
-                            picture:
-                              nullable: true
+                            href:
                               type: string
-                            uid:
+                      pages:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            page:
                               type: number
-                              description: A user identifier
-                            icon:text:
-                              type: string
-                              description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
-                            icon:bgColor:
-                              type: string
-                              description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
-                              example: "#f44336"
-                            lastDelivery:
-                              type: string
-                            setting:
+                            active:
                               type: boolean
-                      default:
-                        type: string
-                      pagination:
+                            qs:
+                              type: string
+                            separator:
+                              type: boolean
+                      currentPage:
+                        type: number
+                      pageCount:
+                        type: number
+                      prev:
                         type: object
                         properties:
-                          rel:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                rel:
-                                  type: string
-                                href:
-                                  type: string
-                          pages:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                page:
-                                  type: number
-                                active:
-                                  type: boolean
-                                qs:
-                                  type: string
-                                separator:
-                                  type: boolean
-                          currentPage:
+                          page:
                             type: number
-                          pageCount:
+                          active:
+                            type: boolean
+                          qs:
+                            type: string
+                      next:
+                        type: object
+                        properties:
+                          page:
                             type: number
-                          prev:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          next:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          first:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          last:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                  - $ref: '../../../components/schemas/CommonProps.yaml#/CommonProps'
+                          active:
+                            type: boolean
+                          qs:
+                            type: string
+                      first:
+                        type: object
+                        properties:
+                          page:
+                            type: number
+                          active:
+                            type: boolean
+                          qs:
+                            type: string
+                      last:
+                        type: object
+                        properties:
+                          page:
+                            type: number
+                          active:
+                            type: boolean
+                          qs:
+                            type: string
+              - $ref: '../../../components/schemas/CommonProps.yaml#/CommonProps'

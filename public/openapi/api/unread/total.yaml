@@ -1,6 +1,5 @@
-
-    get:
-      tags:
-        - posts
-      summary: /api/unread/total
-      responses: {}
+get:
+  tags:
+    - posts
+  summary: /api/unread/total
+  responses: {}

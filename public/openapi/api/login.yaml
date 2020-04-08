@@ -1,56 +1,55 @@
-
-    get:
-      tags:
-        - authentication
-      summary: /api/login
-      responses:
-        "200":
-          description: ""
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - type: object
-                    properties:
-                      loginFormEntry:
-                        type: array
-                        items: {}
-                      alternate_logins:
-                        type: boolean
-                      authentication:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            name:
-                              type: string
-                            url:
-                              type: string
-                            callbackURL:
-                              type: string
-                            icon:
-                              type: string
-                            scope:
-                              type: string
-                            prompt:
-                              type: string
-                      allowRegistration:
-                        type: boolean
-                      allowLoginWith:
-                        type: string
-                      breadcrumbs:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            text:
-                              type: string
-                            url:
-                              type: string
-                      title:
-                        type: string
-                      allowPasswordReset:
-                        type: boolean
-                      allowLocalLogin:
-                        type: boolean
-                  - $ref: '../components/schemas/CommonProps.yaml#/CommonProps'
+get:
+  tags:
+    - authentication
+  summary: /api/login
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  loginFormEntry:
+                    type: array
+                    items: {}
+                  alternate_logins:
+                    type: boolean
+                  authentication:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        url:
+                          type: string
+                        callbackURL:
+                          type: string
+                        icon:
+                          type: string
+                        scope:
+                          type: string
+                        prompt:
+                          type: string
+                  allowRegistration:
+                    type: boolean
+                  allowLoginWith:
+                    type: string
+                  breadcrumbs:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        text:
+                          type: string
+                        url:
+                          type: string
+                  title:
+                    type: string
+                  allowPasswordReset:
+                    type: boolean
+                  allowLocalLogin:
+                    type: boolean
+              - $ref: '../components/schemas/CommonProps.yaml#/CommonProps'

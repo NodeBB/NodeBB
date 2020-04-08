@@ -1,6 +1,5 @@
-
-    get:
-      tags:
-        - admin
-      summary: /api/admin/users/csv
-      responses: {}
+get:
+  tags:
+    - admin
+  summary: /api/admin/users/csv
+  responses: {}

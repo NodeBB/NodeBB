@@ -1,6 +1,5 @@
-
-    get:
-      tags:
-        - admin
-      summary: /api/admin/manage/users/no-posts
-      responses: {}
+get:
+  tags:
+    - admin
+  summary: /api/admin/manage/users/no-posts
+  responses: {}

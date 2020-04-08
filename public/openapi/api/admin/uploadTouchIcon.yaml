@@ -1,6 +1,5 @@
-
-    post:
-      tags:
-        - admin
-      summary: /api/admin/uploadTouchIcon
-      responses: {}
+post:
+  tags:
+    - admin
+  summary: /api/admin/uploadTouchIcon
+  responses: {}

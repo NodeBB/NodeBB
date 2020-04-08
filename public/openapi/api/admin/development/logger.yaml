@@ -1,12 +1,11 @@
-
-    get:
-      tags:
-        - admin
-      summary: /api/admin/development/logger
-      responses:
-        "200":
-          description: ""
-          content:
-            application/json:
-              schema:
-                $ref: '../../../components/schemas/CommonProps.yaml#/CommonProps'
+get:
+  tags:
+    - admin
+  summary: /api/admin/development/logger
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/schemas/CommonProps.yaml#/CommonProps'

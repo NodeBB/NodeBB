@@ -1,6 +1,5 @@
-
-    post:
-      tags:
-        - admin
-      summary: /api/admin/uploadOgImage
-      responses: {}
+post:
+  tags:
+    - admin
+  summary: /api/admin/uploadOgImage
+  responses: {}

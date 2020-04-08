@@ -1,6 +1,5 @@
-
-    get:
-      tags:
-        - admin
-      summary: /api/admin/manage/users/banned
-      responses: {}
+get:
+  tags:
+    - admin
+  summary: /api/admin/manage/users/banned
+  responses: {}

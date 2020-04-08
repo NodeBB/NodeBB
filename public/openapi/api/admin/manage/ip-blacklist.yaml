@@ -1,6 +1,5 @@
-
-    get:
-      tags:
-        - admin
-      summary: /api/admin/manage/ip-blacklist
-      responses: {}
+get:
+  tags:
+    - admin
+  summary: /api/admin/manage/ip-blacklist
+  responses: {}

@@ -1,100 +1,99 @@
-
-    get:
-      tags:
-        - admin
-      summary: /api/admin/manage/users/not-validated
-      responses:
-        "200":
-          description: ""
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - type: object
+get:
+  tags:
+    - admin
+  summary: /api/admin/manage/users/not-validated
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: '../../../../components/schemas/UserObject.yaml#/UserObject'
+                  page:
+                    type: number
+                  pageCount:
+                    type: number
+                  resultsPerPage:
+                    type: number
+                  notvalidated:
+                    type: boolean
+                  search_display:
+                    type: string
+                  pagination:
+                    type: object
                     properties:
-                      users:
+                      rel:
                         type: array
                         items:
-                          $ref: '../../../../components/schemas/UserObject.yaml#/UserObject'
-                      page:
+                          type: object
+                          properties:
+                            rel:
+                              type: string
+                            href:
+                              type: string
+                      pages:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            page:
+                              type: number
+                            active:
+                              type: boolean
+                            qs:
+                              type: string
+                            separator:
+                              type: boolean
+                      currentPage:
                         type: number
                       pageCount:
                         type: number
-                      resultsPerPage:
-                        type: number
-                      notvalidated:
-                        type: boolean
-                      search_display:
-                        type: string
-                      pagination:
+                      prev:
                         type: object
                         properties:
-                          rel:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                rel:
-                                  type: string
-                                href:
-                                  type: string
-                          pages:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                page:
-                                  type: number
-                                active:
-                                  type: boolean
-                                qs:
-                                  type: string
-                                separator:
-                                  type: boolean
-                          currentPage:
+                          page:
                             type: number
-                          pageCount:
+                          active:
+                            type: boolean
+                          qs:
+                            type: string
+                      next:
+                        type: object
+                        properties:
+                          page:
                             type: number
-                          prev:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          next:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          first:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          last:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                      requireEmailConfirmation:
-                        type: number
-                      inviteOnly:
-                        type: boolean
-                      adminInviteOnly:
-                        type: boolean
-                  - $ref: '../../../../components/schemas/CommonProps.yaml#/CommonProps'
+                          active:
+                            type: boolean
+                          qs:
+                            type: string
+                      first:
+                        type: object
+                        properties:
+                          page:
+                            type: number
+                          active:
+                            type: boolean
+                          qs:
+                            type: string
+                      last:
+                        type: object
+                        properties:
+                          page:
+                            type: number
+                          active:
+                            type: boolean
+                          qs:
+                            type: string
+                  requireEmailConfirmation:
+                    type: number
+                  inviteOnly:
+                    type: boolean
+                  adminInviteOnly:
+                    type: boolean
+              - $ref: '../../../../components/schemas/CommonProps.yaml#/CommonProps'

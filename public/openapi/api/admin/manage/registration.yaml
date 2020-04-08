@@ -1,6 +1,5 @@
-
-    get:
-      tags:
-        - admin
-      summary: /api/admin/manage/registration
-      responses: {}
+get:
+  tags:
+    - admin
+  summary: /api/admin/manage/registration
+  responses: {}

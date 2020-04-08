@@ -1,6 +1,5 @@
-
-    get:
-      tags:
-        - admin
-      summary: /api/admin/manage/uploads
-      responses: {}
+get:
+  tags:
+    - admin
+  summary: /api/admin/manage/uploads
+  responses: {}
