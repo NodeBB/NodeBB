@@ -1,0 +1,144 @@
+get:
+  tags:
+    - admin
+  summary: /api/admin/manage/privileges/{cid?}
+  parameters:
+    - name: cid?
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  privileges:
+                    type: object
+                    properties:
+                      labels:
+                        type: object
+                        properties:
+                          users:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                name:
+                                  type: string
+                          groups:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                name:
+                                  type: string
+                      users:
+                        type: array
+                        items: {}
+                      groups:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            nameEscaped:
+                              type: string
+                            privileges:
+                              type: object
+                              properties:
+                                groups:find:
+                                  type: boolean
+                                groups:read:
+                                  type: boolean
+                                groups:topics:read:
+                                  type: boolean
+                                groups:topics:create:
+                                  type: boolean
+                                groups:topics:reply:
+                                  type: boolean
+                                groups:topics:tag:
+                                  type: boolean
+                                groups:posts:edit:
+                                  type: boolean
+                                groups:posts:history:
+                                  type: boolean
+                                groups:posts:delete:
+                                  type: boolean
+                                groups:posts:upvote:
+                                  type: boolean
+                                groups:posts:downvote:
+                                  type: boolean
+                                groups:topics:delete:
+                                  type: boolean
+                                groups:posts:view_deleted:
+                                  type: boolean
+                                groups:purge:
+                                  type: boolean
+                                groups:moderate:
+                                  type: boolean
+                            isPrivate:
+                              type: boolean
+                      columnCountUser:
+                        type: number
+                      columnCountUserOther:
+                        type: number
+                      columnCountGroup:
+                        type: number
+                      columnCountGroupOther:
+                        type: number
+                  categories:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        cid:
+                          type: number
+                          description: A category identifier
+                        name:
+                          type: string
+                        icon:
+                          type: string
+                        selected:
+                          type: boolean
+                        level:
+                          type: string
+                        parentCid:
+                          type: number
+                          description: The category identifier for the category that is the immediate ancestor of the current category
+                        color:
+                          type: string
+                        bgColor:
+                          type: string
+                        imageClass:
+                          type: string
+                  selectedCategory:
+                    type: object
+                    properties:
+                      cid:
+                        type: number
+                        description: A category identifier
+                      name:
+                        type: string
+                      level:
+                        type: string
+                      icon:
+                        type: string
+                      parentCid:
+                        type: number
+                        description: The category identifier for the category that is the immediate ancestor of the current category
+                      color:
+                        type: string
+                      bgColor:
+                        type: string
+                      selected:
+                        type: boolean
+                  cid:
+                    type: number
+                    description: A category identifier
+              - $ref: '../../../components/schemas/CommonProps.yaml#/CommonProps'

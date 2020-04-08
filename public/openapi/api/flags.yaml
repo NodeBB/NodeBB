@@ -1,131 +1,147 @@
-get:
-  tags:
-    - flags
-  summary: /api/flags
-  responses:
-    "200":
-      description: ""
-      content:
-        application/json:
-          schema:
-            allOf:
-              - type: object
-                properties:
-                  flags:
-                    type: array
-                    items:
+index: 
+  get:
+    tags:
+      - flags
+    summary: /api/flags
+    responses:
+      "200":
+        description: ""
+        content:
+          application/json:
+            schema:
+              allOf:
+                - type: object
+                  properties:
+                    flags:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          state:
+                            type: string
+                          flagId:
+                            type: number
+                          type:
+                            type: string
+                          targetId:
+                            oneOf:
+                              - type: string
+                              - type: number
+                          description:
+                            type: string
+                          uid:
+                            type: number
+                            description: A user identifier
+                          datetime:
+                            type: number
+                          reporter:
+                            type: object
+                            properties:
+                              username:
+                                type: string
+                                description: A friendly name for a given user account
+                              picture:
+                                nullable: true
+                                type: string
+                              icon:bgColor:
+                                type: string
+                                description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                example: "#f44336"
+                              icon:text:
+                                type: string
+                                description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                          labelClass:
+                            type: string
+                          target_readable:
+                            type: string
+                          datetimeISO:
+                            type: string
+                          assignee:
+                            type: string
+                    analytics:
+                      type: array
+                      items:
+                        type: number
+                    categories:
                       type: object
                       properties:
-                        state:
+                        "1":
                           type: string
-                        flagId:
+                        "2":
+                          type: string
+                        "3":
+                          type: string
+                        "4":
+                          type: string
+                        "5":
+                          type: string
+                        "6":
+                          type: string
+                        "7":
+                          type: string
+                        "10":
+                          type: string
+                        "13":
+                          type: string
+                        "14":
+                          type: string
+                        "15":
+                          type: string
+                        "16":
+                          type: string
+                        "17":
+                          type: string
+                        "18":
+                          type: string
+                        "19":
+                          type: string
+                        "21":
+                          type: string
+                        "22":
+                          type: string
+                        "26":
+                          type: string
+                    hasFilter:
+                      type: boolean
+                    filters:
+                      type: object
+                      properties:
+                        page:
                           type: number
-                        type:
-                          type: string
-                        targetId:
-                          oneOf:
-                            - type: string
-                            - type: number
-                        description:
-                          type: string
-                        uid:
+                        perPage:
                           type: number
-                          description: A user identifier
-                        datetime:
+                    title:
+                      type: string
+                    pagination:
+                      type: object
+                      properties:
+                        rel:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              rel:
+                                type: string
+                              href:
+                                type: string
+                        pages:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              page:
+                                type: number
+                              active:
+                                type: boolean
+                              qs:
+                                type: string
+                              separator:
+                                type: boolean
+                        currentPage:
                           type: number
-                        reporter:
-                          type: object
-                          properties:
-                            username:
-                              type: string
-                              description: A friendly name for a given user account
-                            picture:
-                              nullable: true
-                              type: string
-                            icon:bgColor:
-                              type: string
-                              description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
-                              example: "#f44336"
-                            icon:text:
-                              type: string
-                              description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
-                        labelClass:
-                          type: string
-                        target_readable:
-                          type: string
-                        datetimeISO:
-                          type: string
-                        assignee:
-                          type: string
-                  analytics:
-                    type: array
-                    items:
-                      type: number
-                  categories:
-                    type: object
-                    properties:
-                      "1":
-                        type: string
-                      "2":
-                        type: string
-                      "3":
-                        type: string
-                      "4":
-                        type: string
-                      "5":
-                        type: string
-                      "6":
-                        type: string
-                      "7":
-                        type: string
-                      "10":
-                        type: string
-                      "13":
-                        type: string
-                      "14":
-                        type: string
-                      "15":
-                        type: string
-                      "16":
-                        type: string
-                      "17":
-                        type: string
-                      "18":
-                        type: string
-                      "19":
-                        type: string
-                      "21":
-                        type: string
-                      "22":
-                        type: string
-                      "26":
-                        type: string
-                  hasFilter:
-                    type: boolean
-                  filters:
-                    type: object
-                    properties:
-                      page:
-                        type: number
-                      perPage:
-                        type: number
-                  title:
-                    type: string
-                  pagination:
-                    type: object
-                    properties:
-                      rel:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            rel:
-                              type: string
-                            href:
-                              type: string
-                      pages:
-                        type: array
-                        items:
+                        pageCount:
+                          type: number
+                        prev:
                           type: object
                           properties:
                             page:
@@ -134,46 +150,159 @@ get:
                               type: boolean
                             qs:
                               type: string
-                            separator:
+                        next:
+                          type: object
+                          properties:
+                            page:
+                              type: number
+                            active:
                               type: boolean
-                      currentPage:
-                        type: number
-                      pageCount:
-                        type: number
-                      prev:
+                            qs:
+                              type: string
+                        first:
+                          type: object
+                          properties:
+                            page:
+                              type: number
+                            active:
+                              type: boolean
+                            qs:
+                              type: string
+                        last:
+                          type: object
+                          properties:
+                            page:
+                              type: number
+                            active:
+                              type: boolean
+                            qs:
+                              type: string
+                - $ref: '../components/schemas/CommonProps.yaml#/CommonProps'
+FlagID: 
+  get:
+    tags:
+      - flags
+    summary: /api/flags/{flagId}
+    parameters:
+      - name: flagId
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      "200":
+        description: ""
+        content:
+          application/json:
+            schema:
+              allOf:
+                - type: object
+                  properties:
+                    state:
+                      type: string
+                    flagId:
+                      type: number
+                    type:
+                      type: string
+                    targetId:
+                      type: string
+                    description:
+                      type: string
+                    uid:
+                      type: number
+                      description: A user identifier
+                    datetime:
+                      type: number
+                    datetimeISO:
+                      type: string
+                    target_readable:
+                      type: string
+                    target:
+                      type: object
+                      properties: {}
+                    history:
+                      type: array
+                      items:
                         type: object
                         properties:
-                          page:
+                          uid:
                             type: number
-                          active:
-                            type: boolean
-                          qs:
-                            type: string
-                      next:
-                        type: object
-                        properties:
-                          page:
+                            description: A user identifier
+                          fields:
+                            type: object
+                            properties:
+                              state:
+                                type: string
+                          datetime:
                             type: number
-                          active:
-                            type: boolean
-                          qs:
+                          datetimeISO:
                             type: string
-                      first:
-                        type: object
-                        properties:
-                          page:
-                            type: number
-                          active:
-                            type: boolean
-                          qs:
-                            type: string
-                      last:
-                        type: object
-                        properties:
-                          page:
-                            type: number
-                          active:
-                            type: boolean
-                          qs:
-                            type: string
-              - $ref: '../components/schemas/CommonProps.yaml#/CommonProps'
+                          user:
+                            type: object
+                            properties:
+                              username:
+                                type: string
+                                description: A friendly name for a given user account
+                              userslug:
+                                type: string
+                                description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                              picture:
+                                nullable: true
+                              uid:
+                                type: number
+                                description: A user identifier
+                              icon:text:
+                                type: string
+                                description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                              icon:bgColor:
+                                type: string
+                                description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                example: "#f44336"
+                    notes:
+                      type: array
+                      items: {}
+                    reporter:
+                      type: object
+                      properties:
+                        username:
+                          type: string
+                          description: A friendly name for a given user account
+                        userslug:
+                          type: string
+                          description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                        picture:
+                          nullable: true
+                        reputation:
+                          type: number
+                        uid:
+                          type: number
+                          description: A user identifier
+                        icon:text:
+                          type: string
+                          description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                        icon:bgColor:
+                          type: string
+                          description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                          example: "#f44336"
+                    type_path:
+                      type: string
+                    assignees:
+                      type: array
+                      items:
+                        $ref: '../components/schemas/UserObject.yaml#/UserObject'
+                    type_bool:
+                      type: object
+                      properties:
+                        post:
+                          type: boolean
+                        user:
+                          type: boolean
+                        empty:
+                          type: boolean
+                    title:
+                      type: string
+                    categories:
+                      type: object
+                      additionalProperties:
+                        type: string
+                - $ref: '../components/schemas/CommonProps.yaml#/CommonProps'
