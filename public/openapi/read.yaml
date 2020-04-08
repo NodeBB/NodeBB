@@ -1128,77 +1128,13 @@ paths:
                         type: boolean
                       search_display:
                         type: string
-                      pagination:
-                        type: object
-                        properties:
-                          rel:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                rel:
-                                  type: string
-                                href:
-                                  type: string
-                          pages:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                page:
-                                  type: number
-                                active:
-                                  type: boolean
-                                qs:
-                                  type: string
-                                separator:
-                                  type: boolean
-                          currentPage:
-                            type: number
-                          pageCount:
-                            type: number
-                          prev:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          next:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          first:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          last:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
                       requireEmailConfirmation:
                         type: number
                       inviteOnly:
                         type: boolean
                       adminInviteOnly:
                         type: boolean
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/manage/users/search:
     get:
@@ -1248,77 +1184,13 @@ paths:
                         type: boolean
                       search_display:
                         type: string
-                      pagination:
-                        type: object
-                        properties:
-                          rel:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                rel:
-                                  type: string
-                                href:
-                                  type: string
-                          pages:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                page:
-                                  type: number
-                                active:
-                                  type: boolean
-                                qs:
-                                  type: string
-                                separator:
-                                  type: boolean
-                          currentPage:
-                            type: number
-                          pageCount:
-                            type: number
-                          prev:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          next:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          first:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          last:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
                       requireEmailConfirmation:
                         type: number
                       inviteOnly:
                         type: boolean
                       adminInviteOnly:
                         type: boolean
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/manage/users/not-validated:
     get:
@@ -1348,77 +1220,13 @@ paths:
                         type: boolean
                       search_display:
                         type: string
-                      pagination:
-                        type: object
-                        properties:
-                          rel:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                rel:
-                                  type: string
-                                href:
-                                  type: string
-                          pages:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                page:
-                                  type: number
-                                active:
-                                  type: boolean
-                                qs:
-                                  type: string
-                                separator:
-                                  type: boolean
-                          currentPage:
-                            type: number
-                          pageCount:
-                            type: number
-                          prev:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          next:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          first:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          last:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
                       requireEmailConfirmation:
                         type: number
                       inviteOnly:
                         type: boolean
                       adminInviteOnly:
                         type: boolean
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/manage/users/no-posts:
     get:
@@ -1535,49 +1343,9 @@ paths:
                               type: string
                             ownerUid:
                               type: number
-                      pagination:
-                        type: object
-                        properties:
-                          prev:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                          next:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                          first:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                          last:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                          rel:
-                            type: array
-                            items: {}
-                          pages:
-                            type: array
-                            items: {}
-                          currentPage:
-                            type: number
-                          pageCount:
-                            type: number
                       yourid:
                         type: number
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/admin/manage/groups/{name}":
     get:
@@ -1742,71 +1510,7 @@ paths:
                               type: boolean
                       default:
                         type: string
-                      pagination:
-                        type: object
-                        properties:
-                          rel:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                rel:
-                                  type: string
-                                href:
-                                  type: string
-                          pages:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                page:
-                                  type: number
-                                active:
-                                  type: boolean
-                                qs:
-                                  type: string
-                                separator:
-                                  type: boolean
-                          currentPage:
-                            type: number
-                          pageCount:
-                            type: number
-                          prev:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          next:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          first:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          last:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/admin/settings/{term?}":
     get:
@@ -4068,47 +3772,6 @@ paths:
                         type: number
                       time:
                         type: string
-                      pagination:
-                        type: object
-                        properties:
-                          prev:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                          next:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                          first:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                          last:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                          rel:
-                            type: array
-                            items: {}
-                          pages:
-                            type: array
-                            items: {}
-                          currentPage:
-                            type: number
-                          pageCount:
-                            type: number
                       multiplePages:
                         type: boolean
                       search_query:
@@ -4147,6 +3810,7 @@ paths:
                         type: string
                       searchDefaultSortBy:
                         type: string
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/reset/{code?}":
     get:
@@ -4577,69 +4241,7 @@ paths:
                         type: string
                       postIndex:
                         type: number
-                      pagination:
-                        type: object
-                        properties:
-                          rel:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                rel:
-                                  type: string
-                                href:
-                                  type: string
-                          pages:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                page:
-                                  type: number
-                                active:
-                                  type: boolean
-                                qs:
-                                  type: string
-                          currentPage:
-                            type: number
-                          pageCount:
-                            type: number
-                          prev:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          next:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          first:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          last:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/topic/{topic_id}/{slug?}":
     get:
@@ -5097,69 +4699,6 @@ paths:
                         type: string
                       postIndex:
                         type: number
-                      pagination:
-                        type: object
-                        properties:
-                          rel:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                rel:
-                                  type: string
-                                href:
-                                  type: string
-                          pages:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                page:
-                                  type: number
-                                active:
-                                  type: boolean
-                                qs:
-                                  type: string
-                          currentPage:
-                            type: number
-                          pageCount:
-                            type: number
-                          prev:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          next:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          first:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          last:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
                       loggedInUser:
                         type: object
                         properties:
@@ -5182,6 +4721,7 @@ paths:
                               value is used in conjunction with `icon:text` for
                               the user's auto-generated icon
                             example: "#f44336"
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/post/{pid}":
     get:
@@ -5336,71 +4876,7 @@ paths:
                             type: number
                       title:
                         type: string
-                      pagination:
-                        type: object
-                        properties:
-                          rel:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                rel:
-                                  type: string
-                                href:
-                                  type: string
-                          pages:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                page:
-                                  type: number
-                                active:
-                                  type: boolean
-                                qs:
-                                  type: string
-                                separator:
-                                  type: boolean
-                          currentPage:
-                            type: number
-                          pageCount:
-                            type: number
-                          prev:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          next:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          first:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          last:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/flags/{flagId}":
     get:
@@ -5740,47 +5216,7 @@ paths:
                                 totalTopicCount:
                                   type: number
                                   description: The number of topics in the category
-                      pagination:
-                        type: object
-                        properties:
-                          prev:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                          next:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                          first:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                          last:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                          rel:
-                            type: array
-                            items: {}
-                          pages:
-                            type: array
-                            items: {}
-                          currentPage:
-                            type: number
-                          pageCount:
-                            type: number
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/ip-blacklist:
     get:
@@ -6068,73 +5504,9 @@ paths:
                               type: boolean
                             imageClass:
                               type: string
-                      pagination:
-                        type: object
-                        properties:
-                          rel:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                rel:
-                                  type: string
-                                href:
-                                  type: string
-                          pages:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                page:
-                                  type: number
-                                active:
-                                  type: boolean
-                                qs:
-                                  type: string
-                                separator:
-                                  type: boolean
-                          currentPage:
-                            type: number
-                          pageCount:
-                            type: number
-                          prev:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          next:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          first:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          last:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
                       rssFeedUrl:
                         type: string
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/tags:
     get:
@@ -6498,71 +5870,6 @@ paths:
                             type: boolean
                           term:
                             type: string
-                      pagination:
-                        type: object
-                        properties:
-                          rel:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                rel:
-                                  type: string
-                                href:
-                                  type: string
-                          pages:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                page:
-                                  type: number
-                                active:
-                                  type: boolean
-                                qs:
-                                  type: string
-                                separator:
-                                  type: boolean
-                          currentPage:
-                            type: number
-                          pageCount:
-                            type: number
-                          prev:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          next:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          first:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          last:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
                       breadcrumbs:
                         type: array
                         items:
@@ -6572,6 +5879,7 @@ paths:
                               type: string
                             url:
                               type: string
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/recent:
     get:
@@ -6884,71 +6192,6 @@ paths:
                             type: boolean
                           term:
                             type: string
-                      pagination:
-                        type: object
-                        properties:
-                          rel:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                rel:
-                                  type: string
-                                href:
-                                  type: string
-                          pages:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                page:
-                                  type: number
-                                active:
-                                  type: boolean
-                                qs:
-                                  type: string
-                                separator:
-                                  type: boolean
-                          currentPage:
-                            type: number
-                          pageCount:
-                            type: number
-                          prev:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          next:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          first:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          last:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
                       breadcrumbs:
                         type: array
                         items:
@@ -6958,6 +6201,7 @@ paths:
                               type: string
                             url:
                               type: string
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/top:
     get:
@@ -7290,71 +6534,6 @@ paths:
                             type: boolean
                           term:
                             type: string
-                      pagination:
-                        type: object
-                        properties:
-                          rel:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                rel:
-                                  type: string
-                                href:
-                                  type: string
-                          pages:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                page:
-                                  type: number
-                                active:
-                                  type: boolean
-                                qs:
-                                  type: string
-                                separator:
-                                  type: boolean
-                          currentPage:
-                            type: number
-                          pageCount:
-                            type: number
-                          prev:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          next:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          first:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          last:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
                       breadcrumbs:
                         type: array
                         items:
@@ -7364,6 +6543,7 @@ paths:
                               type: string
                             url:
                               type: string
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/unread:
     get:
@@ -7590,47 +6770,6 @@ paths:
                         type: string
                       pageCount:
                         type: number
-                      pagination:
-                        type: object
-                        properties:
-                          prev:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                          next:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                          first:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                          last:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                          rel:
-                            type: array
-                            items: {}
-                          pages:
-                            type: array
-                            items: {}
-                          currentPage:
-                            type: number
-                          pageCount:
-                            type: number
                       categories:
                         type: array
                         items:
@@ -7695,6 +6834,7 @@ paths:
                             type: boolean
                           filter:
                             type: string
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/category/{category_id}/{slug}/{topic_index}":
     get:
@@ -8014,71 +7154,7 @@ paths:
                         type: number
                       reputation:disabled:
                         type: number
-                      pagination:
-                        type: object
-                        properties:
-                          rel:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                rel:
-                                  type: string
-                                href:
-                                  type: string
-                          pages:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                page:
-                                  type: number
-                                active:
-                                  type: boolean
-                                qs:
-                                  type: string
-                                separator:
-                                  type: boolean
-                          currentPage:
-                            type: number
-                          pageCount:
-                            type: number
-                          prev:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          next:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          first:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          last:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/category/{category_id}/{slug?}":
     get:
@@ -8409,71 +7485,7 @@ paths:
                         type: number
                       reputation:disabled:
                         type: number
-                      pagination:
-                        type: object
-                        properties:
-                          rel:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                rel:
-                                  type: string
-                                href:
-                                  type: string
-                          pages:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                page:
-                                  type: number
-                                active:
-                                  type: boolean
-                                qs:
-                                  type: string
-                                separator:
-                                  type: boolean
-                          currentPage:
-                            type: number
-                          pageCount:
-                            type: number
-                          prev:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          next:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          first:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          last:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/me/*:
     get:
@@ -9478,47 +8490,6 @@ paths:
                               type: number
                       nextStart:
                         type: number
-                      pagination:
-                        type: object
-                        properties:
-                          prev:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                          next:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                          first:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                          last:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                          rel:
-                            type: array
-                            items: {}
-                          pages:
-                            type: array
-                            items: {}
-                          currentPage:
-                            type: number
-                          pageCount:
-                            type: number
                       noItemsFoundKey:
                         type: string
                       title:
@@ -9545,6 +8516,7 @@ paths:
                               type: string
                             selected:
                               type: boolean
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/best":
     get:
@@ -9860,47 +8832,6 @@ paths:
                         items: {}
                       nextStart:
                         type: number
-                      pagination:
-                        type: object
-                        properties:
-                          prev:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                          next:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                          first:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                          last:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                          rel:
-                            type: array
-                            items: {}
-                          pages:
-                            type: array
-                            items: {}
-                          currentPage:
-                            type: number
-                          pageCount:
-                            type: number
                       noItemsFoundKey:
                         type: string
                       title:
@@ -9927,6 +8858,7 @@ paths:
                               type: string
                             selected:
                               type: boolean
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/watched":
     get:
@@ -10319,69 +9251,6 @@ paths:
                               type: number
                       nextStart:
                         type: number
-                      pagination:
-                        type: object
-                        properties:
-                          rel:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                rel:
-                                  type: string
-                                href:
-                                  type: string
-                          pages:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                page:
-                                  type: number
-                                active:
-                                  type: boolean
-                                qs:
-                                  type: string
-                          currentPage:
-                            type: number
-                          pageCount:
-                            type: number
-                          prev:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          next:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          first:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          last:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
                       noItemsFoundKey:
                         type: string
                       title:
@@ -10409,6 +9278,7 @@ paths:
                             selected:
                               type: boolean
                   - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/ignored":
     get:
@@ -11258,47 +10128,6 @@ paths:
                               type: string
                             subject:
                               type: string
-                      pagination:
-                        type: object
-                        properties:
-                          prev:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                          next:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                          first:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                          last:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                          rel:
-                            type: array
-                            items: {}
-                          pages:
-                            type: array
-                            items: {}
-                          currentPage:
-                            type: number
-                          pageCount:
-                            type: number
                       filters:
                         type: array
                         items:
@@ -11350,6 +10179,7 @@ paths:
                               type: string
                             url:
                               type: string
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/chats/{roomid?}":
     get:
@@ -11737,71 +10567,6 @@ paths:
                               type: string
                             administrator:
                               type: boolean
-                      pagination:
-                        type: object
-                        properties:
-                          rel:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                rel:
-                                  type: string
-                                href:
-                                  type: string
-                          pages:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                page:
-                                  type: number
-                                active:
-                                  type: boolean
-                                qs:
-                                  type: string
-                                separator:
-                                  type: boolean
-                          currentPage:
-                            type: number
-                          pageCount:
-                            type: number
-                          prev:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          next:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          first:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
-                          last:
-                            type: object
-                            properties:
-                              page:
-                                type: number
-                              active:
-                                type: boolean
-                              qs:
-                                type: string
                       userCount:
                         type: number
                       title:
@@ -11837,6 +10602,7 @@ paths:
                         type: boolean
                       reputation:disabled:
                         type: number
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/groups:
     get:
