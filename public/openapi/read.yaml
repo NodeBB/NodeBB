@@ -3440,9 +3440,6 @@ paths:
       description: >
         This route returns an array of uids that correspond to the moderators
         for the category in question.
-
-
-        **Warning**: This route doesn't seem to be used in NodeBB core, so it may be at risk of removal.
       parameters:
         - name: cid
           description: The category identifier for the category you wish to look up
