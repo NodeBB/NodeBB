@@ -1,0 +1,6 @@
+
+    get:
+      tags:
+        - admin
+      summary: /api/admin/manage/uploads
+      responses: {}

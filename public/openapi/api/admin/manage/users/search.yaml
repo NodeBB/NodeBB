@@ -1,0 +1,20 @@
+
+    get:
+      tags:
+        - admin
+      summary: /api/admin/manage/users/search
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      search_display:
+                        type: string
+                      users:
+                        type: array
+                        items: {}
+                  - $ref: '../../../../components/schemas/CommonProps.yaml#/CommonProps'

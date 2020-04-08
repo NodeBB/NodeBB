@@ -1,0 +1,119 @@
+
+    get:
+      tags:
+        - admin
+      summary: /api/admin/extend/plugins
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      installed:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            latest:
+                              type: string
+                            description:
+                              type: string
+                            name:
+                              type: string
+                            updated:
+                              type: string
+                            url:
+                              type: string
+                            numInstalls:
+                              type: number
+                            isCompatible:
+                              type: boolean
+                            id:
+                              type: string
+                            installed:
+                              type: boolean
+                            active:
+                              type: boolean
+                            isTheme:
+                              type: boolean
+                            error:
+                              type: boolean
+                            version:
+                              type: string
+                            license:
+                              type: object
+                              properties:
+                                name:
+                                  type: string
+                                text:
+                                  type: string
+                            outdated:
+                              type: boolean
+                            settingsRoute:
+                              type: string
+                      installedCount:
+                        type: number
+                      activeCount:
+                        type: number
+                      inactiveCount:
+                        type: number
+                      upgradeCount:
+                        type: number
+                      download:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            updated:
+                              type: string
+                            description:
+                              type: string
+                            latest:
+                              type: string
+                            url:
+                              type: string
+                            numInstalls:
+                              type: number
+                            isCompatible:
+                              type: boolean
+                            id:
+                              type: string
+                            installed:
+                              type: boolean
+                            active:
+                              type: boolean
+                      incompatible:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            latest:
+                              type: string
+                            description:
+                              type: string
+                            name:
+                              type: string
+                            updated:
+                              type: string
+                            url:
+                              type: string
+                            numInstalls:
+                              type: number
+                            isCompatible:
+                              type: boolean
+                            id:
+                              type: string
+                            installed:
+                              type: boolean
+                            active:
+                              type: boolean
+                      submitPluginUsage:
+                        type: number
+                      version:
+                        type: string
+                  - $ref: '../../../components/schemas/CommonProps.yaml#/CommonProps'

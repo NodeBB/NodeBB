@@ -1,0 +1,6 @@
+
+    get:
+      tags:
+        - admin
+      summary: /api/admin/general/languages
+      responses: {}

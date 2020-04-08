@@ -1,0 +1,6 @@
+
+    get:
+      tags:
+        - posts
+      summary: /api/unread/total
+      responses: {}

@@ -1,0 +1,170 @@
+
+    get:
+      tags:
+        - notifications
+      summary: /api/notifications
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      notifications:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            type:
+                              type: string
+                            bodyShort:
+                              type: string
+                            bodyLong:
+                              type: string
+                            pid:
+                              oneOf:
+                                - type: number
+                                - type: string
+                            tid:
+                              type: number
+                              description: A topic identifier
+                            path:
+                              type: string
+                            nid:
+                              type: string
+                            from:
+                              type: number
+                            mergeId:
+                              type: string
+                            topicTitle:
+                              type: string
+                            importance:
+                              type: number
+                            datetime:
+                              type: number
+                            datetimeISO:
+                              type: string
+                            user:
+                              type: object
+                              properties:
+                                username:
+                                  type: string
+                                  description: A friendly name for a given user account
+                                userslug:
+                                  type: string
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                picture:
+                                  type: string
+                                uid:
+                                  type: number
+                                  description: A user identifier
+                                icon:text:
+                                  type: string
+                                  description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                icon:bgColor:
+                                  type: string
+                                  description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                  example: "#f44336"
+                            image:
+                              type: string
+                            read:
+                              type: boolean
+                            readClass:
+                              type: string
+                            subject:
+                              type: string
+                      pagination:
+                        type: object
+                        properties:
+                          prev:
+                            type: object
+                            properties:
+                              page:
+                                type: number
+                              active:
+                                type: boolean
+                          next:
+                            type: object
+                            properties:
+                              page:
+                                type: number
+                              active:
+                                type: boolean
+                          first:
+                            type: object
+                            properties:
+                              page:
+                                type: number
+                              active:
+                                type: boolean
+                          last:
+                            type: object
+                            properties:
+                              page:
+                                type: number
+                              active:
+                                type: boolean
+                          rel:
+                            type: array
+                            items: {}
+                          pages:
+                            type: array
+                            items: {}
+                          currentPage:
+                            type: number
+                          pageCount:
+                            type: number
+                      filters:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            filter:
+                              type: string
+                            selected:
+                              type: boolean
+                      regularFilters:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            filter:
+                              type: string
+                            selected:
+                              type: boolean
+                      moderatorFilters:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            filter:
+                              type: string
+                      selectedFilter:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          filter:
+                            type: string
+                          selected:
+                            type: boolean
+                      title:
+                        type: string
+                      breadcrumbs:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            text:
+                              type: string
+                            url:
+                              type: string
+                  - $ref: '../components/schemas/CommonProps.yaml#/CommonProps'

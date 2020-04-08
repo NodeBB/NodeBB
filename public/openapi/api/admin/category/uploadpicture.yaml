@@ -1,0 +1,6 @@
+
+    post:
+      tags:
+        - admin
+      summary: /api/admin/category/uploadpicture
+      responses: {}
