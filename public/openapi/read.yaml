@@ -626,112 +626,17 @@ paths:
                   - type: object
                     properties:
                       category:
-                        type: object
-                        properties:
-                          cid:
-                            type: number
-                            description: A category identifier
-                          name:
-                            type: string
-                          description:
-                            type: string
-                          icon:
-                            type: string
-                          bgColor:
-                            type: string
-                          color:
-                            type: string
-                          slug:
-                            type: string
-                          parentCid:
-                            type: number
-                            description: The category identifier for the category that is the immediate
-                              ancestor of the current category
-                          topic_count:
-                            type: number
-                            description: The number of topics in the category
-                          post_count:
-                            type: number
-                            description: The number of posts in the category
-                          disabled:
-                            type: number
-                          order:
-                            type: number
-                          link:
-                            type: string
-                          numRecentReplies:
-                            type: number
-                          class:
-                            type: string
-                          imageClass:
-                            type: string
-                          timesClicked:
-                            type: number
-                          isSection:
-                            type: number
-                          totalPostCount:
-                            type: number
-                            description: The number of posts in the category
-                          totalTopicCount:
-                            type: number
-                            description: The number of topics in the category
-                          descriptionParsed:
-                            type: string
-                          tagWhitelist:
-                            type: array
-                            items: {}
-                          unread-class:
-                            type: string
-                          parent:
-                            type: object
+                        allOf:
+                          - $ref: components/schemas/CategoryObject.yaml#/CategoryObject
+                          - type: object
                             properties:
-                              cid:
-                                type: number
-                                description: A category identifier
-                              name:
+                              tagWhitelist:
+                                type: array
+                                items: {}
+                              unread-class:
                                 type: string
-                              description:
-                                type: string
-                              icon:
-                                type: string
-                              bgColor:
-                                type: string
-                              color:
-                                type: string
-                              slug:
-                                type: string
-                              parentCid:
-                                type: number
-                                description: The category identifier for the category that is the immediate
-                                  ancestor of the current category
-                              topic_count:
-                                type: number
-                                description: The number of topics in the category
-                              post_count:
-                                type: number
-                                description: The number of posts in the category
-                              disabled:
-                                type: number
-                              order:
-                                type: number
-                              link:
-                                type: string
-                              numRecentReplies:
-                                type: number
-                              class:
-                                type: string
-                              imageClass:
-                                type: string
-                              descriptionParsed:
-                                type: string
-                              isSection:
-                                type: number
-                              totalPostCount:
-                                type: number
-                                description: The number of posts in the category
-                              totalTopicCount:
-                                type: number
-                                description: The number of topics in the category
+                              parent:
+                                $ref: components/schemas/CategoryObject.yaml#/CategoryObject
                       allCategories:
                         type: array
                         items:
@@ -2475,310 +2380,180 @@ paths:
                         description: A collection of category data objects
                         type: array
                         items:
-                          type: object
-                          properties:
-                            cid:
-                              type: number
-                              description: A category identifier
-                            name:
-                              type: string
-                            description:
-                              type: string
-                            icon:
-                              type: string
-                            slug:
-                              type: string
-                            topic_count:
-                              type: number
-                              description: The number of topics in the category
-                            order:
-                              type: number
-                            bgColor:
-                              type: string
-                            link:
-                              type: string
-                            class:
-                              type: string
-                            numRecentReplies:
-                              type: number
-                            color:
-                              type: string
-                            post_count:
-                              type: number
-                              description: The number of posts in the category
-                            descriptionParsed:
-                              type: string
-                            parentCid:
-                              type: number
-                              description: The category identifier for the category that is the immediate
-                                ancestor of the current category
-                            disabled:
-                              type: number
-                            isSection:
-                              type: number
-                            totalPostCount:
-                              type: number
-                              description: The number of posts in the category
-                            totalTopicCount:
-                              type: number
-                              description: The number of topics in the category
-                            tagWhitelist:
-                              type: array
-                              items: {}
-                            unread-class:
-                              type: string
-                            children:
-                              type: array
-                              items:
-                                type: object
-                                properties:
-                                  cid:
-                                    type: number
-                                    description: A category identifier
-                                  name:
-                                    type: string
-                                  description:
-                                    type: string
-                                  icon:
-                                    type: string
-                                  slug:
-                                    type: string
-                                  topic_count:
-                                    type: number
-                                    description: The number of topics in the category
-                                  order:
-                                    type: number
-                                  bgColor:
-                                    type: string
-                                  link:
-                                    type: string
-                                  class:
-                                    type: string
-                                  numRecentReplies:
-                                    type: number
-                                  color:
-                                    type: string
-                                  post_count:
-                                    type: number
-                                    description: The number of posts in the category
-                                  parentCid:
-                                    type: number
-                                    description: The category identifier for the category that is the immediate
-                                      ancestor of the current category
-                                  disabled:
-                                    type: number
-                                  isSection:
-                                    type: number
-                                  totalPostCount:
-                                    type: number
-                                    description: The number of posts in the category
-                                  totalTopicCount:
-                                    type: number
-                                    description: The number of topics in the category
-                                  descriptionParsed:
-                                    type: string
-                                  tagWhitelist:
-                                    type: array
-                                    items: {}
-                                  unread-class:
-                                    type: string
-                                  children:
-                                    type: array
-                                    items: {}
-                                  parent:
+                          allOf:
+                            - $ref: components/schemas/CategoryObject.yaml#/CategoryObject
+                            - type: object
+                              properties:
+                                tagWhitelist:
+                                  type: array
+                                  items: {}
+                                unread-class:
+                                  type: string
+                                children:
+                                  type: array
+                                  items:
+                                    allOf:
+                                      - $ref: components/schemas/CategoryObject.yaml#/CategoryObject
+                                      - type: object
+                                        properties:
+                                          tagWhitelist:
+                                            type: array
+                                            items: {}
+                                          unread-class:
+                                            type: string
+                                          children:
+                                            type: array
+                                            items:
+                                              $ref: components/schemas/CategoryObject.yaml#/CategoryObject
+                                          parent:
+                                            allOf:
+                                              - $ref: components/schemas/CategoryObject.yaml#/CategoryObject
+                                              - type: object
+                                                properties:
+                                                  tagWhitelist:
+                                                    type: array
+                                                    items: {}
+                                                  unread-class:
+                                                    type: string
+                                          posts:
+                                            type: array
+                                            items:
+                                              type: object
+                                              properties:
+                                                pid:
+                                                  type: number
+                                                timestamp:
+                                                  type: number
+                                                content:
+                                                  type: string
+                                                timestampISO:
+                                                  type: string
+                                                  description: An ISO 8601 formatted date string (complementing `timestamp`)
+                                                user:
+                                                  type: object
+                                                  properties:
+                                                    uid:
+                                                      type: number
+                                                      description: A user identifier
+                                                    username:
+                                                      type: string
+                                                      description: A friendly name for a given user account
+                                                    userslug:
+                                                      type: string
+                                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                                        removed, etc.)
+                                                    picture:
+                                                      nullable: true
+                                                      type: string
+                                                    icon:text:
+                                                      type: string
+                                                      description: A single-letter representation of a username. This is used in the
+                                                        auto-generated icon given to
+                                                        users without an avatar
+                                                    icon:bgColor:
+                                                      type: string
+                                                      description: A six-character hexadecimal colour code assigned to the user. This
+                                                        value is used in conjunction
+                                                        with `icon:text` for the user's
+                                                        auto-generated icon
+                                                      example: "#f44336"
+                                                index:
+                                                  type: number
+                                                cid:
+                                                  type: number
+                                                  description: A category identifier
+                                                parentCid:
+                                                  type: number
+                                                  description: The category identifier for the category that is the immediate
+                                                    ancestor of the current category
+                                                topic:
+                                                  type: object
+                                                  properties:
+                                                    slug:
+                                                      type: string
+                                                    title:
+                                                      type: string
+                                          imageClass:
+                                            type: string
+                                          timesClicked:
+                                            type: number
+                                posts:
+                                  type: array
+                                  items:
                                     type: object
                                     properties:
-                                      link:
-                                        type: string
-                                      class:
-                                        type: string
-                                      icon:
-                                        type: string
-                                      description:
-                                        type: string
-                                      order:
+                                      pid:
                                         type: number
-                                      topic_count:
+                                      timestamp:
                                         type: number
-                                        description: The number of topics in the category
-                                      name:
+                                      content:
                                         type: string
+                                      timestampISO:
+                                        type: string
+                                        description: An ISO 8601 formatted date string (complementing `timestamp`)
+                                      user:
+                                        type: object
+                                        properties:
+                                          uid:
+                                            type: number
+                                            description: A user identifier
+                                          username:
+                                            type: string
+                                            description: A friendly name for a given user account
+                                          userslug:
+                                            type: string
+                                            description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                              removed, etc.)
+                                          picture:
+                                            nullable: true
+                                            type: string
+                                          icon:text:
+                                            type: string
+                                            description: A single-letter representation of a username. This is used in the
+                                              auto-generated icon given to users
+                                              without an avatar
+                                          icon:bgColor:
+                                            type: string
+                                            description: A six-character hexadecimal colour code assigned to the user. This
+                                              value is used in conjunction with
+                                              `icon:text` for the user's
+                                              auto-generated icon
+                                            example: "#f44336"
+                                      index:
+                                        type: number
                                       cid:
                                         type: number
                                         description: A category identifier
-                                      post_count:
-                                        type: number
-                                        description: The number of posts in the category
-                                      numRecentReplies:
-                                        type: number
-                                      bgColor:
-                                        type: string
-                                      slug:
-                                        type: string
-                                      color:
-                                        type: string
-                                      disabled:
-                                        type: number
-                                      descriptionParsed:
-                                        type: string
-                                      isSection:
-                                        type: number
                                       parentCid:
                                         type: number
                                         description: The category identifier for the category that is the immediate
                                           ancestor of the current category
-                                      totalPostCount:
-                                        type: number
-                                        description: The number of posts in the category
-                                      totalTopicCount:
-                                        type: number
-                                        description: The number of topics in the category
-                                      tagWhitelist:
-                                        type: array
-                                        items: {}
-                                      unread-class:
-                                        type: string
-                                      imageClass:
-                                        type: string
-                                  posts:
-                                    type: array
-                                    items:
-                                      type: object
-                                      properties:
-                                        pid:
-                                          type: number
-                                        timestamp:
-                                          type: number
-                                        content:
-                                          type: string
-                                        timestampISO:
-                                          type: string
-                                          description: An ISO 8601 formatted date string (complementing `timestamp`)
-                                        user:
-                                          type: object
-                                          properties:
-                                            uid:
-                                              type: number
-                                              description: A user identifier
-                                            username:
-                                              type: string
-                                              description: A friendly name for a given user account
-                                            userslug:
-                                              type: string
-                                              description: An URL-safe variant of the username (i.e. lower-cased, spaces
-                                                removed, etc.)
-                                            picture:
-                                              nullable: true
-                                              type: string
-                                            icon:text:
-                                              type: string
-                                              description: A single-letter representation of a username. This is used in the
-                                                auto-generated icon given to
-                                                users without an avatar
-                                            icon:bgColor:
-                                              type: string
-                                              description: A six-character hexadecimal colour code assigned to the user. This
-                                                value is used in conjunction
-                                                with `icon:text` for the user's
-                                                auto-generated icon
-                                              example: "#f44336"
-                                        index:
-                                          type: number
-                                        cid:
-                                          type: number
-                                          description: A category identifier
-                                        parentCid:
-                                          type: number
-                                          description: The category identifier for the category that is the immediate
-                                            ancestor of the current category
-                                        topic:
-                                          type: object
-                                          properties:
-                                            slug:
-                                              type: string
-                                            title:
-                                              type: string
-                                  imageClass:
-                                    type: string
-                                  timesClicked:
-                                    type: number
-                            posts:
-                              type: array
-                              items:
-                                type: object
-                                properties:
-                                  pid:
-                                    type: number
-                                  timestamp:
-                                    type: number
-                                  content:
-                                    type: string
-                                  timestampISO:
-                                    type: string
-                                    description: An ISO 8601 formatted date string (complementing `timestamp`)
-                                  user:
-                                    type: object
-                                    properties:
-                                      uid:
-                                        type: number
-                                        description: A user identifier
-                                      username:
-                                        type: string
-                                        description: A friendly name for a given user account
-                                      userslug:
-                                        type: string
-                                        description: An URL-safe variant of the username (i.e. lower-cased, spaces
-                                          removed, etc.)
-                                      picture:
-                                        nullable: true
-                                        type: string
-                                      icon:text:
-                                        type: string
-                                        description: A single-letter representation of a username. This is used in the
-                                          auto-generated icon given to users
-                                          without an avatar
-                                      icon:bgColor:
-                                        type: string
-                                        description: A six-character hexadecimal colour code assigned to the user. This
-                                          value is used in conjunction with
-                                          `icon:text` for the user's
-                                          auto-generated icon
-                                        example: "#f44336"
-                                  index:
-                                    type: number
-                                  cid:
-                                    type: number
-                                    description: A category identifier
-                                  parentCid:
-                                    type: number
-                                    description: The category identifier for the category that is the immediate
-                                      ancestor of the current category
-                                  topic:
-                                    type: object
-                                    properties:
-                                      slug:
-                                        type: string
-                                      title:
-                                        type: string
-                            teaser:
-                              type: object
-                              properties:
-                                url:
-                                  type: string
-                                timestampISO:
-                                  type: string
-                                  description: An ISO 8601 formatted date string (complementing `timestamp`)
-                                pid:
-                                  type: number
-                                topic:
+                                      topic:
+                                        type: object
+                                        properties:
+                                          slug:
+                                            type: string
+                                          title:
+                                            type: string
+                                teaser:
                                   type: object
                                   properties:
-                                    slug:
+                                    url:
                                       type: string
-                                    title:
+                                    timestampISO:
                                       type: string
-                            imageClass:
-                              type: string
+                                      description: An ISO 8601 formatted date string (complementing `timestamp`)
+                                    pid:
+                                      type: number
+                                    topic:
+                                      type: object
+                                      properties:
+                                        slug:
+                                          type: string
+                                        title:
+                                          type: string
+                                imageClass:
+                                  type: string
                       topics:
                         type: array
                         items:
@@ -6480,53 +6255,9 @@ paths:
             application/json:
               schema:
                 allOf:
+                  - $ref: components/schemas/CategoryObject.yaml#/CategoryObject
                   - type: object
                     properties:
-                      link:
-                        type: string
-                      class:
-                        type: string
-                      icon:
-                        type: string
-                      description:
-                        type: string
-                      order:
-                        type: number
-                      topic_count:
-                        type: number
-                        description: The number of topics in the category
-                      name:
-                        type: string
-                      cid:
-                        type: number
-                        description: A category identifier
-                      post_count:
-                        type: number
-                        description: The number of posts in the category
-                      numRecentReplies:
-                        type: number
-                      bgColor:
-                        type: string
-                      slug:
-                        type: string
-                      color:
-                        type: string
-                      parentCid:
-                        type: number
-                        description: The category identifier for the category that is the immediate
-                          ancestor of the current category
-                      disabled:
-                        type: number
-                      isSection:
-                        type: number
-                      totalPostCount:
-                        type: number
-                        description: The number of posts in the category
-                      totalTopicCount:
-                        type: number
-                        description: The number of topics in the category
-                      descriptionParsed:
-                        type: string
                       tagWhitelist:
                         type: array
                         items: {}
@@ -6534,7 +6265,8 @@ paths:
                         type: string
                       children:
                         type: array
-                        items: {}
+                        items:
+                          $ref: components/schemas/CategoryObject.yaml#/CategoryObject
                       topics:
                         type: array
                         items:
@@ -6787,53 +6519,9 @@ paths:
             application/json:
               schema:
                 allOf:
+                  - $ref: components/schemas/CategoryObject.yaml#/CategoryObject
                   - type: object
                     properties:
-                      cid:
-                        type: number
-                        description: A category identifier
-                      name:
-                        type: string
-                      description:
-                        type: string
-                      icon:
-                        type: string
-                      slug:
-                        type: string
-                      topic_count:
-                        type: number
-                        description: The number of topics in the category
-                      order:
-                        type: number
-                      bgColor:
-                        type: string
-                      link:
-                        type: string
-                      class:
-                        type: string
-                      numRecentReplies:
-                        type: number
-                      color:
-                        type: string
-                      post_count:
-                        type: number
-                        description: The number of posts in the category
-                      descriptionParsed:
-                        type: string
-                      parentCid:
-                        type: number
-                        description: The category identifier for the category that is the immediate
-                          ancestor of the current category
-                      disabled:
-                        type: number
-                      isSection:
-                        type: number
-                      totalPostCount:
-                        type: number
-                        description: The number of posts in the category
-                      totalTopicCount:
-                        type: number
-                        description: The number of topics in the category
                       tagWhitelist:
                         type: array
                         items: {}
@@ -6841,7 +6529,8 @@ paths:
                         type: string
                       children:
                         type: array
-                        items: {}
+                        items:
+                          $ref: components/schemas/CategoryObject.yaml#/CategoryObject
                       topics:
                         type: array
                         items:
