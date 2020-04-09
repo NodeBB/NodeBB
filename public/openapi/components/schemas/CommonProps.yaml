@@ -3,12 +3,12 @@ CommonProps:
   properties:
     loggedIn:
       type: boolean
-      description: true if user is logged in, false otherwise
+      description: True if user is logged in, false otherwise
     relative_path:
       type: string
       description: |
-        if NodeBB is installed in a subfolder this becomes the path to the forum. For example if your forum url is
-        mycompany.com/community then relative_path will be /community. If your forum url is myforum.com then relative path will be empty string.
+        If NodeBB is installed in a subfolder this becomes the path to the forum. For example if your forum url is
+        `example.org/community` then relative_path will be `/community`. If your forum url is `example.com` then relative path will be an empty string.
     template:
       type: object
       properties:
@@ -18,13 +18,13 @@ CommonProps:
         type: object
     url:
       type: string
-      description: base url of the current page, does not include query params
+      description: Base url of the current page, does not include query params
     bodyClass:
       type: string
-      description: the css class string that is appended to the body element
+      description: The css class string that is appended to the body element
     _header:
       type: object
-      description: list of meta and link tags that are added to the head element
+      description: List of meta and link tags that are added to the head element
       properties:
         tags:
           type: object
@@ -69,7 +69,7 @@ CommonProps:
                   - sizes
     widgets:
       type: object
-      description: rendered widgets
+      description: Rendered widgets
       properties:
         header:
           type: array
