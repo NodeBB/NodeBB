@@ -74,6 +74,6 @@
 	"default-notification-settings": "Varsayılan bildirim ayarları",
 	"categoryWatchState": "Default category watch state",
 	"categoryWatchState.watching": "Watching",
-	"categoryWatchState.notwatching": "Not Watching",
+	"categoryWatchState.notwatching": "Takip edilmiyor",
 	"categoryWatchState.ignoring": "Ignoring"
 }

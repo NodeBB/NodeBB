@@ -12,7 +12,7 @@
 	"settings": "Etiket yönetim sayfasını ziyaret etmek için <a href=\"%1\">buraya</a> tıklayın.",
 	"name": "Etiket Adı",
 
-	"alerts.editing": "Editing tag(s)",
+	"alerts.editing": "Etiket(ler)i Düzenle",
 	"alerts.confirm-delete": "Seçilen etiketleri gerçekten silmek istiyor musunuz?",
 	"alerts.update-success": "Etiket Güncellendi!"
 }
