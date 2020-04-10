@@ -1,6 +1,6 @@
 'use strict';
 
-const mubsub = require('mubsub-nbb');
+const mubsub = require('@nodebb/mubsub');
 const connection = require('./connection');
 
 const client = mubsub(connection.getConnectionString(), connection.getConnectionOptions());

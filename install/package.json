@@ -77,7 +77,7 @@
         "mongodb": "3.5.5",
         "morgan": "^1.10.0",
         "mousetrap": "^1.6.5",
-        "mubsub-nbb": "^1.5.1",
+        "@nodebb/mubsub": "^1.6.0",
         "nconf": "^0.10.0",
         "nodebb-plugin-composer-default": "6.3.23",
         "nodebb-plugin-dbsearch": "4.0.7",
