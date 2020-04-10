@@ -36,20 +36,22 @@ sitemap.getPages = async function () {
 		return sitemap.maps.pages.toString();
 	}
 
+	const prefix = nconf.get('url_parsed').path.replace(/\/$/, "");
+
 	const urls = [{
 		url: '',
 		changefreq: 'weekly',
 		priority: 0.6,
 	}, {
-		url: '/recent',
+		url: `${prefix}/recent`,
 		changefreq: 'daily',
 		priority: 0.4,
 	}, {
-		url: '/users',
+		url: `${prefix}/users`,
 		changefreq: 'daily',
 		priority: 0.4,
 	}, {
-		url: '/groups',
+		url: `${prefix}/groups`,
 		changefreq: 'daily',
 		priority: 0.4,
 	}];
@@ -70,12 +72,14 @@ sitemap.getCategories = async function () {
 		return sitemap.maps.categories.toString();
 	}
 
+	const prefix = nconf.get('url_parsed').path.replace(/\/$/, "");
+
 	const categoryUrls = [];
 	const categoriesData = await categories.getCategoriesByPrivilege('categories:cid', 0, 'find');
 	categoriesData.forEach(function (category) {
 		if (category) {
 			categoryUrls.push({
-				url: '/category/' + category.slug,
+				url: `${prefix}/category/` + category.slug,
 				changefreq: 'weekly',
 				priority: 0.4,
 			});
@@ -104,6 +108,8 @@ sitemap.getTopicPage = async function (page) {
 		return sitemap.maps.topics[page - 1].sm.toString();
 	}
 
+	const prefix = nconf.get('url_parsed').path.replace(/\/$/, "");
+
 	const topicUrls = [];
 	let tids = await db.getSortedSetRevRange('topics:recent', min, max);
 	tids = await privileges.topics.filterTids('topics:read', tids, 0);
@@ -112,7 +118,7 @@ sitemap.getTopicPage = async function (page) {
 	topicData.forEach(function (topic) {
 		if (topic) {
 			topicUrls.push({
-				url: '/topic/' + topic.slug,
+				url: `${prefix}/topic/` + topic.slug,
 				lastmodISO: utils.toISOString(topic.lastposttime),
 				changefreq: 'daily',
 				priority: 0.6,
