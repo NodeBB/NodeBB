@@ -3,6 +3,7 @@
 const validator = require('validator');
 const nconf = require('nconf');
 
+const db = require('../database');
 const meta = require('../meta');
 const groups = require('../groups');
 const user = require('../user');
@@ -24,11 +25,14 @@ groupsController.list = async function (req, res) {
 		privileges.global.can('group:create', req.uid),
 	]);
 
+	let groupNames = await getGroupNames();
+	const pageCount = Math.ceil(groupNames.length / groupsPerPage);
 	res.render('groups/list', {
 		groups: groupData,
 		allowGroupCreation: allowGroupCreation,
 		nextStart: 15,
 		title: '[[pages:groups]]',
+		pagination: pagination.create(page, pageCount, req.query),
 		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[pages:groups]]' }]),
 	});
 };
@@ -140,3 +144,8 @@ groupsController.uploadCover = async function (req, res, next) {
 		next(err);
 	}
 };
+
+async function getGroupNames() {
+	const groupNames = await db.getSortedSetRange('groups:createtime', 0, -1);
+	return groupNames.filter(name => name !== 'registered-users' && !groups.isPrivilegeGroup(name));
+}
