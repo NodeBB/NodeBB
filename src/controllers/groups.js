@@ -14,9 +14,13 @@ const groupsController = module.exports;
 
 groupsController.list = async function (req, res) {
 	const sort = req.query.sort || 'alpha';
+	const page = parseInt(req.query.page, 10) || 1;
+	const groupsPerPage = 14;
+	const start = Math.max(0, (page - 1) * groupsPerPage);
+	const stop = start + groupsPerPage - 1;
 
 	const [groupData, allowGroupCreation] = await Promise.all([
-		groups.getGroupsBySort(sort, 0, 14),
+		groups.getGroupsBySort(sort, start, stop),
 		privileges.global.can('group:create', req.uid),
 	]);
 
