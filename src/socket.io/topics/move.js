@@ -17,13 +17,14 @@ module.exports = function (SocketTopics) {
 			if (!canMove) {
 				throw new Error('[[error:no-privileges]]');
 			}
-			const topicData = await topics.getTopicFields(tid, ['tid', 'cid', 'slug']);
+			const topicData = await topics.getTopicFields(tid, ['tid', 'cid', 'slug', 'deleted']);
 			data.uid = socket.uid;
 			await topics.tools.move(tid, data);
 
 			socketHelpers.emitToTopicAndCategory('event:topic_moved', topicData);
-
-			socketHelpers.sendNotificationToTopicOwner(tid, socket.uid, 'move', 'notifications:moved_your_topic');
+			if (!topicData.deleted) {
+				socketHelpers.sendNotificationToTopicOwner(tid, socket.uid, 'move', 'notifications:moved_your_topic');
+			}
 		});
 	};
 

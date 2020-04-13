@@ -2,6 +2,7 @@
 
 const privileges = require('../../privileges');
 const topics = require('../../topics');
+const posts = require('../../posts');
 const socketHelpers = require('../helpers');
 
 module.exports = function (SocketPosts) {
@@ -25,7 +26,15 @@ module.exports = function (SocketPosts) {
 				throw new Error('[[error:no-privileges]]');
 			}
 			await topics.movePostToTopic(socket.uid, pid, data.tid);
-			socketHelpers.sendNotificationToPostOwner(pid, socket.uid, 'move', 'notifications:moved_your_post');
+
+			const [postDeleted, topicDeleted] = await Promise.all([
+				posts.getPostField(pid, 'deleted'),
+				topics.getTopicField(data.tid, 'deleted'),
+			]);
+
+			if (!postDeleted && !topicDeleted) {
+				socketHelpers.sendNotificationToPostOwner(pid, socket.uid, 'move', 'notifications:moved_your_post');
+			}
 		}
 	};
 };
