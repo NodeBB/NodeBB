@@ -1,28 +1,30 @@
 'use strict';
 
-var async = require('async');
-var prompt = require('prompt');
-var request = require('request');
-var cproc = require('child_process');
-var semver = require('semver');
-var fs = require('fs');
-var path = require('path');
-var nconf = require('nconf');
+const async = require('async');
+const prompt = require('prompt');
+const request = require('request');
+const cproc = require('child_process');
+const semver = require('semver');
+const fs = require('fs');
+const path = require('path');
+const nconf = require('nconf');
 
-var paths = require('./paths');
+const paths = require('./paths');
+const packageManager = nconf.get('package_manager');
 
-var packageManager = nconf.get('package_manager');
-var packageManagerExecutable = packageManager === 'yarn' ? 'yarn' : 'npm';
-var packageManagerInstallArgs = packageManager === 'yarn' ? ['add'] : ['install', '--save'];
+const supportedPackageManagerList = require('./package-install').supportedPackageManager; // load config from src/cli/package-install.js
+
+let packageManagerExecutable = supportedPackageManagerList.indexOf(packageManager) >= 0 ? packageManager : 'npm';
+const packageManagerInstallArgs = packageManager === 'yarn' ? ['add'] : ['install', '--save'];
 
 if (process.platform === 'win32') {
 	packageManagerExecutable += '.cmd';
 }
 
-var dirname = paths.baseDir;
+const dirname = paths.baseDir;
 
 function getModuleVersions(modules, callback) {
-	var versionHash = {};
+	const versionHash = {};
 
 	async.eachLimit(modules, 50, function (module, next) {
 		fs.readFile(path.join(dirname, 'node_modules', module, 'package.json'), { encoding: 'utf-8' }, function (err, pkg) {
@@ -53,8 +55,8 @@ function getInstalledPlugins(callback) {
 			return callback(err);
 		}
 
-		var isNbbModule = /^nodebb-(?:plugin|theme|widget|rewards)-[\w-]+$/;
-		var checklist;
+		const isNbbModule = /^nodebb-(?:plugin|theme|widget|rewards)-[\w-]+$/;
+
 
 		payload.files = payload.files.filter(function (file) {
 			return isNbbModule.test(file);
@@ -75,7 +77,7 @@ function getInstalledPlugins(callback) {
 		});
 
 		// Whittle down deps to send back only extraneously installed plugins/themes/etc
-		checklist = payload.deps.filter(function (pkgName) {
+		const checklist = payload.deps.filter(function (pkgName) {
 			if (payload.bundled.includes(pkgName)) {
 				return false;
 			}
@@ -119,7 +121,7 @@ function checkPlugins(standalone, callback) {
 			version: getCurrentVersion,
 		}),
 		function (payload, next) {
-			var toCheck = Object.keys(payload.plugins);
+			const toCheck = Object.keys(payload.plugins);
 
 			if (!toCheck.length) {
 				process.stdout.write('  OK'.green + ''.reset);
@@ -141,9 +143,9 @@ function checkPlugins(standalone, callback) {
 					body = [body];
 				}
 
-				var current;
-				var suggested;
-				var upgradable = body.map(function (suggestObj) {
+				let current;
+				let suggested;
+				const upgradable = body.map(function (suggestObj) {
 					current = payload.plugins[suggestObj.package];
 					suggested = suggestObj.version;
 
@@ -164,7 +166,7 @@ function checkPlugins(standalone, callback) {
 }
 
 function upgradePlugins(callback) {
-	var standalone = false;
+	let standalone = false;
 	if (typeof callback !== 'function') {
 		callback = function () {};
 		standalone = true;
@@ -203,7 +205,7 @@ function upgradePlugins(callback) {
 
 			if (['y', 'Y', 'yes', 'YES'].includes(result.upgrade)) {
 				console.log('\nUpgrading packages...');
-				var args = packageManagerInstallArgs.concat(found.map(function (suggestObj) {
+				const args = packageManagerInstallArgs.concat(found.map(function (suggestObj) {
 					return suggestObj.name + '@' + suggestObj.suggested;
 				}));
 

@@ -41,15 +41,15 @@ sitemap.getPages = async function () {
 		changefreq: 'weekly',
 		priority: 0.6,
 	}, {
-		url: '/recent',
+		url: `${nconf.get('relative_path')}/recent`,
 		changefreq: 'daily',
 		priority: 0.4,
 	}, {
-		url: '/users',
+		url: `${nconf.get('relative_path')}/users`,
 		changefreq: 'daily',
 		priority: 0.4,
 	}, {
-		url: '/groups',
+		url: `${nconf.get('relative_path')}/groups`,
 		changefreq: 'daily',
 		priority: 0.4,
 	}];
@@ -75,7 +75,7 @@ sitemap.getCategories = async function () {
 	categoriesData.forEach(function (category) {
 		if (category) {
 			categoryUrls.push({
-				url: '/category/' + category.slug,
+				url: `${nconf.get('relative_path')}/category/` + category.slug,
 				changefreq: 'weekly',
 				priority: 0.4,
 			});
@@ -112,7 +112,7 @@ sitemap.getTopicPage = async function (page) {
 	topicData.forEach(function (topic) {
 		if (topic) {
 			topicUrls.push({
-				url: '/topic/' + topic.slug,
+				url: `${nconf.get('relative_path')}/topic/` + topic.slug,
 				lastmodISO: utils.toISOString(topic.lastposttime),
 				changefreq: 'daily',
 				priority: 0.6,

@@ -14,7 +14,8 @@ const pubsub = require('../pubsub');
 
 const statAsync = util.promisify(fs.stat);
 
-const packageManager = nconf.get('package_manager') === 'yarn' ? 'yarn' : 'npm';
+const supportedPackageManagerList = require('../cli/package-install').supportedPackageManager; // load config from src/cli/package-install.js
+const packageManager = supportedPackageManagerList.indexOf(nconf.get('package_manager')) >= 0 ? nconf.get('package_manager') : 'npm';
 let packageManagerExecutable = packageManager;
 const packageManagerCommands = {
 	yarn: {
@@ -22,6 +23,14 @@ const packageManagerCommands = {
 		uninstall: 'remove',
 	},
 	npm: {
+		install: 'install',
+		uninstall: 'uninstall',
+	},
+	cnpm: {
+		install: 'install',
+		uninstall: 'uninstall',
+	},
+	pnpm: {
 		install: 'install',
 		uninstall: 'uninstall',
 	},

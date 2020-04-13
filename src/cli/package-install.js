@@ -1,15 +1,15 @@
 'use strict';
 
-var path = require('path');
-var fs = require('fs');
-var cproc = require('child_process');
+const path = require('path');
+const fs = require('fs');
+const cproc = require('child_process');
 
-var packageFilePath = path.join(__dirname, '../../package.json');
-var packageDefaultFilePath = path.join(__dirname, '../../install/package.json');
-var modulesPath = path.join(__dirname, '../../node_modules');
+const packageFilePath = path.join(__dirname, '../../package.json');
+const packageDefaultFilePath = path.join(__dirname, '../../install/package.json');
+const modulesPath = path.join(__dirname, '../../node_modules');
 
 function updatePackageFile() {
-	var oldPackageContents = {};
+	let oldPackageContents = {};
 
 	try {
 		oldPackageContents = JSON.parse(fs.readFileSync(packageFilePath, 'utf8'));
@@ -19,22 +19,42 @@ function updatePackageFile() {
 		}
 	}
 
-	var defaultPackageContents = JSON.parse(fs.readFileSync(packageDefaultFilePath, 'utf8'));
-	var packageContents = { ...oldPackageContents, ...defaultPackageContents, dependencies: { ...oldPackageContents.dependencies, ...defaultPackageContents.dependencies } };
+	const defaultPackageContents = JSON.parse(fs.readFileSync(packageDefaultFilePath, 'utf8'));
+	const packageContents = { ...oldPackageContents, ...defaultPackageContents, dependencies: { ...oldPackageContents.dependencies, ...defaultPackageContents.dependencies } };
 
 	fs.writeFileSync(packageFilePath, JSON.stringify(packageContents, null, 2));
 }
 
 exports.updatePackageFile = updatePackageFile;
 
+exports.supportedPackageManager = [
+	'npm',
+	'cnpm',
+	'pnpm',
+	'yarn',
+];
+
 function installAll() {
-	var prod = global.env !== 'development';
-	var command = 'npm install';
+	const prod = global.env !== 'development';
+	let command = 'npm install';
 	try {
 		fs.accessSync(path.join(modulesPath, 'nconf/package.json'), fs.constants.R_OK);
-		var packageManager = require('nconf').get('package_manager');
-		if (packageManager === 'yarn') {
-			command = 'yarn';
+		const supportedPackageManagerList = exports.supportedPackageManager; // load config from src/cli/package-install.js
+		const packageManager = require('nconf').get('package_manager');
+		if (supportedPackageManagerList.indexOf(packageManager) >= 0) {
+			switch (packageManager) {
+			case 'yarn':
+				command = 'yarn';
+				break;
+			case 'pnpm':
+				command = 'pnpm install';
+				break;
+			case 'cnpm':
+				command = 'cnpm install';
+				break;
+			default:
+				break;
+			}
 		}
 	} catch (e) {
 		// ignore
@@ -63,13 +83,13 @@ function preserveExtraneousPlugins() {
 		return;
 	}
 
-	var isPackage = /^nodebb-(plugin|theme|widget|reward)-\w+/;
-	var packages = fs.readdirSync(modulesPath).filter(function (pkgName) {
+	const isPackage = /^nodebb-(plugin|theme|widget|reward)-\w+/;
+	const packages = fs.readdirSync(modulesPath).filter(function (pkgName) {
 		return isPackage.test(pkgName);
 	});
-	var packageContents = JSON.parse(fs.readFileSync(packageFilePath, 'utf8'));
+	const packageContents = JSON.parse(fs.readFileSync(packageFilePath, 'utf8'));
 
-	var extraneous = packages
+	const extraneous = packages
 		// only extraneous plugins (ones not in package.json) which are not links
 		.filter(function (pkgName) {
 			const extraneous = !packageContents.dependencies.hasOwnProperty(pkgName);
@@ -79,7 +99,7 @@ function preserveExtraneousPlugins() {
 		})
 		// reduce to a map of package names to package versions
 		.reduce(function (map, pkgName) {
-			var pkgConfig = JSON.parse(fs.readFileSync(path.join(modulesPath, pkgName, 'package.json'), 'utf8'));
+			const pkgConfig = JSON.parse(fs.readFileSync(path.join(modulesPath, pkgName, 'package.json'), 'utf8'));
 			map[pkgName] = pkgConfig.version;
 			return map;
 		}, {});
