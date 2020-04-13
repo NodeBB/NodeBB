@@ -63,7 +63,7 @@
         "helmet": "^3.22.0",
         "html-to-text": "^5.1.1",
         "ipaddr.js": "^1.9.1",
-        "jquery": "3.4.1",
+        "jquery": "3.5.0",
         "jsesc": "3.0.1",
         "json-2-csv": "^3.6.2",
         "jsonwebtoken": "^8.5.1",
