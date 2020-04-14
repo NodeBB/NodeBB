@@ -151,7 +151,7 @@
         "url": "https://github.com/NodeBB/NodeBB/issues"
     },
     "engines": {
-        "node": ">=8 <12"
+        "node": ">=8"
     },
     "maintainers": [
         {
