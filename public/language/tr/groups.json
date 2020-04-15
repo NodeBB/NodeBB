@@ -14,7 +14,7 @@
     "invited.search": "Gruba davet etmek için kullanıcı ara",
     "invited.notification_title": "<strong>%1</strong> grubuna katılmaya davet edildiniz",
     "request.notification_title": "<strong>%1</strong> grup daveti gönderdi",
-    "request.notification_text": "<strong>%1</strong> <strong>%2</strong> grubuna katılmak istiyor",
+    "request.notification_text": "<strong>%1</strong> , <strong>%2</strong> grubuna katılmak istiyor",
     "cover-save": "Kaydet",
     "cover-saving": "Kaydediliyor",
     "details.title": "Grup Detayları",

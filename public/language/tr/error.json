@@ -2,7 +2,7 @@
     "invalid-data": "Geçersiz Veri",
     "invalid-json": "Geçersiz JSON",
     "not-logged-in": "Giriş yapmamış görünüyorsunuz.",
-    "account-locked": "Hesabınız geçici olarak kitlendi",
+    "account-locked": "Hesabınız geçici olarak kilitlendi",
     "search-requires-login": "Arama hesap gerektiriyor. Lütfen giriş yapın ya da kaydolun.",
     "goback": "Bir önceki sayfaya dönmek için geri tuşuna basın",
     "invalid-cid": "Geçersiz Kategori ID",
