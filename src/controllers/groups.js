@@ -112,7 +112,7 @@ groupsController.members = async function (req, res, next) {
 		return next();
 	}
 	//const users = await user.getUsersFromSet('group:' + groupName + ':members', req.uid, start, stop);
-	const users = await groups.getOwnersAndMembers(groupName, req.uid, start, stop),
+	const users = await groups.getOwnersAndMembers(groupName, req.uid, start, stop);
 
 	const breadcrumbs = helpers.buildBreadcrumbs([
 		{ text: '[[pages:groups]]', url: '/groups' },
