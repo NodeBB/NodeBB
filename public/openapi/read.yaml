@@ -46,7 +46,7 @@ paths:
         This route is used to populate the homepage of NodeBB. It is the main
         access point of the forum, and shows a list of categories for navigation
         purposes.
-      summary: /api/
+      summary: Get forum index data
       responses:
         "200":
           description: ""
@@ -430,7 +430,11 @@ paths:
     get:
       tags:
         - posts
-      summary: /api/post/{pid}/raw
+      summary: Get a post's raw text
+      description: >-
+        This route returns the raw content of a post, without running it through any installed parsers. It it useful if you wish to populate a user control on the client-side with the raw input for editing purposes.
+
+        If you are using this on the client side DOM, be careful that appropriate sanitization measures are taken, as raw content will faithfully reproduce any script injections embedded in the post content.
       parameters:
         - name: pid
           in: path
