@@ -223,13 +223,10 @@ define('forum/topic/posts', [
 	}
 
 	Posts.loadMorePosts = function (direction) {
-		if (!components.get('topic').length || navigator.scrollActive || Posts._infiniteScrollTimeout) {
+		if (!components.get('topic').length || navigator.scrollActive) {
 			return;
 		}
 
-		Posts._infiniteScrollTimeout = setTimeout(function () {
-			delete Posts._infiniteScrollTimeout;
-		}, 1000);
 		var replies = components.get('topic').find(components.get('post').not('[data-index=0]').not('.new'));
 		var afterEl = direction > 0 ? replies.last() : replies.first();
 		var after = parseInt(afterEl.attr('data-index'), 10) || 0;
