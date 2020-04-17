@@ -57,9 +57,6 @@ describe('Read API', async () => {
 			// TODO: If `required` present, iterate through that, otherwise iterate through all
 			required.forEach((prop) => {
 				if (schema.hasOwnProperty(prop)) {
-					if (!response) {
-						console.log('wutwut', context, prop);
-					}
 					assert(response.hasOwnProperty(prop), '"' + prop + '" is a required property (path: ' + path + ', context: ' + context + ')');
 					if (response[prop] === null && schema[prop].nullable === true) {
 						return;
@@ -84,7 +81,7 @@ describe('Read API', async () => {
 								compare(schema[prop].items, res, context ? [context, prop].join('.') : prop);
 							});
 						} else {
-							console.log('NOTNONTOT');
+							console.log('Not implemented -- check back later');
 						}
 						break;
 					}
