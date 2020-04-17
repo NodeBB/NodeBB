@@ -2500,34 +2500,118 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/admin/advanced/hooks
+      summary: Get active plugin hooks
       responses:
-        "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot"
+        "200":
+          description: "A JSON object containing all hooks with active listeners"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      hooks:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            hookName:
+                              type: string
+                              description: The name of the hook (also the name used in code)
+                            methods:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                    description: Plugin listening to this hook
+                                  priority:
+                                    type: number
+                                    description: Priority level, lower priorities are executed earlier
+                                  method:
+                                    type: string
+                                    description: Stringified method for examination
+                                  index:
+                                    type: string
+                                    description: Internal counter used for DOM element ids
+                            index:
+                              type: string
+                              description: Internal counter used for DOM element ids
+                            count:
+                              type: number
+                              description: The number of listeners subscribed to this hook
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/advanced/logs:
     get:
       tags:
         - admin
-      summary: /api/admin/advanced/logs
+      summary: Get server-side log output
       responses:
-        "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot"
+        "200":
+          description: "A JSON object containing the server-side log"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      data:
+                        type: string
+                        description: Output of the server-side log file
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/advanced/errors:
     get:
       tags:
         - admin
-      summary: /api/admin/advanced/errors
+      summary: Get server-side errors
       responses:
-        "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot"
+        "200":
+          description: "A JSON object containing server-side errors"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      not-found:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            value:
+                              type: string
+                              description: Path to the requested URL that returned a 404
+                            score:
+                              type: number
+                              description: The number of times that URL was requested
+                      analytics:
+                        type: object
+                        properties:
+                          not-found:
+                            type: array
+                            description: 404 responses groups by day, from 6 days ago, to present day
+                            items:
+                              type: number
+                          toobusy:
+                            type: array
+                            description: 503 responses groups by day, from 6 days ago, to present day
+                            items:
+                              type: number
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/advanced/errors/export:
     get:
       tags:
         - admin
-      summary: /api/admin/advanced/errors/export
+      summary: Export errors (.csv)
       responses:
-        "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot"
+        "200":
+          description: "A CSV file containing server-side errors"
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
   /api/admin/advanced/cache:
     get:
       tags:
@@ -2631,90 +2715,463 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/admin/development/info
+      summary: Get process/system information
       responses:
-        "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot"
+        "200":
+          description: "A JSON object containing process and system information"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      info:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            process:
+                              type: object
+                              properties:
+                                port:
+                                  type: array
+                                  items:
+                                    type: number
+                                pid:
+                                  type: number
+                                  description: Process id
+                                title:
+                                  type: number
+                                  description: Executable
+                                version:
+                                  type: number
+                                  description: NodeBB version
+                                memoryUsage:
+                                  type: object
+                                  properties:
+                                    rss:
+                                      type: number
+                                    heapTotal:
+                                      type: number
+                                    heapUsed:
+                                      type: number
+                                    external:
+                                      type: number
+                                    humanReadable:
+                                      type: number
+                                uptime:
+                                  type: number
+                                cpuUsage:
+                                  type: object
+                                  properties:
+                                    user:
+                                      type: string
+                                    system:
+                                      type: string
+                            os:
+                              type: object
+                              properties:
+                                hostname:
+                                  type: string
+                                type:
+                                  type: string
+                                platform:
+                                  type: string
+                                arch:
+                                  type: string
+                                release:
+                                  type: string
+                                load:
+                                  type: string
+                                  description: CPU load
+                            git:
+                              type: object
+                              properties:
+                                hash:
+                                  type: string
+                                branch:
+                                  type: string
+                            stats:
+                              type: object
+                              properties:
+                                onlineGuestCount:
+                                  type: number
+                                onlineRegisteredCount:
+                                  type: number
+                                socketCount:
+                                  type: number
+                                users:
+                                  type: object
+                                  properties:
+                                    categories:
+                                      type: number
+                                    recent:
+                                      type: number
+                                    unread:
+                                      type: number
+                                    topics:
+                                      type: number
+                                    category:
+                                      type: number
+                                topics:
+                                  type: array
+                            id:
+                              type: string
+                      infoJSON:
+                        type: string
+                        description: "`info`, but stringified"
+                      port:
+                        type: array
+                        description: An array containing the port numbers configured to be used by NodeBB processes
+                        items:
+                          type: number
+                      nodeCount:
+                        type: number
+                        description: The number of NodeBB application processes currently running
+                      timeout:
+                        type: number
+                      ip:
+                        type: string
+                      loggedIn:
+                        type: boolean
+                      relative_path:
+                        type: string
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/users/csv:
     get:
       tags:
         - admin
-      summary: /api/admin/users/csv
+      summary: Get users export (.csv)
       responses:
-        "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot"
+        "200":
+          description: "A CSV file containing all registered users"
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
   /api/admin/analytics:
     get:
       tags:
         - admin
-      summary: /api/admin/analytics
+      summary: Get site analytics
+      parameters:
+        - in: query
+          name: units
+          schema:
+            type: string
+            enum: [hours, days]
+          description: Whether to display dashboard data segmented daily or hourly
+        - in: query
+          name: until
+          schema:
+            type: number
+          description: A UNIX timestamp denoting the end of the analytics reporting period
+        - in: query
+          name: count
+          schema:
+            type: number
+          description: The number of entries to return (e.g. if `units` is `hourly`, and `count` is `24`, the result set will contain 24 hours' worth of analytics)
       responses:
-        "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot"
+        "200":
+          description: "A JSON object containing analytics data"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  query:
+                    additionalProperties:
+                      description: The query string passed in
+                  result:
+                    type: object
+                    properties:
+                      uniquevisitors:
+                        type: array
+                        items:
+                          type: number
+                      pageviews:
+                        type: array
+                        items:
+                          type: number
+                      pageviews:registered:
+                        type: array
+                        items:
+                          type: number
+                      pageviews:bot:
+                        type: array
+                        items:
+                          type: number
+                      pageviews:guest:
+                        type: array
+                        items:
+                          type: number
   /api/admin/category/uploadpicture:
     post:
       tags:
         - admin
-      summary: /api/admin/category/uploadpicture
+      summary: Update category picture (via image upload)
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                cid:
+                  type: number
+                  description: Category identifier whose picture will be set after successful upload
+                  example: 1
+                files:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+              required:
+                - cid
+                - files
       responses:
-        "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot"
+        "200":
+          description: "Image uploaded"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: The filename
+                  url:
+                    type: string
+                    description: URL of the uploaded image for use client-side
   /api/admin/uploadfavicon:
     post:
       tags:
         - admin
-      summary: /api/admin/uploadfavicon
+      summary: Upload favicon
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                files:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+              required:
+                - files
       responses:
-        "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot"
+        "200":
+          description: "Image uploaded"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: The filename
+                  url:
+                    type: string
+                    description: URL of the uploaded image for use client-side
   /api/admin/uploadTouchIcon:
     post:
       tags:
         - admin
-      summary: /api/admin/uploadTouchIcon
+      summary: Upload Touch Icon
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                files:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+              required:
+                - files
       responses:
-        "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot"
+        "200":
+          description: "Image uploaded"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: The filename
+                  url:
+                    type: string
+                    description: URL of the uploaded image for use client-side
   /api/admin/uploadlogo:
     post:
       tags:
         - admin
-      summary: /api/admin/uploadlogo
+      summary: Upload site logo
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                files:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+              required:
+                - files
       responses:
-        "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot"
+        "200":
+          description: "Image uploaded"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: The filename
+                  url:
+                    type: string
+                    description: URL of the uploaded image for use client-side
   /api/admin/uploadOgImage:
     post:
       tags:
         - admin
-      summary: /api/admin/uploadOgImage
+      summary: Upload site-wide Open Graph Image
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                files:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+              required:
+                - files
       responses:
-        "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot"
+        "200":
+          description: "Image uploaded"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: The filename
+                  url:
+                    type: string
+                    description: URL of the uploaded image for use client-side
   /api/admin/upload/sound:
     post:
       tags:
         - admin
-      summary: /api/admin/upload/sound
+      summary: Upload sound file
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                files:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+              required:
+                - files
       responses:
-        "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot"
+        "200":
+          description: "Sound uploaded"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
   /api/admin/upload/file:
     post:
       tags:
         - admin
-      summary: /api/admin/upload/file
+      summary: Upload a file
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                folder:
+                  type: string
+                  description: The folder to upload the files to (relative to `public/uploads/`)
+                files:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+              required:
+                - files
       responses:
-        "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot"
+        "200":
+          description: "File uploaded"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: The filename
+                  url:
+                    type: string
+                    description: URL of the uploaded file for use client-side
   /api/admin/uploadDefaultAvatar:
     post:
       tags:
         - admin
-      summary: /api/admin/uploadDefaultAvatar
+      summary: Upload default avatar
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                files:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+              required:
+                - files
       responses:
-        "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot"
+        "200":
+          description: "Image uploaded"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: The filename
+                  url:
+                    type: string
+                    description: URL of the uploaded image for use client-side
   /api/config:
     get:
       tags:
