@@ -43,6 +43,7 @@ redisModule.init = function (callback) {
 			winston.error('NodeBB could not connect to your Redis database. Redis returned the following error', err);
 			return callback(err);
 		}
+		console.log('okok', nconf.get('redis'));
 
 		require('./redis/promisify')(redisModule.client);
 

@@ -47,10 +47,7 @@ CommonProps:
                   property:
                     type: string
                 required:
-                  - name
                   - content
-                  - noEscape
-                  - property
             link:
               type: array
               items:
@@ -69,30 +66,14 @@ CommonProps:
                 required:
                   - rel
                   - href
-                  - type
-                  - sizes
     widgets:
       type: object
-      description: Rendered widgets
-      properties:
-        header:
-          type: array
-          items:
-            type: object
-            properties:
-              html:
-                type: string
-        sidebar:
-          type: array
-          items:
-            type: object
-            properties:
-              html:
-                type: string
-        footer:
-          type: array
-          items:
-            type: object
-            properties:
-              html:
-                type: string
+      description: Each widget area will have its own property in this object
+      additionalProperties:
+        type: array
+        description: A collection of HTML snippets that are appended to each widget area
+        items:
+          type: object
+          properties:
+            html:
+              type: string
