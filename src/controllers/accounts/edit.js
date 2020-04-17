@@ -7,7 +7,6 @@ const helpers = require('../helpers');
 const groups = require('../../groups');
 const accountHelpers = require('./helpers');
 const privileges = require('../../privileges');
-const file = require('../../file');
 
 const editController = module.exports;
 
@@ -125,46 +124,3 @@ async function getUserData(req) {
 	userData.hasPassword = await user.hasPassword(userData.uid);
 	return userData;
 }
-
-editController.uploadPicture = async function (req, res, next) {
-	const userPhoto = req.files.files[0];
-	try {
-		const updateUid = await user.getUidByUserslug(req.params.userslug);
-		const isAllowed = await privileges.users.canEdit(req.uid, updateUid);
-		if (!isAllowed) {
-			return helpers.notAllowed(req, res);
-		}
-		await user.checkMinReputation(req.uid, updateUid, 'min:rep:profile-picture');
-		const image = await user.uploadCroppedPicture({
-			uid: updateUid,
-			file: userPhoto,
-		});
-		res.json([{
-			name: userPhoto.name,
-			url: image.url,
-		}]);
-	} catch (err) {
-		next(err);
-	} finally {
-		file.delete(userPhoto.path);
-	}
-};
-
-editController.uploadCoverPicture = async function (req, res, next) {
-	var params = JSON.parse(req.body.params);
-	var coverPhoto = req.files.files[0];
-	try {
-		await user.checkMinReputation(req.uid, params.uid, 'min:rep:cover-picture');
-		const image = await user.updateCoverPicture({
-			file: coverPhoto,
-			uid: params.uid,
-		});
-		res.json([{
-			url: image.url,
-		}]);
-	} catch (err) {
-		next(err);
-	} finally {
-		file.delete(coverPhoto.path);
-	}
-};
