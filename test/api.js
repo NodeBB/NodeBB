@@ -76,12 +76,14 @@ describe('Read API', async () => {
 					case 'array':
 						assert.strictEqual(Array.isArray(response[prop]), true, '"' + prop + '" was expected to be an array, but was ' + typeof response[prop] + ' instead (path: ' + path + ', context: ' + context + ')');
 
-						if (schema[prop].items.type === 'object' || Array.isArray(schema[prop].items.allOf)) {
-							response[prop].forEach((res) => {
-								compare(schema[prop].items, res, context ? [context, prop].join('.') : prop);
-							});
-						} else {
-							console.log('Not implemented -- check back later');
+						if (schema[prop].items) {
+							if (schema[prop].items.type === 'object' || Array.isArray(schema[prop].items.allOf)) {
+								response[prop].forEach((res) => {
+									compare(schema[prop].items, res, context ? [context, prop].join('.') : prop);
+								});
+							} else {
+								console.log('Not implemented -- check back later');
+							}
 						}
 						break;
 					}
@@ -94,7 +96,7 @@ describe('Read API', async () => {
 			let testPath = path;
 			if (parameters) {
 				parameters.forEach((param) => {
-					assert(param.example);
+					assert(param.example, path + ' has parameters without examples');
 					testPath = testPath.replace('{' + param.name + '}', param.example);
 				});
 			}

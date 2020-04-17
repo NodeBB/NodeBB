@@ -526,10 +526,10 @@ paths:
                               items:
                                 type: object
                                 properties:
+                                  name:
+                                    type: string
                                   displayName:
                                     type: string
-                                  selected:
-                                    type: boolean
                       groups:
                         type: array
                         items:
@@ -619,6 +619,7 @@ paths:
           required: true
           schema:
             type: string
+          example: 1
       responses:
         "200":
           description: ""
@@ -666,6 +667,7 @@ paths:
           required: true
           schema:
             type: string
+          example: 1
       responses:
         "200":
           description: ""
@@ -697,17 +699,18 @@ paths:
                             items:
                               type: number
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
-  "/api/admin/manage/privileges/{cid?}":
+  "/api/admin/manage/privileges/{cid}":
     get:
       tags:
         - admin
-      summary: /api/admin/manage/privileges/{cid?}
+      summary: Get category privileges
       parameters:
         - name: cid?
           in: path
           required: true
           schema:
             type: string
+          example: 1
       responses:
         "200":
           description: ""
@@ -739,7 +742,18 @@ paths:
                                       type: string
                           users:
                             type: array
-                            items: {}
+                            items:
+                              type: object
+                              properties:
+                                name:
+                                  type: string
+                                nameEscaped:
+                                  type: string
+                                privileges:
+                                  type: object
+                                  additionalProperties:
+                                    type: boolean
+                                    description: Each privilege will have a key in this object
                           groups:
                             type: array
                             items:
@@ -751,37 +765,9 @@ paths:
                                   type: string
                                 privileges:
                                   type: object
-                                  properties:
-                                    groups:find:
-                                      type: boolean
-                                    groups:read:
-                                      type: boolean
-                                    groups:topics:read:
-                                      type: boolean
-                                    groups:topics:create:
-                                      type: boolean
-                                    groups:topics:reply:
-                                      type: boolean
-                                    groups:topics:tag:
-                                      type: boolean
-                                    groups:posts:edit:
-                                      type: boolean
-                                    groups:posts:history:
-                                      type: boolean
-                                    groups:posts:delete:
-                                      type: boolean
-                                    groups:posts:upvote:
-                                      type: boolean
-                                    groups:posts:downvote:
-                                      type: boolean
-                                    groups:topics:delete:
-                                      type: boolean
-                                    groups:posts:view_deleted:
-                                      type: boolean
-                                    groups:purge:
-                                      type: boolean
-                                    groups:moderate:
-                                      type: boolean
+                                  additionalProperties:
+                                    type: boolean
+                                    description: Each privilege will have a key in this object
                                 isPrivate:
                                   type: boolean
                           columnCountUser:
@@ -7129,16 +7115,19 @@ paths:
           required: true
           schema:
             type: string
+          example: 1
         - name: slug
           in: path
           required: true
           schema:
             type: string
+          example: test
         - name: topic_index
           in: path
           required: true
           schema:
             type: string
+          example: 1
       responses:
         "200":
           description: ""
@@ -7391,18 +7380,20 @@ paths:
     get:
       tags:
         - categories
-      summary: /api/category/{category_id}/{slug?}
+      summary: /api/category/{category_id}/{slug}
       parameters:
         - name: category_id
           in: path
           required: true
           schema:
             type: string
-        - name: slug?
+          example: 1
+        - name: slug
           in: path
           required: true
           schema:
             type: string
+          example: test
       responses:
         "200":
           description: ""
