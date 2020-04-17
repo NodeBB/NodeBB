@@ -3440,7 +3440,7 @@ paths:
     get:
       tags:
         - users
-      summary: /api/user/uid/{userslug}/export/posts
+      summary: Export a user's posts (.csv)
       parameters:
         - name: userslug
           in: path
@@ -3448,8 +3448,13 @@ paths:
           schema:
             type: string
       responses:
-        "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot"
+        "200":
+          description: "A CSV file containing a user's posts"
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
   "/api/user/uid/{userslug}/export/uploads":
     get:
       tags:
@@ -3481,65 +3486,180 @@ paths:
           schema:
             type: string
       responses:
-        "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot"
-  "/api/{type}/pid/{id}":
+        "200":
+          description: "A CSV file containing the user profile"
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
+  "/api/post/pid/{id}":
     get:
       tags:
         - shorthand
-      summary: /api/{type}/pid/{id}
+      summary: Get post data
       parameters:
-        - name: type
+        - name: id
           in: path
           required: true
           schema:
-            type: string
+            type: number
+      responses:
+        "200":
+          description: "A JSON object containing post data"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uid:
+                    type: number
+                  tid:
+                    type: number
+                  timestamp:
+                    type: number
+                  content:
+                    type: string
+                  pid:
+                    type: number
+                  downvotes:
+                    type: number
+                  upvotes:
+                    type: number
+                  deleted:
+                    type: number
+                  deleterUid:
+                    type: number
+                  edited:
+                    type: number
+                  votes:
+                    type: number
+                  timestampISO:
+                    type: string
+                  editedISO:
+                    type: string
+                  upvoted:
+                    type: boolean
+                  downvoted:
+                    type: boolean
+  "/api/topic/tid/{id}":
+    get:
+      tags:
+        - shorthand
+      summary: Get topic data
+      parameters:
         - name: id
           in: path
           required: true
           schema:
             type: string
       responses:
-        "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot"
-  "/api/{type}/tid/{id}":
+        "200":
+          description: "A JSON object containing topic data"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tid:
+                    type: number
+                  uid:
+                    type: number
+                  cid:
+                    type: number
+                  mainPid:
+                    type: number
+                  title:
+                    type: string
+                  slug:
+                    type: string
+                  timestamp:
+                    type: number
+                  lastposttime:
+                    type: number
+                  postcount:
+                    type: number
+                  viewcount:
+                    type: number
+                  deleted:
+                    type: number
+                  locked:
+                    type: number
+                  pinned:
+                    type: number
+                  upvotes:
+                    type: number
+                  downvotes:
+                    type: number
+                  deleterUid:
+                    type: number
+                  titleRaw:
+                    type: string
+                  timestampISO:
+                    type: string
+                  lastposttimeISO:
+                    type: string
+                  votes:
+                    type: number
+  "/api/category/cid/{id}":
     get:
       tags:
         - shorthand
-      summary: /api/{type}/tid/{id}
+      summary: Get category data
       parameters:
-        - name: type
-          in: path
-          required: true
-          schema:
-            type: string
         - name: id
           in: path
           required: true
           schema:
             type: string
       responses:
-        "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot"
-  "/api/{type}/cid/{id}":
-    get:
-      tags:
-        - shorthand
-      summary: /api/{type}/cid/{id}
-      parameters:
-        - name: type
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot"
+        "200":
+          description: "A JSON object containing topic data"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cid:
+                    type: number
+                  name:
+                    type: number
+                  description:
+                    type: string
+                  descriptionParsed:
+                    type: string
+                  icon:
+                    type: string
+                  bgColor:
+                    type: string
+                  color:
+                    type: string
+                  slug:
+                    type: string
+                  parentCid:
+                    type: number
+                  topic_count:
+                    type: number
+                  post_count:
+                    type: number
+                  disabled:
+                    type: number
+                  order:
+                    type: number
+                  link:
+                    type: string
+                  numRecentReplies:
+                    type: number
+                  class:
+                    type: string
+                  imageClass:
+                    type: string
+                  isSection:
+                    type: number
+                  totalPostCount:
+                    type: number
+                  totalTopicCount:
+                    type: number
   /api/categories:
     get:
       tags:
@@ -3999,15 +4119,19 @@ paths:
     get:
       tags:
         - posts
-      summary: /api/unread/total
+      summary: Get number of unread topics
       responses:
-        "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot"
+        "200":
+          description: "Success"
+          content:
+            text/plain:
+              schema:
+                type: number
   "/api/topic/teaser/{topic_id}":
     get:
       tags:
         - topics
-      summary: /api/topic/teaser/{topic_id}
+      summary: Get a topic's teaser post
       parameters:
         - name: topic_id
           in: path
@@ -4015,8 +4139,12 @@ paths:
           schema:
             type: string
       responses:
-        "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot"
+        "200":
+          description: "A JSON object containing the teaser post for a topic"
+          content:
+            application/json:
+              schema:
+                $ref: components/schemas/PostsObject.yaml#/PostsObject
   "/api/topic/pagination/{topic_id}":
     get:
       tags:
@@ -4159,10 +4287,38 @@ paths:
     post:
       tags:
         - topics
-      summary: /api/topic/thumb/upload
+      summary: Upload topic thumb
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                files:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+              required:
+                - files
       responses:
-        "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot"
+        "200":
+          description: "Image uploaded"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: The filename
+                  url:
+                    type: string
+                    description: URL of the uploaded image for use client-side
+                  path:
+                    type: string
+                    description: Path to the file in the local file system
   "/api/user/{userslug}/uploadpicture":
     post:
       tags:
@@ -4394,20 +4550,54 @@ paths:
                   - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
-  "/api/reset/{code?}":
+  "/api/reset":
     get:
       tags:
         - authentication
-      summary: /api/reset/{code?}
+      summary: Get user password reset (step 1)
+      responses:
+        "200":
+          description: "A JSON object containing the 1st step of the user password reset flow"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      code:
+                        type: string
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
+  "/api/reset/{code}":
+    get:
+      tags:
+        - authentication
+      summary: Get user password reset (step 2)
       parameters:
-        - name: code?
+        - name: code
           in: path
           required: true
           schema:
             type: string
       responses:
-        "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot"
+        "200":
+          description: "A JSON object containing the 2nd step of the user password reset flow"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      valid:
+                        type: boolean
+                      code:
+                        type: string
+                      minimumPasswordLength:
+                        type: number
+                      minimumPasswordStrength:
+                        type: number
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/email/unsubscribe/{token}":
     get:
       tags:
@@ -4420,8 +4610,10 @@ paths:
           schema:
             type: string
       responses:
-        "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot"
+        "200":
+          description: "Successfully unsubscribed"
+        "500":
+          description: "Server-side error (likely token verification failure)"
   "/api/topic/{topic_id}/{slug}/{post_index?}":
     get:
       tags:
@@ -5636,7 +5828,7 @@ paths:
       summary: /api/ip-blacklist
       responses:
         "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot"
+          description: "TODO: A proper response needs to be added. It is not really a teapot | Copy response from corresponding admin route"
   /api/registration-queue:
     get:
       tags:
@@ -5644,7 +5836,7 @@ paths:
       summary: /api/registration-queue
       responses:
         "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot"
+          description: "TODO: A proper response needs to be added. It is not really a teapot | Copy response from corresponding admin route"
   "/api/tags/{tag}":
     get:
       tags:
