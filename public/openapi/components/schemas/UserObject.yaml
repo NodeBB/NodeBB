@@ -392,3 +392,84 @@ UserObjectFull:
       type: number
     email:disableEdit:
       type: number
+UserObjectSlim:
+  type: object
+  properties:
+    uid:
+      type: number
+      description: A user identifier
+      example: 1
+    username:
+      type: string
+      description: A friendly name for a given user account
+      example: Dragon Fruit
+    userslug:
+      type: string
+      description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+      example: dragon-fruit
+    picture:
+      type: string
+      description: A URL pointing to a picture to be used as the user's avatar
+      example: 'https://images.unsplash.com/photo-1560070094-e1f2ddec4337?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=256&h=256&q=80'
+    status:
+      type: string
+      enum:
+        - online
+        - offline
+        - dnd
+        - away
+      example: online
+    postcount:
+      type: number
+      example: 1000
+    reputation:
+      type: number
+      description: The user's reputation score on the forum. Out-of-the-box, users gain/lose reputation points based on upvotes/downvotes, though plugins can alter the logic and criterion for awarding reputation points
+      example: 100
+    'email:confirmed':
+      type: number
+      description: Whether the user has confirmed their email address or not
+      example: 1
+    lastonline:
+      type: number
+      description: A UNIX timestamp representing the moment the user was last recorded online on this site
+      example: 1585337827953
+    flags:
+      type: number
+      example: 0
+    banned:
+      type: number
+      description: A Boolean representing whether a user is banned or not
+      example: 0
+    'banned:expire':
+      type: number
+      description: A UNIX timestamp representing the moment the ban will be lifted
+      example: 1585337827953
+    joindate:
+      type: number
+      description: A UNIX timestamp representing the moment the user's account was created
+      example: 1585337827953
+    'icon:text':
+      type: string
+      description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+      example: D
+    'icon:bgColor':
+      type: string
+      description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+      example: '#9c27b0'
+    joindateISO:
+      type: string
+      example: '2020-03-27T20:30:36.590Z'
+    lastonlineISO:
+      type: string
+      example: '2020-03-27T20:30:36.590Z'
+    banned_until:
+      type: number
+      description: A UNIX timestamp representing the moment a ban will be lifted
+      example: 0
+    banned_until_readable:
+      type: string
+      description: An ISO 8601 formatted date string representing the moment a ban will be lifted, or the words "Not Banned"
+      example: Not Banned
+    administrator:
+      type: boolean

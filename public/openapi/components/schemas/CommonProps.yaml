@@ -14,8 +14,12 @@ CommonProps:
       properties:
         name:
           type: string
+          description: The path to the template, which acts as a unique name
+          example: admin/settings/general
       additionalProperties:
-        type: object
+        description: There will be one additional property added to all routes here. It is a boolean value whose key is the path to the current template. It is used on the client-side to verify the current page inside of a conditional (e.g. `if (ajaxify.data.template.topic)` to ensure a script is run only on the topic page)
+        type: boolean
+        enum: [true]
     url:
       type: string
       description: Base url of the current page, does not include query params

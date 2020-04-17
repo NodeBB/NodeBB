@@ -5,13 +5,30 @@ info:
   license:
     name: GPL-3.0
   description: >-
-    # Introduction
+    # Overview
 
-    The following document outlines every Read API route available via NodeBB. Unlike the write API, the v1.x API was coded organically, and is **not** strictly RESTful. These shortcomings will be addressed in the v2.x version of the API.
+    The following document outlines every Read API route available via NodeBB. Unlike the write API, the v1.x API was coded organically, and is **not** strictly RESTful. These shortcomings will be addressed in time as the APIs mature.
+
+    ## Shortcomings
+
+    The Read API is named because its primary use is by NodeBB itself when navigating between pages. Therefore, the routes almost universally always follow the same path as actual pages on NodeBB itself. There are also a small number of non-`GET` routes, which doesn't necessarily make sense in a Read API. These will be merged into the Write API in time.
 
     ## Authentication
 
-    Authentication with this API is done via cookies. A valid login session is required for API calls that pertain to operations involving a logged-in user. For example, `/api/unread` is a route showing unread topics, and is not accessible by guest users.
+    ### Cookie Authentication
+
+    This default authentication behaviour of this API is via cookie jar to find a valid session. A valid login session is required for API calls that pertain to operations involving a logged-in user. For example, `/api/unread` is a route showing unread topics, and is not accessible by guest users.
+
+    ### Bearer Authentcation
+
+    The Write API offers bearer authentication, as administered through the administration panel.
+
+      * For NodeBB v1.x, this is provided by [`nodebb-plugin-write-api`](https://github.com/NodeBB/nodebb-plugin-write-api).
+      * For NodeBB v2.x+ (in development), the Write API is available in core, and bearer authentication is available out-of-the-box
+
+    ### JSON Web Token (JWT)
+
+    The Write API also consumes valid JWTs as payload bodies, when signed with a server-generated key. The same restrictions apply as above, with Bearer Authentication (re: NodeBB v1.x vs v2.x).
 tags:
   - name: home
     description: Routes used at the forum index only
@@ -458,15 +475,17 @@ paths:
       tags:
         - admin
       summary: /api/admin
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot | This route is identical to /api/admin/general/dashboard. When the routes are split into separate files, replace this definition with a $ref to that route"
   /api/admin/general/dashboard:
     get:
       tags:
         - admin
-      summary: /api/admin/general/dashboard
+      summary: Get administrative dashboard
       responses:
         "200":
-          description: ""
+          description: A JSON object containing dashboard data
           content:
             application/json:
               schema:
@@ -553,20 +572,207 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/admin/general/languages
-      responses: {}
+      summary: Get language settings
+      responses:
+        "200":
+          description: A JSON object containing available languages and settings
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      languages:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              description: Localised name of the language
+                            code:
+                              type: string
+                              description: A language code (similar to ISO-639)
+                            dir:
+                              type: string
+                              description: Directionality of the language
+                              enum: [ltr, rtl]
+                            selected:
+                              type: boolean
+                              description: Denotes the currently selected default system language on the forum
+                      autoDetectLang:
+                        type: integer
+                        description: Whether the forum will attempt to guess language based on browser's `Accept-Language` header
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/general/sounds:
     get:
       tags:
         - admin
-      summary: /api/admin/general/sounds
-      responses: {}
+      summary: Get sound settings
+      responses:
+        "200":
+          description: A JSON object containing available sounds and settings
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      notification-sound:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            sounds:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  name:
+                                    type: string
+                                  value:
+                                    type: string
+                                  selected:
+                                    type: boolean
+                      chat-incoming-sound:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            sounds:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  name:
+                                    type: string
+                                  value:
+                                    type: string
+                                  selected:
+                                    type: boolean
+                      chat-outgoing-sound:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            sounds:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  name:
+                                    type: string
+                                  value:
+                                    type: string
+                                  selected:
+                                    type: boolean
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/general/navigation:
     get:
       tags:
         - admin
-      summary: /api/admin/general/navigation
-      responses: {}
+      summary: Get navigation bar settings
+      responses:
+        "200":
+          description: A JSON object containing navigation settings
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      enabled:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            route:
+                              type: string
+                              description: Relative URL to the page the navigation item goes to
+                            title:
+                              type: string
+                              description: Tooltip text
+                            enabled:
+                              type: boolean
+                            iconClass:
+                              type: string
+                              description: A FontAwesome icon string
+                            textClass:
+                              type: string
+                              description: HTML class applied to the text label for this navigation item
+                            text:
+                              type: string
+                              description: Label text for this navigation item
+                            order:
+                              type: integer
+                              description: Ordinality of this item, lower value appears earlier
+                            groups:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  displayName:
+                                    type: string
+                                  selected:
+                                    type: boolean
+                            index:
+                              type: integer
+                              description: Seemingly identical to order, but an integer instead of a string
+                            selected:
+                              type: boolean
+                      available:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            route:
+                              type: string
+                              description: Relative URL to the page the navigation item goes to
+                            title:
+                              type: string
+                              description: Tooltip text
+                            enabled:
+                              type: boolean
+                            iconClass:
+                              type: string
+                              description: A FontAwesome icon string
+                            textClass:
+                              type: string
+                              description: HTML class applied to the text label for this navigation item
+                            text:
+                              type: string
+                              description: Label text for this navigation item
+                            core:
+                              type: boolean
+                              description: Whether the navigation item is provided by core or not (a plugin)
+                            groups:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  displayName:
+                                    type: string
+                                  selected:
+                                    type: boolean
+                      groups:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            displayName:
+                              type: string
+                      navigation:
+                        type: array
+                        description: A clone of `enabled`
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/general/homepage:
     get:
       tags:
@@ -595,8 +801,31 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/admin/general/social
-      responses: {}
+      summary: Get post social sharing settings
+      responses:
+        "200":
+          description: "A JSON object containing post social sharing settings"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      posts:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            name:
+                              type: string
+                            class:
+                              type: string
+                              description: A FontAwesome icon string
+                            activated:
+                              type: boolean
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/manage/categories:
     get:
       tags:
@@ -849,20 +1078,192 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/admin/manage/tags
-      responses: {}
+      summary: Get tag settings
+      responses:
+        "200":
+          description: "A JSON object containing tag settings"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      tags:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            value:
+                              type: string
+                              description: The tag name
+                            score:
+                              type: number
+                              description: The number of topics containing this tag
+                            valueEscaped:
+                              type: string
+                            color:
+                              type: string
+                              description: Six-character hexadecimal string (with `#` prepended)
+                              example: "#ff0000"
+                            bgColor:
+                              type: string
+                              description: Six-character hexadecimal string (with `#` prepended)
+                              example: "#ff0000"
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/manage/post-queue:
     get:
       tags:
         - admin
-      summary: /api/admin/manage/post-queue
-      responses: {}
+      summary: Get post queue settings
+      responses:
+        "200":
+          description: "A JSON object containing post queue settings"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      posts:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              description: Unique ID given to this queued post
+                            uid:
+                              type: number
+                              description: A user identifier
+                            data:
+                              type: object
+                              description: Queued post data
+                              properties:
+                                title:
+                                  type: string
+                                content:
+                                  type: string
+                                thumb:
+                                  type: string
+                                cid:
+                                  type: number
+                                tags:
+                                  type: array
+                                uid:
+                                  type: number
+                                req:
+                                  type: object
+                                  properties:
+                                    uid:
+                                      type: number
+                                    ip:
+                                      type: string
+                                    host:
+                                      type: string
+                                    protocol:
+                                      type: string
+                                    secure:
+                                      type: boolean
+                                    url:
+                                      type: string
+                                    path:
+                                      type: string
+                                    headers:
+                                      type: object
+                                      properties:
+                                        host:
+                                          type: string
+                                        user-agent:
+                                          type: string
+                                        accept:
+                                          type: string
+                                        accept-language:
+                                          type: string
+                                        accept-encoding:
+                                          type: string
+                                        referer:
+                                          type: string
+                                        dnt:
+                                          type: string
+                                        connection:
+                                          type: string
+                                        cookie:
+                                          type: string
+                                        pragma:
+                                          type: string
+                                        cache-control:
+                                          type: string
+                                timestamp:
+                                  type: number
+                                fromQueue:
+                                  type: boolean
+                                timestampISO:
+                                  type: string
+                                rawContent:
+                                  type: string
+                            type:
+                              type: string
+                            user:
+                              type: object
+                              properties:
+                                username:
+                                  type: string
+                                userslug:
+                                  type: string
+                                picture:
+                                  type: string
+                                uid:
+                                  type: number
+                                icon:text:
+                                  type: string
+                                icon:bgColor:
+                                  type: string
+                            topic:
+                              type: object
+                              properties:
+                                title:
+                                  type: number
+                                cid:
+                                  type: number
+                            category:
+                              $ref: components/schemas/CategoryObject.yaml#/CategoryObject
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/manage/ip-blacklist:
     get:
       tags:
         - admin
-      summary: /api/admin/manage/ip-blacklist
-      responses: {}
+      summary: Get IP blacklist settings
+      responses:
+        "200":
+          description: "A JSON object containing IP blacklist settings"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      title:
+                        type: string
+                      rules:
+                        type: string
+                        description: A plain text string containing blocked IPs or IP ranges. Separate entries are separated by a newline (`\n`)
+                      analytics:
+                        type: object
+                        properties:
+                          daily:
+                            type: array
+                            description: The values here are shown in ascending order from 6 days ago, to the current day
+                            items:
+                              type: number
+                              description: The number of requests blocked per day
+                          hourly:
+                            type: array
+                            description: The values here are shown in ascending order from 23 hours ago, to the current hour
+                            items:
+                              type: number
+                              description: The number of requests blocked per hour
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/manage/users:
     get:
       tags:
@@ -961,84 +1362,185 @@ paths:
         - admin
       summary: /api/admin/manage/users/not-validated
       responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot | Replace this responses block with the block from /manage/users/latest"
+  /api/admin/manage/users/no-posts:
+    get:
+      tags:
+        - admin
+      summary: /api/admin/manage/users/no-posts
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot | Replace this responses block with the block from /manage/users/latest"
+  /api/admin/manage/users/top-posters:
+    get:
+      tags:
+        - admin
+      summary: /api/admin/manage/users/top-posters
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot | Replace this responses block with the block from /manage/users/latest"
+  /api/admin/manage/users/most-reputation:
+    get:
+      tags:
+        - admin
+      summary: /api/admin/manage/users/most-reputation
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot | Replace this responses block with the block from /manage/users/latest"
+  /api/admin/manage/users/inactive:
+    get:
+      tags:
+        - admin
+      summary: /api/admin/manage/users/inactive
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot | Replace this responses block with the block from /manage/users/latest"
+  /api/admin/manage/users/flagged:
+    get:
+      tags:
+        - admin
+      summary: /api/admin/manage/users/flagged
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot | Replace this responses block with the block from /manage/users/latest"
+  /api/admin/manage/users/banned:
+    get:
+      tags:
+        - admin
+      summary: /api/admin/manage/users/banned
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot | Replace this responses block with the block from /manage/users/latest"
+  /api/admin/manage/registration:
+    get:
+      tags:
+        - admin
+      summary: Get registration queue/invites
+      responses:
         "200":
-          description: ""
+          description: "A JSON object containing the registration queue and invites"
           content:
             application/json:
               schema:
                 allOf:
                   - type: object
                     properties:
+                      registrationQueueCount:
+                        type: number
                       users:
                         type: array
                         items:
-                          $ref: components/schemas/UserObject.yaml#/UserObject
-                      page:
-                        type: number
-                      pageCount:
-                        type: number
-                      resultsPerPage:
-                        type: number
-                      notvalidated:
-                        type: boolean
-                      search_display:
-                        type: string
-                      requireEmailConfirmation:
-                        type: number
-                      inviteOnly:
-                        type: boolean
-                      adminInviteOnly:
-                        type: boolean
+                          type: object
+                          properties:
+                            username:
+                              type: string
+                            email:
+                              type: string
+                            ip:
+                              type: string
+                            timestampISO:
+                              type: string
+                            usernameEscaped:
+                              type: string
+                            ipMatch:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  uid:
+                                    type: number
+                                  username:
+                                    type: string
+                                  picture:
+                                    type: string
+                                  icon:text:
+                                    type: string
+                                  icon:bgColor:
+                                    type: string
+                            customActions:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  title:
+                                    type: string
+                                  id:
+                                    type: string
+                                  class:
+                                    type: string
+                                  icon:
+                                    type: string
+                      customHeaders:
+                        type: array
+                      invites:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            uid:
+                              type: number
+                            invitations:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  email:
+                                    type: string
                   - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
-  /api/admin/manage/users/no-posts:
-    get:
-      tags:
-        - admin
-      summary: /api/admin/manage/users/no-posts
-      responses: {}
-  /api/admin/manage/users/top-posters:
-    get:
-      tags:
-        - admin
-      summary: /api/admin/manage/users/top-posters
-      responses: {}
-  /api/admin/manage/users/most-reputation:
-    get:
-      tags:
-        - admin
-      summary: /api/admin/manage/users/most-reputation
-      responses: {}
-  /api/admin/manage/users/inactive:
-    get:
-      tags:
-        - admin
-      summary: /api/admin/manage/users/inactive
-      responses: {}
-  /api/admin/manage/users/flagged:
-    get:
-      tags:
-        - admin
-      summary: /api/admin/manage/users/flagged
-      responses: {}
-  /api/admin/manage/users/banned:
-    get:
-      tags:
-        - admin
-      summary: /api/admin/manage/users/banned
-      responses: {}
-  /api/admin/manage/registration:
-    get:
-      tags:
-        - admin
-      summary: /api/admin/manage/registration
-      responses: {}
   /api/admin/manage/admins-mods:
     get:
       tags:
         - admin
-      summary: /api/admin/manage/admins-mods
-      responses: {}
+      summary: Get administrators and moderators
+      responses:
+        "200":
+          description: "A JSON object containing administrators and moderators globally and per-category"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      admins:
+                        $ref: components/schemas/GroupObject.yaml#/GroupObject
+                      globalMods:
+                        $ref: components/schemas/GroupObject.yaml#/GroupObject
+                      categories:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            cid:
+                              type: number
+                            name:
+                              type: string
+                            level:
+                              type: number
+                              example: 0
+                            icon:
+                              type: string
+                              description: A FontAwesome icon string
+                            parentCid:
+                              type: number
+                              description: The parent category's identifier
+                            color:
+                              type: string
+                              description: A six-character hexadecimal colour code
+                            bgColor:
+                              type: string
+                              description: A six-character hexadecimal colour code
+                            imageClass:
+                              type: string
+                            depth:
+                              type: number
+                              description: The depth of the category relative to the forum root (`0` is root level)
+                            moderators:
+                              type: array
+                              items:
+                                $ref: components/schemas/UserObject.yaml#/UserObjectSlim
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/manage/groups:
     get:
       tags:
@@ -1224,8 +1726,59 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/admin/manage/uploads
-      responses: {}
+      summary: Get uploaded files
+      parameters:
+        - in: query
+          name: dir
+          schema:
+            type: string
+          description: Path of the folder, relative to `public/uploads/`
+      responses:
+        "200":
+          description: "A JSON object containing uploaded files"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      currentFolder:
+                        type: string
+                        description: Path of the folder, relative to `public/uploads/`
+                      showPids:
+                        type: boolean
+                        description: Whether or not the post identifiers should be shown (this is `true` only for `public/uploads/files/`, as that is where post uploads go)
+                      files:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            path:
+                              type: string
+                              description: Path relative to `currentFolder`
+                            url:
+                              type: string
+                              description: Relative URL ready to be combined with `config.relative_path` on the client-side or templates
+                            fileCount:
+                              type: number
+                              description: For directories, the number of files inside
+                            size:
+                              type: number
+                              description: The size of the file/directory
+                            sizeHumanReadable:
+                              type: string
+                            isDirectory:
+                              type: boolean
+                            isFile:
+                              type: boolean
+                            mtime:
+                              type: number
+                              description: Last modified time of the file, down to the microsecond (expressed as a UNIX timestamp)
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/manage/digest:
     get:
       tags:
@@ -1537,8 +2090,88 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/admin/extend/rewards
-      responses: {}
+      summary: Get rewards settings
+      responses:
+        "200":
+          description: "A JSON object containing rewards and their settings"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      active:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            condition:
+                              type: string
+                            conditional:
+                              type: string
+                            value:
+                              type: number
+                            rid:
+                              type: string
+                            claimable:
+                              type: string
+                            id:
+                              type: string
+                            disabled:
+                              type: boolean
+                            rewards:
+                              type: array
+                              items:
+                                additionalProperties: {}
+                                description: Reward-specific properties
+                      conditions:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            condition:
+                              type: string
+                      conditionals:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            conditional:
+                              type: string
+                      rewards:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            rid:
+                              type: string
+                            name:
+                              type: string
+                            inputs:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  type:
+                                    type: string
+                                  name:
+                                    type: string
+                                  label:
+                                    type: string
+                                  values:
+                                    type: array
+                                    items:
+                                      type: object
+                                      properties:
+                                        name:
+                                          type: string
+                                        value:
+                                          type: string
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/advanced/database:
     get:
       tags:
@@ -1805,32 +2438,96 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/admin/advanced/events
-      responses: {}
+      summary: Get event log
+      parameters:
+        - in: query
+          name: type
+          schema:
+            type: string
+          description: Event name to filter by
+        - in: query
+          name: start
+          schema:
+            type: string
+          description: Start date to filter by
+        - in: query
+          name: end
+          schema:
+            type: string
+          description: End date to filter by
+        - in: query
+          name: perPage
+          schema:
+            type: string
+          description: Limit the number of events returned per page
+      responses:
+        "200":
+          description: "A JSON object containing "
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      events:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            type:
+                              type: string
+                            additionalProperties:
+                              description: Each individual event as added by core/plugins can append their own metadata related to the event
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - type: object
+                    properties:
+                      types:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            value:
+                              type: string
+                            name:
+                              type: string
+                            selected:
+                              type: boolean
+                      query:
+                        additionalProperties:
+                          description: An object containing the query string parameters, if any
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/advanced/hooks:
     get:
       tags:
         - admin
       summary: /api/admin/advanced/hooks
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot"
   /api/admin/advanced/logs:
     get:
       tags:
         - admin
       summary: /api/admin/advanced/logs
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot"
   /api/admin/advanced/errors:
     get:
       tags:
         - admin
       summary: /api/admin/advanced/errors
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot"
   /api/admin/advanced/errors/export:
     get:
       tags:
         - admin
       summary: /api/admin/advanced/errors/export
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot"
   /api/admin/advanced/cache:
     get:
       tags:
@@ -1935,67 +2632,89 @@ paths:
       tags:
         - admin
       summary: /api/admin/development/info
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot"
   /api/admin/users/csv:
     get:
       tags:
         - admin
       summary: /api/admin/users/csv
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot"
   /api/admin/analytics:
     get:
       tags:
         - admin
       summary: /api/admin/analytics
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot"
   /api/admin/category/uploadpicture:
     post:
       tags:
         - admin
       summary: /api/admin/category/uploadpicture
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot"
   /api/admin/uploadfavicon:
     post:
       tags:
         - admin
       summary: /api/admin/uploadfavicon
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot"
   /api/admin/uploadTouchIcon:
     post:
       tags:
         - admin
       summary: /api/admin/uploadTouchIcon
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot"
   /api/admin/uploadlogo:
     post:
       tags:
         - admin
       summary: /api/admin/uploadlogo
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot"
   /api/admin/uploadOgImage:
     post:
       tags:
         - admin
       summary: /api/admin/uploadOgImage
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot"
   /api/admin/upload/sound:
     post:
       tags:
         - admin
       summary: /api/admin/upload/sound
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot"
   /api/admin/upload/file:
     post:
       tags:
         - admin
       summary: /api/admin/upload/file
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot"
   /api/admin/uploadDefaultAvatar:
     post:
       tags:
         - admin
       summary: /api/admin/uploadDefaultAvatar
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot"
   /api/config:
     get:
       tags:
@@ -2271,7 +2990,9 @@ paths:
           required: true
           schema:
             type: string
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot"
   "/api/user/uid/{userslug}/export/uploads":
     get:
       tags:
@@ -2284,13 +3005,13 @@ paths:
           schema:
             type: string
       responses:
-        "401":
-          description: ""
+        "200":
+          description: Successful export of user uploads
           content:
-            application/json:
+            application/zip:
               schema:
-                title: not-authorized
-                type: undefined
+                type: string
+                format: binary
   "/api/user/uid/{userslug}/export/profile":
     get:
       tags:
@@ -2302,7 +3023,9 @@ paths:
           required: true
           schema:
             type: string
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot"
   "/api/{type}/pid/{id}":
     get:
       tags:
@@ -2319,7 +3042,9 @@ paths:
           required: true
           schema:
             type: string
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot"
   "/api/{type}/tid/{id}":
     get:
       tags:
@@ -2336,7 +3061,9 @@ paths:
           required: true
           schema:
             type: string
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot"
   "/api/{type}/cid/{id}":
     get:
       tags:
@@ -2353,7 +3080,9 @@ paths:
           required: true
           schema:
             type: string
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot"
   /api/categories:
     get:
       tags:
@@ -2814,7 +3543,9 @@ paths:
       tags:
         - posts
       summary: /api/unread/total
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot"
   "/api/topic/teaser/{topic_id}":
     get:
       tags:
@@ -2826,7 +3557,9 @@ paths:
           required: true
           schema:
             type: string
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot"
   "/api/topic/pagination/{topic_id}":
     get:
       tags:
@@ -2970,7 +3703,9 @@ paths:
       tags:
         - topics
       summary: /api/topic/thumb/upload
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot"
   "/api/user/{userslug}/uploadpicture":
     post:
       tags:
@@ -3007,13 +3742,17 @@ paths:
           required: true
           schema:
             type: string
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot"
   /api/groups/uploadpicture:
     post:
       tags:
         - groups
       summary: /api/groups/uploadpicture
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot"
   /api/login:
     get:
       tags:
@@ -3209,7 +3948,9 @@ paths:
           required: true
           schema:
             type: string
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot"
   "/api/email/unsubscribe/{token}":
     get:
       tags:
@@ -3221,7 +3962,9 @@ paths:
           required: true
           schema:
             type: string
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot"
   "/api/topic/{topic_id}/{slug}/{post_index?}":
     get:
       tags:
@@ -4003,7 +4746,8 @@ paths:
     get:
       tags:
         - shorthand
-      summary: /api/post/{pid}
+      summary: Access a specific post
+      description: This route comes in handy when all you have is the `pid`, and you want to redirect users to the canonical URL for the topic, with the appropriate topic slug and post index.
       parameters:
         - name: pid
           in: path
@@ -4012,27 +4756,11 @@ paths:
             type: string
       responses:
         "200":
-          description: ""
+          description: "Canonical URL of topic"
           content:
-            application/json:
-              schema:
-                title: /topic/9995/cannot-post-or-reply-to-posts-in-nodebb-mobile-version/14?_=1574522486637&lang=en-US
-                type: undefined
-            text/plain:
-              schema:
-                title: /topic/9995/cannot-post-or-reply-to-posts-in-nodebb-mobile-version/14?_=1574522486637&lang=en-US
-                type: undefined
-        "404":
-          description: ""
-          content:
-            application/json:
-              schema:
-                type: string
-                example: Not Found
             text/plain:
               schema:
                 type: string
-                example: Not Found
   /api/flags:
     get:
       tags:
@@ -4449,13 +5177,17 @@ paths:
       tags:
         - admin
       summary: /api/ip-blacklist
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot"
   /api/registration-queue:
     get:
       tags:
         - admin
       summary: /api/registration-queue
-      responses: {}
+      responses:
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot"
   "/api/tags/{tag}":
     get:
       tags:
@@ -6567,27 +7299,32 @@ paths:
     get:
       tags:
         - shorthand
-      summary: /api/me/*
-      responses: {}
-  "/api/uid/{uid*}":
+      summary: Access your own profile's pages
+      description: >-
+        This shorthand is useful if you want to link to pages in your own account profile, but do not want (or have) the `userslug`. It is also especially useful as a
+        means to instruct users on how to do things, as you can easily redirect them to their own profile pages.
+      responses:
+        "200":
+          description: "Canonical URL to your requested profile page"
+  "/api/uid/{uid}/*":
     get:
       tags:
         - shorthand
-      summary: /api/uid/{uid*}
+      summary: Access a user's profile pages
+      description: >-
+        This particular shorthand is useful if you are looking to redirect to a user's profile (or other associated pages), but do not know or want to retrieve their userslug,
+        which is part of the canonical url.
+
+        For example, to go to `uid` 15's list of topics made, you can navigate to `/api/uid/15/topics`, which will send you to the appropriate canonical URL for that user's topics.
       parameters:
-        - name: uid*
+        - name: uid
           in: path
           required: true
           schema:
             type: string
       responses:
         "200":
-          description: ""
-          content:
-            application/json:
-              schema:
-                title: /user/the-penultimate-defenestrator
-                type: undefined
+          description: "Canonical URL of user profile page"
   "/api/user/{userslug}":
     get:
       tags:
@@ -7952,19 +8689,61 @@ paths:
           required: true
           schema:
             type: string
-      responses: {}
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: components/schemas/UserObject.yaml#/UserObjectFull
+                  - type: object
+                    properties:
+                      posts:
+                        $ref: components/schemas/PostsObject.yaml#/PostsObject
+                      nextStart:
+                        type: number
+                      noItemsFoundKey:
+                        type: string
+                        description: Translation key for message notifying user that there were no posts found
+                      title:
+                        type: string
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/downvoted":
     get:
       tags:
         - users
-      summary: /api/user/{userslug}/downvoted
+      summary: Get user's downvotes
       parameters:
         - name: userslug
           in: path
           required: true
           schema:
             type: string
-      responses: {}
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: components/schemas/UserObject.yaml#/UserObjectFull
+                  - type: object
+                    properties:
+                      posts:
+                        $ref: components/schemas/PostsObject.yaml#/PostsObject
+                      nextStart:
+                        type: number
+                      noItemsFoundKey:
+                        type: string
+                        description: Translation key for message notifying user that there were no posts found
+                      title:
+                        type: string
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/edit":
     get:
       tags:
@@ -8639,7 +9418,7 @@ paths:
     delete:
       tags:
         - users
-      summary: /api/user/{userslug}/session/{uuid}
+      summary: Revoke a user session
       parameters:
         - name: userslug
           in: path
@@ -8651,7 +9430,9 @@ paths:
           required: true
           schema:
             type: string
-      responses: {}
+      responses:
+        "200":
+          description: User session revoked
   /api/notifications:
     get:
       tags:
@@ -9086,12 +9867,12 @@ paths:
             type: string
       responses:
         "200":
-          description: ""
+          description: "Chat identifier resolved"
           content:
-            application/json:
+            text/plain:
               schema:
-                title: /user/baris/chats/3499
-                type: undefined
+                type: string
+                description: A relative path to the canonical URL for that chat page
   /api/users:
     get:
       tags:
