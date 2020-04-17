@@ -54,7 +54,9 @@ function checkSetupFlag(next) {
 		if (nconf.get('setup')) {
 			setupVal = JSON.parse(nconf.get('setup'));
 		}
-	} catch (err) {}
+	} catch (err) {
+		winston.error('Invalid json in nconf.get(\'setup\'), ignoring setup values');
+	}
 
 	if (setupVal && typeof setupVal === 'object') {
 		if (setupVal['admin:username'] && setupVal['admin:password'] && setupVal['admin:password:confirm'] && setupVal['admin:email']) {
