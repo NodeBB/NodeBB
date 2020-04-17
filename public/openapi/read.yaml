@@ -4319,53 +4319,6 @@ paths:
                   path:
                     type: string
                     description: Path to the file in the local file system
-  "/api/user/{userslug}/uploadpicture":
-    post:
-      tags:
-        - users
-      summary: /api/user/{userslug}/uploadpicture
-      parameters:
-        - name: userslug
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: ""
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                    url:
-                      type: string
-  "/api/user/{userslug}/uploadcover":
-    post:
-      tags:
-        - users
-      summary: /api/user/{userslug}/uploadcover
-      parameters:
-        - name: userslug
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot"
-  /api/groups/uploadpicture:
-    post:
-      tags:
-        - groups
-      summary: /api/groups/uploadpicture
-      responses:
-        "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot"
   /api/login:
     get:
       tags:
