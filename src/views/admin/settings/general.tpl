@@ -163,10 +163,10 @@
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<label>[[admin/settings/general:theme-color]]</label>
-			<input type="text" class="form-control" placeholder="#FFFFFF" data-field="themeColor" />
+			<input type="text" class="form-control" placeholder="#ffffff" data-field="themeColor" />
 
 			<label>[[admin/settings/general:background-color]]</label>
-			<input type="text" class="form-control" placeholder="#FFFFFF" data-field="backgroundColor" />
+			<input type="text" class="form-control" placeholder="#ffffff" data-field="backgroundColor" />
 			<p class="help-block">
 				[[admin/settings/general:background-color-help]]
 			</p>

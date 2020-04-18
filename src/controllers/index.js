@@ -251,8 +251,8 @@ Controllers.manifest = function (req, res, next) {
 		start_url: nconf.get('relative_path') + '/',
 		display: 'standalone',
 		orientation: 'portrait',
-		theme_color: meta.config.themeColor || '#FFFFFF',
-		background_color: meta.config.backgroundColor || '#FFFFFF',
+		theme_color: meta.config.themeColor || '#ffffff',
+		background_color: meta.config.backgroundColor || '#ffffff',
 		icons: [],
 	};
 
