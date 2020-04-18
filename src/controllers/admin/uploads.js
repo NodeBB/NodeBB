@@ -146,7 +146,7 @@ uploadsController.uploadFavicon = async function (req, res, next) {
 uploadsController.uploadTouchIcon = async function (req, res, next) {
 	const uploadedFile = req.files.files[0];
 	const allowedTypes = ['image/png'];
-	const sizes = [36, 48, 72, 96, 144, 192];
+	const sizes = [36, 48, 72, 96, 144, 192, 512];
 
 	if (validateUpload(res, uploadedFile, allowedTypes)) {
 		try {
