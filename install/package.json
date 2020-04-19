@@ -131,7 +131,7 @@
         "zxcvbn": "^4.4.2"
     },
     "devDependencies": {
-        "@apidevtools/swagger-parser": "^9.0.1",
+        "@apidevtools/swagger-parser": "9.0.1",
         "@commitlint/cli": "8.3.5",
         "@commitlint/config-angular": "8.3.4",
         "coveralls": "3.0.11",
