@@ -29,6 +29,7 @@
         ]
     },
     "dependencies": {
+        "@apidevtools/swagger-parser": "^9.0.1",
         "ace-builds": "^1.4.9",
         "archiver": "^4.0.0",
         "async": "^3.2.0",
