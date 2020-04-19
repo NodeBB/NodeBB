@@ -58,6 +58,8 @@ describe('Read API', async () => {
 			required.forEach((prop) => {
 				if (schema.hasOwnProperty(prop)) {
 					assert(response.hasOwnProperty(prop), '"' + prop + '" is a required property (path: ' + path + ', context: ' + context + ')');
+
+					// Don't proceed with type-check if the value could possibly be unset (nullable: true, in spec)
 					if (response[prop] === null && schema[prop].nullable === true) {
 						return;
 					}
@@ -77,12 +79,18 @@ describe('Read API', async () => {
 						assert.strictEqual(Array.isArray(response[prop]), true, '"' + prop + '" was expected to be an array, but was ' + typeof response[prop] + ' instead (path: ' + path + ', context: ' + context + ')');
 
 						if (schema[prop].items) {
+							// Ensure the array items have a schema defined
+							assert(schema[prop].items.type || schema[prop].items.allOf, '"' + prop + '" is defined to be an array, but its items have no schema defined (path: ' + path + ', context: ' + context + ')');
+
+							// Compare types
 							if (schema[prop].items.type === 'object' || Array.isArray(schema[prop].items.allOf)) {
 								response[prop].forEach((res) => {
 									compare(schema[prop].items, res, context ? [context, prop].join('.') : prop);
 								});
-							} else {
-								console.log('Not implemented -- check back later');
+							} else if (response[prop].length) { // for now
+								response[prop].forEach((item) => {
+									assert.strictEqual(typeof item, schema[prop].items.type, '"' + prop + '" should have ' + schema[prop].items.type + ' items, but found ' + typeof items + ' instead (path: ' + path + ', context: ' + context + ')');
+								});
 							}
 						}
 						break;
@@ -135,7 +143,7 @@ describe('Read API', async () => {
 		it('response should match schema definition', () => {
 			if (readApi.paths[path].get.responses['200']) {
 				schema = readApi.paths[path].get.responses['200'].content['application/json'].schema;
-				compare(schema, response);
+				compare(schema, response, 'root');
 			}
 		});
 	});

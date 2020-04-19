@@ -654,7 +654,8 @@ paths:
                               type: boolean
                       customClasses:
                         type: array
-                        items: {}
+                        items:
+                          type: string
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/admin/manage/categories/{category_id}/analytics":
     get:
@@ -705,7 +706,7 @@ paths:
         - admin
       summary: Get category privileges
       parameters:
-        - name: cid?
+        - name: cid
           in: path
           required: true
           schema:
@@ -804,6 +805,11 @@ paths:
                               type: string
                             imageClass:
                               type: string
+                          required:
+                            - cid
+                            - name
+                            - icon
+                            - selected
                       selectedCategory:
                         type: object
                         properties:
