@@ -287,6 +287,7 @@
 			'alt="' + userObj.username + '"',
 			'title="' + userObj.username + '"',
 			'data-uid="' + userObj.uid + '"',
+			'loading="lazy"',
 		];
 		var styles = [];
 		classNames = classNames || '';
