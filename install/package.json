@@ -29,7 +29,6 @@
         ]
     },
     "dependencies": {
-        "@apidevtools/swagger-parser": "^9.0.1",
         "ace-builds": "^1.4.9",
         "archiver": "^4.0.0",
         "async": "^3.2.0",
@@ -132,6 +131,7 @@
         "zxcvbn": "^4.4.2"
     },
     "devDependencies": {
+        "@apidevtools/swagger-parser": "^9.0.1",
         "@commitlint/cli": "8.3.5",
         "@commitlint/config-angular": "8.3.4",
         "coveralls": "3.0.11",
