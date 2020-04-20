@@ -29,8 +29,8 @@ describe('Read API', async () => {
 	readApi = await SwaggerParser.dereference(apiPath);
 
 	// Iterate through all documented paths, make a call to it, and compare the result body with what is defined in the spec
-	let paths = Object.keys(readApi.paths);
-	paths = paths.slice(41);
+	const paths = Object.keys(readApi.paths);
+	// paths = paths.slice(41);
 
 	paths.forEach((path) => {
 		let schema;
@@ -145,8 +145,12 @@ describe('Read API', async () => {
 		// Recursively iterate through schema properties, comparing type
 		it('response should match schema definition', () => {
 			const has200 = readApi.paths[path].get.responses['200'];
+			if (!has200) {
+				return;
+			}
+
 			const hasJSON = has200.content['application/json'];
-			if (has200 && hasJSON) {
+			if (hasJSON) {
 				schema = readApi.paths[path].get.responses['200'].content['application/json'].schema;
 				compare(schema, response, 'root');
 			}
