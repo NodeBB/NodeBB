@@ -25,6 +25,18 @@ groupsController.list = async function (req, res) {
 		privileges.global.can('group:create', req.uid),
 	]);
 
+	groupData.forEach(async function (group) {
+		if (group) {
+			const [isMember, isOwner] = await Promise.all([
+				groups.isMember(req.uid, group.name),
+				groups.ownership.isOwner(req.uid, group.name),
+			]);
+
+			group.isMember = isMember;
+			group.isOwner = isOwner;
+		}
+	});
+
 	let groupNames = await getGroupNames();
 	const pageCount = Math.ceil(groupNames.length / groupsPerPage);
 	res.render('groups/list', {
