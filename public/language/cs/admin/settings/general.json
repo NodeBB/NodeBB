@@ -1,6 +1,8 @@
 {
 	"site-settings": "Nastavení stránky",
 	"title": "Název stránky",
+	"title.short": "Short Title",
+	"title.short-placeholder": "If no short title is specified, the site title will be used",
 	"title.url": "URL",
 	"title.url-placeholder": "URL názvu stránky",
 	"title.url-help": "Bude-li kliknuto na název, uživatel bude přesměrován na tuto adresu. Zůstane-li prázdné, uživatel bude odeslán na index fóra",
@@ -31,5 +33,9 @@
 	"outgoing-links": "Odchozí odkazy",
 	"outgoing-links.warning-page": "Použít stránku s upozorněním při odchozích odkazech",
 	"search-default-sort-by": "Výchozí třídění při hledání",
-	"outgoing-links.whitelist": "Domény u kterých bude přeskočena upozorňovací stránka"
+	"outgoing-links.whitelist": "Domény u kterých bude přeskočena upozorňovací stránka",
+	"site-colors": "Site Color Metadata",
+	"theme-color": "Theme Color",
+	"background-color": "Background Color",
+	"background-color-help": "Color used for splash screen background when website is installed as a PWA"
 }

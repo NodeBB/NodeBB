@@ -1,6 +1,8 @@
 {
 	"site-settings": "Forum Einstellungen",
 	"title": "Forum Titel",
+	"title.short": "Short Title",
+	"title.short-placeholder": "If no short title is specified, the site title will be used",
 	"title.url": "URL",
 	"title.url-placeholder": "Die URL des Seitentitels",
 	"title.url-help": "Wenn der Titel angeklickt wird, werden Benutzer zu dieser Adresse geschickt, bei leerem Feld wird die Startseite verwendet.",
@@ -31,5 +33,9 @@
 	"outgoing-links": "Ausgehende Links",
 	"outgoing-links.warning-page": "Warnseite für ausgehende links verwenden",
 	"search-default-sort-by": "Standardmäßige Such-Sortierung",
-	"outgoing-links.whitelist": "Domains, für die keine Warnseite angezeigt werden soll"
+	"outgoing-links.whitelist": "Domains, für die keine Warnseite angezeigt werden soll",
+	"site-colors": "Site Color Metadata",
+	"theme-color": "Theme Color",
+	"background-color": "Background Color",
+	"background-color-help": "Color used for splash screen background when website is installed as a PWA"
 }

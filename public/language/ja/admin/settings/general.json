@@ -1,6 +1,8 @@
 {
 	"site-settings": "サイト設定",
 	"title": "サイトタイトル",
+	"title.short": "Short Title",
+	"title.short-placeholder": "If no short title is specified, the site title will be used",
 	"title.url": "URL",
 	"title.url-placeholder": "サイトタイトルのURL",
 	"title.url-help": "タイトルをクリックすると、ユーザーをこのアドレスに送信します。空白のままにすると、ユーザーはフォーラムのインデックスに送信されます。",
@@ -31,5 +33,9 @@
 	"outgoing-links": "外部サイトへのリンク",
 	"outgoing-links.warning-page": "送信リンクの警告ページを使用",
 	"search-default-sort-by": "デフォルトのソートを検索",
-	"outgoing-links.whitelist": "警告ページをバイパスするためのホワイトリストへのドメイン"
+	"outgoing-links.whitelist": "警告ページをバイパスするためのホワイトリストへのドメイン",
+	"site-colors": "Site Color Metadata",
+	"theme-color": "Theme Color",
+	"background-color": "Background Color",
+	"background-color-help": "Color used for splash screen background when website is installed as a PWA"
 }

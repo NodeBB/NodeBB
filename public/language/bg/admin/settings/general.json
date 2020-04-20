@@ -1,6 +1,8 @@
 {
 	"site-settings": "Настройки на уеб сайта",
 	"title": "Заглавие на уеб сайта",
+	"title.short": "Short Title",
+	"title.short-placeholder": "If no short title is specified, the site title will be used",
 	"title.url": "Адрес",
 	"title.url-placeholder": "Адресът на заглавието на уеб сайта",
 	"title.url-help": "При щракване върху заглавието, потребителите ще бъдат изпратени на този адрес. Ако бъде оставено празно, потребителите ще бъдат изпращани на началната страница на форума.",
@@ -31,5 +33,9 @@
 	"outgoing-links": "Изходящи връзки",
 	"outgoing-links.warning-page": "Показване на предупредителна страница при щракване върху външни връзки",
 	"search-default-sort-by": "Подредба по подразбиране при търсене",
-	"outgoing-links.whitelist": "Домейни, за които да не се показва предупредителната страница"
+	"outgoing-links.whitelist": "Домейни, за които да не се показва предупредителната страница",
+	"site-colors": "Site Color Metadata",
+	"theme-color": "Theme Color",
+	"background-color": "Background Color",
+	"background-color-help": "Color used for splash screen background when website is installed as a PWA"
 }

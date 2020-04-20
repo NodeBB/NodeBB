@@ -1,6 +1,8 @@
 {
 	"site-settings": "Site Instellingen",
 	"title": "Site Titel",
+	"title.short": "Short Title",
+	"title.short-placeholder": "If no short title is specified, the site title will be used",
 	"title.url": "URL",
 	"title.url-placeholder": "De URL van de site titel",
 	"title.url-help": "Wanneer de titel word aangeklikt stuur gebruikers naar dit adress. Is het leeg gelaten dan worden gebruikers naar de forum hoofdpagina gestuurd.",
@@ -31,5 +33,9 @@
 	"outgoing-links": "Uitgaande links",
 	"outgoing-links.warning-page": "Gebruik waarschuwingspagina voor uitgaande links",
 	"search-default-sort-by": "Standaard sortering voor zoeken",
-	"outgoing-links.whitelist": "Domeinen op de whitelist voor het omzeilen van de waarschuwingspagina"
+	"outgoing-links.whitelist": "Domeinen op de whitelist voor het omzeilen van de waarschuwingspagina",
+	"site-colors": "Site Color Metadata",
+	"theme-color": "Theme Color",
+	"background-color": "Background Color",
+	"background-color-help": "Color used for splash screen background when website is installed as a PWA"
 }
