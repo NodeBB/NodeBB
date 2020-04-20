@@ -2215,9 +2215,15 @@ paths:
                               type: object
                               properties:
                                 port:
-                                  type: array
-                                  items:
-                                    type: number
+                                  description: An array containing the port numbers configured to be used by NodeBB processes
+                                  oneOf:
+                                    - type: array
+                                      items:
+                                        oneOf:
+                                          - type: string
+                                          - type: number
+                                    - type: string
+                                    - type: number
                                 pid:
                                   type: number
                                   description: Process id
@@ -2302,10 +2308,15 @@ paths:
                         type: string
                         description: "`info`, but stringified"
                       port:
-                        type: array
                         description: An array containing the port numbers configured to be used by NodeBB processes
-                        items:
-                          type: number
+                        oneOf:
+                          - type: array
+                            items:
+                              oneOf:
+                                - type: string
+                                - type: number
+                          - type: string
+                          - type: number
                       nodeCount:
                         type: number
                         description: The number of NodeBB application processes currently running
