@@ -14,7 +14,7 @@ GroupObject:
       type: number
       description: Label text for the user badge
     userTitleEnabled:
-      type: boolean
+      type: number
     description:
       type: string
       description: The group description
@@ -73,3 +73,4 @@ GroupObject:
       type: boolean
     isOwner:
       type: boolean
+  nullable: true
