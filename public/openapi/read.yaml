@@ -2334,6 +2334,13 @@ paths:
       tags:
         - admin
       summary: Get users export (.csv)
+      parameters:
+        - in: header
+          name: referer
+          schema:
+            type: string
+          required: true
+          example: /admin/manage/users
       responses:
         "200":
           description: "A CSV file containing all registered users"
@@ -2354,16 +2361,19 @@ paths:
             type: string
             enum: [hours, days]
           description: Whether to display dashboard data segmented daily or hourly
+          example: days
         - in: query
           name: until
           schema:
             type: number
           description: A UNIX timestamp denoting the end of the analytics reporting period
+          example: ''
         - in: query
           name: count
           schema:
             type: number
           description: The number of entries to return (e.g. if `units` is `hourly`, and `count` is `24`, the result set will contain 24 hours' worth of analytics)
+          example: 20
       responses:
         "200":
           description: "A JSON object containing analytics data"

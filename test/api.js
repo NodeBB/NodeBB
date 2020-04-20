@@ -30,12 +30,13 @@ describe('Read API', async () => {
 
 	// Iterate through all documented paths, make a call to it, and compare the result body with what is defined in the spec
 	const paths = Object.keys(readApi.paths);
-	// paths = paths.slice(41);
 
 	paths.forEach((path) => {
 		let schema;
 		let response;
 		let url;
+		const headers = {};
+		const qs = {};
 
 		function compare(schema, response, context) {
 			let required = [];
@@ -107,8 +108,19 @@ describe('Read API', async () => {
 			let testPath = path;
 			if (parameters) {
 				parameters.forEach((param) => {
-					assert(param.example, path + ' has parameters without examples');
-					testPath = testPath.replace('{' + param.name + '}', param.example);
+					assert(param.example !== null && param.example !== undefined, path + ' has parameters without examples');
+
+					switch (param.in) {
+					case 'path':
+						testPath = testPath.replace('{' + param.name + '}', param.example);
+						break;
+					case 'header':
+						headers[param.name] = param.example;
+						break;
+					case 'query':
+						qs[param.name] = param.example;
+						break;
+					}
 				});
 			}
 
@@ -136,6 +148,8 @@ describe('Read API', async () => {
 				response = await request(url, {
 					jar: jar,
 					json: true,
+					headers: headers,
+					qs: qs,
 				});
 			} catch (e) {
 				assert(!e, path + ' resolved with ' + e.message);
