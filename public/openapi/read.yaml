@@ -1240,9 +1240,9 @@ paths:
                   - type: object
                     properties:
                       admins:
-                        $ref: components/schemas/GroupObject.yaml#/GroupObject
+                        $ref: components/schemas/GroupObject.yaml#/GroupFullObject
                       globalMods:
-                        $ref: components/schemas/GroupObject.yaml#/GroupObject
+                        $ref: components/schemas/GroupObject.yaml#/GroupFullObject
                       categories:
                         type: array
                         items:
@@ -1392,7 +1392,7 @@ paths:
                   - type: object
                     properties:
                       group:
-                        $ref: components/schemas/GroupObject.yaml#/GroupObject
+                        $ref: components/schemas/GroupObject.yaml#/GroupFullObject
                       groupNames:
                         type: array
                         items:
@@ -2803,75 +2803,6 @@ paths:
                     type: string
                   topicSearchEnabled:
                     type: boolean
-                  hideSubCategories:
-                    type: boolean
-                  hideCategoryLastPost:
-                    type: boolean
-                  enableQuickReply:
-                    type: boolean
-                  markdown:
-                    type: object
-                    properties:
-                      highlight:
-                        type: number
-                      highlightLinesLanguageList:
-                        type: array
-                        items: {}
-                      theme:
-                        type: string
-                  question-and-answer:
-                    type: object
-                    properties:
-                      defaultCid_13:
-                        type: string
-                      defaultCid_1:
-                        type: string
-                      defaultCid_5:
-                        type: string
-                      forceQuestions:
-                        type: string
-                      defaultCid_2:
-                        type: string
-                      defaultCid_6:
-                        type: string
-                      defaultCid_3:
-                        type: string
-                      defaultCid_15:
-                        type: string
-                      defaultCid_7:
-                        type: string
-                      defaultCid_10:
-                        type: string
-                      defaultCid_16:
-                        type: string
-                      defaultCid_21:
-                        type: string
-                      defaultCid_8:
-                        type: string
-                      defaultCid_4:
-                        type: string
-                      defaultCid_14:
-                        type: string
-                      defaultCid_17:
-                        type: string
-                      defaultCid_18:
-                        type: string
-                      defaultCid_19:
-                        type: string
-                      defaultCid_20:
-                        type: string
-                      defaultCid_22:
-                        type: string
-                      defaultCid_26:
-                        type: string
-                  composer-default:
-                    type: object
-                    properties: {}
-                  sso-google:
-                    type: object
-                    properties:
-                      style:
-                        type: string
   /api/me:
     get:
       tags:
@@ -2895,6 +2826,7 @@ paths:
           required: true
           schema:
             type: string
+          example: 1
       responses:
         "200":
           description: ""
@@ -2913,6 +2845,7 @@ paths:
           required: true
           schema:
             type: string
+          example: admin
       responses:
         "200":
           description: ""
@@ -2931,6 +2864,7 @@ paths:
           required: true
           schema:
             type: string
+          example: 'test@example.org'
       responses:
         "200":
           description: ""
@@ -2949,6 +2883,7 @@ paths:
           required: true
           schema:
             type: string
+          example: admin
       responses:
         "200":
           description: "A CSV file containing a user's posts"
@@ -2968,6 +2903,7 @@ paths:
           required: true
           schema:
             type: string
+          example: admin
       responses:
         "200":
           description: Successful export of user uploads
@@ -2987,6 +2923,7 @@ paths:
           required: true
           schema:
             type: string
+          example: admin
       responses:
         "200":
           description: "A CSV file containing the user profile"
@@ -3006,6 +2943,7 @@ paths:
           required: true
           schema:
             type: number
+          example: 1
       responses:
         "200":
           description: "A JSON object containing post data"
@@ -3055,6 +2993,7 @@ paths:
           required: true
           schema:
             type: string
+          example: 1
       responses:
         "200":
           description: "A JSON object containing topic data"
@@ -3114,6 +3053,7 @@ paths:
           required: true
           schema:
             type: string
+          example: 1
       responses:
         "200":
           description: "A JSON object containing topic data"

@@ -17,6 +17,33 @@ const posts = require('../src/posts');
 describe('Read API', async () => {
 	let readApi = false;
 	const apiPath = path.resolve(__dirname, '../public/openapi/read.yaml');
+	let jar;
+	let setup = false;
+
+	async function setupData() {
+		if (setup) {
+			return;
+		}
+
+		// Create admin user
+		console.log('creating admin user');
+		const adminUid = await user.create({ username: 'admin', password: '123456', email: 'test@example.org' });
+		await groups.join('administrators', adminUid);
+
+		// Create a category
+		const testCategory = await categories.create({ name: 'test' });
+
+		// Post a new topic
+		const testTopic = await topics.post({
+			uid: adminUid,
+			cid: testCategory.cid,
+			title: 'Test Topic',
+			content: 'Test topic content',
+		});
+
+		jar = await helpers.loginUser('admin', '123456');
+		setup = true;
+	}
 
 	it('should pass OpenAPI v3 validation', async () => {
 		try {
@@ -103,6 +130,11 @@ describe('Read API', async () => {
 			});
 		}
 
+		// TOXO: fix -- premature exit for POST-only routes
+		if (!readApi.paths[path].get) {
+			return;
+		}
+
 		it('should have examples when parameters are present', () => {
 			const parameters = readApi.paths[path].get.parameters;
 			let testPath = path;
@@ -128,22 +160,8 @@ describe('Read API', async () => {
 		});
 
 		it('should resolve with a 200 when called', async () => {
-			// Create admin user
-			const adminUid = await user.create({ username: 'admin', password: '123456' });
-			await groups.join('administrators', adminUid);
+			await setupData();
 
-			// Create a category
-			const testCategory = await categories.create({ name: 'test' });
-
-			// Post a new topic
-			const testTopic = await topics.post({
-				uid: adminUid,
-				cid: testCategory.cid,
-				title: 'Test Topic',
-				content: 'Test topic content',
-			});
-
-			const jar = await helpers.loginUser('admin', '123456');
 			try {
 				response = await request(url, {
 					jar: jar,

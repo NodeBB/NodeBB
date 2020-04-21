@@ -190,6 +190,8 @@ async function getProfileMenu(uid, callerUID) {
 
 async function parseAboutMe(userData) {
 	if (!userData.aboutme) {
+		userData.aboutme = '';
+		userData.aboutmeParsed = '';
 		return;
 	}
 	userData.aboutme = validator.escape(String(userData.aboutme || ''));

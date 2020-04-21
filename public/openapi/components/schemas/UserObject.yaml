@@ -40,28 +40,34 @@ UserObject:
     location:
       type: string
       example: 'Toronto, Canada'
+      nullable: true
     birthday:
       type: string
       description: A birthdate given in an ISO format parseable by the Date object
       example: 03/27/2020
+      nullable: true
     website:
       type: string
       example: 'https://example.org'
+      nullable: true
     aboutme:
       type: string
       example: |
         This is a paragraph all about how my life got twist-turned upside-down
         and I'd like to take a minute and sit right here,
-        to tell you all about how I because the administrator of NodeBB
+        to tell you all about how I became the administrator of NodeBB
+      nullable: true
     signature:
       type: string
       example: |
         This is an example signature
         It can span multiple lines.
+      nullable: true
     uploadedpicture:
       type: string
       example: /assets/profile/1-profileimg.png
       description: 'In almost all cases, defer to "picture" instead. Use this if you need to specifically reference the picture uploaded to the forum.'
+      nullable: true
     profileviews:
       type: number
       description: The number of times this user's profile has been viewed
@@ -100,18 +106,20 @@ UserObject:
       type: number
       example: 0
       nullable: true
-    followercount:
+    followerCount:
       type: number
       example: 2
-    followingcount:
+    followingCount:
       type: number
       example: 5
     'cover:url':
       type: string
       example: /assets/profile/1-cover.png
+      nullable: true
     'cover:position':
       type: string
       example: 50.0301% 19.2464%
+      nullable: true
     groupTitle:
       type: string
       example: '["administrators","Staff"]'
@@ -142,6 +150,43 @@ UserObject:
       type: string
       description: An ISO 8601 formatted date string representing the moment a ban will be lifted, or the words "Not Banned"
       example: Not Banned
+  required:
+    - uid
+    - username
+    - userslug
+    - 'email:confirmed'
+    - joindate
+    - lastonline
+    - picture
+    - location
+    - birthday
+    - website
+    - aboutme
+    - signature
+    - uploadedpicture
+    - profileviews
+    - reputation
+    - postcount
+    - topiccount
+    - lastposttime
+    - banned
+    - 'banned:expire'
+    - status
+    - enum
+    - flags
+    - followerCount
+    - followingCount
+    - 'cover:url'
+    - 'cover:position'
+    - groupTitle
+    - groupTitleArray
+    - example
+    - 'icon:text'
+    - 'icon:bgColor'
+    - joindateISO
+    - lastonlineISO
+    - banned_until
+    - banned_until_readable
 UserObjectFull:
   type: object
   properties:
@@ -196,7 +241,7 @@ UserObjectFull:
       example: |
         This is a paragraph all about how my life got twist-turned upside-down
         and I'd like to take a minute and sit right here,
-        to tell you all about how I because the administrator of NodeBB
+        to tell you all about how I became the administrator of NodeBB
     signature:
       type: string
       example: |
@@ -206,6 +251,7 @@ UserObjectFull:
       type: string
       example: /assets/profile/1-profileimg.png
       description: 'In almost all cases, defer to "picture" instead. Use this if you need to specifically reference the picture uploaded to the forum.'
+      nullable: true
     profileviews:
       type: number
       description: The number of times this user's profile has been viewed
@@ -244,18 +290,20 @@ UserObjectFull:
       type: number
       example: 0
       nullable: true
-    followercount:
+    followerCount:
       type: number
       example: 2
-    followingcount:
+    followingCount:
       type: number
       example: 5
     'cover:url':
       type: string
       example: /assets/profile/1-cover.png
+      nullable: true
     'cover:position':
       type: string
       example: 50.0301% 19.2464%
+      nullable: true
     groupTitle:
       type: string
       example: '["administrators","Staff"]'
@@ -336,7 +384,8 @@ UserObjectFull:
       type: boolean
     groups:
       type: array
-      items: {}
+      items:
+        $ref: ./GroupObject.yaml#/GroupFullObject
     disableSignatures:
       type: boolean
     reputation:disabled:
@@ -373,6 +422,12 @@ UserObjectFull:
             type: boolean
           icon:
             type: string
+        required:
+          - id
+          - route
+          - name
+          - visibility
+          - public
     sso:
       type: array
       items:
