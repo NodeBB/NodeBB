@@ -19,6 +19,7 @@ describe('Read API', async () => {
 	const apiPath = path.resolve(__dirname, '../public/openapi/read.yaml');
 	let jar;
 	let setup = false;
+	const unauthenticatedRoutes = ['/api/login', '/api/register'];	// Everything else will be called with the admin user
 
 	async function setupData() {
 		if (setup) {
@@ -164,7 +165,7 @@ describe('Read API', async () => {
 
 			try {
 				response = await request(url, {
-					jar: jar,
+					jar: !unauthenticatedRoutes.includes(path) ? jar : undefined,
 					json: true,
 					headers: headers,
 					qs: qs,
