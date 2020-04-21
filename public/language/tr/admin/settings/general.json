@@ -1,6 +1,8 @@
 {
 	"site-settings": "Site Ayarları",
 	"title": "Site Başlığı",
+	"title.short": "Short Title",
+	"title.short-placeholder": "If no short title is specified, the site title will be used",
 	"title.url": "Bağlantı",
 	"title.url-placeholder": "Site başlığının URL adresi",
 	"title.url-help": "Başlık tıklandığında, kullanıcıları bu adrese gönder. Boş bırakılırsa, kullanıcı forum dizinine gönderilir.",
@@ -31,5 +33,9 @@
 	"outgoing-links": "Harici Bağlantılar",
 	"outgoing-links.warning-page": "Dışarı giden bağlantılar için uyarı sayfası kullan",
 	"search-default-sort-by": "Aramada varsayılan sıralama",
-	"outgoing-links.whitelist": "Uyarı sayfasını atlamak için beyaz listeye eklenecek alan-adları"
+	"outgoing-links.whitelist": "Uyarı sayfasını atlamak için beyaz listeye eklenecek alan-adları",
+	"site-colors": "Site Color Metadata",
+	"theme-color": "Theme Color",
+	"background-color": "Background Color",
+	"background-color-help": "Color used for splash screen background when website is installed as a PWA"
 }
