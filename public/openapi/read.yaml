@@ -1628,7 +1628,6 @@ paths:
                             - latest
                             - description
                             - name
-                            - url
                             - id
                             - installed
                             - active
@@ -3524,7 +3523,18 @@ paths:
                     properties:
                       loginFormEntry:
                         type: array
-                        items: {}
+                        items:
+                          type: object
+                          properties:
+                            label:
+                              type: string
+                              description: A label for the added block
+                            html:
+                              type: string
+                              description: HTML to render on the login page
+                            styleName:
+                              type: string
+                              description: Custom identifier (value is added to `input[id]` and `label[for]`)
                       alternate_logins:
                         type: boolean
                       authentication:
@@ -3614,30 +3624,30 @@ paths:
                         type: string
                   - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
-  /api/register/complete:
-    get:
-      tags:
-        - authentication
-      summary: /api/register/complete
-      responses:
-        "200":
-          description: ""
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - type: object
-                    properties:
-                      title:
-                        type: string
-                      errors:
-                        type: array
-                        items: {}
-                      sections:
-                        type: array
-                        items:
-                          type: string
-                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
+  # /api/register/complete:
+  #   get:
+  #     tags:
+  #       - authentication
+  #     summary: /api/register/complete
+  #     responses:
+  #       "200":
+  #         description: ""
+  #         content:
+  #           application/json:
+  #             schema:
+  #               allOf:
+  #                 - type: object
+  #                   properties:
+  #                     title:
+  #                       type: string
+  #                     errors:
+  #                       type: array
+  #                       items: {}
+  #                     sections:
+  #                       type: array
+  #                       items:
+  #                         type: string
+  #                 - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/search:
     get:
       tags:
@@ -3689,6 +3699,20 @@ paths:
                         type: string
                       searchDefaultSortBy:
                         type: string
+                    required:
+                      - posts
+                      - matchCount
+                      - pageCount
+                      - time
+                      - multiplePages
+                      - search_query
+                      - categories
+                      - categoriesCount
+                      - expandSearch
+                      - showAsPosts
+                      - showAsTopics
+                      - title
+                      - searchDefaultSortBy
                   - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
@@ -3708,6 +3732,7 @@ paths:
                     properties:
                       code:
                         type: string
+                        nullable: true
                   - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/reset/{code}":
@@ -3721,6 +3746,7 @@ paths:
           required: true
           schema:
             type: string
+          example: testCode
       responses:
         "200":
           description: "A JSON object containing the 2nd step of the user password reset flow"
@@ -3741,7 +3767,8 @@ paths:
                   - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/email/unsubscribe/{token}":
-    get:
+    # TODO: Need GET route here as well
+    post:
       tags:
         - emails
       summary: /api/email/unsubscribe/{token}
@@ -3751,32 +3778,36 @@ paths:
           required: true
           schema:
             type: string
+          example: testToken
       responses:
         "200":
           description: "Successfully unsubscribed"
         "500":
           description: "Server-side error (likely token verification failure)"
-  "/api/topic/{topic_id}/{slug}/{post_index?}":
+  "/api/topic/{topic_id}/{slug}/{post_index}":
     get:
       tags:
         - topics
-      summary: /api/topic/{topic_id}/{slug}/{post_index?}
+      summary: /api/topic/{topic_id}/{slug}/{post_index}
       parameters:
         - name: topic_id
           in: path
           required: true
           schema:
             type: string
+          example: 1
         - name: slug
           in: path
           required: true
           schema:
             type: string
-        - name: post_index?
+          example: test-topic
+        - name: post_index
           in: path
           required: true
           schema:
             type: string
+          example: 1
       responses:
         "200":
           description: ""
@@ -3784,7 +3815,6 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: components/schemas/CategoryObject.yaml#/CategoryObject
                   - type: object
                     properties:
                       tid:
@@ -3796,10 +3826,6 @@ paths:
                       cid:
                         type: number
                         description: A category identifier
-                      mainPid:
-                        type: number
-                        description: The post id of the first post in this topic (also called the
-                          "original post")
                       title:
                         type: string
                       slug:
@@ -3812,8 +3838,13 @@ paths:
                         type: number
                       viewcount:
                         type: number
+                      mainPid:
+                        type: number
+                        description: The post id of the first post in this topic (also called the
+                          "original post")
                       teaserPid:
                         type: number
+                        nullable: true
                       upvotes:
                         type: number
                       downvotes:
@@ -3994,6 +4025,8 @@ paths:
                               type: boolean
                             display_post_menu:
                               type: boolean
+                      category:
+                        $ref: components/schemas/CategoryObject.yaml#/CategoryObject
                       tagWhitelist:
                         type: array
                         items:
@@ -4109,432 +4142,27 @@ paths:
                   - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
-  "/api/topic/{topic_id}/{slug?}":
+  "/api/topic/{topic_id}/{slug}":
     get:
       tags:
         - topics
-      summary: /api/topic/{topic_id}/{slug?}
+      summary: /api/topic/{topic_id}/{slug}
       parameters:
         - name: topic_id
           in: path
           required: true
           schema:
             type: string
-        - name: slug?
+          example: 1
+        - name: slug
           in: path
           required: true
           schema:
             type: string
+          example: ''
       responses:
-        "200":
-          description: ""
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: components/schemas/CategoryObject.yaml#/CategoryObject
-                  - type: object
-                    properties:
-                      tid:
-                        type: number
-                        description: A topic identifier
-                      uid:
-                        type: number
-                        description: A user identifier
-                      cid:
-                        type: number
-                        description: A category identifier
-                      mainPid:
-                        type: number
-                        description: The post id of the first post in this topic (also called the
-                          "original post")
-                      title:
-                        type: string
-                      slug:
-                        type: string
-                      timestamp:
-                        type: number
-                      lastposttime:
-                        type: number
-                      postcount:
-                        type: number
-                      viewcount:
-                        type: number
-                      teaserPid:
-                        type: number
-                      upvotes:
-                        type: number
-                      downvotes:
-                        type: number
-                      deleted:
-                        type: number
-                      locked:
-                        type: number
-                      pinned:
-                        type: number
-                        description: Whether or not this particular topic is pinned to the top of the
-                          category
-                      titleRaw:
-                        type: string
-                      timestampISO:
-                        type: string
-                        description: An ISO 8601 formatted date string (complementing `timestamp`)
-                      lastposttimeISO:
-                        type: string
-                      votes:
-                        type: number
-                      tags:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            value:
-                              type: string
-                            valueEscaped:
-                              type: string
-                            color:
-                              type: string
-                            bgColor:
-                              type: string
-                            score:
-                              type: number
-                      posts:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            editor:
-                              properties:
-                                uid:
-                                  type: number
-                                  description: A user identifier
-                                username:
-                                  type: string
-                                  description: A friendly name for a given user account
-                                userslug:
-                                  type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
-                                    removed, etc.)
-                              nullable: true
-                              type: object
-                            votes:
-                              type: number
-                            timestamp:
-                              type: number
-                            tid:
-                              type: number
-                              description: A topic identifier
-                            content:
-                              type: string
-                            pid:
-                              type: number
-                            edited:
-                              type: number
-                            uid:
-                              type: number
-                              description: A user identifier
-                            upvotes:
-                              type: number
-                            bookmarks:
-                              type: number
-                            replies:
-                              type: object
-                              properties:
-                                hasMore:
-                                  type: boolean
-                                users:
-                                  type: array
-                                  items:
-                                    type: object
-                                    properties:
-                                      uid:
-                                        type: number
-                                        description: A user identifier
-                                      username:
-                                        type: string
-                                        description: A friendly name for a given user account
-                                      userslug:
-                                        type: string
-                                        description: An URL-safe variant of the username (i.e. lower-cased, spaces
-                                          removed, etc.)
-                                      picture:
-                                        nullable: true
-                                      icon:text:
-                                        type: string
-                                        description: A single-letter representation of a username. This is used in the
-                                          auto-generated icon given to users
-                                          without an avatar
-                                      icon:bgColor:
-                                        type: string
-                                        description: A six-character hexadecimal colour code assigned to the user. This
-                                          value is used in conjunction with
-                                          `icon:text` for the user's
-                                          auto-generated icon
-                                        example: "#f44336"
-                                      administrator:
-                                        type: boolean
-                                text:
-                                  type: string
-                                count:
-                                  type: number
-                                timestampISO:
-                                  type: string
-                                  description: An ISO 8601 formatted date string (complementing `timestamp`)
-                            deleted:
-                              type: number
-                            downvotes:
-                              type: number
-                            deleterUid:
-                              type: number
-                            timestampISO:
-                              type: string
-                              description: An ISO 8601 formatted date string (complementing `timestamp`)
-                            editedISO:
-                              type: string
-                            index:
-                              type: number
-                            user:
-                              type: object
-                              properties:
-                                uid:
-                                  type: number
-                                  description: A user identifier
-                                username:
-                                  type: string
-                                  description: A friendly name for a given user account
-                                fullname:
-                                  type: string
-                                userslug:
-                                  type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
-                                    removed, etc.)
-                                reputation:
-                                  type: number
-                                postcount:
-                                  type: number
-                                topiccount:
-                                  type: number
-                                picture:
-                                  nullable: true
-                                  type: string
-                                signature:
-                                  type: string
-                                banned:
-                                  type: number
-                                banned:expire:
-                                  type: number
-                                status:
-                                  type: string
-                                lastonline:
-                                  type: number
-                                groupTitle:
-                                  nullable: true
-                                  type: string
-                                groupTitleArray:
-                                  type: array
-                                  items:
-                                    type: string
-                                icon:text:
-                                  type: string
-                                  description: A single-letter representation of a username. This is used in the
-                                    auto-generated icon given to users without
-                                    an avatar
-                                icon:bgColor:
-                                  type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This
-                                    value is used in conjunction with
-                                    `icon:text` for the user's auto-generated
-                                    icon
-                                  example: "#f44336"
-                                lastonlineISO:
-                                  type: string
-                                banned_until:
-                                  type: number
-                                banned_until_readable:
-                                  type: string
-                                selectedGroups:
-                                  type: array
-                                  items:
-                                    type: object
-                                    properties:
-                                      name:
-                                        type: string
-                                      slug:
-                                        type: string
-                                      labelColor:
-                                        type: string
-                                      textColor:
-                                        type: string
-                                      icon:
-                                        type: string
-                                      userTitle:
-                                        type: string
-                                custom_profile_info:
-                                  type: array
-                                  items: {}
-                            bookmarked:
-                              type: boolean
-                            upvoted:
-                              type: boolean
-                            downvoted:
-                              type: boolean
-                            selfPost:
-                              type: boolean
-                            display_edit_tools:
-                              type: boolean
-                            display_delete_tools:
-                              type: boolean
-                            display_moderator_tools:
-                              type: boolean
-                            display_move_tools:
-                              type: boolean
-                            display_post_menu:
-                              type: boolean
-                            toPid:
-                              type: number
-                            parent:
-                              type: object
-                              properties:
-                                username:
-                                  type: string
-                                  description: A friendly name for a given user account
-                      tagWhitelist:
-                        type: array
-                        items:
-                          type: string
-                      thread_tools:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            class:
-                              type: string
-                            title:
-                              type: string
-                            icon:
-                              type: string
-                      isFollowing:
-                        type: boolean
-                      isNotFollowing:
-                        type: boolean
-                      isIgnoring:
-                        type: boolean
-                      bookmark:
-                        nullable: true
-                      postSharing:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            id:
-                              type: string
-                            name:
-                              type: string
-                            class:
-                              type: string
-                            activated:
-                              type: boolean
-                      deleter:
-                        nullable: true
-                      merger:
-                        nullable: true
-                      related:
-                        type: array
-                        items: {}
-                      unreplied:
-                        type: boolean
-                      icons:
-                        type: array
-                        items: {}
-                      privileges:
-                        type: object
-                        properties:
-                          topics:reply:
-                            type: boolean
-                          topics:read:
-                            type: boolean
-                          topics:tag:
-                            type: boolean
-                          topics:delete:
-                            type: boolean
-                          posts:edit:
-                            type: boolean
-                          posts:history:
-                            type: boolean
-                          posts:delete:
-                            type: boolean
-                          posts:view_deleted:
-                            type: boolean
-                          read:
-                            type: boolean
-                          purge:
-                            type: boolean
-                          view_thread_tools:
-                            type: boolean
-                          editable:
-                            type: boolean
-                          deletable:
-                            type: boolean
-                          view_deleted:
-                            type: boolean
-                          isAdminOrMod:
-                            type: boolean
-                          disabled:
-                            type: number
-                          tid:
-                            type: string
-                          uid:
-                            type: number
-                            description: A user identifier
-                      topicStaleDays:
-                        type: number
-                      reputation:disabled:
-                        type: number
-                      downvote:disabled:
-                        type: number
-                      feeds:disableRSS:
-                        type: number
-                      bookmarkThreshold:
-                        type: number
-                      postEditDuration:
-                        type: number
-                      postDeleteDuration:
-                        type: number
-                      scrollToMyPost:
-                        type: boolean
-                      allowMultipleBadges:
-                        type: boolean
-                      privateUploads:
-                        type: boolean
-                      rssFeedUrl:
-                        type: string
-                      postIndex:
-                        type: number
-                      loggedInUser:
-                        type: object
-                        properties:
-                          uid:
-                            type: number
-                            description: A user identifier
-                          username:
-                            type: string
-                            description: A friendly name for a given user account
-                          picture:
-                            type: string
-                          icon:text:
-                            type: string
-                            description: A single-letter representation of a username. This is used in the
-                              auto-generated icon given to users without an
-                              avatar
-                          icon:bgColor:
-                            type: string
-                            description: A six-character hexadecimal colour code assigned to the user. This
-                              value is used in conjunction with `icon:text` for
-                              the user's auto-generated icon
-                            example: "#f44336"
-                  - $ref: components/schemas/Pagination.yaml#/Pagination
-                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
-                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot | Copy response from the route w/o post_index"
   "/api/post/{pid}":
     get:
       tags:
@@ -4547,6 +4175,7 @@ paths:
           required: true
           schema:
             type: string
+          example: 1
       responses:
         "200":
           description: "Canonical URL of topic"
@@ -4619,49 +4248,17 @@ paths:
                               type: string
                             assignee:
                               type: string
+                              nullable: true
                       analytics:
                         type: array
                         items:
                           type: number
                       categories:
                         type: object
-                        properties:
-                          "1":
-                            type: string
-                          "2":
-                            type: string
-                          "3":
-                            type: string
-                          "4":
-                            type: string
-                          "5":
-                            type: string
-                          "6":
-                            type: string
-                          "7":
-                            type: string
-                          "10":
-                            type: string
-                          "13":
-                            type: string
-                          "14":
-                            type: string
-                          "15":
-                            type: string
-                          "16":
-                            type: string
-                          "17":
-                            type: string
-                          "18":
-                            type: string
-                          "19":
-                            type: string
-                          "21":
-                            type: string
-                          "22":
-                            type: string
-                          "26":
-                            type: string
+                        properties: {}
+                        additionalProperties:
+                          type: string
+                          description: All categories will be listed here, with the `cid` as the key, and the category name as the value
                       hasFilter:
                         type: boolean
                       filters:
@@ -4686,6 +4283,7 @@ paths:
           required: true
           schema:
             type: string
+          example: 1
       responses:
         "200":
           description: ""
@@ -4763,7 +4361,32 @@ paths:
                                   example: "#f44336"
                       notes:
                         type: array
-                        items: {}
+                        items:
+                          type: object
+                          properties:
+                            uid:
+                              type: number
+                            content:
+                              type: string
+                            datetime:
+                              type: number
+                            datetimeISO:
+                              type: string
+                            user:
+                              type: object
+                              properties:
+                                username:
+                                  type: string
+                                userslug:
+                                  type: string
+                                picture:
+                                  type: string
+                                uid:
+                                  type: number
+                                icon:text:
+                                  type: string
+                                icon:bgColor:
+                                  type: string
                       reporter:
                         type: object
                         properties:
@@ -4994,12 +4617,14 @@ paths:
           required: true
           schema:
             type: string
+          example: test
         - name: page
           description: Page number used in pagination
           in: query
           required: false
           schema:
             type: number
+          example: ''
       responses:
         "200":
           description: ""
@@ -5248,6 +4873,11 @@ paths:
                               type: string
                       rssFeedUrl:
                         type: string
+                    required:
+                      - topics
+                      - tag
+                      - title
+                      - categories
                   - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
@@ -7122,6 +6752,7 @@ paths:
           required: true
           schema:
             type: string
+          example: 1
       responses:
         "200":
           description: "Canonical URL of user profile page"
@@ -7136,6 +6767,7 @@ paths:
           required: true
           schema:
             type: string
+          example: admin
       responses:
         "200":
           description: ""
@@ -7222,10 +6854,12 @@ paths:
           required: true
           schema:
             type: string
+          example: admin
         - name: page
           in: query
           schema:
             type: number
+          example: ''
       responses:
         "200":
           description: ""
@@ -7312,10 +6946,12 @@ paths:
           required: true
           schema:
             type: string
+          example: admin
         - name: page
           in: query
           schema:
             type: number
+          example: ''
       responses:
         "200":
           description: ""
@@ -7402,6 +7038,7 @@ paths:
           required: true
           schema:
             type: string
+          example: admin
       responses:
         "200":
           description: ""
@@ -7462,6 +7099,7 @@ paths:
           required: true
           schema:
             type: string
+          example: admin
       responses:
         "200":
           description: ""
@@ -7508,6 +7146,7 @@ paths:
           required: true
           schema:
             type: string
+          example: admin
       responses:
         "200":
           description: ""
@@ -7804,6 +7443,7 @@ paths:
           required: true
           schema:
             type: string
+          example: admin
       responses:
         "200":
           description: ""
@@ -7849,6 +7489,7 @@ paths:
           required: true
           schema:
             type: string
+          example: admin
       responses:
         "200":
           description: ""
@@ -7881,6 +7522,7 @@ paths:
           required: true
           schema:
             type: string
+          example: admin
       responses:
         "200":
           description: ""
@@ -8031,6 +7673,7 @@ paths:
           required: true
           schema:
             type: string
+          example: admin
       responses:
         "200":
           description: ""
@@ -8443,6 +8086,7 @@ paths:
           required: true
           schema:
             type: string
+          example: admin
       responses:
         "200":
           description: ""
@@ -8489,6 +8133,7 @@ paths:
           required: true
           schema:
             type: string
+          example: admin
       responses:
         "200":
           description: ""
@@ -8522,6 +8167,7 @@ paths:
           required: true
           schema:
             type: string
+          example: admin
       responses:
         "200":
           description: ""
@@ -8555,6 +8201,7 @@ paths:
           required: true
           schema:
             type: string
+          example: admin
       responses:
         "200":
           description: ""
@@ -8613,6 +8260,7 @@ paths:
           required: true
           schema:
             type: string
+          example: admin
       responses:
         "200":
           description: ""
@@ -8640,6 +8288,7 @@ paths:
           required: true
           schema:
             type: string
+          example: admin
       responses:
         "200":
           description: ""
@@ -8667,6 +8316,7 @@ paths:
           required: true
           schema:
             type: string
+          example: admin
       responses:
         "200":
           description: ""
@@ -8698,6 +8348,7 @@ paths:
           required: true
           schema:
             type: string
+          example: admin
       responses:
         "200":
           description: ""
@@ -8796,6 +8447,7 @@ paths:
           required: true
           schema:
             type: string
+          example: admin
       responses:
         "200":
           description: ""
@@ -9103,6 +8755,7 @@ paths:
           required: true
           schema:
             type: string
+          example: admin
       responses:
         "200":
           description: ""
@@ -9134,6 +8787,7 @@ paths:
           required: true
           schema:
             type: string
+          example: admin
       responses:
         "200":
           description: ""
@@ -9168,6 +8822,7 @@ paths:
           required: true
           schema:
             type: string
+          example: admin
       responses:
         "200":
           description: ""
@@ -9197,6 +8852,7 @@ paths:
           required: true
           schema:
             type: string
+          example: admin
       responses:
         "200":
           description: ""
@@ -9225,11 +8881,13 @@ paths:
           required: true
           schema:
             type: string
+          example: admin
         - name: uuid
           in: path
           required: true
           schema:
             type: string
+          example: testuuid
       responses:
         "200":
           description: User session revoked
@@ -9365,18 +9023,20 @@ paths:
     get:
       tags:
         - users
-      summary: /api/user/{userslug}/chats/{roomid?}
+      summary: /api/user/{userslug}/chats/{roomid}
       parameters:
         - name: userslug
           in: path
           required: true
           schema:
             type: string
-        - name: roomid?
+          example: admin
+        - name: roomid
           in: path
           required: true
           schema:
             type: string
+          example: 1
       responses:
         "200":
           description: ""
@@ -9654,17 +9314,18 @@ paths:
                       canViewInfo:
                         type: boolean
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
-  "/api/chats/{roomid?}":
+  "/api/chats/{roomid}":
     get:
       tags:
         - shorthand
-      summary: /api/chats/{roomid?}
+      summary: /api/chats/{roomid}
       parameters:
-        - name: roomid?
+        - name: roomid
           in: path
           required: true
           schema:
             type: string
+          example: 1
       responses:
         "200":
           description: "Chat identifier resolved"
@@ -9894,6 +9555,7 @@ paths:
           required: true
           schema:
             type: string
+          example: administrators
       responses:
         "200":
           description: ""
@@ -10054,6 +9716,7 @@ paths:
           required: true
           schema:
             type: string
+          example: administrators
       responses:
         "200":
           description: ""

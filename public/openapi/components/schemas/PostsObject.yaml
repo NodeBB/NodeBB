@@ -41,6 +41,7 @@ PostsObject:
               removed, etc.)
           picture:
             type: string
+            nullable: true
           status:
             type: string
           icon:text:

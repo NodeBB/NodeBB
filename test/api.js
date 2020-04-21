@@ -12,7 +12,8 @@ const user = require('../src/user');
 const groups = require('../src/groups');
 const categories = require('../src/categories');
 const topics = require('../src/topics');
-const posts = require('../src/posts');
+const plugins = require('../src/plugins');
+const flags = require('../src/flags');
 
 describe('Read API', async () => {
 	let readApi = false;
@@ -26,8 +27,9 @@ describe('Read API', async () => {
 			return;
 		}
 
-		// Create admin user
+		// Create sample users
 		const adminUid = await user.create({ username: 'admin', password: '123456', email: 'test@example.org' });
+		const unprivUid = await user.create({ username: 'unpriv', password: '123456', email: 'unpriv@example.org' });
 		await groups.join('administrators', adminUid);
 
 		// Create a category
@@ -39,6 +41,15 @@ describe('Read API', async () => {
 			cid: testCategory.cid,
 			title: 'Test Topic',
 			content: 'Test topic content',
+		});
+
+		// Create a sample flag
+		await flags.create('post', 1, unprivUid, 'sample reasons', Date.now());
+
+		// Attach a search hook so /api/search is enabled
+		plugins.registerHook('core', {
+			hook: 'filter:search.query',
+			method: async data => [1],
 		});
 
 		jar = await helpers.loginUser('admin', '123456');
@@ -56,8 +67,7 @@ describe('Read API', async () => {
 	readApi = await SwaggerParser.dereference(apiPath);
 
 	// Iterate through all documented paths, make a call to it, and compare the result body with what is defined in the spec
-	let paths = Object.keys(readApi.paths);
-	paths = paths.slice(71);
+	const paths = Object.keys(readApi.paths);
 
 	paths.forEach((path) => {
 		let schema;
