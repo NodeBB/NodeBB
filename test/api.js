@@ -26,7 +26,6 @@ describe('Read API', async () => {
 		}
 
 		// Create admin user
-		console.log('creating admin user');
 		const adminUid = await user.create({ username: 'admin', password: '123456', email: 'test@example.org' });
 		await groups.join('administrators', adminUid);
 
