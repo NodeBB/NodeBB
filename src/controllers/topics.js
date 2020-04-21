@@ -338,5 +338,5 @@ topicsController.pagination = async function (req, res, callback) {
 		rel.href = nconf.get('url') + '/topic/' + topic.slug + rel.href;
 	});
 
-	res.json(paginationData);
+	res.json({ pagination: paginationData });
 };

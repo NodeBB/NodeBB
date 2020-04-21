@@ -100,7 +100,7 @@ define('forum/topic/posts', [
 
 	function updatePagination() {
 		$.get(config.relative_path + '/api/topic/pagination/' + ajaxify.data.tid, { page: ajaxify.data.pagination.currentPage }, function (paginationData) {
-			app.parseAndTranslate('partials/paginator', { pagination: paginationData }, function (html) {
+			app.parseAndTranslate('partials/paginator', paginationData, function (html) {
 				$('[component="pagination"]').after(html).remove();
 			});
 		});
