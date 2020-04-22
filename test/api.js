@@ -192,7 +192,7 @@ describe('Read API', async () => {
 				return;
 			}
 
-			const hasJSON = has200.content['application/json'];
+			const hasJSON = has200.content && has200.content['application/json'];
 			if (hasJSON) {
 				schema = readApi.paths[path].get.responses['200'].content['application/json'].schema;
 				compare(schema, response, 'root');

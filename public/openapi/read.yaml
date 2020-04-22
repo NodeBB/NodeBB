@@ -3938,6 +3938,7 @@ paths:
                                   type: number
                                 picture:
                                   type: string
+                                  nullable: true
                                 signature:
                                   type: string
                                 banned:
@@ -3992,7 +3993,12 @@ paths:
                                         type: string
                                 custom_profile_info:
                                   type: array
-                                  items: {}
+                                  items:
+                                    type: object
+                                    properties:
+                                      content:
+                                        type: string
+                                        description: HTML that is injected into `topic.tpl` of themes that support custom profile info
                             editor:
                               nullable: true
                             bookmarked:
@@ -4008,7 +4014,23 @@ paths:
                                   type: boolean
                                 users:
                                   type: array
-                                  items: {}
+                                  items:
+                                    type: object
+                                    properties:
+                                      uid:
+                                        type: number
+                                      username:
+                                        type: string
+                                      userslug:
+                                        type: string
+                                      picture:
+                                        type: string
+                                      icon:text:
+                                        type: string
+                                      icon:bgColor:
+                                        type: string
+                                      administrator:
+                                        type: boolean
                                 text:
                                   type: string
                                 count:
@@ -4069,12 +4091,15 @@ paths:
                         nullable: true
                       related:
                         type: array
-                        items: {}
+                        items:
+                          $ref: components/schemas/TopicObject.yaml#/TopicObject
                       unreplied:
                         type: boolean
                       icons:
                         type: array
-                        items: {}
+                        items:
+                          type: string
+                          description: HTML that is rendered by the theme
                       privileges:
                         type: object
                         properties:
@@ -4927,7 +4952,7 @@ paths:
     get:
       tags:
         - topics
-      summary: Popular Topics
+      summary: Get Popular Topics
       description: Returns a list of topics sorted by most replies. In an event of a
         tie breaker, the topic with the most views. Can be filtered by All Time,
         Day, Week, or Month.
@@ -4947,203 +4972,7 @@ paths:
                       topics:
                         type: array
                         items:
-                          type: object
-                          properties:
-                            tid:
-                              type: number
-                              description: A topic identifier
-                            uid:
-                              type: number
-                              description: A user identifier
-                            cid:
-                              type: number
-                              description: A category identifier
-                            title:
-                              type: string
-                            slug:
-                              type: string
-                            timestamp:
-                              type: number
-                            lastposttime:
-                              type: number
-                            postcount:
-                              type: number
-                            viewcount:
-                              type: number
-                            pinned:
-                              type: number
-                              description: Whether or not this particular topic is pinned to the top of the
-                                category
-                            thumb:
-                              type: string
-                            mainPid:
-                              type: number
-                              description: The post id of the first post in this topic (also called the
-                                "original post")
-                            teaserPid:
-                              oneOf:
-                                - type: number
-                                - type: string
-                            upvotes:
-                              type: number
-                            downvotes:
-                              type: number
-                            deleted:
-                              type: number
-                            locked:
-                              type: number
-                            titleRaw:
-                              type: string
-                            timestampISO:
-                              type: string
-                              description: An ISO 8601 formatted date string (complementing `timestamp`)
-                            lastposttimeISO:
-                              type: string
-                            votes:
-                              type: number
-                            category:
-                              type: object
-                              properties:
-                                cid:
-                                  type: number
-                                  description: A category identifier
-                                name:
-                                  type: string
-                                slug:
-                                  type: string
-                                icon:
-                                  type: string
-                                image:
-                                  nullable: true
-                                imageClass:
-                                  nullable: true
-                                bgColor:
-                                  type: string
-                                color:
-                                  type: string
-                                disabled:
-                                  type: number
-                            user:
-                              type: object
-                              properties:
-                                uid:
-                                  type: number
-                                  description: A user identifier
-                                username:
-                                  type: string
-                                  description: A friendly name for a given user account
-                                fullname:
-                                  type: string
-                                userslug:
-                                  type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
-                                    removed, etc.)
-                                reputation:
-                                  type: number
-                                postcount:
-                                  type: number
-                                picture:
-                                  nullable: true
-                                  type: string
-                                signature:
-                                  nullable: true
-                                  type: string
-                                banned:
-                                  type: number
-                                status:
-                                  type: string
-                                icon:text:
-                                  type: string
-                                  description: A single-letter representation of a username. This is used in the
-                                    auto-generated icon given to users without
-                                    an avatar
-                                icon:bgColor:
-                                  type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This
-                                    value is used in conjunction with
-                                    `icon:text` for the user's auto-generated
-                                    icon
-                                  example: "#f44336"
-                                banned_until_readable:
-                                  type: string
-                            teaser:
-                              type: object
-                              properties:
-                                pid:
-                                  type: number
-                                uid:
-                                  type: number
-                                  description: A user identifier
-                                timestamp:
-                                  type: number
-                                tid:
-                                  type: number
-                                  description: A topic identifier
-                                content:
-                                  type: string
-                                timestampISO:
-                                  type: string
-                                  description: An ISO 8601 formatted date string (complementing `timestamp`)
-                                user:
-                                  type: object
-                                  properties:
-                                    uid:
-                                      type: number
-                                      description: A user identifier
-                                    username:
-                                      type: string
-                                      description: A friendly name for a given user account
-                                    userslug:
-                                      type: string
-                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces
-                                        removed, etc.)
-                                    picture:
-                                      nullable: true
-                                      type: string
-                                    icon:text:
-                                      type: string
-                                      description: A single-letter representation of a username. This is used in the
-                                        auto-generated icon given to users
-                                        without an avatar
-                                    icon:bgColor:
-                                      type: string
-                                      description: A six-character hexadecimal colour code assigned to the user. This
-                                        value is used in conjunction with
-                                        `icon:text` for the user's
-                                        auto-generated icon
-                                      example: "#f44336"
-                                index:
-                                  type: number
-                            tags:
-                              type: array
-                              items:
-                                type: object
-                                properties:
-                                  value:
-                                    type: string
-                                  valueEscaped:
-                                    type: string
-                                  color:
-                                    type: string
-                                  bgColor:
-                                    type: string
-                                  score:
-                                    type: number
-                            isOwner:
-                              type: boolean
-                            ignored:
-                              type: boolean
-                            unread:
-                              type: boolean
-                            bookmark:
-                              nullable: true
-                            unreplied:
-                              type: boolean
-                            icons:
-                              type: array
-                              items: {}
-                            index:
-                              type: number
+                          $ref: components/schemas/TopicObject.yaml#/TopicObject
                       tids:
                         type: array
                         items:
@@ -5180,7 +5009,8 @@ paths:
                         type: string
                       selectedCids:
                         type: array
-                        items: {}
+                        items:
+                          type: number
                       feeds:disableRSS:
                         type: number
                       rssFeedUrl:
@@ -5260,204 +5090,7 @@ paths:
                       topics:
                         type: array
                         items:
-                          type: object
-                          properties:
-                            tid:
-                              type: number
-                              description: A topic identifier
-                            uid:
-                              type: number
-                              description: A user identifier
-                            cid:
-                              type: number
-                              description: A category identifier
-                            mainPid:
-                              type: number
-                              description: The post id of the first post in this topic (also called the
-                                "original post")
-                            title:
-                              type: string
-                            slug:
-                              type: string
-                            timestamp:
-                              type: number
-                            lastposttime:
-                              type: number
-                            postcount:
-                              type: number
-                            viewcount:
-                              type: number
-                            teaserPid:
-                              type: number
-                            upvotes:
-                              type: number
-                            downvotes:
-                              type: number
-                            deleted:
-                              type: number
-                            locked:
-                              type: number
-                            pinned:
-                              type: number
-                              description: Whether or not this particular topic is pinned to the top of the
-                                category
-                            titleRaw:
-                              type: string
-                            timestampISO:
-                              type: string
-                              description: An ISO 8601 formatted date string (complementing `timestamp`)
-                            lastposttimeISO:
-                              type: string
-                            votes:
-                              type: number
-                            category:
-                              type: object
-                              properties:
-                                cid:
-                                  type: number
-                                  description: A category identifier
-                                name:
-                                  type: string
-                                slug:
-                                  type: string
-                                icon:
-                                  type: string
-                                image:
-                                  nullable: true
-                                imageClass:
-                                  nullable: true
-                                  type: string
-                                bgColor:
-                                  type: string
-                                color:
-                                  type: string
-                                disabled:
-                                  type: number
-                            user:
-                              type: object
-                              properties:
-                                uid:
-                                  type: number
-                                  description: A user identifier
-                                username:
-                                  type: string
-                                  description: A friendly name for a given user account
-                                fullname:
-                                  type: string
-                                userslug:
-                                  type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
-                                    removed, etc.)
-                                reputation:
-                                  type: number
-                                postcount:
-                                  type: number
-                                picture:
-                                  nullable: true
-                                  type: string
-                                signature:
-                                  nullable: true
-                                  type: string
-                                banned:
-                                  type: number
-                                status:
-                                  type: string
-                                icon:text:
-                                  type: string
-                                  description: A single-letter representation of a username. This is used in the
-                                    auto-generated icon given to users without
-                                    an avatar
-                                icon:bgColor:
-                                  type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This
-                                    value is used in conjunction with
-                                    `icon:text` for the user's auto-generated
-                                    icon
-                                  example: "#f44336"
-                                banned_until_readable:
-                                  type: string
-                            teaser:
-                              type: object
-                              properties:
-                                pid:
-                                  type: number
-                                uid:
-                                  type: number
-                                  description: A user identifier
-                                timestamp:
-                                  type: number
-                                tid:
-                                  type: number
-                                  description: A topic identifier
-                                content:
-                                  type: string
-                                timestampISO:
-                                  type: string
-                                  description: An ISO 8601 formatted date string (complementing `timestamp`)
-                                user:
-                                  type: object
-                                  properties:
-                                    uid:
-                                      type: number
-                                      description: A user identifier
-                                    username:
-                                      type: string
-                                      description: A friendly name for a given user account
-                                    userslug:
-                                      type: string
-                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces
-                                        removed, etc.)
-                                    picture:
-                                      nullable: true
-                                      type: string
-                                    icon:text:
-                                      type: string
-                                      description: A single-letter representation of a username. This is used in the
-                                        auto-generated icon given to users
-                                        without an avatar
-                                    icon:bgColor:
-                                      type: string
-                                      description: A six-character hexadecimal colour code assigned to the user. This
-                                        value is used in conjunction with
-                                        `icon:text` for the user's
-                                        auto-generated icon
-                                      example: "#f44336"
-                                index:
-                                  type: number
-                            tags:
-                              type: array
-                              items:
-                                type: object
-                                properties:
-                                  value:
-                                    type: string
-                                  valueEscaped:
-                                    type: string
-                                  color:
-                                    type: string
-                                  bgColor:
-                                    type: string
-                                  score:
-                                    type: number
-                            isOwner:
-                              type: boolean
-                            ignored:
-                              type: boolean
-                            unread:
-                              type: boolean
-                            bookmark:
-                              nullable: true
-                            unreplied:
-                              type: boolean
-                            icons:
-                              type: array
-                              items: {}
-                            index:
-                              type: number
-                            thumb:
-                              type: string
-                            isQuestion:
-                              nullable: true
+                          $ref: components/schemas/TopicObject.yaml#/TopicObject
                       tids:
                         type: array
                         items:
@@ -5494,7 +5127,8 @@ paths:
                         type: string
                       selectedCids:
                         type: array
-                        items: {}
+                        items:
+                          type: number
                       feeds:disableRSS:
                         type: number
                       rssFeedUrl:
@@ -5574,201 +5208,7 @@ paths:
                       topics:
                         type: array
                         items:
-                          type: object
-                          properties:
-                            tid:
-                              type: number
-                              description: A topic identifier
-                            uid:
-                              type: number
-                              description: A user identifier
-                            cid:
-                              type: number
-                              description: A category identifier
-                            mainPid:
-                              type: number
-                              description: The post id of the first post in this topic (also called the
-                                "original post")
-                            title:
-                              type: string
-                            slug:
-                              type: string
-                            timestamp:
-                              type: number
-                            lastposttime:
-                              type: number
-                            postcount:
-                              type: number
-                            viewcount:
-                              type: number
-                            teaserPid:
-                              type: string
-                            upvotes:
-                              type: number
-                            downvotes:
-                              type: number
-                            deleted:
-                              type: number
-                            locked:
-                              type: number
-                            pinned:
-                              type: number
-                              description: Whether or not this particular topic is pinned to the top of the
-                                category
-                            titleRaw:
-                              type: string
-                            timestampISO:
-                              type: string
-                              description: An ISO 8601 formatted date string (complementing `timestamp`)
-                            lastposttimeISO:
-                              type: string
-                            votes:
-                              type: number
-                            category:
-                              type: object
-                              properties:
-                                cid:
-                                  type: number
-                                  description: A category identifier
-                                name:
-                                  type: string
-                                slug:
-                                  type: string
-                                icon:
-                                  type: string
-                                image:
-                                  nullable: true
-                                imageClass:
-                                  nullable: true
-                                bgColor:
-                                  type: string
-                                color:
-                                  type: string
-                                disabled:
-                                  type: number
-                            user:
-                              type: object
-                              properties:
-                                uid:
-                                  type: number
-                                  description: A user identifier
-                                username:
-                                  type: string
-                                  description: A friendly name for a given user account
-                                userslug:
-                                  type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
-                                    removed, etc.)
-                                reputation:
-                                  type: number
-                                postcount:
-                                  type: number
-                                picture:
-                                  nullable: true
-                                  type: string
-                                signature:
-                                  nullable: true
-                                  type: string
-                                banned:
-                                  type: number
-                                status:
-                                  type: string
-                                icon:text:
-                                  type: string
-                                  description: A single-letter representation of a username. This is used in the
-                                    auto-generated icon given to users without
-                                    an avatar
-                                icon:bgColor:
-                                  type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This
-                                    value is used in conjunction with
-                                    `icon:text` for the user's auto-generated
-                                    icon
-                                  example: "#f44336"
-                                banned_until_readable:
-                                  type: string
-                                fullname:
-                                  type: string
-                            teaser:
-                              type: object
-                              properties:
-                                pid:
-                                  type: number
-                                uid:
-                                  type: number
-                                  description: A user identifier
-                                timestamp:
-                                  type: number
-                                tid:
-                                  type: number
-                                  description: A topic identifier
-                                content:
-                                  type: string
-                                timestampISO:
-                                  type: string
-                                  description: An ISO 8601 formatted date string (complementing `timestamp`)
-                                user:
-                                  type: object
-                                  properties:
-                                    uid:
-                                      type: number
-                                      description: A user identifier
-                                    username:
-                                      type: string
-                                      description: A friendly name for a given user account
-                                    userslug:
-                                      type: string
-                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces
-                                        removed, etc.)
-                                    picture:
-                                      nullable: true
-                                      type: string
-                                    icon:text:
-                                      type: string
-                                      description: A single-letter representation of a username. This is used in the
-                                        auto-generated icon given to users
-                                        without an avatar
-                                    icon:bgColor:
-                                      type: string
-                                      description: A six-character hexadecimal colour code assigned to the user. This
-                                        value is used in conjunction with
-                                        `icon:text` for the user's
-                                        auto-generated icon
-                                      example: "#f44336"
-                                index:
-                                  type: number
-                            tags:
-                              type: array
-                              items:
-                                type: object
-                                properties:
-                                  value:
-                                    type: string
-                                  valueEscaped:
-                                    type: string
-                                  color:
-                                    type: string
-                                  bgColor:
-                                    type: string
-                                  score:
-                                    type: number
-                            isOwner:
-                              type: boolean
-                            ignored:
-                              type: boolean
-                            unread:
-                              type: boolean
-                            bookmark:
-                              nullable: true
-                            unreplied:
-                              type: boolean
-                            icons:
-                              type: array
-                              items: {}
-                            index:
-                              type: number
-                            thumb:
-                              type: string
+                          $ref: components/schemas/TopicObject.yaml#/TopicObject
                       tids:
                         type: array
                         items:
@@ -5825,6 +5265,7 @@ paths:
                             type: string
                           selected:
                             type: boolean
+                        nullable: true
                       selectedCids:
                         type: array
                         items:
@@ -6100,7 +5541,8 @@ paths:
                               type: boolean
                             icons:
                               type: array
-                              items: {}
+                              items:
+                                type: string
                             index:
                               type: number
                             isQuestion:
@@ -6141,7 +5583,8 @@ paths:
                         type: string
                       selectedCids:
                         type: array
-                        items: {}
+                        items:
+                          type: number
                       filters:
                         type: array
                         items:
@@ -6216,189 +5659,7 @@ paths:
                       topics:
                         type: array
                         items:
-                          type: object
-                          properties:
-                            tid:
-                              type: number
-                              description: A topic identifier
-                            uid:
-                              type: number
-                              description: A user identifier
-                            cid:
-                              type: number
-                              description: A category identifier
-                            title:
-                              type: string
-                            slug:
-                              type: string
-                            timestamp:
-                              type: number
-                            lastposttime:
-                              type: number
-                            postcount:
-                              type: number
-                            viewcount:
-                              type: number
-                            thumb:
-                              type: string
-                            mainPid:
-                              type: number
-                              description: The post id of the first post in this topic (also called the
-                                "original post")
-                            upvotes:
-                              type: number
-                            downvotes:
-                              type: number
-                            deleted:
-                              type: number
-                            locked:
-                              type: number
-                            pinned:
-                              type: number
-                              description: Whether or not this particular topic is pinned to the top of the
-                                category
-                            titleRaw:
-                              type: string
-                            timestampISO:
-                              type: string
-                              description: An ISO 8601 formatted date string (complementing `timestamp`)
-                            lastposttimeISO:
-                              type: string
-                            votes:
-                              type: number
-                            category:
-                              type: object
-                              properties:
-                                cid:
-                                  type: number
-                                  description: A category identifier
-                                name:
-                                  type: string
-                                slug:
-                                  type: string
-                                icon:
-                                  type: string
-                                image:
-                                  nullable: true
-                                imageClass:
-                                  nullable: true
-                                bgColor:
-                                  type: string
-                                color:
-                                  type: string
-                                disabled:
-                                  type: number
-                            user:
-                              type: object
-                              properties:
-                                uid:
-                                  type: number
-                                  description: A user identifier
-                                username:
-                                  type: string
-                                  description: A friendly name for a given user account
-                                userslug:
-                                  type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
-                                    removed, etc.)
-                                reputation:
-                                  type: number
-                                postcount:
-                                  type: number
-                                picture:
-                                  nullable: true
-                                  type: string
-                                signature:
-                                  nullable: true
-                                  type: string
-                                banned:
-                                  type: number
-                                status:
-                                  type: string
-                                icon:text:
-                                  type: string
-                                  description: A single-letter representation of a username. This is used in the
-                                    auto-generated icon given to users without
-                                    an avatar
-                                icon:bgColor:
-                                  type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This
-                                    value is used in conjunction with
-                                    `icon:text` for the user's auto-generated
-                                    icon
-                                  example: "#f44336"
-                                banned_until_readable:
-                                  type: string
-                                fullname:
-                                  type: string
-                            teaser:
-                              type: object
-                              properties:
-                                pid:
-                                  type: number
-                                uid:
-                                  type: number
-                                  description: A user identifier
-                                timestamp:
-                                  type: number
-                                tid:
-                                  type: number
-                                  description: A topic identifier
-                                content:
-                                  type: string
-                                timestampISO:
-                                  type: string
-                                  description: An ISO 8601 formatted date string (complementing `timestamp`)
-                                user:
-                                  type: object
-                                  properties:
-                                    uid:
-                                      type: number
-                                      description: A user identifier
-                                    username:
-                                      type: string
-                                      description: A friendly name for a given user account
-                                    userslug:
-                                      type: string
-                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces
-                                        removed, etc.)
-                                    picture:
-                                      nullable: true
-                                      type: string
-                                    icon:text:
-                                      type: string
-                                      description: A single-letter representation of a username. This is used in the
-                                        auto-generated icon given to users
-                                        without an avatar
-                                    icon:bgColor:
-                                      type: string
-                                      description: A six-character hexadecimal colour code assigned to the user. This
-                                        value is used in conjunction with
-                                        `icon:text` for the user's
-                                        auto-generated icon
-                                      example: "#f44336"
-                                index:
-                                  type: number
-                            tags:
-                              type: array
-                              items: {}
-                            isOwner:
-                              type: boolean
-                            ignored:
-                              type: boolean
-                            unread:
-                              type: boolean
-                            bookmark:
-                              nullable: true
-                            unreplied:
-                              type: boolean
-                            icons:
-                              type: array
-                              items: {}
-                            index:
-                              type: number
-                            teaserPid:
-                              type: number
+                          $ref: components/schemas/TopicObject.yaml#/TopicObject
                       nextStart:
                         type: number
                       isWatched:
@@ -6461,270 +5722,8 @@ paths:
             type: string
           example: test
       responses:
-        "200":
-          description: ""
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: components/schemas/CategoryObject.yaml#/CategoryObject
-                  - type: object
-                    properties:
-                      tagWhitelist:
-                        type: array
-                        items:
-                          type: string
-                      unread-class:
-                        type: string
-                      children:
-                        type: array
-                        items:
-                          $ref: components/schemas/CategoryObject.yaml#/CategoryObject
-                      topics:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            tid:
-                              type: number
-                              description: A topic identifier
-                            uid:
-                              type: number
-                              description: A user identifier
-                            cid:
-                              type: number
-                              description: A category identifier
-                            title:
-                              type: string
-                            slug:
-                              type: string
-                            timestamp:
-                              type: number
-                            lastposttime:
-                              type: number
-                            postcount:
-                              type: number
-                            viewcount:
-                              type: number
-                            pinned:
-                              type: number
-                              description: Whether or not this particular topic is pinned to the top of the
-                                category
-                            thumb:
-                              type: string
-                            mainPid:
-                              type: number
-                              description: The post id of the first post in this topic (also called the
-                                "original post")
-                            teaserPid:
-                              type: number
-                            upvotes:
-                              type: number
-                            downvotes:
-                              type: number
-                            deleted:
-                              type: number
-                            locked:
-                              type: number
-                            titleRaw:
-                              type: string
-                            timestampISO:
-                              type: string
-                              description: An ISO 8601 formatted date string (complementing `timestamp`)
-                            lastposttimeISO:
-                              type: string
-                            votes:
-                              type: number
-                            category:
-                              type: object
-                              properties:
-                                cid:
-                                  type: number
-                                  description: A category identifier
-                                name:
-                                  type: string
-                                slug:
-                                  type: string
-                                icon:
-                                  type: string
-                                image:
-                                  nullable: true
-                                imageClass:
-                                  nullable: true
-                                bgColor:
-                                  type: string
-                                color:
-                                  type: string
-                                disabled:
-                                  type: number
-                            user:
-                              type: object
-                              properties:
-                                uid:
-                                  type: number
-                                  description: A user identifier
-                                username:
-                                  type: string
-                                  description: A friendly name for a given user account
-                                fullname:
-                                  type: string
-                                userslug:
-                                  type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
-                                    removed, etc.)
-                                reputation:
-                                  type: number
-                                postcount:
-                                  type: number
-                                picture:
-                                  nullable: true
-                                  type: string
-                                signature:
-                                  nullable: true
-                                  type: string
-                                banned:
-                                  type: number
-                                status:
-                                  type: string
-                                icon:text:
-                                  type: string
-                                  description: A single-letter representation of a username. This is used in the
-                                    auto-generated icon given to users without
-                                    an avatar
-                                icon:bgColor:
-                                  type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This
-                                    value is used in conjunction with
-                                    `icon:text` for the user's auto-generated
-                                    icon
-                                  example: "#f44336"
-                                banned_until_readable:
-                                  type: string
-                            teaser:
-                              type: object
-                              properties:
-                                pid:
-                                  type: number
-                                uid:
-                                  type: number
-                                  description: A user identifier
-                                timestamp:
-                                  type: number
-                                tid:
-                                  type: number
-                                  description: A topic identifier
-                                content:
-                                  type: string
-                                timestampISO:
-                                  type: string
-                                  description: An ISO 8601 formatted date string (complementing `timestamp`)
-                                user:
-                                  type: object
-                                  properties:
-                                    uid:
-                                      type: number
-                                      description: A user identifier
-                                    username:
-                                      type: string
-                                      description: A friendly name for a given user account
-                                    userslug:
-                                      type: string
-                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces
-                                        removed, etc.)
-                                    picture:
-                                      nullable: true
-                                      type: string
-                                    icon:text:
-                                      type: string
-                                      description: A single-letter representation of a username. This is used in the
-                                        auto-generated icon given to users
-                                        without an avatar
-                                    icon:bgColor:
-                                      type: string
-                                      description: A six-character hexadecimal colour code assigned to the user. This
-                                        value is used in conjunction with
-                                        `icon:text` for the user's
-                                        auto-generated icon
-                                      example: "#f44336"
-                                index:
-                                  type: number
-                            tags:
-                              type: array
-                              items:
-                                type: object
-                                properties:
-                                  value:
-                                    type: string
-                                  valueEscaped:
-                                    type: string
-                                  color:
-                                    type: string
-                                  bgColor:
-                                    type: string
-                                  score:
-                                    type: number
-                            isOwner:
-                              type: boolean
-                            ignored:
-                              type: boolean
-                            unread:
-                              type: boolean
-                            bookmark:
-                              nullable: true
-                            unreplied:
-                              type: boolean
-                            icons:
-                              type: array
-                              items: {}
-                            index:
-                              type: number
-                            isQuestion:
-                              type: number
-                            isSolved:
-                              type: number
-                      nextStart:
-                        type: number
-                      isWatched:
-                        type: boolean
-                      isNotWatched:
-                        type: boolean
-                      isIgnored:
-                        type: boolean
-                      title:
-                        type: string
-                      privileges:
-                        type: object
-                        properties:
-                          topics:create:
-                            type: boolean
-                          topics:read:
-                            type: boolean
-                          topics:tag:
-                            type: boolean
-                          read:
-                            type: boolean
-                          cid:
-                            type: string
-                          uid:
-                            type: number
-                            description: A user identifier
-                          editable:
-                            type: boolean
-                          view_deleted:
-                            type: boolean
-                          isAdminOrMod:
-                            type: boolean
-                      showSelect:
-                        type: boolean
-                      rssFeedUrl:
-                        type: string
-                      feeds:disableRSS:
-                        type: number
-                      reputation:disabled:
-                        type: number
-                  - $ref: components/schemas/Pagination.yaml#/Pagination
-                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
-                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
+        "418":
+          description: "TODO: A proper response needs to be added. It is not really a teapot | Copy response from indexed variant"
   /api/me/*:
     get:
       tags:
@@ -7111,8 +6110,7 @@ paths:
                   - type: object
                     properties:
                       posts:
-                        type: array
-                        items: {}
+                        $ref: components/schemas/PostsObject.yaml#/PostsObject
                       nextStart:
                         type: number
                       noItemsFoundKey:
@@ -7197,7 +6195,8 @@ paths:
                         type: boolean
                       groups:
                         type: array
-                        items: {}
+                        items:
+                          $ref: components/schemas/GroupObject.yaml#/GroupDataObject
                       disableSignatures:
                         type: boolean
                       reputation:disabled:
@@ -7206,7 +6205,34 @@ paths:
                         type: boolean
                       profile_links:
                         type: array
-                        items: {}
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            route:
+                              type: string
+                            name:
+                              type: string
+                            visibility:
+                              type: object
+                              properties:
+                                self:
+                                  type: boolean
+                                other:
+                                  type: boolean
+                                moderator:
+                                  type: boolean
+                                globalMod:
+                                  type: boolean
+                                admin:
+                                  type: boolean
+                                canViewInfo:
+                                  type: boolean
+                            public:
+                              type: boolean
+                            icon:
+                              type: string
                       sso:
                         type: array
                         items:
@@ -7231,185 +6257,7 @@ paths:
                       topics:
                         type: array
                         items:
-                          type: object
-                          properties:
-                            tid:
-                              type: number
-                              description: A topic identifier
-                            uid:
-                              type: number
-                              description: A user identifier
-                            cid:
-                              type: number
-                              description: A category identifier
-                            title:
-                              type: string
-                            slug:
-                              type: string
-                            timestamp:
-                              type: number
-                            lastposttime:
-                              type: number
-                            postcount:
-                              type: number
-                            viewcount:
-                              type: number
-                            thumb:
-                              type: string
-                            mainPid:
-                              type: number
-                              description: The post id of the first post in this topic (also called the
-                                "original post")
-                            teaserPid:
-                              type: number
-                            upvotes:
-                              type: number
-                            downvotes:
-                              type: number
-                            deleted:
-                              type: number
-                            locked:
-                              type: number
-                            pinned:
-                              type: number
-                              description: Whether or not this particular topic is pinned to the top of the
-                                category
-                            titleRaw:
-                              type: string
-                            timestampISO:
-                              type: string
-                              description: An ISO 8601 formatted date string (complementing `timestamp`)
-                            lastposttimeISO:
-                              type: string
-                            votes:
-                              type: number
-                            category:
-                              type: object
-                              properties:
-                                cid:
-                                  type: number
-                                  description: A category identifier
-                                name:
-                                  type: string
-                                slug:
-                                  type: string
-                                icon:
-                                  type: string
-                                image:
-                                  nullable: true
-                                imageClass:
-                                  nullable: true
-                                bgColor:
-                                  type: string
-                                color:
-                                  type: string
-                                disabled:
-                                  type: number
-                            user:
-                              type: object
-                              properties:
-                                uid:
-                                  type: number
-                                  description: A user identifier
-                                username:
-                                  type: string
-                                  description: A friendly name for a given user account
-                                userslug:
-                                  type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
-                                    removed, etc.)
-                                reputation:
-                                  type: number
-                                postcount:
-                                  type: number
-                                picture:
-                                  nullable: true
-                                signature:
-                                  type: string
-                                banned:
-                                  type: number
-                                status:
-                                  type: string
-                                icon:text:
-                                  type: string
-                                  description: A single-letter representation of a username. This is used in the
-                                    auto-generated icon given to users without
-                                    an avatar
-                                icon:bgColor:
-                                  type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This
-                                    value is used in conjunction with
-                                    `icon:text` for the user's auto-generated
-                                    icon
-                                  example: "#f44336"
-                                banned_until_readable:
-                                  type: string
-                            teaser:
-                              type: object
-                              properties:
-                                pid:
-                                  type: number
-                                uid:
-                                  type: number
-                                  description: A user identifier
-                                timestamp:
-                                  type: number
-                                tid:
-                                  type: number
-                                  description: A topic identifier
-                                content:
-                                  type: string
-                                timestampISO:
-                                  type: string
-                                  description: An ISO 8601 formatted date string (complementing `timestamp`)
-                                user:
-                                  type: object
-                                  properties:
-                                    uid:
-                                      type: number
-                                      description: A user identifier
-                                    username:
-                                      type: string
-                                      description: A friendly name for a given user account
-                                    userslug:
-                                      type: string
-                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces
-                                        removed, etc.)
-                                    picture:
-                                      nullable: true
-                                      type: string
-                                    icon:text:
-                                      type: string
-                                      description: A single-letter representation of a username. This is used in the
-                                        auto-generated icon given to users
-                                        without an avatar
-                                    icon:bgColor:
-                                      type: string
-                                      description: A six-character hexadecimal colour code assigned to the user. This
-                                        value is used in conjunction with
-                                        `icon:text` for the user's
-                                        auto-generated icon
-                                      example: "#f44336"
-                                index:
-                                  type: number
-                            tags:
-                              type: array
-                              items: {}
-                            isOwner:
-                              type: boolean
-                            ignored:
-                              type: boolean
-                            unread:
-                              type: boolean
-                            bookmark:
-                              nullable: true
-                            unreplied:
-                              type: boolean
-                            icons:
-                              type: array
-                              items: {}
-                            index:
-                              type: number
+                          $ref: components/schemas/TopicObject.yaml#/TopicObject
                       nextStart:
                         type: number
                       noItemsFoundKey:
@@ -7579,7 +6427,8 @@ paths:
                         type: boolean
                       groups:
                         type: array
-                        items: {}
+                        items:
+                          $ref: components/schemas/GroupObject.yaml#/GroupDataObject
                       disableSignatures:
                         type: boolean
                       reputation:disabled:
@@ -7638,8 +6487,7 @@ paths:
                       email:disableEdit:
                         type: number
                       posts:
-                        type: array
-                        items: {}
+                        $ref: components/schemas/PostsObject.yaml#/PostsObject
                       nextStart:
                         type: number
                       noItemsFoundKey:
@@ -7847,211 +6695,7 @@ paths:
                       topics:
                         type: array
                         items:
-                          type: object
-                          properties:
-                            tid:
-                              type: number
-                              description: A topic identifier
-                            uid:
-                              type: number
-                              description: A user identifier
-                            cid:
-                              type: number
-                              description: A category identifier
-                            mainPid:
-                              type: number
-                              description: The post id of the first post in this topic (also called the
-                                "original post")
-                            title:
-                              type: string
-                            slug:
-                              type: string
-                            timestamp:
-                              type: number
-                            lastposttime:
-                              type: number
-                            postcount:
-                              type: number
-                            viewcount:
-                              type: number
-                            teaserPid:
-                              oneOf:
-                                - type: number
-                                - type: string
-                            upvotes:
-                              type: number
-                            downvotes:
-                              type: number
-                            deleted:
-                              type: number
-                            locked:
-                              type: number
-                            pinned:
-                              type: number
-                              description: Whether or not this particular topic is pinned to the top of the
-                                category
-                            deleterUid:
-                              type: number
-                            titleRaw:
-                              type: string
-                            timestampISO:
-                              type: string
-                              description: An ISO 8601 formatted date string (complementing `timestamp`)
-                            lastposttimeISO:
-                              type: string
-                            votes:
-                              type: number
-                            category:
-                              type: object
-                              properties:
-                                cid:
-                                  type: number
-                                  description: A category identifier
-                                name:
-                                  type: string
-                                slug:
-                                  type: string
-                                icon:
-                                  type: string
-                                image:
-                                  nullable: true
-                                  type: string
-                                imageClass:
-                                  nullable: true
-                                  type: string
-                                bgColor:
-                                  type: string
-                                color:
-                                  type: string
-                                disabled:
-                                  type: number
-                            user:
-                              type: object
-                              properties:
-                                uid:
-                                  type: number
-                                  description: A user identifier
-                                username:
-                                  type: string
-                                  description: A friendly name for a given user account
-                                userslug:
-                                  type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
-                                    removed, etc.)
-                                reputation:
-                                  type: number
-                                postcount:
-                                  type: number
-                                picture:
-                                  type: string
-                                signature:
-                                  nullable: true
-                                  type: string
-                                banned:
-                                  type: number
-                                status:
-                                  type: string
-                                icon:text:
-                                  type: string
-                                  description: A single-letter representation of a username. This is used in the
-                                    auto-generated icon given to users without
-                                    an avatar
-                                icon:bgColor:
-                                  type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This
-                                    value is used in conjunction with
-                                    `icon:text` for the user's auto-generated
-                                    icon
-                                  example: "#f44336"
-                                banned_until_readable:
-                                  type: string
-                                fullname:
-                                  type: string
-                            teaser:
-                              type: object
-                              properties:
-                                pid:
-                                  type: number
-                                uid:
-                                  type: number
-                                  description: A user identifier
-                                timestamp:
-                                  type: number
-                                tid:
-                                  type: number
-                                  description: A topic identifier
-                                content:
-                                  type: string
-                                timestampISO:
-                                  type: string
-                                  description: An ISO 8601 formatted date string (complementing `timestamp`)
-                                user:
-                                  type: object
-                                  properties:
-                                    uid:
-                                      type: number
-                                      description: A user identifier
-                                    username:
-                                      type: string
-                                      description: A friendly name for a given user account
-                                    userslug:
-                                      type: string
-                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces
-                                        removed, etc.)
-                                    picture:
-                                      nullable: true
-                                      type: string
-                                    icon:text:
-                                      type: string
-                                      description: A single-letter representation of a username. This is used in the
-                                        auto-generated icon given to users
-                                        without an avatar
-                                    icon:bgColor:
-                                      type: string
-                                      description: A six-character hexadecimal colour code assigned to the user. This
-                                        value is used in conjunction with
-                                        `icon:text` for the user's
-                                        auto-generated icon
-                                      example: "#f44336"
-                                index:
-                                  type: number
-                            tags:
-                              type: array
-                              items:
-                                type: object
-                                properties:
-                                  value:
-                                    type: string
-                                  valueEscaped:
-                                    type: string
-                                  color:
-                                    type: string
-                                  bgColor:
-                                    type: string
-                                  score:
-                                    type: number
-                            isOwner:
-                              type: boolean
-                            ignored:
-                              type: boolean
-                            unread:
-                              type: boolean
-                            bookmark:
-                              nullable: true
-                              type: number
-                            unreplied:
-                              type: boolean
-                            icons:
-                              type: array
-                              items: {}
-                            index:
-                              type: number
-                            thumb:
-                              type: string
-                            isQuestion:
-                              type: number
-                            isSolved:
-                              type: number
+                          $ref: components/schemas/TopicObject.yaml#/TopicObject
                       nextStart:
                         type: number
                       noItemsFoundKey:
@@ -8071,7 +6715,6 @@ paths:
                               type: string
                             selected:
                               type: boolean
-                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
@@ -8099,7 +6742,8 @@ paths:
                     properties:
                       topics:
                         type: array
-                        items: {}
+                        items:
+                          $ref: components/schemas/TopicObject.yaml#/TopicObject
                       nextStart:
                         type: number
                       noItemsFoundKey:
@@ -8246,7 +6890,15 @@ paths:
                         type: string
                       editButtons:
                         type: array
-                        items: {}
+                        items:
+                          type: object
+                          properties:
+                            link:
+                              type: string
+                              description: A relative path to the page linked to
+                            text:
+                              type: string
+                              description: Button label
                   - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/edit/username":

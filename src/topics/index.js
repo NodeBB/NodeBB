@@ -102,7 +102,7 @@ Topics.getTopicsByTids = async function (tids, options) {
 		if (topics[i]) {
 			topics[i].category = categoriesMap[topics[i].cid];
 			topics[i].user = usersMap[topics[i].uid];
-			topics[i].teaser = teasers[i];
+			topics[i].teaser = teasers[i] || null;
 			topics[i].tags = tags[i];
 
 			topics[i].isOwner = topics[i].uid === parseInt(uid, 10);
