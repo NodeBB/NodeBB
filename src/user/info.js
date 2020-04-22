@@ -101,7 +101,7 @@ module.exports = function (User) {
 			banObj.user = usersData[index];
 			banObj.until = parseInt(banObj.expire, 10);
 			banObj.untilReadable = new Date(banObj.until).toString();
-			banObj.timestampReadable = new Date(banObj.timestamp).toString();
+			banObj.timestampReadable = new Date(parseInt(banObj.timestamp, 10)).toString();
 			banObj.timestampISO = utils.toISOString(banObj.timestamp);
 			banObj.reason = validator.escape(String(banObj.reason || '')) || '[[user:info.banned-no-reason]]';
 			return banObj;
