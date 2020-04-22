@@ -125,6 +125,14 @@ groupsController.members = async function (req, res, next) {
 	}
 	//const users = await user.getUsersFromSet('group:' + groupName + ':members', req.uid, start, stop);
 	const users = await groups.getOwnersAndMembers(groupName, req.uid, start, stop);
+	
+	if (groupData.cid) {
+		users.forEach(async function (u) {
+			const isModerator = await user.isModerator(u.uid, parseInt(groupData.cid));
+
+			u.isModerator = isModerator;
+		});
+	}
 
 	const breadcrumbs = helpers.buildBreadcrumbs([
 		{ text: '[[pages:groups]]', url: '/groups' },
