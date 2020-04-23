@@ -82,6 +82,7 @@ module.exports = function (Messaging) {
 		messages = await Promise.all(messages.map(async (message) => {
 			if (message.system) {
 				message.content = validator.escape(String(message.content));
+				message.cleanedContent = utils.stripHTMLTags(utils.decodeHTMLEntities(message.content));
 				return message;
 			}
 

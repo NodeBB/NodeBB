@@ -7853,11 +7853,11 @@ paths:
                   - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
-  "/api/user/{userslug}/chats/{roomid?}":
+  "/api/user/{userslug}/chats/{roomid}":
     get:
       tags:
         - users
-      summary: /api/user/{userslug}/chats/{roomid}
+      summary: Get chat room
       parameters:
         - name: userslug
           in: path
@@ -7927,6 +7927,7 @@ paths:
                                     removed, etc.)
                                 picture:
                                   type: string
+                                  nullable: true
                                 status:
                                   type: string
                                 banned:
@@ -7970,6 +7971,7 @@ paths:
                               description: A friendly name for a given user account
                             picture:
                               type: string
+                              nullable: true
                             status:
                               type: string
                             icon:text:
@@ -8098,6 +8100,7 @@ paths:
                                       example: "#f44336"
                                     lastonlineISO:
                                       type: string
+                              nullable: true
                             lastUser:
                               type: object
                               properties:
