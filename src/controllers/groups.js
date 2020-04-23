@@ -92,6 +92,10 @@ groupsController.details = async function (req, res, next) {
 		return next();
 	}
 	groupData.isOwner = groupData.isOwner || isAdmin || (isGlobalMod && !groupData.system);
+	
+	if (groupData.cid) {
+		groupData.isModerator = await user.isModerator(req.uid, parseInt(groupData.cid));
+	}
 
 	res.render('groups/details', {
 		title: '[[pages:group, ' + groupData.displayName + ']]',
