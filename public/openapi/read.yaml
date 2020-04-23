@@ -8422,7 +8422,7 @@ paths:
         - groups
       summary: Get user group members
       parameters:
-        - name: userslug
+        - name: slug
           in: path
           required: true
           schema:

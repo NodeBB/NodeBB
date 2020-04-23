@@ -71,8 +71,7 @@ describe('Read API', async () => {
 	readApi = await SwaggerParser.dereference(apiPath);
 
 	// Iterate through all documented paths, make a call to it, and compare the result body with what is defined in the spec
-	let paths = Object.keys(readApi.paths);
-	paths = paths.slice(120);
+	const paths = Object.keys(readApi.paths);
 
 	paths.forEach((path) => {
 		let schema;
@@ -101,7 +100,6 @@ describe('Read API', async () => {
 			// TODO: If `required` present, iterate through that, otherwise iterate through all
 			required.forEach((prop) => {
 				if (schema.hasOwnProperty(prop)) {
-					console.log(response);
 					assert(response.hasOwnProperty(prop), '"' + prop + '" is a required property (path: ' + path + ', context: ' + context + ')');
 
 					// Don't proceed with type-check if the value could possibly be unset (nullable: true, in spec)
