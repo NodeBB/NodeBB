@@ -4426,7 +4426,7 @@ paths:
                       type:
                         type: string
                       targetId:
-                        type: string
+                        type: number
                       description:
                         type: string
                       uid:
