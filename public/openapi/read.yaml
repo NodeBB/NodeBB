@@ -2202,7 +2202,7 @@ paths:
                           itemCount:
                             type: number
                           percentFull:
-                            type: string
+                            type: number
                           hits:
                             type: string
                           misses:
@@ -2219,7 +2219,7 @@ paths:
                           itemCount:
                             type: number
                           percentFull:
-                            type: string
+                            type: number
                           dump:
                             type: boolean
                           hits:
@@ -2238,7 +2238,7 @@ paths:
                           itemCount:
                             type: number
                           percentFull:
-                            type: string
+                            type: number
                           hits:
                             type: string
                           misses:
