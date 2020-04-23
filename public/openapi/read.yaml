@@ -75,13 +75,21 @@ paths:
                     properties:
                       title:
                         type: string
+                        description: The page title
                       categories:
+                        description: A collection of category data objects
                         type: array
                         items:
                           allOf:
                             - $ref: components/schemas/CategoryObject.yaml#/CategoryObject
                             - type: object
                               properties:
+                                tagWhitelist:
+                                  type: array
+                                  items:
+                                    type: string
+                                unread-class:
+                                  type: string
                                 children:
                                   type: array
                                   items:
@@ -97,9 +105,19 @@ paths:
                                             type: string
                                           children:
                                             type: array
-                                            items: {}
+                                            items:
+                                              $ref: components/schemas/CategoryObject.yaml#/CategoryObject
                                           parent:
-                                            $ref: components/schemas/CategoryObject.yaml#/CategoryObject
+                                            allOf:
+                                              - $ref: components/schemas/CategoryObject.yaml#/CategoryObject
+                                              - type: object
+                                                properties:
+                                                  tagWhitelist:
+                                                    type: array
+                                                    items:
+                                                      type: string
+                                                  unread-class:
+                                                    type: string
                                           posts:
                                             type: array
                                             items:
@@ -237,6 +255,8 @@ paths:
                                           type: string
                                         title:
                                           type: string
+                                imageClass:
+                                  type: string
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin:
     get:
@@ -504,6 +524,9 @@ paths:
                         items:
                           type: object
                           properties:
+                            id:
+                              type: string
+                              description: Unique ID that will be added to the navigation element's `id` property in the DOM
                             route:
                               type: string
                               description: Relative URL to the page the navigation item goes to
@@ -533,6 +556,11 @@ paths:
                                     type: string
                                   displayName:
                                     type: string
+                            properties:
+                              type: object
+                              properties:
+                                targetBlank:
+                                  type: boolean
                       groups:
                         type: array
                         items:
@@ -834,6 +862,8 @@ paths:
                             type: string
                           bgColor:
                             type: string
+                          imageClass:
+                            type: string
                           selected:
                             type: boolean
                       cid:
@@ -1005,6 +1035,8 @@ paths:
                                   type: number
                             category:
                               $ref: components/schemas/CategoryObject.yaml#/CategoryObject
+                      title:
+                        type: string
                   - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/manage/ip-blacklist:
@@ -1306,6 +1338,11 @@ paths:
                               type: array
                               items:
                                 $ref: components/schemas/UserObject.yaml#/UserObjectSlim
+                      allPrivileges:
+                        type: array
+                        items:
+                          type: string
+                          description: A simple array containing user privilege names (used client-side when giving mod privilege)
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/manage/groups:
     get:
@@ -2336,6 +2373,9 @@ paths:
                       infoJSON:
                         type: string
                         description: "`info`, but stringified"
+                      host:
+                        type: string
+                        description: Server hostname
                       port:
                         description: An array containing the port numbers configured to be used by NodeBB processes
                         oneOf:
@@ -2830,7 +2870,15 @@ paths:
                         type: string
                   acpLang:
                     type: string
+                  openOutgoingLinksInNewTab:
+                    type: boolean
                   topicSearchEnabled:
+                    type: boolean
+                  hideSubCategories:
+                    type: boolean
+                  hideCategoryLastPost:
+                    type: boolean
+                  enableQuickReply:
                     type: boolean
   /api/me:
     get:
@@ -3039,6 +3087,9 @@ paths:
                     type: number
                   mainPid:
                     type: number
+                  teaserPid:
+                    type: number
+                    nullable: true
                   title:
                     type: string
                   slug:
@@ -3155,7 +3206,7 @@ paths:
                   - type: object
                     properties:
                       title:
-                        description: The category title
+                        description: The page title
                         type: string
                       categories:
                         description: A collection of category data objects
@@ -3761,6 +3812,8 @@ paths:
                       code:
                         type: string
                         nullable: true
+                      title:
+                        type: string
                   - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/reset/{code}":
@@ -3792,6 +3845,8 @@ paths:
                         type: number
                       minimumPasswordStrength:
                         type: number
+                      title:
+                        type: string
                   - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/email/unsubscribe/{token}":
@@ -3885,6 +3940,8 @@ paths:
                         type: number
                         description: Whether or not this particular topic is pinned to the top of the
                           category
+                      deleterUid:
+                        type: number
                       titleRaw:
                         type: string
                       timestampISO:
@@ -4190,6 +4247,8 @@ paths:
                         type: number
                       bookmarkThreshold:
                         type: number
+                      necroThreshold:
+                        type: number
                       postEditDuration:
                         type: number
                       postDeleteDuration:
@@ -4204,6 +4263,8 @@ paths:
                         type: string
                       postIndex:
                         type: number
+                      loggedInUser:
+                        $ref: components/schemas/UserObject.yaml#/UserObject
                   - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
@@ -4380,6 +4441,11 @@ paths:
                       target:
                         type: object
                         properties: {}
+                        additionalProperties:
+                          description: Properties change depending on the target type (user, post, etc.)
+                      assignee:
+                        type: number
+                        nullable: true
                       history:
                         type: array
                         items:
@@ -5059,6 +5125,16 @@ paths:
                               type: string
                       allCategoriesUrl:
                         type: string
+                      selectedCategory:
+                        type: object
+                        properties:
+                          icon:
+                            type: string
+                          name:
+                            type: string
+                          bgColor:
+                            type: string
+                        nullable: true
                       selectedCids:
                         type: array
                         items:
@@ -5177,6 +5253,16 @@ paths:
                               type: string
                       allCategoriesUrl:
                         type: string
+                      selectedCategory:
+                        type: object
+                        properties:
+                          icon:
+                            type: string
+                          name:
+                            type: string
+                          bgColor:
+                            type: string
+                        nullable: true
                       selectedCids:
                         type: array
                         items:
@@ -6204,108 +6290,9 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: components/schemas/UserObject.yaml#/UserObject
+                  - $ref: components/schemas/UserObject.yaml#/UserObjectFull
                   - type: object
                     properties:
-                      age:
-                        type: number
-                      emailClass:
-                        type: string
-                      moderationNote:
-                        type: string
-                      isBlocked:
-                        type: boolean
-                      yourid:
-                        type: number
-                      theirid:
-                        type: number
-                      isTargetAdmin:
-                        type: boolean
-                      isAdmin:
-                        type: boolean
-                      isGlobalModerator:
-                        type: boolean
-                      isModerator:
-                        type: boolean
-                      isAdminOrGlobalModerator:
-                        type: boolean
-                      isAdminOrGlobalModeratorOrModerator:
-                        type: boolean
-                      isSelfOrAdminOrGlobalModerator:
-                        type: boolean
-                      canEdit:
-                        type: boolean
-                      canBan:
-                        type: boolean
-                      canChangePassword:
-                        type: boolean
-                      isSelf:
-                        type: boolean
-                      isFollowing:
-                        type: boolean
-                      showHidden:
-                        type: boolean
-                      groups:
-                        type: array
-                        items:
-                          $ref: components/schemas/GroupObject.yaml#/GroupDataObject
-                      disableSignatures:
-                        type: boolean
-                      reputation:disabled:
-                        type: boolean
-                      downvote:disabled:
-                        type: boolean
-                      profile_links:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            id:
-                              type: string
-                            route:
-                              type: string
-                            name:
-                              type: string
-                            visibility:
-                              type: object
-                              properties:
-                                self:
-                                  type: boolean
-                                other:
-                                  type: boolean
-                                moderator:
-                                  type: boolean
-                                globalMod:
-                                  type: boolean
-                                admin:
-                                  type: boolean
-                                canViewInfo:
-                                  type: boolean
-                            public:
-                              type: boolean
-                            icon:
-                              type: string
-                      sso:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            associated:
-                              type: boolean
-                            url:
-                              type: string
-                            name:
-                              type: string
-                            icon:
-                              type: string
-                      websiteLink:
-                        type: string
-                      websiteName:
-                        type: string
-                      username:disableEdit:
-                        type: number
-                      email:disableEdit:
-                        type: number
                       topics:
                         type: array
                         items:
@@ -6409,8 +6396,8 @@ paths:
                             type: string
                           account/groups:
                             type: boolean
-        "304":
-          description: ""
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/{userslug}/bookmarks":
     get:
       tags:
@@ -6430,114 +6417,9 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: components/schemas/UserObject.yaml#/UserObject
+                  - $ref: components/schemas/UserObject.yaml#/UserObjectFull
                   - type: object
                     properties:
-                      age:
-                        type: number
-                      emailClass:
-                        type: string
-                      ips:
-                        type: array
-                        items:
-                          type: string
-                      moderationNote:
-                        type: string
-                      isBlocked:
-                        type: boolean
-                      blocksCount:
-                        type: number
-                      yourid:
-                        type: number
-                      theirid:
-                        type: number
-                      isTargetAdmin:
-                        type: boolean
-                      isAdmin:
-                        type: boolean
-                      isGlobalModerator:
-                        type: boolean
-                      isModerator:
-                        type: boolean
-                      isAdminOrGlobalModerator:
-                        type: boolean
-                      isAdminOrGlobalModeratorOrModerator:
-                        type: boolean
-                      isSelfOrAdminOrGlobalModerator:
-                        type: boolean
-                      canEdit:
-                        type: boolean
-                      canBan:
-                        type: boolean
-                      canChangePassword:
-                        type: boolean
-                      isSelf:
-                        type: boolean
-                      isFollowing:
-                        type: boolean
-                      showHidden:
-                        type: boolean
-                      groups:
-                        type: array
-                        items:
-                          $ref: components/schemas/GroupObject.yaml#/GroupDataObject
-                      disableSignatures:
-                        type: boolean
-                      reputation:disabled:
-                        type: boolean
-                      downvote:disabled:
-                        type: boolean
-                      profile_links:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            id:
-                              type: string
-                            route:
-                              type: string
-                            name:
-                              type: string
-                            visibility:
-                              type: object
-                              properties:
-                                self:
-                                  type: boolean
-                                other:
-                                  type: boolean
-                                moderator:
-                                  type: boolean
-                                globalMod:
-                                  type: boolean
-                                admin:
-                                  type: boolean
-                                canViewInfo:
-                                  type: boolean
-                            public:
-                              type: boolean
-                            icon:
-                              type: string
-                      sso:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            associated:
-                              type: boolean
-                            url:
-                              type: string
-                            name:
-                              type: string
-                            icon:
-                              type: string
-                      websiteLink:
-                        type: string
-                      websiteName:
-                        type: string
-                      username:disableEdit:
-                        type: number
-                      email:disableEdit:
-                        type: number
                       posts:
                         $ref: components/schemas/PostsObject.yaml#/PostsObject
                       nextStart:
@@ -6849,6 +6731,24 @@ paths:
                         description: Translation key for message notifying user that there were no posts found
                       title:
                         type: string
+                      showSort:
+                        type: boolean
+                      sortOptions:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            url:
+                              type: string
+                            name:
+                              type: string
+                            selected:
+                              type: boolean
+                    required:
+                      - posts
+                      - nextStart
+                      - noItemsFoundKey
+                      - title
                   - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
@@ -6883,6 +6783,24 @@ paths:
                         description: Translation key for message notifying user that there were no posts found
                       title:
                         type: string
+                      showSort:
+                        type: boolean
+                      sortOptions:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            url:
+                              type: string
+                            name:
+                              type: string
+                            selected:
+                              type: boolean
+                    required:
+                      - posts
+                      - nextStart
+                      - noItemsFoundKey
+                      - title
                   - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
@@ -7080,10 +6998,8 @@ paths:
                                   description: An ISO 8601 formatted date string (complementing `timestamp`)
                                 timestampReadable:
                                   type: string
-                                title:
-                                  type: string
-                                titleRaw:
-                                  type: string
+                              additionalProperties:
+                                description: Contextual data is added to this object (such as topic data, etc.)
                           bans:
                             type: array
                             items:
@@ -7956,6 +7872,8 @@ paths:
                               type: number
                             cleanedContent:
                               type: string
+                            isOwner:
+                              type: boolean
                       isOwner:
                         type: boolean
                       users:

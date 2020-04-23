@@ -188,6 +188,7 @@ UserObject:
     - banned_until
     - banned_until_readable
 UserObjectFull:
+  # accountHelpers.getUserDataByUserSlug
   type: object
   properties:
     uid:

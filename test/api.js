@@ -82,6 +82,7 @@ describe('Read API', async () => {
 
 		function compare(schema, response, context) {
 			let required = [];
+			const additionalProperties = schema.hasOwnProperty('additionalProperties');
 
 			if (schema.allOf) {
 				schema = schema.allOf.reduce((memo, obj) => {
@@ -97,7 +98,7 @@ describe('Read API', async () => {
 				return;
 			}
 
-			// TODO: If `required` present, iterate through that, otherwise iterate through all
+			// Compare the schema to the response
 			required.forEach((prop) => {
 				if (schema.hasOwnProperty(prop)) {
 					assert(response.hasOwnProperty(prop), '"' + prop + '" is a required property (path: ' + path + ', context: ' + context + ')');
@@ -142,6 +143,15 @@ describe('Read API', async () => {
 						break;
 					}
 				}
+			});
+
+			// Compare the response to the schema
+			Object.keys(response).forEach((prop) => {
+				if (additionalProperties) {	// All bets are off
+					return;
+				}
+
+				assert(schema[prop], '"' + prop + '" was found in response, but is not defined in schema (path: ' + path + ', context: ' + context + ')');
 			});
 		}
 
