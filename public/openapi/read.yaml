@@ -266,8 +266,10 @@ paths:
                         type: boolean
                       latestVersion:
                         type: string
+                        nullable: true
                       upgradeAvailable:
                         type: boolean
+                        nullable: true
                       currentPrerelease:
                         type: boolean
                       notices:
@@ -972,16 +974,28 @@ paths:
                               properties:
                                 username:
                                   type: string
+                                  description: A friendly name for a given user account
                                 userslug:
                                   type: string
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
                                 picture:
                                   type: string
                                 uid:
                                   type: number
+                                  description: A user identifier
                                 icon:text:
                                   type: string
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
                                 icon:bgColor:
                                   type: string
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
+                                  example: "#f44336"
                             topic:
                               type: object
                               properties:
@@ -1186,16 +1200,30 @@ paths:
                               items:
                                 type: object
                                 properties:
-                                  uid:
-                                    type: number
                                   username:
                                     type: string
+                                    description: A friendly name for a given user account
+                                  userslug:
+                                    type: string
+                                    description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                      removed, etc.)
                                   picture:
                                     type: string
+                                  uid:
+                                    type: number
+                                    description: A user identifier
                                   icon:text:
                                     type: string
+                                    description: A single-letter representation of a username. This is used in the
+                                      auto-generated icon given to users without
+                                      an avatar
                                   icon:bgColor:
                                     type: string
+                                    description: A six-character hexadecimal colour code assigned to the user. This
+                                      value is used in conjunction with
+                                      `icon:text` for the user's auto-generated
+                                      icon
+                                    example: "#f44336"
                             customActions:
                               type: array
                               items:
@@ -4017,18 +4045,30 @@ paths:
                                   items:
                                     type: object
                                     properties:
-                                      uid:
-                                        type: number
                                       username:
                                         type: string
+                                        description: A friendly name for a given user account
                                       userslug:
                                         type: string
+                                        description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                          removed, etc.)
                                       picture:
                                         type: string
+                                      uid:
+                                        type: number
+                                        description: A user identifier
                                       icon:text:
                                         type: string
+                                        description: A single-letter representation of a username. This is used in the
+                                          auto-generated icon given to users without
+                                          an avatar
                                       icon:bgColor:
                                         type: string
+                                        description: A six-character hexadecimal colour code assigned to the user. This
+                                          value is used in conjunction with
+                                          `icon:text` for the user's auto-generated
+                                          icon
+                                        example: "#f44336"
                                       administrator:
                                         type: boolean
                                 text:
@@ -4402,16 +4442,28 @@ paths:
                               properties:
                                 username:
                                   type: string
+                                  description: A friendly name for a given user account
                                 userslug:
                                   type: string
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
                                 picture:
                                   type: string
                                 uid:
                                   type: number
+                                  description: A user identifier
                                 icon:text:
                                   type: string
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
                                 icon:bgColor:
                                   type: string
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
+                                  example: "#f44336"
                       reporter:
                         type: object
                         properties:
@@ -7034,7 +7086,54 @@ paths:
                                   type: string
                           bans:
                             type: array
-                            items: {}
+                            items:
+                              type: object
+                              properties:
+                                uid:
+                                  type: number
+                                timestamp:
+                                  type: number
+                                expire:
+                                  type: number
+                                fromUid:
+                                  type: number
+                                user:
+                                  type: object
+                                  properties:
+                                    username:
+                                      type: string
+                                      description: A friendly name for a given user account
+                                    userslug:
+                                      type: string
+                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                        removed, etc.)
+                                    picture:
+                                      type: string
+                                    uid:
+                                      type: number
+                                      description: A user identifier
+                                    icon:text:
+                                      type: string
+                                      description: A single-letter representation of a username. This is used in the
+                                        auto-generated icon given to users without
+                                        an avatar
+                                    icon:bgColor:
+                                      type: string
+                                      description: A six-character hexadecimal colour code assigned to the user. This
+                                        value is used in conjunction with
+                                        `icon:text` for the user's auto-generated
+                                        icon
+                                      example: "#f44336"
+                                until:
+                                  type: number
+                                untilReadable:
+                                  type: string
+                                timestampReadable:
+                                  type: string
+                                timestampISO:
+                                  type: string
+                                reason:
+                                  type: string
                       sessions:
                         type: array
                         items:
@@ -7082,7 +7181,44 @@ paths:
                               description: An ISO 8601 formatted date string (complementing `timestamp`)
                       moderationNotes:
                         type: array
-                        items: {}
+                        items:
+                          type: object
+                          properties:
+                            uid:
+                              type: number
+                            note:
+                              type: string
+                            timestamp:
+                              type: number
+                            timestampISO:
+                              type: string
+                            user:
+                              type: object
+                              properties:
+                                username:
+                                  type: string
+                                  description: A friendly name for a given user account
+                                userslug:
+                                  type: string
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
+                                picture:
+                                  type: string
+                                uid:
+                                  type: number
+                                  description: A user identifier
+                                icon:text:
+                                  type: string
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
+                                icon:bgColor:
+                                  type: string
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
+                                  example: "#f44336"
                       title:
                         type: string
                   - $ref: components/schemas/Pagination.yaml#/Pagination
@@ -7121,15 +7257,11 @@ paths:
                             type: number
                           postsPerPage:
                             type: number
-                          notificationSounds:
-                            type: number
                           topicPostSort:
                             type: string
                           openOutgoingLinksInNewTab:
                             type: boolean
                           dailyDigestFreq:
-                            type: string
-                          language:
                             type: string
                           showfullname:
                             type: boolean
@@ -7145,20 +7277,12 @@ paths:
                             type: string
                           userLang:
                             type: string
-                          groupTitle:
-                            nullable: true
-                          pushbullet:enabled:
-                            type: number
-                          pushbullet:target:
-                            type: string
                           bootswatchSkin:
                             type: string
                           homePageRoute:
                             type: string
                           scrollToMyPost:
                             type: boolean
-                          delayImageLoading:
-                            type: number
                           notificationSound:
                             type: string
                           incomingChatSound:
@@ -7202,6 +7326,39 @@ paths:
                           uid:
                             type: number
                             description: A user identifier
+                        required:
+                          - showemail
+                          - usePagination
+                          - topicsPerPage
+                          - postsPerPage
+                          - topicPostSort
+                          - openOutgoingLinksInNewTab
+                          - dailyDigestFreq
+                          - showfullname
+                          - followTopicsOnCreate
+                          - followTopicsOnReply
+                          - restrictChat
+                          - topicSearchEnabled
+                          - categoryTopicSort
+                          - userLang
+                          - bootswatchSkin
+                          - homePageRoute
+                          - scrollToMyPost
+                          - notificationType_new-chat
+                          - notificationType_new-reply
+                          - notificationType_upvote
+                          - notificationType_new-topic
+                          - notificationType_follow
+                          - notificationType_group-invite
+                          - upvoteNotifFreq
+                          - acpLang
+                          - notificationType_new-register
+                          - notificationType_post-queue
+                          - notificationType_new-post-flag
+                          - notificationType_new-user-flag
+                          - categoryWatchState
+                          - notificationType_group-request-membership
+                          - uid
                       languages:
                         type: array
                         items:
@@ -7311,7 +7468,10 @@ paths:
                               type: boolean
                       customSettings:
                         type: array
-                        items: {}
+                        items:
+                          type: object
+                          properties: {}
+                          additionalProperties: {}
                       homePageRoutes:
                         type: array
                         items:
@@ -7420,7 +7580,13 @@ paths:
                     properties:
                       uploads:
                         type: array
-                        items: {}
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            url:
+                              type: string
                       privateUploads:
                         type: boolean
                       title:
@@ -7487,7 +7653,8 @@ paths:
                     properties:
                       users:
                         type: array
-                        items: {}
+                        items:
+                          $ref: components/schemas/UserObject.yaml#/UserObjectSlim
                       title:
                         type: string
                   - $ref: components/schemas/Pagination.yaml#/Pagination
@@ -7517,7 +7684,25 @@ paths:
                     properties:
                       sessions:
                         type: array
-                        items: {}
+                        items:
+                          type: object
+                          properties:
+                            ip:
+                              type: string
+                            uuid:
+                              type: string
+                            datetime:
+                              type: number
+                            platform:
+                              type: string
+                            browser:
+                              type: string
+                            version:
+                              type: string
+                            current:
+                              type: boolean
+                            datetimeISO:
+                              type: string
                       title:
                         type: string
                   - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
@@ -7630,13 +7815,7 @@ paths:
                         type: array
                         items:
                           type: object
-                          properties:
-                            name:
-                              type: string
-                            filter:
-                              type: string
-                            selected:
-                              type: boolean
+                          additionalProperties: {}
                       regularFilters:
                         type: array
                         items:
@@ -7648,6 +7827,9 @@ paths:
                               type: string
                             selected:
                               type: boolean
+                          required:
+                            - name
+                            - filter
                       moderatorFilters:
                         type: array
                         items:
@@ -8220,133 +8402,7 @@ paths:
                       title:
                         type: string
                       group:
-                        type: object
-                        properties:
-                          name:
-                            type: string
-                          description:
-                            type: string
-                          deleted:
-                            type: number
-                          hidden:
-                            type: number
-                          system:
-                            type: number
-                          userTitle:
-                            type: string
-                          icon:
-                            type: string
-                          labelColor:
-                            type: string
-                          slug:
-                            type: string
-                          createtime:
-                            type: number
-                          memberCount:
-                            type: number
-                          private:
-                            type: number
-                          cover:url:
-                            type: string
-                          cover:position:
-                            type: string
-                          userTitleEnabled:
-                            type: number
-                          disableJoinRequests:
-                            type: number
-                          disableLeave:
-                            type: number
-                          nameEncoded:
-                            type: string
-                          displayName:
-                            type: string
-                          textColor:
-                            type: string
-                          createtimeISO:
-                            type: string
-                          cover:thumb:url:
-                            type: string
-                          descriptionParsed:
-                            type: string
-                          members:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                uid:
-                                  type: number
-                                  description: A user identifier
-                                username:
-                                  type: string
-                                  description: A friendly name for a given user account
-                                userslug:
-                                  type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
-                                    removed, etc.)
-                                picture:
-                                  type: string
-                                status:
-                                  type: string
-                                postcount:
-                                  type: number
-                                reputation:
-                                  type: number
-                                email:confirmed:
-                                  type: number
-                                  description: Whether the user has confirmed their email address or not
-                                lastonline:
-                                  type: number
-                                flags:
-                                  nullable: true
-                                  type: number
-                                banned:
-                                  type: number
-                                banned:expire:
-                                  type: number
-                                joindate:
-                                  type: number
-                                  description: A UNIX timestamp representing the moment the user's account was
-                                    created
-                                icon:text:
-                                  type: string
-                                  description: A single-letter representation of a username. This is used in the
-                                    auto-generated icon given to users without
-                                    an avatar
-                                icon:bgColor:
-                                  type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This
-                                    value is used in conjunction with
-                                    `icon:text` for the user's auto-generated
-                                    icon
-                                  example: "#f44336"
-                                joindateISO:
-                                  type: string
-                                lastonlineISO:
-                                  type: string
-                                banned_until:
-                                  type: number
-                                banned_until_readable:
-                                  type: string
-                                administrator:
-                                  type: boolean
-                                isOwner:
-                                  type: boolean
-                          membersNextStart:
-                            type: number
-                          pending:
-                            type: array
-                            items: {}
-                          invited:
-                            type: array
-                            items: {}
-                          isMember:
-                            type: boolean
-                          isPending:
-                            type: boolean
-                          isInvited:
-                            type: boolean
-                          isOwner:
-                            type: boolean
+                        $ref: components/schemas/GroupObject.yaml#/GroupFullObject
                       posts:
                         $ref: components/schemas/PostsObject.yaml#/PostsObject
                       isAdmin:
