@@ -298,7 +298,8 @@ module.exports = function (Topics) {
 
 	Topics.getRelatedTopics = async function (topicData, uid) {
 		if (plugins.hasListeners('filter:topic.getRelatedTopics')) {
-			return await plugins.fireHook('filter:topic.getRelatedTopics', { topic: topicData, uid: uid });
+			const result = await plugins.fireHook('filter:topic.getRelatedTopics', { topic: topicData, uid: uid, topics: [] });
+			return result.topics;
 		}
 
 		let maximumTopics = meta.config.maximumRelatedTopics;
