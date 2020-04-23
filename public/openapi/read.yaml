@@ -2245,6 +2245,10 @@ paths:
                             type: string
                           hitRatio:
                             type: string
+                    required:
+                      - postCache
+                      - groupCache
+                      - localCache
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/development/logger:
     get:
