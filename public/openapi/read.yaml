@@ -2183,7 +2183,7 @@ paths:
                           itemCount:
                             type: number
                           percentFull:
-                            type: string
+                            type: number
                           avgPostSize:
                             type: number
                           hits:
