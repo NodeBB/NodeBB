@@ -71,17 +71,6 @@ describe('Upload Controllers', function () {
 			});
 		});
 
-		it('should upload a profile picture', function (done) {
-			helpers.uploadFile(nconf.get('url') + '/api/user/regular/uploadpicture', path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, function (err, res, body) {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 200);
-				assert(Array.isArray(body));
-				assert.equal(body.length, 1);
-				assert.equal(body[0].url, '/assets/uploads/profile/' + regularUid + '-profileavatar.png');
-				done();
-			});
-		});
-
 		it('should upload an image to a post', function (done) {
 			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
