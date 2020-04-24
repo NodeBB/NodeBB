@@ -16,31 +16,26 @@ const controllers = {
 };
 
 module.exports = function (middleware) {
-	function authenticate(req, res, next, callback) {
+	async function authenticate(req, res, next, callback) {
 		if (req.loggedIn) {
 			return next();
 		}
-		if (plugins.hasListeners('response:middleware.authenticate')) {
-			return plugins.fireHook('response:middleware.authenticate', {
-				req: req,
-				res: res,
-				next: function (err) {
-					if (err) {
-						return next(err);
-					}
 
-					auth.setAuthVars(req, res, function () {
-						if (req.loggedIn && req.user && req.user.uid) {
-							return next();
-						}
+		await plugins.fireHook('response:middleware.authenticate', {
+			req: req,
+			res: res,
+			next: function () {},	// no-op for backwards compatibility
+		});
 
-						callback();
-					});
-				},
+		if (!res.headersSent) {
+			auth.setAuthVars(req, res, function () {
+				if (req.loggedIn && req.user && req.user.uid) {
+					return next();
+				}
+
+				callback();
 			});
 		}
-
-		callback();
 	}
 
 	middleware.authenticate = function middlewareAuthenticate(req, res, next) {
