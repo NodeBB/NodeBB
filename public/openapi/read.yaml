@@ -2314,8 +2314,16 @@ paths:
                                       type: number
                                     external:
                                       type: number
+                                    arrayBuffers:
+                                      type: number
                                     humanReadable:
                                       type: number
+                                  required:
+                                    - rss
+                                    - heapTotal
+                                    - heapUsed
+                                    - external
+                                    - humanReadable
                                 uptime:
                                   type: number
                                 cpuUsage:
