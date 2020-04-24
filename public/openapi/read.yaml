@@ -3448,7 +3448,7 @@ paths:
   /api/unread/total:
     get:
       tags:
-        - posts
+        - topics
       summary: Get number of unread topics
       responses:
         "200":
