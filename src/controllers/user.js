@@ -178,7 +178,7 @@ userController.exportUploads = function (req, res, next) {
 	});
 
 	archive.pipe(output);
-	winston.info('[user/export/uploads] Collating uploads for uid ' + targetUid);
+	winston.verbose('[user/export/uploads] Collating uploads for uid ' + targetUid);
 	user.collateUploads(targetUid, archive, function (err) {
 		if (err) {
 			return next(err);

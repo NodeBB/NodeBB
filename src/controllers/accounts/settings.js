@@ -106,12 +106,12 @@ settingsController.get = async function (req, res, next) {
 
 	userData.categoryWatchState = { [userData.settings.categoryWatchState]: true };
 
-	userData.disableCustomUserSkins = meta.config.disableCustomUserSkins;
+	userData.disableCustomUserSkins = meta.config.disableCustomUserSkins || 0;
 
-	userData.allowUserHomePage = meta.config.allowUserHomePage;
+	userData.allowUserHomePage = meta.config.allowUserHomePage || 1;
 
-	userData.hideFullname = meta.config.hideFullname;
-	userData.hideEmail = meta.config.hideEmail;
+	userData.hideFullname = meta.config.hideFullname || 0;
+	userData.hideEmail = meta.config.hideEmail || 0;
 
 	userData.inTopicSearchAvailable = plugins.hasListeners('filter:topic.search');
 

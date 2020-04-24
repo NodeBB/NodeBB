@@ -10,3 +10,7 @@ Breadcrumbs:
             type: string
           url:
             type: string
+          cid:
+            type: number
+        required:
+          - text

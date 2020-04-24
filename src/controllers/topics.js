@@ -70,16 +70,12 @@ topicsController.get = async function getTopic(req, res, callback) {
 	topics.modifyPostsByPrivilege(topicData, userPrivileges);
 
 	const hookData = await plugins.fireHook('filter:controllers.topic.get', { topicData: topicData, uid: req.uid });
-	await Promise.all([
-		buildBreadcrumbs(hookData.topicData),
-		addTags(topicData, req, res),
-	]);
 
 	topicData.privileges = userPrivileges;
 	topicData.topicStaleDays = meta.config.topicStaleDays;
 	topicData['reputation:disabled'] = meta.config['reputation:disabled'];
 	topicData['downvote:disabled'] = meta.config['downvote:disabled'];
-	topicData['feeds:disableRSS'] = meta.config['feeds:disableRSS'];
+	topicData['feeds:disableRSS'] = meta.config['feeds:disableRSS'] || 0;
 	topicData.bookmarkThreshold = meta.config.bookmarkThreshold;
 	topicData.necroThreshold = meta.config.necroThreshold;
 	topicData.postEditDuration = meta.config.postEditDuration;
@@ -98,6 +94,11 @@ topicsController.get = async function getTopic(req, res, callback) {
 		rel.href = nconf.get('url') + '/topic/' + topicData.slug + rel.href;
 		res.locals.linkTags.push(rel);
 	});
+
+	await Promise.all([
+		buildBreadcrumbs(hookData.topicData),
+		addTags(topicData, req, res),
+	]);
 
 	incrementViewCount(req, tid);
 
@@ -338,5 +339,5 @@ topicsController.pagination = async function (req, res, callback) {
 		rel.href = nconf.get('url') + '/topic/' + topic.slug + rel.href;
 	});
 
-	res.json(paginationData);
+	res.json({ pagination: paginationData });
 };

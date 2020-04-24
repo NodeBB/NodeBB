@@ -104,6 +104,7 @@
         "prompt": "^1.0.0",
         "redis": "3.0.2",
         "request": "2.88.2",
+        "request-promise-native": "^1.0.8",
         "rimraf": "3.0.2",
         "rss": "^1.2.2",
         "sanitize-html": "^1.23.0",

@@ -62,9 +62,9 @@ recentController.getData = async function (req, url, sort) {
 	data.canPost = canPost;
 	data.categories = categoryData.categories;
 	data.allCategoriesUrl = url + helpers.buildQueryString('', filter, '');
-	data.selectedCategory = categoryData.selectedCategory;
+	data.selectedCategory = categoryData.selectedCategory || null;
 	data.selectedCids = categoryData.selectedCids;
-	data['feeds:disableRSS'] = meta.config['feeds:disableRSS'];
+	data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] || 0;
 	data.rssFeedUrl = nconf.get('relative_path') + '/' + url + '.rss';
 	if (req.loggedIn) {
 		data.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;

@@ -109,6 +109,7 @@
     "email:sendmail:rateLimit": 2,
     "email:sendmail:rateDelta": 1000,
     "hideFullname": 0,
+    "hideEmail": 0,
     "allowGuestHandles": 0,
     "disableRecentCategoryFilter": 0,
     "maximumRelatedTopics": 0,

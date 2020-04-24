@@ -33,34 +33,41 @@ UserObject:
       type: string
       description: A URL pointing to a picture to be used as the user's avatar
       example: 'https://images.unsplash.com/photo-1560070094-e1f2ddec4337?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=256&h=256&q=80'
+      nullable: true
     fullname:
       type: string
       example: Mr. Dragon Fruit Jr.
     location:
       type: string
       example: 'Toronto, Canada'
+      nullable: true
     birthday:
       type: string
       description: A birthdate given in an ISO format parseable by the Date object
       example: 03/27/2020
+      nullable: true
     website:
       type: string
       example: 'https://example.org'
+      nullable: true
     aboutme:
       type: string
       example: |
         This is a paragraph all about how my life got twist-turned upside-down
         and I'd like to take a minute and sit right here,
-        to tell you all about how I because the administrator of NodeBB
+        to tell you all about how I became the administrator of NodeBB
+      nullable: true
     signature:
       type: string
       example: |
         This is an example signature
         It can span multiple lines.
+      nullable: true
     uploadedpicture:
       type: string
       example: /assets/profile/1-profileimg.png
       description: 'In almost all cases, defer to "picture" instead. Use this if you need to specifically reference the picture uploaded to the forum.'
+      nullable: true
     profileviews:
       type: number
       description: The number of times this user's profile has been viewed
@@ -98,18 +105,21 @@ UserObject:
     flags:
       type: number
       example: 0
-    followercount:
+      nullable: true
+    followerCount:
       type: number
       example: 2
-    followingcount:
+    followingCount:
       type: number
       example: 5
     'cover:url':
       type: string
       example: /assets/profile/1-cover.png
+      nullable: true
     'cover:position':
       type: string
       example: 50.0301% 19.2464%
+      nullable: true
     groupTitle:
       type: string
       example: '["administrators","Staff"]'
@@ -140,7 +150,45 @@ UserObject:
       type: string
       description: An ISO 8601 formatted date string representing the moment a ban will be lifted, or the words "Not Banned"
       example: Not Banned
+  required:
+    - uid
+    - username
+    - userslug
+    - 'email:confirmed'
+    - joindate
+    - lastonline
+    - picture
+    - location
+    - birthday
+    - website
+    - aboutme
+    - signature
+    - uploadedpicture
+    - profileviews
+    - reputation
+    - postcount
+    - topiccount
+    - lastposttime
+    - banned
+    - 'banned:expire'
+    - status
+    - enum
+    - flags
+    - followerCount
+    - followingCount
+    - 'cover:url'
+    - 'cover:position'
+    - groupTitle
+    - groupTitleArray
+    - example
+    - 'icon:text'
+    - 'icon:bgColor'
+    - joindateISO
+    - lastonlineISO
+    - banned_until
+    - banned_until_readable
 UserObjectFull:
+  # accountHelpers.getUserDataByUserSlug
   type: object
   properties:
     uid:
@@ -175,6 +223,7 @@ UserObjectFull:
       type: string
       description: A URL pointing to a picture to be used as the user's avatar
       example: 'https://images.unsplash.com/photo-1560070094-e1f2ddec4337?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=256&h=256&q=80'
+      nullable: true
     fullname:
       type: string
       example: Mr. Dragon Fruit Jr.
@@ -193,7 +242,7 @@ UserObjectFull:
       example: |
         This is a paragraph all about how my life got twist-turned upside-down
         and I'd like to take a minute and sit right here,
-        to tell you all about how I because the administrator of NodeBB
+        to tell you all about how I became the administrator of NodeBB
     signature:
       type: string
       example: |
@@ -203,6 +252,7 @@ UserObjectFull:
       type: string
       example: /assets/profile/1-profileimg.png
       description: 'In almost all cases, defer to "picture" instead. Use this if you need to specifically reference the picture uploaded to the forum.'
+      nullable: true
     profileviews:
       type: number
       description: The number of times this user's profile has been viewed
@@ -240,18 +290,21 @@ UserObjectFull:
     flags:
       type: number
       example: 0
-    followercount:
+      nullable: true
+    followerCount:
       type: number
       example: 2
-    followingcount:
+    followingCount:
       type: number
       example: 5
     'cover:url':
       type: string
       example: /assets/profile/1-cover.png
+      nullable: true
     'cover:position':
       type: string
       example: 50.0301% 19.2464%
+      nullable: true
     groupTitle:
       type: string
       example: '["administrators","Staff"]'
@@ -332,7 +385,8 @@ UserObjectFull:
       type: boolean
     groups:
       type: array
-      items: {}
+      items:
+        $ref: ./GroupObject.yaml#/GroupFullObject
     disableSignatures:
       type: boolean
     reputation:disabled:
@@ -369,6 +423,12 @@ UserObjectFull:
             type: boolean
           icon:
             type: string
+        required:
+          - id
+          - route
+          - name
+          - visibility
+          - public
     sso:
       type: array
       items:
@@ -411,6 +471,7 @@ UserObjectSlim:
       type: string
       description: A URL pointing to a picture to be used as the user's avatar
       example: 'https://images.unsplash.com/photo-1560070094-e1f2ddec4337?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=256&h=256&q=80'
+      nullable: true
     status:
       type: string
       enum:
@@ -437,6 +498,7 @@ UserObjectSlim:
     flags:
       type: number
       example: 0
+      nullable: true
     banned:
       type: number
       description: A Boolean representing whether a user is banned or not
@@ -467,6 +529,77 @@ UserObjectSlim:
       type: number
       description: A UNIX timestamp representing the moment a ban will be lifted
       example: 0
+    banned_until_readable:
+      type: string
+      description: An ISO 8601 formatted date string representing the moment a ban will be lifted, or the words "Not Banned"
+      example: Not Banned
+    administrator:
+      type: boolean
+UserObjectACP:
+  type: object
+  properties:
+    uid:
+      type: number
+      description: A user identifier
+      example: 1
+    username:
+      type: string
+      description: A friendly name for a given user account
+      example: Dragon Fruit
+    userslug:
+      type: string
+      description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+      example: dragon-fruit
+    email:
+      type: string
+      description: Email address associated with the user account
+      example: dragonfruit@example.org
+    postcount:
+      type: number
+      example: 1000
+    joindate:
+      type: number
+      description: A UNIX timestamp representing the moment the user's account was created
+      example: 1585337827953
+    banned:
+      type: number
+      description: A Boolean representing whether a user is banned or not
+      example: 0
+    reputation:
+      type: number
+      description: The user's reputation score on the forum. Out-of-the-box, users gain/lose reputation points based on upvotes/downvotes, though plugins can alter the logic and criterion for awarding reputation points
+      example: 100
+    picture:
+      type: string
+      description: A URL pointing to a picture to be used as the user's avatar
+      example: 'https://images.unsplash.com/photo-1560070094-e1f2ddec4337?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=256&h=256&q=80'
+      nullable: true
+    flags:
+      type: number
+      example: 0
+      nullable: true
+    lastonline:
+      type: number
+      description: A UNIX timestamp representing the moment the user was last recorded online on this site
+      example: 1585337827953
+    'email:confirmed':
+      type: number
+      description: Whether the user has confirmed their email address or not
+      example: 1
+    'icon:text':
+      type: string
+      description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+      example: D
+    'icon:bgColor':
+      type: string
+      description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+      example: '#9c27b0'
+    joindateISO:
+      type: string
+      example: '2020-03-27T20:30:36.590Z'
+    lastonlineISO:
+      type: string
+      example: '2020-03-27T20:30:36.590Z'
     banned_until_readable:
       type: string
       description: An ISO 8601 formatted date string representing the moment a ban will be lifted, or the words "Not Banned"

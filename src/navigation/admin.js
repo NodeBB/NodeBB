@@ -60,6 +60,9 @@ admin.get = async function () {
 async function getAvailable() {
 	const core = require('../../install/data/navigation.json').map(function (item) {
 		item.core = true;
+		item.id = item.id || '';
+		item.properties = item.properties || { targetBlank: false };
+
 		return item;
 	});
 

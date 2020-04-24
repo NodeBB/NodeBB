@@ -28,11 +28,17 @@ infoController.get = function (req, res) {
 			}
 			return 0;
 		});
+
+		let port = nconf.get('port');
+		if (!Array.isArray(port) && !isNaN(parseInt(port, 10))) {
+			port = [port];
+		}
+
 		res.render('admin/development/info', {
 			info: data,
 			infoJSON: JSON.stringify(data, null, 4),
 			host: os.hostname(),
-			port: nconf.get('port'),
+			port: port,
 			nodeCount: data.length,
 			timeout: timeoutMS,
 			ip: req.ip,

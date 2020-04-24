@@ -32,10 +32,6 @@ tagsController.getTag = async function (req, res) {
 		helpers.getCategoriesByStates(req.uid, '', states),
 	]);
 
-	if (Array.isArray(tids) && !tids.length) {
-		return res.render('tag', templateData);
-	}
-
 	templateData.categories = categoriesData.categories;
 
 	templateData.topics = await topics.getTopics(tids, req.uid);

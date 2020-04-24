@@ -100,6 +100,7 @@ Flags.get = async function (flagId) {
 
 	const flagObj = {
 		state: 'open',
+		assignee: null,
 		...base,
 		description: validator.escape(base.description),
 		datetimeISO: utils.toISOString(base.datetime),
@@ -164,6 +165,7 @@ Flags.list = async function (filters, uid) {
 		const userObj = await user.getUserFields(flagObj.uid, ['username', 'picture']);
 		flagObj = {
 			state: 'open',
+			assignee: null,
 			...flagObj,
 			reporter: {
 				username: userObj.username,

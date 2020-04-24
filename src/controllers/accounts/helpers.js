@@ -143,6 +143,7 @@ async function getProfileMenu(uid, callerUID) {
 		id: 'info',
 		route: 'info',
 		name: '[[user:account_info]]',
+		icon: 'fa-info',
 		visibility: {
 			self: false,
 			other: false,
@@ -155,6 +156,7 @@ async function getProfileMenu(uid, callerUID) {
 		id: 'sessions',
 		route: 'sessions',
 		name: '[[pages:account/sessions]]',
+		icon: 'fa-group',
 		visibility: {
 			self: true,
 			other: false,
@@ -170,6 +172,7 @@ async function getProfileMenu(uid, callerUID) {
 			id: 'consent',
 			route: 'consent',
 			name: '[[user:consent.title]]',
+			icon: 'fa-thumbs-o-up',
 			visibility: {
 				self: true,
 				other: false,
@@ -190,6 +193,8 @@ async function getProfileMenu(uid, callerUID) {
 
 async function parseAboutMe(userData) {
 	if (!userData.aboutme) {
+		userData.aboutme = '';
+		userData.aboutmeParsed = '';
 		return;
 	}
 	userData.aboutme = validator.escape(String(userData.aboutme || ''));
