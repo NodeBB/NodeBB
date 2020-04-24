@@ -23,6 +23,14 @@ describe('Read API', async () => {
 	let setup = false;
 	const unauthenticatedRoutes = ['/api/login', '/api/register'];	// Everything else will be called with the admin user
 
+	async function dummySearchHook(data) {
+		return [1];
+	}
+
+	after(async function () {
+		plugins.unregisterHook('core', 'filter:search.query', dummySearchHook);
+	});
+
 	async function setupData() {
 		if (setup) {
 			return;
@@ -53,7 +61,7 @@ describe('Read API', async () => {
 		// Attach a search hook so /api/search is enabled
 		plugins.registerHook('core', {
 			hook: 'filter:search.query',
-			method: async data => [1],
+			method: dummySearchHook,
 		});
 
 		jar = await helpers.loginUser('admin', '123456');

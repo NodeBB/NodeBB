@@ -107,5 +107,7 @@ function modifyTopic(topic, fields) {
 		topic.votes = topic.upvotes - topic.downvotes;
 	}
 
-	topic.teaserPid = topic.teaserPid || null;
+	if (fields.includes('teaserPid') || !fields.length) {
+		topic.teaserPid = topic.teaserPid || null;
+	}
 }
