@@ -1,13 +1,12 @@
 openapi: 3.0.0
 info:
-  description: 'Standard, out-of-the-box read & write API for NodeBB v2.0+'
+  description: 'Write API for NodeBB v2.0+'
   version: 31-03-2020
-  title: Read/Write API
+  title: Write API
   contact:
     email: support@nodebb.org
   license:
-    name: MIT
-    url: 'https://opensource.org/licenses/MIT'
+    name: GPL-3.0
 servers:
   - url: /api/v1
 tags:
