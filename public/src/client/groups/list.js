@@ -11,14 +11,16 @@ define('forum/groups/list', ['forum/infinitescroll', 'benchpress'], function (in
 		$('button[data-action="new"]').on('click', function () {
 			bootbox.prompt('[[groups:new-group.group_name]]', function (name) {
 				if (name && name.length) {
-					socket.emit('groups.create', {
-						name: name,
-					}, function (err) {
-						if (!err) {
-							ajaxify.go('groups/' + utils.slugify(name));
-						} else {
-							app.alertError(err.message);
-						}
+					$.ajax({
+						url: config.relative_path + '/api/v1/groups',
+						method: 'post',
+						data: {
+							name: name,
+						},
+					}).done(function (res) {
+						ajaxify.go('groups/' + res.response.slug);
+					}).fail(function (ev) {
+						app.alertError(ev.responseJSON.status.message);
 					});
 				}
 			});
