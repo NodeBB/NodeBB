@@ -37,20 +37,22 @@ define('admin/manage/groups', [
 				hidden: $('#create-group-hidden').is(':checked') ? 1 : 0,
 			};
 
-			socket.emit('admin.groups.create', submitObj, function (err, groupData) {
-				if (err) {
-					if (err.hasOwnProperty('message') && utils.hasLanguageKey(err.message)) {
-						err = '[[admin/manage/groups:alerts.create-failure]]';
-					}
-					createModalError.translateHtml(err).removeClass('hide');
-				} else {
-					createModalError.addClass('hide');
-					createGroupName.val('');
-					createModal.on('hidden.bs.modal', function () {
-						ajaxify.go('admin/manage/groups/' + groupData.name);
-					});
-					createModal.modal('hide');
+			$.ajax({
+				url: config.relative_path + '/api/v1/groups',
+				method: 'post',
+				data: submitObj,
+			}).done(function (res) {
+				createModalError.addClass('hide');
+				createGroupName.val('');
+				createModal.on('hidden.bs.modal', function () {
+					ajaxify.go('admin/manage/groups/' + res.response.name);
+				});
+				createModal.modal('hide');
+			}).fail(function (ev) {
+				if (utils.hasLanguageKey(ev.responseJSON.status.message)) {
+					ev.responseJSON.status.message = '[[admin/manage/groups:alerts.create-failure]]';
 				}
+				createModalError.translateHtml(ev.responseJSON.status.message).removeClass('hide');
 			});
 		});
 

@@ -25,7 +25,7 @@ module.exports = function (Groups) {
 
 		const memberCount = data.hasOwnProperty('ownerUid') ? 1 : 0;
 		const isPrivate = data.hasOwnProperty('private') && data.private !== undefined ? parseInt(data.private, 10) === 1 : true;
-		const groupData = {
+		let groupData = {
 			name: data.name,
 			slug: utils.slugify(data.name),
 			createtime: timestamp,
@@ -48,8 +48,6 @@ module.exports = function (Groups) {
 		if (data.hasOwnProperty('ownerUid')) {
 			await db.setAdd('group:' + groupData.name + ':owners', data.ownerUid);
 			await db.sortedSetAdd('group:' + groupData.name + ':members', timestamp, data.ownerUid);
-
-			groupData.ownerUid = data.ownerUid;
 		}
 
 		if (!isHidden && !isSystem) {
@@ -62,6 +60,7 @@ module.exports = function (Groups) {
 
 		await db.setObjectField('groupslug:groupname', groupData.slug, groupData.name);
 
+		groupData = await Groups.getGroupData(groupData.name);
 		plugins.fireHook('action:group.create', { group: groupData });
 		return groupData;
 	};

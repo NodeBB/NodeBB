@@ -6,6 +6,7 @@
  */
 
 const user = require('../user');
+const privileges = require('../privileges');
 const utils = require('../utils');
 
 module.exports = function (middleware) {
@@ -35,6 +36,12 @@ module.exports = function (middleware) {
 		}
 
 		res.locals.privileges = hash;
+		return next();
+	};
+
+	middleware.exposePrivilegeSet = async (req, res, next) => {
+		// Exposes a user's global privilege set
+		res.locals.privileges = await privileges.global.get(req.user.uid);
 		return next();
 	};
 };

@@ -1,10 +1,13 @@
 'use strict';
 
 const groups = require('../../groups');
+const sockets = require('..');
 
 const Groups = module.exports;
 
 Groups.create = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'POST /api/v1/groups');
+
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');
 	} else if (groups.isPrivilegeGroup(data.name)) {
