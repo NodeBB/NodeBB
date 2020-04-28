@@ -89,16 +89,17 @@ topicsController.get = async function getTopic(req, res, callback) {
 	}
 
 	topicData.postIndex = postIndex;
-	topicData.pagination = pagination.create(currentPage, pageCount, req.query);
-	topicData.pagination.rel.forEach(function (rel) {
-		rel.href = nconf.get('url') + '/topic/' + topicData.slug + rel.href;
-		res.locals.linkTags.push(rel);
-	});
 
 	await Promise.all([
 		buildBreadcrumbs(hookData.topicData),
 		addTags(topicData, req, res),
 	]);
+
+	topicData.pagination = pagination.create(currentPage, pageCount, req.query);
+	topicData.pagination.rel.forEach(function (rel) {
+		rel.href = nconf.get('url') + '/topic/' + topicData.slug + rel.href;
+		res.locals.linkTags.push(rel);
+	});
 
 	incrementViewCount(req, tid);
 
