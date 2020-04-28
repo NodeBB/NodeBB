@@ -92,6 +92,7 @@ topicsController.get = async function getTopic(req, res, callback) {
 	topicData.pagination = pagination.create(currentPage, pageCount, req.query);
 	topicData.pagination.rel.forEach(function (rel) {
 		rel.href = nconf.get('url') + '/topic/' + topicData.slug + rel.href;
+		res.locals.linkTags = res.locals.linkTags || [];
 		res.locals.linkTags.push(rel);
 	});
 
