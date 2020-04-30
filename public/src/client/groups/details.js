@@ -1,6 +1,5 @@
 'use strict';
 
-
 define('forum/groups/details', [
 	'forum/groups/memberlist',
 	'iconSelect',
@@ -9,7 +8,8 @@ define('forum/groups/details', [
 	'pictureCropper',
 	'translator',
 	'vendor/colorpicker/colorpicker',
-], function (memberList, iconSelect, components, coverPhoto, pictureCropper, translator) {
+	'api',
+], function (memberList, iconSelect, components, coverPhoto, pictureCropper, translator, api) {
 	var Details = {};
 	var groupName;
 
@@ -106,7 +106,10 @@ define('forum/groups/details', [
 					break;
 
 				case 'join':	// intentional fall-throughs!
-				case 'leave':
+					api.put('/groups/' + ajaxify.data.group.slug + '/membership/' + (uid || app.user.uid), undefined, () => ajaxify.refresh(), err => app.alertError(err.status.message));
+					break;
+
+				case 'leave':	// intentional fall-throughs!
 				case 'accept':
 				case 'reject':
 				case 'issueInvite':
