@@ -464,7 +464,7 @@
           if (option.group) {
             // initialise group if necessary
             if (!groups[option.group]) {
-              groups[option.group] = $("<optgroup/>").attr("label", option.group);
+              groups[option.group] = $("<optgroup></optgroup>").attr("label", option.group);
             }
 
             elem = groups[option.group];
@@ -496,7 +496,7 @@
         // checkboxes have to nest within a containing element, so
         // they break the rules a bit and we end up re-assigning
         // our 'input' element to this container instead
-        input = $("<div/>");
+        input = $("<div></div>");
 
         each(inputOptions, function(_, option) {
           var checkbox = $(templates.inputs[options.inputType]);

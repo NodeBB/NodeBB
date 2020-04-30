@@ -64,7 +64,7 @@ define('forum/chats/search', ['components'], function (components) {
 				'<i class="fa fa-circle status ' + userObj.status + '"></i> ' + userObj.username;
 		}
 
-		var chatEl = $('<li component="chat/search/user" />')
+		var chatEl = $('<li component="chat/search/user"></li>')
 			.attr('data-uid', userObj.uid)
 			.appendTo(chatsListEl);
 

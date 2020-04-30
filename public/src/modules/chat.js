@@ -121,7 +121,7 @@ define('chat', [
 	};
 
 	module.onRoomRename = function (data) {
-		var newTitle = $('<div/>').html(data.newName).text();
+		var newTitle = $('<div></div>').html(data.newName).text();
 		var modal = module.getModal(data.roomId);
 		modal.find('[component="chat/room/name"]').text(newTitle);
 		taskbar.update('chat', modal.attr('data-uuid'), {
