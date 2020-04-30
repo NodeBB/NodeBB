@@ -43,8 +43,8 @@ define('forum/infinitescroll', function () {
 		var offsetTop = container.offset() ? container.offset().top : 0;
 		var scrollPercent = 100 * (currentScrollTop - offsetTop) / (viewportHeight <= 0 ? wh : viewportHeight);
 
-		var top = 20;
-		var bottom = 80;
+		var top = 15;
+		var bottom = 85;
 		var direction = currentScrollTop > previousScrollTop ? 1 : -1;
 
 		if (scrollPercent < top && currentScrollTop < previousScrollTop) {
