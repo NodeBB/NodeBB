@@ -54,18 +54,15 @@ Groups.join = async (req, res) => {
 	});
 	const [isCallerOwner, userExists] = await Promise.all([
 		groups.ownership.isOwner(req.user.uid, group.name),
-		user.exists(req.user.uid),
+		user.exists(req.params.uid),
 	]);
 
-	if (group.isMember) {
+	if (!userExists) {
+		throw new Error('[[error:invalid-uid]]');
+	} else if (group.isMember) {
 		// No change
 		return helpers.formatApiResponse(200, res);
-	} else if (!userExists) {
-		throw new Error('[[error:invalid-uid]]');
 	}
-
-	// console.log(res.locals.privileges);
-	// return res.sendStatus(200);
 
 	if (!res.locals.privileges.isAdmin) {
 		// Admin and privilege groups unjoinable client-side
