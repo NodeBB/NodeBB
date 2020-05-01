@@ -9,7 +9,7 @@
 	"allow-login-with.email": "Только адреса электронной почты",
 	"account-settings": "Настройки учётной записи",
 	"gdpr_enabled": "Запрашивать согласие на сбор и обработку персональных данных",
-	"gdpr_enabled_help": "Включите, чтобы при регистрации новых пользователей запрашивать согласие на сбор и обработку данных в соответствии с законом о <a href=\"https://eugdpr.org/the-regulation/gdpr-faqs/\">General Data Protection Regulation (GDPR)</a>. <strong>Примечание</strong>: эта настойка не повлияет на уже зарегистрированных пользователей. Чтобы запросить их согласие, установите плагин GDPR.",
+	"gdpr_enabled_help": "When enabled, all new registrants will be required to explicitly give consent for data collection and usage under the <a href=\"https://gdpr.eu/faq/\">General Data Protection Regulation (GDPR)</a>. <strong>Note</strong>: Enabling GDPR does not force pre-existing users to provide consent. To do so, you will need to install the GDPR plugin.",
 	"disable-username-changes": "Запретить смену имени пользователя",
 	"disable-email-changes": "Запретить смену адреса электронной почты",
 	"disable-password-changes": "Запретить смену пароля",

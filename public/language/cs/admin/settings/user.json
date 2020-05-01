@@ -9,7 +9,7 @@
 	"allow-login-with.email": "Pouze e-mail",
 	"account-settings": "Nastavení účtu",
 	"gdpr_enabled": "Povolit souhlas s GDPR",
-	"gdpr_enabled_help": "Je-li povoleno, všichni nový uživatelé budou muset souhlasit se sběrem dat dle <a href=\"https://eugdpr.org/the-regulation/gdpr-faqs/\">General Data Protection Regulation (GDPR)</a>.<strong>Nezapomeňte, že: </strong>povolení GDPR nepřinutí již existující uživatele dát souhlas. Abyste tak učinili, bude muset nainstalovat zásuvný modul GDPR.",
+	"gdpr_enabled_help": "When enabled, all new registrants will be required to explicitly give consent for data collection and usage under the <a href=\"https://gdpr.eu/faq/\">General Data Protection Regulation (GDPR)</a>. <strong>Note</strong>: Enabling GDPR does not force pre-existing users to provide consent. To do so, you will need to install the GDPR plugin.",
 	"disable-username-changes": "Zakázat změnu uživatelského jména",
 	"disable-email-changes": "Zakázat změnu e-mailu",
 	"disable-password-changes": "Zakázat změnu hesla",

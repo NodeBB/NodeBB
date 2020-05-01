@@ -9,7 +9,7 @@
 	"allow-login-with.email": "Tylko adresu email",
 	"account-settings": "Ustawienia konta",
 	"gdpr_enabled": "Włącz gromadzenie danych (RODO)",
-	"gdpr_enabled_help": "<strong>Po włączeniu wszyscy nowi rejestrujący będą musieli jednoznacznie wyrazić zgodę na gromadzenie i wykorzystanie danych na mocy <a href=\"https://eugdpr.org/the-regulation/gdpr-faqs/\">ogólnego rozporządzenia o ochronie danych (RODO)</a>. Uwaga: włączenie RODO nie zmusza wcześniejszych użytkowników do wyrażenia zgody. Aby to zrobić, musisz zainstalować wtyczkę GDPR.",
+	"gdpr_enabled_help": "When enabled, all new registrants will be required to explicitly give consent for data collection and usage under the <a href=\"https://gdpr.eu/faq/\">General Data Protection Regulation (GDPR)</a>. <strong>Note</strong>: Enabling GDPR does not force pre-existing users to provide consent. To do so, you will need to install the GDPR plugin.",
 	"disable-username-changes": "Wyłącz możliwość zmiany nazwy użytkownika",
 	"disable-email-changes": "Wyłącz możliwość zmiany adresu e-mail",
 	"disable-password-changes": "Wyłącz możliwość zmiany hasła",

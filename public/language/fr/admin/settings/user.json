@@ -9,7 +9,7 @@
 	"allow-login-with.email": "E-mail uniquement",
 	"account-settings": "Paramètres du compte",
 	"gdpr_enabled": "Activer le consentement GRPD",
-	"gdpr_enabled_help": "Lorsque cette option est activée, tous les nouveaux utilisateurs devront explicitement donner leur consentement pour la collecte et l'utilisation de données en vertu du règlement <a href=\"https://eugdpr.org/the-regulation/gdpr-faqs/\">général sur la protection des données (GRPD)</a>. <strong>Remarque</strong>: l'activation du GRPD ne force pas les utilisateurs préexistants à donner leur consentement. Pour ce faire, vous devrez installer le plugin GRPD.",
+	"gdpr_enabled_help": "When enabled, all new registrants will be required to explicitly give consent for data collection and usage under the <a href=\"https://gdpr.eu/faq/\">General Data Protection Regulation (GDPR)</a>. <strong>Note</strong>: Enabling GDPR does not force pre-existing users to provide consent. To do so, you will need to install the GDPR plugin.",
 	"disable-username-changes": "Désactiver le changement de nom d'utilisateur",
 	"disable-email-changes": "Désactiver le changement d'adresse e-mail",
 	"disable-password-changes": "Désactiver le changement de mot de passe",

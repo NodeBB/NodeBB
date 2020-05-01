@@ -9,7 +9,7 @@
 	"allow-login-with.email": "Apenas E-mail",
 	"account-settings": "Configurações de Conta",
 	"gdpr_enabled": "Ativar coleta de consentimento do GDPR",
-	"gdpr_enabled_help": "Quando ativado, todos os novos usuários que se cadastrarem devem autorizar explicitamente a coleta e o uso de dados de acordo com o <a href=\"https://eugdpr.org/the-regulation/gdpr-faqs/\">Regulamento Geral sobre a Proteção de Dados (GDPR)</a>. <strong>Atenção</strong>: ao habilitar a requisição de autorização de acordo com o GDPR, não força os usuários já cadastrados a autorizar a coleta e o uso de dados. Para isso, você precisa instalar o plugin GDPR.",
+	"gdpr_enabled_help": "When enabled, all new registrants will be required to explicitly give consent for data collection and usage under the <a href=\"https://gdpr.eu/faq/\">General Data Protection Regulation (GDPR)</a>. <strong>Note</strong>: Enabling GDPR does not force pre-existing users to provide consent. To do so, you will need to install the GDPR plugin.",
 	"disable-username-changes": "Desabilitar mudança de nome de usuário",
 	"disable-email-changes": "Desabilitar mudanças de e-mail",
 	"disable-password-changes": "Desabilitar mudanças de senha",

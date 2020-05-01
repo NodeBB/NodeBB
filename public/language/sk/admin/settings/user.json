@@ -9,7 +9,7 @@
 	"allow-login-with.email": "Iba e-mail",
 	"account-settings": "Nastavenia účtu",
 	"gdpr_enabled": "Enable GDPR consent collection",
-	"gdpr_enabled_help": "When enabled, all new registrants will be required to explicitly give consent for data collection and usage under the <a href=\"https://eugdpr.org/the-regulation/gdpr-faqs/\">General Data Protection Regulation (GDPR)</a>. <strong>Note</strong>: Enabling GDPR does not force pre-existing users to provide consent. To do so, you will need to install the GDPR plugin.",
+	"gdpr_enabled_help": "When enabled, all new registrants will be required to explicitly give consent for data collection and usage under the <a href=\"https://gdpr.eu/faq/\">General Data Protection Regulation (GDPR)</a>. <strong>Note</strong>: Enabling GDPR does not force pre-existing users to provide consent. To do so, you will need to install the GDPR plugin.",
 	"disable-username-changes": "Zakázať zmenu používateľského mena",
 	"disable-email-changes": "Zakázať zmenu e-mailu",
 	"disable-password-changes": "Zakázať zmenu hesla",

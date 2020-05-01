@@ -9,7 +9,7 @@
 	"allow-login-with.email": "僅限電子信箱",
 	"account-settings": "使用者設定",
 	"gdpr_enabled": "啟用通用資料保護條例(GDPR)許可的個人資料收集",
-	"gdpr_enabled_help": "當啟用時，所有的新註冊使用者需要明確同意允許資料收集和在<a href=\"https://eugdpr.org/the-regulation/gdpr-faqs/\">通用數據保護協議（GDPR）</a>保護下的使用。<strong>注意</strong>：開啟GDPR不一定要之前已經存在的用戶同意。在這之前，你需要去安裝GDPR插件。",
+	"gdpr_enabled_help": "When enabled, all new registrants will be required to explicitly give consent for data collection and usage under the <a href=\"https://gdpr.eu/faq/\">General Data Protection Regulation (GDPR)</a>. <strong>Note</strong>: Enabling GDPR does not force pre-existing users to provide consent. To do so, you will need to install the GDPR plugin.",
 	"disable-username-changes": "停用修改使用者名",
 	"disable-email-changes": "停用修改電子信箱",
 	"disable-password-changes": "停用修改密碼",

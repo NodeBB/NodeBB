@@ -9,7 +9,7 @@
 	"allow-login-with.email": "Sadece E-posta",
 	"account-settings": "Hesap Ayarları",
 	"gdpr_enabled": "GDPR veri toplamayı etkinleştir",
-	"gdpr_enabled_help": "Etkinleştirildiğinde, tüm yeni tescil ettirenlerin <a href=\"https://eugdpr.org/the-regulation/gdpr-faqs/\">Veri Toplama Yönetmeliği (GDPR)</a> kapsamında veri toplanması ve kullanımı için açık bir şekilde onay vermeleri gerekecektir. <strong>Not</strong>: GDPR'yi etkinleştirmek, önceden var olan kullanıcıları onay vermesi için zorlamaz. Bunu yapmak için GDPR eklentisini yüklemeniz gerekir.",
+	"gdpr_enabled_help": "When enabled, all new registrants will be required to explicitly give consent for data collection and usage under the <a href=\"https://gdpr.eu/faq/\">General Data Protection Regulation (GDPR)</a>. <strong>Note</strong>: Enabling GDPR does not force pre-existing users to provide consent. To do so, you will need to install the GDPR plugin.",
 	"disable-username-changes": "Kullanıcı adı değişikliği kapalı",
 	"disable-email-changes": "E-posta değişikliklerini devre dışı bırak",
 	"disable-password-changes": "Parola değişikliği kapalı",
