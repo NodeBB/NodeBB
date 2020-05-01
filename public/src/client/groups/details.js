@@ -109,8 +109,11 @@ define('forum/groups/details', [
 					api.put('/groups/' + ajaxify.data.group.slug + '/membership/' + (uid || app.user.uid), undefined, () => ajaxify.refresh(), err => app.alertError(err.status.message));
 					break;
 
-				case 'leave':	// intentional fall-throughs!
-				case 'accept':
+				case 'leave':
+					api.del('/groups/' + ajaxify.data.group.slug + '/membership/' + (uid || app.user.uid), undefined, () => ajaxify.refresh(), err => app.alertError(err.status.message));
+					break;
+
+				case 'accept':	// intentional fall-throughs!
 				case 'reject':
 				case 'issueInvite':
 				case 'rescindInvite':

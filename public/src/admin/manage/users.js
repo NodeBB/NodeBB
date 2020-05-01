@@ -108,12 +108,9 @@ define('admin/manage/users', ['translator', 'benchpress', 'autocomplete', 'api']
 						var groupCard = $(this).parents('[data-group-name]');
 						var groupName = groupCard.attr('data-group-name');
 						var uid = $(this).parents('[data-uid]').attr('data-uid');
-						socket.emit('admin.groups.leave', { uid: uid, groupName: groupName }, function (err) {
-							if (err) {
-								return app.alertError(err);
-							}
+						api.del('/groups/' + utils.slugify(groupName) + '/membership/' + uid, undefined, () => {
 							groupCard.remove();
-						});
+						}, err => app.alertError(err.status.message));
 						return false;
 					});
 				});

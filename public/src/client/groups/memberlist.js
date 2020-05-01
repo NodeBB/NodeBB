@@ -1,7 +1,6 @@
 'use strict';
 
-
-define('forum/groups/memberlist', function () {
+define('forum/groups/memberlist', ['api'], function (api) {
 	var MemberList = {};
 	var searchInterval;
 	var groupName;
@@ -83,7 +82,13 @@ define('forum/groups/memberlist', function () {
 		if (groupName === 'administrators') {
 			socket.emit('admin.user.makeAdmins', uids, done);
 		} else {
-			socket.emit('groups.addMember', { groupName: groupName, uid: uids }, done);
+			var requests = uids.map(function (uid) {
+				return api.put('/groups/' + ajaxify.data.group.slug + '/membership/' + uid);
+			});
+
+			$.when(requests)
+				.done(done)
+				.fail(err => app.alertError(err.status.message));
 		}
 	}
 

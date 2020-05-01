@@ -69,6 +69,8 @@ SocketGroups.join = async (socket, data) => {
 };
 
 SocketGroups.leave = async (socket, data) => {
+	sockets.warnDeprecated(socket, 'DELETE /api/v1/groups/:slug/membership/:uid');
+
 	if (socket.uid <= 0) {
 		throw new Error('[[error:invalid-uid]]');
 	}
