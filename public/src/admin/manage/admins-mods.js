@@ -63,16 +63,13 @@ define('admin/manage/admins-mods', ['translator', 'benchpress', 'autocomplete', 
 
 			bootbox.confirm('[[admin/manage/users:alerts.confirm-remove-global-mod]]', function (confirm) {
 				if (confirm) {
-					socket.emit('admin.groups.leave', { uid: uid, groupName: 'Global Moderators' }, function (err) {
-						if (err) {
-							return app.alertError(err.message);
-						}
+					api.del('/groups/global-moderators/membership/' + uid, undefined, () => {
 						app.alertSuccess('[[admin/manage/users:alerts.remove-global-mod-success]]');
 						userCard.remove();
 						if (!$('.global-moderator-area').children().length) {
 							$('#no-global-mods-warning').removeClass('hidden');
 						}
-					});
+					}, err => app.alertError(err.status.message));
 				}
 			});
 		});

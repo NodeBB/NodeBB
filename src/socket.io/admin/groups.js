@@ -39,6 +39,8 @@ Groups.join = async (socket, data) => {
 };
 
 Groups.leave = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'DELETE /api/v1/groups/:slug/membership/:uid');
+
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');
 	}
