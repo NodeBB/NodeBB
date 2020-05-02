@@ -74,6 +74,10 @@ module.exports = function (User) {
 		return await incrementUserFieldAndSetBy(uid, 'reputation', 'users:reputation', value);
 	};
 
+	User.incrementUserFlagsBy = async function (uid, value) {
+		return await incrementUserFieldAndSetBy(uid, 'flags', 'users:flags', value);
+	};
+
 	async function incrementUserFieldAndSetBy(uid, field, set, value) {
 		value = parseInt(value, 10);
 		if (!value || !field || !(parseInt(uid, 10) > 0)) {

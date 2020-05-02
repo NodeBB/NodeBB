@@ -296,8 +296,7 @@ Flags.create = async function (type, id, uid, reason, timestamp) {
 	if (type === 'post') {
 		await db.sortedSetAdd('flags:byPid:' + id, timestamp, flagId);	// by target pid
 		if (targetUid) {
-			await db.sortedSetIncrBy('users:flags', 1, targetUid);
-			await user.incrementUserFieldBy(targetUid, 'flags', 1);
+			await user.incrementUserFlagsBy(targetUid, 1);
 		}
 	}
 

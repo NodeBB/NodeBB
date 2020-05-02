@@ -22,6 +22,7 @@ module.exports = {
 			'users:joindate',
 			'users:reputation',
 			'users:postcount',
+			'users:flags',
 		], 'null');
 
 		await batch.processArray(allUids, async function (uids) {
@@ -34,6 +35,7 @@ module.exports = {
 						'users:joindate',
 						'users:reputation',
 						'users:postcount',
+						'users:flags',
 					], uids[index]);
 					if (userData && !userData.uid) {
 						await db.delete('user:' + uids[index]);
@@ -46,6 +48,9 @@ module.exports = {
 					['users:reputation', userData.reputation, uids[index]],
 					['users:postcount', userData.postcount, uids[index]],
 				]);
+				if (userData.hasOwnProperty('flags') && parseInt(userData.flags, 10) > 0) {
+					await db.sortedSetAdd('users:flags', userData.flags, uids[index]);
+				}
 			}));
 		}, {
 			progress: progress,
