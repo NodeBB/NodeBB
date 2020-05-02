@@ -179,7 +179,7 @@ module.exports = function (Posts) {
 		}
 
 		const postData = await Posts.getPostFields(pid, ['pid', 'uid', 'tid']);
-		const newReputation = user.incrementUserReputationBy(postData.uid, type === 'upvote' ? 1 : -1);
+		const newReputation = await user.incrementUserReputationBy(postData.uid, type === 'upvote' ? 1 : -1);
 
 		await adjustPostVotes(postData, uid, type, unvote);
 
