@@ -41,7 +41,7 @@ require('./blocks')(User);
 require('./uploads')(User);
 
 User.exists = async function (uid) {
-	return await db.exists('user:' + uid);
+	return await db.isSortedSetMember('users:joindate', uid);
 };
 
 User.existsBySlug = async function (userslug) {

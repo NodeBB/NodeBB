@@ -179,10 +179,7 @@ module.exports = function (Posts) {
 		}
 
 		const postData = await Posts.getPostFields(pid, ['pid', 'uid', 'tid']);
-		const newReputation = await user[type === 'upvote' ? 'incrementUserFieldBy' : 'decrementUserFieldBy'](postData.uid, 'reputation', 1);
-		if (parseInt(postData.uid, 10)) {
-			await db.sortedSetAdd('users:reputation', newReputation, postData.uid);
-		}
+		const newReputation = user.incrementUserReputationBy(postData.uid, type === 'upvote' ? 1 : -1);
 
 		await adjustPostVotes(postData, uid, type, unvote);
 

@@ -67,12 +67,26 @@ module.exports = function (User) {
 	};
 
 	User.incrementUserPostCountBy = async function (uid, value) {
-		const newpostcount = await User.incrementUserFieldBy(uid, 'postcount', value);
-		if (parseInt(uid, 10) <= 0) {
+		return await incrementUserFieldAndSetBy(uid, 'postcount', 'users:postcount', value);
+	};
+
+	User.incrementUserReputationBy = async function (uid, value) {
+		return await incrementUserFieldAndSetBy(uid, 'reputation', 'users:reputation', value);
+	};
+
+	async function incrementUserFieldAndSetBy(uid, field, set, value) {
+		value = parseInt(value, 10);
+		if (!value || !field || !(parseInt(uid, 10) > 0)) {
 			return;
 		}
-		await db.sortedSetAdd('users:postcount', newpostcount, uid);
-	};
+		const exists = await User.exists(uid);
+		if (!exists) {
+			return;
+		}
+		const newValue = await User.incrementUserFieldBy(uid, field, value);
+		await db.sortedSetAdd(set, newValue, uid);
+		return newValue;
+	}
 
 	User.getPostIds = async function (uid, start, stop) {
 		const pids = await db.getSortedSetRevRange('uid:' + uid + ':posts', start, stop);

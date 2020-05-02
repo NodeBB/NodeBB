@@ -11,6 +11,7 @@ var db = require('./mocks/databasemock');
 var User = require('../src/user');
 var Topics = require('../src/topics');
 var Categories = require('../src/categories');
+var Posts = require('../src/posts');
 var Password = require('../src/password');
 var groups = require('../src/groups');
 var helpers = require('./helpers');
@@ -411,6 +412,40 @@ describe('User', function () {
 					done();
 				});
 			});
+		});
+
+		it('should not re-add user to users:postcount if post is deleted after user deletion', async function () {
+			const uid = await User.create({ username: 'olduserwithposts' });
+			assert(await db.isSortedSetMember('users:postcount', uid));
+
+			const result = await Topics.post({
+				uid: uid,
+				title: 'old user topic',
+				content: 'old user topic post content',
+				cid: testCid,
+			});
+			assert.equal(await db.sortedSetScore('users:postcount', uid), 1);
+			await User.deleteAccount(uid);
+			assert(!await db.isSortedSetMember('users:postcount', uid));
+			await Posts.purge(result.postData.pid, 1);
+			assert(!await db.isSortedSetMember('users:postcount', uid));
+		});
+
+		it('should not re-add user to users:reputation if post is upvoted after user deletion', async function () {
+			const uid = await User.create({ username: 'olduserwithpostsupvote' });
+			assert(await db.isSortedSetMember('users:reputation', uid));
+
+			const result = await Topics.post({
+				uid: uid,
+				title: 'old user topic',
+				content: 'old user topic post content',
+				cid: testCid,
+			});
+			assert.equal(await db.sortedSetScore('users:reputation', uid), 0);
+			await User.deleteAccount(uid);
+			assert(!await db.isSortedSetMember('users:reputation', uid));
+			await Posts.upvote(result.postData.pid, 1);
+			assert(!await db.isSortedSetMember('users:reputation', uid));
 		});
 	});
 

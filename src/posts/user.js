@@ -1,16 +1,16 @@
 'use strict';
 
-var async = require('async');
-var validator = require('validator');
-var _ = require('lodash');
+const async = require('async');
+const validator = require('validator');
+const _ = require('lodash');
 
 const db = require('../database');
-var user = require('../user');
+const user = require('../user');
 const topics = require('../topics');
-var groups = require('../groups');
-var meta = require('../meta');
-var plugins = require('../plugins');
-var privileges = require('../privileges');
+const groups = require('../groups');
+const meta = require('../meta');
+const plugins = require('../plugins');
+const privileges = require('../privileges');
 
 module.exports = function (Posts) {
 	Posts.getUserInfoForPosts = async function (uids, uid) {
@@ -158,7 +158,7 @@ module.exports = function (Posts) {
 			db.sortedSetRemoveBulk(bulkRemove),
 			db.sortedSetAddBulk(bulkAdd),
 			user.incrementUserPostCountBy(toUid, pids.length),
-			updateReputation(toUid, repChange),
+			user.incrementUserReputationBy(toUid, repChange),
 			handleMainPidOwnerChange(postData, toUid),
 			reduceCounters(postsByUser),
 			updateTopicPosters(postData, toUid),
@@ -171,7 +171,7 @@ module.exports = function (Posts) {
 			const repChange = posts.reduce((acc, val) => acc + val.votes, 0);
 			await Promise.all([
 				user.incrementUserPostCountBy(uid, -posts.length),
-				updateReputation(uid, -repChange),
+				user.incrementUserReputationBy(uid, -repChange),
 			]);
 		});
 	}
@@ -185,14 +185,6 @@ module.exports = function (Posts) {
 				await db.sortedSetIncrBy('tid:' + tid + ':posters', -posts.length, uid);
 			});
 		});
-	}
-
-	async function updateReputation(uid, change) {
-		if (!change) {
-			return;
-		}
-		const newReputation = await user.incrementUserFieldBy(uid, 'reputation', change);
-		await db.sortedSetAdd('users:reputation', newReputation, uid);
 	}
 
 	async function handleMainPidOwnerChange(postData, toUid) {
@@ -230,7 +222,10 @@ module.exports = function (Posts) {
 	async function reduceTopicCounts(postsByUser) {
 		await async.eachSeries(Object.keys(postsByUser), async function (uid) {
 			const posts = postsByUser[uid];
-			await user.incrementUserFieldBy(uid, 'topiccount', -posts.length);
+			const exists = await user.exists(uid);
+			if (exists) {
+				await user.incrementUserFieldBy(uid, 'topiccount', -posts.length);
+			}
 		});
 	}
 };
