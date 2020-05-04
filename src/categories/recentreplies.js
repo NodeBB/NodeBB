@@ -1,13 +1,14 @@
 
 'use strict';
 
-var _ = require('lodash');
+const _ = require('lodash');
 
-var db = require('../database');
-var posts = require('../posts');
-var topics = require('../topics');
-var privileges = require('../privileges');
-var batch = require('../batch');
+const db = require('../database');
+const posts = require('../posts');
+const topics = require('../topics');
+const privileges = require('../privileges');
+const plugins = require('../plugins');
+const batch = require('../batch');
 
 module.exports = function (Categories) {
 	Categories.getRecentReplies = async function (cid, uid, count) {
@@ -25,15 +26,16 @@ module.exports = function (Categories) {
 			db.getObjectField('category:' + cid, 'numRecentReplies'),
 		]);
 
-		if (count < numRecentReplies) {
-			return await db.sortedSetAdd('cid:' + cid + ':recent_tids', Date.now(), tid);
+		if (count >= numRecentReplies) {
+			const data = await db.getSortedSetRangeWithScores('cid:' + cid + ':recent_tids', 0, count - numRecentReplies);
+			const shouldRemove = !(data.length === 1 && count === 1 && data[0].value === String(tid));
+			if (data.length && shouldRemove) {
+				await db.sortedSetsRemoveRangeByScore(['cid:' + cid + ':recent_tids'], '-inf', data[data.length - 1].score);
+			}
 		}
-		const data = await db.getSortedSetRangeWithScores('cid:' + cid + ':recent_tids', 0, count - numRecentReplies);
-		const shouldRemove = !(data.length === 1 && count === 1 && data[0].value === String(tid));
-		if (data.length && shouldRemove) {
-			await db.sortedSetsRemoveRangeByScore(['cid:' + cid + ':recent_tids'], '-inf', data[data.length - 1].score);
-		}
+
 		await db.sortedSetAdd('cid:' + cid + ':recent_tids', Date.now(), tid);
+		await plugins.fireHook('filter:categories.updateRecentTid', { cid: cid, tid: tid });
 	};
 
 	Categories.updateRecentTidForCid = async function (cid) {
