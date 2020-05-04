@@ -138,7 +138,8 @@ module.exports = function (Topics) {
 
 		await Promise.all(promises);
 
-		topicData.isPinned = pin;
+		topicData.isPinned = pin; // deprecate in v2.0
+		topicData.pinned = pin;
 
 		plugins.fireHook('action:topic.pin', { topic: _.clone(topicData), uid: uid });
 
