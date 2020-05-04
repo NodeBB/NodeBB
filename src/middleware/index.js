@@ -84,14 +84,18 @@ middleware.pageView = function pageView(req, res, next) {
 
 middleware.pluginHooks = async function pluginHooks(req, res, next) {
 	// TODO: Deprecate in v2.0
-	await async.each(plugins.loadedHooks['filter:router.page'] || [], function (hookObj, next) {
-		hookObj.method(req, res, next);
-	});
+	try {
+		await async.each(plugins.loadedHooks['filter:router.page'] || [], function (hookObj, next) {
+			hookObj.method(req, res, next);
+		});
 
-	await plugins.fireHook('response:router.page', {
-		req: req,
-		res: res,
-	});
+		await plugins.fireHook('response:router.page', {
+			req: req,
+			res: res,
+		});
+	} catch (err) {
+		return next(err);
+	}
 
 	if (!res.headersSent) {
 		next();
