@@ -82,13 +82,20 @@ middleware.pageView = function pageView(req, res, next) {
 };
 
 
-middleware.pluginHooks = function pluginHooks(req, res, next) {
-	async.each(plugins.loadedHooks['filter:router.page'] || [], function (hookObj, next) {
+middleware.pluginHooks = async function pluginHooks(req, res, next) {
+	// TODO: Deprecate in v2.0
+	await async.each(plugins.loadedHooks['filter:router.page'] || [], function (hookObj, next) {
 		hookObj.method(req, res, next);
-	}, function (err) {
-		// If it got here, then none of the subscribed hooks did anything, or there were no hooks
-		next(err);
 	});
+
+	await plugins.fireHook('response:router.page', {
+		req: req,
+		res: res,
+	});
+
+	if (!res.headersSent) {
+		next();
+	}
 };
 
 middleware.validateFiles = function validateFiles(req, res, next) {
