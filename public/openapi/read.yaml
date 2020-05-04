@@ -4458,6 +4458,13 @@ paths:
                       assignee:
                         type: number
                         nullable: true
+                      filters:
+                        type: object
+                        properties:
+                          page:
+                            type: number
+                          perPage:
+                            type: number
                       history:
                         type: array
                         items:
