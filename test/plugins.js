@@ -11,6 +11,20 @@ var db = require('./mocks/databasemock');
 var plugins = require('../src/plugins');
 
 describe('Plugins', function () {
+	describe('Installed Plugins', async function () {
+		const installedPlugins = await plugins.showInstalled();
+		installedPlugins.forEach((plugin) => {
+			const pathToTests = path.join(__dirname, '../node_modules', plugin.id, 'test');
+			try {
+				require(pathToTests);
+			} catch (err) {
+				if (err.code !== 'MODULE_NOT_FOUND') {
+					console.log(err.stack);
+				}
+			}
+		});
+	});
+
 	it('should load plugin data', function (done) {
 		var pluginId = 'nodebb-plugin-markdown';
 		plugins.loadPlugin(path.join(nconf.get('base_dir'), 'node_modules/' + pluginId), function (err) {
