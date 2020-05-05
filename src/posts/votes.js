@@ -225,6 +225,7 @@ module.exports = function (Posts) {
 				downvotes: postData.downvotes,
 			}),
 		]);
+		plugins.fireHook('action:post.updatePostVoteCount', { post: postData });
 	};
 
 	async function updateTopicVoteCount(postData) {
