@@ -33,8 +33,9 @@ module.exports = function (Categories) {
 				await db.sortedSetsRemoveRangeByScore(['cid:' + cid + ':recent_tids'], '-inf', data[data.length - 1].score);
 			}
 		}
-
-		await db.sortedSetAdd('cid:' + cid + ':recent_tids', Date.now(), tid);
+		if (numRecentReplies > 0) {
+			await db.sortedSetAdd('cid:' + cid + ':recent_tids', Date.now(), tid);
+		}
 		await plugins.fireHook('action:categories.updateRecentTid', { cid: cid, tid: tid });
 	};
 
