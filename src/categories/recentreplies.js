@@ -35,7 +35,7 @@ module.exports = function (Categories) {
 		}
 
 		await db.sortedSetAdd('cid:' + cid + ':recent_tids', Date.now(), tid);
-		await plugins.fireHook('filter:categories.updateRecentTid', { cid: cid, tid: tid });
+		await plugins.fireHook('action:categories.updateRecentTid', { cid: cid, tid: tid });
 	};
 
 	Categories.updateRecentTidForCid = async function (cid) {
