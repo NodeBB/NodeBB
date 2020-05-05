@@ -5,6 +5,7 @@ const LRU = require('lru-cache');
 
 const db = require('../database');
 const pubsub = require('../pubsub');
+const plugins = require('../plugins');
 
 module.exports = function (User) {
 	User.blocks = {
@@ -63,6 +64,7 @@ module.exports = function (User) {
 		await User.incrementUserFieldBy(uid, 'blocksCount', 1);
 		User.blocks._cache.del(parseInt(uid, 10));
 		pubsub.publish('user:blocks:cache:del', parseInt(uid, 10));
+		plugins.fireHook('action:user.block.add', { uid: uid, targetUid: targetUid });
 	};
 
 	User.blocks.remove = async function (targetUid, uid) {
@@ -71,6 +73,7 @@ module.exports = function (User) {
 		await User.decrementUserFieldBy(uid, 'blocksCount', 1);
 		User.blocks._cache.del(parseInt(uid, 10));
 		pubsub.publish('user:blocks:cache:del', parseInt(uid, 10));
+		plugins.fireHook('action:user.block.remove', { uid: uid, targetUid: targetUid });
 	};
 
 	User.blocks.applyChecks = async function (type, targetUid, uid) {
@@ -115,6 +118,7 @@ module.exports = function (User) {
 		set = set.filter(function (item) {
 			return !blockedSet.has(parseInt(isPlain ? item : item[property], 10));
 		});
+		set = await plugins.fireHook('filter:user.block.filter', { set: set, property: property, uid: uid, blockedSet: blockedSet });
 
 		return set;
 	};
