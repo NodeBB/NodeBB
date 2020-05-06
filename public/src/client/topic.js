@@ -87,7 +87,7 @@ define('forum/topic', [
 
 		if (config.topicSearchEnabled) {
 			require(['mousetrap'], function (mousetrap) {
-				mousetrap.bind('ctrl+f', function (e) {
+				mousetrap.bind(['command+f', 'ctrl+f'], function (e) {
 					var match = ajaxify.currentPage.match(/^topic\/([\d]+)/);
 					var tid;
 					if (match) {
