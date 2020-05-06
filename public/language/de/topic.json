@@ -103,7 +103,7 @@
     "move_posts_instruction": "Klicke auf die Beiträge, die du verschieben möchstest.",
     "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "Hier den Titel des Themas eingeben...",
-    "composer.handle_placeholder": "Name",
+    "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "Verwerfen",
     "composer.submit": "Absenden",
     "composer.replying_to": "Antworte auf %1",

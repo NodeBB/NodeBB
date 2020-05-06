@@ -103,7 +103,7 @@
     "move_posts_instruction": "Click the posts you want to move",
     "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "Angiv din trådtittel her ...",
-    "composer.handle_placeholder": "Navn",
+    "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "Fortryd",
     "composer.submit": "Send",
     "composer.replying_to": "Svare til %1",

@@ -103,7 +103,7 @@
     "move_posts_instruction": "Click the posts you want to move",
     "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "Sisesta teema pealkiri siia...",
-    "composer.handle_placeholder": "Nimi",
+    "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "Katkesta",
     "composer.submit": "Postita",
     "composer.replying_to": "Vastad %1'le",

@@ -103,7 +103,7 @@
     "move_posts_instruction": "Click the posts you want to move",
     "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "Unesite naslov teme ovdje ...",
-    "composer.handle_placeholder": "Ime",
+    "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "Odbaci",
     "composer.submit": "Podnesi",
     "composer.replying_to": "Odgovori na %1",

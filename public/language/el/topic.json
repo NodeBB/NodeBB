@@ -103,7 +103,7 @@
     "move_posts_instruction": "Click the posts you want to move",
     "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "Εισαγωγή του τίτλου του θέματος εδώ...",
-    "composer.handle_placeholder": "Name",
+    "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "Πέταγμα",
     "composer.submit": "Υποβολή",
     "composer.replying_to": "Απάντηση στο %1",

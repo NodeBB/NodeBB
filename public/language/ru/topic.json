@@ -103,7 +103,7 @@
     "move_posts_instruction": "Нажмите на сообщения, которые вы хотите перенести",
     "change_owner_instruction": "Нажмите на сообщения, которые вы хотите присвоить другому пользователю",
     "composer.title_placeholder": "Введите название темы...",
-    "composer.handle_placeholder": "Название",
+    "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "Отменить",
     "composer.submit": "Отправить",
     "composer.replying_to": "Ответ %1",

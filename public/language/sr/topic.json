@@ -103,7 +103,7 @@
     "move_posts_instruction": "Кликните на поруке које желите да преместите",
     "change_owner_instruction": "Кликните на поруке које желите да доделите другом кориснику",
     "composer.title_placeholder": "Овде унесите назив теме...",
-    "composer.handle_placeholder": "Име",
+    "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "Одбаци",
     "composer.submit": "Пошаљи",
     "composer.replying_to": "Писање одговора на %1",

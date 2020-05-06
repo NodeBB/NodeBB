@@ -103,7 +103,7 @@
     "move_posts_instruction": "Taşımak istediğin iletilere tıklayın",
     "change_owner_instruction": "Başka kullanıcıya aktarmak istediğiniz iletileri seçiniz",
     "composer.title_placeholder": "Konu ismini buraya girin...",
-    "composer.handle_placeholder": "İsim",
+    "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "Vazgeç",
     "composer.submit": "Gönder",
     "composer.replying_to": "Yanıtlanan Konu %1",

@@ -103,7 +103,7 @@
     "move_posts_instruction": "Zaznacz posty, które chcesz przenieść",
     "change_owner_instruction": "Kliknij w posty, które chcesz przypisać do innego użytkownika",
     "composer.title_placeholder": "Tutaj wpisz tytuł tematu...",
-    "composer.handle_placeholder": "Nazwa",
+    "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "Odrzuć",
     "composer.submit": "Utwórz",
     "composer.replying_to": "Odpowiedź na %1",

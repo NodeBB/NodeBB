@@ -103,7 +103,7 @@
     "move_posts_instruction": "Click the posts you want to move",
     "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "Masukkan judul topik di sini...",
-    "composer.handle_placeholder": "Nama",
+    "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "Buang",
     "composer.submit": "Kirim",
     "composer.replying_to": "Membalas ke %1",

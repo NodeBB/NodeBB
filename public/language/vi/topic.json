@@ -103,7 +103,7 @@
     "move_posts_instruction": "Nhấp chuột vào bài viết bạn muốn di chuyển",
     "change_owner_instruction": "Bấm vào bài viết bạn muốn chỉ định cho người dùng khác",
     "composer.title_placeholder": "Nhập tiêu đề cho chủ đề của bạn tại đây...",
-    "composer.handle_placeholder": "Tên",
+    "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "Huỷ bỏ",
     "composer.submit": "Gửi",
     "composer.replying_to": "Đang trả lời %1",

@@ -103,7 +103,7 @@
     "move_posts_instruction": "Kliknite na príspevky, ktoré chcete presunúť",
     "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "Sem zadajte názov témy...",
-    "composer.handle_placeholder": "Meno",
+    "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "Zahodiť",
     "composer.submit": "Odoslať",
     "composer.replying_to": "Odpovedať na %1",

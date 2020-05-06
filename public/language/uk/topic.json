@@ -103,7 +103,7 @@
     "move_posts_instruction": "Натисніть на пости, які ви хочете перемістити",
     "change_owner_instruction": "Клікніть на дописи які ви хочете призначити іншому користувачу",
     "composer.title_placeholder": "Уведіть заголовок теми...",
-    "composer.handle_placeholder": "Ім'я",
+    "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "Скасувати",
     "composer.submit": "Надіслати",
     "composer.replying_to": "Відповідь для %1",

@@ -103,7 +103,7 @@
     "move_posts_instruction": "Klicka på de inlägg du vill flytta",
     "change_owner_instruction": "Klicka på de inlägg du vill tilldela en annan användare",
     "composer.title_placeholder": "Skriv in ämnets titel här...",
-    "composer.handle_placeholder": "Namn",
+    "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "Avbryt",
     "composer.submit": "Skicka",
     "composer.replying_to": "Svarar till %1",
