@@ -279,6 +279,8 @@ define('forum/category/tools', [
 					});
 				},
 			});
+
+			topicListEl.addClass('sortable-enabled');
 		});
 	}
 
