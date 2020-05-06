@@ -221,12 +221,12 @@ async function giveDefaultGlobalPrivileges() {
 
 async function enableDefaultPlugins() {
 	winston.info('Enabling default plugins\n');
-
+	const testPlugins = Array.isArray(nconf.get('test_plugins')) ? nconf.get('test_plugins') : [];
 	const defaultEnabled = [
 		'nodebb-plugin-dbsearch',
 		'nodebb-plugin-soundpack-default',
 		'nodebb-widget-essentials',
-	];
+	].concat(testPlugins);
 
 	winston.info('[install/enableDefaultPlugins] activating default plugins', defaultEnabled);
 
