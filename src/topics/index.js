@@ -69,7 +69,6 @@ Topics.getTopicsByTids = async function (tids, options) {
 
 	const [
 		callerSettings,
-		users,
 		userSettings,
 		categoriesData,
 		hasRead,
@@ -79,7 +78,6 @@ Topics.getTopicsByTids = async function (tids, options) {
 		tags,
 	] = await Promise.all([
 		user.getSettings(uid),
-		user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status']),
 		user.getMultipleUserSettings(uids),
 		categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'image', 'imageClass', 'bgColor', 'color', 'disabled']),
 		Topics.hasReadTopics(tids, uid),
@@ -89,11 +87,21 @@ Topics.getTopicsByTids = async function (tids, options) {
 		Topics.getTopicsTagsObjects(tids),
 	]);
 
-	users.forEach(function (user, index) {
-		if (meta.config.hideFullname || !userSettings[index].showfullname) {
-			user.fullname = undefined;
+	let users = await user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status']);
+	users = await Promise.all(users.map(async (userObj, idx) => {
+		// Retrieve guest handle from post
+		if (userObj.uid === 0) {
+			const handle = await posts.getPostField(topics[idx].mainPid, 'handle');
+			userObj.username = handle;
 		}
-	});
+
+		// Hide fullname if needed
+		if (meta.config.hideFullname || !userSettings[idx].showfullname) {
+			userObj.fullname = undefined;
+		}
+
+		return userObj;
+	}));
 
 	const usersMap = _.zipObject(uids, users);
 	const categoriesMap = _.zipObject(cids, categoriesData);
