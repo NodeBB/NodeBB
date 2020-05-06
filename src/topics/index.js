@@ -67,8 +67,13 @@ Topics.getTopicsByTids = async function (tids, options) {
 	const uids = _.uniq(topics.map(t => t && t.uid && t.uid.toString()).filter(v => utils.isNumber(v)));
 	const cids = _.uniq(topics.map(t => t && t.cid && t.cid.toString()).filter(v => utils.isNumber(v)));
 
+	const guestTopics = topics.filter(t => t.uid === 0);
+	async function loadGuestHandles() {
+		return await Promise.all(guestTopics.map(topic => posts.getPostField(topic.mainPid, 'handle')));
+	}
 	const [
 		callerSettings,
+		users,
 		userSettings,
 		categoriesData,
 		hasRead,
@@ -76,8 +81,10 @@ Topics.getTopicsByTids = async function (tids, options) {
 		bookmarks,
 		teasers,
 		tags,
+		guestHandles,
 	] = await Promise.all([
 		user.getSettings(uid),
+		user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status']),
 		user.getMultipleUserSettings(uids),
 		categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'image', 'imageClass', 'bgColor', 'color', 'disabled']),
 		Topics.hasReadTopics(tids, uid),
@@ -85,43 +92,39 @@ Topics.getTopicsByTids = async function (tids, options) {
 		Topics.getUserBookmarks(tids, uid),
 		Topics.getTeasers(topics, options),
 		Topics.getTopicsTagsObjects(tids),
+		loadGuestHandles(),
 	]);
 
-	let users = await user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status']);
-	users = await Promise.all(users.map(async (userObj, idx) => {
-		// Retrieve guest handle from post
-		if (userObj.uid === 0) {
-			const handle = await posts.getPostField(topics[idx].mainPid, 'handle');
-			userObj.username = handle;
-		}
-
+	users.forEach((userObj, idx) => {
 		// Hide fullname if needed
 		if (meta.config.hideFullname || !userSettings[idx].showfullname) {
 			userObj.fullname = undefined;
 		}
-
-		return userObj;
-	}));
+	});
 
 	const usersMap = _.zipObject(uids, users);
 	const categoriesMap = _.zipObject(cids, categoriesData);
+	const tidToGuestHandle = _.zipObject(guestTopics.map(t => t.tid), guestHandles);
 	const sortOldToNew = callerSettings.topicPostSort === 'newest_to_oldest';
-	for (var i = 0; i < topics.length; i += 1) {
-		if (topics[i]) {
-			topics[i].category = categoriesMap[topics[i].cid];
-			topics[i].user = usersMap[topics[i].uid];
-			topics[i].teaser = teasers[i] || null;
-			topics[i].tags = tags[i];
+	topics.forEach(function (topic, i) {
+		if (topic) {
+			topic.category = categoriesMap[topic.cid];
+			topic.user = usersMap[topic.uid];
+			if (tidToGuestHandle[topic.tid]) {
+				topic.user.username = tidToGuestHandle[topic.tid];
+			}
+			topic.teaser = teasers[i] || null;
+			topic.tags = tags[i];
 
-			topics[i].isOwner = topics[i].uid === parseInt(uid, 10);
-			topics[i].ignored = isIgnored[i];
-			topics[i].unread = !hasRead[i] && !isIgnored[i];
-			topics[i].bookmark = sortOldToNew ? Math.max(1, topics[i].postcount + 2 - bookmarks[i]) : bookmarks[i];
-			topics[i].unreplied = !topics[i].teaser;
+			topic.isOwner = topic.uid === parseInt(uid, 10);
+			topic.ignored = isIgnored[i];
+			topic.unread = !hasRead[i] && !isIgnored[i];
+			topic.bookmark = sortOldToNew ? Math.max(1, topic.postcount + 2 - bookmarks[i]) : bookmarks[i];
+			topic.unreplied = !topic.teaser;
 
-			topics[i].icons = [];
+			topic.icons = [];
 		}
-	}
+	});
 
 	topics = topics.filter(topic => topic && topic.category && !topic.category.disabled);
 
