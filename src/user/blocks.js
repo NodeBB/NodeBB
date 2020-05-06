@@ -118,8 +118,8 @@ module.exports = function (User) {
 		set = set.filter(function (item) {
 			return !blockedSet.has(parseInt(isPlain ? item : item[property], 10));
 		});
-		set = await plugins.fireHook('filter:user.blocks.filter', { set: set, property: property, uid: uid, blockedSet: blockedSet });
+		const data = await plugins.fireHook('filter:user.blocks.filter', { set: set, property: property, uid: uid, blockedSet: blockedSet });
 
-		return set;
+		return data.set;
 	};
 };
