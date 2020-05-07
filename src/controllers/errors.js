@@ -53,7 +53,7 @@ exports.handleErrors = function handleErrors(err, req, res, next) { // eslint-di
 			return res.locals.isAPI ? res.set('X-Redirect', err.path).status(200).json(err.path) : res.redirect(nconf.get('relative_path') + err.path);
 		}
 
-		winston.error(req.path + '\n', err);
+		winston.error(req.path + '\n' + err.stack);
 
 		res.status(status || 500);
 
