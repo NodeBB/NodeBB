@@ -103,7 +103,7 @@
     "move_posts_instruction": "Натиснете публикациите, които искате да преместите",
     "change_owner_instruction": "Натиснете публикациите, които искате да прехвърлите на друг потребител",
     "composer.title_placeholder": "Въведете заглавието на темата си тук...",
-    "composer.handle_placeholder": "Enter your name/handle here",
+    "composer.handle_placeholder": "Въведете името тук",
     "composer.discard": "Отхвърляне",
     "composer.submit": "Публикуване",
     "composer.replying_to": "Отговор на %1",
