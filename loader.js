@@ -231,7 +231,7 @@ fs.open(pathToConfig, 'r', function (err) {
 			cwd: process.cwd(),
 		});
 
-		fs.writeFileSync(pidFilePath, process.pid);
+		fs.writeFileSync(pidFilePath, String(process.pid));
 	}
 
 	async.series([
