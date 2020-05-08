@@ -194,6 +194,9 @@ define('forum/chats', [
 			if (e.target === components.get('chat/input').get(0)) {
 				// Retrieve message id from messages list
 				var message = components.get('chat/messages').find('.chat-message[data-self="1"]').last();
+				if (!message.length) {
+					return;
+				}
 				var lastMid = message.attr('data-mid');
 				var inputEl = components.get('chat/input');
 
@@ -485,7 +488,7 @@ define('forum/chats', [
 			app.updateUserStatus($('.chats-list [data-uid="' + data.uid + '"] [component="user/status"]'), data.status);
 		});
 
-		messages.onChatMessageEdit();
+		messages.addSocketListeners();
 
 		socket.on('event:chats.roomRename', function (data) {
 			var roomEl = components.get('chat/recent/room', data.roomId);

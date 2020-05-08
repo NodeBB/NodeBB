@@ -2,7 +2,7 @@
 
 const plugins = require('../plugins');
 const utils = require('../utils');
-const db = require('./../database');
+const db = require('../database');
 const batch = require('../batch');
 
 module.exports = function (Groups) {

@@ -103,7 +103,7 @@
     "move_posts_instruction": "לחץ על הפוסטים שאתה רוצה להזיז",
     "change_owner_instruction": "לחץ על ההודעה שהנך רוצה לשנות את בעל ההודעה",
     "composer.title_placeholder": "הכנס את כותרת הנושא כאן...",
-    "composer.handle_placeholder": "שם",
+    "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "ביטול",
     "composer.submit": "שלח",
     "composer.replying_to": "מגיב ל %1",

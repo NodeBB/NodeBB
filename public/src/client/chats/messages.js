@@ -129,14 +129,20 @@ define('forum/chats/messages', ['components', 'sounds', 'translator', 'benchpres
 				// By setting the `data-mid` attribute, I tell the chat code that I am editing a
 				// message, instead of posting a new one.
 				inputEl.attr('data-mid', messageId).addClass('editing');
-				inputEl.val(raw);
+				inputEl.val(raw).focus();
 			}
 		});
 	};
 
-	messages.onChatMessageEdit = function () {
+	messages.addSocketListeners = function () {
 		socket.removeListener('event:chats.edit', onChatMessageEdited);
 		socket.on('event:chats.edit', onChatMessageEdited);
+
+		socket.removeListener('event:chats.delete', onChatMessageDeleted);
+		socket.on('event:chats.delete', onChatMessageDeleted);
+
+		socket.removeListener('event:chats.restore', onChatMessageRestored);
+		socket.on('event:chats.restore', onChatMessageRestored);
 	};
 
 	function onChatMessageEdited(data) {
@@ -151,6 +157,18 @@ define('forum/chats/messages', ['components', 'sounds', 'translator', 'benchpres
 				}
 			});
 		});
+	}
+
+	function onChatMessageDeleted(messageId) {
+		components.get('chat/message', messageId)
+			.toggleClass('deleted', true)
+			.find('[component="chat/message/body"]').translateHtml('[[modules:chat.message-deleted]]');
+	}
+
+	function onChatMessageRestored(message) {
+		components.get('chat/message', message.messageId)
+			.toggleClass('deleted', false)
+			.find('[component="chat/message/body"]').html(message.content);
 	}
 
 	messages.delete = function (messageId, roomId) {

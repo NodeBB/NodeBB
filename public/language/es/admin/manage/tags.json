@@ -12,8 +12,7 @@
 	"settings": "Haz click<a href=\"%1\">aquí</a> para visitar la página de configuración de etiquetas (tags).",
 	"name": "Nombre de Etiqueta (tag)",
 
-	"alerts.editing-multiple": "Editando múltiples etiquetas (tags)",
-	"alerts.editing-x": "Editar \"%1\" etiqueta (tag)",
+	"alerts.editing": "Editing tag(s)",
 	"alerts.confirm-delete": "¿Quieres borrar las etiquetas (tags) seleccionadas?",
 	"alerts.update-success": "¡Etiqueta (tag) Actualizada!"
 }

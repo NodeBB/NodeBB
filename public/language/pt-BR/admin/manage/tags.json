@@ -12,8 +12,7 @@
 	"settings": "Clique <a href=\"%1\">aqui</a> para visitar a página de configurações de tag.",
 	"name": "Nome da Tag",
 
-	"alerts.editing-multiple": "Editando múltiplas tags",
-	"alerts.editing-x": "Editando a Tag \"%1\"",
+	"alerts.editing": "Editing tag(s)",
 	"alerts.confirm-delete": "Você deseja excluir as tags selecionadas?",
 	"alerts.update-success": "Tag Atualizada!"
 }

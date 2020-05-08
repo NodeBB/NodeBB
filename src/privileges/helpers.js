@@ -16,11 +16,26 @@ const uidToSystemGroup = {
 	'-1': 'spiders',
 };
 
+helpers.isUsersAllowedTo = async function (privilege, uids, cid) {
+	const [hasUserPrivilege, hasGroupPrivilege] = await Promise.all([
+		groups.isMembers(uids, 'cid:' + cid + ':privileges:' + privilege),
+		groups.isMembersOfGroupList(uids, 'cid:' + cid + ':privileges:groups:' + privilege),
+	]);
+	const allowed = uids.map((uid, index) => hasUserPrivilege[index] || hasGroupPrivilege[index]);
+	const result = await plugins.fireHook('filter:privileges:isUsersAllowedTo', { allowed: allowed, privilege: privilege, uids: uids, cid: cid });
+	return result.allowed;
+};
+
 helpers.isUserAllowedTo = async function (privilege, uid, cid) {
+	let allowed;
 	if (Array.isArray(privilege) && !Array.isArray(cid)) {
-		return await isUserAllowedToPrivileges(privilege, uid, cid);
+		allowed = await isUserAllowedToPrivileges(privilege, uid, cid);
 	} else if (Array.isArray(cid) && !Array.isArray(privilege)) {
-		return await isUserAllowedToCids(privilege, uid, cid);
+		allowed = await isUserAllowedToCids(privilege, uid, cid);
+	}
+	if (allowed) {
+		const result = await plugins.fireHook('filter:privileges:isUserAllowedTo', { allowed: allowed, privilege: privilege, uid: uid, cid: cid });
+		return result.allowed;
 	}
 	throw new Error('[[error:invalid-data]]');
 };
@@ -62,14 +77,6 @@ async function checkIfAllowed(uid, userKeys, groupKeys) {
 	]);
 	return userKeys.map((key, index) => hasUserPrivilege[index] || hasGroupPrivilege[index]);
 }
-
-helpers.isUsersAllowedTo = async function (privilege, uids, cid) {
-	const [hasUserPrivilege, hasGroupPrivilege] = await Promise.all([
-		groups.isMembers(uids, 'cid:' + cid + ':privileges:' + privilege),
-		groups.isMembersOfGroupList(uids, 'cid:' + cid + ':privileges:groups:' + privilege),
-	]);
-	return uids.map((uid, index) => hasUserPrivilege[index] || hasGroupPrivilege[index]);
-};
 
 async function isSystemGroupAllowedToCids(privilege, uid, cids) {
 	const groupKeys = cids.map(cid => 'cid:' + cid + ':privileges:groups:' + privilege);

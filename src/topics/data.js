@@ -106,4 +106,8 @@ function modifyTopic(topic, fields) {
 	if (topic.hasOwnProperty('upvotes') && topic.hasOwnProperty('downvotes')) {
 		topic.votes = topic.upvotes - topic.downvotes;
 	}
+
+	if (fields.includes('teaserPid') || !fields.length) {
+		topic.teaserPid = topic.teaserPid || null;
+	}
 }

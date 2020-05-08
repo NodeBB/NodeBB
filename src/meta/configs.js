@@ -8,7 +8,7 @@ const util = require('util');
 
 const db = require('../database');
 const pubsub = require('../pubsub');
-const Meta = require('../meta');
+const Meta = require('./index');
 const cacheBuster = require('./cacheBuster');
 const defaults = require('../../install/data/defaults');
 
@@ -145,6 +145,27 @@ Configs.setOnEmpty = async function (values) {
 
 Configs.remove = async function (field) {
 	await db.deleteObjectField('config', field);
+};
+
+Configs.cookie = {
+	get: () => {
+		const cookie = {};
+
+		if (nconf.get('cookieDomain') || Meta.config.cookieDomain) {
+			cookie.domain = nconf.get('cookieDomain') || Meta.config.cookieDomain;
+		}
+
+		if (nconf.get('secure')) {
+			cookie.secure = true;
+		}
+
+		var relativePath = nconf.get('relative_path');
+		if (relativePath !== '') {
+			cookie.path = relativePath;
+		}
+
+		return cookie;
+	},
 };
 
 async function processConfig(data) {

@@ -103,7 +103,7 @@
     "move_posts_instruction": "点击您想要移动的帖子",
     "change_owner_instruction": "点击您想转移给其他用户的帖子",
     "composer.title_placeholder": "在此输入您主题的标题...",
-    "composer.handle_placeholder": "姓名",
+    "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "撤销",
     "composer.submit": "提交",
     "composer.replying_to": "正在回复 %1",

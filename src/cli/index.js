@@ -82,10 +82,9 @@ program
 	.version(pkg.version)
 	.option('--json-logging', 'Output to logs in JSON format', false)
 	.option('--log-level <level>', 'Default logging level to use', 'info')
+	.option('--config <value>', 'Specify a config file', 'config.json')
 	.option('-d, --dev', 'Development mode, including verbose logging', false)
-	.option('-l, --log', 'Log subprocess output to console', false)
-	.option('-c, --config <value>', 'Specify a config file', 'config.json')
-	.parse(process.argv);
+	.option('-l, --log', 'Log subprocess output to console', false);
 
 nconf.argv().env({
 	separator: '__',
@@ -98,7 +97,7 @@ global.env = env;
 prestart.setupWinston();
 
 // Alternate configuration file support
-var	configFile = path.resolve(dirname, program.config);
+var	configFile = path.resolve(dirname, nconf.get('config') || 'config.json');
 var configExists = file.existsSync(configFile) || (nconf.get('url') && nconf.get('secret') && nconf.get('database'));
 
 prestart.loadConfig(configFile);
@@ -167,6 +166,7 @@ program
 program
 	.command('setup [config]')
 	.description('Run the NodeBB setup script, or setup with an initial config')
+	.option('--skip-build', 'Run setup without building assets')
 	.action(function (initConfig) {
 		if (initConfig) {
 			try {

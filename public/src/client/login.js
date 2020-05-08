@@ -41,6 +41,7 @@ define('forum/login', [], function () {
 
 						app.updateHeader(data, function () {
 							ajaxify.go(data.next);
+							app.flags._sessionRefresh = false;
 							$(window).trigger('action:app.loggedIn', data);
 						});
 					},

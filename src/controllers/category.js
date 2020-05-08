@@ -103,7 +103,7 @@ categoryController.get = async function (req, res, next) {
 
 	addTags(categoryData, res);
 
-	categoryData['feeds:disableRSS'] = meta.config['feeds:disableRSS'];
+	categoryData['feeds:disableRSS'] = meta.config['feeds:disableRSS'] || 0;
 	categoryData['reputation:disabled'] = meta.config['reputation:disabled'];
 	pageCount = Math.max(1, Math.ceil(categoryData.topic_count / userSettings.topicsPerPage));
 	categoryData.pagination = pagination.create(currentPage, pageCount, req.query);
@@ -122,6 +122,7 @@ async function buildBreadcrumbs(req, categoryData) {
 		{
 			text: categoryData.name,
 			url: nconf.get('relative_path') + '/category/' + categoryData.slug,
+			cid: categoryData.cid,
 		},
 	];
 	const crumbs = await helpers.buildCategoryBreadcrumbs(categoryData.parentCid);

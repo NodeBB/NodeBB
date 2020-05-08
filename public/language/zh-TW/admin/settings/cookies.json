@@ -1,12 +1,12 @@
 {
-	"eu-consent": "EU Consent",
-	"consent.enabled": "Enabled",
-	"consent.message": "Notification message",
-	"consent.acceptance": "Acceptance message",
-	"consent.link-text": "Policy Link Text",
-	"consent.link-url": "Policy Link URL",
-	"consent.blank-localised-default": "Leave blank to use NodeBB localised defaults",
-	"settings": "Settings",
-	"cookie-domain": "Session cookie domain",
-	"blank-default": "Leave blank for default"
+	"eu-consent": "歐盟 Cookies 政策",
+	"consent.enabled": "啟用選項",
+	"consent.message": "通知訊息",
+	"consent.acceptance": "接受訊息",
+	"consent.link-text": "政策連結文字",
+	"consent.link-url": "政策地址連結",
+	"consent.blank-localised-default": "留白以便使用 NodeBB 本地預設值",
+	"settings": "設定",
+	"cookie-domain": "Session cookie 域名",
+	"blank-default": "留白以保持預設"
 }

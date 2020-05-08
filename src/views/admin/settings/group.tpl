@@ -21,7 +21,7 @@
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="allowMultipleBadges">
-					<span class="mdl-switch__label"><strong>Allow Multiple Badges</strong></span>
+					<span class="mdl-switch__label"><strong>[[admin/settings/group:allow-multiple-badges]]</strong></span>
 				</label>
 			</div>
 

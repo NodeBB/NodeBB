@@ -91,10 +91,8 @@ define('admin/manage/tags', [
 			}
 
 			var firstTag = $(tagsToModify[0]);
-			var title = tagsToModify.length > 1 ? '[[admin/manage/tags:alerts.editing-multiple]]' : '[[admin/manage/tags:alerts.editing-x, ' + firstTag.find('.tag-item').attr('data-tag') + ']]';
-
 			var modal = bootbox.dialog({
-				title: title,
+				title: '[[admin/manage/tags:alerts.editing]]',
 				message: firstTag.find('.tag-modal').html(),
 				buttons: {
 					success: {
@@ -140,11 +138,8 @@ define('admin/manage/tags', [
 				return;
 			}
 
-			var firstTag = $(tagsToModify[0]);
-			var title = tagsToModify.length > 1 ? '[[admin/manage/tags:alerts.editing-multiple]]' : '[[admin/manage/tags:alerts.editing-x, ' + firstTag.find('.tag-item').attr('data-tag') + ']]';
-
 			var modal = bootbox.dialog({
-				title: title,
+				title: '[[admin/manage/tags:alerts.editing]]',
 				message: $('.rename-modal').html(),
 				buttons: {
 					success: {

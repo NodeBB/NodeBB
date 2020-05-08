@@ -1,6 +1,7 @@
 'use strict';
 
 const validator = require('validator');
+const nconf = require('nconf');
 
 const meta = require('../meta');
 const groups = require('../groups');
@@ -29,18 +30,28 @@ groupsController.list = async function (req, res) {
 };
 
 groupsController.details = async function (req, res, next) {
+	const lowercaseSlug = req.params.slug.toLowerCase();
+	if (req.params.slug !== lowercaseSlug) {
+		if (res.locals.isAPI) {
+			req.params.slug = lowercaseSlug;
+		} else {
+			return res.redirect(nconf.get('relative_path') + '/groups/' + lowercaseSlug);
+		}
+	}
 	const groupName = await groups.getGroupNameByGroupSlug(req.params.slug);
 	if (!groupName) {
 		return next();
 	}
-	const [exists, isHidden] = await Promise.all([
+	const [exists, isHidden, isAdmin, isGlobalMod] = await Promise.all([
 		groups.exists(groupName),
 		groups.isHidden(groupName),
+		user.isAdministrator(req.uid),
+		user.isGlobalModerator(req.uid),
 	]);
 	if (!exists) {
 		return next();
 	}
-	if (isHidden) {
+	if (isHidden && !isAdmin && !isGlobalMod) {
 		const [isMember, isInvited] = await Promise.all([
 			groups.isMember(req.uid, groupName),
 			groups.isInvited(req.uid, groupName),
@@ -49,15 +60,13 @@ groupsController.details = async function (req, res, next) {
 			return next();
 		}
 	}
-	const [groupData, posts, isAdmin, isGlobalMod] = await Promise.all([
+	const [groupData, posts] = await Promise.all([
 		groups.get(groupName, {
 			uid: req.uid,
 			truncateUserList: true,
 			userListCount: 20,
 		}),
 		groups.getLatestMemberPosts(groupName, 10, req.uid),
-		user.isAdministrator(req.uid),
-		user.isGlobalModerator(req.uid),
 	]);
 	if (!groupData) {
 		return next();
@@ -108,22 +117,4 @@ groupsController.members = async function (req, res, next) {
 		pagination: pagination.create(page, pageCount, req.query),
 		breadcrumbs: breadcrumbs,
 	});
-};
-
-groupsController.uploadCover = async function (req, res, next) {
-	const params = JSON.parse(req.body.params);
-
-	try {
-		const isOwner = await groups.ownership.isOwner(req.uid, params.groupName);
-		if (!isOwner) {
-			throw new Error('[[error:no-privileges]]');
-		}
-		const image = await groups.updateCover(req.uid, {
-			file: req.files.files[0],
-			groupName: params.groupName,
-		});
-		res.json([{ url: image.url }]);
-	} catch (err) {
-		next(err);
-	}
 };

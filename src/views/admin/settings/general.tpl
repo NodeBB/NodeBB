@@ -8,7 +8,8 @@
 		<form>
 			<label>[[admin/settings/general:title]]</label>
 			<input class="form-control" type="text" placeholder="[[admin/settings/general:title.name]]" data-field="title" />
-
+			<label for="title:short">[[admin/settings/general:title.short]]</label>
+			<input id="title:short" type="text" class="form-control" placeholder="[[admin/settings/general:title.short-placeholder]]" data-field="title:short" />
 			<label for="title:url">[[admin/settings/general:title.url]]</label>
 			<input id ="title:url" type="text" class="form-control" placeholder="[[admin/settings/general:title.url-placeholder]]" data-field="title:url" />
 			<p class="help-block">
@@ -143,8 +144,8 @@
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input type="checkbox" class="mdl-switch__input" id="showSiteTitle" data-field="useOutgoingLinksPage">
+				<label for="useOutgoingLinksPage" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input type="checkbox" class="mdl-switch__input" id="useOutgoingLinksPage" data-field="useOutgoingLinksPage">
 					<span class="mdl-switch__label"><strong>[[admin/settings/general:outgoing-links.warning-page]]</strong></span>
 				</label>
 			</div>
@@ -153,6 +154,22 @@
 				<label for="outgoingLinks:whitelist">[[admin/settings/general:outgoing-links.whitelist]]</label><br />
 				<input id="outgoingLinks:whitelist" type="text" class="form-control" placeholder="subdomain.domain.com" data-field="outgoingLinks:whitelist" data-field-type="tagsinput" />
 			</div>
+		</form>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/general:site-colors]]</div>
+	<div class="col-sm-10 col-xs-12">
+		<form>
+			<label>[[admin/settings/general:theme-color]]</label>
+			<input type="text" class="form-control" placeholder="#ffffff" data-field="themeColor" />
+
+			<label>[[admin/settings/general:background-color]]</label>
+			<input type="text" class="form-control" placeholder="#ffffff" data-field="backgroundColor" />
+			<p class="help-block">
+				[[admin/settings/general:background-color-help]]
+			</p>
 		</form>
 	</div>
 </div>

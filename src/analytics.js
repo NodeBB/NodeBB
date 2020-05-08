@@ -148,6 +148,11 @@ Analytics.writeData = async function () {
 };
 
 Analytics.getHourlyStatsForSet = async function (set, hour, numHours) {
+	// Guard against accidental ommission of `analytics:` prefix
+	if (!set.startsWith('analytics:')) {
+		set = 'analytics:' + set;
+	}
+
 	const terms = {};
 	const hoursArr = [];
 
@@ -176,6 +181,11 @@ Analytics.getHourlyStatsForSet = async function (set, hour, numHours) {
 };
 
 Analytics.getDailyStatsForSet = async function (set, day, numDays) {
+	// Guard against accidental ommission of `analytics:` prefix
+	if (!set.startsWith('analytics:')) {
+		set = 'analytics:' + set;
+	}
+
 	const daysArr = [];
 	day = new Date(day);
 	day.setDate(day.getDate() + 1);	// set the date to tomorrow, because getHourlyStatsForSet steps *backwards* 24 hours to sum up the values
@@ -183,7 +193,7 @@ Analytics.getDailyStatsForSet = async function (set, day, numDays) {
 
 	while (numDays > 0) {
 		/* eslint-disable no-await-in-loop */
-		const dayData = await Analytics.getHourlyStatsForSet(set, day.getTime() - (1000 * 60 * 60 * 24 * numDays), 24);
+		const dayData = await Analytics.getHourlyStatsForSet(set, day.getTime() - (1000 * 60 * 60 * 24 * (numDays - 1)), 24);
 		daysArr.push(dayData.reduce((cur, next) => cur + next));
 		numDays -= 1;
 	}

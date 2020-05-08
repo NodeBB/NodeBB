@@ -82,6 +82,7 @@ module.exports = function (Messaging) {
 		messages = await Promise.all(messages.map(async (message) => {
 			if (message.system) {
 				message.content = validator.escape(String(message.content));
+				message.cleanedContent = utils.stripHTMLTags(utils.decodeHTMLEntities(message.content));
 				return message;
 			}
 
@@ -100,6 +101,8 @@ module.exports = function (Messaging) {
 					message.newSet = true;
 				} else if (index > 0 && message.fromuid !== messages[index - 1].fromuid) {
 					// If the previous message was from the other person, this is also a new set
+					message.newSet = true;
+				} else if (index === 0) {
 					message.newSet = true;
 				}
 

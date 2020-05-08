@@ -1,5 +1,6 @@
 {
-	"you-are-on": "Info - Tu lieto <strong>%1:%2</strong>",
+	"you-are-on": "You are on <strong>%1:%2</strong>",
+	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "%1 serveri atbildēja %2ms laikā!",
 	"host": "serveris",
 	"pid": "pid",

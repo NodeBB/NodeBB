@@ -195,6 +195,7 @@ authenticationController.registerComplete = function (req, res, next) {
 authenticationController.registerAbort = function (req, res) {
 	// End the session and redirect to home
 	req.session.destroy(function () {
+		res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
 		res.redirect(nconf.get('relative_path') + '/');
 	});
 };
@@ -423,9 +424,7 @@ authenticationController.logout = async function (req, res, next) {
 		req.logout();
 
 		await destroyAsync(req);
-		res.clearCookie(nconf.get('sessionKey'), {
-			path: nconf.get('relative_path'),
-		});
+		res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
 		req.uid = 0;
 		req.headers['x-csrf-token'] = req.csrfToken();
 

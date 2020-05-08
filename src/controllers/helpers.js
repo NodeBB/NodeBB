@@ -159,6 +159,7 @@ helpers.buildCategoryBreadcrumbs = async function (cid) {
 			breadcrumbs.unshift({
 				text: String(data.name),
 				url: nconf.get('relative_path') + '/category/' + data.slug,
+				cid: cid,
 			});
 		}
 		cid = data.parentCid;

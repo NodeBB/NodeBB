@@ -153,7 +153,7 @@ define('taskbar', ['benchpress', 'translator'], function (Benchpress, translator
 		translator.translate(data.options.title, function (taskTitle) {
 			var title = $('<div></div>').text(taskTitle || 'NodeBB Task').html();
 
-			var	taskbarEl = $('<li />')
+			var	taskbarEl = $('<li></li>')
 				.addClass(data.options.className)
 				.html('<a href="#"' + (data.options.image ? ' style="background-image: url(\'' + data.options.image + '\'); background-size: cover;"' : '') + '>' +
 					(data.options.icon ? '<i class="fa ' + data.options.icon + '"></i> ' : '') +
@@ -200,6 +200,9 @@ define('taskbar', ['benchpress', 'translator'], function (Benchpress, translator
 
 	taskbar.update = function (module, uuid, options) {
 		var element = taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"]');
+		if (!element.length) {
+			return;
+		}
 		var data = element.data();
 
 		Object.keys(options).forEach(function (key) {

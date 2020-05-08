@@ -1467,33 +1467,6 @@ describe('Groups', function () {
 			});
 		});
 
-		it('should error if user is not owner of group', function (done) {
-			helpers.loginUser('regularuser', '123456', function (err, jar, csrf_token) {
-				assert.ifError(err);
-				helpers.uploadFile(nconf.get('url') + '/api/groups/uploadpicture', logoPath, { params: JSON.stringify({ groupName: 'Test' }) }, jar, csrf_token, function (err, res, body) {
-					assert.ifError(err);
-					assert.equal(res.statusCode, 500);
-					assert.equal(body.error, '[[error:no-privileges]]');
-					done();
-				});
-			});
-		});
-
-		it('should upload group cover with api route', function (done) {
-			helpers.loginUser('admin', '123456', function (err, jar, csrf_token) {
-				assert.ifError(err);
-				helpers.uploadFile(nconf.get('url') + '/api/groups/uploadpicture', logoPath, { params: JSON.stringify({ groupName: 'Test' }) }, jar, csrf_token, function (err, res, body) {
-					assert.ifError(err);
-					assert.equal(res.statusCode, 200);
-					Groups.getGroupFields('Test', ['cover:url'], function (err, groupData) {
-						assert.ifError(err);
-						assert.equal(nconf.get('relative_path') + body[0].url, groupData['cover:url']);
-						done();
-					});
-				});
-			});
-		});
-
 		it('should fail to remove cover if not logged in', function (done) {
 			socketGroups.cover.remove({ uid: 0 }, { groupName: 'Test' }, function (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');

@@ -87,7 +87,7 @@ define('forum/topic', [
 
 		if (config.topicSearchEnabled) {
 			require(['mousetrap'], function (mousetrap) {
-				mousetrap.bind('ctrl+f', function (e) {
+				mousetrap.bind(['command+f', 'ctrl+f'], function (e) {
 					var match = ajaxify.currentPage.match(/^topic\/([\d]+)/);
 					var tid;
 					if (match) {
@@ -241,6 +241,9 @@ define('forum/topic', [
 	function updateUserBookmark(index) {
 		var bookmarkKey = 'topic:' + ajaxify.data.tid + ':bookmark';
 		var currentBookmark = ajaxify.data.bookmark || storage.getItem(bookmarkKey);
+		if (config.topicPostSort === 'newest_to_oldest') {
+			index = Math.max(1, ajaxify.data.postcount - index + 2);
+		}
 
 		if (ajaxify.data.postcount > ajaxify.data.bookmarkThreshold && (!currentBookmark || parseInt(index, 10) > parseInt(currentBookmark, 10) || ajaxify.data.postcount < parseInt(currentBookmark, 10))) {
 			if (app.user.uid) {

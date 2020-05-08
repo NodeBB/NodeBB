@@ -1,7 +1,7 @@
 {
-	"notifications": "告示",
-	"welcome-notification": "歡迎告示",
-	"welcome-notification-link": "歡迎告示連結",
-	"welcome-notification-uid": "Welcome Notification User (UID)",
-	"notification-alert-timeout": "Notification Alert Timeout"
+	"notifications": "通知",
+	"welcome-notification": "歡迎通知",
+	"welcome-notification-link": "歡迎通知連結",
+	"welcome-notification-uid": "歡迎通知使用者 (UID)",
+	"notification-alert-timeout": "通知與警吿逾時時間"
 }

@@ -1,73 +1,108 @@
 'use strict';
 
-var async = require('async');
+const db = require('../database');
+const plugins = require('../plugins');
+const Meta = require('./index');
+const pubsub = require('../pubsub');
 
-var db = require('../database');
-var plugins = require('../plugins');
-var Meta = require('../meta');
-var pubsub = require('../pubsub');
+const Settings = module.exports;
 
-var Settings = module.exports;
+Settings.get = async function (hash) {
+	const data = await db.getObject('settings:' + hash) || {};
+	const sortedLists = await db.getSetMembers('settings:' + hash + ':sorted-lists');
 
-Settings.get = function (hash, callback) {
-	db.getObject('settings:' + hash, function (err, settings) {
-		callback(err, settings || {});
-	});
+	await Promise.all(sortedLists.map(async function (list) {
+		const members = await db.getSortedSetRange('settings:' + hash + ':sorted-list:' + list, 0, -1) || [];
+		const keys = [];
+
+		data[list] = [];
+		for (const order of members) {
+			keys.push('settings:' + hash + ':sorted-list:' + list + ':' + order);
+		}
+
+		const objects = await db.getObjects(keys);
+		objects.forEach(function (obj) {
+			data[list].push(obj);
+		});
+	}));
+
+	return data;
 };
 
-Settings.getOne = function (hash, field, callback) {
-	db.getObjectField('settings:' + hash, field, callback);
+Settings.getOne = async function (hash, field) {
+	const data = await Settings.get(hash);
+	return data[field] !== undefined ? data[field] : null;
 };
 
-Settings.set = function (hash, values, quiet, callback) {
-	if (!callback && typeof quiet === 'function') {
-		callback = quiet;
-		quiet = false;
-	} else {
-		quiet = quiet || false;
+Settings.set = async function (hash, values, quiet) {
+	quiet = quiet || false;
+
+	const sortedLists = [];
+
+	for (const key in values) {
+		if (values.hasOwnProperty(key)) {
+			if (Array.isArray(values[key]) && typeof values[key][0] !== 'string') {
+				sortedLists.push(key);
+			}
+		}
 	}
 
-	async.waterfall([
-		function (next) {
-			db.setObject('settings:' + hash, values, next);
-		},
-		function (next) {
-			plugins.fireHook('action:settings.set', {
-				plugin: hash,
-				settings: values,
+	if (sortedLists.length) {
+		await db.delete('settings:' + hash + ':sorted-lists');
+		await db.setAdd('settings:' + hash + ':sorted-lists', sortedLists);
+
+		await Promise.all(sortedLists.map(async function (list) {
+			await db.delete('settings:' + hash + ':sorted-list:' + list);
+			await Promise.all(values[list].map(async function (data, order) {
+				await db.delete('settings:' + hash + ':sorted-list:' + list + ':' + order);
+			}));
+		}));
+
+		const ops = [];
+		sortedLists.forEach(function (list) {
+			const arr = values[list];
+			delete values[list];
+
+			arr.forEach(function (data, order) {
+				ops.push(db.sortedSetAdd('settings:' + hash + ':sorted-list:' + list, order, order));
+				ops.push(db.setObject('settings:' + hash + ':sorted-list:' + list + ':' + order, data));
 			});
-			pubsub.publish('action:settings.set.' + hash, values);
-			Meta.reloadRequired = !quiet;
-			next();
-		},
-	], callback);
+		});
+
+		await Promise.all(ops);
+	}
+
+	if (Object.keys(values).length) {
+		await db.setObject('settings:' + hash, values);
+	}
+
+	plugins.fireHook('action:settings.set', {
+		plugin: hash,
+		settings: values,
+	});
+
+	pubsub.publish('action:settings.set.' + hash, values);
+	Meta.reloadRequired = !quiet;
 };
 
-Settings.setOne = function (hash, field, value, callback) {
-	var data = {};
+Settings.setOne = async function (hash, field, value) {
+	const data = {};
 	data[field] = value;
-	Settings.set(hash, data, callback);
+	await Settings.set(hash, data);
 };
 
-Settings.setOnEmpty = function (hash, values, callback) {
-	async.waterfall([
-		function (next) {
-			db.getObject('settings:' + hash, next);
-		},
-		function (settings, next) {
-			settings = settings || {};
-			var empty = {};
-			Object.keys(values).forEach(function (key) {
-				if (!settings.hasOwnProperty(key)) {
-					empty[key] = values[key];
-				}
-			});
+Settings.setOnEmpty = async function (hash, values) {
+	const settings = await Settings.get(hash) || {};
+	const empty = {};
 
-			if (Object.keys(empty).length) {
-				Settings.set(hash, empty, next);
-			} else {
-				next();
-			}
-		},
-	], callback);
+	Object.keys(values).forEach(function (key) {
+		if (!settings.hasOwnProperty(key)) {
+			empty[key] = values[key];
+		}
+	});
+
+
+	if (Object.keys(empty).length) {
+		await Settings.set(hash, empty);
+	}
 };

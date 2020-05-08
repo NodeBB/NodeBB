@@ -103,7 +103,7 @@
     "move_posts_instruction": "بر روی پستی که می خواهید انتقال دهید کلیک کنید",
     "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "عنوان موضوعتان را اینجا بنویسید...",
-    "composer.handle_placeholder": "نام",
+    "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "دور بیانداز",
     "composer.submit": "بفرست",
     "composer.replying_to": "پاسخ به %1",

@@ -15,6 +15,7 @@
 	"headers.acah": "Access-Control-Allow-Headers",
 	"hsts": "Přísné zabezpečení přenosu",
 	"hsts.enabled": "Povolit HSTS (doporučeno)",
+	"hsts.maxAge": "HSTS Max Age",
 	"hsts.subdomains": "Zahrnout poddomény v hlavičce HSTS",
 	"hsts.preload": "Povolit před-načtení hlavičky HSTS",
 	"hsts.help": "Je-li povoleno, bude nastavena pro tyto stránky hlavička HSTS . Můžete si v hlavičce zvolit zahrnutí i poddomén a přednastavených příznaků. Nejste-li si jist/a, ponechte nezaškrtnuté<a href=\"%1\">Více informací <i class=\"fa fa-external-link\"></i></a>",

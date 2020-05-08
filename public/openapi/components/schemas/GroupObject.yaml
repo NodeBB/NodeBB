@@ -1,0 +1,133 @@
+GroupFullObject:
+  type: object
+  description: The response from an internal call to `Groups.get(<groupname>)`
+  properties:
+    name:
+      type: string
+      description: The group name
+    slug:
+      type: string
+      description: URL-safe slug of the group name
+    createtime:
+      type: number
+      description: UNIX timestamp of the group's creation
+    userTitle:
+      type: number
+      description: Label text for the user badge
+    userTitleEnabled:
+      type: number
+    description:
+      type: string
+      description: The group description
+    memberCount:
+      type: number
+    hidden:
+      type: number
+    system:
+      type: number
+    private:
+      type: number
+    disableJoinRequests:
+      type: number
+    disableLeave:
+      type: number
+    nameEncoded:
+      type: string
+    displayName:
+      type: string
+      description: A custom override of the group's name, a friendly name
+    labelColor:
+      type: string
+      description: A six-character hexadecimal colour code
+    textColor:
+      type: string
+      description: A six-character hexadecimal colour code
+    icon:
+      type: string
+      description: A FontAwesome icon string
+    createtimeISO:
+      type: string
+      description: "`createtime` rendered as an ISO 8601 format"
+    cover:thumb:url:
+      type: string
+    cover:url:
+      type: string
+    cover:position:
+      type: string
+    descriptionParsed:
+      type: string
+    members:
+      type: array
+      items:
+        $ref: UserObject.yaml#/UserObjectSlim
+    membersNextStart:
+      type: number
+    pending:
+      type: array
+    invited:
+      type: array
+    isMember:
+      type: boolean
+    isPending:
+      type: boolean
+    isInvited:
+      type: boolean
+    isOwner:
+      type: boolean
+  nullable: true
+GroupDataObject:
+  type: object
+  description: The response from an internal call to `Groups.getGroupData(<groupname>, [])` with **explicitly** no fields passed in
+  properties:
+    name:
+      type: string
+      description: The group name
+    slug:
+      type: string
+      description: URL-safe slug of the group name
+    createtime:
+      type: number
+      description: UNIX timestamp of the group's creation
+    userTitle:
+      type: number
+      description: Label text for the user badge
+    userTitleEnabled:
+      type: number
+    description:
+      type: string
+      description: The group description
+    memberCount:
+      type: number
+    hidden:
+      type: number
+    system:
+      type: number
+    private:
+      type: number
+    disableJoinRequests:
+      type: number
+    disableLeave:
+      type: number
+    cover:url:
+      type: string
+    cover:thumb:url:
+      type: string
+    nameEncoded:
+      type: string
+    displayName:
+      type: string
+      description: A custom override of the group's name, a friendly name
+    labelColor:
+      type: string
+      description: A six-character hexadecimal colour code
+    textColor:
+      type: string
+      description: A six-character hexadecimal colour code
+    icon:
+      type: string
+      description: A FontAwesome icon string
+    createtimeISO:
+      type: string
+      description: "`createtime` rendered as an ISO 8601 format"
+    cover:position:
+      type: string

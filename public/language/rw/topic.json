@@ -103,7 +103,7 @@
     "move_posts_instruction": "Click the posts you want to move",
     "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "Shyira umutwe w'ikiganiro cyawe aha...",
-    "composer.handle_placeholder": "Izina",
+    "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "Byihorere",
     "composer.submit": "Shyiraho",
     "composer.replying_to": "Gusubiza %1",

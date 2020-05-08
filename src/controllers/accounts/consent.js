@@ -19,7 +19,7 @@ consentController.get = async function (req, res, next) {
 	const consented = await db.getObjectField('user:' + userData.uid, 'gdpr_consent');
 	userData.gdpr_consent = parseInt(consented, 10) === 1;
 	userData.digest = {
-		frequency: meta.config.dailyDigestFreq,
+		frequency: meta.config.dailyDigestFreq || 'off',
 		enabled: meta.config.dailyDigestFreq !== 'off',
 	};
 

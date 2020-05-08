@@ -17,26 +17,25 @@ module.exports = function (Topics) {
 			getSearchTids(tid, uid),
 		]);
 
-		tids = tagTids.concat(searchTids);
-		tids = tids.filter(_tid => _tid !== tid);
-		tids = _.shuffle(_.uniq(tids));
+		tids = tagTids.concat(searchTids).filter(_tid => _tid !== tid);
 		let categoryTids = [];
 		if (stop !== -1 && tids.length < stop - start + 1) {
 			categoryTids = await getCategoryTids(tid);
 		}
-		tids = _.uniq(tids.concat(categoryTids)).slice(start, stop !== -1 ? stop + 1 : undefined);
+		tids = _.shuffle(_.uniq(tids.concat(categoryTids)));
 		tids = await privileges.topics.filterTids('topics:read', tids, uid);
 
 		let topicData = await Topics.getTopicsByTids(tids, uid);
 		topicData = topicData.filter(topic => topic && !topic.deleted && topic.tid !== tid);
 		topicData = await user.blocks.filter(uid, topicData);
+		topicData = topicData.slice(start, stop !== -1 ? stop + 1 : undefined);
 		return topicData;
 	};
 
 	async function getTidsWithSameTags(tid) {
 		const tags = await Topics.getTopicTags(tid);
 		const tids = await db.getSortedSetRevRange(tags.map(tag => 'tag:' + tag + ':topics'), 0, -1);
-		return _.uniq(tids).map(Number);
+		return _.shuffle(_.uniq(tids)).slice(0, 10).map(Number);
 	}
 
 	async function getSearchTids(tid, uid) {
@@ -49,7 +48,7 @@ module.exports = function (Topics) {
 			uid: uid,
 			returnIds: true,
 		});
-		return _.shuffle(data.tids).slice(0, 20).map(Number);
+		return _.shuffle(data.tids).slice(0, 10).map(Number);
 	}
 
 	async function getCategoryTids(tid) {

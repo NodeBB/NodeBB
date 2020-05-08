@@ -103,7 +103,7 @@
     "move_posts_instruction": "Click the posts you want to move",
     "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "ป้อนชื่อกระทู้ของคุณที่นี่ ...",
-    "composer.handle_placeholder": "ชื่อ",
+    "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "ยกเลิก",
     "composer.submit": "ส่ง",
     "composer.replying_to": "ตอบไปยัง  %1",

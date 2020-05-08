@@ -15,6 +15,7 @@
 	"headers.acah": "Erişim-Kontrolü-Başlık-İzni",
 	"hsts": "STS",
 	"hsts.enabled": "HSTS'yi etkinleştir (önerilir)",
+	"hsts.maxAge": "HSTS Max Age",
 	"hsts.subdomains": "Alt alanları HSTS üstbilgisine ekle",
 	"hsts.preload": "HSTS üst bilgisinin ön yüklemesine izin ver",
 	"hsts.help": "Etkinleştirildiğinde, bu site için bir HSTS başlığı ayarlanır. Alt alanları ve önyükleme bayraklarını dahil etmeyi seçebilirsiniz. Kararsızsanız, bu alanı işaretlenmemiş olarak bırakabilirsiniz. <a href=\"%1\">Daha fazla bilgi <i class=\"fa fa-external-link\"></i></a>",

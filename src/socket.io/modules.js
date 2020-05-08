@@ -8,7 +8,7 @@ const notifications = require('../notifications');
 const plugins = require('../plugins');
 const Messaging = require('../messaging');
 const utils = require('../utils');
-const server = require('./');
+const server = require('./index');
 const user = require('../user');
 const privileges = require('../privileges');
 
@@ -196,7 +196,7 @@ SocketModules.chats.delete = async function (socket, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	await Messaging.canDelete(data.messageId, socket.uid);
-	await Messaging.deleteMessage(data.messageId);
+	await Messaging.deleteMessage(data.messageId, socket.uid);
 };
 
 SocketModules.chats.restore = async function (socket, data) {
@@ -204,7 +204,7 @@ SocketModules.chats.restore = async function (socket, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	await Messaging.canDelete(data.messageId, socket.uid);
-	await Messaging.restoreMessage(data.messageId);
+	await Messaging.restoreMessage(data.messageId, socket.uid);
 };
 
 SocketModules.chats.canMessage = async function (socket, roomId) {

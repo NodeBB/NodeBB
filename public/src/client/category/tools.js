@@ -254,9 +254,15 @@ define('forum/category/tools', [
 	}
 
 	function handlePinnedTopicSort() {
-		if (!ajaxify.data.privileges.isAdminOrMod) {
+		var numPinned = ajaxify.data.topics.reduce(function (memo, topic) {
+			memo = topic.pinned ? memo += 1 : memo;
+			return memo;
+		}, 0);
+
+		if (!ajaxify.data.privileges.isAdminOrMod || numPinned < 2) {
 			return;
 		}
+
 		app.loadJQueryUI(function () {
 			var topicListEl = $('[component="category"]').filter(function (i, e) {
 				return !$(e).parents('[widget-area],[data-widget-area]').length;

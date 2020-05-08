@@ -1,5 +1,6 @@
 {
-	"you-are-on": "Info - Sie verwenden <strong>%1:%2</strong>",
+	"you-are-on": "You are on <strong>%1:%2</strong>",
+	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "%1 Knoten antworteten innerhalb von %2ms",
 	"host": "Host",
 	"pid": "PID",

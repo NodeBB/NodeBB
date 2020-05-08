@@ -103,7 +103,7 @@
     "move_posts_instruction": "Cliquez sur les messages que vous souhaitez déplacer",
     "change_owner_instruction": "Cliquez sur les messages que vous souhaitez attribuer à un autre utilisateur.",
     "composer.title_placeholder": "Entrer le titre du sujet ici…",
-    "composer.handle_placeholder": "Nom",
+    "composer.handle_placeholder": "Entrez votre nom/identifiant ici",
     "composer.discard": "Abandonner",
     "composer.submit": "Envoyer",
     "composer.replying_to": "En réponse à %1",

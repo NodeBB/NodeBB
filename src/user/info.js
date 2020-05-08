@@ -4,7 +4,6 @@ var _ = require('lodash');
 var validator = require('validator');
 
 var db = require('../database');
-var user = require('../user');
 var posts = require('../posts');
 var topics = require('../topics');
 var utils = require('../../public/src/utils');
@@ -97,12 +96,12 @@ module.exports = function (User) {
 	async function formatBanData(bans) {
 		const banData = await db.getObjects(bans);
 		const uids = banData.map(banData => banData.fromUid);
-		const usersData = await user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture']);
+		const usersData = await User.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture']);
 		return banData.map(function (banObj, index) {
 			banObj.user = usersData[index];
 			banObj.until = parseInt(banObj.expire, 10);
 			banObj.untilReadable = new Date(banObj.until).toString();
-			banObj.timestampReadable = new Date(banObj.timestamp).toString();
+			banObj.timestampReadable = new Date(parseInt(banObj.timestamp, 10)).toString();
 			banObj.timestampISO = utils.toISOString(banObj.timestamp);
 			banObj.reason = validator.escape(String(banObj.reason || '')) || '[[user:info.banned-no-reason]]';
 			return banObj;

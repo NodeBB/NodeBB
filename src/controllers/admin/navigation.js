@@ -28,7 +28,7 @@ navigationController.get = async function (req, res) {
 	});
 
 	admin.available.forEach(function (available) {
-		available.groups = groups;
+		available.groups = admin.groups;
 	});
 
 	admin.navigation = admin.enabled.slice();

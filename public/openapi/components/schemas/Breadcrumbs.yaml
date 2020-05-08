@@ -1,0 +1,16 @@
+Breadcrumbs:
+  type: object
+  properties:
+    breadcrumbs:
+      type: array
+      items:
+        type: object
+        properties:
+          text:
+            type: string
+          url:
+            type: string
+          cid:
+            type: number
+        required:
+          - text

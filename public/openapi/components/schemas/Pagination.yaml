@@ -1,0 +1,64 @@
+Pagination:
+  type: object
+  properties:
+    pagination:
+      type: object
+      properties:
+        prev:
+          type: object
+          properties:
+            page:
+              type: number
+            active:
+              type: boolean
+        next:
+          type: object
+          properties:
+            page:
+              type: number
+            active:
+              type: boolean
+        first:
+          type: object
+          properties:
+            page:
+              type: number
+            active:
+              type: boolean
+        last:
+          type: object
+          properties:
+            page:
+              type: number
+            active:
+              type: boolean
+        rel:
+          type: array
+          description: A collection of objects used to build the link tags pointing to adjacent pages, if any.
+          items:
+            type: object
+            properties:
+              rel:
+                type: string
+                enum: [prev, next]
+              href:
+                type: string
+                description: A query string that points to the previous or next page
+        pages:
+          type: array
+          items:
+            type: object
+            properties:
+              page:
+                type: number
+                description: The current page
+              active:
+                type: boolean
+                description: If the page noted in this array is the current page
+              qs:
+                type: string
+                description: A query string that points to the page noted in this array
+        currentPage:
+          type: number
+        pageCount:
+          type: number

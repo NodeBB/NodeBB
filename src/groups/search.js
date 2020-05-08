@@ -1,7 +1,7 @@
 'use strict';
 
 const user = require('../user');
-const db = require('./../database');
+const db = require('../database');
 
 module.exports = function (Groups) {
 	Groups.search = async function (query, options) {

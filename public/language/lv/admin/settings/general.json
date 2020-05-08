@@ -1,6 +1,8 @@
 {
 	"site-settings": "Foruma iestatījumi",
 	"title": "Foruma nosaukums",
+	"title.short": "Short Title",
+	"title.short-placeholder": "If no short title is specified, the site title will be used",
 	"title.url": "URL",
 	"title.url-placeholder": "Foruma virsrakta URL",
 	"title.url-help": "Kad virsraksts tiek noklikšķināts, nosūtīt uz šo adresi. Ja ir tukšs, nosūtīt uz foruma sākumlapu.",
@@ -31,5 +33,9 @@
 	"outgoing-links": "Izejošās saites",
 	"outgoing-links.warning-page": "Lietot izejošo saišu brīdinājuma lapu",
 	"search-default-sort-by": "Noklusējuma kārtošana",
-	"outgoing-links.whitelist": "Domēni, kuriem apiet brīdinājuma lapu"
+	"outgoing-links.whitelist": "Domēni, kuriem apiet brīdinājuma lapu",
+	"site-colors": "Site Color Metadata",
+	"theme-color": "Theme Color",
+	"background-color": "Background Color",
+	"background-color-help": "Color used for splash screen background when website is installed as a PWA"
 }

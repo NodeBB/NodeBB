@@ -40,14 +40,13 @@ Messaging.getMessages = async (params) => {
 	});
 	mids.reverse();
 
-	let messageData = await Messaging.getMessagesData(mids, params.uid, params.roomId, isNew);
+	const messageData = await Messaging.getMessagesData(mids, params.uid, params.roomId, isNew);
 	messageData.forEach(function (messageData) {
 		messageData.index = indices[messageData.messageId.toString()];
-	});
-
-	// Filter out deleted messages unless you're the sender of said message
-	messageData = messageData.filter(function (messageData) {
-		return (!messageData.deleted || messageData.fromuid === parseInt(params.uid, 10));
+		messageData.isOwner = messageData.fromuid === parseInt(params.uid, 10);
+		if (messageData.deleted && !messageData.isOwner) {
+			messageData.content = '[[modules:chat.message-deleted]]';
+		}
 	});
 
 	return messageData;
@@ -100,9 +99,7 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 		unread: db.isSortedSetMembers('uid:' + uid + ':chat:rooms:unread', roomIds),
 		users: Promise.all(roomIds.map(async (roomId) => {
 			let uids = await db.getSortedSetRevRange('chat:room:' + roomId + ':uids', 0, 9);
-			uids = uids.filter(function (value) {
-				return value && parseInt(value, 10) !== parseInt(uid, 10);
-			});
+			uids = uids.filter(_uid => _uid && parseInt(_uid, 10) !== parseInt(uid, 10));
 			return await user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline']);
 		})),
 		teasers: Promise.all(roomIds.map(async roomId => Messaging.getTeaser(uid, roomId))),

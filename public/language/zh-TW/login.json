@@ -1,12 +1,12 @@
 {
-    "username-email": "帳號 / 電子郵件",
-    "username": "帳號",
-    "email": "電子郵件",
-    "remember_me": "記住我？",
+    "username-email": "使用者名 / 電子信箱",
+    "username": "使用者名",
+    "email": "電子信箱",
+    "remember_me": "保持登入？",
     "forgot_password": "忘記密碼？",
-    "alternative_logins": "其他登入方式",
+    "alternative_logins": "使用合作網站帳戶登錄",
     "failed_login_attempt": "登入失敗",
-    "login_successful": "你已成功登入！",
-    "dont_have_account": "還沒有帳號？",
-    "logged-out-due-to-inactivity": "你已登出管理控制台，因為一段時間沒有任何動作。"
+    "login_successful": "您已成功登入！",
+    "dont_have_account": "沒有帳戶？",
+    "logged-out-due-to-inactivity": "由於長時間沒有活動，您的帳戶已被管理員從後台登出"
 }

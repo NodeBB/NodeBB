@@ -186,7 +186,7 @@ async function render(req, res, data) {
 	data.adminInviteOnly = registrationType === 'admin-invite-only';
 	data.invites = await user.getInvitesNumber(req.uid);
 	data.showInviteButton = req.loggedIn && (
-		(registrationType === 'invite-only' && (!data.maximumInvites || data.invites < data.maximumInvites)) ||
+		(registrationType === 'invite-only' && (data.isAdmin || !data.maximumInvites || data.invites < data.maximumInvites)) ||
 		(registrationType === 'admin-invite-only' && data.isAdmin)
 	);
 	data['reputation:disabled'] = meta.config['reputation:disabled'];

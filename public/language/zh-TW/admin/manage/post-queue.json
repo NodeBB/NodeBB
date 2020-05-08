@@ -1,11 +1,11 @@
 {
-	"post-queue": "Post Queue",
-	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
-	"user": "User",
-	"category": "Category",
-	"title": "Title",
-	"content": "Content",
-	"posted": "Posted",
-	"reply-to": "Reply to \"%1\"",
-	"content-editable": "You can click on individual content to edit before posting."
+	"post-queue": "貼文隊列",
+	"description": "貼文隊列中暫無新貼文。啟用此功能，請前往設定&rarr;貼文&rarr;貼文隊列，然後啟用貼文隊列。",
+	"user": "使用者",
+	"category": "版面",
+	"title": "標題",
+	"content": "內容",
+	"posted": "發佈",
+	"reply-to": "回覆\"%1\"",
+	"content-editable": "發文前，您可以點擊內容進行編輯。"
 }

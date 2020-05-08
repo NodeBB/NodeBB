@@ -46,8 +46,6 @@ module.exports = function (Topics) {
 		if (!tag) {
 			throw new Error('[[error:invalid-tag]]');
 		}
-
-		tag = utils.cleanUpTag(tag, meta.config.maximumTagLength);
 		if (tag.length < (meta.config.minimumTagLength || 3)) {
 			throw new Error('[[error:tag-too-short]]');
 		}
@@ -77,6 +75,7 @@ module.exports = function (Topics) {
 		if (!newTagName || tag === newTagName) {
 			return;
 		}
+		newTagName = utils.cleanUpTag(newTagName, meta.config.maximumTagLength);
 		await Topics.createEmptyTag(newTagName);
 		await batch.processSortedSet('tag:' + tag + ':topics', async function (tids) {
 			const scores = await db.sortedSetScores('tag:' + tag + ':topics', tids);
@@ -299,7 +298,8 @@ module.exports = function (Topics) {
 
 	Topics.getRelatedTopics = async function (topicData, uid) {
 		if (plugins.hasListeners('filter:topic.getRelatedTopics')) {
-			return await plugins.fireHook('filter:topic.getRelatedTopics', { topic: topicData, uid: uid });
+			const result = await plugins.fireHook('filter:topic.getRelatedTopics', { topic: topicData, uid: uid, topics: [] });
+			return result.topics;
 		}
 
 		let maximumTopics = meta.config.maximumRelatedTopics;

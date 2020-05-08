@@ -128,7 +128,6 @@ module.exports = function (Groups) {
 	}
 
 	async function checkNameChange(currentName, newName) {
-		Groups.validateGroupName(newName);
 		if (Groups.isPrivilegeGroup(newName)) {
 			throw new Error('[[error:invalid-group-name]]');
 		}
@@ -137,6 +136,7 @@ module.exports = function (Groups) {
 		if (currentName === newName || currentSlug === newSlug) {
 			return;
 		}
+		Groups.validateGroupName(newName);
 		const [group, exists] = await Promise.all([
 			Groups.getGroupData(currentName),
 			Groups.existsBySlug(newSlug),

@@ -103,7 +103,7 @@
     "move_posts_instruction": "Clicca sui post che vuoi spostare",
     "change_owner_instruction": "Clicca sui post che vuoi assegnare ad un altro utente",
     "composer.title_placeholder": "Inserisci qui il titolo della discussione...",
-    "composer.handle_placeholder": "Nome",
+    "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "Annulla",
     "composer.submit": "Invia",
     "composer.replying_to": "Rispondendo a %1",

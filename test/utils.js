@@ -3,7 +3,7 @@
 
 var assert = require('assert');
 var JSDOM = require('jsdom').JSDOM;
-var utils = require('./../public/src/utils.js');
+var utils = require('../public/src/utils.js');
 const db = require('./mocks/databasemock');
 
 describe('Utility Methods', function () {

@@ -7,7 +7,7 @@ var readline = require('readline');
 var winston = require('winston');
 
 var db = require('./database');
-var file = require('../src/file');
+var file = require('./file');
 
 /*
  * Need to write an upgrade script for NodeBB? Cool.

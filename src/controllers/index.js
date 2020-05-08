@@ -247,9 +247,12 @@ Controllers.robots = function (req, res) {
 Controllers.manifest = function (req, res, next) {
 	var manifest = {
 		name: meta.config.title || 'NodeBB',
+		short_name: meta.config['title:short'] || meta.config.title || 'NodeBB',
 		start_url: nconf.get('relative_path') + '/',
 		display: 'standalone',
 		orientation: 'portrait',
+		theme_color: meta.config.themeColor || '#ffffff',
+		background_color: meta.config.backgroundColor || '#ffffff',
 		icons: [],
 	};
 
@@ -284,6 +287,11 @@ Controllers.manifest = function (req, res, next) {
 			sizes: '192x192',
 			type: 'image/png',
 			density: 4.0,
+		}, {
+			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-512.png',
+			sizes: '512x512',
+			type: 'image/png',
+			density: 10.0,
 		});
 	}
 	plugins.fireHook('filter:manifest.build', { req: req, res: res, manifest: manifest }, function (err, data) {

@@ -5,6 +5,7 @@ const async = require('async');
 
 const db = require('../database');
 const posts = require('../posts');
+const categories = require('../categories');
 const privileges = require('../privileges');
 const plugins = require('../plugins');
 const meta = require('../meta');
@@ -101,6 +102,7 @@ module.exports = function (Topics) {
 			await db.sortedSetIncrBy('cid:' + topicData[1].cid + ':tids:posts', 1, toTid);
 		}
 		if (topicData[0].cid === topicData[1].cid) {
+			await categories.updateRecentTidForCid(topicData[0].cid);
 			return;
 		}
 		const removeFrom = [
@@ -118,6 +120,11 @@ module.exports = function (Topics) {
 		if (postData.votes > 0) {
 			tasks.push(db.sortedSetAdd('cid:' + topicData[1].cid + ':uid:' + postData.uid + ':pids:votes', postData.votes, postData.pid));
 		}
+
 		await Promise.all(tasks);
+		await Promise.all([
+			categories.updateRecentTidForCid(topicData[0].cid),
+			categories.updateRecentTidForCid(topicData[1].cid),
+		]);
 	}
 };

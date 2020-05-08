@@ -103,7 +103,7 @@
     "move_posts_instruction": "Clique nas postagens que você deseja mover",
     "change_owner_instruction": "Clique na postagem que você quer associar a outro usuário",
     "composer.title_placeholder": "Digite aqui o título para o seu tópico...",
-    "composer.handle_placeholder": "Nome",
+    "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "Descartar",
     "composer.submit": "Enviar",
     "composer.replying_to": "Respondendo para %1",

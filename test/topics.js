@@ -1071,7 +1071,7 @@ describe('Topic\'s', function () {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 200);
 				assert(body);
-				assert.deepEqual(body, {
+				assert.deepEqual(body.pagination, {
 					prev: { page: 1, active: false },
 					next: { page: 1, active: false },
 					first: { page: 1, active: true },

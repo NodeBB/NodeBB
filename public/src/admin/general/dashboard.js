@@ -234,6 +234,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 							id: 'left-y-axis',
 							ticks: {
 								beginAtZero: true,
+								precision: 0,
 							},
 							type: 'linear',
 							position: 'left',
@@ -246,6 +247,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 							ticks: {
 								beginAtZero: true,
 								suggestedMax: 10,
+								precision: 0,
 							},
 							type: 'linear',
 							position: 'right',

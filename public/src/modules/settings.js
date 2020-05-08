@@ -10,6 +10,7 @@ define('settings', function () {
 		'settings/array',
 		'settings/key',
 		'settings/object',
+		'settings/sorted-list',
 	];
 
 	var Settings;
@@ -271,6 +272,25 @@ define('settings', function () {
 				onReady.push(callback);
 			}
 		},
+		serializeForm: function (formEl) {
+			var values = formEl.serializeObject();
+
+			// "Fix" checkbox values, so that unchecked options are not omitted
+			formEl.find('input[type="checkbox"]').each(function (idx, inputEl) {
+				inputEl = $(inputEl);
+				if (!inputEl.is(':checked')) {
+					values[inputEl.attr('name')] = 'off';
+				}
+			});
+
+			// save multiple selects as json arrays
+			formEl.find('select[multiple]').each(function (idx, selectEl) {
+				selectEl = $(selectEl);
+				values[selectEl.attr('name')] = JSON.stringify(selectEl.val());
+			});
+
+			return values;
+		},
 		/**
 		 Persists the given settings with given hash.
 		 @param hash The hash to use as settings-id.
@@ -456,7 +476,6 @@ define('settings', function () {
 				if (err) {
 					return callback(err);
 				}
-
 				// multipe selects are saved as json arrays, parse them here
 				$(formEl).find('select[multiple]').each(function (idx, selectEl) {
 					var key = $(selectEl).attr('name');
@@ -471,6 +490,12 @@ define('settings', function () {
 
 				// Save loaded settings into ajaxify.data for use client-side
 				ajaxify.data.settings = values;
+
+				helper.whenReady(function () {
+					$(formEl).find('[data-sorted-list]').each(function (idx, el) {
+						getHook(el, 'get').call(Settings, $(el), hash);
+					});
+				});
 
 				$(formEl).deserialize(values);
 				$(formEl).find('input[type="checkbox"]').each(function () {
@@ -489,21 +514,15 @@ define('settings', function () {
 		},
 		save: function (hash, formEl, callback) {
 			formEl = $(formEl);
+
 			if (formEl.length) {
-				var values = formEl.serializeObject();
+				var values = helper.serializeForm(formEl);
 
-				// "Fix" checkbox values, so that unchecked options are not omitted
-				formEl.find('input[type="checkbox"]').each(function (idx, inputEl) {
-					inputEl = $(inputEl);
-					if (!inputEl.is(':checked')) {
-						values[inputEl.attr('name')] = 'off';
+				helper.whenReady(function () {
+					var list = formEl.find('[data-sorted-list]');
+					if (list.length) {
+						getHook(list, 'set').call(Settings, list, values);
 					}
-				});
-
-				// save multiple selects as json arrays
-				formEl.find('select[multiple]').each(function (idx, selectEl) {
-					selectEl = $(selectEl);
-					values[selectEl.attr('name')] = JSON.stringify(selectEl.val());
 				});
 
 				socket.emit('admin.settings.set', {

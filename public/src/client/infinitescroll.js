@@ -7,6 +7,7 @@ define('forum/infinitescroll', function () {
 	var previousScrollTop = 0;
 	var loadingMore	= false;
 	var container;
+	var scrollTimeout = 0;
 
 	scroll.init = function (el, cb) {
 		if (typeof el === 'function') {
@@ -17,8 +18,18 @@ define('forum/infinitescroll', function () {
 			container = el || $('body');
 		}
 		previousScrollTop = $(window).scrollTop();
-		$(window).off('scroll', onScroll).on('scroll', onScroll);
+		$(window).off('scroll', startScrollTimeout).on('scroll', startScrollTimeout);
 	};
+
+	function startScrollTimeout() {
+		if (scrollTimeout) {
+			clearTimeout(scrollTimeout);
+		}
+		scrollTimeout = setTimeout(function () {
+			scrollTimeout = 0;
+			onScroll();
+		}, 60);
+	}
 
 	function onScroll() {
 		var bsEnv = utils.findBootstrapEnvironment();
@@ -32,9 +43,8 @@ define('forum/infinitescroll', function () {
 		var offsetTop = container.offset() ? container.offset().top : 0;
 		var scrollPercent = 100 * (currentScrollTop - offsetTop) / (viewportHeight <= 0 ? wh : viewportHeight);
 
-		var top = 20;
-		var bottom = 80;
-
+		var top = 15;
+		var bottom = 85;
 		var direction = currentScrollTop > previousScrollTop ? 1 : -1;
 
 		if (scrollPercent < top && currentScrollTop < previousScrollTop) {

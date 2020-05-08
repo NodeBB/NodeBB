@@ -101,6 +101,7 @@ define('admin/manage/category-analytics', ['Chart'], function (Chart) {
 					yAxes: [{
 						ticks: {
 							beginAtZero: true,
+							precision: 0,
 						},
 					}],
 				},
@@ -120,6 +121,7 @@ define('admin/manage/category-analytics', ['Chart'], function (Chart) {
 					yAxes: [{
 						ticks: {
 							beginAtZero: true,
+							precision: 0,
 						},
 					}],
 				},
@@ -139,6 +141,7 @@ define('admin/manage/category-analytics', ['Chart'], function (Chart) {
 					yAxes: [{
 						ticks: {
 							beginAtZero: true,
+							precision: 0,
 						},
 					}],
 				},
@@ -158,6 +161,7 @@ define('admin/manage/category-analytics', ['Chart'], function (Chart) {
 					yAxes: [{
 						ticks: {
 							beginAtZero: true,
+							precision: 0,
 						},
 					}],
 				},

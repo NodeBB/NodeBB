@@ -46,7 +46,7 @@ define('iconSelect', ['benchpress'], function (Benchpress) {
 						className: 'btn-primary',
 						callback: function () {
 							var iconClass = $('.bootbox .selected').attr('class');
-							var categoryIconClass = $('<div/>').addClass(iconClass).removeClass('fa').removeClass('selected')
+							var categoryIconClass = $('<div></div>').addClass(iconClass).removeClass('fa').removeClass('selected')
 								.attr('class');
 
 							if (categoryIconClass) {
