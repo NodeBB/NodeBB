@@ -175,19 +175,15 @@ function calculateTopicPostCount(category) {
 		return;
 	}
 
-	var postCount = category.post_count;
-	var topicCount = category.topic_count;
-	if (!Array.isArray(category.children) || !category.children.length) {
-		category.totalPostCount = postCount;
-		category.totalTopicCount = topicCount;
-		return;
+	let postCount = category.post_count;
+	let topicCount = category.topic_count;
+	if (Array.isArray(category.children)) {
+		category.children.forEach(function (child) {
+			calculateTopicPostCount(child);
+			postCount += parseInt(child.totalPostCount, 10) || 0;
+			topicCount += parseInt(child.totalTopicCount, 10) || 0;
+		});
 	}
-
-	category.children.forEach(function (child) {
-		calculateTopicPostCount(child);
-		postCount += parseInt(child.totalPostCount, 10) || 0;
-		topicCount += parseInt(child.totalTopicCount, 10) || 0;
-	});
 
 	category.totalPostCount = postCount;
 	category.totalTopicCount = topicCount;
