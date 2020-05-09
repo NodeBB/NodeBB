@@ -62,12 +62,24 @@ module.exports = function (Categories) {
 		}
 	};
 
-	Categories.getRecentTopicReplies = async function (categoryData, uid) {
+	Categories.getRecentTopicReplies = async function (categoryData, uid, query) {
 		if (!Array.isArray(categoryData) || !categoryData.length) {
 			return;
 		}
-		const categoriesToLoad = categoryData.filter(category => category && category.numRecentReplies && parseInt(category.numRecentReplies, 10) > 0);
-		const keys = categoriesToLoad.map(category => 'cid:' + category.cid + ':recent_tids');
+		const categoriesToLoad = categoryData.filter(c => c && c.numRecentReplies && parseInt(c.numRecentReplies, 10) > 0);
+		let keys = [];
+		if (plugins.hasListeners('filter:categories.getRecentTopicReplies')) {
+			const result = await plugins.fireHook('filter:categories.getRecentTopicReplies', {
+				categories: categoriesToLoad,
+				uid: uid,
+				query: query,
+				keys: [],
+			});
+			keys = result.keys;
+		} else {
+			keys = categoriesToLoad.map(c => 'cid:' + c.cid + ':recent_tids');
+		}
+
 		const results = await db.getSortedSetsMembers(keys);
 		let tids = _.uniq(_.flatten(results).filter(Boolean));
 

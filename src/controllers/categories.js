@@ -19,7 +19,7 @@ categoriesController.list = async function (req, res) {
 
 	const categoryData = await categories.getCategoriesByPrivilege('categories:cid', req.uid, 'find');
 	const tree = categories.getTree(categoryData, 0);
-	await categories.getRecentTopicReplies(categoryData, req.uid);
+	await categories.getRecentTopicReplies(categoryData, req.uid, req.query);
 
 	const data = {
 		title: meta.config.homePageTitle || '[[pages:home]]',

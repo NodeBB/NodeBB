@@ -109,7 +109,7 @@ describe('Categories', function () {
 				uid: 0,
 			}, function (err, categoryData) {
 				assert.ifError(err);
-				Categories.getRecentTopicReplies(categoryData, 0, function (err) {
+				Categories.getRecentTopicReplies(categoryData, 0, {}, function (err) {
 					assert.ifError(err);
 					done();
 				});
