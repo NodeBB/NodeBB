@@ -69,7 +69,8 @@ DO UPDATE SET "score" = EXCLUDED."score"`,
 			return;
 		}
 		const isArrayOfScores = Array.isArray(scores);
-		if (!isArrayOfScores && !utils.isNumber(scores)) {
+		if ((!isArrayOfScores && !utils.isNumber(scores)) ||
+			(isArrayOfScores && scores.map(s => utils.isNumber(s)).includes(false))) {
 			throw new Error('[[error:invalid-score, ' + scores + ']]');
 		}
 
@@ -108,6 +109,9 @@ INSERT INTO "legacy_zset" ("_key", "value", "score")
 		const values = [];
 		const scores = [];
 		data.forEach(function (item) {
+			if (!utils.isNumber(item[1])) {
+				throw new Error('[[error:invalid-score, ' + item[1] + ']]');
+			}
 			keys.push(item[0]);
 			scores.push(item[1]);
 			values.push(item[2]);
