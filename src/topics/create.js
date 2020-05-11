@@ -13,6 +13,7 @@ var meta = require('../meta');
 var posts = require('../posts');
 var privileges = require('../privileges');
 var categories = require('../categories');
+const translator = require('../translator');
 
 module.exports = function (Topics) {
 	Topics.create = async function (data) {
@@ -180,7 +181,13 @@ module.exports = function (Topics) {
 			user.setUserField(uid, 'lastonline', Date.now());
 		}
 
-		Topics.notifyFollowers(postData, uid);
+		Topics.notifyFollowers(postData, uid, {
+			type: 'new-reply',
+			bodyShort: translator.compile('notifications:user_posted_to', postData.user.username, postData.topic.title),
+			nid: 'new_post:tid:' + postData.topic.tid + ':pid:' + postData.pid + ':uid:' + uid,
+			mergeId: 'notifications:user_posted_to|' + postData.topic.tid,
+		});
+
 		analytics.increment(['posts', 'posts:byCid:' + data.cid]);
 		plugins.fireHook('action:topic.reply', { post: _.clone(postData), data: data });
 
