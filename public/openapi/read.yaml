@@ -7228,6 +7228,8 @@ paths:
                             type: string
                           notificationType_new-reply:
                             type: string
+                          notificationType_post-edit:
+                            type: string
                           sendChatNotifications:
                             nullable: true
                           sendPostNotifications:
