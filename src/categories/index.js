@@ -236,7 +236,7 @@ Categories.getChildrenCids = async function (rootCid) {
 		}
 		keys = childrenCids.map(cid => 'cid:' + cid + ':children');
 		childrenCids.forEach(cid => allCids.push(parseInt(cid, 10)));
-		recursive(keys);
+		await recursive(keys);
 	}
 	const key = 'cid:' + rootCid + ':children';
 	const childrenCids = cache.get(key);

@@ -910,4 +910,18 @@ describe('Categories', function () {
 			});
 		});
 	});
+
+	it('should return nested children categories', async function () {
+		const rootCategory = await Categories.create({ name: 'root' });
+		const child1 = await Categories.create({ name: 'child1', parentCid: rootCategory.cid });
+		const child2 = await Categories.create({ name: 'child2', parentCid: child1.cid });
+		const data = await Categories.getCategoryById({
+			uid: 1,
+			cid: rootCategory.cid,
+			start: 0,
+			stop: 19,
+		});
+		assert.strictEqual(child1.cid, data.children[0].cid);
+		assert.strictEqual(child2.cid, data.children[0].children[0].cid);
+	});
 });
