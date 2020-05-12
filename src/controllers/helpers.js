@@ -222,7 +222,7 @@ async function getCategoryData(cids, uid, selectedCid, states) {
 	if (selectedCid && !Array.isArray(selectedCid)) {
 		selectedCid = [selectedCid];
 	}
-
+	selectedCid = selectedCid && selectedCid.map(String);
 	states = states || [categories.watchStates.watching, categories.watchStates.notwatching];
 
 	const [allowed, watchState, categoryData, isAdmin] = await Promise.all([
