@@ -260,14 +260,6 @@ paths:
                                 imageClass:
                                   type: string
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
-  /api/admin:
-    get:
-      tags:
-        - admin
-      summary: /api/admin
-      responses:
-        "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot | This route is identical to /api/admin/general/dashboard. When the routes are split into separate files, replace this definition with a $ref to that route"
   /api/admin/general/dashboard:
     get:
       tags:
@@ -580,7 +572,7 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/admin/general/homepage
+      summary: Get homepage settings
       responses:
         "200":
           description: ""
@@ -633,7 +625,7 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/admin/manage/categories
+      summary: Get category management settings
       responses:
         "200":
           description: ""
@@ -645,7 +637,7 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/admin/manage/categories/{category_id}
+      summary: Get category settings
       parameters:
         - name: category_id
           in: path
@@ -695,7 +687,7 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/admin/manage/categories/{category_id}/analytics
+      summary: Get category anayltics
       parameters:
         - name: category_id
           in: path
@@ -1081,7 +1073,7 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/admin/manage/users
+      summary: Get users
       responses:
         "200":
           description: ""
@@ -1117,7 +1109,7 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/admin/manage/users/search
+      summary: Get users via search term
       responses:
         "200":
           description: ""
@@ -1138,7 +1130,7 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/admin/manage/users/latest
+      summary: Get latest users
       responses:
         "418":
           description: "TODO: A proper response needs to be added. It is not really a teapot | Replace this responses block with the block from /manage/users/latest"
@@ -1146,7 +1138,7 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/admin/manage/users/not-validated
+      summary: Get non-verified users
       responses:
         "418":
           description: "TODO: A proper response needs to be added. It is not really a teapot | Replace this responses block with the block from /manage/users/latest"
@@ -1154,7 +1146,7 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/admin/manage/users/no-posts
+      summary: Get users with no posts
       responses:
         "418":
           description: "TODO: A proper response needs to be added. It is not really a teapot | Replace this responses block with the block from /manage/users/latest"
@@ -1162,7 +1154,7 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/admin/manage/users/top-posters
+      summary: Get users with the most posts
       responses:
         "418":
           description: "TODO: A proper response needs to be added. It is not really a teapot | Replace this responses block with the block from /manage/users/latest"
@@ -1170,7 +1162,7 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/admin/manage/users/most-reputation
+      summary: Get users with the most reputation
       responses:
         "418":
           description: "TODO: A proper response needs to be added. It is not really a teapot | Replace this responses block with the block from /manage/users/latest"
@@ -1178,7 +1170,7 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/admin/manage/users/inactive
+      summary: Get inactive users
       responses:
         "418":
           description: "TODO: A proper response needs to be added. It is not really a teapot | Replace this responses block with the block from /manage/users/latest"
@@ -1186,7 +1178,7 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/admin/manage/users/flagged
+      summary: Get flagged users
       responses:
         "418":
           description: "TODO: A proper response needs to be added. It is not really a teapot | Replace this responses block with the block from /manage/users/latest"
@@ -1194,7 +1186,7 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/admin/manage/users/banned
+      summary: Get banned users
       responses:
         "418":
           description: "TODO: A proper response needs to be added. It is not really a teapot | Replace this responses block with the block from /manage/users/latest"
@@ -1350,7 +1342,7 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/admin/manage/groups
+      summary: Get user groups
       responses:
         "200":
           description: ""
@@ -1443,7 +1435,7 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/admin/manage/groups/{name}
+      summary: Get user group details
       parameters:
         - name: name
           in: path
@@ -1638,7 +1630,7 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/admin/extend/plugins
+      summary: Get system plugin settings
       responses:
         "200":
           description: ""
@@ -1790,7 +1782,7 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/admin/extend/widgets
+      summary: Get widget settings
       responses:
         "200":
           description: ""
@@ -2164,7 +2156,7 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/admin/advanced/cache
+      summary: Get system cache info
       responses:
         "200":
           description: ""
@@ -2256,7 +2248,7 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/admin/development/logger
+      summary: Get system logger settings
       responses:
         "200":
           description: ""
@@ -2895,18 +2887,123 @@ paths:
                     type: boolean
                   enableQuickReply:
                     type: boolean
-  /api/me:
+  /api/users:
     get:
       tags:
-        - shorthand
-      summary: /api/me
+        - users
+      summary: Get users
+      parameters:
+        - in: query
+          name: section
+          schema:
+            type: string
+          required: false
+          description: Allows filtering of the user list via pre-defined sections
+          enum: ['joindate', 'online', 'sort-posts', 'sort-reputation', 'banned', 'flagged']
+        - in: query
+          name: term
+          schema:
+            type: string
+          required: false
+          description: Allows for searching of user list
       responses:
         "200":
           description: ""
           content:
             application/json:
               schema:
-                $ref: components/schemas/UserObject.yaml#/UserObjectFull
+                allOf:
+                  - type: object
+                    properties:
+                      users:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            uid:
+                              type: number
+                              description: A user identifier
+                            username:
+                              type: string
+                              description: A friendly name for a given user account
+                            userslug:
+                              type: string
+                              description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                removed, etc.)
+                            picture:
+                              nullable: true
+                              type: string
+                            status:
+                              type: string
+                            postcount:
+                              type: number
+                            reputation:
+                              type: number
+                            email:confirmed:
+                              type: number
+                              description: Whether the user has confirmed their email address or not
+                            lastonline:
+                              type: number
+                            flags:
+                              nullable: true
+                            banned:
+                              type: number
+                            banned:expire:
+                              type: number
+                            joindate:
+                              type: number
+                              description: A UNIX timestamp representing the moment the user's account was
+                                created
+                            icon:text:
+                              type: string
+                              description: A single-letter representation of a username. This is used in the
+                                auto-generated icon given to users without an
+                                avatar
+                            icon:bgColor:
+                              type: string
+                              description: A six-character hexadecimal colour code assigned to the user. This
+                                value is used in conjunction with `icon:text`
+                                for the user's auto-generated icon
+                              example: "#f44336"
+                            joindateISO:
+                              type: string
+                            lastonlineISO:
+                              type: string
+                            banned_until:
+                              type: number
+                            banned_until_readable:
+                              type: string
+                            administrator:
+                              type: boolean
+                      userCount:
+                        type: number
+                      title:
+                        type: string
+                      isAdminOrGlobalMod:
+                        type: boolean
+                      isAdmin:
+                        type: boolean
+                      isGlobalMod:
+                        type: boolean
+                      displayUserSearch:
+                        type: boolean
+                      section_joindate:
+                        type: boolean
+                      maximumInvites:
+                        type: number
+                      inviteOnly:
+                        type: boolean
+                      adminInviteOnly:
+                        type: boolean
+                      invites:
+                        type: number
+                      showInviteButton:
+                        type: boolean
+                      reputation:disabled:
+                        type: number
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/user/uid/{uid}":
     get:
       tags:
@@ -4567,7 +4664,7 @@ paths:
     get:
       tags:
         - search
-      summary: /api/search
+      summary: Get search results
       responses:
         "200":
           description: ""
@@ -4690,7 +4787,7 @@ paths:
     post:
       tags:
         - emails
-      summary: /api/email/unsubscribe/{token}
+      summary: Unsubscribe user from email type
       parameters:
         - name: token
           in: path
@@ -4727,7 +4824,7 @@ paths:
     get:
       tags:
         - flags
-      summary: /api/flags
+      summary: Get flags list
       responses:
         "200":
           description: ""
@@ -5005,7 +5102,7 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/post-queue
+      summary: Get flag data
       responses:
         "200":
           description: ""
@@ -5156,7 +5253,7 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/ip-blacklist
+      summary: Get IP blacklist settings
       responses:
         "418":
           description: "TODO: A proper response needs to be added. It is not really a teapot | Copy response from corresponding admin route"
@@ -5164,15 +5261,57 @@ paths:
     get:
       tags:
         - admin
-      summary: /api/registration-queue
+      summary: Get registration queue
       responses:
         "418":
           description: "TODO: A proper response needs to be added. It is not really a teapot | Copy response from corresponding admin route"
+  /api/tags:
+    get:
+      tags:
+        - tags
+      summary: Get tags
+      description: Returns a list of tags sorted by the most topics
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      tags:
+                        type: array
+                        description: An array of tags sorted by the most topics
+                        items:
+                          type: object
+                          properties:
+                            value:
+                              type: string
+                              description: The raw tag
+                            score:
+                              type: number
+                              description: Number of topics tagged by this tag
+                            valueEscaped:
+                              type: string
+                              description: This is the escaped tag value, equal to validator.escape(value)
+                            color:
+                              type: string
+                            bgColor:
+                              type: string
+                      displayTagSearch:
+                        type: boolean
+                      nextStart:
+                        type: number
+                      title:
+                        type: string
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/tags/{tag}":
     get:
       tags:
         - tags
-      summary: /api/tags/{tag}
+      summary: Get tag data
       description: Returns a list of topics that are tagged with {tag}
       parameters:
         - name: tag
@@ -5443,48 +5582,6 @@ paths:
                       - title
                       - categories
                   - $ref: components/schemas/Pagination.yaml#/Pagination
-                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
-                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
-  /api/tags:
-    get:
-      tags:
-        - tags
-      summary: /api/tags
-      description: Returns a list of tags sorted by the most topics
-      responses:
-        "200":
-          description: ""
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - type: object
-                    properties:
-                      tags:
-                        type: array
-                        description: An array of tags sorted by the most topics
-                        items:
-                          type: object
-                          properties:
-                            value:
-                              type: string
-                              description: The raw tag
-                            score:
-                              type: number
-                              description: Number of topics tagged by this tag
-                            valueEscaped:
-                              type: string
-                              description: This is the escaped tag value, equal to validator.escape(value)
-                            color:
-                              type: string
-                            bgColor:
-                              type: string
-                      displayTagSearch:
-                        type: boolean
-                      nextStart:
-                        type: number
-                      title:
-                        type: string
                   - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/popular:
@@ -5852,32 +5949,24 @@ paths:
                   - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
-  "/api/category/{category_id}/{slug?}":
+  /api/me:
     get:
       tags:
-        - categories
-      summary: /api/category/{category_id}/{slug}
-      parameters:
-        - name: category_id
-          in: path
-          required: true
-          schema:
-            type: string
-          example: 1
-        - name: slug
-          in: path
-          required: true
-          schema:
-            type: string
-          example: test
+        - shorthand
+      summary: Access your profile
+      description: This shorthand is useful if you want to link to pages in your own account profile, but do not want (or have) the userslug. It is also especially useful as a means to instruct users on how to do things, as you can easily redirect them to their own profile pages.
       responses:
-        "418":
-          description: "TODO: A proper response needs to be added. It is not really a teapot | Copy response from indexed variant"
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: components/schemas/UserObject.yaml#/UserObjectFull
   /api/me/*:
     get:
       tags:
         - shorthand
-      summary: Access your own profile's pages
+      summary: Access your own profile's sub-pages
       description: >-
         This shorthand is useful if you want to link to pages in your own account profile, but do not want (or have) the `userslug`. It is also especially useful as a
         means to instruct users on how to do things, as you can easily redirect them to their own profile pages.
@@ -6179,7 +6268,8 @@ paths:
     get:
       tags:
         - users
-      summary: /api/user/{userslug}/categories
+      summary: Get user's watched categories
+      description: This route retrieves the list of categories and their watch states
       parameters:
         - name: userslug
           in: path
@@ -6413,7 +6503,7 @@ paths:
     get:
       tags:
         - users
-      summary: /api/user/{userslug}/bookmarks
+      summary: Get user's bookmarks
       parameters:
         - name: userslug
           in: path
@@ -6459,7 +6549,7 @@ paths:
     get:
       tags:
         - users
-      summary: /api/user/{userslug}/watched
+      summary: Get user's watched topics
       parameters:
         - name: userslug
           in: path
@@ -6667,7 +6757,7 @@ paths:
     get:
       tags:
         - users
-      summary: /api/user/{userslug}/ignored
+      summary: Get user's ignored topics
       parameters:
         - name: userslug
           in: path
@@ -6715,7 +6805,7 @@ paths:
     get:
       tags:
         - users
-      summary: /api/user/{userslug}/upvoted
+      summary: Get user's upvoted posts
       parameters:
         - name: userslug
           in: path
@@ -6767,7 +6857,7 @@ paths:
     get:
       tags:
         - users
-      summary: Get user's downvotes
+      summary: Get user's downvoted posts
       parameters:
         - name: userslug
           in: path
@@ -6819,7 +6909,7 @@ paths:
     get:
       tags:
         - users
-      summary: /api/user/{userslug}/edit
+      summary: Get user profile for editing
       parameters:
         - name: userslug
           in: path
@@ -6886,7 +6976,7 @@ paths:
     get:
       tags:
         - users
-      summary: /api/user/{userslug}/edit/username
+      summary: Get configs for username editing
       parameters:
         - name: userslug
           in: path
@@ -6914,7 +7004,7 @@ paths:
     get:
       tags:
         - users
-      summary: /api/user/{userslug}/edit/email
+      summary: Get configs for email editing
       parameters:
         - name: userslug
           in: path
@@ -6942,7 +7032,7 @@ paths:
     get:
       tags:
         - users
-      summary: /api/user/{userslug}/edit/password
+      summary: Get configs for password editing
       parameters:
         - name: userslug
           in: path
@@ -6974,7 +7064,8 @@ paths:
     get:
       tags:
         - users
-      summary: /api/user/{userslug}/info
+      summary: Get user moderation info
+      description: Administrators and Global Moderators get access to the `/info` page, which shows some backend data that is useful from a moderation point-of-view (such as IP addresses, recent bans, moderation history, etc).
       parameters:
         - name: userslug
           in: path
@@ -7155,7 +7246,7 @@ paths:
     get:
       tags:
         - users
-      summary: /api/user/{userslug}/settings
+      summary: Get user's settings
       parameters:
         - name: userslug
           in: path
@@ -7489,7 +7580,7 @@ paths:
     get:
       tags:
         - users
-      summary: /api/user/{userslug}/uploads
+      summary: Get user's uploads
       parameters:
         - name: userslug
           in: path
@@ -7527,7 +7618,7 @@ paths:
     get:
       tags:
         - users
-      summary: /api/user/{userslug}/consent
+      summary: Get user's GDPR consent settings
       parameters:
         - name: userslug
           in: path
@@ -7562,7 +7653,7 @@ paths:
     get:
       tags:
         - users
-      summary: /api/user/{userslug}/blocks
+      summary: Get user's blocks
       parameters:
         - name: userslug
           in: path
@@ -7593,7 +7684,7 @@ paths:
     get:
       tags:
         - users
-      summary: /api/user/{userslug}/sessions
+      summary: Get user's active sessions
       parameters:
         - name: userslug
           in: path
@@ -7661,7 +7752,7 @@ paths:
     get:
       tags:
         - notifications
-      summary: /api/notifications
+      summary: Get notifications
       responses:
         "200":
           description: ""
@@ -8086,7 +8177,8 @@ paths:
     get:
       tags:
         - shorthand
-      summary: /api/chats/{roomid}
+      summary: Access a chat room
+      description: Redirects a request to the proper chat page URL
       parameters:
         - name: roomid
           in: path
@@ -8102,114 +8194,11 @@ paths:
               schema:
                 type: string
                 description: A relative path to the canonical URL for that chat page
-  /api/users:
-    get:
-      tags:
-        - users
-      summary: /api/users
-      responses:
-        "200":
-          description: ""
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - type: object
-                    properties:
-                      users:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            uid:
-                              type: number
-                              description: A user identifier
-                            username:
-                              type: string
-                              description: A friendly name for a given user account
-                            userslug:
-                              type: string
-                              description: An URL-safe variant of the username (i.e. lower-cased, spaces
-                                removed, etc.)
-                            picture:
-                              nullable: true
-                              type: string
-                            status:
-                              type: string
-                            postcount:
-                              type: number
-                            reputation:
-                              type: number
-                            email:confirmed:
-                              type: number
-                              description: Whether the user has confirmed their email address or not
-                            lastonline:
-                              type: number
-                            flags:
-                              nullable: true
-                            banned:
-                              type: number
-                            banned:expire:
-                              type: number
-                            joindate:
-                              type: number
-                              description: A UNIX timestamp representing the moment the user's account was
-                                created
-                            icon:text:
-                              type: string
-                              description: A single-letter representation of a username. This is used in the
-                                auto-generated icon given to users without an
-                                avatar
-                            icon:bgColor:
-                              type: string
-                              description: A six-character hexadecimal colour code assigned to the user. This
-                                value is used in conjunction with `icon:text`
-                                for the user's auto-generated icon
-                              example: "#f44336"
-                            joindateISO:
-                              type: string
-                            lastonlineISO:
-                              type: string
-                            banned_until:
-                              type: number
-                            banned_until_readable:
-                              type: string
-                            administrator:
-                              type: boolean
-                      userCount:
-                        type: number
-                      title:
-                        type: string
-                      isAdminOrGlobalMod:
-                        type: boolean
-                      isAdmin:
-                        type: boolean
-                      isGlobalMod:
-                        type: boolean
-                      displayUserSearch:
-                        type: boolean
-                      section_joindate:
-                        type: boolean
-                      maximumInvites:
-                        type: number
-                      inviteOnly:
-                        type: boolean
-                      adminInviteOnly:
-                        type: boolean
-                      invites:
-                        type: number
-                      showInviteButton:
-                        type: boolean
-                      reputation:disabled:
-                        type: number
-                  - $ref: components/schemas/Pagination.yaml#/Pagination
-                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
-                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/groups:
     get:
       tags:
         - groups
-      summary: /api/groups
+      summary: Get user groups
       responses:
         "200":
           description: ""
@@ -8316,7 +8305,7 @@ paths:
     get:
       tags:
         - groups
-      summary: /api/groups/{slug}
+      summary: Get user group details
       parameters:
         - name: slug
           in: path
