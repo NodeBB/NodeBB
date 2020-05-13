@@ -2897,15 +2897,17 @@ paths:
           name: section
           schema:
             type: string
+            enum: ['joindate', 'online', 'sort-posts', 'sort-reputation', 'banned', 'flagged']
           required: false
           description: Allows filtering of the user list via pre-defined sections
-          enum: ['joindate', 'online', 'sort-posts', 'sort-reputation', 'banned', 'flagged']
+          example: 'joindate'
         - in: query
           name: term
           schema:
             type: string
           required: false
           description: Allows for searching of user list
+          example: ''
       responses:
         "200":
           description: ""
