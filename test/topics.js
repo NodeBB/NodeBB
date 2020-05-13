@@ -1753,6 +1753,19 @@ describe('Topic\'s', function () {
 				});
 			});
 		});
+
+		it('should add and remove tags from topics properly', async () => {
+			const result = await topics.post({ uid: adminUid, tags: ['tag4', 'tag2', 'tag1', 'tag3'], title: 'tag topic', content: 'topic 1 content', cid: topic.categoryId });
+			const tid = result.topicData.tid;
+			let tags = await topics.getTopicTags(tid);
+			assert.deepStrictEqual(tags, ['tag1', 'tag2', 'tag3', 'tag4']);
+			await topics.addTags(['tag7', 'tag6', 'tag5'], [tid]);
+			tags = await topics.getTopicTags(tid);
+			assert.deepStrictEqual(tags, ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag6', 'tag7']);
+			await topics.removeTags(['tag1', 'tag3', 'tag5', 'tag7'], [tid]);
+			tags = await topics.getTopicTags(tid);
+			assert.deepStrictEqual(tags, ['tag2', 'tag4', 'tag6']);
+		});
 	});
 
 	describe('follow/unfollow', function () {

@@ -152,12 +152,15 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getTopicTags = async function (tid) {
-		return await db.getSetMembers('topic:' + tid + ':tags');
+		const tags = await db.getSetMembers('topic:' + tid + ':tags');
+		return tags.sort();
 	};
 
 	Topics.getTopicsTags = async function (tids) {
 		const keys = tids.map(tid => 'topic:' + tid + ':tags');
-		return await db.getSetsMembers(keys);
+		const tags = await db.getSetsMembers(keys);
+		tags.forEach(tags => tags.sort());
+		return tags;
 	};
 
 	Topics.getTopicTagsObjects = async function (tid) {
@@ -190,6 +193,31 @@ module.exports = function (Topics) {
 		});
 
 		return topicTags;
+	};
+
+	Topics.addTags = async function (tags, tids) {
+		const topicData = await Topics.getTopicsFields(tids, ['timestamp']);
+		const sets = tids.map(tid => 'topic:' + tid + ':tags');
+		for (let i = 0; i < tags.length; i++) {
+			/* eslint-disable no-await-in-loop */
+			await Promise.all([
+				db.setsAdd(sets, tags[i]),
+				db.sortedSetAdd('tag:' + tags[i] + ':topics', topicData.map(t => t.timestamp), tids),
+			]);
+			await updateTagCount(tags[i]);
+		}
+	};
+
+	Topics.removeTags = async function (tags, tids) {
+		const sets = tids.map(tid => 'topic:' + tid + ':tags');
+		for (let i = 0; i < tags.length; i++) {
+			/* eslint-disable no-await-in-loop */
+			await Promise.all([
+				db.setsRemove(sets, tags[i]),
+				db.sortedSetRemove('tag:' + tags[i] + ':topics', tids),
+			]);
+			await updateTagCount(tags[i]);
+		}
 	};
 
 	Topics.updateTopicTags = async function (tid, tags) {
