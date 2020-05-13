@@ -108,7 +108,7 @@ settingsController.get = async function (req, res, next) {
 
 	userData.disableCustomUserSkins = meta.config.disableCustomUserSkins || 0;
 
-	userData.allowUserHomePage = meta.config.allowUserHomePage || 1;
+	userData.allowUserHomePage = meta.config.allowUserHomePage === 1 ? 1 : 0;
 
 	userData.hideFullname = meta.config.hideFullname || 0;
 	userData.hideEmail = meta.config.hideEmail || 0;
