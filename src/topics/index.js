@@ -67,7 +67,7 @@ Topics.getTopicsByTids = async function (tids, options) {
 	const uids = _.uniq(topics.map(t => t && t.uid && t.uid.toString()).filter(v => utils.isNumber(v)));
 	const cids = _.uniq(topics.map(t => t && t.cid && t.cid.toString()).filter(v => utils.isNumber(v)));
 
-	const guestTopics = topics.filter(t => t.uid === 0);
+	const guestTopics = topics.filter(t => t && t.uid === 0);
 	async function loadGuestHandles() {
 		return await Promise.all(guestTopics.map(topic => posts.getPostField(topic.mainPid, 'handle')));
 	}
