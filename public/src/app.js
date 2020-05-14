@@ -570,7 +570,6 @@ app.cacheBuster = null;
 	}
 
 	app.enableTopicSearch = function (options) {
-		console.log('enableTopicSearch', options, new Error('a').stack);
 		var quickSearchResults = options.resultEl;
 		var inputEl = options.inputEl;
 		var template = options.template || 'partials/quick-search-results';
