@@ -570,6 +570,7 @@ app.cacheBuster = null;
 	}
 
 	app.enableTopicSearch = function (options) {
+		console.log('enableTopicSearch', options, new Error('a').stack);
 		var quickSearchResults = options.resultEl;
 		var inputEl = options.inputEl;
 		var template = options.template || 'partials/quick-search-results';
@@ -595,16 +596,16 @@ app.cacheBuster = null;
 					};
 					$(window).trigger('action:search.quick', { data: data });
 					search.api(data, function (data) {
-						if (!data.matchCount) {
-							quickSearchResults.html('').addClass('hidden');
-							return;
-						}
 						data.posts.forEach(function (p) {
 							p.snippet = utils.escapeHTML($(p.content).text().slice(0, 80) + '...');
 						});
 						app.parseAndTranslate(template, data, function (html) {
-							html.find('.timeago').timeago();
-							quickSearchResults.html(html).removeClass('hidden').show();
+							if (html.length) {
+								html.find('.timeago').timeago();
+								quickSearchResults.html(html).removeClass('hidden').show();
+							} else {
+								quickSearchResults.html('').addClass('hidden');
+							}
 						});
 					});
 				});
