@@ -266,7 +266,6 @@ describe('Sorted Set methods', function () {
 		});
 
 		it('should work with big arrays (length > 100) ', async function () {
-			var st = process.hrtime();
 			for (let i = 0; i < 400; i++) {
 				/* eslint-disable no-await-in-loop */
 				const bulkAdd = [];
