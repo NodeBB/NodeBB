@@ -17,7 +17,7 @@ module.exports = function (module) {
 		value = helpers.valueToString(value);
 
 		try {
-			await module.client.collection('objects').updateOne({ _key: key, value: value }, { $set: { score: parseFloat(score) } }, { upsert: true, w: 1 });
+			await module.client.collection('objects').updateOne({ _key: key, value: value }, { $set: { score: parseFloat(score) } }, { upsert: true, w: 1, collation: { locale: 'en_US', numericOrdering: true } });
 		} catch (err) {
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
 				return await module.sortedSetAdd(key, score, value);
@@ -79,7 +79,11 @@ module.exports = function (module) {
 			if (!utils.isNumber(item[1])) {
 				throw new Error('[[error:invalid-score, ' + item[1] + ']]');
 			}
-			bulk.find({ _key: item[0], value: String(item[2]) }).upsert().updateOne({ $set: { score: parseFloat(item[1]) } });
+			bulk.find({ _key: item[0], value: String(item[2]) }).upsert().updateOne({
+				$set: { score: parseFloat(item[1]) },
+			}, {
+				collation: { locale: 'en_US', numericOrdering: true },
+			});
 		});
 		await bulk.execute();
 	};

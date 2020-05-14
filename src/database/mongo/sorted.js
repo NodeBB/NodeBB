@@ -260,7 +260,12 @@ module.exports = function (module) {
 			return null;
 		}
 		value = helpers.valueToString(value);
-		const result = await module.client.collection('objects').findOne({ _key: key, value: value }, { projection: { _id: 0, _key: 0, value: 0 } });
+		const result = await module.client.collection('objects').findOne({
+			_key: key, value: value,
+		}, {
+			projection: { _id: 0, _key: 0, value: 0 },
+			collation: { locale: 'en_US', numericOrdering: true },
+		});
 		return result ? result.score : null;
 	};
 
@@ -405,6 +410,7 @@ module.exports = function (module) {
 
 		const data = await module.client.collection('objects').find(query, { projection: { _id: 0, _key: 0, score: 0 } })
 			.sort({ value: sort })
+			.collation({ locale: 'en_US', numericOrdering: true })
 			.skip(start)
 			.limit(count === -1 ? 0 : count)
 			.toArray();

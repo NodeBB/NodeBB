@@ -86,7 +86,12 @@ mongoModule.createIndices = async function () {
 	winston.info('[database] Checking database indices.');
 	const collection = mongoModule.client.collection('objects');
 	await collection.createIndex({ _key: 1, score: -1 }, { background: true });
-	await collection.createIndex({ _key: 1, value: -1 }, { background: true, unique: true, sparse: true });
+	await collection.createIndex({ _key: 1, value: -1 }, {
+		background: true,
+		unique: true,
+		sparse: true,
+		collation: { locale: 'en_US', numericOrdering: true },
+	});
 	await collection.createIndex({ expireAt: 1 }, { expireAfterSeconds: 0, background: true });
 	winston.info('[database] Checking database indices done!');
 };

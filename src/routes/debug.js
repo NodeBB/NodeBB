@@ -9,8 +9,20 @@ const path = require('path');
 module.exports = function (app) {
 	var router = express.Router();
 
-	router.get('/test', function (req, res) {
-		res.redirect(404);
+	router.get('/test', async function (req, res) {
+		var db = require('../database');
+		var st = process.hrtime();
+		// const data = await db.getSortedSetRevIntersect({
+		// 	sets: ['users:joindate', 'group:administrators:members'],
+		// 	// sets: ['cid:7:tids', 'tag:plugins:topics'],
+		// 	start: 0,
+		// 	stop: 19,
+		// 	weights: [1, 0],
+		// });
+		var data = await db.sortedSetScore('userslug:uid', 'baris');
+		process.profile('st', st);
+		res.json(data);
+		// res.redirect(404);
 	});
 
 	// Redoc

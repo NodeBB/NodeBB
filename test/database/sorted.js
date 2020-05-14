@@ -269,6 +269,8 @@ describe('Sorted Set methods', function () {
 		});
 
 		it('should work with big arrays (length > 100) ', async function () {
+			console.log('bulk add test');
+			var st = process.hrtime();
 			for (let i = 0; i < 400; i++) {
 				/* eslint-disable no-await-in-loop */
 				const bulkAdd = [];
@@ -298,6 +300,7 @@ describe('Sorted Set methods', function () {
 
 			data = await db.getSortedSetRange(keys, 9998, 10002);
 			assert.deepStrictEqual(data, ['9998', '9999', '10000', '10001', '10002']);
+			process.profile('bukl add', st);
 		});
 	});
 
@@ -1225,6 +1228,31 @@ describe('Sorted Set methods', function () {
 				assert.equal(data.length, 0);
 				done();
 			});
+		});
+
+		it('should return empty array if there is no intersection', async () => {
+			await db.sortedSetAdd('distinct1', [1, 2, 3], ['1', '2', '3']);
+			await db.sortedSetAdd('distinct2', [1, 2, 3], ['1000', '1001', '1002']);
+			const data = await db.getSortedSetIntersect({
+				sets: ['distinct1', 'distinct2'],
+				start: 0,
+				stop: -1,
+			});
+			assert.equal(data.length, 0);
+		});
+
+		it('should intersect 3 zsets properly', async () => {
+			await db.sortedSetAdd('3wayintersect1', [1, 2, 3], ['1', '2', '3']);
+			await db.sortedSetAdd('3wayintersect2', [1, 2, 3], ['2', '1001', '1002']);
+			await db.sortedSetAdd('3wayintersect3', [1, 2, 3], ['30000', '2', '50000']);
+			const data = await db.getSortedSetIntersect({
+				sets: ['3wayintersect1', '3wayintersect2', '3wayintersect3'],
+				start: 0,
+				stop: -1,
+				weights: [1, 0, 0],
+			});
+			assert.equal(data.length, 1);
+			assert(data.includes('2'));
 		});
 	});
 
