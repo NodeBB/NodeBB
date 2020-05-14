@@ -52,6 +52,13 @@ module.exports = function (Posts) {
 
 		postData.cid = topic.cid;
 		postData.topic = topic;
+
+		await topics.notifyFollowers(postData, data.uid, {
+			type: 'post-edit',
+			bodyShort: translator.compile('notifications:user_edited_post', editor.username, postData.topic.title),
+			nid: 'edit_post:' + postData.pid + ':uid:' + data.uid,
+		});
+
 		plugins.fireHook('action:post.edit', { post: _.clone(postData), data: data, uid: data.uid });
 
 		require('./cache').del(String(postData.pid));
@@ -79,6 +86,7 @@ module.exports = function (Posts) {
 			return {
 				tid: tid,
 				cid: topicData.cid,
+				title: validator.escape(String(topicData.title)),
 				isMainPost: false,
 				renamed: false,
 			};

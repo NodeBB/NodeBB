@@ -21,6 +21,7 @@ Notifications.baseTypes = [
 	'notificationType_upvote',
 	'notificationType_new-topic',
 	'notificationType_new-reply',
+	'notificationType_post-edit',
 	'notificationType_follow',
 	'notificationType_new-chat',
 	'notificationType_group-invite',

@@ -42,7 +42,8 @@ module.exports = function (module) {
 			return;
 		}
 		const isArrayOfScores = Array.isArray(scores);
-		if (!isArrayOfScores && !utils.isNumber(scores)) {
+		if ((!isArrayOfScores && !utils.isNumber(scores)) ||
+			(isArrayOfScores && scores.map(s => utils.isNumber(s)).includes(false))) {
 			throw new Error('[[error:invalid-score, ' + scores + ']]');
 		}
 
@@ -65,6 +66,9 @@ module.exports = function (module) {
 		}
 		var batch = module.client.batch();
 		data.forEach(function (item) {
+			if (!utils.isNumber(item[1])) {
+				throw new Error('[[error:invalid-score, ' + item[1] + ']]');
+			}
 			batch.zadd(item[0], item[1], item[2]);
 		});
 		await helpers.execBatch(batch);

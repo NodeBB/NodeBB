@@ -93,7 +93,8 @@ module.exports = function (Topics) {
 			throw new Error('[[error:no-privileges]]');
 		}
 		await Topics.setTopicField(tid, 'locked', lock ? 1 : 0);
-		topicData.isLocked = lock;
+		topicData.isLocked = lock; // deprecate in v2.0
+		topicData.locked = lock;
 
 		plugins.fireHook('action:topic.lock', { topic: _.clone(topicData), uid: uid });
 		return topicData;

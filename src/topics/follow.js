@@ -145,47 +145,37 @@ module.exports = function (Topics) {
 		return tids.filter((tid, index) => tid && !scores[index]);
 	};
 
-	Topics.notifyFollowers = async function (postData, exceptUid) {
-		var title;
-		var titleEscaped;
-
+	Topics.notifyFollowers = async function (postData, exceptUid, notifData) {
+		notifData = notifData || {};
 		let followers = await Topics.getFollowers(postData.topic.tid);
-
-		var index = followers.indexOf(exceptUid.toString());
+		const index = followers.indexOf(String(exceptUid));
 		if (index !== -1) {
 			followers.splice(index, 1);
 		}
 
 		followers = await privileges.topics.filterUids('topics:read', postData.topic.tid, followers);
-
 		if (!followers.length) {
 			return;
 		}
-		title = postData.topic.title;
 
+		let title = postData.topic.title;
 		if (title) {
 			title = utils.decodeHTMLEntities(title);
-			titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 		}
 
 		postData.content = posts.relativeToAbsolute(postData.content, posts.urlRegex);
 		postData.content = posts.relativeToAbsolute(postData.content, posts.imgRegex);
 
 		const notification = await notifications.create({
-			type: 'new-reply',
 			subject: title,
-			bodyShort: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + titleEscaped + ']]',
 			bodyLong: postData.content,
 			pid: postData.pid,
 			path: '/post/' + postData.pid,
-			nid: 'new_post:tid:' + postData.topic.tid + ':pid:' + postData.pid + ':uid:' + exceptUid,
 			tid: postData.topic.tid,
 			from: exceptUid,
-			mergeId: 'notifications:user_posted_to|' + postData.topic.tid,
 			topicTitle: title,
+			...notifData,
 		});
-		if (notification) {
-			notifications.push(notification, followers);
-		}
+		notifications.push(notification, followers);
 	};
 };

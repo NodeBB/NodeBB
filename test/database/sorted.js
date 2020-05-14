@@ -118,6 +118,18 @@ describe('Sorted Set methods', function () {
 				done();
 			});
 		});
+
+		it('should error if scores has null', async function () {
+			let err;
+			try {
+				await db.sortedSetsAdd(['sorted1', 'sorted2'], [1, null], 'dontadd');
+			} catch (_err) {
+				err = _err;
+			}
+			assert.equal(err.message, '[[error:invalid-score, 1,]]');
+			assert.strictEqual(await db.isSortedSetMember('sorted1', 'dontadd'), false);
+			assert.strictEqual(await db.isSortedSetMember('sorted2', 'dontadd'), false);
+		});
 	});
 
 	describe('sortedSetAddMulti()', function () {
@@ -145,6 +157,21 @@ describe('Sorted Set methods', function () {
 				assert.ifError(err);
 				done();
 			});
+		});
+
+		it('should error if score is null', async function () {
+			let err;
+			try {
+				await db.sortedSetAddBulk([
+					['bulk4', 0, 'dontadd'],
+					['bulk5', null, 'dontadd'],
+				]);
+			} catch (_err) {
+				err = _err;
+			}
+			assert.equal(err.message, '[[error:invalid-score, null]]');
+			assert.strictEqual(await db.isSortedSetMember('bulk4', 'dontadd'), false);
+			assert.strictEqual(await db.isSortedSetMember('bulk5', 'dontadd'), false);
 		});
 	});
 

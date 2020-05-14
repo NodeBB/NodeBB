@@ -88,7 +88,7 @@ categoryController.get = async function (req, res, next) {
 	if (categoryData.children.length) {
 		const allCategories = [];
 		categories.flattenCategories(allCategories, categoryData.children);
-		await categories.getRecentTopicReplies(allCategories, req.uid);
+		await categories.getRecentTopicReplies(allCategories, req.uid, req.query);
 	}
 
 	categoryData.title = translator.escape(categoryData.name);
