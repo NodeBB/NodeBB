@@ -21,7 +21,7 @@ module.exports = function (module) {
 		await module.client.collection('objects').deleteMany({
 			_key: Array.isArray(key) ? { $in: key } : key,
 			value: isValueArray ? { $in: value } : value,
-		});
+		}, { collation: { locale: 'en_US', numericOrdering: true } });
 	};
 
 	module.sortedSetsRemove = async function (keys, value) {
@@ -30,7 +30,11 @@ module.exports = function (module) {
 		}
 		value = helpers.valueToString(value);
 
-		await module.client.collection('objects').deleteMany({ _key: { $in: keys }, value: value });
+		await module.client.collection('objects').deleteMany({
+			_key: { $in: keys }, value: value,
+		}, {
+			collation: { locale: 'en_US', numericOrdering: true },
+		});
 	};
 
 	module.sortedSetsRemoveRangeByScore = async function (keys, min, max) {
@@ -56,8 +60,15 @@ module.exports = function (module) {
 		if (!Array.isArray(data) || !data.length) {
 			return;
 		}
-		var bulk = module.client.collection('objects').initializeUnorderedBulkOp();
-		data.forEach(item => bulk.find({ _key: item[0], value: String(item[1]) }).remove());
-		await bulk.execute();
+		var updates = [];
+		data.forEach(function (item) {
+			updates.push({
+				deleteOne: {
+					q: { _key: item[0], value: String(item[1]) },
+					collation: { locale: 'en_US', numericOrdering: true },
+				},
+			});
+		});
+		await module.client.collection('objects').bulkWrite(updates);
 	};
 };

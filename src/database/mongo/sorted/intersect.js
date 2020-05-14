@@ -7,9 +7,10 @@ module.exports = function (module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return 0;
 		}
-
+		const match = { _key: { $in: keys } };
+		await buildValueQuery(match, keys);
 		var pipeline = [
-			{ $match: { _key: { $in: keys } } },
+			{ $match: match },
 			{ $group: { _id: { value: '$value' }, count: { $sum: 1 } } },
 			{ $match: { count: keys.length } },
 			{ $group: { _id: null, count: { $sum: 1 } } },
@@ -20,7 +21,6 @@ module.exports = function (module) {
 			.toArray();
 		return Array.isArray(data) && data.length ? data[0].count : 0;
 	};
-
 
 	module.getSortedSetIntersect = async function (params) {
 		params.sort = 1;
@@ -93,11 +93,9 @@ module.exports = function (module) {
 			project.score = '$totalScore';
 		}
 		pipeline.push({ $project: project });
-		var aa = process.hrtime();
 		let data = await module.client.collection('objects')
 			.aggregate(pipeline, { collation: { locale: 'en_US', numericOrdering: true } })
 			.toArray();
-		process.profile('agg', aa);
 		if (!params.withScores) {
 			data = data.map(item => item.value);
 		}
@@ -105,7 +103,6 @@ module.exports = function (module) {
 	}
 
 	async function buildValueQuery(match, sets) {
-		var st = process.hrtime();
 		async function query(set, sort) {
 			const data = await module.client.collection('objects')
 				.find({ _key: set }, { projection: { _id: 0, _key: 0, score: 0 } })
@@ -120,7 +117,7 @@ module.exports = function (module) {
 			var l = await query(s, 1);
 			return { u: u, l: l };
 		}));
-		console.log(bounds);
+
 		let lowerBound = bounds[0].l;
 		let upperBound = bounds[0].u;
 
@@ -137,7 +134,6 @@ module.exports = function (module) {
 			}
 		}
 
-		console.log(lowerBound, upperBound);
 		if (lowerBound) {
 			match.value = { $gte: String(lowerBound) };
 		}
@@ -145,8 +141,5 @@ module.exports = function (module) {
 			match.value = match.value || {};
 			match.value.$lte = String(upperBound);
 		}
-
-		process.profile('last', st);
-		console.log('value q', match);
 	}
 };

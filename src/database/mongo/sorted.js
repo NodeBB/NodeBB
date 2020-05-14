@@ -235,24 +235,15 @@ module.exports = function (module) {
 	}
 
 	module.sortedSetRanks = async function (key, values) {
-		return await sortedSetRanks(module.getSortedSetRange, key, values);
+		return await sortedSetRanks(module.sortedSetRank, key, values);
 	};
 
 	module.sortedSetRevRanks = async function (key, values) {
-		return await sortedSetRanks(module.getSortedSetRevRange, key, values);
+		return await sortedSetRanks(module.sortedSetRevRank, key, values);
 	};
 
 	async function sortedSetRanks(method, key, values) {
-		const sortedSet = await method(key, 0, -1);
-
-		var result = values.map(function (value) {
-			if (!value) {
-				return null;
-			}
-			var index = sortedSet.indexOf(value.toString());
-			return index !== -1 ? index : null;
-		});
-		return result;
+		return await Promise.all(values.map(value => method(key, value)));
 	}
 
 	module.sortedSetScore = async function (key, value) {
@@ -274,7 +265,13 @@ module.exports = function (module) {
 			return [];
 		}
 		value = helpers.valueToString(value);
-		const result = await module.client.collection('objects').find({ _key: { $in: keys }, value: value }, { projection: { _id: 0, value: 0 } }).toArray();
+		const result = await module.client.collection('objects').find({
+			_key: { $in: keys }, value: value,
+		}, {
+			projection: { _id: 0, value: 0 },
+			collation: { locale: 'en_US', numericOrdering: true },
+		}).toArray();
+
 		var map = {};
 		result.forEach(function (item) {
 			if (item) {
@@ -293,7 +290,12 @@ module.exports = function (module) {
 			return [];
 		}
 		values = values.map(helpers.valueToString);
-		const result = await module.client.collection('objects').find({ _key: key, value: { $in: values } }, { projection: { _id: 0, _key: 0 } }).toArray();
+		const result = await module.client.collection('objects').find({
+			_key: key, value: { $in: values },
+		}, {
+			projection: { _id: 0, _key: 0 },
+			collation: { locale: 'en_US', numericOrdering: true },
+		}).toArray();
 
 		var valueToScore = {};
 		result.forEach(function (item) {
@@ -310,7 +312,12 @@ module.exports = function (module) {
 			return;
 		}
 		value = helpers.valueToString(value);
-		const result = await module.client.collection('objects').findOne({ _key: key, value: value }, { projection: { _id: 0, _key: 0, score: 0 } });
+		const result = await module.client.collection('objects').findOne({
+			_key: key, value: value,
+		}, {
+			projection: { _id: 0, _key: 0, score: 0 },
+			collation: { locale: 'en_US', numericOrdering: true },
+		});
 		return !!result;
 	};
 
@@ -319,7 +326,12 @@ module.exports = function (module) {
 			return;
 		}
 		values = values.map(helpers.valueToString);
-		const results = await module.client.collection('objects').find({ _key: key, value: { $in: values } }, { projection: { _id: 0, _key: 0, score: 0 } }).toArray();
+		const results = await module.client.collection('objects').find({
+			_key: key, value: { $in: values },
+		}, {
+			projection: { _id: 0, _key: 0, score: 0 },
+			collation: { locale: 'en_US', numericOrdering: true },
+		}).toArray();
 
 		var isMember = {};
 		results.forEach(function (item) {
@@ -336,7 +348,12 @@ module.exports = function (module) {
 			return [];
 		}
 		value = helpers.valueToString(value);
-		const results = await module.client.collection('objects').find({ _key: { $in: keys }, value: value }, { projection: { _id: 0, score: 0 } }).toArray();
+		const results = await module.client.collection('objects').find({
+			_key: { $in: keys }, value: value,
+		}, {
+			projection: { _id: 0, score: 0 },
+			collation: { locale: 'en_US', numericOrdering: true },
+		}).toArray();
 
 		var isMember = {};
 		results.forEach(function (item) {
@@ -375,7 +392,15 @@ module.exports = function (module) {
 		data.score = parseFloat(increment);
 
 		try {
-			const result = await module.client.collection('objects').findOneAndUpdate({ _key: key, value: value }, { $inc: data }, { returnOriginal: false, upsert: true });
+			const result = await module.client.collection('objects').findOneAndUpdate({
+				_key: key, value: value,
+			}, {
+				$inc: data,
+			}, {
+				returnOriginal: false,
+				upsert: true,
+				collation: { locale: 'en_US', numericOrdering: true },
+			});
 			return result && result.value ? result.value.score : null;
 		} catch (err) {
 			// if there is duplicate key error retry the upsert
@@ -422,7 +447,9 @@ module.exports = function (module) {
 		var query = { _key: key };
 		buildLexQuery(query, min, max);
 
-		await module.client.collection('objects').deleteMany(query);
+		await module.client.collection('objects').deleteMany(query, {
+			collation: { locale: 'en_US', numericOrdering: true },
+		});
 	};
 
 	function buildLexQuery(query, min, max) {

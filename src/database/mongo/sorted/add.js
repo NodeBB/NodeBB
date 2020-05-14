@@ -40,11 +40,18 @@ module.exports = function (module) {
 		}
 		values = values.map(helpers.valueToString);
 
-		var bulk = module.client.collection('objects').initializeUnorderedBulkOp();
+		var updates = [];
 		for (var i = 0; i < scores.length; i += 1) {
-			bulk.find({ _key: key, value: values[i] }).upsert().updateOne({ $set: { score: parseFloat(scores[i]) } });
+			updates.push({
+				updateOne: {
+					q: { _key: key, value: values[i] },
+					u: { $set: { score: parseFloat(scores[i]) } },
+					upsert: true,
+					collation: { locale: 'en_US', numericOrdering: true },
+				},
+			});
 		}
-		await bulk.execute();
+		await module.client.collection('objects').bulkWrite(updates);
 	}
 
 	module.sortedSetsAdd = async function (keys, scores, value) {
@@ -63,28 +70,39 @@ module.exports = function (module) {
 
 		value = helpers.valueToString(value);
 
-		var bulk = module.client.collection('objects').initializeUnorderedBulkOp();
+		var updates = [];
 		for (var i = 0; i < keys.length; i += 1) {
-			bulk.find({ _key: keys[i], value: value }).upsert().updateOne({ $set: { score: parseFloat(isArrayOfScores ? scores[i] : scores) } });
+			updates.push({
+				updateOne: {
+					q: { _key: keys[i], value: value },
+					u: { $set: { score: parseFloat(isArrayOfScores ? scores[i] : scores) } },
+					upsert: true,
+					collation: { locale: 'en_US', numericOrdering: true },
+				},
+			});
 		}
-		await bulk.execute();
+		await module.client.collection('objects').bulkWrite(updates);
 	};
 
 	module.sortedSetAddBulk = async function (data) {
 		if (!Array.isArray(data) || !data.length) {
 			return;
 		}
-		var bulk = module.client.collection('objects').initializeUnorderedBulkOp();
+
+		var updates = [];
 		data.forEach(function (item) {
 			if (!utils.isNumber(item[1])) {
 				throw new Error('[[error:invalid-score, ' + item[1] + ']]');
 			}
-			bulk.find({ _key: item[0], value: String(item[2]) }).upsert().updateOne({
-				$set: { score: parseFloat(item[1]) },
-			}, {
-				collation: { locale: 'en_US', numericOrdering: true },
+			updates.push({
+				updateOne: {
+					q: { _key: item[0], value: String(item[2]) },
+					u: { $set: { score: parseFloat(item[1]) } },
+					upsert: true,
+					collation: { locale: 'en_US', numericOrdering: true },
+				},
 			});
 		});
-		await bulk.execute();
+		await module.client.collection('objects').bulkWrite(updates);
 	};
 };

@@ -85,12 +85,9 @@ describe('Sorted Set methods', function () {
 	});
 
 	describe('sortedSetsAdd()', function () {
-		it('should add an element to two sorted sets', function (done) {
-			db.sortedSetsAdd(['sorted1', 'sorted2'], 3, 'value3', function (err) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 1);
-				done();
-			});
+		it('should add an element to two sorted sets', async function () {
+			await db.sortedSetsAdd(['sorted1', 'sorted2'], 3, 'value3');
+			assert.deepStrictEqual(await db.isMemberOfSortedSets(['sorted1', 'sorted2'], 'value3'), [true, true]);
 		});
 
 		it('should add an element to two sorted sets with different scores', function (done) {
@@ -269,7 +266,6 @@ describe('Sorted Set methods', function () {
 		});
 
 		it('should work with big arrays (length > 100) ', async function () {
-			console.log('bulk add test');
 			var st = process.hrtime();
 			for (let i = 0; i < 400; i++) {
 				/* eslint-disable no-await-in-loop */
@@ -279,6 +275,7 @@ describe('Sorted Set methods', function () {
 				}
 				await db.sortedSetAddBulk(bulkAdd);
 			}
+
 			const keys = [];
 			for (let i = 0; i < 400; i++) {
 				keys.push('testzset' + i);
@@ -300,7 +297,6 @@ describe('Sorted Set methods', function () {
 
 			data = await db.getSortedSetRange(keys, 9998, 10002);
 			assert.deepStrictEqual(data, ['9998', '9999', '10000', '10001', '10002']);
-			process.profile('bukl add', st);
 		});
 	});
 
