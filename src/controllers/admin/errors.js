@@ -1,7 +1,6 @@
 'use strict';
 
-const json2csv = require('json-2-csv').json2csv;
-const util = require('util');
+const json2csvAsync = require('json2csv').parseAsync;
 
 const meta = require('../../meta');
 const analytics = require('../../analytics');
@@ -17,12 +16,10 @@ errorsController.get = async function (req, res) {
 	res.render('admin/advanced/errors', data);
 };
 
-const json2csvAsync = util.promisify(function (data, callback) {
-	json2csv(data, (err, output) => callback(err, output));
-});
-
 errorsController.export = async function (req, res) {
 	const data = await meta.errors.get(false);
-	const csv = await json2csvAsync(data);
+	const fields = data.length ? Object.keys(data[0]) : [];
+	const opts = { fields };
+	const csv = await json2csvAsync(data, opts);
 	res.set('Content-Type', 'text/csv').set('Content-Disposition', 'attachment; filename="404.csv"').send(csv);
 };
