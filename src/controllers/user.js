@@ -99,12 +99,15 @@ userController.exportPosts = async function (req, res) {
 			return post;
 		});
 		payload = payload.concat(postData);
+	}, {
+		batch: 500,
 	});
+
 	const csv = await json2csv(payload, {
 		checkSchemaDifferences: false,
 		emptyFieldValue: '',
 	});
-	res.set('Content-Type', 'text/csv').set('Content-Disposition', 'attachment; filename="' + req.locals.uid + '_posts.csv"').send(csv);
+	res.set('Content-Type', 'text/csv').set('Content-Disposition', 'attachment; filename="' + res.locals.uid + '_posts.csv"').send(csv);
 };
 
 userController.exportUploads = function (req, res, next) {
