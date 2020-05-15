@@ -195,11 +195,11 @@ userController.exportProfile = async function (req, res) {
 		user.auth.getSessions(targetUid, req.sessionID),
 		user.getHistory('user:' + targetUid + ':usernames'),
 		user.getHistory('user:' + targetUid + ':emails'),
-		getSetData('uid:' + targetUid + ':bookmarks', 'post:'),
-		getSetData('uid:' + targetUid + ':followed_tids', 'topic:'),
-		getSetData('uid:' + targetUid + ':upvote', 'post:'),
-		getSetData('uid:' + targetUid + ':downvote', 'post:'),
-		getSetData('following:' + targetUid, 'user:'),
+		getSetData('uid:' + targetUid + ':bookmarks', 'post:', targetUid),
+		getSetData('uid:' + targetUid + ':followed_tids', 'topic:', targetUid),
+		getSetData('uid:' + targetUid + ':upvote', 'post:', targetUid),
+		getSetData('uid:' + targetUid + ':downvote', 'post:', targetUid),
+		getSetData('following:' + targetUid, 'user:', targetUid),
 	]);
 	delete userData.password;
 	const followingData = following.map(u => ({ username: u.username, uid: u.uid }));
@@ -239,14 +239,18 @@ async function getRoomMessages(uid, roomId) {
 	return data;
 }
 
-async function getSetData(set, keyPrefix) {
+async function getSetData(set, keyPrefix, uid) {
 	let data = [];
 	await batch.processSortedSet(set, async (ids) => {
-		data = data.concat(await db.getObjects(ids.map(mid => keyPrefix + mid)));
+		if (keyPrefix === 'post:') {
+			ids = await privileges.posts.filter('topics:read', ids, uid);
+		} else if (keyPrefix === 'topic:') {
+			ids = await privileges.topics.filterTids('topics:read', ids, uid);
+		}
+		data = data.concat(await db.getObjects(ids.map(id => keyPrefix + id)));
 	}, { batch: 500 });
 	return data;
 }
-
 
 require('../promisify')(userController, [
 	'getCurrentUser', 'getUserByUID', 'getUserByUsername', 'getUserByEmail',
