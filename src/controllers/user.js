@@ -104,7 +104,7 @@ userController.exportPosts = async function (req, res) {
 		checkSchemaDifferences: false,
 		emptyFieldValue: '',
 	});
-	res.set('Content-Type', 'text/csv').set('Content-Disposition', 'attachment; filename="' + req.params.uid + '_posts.csv"').send(csv);
+	res.set('Content-Type', 'text/csv').set('Content-Disposition', 'attachment; filename="' + req.locals.uid + '_posts.csv"').send(csv);
 };
 
 userController.exportUploads = function (req, res, next) {
