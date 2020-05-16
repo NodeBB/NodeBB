@@ -170,7 +170,7 @@
     "consent.right_to_erasure_description": "At any time, you are able to revoke your consent to data collection and/or processing by deleting your account. Your individual profile can be deleted, although your posted content will remain. If you wish to delete both your account <strong>and</strong> your content, please contact the administrative team for this website.",
     "consent.right_to_data_portability": "あなたはデータを移動する権利があります",
     "consent.right_to_data_portability_description": "あなたは私たちにあなたとあなたのアカウントに関して収集されたデータの機械読み取り可能なエクスポートを要求することができます。 下の適切なボタンをクリックしてそれを行うことができます。",
-    "consent.export_profile": "プロファイルをエクスポート(.csv)",
+    "consent.export_profile": "Export Profile (.json)",
     "consent.export_uploads": "アップデートしたコンテンツをエクスポート(.zip)",
     "consent.export_posts": "投稿をエクスポート (.csv)"
 }

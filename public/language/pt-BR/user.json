@@ -170,7 +170,7 @@
     "consent.right_to_erasure_description": "A qualquer momento, você pode revogar o consentimento à coleta e/ou ao processamento de dados excluindo sua conta. Seu perfil individual pode ser excluído, no entanto, as suas postagens serão mantidas. Se você desejar deletar tanto a sua conta <strong>e</strong> as suas postagens, por favor, entre em contato com a equipe administrativa deste site.",
     "consent.right_to_data_portability": "Você tem o Direito de Portabilidade de Dados",
     "consent.right_to_data_portability_description": "Você pode solicitar de nós uma exportação legível por máquina de quaisquer dados coletados sobre você e sua conta. Você pode fazer isso clicando no botão apropriado abaixo.",
-    "consent.export_profile": "Exportar Perfil (.csv)",
+    "consent.export_profile": "Export Profile (.json)",
     "consent.export_uploads": "Exportar Arquivos Enviados (.zip)",
     "consent.export_posts": "Exportar Posts (.csv)"
 }

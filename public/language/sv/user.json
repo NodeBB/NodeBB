@@ -170,7 +170,7 @@
     "consent.right_to_erasure_description": "Du kan när som helst ta tillbaka ditt medgivande till datainsamling och/eller behandling genom att radera ditt konto. Din individuella profil kan raderas, men innehåll du lagt upp kommer bestå. Om du vill radera både din profil<strong>och</strong> ditt innehåll, vänligen kontakta detta forums administrativa team.",
     "consent.right_to_data_portability": "Du har rätten till dataförflyttbarhet",
     "consent.right_to_data_portability_description": "Du kan hämta en maskinläslig export av all insamlad data om dig och ditt konto. Du kan göra det genom att klicka på passande knapp nedan.",
-    "consent.export_profile": "Exportera profil (.csv)",
+    "consent.export_profile": "Export Profile (.json)",
     "consent.export_uploads": "Exportera uppladdat innehåll (.zip)",
     "consent.export_posts": "Exportera poster (.csv)"
 }

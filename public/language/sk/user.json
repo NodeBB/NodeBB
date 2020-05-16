@@ -170,7 +170,7 @@
     "consent.right_to_erasure_description": "Kedykoľvek môžete zmeniť svoj súhlas so zhromažďovaním údajov a/alebo spracovaním odstránenia Vášho účtu. Váš profil bude odstránený, hoci Vaše príspevky budú zachované. Ak si prajete odstránenie <strong>ako účtu tak aj obsahu</strong>, prosím kontaktujte správcov tejto stránky.",
     "consent.right_to_data_portability": "Máte právo na prenositeľnosť údajov ",
     "consent.right_to_data_portability_description": "Môžete od nás požadovať strojovo čitateľné údaje, ktoré boli zozbierané o Vás a Vašom účte. Urobíte tak kliknutím na tlačidlá zobrazené nižšie.",
-    "consent.export_profile": "Exportovať profil (*.csv)",
+    "consent.export_profile": "Export Profile (.json)",
     "consent.export_uploads": "Exportovať nahraný obsah (*.zip)",
     "consent.export_posts": "Exportovať príspevky (*.csv)"
 }

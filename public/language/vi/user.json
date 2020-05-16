@@ -170,7 +170,7 @@
     "consent.right_to_erasure_description": "Bất cứ lúc nào, bạn có thể thu hồi sự đồng ý của bạn để thu thập và / hoặc xử lý dữ liệu bằng cách xóa tài khoản của bạn. Hồ sơ cá nhân của bạn có thể bị xóa, mặc dù nội dung được đăng của bạn sẽ vẫn còn. Nếu bạn muốn xóa cả tài khoản <strong> và </strong> nội dung của mình, vui lòng liên hệ với nhóm quản trị cho trang web này.",
     "consent.right_to_data_portability": "Bạn có quyền di chuyển dữ liệu",
     "consent.right_to_data_portability_description": "Bạn có thể yêu cầu chúng tôi xuất khẩu có thể đọc được bằng máy đối với bất kỳ dữ liệu được thu thập nào về bạn và tài khoản của bạn. Bạn có thể làm như vậy bằng cách nhấp vào nút thích hợp bên dưới.",
-    "consent.export_profile": "Xuất hồ sơ(.csv)",
+    "consent.export_profile": "Export Profile (.json)",
     "consent.export_uploads": "Xuất nội dung đã tải lên (.zip)",
     "consent.export_posts": "Xuất bài viết (.csv)"
 }

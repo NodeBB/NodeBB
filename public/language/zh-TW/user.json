@@ -170,7 +170,7 @@
     "consent.right_to_erasure_description": "您隨時都可以通過刪除帳戶，來撤銷資料收集和處理的許可。您的個人檔案可以被刪除，但是您發表的內容仍然會保留。如果您想要同時刪除您的帳戶<strong>和</strong>內容，請聯繫此網站的管理團隊。",
     "consent.right_to_data_portability": "您擁有資料轉移權",
     "consent.right_to_data_portability_description": "您也許想導出有關您和您的帳戶的機器可讀副本。您可以點擊下方的按鈕來獲取它們。",
-    "consent.export_profile": "導出個人資料 (.csv)",
+    "consent.export_profile": "Export Profile (.json)",
     "consent.export_uploads": "導出上傳檔案 (.zip)",
     "consent.export_posts": "導出貼文 (.csv)"
 }

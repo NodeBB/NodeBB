@@ -170,7 +170,7 @@
     "consent.right_to_erasure_description": "Du kannst deine Zustimmung zur Datensammlung und/oder Verarbeitung von Daten jederzeit widerrufen, indem du dein Konto löschst. Dein Individuelles Profil kann gelöscht werden, jedoch blieben deine Beiträge und sonstigen Inhalte. Wenn du sowohl dein Konto <strong>sowie auch</strong> deine Inhalten löschen willst, kontaktiere bitte die Administratoren dieser Seite.",
     "consent.right_to_data_portability": "Du hast das Recht auf Datenportabilität",
     "consent.right_to_data_portability_description": "Du kannst von uns eine Maschinen-Lesbare Datei von jeglichen gesammelten Daten von dir und deinem Konto anfordern, indem du unten auf den entsprechenden Knopf drückst. ",
-    "consent.export_profile": "Profil exportieren (.csv)",
+    "consent.export_profile": "Export Profile (.json)",
     "consent.export_uploads": "Hochgeladene Dateien exportieren (.zip)",
     "consent.export_posts": "Beiträge exportieren (.csv)"
 }
