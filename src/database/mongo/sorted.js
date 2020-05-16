@@ -235,24 +235,25 @@ module.exports = function (module) {
 	}
 
 	module.sortedSetRanks = async function (key, values) {
-		return await sortedSetRanks(module.getSortedSetRange, key, values);
+		return await sortedSetRanks(false, key, values);
 	};
 
 	module.sortedSetRevRanks = async function (key, values) {
-		return await sortedSetRanks(module.getSortedSetRevRange, key, values);
+		return await sortedSetRanks(true, key, values);
 	};
 
-	async function sortedSetRanks(method, key, values) {
-		const sortedSet = await method(key, 0, -1);
-
-		var result = values.map(function (value) {
+	async function sortedSetRanks(reverse, key, values) {
+		if (values.length === 1) {
+			return [await getSortedSetRank(reverse, key, values[0])];
+		}
+		const sortedSet = await module[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](key, 0, -1);
+		return values.map(function (value) {
 			if (!value) {
 				return null;
 			}
-			var index = sortedSet.indexOf(value.toString());
+			const index = sortedSet.indexOf(value.toString());
 			return index !== -1 ? index : null;
 		});
-		return result;
 	}
 
 	module.sortedSetScore = async function (key, value) {
