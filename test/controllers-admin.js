@@ -395,7 +395,7 @@ describe('Admin Controllers', function () {
 		request(nconf.get('url') + '/api/admin/advanced/errors/export', { jar: jar }, function (err, res, body) {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
-			assert(body);
+			assert.strictEqual(body, '');
 			done();
 		});
 	});
