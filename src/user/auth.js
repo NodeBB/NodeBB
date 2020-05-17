@@ -66,43 +66,44 @@ module.exports = function (User) {
 	const sessionStoreDestroy = util.promisify((sid, callback) => db.sessionStore.destroy(sid, err => callback(err)));
 
 	User.auth.getSessions = async function (uid, curSessionId) {
+		await cleanExpiredSessions(uid);
 		const sids = await db.getSortedSetRevRange('uid:' + uid + ':sessions', 0, 19);
 		let sessions = await Promise.all(sids.map(sid => getSessionFromStore(sid)));
-		sessions.forEach(function (sessionObj, idx) {
-			if (sessionObj && sessionObj.meta) {
-				sessionObj.meta.current = curSessionId === sids[idx];
-			}
-		});
-
-		// Revoke any sessions that have expired, return filtered list
-		const expiredSids = [];
-		sessions = sessions.filter(function (sessionObj, idx) {
-			const expired = !sessionObj || !sessionObj.hasOwnProperty('passport') ||
-				!sessionObj.passport.hasOwnProperty('user')	||
-				parseInt(sessionObj.passport.user, 10) !== parseInt(uid, 10);
-
-			if (expired) {
-				expiredSids.push(sids[idx]);
-			}
-
-			return !expired;
-		});
-		await Promise.all(expiredSids.map(s => User.auth.revokeSession(s, uid)));
-
-		sessions = sessions.map(function (sessObj) {
-			if (sessObj.meta) {
+		sessions = sessions.map(function (sessObj, idx) {
+			if (sessObj && sessObj.meta) {
+				sessObj.meta.current = curSessionId === sids[idx];
 				sessObj.meta.datetimeISO = new Date(sessObj.meta.datetime).toISOString();
 				sessObj.meta.ip = validator.escape(String(sessObj.meta.ip));
 			}
-			return sessObj.meta;
+			return sessObj && sessObj.meta;
 		}).filter(Boolean);
 		return sessions;
 	};
+
+	async function cleanExpiredSessions(uid) {
+		const uuidMapping = await db.getObject('uid:' + uid + ':sessionUUID:sessionId');
+		const expiredUUIDs = [];
+		const expiredSids = [];
+		await Promise.all(Object.keys(uuidMapping).map(async (uuid) => {
+			const sid = uuidMapping[uuid];
+			const sessionObj = await getSessionFromStore(sid);
+			const expired = !sessionObj || !sessionObj.hasOwnProperty('passport') ||
+				!sessionObj.passport.hasOwnProperty('user')	||
+				parseInt(sessionObj.passport.user, 10) !== parseInt(uid, 10);
+			if (expired) {
+				expiredUUIDs.push(uuid);
+				expiredSids.push(sid);
+			}
+		}));
+		await db.deleteObjectFields('uid:' + uid + ':sessionUUID:sessionId', expiredUUIDs);
+		await db.sortedSetRemove('uid:' + uid + ':sessions', expiredSids);
+	}
 
 	User.auth.addSession = async function (uid, sessionId) {
 		if (!(parseInt(uid, 10) > 0)) {
 			return;
 		}
+		await cleanExpiredSessions(uid);
 		await db.sortedSetAdd('uid:' + uid + ':sessions', Date.now(), sessionId);
 	};
 
