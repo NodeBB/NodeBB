@@ -82,6 +82,9 @@ module.exports = function (User) {
 
 	async function cleanExpiredSessions(uid) {
 		const uuidMapping = await db.getObject('uid:' + uid + ':sessionUUID:sessionId');
+		if (!uuidMapping) {
+			return;
+		}
 		const expiredUUIDs = [];
 		const expiredSids = [];
 		await Promise.all(Object.keys(uuidMapping).map(async (uuid) => {

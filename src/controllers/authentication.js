@@ -350,10 +350,12 @@ authenticationController.onSuccessfulLogin = async function (req, uid) {
 		});
 		await Promise.all([
 			user.auth.addSession(uid, req.sessionID),
-			(uid > 0) ?	db.setObjectField('uid:' + uid + ':sessionUUID:sessionId', uuid, req.sessionID) : null,
 			user.updateLastOnlineTime(uid),
 			user.updateOnlineUsers(uid),
 		]);
+		if (uid > 0) {
+			await db.setObjectField('uid:' + uid + ':sessionUUID:sessionId', uuid, req.sessionID);
+		}
 
 		// Force session check for all connected socket.io clients with the same session id
 		sockets.in('sess_' + req.sessionID).emit('checkSession', uid);
