@@ -5,18 +5,30 @@ module.exports = function (module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return 0;
 		}
-
-		var pipeline = [
-			{ $match: { _key: { $in: keys } } },
-			{ $group: { _id: { value: '$value' }, count: { $sum: 1 } } },
-			{ $match: { count: keys.length } },
-			{ $group: { _id: null, count: { $sum: 1 } } },
-		];
-
-		const data = await module.client.collection('objects').aggregate(pipeline).toArray();
-		return Array.isArray(data) && data.length ? data[0].count : 0;
+		const items = await getIntersectionItems(keys);
+		return items.length;
 	};
 
+	async function getIntersectionItems(sets) {
+		const objects = module.client.collection('objects');
+		const counts = await Promise.all(
+			sets.map(s => objects.countDocuments({ _key: s }, { limit: 50000 }))
+		);
+		const minCount = Math.min(...counts);
+		if (minCount === 0) {
+			return [];
+		}
+		const index = counts.indexOf(minCount);
+		const smallestSet = sets[index];
+		let items = await objects.find({ _key: smallestSet }, {
+			projection: { _id: 0, value: 1 },
+		}).toArray();
+
+		items = items.map(v => v.value);
+		const otherSets = sets.filter(s => s !== smallestSet);
+		const isMembers = await Promise.all(otherSets.map(s => module.isSortedSetMembers(s, items)));
+		return items.filter((item, idx) => isMembers.every(arr => arr[idx]));
+	}
 
 	module.getSortedSetIntersect = async function (params) {
 		params.sort = 1;
@@ -44,6 +56,29 @@ module.exports = function (module) {
 		var limit = stop - start + 1;
 		if (limit <= 0) {
 			limit = 0;
+		}
+
+		if (weights.filter(w => w > 0).length === 1 && limit !== 0) {
+			const items = await getIntersectionItems(sets);
+			if (!items.length) {
+				return [];
+			}
+
+			const project = { _id: 0, value: 1 };
+			if (params.withScores) {
+				project.score = 1;
+			}
+			const sortSet = sets[weights.indexOf(1)];
+			let res = await module.client.collection('objects')
+				.find({ _key: sortSet, value: { $in: items } }, project)
+				.sort({ score: params.sort })
+				.skip(start)
+				.limit(limit)
+				.toArray();
+			if (!params.withScores) {
+				res = res.map(i => i.value);
+			}
+			return res;
 		}
 
 		var pipeline = [{ $match: { _key: { $in: sets } } }];
