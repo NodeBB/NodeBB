@@ -306,7 +306,11 @@ module.exports = function (module) {
 			return;
 		}
 		value = helpers.valueToString(value);
-		const result = await module.client.collection('objects').findOne({ _key: key, value: value }, { projection: { _id: 0, _key: 0, score: 0 } });
+		const result = await module.client.collection('objects').findOne({
+			_key: key, value: value,
+		}, {
+			projection: { _id: 0, value: 1 },
+		});
 		return !!result;
 	};
 
@@ -315,7 +319,11 @@ module.exports = function (module) {
 			return;
 		}
 		values = values.map(helpers.valueToString);
-		const results = await module.client.collection('objects').find({ _key: key, value: { $in: values } }, { projection: { _id: 0, _key: 0, score: 0 } }).toArray();
+		const results = await module.client.collection('objects').find({
+			_key: key, value: { $in: values },
+		}, {
+			projection: { _id: 0, value: 1 },
+		}).toArray();
 
 		var isMember = {};
 		results.forEach(function (item) {
@@ -332,7 +340,11 @@ module.exports = function (module) {
 			return [];
 		}
 		value = helpers.valueToString(value);
-		const results = await module.client.collection('objects').find({ _key: { $in: keys }, value: value }, { projection: { _id: 0, score: 0 } }).toArray();
+		const results = await module.client.collection('objects').find({
+			_key: { $in: keys }, value: value,
+		}, {
+			projection: { _id: 0, _key: 1, value: 1 },
+		}).toArray();
 
 		var isMember = {};
 		results.forEach(function (item) {
@@ -351,7 +363,7 @@ module.exports = function (module) {
 
 		const data = await module.client.collection('objects').find({
 			_key: keys.length === 1 ? keys[0] : { $in: keys },
-		}, { projection: { _id: 0, score: 0 } }).sort({ score: 1 }).toArray();
+		}, { projection: { _id: 0, _key: 1, value: 1 } }).toArray();
 
 		var sets = {};
 		data.forEach(function (set) {

@@ -10,7 +10,6 @@ module.exports = function (module) {
 			{ $match: { _key: { $in: keys } } },
 			{ $group: { _id: { value: '$value' } } },
 			{ $group: { _id: null, count: { $sum: 1 } } },
-			{ $project: { _id: 0, count: '$count' } },
 		]).toArray();
 		return Array.isArray(data) && data.length ? data[0].count : 0;
 	};
