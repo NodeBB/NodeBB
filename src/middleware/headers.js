@@ -73,11 +73,11 @@ module.exports = function (middleware) {
 
 	let langs = [];
 	middleware.autoLocale = function autoLocale(req, res, next) {
-		if (parseInt(req.uid, 10) > 0 || !meta.config.autoDetectLang) {
+		if (parseInt(req.uid, 10) > 0 || !meta.config.autoDetectLang || req.query.lang) {
 			return next();
 		}
 
-		var lang = req.acceptsLanguages(langs);
+		const lang = req.acceptsLanguages(langs);
 		if (!lang) {
 			return next();
 		}
