@@ -12,7 +12,9 @@ const nconf = require('nconf');
 const url = require('url');
 const util = require('util');
 
-global.env = process.env.TEST_ENV || 'production';
+process.env.NODE_ENV = process.env.TEST_ENV || 'production';
+global.env = process.env.NODE_ENV || 'production';
+
 
 const winston = require('winston');
 const packageInfo = require('../../package');
