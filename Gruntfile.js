@@ -179,7 +179,7 @@ module.exports = function (grunt) {
 };
 
 function addBaseThemes(plugins) {
-	let themeId = plugins.find(p => p.contains('nodebb-theme-'));
+	let themeId = plugins.find(p => p.includes('nodebb-theme-'));
 	if (!themeId) {
 		return plugins;
 	}
