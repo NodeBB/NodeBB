@@ -118,6 +118,15 @@ function addProcessHandlers() {
 		require('./meta').js.killMinifier();
 		shutdown(1);
 	});
+	process.on('message', function (msg) {
+		if (msg && msg.compiling === 'tpl') {
+			const benchpressjs = require('benchpressjs');
+			benchpressjs.flush();
+		} else if (msg && msg.compiling === 'lang') {
+			const translator = require('./translator');
+			translator.flush();
+		}
+	});
 }
 
 function restart() {
