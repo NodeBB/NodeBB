@@ -179,23 +179,22 @@ module.exports = function (grunt) {
 };
 
 function addBaseThemes(plugins) {
-	const themeId = plugins.find(p => p.startsWith('nodebb-theme-'));
+	let themeId = plugins.find(p => p.contains('nodebb-theme-'));
 	if (!themeId) {
 		return plugins;
 	}
-	function getBaseRecursive(themeId) {
+	let baseTheme;
+	do {
 		try {
-			const baseTheme = require(themeId + '/theme').baseTheme;
-
-			if (baseTheme) {
-				plugins.push(baseTheme);
-				getBaseRecursive(baseTheme);
-			}
+			baseTheme = require(themeId + '/theme').baseTheme;
 		} catch (err) {
 			console.log(err);
 		}
-	}
 
-	getBaseRecursive(themeId);
+		if (baseTheme) {
+			plugins.push(baseTheme);
+			themeId = baseTheme;
+		}
+	} while (baseTheme);
 	return plugins;
 }
