@@ -52,6 +52,14 @@ module.exports = function (Topics) {
 
 		await Topics.updateLastPostTime(tid, Date.now());
 
+		await Promise.all([
+			Topics.setTopicFields(tid, {
+				upvotes: postData.upvotes,
+				downvotes: postData.downvotes,
+			}),
+			db.sortedSetsAdd(['topics:votes', 'cid:' + cid + ':tids:votes'], postData.votes, tid),
+		]);
+
 		plugins.fireHook('action:topic.fork', { tid: tid, fromTid: fromTid, uid: uid });
 
 		return await Topics.getTopicData(tid);

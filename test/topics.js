@@ -906,6 +906,22 @@ describe('Topic\'s', function () {
 				},
 			], done);
 		});
+
+		it('should properly update topic vote count after forking', async () => {
+			const result = await topics.post({ uid: fooUid, cid: categoryObj.cid, title: 'fork vote test', content: 'main post' });
+			const reply1 = await topics.reply({ tid: result.topicData.tid, uid: fooUid, content: 'test reply 1' });
+			const reply2 = await topics.reply({ tid: result.topicData.tid, uid: fooUid, content: 'test reply 2' });
+			const reply3 = await topics.reply({ tid: result.topicData.tid, uid: fooUid, content: 'test reply 3' });
+			await posts.upvote(result.postData.pid, adminUid);
+			await posts.upvote(reply1.pid, adminUid);
+			assert.strictEqual(await db.sortedSetScore('topics:votes', result.topicData.tid), 1);
+			assert.strictEqual(await db.sortedSetScore('cid:' + categoryObj.cid + ':tids:votes', result.topicData.tid), 1);
+			const newTopic = await topics.createTopicFromPosts(adminUid, 'Fork test, vote update', [reply1.pid, reply2.pid], result.topicData.tid);
+
+			assert.strictEqual(await db.sortedSetScore('topics:votes', newTopic.tid), 1);
+			assert.strictEqual(await db.sortedSetScore('cid:' + categoryObj.cid + ':tids:votes', newTopic.tid), 1);
+			assert.strictEqual(await topics.getTopicField(newTopic.tid, 'upvotes'), 1);
+		});
 	});
 
 	describe('controller', function () {

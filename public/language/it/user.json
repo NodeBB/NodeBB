@@ -170,7 +170,7 @@
     "consent.right_to_erasure_description": "In qualsiasi momento, puoi revocare il tuo consenso alla raccolta e / o al trattamento dei dati eliminando il tuo account. Il tuo profilo individuale può essere eliminato, anche se i contenuti pubblicati rimarranno. Se desideri eliminare entrambi i tuoi account <strong>e</strong> i tuoi contenuti, contatta il team amministrativo per questo sito Web.",
     "consent.right_to_data_portability": "Hai i privilegi alla portabilità dei dati",
     "consent.right_to_data_portability_description": "Puoi richiedere da noi un'esportazione leggibile meccanicamente di tutti i dati raccolti su di te e sul tuo account. Puoi farlo facendo clic sul pulsante appropriato in basso.",
-    "consent.export_profile": "Esporta i profili (.csv)",
+    "consent.export_profile": "Export Profile (.json)",
     "consent.export_uploads": "Esporta i contenuti caricati (.zip)",
     "consent.export_posts": "Esporta i post (.csv)"
 }

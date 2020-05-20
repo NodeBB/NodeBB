@@ -2,10 +2,10 @@
 	"events": "Ereignisse",
 	"no-events": "Es gibt keine Ereignisse",
 	"control-panel": "Ereignis-Steuerung",
-	"filters": "Filters",
-	"filters-apply": "Apply Filters",
-	"filter-type": "Event Type",
-	"filter-start": "Start Date",
-	"filter-end": "End Date",
-	"filter-perPage": "Per Page"
+	"filters": "Filter",
+	"filters-apply": "Filter anwenden",
+	"filter-type": "Ereignistyp",
+	"filter-start": "Start-Datum",
+	"filter-end": "End-Datum",
+	"filter-perPage": "Pro Seite"
 }

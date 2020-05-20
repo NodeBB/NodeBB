@@ -56,8 +56,9 @@ module.exports = function (middleware) {
 		}
 
 		// Ensure that the session is valid. This block guards against edge-cases where the server-side session has
-		// been deleted (but client-side cookie still exists)
-		if (req.uid > 0 && !req.session.meta && !res.get('Set-Cookie')) {
+		// been deleted (but client-side cookie still exists).
+		// req.session.flash is present if you visit register/login, so all logged-in users have it, but it is missing if your server-side session got destroyed.
+		if (!req.session.flash && !req.session.meta && !res.get('Set-Cookie')) {
 			res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
 		}
 
@@ -72,11 +73,11 @@ module.exports = function (middleware) {
 
 	let langs = [];
 	middleware.autoLocale = function autoLocale(req, res, next) {
-		if (parseInt(req.uid, 10) > 0 || !meta.config.autoDetectLang) {
+		if (parseInt(req.uid, 10) > 0 || !meta.config.autoDetectLang || req.query.lang) {
 			return next();
 		}
 
-		var lang = req.acceptsLanguages(langs);
+		const lang = req.acceptsLanguages(langs);
 		if (!lang) {
 			return next();
 		}

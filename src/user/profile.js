@@ -16,7 +16,9 @@ module.exports = function (User) {
 			'username', 'email', 'fullname', 'website', 'location',
 			'groupTitle', 'birthday', 'signature', 'aboutme',
 		];
-
+		if (!data.uid) {
+			throw new Error('[[error:invalid-update-uid]]');
+		}
 		const updateUid = data.uid;
 
 		const result = await plugins.fireHook('filter:user.updateProfile', { uid: uid, data: data, fields: fields });

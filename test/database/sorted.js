@@ -992,21 +992,12 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should remove value from multiple keys', function (done) {
-			db.sortedSetAdd('multiTest3', [1, 2, 3, 4], ['one', 'two', 'three', 'four'], function (err) {
-				assert.ifError(err);
-				db.sortedSetAdd('multiTest4', [3, 4, 5, 6], ['three', 'four', 'five', 'six'], function (err) {
-					assert.ifError(err);
-					db.sortedSetRemove(['multiTest3', 'multiTest4'], 'three', function (err) {
-						assert.ifError(err);
-						db.getSortedSetsMembers(['multiTest3', 'multiTest4'], function (err, members) {
-							assert.ifError(err);
-							assert.deepEqual(members, [['one', 'two', 'four'], ['four', 'five', 'six']]);
-							done();
-						});
-					});
-				});
-			});
+		it('should remove value from multiple keys', async function () {
+			await db.sortedSetAdd('multiTest3', [1, 2, 3, 4], ['one', 'two', 'three', 'four']);
+			await db.sortedSetAdd('multiTest4', [3, 4, 5, 6], ['three', 'four', 'five', 'six']);
+			await db.sortedSetRemove(['multiTest3', 'multiTest4'], 'three');
+			assert.deepStrictEqual(await db.getSortedSetRange('multiTest3', 0, -1), ['one', 'two', 'four']);
+			assert.deepStrictEqual(await db.getSortedSetRange('multiTest4', 0, -1), ['four', 'five', 'six']);
 		});
 
 		it('should remove multiple values from multiple keys', function (done) {

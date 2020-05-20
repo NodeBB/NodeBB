@@ -170,7 +170,7 @@
     "consent.right_to_erasure_description": "בכל עת תוכל לבטל את הסכמתך לאיסוף נתונים ו / או עיבודם על ידי מחיקת חשבונך. מחיקת הפרופיל שלך לא תגרום למחיקת התוכנים שפרסמת. על מנת למחוק את חשבונך <strong> ואת </strong> התוכן המקושר לו צור קשר עם צוות הניהול של האתר.",
     "consent.right_to_data_portability": "זכותך לניוד הנתונים",
     "consent.right_to_data_portability_description": "באפרותך לבקש ייצוא של כל הנתונים שנאספו מחשבונך אודותיך. תוכל לעשות זאת על ידי לחיצה על הלחצן המתאים מטה.",
-    "consent.export_profile": "יצוא פרופיל (CVS.)",
+    "consent.export_profile": "Export Profile (.json)",
     "consent.export_uploads": "יצוא תוכן שהועלה (ZIP.)",
     "consent.export_posts": "יצוא פוסטים (CVS.)"
 }

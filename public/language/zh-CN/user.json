@@ -170,7 +170,7 @@
     "consent.right_to_erasure_description": "您随时都可以通过删除帐号，来撤销数据收集和处理的许可。您的个人资料可以被删除，但是您发表的内容仍然会保留。如果您想要同时删除您的帐号<strong>和</strong>内容，请联系此网站的管理团队。",
     "consent.right_to_data_portability": "您拥有数据转移权",
     "consent.right_to_data_portability_description": "您也许想导出有关您和您的账号的机器可读副本。您可以点击下方的按钮来获取它们。",
-    "consent.export_profile": "导出个人资料 (.csv)",
+    "consent.export_profile": "Export Profile (.json)",
     "consent.export_uploads": "导出上传文件 (.zip)",
     "consent.export_posts": "导出帖子 (.csv)"
 }

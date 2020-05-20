@@ -170,7 +170,7 @@
     "consent.right_to_erasure_description": "En cualquier momento, usted puede revocar su consentimiento a la recolección y/o procesado de datos mediante el borrado de su cuenta. Su perfil individual puede ser borrado, aunque sus respuestas y entradas permanecerán. Si desea borrar su cuenta <strong>y</strong> el contenido (entradas, temas, respuestas...), por favor contacte el equipo administrativo de este sitio web.",
     "consent.right_to_data_portability": "Usted tiene el Derecho a la Portabilidad de Datos",
     "consent.right_to_data_portability_description": "Puede pedir de nosotros una exportación legible por máquinas de cualquier dato recolectado sobre usted y su cuenta. Puede hacerlo haciendo click en el botón apropiado abajo.",
-    "consent.export_profile": "Exportar Perfil (.csv)",
+    "consent.export_profile": "Export Profile (.json)",
     "consent.export_uploads": "Exportar Contenido Subido (.zip)",
     "consent.export_posts": "Exportar Entradas y Respuestas (.csv)"
 }

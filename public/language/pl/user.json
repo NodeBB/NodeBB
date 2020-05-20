@@ -170,7 +170,7 @@
     "consent.right_to_erasure_description": "Możesz w każdej chwili cofnąć zgodę na gromadzenie lub przetwarzanie danych poprzez usunięcie konta. Twój profil zostanie usunięty, ale zamieszczone przez Ciebie treści pozostaną dostępne. Jeśli chcesz usunąć swoje konto <strong>oraz</strong> swoje treści, skontaktuj się z administratorami tej strony.",
     "consent.right_to_data_portability": "Masz prawo do przenoszenia danych",
     "consent.right_to_data_portability_description": "Możesz poprosić nas o eksport wszelkich danych gromadzonych na temat Ciebie i Twojego konta w formie do odczytu elektronicznego. W tym celu kliknij stosowny przycisk poniżej.",
-    "consent.export_profile": "Eksportuj profil (csv)",
+    "consent.export_profile": "Export Profile (.json)",
     "consent.export_uploads": "Eksportuj przesłane treści (zip)",
     "consent.export_posts": "Eksportuj wpisy (csv)"
 }
