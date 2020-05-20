@@ -6,7 +6,7 @@ module.exports = function (module) {
 			return 0;
 		}
 		const objects = module.client.collection('objects');
-		const counts = await countSets(keys);
+		const counts = await countSets(keys, 50000);
 		if (counts.minCount === 0) {
 			return 0;
 		}
@@ -17,7 +17,7 @@ module.exports = function (module) {
 		items = items.map(i => i.value);
 		const otherSets = keys.filter(s => s !== counts.smallestSet);
 		if (otherSets.length === 1) {
-			return await module.client.collection('objects').countDocuments({
+			return await objects.countDocuments({
 				_key: otherSets[0], value: { $in: items },
 			});
 		}
@@ -38,10 +38,12 @@ module.exports = function (module) {
 		return items;
 	}
 
-	async function countSets(sets) {
+	async function countSets(sets, limit) {
 		const objects = module.client.collection('objects');
 		const counts = await Promise.all(
-			sets.map(s => objects.countDocuments({ _key: s }, { limit: 25000 }))
+			sets.map(s => objects.countDocuments({ _key: s }, {
+				limit: limit || 25000,
+			}))
 		);
 		const minCount = Math.min(...counts);
 		const index = counts.indexOf(minCount);
@@ -77,7 +79,6 @@ module.exports = function (module) {
 		}
 
 		const simple = params.weights.filter(w => w === 1).length === 1 && params.limit !== 0;
-		console.log('derp', simple, params);
 		if (params.counts.minCount < 25000 && simple) {
 			return await intersectSingle(params);
 		} else if (simple) {
@@ -105,13 +106,12 @@ module.exports = function (module) {
 			project.score = 1;
 		}
 		const sortSet = params.sets[params.weights.indexOf(1)];
-		let res = await module.client.collection('objects')
-			.find({ _key: sortSet, value: { $in: items } }, project)
+		let res = await objects
+			.find({ _key: sortSet, value: { $in: items } }, { projection: project })
 			.sort({ score: params.sort })
 			.skip(params.start)
 			.limit(params.limit)
 			.toArray();
-		console.log(params);
 		if (!params.withScores) {
 			res = res.map(i => i.value);
 		}
@@ -123,14 +123,14 @@ module.exports = function (module) {
 		if (params.withScores) {
 			project.score = 1;
 		}
-
+		const sortSet = params.sets[params.weights.indexOf(1)];
 		const batchSize = 10000;
 		const cursor = await module.client.collection('objects')
-			.find({ _key: params.sets[0] }, { projection: project })
+			.find({ _key: sortSet }, { projection: project })
 			.sort({ score: params.sort })
 			.batchSize(batchSize);
 
-		const otherSets = params.sets.slice(1);
+		const otherSets = params.sets.filter(s => s !== sortSet);
 		let inters = [];
 		let done = false;
 		while (!done) {
