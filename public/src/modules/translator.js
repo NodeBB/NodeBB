@@ -527,6 +527,12 @@
 		unescape: Translator.unescape,
 		getLanguage: Translator.getLanguage,
 
+		flush: function () {
+			Object.keys(Translator.cache).forEach(function (code) {
+				Translator.cache[code].translations = {};
+			});
+		},
+
 		/**
 		 * Legacy translator function for backwards compatibility
 		 */
