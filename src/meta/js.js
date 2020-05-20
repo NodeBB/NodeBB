@@ -260,7 +260,7 @@ JS.buildModules = function (fork, callback) {
 	async.waterfall([
 		clearModules,
 		function (next) {
-			if (global.env === 'development') {
+			if (process.env.NODE_ENV === 'development') {
 				return linkModules(callback);
 			}
 
@@ -323,7 +323,7 @@ function getBundleScriptList(target, callback) {
 
 		var scripts = JS.scripts.base;
 
-		if (target === 'client' && global.env !== 'development') {
+		if (target === 'client' && process.env.NODE_ENV !== 'development') {
 			scripts = scripts.concat(JS.scripts.rjs);
 		} else if (target === 'acp') {
 			scripts = scripts.concat(JS.scripts.admin);
@@ -357,7 +357,7 @@ JS.buildBundle = function (target, fork, callback) {
 			});
 		},
 		function (files, next) {
-			var minify = global.env !== 'development';
+			var minify = process.env.NODE_ENV !== 'development';
 			var filePath = path.join(__dirname, '../../build/public', fileNames[target]);
 
 			minifier.js.bundle({

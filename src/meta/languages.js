@@ -56,7 +56,7 @@ async function getTranslationMetadata() {
 }
 
 async function writeLanguageFile(language, namespace, translations) {
-	const dev = global.env === 'development';
+	const dev = process.env.NODE_ENV === 'development';
 	const filePath = path.join(buildLanguagesPath, language, namespace + '.json');
 
 	await mkdirp(path.dirname(filePath));

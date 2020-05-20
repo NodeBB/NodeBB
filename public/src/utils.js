@@ -661,17 +661,21 @@
 
 		// get all the url params in a single key/value hash
 		params: function (options) {
-			var a;
 			var hash = {};
-			var params;
 
 			options = options || {};
 			options.skipToType = options.skipToType || {};
 
-			if (options.url) {
-				a = utils.urlToLocation(options.url);
+			var searchStr = window.location.search;
+			if (options.hasOwnProperty('url')) {
+				if (options.url) {
+					var a = utils.urlToLocation(options.url);
+					searchStr = a ? a.search : '';
+				} else {
+					searchStr = '';
+				}
 			}
-			params = (a ? a.search : window.location.search).substring(1).split('&');
+			var params = searchStr.substring(1).split('&');
 
 			params.forEach(function (param) {
 				var val = param.split('=');
