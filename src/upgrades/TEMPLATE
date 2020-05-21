@@ -1,8 +1,6 @@
 'use strict';
 
 const db = require('../../database');
-
-const async = require('async');
 const winston = require('winston');
 
 module.exports = {
@@ -11,7 +9,7 @@ module.exports = {
 	name: 'User_friendly_upgrade_script_name',
 	// remember, month is zero-indexed (so January is 0, December is 11)
 	timestamp: Date.UTC(2020, 0, 1),
-	method: async (callback) => {
+	method: async () => {
 		// Do stuff here...
 	},
 };
