@@ -9,6 +9,7 @@ module.exports = {
 	method: async () => {
 		const allowFileUploads = parseInt(await db.getObjectField('config', 'allowFileUploads'), 10);
 		if (allowFileUploads === 1) {
+			await db.deleteObjectField('config', 'allowFileUploads');
 			return;
 		}
 
