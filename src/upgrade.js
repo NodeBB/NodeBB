@@ -158,7 +158,7 @@ Upgrade.process = function (files, skipCount, callback) {
 				// For backwards compatibility, cross-reference with schemaDate (if found). If a script's date is older, skip it
 				if ((!results.schemaDate && !results.schemaLogCount) || (scriptExport.timestamp <= results.schemaDate && semver.lt(version, '1.5.0'))) {
 					process.stdout.write(' skipped\n'.grey);
-					db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'), next);
+					await db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
 					return;
 				}
 
