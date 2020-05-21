@@ -34,7 +34,7 @@
     "allowAccountDelete": 1,
     "allowFileUploads": 0,
     "privateUploads": 0,
-    "allowedFileExtensions": "png,jpg,bmp",
+    "allowedFileExtensions": "png,jpg,bmp,txt",
     "allowUserHomePage": 1,
     "allowMultipleBadges": 0,
     "maximumFileSize": 2048,
