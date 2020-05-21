@@ -2,6 +2,7 @@
 
 var async = require('async');
 var path = require('path');
+var util = require('util');
 var semver = require('semver');
 var readline = require('readline');
 var winston = require('winston');
@@ -140,7 +141,7 @@ Upgrade.process = function (files, skipCount, callback) {
 			}, next);
 		},
 		function (results, next) {
-			async.eachSeries(files, function (file, next) {
+			async.eachSeries(files, async (file) => {
 				var scriptExport = require(file);
 				var date = new Date(scriptExport.timestamp);
 				var version = path.dirname(file).split('/').pop();
@@ -152,35 +153,34 @@ Upgrade.process = function (files, skipCount, callback) {
 					date: date,
 				};
 
-				console.log('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '...');
+				process.stdout.write('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '...');
 
 				// For backwards compatibility, cross-reference with schemaDate (if found). If a script's date is older, skip it
 				if ((!results.schemaDate && !results.schemaLogCount) || (scriptExport.timestamp <= results.schemaDate && semver.lt(version, '1.5.0'))) {
-					readline.clearLine(process.stdout, 0);
-					readline.cursorTo(process.stdout, 0);
-					readline.moveCursor(process.stdout, 0, -1);
-					console.log('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '... ' + 'skipped'.grey);
-					db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'), next);
+					process.stdout.write(' skipped\n'.grey);
+					await db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
 					return;
 				}
 
+				// Promisify method if necessary
+				if (scriptExport.method.constructor && scriptExport.method.constructor.name !== 'AsyncFunction') {
+					scriptExport.method = util.promisify(scriptExport.method);
+				}
+
 				// Do the upgrade...
-				scriptExport.method.bind({
-					progress: progress,
-				})(function (err) {
-					if (err) {
-						console.error('Error occurred');
-						return next(err);
-					}
+				try {
+					await scriptExport.method.bind({
+						progress: progress,
+					})();
+				} catch (err) {
+					console.error('Error occurred');
+					throw err;
+				}
 
-					readline.clearLine(process.stdout, 0);
-					readline.cursorTo(process.stdout, 0);
-					readline.moveCursor(process.stdout, 0, -1);
-					console.log('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '... ' + 'OK'.green);
+				process.stdout.write(' OK\n'.green);
 
-					// Record success in schemaLog
-					db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'), next);
-				});
+				// Record success in schemaLog
+				await db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
 			}, next);
 		},
 		function (next) {

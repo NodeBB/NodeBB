@@ -34,7 +34,6 @@ apiController.loadConfig = async function (req) {
 		useOutgoingLinksPage: meta.config.useOutgoingLinksPage === 1,
 		outgoingLinksWhitelist: meta.config.useOutgoingLinksPage === 1 ? meta.config['outgoingLinks:whitelist'] : undefined,
 		allowGuestHandles: meta.config.allowGuestHandles === 1,
-		allowFileUploads: meta.config.allowFileUploads === 1,
 		allowTopicsThumbnail: meta.config.allowTopicsThumbnail === 1,
 		usePagination: meta.config.usePagination === 1,
 		disableChat: meta.config.disableChat === 1,

@@ -596,7 +596,7 @@ app.cacheBuster = null;
 					$(window).trigger('action:search.quick', { data: data });
 					search.api(data, function (data) {
 						data.posts.forEach(function (p) {
-							p.snippet = utils.escapeHTML($(p.content).text().slice(0, 80) + '...');
+							p.snippet = utils.escapeHTML($('<div>' + p.content + '</div>').text().slice(0, 80) + '...');
 						});
 						app.parseAndTranslate(template, data, function (html) {
 							if (html.length) {

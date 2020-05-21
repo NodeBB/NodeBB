@@ -8,13 +8,6 @@
 		<form>
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="allowFileUploads">
-					<span class="mdl-switch__label"><strong>[[admin/settings/uploads:allow-files]]</strong></span>
-				</label>
-			</div>
-
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="privateUploads">
 					<span class="mdl-switch__label"><strong>[[admin/settings/uploads:private]]</strong></span>
 				</label>

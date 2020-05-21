@@ -84,10 +84,6 @@ async function uploadAsFile(req, uploadedFile) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	if (!meta.config.allowFileUploads) {
-		throw new Error('[[error:uploads-are-disabled]]');
-	}
-
 	const fileObj = await uploadsController.uploadFile(req.uid, uploadedFile);
 	return {
 		url: fileObj.url,

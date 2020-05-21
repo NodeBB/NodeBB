@@ -6,11 +6,10 @@ const batch = require('../../batch');
 module.exports = {
 	name: 'Clean up post hash data',
 	timestamp: Date.UTC(2019, 9, 7),
-	method: async function (callback) {
+	method: async function () {
 		const progress = this.progress;
 		await cleanPost(progress);
 		await cleanTopic(progress);
-		callback();
 	},
 };
 

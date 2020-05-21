@@ -1,17 +1,15 @@
 'use strict';
 
-var db = require('../../database');
-
-var async = require('async');
-var winston = require('winston');
+const db = require('../../database');
+const winston = require('winston');
 
 module.exports = {
 	// you should use spaces
 	// the underscores are there so you can double click to select the whole thing
 	name: 'User_friendly_upgrade_script_name',
 	// remember, month is zero-indexed (so January is 0, December is 11)
-	timestamp: Date.UTC(2019, 0, 1),
-	method: function (callback) {
+	timestamp: Date.UTC(2020, 0, 1),
+	method: async () => {
 		// Do stuff here...
 	},
 };
