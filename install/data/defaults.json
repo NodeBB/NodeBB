@@ -32,7 +32,6 @@
     "registrationType": "normal",
     "registrationApprovalType": "normal",
     "allowAccountDelete": 1,
-    "allowFileUploads": 0,
     "privateUploads": 0,
     "allowedFileExtensions": "png,jpg,bmp,txt",
     "allowUserHomePage": 1,

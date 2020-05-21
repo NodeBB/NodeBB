@@ -6,7 +6,7 @@ const batch = require('../../batch');
 module.exports = {
 	name: 'Clean flag byCid zsets',
 	timestamp: Date.UTC(2019, 8, 24),
-	method: async function (callback) {
+	method: async function () {
 		const progress = this.progress;
 
 		await batch.processSortedSet('flags:datetime', async function (flagIds) {
@@ -23,6 +23,5 @@ module.exports = {
 		}, {
 			progress: progress,
 		});
-		callback();
 	},
 };

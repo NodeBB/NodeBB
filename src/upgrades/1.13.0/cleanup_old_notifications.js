@@ -7,7 +7,7 @@ const user = require('../../user');
 module.exports = {
 	name: 'Clean up old notifications and hash data',
 	timestamp: Date.UTC(2019, 9, 7),
-	method: async function (callback) {
+	method: async function () {
 		const progress = this.progress;
 		const week = 604800000;
 		const cutoffTime = Date.now() - week;
@@ -47,6 +47,5 @@ module.exports = {
 			batch: 500,
 			progress: progress,
 		});
-		callback();
 	},
 };
