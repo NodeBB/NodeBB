@@ -2795,8 +2795,6 @@ paths:
                     type: boolean
                   allowGuestHandles:
                     type: boolean
-                  allowFileUploads:
-                    type: boolean
                   allowTopicsThumbnail:
                     type: boolean
                   usePagination:
