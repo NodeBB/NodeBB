@@ -6,7 +6,7 @@ const batch = require('../../batch');
 module.exports = {
 	name: 'Fix user sorted sets',
 	timestamp: Date.UTC(2020, 4, 2),
-	method: async function (callback) {
+	method: async function () {
 		const progress = this.progress;
 		const nextUid = await db.getObjectField('global', 'nextUid');
 		const allUids = [];
@@ -58,6 +58,5 @@ module.exports = {
 		});
 
 		await db.setObjectField('global', 'userCount', totalUserCount);
-		callback();
 	},
 };
