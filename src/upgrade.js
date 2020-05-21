@@ -180,7 +180,7 @@ Upgrade.process = function (files, skipCount, callback) {
 				process.stdout.write(' OK\n'.green);
 
 				// Record success in schemaLog
-				db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
+				await db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
 			}, next);
 		},
 		function (next) {
