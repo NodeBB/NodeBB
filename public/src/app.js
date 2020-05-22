@@ -583,7 +583,7 @@ app.cacheBuster = null;
 			if (inputEl.val().length < 3 || inputEl.val() === currentVal) {
 				return;
 			}
-
+			currentVal = inputEl.val();
 			searchTimeoutId = setTimeout(function () {
 				if (!inputEl.is(':focus')) {
 					return quickSearchResults.addClass('hidden');
