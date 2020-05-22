@@ -40,7 +40,8 @@ module.exports = function (Topics) {
 				extension = '.' + mime.getExtension(type);
 			}
 			const filename = Date.now() + '-topic-thumb' + extension;
-			pathToUpload = path.join(nconf.get('upload_path'), 'files', filename);
+			const folder = 'files';
+			pathToUpload = path.join(nconf.get('upload_path'), folder, filename);
 
 			await pipeToFileAsync(data.thumb, pathToUpload);
 
@@ -53,11 +54,15 @@ module.exports = function (Topics) {
 			});
 
 			if (!plugins.hasListeners('filter:uploadImage')) {
-				data.thumb = '/assets/uploads/files/' + filename;
+				data.thumb = '/assets/uploads/' + folder + '/' + filename;
 				return;
 			}
 
-			const uploadedFile = await plugins.fireHook('filter:uploadImage', { image: { path: pathToUpload, name: '' }, uid: data.uid });
+			const uploadedFile = await plugins.fireHook('filter:uploadImage', {
+				image: { path: pathToUpload, name: '' },
+				uid: data.uid,
+				folder: folder,
+			});
 			file.delete(pathToUpload);
 			data.thumb = uploadedFile.url;
 		} catch (err) {
