@@ -269,17 +269,15 @@ describe('Sorted Set methods', function () {
 		});
 
 		it('should work with big arrays (length > 100) ', async function () {
+			const keys = [];
 			for (let i = 0; i < 400; i++) {
 				/* eslint-disable no-await-in-loop */
 				const bulkAdd = [];
+				keys.push('testzset' + i);
 				for (let k = 0; k < 100; k++) {
 					bulkAdd.push(['testzset' + i, 1000000 + k + (i * 100), k + (i * 100)]);
 				}
 				await db.sortedSetAddBulk(bulkAdd);
-			}
-			const keys = [];
-			for (let i = 0; i < 400; i++) {
-				keys.push('testzset' + i);
 			}
 
 			let data = await db.getSortedSetRevRange(keys, 0, 3);
