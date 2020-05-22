@@ -14,29 +14,16 @@ module.exports = function (module) {
 			projection: { _id: 0, value: 1 },
 		}).toArray();
 
-		items = items.map(i => i.value);
 		const otherSets = keys.filter(s => s !== counts.smallestSet);
-		if (otherSets.length === 1) {
-			return await objects.countDocuments({
-				_key: otherSets[0], value: { $in: items },
-			});
-		}
-		items = await intersectValuesWithSets(items, otherSets);
-		return items.length;
-	};
-
-	async function intersectValuesWithSets(items, sets) {
-		for (let i = 0; i < sets.length; i++) {
+		for (let i = 0; i < otherSets.length; i++) {
 			/* eslint-disable no-await-in-loop */
-			items = await module.client.collection('objects').find({
-				_key: sets[i], value: { $in: items },
-			}, {
-				projection: { _id: 0, value: 1 },
-			}).toArray();
-			items = items.map(i => i.value);
+			const query = { _key: otherSets[i], value: { $in: items.map(i => i.value) } };
+			if (i === otherSets.length - 1) {
+				return await objects.countDocuments(query);
+			}
+			items = await objects.find(query, { projection: { _id: 0, value: 1 } }).toArray();
 		}
-		return items;
-	}
+	};
 
 	async function countSets(sets, limit) {
 		const objects = module.client.collection('objects');
@@ -92,30 +79,49 @@ module.exports = function (module) {
 		let items = await objects.find({ _key: params.counts.smallestSet }, {
 			projection: { _id: 0, value: 1 },
 		}).toArray();
-		if (!items.length) {
-			return [];
-		}
-
+		const sortSet = params.sets[params.weights.indexOf(1)];
 		const otherSets = params.sets.filter(s => s !== params.counts.smallestSet);
-		items = await intersectValuesWithSets(items.map(i => i.value), otherSets);
-		if (!items.length) {
-			return [];
-		}
 		const project = { _id: 0, value: 1 };
 		if (params.withScores) {
 			project.score = 1;
 		}
-		const sortSet = params.sets[params.weights.indexOf(1)];
-		let res = await objects
-			.find({ _key: sortSet, value: { $in: items } }, { projection: project })
-			.sort({ score: params.sort })
-			.skip(params.start)
-			.limit(params.limit)
-			.toArray();
-		if (!params.withScores) {
-			res = res.map(i => i.value);
+
+		if (sortSet !== params.counts.smallestSet) {
+			// move sortSet to the end of array
+			otherSets.push(otherSets.splice(otherSets.indexOf(sortSet), 1)[0]);
+			for (let i = 0; i < otherSets.length; i++) {
+				/* eslint-disable no-await-in-loop */
+				const cursor = objects.find({ _key: otherSets[i], value: { $in: items.map(i => i.value) } });
+				// at the last step sort by sortSet
+				if (i === otherSets.length - 1) {
+					cursor.project(project).sort({ score: params.sort }).skip(params.start).limit(params.limit);
+				} else {
+					cursor.project({ _id: 0, value: 1 });
+				}
+				items = await cursor.toArray();
+			}
+		} else {
+			for (let i = 0; i < otherSets.length; i++) {
+				/* eslint-disable no-await-in-loop */
+				items = await module.client.collection('objects').find({
+					_key: otherSets[i], value: { $in: items.map(i => i.value) },
+				}, { projection: { _id: 0, value: 1 } }).toArray();
+			}
+			if (!items.length) {
+				return [];
+			}
+			items = await objects.find({ _key: sortSet, value: { $in: items.map(i => i.value) } })
+				.project(project)
+				.sort({ score: params.sort })
+				.skip(params.start)
+				.limit(params.limit)
+				.toArray();
 		}
-		return res;
+
+		if (!params.withScores) {
+			items = items.map(i => i.value);
+		}
+		return items;
 	}
 
 	async function intersectBatch(params) {
@@ -159,7 +165,7 @@ module.exports = function (module) {
 	}
 
 	async function intersectAggregate(params) {
-		var aggregate = {};
+		const aggregate = {};
 
 		if (params.aggregate) {
 			aggregate['$' + params.aggregate.toLowerCase()] = '$score';

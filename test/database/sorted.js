@@ -1217,6 +1217,58 @@ describe('Sorted Set methods', function () {
 				done();
 			});
 		});
+
+		it('should return correct results if sorting by different zset', async function () {
+			await db.sortedSetAdd('bigzset', [1, 2, 3, 4, 5, 6], ['a', 'b', 'c', 'd', 'e', 'f']);
+			await db.sortedSetAdd('smallzset', [3, 2, 1], ['b', 'e', 'g']);
+			const data = await db.getSortedSetRevIntersect({
+				sets: ['bigzset', 'smallzset'],
+				start: 0,
+				stop: 19,
+				weights: [1, 0],
+				withScores: true,
+			});
+			assert.deepStrictEqual(data, [{ value: 'e', score: 5 }, { value: 'b', score: 2 }]);
+			const data2 = await db.getSortedSetRevIntersect({
+				sets: ['bigzset', 'smallzset'],
+				start: 0,
+				stop: 19,
+				weights: [0, 1],
+				withScores: true,
+			});
+			assert.deepStrictEqual(data2, [{ value: 'b', score: 3 }, { value: 'e', score: 2 }]);
+		});
+
+		it('should return correct results when intersecting big zsets', async function () {
+			const scores = [];
+			const values = [];
+			for (let i = 0; i < 30000; i++) {
+				scores.push((i + 1) * 1000);
+				values.push(String(i + 1));
+			}
+			await db.sortedSetAdd('verybigzset', scores, values);
+
+			scores.length = 0;
+			values.length = 0;
+			for (let i = 15000; i < 45000; i++) {
+				scores.push((i + 1) * 1000);
+				values.push(String(i + 1));
+			}
+			await db.sortedSetAdd('anotherbigzset', scores, values);
+			const data = await db.getSortedSetRevIntersect({
+				sets: ['verybigzset', 'anotherbigzset'],
+				start: 0,
+				stop: 3,
+				weights: [1, 0],
+				withScores: true,
+			});
+			assert.deepStrictEqual(data, [
+				{ value: '30000', score: 30000000 },
+				{ value: '29999', score: 29999000 },
+				{ value: '29998', score: 29998000 },
+				{ value: '29997', score: 29997000 },
+			]);
+		});
 	});
 
 	describe('sortedSetIntersectCard', function () {
