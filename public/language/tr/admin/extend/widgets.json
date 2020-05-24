@@ -20,11 +20,11 @@
 
 	"error.select-clone": "Lütfen klonlanacak bir sayfa seçin",
 
-	"title": "Title",
-	"title.placeholder": "Title (only shown on some containers)",
-	"container": "Container",
-	"container.placeholder": "Drag and drop a container or enter HTML here.",
-	"show-to-groups": "Show to groups",
-	"hide-from-groups": "Hide from groups",
-	"hide-on-mobile": "Hide on mobile"
+	"title": "Başlık",
+	"title.placeholder": "Başlık (Sadece bazı kutucuklarda gösteriliyor)",
+	"container": "Kutucuk",
+	"container.placeholder": "Bir kutucuğu sürükle ve buraya bırak veya HTML gir",
+	"show-to-groups": "Şu gruplara göster",
+	"hide-from-groups": "Şu gruplara gösterme",
+	"hide-on-mobile": "Mobilde gösterme"
 }

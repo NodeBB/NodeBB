@@ -4,18 +4,18 @@
 	"disclaimer-continued": "A successful delivery means the message was sent successfully by NodeBB and acknowledged by the recipient server. It does not mean the email landed in the inbox. For best results, we recommend using a third-party email delivery service such as <a href=\"https://sendgrid.com/why-sendgrid/\">SendGrid</a>.",
 
 	"user": "Kullanıcı",
-	"subscription": "Subscription Type",
-	"last-delivery": "Last successful delivery",
-	"default": "System default",
+	"subscription": "Abonelik türü",
+	"last-delivery": "En son başarılı gönderim",
+	"default": "Sistem varsayılanı",
 	"default-help": "<em>System default</em> means the user has not explicitly overridden the global forum setting for digests, which is currently: &quot;<strong>%1</strong>&quot;",
-	"resend": "Resend Digest",
+	"resend": "Özeti bir daha gönder",
 	"resend-all-confirm": "Are you sure you wish to mnually execute this digest run?",
 	"resent-single": "Manual digest resend completed",
-	"resent-day": "Daily digest resent",
-	"resent-week": "Weekly digest resent",
-	"resent-month": "Monthly digest resent",
-	"null": "<em>Never</em>",
+	"resent-day": "Günlük özet bir daha gönderildi",
+	"resent-week": "Haftalık özet bir daha gönderildi",
+	"resent-month": "Aylık özet bir daha gönderildi",
+	"null": "<em>Hiçbir zaman</em>",
 	"manual-run": "Manual digest run:",
 
-	"no-delivery-data": "No delivery data found"
+	"no-delivery-data": "Gönderim bilgisi bulunmadı"
 }

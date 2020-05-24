@@ -34,7 +34,7 @@
 	"online-cutoff-help": "Eğer kullanıcı bu süre içinde herhangi bir işlem yapmazsa, etkin olmayan olarak kabul edilir ve gerçek zamanlı güncellemeler almaz.",
 	"registration": "Kullanıcı Kaydı",
 	"registration-type": "Kayıt Tipi",
-	"registration-approval-type": "Registration Approval Type",
+	"registration-approval-type": "Kayıt Onay Tipi",
 	"registration-type.normal": "Normal",
 	"registration-type.admin-approval": "Yönetici Onayı",
 	"registration-type.admin-approval-ip": "IP'ler için Yönetici Onayı",
@@ -72,8 +72,8 @@
 	"follow-created-topics": "Kendi konularımı takip et",
 	"follow-replied-topics": "Cevap verdiğim konuları takip et",
 	"default-notification-settings": "Varsayılan bildirim ayarları",
-	"categoryWatchState": "Default category watch state",
-	"categoryWatchState.watching": "Watching",
+	"categoryWatchState": "Varsayılan kategori izlenme durumu",
+	"categoryWatchState.watching": "Takip ediliyor",
 	"categoryWatchState.notwatching": "Takip edilmiyor",
-	"categoryWatchState.ignoring": "Ignoring"
+	"categoryWatchState.ignoring": "Yok sayılıyor"
 }
