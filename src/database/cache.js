@@ -5,7 +5,7 @@ module.exports.create = function (name) {
 	var pubsub = require('../pubsub');
 
 	var cache = new LRU({
-		max: 20000,
+		max: 40000,
 		length: function () { return 1; },
 		maxAge: 0,
 	});

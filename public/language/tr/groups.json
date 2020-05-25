@@ -28,7 +28,7 @@
     "details.disableLeave": "Üyelerin gruptan ayrılmasını yasakla",
     "details.grant": "Grup Sahibi Yap/Kaldır",
     "details.kick": "Dışarı at",
-    "details.kick_confirm": "Bu üyeyi bu gruptan silmek istediğinden emin misin?",
+    "details.kick_confirm": "Bu üyeyi bu gruptan silmek istediğinize emin misiniz?",
     "details.add-member": "Üye Ekle",
     "details.owner_options": "Grup Yöneticisi",
     "details.group_name": "Grup ismi",

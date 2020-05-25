@@ -1,6 +1,6 @@
 {
 	"post-queue": "İleti Kuyruğu",
-	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
+	"description": "İleti kuyruğunda hiçbir ileti bulunmamaktadır. <br> Bu özelliği aktifleştirmek için, şuraya gidin <a href=\"%1\">Ayarlar &rarr; İleti &rarr; İleti Kuyruğu</a> ve şu özelliği aktifleştirin:  <strong>İleti Kuyruğu</strong>.",
 	"user": "Kullanıcı",
 	"category": "Kategori",
 	"title": "Başlık",

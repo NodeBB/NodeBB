@@ -149,6 +149,7 @@ image.uploadImage = async function (filename, folder, imageData) {
 		return await plugins.fireHook('filter:uploadImage', {
 			image: imageData,
 			uid: imageData.uid,
+			folder: folder,
 		});
 	}
 	await image.isFileTypeAllowed(imageData.path);

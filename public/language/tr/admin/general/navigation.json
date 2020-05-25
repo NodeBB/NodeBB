@@ -5,7 +5,7 @@
 	"tooltip": "Araç ipucu:",
 	"text": "Yazı:",
 	"text-class": "Metin Sınıfı: <small>opsiyonel</small>",
-	"class": "Class: <small>optional</small>",
+	"class": "Sınıf: <small>opsiyonel</small>",
 	"id": "ID: <small>opsiyonel</small>",
 
 	"properties": "Özellikler:",

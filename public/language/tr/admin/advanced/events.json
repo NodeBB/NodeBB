@@ -1,11 +1,11 @@
 {
-	"events": "Olaylar",
-	"no-events": "Olay yok",
+	"events": "Etkinlikler",
+	"no-events": "Etkinlik yok",
 	"control-panel": "Etkinlik Kontrol Paneli",
-	"filters": "Filters",
-	"filters-apply": "Apply Filters",
-	"filter-type": "Event Type",
-	"filter-start": "Start Date",
-	"filter-end": "End Date",
-	"filter-perPage": "Per Page"
+	"filters": "Filtreler",
+	"filters-apply": "Filtreleri Uygula",
+	"filter-type": "Etkinlik türü",
+	"filter-start": "Başlangıç zamanı",
+	"filter-end": "Bitiş zamanı",
+	"filter-perPage": "Sayfa Başına"
 }

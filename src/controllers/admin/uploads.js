@@ -243,7 +243,7 @@ async function uploadImage(filename, folder, uploadedFile, req, res, next) {
 	let imageData;
 	try {
 		if (plugins.hasListeners('filter:uploadImage')) {
-			imageData = await plugins.fireHook('filter:uploadImage', { image: uploadedFile, uid: req.uid });
+			imageData = await plugins.fireHook('filter:uploadImage', { image: uploadedFile, uid: req.uid, folder: folder });
 		} else {
 			imageData = await file.saveFileToLocal(filename, folder, uploadedFile.path);
 		}
