@@ -360,15 +360,22 @@ module.exports = function (module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return [];
 		}
-
+		const arrayOfKeys = keys.length > 1;
+		const projection = { _id: 0, value: 1 };
+		if (arrayOfKeys) {
+			projection._key = 1;
+		}
 		const data = await module.client.collection('objects').find({
-			_key: keys.length === 1 ? keys[0] : { $in: keys },
-		}, { projection: { _id: 0, _key: 1, value: 1 } }).toArray();
+			_key: arrayOfKeys ? { $in: keys } : keys[0],
+		}, { projection: projection }).toArray();
 
-		var sets = {};
-		data.forEach(function (set) {
-			sets[set._key] = sets[set._key] || [];
-			sets[set._key].push(set.value);
+		if (!arrayOfKeys) {
+			return [data.map(item => item.value)];
+		}
+		const sets = {};
+		data.forEach(function (item) {
+			sets[item._key] = sets[item._key] || [];
+			sets[item._key].push(item.value);
 		});
 
 		return keys.map(k => sets[k] || []);

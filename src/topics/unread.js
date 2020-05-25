@@ -177,9 +177,9 @@ module.exports = function (Topics) {
 	}
 
 	async function getFollowedTids(params) {
-		const tids = await db.getSortedSetRevRange('uid:' + params.uid + ':followed_tids', 0, -1);
-		const scores = await db.sortedSetScores('topics:recent', tids);
-		const data = tids.map((tid, index) => ({ value: tid, score: scores[index] }));
+		const tids = await db.getSortedSetsMembers(['uid:' + params.uid + ':followed_tids']);
+		const scores = await db.sortedSetScores('topics:recent', tids[0]);
+		const data = tids[0].map((tid, index) => ({ value: tid, score: scores[index] }));
 		return data.filter(item => item.score > params.cutoff);
 	}
 
