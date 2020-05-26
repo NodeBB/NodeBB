@@ -26,7 +26,7 @@ module.exports = {
 				}, next);
 			},
 			function (next) {
-				privileges.global.give(['view:users:info'], 'Global Moderators', next);
+				privileges.global.give(['groups:view:users:info'], 'Global Moderators', next);
 			},
 		], callback);
 		function givePrivsToModerators(cid, groupPrefix, callback) {

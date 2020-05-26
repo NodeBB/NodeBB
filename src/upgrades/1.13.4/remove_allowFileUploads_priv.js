@@ -14,7 +14,7 @@ module.exports = {
 		}
 
 		// Remove `upload:post:file` privilege for all groups
-		await privileges.categories.rescind(['upload:post:file'], 0, ['guests', 'registered-users', 'Global Moderators']);
+		await privileges.categories.rescind(['groups:upload:post:file'], 0, ['guests', 'registered-users', 'Global Moderators']);
 
 		// Clean up the old option from the config hash
 		await db.deleteObjectField('config', 'allowFileUploads');

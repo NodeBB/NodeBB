@@ -22,10 +22,10 @@ module.exports = {
 
 					var privs = [];
 					if (groupPrivileges['groups:upload:post:image']) {
-						privs.push('upload:post:image');
+						privs.push('groups:upload:post:image');
 					}
 					if (groupPrivileges['groups:upload:post:file']) {
-						privs.push('upload:post:file');
+						privs.push('groups:upload:post:file');
 					}
 					privileges.global.give(privs, 'registered-users', next);
 				});

@@ -213,11 +213,12 @@ async function setupDefaultConfigs(meta) {
 async function giveDefaultGlobalPrivileges() {
 	const privileges = require('../../src/privileges');
 	await privileges.global.give([
-		'chat', 'upload:post:image', 'signature', 'search:content',
-		'search:users', 'search:tags', 'local:login', 'view:users', 'view:tags', 'view:groups',
+		'groups:chat', 'groups:upload:post:image', 'groups:signature', 'groups:search:content',
+		'groups:search:users', 'groups:search:tags', 'groups:local:login', 'groups:view:users',
+		'groups:view:tags', 'groups:view:groups',
 	], 'registered-users');
 	await privileges.global.give([
-		'view:users', 'view:tags', 'view:groups',
+		'groups:view:users', 'groups:view:tags', 'groups:view:groups',
 	], 'guests');
 }
 

@@ -553,12 +553,12 @@ describe('Topic\'s', function () {
 					groups.join('Global Moderators', uid, next);
 				},
 				function (next) {
-					privileges.categories.rescind(['purge'], categoryObj.cid, 'Global Moderators', next);
+					privileges.categories.rescind(['groups:purge'], categoryObj.cid, 'Global Moderators', next);
 				},
 				function (next) {
 					socketTopics.purge({ uid: globalModUid }, { tids: [tid], cid: categoryObj.cid }, function (err) {
 						assert.equal(err.message, '[[error:no-privileges]]');
-						privileges.categories.give(['purge'], categoryObj.cid, 'Global Moderators', next);
+						privileges.categories.give(['groups:purge'], categoryObj.cid, 'Global Moderators', next);
 					});
 				},
 			], done);
@@ -979,13 +979,13 @@ describe('Topic\'s', function () {
 
 		it('should 401 if not allowed to read as guest', function (done) {
 			var privileges = require('../src/privileges');
-			privileges.categories.rescind(['topics:read'], topicData.cid, 'guests', function (err) {
+			privileges.categories.rescind(['groups:topics:read'], topicData.cid, 'guests', function (err) {
 				assert.ifError(err);
 				request(nconf.get('url') + '/api/topic/' + topicData.slug, function (err, response, body) {
 					assert.ifError(err);
 					assert.equal(response.statusCode, 401);
 					assert(body);
-					privileges.categories.give(['topics:read'], topicData.cid, 'guests', done);
+					privileges.categories.give(['groups:topics:read'], topicData.cid, 'guests', done);
 				});
 			});
 		});
@@ -1428,7 +1428,7 @@ describe('Topic\'s', function () {
 				},
 				function (category, next) {
 					privateCid = category.cid;
-					privileges.categories.rescind(['topics:read'], category.cid, 'registered-users', next);
+					privileges.categories.rescind(['groups:topics:read'], category.cid, 'registered-users', next);
 				},
 				function (next) {
 					topics.post({ uid: adminUid, title: 'topic in private category', content: 'registered-users cant see this', cid: privateCid }, next);
@@ -1457,7 +1457,7 @@ describe('Topic\'s', function () {
 				},
 				function (category, next) {
 					ignoredCid = category.cid;
-					privileges.categories.rescind(['topics:read'], category.cid, 'registered-users', next);
+					privileges.categories.rescind(['groups:topics:read'], category.cid, 'registered-users', next);
 				},
 				function (next) {
 					topics.post({ uid: adminUid, title: 'topic in private category', content: 'registered-users cant see this', cid: ignoredCid }, next);
@@ -2036,7 +2036,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should fail to post if user does not have tag privilege', function (done) {
-			privileges.categories.rescind(['topics:tag'], cid, 'registered-users', function (err) {
+			privileges.categories.rescind(['groups:topics:tag'], cid, 'registered-users', function (err) {
 				assert.ifError(err);
 				topics.post({ uid: uid, cid: cid, tags: ['tag1'], title: 'topic with tags', content: 'some content here' }, function (err) {
 					assert.equal(err.message, '[[error:no-privileges]]');
@@ -2057,7 +2057,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should be able to edit topic and add tags if allowed', function (done) {
-			privileges.categories.give(['topics:tag'], cid, 'registered-users', function (err) {
+			privileges.categories.give(['groups:topics:tag'], cid, 'registered-users', function (err) {
 				assert.ifError(err);
 				topics.post({ uid: uid, cid: cid, tags: ['tag1'], title: 'topic with tags', content: 'some content here' }, function (err, result) {
 					assert.ifError(err);

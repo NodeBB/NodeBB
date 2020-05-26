@@ -13,7 +13,7 @@ module.exports = {
 		batch.processSortedSet('categories:cid', function (cids, next) {
 			async.eachSeries(cids, function (cid, next) {
 				progress.incr();
-				privileges.categories.give(['topics:tag'], cid, 'registered-users', next);
+				privileges.categories.give(['groups:topics:tag'], cid, 'registered-users', next);
 			}, next);
 		}, {
 			progress: progress,

@@ -330,13 +330,13 @@ describe('authentication', function () {
 	});
 
 	it('should fail to login if local login is disabled', function (done) {
-		privileges.global.rescind(['local:login'], 'registered-users', function (err) {
+		privileges.global.rescind(['groups:local:login'], 'registered-users', function (err) {
 			assert.ifError(err);
 			loginUser('regular', 'regularpwd', function (err, response, body) {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 403);
 				assert.equal(body, '[[error:local-login-disabled]]');
-				privileges.global.give(['local:login'], 'registered-users', done);
+				privileges.global.give(['groups:local:login'], 'registered-users', done);
 			});
 		});
 	});

@@ -29,18 +29,18 @@ module.exports = {
 		]);
 
 		const globalModPrivs = [
-			'chat',
-			'upload:post:image',
-			'upload:post:file',
-			'signature',
-			'ban',
-			'search:content',
-			'search:users',
-			'search:tags',
-			'view:users',
-			'view:tags',
-			'view:groups',
-			'local:login',
+			'groups:chat',
+			'groups:upload:post:image',
+			'groups:upload:post:file',
+			'groups:signature',
+			'groups:ban',
+			'groups:search:content',
+			'groups:search:users',
+			'groups:search:tags',
+			'groups:view:users',
+			'groups:view:tags',
+			'groups:view:groups',
+			'groups:local:login',
 		];
 
 		async.waterfall([
@@ -57,7 +57,7 @@ module.exports = {
 							givePrivsToModerators(cid, 'groups:', next);
 						},
 						function (next) {
-							privileges.categories.give(modPrivileges, cid, ['Global Moderators'], next);
+							privileges.categories.give(modPrivileges.map(p => 'groups:' + p), cid, ['Global Moderators'], next);
 						},
 					], next);
 				}, next);
