@@ -177,9 +177,14 @@ module.exports = function (Topics) {
 	}
 
 	async function getFollowedTids(params) {
-		const tids = await db.getSortedSetsMembers(['uid:' + params.uid + ':followed_tids']);
-		const scores = await db.sortedSetScores('topics:recent', tids[0]);
-		const data = tids[0].map((tid, index) => ({ value: tid, score: scores[index] }));
+		let tids = (await db.getSortedSetsMembers(['uid:' + params.uid + ':followed_tids']))[0];
+		const filterCids = params.cid && params.cid.map(cid => parseInt(cid, 10));
+		if (filterCids) {
+			const topicData = await Topics.getTopicsFields(tids, ['tid', 'cid']);
+			tids = topicData.filter(t => filterCids.includes(t.cid)).map(t => t.tid);
+		}
+		const scores = await db.sortedSetScores('topics:recent', tids);
+		const data = tids.map((tid, index) => ({ value: tid, score: scores[index] }));
 		return data.filter(item => item.score > params.cutoff);
 	}
 
