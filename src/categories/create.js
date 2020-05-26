@@ -191,15 +191,15 @@ module.exports = function (Categories) {
 		});
 	}
 
-	async function copyPrivilegesByGroup(privileges, fromCid, toCid, group) {
-		const fromGroups = privileges.map(privilege => 'group:cid:' + fromCid + ':privileges:' + privilege + ':members');
-		const toGroups = privileges.map(privilege => 'group:cid:' + toCid + ':privileges:' + privilege + ':members');
+	async function copyPrivilegesByGroup(privilegeList, fromCid, toCid, group) {
+		const fromGroups = privilegeList.map(privilege => 'group:cid:' + fromCid + ':privileges:' + privilege + ':members');
+		const toGroups = privilegeList.map(privilege => 'group:cid:' + toCid + ':privileges:' + privilege + ':members');
 		const [fromChecks, toChecks] = await Promise.all([
 			db.isMemberOfSortedSets(fromGroups, group),
 			db.isMemberOfSortedSets(toGroups, group),
 		]);
-		const givePrivs = privileges.filter((priv, index) => fromChecks[index] && !toChecks[index]);
-		const rescindPrivs = privileges.filter((priv, index) => !fromChecks[index] && toChecks[index]);
+		const givePrivs = privilegeList.filter((priv, index) => fromChecks[index] && !toChecks[index]);
+		const rescindPrivs = privilegeList.filter((priv, index) => !fromChecks[index] && toChecks[index]);
 		await privileges.categories.give(givePrivs, toCid, group);
 		await privileges.categories.rescind(rescindPrivs, toCid, group);
 	}
