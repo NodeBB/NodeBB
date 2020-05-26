@@ -8,7 +8,7 @@
 	"custom-js.enable": "Özelleştirilmiş Javascript'i etkinleştir",
 
 	"custom-header": "Özel Header",
-	"custom-header.description": "Enter custom HTML here (ex. Meta Tags, etc.), which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup. Script tags are allowed, but are discouraged, as the <a href=\"#custom-js\" data-toggle=\"tab\">Custom Javascript</a> tab is available.",
+	"custom-header.description": "Size özel HTML kodları buraya girin  (Meta Tags vb.). Bu kodlar forumun markup'ının şu bölümüne eklenecek: <code>&lt;head&gt;</code>. Script etiketlerini kullanabilirsiniz, fakat <a href=\"#custom-js\" data-toggle=\"tab\">Custom Javascript</a> sekmesi uygun oldugundan bunları kullanmanız tavsiye edilmez. ",
 	"custom-header.enable": "Özel Header'ı Etkinleştir",
 
 	"custom-css.livereload": "Canlı Yenilemeyi Etkinleştir",

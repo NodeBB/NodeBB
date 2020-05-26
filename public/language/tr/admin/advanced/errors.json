@@ -4,7 +4,7 @@
 	"error.404": "404 Bulunamadı",
 	"error.503": "503 Servis Kullanılamıyor",
 	"manage-error-log": "Hata Kayıtlarını Yönet",
-	"export-error-log": "Hata Kayıtlarını Dışarı Çıkar (CSV)",
+	"export-error-log": "Hata Kayıtlarını Dışarı Aktar (CSV)",
 	"clear-error-log": "Hata Kayıtlarını Temizle",
 	"route": "Rota",
 	"count": "Sayı",

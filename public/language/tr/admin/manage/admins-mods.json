@@ -1,9 +1,9 @@
 {
     "administrators": "Yöneticiler",
     "global-moderators": "Genel Moderatörler",
-    "no-global-moderators": "Genel Olmayan Moderatörler",
-    "moderators-of-category": "%1 Moderatör",
-    "no-moderators": "Moderatörsüz",
+    "no-global-moderators": "Genel Moderatör Yok",
+    "moderators-of-category": "%1 Moderatörleri",
+    "no-moderators": "Moderatör Yok",
     "add-administrator": "Yönetici Ekle",
     "add-global-moderator": "Genel Moderatör Ekle",
     "add-moderator": "Moderatör Ekle"

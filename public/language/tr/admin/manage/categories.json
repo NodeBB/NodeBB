@@ -30,7 +30,7 @@
 	"select-category": "Kategori Seç",
 	"set-parent-category": "Ana Kategori Ayarla",
 
-	"privileges.description": "You can configure the access control privileges for portions of the site in this section. Privileges can be granted on a per-user or a per-group basis. Select the domain of effect from the dropdown below.",
+	"privileges.description": "Erişim kontrol ayrıcalıklarını bu bölümde ayarlayabilirsiniz. Bu ayrıcalıklar kullanıcılara veya gruplara özel olabilir. Açılır menüden ilgili bölümü seçebilirsiniz.",
 	"privileges.category-selector": "için yapılandırılan ayrıcalıklar",
 	"privileges.warning": "<strong>Not</strong>: Ayrıcalık ayarları hemen yürürlüğe girer. Bu ayarları yaptıktan sonra kategoriyi kaydetmek gerekli değildir.",
 	"privileges.section-viewing": "Ayrıcalıkları Görüntüle",
@@ -50,7 +50,7 @@
 	"privileges.copy-group-privileges-to-all-categories": "Bu Grubun Ayrıcalıklarını Tüm Kategorilere Kopyala",
 	"privileges.copy-group-privileges-from": "Bu Grubun Ayrıcalıklarını Başka Bir Kategoriden Kopyala",
 	"privileges.inherit": "<code>Kayıtlı kullanıcı</code> grubuna belirli bir ayrıcalık tanınması durumunda, diğer tüm gruplar açıkça tanımlanmamış / kontrol edilmemiş olsalar bile <strong>örtük bir ayrıcalık</strong> alırlar. Bu örtük ayrıcalık size gösterilir. Tüm kullanıcılar <code>kayıtlı kullanıcılar</code> grubunun bir parçasıdır. Bu nedenle ek gruplara yönelik ayrıcalıkların açıkça verilmesine gerek yoktur.",
-	"privileges.copy-success": "Privileges copied!",
+	"privileges.copy-success": "Ayrıcalıklar kopyalandı!",
 
 	"analytics.back": "Kategori listesine geri dön",
 	"analytics.title": "\"%1\" kategorisi için analiz",

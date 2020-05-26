@@ -1,10 +1,10 @@
 {
-	"events": "Etkinlikler",
-	"no-events": "Etkinlik yok",
-	"control-panel": "Etkinlik Kontrol Paneli",
+	"events": "Aktiviteler",
+	"no-events": "Aktivite yok",
+	"control-panel": "Aktivite Kontrol Paneli",
 	"filters": "Filtreler",
 	"filters-apply": "Filtreleri Uygula",
-	"filter-type": "Etkinlik türü",
+	"filter-type": "Aktivite türü",
 	"filter-start": "Başlangıç zamanı",
 	"filter-end": "Bitiş zamanı",
 	"filter-perPage": "Sayfa Başına"

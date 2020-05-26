@@ -2,7 +2,7 @@
 	"icon": "İkon:",
 	"change-icon": "değiştir",
 	"route": "Yol:",
-	"tooltip": "Araç ipucu:",
+	"tooltip": "Araç ipucu: ",
 	"text": "Yazı:",
 	"text-class": "Metin Sınıfı: <small>opsiyonel</small>",
 	"class": "Sınıf: <small>opsiyonel</small>",
@@ -13,8 +13,8 @@
 	"open-new-window": "Yeni pencerede aç",
 
 	"btn.delete": "Sil",
-	"btn.disable": "Kapalı",
-	"btn.enable": "Açık",
+	"btn.disable": "Etkinsizleştir",
+	"btn.enable": "Etkinleştir",
 
 	"available-menu-items": "Kullanılabilir Menü Öğeleri",
 	"custom-route": "Özel Yol",

@@ -4,6 +4,6 @@
 	"select-skin": "Deri Seç",
 	"current-skin": "Mevcut Deri",
 	"skin-updated": "Deri Güncellendi",
-	"applied-success": "%1 deri başarıyla uygulandı",
+	"applied-success": "%1 isimli deri başarıyla uygulandı",
 	"revert-success": "Deri taban renkleri geri döndürüldü"
 }

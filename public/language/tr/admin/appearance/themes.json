@@ -2,10 +2,10 @@
     "checking-for-installed": "Yüklü temalar kontrol ediliyor...",
     "homepage": "Anasayfa",
     "select-theme": "Tema Seç",
-    "current-theme": "Geçerli Tema",
+    "current-theme": "Mevcut Tema",
     "no-themes": "Yüklü tema bulunamadı",
     "revert-confirm": "Varsayılan NodeBB temasını geri yüklemek istediğinizden emin misiniz?",
     "theme-changed": "Tema Değiştirildi",
     "revert-success": "NodeBB'nin varsayılan temasına başarıyla geri dönüş yaptınız.",
-    "restart-to-activate": "68/5000\nBu temayı tamamen etkinleştirmek için NodeBB'nizi lütfen yeniden oluşturun ve yeniden başlatın."
+    "restart-to-activate": "Bu temayı tamamen etkinleştirmek için NodeBB'nizi lütfen sıfırlayıp, yeniden başlatın."
 }

@@ -53,7 +53,7 @@
     "membership.invitation-pending": "Davet beklemede",
     "membership.join-group": "Gruba Katıl",
     "membership.leave-group": "Gruptan Ayrıl",
-    "membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
+    "membership.leave.notification_title": "<strong>%1</strong> kullanıcısı şu gruptan ayrıldı: <strong>%2</strong>",
     "membership.reject": "Reddet",
     "new-group.group_name": "Grup İsmi:",
     "upload-group-cover": "Grup kapağı yükle",

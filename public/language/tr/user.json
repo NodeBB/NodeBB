@@ -50,7 +50,7 @@
     "change_picture": "Fotoğrafı Değiştir",
     "change_username": "Kullanıcı Adı Değiştir",
     "change_email": "E-posta Değiştir",
-    "email_same_as_password": "Please enter your current password to continue &ndash; you've entered your new email again",
+    "email_same_as_password": "Lütfen devam etmek için şu anki şifrenizi girin &ndash; Tekrar e-posta adresinizi girdiniz",
     "edit": "Düzenle",
     "edit-profile": "Profil Düzenle",
     "default_picture": "Varsayılan ikon",
@@ -170,7 +170,7 @@
     "consent.right_to_erasure_description": "Herhangi bir zamanda, hesabınızı silerek veri toplama ve / veya işlemeye onayınızı iptal edebilirsiniz. Gönderilen içeriğiniz kalsa da, bireysel profiliniz silinebilir. Hem hesabınızı hem de içeriğinizi silmek isterseniz, lütfen bu web sitesi için yönetim ekibine başvurun.",
     "consent.right_to_data_portability": "Veri taşıma hakkına sahipsiniz",
     "consent.right_to_data_portability_description": "Sizden ve hesabınız hakkında toplanan verilere makine tarafından okunabilir bir veri talep edebilirsiniz. Aşağıdaki uygun düğmeyi tıklayarak bunu yapabilirsiniz.",
-    "consent.export_profile": "Export Profile (.json)",
+    "consent.export_profile": "Profili Dışa Aktar (.json)",
     "consent.export_uploads": "Karşıya Yüklenmiş İçeriği Dışarı Aktar (.zip)",
     "consent.export_posts": "Gönderileri Dışa Aktar (.csv)"
 }
