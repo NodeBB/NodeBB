@@ -4974,9 +4974,21 @@ paths:
                               description: A user identifier
                             fields:
                               type: object
-                              properties:
-                                state:
-                                  type: string
+                              additionalProperties: {}
+                            meta:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  key:
+                                    type: string
+                                  value:
+                                    type: string
+                                  labelClass:
+                                    type: string
+                                    enum: ['default', 'primary', 'success', 'info', 'danger']
+                                required:
+                                  - key
                             datetime:
                               type: number
                             datetimeISO:
@@ -5008,6 +5020,11 @@ paths:
                                     `icon:text` for the user's auto-generated
                                     icon
                                   example: "#f44336"
+                          required:
+                            - uid
+                            - datetime
+                            - datetimeISO
+                            - user
                       notes:
                         type: array
                         items:
