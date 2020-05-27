@@ -177,7 +177,7 @@ module.exports = function (Topics) {
 	}
 
 	async function getFollowedTids(params) {
-		let tids = (await db.getSortedSetsMembers(['uid:' + params.uid + ':followed_tids']))[0];
+		let tids = await db.getSortedSetMembers('uid:' + params.uid + ':followed_tids');
 		const filterCids = params.cid && params.cid.map(cid => parseInt(cid, 10));
 		if (filterCids) {
 			const topicData = await Topics.getTopicsFields(tids, ['tid', 'cid']);
