@@ -10,12 +10,7 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 
 		$('[data-action]').on('click', function () {
 			var action = this.getAttribute('data-action');
-			var uid;
-			try {
-				uid = $(this).parents('[data-uid]').get(0).getAttribute('data-uid');
-			} catch (e) {
-				// noop
-			}
+			var uid = $(this).parents('[data-uid]').attr('data-uid');
 
 			switch (action) {
 			case 'update':
