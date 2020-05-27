@@ -870,6 +870,13 @@ describe('Sorted Set methods', function () {
 	});
 
 	describe('getSortedSetsMembers', function () {
+		it('should return members of a sorted set', async function () {
+			const result = await db.getSortedSetMembers('sortedSetTest1');
+			result.forEach(function (element) {
+				assert(['value1', 'value2', 'value3'].includes(element));
+			});
+		});
+
 		it('should return members of multiple sorted sets', function (done) {
 			db.getSortedSetsMembers(['doesnotexist', 'sortedSetTest1'], function (err, sortedSets) {
 				assert.equal(err, null);

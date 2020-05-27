@@ -356,6 +356,11 @@ module.exports = function (module) {
 		return keys.map(key => !!isMember[key]);
 	};
 
+	module.getSortedSetMembers = async function (key) {
+		const data = await module.getSortedSetsMembers([key]);
+		return data && data[0];
+	};
+
 	module.getSortedSetsMembers = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return [];

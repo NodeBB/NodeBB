@@ -219,6 +219,10 @@ module.exports = function (module) {
 		return results.map(utils.isNumber);
 	};
 
+	module.getSortedSetMembers = async function (key) {
+		return await module.client.async.zrange(key, 0, -1);
+	};
+
 	module.getSortedSetsMembers = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return [];
