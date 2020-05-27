@@ -155,6 +155,7 @@ app.cacheBuster = null;
 		message = message.message || message;
 
 		if (message === '[[error:invalid-session]]') {
+			app.logout(false);
 			return app.handleInvalidSession();
 		}
 
@@ -168,7 +169,6 @@ app.cacheBuster = null;
 
 	app.handleInvalidSession = function () {
 		socket.disconnect();
-		app.logout(false);
 		bootbox.alert({
 			title: '[[error:invalid-session]]',
 			message: '[[error:invalid-session-text]]',
