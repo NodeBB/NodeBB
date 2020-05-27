@@ -93,7 +93,6 @@ apiController.loadConfig = async function (req) {
 	config.topicSearchEnabled = settings.topicSearchEnabled || false;
 	config.bootswatchSkin = (meta.config.disableCustomUserSkins !== 1 && settings.bootswatchSkin && settings.bootswatchSkin !== '') ? settings.bootswatchSkin : '';
 	config = await plugins.fireHook('filter:config.get', config);
-	req.res.locals.config = config;
 	return config;
 };
 
