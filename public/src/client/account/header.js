@@ -56,6 +56,10 @@ define('forum/account/header', [
 		components.get('account/block').on('click', toggleBlockAccount);
 	};
 
+	// TODO: These exported methods are used in forum/flags/detail -- refactor??
+	AccountHeader.banAccount = banAccount;
+	AccountHeader.deleteAccount = deleteAccount;
+
 	function hidePrivateLinks() {
 		if (!app.user.uid || app.user.uid !== parseInt(ajaxify.data.theirid, 10)) {
 			$('.account-sub-links .plugin-link.private').addClass('hide');
@@ -117,7 +121,9 @@ define('forum/account/header', [
 		return false;
 	}
 
-	function banAccount() {
+	function banAccount(theirid, onSuccess) {
+		theirid = theirid || ajaxify.data.theirid;
+
 		Benchpress.parse('admin/partials/temporary-ban', {}, function (html) {
 			bootbox.dialog({
 				className: 'ban-modal',
@@ -140,13 +146,18 @@ define('forum/account/header', [
 							var until = formData.length > 0 ? (Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))) : 0;
 
 							socket.emit('user.banUsers', {
-								uids: [ajaxify.data.theirid],
+								uids: [theirid],
 								until: until,
 								reason: formData.reason || '',
 							}, function (err) {
 								if (err) {
 									return app.alertError(err.message);
 								}
+
+								if (typeof onSuccess === 'function') {
+									return onSuccess();
+								}
+
 								ajaxify.refresh();
 							});
 						},
@@ -165,18 +176,25 @@ define('forum/account/header', [
 		});
 	}
 
-	function deleteAccount() {
+	function deleteAccount(theirid, onSuccess) {
+		theirid = theirid || ajaxify.data.theirid;
+
 		translator.translate('[[user:delete_this_account_confirm]]', function (translated) {
 			bootbox.confirm(translated, function (confirm) {
 				if (!confirm) {
 					return;
 				}
 
-				socket.emit('admin.user.deleteUsersAndContent', [ajaxify.data.theirid], function (err) {
+				socket.emit('admin.user.deleteUsersAndContent', [theirid], function (err) {
 					if (err) {
 						return app.alertError(err.message);
 					}
 					app.alertSuccess('[[user:account-deleted]]');
+
+					if (typeof onSuccess === 'function') {
+						return onSuccess();
+					}
+
 					history.back();
 				});
 			});
