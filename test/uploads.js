@@ -67,7 +67,7 @@ describe('Upload Controllers', function () {
 				assert.ifError(err);
 				jar = _jar;
 				csrf_token = _csrf_token;
-				privileges.global.give(['upload:post:file'], 'registered-users', done);
+				privileges.global.give(['groups:upload:post:file'], 'registered-users', done);
 			});
 		});
 

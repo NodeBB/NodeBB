@@ -107,7 +107,7 @@ describe('Search', function () {
 	it('should search term in titles and posts', function (done) {
 		var meta = require('../src/meta');
 		var qs = '/api/search?term=cucumber&in=titlesposts&categories[]=' + cid1 + '&by=phoebe&replies=1&repliesFilter=atleast&sortBy=timestamp&sortDirection=desc&showAs=posts';
-		privileges.global.give(['search:content'], 'guests', function (err) {
+		privileges.global.give(['groups:search:content'], 'guests', function (err) {
 			assert.ifError(err);
 			request({
 				url: nconf.get('url') + qs,
@@ -120,7 +120,7 @@ describe('Search', function () {
 				assert.equal(body.posts[0].pid, post1Data.pid);
 				assert.equal(body.posts[0].uid, phoebeUid);
 
-				privileges.global.rescind(['search:content'], 'guests', done);
+				privileges.global.rescind(['groups:search:content'], 'guests', done);
 			});
 		});
 	});
@@ -230,7 +230,7 @@ describe('Search', function () {
 
 	it('should return json search data with no categories', function (done) {
 		var qs = '/api/search?term=cucumber&in=titlesposts&searchOnly=1';
-		privileges.global.give(['search:content'], 'guests', function (err) {
+		privileges.global.give(['groups:search:content'], 'guests', function (err) {
 			assert.ifError(err);
 			request({
 				url: nconf.get('url') + qs,
@@ -244,7 +244,7 @@ describe('Search', function () {
 				assert(body.hasOwnProperty('posts'));
 				assert(!body.hasOwnProperty('categories'));
 
-				privileges.global.rescind(['search:content'], 'guests', done);
+				privileges.global.rescind(['groups:search:content'], 'guests', done);
 			});
 		});
 	});

@@ -129,12 +129,22 @@ module.exports = function (privileges) {
 		return uids.filter((uid, index) => allowedTo[index] || isAdmins[index]);
 	};
 
-	privileges.categories.give = async function (privileges, cid, groupName) {
-		await helpers.giveOrRescind(groups.join, privileges, cid, groupName);
+	privileges.categories.give = async function (privileges, cid, members) {
+		await helpers.giveOrRescind(groups.join, privileges, cid, members);
+		plugins.fireHook('action:privileges.categories.give', {
+			privileges: privileges,
+			cids: Array.isArray(cid) ? cid : [cid],
+			members: Array.isArray(members) ? members : [members],
+		});
 	};
 
-	privileges.categories.rescind = async function (privileges, cid, groupName) {
-		await helpers.giveOrRescind(groups.leave, privileges, cid, groupName);
+	privileges.categories.rescind = async function (privileges, cid, members) {
+		await helpers.giveOrRescind(groups.leave, privileges, cid, members);
+		plugins.fireHook('action:privileges.categories.rescind', {
+			privileges: privileges,
+			cids: Array.isArray(cid) ? cid : [cid],
+			members: Array.isArray(members) ? members : [members],
+		});
 	};
 
 	privileges.categories.canMoveAllTopics = async function (currentCid, targetCid, uid) {

@@ -160,13 +160,13 @@ describe('Post\'s', function () {
 
 	describe('voting', function () {
 		it('should fail to upvote post if group does not have upvote permission', function (done) {
-			privileges.categories.rescind(['posts:upvote', 'posts:downvote'], cid, 'registered-users', function (err) {
+			privileges.categories.rescind(['groups:posts:upvote', 'groups:posts:downvote'], cid, 'registered-users', function (err) {
 				assert.ifError(err);
 				socketPosts.upvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' }, function (err) {
 					assert.equal(err.message, '[[error:no-privileges]]');
 					socketPosts.downvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' }, function (err) {
 						assert.equal(err.message, '[[error:no-privileges]]');
-						privileges.categories.give(['posts:upvote', 'posts:downvote'], cid, 'registered-users', function (err) {
+						privileges.categories.give(['groups:posts:upvote', 'groups:posts:downvote'], cid, 'registered-users', function (err) {
 							assert.ifError(err);
 							done();
 						});
@@ -320,7 +320,7 @@ describe('Post\'s', function () {
 				tid = topicPostData.topicData.tid;
 				mainPid = topicPostData.postData.pid;
 				replyPid = replyData.pid;
-				privileges.categories.give(['purge'], cid, 'registered-users', done);
+				privileges.categories.give(['groups:purge'], cid, 'registered-users', done);
 			});
 		});
 
@@ -351,7 +351,7 @@ describe('Post\'s', function () {
 					groups.join('Global Moderators', uid, next);
 				},
 				function (next) {
-					privileges.categories.rescind(['posts:view_deleted'], cid, 'Global Moderators', next);
+					privileges.categories.rescind(['groups:posts:view_deleted'], cid, 'Global Moderators', next);
 				},
 				function (next) {
 					helpers.loginUser('global mod', '123456', function (err, _jar) {
@@ -361,7 +361,7 @@ describe('Post\'s', function () {
 						request(nconf.get('url') + '/api/topic/' + tid, { jar: jar, json: true }, function (err, res, body) {
 							assert.ifError(err);
 							assert.equal(body.posts[1].content, '[[topic:post_is_deleted]]');
-							privileges.categories.give(['posts:view_deleted'], cid, 'Global Moderators', next);
+							privileges.categories.give(['groups:posts:view_deleted'], cid, 'Global Moderators', next);
 						});
 					});
 				},
@@ -448,7 +448,7 @@ describe('Post\'s', function () {
 				}, function (err, data) {
 					assert.ifError(err);
 					replyPid = data.pid;
-					privileges.categories.give(['posts:edit'], cid, 'registered-users', done);
+					privileges.categories.give(['groups:posts:edit'], cid, 'registered-users', done);
 				});
 			});
 		});
@@ -783,7 +783,7 @@ describe('Post\'s', function () {
 			}, function (err, postData) {
 				assert.ifError(err);
 				pid = postData.pid;
-				privileges.categories.rescind(['topics:read'], cid, 'guests', done);
+				privileges.categories.rescind(['groups:topics:read'], cid, 'guests', done);
 			});
 		});
 

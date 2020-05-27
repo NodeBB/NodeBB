@@ -404,22 +404,22 @@ function createGlobalModeratorsGroup(next) {
 function giveGlobalPrivileges(next) {
 	var privileges = require('./privileges');
 	var defaultPrivileges = [
-		'chat', 'upload:post:image', 'signature', 'search:content',
-		'search:users', 'search:tags', 'view:users', 'view:tags', 'view:groups',
-		'local:login',
+		'groups:chat', 'groups:upload:post:image', 'groups:signature', 'groups:search:content',
+		'groups:search:users', 'groups:search:tags', 'groups:view:users', 'groups:view:tags', 'groups:view:groups',
+		'groups:local:login',
 	];
 	async.waterfall([
 		function (next) {
 			privileges.global.give(defaultPrivileges, 'registered-users', next);
 		},
 		function (next) {
-			privileges.global.give(defaultPrivileges.concat(['ban', 'upload:post:file', 'view:users:info']), 'Global Moderators', next);
+			privileges.global.give(defaultPrivileges.concat(['groups:ban', 'groups:upload:post:file', 'groups:view:users:info']), 'Global Moderators', next);
 		},
 		function (next) {
-			privileges.global.give(['view:users', 'view:tags', 'view:groups'], 'guests', next);
+			privileges.global.give(['groups:view:users', 'groups:view:tags', 'groups:view:groups'], 'guests', next);
 		},
 		function (next) {
-			privileges.global.give(['view:users', 'view:tags', 'view:groups'], 'spiders', next);
+			privileges.global.give(['groups:view:users', 'groups:view:tags', 'groups:view:groups'], 'spiders', next);
 		},
 	], next);
 }

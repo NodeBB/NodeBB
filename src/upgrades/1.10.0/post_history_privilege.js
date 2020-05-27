@@ -15,7 +15,7 @@ module.exports = {
 				return callback(err);
 			}
 			async.eachSeries(cids, function (cid, next) {
-				privileges.categories.give(['posts:history'], cid, 'registered-users', next);
+				privileges.categories.give(['groups:posts:history'], cid, 'registered-users', next);
 			}, callback);
 		});
 	},

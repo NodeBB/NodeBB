@@ -579,7 +579,7 @@ describe('Groups', function () {
 					Groups.create({ name: groupName }, next);
 				},
 				function (groupData, next) {
-					privileges.categories.give(['topics:create'], cid, groupName, next);
+					privileges.categories.give(['groups:topics:create'], cid, groupName, next);
 				},
 				function (next) {
 					Groups.isMember(groupName, 'cid:1:privileges:groups:topics:create', next);

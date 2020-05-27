@@ -101,10 +101,18 @@ module.exports = function (privileges) {
 
 	privileges.global.give = async function (privileges, groupName) {
 		await helpers.giveOrRescind(groups.join, privileges, 0, groupName);
+		plugins.fireHook('action:privileges.global.give', {
+			privileges: privileges,
+			groupNames: Array.isArray(groupName) ? groupName : [groupName],
+		});
 	};
 
 	privileges.global.rescind = async function (privileges, groupName) {
 		await helpers.giveOrRescind(groups.leave, privileges, 0, groupName);
+		plugins.fireHook('action:privileges.global.rescind', {
+			privileges: privileges,
+			groupNames: Array.isArray(groupName) ? groupName : [groupName],
+		});
 	};
 
 	privileges.global.userPrivileges = async function (uid) {

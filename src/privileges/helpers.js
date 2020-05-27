@@ -153,18 +153,18 @@ function moveToFront(groupNames, groupToMove) {
 	}
 }
 
-helpers.giveOrRescind = async function (method, privileges, cids, groupNames) {
-	groupNames = Array.isArray(groupNames) ? groupNames : [groupNames];
+helpers.giveOrRescind = async function (method, privileges, cids, members) {
+	members = Array.isArray(members) ? members : [members];
 	cids = Array.isArray(cids) ? cids : [cids];
-	for (const groupName of groupNames) {
+	for (const member of members) {
 		const groupKeys = [];
 		cids.forEach((cid) => {
 			privileges.forEach((privilege) => {
-				groupKeys.push('cid:' + cid + ':privileges:groups:' + privilege);
+				groupKeys.push('cid:' + cid + ':privileges:' + privilege);
 			});
 		});
 		/* eslint-disable no-await-in-loop */
-		await method(groupKeys, groupName);
+		await method(groupKeys, member);
 	}
 };
 

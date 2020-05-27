@@ -22,13 +22,13 @@ module.exports = {
 
 					var privs = [];
 					if (groupPrivileges['groups:find']) {
-						privs.push('find');
+						privs.push('groups:find');
 					}
 					if (groupPrivileges['groups:read']) {
-						privs.push('read');
+						privs.push('groups:read');
 					}
 					if (groupPrivileges['groups:topics:read']) {
-						privs.push('topics:read');
+						privs.push('groups:topics:read');
 					}
 
 					privileges.categories.give(privs, cid, 'spiders', next);

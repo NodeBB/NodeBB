@@ -91,14 +91,14 @@ describe('feeds', function () {
 	});
 
 	it('should redirect if we do not have read privilege', function (done) {
-		privileges.categories.rescind(['topics:read'], cid, 'guests', function (err) {
+		privileges.categories.rescind(['groups:topics:read'], cid, 'guests', function (err) {
 			assert.ifError(err);
 			request(nconf.get('url') + '/topic/' + tid + '.rss', function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
 				assert(body.includes('Login to your account'));
-				privileges.categories.give(['topics:read'], cid, 'guests', done);
+				privileges.categories.give(['groups:topics:read'], cid, 'guests', done);
 			});
 		});
 	});
@@ -112,14 +112,14 @@ describe('feeds', function () {
 	});
 
 	it('should redirect if we do not have read privilege', function (done) {
-		privileges.categories.rescind(['read'], cid, 'guests', function (err) {
+		privileges.categories.rescind(['groups:read'], cid, 'guests', function (err) {
 			assert.ifError(err);
 			request(nconf.get('url') + '/category/' + cid + '.rss', function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
 				assert(body.includes('Login to your account'));
-				privileges.categories.give(['read'], cid, 'guests', done);
+				privileges.categories.give(['groups:read'], cid, 'guests', done);
 			});
 		});
 	});
@@ -146,7 +146,7 @@ describe('feeds', function () {
 
 
 		it('should not allow access if uid or token is missing', function (done) {
-			privileges.categories.rescind(['read'], cid, 'guests', function (err) {
+			privileges.categories.rescind(['groups:read'], cid, 'guests', function (err) {
 				assert.ifError(err);
 				async.parallel({
 					test1: function (next) {
@@ -189,7 +189,7 @@ describe('feeds', function () {
 		});
 
 		it('should not allow access if token is correct but has no privilege', function (done) {
-			privileges.categories.rescind(['read'], cid, 'registered-users', function (err) {
+			privileges.categories.rescind(['groups:read'], cid, 'registered-users', function (err) {
 				assert.ifError(err);
 				request(nconf.get('url') + '/category/' + cid + '.rss?uid=' + fooUid + '&token=' + rssToken, { }, function (err, res, body) {
 					assert.ifError(err);

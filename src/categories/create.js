@@ -1,14 +1,13 @@
 'use strict';
 
-var async = require('async');
-var _ = require('lodash');
+const async = require('async');
+const _ = require('lodash');
 
-var db = require('../database');
-var groups = require('../groups');
-var plugins = require('../plugins');
-var privileges = require('../privileges');
-var utils = require('../utils');
-var cache = require('../cache');
+const db = require('../database');
+const plugins = require('../plugins');
+const privileges = require('../privileges');
+const utils = require('../utils');
+const cache = require('../cache');
 
 module.exports = function (Categories) {
 	Categories.create = async function (data) {
@@ -48,33 +47,34 @@ module.exports = function (Categories) {
 		const result = await plugins.fireHook('filter:category.create', { category: category, data: data });
 		category = result.category;
 
-		const defaultPrivileges = [
-			'find',
-			'read',
-			'topics:read',
-			'topics:create',
-			'topics:reply',
-			'topics:tag',
-			'posts:edit',
-			'posts:history',
-			'posts:delete',
-			'posts:upvote',
-			'posts:downvote',
-			'topics:delete',
-		];
-		const modPrivileges = defaultPrivileges.concat([
-			'posts:view_deleted',
-			'purge',
-		]);
 
 		await db.setObject('category:' + category.cid, category);
 		if (!category.descriptionParsed) {
 			await Categories.parseDescription(category.cid, category.description);
 		}
 		await db.sortedSetsAdd(['categories:cid', 'cid:' + parentCid + ':children'], category.order, category.cid);
+
+		const defaultPrivileges = [
+			'groups:find',
+			'groups:read',
+			'groups:topics:read',
+			'groups:topics:create',
+			'groups:topics:reply',
+			'groups:topics:tag',
+			'groups:posts:edit',
+			'groups:posts:history',
+			'groups:posts:delete',
+			'groups:posts:upvote',
+			'groups:posts:downvote',
+			'groups:topics:delete',
+		];
+		const modPrivileges = defaultPrivileges.concat([
+			'groups:posts:view_deleted',
+			'groups:purge',
+		]);
 		await privileges.categories.give(defaultPrivileges, category.cid, 'registered-users');
 		await privileges.categories.give(modPrivileges, category.cid, ['administrators', 'Global Moderators']);
-		await privileges.categories.give(['find', 'read', 'topics:read'], category.cid, ['guests', 'spiders']);
+		await privileges.categories.give(['groups:find', 'groups:read', 'groups:topics:read'], category.cid, ['guests', 'spiders']);
 
 		cache.del(['categories:cid', 'cid:' + parentCid + ':children']);
 		if (data.cloneFromCid && parseInt(data.cloneFromCid, 10)) {
@@ -110,10 +110,9 @@ module.exports = function (Categories) {
 	}
 
 	Categories.assignColours = function () {
-		var backgrounds = ['#AB4642', '#DC9656', '#F7CA88', '#A1B56C', '#86C1B9', '#7CAFC2', '#BA8BAF', '#A16946'];
-		var text = ['#fff', '#fff', '#333', '#fff', '#333', '#fff', '#fff', '#fff'];
-		var index = Math.floor(Math.random() * backgrounds.length);
-
+		const backgrounds = ['#AB4642', '#DC9656', '#F7CA88', '#A1B56C', '#86C1B9', '#7CAFC2', '#BA8BAF', '#A16946'];
+		const text = ['#fff', '#fff', '#333', '#fff', '#333', '#fff', '#fff', '#fff'];
+		const index = Math.floor(Math.random() * backgrounds.length);
 		return [backgrounds[index], text[index]];
 	};
 
@@ -192,14 +191,16 @@ module.exports = function (Categories) {
 		});
 	}
 
-	async function copyPrivilegesByGroup(privileges, fromCid, toCid, group) {
-		const leaveGroups = privileges.map(privilege => 'cid:' + toCid + ':privileges:' + privilege);
-		await groups.leave(leaveGroups, group);
-
-		const checkGroups = privileges.map(privilege => 'group:cid:' + fromCid + ':privileges:' + privilege + ':members');
-		const isMembers = await db.isMemberOfSortedSets(checkGroups, group);
-		privileges = privileges.filter((priv, index) => isMembers[index]);
-		const joinGroups = privileges.map(privilege => 'cid:' + toCid + ':privileges:' + privilege);
-		await groups.join(joinGroups, group);
+	async function copyPrivilegesByGroup(privilegeList, fromCid, toCid, group) {
+		const fromGroups = privilegeList.map(privilege => 'group:cid:' + fromCid + ':privileges:' + privilege + ':members');
+		const toGroups = privilegeList.map(privilege => 'group:cid:' + toCid + ':privileges:' + privilege + ':members');
+		const [fromChecks, toChecks] = await Promise.all([
+			db.isMemberOfSortedSets(fromGroups, group),
+			db.isMemberOfSortedSets(toGroups, group),
+		]);
+		const givePrivs = privilegeList.filter((priv, index) => fromChecks[index] && !toChecks[index]);
+		const rescindPrivs = privilegeList.filter((priv, index) => !fromChecks[index] && toChecks[index]);
+		await privileges.categories.give(givePrivs, toCid, group);
+		await privileges.categories.rescind(rescindPrivs, toCid, group);
 	}
 };

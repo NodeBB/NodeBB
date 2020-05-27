@@ -655,7 +655,7 @@ describe('Flags', function () {
 			it('should not allow flagging post in private category', async function () {
 				const category = await Categories.create({ name: 'private category' });
 
-				await Privileges.categories.rescind(['topics:read'], category.cid, 'registered-users');
+				await Privileges.categories.rescind(['groups:topics:read'], category.cid, 'registered-users');
 				const result = await Topics.post({
 					cid: category.cid,
 					uid: adminUid,
