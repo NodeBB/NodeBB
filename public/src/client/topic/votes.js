@@ -95,7 +95,7 @@ define('forum/topic/votes', ['components', 'translator', 'benchpress'], function
 			Benchpress.parse('partials/modals/votes_modal', data, function (html) {
 				translator.translate(html, function (translated) {
 					var dialog = bootbox.dialog({
-						title: 'Voters',
+						title: '[[global:voters]]',
 						message: translated,
 						className: 'vote-modal',
 						show: true,
