@@ -11,6 +11,8 @@ const db = require('../database');
 var meta = require('../meta');
 var languages = require('../languages');
 
+const getSessionAsync = util.promisify((sid, callback) => db.sessionStore.get(sid, (err, sessionObj) => callback(err, sessionObj || null)));
+
 module.exports = function (middleware) {
 	middleware.addHeaders = async function addHeaders(req, res, next) {
 		var headers = {
@@ -60,7 +62,6 @@ module.exports = function (middleware) {
 
 		// Ensure that the session is valid. This block guards against edge-cases where the server-side session has
 		// been deleted (but client-side cookie still exists)
-		const getSessionAsync = util.promisify((sid, callback) => db.sessionStore.get(sid, (err, sessionObj) => callback(err, sessionObj || null)));
 		if (req.signedCookies && req.signedCookies[nconf.get('sessionKey')]) {
 			const sessionData = await getSessionAsync(req.signedCookies[nconf.get('sessionKey')]);
 			if (!sessionData) {
