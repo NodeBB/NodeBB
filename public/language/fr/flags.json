@@ -27,7 +27,7 @@
 	"filter-cid-all": "Toutes les catégories",
 	"apply-filters": "Appliquer les filtres",
 
-	"quick-links": "Permaliens",
+	"quick-actions": "Actions Rapide",
 	"flagged-user": "Utilisateurs signalés",
 	"view-profile": "Voir le profil",
 	"start-new-chat": "Démarrer un nouveau Chat",
@@ -40,7 +40,7 @@
 	"add-note": "Ajouter une note",
 	"no-notes": "aucune note partagée",
 
-	"history": "Historiques des signalements",
+	"history": "Compte &amp; Historique des signalements",
 	"back": "Revenir à la liste des signalements",
 	"no-history": "aucun historique de signalements",
 

@@ -27,7 +27,7 @@
 	"filter-cid-all": "Sve kategorije",
 	"apply-filters": "Primjeni filtere",
 
-	"quick-links": "Brze poveznice",
+	"quick-actions": "Quick Actions",
 	"flagged-user": "Označeni korisnici",
 	"view-profile": "Pogledaj profil",
 	"start-new-chat": "Pokreni novi razgovor",
@@ -40,7 +40,7 @@
 	"add-note": "Dodaj bilješku",
 	"no-notes": "Nema podijeljenih bilješki",
 
-	"history": "Povijest zastava",
+	"history": "Account &amp; Flag History",
 	"back": "Nazad na popis zastava",
 	"no-history": "Nema povijesti zastava.",
 

@@ -9,7 +9,7 @@
 	"default": "Sistem varsayılanı",
 	"default-help": "<em>Sistem varsayılanı</em> , kullanıcının forumun varsayılan ayarlarını değiştirmediği anlamına gelir. Forumun şu anki varsayılan ayarı:  &quot;<strong>%1</strong>&quot;",
 	"resend": "Özeti yeniden gönder",
-	"resend-all-confirm": "Bu özeti elle göndermek isteğinize emin misiniz?",
+	"resend-all-confirm": "Bu özet e-postasını elle göndermek istediğinize emin misiniz?",
 	"resent-single": "El ile özet gönderimi tamamlandı",
 	"resent-day": "Günlük özet yeniden gönderildi",
 	"resent-week": "Haftalık özet yeniden gönderildi",

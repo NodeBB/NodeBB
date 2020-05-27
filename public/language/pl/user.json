@@ -144,6 +144,7 @@
     "info.ban-history": "Historia ostatnich banów",
     "info.no-ban-history": "Ten użytkownik nigdy nie był zbanowany",
     "info.banned-until": "Zbanowany do %1",
+    "info.banned-expiry": "Expiry",
     "info.banned-permanently": "Zbanowany permanentnie",
     "info.banned-reason-label": "Powód",
     "info.banned-no-reason": "Nie podano powodu.",

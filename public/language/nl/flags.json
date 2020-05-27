@@ -27,7 +27,7 @@
 	"filter-cid-all": "Alle categorieën",
 	"apply-filters": "Filters toepassen",
 
-	"quick-links": "Snelkoppelingen",
+	"quick-actions": "Quick Actions",
 	"flagged-user": "Gemarkeerde gebruiker",
 	"view-profile": "Profiel bekijken",
 	"start-new-chat": "Begin een nieuwe chat",
@@ -40,7 +40,7 @@
 	"add-note": "Notitie toevoegen",
 	"no-notes": "Geen gedeelde notities",
 
-	"history": "Markering geschiedenis",
+	"history": "Account &amp; Flag History",
 	"back": "Terug naar Markeringen lijst",
 	"no-history": "Geen markering geschiedenis",
 

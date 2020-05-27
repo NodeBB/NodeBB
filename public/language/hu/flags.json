@@ -27,7 +27,7 @@
 	"filter-cid-all": "Minden kategória",
 	"apply-filters": "Szűrők alkalmazása",
 
-	"quick-links": "Quick Links",
+	"quick-actions": "Quick Actions",
 	"flagged-user": "Megjelölt felhasználó",
 	"view-profile": "Profil megtekintése",
 	"start-new-chat": "Új chat indítása",
@@ -40,7 +40,7 @@
 	"add-note": "Add Note",
 	"no-notes": "No shared notes.",
 
-	"history": "Flag History",
+	"history": "Account &amp; Flag History",
 	"back": "Back to Flags List",
 	"no-history": "No flag history.",
 

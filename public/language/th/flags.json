@@ -27,7 +27,7 @@
 	"filter-cid-all": "ทุกหมวดหมู่",
 	"apply-filters": "ใช้งานฟิลเตอร์",
 
-	"quick-links": "ลิ้งค์ด่วน",
+	"quick-actions": "Quick Actions",
 	"flagged-user": "ผู้ใช้ที่ถูกปักธง",
 	"view-profile": "ดูโปรไฟล์",
 	"start-new-chat": "เริ่มแชทใหม่",
@@ -40,7 +40,7 @@
 	"add-note": "เพิ่มโน้ต",
 	"no-notes": "ไม่มีโน้ตที่แชร์",
 
-	"history": "ประวัติการปักธง",
+	"history": "Account &amp; Flag History",
 	"back": "กลับไปยังรายการปักธง",
 	"no-history": "ไม่มีประวัติปักธง",
 

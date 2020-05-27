@@ -27,7 +27,7 @@
 	"filter-cid-all": "Све категорије",
 	"apply-filters": "Примени филтере",
 
-	"quick-links": "Брзе везе",
+	"quick-actions": "Quick Actions",
 	"flagged-user": "Означени корисник",
 	"view-profile": "Погледај профил",
 	"start-new-chat": "Започни ново ћаскање",
@@ -40,7 +40,7 @@
 	"add-note": "Додај белешку",
 	"no-notes": "Нема дељених бележака.",
 
-	"history": "Историја заставица",
+	"history": "Account &amp; Flag History",
 	"back": "Назад на списак заставица",
 	"no-history": "Нема историје заставица",
 

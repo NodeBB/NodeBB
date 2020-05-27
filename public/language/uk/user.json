@@ -144,6 +144,7 @@
     "info.ban-history": "Історія банів",
     "info.no-ban-history": "Цього користувача ніколи не банили",
     "info.banned-until": "Забанений до %1",
+    "info.banned-expiry": "Expiry",
     "info.banned-permanently": "Забанений назавжди",
     "info.banned-reason-label": "Причина",
     "info.banned-no-reason": "Причина не вказана",

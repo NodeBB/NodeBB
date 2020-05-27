@@ -144,6 +144,7 @@
     "info.ban-history": "Blokavimų istorija",
     "info.no-ban-history": "Šis narys nebuvo užblokuotas.",
     "info.banned-until": "Užblokuotas iki %1",
+    "info.banned-expiry": "Expiry",
     "info.banned-permanently": "Užblokuotas visam laikui",
     "info.banned-reason-label": "Priežastis",
     "info.banned-no-reason": "Be priežasties",

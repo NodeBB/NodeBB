@@ -27,7 +27,7 @@
 	"filter-cid-all": "Wszystkie kategorie",
 	"apply-filters": "Zastosuj filtry",
 
-	"quick-links": "Szybkie odnośniki",
+	"quick-actions": "Quick Actions",
 	"flagged-user": "Oflagowany użytkownik",
 	"view-profile": "Zobacz profil",
 	"start-new-chat": "Rozpocznij nowy czat",
@@ -40,7 +40,7 @@
 	"add-note": "Dodaj notatkę",
 	"no-notes": "Brak udostępnionych notatek",
 
-	"history": "Historia flag",
+	"history": "Account &amp; Flag History",
 	"back": "Wróć do listy flag",
 	"no-history": "Brak historii flag",
 

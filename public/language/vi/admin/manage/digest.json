@@ -9,7 +9,7 @@
 	"default": "Mặc định hệ thống",
 	"default-help": "<em>System default</em> means the user has not explicitly overridden the global forum setting for digests, which is currently: &quot;<strong>%1</strong>&quot;",
 	"resend": "Resend Digest",
-	"resend-all-confirm": "Are you sure you wish to mnually execute this digest run?",
+	"resend-all-confirm": "Are you sure you wish to manually execute this digest run?",
 	"resent-single": "Manual digest resend completed",
 	"resent-day": "Daily digest resent",
 	"resent-week": "Weekly digest resent",

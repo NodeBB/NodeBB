@@ -144,6 +144,7 @@
     "info.ban-history": "最近停止した履歴",
     "info.no-ban-history": "このユーザーは停止されていません",
     "info.banned-until": "%1まで停止",
+    "info.banned-expiry": "Expiry",
     "info.banned-permanently": "永久に停止",
     "info.banned-reason-label": "理由",
     "info.banned-no-reason": "理由なし。",

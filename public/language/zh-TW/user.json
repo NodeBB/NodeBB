@@ -144,6 +144,7 @@
     "info.ban-history": "最近停權紀錄",
     "info.no-ban-history": "該使用者從未被停權",
     "info.banned-until": "停權直到 %1",
+    "info.banned-expiry": "Expiry",
     "info.banned-permanently": "永久禁用",
     "info.banned-reason-label": "原因",
     "info.banned-no-reason": "沒有原因",

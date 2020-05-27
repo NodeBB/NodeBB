@@ -144,6 +144,7 @@
     "info.ban-history": "Kitiltási előzmény",
     "info.no-ban-history": "A felhasználó sosem volt kitiltva",
     "info.banned-until": "Kitiltás lejárata: %1",
+    "info.banned-expiry": "Expiry",
     "info.banned-permanently": "Végleges kitiltás",
     "info.banned-reason-label": "Oka",
     "info.banned-no-reason": "Az oka nincs megadva.",

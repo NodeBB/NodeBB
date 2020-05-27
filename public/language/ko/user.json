@@ -144,6 +144,7 @@
     "info.ban-history": "최근 차단 히스토리",
     "info.no-ban-history": "이 사용자는 차단된 적이 없습니다.",
     "info.banned-until": "%1까지 차단됨",
+    "info.banned-expiry": "Expiry",
     "info.banned-permanently": "영구 차단",
     "info.banned-reason-label": "사유",
     "info.banned-no-reason": "제공된 사유가 없습니다.",

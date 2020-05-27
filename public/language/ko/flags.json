@@ -27,7 +27,7 @@
 	"filter-cid-all": "모든 게시판",
 	"apply-filters": "필터 적용",
 
-	"quick-links": "바로가기",
+	"quick-actions": "Quick Actions",
 	"flagged-user": "신고된 사용자",
 	"view-profile": "프로필 보기",
 	"start-new-chat": "새로운 채팅 시작",
@@ -40,7 +40,7 @@
 	"add-note": "노트 추가",
 	"no-notes": "공유된 노트가 없습니다.",
 
-	"history": "신고 기록",
+	"history": "Account &amp; Flag History",
 	"back": "신고 목록으로 돌아가기",
 	"no-history": "신고 기록들이 없습니다.",
 

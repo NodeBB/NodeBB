@@ -27,7 +27,7 @@
 	"filter-cid-all": "Всички категории",
 	"apply-filters": "Прилагане на филтрите",
 
-	"quick-links": "Бързи връзки",
+	"quick-actions": "Quick Actions",
 	"flagged-user": "Докладван потребител",
 	"view-profile": "Преглед на профила",
 	"start-new-chat": "Започване на нов разговор",
@@ -40,7 +40,7 @@
 	"add-note": "Добавяне на бележка",
 	"no-notes": "Няма споделени бележки.",
 
-	"history": "История на доклада",
+	"history": "Account &amp; Flag History",
 	"back": "Обратно към списъка с доклади",
 	"no-history": "Няма история на доклада.",
 

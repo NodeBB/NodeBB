@@ -27,7 +27,7 @@
 	"filter-cid-all": "Všechny kategorie",
 	"apply-filters": "Použít filtry",
 
-	"quick-links": "Rychlé odkazy",
+	"quick-actions": "Quick Actions",
 	"flagged-user": "Označený uživatel",
 	"view-profile": "Zobrazit profil",
 	"start-new-chat": "Začít novou konverzaci",
@@ -40,7 +40,7 @@
 	"add-note": "Přidat poznámku",
 	"no-notes": "Žádné sdílené poznámky.",
 
-	"history": "Historie označení",
+	"history": "Account &amp; Flag History",
 	"back": "Zpět k seznamu označení",
 	"no-history": "Žádná historie označení.",
 

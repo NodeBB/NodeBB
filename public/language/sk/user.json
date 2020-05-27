@@ -144,6 +144,7 @@
     "info.ban-history": "Nedávna história zablokovania",
     "info.no-ban-history": "Tento člen nebol nikdy zablokovaný",
     "info.banned-until": "Zablokovaný až do %1",
+    "info.banned-expiry": "Expiry",
     "info.banned-permanently": "Zablokovaný natrvalo",
     "info.banned-reason-label": "Dôvod",
     "info.banned-no-reason": "Neboli uvedené žiadne dôvody.",

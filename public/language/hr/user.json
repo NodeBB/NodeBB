@@ -144,6 +144,7 @@
     "info.ban-history": "Povijest nedavno blokiranih",
     "info.no-ban-history": "Ovaj korisnik nikad nije bio blokiran",
     "info.banned-until": "Blokiran do %1!",
+    "info.banned-expiry": "Expiry",
     "info.banned-permanently": "Trajno blokiran",
     "info.banned-reason-label": "Razlog",
     "info.banned-no-reason": "Razlog nije dan.",

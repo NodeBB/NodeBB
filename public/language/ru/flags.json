@@ -27,7 +27,7 @@
 	"filter-cid-all": "Все категории",
 	"apply-filters": "Применить фильтры",
 
-	"quick-links": "Быстрые ссылки",
+	"quick-actions": "Quick Actions",
 	"flagged-user": "Отмеченный пользователь",
 	"view-profile": "Просмотреть профиль",
 	"start-new-chat": "Начать новый чат",
@@ -40,7 +40,7 @@
 	"add-note": "Добавить примечание",
 	"no-notes": "Нет примечаний.",
 
-	"history": "История жалобы",
+	"history": "Account &amp; Flag History",
 	"back": "Вернуться к списку жалоб",
 	"no-history": "Нет истории жалобы.",
 

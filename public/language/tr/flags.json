@@ -27,7 +27,7 @@
 	"filter-cid-all": "Tüm kategoriler",
 	"apply-filters": "Filtreleri Onayla",
 
-	"quick-links": "Akıllı Bağlantılar",
+	"quick-actions": "Hızlı Eylemler",
 	"flagged-user": "Şikayet Edilen Kullanıcı",
 	"view-profile": "Profili Gör",
 	"start-new-chat": "Yeni Sohbet Başlat",
@@ -40,7 +40,7 @@
 	"add-note": "Not Ekle",
 	"no-notes": "Not paylaşılmadı",
 
-	"history": "Şikayet Geçmişi",
+	"history": "Hesap &amp; Şikayet Geçmişi",
 	"back": "Şikayet Listesine Geri Dön",
 	"no-history": "Şikayet geçmişi yok",
 

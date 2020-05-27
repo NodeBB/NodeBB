@@ -144,6 +144,7 @@
     "info.ban-history": "Lịch sử khóa tài khoản gần đây",
     "info.no-ban-history": "Người dùng này chưa từng bị khóa tài khoản",
     "info.banned-until": "Bị khóa tài khoản tới %1",
+    "info.banned-expiry": "Expiry",
     "info.banned-permanently": "Bị cấm vĩnh viễn",
     "info.banned-reason-label": "Lý do",
     "info.banned-no-reason": "Không có lí do.",

@@ -27,7 +27,7 @@
 	"filter-cid-all": "همه دسته بندی ها",
 	"apply-filters": "اعمال فیلتر ها",
 
-	"quick-links": "لینک های سریع",
+	"quick-actions": "Quick Actions",
 	"flagged-user": "کاربر گزارش شده",
 	"view-profile": "نمایش پروفایل",
 	"start-new-chat": "شروع چت جدید",
@@ -40,7 +40,7 @@
 	"add-note": "افزودن یادداشت",
 	"no-notes": "بدون یادداشت",
 
-	"history": "تاریخچه گزارش ",
+	"history": "Account &amp; Flag History",
 	"back": "بازگشت به لیست گزارش ها",
 	"no-history": "بدون تاریخچه گزارش",
 

@@ -9,7 +9,7 @@
 	"default": "Valeur par défaut",
 	"default-help": "<em>La valeur par défaut</em> signifie que l'utilisateur n'a pas explicitement modifié ses paramètres pour les résumés; qui sont : &quot;<strong>%1</strong>&quot;",
 	"resend": "Renvoi",
-	"resend-all-confirm": "Êtes-vous sûr de vouloir exécuter manuellement ce résumé?",
+	"resend-all-confirm": "Voulez-vous vraiment exécuter manuellement cette envoi ?",
 	"resent-single": "Renvoi manuel du Résumé terminé",
 	"resent-day": "Résumé quotidienne renvoyé",
 	"resent-week": "Résumé hebdomadaire renvoyé",

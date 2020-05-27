@@ -144,6 +144,7 @@
     "info.ban-history": "История блокировок",
     "info.no-ban-history": "Этот пользователь никогда не был заблокирован",
     "info.banned-until": "Заблокирован до %1",
+    "info.banned-expiry": "Expiry",
     "info.banned-permanently": "Заблокирован навсегда",
     "info.banned-reason-label": "Причина",
     "info.banned-no-reason": "Без объяснения причин.",

@@ -27,7 +27,7 @@
 	"filter-cid-all": "Alle Kategorien",
 	"apply-filters": "Filter anwenden",
 
-	"quick-links": "Schnellnavigation",
+	"quick-actions": "Quick Actions",
 	"flagged-user": "Gemeldeter Benutzer",
 	"view-profile": "Profil ansehen",
 	"start-new-chat": "Neuen Chat beginnen",
@@ -40,7 +40,7 @@
 	"add-note": "Notiz hinzufügen",
 	"no-notes": "Keine geteilten Notizen",
 
-	"history": "Meldungsverlauf",
+	"history": "Account &amp; Flag History",
 	"back": "Zurück zur Meldungsliste",
 	"no-history": "Kein Meldungsverlauf",
 

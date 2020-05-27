@@ -144,6 +144,7 @@
     "info.ban-history": "سجل الحظر الأحدث",
     "info.no-ban-history": "هذا المستخدم لم يتم حظره مطلقا",
     "info.banned-until": "محظور حتى %1",
+    "info.banned-expiry": "Expiry",
     "info.banned-permanently": "محظور بشكل دائم",
     "info.banned-reason-label": "سبب",
     "info.banned-no-reason": "لم يتم إعطاء سبب.",

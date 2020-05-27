@@ -27,7 +27,7 @@
 	"filter-cid-all": "Todas as categorias",
 	"apply-filters": "Aplicar Filtros",
 
-	"quick-links": "Links Rápidos",
+	"quick-actions": "Quick Actions",
 	"flagged-user": "Usuário Sinalizado",
 	"view-profile": "Ver Perfil",
 	"start-new-chat": "Iniciar Novo Chat",
@@ -40,7 +40,7 @@
 	"add-note": "Adicionar Nota",
 	"no-notes": "Nenhuma nota compartilhada.",
 
-	"history": "Histórico de Sinalizações",
+	"history": "Account &amp; Flag History",
 	"back": "Voltar à Lista de Sinaliações",
 	"no-history": "Sem histórico de sinalizações.",
 

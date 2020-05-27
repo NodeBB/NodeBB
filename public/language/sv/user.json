@@ -144,6 +144,7 @@
     "info.ban-history": "Ban historik",
     "info.no-ban-history": "Den här användaren har aldrig varit bannad",
     "info.banned-until": "Bannad tills %1",
+    "info.banned-expiry": "Expiry",
     "info.banned-permanently": "Permanent bannad",
     "info.banned-reason-label": "Anledning",
     "info.banned-no-reason": "Ingen anledning angiven",

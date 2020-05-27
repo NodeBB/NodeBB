@@ -27,7 +27,7 @@
 	"filter-cid-all": "כל הקטגוריות",
 	"apply-filters": "הפעל סינון",
 
-	"quick-links": "קישורים מהירים",
+	"quick-actions": "Quick Actions",
 	"flagged-user": "משתמש מסומן",
 	"view-profile": "צפה בפרופיל",
 	"start-new-chat": "התחל שיחה חדשה",
@@ -40,7 +40,7 @@
 	"add-note": "הוסף הערה",
 	"no-notes": "אין הערות",
 
-	"history": "היסטוריית הסימונים",
+	"history": "Account &amp; Flag History",
 	"back": "חזרה לרשימת הסימונים",
 	"no-history": "אין הסיטוריית סימונים",
 
