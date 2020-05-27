@@ -145,7 +145,7 @@ function setupExpressApp(app) {
 
 	configureBodyParser(app);
 
-	app.use(cookieParser());
+	app.use(cookieParser(nconf.get('secret')));
 	const userAgentMiddleware = useragent.express();
 	app.use(function userAgent(req, res, next) {
 		userAgentMiddleware(req, res, next);

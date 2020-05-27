@@ -3,7 +3,6 @@
 var os = require('os');
 var winston = require('winston');
 var _ = require('lodash');
-const nconf = require('nconf');
 
 var meta = require('../meta');
 var languages = require('../languages');
@@ -53,12 +52,6 @@ module.exports = function (middleware) {
 
 		if (process.env.NODE_ENV === 'development') {
 			headers['X-Upstream-Hostname'] = os.hostname();
-		}
-
-		// Ensure that the session is valid. This block guards against edge-cases where the server-side session has
-		// been deleted (but client-side cookie still exists)
-		if (req.uid > 0 && !req.session.meta && !res.get('Set-Cookie')) {
-			res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
 		}
 
 		for (var key in headers) {

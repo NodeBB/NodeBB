@@ -416,6 +416,7 @@ const destroyAsync = util.promisify((req, callback) => req.session.destroy(callb
 
 authenticationController.logout = async function (req, res, next) {
 	if (!req.loggedIn || !req.sessionID) {
+		res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
 		return res.status(200).send('not-logged-in');
 	}
 	const uid = req.uid;
