@@ -479,7 +479,6 @@ app.cacheBuster = null;
 	app.enableTopicSearch = function (options) {
 		var quickSearchResults = options.resultEl;
 		var inputEl = options.inputEl;
-		var template = options.template || 'partials/quick-search-results';
 		var searchTimeoutId = 0;
 		var currentVal = inputEl.val();
 		inputEl.off('keyup').on('keyup', function () {
@@ -496,24 +495,12 @@ app.cacheBuster = null;
 					return quickSearchResults.addClass('hidden');
 				}
 				require(['search'], function (search) {
-					var data = {
+					search.quick({
 						term: inputEl.val(),
 						in: 'titles',
-						searchOnly: 1,
-					};
-					$(window).trigger('action:search.quick', { data: data });
-					search.api(data, function (data) {
-						data.posts.forEach(function (p) {
-							p.snippet = utils.escapeHTML($('<div>' + p.content + '</div>').text().slice(0, 80) + '...');
-						});
-						app.parseAndTranslate(template, data, function (html) {
-							if (html.length) {
-								html.find('.timeago').timeago();
-								quickSearchResults.html(html).removeClass('hidden').show();
-							} else {
-								quickSearchResults.html('').addClass('hidden');
-							}
-						});
+					}, {
+						template: options.template,
+						resultEl: quickSearchResults,
 					});
 				});
 			}, 250);

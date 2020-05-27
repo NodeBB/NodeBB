@@ -33,6 +33,28 @@ define('search', ['navigator', 'translator', 'storage'], function (nav, translat
 		});
 	};
 
+	Search.quick = function (query, options, callback) {
+		callback = callback || function () {};
+		var template = options.template || 'partials/quick-search-results';
+		$(window).trigger('action:search.quick', { data: query });
+		query.searchOnly = 1;
+		Search.api(query, function (data) {
+			data.posts.forEach(function (p) {
+				p.snippet = utils.escapeHTML($('<div>' + p.content + '</div>').text().slice(0, 80) + '...');
+			});
+			app.parseAndTranslate(template, data, function (html) {
+				if (html.length) {
+					html.find('.timeago').timeago();
+					options.resultEl.html(html).removeClass('hidden').show();
+				} else {
+					options.resultEl.html('').addClass('hidden');
+				}
+				$(window).trigger('action:search.quick.complete', { });
+				callback();
+			});
+		});
+	};
+
 	function createQueryString(data) {
 		var searchIn = data.in || 'titlesposts';
 		var postedBy = data.by || '';
