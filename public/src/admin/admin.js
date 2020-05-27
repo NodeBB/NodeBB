@@ -37,7 +37,9 @@
 			});
 		}
 
-		$('[component="logout"]').on('click', app.logout);
+		$('[component="logout"]').on('click', function () {
+			app.logout();
+		});
 
 		configureSlidemenu();
 		setupNProgress();

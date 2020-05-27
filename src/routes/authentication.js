@@ -87,8 +87,7 @@ Auth.reloadRoutes = async function (params) {
 			// save returnTo for later usage in /register/complete
 			// passport seems to remove `req.session.returnTo` after it redirects
 			req.session.registration.returnTo = req.session.returnTo;
-			next();
-		}, function (req, res, next) {
+
 			passport.authenticate(strategy.name, function (err, user) {
 				if (err) {
 					delete req.session.registration;

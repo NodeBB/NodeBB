@@ -15,7 +15,6 @@ const plugins = require('../plugins');
 const utils = require('../utils');
 const translator = require('../translator');
 const helpers = require('./helpers');
-const middleware = require('../middleware');
 const privileges = require('../privileges');
 const sockets = require('../socket.io');
 
@@ -159,9 +158,7 @@ authenticationController.registerComplete = function (req, res, next) {
 
 		async.parallel(callbacks, async function (_blank, err) {
 			if (err.length) {
-				err = err.filter(Boolean).map(function (err) {
-					return err.message;
-				});
+				err = err.filter(Boolean).map(err => err.message);
 			}
 
 			if (err.length) {
@@ -232,7 +229,7 @@ authenticationController.login = function (req, res, next) {
 };
 
 function continueLogin(req, res, next) {
-	passport.authenticate('local', function (err, userData, info) {
+	passport.authenticate('local', async function (err, userData, info) {
 		if (err) {
 			return helpers.noScriptErrors(req, res, err.message, 403);
 		}
@@ -258,51 +255,28 @@ function continueLogin(req, res, next) {
 			winston.verbose('[auth] Triggering password reset for uid ' + userData.uid + ' due to password policy');
 			req.session.passwordExpired = true;
 
-			async.series({
-				code: async.apply(user.reset.generate, userData.uid),
-				buildHeader: async.apply(middleware.buildHeader, req, res),
-				header: async.apply(middleware.generateHeader, req, res, {}),
-			}, function (err, payload) {
-				if (err) {
-					return helpers.noScriptErrors(req, res, err.message, 403);
-				}
-
-				res.status(200).send({
-					next: nconf.get('relative_path') + '/reset/' + payload.code,
-					header: payload.header,
-					config: res.locals.config,
-				});
+			const code = await user.reset.generate(userData.uid);
+			res.status(200).send({
+				next: nconf.get('relative_path') + '/reset/' + code,
 			});
 		} else {
 			delete req.query.lang;
+			await authenticationController.doLogin(req, userData.uid);
+			var destination;
+			if (req.session.returnTo) {
+				destination = req.session.returnTo;
+				delete req.session.returnTo;
+			} else {
+				destination = nconf.get('relative_path') + '/';
+			}
 
-			async.series({
-				doLogin: async.apply(authenticationController.doLogin, req, userData.uid),
-				buildHeader: async.apply(middleware.buildHeader, req, res),
-				header: async.apply(middleware.generateHeader, req, res, {}),
-			}, function (err, payload) {
-				if (err) {
-					return helpers.noScriptErrors(req, res, err.message, 403);
-				}
-
-				var destination;
-				if (!req.session.returnTo) {
-					destination = nconf.get('relative_path') + '/';
-				} else {
-					destination = req.session.returnTo;
-					delete req.session.returnTo;
-				}
-
-				if (req.body.noscript === 'true') {
-					res.redirect(destination + '?loggedin');
-				} else {
-					res.status(200).send({
-						next: destination,
-						header: payload.header,
-						config: res.locals.config,
-					});
-				}
-			});
+			if (req.body.noscript === 'true') {
+				res.redirect(destination + '?loggedin');
+			} else {
+				res.status(200).send({
+					next: destination,
+				});
+			}
 		}
 	})(req, res, next);
 }
@@ -416,6 +390,7 @@ const destroyAsync = util.promisify((req, callback) => req.session.destroy(callb
 
 authenticationController.logout = async function (req, res, next) {
 	if (!req.loggedIn || !req.sessionID) {
+		res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
 		return res.status(200).send('not-logged-in');
 	}
 	const uid = req.uid;
@@ -434,24 +409,16 @@ authenticationController.logout = async function (req, res, next) {
 		await db.sortedSetAdd('users:online', Date.now() - (meta.config.onlineCutoff * 60000), uid);
 		await plugins.fireHook('static:user.loggedOut', { req: req, res: res, uid: uid, sessionID: sessionID });
 
-		const autoLocaleAsync = util.promisify(middleware.autoLocale);
-		await autoLocaleAsync(req, res);
-
 		// Force session check for all connected socket.io clients with the same session id
 		sockets.in('sess_' + sessionID).emit('checkSession', 0);
-		if (req.body.noscript === 'true') {
-			return res.redirect(nconf.get('relative_path') + '/');
-		}
-		const buildHeaderAsync = util.promisify(middleware.buildHeader);
-		const generateHeaderAsync = util.promisify(middleware.generateHeader);
-
-		await buildHeaderAsync(req, res);
-		const header = await generateHeaderAsync(req, res, {});
 		const payload = {
-			header: header,
-			config: res.locals.config,
+			next: nconf.get('relative_path') + '/',
 		};
 		plugins.fireHook('filter:user.logout', payload);
+
+		if (req.body.noscript === 'true') {
+			return res.redirect(payload.next);
+		}
 		res.status(200).send(payload);
 	} catch (err) {
 		next(err);

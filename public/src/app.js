@@ -57,7 +57,9 @@ app.cacheBuster = null;
 			app.newTopic();
 		});
 
-		$('#header-menu .container').on('click', '[component="user/logout"]', app.logout);
+		$('#header-menu .container').on('click', '[component="user/logout"]', function () {
+			app.logout();
+		});
 
 		Visibility.change(function (event, state) {
 			if (state === 'visible') {
@@ -105,79 +107,9 @@ app.cacheBuster = null;
 		});
 	};
 
-	app.updateHeader = function (data, callback) {
-		/**
-		 * data:
-		 *   header (obj)
-		 *   config (obj)
-		 *   next (string)
-		 */
-		require([
-			'benchpress',
-			'translator',
-			'forum/unread',
-			'forum/header/notifications',
-			'forum/header/chat',
-		], function (Benchpress, translator, Unread, Notifications, Chat) {
-			app.user = data.header.user;
-			data.header.config = data.config;
-			config = data.config;
-			Benchpress.setGlobal('config', config);
-
-			var htmlEl = $('html');
-			htmlEl.attr('data-dir', data.header.languageDirection);
-			htmlEl.css('direction', data.header.languageDirection);
-
-			// Manually reconnect socket.io
-			socket.close();
-			socket.open();
-
-			// Re-render top bar menu
-			var toRender = {
-				'slideout-menu': $('.slideout-menu'),
-				menu: $('#header-menu .container'),
-				'chats-menu': $('#chats-menu'),
-			};
-			Promise.all(Object.keys(toRender).map(function (tpl) {
-				return Benchpress.render('partials/' + tpl, data.header).then(function (render) {
-					return translator.Translator.create().translate(render);
-				});
-			})).then(function (html) {
-				Object.keys(toRender)
-					.map(function (k) { return toRender[k]; })
-					.forEach(function (element, idx) {
-						element.html(html[idx]);
-					});
-				Unread.initUnreadTopics();
-				Notifications.prepareDOM();
-				Chat.prepareDOM();
-				app.reskin(data.header.bootswatchSkin);
-				translator.switchTimeagoLanguage(callback);
-				bootbox.setLocale(config.userLang);
-
-				if (config.searchEnabled) {
-					app.handleSearch();
-				}
-
-				handleStatusChange();
-
-				$(window).trigger('action:app.updateHeader');
-			});
-		});
-	};
-
-	app.logout = function (e) {
-		if (e) {
-			e.preventDefault();
-		}
+	app.logout = function (redirect) {
+		redirect = redirect === undefined ? true : redirect;
 		$(window).trigger('action:app.logout');
-
-		/*
-			Set session refresh flag (otherwise the session check will trip and throw invalid session modal)
-			We know the session is/will be invalid (uid mismatch) because the user is logging out
-		*/
-		app.flags = app.flags || {};
-		app.flags._sessionRefresh = true;
 
 		$.ajax(config.relative_path + '/logout', {
 			type: 'POST',
@@ -185,31 +117,17 @@ app.cacheBuster = null;
 				'x-csrf-token': config.csrf_token,
 			},
 			success: function (data) {
-				// ACP logouts go to frontend via page load, not ajaxify
-				if (ajaxify.data.template.name.startsWith('admin/')) {
-					$(window).trigger('action:app.loggedOut', data);
-					window.location.href = config.relative_path + (data.next || '/');
-					return;
-				}
-
-				app.updateHeader(data, function () {
-					// Overwrite in hook (below) to redirect elsewhere
-					data.next = data.next || undefined;
-
-					$(window).trigger('action:app.loggedOut', data);
+				$(window).trigger('action:app.loggedOut', data);
+				if (redirect) {
 					if (data.next) {
-						if (data.next.startsWith('http')) {
-							window.location.href = data.next;
-							return;
-						}
-
-						ajaxify.go(data.next);
+						window.location.href = data.next;
 					} else {
-						ajaxify.refresh();
+						window.location.reload();
 					}
-				});
+				}
 			},
 		});
+		return false;
 	};
 
 	app.alert = function (params) {
@@ -249,26 +167,15 @@ app.cacheBuster = null;
 	};
 
 	app.handleInvalidSession = function () {
-		if (app.flags && app.flags._sessionRefresh) {
-			return;
-		}
-
-		app.flags = app.flags || {};
-		app.flags._sessionRefresh = true;
-
 		socket.disconnect();
-
-		require(['translator'], function (translator) {
-			translator.translate('[[error:invalid-session-text]]', function (translated) {
-				bootbox.alert({
-					title: '[[error:invalid-session]]',
-					message: translated,
-					closeButton: false,
-					callback: function () {
-						window.location.reload();
-					},
-				});
-			});
+		app.logout(false);
+		bootbox.alert({
+			title: '[[error:invalid-session]]',
+			message: '[[error:invalid-session-text]]',
+			closeButton: false,
+			callback: function () {
+				window.location.reload();
+			},
 		});
 	};
 
