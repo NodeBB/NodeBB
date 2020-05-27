@@ -57,7 +57,9 @@ app.cacheBuster = null;
 			app.newTopic();
 		});
 
-		$('#header-menu .container').on('click', '[component="user/logout"]', app.logout);
+		$('#header-menu .container').on('click', '[component="user/logout"]', function () {
+			app.logout();
+		});
 
 		Visibility.change(function (event, state) {
 			if (state === 'visible') {
@@ -105,7 +107,8 @@ app.cacheBuster = null;
 		});
 	};
 
-	app.logout = function () {
+	app.logout = function (redirect) {
+		redirect = redirect === undefined ? true : redirect;
 		$(window).trigger('action:app.logout');
 
 		$.ajax(config.relative_path + '/logout', {
@@ -115,10 +118,12 @@ app.cacheBuster = null;
 			},
 			success: function (data) {
 				$(window).trigger('action:app.loggedOut', data);
-				if (data.next) {
-					window.location.href = data.next;
-				} else {
-					window.location.reload();
+				if (redirect) {
+					if (data.next) {
+						window.location.href = data.next;
+					} else {
+						window.location.reload();
+					}
 				}
 			},
 		});
@@ -163,18 +168,14 @@ app.cacheBuster = null;
 
 	app.handleInvalidSession = function () {
 		socket.disconnect();
-
-		require(['translator'], function (translator) {
-			translator.translate('[[error:invalid-session-text]]', function (translated) {
-				bootbox.alert({
-					title: '[[error:invalid-session]]',
-					message: translated,
-					closeButton: false,
-					callback: function () {
-						app.logout();
-					},
-				});
-			});
+		app.logout(false);
+		bootbox.alert({
+			title: '[[error:invalid-session]]',
+			message: '[[error:invalid-session-text]]',
+			closeButton: false,
+			callback: function () {
+				window.location.reload();
+			},
 		});
 	};
 
