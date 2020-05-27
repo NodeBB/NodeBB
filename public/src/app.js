@@ -487,11 +487,11 @@ app.cacheBuster = null;
 				clearTimeout(searchTimeoutId);
 				searchTimeoutId = 0;
 			}
-			if (inputEl.val().length < 3 || inputEl.val() === currentVal) {
-				return;
-			}
-			currentVal = inputEl.val();
 			searchTimeoutId = setTimeout(function () {
+				if (inputEl.val().length < 3 || inputEl.val() === currentVal) {
+					return;
+				}
+				currentVal = inputEl.val();
 				if (!inputEl.is(':focus')) {
 					return quickSearchResults.addClass('hidden');
 				}
