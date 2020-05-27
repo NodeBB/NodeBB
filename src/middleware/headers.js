@@ -5,11 +5,14 @@ var winston = require('winston');
 var _ = require('lodash');
 const nconf = require('nconf');
 
+const util = require('util');
+
+const db = require('../database');
 var meta = require('../meta');
 var languages = require('../languages');
 
 module.exports = function (middleware) {
-	middleware.addHeaders = function addHeaders(req, res, next) {
+	middleware.addHeaders = async function addHeaders(req, res, next) {
 		var headers = {
 			'X-Powered-By': encodeURI(meta.config['powered-by'] || 'NodeBB'),
 			'X-Frame-Options': meta.config['allow-from-uri'] ? 'ALLOW-FROM ' + encodeURI(meta.config['allow-from-uri']) : 'SAMEORIGIN',
@@ -57,8 +60,12 @@ module.exports = function (middleware) {
 
 		// Ensure that the session is valid. This block guards against edge-cases where the server-side session has
 		// been deleted (but client-side cookie still exists)
-		if (req.uid > 0 && !req.session.meta && !res.get('Set-Cookie')) {
-			res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
+		const getSessionAsync = util.promisify((sid, callback) => db.sessionStore.get(sid, (err, sessionObj) => callback(err, sessionObj || null)));
+		if (req.signedCookies && req.signedCookies[nconf.get('sessionKey')]) {
+			const sessionData = await getSessionAsync(req.signedCookies[nconf.get('sessionKey')]);
+			if (!sessionData) {
+				res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
+			}
 		}
 
 		for (var key in headers) {
