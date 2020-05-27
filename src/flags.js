@@ -455,65 +455,8 @@ Flags.getHistory = async function (flagId) {
 	});
 
 	// Append ban history and username change data
-	let recentBans = await db.getSortedSetRevRange('uid:' + targetUid + ':bans:timestamp', 0, 19);
-	const usernameChanges = await user.getHistory('user:' + targetUid + ':usernames');
-	const emailChanges = await user.getHistory('user:' + targetUid + ':emails');
-
-	recentBans = await db.getObjects(recentBans);
-	history = history.concat(recentBans.reduce((memo, cur) => {
-		uids.push(cur.fromUid);
-		memo.push({
-			uid: cur.fromUid,
-			meta: [
-				{
-					key: '[[user:banned]]',
-					value: cur.reason,
-					labelClass: 'danger',
-				},
-				{
-					key: '[[user:info.banned-expiry]]',
-					value: new Date(parseInt(cur.expire, 10)).toISOString(),
-					labelClass: 'default',
-				},
-			],
-			datetime: parseInt(cur.timestamp, 10),
-			datetimeISO: utils.toISOString(parseInt(cur.timestamp, 10)),
-		});
-
-		return memo;
-	}, [])).concat(usernameChanges.reduce((memo, changeObj) => {
-		uids.push(targetUid);
-		memo.push({
-			uid: targetUid,
-			meta: [
-				{
-					key: '[[user:change_username]]',
-					value: changeObj.value,
-					labelClass: 'primary',
-				},
-			],
-			datetime: changeObj.timestamp,
-			datetimeISO: changeObj.timestampISO,
-		});
-
-		return memo;
-	}, [])).concat(emailChanges.reduce((memo, changeObj) => {
-		uids.push(targetUid);
-		memo.push({
-			uid: targetUid,
-			meta: [
-				{
-					key: '[[user:change_email]]',
-					value: changeObj.value,
-					labelClass: 'primary',
-				},
-			],
-			datetime: changeObj.timestamp,
-			datetimeISO: changeObj.timestampISO,
-		});
-
-		return memo;
-	}, []));
+	history = await mergeBanHistory(history, targetUid, uids);
+	history = await mergeUsernameEmailChanges(history, targetUid, uids);
 
 	const userData = await user.getUsersFields(uids, ['username', 'userslug', 'picture']);
 	history.forEach((event, idx) => { event.user = userData[idx]; });
@@ -589,5 +532,72 @@ Flags.notify = async function (flagObj, uid) {
 	uids = uids.filter(_uid => parseInt(_uid, 10) !== parseInt(uid, 10));
 	await notifications.push(notifObj, uids);
 };
+
+async function mergeBanHistory(history, targetUid, uids) {
+	let recentBans = await db.getSortedSetRevRange('uid:' + targetUid + ':bans:timestamp', 0, 19);
+	recentBans = await db.getObjects(recentBans);
+
+	return history.concat(recentBans.reduce((memo, cur) => {
+		uids.push(cur.fromUid);
+		memo.push({
+			uid: cur.fromUid,
+			meta: [
+				{
+					key: '[[user:banned]]',
+					value: cur.reason,
+					labelClass: 'danger',
+				},
+				{
+					key: '[[user:info.banned-expiry]]',
+					value: new Date(parseInt(cur.expire, 10)).toISOString(),
+					labelClass: 'default',
+				},
+			],
+			datetime: parseInt(cur.timestamp, 10),
+			datetimeISO: utils.toISOString(parseInt(cur.timestamp, 10)),
+		});
+
+		return memo;
+	}, []));
+}
+
+async function mergeUsernameEmailChanges(history, targetUid, uids) {
+	const usernameChanges = await user.getHistory('user:' + targetUid + ':usernames');
+	const emailChanges = await user.getHistory('user:' + targetUid + ':emails');
+
+	return history.concat(usernameChanges.reduce((memo, changeObj) => {
+		uids.push(targetUid);
+		memo.push({
+			uid: targetUid,
+			meta: [
+				{
+					key: '[[user:change_username]]',
+					value: changeObj.value,
+					labelClass: 'primary',
+				},
+			],
+			datetime: changeObj.timestamp,
+			datetimeISO: changeObj.timestampISO,
+		});
+
+		return memo;
+	}, [])).concat(emailChanges.reduce((memo, changeObj) => {
+		uids.push(targetUid);
+		memo.push({
+			uid: targetUid,
+			meta: [
+				{
+					key: '[[user:change_email]]',
+					value: changeObj.value,
+					labelClass: 'primary',
+				},
+			],
+			datetime: changeObj.timestamp,
+			datetimeISO: changeObj.timestampISO,
+		});
+
+		return memo;
+	}, []));
+}
 
 require('./promisify')(Flags);
