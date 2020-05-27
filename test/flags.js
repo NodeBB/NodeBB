@@ -601,7 +601,8 @@ describe('Flags', function () {
 						throw err;
 					}
 
-					assert.strictEqual(entries + 1, history.length);
+					// 1 for the new event appended, 2 for username and email change
+					assert.strictEqual(entries + 3, history.length);
 					done();
 				});
 			});
