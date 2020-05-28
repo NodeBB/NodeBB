@@ -7,12 +7,7 @@ module.exports = function (app, middleware, controllers) {
 
 	helpers.setupAdminPageRoute(app, '/admin', middleware, middlewares, controllers.admin.dashboard.get);
 
-	helpers.setupAdminPageRoute(app, '/admin/general/dashboard', middleware, middlewares, controllers.admin.dashboard.get);
-	helpers.setupAdminPageRoute(app, '/admin/general/languages', middleware, middlewares, controllers.admin.languages.get);
-	helpers.setupAdminPageRoute(app, '/admin/general/sounds', middleware, middlewares, controllers.admin.sounds.get);
-	helpers.setupAdminPageRoute(app, '/admin/general/navigation', middleware, middlewares, controllers.admin.navigation.get);
-	helpers.setupAdminPageRoute(app, '/admin/general/homepage', middleware, middlewares, controllers.admin.homepage.get);
-	helpers.setupAdminPageRoute(app, '/admin/general/social', middleware, middlewares, controllers.admin.social.get);
+	helpers.setupAdminPageRoute(app, '/admin/dashboard', middleware, middlewares, controllers.admin.dashboard.get);
 
 	helpers.setupAdminPageRoute(app, '/admin/manage/categories', middleware, middlewares, controllers.admin.categories.getAll);
 	helpers.setupAdminPageRoute(app, '/admin/manage/categories/:category_id', middleware, middlewares, controllers.admin.categories.get);
@@ -43,6 +38,14 @@ module.exports = function (app, middleware, controllers) {
 	helpers.setupAdminPageRoute(app, '/admin/manage/uploads', middleware, middlewares, controllers.admin.uploads.get);
 	helpers.setupAdminPageRoute(app, '/admin/manage/digest', middleware, middlewares, controllers.admin.digest.get);
 
+	helpers.setupAdminPageRoute(app, '/admin/settings/email', middleware, middlewares, controllers.admin.settings.email);
+	helpers.setupAdminPageRoute(app, '/admin/settings/user', middleware, middlewares, controllers.admin.settings.user);
+	helpers.setupAdminPageRoute(app, '/admin/settings/post', middleware, middlewares, controllers.admin.settings.post);
+	helpers.setupAdminPageRoute(app, '/admin/settings/languages', middleware, middlewares, controllers.admin.settings.languages);
+	helpers.setupAdminPageRoute(app, '/admin/settings/sounds', middleware, middlewares, controllers.admin.settings.sounds);
+	helpers.setupAdminPageRoute(app, '/admin/settings/navigation', middleware, middlewares, controllers.admin.settings.navigation);
+	helpers.setupAdminPageRoute(app, '/admin/settings/homepage', middleware, middlewares, controllers.admin.settings.homepage);
+	helpers.setupAdminPageRoute(app, '/admin/settings/social', middleware, middlewares, controllers.admin.settings.social);
 	helpers.setupAdminPageRoute(app, '/admin/settings/:term?', middleware, middlewares, controllers.admin.settings.get);
 
 	helpers.setupAdminPageRoute(app, '/admin/appearance/:term?', middleware, middlewares, controllers.admin.appearance.get);

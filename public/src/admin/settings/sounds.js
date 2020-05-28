@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/general/sounds', ['sounds', 'settings', 'admin/settings'], function (Sounds, Settings, AdminSettings) {
+define('admin/settings/sounds', ['sounds', 'settings', 'admin/settings'], function (Sounds, Settings, AdminSettings) {
 	var	SoundsAdmin = {};
 
 	SoundsAdmin.init = function () {

@@ -260,7 +260,7 @@ paths:
                                 imageClass:
                                   type: string
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
-  /api/admin/general/dashboard:
+  /api/admin/dashboard:
     get:
       tags:
         - admin
@@ -355,7 +355,7 @@ paths:
                             type: string
                             description: An ISO 8601 formatted date string (complementing `timestamp`)
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
-  /api/admin/general/languages:
+  /api/admin/settings/languages:
     get:
       tags:
         - admin
@@ -391,7 +391,7 @@ paths:
                         type: integer
                         description: Whether the forum will attempt to guess language based on browser's `Accept-Language` header
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
-  /api/admin/general/sounds:
+  /api/admin/settings/sounds:
     get:
       tags:
         - admin
@@ -460,7 +460,7 @@ paths:
                                   selected:
                                     type: boolean
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
-  /api/admin/general/navigation:
+  /api/admin/settings/navigation:
     get:
       tags:
         - admin
@@ -568,7 +568,7 @@ paths:
                         type: array
                         description: A clone of `enabled`
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
-  /api/admin/general/homepage:
+  /api/admin/settings/homepage:
     get:
       tags:
         - admin
@@ -592,7 +592,7 @@ paths:
                             name:
                               type: string
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
-  /api/admin/general/social:
+  /api/admin/settings/social:
     get:
       tags:
         - admin

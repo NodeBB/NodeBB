@@ -2,9 +2,9 @@
 	<div class="col-xs-12">
 		<form role="form">
 			<div class="row">
-				<div class="col-sm-2 col-xs-12 settings-header">[[admin/general/sounds:notifications]]</div>
+				<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/sounds:notifications]]</div>
 				<div class="col-sm-10 col-xs-12">
-					<label for="notification">[[admin/general/sounds:notifications]]</label>
+					<label for="notification">[[admin/settings/sounds:notifications]]</label>
 					<div class="row">
 						<div class="form-group col-xs-9">
 							<select class="form-control" id="notification" data-field="notification">
@@ -21,16 +21,16 @@
 							</select>
 						</div>
 						<div class="btn-group col-xs-3">
-							<button type="button" class="form-control btn btn-sm btn-default" data-action="play"><span class="hidden-xs">[[admin/general/sounds:play-sound]] </span><i class="fa fa-play"></i></button>
+							<button type="button" class="form-control btn btn-sm btn-default" data-action="play"><span class="hidden-xs">[[admin/settings/sounds:play-sound]] </span><i class="fa fa-play"></i></button>
 						</div>
 					</div>
 				</div>
 			</div>
 
 			<div class="row">
-				<div class="col-sm-2 col-xs-12 settings-header">[[admin/general/sounds:chat-messages]]</div>
+				<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/sounds:chat-messages]]</div>
 				<div class="col-sm-10 col-xs-12">
-					<label for="chat-incoming">[[admin/general/sounds:incoming-message]]</label>
+					<label for="chat-incoming">[[admin/settings/sounds:incoming-message]]</label>
 					<div class="row">
 						<div class="form-group col-xs-9">
 							<select class="form-control" id="chat-incoming" data-field="chat-incoming">
@@ -47,11 +47,11 @@
 							</select>
 						</div>
 						<div class="btn-group col-xs-3">
-							<button type="button" class="form-control btn btn-sm btn-default" data-action="play"><span class="hidden-xs">[[admin/general/sounds:play-sound]] </span><i class="fa fa-play"></i></button>
+							<button type="button" class="form-control btn btn-sm btn-default" data-action="play"><span class="hidden-xs">[[admin/settings/sounds:play-sound]] </span><i class="fa fa-play"></i></button>
 						</div>
 					</div>
 
-					<label for="chat-outgoing">[[admin/general/sounds:outgoing-message]]</label>
+					<label for="chat-outgoing">[[admin/settings/sounds:outgoing-message]]</label>
 					<div class="row">
 						<div class="form-group col-xs-9">
 							<select class="form-control" id="chat-outgoing" data-field="chat-outgoing">
@@ -68,7 +68,7 @@
 							</select>
 						</div>
 						<div class="btn-group col-xs-3">
-							<button type="button" class="form-control btn btn-sm btn-default" data-action="play"><span class="hidden-xs">[[admin/general/sounds:play-sound]] </span><i class="fa fa-play"></i></button>
+							<button type="button" class="form-control btn btn-sm btn-default" data-action="play"><span class="hidden-xs">[[admin/settings/sounds:play-sound]] </span><i class="fa fa-play"></i></button>
 						</div>
 					</div>
 
@@ -81,7 +81,7 @@
 								data-accept="audio/*"
 								type="button"
 								class="btn btn-primary"
-								value="[[admin/general/sounds:upload-new-sound]]"
+								value="[[admin/settings/sounds:upload-new-sound]]"
 							></input>
 						</span>
 					</div>
