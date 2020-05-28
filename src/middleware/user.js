@@ -1,6 +1,5 @@
 'use strict';
 
-const util = require('util');
 const nconf = require('nconf');
 const winston = require('winston');
 
@@ -16,9 +15,9 @@ const controllers = {
 };
 
 module.exports = function (middleware) {
-	async function authenticate(req, res, next, callback) {
+	async function authenticate(req, res) {
 		if (req.loggedIn) {
-			return next();
+			return true;
 		}
 
 		await plugins.fireHook('response:middleware.authenticate', {
@@ -28,26 +27,26 @@ module.exports = function (middleware) {
 		});
 
 		if (!res.headersSent) {
-			auth.setAuthVars(req, res, function () {
-				if (req.loggedIn && req.user && req.user.uid) {
-					return next();
-				}
-
-				callback();
-			});
+			auth.setAuthVars(req);
 		}
+		return !res.headersSent;
 	}
 
-	middleware.authenticate = function middlewareAuthenticate(req, res, next) {
-		authenticate(req, res, next, function () {
-			controllers.helpers.notAllowed(req, res, next);
-		});
+	middleware.authenticate = async function middlewareAuthenticate(req, res, next) {
+		if (!await authenticate(req, res)) {
+			return;
+		}
+		if (!req.loggedIn) {
+			return controllers.helpers.notAllowed(req, res);
+		}
+		next();
 	};
 
-	const authenticateAsync = util.promisify(middleware.authenticate);
-
-	middleware.authenticateOrGuest = function authenticateOrGuest(req, res, next) {
-		authenticate(req, res, next, next);
+	middleware.authenticateOrGuest = async function authenticateOrGuest(req, res, next) {
+		if (!await authenticate(req, res)) {
+			return;
+		}
+		next();
 	};
 
 	middleware.ensureSelfOrGlobalPrivilege = function ensureSelfOrGlobalPrivilege(req, res, next) {
@@ -103,7 +102,12 @@ module.exports = function (middleware) {
 
 	middleware.checkAccountPermissions = async function checkAccountPermissions(req, res, next) {
 		// This middleware ensures that only the requested user and admins can pass
-		await authenticateAsync(req, res);
+		if (!await authenticate(req, res)) {
+			return;
+		}
+		if (!req.loggedIn) {
+			return controllers.helpers.notAllowed(req, res);
+		}
 		const uid = await user.getUidByUserslug(req.params.userslug);
 		let allowed = await privileges.users.canEdit(req.uid, uid);
 		if (allowed) {
