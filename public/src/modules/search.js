@@ -40,7 +40,7 @@ define('search', ['navigator', 'translator', 'storage'], function (nav, translat
 		query.searchOnly = 1;
 		Search.api(query, function (data) {
 			if (options.hideOnNoMatches && !data.posts.length) {
-				return options.resultEl.html('').addClass('hidden');
+				return options.resultEl.addClass('hidden').find('#quick-search-results-container').html('');
 			}
 			data.posts.forEach(function (p) {
 				p.snippet = utils.escapeHTML($('<div>' + p.content + '</div>').text().slice(0, 80) + '...');
@@ -48,9 +48,9 @@ define('search', ['navigator', 'translator', 'storage'], function (nav, translat
 			app.parseAndTranslate(template, data, function (html) {
 				if (html.length) {
 					html.find('.timeago').timeago();
-					options.resultEl.html(html).removeClass('hidden');
+					options.resultEl.removeClass('hidden').find('#quick-search-results-container').html(html);
 				} else {
-					options.resultEl.html('').addClass('hidden');
+					options.resultEl.addClass('hidden').find('#quick-search-results-container').html('');
 				}
 				$(window).trigger('action:search.quick.complete', { });
 				callback();
