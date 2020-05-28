@@ -498,10 +498,7 @@ app.cacheBuster = null;
 					search.quick({
 						term: inputEl.val(),
 						in: 'titles',
-					}, {
-						template: options.template,
-						resultEl: quickSearchResults,
-					});
+					}, options);
 				});
 			}, 250);
 		});
@@ -511,7 +508,7 @@ app.cacheBuster = null;
 		var searchButton = $('#search-button');
 		var searchFields = $('#search-fields');
 		var searchInput = $('#search-fields input');
-		var quickSearchResults = $('#quick-search-results');
+		var quickSearchContainer = $('#quick-search-container');
 
 		$('#search-form .advanced-search-link').off('mousedown').on('mousedown', function () {
 			ajaxify.go('/search');
@@ -522,21 +519,21 @@ app.cacheBuster = null;
 		});
 		searchInput.off('blur').on('blur', dismissSearch);
 		searchInput.off('focus').on('focus', function () {
-			if (searchInput.val() && quickSearchResults.children().length) {
-				quickSearchResults.removeClass('hidden').show();
+			if (searchInput.val() && quickSearchContainer.find('#quick-search-results').children().length) {
+				quickSearchContainer.removeClass('hidden');
 			}
 		});
 
 		app.enableTopicSearch({
 			inputEl: searchInput,
-			resultEl: quickSearchResults,
+			resultEl: quickSearchContainer,
 		});
 
 		function dismissSearch() {
 			searchFields.addClass('hidden');
 			searchButton.removeClass('hidden');
 			setTimeout(function () {
-				quickSearchResults.addClass('hidden');
+				quickSearchContainer.addClass('hidden');
 			}, 200);
 		}
 

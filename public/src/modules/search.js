@@ -39,13 +39,16 @@ define('search', ['navigator', 'translator', 'storage'], function (nav, translat
 		$(window).trigger('action:search.quick', { data: query });
 		query.searchOnly = 1;
 		Search.api(query, function (data) {
+			if (options.hideOnNoMatches && !data.posts.length) {
+				return options.resultEl.html('').addClass('hidden');
+			}
 			data.posts.forEach(function (p) {
 				p.snippet = utils.escapeHTML($('<div>' + p.content + '</div>').text().slice(0, 80) + '...');
 			});
 			app.parseAndTranslate(template, data, function (html) {
 				if (html.length) {
 					html.find('.timeago').timeago();
-					options.resultEl.html(html).removeClass('hidden').show();
+					options.resultEl.html(html).removeClass('hidden');
 				} else {
 					options.resultEl.html('').addClass('hidden');
 				}
