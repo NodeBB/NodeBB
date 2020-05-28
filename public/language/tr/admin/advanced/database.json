@@ -16,8 +16,8 @@
 	"mongo.index-size": "İndex Boyutu",
 	"mongo.file-size": "Dosya Boyutu",
 	"mongo.resident-memory": "Yerleşik Bellek",
-	"mongo.virtual-memory": "Sanal Hafıza",
-	"mongo.mapped-memory": "Planlanan Hafıza",
+	"mongo.virtual-memory": "Sanal Bellek",
+	"mongo.mapped-memory": "Planlanan Bellek",
 	"mongo.bytes-in": "alınan bayt",
 	"mongo.bytes-out": "gönderilen bayt",
 	"mongo.num-requests": "İsteklerin Sayısı",
@@ -25,14 +25,14 @@
 	"mongo.unauthorized": "NodeBB, ilgili istatistikler için MongoDB'yi sorgulayamadı. Lütfen NodeBB'yi kullanan kişinin &quot;admin&quot; veri bankasında &quot;clusterMonitor&quot; listesinde bulunduğuna emin olunuz.",
 
 	"redis": "Redis",
-	"redis.version": "Redis Versiyonu",
+	"redis.version": "Redis Sürümü",
 	"redis.keys": "Anahtarlar",
 	"redis.expires": "Sona erenler",
 	"redis.avg-ttl": "Ortalama TTL",
 	"redis.connected-clients": "Bağlı İstemciler",
 	"redis.connected-slaves": "İlişkili Bağımlılar",
 	"redis.blocked-clients": "Engellenen İstemciler",
-	"redis.used-memory": "Kullanılan Hafıza",
+	"redis.used-memory": "Kullanılan Bellek",
 	"redis.memory-frag-ratio": "Bellek Parçalanma Oranı",
 	"redis.total-connections-recieved": "Toplam Alınan Bağlantılar",
 	"redis.total-commands-processed": "Toplam İşlenen Komutlar",
@@ -47,6 +47,6 @@
 	"redis.raw-info": "İşlenmemiş Redis Bilgisi",
 
 	"postgres": "Postgres",
-	"postgres.version": "PostgreSQL Sürüm",
+	"postgres.version": "PostgreSQL Sürümü",
 	"postgres.raw-info": "İşlenmemiş Postgres Bilgisi"
 }

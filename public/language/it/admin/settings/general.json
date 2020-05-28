@@ -1,8 +1,8 @@
 {
 	"site-settings": "Impostazioni Sito",
 	"title": "Titolo Sito",
-	"title.short": "Short Title",
-	"title.short-placeholder": "If no short title is specified, the site title will be used",
+	"title.short": "Titolo abbreviato",
+	"title.short-placeholder": "Se non specifichi un titolo abbreviato, verrà utilizzato il titolo completo",
 	"title.url": "URL",
 	"title.url-placeholder": "L'URL del titolo del sito",
 	"title.url-help": "Quando si clicca sul titolo, invia gli utenti a questo indirizzo. Se lasciato vuoto, l'utente sarà inviato all'indice del forum.",
@@ -36,6 +36,6 @@
 	"outgoing-links.whitelist": "Domini nella whitelist per aggirare la pagina di avviso",
 	"site-colors": "Site Color Metadata",
 	"theme-color": "Theme Color",
-	"background-color": "Background Color",
+	"background-color": "Colore di sfondo",
 	"background-color-help": "Color used for splash screen background when website is installed as a PWA"
 }

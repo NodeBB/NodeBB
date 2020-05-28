@@ -1,6 +1,6 @@
 {
     "latest_users": "En Yeni Kullanıcılar",
-    "top_posters": "En Fazla İleti Gönderenler",
+    "top_posters": "En Fazla Gönderim Yapanlar",
     "most_reputation": "En Saygınlar",
     "most_flags": "En Fazla Şikayet",
     "search": "Ara",
@@ -13,9 +13,9 @@
     "prompt-email": "Eposta:",
     "invitation-email-sent": "%1'e bir davet e-posta'sı gönderildi",
     "user_list": "Kullanıcı Listesi",
-    "recent_topics": "Güncel Başlıklar",
-    "popular_topics": "Popüler Başlıklar",
-    "unread_topics": "Okunmamış Başlıklar",
+    "recent_topics": "Güncel Konular",
+    "popular_topics": "Popüler Konular",
+    "unread_topics": "Okunmamış Konular",
     "categories": "Kategoriler",
     "tags": "Etiketler",
     "no-users-found": "Kullanıcı bulunamadı!"
