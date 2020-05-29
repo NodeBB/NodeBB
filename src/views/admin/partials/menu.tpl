@@ -30,13 +30,13 @@
 		<h3 class="menu-section-title">[[admin/menu:section-settings]]</h3>
 		<ul class="menu-section-list">
 			<li><a href="{relative_path}/admin/settings/general">[[admin/menu:section-general]]</a></li>
-			<li><a href="{relative_path}/admin/settings/homepage">[[admin/menu:homepage]]</a></li>
-			<li><a href="{relative_path}/admin/settings/navigation">[[admin/menu:general/navigation]]</a></li>
+			<li><a href="{relative_path}/admin/settings/homepage">[[admin/menu:settings/homepage]]</a></li>
+			<li><a href="{relative_path}/admin/settings/navigation">[[admin/menu:settings/navigation]]</a></li>
 			<li><a href="{relative_path}/admin/settings/user">[[admin/menu:settings/user]]</a></li>
 			<li><a href="{relative_path}/admin/settings/group">[[admin/menu:settings/group]]</a></li>
 			<li><a href="{relative_path}/admin/settings/tags">[[admin/menu:manage/tags]]</a></li>
 			<li><a href="{relative_path}/admin/settings/post">[[admin/menu:settings/post]]</a></li>
-			<li><a href="{relative_path}/admin/settings/languages">[[admin/menu:general/languages]]</a></li>
+			<li><a href="{relative_path}/admin/settings/languages">[[admin/menu:settings/languages]]</a></li>
 			<li><a href="{relative_path}/admin/settings/email">[[admin/menu:settings/email]]</a></li>
 			<li><a href="{relative_path}/admin/settings/reputation">[[admin/menu:settings/reputation]]</a></li>
 			<li><a href="{relative_path}/admin/settings/guest">[[admin/menu:settings/guest]]</a></li>
@@ -44,8 +44,8 @@
 			<li><a href="{relative_path}/admin/settings/chat">[[admin/menu:settings/chat]]</a></li>
 			<li><a href="{relative_path}/admin/settings/pagination">[[admin/menu:settings/pagination]]</a></li>
 			<li><a href="{relative_path}/admin/settings/notifications">[[admin/menu:settings/notifications]]</a></li>
-			<li><a href="{relative_path}/admin/settings/sounds">[[admin/menu:general/sounds]]</a></li>
-			<li><a href="{relative_path}/admin/settings/social">[[admin/menu:general/social]]</a></li>
+			<li><a href="{relative_path}/admin/settings/sounds">[[admin/menu:settings/sounds]]</a></li>
+			<li><a href="{relative_path}/admin/settings/social">[[admin/menu:settings/social]]</a></li>
 			<li><a href="{relative_path}/admin/settings/cookies">[[admin/menu:settings/cookies]]</a></li>
 			<li><a href="{relative_path}/admin/settings/web-crawler">[[admin/menu:settings/web-crawler]]</a></li>
 			<li><a href="{relative_path}/admin/settings/sockets">[[admin/menu:settings/sockets]]</a></li>
@@ -186,7 +186,7 @@
 				<a id="settings-menu" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin/menu:section-settings]]</a>
 				<ul class="dropdown-menu" role="menu">
 					<li><a id="settings-general" href="{relative_path}/admin/settings/general">[[admin/menu:section-general]]</a></li>
-					<li><a href="{relative_path}/admin/settings/homepage">[[admin/menu:homepage]]</a></li>
+					<li><a href="{relative_path}/admin/settings/homepage">[[admin/menu:settings/homepage]]</a></li>
 					<li><a href="{relative_path}/admin/settings/navigation">[[admin/menu:settings/navigation]]</a></li>
 					<li><a href="{relative_path}/admin/settings/user">[[admin/menu:settings/user]]</a></li>
 					<li><a href="{relative_path}/admin/settings/group">[[admin/menu:settings/group]]</a></li>

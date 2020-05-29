@@ -174,8 +174,8 @@ describe('Admin Controllers', function () {
 		});
 	});
 
-	it('should load /admin/general/homepage', function (done) {
-		request(nconf.get('url') + '/api/admin/general/homepage', { jar: jar, json: true }, function (err, res, body) {
+	it('should load /admin/settings/homepage', function (done) {
+		request(nconf.get('url') + '/api/admin/settings/homepage', { jar: jar, json: true }, function (err, res, body) {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body.routes);
@@ -413,13 +413,13 @@ describe('Admin Controllers', function () {
 		});
 	});
 
-	it('should load /admin/general/navigation', function (done) {
+	it('should load /admin/settings/navigation', function (done) {
 		var navigation = require('../src/navigation/admin');
 		var data = require('../install/data/navigation.json');
 
 		navigation.save(data, function (err) {
 			assert.ifError(err);
-			request(nconf.get('url') + '/api/admin/general/navigation', { jar: jar, json: true }, function (err, res, body) {
+			request(nconf.get('url') + '/api/admin/settings/navigation', { jar: jar, json: true }, function (err, res, body) {
 				assert.ifError(err);
 				assert(body);
 				assert(body.available);
@@ -456,8 +456,8 @@ describe('Admin Controllers', function () {
 		});
 	});
 
-	it('should load /admin/general/sounds', function (done) {
-		request(nconf.get('url') + '/api/admin/general/sounds', { jar: jar, json: true }, function (err, res, body) {
+	it('should load /admin/settings/sounds', function (done) {
+		request(nconf.get('url') + '/api/admin/settings/sounds', { jar: jar, json: true }, function (err, res, body) {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -510,8 +510,8 @@ describe('Admin Controllers', function () {
 		});
 	});
 
-	it('should load /admin/general/languages', function (done) {
-		request(nconf.get('url') + '/api/admin/general/languages', { jar: jar, json: true }, function (err, res, body) {
+	it('should load /admin/settings/languages', function (done) {
+		request(nconf.get('url') + '/api/admin/settings/languages', { jar: jar, json: true }, function (err, res, body) {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -519,11 +519,11 @@ describe('Admin Controllers', function () {
 		});
 	});
 
-	it('should load /admin/general/social', function (done) {
+	it('should load /admin/settings/social', function (done) {
 		var socketAdmin = require('../src/socket.io/admin');
 		socketAdmin.social.savePostSharingNetworks({ uid: adminUid }, ['facebook', 'twitter'], function (err) {
 			assert.ifError(err);
-			request(nconf.get('url') + '/api/admin/general/social', { jar: jar, json: true }, function (err, res, body) {
+			request(nconf.get('url') + '/api/admin/settings/social', { jar: jar, json: true }, function (err, res, body) {
 				assert.ifError(err);
 				assert(body);
 				body = body.posts.map(function (network) {
