@@ -137,7 +137,7 @@ function initDict(language, callback) {
 
 					var title = namespace;
 					if (/admin\/general\/dashboard$/.test(title)) {
-						title = '[[admin/menu:general/dashboard]]';
+						title = '[[admin/menu:dashboard]]';
 					} else {
 						title = title.match(/admin\/(.+?)\/(.+?)$/);
 						title = '[[admin/menu:section-' +

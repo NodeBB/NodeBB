@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/general/social', [], function () {
+define('admin/settings/social', [], function () {
 	var social = {};
 
 	social.init = function () {
@@ -18,7 +18,7 @@ define('admin/general/social', [], function () {
 					return app.alertError(err);
 				}
 
-				app.alertSuccess('[[admin/general/social:save-success]]');
+				app.alertSuccess('[[admin/settings/social:save-success]]');
 			});
 		});
 	};
