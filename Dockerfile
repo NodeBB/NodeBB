@@ -13,6 +13,8 @@ RUN npm install --only=prod && \
     
 COPY . /usr/src/app
 
+RUN node build-config.js
+
 ENV NODE_ENV=production \
     daemon=false \
     silent=false

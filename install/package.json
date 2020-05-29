@@ -29,6 +29,7 @@
         ]
     },
     "dependencies": {
+        "@nodebb/mubsub": "^1.6.0",
         "ace-builds": "^1.4.9",
         "archiver": "^4.0.0",
         "async": "^3.2.0",
@@ -56,6 +57,7 @@
         "csurf": "^1.11.0",
         "daemon": "^1.1.0",
         "diff": "^4.0.2",
+        "dotenv": "^8.2.0",
         "express": "^4.17.1",
         "express-session": "^1.17.0",
         "express-useragent": "^1.0.13",
@@ -77,7 +79,6 @@
         "mongodb": "3.5.8",
         "morgan": "^1.10.0",
         "mousetrap": "^1.6.5",
-        "@nodebb/mubsub": "^1.6.0",
         "nconf": "^0.10.0",
         "nodebb-plugin-composer-default": "6.3.32",
         "nodebb-plugin-dbsearch": "4.0.7",

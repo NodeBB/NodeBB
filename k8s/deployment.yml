@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: community-forum
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: community-forum
+  template:
+    metadata:
+      labels:
+        app: community-forum
+    spec:
+      containers:
+      - name: nodebb
+        image: gcr.io/nsg-lobby/nodebb
+        ports:
+        - containerPort: 4567
+        livenessProbe:
+          httpGet:
+            path: /favicon.ico
+            port: 4567
+          initialDelaySeconds: 600
+          periodSeconds: 600

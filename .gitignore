@@ -1,3 +1,4 @@
+.env
 dist/
 yarn.lock
 npm-debug.log
