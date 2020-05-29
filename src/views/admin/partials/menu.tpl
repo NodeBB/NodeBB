@@ -15,14 +15,15 @@
 			<li><a href="{relative_path}/admin/manage/categories">[[admin/menu:manage/categories]]</a></li>
 			<li><a href="{relative_path}/admin/manage/privileges">[[admin/menu:manage/privileges]]</a></li>
 			<li><a href="{relative_path}/admin/manage/users">[[admin/menu:manage/users]]</a></li>
+			<li><a href="{relative_path}/admin/manage/registration">[[admin/menu:manage/registration]]</a></li>
 			<li><a href="{relative_path}/admin/manage/admins-mods">[[admin/menu:manage/admins-mods]]</a></li>
 			<li><a href="{relative_path}/admin/manage/groups">[[admin/menu:manage/groups]]</a></li>
 			<li><a href="{relative_path}/admin/manage/tags">[[admin/menu:manage/tags]]</a></li>
-			<li><a href="{relative_path}/admin/manage/registration">[[admin/menu:manage/registration]]</a></li>
-			<li><a href="{relative_path}/admin/manage/post-queue">[[admin/menu:manage/post-queue]]</a></li>
-			<li><a href="{relative_path}/admin/manage/ip-blacklist">[[admin/menu:manage/ip-blacklist]]</a></li>
 			<li><a href="{relative_path}/admin/manage/uploads">[[admin/menu:manage/uploads]]</a></li>
 			<li><a href="{relative_path}/admin/manage/digest">[[admin/menu:manage/digest]]</a></li>
+
+			<li><a target="_top" href="{relative_path}/post-queue">[[admin/menu:manage/post-queue]] <i class="fa fa-external-link"></i></a></li>
+			<li><a target="_top" href="{relative_path}/ip-blacklist">[[admin/menu:manage/ip-blacklist]] <i class="fa fa-external-link"></i></a></li>
 		</ul>
 	</section>
 
@@ -33,14 +34,14 @@
 			<li><a href="{relative_path}/admin/settings/homepage">[[admin/menu:settings/homepage]]</a></li>
 			<li><a href="{relative_path}/admin/settings/navigation">[[admin/menu:settings/navigation]]</a></li>
 			<li><a href="{relative_path}/admin/settings/user">[[admin/menu:settings/user]]</a></li>
+			<li><a href="{relative_path}/admin/settings/reputation">[[admin/menu:settings/reputation]]</a></li>
+			<li><a href="{relative_path}/admin/settings/guest">[[admin/menu:settings/guest]]</a></li>
 			<li><a href="{relative_path}/admin/settings/group">[[admin/menu:settings/group]]</a></li>
 			<li><a href="{relative_path}/admin/settings/tags">[[admin/menu:manage/tags]]</a></li>
 			<li><a href="{relative_path}/admin/settings/post">[[admin/menu:settings/post]]</a></li>
+			<li><a href="{relative_path}/admin/settings/uploads">[[admin/menu:settings/uploads]]</a></li>
 			<li><a href="{relative_path}/admin/settings/languages">[[admin/menu:settings/languages]]</a></li>
 			<li><a href="{relative_path}/admin/settings/email">[[admin/menu:settings/email]]</a></li>
-			<li><a href="{relative_path}/admin/settings/reputation">[[admin/menu:settings/reputation]]</a></li>
-			<li><a href="{relative_path}/admin/settings/guest">[[admin/menu:settings/guest]]</a></li>
-			<li><a href="{relative_path}/admin/settings/uploads">[[admin/menu:settings/uploads]]</a></li>
 			<li><a href="{relative_path}/admin/settings/chat">[[admin/menu:settings/chat]]</a></li>
 			<li><a href="{relative_path}/admin/settings/pagination">[[admin/menu:settings/pagination]]</a></li>
 			<li><a href="{relative_path}/admin/settings/notifications">[[admin/menu:settings/notifications]]</a></li>
@@ -48,7 +49,6 @@
 			<li><a href="{relative_path}/admin/settings/social">[[admin/menu:settings/social]]</a></li>
 			<li><a href="{relative_path}/admin/settings/cookies">[[admin/menu:settings/cookies]]</a></li>
 			<li><a href="{relative_path}/admin/settings/web-crawler">[[admin/menu:settings/web-crawler]]</a></li>
-			<li><a href="{relative_path}/admin/settings/sockets">[[admin/menu:settings/sockets]]</a></li>
 			<li><a href="{relative_path}/admin/settings/advanced">[[admin/menu:settings/advanced]]</a></li>
 		</ul>
 	</section>
@@ -172,14 +172,15 @@
 					<li><a id="manage-categories" href="{relative_path}/admin/manage/categories">[[admin/menu:manage/categories]]</a></li>
 					<li><a href="{relative_path}/admin/manage/privileges">[[admin/menu:manage/privileges]]</a></li>
 					<li><a id="manage-users" href="{relative_path}/admin/manage/users">[[admin/menu:manage/users]]</a></li>
+					<li><a href="{relative_path}/admin/manage/registration">[[admin/menu:manage/registration]]</a></li>
 					<li><a href="{relative_path}/admin/manage/admins-mods">[[admin/menu:manage/admins-mods]]</a></li>
 					<li><a href="{relative_path}/admin/manage/groups">[[admin/menu:manage/groups]]</a></li>
 					<li><a href="{relative_path}/admin/manage/tags">[[admin/menu:manage/tags]]</a></li>
-					<li><a href="{relative_path}/admin/manage/registration">[[admin/menu:manage/registration]]</a></li>
-					<li><a href="{relative_path}/admin/manage/post-queue">[[admin/menu:manage/post-queue]]</a></li>
-					<li><a href="{relative_path}/admin/manage/ip-blacklist">[[admin/menu:manage/ip-blacklist]]</a></li>
 					<li><a href="{relative_path}/admin/manage/uploads">[[admin/menu:manage/uploads]]</a></li>
 					<li><a href="{relative_path}/admin/manage/digest">[[admin/menu:manage/digest]]</a></li>
+					<li role="separator" class="divider"></li>
+					<li><a target="_top" href="{relative_path}/post-queue">[[admin/menu:manage/post-queue]] <i class="fa fa-external-link"></i></a></li>
+					<li><a target="_top" href="{relative_path}/ip-blacklist">[[admin/menu:manage/ip-blacklist]] <i class="fa fa-external-link"></i></a></li>
 				</ul>
 			</li>
 			<li class="dropdown menu-item">
@@ -189,14 +190,14 @@
 					<li><a href="{relative_path}/admin/settings/homepage">[[admin/menu:settings/homepage]]</a></li>
 					<li><a href="{relative_path}/admin/settings/navigation">[[admin/menu:settings/navigation]]</a></li>
 					<li><a href="{relative_path}/admin/settings/user">[[admin/menu:settings/user]]</a></li>
+					<li><a href="{relative_path}/admin/settings/reputation">[[admin/menu:settings/reputation]]</a></li>
+					<li><a href="{relative_path}/admin/settings/guest">[[admin/menu:settings/guest]]</a></li>
 					<li><a href="{relative_path}/admin/settings/group">[[admin/menu:settings/group]]</a></li>
 					<li><a href="{relative_path}/admin/settings/tags">[[admin/menu:manage/tags]]</a></li>
 					<li><a href="{relative_path}/admin/settings/post">[[admin/menu:settings/post]]</a></li>
+					<li><a href="{relative_path}/admin/settings/uploads">[[admin/menu:settings/uploads]]</a></li>
 					<li><a href="{relative_path}/admin/settings/languages">[[admin/menu:settings/languages]]</a></li>
 					<li><a href="{relative_path}/admin/settings/email">[[admin/menu:settings/email]]</a></li>
-					<li><a href="{relative_path}/admin/settings/reputation">[[admin/menu:settings/reputation]]</a></li>
-					<li><a href="{relative_path}/admin/settings/guest">[[admin/menu:settings/guest]]</a></li>
-					<li><a href="{relative_path}/admin/settings/uploads">[[admin/menu:settings/uploads]]</a></li>
 					<li><a href="{relative_path}/admin/settings/chat">[[admin/menu:settings/chat]]</a></li>
 					<li><a href="{relative_path}/admin/settings/pagination">[[admin/menu:settings/pagination]]</a></li>
 					<li><a href="{relative_path}/admin/settings/notifications">[[admin/menu:settings/notifications]]</a></li>
@@ -204,7 +205,6 @@
 					<li><a href="{relative_path}/admin/settings/social">[[admin/menu:settings/social]]</a></li>
 					<li><a href="{relative_path}/admin/settings/cookies">[[admin/menu:settings/cookies]]</a></li>
 					<li><a href="{relative_path}/admin/settings/web-crawler">[[admin/menu:settings/web-crawler]]</a></li>
-					<li><a href="{relative_path}/admin/settings/sockets">[[admin/menu:settings/sockets]]</a></li>
 					<li><a href="{relative_path}/admin/settings/advanced">[[admin/menu:settings/advanced]]</a></li>
 				</ul>
 			</li>

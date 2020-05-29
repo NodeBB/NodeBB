@@ -15,8 +15,6 @@ module.exports = function (app, middleware, controllers) {
 
 	helpers.setupAdminPageRoute(app, '/admin/manage/privileges/:cid?', middleware, middlewares, controllers.admin.privileges.get);
 	helpers.setupAdminPageRoute(app, '/admin/manage/tags', middleware, middlewares, controllers.admin.tags.get);
-	helpers.setupAdminPageRoute(app, '/admin/manage/post-queue', middleware, middlewares, controllers.admin.postQueue.get);
-	helpers.setupAdminPageRoute(app, '/admin/manage/ip-blacklist', middleware, middlewares, controllers.admin.blacklist.get);
 
 	helpers.setupAdminPageRoute(app, '/admin/manage/users', middleware, middlewares, controllers.admin.users.sortByJoinDate);
 	helpers.setupAdminPageRoute(app, '/admin/manage/users/search', middleware, middlewares, controllers.admin.users.search);
