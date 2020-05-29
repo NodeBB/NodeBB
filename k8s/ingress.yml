@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: community-forum
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: community-forum-staging
+    networking.gke.io/managed-certificates: community-forum
+spec:
+  rules:
+  - host: community.nerdstgamersevents.com
+    http:
+      paths:
+      - path: /*
+        backend:
+          serviceName: community-forum
+          servicePort: 80

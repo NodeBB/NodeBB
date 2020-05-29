@@ -1,0 +1,23 @@
+steps:
+  # write the kubernetes cluster secrets to an .env file so they are available for the container build step
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+    - '-c'
+    - |
+      gcloud container clusters get-credentials staging-secrets-nodebb --zone us-east4
+      kubectl get secrets staging-secrets-nodebb -o=go-template='{{range $k, $v := .data}}{{$k}}{{"="}}{{$v | base64decode}}{{"\n"}}{{end}}' > .env
+  # build the container
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'build', '-t', 'gcr.io/nsg-lobby/nodebb', '.' ]
+  # push container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'push', 'gcr.io/nsg-lobby/nodebb:latest']
+  # deploy container image to GKE
+  - name: 'gcr.io/cloud-builders/gke-deploy'
+    args:
+    - run
+    - --filename=k8s/
+    - --image=gcr.io/nsg-lobby/nodebb:latest
+    - --location=us-east4
+    - --cluster=lobbygg-next-staging
