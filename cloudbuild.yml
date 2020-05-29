@@ -5,7 +5,7 @@ steps:
     args:
     - '-c'
     - |
-      gcloud container clusters get-credentials staging-secrets-nodebb --zone us-east4
+      gcloud container clusters get-credentials lobbygg-next-staging --zone us-east4
       kubectl get secrets staging-secrets-nodebb -o=go-template='{{range $k, $v := .data}}{{$k}}{{"="}}{{$v | base64decode}}{{"\n"}}{{end}}' > .env
   # build the container
   - name: 'gcr.io/cloud-builders/docker'
