@@ -25,5 +25,10 @@
 	"traffic.event-lag": "이벤트 루프 간격(단위: 1/1000초)",
 	"traffic.event-lag-help": "이 값을 낮추게 되면 페이지 로딩에 걸리는 시간이 단축되지만, 더 많은 사용자들이 \"과도한 로딩\"이라는 메시지를 보게됩니다. (재시작 필요)",
 	"traffic.lag-check-interval": "트래픽 체크 간격(단위: 1/1000초)",
-	"traffic.lag-check-interval-help": "이 값을 낮추게 되면 갑작스런 로딩값 변화에 더 민감해지지만, 과하게 예민한 반응을 야기할 수 있습니다. (재시작 필요)"
+	"traffic.lag-check-interval-help": "이 값을 낮추게 되면 갑작스런 로딩값 변화에 더 민감해지지만, 과하게 예민한 반응을 야기할 수 있습니다. (재시작 필요)",
+
+	"sockets.settings": "WebSocket Settings",
+	"sockets.max-attempts": "Max Reconnection Attempts",
+	"sockets.default-placeholder": "Default: %1",
+	"sockets.delay": "Reconnection Delay"
 }

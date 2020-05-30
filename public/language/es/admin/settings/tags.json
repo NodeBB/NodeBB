@@ -1,5 +1,6 @@
 {
     "tag": "Configuración de Etiqueta (tag)",
+    "link-to-manage": "Manage Tags",
     "min-per-topic": "Etiquetas (tags) mínimas por tema",
     "max-per-topic": "Etiquetas (tags) Máximas por Tema",
     "min-length": "Longitud Mínima de Etiqueta (tag)",

@@ -25,5 +25,10 @@
 	"traffic.event-lag": "Seuil de lag des boucles d'événements (en millisecondes) ",
 	"traffic.event-lag-help": "Descendre cette valeur réduit le temps d'attente pour le chargement de s pages, mais montrera le message \"charge excessive\" à plus d'utilisateurs. (redémarrage requis)",
 	"traffic.lag-check-interval": "Vérifier l’intervalle (en millisecondes)",
-	"traffic.lag-check-interval-help": "Descendre cette valeur rend NodeBB plus sensible aux pics dans le chargement, mais rend aussi le contrôle trop sensible. (redémarrage requis)"
+	"traffic.lag-check-interval-help": "Descendre cette valeur rend NodeBB plus sensible aux pics dans le chargement, mais rend aussi le contrôle trop sensible. (redémarrage requis)",
+
+	"sockets.settings": "WebSocket Settings",
+	"sockets.max-attempts": "Max Reconnection Attempts",
+	"sockets.default-placeholder": "Default: %1",
+	"sockets.delay": "Reconnection Delay"
 }

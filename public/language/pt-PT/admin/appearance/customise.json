@@ -4,7 +4,7 @@
 	"custom-css.enable": "Ativar CSS/LESS Personalizado",
 
 	"custom-js": "Javascript Personalizado",
-	"custom-js.description": "Enter your own javascript here. It will be executed after the page is loaded completely.",
+	"custom-js.description": "Insere aqui o teu código Javascript personalizado. Ele será executado logo após a página ser carregada completamente.",
 	"custom-js.enable": "Ativar Javascript Personalizado",
 
 	"custom-header": "Cabeçalho Personalizado",

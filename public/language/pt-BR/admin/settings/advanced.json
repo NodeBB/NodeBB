@@ -25,5 +25,10 @@
 	"traffic.event-lag": "Limite do Lag do Loop de Eventos (em milisegundos)",
 	"traffic.event-lag-help": "Abaixar este valor diminui o tempo de espera para o carregamentos de página, mas irá também mostrar a mensagem de \"carga excessiva\" para mais usuários. (É necessário reiniciar)",
 	"traffic.lag-check-interval": "Intervalo de Checagem (em milisegundos)",
-	"traffic.lag-check-interval-help": "Diminuir esse valor faz com que o NodeBB fique mais sensível a picos de carga, mas também pode fazer com que a verificação fique muito sensível. (É necessário reiniciar)"
+	"traffic.lag-check-interval-help": "Diminuir esse valor faz com que o NodeBB fique mais sensível a picos de carga, mas também pode fazer com que a verificação fique muito sensível. (É necessário reiniciar)",
+
+	"sockets.settings": "WebSocket Settings",
+	"sockets.max-attempts": "Max Reconnection Attempts",
+	"sockets.default-placeholder": "Default: %1",
+	"sockets.delay": "Reconnection Delay"
 }

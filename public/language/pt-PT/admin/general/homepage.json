@@ -1,6 +1,6 @@
 {
 	"home-page": "Página Principal",
-	"description": "Choose what page is shown when users navigate to the root URL of your forum.",
+	"description": "Escolhe qual página é apresentada quando os utilizadores navegam para o URL raiz do teu fórum.",
 	"home-page-route": "Caminho da Página Principal",
 	"custom-route": "Caminho personalizado",
 	"allow-user-home-pages": "Permitir página principal personalizada para os utilizadores",

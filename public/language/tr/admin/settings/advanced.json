@@ -25,5 +25,10 @@
 	"traffic.event-lag": "Olay Döngüsü Gecikme Eşiği (milisaniye cinsinden)",
 	"traffic.event-lag-help": "Bu değeri düşürmek, sayfa yüklemeleri için bekleme sürelerini azaltır, ancak daha fazla kullanıcıya \"aşırı yükleme\" mesajını da gösterir. (Yeniden başlatmak gerekir)",
 	"traffic.lag-check-interval": "Kontrol Aralığı (milisaniye cinsinden)",
-	"traffic.lag-check-interval-help": "Bu değerin düşürülmesi, NodeBB'nin yükteki ani artışlara daha duyarlı olmasına neden olur, ancak ayrıca kontrolün çok hassas hale gelmesine de neden olabilir. (Yeniden başlatmak gerekir)"
+	"traffic.lag-check-interval-help": "Bu değerin düşürülmesi, NodeBB'nin yükteki ani artışlara daha duyarlı olmasına neden olur, ancak ayrıca kontrolün çok hassas hale gelmesine de neden olabilir. (Yeniden başlatmak gerekir)",
+
+	"sockets.settings": "WebSocket Settings",
+	"sockets.max-attempts": "Max Reconnection Attempts",
+	"sockets.default-placeholder": "Default: %1",
+	"sockets.delay": "Reconnection Delay"
 }

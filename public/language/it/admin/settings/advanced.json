@@ -25,5 +25,10 @@
 	"traffic.event-lag": "Soglia ritardo ciclo eventi (in millisecondi)",
 	"traffic.event-lag-help": "L'abbassamento di questo valore diminuisce i tempi di attesa per il caricamento della pagina, ma mostrerà il messaggio \"carico eccessivo\" a più utenti. (Necessario riavviare)",
 	"traffic.lag-check-interval": "Intervallo di controllo (in millisecondi)",
-	"traffic.lag-check-interval-help": "L'abbassamento di questo valore fa sì che NodeBBB diventi più sensibile ai picchi di carico, ma può anche far sì che il controllo diventi troppo sensibile. (Necessario riavviare)"
+	"traffic.lag-check-interval-help": "L'abbassamento di questo valore fa sì che NodeBBB diventi più sensibile ai picchi di carico, ma può anche far sì che il controllo diventi troppo sensibile. (Necessario riavviare)",
+
+	"sockets.settings": "WebSocket Settings",
+	"sockets.max-attempts": "Max Reconnection Attempts",
+	"sockets.default-placeholder": "Default: %1",
+	"sockets.delay": "Reconnection Delay"
 }

@@ -18,13 +18,13 @@
     "last_reply_time": "Última resposta",
     "reply-as-topic": "Responder com um tópico",
     "guest-login-reply": "Inicia sessão para responder",
-    "login-to-view": "🔒 Log in to view",
+    "login-to-view": "🔒 Inicia sessão para veres",
     "edit": "Editar",
     "delete": "Apagar",
     "purge": "Eliminar",
     "restore": "Restaurar",
     "move": "Mover",
-    "change-owner": "Change Owner",
+    "change-owner": "Alterar Proprietário",
     "fork": "Clonar",
     "link": "Ligação",
     "share": "Partilhar",
@@ -66,7 +66,7 @@
     "thread_tools.move": "Mover tópico",
     "thread_tools.move-posts": "Mover publicações",
     "thread_tools.move_all": "Mover todos",
-    "thread_tools.change_owner": "Change Owner",
+    "thread_tools.change_owner": "Alterar Proprietário",
     "thread_tools.select_category": "Selecionar Categoria",
     "thread_tools.fork": "Clonar tópico",
     "thread_tools.delete": "Eliminar tópico",
@@ -134,6 +134,6 @@
     "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
     "diffs.current-revision": "revisão atual",
     "diffs.original-revision": "revisão original",
-    "timeago_later": "%1 later",
-    "timeago_earlier": "%1 earlier"
+    "timeago_later": "%1 depois",
+    "timeago_earlier": "%1 antes"
 }

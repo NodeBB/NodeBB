@@ -25,5 +25,10 @@
 	"traffic.event-lag": "Затримка циклу обробки дій (в мілісекундах)",
 	"traffic.event-lag-help": "Зменшення цього значення прискорює час завантаження сторінок, але в той же час більше користувачів будуть отримувати повідомлення про \"надмірне навантаження\". (Потребує перезавантаження)",
 	"traffic.lag-check-interval": "Інтервал перевірки (в мілісекундах)",
-	"traffic.lag-check-interval-help": "Зменшення цього значення робить NodeBB більш чутливим до піків навантаження, але може зробити перевірку занадто чутливою. (Потребує перезавантаження)"
+	"traffic.lag-check-interval-help": "Зменшення цього значення робить NodeBB більш чутливим до піків навантаження, але може зробити перевірку занадто чутливою. (Потребує перезавантаження)",
+
+	"sockets.settings": "WebSocket Settings",
+	"sockets.max-attempts": "Max Reconnection Attempts",
+	"sockets.default-placeholder": "Default: %1",
+	"sockets.delay": "Reconnection Delay"
 }
