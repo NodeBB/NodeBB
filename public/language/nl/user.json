@@ -144,7 +144,7 @@
     "info.ban-history": "Recente verban-geschiedenis",
     "info.no-ban-history": "Deze gebruiker is nooit eerder verbannen",
     "info.banned-until": "Verbannen tot %1",
-    "info.banned-expiry": "Expiry",
+    "info.banned-expiry": "Verloopt",
     "info.banned-permanently": "Voor altijd verbannen",
     "info.banned-reason-label": "Reden",
     "info.banned-no-reason": "Geen reden opgegeven",
@@ -171,7 +171,7 @@
     "consent.right_to_erasure_description": "Uw toestemming om gegevens te verzamelen en te verwerken kunt u op ieder moment intrekken door uw account te verwijderen. Uw individuele profiel kan worden verwijderd hoewel uw berichten blijven staan. Als u zowel uw account <strong> en </strong> uw berichten wilt verwijderen, neem dan contact op met het administrator team van deze website.",
     "consent.right_to_data_portability": "U hebt Recht op Dataportabiliteit",
     "consent.right_to_data_portability_description": "U kan van ons machine-leesbare export opvragen van verzamelde gegevens van u en uw account. U kan dit doen door te klikken op de van toepassing zijnde knop hieronder.",
-    "consent.export_profile": "Export Profile (.json)",
+    "consent.export_profile": "Exporteer profiel (.json)",
     "consent.export_uploads": "Exporteer geuploade inhoud (.zip)",
     "consent.export_posts": "Exporteer berichten (.csv)"
 }

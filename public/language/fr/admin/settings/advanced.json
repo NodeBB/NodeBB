@@ -27,8 +27,8 @@
 	"traffic.lag-check-interval": "Vérifier l’intervalle (en millisecondes)",
 	"traffic.lag-check-interval-help": "Descendre cette valeur rend NodeBB plus sensible aux pics dans le chargement, mais rend aussi le contrôle trop sensible. (redémarrage requis)",
 
-	"sockets.settings": "WebSocket Settings",
-	"sockets.max-attempts": "Max Reconnection Attempts",
-	"sockets.default-placeholder": "Default: %1",
-	"sockets.delay": "Reconnection Delay"
+	"sockets.settings": "Configuration WebSocket",
+	"sockets.max-attempts": "Nombre maximum de tentatives de reconnexion",
+	"sockets.default-placeholder": "Défaut : %1",
+	"sockets.delay": "Délai de reconnexion"
 }
