@@ -27,8 +27,8 @@
 	"traffic.lag-check-interval": "Kontrol Aralığı (milisaniye cinsinden)",
 	"traffic.lag-check-interval-help": "Bu değerin düşürülmesi, NodeBB'nin yükteki ani artışlara daha duyarlı olmasına neden olur, ancak ayrıca kontrolün çok hassas hale gelmesine de neden olabilir. (Yeniden başlatmak gerekir)",
 
-	"sockets.settings": "WebSocket Settings",
-	"sockets.max-attempts": "Max Reconnection Attempts",
-	"sockets.default-placeholder": "Default: %1",
-	"sockets.delay": "Reconnection Delay"
+	"sockets.settings": "WebSocket Ayarları",
+	"sockets.max-attempts": "Maksimum Tekrar Bağlanma Denemesi",
+	"sockets.default-placeholder": "Varsayılan: %1",
+	"sockets.delay": "Yeniden Bağlanma Gecikmesi"
 }
