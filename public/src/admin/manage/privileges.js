@@ -81,7 +81,13 @@ define('admin/manage/privileges', [
 			if (err) {
 				return app.alertError(err.message);
 			}
-			var tpl = cid ? 'admin/partials/categories/privileges' : 'admin/partials/global/privileges';
+
+			var tpl;
+			if (cid !== 'admin') {
+				tpl = cid ? 'admin/partials/privileges/category' : 'admin/partials/privileges/global';
+			} else {
+				tpl = 'admin/partials/privileges/admin';
+			}
 			Benchpress.parse(tpl, {
 				privileges: privileges,
 			}, function (html) {
@@ -143,7 +149,12 @@ define('admin/manage/privileges', [
 			inputEl.focus();
 
 			autocomplete.user(inputEl, function (ev, ui) {
-				var defaultPrivileges = cid ? ['find', 'read', 'topics:read'] : ['chat'];
+				var defaultPrivileges;
+				if (cid === 'admin') {
+					defaultPrivileges = ['manage:categories'];
+				} else {
+					defaultPrivileges = cid ? ['find', 'read', 'topics:read'] : ['chat'];
+				}
 				socket.emit('admin.categories.setPrivilege', {
 					cid: cid,
 					privilege: defaultPrivileges,
@@ -172,7 +183,14 @@ define('admin/manage/privileges', [
 			var inputEl = modal.find('input');
 
 			autocomplete.group(inputEl, function (ev, ui) {
-				var defaultPrivileges = cid ? ['groups:find', 'groups:read', 'groups:topics:read'] : ['groups:chat'];
+				var defaultPrivileges;
+				if (cid === 'admin') {
+					defaultPrivileges = ['groups:manage:categories'];
+				} else {
+					defaultPrivileges = cid ? ['groups:find', 'groups:read', 'groups:topics:read'] : ['groups:chat'];
+				}
+
+				console.log(cid, defaultPrivileges);
 				socket.emit('admin.categories.setPrivilege', {
 					cid: cid,
 					privilege: defaultPrivileges,
