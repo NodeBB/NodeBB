@@ -392,11 +392,14 @@ describe('Admin Controllers', function () {
 	});
 
 	it('should load /admin/advanced/errors/export', function (done) {
-		request(nconf.get('url') + '/api/admin/advanced/errors/export', { jar: jar }, function (err, res, body) {
+		meta.errors.clear(function (err) {
 			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert.strictEqual(body, '');
-			done();
+			request(nconf.get('url') + '/api/admin/advanced/errors/export', { jar: jar }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert.strictEqual(body, '');
+				done();
+			});
 		});
 	});
 
