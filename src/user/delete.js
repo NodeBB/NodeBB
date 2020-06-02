@@ -29,6 +29,7 @@ module.exports = function (User) {
 		await deletePosts(callerUid, uid);
 		await deleteTopics(callerUid, uid);
 		await deleteUploads(uid);
+		await deleteQueued(uid);
 		const userData = await User.deleteAccount(uid);
 		return userData;
 	};
@@ -55,6 +56,14 @@ module.exports = function (User) {
 				await file.delete(path.join(nconf.get('upload_path'), uploadName));
 			});
 			await db.sortedSetRemove('uid:' + uid + ':uploads', uploadNames);
+		}, { alwaysStartAt: 0 });
+	}
+
+	async function deleteQueued(uid) {
+		await batch.processSortedSet('post:queue', async function (ids) {
+			const data = await db.getObjects(ids.map(id => 'post:queue:' + id));
+			const deleteIds = data.filter(d => parseInt(d.uid, 10) === parseInt(uid, 10)).map(d => d.id);
+			await async.eachSeries(deleteIds, posts.removeFromQueue);
 		}, { alwaysStartAt: 0 });
 	}
 

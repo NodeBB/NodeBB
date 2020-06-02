@@ -89,7 +89,7 @@ User.sendValidationEmail = async function (socket, uids) {
 	}
 
 	await async.eachLimit(uids, 50, async function (uid) {
-		await user.email.sendValidationEmail(uid);
+		await user.email.sendValidationEmail(uid, { force: true });
 	});
 };
 
