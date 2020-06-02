@@ -13,41 +13,56 @@ module.exports = function (privileges) {
 	privileges.admin = {};
 
 	privileges.admin.privilegeLabels = [
-		{ name: '[[admin/manage/privileges:manage-categories]]' },
+		{ name: '[[admin/manage/privileges:admin-dashboard]]' },
+		{ name: '[[admin/manage/privileges:admin-categories]]' },
+		{ name: '[[admin/manage/privileges:admin-settings]]' },
 	];
 
 	privileges.admin.userPrivilegeList = [
-		'manage:categories',
+		'admin:dashboard',
+		'admin:categories',
+		'admin:settings',
 	];
 
 	privileges.admin.groupPrivilegeList = privileges.admin.userPrivilegeList.map(privilege => 'groups:' + privilege);
 
 	// Mapping for a page route (via direct match or regexp) to a privilege
 	privileges.admin.routeMap = {
-		'manage/categories': 'manage:categories',
+		dashboard: 'admin:dashboard',
+		'manage/categories': 'admin:categories',
 	};
 	privileges.admin.routeRegexpMap = {
-		'^manage/categories/\\d+': 'manage:categories',
+		'^manage/categories/\\d+': 'admin:categories',
+		'^settings/[\\w\\-]+$': 'admin:settings',
 	};
 
 	// Mapping for socket call methods to a privilege
+	// In NodeBB v2, these socket calls will be removed in favour of xhr calls
 	privileges.admin.socketMap = {
-		'admin.categories.getAll': 'manage:categories',
-		'admin.categories.create': 'manage:categories',
-		'admin.categories.update': 'manage:categories',
-		'admin.categories.purge': 'manage:categories',
-		'admin.categories.copySettingsFrom': 'manage:categories',
+		'admin.rooms.getAll': 'admin:dashboard',
+		'admin.analytics.get': 'admin:dashboard',
+
+		'admin.categories.getAll': 'admin:categories',
+		'admin.categories.create': 'admin:categories',
+		'admin.categories.update': 'admin:categories',
+		'admin.categories.purge': 'admin:categories',
+		'admin.categories.copySettingsFrom': 'admin:categories',
+
+		'admin.getSearchDict': 'admin:settings',
+		'admin.config.setMultiple': 'admin:settings',
+		'admin.config.remove': 'admin:settings',
 	};
 
 	privileges.admin.resolve = (path) => {
 		if (privileges.admin.routeMap[path]) {
 			return privileges.admin.routeMap[path];
+		} else if (path === '') {
+			return 'manage:dashboard';
 		}
 
 		let privilege;
 		Object.keys(privileges.admin.routeRegexpMap).forEach((regexp) => {
 			if (!privilege) {
-				console.log('here', new RegExp(regexp), path);
 				if (new RegExp(regexp).test(path)) {
 					privilege = privileges.admin.routeRegexpMap[regexp];
 				}

@@ -61,7 +61,6 @@ Categories.setPrivilege = async function (socket, data) {
 		throw new Error('[[error:no-user-or-group]]');
 	}
 
-	console.log('setting', data);
 	await privileges.categories[data.set ? 'give' : 'rescind'](
 		Array.isArray(data.privilege) ? data.privilege : [data.privilege], data.cid, data.member
 	);

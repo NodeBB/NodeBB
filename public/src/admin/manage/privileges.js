@@ -146,7 +146,7 @@ define('admin/manage/privileges', [
 			autocomplete.user(inputEl, function (ev, ui) {
 				var defaultPrivileges;
 				if (ajaxify.data.url === '/admin/manage/privileges/admin') {
-					defaultPrivileges = ['manage:categories'];
+					defaultPrivileges = ['admin:dashboard'];
 				} else {
 					defaultPrivileges = cid ? ['find', 'read', 'topics:read'] : ['chat'];
 				}
@@ -180,7 +180,7 @@ define('admin/manage/privileges', [
 			autocomplete.group(inputEl, function (ev, ui) {
 				var defaultPrivileges;
 				if (ajaxify.data.url === '/admin/manage/privileges/admin') {
-					defaultPrivileges = ['groups:manage:categories'];
+					defaultPrivileges = ['groups:admin:dashboard'];
 				} else {
 					defaultPrivileges = cid ? ['groups:find', 'groups:read', 'groups:topics:read'] : ['groups:chat'];
 				}

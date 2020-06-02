@@ -34,5 +34,7 @@
 	"purge": "Purge",
 	"moderate": "Moderate",
 
-	"manage-categories": "Manage Categories"
+	"admin-dashboard": "Dashboard",
+	"admin-categories": "Categories",
+	"admin-settings": "Settings"
 }
