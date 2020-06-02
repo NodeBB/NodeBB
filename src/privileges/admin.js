@@ -22,6 +22,41 @@ module.exports = function (privileges) {
 
 	privileges.admin.groupPrivilegeList = privileges.admin.userPrivilegeList.map(privilege => 'groups:' + privilege);
 
+	// Mapping for a page route (via direct match or regexp) to a privilege
+	privileges.admin.routeMap = {
+		'manage/categories': 'manage:categories',
+	};
+	privileges.admin.routeRegexpMap = {
+		'^manage/categories/\\d+': 'manage:categories',
+	};
+
+	// Mapping for socket call methods to a privilege
+	privileges.admin.socketMap = {
+		'admin.categories.getAll': 'manage:categories',
+		'admin.categories.create': 'manage:categories',
+		'admin.categories.update': 'manage:categories',
+		'admin.categories.purge': 'manage:categories',
+		'admin.categories.copySettingsFrom': 'manage:categories',
+	};
+
+	privileges.admin.resolve = (path) => {
+		if (privileges.admin.routeMap[path]) {
+			return privileges.admin.routeMap[path];
+		}
+
+		let privilege;
+		Object.keys(privileges.admin.routeRegexpMap).forEach((regexp) => {
+			if (!privilege) {
+				console.log('here', new RegExp(regexp), path);
+				if (new RegExp(regexp).test(path)) {
+					privilege = privileges.admin.routeRegexpMap[regexp];
+				}
+			}
+		});
+
+		return privilege;
+	};
+
 	privileges.admin.list = async function () {
 		async function getLabels() {
 			return await utils.promiseParallel({
@@ -61,13 +96,10 @@ module.exports = function (privileges) {
 	// 	});
 	// };
 
-	// privileges.admin.can = async function (privilege, uid) {
-	// 	const [isAdministrator, isUserAllowedTo] = await Promise.all([
-	// 		user.isAdministrator(uid),
-	// 		helpers.isUserAllowedTo(privilege, uid, [0]),
-	// 	]);
-	// 	return isAdministrator || isUserAllowedTo[0];
-	// };
+	privileges.admin.can = async function (privilege, uid) {
+		const isUserAllowedTo = await helpers.isUserAllowedTo(privilege, uid, [0]);
+		return isUserAllowedTo[0];
+	};
 
 	// privileges.admin.canGroup = async function (privilege, groupName) {
 	// 	return await groups.isMember(groupName, 'cid:0:privileges:groups:' + privilege);

@@ -6,6 +6,7 @@ const meta = require('../meta');
 const user = require('../user');
 const events = require('../events');
 const db = require('../database');
+const privileges = require('../privileges');
 const websockets = require('./index');
 const index = require('./index');
 const getAdminSearchDict = require('../admin/search').getDictionary;
@@ -37,6 +38,13 @@ SocketAdmin.before = async function (socket, method) {
 	if (isAdmin) {
 		return;
 	}
+
+	// Check admin privileges mapping (if not in mapping, deny access)
+	const privilege = privileges.admin.socketMap[method];
+	if (privilege && await privileges.admin.can(privilege, socket.uid)) {
+		return;
+	}
+
 	winston.warn('[socket.io] Call to admin method ( ' + method + ' ) blocked (accessed by uid ' + socket.uid + ')');
 	throw new Error('[[error:no-privileges]]');
 };
