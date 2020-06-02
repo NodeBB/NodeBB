@@ -77,17 +77,12 @@ define('admin/manage/privileges', [
 	};
 
 	Privileges.refreshPrivilegeTable = function () {
-		socket.emit('admin.categories.getPrivilegeSettings', cid, function (err, privileges) {
+		socket.emit('admin.categories.getPrivilegeSettings', ajaxify.data.admin ? 'admin' : cid, function (err, privileges) {
 			if (err) {
 				return app.alertError(err.message);
 			}
 
-			var tpl;
-			if (cid !== 'admin') {
-				tpl = cid ? 'admin/partials/privileges/category' : 'admin/partials/privileges/global';
-			} else {
-				tpl = 'admin/partials/privileges/admin';
-			}
+			var tpl = cid ? 'admin/partials/privileges/category' : 'admin/partials/privileges/global';
 			Benchpress.parse(tpl, {
 				privileges: privileges,
 			}, function (html) {
@@ -150,7 +145,7 @@ define('admin/manage/privileges', [
 
 			autocomplete.user(inputEl, function (ev, ui) {
 				var defaultPrivileges;
-				if (cid === 'admin') {
+				if (ajaxify.url === '/admin/manage/privileges/admin') {
 					defaultPrivileges = ['manage:categories'];
 				} else {
 					defaultPrivileges = cid ? ['find', 'read', 'topics:read'] : ['chat'];
@@ -184,7 +179,7 @@ define('admin/manage/privileges', [
 
 			autocomplete.group(inputEl, function (ev, ui) {
 				var defaultPrivileges;
-				if (cid === 'admin') {
+				if (ajaxify.url === '/admin/manage/privileges/admin') {
 					defaultPrivileges = ['groups:manage:categories'];
 				} else {
 					defaultPrivileges = cid ? ['groups:find', 'groups:read', 'groups:topics:read'] : ['groups:chat'];

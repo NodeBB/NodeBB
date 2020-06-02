@@ -31,8 +31,8 @@ module.exports = function (privileges) {
 		}
 		const payload = await utils.promiseParallel({
 			labels: getLabels(),
-			users: helpers.getUserPrivileges('admin', 'filter:privileges.admin.list', privileges.admin.userPrivilegeList),
-			groups: helpers.getGroupPrivileges('admin', 'filter:privileges.admin.groups.list', privileges.admin.groupPrivilegeList),
+			users: helpers.getUserPrivileges(0, 'filter:privileges.admin.list', privileges.admin.userPrivilegeList),
+			groups: helpers.getGroupPrivileges(0, 'filter:privileges.admin.groups.list', privileges.admin.groupPrivilegeList),
 		});
 		// This is a hack because I can't do {labels.users.length} to echo the count in templates.js
 		payload.columnCount = payload.labels.users.length + 2;

@@ -61,15 +61,9 @@ Categories.setPrivilege = async function (socket, data) {
 		throw new Error('[[error:no-user-or-group]]');
 	}
 
-	if (isNaN(parseInt(data.cid, 10))) {
-		await privileges[data.cid][data.set ? 'give' : 'rescind'](
-			Array.isArray(data.privilege) ? data.privilege : [data.privilege], data.member
-		);
-	} else {
-		await privileges.categories[data.set ? 'give' : 'rescind'](
-			Array.isArray(data.privilege) ? data.privilege : [data.privilege], data.cid, data.member
-		);
-	}
+	await privileges.categories[data.set ? 'give' : 'rescind'](
+		Array.isArray(data.privilege) ? data.privilege : [data.privilege], data.cid, data.member
+	);
 
 	await events.log({
 		uid: socket.uid,
