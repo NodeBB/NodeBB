@@ -42,7 +42,7 @@ module.exports = function (middleware) {
 			scripts: getAdminScripts(),
 			custom_header: plugins.fireHook('filter:admin.header.build', custom_header),
 			configs: meta.configs.list(),
-			latestVersion: versions.getLatestVersion(),
+			latestVersion: getLatestVersion(),
 		});
 
 		var userData = results.userData;
@@ -88,6 +88,16 @@ module.exports = function (middleware) {
 		return scripts.map(function (script) {
 			return { src: script };
 		});
+	}
+
+	async function getLatestVersion() {
+		try {
+			const result = await versions.getLatestVersion();
+			return result;
+		} catch (err) {
+			winston.error('[acp] Failed to fetch latest version' + err.stack);
+		}
+		return null;
 	}
 
 	middleware.admin.renderFooter = async function (req, res, data) {
