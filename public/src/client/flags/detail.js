@@ -48,14 +48,47 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 					AccountHeader.banAccount(uid, ajaxify.refresh);
 					break;
 
-				case 'delete':
+				case 'delete-account':
 					AccountHeader.deleteAccount(uid, ajaxify.refresh);
+					break;
+
+				case 'delete-post':
+					postAction('delete', ajaxify.data.target.pid, ajaxify.data.target.tid);
+					break;
+
+				case 'purge-post':
+					postAction('purge', ajaxify.data.target.pid, ajaxify.data.target.tid);
+					break;
+
+				case 'restore-post':
+					postAction('restore', ajaxify.data.target.pid, ajaxify.data.target.tid);
 					break;
 			}
 		});
 
 		FlagsList.enableFilterForm();
 	};
+
+	function postAction(action, pid, tid) {
+		translator.translate('[[topic:post_' + action + '_confirm]]', function (msg) {
+			bootbox.confirm(msg, function (confirm) {
+				if (!confirm) {
+					return;
+				}
+
+				socket.emit('posts.' + action, {
+					pid: pid,
+					tid: tid,
+				}, function (err) {
+					if (err) {
+						app.alertError(err.message);
+					}
+
+					ajaxify.refresh();
+				});
+			});
+		});
+	}
 
 	Detail.reloadNotes = function (notes) {
 		Benchpress.parse('flags/detail', 'notes', {
