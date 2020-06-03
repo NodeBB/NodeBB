@@ -31,18 +31,18 @@ module.exports = function (Groups) {
 
 	Groups.sort = function (strategy, groups) {
 		switch (strategy) {
-		case 'count':
-			groups.sort((a, b) => a.slug > b.slug)
-				.sort((a, b) => b.memberCount - a.memberCount);
-			break;
+			case 'count':
+				groups.sort((a, b) => a.slug > b.slug)
+					.sort((a, b) => b.memberCount - a.memberCount);
+				break;
 
-		case 'date':
-			groups.sort((a, b) => b.createtime - a.createtime);
-			break;
+			case 'date':
+				groups.sort((a, b) => b.createtime - a.createtime);
+				break;
 
-		case 'alpha':	// intentional fall-through
-		default:
-			groups.sort((a, b) => (a.slug > b.slug ? 1 : -1));
+			case 'alpha':	// intentional fall-through
+			default:
+				groups.sort((a, b) => (a.slug > b.slug ? 1 : -1));
 		}
 
 		return groups;

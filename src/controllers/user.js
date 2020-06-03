@@ -151,25 +151,25 @@ userController.exportUploads = function (req, res, next) {
 
 	archive.on('warning', function (err) {
 		switch (err.code) {
-		case 'ENOENT':
-			winston.warn('[user/export/uploads] File not found: ' + trimPath(err.path));
-			break;
+			case 'ENOENT':
+				winston.warn('[user/export/uploads] File not found: ' + trimPath(err.path));
+				break;
 
-		default:
-			winston.warn('[user/export/uploads] Unexpected warning: ' + err.message);
-			break;
+			default:
+				winston.warn('[user/export/uploads] Unexpected warning: ' + err.message);
+				break;
 		}
 	});
 
 	archive.on('error', function (err) {
 		switch (err.code) {
-		case 'EACCES':
-			winston.error('[user/export/uploads] File inaccessible: ' + trimPath(err.path));
-			break;
+			case 'EACCES':
+				winston.error('[user/export/uploads] File inaccessible: ' + trimPath(err.path));
+				break;
 
-		default:
-			winston.error('[user/export/uploads] Unable to construct archive: ' + err.message);
-			break;
+			default:
+				winston.error('[user/export/uploads] Unable to construct archive: ' + err.message);
+				break;
 		}
 
 		res.sendStatus(500);

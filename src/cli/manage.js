@@ -175,15 +175,15 @@ function info() {
 			var config = require('../../config.json');
 
 			switch (config.database) {
-			case 'redis':
-				console.log('        version: ' + info.redis_version);
-				console.log('        disk sync:  ' + info.rdb_last_bgsave_status);
-				break;
+				case 'redis':
+					console.log('        version: ' + info.redis_version);
+					console.log('        disk sync:  ' + info.rdb_last_bgsave_status);
+					break;
 
-			case 'mongo':
-				console.log('        version: ' + info.version);
-				console.log('        engine:  ' + info.storageEngine);
-				break;
+				case 'mongo':
+					console.log('        version: ' + info.version);
+					console.log('        engine:  ' + info.storageEngine);
+					break;
 			}
 
 			next();

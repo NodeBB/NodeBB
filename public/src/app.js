@@ -275,25 +275,25 @@ app.cacheBuster = null;
 
 		function showAlert(type, message) {
 			switch (messages[type].format) {
-			case 'alert':
-				app.alert({
-					type: 'success',
-					title: messages[type].title,
-					message: messages[type].message,
-					timeout: 5000,
-				});
-				break;
+				case 'alert':
+					app.alert({
+						type: 'success',
+						title: messages[type].title,
+						message: messages[type].message,
+						timeout: 5000,
+					});
+					break;
 
-			case 'modal':
-				require(['translator'], function (translator) {
-					translator.translate(message || messages[type].message, function (translated) {
-						bootbox.alert({
-							title: messages[type].title,
-							message: translated,
+				case 'modal':
+					require(['translator'], function (translator) {
+						translator.translate(message || messages[type].message, function (translated) {
+							bootbox.alert({
+								title: messages[type].title,
+								message: translated,
+							});
 						});
 					});
-				});
-				break;
+					break;
 			}
 		}
 
