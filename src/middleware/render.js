@@ -12,8 +12,6 @@ const widgets = require('../widgets');
 const utils = require('../utils');
 
 module.exports = function (middleware) {
-	const renderHeaderFooterAsync = util.promisify(renderHeaderFooter);
-
 	middleware.processRender = function processRender(req, res, next) {
 		// res.render post-processing, modified from here: https://gist.github.com/mrlannigan/5051687
 		const render = res.render;
@@ -63,9 +61,9 @@ module.exports = function (middleware) {
 			const renderAsync = util.promisify((templateToRender, options, next) => render.call(self, templateToRender, options, next));
 
 			const results = await utils.promiseParallel({
-				header: renderHeaderFooterAsync('renderHeader', req, res, options),
+				header: renderHeaderFooter('renderHeader', req, res, options),
 				content: renderAsync(templateToRender, options),
-				footer: renderHeaderFooterAsync('renderFooter', req, res, options),
+				footer: renderHeaderFooter('renderFooter', req, res, options),
 			});
 
 			const str = results.header +
@@ -89,14 +87,13 @@ module.exports = function (middleware) {
 		next();
 	};
 
-	function renderHeaderFooter(method, req, res, options, next) {
+	async function renderHeaderFooter(method, req, res, options) {
 		if (res.locals.renderHeader) {
-			middleware[method](req, res, options, next);
+			return await middleware[method](req, res, options);
 		} else if (res.locals.renderAdminHeader) {
-			middleware.admin[method](req, res, options, next);
-		} else {
-			next(null, '');
+			return await middleware.admin[method](req, res, options);
 		}
+		return '';
 	}
 
 	async function translate(str, req, res) {
