@@ -13,44 +13,44 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 			var uid = $(this).parents('[data-uid]').attr('data-uid');
 
 			switch (action) {
-			case 'update':
-				socket.emit('flags.update', {
-					flagId: ajaxify.data.flagId,
-					data: $('#attributes').serializeArray(),
-				}, function (err, history) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-					app.alertSuccess('[[flags:updated]]');
-					Detail.reloadHistory(history);
-				});
-				break;
+				case 'update':
+					socket.emit('flags.update', {
+						flagId: ajaxify.data.flagId,
+						data: $('#attributes').serializeArray(),
+					}, function (err, history) {
+						if (err) {
+							return app.alertError(err.message);
+						}
+						app.alertSuccess('[[flags:updated]]');
+						Detail.reloadHistory(history);
+					});
+					break;
 
-			case 'appendNote':
-				socket.emit('flags.appendNote', {
-					flagId: ajaxify.data.flagId,
-					note: document.getElementById('note').value,
-				}, function (err, payload) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-					app.alertSuccess('[[flags:note-added]]');
-					Detail.reloadNotes(payload.notes);
-					Detail.reloadHistory(payload.history);
-				});
-				break;
+				case 'appendNote':
+					socket.emit('flags.appendNote', {
+						flagId: ajaxify.data.flagId,
+						note: document.getElementById('note').value,
+					}, function (err, payload) {
+						if (err) {
+							return app.alertError(err.message);
+						}
+						app.alertSuccess('[[flags:note-added]]');
+						Detail.reloadNotes(payload.notes);
+						Detail.reloadHistory(payload.history);
+					});
+					break;
 
-			case 'chat':
-				app.newChat(uid);
-				break;
+				case 'chat':
+					app.newChat(uid);
+					break;
 
-			case 'ban':
-				AccountHeader.banAccount(uid, ajaxify.refresh);
-				break;
+				case 'ban':
+					AccountHeader.banAccount(uid, ajaxify.refresh);
+					break;
 
-			case 'delete':
-				AccountHeader.deleteAccount(uid, ajaxify.refresh);
-				break;
+				case 'delete':
+					AccountHeader.deleteAccount(uid, ajaxify.refresh);
+					break;
 			}
 		});
 

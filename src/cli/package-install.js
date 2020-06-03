@@ -43,17 +43,17 @@ function installAll() {
 		const packageManager = require('nconf').get('package_manager');
 		if (supportedPackageManagerList.indexOf(packageManager) >= 0) {
 			switch (packageManager) {
-			case 'yarn':
-				command = 'yarn';
-				break;
-			case 'pnpm':
-				command = 'pnpm install';
-				break;
-			case 'cnpm':
-				command = 'cnpm install';
-				break;
-			default:
-				break;
+				case 'yarn':
+					command = 'yarn';
+					break;
+				case 'pnpm':
+					command = 'pnpm install';
+					break;
+				case 'cnpm':
+					command = 'cnpm install';
+					break;
+				default:
+					break;
 			}
 		}
 	} catch (e) {
