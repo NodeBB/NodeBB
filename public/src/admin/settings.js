@@ -122,7 +122,7 @@ define('admin/settings', ['uploader'], function (uploader) {
 					accept: uploadBtn.attr('data-accept'),
 				}, function (image) {
 					// need to move these into template, ex data-callback
-					if (ajaxify.currentPage === 'admin/general/sounds') {
+					if (ajaxify.currentPage === 'admin/settings/sounds') {
 						ajaxify.refresh();
 					} else {
 						$('#' + uploadBtn.attr('data-target')).val(image);
@@ -156,17 +156,17 @@ define('admin/settings', ['uploader'], function (uploader) {
 			if (field.is('input')) {
 				inputType = field.attr('type');
 				switch (inputType) {
-				case 'text':
-				case 'password':
-				case 'hidden':
-				case 'textarea':
-				case 'number':
-					value = field.val();
-					break;
+					case 'text':
+					case 'password':
+					case 'hidden':
+					case 'textarea':
+					case 'number':
+						value = field.val();
+						break;
 
-				case 'checkbox':
-					value = field.prop('checked') ? '1' : '0';
-					break;
+					case 'checkbox':
+						value = field.prop('checked') ? '1' : '0';
+						break;
 				}
 			} else if (field.is('textarea') || field.is('select')) {
 				value = field.val();

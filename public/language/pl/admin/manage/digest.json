@@ -9,7 +9,7 @@
 	"default": "Domyślne ustawienie systemowe",
 	"default-help": "<em>Domyślne ustawienia systemowe</em> oznaczają, że użytkownik korzysta z globalnych ustawień podsumowań, czyli obecnie: &quot;<strong>%1</strong>&quot;",
 	"resend": "Wyślij ponownie podsumowanie",
-	"resend-all-confirm": "Are you sure you wish to manually execute this digest run?",
+	"resend-all-confirm": "Czy na pewno chcesz ręcznie wykonać wysłanie tego podsumowania?",
 	"resent-single": "Ręczne wysyłanie podsumowania zakończone",
 	"resent-day": "Codzienne podsumowanie",
 	"resent-week": "Tygodniowe podsumowanie",

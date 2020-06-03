@@ -141,28 +141,28 @@ define('settings/key', function () {
 		for (var i = 0; i < parts.length; i += 1) {
 			var part = parts[i];
 			switch (part) {
-			case 'C':
-			case 'Ctrl':
-				key.c = true;
-				break;
-			case 'A':
-			case 'Alt':
-				key.a = true;
-				break;
-			case 'S':
-			case 'Shift':
-				key.s = true;
-				break;
-			case 'M':
-			case 'Meta':
-				key.m = true;
-				break;
-			default:
-				var num = /\d+/.exec(part);
-				if (num != null) {
-					key.code = num[0];
-				}
-				key.char = convertKeyCodeToChar(key.code);
+				case 'C':
+				case 'Ctrl':
+					key.c = true;
+					break;
+				case 'A':
+				case 'Alt':
+					key.a = true;
+					break;
+				case 'S':
+				case 'Shift':
+					key.s = true;
+					break;
+				case 'M':
+				case 'Meta':
+					key.m = true;
+					break;
+				default:
+					var num = /\d+/.exec(part);
+					if (num != null) {
+						key.code = num[0];
+					}
+					key.char = convertKeyCodeToChar(key.code);
 			}
 		}
 		return key;

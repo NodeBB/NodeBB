@@ -9,7 +9,7 @@
 	"hint-2": "Podes adicionar comentários começando linhas com o símbolo <code>#</code>.",
 
 	"validate.x-valid": "<strong>%1</strong> out of <strong>%2</strong> rule(s) valid.",
-	"validate.x-invalid": "The following <strong>%1</strong> rules are invalid:",
+	"validate.x-invalid": "As seguintes <strong>%1</strong> regras são inválidas:",
 
 	"alerts.applied-success": "Lista Negra Aplicada",
 

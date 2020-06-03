@@ -25,5 +25,10 @@
 	"traffic.event-lag": "Hranice oneskorenia slučky udalosti (v milisekundách)",
 	"traffic.event-lag-help": "Zníženie tejto hodnoty zníži čas pre načítanie stránky, ale taktiež zobrazí viac používateľom správu o „preťažení stránok”. (je vyžadovaný reštart)",
 	"traffic.lag-check-interval": "Kontrola intervalov (v milisekundách)",
-	"traffic.lag-check-interval-help": "Zníženie tejto hodnoty spôsobí, že NodeBB bude citlivejšie na zaťaženie načítania stránok a na kontrolu tohto zaťaženia. (je vyžadovaný reštart)"
+	"traffic.lag-check-interval-help": "Zníženie tejto hodnoty spôsobí, že NodeBB bude citlivejšie na zaťaženie načítania stránok a na kontrolu tohto zaťaženia. (je vyžadovaný reštart)",
+
+	"sockets.settings": "WebSocket Settings",
+	"sockets.max-attempts": "Max Reconnection Attempts",
+	"sockets.default-placeholder": "Default: %1",
+	"sockets.delay": "Reconnection Delay"
 }

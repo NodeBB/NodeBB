@@ -63,9 +63,9 @@ Flags.init = async function () {
 			perPage: function () {	/* noop */ },
 			quick: function (sets, orSets, key, uid) {
 				switch (key) {
-				case 'mine':
-					sets.push('flags:byAssignee:' + uid);
-					break;
+					case 'mine':
+						sets.push('flags:byAssignee:' + uid);
+						break;
 				}
 			},
 		},

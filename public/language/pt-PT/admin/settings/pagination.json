@@ -1,6 +1,6 @@
 {
-	"pagination": "Pagination Settings",
-	"enable": "Paginate topics and posts instead of using infinite scroll.",
+	"pagination": "Definições de Paginação",
+	"enable": "Paginar tópicos e publicações em vez de usar scroll infinito.",
 	"topics": "Paginação de Tópicos",
 	"posts-per-page": "Publicações por página",
 	"max-posts-per-page": "Máximo de publicações por página",

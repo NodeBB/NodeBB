@@ -1,6 +1,6 @@
 {
-	"reputation": "Reputation Settings",
-	"disable": "Disable Reputation System",
+	"reputation": "Definições de Reputação",
+	"disable": "Desativar Sistema de Reputação",
 	"disable-down-voting": "Desativar Votos Negativos",
 	"votes-are-public": "Todos os Votos São Públicos",
 	"thresholds": "Activity Thresholds",

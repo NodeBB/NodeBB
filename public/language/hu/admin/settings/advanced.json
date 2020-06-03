@@ -25,5 +25,10 @@
 	"traffic.event-lag": "Eseményciklus késési küszübértéke (ezredmásodpercben)",
 	"traffic.event-lag-help": "Az érték csökkentésével csökken az oldalbetöltések várakozási ideje, ám több felhasználó fogja tapasztalni a \"túlzott terhelés\" üzenetet. (Újraindítást igényel)",
 	"traffic.lag-check-interval": "Ellenőrzési időköz (ezredmásodpercben)",
-	"traffic.lag-check-interval-help": "Az érték csökkentésével a NodeBB érzékenyebbé válik a tüskékkel szemben terheléskor, ám az ellenőrzés túlérzékenységét is okozhatja. (Újraindítást igényel)"
+	"traffic.lag-check-interval-help": "Az érték csökkentésével a NodeBB érzékenyebbé válik a tüskékkel szemben terheléskor, ám az ellenőrzés túlérzékenységét is okozhatja. (Újraindítást igényel)",
+
+	"sockets.settings": "WebSocket Settings",
+	"sockets.max-attempts": "Max Reconnection Attempts",
+	"sockets.default-placeholder": "Default: %1",
+	"sockets.delay": "Reconnection Delay"
 }

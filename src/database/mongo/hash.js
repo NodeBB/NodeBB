@@ -15,12 +15,19 @@ module.exports = function (module) {
 		}
 
 		const writeData = helpers.serializeData(data);
-		if (isArray) {
-			var bulk = module.client.collection('objects').initializeUnorderedBulkOp();
-			key.forEach(key => bulk.find({ _key: key }).upsert().updateOne({ $set: writeData }));
-			await bulk.execute();
-		} else {
-			await module.client.collection('objects').updateOne({ _key: key }, { $set: writeData }, { upsert: true, w: 1 });
+		try {
+			if (isArray) {
+				var bulk = module.client.collection('objects').initializeUnorderedBulkOp();
+				key.forEach(key => bulk.find({ _key: key }).upsert().updateOne({ $set: writeData }));
+				await bulk.execute();
+			} else {
+				await module.client.collection('objects').updateOne({ _key: key }, { $set: writeData }, { upsert: true, w: 1 });
+			}
+		} catch (err) {
+			if (err && err.message.startsWith('E11000 duplicate key error')) {
+				return await module.setObject(key, data);
+			}
+			throw err;
 		}
 
 		cache.delObjectCache(key);

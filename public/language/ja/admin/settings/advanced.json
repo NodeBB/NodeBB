@@ -25,5 +25,10 @@
 	"traffic.event-lag": "イベントループの場所のしきい値(ミリ秒単位)",
 	"traffic.event-lag-help": "この値を下げるとページの読み込み時間が短縮されますが、さらに多くのユーザーには「過剰な読み込み」メッセージが表示されます。(再起動が必要)",
 	"traffic.lag-check-interval": "チェック間隔(ミリ秒単位)",
-	"traffic.lag-check-interval-help": "この値を小さくすると、NodeBBは負荷のスパイクに対してより敏感になりますが、チェックが過敏になる可能性もあります。(再起動が必要)"
+	"traffic.lag-check-interval-help": "この値を小さくすると、NodeBBは負荷のスパイクに対してより敏感になりますが、チェックが過敏になる可能性もあります。(再起動が必要)",
+
+	"sockets.settings": "WebSocket Settings",
+	"sockets.max-attempts": "Max Reconnection Attempts",
+	"sockets.default-placeholder": "Default: %1",
+	"sockets.delay": "Reconnection Delay"
 }
