@@ -1,5 +1,6 @@
 {
     "tag": "Nastavení značky",
+    "link-to-manage": "Manage Tags",
     "min-per-topic": "Minimální počet značek/téma",
     "max-per-topic": "maximální počet značek/téma",
     "min-length": "Minimální délka značky",

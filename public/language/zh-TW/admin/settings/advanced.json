@@ -25,5 +25,10 @@
 	"traffic.event-lag": "事件循環滯後門檻值（毫秒）",
 	"traffic.event-lag-help": "降低此值會減少頁面加載的等待時間，但也會向更多使用者顯示“過載”訊息。(需要重新啟動)",
 	"traffic.lag-check-interval": "檢查間隔（毫秒）",
-	"traffic.lag-check-interval-help": "降低此值會造成 NodeBB 的負載峰值變得更加敏感，但也可能導致檢查變得過於敏感（需要重新啟動）"
+	"traffic.lag-check-interval-help": "降低此值會造成 NodeBB 的負載峰值變得更加敏感，但也可能導致檢查變得過於敏感（需要重新啟動）",
+
+	"sockets.settings": "WebSocket Settings",
+	"sockets.max-attempts": "Max Reconnection Attempts",
+	"sockets.default-placeholder": "Default: %1",
+	"sockets.delay": "Reconnection Delay"
 }

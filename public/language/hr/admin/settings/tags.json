@@ -1,5 +1,6 @@
 {
     "tag": "Postavke oznaka",
+    "link-to-manage": "Manage Tags",
     "min-per-topic": "Najmanje oznaka za temu",
     "max-per-topic": "Maksimalno oznaka po temi",
     "min-length": "Minimalna dužina oznake",

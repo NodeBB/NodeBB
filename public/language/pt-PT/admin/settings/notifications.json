@@ -1,7 +1,7 @@
 {
-	"notifications": "Notifications",
-	"welcome-notification": "Welcome Notification",
-	"welcome-notification-link": "Welcome Notification Link",
+	"notifications": "Notificações",
+	"welcome-notification": "Notificação de Boas-vindas",
+	"welcome-notification-link": "Link da Notificação de Boas-vindas",
 	"welcome-notification-uid": "Notificação de boas-vindas ao utilizador (UID)",
-	"notification-alert-timeout": "Notification Alert Timeout"
+	"notification-alert-timeout": "Tempo Limite do Alerta de Notificação"
 }

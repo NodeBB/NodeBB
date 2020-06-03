@@ -13,49 +13,82 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 			var uid = $(this).parents('[data-uid]').attr('data-uid');
 
 			switch (action) {
-			case 'update':
-				socket.emit('flags.update', {
-					flagId: ajaxify.data.flagId,
-					data: $('#attributes').serializeArray(),
-				}, function (err, history) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-					app.alertSuccess('[[flags:updated]]');
-					Detail.reloadHistory(history);
-				});
-				break;
+				case 'update':
+					socket.emit('flags.update', {
+						flagId: ajaxify.data.flagId,
+						data: $('#attributes').serializeArray(),
+					}, function (err, history) {
+						if (err) {
+							return app.alertError(err.message);
+						}
+						app.alertSuccess('[[flags:updated]]');
+						Detail.reloadHistory(history);
+					});
+					break;
 
-			case 'appendNote':
-				socket.emit('flags.appendNote', {
-					flagId: ajaxify.data.flagId,
-					note: document.getElementById('note').value,
-				}, function (err, payload) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-					app.alertSuccess('[[flags:note-added]]');
-					Detail.reloadNotes(payload.notes);
-					Detail.reloadHistory(payload.history);
-				});
-				break;
+				case 'appendNote':
+					socket.emit('flags.appendNote', {
+						flagId: ajaxify.data.flagId,
+						note: document.getElementById('note').value,
+					}, function (err, payload) {
+						if (err) {
+							return app.alertError(err.message);
+						}
+						app.alertSuccess('[[flags:note-added]]');
+						Detail.reloadNotes(payload.notes);
+						Detail.reloadHistory(payload.history);
+					});
+					break;
 
-			case 'chat':
-				app.newChat(uid);
-				break;
+				case 'chat':
+					app.newChat(uid);
+					break;
 
-			case 'ban':
-				AccountHeader.banAccount(uid, ajaxify.refresh);
-				break;
+				case 'ban':
+					AccountHeader.banAccount(uid, ajaxify.refresh);
+					break;
 
-			case 'delete':
-				AccountHeader.deleteAccount(uid, ajaxify.refresh);
-				break;
+				case 'delete-account':
+					AccountHeader.deleteAccount(uid, ajaxify.refresh);
+					break;
+
+				case 'delete-post':
+					postAction('delete', ajaxify.data.target.pid, ajaxify.data.target.tid);
+					break;
+
+				case 'purge-post':
+					postAction('purge', ajaxify.data.target.pid, ajaxify.data.target.tid);
+					break;
+
+				case 'restore-post':
+					postAction('restore', ajaxify.data.target.pid, ajaxify.data.target.tid);
+					break;
 			}
 		});
 
 		FlagsList.enableFilterForm();
 	};
+
+	function postAction(action, pid, tid) {
+		translator.translate('[[topic:post_' + action + '_confirm]]', function (msg) {
+			bootbox.confirm(msg, function (confirm) {
+				if (!confirm) {
+					return;
+				}
+
+				socket.emit('posts.' + action, {
+					pid: pid,
+					tid: tid,
+				}, function (err) {
+					if (err) {
+						app.alertError(err.message);
+					}
+
+					ajaxify.refresh();
+				});
+			});
+		});
+	}
 
 	Detail.reloadNotes = function (notes) {
 		Benchpress.parse('flags/detail', 'notes', {

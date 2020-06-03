@@ -1,7 +1,7 @@
 <div class="social settings">
 	<form role="form">
 		<div class="row">
-			<div class="col-sm-2 col-xs-12 settings-header">[[admin/general/social:post-sharing]]</div>
+			<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/social:post-sharing]]</div>
 			<div class="col-sm-10 col-xs-12">
 				<div class="form-group" id="postSharingNetworks">
 					<!-- BEGIN posts -->
@@ -12,7 +12,7 @@
 						</label>
 					</div>
 					<!-- END posts -->
-					<small>[[admin/general/social:info-plugins-additional]]</small>
+					<small>[[admin/settings/social:info-plugins-additional]]</small>
 				</div>
 			</div>
 		</div>

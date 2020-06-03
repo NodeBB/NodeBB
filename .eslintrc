@@ -24,7 +24,7 @@
 		"consistent-return": "off",
 		"func-names": "off",
 		"no-tabs": "off",
-		"indent": ["error", "tab"],
+		"indent": ["error", "tab", { "SwitchCase": 1 }],
 		"no-eq-null": "off",
 		"camelcase": "off",
 		"no-new": "off",

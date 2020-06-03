@@ -103,7 +103,7 @@
     "move_posts_instruction": "Klik op de berichten die je wilt verplaatsen",
     "change_owner_instruction": "Klik op de berichten die je wilt toewijzen aan een andere gebruiker",
     "composer.title_placeholder": "Voer hier de titel van het onderwerp in...",
-    "composer.handle_placeholder": "Enter your name/handle here",
+    "composer.handle_placeholder": "Voer je naam/pseudoniem hier in",
     "composer.discard": "Annuleren",
     "composer.submit": "Verzenden",
     "composer.replying_to": "Reactie op %1",

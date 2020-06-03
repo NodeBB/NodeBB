@@ -10,13 +10,13 @@
 	"ban": "Banir Utilizador(es)",
 	"temp-ban": "Banir Utilizador(es) Temporariamente",
 	"unban": "Desbanir Utilizador(es)",
-	"reset-lockout": "Reset Lockout",
+	"reset-lockout": "Redefinir Bloqueio",
 	"reset-flags": "Redefinir Denúncias",
 	"delete": "Eliminar Utilizador(es)",
 	"purge": "Apagar Utilizador(es) e Conteúdo",
 	"download-csv": "Transferir CSV",
-	"manage-groups": "Manage Groups",
-	"add-group": "Add Group",
+	"manage-groups": "Gerir Grupos",
+	"add-group": "Adicionar Grupo",
 	"invite": "Convidar",
 	"new": "Novo Utilizador",
 
@@ -30,10 +30,10 @@
 	"pills.banned": "Banido",
 	"pills.search": "Procura de Utilizadores",
 
-	"50-per-page": "50 per page",
-	"100-per-page": "100 per page",
-	"250-per-page": "250 per page",
-	"500-per-page": "500 per page",
+	"50-per-page": "50 por página",
+	"100-per-page": "100 por página",
+	"250-per-page": "250 por página",
+	"500-per-page": "500 por página",
 
 	"search.uid": "Por ID de Utilizador",
 	"search.uid-placeholder": "Digita um ID de utilizador para procurar",
@@ -73,10 +73,10 @@
 
 	"alerts.confirm-ban": "Tens a certeza que queres banir este utilizador <strong>permanentemente</strong>?",
 	"alerts.confirm-ban-multi": "Tens a certeza que queres banir estes utilizadores <strong>permanentemente</strong>?",
-	"alerts.ban-success": "Utilizador(es) banidos!",
+	"alerts.ban-success": "Utilizador(es) banido(s)!",
 	"alerts.button-ban-x": "Banir %1 utilizador(es)",
-	"alerts.unban-success": "Utilizador(es) desbanidos!",
-	"alerts.lockout-reset-success": "Lockout(s) reset!",
+	"alerts.unban-success": "Utilizador(es) desbanido(s)!",
+	"alerts.lockout-reset-success": "Bloqueio(s) redefinido(s)!",
 	"alerts.flag-reset-success": "Denúncia(s) redefinida(s)!",
 	"alerts.no-remove-yourself-admin": "Não podes remover a ti próprio como Administrador!",
 	"alerts.make-admin-success": "O utilizador é agora um administrador.",
@@ -105,5 +105,5 @@
 
 	"alerts.prompt-email": "E-mails:",
 	"alerts.email-sent-to": "Foi enviado um e-mail de convite para %1",
-	"alerts.x-users-found": "%1 utilizador(es) encontrado(s)! A procura demorou %2 ms."
+	"alerts.x-users-found": "%1 utilizador(es) encontrado(s)! A pesquisa demorou %2 ms."
 }

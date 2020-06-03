@@ -25,5 +25,10 @@
 	"traffic.event-lag": "Порог лага Event Loop (в миллисекундах)",
 	"traffic.event-lag-help": "Уменьшение этого значение ускорит загрузку страниц, но также может привести к показу сообщения \"высокая нагрузка\" большому количеству участников. (Необходим перезапуск)",
 	"traffic.lag-check-interval": "Интервал проверки (в миллисекундах)",
-	"traffic.lag-check-interval-help": "Снижение значения этого параметра приведет увеличению чувствительности NodeBB к пикам нагрузки, но также может сделать эту проверку слишком чувствительной. (Необходим перезапуск)"
+	"traffic.lag-check-interval-help": "Снижение значения этого параметра приведет увеличению чувствительности NodeBB к пикам нагрузки, но также может сделать эту проверку слишком чувствительной. (Необходим перезапуск)",
+
+	"sockets.settings": "WebSocket Settings",
+	"sockets.max-attempts": "Max Reconnection Attempts",
+	"sockets.default-placeholder": "Default: %1",
+	"sockets.delay": "Reconnection Delay"
 }

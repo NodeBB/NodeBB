@@ -25,5 +25,10 @@
 	"traffic.event-lag": "Próg opóźnienia pętli zdarzeń (w milisekundach)",
 	"traffic.event-lag-help": "Obniżenie tej wartości spowoduje krótsze ładowanie stron, ale równocześnie wyświetli komunikat \"excessive load\" dla większej liczby użytkowników (wymagany restart).",
 	"traffic.lag-check-interval": "Interwał sprawdzenia (w milisekundach)",
-	"traffic.lag-check-interval-help": "Obniżenie tej wartości sprawi, że NodeBB będzie bardziej czuły na skoki obciążenia, ale może też spowodować, że sprawdzanie będzie za bardzo dokładne (wymagany restart)."
+	"traffic.lag-check-interval-help": "Obniżenie tej wartości sprawi, że NodeBB będzie bardziej czuły na skoki obciążenia, ale może też spowodować, że sprawdzanie będzie za bardzo dokładne (wymagany restart).",
+
+	"sockets.settings": "Ustawienia WebSocket",
+	"sockets.max-attempts": "Maksymalna liczba prób połączenia",
+	"sockets.default-placeholder": "Domyślnie: %1",
+	"sockets.delay": "Opóźnienie ponownego łączenia"
 }

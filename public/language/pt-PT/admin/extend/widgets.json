@@ -18,13 +18,13 @@
 	"alert.update-success": "Widgets atualizados com sucesso",
 	"alert.clone-success": "Widgets clonados com sucesso",
 
-	"error.select-clone": "Please select a page to clone from",
+	"error.select-clone": "Por favor, seleciona uma página para clonar de",
 
-	"title": "Title",
-	"title.placeholder": "Title (only shown on some containers)",
+	"title": "Título",
+	"title.placeholder": "Título (mostrado apenas em alguns containers)",
 	"container": "Container",
-	"container.placeholder": "Drag and drop a container or enter HTML here.",
-	"show-to-groups": "Show to groups",
-	"hide-from-groups": "Hide from groups",
-	"hide-on-mobile": "Hide on mobile"
+	"container.placeholder": "Arrasta e solta um container ou insere HTML aqui.",
+	"show-to-groups": "Mostrar para os grupos",
+	"hide-from-groups": "Ocultar dos grupos",
+	"hide-on-mobile": "Ocultar em telemóvel"
 }

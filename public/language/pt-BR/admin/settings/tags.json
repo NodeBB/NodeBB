@@ -1,5 +1,6 @@
 {
     "tag": "Configurações de Tag",
+    "link-to-manage": "Manage Tags",
     "min-per-topic": "Mínimo de Tags por Tópico",
     "max-per-topic": "Máximo de Tags por Tópico",
     "min-length": "Tamanho Mínimo das Tags",

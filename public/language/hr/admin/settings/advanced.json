@@ -25,5 +25,10 @@
 	"traffic.event-lag": "Event Loop Lag Threshold (in milliseconds)",
 	"traffic.event-lag-help": "Smanjivanje ove vrijednosti smanjuje vrijeme čekanja za učitavanje stranica,ali će također pokazivati poruku \"prekomjerno opterećenje\" više korisnika(u takvim slučajevima potrebno je ponovo pokretanje).",
 	"traffic.lag-check-interval": "Provjeri interval (u milisekundama)",
-	"traffic.lag-check-interval-help": "Smanjivanje ove vrijednosti uzrokuje da NodeBB postane osjetljivji na oscilacije u prometu,takodjer može uzrokovati da provjere postanu preosjetljive(Biti će potrebno ponovno pokretanje)."
+	"traffic.lag-check-interval-help": "Smanjivanje ove vrijednosti uzrokuje da NodeBB postane osjetljivji na oscilacije u prometu,takodjer može uzrokovati da provjere postanu preosjetljive(Biti će potrebno ponovno pokretanje).",
+
+	"sockets.settings": "WebSocket Settings",
+	"sockets.max-attempts": "Max Reconnection Attempts",
+	"sockets.default-placeholder": "Default: %1",
+	"sockets.delay": "Reconnection Delay"
 }

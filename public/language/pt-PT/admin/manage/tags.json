@@ -3,16 +3,16 @@
 	"bg-color": "Cor de Fundo",
 	"text-color": "Cor do Texto",
 	"create-modify": "Criar e Modificar Marcadores",
-	"description": "Seleciona marcadores clicando ou arrastando, utiliza SHIFT para selecionar vários",
+	"description": "Seleciona as etiquetas clicando ou arrastando, usa <code> CTRL</code> para selecionar múltiplas etiquetas.",
 	"create": "Criar Marcador",
 	"modify": "Modificar Marcadores",
 	"rename": "Renomear Marcadores",
 	"delete": "Apagar Marcadores Selecionados",
 	"search": "Procurar por marcadores...",
-	"settings": "Click <a href=\"%1\">here</a> to visit the tag settings page.",
+	"settings": "Definições das Etiquetas",
 	"name": "Nome da Etiqueta",
 
-	"alerts.editing": "Editing tag(s)",
+	"alerts.editing": "Editar etiqueta(s)",
 	"alerts.confirm-delete": "Queres mesmo apagar os marcadores selecionados?",
 	"alerts.update-success": "Etiqueta Atualizada!"
 }

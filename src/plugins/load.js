@@ -90,20 +90,20 @@ module.exports = function (Plugins) {
 		// clear old data before build
 		fields.forEach((field) => {
 			switch (field) {
-			case 'clientScripts':
-			case 'acpScripts':
-			case 'cssFiles':
-			case 'lessFiles':
-			case 'acpLessFiles':
-				Plugins[field].length = 0;
-				break;
-			case 'soundpack':
-				Plugins.soundpacks.length = 0;
-				break;
-			case 'languageData':
-				Plugins.languageData.languages = [];
-				Plugins.languageData.namespaces = [];
-				break;
+				case 'clientScripts':
+				case 'acpScripts':
+				case 'cssFiles':
+				case 'lessFiles':
+				case 'acpLessFiles':
+					Plugins[field].length = 0;
+					break;
+				case 'soundpack':
+					Plugins.soundpacks.length = 0;
+					break;
+				case 'languageData':
+					Plugins.languageData.languages = [];
+					Plugins.languageData.namespaces = [];
+					break;
 			// do nothing for modules and staticDirs
 			}
 		});
