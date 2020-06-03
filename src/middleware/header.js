@@ -1,6 +1,5 @@
 'use strict';
 
-var async = require('async');
 var nconf = require('nconf');
 var jsesc = require('jsesc');
 var _ = require('lodash');
