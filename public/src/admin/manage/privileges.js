@@ -176,6 +176,7 @@ define('admin/manage/privileges', [
 
 		modal.on('shown.bs.modal', function () {
 			var inputEl = modal.find('input');
+			inputEl.focus();
 
 			autocomplete.group(inputEl, function (ev, ui) {
 				var defaultPrivileges;
