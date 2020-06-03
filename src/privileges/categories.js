@@ -45,14 +45,12 @@ module.exports = function (privileges) {
 			user.isModerator(uid, cid),
 		]);
 
-		const privData = _.zipObject(privs, userPrivileges);
+		const combined = userPrivileges.map(allowed => allowed || isAdministrator);
+		const privData = _.zipObject(privs, combined);
 		const isAdminOrMod = isAdministrator || isModerator;
 
 		return await plugins.fireHook('filter:privileges.categories.get', {
-			'topics:create': privData['topics:create'] || isAdministrator,
-			'topics:read': privData['topics:read'] || isAdministrator,
-			'topics:tag': privData['topics:tag'] || isAdministrator,
-			read: privData.read || isAdministrator,
+			...privData,
 			cid: cid,
 			uid: uid,
 			editable: isAdminOrMod,

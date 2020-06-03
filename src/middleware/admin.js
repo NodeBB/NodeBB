@@ -52,6 +52,7 @@ module.exports = function (middleware) {
 			custom_header: plugins.fireHook('filter:admin.header.build', custom_header),
 			configs: meta.configs.list(),
 			latestVersion: versions.getLatestVersion(),
+			privileges: privileges.admin.get(req.uid),
 		});
 
 		var userData = results.userData;
@@ -84,6 +85,7 @@ module.exports = function (middleware) {
 			version: version,
 			latestVersion: results.latestVersion,
 			upgradeAvailable: results.latestVersion && semver.gt(results.latestVersion, version),
+			privileges: results.privileges,
 		};
 
 		templateValues.template = { name: res.locals.template };
