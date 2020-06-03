@@ -8,6 +8,7 @@ var nconf = require('nconf');
 var ensureLoggedIn = require('connect-ensure-login');
 var toobusy = require('toobusy-js');
 var LRU = require('lru-cache');
+var util = require('util');
 
 var plugins = require('../plugins');
 var meta = require('../meta');
@@ -15,6 +16,7 @@ var user = require('../user');
 var groups = require('../groups');
 var analytics = require('../analytics');
 var privileges = require('../privileges');
+var helpers = require('./helpers');
 
 var controllers = {
 	api: require('../controllers/api'),
@@ -39,6 +41,8 @@ middleware.applyCSRF = csrf({
 	} : true,
 });
 
+middleware.applyCSRFAsync = util.promisify(middleware.applyCSRF);
+
 middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login');
 
 require('./admin')(middleware);
@@ -57,30 +61,20 @@ middleware.stripLeadingSlashes = function stripLeadingSlashes(req, res, next) {
 	}
 };
 
-middleware.pageView = function pageView(req, res, next) {
-	analytics.pageView({
-		ip: req.ip,
-		uid: req.uid,
-	});
-
-	plugins.fireHook('action:middleware.pageView', { req: req });
-
+middleware.pageView = helpers.try(async function pageView(req, res, next) {
+	var st = process.hrtime();
+	const promises = [
+		analytics.pageView({ ip: req.ip, uid: req.uid }),
+	];
 	if (req.loggedIn) {
-		if (req.path.startsWith('/api/users') || req.path.startsWith('/users')) {
-			async.parallel([
-				async.apply(user.updateOnlineUsers, req.uid),
-				async.apply(user.updateLastOnlineTime, req.uid),
-			], next);
-		} else {
-			user.updateOnlineUsers(req.uid);
-			user.updateLastOnlineTime(req.uid);
-			setImmediate(next);
-		}
-	} else {
-		setImmediate(next);
+		promises.push(user.updateOnlineUsers(req.uid));
+		promises.push(user.updateLastOnlineTime(req.uid));
 	}
-};
-
+	await Promise.all(promises);
+	process.profile('pageview', st);
+	plugins.fireHook('action:middleware.pageView', { req: req });
+	next();
+});
 
 middleware.pluginHooks = async function pluginHooks(req, res, next) {
 	// TODO: Deprecate in v2.0

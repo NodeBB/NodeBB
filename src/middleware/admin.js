@@ -10,6 +10,7 @@ var user = require('../user');
 var meta = require('../meta');
 var plugins = require('../plugins');
 var versions = require('../admin/versions');
+var helpers = require('./helpers');
 
 var controllers = {
 	api: require('../controllers/api'),
@@ -18,24 +19,16 @@ var controllers = {
 
 module.exports = function (middleware) {
 	middleware.admin = {};
-	middleware.admin.isAdmin = function (req, res, next) {
+	middleware.admin.isAdmin = helpers.try(async function (req, res, next) {
 		winston.warn('[middleware.admin.isAdmin] deprecation warning, no need to use this from plugins!');
-		middleware.isAdmin(req, res, next);
-	};
+		await middleware.isAdmin(req, res, next);
+	});
 
-	middleware.admin.buildHeader = function (req, res, next) {
+	middleware.admin.buildHeader = helpers.try(async function (req, res, next) {
 		res.locals.renderAdminHeader = true;
-
-		async.waterfall([
-			function (next) {
-				controllers.api.loadConfig(req, next);
-			},
-			function (config, next) {
-				res.locals.config = config;
-				next();
-			},
-		], next);
-	};
+		res.locals.config = await controllers.api.loadConfig(req);
+		next();
+	});
 
 	middleware.admin.renderHeader = function (req, res, data, next) {
 		var custom_header = {
