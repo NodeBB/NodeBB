@@ -4,7 +4,6 @@ var async = require('async');
 var nconf = require('nconf');
 var jsesc = require('jsesc');
 var _ = require('lodash');
-const util = require('util');
 
 var db = require('../database');
 var user = require('../user');
@@ -119,7 +118,7 @@ module.exports = function (middleware) {
 		templateValues.config.bootswatchSkin = templateValues.bootswatchSkin || 'noskin';	// TODO remove in v1.12.0+
 
 		const unreadCounts = results.unreadData.counts;
-		var unreadCount = {
+		const unreadCount = {
 			topic: unreadCounts[''] || 0,
 			newTopic: unreadCounts.new || 0,
 			watchedTopic: unreadCounts.watched || 0,
@@ -193,8 +192,7 @@ module.exports = function (middleware) {
 	}
 
 	middleware.renderHeader = async function renderHeader(req, res, data) {
-		const render = util.promisify(req.app.render.bind(req.app));
-		return await render('header', await generateHeader(req, res, data));
+		return await req.app.renderAsync('header', await generateHeader(req, res, data));
 	};
 
 	middleware.renderFooter = async function renderFooter(req, res, templateValues) {
@@ -203,7 +201,6 @@ module.exports = function (middleware) {
 			res: res,
 			templateValues: templateValues,
 		});
-		const render = util.promisify(req.app.render.bind(req.app));
 
 		const results = await utils.promiseParallel({
 			scripts: plugins.fireHook('filter:scripts.get', []),
@@ -231,7 +228,7 @@ module.exports = function (middleware) {
 		data.templateValues.customJS = data.templateValues.useCustomJS ? meta.config.customJS : '';
 		data.templateValues.isSpider = req.uid === -1;
 
-		return await render('footer', data.templateValues);
+		return await req.app.renderAsync('footer', data.templateValues);
 	};
 
 	function modifyTitle(obj) {

@@ -5,7 +5,6 @@ var winston = require('winston');
 var jsesc = require('jsesc');
 var nconf = require('nconf');
 var semver = require('semver');
-const util = require('util');
 
 var user = require('../user');
 var meta = require('../meta');
@@ -89,8 +88,7 @@ module.exports = function (middleware) {
 		templateValues.template = { name: res.locals.template };
 		templateValues.template[res.locals.template] = true;
 
-		const render = util.promisify(req.app.render.bind(req.app));
-		return await render('admin/header', templateValues);
+		return await req.app.renderAsync('admin/header', templateValues);
 	};
 
 	async function getAdminScripts() {
@@ -101,7 +99,6 @@ module.exports = function (middleware) {
 	}
 
 	middleware.admin.renderFooter = async function (req, res, data) {
-		const render = util.promisify(req.app.render.bind(req.app));
-		return await render('admin/footer', data);
+		return await req.app.renderAsync('admin/footer', data);
 	};
 };
