@@ -30,10 +30,15 @@ module.exports = function (privileges) {
 	privileges.admin.routeMap = {
 		dashboard: 'admin:dashboard',
 		'manage/categories': 'admin:categories',
+		'extend/plugins': 'admin:settings',
+		'extend/widgets': 'admin:settings',
+		'extend/rewards': 'admin:settings',
 	};
 	privileges.admin.routeRegexpMap = {
 		'^manage/categories/\\d+': 'admin:categories',
 		'^settings/[\\w\\-]+$': 'admin:settings',
+		'^appearance/[\\w]+$': 'admin:settings',
+		'^plugins/[\\w\\-]+$': 'admin:settings',
 	};
 
 	// Mapping for socket call methods to a privilege
@@ -51,6 +56,10 @@ module.exports = function (privileges) {
 		'admin.getSearchDict': 'admin:settings',
 		'admin.config.setMultiple': 'admin:settings',
 		'admin.config.remove': 'admin:settings',
+		'admin.themes.getInstalled': 'admin:settings',
+		'admin.themes.set': 'admin:settings',
+		'admin.reloadAllSessions': 'admin:settings',
+		'admin.settings.get': 'admin:settings',
 	};
 
 	privileges.admin.resolve = (path) => {
@@ -98,6 +107,7 @@ module.exports = function (privileges) {
 		const combined = userPrivileges.map(allowed => allowed || isAdministrator);
 		const privData = _.zipObject(privileges.admin.userPrivilegeList, combined);
 
+		privData.superadmin = isAdministrator;
 		return await plugins.fireHook('filter:privileges.admin.get', privData);
 	};
 

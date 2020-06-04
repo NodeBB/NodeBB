@@ -58,6 +58,7 @@ module.exports = function (middleware) {
 		var userData = results.userData;
 		userData.uid = req.uid;
 		userData['email:confirmed'] = userData['email:confirmed'] === 1;
+		userData.privileges = results.privileges;
 
 		var acpPath = req.path.slice(1).split('/');
 		acpPath.forEach(function (path, i) {
@@ -85,7 +86,6 @@ module.exports = function (middleware) {
 			version: version,
 			latestVersion: results.latestVersion,
 			upgradeAvailable: results.latestVersion && semver.gt(results.latestVersion, version),
-			privileges: results.privileges,
 		};
 
 		templateValues.template = { name: res.locals.template };
