@@ -32,6 +32,9 @@
 	"view-profile": "Profili Gör",
 	"start-new-chat": "Yeni Sohbet Başlat",
 	"go-to-target": "Şikayet Edilen İçeriği Gör",
+	"delete-post": "Delete Post",
+	"purge-post": "Purge Post",
+	"restore-post": "Restore Post",
 
 	"user-view": "Profili Gör",
 	"user-edit": "Profili Düzenle",

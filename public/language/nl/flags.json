@@ -32,6 +32,9 @@
 	"view-profile": "Profiel bekijken",
 	"start-new-chat": "Begin een nieuwe chat",
 	"go-to-target": "Bekijk markering doel",
+	"delete-post": "Delete Post",
+	"purge-post": "Purge Post",
+	"restore-post": "Restore Post",
 
 	"user-view": "Profiel bekijken",
 	"user-edit": "Profiel wijzigen",

@@ -32,6 +32,9 @@
 	"view-profile": "프로필 보기",
 	"start-new-chat": "새로운 채팅 시작",
 	"go-to-target": "신고된 게시물 바로가기",
+	"delete-post": "Delete Post",
+	"purge-post": "Purge Post",
+	"restore-post": "Restore Post",
 
 	"user-view": "프로필 보기",
 	"user-edit": "프로필 수정",
