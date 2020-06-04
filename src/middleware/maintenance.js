@@ -35,8 +35,7 @@ module.exports = function (middleware) {
 		if (res.locals.isAPI) {
 			return res.json(data);
 		}
-		const buildHeaderAsync = util.promisify(middleware.buildHeader);
-		await buildHeaderAsync(req, res);
+		await middleware.buildHeaderAsync(req, res);
 		res.render('503', data);
 	});
 };

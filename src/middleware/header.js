@@ -3,6 +3,7 @@
 var nconf = require('nconf');
 var jsesc = require('jsesc');
 var _ = require('lodash');
+var util = require('util');
 
 var db = require('../database');
 var user = require('../user');
@@ -26,9 +27,6 @@ module.exports = function (middleware) {
 	middleware.buildHeader = helpers.try(async function buildHeader(req, res, next) {
 		res.locals.renderHeader = true;
 		res.locals.isAPI = false;
-		if (req.uid >= 0) {
-			await middleware.applyCSRFAsync(req, res);
-		}
 		const [config] = await Promise.all([
 			controllers.api.loadConfig(req),
 			plugins.fireHook('filter:middleware.buildHeader', { req: req, locals: res.locals }),
@@ -36,6 +34,8 @@ module.exports = function (middleware) {
 		res.locals.config = config;
 		next();
 	});
+
+	middleware.buildHeaderAsync = util.promisify(middleware.buildHeader);
 
 	async function generateHeader(req, res, data) {
 		var registrationType = meta.config.registrationType || 'normal';
