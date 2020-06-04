@@ -4542,6 +4542,13 @@ paths:
                         type: string
                       searchDefaultSortBy:
                         type: string
+                      permissions:
+                        type: object
+                        properties:
+                          users:
+                            type: boolean
+                          content:
+                            type: boolean
                     required:
                       - posts
                       - matchCount
@@ -4556,6 +4563,7 @@ paths:
                       - showAsTopics
                       - title
                       - searchDefaultSortBy
+                      - permissions
                   - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
