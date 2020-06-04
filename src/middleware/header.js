@@ -27,9 +27,6 @@ module.exports = function (middleware) {
 	middleware.buildHeader = helpers.try(async function buildHeader(req, res, next) {
 		res.locals.renderHeader = true;
 		res.locals.isAPI = false;
-		if (req.uid >= 0) {
-			await middleware.applyCSRFAsync(req, res);
-		}
 		const [config] = await Promise.all([
 			controllers.api.loadConfig(req),
 			plugins.fireHook('filter:middleware.buildHeader', { req: req, locals: res.locals }),
