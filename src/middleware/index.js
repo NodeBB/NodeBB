@@ -8,6 +8,7 @@ var nconf = require('nconf');
 var ensureLoggedIn = require('connect-ensure-login');
 var toobusy = require('toobusy-js');
 var LRU = require('lru-cache');
+var util = require('util');
 
 var plugins = require('../plugins');
 var meta = require('../meta');
@@ -15,6 +16,7 @@ var user = require('../user');
 var groups = require('../groups');
 var analytics = require('../analytics');
 var privileges = require('../privileges');
+var helpers = require('./helpers');
 
 var controllers = {
 	api: require('../controllers/api'),
@@ -39,6 +41,8 @@ middleware.applyCSRF = csrf({
 	} : true,
 });
 
+middleware.applyCSRFAsync = util.promisify(middleware.applyCSRF);
+
 middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login');
 
 require('./admin')(middleware);
@@ -51,56 +55,39 @@ require('./headers')(middleware);
 middleware.stripLeadingSlashes = function stripLeadingSlashes(req, res, next) {
 	var target = req.originalUrl.replace(nconf.get('relative_path'), '');
 	if (target.startsWith('//')) {
-		res.redirect(nconf.get('relative_path') + target.replace(/^\/+/, '/'));
-	} else {
-		setImmediate(next);
+		return res.redirect(nconf.get('relative_path') + target.replace(/^\/+/, '/'));
 	}
+	next();
 };
 
-middleware.pageView = function pageView(req, res, next) {
-	analytics.pageView({
-		ip: req.ip,
-		uid: req.uid,
+middleware.pageView = helpers.try(async function pageView(req, res, next) {
+	const promises = [
+		analytics.pageView({ ip: req.ip, uid: req.uid }),
+	];
+	if (req.loggedIn) {
+		promises.push(user.updateOnlineUsers(req.uid));
+		promises.push(user.updateLastOnlineTime(req.uid));
+	}
+	await Promise.all(promises);
+	plugins.fireHook('action:middleware.pageView', { req: req });
+	next();
+});
+
+middleware.pluginHooks = helpers.try(async function pluginHooks(req, res, next) {
+	// TODO: Deprecate in v2.0
+	await async.each(plugins.loadedHooks['filter:router.page'] || [], function (hookObj, next) {
+		hookObj.method(req, res, next);
 	});
 
-	plugins.fireHook('action:middleware.pageView', { req: req });
-
-	if (req.loggedIn) {
-		if (req.path.startsWith('/api/users') || req.path.startsWith('/users')) {
-			async.parallel([
-				async.apply(user.updateOnlineUsers, req.uid),
-				async.apply(user.updateLastOnlineTime, req.uid),
-			], next);
-		} else {
-			user.updateOnlineUsers(req.uid);
-			user.updateLastOnlineTime(req.uid);
-			setImmediate(next);
-		}
-	} else {
-		setImmediate(next);
-	}
-};
-
-
-middleware.pluginHooks = async function pluginHooks(req, res, next) {
-	// TODO: Deprecate in v2.0
-	try {
-		await async.each(plugins.loadedHooks['filter:router.page'] || [], function (hookObj, next) {
-			hookObj.method(req, res, next);
-		});
-
-		await plugins.fireHook('response:router.page', {
-			req: req,
-			res: res,
-		});
-	} catch (err) {
-		return next(err);
-	}
+	await plugins.fireHook('response:router.page', {
+		req: req,
+		res: res,
+	});
 
 	if (!res.headersSent) {
 		next();
 	}
-};
+});
 
 middleware.validateFiles = function validateFiles(req, res, next) {
 	if (!Array.isArray(req.files.files) || !req.files.files.length) {
@@ -131,36 +118,28 @@ middleware.routeTouchIcon = function routeTouchIcon(req, res) {
 	});
 };
 
-middleware.privateTagListing = function privateTagListing(req, res, next) {
-	privileges.global.can('view:tags', req.uid, function (err, canView) {
-		if (err || canView) {
-			return next(err);
-		}
-		controllers.helpers.notAllowed(req, res);
-	});
-};
+middleware.privateTagListing = helpers.try(async function privateTagListing(req, res, next) {
+	const canView = await privileges.global.can('view:tags', req.uid);
+	if (!canView) {
+		return controllers.helpers.notAllowed(req, res);
+	}
+	next();
+});
 
-middleware.exposeGroupName = function exposeGroupName(req, res, next) {
-	expose('groupName', groups.getGroupNameByGroupSlug, 'slug', req, res, next);
-};
+middleware.exposeGroupName = helpers.try(async function exposeGroupName(req, res, next) {
+	await expose('groupName', groups.getGroupNameByGroupSlug, 'slug', req, res, next);
+});
 
-middleware.exposeUid = function exposeUid(req, res, next) {
-	expose('uid', user.getUidByUserslug, 'userslug', req, res, next);
-};
+middleware.exposeUid = helpers.try(async function exposeUid(req, res, next) {
+	await expose('uid', user.getUidByUserslug, 'userslug', req, res, next);
+});
 
-function expose(exposedField, method, field, req, res, next) {
+async function expose(exposedField, method, field, req, res, next) {
 	if (!req.params.hasOwnProperty(field)) {
 		return next();
 	}
-	async.waterfall([
-		function (next) {
-			method(req.params[field], next);
-		},
-		function (id, next) {
-			res.locals[exposedField] = id;
-			next();
-		},
-	], next);
+	res.locals[exposedField] = await method(req.params[field]);
+	next();
 }
 
 middleware.privateUploads = function privateUploads(req, res, next) {
@@ -188,10 +167,13 @@ middleware.busyCheck = function busyCheck(req, res, next) {
 	}
 };
 
-middleware.applyBlacklist = function applyBlacklist(req, res, next) {
-	meta.blacklist.test(req.ip, function (err) {
+middleware.applyBlacklist = async function applyBlacklist(req, res, next) {
+	try {
+		await meta.blacklist.test(req.ip);
+		next();
+	} catch (err) {
 		next(err);
-	});
+	}
 };
 
 middleware.delayLoading = function delayLoading(req, res, next) {
@@ -207,25 +189,19 @@ middleware.delayLoading = function delayLoading(req, res, next) {
 	setTimeout(next, 1000);
 };
 
-middleware.buildSkinAsset = function buildSkinAsset(req, res, next) {
+middleware.buildSkinAsset = helpers.try(async function buildSkinAsset(req, res, next) {
 	// If this middleware is reached, a skin was requested, so it is built on-demand
-	var target = path.basename(req.originalUrl).match(/(client-[a-z]+)/);
-	if (target) {
-		async.waterfall([
-			async.apply(plugins.prepareForBuild, ['client side styles']),
-			async.apply(meta.css.buildBundle, target[0], true),
-		], function (err, css) {
-			if (err) {
-				return next();
-			}
-
-			require('../meta/minifier').killAll();
-			res.status(200).type('text/css').send(css);
-		});
-	} else {
-		setImmediate(next);
+	const target = path.basename(req.originalUrl).match(/(client-[a-z]+)/);
+	if (!target) {
+		return next();
 	}
-};
+
+	await plugins.prepareForBuild(['client side styles']);
+	const buildBundle = util.promisify(meta.css.buildBundle);
+	const css = await buildBundle(target[0], true);
+	require('../meta/minifier').killAll();
+	res.status(200).type('text/css').send(css);
+});
 
 middleware.trimUploadTimestamps = function trimUploadTimestamps(req, res, next) {
 	// Check match
@@ -238,19 +214,18 @@ middleware.trimUploadTimestamps = function trimUploadTimestamps(req, res, next) 
 	next();
 };
 
-middleware.validateAuth = function validateAuth(req, res, next) {
-	plugins.fireHook('static:auth.validate', {
-		user: res.locals.user,
-		strategy: res.locals.strategy,
-	}, function (err) {
-		if (err) {
-			return req.session.regenerate(function () {
-				req.uid = 0;
-				req.loggedIn = false;
-				next(err);
-			});
-		}
-
+middleware.validateAuth = helpers.try(async function validateAuth(req, res, next) {
+	try {
+		await plugins.fireHook('static:auth.validate', {
+			user: res.locals.user,
+			strategy: res.locals.strategy,
+		});
 		next();
-	});
-};
+	} catch (err) {
+		const regenerateSession = util.promisify(cb => req.session.regenerate(cb));
+		await regenerateSession();
+		req.uid = 0;
+		req.loggedIn = false;
+		next(err);
+	}
+});

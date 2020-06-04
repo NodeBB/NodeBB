@@ -23,14 +23,17 @@ Auth.initialize = function (app, middleware) {
 		passportSessionMiddleware(req, res, next);
 	});
 
-	app.use(Auth.setAuthVars);
+	app.use(function (req, res, next) {
+		Auth.setAuthVars(req, res);
+		next();
+	});
 
 	Auth.app = app;
 	Auth.middleware = middleware;
 };
 
-Auth.setAuthVars = function setAuthVars(req, res, next) {
-	var isSpider = req.isSpider();
+Auth.setAuthVars = function setAuthVars(req) {
+	const isSpider = req.isSpider();
 	req.loggedIn = !isSpider && !!req.user;
 	if (req.user) {
 		req.uid = parseInt(req.user.uid, 10);
@@ -39,7 +42,6 @@ Auth.setAuthVars = function setAuthVars(req, res, next) {
 	} else {
 		req.uid = 0;
 	}
-	next();
 };
 
 Auth.getLoginStrategies = function () {

@@ -1,6 +1,5 @@
 'use strict';
 
-var async = require('async');
 var nconf = require('nconf');
 var jsesc = require('jsesc');
 var _ = require('lodash');
@@ -16,6 +15,7 @@ var translator = require('../translator');
 var privileges = require('../privileges');
 var languages = require('../languages');
 var utils = require('../utils');
+var helpers = require('./helpers');
 
 var controllers = {
 	api: require('../controllers/api'),
@@ -23,34 +23,19 @@ var controllers = {
 };
 
 module.exports = function (middleware) {
-	middleware.buildHeader = function buildHeader(req, res, next) {
+	middleware.buildHeader = helpers.try(async function buildHeader(req, res, next) {
 		res.locals.renderHeader = true;
 		res.locals.isAPI = false;
-		async.waterfall([
-			function (next) {
-				if (req.uid >= 0) {
-					middleware.applyCSRF(req, res, next);
-				} else {
-					setImmediate(next);
-				}
-			},
-			function (next) {
-				async.parallel({
-					config: function (next) {
-						controllers.api.loadConfig(req, next);
-					},
-					plugins: function (next) {
-						plugins.fireHook('filter:middleware.buildHeader', { req: req, locals: res.locals }, next);
-					},
-				}, next);
-			},
-			function (results, next) {
-				res.locals.config = results.config;
-				// Return no arguments
-				setImmediate(next);
-			},
-		], next);
-	};
+		if (req.uid >= 0) {
+			await middleware.applyCSRFAsync(req, res);
+		}
+		const [config] = await Promise.all([
+			controllers.api.loadConfig(req),
+			plugins.fireHook('filter:middleware.buildHeader', { req: req, locals: res.locals }),
+		]);
+		res.locals.config = config;
+		next();
+	});
 
 	async function generateHeader(req, res, data) {
 		var registrationType = meta.config.registrationType || 'normal';

@@ -1,6 +1,5 @@
 'use strict';
 
-var async = require('async');
 var winston = require('winston');
 var jsesc = require('jsesc');
 var nconf = require('nconf');
@@ -11,6 +10,7 @@ var meta = require('../meta');
 var plugins = require('../plugins');
 var utils = require('../../public/src/utils');
 var versions = require('../admin/versions');
+var helpers = require('./helpers');
 
 var controllers = {
 	api: require('../controllers/api'),
@@ -19,24 +19,16 @@ var controllers = {
 
 module.exports = function (middleware) {
 	middleware.admin = {};
-	middleware.admin.isAdmin = function (req, res, next) {
+	middleware.admin.isAdmin = helpers.try(async function (req, res, next) {
 		winston.warn('[middleware.admin.isAdmin] deprecation warning, no need to use this from plugins!');
-		middleware.isAdmin(req, res, next);
-	};
+		await middleware.isAdmin(req, res, next);
+	});
 
-	middleware.admin.buildHeader = function (req, res, next) {
+	middleware.admin.buildHeader = helpers.try(async function (req, res, next) {
 		res.locals.renderAdminHeader = true;
-
-		async.waterfall([
-			function (next) {
-				controllers.api.loadConfig(req, next);
-			},
-			function (config, next) {
-				res.locals.config = config;
-				next();
-			},
-		], next);
-	};
+		res.locals.config = await controllers.api.loadConfig(req);
+		next();
+	});
 
 	middleware.admin.renderHeader = async (req, res, data) => {
 		var custom_header = {
@@ -50,7 +42,7 @@ module.exports = function (middleware) {
 			scripts: getAdminScripts(),
 			custom_header: plugins.fireHook('filter:admin.header.build', custom_header),
 			configs: meta.configs.list(),
-			latestVersion: versions.getLatestVersion(),
+			latestVersion: getLatestVersion(),
 		});
 
 		var userData = results.userData;
@@ -96,6 +88,16 @@ module.exports = function (middleware) {
 		return scripts.map(function (script) {
 			return { src: script };
 		});
+	}
+
+	async function getLatestVersion() {
+		try {
+			const result = await versions.getLatestVersion();
+			return result;
+		} catch (err) {
+			winston.error('[acp] Failed to fetch latest version' + err.stack);
+		}
+		return null;
 	}
 
 	middleware.admin.renderFooter = async function (req, res, data) {
