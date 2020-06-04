@@ -33,6 +33,10 @@ function getLatestVersion(callback) {
 			return callback(null, versionCache);
 		}
 
+		if (res.statusCode === 403) {
+			return callback(null, null);
+		}
+
 		if (res.statusCode !== 200) {
 			return callback(Error(res.statusMessage));
 		}
