@@ -49,8 +49,6 @@ middleware.applyCSRF = function (req, res, next) {
 	}
 };
 
-middleware.applyCSRFAsync = util.promisify(middleware.applyCSRF);
-
 middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login');
 
 require('./admin')(middleware);
