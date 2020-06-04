@@ -117,13 +117,12 @@ helpers.notAllowed = async function (req, res, error) {
 				title: '[[global:403.title]]',
 			});
 		} else {
-			middleware.buildHeader(req, res, function () {
-				res.status(403).render('403', {
-					path: req.path,
-					loggedIn: req.loggedIn,
-					error: data.error,
-					title: '[[global:403.title]]',
-				});
+			await middleware.buildHeaderAsync(req, res);
+			res.status(403).render('403', {
+				path: req.path,
+				loggedIn: req.loggedIn,
+				error: data.error,
+				title: '[[global:403.title]]',
 			});
 		}
 	} else if (res.locals.isAPI) {
