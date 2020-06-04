@@ -52,7 +52,7 @@ Analytics.increment = function (keys, callback) {
 	}
 };
 
-Analytics.pageView = function (payload) {
+Analytics.pageView = async function (payload) {
 	pageViews += 1;
 
 	if (payload.uid > 0) {
@@ -71,20 +71,16 @@ Analytics.pageView = function (payload) {
 			ipCache.set(payload.ip + nconf.get('secret'), hash);
 		}
 
-		db.sortedSetScore('ip:recent', hash, function (err, score) {
-			if (err) {
-				return;
-			}
-			if (!score) {
-				uniqueIPCount += 1;
-			}
-			var today = new Date();
-			today.setHours(today.getHours(), 0, 0, 0);
-			if (!score || score < today.getTime()) {
-				uniquevisitors += 1;
-				db.sortedSetAdd('ip:recent', Date.now(), hash);
-			}
-		});
+		const score = await db.sortedSetScore('ip:recent', hash);
+		if (!score) {
+			uniqueIPCount += 1;
+		}
+		const today = new Date();
+		today.setHours(today.getHours(), 0, 0, 0);
+		if (!score || score < today.getTime()) {
+			uniquevisitors += 1;
+			await db.sortedSetAdd('ip:recent', Date.now(), hash);
+		}
 	}
 };
 

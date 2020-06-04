@@ -1,6 +1,5 @@
 'use strict';
 
-var async = require('async');
 var winston = require('winston');
 var jsesc = require('jsesc');
 var nconf = require('nconf');
@@ -9,7 +8,9 @@ var semver = require('semver');
 var user = require('../user');
 var meta = require('../meta');
 var plugins = require('../plugins');
+var utils = require('../../public/src/utils');
 var versions = require('../admin/versions');
+var helpers = require('./helpers');
 
 var controllers = {
 	api: require('../controllers/api'),
@@ -18,112 +19,88 @@ var controllers = {
 
 module.exports = function (middleware) {
 	middleware.admin = {};
-	middleware.admin.isAdmin = function (req, res, next) {
+	middleware.admin.isAdmin = helpers.try(async function (req, res, next) {
 		winston.warn('[middleware.admin.isAdmin] deprecation warning, no need to use this from plugins!');
-		middleware.isAdmin(req, res, next);
-	};
+		await middleware.isAdmin(req, res, next);
+	});
 
-	middleware.admin.buildHeader = function (req, res, next) {
+	middleware.admin.buildHeader = helpers.try(async function (req, res, next) {
 		res.locals.renderAdminHeader = true;
+		res.locals.config = await controllers.api.loadConfig(req);
+		next();
+	});
 
-		async.waterfall([
-			function (next) {
-				controllers.api.loadConfig(req, next);
-			},
-			function (config, next) {
-				res.locals.config = config;
-				next();
-			},
-		], next);
-	};
-
-	middleware.admin.renderHeader = function (req, res, data, next) {
+	middleware.admin.renderHeader = async (req, res, data) => {
 		var custom_header = {
 			plugins: [],
 			authentication: [],
 		};
 		res.locals.config = res.locals.config || {};
-		async.waterfall([
-			function (next) {
-				async.parallel({
-					userData: function (next) {
-						user.getUserFields(req.uid, ['username', 'userslug', 'email', 'picture', 'email:confirmed'], next);
-					},
-					scripts: function (next) {
-						getAdminScripts(next);
-					},
-					custom_header: function (next) {
-						plugins.fireHook('filter:admin.header.build', custom_header, next);
-					},
-					configs: function (next) {
-						meta.configs.list(next);
-					},
-					latestVersion: function (next) {
-						versions.getLatestVersion(function (err, result) {
-							if (err) {
-								winston.error('[acp] Failed to fetch latest version', err);
-							}
 
-							next(null, err ? null : result);
-						});
-					},
-				}, next);
-			},
-			function (results, next) {
-				var userData = results.userData;
-				userData.uid = req.uid;
-				userData['email:confirmed'] = userData['email:confirmed'] === 1;
+		const results = await utils.promiseParallel({
+			userData: user.getUserFields(req.uid, ['username', 'userslug', 'email', 'picture', 'email:confirmed']),
+			scripts: getAdminScripts(),
+			custom_header: plugins.fireHook('filter:admin.header.build', custom_header),
+			configs: meta.configs.list(),
+			latestVersion: getLatestVersion(),
+		});
 
-				var acpPath = req.path.slice(1).split('/');
-				acpPath.forEach(function (path, i) {
-					acpPath[i] = path.charAt(0).toUpperCase() + path.slice(1);
-				});
-				acpPath = acpPath.join(' > ');
+		var userData = results.userData;
+		userData.uid = req.uid;
+		userData['email:confirmed'] = userData['email:confirmed'] === 1;
 
-				var version = nconf.get('version');
+		var acpPath = req.path.slice(1).split('/');
+		acpPath.forEach(function (path, i) {
+			acpPath[i] = path.charAt(0).toUpperCase() + path.slice(1);
+		});
+		acpPath = acpPath.join(' > ');
 
-				res.locals.config.userLang = res.locals.config.acpLang || res.locals.config.userLang;
-				var templateValues = {
-					config: res.locals.config,
-					configJSON: jsesc(JSON.stringify(res.locals.config), { isScriptContext: true }),
-					relative_path: res.locals.config.relative_path,
-					adminConfigJSON: encodeURIComponent(JSON.stringify(results.configs)),
-					user: userData,
-					userJSON: jsesc(JSON.stringify(userData), { isScriptContext: true }),
-					plugins: results.custom_header.plugins,
-					authentication: results.custom_header.authentication,
-					scripts: results.scripts,
-					'cache-buster': meta.config['cache-buster'] || '',
-					env: !!process.env.NODE_ENV,
-					title: (acpPath || 'Dashboard') + ' | NodeBB Admin Control Panel',
-					bodyClass: data.bodyClass,
-					version: version,
-					latestVersion: results.latestVersion,
-					upgradeAvailable: results.latestVersion && semver.gt(results.latestVersion, version),
-				};
+		var version = nconf.get('version');
 
-				templateValues.template = { name: res.locals.template };
-				templateValues.template[res.locals.template] = true;
+		res.locals.config.userLang = res.locals.config.acpLang || res.locals.config.userLang;
+		var templateValues = {
+			config: res.locals.config,
+			configJSON: jsesc(JSON.stringify(res.locals.config), { isScriptContext: true }),
+			relative_path: res.locals.config.relative_path,
+			adminConfigJSON: encodeURIComponent(JSON.stringify(results.configs)),
+			user: userData,
+			userJSON: jsesc(JSON.stringify(userData), { isScriptContext: true }),
+			plugins: results.custom_header.plugins,
+			authentication: results.custom_header.authentication,
+			scripts: results.scripts,
+			'cache-buster': meta.config['cache-buster'] || '',
+			env: !!process.env.NODE_ENV,
+			title: (acpPath || 'Dashboard') + ' | NodeBB Admin Control Panel',
+			bodyClass: data.bodyClass,
+			version: version,
+			latestVersion: results.latestVersion,
+			upgradeAvailable: results.latestVersion && semver.gt(results.latestVersion, version),
+		};
 
-				req.app.render('admin/header', templateValues, next);
-			},
-		], next);
+		templateValues.template = { name: res.locals.template };
+		templateValues.template[res.locals.template] = true;
+
+		return await req.app.renderAsync('admin/header', templateValues);
 	};
 
-	function getAdminScripts(callback) {
-		async.waterfall([
-			function (next) {
-				plugins.fireHook('filter:admin.scripts.get', [], next);
-			},
-			function (scripts, next) {
-				next(null, scripts.map(function (script) {
-					return { src: script };
-				}));
-			},
-		], callback);
+	async function getAdminScripts() {
+		const scripts = await plugins.fireHook('filter:admin.scripts.get', []);
+		return scripts.map(function (script) {
+			return { src: script };
+		});
 	}
 
-	middleware.admin.renderFooter = function (req, res, data, next) {
-		req.app.render('admin/footer', data, next);
+	async function getLatestVersion() {
+		try {
+			const result = await versions.getLatestVersion();
+			return result;
+		} catch (err) {
+			winston.error('[acp] Failed to fetch latest version' + err.stack);
+		}
+		return null;
+	}
+
+	middleware.admin.renderFooter = async function (req, res, data) {
+		return await req.app.renderAsync('admin/footer', data);
 	};
 };

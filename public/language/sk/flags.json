@@ -32,6 +32,9 @@
 	"view-profile": "Zobraziť profil",
 	"start-new-chat": "Začať novú konverzáciu",
 	"go-to-target": "Zobraziť cieľové označenie",
+	"delete-post": "Delete Post",
+	"purge-post": "Purge Post",
+	"restore-post": "Restore Post",
 
 	"user-view": "Zobraziť profil",
 	"user-edit": "Upraviť profil",

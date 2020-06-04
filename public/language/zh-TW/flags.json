@@ -32,6 +32,9 @@
 	"view-profile": "查看個人資料",
 	"start-new-chat": "開始新聊天對話",
 	"go-to-target": "查看舉報目標",
+	"delete-post": "Delete Post",
+	"purge-post": "Purge Post",
+	"restore-post": "Restore Post",
 
 	"user-view": "查看資料",
 	"user-edit": "編輯資料",

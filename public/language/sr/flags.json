@@ -32,6 +32,9 @@
 	"view-profile": "Погледај профил",
 	"start-new-chat": "Започни ново ћаскање",
 	"go-to-target": "Погледај циљ означавања",
+	"delete-post": "Delete Post",
+	"purge-post": "Purge Post",
+	"restore-post": "Restore Post",
 
 	"user-view": "Погледај профил",
 	"user-edit": "Уреди профил",
