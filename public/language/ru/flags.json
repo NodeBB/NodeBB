@@ -32,6 +32,9 @@
 	"view-profile": "Просмотреть профиль",
 	"start-new-chat": "Начать новый чат",
 	"go-to-target": "Показать предмет жалобы",
+	"delete-post": "Delete Post",
+	"purge-post": "Purge Post",
+	"restore-post": "Restore Post",
 
 	"user-view": "Открыть профиль",
 	"user-edit": "Изменить профиль",

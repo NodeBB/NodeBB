@@ -32,6 +32,9 @@
 	"view-profile": "プロフィールを見る",
 	"start-new-chat": "新しいチャットを開始",
 	"go-to-target": "フラグのターゲットを表示",
+	"delete-post": "Delete Post",
+	"purge-post": "Purge Post",
+	"restore-post": "Restore Post",
 
 	"user-view": "プロフィールを見る",
 	"user-edit": "プロフィールを編集",

@@ -32,6 +32,9 @@
 	"view-profile": "Ver perfil",
 	"start-new-chat": "Empezar nuevo chat",
 	"go-to-target": "Ver objetivo marcado",
+	"delete-post": "Delete Post",
+	"purge-post": "Purge Post",
+	"restore-post": "Restore Post",
 
 	"user-view": "Ver perfil",
 	"user-edit": "Editar perfil",

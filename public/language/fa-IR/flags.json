@@ -32,6 +32,9 @@
 	"view-profile": "نمایش پروفایل",
 	"start-new-chat": "شروع چت جدید",
 	"go-to-target": "مشاهده محتوای گزارش شده",
+	"delete-post": "Delete Post",
+	"purge-post": "Purge Post",
+	"restore-post": "Restore Post",
 
 	"user-view": "نمایش پروفایل",
 	"user-edit": "ویرایش پروفایل",
