@@ -3,6 +3,7 @@
 var nconf = require('nconf');
 var jsesc = require('jsesc');
 var _ = require('lodash');
+var util = require('util');
 
 var db = require('../database');
 var user = require('../user');
@@ -36,6 +37,8 @@ module.exports = function (middleware) {
 		res.locals.config = config;
 		next();
 	});
+
+	middleware.buildHeaderAsync = util.promisify(middleware.buildHeader);
 
 	async function generateHeader(req, res, data) {
 		var registrationType = meta.config.registrationType || 'normal';
