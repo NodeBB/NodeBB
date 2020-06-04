@@ -98,6 +98,9 @@ SocketHelpers.sendNotificationToPostOwner = async function (pid, fromuid, comman
 	const title = utils.decodeHTMLEntities(topicTitle);
 	const titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 
+	postObj.content = posts.relativeToAbsolute(postObj.content, posts.urlRegex);
+	postObj.content = posts.relativeToAbsolute(postObj.content, posts.imgRegex);
+
 	const notifObj = await notifications.create({
 		type: command,
 		bodyShort: '[[' + notification + ', ' + username + ', ' + titleEscaped + ']]',

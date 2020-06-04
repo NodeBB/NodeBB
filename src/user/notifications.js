@@ -10,6 +10,7 @@ var notifications = require('../notifications');
 var privileges = require('../privileges');
 var plugins = require('../plugins');
 var utils = require('../utils');
+var posts = require('../posts');
 
 var UserNotifications = module.exports;
 
@@ -176,6 +177,9 @@ UserNotifications.sendTopicNotificationToFollowers = async function (uid, topicD
 			title = utils.decodeHTMLEntities(title);
 			title = title.replace(/,/g, '\\,');
 		}
+
+		postData.content = posts.relativeToAbsolute(postData.content, posts.urlRegex);
+		postData.content = posts.relativeToAbsolute(postData.content, posts.imgRegex);
 
 		const notifObj = await notifications.create({
 			type: 'new-topic',
