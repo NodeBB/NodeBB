@@ -124,6 +124,7 @@
 	</div>
 
 	<div class="col-lg-3">
+		{{{ if showSystemControls }}}
 		<div class="panel panel-default">
 			<div class="panel-heading">[[admin/dashboard:control-panel]]</div>
 			<div class="panel-body text-center">
@@ -152,6 +153,7 @@
 				<span id="toggle-realtime">[[admin/dashboard:realtime-chart-updates]] <strong>OFF</strong> <i class="fa fa fa-toggle-off pointer"></i></span>
 			</div>
 		</div>
+		{{{ end }}}
 
 		<div class="panel panel-default">
 			<div class="panel-heading">[[admin/dashboard:active-users]]</div>

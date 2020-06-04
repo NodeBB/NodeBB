@@ -36,5 +36,7 @@
 
 	"admin-dashboard": "Dashboard",
 	"admin-categories": "Categories",
+	"admin-privileges": "Privileges",
+	"admin-users": "Users",
 	"admin-settings": "Settings"
 }

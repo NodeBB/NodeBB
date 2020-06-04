@@ -15,12 +15,16 @@ module.exports = function (privileges) {
 	privileges.admin.privilegeLabels = [
 		{ name: '[[admin/manage/privileges:admin-dashboard]]' },
 		{ name: '[[admin/manage/privileges:admin-categories]]' },
+		{ name: '[[admin/manage/privileges:admin-privileges]]' },
+		{ name: '[[admin/manage/privileges:admin-users]]' },
 		{ name: '[[admin/manage/privileges:admin-settings]]' },
 	];
 
 	privileges.admin.userPrivilegeList = [
 		'admin:dashboard',
 		'admin:categories',
+		'admin:privileges',
+		'admin:users',
 		'admin:settings',
 	];
 
@@ -30,12 +34,15 @@ module.exports = function (privileges) {
 	privileges.admin.routeMap = {
 		dashboard: 'admin:dashboard',
 		'manage/categories': 'admin:categories',
+		'manage/privileges': 'admin:privileges',
+		'manage/users': 'admin:users',
 		'extend/plugins': 'admin:settings',
 		'extend/widgets': 'admin:settings',
 		'extend/rewards': 'admin:settings',
 	};
 	privileges.admin.routeRegexpMap = {
 		'^manage/categories/\\d+': 'admin:categories',
+		'^manage/privileges/\\d+': 'admin:privileges',
 		'^settings/[\\w\\-]+$': 'admin:settings',
 		'^appearance/[\\w]+$': 'admin:settings',
 		'^plugins/[\\w\\-]+$': 'admin:settings',
@@ -52,6 +59,28 @@ module.exports = function (privileges) {
 		'admin.categories.update': 'admin:categories',
 		'admin.categories.purge': 'admin:categories',
 		'admin.categories.copySettingsFrom': 'admin:categories',
+
+		'admin.categories.getPrivilegeSettings': 'admin:privileges',
+		'admin.categories.setPrivilege': 'admin:privileges',
+		'admin.categories.copyPrivilegesToChildren': 'admin:privileges',
+		'admin.categories.copyPrivilegesFrom': 'admin:privileges',
+		'admin.categories.copyPrivilegesToAllCategories': 'admin:privileges',
+
+		'admin.user.loadGroups': 'admin:users',
+		'admin.groups.join': 'admin:users',
+		'admin.groups.leave': 'admin:users',
+		'user.banUsers': 'admin:users',
+		'user.unbanUsers': 'admin:users',
+		'admin.user.resetLockouts': 'admin:users',
+		'admin.user.validateEmail': 'admin:users',
+		'admin.user.sendValidationEmail': 'admin:users',
+		'admin.user.sendPasswordResetEmail': 'admin:users',
+		'admin.user.forcePasswordReset': 'admin:users',
+		'admin.user.deleteUsers': 'admin:users',
+		'admin.user.deleteUsersAndContent': 'admin:users',
+		'admin.user.createUser': 'admin:users',
+		'admin.user.search': 'admin:users',
+		'admin.user.invite': 'admin:users',
 
 		'admin.getSearchDict': 'admin:settings',
 		'admin.config.setMultiple': 'admin:settings',
