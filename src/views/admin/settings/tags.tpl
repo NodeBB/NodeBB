@@ -27,7 +27,6 @@
 				<input id="maximumTagLength" type="text" class="form-control" value="15" data-field="maximumTagLength">
 			</div>
 		</form>
-		<a href="{config.relative_path}/admin/manage/tags">[[admin/settings/tags:goto-manage]]</a>
 	</div>
 </div>
 
