@@ -116,14 +116,16 @@ define('forum/topic', [
 	};
 
 	function handleBookmark(tid) {
-		// use the user's bookmark data if available, fallback to local if available
+		if (window.location.hash) {
+			var el = $(utils.escapeHTML(window.location.hash));
+			if (el.length) {
+				return navigator.scrollToElement(el, true, 0);
+			}
+		}
 		var bookmark = ajaxify.data.bookmark || storage.getItem('topic:' + tid + ':bookmark');
 		var postIndex = ajaxify.data.postIndex;
-		if (window.location.hash) {
-			var hash = window.location.hash;
-			window.location.hash = '';
-			window.location.hash = hash;
-		} else if (postIndex > 1) {
+
+		if (postIndex > 1) {
 			if (components.get('post/anchor', postIndex - 1).length) {
 				return navigator.scrollToPostIndex(postIndex - 1, true, 0);
 			}
