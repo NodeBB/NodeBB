@@ -25,9 +25,12 @@ searchController.search = async function (req, res, next) {
 	const userPrivileges = await utils.promiseParallel({
 		'search:users': privileges.global.can('search:users', req.uid),
 		'search:content': privileges.global.can('search:content', req.uid),
+		'search:tags': privileges.global.can('search:tags', req.uid),
 	});
 
-	const allowed = (req.query.in === 'users') ? userPrivileges['search:users'] : userPrivileges['search:content'];
+	const allowed = (req.query.in === 'users' && userPrivileges['search:users']) ||
+					(req.query.in === 'tags' && userPrivileges['search:tags']) ||
+					(['titles', 'titlesposts', 'posts'].includes(req.query.in) && userPrivileges['search:content']);
 
 	if (!allowed) {
 		return helpers.notAllowed(req, res);
