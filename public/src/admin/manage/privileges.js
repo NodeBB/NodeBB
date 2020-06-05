@@ -11,12 +11,15 @@ define('admin/manage/privileges', [
 	var cid;
 
 	Privileges.init = function () {
-		cid = ajaxify.data.cid || 0;
+		cid = ajaxify.data.cid || 'admin';
 
 		categorySelector.init($('[component="category-selector"]'), function (category) {
-			var cid = parseInt(category.cid, 10);
-			ajaxify.go('admin/manage/privileges/' + (cid || ''));
+			cid = parseInt(category.cid, 10);
+			cid = !isNaN(cid) ? cid : 'admin';
+			Privileges.refreshPrivilegeTable();
+			ajaxify.updateHistory('admin/manage/privileges/' + (cid || ''));
 		});
+
 		Privileges.setupPrivilegeTable();
 	};
 
@@ -77,12 +80,12 @@ define('admin/manage/privileges', [
 	};
 
 	Privileges.refreshPrivilegeTable = function () {
-		socket.emit('admin.categories.getPrivilegeSettings', ajaxify.data.admin ? 'admin' : cid, function (err, privileges) {
+		socket.emit('admin.categories.getPrivilegeSettings', cid, function (err, privileges) {
 			if (err) {
 				return app.alertError(err.message);
 			}
 
-			var tpl = cid ? 'admin/partials/privileges/category' : 'admin/partials/privileges/global';
+			var tpl = parseInt(cid, 10) ? 'admin/partials/privileges/category' : 'admin/partials/privileges/global';
 			Benchpress.parse(tpl, {
 				privileges: privileges,
 			}, function (html) {
