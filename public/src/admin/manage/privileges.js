@@ -189,7 +189,6 @@ define('admin/manage/privileges', [
 					defaultPrivileges = cid ? ['groups:find', 'groups:read', 'groups:topics:read'] : ['groups:chat'];
 				}
 
-				console.log(cid, defaultPrivileges);
 				socket.emit('admin.categories.setPrivilege', {
 					cid: cid,
 					privilege: defaultPrivileges,
