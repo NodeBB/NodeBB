@@ -9,6 +9,7 @@ const search = require('../search');
 const categories = require('../categories');
 const pagination = require('../pagination');
 const privileges = require('../privileges');
+const utils = require('../utils');
 const helpers = require('./helpers');
 
 const searchController = module.exports;
@@ -21,7 +22,13 @@ searchController.search = async function (req, res, next) {
 
 	const searchOnly = parseInt(req.query.searchOnly, 10) === 1;
 
-	const allowed = await privileges.global.can('search:content', req.uid);
+	const permissions = await utils.promiseParallel({
+		users: privileges.global.can('search:users', req.uid),
+		content: privileges.global.can('search:content', req.uid),
+	});
+
+	const allowed = (req.query.in === 'users') ? permissions.users : permissions.content;
+
 	if (!allowed) {
 		return helpers.notAllowed(req, res);
 	}
@@ -77,6 +84,8 @@ searchController.search = async function (req, res, next) {
 	searchData.title = '[[global:header.search]]';
 
 	searchData.searchDefaultSortBy = meta.config.searchDefaultSortBy || '';
+	searchData.permissions = permissions;
+
 	res.render('search', searchData);
 };
 
