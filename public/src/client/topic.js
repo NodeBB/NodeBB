@@ -39,7 +39,7 @@ define('forum/topic', [
 
 	Topic.init = function () {
 		var tid = ajaxify.data.tid;
-
+		currentUrl = ajaxify.currentPage;
 		$(window).trigger('action:topic.loading');
 
 		app.enterRoom('topic_' + tid);
@@ -119,8 +119,11 @@ define('forum/topic', [
 		// use the user's bookmark data if available, fallback to local if available
 		var bookmark = ajaxify.data.bookmark || storage.getItem('topic:' + tid + ':bookmark');
 		var postIndex = ajaxify.data.postIndex;
-
-		if (postIndex > 1) {
+		if (window.location.hash) {
+			var hash = window.location.hash;
+			window.location.hash = '';
+			window.location.hash = hash;
+		} else if (postIndex > 1) {
 			if (components.get('post/anchor', postIndex - 1).length) {
 				return navigator.scrollToPostIndex(postIndex - 1, true, 0);
 			}
