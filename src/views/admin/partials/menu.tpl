@@ -22,10 +22,10 @@
 			<li><a href="{relative_path}/admin/manage/tags">[[admin/menu:manage/tags]]</a></li>
 			<li><a href="{relative_path}/admin/manage/uploads">[[admin/menu:manage/uploads]]</a></li>
 			<li><a href="{relative_path}/admin/manage/digest">[[admin/menu:manage/digest]]</a></li>
-			{{{ end }}}
 
 			<li><a target="_top" href="{relative_path}/post-queue">[[admin/menu:manage/post-queue]] <i class="fa fa-external-link"></i></a></li>
 			<li><a target="_top" href="{relative_path}/ip-blacklist">[[admin/menu:manage/ip-blacklist]] <i class="fa fa-external-link"></i></a></li>
+			{{{ end }}}
 		</ul>
 	</section>
 
@@ -189,10 +189,10 @@
 					<li><a href="{relative_path}/admin/manage/tags">[[admin/menu:manage/tags]]</a></li>
 					<li><a href="{relative_path}/admin/manage/uploads">[[admin/menu:manage/uploads]]</a></li>
 					<li><a href="{relative_path}/admin/manage/digest">[[admin/menu:manage/digest]]</a></li>
-					{{{ end }}}
 					<li role="separator" class="divider"></li>
 					<li><a target="_top" href="{relative_path}/post-queue">[[admin/menu:manage/post-queue]] <i class="fa fa-external-link"></i></a></li>
 					<li><a target="_top" href="{relative_path}/ip-blacklist">[[admin/menu:manage/ip-blacklist]] <i class="fa fa-external-link"></i></a></li>
+					{{{ end }}}
 				</ul>
 			</li>
 

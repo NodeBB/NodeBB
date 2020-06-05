@@ -15,7 +15,7 @@ define('admin/manage/privileges', [
 
 		categorySelector.init($('[component="category-selector"]'), function (category) {
 			cid = parseInt(category.cid, 10);
-			cid = !isNaN(cid) ? cid : 'admin';
+			cid = isNaN(cid) ? 'admin' : cid;
 			Privileges.refreshPrivilegeTable();
 			ajaxify.updateHistory('admin/manage/privileges/' + (cid || ''));
 		});
@@ -121,7 +121,7 @@ define('admin/manage/privileges', [
 
 	Privileges.setPrivilege = function (member, privilege, state, checkboxEl) {
 		socket.emit('admin.categories.setPrivilege', {
-			cid: !isNaN(cid) ? cid : 0,
+			cid: isNaN(cid) ? 0 : cid,
 			privilege: privilege,
 			set: state,
 			member: member,
@@ -154,7 +154,7 @@ define('admin/manage/privileges', [
 					defaultPrivileges = cid ? ['find', 'read', 'topics:read'] : ['chat'];
 				}
 				socket.emit('admin.categories.setPrivilege', {
-					cid: !isNaN(cid) ? cid : 0,
+					cid: isNaN(cid) ? 0 : cid,
 					privilege: defaultPrivileges,
 					set: true,
 					member: ui.item.user.uid,
@@ -190,7 +190,7 @@ define('admin/manage/privileges', [
 				}
 
 				socket.emit('admin.categories.setPrivilege', {
-					cid: !isNaN(cid) ? cid : 0,
+					cid: isNaN(cid) ? 0 : cid,
 					privilege: defaultPrivileges,
 					set: true,
 					member: ui.item.group.name,
