@@ -121,7 +121,7 @@ define('admin/manage/privileges', [
 
 	Privileges.setPrivilege = function (member, privilege, state, checkboxEl) {
 		socket.emit('admin.categories.setPrivilege', {
-			cid: cid,
+			cid: !isNaN(cid) ? cid : 0,
 			privilege: privilege,
 			set: state,
 			member: member,
