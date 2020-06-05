@@ -77,6 +77,14 @@ SocketAdmin.fireEvent = function (socket, data, callback) {
 	callback();
 };
 
+SocketAdmin.deleteEvents = function (socket, eids, callback) {
+	events.deleteEvents(eids, callback);
+};
+
+SocketAdmin.deleteAllEvents = function (socket, data, callback) {
+	events.deleteAll(callback);
+};
+
 SocketAdmin.getSearchDict = async function (socket) {
 	const settings = await user.getSettings(socket.uid);
 	const lang = settings.userLang || meta.config.defaultLang || 'en-GB';
