@@ -4542,12 +4542,12 @@ paths:
                         type: string
                       searchDefaultSortBy:
                         type: string
-                      permissions:
+                      privileges:
                         type: object
                         properties:
-                          users:
+                          search:users:
                             type: boolean
-                          content:
+                          search:content:
                             type: boolean
                     required:
                       - posts
