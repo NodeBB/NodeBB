@@ -4,11 +4,12 @@ const util = require('util');
 const nconf = require('nconf');
 const meta = require('../meta');
 const user = require('../user');
+const helpers = require('./helpers');
 
 module.exports = function (middleware) {
-	middleware.maintenanceMode = async function maintenanceMode(req, res, next) {
+	middleware.maintenanceMode = helpers.try(async function maintenanceMode(req, res, next) {
 		if (!meta.config.maintenanceMode) {
-			return setImmediate(next);
+			return next();
 		}
 
 		const hooksAsync = util.promisify(middleware.pluginHooks);
@@ -16,12 +17,12 @@ module.exports = function (middleware) {
 
 		const url = req.url.replace(nconf.get('relative_path'), '');
 		if (url.startsWith('/login') || url.startsWith('/api/login')) {
-			return setImmediate(next);
+			return next();
 		}
 
 		const isAdmin = await user.isAdministrator(req.uid);
 		if (isAdmin) {
-			return setImmediate(next);
+			return next();
 		}
 
 		res.status(meta.config.maintenanceModeStatus);
@@ -34,8 +35,7 @@ module.exports = function (middleware) {
 		if (res.locals.isAPI) {
 			return res.json(data);
 		}
-		const buildHeaderAsync = util.promisify(middleware.buildHeader);
-		await buildHeaderAsync(req, res);
+		await middleware.buildHeaderAsync(req, res);
 		res.render('503', data);
-	};
+	});
 };

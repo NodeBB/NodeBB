@@ -32,6 +32,9 @@
 	"view-profile": "Voir le profil",
 	"start-new-chat": "Démarrer un nouveau Chat",
 	"go-to-target": "Voir le signalement cible",
+	"delete-post": "Supprimer les messages",
+	"purge-post": "Supprimer définitivement",
+	"restore-post": "Restaurer les messages",
 
 	"user-view": "Voir le profil",
 	"user-edit": "Éditer le profil",

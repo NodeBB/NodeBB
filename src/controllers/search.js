@@ -9,6 +9,7 @@ const search = require('../search');
 const categories = require('../categories');
 const pagination = require('../pagination');
 const privileges = require('../privileges');
+const utils = require('../utils');
 const helpers = require('./helpers');
 
 const searchController = module.exports;
@@ -21,7 +22,16 @@ searchController.search = async function (req, res, next) {
 
 	const searchOnly = parseInt(req.query.searchOnly, 10) === 1;
 
-	const allowed = await privileges.global.can('search:content', req.uid);
+	const userPrivileges = await utils.promiseParallel({
+		'search:users': privileges.global.can('search:users', req.uid),
+		'search:content': privileges.global.can('search:content', req.uid),
+		'search:tags': privileges.global.can('search:tags', req.uid),
+	});
+	req.query.in = req.query.in || 'posts';
+	const allowed = (req.query.in === 'users' && userPrivileges['search:users']) ||
+					(req.query.in === 'tags' && userPrivileges['search:tags']) ||
+					(['titles', 'titlesposts', 'posts'].includes(req.query.in) && userPrivileges['search:content']);
+
 	if (!allowed) {
 		return helpers.notAllowed(req, res);
 	}
@@ -35,7 +45,7 @@ searchController.search = async function (req, res, next) {
 
 	const data = {
 		query: req.query.term,
-		searchIn: req.query.in || 'posts',
+		searchIn: req.query.in,
 		matchWords: req.query.matchWords || 'all',
 		postedBy: req.query.by,
 		categories: req.query.categories,
@@ -77,6 +87,8 @@ searchController.search = async function (req, res, next) {
 	searchData.title = '[[global:header.search]]';
 
 	searchData.searchDefaultSortBy = meta.config.searchDefaultSortBy || '';
+	searchData.privileges = userPrivileges;
+
 	res.render('search', searchData);
 };
 

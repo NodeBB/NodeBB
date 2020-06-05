@@ -32,6 +32,9 @@
 	"view-profile": "Profil megtekintése",
 	"start-new-chat": "Új chat indítása",
 	"go-to-target": "View Flag Target",
+	"delete-post": "Delete Post",
+	"purge-post": "Purge Post",
+	"restore-post": "Restore Post",
 
 	"user-view": "View Profile",
 	"user-edit": "Edit Profile",

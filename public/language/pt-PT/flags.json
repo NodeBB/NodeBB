@@ -32,6 +32,9 @@
 	"view-profile": "Ver Perfil",
 	"start-new-chat": "Iniciar Nova Conversa",
 	"go-to-target": "Ver Alvo da Denúncia",
+	"delete-post": "Delete Post",
+	"purge-post": "Purge Post",
+	"restore-post": "Restore Post",
 
 	"user-view": "Ver Perfil",
 	"user-edit": "Editar Perfil",

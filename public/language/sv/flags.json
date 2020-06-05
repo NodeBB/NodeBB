@@ -32,6 +32,9 @@
 	"view-profile": "Visa profil",
 	"start-new-chat": "Påbörja ny chatt",
 	"go-to-target": "Visa flaggans ämne",
+	"delete-post": "Delete Post",
+	"purge-post": "Purge Post",
+	"restore-post": "Restore Post",
 
 	"user-view": "Visa profil",
 	"user-edit": "Redigera profil",

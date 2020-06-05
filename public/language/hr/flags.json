@@ -32,6 +32,9 @@
 	"view-profile": "Pogledaj profil",
 	"start-new-chat": "Pokreni novi razgovor",
 	"go-to-target": "Pogledaj metu zastave",
+	"delete-post": "Delete Post",
+	"purge-post": "Purge Post",
+	"restore-post": "Restore Post",
 
 	"user-view": "Pogledaj profil",
 	"user-edit": "Uredi profil",

@@ -56,7 +56,7 @@ function topicRoutes(app, middleware, controllers) {
 
 function postRoutes(app, middleware, controllers) {
 	const middlewares = [middleware.maintenanceMode, middleware.registrationComplete, middleware.pluginHooks];
-	app.get('/post/:pid', middleware.busyCheck, middleware.buildHeader, middlewares, controllers.posts.redirectToPost);
+	app.get('/post/:pid', middleware.busyCheck, middlewares, controllers.posts.redirectToPost);
 	app.get('/api/post/:pid', middlewares, controllers.posts.redirectToPost);
 }
 
