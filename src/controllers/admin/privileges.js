@@ -47,6 +47,5 @@ privilegesController.get = async function (req, res) {
 		categories: categoriesData,
 		selectedCategory: selectedCategory,
 		cid: cid,
-		admin: isAdminPriv,
 	});
 };

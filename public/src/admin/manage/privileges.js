@@ -154,7 +154,7 @@ define('admin/manage/privileges', [
 					defaultPrivileges = cid ? ['find', 'read', 'topics:read'] : ['chat'];
 				}
 				socket.emit('admin.categories.setPrivilege', {
-					cid: cid,
+					cid: !isNaN(cid) ? cid : 0,
 					privilege: defaultPrivileges,
 					set: true,
 					member: ui.item.user.uid,
@@ -190,7 +190,7 @@ define('admin/manage/privileges', [
 				}
 
 				socket.emit('admin.categories.setPrivilege', {
-					cid: cid,
+					cid: !isNaN(cid) ? cid : 0,
 					privilege: defaultPrivileges,
 					set: true,
 					member: ui.item.group.name,
