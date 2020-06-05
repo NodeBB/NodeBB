@@ -3,6 +3,8 @@
 		<i class="fa fw-fw fa-sign-out"></i>
 	</a>
 </li>
+
+{{{ if user.privileges.superadmin }}}
 <li>
 	<a href="#" class="restart" data-toggle="tooltip" data-placement="bottom" title="[[admin/menu:restart-forum]]">
 		<i class="fa fa-fw fa-repeat"></i>
@@ -13,6 +15,7 @@
 		<i class="fa fa-fw fa-refresh"></i>
 	</a>
 </li>
+{{{ end }}}
 
 <li>
 	<a href="{config.relative_path}/" data-toggle="tooltip" data-placement="bottom" title="[[admin/menu:view-forum]]">

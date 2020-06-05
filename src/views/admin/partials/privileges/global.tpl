@@ -1,9 +1,6 @@
 					<label>[[admin/manage/privileges:group-privileges]]</label>
 					<table class="table table-striped privilege-table">
 						<thead>
-							<tr class="privilege-table-header">
-								<th colspan="15"></th>
-							</tr><tr><!-- zebrastripe reset --></tr>
 							<tr>
 								<th colspan="2">[[admin/manage/categories:privileges.section-group]]</th>
 								<!-- BEGIN privileges.labels.groups -->

@@ -11,11 +11,11 @@
 			</div>
 
 			<div class="privilege-table-container">
-				<!-- IF cid -->
-				<!-- IMPORT admin/partials/categories/privileges.tpl -->
-				<!-- ELSE -->
-				<!-- IMPORT admin/partials/global/privileges.tpl -->
-				<!-- ENDIF cid -->
+				{{{ if cid }}}
+				<!-- IMPORT admin/partials/privileges/category.tpl -->
+				{{{ else }}}
+				<!-- IMPORT admin/partials/privileges/global.tpl -->
+				{{{ endif }}}
 			</div>
 		</div>
 	</form>

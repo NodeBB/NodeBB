@@ -16,11 +16,12 @@ const utils = require('../../utils');
 const dashboardController = module.exports;
 
 dashboardController.get = async function (req, res) {
-	const [stats, notices, latestVersion, lastrestart] = await Promise.all([
+	const [stats, notices, latestVersion, lastrestart, isAdmin] = await Promise.all([
 		getStats(),
 		getNotices(),
 		getLatestVersion(),
 		getLastRestart(),
+		user.isAdministrator(),
 	]);
 	const version = nconf.get('version');
 
@@ -34,6 +35,7 @@ dashboardController.get = async function (req, res) {
 		stats: stats,
 		canRestart: !!process.send,
 		lastrestart: lastrestart,
+		showSystemControls: isAdmin,
 	});
 };
 

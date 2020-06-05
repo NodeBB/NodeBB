@@ -5,7 +5,7 @@ const helpers = require('./helpers');
 module.exports = function (app, middleware, controllers) {
 	const middlewares = [middleware.pluginHooks];
 
-	helpers.setupAdminPageRoute(app, '/admin', middleware, middlewares, controllers.admin.dashboard.get);
+	helpers.setupAdminPageRoute(app, '/admin', middleware, middlewares, controllers.admin.routeIndex);
 
 	helpers.setupAdminPageRoute(app, '/admin/dashboard', middleware, middlewares, controllers.admin.dashboard.get);
 

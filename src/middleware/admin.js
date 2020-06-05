@@ -8,6 +8,7 @@ var semver = require('semver');
 var user = require('../user');
 var meta = require('../meta');
 var plugins = require('../plugins');
+var privileges = require('../privileges');
 var utils = require('../../public/src/utils');
 var versions = require('../admin/versions');
 var helpers = require('./helpers');
@@ -43,11 +44,13 @@ module.exports = function (middleware) {
 			custom_header: plugins.fireHook('filter:admin.header.build', custom_header),
 			configs: meta.configs.list(),
 			latestVersion: getLatestVersion(),
+			privileges: privileges.admin.get(req.uid),
 		});
 
 		var userData = results.userData;
 		userData.uid = req.uid;
 		userData['email:confirmed'] = userData['email:confirmed'] === 1;
+		userData.privileges = results.privileges;
 
 		var acpPath = req.path.slice(1).split('/');
 		acpPath.forEach(function (path, i) {
@@ -102,5 +105,27 @@ module.exports = function (middleware) {
 
 	middleware.admin.renderFooter = async function (req, res, data) {
 		return await req.app.renderAsync('admin/footer', data);
+	};
+
+	middleware.admin.checkPrivileges = async (req, res, next) => {
+		// Kick out guests, obviously
+		if (!req.uid) {
+			return controllers.helpers.notAllowed(req, res);
+		}
+
+		// Users in "administrators" group are considered super admins
+		const isAdmin = await user.isAdministrator(req.uid);
+		if (isAdmin) {
+			return next();
+		}
+
+		// Otherwise, check for privilege based on page (if not in mapping, deny access)
+		const path = req.path.replace(/^(\/api)?\/admin\/?/g, '');
+		const privilege = privileges.admin.resolve(path);
+		if (!privilege || !await privileges.admin.can(privilege, req.uid)) {
+			return controllers.helpers.notAllowed(req, res);
+		}
+
+		return next();
 	};
 };

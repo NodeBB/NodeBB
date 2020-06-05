@@ -354,6 +354,8 @@ paths:
                           timestampISO:
                             type: string
                             description: An ISO 8601 formatted date string (complementing `timestamp`)
+                      showSystemControls:
+                        type: boolean
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/settings/languages:
     get:
