@@ -136,7 +136,7 @@
         "@commitlint/cli": "8.3.5",
         "@commitlint/config-angular": "8.3.4",
         "coveralls": "3.1.0",
-        "eslint": "7.1.0",
+        "eslint": "7.2.0",
         "eslint-config-airbnb-base": "14.1.0",
         "eslint-plugin-import": "2.21.1",
         "grunt": "1.1.0",
