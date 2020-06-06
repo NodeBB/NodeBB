@@ -5,7 +5,6 @@
     "max-per-topic": "Etiquetas (tags) Máximas por Tema",
     "min-length": "Longitud Mínima de Etiqueta (tag)",
     "max-length": "Longitud Máxima de Etiqueta (tag)",
-    "goto-manage": "Click aquí para visitar la página de administración de etiquetas (tags)",
     "related-topics": "Temas Relacionados",
     "max-related-topics": "Máximo de temas relacionados para mostrar (si lo soporta el theme/plantilla)"
 }

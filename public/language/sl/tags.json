@@ -3,5 +3,6 @@
     "tags": "Oznake",
     "enter_tags_here": "Tu vpišite oznake. Dovoljeno število znakov: najmanj %1 in največ %2.",
     "enter_tags_here_short": "Vpišite oznake...",
-    "no_tags": "Oznak še ni."
+    "no_tags": "Oznak še ni.",
+    "select_tags": "Select Tags"
 }

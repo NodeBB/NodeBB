@@ -2,6 +2,7 @@
 	"events": "События",
 	"no-events": "Нет событий",
 	"control-panel": "Панель управления событиями",
+	"delete-events": "Delete Events",
 	"filters": "Фильтр",
 	"filters-apply": "Применить фильтр",
 	"filter-type": "Тип события",

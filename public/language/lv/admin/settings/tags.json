@@ -5,7 +5,6 @@
     "max-per-topic": "Maksimālais birku skaits tematā",
     "min-length": "Minimālais birkas nosaukuma garums",
     "max-length": "Maksimālais birkas nosaukuma garums",
-    "goto-manage": "Noklikšķini, lai apmeklētu birku vadības lapu.",
     "related-topics": "Saistītie temati",
     "max-related-topics": "Maksimālais skaits saistīto tematu, ko rādīt (ja tema tos atbalsta)"
 }

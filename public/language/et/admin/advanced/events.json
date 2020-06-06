@@ -2,6 +2,7 @@
 	"events": "Sündmused",
 	"no-events": "Sündmused puuduvad",
 	"control-panel": "Sündmuste kontrollpaneel",
+	"delete-events": "Delete Events",
 	"filters": "Filters",
 	"filters-apply": "Apply Filters",
 	"filter-type": "Event Type",

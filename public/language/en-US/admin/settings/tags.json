@@ -5,7 +5,6 @@
     "max-per-topic": "Maximum Tags per Topic",
     "min-length": "Minimum Tag Length",
     "max-length": "Maximum Tag Length",
-    "goto-manage": "Click here to visit the tag management page.",
     "related-topics": "Related Topics",
     "max-related-topics": "Maximum related topics to display (if supported by theme)"
 }

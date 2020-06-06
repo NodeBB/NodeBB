@@ -1,6 +1,7 @@
 {
 	"global": "Genel",
 	"global.no-users": "Kullanıcıya özel genel ayrıcalık yok.",
+	"admin": "Admin",
 	"group-privileges": "Grup Ayrıcalıkları",
 	"user-privileges": "Kullanıcı Ayrıcalıkları",
 	"chat": "Sohbet",
@@ -31,5 +32,11 @@
 	"downvote-posts": "İletilere Eksi Oy Ver",
 	"delete-topics": "Başlıkları Sil",
 	"purge": "Temizle",
-	"moderate": "Moderasyon"
+	"moderate": "Moderasyon",
+
+	"admin-dashboard": "Dashboard",
+	"admin-categories": "Categories",
+	"admin-privileges": "Privileges",
+	"admin-users": "Users",
+	"admin-settings": "Settings"
 }

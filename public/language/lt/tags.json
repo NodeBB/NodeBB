@@ -3,5 +3,6 @@
     "tags": "Žymos",
     "enter_tags_here": "Įveskite žymas čia, tarp %1 ir %2 simbolių kiekvienam",
     "enter_tags_here_short": "Įveskite žymas...",
-    "no_tags": "Žymų kolkas nėra."
+    "no_tags": "Žymų kolkas nėra.",
+    "select_tags": "Select Tags"
 }

@@ -3,5 +3,6 @@
     "tags": "Etiketler",
     "enter_tags_here": "Etiketleri buraya girin. %1-%2 karakter. Her etiketten sonra enter tuşuna basın.",
     "enter_tags_here_short": "Etiketleri gir...",
-    "no_tags": "Henüz etiket yok."
+    "no_tags": "Henüz etiket yok.",
+    "select_tags": "Select Tags"
 }

@@ -3,5 +3,6 @@
     "tags": "Tagi",
     "enter_tags_here": "Wpisz tagi tutaj, każdy o długości od %1 do %2 znaków.",
     "enter_tags_here_short": "Wpisz tagi...",
-    "no_tags": "Jeszcze nie ma tagów."
+    "no_tags": "Jeszcze nie ma tagów.",
+    "select_tags": "Select Tags"
 }

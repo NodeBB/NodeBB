@@ -5,7 +5,6 @@
     "max-per-topic": "每話題的最大標籤數",
     "min-length": "最短標籤長度",
     "max-length": "最大標籤長度",
-    "goto-manage": "點擊這裡訪問標籤管理頁面。",
     "related-topics": "相關主題",
     "max-related-topics": "最大相關主題顯示量(如果主題支持)"
 }

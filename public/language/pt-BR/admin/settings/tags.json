@@ -5,7 +5,6 @@
     "max-per-topic": "Máximo de Tags por Tópico",
     "min-length": "Tamanho Mínimo das Tags",
     "max-length": "Tamanho Máximo das Tags",
-    "goto-manage": "Clique aqui para visitar a página de administração da tag.",
     "related-topics": "Tópicos Relacionados",
     "max-related-topics": "Máximo de tópicos relacionados para exibir (se suportado pelo tema)"
 }

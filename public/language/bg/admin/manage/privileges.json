@@ -1,6 +1,7 @@
 {
 	"global": "Глобални",
 	"global.no-users": "Няма глобални правомощия за отделни потребители.",
+	"admin": "Администратор",
 	"group-privileges": "Правомощия за групите",
 	"user-privileges": "Правомощия за потребителите",
 	"chat": "Разговор",
@@ -31,5 +32,11 @@
 	"downvote-posts": "Отрицателно гласуване за публикации",
 	"delete-topics": "Изтриване на теми",
 	"purge": "Изчистване",
-	"moderate": "Модериране"
+	"moderate": "Модериране",
+
+	"admin-dashboard": "Табло",
+	"admin-categories": "Категории",
+	"admin-privileges": "Правомощия",
+	"admin-users": "Потребители",
+	"admin-settings": "Настройки"
 }

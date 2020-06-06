@@ -2,6 +2,7 @@
 	"events": "イベント",
 	"no-events": "イベントがありません",
 	"control-panel": "イベントのコントロールパネル",
+	"delete-events": "Delete Events",
 	"filters": "Filters",
 	"filters-apply": "Apply Filters",
 	"filter-type": "Event Type",

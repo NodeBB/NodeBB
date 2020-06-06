@@ -2,6 +2,7 @@
 	"events": "Notikumi",
 	"no-events": "Nav notikumu",
 	"control-panel": "Notikumu vadības panelis",
+	"delete-events": "Delete Events",
 	"filters": "Filters",
 	"filters-apply": "Apply Filters",
 	"filter-type": "Event Type",

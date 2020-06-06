@@ -2,6 +2,7 @@
 	"events": "رویداد ها",
 	"no-events": "رویدادی موجود نیست",
 	"control-panel": "کنترل پنل رویداد ها",
+	"delete-events": "Delete Events",
 	"filters": "Filters",
 	"filters-apply": "Apply Filters",
 	"filter-type": "Event Type",

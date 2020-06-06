@@ -3,5 +3,6 @@
     "tags": "Taguri",
     "enter_tags_here": "Introduceți tagurile aici, fiecare tag trebuie să conțină între %1 și %2 caractere.",
     "enter_tags_here_short": "Introdu taguri...",
-    "no_tags": "În acest moment nu există nici un tag."
+    "no_tags": "În acest moment nu există nici un tag.",
+    "select_tags": "Select Tags"
 }

@@ -2,6 +2,7 @@
 	"events": "ארועים",
 	"no-events": "אין ארועים",
 	"control-panel": "בקרת ארועים\n ",
+	"delete-events": "Delete Events",
 	"filters": "מסננים",
 	"filters-apply": "החל מסננים",
 	"filter-type": "סוג אירוע",

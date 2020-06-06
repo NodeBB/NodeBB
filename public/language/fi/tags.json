@@ -3,5 +3,6 @@
     "tags": "Tagit",
     "enter_tags_here": "Syötä tagit tähän merkkien %1 ja %2 väliin.",
     "enter_tags_here_short": "Syötä tagit...",
-    "no_tags": "Ei vielä yhtään tagia."
+    "no_tags": "Ei vielä yhtään tagia.",
+    "select_tags": "Select Tags"
 }

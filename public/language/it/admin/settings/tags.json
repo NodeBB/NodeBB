@@ -5,7 +5,6 @@
     "max-per-topic": "Tag massimi per discussione",
     "min-length": "Lunghezza minima tag",
     "max-length": "Lunghezza massima tag",
-    "goto-manage": "Clicca qui per visitare la pagina di gestione tag.",
     "related-topics": "Discussioni correlate",
     "max-related-topics": "Numero massimo di discussioni correlate da visualizzare (se supportati dal tema)"
 }
