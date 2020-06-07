@@ -1,0 +1,23 @@
+{
+	"icon": "Ikona:",
+	"change-icon": "promjena",
+	"route": "Putanja:",
+	"tooltip": "Napomena:",
+	"text": "Tekst:",
+	"text-class": "Text Class: <small>opcija</small>",
+	"class": "Class: <small>optional</small>",
+	"id": "ID: <small>opcionalno</small>",
+
+	"properties": "Postavke",
+	"groups": "Groups:",
+	"open-new-window": "Otvori u novom prozoru",
+
+	"btn.delete": "Obriši",
+	"btn.disable": "Onemogući",
+	"btn.enable": "Omogući",
+
+	"available-menu-items": "Dostupni artikli menija",
+	"custom-route": "Uobičajna putanja",
+	"core": "jezgra",
+	"plugin": "dodatak"
+}

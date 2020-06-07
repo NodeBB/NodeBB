@@ -1,0 +1,23 @@
+{
+	"icon": "Іконка:",
+	"change-icon": "змінити",
+	"route": "Шлях:",
+	"tooltip": "Підказка:",
+	"text": "Текст:",
+	"text-class": "Класс тексту: <small>необов'язковий</small>",
+	"class": "Class: <small>optional</small>",
+	"id": "ID: <small>необов'язковий</small>",
+
+	"properties": "Властивості:",
+	"groups": "Groups:",
+	"open-new-window": "Відкривати у новому вікні",
+
+	"btn.delete": "Видалити",
+	"btn.disable": "Вимкнути",
+	"btn.enable": "Увімкнути",
+
+	"available-menu-items": "Доступні пункти меню",
+	"custom-route": "Користувацький шлях",
+	"core": "ядро",
+	"plugin": "плагін"
+}

@@ -1,0 +1,8 @@
+{
+	"home-page": "首頁",
+	"description": "請選擇使用者到達根 URL 時所顯示的頁面。",
+	"home-page-route": "首頁路徑",
+	"custom-route": "自訂路徑",
+	"allow-user-home-pages": "允許使用者自訂首頁",
+	"home-page-title": "首頁標題(預設為“Home”)"
+}

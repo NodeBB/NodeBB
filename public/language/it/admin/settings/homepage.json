@@ -1,0 +1,8 @@
+{
+	"home-page": "Pagina Iniziale",
+	"description": "Scegliere quale pagina visualizzare quando gli utenti navigano all'URL principale del forum.",
+	"home-page-route": "Percorso Pagina Iniziale",
+	"custom-route": "Percorso personalizzato",
+	"allow-user-home-pages": "Consenti Pagina Iniziale Utente",
+	"home-page-title": "Titolo della pagina iniziale (impostazione predefinita \"Home\")"
+}

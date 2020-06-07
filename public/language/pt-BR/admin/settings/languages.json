@@ -1,0 +1,6 @@
+{
+	"language-settings": "Configurações de Idioma",
+	"description": "O idioma padrão determina as configurações de idioma para todos os usuários que estiverem visitando o seu fórum. <br />Usuários individuais podem sobrepor o idioma padrão em sua página de configurações de conta.",
+	"default-language": "Idioma Padrão",
+	"auto-detect": "Auto Detectar Configurações de Idioma para Convidados"
+}

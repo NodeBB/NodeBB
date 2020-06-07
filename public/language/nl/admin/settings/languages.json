@@ -1,0 +1,6 @@
+{
+	"language-settings": "Taalinstellingen",
+	"description": "De standaard taal bepaald de taalinstellingen voor alle gebruikers die uw forum bezoeken. <br />Individuele gebruikers kunnen deze standaard instellingen overschrijven op hun gebruikersinstellingen pagina.",
+	"default-language": "Standaard taal",
+	"auto-detect": "Detecteer de taalinstellingen voor Gasten automatisch"
+}

@@ -1,0 +1,8 @@
+{
+	"home-page": "Ana Sayfa",
+	"description": "Kullanıcıların, forumunuzun kök bağlantısına gittiğinde hangi sayfanın görüntüleneceğini seçin.",
+	"home-page-route": "Ana Sayfa Yolu",
+	"custom-route": "Özel Yol",
+	"allow-user-home-pages": "Kullanıcılara ana sayfalarını özelleştirmeleri için izin ver",
+	"home-page-title": "Ana sayfanın başlığı (varsayılan \"Ana Sayfa\")"
+}

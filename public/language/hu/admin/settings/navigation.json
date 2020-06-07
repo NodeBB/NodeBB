@@ -1,0 +1,23 @@
+{
+	"icon": "Ikon:",
+	"change-icon": "módosítás",
+	"route": "Útvonal:",
+	"tooltip": "Elemleírás:",
+	"text": "Szöveg:",
+	"text-class": "Szövegosztály: <small>nem kötelező</small>",
+	"class": "Class: <small>optional</small>",
+	"id": "ID: <small>nem kötelező</small>",
+
+	"properties": "Tulajdonságok:",
+	"groups": "Groups:",
+	"open-new-window": "Megnyitás új ablakban",
+
+	"btn.delete": "Törlés",
+	"btn.disable": "Tiltás",
+	"btn.enable": "Engedélyezés",
+
+	"available-menu-items": "Rendelkezésre álló menüelemek",
+	"custom-route": "Egyéni útvonal",
+	"core": "alapvető",
+	"plugin": "beépülő"
+}

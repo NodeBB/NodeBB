@@ -1,0 +1,8 @@
+{
+	"home-page": "Startseite",
+	"description": "Wähle aus, welche Seite angezeigt werden soll, wenn Nutzer zur Startseite des Forums navigieren.",
+	"home-page-route": "Startseitenpfad",
+	"custom-route": "Eigener Startseitenpfad",
+	"allow-user-home-pages": "Benutzern eigene Startseiten erlauben",
+	"home-page-title": "Titel der Startseite (Standardmäßig \"Home\")"
+}

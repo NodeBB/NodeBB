@@ -1,0 +1,23 @@
+{
+	"icon": "Icon:",
+	"change-icon": "ändern",
+	"route": "Pfad:",
+	"tooltip": "Tooltip:",
+	"text": "Text:",
+	"text-class": "Text Klasse: <small>optional</small>",
+	"class": "Klasse <small>optional</small>",
+	"id": "ID: <small>optional</small>",
+
+	"properties": "Eigenschaften:",
+	"groups": "Gruppen:",
+	"open-new-window": "In neuem Fenster öffnen",
+
+	"btn.delete": "Löschen",
+	"btn.disable": "Deaktivieren",
+	"btn.enable": "Aktivieren",
+
+	"available-menu-items": "Verfügbare Menüpunkte",
+	"custom-route": "Benutzerdefinierter Pfad",
+	"core": "Kern",
+	"plugin": "Plugin"
+}

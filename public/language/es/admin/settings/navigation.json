@@ -1,0 +1,23 @@
+{
+	"icon": "Icono:",
+	"change-icon": "cambio",
+	"route": "Ruta:",
+	"tooltip": "Nota de ayuda:",
+	"text": "Texto:",
+	"text-class": "Clase de Texto: <small>opcional</small>",
+	"class": "Clase  <small>opcional</small>",
+	"id": "ID: <small>opcional</small>",
+
+	"properties": "Propiedades:",
+	"groups": "Grupos:",
+	"open-new-window": "Abrir en una ventana nueva",
+
+	"btn.delete": "Borrar",
+	"btn.disable": "Deshabilitar",
+	"btn.enable": "Habilitar",
+
+	"available-menu-items": "Items de Menú Disponibles",
+	"custom-route": "Ruta Personalizada:",
+	"core": "núcleo",
+	"plugin": "plugin"
+}

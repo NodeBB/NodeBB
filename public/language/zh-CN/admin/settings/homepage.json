@@ -1,0 +1,8 @@
+{
+	"home-page": "主页",
+	"description": "请选择用户到达根 URL 时所显示的页面。",
+	"home-page-route": "主页路由",
+	"custom-route": "自定义路由",
+	"allow-user-home-pages": "允许用户主页",
+	"home-page-title": "首页标题(默认“Home”)"
+}

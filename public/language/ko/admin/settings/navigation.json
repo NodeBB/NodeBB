@@ -1,0 +1,23 @@
+{
+	"icon": "아이콘:",
+	"change-icon": "변경",
+	"route": "경로:",
+	"tooltip": "툴팁:",
+	"text": "텍스트:",
+	"text-class": "텍스트 클래스: <small>선택 사항</small>",
+	"class": "Class: <small>optional</small>",
+	"id": "ID: <small>선택 사항</small>",
+
+	"properties": "속성:",
+	"groups": "그룹:",
+	"open-new-window": "새 창에서 열기",
+
+	"btn.delete": "삭제",
+	"btn.disable": "비활성화",
+	"btn.enable": "활성화",
+
+	"available-menu-items": "이용 가능한 메뉴 항목",
+	"custom-route": "사용자 지정 경로",
+	"core": "핵심",
+	"plugin": "플러그인"
+}

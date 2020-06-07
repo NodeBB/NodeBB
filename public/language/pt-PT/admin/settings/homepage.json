@@ -1,0 +1,8 @@
+{
+	"home-page": "Página Principal",
+	"description": "Escolhe qual página é apresentada quando os utilizadores navegam para o URL raiz do teu fórum.",
+	"home-page-route": "Caminho da Página Principal",
+	"custom-route": "Caminho personalizado",
+	"allow-user-home-pages": "Permitir página principal personalizada para os utilizadores",
+	"home-page-title": "Título da página inicial (predefinido \"Página inicial\")"
+}

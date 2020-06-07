@@ -1,0 +1,6 @@
+{
+	"language-settings": "Definições de Idioma",
+	"description": "The default language determines the language settings for all users who are visiting your forum. <br />Individual users can override the default language on their account settings page.",
+	"default-language": "Idioma Predefinido",
+	"auto-detect": "Auto Detect Language Setting for Guests"
+}
