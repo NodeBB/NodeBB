@@ -27,14 +27,14 @@
 	"filter-cid-all": "全部版面",
 	"apply-filters": "應用過濾器",
 
-	"quick-actions": "Quick Actions",
+	"quick-actions": "快速操作",
 	"flagged-user": "被舉報的使用者",
 	"view-profile": "查看個人資料",
 	"start-new-chat": "開始新聊天對話",
 	"go-to-target": "查看舉報目標",
-	"delete-post": "Delete Post",
-	"purge-post": "Purge Post",
-	"restore-post": "Restore Post",
+	"delete-post": "刪除貼文",
+	"purge-post": "清除貼文",
+	"restore-post": "恢復貼文",
 
 	"user-view": "查看資料",
 	"user-edit": "編輯資料",
@@ -43,7 +43,7 @@
 	"add-note": "新增備註",
 	"no-notes": "沒有共享的備註內容。",
 
-	"history": "Account &amp; Flag History",
+	"history": "帳戶 &amp; 舉報紀錄",
 	"back": "返回舉報列表",
 	"no-history": "沒有舉報歷史。",
 

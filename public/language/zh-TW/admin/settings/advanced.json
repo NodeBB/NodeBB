@@ -13,12 +13,12 @@
 	"headers.acac": "Access-Control-Allow-Credentials",
 	"headers.acam": "Access-Control-Allow-Methods",
 	"headers.acah": "Access-Control-Allow-Headers",
-	"hsts": "嚴格安全傳輸（HSTS）",
+	"hsts": "嚴格安全傳輸",
 	"hsts.enabled": "啟用HSTS（推薦）",
 	"hsts.maxAge": "HSTS Max Age",
 	"hsts.subdomains": "HSTS標頭訊息包含的域名",
-	"hsts.preload": "允許在HSTS標頭中預加載（preloading）",
-	"hsts.help": "如果啟用此項，網站將會向瀏覽器發送HSTS標頭訊息。您可以設定是否為子域名開啟HSTS，以及HSTS標頭訊息中是否包含預加載標誌（preload參數）如果您不瞭解HSTS，可以忽略此項設定。<a href=\"%1\">瞭解詳情 <i class=\"fa fa-external-link\"></i></a>",
+	"hsts.preload": "允許在HSTS標頭中預加載",
+	"hsts.help": "如果啟用此項，網站將會向瀏覽器發送HSTS標頭訊息。您可以設定是否為子域名開啟HSTS，以及HSTS標頭訊息中是否包含預加載標誌。如果您不瞭解HSTS，可以忽略此項設定。<a href=\"%1\">瞭解詳情 <i class=\"fa fa-external-link\"></i></a>",
 	"traffic-management": "流量管理",
 	"traffic.help": "NodeBB 擁有在高流量情況下自動拒絕請求的模塊。儘管預設值就很棒，但您可以在這裡調整這些設定。",
 	"traffic.enable": "啟用流量管理",
@@ -27,8 +27,8 @@
 	"traffic.lag-check-interval": "檢查間隔（毫秒）",
 	"traffic.lag-check-interval-help": "降低此值會造成 NodeBB 的負載峰值變得更加敏感，但也可能導致檢查變得過於敏感（需要重新啟動）",
 
-	"sockets.settings": "WebSocket Settings",
-	"sockets.max-attempts": "Max Reconnection Attempts",
-	"sockets.default-placeholder": "Default: %1",
-	"sockets.delay": "Reconnection Delay"
+	"sockets.settings": "WebSocket 設定",
+	"sockets.max-attempts": "最大重連次數",
+	"sockets.default-placeholder": "預設: %1",
+	"sockets.delay": "重新連線延遲時間"
 }

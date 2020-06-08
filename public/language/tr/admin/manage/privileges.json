@@ -34,9 +34,9 @@
 	"purge": "Temizle",
 	"moderate": "Moderasyon",
 
-	"admin-dashboard": "Dashboard",
-	"admin-categories": "Categories",
-	"admin-privileges": "Privileges",
-	"admin-users": "Users",
-	"admin-settings": "Settings"
+	"admin-dashboard": "Yönetim Paneli",
+	"admin-categories": "Kategoriler",
+	"admin-privileges": "Ayrıcalıklar",
+	"admin-users": "Kullanıcılar",
+	"admin-settings": "Ayarlar"
 }

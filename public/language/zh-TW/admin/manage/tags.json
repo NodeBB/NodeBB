@@ -3,16 +3,16 @@
 	"bg-color": "背景顏色",
 	"text-color": "文字顏色",
 	"create-modify": "建立或修改標籤",
-	"description": "Select tags by clicking or dragging, use <code>CTRL</code> to select multiple tags.",
+	"description": "透過點擊或者拖拉方式選擇標籤, 可同時使用 <code>CTRL</code> 來選擇多個標籤。",
 	"create": "建立標籤",
 	"modify": "修改標籤",
 	"rename": "重命名標籤",
 	"delete": "刪除所選標籤",
 	"search": "搜尋標籤...",
-	"settings": "Tags Settings",
+	"settings": "標籤設定",
 	"name": "標籤名",
 
-	"alerts.editing": "編輯標籤",
+	"alerts.editing": "編輯(多個)標籤",
 	"alerts.confirm-delete": "是否要刪除所選標籤？",
 	"alerts.update-success": "標籤已更新！"
 }

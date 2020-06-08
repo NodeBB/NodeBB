@@ -1,8 +1,8 @@
 {
 	"site-settings": "網站設定",
 	"title": "網站標題",
-	"title.short": "Short Title",
-	"title.short-placeholder": "If no short title is specified, the site title will be used",
+	"title.short": "短標題",
+	"title.short-placeholder": "如短標題為指定則會使用網站標題",
 	"title.url": "網址",
 	"title.url-placeholder": "網站標題連結",
 	"title.url-help": "當標題被點擊，使用者將轉導到該地址。如果留白，使用者將跳轉到論壇首頁。",
@@ -15,7 +15,7 @@
 	"description.placeholder": "關於您的社區的簡短說明",
 	"description": "網站描述",
 	"keywords": "網站關鍵字",
-	"keywords-placeholder": "描述您的社區的關鍵字（以逗號分隔）",
+	"keywords-placeholder": "描述您的社區的關鍵字，以逗號分隔",
 	"logo": "網站 Logo",
 	"logo.image": "圖檔",
 	"logo.image-placeholder": "要在論壇標題上顯示的 Logo 的路徑",
@@ -34,8 +34,8 @@
 	"outgoing-links.warning-page": "使用站外連結警告頁",
 	"search-default-sort-by": "預設搜尋排序",
 	"outgoing-links.whitelist": "新增域名到白名單以繞過警告頁面",
-	"site-colors": "Site Color Metadata",
-	"theme-color": "Theme Color",
-	"background-color": "Background Color",
-	"background-color-help": "Color used for splash screen background when website is installed as a PWA"
+	"site-colors": "網站顏色仲介資料",
+	"theme-color": "主題顏色",
+	"background-color": "背景顏色",
+	"background-color-help": "當網站以 PWA 方式安裝時起始視窗的背景顏色"
 }
