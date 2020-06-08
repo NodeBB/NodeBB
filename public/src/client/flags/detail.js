@@ -52,6 +52,10 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 					AccountHeader.deleteAccount(uid, ajaxify.refresh);
 					break;
 
+				case 'delete-content':
+					AccountHeader.deleteContent(uid, ajaxify.refresh);
+					break;
+
 				case 'delete-post':
 					postAction('delete', ajaxify.data.target.pid, ajaxify.data.target.tid);
 					break;

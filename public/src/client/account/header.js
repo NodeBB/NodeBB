@@ -59,6 +59,7 @@ define('forum/account/header', [
 	// TODO: These exported methods are used in forum/flags/detail -- refactor??
 	AccountHeader.banAccount = banAccount;
 	AccountHeader.deleteAccount = deleteAccount;
+	AccountHeader.deleteContent = deleteContent;
 
 	function hidePrivateLinks() {
 		if (!app.user.uid || app.user.uid !== parseInt(ajaxify.data.theirid, 10)) {
@@ -190,6 +191,31 @@ define('forum/account/header', [
 						return app.alertError(err.message);
 					}
 					app.alertSuccess('[[user:account-deleted]]');
+
+					if (typeof onSuccess === 'function') {
+						return onSuccess();
+					}
+
+					history.back();
+				});
+			});
+		});
+	}
+
+	function deleteContent(theirid, onSuccess) {
+		theirid = theirid || ajaxify.data.theirid;
+
+		translator.translate('[[user:delete_account_content_confirm]]', function (translated) {
+			bootbox.confirm(translated, function (confirm) {
+				if (!confirm) {
+					return;
+				}
+
+				socket.emit('admin.user.deleteUsersContent', [theirid], function (err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					app.alertSuccess('[[user:account-content-deleted]]');
 
 					if (typeof onSuccess === 'function') {
 						return onSuccess();

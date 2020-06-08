@@ -126,6 +126,20 @@ User.deleteUsers = async function (socket, uids) {
 	});
 };
 
+User.deleteUsersContent = async function (socket, uids) {
+	if (!Array.isArray(uids)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	const isMembers = await groups.isMembers(uids, 'administrators');
+	if (isMembers.includes(true)) {
+		throw new Error('[[error:cant-delete-other-admins]]');
+	}
+
+	await Promise.all(uids.map(async (uid) => {
+		await user.deleteContent(socket.uid, uid);
+	}));
+};
+
 User.deleteUsersAndContent = async function (socket, uids) {
 	deleteUsers(socket, uids, async function (uid) {
 		await user.delete(socket.uid, uid);
