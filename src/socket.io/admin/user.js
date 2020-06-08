@@ -122,7 +122,7 @@ User.forcePasswordReset = async function (socket, uids) {
 
 User.deleteUsers = async function (socket, uids) {
 	deleteUsers(socket, uids, async function (uid) {
-		await user.deleteAccount(uid);
+		return await user.deleteAccount(uid);
 	});
 };
 
@@ -142,7 +142,7 @@ User.deleteUsersContent = async function (socket, uids) {
 
 User.deleteUsersAndContent = async function (socket, uids) {
 	deleteUsers(socket, uids, async function (uid) {
-		await user.delete(socket.uid, uid);
+		return await user.delete(socket.uid, uid);
 	});
 };
 
