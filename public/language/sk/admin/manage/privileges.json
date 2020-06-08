@@ -1,6 +1,7 @@
 {
 	"global": "Verejný",
 	"global.no-users": "Žiadne všeobecné používateľské nastavenia.",
+	"admin": "Admin",
 	"group-privileges": "Group Privileges",
 	"user-privileges": "User Privileges",
 	"chat": "Konverzácia",
@@ -31,5 +32,11 @@
 	"downvote-posts": "Nesúhlasné príspevky",
 	"delete-topics": "Odstrániť témy",
 	"purge": "Vyčistiť",
-	"moderate": "Moderovať"
+	"moderate": "Moderovať",
+
+	"admin-dashboard": "Dashboard",
+	"admin-categories": "Categories",
+	"admin-privileges": "Privileges",
+	"admin-users": "Users",
+	"admin-settings": "Settings"
 }

@@ -3,5 +3,6 @@
     "tags": "Метки",
     "enter_tags_here": "Добавьте метки здесь, от %1 до %2 символов каждая.",
     "enter_tags_here_short": "Введите метки...",
-    "no_tags": "Меток пока нет."
+    "no_tags": "Меток пока нет.",
+    "select_tags": "Select Tags"
 }

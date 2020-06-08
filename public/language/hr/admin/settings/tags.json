@@ -5,7 +5,6 @@
     "max-per-topic": "Maksimalno oznaka po temi",
     "min-length": "Minimalna dužina oznake",
     "max-length": "Maksimalna dužina oznaka",
-    "goto-manage": "Klikni ovdje za upravljanje oznakama.",
     "related-topics": "Slične teme",
     "max-related-topics": "Maksimalni broj povezanih tema za prikaz(ako je podržano unutar predloška)"
 }

@@ -2,6 +2,7 @@
 	"events": "事件",
 	"no-events": "暂无事件",
 	"control-panel": "事件控制面板",
+	"delete-events": "Delete Events",
 	"filters": "过滤器",
 	"filters-apply": "应用过滤器",
 	"filter-type": "事件类型",

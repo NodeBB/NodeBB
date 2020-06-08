@@ -1,0 +1,23 @@
+{
+	"icon": "アイコン:",
+	"change-icon": "変更",
+	"route": "ルート:",
+	"tooltip": "ツールチップ:",
+	"text": "テキスト:",
+	"text-class": " テキストのClass:<small>任意</small>",
+	"class": "Class: <small>optional</small>",
+	"id": "ID: <small>任意</small>",
+
+	"properties": "プロパティ:",
+	"groups": "Groups:",
+	"open-new-window": "新しいウィンドウで開く",
+
+	"btn.delete": "削除",
+	"btn.disable": "無効",
+	"btn.enable": "有効",
+
+	"available-menu-items": "利用可能なメニューアイテム",
+	"custom-route": "カスタムルート",
+	"core": "コア",
+	"plugin": "プラグイン"
+}

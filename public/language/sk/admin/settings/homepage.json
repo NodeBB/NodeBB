@@ -1,0 +1,8 @@
+{
+	"home-page": "Domovská stránka",
+	"description": "Vyberte, akú stránku sa zobrazí, keď sa používatelia dostanú do koreňovej adresy URL vášho fóra.",
+	"home-page-route": "Cesta k domovskej stránke",
+	"custom-route": "Upraviť cestu",
+	"allow-user-home-pages": "Povoliť používateľom domovské stránky",
+	"home-page-title": "Titulok domovskej stránky (Predvolený „Domov”)"
+}

@@ -1,0 +1,23 @@
+{
+	"icon": "Ikona:",
+	"change-icon": "izmaiņa",
+	"route": "Ceļš:",
+	"tooltip": "Paskaidre:",
+	"text": "Teksts:",
+	"text-class": "Teksta klase: <small>neobligāta</small>",
+	"class": "Class: <small>optional</small>",
+	"id": "ID: <small>neobligāts</small>",
+
+	"properties": "Īpašības:",
+	"groups": "Grupas:",
+	"open-new-window": "Rādīt jaunā logā",
+
+	"btn.delete": "Izdzēst",
+	"btn.disable": "Atspējot",
+	"btn.enable": "Iespējot",
+
+	"available-menu-items": "Pieejamās izvēlnes iespējas",
+	"custom-route": "Pielāgotais ceļš",
+	"core": "kodols",
+	"plugin": "spraudnis"
+}

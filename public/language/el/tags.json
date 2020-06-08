@@ -3,5 +3,6 @@
     "tags": "Ετικέτες",
     "enter_tags_here": "Enter tags here, between %1 and %2 characters each.",
     "enter_tags_here_short": "Εισαγωγή ετικετών...",
-    "no_tags": "Δεν υπάρχουν ακόμα ετικέτες."
+    "no_tags": "Δεν υπάρχουν ακόμα ετικέτες.",
+    "select_tags": "Select Tags"
 }

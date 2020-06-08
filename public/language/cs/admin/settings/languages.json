@@ -1,0 +1,6 @@
+{
+	"language-settings": "Nastavení jazyka",
+	"description": "Výchozí jazyk určuje nastavení jazyka pro všechny uživatele navštěvující vaše fórum. <br />Každý uživatel si může pak nastavit výchozí jazyk na stránce nastavení účtu.",
+	"default-language": "Výchozí jazyk",
+	"auto-detect": "Automaticky detekovat nastavení jazyka pro hosty"
+}

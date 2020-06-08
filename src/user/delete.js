@@ -17,7 +17,13 @@ const file = require('../file');
 module.exports = function (User) {
 	const deletesInProgress = {};
 
-	User.delete = async function (callerUid, uid) {
+	User.delete = async (callerUid, uid) => {
+		await User.deleteContent(callerUid, uid);
+		await removeFromSortedSets(uid);
+		return await User.deleteAccount(uid);
+	};
+
+	User.deleteContent = async function (callerUid, uid) {
 		if (parseInt(uid, 10) <= 0) {
 			throw new Error('[[error:invalid-uid]]');
 		}
@@ -25,13 +31,10 @@ module.exports = function (User) {
 			throw new Error('[[error:already-deleting]]');
 		}
 		deletesInProgress[uid] = 'user.delete';
-		await removeFromSortedSets(uid);
 		await deletePosts(callerUid, uid);
 		await deleteTopics(callerUid, uid);
 		await deleteUploads(uid);
 		await deleteQueued(uid);
-		const userData = await User.deleteAccount(uid);
-		return userData;
 	};
 
 	async function deletePosts(callerUid, uid) {

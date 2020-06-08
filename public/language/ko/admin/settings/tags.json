@@ -5,7 +5,6 @@
     "max-per-topic": "주제별 최대 태그",
     "min-length": "태그 최소 길이",
     "max-length": "태그 최대 길이",
-    "goto-manage": "태그 관리 페이지를 방문하시려면 클릭하세요",
     "related-topics": "관련된 주제들",
     "max-related-topics": "테마가 지원하는 보여질 관련된 주제들의 최대 개수"
 }

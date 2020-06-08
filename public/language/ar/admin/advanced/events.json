@@ -2,6 +2,7 @@
 	"events": "أحداث",
 	"no-events": "لا توجد أحداث",
 	"control-panel": "لوحة تحكم الأحداث",
+	"delete-events": "Delete Events",
 	"filters": "Filters",
 	"filters-apply": "Apply Filters",
 	"filter-type": "Event Type",

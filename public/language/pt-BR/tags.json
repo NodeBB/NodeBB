@@ -3,5 +3,6 @@
     "tags": "Tags",
     "enter_tags_here": "Digite as tags aqui, entre %1 e %2 caracteres cada.",
     "enter_tags_here_short": "Digite tags...",
-    "no_tags": "Ainda não há tags."
+    "no_tags": "Ainda não há tags.",
+    "select_tags": "Select Tags"
 }

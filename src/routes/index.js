@@ -98,8 +98,8 @@ module.exports = async function (app, middleware) {
 	var ensureLoggedIn = require('connect-ensure-login');
 
 	router.all('(/+api|/+api/*?)', middleware.prepareAPI);
-	router.all('(/+api/admin|/+api/admin/*?)', middleware.isAdmin);
-	router.all('(/+admin|/+admin/*?)', ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login?local=1'), middleware.applyCSRF, middleware.isAdmin);
+	router.all('(/+api/admin|/+api/admin/*?)', middleware.admin.checkPrivileges);
+	router.all('(/+admin|/+admin/*?)', ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login?local=1'), middleware.applyCSRF, middleware.admin.checkPrivileges);
 
 	app.use(middleware.stripLeadingSlashes);
 

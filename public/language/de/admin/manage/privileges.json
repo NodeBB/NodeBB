@@ -1,6 +1,7 @@
 {
 	"global": "Global",
 	"global.no-users": "Keine benutzerspezifischen globalen Berechtigungen",
+	"admin": "Admin",
 	"group-privileges": "Group Privileges",
 	"user-privileges": "User Privileges",
 	"chat": "Chat",
@@ -31,5 +32,11 @@
 	"downvote-posts": "Beiträge negativ bewerten",
 	"delete-topics": "Themen entfernen",
 	"purge": "Endgültig löschen",
-	"moderate": "Moderieren"
+	"moderate": "Moderieren",
+
+	"admin-dashboard": "Dashboard",
+	"admin-categories": "Categories",
+	"admin-privileges": "Privileges",
+	"admin-users": "Users",
+	"admin-settings": "Settings"
 }

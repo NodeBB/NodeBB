@@ -1,0 +1,6 @@
+{
+	"language-settings": "Cài đặt ngôn ngữ",
+	"description": "Ngôn ngữ mặc định xác định cài đặt ngôn ngữ cho tất cả người dùng đang truy cập diễn đàn của bạn. <br />Người dùng cá nhân có thể ghi đè ngôn ngữ mặc định trên trang cài đặt tài khoản của họ",
+	"default-language": "Ngôn ngữ mặc định",
+	"auto-detect": "Tự động phát hiện cài đặt ngôn ngữ cho khách"
+}

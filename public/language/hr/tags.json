@@ -3,5 +3,6 @@
     "tags": "Oznake",
     "enter_tags_here": "Unesite oznake, između %1 i %2 znaka.",
     "enter_tags_here_short": "Unestie oznake ...",
-    "no_tags": "Još nema oznaka."
+    "no_tags": "Još nema oznaka.",
+    "select_tags": "Select Tags"
 }

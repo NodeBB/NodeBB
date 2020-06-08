@@ -2,6 +2,7 @@
 	"events": "อีเวนท์",
 	"no-events": "ไม่มีอีเวนท์",
 	"control-panel": "แผงควบคุมอีเวนท์",
+	"delete-events": "Delete Events",
 	"filters": "Filters",
 	"filters-apply": "Apply Filters",
 	"filter-type": "Event Type",

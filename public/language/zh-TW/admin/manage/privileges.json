@@ -1,6 +1,7 @@
 {
 	"global": "全域",
 	"global.no-users": "沒有使用者專用的全域權限。",
+	"admin": "Admin",
 	"group-privileges": "群組權限",
 	"user-privileges": "使用者權限",
 	"chat": "聊天",
@@ -31,5 +32,11 @@
 	"downvote-posts": "倒讚",
 	"delete-topics": "刪除主題",
 	"purge": "清除",
-	"moderate": "編審"
+	"moderate": "編審",
+
+	"admin-dashboard": "Dashboard",
+	"admin-categories": "Categories",
+	"admin-privileges": "Privileges",
+	"admin-users": "Users",
+	"admin-settings": "Settings"
 }

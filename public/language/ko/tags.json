@@ -3,5 +3,6 @@
     "tags": "태그 목록",
     "enter_tags_here": "%1 에서 %2 자 안에서 태그를 입력하세요.",
     "enter_tags_here_short": "태그 입력...",
-    "no_tags": "아직 태그가 달리지 않았습니다."
+    "no_tags": "아직 태그가 달리지 않았습니다.",
+    "select_tags": "Select Tags"
 }

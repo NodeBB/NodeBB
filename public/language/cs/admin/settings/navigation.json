@@ -1,0 +1,23 @@
+{
+	"icon": "Ikona:",
+	"change-icon": "změnit",
+	"route": "Cesta:",
+	"tooltip": "Tip:",
+	"text": "Text:",
+	"text-class": "Textová třída: <small>doporučené</small>",
+	"class": "Třída: <small>doporučené</small>",
+	"id": "ID: <small>doporučené</small>",
+
+	"properties": "Vlastnosti:",
+	"groups": "Skupiny:",
+	"open-new-window": "Otevřít v novém okně",
+
+	"btn.delete": "Odstranit",
+	"btn.disable": "Zakázat",
+	"btn.enable": "Povolit",
+
+	"available-menu-items": "Dostupné položky nabídky",
+	"custom-route": "Upravit cestu",
+	"core": "jádro",
+	"plugin": "rozšíření"
+}

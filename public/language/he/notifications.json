@@ -37,7 +37,7 @@
     "user_posted_topic": "<strong>%1</strong> העלה נושא חדש: <strong>%2</strong>",
     "user_edited_post": "<strong>%1</strong> has edited a post in <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> התחיל לעקוב אחריך.",
-    "user_started_following_you_dual": "<strong>%1</strong> ו<strong>%1</strong> התחילו לעקוב אחריך.",
+    "user_started_following_you_dual": "<strong>%1</strong> ו-<strong>%2</strong> התחילו לעקוב אחריך.",
     "user_started_following_you_multiple": "<strong>%1</strong> ו%2 התחילו לעקוב אחריך.",
     "new_register": "<strong>%1</strong> שלח בקשת הרשמה.",
     "new_register_multiple": "ישנן <strong>%1</strong> בקשות הרשמה שמחכות לבדיקה.",

@@ -3,5 +3,6 @@
     "tags": "Schlagworte",
     "enter_tags_here": "Hier Schlagworte eingeben. Jeweils %1 bis %2 Zeichen.",
     "enter_tags_here_short": "Schlagworte eingeben...",
-    "no_tags": "Es gibt noch keine Schlagworte."
+    "no_tags": "Es gibt noch keine Schlagworte.",
+    "select_tags": "Select Tags"
 }

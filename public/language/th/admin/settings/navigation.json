@@ -1,0 +1,23 @@
+{
+	"icon": "Icon:",
+	"change-icon": "change",
+	"route": "Route:",
+	"tooltip": "Tooltip:",
+	"text": "Text:",
+	"text-class": "Text Class: <small>optional</small>",
+	"class": "Class: <small>optional</small>",
+	"id": "ID: <small>optional</small>",
+
+	"properties": "Properties:",
+	"groups": "Groups:",
+	"open-new-window": "Open in a new window",
+
+	"btn.delete": "Delete",
+	"btn.disable": "Disable",
+	"btn.enable": "Enable",
+
+	"available-menu-items": "Available Menu Items",
+	"custom-route": "Custom Route",
+	"core": "core",
+	"plugin": "plugin"
+}

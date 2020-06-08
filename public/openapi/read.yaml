@@ -354,6 +354,8 @@ paths:
                           timestampISO:
                             type: string
                             description: An ISO 8601 formatted date string (complementing `timestamp`)
+                      showSystemControls:
+                        type: boolean
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/settings/languages:
     get:
@@ -4542,6 +4544,15 @@ paths:
                         type: string
                       searchDefaultSortBy:
                         type: string
+                      privileges:
+                        type: object
+                        properties:
+                          search:users:
+                            type: boolean
+                          search:content:
+                            type: boolean
+                          search:tags:
+                            type: boolean
                     required:
                       - posts
                       - matchCount
@@ -4556,6 +4567,7 @@ paths:
                       - showAsTopics
                       - title
                       - searchDefaultSortBy
+                      - permissions
                   - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps

@@ -1,6 +1,7 @@
 {
 	"global": "כללי",
 	"global.no-users": "אין הרשאות כלליות למשתמשים מסויימים",
+	"admin": "Admin",
 	"group-privileges": "Group Privileges",
 	"user-privileges": "User Privileges",
 	"chat": "צ'אט",
@@ -31,5 +32,11 @@
 	"downvote-posts": "Downvote Posts",
 	"delete-topics": "Delete Topics",
 	"purge": "Purge",
-	"moderate": "Moderate"
+	"moderate": "Moderate",
+
+	"admin-dashboard": "Dashboard",
+	"admin-categories": "Categories",
+	"admin-privileges": "Privileges",
+	"admin-users": "Users",
+	"admin-settings": "Settings"
 }

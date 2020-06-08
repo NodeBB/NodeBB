@@ -1,0 +1,6 @@
+{
+	"language-settings": "Ustawienia językowe",
+	"description": "Domyślny język określa ustawienia języka dla wszystkich użytkowników, którzy odwiedzają forum. <br /> Użytkownicy mogą zmienić domyślny język w ustawieniach swojego konta.",
+	"default-language": "Domyślny język",
+	"auto-detect": "Automatycznie wykrywaj język gości"
+}

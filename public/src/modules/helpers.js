@@ -188,7 +188,7 @@
 			var spidersEnabled = ['groups:find', 'groups:read', 'groups:topics:read', 'groups:view:users', 'groups:view:tags', 'groups:view:groups'];
 			var globalModDisabled = ['groups:moderate'];
 			var disabled =
-				(member === 'guests' && guestDisabled.includes(priv.name)) ||
+				(member === 'guests' && (guestDisabled.includes(priv.name) || priv.name.startsWith('groups:admin:'))) ||
 				(member === 'spiders' && !spidersEnabled.includes(priv.name)) ||
 				(member === 'Global Moderators' && globalModDisabled.includes(priv.name));
 

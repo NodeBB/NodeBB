@@ -11,12 +11,15 @@ define('admin/manage/privileges', [
 	var cid;
 
 	Privileges.init = function () {
-		cid = ajaxify.data.cid || 0;
+		cid = ajaxify.data.cid || 'admin';
 
 		categorySelector.init($('[component="category-selector"]'), function (category) {
-			var cid = parseInt(category.cid, 10);
-			ajaxify.go('admin/manage/privileges/' + (cid || ''));
+			cid = parseInt(category.cid, 10);
+			cid = isNaN(cid) ? 'admin' : cid;
+			Privileges.refreshPrivilegeTable();
+			ajaxify.updateHistory('admin/manage/privileges/' + (cid || ''));
 		});
+
 		Privileges.setupPrivilegeTable();
 	};
 
@@ -81,7 +84,8 @@ define('admin/manage/privileges', [
 			if (err) {
 				return app.alertError(err.message);
 			}
-			var tpl = cid ? 'admin/partials/categories/privileges' : 'admin/partials/global/privileges';
+
+			var tpl = parseInt(cid, 10) ? 'admin/partials/privileges/category' : 'admin/partials/privileges/global';
 			Benchpress.parse(tpl, {
 				privileges: privileges,
 			}, function (html) {
@@ -117,7 +121,7 @@ define('admin/manage/privileges', [
 
 	Privileges.setPrivilege = function (member, privilege, state, checkboxEl) {
 		socket.emit('admin.categories.setPrivilege', {
-			cid: cid,
+			cid: isNaN(cid) ? 0 : cid,
 			privilege: privilege,
 			set: state,
 			member: member,
@@ -143,9 +147,14 @@ define('admin/manage/privileges', [
 			inputEl.focus();
 
 			autocomplete.user(inputEl, function (ev, ui) {
-				var defaultPrivileges = cid ? ['find', 'read', 'topics:read'] : ['chat'];
+				var defaultPrivileges;
+				if (ajaxify.data.url === '/admin/manage/privileges/admin') {
+					defaultPrivileges = ['admin:dashboard'];
+				} else {
+					defaultPrivileges = cid ? ['find', 'read', 'topics:read'] : ['chat'];
+				}
 				socket.emit('admin.categories.setPrivilege', {
-					cid: cid,
+					cid: isNaN(cid) ? 0 : cid,
 					privilege: defaultPrivileges,
 					set: true,
 					member: ui.item.user.uid,
@@ -170,11 +179,18 @@ define('admin/manage/privileges', [
 
 		modal.on('shown.bs.modal', function () {
 			var inputEl = modal.find('input');
+			inputEl.focus();
 
 			autocomplete.group(inputEl, function (ev, ui) {
-				var defaultPrivileges = cid ? ['groups:find', 'groups:read', 'groups:topics:read'] : ['groups:chat'];
+				var defaultPrivileges;
+				if (ajaxify.data.url === '/admin/manage/privileges/admin') {
+					defaultPrivileges = ['groups:admin:dashboard'];
+				} else {
+					defaultPrivileges = cid ? ['groups:find', 'groups:read', 'groups:topics:read'] : ['groups:chat'];
+				}
+
 				socket.emit('admin.categories.setPrivilege', {
-					cid: cid,
+					cid: isNaN(cid) ? 0 : cid,
 					privilege: defaultPrivileges,
 					set: true,
 					member: ui.item.group.name,

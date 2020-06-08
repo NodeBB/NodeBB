@@ -3,5 +3,6 @@
     "tags": "Označení",
     "enter_tags_here": "Zde vložte označení, každé o délce %1 až %2 znaků.",
     "enter_tags_here_short": "Zadejte označení…",
-    "no_tags": "Zatím tu není žádné označení."
+    "no_tags": "Zatím tu není žádné označení.",
+    "select_tags": "Select Tags"
 }

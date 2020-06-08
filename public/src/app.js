@@ -59,6 +59,7 @@ app.cacheBuster = null;
 
 		$('#header-menu .container').on('click', '[component="user/logout"]', function () {
 			app.logout();
+			return false;
 		});
 
 		Visibility.change(function (event, state) {

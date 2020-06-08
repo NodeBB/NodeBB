@@ -5,7 +5,6 @@
     "max-per-topic": "maximální počet značek/téma",
     "min-length": "Minimální délka značky",
     "max-length": "Maximální délka značky",
-    "goto-manage": "Pro přejití na stránku správy značek, klikněte zde.",
     "related-topics": "Související témata",
     "max-related-topics": "Maximální počet zobrazených souvisejících témat (je-li podporováno motivem)"
 }

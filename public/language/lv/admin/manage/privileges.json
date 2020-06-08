@@ -1,6 +1,7 @@
 {
 	"global": "Globālās",
 	"global.no-users": "Nav lietotājiem īpašo globālo privilēģiju.",
+	"admin": "Admin",
 	"group-privileges": "Group Privileges",
 	"user-privileges": "User Privileges",
 	"chat": "Sarunāties",
@@ -31,5 +32,11 @@
 	"downvote-posts": "Balsot \"pret\"",
 	"delete-topics": "Izdzēst tematus",
 	"purge": "Iztīrīt",
-	"moderate": "Moderēt"
+	"moderate": "Moderēt",
+
+	"admin-dashboard": "Dashboard",
+	"admin-categories": "Categories",
+	"admin-privileges": "Privileges",
+	"admin-users": "Users",
+	"admin-settings": "Settings"
 }

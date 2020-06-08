@@ -2,6 +2,7 @@
 	"events": "Події",
 	"no-events": "Подій немає",
 	"control-panel": "Панель керування подіями",
+	"delete-events": "Delete Events",
 	"filters": "Filters",
 	"filters-apply": "Apply Filters",
 	"filter-type": "Event Type",

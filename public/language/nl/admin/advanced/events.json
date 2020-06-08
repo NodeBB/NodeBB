@@ -2,6 +2,7 @@
 	"events": "Events",
 	"no-events": "Er zijn geen events",
 	"control-panel": "Events Controlepaneel",
+	"delete-events": "Delete Events",
 	"filters": "Filters",
 	"filters-apply": "Apply Filters",
 	"filter-type": "Event Type",

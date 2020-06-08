@@ -262,6 +262,25 @@ define('admin/manage/users', ['translator', 'benchpress', 'autocomplete'], funct
 			});
 		});
 
+		$('.delete-user-content').on('click', function () {
+			var uids = getSelectedUids();
+			if (!uids.length) {
+				return;
+			}
+
+			bootbox.confirm('[[admin/manage/users:alerts.confirm-delete-content]]', function (confirm) {
+				if (confirm) {
+					socket.emit('admin.user.deleteUsersContent', uids, function (err) {
+						if (err) {
+							return app.alertError(err.message);
+						}
+
+						app.alertSuccess('[[admin/manage/users:alerts.delete-content-success]]');
+					});
+				}
+			});
+		});
+
 		$('.delete-user-and-content').on('click', function () {
 			var uids = getSelectedUids();
 			if (!uids.length) {

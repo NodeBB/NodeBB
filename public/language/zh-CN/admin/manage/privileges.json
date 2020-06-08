@@ -1,6 +1,7 @@
 {
 	"global": "全局",
 	"global.no-users": "没有用户专用的全局权限。",
+	"admin": "Admin",
 	"group-privileges": "群组权限",
 	"user-privileges": "用户权限",
 	"chat": "对话",
@@ -31,5 +32,11 @@
 	"downvote-posts": "踩帖",
 	"delete-topics": "删除主题",
 	"purge": "清除",
-	"moderate": "版主"
+	"moderate": "版主",
+
+	"admin-dashboard": "Dashboard",
+	"admin-categories": "Categories",
+	"admin-privileges": "Privileges",
+	"admin-users": "Users",
+	"admin-settings": "Settings"
 }

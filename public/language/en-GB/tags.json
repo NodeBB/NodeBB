@@ -3,5 +3,6 @@
 	"tags": "Tags",
 	"enter_tags_here": "Enter tags here, between %1 and %2 characters each.",
 	"enter_tags_here_short": "Enter tags...",
-	"no_tags": "There are no tags yet."
+	"no_tags": "There are no tags yet.",
+	"select_tags": "Select Tags"
 }

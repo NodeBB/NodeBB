@@ -1,0 +1,23 @@
+{
+	"icon": "Иконка:",
+	"change-icon": "промяна",
+	"route": "Маршрут:",
+	"tooltip": "Подсказка:",
+	"text": "Текст:",
+	"text-class": "Текстов клас: <small>незадължително</small>",
+	"class": "Клас: <small>незадължително</small>",
+	"id": "Идентификатор: <small>незадължително</small>",
+
+	"properties": "Свойства:",
+	"groups": "Групи:",
+	"open-new-window": "Отваряне в нов прозорец",
+
+	"btn.delete": "Изтриване",
+	"btn.disable": "Изключване",
+	"btn.enable": "Включване",
+
+	"available-menu-items": "Налични елементи за менюто",
+	"custom-route": "Персонализиран маршрут",
+	"core": "ядро",
+	"plugin": "добавка"
+}

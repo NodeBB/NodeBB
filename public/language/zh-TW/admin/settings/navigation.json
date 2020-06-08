@@ -1,0 +1,23 @@
+{
+	"icon": "圖示：",
+	"change-icon": "更改",
+	"route": "路徑：",
+	"tooltip": "提示：",
+	"text": "文字：",
+	"text-class": "文字類別：<small>可選</small>",
+	"class": "類: <small>可選</small>",
+	"id": "ID：<small>可選</small>",
+
+	"properties": "屬性：",
+	"groups": "群組：",
+	"open-new-window": "在新窗口中打開",
+
+	"btn.delete": "刪除",
+	"btn.disable": "禁用",
+	"btn.enable": "啟用",
+
+	"available-menu-items": "可用的選單項目",
+	"custom-route": "自訂路徑",
+	"core": "核心",
+	"plugin": "外掛"
+}

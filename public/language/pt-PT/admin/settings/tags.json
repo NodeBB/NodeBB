@@ -5,7 +5,6 @@
     "max-per-topic": "Máximo de Etiquetas por Tópico",
     "min-length": "Comprimento Mínimo da Etiqueta",
     "max-length": "Comprimento Máximo da Etiqueta",
-    "goto-manage": "Clica aqui para visitares a página de gestão das etiquetas. ",
     "related-topics": "Tópicos Relacionados",
     "max-related-topics": "Máximo de tópicos relacionados a mostrar (se for suportado pelo tema)"
 }

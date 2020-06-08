@@ -1,6 +1,7 @@
 {
 	"global": "글로벌",
 	"global.no-users": "사용자별 글로벌 권한이 없습니다.",
+	"admin": "Admin",
 	"group-privileges": "Group Privileges",
 	"user-privileges": "User Privileges",
 	"chat": "대화",
@@ -31,5 +32,11 @@
 	"downvote-posts": "글 비추천",
 	"delete-topics": "게시물 삭제",
 	"purge": "Purge",
-	"moderate": "Moderate"
+	"moderate": "Moderate",
+
+	"admin-dashboard": "Dashboard",
+	"admin-categories": "Categories",
+	"admin-privileges": "Privileges",
+	"admin-users": "Users",
+	"admin-settings": "Settings"
 }

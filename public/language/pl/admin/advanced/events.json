@@ -2,6 +2,7 @@
 	"events": "Zdarzenia",
 	"no-events": "Brak zdarzeń",
 	"control-panel": "Panel zdarzeń",
+	"delete-events": "Delete Events",
 	"filters": "Filtry",
 	"filters-apply": "Zatwierdź filtry",
 	"filter-type": "Typ zdarzenia",

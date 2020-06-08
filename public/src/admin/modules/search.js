@@ -46,6 +46,10 @@ define('admin/modules/search', ['mousetrap'], function (mousetrap) {
 	}
 
 	search.init = function () {
+		if (!app.user.privileges['admin:settings']) {
+			return;
+		}
+
 		socket.emit('admin.getSearchDict', {}, function (err, dict) {
 			if (err) {
 				app.alertError(err);

@@ -1,6 +1,7 @@
 {
 	"global": "Глобальні",
 	"global.no-users": "Відсутні глобальні права, що стосуються користувача.",
+	"admin": "Admin",
 	"group-privileges": "Group Privileges",
 	"user-privileges": "User Privileges",
 	"chat": "Чат",
@@ -31,5 +32,11 @@
 	"downvote-posts": "Голосувати \"Проти\" Постів",
 	"delete-topics": "Видаляти Теми",
 	"purge": "Очищувати",
-	"moderate": "Модерувати"
+	"moderate": "Модерувати",
+
+	"admin-dashboard": "Dashboard",
+	"admin-categories": "Categories",
+	"admin-privileges": "Privileges",
+	"admin-users": "Users",
+	"admin-settings": "Settings"
 }
