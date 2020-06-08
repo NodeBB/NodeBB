@@ -7,7 +7,8 @@ define('forum/account/header', [
 	'components',
 	'translator',
 	'benchpress',
-], function (coverPhoto, pictureCropper, components, translator, Benchpress) {
+	'accounts/delete',
+], function (coverPhoto, pictureCropper, components, translator, Benchpress, AccountsDelete) {
 	var AccountHeader = {};
 	var isAdminOrSelfOrGlobalMod;
 
@@ -51,15 +52,19 @@ define('forum/account/header', [
 
 		components.get('account/ban').on('click', banAccount);
 		components.get('account/unban').on('click', unbanAccount);
-		components.get('account/delete').on('click', deleteAccount);
+		components.get('account/delete-account').on('click', handleDeleteEvent.bind(null, 'account'));
+		components.get('account/delete-content').on('click', handleDeleteEvent.bind(null, 'content'));
+		components.get('account/delete-all').on('click', handleDeleteEvent.bind(null, 'purge'));
 		components.get('account/flag').on('click', flagAccount);
 		components.get('account/block').on('click', toggleBlockAccount);
 	};
 
-	// TODO: These exported methods are used in forum/flags/detail -- refactor??
+	function handleDeleteEvent(type) {
+		AccountsDelete[type](ajaxify.data.theirid);
+	}
+
+	// TODO: This exported method is used in forum/flags/detail -- refactor??
 	AccountHeader.banAccount = banAccount;
-	AccountHeader.deleteAccount = deleteAccount;
-	AccountHeader.deleteContent = deleteContent;
 
 	function hidePrivateLinks() {
 		if (!app.user.uid || app.user.uid !== parseInt(ajaxify.data.theirid, 10)) {
@@ -174,56 +179,6 @@ define('forum/account/header', [
 				return app.alertError(err.message);
 			}
 			ajaxify.refresh();
-		});
-	}
-
-	function deleteAccount(theirid, onSuccess) {
-		theirid = theirid || ajaxify.data.theirid;
-
-		translator.translate('[[user:delete_this_account_confirm]]', function (translated) {
-			bootbox.confirm(translated, function (confirm) {
-				if (!confirm) {
-					return;
-				}
-
-				socket.emit('admin.user.deleteUsersAndContent', [theirid], function (err) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-					app.alertSuccess('[[user:account-deleted]]');
-
-					if (typeof onSuccess === 'function') {
-						return onSuccess();
-					}
-
-					history.back();
-				});
-			});
-		});
-	}
-
-	function deleteContent(theirid, onSuccess) {
-		theirid = theirid || ajaxify.data.theirid;
-
-		translator.translate('[[user:delete_account_content_confirm]]', function (translated) {
-			bootbox.confirm(translated, function (confirm) {
-				if (!confirm) {
-					return;
-				}
-
-				socket.emit('admin.user.deleteUsersContent', [theirid], function (err) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-					app.alertSuccess('[[user:account-content-deleted]]');
-
-					if (typeof onSuccess === 'function') {
-						return onSuccess();
-					}
-
-					history.back();
-				});
-			});
 		});
 	}
 

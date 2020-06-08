@@ -1,6 +1,6 @@
 'use strict';
 
-define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'benchpress', 'forum/account/header'], function (FlagsList, components, translator, Benchpress, AccountHeader) {
+define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'benchpress', 'forum/account/header', 'accounts/delete'], function (FlagsList, components, translator, Benchpress, AccountHeader, AccountsDelete) {
 	var Detail = {};
 
 	Detail.init = function () {
@@ -49,11 +49,15 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 					break;
 
 				case 'delete-account':
-					AccountHeader.deleteAccount(uid, ajaxify.refresh);
+					AccountsDelete.account(uid, ajaxify.refresh);
 					break;
 
 				case 'delete-content':
-					AccountHeader.deleteContent(uid, ajaxify.refresh);
+					AccountsDelete.content(uid, ajaxify.refresh);
+					break;
+
+				case 'delete-all':
+					AccountsDelete.purge(uid, ajaxify.refresh);
 					break;
 
 				case 'delete-post':
