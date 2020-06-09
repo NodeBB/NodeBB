@@ -7,6 +7,7 @@ module.exports = function (app, middleware, controllers) {
 	var middlewares = [middleware.exposeUid, middleware.canViewUsers];
 	var accountMiddlewares = [middleware.exposeUid, middleware.canViewUsers, middleware.checkAccountPermissions];
 
+	app.get('/me', middleware.redirectMeToUserslug);
 	setupPageRoute(app, '/me/*', middleware, [], middleware.redirectMeToUserslug);
 	setupPageRoute(app, '/uid/:uid*', middleware, [], middleware.redirectUidToUserslug);
 

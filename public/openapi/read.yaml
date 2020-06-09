@@ -4800,13 +4800,6 @@ paths:
                       assignee:
                         type: number
                         nullable: true
-                      filters:
-                        type: object
-                        properties:
-                          page:
-                            type: number
-                          perPage:
-                            type: number
                       history:
                         type: array
                         items:
@@ -4957,6 +4950,19 @@ paths:
                         type: object
                         additionalProperties:
                           type: string
+                      filters:
+                        type: object
+                        properties:
+                          page:
+                            type: number
+                          perPage:
+                            type: number
+                      privileges:
+                        type: object
+                        properties: {}
+                        additionalProperties:
+                          description: "A list of global and admin privileges, and whether the calling user has (or has inherited) them"
+                          type: boolean
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/post-queue:
     get:

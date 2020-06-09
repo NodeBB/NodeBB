@@ -81,10 +81,6 @@ function modifyCategory(category, fields) {
 		category.totalTopicCount = category.topic_count;
 	}
 
-	if (category.image) {
-		category.backgroundImage = category.image;
-	}
-
 	if (category.description) {
 		category.description = validator.escape(String(category.description));
 		category.descriptionParsed = category.descriptionParsed || category.description;

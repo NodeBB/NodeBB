@@ -34,8 +34,8 @@
 	"outgoing-links.warning-page": "Usa pagina di avviso collegamenti in uscita",
 	"search-default-sort-by": "Ricerca predefinita ordinata per",
 	"outgoing-links.whitelist": "Domini nella whitelist per aggirare la pagina di avviso",
-	"site-colors": "Site Color Metadata",
-	"theme-color": "Theme Color",
+	"site-colors": "Colore Metadati del Sito",
+	"theme-color": "Colore del Tema",
 	"background-color": "Colore di sfondo",
-	"background-color-help": "Color used for splash screen background when website is installed as a PWA"
+	"background-color-help": "Colore utilizzato per lo sfondo della schermata iniziale quando il sito Web è installato come PWA"
 }

@@ -1,5 +1,5 @@
 {
-	"you-are-on": "You are on <strong>%1:%2</strong>",
+	"you-are-on": "Sei su <strong>%1:%2</strong>",
 	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "%1 nodi hanno risposto entro %2ms!",
 	"host": "host",

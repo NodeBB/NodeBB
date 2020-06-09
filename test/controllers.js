@@ -1070,6 +1070,15 @@ describe('Controllers', function () {
 		});
 
 		describe('/me/*', function () {
+			it('should redirect to user profile', function (done) {
+				request(nconf.get('url') + '/me', { jar: jar, json: true }, function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert(body.includes('template: "account/profile"'));
+					assert(body.includes('"username":"foo"'));
+					done();
+				});
+			});
 			it('api should redirect to /user/[userslug]/bookmarks', function (done) {
 				request(nconf.get('url') + '/api/me/bookmarks', { jar: jar, json: true }, function (err, res, body) {
 					assert.ifError(err);

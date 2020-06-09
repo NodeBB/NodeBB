@@ -1,6 +1,6 @@
 {
     "tag": "標籤設定",
-    "link-to-manage": "Manage Tags",
+    "link-to-manage": "管理標籤",
     "min-per-topic": "每個主題的最少標籤數",
     "max-per-topic": "每話題的最大標籤數",
     "min-length": "最短標籤長度",

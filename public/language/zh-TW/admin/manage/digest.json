@@ -9,7 +9,7 @@
 	"default": "系統預設",
 	"default-help": "<em>System default</em> 表示使用者尚未明確覆寫摘要的全域論壇設置，該設定當前為： “<strong>%1</strong>“",
 	"resend": "重發摘要",
-	"resend-all-confirm": "Are you sure you wish to manually execute this digest run?",
+	"resend-all-confirm": "您確認要手動執行這個摘要嗎？",
 	"resent-single": "摘要重發操作完成",
 	"resent-day": "已發送每日摘要",
 	"resent-week": "已發送每週摘要",

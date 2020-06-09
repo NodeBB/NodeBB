@@ -1,9 +1,9 @@
 {
-	"notifications": "Notifications",
-	"chat-messages": "Chat Messages",
-	"play-sound": "Play",
-	"incoming-message": "Incoming Message",
-	"outgoing-message": "Outgoing Message",
-	"upload-new-sound": "Upload New Sound",
-	"saved": "Settings Saved"
+	"notifications": "התראות",
+	"chat-messages": "הודעות צ'אט",
+	"play-sound": "נגן",
+	"incoming-message": "הודעה נכנסת",
+	"outgoing-message": "הודעה יוצאת",
+	"upload-new-sound": "העלה צליל חדש",
+	"saved": "הגדרות נשמרו"
 }
