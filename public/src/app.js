@@ -477,35 +477,51 @@ app.cacheBuster = null;
 		});
 	}
 
-	app.enableTopicSearch = function (options) {
+	app.enableTopicSearch = function (options, searchQuery) {
 		var quickSearchResults = options.resultEl;
 		var inputEl = options.inputEl;
 		var searchTimeoutId = 0;
-		var currentVal = inputEl.val();
+		var oldValue = inputEl.val();
+		inputEl.on('blur', function () {
+			setTimeout(function () {
+				quickSearchResults.addClass('hidden');
+			}, 200);
+		});
+		inputEl.on('focus', function () {
+			if (inputEl.val() && quickSearchResults.find('#quick-search-results').children().length) {
+				quickSearchResults.removeClass('hidden');
+			}
+		});
+
 		inputEl.off('keyup').on('keyup', function () {
 			if (searchTimeoutId) {
 				clearTimeout(searchTimeoutId);
 				searchTimeoutId = 0;
 			}
 			searchTimeoutId = setTimeout(function () {
-				if (inputEl.val().length < 3 || inputEl.val() === currentVal) {
+				if (inputEl.val().length < 3) {
+					quickSearchResults.addClass('hidden');
+					oldValue = inputEl.val();
 					return;
 				}
-				currentVal = inputEl.val();
+				if (inputEl.val() === oldValue) {
+					return;
+				}
+				oldValue = inputEl.val();
 				if (!inputEl.is(':focus')) {
 					return quickSearchResults.addClass('hidden');
 				}
 				require(['search'], function (search) {
-					search.quick({
-						term: inputEl.val(),
-						in: 'titles',
-					}, options);
+					searchQuery = searchQuery || { in: 'titles' };
+					searchQuery.term = inputEl.val();
+					search.quick(searchQuery, options);
 				});
 			}, 250);
 		});
 	};
 
-	app.handleSearch = function () {
+	app.handleSearch = function (options) {
+		options = options || { in: 'titles' };
 		var searchButton = $('#search-button');
 		var searchFields = $('#search-fields');
 		var searchInput = $('#search-fields input');
@@ -519,23 +535,16 @@ app.cacheBuster = null;
 			searchInput.blur();
 		});
 		searchInput.off('blur').on('blur', dismissSearch);
-		searchInput.off('focus').on('focus', function () {
-			if (searchInput.val() && quickSearchContainer.find('#quick-search-results').children().length) {
-				quickSearchContainer.removeClass('hidden');
-			}
-		});
+		searchInput.off('focus');
 
 		app.enableTopicSearch({
 			inputEl: searchInput,
 			resultEl: quickSearchContainer,
-		});
+		}, options);
 
 		function dismissSearch() {
 			searchFields.addClass('hidden');
 			searchButton.removeClass('hidden');
-			setTimeout(function () {
-				quickSearchContainer.addClass('hidden');
-			}, 200);
 		}
 
 		searchButton.off('click').on('click', function (e) {

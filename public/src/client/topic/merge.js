@@ -29,6 +29,20 @@ define('forum/topic/merge', function () {
 			mergeBtn.on('click', function () {
 				mergeTopics(mergeBtn);
 			});
+
+			app.enableTopicSearch({
+				inputEl: modal.find('.topic-search-input'),
+				resultEl: modal.find('.quick-search-container'),
+			}, {
+				in: 'titles',
+			});
+			modal.on('click', '[data-tid]', function () {
+				if ($(this).attr('data-tid')) {
+					Merge.addTopic($(this).attr('data-tid'));
+				}
+				return false;
+			});
+
 			callback();
 		});
 	};
