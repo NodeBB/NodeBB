@@ -10,6 +10,7 @@ const flags = require('../flags');
 const analytics = require('../analytics');
 const plugins = require('../plugins');
 const pagination = require('../pagination');
+const privileges = require('../privileges');
 const utils = require('../utils');
 
 const modsController = module.exports;
@@ -103,7 +104,9 @@ modsController.flags.detail = async function (req, res, next) {
 		flagData: flags.get(req.params.flagId),
 		assignees: user.getAdminsandGlobalModsandModerators(),
 		categories: categories.buildForSelect(req.uid, 'read'),
+		privileges: Promise.all(['global', 'admin'].map(async type => privileges[type].get(req.uid))),
 	});
+	results.privileges = { ...results.privileges[0], ...results.privileges[1] };
 
 	if (!results.flagData) {
 		return next(new Error('[[error:invalid-data]]'));
@@ -137,6 +140,7 @@ modsController.flags.detail = async function (req, res, next) {
 		title: '[[pages:flag-details, ' + req.params.flagId + ']]',
 		categories: results.categories,
 		filters: req.session.flags_filters || [],
+		privileges: results.privileges,
 	}));
 };
 
