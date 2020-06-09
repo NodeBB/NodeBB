@@ -122,14 +122,14 @@
 								[[admin/manage/categories:upload-image]]
 							</button>
 						</div>
-						<!-- IF category.image -->
+						<!-- IF category.backgroundImage -->
 						<div class="btn-group">
 							<button class="btn btn-warning delete-image">
 								<i data-name="icon" value="fa-times" class="fa fa-times"></i>
 								[[admin/manage/categories:delete-image]]
 							</button>
 						</div>
-						<!-- ENDIF category.image -->
+						<!-- ENDIF category.backgroundImage -->
 					</div><br />
 
 					<fieldset>
@@ -138,7 +138,7 @@
 								[[admin/manage/categories:category-image]]
 							</label>
 							<br/>
-							<input id="category-image" type="text" class="form-control" placeholder="[[admin/manage/categories:category-image]]" data-name="image" value="{category.image}" />
+							<input id="category-image" type="text" class="form-control" placeholder="[[admin/manage/categories:category-image]]" data-name="backgroundImage" value="{category.backgroundImage}" />
 						</div>
 					</fieldset>
 
