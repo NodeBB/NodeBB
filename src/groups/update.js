@@ -8,7 +8,7 @@ const db = require('../database');
 const user = require('../user');
 const batch = require('../batch');
 const meta = require('../meta');
-const cache = require('../cache);
+const cache = require('../cache');
 
 
 module.exports = function (Groups) {
