@@ -33,34 +33,6 @@ define('search', ['navigator', 'translator', 'storage'], function (nav, translat
 		});
 	};
 
-	Search.quick = function (options, callback) {
-		callback = callback || function () {};
-		$(window).trigger('action:search.quick.start', options);
-		options.searchOptions.searchOnly = 1;
-		Search.api(options.searchOptions, function (data) {
-			var resultEl = options.searchElements.resultEl;
-			if (options.hideOnNoMatches && !data.posts.length) {
-				return resultEl.addClass('hidden').find('.quick-search-results-container').html('');
-			}
-			data.posts.forEach(function (p) {
-				p.snippet = utils.escapeHTML($('<div>' + p.content + '</div>').text().slice(0, 80) + '...');
-			});
-			app.parseAndTranslate('partials/quick-search-results', data, function (html) {
-				if (html.length) {
-					html.find('.timeago').timeago();
-					resultEl.removeClass('hidden').find('.quick-search-results-container').html(html);
-				} else {
-					resultEl.addClass('hidden').find('.quick-search-results-container').html('');
-				}
-				$(window).trigger('action:search.quick.complete', {
-					data: data,
-					options: options,
-				});
-				callback();
-			});
-		});
-	};
-
 	function createQueryString(data) {
 		var searchIn = data.in || 'titlesposts';
 		var postedBy = data.by || '';
