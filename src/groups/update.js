@@ -182,7 +182,7 @@ module.exports = function (Groups) {
 		const keys = allGroups.map(group => 'group:' + group + ':members');
 		await renameGroupsMember(keys, oldName, newName);
 		cache.del(keys);
-		
+
 		await db.rename('group:' + oldName, 'group:' + newName);
 		await db.rename('group:' + oldName + ':members', 'group:' + newName + ':members');
 		await db.rename('group:' + oldName + ':owners', 'group:' + newName + ':owners');
