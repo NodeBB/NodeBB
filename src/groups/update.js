@@ -8,6 +8,7 @@ const db = require('../database');
 const user = require('../user');
 const batch = require('../batch');
 const meta = require('../meta');
+const cache = require('../cache');
 
 
 module.exports = function (Groups) {
@@ -180,6 +181,7 @@ module.exports = function (Groups) {
 		const allGroups = await db.getSortedSetRange('groups:createtime', 0, -1);
 		const keys = allGroups.map(group => 'group:' + group + ':members');
 		await renameGroupsMember(keys, oldName, newName);
+		cache.del(keys);
 
 		await db.rename('group:' + oldName, 'group:' + newName);
 		await db.rename('group:' + oldName + ':members', 'group:' + newName + ':members');
