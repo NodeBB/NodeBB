@@ -77,12 +77,19 @@ define('forum/topic/merge', function () {
 	function mergeTopics(btn) {
 		btn.attr('disabled', true);
 		var tids = Object.keys(selectedTids);
-		socket.emit('topics.merge', tids, function (err) {
+		var options = {};
+		if (modal.find('.merge-main-topic-radio').is(':checked')) {
+			options.mainTid = modal.find('.merge-main-topic-select').val();
+		} else if (modal.find('.merge-new-title-radio').is(':checked')) {
+			options.newTopicTitle = modal.find('.merge-new-title-input').val();
+		}
+
+		socket.emit('topics.merge', { tids: tids, options: options }, function (err, tid) {
 			btn.removeAttr('disabled');
 			if (err) {
 				return app.alertError(err.message);
 			}
-			ajaxify.go('/topic/' + tids[0]);
+			ajaxify.go('/topic/' + tid);
 			closeModal();
 		});
 	}
@@ -103,7 +110,7 @@ define('forum/topic/merge', function () {
 				topics: topics,
 			}, function (html) {
 				modal.find('.topics-section').html(html.find('.topics-section').html());
-				modal.find('.main-topic-select').html(html.find('.main-topic-select').html());
+				modal.find('.merge-main-topic-select').html(html.find('.merge-main-topic-select').html());
 			});
 		} else {
 			modal.find('.topics-section').translateHtml('[[error:no-topics-selected]]');
