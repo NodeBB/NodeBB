@@ -477,14 +477,16 @@ app.cacheBuster = null;
 		});
 	}
 
-	app.enableTopicSearch = function (options, searchQuery) {
-		var quickSearchResults = options.resultEl;
-		var inputEl = options.inputEl;
+	app.enableTopicSearch = function (options) {
+		var quickSearchResults = options.searchElements.resultEl;
+		var inputEl = options.searchElements.inputEl;
 		var searchTimeoutId = 0;
 		var oldValue = inputEl.val();
 		inputEl.on('blur', function () {
 			setTimeout(function () {
-				quickSearchResults.addClass('hidden');
+				if (!inputEl.is(':focus')) {
+					quickSearchResults.addClass('hidden');
+				}
 			}, 200);
 		});
 		inputEl.on('focus', function () {
@@ -512,16 +514,16 @@ app.cacheBuster = null;
 					return quickSearchResults.addClass('hidden');
 				}
 				require(['search'], function (search) {
-					searchQuery = searchQuery || { in: 'titles' };
-					searchQuery.term = inputEl.val();
-					search.quick(searchQuery, options);
+					options.searchOptions = options.searchOptions || { in: 'titles' };
+					options.searchOptions.term = inputEl.val();
+					search.quick(options);
 				});
 			}, 250);
 		});
 	};
 
-	app.handleSearch = function (options) {
-		options = options || { in: 'titles' };
+	app.handleSearch = function (searchOptions) {
+		searchOptions = searchOptions || { in: 'titles' };
 		var searchButton = $('#search-button');
 		var searchFields = $('#search-fields');
 		var searchInput = $('#search-fields input');
@@ -537,10 +539,15 @@ app.cacheBuster = null;
 		searchInput.off('blur').on('blur', dismissSearch);
 		searchInput.off('focus');
 
-		app.enableTopicSearch({
+		var searchElements = {
 			inputEl: searchInput,
 			resultEl: quickSearchContainer,
-		}, options);
+		};
+
+		app.enableTopicSearch({
+			searchOptions: searchOptions,
+			searchElements: searchElements,
+		});
 
 		function dismissSearch() {
 			searchFields.addClass('hidden');
@@ -567,7 +574,10 @@ app.cacheBuster = null;
 			require(['search'], function (search) {
 				var data = search.getSearchPreferences();
 				data.term = input.val();
-				$(window).trigger('action:search.submit', { data: data });
+				$(window).trigger('action:search.submit', {
+					data: data,
+					searchElements: searchElements,
+				});
 				search.query(data, function () {
 					input.val('');
 				});

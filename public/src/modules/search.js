@@ -33,26 +33,29 @@ define('search', ['navigator', 'translator', 'storage'], function (nav, translat
 		});
 	};
 
-	Search.quick = function (query, options, callback) {
+	Search.quick = function (options, callback) {
 		callback = callback || function () {};
-		var template = options.template || 'partials/quick-search-results';
-		$(window).trigger('action:search.quick.start', { data: query });
-		query.searchOnly = 1;
-		Search.api(query, function (data) {
+		$(window).trigger('action:search.quick.start', options);
+		options.searchOptions.searchOnly = 1;
+		Search.api(options.searchOptions, function (data) {
+			var resultEl = options.searchElements.resultEl;
 			if (options.hideOnNoMatches && !data.posts.length) {
-				return options.resultEl.addClass('hidden').find('#quick-search-results-container').html('');
+				return resultEl.addClass('hidden').find('.quick-search-results-container').html('');
 			}
 			data.posts.forEach(function (p) {
 				p.snippet = utils.escapeHTML($('<div>' + p.content + '</div>').text().slice(0, 80) + '...');
 			});
-			app.parseAndTranslate(template, data, function (html) {
+			app.parseAndTranslate('partials/quick-search-results', data, function (html) {
 				if (html.length) {
 					html.find('.timeago').timeago();
-					options.resultEl.removeClass('hidden').find('#quick-search-results-container').html(html);
+					resultEl.removeClass('hidden').find('.quick-search-results-container').html(html);
 				} else {
-					options.resultEl.addClass('hidden').find('#quick-search-results-container').html('');
+					resultEl.addClass('hidden').find('.quick-search-results-container').html('');
 				}
-				$(window).trigger('action:search.quick.complete', { data: data });
+				$(window).trigger('action:search.quick.complete', {
+					data: data,
+					options: options,
+				});
 				callback();
 			});
 		});

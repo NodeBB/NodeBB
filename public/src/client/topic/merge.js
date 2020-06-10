@@ -31,10 +31,13 @@ define('forum/topic/merge', function () {
 			});
 
 			app.enableTopicSearch({
-				inputEl: modal.find('.topic-search-input'),
-				resultEl: modal.find('.quick-search-container'),
-			}, {
-				in: 'titles',
+				searchElements: {
+					inputEl: modal.find('.topic-search-input'),
+					resultEl: modal.find('.quick-search-container'),
+				},
+				searchOptions: {
+					in: 'titles',
+				},
 			});
 			modal.on('click', '[data-tid]', function () {
 				if ($(this).attr('data-tid')) {
