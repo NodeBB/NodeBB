@@ -2080,6 +2080,11 @@ describe('Topic\'s', function () {
 		var topic1Data;
 		var topic2Data;
 
+		async function getTopic(tid) {
+			const topicData = await topics.getTopicData(tid);
+			return await topics.getTopicWithPosts(topicData, 'tid:' + topicData.tid + ':posts', adminUid, 0, 19, false);
+		}
+
 		before(function (done) {
 			async.waterfall([
 				function (next) {
@@ -2111,18 +2116,17 @@ describe('Topic\'s', function () {
 		});
 
 		it('should error if user does not have privileges', function (done) {
-			socketTopics.merge({ uid: 0 }, [topic2Data.tid, topic1Data.tid], function (err) {
+			socketTopics.merge({ uid: 0 }, { tids: [topic2Data.tid, topic1Data.tid] }, function (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');
 				done();
 			});
 		});
 
 		it('should merge 2 topics', async function () {
-			await socketTopics.merge({ uid: adminUid }, [topic2Data.tid, topic1Data.tid]);
-			async function getTopic(tid) {
-				const topicData = await topics.getTopicData(tid);
-				return await topics.getTopicWithPosts(topicData, 'tid:' + topicData.tid + ':posts', adminUid, 0, 19, false);
-			}
+			await socketTopics.merge({ uid: adminUid }, {
+				tids: [topic2Data.tid, topic1Data.tid],
+			});
+
 			const [topic1, topic2] = await Promise.all([
 				getTopic(topic1Data.tid),
 				getTopic(topic2Data.tid),
@@ -2136,6 +2140,7 @@ describe('Topic\'s', function () {
 			assert.equal(topic1.posts[1].content, 'topic 2 OP');
 			assert.equal(topic1.posts[2].content, 'topic 1 reply');
 			assert.equal(topic1.posts[3].content, 'topic 2 reply');
+			assert.equal(topic1.title, 'topic 1');
 		});
 
 		it('should return properly for merged topic', function (done) {
@@ -2146,6 +2151,65 @@ describe('Topic\'s', function () {
 				assert.deepStrictEqual(body.posts, []);
 				done();
 			});
+		});
+
+		it('should merge 2 topics with options mainTid', async function () {
+			const topic1Result = await topics.post({ uid: uid, cid: categoryObj.cid, title: 'topic 1', content: 'topic 1 OP' });
+			const topic2Result = await topics.post({ uid: uid, cid: categoryObj.cid, title: 'topic 2', content: 'topic 2 OP' });
+			await topics.reply({ uid: uid, content: 'topic 1 reply', tid: topic1Result.topicData.tid });
+			await topics.reply({ uid: uid, content: 'topic 2 reply', tid: topic2Result.topicData.tid });
+			await socketTopics.merge({ uid: adminUid }, {
+				tids: [topic2Result.topicData.tid, topic1Result.topicData.tid],
+				options: {
+					mainTid: topic2Result.topicData.tid,
+				},
+			});
+
+			const [topic1, topic2] = await Promise.all([
+				getTopic(topic1Result.topicData.tid),
+				getTopic(topic2Result.topicData.tid),
+			]);
+
+			assert.equal(topic1.posts.length, 0);
+			assert.equal(topic2.posts.length, 4);
+			assert.equal(topic1.deleted, true);
+
+			assert.equal(topic2.posts[0].content, 'topic 2 OP');
+			assert.equal(topic2.posts[1].content, 'topic 1 OP');
+			assert.equal(topic2.posts[2].content, 'topic 1 reply');
+			assert.equal(topic2.posts[3].content, 'topic 2 reply');
+			assert.equal(topic2.title, 'topic 2');
+		});
+
+		it('should merge 2 topics with options newTopicTitle', async function () {
+			const topic1Result = await topics.post({ uid: uid, cid: categoryObj.cid, title: 'topic 1', content: 'topic 1 OP' });
+			const topic2Result = await topics.post({ uid: uid, cid: categoryObj.cid, title: 'topic 2', content: 'topic 2 OP' });
+			await topics.reply({ uid: uid, content: 'topic 1 reply', tid: topic1Result.topicData.tid });
+			await topics.reply({ uid: uid, content: 'topic 2 reply', tid: topic2Result.topicData.tid });
+			const mergeTid = await socketTopics.merge({ uid: adminUid }, {
+				tids: [topic2Result.topicData.tid, topic1Result.topicData.tid],
+				options: {
+					newTopicTitle: 'new merge topic',
+				},
+			});
+
+			const [topic1, topic2, topic3] = await Promise.all([
+				getTopic(topic1Result.topicData.tid),
+				getTopic(topic2Result.topicData.tid),
+				getTopic(mergeTid),
+			]);
+
+			assert.equal(topic1.posts.length, 0);
+			assert.equal(topic2.posts.length, 0);
+			assert.equal(topic3.posts.length, 4);
+			assert.equal(topic1.deleted, true);
+			assert.equal(topic2.deleted, true);
+
+			assert.equal(topic3.posts[0].content, 'topic 1 OP');
+			assert.equal(topic3.posts[1].content, 'topic 2 OP');
+			assert.equal(topic3.posts[2].content, 'topic 1 reply');
+			assert.equal(topic3.posts[3].content, 'topic 2 reply');
+			assert.equal(topic3.title, 'new merge topic');
 		});
 	});
 

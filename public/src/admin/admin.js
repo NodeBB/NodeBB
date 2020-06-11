@@ -39,6 +39,7 @@
 
 		$('[component="logout"]').on('click', function () {
 			app.logout();
+			return false;
 		});
 
 		configureSlidemenu();
