@@ -144,7 +144,7 @@
         "husky": "4.2.5",
         "jsdom": "16.2.2",
         "lint-staged": "10.2.9",
-        "mocha": "7.2.0",
+        "mocha": "8.0.1",
         "mocha-lcov-reporter": "1.3.0",
         "nyc": "15.0.1",
         "smtp-server": "3.6.0"
