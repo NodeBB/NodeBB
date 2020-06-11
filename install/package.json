@@ -125,7 +125,7 @@
         "textcomplete.contenteditable": "^0.1.1",
         "toobusy-js": "^0.5.1",
         "uglify-es": "^3.3.9",
-        "validator": "13.1.0",
+        "validator": "13.1.1",
         "winston": "3.2.1",
         "xml": "^1.0.1",
         "xregexp": "^4.3.0",
