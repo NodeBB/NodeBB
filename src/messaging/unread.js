@@ -20,18 +20,20 @@ module.exports = function (Messaging) {
 		sockets.in('uid_' + uid).emit('event:unread.updateChatCount', unreadCount);
 	};
 
-	Messaging.markRead = async (uid, roomId) => db.sortedSetRemove('uid:' + uid + ':chat:rooms:unread', roomId);
-	Messaging.markAllRead = async uid => db.delete('uid:' + uid + ':chat:rooms:unread');
+	Messaging.markRead = async (uid, roomId) => {
+		await db.sortedSetRemove('uid:' + uid + ':chat:rooms:unread', roomId);
+	};
+
+	Messaging.markAllRead = async (uid) => {
+		await db.delete('uid:' + uid + ':chat:rooms:unread');
+	};
 
 	Messaging.markUnread = async (uids, roomId) => {
 		const exists = await Messaging.roomExists(roomId);
 		if (!exists) {
 			throw new Error('[[error:chat-room-does-not-exist]]');
 		}
-		var keys = uids.map(function (uid) {
-			return 'uid:' + uid + ':chat:rooms:unread';
-		});
-
+		const keys = uids.map(uid => 'uid:' + uid + ':chat:rooms:unread');
 		return await db.sortedSetsAdd(keys, Date.now(), roomId);
 	};
 };
