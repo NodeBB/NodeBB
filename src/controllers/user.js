@@ -91,7 +91,7 @@ userController.exportPosts = async function (req, res) {
 		let postData = await posts.getPostsData(pids);
 		// Remove empty post references and convert newlines in content
 		postData = postData.filter(Boolean).map(function (post) {
-			post.content = '"' + post.content.replace(/\n/g, '\\n').replace(/"/g, '\\"') + '"';
+			post.content = '"' + String(post.content || '').replace(/\n/g, '\\n').replace(/"/g, '\\"') + '"';
 			return post;
 		});
 		payload = payload.concat(postData);
