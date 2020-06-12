@@ -20,7 +20,7 @@
 	"hsts.preload": "Atļaut iepriekš ielādēt HSTS iezīmi",
 	"hsts.help": "If enabled, an HSTS header will be set for this site. You can elect to include subdomains and preloading flags in your header. If in doubt, you can leave these unchecked. <a href=\"%1\">More information <i class=\"fa fa-external-link\"></i></a>",
 	"traffic-management": "Satiksmes pārvaldīšana",
-	"traffic.help": "NodeBB ir aprīkots ar moduli, kas automātiski liedz pieprasījumus lielas slodzes situācijās. Šeit var iestatīt šo moduli, lai gan noklusējuma iestatījumi ir labs sākumpunkts.",
+	"traffic.help": "NodeBB uses a module that automatically denies requests in high-traffic situations. You can tune these settings here, although the defaults are a good starting point.",
 	"traffic.enable": "Iespējot satiksmes pārvaldīšanu",
 	"traffic.event-lag": "Notikumu cilpas novilcināšanas slieksnis (milisekundēs)",
 	"traffic.event-lag-help": "Samazinot šo vērtību, tiek samazināti lapas ielādes gaidīšanas laiki, bet arī vairāk lietotājiem parādīsies ziņojums \"pārmērīga slodze\". (Nepieciešams restartēt)",

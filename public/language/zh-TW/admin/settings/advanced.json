@@ -20,7 +20,7 @@
 	"hsts.preload": "允許在HSTS標頭中預加載",
 	"hsts.help": "如果啟用此項，網站將會向瀏覽器發送HSTS標頭訊息。您可以設定是否為子域名開啟HSTS，以及HSTS標頭訊息中是否包含預加載標誌。如果您不瞭解HSTS，可以忽略此項設定。<a href=\"%1\">瞭解詳情 <i class=\"fa fa-external-link\"></i></a>",
 	"traffic-management": "流量管理",
-	"traffic.help": "NodeBB 擁有在高流量情況下自動拒絕請求的模塊。儘管預設值就很棒，但您可以在這裡調整這些設定。",
+	"traffic.help": "NodeBB uses a module that automatically denies requests in high-traffic situations. You can tune these settings here, although the defaults are a good starting point.",
 	"traffic.enable": "啟用流量管理",
 	"traffic.event-lag": "事件循環滯後門檻值（毫秒）",
 	"traffic.event-lag-help": "降低此值會減少頁面加載的等待時間，但也會向更多使用者顯示“過載”訊息。(需要重新啟動)",

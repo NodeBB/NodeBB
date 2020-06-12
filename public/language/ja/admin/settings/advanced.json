@@ -20,7 +20,7 @@
 	"hsts.preload": "Allow preloading of HSTS header",
 	"hsts.help": "If enabled, an HSTS header will be set for this site. You can elect to include subdomains and preloading flags in your header. If in doubt, you can leave these unchecked. <a href=\"%1\">More information <i class=\"fa fa-external-link\"></i></a>",
 	"traffic-management": "トラフィック管理",
-	"traffic.help": "NodeBBは、トラフィックの多い状況で要求を自動的に拒否するモジュールを備えています。これらの設定はここで調整することができますが、はじめはデフォルト設定にしておくことをお勧めします。",
+	"traffic.help": "NodeBB uses a module that automatically denies requests in high-traffic situations. You can tune these settings here, although the defaults are a good starting point.",
 	"traffic.enable": "トラフィック管理を有効にする",
 	"traffic.event-lag": "イベントループの場所のしきい値(ミリ秒単位)",
 	"traffic.event-lag-help": "この値を下げるとページの読み込み時間が短縮されますが、さらに多くのユーザーには「過剰な読み込み」メッセージが表示されます。(再起動が必要)",

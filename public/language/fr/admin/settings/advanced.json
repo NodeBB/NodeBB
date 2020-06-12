@@ -20,7 +20,7 @@
 	"hsts.preload": "Autoriser le préchargement de l'en-tête HSTS",
 	"hsts.help": "Si activé, un en-tête HSTS sera défini pour ce site. Vous pouvez choisir d'inclure des sous-domaines et des indicateurs de préchargement dans votre en-tête. En cas de doute, ne cochez pas l'option. <a href=\"%1\">Plus d'informations<i class=\"fa fa-external-link\"></i></a>",
 	"traffic-management": "Gestion du trafic",
-	"traffic.help": "NodeBB est déployé équipé d'un module qui refuse les requêtes en cas de situation de haut traffic. Vous pouvez changer les paramètres ici, bien que les paramètres par défaut sont un bon commencement.",
+	"traffic.help": "NodeBB utilise un module qui refuse automatiquement les demandes dans les situations de fort trafic. Vous pouvez régler ces paramètres ici, bien que les valeurs par défaut soient un bon point de départ.",
 	"traffic.enable": "Activé la gestion du trafic",
 	"traffic.event-lag": "Seuil de lag des boucles d'événements (en millisecondes) ",
 	"traffic.event-lag-help": "Descendre cette valeur réduit le temps d'attente pour le chargement de s pages, mais montrera le message \"charge excessive\" à plus d'utilisateurs. (redémarrage requis)",
