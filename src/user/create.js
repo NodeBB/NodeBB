@@ -55,7 +55,7 @@ module.exports = function (User) {
 
 		const bulkAdd = [
 			['username:uid', userData.uid, userData.username],
-			['user:' + userData.uid + ':usernames', timestamp, userData.username],
+			['user:' + userData.uid + ':usernames', timestamp, userData.username + ':' + timestamp],
 			['username:sorted', 0, userData.username.toLowerCase() + ':' + userData.uid],
 			['userslug:uid', userData.uid, userData.userslug],
 			['users:joindate', timestamp, userData.uid],

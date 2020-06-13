@@ -1137,17 +1137,12 @@ describe('User', function () {
 		});
 
 
-		it('should get history from set', function (done) {
-			var now = Date.now();
-			db.sortedSetAdd('user:' + testUid + ':usernames', now, 'derp:' + now, function (err) {
-				assert.ifError(err);
-				User.getHistory('user:' + testUid + ':usernames', function (err, data) {
-					assert.ifError(err);
-					assert.equal(data[0].value, 'derp');
-					assert.equal(data[0].timestamp, now);
-					done();
-				});
-			});
+		it('should get history from set', async function () {
+			const now = Date.now();
+			await db.sortedSetAdd('user:' + testUid + ':usernames', now, 'derp:' + now);
+			const data = await User.getHistory('user:' + testUid + ':usernames');
+			assert.equal(data[0].value, 'derp');
+			assert.equal(data[0].timestamp, now);
 		});
 
 		it('should return the correct ban reason', function (done) {
