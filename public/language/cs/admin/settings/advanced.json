@@ -20,7 +20,7 @@
 	"hsts.preload": "Povolit před-načtení hlavičky HSTS",
 	"hsts.help": "Je-li povoleno, bude nastavena pro tyto stránky hlavička HSTS . Můžete si v hlavičce zvolit zahrnutí i poddomén a přednastavených příznaků. Nejste-li si jist/a, ponechte nezaškrtnuté<a href=\"%1\">Více informací <i class=\"fa fa-external-link\"></i></a>",
 	"traffic-management": "Správa provozu",
-	"traffic.help": "NodeBB obsahuje modul, který automaticky zamítá požadavky při vysokém vytížení. Toto nastavení můžete zde upravit, ačkoliv výchozí hodnoty jsou zaručením úspěchu.",
+	"traffic.help": "NodeBB uses a module that automatically denies requests in high-traffic situations. You can tune these settings here, although the defaults are a good starting point.",
 	"traffic.enable": "Povolit správu provozu",
 	"traffic.event-lag": "Hranice prodlevy smyčky události (v milisekundách)",
 	"traffic.event-lag-help": "Snížení této hodnoty sníží čas pro načtení stránky, ale taky zobrazí více uživatelům zprávu o „přetížení stránek”. (je vyžadován restart)",

@@ -57,14 +57,10 @@ module.exports = function (Messaging) {
 		await Promise.all([
 			Messaging.addRoomToUsers(data.roomId, uids, timestamp),
 			Messaging.addMessageToUsers(data.roomId, uids, mid, timestamp),
-			Messaging.markUnread(uids, data.roomId),
+			Messaging.markUnread(uids.filter(uid => uid !== String(data.uid)), data.roomId),
 		]);
 
-		const [, messages] = await Promise.all([
-			await Messaging.markRead(data.uid, data.roomId),
-			await Messaging.getMessagesData([mid], data.uid, data.roomId, true),
-		]);
-
+		const messages = await Messaging.getMessagesData([mid], data.uid, data.roomId, true);
 		if (!messages || !messages[0]) {
 			return null;
 		}

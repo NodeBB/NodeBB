@@ -20,7 +20,7 @@
 	"hsts.preload": "Vorabladen von HSTS Header erlauben",
 	"hsts.help": "Wenn aktiviert, wird ein HSTS-Header für diese Seite gesetzt. Du kannst wählen, ob du Subdomains und Preloading-Flags in deinen Header aufnehmen möchtest. Im Zweifelsfall kannst du diese unmarkiert lassen.",
 	"traffic-management": "Traffic Management",
-	"traffic.help": "NodeBB wird mit einem Modul geliefert, welches automatisch anfragen in High-Traffic Situationen blockiert. Du kannst diese Einstellungen hier ändern, auch wenn die Standardeinstellungen einen guten Anfang darstellen sollten",
+	"traffic.help": "NodeBB uses a module that automatically denies requests in high-traffic situations. You can tune these settings here, although the defaults are a good starting point.",
 	"traffic.enable": "Traffic Management aktivieren",
 	"traffic.event-lag": "Eventschleifenverzögerungsschwelle (in Millisekunden)",
 	"traffic.event-lag-help": "Das Heruntersetzen dieses Werts reduziert die Ladezeiten, aber wird auch dafür sorgen, dass die \"Übermäßige Belastung\" nachricht öfter angezeigt wird. (Neustart erforderlich)",

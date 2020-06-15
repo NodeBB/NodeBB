@@ -20,7 +20,7 @@
 	"hsts.preload": "Permitir pré-carregamento do cabeçalho do HSTS",
 	"hsts.help": "Se habilitado, um cabeçalho de HSTS será enviado para este site. Você pode selecionar tanto quais subdomínios deseja incluir, como quais serão as flags de pré-carregamento no seu cabeçalho. Se estiver em dúvida, você pode deixar esta opção desmarcada. <a href=\"%1\">Mais informações<i class=\"fa fa-external-link\"></i></a>",
 	"traffic-management": "Administração de Tráfego",
-	"traffic.help": "Quando instalado, o NodeBB vem equipado com um módulo que nega automaticamente solicitações em situações de alto tráfego. Você pode ajustar estas configurações aqui, apesar de que os valores padrões são um bom começo.",
+	"traffic.help": "NodeBB uses a module that automatically denies requests in high-traffic situations. You can tune these settings here, although the defaults are a good starting point.",
 	"traffic.enable": "Ativar a Administração de Tráfego",
 	"traffic.event-lag": "Limite do Lag do Loop de Eventos (em milisegundos)",
 	"traffic.event-lag-help": "Abaixar este valor diminui o tempo de espera para o carregamentos de página, mas irá também mostrar a mensagem de \"carga excessiva\" para mais usuários. (É necessário reiniciar)",

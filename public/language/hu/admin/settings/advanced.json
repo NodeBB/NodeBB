@@ -20,7 +20,7 @@
 	"hsts.preload": "Allow preloading of HSTS header",
 	"hsts.help": "If enabled, an HSTS header will be set for this site. You can elect to include subdomains and preloading flags in your header. If in doubt, you can leave these unchecked. <a href=\"%1\">More information <i class=\"fa fa-external-link\"></i></a>",
 	"traffic-management": "Forgalomirányítás",
-	"traffic.help": "A NodeBB egy, a kéréseket nagy forgalmú helyzetekben automatikusan elutasító modullal felszerelve vonul fel. Átállíthatod ezen opciókat, habár az alapértékek egy remek kiinduló pont.",
+	"traffic.help": "NodeBB uses a module that automatically denies requests in high-traffic situations. You can tune these settings here, although the defaults are a good starting point.",
 	"traffic.enable": "Forgalomirányítás engedélyezése",
 	"traffic.event-lag": "Eseményciklus késési küszübértéke (ezredmásodpercben)",
 	"traffic.event-lag-help": "Az érték csökkentésével csökken az oldalbetöltések várakozási ideje, ám több felhasználó fogja tapasztalni a \"túlzott terhelés\" üzenetet. (Újraindítást igényel)",

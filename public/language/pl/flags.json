@@ -32,9 +32,9 @@
 	"view-profile": "Zobacz profil",
 	"start-new-chat": "Rozpocznij nowy czat",
 	"go-to-target": "Zobacz cel flagowania",
-	"delete-post": "Delete Post",
-	"purge-post": "Purge Post",
-	"restore-post": "Restore Post",
+	"delete-post": "Usuń post",
+	"purge-post": "Wyczyść post",
+	"restore-post": "Przywróć post",
 
 	"user-view": "Zobacz profil",
 	"user-edit": "Edytuj profil",

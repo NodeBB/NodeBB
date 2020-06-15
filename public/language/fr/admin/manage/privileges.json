@@ -34,9 +34,9 @@
 	"purge": "Purger",
 	"moderate": "Modérer",
 
-	"admin-dashboard": "Dashboard",
-	"admin-categories": "Categories",
-	"admin-privileges": "Privileges",
-	"admin-users": "Users",
-	"admin-settings": "Settings"
+	"admin-dashboard": "Tableau de bord",
+	"admin-categories": "Catégories",
+	"admin-privileges": "Privilèges",
+	"admin-users": "Utilisateurs",
+	"admin-settings": "Paramètres"
 }

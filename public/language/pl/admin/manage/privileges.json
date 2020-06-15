@@ -35,8 +35,8 @@
 	"moderate": "Moderowanie",
 
 	"admin-dashboard": "Dashboard",
-	"admin-categories": "Categories",
-	"admin-privileges": "Privileges",
-	"admin-users": "Users",
-	"admin-settings": "Settings"
+	"admin-categories": "Kategorie",
+	"admin-privileges": "Uprawnienia",
+	"admin-users": "Użytkownicy",
+	"admin-settings": "Ustawienia"
 }

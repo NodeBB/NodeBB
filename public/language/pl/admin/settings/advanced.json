@@ -20,7 +20,7 @@
 	"hsts.preload": "Zezwól na wstępne ładowanie nagłówka HSTS",
 	"hsts.help": "Jeśli ta opcja jest włączona, dla tej witryny zostanie ustawiony nagłówek HSTS. Możesz zdecydować, czy uwzględnić subdomeny i wstępnie ładować flagi w nagłówku. Jeśli masz wątpliwości, możesz zostawić te pola niezaznaczone. <a href=\"%1\">Więcej informacji<i class=\"fa fa-external-link\"></i></a>",
 	"traffic-management": "Zarządzanie ruchem",
-	"traffic.help": "System NodeBB jest dostarczany z modułem, który automatycznie blokuje żądania w przypadku nadmiernego ruchu. Tutaj możesz zmienić te ustawienia, ale ustawienia początkowe są dobrym punktem wyjścia w większości sytuacji.",
+	"traffic.help": "NodeBB uses a module that automatically denies requests in high-traffic situations. You can tune these settings here, although the defaults are a good starting point.",
 	"traffic.enable": "Włącz zarządzanie ruchem",
 	"traffic.event-lag": "Próg opóźnienia pętli zdarzeń (w milisekundach)",
 	"traffic.event-lag-help": "Obniżenie tej wartości spowoduje krótsze ładowanie stron, ale równocześnie wyświetli komunikat \"excessive load\" dla większej liczby użytkowników (wymagany restart).",
