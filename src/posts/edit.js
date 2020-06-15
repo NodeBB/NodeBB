@@ -46,7 +46,12 @@ module.exports = function (Posts) {
 		await Posts.setPostFields(data.pid, postData);
 
 		if (meta.config.enablePostHistory === 1) {
-			await Posts.diffs.save(data.pid, oldContent, data.content);
+			await Posts.diffs.save({
+				pid: data.pid,
+				uid: data.uid,
+				oldContent: oldContent,
+				newContent: data.content,
+			});
 		}
 		await Posts.uploads.sync(data.pid);
 

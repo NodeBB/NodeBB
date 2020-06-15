@@ -1,14 +1,34 @@
 'use strict';
 
 const posts = require('../../posts');
+const user = require('../../user');
 const privileges = require('../../privileges');
+const websockets = require('..');
 
 module.exports = function (SocketPosts) {
 	SocketPosts.getDiffs = async function (socket, data) {
 		await privilegeCheck(data.pid, socket.uid);
 		const timestamps = await posts.diffs.list(data.pid);
-		timestamps.unshift(Date.now());
-		return timestamps;
+		const post = await posts.getPostFields(data.pid, ['timestamp', 'uid']);
+
+		const diffs = await posts.diffs.get(data.pid);
+		const uids = diffs.map(diff => diff.uid || null);
+		uids.push(post.uid);
+		let usernames = await user.getUsersFields(uids, ['username']);
+		usernames = usernames.map(userObj => (userObj.uid ? userObj.username : null));
+
+		const cid = await posts.getCidByPid(data.pid);
+		const canEdit = await privileges.categories.can('edit', cid, socket.uid);
+		timestamps.push(post.timestamp);
+
+		return {
+			timestamps: timestamps,
+			revisions: timestamps.map((timestamp, idx) => ({
+				timestamp: timestamp,
+				username: usernames[idx],
+			})),
+			editable: canEdit,
+		};
 	};
 
 	SocketPosts.showPostAt = async function (socket, data) {
@@ -27,4 +47,15 @@ module.exports = function (SocketPosts) {
 			throw new Error('[[error:no-privileges]]');
 		}
 	}
+
+	SocketPosts.restoreDiff = async function (socket, data) {
+		const cid = await posts.getCidByPid(data.pid);
+		const canEdit = await privileges.categories.can('edit', cid, socket.uid);
+		if (!canEdit) {
+			throw new Error('[[error:no-privileges]]');
+		}
+
+		const edit = await posts.diffs.restore(data.pid, data.since, socket.uid, websockets.reqFromSocket(socket));
+		websockets.in('topic_' + edit.topic.tid).emit('event:post_edited', edit);
+	};
 };

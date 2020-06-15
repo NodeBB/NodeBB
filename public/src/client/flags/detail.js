@@ -13,6 +13,10 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 			var uid = $(this).parents('[data-uid]').attr('data-uid');
 
 			switch (action) {
+				case 'assign':
+					$('#assignee').val(app.user.uid);
+					// falls through
+
 				case 'update':
 					socket.emit('flags.update', {
 						flagId: ajaxify.data.flagId,

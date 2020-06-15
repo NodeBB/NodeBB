@@ -138,6 +138,9 @@
     "diffs.no-revisions-description": "Cet article a <strong>%1</strong> révisions.",
     "diffs.current-revision": "Révision en cours",
     "diffs.original-revision": "Révision originale",
+    "diffs.restore": "Restaurer cette révision",
+    "diffs.restore-description": "Une nouvelle révision sera ajoutée à l'historique des modifications de ce message.",
+    "diffs.post-restored": "Restauration avec succès dans une révision antérieure",
     "timeago_later": "%1",
     "timeago_earlier": "il y a %1"
 }

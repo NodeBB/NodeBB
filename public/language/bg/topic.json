@@ -138,6 +138,9 @@
     "diffs.no-revisions-description": "Тази публикация има <strong>%1</strong> варианта.",
     "diffs.current-revision": "текуща версия",
     "diffs.original-revision": "оригинална версия",
+    "diffs.restore": "Restore this revision",
+    "diffs.restore-description": "A new revision will be appended to this post's edit history.",
+    "diffs.post-restored": "Post successfully restored to earlier revision",
     "timeago_later": "%1 по-късно",
     "timeago_earlier": "%1 по-рано"
 }

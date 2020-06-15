@@ -138,6 +138,9 @@
     "diffs.no-revisions-description": "Tästä viestistä on <strong>%1 </strong>versiota",
     "diffs.current-revision": "nykyinen versio",
     "diffs.original-revision": "alkuperäinen versio",
+    "diffs.restore": "Restore this revision",
+    "diffs.restore-description": "A new revision will be appended to this post's edit history.",
+    "diffs.post-restored": "Post successfully restored to earlier revision",
     "timeago_later": "%1 myöhempi",
     "timeago_earlier": "%1 aiempi"
 }

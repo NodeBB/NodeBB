@@ -138,6 +138,9 @@
     "diffs.no-revisions-description": "Bài viết này có <strong>%1</strong> sửa đổi",
     "diffs.current-revision": "Bản sao lưu hiện tại",
     "diffs.original-revision": "Bản sao lưu gốc",
+    "diffs.restore": "Restore this revision",
+    "diffs.restore-description": "A new revision will be appended to this post's edit history.",
+    "diffs.post-restored": "Post successfully restored to earlier revision",
     "timeago_later": "%1 sau",
     "timeago_earlier": "%1 earlier"
 }

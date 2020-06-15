@@ -138,6 +138,9 @@
     "diffs.no-revisions-description": "این پست %1 نسخه دارد.",
     "diffs.current-revision": "نسخه فعلی",
     "diffs.original-revision": "نسخه اصلی",
+    "diffs.restore": "Restore this revision",
+    "diffs.restore-description": "A new revision will be appended to this post's edit history.",
+    "diffs.post-restored": "Post successfully restored to earlier revision",
     "timeago_later": "%1 later",
     "timeago_earlier": "%1 earlier"
 }
