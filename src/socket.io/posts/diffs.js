@@ -2,13 +2,19 @@
 
 const posts = require('../../posts');
 const privileges = require('../../privileges');
+const websockets = require('..');
 
 module.exports = function (SocketPosts) {
 	SocketPosts.getDiffs = async function (socket, data) {
 		await privilegeCheck(data.pid, socket.uid);
 		const timestamps = await posts.diffs.list(data.pid);
+		const cid = await posts.getCidByPid(data.pid);
+		const canEdit = await privileges.categories.can('edit', cid, socket.uid);
 		timestamps.unshift(Date.now());
-		return timestamps;
+		return {
+			timestamps: timestamps,
+			editable: canEdit,
+		};
 	};
 
 	SocketPosts.showPostAt = async function (socket, data) {
@@ -27,4 +33,15 @@ module.exports = function (SocketPosts) {
 			throw new Error('[[error:no-privileges]]');
 		}
 	}
+
+	SocketPosts.restoreDiff = async function (socket, data) {
+		const cid = await posts.getCidByPid(data.pid);
+		const canEdit = await privileges.categories.can('edit', cid, socket.uid);
+		if (!canEdit) {
+			throw new Error('[[error:no-privileges]]');
+		}
+
+		const edit = await posts.diffs.restore(data.pid, data.since, socket.uid, websockets.reqFromSocket(socket));
+		websockets.in('topic_' + edit.topic.tid).emit('event:post_edited', edit);
+	};
 };

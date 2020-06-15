@@ -33,12 +33,14 @@ module.exports = function (Posts) {
 		return await db.getListRange('post:' + pid + ':diffs', 0, -1);
 	};
 
-	Diffs.save = async function (pid, oldContent, newContent) {
+	Diffs.save = async function (data) {
+		const { pid, uid, oldContent, newContent } = data;
 		const now = Date.now();
 		const patch = diff.createPatch('', newContent, oldContent);
 		await Promise.all([
 			db.listPrepend('post:' + pid + ':diffs', now),
 			db.setObject('diff:' + pid + '.' + now, {
+				uid: uid,
 				pid: pid,
 				patch: patch,
 			}),
@@ -46,6 +48,31 @@ module.exports = function (Posts) {
 	};
 
 	Diffs.load = async function (pid, since, uid) {
+		const post = await postDiffLoad(pid, since, uid);
+
+		// Clear editor data (as it is outdated for this content)
+		delete post.edited;
+		post.editor = null;
+
+		post.content = String(post.content || '');
+
+		const result = await plugins.fireHook('filter:parse.post', { postData: post });
+		result.postData.content = translator.escape(result.postData.content);
+		return result.postData;
+	};
+
+	Diffs.restore = async function (pid, since, uid, req) {
+		const post = await postDiffLoad(pid, since, uid);
+
+		return await Posts.edit({
+			uid: uid,
+			pid: pid,
+			content: post.content,
+			req: req,
+		});
+	};
+
+	async function postDiffLoad(pid, since, uid) {
 		// Retrieves all diffs made since `since` and replays them to reconstruct what the post looked like at `since`
 		since = parseInt(since, 10);
 
@@ -57,33 +84,16 @@ module.exports = function (Posts) {
 			Posts.getPostSummaryByPids([pid], uid, { parse: false }),
 			Posts.diffs.get(pid, since),
 		]);
-		const data = {
-			post: post,
-			diffs: diffs,
-		};
-		postDiffLoad(data);
-		const result = await plugins.fireHook('filter:parse.post', { postData: data.post });
-		result.postData.content = translator.escape(result.postData.content);
-		return result.postData;
-	};
-
-	function postDiffLoad(data) {
-		data.post = data.post[0];
-		data.post.content = validator.unescape(data.post.content);
 
 		// Replace content with re-constructed content from that point in time
-		data.post.content = data.diffs.reduce(function (content, currentDiff) {
+		post[0].content = diffs.reduce(function (content, currentDiff) {
 			const result = diff.applyPatch(content, currentDiff.patch, {
 				fuzzFactor: 1,
 			});
 
 			return typeof result === 'string' ? result : content;
-		}, data.post.content);
+		}, validator.unescape(post[0].content));
 
-		// Clear editor data (as it is outdated for this content)
-		delete data.post.edited;
-		data.post.editor = null;
-
-		data.post.content = String(data.post.content || '');
+		return post[0];
 	}
 };
