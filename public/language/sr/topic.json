@@ -138,6 +138,9 @@
     "diffs.no-revisions-description": "Ова порука има %1 корекција.",
     "diffs.current-revision": "тренутна корекција",
     "diffs.original-revision": "оригинална корекција",
+    "diffs.restore": "Restore this revision",
+    "diffs.restore-description": "A new revision will be appended to this post's edit history.",
+    "diffs.post-restored": "Post successfully restored to earlier revision",
     "timeago_later": "%1 касније",
     "timeago_earlier": "%1 раније"
 }

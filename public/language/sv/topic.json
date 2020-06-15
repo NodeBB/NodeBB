@@ -138,6 +138,9 @@
     "diffs.no-revisions-description": "Detta inlägg har <strong>%1</strong> revisioner.",
     "diffs.current-revision": "Nuvarande revision",
     "diffs.original-revision": "Ursprunglig revision",
+    "diffs.restore": "Restore this revision",
+    "diffs.restore-description": "A new revision will be appended to this post's edit history.",
+    "diffs.post-restored": "Post successfully restored to earlier revision",
     "timeago_later": "%1 senare",
     "timeago_earlier": "%1 tidigare"
 }

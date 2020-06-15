@@ -138,6 +138,9 @@
     "diffs.no-revisions-description": "לפוסט זה יש <strong>%1</strong>גרסאות",
     "diffs.current-revision": "גירסה נוכחית",
     "diffs.original-revision": "גירסה מקורית",
+    "diffs.restore": "Restore this revision",
+    "diffs.restore-description": "A new revision will be appended to this post's edit history.",
+    "diffs.post-restored": "Post successfully restored to earlier revision",
     "timeago_later": "אחרי %1:",
     "timeago_earlier": "לפני %1 "
 }

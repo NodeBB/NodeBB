@@ -138,6 +138,9 @@
     "diffs.no-revisions-description": "Dieser Beitrag ha <strong>%1</strong> Revisionen.",
     "diffs.current-revision": "Aktuelle Revision",
     "diffs.original-revision": "Ursprüngliche Revision",
+    "diffs.restore": "Restore this revision",
+    "diffs.restore-description": "A new revision will be appended to this post's edit history.",
+    "diffs.post-restored": "Post successfully restored to earlier revision",
     "timeago_later": "%1 später",
     "timeago_earlier": "%1 earlier"
 }

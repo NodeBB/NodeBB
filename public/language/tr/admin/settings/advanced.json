@@ -20,7 +20,7 @@
 	"hsts.preload": "HSTS üst bilgisinin ön yüklemesine izin ver",
 	"hsts.help": "Etkinleştirildiğinde, bu site için bir HSTS başlığı ayarlanır. Alt alanları ve önyükleme bayraklarını dahil etmeyi seçebilirsiniz. Kararsızsanız, bu alanı işaretlenmemiş olarak bırakabilirsiniz. <a href=\"%1\">Daha fazla bilgi <i class=\"fa fa-external-link\"></i></a>",
 	"traffic-management": "Trafik Yönetimi",
-	"traffic.help": "NodeBB uses a module that automatically denies requests in high-traffic situations. You can tune these settings here, although the defaults are a good starting point.",
+	"traffic.help": "NodeBB, yoğun trafik isteklerini otomatik olarak reddeden bir modül ile donatılmıştır. Varsayıla ayarlar başlangıç için yeterli olsa da, bu ayarları buradan düzenleyebilirsiniz.",
 	"traffic.enable": "Trafik Yönetimini Etkinleştir",
 	"traffic.event-lag": "Olay Döngüsü Gecikme Eşiği (milisaniye cinsinden)",
 	"traffic.event-lag-help": "Bu değeri düşürmek, sayfa yüklemeleri için bekleme sürelerini azaltır, ancak daha fazla kullanıcıya \"aşırı yükleme\" mesajını da gösterir. (Yeniden başlatmak gerekir)",

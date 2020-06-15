@@ -138,6 +138,9 @@
     "diffs.no-revisions-description": "У этого сообщения есть <strong>%1</strong>версий",
     "diffs.current-revision": "текущая версия",
     "diffs.original-revision": "исходная версия",
+    "diffs.restore": "Restore this revision",
+    "diffs.restore-description": "A new revision will be appended to this post's edit history.",
+    "diffs.post-restored": "Post successfully restored to earlier revision",
     "timeago_later": "через %1",
     "timeago_earlier": "на %1 раньше"
 }

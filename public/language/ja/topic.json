@@ -138,6 +138,9 @@
     "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
     "diffs.current-revision": "現在のリビジョン",
     "diffs.original-revision": "元のリビジョン",
+    "diffs.restore": "Restore this revision",
+    "diffs.restore-description": "A new revision will be appended to this post's edit history.",
+    "diffs.post-restored": "Post successfully restored to earlier revision",
     "timeago_later": "%1 later",
     "timeago_earlier": "%1 earlier"
 }
