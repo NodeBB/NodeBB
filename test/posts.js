@@ -593,10 +593,16 @@ describe('Post\'s', function () {
 		it('should allow registered-users group to view diffs', function (done) {
 			socketPosts.getDiffs({ uid: 1 }, { pid: 1 }, function (err, data) {
 				assert.ifError(err);
+
 				assert.strictEqual('boolean', typeof data.editable);
 				assert.strictEqual(false, data.editable);
+
 				assert.equal(true, Array.isArray(data.timestamps));
 				assert.strictEqual(1, data.timestamps.length);
+
+				assert.equal(true, Array.isArray(data.revisions));
+				assert.strictEqual(data.timestamps.length, data.revisions.length);
+				['timestamp', 'username'].every(prop => Object.keys(data.revisions[0]).includes(prop));
 				done();
 			});
 		});
