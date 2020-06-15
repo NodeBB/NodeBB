@@ -10,7 +10,8 @@ module.exports = function (SocketPosts) {
 		const timestamps = await posts.diffs.list(data.pid);
 		const cid = await posts.getCidByPid(data.pid);
 		const canEdit = await privileges.categories.can('edit', cid, socket.uid);
-		timestamps.unshift(Date.now());
+		const postTime = await posts.getPostField(data.pid, 'timestamp');
+		timestamps.push(postTime);
 		return {
 			timestamps: timestamps,
 			editable: canEdit,

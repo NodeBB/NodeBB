@@ -24,7 +24,7 @@ module.exports = function (Posts) {
 	Diffs.get = async function (pid, since) {
 		const timestamps = await Diffs.list(pid);
 		// Pass those made after `since`, and create keys
-		const keys = timestamps.filter(t => (parseInt(t, 10) || 0) >= since)
+		const keys = timestamps.filter(t => (parseInt(t, 10) || 0) > since)
 			.map(t => 'diff:' + pid + '.' + t);
 		return await db.getObjects(keys);
 	};
