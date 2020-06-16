@@ -498,7 +498,11 @@ app.cacheBuster = null;
 						return resultEl.addClass('hidden').find('.quick-search-results-container').html('');
 					}
 					data.posts.forEach(function (p) {
-						p.snippet = utils.escapeHTML($('<div>' + p.content + '</div>').text().slice(0, 80) + '...');
+						var text = $('<div>' + p.content + '</div>').text();
+						var start = Math.max(0, text.toLowerCase().indexOf(inputEl.val().toLowerCase()) - 40);
+						p.snippet = utils.escapeHTML((start > 0 ? '...' : '') +
+							text.slice(start, start + 80) +
+							(text.length - start > 80 ? '...' : ''));
 					});
 					app.parseAndTranslate('partials/quick-search-results', data, function (html) {
 						if (html.length) {
