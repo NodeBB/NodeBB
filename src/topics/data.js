@@ -27,7 +27,7 @@ module.exports = function (Topics) {
 			topics: topics,
 			fields: fields,
 			keys: keys,
-		}); 
+		});
 		result.topics.forEach(topic => modifyTopic(topic, fields));
 		return result.topics;
 	};
