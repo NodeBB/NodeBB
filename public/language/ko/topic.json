@@ -138,6 +138,9 @@
     "diffs.no-revisions-description": "이 게시글에는 <strong>%1</strong>번의 수정이 있습니다.",
     "diffs.current-revision": "현재 리비젼",
     "diffs.original-revision": "원래의 리비젼",
+    "diffs.restore": "Restore this revision",
+    "diffs.restore-description": "A new revision will be appended to this post's edit history.",
+    "diffs.post-restored": "Post successfully restored to earlier revision",
     "timeago_later": "%1 later",
     "timeago_earlier": "%1 earlier"
 }

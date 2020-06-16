@@ -138,6 +138,9 @@
     "diffs.no-revisions-description": "該貼文已重新修改",
     "diffs.current-revision": "當前版本",
     "diffs.original-revision": "原始版本",
+    "diffs.restore": "Restore this revision",
+    "diffs.restore-description": "A new revision will be appended to this post's edit history.",
+    "diffs.post-restored": "Post successfully restored to earlier revision",
     "timeago_later": "%1 後",
     "timeago_earlier": "%1 前"
 }

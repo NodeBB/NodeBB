@@ -134,10 +134,13 @@
     "stale.reply_anyway": "Отговаряне в тази тема въпреки това",
     "link_back": "Отговор: [%1](%2)",
     "diffs.title": "История на редакциите",
-    "diffs.description": "Тази публикация има <strong>%1</strong> варианта. Щракнете върху някоя от версиите по-долу, за да видите съдържанието ѝ в съответния момент.",
-    "diffs.no-revisions-description": "Тази публикация има <strong>%1</strong> варианта.",
+    "diffs.description": "Тази публикация има <strong>%1</strong> версии. Щракнете върху някоя от версиите по-долу, за да видите съдържанието ѝ в съответния момент.",
+    "diffs.no-revisions-description": "Тази публикация има <strong>%1</strong> версии.",
     "diffs.current-revision": "текуща версия",
     "diffs.original-revision": "оригинална версия",
+    "diffs.restore": "Възстановяване на тази версия",
+    "diffs.restore-description": "Към историята на редакциите на тази публикация ще бъде добавена нова версия.",
+    "diffs.post-restored": "Публикацията е възстановена успешно до по-ранна версия",
     "timeago_later": "%1 по-късно",
     "timeago_earlier": "%1 по-рано"
 }

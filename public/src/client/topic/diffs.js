@@ -16,10 +16,11 @@ define('forum/topic/diffs', ['forum/topic/images', 'benchpress', 'translator'], 
 			}
 
 			Benchpress.parse('partials/modals/post_history', {
-				diffs: data.timestamps.map(function (timestamp) {
-					timestamp = parseInt(timestamp, 10);
+				diffs: data.revisions.map(function (revision) {
+					var timestamp = parseInt(revision.timestamp, 10);
 
 					return {
+						username: revision.username,
 						timestamp: timestamp,
 						pretty: new Date(timestamp).toLocaleString(config.userLang.replace('_', '-'), localeStringOpts),
 					};
@@ -44,7 +45,7 @@ define('forum/topic/diffs', ['forum/topic/images', 'benchpress', 'translator'], 
 
 					selectEl.on('change', function () {
 						Diffs.load(pid, this.value, postContainer);
-						revertEl.prop('disabled', data.timestamps.indexOf(this.value) === -1);
+						revertEl.prop('disabled', data.timestamps.indexOf(this.value) === 0);
 					});
 
 					revertEl.on('click', function () {

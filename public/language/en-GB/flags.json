@@ -32,6 +32,7 @@
 	"view-profile": "View Profile",
 	"start-new-chat": "Start New Chat",
 	"go-to-target": "View Flag Target",
+	"assign-to-me": "Assign To Me",
 	"delete-post": "Delete Post",
 	"purge-post": "Purge Post",
 	"restore-post": "Restore Post",
@@ -44,7 +45,6 @@
 	"no-notes": "No shared notes.",
 
 	"history": "Account &amp; Flag History",
-	"back": "Back to Flags List",
 	"no-history": "No flag history.",
 
 	"state-all": "All states",

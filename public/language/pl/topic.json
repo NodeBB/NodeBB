@@ -138,6 +138,9 @@
     "diffs.no-revisions-description": "Ten post zawiera <strong>%1</strong> zmian.",
     "diffs.current-revision": "wersja obecna",
     "diffs.original-revision": "pierwsza zmiana",
+    "diffs.restore": "Restore this revision",
+    "diffs.restore-description": "A new revision will be appended to this post's edit history.",
+    "diffs.post-restored": "Post successfully restored to earlier revision",
     "timeago_later": "%1 później",
     "timeago_earlier": "%1 wcześniej"
 }

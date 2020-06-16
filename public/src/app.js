@@ -445,7 +445,7 @@ app.cacheBuster = null;
 	app.toggleNavbar = function (state) {
 		var navbarEl = $('.navbar');
 		if (navbarEl) {
-			navbarEl.toggleClass('hidden', !state);
+			navbarEl[state ? 'show' : 'hide']();
 		}
 	};
 

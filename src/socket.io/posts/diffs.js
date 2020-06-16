@@ -1,6 +1,7 @@
 'use strict';
 
 const posts = require('../../posts');
+const user = require('../../user');
 const privileges = require('../../privileges');
 const websockets = require('..');
 
@@ -8,11 +9,24 @@ module.exports = function (SocketPosts) {
 	SocketPosts.getDiffs = async function (socket, data) {
 		await privilegeCheck(data.pid, socket.uid);
 		const timestamps = await posts.diffs.list(data.pid);
+		const post = await posts.getPostFields(data.pid, ['timestamp', 'uid']);
+
+		const diffs = await posts.diffs.get(data.pid);
+		const uids = diffs.map(diff => diff.uid || null);
+		uids.push(post.uid);
+		let usernames = await user.getUsersFields(uids, ['username']);
+		usernames = usernames.map(userObj => (userObj.uid ? userObj.username : null));
+
 		const cid = await posts.getCidByPid(data.pid);
 		const canEdit = await privileges.categories.can('edit', cid, socket.uid);
-		timestamps.unshift(Date.now());
+		timestamps.push(post.timestamp);
+
 		return {
 			timestamps: timestamps,
+			revisions: timestamps.map((timestamp, idx) => ({
+				timestamp: timestamp,
+				username: usernames[idx],
+			})),
 			editable: canEdit,
 		};
 	};

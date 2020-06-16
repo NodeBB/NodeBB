@@ -23,8 +23,12 @@ module.exports = function (Posts) {
 
 	Diffs.get = async function (pid, since) {
 		const timestamps = await Diffs.list(pid);
+		if (!since) {
+			since = 0;
+		}
+
 		// Pass those made after `since`, and create keys
-		const keys = timestamps.filter(t => (parseInt(t, 10) || 0) >= since)
+		const keys = timestamps.filter(t => (parseInt(t, 10) || 0) > since)
 			.map(t => 'diff:' + pid + '.' + t);
 		return await db.getObjects(keys);
 	};
@@ -49,11 +53,6 @@ module.exports = function (Posts) {
 
 	Diffs.load = async function (pid, since, uid) {
 		const post = await postDiffLoad(pid, since, uid);
-
-		// Clear editor data (as it is outdated for this content)
-		delete post.edited;
-		post.editor = null;
-
 		post.content = String(post.content || '');
 
 		const result = await plugins.fireHook('filter:parse.post', { postData: post });
