@@ -24,7 +24,7 @@ module.exports = function (Topics) {
 		const topics = await (fields.length ? db.getObjectsFields(keys, fields) : db.getObjects(keys));
 		const result = await plugins.fireHook('filter:topic.getFields', {
 			tids: tids,
-			topics: topics, //topicData,
+			topics: topics,
 			fields: fields,
 			keys: keys,
 		}); 
