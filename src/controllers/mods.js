@@ -12,6 +12,7 @@ const plugins = require('../plugins');
 const pagination = require('../pagination');
 const privileges = require('../privileges');
 const utils = require('../utils');
+const helpers = require('./helpers');
 
 const modsController = module.exports;
 modsController.flags = {};
@@ -94,6 +95,7 @@ modsController.flags.list = async function (req, res, next) {
 		filters: filters,
 		title: '[[pages:flags]]',
 		pagination: pagination.create(flagsData.page, flagsData.pageCount, req.query),
+		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[pages:flags]]' }]),
 	});
 };
 
@@ -141,6 +143,10 @@ modsController.flags.detail = async function (req, res, next) {
 		categories: results.categories,
 		filters: req.session.flags_filters || [],
 		privileges: results.privileges,
+		breadcrumbs: helpers.buildBreadcrumbs([
+			{ text: '[[pages:flags]]', url: '/flags' },
+			{ text: '[[pages:flag-details, ' + req.params.flagId + ']]' },
+		]),
 	}));
 };
 
@@ -193,6 +199,7 @@ modsController.postQueue = async function (req, res, next) {
 		title: '[[pages:post-queue]]',
 		posts: postData,
 		pagination: pagination.create(page, pageCount),
+		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[pages:post-queue]]' }]),
 	});
 };
 

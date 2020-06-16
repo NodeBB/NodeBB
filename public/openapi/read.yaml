@@ -4751,6 +4751,7 @@ paths:
                       title:
                         type: string
                   - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   "/api/flags/{flagId}":
     get:
@@ -4963,6 +4964,7 @@ paths:
                         additionalProperties:
                           description: "A list of global and admin privileges, and whether the calling user has (or has inherited) them"
                           type: boolean
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/post-queue:
     get:
@@ -5114,6 +5116,7 @@ paths:
                                       type: string
                             - $ref: components/schemas/CategoryObject.yaml#/CategoryObject
                   - $ref: components/schemas/Pagination.yaml#/Pagination
+                  - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/ip-blacklist:
     get:

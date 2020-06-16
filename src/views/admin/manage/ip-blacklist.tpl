@@ -1,3 +1,5 @@
+<!-- IMPORT partials/breadcrumbs.tpl -->
+
 <div class="row ip-blacklist">
 	<div class="col-lg-12">
 		<p class="lead">
@@ -40,7 +42,7 @@
 					</div>
 					<div class="panel-footer"><small>[[admin/manage/ip-blacklist:analytics.blacklist-hourly]]</small></div>
 				</div>
-					
+
 				<div class="panel panel-default">
 					<div class="panel-body">
 						<div><canvas id="blacklist:daily" height="250"></canvas></div>
