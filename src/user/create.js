@@ -70,7 +70,7 @@ module.exports = function (User) {
 		if (userData.email) {
 			bulkAdd.push(['email:uid', userData.uid, userData.email.toLowerCase()]);
 			bulkAdd.push(['email:sorted', 0, userData.email.toLowerCase() + ':' + userData.uid]);
-			bulkAdd.push(['user:' + userData.uid + ':emails', timestamp, userData.email]);
+			bulkAdd.push(['user:' + userData.uid + ':emails', timestamp, userData.email + ':' + timestamp]);
 		}
 
 		await Promise.all([
