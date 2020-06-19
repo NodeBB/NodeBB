@@ -100,6 +100,40 @@ describe('User', function () {
 				done();
 			});
 		});
+
+		it('should error if username is already taken', async function () {
+			let err;
+			async function tryCreate(data) {
+				try {
+					return await User.create(data);
+				} catch (_err) {
+					err = _err;
+				}
+			}
+
+			await Promise.all([
+				tryCreate({ username: 'dupe1' }),
+				tryCreate({ username: 'dupe1' }),
+			]);
+			assert.strictEqual(err.message, '[[error:username-taken]]');
+		});
+
+		it('should error if email is already taken', async function () {
+			let err;
+			async function tryCreate(data) {
+				try {
+					return await User.create(data);
+				} catch (_err) {
+					err = _err;
+				}
+			}
+
+			await Promise.all([
+				tryCreate({ username: 'notdupe1', email: 'dupe@dupe.com' }),
+				tryCreate({ username: 'notdupe2', email: 'dupe@dupe.com' }),
+			]);
+			assert.strictEqual(err.message, '[[error:email-taken]]');
+		});
 	});
 
 	describe('.uniqueUsername()', function () {

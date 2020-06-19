@@ -435,6 +435,10 @@ describe('Hash methods', function () {
 			});
 		});
 
+		it('should not error if one of the fields is undefined', async function () {
+			await db.deleteObjectFields('someKey', ['best', undefined]);
+		});
+
 		it('should not error if field is null', function (done) {
 			db.deleteObjectField('someKey', null, function (err) {
 				assert.ifError(err);
