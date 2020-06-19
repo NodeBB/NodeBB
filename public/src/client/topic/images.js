@@ -25,7 +25,7 @@ define('forum/topic/images', [], function () {
 			if (!$this.parent().is('a')) {
 				$this.wrap('<a href="' + src + '" ' +
 					(!srcExt && altExt ? ' download="' + altFilename + '" ' : '') +
-					' target="_blank" >');
+					' target="_blank" rel="noopener">');
 			}
 		});
 	};
