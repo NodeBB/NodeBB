@@ -18,13 +18,7 @@ module.exports = function (Messaging) {
 		}
 
 		const keys = mids.map(mid => 'message:' + mid);
-		let messages;
-		if (fields.length) {
-			messages = await db.getObjectsFields(keys, fields);
-		} else {
-			messages = await db.getObjects(keys);
-		}
-
+		const messages = await (fields.length ? db.getObjectsFields(keys, fields) : db.getObjects(keys));
 		messages.forEach(message => modifyMessage(message, fields));
 		return messages;
 	};

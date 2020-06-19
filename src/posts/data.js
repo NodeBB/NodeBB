@@ -15,12 +15,7 @@ module.exports = function (Posts) {
 			return [];
 		}
 		const keys = pids.map(pid => 'post:' + pid);
-		let postData;
-		if (fields.length) {
-			postData = await db.getObjectsFields(keys, fields);
-		} else {
-			postData = await db.getObjects(keys);
-		}
+		const postData = await (fields.length ? db.getObjectsFields(keys, fields) : db.getObjects(keys));
 		const result = await plugins.fireHook('filter:post.getFields', {
 			pids: pids,
 			posts: postData,
