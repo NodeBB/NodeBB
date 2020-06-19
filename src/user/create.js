@@ -14,9 +14,29 @@ module.exports = function (User) {
 		if (data.email !== undefined) {
 			data.email = String(data.email).trim();
 		}
-		const timestamp = data.timestamp || Date.now();
 
 		await User.isDataValid(data);
+
+		try {
+			await lock(data.username, '[[error:username-taken]]');
+			if (data.email) {
+				await lock(data.email, '[[error:email-taken]]');
+			}
+			return await create(data);
+		} finally {
+			await db.deleteObjectFields('locks', [data.username, data.email]);
+		}
+	};
+
+	async function lock(value, error) {
+		const count = await db.incrObjectField('locks', value);
+		if (count > 1) {
+			throw new Error(error);
+		}
+	}
+
+	async function create(data) {
+		const timestamp = data.timestamp || Date.now();
 
 		let userData = {
 			username: data.username,
@@ -92,7 +112,7 @@ module.exports = function (User) {
 		}
 		plugins.fireHook('action:user.create', { user: userData, data: data });
 		return userData.uid;
-	};
+	}
 
 	async function storePassword(uid, password) {
 		if (!password) {
