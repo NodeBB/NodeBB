@@ -96,6 +96,14 @@ describe('file', function () {
 				done();
 			});
 		});
+
+		it('should error if folder is relative', function (done) {
+			file.saveFileToLocal(filename, '../../text', tempPath + '000000000', function (err) {
+				assert(err);
+				assert.strictEqual(err.message, '[[error:invalid-path]]');
+				done();
+			});
+		});
 	});
 
 	it('should walk directory', function (done) {

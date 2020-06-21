@@ -107,7 +107,7 @@ helpers.uploadFile = function (uploadEndPoint, filePath, body, jar, csrf_token, 
 			return callback(err);
 		}
 		if (res.statusCode !== 200) {
-			winston.error(body);
+			winston.error(JSON.stringify(body));
 		}
 		callback(null, res, body);
 	});

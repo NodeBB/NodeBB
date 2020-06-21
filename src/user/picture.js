@@ -45,9 +45,9 @@ module.exports = function (User) {
 
 			validateUpload(data, meta.config.maximumCoverImageSize, ['image/png', 'image/jpeg', 'image/bmp']);
 
-			picture.path = await getTempPath(data);
+			picture.path = await image.writeImageDataToTempFile(data.imageData);
 
-			const extension = file.typeToExtension(getMimeType(data));
+			const extension = file.typeToExtension(image.mimeFromBase64(data.imageData));
 			const filename = data.uid + '-profilecover' + extension;
 			const uploadData = await image.uploadImage(filename, 'profile', picture);
 
@@ -61,7 +61,7 @@ module.exports = function (User) {
 				url: uploadData.url,
 			};
 		} finally {
-			file.delete(picture.path || (data.file && data.file.path));
+			file.delete(picture.path);
 		}
 	};
 
@@ -78,12 +78,12 @@ module.exports = function (User) {
 
 			validateUpload(data, meta.config.maximumProfileImageSize, User.getAllowedImageTypes());
 
-			const extension = file.typeToExtension(getMimeType(data));
+			const extension = file.typeToExtension(image.mimeFromBase64(data.imageData));
 			if (!extension) {
 				throw new Error('[[error:invalid-image-extension]]');
 			}
 
-			picture.path = await getTempPath(data);
+			picture.path = await image.writeImageDataToTempFile(data.imageData);
 			picture.path = await convertToPNG(picture.path);
 
 			await image.resizeImage({
@@ -101,34 +101,23 @@ module.exports = function (User) {
 			});
 			return uploadedImage;
 		} finally {
-			file.delete(picture.path || (data.file && data.file.path));
+			file.delete(picture.path);
 		}
 	};
 
 	function validateUpload(data, maxSize, allowedTypes) {
-		if (!data.imageData && !data.file) {
+		if (!data.imageData) {
 			throw new Error('[[error:invalid-data]]');
 		}
-		const size = data.file ? data.file.size : image.sizeFromBase64(data.imageData);
+		const size = image.sizeFromBase64(data.imageData);
 		if (size > maxSize * 1024) {
 			throw new Error('[[error:file-too-big, ' + maxSize + ']]');
 		}
 
-		const type = getMimeType(data);
+		const type = image.mimeFromBase64(data.imageData);
 		if (!type || !allowedTypes.includes(type)) {
 			throw new Error('[[error:invalid-image]]');
 		}
-	}
-
-	function getMimeType(data) {
-		return data.file ? data.file.type : image.mimeFromBase64(data.imageData);
-	}
-
-	async function getTempPath(data) {
-		if (data.file) {
-			return data.file.path;
-		}
-		return await image.writeImageDataToTempFile(data.imageData);
 	}
 
 	async function convertToPNG(path) {
