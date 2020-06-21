@@ -67,10 +67,9 @@ async function getNotices() {
 
 async function getLatestVersion() {
 	try {
-		const result = await versions.getLatestVersion();
-		return result;
+		return await versions.getLatestVersion();
 	} catch (err) {
-		winston.error('[acp] Failed to fetch latest version', err);
+		winston.error('[acp] Failed to fetch latest version', err.stack);
 	}
 	return null;
 }

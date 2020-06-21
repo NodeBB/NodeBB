@@ -78,7 +78,7 @@ Flags.init = async function () {
 		const data = await plugins.fireHook('filter:flags.getFilters', hookData);
 		Flags._filters = data.filters;
 	} catch (err) {
-		winston.error('[flags/init] Could not retrieve filters', err);
+		winston.error('[flags/init] Could not retrieve filters', err.stack);
 		Flags._filters = {};
 	}
 };

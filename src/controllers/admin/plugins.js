@@ -52,7 +52,7 @@ async function getPlugins(matching) {
 		const pluginsData = await plugins.list(matching);
 		return pluginsData || [];
 	} catch (err) {
-		winston.error(err);
+		winston.error(err.stack);
 		return [];
 	}
 }

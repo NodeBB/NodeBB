@@ -44,7 +44,7 @@ function deserialize(config) {
 			try {
 				deserialized[key] = JSON.parse(config[key] || '[]');
 			} catch (err) {
-				winston.error(err);
+				winston.error(err.stack);
 				deserialized[key] = defaults[key];
 			}
 		} else {

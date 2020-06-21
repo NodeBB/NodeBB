@@ -190,7 +190,7 @@ UserNotifications.sendTopicNotificationToFollowers = async function (uid, topicD
 
 		await notifications.push(notifObj, followers);
 	} catch (err) {
-		winston.error(err);
+		winston.error(err.stack);
 	}
 };
 

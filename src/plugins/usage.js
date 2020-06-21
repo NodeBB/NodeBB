@@ -33,7 +33,7 @@ module.exports = function (Plugins) {
 			timeout: 5000,
 		}, function (err, res, body) {
 			if (err) {
-				return winston.error(err);
+				return winston.error(err.stack);
 			}
 			if (res.statusCode !== 200) {
 				winston.error('[plugins.submitUsageData] received ' + res.statusCode + ' ' + body);

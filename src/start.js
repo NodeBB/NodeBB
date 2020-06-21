@@ -113,7 +113,7 @@ function addProcessHandlers() {
 	process.on('SIGINT', shutdown);
 	process.on('SIGHUP', restart);
 	process.on('uncaughtException', function (err) {
-		winston.error(err);
+		winston.error(err.stack);
 
 		require('./meta').js.killMinifier();
 		shutdown(1);

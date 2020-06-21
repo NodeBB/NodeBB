@@ -143,7 +143,7 @@ function markAsRead(req, tid) {
 	if (req.loggedIn) {
 		topics.markAsRead([tid], req.uid, function (err, markedRead) {
 			if (err) {
-				return winston.error(err);
+				return winston.error(err.stack);
 			}
 			if (markedRead) {
 				topics.pushUnreadCount(req.uid);

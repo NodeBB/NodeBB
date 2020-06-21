@@ -173,7 +173,7 @@ async function deleteUsers(socket, uids, method) {
 	try {
 		await Promise.all(uids.map(uid => doDelete(uid)));
 	} catch (err) {
-		winston.error(err);
+		winston.error(err.stack);
 	}
 }
 
