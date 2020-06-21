@@ -936,31 +936,6 @@ describe('User', function () {
 			});
 		});
 
-		it('should upload profile picture', function (done) {
-			helpers.copyFile(
-				path.join(nconf.get('base_dir'), 'test/files/test.png'),
-				path.join(nconf.get('base_dir'), 'test/files/test_copy.png'),
-				function (err) {
-					assert.ifError(err);
-					var picture = {
-						path: path.join(nconf.get('base_dir'), 'test/files/test_copy.png'),
-						size: 7189,
-						name: 'test_copy.png',
-						type: 'image/png',
-					};
-					User.uploadCroppedPicture({
-						uid: uid,
-						file: picture,
-					}, function (err, uploadedPicture) {
-						assert.ifError(err);
-						assert.equal(uploadedPicture.url, '/assets/uploads/profile/' + uid + '-profileavatar.png');
-						assert.equal(uploadedPicture.path, path.join(nconf.get('upload_path'), 'profile', uid + '-profileavatar.png'));
-						done();
-					});
-				}
-			);
-		});
-
 		it('should return error if profile image uploads disabled', function (done) {
 			meta.config.allowProfileImageUploads = 0;
 			var picture = {
