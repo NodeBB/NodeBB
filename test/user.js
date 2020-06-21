@@ -949,37 +949,15 @@ describe('User', function () {
 				file: picture,
 			}, function (err) {
 				assert.equal(err.message, '[[error:profile-image-uploads-disabled]]');
-				done();
-			});
-		});
-
-		it('should return error if profile image is too big', function (done) {
-			meta.config.allowProfileImageUploads = 1;
-			var picture = {
-				path: path.join(nconf.get('base_dir'), 'test/files/test_copy.png'),
-				size: 265000,
-				name: 'test.png',
-				type: 'image/png',
-			};
-
-			User.uploadCroppedPicture({
-				uid: uid,
-				file: picture,
-			}, function (err) {
-				assert.equal(err.message, '[[error:file-too-big, 256]]');
+				meta.config.allowProfileImageUploads = 1;
 				done();
 			});
 		});
 
 		it('should return error if profile image has no mime type', function (done) {
-			var picture = {
-				path: path.join(nconf.get('base_dir'), 'test/files/test_copy.png'),
-				size: 7189,
-				name: 'test',
-			};
 			User.uploadCroppedPicture({
 				uid: uid,
-				file: picture,
+				imageData: 'data:image/invalid;base64,R0lGODlhPQBEAPeoAJosM/',
 			}, function (err) {
 				assert.equal(err.message, '[[error:invalid-image]]');
 				done();
