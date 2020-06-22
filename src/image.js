@@ -101,7 +101,7 @@ image.stripEXIF = async function (path) {
 		const sharp = requireSharp();
 		await sharp(buffer, { failOnError: true }).rotate().toFile(path);
 	} catch (err) {
-		winston.error(err);
+		winston.error(err.stack);
 	}
 };
 

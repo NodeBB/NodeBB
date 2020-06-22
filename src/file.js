@@ -30,6 +30,9 @@ file.saveFileToLocal = async function (filename, folder, tempPath) {
 	filename = filename.split('.').map(name => utils.slugify(name)).join('.');
 
 	const uploadPath = path.join(nconf.get('upload_path'), folder, filename);
+	if (!uploadPath.startsWith(nconf.get('upload_path'))) {
+		throw new Error('[[error:invalid-path]]');
+	}
 
 	winston.verbose('Saving file ' + filename + ' to : ' + uploadPath);
 	await mkdirp(path.dirname(uploadPath));

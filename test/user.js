@@ -936,31 +936,6 @@ describe('User', function () {
 			});
 		});
 
-		it('should upload profile picture', function (done) {
-			helpers.copyFile(
-				path.join(nconf.get('base_dir'), 'test/files/test.png'),
-				path.join(nconf.get('base_dir'), 'test/files/test_copy.png'),
-				function (err) {
-					assert.ifError(err);
-					var picture = {
-						path: path.join(nconf.get('base_dir'), 'test/files/test_copy.png'),
-						size: 7189,
-						name: 'test_copy.png',
-						type: 'image/png',
-					};
-					User.uploadCroppedPicture({
-						uid: uid,
-						file: picture,
-					}, function (err, uploadedPicture) {
-						assert.ifError(err);
-						assert.equal(uploadedPicture.url, '/assets/uploads/profile/' + uid + '-profileavatar.png');
-						assert.equal(uploadedPicture.path, path.join(nconf.get('upload_path'), 'profile', uid + '-profileavatar.png'));
-						done();
-					});
-				}
-			);
-		});
-
 		it('should return error if profile image uploads disabled', function (done) {
 			meta.config.allowProfileImageUploads = 0;
 			var picture = {
@@ -974,37 +949,15 @@ describe('User', function () {
 				file: picture,
 			}, function (err) {
 				assert.equal(err.message, '[[error:profile-image-uploads-disabled]]');
-				done();
-			});
-		});
-
-		it('should return error if profile image is too big', function (done) {
-			meta.config.allowProfileImageUploads = 1;
-			var picture = {
-				path: path.join(nconf.get('base_dir'), 'test/files/test_copy.png'),
-				size: 265000,
-				name: 'test.png',
-				type: 'image/png',
-			};
-
-			User.uploadCroppedPicture({
-				uid: uid,
-				file: picture,
-			}, function (err) {
-				assert.equal(err.message, '[[error:file-too-big, 256]]');
+				meta.config.allowProfileImageUploads = 1;
 				done();
 			});
 		});
 
 		it('should return error if profile image has no mime type', function (done) {
-			var picture = {
-				path: path.join(nconf.get('base_dir'), 'test/files/test_copy.png'),
-				size: 7189,
-				name: 'test',
-			};
 			User.uploadCroppedPicture({
 				uid: uid,
-				file: picture,
+				imageData: 'data:image/invalid;base64,R0lGODlhPQBEAPeoAJosM/',
 			}, function (err) {
 				assert.equal(err.message, '[[error:invalid-image]]');
 				done();
