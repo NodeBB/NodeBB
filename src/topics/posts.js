@@ -50,7 +50,7 @@ module.exports = function (Topics) {
 			getPostUserData('editor', async function (uids) {
 				return await user.getUsersFields(uids, ['uid', 'username', 'userslug']);
 			}),
-			getPostReplies(pids, uid),
+			Topics.getPostReplies(pids, uid),
 			Topics.addParentPosts(postData),
 		]);
 
@@ -233,51 +233,74 @@ module.exports = function (Topics) {
 		return await db.getObjectField('topic:' + tid, 'postcount');
 	};
 
-	async function getPostReplies(pids, callerUid) {
-		const keys = pids.map(pid => 'pid:' + pid + ':replies');
+	Topics.getPostReplies = async (pids, callerUid) => {
+		const keys = pids.map((pid) => "pid:" + pid + ":replies");
 		const arrayOfReplyPids = await db.getSortedSetsMembers(keys);
 
 		const uniquePids = _.uniq(_.flatten(arrayOfReplyPids));
 
-		const replyData = await posts.getPostsFields(uniquePids, ['pid', 'uid', 'timestamp']);
+		const replyData = await posts.getPostsFields(uniquePids, [
+			"pid",
+			"uid",
+			"timestamp",
+		]);
 
-		const uids = replyData.map(replyData => replyData && replyData.uid);
+		const uids = replyData.map((replyData) => replyData && replyData.uid);
 
 		const uniqueUids = _.uniq(uids);
 
-		const userData = await user.getUsersWithFields(uniqueUids, ['uid', 'username', 'userslug', 'picture'], callerUid);
+		const userData = await user.getUsersWithFields(
+			uniqueUids,
+			["uid", "username", "userslug", "picture"],
+			callerUid
+		);
 
 		var uidMap = _.zipObject(uniqueUids, userData);
 		var pidMap = _.zipObject(uniquePids, replyData);
 
-		var returnData = arrayOfReplyPids.map(function (replyPids) {
-			var uidsUsed = {};
-			var currentData = {
-				hasMore: false,
-				users: [],
-				text: replyPids.length > 1 ? '[[topic:replies_to_this_post, ' + replyPids.length + ']]' : '[[topic:one_reply_to_this_post]]',
-				count: replyPids.length,
-				timestampISO: replyPids.length ? utils.toISOString(pidMap[replyPids[0]].timestamp) : undefined,
-			};
+		var returnData = await Promise.all(
+			arrayOfReplyPids.map(async function (replyPids) {
+				var uidsUsed = {};
+				var currentData = {
+					hasMore: false,
+					users: [],
+					text:
+						replyPids.length > 1
+							? "[[topic:replies_to_this_post, " + replyPids.length + "]]"
+							: "[[topic:one_reply_to_this_post]]",
+					count: replyPids.length,
+					timestampISO: replyPids.length
+						? utils.toISOString(pidMap[replyPids[0]].timestamp)
+						: undefined,
+				};
 
-			replyPids.sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+				replyPids.sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
 
-			replyPids.forEach(function (replyPid) {
-				var replyData = pidMap[replyPid];
-				if (!uidsUsed[replyData.uid] && currentData.users.length < 6) {
-					currentData.users.push(uidMap[replyData.uid]);
-					uidsUsed[replyData.uid] = true;
+				replyPids.forEach(function (replyPid) {
+					var replyData = pidMap[replyPid];
+					if (!uidsUsed[replyData.uid] && currentData.users.length < 6) {
+						currentData.users.push(uidMap[replyData.uid]);
+						uidsUsed[replyData.uid] = true;
+					}
+				});
+
+				if (currentData.users.length > 5) {
+					currentData.users.pop();
+					currentData.hasMore = true;
 				}
-			});
 
-			if (currentData.users.length > 5) {
-				currentData.users.pop();
-				currentData.hasMore = true;
-			}
-
-			return currentData;
-		});
+				const postsData = await posts.getPostSummaryByPids(
+					replyPids,
+					callerUid,
+					{}
+				);
+				return {
+					...currentData,
+					posts: postsData,
+				};
+			})
+		);
 
 		return returnData;
-	}
+	};
 };
