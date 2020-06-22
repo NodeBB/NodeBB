@@ -126,7 +126,7 @@
         "toobusy-js": "^0.5.1",
         "uglify-es": "^3.3.9",
         "validator": "13.1.1",
-        "winston": "3.3.1",
+        "winston": "3.3.2",
         "xml": "^1.0.1",
         "xregexp": "^4.3.0",
         "zxcvbn": "^4.4.2"
