@@ -193,7 +193,7 @@ Emailer.send = async function (template, uid, params) {
 	try {
 		await Emailer.sendToEmail(template, userData.email, userSettings.userLang, params);
 	} catch (err) {
-		winston.error(err);
+		winston.error(err.stack);
 	}
 };
 
@@ -286,7 +286,7 @@ Emailer.sendViaFallback = function (data, callback) {
 	winston.verbose('[emailer] Sending email to uid ' + data.uid + ' (' + data.to + ')');
 	Emailer.fallbackTransport.sendMail(data, function (err) {
 		if (err) {
-			winston.error(err);
+			winston.error(err.stack);
 		}
 		callback();
 	});
@@ -322,7 +322,7 @@ async function buildCustomTemplates(config) {
 		Benchpress.flush();
 		winston.verbose('[emailer] Built custom email templates');
 	} catch (err) {
-		winston.error('[emailer] Failed to build custom email templates', err);
+		winston.error('[emailer] Failed to build custom email templates', err.stack);
 	}
 }
 

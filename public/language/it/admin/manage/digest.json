@@ -9,7 +9,7 @@
 	"default": "Sistema predefinito",
 	"default-help": "<em>Sistema predefinito</em> significa che l'utente non ha esplicitamente sovrascritto l'impostazione del forum globale per i digest, che attualmente è: & quot;<strong>%1</strong>&quot;",
 	"resend": "Rinvia Digest",
-	"resend-all-confirm": "Are you sure you wish to manually execute this digest run?",
+	"resend-all-confirm": "Sei sicuro di voler eseguire manualmente questa esecuzione del riepilogo?",
 	"resent-single": "Invio del digest manuale completato",
 	"resent-day": "Rinvio digest giornaliero",
 	"resent-week": "Rinvio del digest settimanale",

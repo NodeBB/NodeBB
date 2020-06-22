@@ -58,7 +58,7 @@ connection.connect = function (options, callback) {
 	if (dbIdx >= 0) {
 		cxn.select(dbIdx, function (err) {
 			if (err) {
-				winston.error('NodeBB could not select Redis database. Redis returned the following error', err);
+				winston.error('NodeBB could not select Redis database. Redis returned the following error', err.stack);
 				throw err;
 			}
 		});

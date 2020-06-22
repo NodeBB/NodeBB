@@ -13,13 +13,13 @@ const PubSub = function () {
 
 	subClient.connect(function (err) {
 		if (err) {
-			winston.error(err);
+			winston.error(err.stack);
 			return;
 		}
 
 		subClient.query('LISTEN pubsub', function (err) {
 			if (err) {
-				winston.error(err);
+				winston.error(err.stack);
 			}
 		});
 

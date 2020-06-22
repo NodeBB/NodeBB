@@ -30,7 +30,7 @@ Errors.writeData = async function () {
 			await db.sortedSetIncrBy('errors:404', _counters[key], key);
 		}
 	} catch (err) {
-		winston.error(err);
+		winston.error(err.stack);
 	}
 };
 

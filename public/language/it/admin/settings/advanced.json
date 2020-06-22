@@ -15,7 +15,7 @@
 	"headers.acah": "Access-Control-Allow-Headers",
 	"hsts": "Rigorosa sicurezza trasporto",
 	"hsts.enabled": "Abilita HSTS (consigliato)",
-	"hsts.maxAge": "HSTS Max Age",
+	"hsts.maxAge": "Età massima HSTS",
 	"hsts.subdomains": "Includi i sottodomini nell'intestazione HSTS",
 	"hsts.preload": "Consenti la precarica dell'intestazione HSTS",
 	"hsts.help": "Se abilitato, sarà impostata un'intestazione HSTS per questo sito. Puoi scegliere di includere sottodomini e segnalazioni di precaricamento nell'intestazione. In caso di dubbio, puoi lasciarle deselezionate. <a href=\"%1\">Più informazioni <i class=\"fa fa-external-link\"></i></a>",
