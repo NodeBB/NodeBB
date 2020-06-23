@@ -7636,29 +7636,14 @@ paths:
                         items:
                           type: object
                           properties:
-                            type:
-                              type: string
                             bodyShort:
                               type: string
-                            bodyLong:
-                              type: string
-                            pid:
-                              oneOf:
-                                - type: number
-                                - type: string
-                            tid:
-                              type: number
-                              description: A topic identifier
                             path:
                               type: string
                             nid:
                               type: string
                             from:
                               type: number
-                            mergeId:
-                              type: string
-                            topicTitle:
-                              type: string
                             importance:
                               type: number
                             datetime:
@@ -7677,6 +7662,7 @@ paths:
                                     removed, etc.)
                                 picture:
                                   type: string
+                                  nullable: true
                                 uid:
                                   type: number
                                   description: A user identifier
@@ -7694,11 +7680,10 @@ paths:
                                   example: "#f44336"
                             image:
                               type: string
+                              nullable: true
                             read:
                               type: boolean
                             readClass:
-                              type: string
-                            subject:
                               type: string
                       filters:
                         type: array

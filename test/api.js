@@ -5,6 +5,8 @@ const path = require('path');
 const SwaggerParser = require('@apidevtools/swagger-parser');
 const request = require('request-promise-native');
 const nconf = require('nconf');
+const util = require('util');
+const wait = util.promisify(setTimeout);
 
 const db = require('./mocks/databasemock');
 const helpers = require('./helpers');
@@ -15,6 +17,7 @@ const topics = require('../src/topics');
 const plugins = require('../src/plugins');
 const flags = require('../src/flags');
 const messaging = require('../src/messaging');
+const socketUser = require('../src/socket.io/user');
 
 describe('Read API', async () => {
 	let readApi = false;
@@ -57,6 +60,13 @@ describe('Read API', async () => {
 
 		// Create a new chat room
 		await messaging.newRoom(1, [2]);
+
+		// export data for admin user
+		await socketUser.exportProfile({ uid: adminUid }, { uid: adminUid });
+		await socketUser.exportPosts({ uid: adminUid }, { uid: adminUid });
+		await socketUser.exportUploads({ uid: adminUid }, { uid: adminUid });
+		// wait for export child process to complete
+		await wait(2000);
 
 		// Attach a search hook so /api/search is enabled
 		plugins.registerHook('core', {
