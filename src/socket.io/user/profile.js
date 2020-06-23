@@ -162,7 +162,7 @@ module.exports = function (SocketUser) {
 			throw new Error('[[error:invalid-uid]]');
 		}
 
-		if (!data || !data.uid) {
+		if (!data || !(parseInt(data.uid, 10) > 0)) {
 			throw new Error('[[error:invalid-data]]');
 		}
 
