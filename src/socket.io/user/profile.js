@@ -1,9 +1,13 @@
 'use strict';
 
+const winston = require('winston');
+
 const user = require('../../user');
 const meta = require('../../meta');
 const events = require('../../events');
 const privileges = require('../../privileges');
+const notifications = require('../../notifications');
+const db = require('../../database');
 
 module.exports = function (SocketUser) {
 	SocketUser.changeUsernameEmail = async function (socket, data) {
@@ -140,4 +144,59 @@ module.exports = function (SocketUser) {
 		await user.blocks[isBlocked ? 'remove' : 'add'](data.blockeeUid, data.blockerUid);
 		return !isBlocked;
 	};
+
+	SocketUser.exportProfile = async function (socket, data) {
+		await doExport(socket, data, 'profile');
+	};
+
+	SocketUser.exportPosts = async function (socket, data) {
+		await doExport(socket, data, 'posts');
+	};
+
+	SocketUser.exportUploads = async function (socket, data) {
+		await doExport(socket, data, 'uploads');
+	};
+
+	async function doExport(socket, data, type) {
+		if (!socket.uid) {
+			throw new Error('[[error:invalid-uid]]');
+		}
+
+		if (!data || !data.uid) {
+			throw new Error('[[error:invalid-data]]');
+		}
+
+		await user.isAdminOrSelf(socket.uid, data.uid);
+
+		const count = await db.incrObjectField('locks', 'export:' + data.uid + type);
+		if (count > 1) {
+			throw new Error('[[error:already-exporting]]');
+		}
+
+		const child = require('child_process').fork('./src/user/jobs/export-' + type + '.js', [], {
+			env: process.env,
+		});
+		child.send({ uid: data.uid });
+		child.on('error', async function (err) {
+			winston.error(err.stack);
+			await db.deleteObjectField('locks', 'export:' + data.uid + type);
+		});
+		child.on('exit', async function () {
+			await db.deleteObjectField('locks', 'export:' + data.uid + type);
+			const userData = await user.getUserFields(data.uid, ['username', 'userslug']);
+			const n = await notifications.create({
+				bodyShort: '[[notifications:' + type + '-exported, ' + userData.username + ']]',
+				path: '/api/user/uid/' + userData.userslug + '/export/' + type,
+				nid: type + ':export:' + data.uid,
+				from: data.uid,
+			});
+			await notifications.push(n, [socket.uid]);
+			await events.log({
+				type: 'export:' + type,
+				uid: socket.uid,
+				targetUid: data.uid,
+				ip: socket.ip,
+			});
+		});
+	}
 };

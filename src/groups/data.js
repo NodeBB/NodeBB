@@ -25,13 +25,8 @@ module.exports = function (Groups) {
 			return memo;
 		}, []);
 
-		let groupData;
 		const keys = groupNames.map(groupName => 'group:' + groupName);
-		if (fields.length) {
-			groupData = await db.getObjectsFields(keys, fields);
-		} else {
-			groupData = await db.getObjects(keys);
-		}
+		const groupData = await (fields.length ? db.getObjectsFields(keys, fields) : db.getObjects(keys));
 		if (ephemeralIdx.length) {
 			ephemeralIdx.forEach(function (idx) {
 				groupData[idx] = Groups.getEphemeralGroup(groupNames[idx]);

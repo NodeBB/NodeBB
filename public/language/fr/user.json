@@ -179,6 +179,9 @@
     "consent.right_to_data_portability": "Vous avez la possibilité de portabilité des données.",
     "consent.right_to_data_portability_description": "Vous pouvez exporter de toutes vos données collectées. Vous pouvez le faire en cliquant sur le bouton ci-dessous.",
     "consent.export_profile": "Exporter Profile (.json)",
+    "consent.export-profile-success": "Exporting profile, you will get a notification when it is complete.",
     "consent.export_uploads": "Exporter le contenu de vos fichiers envoyés (.zip)",
-    "consent.export_posts": "Exporter vos messages (.csv)"
+    "consent.export-uploads-success": "Exporting uploads, you will get a notification when it is complete.",
+    "consent.export_posts": "Exporter vos messages (.csv)",
+    "consent.export-posts-success": "Exporting posts, you will get a notification when it is complete."
 }

@@ -50,7 +50,9 @@ define('forum/account/header', [
 		});
 
 
-		components.get('account/ban').on('click', banAccount);
+		components.get('account/ban').on('click', function () {
+			banAccount(ajaxify.data.theirid);
+		});
 		components.get('account/unban').on('click', unbanAccount);
 		components.get('account/delete-account').on('click', handleDeleteEvent.bind(null, 'account'));
 		components.get('account/delete-content').on('click', handleDeleteEvent.bind(null, 'content'));

@@ -179,6 +179,9 @@
     "consent.right_to_data_portability": "Máte právo na prenositeľnosť údajov ",
     "consent.right_to_data_portability_description": "Môžete od nás požadovať strojovo čitateľné údaje, ktoré boli zozbierané o Vás a Vašom účte. Urobíte tak kliknutím na tlačidlá zobrazené nižšie.",
     "consent.export_profile": "Export Profile (.json)",
+    "consent.export-profile-success": "Exporting profile, you will get a notification when it is complete.",
     "consent.export_uploads": "Exportovať nahraný obsah (*.zip)",
-    "consent.export_posts": "Exportovať príspevky (*.csv)"
+    "consent.export-uploads-success": "Exporting uploads, you will get a notification when it is complete.",
+    "consent.export_posts": "Exportovať príspevky (*.csv)",
+    "consent.export-posts-success": "Exporting posts, you will get a notification when it is complete."
 }

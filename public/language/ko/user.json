@@ -179,6 +179,9 @@
     "consent.right_to_data_portability": "당신은 데이터 이동 권한이 있습니다.",
     "consent.right_to_data_portability_description": "당신은 우리가 수집한 당신과 당신의 계정에 대한 어떠한 수집 데이터라도 기계가 읽을 수 있는 형태로 출력본을 요청할 수 있습니다. 아래에 적절한 버튼을 클릭하여 해당 처리를 수행할 수 있습니다.",
     "consent.export_profile": "Export Profile (.json)",
+    "consent.export-profile-success": "Exporting profile, you will get a notification when it is complete.",
     "consent.export_uploads": "업로드한 콘텐츠 내보내기 (.zip)",
-    "consent.export_posts": "포스트 내보내기 (.csv)"
+    "consent.export-uploads-success": "Exporting uploads, you will get a notification when it is complete.",
+    "consent.export_posts": "포스트 내보내기 (.csv)",
+    "consent.export-posts-success": "Exporting posts, you will get a notification when it is complete."
 }

@@ -326,7 +326,7 @@ Notifications.prune = async function () {
 		}, { batch: 500, interval: 100 });
 	} catch (err) {
 		if (err) {
-			winston.error('Encountered error pruning notifications', err);
+			winston.error('Encountered error pruning notifications', err.stack);
 		}
 	}
 };

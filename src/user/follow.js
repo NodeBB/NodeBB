@@ -36,8 +36,6 @@ module.exports = function (User) {
 					['following:' + uid, now, theiruid],
 					['followers:' + theiruid, now, uid],
 				]),
-				User.incrementUserFieldBy(uid, 'followingCount', 1),
-				User.incrementUserFieldBy(theiruid, 'followerCount', 1),
 			]);
 		} else {
 			if (!isFollowing) {
@@ -48,10 +46,17 @@ module.exports = function (User) {
 					['following:' + uid, theiruid],
 					['followers:' + theiruid, uid],
 				]),
-				User.decrementUserFieldBy(uid, 'followingCount', 1),
-				User.decrementUserFieldBy(theiruid, 'followerCount', 1),
 			]);
 		}
+
+		const [followingCount, followerCount] = await Promise.all([
+			db.sortedSetCard('following:' + uid),
+			db.sortedSetCard('followers:' + theiruid),
+		]);
+		await Promise.all([
+			User.setUserField(uid, 'followingCount', followingCount),
+			User.setUserField(theiruid, 'followerCount', followerCount),
+		]);
 	}
 
 	User.getFollowing = async function (uid, start, stop) {

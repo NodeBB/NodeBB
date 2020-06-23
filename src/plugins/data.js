@@ -48,7 +48,7 @@ Data.loadPluginInfo = async function (pluginPath) {
 	} catch (err) {
 		var pluginDir = path.basename(pluginPath);
 
-		winston.error('[plugins/' + pluginDir + '] Error in plugin.json or package.json!', err);
+		winston.error('[plugins/' + pluginDir + '] Error in plugin.json or package.json!', err.stack);
 		throw new Error('[[error:parse-error]]');
 	}
 	return pluginData;

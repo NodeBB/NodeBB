@@ -179,6 +179,9 @@
     "consent.right_to_data_portability": "У вас є Право на Переносимість Даних",
     "consent.right_to_data_portability_description": "Ви можете отримати від нас експортовану копію машинно-читабельних даних, які були зібрані про вас і ваш акаунт. Ви можете це зробити, натиснувши на відповідну кнопку внизу.",
     "consent.export_profile": "Export Profile (.json)",
+    "consent.export-profile-success": "Exporting profile, you will get a notification when it is complete.",
     "consent.export_uploads": "Експортувати Завантажений Контент (.zip)",
-    "consent.export_posts": "Експортувати Пости (.csv)"
+    "consent.export-uploads-success": "Exporting uploads, you will get a notification when it is complete.",
+    "consent.export_posts": "Експортувати Пости (.csv)",
+    "consent.export-posts-success": "Exporting posts, you will get a notification when it is complete."
 }

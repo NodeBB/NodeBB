@@ -12,7 +12,7 @@ logsController.get = async function (req, res) {
 	try {
 		logs = await meta.logs.get();
 	} catch (err) {
-		winston.error(err);
+		winston.error(err.stack);
 	}
 	res.render('admin/advanced/logs', {
 		data: validator.escape(logs),

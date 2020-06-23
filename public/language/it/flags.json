@@ -32,7 +32,7 @@
 	"view-profile": "Vedi Profilo",
 	"start-new-chat": "Inizia Nuova Chat",
 	"go-to-target": "Visualizza oggetto segnalazione",
-	"assign-to-me": "Assign To Me",
+	"assign-to-me": "Assegna a me",
 	"delete-post": "Elimina post",
 	"purge-post": "Elimina Post",
 	"restore-post": "Ripristina post",
@@ -45,7 +45,6 @@
 	"no-notes": "Nessuna nota condivisa",
 
 	"history": "Cronologia segnalazioni account",
-	"back": "Torna all'elenco segnalazioni",
 	"no-history": "Nessuna cronologia segnalazione.",
 
 	"state-all": "Tutti gli stati",

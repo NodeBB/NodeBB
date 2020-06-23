@@ -1,15 +1,12 @@
 'use strict';
 
 const nconf = require('nconf');
-const url = require('url');
 const winston = require('winston');
 
 const start = module.exports;
 
 start.start = async function () {
 	const db = require('./database');
-
-	setupConfigs();
 
 	printStartupInfo();
 
@@ -81,21 +78,6 @@ async function runUpgrades() {
 	}
 }
 
-function setupConfigs() {
-	// nconf defaults, if not set in config
-	if (!nconf.get('sessionKey')) {
-		nconf.set('sessionKey', 'express.sid');
-	}
-	// Parse out the relative_url and other goodies from the configured URL
-	const urlObject = url.parse(nconf.get('url'));
-	const relativePath = urlObject.pathname !== '/' ? urlObject.pathname.replace(/\/+$/, '') : '';
-	nconf.set('base_url', urlObject.protocol + '//' + urlObject.host);
-	nconf.set('secure', urlObject.protocol === 'https:');
-	nconf.set('use_port', !!urlObject.port);
-	nconf.set('relative_path', relativePath);
-	nconf.set('port', nconf.get('PORT') || nconf.get('port') || urlObject.port || (nconf.get('PORT_ENV_VAR') ? nconf.get(nconf.get('PORT_ENV_VAR')) : false) || 4567);
-}
-
 function printStartupInfo() {
 	if (nconf.get('isPrimary') === 'true') {
 		winston.info('Initializing NodeBB v%s %s', nconf.get('version'), nconf.get('url'));
@@ -113,7 +95,7 @@ function addProcessHandlers() {
 	process.on('SIGINT', shutdown);
 	process.on('SIGHUP', restart);
 	process.on('uncaughtException', function (err) {
-		winston.error(err);
+		winston.error(err.stack);
 
 		require('./meta').js.killMinifier();
 		shutdown(1);

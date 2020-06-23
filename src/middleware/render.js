@@ -113,7 +113,7 @@ module.exports = function (middleware) {
 			try {
 				p = utils.slugify(decodeURIComponent(p));
 			} catch (err) {
-				winston.error(err);
+				winston.error(err.stack);
 				p = '';
 			}
 			p = validator.escape(String(p));

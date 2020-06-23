@@ -179,6 +179,9 @@
     "consent.right_to_data_portability": "您擁有資料轉移權",
     "consent.right_to_data_portability_description": "您也許想導出有關您和您的帳戶的機器可讀副本。您可以點擊下方的按鈕來獲取它們。",
     "consent.export_profile": "輸出個人資料 (.json)",
+    "consent.export-profile-success": "Exporting profile, you will get a notification when it is complete.",
     "consent.export_uploads": "導出上傳檔案 (.zip)",
-    "consent.export_posts": "導出貼文 (.csv)"
+    "consent.export-uploads-success": "Exporting uploads, you will get a notification when it is complete.",
+    "consent.export_posts": "導出貼文 (.csv)",
+    "consent.export-posts-success": "Exporting posts, you will get a notification when it is complete."
 }

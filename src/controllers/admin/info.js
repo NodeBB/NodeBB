@@ -52,7 +52,7 @@ pubsub.on('sync:node:info:start', async function () {
 		data.id = os.hostname() + ':' + nconf.get('port');
 		pubsub.publish('sync:node:info:end', { data: data, id: data.id });
 	} catch (err) {
-		winston.error(err);
+		winston.error(err.stack);
 	}
 });
 
@@ -99,7 +99,7 @@ async function getGitInfo() {
 	function get(cmd, callback) {
 		exec(cmd, function (err, stdout) {
 			if (err) {
-				winston.error(err);
+				winston.error(err.stack);
 			}
 			callback(null, stdout ? stdout.replace(/\n$/, '') : 'no-git-info');
 		});

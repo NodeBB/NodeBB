@@ -138,9 +138,9 @@
     "diffs.no-revisions-description": "Bu iletinin <strong>%1</strong> revizyonu var.",
     "diffs.current-revision": "mevcut revizyon",
     "diffs.original-revision": "orijinal revizyon",
-    "diffs.restore": "Restore this revision",
-    "diffs.restore-description": "A new revision will be appended to this post's edit history.",
-    "diffs.post-restored": "Post successfully restored to earlier revision",
+    "diffs.restore": "Bu revizyonu geri getir",
+    "diffs.restore-description": "Yeni bir revizyon bu iletinın geçmişine eklenecek. ",
+    "diffs.post-restored": "İleti önceki revizyona başarıyla geri getirildi",
     "timeago_later": "%1 sonra",
     "timeago_earlier": "%1 önce"
 }

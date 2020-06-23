@@ -85,7 +85,7 @@ function activate(plugin) {
 		},
 	], function (err) {
 		if (err) {
-			winston.error('An error occurred during plugin activation', err);
+			winston.error('An error occurred during plugin activation', err.stack);
 			throw err;
 		}
 		process.exit(0);
@@ -219,7 +219,7 @@ function info() {
 function buildWrapper(targets, options) {
 	build.build(targets, options, function (err) {
 		if (err) {
-			winston.error(err);
+			winston.error(err.stack);
 			process.exit(1);
 		}
 		process.exit(0);

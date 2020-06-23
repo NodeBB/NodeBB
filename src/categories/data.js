@@ -14,13 +14,9 @@ module.exports = function (Categories) {
 		if (!Array.isArray(cids) || !cids.length) {
 			return [];
 		}
-		let categories;
+
 		const keys = cids.map(cid => 'category:' + cid);
-		if (fields.length) {
-			categories = await db.getObjectsFields(keys, fields);
-		} else {
-			categories = await db.getObjects(keys);
-		}
+		const categories = await (fields.length ? db.getObjectsFields(keys, fields) : db.getObjects(keys));
 		categories.forEach(category => modifyCategory(category, fields));
 		return categories;
 	};

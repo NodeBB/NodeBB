@@ -82,7 +82,7 @@ module.exports = function (Groups) {
 				});
 			} catch (err) {
 				if (err && err.message !== '[[error:group-already-exists]]') {
-					winston.error('[groups.join] Could not create new hidden group', err);
+					winston.error('[groups.join] Could not create new hidden group', err.stack);
 					throw err;
 				}
 			}

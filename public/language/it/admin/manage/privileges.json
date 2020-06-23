@@ -1,7 +1,7 @@
 {
 	"global": "Globale",
 	"global.no-users": "Nessun privilegio globale specifico per l'utente.",
-	"admin": "Admin",
+	"admin": "Amministratore",
 	"group-privileges": "Privilegi di gruppo",
 	"user-privileges": "Privilegi utente",
 	"chat": "Chat",
@@ -35,8 +35,8 @@
 	"moderate": "Moderata",
 
 	"admin-dashboard": "Dashboard",
-	"admin-categories": "Categories",
-	"admin-privileges": "Privileges",
-	"admin-users": "Users",
-	"admin-settings": "Settings"
+	"admin-categories": "Categorie",
+	"admin-privileges": "Privilegi",
+	"admin-users": "Utenti",
+	"admin-settings": "Impostazioni"
 }

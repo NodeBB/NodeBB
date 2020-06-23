@@ -179,6 +179,9 @@
     "consent.right_to_data_portability": "U hebt Recht op Dataportabiliteit",
     "consent.right_to_data_portability_description": "U kan van ons machine-leesbare export opvragen van verzamelde gegevens van u en uw account. U kan dit doen door te klikken op de van toepassing zijnde knop hieronder.",
     "consent.export_profile": "Exporteer profiel (.json)",
+    "consent.export-profile-success": "Exporting profile, you will get a notification when it is complete.",
     "consent.export_uploads": "Exporteer geuploade inhoud (.zip)",
-    "consent.export_posts": "Exporteer berichten (.csv)"
+    "consent.export-uploads-success": "Exporting uploads, you will get a notification when it is complete.",
+    "consent.export_posts": "Exporteer berichten (.csv)",
+    "consent.export-posts-success": "Exporting posts, you will get a notification when it is complete."
 }
