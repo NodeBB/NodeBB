@@ -179,6 +179,9 @@
     "consent.right_to_data_portability": "Имате право на пренос на данни",
     "consent.right_to_data_portability_description": "Можете да изискате от нас всички събрани за Вас и акаунта Ви данни в машинен формат. Можете да направите това като натиснете съответния бутон по-долу.",
     "consent.export_profile": "Изнасяне на профила (.json)",
+    "consent.export-profile-success": "Изнасяне на профила… Ще получите известие, когато е готово.",
     "consent.export_uploads": "Изнасяне на каченото съдържание (.zip)",
-    "consent.export_posts": "Изнасяне на публикациите (.csv)"
+    "consent.export-uploads-success": "Изнасяне на каченото съдържание… Ще получите известие, когато е готово.",
+    "consent.export_posts": "Изнасяне на публикациите (.csv)",
+    "consent.export-posts-success": "Изнасяне на публикациите… Ще получите известие, когато е готово."
 }

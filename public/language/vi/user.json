@@ -179,6 +179,9 @@
     "consent.right_to_data_portability": "Bạn có quyền di chuyển dữ liệu",
     "consent.right_to_data_portability_description": "Bạn có thể yêu cầu chúng tôi xuất khẩu có thể đọc được bằng máy đối với bất kỳ dữ liệu được thu thập nào về bạn và tài khoản của bạn. Bạn có thể làm như vậy bằng cách nhấp vào nút thích hợp bên dưới.",
     "consent.export_profile": "Export Profile (.json)",
+    "consent.export-profile-success": "Exporting profile, you will get a notification when it is complete.",
     "consent.export_uploads": "Xuất nội dung đã tải lên (.zip)",
-    "consent.export_posts": "Xuất bài viết (.csv)"
+    "consent.export-uploads-success": "Exporting uploads, you will get a notification when it is complete.",
+    "consent.export_posts": "Xuất bài viết (.csv)",
+    "consent.export-posts-success": "Exporting posts, you will get a notification when it is complete."
 }

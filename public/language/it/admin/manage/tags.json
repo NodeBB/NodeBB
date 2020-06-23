@@ -3,7 +3,7 @@
 	"bg-color": "Colore di sfondo",
 	"text-color": "Colore del testo",
 	"create-modify": "Crea e modifica i tag",
-	"description": "Select tags by clicking or dragging, use <code>CTRL</code> to select multiple tags.",
+	"description": "Seleziona i tag facendo clic o trascinando, utilizza <code>CTRL</code> per selezionare più tag.",
 	"create": "Crea tag",
 	"modify": "Modifica i tag",
 	"rename": "Rinomina i tag",

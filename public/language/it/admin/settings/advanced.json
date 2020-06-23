@@ -20,7 +20,7 @@
 	"hsts.preload": "Consenti la precarica dell'intestazione HSTS",
 	"hsts.help": "Se abilitato, sarà impostata un'intestazione HSTS per questo sito. Puoi scegliere di includere sottodomini e segnalazioni di precaricamento nell'intestazione. In caso di dubbio, puoi lasciarle deselezionate. <a href=\"%1\">Più informazioni <i class=\"fa fa-external-link\"></i></a>",
 	"traffic-management": "Gestione Traffico",
-	"traffic.help": "NodeBB uses a module that automatically denies requests in high-traffic situations. You can tune these settings here, although the defaults are a good starting point.",
+	"traffic.help": "NodeBB utilizza un modulo che nega automaticamente le richieste in situazioni di traffico elevato. È possibile regolare queste impostazioni qui, anche se le impostazioni predefinite sono un buon punto di partenza.",
 	"traffic.enable": "Abilita Gestione Traffico",
 	"traffic.event-lag": "Soglia ritardo ciclo eventi (in millisecondi)",
 	"traffic.event-lag-help": "L'abbassamento di questo valore diminuisce i tempi di attesa per il caricamento della pagina, ma mostrerà il messaggio \"carico eccessivo\" a più utenti. (Necessario riavviare)",

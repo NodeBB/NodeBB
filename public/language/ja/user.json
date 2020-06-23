@@ -179,6 +179,9 @@
     "consent.right_to_data_portability": "あなたはデータを移動する権利があります",
     "consent.right_to_data_portability_description": "あなたは私たちにあなたとあなたのアカウントに関して収集されたデータの機械読み取り可能なエクスポートを要求することができます。 下の適切なボタンをクリックしてそれを行うことができます。",
     "consent.export_profile": "Export Profile (.json)",
+    "consent.export-profile-success": "Exporting profile, you will get a notification when it is complete.",
     "consent.export_uploads": "アップデートしたコンテンツをエクスポート(.zip)",
-    "consent.export_posts": "投稿をエクスポート (.csv)"
+    "consent.export-uploads-success": "Exporting uploads, you will get a notification when it is complete.",
+    "consent.export_posts": "投稿をエクスポート (.csv)",
+    "consent.export-posts-success": "Exporting posts, you will get a notification when it is complete."
 }

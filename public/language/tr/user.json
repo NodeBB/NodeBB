@@ -179,6 +179,9 @@
     "consent.right_to_data_portability": "Veri taşıma hakkına sahipsiniz",
     "consent.right_to_data_portability_description": "Sizden ve hesabınız hakkında toplanan verilere makine tarafından okunabilir bir veri talep edebilirsiniz. Aşağıdaki uygun düğmeyi tıklayarak bunu yapabilirsiniz.",
     "consent.export_profile": "Profili Dışa Aktar (.json)",
+    "consent.export-profile-success": "Exporting profile, you will get a notification when it is complete.",
     "consent.export_uploads": "Karşıya Yüklenmiş İçeriği Dışarı Aktar (.zip)",
-    "consent.export_posts": "Gönderileri Dışa Aktar (.csv)"
+    "consent.export-uploads-success": "Exporting uploads, you will get a notification when it is complete.",
+    "consent.export_posts": "Gönderileri Dışa Aktar (.csv)",
+    "consent.export-posts-success": "Exporting posts, you will get a notification when it is complete."
 }
