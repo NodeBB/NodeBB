@@ -2941,7 +2941,7 @@ paths:
     get:
       tags:
         - users
-      summary: Export a user's profile data (.csv)
+      summary: Export a user's profile data (.json)
       parameters:
         - name: userslug
           in: path
@@ -2951,9 +2951,9 @@ paths:
           example: admin
       responses:
         "200":
-          description: "A CSV file containing the user profile"
+          description: "A JSON file containing the user profile"
           content:
-            text/csv:
+            text/json:
               schema:
                 type: string
                 format: binary
