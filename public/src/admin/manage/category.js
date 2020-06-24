@@ -124,49 +124,55 @@ define('admin/manage/category', [
 		});
 
 		$('.copy-settings').on('click', function () {
-			Benchpress.parse('admin/partials/categories/copy-settings', {
-				categories: ajaxify.data.allCategories,
-			}, function (html) {
-				var selectedCid;
-				var modal = bootbox.dialog({
-					title: '[[modules:composer.select_category]]',
-					message: html,
-					buttons: {
-						save: {
-							label: '[[modules:bootbox.confirm]]',
-							className: 'btn-primary',
-							callback: function () {
-								if (!selectedCid) {
-									return;
-								}
+			socket.emit('categories.getSelectCategories', {}, function (err, allCategories) {
+				if (err) {
+					return app.alertError(err.message);
+				}
 
-								socket.emit('admin.categories.copySettingsFrom', {
-									fromCid: selectedCid,
-									toCid: ajaxify.data.category.cid,
-									copyParent: modal.find('#copyParent').prop('checked'),
-								}, function (err) {
-									if (err) {
-										return app.alertError(err.message);
+				Benchpress.parse('admin/partials/categories/copy-settings', {
+					categories: allCategories,
+				}, function (html) {
+					var selectedCid;
+					var modal = bootbox.dialog({
+						title: '[[modules:composer.select_category]]',
+						message: html,
+						buttons: {
+							save: {
+								label: '[[modules:bootbox.confirm]]',
+								className: 'btn-primary',
+								callback: function () {
+									if (!selectedCid || parseInt(selectedCid, 10) === parseInt(ajaxify.data.category.cid, 10)) {
+										return;
 									}
 
-									modal.modal('hide');
-									app.alertSuccess('[[admin/manage/categories:alert.copy-success]]');
-									ajaxify.refresh();
-								});
-								return false;
+									socket.emit('admin.categories.copySettingsFrom', {
+										fromCid: selectedCid,
+										toCid: ajaxify.data.category.cid,
+										copyParent: modal.find('#copyParent').prop('checked'),
+									}, function (err) {
+										if (err) {
+											return app.alertError(err.message);
+										}
+
+										modal.modal('hide');
+										app.alertSuccess('[[admin/manage/categories:alert.copy-success]]');
+										ajaxify.refresh();
+									});
+									return false;
+								},
 							},
 						},
-					},
+					});
+					modal.find('.modal-footer button').prop('disabled', true);
+					categorySelector.init(modal.find('[component="category-selector"]'), function (selectedCategory) {
+						selectedCid = selectedCategory && selectedCategory.cid;
+						if (selectedCid) {
+							modal.find('.modal-footer button').prop('disabled', false);
+						}
+					});
 				});
-				modal.find('.modal-footer button').prop('disabled', true);
-				categorySelector.init(modal.find('[component="category-selector"]'), function (selectedCategory) {
-					selectedCid = selectedCategory && selectedCategory.cid;
-					if (selectedCid) {
-						modal.find('.modal-footer button').prop('disabled', false);
-					}
-				});
+				return false;
 			});
-			return false;
 		});
 
 		$('.upload-button').on('click', function () {

@@ -63,3 +63,9 @@ CategoryObject:
     totalTopicCount:
       type: number
       description: The number of topics in the category
+    minTags:
+      type: number
+      description: Minimum tags per topic in this category
+    maxTags:
+      type: number
+      description: Maximum tags per topic in this category

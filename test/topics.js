@@ -1782,6 +1782,58 @@ describe('Topic\'s', function () {
 			tags = await topics.getTopicTags(tid);
 			assert.deepStrictEqual(tags, ['tag2', 'tag4', 'tag6']);
 		});
+
+		it('should respect minTags', async () => {
+			const oldValue = meta.config.minimumTagsPerTopic;
+			meta.config.minimumTagsPerTopic = 2;
+			let err;
+			try {
+				await topics.post({ uid: adminUid, tags: ['tag4'], title: 'tag topic', content: 'topic 1 content', cid: topic.categoryId });
+			} catch (_err) {
+				err = _err;
+			}
+			assert.equal(err.message, '[[error:not-enough-tags, ' + meta.config.minimumTagsPerTopic + ']]');
+			meta.config.minimumTagsPerTopic = oldValue;
+		});
+
+		it('should respect maxTags', async () => {
+			const oldValue = meta.config.maximumTagsPerTopic;
+			meta.config.maximumTagsPerTopic = 2;
+			let err;
+			try {
+				await topics.post({ uid: adminUid, tags: ['tag1', 'tag2', 'tag3'], title: 'tag topic', content: 'topic 1 content', cid: topic.categoryId });
+			} catch (_err) {
+				err = _err;
+			}
+			assert.equal(err.message, '[[error:too-many-tags, ' + meta.config.maximumTagsPerTopic + ']]');
+			meta.config.maximumTagsPerTopic = oldValue;
+		});
+
+		it('should respect minTags per category', async () => {
+			const minTags = 2;
+			await categories.setCategoryField(topic.categoryId, 'minTags', minTags);
+			let err;
+			try {
+				await topics.post({ uid: adminUid, tags: ['tag4'], title: 'tag topic', content: 'topic 1 content', cid: topic.categoryId });
+			} catch (_err) {
+				err = _err;
+			}
+			assert.equal(err.message, '[[error:not-enough-tags, ' + minTags + ']]');
+			await db.deleteObjectField('category:' + topic.categoryId, 'minTags');
+		});
+
+		it('should respect maxTags per category', async () => {
+			const maxTags = 2;
+			await categories.setCategoryField(topic.categoryId, 'maxTags', maxTags);
+			let err;
+			try {
+				await topics.post({ uid: adminUid, tags: ['tag1', 'tag2', 'tag3'], title: 'tag topic', content: 'topic 1 content', cid: topic.categoryId });
+			} catch (_err) {
+				err = _err;
+			}
+			assert.equal(err.message, '[[error:too-many-tags, ' + maxTags + ']]');
+			await db.deleteObjectField('category:' + topic.categoryId, 'maxTags');
+		});
 	});
 
 	describe('follow/unfollow', function () {

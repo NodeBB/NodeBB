@@ -19,7 +19,7 @@ module.exports = function (Topics) {
 			return;
 		}
 		const result = await plugins.fireHook('filter:tags.filter', { tags: tags, tid: tid });
-		tags = _.uniq(result.tags).slice(0, meta.config.maximumTagsPerTopic || 5)
+		tags = _.uniq(result.tags)
 			.map(tag => utils.cleanUpTag(tag, meta.config.maximumTagLength))
 			.filter(tag => tag && tag.length >= (meta.config.minimumTagLength || 3));
 
@@ -30,6 +30,19 @@ module.exports = function (Topics) {
 		]);
 
 		await Promise.all(tags.map(tag => updateTagCount(tag)));
+	};
+
+	Topics.validateTags = async function (tags, cid) {
+		if (!Array.isArray(tags)) {
+			throw new Error('[[error:invalid-data]]');
+		}
+		tags = _.uniq(tags);
+		const categoryData = await categories.getCategoryFields(cid, ['minTags', 'maxTags']);
+		if (tags.length < parseInt(categoryData.minTags, 10)) {
+			throw new Error('[[error:not-enough-tags, ' + categoryData.minTags + ']]');
+		} else if (tags.length > parseInt(categoryData.maxTags, 10)) {
+			throw new Error('[[error:too-many-tags, ' + categoryData.maxTags + ']]');
+		}
 	};
 
 	async function filterCategoryTags(tags, tid) {

@@ -68,7 +68,7 @@ module.exports = function (Topics) {
 			data.content = utils.rtrim(data.content);
 		}
 		check(data.title, meta.config.minimumTitleLength, meta.config.maximumTitleLength, 'title-too-short', 'title-too-long');
-		check(data.tags, meta.config.minimumTagsPerTopic, meta.config.maximumTagsPerTopic, 'not-enough-tags', 'too-many-tags');
+		await Topics.validateTags(data.tags, data.cid);
 		check(data.content, meta.config.minimumPostLength, meta.config.maximumPostLength, 'content-too-short', 'content-too-long');
 
 		const [categoryExists, canCreate, canTag] = await Promise.all([
