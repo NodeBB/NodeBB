@@ -115,8 +115,8 @@
 				</fieldset>
 				<fieldset class="row">
 					<div class="col-lg-12">
-						<label for="tag-whitelist">Tag Whitelist</label><br />
-						<input id="tag-whitelist" type="text" class="form-control" placeholder="Enter category tags here" data-name="tagWhitelist" value="" />
+						<label for="tag-whitelist">[[admin/manage/categories:tag-whitelist]]</label><br />
+						<input id="tag-whitelist" type="text" class="form-control" data-name="tagWhitelist" value="" />
 					</div>
 				</fieldset>
 			</div>
