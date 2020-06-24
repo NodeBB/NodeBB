@@ -95,9 +95,29 @@
 						</div>
 					</div>
 				</fieldset>
-				<fieldset>
-					<label for="tag-whitelist">Tag Whitelist</label><br />
-					<input id="tag-whitelist" type="text" class="form-control" placeholder="Enter category tags here" data-name="tagWhitelist" value="" />
+				<fieldset class="row">
+					<div class="col-sm-6 col-xs-12">
+						<div class="form-group">
+							<label for="cid-min-tags">
+								[[admin/settings/tags:min-per-topic]]
+							</label>
+							<input id="cid-min-tags" type="text" class="form-control" data-name="minTags" value="{category.minTags}" />
+						</div>
+					</div>
+					<div class="col-sm-6 col-xs-12">
+						<div class="form-group">
+							<label for="cid-max-tags">
+								[[admin/settings/tags:max-per-topic]]
+							</label>
+							<input id="cid-max-tags" type="text" class="form-control" data-name="maxTags" value="{category.maxTags}" />
+						</div>
+					</div>
+				</fieldset>
+				<fieldset class="row">
+					<div class="col-lg-12">
+						<label for="tag-whitelist">Tag Whitelist</label><br />
+						<input id="tag-whitelist" type="text" class="form-control" placeholder="Enter category tags here" data-name="tagWhitelist" value="" />
+					</div>
 				</fieldset>
 			</div>
 		</div>

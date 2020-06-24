@@ -1,12 +1,14 @@
 'use strict';
 
-var validator = require('validator');
+const validator = require('validator');
 
-var db = require('../database');
+const db = require('../database');
+const meta = require('../meta');
 
 const intFields = [
 	'cid', 'parentCid', 'disabled', 'isSection', 'order',
 	'topic_count', 'post_count', 'numRecentReplies',
+	'minTags', 'maxTags',
 ];
 
 module.exports = function (Categories) {
@@ -57,6 +59,21 @@ module.exports = function (Categories) {
 function modifyCategory(category, fields) {
 	if (!category) {
 		return;
+	}
+
+	if (!fields.length || fields.includes('minTags')) {
+		const useDefault = !category.hasOwnProperty('minTags') ||
+			category.minTags === null ||
+			category.minTags === '' ||
+			!parseInt(category.minTags, 10);
+		category.minTags = useDefault ? meta.config.minimumTagsPerTopic : category.minTags;
+	}
+	if (!fields.length || fields.includes('maxTags')) {
+		const useDefault = !category.hasOwnProperty('maxTags') ||
+			category.maxTags === null ||
+			category.maxTags === '' ||
+			!parseInt(category.maxTags, 10);
+		category.maxTags = useDefault ? meta.config.maximumTagsPerTopic : category.maxTags;
 	}
 
 	db.parseIntFields(category, intFields, fields);

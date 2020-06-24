@@ -143,6 +143,8 @@ module.exports = function (Categories) {
 		destination.class = source.class;
 		destination.image = source.image;
 		destination.imageClass = source.imageClass;
+		destination.minTags = source.minTags;
+		destination.maxTags = source.maxTags;
 
 		if (copyParent) {
 			destination.parentCid = source.parentCid || 0;

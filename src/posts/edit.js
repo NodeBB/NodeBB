@@ -117,6 +117,8 @@ module.exports = function (Posts) {
 				throw new Error('[[error:no-privileges]]');
 			}
 		}
+		await topics.validateTags(data.tags, topicData.cid);
+
 		const results = await plugins.fireHook('filter:topic.edit', { req: data.req, topic: newTopicData, data: data });
 		await db.setObject('topic:' + tid, results.topic);
 		await topics.updateTopicTags(tid, data.tags);

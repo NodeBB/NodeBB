@@ -3130,6 +3130,10 @@ paths:
                     type: number
                   totalTopicCount:
                     type: number
+                  minTags:
+                    type: number
+                  maxTags:
+                    type: number
   /api/categories:
     get:
       tags:
@@ -3655,6 +3659,10 @@ paths:
                         type: array
                         items:
                           type: string
+                      minTags:
+                        type: number
+                      maxTags:
+                        type: number
                       thread_tools:
                         type: array
                         items:
