@@ -56,25 +56,23 @@ module.exports = function (Categories) {
 	};
 };
 
+function defaultMinMaxTags(category, fields, fieldName, defaultField) {
+	if (!fields.length || fields.includes(fieldName)) {
+		const useDefault = !category.hasOwnProperty(fieldName) ||
+			category[fieldName] === null ||
+			category[fieldName] === '' ||
+			!parseInt(category[fieldName], 10);
+		category[fieldName] = useDefault ? meta.config[defaultField] : category[fieldName];
+	}
+}
+
 function modifyCategory(category, fields) {
 	if (!category) {
 		return;
 	}
 
-	if (!fields.length || fields.includes('minTags')) {
-		const useDefault = !category.hasOwnProperty('minTags') ||
-			category.minTags === null ||
-			category.minTags === '' ||
-			!parseInt(category.minTags, 10);
-		category.minTags = useDefault ? meta.config.minimumTagsPerTopic : category.minTags;
-	}
-	if (!fields.length || fields.includes('maxTags')) {
-		const useDefault = !category.hasOwnProperty('maxTags') ||
-			category.maxTags === null ||
-			category.maxTags === '' ||
-			!parseInt(category.maxTags, 10);
-		category.maxTags = useDefault ? meta.config.maximumTagsPerTopic : category.maxTags;
-	}
+	defaultMinMaxTags(category, fields, 'minTags', 'minimumTagsPerTopic');
+	defaultMinMaxTags(category, fields, 'maxTags', 'maximumTagsPerTopic');
 
 	db.parseIntFields(category, intFields, fields);
 
