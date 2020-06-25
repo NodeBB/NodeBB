@@ -11,6 +11,7 @@
 	"num-recent-replies": "# 最近の返信数",
 	"ext-link": "外部リンク",
 	"is-section": "このカテゴリをセクションとして扱う",
+	"tag-whitelist": "Tag Whitelist",
 	"upload-image": "画像をアップロード",
 	"delete-image": "削除",
 	"category-image": "カテゴリ画像",
