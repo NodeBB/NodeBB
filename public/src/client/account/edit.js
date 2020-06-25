@@ -206,7 +206,7 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 
 			updateHeader(urlOnServer);
 
-			if (ajaxify.data.picture.length) {
+			if (ajaxify.data.picture && ajaxify.data.picture.length) {
 				$('#user-current-picture, img.avatar').attr('src', urlOnServer);
 				ajaxify.data.uploadedpicture = urlOnServer;
 			} else {
@@ -228,6 +228,7 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 
 			pictureCropper.show({
 				socketMethod: 'user.uploadCroppedPicture',
+				route: config.relative_path + '/api/user/' + ajaxify.data.userslug + '/uploadpicture',
 				aspectRatio: 1 / 1,
 				paramName: 'uid',
 				paramValue: ajaxify.data.theirid,
