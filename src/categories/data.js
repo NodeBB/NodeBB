@@ -76,9 +76,12 @@ function modifyCategory(category, fields) {
 
 	db.parseIntFields(category, intFields, fields);
 
-	if (category.hasOwnProperty('name')) {
-		category.name = validator.escape(String(category.name || ''));
-	}
+	const escapeFields = ['name', 'color', 'bgColor', 'imageClass', 'class', 'link'];
+	escapeFields.forEach((field) => {
+		if (category.hasOwnProperty(field)) {
+			category[field] = validator.escape(String(category[field] || ''));
+		}
+	});
 
 	if (category.hasOwnProperty('icon')) {
 		category.icon = category.icon || 'hidden';

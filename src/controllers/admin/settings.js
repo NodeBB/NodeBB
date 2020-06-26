@@ -10,6 +10,7 @@ const navigationAdmin = require('../../navigation/admin');
 const social = require('../../social');
 
 const helpers = require('../helpers');
+const translator = require('../../../public/src/modules/translator');
 const settingsController = module.exports;
 
 settingsController.get = async function (req, res) {
@@ -104,7 +105,8 @@ settingsController.navigation = async function (req, res) {
 	admin.enabled.forEach(function (enabled, index) {
 		enabled.index = index;
 		enabled.selected = index === 0;
-
+		enabled.title = translator.escape(enabled.title);
+		enabled.text = translator.escape(enabled.text);
 		enabled.groups = admin.groups.map(function (group) {
 			return {
 				displayName: group.displayName,

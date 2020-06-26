@@ -1,10 +1,10 @@
 'use strict';
 
 const _ = require('lodash');
+const validator = require('validator');
 
 const plugins = require('../plugins');
 const db = require('../database');
-const translator = require('../translator');
 const pubsub = require('../pubsub');
 
 const admin = module.exports;
@@ -17,11 +17,6 @@ pubsub.on('admin:navigation:save', function () {
 admin.save = async function (data) {
 	const order = Object.keys(data);
 	const items = data.map(function (item, index) {
-		for (var i in item) {
-			if (item.hasOwnProperty(i) && typeof item[i] === 'string' && (i === 'title' || i === 'text')) {
-				item[i] = translator.escape(item[i]);
-			}
-		}
 		item.order = order[index];
 		return JSON.stringify(item);
 	});
@@ -45,8 +40,16 @@ admin.get = async function () {
 		return _.cloneDeep(cache);
 	}
 	const data = await db.getSortedSetRange('navigation:enabled', 0, -1);
+	const escapeFields = ['iconClass', 'class', 'route', 'id', 'text', 'textClass', 'title'];
 	cache = data.map(function (item) {
 		item = JSON.parse(item);
+
+		escapeFields.forEach((field) => {
+			if (item.hasOwnProperty(field)) {
+				item[field] = validator.escape(String(item[field]));
+			}
+		});
+
 		item.groups = item.groups || [];
 		if (item.groups && !Array.isArray(item.groups)) {
 			item.groups = [item.groups];

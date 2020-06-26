@@ -90,7 +90,12 @@ Themes.set = async (data) => {
 		case 'local': {
 			const current = await Meta.configs.get('theme:id');
 			if (current !== data.id) {
-				let config = await fsReadfile(path.join(nconf.get('themes_path'), data.id, 'theme.json'), 'utf8');
+				const pathToThemeJson = path.join(nconf.get('themes_path'), data.id, 'theme.json');
+				if (!pathToThemeJson.startsWith(nconf.get('themes_path'))) {
+					throw new Error('[[error:invalid-theme-id]]');
+				}
+
+				let config = await fsReadfile(pathToThemeJson, 'utf8');
 				config = JSON.parse(config);
 
 				await db.sortedSetRemove('plugins:active', current);

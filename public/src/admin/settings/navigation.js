@@ -8,18 +8,11 @@ define('admin/settings/navigation', ['translator', 'iconSelect', 'benchpress', '
 	navigation.init = function () {
 		available = ajaxify.data.available;
 
-		$('#enabled .unescape').each(function () {
-			$(this).val(translator.unescape($(this).val()));
-		});
-
-		translator.translate($('#available').html(), function (html) {
-			$('#available').html(translator.unescape(html))
-				.find('li .drag-item').draggable({
-					connectToSortable: '#active-navigation',
-					helper: 'clone',
-					distance: 10,
-					stop: drop,
-				});
+		$('#available').find('li .drag-item').draggable({
+			connectToSortable: '#active-navigation',
+			helper: 'clone',
+			distance: 10,
+			stop: drop,
 		});
 
 		$('#active-navigation').sortable().droppable({
@@ -112,7 +105,7 @@ define('admin/settings/navigation', ['translator', 'iconSelect', 'benchpress', '
 					}
 					data[input.name].push(input.value);
 				} else {
-					data[input.name] = translator.escape(input.value);
+					data[input.name] = input.value;
 				}
 			});
 

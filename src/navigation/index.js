@@ -2,7 +2,6 @@
 
 const nconf = require('nconf');
 const admin = require('./admin');
-const translator = require('../translator');
 const groups = require('../groups');
 
 const navigation = module.exports;
@@ -16,10 +15,6 @@ navigation.get = async function (uid) {
 		if (!item.route.startsWith('http')) {
 			item.route = nconf.get('relative_path') + item.route;
 		}
-
-		Object.keys(item).forEach(function (key) {
-			item[key] = translator.unescape(item[key]);
-		});
 
 		return item;
 	});
