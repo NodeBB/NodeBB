@@ -1,7 +1,6 @@
 'use strict';
 
-var async = require('async');
-var db = require('../../database');
+const db = require('../../database');
 
 module.exports = {
 	name: 'Unescape navigation titles',
@@ -9,11 +8,10 @@ module.exports = {
 	method: async function () {
 		const data = await db.getSortedSetRangeWithScores('navigation:enabled', 0, -1);
 		const translator = require('../../translator');
-		var order = [];
-		var items = [];
+		const order = [];
+		const items = [];
 		data.forEach(function (item) {
-			var navItem = JSON.parse(item.value);
-			var keys = Object.keys(navItem);
+			const navItem = JSON.parse(item.value);
 			if (navItem.hasOwnProperty('title')) {
 				navItem.title = translator.unescape(navItem.title);
 			}
