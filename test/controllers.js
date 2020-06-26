@@ -2047,8 +2047,8 @@ describe('Controllers', function () {
 					request(nconf.get('url') + '/api/category/' + category.slug, { jar: jar, json: true }, function (err, res, body) {
 						assert.ifError(err);
 						assert.equal(res.statusCode, 200);
-						assert.equal(res.headers['x-redirect'], 'https://nodebb.org');
-						assert.equal(body, 'https://nodebb.org');
+						assert.equal(res.headers['x-redirect'], 'https:&#x2F;&#x2F;nodebb.org');
+						assert.equal(body, 'https:&#x2F;&#x2F;nodebb.org');
 						next();
 					});
 				},
