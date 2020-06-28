@@ -42,6 +42,7 @@
 	"unread.cutoff": "Okunmamış gün sınırı",
 	"unread.min-track-last": "Son okumayı takip etmeden önce konuya yapılan asgari gönderim",
 	"recent": "Güncel Ayarlar",
+	"recent.max-topics": "Maximum topics on /recent",
 	"recent.categoryFilter.disable": "Son sayfada önemsenmeyen kategorilerde konu filtrelemeyi devre dışı bırak",
 	"signature": "İmza Ayarları",
 	"signature.disable": "İmzaları devre dışı bırak",

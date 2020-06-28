@@ -42,6 +42,7 @@
 	"unread.cutoff": "읽지 않은 글 표기 기간",
 	"unread.min-track-last": "마지막으로 읽은 글 추적 기능을 사용할 최소 글 수",
 	"recent": "최근 작성된 글 설정",
+	"recent.max-topics": "Maximum topics on /recent",
 	"recent.categoryFilter.disable": "최근 작성된 글 페이지에서 무시 중인 게시판의 게시물도 포함",
 	"signature": "서명 설정",
 	"signature.disable": "서명 비활성화",

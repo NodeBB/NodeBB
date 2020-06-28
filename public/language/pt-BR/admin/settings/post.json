@@ -42,6 +42,7 @@
 	"unread.cutoff": "Data de corte de não-lidos",
 	"unread.min-track-last": "Mínimo de posts no tópico antes de rastrear o último lido",
 	"recent": "Configurações Recentes",
+	"recent.max-topics": "Maximum topics on /recent",
 	"recent.categoryFilter.disable": "Desailitar filtragem de tópicos em categorias ignoradas na página /recente",
 	"signature": "Configurações de Assinatura",
 	"signature.disable": "Desabilitar assinaturas",

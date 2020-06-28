@@ -42,6 +42,7 @@
 	"unread.cutoff": "Nepročitano dani prekinutosti",
 	"unread.min-track-last": "Minimalni broj objava u temi prije praćenja zadnje pročitanog",
 	"recent": "Nedavne postavke",
+	"recent.max-topics": "Maximum topics on /recent",
 	"recent.categoryFilter.disable": "onemogući filtriranje tema u ignoriranim kategorijama na stranici /nedavno",
 	"signature": "Postavke potpisa",
 	"signature.disable": "Onemogući potpise",

@@ -42,6 +42,7 @@
 	"unread.cutoff": "Días límite sin leer",
 	"unread.min-track-last": "Entradas mínimas en un tema antes de indicar la última leída.",
 	"recent": "Configuraciones recientes",
+	"recent.max-topics": "Maximum topics on /recent",
 	"recent.categoryFilter.disable": "Desactivar el filtrado de teas en categorías ignoradas en la página /reciente",
 	"signature": "Configuraciones de Firma",
 	"signature.disable": "Desactivar firmas",

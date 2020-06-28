@@ -42,6 +42,7 @@
 	"unread.cutoff": "未讀截止時間（天）",
 	"unread.min-track-last": "跟蹤最後閱讀之前的主題最小貼文",
 	"recent": "最近設定",
+	"recent.max-topics": "Maximum topics on /recent",
 	"recent.categoryFilter.disable": "禁用對 /recent 頁面上忽略版面中的主題進行過濾",
 	"signature": "簽名設定",
 	"signature.disable": "禁用簽名",
