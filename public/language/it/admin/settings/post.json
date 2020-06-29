@@ -42,7 +42,7 @@
 	"unread.cutoff": "Giorni di interruzione non letti",
 	"unread.min-track-last": "Post minimi nell'argomento prima del monitoraggio dell'ultima lettura",
 	"recent": "Impostazioni Recenti",
-	"recent.max-topics": "Maximum topics on /recent",
+	"recent.max-topics": "Numero massimo di discussioni in atto/recenti",
 	"recent.categoryFilter.disable": "Disabilita il filtro degli argomenti nelle categorie ignorate nella pagina/recente",
 	"signature": "Impostazioni della Firma",
 	"signature.disable": "Disabilita le firme",
