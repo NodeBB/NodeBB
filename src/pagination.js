@@ -69,14 +69,14 @@ pagination.create = function (currentPage, pageCount, queryObj) {
 	if (currentPage < pageCount) {
 		data.rel.push({
 			rel: 'next',
-			href: '?page=' + next,
+			href: '?' + qs.stringify({ ...queryObj, page: next }),
 		});
 	}
 
 	if (currentPage > 1) {
 		data.rel.push({
 			rel: 'prev',
-			href: '?page=' + previous,
+			href: '?' + qs.stringify({ ...queryObj, page: previous }),
 		});
 	}
 	return data;
