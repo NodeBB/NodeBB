@@ -72,7 +72,6 @@ userController.getUserDataByUID = async function (callerUid, uid) {
 
 	userData.email = settings.showemail && !meta.config.hideEmail ? userData.email : undefined;
 	userData.fullname = settings.showfullname && !meta.config.hideFullname ? userData.fullname : undefined;
-	userData.blocksCount = undefined;
 
 	return userData;
 };

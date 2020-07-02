@@ -28,8 +28,8 @@ module.exports = function (User) {
 		'lastonline', 'picture', 'fullname', 'location', 'birthday', 'website',
 		'aboutme', 'signature', 'uploadedpicture', 'profileviews', 'reputation',
 		'postcount', 'topiccount', 'lastposttime', 'banned', 'banned:expire',
-		'status', 'flags', 'followerCount', 'followingCount', 'blocksCount',
-		'cover:url', 'cover:position', 'groupTitle',
+		'status', 'flags', 'followerCount', 'followingCount', 'cover:url',
+		'cover:position', 'groupTitle',
 	];
 
 	User.guestData = {

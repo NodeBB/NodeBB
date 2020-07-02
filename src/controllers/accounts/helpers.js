@@ -59,7 +59,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID) {
 
 	userData.isBlocked = results.isBlocked;
 	if (isAdmin || isSelf) {
-		userData.blocksCount = parseInt(userData.blocksCount, 10) || 0;
+		userData.blocksCount = await user.getUserField(userData.uid, 'blocksCount');
 	}
 
 	userData.yourid = callerUID;
