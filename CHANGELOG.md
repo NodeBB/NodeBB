@@ -1,3 +1,35 @@
+#### 1.13.4 (2020-07-02)
+
+##### Chores
+
+* **deps:**  update dependency smtp-server to v3.7.0 (e80100b5)
+*  bump persona (19f9af94)
+
+##### New Features
+
+*  polish for user blocks UX (6cb31791)
+*  #8450, next/prev link tags on /unread /recent (eb9704f8)
+*  allow flagging of user acounts from post tools menu (6931f29d)
+*  closes #8440, allow configuring max topic count (e09ab3dc)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency nodebb-plugin-composer-default to v6.3.46 (5a713d85)
+  *  update dependency nodebb-plugin-mentions to v2.8.3 (#8449) (bbd85049)
+  *  update dependency nodebb-plugin-mentions to v2.8.0 (d40720f9)
+*  don't show in unreplied if score is null (fd400a00)
+*  lint (0d0b9513)
+*  upgrade script to unescape navigation titles (37b6b8fd)
+*  test (f0ce309d)
+*  show controls @julianlam (023de94e)
+*  #8437, #8433 (e53a18f2)
+
+##### Other Changes
+
+* id, category fields (2355d9d5)
+* **deps:**  update dependency nodebb-plugin-mentions to v2.8.0" (5c7d37c0)
+
 #### 1.13.3 (2020-05-08)
 
 ##### Chores
