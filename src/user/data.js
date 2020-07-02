@@ -11,8 +11,9 @@ const utils = require('../utils');
 
 const intFields = [
 	'uid', 'postcount', 'topiccount', 'reputation', 'profileviews',
-	'banned', 'banned:expire', 'email:confirmed', 'joindate', 'lastonline', 'lastqueuetime',
-	'lastposttime', 'followingCount', 'followerCount', 'passwordExpiry',
+	'banned', 'banned:expire', 'email:confirmed', 'joindate', 'lastonline',
+	'lastqueuetime', 'lastposttime', 'followingCount', 'followerCount',
+	'blocksCount', 'passwordExpiry',
 ];
 
 module.exports = function (User) {
@@ -27,8 +28,8 @@ module.exports = function (User) {
 		'lastonline', 'picture', 'fullname', 'location', 'birthday', 'website',
 		'aboutme', 'signature', 'uploadedpicture', 'profileviews', 'reputation',
 		'postcount', 'topiccount', 'lastposttime', 'banned', 'banned:expire',
-		'status', 'flags', 'followerCount', 'followingCount', 'cover:url',
-		'cover:position', 'groupTitle',
+		'status', 'flags', 'followerCount', 'followingCount', 'blocksCount',
+		'cover:url', 'cover:position', 'groupTitle',
 	];
 
 	User.guestData = {
