@@ -26,6 +26,71 @@ describe('Sorted Set methods', function () {
 		], done);
 	});
 
+	describe('sortedSetScan', function () {
+		it('should find matches in sorted set containing substring', async () => {
+			await db.sortedSetAdd('scanzset', [1, 2, 3, 4, 5, 6], ['aaaa', 'bbbb', 'bbcc', 'ddd', 'dddd', 'fghbc']);
+			const data = await db.getSortedSetScan({
+				key: 'scanzset',
+				match: '*bc*',
+			});
+			assert(data.includes('bbcc'));
+			assert(data.includes('fghbc'));
+		});
+
+		it('should find matches in sorted set with scores', async () => {
+			const data = await db.getSortedSetScan({
+				key: 'scanzset',
+				match: '*bc*',
+				withScores: true,
+			});
+			data.sort((a, b) => a.score - b.score);
+			assert.deepStrictEqual(data, [{ value: 'bbcc', score: 3 }, { value: 'fghbc', score: 6 }]);
+		});
+
+		it('should find matches in sorted set with a limit', async () => {
+			await db.sortedSetAdd('scanzset2', [1, 2, 3, 4, 5, 6], ['aaab', 'bbbb', 'bbcb', 'ddb', 'dddd', 'fghbc']);
+			const data = await db.getSortedSetScan({
+				key: 'scanzset2',
+				match: '*b*',
+				limit: 2,
+			});
+			assert.equal(data.length, 2);
+		});
+
+		it('should work for special characters', async () => {
+			await db.sortedSetAdd('scanzset3', [1, 2, 3, 4, 5], ['aaab{', 'bbbb', 'bbcb{', 'ddb', 'dddd']);
+			const data = await db.getSortedSetScan({
+				key: 'scanzset3',
+				match: '*b{',
+				limit: 2,
+			});
+			assert(data.includes('aaab{'));
+			assert(data.includes('bbcb{'));
+		});
+
+		it('should find everything starting with string', async () => {
+			await db.sortedSetAdd('scanzset4', [1, 2, 3, 4, 5], ['aaab{', 'bbbb', 'bbcb', 'ddb', 'dddd']);
+			const data = await db.getSortedSetScan({
+				key: 'scanzset4',
+				match: 'b*',
+				limit: 2,
+			});
+			assert(data.includes('bbbb'));
+			assert(data.includes('bbcb'));
+		});
+
+		it('should find everything ending with string', async () => {
+			await db.sortedSetAdd('scanzset5', [1, 2, 3, 4, 5, 6], ['aaab{', 'bbbb', 'bbcb', 'ddb', 'dddd', 'adb']);
+			const data = await db.getSortedSetScan({
+				key: 'scanzset5',
+				match: '*db',
+			});
+			assert.equal(data.length, 2);
+			assert(data.includes('ddb'));
+			assert(data.includes('adb'));
+		});
+	});
+
 	describe('sortedSetAdd()', function () {
 		it('should add an element to a sorted set', function (done) {
 			db.sortedSetAdd('sorted1', 1, 'value1', function (err) {

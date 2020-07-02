@@ -466,6 +466,48 @@ module.exports = function (module) {
 		}
 	}
 
+	module.getSortedSetScan = async function (params) {
+		const project = { _id: 0, value: 1 };
+		if (params.withScores) {
+			project.score = 1;
+		}
+
+		let match = params.match;
+		if (params.match.startsWith('*')) {
+			match = match.substring(1);
+		}
+		if (params.match.endsWith('*')) {
+			match = match.substring(0, match.length - 1);
+		}
+		match = utils.escapeRegexChars(match);
+		if (!params.match.startsWith('*')) {
+			match = '^' + match;
+		}
+		if (!params.match.endsWith('*')) {
+			match += '$';
+		}
+		let regex;
+		try {
+			regex = new RegExp(match);
+		} catch (err) {
+			return [];
+		}
+
+		const cursor = module.client.collection('objects').find({
+			_key: params.key, value: { $regex: regex },
+		}, { projection: project });
+
+		if (params.limit) {
+			cursor.limit(params.limit);
+		}
+
+		const data = await cursor.toArray();
+		if (!params.withScores) {
+			return data.map(d => d.value);
+		}
+		return data;
+	};
+
 	module.processSortedSet = async function (setKey, processFn, options) {
 		var done = false;
 		var ids = [];
