@@ -473,19 +473,22 @@ module.exports = function (module) {
 		}
 
 		let match = params.match;
-		if (match.startsWith('*')) {
+		if (params.match.startsWith('*')) {
 			match = match.substring(1);
-		} else {
+		}
+		if (params.match.endsWith('*')) {
+			match = match.substring(0, match.length - 1);
+		}
+		match = utils.escapeRegexChars(match);
+		if (!params.match.startsWith('*')) {
 			match = '^' + match;
 		}
-		if (match.endsWith('*')) {
-			match = match.substring(0, match.length - 1);
-		} else {
+		if (!params.match.endsWith('*')) {
 			match += '$';
 		}
 		let regex;
 		try {
-			regex = new RegExp(utils.escapeRegexChars(match));
+			regex = new RegExp(match);
 		} catch (err) {
 			return [];
 		}
