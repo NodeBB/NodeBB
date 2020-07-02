@@ -112,6 +112,7 @@
     "hideFullname": 0,
     "hideEmail": 0,
     "allowGuestHandles": 0,
+    "recentMaxTopics": 200,
     "disableRecentCategoryFilter": 0,
     "maximumRelatedTopics": 0,
     "disableEmailSubscriptions": 0,

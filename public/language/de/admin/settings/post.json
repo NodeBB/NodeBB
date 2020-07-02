@@ -42,6 +42,7 @@
 	"unread.cutoff": "Ungelesen-Limit (in Tagen)",
 	"unread.min-track-last": "Minimale Anzahl an Beiträgen pro Thema bevor die letzte Sichtung mitgeschrieben wird",
 	"recent": "Kürzlich verwendete Einstellungen",
+	"recent.max-topics": "Maximum topics on /recent",
 	"recent.categoryFilter.disable": "Filtern von Themen in ignorierten Kategorien auf der /recent Seite deaktivieren",
 	"signature": "Signatureinstellungen",
 	"signature.disable": "Signaturen deaktivieren",

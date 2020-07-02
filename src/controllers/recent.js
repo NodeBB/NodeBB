@@ -78,6 +78,7 @@ recentController.getData = async function (req, url, sort) {
 
 	var pageCount = Math.max(1, Math.ceil(data.topicCount / settings.topicsPerPage));
 	data.pagination = pagination.create(page, pageCount, req.query);
+	helpers.addLinkTags({ url: url, res: req.res, tags: data.pagination.rel });
 
 	if (req.originalUrl.startsWith(nconf.get('relative_path') + '/api/' + url) || req.originalUrl.startsWith(nconf.get('relative_path') + '/' + url)) {
 		data.title = '[[pages:' + url + ']]';

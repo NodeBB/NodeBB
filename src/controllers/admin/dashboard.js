@@ -21,7 +21,7 @@ dashboardController.get = async function (req, res) {
 		getNotices(),
 		getLatestVersion(),
 		getLastRestart(),
-		user.isAdministrator(),
+		user.isAdministrator(req.uid),
 	]);
 	const version = nconf.get('version');
 

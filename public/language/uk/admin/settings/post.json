@@ -42,6 +42,7 @@
 	"unread.cutoff": "За скільки днів показувати непрочитані",
 	"unread.min-track-last": "Мінімальна кількість постів у темі перш ніж відслідковувати останні прочитані",
 	"recent": "Останні Налаштування",
+	"recent.max-topics": "Maximum topics on /recent",
 	"recent.categoryFilter.disable": "Відключити фільтрування тем в ігнорованих категоріях на сторінці /recent",
 	"signature": "Налаштування підписів",
 	"signature.disable": "Вимкнути підписи",

@@ -42,6 +42,7 @@
 	"unread.cutoff": "Dni do odcięcia nieprzeczytanych ",
 	"unread.min-track-last": "Minimalna liczba postów w temacie przed śledzeniem ostatnio przeczytanego",
 	"recent": "Ustawienia ostatnich",
+	"recent.max-topics": "Maximum topics on /recent",
 	"recent.categoryFilter.disable": "Wyłącz filtrowanie tematów w ignorowanych kategoriach na stronie /recent",
 	"signature": "Ustawienia sygnatur",
 	"signature.disable": "Wyłącz sygnatury",

@@ -42,6 +42,7 @@
 	"unread.cutoff": "Порог отсечки (в днях)",
 	"unread.min-track-last": "Минимальное кол-во сообщений в теме, чтобы начать отслеживать непрочитанные ответы",
 	"recent": "Настройка списка последних тем",
+	"recent.max-topics": "Maximum topics on /recent",
 	"recent.categoryFilter.disable": "Отключить фильтрацию тем из игнорируемых категорий для списка последних тем",
 	"signature": "Настройка подписей",
 	"signature.disable": "Отключить подписи",

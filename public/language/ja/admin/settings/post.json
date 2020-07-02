@@ -42,6 +42,7 @@
 	"unread.cutoff": "未読のカットオフ日",
 	"unread.min-track-last": "最後に読み込みを行う前に追跡するスレッドの最小投稿数",
 	"recent": "最近の設定",
+	"recent.max-topics": "Maximum topics on /recent",
 	"recent.categoryFilter.disable": "最近のページで無視されたカテゴリのトピックのフィルタリングを無効にする",
 	"signature": "署名の設定",
 	"signature.disable": "署名を無効にする",

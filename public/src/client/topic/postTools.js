@@ -129,6 +129,16 @@ define('forum/topic/postTools', [
 			});
 		});
 
+		postContainer.on('click', '[component="post/flagUser"]', function () {
+			var uid = getData($(this), 'data-uid');
+			require(['flags'], function (flags) {
+				flags.showFlagModal({
+					type: 'user',
+					id: uid,
+				});
+			});
+		});
+
 		postContainer.on('click', '[component="post/edit"]', function () {
 			var btn = $(this);
 

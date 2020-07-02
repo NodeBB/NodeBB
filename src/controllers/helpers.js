@@ -53,6 +53,19 @@ helpers.buildQueryString = function (cid, filter, term) {
 	return Object.keys(qs).length ? '?' + querystring.stringify(qs) : '';
 };
 
+helpers.addLinkTags = function (params) {
+	params.res.locals.linkTags = params.res.locals.linkTags || [];
+	params.res.locals.linkTags.push({
+		rel: 'canonical',
+		href: nconf.get('url') + '/' + params.url,
+	});
+
+	params.tags.forEach(function (rel) {
+		rel.href = nconf.get('url') + '/' + params.url + rel.href;
+		params.res.locals.linkTags.push(rel);
+	});
+};
+
 helpers.buildFilters = function (url, filter, query) {
 	return [{
 		name: '[[unread:all-topics]]',

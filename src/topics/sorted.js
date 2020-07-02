@@ -26,7 +26,7 @@ module.exports = function (Topics) {
 		}
 		data.tids = await getTids(params);
 		data.tids = await sortTids(data.tids, params);
-		data.tids = await filterTids(data.tids.slice(0, 200), params);
+		data.tids = await filterTids(data.tids.slice(0, meta.config.recentMaxTopics), params);
 		data.topicCount = data.tids.length;
 		data.topics = await getTopics(data.tids, params);
 		data.nextStart = params.stop + 1;
@@ -49,7 +49,7 @@ module.exports = function (Topics) {
 		} else if (params.cids) {
 			tids = await getCidTids(params);
 		} else {
-			tids = await db.getSortedSetRevRange('topics:' + params.sort, 0, 199);
+			tids = await db.getSortedSetRevRange('topics:' + params.sort, 0, meta.config.recentMaxTopics - 1);
 		}
 
 		return tids;
@@ -67,7 +67,7 @@ module.exports = function (Topics) {
 			pinnedSets.push('cid:' + cid + ':tids:pinned');
 		});
 		const [tids, pinnedTids] = await Promise.all([
-			db.getSortedSetRevRange(sets, 0, 199),
+			db.getSortedSetRevRange(sets, 0, meta.config.recentMaxTopics - 1),
 			db.getSortedSetRevRange(pinnedSets, 0, -1),
 		]);
 		return pinnedTids.concat(tids);

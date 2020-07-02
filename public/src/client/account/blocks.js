@@ -1,16 +1,32 @@
 'use strict';
 
-define('forum/account/blocks', ['forum/account/header', 'autocomplete'], function (header, autocomplete) {
+define('forum/account/blocks', ['forum/account/header'], function (header) {
 	var Blocks = {};
 
 	Blocks.init = function () {
 		header.init();
 
-		autocomplete.user($('#user-search'), function (ev, ui) {
-			app.parseAndTranslate('account/blocks', 'edit', {
-				edit: [ui.item.user],
-			}, function (html) {
-				$('.block-edit').html(html);
+		$('#user-search').on('keyup', function () {
+			var username = this.value;
+
+			socket.emit('user.search', {
+				query: username,
+				searchBy: 'username',
+			}, function (err, data) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+
+				// Only show first 10 matches
+				if (data.matchCount > 10) {
+					data.users.length = 10;
+				}
+
+				app.parseAndTranslate('account/blocks', 'edit', {
+					edit: data.users,
+				}, function (html) {
+					$('.block-edit').html(html);
+				});
 			});
 		});
 

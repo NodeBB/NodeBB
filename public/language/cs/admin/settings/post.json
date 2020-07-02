@@ -42,6 +42,7 @@
 	"unread.cutoff": "Dny ukončení nepřečtených",
 	"unread.min-track-last": "Minimální počet příspěvků v tématu před posledním čtením",
 	"recent": "Nastavení pro poslední",
+	"recent.max-topics": "Maximum topics on /recent",
 	"recent.categoryFilter.disable": "Zakázat filtrování témat v ignorovaných kategoriích na poslední stránce",
 	"signature": "Nastavení podpisu",
 	"signature.disable": "Zakázat podpisy",

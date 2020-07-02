@@ -21,7 +21,7 @@
     "delete_account_content_confirm": "Are you sure you want to delete this account's content (posts/topics/uploads)? <br /><strong>This action is irreversible and you will not be able to recover any data</strong><br /><br />",
     "delete_all_confirm": "Are you sure you want to delete this account and all of its content (posts/topics/uploads)? <br /><strong>This action is irreversible and you will not be able to recover any data</strong><br /><br />",
     "account-deleted": "帐号已删除",
-    "account-content-deleted": "Account content deleted",
+    "account-content-deleted": "账号内容已删除",
     "fullname": "姓名",
     "website": "网站",
     "location": "位置",

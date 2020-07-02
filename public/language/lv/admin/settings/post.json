@@ -42,6 +42,7 @@
 	"unread.cutoff": "Nelasīto rakstu vecumu robeža",
 	"unread.min-track-last": "Minimālais rakstu skaits tematā pirms izseko pēdējo lasīto",
 	"recent": "Nesenie raksti",
+	"recent.max-topics": "Maximum topics on /recent",
 	"recent.categoryFilter.disable": "Atspējot tematu filtrēšanu ignorētās kategorijās /recent lapā",
 	"signature": "Parakstīšanās",
 	"signature.disable": "Atspējot parakstus",

@@ -1,9 +1,9 @@
 {
 	"global": "כללי",
 	"global.no-users": "אין הרשאות כלליות למשתמשים מסויימים",
-	"admin": "Admin",
-	"group-privileges": "Group Privileges",
-	"user-privileges": "User Privileges",
+	"admin": "מנהל",
+	"group-privileges": "הרשאות קבוצתיות",
+	"user-privileges": "הרשאות משתמש",
 	"chat": "צ'אט",
 	"upload-images": "העלאת תמונות",
 	"upload-files": "העלאת קבצים",
@@ -17,7 +17,7 @@
 	"view-groups": "צפייה בקבוצות",
 	"allow-local-login": "התחברות מקומית",
 	"allow-group-creation": "יצרת קבוצות",
-	"view-users-info": "View Users Info",
+	"view-users-info": "צפיה במידע משתמש",
 	"find-category": "מציאת הקטגוריה",
 	"access-category": "גישה לקטגוריה",
 	"access-topics": "גישה לנושאים",
@@ -30,13 +30,13 @@
 	"view_deleted": "הצגת פוסטים מחוקים",
 	"upvote-posts": "Upvote Posts",
 	"downvote-posts": "Downvote Posts",
-	"delete-topics": "Delete Topics",
+	"delete-topics": "מחיקת נושא",
 	"purge": "Purge",
 	"moderate": "Moderate",
 
-	"admin-dashboard": "Dashboard",
-	"admin-categories": "Categories",
-	"admin-privileges": "Privileges",
-	"admin-users": "Users",
-	"admin-settings": "Settings"
+	"admin-dashboard": "לוח מחוונים",
+	"admin-categories": "קטגוריות",
+	"admin-privileges": "הרשאות",
+	"admin-users": "משתמשים",
+	"admin-settings": "הגדרות"
 }

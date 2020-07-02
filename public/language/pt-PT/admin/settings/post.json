@@ -42,6 +42,7 @@
 	"unread.cutoff": "Unread cutoff days",
 	"unread.min-track-last": "Minimum posts in topic before tracking last read",
 	"recent": "Definições Recentes",
+	"recent.max-topics": "Maximum topics on /recent",
 	"recent.categoryFilter.disable": "Disable filtering of topics in ignored categories on the /recent page",
 	"signature": "Definições da Assinatura",
 	"signature.disable": "Desativar assinaturas",

@@ -3,6 +3,7 @@
 var nconf = require('nconf');
 var jsesc = require('jsesc');
 var _ = require('lodash');
+const validator = require('validator');
 var util = require('util');
 
 var db = require('../database');
@@ -121,7 +122,7 @@ module.exports = function (middleware) {
 		const tidsByFilter = results.unreadData.tidsByFilter;
 		results.navigation = results.navigation.map(function (item) {
 			function modifyNavItem(item, route, filter, content) {
-				if (item && item.originalRoute === route) {
+				if (item && validator.unescape(item.originalRoute) === route) {
 					unreadData[filter] = _.zipObject(tidsByFilter[filter], tidsByFilter[filter].map(() => true));
 					item.content = content;
 					if (unreadCounts[filter] > 0) {

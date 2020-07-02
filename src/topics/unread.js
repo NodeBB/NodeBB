@@ -370,6 +370,6 @@ module.exports = function (Topics) {
 
 	Topics.filterUnrepliedTids = async function (tids) {
 		const scores = await db.sortedSetScores('topics:posts', tids);
-		return tids.filter((tid, index) => tid && scores[index] <= 1);
+		return tids.filter((tid, index) => tid && scores[index] !== null && scores[index] <= 1);
 	};
 };

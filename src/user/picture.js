@@ -61,10 +61,52 @@ module.exports = function (User) {
 				url: uploadData.url,
 			};
 		} finally {
-			file.delete(picture.path);
+			await file.delete(picture.path);
 		}
 	};
 
+	// uploads a image file as profile picture
+	User.uploadCroppedPictureFile = async function (data) {
+		const userPhoto = data.file;
+		if (!meta.config.allowProfileImageUploads) {
+			throw new Error('[[error:profile-image-uploads-disabled]]');
+		}
+
+		if (userPhoto.size > meta.config.maximumProfileImageSize * 1024) {
+			throw new Error('[[error:file-too-big, ' + meta.config.maximumProfileImageSize + ']]');
+		}
+
+		if (!userPhoto.type || !User.getAllowedImageTypes().includes(userPhoto.type)) {
+			throw new Error('[[error:invalid-image]]');
+		}
+
+		const extension = file.typeToExtension(userPhoto.type);
+		if (!extension) {
+			throw new Error('[[error:invalid-image-extension]]');
+		}
+
+		const newPath = await convertToPNG(userPhoto.path);
+
+		await image.resizeImage({
+			path: newPath,
+			width: meta.config.profileImageDimension,
+			height: meta.config.profileImageDimension,
+		});
+
+		const filename = generateProfileImageFilename(data.uid, extension);
+		const uploadedImage = await image.uploadImage(filename, 'profile', {
+			uid: data.uid,
+			path: newPath,
+		});
+
+		await User.setUserFields(data.uid, {
+			uploadedpicture: uploadedImage.url,
+			picture: uploadedImage.url,
+		});
+		return uploadedImage;
+	};
+
+	// uploads image data in base64 as profile picture
 	User.uploadCroppedPicture = async function (data) {
 		const picture = {
 			name: 'profileAvatar',
@@ -101,7 +143,7 @@ module.exports = function (User) {
 			});
 			return uploadedImage;
 		} finally {
-			file.delete(picture.path);
+			await file.delete(picture.path);
 		}
 	};
 
@@ -126,7 +168,7 @@ module.exports = function (User) {
 			return path;
 		}
 		const newPath = await image.normalise(path);
-		file.delete(path);
+		await file.delete(path);
 		return newPath;
 	}
 
