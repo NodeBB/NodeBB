@@ -610,6 +610,35 @@ DELETE FROM "legacy_zset" z
 		return q;
 	}
 
+	module.getSortedSetScan = async function (params) {
+		let match = params.match;
+		if (match.startsWith('*')) {
+			match = '%' + match.substring(1);
+		}
+
+		if (match.endsWith('*')) {
+			match = match.substring(0, match.length - 1) + '%';
+		}
+
+		const res = await module.pool.query({
+			text: `
+SELECT z."value",
+       z."score"
+  FROM "legacy_object_live" o
+ INNER JOIN "legacy_zset" z
+         ON o."_key" = z."_key"
+        AND o."type" = z."type"
+ WHERE o."_key" = $1::TEXT
+  AND z."value" LIKE '${match}'
+  LIMIT $2::INTEGER`,
+			values: [params.key, params.limit],
+		});
+		if (!params.withScores) {
+			return res.rows.map(r => r.value);
+		}
+		return res.rows.map(r => ({ value: r.value, score: parseFloat(r.score) }));
+	};
+
 	module.processSortedSet = async function (setKey, process, options) {
 		const client = await module.pool.connect();
 		var batchSize = (options || {}).batch || 100;
