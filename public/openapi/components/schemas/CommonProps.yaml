@@ -63,6 +63,8 @@ CommonProps:
                     type: string
                   sizes:
                     type: string
+                  as:
+                    type: string
                 required:
                   - rel
                   - href
