@@ -78,7 +78,7 @@
         "morgan": "^1.10.0",
         "mousetrap": "^1.6.5",
         "@nodebb/mubsub": "^1.6.0",
-        "@nodebb/socket.io-adapter-mongo": "3.0.0",
+        "@nodebb/socket.io-adapter-mongo": "3.0.1",
         "nconf": "^0.10.0",
         "nodebb-plugin-composer-default": "6.3.46",
         "nodebb-plugin-dbsearch": "4.0.7",
