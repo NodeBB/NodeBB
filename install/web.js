@@ -223,12 +223,15 @@ function launch(req, res) {
 }
 
 function compileLess(callback) {
-	fs.readFile(path.join(__dirname, '../public/less/install.less'), function (err, style) {
+	var installSrc = path.join(__dirname, '../public/less/install.less');
+	fs.readFile(installSrc, function (err, style) {
 		if (err) {
 			return winston.error('Unable to read LESS install file: ', err.stack);
 		}
 
-		less.render(style.toString(), function (err, css) {
+		less.render(style.toString(), {
+			filename: path.resolve(installSrc),
+		}, function (err, css) {
 			if (err) {
 				return winston.error('Unable to compile LESS: ', err.stack);
 			}
