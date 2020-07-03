@@ -42,6 +42,25 @@ module.exports = function (module) {
 		return res.rows[0].e;
 	};
 
+	module.scan = async function (params) {
+		let match = params.match;
+		if (match.startsWith('*')) {
+			match = '%' + match.substring(1);
+		}
+		if (match.endsWith('*')) {
+			match = match.substring(0, match.length - 1) + '%';
+		}
+
+		const res = await module.pool.query({
+			text: `
+		SELECT o."_key"
+		FROM "legacy_object_live" o
+		WHERE o."_key" LIKE '${match}'`,
+		});
+
+		return res.rows.map(r => r._key);
+	};
+
 	module.delete = async function (key) {
 		if (!key) {
 			return;

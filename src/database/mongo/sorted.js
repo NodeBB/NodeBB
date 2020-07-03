@@ -472,20 +472,7 @@ module.exports = function (module) {
 			project.score = 1;
 		}
 
-		let match = params.match;
-		if (params.match.startsWith('*')) {
-			match = match.substring(1);
-		}
-		if (params.match.endsWith('*')) {
-			match = match.substring(0, match.length - 1);
-		}
-		match = utils.escapeRegexChars(match);
-		if (!params.match.startsWith('*')) {
-			match = '^' + match;
-		}
-		if (!params.match.endsWith('*')) {
-			match += '$';
-		}
+		const match = helpers.buildMatchQuery(params.match);
 		let regex;
 		try {
 			regex = new RegExp(match);
