@@ -23,6 +23,18 @@ module.exports = function (module) {
 		return exists === 1;
 	};
 
+	module.scan = async function (params) {
+		let cursor = '0';
+		let returnData = [];
+		do {
+			/* eslint-disable no-await-in-loop */
+			const res = await module.client.async.scan(cursor, 'MATCH', params.match, 'COUNT', 10000);
+			cursor = res[0];
+			returnData = returnData.concat(res[1]);
+		} while (cursor !== '0');
+		return returnData;
+	};
+
 	module.delete = async function (key) {
 		await module.client.async.del(key);
 		module.objectCache.delObjectCache(key);

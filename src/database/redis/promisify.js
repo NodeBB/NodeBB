@@ -7,6 +7,7 @@ module.exports = function (redisClient) {
 		send_command: util.promisify(redisClient.send_command).bind(redisClient),
 
 		exists: util.promisify(redisClient.exists).bind(redisClient),
+		scan: util.promisify(redisClient.scan).bind(redisClient),
 
 		del: util.promisify(redisClient.del).bind(redisClient),
 		get: util.promisify(redisClient.get).bind(redisClient),
