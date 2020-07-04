@@ -428,7 +428,7 @@ module.exports = function (module) {
 		count = count !== undefined ? count : 0;
 		buildLexQuery(query, min, max);
 
-		const data = await module.client.collection('objects').find(query, { projection: { _id: 0, _key: 0, score: 0 } })
+		const data = await module.client.collection('objects').find(query, { projection: { _id: 0, value: 1 } })
 			.sort({ value: sort })
 			.skip(start)
 			.limit(count === -1 ? 0 : count)
