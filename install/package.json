@@ -93,7 +93,7 @@
         "nodebb-theme-persona": "10.1.58",
         "nodebb-theme-slick": "1.2.29",
         "nodebb-theme-vanilla": "11.1.32",
-        "nodebb-widget-essentials": "4.1.0",
+        "nodebb-widget-essentials": "4.1.1",
         "nodemailer": "^6.4.6",
         "passport": "^0.4.1",
         "passport-local": "1.0.0",
