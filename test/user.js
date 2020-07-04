@@ -314,7 +314,13 @@ describe('User', function () {
 	});
 
 	describe('.search()', function () {
-		var uid;
+		let adminUid;
+		let uid;
+		before(async () => {
+			adminUid = await User.create({ username: 'noteadmin' });
+			await groups.join('administrators', adminUid);
+		});
+
 		it('should return an object containing an array of matching users', function (done) {
 			User.search({ query: 'john' }, function (err, searchData) {
 				assert.ifError(err);
@@ -347,22 +353,36 @@ describe('User', function () {
 			});
 		});
 
-		it('should search users by ip', function (done) {
-			User.create({ username: 'ipsearch' }, function (err, uid) {
-				assert.ifError(err);
-				db.sortedSetAdd('ip:1.1.1.1:uid', [1, 1], [testUid, uid], function (err) {
-					assert.ifError(err);
-					socketUser.search({ uid: testUid }, { query: '1.1.1.1', searchBy: 'ip' }, function (err, data) {
-						assert.ifError(err);
-						assert(Array.isArray(data.users));
-						assert.equal(data.users.length, 2);
-						done();
-					});
-				});
+		it('should error for unprivileged user', function (done) {
+			socketUser.search({ uid: testUid }, { searchBy: 'ip', query: '123' }, function (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+				done();
 			});
 		});
 
-		it('should search users by ip', function (done) {
+		it('should error for unprivileged user', function (done) {
+			socketUser.search({ uid: testUid }, { bannedOnly: true, query: '123' }, function (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+				done();
+			});
+		});
+
+		it('should error for unprivileged user', function (done) {
+			socketUser.search({ uid: testUid }, { flaggedOnly: true, query: '123' }, function (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+				done();
+			});
+		});
+
+		it('should search users by ip', async function () {
+			const uid = await User.create({ username: 'ipsearch' });
+			await db.sortedSetAdd('ip:1.1.1.1:uid', [1, 1], [testUid, uid]);
+			const data = await socketUser.search({ uid: adminUid }, { query: '1.1.1.1', searchBy: 'ip' });
+			assert(Array.isArray(data.users));
+			assert.equal(data.users.length, 2);
+		});
+
+		it('should search users by uid', function (done) {
 			socketUser.search({ uid: testUid }, { query: uid, searchBy: 'uid' }, function (err, data) {
 				assert.ifError(err);
 				assert(Array.isArray(data.users));
@@ -384,7 +404,7 @@ describe('User', function () {
 				assert.ifError(err);
 				User.setUserFields(uid, { banned: 1, flags: 10 }, function (err) {
 					assert.ifError(err);
-					socketUser.search({ uid: testUid }, {
+					socketUser.search({ uid: adminUid }, {
 						query: 'ipsearch',
 						onlineOnly: true,
 						bannedOnly: true,

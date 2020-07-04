@@ -9,8 +9,12 @@ module.exports = function (SocketUser) {
 		if (!data) {
 			throw new Error('[[error:invalid-data]]');
 		}
-		const allowed = await privileges.global.can('search:users', socket.uid);
-		if (!allowed) {
+		const [allowed, isPrivileged] = await Promise.all([
+			privileges.global.can('search:users', socket.uid),
+			user.isPrivileged(socket.uid),
+		]);
+
+		if (!allowed || ((data.searchBy === 'ip' || data.bannedOnly || data.flaggedOnly) && !isPrivileged)) {
 			throw new Error('[[error:no-privileges]]');
 		}
 		const result = await user.search({
