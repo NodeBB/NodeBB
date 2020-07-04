@@ -28,6 +28,7 @@ define('forum/chats/search', ['components'], function (components) {
 		socket.emit('user.search', {
 			query: username,
 			searchBy: 'username',
+			paginate: false,
 		}, function (err, data) {
 			if (err) {
 				return app.alertError(err.message);

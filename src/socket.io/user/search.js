@@ -14,7 +14,7 @@ module.exports = function (SocketUser) {
 			user.isPrivileged(socket.uid),
 		]);
 
-		if (!allowed || ((data.searchBy === 'ip' || data.bannedOnly || data.flaggedOnly) && !isPrivileged)) {
+		if (!allowed || ((data.searchBy === 'ip' || data.searchBy === 'email' || data.bannedOnly || data.flaggedOnly) && !isPrivileged)) {
 			throw new Error('[[error:no-privileges]]');
 		}
 		const result = await user.search({

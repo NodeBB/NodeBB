@@ -30,10 +30,14 @@ usersController.index = async function (req, res, next) {
 	}
 };
 
-usersController.search = async function (req, res, next) {
-	const allowed = await privileges.global.can('search:users', req.uid);
-	if (!allowed) {
-		return next(new Error('[[error:no-privileges]]'));
+usersController.search = async function (req, res) {
+	const [allowed, isPrivileged] = await Promise.all([
+		privileges.global.can('search:users', req.uid),
+		user.isPrivileged(req.uid),
+	]);
+
+	if (!allowed || ((req.query.searchBy === 'ip' || req.query.searchBy === 'email' || req.query.bannedOnly === 'true' || req.query.flaggedOnly === 'true') && !isPrivileged)) {
+		throw new Error('[[error:no-privileges]]');
 	}
 	const [searchData, isAdminOrGlobalMod] = await Promise.all([
 		user.search({
