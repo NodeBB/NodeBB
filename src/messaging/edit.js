@@ -8,6 +8,7 @@ const sockets = require('../socket.io');
 
 module.exports = function (Messaging) {
 	Messaging.editMessage = async (uid, mid, roomId, content) => {
+		await Messaging.checkContent(content);
 		const raw = await Messaging.getMessageField(mid, 'content');
 		if (raw === content) {
 			return;
