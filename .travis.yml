@@ -28,7 +28,6 @@ env:
   jobs:
     - "DB=mongodb TEST_ENV=production"
     - "DB=mongodb TEST_ENV=development"
-    - "DB=redis TEST_ENV=production"
     - "DB=postgres TEST_ENV=production"
 addons:
   apt:
