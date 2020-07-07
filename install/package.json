@@ -13,7 +13,7 @@
         "start": "node loader.js",
         "lint": "npx eslint --cache ./nodebb .",
         "pretest": "npm run lint",
-        "test": "nyc --reporter=html --reporter=text-summary mocha",
+        "test": "npx nyc --reporter=html --reporter=text-summary npx mocha",
         "coveralls": "nyc report --reporter=text-lcov | coveralls && rm -r coverage"
     },
     "husky": {
