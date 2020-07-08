@@ -1,3 +1,70 @@
+#### 1.14.1 (2020-07-08)
+
+##### Chores
+
+*  incrementing version number - v1.14.1 (31203b16)
+*  update changelog for v1.14.1 (d4c16086)
+*  incrementing version number - v1.14.1-beta.3 (e8ecef6b)
+*  incrementing version number - v1.14.1-beta.2 (b8d9b6b1)
+*  incrementing version number - v1.14.1-beta.1 (be85123a)
+*  incrementing version number - v1.14.1-beta.0 (c279875a)
+*  incrementing version number - v1.14.0 (bb73d6a4)
+*  update changelog for v1.14.0 (cffae0f1)
+
+##### New Features
+
+*  add tools to recent/unread (#8477) (658dd03b)
+*  fire new hooks on chat message editing (4f51838d)
+*  add back redis tests (bdc4d9e7)
+*  remove redis test (8461a179)
+*  use covered query (057b783d)
+*  add js-enabled.css to list of preloaded css files (da29b947)
+*  zscan (#8457) (723fe8e8)
+*  fix blocksCount not being returned on user profile (bd228d5e)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency nodebb-theme-persona to v10.1.60 (#8478) (14eafcb6)
+  *  bump nodebb-plugin-composer-default to 6.3.48 (943a344a)
+  *  update dependency nodebb-plugin-dbsearch to v4.1.1 (#8476) (9f06f12c)
+  *  update dependency nodebb-plugin-composer-default to v6.3.47 (#8473) (857900f1)
+  *  update dependency nodebb-plugin-dbsearch to v4.1.0 (#8471) (eb51cfd4)
+  *  update dependency nodebb-theme-persona to v10.1.59 (#8468) (ee38e05d)
+  *  update dependency nodebb-widget-essentials to v4.1.1 (#8466) (519e035d)
+  *  update dependency @nodebb/socket.io-adapter-mongo to v3.0.1 (#8464) (412ca4ae)
+*  #8474 (c2ca02df)
+*  show stack properly (7b04d897)
+*  editing chat messages does not go through content sanity checks (9a6b87d2)
+*  don't show blocked users under nested replies (d6c619cf)
+*  tests (87dd6c83)
+*  handle scan/zscan returning duplicate elements on redis (746222d6)
+*  #8467, fix url to merged topic in subfolder installs (9eb748b9)
+*  openapi (5f1865c0)
+*  openapi (65c0adc7)
+*  dont allow searching by email/ip if not privileged (ac6b571e)
+*  missing backgroundImage #8386 (fef04fcf)
+*  dont allow searching by ip/banned/flagged for regular users (02ac44cc)
+*  admin privileges client-side regression (f3441fce)
+*  only add blocksCount for self and admins (59a2ace6)
+*  tests (fd20e5c6)
+*  better changelog (f992af05)
+* **tests:**
+  *  another shot in the dark (8853cd1a)
+  *  shot in the dark (9458d90b)
+* **openapi:**  tests (c468942f)
+
+##### Other Changes
+
+*  update changelog for v1.14.1" (26c74409)
+* //github.com/NodeBB/NodeBB (0d9461b1)
+* //github.com/NodeBB/NodeBB (ace312e0)
+* post.changeOwner (b60e1cbf)
+
+##### Reverts
+
+*  bad changelog (a761e31f)
+
 #### 1.14.0 (2020-07-02)
 
 ##### Chores
