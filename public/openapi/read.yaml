@@ -3871,6 +3871,8 @@ paths:
                               type: boolean
                             filter:
                               type: string
+                            icon:
+                              type: string
                       selectedFilter:
                         type: object
                         properties:
@@ -3881,6 +3883,8 @@ paths:
                           selected:
                             type: boolean
                           filter:
+                            type: string
+                          icon:
                             type: string
                       terms:
                         type: array
@@ -4199,6 +4203,8 @@ paths:
                               type: boolean
                             filter:
                               type: string
+                            icon:
+                              type: string
                       selectedFilter:
                         type: object
                         properties:
@@ -4209,6 +4215,8 @@ paths:
                           selected:
                             type: boolean
                           filter:
+                            type: string
+                          icon:
                             type: string
                   - $ref: components/schemas/Pagination.yaml#/Pagination
                   - $ref: components/schemas/Breadcrumbs.yaml#/Breadcrumbs
@@ -5553,6 +5561,8 @@ paths:
                               type: boolean
                             filter:
                               type: string
+                            icon:
+                              type: string
                       selectedFilter:
                         type: object
                         properties:
@@ -5563,6 +5573,8 @@ paths:
                           selected:
                             type: boolean
                           filter:
+                            type: string
+                          icon:
                             type: string
                       terms:
                         type: array
@@ -5694,6 +5706,8 @@ paths:
                               type: boolean
                             filter:
                               type: string
+                            icon:
+                              type: string
                       selectedFilter:
                         type: object
                         properties:
@@ -5704,6 +5718,8 @@ paths:
                           selected:
                             type: boolean
                           filter:
+                            type: string
+                          icon:
                             type: string
                       terms:
                         type: array
