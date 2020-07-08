@@ -14,7 +14,7 @@ function get() {
 
 	var pubsub;
 
-	if (nconf.get('isCluster') === 'false') {
+	if (!nconf.get('isCluster')) {
 		if (noCluster) {
 			real = noCluster;
 			return real;

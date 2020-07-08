@@ -54,14 +54,22 @@ function loadConfig(configFile) {
 		upload_path: 'public/uploads',
 		views_dir: path.join(dirname, 'build/public/templates'),
 		version: pkg.version,
+		isCluster: false,
+		isPrimary: true,
+		jobsDisabled: false,
 	});
 
-	if (!nconf.get('isCluster')) {
-		nconf.set('isPrimary', 'true');
-		nconf.set('isCluster', 'false');
-	}
-	var isPrimary = nconf.get('isPrimary');
-	nconf.set('isPrimary', isPrimary === undefined ? 'true' : isPrimary);
+	// Explicitly cast as Bool, loader.js passes in isCluster as string 'true'/'false'
+	var castAsBool = ['isCluster', 'isPrimary', 'jobsDisabled'];
+	nconf.stores.env.readOnly = false;
+	castAsBool.forEach(function (prop) {
+		var value = nconf.get(prop);
+		if (value !== undefined) {
+			nconf.set(prop, typeof value === 'boolean' ? value : String(value).toLowerCase() === 'true');
+		}
+	});
+	nconf.stores.env.readOnly = true;
+	nconf.set('runJobs', nconf.get('isPrimary') && !nconf.get('jobsDisabled'));
 
 	// Ensure themes_path is a full filepath
 	nconf.set('themes_path', path.resolve(dirname, nconf.get('themes_path')));
@@ -71,18 +79,6 @@ function loadConfig(configFile) {
 	nconf.set('upload_path', path.resolve(nconf.get('base_dir'), nconf.get('upload_path')));
 	nconf.set('upload_url', '/assets/uploads');
 
-	// Explicitly cast 'jobsDisabled' as Bool
-	var castAsBool = ['jobsDisabled'];
-	nconf.stores.env.readOnly = false;
-	castAsBool.forEach(function (prop) {
-		var value = nconf.get(prop);
-		if (value) {
-			nconf.set(prop, typeof value === 'boolean' ? value : String(value).toLowerCase() === 'true');
-		}
-	});
-	nconf.stores.env.readOnly = true;
-
-	nconf.set('runJobs', nconf.get('isPrimary') === 'true' && !nconf.get('jobsDisabled'));
 
 	// nconf defaults, if not set in config
 	if (!nconf.get('sessionKey')) {

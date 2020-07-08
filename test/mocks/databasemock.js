@@ -39,9 +39,9 @@ const urlObject = url.parse(nconf.get('url'));
 const relativePath = urlObject.pathname !== '/' ? urlObject.pathname : '';
 nconf.set('relative_path', relativePath);
 
-if (!nconf.get('isCluster')) {
-	nconf.set('isPrimary', 'true');
-	nconf.set('isCluster', 'true');
+if (nconf.get('isCluster') === undefined) {
+	nconf.set('isPrimary', true);
+	nconf.set('isCluster', true);
 }
 
 const dbType = nconf.get('database');

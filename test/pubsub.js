@@ -8,7 +8,7 @@ var pubsub = require('../src/pubsub');
 
 describe('pubsub', function () {
 	it('should use the plain event emitter', function (done) {
-		nconf.set('isCluster', 'false');
+		nconf.set('isCluster', false);
 		pubsub.reset();
 		pubsub.on('testEvent', function (message) {
 			assert.equal(message.foo, 1);
@@ -21,7 +21,7 @@ describe('pubsub', function () {
 	it('should use same event emitter', function (done) {
 		pubsub.on('dummyEvent', function (message) {
 			assert.equal(message.foo, 2);
-			nconf.set('isCluster', 'true');
+			nconf.set('isCluster', true);
 			pubsub.removeAllListeners('dummyEvent');
 			pubsub.reset();
 			done();
