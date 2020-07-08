@@ -5,7 +5,8 @@ define('topicList', [
 	'handleBack',
 	'topicSelect',
 	'categorySearch',
-], function (infinitescroll, handleBack, topicSelect, categorySearch) {
+	'forum/category/tools',
+], function (infinitescroll, handleBack, topicSelect, categorySearch, categoryTools) {
 	var TopicList = {};
 	var templateName = '';
 
@@ -24,6 +25,7 @@ define('topicList', [
 
 	$(window).on('action:ajaxify.start', function () {
 		TopicList.removeListeners();
+		categoryTools.removeListeners();
 	});
 
 	TopicList.init = function (template, cb) {
@@ -31,6 +33,8 @@ define('topicList', [
 
 		templateName = template;
 		loadTopicsCallback = cb || loadTopicsAfter;
+
+		categoryTools.init();
 
 		TopicList.watchForNewPosts();
 

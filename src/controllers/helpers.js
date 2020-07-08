@@ -72,21 +72,25 @@ helpers.buildFilters = function (url, filter, query) {
 		url: url + helpers.buildQueryString(query.cid, '', query.term),
 		selected: filter === '',
 		filter: '',
+		icon: 'fa-book',
 	}, {
 		name: '[[unread:new-topics]]',
 		url: url + helpers.buildQueryString(query.cid, 'new', query.term),
 		selected: filter === 'new',
 		filter: 'new',
+		icon: 'fa-clock-o',
 	}, {
 		name: '[[unread:watched-topics]]',
 		url: url + helpers.buildQueryString(query.cid, 'watched', query.term),
 		selected: filter === 'watched',
 		filter: 'watched',
+		icon: 'fa-bell-o',
 	}, {
 		name: '[[unread:unreplied-topics]]',
 		url: url + helpers.buildQueryString(query.cid, 'unreplied', query.term),
 		selected: filter === 'unreplied',
 		filter: 'unreplied',
+		icon: 'fa-reply',
 	}];
 };
 
