@@ -48,7 +48,11 @@ module.exports = function (Topics) {
 				'cid:' + topicData.cid + ':tids',
 				'cid:' + topicData.cid + ':uid:' + topicData.uid + ':tids',
 			], timestamp, topicData.tid),
-			db.sortedSetAdd('cid:' + topicData.cid + ':tids:votes', 0, topicData.tid),
+			db.sortedSetsAdd([
+				'topics:views', 'topics:posts', 'topics:votes',
+				'cid:' + topicData.cid + ':tids:votes',
+				'cid:' + topicData.cid + ':tids:posts',
+			], 0, topicData.tid),
 			categories.updateRecentTid(topicData.cid, topicData.tid),
 			user.addTopicIdToUser(topicData.uid, topicData.tid, timestamp),
 			db.incrObjectField('category:' + topicData.cid, 'topic_count'),

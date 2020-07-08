@@ -191,9 +191,8 @@ SocketHelpers.rescindUpvoteNotification = async function (pid, fromuid) {
 	websockets.in('uid_' + uid).emit('event:notifications.updateCount', count);
 };
 
-SocketHelpers.emitToTopicAndCategory = function (event, data) {
-	websockets.in('topic_' + data.tid).emit(event, data);
-	websockets.in('category_' + data.cid).emit(event, data);
+SocketHelpers.emitToTopicAndCategory = async function (event, data, uids) {
+	uids.forEach(toUid => websockets.in('uid_' + toUid).emit(event, data));
 };
 
 require('../promisify')(SocketHelpers);

@@ -1,6 +1,7 @@
 'use strict';
 
 const async = require('async');
+const user = require('../../user');
 const topics = require('../../topics');
 const categories = require('../../categories');
 const privileges = require('../../privileges');
@@ -12,6 +13,8 @@ module.exports = function (SocketTopics) {
 			throw new Error('[[error:invalid-data]]');
 		}
 
+		const uids = await user.getUidsFromSet('users:online', 0, -1);
+
 		await async.eachLimit(data.tids, 10, async function (tid) {
 			const canMove = await privileges.topics.isAdminOrMod(tid, socket.uid);
 			if (!canMove) {
@@ -21,7 +24,8 @@ module.exports = function (SocketTopics) {
 			data.uid = socket.uid;
 			await topics.tools.move(tid, data);
 
-			socketHelpers.emitToTopicAndCategory('event:topic_moved', topicData);
+			const notifyUids = await privileges.categories.filterUids('topics:read', topicData.cid, uids);
+			socketHelpers.emitToTopicAndCategory('event:topic_moved', topicData, notifyUids);
 			if (!topicData.deleted) {
 				socketHelpers.sendNotificationToTopicOwner(tid, socket.uid, 'move', 'notifications:moved_your_topic');
 			}

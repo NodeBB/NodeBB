@@ -9,9 +9,7 @@ define('forum/category/tools', [
 ], function (topicSelect, components, translator) {
 	var CategoryTools = {};
 
-	CategoryTools.init = function (cid) {
-		CategoryTools.cid = cid;
-
+	CategoryTools.init = function () {
 		topicSelect.init(updateDropdownOptions);
 
 		handlePinnedTopicSort();
@@ -36,7 +34,7 @@ define('forum/category/tools', [
 			if (!tids.length) {
 				return app.alertError('[[error:no-topics-selected]]');
 			}
-			socket.emit('topics.lock', { tids: tids, cid: CategoryTools.cid }, onCommandComplete);
+			socket.emit('topics.lock', { tids: tids }, onCommandComplete);
 			return false;
 		});
 
@@ -45,7 +43,7 @@ define('forum/category/tools', [
 			if (!tids.length) {
 				return app.alertError('[[error:no-topics-selected]]');
 			}
-			socket.emit('topics.unlock', { tids: tids, cid: CategoryTools.cid }, onCommandComplete);
+			socket.emit('topics.unlock', { tids: tids }, onCommandComplete);
 			return false;
 		});
 
@@ -54,7 +52,7 @@ define('forum/category/tools', [
 			if (!tids.length) {
 				return app.alertError('[[error:no-topics-selected]]');
 			}
-			socket.emit('topics.pin', { tids: tids, cid: CategoryTools.cid }, onCommandComplete);
+			socket.emit('topics.pin', { tids: tids }, onCommandComplete);
 			return false;
 		});
 
@@ -63,7 +61,7 @@ define('forum/category/tools', [
 			if (!tids.length) {
 				return app.alertError('[[error:no-topics-selected]]');
 			}
-			socket.emit('topics.unpin', { tids: tids, cid: CategoryTools.cid }, onCommandComplete);
+			socket.emit('topics.unpin', { tids: tids }, onCommandComplete);
 			return false;
 		});
 
@@ -92,13 +90,17 @@ define('forum/category/tools', [
 				if (!tids.length) {
 					return app.alertError('[[error:no-topics-selected]]');
 				}
-				move.init(tids, cid, onCommandComplete);
+				move.init(tids, null, onCommandComplete);
 			});
 
 			return false;
 		});
 
 		components.get('topic/move-all').on('click', function () {
+			var cid = ajaxify.data.cid;
+			if (!ajaxify.data.template.category) {
+				return app.alertError('[[error:invalid-data]]');
+			}
 			require(['forum/topic/move'], function (move) {
 				move.init(null, cid, function (err) {
 					if (err) {
@@ -110,7 +112,7 @@ define('forum/category/tools', [
 			});
 		});
 
-		$('.category').on('click', '[component="topic/merge"]', function () {
+		components.get('topic/merge').on('click', function () {
 			require(['forum/topic/merge'], function (merge) {
 				merge.init();
 			});
@@ -138,7 +140,7 @@ define('forum/category/tools', [
 					return;
 				}
 
-				socket.emit('topics.' + command, { tids: tids, cid: CategoryTools.cid }, onDeletePurgeComplete);
+				socket.emit('topics.' + command, { tids: tids }, onDeletePurgeComplete);
 			});
 		});
 	}
@@ -259,7 +261,7 @@ define('forum/category/tools', [
 			return memo;
 		}, 0);
 
-		if (!ajaxify.data.privileges.isAdminOrMod || numPinned < 2) {
+		if ((!app.user.isAdmin && !app.user.isMod) || numPinned < 2) {
 			return;
 		}
 

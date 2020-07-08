@@ -60,9 +60,7 @@ module.exports = function (Topics) {
 
 		await db.sortedSetAdd('cid:' + topicData.cid + ':tids:lastposttime', lastposttime, tid);
 
-		if (!topicData.deleted) {
-			await Topics.updateRecent(tid, lastposttime);
-		}
+		await Topics.updateRecent(tid, lastposttime);
 
 		if (!topicData.pinned) {
 			await db.sortedSetAdd('cid:' + topicData.cid + ':tids', lastposttime, tid);
