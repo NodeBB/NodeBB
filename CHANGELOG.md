@@ -1,13 +1,3 @@
-#### 1.14.2.3 (2020-07-08)
-
-##### New Features
-
-*  add tools to recent/unread (#8477) (658dd03b)
-
-##### Bug Fixes
-
-* **deps:**  update dependency nodebb-theme-persona to v10.1.60 (#8478) (14eafcb6)
-
 #### 1.14.0 (2020-07-02)
 
 ##### Chores
