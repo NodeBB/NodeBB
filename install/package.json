@@ -80,7 +80,7 @@
         "@nodebb/mubsub": "^1.6.0",
         "@nodebb/socket.io-adapter-mongo": "3.0.1",
         "nconf": "^0.10.0",
-        "nodebb-plugin-composer-default": "6.3.47",
+        "nodebb-plugin-composer-default": "6.3.48",
         "nodebb-plugin-dbsearch": "4.1.1",
         "nodebb-plugin-emoji": "^3.3.0",
         "nodebb-plugin-emoji-android": "2.0.0",
