@@ -18,12 +18,6 @@ module.exports = function (Topics) {
 				deleterUid: uid,
 				deletedTimestamp: Date.now(),
 			}),
-			db.sortedSetsRemove([
-				'topics:recent',
-				'topics:posts',
-				'topics:views',
-				'topics:votes',
-			], tid),
 			removeTopicPidsFromCid(tid),
 		]);
 	};
@@ -55,16 +49,11 @@ module.exports = function (Topics) {
 	}
 
 	Topics.restore = async function (tid) {
-		const topicData = await Topics.getTopicData(tid);
+		await Topics.deleteTopicFields(tid, [
+			'deleterUid', 'deletedTimestamp',
+		]);
 		await Promise.all([
 			Topics.setTopicField(tid, 'deleted', 0),
-			Topics.deleteTopicFields(tid, ['deleterUid', 'deletedTimestamp']),
-			Topics.updateRecent(tid, topicData.lastposttime),
-			db.sortedSetAddBulk([
-				['topics:posts', topicData.postcount, tid],
-				['topics:views', topicData.viewcount, tid],
-				['topics:votes', parseInt(topicData.votes, 10) || 0, tid],
-			]),
 			addTopicPidsToCid(tid),
 		]);
 	};

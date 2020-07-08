@@ -428,7 +428,7 @@ module.exports = function (module) {
 		count = count !== undefined ? count : 0;
 		buildLexQuery(query, min, max);
 
-		const data = await module.client.collection('objects').find(query, { projection: { _id: 0, _key: 0, score: 0 } })
+		const data = await module.client.collection('objects').find(query, { projection: { _id: 0, value: 1 } })
 			.sort({ value: sort })
 			.skip(start)
 			.limit(count === -1 ? 0 : count)
@@ -465,6 +465,35 @@ module.exports = function (module) {
 			}
 		}
 	}
+
+	module.getSortedSetScan = async function (params) {
+		const project = { _id: 0, value: 1 };
+		if (params.withScores) {
+			project.score = 1;
+		}
+
+		const match = helpers.buildMatchQuery(params.match);
+		let regex;
+		try {
+			regex = new RegExp(match);
+		} catch (err) {
+			return [];
+		}
+
+		const cursor = module.client.collection('objects').find({
+			_key: params.key, value: { $regex: regex },
+		}, { projection: project });
+
+		if (params.limit) {
+			cursor.limit(params.limit);
+		}
+
+		const data = await cursor.toArray();
+		if (!params.withScores) {
+			return data.map(d => d.value);
+		}
+		return data;
+	};
 
 	module.processSortedSet = async function (setKey, processFn, options) {
 		var done = false;

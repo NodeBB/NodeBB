@@ -37,11 +37,12 @@ recentController.getData = async function (req, url, sort) {
 		states.push(categories.watchStates.ignoring);
 	}
 
-	const [settings, categoryData, rssToken, canPost] = await Promise.all([
+	const [settings, categoryData, rssToken, canPost, isPrivileged] = await Promise.all([
 		user.getSettings(req.uid),
 		helpers.getCategoriesByStates(req.uid, cid, states),
 		user.auth.getFeedToken(req.uid),
 		canPostTopic(req.uid),
+		user.isPrivileged(req.uid),
 	]);
 
 	const start = Math.max(0, (page - 1) * settings.topicsPerPage);
@@ -60,6 +61,8 @@ recentController.getData = async function (req, url, sort) {
 	});
 
 	data.canPost = canPost;
+	data.showSelect = isPrivileged;
+	data.showTopicTools = isPrivileged;
 	data.categories = categoryData.categories;
 	data.allCategoriesUrl = url + helpers.buildQueryString('', filter, '');
 	data.selectedCategory = categoryData.selectedCategory || null;

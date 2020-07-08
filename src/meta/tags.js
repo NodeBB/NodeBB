@@ -56,6 +56,10 @@ Tags.parse = async (req, data, meta, link) => {
 	}, {
 		rel: 'manifest',
 		href: nconf.get('relative_path') + '/manifest.json',
+	}, {
+		rel: 'preload',
+		href: nconf.get('relative_path') + '/assets/js-enabled.css?' + (Meta.config['cache-buster'] ? '?' + Meta.config['cache-buster'] : ''),
+		as: 'style',
 	}];
 
 	if (plugins.hasListeners('filter:search.query')) {

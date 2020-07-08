@@ -127,9 +127,11 @@ module.exports = function (Posts) {
 		if (!exists) {
 			throw new Error('[[error:no-user]]');
 		}
-		const postData = await Posts.getPostsFields(pids, ['pid', 'tid', 'uid', 'timestamp', 'upvotes', 'downvotes']);
-		pids = postData.filter(p => p.pid && p.uid !== parseInt(toUid, 10))
-			.map(p => p.pid);
+		let postData = await Posts.getPostsFields(pids, [
+			'pid', 'tid', 'uid', 'content', 'deleted', 'timestamp', 'upvotes', 'downvotes',
+		]);
+		postData = postData.filter(p => p.pid && p.uid !== parseInt(toUid, 10));
+		pids = postData.map(p => p.pid);
 
 		const cids = await Posts.getCidsByPids(pids);
 
@@ -163,6 +165,11 @@ module.exports = function (Posts) {
 			reduceCounters(postsByUser),
 			updateTopicPosters(postData, toUid),
 		]);
+
+		plugins.fireHook('action:post.changeOwner', {
+			posts: _.cloneDeep(postData),
+			toUid: toUid,
+		});
 		return postData;
 	};
 
@@ -189,7 +196,9 @@ module.exports = function (Posts) {
 
 	async function handleMainPidOwnerChange(postData, toUid) {
 		const tids = _.uniq(postData.map(p => p.tid));
-		const topicData = await topics.getTopicsFields(tids, ['mainPid', 'timestamp']);
+		const topicData = await topics.getTopicsFields(tids, [
+			'tid', 'cid', 'deleted', 'title', 'uid', 'mainPid', 'timestamp',
+		]);
 		const tidToTopic = _.zipObject(tids, topicData);
 
 		const mainPosts = postData.filter(p => p.pid === tidToTopic[p.tid].mainPid);
@@ -217,6 +226,12 @@ module.exports = function (Posts) {
 			user.incrementUserFieldBy(toUid, 'topiccount', mainPosts.length),
 			reduceTopicCounts(postsByUser),
 		]);
+
+		const changedTopics = mainPosts.map(p => tidToTopic[p.tid]);
+		plugins.fireHook('action:topic.changeOwner', {
+			topics: _.cloneDeep(changedTopics),
+			toUid: toUid,
+		});
 	}
 
 	async function reduceTopicCounts(postsByUser) {

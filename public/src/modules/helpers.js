@@ -70,12 +70,13 @@
 	function buildLinkTag(tag) {
 		var link = tag.link ? 'link="' + tag.link + '" ' : '';
 		var rel = tag.rel ? 'rel="' + tag.rel + '" ' : '';
+		var as = tag.as ? 'as="' + tag.as + '" ' : '';
 		var type = tag.type ? 'type="' + tag.type + '" ' : '';
 		var href = tag.href ? 'href="' + tag.href + '" ' : '';
 		var sizes = tag.sizes ? 'sizes="' + tag.sizes + '" ' : '';
 		var title = tag.title ? 'title="' + tag.title + '" ' : '';
 
-		return '<link ' + link + rel + type + sizes + title + href + '/>\n\t';
+		return '<link ' + link + rel + as + type + sizes + title + href + '/>\n\t';
 	}
 
 	function stringify(obj) {

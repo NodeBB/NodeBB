@@ -1,6 +1,7 @@
 'use strict';
 
 module.exports = function (module) {
+	const helpers = require('./helpers');
 	module.flushdb = async function () {
 		await module.client.dropDatabase();
 	};
@@ -14,17 +15,31 @@ module.exports = function (module) {
 		if (!key) {
 			return;
 		}
+
 		if (Array.isArray(key)) {
-			const data = await module.client.collection('objects').find({ _key: { $in: key } }).toArray();
-			var map = {};
+			const data = await module.client.collection('objects').find({
+				_key: { $in: key },
+			}, { _id: 0, _key: 1 }).toArray();
+
+			const map = {};
 			data.forEach(function (item) {
 				map[item._key] = true;
 			});
 
 			return key.map(key => !!map[key]);
 		}
-		const item = await module.client.collection('objects').findOne({ _key: key });
+
+		const item = await module.client.collection('objects').findOne({
+			_key: key,
+		}, { _id: 0, _key: 1 });
 		return item !== undefined && item !== null;
+	};
+
+	module.scan = async function (params) {
+		const match = helpers.buildMatchQuery(params.match);
+		return await module.client.collection('objects').distinct(
+			'_key', { _key: { $regex: new RegExp(match) } }
+		);
 	};
 
 	module.delete = async function (key) {
@@ -66,15 +81,16 @@ module.exports = function (module) {
 		if (!key) {
 			return;
 		}
-		var data = { data: value };
-		await module.setObject(key, data);
+		await module.setObject(key, { data: value });
 	};
 
 	module.increment = async function (key) {
 		if (!key) {
 			return;
 		}
-		const result = await module.client.collection('objects').findOneAndUpdate({ _key: key }, { $inc: { data: 1 } }, { returnOriginal: false, upsert: true });
+		const result = await module.client.collection('objects').findOneAndUpdate({
+			_key: key,
+		}, { $inc: { data: 1 } }, { returnOriginal: false, upsert: true });
 		return result && result.value ? result.value.data : null;
 	};
 

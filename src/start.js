@@ -79,7 +79,7 @@ async function runUpgrades() {
 }
 
 function printStartupInfo() {
-	if (nconf.get('isPrimary') === 'true') {
+	if (nconf.get('isPrimary')) {
 		winston.info('Initializing NodeBB v%s %s', nconf.get('version'), nconf.get('url'));
 
 		const host = nconf.get(nconf.get('database') + ':host');

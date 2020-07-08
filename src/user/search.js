@@ -1,6 +1,8 @@
 
 'use strict';
 
+const _ = require('lodash');
+
 const meta = require('../meta');
 const plugins = require('../plugins');
 const db = require('../database');
@@ -128,6 +130,8 @@ module.exports = function (User) {
 	}
 
 	async function searchByIP(ip) {
-		return await db.getSortedSetRevRange('ip:' + ip + ':uid', 0, -1);
+		const ipKeys = await db.scan({ match: 'ip:' + ip + '*' });
+		const uids = await db.getSortedSetRevRange(ipKeys, 0, -1);
+		return _.uniq(uids);
 	}
 };

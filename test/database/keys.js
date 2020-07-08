@@ -61,6 +61,21 @@ describe('Key methods', function () {
 		});
 	});
 
+	describe('scan', function () {
+		it('should scan keys for pattern', async function () {
+			await db.sortedSetAdd('ip:123:uid', 1, 'a');
+			await db.sortedSetAdd('ip:123:uid', 2, 'b');
+			await db.sortedSetAdd('ip:124:uid', 2, 'b');
+			await db.sortedSetAdd('ip:1:uid', 1, 'a');
+			await db.sortedSetAdd('ip:23:uid', 1, 'a');
+			const data = await db.scan({ match: 'ip:1*' });
+			assert.equal(data.length, 3);
+			assert(data.includes('ip:123:uid'));
+			assert(data.includes('ip:124:uid'));
+			assert(data.includes('ip:1:uid'));
+		});
+	});
+
 	it('should delete a key without error', function (done) {
 		db.delete('testKey', function (err) {
 			assert.ifError(err);

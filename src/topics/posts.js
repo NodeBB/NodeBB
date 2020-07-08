@@ -239,7 +239,8 @@ module.exports = function (Topics) {
 
 		const uniquePids = _.uniq(_.flatten(arrayOfReplyPids));
 
-		const replyData = await posts.getPostsFields(uniquePids, ['pid', 'uid', 'timestamp']);
+		let replyData = await posts.getPostsFields(uniquePids, ['pid', 'uid', 'timestamp']);
+		replyData = await user.blocks.filter(callerUid, replyData);
 
 		const uids = replyData.map(replyData => replyData && replyData.uid);
 
@@ -247,12 +248,13 @@ module.exports = function (Topics) {
 
 		const userData = await user.getUsersWithFields(uniqueUids, ['uid', 'username', 'userslug', 'picture'], callerUid);
 
-		var uidMap = _.zipObject(uniqueUids, userData);
-		var pidMap = _.zipObject(uniquePids, replyData);
+		const uidMap = _.zipObject(uniqueUids, userData);
+		const pidMap = _.zipObject(replyData.map(r => r.pid), replyData);
 
-		var returnData = arrayOfReplyPids.map(function (replyPids) {
-			var uidsUsed = {};
-			var currentData = {
+		const returnData = arrayOfReplyPids.map(function (replyPids) {
+			replyPids = replyPids.filter(pid => pidMap[pid]);
+			const uidsUsed = {};
+			const currentData = {
 				hasMore: false,
 				users: [],
 				text: replyPids.length > 1 ? '[[topic:replies_to_this_post, ' + replyPids.length + ']]' : '[[topic:one_reply_to_this_post]]',
@@ -263,7 +265,7 @@ module.exports = function (Topics) {
 			replyPids.sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
 
 			replyPids.forEach(function (replyPid) {
-				var replyData = pidMap[replyPid];
+				const replyData = pidMap[replyPid];
 				if (!uidsUsed[replyData.uid] && currentData.users.length < 6) {
 					currentData.users.push(uidMap[replyData.uid]);
 					uidsUsed[replyData.uid] = true;

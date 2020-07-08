@@ -95,6 +95,7 @@ categoryController.get = async function (req, res, next) {
 	categoryData.description = translator.escape(categoryData.description);
 	categoryData.privileges = userPrivileges;
 	categoryData.showSelect = userPrivileges.editable;
+	categoryData.showTopicTools = userPrivileges.editable;
 	categoryData.rssFeedUrl = nconf.get('url') + '/category/' + categoryData.cid + '.rss';
 	if (parseInt(req.uid, 10)) {
 		categories.markAsRead([cid], req.uid);

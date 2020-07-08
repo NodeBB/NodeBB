@@ -22,9 +22,10 @@ unreadController.get = async function (req, res, next) {
 	if (!filterData.filters[filter]) {
 		return next();
 	}
-	const [watchedCategories, userSettings] = await Promise.all([
+	const [watchedCategories, userSettings, isPrivileged] = await Promise.all([
 		getWatchedCategories(req.uid, cid, filter),
 		user.getSettings(req.uid),
+		user.isPrivileged(req.uid),
 	]);
 
 	const page = parseInt(req.query.page, 10) || 1;
@@ -48,7 +49,8 @@ unreadController.get = async function (req, res, next) {
 		req.query.page = Math.max(1, Math.min(data.pageCount, page));
 		return helpers.redirect(res, '/unread?' + querystring.stringify(req.query));
 	}
-
+	data.showSelect = isPrivileged;
+	data.showTopicTools = isPrivileged;
 	data.categories = watchedCategories.categories;
 	data.allCategoriesUrl = 'unread' + helpers.buildQueryString('', filter, '');
 	data.selectedCategory = watchedCategories.selectedCategory;

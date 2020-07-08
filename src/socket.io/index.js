@@ -27,12 +27,14 @@ Sockets.init = function (server) {
 		path: nconf.get('relative_path') + '/socket.io',
 	});
 
-	if (nconf.get('singleHostCluster')) {
-		io.adapter(require('./single-host-cluster'));
-	} else if (nconf.get('redis')) {
-		io.adapter(require('../database/redis').socketAdapter());
-	} else {
-		io.adapter(db.socketAdapter());
+	if (nconf.get('isCluster')) {
+		if (nconf.get('singleHostCluster')) {
+			io.adapter(require('./single-host-cluster'));
+		} else if (nconf.get('redis')) {
+			io.adapter(require('../database/redis').socketAdapter());
+		} else {
+			io.adapter(db.socketAdapter());
+		}
 	}
 
 	io.use(socketioWildcard);

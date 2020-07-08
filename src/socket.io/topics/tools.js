@@ -1,5 +1,6 @@
 'use strict';
 
+const user = require('../../user');
 const topics = require('../../topics');
 const events = require('../../events');
 const privileges = require('../../privileges');
@@ -65,17 +66,21 @@ module.exports = function (SocketTopics) {
 			throw new Error('[[error:no-privileges]]');
 		}
 
-		if (!data || !Array.isArray(data.tids) || !data.cid) {
+		if (!data || !Array.isArray(data.tids)) {
 			throw new Error('[[error:invalid-tid]]');
 		}
 
 		if (typeof topics.tools[action] !== 'function') {
 			return;
 		}
+
+		const uids = await user.getUidsFromSet('users:online', 0, -1);
+
 		await Promise.all(data.tids.map(async function (tid) {
 			const title = await topics.getTopicField(tid, 'title');
 			const data = await topics.tools[action](tid, socket.uid);
-			socketHelpers.emitToTopicAndCategory(event, data);
+			const notifyUids = await privileges.categories.filterUids('topics:read', data.cid, uids);
+			socketHelpers.emitToTopicAndCategory(event, data, notifyUids);
 			await logTopicAction(action, socket, tid, title);
 		}));
 	};

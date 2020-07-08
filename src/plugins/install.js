@@ -41,7 +41,7 @@ if (process.platform === 'win32') {
 }
 
 module.exports = function (Plugins) {
-	if (nconf.get('isPrimary') === 'true') {
+	if (nconf.get('isPrimary')) {
 		pubsub.on('plugins:toggleInstall', function (data) {
 			if (data.hostname !== os.hostname()) {
 				toggleInstall(data.id, data.version);

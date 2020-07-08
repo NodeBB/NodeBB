@@ -276,4 +276,38 @@ module.exports = function (module) {
 		}
 		return await module.client.async[method](args);
 	}
+
+	module.getSortedSetScan = async function (params) {
+		let cursor = '0';
+
+		const returnData = [];
+		let done = false;
+		const seen = {};
+		do {
+			/* eslint-disable no-await-in-loop */
+			const res = await module.client.async.zscan(params.key, cursor, 'MATCH', params.match, 'COUNT', 5000);
+			cursor = res[0];
+			done = cursor === '0';
+			const data = res[1];
+
+			for (let i = 0; i < data.length; i += 2) {
+				const value = data[i];
+				if (!seen[value]) {
+					seen[value] = 1;
+
+					if (params.withScores) {
+						returnData.push({ value: value, score: parseFloat(data[i + 1]) });
+					} else {
+						returnData.push(value);
+					}
+					if (params.limit && returnData.length >= params.limit) {
+						done = true;
+						break;
+					}
+				}
+			}
+		} while (!done);
+
+		return returnData;
+	};
 };

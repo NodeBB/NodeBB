@@ -19,8 +19,8 @@ module.exports = function (Messaging) {
 
 		const keys = mids.map(mid => 'message:' + mid);
 		const messages = await (fields.length ? db.getObjectsFields(keys, fields) : db.getObjects(keys));
-		messages.forEach(message => modifyMessage(message, fields));
-		return messages;
+
+		return await Promise.all(messages.map(async (message, idx) => modifyMessage(message, fields, parseInt(mids[idx], 10))));
 	};
 
 	Messaging.getMessageField = async (mid, field) => {
@@ -133,7 +133,7 @@ module.exports = function (Messaging) {
 	};
 };
 
-function modifyMessage(message, fields) {
+async function modifyMessage(message, fields, mid) {
 	if (message) {
 		db.parseIntFields(message, intFields, fields);
 		if (message.hasOwnProperty('timestamp')) {
@@ -143,4 +143,12 @@ function modifyMessage(message, fields) {
 			message.editedISO = utils.toISOString(message.edited);
 		}
 	}
+
+	const payload = await plugins.fireHook('filter:messaging.getFields', {
+		mid: mid,
+		message: message,
+		fields: fields,
+	});
+
+	return payload.message;
 }

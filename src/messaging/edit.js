@@ -2,23 +2,28 @@
 
 const meta = require('../meta');
 const user = require('../user');
+const plugins = require('../plugins');
 
 const sockets = require('../socket.io');
 
 
 module.exports = function (Messaging) {
 	Messaging.editMessage = async (uid, mid, roomId, content) => {
+		await Messaging.checkContent(content);
 		const raw = await Messaging.getMessageField(mid, 'content');
 		if (raw === content) {
 			return;
 		}
-		if (!String(content).trim()) {
-			throw new Error('[[error:invalid-chat-message]]');
-		}
-		await Messaging.setMessageFields(mid, {
+
+		const payload = await plugins.fireHook('filter:messaging.edit', {
 			content: content,
 			edited: Date.now(),
 		});
+
+		if (!String(payload.content).trim()) {
+			throw new Error('[[error:invalid-chat-message]]');
+		}
+		await Messaging.setMessageFields(mid, payload);
 
 		// Propagate this change to users in the room
 		const [uids, messages] = await Promise.all([
