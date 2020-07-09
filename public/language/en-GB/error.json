@@ -165,6 +165,8 @@
 	"not-enough-reputation-min-rep-cover-picture": "You do not have enough reputation to add a cover picture",
 	"already-flagged": "You have already flagged this post",
 	"self-vote": "You cannot vote on your own post",
+	"too-many-downvotes-today": "You can only downvote %1 times a day",
+	"too-many-downvotes-today-user": "You can only downvote a user %1 times a day",
 
 	"reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading.",
 
