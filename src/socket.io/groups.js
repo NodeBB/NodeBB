@@ -368,8 +368,15 @@ SocketGroups.cover.update = async (socket, data) => {
 	if (!socket.uid) {
 		throw new Error('[[error:no-privileges]]');
 	}
+	if (data.file || (!data.imageData && !data.position)) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	await canModifyGroup(socket.uid, data.groupName);
-	return await groups.updateCover(socket.uid, data);
+	return await groups.updateCover(socket.uid, {
+		groupName: data.groupName,
+		imageData: data.imageData,
+		position: data.position,
+	});
 };
 
 SocketGroups.cover.remove = async (socket, data) => {
@@ -378,7 +385,9 @@ SocketGroups.cover.remove = async (socket, data) => {
 	}
 
 	await canModifyGroup(socket.uid, data.groupName);
-	await groups.removeCover(data);
+	await groups.removeCover({
+		groupName: data.groupName,
+	});
 };
 
 async function canModifyGroup(uid, groupName) {

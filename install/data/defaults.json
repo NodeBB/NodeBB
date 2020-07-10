@@ -70,6 +70,8 @@
     "reputation:disabled": 0,
     "downvote:disabled": 0,
     "disableSignatures": 0,
+    "downvotesPerDay": 10,
+    "downvotesPerUserPerDay": 3,
     "min:rep:downvote": 0,
     "min:rep:flag": 0,
     "min:rep:profile-picture": 0,

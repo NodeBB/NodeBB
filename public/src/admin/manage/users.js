@@ -376,33 +376,10 @@ define('admin/manage/users', ['translator', 'benchpress', 'autocomplete'], funct
 
 			timeoutId = setTimeout(function () {
 				$('.fa-spinner').removeClass('hidden');
-
-				socket.emit('admin.user.search', { searchBy: type, query: $this.val() }, function (err, data) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-
-					Benchpress.parse('admin/manage/users', 'users', data, function (html) {
-						translator.translate(html, function (html) {
-							html = $(html);
-							$('.users-table tbody tr').remove();
-							$('.users-table tbody').append(html);
-							html.find('.timeago').timeago();
-							$('.fa-spinner').addClass('hidden');
-
-							if (data && data.users.length === 0) {
-								$('#user-notfound-notify').translateHtml('[[admin/manage/users:search.not-found]]')
-									.removeClass('hide')
-									.addClass('label-danger')
-									.removeClass('label-success');
-							} else {
-								$('#user-notfound-notify').translateHtml(translator.compile('admin/manage/users:alerts.x-users-found', data.users.length, data.timing))
-									.removeClass('hide')
-									.addClass('label-success')
-									.removeClass('label-danger');
-							}
-						});
-					});
+				loadSearchPage({
+					searchBy: type,
+					query: $this.val(),
+					page: 1,
 				});
 			}, 250);
 		});
@@ -411,6 +388,38 @@ define('admin/manage/users', ['translator', 'benchpress', 'autocomplete'], funct
 
 		handleInvite();
 	};
+
+	function loadSearchPage(query) {
+		var qs = decodeURIComponent($.param(query));
+		$.get(config.relative_path + '/api/admin/manage/users/search?' + qs, renderSearchResults).fail(function (xhrErr) {
+			if (xhrErr && xhrErr.responseJSON && xhrErr.responseJSON.error) {
+				app.alertError(xhrErr.responseJSON.error);
+			}
+		});
+	}
+
+	function renderSearchResults(data) {
+		Benchpress.parse('partials/paginator', { pagination: data.pagination }, function (html) {
+			$('.pagination-container').replaceWith(html);
+		});
+
+		app.parseAndTranslate('admin/manage/users', 'users', data, function (html) {
+			$('.users-table tbody tr').remove();
+			$('.users-table tbody').append(html);
+			html.find('.timeago').timeago();
+			$('.fa-spinner').addClass('hidden');
+
+			if (data && data.users.length === 0) {
+				$('#user-notfound-notify').translateHtml('[[admin/manage/users:search.not-found]]')
+					.removeClass('hidden');
+				$('#user-found-notify').addClass('hidden');
+			} else {
+				$('#user-found-notify').translateHtml(translator.compile('admin/manage/users:alerts.x-users-found', data.matchCount, data.timing))
+					.removeClass('hidden');
+				$('#user-notfound-notify').addClass('hidden');
+			}
+		});
+	}
 
 	function handleInvite() {
 		$('[component="user/invite"]').on('click', function () {

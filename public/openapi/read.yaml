@@ -954,11 +954,30 @@ paths:
                     properties:
                       search_display:
                         type: string
+                      matchCount:
+                        type: number
+                      query:
+                        type: string
+                      uidQuery:
+                        type: string
+                      usernameQuery:
+                        type: string
+                      emailQuery:
+                        type: string
+                      ipQuery:
+                        type: string
+                      pageCount:
+                        type: number
+                      resultsPerPage:
+                        type: number
+                      timing:
+                        type: number
                       users:
                         type: array
                         items:
                           $ref: components/schemas/UserObject.yaml#/UserObjectACP
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
   /api/admin/manage/users/latest:
     get:
       tags:

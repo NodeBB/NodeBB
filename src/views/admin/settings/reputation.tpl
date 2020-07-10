@@ -32,7 +32,10 @@
 	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/reputation:thresholds]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
-			<strong>[[admin/settings/reputation:min-rep-downvote]]</strong><br /> <input type="text" class="form-control" placeholder="0" data-field="min:rep:downvote"><br />
+			<strong>[[admin/settings/reputation:min-rep-downvote]]</strong><br /> <input type="text" class="form-control" placeholder="0"
+			data-field="min:rep:downvote"><br />
+			<strong>[[admin/settings/reputation:downvotes-per-day]]</strong><br /> <input type="text" class="form-control" placeholder="10" data-field="downvotesPerDay"><br />
+			<strong>[[admin/settings/reputation:downvotes-per-user-per-day]]</strong><br /> <input type="text" class="form-control" placeholder="3" data-field="downvotesPerUserPerDay"><br />
 			<strong>[[admin/settings/reputation:min-rep-flag]]</strong><br /> <input type="text" class="form-control" placeholder="0" data-field="min:rep:flag"><br />
 			<strong>[[admin/settings/reputation:min-rep-website]]</strong><br /> <input type="text" class="form-control" placeholder="0" data-field="min:rep:website"><br />
 			<strong>[[admin/settings/reputation:min-rep-aboutme]]</strong><br /> <input type="text" class="form-control" placeholder="0" data-field="min:rep:aboutme"><br />

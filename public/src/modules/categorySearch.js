@@ -11,7 +11,9 @@ define('categorySearch', function () {
 		if (!searchEl.length) {
 			return;
 		}
-		var toggleVisibility = searchEl.parent('[component="category/dropdown"]').length > 0;
+		var toggleVisibility = searchEl.parent('[component="category/dropdown"]').length > 0 ||
+			searchEl.parent('[component="category-selector"]').length > 0;
+
 		var categoryEls = el.find('[component="category/list"] [data-cid]');
 		el.on('show.bs.dropdown', function () {
 			function revealParents(cid) {

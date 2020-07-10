@@ -57,23 +57,26 @@
 			<form class="form-inline">
 				<div class="form-group">
 					<label>[[admin/manage/users:search.uid]]</label>
-					<input class="form-control" id="search-user-uid" data-search-type="uid" type="number" placeholder="[[admin/manage/users:search.uid-placeholder]]"/><br />
+					<input class="form-control" id="search-user-uid" data-search-type="uid" type="number" placeholder="[[admin/manage/users:search.uid-placeholder]]" value="{uidQuery}"/>
 				</div>
 				<div class="form-group">
 					<label>[[admin/manage/users:search.username]]</label>
-					<input class="form-control" id="search-user-name" data-search-type="username" type="text" placeholder="[[admin/manage/users:search.username-placeholder]]"/><br />
+					<input class="form-control" id="search-user-name" data-search-type="username" type="text" placeholder="[[admin/manage/users:search.username-placeholder]]" value="{usernameQuery}"/>
 				</div>
 				<div class="form-group">
 					<label>[[admin/manage/users:search.email]]</label>
-					<input class="form-control" id="search-user-email" data-search-type="email" type="text" placeholder="[[admin/manage/users:search.email-placeholder]]"/><br />
+					<input class="form-control" id="search-user-email" data-search-type="email" type="text" placeholder="[[admin/manage/users:search.email-placeholder]]" value="{emailQuery}"/>
 				</div>
 				<div class="form-group">
 					<label>[[admin/manage/users:search.ip]]</label>
-					<input class="form-control" id="search-user-ip" data-search-type="ip" type="text" placeholder="[[admin/manage/users:search.ip-placeholder]]"/><br />
+					<input class="form-control" id="search-user-ip" data-search-type="ip" type="text" placeholder="[[admin/manage/users:search.ip-placeholder]]" value="{ipQuery}"/>
 				</div>
 			</form>
 			<i class="fa fa-spinner fa-spin hidden"></i>
-			<span id="user-notfound-notify" class="label label-danger hide">[[admin/manage/users:search.not-found]]</span><br/>
+
+			<div id="user-found-notify" class="label label-info {{{if !matchCount}}}hidden{{{end}}}">[[admin/manage/users:alerts.x-users-found, {matchCount}, {timing}]]</div>
+
+			<div id="user-notfound-notify" class="label label-danger {{{if !query}}}hidden{{{end}}} {{{if matchCount}}}hidden{{{end}}}">[[admin/manage/users:search.not-found]]</div>
 		</div>
 
 		<!-- IF inactive -->
