@@ -37,9 +37,9 @@ module.exports = function (User) {
 		};
 
 		if (paginate) {
-			var resultsPerPage = meta.config.userSearchResultsPerPage;
-			var start = Math.max(0, page - 1) * resultsPerPage;
-			var stop = start + resultsPerPage;
+			const resultsPerPage = data.resultsPerPage || meta.config.userSearchResultsPerPage;
+			const start = Math.max(0, page - 1) * resultsPerPage;
+			const stop = start + resultsPerPage;
 			searchResult.pageCount = Math.ceil(uids.length / resultsPerPage);
 			uids = uids.slice(start, stop);
 		}

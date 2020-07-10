@@ -1,6 +1,7 @@
 'use strict';
 
 const nconf = require('nconf');
+const validator = require('validator');
 
 const user = require('../../user');
 const meta = require('../../meta');
@@ -15,11 +16,56 @@ const usersController = module.exports;
 const userFields = ['uid', 'username', 'userslug', 'email', 'postcount', 'joindate', 'banned',
 	'reputation', 'picture', 'flags', 'lastonline', 'email:confirmed'];
 
-usersController.search = function (req, res) {
-	res.render('admin/manage/users', {
-		search_display: '',
-		users: [],
+usersController.search = async function (req, res) {
+	const page = parseInt(req.query.page, 10) || 1;
+	let resultsPerPage = parseInt(req.query.resultsPerPage, 10) || 50;
+	if (![50, 100, 250, 500].includes(resultsPerPage)) {
+		resultsPerPage = 50;
+	}
+	const searchData = await user.search({
+		uid: req.uid,
+		query: req.query.query,
+		searchBy: req.query.searchBy,
+		page: page,
+		resultsPerPage: resultsPerPage,
+		findUids: async function (query, searchBy, hardCap) {
+			if (!query || query.length < 2) {
+				return [];
+			}
+			hardCap = hardCap || resultsPerPage * 10;
+			if (!query.endsWith('*')) {
+				query += '*';
+			}
+
+			const data = await db.getSortedSetScan({
+				key: searchBy + ':sorted',
+				match: query,
+				limit: hardCap,
+			});
+			return data.map(data => data.split(':')[1]);
+		},
 	});
+
+	const uids = searchData.users.map(user => user && user.uid);
+	const userInfo = await user.getUsersFields(uids, ['email', 'flags', 'lastonline', 'joindate']);
+
+	searchData.users.forEach(function (user, index) {
+		if (user && userInfo[index]) {
+			user.email = userInfo[index].email;
+			user.flags = userInfo[index].flags || 0;
+			user.lastonlineISO = userInfo[index].lastonlineISO;
+			user.joindateISO = userInfo[index].joindateISO;
+		}
+	});
+	searchData.query = validator.escape(String(req.query.query || ''));
+	searchData.uidQuery = req.query.searchBy === 'uid' ? searchData.query : '';
+	searchData.usernameQuery = req.query.searchBy === 'username' ? searchData.query : '';
+	searchData.emailQuery = req.query.searchBy === 'email' ? searchData.query : '';
+	searchData.ipQuery = req.query.searchBy === 'uid' ? searchData.query : '';
+	searchData.resultsPerPage = resultsPerPage;
+	searchData.pagination = pagination.create(page, searchData.pageCount, req.query);
+	searchData.search_display = '';
+	res.render('admin/manage/users', searchData);
 };
 
 usersController.sortByJoinDate = async function (req, res) {
