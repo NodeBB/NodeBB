@@ -364,6 +364,43 @@ describe('Admin Controllers', function () {
 		});
 	});
 
+	it('should return 403 if no referer', function (done) {
+		request(nconf.get('url') + '/api/admin/groups/administrators/csv', { jar: jar }, function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 403);
+			assert.equal(body, '[[error:invalid-origin]]');
+			done();
+		});
+	});
+
+	it('should return 403 if referer is not /api/admin/groups/administrators/csv', function (done) {
+		request(nconf.get('url') + '/api/admin/groups/administrators/csv', {
+			jar: jar,
+			headers: {
+				referer: '/topic/1/test',
+			},
+		}, function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 403);
+			assert.equal(body, '[[error:invalid-origin]]');
+			done();
+		});
+	});
+
+	it('should load /api/admin/groups/administrators/csv', function (done) {
+		request(nconf.get('url') + '/api/admin/groups/administrators/csv', {
+			jar: jar,
+			headers: {
+				referer: nconf.get('url') + '/admin/manage/groups',
+			},
+		}, function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
 	it('should load /admin/advanced/hooks', function (done) {
 		request(nconf.get('url') + '/api/admin/advanced/hooks', { jar: jar, json: true }, function (err, res, body) {
 			assert.ifError(err);

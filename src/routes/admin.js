@@ -69,6 +69,7 @@ module.exports = function (app, middleware, controllers) {
 
 function apiRoutes(router, middleware, controllers) {
 	router.get('/api/admin/users/csv', middleware.authenticate, helpers.tryRoute(controllers.admin.users.getCSV));
+	router.get('/api/admin/groups/:groupname/csv', middleware.authenticate, helpers.tryRoute(controllers.admin.groups.getCSV));
 	router.get('/api/admin/analytics', middleware.authenticate, helpers.tryRoute(controllers.admin.dashboard.getAnalytics));
 
 	const multipart = require('connect-multiparty');
