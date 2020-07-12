@@ -20,15 +20,15 @@
 	"hsts.preload": "Разрешить предзагрузку заголовка HSTS",
 	"hsts.help": "Включите, чтобы установить заголовок HSTS для этого сайта, а также настроить его предзагрузку или использование поддоменов. Если вы не уверены, какими должны быть эти параметры, оставьте всё как есть. <a href=\"%1\">Дополнительная информация <i class=\"fa fa-external-link\"></i></a>",
 	"traffic-management": "Управление трафиком",
-	"traffic.help": "NodeBB uses a module that automatically denies requests in high-traffic situations. You can tune these settings here, although the defaults are a good starting point.",
+	"traffic.help": "NodeBB использует модуль, который автоматически отклоняет запросы в ситуациях с высоким трафиком. Вы можете настроить эти параметры здесь, хотя значения по умолчанию тоже оптимальны.",
 	"traffic.enable": "Включить управление трафиком",
 	"traffic.event-lag": "Порог лага Event Loop (в миллисекундах)",
 	"traffic.event-lag-help": "Уменьшение этого значение ускорит загрузку страниц, но также может привести к показу сообщения \"высокая нагрузка\" большому количеству участников. (Необходим перезапуск)",
 	"traffic.lag-check-interval": "Интервал проверки (в миллисекундах)",
 	"traffic.lag-check-interval-help": "Снижение значения этого параметра приведет увеличению чувствительности NodeBB к пикам нагрузки, но также может сделать эту проверку слишком чувствительной. (Необходим перезапуск)",
 
-	"sockets.settings": "WebSocket Settings",
-	"sockets.max-attempts": "Max Reconnection Attempts",
-	"sockets.default-placeholder": "Default: %1",
-	"sockets.delay": "Reconnection Delay"
+	"sockets.settings": "Настройки WebSocket'а",
+	"sockets.max-attempts": "Максимальное количество попыток переподключения",
+	"sockets.default-placeholder": "По умолчанию: %1",
+	"sockets.delay": "Задержка переподключения"
 }
