@@ -14,7 +14,6 @@ define('forum/unread', ['topicSelect', 'components', 'topicList'], function (top
 		app.enterRoom('unread_topics');
 
 		topicList.init('unread');
-		topicSelect.init();
 
 		updateUnreadTopicCount('/' + ajaxify.data.selectedFilter.url, ajaxify.data.topicCount);
 
