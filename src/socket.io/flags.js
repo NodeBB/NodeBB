@@ -62,4 +62,23 @@ SocketFlags.appendNote = async function (socket, data) {
 	return { notes: notes, history: history };
 };
 
+SocketFlags.deleteNote = async function (socket, data) {
+	if (!data || !(data.flagId && data.datetime)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	const note = await flags.getNote(data.flagId, data.datetime);
+	if (note.uid !== socket.uid) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	await flags.deleteNote(data.flagId, data.datetime);
+
+	const [notes, history] = await Promise.all([
+		flags.getNotes(data.flagId),
+		flags.getHistory(data.flagId),
+	]);
+	return { notes: notes, history: history };
+};
+
 require('../promisify')(SocketFlags);

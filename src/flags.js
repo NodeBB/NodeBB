@@ -228,6 +228,21 @@ Flags.validate = async function (payload) {
 
 Flags.getNotes = async function (flagId) {
 	let notes = await db.getSortedSetRevRangeWithScores('flag:' + flagId + ':notes', 0, -1);
+	notes = await modifyNotes(notes);
+	return notes;
+};
+
+Flags.getNote = async function (flagId, datetime) {
+	let notes = await db.getSortedSetRangeByScoreWithScores('flag:' + flagId + ':notes', 0, 1, datetime, datetime);
+	if (!notes.length) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	notes = await modifyNotes(notes);
+	return notes[0];
+};
+
+async function modifyNotes(notes) {
 	const uids = [];
 	notes = notes.map(function (note) {
 		const noteObj = JSON.parse(note.value);
@@ -245,6 +260,15 @@ Flags.getNotes = async function (flagId) {
 		note.content = validator.escape(note.content);
 		return note;
 	});
+}
+
+Flags.deleteNote = async function (flagId, datetime) {
+	const note = await db.getSortedSetRangeByScore('flag:' + flagId + ':notes', 0, 1, datetime, datetime);
+	if (!note.length) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	await db.sortedSetRemove('flag:' + flagId + ':notes', note[0]);
 };
 
 Flags.create = async function (type, id, uid, reason, timestamp) {

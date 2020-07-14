@@ -8,7 +8,7 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 		$('#state').val(ajaxify.data.state).removeAttr('disabled');
 		$('#assignee').val(ajaxify.data.assignee).removeAttr('disabled');
 
-		$('[data-action]').on('click', function () {
+		$('#content > div').on('click', '[data-action]', function () {
 			var action = this.getAttribute('data-action');
 			var uid = $(this).parents('[data-uid]').attr('data-uid');
 
@@ -74,6 +74,26 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 
 				case 'restore-post':
 					postAction('restore', ajaxify.data.target.pid, ajaxify.data.target.tid);
+					break;
+
+				case 'delete-note':
+					var datetime = this.closest('[data-datetime]').getAttribute('data-datetime');
+					bootbox.confirm('[[flags:delete-note-confirm]]', function (ok) {
+						if (ok) {
+							socket.emit('flags.deleteNote', {
+								flagId: ajaxify.data.flagId,
+								datetime: datetime,
+							}, function (err, payload) {
+								if (err) {
+									return app.alertError(err.message);
+								}
+
+								app.alertSuccess('[[flags:note-deleted]]');
+								Detail.reloadNotes(payload.notes);
+								Detail.reloadHistory(payload.history);
+							});
+						}
+					});
 					break;
 			}
 		});
