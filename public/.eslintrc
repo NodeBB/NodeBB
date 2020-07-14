@@ -21,6 +21,7 @@
 		"es6": false
 	},
 	"rules": {
+		"block-scoped-var": "off",
 		"no-dupe-class-members": "off",
 		"no-var": "off",
 		"object-shorthand": "off",

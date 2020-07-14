@@ -499,7 +499,11 @@ Flags.appendHistory = async function (flagId, uid, changeset) {
 };
 
 Flags.appendNote = async function (flagId, uid, note, datetime) {
+	if (datetime) {
+		await Flags.deleteNote(flagId, datetime);
+	}
 	datetime = datetime || Date.now();
+
 	const payload = JSON.stringify([uid, note]);
 	await db.sortedSetAdd('flag:' + flagId + ':notes', datetime, payload);
 	await Flags.appendHistory(flagId, uid, {
