@@ -1,3 +1,19 @@
+#### 1.14.3.1 (2020-07-15)
+
+##### Chores
+
+*  up theme (63fb2ad7)
+
+##### New Features
+
+*  logic for flag note editing, #8499 (14417209)
+*  logic for flag note deletion, #8499 (f85a45c7)
+
+##### Bug Fixes
+
+* **deps:**  update dependency nodebb-plugin-mentions to v2.9.1 (c54287fe)
+*  #8499 (65240a17)
+
 #### 1.14.1 (2020-07-08)
 
 ##### Chores
