@@ -1,11 +1,14 @@
 'use strict';
 
+const nconf = require('nconf');
 const validator = require('validator');
 
 const db = require('../../database');
+const user = require('../../user');
 const groups = require('../../groups');
 const meta = require('../../meta');
 const pagination = require('../../pagination');
+const events = require('../../events');
 
 const groupsController = module.exports;
 
@@ -60,3 +63,29 @@ async function getGroupNames() {
 	const groupNames = await db.getSortedSetRange('groups:createtime', 0, -1);
 	return groupNames.filter(name => name !== 'registered-users' && !groups.isPrivilegeGroup(name));
 }
+
+groupsController.getCSV = async function (req, res) {
+	const referer = req.headers.referer;
+
+	if (!referer || !referer.replace(nconf.get('url'), '').startsWith('/admin/manage/groups')) {
+		return res.status(403).send('[[error:invalid-origin]]');
+	}
+	await events.log({
+		type: 'getGroupCSV',
+		uid: req.uid,
+		ip: req.ip,
+	});
+	const groupName = req.params.groupname;
+	const members = (await groups.getMembersOfGroups([groupName]))[0];
+	const fields = ['email', 'username', 'uid'];
+	const userData = await user.getUsersFields(members, fields);
+	let csvContent = fields.join(',') + '\n';
+	csvContent += userData.reduce((memo, user) => {
+		memo += user.email + ',' + user.username + ',' + user.uid + '\n';
+		return memo;
+	}, '');
+
+	res.attachment(validator.escape(groupName) + '_members.csv');
+	res.setHeader('Content-Type', 'text/csv');
+	res.end(csvContent);
+};

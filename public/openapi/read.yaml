@@ -954,11 +954,30 @@ paths:
                     properties:
                       search_display:
                         type: string
+                      matchCount:
+                        type: number
+                      query:
+                        type: string
+                      uidQuery:
+                        type: string
+                      usernameQuery:
+                        type: string
+                      emailQuery:
+                        type: string
+                      ipQuery:
+                        type: string
+                      pageCount:
+                        type: number
+                      resultsPerPage:
+                        type: number
+                      timing:
+                        type: number
                       users:
                         type: array
                         items:
                           $ref: components/schemas/UserObject.yaml#/UserObjectACP
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
+                  - $ref: components/schemas/Pagination.yaml#/Pagination
   /api/admin/manage/users/latest:
     get:
       tags:
@@ -2252,6 +2271,26 @@ paths:
       responses:
         "200":
           description: "A CSV file containing all registered users"
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
+  /api/admin/groups/{groupname}/csv:
+    get:
+      tags:
+        - admin
+      summary: Get members of a group (.csv)
+      parameters:
+        - in: header
+          name: referer
+          schema:
+            type: string
+          required: true
+          example: /admin/manage/groups
+      responses:
+        "200":
+          description: "A CSV file containing all users in the group"
           content:
             text/csv:
               schema:

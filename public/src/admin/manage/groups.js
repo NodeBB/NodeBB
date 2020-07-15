@@ -52,7 +52,7 @@ define('admin/manage/groups', ['translator', 'benchpress'], function (translator
 			});
 		});
 
-		$('.groups-list').on('click', 'button[data-action]', function () {
+		$('.groups-list').on('click', '[data-action]', function () {
 			var el = $(this);
 			var action = el.attr('data-action');
 			var groupName = el.parents('tr[data-groupname]').attr('data-groupname');

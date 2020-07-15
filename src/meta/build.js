@@ -218,7 +218,7 @@ exports.build = function (targets, options, callback) {
 		},
 	], function (err) {
 		if (err) {
-			winston.error('[build] Encountered error during build step\n' + err.stack);
+			winston.error('[build] Encountered error during build step\n' + err.stack ? err.stack : err);
 			return callback(err);
 		}
 

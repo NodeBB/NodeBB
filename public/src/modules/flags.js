@@ -49,6 +49,11 @@ define('flags', function () {
 			});
 
 			flagModal.modal('show');
+			$(window).trigger('action:flag.showModal', {
+				modalEl: flagModal,
+				type: data.type,
+				id: data.id,
+			});
 
 			flagModal.find('#flag-reason-custom').on('keyup blur change', checkFlagButtonEnable);
 		});

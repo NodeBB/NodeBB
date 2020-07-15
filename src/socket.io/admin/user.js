@@ -178,6 +178,7 @@ async function deleteUsers(socket, uids, method) {
 }
 
 User.search = async function (socket, data) {
+	// TODO: deprecate
 	const searchData = await user.search({
 		query: data.query,
 		searchBy: data.searchBy,

@@ -6,6 +6,7 @@ app = window.app || {};
 app.isFocused = true;
 app.currentRoom = null;
 app.widgets = {};
+app.flags = {};
 app.cacheBuster = null;
 
 (function () {
@@ -117,6 +118,9 @@ app.cacheBuster = null;
 			headers: {
 				'x-csrf-token': config.csrf_token,
 			},
+			beforeSend: function () {
+				app.flags._logout = true;
+			},
 			success: function (data) {
 				$(window).trigger('action:app.loggedOut', data);
 				if (redirect) {
@@ -169,6 +173,10 @@ app.cacheBuster = null;
 	};
 
 	app.handleInvalidSession = function () {
+		if (app.flags._logout) {
+			return;
+		}
+
 		socket.disconnect();
 		bootbox.alert({
 			title: '[[error:invalid-session]]',

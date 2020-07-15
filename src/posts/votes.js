@@ -119,18 +119,17 @@ module.exports = function (Posts) {
 	}
 
 	async function unvote(pid, uid, command) {
-		const [owner, voteStatus, reputation] = await Promise.all([
+		const [owner, voteStatus] = await Promise.all([
 			Posts.getPostField(pid, 'uid'),
 			Posts.hasVoted(pid, uid),
-			user.getUserField(uid, 'reputation'),
 		]);
 
 		if (parseInt(uid, 10) === parseInt(owner, 10)) {
 			throw new Error('[[error:self-vote]]');
 		}
 
-		if (command === 'downvote' && reputation < meta.config['min:rep:downvote']) {
-			throw new Error('[[error:not-enough-reputation-to-downvote]]');
+		if (command === 'downvote') {
+			await checkDownvoteLimitation(pid, uid);
 		}
 
 		let hook;
@@ -157,6 +156,33 @@ module.exports = function (Posts) {
 		}
 
 		return await vote(voteStatus.upvoted ? 'downvote' : 'upvote', true, pid, uid);
+	}
+
+	async function checkDownvoteLimitation(pid, uid) {
+		const oneDay = 86400000;
+		const [reputation, targetUid, downvotedPids] = await Promise.all([
+			user.getUserField(uid, 'reputation'),
+			Posts.getPostField(pid, 'uid'),
+			db.getSortedSetRevRangeByScore(
+				'uid:' + uid + ':downvote', 0, -1, '+inf', Date.now() - oneDay
+			),
+		]);
+
+		if (reputation < meta.config['min:rep:downvote']) {
+			throw new Error('[[error:not-enough-reputation-to-downvote]]');
+		}
+
+		if (meta.config.downvotesPerDay && downvotedPids.length >= meta.config.downvotesPerDay) {
+			throw new Error('[[error:too-many-downvotes-today, ' + meta.config.downvotesPerDay + ']]');
+		}
+
+		if (meta.config.downvotesPerUserPerDay) {
+			const postData = await Posts.getPostsFields(downvotedPids, ['uid']);
+			const targetDownvotes = postData.filter(p => p.uid === targetUid).length;
+			if (targetDownvotes >= meta.config.downvotesPerUserPerDay) {
+				throw new Error('[[error:too-many-downvotes-today-user, ' + meta.config.downvotesPerUserPerDay + ']]');
+			}
+		}
 	}
 
 	async function vote(type, unvote, pid, uid) {

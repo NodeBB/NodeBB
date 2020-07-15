@@ -242,6 +242,42 @@ describe('Post\'s', function () {
 				});
 			});
 		});
+
+		it('should prevent downvoting more than total daily limit', async () => {
+			const oldValue = meta.config.downvotesPerDay;
+			meta.config.downvotesPerDay = 1;
+			let err;
+			const p1 = await topics.reply({
+				uid: voteeUid,
+				tid: topicData.tid,
+				content: 'raw content',
+			});
+			try {
+				await socketPosts.downvote({ uid: voterUid }, { pid: p1.pid, room_id: 'topic_1' });
+			} catch (_err) {
+				err = _err;
+			}
+			assert.equal(err.message, '[[error:too-many-downvotes-today, 1]]');
+			meta.config.downvotesPerDay = oldValue;
+		});
+
+		it('should prevent downvoting target user more than total daily limit', async () => {
+			const oldValue = meta.config.downvotesPerUserPerDay;
+			meta.config.downvotesPerUserPerDay = 1;
+			let err;
+			const p1 = await topics.reply({
+				uid: voteeUid,
+				tid: topicData.tid,
+				content: 'raw content',
+			});
+			try {
+				await socketPosts.downvote({ uid: voterUid }, { pid: p1.pid, room_id: 'topic_1' });
+			} catch (_err) {
+				err = _err;
+			}
+			assert.equal(err.message, '[[error:too-many-downvotes-today-user, 1]]');
+			meta.config.downvotesPerUserPerDay = oldValue;
+		});
 	});
 
 	describe('bookmarking', function () {
@@ -910,7 +946,7 @@ describe('Post\'s', function () {
 		it('should get pid index', function (done) {
 			socketPosts.getPidIndex({ uid: voterUid }, { pid: pid, tid: topicData.tid, topicPostSort: 'oldest_to_newest' }, function (err, index) {
 				assert.ifError(err);
-				assert.equal(index, 2);
+				assert.equal(index, 4);
 				done();
 			});
 		});
