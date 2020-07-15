@@ -1,3 +1,51 @@
+#### 1.14.2 (2020-07-15)
+
+##### Chores
+
+*  incrementing version number - v1.14.2 (1e4d683f)
+*  update changelog for v1.14.2 (488e69fd)
+*  up theme (63fb2ad7)
+*  incrementing version number - v1.14.2-beta.1 (9d1465d0)
+*  up theme (15aabfd3)
+*  up theme (599c5015)
+*  incrementing version number - v1.14.2-beta.0 (fca4ee31)
+*  incrementing version number - v1.14.1 (31203b16)
+*  update changelog for v1.14.1 (d4c16086)
+* **deps:**  update commitlint monorepo to v9.1.1 (0ca7e28a)
+
+##### New Features
+
+*  logic for flag note editing, #8499 (14417209)
+*  logic for flag note deletion, #8499 (f85a45c7)
+*  #8460, export groups members as csv (00d39fb3)
+*  pass connection options to socket.io-adapter-mongo (393f19b4)
+*  #8023, allow wildcard search for uid/email (3dcf5387)
+*  up composer (6235b31c)
+*  #8427, daily downvote limits (c513b88d)
+*  warn user if whitelisted tags are less than minTags (4adbf87c)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency nodebb-plugin-mentions to v2.9.1 (c54287fe)
+  *  update dependency nodebb-plugin-mentions to v2.9.0 (7730e7da)
+  *  update dependency nodebb-theme-persona to v10.1.62 (#8485) (4e9743ab)
+  *  update dependency nodebb-plugin-composer-default to v6.3.49 (#8479) (ab244ca6)
+*  #8499 (65240a17)
+*  #8500 (5e984d10)
+*  invalid session error modal during logout (2286ee2a)
+*  #8488 (b3a88331)
+*  category search in selector (46a66863)
+*  groups.updateCover (73ddf1cb)
+* **docs:**  bad changelog (60bf488f)
+
+##### Other Changes
+
+*  update changelog for v1.14.2" (e085c846)
+* flag.showModal on flag modal appearance (3379d65f)
+* NodeBB/NodeBB (2fba0a14)
+*  update changelog for v1.14.1" (26c74409)
+
 #### 1.14.1 (2020-07-08)
 
 ##### Chores
