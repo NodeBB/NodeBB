@@ -12,5 +12,9 @@
 	"min-rep-aboutme": "Minimum reputation to add \"About me\" to user profile",
 	"min-rep-signature": "Minimum reputation to add \"Signature\" to user profile",
 	"min-rep-profile-picture": "Minimum reputation to add \"Profile Picture\" to user profile",
-	"min-rep-cover-picture": "Minimum reputation to add \"Cover Picture\" to user profile"
+	"min-rep-cover-picture": "Minimum reputation to add \"Cover Picture\" to user profile",
+
+	"flags": "Flag Settings",
+	"flags.limit-per-target": "Maximum number of times something can be flagged",
+	"flags.limit-per-target-placeholder": "Default: 0"
 }

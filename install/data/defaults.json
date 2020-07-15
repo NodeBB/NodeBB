@@ -79,6 +79,7 @@
     "min:rep:website": 0,
     "min:rep:aboutme": 0,
     "min:rep:signature": 0,
+    "flags:limitPerTarget": 0,
     "notificationType_upvote": "notification",
     "notificationType_new-topic": "notification",
     "notificationType_new-reply": "notification",

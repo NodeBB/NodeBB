@@ -277,7 +277,7 @@ Flags.create = async function (type, id, uid, reason, timestamp) {
 		timestamp = Date.now();
 		doHistoryAppend = true;
 	}
-	const [flagExists, targetExists, canFlag, targetUid, targetCid] = await Promise.all([
+	const [flagExists, targetExists,, targetUid, targetCid] = await Promise.all([
 		// Sanity checks
 		Flags.exists(type, id, uid),
 		Flags.targetExists(type, id),
@@ -287,12 +287,11 @@ Flags.create = async function (type, id, uid, reason, timestamp) {
 		Flags.getTargetCid(type, id),
 	]);
 	if (flagExists) {
-		throw new Error('[[error:already-flagged]]');
+		throw new Error(`[[error:${type}-already-flagged]]`);
 	} else if (!targetExists) {
 		throw new Error('[[error:invalid-data]]');
-	} else if (!canFlag) {
-		throw new Error('[[error:no-privileges]]');
 	}
+
 	const flagId = await db.incrObjectField('global', 'nextFlagId');
 
 	await db.setObject('flag:' + flagId, {
@@ -307,6 +306,7 @@ Flags.create = async function (type, id, uid, reason, timestamp) {
 	await db.sortedSetAdd('flags:byReporter:' + uid, timestamp, flagId); // by reporter
 	await db.sortedSetAdd('flags:byType:' + type, timestamp, flagId);	// by flag type
 	await db.sortedSetAdd('flags:hash', flagId, [type, id, uid].join(':')); // save zset for duplicate checking
+	await db.sortedSetIncrBy('flags:byTarget', 1, [type, id].join(':'));	// by flag target (score is count)
 	await analytics.increment('flags'); // some fancy analytics
 
 	if (targetUid) {
@@ -336,13 +336,28 @@ Flags.exists = async function (type, id, uid) {
 };
 
 Flags.canFlag = async function (type, id, uid) {
-	if (type === 'user') {
-		return true;
+	const limit = meta.config['flags:limitPerTarget'];
+	if (limit > 0) {
+		const score = await db.sortedSetScore('flags:byTarget', `${type}:${id}`);
+		if (score >= limit) {
+			throw new Error(`[[error:${type}-flagged-too-many-times]]`);
+		}
 	}
-	if (type === 'post') {
-		return await privileges.posts.can('topics:read', id, uid);
+
+	const canRead = await privileges.posts.can('topics:read', id, uid);
+	switch (type) {
+		case 'user':
+			return true;
+
+		case 'post':
+			if (!canRead) {
+				throw new Error('[[error:no-privileges]]');
+			}
+			break;
+
+		default:
+			throw new Error('[[error:invalid-data]]');
 	}
-	throw new Error('[[error:invalid-data]]');
 };
 
 Flags.getTarget = async function (type, id, uid) {

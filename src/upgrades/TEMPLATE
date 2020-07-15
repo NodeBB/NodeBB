@@ -1,7 +1,6 @@
 'use strict';
 
 const db = require('../../database');
-const winston = require('winston');
 
 module.exports = {
 	// you should use spaces

@@ -5,7 +5,7 @@ const db = require('../../database');
 const batch = require('../../batch');
 
 module.exports = {
-	name: 'Re add deleted topics to topics:recent',
+	name: 'Re-add deleted topics to topics:recent',
 	timestamp: Date.UTC(2018, 9, 11),
 	method: async function () {
 		const progress = this.progress;
