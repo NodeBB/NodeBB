@@ -13,6 +13,11 @@ module.exports = function (SocketTopics) {
 			throw new Error('[[error:invalid-data]]');
 		}
 
+		const canMove = await privileges.categories.isAdminOrMod(data.cid, socket.uid);
+		if (!canMove) {
+			throw new Error('[[error:no-privileges]]');
+		}
+
 		const uids = await user.getUidsFromSet('users:online', 0, -1);
 
 		await async.eachLimit(data.tids, 10, async function (tid) {
