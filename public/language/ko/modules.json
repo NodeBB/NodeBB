@@ -58,6 +58,7 @@
     "composer.upload-file": "파일 업로드",
     "composer.zen_mode": "전체화면",
     "composer.select_category": "카테고리 선택",
+    "composer.textarea.placeholder": "Enter your post content here, drag and drop images",
     "bootbox.ok": "확인",
     "bootbox.cancel": "취소",
     "bootbox.confirm": "확인",

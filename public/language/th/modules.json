@@ -58,6 +58,7 @@
     "composer.upload-file": "อัพโหลดไฟล์",
     "composer.zen_mode": "เซ็นโหมด",
     "composer.select_category": "เลือกหมวดหมู่",
+    "composer.textarea.placeholder": "Enter your post content here, drag and drop images",
     "bootbox.ok": "ตกลง",
     "bootbox.cancel": "ยกเลิก",
     "bootbox.confirm": "ยืนยัน",

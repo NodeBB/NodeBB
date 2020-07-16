@@ -58,6 +58,7 @@
     "composer.upload-file": "Tải file lên",
     "composer.zen_mode": "Zen Mode",
     "composer.select_category": "Chọn một chuyên mục",
+    "composer.textarea.placeholder": "Enter your post content here, drag and drop images",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Huỷ bỏ",
     "bootbox.confirm": "Xác nhận",

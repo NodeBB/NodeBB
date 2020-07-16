@@ -58,6 +58,7 @@
     "composer.upload-file": "Augšupielādēt failu",
     "composer.zen_mode": "Zen režīms",
     "composer.select_category": "Izvēlēties kategoriju",
+    "composer.textarea.placeholder": "Enter your post content here, drag and drop images",
     "bootbox.ok": "Labi",
     "bootbox.cancel": "Atcelt",
     "bootbox.confirm": "Apstiprināt",

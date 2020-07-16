@@ -58,6 +58,7 @@
     "composer.upload-file": "Envoyer un fichier",
     "composer.zen_mode": "Mode Zen",
     "composer.select_category": "Sélectionnez une catégorie",
+    "composer.textarea.placeholder": "Saisissez le contenu de votre message ici, faites glisser et déposez les images",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Annuler",
     "bootbox.confirm": "Confirmer",

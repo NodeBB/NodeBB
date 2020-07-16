@@ -58,6 +58,7 @@
     "composer.upload-file": "上传文件",
     "composer.zen_mode": "无干扰模式",
     "composer.select_category": "选择一个版块",
+    "composer.textarea.placeholder": "Enter your post content here, drag and drop images",
     "bootbox.ok": "确认",
     "bootbox.cancel": "取消",
     "bootbox.confirm": "确认",

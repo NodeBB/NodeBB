@@ -58,6 +58,7 @@
     "composer.upload-file": "Upload File",
     "composer.zen_mode": "Zen Mode",
     "composer.select_category": "Select a category",
+    "composer.textarea.placeholder": "Enter your post content here, drag and drop images",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Annuller",
     "bootbox.confirm": "Bekræft",

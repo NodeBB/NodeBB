@@ -58,6 +58,7 @@
     "composer.upload-file": "Завантажити файл",
     "composer.zen_mode": "Режим Дзен",
     "composer.select_category": "Обрати категорію",
+    "composer.textarea.placeholder": "Enter your post content here, drag and drop images",
     "bootbox.ok": "ОК",
     "bootbox.cancel": "Скасувати",
     "bootbox.confirm": "Підтвердити",

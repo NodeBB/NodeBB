@@ -58,6 +58,7 @@
     "composer.upload-file": "העלה קובץ",
     "composer.zen_mode": "מצב זן",
     "composer.select_category": "בחר קטגוריה",
+    "composer.textarea.placeholder": "Enter your post content here, drag and drop images",
     "bootbox.ok": "אוקיי",
     "bootbox.cancel": "בטל",
     "bootbox.confirm": "אשר",

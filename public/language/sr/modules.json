@@ -58,6 +58,7 @@
     "composer.upload-file": "Отпреми датотеку",
     "composer.zen_mode": "Цео екран",
     "composer.select_category": "Изаберите категорију",
+    "composer.textarea.placeholder": "Enter your post content here, drag and drop images",
     "bootbox.ok": "ОК",
     "bootbox.cancel": "Откажи",
     "bootbox.confirm": "Потврди",

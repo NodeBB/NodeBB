@@ -58,6 +58,7 @@
     "composer.upload-file": "Wyślij plik",
     "composer.zen_mode": "Tryb Zen",
     "composer.select_category": "Wybierz kategorię",
+    "composer.textarea.placeholder": "Enter your post content here, drag and drop images",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Anuluj",
     "bootbox.confirm": "Potwierdź",

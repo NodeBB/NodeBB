@@ -58,6 +58,7 @@
     "composer.upload-file": "Prenesi datoteko",
     "composer.zen_mode": "Zen način",
     "composer.select_category": "Select a category",
+    "composer.textarea.placeholder": "Enter your post content here, drag and drop images",
     "bootbox.ok": "V redu",
     "bootbox.cancel": "Prekliči",
     "bootbox.confirm": "Potrdi",

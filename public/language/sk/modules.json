@@ -58,6 +58,7 @@
     "composer.upload-file": "Nahrať súbor",
     "composer.zen_mode": "Režim Zen",
     "composer.select_category": "Vyberte kategóriu",
+    "composer.textarea.placeholder": "Enter your post content here, drag and drop images",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Zrušiť",
     "bootbox.confirm": "Potvrdiť",

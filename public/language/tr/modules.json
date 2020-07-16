@@ -58,6 +58,7 @@
     "composer.upload-file": "Dosya Yükle",
     "composer.zen_mode": "Tam ekran modu",
     "composer.select_category": "Bir kategori seç",
+    "composer.textarea.placeholder": "İletinizi buraya giriniz, görselleri sürükleyip bırakabilirsiniz",
     "bootbox.ok": "Kabul",
     "bootbox.cancel": "İptal",
     "bootbox.confirm": "Onayla",

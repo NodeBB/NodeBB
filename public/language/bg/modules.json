@@ -58,6 +58,7 @@
     "composer.upload-file": "Качване на файл",
     "composer.zen_mode": "Режим Дзен",
     "composer.select_category": "Изберете категория",
+    "composer.textarea.placeholder": "Въведете съдържанието на публикацията си тук. Можете също да влачите и пускате снимки.",
     "bootbox.ok": "Добре",
     "bootbox.cancel": "Отказ",
     "bootbox.confirm": "Потвърждаване",

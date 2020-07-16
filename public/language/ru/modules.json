@@ -58,6 +58,7 @@
     "composer.upload-file": "Загрузить файл",
     "composer.zen_mode": "Полноэкранный режим",
     "composer.select_category": "Выберите категорию",
+    "composer.textarea.placeholder": "Введите содержание вашего сообщения здесь, перетащите изображения",
     "bootbox.ok": "ОК",
     "bootbox.cancel": "Отмена",
     "bootbox.confirm": "Подтвердить",

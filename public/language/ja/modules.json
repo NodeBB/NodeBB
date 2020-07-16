@@ -58,6 +58,7 @@
     "composer.upload-file": "ファイルをアップロード",
     "composer.zen_mode": "Zen モード",
     "composer.select_category": "カテゴリを選択",
+    "composer.textarea.placeholder": "Enter your post content here, drag and drop images",
     "bootbox.ok": "OK",
     "bootbox.cancel": "キャンセル",
     "bootbox.confirm": "確認",

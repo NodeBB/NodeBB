@@ -58,6 +58,7 @@
     "composer.upload-file": "Fájl feltöltése",
     "composer.zen_mode": "Zen mód",
     "composer.select_category": "Kategória választása",
+    "composer.textarea.placeholder": "Enter your post content here, drag and drop images",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Mégse",
     "bootbox.confirm": "Megerősítés",
