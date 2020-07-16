@@ -5,7 +5,13 @@ define('forum/flags/list', ['components', 'Chart'], function (components, Chart)
 
 	Flags.init = function () {
 		Flags.enableFilterForm();
-		Flags.handleGraphs();
+
+		var graphWrapper = $('#flags-daily-wrapper');
+		var graphFooter = graphWrapper.siblings('.panel-footer');
+		$('#flags-daily-wrapper').one('shown.bs.collapse', function () {
+			Flags.handleGraphs();
+		});
+		graphFooter.on('click', graphWrapper.collapse.bind(graphWrapper, 'toggle'));
 	};
 
 	Flags.enableFilterForm = function () {
