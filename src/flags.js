@@ -305,47 +305,58 @@ Flags.create = async function (type, id, uid, reason, timestamp) {
 	// If the flag already exists, just add the report
 	if (targetFlagged) {
 		const flagId = await Flags.getFlagIdByTarget(type, id);
-		await Flags.addReport(flagId, uid, reason, timestamp);
+		await Promise.all([
+			Flags.addReport(flagId, uid, reason, timestamp),
+			Flags.update(flagId, uid, { state: 'open' }),
+		]);
 
 		return await Flags.get(flagId);
 	}
 
 	const flagId = await db.incrObjectField('global', 'nextFlagId');
+	const batched = [];
 
-	await db.setObject('flag:' + flagId, {
-		flagId: flagId,
-		type: type,
-		targetId: id,
-		datetime: timestamp,
-	});
-	await Flags.addReport(flagId, uid, reason, timestamp);
-	await db.sortedSetAdd('flags:datetime', timestamp, flagId); // by time, the default
-	await db.sortedSetAdd('flags:byType:' + type, timestamp, flagId);	// by flag type
-	await db.sortedSetAdd('flags:hash', flagId, [type, id, uid].join(':')); // save zset for duplicate checking
-	await db.sortedSetIncrBy('flags:byTarget', 1, [type, id].join(':'));	// by flag target (score is count)
-	await analytics.increment('flags'); // some fancy analytics
+	batched.push(
+		db.setObject.bind(db, 'flag:' + flagId, {
+			flagId: flagId,
+			type: type,
+			targetId: id,
+			datetime: timestamp,
+		}),
+		Flags.addReport.bind(Flags, flagId, uid, reason, timestamp),
+		db.sortedSetAdd.bind(db, 'flags:datetime', timestamp, flagId), // by time, the default
+		db.sortedSetAdd.bind(db, 'flags:byType:' + type, timestamp, flagId),	// by flag type
+		db.sortedSetAdd.bind(db, 'flags:hash', flagId, [type, id, uid].join(':')), // save zset for duplicate checking
+		db.sortedSetIncrBy.bind(db, 'flags:byTarget', 1, [type, id].join(':')),	// by flag target (score is count)
+		analytics.increment.bind(analytics, 'flags') // some fancy analytics
+	);
 
 	if (targetUid) {
-		await db.sortedSetAdd('flags:byTargetUid:' + targetUid, timestamp, flagId); // by target uid
+		batched.push(db.sortedSetAdd.bind(db, 'flags:byTargetUid:' + targetUid, timestamp, flagId)); // by target uid
 	}
 
 	if (targetCid) {
-		await db.sortedSetAdd('flags:byCid:' + targetCid, timestamp, flagId); // by target cid
+		batched.push(db.sortedSetAdd.bind(db, 'flags:byCid:' + targetCid, timestamp, flagId)); // by target cid
 	}
 
 	if (type === 'post') {
-		await db.sortedSetAdd('flags:byPid:' + id, timestamp, flagId);	// by target pid
-		if (targetUid) {
-			await user.incrementUserFlagsBy(targetUid, 1);
-		}
+		batched.push(
+			db.sortedSetAdd.bind(db, 'flags:byPid:' + id, timestamp, flagId),	// by target pid
+			posts.setPostField.bind(posts, id, 'flagId', flagId)
+		);
 
-		await posts.setPostField(id, 'flagId', flagId);
+		if (targetUid) {
+			batched.push(user.incrementUserFlagsBy.bind(user, targetUid, 1));
+		}
 	} else if (type === 'user') {
-		await user.setUserField(id, 'flagId', flagId);
+		batched.push(user.setUserField.bind(user, id, 'flagId', flagId));
 	}
 
+	// Run all the database calls in one single batched call...
+	await Promise.all(batched.map(async method => await method()));
+
 	if (doHistoryAppend) {
-		await Flags.update(flagId, uid, { state: 'open' });
+		Flags.update(flagId, uid, { state: 'open' });
 	}
 
 	return await Flags.get(flagId);
