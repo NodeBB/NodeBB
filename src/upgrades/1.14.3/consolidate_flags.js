@@ -13,22 +13,30 @@ module.exports = {
 
 		let flags = await db.getSortedSetRange('flags:datetime', 0, -1);
 		flags = flags.map(flagId => `flag:${flagId}`);
-		flags = await db.getObjectsFields(flags, ['flagId', 'type', 'targetId']);
+		flags = await db.getObjectsFields(flags, ['flagId', 'type', 'targetId', 'uid', 'description', 'datetime']);
 		progress.total = flags.length;
 
 		await batch.processArray(flags, async function (subset) {
 			progress.incr(subset.length);
 
 			await Promise.all(subset.map(async (flagObj) => {
+				const methods = [];
 				switch (flagObj.type) {
 					case 'post':
-						await posts.setPostField(flagObj.targetId, 'flagId', flagObj.flagId);
+						methods.push(posts.setPostField.bind(posts, flagObj.targetId, 'flagId', flagObj.flagId));
 						break;
 
 					case 'user':
-						await user.setUserField(flagObj.targetId, 'flagId', flagObj.flagId);
+						methods.push(user.setUserField.bind(user, flagObj.targetId, 'flagId', flagObj.flagId));
 						break;
 				}
+
+				methods.push(
+					db.sortedSetAdd.bind(db, `flag:${flagObj.flagId}:reports`, flagObj.datetime, flagObj.description),
+					db.sortedSetAdd.bind(db, `flag:${flagObj.flagId}:reporters`, flagObj.datetime, flagObj.uid)
+				);
+
+				await Promise.all(methods.map(async method => method()));
 			}));
 		}, {
 			progress: progress,

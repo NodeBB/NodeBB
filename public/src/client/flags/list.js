@@ -6,6 +6,11 @@ define('forum/flags/list', ['components', 'Chart'], function (components, Chart)
 	Flags.init = function () {
 		Flags.enableFilterForm();
 
+		components.get('flags/list').on('click', '[data-flag-id]', function () {
+			var flagId = this.getAttribute('data-flag-id');
+			ajaxify.go('flags/' + flagId);
+		});
+
 		var graphWrapper = $('#flags-daily-wrapper');
 		var graphFooter = graphWrapper.siblings('.panel-footer');
 		$('#flags-daily-wrapper').one('shown.bs.collapse', function () {

@@ -1,8 +1,7 @@
 {
 	"state": "State",
-	"reporter": "Reporter",
-	"reported-at": "Reported At",
-	"description": "Description",
+	"reports": "Reports",
+	"first-reported": "First Reported",
 	"no-flags": "Hooray! No flags found.",
 	"assignee": "Assignee",
 	"update": "Update",
