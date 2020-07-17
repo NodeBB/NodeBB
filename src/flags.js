@@ -105,6 +105,7 @@ Flags.get = async function (flagId) {
 		notes: notes,
 		reports: reports,
 	};
+
 	const data = await plugins.fireHook('filter:flags.get', {
 		flag: flagObj,
 	});
