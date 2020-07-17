@@ -364,8 +364,8 @@ Flags.create = async function (type, id, uid, reason, timestamp) {
 
 Flags.getReports = async function (flagId) {
 	const [reports, reporterUids] = await Promise.all([
-		db.getSortedSetRangeWithScores(`flag:${flagId}:reports`, 0, -1),
-		db.getSortedSetRange(`flag:${flagId}:reporters`, 0, -1),
+		db.getSortedSetRevRangeWithScores(`flag:${flagId}:reports`, 0, -1),
+		db.getSortedSetRevRange(`flag:${flagId}:reporters`, 0, -1),
 	]);
 
 	await Promise.all(reports.map(async (report, idx) => {
