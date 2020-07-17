@@ -3046,6 +3046,9 @@ paths:
                     type: boolean
                   downvoted:
                     type: boolean
+                  flagId:
+                    type: number
+                    description: The flag identifier, if this particular post has been flagged before
   "/api/topic/tid/{id}":
     get:
       tags:
@@ -3692,6 +3695,9 @@ paths:
                               type: boolean
                             display_post_menu:
                               type: boolean
+                            flagId:
+                              type: number
+                              description: The flag identifier, if this particular post has been flagged before
                       category:
                         $ref: components/schemas/CategoryObject.yaml#/CategoryObject
                       tagWhitelist:
@@ -4745,6 +4751,9 @@ paths:
                           properties:
                             state:
                               type: string
+                            heat:
+                              type: number
+                              description: The number of reports that make up this flag
                             flagId:
                               type: number
                             type:
@@ -4753,34 +4762,8 @@ paths:
                               oneOf:
                                 - type: string
                                 - type: number
-                            description:
-                              type: string
-                            uid:
-                              type: number
-                              description: A user identifier
                             datetime:
                               type: number
-                            reporter:
-                              type: object
-                              properties:
-                                username:
-                                  type: string
-                                  description: A friendly name for a given user account
-                                picture:
-                                  nullable: true
-                                  type: string
-                                icon:bgColor:
-                                  type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This
-                                    value is used in conjunction with
-                                    `icon:text` for the user's auto-generated
-                                    icon
-                                  example: "#f44336"
-                                icon:text:
-                                  type: string
-                                  description: A single-letter representation of a username. This is used in the
-                                    auto-generated icon given to users without
-                                    an avatar
                             labelClass:
                               type: string
                             target_readable:
@@ -4843,11 +4826,6 @@ paths:
                         type: string
                       targetId:
                         type: number
-                      description:
-                        type: string
-                      uid:
-                        type: number
-                        description: A user identifier
                       datetime:
                         type: number
                       datetimeISO:
@@ -4963,34 +4941,45 @@ paths:
                                     `icon:text` for the user's auto-generated
                                     icon
                                   example: "#f44336"
-                      reporter:
-                        type: object
-                        properties:
-                          username:
-                            type: string
-                            description: A friendly name for a given user account
-                          userslug:
-                            type: string
-                            description: An URL-safe variant of the username (i.e. lower-cased, spaces
-                              removed, etc.)
-                          picture:
-                            nullable: true
-                          reputation:
-                            type: number
-                          uid:
-                            type: number
-                            description: A user identifier
-                          icon:text:
-                            type: string
-                            description: A single-letter representation of a username. This is used in the
-                              auto-generated icon given to users without an
-                              avatar
-                          icon:bgColor:
-                            type: string
-                            description: A six-character hexadecimal colour code assigned to the user. This
-                              value is used in conjunction with `icon:text` for
-                              the user's auto-generated icon
-                            example: "#f44336"
+                      reports:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            value:
+                              type: string
+                            timestamp:
+                              type: number
+                            timestampISO:
+                              type: string
+                            reporter:
+                              type: object
+                              properties:
+                                username:
+                                  type: string
+                                  description: A friendly name for a given user account
+                                userslug:
+                                  type: string
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
+                                picture:
+                                  nullable: true
+                                reputation:
+                                  type: number
+                                uid:
+                                  type: number
+                                  description: A user identifier
+                                icon:text:
+                                  type: string
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without an
+                                    avatar
+                                icon:bgColor:
+                                  type: string
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with `icon:text` for
+                                    the user's auto-generated icon
+                                  example: "#f44336"
                       type_path:
                         type: string
                       assignees:

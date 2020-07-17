@@ -98,6 +98,7 @@ Flags.get = async function (flagId) {
 		state: 'open',
 		assignee: null,
 		...base,
+		datetimeISO: utils.toISOString(base.datetime),
 		target_readable: base.type.charAt(0).toUpperCase() + base.type.slice(1) + ' ' + base.targetId,
 		target: await Flags.getTarget(base.type, base.targetId, 0),
 		history: history,
@@ -167,7 +168,6 @@ Flags.list = async function (filters, uid) {
 		flagObj.labelClass = Flags._constants.state_class[flagObj.state];
 
 		return Object.assign(flagObj, {
-			description: validator.escape(String(flagObj.description)),
 			target_readable: flagObj.type.charAt(0).toUpperCase() + flagObj.type.slice(1) + ' ' + flagObj.targetId,
 			datetimeISO: utils.toISOString(flagObj.datetime),
 		});
