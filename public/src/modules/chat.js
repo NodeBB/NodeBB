@@ -91,7 +91,9 @@ define('chat', [
 
 			if (modal.is(':visible')) {
 				taskbar.updateActive(modal.attr('data-uuid'));
-				ChatsMessages.scrollToBottom(modal.find('.chat-content'));
+				if (ChatsMessages.isAtBottom(modal.find('.chat-content'))) {
+					ChatsMessages.scrollToBottom(modal.find('.chat-content'));
+				}
 			} else if (!ajaxify.data.template.chats) {
 				module.toggleNew(modal.attr('data-uuid'), true, true);
 			}
@@ -239,6 +241,7 @@ define('chat', [
 				Chats.createAutoComplete(chatModal.find('[component="chat/input"]'));
 
 				Chats.addScrollHandler(chatModal.attr('data-roomid'), data.uid, chatModal.find('.chat-content'));
+				Chats.addScrollBottomHandler(chatModal.find('.chat-content'));
 
 				Chats.addCharactersLeftHandler(chatModal);
 				Chats.addIPHandler(chatModal);
