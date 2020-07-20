@@ -1,9 +1,13 @@
+<div class="row">
+	<div class="col-lg-3 pull-right">
+		<div class="input-group">
+			<input type="text" class="form-control" placeholder="[[admin/manage/groups:search-placeholder]]" id="group-search">
+			<span class="input-group-addon search-button"><i class="fa fa-search"></i></span>
+		</div>
+	</div>
+</div>
 <div class="row groups">
 	<div class="col-xs-12">
-		<div>
-			<input id="group-search" type="text" class="form-control" placeholder="[[admin/manage/groups:search-placeholder]]" />
-		</div>
-
 		<table class="table table-striped groups-list">
 			<thead>
 				<tr>
