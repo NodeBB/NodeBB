@@ -278,7 +278,7 @@
 			}
 
 			if (namespace && !key) {
-				warn('Missing key in translation token "' + name + '" lang: ' + self.lang);
+				warn('Missing key in translation token "' + name + '" for language "' + self.lang + '"');
 				return Promise.resolve('[[' + namespace + ']]');
 			}
 
@@ -286,7 +286,7 @@
 			return translation.then(function (translated) {
 				// check if the translation is missing first
 				if (!translated) {
-					warn('Missing translation "' + name + '" lang: ' + self.lang);
+					warn('Missing translation "' + name + '" for language "' + self.lang + '"');
 					return backup || key;
 				}
 
