@@ -2195,10 +2195,25 @@ paths:
                                 load:
                                   type: string
                                   description: CPU load
+                            nodebb:
+                              type: object
+                              properties:
+                                isPrimary:
+                                  type: boolean
+                                isCluster:
+                                  type: boolean
+                                runJobs:
+                                  type: boolean
+                                  nullable: true
+                                jobsDisabled:
+                                  type: boolean
+                                  nullable: true
                             git:
                               type: object
                               properties:
                                 hash:
+                                  type: string
+                                hashShort:
                                   type: string
                                 branch:
                                   type: string
