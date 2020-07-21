@@ -22,31 +22,38 @@ define('admin/manage/post-queue', function () {
 			return false;
 		});
 
-		$('.posts-list').on('click', '.post-content', function () {
+		handleContentEdit('.post-content', '.post-content-editable', 'textarea');
+		handleContentEdit('.topic-title', '.topic-title-editable', 'input');
+	};
+
+	function handleContentEdit(displayClass, editableClass, inputSelector) {
+		$('.posts-list').on('click', displayClass, function () {
 			var el = $(this);
 			el.addClass('hidden');
-			var textareaParent = el.parent().find('.post-content-editable');
-			textareaParent.removeClass('hidden').find('textarea').focus();
+			var inputEl = el.parent().find(editableClass);
+			inputEl.removeClass('hidden').find(inputSelector).focus();
 		});
 
-		$('.posts-list').on('blur', '.post-content-editable textarea', function () {
+		$('.posts-list').on('blur', editableClass + ' ' + inputSelector, function () {
 			var textarea = $(this);
-			var preview = textarea.parent().parent().find('.post-content');
+			var preview = textarea.parent().parent().find(displayClass);
 			var id = textarea.parents('[data-id]').attr('data-id');
+			var titleEdit = displayClass === '.topic-title';
 
 			socket.emit('posts.editQueuedContent', {
 				id: id,
-				content: textarea.val(),
+				title: titleEdit ? textarea.val() : undefined,
+				content: titleEdit ? undefined : textarea.val(),
 			}, function (err, data) {
 				if (err) {
 					return app.alertError(err);
 				}
-				preview.html(data.postData.content);
+				preview.html(titleEdit ? data.postData.title : data.postData.content);
 				textarea.parent().addClass('hidden');
 				preview.removeClass('hidden');
 			});
 		});
-	};
+	}
 
 	return PostQueue;
 });

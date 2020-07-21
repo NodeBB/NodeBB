@@ -19,7 +19,7 @@
 						<tr>
 							<th>[[admin/manage/post-queue:user]]</th>
 							<th>[[admin/manage/post-queue:category]]</th>
-							<th>[[admin/manage/post-queue:title]]</th>
+							<th>[[admin/manage/post-queue:title]] <i class="fa fa-info-circle" data-toggle="tooltip" title="[[admin/manage/post-queue:content-editable]]"></i></th>
 							<th>[[admin/manage/post-queue:content]] <i class="fa fa-info-circle" data-toggle="tooltip" title="[[admin/manage/post-queue:content-editable]]"></i></th>
 							<th>[[admin/manage/post-queue:posted]]</th>
 							<th></th>
@@ -44,9 +44,14 @@
 								<!-- ENDIF posts.data.tid -->
 								{posts.data.title}
 							</td>
+							{{{if !posts.data.tid}}}
+							<td class="col-md-2 topic-title-editable hidden">
+								<input class="form-control" type="text" value="{posts.data.title}"/>
+							</td>
+							{{{end}}}
 							<td class="col-md-5 post-content">{posts.data.content}</td>
 							<td class="col-md-5 post-content-editable hidden">
-								<textarea>{posts.data.rawContent}</textarea>
+								<textarea class="form-control">{posts.data.rawContent}</textarea>
 							</td>
 							<td class="col-md-1">
 								<span class="timeago" title={posts.data.timestampISO}></span>

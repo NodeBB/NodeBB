@@ -174,10 +174,10 @@ async function acceptOrReject(method, socket, data) {
 }
 
 SocketPosts.editQueuedContent = async function (socket, data) {
-	if (!data || !data.id || !data.content) {
+	if (!data || !data.id || (!data.content && !data.title)) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	await posts.editQueuedContent(socket.uid, data.id, data.content);
+	await posts.editQueuedContent(socket.uid, data.id, data.content, data.title);
 	return await plugins.fireHook('filter:parse.post', { postData: data });
 };
 

@@ -147,7 +147,7 @@ module.exports = function (Posts) {
 		socketHelpers.notifyNew(data.uid, 'newPost', result);
 	}
 
-	Posts.editQueuedContent = async function (uid, id, content) {
+	Posts.editQueuedContent = async function (uid, id, content, title) {
 		const canEditQueue = await Posts.canEditQueue(uid, id);
 		if (!canEditQueue) {
 			throw new Error('[[error:no-privileges]]');
@@ -156,7 +156,12 @@ module.exports = function (Posts) {
 		if (!data) {
 			return;
 		}
-		data.data.content = content;
+		if (content !== undefined) {
+			data.data.content = content;
+		}
+		if (title !== undefined) {
+			data.data.title = title;
+		}
 		await db.setObjectField('post:queue:' + id, 'data', JSON.stringify(data.data));
 	};
 
