@@ -138,7 +138,7 @@ before(async function () {
 	nconf.set('socket.io:origins', '*:*');
 	nconf.set('version', packageInfo.version);
 	nconf.set('runJobs', false);
-	nconf.set('jobsDisabled', true);
+	nconf.set('jobsDisabled', false);
 
 	await meta.dependencies.check();
 
