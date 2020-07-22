@@ -178,7 +178,10 @@ SocketPosts.editQueuedContent = async function (socket, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	await posts.editQueuedContent(socket.uid, data.id, data.content, data.title);
-	return await plugins.fireHook('filter:parse.post', { postData: data });
+	if (data.content) {
+		return await plugins.fireHook('filter:parse.post', { postData: data });
+	}
+	return { postData: data };
 };
 
 require('../promisify')(SocketPosts);
