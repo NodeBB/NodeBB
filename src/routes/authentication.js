@@ -67,7 +67,7 @@ Auth.reloadRoutes = async function (params) {
 	loginStrategies.forEach(function (strategy) {
 		if (strategy.url) {
 			router.get(strategy.url, Auth.middleware.applyCSRF, function (req, res, next) {
-				req.session.ssoState = req.csrfToken();
+				req.session.ssoState = req.csrfToken && req.csrfToken();
 				passport.authenticate(strategy.name, {
 					scope: strategy.scope,
 					prompt: strategy.prompt || undefined,
