@@ -123,14 +123,14 @@ Digest.send = async function (data) {
 
 		// Fix relative paths in topic data
 		topicsData = topicsData.map(function (topicObj) {
-			const user = topicObj.hasOwnProperty('teaser') && topicObj.teaser !== undefined ? topicObj.teaser.user : topicObj.user;
+			const user = topicObj.hasOwnProperty('teaser') && topicObj.teaser && topicObj.teaser.user ? topicObj.teaser.user : topicObj.user;
 			if (user && user.picture && utils.isRelativeUrl(user.picture)) {
 				user.picture = nconf.get('base_url') + user.picture;
 			}
 			return topicObj;
 		});
 		emailsSent += 1;
-		const now = Date.now();
+		const now = new Date();
 		try {
 			await emailer.send('digest', userObj.uid, {
 				subject: '[[email:digest.subject, ' + (now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate()) + ']]',
@@ -142,7 +142,7 @@ Digest.send = async function (data) {
 				showUnsubscribe: true,
 			});
 		} catch (err) {
-			winston.error('[user/jobs] Could not send digest email', err.stack);
+			winston.error('[user/jobs] Could not send digest email\n' + err.stack);
 		}
 
 		if (data.interval !== 'alltime') {
