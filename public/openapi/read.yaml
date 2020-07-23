@@ -5056,6 +5056,35 @@ paths:
                     properties:
                       title:
                         type: string
+                      allCategories:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            bgColor:
+                              type: string
+                            cid:
+                              type: number
+                            color:
+                              type: string
+                            disabled:
+                              type: number
+                            disabledClass:
+                              type: boolean
+                            icon:
+                              type: string
+                            imageClass:
+                              type: string
+                            level:
+                              type: string
+                            link:
+                              type: string
+                            name:
+                              type: string
+                            parentCid:
+                              type: number
+                            slug:
+                              type: string
                       posts:
                         type: array
                         items:
