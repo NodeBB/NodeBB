@@ -113,6 +113,11 @@
 				<option value="{groupNames.encodedName}" <!-- IF groupNames.selected -->selected<!-- ENDIF groupNames.selected -->>{groupNames.displayName}</option>
 				<!-- END groupNames -->
 			</select>
+			<br />
+			<div class="well">
+				<strong class="pull-left">[[admin/manage/privileges:edit-privileges]]</strong><br />
+				<!-- IMPORT partials/category-selector.tpl -->
+			</div>
 		</div>
 	</form>
 </div>

@@ -88,6 +88,13 @@ define('admin/manage/group', [
 			});
 		});
 
+		$('[component="category/list"] [data-cid]').on('click', function () {
+			var cid = $(this).attr('data-cid');
+			if (cid) {
+				ajaxify.go('admin/manage/privileges/' + cid);
+			}
+		});
+
 		colorpicker.enable(changeGroupLabelColor, function (hsb, hex) {
 			groupLabelPreview.css('background-color', '#' + hex);
 		});
