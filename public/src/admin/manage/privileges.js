@@ -6,7 +6,7 @@ define('admin/manage/privileges', [
 	'benchpress',
 	'categorySelector',
 ], function (autocomplete, translator, Benchpress, categorySelector) {
-	var	Privileges = {};
+	var Privileges = {};
 
 	var cid;
 
@@ -21,6 +21,8 @@ define('admin/manage/privileges', [
 		});
 
 		Privileges.setupPrivilegeTable();
+
+		highlightRow();
 	};
 
 	Privileges.setupPrivilegeTable = function () {
@@ -79,7 +81,7 @@ define('admin/manage/privileges', [
 		Privileges.exposeAssumedPrivileges();
 	};
 
-	Privileges.refreshPrivilegeTable = function () {
+	Privileges.refreshPrivilegeTable = function (groupToHighlight) {
 		socket.emit('admin.categories.getPrivilegeSettings', cid, function (err, privileges) {
 			if (err) {
 				return app.alertError(err.message);
@@ -92,6 +94,10 @@ define('admin/manage/privileges', [
 				translator.translate(html, function (html) {
 					$('.privilege-table-container').html(html);
 					Privileges.exposeAssumedPrivileges();
+
+					if (groupToHighlight) {
+						$('[data-group-name="' + groupToHighlight + '"]').addClass('selected');
+					}
 				});
 			});
 		});
@@ -182,24 +188,7 @@ define('admin/manage/privileges', [
 			inputEl.focus();
 
 			autocomplete.group(inputEl, function (ev, ui) {
-				var defaultPrivileges;
-				if (ajaxify.data.url === '/admin/manage/privileges/admin') {
-					defaultPrivileges = ['groups:admin:dashboard'];
-				} else {
-					defaultPrivileges = cid ? ['groups:find', 'groups:read', 'groups:topics:read'] : ['groups:chat'];
-				}
-
-				socket.emit('admin.categories.setPrivilege', {
-					cid: isNaN(cid) ? 0 : cid,
-					privilege: defaultPrivileges,
-					set: true,
-					member: ui.item.group.name,
-				}, function (err) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-
-					Privileges.refreshPrivilegeTable();
+				addGroupToCategory(ui.item.group.name, function () {
 					modal.modal('hide');
 				});
 			});
@@ -234,6 +223,43 @@ define('admin/manage/privileges', [
 			app.alertSuccess('[[admin/manage/categories:privileges.copy-success]]');
 		});
 	};
+
+	function highlightRow() {
+		var params = utils.params();
+		if (params.group) {
+			var el = $('[data-group-name="' + params.group + '"]');
+			if (el.length) {
+				return el.addClass('selected');
+			}
+
+			addGroupToCategory(params.group);
+		}
+	}
+
+	function addGroupToCategory(group, cb) {
+		var defaultPrivileges;
+		if (ajaxify.data.url === '/admin/manage/privileges/admin') {
+			defaultPrivileges = ['groups:admin:dashboard'];
+		} else {
+			defaultPrivileges = cid ? ['groups:find', 'groups:read', 'groups:topics:read'] : ['groups:chat'];
+		}
+
+		socket.emit('admin.categories.setPrivilege', {
+			cid: isNaN(cid) ? 0 : cid,
+			privilege: defaultPrivileges,
+			set: true,
+			member: group,
+		}, function (err) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
+			Privileges.refreshPrivilegeTable(group);
+			if (typeof cb === 'function') {
+				cb();
+			}
+		});
+	}
 
 	return Privileges;
 });

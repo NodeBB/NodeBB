@@ -93,7 +93,7 @@ define('admin/manage/group', [
 			var cid = $(this).attr('data-cid');
 
 			if (cid) {
-				var url = 'admin/manage/privileges/' + cid;
+				var url = 'admin/manage/privileges/' + cid + '?group=' + ajaxify.data.group.name;
 				if (app.flags && app.flags._unsaved === true) {
 					translator.translate('[[global:unsaved-changes]]', function (text) {
 						bootbox.confirm(text, function (navigate) {
