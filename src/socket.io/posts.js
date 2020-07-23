@@ -166,7 +166,7 @@ SocketPosts.reject = async function (socket, data) {
 };
 
 async function acceptOrReject(method, socket, data) {
-	const canEditQueue = await posts.canEditQueue(socket.uid, data.id);
+	const canEditQueue = await posts.canEditQueue(socket.uid, data);
 	if (!canEditQueue) {
 		throw new Error('[[error:no-privileges]]');
 	}
@@ -174,10 +174,10 @@ async function acceptOrReject(method, socket, data) {
 }
 
 SocketPosts.editQueuedContent = async function (socket, data) {
-	if (!data || !data.id || (!data.content && !data.title)) {
+	if (!data || !data.id || (!data.content && !data.title && !data.cid)) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	await posts.editQueuedContent(socket.uid, data.id, data.content, data.title);
+	await posts.editQueuedContent(socket.uid, data);
 	if (data.content) {
 		return await plugins.fireHook('filter:parse.post', { postData: data });
 	}

@@ -18,7 +18,7 @@
 					<thead>
 						<tr>
 							<th>[[admin/manage/post-queue:user]]</th>
-							<th>[[admin/manage/post-queue:category]]</th>
+							<th>[[admin/manage/post-queue:category]] <i class="fa fa-info-circle" data-toggle="tooltip" title="[[admin/manage/post-queue:content-editable]]"></i></th>
 							<th>[[admin/manage/post-queue:title]] <i class="fa fa-info-circle" data-toggle="tooltip" title="[[admin/manage/post-queue:content-editable]]"></i></th>
 							<th>[[admin/manage/post-queue:content]] <i class="fa fa-info-circle" data-toggle="tooltip" title="[[admin/manage/post-queue:content-editable]]"></i></th>
 							<th>[[admin/manage/post-queue:posted]]</th>
@@ -35,8 +35,8 @@
 								{posts.user.username}
 								<!-- ENDIF posts.user.userslug -->
 							</td>
-							<td class="col-md-2">
-								<a href="{config.relative_path}/category/{posts.category.slug}"><!-- IF posts.categiry.icon --><span class="fa-stack"><i style="color: {posts.category.bgColor};" class="fa fa-circle fa-stack-2x"></i><i style="color: {posts.category.color};" class="fa fa-stack-1x fa-fw {posts.category.icon}"></i></span><!-- ENDIF posts.category.icon --> {posts.category.name}</a>
+							<td class="col-md-2 topic-category" {{{if posts.data.cid}}}data-editable="editable"{{{end}}}">
+								<a href="{config.relative_path}/category/{posts.category.slug}"><!-- IF posts.category.icon --><span class="fa-stack"><i style="color: {posts.category.bgColor};" class="fa fa-circle fa-stack-2x"></i><i style="color: {posts.category.color};" class="fa fa-stack-1x fa-fw {posts.category.icon}"></i></span><!-- ENDIF posts.category.icon --> {posts.category.name}</a>
 							</td>
 							<td class="col-md-2 topic-title">
 								<!-- IF posts.data.tid -->

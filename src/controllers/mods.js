@@ -181,11 +181,16 @@ modsController.postQueue = async function (req, res, next) {
 	const page = parseInt(req.query.page, 10) || 1;
 	const postsPerPage = 20;
 
-	const [ids, isAdminOrGlobalMod, moderatedCids] = await Promise.all([
+	const [ids, isAdminOrGlobalMod, moderatedCids, allCategories] = await Promise.all([
 		db.getSortedSetRange('post:queue', 0, -1),
 		user.isAdminOrGlobalMod(req.uid),
 		user.getModeratedCids(req.uid),
+		categories.buildForSelect(req.uid, 'find', ['disabled', 'link', 'slug']),
 	]);
+
+	allCategories.forEach((c) => {
+		c.disabledClass = !isAdminOrGlobalMod && !moderatedCids.includes(String(c.cid));
+	});
 
 	let postData = await getQueuedPosts(ids);
 	postData = postData.filter(p => p && (isAdminOrGlobalMod || moderatedCids.includes(String(p.category.cid))));
@@ -198,6 +203,7 @@ modsController.postQueue = async function (req, res, next) {
 	res.render('admin/manage/post-queue', {
 		title: '[[pages:post-queue]]',
 		posts: postData,
+		allCategories: allCategories,
 		pagination: pagination.create(page, pageCount),
 		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[pages:post-queue]]' }]),
 	});

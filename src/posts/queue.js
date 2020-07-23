@@ -147,28 +147,31 @@ module.exports = function (Posts) {
 		socketHelpers.notifyNew(data.uid, 'newPost', result);
 	}
 
-	Posts.editQueuedContent = async function (uid, id, content, title) {
-		const canEditQueue = await Posts.canEditQueue(uid, id);
+	Posts.editQueuedContent = async function (uid, editData) {
+		const canEditQueue = await Posts.canEditQueue(uid, editData);
 		if (!canEditQueue) {
 			throw new Error('[[error:no-privileges]]');
 		}
-		const data = await getParsedObject(id);
+		const data = await getParsedObject(editData.id);
 		if (!data) {
 			return;
 		}
-		if (content !== undefined) {
-			data.data.content = content;
+		if (editData.content !== undefined) {
+			data.data.content = editData.content;
 		}
-		if (title !== undefined) {
-			data.data.title = title;
+		if (editData.title !== undefined) {
+			data.data.title = editData.title;
 		}
-		await db.setObjectField('post:queue:' + id, 'data', JSON.stringify(data.data));
+		if (editData.cid !== undefined) {
+			data.data.cid = editData.cid;
+		}
+		await db.setObjectField('post:queue:' + editData.id, 'data', JSON.stringify(data.data));
 	};
 
-	Posts.canEditQueue = async function (uid, id) {
+	Posts.canEditQueue = async function (uid, editData) {
 		const [isAdminOrGlobalMod, data] = await Promise.all([
 			user.isAdminOrGlobalMod(uid),
-			getParsedObject(id),
+			getParsedObject(editData.id),
 		]);
 		if (!data) {
 			return false;
@@ -184,6 +187,11 @@ module.exports = function (Posts) {
 		} else if (data.type === 'reply') {
 			cid = await topics.getTopicField(data.data.tid, 'cid');
 		}
-		return await user.isModerator(uid, cid);
+		const isModerator = await user.isModerator(uid, cid);
+		let isModeratorOfTargetCid = true;
+		if (editData.cid) {
+			isModeratorOfTargetCid = await user.isModerator(uid, editData.cid);
+		}
+		return isModerator && isModeratorOfTargetCid;
 	};
 };

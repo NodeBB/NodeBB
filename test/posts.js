@@ -1096,6 +1096,21 @@ describe('Post\'s', function () {
 			});
 		});
 
+		it('should edit topic category in queue', function (done) {
+			socketPosts.editQueuedContent({ uid: globalModUid }, { id: topicQueueId, cid: 2 }, function (err) {
+				assert.ifError(err);
+				request(nconf.get('url') + '/api/post-queue', { jar: jar, json: true }, function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(body.posts[0].type, 'topic');
+					assert.equal(body.posts[0].data.cid, 2);
+					socketPosts.editQueuedContent({ uid: globalModUid }, { id: topicQueueId, cid: cid }, function (err) {
+						assert.ifError(err);
+						done();
+					});
+				});
+			});
+		});
+
 		it('should prevent regular users from approving posts', function (done) {
 			socketPosts.accept({ uid: uid }, { id: queueId }, function (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');

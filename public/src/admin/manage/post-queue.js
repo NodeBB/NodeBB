@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/manage/post-queue', function () {
+define('admin/manage/post-queue', ['categorySelector'], function (categorySelector) {
 	var PostQueue = {};
 
 	PostQueue.init = function () {
@@ -24,6 +24,32 @@ define('admin/manage/post-queue', function () {
 
 		handleContentEdit('.post-content', '.post-content-editable', 'textarea');
 		handleContentEdit('.topic-title', '.topic-title-editable', 'input');
+
+		$('.posts-list').on('click', '.topic-category[data-editable]', function () {
+			var $this = $(this);
+			var id = $this.parents('[data-id]').attr('data-id');
+			categorySelector.modal(ajaxify.data.allCategories, function (cid) {
+				var category = ajaxify.data.allCategories.find(function (c) {
+					return parseInt(c.cid, 10) === parseInt(cid, 10);
+				});
+				socket.emit('posts.editQueuedContent', {
+					id: id,
+					cid: cid,
+				}, function (err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					app.parseAndTranslate('admin/manage/post-queue', 'posts', {
+						posts: [{
+							category: category,
+						}],
+					}, function (html) {
+						$this.replaceWith(html.find('.topic-category'));
+					});
+				});
+			});
+			return false;
+		});
 	};
 
 	function handleContentEdit(displayClass, editableClass, inputSelector) {
