@@ -38,8 +38,6 @@ app.cacheBuster = null;
 	});
 
 	app.load = function () {
-		app.loadProgressiveStylesheet();
-
 		overrides.overrideTimeago();
 
 		var url = ajaxify.start(window.location.pathname.slice(1) + window.location.search + window.location.hash);
@@ -749,14 +747,6 @@ app.cacheBuster = null;
 				});
 			}
 		});
-	};
-
-	app.loadProgressiveStylesheet = function () {
-		var linkEl = document.createElement('link');
-		linkEl.rel = 'stylesheet';
-		linkEl.href = config.relative_path + '/assets/js-enabled.css?' + app.cacheBuster;
-
-		document.head.appendChild(linkEl);
 	};
 
 	app.showCookieWarning = function () {

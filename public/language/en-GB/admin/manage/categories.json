@@ -79,5 +79,6 @@
 	"alert.not-enough-whitelisted-tags": "Whitelisted tags are less than minimum tags, you need to create more whitelisted tags!",
 	"collapse-all": "Collapse All",
 	"expand-all": "Expand All",
-	"disable-on-create": "Disable on create"
+	"disable-on-create": "Disable on create",
+	"no-matches": "No matches"
 }
