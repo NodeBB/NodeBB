@@ -5,7 +5,8 @@ define('admin/manage/group', [
 	'forum/groups/memberlist',
 	'iconSelect',
 	'admin/modules/colorpicker',
-], function (memberList, iconSelect, colorpicker) {
+	'translator',
+], function (memberList, iconSelect, colorpicker, translator) {
 	var Groups = {};
 
 	Groups.init = function () {
@@ -90,8 +91,21 @@ define('admin/manage/group', [
 
 		$('[component="category/list"] [data-cid]').on('click', function () {
 			var cid = $(this).attr('data-cid');
+
 			if (cid) {
-				ajaxify.go('admin/manage/privileges/' + cid);
+				var url = 'admin/manage/privileges/' + cid;
+				if (app.flags && app.flags._unsaved === true) {
+					translator.translate('[[global:unsaved-changes]]', function (text) {
+						bootbox.confirm(text, function (navigate) {
+							if (navigate) {
+								app.flags._unsaved = false;
+								ajaxify.go(url);
+							}
+						});
+					});
+					return;
+				}
+				ajaxify.go(url);
 			}
 		});
 
@@ -101,6 +115,11 @@ define('admin/manage/group', [
 
 		colorpicker.enable(changeGroupTextColor, function (hsb, hex) {
 			groupLabelPreview.css('color', '#' + hex);
+		});
+
+		$('form').on('change', 'input, select, textarea', function () {
+			app.flags = app.flags || {};
+			app.flags._unsaved = true;
 		});
 
 		$('#save').on('click', function () {
