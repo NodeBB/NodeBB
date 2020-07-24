@@ -1012,6 +1012,7 @@ describe('Post\'s', function () {
 	describe('post queue', function () {
 		var uid;
 		var queueId;
+		var topicQueueId;
 		var jar;
 		before(function (done) {
 			meta.config.postQueue = 1;
@@ -1033,6 +1034,7 @@ describe('Post\'s', function () {
 				assert.ifError(err);
 				assert.strictEqual(result.queued, true);
 				assert.equal(result.message, '[[success:post-queued]]');
+				topicQueueId = result.id;
 
 				done();
 			});
@@ -1078,6 +1080,33 @@ describe('Post\'s', function () {
 					assert.equal(body.posts[1].type, 'reply');
 					assert.equal(body.posts[1].data.content, 'newContent');
 					done();
+				});
+			});
+		});
+
+		it('should edit topic title in queue', function (done) {
+			socketPosts.editQueuedContent({ uid: globalModUid }, { id: topicQueueId, title: 'new topic title' }, function (err) {
+				assert.ifError(err);
+				request(nconf.get('url') + '/api/post-queue', { jar: jar, json: true }, function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(body.posts[0].type, 'topic');
+					assert.equal(body.posts[0].data.title, 'new topic title');
+					done();
+				});
+			});
+		});
+
+		it('should edit topic category in queue', function (done) {
+			socketPosts.editQueuedContent({ uid: globalModUid }, { id: topicQueueId, cid: 2 }, function (err) {
+				assert.ifError(err);
+				request(nconf.get('url') + '/api/post-queue', { jar: jar, json: true }, function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(body.posts[0].type, 'topic');
+					assert.equal(body.posts[0].data.cid, 2);
+					socketPosts.editQueuedContent({ uid: globalModUid }, { id: topicQueueId, cid: cid }, function (err) {
+						assert.ifError(err);
+						done();
+					});
 				});
 			});
 		});

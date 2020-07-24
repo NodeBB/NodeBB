@@ -50,10 +50,11 @@ module.exports = function (Messaging) {
 			db.sortedSetAdd('chat:room:' + roomId + ':uids', now, uid),
 		]);
 		await Promise.all([
-			Messaging.addSystemMessage('user-join', uid, roomId),	// chat owner should also get the user-join system message
 			Messaging.addUsersToRoom(uid, toUids, roomId),
 			Messaging.addRoomToUsers(roomId, [uid].concat(toUids), now),
 		]);
+		// chat owner should also get the user-join system message
+		await Messaging.addSystemMessage('user-join', uid, roomId);
 
 		return roomId;
 	};

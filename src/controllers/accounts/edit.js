@@ -2,7 +2,6 @@
 
 const user = require('../../user');
 const meta = require('../../meta');
-const plugins = require('../../plugins');
 const helpers = require('../helpers');
 const groups = require('../../groups');
 const accountHelpers = require('./helpers');
@@ -67,9 +66,7 @@ editController.get = async function (req, res, next) {
 		},
 	]);
 	userData.editButtons = [];
-
-	const result = await plugins.fireHook('filter:user.account.edit', userData);
-	res.render('account/edit', result);
+	res.render('account/edit', userData);
 };
 
 editController.password = async function (req, res, next) {

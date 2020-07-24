@@ -29,13 +29,14 @@ Digest.execute = async function (payload) {
 		return;
 	}
 	try {
+		winston.info('[user/jobs] Digest (' + payload.interval + ') scheduling completed. Sending emails; this may take some time...');
 		await Digest.send({
 			interval: payload.interval,
 			subscribers: subscribers,
 		});
-		winston.info('[user/jobs] Digest (' + payload.interval + ') scheduling completed. Sending emails; this may take some time...');
+		winston.info('[user/jobs] Digest (' + payload.interval + ') complete.');
 	} catch (err) {
-		winston.error('[user/jobs] Could not send digests (' + payload.interval + ')', err.stack);
+		winston.error('[user/jobs] Could not send digests (' + payload.interval + ')\n' + err.stack);
 		throw err;
 	}
 };
@@ -81,7 +82,10 @@ Digest.getSubscribers = async function (interval) {
 		});
 		subUids = await user.bans.filterBanned(subUids);
 		subscribers = subscribers.concat(subUids);
-	}, { interval: 1000 });
+	}, {
+		interval: 1000,
+		batch: 500,
+	});
 
 	const results = await plugins.fireHook('filter:digest.subscribers', {
 		interval: interval,
@@ -91,15 +95,13 @@ Digest.getSubscribers = async function (interval) {
 };
 
 Digest.send = async function (data) {
-	var emailsSent = 0;
+	let emailsSent = 0;
 	if (!data || !data.subscribers || !data.subscribers.length) {
 		return emailsSent;
 	}
-	const now = new Date();
 
-	const users = await user.getUsersFields(data.subscribers, ['uid', 'username', 'userslug', 'lastonline']);
-
-	async.eachLimit(users, 100, async function (userObj) {
+	await async.eachLimit(data.subscribers, 100, async function (uid) {
+		const userObj = await user.getUserFields(uid, ['uid', 'username', 'userslug', 'lastonline']);
 		let [notifications, topicsData] = await Promise.all([
 			user.notifications.getUnreadInterval(userObj.uid, data.interval),
 			getTermTopics(data.interval, userObj.uid, 0, 9),
@@ -121,13 +123,14 @@ Digest.send = async function (data) {
 
 		// Fix relative paths in topic data
 		topicsData = topicsData.map(function (topicObj) {
-			const user = topicObj.hasOwnProperty('teaser') && topicObj.teaser !== undefined ? topicObj.teaser.user : topicObj.user;
+			const user = topicObj.hasOwnProperty('teaser') && topicObj.teaser && topicObj.teaser.user ? topicObj.teaser.user : topicObj.user;
 			if (user && user.picture && utils.isRelativeUrl(user.picture)) {
 				user.picture = nconf.get('base_url') + user.picture;
 			}
 			return topicObj;
 		});
 		emailsSent += 1;
+		const now = new Date();
 		try {
 			await emailer.send('digest', userObj.uid, {
 				subject: '[[email:digest.subject, ' + (now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate()) + ']]',
@@ -139,15 +142,14 @@ Digest.send = async function (data) {
 				showUnsubscribe: true,
 			});
 		} catch (err) {
-			winston.error('[user/jobs] Could not send digest email', err.stack);
+			winston.error('[user/jobs] Could not send digest email\n' + err.stack);
 		}
 
 		if (data.interval !== 'alltime') {
 			await db.sortedSetAdd('digest:delivery', now.getTime(), userObj.uid);
 		}
-	}, function () {
-		winston.info('[user/jobs] Digest (' + data.interval + ') sending completed. ' + emailsSent + ' emails sent.');
 	});
+	winston.info('[user/jobs] Digest (' + data.interval + ') sending completed. ' + emailsSent + ' emails sent.');
 };
 
 Digest.getDeliveryTimes = async (start, stop) => {

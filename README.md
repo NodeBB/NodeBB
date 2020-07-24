@@ -48,7 +48,7 @@ Our minimalist "Persona" theme gets you going right away, no coding experience r
 
 NodeBB requires the following software to be installed:
 
-* A version of Node.js at least 8 or greater ([installation/upgrade instructions](https://github.com/nodesource/distributions))
+* A version of Node.js at least 10 or greater ([installation/upgrade instructions](https://github.com/nodesource/distributions))
 * Redis, version 2.8.9 or greater **or** MongoDB, version 2.6 or greater
 * nginx, version 1.3.13 or greater (**only if** intending to use nginx to proxy requests to a NodeBB)
 

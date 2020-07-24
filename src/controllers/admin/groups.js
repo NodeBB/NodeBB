@@ -5,6 +5,7 @@ const validator = require('validator');
 
 const db = require('../../database');
 const user = require('../../user');
+const categories = require('../../categories');
 const groups = require('../../groups');
 const meta = require('../../meta');
 const pagination = require('../../pagination');
@@ -50,12 +51,15 @@ groupsController.get = async function (req, res, next) {
 		};
 	});
 
+	const allCategories = await categories.buildForSelectAll();
+
 	res.render('admin/manage/group', {
 		group: group,
 		groupNames: groupNameData,
 		allowPrivateGroups: meta.config.allowPrivateGroups,
 		maximumGroupNameLength: meta.config.maximumGroupNameLength,
 		maximumGroupTitleLength: meta.config.maximumGroupTitleLength,
+		categories: allCategories,
 	});
 };
 

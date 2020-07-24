@@ -11,9 +11,9 @@ define('admin/manage/categories', [
 	var sortables;
 
 	Categories.init = function () {
-		socket.emit('admin.categories.getAll', function (error, payload) {
-			if (error) {
-				return app.alertError(error.message);
+		socket.emit('admin.categories.getAll', function (err, payload) {
+			if (err) {
+				return app.alertError(err.message);
 			}
 
 			Categories.render(payload);
@@ -63,7 +63,54 @@ define('admin/manage/categories', [
 			el.find('i').toggleClass('fa-minus', expand).toggleClass('fa-plus', !expand);
 			el.closest('[data-cid]').find('> ul[data-cid]').toggleClass('hidden', !expand);
 		}
+
+		$('#category-search').on('keyup', function () {
+			searchCategory();
+		});
 	};
+
+	function searchCategory() {
+		var container = $('#content .categories');
+		function revealParents(cid) {
+			var parentCid = container.find('li[data-cid="' + cid + '"]').attr('data-parent-cid');
+			if (parentCid) {
+				container.find('li[data-cid="' + parentCid + '"]').removeClass('hidden');
+				revealParents(parentCid);
+			}
+		}
+
+		function revealChildren(cid) {
+			var els = container.find('li[data-parent-cid="' + cid + '"]');
+			els.each(function (index, el) {
+				var $el = $(el);
+				$el.removeClass('hidden');
+				revealChildren($el.attr('data-cid'));
+			});
+		}
+
+		var categoryEls = container.find('li[data-cid]');
+		var val = $('#category-search').val().toLowerCase();
+		var noMatch = true;
+		var cids = [];
+		categoryEls.each(function () {
+			var liEl = $(this);
+			var isMatch = liEl.attr('data-name').toLowerCase().indexOf(val) !== -1;
+			if (noMatch && isMatch) {
+				noMatch = false;
+			}
+			if (isMatch && val) {
+				cids.push(liEl.attr('data-cid'));
+			}
+			liEl.toggleClass('hidden', !isMatch);
+		});
+
+		cids.forEach(function (cid) {
+			revealParents(cid);
+			revealChildren(cid);
+		});
+
+		$('[component="category/no-matches"]').toggleClass('hidden', !noMatch);
+	}
 
 	Categories.throwCreateModal = function () {
 		socket.emit('categories.getSelectCategories', {}, function (err, categories) {

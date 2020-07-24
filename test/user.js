@@ -101,7 +101,7 @@ describe('User', function () {
 			});
 		});
 
-		it('should error if username is already taken', async function () {
+		it('should error if username is already taken or rename user', async function () {
 			let err;
 			async function tryCreate(data) {
 				try {
@@ -111,11 +111,19 @@ describe('User', function () {
 				}
 			}
 
-			await Promise.all([
+			const [uid1, uid2] = await Promise.all([
 				tryCreate({ username: 'dupe1' }),
 				tryCreate({ username: 'dupe1' }),
 			]);
-			assert.strictEqual(err.message, '[[error:username-taken]]');
+			if (err) {
+				assert.strictEqual(err.message, '[[error:username-taken]]');
+			} else {
+				const userData = await User.getUsersFields([uid1, uid2], ['username']);
+				const userNames = userData.map(u => u.username);
+				// make sure only 1 dupe1 is created
+				assert.equal(userNames.filter(username => username === 'dupe1').length, 1);
+				assert.equal(userNames.filter(username => username === 'dupe1 0').length, 1);
+			}
 		});
 
 		it('should error if email is already taken', async function () {

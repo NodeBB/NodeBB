@@ -49,7 +49,7 @@ unreadController.get = async function (req, res, next) {
 		req.query.page = Math.max(1, Math.min(data.pageCount, page));
 		return helpers.redirect(res, '/unread?' + querystring.stringify(req.query));
 	}
-	data.showSelect = isPrivileged;
+	data.showSelect = true;
 	data.showTopicTools = isPrivileged;
 	data.categories = watchedCategories.categories;
 	data.allCategoriesUrl = 'unread' + helpers.buildQueryString('', filter, '');

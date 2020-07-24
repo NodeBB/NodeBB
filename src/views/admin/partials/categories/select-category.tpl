@@ -12,7 +12,7 @@
 					<a role="menu-item">[[search:no-matches]]</a>
 				</li>
 				<!-- BEGIN categories -->
-				<li role="presentation" class="category" data-cid="{categories.cid}" data-name="{categories.name}">
+				<li role="presentation" class="category {{{if categories.disabledClass}}}disabled{{{end}}}" data-cid="{categories.cid}" data-name="{categories.name}">
 					<a role="menu-item">{categories.level}<span component="category-markup"><!-- IF categories.icon --><span class="fa-stack" style="{function.generateCategoryBackground}"><i style="color: {categories.color};" class="fa fa-stack-1x fa-fw {categories.icon}"></i></span><!-- ENDIF categories.icon --> {categories.name}</span></a>
 				</li>
 				<!-- END categories -->
