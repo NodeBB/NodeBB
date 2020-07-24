@@ -399,14 +399,6 @@ describe('Utility Methods', function () {
 		done();
 	});
 
-	it('should walk directory', function (done) {
-		utils.walk(__dirname, function (err, data) {
-			assert.ifError(err);
-			assert(Array.isArray(data));
-			done();
-		});
-	});
-
 	it('should profile function', function (done) {
 		var st = process.hrtime();
 		setTimeout(function () {

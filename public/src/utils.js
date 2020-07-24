@@ -5,12 +5,6 @@
 		var winston = require('winston');
 
 		module.exports = factory(require('xregexp'), winston);
-		module.exports.walk = function (dir, done) {
-			// DEPRECATED
-			var file = require('../../src/file');
-			winston.warn('[deprecated] `utils.walk` is deprecated. Use `file.walk` instead.');
-			file.walk(dir, done);
-		};
 
 		process.profile = function (operation, start) {
 			console.log('%s took %d milliseconds', operation, process.elapsedTimeSince(start));
