@@ -37,47 +37,7 @@ define('admin/manage/group', [
 			groupLabelPreview.css('color', changeGroupTextColor.val() || '#ffffff');
 		});
 
-		$('[component="groups/members"]').on('click', '[data-action]', function () {
-			var btnEl = $(this);
-			var userRow = btnEl.parents('[data-uid]');
-			var ownerFlagEl = userRow.find('.member-name .user-owner-icon');
-			var isOwner = !ownerFlagEl.hasClass('invisible');
-			var uid = userRow.attr('data-uid');
-			var action = btnEl.attr('data-action');
-
-			switch (action) {
-				case 'toggleOwnership':
-					socket.emit('groups.' + (isOwner ? 'rescind' : 'grant'), {
-						toUid: uid,
-						groupName: groupName,
-					}, function (err) {
-						if (err) {
-							return app.alertError(err.message);
-						}
-						ownerFlagEl.toggleClass('invisible');
-					});
-					break;
-
-				case 'kick':
-					bootbox.confirm('[[admin/manage/groups:edit.confirm-remove-user]]', function (confirm) {
-						if (!confirm) {
-							return;
-						}
-						socket.emit('admin.groups.leave', {
-							uid: uid,
-							groupName: groupName,
-						}, function (err) {
-							if (err) {
-								return app.alertError(err.message);
-							}
-							userRow.slideUp().remove();
-						});
-					});
-					break;
-				default:
-					break;
-			}
-		});
+		setupGroupMembersMenu(groupName);
 
 		$('#group-icon, #group-icon-label').on('click', function () {
 			iconSelect.init(groupIcon, function () {
@@ -89,25 +49,7 @@ define('admin/manage/group', [
 			});
 		});
 
-		$('[component="category/list"] [data-cid]').on('click', function () {
-			var cid = $(this).attr('data-cid');
-
-			if (cid) {
-				var url = 'admin/manage/privileges/' + cid + '?group=' + ajaxify.data.group.name;
-				if (app.flags && app.flags._unsaved === true) {
-					translator.translate('[[global:unsaved-changes]]', function (text) {
-						bootbox.confirm(text, function (navigate) {
-							if (navigate) {
-								app.flags._unsaved = false;
-								ajaxify.go(url);
-							}
-						});
-					});
-					return;
-				}
-				ajaxify.go(url);
-			}
-		});
+		$('[component="category/list"] [data-cid]').on('click', navigateToCategory);
 
 		colorpicker.enable(changeGroupLabelColor, function (hsb, hex) {
 			groupLabelPreview.css('background-color', '#' + hex);
@@ -155,6 +97,70 @@ define('admin/manage/group', [
 			return false;
 		});
 	};
+
+	function setupGroupMembersMenu(groupName) {
+		$('[component="groups/members"]').on('click', '[data-action]', function () {
+			var btnEl = $(this);
+			var userRow = btnEl.parents('[data-uid]');
+			var ownerFlagEl = userRow.find('.member-name .user-owner-icon');
+			var isOwner = !ownerFlagEl.hasClass('invisible');
+			var uid = userRow.attr('data-uid');
+			var action = btnEl.attr('data-action');
+
+			switch (action) {
+				case 'toggleOwnership':
+					socket.emit('groups.' + (isOwner ? 'rescind' : 'grant'), {
+						toUid: uid,
+						groupName: groupName,
+					}, function (err) {
+						if (err) {
+							return app.alertError(err.message);
+						}
+						ownerFlagEl.toggleClass('invisible');
+					});
+					break;
+
+				case 'kick':
+					bootbox.confirm('[[admin/manage/groups:edit.confirm-remove-user]]', function (confirm) {
+						if (!confirm) {
+							return;
+						}
+						socket.emit('admin.groups.leave', {
+							uid: uid,
+							groupName: groupName,
+						}, function (err) {
+							if (err) {
+								return app.alertError(err.message);
+							}
+							userRow.slideUp().remove();
+						});
+					});
+					break;
+				default:
+					break;
+			}
+		});
+	}
+
+	function navigateToCategory() {
+		var cid = $(this).attr('data-cid');
+
+		if (cid) {
+			var url = 'admin/manage/privileges/' + cid + '?group=' + ajaxify.data.group.name;
+			if (app.flags && app.flags._unsaved === true) {
+				translator.translate('[[global:unsaved-changes]]', function (text) {
+					bootbox.confirm(text, function (navigate) {
+						if (navigate) {
+							app.flags._unsaved = false;
+							ajaxify.go(url);
+						}
+					});
+				});
+				return;
+			}
+			ajaxify.go(url);
+		}
+	}
 
 	return Groups;
 });
