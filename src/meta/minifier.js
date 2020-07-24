@@ -271,7 +271,8 @@ function buildCSS(data, callback) {
 		javascriptEnabled: true,
 	}, function (err, lessOutput) {
 		if (err) {
-			return callback(err);
+			// display less parser errors properly
+			return callback(new Error(String(err)));
 		}
 
 		postcss(data.minify ? [
