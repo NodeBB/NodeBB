@@ -65,10 +65,18 @@ module.exports = function (middleware) {
 	});
 
 	middleware.autoLocale = helpers.try(async function autoLocale(req, res, next) {
-		if (parseInt(req.uid, 10) > 0 || !meta.config.autoDetectLang || req.query.lang) {
+		let langs;
+		if (req.query.lang) {
+			langs = await listCodes();
+			if (!langs.includes(req.query.lang)) {
+				req.query.lang = meta.config.defaultLang;
+			}
 			return next();
 		}
-		const langs = await listCodes();
+		if (parseInt(req.uid, 10) > 0 || !meta.config.autoDetectLang) {
+			return next();
+		}
+		langs = await listCodes();
 		const lang = req.acceptsLanguages(langs);
 		if (!lang) {
 			return next();
