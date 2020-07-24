@@ -4,7 +4,7 @@
 	if (typeof module === 'object' && module.exports) {
 		var winston = require('winston');
 
-		module.exports = factory(require('xregexp'), winston);
+		module.exports = factory(require('xregexp'), winston, false);
 		module.exports.walk = function (dir, done) {
 			// DEPRECATED
 			var file = require('../../src/file');
@@ -21,10 +21,10 @@
 			return (diff[0] * 1e3) + (diff[1] / 1e6);
 		};
 	} else {
-		window.utils = factory(window.XRegExp, console);
+		window.utils = factory(window.XRegExp, console, true);
 	}
 	// eslint-disable-next-line
-}(function (XRegExp, console) {
+}(function (XRegExp, console, isBrowser) {
 	var freeze = Object.freeze || function (obj) { return obj; };
 
 	// add default escape function for escaping HTML entities
@@ -487,14 +487,50 @@
 			});
 		},
 
-		// https://github.com/sindresorhus/is-absolute-url
-		isAbsoluteUrlRE: /^[a-zA-Z][a-zA-Z\d+\-.]*:/,
-		isWinPathRE: /^[a-zA-Z]:\\/,
-		isAbsoluteUrl: function (url) {
-			if (utils.isWinPathRE.test(url)) {
-				return false;
+		urlToLocation: function (url) {
+			return utils.urlParse(url, true, true);
+		},
+
+		urlParse: function (url, parseQueryString, slashesDenoteHost) {
+			if (isBrowser) {
+				var a = document.createElement('a');
+				a.href = url;
+				return a;
 			}
-			return utils.isAbsoluteUrlRE.test(url);
+			return require('url').parse(url, parseQueryString, slashesDenoteHost);
+		},
+
+		isProtocolAbsoluteUrl: function (url) {
+			url = url.replace(/^\/{3,}/, '//');
+			var a = utils.urlParse(url, true, true);
+			if (isBrowser) {
+				return a.host !== window.location.host;
+			}
+			return !!a.host;
+		},
+
+		isProtocolRelativeUrl: function (url) {
+			return !utils.isProtocolAbsoluteUrl(url);
+		},
+
+		isSchemeAbsoluteUrl: function (url) {
+			var a = utils.urlParse(url);
+			if (isBrowser) {
+				return a.host !== window.location.host;
+			}
+			return !!a.host;
+		},
+
+		isSchemeRelativeUrl: function (url) {
+			return !utils.isSchemeAbsoluteUrl(url);
+		},
+
+		// scheme-absolute seems to win the people's consensus
+		// https://stackoverflow.com/questions/15581445/are-protocol-relative-urls-relative-urls
+		// BUT the behavior is different from the server and the client
+		// so we use isProtocolAbsoluteUrl()
+		isAbsoluteUrl: function (url) {
+			return utils.isProtocolAbsoluteUrl(url);
 		},
 
 		isRelativeUrl: function (url) {
@@ -701,12 +737,6 @@
 
 		param: function (key) {
 			return this.params()[key];
-		},
-
-		urlToLocation: function (url) {
-			var a = document.createElement('a');
-			a.href = url;
-			return a;
 		},
 
 		// return boolean if string 'true' or string 'false', or if a parsable string which is a number
