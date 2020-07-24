@@ -105,7 +105,7 @@ sitemap.getTopicPage = async function (page) {
 	}
 
 	const topicUrls = [];
-	let tids = await db.getSortedSetRevRange('topics:recent', min, max);
+	let tids = await db.getSortedSetRange('topics:tid', min, max);
 	tids = await privileges.topics.filterTids('topics:read', tids, 0);
 	const topicData = await topics.getTopicsFields(tids, ['tid', 'title', 'slug', 'lastposttime']);
 
