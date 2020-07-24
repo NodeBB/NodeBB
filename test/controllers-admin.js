@@ -712,7 +712,9 @@ describe('Admin Controllers', function () {
 				request(nconf.get('url') + '/api/flags/' + flagId, { jar: moderatorJar, json: true }, function (err, res, body) {
 					assert.ifError(err);
 					assert(body);
-					assert.equal(body.reporter.username, 'regular');
+					assert(body.reports);
+					assert(Array.isArray(body.reports));
+					assert.equal(body.reports[0].reporter.username, 'regular');
 					done();
 				});
 			});
