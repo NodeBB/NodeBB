@@ -42,7 +42,7 @@
         "cli-graph": "^3.2.2",
         "clipboard": "^2.0.6",
         "colors": "^1.4.0",
-        "commander": "^5.0.0",
+        "commander": "^6.0.0",
         "compression": "^1.7.4",
         "connect-ensure-login": "^0.1.1",
         "connect-flash": "^0.1.1",
