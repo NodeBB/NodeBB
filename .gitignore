@@ -68,3 +68,4 @@ test/files/normalise-resized.jpg
 package-lock.json
 /package.json
 *.mongodb
+link-plugins.sh
