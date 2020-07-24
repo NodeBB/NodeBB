@@ -48,10 +48,10 @@ describe('Flags', function () {
 				assert.ifError(err);
 				var compare = {
 					flagId: 1,
-					uid: 1,
 					targetId: 1,
 					type: 'post',
-					description: 'Test flag',
+					state: 'open',
+					target_readable: 'Post 1',
 				};
 				assert(flagData);
 				for (var key in compare) {
@@ -124,11 +124,10 @@ describe('Flags', function () {
 				assert.ifError(err);
 				var compare = {
 					flagId: 1,
-					uid: 1,
 					targetId: 1,
 					type: 'post',
-					description: 'Test flag',
 					state: 'open',
+					target_readable: 'Post 1',
 				};
 				assert(flagData);
 				for (var key in compare) {
@@ -378,14 +377,14 @@ describe('Flags', function () {
 			await sleep(2000);
 
 			let userNotifs = await User.notifications.getAll(adminUid);
-			assert(userNotifs.includes('flag:post:' + result.postData.pid + ':uid:' + uid1));
+			assert(userNotifs.includes('flag:post:' + result.postData.pid));
 
 			await Flags.update(flagId, adminUid, {
 				state: 'resolved',
 			});
 
 			userNotifs = await User.notifications.getAll(adminUid);
-			assert(!userNotifs.includes('flag:post:' + result.postData.pid + ':uid:' + uid1));
+			assert(!userNotifs.includes('flag:post:' + result.postData.pid));
 		});
 	});
 

@@ -504,7 +504,7 @@ Flags.update = async function (flagId, uid, changeset) {
 					tasks.push(db.sortedSetAdd('flags:byState:' + changeset[prop], now, flagId));
 					tasks.push(db.sortedSetRemove('flags:byState:' + current[prop], flagId));
 					if (changeset[prop] === 'resolved' || changeset[prop] === 'rejected') {
-						tasks.push(notifications.rescind('flag:' + current.type + ':' + current.targetId + ':uid:' + current.uid));
+						tasks.push(notifications.rescind('flag:' + current.type + ':' + current.targetId));
 					}
 				}
 			} else if (prop === 'assignee') {
@@ -610,7 +610,7 @@ Flags.notify = async function (flagObj, uid) {
 			bodyLong: flagObj.description,
 			pid: flagObj.targetId,
 			path: '/flags/' + flagObj.flagId,
-			nid: 'flag:post:' + flagObj.targetId + ':uid:' + uid,
+			nid: 'flag:post:' + flagObj.targetId,
 			from: uid,
 			mergeId: 'notifications:user_flagged_post_in|' + flagObj.targetId,
 			topicTitle: title,
@@ -622,7 +622,7 @@ Flags.notify = async function (flagObj, uid) {
 			bodyShort: '[[notifications:user_flagged_user, ' + flagObj.reports[flagObj.reports.length - 1].reporter.username + ', ' + flagObj.target.username + ']]',
 			bodyLong: flagObj.description,
 			path: '/flags/' + flagObj.flagId,
-			nid: 'flag:user:' + flagObj.targetId + ':uid:' + uid,
+			nid: 'flag:user:' + flagObj.targetId,
 			from: uid,
 			mergeId: 'notifications:user_flagged_user|' + flagObj.targetId,
 		});
