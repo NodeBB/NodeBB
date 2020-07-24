@@ -53,11 +53,6 @@ file.base64ToLocal = async function (imageData, uploadPath) {
 	return uploadPath;
 };
 
-file.isFileTypeAllowed = async function (path) {
-	winston.warn('[deprecated] file.isFileTypeAllowed is deprecated, use image.isFileTypeAllowed');
-	await require('./image').isFileTypeAllowed(path);
-};
-
 // https://stackoverflow.com/a/31205878/583363
 file.appendToFileName = function (filename, string) {
 	const dotIndex = filename.lastIndexOf('.');
