@@ -30,7 +30,7 @@
     },
     "dependencies": {
         "ace-builds": "^1.4.9",
-        "archiver": "^4.0.0",
+        "archiver": "^5.0.0",
         "async": "^3.2.0",
         "autoprefixer": "^9.7.6",
         "bcryptjs": "2.4.3",
