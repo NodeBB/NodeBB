@@ -68,4 +68,4 @@ Meta.getSessionTTLSeconds = function () {
 	return ttl;
 };
 
-Meta.async = require('../promisify')(Meta);
+require('../promisify')(Meta);

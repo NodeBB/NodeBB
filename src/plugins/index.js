@@ -351,4 +351,4 @@ async function findNodeBBModules(dirs) {
 	return pluginPaths;
 }
 
-Plugins.async = require('../promisify')(Plugins);
+require('../promisify')(Plugins);

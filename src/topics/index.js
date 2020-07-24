@@ -283,4 +283,4 @@ Topics.search = async function (tid, term) {
 	return Array.isArray(pids) ? pids : [];
 };
 
-Topics.async = require('../promisify')(Topics);
+require('../promisify')(Topics);

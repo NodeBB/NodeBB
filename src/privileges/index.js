@@ -49,4 +49,4 @@ require('./topics')(privileges);
 require('./posts')(privileges);
 require('./users')(privileges);
 
-privileges.async = require('../promisify')(privileges);
+require('../promisify')(privileges);

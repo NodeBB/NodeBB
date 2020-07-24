@@ -300,4 +300,4 @@ async function getSearchUids(data) {
 	return await user.getUidsByUsernames(Array.isArray(data.postedBy) ? data.postedBy : [data.postedBy]);
 }
 
-search.async = require('./promisify')(search);
+require('./promisify')(search);

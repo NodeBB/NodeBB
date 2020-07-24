@@ -228,4 +228,4 @@ Groups.existsBySlug = async function (slug) {
 	return await db.isObjectField('groupslug:groupname', slug);
 };
 
-Groups.async = require('../promisify')(Groups);
+require('../promisify')(Groups);

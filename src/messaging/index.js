@@ -284,4 +284,4 @@ Messaging.hasPrivateChat = async (uid, withUid) => {
 	return roomId;
 };
 
-Messaging.async = require('../promisify')(Messaging);
+require('../promisify')(Messaging);

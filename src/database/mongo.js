@@ -178,4 +178,4 @@ require('./mongo/sorted')(mongoModule);
 require('./mongo/list')(mongoModule);
 require('./mongo/transaction')(mongoModule);
 
-mongoModule.async = require('../promisify')(mongoModule, ['client', 'sessionStore']);
+require('../promisify')(mongoModule, ['client', 'sessionStore']);

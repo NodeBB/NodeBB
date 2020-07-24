@@ -420,4 +420,4 @@ require('./postgres/sorted')(postgresModule);
 require('./postgres/list')(postgresModule);
 require('./postgres/transaction')(postgresModule);
 
-postgresModule.async = require('../promisify')(postgresModule, ['client', 'sessionStore', 'pool', 'transaction']);
+require('../promisify')(postgresModule, ['client', 'sessionStore', 'pool', 'transaction']);

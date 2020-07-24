@@ -367,4 +367,4 @@ Categories.buildForSelectCategories = function (categories, fields) {
 	return categoriesData.map(category => _.pick(category, pickFields));
 };
 
-Categories.async = require('../promisify')(Categories);
+require('../promisify')(Categories);
