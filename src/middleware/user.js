@@ -1,7 +1,6 @@
 'use strict';
 
 const nconf = require('nconf');
-const winston = require('winston');
 
 const meta = require('../meta');
 const user = require('../user');
@@ -75,11 +74,6 @@ module.exports = function (middleware) {
 
 		return next();
 	}
-
-	middleware.checkGlobalPrivacySettings = helpers.try(async function checkGlobalPrivacySettings(req, res, next) {
-		winston.warn('[middleware], checkGlobalPrivacySettings deprecated, use canViewUsers or canViewGroups');
-		await middleware.canViewUsers(req, res, next);
-	});
 
 	middleware.canViewUsers = helpers.try(async function canViewUsers(req, res, next) {
 		if (parseInt(res.locals.uid, 10) === req.uid) {
