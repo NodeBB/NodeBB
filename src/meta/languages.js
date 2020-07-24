@@ -1,5 +1,6 @@
 'use strict';
 
+const nconf = require('nconf');
 const path = require('path');
 const fs = require('fs');
 const util = require('util');
@@ -43,7 +44,10 @@ async function getTranslationMetadata() {
 
 	languages = _.union(languages, Plugins.languageData.languages).sort().filter(Boolean);
 	namespaces = _.union(namespaces, Plugins.languageData.namespaces).sort().filter(Boolean);
-
+	const configLangs = nconf.get('languages');
+	if (process.env.NODE_ENV === 'development' && Array.isArray(configLangs) && configLangs.length) {
+		languages = configLangs;
+	}
 	// save a list of languages to `${buildLanguagesPath}/metadata.json`
 	// avoids readdirs later on
 	await mkdirp(buildLanguagesPath);
