@@ -56,11 +56,9 @@ notificationsController.get = async function (req, res, next) {
 	nids = nids.slice(start, stop + 1);
 
 	const notifications = await user.notifications.getNotifications(nids, req.uid);
-	const data = await plugins.fireHook('filter:notifications.get', {
-		notifications: notifications,
-	});
+
 	res.render('notifications', {
-		notifications: data.notifications,
+		notifications: notifications,
 		pagination: pagination.create(page, pageCount, req.query),
 		filters: allFilters,
 		regularFilters: regularFilters,

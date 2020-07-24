@@ -6,7 +6,6 @@ const db = require('../../database');
 const user = require('../../user');
 const posts = require('../../posts');
 const categories = require('../../categories');
-const plugins = require('../../plugins');
 const meta = require('../../meta');
 const accountHelpers = require('./helpers');
 const helpers = require('../helpers');
@@ -58,8 +57,7 @@ profileController.get = async function (req, res, next) {
 	userData.selectedGroup = userData.groups.filter(group => group && userData.groupTitleArray.includes(group.name))
 		.sort((a, b) => userData.groupTitleArray.indexOf(a.name) - userData.groupTitleArray.indexOf(b.name));
 
-	const results = await plugins.fireHook('filter:user.account', { userData: userData, uid: req.uid });
-	res.render('account/profile', results.userData);
+	res.render('account/profile', userData);
 };
 
 async function incrementProfileViews(req, userData) {

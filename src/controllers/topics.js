@@ -8,7 +8,6 @@ const meta = require('../meta');
 const topics = require('../topics');
 const posts = require('../posts');
 const privileges = require('../privileges');
-const plugins = require('../plugins');
 const helpers = require('./helpers');
 const pagination = require('../pagination');
 const utils = require('../utils');
@@ -69,8 +68,6 @@ topicsController.get = async function getTopic(req, res, callback) {
 
 	topics.modifyPostsByPrivilege(topicData, userPrivileges);
 
-	const hookData = await plugins.fireHook('filter:controllers.topic.get', { topicData: topicData, uid: req.uid });
-
 	topicData.privileges = userPrivileges;
 	topicData.topicStaleDays = meta.config.topicStaleDays;
 	topicData['reputation:disabled'] = meta.config['reputation:disabled'];
@@ -91,7 +88,7 @@ topicsController.get = async function getTopic(req, res, callback) {
 	topicData.postIndex = postIndex;
 
 	await Promise.all([
-		buildBreadcrumbs(hookData.topicData),
+		buildBreadcrumbs(topicData),
 		addTags(topicData, req, res),
 	]);
 

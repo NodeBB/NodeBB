@@ -26,10 +26,6 @@ function requireSharp() {
 
 image.isFileTypeAllowed = async function (path) {
 	const plugins = require('./plugins');
-	// deprecated: remove in 1.14.0
-	if (plugins.hasListeners('filter:file.isFileTypeAllowed')) {
-		return await plugins.fireHook('filter:file.isFileTypeAllowed', path);
-	}
 	if (plugins.hasListeners('filter:image.isFileTypeAllowed')) {
 		return await plugins.fireHook('filter:image.isFileTypeAllowed', path);
 	}
