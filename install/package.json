@@ -37,7 +37,7 @@
         "benchpressjs": "^2.0.2",
         "body-parser": "^1.19.0",
         "bootstrap": "^3.4.1",
-        "bootswatch": "git://github.com/thomaspark/bootswatch.git#c41a8f066feb8950c6f9c6bcf5a3c37d1085404e",
+        "bootswatch": "thomaspark/bootswatch#v3.4.1+1",
         "chart.js": "^2.9.3",
         "cli-graph": "^3.2.2",
         "clipboard": "^2.0.6",
