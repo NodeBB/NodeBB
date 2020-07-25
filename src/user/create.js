@@ -15,13 +15,14 @@ module.exports = function (User) {
 			data.email = String(data.email).trim();
 		}
 
-		await User.isDataValid(data);
-
 		try {
 			await lock(data.username, '[[error:username-taken]]');
 			if (data.email) {
 				await lock(data.email, '[[error:email-taken]]');
 			}
+
+			await User.isDataValid(data);
+
 			return await create(data);
 		} finally {
 			await db.deleteObjectFields('locks', [data.username, data.email]);
