@@ -6,17 +6,18 @@ const winston = require('winston');
 const start = module.exports;
 
 start.start = async function () {
-	const db = require('./database');
-
 	printStartupInfo();
 
 	addProcessHandlers();
+
 	try {
+		const db = require('./database');
 		await db.init();
+		await db.checkCompatibility();
 
 		const meta = require('./meta');
-		await db.checkCompatibility();
 		await meta.configs.init();
+
 		if (nconf.get('runJobs')) {
 			await runUpgrades();
 		}
