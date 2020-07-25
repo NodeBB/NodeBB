@@ -10,6 +10,7 @@ const events = require('../../events');
 const meta = require('../../meta');
 const plugins = require('../../plugins');
 const translator = require('../../translator');
+const flags = require('../../flags');
 
 const User = module.exports;
 
@@ -155,6 +156,7 @@ async function deleteUsers(socket, uids, method) {
 		throw new Error('[[error:cant-delete-other-admins]]');
 	}
 	async function doDelete(uid) {
+		await flags.resolveFlag('user', uid, socket.uid);
 		const userData = await method(uid);
 		await events.log({
 			type: 'user-delete',

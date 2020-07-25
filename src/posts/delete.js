@@ -9,6 +9,7 @@ const user = require('../user');
 const groups = require('../groups');
 const notifications = require('../notifications');
 const plugins = require('../plugins');
+const flags = require('../flags');
 
 module.exports = function (Posts) {
 	Posts.delete = async function (pid, uid) {
@@ -38,6 +39,9 @@ module.exports = function (Posts) {
 		]);
 		await categories.updateRecentTidForCid(postData.cid);
 		plugins.fireHook('action:post.' + type, { post: _.clone(postData), uid: uid });
+		if (type === 'delete') {
+			await flags.resolveFlag('post', pid, uid);
+		}
 		return postData;
 	}
 
@@ -59,6 +63,7 @@ module.exports = function (Posts) {
 			db.sortedSetsRemove(['posts:pid', 'posts:votes', 'posts:flagged'], pid),
 			Posts.uploads.dissociateAll(pid),
 		]);
+		await flags.resolveFlag('post', pid, uid);
 		plugins.fireHook('action:post.purge', { post: postData, uid: uid });
 		await db.delete('post:' + pid);
 	};

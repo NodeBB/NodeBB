@@ -12,6 +12,7 @@ const plugins = require('../../plugins');
 const emailer = require('../../emailer');
 const translator = require('../../translator');
 const utils = require('../../../public/src/utils');
+const flags = require('../../flags');
 
 module.exports = function (SocketUser) {
 	SocketUser.banUsers = async function (socket, data) {
@@ -21,6 +22,7 @@ module.exports = function (SocketUser) {
 
 		await toggleBan(socket.uid, data.uids, async function (uid) {
 			await banUser(socket.uid, uid, data.until || 0, data.reason || '');
+			await flags.resolveFlag('user', uid, socket.uid);
 			await events.log({
 				type: 'user-ban',
 				uid: socket.uid,

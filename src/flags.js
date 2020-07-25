@@ -381,10 +381,10 @@ Flags.getReports = async function (flagId) {
 
 Flags.addReport = async function (flagId, uid, reason, timestamp) {
 	// adds to reporters/report zsets
-	await Promise.all([
-		db.sortedSetAdd(`flags:byReporter:${uid}`, timestamp, flagId),
-		db.sortedSetAdd(`flag:${flagId}:reports`, timestamp, reason),
-		db.sortedSetAdd(`flag:${flagId}:reporters`, timestamp, uid),
+	await db.sortedSetAddBulk([
+		[`flags:byReporter:${uid}`, timestamp, flagId],
+		[`flag:${flagId}:reports`, timestamp, reason],
+		[`flag:${flagId}:reporters`, timestamp, uid],
 	]);
 };
 
@@ -463,6 +463,9 @@ Flags.getTargetCid = async function (type, id) {
 
 Flags.update = async function (flagId, uid, changeset) {
 	const current = await db.getObjectFields('flag:' + flagId, ['uid', 'state', 'assignee', 'type', 'targetId']);
+	if (!current.type) {
+		return;
+	}
 	const now = changeset.datetime || Date.now();
 	const notifyAssignee = async function (assigneeId) {
 		if (assigneeId === '' || parseInt(uid, 10) === parseInt(assigneeId, 10)) {
@@ -525,8 +528,16 @@ Flags.update = async function (flagId, uid, changeset) {
 
 	tasks.push(db.setObject('flag:' + flagId, changeset));
 	tasks.push(Flags.appendHistory(flagId, uid, changeset));
-	tasks.push(plugins.fireHook('action:flags.update', { flagId: flagId, changeset: changeset, uid: uid }));
 	await Promise.all(tasks);
+
+	plugins.fireHook('action:flags.update', { flagId: flagId, changeset: changeset, uid: uid });
+};
+
+Flags.resolveFlag = async function (type, id, uid) {
+	const flagId = await Flags.getFlagIdByTarget(type, id);
+	if (parseInt(flagId, 10)) {
+		await Flags.update(flagId, uid, { state: 'resolved' });
+	}
 };
 
 Flags.getHistory = async function (flagId) {

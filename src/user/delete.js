@@ -63,11 +63,13 @@ module.exports = function (User) {
 	}
 
 	async function deleteQueued(uid) {
+		let deleteIds = [];
 		await batch.processSortedSet('post:queue', async function (ids) {
 			const data = await db.getObjects(ids.map(id => 'post:queue:' + id));
-			const deleteIds = data.filter(d => parseInt(d.uid, 10) === parseInt(uid, 10)).map(d => d.id);
-			await async.eachSeries(deleteIds, posts.removeFromQueue);
-		}, { alwaysStartAt: 0 });
+			const userQueuedIds = data.filter(d => parseInt(d.uid, 10) === parseInt(uid, 10)).map(d => d.id);
+			deleteIds = deleteIds.concat(userQueuedIds);
+		}, { batch: 500 });
+		await async.eachSeries(deleteIds, posts.removeFromQueue);
 	}
 
 	async function removeFromSortedSets(uid) {
