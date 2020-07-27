@@ -1,5 +1,5 @@
 div.categories {
-	ul {
+	ul[data-cid] {
 		.no-select;
 		list-style-type: none;
 		margin: 0;
@@ -19,6 +19,14 @@ div.categories {
 				border-bottom: 0px;
 			}
 		}
+		> li {
+			margin: @acp-base-line 0;
+
+			&.placeholder {
+				border: 1px dashed #2196F3;
+				background-color: #E1F5FE;
+			}
+		}
 	}
 
 	.stats {
@@ -32,14 +40,6 @@ div.categories {
 		}
 	}
 
-	li {
-		margin: @acp-base-line 0;
-
-		&.placeholder {
-			border: 1px dashed #2196F3;
-			background-color: #E1F5FE;
-		}
-	}
 
 	.disabled > .category-row {
 
