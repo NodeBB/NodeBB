@@ -1,8 +1,7 @@
 {
 	"state": "Stav",
-	"reporter": "Nahlásil",
-	"reported-at": "Nahlásil v",
-	"description": "Popis",
+	"reports": "Reports",
+	"first-reported": "First Reported",
 	"no-flags": "Hurá, žádné označení.",
 	"assignee": "Nabyvatel",
 	"update": "Aktualizovat",
@@ -26,6 +25,7 @@
 	"filter-quick-mine": "Přiřazeno mě",
 	"filter-cid-all": "Všechny kategorie",
 	"apply-filters": "Použít filtry",
+	"more-filters": "More Filters",
 
 	"quick-actions": "Quick Actions",
 	"flagged-user": "Označený uživatel",
@@ -43,6 +43,9 @@
 	"notes": "Poznámky označení",
 	"add-note": "Přidat poznámku",
 	"no-notes": "Žádné sdílené poznámky.",
+	"delete-note-confirm": "Are you sure you want to delete this flag note?",
+	"note-added": "Poznámka přidána",
+	"note-deleted": "Note Deleted",
 
 	"history": "Account &amp; Flag History",
 	"no-history": "Žádná historie označení.",
@@ -53,7 +56,6 @@
 	"state-resolved": "Vyřešeno",
 	"state-rejected": "Zamítnuto",
 	"no-assignee": "Nepřiřazeno",
-	"note-added": "Poznámka přidána",
 
 	"modal-title": "Nahlásit nevhodný obsah",
 	"modal-body": "Zadejte váš důvod k označení %1 %2 pro kontrolu. Nebo použijte tlačítko je-li dostupné.",

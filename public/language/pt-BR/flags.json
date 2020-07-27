@@ -1,8 +1,7 @@
 {
 	"state": "Estado",
-	"reporter": "Reportado por",
-	"reported-at": "Reportado Em",
-	"description": "Descrição",
+	"reports": "Reports",
+	"first-reported": "First Reported",
 	"no-flags": "Ihuul! Nenhuma sinalização encontrada.",
 	"assignee": "Responsável",
 	"update": "Atualizar",
@@ -26,6 +25,7 @@
 	"filter-quick-mine": "Atribuído a mim",
 	"filter-cid-all": "Todas as categorias",
 	"apply-filters": "Aplicar Filtros",
+	"more-filters": "More Filters",
 
 	"quick-actions": "Quick Actions",
 	"flagged-user": "Usuário Sinalizado",
@@ -43,6 +43,9 @@
 	"notes": "Notas da Sinalização",
 	"add-note": "Adicionar Nota",
 	"no-notes": "Nenhuma nota compartilhada.",
+	"delete-note-confirm": "Are you sure you want to delete this flag note?",
+	"note-added": "Nota Adicionada",
+	"note-deleted": "Note Deleted",
 
 	"history": "Account &amp; Flag History",
 	"no-history": "Sem histórico de sinalizações.",
@@ -53,7 +56,6 @@
 	"state-resolved": "Resolvido",
 	"state-rejected": "Rejeitado",
 	"no-assignee": "Não Atribuído",
-	"note-added": "Nota Adicionada",
 
 	"modal-title": "Reportar Conteúdo Inadequado",
 	"modal-body": "Por favor, especifique a razão pela qual você está sinalizando %1 %2 para a revisão. Alternativamente, use um dos botões de reporte rápido se for aplicável.",

@@ -1,8 +1,7 @@
 {
 	"state": "State",
-	"reporter": "Reporter",
-	"reported-at": "Reported At",
-	"description": "Description",
+	"reports": "Reports",
+	"first-reported": "First Reported",
 	"no-flags": "Hooray! No flags found.",
 	"assignee": "Assignee",
 	"update": "Update",
@@ -26,6 +25,7 @@
 	"filter-quick-mine": "Assigned to me",
 	"filter-cid-all": "All categories",
 	"apply-filters": "Apply Filters",
+	"more-filters": "More Filters",
 
 	"quick-actions": "Quick Actions",
 	"flagged-user": "Flagged User",
@@ -43,6 +43,9 @@
 	"notes": "Flag Notes",
 	"add-note": "Add Note",
 	"no-notes": "No shared notes.",
+	"delete-note-confirm": "Are you sure you want to delete this flag note?",
+	"note-added": "Note Added",
+	"note-deleted": "Note Deleted",
 
 	"history": "Account &amp; Flag History",
 	"no-history": "No flag history.",
@@ -53,7 +56,6 @@
 	"state-resolved": "Resolved",
 	"state-rejected": "Rejected",
 	"no-assignee": "Not Assigned",
-	"note-added": "Note Added",
 
 	"modal-title": "Report Inappropriate Content",
 	"modal-body": "Please specify your reason for flagging %1 %2 for review. Alternatively, use one of the quick report buttons if applicable.",

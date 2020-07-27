@@ -1,8 +1,7 @@
 {
 	"state": "狀態",
-	"reporter": "舉報人",
-	"reported-at": "舉報於",
-	"description": "描述",
+	"reports": "Reports",
+	"first-reported": "First Reported",
 	"no-flags": "帥！沒發現任何的舉報。",
 	"assignee": "受指派人",
 	"update": "更新",
@@ -26,6 +25,7 @@
 	"filter-quick-mine": "指派給我",
 	"filter-cid-all": "全部版面",
 	"apply-filters": "應用過濾器",
+	"more-filters": "More Filters",
 
 	"quick-actions": "快速操作",
 	"flagged-user": "被舉報的使用者",
@@ -43,6 +43,9 @@
 	"notes": "舉報備註",
 	"add-note": "新增備註",
 	"no-notes": "沒有共享的備註內容。",
+	"delete-note-confirm": "Are you sure you want to delete this flag note?",
+	"note-added": "備註已添加",
+	"note-deleted": "Note Deleted",
 
 	"history": "帳戶 &amp; 舉報紀錄",
 	"no-history": "沒有舉報歷史。",
@@ -53,7 +56,6 @@
 	"state-resolved": "已解決",
 	"state-rejected": "已拒絕",
 	"no-assignee": "未指派",
-	"note-added": "備註已添加",
 
 	"modal-title": "舉報不適內容",
 	"modal-body": "請選擇或者輸入您舉報 %1%2 的原因以便版主進行審核。",

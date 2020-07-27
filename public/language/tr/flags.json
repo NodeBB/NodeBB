@@ -1,8 +1,7 @@
 {
 	"state": "Bildiri",
-	"reporter": "Muhabir",
-	"reported-at": "Bildirildi",
-	"description": "Açıklama",
+	"reports": "Reports",
+	"first-reported": "First Reported",
 	"no-flags": "Yaşasın! Şikayet bulunamadı.",
 	"assignee": "Vekil",
 	"update": "Güncelle",
@@ -26,6 +25,7 @@
 	"filter-quick-mine": "Vekil atandı",
 	"filter-cid-all": "Tüm kategoriler",
 	"apply-filters": "Filtreleri Onayla",
+	"more-filters": "Daha Fazla Filtre",
 
 	"quick-actions": "Hızlı Eylemler",
 	"flagged-user": "Şikayet Edilen Kullanıcı",
@@ -43,6 +43,9 @@
 	"notes": "Şikayet Notu",
 	"add-note": "Not Ekle",
 	"no-notes": "Not paylaşılmadı",
+	"delete-note-confirm": "Bu şikayet notunu silmek istediğinize emin misiniz?",
+	"note-added": "Not eklendi",
+	"note-deleted": "Not silindi",
 
 	"history": "Hesap &amp; Şikayet Geçmişi",
 	"no-history": "Şikayet geçmişi yok",
@@ -53,7 +56,6 @@
 	"state-resolved": "Çözüldü",
 	"state-rejected": "Reddedildi",
 	"no-assignee": "Atanmadı",
-	"note-added": "Not eklendi",
 
 	"modal-title": "Uygunsuz İçeriği Rapor Et",
 	"modal-body": "%1 %2 için şikayet nedenini belirtiniz. Alternatif olarak hızlı rapor butonlarından birini kullanabilirsiniz.",

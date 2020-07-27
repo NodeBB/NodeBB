@@ -1,8 +1,7 @@
 {
 	"state": "状态",
-	"reporter": "举报人",
-	"reported-at": "举报于",
-	"description": "描述",
+	"reports": "Reports",
+	"first-reported": "First Reported",
 	"no-flags": "啊哈！没发现任何的举报。",
 	"assignee": "受委托人",
 	"update": "更新",
@@ -26,6 +25,7 @@
 	"filter-quick-mine": "委托给我",
 	"filter-cid-all": "全部版块",
 	"apply-filters": "应用过滤器",
+	"more-filters": "More Filters",
 
 	"quick-actions": "Quick Actions",
 	"flagged-user": "被举报的用户",
@@ -43,6 +43,9 @@
 	"notes": "举报备注",
 	"add-note": "添加备注",
 	"no-notes": "没有共享的备注内容。",
+	"delete-note-confirm": "Are you sure you want to delete this flag note?",
+	"note-added": "备注已添加",
+	"note-deleted": "Note Deleted",
 
 	"history": "Account &amp; Flag History",
 	"no-history": "没有举报历史。",
@@ -53,7 +56,6 @@
 	"state-resolved": "已解决",
 	"state-rejected": "已拒绝",
 	"no-assignee": "未指派",
-	"note-added": "备注已添加",
 
 	"modal-title": "举报不适内容",
 	"modal-body": "请选择或者输入您举报 %1%2 的原因以便版主进行审核。",

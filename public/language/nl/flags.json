@@ -1,8 +1,7 @@
 {
 	"state": "Status",
-	"reporter": "Rapporteur",
-	"reported-at": "Gerapporteerd op",
-	"description": "Beschrijving",
+	"reports": "Reports",
+	"first-reported": "First Reported",
 	"no-flags": "Hoera! Geen markeringen gevonden.",
 	"assignee": "Toegekend aan",
 	"update": "Bijwerken",
@@ -26,6 +25,7 @@
 	"filter-quick-mine": "Toegewezen aan mij",
 	"filter-cid-all": "Alle categorieën",
 	"apply-filters": "Filters toepassen",
+	"more-filters": "More Filters",
 
 	"quick-actions": "Snelle acties",
 	"flagged-user": "Gemarkeerde gebruiker",
@@ -43,6 +43,9 @@
 	"notes": "Markering notities",
 	"add-note": "Notitie toevoegen",
 	"no-notes": "Geen gedeelde notities",
+	"delete-note-confirm": "Are you sure you want to delete this flag note?",
+	"note-added": "Notitie toegevoegd",
+	"note-deleted": "Note Deleted",
 
 	"history": "Account &amp; markering geschiedenis",
 	"no-history": "Geen markering geschiedenis",
@@ -53,7 +56,6 @@
 	"state-resolved": "Opgelost",
 	"state-rejected": "Afgewezen",
 	"no-assignee": "Niet toegewezen",
-	"note-added": "Notitie toegevoegd",
 
 	"modal-title": "Rapporteer ongepaste content",
 	"modal-body": "Beschrijf de reden voor het markeren van %1 %2 voor review. Of gebruik een van de snelknoppen indien van toepassing.",

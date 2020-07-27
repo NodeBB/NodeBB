@@ -1,8 +1,7 @@
 {
 	"state": "وضعیت",
-	"reporter": "کاربر گزارش دهنده",
-	"reported-at": "گزارش شده در",
-	"description": "شرح",
+	"reports": "Reports",
+	"first-reported": "First Reported",
 	"no-flags": "هووووورا ! هیچ گزارشی یافت نشد.",
 	"assignee": "اختصاص دادن ",
 	"update": "به روزرسانی",
@@ -26,6 +25,7 @@
 	"filter-quick-mine": "رسیدگی شده توسط من",
 	"filter-cid-all": "همه دسته بندی ها",
 	"apply-filters": "اعمال فیلتر ها",
+	"more-filters": "More Filters",
 
 	"quick-actions": "Quick Actions",
 	"flagged-user": "کاربر گزارش شده",
@@ -43,6 +43,9 @@
 	"notes": "یادداشت های گزارش",
 	"add-note": "افزودن یادداشت",
 	"no-notes": "بدون یادداشت",
+	"delete-note-confirm": "Are you sure you want to delete this flag note?",
+	"note-added": "یادداشت افزوده شد",
+	"note-deleted": "Note Deleted",
 
 	"history": "Account &amp; Flag History",
 	"no-history": "بدون تاریخچه گزارش",
@@ -53,7 +56,6 @@
 	"state-resolved": "حل شده",
 	"state-rejected": "رد شده",
 	"no-assignee": "اختصاص داده نشده",
-	"note-added": "یادداشت افزوده شد",
 
 	"modal-title": "گزارش محتوای نامناسب",
 	"modal-body": "لطفا علت گزارش <strong>%2</strong> <strong>%1</strong> را برای بررسی مشخص کنید. همچنین می توانید از یکی از دکمه های ارسال سریع استفاده کنید.",

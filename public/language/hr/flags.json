@@ -1,8 +1,7 @@
 {
 	"state": "Stanje",
-	"reporter": "Reporter",
-	"reported-at": "Prijavljeno u",
-	"description": "Opis",
+	"reports": "Reports",
+	"first-reported": "First Reported",
 	"no-flags": "Huura! Nema pronađenih zastavica.",
 	"assignee": "Dodijeljeni",
 	"update": "Nadogradnja",
@@ -26,6 +25,7 @@
 	"filter-quick-mine": "Dodijeljeno meni",
 	"filter-cid-all": "Sve kategorije",
 	"apply-filters": "Primjeni filtere",
+	"more-filters": "More Filters",
 
 	"quick-actions": "Quick Actions",
 	"flagged-user": "Označeni korisnici",
@@ -43,6 +43,9 @@
 	"notes": "Bilješke zastave",
 	"add-note": "Dodaj bilješku",
 	"no-notes": "Nema podijeljenih bilješki",
+	"delete-note-confirm": "Are you sure you want to delete this flag note?",
+	"note-added": "Bilješka dodana",
+	"note-deleted": "Note Deleted",
 
 	"history": "Account &amp; Flag History",
 	"no-history": "Nema povijesti zastava.",
@@ -53,7 +56,6 @@
 	"state-resolved": "Riješeno",
 	"state-rejected": "Odbijeno",
 	"no-assignee": "Nije dodijeljeno",
-	"note-added": "Bilješka dodana",
 
 	"modal-title": "Prijavi neprimjereni sadržaj",
 	"modal-body": "Navedite razlog označavanja zastavom %1 %2 .U suprotnom koristite jedan od dugmića za brzo prijavljivanje.",

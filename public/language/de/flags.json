@@ -1,8 +1,7 @@
 {
 	"state": "Zustand",
-	"reporter": "Meldender",
-	"reported-at": "Gemeldet am",
-	"description": "Beschreibung",
+	"reports": "Reports",
+	"first-reported": "First Reported",
 	"no-flags": "Hurra! Keine Meldungen gefunden.",
 	"assignee": "Zugeordneter Benutzer",
 	"update": "Aktualisieren",
@@ -26,6 +25,7 @@
 	"filter-quick-mine": "Mir zugewiesen",
 	"filter-cid-all": "Alle Kategorien",
 	"apply-filters": "Filter anwenden",
+	"more-filters": "More Filters",
 
 	"quick-actions": "Quick Actions",
 	"flagged-user": "Gemeldeter Benutzer",
@@ -43,6 +43,9 @@
 	"notes": "Meldungsnotizen",
 	"add-note": "Notiz hinzufügen",
 	"no-notes": "Keine geteilten Notizen",
+	"delete-note-confirm": "Are you sure you want to delete this flag note?",
+	"note-added": "Notiz hinzugefügt",
+	"note-deleted": "Note Deleted",
 
 	"history": "Account &amp; Flag History",
 	"no-history": "Kein Meldungsverlauf",
@@ -53,7 +56,6 @@
 	"state-resolved": "Gelöst",
 	"state-rejected": "Abgelehnt",
 	"no-assignee": "Nicht zugewiesen",
-	"note-added": "Notiz hinzugefügt",
 
 	"modal-title": "Anstößige Inhalte Melden",
 	"modal-body": "Bitte geben Sie den Grund an, weshalb Sie %1 %2 melden wollen. Alternativ können Sie einen der Schnell-Meldungs-Knöpfe verwenden, wenn anwendbar.",

@@ -1,8 +1,7 @@
 {
 	"state": "Etat",
-	"reporter": "Rapporteur",
-	"reported-at": "Reporté à",
-	"description": "Description",
+	"reports": "Rapports",
+	"first-reported": "Premier rapport",
 	"no-flags": "Hourra ! Aucun signalement trouvé.",
 	"assignee": "Assigné",
 	"update": "Mise à jour",
@@ -26,6 +25,7 @@
 	"filter-quick-mine": "Assigné à moi",
 	"filter-cid-all": "Toutes les catégories",
 	"apply-filters": "Appliquer les filtres",
+	"more-filters": "Plus de filtres",
 
 	"quick-actions": "Actions Rapide",
 	"flagged-user": "Utilisateurs signalés",
@@ -43,6 +43,9 @@
 	"notes": "Notes de signalement",
 	"add-note": "Ajouter une note",
 	"no-notes": "aucune note partagée",
+	"delete-note-confirm": "Êtes-vous sûr de bien vouloir supprimer cette note de signalement ?",
+	"note-added": "Note ajoutée",
+	"note-deleted": "Note supprimée",
 
 	"history": "Compte &amp; Historique des signalements",
 	"no-history": "aucun historique de signalements",
@@ -53,10 +56,9 @@
 	"state-resolved": "Résolu",
 	"state-rejected": "Rejeté",
 	"no-assignee": "Non assigné",
-	"note-added": "Note ajoutée",
 
 	"modal-title": "Signaler un contenu inapproprié",
-	"modal-body": "Veuillez spécifier votre signalement %1 %2 pour une révision.  Vous pouvez utiliser un des boutons de demande si c'est plus approprié",
+	"modal-body": "Veuillez saisir le motif de votre signalement pour %1 %2 et sélectionner le bouton ci-dessous le plus approprié.",
 	"modal-reason-spam": "Spam",
 	"modal-reason-offensive": "Choquant",
 	"modal-reason-other": "Autre (précisez ci-dessous)",

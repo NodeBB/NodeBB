@@ -1,8 +1,7 @@
 {
 	"state": "สถานะ",
-	"reporter": "ผู้รายงาน",
-	"reported-at": "ถูกรายงานที่",
-	"description": "คำอธิบาย",
+	"reports": "Reports",
+	"first-reported": "First Reported",
 	"no-flags": "ไชโย ไม่เจอธงใดๆเลย",
 	"assignee": "ผู้ได้รับมอบหมาย",
 	"update": "อัพเดท",
@@ -26,6 +25,7 @@
 	"filter-quick-mine": "ถูกมอบหมายให้ฉัน",
 	"filter-cid-all": "ทุกหมวดหมู่",
 	"apply-filters": "ใช้งานฟิลเตอร์",
+	"more-filters": "More Filters",
 
 	"quick-actions": "Quick Actions",
 	"flagged-user": "ผู้ใช้ที่ถูกปักธง",
@@ -43,6 +43,9 @@
 	"notes": "โน๊ตปักธง",
 	"add-note": "เพิ่มโน้ต",
 	"no-notes": "ไม่มีโน้ตที่แชร์",
+	"delete-note-confirm": "Are you sure you want to delete this flag note?",
+	"note-added": "โน้ตถูกเพิ่มแล้ว",
+	"note-deleted": "Note Deleted",
 
 	"history": "Account &amp; Flag History",
 	"no-history": "ไม่มีประวัติปักธง",
@@ -53,7 +56,6 @@
 	"state-resolved": "แก้แล้ว",
 	"state-rejected": "ถูกปฏิเสธ",
 	"no-assignee": "ไม่ได้รับการมอบหมาย",
-	"note-added": "โน้ตถูกเพิ่มแล้ว",
 
 	"modal-title": "รายงานเนื้อหาไม่เหมาะสม",
 	"modal-body": "กรุณาระเหตุผลสำหรับการปักธง %1 %2 สำหรับการรีวิว หรือไม่ก็ใช้หนึ่งในปุ่มกดรายงานด่วนถ้าเป็นไปได้",

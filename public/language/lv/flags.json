@@ -1,8 +1,7 @@
 {
 	"state": "Stāvoklis",
-	"reporter": "Ziņotājs",
-	"reported-at": "Ziņots",
-	"description": "Apraksts",
+	"reports": "Reports",
+	"first-reported": "First Reported",
 	"no-flags": "Labi! Nav atzīmju.",
 	"assignee": "Piešķirtais",
 	"update": "Atjaunot",
@@ -26,6 +25,7 @@
 	"filter-quick-mine": "Piešķirts man",
 	"filter-cid-all": "Visas kategorijas",
 	"apply-filters": "Iespējot filtrus",
+	"more-filters": "More Filters",
 
 	"quick-actions": "Quick Actions",
 	"flagged-user": "Atzīmētais lietotājs",
@@ -43,6 +43,9 @@
 	"notes": "Atzīmju piezīmes",
 	"add-note": "Pievienot piezīmi",
 	"no-notes": "Nav kopīgu piezīmju.",
+	"delete-note-confirm": "Are you sure you want to delete this flag note?",
+	"note-added": "Piezīme pievienota",
+	"note-deleted": "Note Deleted",
 
 	"history": "Account &amp; Flag History",
 	"no-history": "Nav atzīmju vēsture.",
@@ -53,7 +56,6 @@
 	"state-resolved": "Atrisināts",
 	"state-rejected": "Noraidīts",
 	"no-assignee": "Nav piešķirts",
-	"note-added": "Piezīme pievienota",
 
 	"modal-title": "Ziņot par nepiemērotu saturu",
 	"modal-body": "Lūdzu, norādi iemeslu, kāpēc %1 %2 ir atzīmēts pārskatīšanai. Citādi, izmanto vienu no ātrā ziņojuma pogām.",

@@ -1,8 +1,7 @@
 {
 	"state": "מצב",
-	"reporter": "מדווח",
-	"reported-at": "דווח ב",
-	"description": "תאור",
+	"reports": "Reports",
+	"first-reported": "First Reported",
 	"no-flags": "מופלטה! לא נמצאו סימונים.",
 	"assignee": "מוקצה",
 	"update": "עדכון",
@@ -26,6 +25,7 @@
 	"filter-quick-mine": "הוקצה עבורי",
 	"filter-cid-all": "כל הקטגוריות",
 	"apply-filters": "הפעל סינון",
+	"more-filters": "More Filters",
 
 	"quick-actions": "Quick Actions",
 	"flagged-user": "משתמש מסומן",
@@ -43,6 +43,9 @@
 	"notes": "הערות הסימון",
 	"add-note": "הוסף הערה",
 	"no-notes": "אין הערות",
+	"delete-note-confirm": "Are you sure you want to delete this flag note?",
+	"note-added": "נוספה הערה",
+	"note-deleted": "Note Deleted",
 
 	"history": "Account &amp; Flag History",
 	"no-history": "אין הסיטוריית סימונים",
@@ -53,7 +56,6 @@
 	"state-resolved": "הושלם",
 	"state-rejected": "נדחה",
 	"no-assignee": "לא הוקצה",
-	"note-added": "נוספה הערה",
 
 	"modal-title": "דווח על תוכן לא ראוי",
 	"modal-body": "אנא ציין את הסיבה לסימון %1 %2 לצורך בקרה. לחלופין, השתמש באחד מכפתורי הדיווח המהיר אם אפשר.",

@@ -1,8 +1,7 @@
 {
 	"state": "Estado",
-	"reporter": "Reportador",
-	"reported-at": "Reportado en",
-	"description": "Descripción",
+	"reports": "Reports",
+	"first-reported": "First Reported",
 	"no-flags": "Un licorca, que non hai nada marcado para revisión.",
 	"assignee": "Encargado",
 	"update": "Actualizar",
@@ -26,6 +25,7 @@
 	"filter-quick-mine": "Asignado a min",
 	"filter-cid-all": "Tódalas categorías",
 	"apply-filters": "Aplicar filtros",
+	"more-filters": "More Filters",
 
 	"quick-actions": "Quick Actions",
 	"flagged-user": "Usuario marcado",
@@ -43,6 +43,9 @@
 	"notes": "Notas do aviso",
 	"add-note": "Engadir nota",
 	"no-notes": "Ningunha nota foi compartida",
+	"delete-note-confirm": "Are you sure you want to delete this flag note?",
+	"note-added": "Nota engadida",
+	"note-deleted": "Note Deleted",
 
 	"history": "Account &amp; Flag History",
 	"no-history": "Non hai historial de avisos",
@@ -53,7 +56,6 @@
 	"state-resolved": "Resolto",
 	"state-rejected": "Rexeitado",
 	"no-assignee": "Non asignado",
-	"note-added": "Nota engadida",
 
 	"modal-title": "Reportar Contido Inapropiado",
 	"modal-body": "Por favor, especifique o seu motivo para marcar %1 %2 para revisión. Alternativamente, empregue un dos botóns de reporte rápido se fose pertinente.",

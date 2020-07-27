@@ -1,8 +1,7 @@
 {
 	"state": "처리 상태",
-	"reporter": "신고자",
-	"reported-at": "신고시간",
-	"description": "설명",
+	"reports": "Reports",
+	"first-reported": "First Reported",
 	"no-flags": "들어온 신고가 없습니다.",
 	"assignee": "담당자",
 	"update": "업데이트",
@@ -26,6 +25,7 @@
 	"filter-quick-mine": "나에게 배정된 신고",
 	"filter-cid-all": "모든 게시판",
 	"apply-filters": "필터 적용",
+	"more-filters": "More Filters",
 
 	"quick-actions": "Quick Actions",
 	"flagged-user": "신고된 사용자",
@@ -43,6 +43,9 @@
 	"notes": "관리자 피드백",
 	"add-note": "노트 추가",
 	"no-notes": "공유된 노트가 없습니다.",
+	"delete-note-confirm": "Are you sure you want to delete this flag note?",
+	"note-added": "노트가 추가되었습니다.",
+	"note-deleted": "Note Deleted",
 
 	"history": "Account &amp; Flag History",
 	"no-history": "신고 기록들이 없습니다.",
@@ -53,7 +56,6 @@
 	"state-resolved": "처리됨",
 	"state-rejected": "거절된 신고",
 	"no-assignee": "담당자 미정",
-	"note-added": "노트가 추가되었습니다.",
 
 	"modal-title": "부적절한 컨텐츠 신고",
 	"modal-body": "%1 %2 에 대한 신고 사유를 적어주시거나, 빠른 신고 버튼 중 하나를 사용해 주세요.",

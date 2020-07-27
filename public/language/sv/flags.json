@@ -1,8 +1,7 @@
 {
 	"state": "Status",
-	"reporter": "Repporterare",
-	"reported-at": "Rapporterad vid tid",
-	"description": "Beskrivning",
+	"reports": "Reports",
+	"first-reported": "First Reported",
 	"no-flags": "Yippie! Inga flaggor funna.",
 	"assignee": "Tilldelad",
 	"update": "Uppdatera",
@@ -26,6 +25,7 @@
 	"filter-quick-mine": "Tilldelade till mig",
 	"filter-cid-all": "Alla kategorier",
 	"apply-filters": "Applicera filter",
+	"more-filters": "More Filters",
 
 	"quick-actions": "Quick Actions",
 	"flagged-user": "Flaggad användare",
@@ -43,6 +43,9 @@
 	"notes": "Flaggans anteckningar",
 	"add-note": "Lägg till anteckning",
 	"no-notes": "Inga delade anteckningar.",
+	"delete-note-confirm": "Are you sure you want to delete this flag note?",
+	"note-added": "Anteckning tillagd",
+	"note-deleted": "Note Deleted",
 
 	"history": "Account &amp; Flag History",
 	"no-history": "Ingen flagghitorik.",
@@ -53,7 +56,6 @@
 	"state-resolved": "Löst",
 	"state-rejected": "Avvisad",
 	"no-assignee": "Ej tilldelad",
-	"note-added": "Anteckning tillagd",
 
 	"modal-title": "Rapportera opassande innehåll",
 	"modal-body": "Vänligen ange anledningen till att du flaggar %1 %2 för granskning. Alternativt, använd en av snabbrapporteringsknapparna.",

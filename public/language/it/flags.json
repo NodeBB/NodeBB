@@ -1,8 +1,7 @@
 {
 	"state": "Stato",
-	"reporter": "Segnalatore",
-	"reported-at": "Segnalato a",
-	"description": "Descrizione",
+	"reports": "Segnalazioni",
+	"first-reported": "Prima segnalazione",
 	"no-flags": "Evviva! Nessuna segnalazione trovata.",
 	"assignee": "Assegnatario",
 	"update": "Aggiorna",
@@ -26,6 +25,7 @@
 	"filter-quick-mine": "Assegnato a me",
 	"filter-cid-all": "Tutte le categorie",
 	"apply-filters": "Applica Filtri",
+	"more-filters": "Altri filtri",
 
 	"quick-actions": "Azioni rapide",
 	"flagged-user": "Utente Segnalato",
@@ -43,6 +43,9 @@
 	"notes": "Note Segnalazione",
 	"add-note": "Aggiungi Nota",
 	"no-notes": "Nessuna nota condivisa",
+	"delete-note-confirm": "Sei sicuro di voler eliminare questa nota di segnalazione?",
+	"note-added": "Nota aggiunta",
+	"note-deleted": "Nota eliminata",
 
 	"history": "Cronologia segnalazioni account",
 	"no-history": "Nessuna cronologia segnalazione.",
@@ -53,7 +56,6 @@
 	"state-resolved": "Risolto",
 	"state-rejected": "Rifiutato",
 	"no-assignee": "Non assegnato",
-	"note-added": "Nota aggiunta",
 
 	"modal-title": "Segnala Contenuto Inappropriato",
 	"modal-body": "Specifica il motivo per cui contrassegni %1 %2 per la revisione. In alternativa, utilizza uno dei pulsanti di segnalazione rapida, se applicabile.",
