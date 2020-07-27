@@ -1,6 +1,7 @@
 {
     "chat.chatting_with": "Chat with",
     "chat.placeholder": "Skriv din chatbesked her, tryk enter for at sende",
+    "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
     "chat.send": "Send",
     "chat.no_active": "Du har ingen aktive chats.",
     "chat.user_typing": "%1 skriver ...",

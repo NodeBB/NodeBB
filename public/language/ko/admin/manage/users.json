@@ -108,5 +108,5 @@
 
 	"alerts.prompt-email": "이메일:",
 	"alerts.email-sent-to": "%1에게 초대 이메일이 발송됐습니다.",
-	"alerts.x-users-found": "%1명의 사용자를 찾았습니다! 검색에 %2 ms가 소요됐습니다."
+	"alerts.x-users-found": "%1 user(s) found, (%2 seconds)"
 }

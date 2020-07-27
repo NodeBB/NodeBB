@@ -1,6 +1,7 @@
 {
     "chat.chatting_with": "Чат з",
     "chat.placeholder": "Надрукуйте повідомлення і натисніть Enter для відправки",
+    "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
     "chat.send": "Надіслати",
     "chat.no_active": "У вас немає активних чатів.",
     "chat.user_typing": "%1 друкує...",

@@ -38,7 +38,7 @@
     "bookmark_instructions": "برای بازگشت به آخرین پست در این موضوع اینجا را کلیک کنید.",
     "flag_post": "Flag this post",
     "flag_user": "Flag this user",
-    "merged_message": "این تاپیک با %2 ادغام شد",
+    "merged_message": "This topic has been merged into <a href=\"%1\">%2</a>",
     "deleted_message": "این موضوع پاک شده است. تنها کاربرانِ با حق مدیریت موضوع می‌توانند آن را ببینند.",
     "following_topic.message": "از این پس اگر کسی در این موضوع پست بگذارد، شما آگاه خواهید شد.",
     "not_following_topic.message": "شما این موضوع را تو فهرست موضوعات خوانده نشده می‌بینید، اما وقتی پست جدیدی ارسال می‌شود آگاه‌سازی دریافت نمی‌کنید.",

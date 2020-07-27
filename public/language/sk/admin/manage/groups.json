@@ -8,6 +8,8 @@
 	"hidden": "Hidden",
 	"private": "Private",
 	"edit": "Upraviť",
+	"delete": "Delete",
+	"download-csv": "Download CSV",
 	"search-placeholder": "Hľadať",
 	"create": "Vytvoriť skupinu",
 	"description-placeholder": "Krátky popis skupiny",

@@ -8,6 +8,8 @@
 	"hidden": "Hidden",
 	"private": "Private",
 	"edit": "Uredi",
+	"delete": "Delete",
+	"download-csv": "Download CSV",
 	"search-placeholder": "Pretraga",
 	"create": "Kreiraj grupu",
 	"description-placeholder": "Kratki opis grupe",

@@ -9,14 +9,14 @@
     "no_new_posts": "Pas de nouveau message",
     "watch": "S'abonner",
     "ignore": "Ne plus surveiller",
-    "watching": "Abonné",
-    "not-watching": "Ne plus être abonné",
+    "watching": "Suivi",
+    "not-watching": "Ne plus suivre",
     "ignoring": "Ignoré",
     "watching.description": "Afficher les sujets non lus et récents",
     "not-watching.description": "Ne pas afficher les sujets non lus, afficher les récents",
     "ignoring.description": "Ne pas afficher les sujets non lus et récents",
-    "watching.message": "Vous êtes désormais abonné aux mises à jour de cette catégorie et de ses sous-catégories. ",
-    "notwatching.message": "Vous n'êtes plus abonné aux mises à jour de cette catégorie et de ses sous-catégories.",
+    "watching.message": "Vous suivez les mises à jour de cette catégorie et de ses sous-catégories. ",
+    "notwatching.message": "Vous ne suivez aucunes mises à jour de cette catégorie et de ses sous-catégories.",
     "ignoring.message": "Vous ignorez maintenant les mises à jour de cette catégorie et de toutes les sous-catégories.",
-    "watched-categories": "Abonnements"
+    "watched-categories": "Catégories surveillées"
 }

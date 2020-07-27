@@ -38,7 +38,7 @@
     "bookmark_instructions": "Klikni tukaj za vrnitev na zadnje prebrano objavo v tej niti",
     "flag_post": "Flag this post",
     "flag_user": "Flag this user",
-    "merged_message": "This topic has been merged into <a href=\"/topic/%1\">%2</a>",
+    "merged_message": "This topic has been merged into <a href=\"%1\">%2</a>",
     "deleted_message": "Ta tema je bila izbrisana. Le uporabniki s pravicami upravljanja tem jo lahko vidijo.",
     "following_topic.message": "Če nekdo objavi v to temo, boste od sedaj  dobivali obvestila. ",
     "not_following_topic.message": "To temo boste videli v seznamu neprebranih tem. Ne boste pa dobili obvestila, če bo nekdo objavil v tej temi. ",

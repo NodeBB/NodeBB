@@ -4,6 +4,7 @@
 	"admin": "Admin",
 	"group-privileges": "Uprawnienia grup",
 	"user-privileges": "Uprawnienia użytkownika",
+	"edit-privileges": "Edit Privileges",
 	"chat": "Dostęp do czatu",
 	"upload-images": "Przesyłanie zdjęć",
 	"upload-files": "Przesyłanie plików",
@@ -33,7 +34,6 @@
 	"delete-topics": "Usuwanie tematów",
 	"purge": "Czyszczenie",
 	"moderate": "Moderowanie",
-
 	"admin-dashboard": "Dashboard",
 	"admin-categories": "Kategorie",
 	"admin-privileges": "Uprawnienia",

@@ -38,7 +38,7 @@
     "bookmark_instructions": "לחץ כאן לחזור לפוסט האחרון שקראת בנושא הזה.",
     "flag_post": "Flag this post",
     "flag_user": "Flag this user",
-    "merged_message": "נושא זה מוזג עם <a href=\"/topic/%1\">%2</a>",
+    "merged_message": "This topic has been merged into <a href=\"%1\">%2</a>",
     "deleted_message": "נושא זה נמחק. רק משתמשים עם ההרשאות המתאימות יכולים לצפות בו.",
     "following_topic.message": "מעתה, תקבל הודעות כאשר מישהו יעלה פוסט לנושא זה.",
     "not_following_topic.message": "תוכל לראות נושא זה ברשימת הנושאים שלא נקראו, אולם לא תוכל לקבל התראות כשמישהו יעלה פוסט על נושא זה.",

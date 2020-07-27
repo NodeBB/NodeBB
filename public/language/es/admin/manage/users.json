@@ -108,5 +108,5 @@
 
 	"alerts.prompt-email": "Correos electrónico:",
 	"alerts.email-sent-to": "Un email de invitación ha sido enviado a %1",
-	"alerts.x-users-found": "¡%1 usuario(s) encontrado(s)! La búsqueda tardó %2 ms."
+	"alerts.x-users-found": "%1 user(s) found, (%2 seconds)"
 }

@@ -1,6 +1,7 @@
 {
     "chat.chatting_with": "Chat with",
     "chat.placeholder": "Skriv chat-melding her, trykk enter for å sende",
+    "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
     "chat.send": "Send",
     "chat.no_active": "Du har ingen aktive chatter.",
     "chat.user_typing": "%1 skriver ...",

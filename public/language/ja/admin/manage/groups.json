@@ -8,6 +8,8 @@
 	"hidden": "Hidden",
 	"private": "Private",
 	"edit": "編集",
+	"delete": "Delete",
+	"download-csv": "Download CSV",
 	"search-placeholder": "検索",
 	"create": "グループを作成",
 	"description-placeholder": "あなたのグループについての簡単な説明",

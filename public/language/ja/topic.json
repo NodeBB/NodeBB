@@ -38,7 +38,7 @@
     "bookmark_instructions": "ここをクリックすると、このスレッドの最後に読んでいた投稿へ移動します。",
     "flag_post": "Flag this post",
     "flag_user": "Flag this user",
-    "merged_message": "This topic has been merged into <a href=\"/topic/%1\">%2</a>",
+    "merged_message": "This topic has been merged into <a href=\"%1\">%2</a>",
     "deleted_message": "このスレッドが削除されました。スレッド管理権を持っているユーザーにしか読めません。",
     "following_topic.message": "このスレッドが更新された際に通知を受け取ります。",
     "not_following_topic.message": "あなたはスレッド一覧を未読にすると、このスレッドを参照できます。ただし誰かがこのスレッドに投稿したときは通知を受信できません。",

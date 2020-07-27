@@ -1,6 +1,7 @@
 {
     "chat.chatting_with": "לשוחח עם",
     "chat.placeholder": "הקלד את הודעת הצ'אט כאן, לחץ אנטר לשליחה",
+    "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
     "chat.send": "שלח",
     "chat.no_active": "אין לך צ'אטים פעילים",
     "chat.user_typing": "%1 מקליד ...",

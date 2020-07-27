@@ -3,16 +3,16 @@
 	"bg-color": "Цвет фона",
 	"text-color": "Цвет текста",
 	"create-modify": "Создать и изменить метки",
-	"description": "Select tags by clicking or dragging, use <code>CTRL</code> to select multiple tags.",
+	"description": "Нажмите на метку, чтобы выбрать её, или просто перетащите. Используйте клавишу <code>Ctrl</code>, чтобы выбрать несколько меток.",
 	"create": "Создать метку",
 	"modify": "Изменить метку",
 	"rename": "Переименовать метку",
 	"delete": "Удалить выбранные метки",
 	"search": "Поиск меток...",
-	"settings": "Tags Settings",
+	"settings": "Настройки меток",
 	"name": "Название метки",
 
-	"alerts.editing": "Editing tag(s)",
+	"alerts.editing": "Редактирование меток",
 	"alerts.confirm-delete": "Вы хотите удалить выбранные метки?",
 	"alerts.update-success": "Метка обновлена!"
 }

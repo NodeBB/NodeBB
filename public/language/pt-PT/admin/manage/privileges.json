@@ -1,9 +1,10 @@
 {
 	"global": "Global",
 	"global.no-users": "Não existem privilégios globais específicos para utilizadores.",
-	"admin": "Admin",
+	"admin": "Administrador",
 	"group-privileges": "Privilégios de Grupos",
 	"user-privileges": "Privilégios de Utilizadores",
+	"edit-privileges": "Edit Privileges",
 	"chat": "Conversa",
 	"upload-images": "Enviar Imagens",
 	"upload-files": "Enviar Ficheiros",
@@ -33,10 +34,9 @@
 	"delete-topics": "Apagar Tópicos",
 	"purge": "Eliminar",
 	"moderate": "Moderar",
-
-	"admin-dashboard": "Dashboard",
-	"admin-categories": "Categories",
-	"admin-privileges": "Privileges",
-	"admin-users": "Users",
-	"admin-settings": "Settings"
+	"admin-dashboard": "Painel de Controlo",
+	"admin-categories": "Categorias",
+	"admin-privileges": "Privilégios",
+	"admin-users": "Utilizadores",
+	"admin-settings": "Definições"
 }

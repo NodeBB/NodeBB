@@ -1,6 +1,7 @@
 {
     "chat.chatting_with": "คุยกับ",
     "chat.placeholder": "พิมพ์ข้อความแชทที่นี่ กด enter เพื่อส่ง",
+    "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
     "chat.send": "ส่ง",
     "chat.no_active": "คุณไม่มีแชทที่คุยอยู่",
     "chat.user_typing": "%1 กำลังพิมพ์อยู่ ...",

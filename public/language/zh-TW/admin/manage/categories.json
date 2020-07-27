@@ -27,6 +27,8 @@
 	"enable": "啟用",
 	"disable": "禁用",
 	"edit": "編輯",
+	"analytics": "Analytics",
+	"view-category": "View category",
 
 	"select-category": "選擇版面",
 	"set-parent-category": "設置上層版面",
@@ -76,7 +78,9 @@
 	"alert.user-search": "在這裡尋找使用者…",
 	"alert.find-group": "尋找群組",
 	"alert.group-search": "在此處搜尋群組...",
+	"alert.not-enough-whitelisted-tags": "Whitelisted tags are less than minimum tags, you need to create more whitelisted tags!",
 	"collapse-all": "全部摺疊",
 	"expand-all": "全部展開",
-	"disable-on-create": "建立後禁用"
+	"disable-on-create": "建立後禁用",
+	"no-matches": "No matches"
 }

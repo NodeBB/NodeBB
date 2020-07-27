@@ -8,6 +8,8 @@
 	"hidden": "Hidden",
 	"private": "Private",
 	"edit": "ערוך",
+	"delete": "Delete",
+	"download-csv": "Download CSV",
 	"search-placeholder": "חפש",
 	"create": "צור קבוצה",
 	"description-placeholder": "תאור קצר על הקבוצה שלך",

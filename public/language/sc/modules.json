@@ -1,6 +1,7 @@
 {
     "chat.chatting_with": "Chat with",
     "chat.placeholder": "Type chat message here, press enter to send",
+    "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
     "chat.send": "Imbia",
     "chat.no_active": "Non tenes tzarras ativas.",
     "chat.user_typing": "%1 is typing ...",

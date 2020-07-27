@@ -3,6 +3,7 @@
 	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "%2ms içinde %1 düğüm yanıt verdi!",
 	"host": "sunucu",
+	"primary": "primary / run jobs",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "çevrimiçi",

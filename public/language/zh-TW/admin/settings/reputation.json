@@ -5,10 +5,16 @@
 	"votes-are-public": "公開所有讚",
 	"thresholds": "操作限制",
 	"min-rep-downvote": "倒讚貼文 需要的最低聲望",
+	"downvotes-per-day": "Downvotes per day (set to 0 for unlimited downvotes)",
+	"downvotes-per-user-per-day": "Downvotes per user per day (set to 0 for unlimited downvotes)",
 	"min-rep-flag": "舉報貼文 需要的最低聲望",
 	"min-rep-website": "加入 個人網站 需要的最低聲望",
 	"min-rep-aboutme": "加入 個人 “關於我”頁 需要的最低聲望",
 	"min-rep-signature": "加入 簽名檔 需要的最低聲望",
 	"min-rep-profile-picture": "加入 個人頭像 需要的最低聲望",
-	"min-rep-cover-picture": "加入 個人封面圖片 需要的最低聲望"
+	"min-rep-cover-picture": "加入 個人封面圖片 需要的最低聲望",
+
+	"flags": "Flag Settings",
+	"flags.limit-per-target": "Maximum number of times something can be flagged",
+	"flags.limit-per-target-placeholder": "Default: 0"
 }

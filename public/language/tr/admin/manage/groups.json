@@ -8,6 +8,8 @@
 	"hidden": "Gizlenmiş",
 	"private": "Özel",
 	"edit": "Düzenle",
+	"delete": "Sil",
+	"download-csv": "CSV'i İndir",
 	"search-placeholder": "Ara",
 	"create": "Grup Oluştur",
 	"description-placeholder": "Grup hakkında kısa bir açıklama yazın",

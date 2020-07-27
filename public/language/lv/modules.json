@@ -1,6 +1,7 @@
 {
     "chat.chatting_with": "Sarunāties ar",
     "chat.placeholder": "Šeit ierakstīt sarunu, tad nospiest \"Enter\", lai to nosūtītu",
+    "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
     "chat.send": "Nosūtīt",
     "chat.no_active": "Nav aktīvo sarunu.",
     "chat.user_typing": "%1 raksta...",

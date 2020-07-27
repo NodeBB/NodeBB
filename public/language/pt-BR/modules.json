@@ -1,6 +1,7 @@
 {
     "chat.chatting_with": "Conversar com",
     "chat.placeholder": "Digite a mensagem de chat aqui, pressione enter para enviar",
+    "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
     "chat.send": "Enviar",
     "chat.no_active": "Você não tem chats ativos.",
     "chat.user_typing": "%1 está digitando ...",

@@ -38,7 +38,7 @@
     "bookmark_instructions": "Pro návrat k poslednímu čtenému příspěvku v tématu, klikněte zde.",
     "flag_post": "Flag this post",
     "flag_user": "Flag this user",
-    "merged_message": "Toto téma bylo sloučeno do <a href=\"/topic/%1\">%2</a>",
+    "merged_message": "This topic has been merged into <a href=\"%1\">%2</a>",
     "deleted_message": "Toto téma bylo odstraněno. Jen uživatelé s oprávněním správy témat ho mohou vidět.",
     "following_topic.message": "Nyní budete dostávat upozornění, jakmile někdo přidá příspěvek do tohoto tématu.",
     "not_following_topic.message": " Toto téma uvidíte v seznamu nepřečtených témat, ale neobdržíte upozornění, přidá-li někdo nový příspěvek.",

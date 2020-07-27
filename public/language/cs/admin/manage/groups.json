@@ -8,6 +8,8 @@
 	"hidden": "Skrytý",
 	"private": "Soukromí",
 	"edit": "Upravit",
+	"delete": "Delete",
+	"download-csv": "Download CSV",
 	"search-placeholder": "Hledat",
 	"create": "Vytvořit skupinu",
 	"description-placeholder": "Krátký popis skupiny",

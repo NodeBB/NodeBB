@@ -108,5 +108,5 @@
 
 	"alerts.prompt-email": "Emails: ",
 	"alerts.email-sent-to": "Запрошення надіслано за адресою %1",
-	"alerts.x-users-found": "%1 користувач(ів) знайдено! Пошук тривав %2 мс."
+	"alerts.x-users-found": "%1 user(s) found, (%2 seconds)"
 }

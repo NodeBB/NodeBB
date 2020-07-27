@@ -12,12 +12,12 @@
 	"unban": "Разблокировать пользователя(-ей)",
 	"reset-lockout": "Снять локаут",
 	"reset-flags": "Сбросить счётчик жалоб",
-	"delete": "Delete <strong>User(s)</strong>",
-	"delete-content": "Delete User(s) <strong>Content</strong>",
-	"purge": "Delete <strong>User(s)</strong> and <strong>Content</strong>",
+	"delete": "Удалить <strong>пользователя(-ей)</strong>",
+	"delete-content": "Удалить <strong>данные</strong> пользователя(-ей)",
+	"purge": "Удалить <strong>пользователя(-ей)</strong> и <strong>данные</strong>",
 	"download-csv": "Скачать CSV",
-	"manage-groups": "Manage Groups",
-	"add-group": "Add Group",
+	"manage-groups": "Изменить членство в группах",
+	"add-group": "Добавить группу",
 	"invite": "Пригласить",
 	"new": "Новый пользователь",
 
@@ -94,11 +94,11 @@
 	"alerts.validate-email-success": "Адреса электронной почты подтверждены",
 	"alerts.validate-force-password-reset-success": "Пароли были сброшены, а сессии — завершены.",
 	"alerts.password-reset-confirm": "Вы хотите отправить этому пользователю ссылку для сброса пароля?",
-	"alerts.confirm-delete": "<strong>Warning!</strong><p>Do you really want to delete <strong>user(s)</strong>?</p><p>This action is not reversible! Only the user account will be deleted, their posts and topics will remain.</p>",
+	"alerts.confirm-delete": "<strong>Внимание!</strong><p>Вы действительно хотите удалить этого <strong>пользователя(ей)</strong>?</p><p>Это действие необратимо! Будет удалена только учётная запись, темы и сообщения пользователя останутся.</p>",
 	"alerts.delete-success": "Пользователь(и) удален(ы)!",
-	"alerts.confirm-delete-content": "<strong>Warning!</strong><p>Do you really want to delete these user(s) <strong>content</strong>?</p><p>This action is not reversible! The users' accounts will remain, but their posts and topics will be deleted.</p>",
-	"alerts.delete-content-success": "User(s) Content Deleted!",
-	"alerts.confirm-purge": "<strong>Warning!</strong><p>Do you really want to delete <strong>user(s) and their content</strong>?</p><p>This action is not reversible! All user data and content will be erased!</p>",
+	"alerts.confirm-delete-content": "<strong>Внимание!</strong><p>Вы действительно хотите удалить <strong>данные</strong> этого пользователя(ей)?</p><p>Это действие необратимо! Учётная запись пользователя сохранится, но его контент будет удалён!</p>",
+	"alerts.delete-content-success": "Данные пользователя(-ей) удалены!",
+	"alerts.confirm-purge": "<strong>Внимание!</strong><p>Вы действительно хотите удалить этого <strong>пользователя(ей) и его данные</strong>?<p>Это действие необратимо! Будут удалены как учётная запись, так и весь контент пользователя!</p>",
 	"alerts.create": "Создать пользователя",
 	"alerts.button-create": "Создать",
 	"alerts.button-cancel": "Отмена",
@@ -108,5 +108,5 @@
 
 	"alerts.prompt-email": "Адреса электронной почты:",
 	"alerts.email-sent-to": "Письмо с приглашением для %1 отправлено",
-	"alerts.x-users-found": "Найдено пользователей: %1! Поиск занял %2 мс."
+	"alerts.x-users-found": "%1 пользователь(ей) найдено, (%2 секунды)"
 }

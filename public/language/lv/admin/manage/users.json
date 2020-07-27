@@ -108,5 +108,5 @@
 
 	"alerts.prompt-email": "E-pasta adreses:",
 	"alerts.email-sent-to": "Ielūguma e-pasts ir nosūtīts %1",
-	"alerts.x-users-found": "Atrasts %1 lietotājs(-i)! Meklēšana ilga 20 milisekundes."
+	"alerts.x-users-found": "%1 user(s) found, (%2 seconds)"
 }

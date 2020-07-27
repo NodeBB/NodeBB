@@ -1,6 +1,7 @@
 {
     "chat.chatting_with": "Чат с",
     "chat.placeholder": "Введите сообщение, нажмите Enter для отправки",
+    "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
     "chat.send": "Отправить",
     "chat.no_active": "У вас нет активных чатов.",
     "chat.user_typing": "%1 пишет...",

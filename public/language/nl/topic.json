@@ -38,7 +38,7 @@
     "bookmark_instructions": "Klik hier om terug te keren naar de laatst gelezen post in deze thread.",
     "flag_post": "Flag this post",
     "flag_user": "Flag this user",
-    "merged_message": "Dit onderwerp is gevoegd in <a href=\"/topic/%1\">%2</a>",
+    "merged_message": "This topic has been merged into <a href=\"%1\">%2</a>",
     "deleted_message": "Dit onderwerp is verwijderd. Alleen gebruikers met beheerrechten op onderwerpniveau kunnen dit inzien.",
     "following_topic.message": "Vanaf nu worden meldingen ontvangen zodra iemand een reactie op dit onderwerp geeft.",
     "not_following_topic.message": "Dit onderwerp zal verschijnen in de lijst van ongelezen onderwerpen, maar er zullen geen meldingen ontvangen zodra iemand een reactie op dit onderwerp geeft.",

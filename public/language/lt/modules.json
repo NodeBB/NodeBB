@@ -1,6 +1,7 @@
 {
     "chat.chatting_with": "Chat with",
     "chat.placeholder": "Įrašykite žinutę čia ir spauskite \"enter\" norėdami išsiųsti",
+    "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
     "chat.send": "Siųsti",
     "chat.no_active": "Jūs neturite aktyvių susirašinėjimų.",
     "chat.user_typing": "%1 dabar rašo...",

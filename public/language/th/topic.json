@@ -38,7 +38,7 @@
     "bookmark_instructions": "คลิกที่นี่เพื่อกลับไปยังโพสต์ล่าสุดในหัวข้อนี้",
     "flag_post": "Flag this post",
     "flag_user": "Flag this user",
-    "merged_message": "กระทูนี้ถูกรวมเข้ากับ <a href=\"/topic/%1\">%2</a>",
+    "merged_message": "This topic has been merged into <a href=\"%1\">%2</a>",
     "deleted_message": "Topic นี้ถูกลบไปแล้ว เฉพาะผู้ใช้งานที่มีสิทธิ์ในการจัดการ Topic เท่านั้นที่จะมีสิทธิ์ในการเข้าชม",
     "following_topic.message": "คุณจะได้รับการแจ้งเตือนเมื่อมีคนโพสต์ในกระทู้นี้",
     "not_following_topic.message": "คุณจะเห็นกระทู้นี้ในรายการของกระทู้ที่ยังไม่ได้อ่าน แต่คุณจะไม่ได้รับการแจ้งเตือนเมื่่อมีคนตอบกระทู้นี้",

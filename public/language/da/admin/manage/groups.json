@@ -8,6 +8,8 @@
 	"hidden": "Hidden",
 	"private": "Private",
 	"edit": "Edit",
+	"delete": "Delete",
+	"download-csv": "Download CSV",
 	"search-placeholder": "Search",
 	"create": "Create Group",
 	"description-placeholder": "A short description about your group",

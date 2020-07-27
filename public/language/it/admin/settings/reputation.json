@@ -5,10 +5,16 @@
 	"votes-are-public": "Tutti i voti sono pubblici",
 	"thresholds": "Soglie di attività",
 	"min-rep-downvote": "Reputazione minima per votare negativamente i post",
+	"downvotes-per-day": "Voti negativi al giorno (imposta a 0 per voti negativi illimitati)",
+	"downvotes-per-user-per-day": "Voti negativi per utenti al giorno (imposta a 0 per voti negativi illimitati)",
 	"min-rep-flag": "Reputazione minima per segnalare i post",
 	"min-rep-website": "Reputazione minima per aggiungere \"Sito Web\" al profilo utente",
 	"min-rep-aboutme": "Reputazione minima per aggiungere \"Su di me\" al profilo utente",
 	"min-rep-signature": "Reputazione minima per aggiungere \"Firma\" al profilo utente",
 	"min-rep-profile-picture": "Reputazione minima per aggiungere \"Immagine profilo\" al profilo utente",
-	"min-rep-cover-picture": "Reputazione minima per aggiungere \"Immagine copertina\" al profilo utente"
+	"min-rep-cover-picture": "Reputazione minima per aggiungere \"Immagine copertina\" al profilo utente",
+
+	"flags": "Impostazioni segnalazioni",
+	"flags.limit-per-target": "Numero massimo di volte che qualcosa può essere segnalato",
+	"flags.limit-per-target-placeholder": "Predefinito: 0"
 }

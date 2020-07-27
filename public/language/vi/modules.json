@@ -1,6 +1,7 @@
 {
     "chat.chatting_with": "Chat with",
     "chat.placeholder": "Nhập tin nhắn ở đây, nhấn enter để gửi",
+    "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
     "chat.send": "Gửi",
     "chat.no_active": "Bạn hiện giờ không có cuộc chat nào",
     "chat.user_typing": "%1b đang gõ...",

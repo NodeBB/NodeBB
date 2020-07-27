@@ -27,6 +27,8 @@
 	"enable": "Ativar",
 	"disable": "Desativar",
 	"edit": "Editar",
+	"analytics": "Analytics",
+	"view-category": "View category",
 
 	"select-category": "Selecionar Categoria",
 	"set-parent-category": "Definir Categoria-Mãe",
@@ -76,7 +78,9 @@
 	"alert.user-search": "Procure por um usuário aqui...",
 	"alert.find-group": "Encontre um Grupo",
 	"alert.group-search": "Pesquise por um grupo aqui...",
+	"alert.not-enough-whitelisted-tags": "Whitelisted tags are less than minimum tags, you need to create more whitelisted tags!",
 	"collapse-all": "Esconder todos",
 	"expand-all": "Expandir todos",
-	"disable-on-create": "Desativar ao criar"
+	"disable-on-create": "Desativar ao criar",
+	"no-matches": "No matches"
 }

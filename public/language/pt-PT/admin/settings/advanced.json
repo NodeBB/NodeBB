@@ -5,7 +5,7 @@
 	"maintenance-mode.message": "Mensagem de Manutenção",
 	"headers": "Headers",
 	"headers.allow-from": "Set ALLOW-FROM to Place NodeBB in an iFrame",
-	"headers.powered-by": "Customise the \"Powered By\" header sent by NodeBB",
+	"headers.powered-by": "Personaliza o cabeçalho \"Powered By\" enviado pelo NodeBB",
 	"headers.acao": "Access-Control-Allow-Origin",
 	"headers.acao-regex": "Access-Control-Allow-Origin Regular Expression",
 	"headers.acao-help": "To deny access to all sites, leave empty",
@@ -24,7 +24,7 @@
 	"traffic.enable": "Enable Traffic Management",
 	"traffic.event-lag": "Event Loop Lag Threshold (in milliseconds)",
 	"traffic.event-lag-help": "Lowering this value decreases wait times for page loads, but will also show the \"excessive load\" message to more users. (Restart required)",
-	"traffic.lag-check-interval": "Check Interval (in milliseconds)",
+	"traffic.lag-check-interval": "Intervalo de Verificação (em milissegundos)",
 	"traffic.lag-check-interval-help": "Lowering this value causes NodeBB to become more sensitive to spikes in load, but may also cause the check to become too sensitive. (Restart required)",
 
 	"sockets.settings": "WebSocket Settings",

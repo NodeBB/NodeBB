@@ -4,6 +4,7 @@
 	"admin": "Администратор",
 	"group-privileges": "Правомощия за групите",
 	"user-privileges": "Правомощия за потребителите",
+	"edit-privileges": "Редактиране на правомощията",
 	"chat": "Разговор",
 	"upload-images": "Качване на изображения",
 	"upload-files": "Качване на файлове",
@@ -33,7 +34,6 @@
 	"delete-topics": "Изтриване на теми",
 	"purge": "Изчистване",
 	"moderate": "Модериране",
-
 	"admin-dashboard": "Табло",
 	"admin-categories": "Категории",
 	"admin-privileges": "Правомощия",

@@ -5,10 +5,16 @@
 	"votes-are-public": "Wszystkie głosy są publiczne",
 	"thresholds": "Progi aktywności",
 	"min-rep-downvote": "Minimalna reputacja pozwalająca głosować przeciw",
+	"downvotes-per-day": "Ilość głosów przeciw na dzień (ustaw na 0 by były nielimitowane)",
+	"downvotes-per-user-per-day": "Ilość głosów przeciw na użytkownika na dzień (ustaw na 0 by były nielimitowane)",
 	"min-rep-flag": "Minimalna reputacja pozwalająca flagować posty",
 	"min-rep-website": "Minimalna reputacja pozwalająca wypełnić sekcję „Strona WWW” w profilu użytkownika",
 	"min-rep-aboutme": "Minimalna reputacja pozwalająca wypełnić sekcję „O mnie” w profilu użytkownika",
 	"min-rep-signature": "Minimalna reputacja pozwalająca wypełnić sekcję „Sygnatura” w profilu użytkownika",
 	"min-rep-profile-picture": "Minimalny poziom uprawnień, by dodać \"Zdjęcie profilowe\" w profilu użytkownika",
-	"min-rep-cover-picture": "Minimalny poziom uprawnień, by dodać \"Zdjęcie w tle\" w profilu użytkownika"
+	"min-rep-cover-picture": "Minimalny poziom uprawnień, by dodać \"Zdjęcie w tle\" w profilu użytkownika",
+
+	"flags": "Ustawienia flag",
+	"flags.limit-per-target": "Maksymalna ilość razy coś może być oflagowane",
+	"flags.limit-per-target-placeholder": "Domyślnie:  0"
 }

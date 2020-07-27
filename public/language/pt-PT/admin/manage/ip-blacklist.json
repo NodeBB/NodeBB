@@ -8,7 +8,7 @@
 	"hint-1": "Define a single IP addresses per line. You can add IP blocks as long as they follow the CIDR format (e.g. <code>192.168.100.0/22</code>).",
 	"hint-2": "Podes adicionar comentários começando linhas com o símbolo <code>#</code>.",
 
-	"validate.x-valid": "<strong>%1</strong> out of <strong>%2</strong> rule(s) valid.",
+	"validate.x-valid": "<strong>%1</strong> de <strong>%2</strong> regra(s) válidas.",
 	"validate.x-invalid": "As seguintes <strong>%1</strong> regras são inválidas:",
 
 	"alerts.applied-success": "Lista Negra Aplicada",

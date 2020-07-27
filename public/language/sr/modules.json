@@ -1,6 +1,7 @@
 {
     "chat.chatting_with": "Ћаскај са",
     "chat.placeholder": "Овде унесите текст поруке, притисните ентер за слање",
+    "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
     "chat.send": "Пошаљи",
     "chat.no_active": "Нема активних ћаскања.",
     "chat.user_typing": "%1 куца ...",

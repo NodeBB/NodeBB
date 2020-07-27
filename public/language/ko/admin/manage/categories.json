@@ -27,6 +27,8 @@
 	"enable": "활성화",
 	"disable": "비활성화",
 	"edit": "편집",
+	"analytics": "Analytics",
+	"view-category": "View category",
 
 	"select-category": "게시판 선택",
 	"set-parent-category": "상위 게시판 설정",
@@ -76,7 +78,9 @@
 	"alert.user-search": "여기서 사용자를 검색하십시오...",
 	"alert.find-group": "그룹 검색",
 	"alert.group-search": "여기서 그룹을 검색하십시오...",
+	"alert.not-enough-whitelisted-tags": "Whitelisted tags are less than minimum tags, you need to create more whitelisted tags!",
 	"collapse-all": "모두 축소",
 	"expand-all": "모두 확장",
-	"disable-on-create": "생성시 사용 중지"
+	"disable-on-create": "생성시 사용 중지",
+	"no-matches": "No matches"
 }

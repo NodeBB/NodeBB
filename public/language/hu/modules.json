@@ -1,6 +1,7 @@
 {
     "chat.chatting_with": "Chat with",
     "chat.placeholder": "Ide írd be az üzenetet, majd küldéshez Enter gomb",
+    "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
     "chat.send": "Küldés",
     "chat.no_active": "Nincs aktív csevegésed.",
     "chat.user_typing": "%1 éppen ír ...",

@@ -108,5 +108,5 @@
 
 	"alerts.prompt-email": "Emails: ",
 	"alerts.email-sent-to": "Email pozivnica je poslana %1",
-	"alerts.x-users-found": "%1 korisnik pronađen! Vrijeme pretrage: %2 ms"
+	"alerts.x-users-found": "%1 user(s) found, (%2 seconds)"
 }

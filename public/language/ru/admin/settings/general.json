@@ -1,8 +1,8 @@
 {
 	"site-settings": "Настройки сайта",
 	"title": "Название сайта",
-	"title.short": "Short Title",
-	"title.short-placeholder": "If no short title is specified, the site title will be used",
+	"title.short": "Краткий заголовок",
+	"title.short-placeholder": "Если здесь ничего не указано, будет использовано название сайта",
 	"title.url": "URL",
 	"title.url-placeholder": "URL для названия сайта",
 	"title.url-help": "Когда пользователь нажмёт на название сайта, он перейдёт по этой ссылке.\nОставьте поле пустым, чтобы отправлять пользователей на главную страницу форума.",
@@ -34,8 +34,8 @@
 	"outgoing-links.warning-page": "Предупреждать, когда пользователь переходит по внешним ссылкам",
 	"search-default-sort-by": "Сортировать результаты поиска по",
 	"outgoing-links.whitelist": "Список доменов, для которых страница предупреждения отключена",
-	"site-colors": "Site Color Metadata",
-	"theme-color": "Theme Color",
-	"background-color": "Background Color",
-	"background-color-help": "Color used for splash screen background when website is installed as a PWA"
+	"site-colors": "Цвета сайта",
+	"theme-color": "Цвет темы",
+	"background-color": "Цвет фона",
+	"background-color-help": "Эти цвета используются на экране-заставке, если сайт установлен как приложение PWA"
 }

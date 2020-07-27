@@ -5,10 +5,16 @@
 	"votes-are-public": "Всі голоси публічні",
 	"thresholds": "Допуски активності",
 	"min-rep-downvote": "Мінімальна репутація для голосування проти постів",
+	"downvotes-per-day": "Downvotes per day (set to 0 for unlimited downvotes)",
+	"downvotes-per-user-per-day": "Downvotes per user per day (set to 0 for unlimited downvotes)",
 	"min-rep-flag": "Мінімальна репутація для подання скарг на пости",
 	"min-rep-website": "Мінімальна репутація для додавання \"Веб-сайту\" до профілю користувача",
 	"min-rep-aboutme": "Мінімальна репутація для додавання \"Про мене\" до профілю користувача",
 	"min-rep-signature": "Мінімальна репутація для додавання \"Підпис\" до профілю користувача",
 	"min-rep-profile-picture": "Мінімальна репутація, щоб додавати \"Зображення Профілю\" до профілю користувача",
-	"min-rep-cover-picture": "Мінімальна репутація, щоб додавати \"Зображення Обкладинки\" до профілю користувача"
+	"min-rep-cover-picture": "Мінімальна репутація, щоб додавати \"Зображення Обкладинки\" до профілю користувача",
+
+	"flags": "Flag Settings",
+	"flags.limit-per-target": "Maximum number of times something can be flagged",
+	"flags.limit-per-target-placeholder": "Default: 0"
 }

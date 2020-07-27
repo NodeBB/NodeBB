@@ -5,10 +5,16 @@
 	"votes-are-public": "모든 투표는 공개적입니다.",
 	"thresholds": "포럼 활동 기준선",
 	"min-rep-downvote": "평판이 낮아 이 게시물을 다운로드 할 수 없습니다.",
+	"downvotes-per-day": "Downvotes per day (set to 0 for unlimited downvotes)",
+	"downvotes-per-user-per-day": "Downvotes per user per day (set to 0 for unlimited downvotes)",
 	"min-rep-flag": "평판이 낮아 이 게시물을 신고할 수 없습니다.",
 	"min-rep-website": "Minimum reputation to add \"Website\" to user profile",
 	"min-rep-aboutme": "Minimum reputation to add \"About me\" to user profile",
 	"min-rep-signature": "Minimum reputation to add \"Signature\" to user profile",
 	"min-rep-profile-picture": "Minimum reputation to add \"Profile Picture\" to user profile",
-	"min-rep-cover-picture": "Minimum reputation to add \"Cover Picture\" to user profile"
+	"min-rep-cover-picture": "Minimum reputation to add \"Cover Picture\" to user profile",
+
+	"flags": "Flag Settings",
+	"flags.limit-per-target": "Maximum number of times something can be flagged",
+	"flags.limit-per-target-placeholder": "Default: 0"
 }

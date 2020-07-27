@@ -8,6 +8,8 @@
 	"hidden": "Скрытая",
 	"private": "Закрытая",
 	"edit": "Редактировать",
+	"delete": "Удалить",
+	"download-csv": "Скачать CSV",
 	"search-placeholder": "Поиск",
 	"create": "Создать группу",
 	"description-placeholder": "Краткое описание вашей группы",

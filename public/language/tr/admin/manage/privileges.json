@@ -4,6 +4,7 @@
 	"admin": "Admin",
 	"group-privileges": "Grup Ayrıcalıkları",
 	"user-privileges": "Kullanıcı Ayrıcalıkları",
+	"edit-privileges": "Ayrıcalıkları Düzenle",
 	"chat": "Sohbet",
 	"upload-images": "Resim Yükle",
 	"upload-files": "Dosya Yükle",
@@ -33,7 +34,6 @@
 	"delete-topics": "Başlıkları Sil",
 	"purge": "Temizle",
 	"moderate": "Moderasyon",
-
 	"admin-dashboard": "Yönetim Paneli",
 	"admin-categories": "Kategoriler",
 	"admin-privileges": "Ayrıcalıklar",

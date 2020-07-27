@@ -108,5 +108,5 @@
 
 	"alerts.prompt-email": "Emails: ",
 	"alerts.email-sent-to": "E-mail s pozvánkou bol odoslaný na %1",
-	"alerts.x-users-found": "Počet nájdených používateľov: %1 (hľadanie trvalo %2 ms)"
+	"alerts.x-users-found": "%1 user(s) found, (%2 seconds)"
 }

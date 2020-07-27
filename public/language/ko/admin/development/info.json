@@ -3,6 +3,7 @@
 	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "%1 노드가 %2ms 내로 응답했습니다.",
 	"host": "호스트",
+	"primary": "primary / run jobs",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "온라인",

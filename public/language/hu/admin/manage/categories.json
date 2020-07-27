@@ -27,6 +27,8 @@
 	"enable": "Engedélyezés",
 	"disable": "Letiltás",
 	"edit": "Szerkesztés",
+	"analytics": "Analytics",
+	"view-category": "View category",
 
 	"select-category": "Kategória kiválasztása",
 	"set-parent-category": "Szülő kategória beállítása",
@@ -76,7 +78,9 @@
 	"alert.user-search": "Itt megkereshetsz egy felhasználót...",
 	"alert.find-group": "Csoport keresése",
 	"alert.group-search": "Itt megkereshetsz egy csoportot...",
+	"alert.not-enough-whitelisted-tags": "Whitelisted tags are less than minimum tags, you need to create more whitelisted tags!",
 	"collapse-all": "Mind összecsukása",
 	"expand-all": "Mind kibontása",
-	"disable-on-create": "Disable on create"
+	"disable-on-create": "Disable on create",
+	"no-matches": "No matches"
 }

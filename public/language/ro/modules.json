@@ -1,6 +1,7 @@
 {
     "chat.chatting_with": "Chat with",
     "chat.placeholder": "introdu mesajul conversației aici, apasă enter pentru a trimite",
+    "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
     "chat.send": "Trimite",
     "chat.no_active": "Nu ai nici o conversație activă",
     "chat.user_typing": "%1 scrie ...",

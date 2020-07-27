@@ -27,6 +27,8 @@
 	"enable": "Iespējot",
 	"disable": "Atspējot",
 	"edit": "Rediģēt",
+	"analytics": "Analytics",
+	"view-category": "View category",
 
 	"select-category": "Atlasīt kategoriju",
 	"set-parent-category": "Iestatīt virskategoriju",
@@ -76,7 +78,9 @@
 	"alert.user-search": "Meklēt lietotājus šeit",
 	"alert.find-group": "Meklēt grupās",
 	"alert.group-search": "Meklēt grupas šeit...",
+	"alert.not-enough-whitelisted-tags": "Whitelisted tags are less than minimum tags, you need to create more whitelisted tags!",
 	"collapse-all": "Sakļaut visas",
 	"expand-all": "Izvērst visas",
-	"disable-on-create": "Atiestatīt pie izveidošanas"
+	"disable-on-create": "Atiestatīt pie izveidošanas",
+	"no-matches": "No matches"
 }

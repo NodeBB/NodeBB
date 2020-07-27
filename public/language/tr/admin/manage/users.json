@@ -108,5 +108,5 @@
 
 	"alerts.prompt-email": "Eposta:",
 	"alerts.email-sent-to": "%1'e bir davet e-postası gönderildi",
-	"alerts.x-users-found": "(%1) kullanıcı bulundu! Arama süresi: %2 ms."
+	"alerts.x-users-found": "%1 kullanıcı bulundu, (%2 saniye)"
 }

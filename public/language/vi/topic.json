@@ -38,7 +38,7 @@
     "bookmark_instructions": "Bấm vào đây để quay về đọc bài viết mới nhất trong chủ đề này.",
     "flag_post": "Flag this post",
     "flag_user": "Flag this user",
-    "merged_message": "Chủ đề này đã được sát nhập với <a href=\"/topic/%1\">%2</a>",
+    "merged_message": "This topic has been merged into <a href=\"%1\">%2</a>",
     "deleted_message": "Chủ đề này đã bị xóa. Chỉ ban quản trị mới xem được.",
     "following_topic.message": "Từ giờ bạn sẽ nhận được thông báo khi có ai đó gửi bài viết trong chủ đề này",
     "not_following_topic.message": "Bạn có thể xem chủ đề này trong danh sách chủ đề chưa xem, nhưng bạn sẽ không nhận thông báo khi có ai đó đăng bài viết trong chủ đề này",

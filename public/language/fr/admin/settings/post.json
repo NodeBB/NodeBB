@@ -42,7 +42,7 @@
 	"unread.cutoff": "Nombre de jours pour les messages non-lus",
 	"unread.min-track-last": "Nombre minimum de messages dans le sujet avant de garder en mémoire le dernier message lu",
 	"recent": "Réglages récents",
-	"recent.max-topics": "Maximum topics on /recent",
+	"recent.max-topics": "Maximum de sujets récents",
 	"recent.categoryFilter.disable": "Désactiver le filtrage des sujets dans les catégories ignorées sur la page /recent",
 	"signature": "Paramètres de signature",
 	"signature.disable": "Désactiver les signatures",

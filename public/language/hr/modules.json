@@ -1,6 +1,7 @@
 {
     "chat.chatting_with": "Chat with",
     "chat.placeholder": "Upišite poruku ovdje, ENTER za slanje",
+    "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
     "chat.send": "Pošalji",
     "chat.no_active": "Nemate aktivnih razgovora.",
     "chat.user_typing": "%1 piše poruku ...",

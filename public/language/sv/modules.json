@@ -1,6 +1,7 @@
 {
     "chat.chatting_with": "Chatta med",
     "chat.placeholder": "Skriv chattmeddelande här och tryck sen Enter för att skicka ",
+    "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
     "chat.send": "Skicka",
     "chat.no_active": "Du har inte några aktiva chattar.",
     "chat.user_typing": "%1 skriver ...",

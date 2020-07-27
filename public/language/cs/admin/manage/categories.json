@@ -27,6 +27,8 @@
 	"enable": "Povolit",
 	"disable": "Zakázat",
 	"edit": "Upravit",
+	"analytics": "Analytics",
+	"view-category": "View category",
 
 	"select-category": "Vyberte kategorii",
 	"set-parent-category": "Nastavit nadřazenou kategorii",
@@ -76,7 +78,9 @@
 	"alert.user-search": "Najít uživatele…",
 	"alert.find-group": "Najít skupinu",
 	"alert.group-search": "Hledat skupinu…",
+	"alert.not-enough-whitelisted-tags": "Whitelisted tags are less than minimum tags, you need to create more whitelisted tags!",
 	"collapse-all": "Sbalit vše",
 	"expand-all": "Rozbalit vše",
-	"disable-on-create": "Zakázat při vytvoření"
+	"disable-on-create": "Zakázat při vytvoření",
+	"no-matches": "No matches"
 }

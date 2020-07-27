@@ -1,6 +1,7 @@
 {
     "chat.chatting_with": "Czatuj z",
     "chat.placeholder": "Wpisz wiadomość tutaj i naciśnij Enter, aby wysłać.",
+    "chat.scroll-up-alert": "Przeglądasz starsze wiadomości, naciśnij tutaj by przejść do najnowszych",
     "chat.send": "Wyślij",
     "chat.no_active": "Brak aktywnych czatów",
     "chat.user_typing": "%1 pisze...",
@@ -58,7 +59,7 @@
     "composer.upload-file": "Wyślij plik",
     "composer.zen_mode": "Tryb Zen",
     "composer.select_category": "Wybierz kategorię",
-    "composer.textarea.placeholder": "Enter your post content here, drag and drop images",
+    "composer.textarea.placeholder": "Wprowadź tutaj zawartość swojego posta, możesz przeciągnąć i upuścić obrazki",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Anuluj",
     "bootbox.confirm": "Potwierdź",

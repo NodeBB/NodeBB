@@ -38,7 +38,7 @@
     "bookmark_instructions": "Kattints ide a beszélgetés utolsó hozzászólására ugráshoz.",
     "flag_post": "Flag this post",
     "flag_user": "Flag this user",
-    "merged_message": "A témakör következőbe lett összevonva: <a href=\"/topic/%1\">%2</a>",
+    "merged_message": "This topic has been merged into <a href=\"%1\">%2</a>",
     "deleted_message": "A  témakör törölve lett. Csak a témakör-kezelési joggal rendelkező felhasználók láthatják.",
     "following_topic.message": "Mostantól értesítést kapsz, mikor valaki hozzászól ehhez a témakörhöz.",
     "not_following_topic.message": "Látni fogod ezt a témakört az olvasatlan témakörök listáján, de nem kapsz értesítést, mikor valaki hozzászól a témakörhöz.",

@@ -108,5 +108,5 @@
 
 	"alerts.prompt-email": "メール:",
 	"alerts.email-sent-to": "招待メールが%1に送られました。",
-	"alerts.x-users-found": "ユーザー(s)％1が見つかりました!検索には％2ミリ秒かかりました。"
+	"alerts.x-users-found": "%1 user(s) found, (%2 seconds)"
 }

@@ -3,6 +3,7 @@
 	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "%1個節點在%2ms內響應！",
 	"host": "主機",
+	"primary": "primary / run jobs",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "在線",

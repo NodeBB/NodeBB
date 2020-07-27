@@ -27,6 +27,8 @@
 	"enable": "Etkinleştir",
 	"disable": "Devre dışı",
 	"edit": "Düzenle",
+	"analytics": "Analytics",
+	"view-category": "View category",
 
 	"select-category": "Kategori Seç",
 	"set-parent-category": "Ana Kategori Ayarla",
@@ -76,7 +78,9 @@
 	"alert.user-search": "Burada bir kullanıcı ara...",
 	"alert.find-group": "Bir Grup Ara",
 	"alert.group-search": "Burada bir grup ara...",
+	"alert.not-enough-whitelisted-tags": "Kullanılabilecek etiketlerin sayısı minimum etiket sayısından daha az, daha fazla etiket belirlemelisiniz. ",
 	"collapse-all": "Hepsini Kapat",
 	"expand-all": "Hepsini Genişlet",
-	"disable-on-create": "Oluşturma sırasında devre dışı bırak"
+	"disable-on-create": "Oluşturma sırasında devre dışı bırak",
+	"no-matches": "No matches"
 }

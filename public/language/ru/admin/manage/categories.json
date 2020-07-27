@@ -11,7 +11,7 @@
 	"num-recent-replies": "# последних ответов",
 	"ext-link": "Внешняя ссылка",
 	"is-section": "Рассматривать эту категорию как секцию",
-	"tag-whitelist": "Tag Whitelist",
+	"tag-whitelist": "Разрешенный список меток",
 	"upload-image": "Загрузить изображение",
 	"delete-image": "Удалить",
 	"category-image": "Изображение категории",
@@ -27,6 +27,8 @@
 	"enable": "Включить",
 	"disable": "Отключить",
 	"edit": "Редактировать",
+	"analytics": "Analytics",
+	"view-category": "View category",
 
 	"select-category": "Указать категорию",
 	"set-parent-category": "Указать родительскую категорию",
@@ -76,7 +78,9 @@
 	"alert.user-search": "Искать пользователя...",
 	"alert.find-group": "Найти группу",
 	"alert.group-search": "Искать группу...",
+	"alert.not-enough-whitelisted-tags": "Разрешенный список меток меньше чем минимальные метки, вам необходимо создать больше разрешенных меток.",
 	"collapse-all": "Свернуть всё",
 	"expand-all": "Развернуть всё",
-	"disable-on-create": "Отключить при создании"
+	"disable-on-create": "Отключить при создании",
+	"no-matches": "No matches"
 }

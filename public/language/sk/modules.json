@@ -1,6 +1,7 @@
 {
     "chat.chatting_with": "Konverzácia s",
     "chat.placeholder": "Sem napíšte správu, ktorú odošlete stlačením tlačidla 'Enter'",
+    "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
     "chat.send": "Odoslať",
     "chat.no_active": "Nemáte žiadne aktívne konverzácie.",
     "chat.user_typing": "%1 práve píše...",

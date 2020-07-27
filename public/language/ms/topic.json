@@ -38,7 +38,7 @@
     "bookmark_instructions": "Click here to return to the last read post in this thread.",
     "flag_post": "Flag this post",
     "flag_user": "Flag this user",
-    "merged_message": "This topic has been merged into <a href=\"/topic/%1\">%2</a>",
+    "merged_message": "This topic has been merged into <a href=\"%1\">%2</a>",
     "deleted_message": "Topik ini telah dipadam. Hanya pengguna dengan kuasa pengurusan boleh melihatnya.",
     "following_topic.message": "Anda akan menerima makluman apabila ada kiriman ke dalam topik ini",
     "not_following_topic.message": "You will see this topic in the unread topics list, but you will not receive notifications when somebody posts to this topic.",

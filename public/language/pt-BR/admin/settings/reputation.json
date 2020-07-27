@@ -5,10 +5,16 @@
 	"votes-are-public": "Todos os Votos São Públicos",
 	"thresholds": "Limites às atividades",
 	"min-rep-downvote": "Reputação mínima para votar negativamente em posts",
+	"downvotes-per-day": "Downvotes per day (set to 0 for unlimited downvotes)",
+	"downvotes-per-user-per-day": "Downvotes per user per day (set to 0 for unlimited downvotes)",
 	"min-rep-flag": "Reputação mínima para sinalizar posts",
 	"min-rep-website": "Reputação mínima para adicionar \"Website\" ao perfil do usuário",
 	"min-rep-aboutme": "Reputação mínima para adicionar \"Sobre mim\" ao perfil do usuário",
 	"min-rep-signature": "Reputação mínima para adicionar \"Assinatura\" ao perfil do usuário",
 	"min-rep-profile-picture": "Reputação mínima para adicionar \"Foto do Perfil\" ao perfil do usuário",
-	"min-rep-cover-picture": "Reputação mínima para adicionar \"Foto de Capa\" ao perfil do usuário"
+	"min-rep-cover-picture": "Reputação mínima para adicionar \"Foto de Capa\" ao perfil do usuário",
+
+	"flags": "Flag Settings",
+	"flags.limit-per-target": "Maximum number of times something can be flagged",
+	"flags.limit-per-target-placeholder": "Default: 0"
 }

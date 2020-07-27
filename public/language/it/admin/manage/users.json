@@ -108,5 +108,5 @@
 
 	"alerts.prompt-email": "Emails:",
 	"alerts.email-sent-to": "Un invito è stato inviato tramite mail a %1",
-	"alerts.x-users-found": "%1 utente(i) trovato! La ricerca ha impiegato %2 ms."
+	"alerts.x-users-found": "%1 utente(i) trovato(i), (%2 secondi)"
 }

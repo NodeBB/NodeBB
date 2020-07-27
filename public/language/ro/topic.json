@@ -38,7 +38,7 @@
     "bookmark_instructions": "Click here to return to the last read post in this thread.",
     "flag_post": "Flag this post",
     "flag_user": "Flag this user",
-    "merged_message": "This topic has been merged into <a href=\"/topic/%1\">%2</a>",
+    "merged_message": "This topic has been merged into <a href=\"%1\">%2</a>",
     "deleted_message": "Acest subiect a fost șters. Doar utilizatorii cu privilegii pentru moderarea subiectelor îl poate vedea.",
     "following_topic.message": "Vei primi notificări când cineva va posta un nou mesaj in acest subiect.",
     "not_following_topic.message": "You will see this topic in the unread topics list, but you will not receive notifications when somebody posts to this topic.",

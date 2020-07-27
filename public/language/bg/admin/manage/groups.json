@@ -8,6 +8,8 @@
 	"hidden": "Скрита",
 	"private": "Частна",
 	"edit": "Редактиране",
+	"delete": "Изтриване",
+	"download-csv": "Сваляне във формат „CSV“",
 	"search-placeholder": "Търсене",
 	"create": "Създаване на група",
 	"description-placeholder": "Кратко описание на групата",

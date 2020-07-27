@@ -3,6 +3,7 @@
 	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "%1 Knoten antworteten innerhalb von %2ms",
 	"host": "Host",
+	"primary": "primary / run jobs",
 	"pid": "PID",
 	"nodejs": "Node.js Version",
 	"online": "Online",

@@ -3,6 +3,7 @@
 	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "%1 csomópont válaszolt %2mp-n belül!",
 	"host": "host",
+	"primary": "primary / run jobs",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "online",

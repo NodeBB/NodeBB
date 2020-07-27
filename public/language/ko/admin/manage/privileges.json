@@ -4,6 +4,7 @@
 	"admin": "Admin",
 	"group-privileges": "Group Privileges",
 	"user-privileges": "User Privileges",
+	"edit-privileges": "Edit Privileges",
 	"chat": "대화",
 	"upload-images": "이미지 업로드",
 	"upload-files": "파일 업로드",
@@ -33,7 +34,6 @@
 	"delete-topics": "게시물 삭제",
 	"purge": "Purge",
 	"moderate": "Moderate",
-
 	"admin-dashboard": "Dashboard",
 	"admin-categories": "Categories",
 	"admin-privileges": "Privileges",

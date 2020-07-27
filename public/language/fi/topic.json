@@ -38,7 +38,7 @@
     "bookmark_instructions": "Klikkaa tästä palataksesi viimeisimpään luettuun viestiin tässä aiheessa",
     "flag_post": "Flag this post",
     "flag_user": "Flag this user",
-    "merged_message": "Tämä aihe on sulautettu aiheeseen <a href=\"/topic/%1\"> %2¤</a>",
+    "merged_message": "This topic has been merged into <a href=\"%1\">%2</a>",
     "deleted_message": "Tämä aihe on poistettu. Vain käyttäjät, joilla on aiheen hallintaoikeudet, voivat nähdä sen.",
     "following_topic.message": "Saat nyt ilmoituksen, kun joku kirjoittaa tähän aiheeseen.",
     "not_following_topic.message": "Et näe tätä aihetta lukemattomissa aiheissa, mutta saat ilmoituksen kun joku lähettää viestin tähän aiheeseen.",

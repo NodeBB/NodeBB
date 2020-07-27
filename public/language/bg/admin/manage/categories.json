@@ -27,6 +27,8 @@
 	"enable": "Включване",
 	"disable": "Изключване",
 	"edit": "Редактиране",
+	"analytics": "Analytics",
+	"view-category": "View category",
 
 	"select-category": "Изберете категория",
 	"set-parent-category": "Задайте базова категория",
@@ -76,7 +78,9 @@
 	"alert.user-search": "Потърсете потребител тук…",
 	"alert.find-group": "Търсене на група",
 	"alert.group-search": "Потърсете група тук…",
+	"alert.not-enough-whitelisted-tags": "Разрешените етикети са по-малко от минимума. Трябва да създадете още разрешени етикети!",
 	"collapse-all": "Свиване на всички",
 	"expand-all": "Разгъване на всички",
-	"disable-on-create": "Изключване при създаване"
+	"disable-on-create": "Изключване при създаване",
+	"no-matches": "Няма съвпадения"
 }

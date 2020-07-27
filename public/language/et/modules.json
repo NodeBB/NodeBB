@@ -1,6 +1,7 @@
 {
     "chat.chatting_with": "Chat with",
     "chat.placeholder": "Kirjuta sõnum siia ning vajuta enterit sõnumi saatmiseks",
+    "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
     "chat.send": "Saada",
     "chat.no_active": "Sul ei ole hetkel aktiivseid vestlusi.",
     "chat.user_typing": "%1 kirjutab sõnumit...",

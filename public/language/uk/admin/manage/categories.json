@@ -27,6 +27,8 @@
 	"enable": "Увімкнути",
 	"disable": "Вимкнути",
 	"edit": "Редагувати",
+	"analytics": "Analytics",
+	"view-category": "View category",
 
 	"select-category": "Вибрати категорію",
 	"set-parent-category": "Встановити батьківську категорію",
@@ -76,7 +78,9 @@
 	"alert.user-search": "Шукайте користувача тут...",
 	"alert.find-group": "Знайти групу",
 	"alert.group-search": "Шукайте групу тут...",
+	"alert.not-enough-whitelisted-tags": "Whitelisted tags are less than minimum tags, you need to create more whitelisted tags!",
 	"collapse-all": "Згорнути всі",
 	"expand-all": "Розгорнути всі",
-	"disable-on-create": "Disable on create"
+	"disable-on-create": "Disable on create",
+	"no-matches": "No matches"
 }

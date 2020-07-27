@@ -4,6 +4,7 @@
 	"admin": "Admin",
 	"group-privileges": "群组权限",
 	"user-privileges": "用户权限",
+	"edit-privileges": "Edit Privileges",
 	"chat": "对话",
 	"upload-images": "上传图片",
 	"upload-files": "上传文件",
@@ -33,7 +34,6 @@
 	"delete-topics": "删除主题",
 	"purge": "清除",
 	"moderate": "版主",
-
 	"admin-dashboard": "Dashboard",
 	"admin-categories": "Categories",
 	"admin-privileges": "Privileges",

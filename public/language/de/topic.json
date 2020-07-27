@@ -38,7 +38,7 @@
     "bookmark_instructions": "Klicke hier, um zum letzten gelesenen Beitrag des Themas zurückzukehren.",
     "flag_post": "Flag this post",
     "flag_user": "Flag this user",
-    "merged_message": "Dieses Thema wurde mit <a href=\"/topic/%1\">%2</a> zusammengeführt",
+    "merged_message": "This topic has been merged into <a href=\"%1\">%2</a>",
     "deleted_message": "Dieses Thema wurde gelöscht. Nur Nutzer mit entsprechenden Rechten können es sehen.",
     "following_topic.message": "Du erhältst nun eine Benachrichtigung, wenn jemand einen Beitrag zu diesem Thema verfasst.",
     "not_following_topic.message": "Ungelesene Beiträge in diesem Thema werden angezeigt, aber du erhältst keine Benachrichtigung wenn jemand einen Beitrag zu diesem Thema verfasst.",

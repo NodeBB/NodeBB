@@ -38,7 +38,7 @@
     "bookmark_instructions": "Haz click aquí para volver a tu último mensaje leído en este tema",
     "flag_post": "Flag this post",
     "flag_user": "Flag this user",
-    "merged_message": "Este tema ha sido fusionado en <a href=\"/topic/%1\">%2</a>",
+    "merged_message": "This topic has been merged into <a href=\"%1\">%2</a>",
     "deleted_message": "Este tema ha sido borrado. Solo los usuarios que tengan privilegios de administración de temas pueden verlo.",
     "following_topic.message": "Ahora recibiras notificaciones cuando alguien publique en este tema.",
     "not_following_topic.message": "Podras ver este tema en la lista de no leidos, pero no recibirás notificaciones cuando alguien escriba en él.",

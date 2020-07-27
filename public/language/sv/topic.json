@@ -38,7 +38,7 @@
     "bookmark_instructions": "Klicka här för att återgå till senast lästa inlägg i detta ämne.",
     "flag_post": "Flag this post",
     "flag_user": "Flag this user",
-    "merged_message": "Detta ämne har sammanslagits med <a href=\"/topic/%1\">%2</a>",
+    "merged_message": "This topic has been merged into <a href=\"%1\">%2</a>",
     "deleted_message": "Det här ämnet har raderats. Endast användare med ämneshanterings-privilegier kan se det.",
     "following_topic.message": "Du kommer nu få notiser när någon gör inlägg i detta ämne.",
     "not_following_topic.message": "Du kommer att se det här ämnet i listan olästa ämnen, men du kommer inte att få meddelande när någon gör inlägg till detta ämne.",

@@ -2,9 +2,9 @@
 	"crawlability-settings": "Crawlability Settings",
 	"robots-txt": "Custom Robots.txt <small>Leave blank for default</small>",
 	"sitemap-feed-settings": "Sitemap & Feed Settings",
-	"disable-rss-feeds": "Disable RSS Feeds",
-	"disable-sitemap-xml": "Disable Sitemap.xml",
+	"disable-rss-feeds": "Desativar RSS Feeds",
+	"disable-sitemap-xml": "Desativar Sitemap.xml",
 	"sitemap-topics": "Number of Topics to display in the Sitemap",
-	"clear-sitemap-cache": "Clear Sitemap Cache",
-	"view-sitemap": "View Sitemap"
+	"clear-sitemap-cache": "Limpar Cache do Sitemap",
+	"view-sitemap": "Ver Sitemap"
 }

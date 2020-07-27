@@ -5,10 +5,16 @@
 	"votes-are-public": "公开所有投票",
 	"thresholds": "操作限制",
 	"min-rep-downvote": "踩帖子 需要的最低声望",
+	"downvotes-per-day": "Downvotes per day (set to 0 for unlimited downvotes)",
+	"downvotes-per-user-per-day": "Downvotes per user per day (set to 0 for unlimited downvotes)",
 	"min-rep-flag": "举报帖子 需要的最低声望",
 	"min-rep-website": "添加 个人网站 需要的最低声望",
 	"min-rep-aboutme": "添加 个人 “关于我”页 需要的最低声望",
 	"min-rep-signature": "添加 签名档 需要的最低声望",
 	"min-rep-profile-picture": "添加 个人资料图片 需要的最低声望",
-	"min-rep-cover-picture": "添加 个人封面图片 需要的最低声望"
+	"min-rep-cover-picture": "添加 个人封面图片 需要的最低声望",
+
+	"flags": "Flag Settings",
+	"flags.limit-per-target": "Maximum number of times something can be flagged",
+	"flags.limit-per-target-placeholder": "Default: 0"
 }

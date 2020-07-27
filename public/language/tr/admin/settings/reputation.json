@@ -5,10 +5,16 @@
 	"votes-are-public": "Tüm Oylar Herkese Açık",
 	"thresholds": "Etkinlik Eşikleri",
 	"min-rep-downvote": "Eksilenen iletiler için minimum itibar",
+	"downvotes-per-day": "Eksi oy günlük limiti (sınırsız eksi oy için 0 giriniz)",
+	"downvotes-per-user-per-day": "Aynı kişiye verilecek eksi oy günlük limiti (sınırsız eksi oy için 0 giriniz)",
 	"min-rep-flag": "Bayraklı iletiler için minimum itibar",
 	"min-rep-website": "Kullanıcı profiline \"Web Sitesi\" eklemek için gerekli asgari itibar",
 	"min-rep-aboutme": "Kullanıcı profiline \"Hakkımda\" eklemek için gereken asgari itibar",
 	"min-rep-signature": "Kullanıcı profiline \"İmza\" eklemek için gerekli asgari itibar",
 	"min-rep-profile-picture": "Kullanıcı profiline \"Profil Resmi\" eklemek için gerekli asgari itibar",
-	"min-rep-cover-picture": "Kullanıcı profiline \"Kapak Resmi\" eklemek için gerekli asgari itibar"
+	"min-rep-cover-picture": "Kullanıcı profiline \"Kapak Resmi\" eklemek için gerekli asgari itibar",
+
+	"flags": "Şikayet Ayarları",
+	"flags.limit-per-target": "Maksimum şikayet edilme sayısı",
+	"flags.limit-per-target-placeholder": "Varsayılan: 0"
 }

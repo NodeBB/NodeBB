@@ -27,6 +27,8 @@
 	"enable": "启用",
 	"disable": "禁用",
 	"edit": "编辑",
+	"analytics": "Analytics",
+	"view-category": "View category",
 
 	"select-category": "选择版块",
 	"set-parent-category": "设置父版块",
@@ -76,7 +78,9 @@
 	"alert.user-search": "在这里查找用户…",
 	"alert.find-group": "查找群组",
 	"alert.group-search": "在此处搜索群组...",
+	"alert.not-enough-whitelisted-tags": "Whitelisted tags are less than minimum tags, you need to create more whitelisted tags!",
 	"collapse-all": "全部折叠",
 	"expand-all": "全部展开",
-	"disable-on-create": "禁用创建"
+	"disable-on-create": "禁用创建",
+	"no-matches": "No matches"
 }

@@ -5,7 +5,7 @@
 	"enable-http": "Enable HTTP logging",
 	"enable-socket": "Enable socket.io event logging",
 	"file-path": "Caminho para o Arquivo de Registos",
-	"file-path-placeholder": "/path/to/log/file.log ::: leave blank to log to your terminal",
+	"file-path-placeholder": "/caminho/para/ficheiro/registo.log ::: deixa em branco para registar no teu terminal",
 
 	"control-panel": "Logger Control Panel",
 	"update-settings": "Update Logger Settings"

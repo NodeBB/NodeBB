@@ -12,9 +12,9 @@
 	"unban": "Desbanir Utilizador(es)",
 	"reset-lockout": "Redefinir Bloqueio",
 	"reset-flags": "Redefinir Denúncias",
-	"delete": "Delete <strong>User(s)</strong>",
-	"delete-content": "Delete User(s) <strong>Content</strong>",
-	"purge": "Delete <strong>User(s)</strong> and <strong>Content</strong>",
+	"delete": "Eliminar <strong>Utilizador(es)</strong>",
+	"delete-content": "Eliminar <strong>Conteúdo</strong> do(s) Utilizador(es)",
+	"purge": "Eliminar <strong>Utilizador(es)</strong> e os seus <strong>Conteúdos</strong>",
 	"download-csv": "Transferir CSV",
 	"manage-groups": "Gerir Grupos",
 	"add-group": "Adicionar Grupo",
@@ -97,7 +97,7 @@
 	"alerts.confirm-delete": "<strong>Warning!</strong><p>Do you really want to delete <strong>user(s)</strong>?</p><p>This action is not reversible! Only the user account will be deleted, their posts and topics will remain.</p>",
 	"alerts.delete-success": "Utilizador(es) Eliminados!",
 	"alerts.confirm-delete-content": "<strong>Warning!</strong><p>Do you really want to delete these user(s) <strong>content</strong>?</p><p>This action is not reversible! The users' accounts will remain, but their posts and topics will be deleted.</p>",
-	"alerts.delete-content-success": "User(s) Content Deleted!",
+	"alerts.delete-content-success": "Conteúdo do(s) Utilizador(es) Eliminado!",
 	"alerts.confirm-purge": "<strong>Warning!</strong><p>Do you really want to delete <strong>user(s) and their content</strong>?</p><p>This action is not reversible! All user data and content will be erased!</p>",
 	"alerts.create": "Criar Utilizador",
 	"alerts.button-create": "Criar",
@@ -108,5 +108,5 @@
 
 	"alerts.prompt-email": "E-mails:",
 	"alerts.email-sent-to": "Foi enviado um e-mail de convite para %1",
-	"alerts.x-users-found": "%1 utilizador(es) encontrado(s)! A pesquisa demorou %2 ms."
+	"alerts.x-users-found": "%1 utilizador(es) encontrado(s), (%2 segundos)"
 }

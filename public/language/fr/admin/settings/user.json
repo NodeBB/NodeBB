@@ -68,7 +68,7 @@
 	"digest-freq.weekly": "Hebdomadaire",
 	"digest-freq.monthly": "Mensuel",
 	"email-chat-notifs": "Envoyer un e-mail si un nouveau message de chat arrive lorsque je ne suis pas en ligne",
-	"email-post-notif": "Envoyer un email lors de réponses envoyées aux sujets auxquels je suis abonné",
+	"email-post-notif": "Envoyer un email lors de réponses envoyées aux sujets auxquels que je suis",
 	"follow-created-topics": "S'abonner aux sujets que vous créez",
 	"follow-replied-topics": "S'abonner aux sujets auxquels vous répondez",
 	"default-notification-settings": "Paramètres des notifications par défaut",

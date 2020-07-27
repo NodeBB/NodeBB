@@ -1,6 +1,7 @@
 {
     "chat.chatting_with": "Discuter avec",
     "chat.placeholder": "Écrivez votre message ici et appuyez sur entrée pour envoyer",
+    "chat.scroll-up-alert": "Vous consultez des messages plus anciens, cliquez ici pour accéder au message le plus récent.",
     "chat.send": "Envoyer",
     "chat.no_active": "Vous n'avez aucune discussion en cours.",
     "chat.user_typing": "%1 est en train d'écrire ...",

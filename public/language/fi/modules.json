@@ -1,6 +1,7 @@
 {
     "chat.chatting_with": "Chat with",
     "chat.placeholder": "Kirjoita viestisi tähän ja paina enter lähettääksesi",
+    "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
     "chat.send": "Lähetä",
     "chat.no_active": "Sinulla ei ole aktiivisia keskusteluita.",
     "chat.user_typing": "%1 kirjoittaa ...",

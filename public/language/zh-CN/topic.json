@@ -38,7 +38,7 @@
     "bookmark_instructions": "点击阅读本主题帖中的最新回复",
     "flag_post": "Flag this post",
     "flag_user": "Flag this user",
-    "merged_message": "此主题已并入<a href=\"/topic/%1\">%2</a>",
+    "merged_message": "This topic has been merged into <a href=\"%1\">%2</a>",
     "deleted_message": "此主题已被删除。只有拥有主题管理权限的用户可以查看。",
     "following_topic.message": "当有人回复此主题时，您会收到通知。",
     "not_following_topic.message": "您将在未读主题列表中看到这个主题，但您不会在帖子被回复时收到通知。",

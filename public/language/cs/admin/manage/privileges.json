@@ -4,6 +4,7 @@
 	"admin": "Admin",
 	"group-privileges": "Oprávnění skupiny",
 	"user-privileges": "Oprávnění uživatele",
+	"edit-privileges": "Edit Privileges",
 	"chat": "Konverzace",
 	"upload-images": "Nahrát obrázky",
 	"upload-files": "Náhrát soubory",
@@ -33,7 +34,6 @@
 	"delete-topics": "Odstranit témata",
 	"purge": "Vyčistit",
 	"moderate": "Moderace",
-
 	"admin-dashboard": "Dashboard",
 	"admin-categories": "Categories",
 	"admin-privileges": "Privileges",

@@ -8,6 +8,8 @@
 	"hidden": "Hidden",
 	"private": "Private",
 	"edit": "Rediģēt",
+	"delete": "Delete",
+	"download-csv": "Download CSV",
 	"search-placeholder": "Meklēt",
 	"create": "Izveidot grupu",
 	"description-placeholder": "Īss grupas apraksts",

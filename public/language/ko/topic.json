@@ -38,7 +38,7 @@
     "bookmark_instructions": "이 스레드에서 읽은 마지막 포스트로 이동하시려면 여기를 클릭 하세요.",
     "flag_post": "Flag this post",
     "flag_user": "Flag this user",
-    "merged_message": "이 게시물은 <a href=\"/topic/%1\">%2</a>(으)로 병합되었습니다",
+    "merged_message": "This topic has been merged into <a href=\"%1\">%2</a>",
     "deleted_message": "이 게시물은 삭제됐습니다. 게시물 관리 권한이 있는 사용자만 볼 수 있습니다.",
     "following_topic.message": "이제 이 게시물에 새 답글이 달리면 알림을 받습니다.",
     "not_following_topic.message": "이 게시물을 아직 읽지 않은 게시물 목록에서 볼 수 있지만, 이 주제에 달린 포스트에 대해서는 알림을 받지 않습니다.",

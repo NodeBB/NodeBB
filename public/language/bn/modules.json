@@ -1,6 +1,7 @@
 {
     "chat.chatting_with": "Chat with",
     "chat.placeholder": "এখানে আপনার বার্তা লিখুন। পাঠানোর জন্য Enter চাপুন",
+    "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
     "chat.send": "প্রেরন করুন",
     "chat.no_active": "আপনার কোন সচল কথোপকথন নেই",
     "chat.user_typing": "%1 লিখছেন",

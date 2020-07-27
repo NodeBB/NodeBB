@@ -1,6 +1,7 @@
 {
     "chat.chatting_with": "与<span id=\"chat-with-name\"></span>聊天",
     "chat.placeholder": "在这里输入聊天消息，按回车键发送",
+    "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
     "chat.send": "发送",
     "chat.no_active": "暂无聊天",
     "chat.user_typing": "%1 正在输入……",

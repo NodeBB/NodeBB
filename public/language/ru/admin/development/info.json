@@ -1,8 +1,9 @@
 {
-	"you-are-on": "You are on <strong>%1:%2</strong>",
+	"you-are-on": "Вы находитесь на %1:%2",
 	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "Узлов: %1. Время ответа %2мс!",
 	"host": "хост",
+	"primary": "primary / run jobs",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "онлайн",

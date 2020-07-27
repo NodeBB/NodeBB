@@ -5,10 +5,16 @@
 	"votes-are-public": "Alle Bewertungen sind öffentlich",
 	"thresholds": "Aktivitätsschwelle",
 	"min-rep-downvote": "Minimales Ansehen um Beiträge negativ zu bewerten",
+	"downvotes-per-day": "Downvotes per day (set to 0 for unlimited downvotes)",
+	"downvotes-per-user-per-day": "Downvotes per user per day (set to 0 for unlimited downvotes)",
 	"min-rep-flag": "Minimales Ansehen und Beiträge zu melden",
 	"min-rep-website": "Erforderliche Reputation um eine \"Website\" zum Benutzerprofil hinzuzufügen",
 	"min-rep-aboutme": "Erforderliche Reputation um eine \"Über mich\"-Sektion zum Benutzerprofil hinzuzufügen",
 	"min-rep-signature": "Erforderliche Reputation um eine \"Signatur\" zum Benutzerprofil hinzuzufügen",
 	"min-rep-profile-picture": "Minimale Reputation um ein Profilbild hinzuzufügen",
-	"min-rep-cover-picture": "Minimale Reputation um ein Deckbild hinzuzufügen"
+	"min-rep-cover-picture": "Minimale Reputation um ein Deckbild hinzuzufügen",
+
+	"flags": "Flag Settings",
+	"flags.limit-per-target": "Maximum number of times something can be flagged",
+	"flags.limit-per-target-placeholder": "Default: 0"
 }

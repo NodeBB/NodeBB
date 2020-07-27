@@ -108,5 +108,5 @@
 
 	"alerts.prompt-email": "邮件：",
 	"alerts.email-sent-to": "已发送邀请给 %1",
-	"alerts.x-users-found": "找到 %1 位用户！搜索耗时 %2 毫秒。"
+	"alerts.x-users-found": "%1 user(s) found, (%2 seconds)"
 }

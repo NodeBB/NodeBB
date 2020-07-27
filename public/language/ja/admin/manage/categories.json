@@ -27,6 +27,8 @@
 	"enable": "有効",
 	"disable": "無効",
 	"edit": "編集",
+	"analytics": "Analytics",
+	"view-category": "View category",
 
 	"select-category": "カテゴリを選択",
 	"set-parent-category": "親カテゴリとして設定",
@@ -76,7 +78,9 @@
 	"alert.user-search": "ここでユーザーを検索...",
 	"alert.find-group": "グループを探す",
 	"alert.group-search": "ここでグループを検索する...",
+	"alert.not-enough-whitelisted-tags": "Whitelisted tags are less than minimum tags, you need to create more whitelisted tags!",
 	"collapse-all": "すべて折りたたむ",
 	"expand-all": "すべて展開する",
-	"disable-on-create": "作成時に無効にする"
+	"disable-on-create": "作成時に無効にする",
+	"no-matches": "No matches"
 }

@@ -108,5 +108,5 @@
 
 	"alerts.prompt-email": "Emails: ",
 	"alerts.email-sent-to": "Meghívó email elküldve %1 részére",
-	"alerts.x-users-found": "%1 felhasználó található! A keresés %2 másodpercet vett igénybe."
+	"alerts.x-users-found": "%1 user(s) found, (%2 seconds)"
 }

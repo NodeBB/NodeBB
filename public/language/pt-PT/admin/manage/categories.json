@@ -27,6 +27,8 @@
 	"enable": "Ativar",
 	"disable": "Desativar",
 	"edit": "Editar",
+	"analytics": "Analytics",
+	"view-category": "View category",
 
 	"select-category": "Selecionar Categoria",
 	"set-parent-category": "Definir uma Categoria Pai",
@@ -55,10 +57,10 @@
 
 	"analytics.back": "Voltar à Lista de Categorias",
 	"analytics.title": "Estatísticas para a categoria \"%1\"",
-	"analytics.pageviews-hourly": "<strong>Figure 1</strong> &ndash; Hourly page views for this category</small>",
-	"analytics.pageviews-daily": "<strong>Figure 2</strong> &ndash; Daily page views for this category</small>",
-	"analytics.topics-daily": "<strong>Figure 3</strong> &ndash; Daily topics created in this category</small>",
-	"analytics.posts-daily": "<strong>Figure 4</strong> &ndash; Daily posts made in this category</small>",
+	"analytics.pageviews-hourly": "<strong>Figura 1</strong> &ndash; Visualizações por hora para esta categoria",
+	"analytics.pageviews-daily": "<strong>Figura 2</strong> &ndash; Visualizações por dia para esta categoria</small>",
+	"analytics.topics-daily": "<strong>Figura 3</strong> &ndash; Tópicos por dia criados nesta categoria</small>",
+	"analytics.posts-daily": "<strong>Figura 4</strong> &ndash; Publicações por dia feitas nesta categoria</small>",
 
 	"alert.created": "Criada",
 	"alert.create-success": "Categoria criada com sucesso!",
@@ -76,7 +78,9 @@
 	"alert.user-search": "Procurar por um utilizador aqui...",
 	"alert.find-group": "Procurar um Grupo",
 	"alert.group-search": "Procura por um grupo aqui...",
+	"alert.not-enough-whitelisted-tags": "Whitelisted tags are less than minimum tags, you need to create more whitelisted tags!",
 	"collapse-all": "Recolher Todas",
 	"expand-all": "Expandir Todas",
-	"disable-on-create": "Desativar imediatamente ao criar"
+	"disable-on-create": "Desativar imediatamente ao criar",
+	"no-matches": "No matches"
 }

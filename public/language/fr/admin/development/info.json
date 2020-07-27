@@ -3,6 +3,7 @@
 	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "%1 noeuds ont répondu en %2ms !",
 	"host": "hôte",
+	"primary": "Tâches principales / Exécuter",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "en ligne",

@@ -4,6 +4,7 @@
 	"admin": "מנהל",
 	"group-privileges": "הרשאות קבוצתיות",
 	"user-privileges": "הרשאות משתמש",
+	"edit-privileges": "Edit Privileges",
 	"chat": "צ'אט",
 	"upload-images": "העלאת תמונות",
 	"upload-files": "העלאת קבצים",
@@ -33,7 +34,6 @@
 	"delete-topics": "מחיקת נושא",
 	"purge": "Purge",
 	"moderate": "Moderate",
-
 	"admin-dashboard": "לוח מחוונים",
 	"admin-categories": "קטגוריות",
 	"admin-privileges": "הרשאות",

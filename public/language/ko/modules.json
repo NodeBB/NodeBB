@@ -1,6 +1,7 @@
 {
     "chat.chatting_with": "대화하기",
     "chat.placeholder": "메시지를 여기에 입력한 후 엔터를 눌러 전송하세요.",
+    "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
     "chat.send": "전송",
     "chat.no_active": "활성화된 채팅이 없습니다.",
     "chat.user_typing": "%1 님이 입력 중입니다.",

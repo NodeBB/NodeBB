@@ -8,6 +8,8 @@
 	"hidden": "Hidden",
 	"private": "Private",
 	"edit": "수정",
+	"delete": "Delete",
+	"download-csv": "Download CSV",
 	"search-placeholder": "검색",
 	"create": "그룹 만들기",
 	"description-placeholder": "그룹에 대한 짧은 설명",

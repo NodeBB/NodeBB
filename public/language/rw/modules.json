@@ -1,6 +1,7 @@
 {
     "chat.chatting_with": "Chat with",
     "chat.placeholder": "Andika ubutumwa bwawe aha. Ushobora gukanda \"Enter\" ngo wohereze.",
+    "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
     "chat.send": "Ohereza",
     "chat.no_active": "Nta biganiro byo mu gikari ufite. ",
     "chat.user_typing": "%1 ari kwandika ...",

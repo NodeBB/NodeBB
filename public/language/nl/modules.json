@@ -1,6 +1,7 @@
 {
     "chat.chatting_with": "Chat met",
     "chat.placeholder": "Typ een chatbericht hier, toets enter om te verzenden",
+    "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
     "chat.send": "Verzenden",
     "chat.no_active": "Er zijn geen actieve chats.",
     "chat.user_typing": "%1 is aan het typen ...",
