@@ -7,16 +7,16 @@
                     <div class="toggle">
                         <i class="fa fa-minus"></i>
                     </div>
-                    <div class="icon" style="
-                        color: {categories.color};
-                        background-color: {categories.bgColor};
-                        <!-- IF categories.backgroundImage -->
-                        background-image: url('{categories.backgroundImage}');
-                        <!-- ENDIF categories.backgroundImage -->
-                    ">
-                        <i data-name="icon" value="{categories.icon}" class="fa {categories.icon}"></i>
-                    </div>
                     <div class="information">
+                        <div class="icon" style="
+                            color: {categories.color};
+                            background-color: {categories.bgColor};
+                            <!-- IF categories.backgroundImage -->
+                            background-image: url('{categories.backgroundImage}');
+                            <!-- ENDIF categories.backgroundImage -->
+                        ">
+                            <i data-name="icon" value="{categories.icon}" class="fa {categories.icon}"></i>
+                        </div>
                         <h5 class="category-header">{categories.name}</h5>
                     </div>
                 </div>

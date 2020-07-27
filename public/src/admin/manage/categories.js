@@ -291,7 +291,7 @@ define('admin/manage/categories', [
 					sortables[parentId] = Sortable.create($('ul[data-cid="' + parentId + '"]')[0], {
 						group: 'cross-categories',
 						animation: 150,
-						handle: '.icon',
+						handle: '.information',
 						dataIdAttr: 'data-cid',
 						ghostClass: 'placeholder',
 						onAdd: itemDidAdd,
