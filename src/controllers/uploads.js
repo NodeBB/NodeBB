@@ -33,7 +33,11 @@ uploadsController.upload = async function (req, res, filesIterator) {
 	}
 
 	try {
-		const images = await Promise.all(files.map(fileObj => filesIterator(fileObj)));
+		const images = [];
+		for (const fileObj of files) {
+			/* eslint-disable no-await-in-loop */
+			images.push(await filesIterator(fileObj));
+		}
 		res.status(200).json(images);
 	} catch (err) {
 		res.status(500).json({ path: req.path, error: err.message });
