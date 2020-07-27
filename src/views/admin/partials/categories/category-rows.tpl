@@ -23,20 +23,25 @@
             </div>
             <div class="col-md-3">
                 <div class="clearfix pull-right text-right">
-                    <div class="btn-group">
-                        <button data-cid="{categories.cid}" data-action="toggle" data-disabled="{categories.disabled}" class="btn btn-sm <!-- IF categories.disabled -->btn-primary<!-- ELSE -->btn-danger<!-- ENDIF categories.disabled -->">
-                            <!-- IF categories.disabled -->
-                            [[admin/manage/categories:enable]]
-                            <!-- ELSE -->
-                            [[admin/manage/categories:disable]]
-                            <!-- ENDIF categories.disabled -->
-                        </button>
-                        <a href="./categories/{categories.cid}/analytics" class="btn btn-default btn-sm">
-                            <i class="fa fa-line-chart"></i>
-                        </a>
-                        <a href="./categories/{categories.cid}" class="btn btn-default btn-sm">
-                            [[admin/manage/categories:edit]]
-                        </a>
+                    <div class="btn-group category-tools">
+                        <button class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" type="button"><i class="fa fa-fw fa-ellipsis-h"></i></button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li><a href="./categories/{categories.cid}">[[admin/manage/categories:edit]]</a></li>
+                            <li><a href="./categories/{categories.cid}/analytics">[[admin/manage/categories:analytics]]</a></li>
+                            <li><a href="{config.relative_path}/admin/manage/privileges/{categories.cid}">[[admin/manage/categories:privileges]]</a></li>
+
+                            <li><a href="{config.relative_path}/category/{categories.cid}">[[admin/manage/categories:view-category]]</a></li>
+
+                            <li>
+                                <a href="#" data-disable-cid="{categories.cid}" data-action="toggle" data-disabled="{categories.disabled}">
+                                {{{if categories.disabled}}}
+                                [[admin/manage/categories:enable]]
+                                {{{else}}}
+                                [[admin/manage/categories:disable]]
+                                {{{end}}}
+                                </a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>

@@ -27,6 +27,8 @@
 	"enable": "Enable",
 	"disable": "Disable",
 	"edit": "Edit",
+	"analytics": "Analytics",
+	"view-category": "View category",
 
 	"select-category": "Select Category",
 	"set-parent-category": "Set Parent Category",

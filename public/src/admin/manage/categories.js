@@ -22,9 +22,9 @@ define('admin/manage/categories', [
 		$('button[data-action="create"]').on('click', Categories.throwCreateModal);
 
 		// Enable/Disable toggle events
-		$('.categories').on('click', 'button[data-action="toggle"]', function () {
+		$('.categories').on('click', '.category-tools [data-action="toggle"]', function () {
 			var $this = $(this);
-			var cid = $this.attr('data-cid');
+			var cid = $this.attr('data-disable-cid');
 			var parentEl = $this.parents('li[data-cid="' + cid + '"]');
 			var disabled = parentEl.hasClass('disabled');
 			var childrenEls = parentEl.find('li[data-cid]');
@@ -34,14 +34,10 @@ define('admin/manage/categories', [
 
 			parentEl.toggleClass('disabled', !disabled);
 			childrenEls.toggleClass('disabled', !disabled);
-
 			$this.translateText(!disabled ? '[[admin/manage/categories:enable]]' : '[[admin/manage/categories:disable]]');
-			$this.toggleClass('btn-primary', !disabled).toggleClass('btn-danger', disabled);
-			childrenEls.find('button[data-action="toggle"]').translateText(!disabled ? '[[admin/manage/categories:enable]]' : '[[admin/manage/categories:disable]]');
-			childrenEls.find('button[data-action="toggle"]').toggleClass('btn-primary', !disabled).toggleClass('btn-danger', disabled);
+			childrenEls.find('li a[data-action="toggle"]').translateText(!disabled ? '[[admin/manage/categories:enable]]' : '[[admin/manage/categories:disable]]');
 
 			Categories.toggle([cid].concat(childrenCids), !disabled);
-			return false;
 		});
 
 		$('.categories').on('click', '.toggle', function () {

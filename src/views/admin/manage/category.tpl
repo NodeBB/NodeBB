@@ -180,6 +180,9 @@
 					<a href="{config.relative_path}/admin/manage/privileges/{category.cid}" class="btn btn-info btn-block">
 						<i class="fa fa-gear"></i> [[admin/manage/privileges:edit-privileges]]
 					</a>
+					<a href="{config.relative_path}/category/{category.cid}" class="btn btn-info btn-block">
+						<i class="fa fa-eye"></i> [[admin/manage/category:view-category]]
+					</a>
 					<button class="btn btn-info btn-block copy-settings">
 						<i class="fa fa-files-o"></i> [[admin/manage/categories:copy-settings]]
 					</button>
