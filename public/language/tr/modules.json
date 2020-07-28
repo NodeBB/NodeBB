@@ -1,7 +1,7 @@
 {
     "chat.chatting_with": "Sohbet",
     "chat.placeholder": "Buraya bir mesaj girin, göndermek için girişe basın",
-    "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
+    "chat.scroll-up-alert": "Eski mesajlara bakıyorsunuz, en yeni mesajları görmek için buraya tıklayınız.",
     "chat.send": "Gönder",
     "chat.no_active": "Aktif sohbet mevcut değil",
     "chat.user_typing": "%1 yazıyor ...",

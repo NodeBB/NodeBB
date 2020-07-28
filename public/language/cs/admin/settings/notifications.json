@@ -2,6 +2,5 @@
 	"notifications": "Oznámení",
 	"welcome-notification": "Uvítání",
 	"welcome-notification-link": "Odkaz na uvítání",
-	"welcome-notification-uid": "Uvítání uživatele (UID)",
-	"notification-alert-timeout": "Čas pro zobrazení oznámení"
+	"welcome-notification-uid": "Uvítání uživatele (UID)"
 }

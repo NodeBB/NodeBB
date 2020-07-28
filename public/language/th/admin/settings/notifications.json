@@ -2,6 +2,5 @@
 	"notifications": "การแจ้งเตือน",
 	"welcome-notification": "การยินดีต้อนรับแจ้งเตือน",
 	"welcome-notification-link": "ลิงค์การยินดีต้อนรับแจ้งเตือน",
-	"welcome-notification-uid": "Welcome Notification User (UID)",
-	"notification-alert-timeout": "Notification Alert Timeout"
+	"welcome-notification-uid": "Welcome Notification User (UID)"
 }

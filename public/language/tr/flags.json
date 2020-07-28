@@ -1,7 +1,7 @@
 {
 	"state": "Bildiri",
-	"reports": "Reports",
-	"first-reported": "First Reported",
+	"reports": "Raporlar",
+	"first-reported": "İlk rapor tarihi",
 	"no-flags": "Yaşasın! Şikayet bulunamadı.",
 	"assignee": "Vekil",
 	"update": "Güncelle",

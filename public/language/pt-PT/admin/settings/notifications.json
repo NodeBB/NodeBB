@@ -2,6 +2,5 @@
 	"notifications": "Notificações",
 	"welcome-notification": "Notificação de Boas-vindas",
 	"welcome-notification-link": "Link da Notificação de Boas-vindas",
-	"welcome-notification-uid": "Notificação de boas-vindas ao utilizador (UID)",
-	"notification-alert-timeout": "Tempo Limite do Alerta de Notificação"
+	"welcome-notification-uid": "Notificação de boas-vindas ao utilizador (UID)"
 }

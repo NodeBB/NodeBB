@@ -2,6 +2,5 @@
 	"notifications": "通知",
 	"welcome-notification": "ウェルカム通知",
 	"welcome-notification-link": "ウェルカム通知のリンク",
-	"welcome-notification-uid": "Welcome Notification User (UID)",
-	"notification-alert-timeout": "Notification Alert Timeout"
+	"welcome-notification-uid": "Welcome Notification User (UID)"
 }

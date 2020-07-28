@@ -2,6 +2,5 @@
 	"notifications": "Известия",
 	"welcome-notification": "Приветствено известие",
 	"welcome-notification-link": "Връзка за приветственото известие",
-	"welcome-notification-uid": "Потр. ид. за приветственото известие",
-	"notification-alert-timeout": "Време за изчакване преди премахване на уведомяването за известие"
+	"welcome-notification-uid": "Потр. ид. за приветственото известие"
 }

@@ -2,6 +2,5 @@
 	"notifications": "Сповіщення",
 	"welcome-notification": "Сповіщення \"Ласкаво просимо\"",
 	"welcome-notification-link": "Посилання для сповіщення \"Ласкаво просимо\"",
-	"welcome-notification-uid": "Сповіщення \"Ласкаво просимо\" для користувача (UID)",
-	"notification-alert-timeout": "Тривалість Показу Сповіщення"
+	"welcome-notification-uid": "Сповіщення \"Ласкаво просимо\" для користувача (UID)"
 }

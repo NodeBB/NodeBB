@@ -27,8 +27,8 @@
 	"enable": "Etkinleştir",
 	"disable": "Devre dışı",
 	"edit": "Düzenle",
-	"analytics": "Analytics",
-	"view-category": "View category",
+	"analytics": "Analiz",
+	"view-category": "Kategori Görüntüle",
 
 	"select-category": "Kategori Seç",
 	"set-parent-category": "Ana Kategori Ayarla",
@@ -82,5 +82,5 @@
 	"collapse-all": "Hepsini Kapat",
 	"expand-all": "Hepsini Genişlet",
 	"disable-on-create": "Oluşturma sırasında devre dışı bırak",
-	"no-matches": "No matches"
+	"no-matches": "Eşleşme Bulunamadı"
 }

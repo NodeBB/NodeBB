@@ -2,6 +2,5 @@
 	"notifications": "Obavijesti",
 	"welcome-notification": "Obavijest dobrodošlice",
 	"welcome-notification-link": "Poveznica objave dobrodošlice",
-	"welcome-notification-uid": "Welcome Notification User (UID)",
-	"notification-alert-timeout": "Notification Alert Timeout"
+	"welcome-notification-uid": "Welcome Notification User (UID)"
 }
