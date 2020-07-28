@@ -264,7 +264,9 @@ function continueLogin(req, res, next) {
 			await authenticationController.doLogin(req, userData.uid);
 			var destination;
 			if (req.session.returnTo) {
-				destination = req.session.returnTo;
+				destination = req.session.returnTo.startsWith('http') ?
+					req.session.returnTo :
+					nconf.get('relative_path') + req.session.returnTo;
 				delete req.session.returnTo;
 			} else {
 				destination = nconf.get('relative_path') + '/';
