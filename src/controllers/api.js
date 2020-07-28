@@ -61,7 +61,6 @@ apiController.loadConfig = async function (req) {
 		searchEnabled: plugins.hasListeners('filter:search.query'),
 		bootswatchSkin: meta.config.bootswatchSkin || '',
 		enablePostHistory: meta.config.enablePostHistory === 1,
-		notificationAlertTimeout: meta.config.notificationAlertTimeout || 5000,
 		timeagoCutoff: meta.config.timeagoCutoff !== '' ? Math.max(0, parseInt(meta.config.timeagoCutoff, 10)) : meta.config.timeagoCutoff,
 		timeagoCodes: languages.timeagoCodes,
 		cookies: {
