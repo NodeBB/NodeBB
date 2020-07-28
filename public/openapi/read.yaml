@@ -2767,8 +2767,6 @@ paths:
                     type: string
                   enablePostHistory:
                     type: boolean
-                  notificationAlertTimeout:
-                    type: number
                   timeagoCutoff:
                     type: number
                   timeagoCodes:
