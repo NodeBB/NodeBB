@@ -44,28 +44,6 @@ Plugins.loadedPlugins = [];
 
 Plugins.initialized = false;
 
-var defaultRequire = module.require;
-
-module.require = function (p) {
-	try {
-		return defaultRequire.apply(module, arguments);
-	} catch (err) {
-		// if we can't find the module try in parent directory
-		// since plugins.js moved into plugins folder
-		if (err.code === 'MODULE_NOT_FOUND') {
-			let stackLine = err.stack.split('\n');
-			stackLine = stackLine.find(line => line.includes('nodebb-plugin') || line.includes('nodebb-theme'));
-			var deprecatedPath = err.message.replace('Cannot find module ', '');
-			winston.warn('[deprecated] requiring core modules with `module.parent.require(' + deprecatedPath + ')` is deprecated. Please use `require.main.require("./src/<module_name>")` instead.\n' + stackLine);
-			if (path.isAbsolute(p)) {
-				throw err;
-			}
-			return defaultRequire.apply(module, [path.join('../', p)]);
-		}
-		throw err;
-	}
-};
-
 Plugins.requireLibrary = function (pluginID, libraryPath) {
 	Plugins.libraries[pluginID] = require(libraryPath);
 	Plugins.libraryPaths.push(libraryPath);
