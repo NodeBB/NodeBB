@@ -11,13 +11,7 @@ define('admin/manage/categories', [
 	var sortables;
 
 	Categories.init = function () {
-		socket.emit('admin.categories.getAll', function (err, payload) {
-			if (err) {
-				return app.alertError(err.message);
-			}
-
-			Categories.render(payload);
-		});
+		Categories.render(ajaxify.data.categories);
 
 		$('button[data-action="create"]').on('click', Categories.throwCreateModal);
 

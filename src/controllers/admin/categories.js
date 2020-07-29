@@ -43,9 +43,19 @@ categoriesController.get = async function (req, res, next) {
 	});
 };
 
-categoriesController.getAll = function (req, res) {
+categoriesController.getAll = async function (req, res) {
 	// Categories list will be rendered on client side with recursion, etc.
-	res.render('admin/manage/categories', {});
+	const cids = await categories.getAllCidsFromSet('categories:cid');
+	const fields = [
+		'cid', 'name', 'level', 'icon',	'parentCid', 'disabled', 'link',
+		'color', 'bgColor', 'backgroundImage', 'imageClass',
+	];
+	const categoriesData = await categories.getCategoriesFields(cids, fields);
+	const result = await plugins.fireHook('filter:admin.categories.get', { categories: categoriesData, fields: fields });
+	const tree = categories.getTree(result.categories, 0);
+	res.render('admin/manage/categories', {
+		categories: tree,
+	});
 };
 
 categoriesController.getAnalytics = async function (req, res) {

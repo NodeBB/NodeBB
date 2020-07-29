@@ -1,5 +1,7 @@
 'use strict';
 
+const winston = require('winston');
+
 const groups = require('../../groups');
 const user = require('../../user');
 const categories = require('../../categories');
@@ -18,9 +20,14 @@ Categories.create = async function (socket, data) {
 };
 
 Categories.getAll = async function () {
+	winston.warn('[deprecated] admin.categories.getAll deprecated, data is returned in the api route');
 	const cids = await categories.getAllCidsFromSet('categories:cid');
-	const categoriesData = await categories.getCategoriesData(cids);
-	const result = await plugins.fireHook('filter:admin.categories.get', { categories: categoriesData });
+	const fields = [
+		'cid', 'name', 'level', 'icon',	'parentCid', 'disabled', 'link',
+		'color', 'bgColor', 'backgroundImage', 'imageClass',
+	];
+	const categoriesData = await categories.getCategoriesFields(cids, fields);
+	const result = await plugins.fireHook('filter:admin.categories.get', { categories: categoriesData, fields: fields });
 	return categories.getTree(result.categories, 0);
 };
 
