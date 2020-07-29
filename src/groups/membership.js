@@ -4,7 +4,6 @@ const _ = require('lodash');
 
 const db = require('../database');
 const user = require('../user');
-
 const cache = require('../cache');
 
 module.exports = function (Groups) {
@@ -25,7 +24,7 @@ module.exports = function (Groups) {
 	};
 
 	Groups.isMember = async function (uid, groupName) {
-		if (!uid || parseInt(uid, 10) <= 0 || !groupName) {
+		if (!uid || !(parseInt(uid, 10) > 0) || !groupName) {
 			return false;
 		}
 
@@ -66,7 +65,7 @@ module.exports = function (Groups) {
 	};
 
 	Groups.isMemberOfGroups = async function (uid, groups) {
-		if (!uid || parseInt(uid, 10) <= 0 || !groups.length) {
+		if (!uid || !(parseInt(uid, 10) > 0) || !groups.length) {
 			return groups.map(groupName => groupName === 'guests');
 		}
 		const cachedData = {};
