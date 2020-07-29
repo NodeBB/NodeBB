@@ -32,6 +32,7 @@ SocketAdmin.logs = require('./admin/logs');
 SocketAdmin.errors = require('./admin/errors');
 SocketAdmin.uploads = require('./admin/uploads');
 SocketAdmin.digest = require('./admin/digest');
+SocketAdmin.cache = require('./admin/cache');
 
 SocketAdmin.before = async function (socket, method) {
 	const isAdmin = await user.isAdministrator(socket.uid);

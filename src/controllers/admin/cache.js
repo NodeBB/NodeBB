@@ -45,7 +45,7 @@ cacheController.get = function (req, res) {
 			dump: req.query.debug ? JSON.stringify(localCache.dump(), null, 4) : false,
 			hits: utils.addCommas(String(localCache.hits)),
 			misses: utils.addCommas(String(localCache.misses)),
-			hitRatio: (localCache.hits / (localCache.hits + localCache.misses)).toFixed(4),
+			hitRatio: ((localCache.hits / (localCache.hits + localCache.misses) || 0)).toFixed(4),
 		},
 	};
 

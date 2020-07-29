@@ -106,14 +106,9 @@
 		<div class="panel panel-default">
 			<div class="panel-heading">[[admin/advanced/cache:control-panel]]</div>
 			<div class="panel-body">
-				<button class="btn btn-primary" id="save">[[admin/advanced/cache:update-settings]]</button>
+				<button class="btn btn-primary btn-block" id="save">[[admin/advanced/cache:update-settings]]</button>
+				<button class="btn btn-info btn-block" id="clear">[[admin/advanced/cache:clear]]</button>
 			</div>
 		</div>
 	</div>
 </div>
-
-<script>
-	require(['admin/settings'], function(Settings) {
-		Settings.prepare();
-	});
-</script>
