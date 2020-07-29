@@ -23,7 +23,7 @@ Categories.getAll = async function () {
 	winston.warn('[deprecated] admin.categories.getAll deprecated, data is returned in the api route');
 	const cids = await categories.getAllCidsFromSet('categories:cid');
 	const fields = [
-		'cid', 'name', 'level', 'icon',	'parentCid', 'disabled', 'link',
+		'cid', 'name', 'icon', 'parentCid', 'disabled', 'link',
 		'color', 'bgColor', 'backgroundImage', 'imageClass',
 	];
 	const categoriesData = await categories.getCategoriesFields(cids, fields);

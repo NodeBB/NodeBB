@@ -47,7 +47,7 @@ categoriesController.getAll = async function (req, res) {
 	// Categories list will be rendered on client side with recursion, etc.
 	const cids = await categories.getAllCidsFromSet('categories:cid');
 	const fields = [
-		'cid', 'name', 'level', 'icon',	'parentCid', 'disabled', 'link',
+		'cid', 'name', 'icon', 'parentCid', 'disabled', 'link',
 		'color', 'bgColor', 'backgroundImage', 'imageClass',
 	];
 	const categoriesData = await categories.getCategoriesFields(cids, fields);
