@@ -54,16 +54,14 @@ module.exports = function (Groups) {
 			return { users: users };
 		}
 
+		const results = await user.search({
+			...data,
+			paginate: false,
+			hardCap: -1,
+			groupName: data.groupName,
+		});
 
-		data.paginate = false;
-		const results = await user.search(data);
-
-		let uids = results.users.map(user => user && user.uid);
-		const isMembers = await Groups.isMembers(uids, data.groupName);
-
-		results.users = results.users.filter((user, index) => isMembers[index]);
-
-		uids = results.users.map(user => user && user.uid);
+		const uids = results.users.map(user => user && user.uid);
 		const isOwners = await Groups.ownership.isOwners(uids, data.groupName);
 
 		results.users.forEach(function (user, index) {

@@ -6,6 +6,7 @@ const _ = require('lodash');
 const meta = require('../meta');
 const plugins = require('../plugins');
 const db = require('../database');
+const groups = require('../groups');
 const utils = require('../utils');
 
 module.exports = function (User) {
@@ -84,13 +85,17 @@ module.exports = function (User) {
 			fields.push('flags');
 		}
 
+		if (data.groupName) {
+			const isMembers = await groups.isMembers(uids, data.groupName);
+			uids = uids.filter((uid, index) => isMembers[index]);
+		}
+
 		if (!fields.length) {
 			return uids;
 		}
 
 		fields.push('uid');
 		let userData = await User.getUsersFields(uids, fields);
-		userData = userData.filter(Boolean);
 		if (data.onlineOnly) {
 			userData = userData.filter(user => user.status !== 'offline' && (Date.now() - user.lastonline < 300000));
 		}
