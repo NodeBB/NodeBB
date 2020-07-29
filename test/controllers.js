@@ -551,15 +551,6 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load stylesheet.css', function (done) {
-		request(nconf.get('url') + '/assets/stylesheet.css', function (err, res, body) {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
-	});
-
 	it('should load client.css', function (done) {
 		request(nconf.get('url') + '/assets/client.css', function (err, res, body) {
 			assert.ifError(err);
