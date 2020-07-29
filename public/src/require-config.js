@@ -1,7 +1,7 @@
 'use strict';
 
 require.config({
-	baseUrl: config.relative_path + '/assets/src/modules',
+	baseUrl: config.requireBaseUrl,
 	waitSeconds: 0,
 	urlArgs: config['cache-buster'],
 	paths: {
