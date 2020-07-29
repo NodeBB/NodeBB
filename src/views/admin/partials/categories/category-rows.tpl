@@ -30,7 +30,7 @@
                             <li><a href="./categories/{categories.cid}/analytics">[[admin/manage/categories:analytics]]</a></li>
                             <li><a href="{config.relative_path}/admin/manage/privileges/{categories.cid}">[[admin/manage/categories:privileges]]</a></li>
 
-                            <li><a href="{config.relative_path}/category/{categories.cid}">[[admin/manage/categories:view-category]]</a></li>
+                            <li><a href="{{{if categories.link}}}{categories.link}{{{else}}}{config.relative_path}/category/{categories.cid}{{{end}}}" target="_blank">[[admin/manage/categories:view-category]]</a></li>
 
                             <li>
                                 <a href="#" data-disable-cid="{categories.cid}" data-action="toggle" data-disabled="{categories.disabled}">
