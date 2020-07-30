@@ -2,8 +2,8 @@
 
 
 define('admin/manage/groups', [
-	'translator', 'benchpress', 'categorySelector',
-], function (translator, Benchpress, categorySelector) {
+	'categorySelector',
+], function (categorySelector) {
 	var	Groups = {};
 
 	var intervalId = 0;
@@ -78,13 +78,17 @@ define('admin/manage/groups', [
 			}
 		});
 
+		enableCategorySelectors();
+	};
+
+	function enableCategorySelectors() {
 		$('.groups-list [component="category-selector"]').each(function () {
 			var nameEncoded = $(this).parents('[data-name-encoded]').attr('data-name-encoded');
 			categorySelector.init($(this), function (selectedCategory) {
 				ajaxify.go('admin/manage/privileges/' + selectedCategory.cid + '?group=' + nameEncoded);
 			});
 		});
-	};
+	}
 
 	function handleSearch() {
 		var queryEl = $('#group-search');
@@ -105,13 +109,13 @@ define('admin/manage/groups', [
 					return app.alertError(err.message);
 				}
 
-				Benchpress.parse('admin/manage/groups', 'groups', {
+				app.parseAndTranslate('admin/manage/groups', 'groups', {
 					groups: groups,
+					categories: ajaxify.data.categories,
 				}, function (html) {
-					translator.translate(html, function (html) {
-						groupsEl.find('[data-groupname]').remove();
-						groupsEl.find('tbody').append(html);
-					});
+					groupsEl.find('[data-groupname]').remove();
+					groupsEl.find('tbody').append(html);
+					enableCategorySelectors();
 				});
 			});
 		}
