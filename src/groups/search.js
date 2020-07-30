@@ -58,7 +58,6 @@ module.exports = function (Groups) {
 			...data,
 			paginate: false,
 			hardCap: -1,
-			groupName: data.groupName,
 		});
 
 		const uids = results.users.map(user => user && user.uid);
