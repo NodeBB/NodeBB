@@ -1,7 +1,9 @@
 'use strict';
 
 
-define('admin/manage/groups', ['translator', 'benchpress'], function (translator, Benchpress) {
+define('admin/manage/groups', [
+	'translator', 'benchpress', 'categorySelector',
+], function (translator, Benchpress, categorySelector) {
 	var	Groups = {};
 
 	var intervalId = 0;
@@ -74,6 +76,13 @@ define('admin/manage/groups', ['translator', 'benchpress'], function (translator
 					});
 					break;
 			}
+		});
+
+		$('.groups-list [component="category-selector"]').each(function () {
+			var nameEncoded = $(this).parents('[data-name-encoded]').attr('data-name-encoded');
+			categorySelector.init($(this), function (selectedCategory) {
+				ajaxify.go('admin/manage/privileges/' + selectedCategory.cid + '?group=' + nameEncoded);
+			});
 		});
 	};
 

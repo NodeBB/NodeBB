@@ -15,15 +15,14 @@
 					<th>[[admin/manage/groups:badge]]</th>
 					<th>[[admin/manage/groups:properties]]</th>
 					<th class="hidden-xs">[[admin/manage/groups:description]]</th>
-					<th class="hidden-xs text-right">[[admin/manage/groups:member-count]]</th>
 					<th></th>
 				</tr>
 			</thead>
 			<tbody>
 				<!-- BEGIN groups -->
-				<tr data-groupname="{groups.displayName}">
+				<tr data-groupname="{groups.displayName}" data-name-encoded="{groups.nameEncoded}">
 					<td>
-						<a href="{config.relative_path}/admin/manage/groups/{groups.nameEncoded}">{groups.displayName}</a>
+						<a href="{config.relative_path}/admin/manage/groups/{groups.nameEncoded}">{groups.displayName}</a> ({groups.memberCount})
 					</td>
 					<td>
 						<span class="label label-default" style="color:{groups.textColor}; background-color: {groups.labelColor};"><!-- IF groups.icon --><i class="fa {groups.icon}"></i> <!-- ENDIF groups.icon -->{groups.userTitle}</span>
@@ -42,19 +41,15 @@
 					<td class="hidden-xs">
 						<p class="description">{groups.description}</p>
 					</td>
-					<td class="hidden-xs text-right">
-						{groups.memberCount}
-					</td>
 					<td>
 						<div class="btn-group">
-							<button class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" type="button"><i class="fa fa-fw fa-ellipsis-h"></i></button>
-							<ul class="dropdown-menu dropdown-menu-right">
-								<li><a href="{config.relative_path}/admin/manage/groups/{groups.nameEncoded}"><i class="fa fa-fw fa-edit"></i> [[admin/manage/groups:edit]]</a></li>
-								<li><a href="{config.relative_path}/api/admin/groups/{groups.nameEncoded}/csv"><i class="fa fa-fw fa-file-text"></i> [[admin/manage/groups:download-csv]]</a></li>
-								<!-- IF !groups.system -->
-								<li data-action="delete"><a href="#"><i class="fa fa-fw fa-times"></i> [[admin/manage/groups:delete]]</a></li>
-								<!-- ENDIF !groups.system -->
-							</ul>
+							<a href="{config.relative_path}/api/admin/groups/{groups.nameEncoded}/csv" class="btn btn-default">[[admin/manage/groups:download-csv]]</a>
+
+							<!-- IMPORT admin/partials/groups/privileges-select-category.tpl -->
+
+							<!-- IF !groups.system -->
+							<button class="btn btn-danger" data-action="delete"><i class="fa fa-times"></i></button>
+							<!-- ENDIF !groups.system -->
 						</div>
 					</td>
 				</tr>

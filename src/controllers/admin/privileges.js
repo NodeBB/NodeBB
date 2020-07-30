@@ -41,11 +41,12 @@ privilegesController.get = async function (req, res) {
 			}
 		}
 	});
-
+	const group = req.query.group ? req.query.group : '';
 	res.render('admin/manage/privileges', {
 		privileges: privilegesData,
 		categories: categoriesData,
 		selectedCategory: selectedCategory,
 		cid: cid,
+		group: group,
 	});
 };

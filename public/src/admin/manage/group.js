@@ -6,7 +6,8 @@ define('admin/manage/group', [
 	'iconSelect',
 	'admin/modules/colorpicker',
 	'translator',
-], function (memberList, iconSelect, colorpicker, translator) {
+	'categorySelector',
+], function (memberList, iconSelect, colorpicker, translator, categorySelector) {
 	var Groups = {};
 
 	Groups.init = function () {
@@ -49,7 +50,9 @@ define('admin/manage/group', [
 			});
 		});
 
-		$('[component="category/list"] [data-cid]').on('click', navigateToCategory);
+		categorySelector.init($('[component="category-selector"]'), function (selectedCategory) {
+			navigateToCategory(selectedCategory.cid);
+		});
 
 		colorpicker.enable(changeGroupLabelColor, function (hsb, hex) {
 			groupLabelPreview.css('background-color', '#' + hex);
@@ -142,11 +145,9 @@ define('admin/manage/group', [
 		});
 	}
 
-	function navigateToCategory() {
-		var cid = $(this).attr('data-cid');
-
+	function navigateToCategory(cid) {
 		if (cid) {
-			var url = 'admin/manage/privileges/' + cid + '?group=' + ajaxify.data.group.name;
+			var url = 'admin/manage/privileges/' + cid + '?group=' + ajaxify.data.group.nameEncoded;
 			if (app.flags && app.flags._unsaved === true) {
 				translator.translate('[[global:unsaved-changes]]', function (text) {
 					bootbox.confirm(text, function (navigate) {

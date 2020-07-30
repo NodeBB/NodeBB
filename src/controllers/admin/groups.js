@@ -21,13 +21,15 @@ groupsController.list = async function (req, res) {
 	const pageCount = Math.ceil(groupNames.length / groupsPerPage);
 	const start = (page - 1) * groupsPerPage;
 	const stop = start + groupsPerPage - 1;
-
 	groupNames = groupNames.slice(start, stop + 1);
+
+	const allCategories = await categories.buildForSelectAll();
 	const groupData = await groups.getGroupsData(groupNames);
 	res.render('admin/manage/groups', {
 		groups: groupData,
 		pagination: pagination.create(page, pageCount),
 		yourid: req.uid,
+		categories: allCategories,
 	});
 };
 
