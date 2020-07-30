@@ -2,6 +2,7 @@
 
 const posts = require('../../posts');
 const topics = require('../../topics');
+const flags = require('../../flags');
 const events = require('../../events');
 const websockets = require('../index');
 const socketTopics = require('../topics');
@@ -27,6 +28,7 @@ module.exports = function (SocketPosts) {
 			canDelete: privileges.posts.canDelete(data.pid, socket.uid),
 			canPurge: privileges.posts.canPurge(data.pid, socket.uid),
 			canFlag: privileges.posts.canFlag(data.pid, socket.uid),
+			flagged: flags.exists('post', data.pid, socket.uid),	// specifically, whether THIS calling user flagged
 			bookmarked: posts.hasBookmarked(data.pid, socket.uid),
 			tools: plugins.fireHook('filter:post.tools', { pid: data.pid, uid: socket.uid, tools: [] }),
 			postSharing: social.getActivePostSharing(),
@@ -48,6 +50,12 @@ module.exports = function (SocketPosts) {
 		postData.display_ip_ban = (results.isAdmin || results.isGlobalMod) && !postData.selfPost;
 		postData.display_history = results.history;
 		postData.toolsVisible = postData.tools.length || postData.display_moderator_tools;
+		postData.flags = {
+			flagId: parseInt(results.posts.flagId, 10) || null,
+			can: results.canFlag.flag,
+			exists: !!results.posts.flagId,
+			flagged: results.flagged,
+		};
 
 		if (!results.isAdmin && !results.canViewInfo) {
 			postData.ip = undefined;
