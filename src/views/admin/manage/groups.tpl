@@ -14,7 +14,6 @@
 					<th>[[admin/manage/groups:name]]</th>
 					<th>[[admin/manage/groups:badge]]</th>
 					<th>[[admin/manage/groups:properties]]</th>
-					<th class="hidden-xs">[[admin/manage/groups:description]]</th>
 					<th></th>
 				</tr>
 			</thead>
@@ -23,6 +22,7 @@
 				<tr data-groupname="{groups.displayName}" data-name-encoded="{groups.nameEncoded}">
 					<td>
 						<a href="{config.relative_path}/admin/manage/groups/{groups.nameEncoded}">{groups.displayName}</a> ({groups.memberCount})
+						<p class="description">{groups.description}</p>
 					</td>
 					<td>
 						<span class="label label-default" style="color:{groups.textColor}; background-color: {groups.labelColor};"><!-- IF groups.icon --><i class="fa {groups.icon}"></i> <!-- ENDIF groups.icon -->{groups.userTitle}</span>
@@ -38,9 +38,7 @@
 						<span class="label label-default">[[admin/manage/groups:hidden]]</span>
 						<!-- ENDIF groups.hidden -->
 					</td>
-					<td class="hidden-xs">
-						<p class="description">{groups.description}</p>
-					</td>
+
 					<td>
 						<div class="btn-group">
 							<a href="{config.relative_path}/api/admin/groups/{groups.nameEncoded}/csv" class="btn btn-default">[[admin/manage/groups:download-csv]]</a>
