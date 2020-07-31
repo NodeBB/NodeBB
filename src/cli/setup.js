@@ -23,7 +23,9 @@ function setup(initConfig) {
 	install.values = initConfig;
 
 	async.series([
-		install.setup,
+		async function () {
+			return await install.setup();
+		},
 		function (next) {
 			var configFile = paths.config;
 			if (nconf.get('config')) {

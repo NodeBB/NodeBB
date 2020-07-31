@@ -1,18 +1,20 @@
 'use strict';
 
-var async = require('async');
-var fs = require('fs');
-var url = require('url');
-var path = require('path');
-var prompt = require('prompt');
-var winston = require('winston');
-var nconf = require('nconf');
-var _ = require('lodash');
+const fs = require('fs');
+const url = require('url');
+const path = require('path');
+const prompt = require('prompt');
+const winston = require('winston');
+const nconf = require('nconf');
+const _ = require('lodash');
+const util = require('util');
 
-var utils = require('./utils.js');
+const promptGet = util.promisify((schema, callback) => prompt.get(schema, callback));
 
-var install = module.exports;
-var questions = {};
+const utils = require('./utils.js');
+
+const install = module.exports;
+const questions = {};
 
 questions.main = [
 	{
@@ -47,8 +49,8 @@ questions.optional = [
 	},
 ];
 
-function checkSetupFlag(next) {
-	var setupVal = install.values;
+function checkSetupFlag() {
+	let setupVal = install.values;
 
 	try {
 		if (nconf.get('setup')) {
@@ -61,7 +63,6 @@ function checkSetupFlag(next) {
 	if (setupVal && typeof setupVal === 'object') {
 		if (setupVal['admin:username'] && setupVal['admin:password'] && setupVal['admin:password:confirm'] && setupVal['admin:email']) {
 			install.values = setupVal;
-			next();
 		} else {
 			winston.error('Required values are missing for automated setup:');
 			if (!setupVal['admin:username']) {
@@ -82,13 +83,10 @@ function checkSetupFlag(next) {
 	} else if (nconf.get('database')) {
 		install.values = install.values || {};
 		install.values.database = nconf.get('database');
-		next();
-	} else {
-		next();
 	}
 }
 
-function checkCIFlag(next) {
+function checkCIFlag() {
 	var ciVals;
 	try {
 		ciVals = JSON.parse(nconf.get('ci'));
@@ -99,7 +97,6 @@ function checkCIFlag(next) {
 	if (ciVals && ciVals instanceof Object) {
 		if (ciVals.hasOwnProperty('host') && ciVals.hasOwnProperty('port') && ciVals.hasOwnProperty('database')) {
 			install.ciVals = ciVals;
-			next();
 		} else {
 			winston.error('Required values are missing for automated CI integration:');
 			if (!ciVals.hasOwnProperty('host')) {
@@ -114,54 +111,43 @@ function checkCIFlag(next) {
 
 			process.exit();
 		}
-	} else {
-		next();
 	}
 }
 
-function setupConfig(next) {
-	var configureDatabases = require('../install/databases');
+async function setupConfig() {
+	const configureDatabases = require('../install/databases');
 
 	// prompt prepends "prompt: " to questions, let's clear that.
 	prompt.start();
 	prompt.message = '';
 	prompt.delimiter = '';
 	prompt.colors = false;
+	let config = {};
 
-	async.waterfall([
-		function (next) {
-			if (install.values) {
-				// Use provided values, fall back to defaults
-				var config = {};
-				var redisQuestions = require('./database/redis').questions;
-				var mongoQuestions = require('./database/mongo').questions;
-				var postgresQuestions = require('./database/postgres').questions;
-				var allQuestions = questions.main.concat(questions.optional).concat(redisQuestions).concat(mongoQuestions).concat(postgresQuestions);
+	if (install.values) {
+		// Use provided values, fall back to defaults
+		const redisQuestions = require('./database/redis').questions;
+		const mongoQuestions = require('./database/mongo').questions;
+		const postgresQuestions = require('./database/postgres').questions;
+		const allQuestions = questions.main.concat(questions.optional).concat(redisQuestions).concat(mongoQuestions).concat(postgresQuestions);
 
-				allQuestions.forEach(function (question) {
-					if (install.values.hasOwnProperty(question.name)) {
-						config[question.name] = install.values[question.name];
-					} else if (question.hasOwnProperty('default')) {
-						config[question.name] = question.default;
-					} else {
-						config[question.name] = undefined;
-					}
-				});
-				setImmediate(next, null, config);
+		allQuestions.forEach(function (question) {
+			if (install.values.hasOwnProperty(question.name)) {
+				config[question.name] = install.values[question.name];
+			} else if (question.hasOwnProperty('default')) {
+				config[question.name] = question.default;
 			} else {
-				prompt.get(questions.main, next);
+				config[question.name] = undefined;
 			}
-		},
-		function (config, next) {
-			configureDatabases(config, next);
-		},
-		function (config, next) {
-			completeConfigSetup(config, next);
-		},
-	], next);
+		});
+	} else {
+		config = await promptGet(questions.main);
+	}
+	await configureDatabases(config);
+	await completeConfigSetup(config);
 }
 
-function completeConfigSetup(config, next) {
+async function completeConfigSetup(config) {
 	// Add CI object
 	if (install.ciVals) {
 		config.test_database = {};
@@ -177,101 +163,81 @@ function completeConfigSetup(config, next) {
 		config.package_manager = nconf.get('package_manager');
 	}
 	nconf.overrides(config);
-	async.waterfall([
-		function (next) {
-			require('./database').init(next);
-		},
-		function (next) {
-			require('./database').createIndices(next);
-		},
-		function (next) {
-			// Sanity-check/fix url/port
-			if (!/^http(?:s)?:\/\//.test(config.url)) {
-				config.url = 'http://' + config.url;
-			}
-			var urlObj = url.parse(config.url);
-			if (urlObj.port) {
-				config.port = urlObj.port;
-			}
+	const db = require('./database');
+	await db.init();
+	await db.createIndices();
 
-			// Remove trailing slash from non-subfolder installs
-			if (urlObj.path === '/') {
-				urlObj.path = '';
-				urlObj.pathname = '';
-			}
+	// Sanity-check/fix url/port
+	if (!/^http(?:s)?:\/\//.test(config.url)) {
+		config.url = 'http://' + config.url;
+	}
+	var urlObj = url.parse(config.url);
+	if (urlObj.port) {
+		config.port = urlObj.port;
+	}
 
-			config.url = url.format(urlObj);
+	// Remove trailing slash from non-subfolder installs
+	if (urlObj.path === '/') {
+		urlObj.path = '';
+		urlObj.pathname = '';
+	}
 
-			// ref: https://github.com/indexzero/nconf/issues/300
-			delete config.type;
+	config.url = url.format(urlObj);
 
-			var meta = require('./meta');
-			meta.configs.set('submitPluginUsage', config.submitPluginUsage === 'yes' ? 1 : 0, function (err) {
-				next(err, config);
-			});
-		},
-		function (config, next) {
-			delete config.submitPluginUsage;
+	// ref: https://github.com/indexzero/nconf/issues/300
+	delete config.type;
 
-			install.save(config, next);
-		},
-	], next);
+	const meta = require('./meta');
+	await meta.configs.set('submitPluginUsage', config.submitPluginUsage === 'yes' ? 1 : 0);
+	delete config.submitPluginUsage;
+
+	await install.save(config);
 }
 
-function setupDefaultConfigs(next) {
+async function setupDefaultConfigs() {
 	console.log('Populating database with default configs, if not already set...');
-	var meta = require('./meta');
-	var defaults = require(path.join(__dirname, '../', 'install/data/defaults.json'));
+	const meta = require('./meta');
+	const defaults = require(path.join(__dirname, '../', 'install/data/defaults.json'));
 
-	meta.configs.setOnEmpty(defaults, function (err) {
-		if (err) {
-			return next(err);
-		}
+	await meta.configs.setOnEmpty(defaults);
+	await meta.configs.init();
+}
 
-		meta.configs.init(next);
+async function enableDefaultTheme() {
+	const meta = require('./meta');
+
+	const id = await meta.configs.get('theme:id');
+	if (id) {
+		console.log('Previous theme detected, skipping enabling default theme');
+		return;
+	}
+
+	const defaultTheme = nconf.get('defaultTheme') || 'nodebb-theme-persona';
+	console.log('Enabling default theme: ' + defaultTheme);
+	await meta.themes.set({
+		type: 'local',
+		id: defaultTheme,
 	});
 }
 
-function enableDefaultTheme(next) {
-	var meta = require('./meta');
-
-	meta.configs.get('theme:id', function (err, id) {
-		if (err || id) {
-			console.log('Previous theme detected, skipping enabling default theme');
-			return next(err);
-		}
-		var defaultTheme = nconf.get('defaultTheme') || 'nodebb-theme-persona';
-		console.log('Enabling default theme: ' + defaultTheme);
-		meta.themes.set({
-			type: 'local',
-			id: defaultTheme,
-		}, next);
-	});
+async function createAdministrator() {
+	const Groups = require('./groups');
+	const memberCount = await Groups.getMemberCount('administrators');
+	if (memberCount > 0) {
+		console.log('Administrator found, skipping Admin setup');
+		return;
+	}
+	return await createAdmin();
 }
 
-function createAdministrator(next) {
-	var Groups = require('./groups');
-	Groups.getMemberCount('administrators', function (err, memberCount) {
-		if (err) {
-			return next(err);
-		}
-		if (memberCount > 0) {
-			console.log('Administrator found, skipping Admin setup');
-			next();
-		} else {
-			createAdmin(next);
-		}
-	});
-}
-
-function createAdmin(callback) {
-	var User = require('./user');
-	var Groups = require('./groups');
-	var password;
+async function createAdmin() {
+	const User = require('./user');
+	const Groups = require('./groups');
+	let password;
 
 	winston.warn('No administrators have been detected, running initial user setup\n');
 
-	var questions = [{
+	let questions = [{
 		name: 'username',
 		description: 'Administrator username',
 		required: true,
@@ -282,7 +248,7 @@ function createAdmin(callback) {
 		pattern: /.+@.+/,
 		required: true,
 	}];
-	var passwordQuestions = [{
+	const passwordQuestions = [{
 		name: 'password',
 		description: 'Password',
 		required: true,
@@ -295,213 +261,160 @@ function createAdmin(callback) {
 		hidden: true,
 		type: 'string',
 	}];
-	function success(err, results) {
-		if (err) {
-			return callback(err);
-		}
+
+	async function success(results) {
 		if (!results) {
-			return callback(new Error('aborted'));
+			throw new Error('aborted');
 		}
 
 		if (results['password:confirm'] !== results.password) {
 			winston.warn('Passwords did not match, please try again');
-			return retryPassword(results);
+			return await retryPassword(results);
 		}
 
 		try {
 			User.isPasswordValid(results.password);
 		} catch (err) {
 			winston.warn('Password error, please try again. ' + err.message);
-			return retryPassword(results);
+			return await retryPassword(results);
 		}
 
-		var adminUid;
-		async.waterfall([
-			function (next) {
-				User.create({ username: results.username, password: results.password, email: results.email }, next);
-			},
-			function (uid, next) {
-				adminUid = uid;
-				Groups.join('administrators', uid, next);
-			},
-			function (next) {
-				Groups.show('administrators', next);
-			},
-			function (next) {
-				Groups.ownership.grant(adminUid, 'administrators', next);
-			},
-		], function (err) {
-			if (err) {
-				return callback(err);
-			}
-			callback(null, password ? results : undefined);
+		const adminUid = await User.create({
+			username: results.username,
+			password: results.password,
+			email: results.email,
 		});
+		await Groups.join('administrators', adminUid);
+		await Groups.show('administrators');
+		await Groups.ownership.grant(adminUid, 'administrators');
+
+		return password ? results : undefined;
 	}
-	function retryPassword(originalResults) {
+
+	async function retryPassword(originalResults) {
 		// Ask only the password questions
-		prompt.get(passwordQuestions, function (err, results) {
-			if (!results) {
-				return callback(new Error('aborted'));
-			}
+		const results = await promptGet(passwordQuestions);
 
-			// Update the original data with newly collected password
-			originalResults.password = results.password;
-			originalResults['password:confirm'] = results['password:confirm'];
+		// Update the original data with newly collected password
+		originalResults.password = results.password;
+		originalResults['password:confirm'] = results['password:confirm'];
 
-			// Send back to success to handle
-			success(err, originalResults);
-		});
+		// Send back to success to handle
+		return await success(originalResults);
 	}
 
 	// Add the password questions
 	questions = questions.concat(passwordQuestions);
 
 	if (!install.values) {
-		prompt.get(questions, success);
-	} else {
-		// If automated setup did not provide a user password, generate one, it will be shown to the user upon setup completion
-		if (!install.values.hasOwnProperty('admin:password') && !nconf.get('admin:password')) {
-			console.log('Password was not provided during automated setup, generating one...');
-			password = utils.generateUUID().slice(0, 8);
-		}
-
-		var results = {
-			username: install.values['admin:username'] || nconf.get('admin:username') || 'admin',
-			email: install.values['admin:email'] || nconf.get('admin:email') || '',
-			password: install.values['admin:password'] || nconf.get('admin:password') || password,
-			'password:confirm': install.values['admin:password:confirm'] || nconf.get('admin:password') || password,
-		};
-
-		success(null, results);
+		const results = await promptGet(questions);
+		return await success(results);
 	}
+	// If automated setup did not provide a user password, generate one, it will be shown to the user upon setup completion
+	if (!install.values.hasOwnProperty('admin:password') && !nconf.get('admin:password')) {
+		console.log('Password was not provided during automated setup, generating one...');
+		password = utils.generateUUID().slice(0, 8);
+	}
+
+	const results = {
+		username: install.values['admin:username'] || nconf.get('admin:username') || 'admin',
+		email: install.values['admin:email'] || nconf.get('admin:email') || '',
+		password: install.values['admin:password'] || nconf.get('admin:password') || password,
+		'password:confirm': install.values['admin:password:confirm'] || nconf.get('admin:password') || password,
+	};
+
+	return await success(results);
 }
 
-function createGlobalModeratorsGroup(next) {
-	var groups = require('./groups');
-	async.waterfall([
-		function (next) {
-			groups.exists('Global Moderators', next);
-		},
-		function (exists, next) {
-			if (exists) {
-				winston.info('Global Moderators group found, skipping creation!');
-				return next(null, null);
-			}
-			groups.create({
-				name: 'Global Moderators',
-				userTitle: 'Global Moderator',
-				description: 'Forum wide moderators',
-				hidden: 0,
-				private: 1,
-				disableJoinRequests: 1,
-			}, next);
-		},
-		function (groupData, next) {
-			groups.show('Global Moderators', next);
-		},
-	], next);
+async function createGlobalModeratorsGroup() {
+	const groups = require('./groups');
+	const exists = await groups.exists('Global Moderators');
+	if (exists) {
+		winston.info('Global Moderators group found, skipping creation!');
+	} else {
+		await groups.create({
+			name: 'Global Moderators',
+			userTitle: 'Global Moderator',
+			description: 'Forum wide moderators',
+			hidden: 0,
+			private: 1,
+			disableJoinRequests: 1,
+		});
+	}
+	await groups.show('Global Moderators');
 }
 
-function giveGlobalPrivileges(next) {
-	var privileges = require('./privileges');
-	var defaultPrivileges = [
+async function giveGlobalPrivileges() {
+	const privileges = require('./privileges');
+	const defaultPrivileges = [
 		'groups:chat', 'groups:upload:post:image', 'groups:signature', 'groups:search:content',
 		'groups:search:users', 'groups:search:tags', 'groups:view:users', 'groups:view:tags', 'groups:view:groups',
 		'groups:local:login',
 	];
-	async.waterfall([
-		function (next) {
-			privileges.global.give(defaultPrivileges, 'registered-users', next);
-		},
-		function (next) {
-			privileges.global.give(defaultPrivileges.concat(['groups:ban', 'groups:upload:post:file', 'groups:view:users:info']), 'Global Moderators', next);
-		},
-		function (next) {
-			privileges.global.give(['groups:view:users', 'groups:view:tags', 'groups:view:groups'], 'guests', next);
-		},
-		function (next) {
-			privileges.global.give(['groups:view:users', 'groups:view:tags', 'groups:view:groups'], 'spiders', next);
-		},
-	], next);
+	await privileges.global.give(defaultPrivileges, 'registered-users');
+	await privileges.global.give(defaultPrivileges.concat([
+		'groups:ban', 'groups:upload:post:file', 'groups:view:users:info',
+	]), 'Global Moderators');
+	await privileges.global.give(['groups:view:users', 'groups:view:tags', 'groups:view:groups'], 'guests');
+	await privileges.global.give(['groups:view:users', 'groups:view:tags', 'groups:view:groups'], 'spiders');
 }
 
-function createCategories(next) {
-	var Categories = require('./categories');
-	var db = require('./database');
-	db.getSortedSetRange('categories:cid', 0, -1, function (err, cids) {
-		if (err) {
-			return next(err);
-		}
+async function createCategories() {
+	const Categories = require('./categories');
+	const db = require('./database');
+	const cids = await db.getSortedSetRange('categories:cid', 0, -1);
+	if (Array.isArray(cids) && cids.length) {
+		console.log('Categories OK. Found ' + cids.length + ' categories.');
+		return;
+	}
 
-		if (Array.isArray(cids) && cids.length) {
-			console.log('Categories OK. Found ' + cids.length + ' categories.');
-			return next();
-		}
+	console.log('No categories found, populating instance with default categories');
 
-		console.log('No categories found, populating instance with default categories');
+	const default_categories = JSON.parse(
+		await fs.promises.readFile(path.join(__dirname, '../', 'install/data/categories.json'), 'utf8')
+	);
+	for (const categoryData of default_categories) {
+		// eslint-disable-next-line no-await-in-loop
+		await Categories.create(categoryData);
+	}
+}
 
-		fs.readFile(path.join(__dirname, '../', 'install/data/categories.json'), 'utf8', function (err, default_categories) {
-			if (err) {
-				return next(err);
-			}
-			default_categories = JSON.parse(default_categories);
+async function createMenuItems() {
+	const db = require('./database');
 
-			async.eachSeries(default_categories, Categories.create, next);
+	const exists = await db.exists('navigation:enabled');
+	if (exists) {
+		return;
+	}
+	const navigation = require('./navigation/admin');
+	const data = require('../install/data/navigation.json');
+	await navigation.save(data);
+}
+
+async function createWelcomePost() {
+	const db = require('./database');
+	const Topics = require('./topics');
+
+	const [content, numTopics] = await Promise.all([
+		fs.promises.readFile(path.join(__dirname, '../', 'install/data/welcome.md'), 'utf8'),
+		db.getObjectField('global', 'topicCount'),
+	]);
+
+	if (!parseInt(numTopics, 10)) {
+		console.log('Creating welcome post!');
+		await Topics.post({
+			uid: 1,
+			cid: 2,
+			title: 'Welcome to your NodeBB!',
+			content: content,
 		});
-	});
+	}
 }
 
-function createMenuItems(next) {
-	var db = require('./database');
-
-	db.exists('navigation:enabled', function (err, exists) {
-		if (err || exists) {
-			return next(err);
-		}
-		var navigation = require('./navigation/admin');
-		var data = require('../install/data/navigation.json');
-
-		navigation.save(data, next);
-	});
-}
-
-function createWelcomePost(next) {
-	var db = require('./database');
-	var Topics = require('./topics');
-
-	async.parallel([
-		function (next) {
-			fs.readFile(path.join(__dirname, '../', 'install/data/welcome.md'), 'utf8', next);
-		},
-		function (next) {
-			db.getObjectField('global', 'topicCount', next);
-		},
-	], function (err, results) {
-		if (err) {
-			return next(err);
-		}
-
-		var content = results[0];
-		var numTopics = results[1];
-
-		if (!parseInt(numTopics, 10)) {
-			console.log('Creating welcome post!');
-			Topics.post({
-				uid: 1,
-				cid: 2,
-				title: 'Welcome to your NodeBB!',
-				content: content,
-			}, next);
-		} else {
-			next();
-		}
-	});
-}
-
-function enableDefaultPlugins(next) {
+async function enableDefaultPlugins() {
 	console.log('Enabling default plugins');
 
-	var defaultEnabled = [
+	let defaultEnabled = [
 		'nodebb-plugin-composer-default',
 		'nodebb-plugin-markdown',
 		'nodebb-plugin-mentions',
@@ -511,7 +424,7 @@ function enableDefaultPlugins(next) {
 		'nodebb-plugin-emoji',
 		'nodebb-plugin-emoji-android',
 	];
-	var customDefaults = nconf.get('defaultplugins') || nconf.get('defaultPlugins');
+	let customDefaults = nconf.get('defaultplugins') || nconf.get('defaultPlugins');
 
 	winston.info('[install/defaultPlugins] customDefaults', customDefaults);
 
@@ -529,95 +442,75 @@ function enableDefaultPlugins(next) {
 
 	winston.info('[install/enableDefaultPlugins] activating default plugins', defaultEnabled);
 
-	var db = require('./database');
-	var order = defaultEnabled.map((plugin, index) => index);
-	db.sortedSetAdd('plugins:active', order, defaultEnabled, next);
+	const db = require('./database');
+	const order = defaultEnabled.map((plugin, index) => index);
+	await db.sortedSetAdd('plugins:active', order, defaultEnabled);
 }
 
-function setCopyrightWidget(next) {
-	var db = require('./database');
-	async.parallel({
-		footerJSON: function (next) {
-			fs.readFile(path.join(__dirname, '../', 'install/data/footer.json'), 'utf8', next);
-		},
-		footer: function (next) {
-			db.getObjectField('widgets:global', 'footer', next);
-		},
-	}, function (err, results) {
-		if (err) {
-			return next(err);
-		}
+async function setCopyrightWidget() {
+	const db = require('./database');
+	const [footerJSON, footer] = await Promise.all([
+		fs.promises.readFile(path.join(__dirname, '../', 'install/data/footer.json'), 'utf8'),
+		db.getObjectField('widgets:global', 'footer'),
+	]);
 
-		if (!results.footer && results.footerJSON) {
-			db.setObjectField('widgets:global', 'footer', results.footerJSON, next);
-		} else {
-			next();
-		}
-	});
+	if (!footer && footerJSON) {
+		await db.setObjectField('widgets:global', 'footer', footerJSON);
+	}
 }
 
-install.setup = function (callback) {
-	async.series([
-		checkSetupFlag,
-		checkCIFlag,
-		setupConfig,
-		setupDefaultConfigs,
-		enableDefaultTheme,
-		createCategories,
-		createAdministrator,
-		createGlobalModeratorsGroup,
-		giveGlobalPrivileges,
-		createMenuItems,
-		createWelcomePost,
-		enableDefaultPlugins,
-		setCopyrightWidget,
-		function (next) {
-			var upgrade = require('./upgrade');
-			upgrade.check(function (err) {
-				if (err && err.message === 'schema-out-of-date') {
-					upgrade.run(next);
-				} else if (err) {
-					return next(err);
-				} else {
-					next();
-				}
-			});
-		},
-	], function (err, results) {
+async function checkUpgrade() {
+	const upgrade = require('./upgrade');
+	try {
+		await upgrade.check();
+	} catch (err) {
+		if (err.message === 'schema-out-of-date') {
+			await upgrade.run();
+			return;
+		}
+		throw err;
+	}
+}
+
+install.setup = async function () {
+	try {
+		checkSetupFlag();
+		checkCIFlag();
+		await setupConfig();
+		await setupDefaultConfigs();
+		await enableDefaultTheme();
+		await createCategories();
+		const adminInfo = await createAdministrator();
+		await createGlobalModeratorsGroup();
+		await giveGlobalPrivileges();
+		await createMenuItems();
+		await createWelcomePost();
+		await enableDefaultPlugins();
+		await setCopyrightWidget();
+		await checkUpgrade();
+
+		const data = {
+			...adminInfo,
+		};
+		return data;
+	} catch (err) {
 		if (err) {
 			winston.warn('NodeBB Setup Aborted.\n ' + err.stack);
 			process.exit(1);
-		} else {
-			var data = {};
-			if (results[6]) {
-				data.username = results[6].username;
-				data.password = results[6].password;
-			}
-
-			callback(null, data);
 		}
-	});
+	}
 };
 
-install.save = function (server_conf, callback) {
-	var serverConfigPath = path.join(__dirname, '../config.json');
+install.save = async function (server_conf) {
+	let serverConfigPath = path.join(__dirname, '../config.json');
 
 	if (nconf.get('config')) {
 		serverConfigPath = path.resolve(__dirname, '../', nconf.get('config'));
 	}
 
-	fs.writeFile(serverConfigPath, JSON.stringify(server_conf, null, 4), function (err) {
-		if (err) {
-			winston.error('Error saving server configuration!', err.stack);
-			return callback(err);
-		}
-
-		console.log('Configuration Saved OK');
-
-		nconf.file({
-			file: serverConfigPath,
-		});
-
-		callback();
+	await fs.promises.writeFile(serverConfigPath, JSON.stringify(server_conf, null, 4));
+	console.log('Configuration Saved OK');
+	nconf.file({
+		file: serverConfigPath,
 	});
 };
