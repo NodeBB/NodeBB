@@ -41,12 +41,18 @@ define('admin/manage/group', [
 		setupGroupMembersMenu(groupName);
 
 		$('#group-icon, #group-icon-label').on('click', function () {
+			var currentIcon = groupIcon.attr('value');
 			iconSelect.init(groupIcon, function () {
 				var newIcon = groupIcon.attr('value');
+				if (newIcon === currentIcon) {
+					return;
+				}
 				if (newIcon === 'fa-nbb-none') {
 					newIcon = 'hidden';
 				}
 				$('#group-icon-preview').attr('class', 'fa fa-fw ' + (newIcon || 'hidden'));
+				app.flags = app.flags || {};
+				app.flags._unsaved = true;
 			});
 		});
 
@@ -62,7 +68,7 @@ define('admin/manage/group', [
 			groupLabelPreview.css('color', '#' + hex);
 		});
 
-		$('form').on('change', 'input, select, textarea', function () {
+		$('form [data-property]').on('change', function () {
 			app.flags = app.flags || {};
 			app.flags._unsaved = true;
 		});

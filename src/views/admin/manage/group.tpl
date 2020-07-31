@@ -4,12 +4,12 @@
 			<div class="group-settings-form">
 				<fieldset>
 					<label for="change-group-name">[[admin/manage/groups:edit.name]]</label>
-					<input type="text" class="form-control" id="change-group-name" placeholder="Group Name" value="{group.displayName}" maxlength="{maximumGroupNameLength}" <!-- IF group.system -->readonly<!-- ENDIF group.system -->/><br />
+					<input type="text" class="form-control" id="change-group-name" placeholder="Group Name" value="{group.displayName}" maxlength="{maximumGroupNameLength}" data-property <!-- IF group.system -->readonly<!-- ENDIF group.system -->/><br />
 				</fieldset>
 
 				<fieldset>
 					<label for="change-group-desc">[[admin/manage/groups:edit.description]]</label>
-					<input type="text" class="form-control" id="change-group-desc" placeholder="A short description about your group" value="{group.description}" maxlength="255" /><br />
+					<input type="text" class="form-control" id="change-group-desc" placeholder="A short description about your group" value="{group.description}" maxlength="255" data-property /><br />
 				</fieldset>
 
 				<div class="row">
@@ -17,7 +17,7 @@
 						<fieldset>
 							<label for="change-group-user-title">[[admin/manage/groups:edit.user-title]]</label>
 							<span id="group-label-preview" class="label label-default" style="color:<!-- IF group.textColor -->{group.textColor}<!-- ELSE -->#ffffff<!-- ENDIF group.textColor -->; background:<!-- IF group.labelColor -->{group.labelColor}<!-- ELSE -->#000000<!-- ENDIF group.labelColor -->;"><i id="group-icon-preview" class="fa {group.icon} <!-- IF !group.icon -->hidden<!-- ENDIF -->"></i> <span id="group-label-preview-text">{group.userTitle}</span></span>
-							<input type="text" class="form-control" id="change-group-user-title" placeholder="The title of users if they are a member of this group" value="{group.userTitle}" maxlength="{maximumGroupTitleLength}" /><br />
+							<input type="text" class="form-control" id="change-group-user-title" placeholder="The title of users if they are a member of this group" value="{group.userTitle}" maxlength="{maximumGroupTitleLength}" data-property /><br />
 						</fieldset>
 					</div>
 					<div class="col-md-2">
@@ -30,20 +30,20 @@
 						<fieldset>
 							<label for="change-group-label-color">[[admin/manage/groups:edit.label-color]]</label>
 
-							<input id="change-group-label-color" placeholder="#0059b2" data-name="bgColor" value="{group.labelColor}" class="form-control" /><br />
+							<input id="change-group-label-color" placeholder="#0059b2" data-name="bgColor" value="{group.labelColor}" class="form-control" data-property/><br />
 						</fieldset>
 					</div>
 					<div class="col-md-3">
 						<fieldset>
 							<label for="change-group-text-color">[[admin/manage/groups:edit.text-color]]</label>
-							<input id="change-group-text-color" placeholder="#ffffff" data-name="textColor" value="{group.textColor}" class="form-control" /><br />
+							<input id="change-group-text-color" placeholder="#ffffff" data-name="textColor" value="{group.textColor}" class="form-control" data-property/><br />
 						</fieldset>
 					</div>
 				</div>
 				<fieldset>
 					<div class="checkbox">
 						<label>
-							<input id="group-userTitleEnabled" name="userTitleEnabled" type="checkbox"<!-- IF group.userTitleEnabled --> checked<!-- ENDIF group.userTitleEnabled -->> <strong>[[admin/manage/groups:edit.show-badge]]</strong>
+							<input id="group-userTitleEnabled" name="userTitleEnabled" data-property type="checkbox"<!-- IF group.userTitleEnabled --> checked<!-- ENDIF group.userTitleEnabled -->> <strong>[[admin/manage/groups:edit.show-badge]]</strong>
 						</label>
 					</div>
 				</fieldset>
@@ -51,7 +51,7 @@
 				<fieldset>
 					<div class="checkbox">
 						<label>
-							<input id="group-private" name="private" type="checkbox"<!-- IF group.private --> checked<!-- ENDIF group.private -->>
+							<input id="group-private" name="private" data-property type="checkbox"<!-- IF group.private --> checked<!-- ENDIF group.private -->>
 							<strong>[[groups:details.private]]</strong>
 							<p class="help-block">
 								[[admin/manage/groups:edit.private-details]]
@@ -68,7 +68,7 @@
 				<fieldset>
 					<div class="checkbox">
 						<label>
-							<input id="group-disableJoinRequests" name="disableJoinRequests" type="checkbox"<!-- IF group.disableJoinRequests --> checked<!-- ENDIF group.disableJoinRequests -->>
+							<input id="group-disableJoinRequests" name="disableJoinRequests" data-property type="checkbox"<!-- IF group.disableJoinRequests --> checked<!-- ENDIF group.disableJoinRequests -->>
 							<strong>[[admin/manage/groups:edit.disable-join]]</strong>
 						</label>
 					</div>
@@ -77,7 +77,7 @@
 				<fieldset>
 					<div class="checkbox">
 						<label>
-							<input id="group-disableLeave" name="disableLeave" type="checkbox"{{{if group.disableLeave}}} checked{{{end}}}>
+							<input id="group-disableLeave" name="disableLeave" data-property type="checkbox"{{{if group.disableLeave}}} checked{{{end}}}>
 							<strong>[[admin/manage/groups:edit.disable-leave]]</strong>
 						</label>
 					</div>
@@ -86,7 +86,7 @@
 				<fieldset>
 					<div class="checkbox">
 						<label>
-							<input id="group-hidden" name="hidden" type="checkbox"<!-- IF group.hidden --> checked<!-- ENDIF group.hidden -->>
+							<input id="group-hidden" name="hidden" data-property type="checkbox"<!-- IF group.hidden --> checked<!-- ENDIF group.hidden -->>
 							<strong>[[admin/manage/groups:edit.hidden]]</strong>
 							<p class="help-block">
 								[[admin/manage/groups:edit.hidden-details]]
