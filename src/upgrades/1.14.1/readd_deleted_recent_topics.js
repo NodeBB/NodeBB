@@ -16,6 +16,9 @@ module.exports = {
 				tids.map(tid => 'topic:' + tid),
 				['tid', 'lastposttime', 'viewcount', 'postcount', 'upvotes', 'downvotes']
 			);
+			if (!topicData.tid) {
+				return;
+			}
 			topicData.forEach((t) => {
 				if (t.hasOwnProperty('upvotes') && t.hasOwnProperty('downvotes')) {
 					t.votes = parseInt(t.upvotes, 10) - parseInt(t.downvotes, 10);
@@ -23,7 +26,7 @@ module.exports = {
 			});
 
 			await db.sortedSetAdd('topics:recent',
-				topicData.map(t => t.lastposttime),
+				topicData.map(t => t.lastposttime || 0),
 				topicData.map(t => t.tid)
 			);
 
