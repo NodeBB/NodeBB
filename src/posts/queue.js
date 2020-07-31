@@ -97,7 +97,9 @@ module.exports = function (Posts) {
 		topics.checkContent(data.content);
 		if (type === 'topic') {
 			topics.checkTitle(data.title);
-			await topics.validateTags(data.tags);
+			if (data.tags) {
+				await topics.validateTags(data.tags);
+			}
 		}
 
 		const [canPost] = await Promise.all([
