@@ -94,6 +94,12 @@ module.exports = function (Posts) {
 			reply: 'topics:reply',
 		};
 
+		topics.checkContent(data.content);
+		if (type === 'topic') {
+			topics.checkTitle(data.title);
+			await topics.validateTags(data.tags);
+		}
+
 		const [canPost] = await Promise.all([
 			privileges.categories.can(typeToPrivilege[type], cid, data.uid),
 			user.isReadyToQueue(data.uid, cid),
