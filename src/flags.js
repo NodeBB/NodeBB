@@ -307,7 +307,7 @@ Flags.create = async function (type, id, uid, reason, timestamp) {
 	if (targetFlagged) {
 		const flagId = await Flags.getFlagIdByTarget(type, id);
 		await Promise.all([
-			Flags.addReport(flagId, uid, reason, timestamp),
+			Flags.addReport(flagId, type, id, uid, reason, timestamp),
 			Flags.update(flagId, uid, { state: 'open' }),
 		]);
 
@@ -324,10 +324,9 @@ Flags.create = async function (type, id, uid, reason, timestamp) {
 			targetId: id,
 			datetime: timestamp,
 		}),
-		Flags.addReport(flagId, uid, reason, timestamp),
+		Flags.addReport(flagId, type, id, uid, reason, timestamp),
 		db.sortedSetAdd('flags:datetime', timestamp, flagId), // by time, the default
 		db.sortedSetAdd('flags:byType:' + type, timestamp, flagId),	// by flag type
-		db.sortedSetAdd('flags:hash', flagId, [type, id, uid].join(':')), // save zset for duplicate checking
 		db.sortedSetIncrBy('flags:byTarget', 1, [type, id].join(':')),	// by flag target (score is count)
 		analytics.increment('flags') // some fancy analytics
 	);
@@ -379,12 +378,14 @@ Flags.getReports = async function (flagId) {
 	return reports;
 };
 
-Flags.addReport = async function (flagId, uid, reason, timestamp) {
+Flags.addReport = async function (flagId, type, id, uid, reason, timestamp) {
 	// adds to reporters/report zsets
 	await db.sortedSetAddBulk([
 		[`flags:byReporter:${uid}`, timestamp, flagId],
 		[`flag:${flagId}:reports`, timestamp, reason],
 		[`flag:${flagId}:reporters`, timestamp, uid],
+
+		['flags:hash', flagId, [type, id, uid].join(':')],
 	]);
 };
 
