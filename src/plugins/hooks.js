@@ -6,7 +6,7 @@ const utils = require('../utils');
 
 module.exports = function (Plugins) {
 	Plugins.deprecatedHooks = {
-
+		'filter:user.profileMenu': 'filter:buildLinks.accounts/profile',
 	};
 
 	Plugins.internals = {
