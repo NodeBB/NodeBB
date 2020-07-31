@@ -136,7 +136,7 @@ define('forum/topic', [
 				timeout: 0,
 				type: 'info',
 				clickfn: function () {
-					navigator.scrollToIndex(parseInt(bookmark - 1, 10), true);
+					navigator.scrollToIndex(parseInt(bookmark, 10), true);
 				},
 				closefn: function () {
 					storage.removeItem('topic:' + tid + ':bookmark');
@@ -259,7 +259,7 @@ define('forum/topic', [
 					if (err) {
 						return app.alertError(err.message);
 					}
-					ajaxify.data.bookmark = index;
+					ajaxify.data.bookmark = index + 1;
 				});
 			} else {
 				storage.setItem(bookmarkKey, index);
