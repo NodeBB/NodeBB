@@ -28,28 +28,49 @@ define('admin/manage/privileges', [
 	Privileges.setupPrivilegeTable = function () {
 		$('.privilege-table-container').on('change', 'input[type="checkbox"]', function () {
 			var checkboxEl = $(this);
-			var privilege = checkboxEl.parent().attr('data-privilege');
+			var wrapperEl = checkboxEl.parent();
+			var privilege = wrapperEl.attr('data-privilege');
 			var state = checkboxEl.prop('checked');
 			var rowEl = checkboxEl.parents('tr');
 			var member = rowEl.attr('data-group-name') || rowEl.attr('data-uid');
 			var isPrivate = parseInt(rowEl.attr('data-private') || 0, 10);
 			var isGroup = rowEl.attr('data-group-name') !== undefined;
+			var delta = checkboxEl.prop('checked') === (wrapperEl.attr('data-value') === 'true') ? null : state;
 
 			if (member) {
 				if (isGroup && privilege === 'groups:moderate' && !isPrivate && state) {
-					bootbox.confirm('[[admin/manage/categories:alert.confirm-moderate]]', function (confirm) {
+					bootbox.confirm('[[admin/manage/privileges:alert.confirm-moderate]]', function (confirm) {
 						if (confirm) {
-							Privileges.setPrivilege(member, privilege, state, checkboxEl);
+							wrapperEl.attr('data-delta', delta);
+							// Privileges.setPrivilege(member, privilege, state, checkboxEl);
 						} else {
 							checkboxEl.prop('checked', !checkboxEl.prop('checked'));
 						}
 					});
 				} else {
-					Privileges.setPrivilege(member, privilege, state, checkboxEl);
+					wrapperEl.attr('data-delta', delta);
+					// Privileges.setPrivilege(member, privilege, state, checkboxEl);
 				}
 			} else {
 				app.alertError('[[error:invalid-data]]');
 			}
+		});
+
+		document.getElementById('save').addEventListener('click', function () {
+			var tableEl = document.querySelector('.privilege-table-container');
+			var requests = tableEl.querySelectorAll('td[data-delta]').forEach(function (el) {
+				var privilege = el.getAttribute('data-privilege');
+				var rowEl = el.parentNode;
+				var member = rowEl.getAttribute('data-group-name') || rowEl.getAttribute('data-uid');
+				var state = el.getAttribute('data-delta') === 'true' ? 1 : 0;
+				var checkboxEl = el.querySelector('input');
+
+				Privileges.setPrivilege(member, privilege, state, checkboxEl);
+			});
+
+			$.when(requests).done(function () {
+				Privileges.refreshPrivilegeTable();
+			});
 		});
 
 		$('.privilege-table-container').on('click', '[data-action="search.user"]', Privileges.addUserToPrivilegeTable);
@@ -126,6 +147,8 @@ define('admin/manage/privileges', [
 	};
 
 	Privileges.setPrivilege = function (member, privilege, state, checkboxEl) {
+		var deferred = $.Deferred();
+
 		socket.emit('admin.categories.setPrivilege', {
 			cid: isNaN(cid) ? 0 : cid,
 			privilege: privilege,
@@ -133,12 +156,15 @@ define('admin/manage/privileges', [
 			member: member,
 		}, function (err) {
 			if (err) {
+				deferred.reject(err);
 				return app.alertError(err.message);
 			}
 
 			checkboxEl.replaceWith('<i class="fa fa-spin fa-spinner"></i>');
-			Privileges.refreshPrivilegeTable();
+			deferred.resolve();
 		});
+
+		return deferred.promise();
 	};
 
 	Privileges.addUserToPrivilegeTable = function () {
