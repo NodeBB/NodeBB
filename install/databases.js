@@ -1,58 +1,51 @@
 'use strict';
 
-var async = require('async');
-var prompt = require('prompt');
-var winston = require('winston');
+const prompt = require('prompt');
+const winston = require('winston');
 
-var questions = {
+const util = require('util');
+
+const promptGet = util.promisify((schema, callback) => prompt.get(schema, callback));
+
+const questions = {
 	redis: require('../src/database/redis').questions,
 	mongo: require('../src/database/mongo').questions,
 	postgres: require('../src/database/postgres').questions,
 };
 
-module.exports = function (config, callback) {
-	async.waterfall([
-		function (next) {
-			winston.info('\nNow configuring ' + config.database + ' database:');
-			getDatabaseConfig(config, next);
-		},
-		function (databaseConfig, next) {
-			saveDatabaseConfig(config, databaseConfig, next);
-		},
-	], callback);
+module.exports = async function (config) {
+	winston.info('\nNow configuring ' + config.database + ' database:');
+	const databaseConfig = await getDatabaseConfig(config);
+	return saveDatabaseConfig(config, databaseConfig);
 };
 
-function getDatabaseConfig(config, callback) {
+async function getDatabaseConfig(config) {
 	if (!config) {
-		return callback(new Error('aborted'));
+		throw new Error('invalid config, aborted');
 	}
 
 	if (config.database === 'redis') {
 		if (config['redis:host'] && config['redis:port']) {
-			callback(null, config);
-		} else {
-			prompt.get(questions.redis, callback);
+			return config;
 		}
+		return await promptGet(questions.redis);
 	} else if (config.database === 'mongo') {
 		if ((config['mongo:host'] && config['mongo:port']) || config['mongo:uri']) {
-			callback(null, config);
-		} else {
-			prompt.get(questions.mongo, callback);
+			return config;
 		}
+		return await promptGet(questions.mongo);
 	} else if (config.database === 'postgres') {
 		if (config['postgres:host'] && config['postgres:port']) {
-			callback(null, config);
-		} else {
-			prompt.get(questions.postgres, callback);
+			return config;
 		}
-	} else {
-		return callback(new Error('unknown database : ' + config.database));
+		return await promptGet(questions.postgres);
 	}
+	throw new Error('unknown database : ' + config.database);
 }
 
-function saveDatabaseConfig(config, databaseConfig, callback) {
+function saveDatabaseConfig(config, databaseConfig) {
 	if (!databaseConfig) {
-		return callback(new Error('aborted'));
+		throw new Error('invalid config, aborted');
 	}
 
 	// Translate redis properties into redis object
@@ -86,13 +79,13 @@ function saveDatabaseConfig(config, databaseConfig, callback) {
 			ssl: databaseConfig['postgres:ssl'],
 		};
 	} else {
-		return callback(new Error('unknown database : ' + config.database));
+		throw new Error('unknown database : ' + config.database);
 	}
 
-	var allQuestions = questions.redis.concat(questions.mongo).concat(questions.postgres);
+	const allQuestions = questions.redis.concat(questions.mongo).concat(questions.postgres);
 	for (var x = 0; x < allQuestions.length; x += 1) {
 		delete config[allQuestions[x].name];
 	}
 
-	callback(null, config);
+	return config;
 }

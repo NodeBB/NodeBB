@@ -130,9 +130,7 @@ define('admin/manage/privileges', [
 					$('.privilege-table-container').html(html);
 					Privileges.exposeAssumedPrivileges();
 
-					if (groupToHighlight) {
-						$('[data-group-name="' + groupToHighlight + '"]').addClass('selected');
-					}
+					hightlightRowByGroupName(groupToHighlight);
 				});
 			});
 		});
@@ -264,15 +262,25 @@ define('admin/manage/privileges', [
 		});
 	};
 
-	function highlightRow() {
-		var params = utils.params();
-		if (params.group) {
-			var el = $('[data-group-name="' + params.group + '"]');
+	function hightlightRowByGroupName(groupName) {
+		if (groupName) {
+			var el = $('[data-group-name]').filter(function () {
+				return $(this).attr('data-group-name') === groupName;
+			});
 			if (el.length) {
-				return el.addClass('selected');
+				el.addClass('selected');
+				return true;
 			}
+		}
+		return false;
+	}
 
-			addGroupToCategory(params.group);
+	function highlightRow() {
+		if (ajaxify.data.group) {
+			if (hightlightRowByGroupName(ajaxify.data.group)) {
+				return;
+			}
+			addGroupToCategory(ajaxify.data.group);
 		}
 	}
 

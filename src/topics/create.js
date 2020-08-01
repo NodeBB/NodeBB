@@ -1,24 +1,24 @@
 
 'use strict';
 
-var _ = require('lodash');
-var validator = require('validator');
+const _ = require('lodash');
+const validator = require('validator');
 
-var db = require('../database');
-var utils = require('../utils');
-var plugins = require('../plugins');
-var analytics = require('../analytics');
-var user = require('../user');
-var meta = require('../meta');
-var posts = require('../posts');
-var privileges = require('../privileges');
-var categories = require('../categories');
+const db = require('../database');
+const utils = require('../utils');
+const plugins = require('../plugins');
+const analytics = require('../analytics');
+const user = require('../user');
+const meta = require('../meta');
+const posts = require('../posts');
+const privileges = require('../privileges');
+const categories = require('../categories');
 const translator = require('../translator');
 
 module.exports = function (Topics) {
 	Topics.create = async function (data) {
 		// This is an internal method, consider using Topics.post instead
-		var timestamp = data.timestamp || Date.now();
+		const timestamp = data.timestamp || Date.now();
 		await Topics.resizeAndUploadThumb(data);
 
 		const tid = await db.incrObjectField('global', 'nextTid');
@@ -71,9 +71,9 @@ module.exports = function (Topics) {
 		if (data.content) {
 			data.content = utils.rtrim(data.content);
 		}
-		check(data.title, meta.config.minimumTitleLength, meta.config.maximumTitleLength, 'title-too-short', 'title-too-long');
+		Topics.checkTitle(data.title);
 		await Topics.validateTags(data.tags, data.cid);
-		check(data.content, meta.config.minimumPostLength, meta.config.maximumPostLength, 'content-too-short', 'content-too-long');
+		Topics.checkContent(data.content);
 
 		const [categoryExists, canCreate, canTag] = await Promise.all([
 			categories.exists(data.cid),
@@ -135,8 +135,8 @@ module.exports = function (Topics) {
 	};
 
 	Topics.reply = async function (data) {
-		var tid = data.tid;
-		var uid = data.uid;
+		const tid = data.tid;
+		const uid = data.uid;
 
 		const topicData = await Topics.getTopicData(tid);
 		if (!topicData) {
@@ -170,7 +170,7 @@ module.exports = function (Topics) {
 		if (data.content) {
 			data.content = utils.rtrim(data.content);
 		}
-		check(data.content, meta.config.minimumPostLength, meta.config.maximumPostLength, 'content-too-short', 'content-too-long');
+		Topics.checkContent(data.content);
 
 		data.ip = data.req ? data.req.ip : null;
 		let postData = await posts.create(data);
@@ -234,6 +234,14 @@ module.exports = function (Topics) {
 
 		return postData;
 	}
+
+	Topics.checkTitle = function (title) {
+		check(title, meta.config.minimumTitleLength, meta.config.maximumTitleLength, 'title-too-short', 'title-too-long');
+	};
+
+	Topics.checkContent = function (content) {
+		check(content, meta.config.minimumPostLength, meta.config.maximumPostLength, 'content-too-short', 'content-too-long');
+	};
 
 	function check(item, min, max, minError, maxError) {
 		// Trim and remove HTML (latter for composers that send in HTML, like redactor)

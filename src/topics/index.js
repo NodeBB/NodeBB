@@ -119,7 +119,9 @@ Topics.getTopicsByTids = async function (tids, options) {
 			topic.isOwner = topic.uid === parseInt(uid, 10);
 			topic.ignored = isIgnored[i];
 			topic.unread = !hasRead[i] && !isIgnored[i];
-			topic.bookmark = sortOldToNew ? Math.max(1, topic.postcount + 2 - bookmarks[i]) : bookmarks[i];
+			topic.bookmark = sortOldToNew ?
+				Math.max(1, topic.postcount + 2 - bookmarks[i]) :
+				Math.min(topic.postcount, bookmarks[i] + 1);
 			topic.unreplied = !topic.teaser;
 
 			topic.icons = [];

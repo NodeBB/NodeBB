@@ -38,7 +38,7 @@ define('admin/settings', ['uploader'], function (uploader) {
 		var field;
 
 		// Handle unsaved changes
-		$(fields).on('change', function () {
+		fields.on('change', function () {
 			app.flags = app.flags || {};
 			app.flags._unsaved = true;
 		});

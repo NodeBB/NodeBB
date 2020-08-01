@@ -6,7 +6,8 @@ define('admin/manage/group', [
 	'iconSelect',
 	'admin/modules/colorpicker',
 	'translator',
-], function (memberList, iconSelect, colorpicker, translator) {
+	'categorySelector',
+], function (memberList, iconSelect, colorpicker, translator, categorySelector) {
 	var Groups = {};
 
 	Groups.init = function () {
@@ -40,16 +41,24 @@ define('admin/manage/group', [
 		setupGroupMembersMenu(groupName);
 
 		$('#group-icon, #group-icon-label').on('click', function () {
+			var currentIcon = groupIcon.attr('value');
 			iconSelect.init(groupIcon, function () {
 				var newIcon = groupIcon.attr('value');
+				if (newIcon === currentIcon) {
+					return;
+				}
 				if (newIcon === 'fa-nbb-none') {
 					newIcon = 'hidden';
 				}
 				$('#group-icon-preview').attr('class', 'fa fa-fw ' + (newIcon || 'hidden'));
+				app.flags = app.flags || {};
+				app.flags._unsaved = true;
 			});
 		});
 
-		$('[component="category/list"] [data-cid]').on('click', navigateToCategory);
+		categorySelector.init($('[component="category-selector"]'), function (selectedCategory) {
+			navigateToCategory(selectedCategory.cid);
+		});
 
 		colorpicker.enable(changeGroupLabelColor, function (hsb, hex) {
 			groupLabelPreview.css('background-color', '#' + hex);
@@ -59,7 +68,7 @@ define('admin/manage/group', [
 			groupLabelPreview.css('color', '#' + hex);
 		});
 
-		$('form').on('change', 'input, select, textarea', function () {
+		$('form [data-property]').on('change', function () {
 			app.flags = app.flags || {};
 			app.flags._unsaved = true;
 		});
@@ -142,11 +151,9 @@ define('admin/manage/group', [
 		});
 	}
 
-	function navigateToCategory() {
-		var cid = $(this).attr('data-cid');
-
+	function navigateToCategory(cid) {
 		if (cid) {
-			var url = 'admin/manage/privileges/' + cid + '?group=' + ajaxify.data.group.name;
+			var url = 'admin/manage/privileges/' + cid + '?group=' + ajaxify.data.group.nameEncoded;
 			if (app.flags && app.flags._unsaved === true) {
 				translator.translate('[[global:unsaved-changes]]', function (text) {
 					bootbox.confirm(text, function (navigate) {

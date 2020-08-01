@@ -16,8 +16,8 @@ define('admin/manage/category', [
 			$this.val($this.attr('data-value'));
 		});
 
-		$('#category-selector').on('change', function () {
-			ajaxify.go('admin/manage/categories/' + $(this).val() + window.location.hash);
+		categorySelector.init($('[component="category-selector"]'), function (selectedCategory) {
+			ajaxify.go('admin/manage/categories/' + selectedCategory.cid);
 		});
 
 		function enableColorPicker(idx, inputEl) {

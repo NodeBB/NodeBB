@@ -1,11 +1,7 @@
 <div class="category" data-cid="{category.cid}">
 	<div class="row">
 		<div class="col-md-3 pull-right">
-			<select id="category-selector" class="form-control">
-				<!-- BEGIN allCategories -->
-				<option value="{allCategories.value}" <!-- IF allCategories.selected -->selected<!-- ENDIF allCategories.selected -->>{allCategories.text}</option>
-				<!-- END allCategories -->
-			</select>
+			<!-- IMPORT partials/category-selector.tpl -->
 		</div>
 	</div>
 

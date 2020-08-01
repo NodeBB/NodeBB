@@ -307,7 +307,7 @@ Flags.create = async function (type, id, uid, reason, timestamp) {
 	if (targetFlagged) {
 		const flagId = await Flags.getFlagIdByTarget(type, id);
 		await Promise.all([
-			Flags.addReport(flagId, uid, reason, timestamp),
+			Flags.addReport(flagId, type, id, uid, reason, timestamp),
 			Flags.update(flagId, uid, { state: 'open' }),
 		]);
 
@@ -324,10 +324,9 @@ Flags.create = async function (type, id, uid, reason, timestamp) {
 			targetId: id,
 			datetime: timestamp,
 		}),
-		Flags.addReport(flagId, uid, reason, timestamp),
+		Flags.addReport(flagId, type, id, uid, reason, timestamp),
 		db.sortedSetAdd('flags:datetime', timestamp, flagId), // by time, the default
 		db.sortedSetAdd('flags:byType:' + type, timestamp, flagId),	// by flag type
-		db.sortedSetAdd('flags:hash', flagId, [type, id, uid].join(':')), // save zset for duplicate checking
 		db.sortedSetIncrBy('flags:byTarget', 1, [type, id].join(':')),	// by flag target (score is count)
 		analytics.increment('flags') // some fancy analytics
 	);
@@ -364,27 +363,32 @@ Flags.create = async function (type, id, uid, reason, timestamp) {
 };
 
 Flags.getReports = async function (flagId) {
-	const [reports, reporterUids] = await Promise.all([
-		db.getSortedSetRevRangeWithScores(`flag:${flagId}:reports`, 0, -1),
-		db.getSortedSetRevRange(`flag:${flagId}:reporters`, 0, -1),
-	]);
+	const payload = await db.getSortedSetRevRangeWithScores(`flag:${flagId}:reports`, 0, -1);
+	const [reports, uids] = payload.reduce(function (memo, cur) {
+		const value = cur.value.split(';');
+		memo[1].push(value.shift());
+		cur.value = value.join(';');
+		memo[0].push(cur);
+
+		return memo;
+	}, [[], []]);
 
 	await Promise.all(reports.map(async (report, idx) => {
 		report.timestamp = report.score;
 		report.timestampISO = new Date(report.score).toISOString();
 		delete report.score;
-		report.reporter = await user.getUserFields(reporterUids[idx], ['username', 'userslug', 'picture', 'reputation']);
+		report.reporter = await user.getUserFields(uids[idx], ['username', 'userslug', 'picture', 'reputation']);
 	}));
 
 	return reports;
 };
 
-Flags.addReport = async function (flagId, uid, reason, timestamp) {
-	// adds to reporters/report zsets
+Flags.addReport = async function (flagId, type, id, uid, reason, timestamp) {
 	await db.sortedSetAddBulk([
 		[`flags:byReporter:${uid}`, timestamp, flagId],
-		[`flag:${flagId}:reports`, timestamp, reason],
-		[`flag:${flagId}:reporters`, timestamp, uid],
+		[`flag:${flagId}:reports`, timestamp, [uid, reason].join(';')],
+
+		['flags:hash', flagId, [type, id, uid].join(':')],
 	]);
 };
 
