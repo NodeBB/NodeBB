@@ -42,14 +42,14 @@ define('admin/manage/privileges', [
 					bootbox.confirm('[[admin/manage/privileges:alert.confirm-moderate]]', function (confirm) {
 						if (confirm) {
 							wrapperEl.attr('data-delta', delta);
-							// Privileges.setPrivilege(member, privilege, state, checkboxEl);
+							Privileges.exposeAssumedPrivileges();
 						} else {
 							checkboxEl.prop('checked', !checkboxEl.prop('checked'));
 						}
 					});
 				} else {
 					wrapperEl.attr('data-delta', delta);
-					// Privileges.setPrivilege(member, privilege, state, checkboxEl);
+					Privileges.exposeAssumedPrivileges();
 				}
 			} else {
 				app.alertError('[[error:invalid-data]]');
@@ -57,19 +57,33 @@ define('admin/manage/privileges', [
 		});
 
 		document.getElementById('save').addEventListener('click', function () {
-			var tableEl = document.querySelector('.privilege-table-container');
-			var requests = tableEl.querySelectorAll('td[data-delta]').forEach(function (el) {
-				var privilege = el.getAttribute('data-privilege');
-				var rowEl = el.parentNode;
-				var member = rowEl.getAttribute('data-group-name') || rowEl.getAttribute('data-uid');
-				var state = el.getAttribute('data-delta') === 'true' ? 1 : 0;
-				var checkboxEl = el.querySelector('input');
+			bootbox.confirm('[[admin/manage/privileges:alert.confirm-save]]', function (ok) {
+				if (ok) {
+					var tableEl = document.querySelector('.privilege-table-container');
+					var requests = tableEl.querySelectorAll('td[data-delta]').forEach(function (el) {
+						var privilege = el.getAttribute('data-privilege');
+						var rowEl = el.parentNode;
+						var member = rowEl.getAttribute('data-group-name') || rowEl.getAttribute('data-uid');
+						var state = el.getAttribute('data-delta') === 'true' ? 1 : 0;
+						var checkboxEl = el.querySelector('input');
 
-				Privileges.setPrivilege(member, privilege, state, checkboxEl);
+						Privileges.setPrivilege(member, privilege, state, checkboxEl);
+					});
+
+					$.when(requests).done(function () {
+						Privileges.refreshPrivilegeTable();
+						app.alertSuccess('[[admin/manage/privileges:alert.saved]]');
+					});
+				}
 			});
+		});
 
-			$.when(requests).done(function () {
-				Privileges.refreshPrivilegeTable();
+		document.getElementById('discard').addEventListener('click', function () {
+			bootbox.confirm('[[admin/manage/privileges:alert.confirm-discard]]', function (ok) {
+				if (ok) {
+					Privileges.refreshPrivilegeTable();
+					app.alertSuccess('[[admin/manage/privileges:alert.discarded]]');
+				}
 			});
 		});
 
