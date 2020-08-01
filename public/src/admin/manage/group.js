@@ -7,7 +7,8 @@ define('admin/manage/group', [
 	'admin/modules/colorpicker',
 	'translator',
 	'categorySelector',
-], function (memberList, iconSelect, colorpicker, translator, categorySelector) {
+	'groupSearch',
+], function (memberList, iconSelect, colorpicker, translator, categorySelector, groupSearch) {
 	var Groups = {};
 
 	Groups.init = function () {
@@ -59,6 +60,8 @@ define('admin/manage/group', [
 		categorySelector.init($('[component="category-selector"]'), function (selectedCategory) {
 			navigateToCategory(selectedCategory.cid);
 		});
+
+		groupSearch.init($('[component="group-selector"]'));
 
 		colorpicker.enable(changeGroupLabelColor, function (hsb, hex) {
 			groupLabelPreview.css('background-color', '#' + hex);

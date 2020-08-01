@@ -108,12 +108,25 @@
 			</div>
 		</div>
 		<div class="col-md-3">
-			<select id="group-selector" class="form-control">
-				<!-- BEGIN groupNames -->
-				<option value="{groupNames.encodedName}" <!-- IF groupNames.selected -->selected<!-- ENDIF groupNames.selected -->>{groupNames.displayName}</option>
-				<!-- END groupNames -->
-			</select>
-			<br />
+			<div component="group-selector" class="btn-group">
+				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+					<span component="group-selector-selected">{group.displayName}</span> <span class="caret"></span>
+				</button>
+				<div component="group-selector-search" class="hidden">
+					<input type="text" class="form-control" autocomplete="off">
+				</div>
+				<ul component="group-list" class="dropdown-menu group-dropdown-menu" role="menu">
+					<li component="group-no-matches" role="presentation" class="group hidden">
+						<a role="menu-item">[[search:no-matches]]</a>
+					</li>
+					<!-- BEGIN groupNames -->
+					<li role="presentation" class="group" data-name="{groupNames.displayName}">
+						<a href="{config.relative_path}/admin/manage/groups/{groupNames.encodedName}" role="menu-item">{groupNames.displayName}</a>
+					</li>
+					<!-- END groupNames -->
+				</ul>
+			</div>
+			<hr />
 			<div class="well">
 				<strong class="pull-left">[[admin/manage/privileges:edit-privileges]]</strong><br />
 				<!-- IMPORT partials/category-selector.tpl -->
