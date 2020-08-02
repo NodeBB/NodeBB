@@ -152,16 +152,6 @@ describe('helpers', function () {
 		done();
 	});
 
-	it('should spawn privilege states', function (done) {
-		var privs = {
-			find: true,
-			read: true,
-		};
-		var html = helpers.spawnPrivilegeStates('guests', privs);
-		assert.equal(html, '<td class="text-center" data-privilege="find"><input type="checkbox" checked /></td><td class="text-center" data-privilege="read"><input type="checkbox" checked /></td>');
-		done();
-	});
-
 	it('should render thumb as topic image', function (done) {
 		var topicObj = { thumb: '/uploads/1.png', user: { username: 'baris' } };
 		var html = helpers.renderTopicImage(topicObj);
