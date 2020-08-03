@@ -156,8 +156,18 @@ define('admin/manage/privileges', [
 				privs.push(el.getAttribute('data-privilege'));
 			}
 		});
+
+		// Also apply to non-group privileges
+		privs = privs.concat(privs.map(function (priv) {
+			if (priv.startsWith('groups:')) {
+				return priv.slice(7);
+			}
+
+			return false;
+		})).filter(Boolean);
+
 		for (var x = 0, numPrivs = privs.length; x < numPrivs; x += 1) {
-			var inputs = $('.privilege-table tr[data-group-name]:not([data-group-name="registered-users"],[data-group-name="guests"],[data-group-name="spiders"]) td[data-privilege="' + privs[x] + '"] input');
+			var inputs = $('.privilege-table tr[data-group-name]:not([data-group-name="registered-users"],[data-group-name="guests"],[data-group-name="spiders"]) td[data-privilege="' + privs[x] + '"] input, .privilege-table tr[data-uid] td[data-privilege="' + privs[x] + '"] input');
 			inputs.each(function (idx, el) {
 				if (!el.checked) {
 					el.indeterminate = true;
