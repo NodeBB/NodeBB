@@ -309,7 +309,7 @@ define('admin/manage/privileges', [
 
 	function addGroupToCategory(group, cb) {
 		// Generate data for new row
-		var privilegeSet = ajaxify.data.privileges.keys.group.reduce(function (memo, cur) {
+		var privilegeSet = ajaxify.data.privileges.keys.groups.reduce(function (memo, cur) {
 			memo[cur] = false;
 			return memo;
 		}, {});

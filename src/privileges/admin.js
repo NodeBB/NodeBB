@@ -120,7 +120,7 @@ module.exports = function (privileges) {
 
 		const keys = await utils.promiseParallel({
 			users: plugins.fireHook('filter:privileges.admin.list', privileges.admin.userPrivilegeList.slice()),
-			group: plugins.fireHook('filter:privileges.admin.groups.list', privileges.admin.groupPrivilegeList.slice()),
+			groups: plugins.fireHook('filter:privileges.admin.groups.list', privileges.admin.groupPrivilegeList.slice()),
 		});
 
 		const payload = await utils.promiseParallel({
