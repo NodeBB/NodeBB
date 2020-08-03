@@ -64,7 +64,7 @@ module.exports = function (privileges) {
 		const payload = await utils.promiseParallel({
 			labels: getLabels(),
 			users: helpers.getUserPrivileges(0, keys.users),
-			groups: helpers.getGroupPrivileges(0, keys.group),
+			groups: helpers.getGroupPrivileges(0, keys.groups),
 		});
 		payload.keys = keys;
 
