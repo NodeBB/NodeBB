@@ -129,6 +129,7 @@ define('admin/manage/privileges', [
 				return app.alertError(err.message);
 			}
 
+			ajaxify.data.privileges = privileges;
 			var tpl = parseInt(cid, 10) ? 'admin/partials/privileges/category' : 'admin/partials/privileges/global';
 			Benchpress.parse(tpl, {
 				privileges: privileges,
