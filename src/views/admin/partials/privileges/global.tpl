@@ -50,7 +50,6 @@
 							</tr>
 						</thead>
 						<tbody>
-							<!-- IF privileges.users.length -->
 							<!-- BEGIN privileges.users -->
 							<tr data-uid="{privileges.users.uid}">
 								<td>
@@ -71,15 +70,5 @@
 									</button>
 								</td>
 							</tr>
-							<!-- ELSE -->
-							<tr>
-								<td colspan="{privileges.columnCount}">
-									[[admin/manage/privileges:global.no-users]]
-									<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.user">
-										[[admin/manage/categories:privileges.search-user]]
-									</button>
-								</td>
-							</tr>
-							<!-- ENDIF privileges.users.length -->
 						</tbody>
 					</table>

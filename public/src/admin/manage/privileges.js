@@ -90,11 +90,11 @@ define('admin/manage/privileges', [
 		$('.privilege-table-container').on('click', '[data-action="search.user"]', Privileges.addUserToPrivilegeTable);
 		$('.privilege-table-container').on('click', '[data-action="search.group"]', Privileges.addGroupToPrivilegeTable);
 		$('.privilege-table-container').on('click', '[data-action="copyToChildren"]', function () {
-			Privileges.copyPrivilegesToChildren(cid, '');
+			throwConfirmModal('copyToChildren', Privileges.copyPrivilegesToChildren.bind(null, cid, ''));
 		});
 		$('.privilege-table-container').on('click', '[data-action="copyToChildrenGroup"]', function () {
 			var groupName = $(this).parents('[data-group-name]').attr('data-group-name');
-			Privileges.copyPrivilegesToChildren(cid, groupName);
+			throwConfirmModal('copyToChildrenGroup', Privileges.copyPrivilegesToChildren.bind(null, cid, groupName));
 		});
 
 		$('.privilege-table-container').on('click', '[data-action="copyPrivilegesFrom"]', function () {
@@ -106,12 +106,20 @@ define('admin/manage/privileges', [
 		});
 
 		$('.privilege-table-container').on('click', '[data-action="copyToAll"]', function () {
-			Privileges.copyPrivilegesToAllCategories(cid, '');
+			throwConfirmModal('copyToAll', Privileges.copyPrivilegesToAllCategories.bind(null, cid, ''));
 		});
 		$('.privilege-table-container').on('click', '[data-action="copyToAllGroup"]', function () {
 			var groupName = $(this).parents('[data-group-name]').attr('data-group-name');
-			Privileges.copyPrivilegesToAllCategories(cid, groupName);
+			throwConfirmModal('copyToAllGroup', Privileges.copyPrivilegesToAllCategories.bind(null, cid, groupName));
 		});
+
+		function throwConfirmModal(method, onConfirm) {
+			bootbox.confirm('[[admin/manage/privileges:alert.confirm-' + method + ']]<br /><br />[[admin/manage/privileges:alert.no-undo]]', function (ok) {
+				if (ok) {
+					onConfirm.call();
+				}
+			});
+		}
 
 		Privileges.exposeAssumedPrivileges();
 	};
@@ -191,25 +199,51 @@ define('admin/manage/privileges', [
 			inputEl.focus();
 
 			autocomplete.user(inputEl, function (ev, ui) {
-				var defaultPrivileges;
-				if (ajaxify.data.url === '/admin/manage/privileges/admin') {
-					defaultPrivileges = ['admin:dashboard'];
-				} else {
-					defaultPrivileges = cid ? ['find', 'read', 'topics:read'] : ['chat'];
-				}
-				socket.emit('admin.categories.setPrivilege', {
-					cid: isNaN(cid) ? 0 : cid,
-					privilege: defaultPrivileges,
-					set: true,
-					member: ui.item.user.uid,
-				}, function (err) {
-					if (err) {
-						return app.alertError(err.message);
-					}
+				// var defaultPrivileges;
+				// if (ajaxify.data.url === '/admin/manage/privileges/admin') {
+				// 	defaultPrivileges = ['admin:dashboard'];
+				// } else {
+				// 	defaultPrivileges = cid ? ['find', 'read', 'topics:read'] : ['chat'];
+				// }
 
-					Privileges.refreshPrivilegeTable();
+				var privilegeSet = Object.assign({}, ajaxify.data.privileges.groups[0].privileges);
+				for (var privilege in privilegeSet) {
+					if (privilegeSet.hasOwnProperty(privilege)) {
+						privilegeSet[privilege] = false;
+					}
+				}
+				app.parseAndTranslate('admin/partials/privileges/' + (isNaN(cid) ? 'global' : 'category'), 'privileges.users', {
+					privileges: {
+						users: [
+							{
+								picture: ui.item.user.picture,
+								username: ui.item.user.username,
+								uid: ui.item.user.uid,
+								'icon:text': ui.item.user['icon:text'],
+								'icon:bgColor': ui.item.user['icon:bgColor'],
+								privileges: privilegeSet,
+							},
+						],
+					},
+				}, function (html) {
+					var tableEl = document.querySelectorAll('.privilege-table');
+					var rowEl = tableEl[1].querySelector('tbody tr');
+					html.insertBefore(rowEl);
 					modal.modal('hide');
 				});
+				// socket.emit('admin.categories.setPrivilege', {
+				// 	cid: isNaN(cid) ? 0 : cid,
+				// 	privilege: defaultPrivileges,
+				// 	set: true,
+				// 	member: ui.item.user.uid,
+				// }, function (err) {
+				// 	if (err) {
+				// 		return app.alertError(err.message);
+				// 	}
+
+				// 	Privileges.refreshPrivilegeTable();
+				// 	modal.modal('hide');
+				// });
 			});
 		});
 	};
