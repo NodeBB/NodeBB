@@ -88,8 +88,7 @@ async function isSystemGroupAllowedToPrivileges(privileges, uid, cid) {
 	return await groups.isMemberOfGroups(uidToSystemGroup[uid], groupKeys);
 }
 
-helpers.getUserPrivileges = async function (cid, hookName, userPrivilegeList) {
-	const userPrivileges = await plugins.fireHook(hookName, userPrivilegeList.slice());
+helpers.getUserPrivileges = async function (cid, userPrivileges) {
 	let memberSets = await groups.getMembersOfGroups(userPrivileges.map(privilege => 'cid:' + cid + ':privileges:' + privilege));
 	memberSets = memberSets.map(function (set) {
 		return set.map(uid => parseInt(uid, 10));
@@ -108,8 +107,7 @@ helpers.getUserPrivileges = async function (cid, hookName, userPrivilegeList) {
 	return memberData;
 };
 
-helpers.getGroupPrivileges = async function (cid, hookName, groupPrivilegeList) {
-	const groupPrivileges = await plugins.fireHook(hookName, groupPrivilegeList.slice());
+helpers.getGroupPrivileges = async function (cid, groupPrivileges) {
 	const [memberSets, allGroupNames] = await Promise.all([
 		groups.getMembersOfGroups(groupPrivileges.map(privilege => 'cid:' + cid + ':privileges:' + privilege)),
 		groups.getGroups('groups:createtime', 0, -1),

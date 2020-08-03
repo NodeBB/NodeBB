@@ -65,9 +65,8 @@ define('admin/manage/privileges', [
 						var rowEl = el.parentNode;
 						var member = rowEl.getAttribute('data-group-name') || rowEl.getAttribute('data-uid');
 						var state = el.getAttribute('data-delta') === 'true' ? 1 : 0;
-						var checkboxEl = el.querySelector('input');
 
-						Privileges.setPrivilege(member, privilege, state, checkboxEl);
+						Privileges.setPrivilege(member, privilege, state);
 					});
 
 					$.when(requests).done(function () {
@@ -166,7 +165,7 @@ define('admin/manage/privileges', [
 		}
 	};
 
-	Privileges.setPrivilege = function (member, privilege, state, checkboxEl) {
+	Privileges.setPrivilege = function (member, privilege, state) {
 		var deferred = $.Deferred();
 
 		socket.emit('admin.categories.setPrivilege', {
@@ -180,7 +179,6 @@ define('admin/manage/privileges', [
 				return app.alertError(err.message);
 			}
 
-			checkboxEl.replaceWith('<i class="fa fa-spin fa-spinner"></i>');
 			deferred.resolve();
 		});
 
@@ -199,19 +197,12 @@ define('admin/manage/privileges', [
 			inputEl.focus();
 
 			autocomplete.user(inputEl, function (ev, ui) {
-				// var defaultPrivileges;
-				// if (ajaxify.data.url === '/admin/manage/privileges/admin') {
-				// 	defaultPrivileges = ['admin:dashboard'];
-				// } else {
-				// 	defaultPrivileges = cid ? ['find', 'read', 'topics:read'] : ['chat'];
-				// }
+				// Generate data for new row
+				var privilegeSet = ajaxify.data.privileges.keys.users.reduce(function (memo, cur) {
+					memo[cur] = false;
+					return memo;
+				}, {});
 
-				var privilegeSet = Object.assign({}, ajaxify.data.privileges.groups[0].privileges);
-				for (var privilege in privilegeSet) {
-					if (privilegeSet.hasOwnProperty(privilege)) {
-						privilegeSet[privilege] = false;
-					}
-				}
 				app.parseAndTranslate('admin/partials/privileges/' + (isNaN(cid) ? 'global' : 'category'), 'privileges.users', {
 					privileges: {
 						users: [
@@ -227,23 +218,10 @@ define('admin/manage/privileges', [
 					},
 				}, function (html) {
 					var tableEl = document.querySelectorAll('.privilege-table');
-					var rowEl = tableEl[1].querySelector('tbody tr');
-					html.insertBefore(rowEl);
+					var rows = tableEl[1].querySelectorAll('tbody tr');
+					html.insertBefore(rows[rows.length - 1]);
 					modal.modal('hide');
 				});
-				// socket.emit('admin.categories.setPrivilege', {
-				// 	cid: isNaN(cid) ? 0 : cid,
-				// 	privilege: defaultPrivileges,
-				// 	set: true,
-				// 	member: ui.item.user.uid,
-				// }, function (err) {
-				// 	if (err) {
-				// 		return app.alertError(err.message);
-				// 	}
-
-				// 	Privileges.refreshPrivilegeTable();
-				// 	modal.modal('hide');
-				// });
 			});
 		});
 	};
@@ -319,24 +297,29 @@ define('admin/manage/privileges', [
 	}
 
 	function addGroupToCategory(group, cb) {
-		var defaultPrivileges;
-		if (ajaxify.data.url === '/admin/manage/privileges/admin') {
-			defaultPrivileges = ['groups:admin:dashboard'];
-		} else {
-			defaultPrivileges = cid ? ['groups:find', 'groups:read', 'groups:topics:read'] : ['groups:chat'];
-		}
+		// Generate data for new row
+		var privilegeSet = ajaxify.data.privileges.keys.group.reduce(function (memo, cur) {
+			memo[cur] = false;
+			return memo;
+		}, {});
 
-		socket.emit('admin.categories.setPrivilege', {
-			cid: isNaN(cid) ? 0 : cid,
-			privilege: defaultPrivileges,
-			set: true,
-			member: group,
-		}, function (err) {
-			if (err) {
-				return app.alertError(err.message);
-			}
+		app.parseAndTranslate('admin/partials/privileges/' + (isNaN(cid) ? 'global' : 'category'), 'privileges.groups', {
+			privileges: {
+				groups: [
+					{
+						name: group,
+						nameEscaped: translator.escape(group),
+						privileges: privilegeSet,
+					},
+				],
+			},
+		}, function (html) {
+			console.log(html);
+			var tableEl = document.querySelector('.privilege-table');
+			var rows = tableEl.querySelectorAll('tbody tr');
+			html.insertBefore(rows[rows.length - 1]);
+			Privileges.exposeAssumedPrivileges();
 
-			Privileges.refreshPrivilegeTable(group);
 			if (typeof cb === 'function') {
 				cb();
 			}
