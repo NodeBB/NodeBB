@@ -314,7 +314,7 @@ define('admin/manage/privileges', [
 			return memo;
 		}, {});
 
-		app.parseAndTranslate('admin/partials/privileges/' + (isNaN(cid) ? 'global' : 'category'), 'privileges.groups', {
+		app.parseAndTranslate('admin/partials/privileges/' + ((isNaN(cid) || cid === 0) ? 'global' : 'category'), 'privileges.groups', {
 			privileges: {
 				groups: [
 					{
@@ -325,7 +325,6 @@ define('admin/manage/privileges', [
 				],
 			},
 		}, function (html) {
-			console.log(html);
 			var tableEl = document.querySelector('.privilege-table');
 			var rows = tableEl.querySelectorAll('tbody tr');
 			html.insertBefore(rows[rows.length - 1]);
