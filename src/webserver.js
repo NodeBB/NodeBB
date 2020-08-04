@@ -164,9 +164,7 @@ function setupExpressApp(app) {
 		saveUninitialized: nconf.get('sessionSaveUninitialized') || false,
 	}));
 
-	app.use(helmet({
-		hsts: !!meta.config['hsts-enabled'],
-	}));
+	app.use(helmet());
 	app.use(helmet.referrerPolicy({ policy: 'strict-origin-when-cross-origin' }));
 	if (meta.config['hsts-enabled']) {
 		app.use(helmet.hsts({
