@@ -56,34 +56,17 @@ define('admin/manage/privileges', [
 			}
 		});
 
+		Privileges.exposeAssumedPrivileges();
+		Privileges.addEvents();	// events with confirmation modals
+	};
+
+	Privileges.addEvents = function () {
 		document.getElementById('save').addEventListener('click', function () {
-			bootbox.confirm('[[admin/manage/privileges:alert.confirm-save]]', function (ok) {
-				if (ok) {
-					var tableEl = document.querySelector('.privilege-table-container');
-					var requests = $.map(tableEl.querySelectorAll('td[data-delta]'), function (el) {
-						var privilege = el.getAttribute('data-privilege');
-						var rowEl = el.parentNode;
-						var member = rowEl.getAttribute('data-group-name') || rowEl.getAttribute('data-uid');
-						var state = el.getAttribute('data-delta') === 'true' ? 1 : 0;
-
-						return Privileges.setPrivilege(member, privilege, state);
-					});
-
-					$.when(requests).done(function () {
-						Privileges.refreshPrivilegeTable();
-						app.alertSuccess('[[admin/manage/privileges:alert.saved]]');
-					});
-				}
-			});
+			throwConfirmModal('save', Privileges.commit);
 		});
 
 		document.getElementById('discard').addEventListener('click', function () {
-			bootbox.confirm('[[admin/manage/privileges:alert.confirm-discard]]', function (ok) {
-				if (ok) {
-					Privileges.refreshPrivilegeTable();
-					app.alertSuccess('[[admin/manage/privileges:alert.discarded]]');
-				}
-			});
+			throwConfirmModal('discard', Privileges.discard);
 		});
 
 		$('.privilege-table-container').on('click', '[data-action="search.user"]', Privileges.addUserToPrivilegeTable);
@@ -119,8 +102,28 @@ define('admin/manage/privileges', [
 				}
 			});
 		}
+	};
 
-		Privileges.exposeAssumedPrivileges();
+	Privileges.commit = function () {
+		var tableEl = document.querySelector('.privilege-table-container');
+		var requests = $.map(tableEl.querySelectorAll('td[data-delta]'), function (el) {
+			var privilege = el.getAttribute('data-privilege');
+			var rowEl = el.parentNode;
+			var member = rowEl.getAttribute('data-group-name') || rowEl.getAttribute('data-uid');
+			var state = el.getAttribute('data-delta') === 'true' ? 1 : 0;
+
+			return Privileges.setPrivilege(member, privilege, state);
+		});
+
+		$.when(requests).done(function () {
+			Privileges.refreshPrivilegeTable();
+			app.alertSuccess('[[admin/manage/privileges:alert.saved]]');
+		});
+	};
+
+	Privileges.discard = function () {
+		Privileges.refreshPrivilegeTable();
+		app.alertSuccess('[[admin/manage/privileges:alert.discarded]]');
 	};
 
 	Privileges.refreshPrivilegeTable = function (groupToHighlight) {
