@@ -307,7 +307,7 @@ define('admin/manage/users', ['translator', 'benchpress', 'autocomplete'], funct
 		function handleUserCreate() {
 			$('#createUser').on('click', function () {
 				Benchpress.parse('admin/partials/create_user_modal', {}, function (html) {
-					bootbox.dialog({
+					var modal = bootbox.dialog({
 						message: html,
 						title: '[[admin/manage/users:alerts.create]]',
 						onEscape: true,
@@ -325,6 +325,9 @@ define('admin/manage/users', ['translator', 'benchpress', 'autocomplete'], funct
 								},
 							},
 						},
+					});
+					modal.on('shown.bs.modal', function () {
+						modal.find('#create-user-name').focus();
 					});
 				});
 				return false;
