@@ -66,7 +66,6 @@
 	"alert.create-success": "カテゴリが正常に作成されました!",
 	"alert.none-active": "アクティブなカテゴリがありません。",
 	"alert.create": "カテゴリを作成",
-	"alert.confirm-moderate": "<strong>このユーザーグループに管理権限を付与してもよろしいですか？</strong>このグループは一般公開されており、任意のユーザーが自由に参加できます。",
 	"alert.confirm-purge": "<p class=\"lead\">本当にこのカテゴリ \"％1\"を切り離しますか？</p><h5><strong class=\"text-danger\">警告!</strong>このカテゴリのすべてのスレッドと投稿が削除されます。</h5> <p class=\"help-block\">カテゴリをパージすると、すべてのスレッドと投稿が削除され、データベースからカテゴリが削除されます。<em>一時的に</ em>カテゴリを削除する場合は、代わりにカテゴリを無効にすることをおすすめします。</p>",
 	"alert.purge-success": "カテゴリが切り離されました！",
 	"alert.copy-success": "設定をコピーしました。",

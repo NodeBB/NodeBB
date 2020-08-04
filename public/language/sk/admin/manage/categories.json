@@ -66,7 +66,6 @@
 	"alert.create-success": "Kategória bola úspešne vytvorená.",
 	"alert.none-active": "Nemáte žiadne aktívne kategórie.",
 	"alert.create": "Vytvoriť kategóriu",
-	"alert.confirm-moderate": "<strong>Ste si istý, že chcete umožniť oprávnenia moderovať tejto skupine používateľov?</strong> Táto skupina je verejná a užívatelia sa k nej môžu pripojiť podľa potreby.",
 	"alert.confirm-purge": "<p class=\"lead\">Naozaj chcete vyčistiť túto kategóriu „%1“?</p><h5><strong class=\"text-danger\">Upozornenie!</strong> Všetky témy a príspevky v tejto kategórií budu odstránené!</h5><p class=\"help-block\">Vyčistenie kategórií odstráni všetky témy a príspevky a odstráni kategórie z databázy. Pokiaľ chcete vyčistiť kategórie <em>dočasne</em>. radšej namiesto toho kategóriu „zakážte“.</p>",
 	"alert.purge-success": "Kategória bola vyčistená!",
 	"alert.copy-success": "Nastavenia boli skopírované!",

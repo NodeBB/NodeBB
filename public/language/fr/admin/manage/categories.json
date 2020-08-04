@@ -66,7 +66,6 @@
 	"alert.create-success": "Catégorie créée avec succès !",
 	"alert.none-active": "Vous n'avez aucune catégorie active.",
 	"alert.create": "Créer une catégorie",
-	"alert.confirm-moderate": "<strong>Êtes-vous sûr de vouloir accorder à ce groupe les privilèges de modération ?</strong> Ce groupe est public, et n'importe qui peut s'y joindre.",
 	"alert.confirm-purge": "<p class=\"lead\">Voulez-vous vraiment purger cette catégorie \"%1\"?</p><h5><strong class=\"text-danger\">Attention!</strong>Tous les sujets et posts dans cette catégorie vont être supprimés</h5> <p class=\"help-block\">Purger une catégorie va enlever tous les sujets et les posts, et supprimer la catégorie de la base de données. Si vous voulez seulement enlevez une catégorie<em>temporairement</em>, il faut plutôt \"désactiver\" la catégorie.",
 	"alert.purge-success": "Catégorie purgée !",
 	"alert.copy-success": "Paramètres copiés !",

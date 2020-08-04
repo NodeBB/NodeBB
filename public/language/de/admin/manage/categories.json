@@ -66,7 +66,6 @@
 	"alert.create-success": "Kategorie erfolgreich erstellt!",
 	"alert.none-active": "Du hast keine aktiven Kategorien.",
 	"alert.create": "Erstelle eine Kategorie",
-	"alert.confirm-moderate": "<strong>Bist du sicher, dass du dieser Gruppe das Moderationsrecht gewähren möchtest?</strong> Diese Gruppe ist öffentlich, und alle Benutzer können nach Belieben beitreten.",
 	"alert.confirm-purge": "<p class=\"lead\">Möchtest du die Kategorie \"%1\" wirklich löschen?</p><h5><strong class=\"text-danger\">Warnung!</strong> Alle Themen und Beiträge in dieser Kategorie werden gelöscht!</h5> <p class=\"help-block\">Löschen einer Kategorie wird alle Themen und Beiträge zu entfernen, und die Kategorie aus der Datenbank löschen. Falls du eine Kategorie <em>temporär</em> entfernen möchstest, dann kannst du sie stattdessen \"deaktivieren\".",
 	"alert.purge-success": "Kategorie gelöscht!",
 	"alert.copy-success": "Einstellungen kopiert!",

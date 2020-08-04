@@ -66,7 +66,6 @@
 	"alert.create-success": "Kategorija veiksmīgi izveidota",
 	"alert.none-active": "Nav aktīvo kategoriju",
 	"alert.create": "Izveidot kategoriju",
-	"alert.confirm-moderate": "<strong>Vai tiešām vēlies piešķirt moderatora tiesības šai grupai?</strong> Grupa ir publiska, un lietotāji viņai var pievienoties pēc vēlēšanās.",
 	"alert.confirm-purge": "<p class=\"lead\">Vai tiešām vēlies iztīrīt šo kategoriju \"%1\"?</p><h5><strong class=\"text-danger\">Brīdinājums!</strong>Visi temati un raksti šajā kategorijā tiks iztīrīti!</h5><p class=\"help-block\">Iztukšojot kategoriju, tiks noņemti visi temati un raksti un kategorija tiks izdzēsta no datu bāzes. Ja vēlies <em>īslaicīgi</em> noņemt kategoriju, \"atspējo\" to.</p>",
 	"alert.purge-success": "Kategorija iztīrīta!",
 	"alert.copy-success": "Iestatījumi kopēti!",
