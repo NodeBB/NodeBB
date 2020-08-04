@@ -847,6 +847,17 @@ paths:
                                   properties:
                                     name:
                                       type: string
+                          keys:
+                            type: object
+                            properties:
+                              users:
+                                type: array
+                                items:
+                                  type: string
+                              groups:
+                                type: array
+                                items:
+                                  type: string
                           users:
                             type: array
                             items:

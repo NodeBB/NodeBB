@@ -20,3 +20,13 @@
 		</div>
 	</form>
 </div>
+
+<div class="floating-button">
+	<button id="discard" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+		<i class="material-icons">delete</i>
+	</button>
+
+	<button id="save" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored primary">
+		<i class="material-icons">save</i>
+	</button>
+</div>

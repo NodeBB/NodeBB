@@ -1,11 +1,3 @@
-.page-manage-privileges {
-	.ui-autocomplete {
-		height: 500px;
-		overflow-y: auto;
-		overflow-x: hidden;
-	}
-}
-
 .page-admin-privileges {
 	@keyframes fadeOut {
 		0% {background-color: @brand-primary;}
@@ -16,6 +8,25 @@
 		animation-name: fadeOut;
 		animation-duration: 5s;
 		animation-fill-mode: both;
-		animation-timing-function: ease-out; 
+		animation-timing-function: ease-out;
+	}
+
+	.privilege-table {
+		td[data-delta="true"] > input {
+			&:after {
+				border-color: @state-success-text;
+				background-color: @state-success-text;
+			}
+		}
+
+		td[data-delta="false"] > input {
+			&:after {
+				border-color: @state-danger-bg;
+			}
+
+			&:indeterminate:after {
+				background-color: @state-danger-bg;
+			}
+		}
 	}
 }

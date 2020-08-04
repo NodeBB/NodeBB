@@ -52,16 +52,20 @@
 							<tr>
 								<td colspan="{privileges.columnCountGroup}">
 									<div class="btn-toolbar">
-										<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.group">
+										<button type="button" class="btn btn-default pull-right" data-ajaxify="false" data-action="search.group">
+											<i class="fa fa-users"></i>
 											[[admin/manage/categories:privileges.search-group]]
 										</button>
-										<button type="button" class="btn btn-info pull-right" data-ajaxify="false" data-action="copyPrivilegesFrom">
+										<button type="button" class="btn btn-default pull-right" data-ajaxify="false" data-action="copyPrivilegesFrom">
+											<i class="fa fa-copy"></i>
 											[[admin/manage/categories:privileges.copy-from-category]]
 										</button>
-										<button type="button" class="btn btn-info pull-right" data-ajaxify="false" data-action="copyToChildren">
+										<button type="button" class="btn btn-default pull-right" data-ajaxify="false" data-action="copyToChildren">
+											<i class="fa fa-copy"></i>
 											[[admin/manage/categories:privileges.copy-to-children]]
 										</button>
-										<button type="button" class="btn btn-info pull-right" data-ajaxify="false" data-action="copyToAll">
+										<button type="button" class="btn btn-default pull-right" data-ajaxify="false" data-action="copyToAll">
+											<i class="fa fa-copy"></i>
 											[[admin/manage/categories:privileges.copy-privileges-to-all-categories]]
 										</button>
 									</div>
@@ -101,7 +105,6 @@
 							</tr>
 						</thead>
 						<tbody>
-							<!-- IF privileges.users.length -->
 							<!-- BEGIN privileges.users -->
 							<tr data-uid="{privileges.users.uid}">
 								<td>
@@ -117,20 +120,11 @@
 							<!-- END privileges.users -->
 							<tr>
 								<td colspan="{privileges.columnCountUser}">
-									<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.user">
+									<button type="button" class="btn btn-default pull-right" data-ajaxify="false" data-action="search.user">
+										<i class="fa fa-user"></i>
 										[[admin/manage/categories:privileges.search-user]]
 									</button>
 								</td>
 							</tr>
-							<!-- ELSE -->
-							<tr>
-								<td colspan="{privileges.columnCountUser}">
-									[[admin/manage/categories:privileges.no-users]]
-									<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.user">
-										[[admin/manage/categories:privileges.search-user]]
-									</button>
-								</td>
-							</tr>
-							<!-- ENDIF privileges.users.length -->
 						</tbody>
 					</table>

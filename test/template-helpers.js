@@ -148,17 +148,7 @@ describe('helpers', function () {
 			read: true,
 		};
 		var html = helpers.spawnPrivilegeStates('guests', privs);
-		assert.equal(html, '<td class="text-center" data-privilege="find"><input type="checkbox" checked /></td><td class="text-center" data-privilege="read"><input type="checkbox" checked /></td>');
-		done();
-	});
-
-	it('should spawn privilege states', function (done) {
-		var privs = {
-			find: true,
-			read: true,
-		};
-		var html = helpers.spawnPrivilegeStates('guests', privs);
-		assert.equal(html, '<td class="text-center" data-privilege="find"><input type="checkbox" checked /></td><td class="text-center" data-privilege="read"><input type="checkbox" checked /></td>');
+		assert.equal(html, '<td class="text-center" data-privilege="find" data-value="true"><input autocomplete="off" type="checkbox" checked /></td><td class="text-center" data-privilege="read" data-value="true"><input autocomplete="off" type="checkbox" checked /></td>');
 		done();
 	});
 

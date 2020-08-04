@@ -27,6 +27,7 @@
 		"object-shorthand": "off",
 		"prefer-arrow-callback": "off",
 		"prefer-spread": "off",
+		"prefer-object-spread": "off",
 		"prefer-reflect": "off",
 		"prefer-template": "off"
 	},

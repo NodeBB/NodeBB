@@ -24,7 +24,8 @@
 							<tr>
 								<td colspan="{privileges.columnCount}">
 									<div class="btn-toolbar">
-										<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.group">
+										<button type="button" class="btn btn-default pull-right" data-ajaxify="false" data-action="search.group">
+											<i class="fa fa-users"></i>
 											[[admin/manage/categories:privileges.search-group]]
 										</button>
 									</div>
@@ -50,7 +51,6 @@
 							</tr>
 						</thead>
 						<tbody>
-							<!-- IF privileges.users.length -->
 							<!-- BEGIN privileges.users -->
 							<tr data-uid="{privileges.users.uid}">
 								<td>
@@ -66,20 +66,11 @@
 							<!-- END privileges.users -->
 							<tr>
 								<td colspan="{privileges.columnCount}">
-									<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.user">
+									<button type="button" class="btn btn-default pull-right" data-ajaxify="false" data-action="search.user">
+										<i class="fa fa-user"></i>
 										[[admin/manage/categories:privileges.search-user]]
 									</button>
 								</td>
 							</tr>
-							<!-- ELSE -->
-							<tr>
-								<td colspan="{privileges.columnCount}">
-									[[admin/manage/privileges:global.no-users]]
-									<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.user">
-										[[admin/manage/categories:privileges.search-user]]
-									</button>
-								</td>
-							</tr>
-							<!-- ENDIF privileges.users.length -->
 						</tbody>
 					</table>

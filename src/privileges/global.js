@@ -55,11 +55,19 @@ module.exports = function (privileges) {
 				groups: plugins.fireHook('filter:privileges.global.groups.list_human', privileges.global.privilegeLabels.slice()),
 			});
 		}
+
+		const keys = await utils.promiseParallel({
+			users: plugins.fireHook('filter:privileges.global.list', privileges.global.userPrivilegeList.slice()),
+			groups: plugins.fireHook('filter:privileges.global.groups.list', privileges.global.groupPrivilegeList.slice()),
+		});
+
 		const payload = await utils.promiseParallel({
 			labels: getLabels(),
-			users: helpers.getUserPrivileges(0, 'filter:privileges.global.list', privileges.global.userPrivilegeList),
-			groups: helpers.getGroupPrivileges(0, 'filter:privileges.global.groups.list', privileges.global.groupPrivilegeList),
+			users: helpers.getUserPrivileges(0, keys.users),
+			groups: helpers.getGroupPrivileges(0, keys.groups),
 		});
+		payload.keys = keys;
+
 		// This is a hack because I can't do {labels.users.length} to echo the count in templates.js
 		payload.columnCount = payload.labels.users.length + 2;
 		return payload;
