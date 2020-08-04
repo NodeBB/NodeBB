@@ -60,13 +60,13 @@ define('admin/manage/privileges', [
 			bootbox.confirm('[[admin/manage/privileges:alert.confirm-save]]', function (ok) {
 				if (ok) {
 					var tableEl = document.querySelector('.privilege-table-container');
-					var requests = tableEl.querySelectorAll('td[data-delta]').forEach(function (el) {
+					var requests = $.map(tableEl.querySelectorAll('td[data-delta]'), function (el) {
 						var privilege = el.getAttribute('data-privilege');
 						var rowEl = el.parentNode;
 						var member = rowEl.getAttribute('data-group-name') || rowEl.getAttribute('data-uid');
 						var state = el.getAttribute('data-delta') === 'true' ? 1 : 0;
 
-						Privileges.setPrivilege(member, privilege, state);
+						return Privileges.setPrivilege(member, privilege, state);
 					});
 
 					$.when(requests).done(function () {
