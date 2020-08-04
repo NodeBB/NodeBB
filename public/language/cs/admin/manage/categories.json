@@ -66,7 +66,6 @@
 	"alert.create-success": "Kategorie byla úspěšně vytvořena.",
 	"alert.none-active": "Nemáte žádné aktivní kategorie.",
 	"alert.create": "Vytvořit kategorii",
-	"alert.confirm-moderate": "<strong>Jste si jist/a, že chcete umožnit oprávnění moderovat této skupině uživatelů?</strong> Tato skupina je veřejná a uživatelé se k ní mohou připojit dle libosti.",
 	"alert.confirm-purge": "<p class=\"lead\">Opravdu chcete vyčistit tuto kategorii \"%1\"?</p><h5><strong class=\"text-danger\">Upozornění</strong>Všechny témata a příspěvky v této kategorii budou smazána.</h5><p class=\"help-block\">Smazání kategorie vyjme všechny témata a příspěvky a odstraní kategorii z databáze. Pokud chcete vyjmout kategorii <em>dočasně</em>, raději místo toho kategorii „zakažte”.</p>",
 	"alert.purge-success": "Kategorie byla vyčištěna.",
 	"alert.copy-success": "Nastavení bylo zkopírováno.",

@@ -66,7 +66,6 @@
 	"alert.create-success": "Categoria creata con successo!",
 	"alert.none-active": "Hai una categoria non attiva.",
 	"alert.create": "Crea una Categoria",
-	"alert.confirm-moderate": "<strong>Sei sicuro di voler concedere il privilegio di moderazione a questo gruppo di utenti?</strong> Questo gruppo è pubblico e tutti gli utenti possono aderire a piacimento.",
 	"alert.confirm-purge": "<p class=\"lead\">Vuoi davvero eliminare definitivamente questa categoria \"%1\"?</p><h5><strong class=\"text-danger\">Attenzione!</strong>Tutte le discussioni e i posti in questa categoria saranno eliminati definitivamente!</h5> <p class=\"help-block\">Eliminare definitivamente una categoria rimuoverà tutte le discussioni e i post ed eliminerà la categoria dal database. Se vuoi rimuovere una categoria <em>temporaneamente</em>, puoi invece \"disabilitare\" la categoria.",
 	"alert.purge-success": "Categoria eliminata definitivamente!",
 	"alert.copy-success": "Impostazioni copiate!",

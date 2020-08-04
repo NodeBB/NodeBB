@@ -1,6 +1,5 @@
 {
 	"global": "Všeobecné",
-	"global.no-users": "Žádné všeobecné uživatelské nastavení.",
 	"admin": "Admin",
 	"group-privileges": "Oprávnění skupiny",
 	"user-privileges": "Oprávnění uživatele",
@@ -38,5 +37,16 @@
 	"admin-categories": "Categories",
 	"admin-privileges": "Privileges",
 	"admin-users": "Users",
-	"admin-settings": "Settings"
+	"admin-settings": "Settings",
+
+	"alert.confirm-moderate": "<strong>Are you sure you wish to grant the moderation privilege to this user group?</strong> This group is public, and any users can join at will.",
+	"alert.confirm-save": "Please confirm your intention to save these privileges",
+	"alert.saved": "Privilege changes saved and applied",
+	"alert.confirm-discard": "Are you sure you wish to discard your privilege changes?",
+	"alert.discarded": "Privilege changes discarded",
+	"alert.confirm-copyToAll": "Are you sure you wish to apply this privilege set to <strong>all categories</strong>?",
+	"alert.confirm-copyToAllGroup": "Are you sure you wish to apply this group's privilege set to <strong>all categories</strong>?",
+	"alert.confirm-copyToChildren": "Are you sure you wish to apply this privilege set to <strong>all descendant (child) categories</strong>?",
+	"alert.confirm-copyToChildrenGroup": "Are you sure you wish to apply this group's privilege set to <strong>all descendant (child) categories</strong>?",
+	"alert.no-undo": "<em>This action cannot be undone.</em>"
 }

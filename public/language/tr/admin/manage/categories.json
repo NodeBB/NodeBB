@@ -66,7 +66,6 @@
 	"alert.create-success": "Kategori başarıyla yaratıldı!",
 	"alert.none-active": "Aktif kategoriniz mevcut değil.",
 	"alert.create": "Bir Kategori Yarat",
-	"alert.confirm-moderate": "<strong>Bu kullanıcı grubuna moderatör ayrıcalığı vermek istediğinizden emin misiniz?</strong> Bu grup herkese açıktır ve herhangi bir kullanıcı isteğine katılabilir.",
 	"alert.confirm-purge": "<p class=\"lead\">\"% 1\" kategorisini gerçekten temizlemek istiyor musunuz?</p><h5><strong class=\"text-danger\">Uyarı!</strong> Bu kategorideki tüm başlıklar ve iletiler temizlenir!</h5> <p class=\"help-block\">Bir kategoriyi temizlemek, tüm başlıkları ve iletileri kaldıracak ve kategoriyi veritabanından silecektir. Bir kategoriyi <em>geçici</em> olarak kaldırmak isterseniz, kategoriyi \"devre dışı\" bırakmanız yeterlidir.</p>",
 	"alert.purge-success": "Kategori temizlendi!",
 	"alert.copy-success": "Ayarlar Kopyalandı!",

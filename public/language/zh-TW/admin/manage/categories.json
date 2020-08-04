@@ -66,7 +66,6 @@
 	"alert.create-success": "版面建立成功！",
 	"alert.none-active": "您沒有有效的版面。",
 	"alert.create": "建立一個版面",
-	"alert.confirm-moderate": "<strong>您確定要將審核權限授予此群組嗎？</strong>此群組是公開的，任何使用者都可以隨意加入。",
 	"alert.confirm-purge": "<p class =“lead”>您確定要清除 “%1” 版面嗎？</p> <h5> <strong class =“text-danger”>警告！</strong> 版面將被清除！</h5> <p class =“help-block”>清除版塊將刪除所有主題和帖子，並從數據庫中刪除版塊。 如果您想<em>暫時</em>移除版塊，請使用停用版塊。</p>",
 	"alert.purge-success": "版面已刪除！",
 	"alert.copy-success": "設定已複製！",

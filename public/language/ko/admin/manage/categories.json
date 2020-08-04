@@ -66,7 +66,6 @@
 	"alert.create-success": "게시판 성공적으로 생성됨!",
 	"alert.none-active": "활성화된 게시판이 없습니다.",
 	"alert.create": "게시판 생성",
-	"alert.confirm-moderate": "<strong>이 사용자 그룹에 (준)관리지 권한을 부여하시겠습니까?</strong> 이 그룹은 공개 그룹이므로 모든 사용자가 자유롭게 가입 할 수 있습니다.",
 	"alert.confirm-purge": "<p class=\"lead\">정말로 이 게시판을 \"%1\" 제거하시겠습니까?</p><h5><strong class=\"text-danger\">경고!</strong>이 게시판에 속한 모든 게시물과 포스트가 삭제됩니다!</h5><p class=\"help-block\">게시판을 제거하게 되면 모든 게시물과 포스트가 삭제되고 데이터베이스에서도 이 게시판이 삭제됩니다. 만약 일시적으로 게시판을 없애고 싶으시다면 삭제 대신 \"비활성화\"를 해주십시오.</p>",
 	"alert.purge-success": "게시판 제거됨!",
 	"alert.copy-success": "설정 복사됨!",

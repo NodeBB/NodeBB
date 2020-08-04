@@ -1,6 +1,5 @@
 {
 	"global": "全域",
-	"global.no-users": "沒有使用者專用的全域權限。",
 	"admin": "管理員",
 	"group-privileges": "群組權限",
 	"user-privileges": "使用者權限",
@@ -38,5 +37,16 @@
 	"admin-categories": "版面",
 	"admin-privileges": "權限",
 	"admin-users": "使用者",
-	"admin-settings": "設定"
+	"admin-settings": "設定",
+
+	"alert.confirm-moderate": "<strong>Are you sure you wish to grant the moderation privilege to this user group?</strong> This group is public, and any users can join at will.",
+	"alert.confirm-save": "Please confirm your intention to save these privileges",
+	"alert.saved": "Privilege changes saved and applied",
+	"alert.confirm-discard": "Are you sure you wish to discard your privilege changes?",
+	"alert.discarded": "Privilege changes discarded",
+	"alert.confirm-copyToAll": "Are you sure you wish to apply this privilege set to <strong>all categories</strong>?",
+	"alert.confirm-copyToAllGroup": "Are you sure you wish to apply this group's privilege set to <strong>all categories</strong>?",
+	"alert.confirm-copyToChildren": "Are you sure you wish to apply this privilege set to <strong>all descendant (child) categories</strong>?",
+	"alert.confirm-copyToChildrenGroup": "Are you sure you wish to apply this group's privilege set to <strong>all descendant (child) categories</strong>?",
+	"alert.no-undo": "<em>This action cannot be undone.</em>"
 }

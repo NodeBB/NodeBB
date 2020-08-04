@@ -66,7 +66,6 @@
 	"alert.create-success": "Kategoria pomyślnie dodana!",
 	"alert.none-active": "Nie masz aktywnych kategorii.",
 	"alert.create": "Utwórz kategorię",
-	"alert.confirm-moderate": "<strong>Czy na pewno chcesz nadać uprawnienia moderatorskie tej grupie użytkowników?</strong>Ta grupa jest publiczna i każdy użytkownik może do niej dołączyć.",
 	"alert.confirm-purge": "<p class=\"lead\">Czy na pewno chcesz wymazać tą kategorię \"%1\"?</p><h5><strong class=\"text-danger\">Uwaga!</strong> Wszystkie tematy oraz posty z tej kategorii zostaną wymazane!</h5><p class=\"help-block\">Wymazanie kategorii skasuje wszystkie tematy, posty oraz skasuję kategorię z bazy danych.  Jeśli chcesz <em>tymczasowo</em>usunąć kategorię, będziesz musiał \"wyłączyć\" kategorię.</p>",
 	"alert.purge-success": "Kategoria usunięta!",
 	"alert.copy-success": "Ustawienie skopiowane!",

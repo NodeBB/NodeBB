@@ -66,7 +66,6 @@
 	"alert.create-success": "¡Categoría creada con éxito!",
 	"alert.none-active": "No tienes categorías activas.",
 	"alert.create": "Crear una Categoría",
-	"alert.confirm-moderate": "<strong>¡Estás seguro de que quieres dar privilegios de moderación a este grupo de usuarios?</strong> Este grupo es público, y cualquier usuario puede unirse si lo desea.",
 	"alert.confirm-purge": "<p class=\"lead\">¿Realmente quieres purgar esta categoría\"%1\"?</p><h5><strong class=\"text-danger\">¡Cuidado!</strong> ¡Todos los temas y respuestas en esta categoría serán purgados!</h5> <p class=\"help-block\">Purgar una categoría eliminará todos los temas y respuestas, y borrará la categoría de la base de datos. Si quieres eliminar una categoría <em>temporalmente</em>, deberías \"desactivar\" esa categoría en su lugar.</p>",
 	"alert.purge-success": "¡Categoría purgada!",
 	"alert.copy-success": "¡Configuración Copiada!",
