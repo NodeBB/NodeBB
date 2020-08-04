@@ -164,14 +164,7 @@ function setupExpressApp(app) {
 		saveUninitialized: nconf.get('sessionSaveUninitialized') || false,
 	}));
 
-	app.use(helmet.referrerPolicy({ policy: 'strict-origin-when-cross-origin' }));
-	if (meta.config['hsts-enabled']) {
-		app.use(helmet.hsts({
-			maxAge: meta.config['hsts-maxage'],
-			includeSubDomains: !!meta.config['hsts-subdomains'],
-			preload: !!meta.config['hsts-preload'],
-		}));
-	}
+	setupHelmet(app);
 
 	app.use(middleware.addHeaders);
 	app.use(middleware.processRender);
@@ -182,6 +175,27 @@ function setupExpressApp(app) {
 	toobusy.maxLag(meta.config.eventLoopLagThreshold);
 	toobusy.interval(meta.config.eventLoopInterval);
 }
+
+function setupHelmet(app) {
+	app.use(helmet.dnsPrefetchControl());
+	app.use(helmet.expectCt());
+	app.use(helmet.frameguard());
+	app.use(helmet.hidePoweredBy());
+	app.use(helmet.ieNoOpen());
+	app.use(helmet.noSniff());
+	app.use(helmet.permittedCrossDomainPolicies());
+	app.use(helmet.xssFilter());
+
+	app.use(helmet.referrerPolicy({ policy: 'strict-origin-when-cross-origin' }));
+	if (meta.config['hsts-enabled']) {
+		app.use(helmet.hsts({
+			maxAge: meta.config['hsts-maxage'],
+			includeSubDomains: !!meta.config['hsts-subdomains'],
+			preload: !!meta.config['hsts-preload'],
+		}));
+	}
+}
+
 
 function setupFavicon(app) {
 	var faviconPath = meta.config['brand:favicon'] || 'favicon.ico';
