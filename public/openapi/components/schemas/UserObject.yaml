@@ -533,8 +533,6 @@ UserObjectSlim:
       type: string
       description: An ISO 8601 formatted date string representing the moment a ban will be lifted, or the words "Not Banned"
       example: Not Banned
-    administrator:
-      type: boolean
 UserObjectACP:
   type: object
   properties:

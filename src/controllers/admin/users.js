@@ -175,7 +175,16 @@ async function getUsers(set, section, min, max, req, res) {
 		} else {
 			uids = await user.getUidsFromSet(set, start, stop);
 		}
-		return await user.getUsersWithFields(uids, userFields, req.uid);
+		const [isAdmin, userData] = await Promise.all([
+			user.isAdministrator(uids),
+			user.getUsersWithFields(uids, userFields, req.uid),
+		]);
+		userData.forEach((user, index) => {
+			if (user) {
+				user.administrator = isAdmin[index];
+			}
+		});
+		return userData;
 	}
 
 	const [count, users] = await Promise.all([

@@ -66,15 +66,7 @@ User.getUsersFromSet = async function (set, uid, start, stop) {
 User.getUsersWithFields = async function (uids, fields, uid) {
 	let results = await plugins.fireHook('filter:users.addFields', { fields: fields });
 	results.fields = _.uniq(results.fields);
-	const [userData, isAdmin] = await Promise.all([
-		User.getUsersFields(uids, results.fields),
-		User.isAdministrator(uids),
-	]);
-	userData.forEach(function (user, index) {
-		if (user) {
-			user.administrator = isAdmin[index];
-		}
-	});
+	const userData = await User.getUsersFields(uids, results.fields);
 	results = await plugins.fireHook('filter:userlist.get', { users: userData, uid: uid });
 	return results.users;
 };

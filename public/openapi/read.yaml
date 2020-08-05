@@ -3009,8 +3009,6 @@ paths:
                               type: number
                             banned_until_readable:
                               type: string
-                            administrator:
-                              type: boolean
                       userCount:
                         type: number
                       title:
