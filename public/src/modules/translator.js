@@ -2,7 +2,7 @@
 
 (function (factory) {
 	function loadClient(language, namespace) {
-		return Promise.resolve(jQuery.getJSON(config.relative_path + '/assets/language/' + language + '/' + namespace + '.json?' + config['cache-buster']));
+		return Promise.resolve(jQuery.getJSON(config.l10nBaseUrl + '/' + language + '/' + namespace + '.json?' + config['cache-buster']));
 	}
 	var warn = function () { console.warn.apply(console, arguments); };
 	if (typeof define === 'function' && define.amd) {
