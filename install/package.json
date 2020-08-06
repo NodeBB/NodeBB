@@ -138,7 +138,7 @@
         "coveralls": "3.1.0",
         "eslint": "7.6.0",
         "eslint-config-airbnb-base": "14.1.0",
-        "eslint-plugin-import": "2.21.1",
+        "eslint-plugin-import": "2.22.0",
         "grunt": "1.2.1",
         "grunt-contrib-watch": "1.1.0",
         "husky": "4.2.5",
