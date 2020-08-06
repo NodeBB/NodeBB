@@ -151,11 +151,11 @@ helpers.notAllowed = async function (req, res, error) {
 	}
 };
 
-helpers.redirect = function (res, url) {
+helpers.redirect = function (res, url, permanent) {
 	if (res.locals.isAPI) {
 		res.set('X-Redirect', encodeURI(url)).status(200).json(url);
 	} else {
-		res.redirect(nconf.get('relative_path') + encodeURI(url));
+		res.redirect(permanent ? 308 : 307, nconf.get('relative_path') + encodeURI(url));
 	}
 };
 

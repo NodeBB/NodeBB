@@ -39,7 +39,7 @@ categoryController.get = async function (req, res, next) {
 	}
 
 	if (!res.locals.isAPI && (!req.params.slug || categoryFields.slug !== cid + '/' + req.params.slug) && (categoryFields.slug && categoryFields.slug !== cid + '/')) {
-		return helpers.redirect(res, '/category/' + categoryFields.slug);
+		return helpers.redirect(res, '/category/' + categoryFields.slug, true);
 	}
 
 	const topicCount = categoryFields.topic_count;

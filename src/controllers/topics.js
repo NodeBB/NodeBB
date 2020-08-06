@@ -44,7 +44,7 @@ topicsController.get = async function getTopic(req, res, callback) {
 	}
 
 	if (!res.locals.isAPI && (!req.params.slug || topicData.slug !== tid + '/' + req.params.slug) && (topicData.slug && topicData.slug !== tid + '/')) {
-		return helpers.redirect(res, '/topic/' + topicData.slug + (postIndex ? '/' + postIndex : '') + (currentPage > 1 ? '?page=' + currentPage : ''));
+		return helpers.redirect(res, '/topic/' + topicData.slug + (postIndex ? '/' + postIndex : '') + (currentPage > 1 ? '?page=' + currentPage : ''), true);
 	}
 
 	if (postIndex === 'unread') {
