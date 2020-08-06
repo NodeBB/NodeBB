@@ -10,11 +10,11 @@ module.exports = function (SocketTopics) {
 			throw new Error('[[error:invalid-data]]');
 		}
 		const hasMarked = await topics.markAsRead(tids, socket.uid);
+		const promises = [topics.markTopicNotificationsRead(tids, socket.uid)];
 		if (hasMarked) {
-			topics.pushUnreadCount(socket.uid);
-
-			topics.markTopicNotificationsRead(tids, socket.uid);
+			promises.push(topics.pushUnreadCount(socket.uid));
 		}
+		await Promise.all(promises);
 	};
 
 	SocketTopics.markTopicNotificationsRead = async function (socket, tids) {
