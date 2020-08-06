@@ -144,6 +144,6 @@
     "diffs.restore": "Ripristina questa revisione",
     "diffs.restore-description": "Una nuova revisione sarà aggiunta alla cronologia delle modifiche di questo post.",
     "diffs.post-restored": "Post ripristinato con successo alla revisione precedente",
-    "timeago_later": "%1 successivo",
+    "timeago_later": "%1 dopo",
     "timeago_earlier": "%1 precedente"
 }
