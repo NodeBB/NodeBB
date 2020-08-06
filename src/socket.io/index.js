@@ -150,7 +150,8 @@ async function onMessage(socket, payload) {
 			});
 		}
 	} catch (err) {
-		winston.error(err.stack ? err.stack : err.message);
+		const event = JSON.stringify({ eventName, params });
+		winston.error(event + '\n' + (err.stack ? err.stack : err.message));
 		callback({ message: err.message });
 	}
 }
