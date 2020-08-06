@@ -121,7 +121,7 @@
 		// "comma-spacing": "off",
 		// "no-trailing-spaces": "off",
 		// "key-spacing": "off",
-		// "no-multiple-empty-lines": "off",
+		"no-multiple-empty-lines": "off"
 		// "spaced-comment": "off",
 		// "space-in-parens": "off",
 		// "block-spacing": "off",
