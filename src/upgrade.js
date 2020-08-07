@@ -41,6 +41,23 @@ Upgrade.getAll = function (callback) {
 			}));
 		},
 		async.apply(Upgrade.appendPluginScripts),
+		function (files, next) {
+			// check duplicates and error
+			const seen = {};
+			const dupes = [];
+			files.forEach((file) => {
+				if (seen[file]) {
+					dupes.push(file);
+				} else {
+					seen[file] = true;
+				}
+			});
+			if (dupes.length) {
+				winston.error('Found duplicate upgrade scripts\n' + dupes);
+				return next(new Error('[[error:duplicate-upgrade-scripts]]'));
+			}
+			setImmediate(next);
+		},
 	], callback);
 };
 
