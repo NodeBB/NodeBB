@@ -168,7 +168,7 @@ module.exports = function (Topics) {
 	Topics.calculateTopicIndices = function (topicData, start) {
 		topicData.forEach((topic, index) => {
 			if (topic) {
-				topic.index = start + index;
+				topic.index = start + index + 1;
 			}
 		});
 	};

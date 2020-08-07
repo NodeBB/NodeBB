@@ -128,7 +128,7 @@ module.exports = function (Topics) {
 	Topics.calculatePostIndices = function (posts, start) {
 		posts.forEach(function (post, index) {
 			if (post) {
-				post.index = start + index + 1;
+				post.index = start + index + 2;
 			}
 		});
 	};

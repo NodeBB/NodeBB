@@ -216,7 +216,7 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 
 		var els = $(navigator.selector);
 		if (els.length) {
-			index = parseInt(els.first().attr('data-index'), 10) + 1;
+			index = parseInt(els.first().attr('data-index'), 10);
 		}
 
 		var scrollTop = $(window).scrollTop();
@@ -232,13 +232,13 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 			}
 
 			if (distanceToMiddle < previousDistance) {
-				index = parseInt($(this).attr('data-index'), 10) + 1;
+				index = parseInt($(this).attr('data-index'), 10);
 				previousDistance = distanceToMiddle;
 			}
 		});
 
-		var atTop = scrollTop === 0 && parseInt(els.first().attr('data-index'), 10) === 0;
-		var nearBottom = scrollTop + windowHeight > documentHeight - 100 && parseInt(els.last().attr('data-index'), 10) === count - 1;
+		var atTop = scrollTop === 0 && parseInt(els.first().attr('data-index'), 10) === 1;
+		var nearBottom = (documentHeight - (windowHeight + scrollTop)) < 100;
 
 		if (atTop) {
 			index = 1;
@@ -279,33 +279,13 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 	};
 
 	navigator.scrollUp = function () {
-		var $window = $(window);
-
-		if (config.usePagination) {
-			var atTop = $window.scrollTop() <= 0;
-			if (atTop) {
-				return pagination.previousPage(function () {
-					$('body,html').scrollTop($(document).height() - $window.height());
-				});
-			}
-		}
-		$('body,html').animate({
-			scrollTop: $window.scrollTop() - $window.height(),
-		});
+		console.log('index is', index, 'scrolling to', index > 1 ? index - 1 : 1);
+		navigator.scrollToIndex(index > 1 ? index - 1 : 1, true);
 	};
 
 	navigator.scrollDown = function () {
-		var $window = $(window);
-
-		if (config.usePagination) {
-			var atBottom = $window.scrollTop() >= $(document).height() - $window.height();
-			if (atBottom) {
-				return pagination.nextPage();
-			}
-		}
-		$('body,html').animate({
-			scrollTop: $window.scrollTop() + $window.height(),
-		});
+		console.log('index is', index, 'scrolling to', count > index ? index + 1 : count);
+		navigator.scrollToIndex(count > index ? index + 1 : count, true);
 	};
 
 	navigator.scrollTop = function (index) {
@@ -345,11 +325,12 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 			return navigator.scrollToPostIndex(index, highlight, duration);
 		}
 
-		// if in category and item alreay on page
+		// if in category and item already on page
 		if (inCategory && $('[component="category/topic"][data-index="' + index + '"]').length) {
 			return navigator.scrollToTopicIndex(index, highlight, duration);
 		}
 
+		// Infinite scroll
 		if (!config.usePagination) {
 			navigator.scrollActive = false;
 			index = parseInt(index, 10) + 1;
@@ -357,8 +338,8 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 			return;
 		}
 
+		// Pagination
 		var scrollMethod = inTopic ? navigator.scrollToPostIndex : navigator.scrollToTopicIndex;
-
 		var page = 1 + Math.floor(index / config.postsPerPage);
 		if (parseInt(page, 10) !== ajaxify.data.pagination.currentPage) {
 			pagination.loadPage(page, function () {
@@ -389,7 +370,7 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		var navbarHeight = components.get('navbar').height();
 
 		// Temporarily disable navigator update on scroll
-		$(window).off('scroll', navigator.update);
+		$(window).off('scroll', navigator.delayedUpdate);
 
 		duration = duration !== undefined ? duration : 400;
 		navigator.scrollActive = true;
@@ -399,9 +380,11 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 			function onAnimateComplete() {
 				if (done) {
 					// Re-enable onScroll behaviour
-					$(window).on('scroll', navigator.update);
+					$(window).on('scroll', navigator.delayedUpdate);
 					var scrollToRect = scrollTo.get(0).getBoundingClientRect();
 					navigator.update(scrollToRect.top);
+					index = parseInt(scrollTo.get(0).getAttribute('data-index'), 10);
+					console.log('index is now', index);
 					return;
 				}
 				done = true;

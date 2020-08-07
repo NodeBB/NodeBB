@@ -207,7 +207,7 @@ async function getMainPostAndReplies(topic, set, uid, start, stop, reverse) {
 	}
 	var replies = postData;
 	if (topic.mainPid && start === 0) {
-		postData[0].index = 0;
+		postData[0].index = 1;
 		replies = postData.slice(1);
 	}
 
