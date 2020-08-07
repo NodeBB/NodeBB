@@ -1,6 +1,7 @@
 'use strict';
 
 const validator = require('validator');
+const winston = require('winston');
 const nconf = require('nconf');
 
 const user = require('../../user');
@@ -11,7 +12,6 @@ const utils = require('../../utils');
 const privileges = require('../../privileges');
 const translator = require('../../translator');
 const messaging = require('../../messaging');
-const { buildLinks } = require('../helpers');
 
 const helpers = module.exports;
 
@@ -83,55 +83,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID) {
 	userData['reputation:disabled'] = meta.config['reputation:disabled'] === 1;
 	userData['downvote:disabled'] = meta.config['downvote:disabled'] === 1;
 	userData['email:confirmed'] = !!userData['email:confirmed'];
-
-	const profileMenuLinks = [{
-		id: 'info',
-		route: 'info',
-		name: '[[user:account_info]]',
-		icon: 'fa-info',
-		visibility: {
-			self: false,
-			other: false,
-			moderator: false,
-			globalMod: false,
-			admin: true,
-			canViewInfo: true,
-		},
-	}, {
-		id: 'sessions',
-		route: 'sessions',
-		name: '[[pages:account/sessions]]',
-		icon: 'fa-group',
-		visibility: {
-			self: true,
-			other: false,
-			moderator: false,
-			globalMod: false,
-			admin: false,
-			canViewInfo: false,
-		},
-	}];
-
-	if (meta.config.gdpr_enabled) {
-		profileMenuLinks.push({
-			id: 'consent',
-			route: 'consent',
-			name: '[[user:consent.title]]',
-			icon: 'fa-thumbs-o-up',
-			visibility: {
-				self: true,
-				other: false,
-				moderator: false,
-				globalMod: false,
-				admin: false,
-				canViewInfo: false,
-			},
-		});
-	}
-
-	const { links } = await plugins.fireHook('filter:user.profileMenu', { uid, callerUID, links: profileMenuLinks });
-
-	userData.profile_links = await buildLinks('accounts/profile', links, {
+	userData.profile_links = filterLinks(results.profile_menu.links, {
 		self: isSelf,
 		other: !isSelf,
 		moderator: isModerator,
@@ -175,6 +127,7 @@ async function getAllData(uid, callerUID) {
 		isModerator: user.isModeratorOfAnyCategory(callerUID),
 		isFollowing: user.isFollowing(callerUID, uid),
 		ips: user.getIPs(uid, 4),
+		profile_menu: getProfileMenu(uid, callerUID),
 		groups: groups.getUserGroups([uid]),
 		sso: plugins.fireHook('filter:auth.list', { uid: uid, associations: [] }),
 		canEdit: privileges.users.canEdit(callerUID, uid),
@@ -182,6 +135,59 @@ async function getAllData(uid, callerUID) {
 		isBlocked: user.blocks.is(uid, callerUID),
 		canViewInfo: privileges.global.can('view:users:info', callerUID),
 		hasPrivateChat: messaging.hasPrivateChat(callerUID, uid),
+	});
+}
+
+async function getProfileMenu(uid, callerUID) {
+	const links = [{
+		id: 'info',
+		route: 'info',
+		name: '[[user:account_info]]',
+		icon: 'fa-info',
+		visibility: {
+			self: false,
+			other: false,
+			moderator: false,
+			globalMod: false,
+			admin: true,
+			canViewInfo: true,
+		},
+	}, {
+		id: 'sessions',
+		route: 'sessions',
+		name: '[[pages:account/sessions]]',
+		icon: 'fa-group',
+		visibility: {
+			self: true,
+			other: false,
+			moderator: false,
+			globalMod: false,
+			admin: false,
+			canViewInfo: false,
+		},
+	}];
+
+	if (meta.config.gdpr_enabled) {
+		links.push({
+			id: 'consent',
+			route: 'consent',
+			name: '[[user:consent.title]]',
+			icon: 'fa-thumbs-o-up',
+			visibility: {
+				self: true,
+				other: false,
+				moderator: false,
+				globalMod: false,
+				admin: false,
+				canViewInfo: false,
+			},
+		});
+	}
+
+	return await plugins.fireHook('filter:user.profileMenu', {
+		uid: uid,
+		callerUID: callerUID,
+		links: links,
 	});
 }
 
@@ -194,6 +200,32 @@ async function parseAboutMe(userData) {
 	userData.aboutme = validator.escape(String(userData.aboutme || ''));
 	const parsed = await plugins.fireHook('filter:parse.aboutme', userData.aboutme);
 	userData.aboutmeParsed = translator.escape(parsed);
+}
+
+function filterLinks(links, states) {
+	return links.filter(function (link, index) {
+		// "public" is the old property, if visibility is defined, discard `public`
+		if (link.hasOwnProperty('public') && !link.hasOwnProperty('visibility')) {
+			winston.warn('[account/profileMenu (' + link.id + ')] Use of the `.public` property is deprecated, use `visibility` now');
+			return link && (link.public || states.self);
+		}
+
+		// Default visibility
+		link.visibility = { self: true,
+			other: true,
+			moderator: true,
+			globalMod: true,
+			admin: true,
+			canViewInfo: true,
+			...link.visibility };
+
+		var permit = Object.keys(states).some(function (state) {
+			return states[state] && link.visibility[state];
+		});
+
+		links[index].public = permit;
+		return permit;
+	});
 }
 
 require('../../promisify')(helpers);

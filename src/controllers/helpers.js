@@ -1,6 +1,5 @@
 'use strict';
 
-const winston = require('winston');
 const nconf = require('nconf');
 const validator = require('validator');
 const querystring = require('querystring');
@@ -217,34 +216,6 @@ helpers.buildTitle = function (pageTitle) {
 	pageTitle = pageTitle || '';
 	const title = titleLayout.replace('{pageTitle}', () => pageTitle).replace('{browserTitle}', () => browserTitle);
 	return title;
-};
-
-helpers.buildLinks = async function (event, links, states) {
-	const filtered = await plugins.fireHook(`filter:buildLinks.${event}`, { links, states });
-
-	return filtered.links.filter(function (link, index) {
-		// "public" is the old property, if visibility is defined, discard `public`
-		if (link.hasOwnProperty('public') && !link.hasOwnProperty('visibility')) {
-			winston.warn('[account/profileMenu (' + link.id + ')] Use of the `.public` property is deprecated, use `visibility` now');
-			return link && (link.public || filtered.states.self);
-		}
-
-		// Default visibility
-		link.visibility = { self: true,
-			other: true,
-			moderator: true,
-			globalMod: true,
-			admin: true,
-			canViewInfo: true,
-			...link.visibility };
-
-		var permit = Object.keys(filtered.states).some(function (state) {
-			return filtered.states[state] && link.visibility[state];
-		});
-
-		filtered.links[index].public = permit;
-		return permit;
-	});
 };
 
 helpers.getCategories = async function (set, uid, privilege, selectedCid) {
