@@ -56,7 +56,7 @@ Upgrade.getAll = function (callback) {
 				winston.error('Found duplicate upgrade scripts\n' + dupes);
 				return next(new Error('[[error:duplicate-upgrade-scripts]]'));
 			}
-			setImmediate(next);
+			next(null, files);
 		},
 	], callback);
 };
