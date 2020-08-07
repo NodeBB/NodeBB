@@ -2805,6 +2805,8 @@ paths:
                     type: string
                   requireBaseUrl:
                     type: string
+                  l10nBaseUrl:
+                    type: string
                   siteTitle:
                     type: string
                   browserTitle:
