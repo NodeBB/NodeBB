@@ -21,7 +21,7 @@ exports.handle404 = function handle404(req, res) {
 	}
 
 	if (isClientScript.test(req.url)) {
-		res.type('text/javascript').status(200).send('');
+		res.type('text/javascript').status(404).send('Not Found');
 	} else if (req.path.startsWith(relativePath + '/assets/uploads') || (req.get('accept') && !req.get('accept').includes('text/html')) || req.path === '/favicon.ico') {
 		meta.errors.log404(req.path || '');
 		res.sendStatus(404);
