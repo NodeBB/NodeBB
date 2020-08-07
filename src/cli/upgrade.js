@@ -101,7 +101,9 @@ function runUpgrade(upgrades, options) {
 	async.series([
 		db.init,
 		require('../meta').configs.init,
-		async.apply(upgrade.runParticular, upgrades),
+		async function () {
+			await upgrade.runParticular(upgrades);
+		},
 	], function (err) {
 		if (err) {
 			throw err;
