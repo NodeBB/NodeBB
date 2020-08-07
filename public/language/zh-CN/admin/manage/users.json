@@ -12,7 +12,7 @@
 	"unban": "解禁用户",
 	"reset-lockout": "重设闭锁",
 	"reset-flags": "重设举报",
-	"delete": "Delete <strong>User(s)</strong>",
+	"delete": "删除<strong>用户</strong>",
 	"delete-content": "Delete User(s) <strong>Content</strong>",
 	"purge": "Delete <strong>User(s)</strong> and <strong>Content</strong>",
 	"download-csv": "下载CSV",

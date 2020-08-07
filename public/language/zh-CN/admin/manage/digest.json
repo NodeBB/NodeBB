@@ -9,7 +9,7 @@
 	"default": "系统默认",
 	"default-help": "<em>System default</em> 表示用户尚未明确覆盖摘要的全局论坛设置，该设置当前为： “<strong>%1</strong>“",
 	"resend": "重发摘要",
-	"resend-all-confirm": "Are you sure you wish to manually execute this digest run?",
+	"resend-all-confirm": "你确定您要手动运行此摘要吗？",
 	"resent-single": "摘要重发操作完成",
 	"resent-day": "已发送每日摘要",
 	"resent-week": "已发送每周摘要",

@@ -10,8 +10,8 @@
 	"custom-class": "自定义 Class",
 	"num-recent-replies": "最近回复数",
 	"ext-link": "外部链接",
-	"is-section": "将该版块作为段落",
-	"tag-whitelist": "Tag Whitelist",
+	"is-section": "将此版块作为段落",
+	"tag-whitelist": "话题白名单",
 	"upload-image": "上传图片",
 	"delete-image": "移除",
 	"category-image": "版块图片",
@@ -27,8 +27,8 @@
 	"enable": "启用",
 	"disable": "禁用",
 	"edit": "编辑",
-	"analytics": "Analytics",
-	"view-category": "View category",
+	"analytics": "分析",
+	"view-category": "查看版块",
 
 	"select-category": "选择版块",
 	"set-parent-category": "设置父版块",
@@ -77,9 +77,9 @@
 	"alert.user-search": "在这里查找用户…",
 	"alert.find-group": "查找群组",
 	"alert.group-search": "在此处搜索群组...",
-	"alert.not-enough-whitelisted-tags": "Whitelisted tags are less than minimum tags, you need to create more whitelisted tags!",
+	"alert.not-enough-whitelisted-tags": "白名单话题少于最少话题，您需要创建更多的白名单话题！",
 	"collapse-all": "全部折叠",
 	"expand-all": "全部展开",
 	"disable-on-create": "禁用创建",
-	"no-matches": "No matches"
+	"no-matches": "没有匹配项"
 }

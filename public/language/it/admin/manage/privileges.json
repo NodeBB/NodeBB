@@ -39,14 +39,14 @@
 	"admin-users": "Utenti",
 	"admin-settings": "Impostazioni",
 
-	"alert.confirm-moderate": "<strong>Are you sure you wish to grant the moderation privilege to this user group?</strong> This group is public, and any users can join at will.",
-	"alert.confirm-save": "Please confirm your intention to save these privileges",
-	"alert.saved": "Privilege changes saved and applied",
-	"alert.confirm-discard": "Are you sure you wish to discard your privilege changes?",
-	"alert.discarded": "Privilege changes discarded",
-	"alert.confirm-copyToAll": "Are you sure you wish to apply this privilege set to <strong>all categories</strong>?",
-	"alert.confirm-copyToAllGroup": "Are you sure you wish to apply this group's privilege set to <strong>all categories</strong>?",
-	"alert.confirm-copyToChildren": "Are you sure you wish to apply this privilege set to <strong>all descendant (child) categories</strong>?",
-	"alert.confirm-copyToChildrenGroup": "Are you sure you wish to apply this group's privilege set to <strong>all descendant (child) categories</strong>?",
-	"alert.no-undo": "<em>This action cannot be undone.</em>"
+	"alert.confirm-moderate": "<strong>Sei sicuro di voler concedere il privilegio di moderazione a questo gruppo di utenti?</strong> Questo gruppo è pubblico e tutti gli utenti possono iscriversi a piacimento.",
+	"alert.confirm-save": "Si prega di confermare l'intenzione di salvare questi privilegi",
+	"alert.saved": "Modifiche ai privilegi salvate e applicate",
+	"alert.confirm-discard": "Sei sicuro di voler annullare le modifiche ai privilegi?",
+	"alert.discarded": "Modifiche ai privilegi ignorate",
+	"alert.confirm-copyToAll": "Sei sicuro di voler applicare questo privilegio a <strong>tutte le categorie</strong>?",
+	"alert.confirm-copyToAllGroup": "Sei sicuro di voler applicare il privilegio di questo gruppo a <strong>tutte le categorie</strong>?",
+	"alert.confirm-copyToChildren": "Sei sicuro di voler applicare questo privilegio a <strong>tutte le categorie discendenti (figli)</strong>?",
+	"alert.confirm-copyToChildrenGroup": "Sei sicuro di voler applicare il privilegio di questo gruppo a <strong>tutte le categorie discendenti (figli)</strong>?",
+	"alert.no-undo": "<em>Questa azione non può essere annullata.</em>"
 }
