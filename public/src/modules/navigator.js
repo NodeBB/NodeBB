@@ -279,12 +279,10 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 	};
 
 	navigator.scrollUp = function () {
-		console.log('index is', index, 'scrolling to', index > 1 ? index - 1 : 1);
 		navigator.scrollToIndex(index > 1 ? index - 1 : 1, true);
 	};
 
 	navigator.scrollDown = function () {
-		console.log('index is', index, 'scrolling to', count > index ? index + 1 : count);
 		navigator.scrollToIndex(count > index ? index + 1 : count, true);
 	};
 
@@ -384,7 +382,6 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 					var scrollToRect = scrollTo.get(0).getBoundingClientRect();
 					navigator.update(scrollToRect.top);
 					index = parseInt(scrollTo.get(0).getAttribute('data-index'), 10);
-					console.log('index is now', index);
 					return;
 				}
 				done = true;
