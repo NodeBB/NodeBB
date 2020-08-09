@@ -1,7 +1,7 @@
 {
-	"alert.confirm-rebuild-and-restart": "Are you sure you wish to rebuild and restart NodeBB?",
-	"alert.confirm-restart": "Είσαι σίγουρος/η πως θέλεις να επανεκκινήσεις το NodeBB?",
+	"alert.confirm-rebuild-and-restart": "Είστε βέβαιοι ότι θέλετε να αναδημιουργήσετε και να επανεκκινήσετε το NodeBB;",
+	"alert.confirm-restart": "Είστε βέβαιοι ότι θέλετε να επανεκκινήσετε το NodeBB;",
 
-	"acp-title": "%1 | NodeBB Πίνακας ελέγχου",
+	"acp-title": "%1 | NodeBB Πίνακας Ελέγχου",
 	"settings-header-contents": "Περιεχόμενα"
 }
