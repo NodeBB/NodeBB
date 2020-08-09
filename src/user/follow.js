@@ -57,6 +57,8 @@ module.exports = function (User) {
 			User.setUserField(uid, 'followingCount', followingCount),
 			User.setUserField(theiruid, 'followerCount', followerCount),
 		]);
+
+		plugins.fireHook('action:user.' + type, { uid: uid, theiruid: theiruid });
 	}
 
 	User.getFollowing = async function (uid, start, stop) {
