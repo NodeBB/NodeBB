@@ -19,8 +19,7 @@ apiController.loadConfig = async function (req) {
 	let config = {
 		relative_path: nconf.get('relative_path'),
 		upload_url: nconf.get('upload_url'),
-		requireBaseUrl: `${nconf.get('relative_path')}/assets/src/modules`,
-		l10nBaseUrl: `${nconf.get('relative_path')}/assets/language`,
+		assetBaseUrl: `${nconf.get('relative_path')}/assets`,
 		siteTitle: validator.escape(String(meta.config.title || meta.config.browserTitle || 'NodeBB')),
 		browserTitle: validator.escape(String(meta.config.browserTitle || meta.config.title || 'NodeBB')),
 		titleLayout: (meta.config.titleLayout || '{pageTitle} | {browserTitle}').replace(/{/g, '&#123;').replace(/}/g, '&#125;'),

@@ -2,7 +2,7 @@
 
 (function (factory) {
 	function loadClient(language, namespace) {
-		return Promise.resolve(jQuery.getJSON(config.l10nBaseUrl + '/' + language + '/' + namespace + '.json?' + config['cache-buster']));
+		return Promise.resolve(jQuery.getJSON([config.assetBaseUrl, 'language', language, namespace].join('/') + '.json?' + config['cache-buster']));
 	}
 	var warn = function () { console.warn.apply(console, arguments); };
 	if (typeof define === 'function' && define.amd) {
@@ -605,7 +605,7 @@
 				}
 
 				var originalSettings = assign({}, jQuery.timeago.settings.strings);
-				jQuery.getScript(config.relative_path + '/assets/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '-short.js').done(function () {
+				jQuery.getScript(config.assetBaseUrl + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '-short.js').done(function () {
 					adaptor.timeagoShort = assign({}, jQuery.timeago.settings.strings);
 					jQuery.timeago.settings.strings = assign({}, originalSettings);
 					toggle();
@@ -620,7 +620,7 @@
 			delete adaptor.timeagoShort;
 
 			var languageCode = utils.userLangToTimeagoCode(config.userLang);
-			jQuery.getScript(config.relative_path + '/assets/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').done(callback);
+			jQuery.getScript(config.assetBaseUrl + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').done(callback);
 		},
 
 		prepareDOM: function prepareDOM() {
