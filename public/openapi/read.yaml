@@ -2803,9 +2803,7 @@ paths:
                     type: string
                   upload_url:
                     type: string
-                  requireBaseUrl:
-                    type: string
-                  l10nBaseUrl:
+                  assetBaseUrl:
                     type: string
                   siteTitle:
                     type: string
