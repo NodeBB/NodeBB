@@ -21,13 +21,12 @@ define('forum/topic', [
 			clearTimeout(Topic.replaceURLTimeout);
 			Topic.replaceURLTimeout = 0;
 		}
+		events.removeListeners();
 
 		if (!String(data.url).startsWith('topic/')) {
 			navigator.disable();
 			components.get('navbar/title').find('span').text('').hide();
 			app.removeAlert('bookmark');
-
-			events.removeListeners();
 
 			require(['search'], function (search) {
 				if (search.topicDOM.active) {
