@@ -166,8 +166,8 @@ function getBundleMetadata(target, callback) {
 				skin: function (cb) {
 					const skinImport = [];
 					if (themeData && themeData.bootswatchSkin) {
-						skinImport.push('\n@import "./bootswatch/' + themeData.bootswatchSkin + '/variables.less";');
-						skinImport.push('\n@import "./bootswatch/' + themeData.bootswatchSkin + '/bootswatch.less";');
+						skinImport.push('\n@import "./@nodebb/bootswatch/' + themeData.bootswatchSkin + '/variables.less";');
+						skinImport.push('\n@import "./@nodebb/bootswatch/' + themeData.bootswatchSkin + '/bootswatch.less";');
 					}
 
 					cb(null, skinImport.join(''));
