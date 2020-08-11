@@ -197,7 +197,7 @@ module.exports = function (middleware) {
 
 				if (languageCodes.includes(userLang) && languages.timeagoCodes.includes(timeagoCode)) {
 					const pathToLocaleFile = '/vendor/jquery/timeago/locales/jquery.timeago.' + timeagoCode + '.js';
-					return nconf.get('relative_path') + '/assets' + pathToLocaleFile;
+					return res.locals.config.assetBaseUrl + pathToLocaleFile;
 				}
 				return false;
 			})(),
