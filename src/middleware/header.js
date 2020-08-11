@@ -15,7 +15,6 @@ var plugins = require('../plugins');
 var navigation = require('../navigation');
 var translator = require('../translator');
 var privileges = require('../privileges');
-var languages = require('../languages');
 var utils = require('../utils');
 var helpers = require('./helpers');
 
@@ -188,25 +187,8 @@ module.exports = function (middleware) {
 			templateValues: templateValues,
 		});
 
-		const results = await utils.promiseParallel({
-			scripts: plugins.fireHook('filter:scripts.get', []),
-			timeagoLocale: (async () => {
-				const languageCodes = await languages.listCodes();
-				const userLang = res.locals.config.userLang;
-				const timeagoCode = utils.userLangToTimeagoCode(userLang);
-
-				if (languageCodes.includes(userLang) && languages.timeagoCodes.includes(timeagoCode)) {
-					const pathToLocaleFile = '/vendor/jquery/timeago/locales/jquery.timeago.' + timeagoCode + '.js';
-					return nconf.get('relative_path') + '/assets' + pathToLocaleFile;
-				}
-				return false;
-			})(),
-		});
-
-		if (results.timeagoLocale) {
-			results.scripts.push(results.timeagoLocale);
-		}
-		data.templateValues.scripts = results.scripts.map(function (script) {
+		const scripts = await plugins.fireHook('filter:scripts.get', []);
+		data.templateValues.scripts = scripts.map(function (script) {
 			return { src: script };
 		});
 

@@ -252,7 +252,11 @@ app.cacheBuster = null;
 	app.processPage = function () {
 		highlightNavigationLink();
 
-		$('.timeago').timeago();
+		app.initTimeago().then(function () {
+			$('.timeago').timeago();
+		}, function () {
+			console.warn('[timeago] Unable to retrieve ' + config.userLang + ' strings, falling back to English');
+		});
 
 		utils.makeNumbersHumanReadable($('.human-readable-number'));
 
@@ -266,6 +270,21 @@ app.cacheBuster = null;
 		if (!ajaxify.isCold()) {
 			window.scrollTo(0, 0);
 		}
+	};
+
+	app.initTimeago = function () {
+		// Loads strings based on user language, if not already loaded
+		return new Promise(function (resolve, reject) {
+			if (app.flags._timeago) {
+				return resolve();
+			}
+
+			var pathToLocaleFile = '/vendor/jquery/timeago/locales/jquery.timeago.' + utils.userLangToTimeagoCode(config.userLang) + '.js';
+			$.getScript(config.assetBaseUrl + pathToLocaleFile).done(function () {
+				app.flags._timeago = true;
+				resolve();
+			}).fail(reject);
+		});
 	};
 
 	app.showMessages = function () {
