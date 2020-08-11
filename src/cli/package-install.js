@@ -8,6 +8,8 @@ const packageFilePath = path.join(__dirname, '../../package.json');
 const packageDefaultFilePath = path.join(__dirname, '../../install/package.json');
 const modulesPath = path.join(__dirname, '../../node_modules');
 
+const isPackage = /^nodebb-(plugin|theme|widget|reward)-\w+/;
+
 function updatePackageFile() {
 	let oldPackageContents = {};
 
@@ -20,7 +22,15 @@ function updatePackageFile() {
 	}
 
 	const defaultPackageContents = JSON.parse(fs.readFileSync(packageDefaultFilePath, 'utf8'));
-	const packageContents = { ...oldPackageContents, ...defaultPackageContents, dependencies: { ...oldPackageContents.dependencies, ...defaultPackageContents.dependencies } };
+
+	const dependencies = {};
+	Object.entries(oldPackageContents.dependencies).forEach(([dep, version]) => {
+		if (isPackage.test(dep)) {
+			dependencies[dep] = version;
+		}
+	});
+
+	const packageContents = { ...oldPackageContents, ...defaultPackageContents, dependencies: { ...dependencies, ...defaultPackageContents.dependencies } };
 
 	fs.writeFileSync(packageFilePath, JSON.stringify(packageContents, null, 2));
 }
@@ -83,7 +93,6 @@ function preserveExtraneousPlugins() {
 		return;
 	}
 
-	const isPackage = /^nodebb-(plugin|theme|widget|reward)-\w+/;
 	const packages = fs.readdirSync(modulesPath).filter(function (pkgName) {
 		return isPackage.test(pkgName);
 	});
