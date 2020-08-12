@@ -42,7 +42,7 @@ module.exports = function (privileges) {
 	};
 	privileges.admin.routeRegexpMap = {
 		'^manage/categories/\\d+': 'admin:categories',
-		'^manage/privileges/\\d+': 'admin:privileges',
+		'^manage/privileges/(\\d+|admin)': 'admin:privileges',
 		'^settings/[\\w\\-]+$': 'admin:settings',
 		'^appearance/[\\w]+$': 'admin:settings',
 		'^plugins/[\\w\\-]+$': 'admin:settings',
@@ -110,17 +110,29 @@ module.exports = function (privileges) {
 		return privilege;
 	};
 
-	privileges.admin.list = async function () {
+	privileges.admin.list = async function (uid) {
+		const privilegeLabels = privileges.admin.privilegeLabels.slice();
+		const userPrivilegeList = privileges.admin.userPrivilegeList.slice();
+		const groupPrivilegeList = privileges.admin.groupPrivilegeList.slice();
+
+		// Restrict privileges column to superadmins
+		if (!(await user.isAdministrator(uid))) {
+			const idx = privileges.admin.userPrivilegeList.indexOf('admin:privileges');
+			privilegeLabels.splice(idx, 1);
+			userPrivilegeList.splice(idx, 1);
+			groupPrivilegeList.splice(idx, 1);
+		}
+
 		async function getLabels() {
 			return await utils.promiseParallel({
-				users: plugins.fireHook('filter:privileges.admin.list_human', privileges.admin.privilegeLabels.slice()),
-				groups: plugins.fireHook('filter:privileges.admin.groups.list_human', privileges.admin.privilegeLabels.slice()),
+				users: plugins.fireHook('filter:privileges.admin.list_human', privilegeLabels.slice()),
+				groups: plugins.fireHook('filter:privileges.admin.groups.list_human', privilegeLabels.slice()),
 			});
 		}
 
 		const keys = await utils.promiseParallel({
-			users: plugins.fireHook('filter:privileges.admin.list', privileges.admin.userPrivilegeList.slice()),
-			groups: plugins.fireHook('filter:privileges.admin.groups.list', privileges.admin.groupPrivilegeList.slice()),
+			users: plugins.fireHook('filter:privileges.admin.list', userPrivilegeList.slice()),
+			groups: plugins.fireHook('filter:privileges.admin.groups.list', groupPrivilegeList.slice()),
 		});
 
 		const payload = await utils.promiseParallel({

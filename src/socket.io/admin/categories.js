@@ -85,7 +85,7 @@ Categories.setPrivilege = async function (socket, data) {
 
 Categories.getPrivilegeSettings = async function (socket, cid) {
 	if (cid === 'admin') {
-		return await privileges.admin.list();
+		return await privileges.admin.list(socket.uid);
 	} else if (!parseInt(cid, 10)) {
 		return await privileges.global.list();
 	}

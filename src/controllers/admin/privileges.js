@@ -17,7 +17,7 @@ privilegesController.get = async function (req, res) {
 	}
 
 	const [privilegesData, categoriesData] = await Promise.all([
-		method(),
+		method(isAdminPriv ? req.uid : undefined),
 		categories.buildForSelectAll(),
 	]);
 
