@@ -105,10 +105,6 @@ winston.info('environment ' + global.env);
 const db = require('../../src/database');
 module.exports = db;
 
-after(async function () {
-	await db.flushdb();
-});
-
 before(async function () {
 	this.timeout(30000);
 	await db.init();
