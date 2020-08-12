@@ -280,13 +280,18 @@ module.exports = function (User) {
 		}
 		let isAdminOrPasswordMatch = false;
 		const isSelf = parseInt(uid, 10) === parseInt(data.uid, 10);
+
+		if (!isAdmin && !isSelf) {
+			throw new Error('[[user:change_password_error_privileges]]');
+		}
+
 		if (
 			(isAdmin && !isSelf) || // Admins ok
 			(!hasPassword && isSelf)	// Initial password set ok
 		) {
 			isAdminOrPasswordMatch = true;
 		} else {
-			isAdminOrPasswordMatch = await User.isPasswordCorrect(uid, data.currentPassword, data.ip);
+			isAdminOrPasswordMatch = await User.isPasswordCorrect(data.uid, data.currentPassword, data.ip);
 		}
 
 		if (!isAdminOrPasswordMatch) {
