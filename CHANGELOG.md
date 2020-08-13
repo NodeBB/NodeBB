@@ -1,3 +1,9 @@
+#### 1.14.3 (2020-07-08)
+
+##### Bug Fixes
+
+*  improper targetUid check during password change (c2477d9d)
+
 #### 1.14.2 (2020-07-15)
 
 ##### Chores
