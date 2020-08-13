@@ -108,5 +108,5 @@
 
 	"alerts.prompt-email": "Adresy e-mail:",
 	"alerts.email-sent-to": "Wysłano zaproszenie do %1",
-	"alerts.x-users-found": "%1 user(s) found, (%2 seconds)"
+	"alerts.x-users-found": "Znaleziono %1 użytkownika(-ów), (czas wyszukiwania: %2 s)"
 }

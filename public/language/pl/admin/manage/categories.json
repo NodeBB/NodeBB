@@ -11,7 +11,7 @@
 	"num-recent-replies": "# z ostatnich odpowiedzi",
 	"ext-link": "Zewnętrzny odnośnik",
 	"is-section": "Traktuj tę kategorię jako sekcję",
-	"tag-whitelist": "Tag Whitelist",
+	"tag-whitelist": "Otaguj białą listę",
 	"upload-image": "Prześlij obrazek",
 	"delete-image": "Usuń",
 	"category-image": "Obrazek kategorii",
@@ -27,8 +27,8 @@
 	"enable": "Włącz",
 	"disable": "Wyłącz",
 	"edit": "Edytuj",
-	"analytics": "Analytics",
-	"view-category": "View category",
+	"analytics": "Analityka",
+	"view-category": "Wyświetl kategorię",
 
 	"select-category": "Wybierz kategorię",
 	"set-parent-category": "Ustaw nadrzędną kategorie",
@@ -77,9 +77,9 @@
 	"alert.user-search": "Wyszukaj użytkownika tutaj...",
 	"alert.find-group": "Znajdź grupę",
 	"alert.group-search": "Wyszukaj grupę tutaj...",
-	"alert.not-enough-whitelisted-tags": "Whitelisted tags are less than minimum tags, you need to create more whitelisted tags!",
+	"alert.not-enough-whitelisted-tags": "Tagów dodanych na białą listę jest mniej, niż minimalna liczba tagów - należy dodać więcej tagów do białej listy!",
 	"collapse-all": "Zwiń wszystko",
 	"expand-all": "Rozwiń wszystko",
 	"disable-on-create": "Wyłącz przy tworzeniu",
-	"no-matches": "No matches"
+	"no-matches": "Brak dopasowań"
 }

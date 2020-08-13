@@ -3,7 +3,7 @@
 	"admin": "Admin",
 	"group-privileges": "Uprawnienia grup",
 	"user-privileges": "Uprawnienia użytkownika",
-	"edit-privileges": "Edit Privileges",
+	"edit-privileges": "Edytuj uprawnienia",
 	"chat": "Dostęp do czatu",
 	"upload-images": "Przesyłanie zdjęć",
 	"upload-files": "Przesyłanie plików",
@@ -39,14 +39,14 @@
 	"admin-users": "Użytkownicy",
 	"admin-settings": "Ustawienia",
 
-	"alert.confirm-moderate": "<strong>Are you sure you wish to grant the moderation privilege to this user group?</strong> This group is public, and any users can join at will.",
-	"alert.confirm-save": "Please confirm your intention to save these privileges",
-	"alert.saved": "Privilege changes saved and applied",
-	"alert.confirm-discard": "Are you sure you wish to discard your privilege changes?",
-	"alert.discarded": "Privilege changes discarded",
-	"alert.confirm-copyToAll": "Are you sure you wish to apply this privilege set to <strong>all categories</strong>?",
-	"alert.confirm-copyToAllGroup": "Are you sure you wish to apply this group's privilege set to <strong>all categories</strong>?",
-	"alert.confirm-copyToChildren": "Are you sure you wish to apply this privilege set to <strong>all descendant (child) categories</strong>?",
-	"alert.confirm-copyToChildrenGroup": "Are you sure you wish to apply this group's privilege set to <strong>all descendant (child) categories</strong>?",
-	"alert.no-undo": "<em>This action cannot be undone.</em>"
+	"alert.confirm-moderate": "<strong>Czy na pewno chcesz przyznać uprawnienia moderacji dla tej grupy użytkowników?</strong> Ta grupa jest publiczna i każdy użytkownik może do niej dołączyć.",
+	"alert.confirm-save": "Potwierdź zamiar zapisania uprawnień",
+	"alert.saved": "Zapisano i zastosowano zmiany w uprawnieniach",
+	"alert.confirm-discard": "Czy na pewno chcesz odrzucić wprowadzone zmiany w uprawnieniach?",
+	"alert.discarded": "Odrzucono zmiany w uprawnieniach",
+	"alert.confirm-copyToAll": "Czy na pewno chcesz zastosować ten zbiór uprawnień dla <strong>wszystkich kategorii</strong>?",
+	"alert.confirm-copyToAllGroup": "Czy na pewno chcesz zastosować zbiór uprawnień tej grupy dla <strong>wszystkich kategorii</strong>?",
+	"alert.confirm-copyToChildren": "Czy na pewno chcesz zastosować ten zbiór uprawnień dla <strong>wszystkich podkategorii</strong>?",
+	"alert.confirm-copyToChildrenGroup": "Czy na pewno chcesz zastosować zbiór uprawnień tej grupy dla <strong>wszystkich podkategorii</strong>?",
+	"alert.no-undo": "<em>Tej czynności nie można cofnąć.</em>"
 }
