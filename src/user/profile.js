@@ -278,24 +278,18 @@ module.exports = function (User) {
 		if (meta.config['password:disableEdit'] && !isAdmin) {
 			throw new Error('[[error:no-privileges]]');
 		}
-		let isAdminOrPasswordMatch = false;
+
 		const isSelf = parseInt(uid, 10) === parseInt(data.uid, 10);
 
 		if (!isAdmin && !isSelf) {
 			throw new Error('[[user:change_password_error_privileges]]');
 		}
 
-		if (
-			(isAdmin && !isSelf) || // Admins ok
-			(!hasPassword && isSelf)	// Initial password set ok
-		) {
-			isAdminOrPasswordMatch = true;
-		} else {
-			isAdminOrPasswordMatch = await User.isPasswordCorrect(data.uid, data.currentPassword, data.ip);
-		}
-
-		if (!isAdminOrPasswordMatch) {
-			throw new Error('[[user:change_password_error_wrong_current]]');
+		if (isSelf && hasPassword) {
+			const correct = await User.isPasswordCorrect(data.uid, data.currentPassword, data.ip);
+			if (!correct) {
+				throw new Error('[[user:change_password_error_wrong_current]]');
+			}
 		}
 
 		const hashedPassword = await User.hashPassword(data.newPassword);

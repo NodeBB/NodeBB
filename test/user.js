@@ -860,6 +860,19 @@ describe('User', function () {
 			assert(correct);
 		});
 
+		it('should not let admin change their password if current password is incorrect', async function () {
+			const adminUid = await User.create({ username: 'adminforgotpwd', password: 'admin1234' });
+			await groups.join('administrators', adminUid);
+
+			let err;
+			try {
+				await socketUser.changePassword({ uid: adminUid }, { uid: adminUid, newPassword: '654321', currentPassword: 'wrongpwd' });
+			} catch (_err) {
+				err = _err;
+			}
+			assert.equal(err.message, '[[user:change_password_error_wrong_current]]');
+		});
+
 		it('should change username', function (done) {
 			socketUser.changeUsernameEmail({ uid: uid }, { uid: uid, username: 'updatedAgain', password: '123456' }, function (err) {
 				assert.ifError(err);
