@@ -3,7 +3,7 @@
 var async = require('async');
 
 const batch = require('../../batch');
-const posts = require('../../posts').async;
+const posts = require('../../posts');
 
 module.exports = {
 	name: 'Calculate image sizes of all uploaded images',
