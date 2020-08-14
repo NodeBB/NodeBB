@@ -141,7 +141,8 @@ Upgrade.process = async function (files, skipCount) {
 			process.stdout.write(' skipped\n'.grey);
 
 			await db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
-			return;
+			// eslint-disable-next-line no-continue
+			continue;
 		}
 
 		// Promisify method if necessary
