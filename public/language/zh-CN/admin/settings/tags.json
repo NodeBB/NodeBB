@@ -1,6 +1,6 @@
 {
     "tag": "话题设置",
-    "link-to-manage": "Manage Tags",
+    "link-to-manage": "管理话题",
     "min-per-topic": "每个主题的最少话题数",
     "max-per-topic": "每话题的最大话题数",
     "min-length": "最短话题长度",

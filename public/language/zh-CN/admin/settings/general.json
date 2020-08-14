@@ -1,8 +1,8 @@
 {
 	"site-settings": "站点设置",
 	"title": "站点标题",
-	"title.short": "Short Title",
-	"title.short-placeholder": "If no short title is specified, the site title will be used",
+	"title.short": "短标题",
+	"title.short-placeholder": "如果没有指定短标题，将会使用站点标题",
 	"title.url": "网址",
 	"title.url-placeholder": "网站标题链接",
 	"title.url-help": "当标题被点击，用户将跳转到该地址。如果留空，用户将跳转到论坛首页。",
@@ -34,8 +34,8 @@
 	"outgoing-links.warning-page": "使用站外链接警告页",
 	"search-default-sort-by": "默认搜索排序",
 	"outgoing-links.whitelist": "添加域名到白名单以绕过警告页面",
-	"site-colors": "Site Color Metadata",
-	"theme-color": "Theme Color",
-	"background-color": "Background Color",
+	"site-colors": "站点颜色元数据",
+	"theme-color": "主题色",
+	"background-color": "背景色",
 	"background-color-help": "Color used for splash screen background when website is installed as a PWA"
 }

@@ -25,7 +25,7 @@
 	"filter-quick-mine": "委托给我",
 	"filter-cid-all": "全部版块",
 	"apply-filters": "应用过滤器",
-	"more-filters": "More Filters",
+	"more-filters": "更多过滤器",
 
 	"quick-actions": "Quick Actions",
 	"flagged-user": "被举报的用户",
@@ -33,9 +33,9 @@
 	"start-new-chat": "开始新会话",
 	"go-to-target": "查看举报目标",
 	"assign-to-me": "Assign To Me",
-	"delete-post": "Delete Post",
+	"delete-post": "删除帖子",
 	"purge-post": "Purge Post",
-	"restore-post": "Restore Post",
+	"restore-post": "恢复帖子",
 
 	"user-view": "查看资料",
 	"user-edit": "编辑资料",

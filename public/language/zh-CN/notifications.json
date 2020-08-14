@@ -35,7 +35,7 @@
     "user_posted_to_dual": "<strong>%1</strong> 和 <strong>%2</strong> 回复了: <strong>%3</strong>",
     "user_posted_to_multiple": "<strong>%1</strong> 和 %2 个其他人回复了: <strong>%3</strong>",
     "user_posted_topic": "<strong>%1</strong> 发表了新主题：<strong>%2</strong>",
-    "user_edited_post": "<strong>%1</strong> has edited a post in <strong>%2</strong>",
+    "user_edited_post": "<strong>%1</strong> 在 <strong>%2</strong> 编辑了一个帖子",
     "user_started_following_you": "<strong>%1</strong>关注了您。",
     "user_started_following_you_dual": "<strong>%1</strong> 和 <strong>%2</strong> 关注了您。",
     "user_started_following_you_multiple": "<strong>%1</strong> 和 %2 个其他人关注了您。",

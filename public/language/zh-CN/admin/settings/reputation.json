@@ -16,5 +16,5 @@
 
 	"flags": "Flag Settings",
 	"flags.limit-per-target": "Maximum number of times something can be flagged",
-	"flags.limit-per-target-placeholder": "Default: 0"
+	"flags.limit-per-target-placeholder": "默认：0"
 }

@@ -29,6 +29,6 @@
 
 	"sockets.settings": "WebSocket Settings",
 	"sockets.max-attempts": "Max Reconnection Attempts",
-	"sockets.default-placeholder": "Default: %1",
+	"sockets.default-placeholder": "默认：%1",
 	"sockets.delay": "Reconnection Delay"
 }
