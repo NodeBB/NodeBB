@@ -7,7 +7,7 @@ const user = require('../../user');
 module.exports = {
 	name: 'Delete username email history for deleted users',
 	timestamp: Date.UTC(2019, 2, 25),
-	method: async function (callback) {
+	method: function (callback) {
 		const progress = this.progress;
 		var currentUid = 1;
 		db.getObjectField('global', 'nextUid', function (err, nextUid) {
