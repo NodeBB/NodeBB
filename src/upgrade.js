@@ -173,7 +173,7 @@ Upgrade.incrementProgress = function (value) {
 	this.current += value || 1;
 
 	// Redraw the progress bar every 100 units
-	if (this.current % 100 === 0) {
+	if (this.current % (this.total ? Math.floor(this.total / 100) : 100) === 0 || this.current === this.total) {
 		var percentage = 0;
 		var filled = 0;
 		var unfilled = 15;
