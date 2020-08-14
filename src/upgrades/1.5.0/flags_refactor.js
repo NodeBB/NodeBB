@@ -75,7 +75,7 @@ module.exports = {
 								}
 							},
 						], function (err) {
-							if (err && err.message === '[[error:already-flagged]]') {
+							if (err && err.message === '[[error:post-already-flagged]]') {
 								// Already flagged, no need to parse, but not an error
 								next();
 							} else {
