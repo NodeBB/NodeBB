@@ -170,6 +170,11 @@ Upgrade.process = async function (files, skipCount) {
 };
 
 Upgrade.incrementProgress = function (value) {
+	// Newline on first invocation
+	if (this.current === 0) {
+		process.stdout.write('\n');
+	}
+
 	this.current += value || 1;
 
 	// Redraw the progress bar every 100 units
