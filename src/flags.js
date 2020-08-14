@@ -177,6 +177,7 @@ Flags.list = async function (filters, uid) {
 	const data = await plugins.fireHook('filter:flags.list', {
 		flags: flags,
 		page: filters.page,
+		uid: uid,
 	});
 
 	return {
