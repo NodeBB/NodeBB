@@ -11,8 +11,6 @@ const util = require('util');
 const user = require('../user');
 const posts = require('../posts');
 
-const readdirAsync = util.promisify(fs.readdir);
-
 var app;
 var middleware;
 
@@ -253,7 +251,7 @@ Plugins.normalise = async function (apiReturn) {
 Plugins.nodeModulesPath = path.join(__dirname, '../../node_modules');
 
 Plugins.showInstalled = async function () {
-	const dirs = await readdirAsync(Plugins.nodeModulesPath);
+	const dirs = await fs.promises.readdir(Plugins.nodeModulesPath);
 
 	let pluginPaths = await findNodeBBModules(dirs);
 	pluginPaths = pluginPaths.map(dir => path.join(Plugins.nodeModulesPath, dir));

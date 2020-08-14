@@ -1,7 +1,6 @@
 'use strict';
 
 const fs = require('fs');
-const util = require('util');
 const path = require('path');
 const winston = require('winston');
 
@@ -11,9 +10,6 @@ const file = require('../file');
 const Data = module.exports;
 
 const basePath = path.join(__dirname, '../../');
-
-const readFileAsync = util.promisify(fs.readFile);
-const statAsync = util.promisify(fs.stat);
 
 Data.getPluginPaths = async function () {
 	let plugins = await db.getSortedSetRange('plugins:active', 0, -1);
@@ -26,8 +22,8 @@ Data.getPluginPaths = async function () {
 
 Data.loadPluginInfo = async function (pluginPath) {
 	const [packageJson, pluginJson] = await Promise.all([
-		readFileAsync(path.join(pluginPath, 'package.json'), 'utf8'),
-		readFileAsync(path.join(pluginPath, 'plugin.json'), 'utf8'),
+		fs.promises.readFile(path.join(pluginPath, 'package.json'), 'utf8'),
+		fs.promises.readFile(path.join(pluginPath, 'plugin.json'), 'utf8'),
 	]);
 
 	let pluginData;
@@ -96,7 +92,7 @@ Data.getStaticDirectories = async function (pluginData) {
 
 		const dirPath = path.join(pluginData.path, pluginData.staticDirs[route]);
 		try {
-			const stats = await statAsync(dirPath);
+			const stats = await fs.promises.stat(dirPath);
 			if (!stats.isDirectory()) {
 				winston.warn('[plugins/' + pluginData.id + '] Mapped path \'' +
 					route + ' => ' + dirPath + '\' is not a directory.');

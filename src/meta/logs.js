@@ -2,17 +2,14 @@
 
 const path = require('path');
 const fs = require('fs');
-const util = require('util');
-const readFileAsync = util.promisify(fs.readFile);
-const truncateAsync = util.promisify(fs.truncate);
 const Logs = module.exports;
 
 Logs.path = path.resolve(__dirname, '../../logs/output.log');
 
 Logs.get = async function () {
-	return await readFileAsync(Logs.path, 'utf-8');
+	return await fs.promises.readFile(Logs.path, 'utf-8');
 };
 
 Logs.clear = async function () {
-	return await truncateAsync(Logs.path, 0);
+	return await fs.promises.truncate(Logs.path, 0);
 };

@@ -2,8 +2,6 @@
 
 const path = require('path');
 const fs = require('fs');
-const util = require('util');
-const readFileAsync = util.promisify(fs.readFile);
 
 const file = require('../../file');
 
@@ -17,7 +15,7 @@ themesController.get = async function (req, res, next) {
 
 	let themeConfig;
 	try {
-		themeConfig = await readFileAsync(themeConfigPath, 'utf8');
+		themeConfig = await fs.promises.readFile(themeConfigPath, 'utf8');
 		themeConfig = JSON.parse(themeConfig);
 	} catch (err) {
 		if (err.code === 'ENOENT') {

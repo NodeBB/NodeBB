@@ -4,13 +4,7 @@ const path = require('path');
 const nconf = require('nconf');
 const winston = require('winston');
 const _ = require('lodash');
-
-const util = require('util');
 const fs = require('fs');
-const fsReaddir = util.promisify(fs.readdir);
-const fsStat = util.promisify(fs.stat);
-const fsReadfile = util.promisify(fs.readFile);
-
 
 const file = require('../file');
 const db = require('../database');
@@ -33,7 +27,7 @@ Themes.get = async () => {
 	themes = await Promise.all(themes.map(async (theme) => {
 		const config = path.join(themePath, theme, 'theme.json');
 		try {
-			const file = await fsReadfile(config, 'utf8');
+			const file = await fs.promises.readFile(config, 'utf8');
 			const configObj = JSON.parse(file);
 
 			// Minor adjustments for API output
@@ -59,12 +53,12 @@ Themes.get = async () => {
 };
 
 async function getThemes(themePath) {
-	let dirs = await fsReaddir(themePath);
+	let dirs = await fs.promises.readdir(themePath);
 	dirs = dirs.filter(dir => themeNamePattern.test(dir) || dir.startsWith('@'));
 	return await Promise.all(dirs.map(async (dir) => {
 		try {
 			const dirpath = path.join(themePath, dir);
-			const stat = await fsStat(dirpath);
+			const stat = await fs.promises.stat(dirpath);
 			if (!stat.isDirectory()) {
 				return false;
 			}
@@ -95,7 +89,7 @@ Themes.set = async (data) => {
 					throw new Error('[[error:invalid-theme-id]]');
 				}
 
-				let config = await fsReadfile(pathToThemeJson, 'utf8');
+				let config = await fs.promises.readFile(pathToThemeJson, 'utf8');
 				config = JSON.parse(config);
 
 				await db.sortedSetRemove('plugins:active', current);

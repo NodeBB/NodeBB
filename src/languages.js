@@ -3,9 +3,6 @@
 const fs = require('fs');
 const path = require('path');
 
-const util = require('util');
-const readFileAsync = util.promisify(fs.readFile);
-
 const Languages = module.exports;
 const languagesPath = path.join(__dirname, '../build/public/language');
 
@@ -13,7 +10,7 @@ const files = fs.readdirSync(path.join(__dirname, '../public/vendor/jquery/timea
 Languages.timeagoCodes = files.filter(f => f.startsWith('jquery.timeago')).map(f => f.split('.')[2]);
 
 Languages.get = async function (language, namespace) {
-	const data = await readFileAsync(path.join(languagesPath, language, namespace + '.json'), 'utf8');
+	const data = await fs.promises.readFile(path.join(languagesPath, language, namespace + '.json'), 'utf8');
 	return JSON.parse(data) || {};
 };
 
@@ -23,7 +20,7 @@ Languages.listCodes = async function () {
 		return codeCache;
 	}
 	try {
-		const file = await readFileAsync(path.join(languagesPath, 'metadata.json'), 'utf8');
+		const file = await fs.promises.readFile(path.join(languagesPath, 'metadata.json'), 'utf8');
 		const parsed = JSON.parse(file);
 
 		codeCache = parsed.languages;
@@ -47,7 +44,7 @@ Languages.list = async function () {
 	let languages = await Promise.all(codes.map(async function (folder) {
 		try {
 			const configPath = path.join(languagesPath, folder, 'language.json');
-			const file = await readFileAsync(configPath, 'utf8');
+			const file = await fs.promises.readFile(configPath, 'utf8');
 			const lang = JSON.parse(file);
 			return lang;
 		} catch (err) {

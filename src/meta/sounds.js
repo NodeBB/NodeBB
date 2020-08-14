@@ -4,13 +4,11 @@ const path = require('path');
 const fs = require('fs');
 const util = require('util');
 
-const rimraf = require('rimraf');
 let mkdirp = require('mkdirp');
 mkdirp = mkdirp.hasOwnProperty('native') ? mkdirp : util.promisify(mkdirp);
 
-const readdirAsync = util.promisify(fs.readdir);
+const rimraf = require('rimraf');
 const rimrafAsync = util.promisify(rimraf);
-const writeFileAsync = util.promisify(fs.writeFile);
 
 const file = require('../file');
 const plugins = require('../plugins');
@@ -25,7 +23,7 @@ const Sounds = module.exports;
 Sounds.addUploads = async function addUploads() {
 	let files = [];
 	try {
-		files = await readdirAsync(uploadsPath);
+		files = await fs.promises.readdir(uploadsPath);
 	} catch (err) {
 		if (err.code !== 'ENOENT') {
 			throw err;
@@ -72,7 +70,7 @@ Sounds.build = async function build() {
 	await rimrafAsync(soundsPath);
 	await mkdirp(soundsPath);
 
-	await writeFileAsync(path.join(soundsPath, 'fileMap.json'), JSON.stringify(map));
+	await fs.promises.writeFile(path.join(soundsPath, 'fileMap.json'), JSON.stringify(map));
 
 	await Promise.all(plugins.soundpacks.map(pack => file.linkDirs(pack.dir, path.join(soundsPath, pack.id), false)));
 };

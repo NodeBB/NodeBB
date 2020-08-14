@@ -1,8 +1,6 @@
 'use strict';
 
 const fs = require('fs');
-const util = require('util');
-const readFileAsync = util.promisify(fs.readFile);
 
 const path = require('path');
 const nconf = require('nconf');
@@ -68,7 +66,7 @@ async function renderAdminTemplate() {
 }
 
 async function getSource() {
-	return await readFileAsync(path.resolve(nconf.get('views_dir'), 'admin/partials/widget-settings.tpl'), 'utf8');
+	return await fs.promises.readFile(path.resolve(nconf.get('views_dir'), 'admin/partials/widget-settings.tpl'), 'utf8');
 }
 
 function buildTemplatesFromAreas(areas) {

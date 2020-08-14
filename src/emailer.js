@@ -9,10 +9,6 @@ const htmlToText = require('html-to-text');
 const url = require('url');
 const path = require('path');
 const fs = require('fs');
-const util = require('util');
-const readFileAsync = util.promisify(fs.readFile);
-const writeFileAsync = util.promisify(fs.writeFile);
-
 const _ = require('lodash');
 const jwt = require('jsonwebtoken');
 
@@ -47,7 +43,7 @@ Emailer.getTemplates = async function (config) {
 
 	const templates = await Promise.all(emails.map(async (email) => {
 		const path = email.replace(emailsPath, '').substr(1).replace('.tpl', '');
-		const original = await readFileAsync(email, 'utf8');
+		const original = await fs.promises.readFile(email, 'utf8');
 
 		return {
 			path: path,
@@ -316,7 +312,7 @@ async function buildCustomTemplates(config) {
 			const compiled = await Benchpress.precompile(source, {
 				minify: global.env !== 'development',
 			});
-			await writeFileAsync(template.fullpath.replace(/\.tpl$/, '.js'), compiled);
+			await fs.promises.writeFile(template.fullpath.replace(/\.tpl$/, '.js'), compiled);
 		}));
 
 		Benchpress.flush();

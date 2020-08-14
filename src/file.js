@@ -7,15 +7,6 @@ const winston = require('winston');
 const mkdirp = require('mkdirp');
 const mime = require('mime');
 const graceful = require('graceful-fs');
-const util = require('util');
-
-const readdirAsync = util.promisify(fs.readdir);
-const copyFileAsync = util.promisify(fs.copyFile);
-const writeFleAsync = util.promisify(fs.writeFile);
-const statAsync = util.promisify(fs.stat);
-const unlinkAsync = util.promisify(fs.unlink);
-const linkAsync = util.promisify(fs.link);
-const symlinkAsync = util.promisify(fs.symlink);
 
 const utils = require('./utils');
 
@@ -36,7 +27,7 @@ file.saveFileToLocal = async function (filename, folder, tempPath) {
 
 	winston.verbose('Saving file ' + filename + ' to : ' + uploadPath);
 	await mkdirp(path.dirname(uploadPath));
-	await copyFileAsync(tempPath, uploadPath);
+	await fs.promises.copyFile(tempPath, uploadPath);
 	return {
 		url: '/assets/uploads/' + (folder ? folder + '/' : '') + filename,
 		path: uploadPath,
@@ -47,7 +38,7 @@ file.base64ToLocal = async function (imageData, uploadPath) {
 	const buffer = Buffer.from(imageData.slice(imageData.indexOf('base64') + 7), 'base64');
 	uploadPath = path.join(nconf.get('upload_path'), uploadPath);
 
-	await writeFleAsync(uploadPath, buffer, {
+	await fs.promises.writeFile(uploadPath, buffer, {
 		encoding: 'base64',
 	});
 	return uploadPath;
@@ -86,7 +77,7 @@ file.allowedExtensions = function () {
 
 file.exists = async function (path) {
 	try {
-		await statAsync(path);
+		await fs.promises.stat(path);
 	} catch (err) {
 		if (err.code === 'ENOENT') {
 			return false;
@@ -114,7 +105,7 @@ file.delete = async function (path) {
 		return;
 	}
 	try {
-		await unlinkAsync(path);
+		await fs.promises.unlink(path);
 	} catch (err) {
 		winston.warn(err);
 	}
@@ -126,9 +117,9 @@ file.link = async function link(filePath, destPath, relative) {
 	}
 
 	if (process.platform === 'win32') {
-		await linkAsync(filePath, destPath);
+		await fs.promises.link(filePath, destPath);
 	} else {
-		await symlinkAsync(filePath, destPath, 'file');
+		await fs.promises.symlink(filePath, destPath, 'file');
 	}
 };
 
@@ -138,7 +129,7 @@ file.linkDirs = async function linkDirs(sourceDir, destDir, relative) {
 	}
 
 	const type = (process.platform === 'win32') ? 'junction' : 'dir';
-	await symlinkAsync(sourceDir, destDir, type);
+	await fs.promises.symlink(sourceDir, destDir, type);
 };
 
 file.typeToExtension = function (type) {
@@ -151,10 +142,10 @@ file.typeToExtension = function (type) {
 
 // Adapted from http://stackoverflow.com/questions/5827612/node-js-fs-readdir-recursive-directory-search
 file.walk = async function (dir) {
-	const subdirs = await readdirAsync(dir);
+	const subdirs = await fs.promises.readdir(dir);
 	const files = await Promise.all(subdirs.map(async (subdir) => {
 		const res = path.resolve(dir, subdir);
-		return (await statAsync(res)).isDirectory() ? file.walk(res) : res;
+		return (await fs.promises.stat(res)).isDirectory() ? file.walk(res) : res;
 	}));
 	return files.reduce((a, f) => a.concat(f), []);
 };
