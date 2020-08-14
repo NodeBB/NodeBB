@@ -14,9 +14,14 @@ module.exports = {
 			const navItem = JSON.parse(item.value);
 			if (navItem.hasOwnProperty('title')) {
 				navItem.title = translator.unescape(navItem.title);
+				navItem.title = navItem.title.replace(/&#x5C;/g, '');
 			}
 			if (navItem.hasOwnProperty('text')) {
 				navItem.text = translator.unescape(navItem.text);
+				navItem.text = navItem.text.replace(/&#x5C;/g, '');
+			}
+			if (navItem.hasOwnProperty('route')) {
+				navItem.route = navItem.route.replace('&#x2F;', '/');
 			}
 			order.push(item.score);
 			items.push(JSON.stringify(navItem));
