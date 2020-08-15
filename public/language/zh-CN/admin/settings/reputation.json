@@ -14,7 +14,7 @@
 	"min-rep-profile-picture": "添加 个人资料图片 需要的最低声望",
 	"min-rep-cover-picture": "添加 个人封面图片 需要的最低声望",
 
-	"flags": "Flag Settings",
+	"flags": "举报设置",
 	"flags.limit-per-target": "Maximum number of times something can be flagged",
 	"flags.limit-per-target-placeholder": "默认：0"
 }
