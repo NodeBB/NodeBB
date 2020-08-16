@@ -27,12 +27,12 @@
 	"apply-filters": "应用过滤器",
 	"more-filters": "更多过滤器",
 
-	"quick-actions": "Quick Actions",
+	"quick-actions": "快速操作",
 	"flagged-user": "被举报的用户",
 	"view-profile": "查看个人资料",
 	"start-new-chat": "开始新会话",
 	"go-to-target": "查看举报目标",
-	"assign-to-me": "Assign To Me",
+	"assign-to-me": "指派给我",
 	"delete-post": "删除帖子",
 	"purge-post": "清除帖子",
 	"restore-post": "恢复帖子",
@@ -47,7 +47,7 @@
 	"note-added": "备注已添加",
 	"note-deleted": "Note Deleted",
 
-	"history": "Account &amp; Flag History",
+	"history": "账号 &amp; 举报历史",
 	"no-history": "没有举报历史。",
 
 	"state-all": "所有状态",

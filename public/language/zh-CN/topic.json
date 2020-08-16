@@ -102,8 +102,8 @@
     "fork_pid_count": "选择了 %1 个帖子",
     "fork_success": "成功分割主题! 点这里跳转到分割后的主题。",
     "delete_posts_instruction": "点击想要删除/永久删除的帖子",
-    "merge_topics_instruction": "Click the topics you want to merge or search for them",
-    "merge-topic-list-title": "List of topics to be merged",
+    "merge_topics_instruction": "点击您想合并或搜索的主题",
+    "merge-topic-list-title": "要合并的主题列表",
     "merge-options": "合并选项",
     "merge-select-main-topic": "Select the main topic",
     "merge-new-title-for-topic": "New title for topic",
@@ -141,9 +141,9 @@
     "diffs.no-revisions-description": "该贴已重新修改",
     "diffs.current-revision": "当前版本",
     "diffs.original-revision": "原始版本",
-    "diffs.restore": "Restore this revision",
+    "diffs.restore": "恢复到此修订",
     "diffs.restore-description": "A new revision will be appended to this post's edit history.",
-    "diffs.post-restored": "Post successfully restored to earlier revision",
+    "diffs.post-restored": "帖子成功恢复到更早的修订版本",
     "timeago_later": "%1 后",
     "timeago_earlier": "%1 前"
 }

@@ -37,5 +37,5 @@
 	"site-colors": "站点颜色元数据",
 	"theme-color": "主题色",
 	"background-color": "背景色",
-	"background-color-help": "Color used for splash screen background when website is installed as a PWA"
+	"background-color-help": "当网站安装为 PWA 时用于启动屏幕背景的颜色"
 }

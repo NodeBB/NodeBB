@@ -57,7 +57,7 @@
     "notificationType_upvote": "当有人顶了我的帖子时",
     "notificationType_new-topic": "当有人回复我的帖子时",
     "notificationType_new-reply": "当您正在查看的主题中有新回复时",
-    "notificationType_post-edit": "When a post is edited in a topic you are watching",
+    "notificationType_post-edit": "当您关注的主题有帖子被编辑时",
     "notificationType_follow": "当有人关注您时",
     "notificationType_new-chat": "当您收到聊天消息时",
     "notificationType_group-invite": "当您收到群组邀请时",

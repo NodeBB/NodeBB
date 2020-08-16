@@ -20,15 +20,15 @@
 	"hsts.preload": "允许在HSTS头信息中预加载（preloading）",
 	"hsts.help": "如果启用此项，站点将会向浏览器发送HSTS头信息。您可以设置是否为子域名开启HSTS，以及HSTS头信息中是否包含预加载标志（preload参数）如果您不了解HSTS，可以忽略此项设置。<a href=\"%1\">了解详情 <i class=\"fa fa-external-link\"></i></a>",
 	"traffic-management": "流量管理",
-	"traffic.help": "NodeBB uses a module that automatically denies requests in high-traffic situations. You can tune these settings here, although the defaults are a good starting point.",
+	"traffic.help": "NodeBB 使用一个在高流量情况下自动拒绝请求的模块。尽管默认值就很棒，但您可以在这里调整这些设置。",
 	"traffic.enable": "启用流量管理",
 	"traffic.event-lag": "事件循环滞后阈值（毫秒）",
 	"traffic.event-lag-help": "降低此值会减少页面加载的等待时间，但也会向更多用户显示“过载”消息。(需要重新启动)",
 	"traffic.lag-check-interval": "检查间隔（毫秒）",
 	"traffic.lag-check-interval-help": "降低此值会造成 NodeBB 的负载峰值变得更加敏感，但也可能导致检查变得过于敏感（需要重新启动）",
 
-	"sockets.settings": "WebSocket Settings",
-	"sockets.max-attempts": "Max Reconnection Attempts",
+	"sockets.settings": "WebSocket 设置",
+	"sockets.max-attempts": "最大重连尝试次数",
 	"sockets.default-placeholder": "默认：%1",
-	"sockets.delay": "Reconnection Delay"
+	"sockets.delay": "重连等待时间"
 }
