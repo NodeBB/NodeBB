@@ -104,10 +104,21 @@ SocketGroups.addMember = async (socket, data) => {
 	if (data.groupName === 'administrators' || groups.isPrivilegeGroup(data.groupName)) {
 		throw new Error('[[error:not-allowed]]');
 	}
-	await groups.join(data.groupName, data.uid);
+	if (!data.uid) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	data.uid = !Array.isArray(data.uid) ? [data.uid] : data.uid;
+	if (data.uid.filter(uid => !(parseInt(uid, 10) > 0)).length) {
+		throw new Error('[[error:invalid-uid]]');
+	}
+	for (const uid of data.uid) {
+		// eslint-disable-next-line no-await-in-loop
+		await groups.join(data.groupName, uid);
+	}
+
 	logGroupEvent(socket, 'group-add-member', {
 		groupName: data.groupName,
-		targetUid: data.uid,
+		targetUid: String(data.uid),
 	});
 };
 
