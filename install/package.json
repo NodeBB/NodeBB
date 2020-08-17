@@ -61,7 +61,7 @@
         "graceful-fs": "^4.2.3",
         "helmet": "^4.0.0",
         "html-to-text": "^5.1.1",
-        "ipaddr.js": "^1.9.1",
+        "ipaddr.js": "^2.0.0",
         "jquery": "3.5.1",
         "jsesc": "3.0.1",
         "json2csv": "5.0.1",
