@@ -39,14 +39,14 @@
 	"admin-users": "用户",
 	"admin-settings": "设置",
 
-	"alert.confirm-moderate": "<strong>Are you sure you wish to grant the moderation privilege to this user group?</strong> This group is public, and any users can join at will.",
+	"alert.confirm-moderate": "<strong>您确定要将审核权限授予此用户组吗？</strong>此用户组是公开的，任何用户都可以随意加入。",
 	"alert.confirm-save": "请验证您保存这些权限的目的",
 	"alert.saved": "权限修改已保存并应用",
 	"alert.confirm-discard": "您确定要取消权限修改吗？",
 	"alert.discarded": "权限修改已被丢弃",
-	"alert.confirm-copyToAll": "Are you sure you wish to apply this privilege set to <strong>all categories</strong>?",
-	"alert.confirm-copyToAllGroup": "Are you sure you wish to apply this group's privilege set to <strong>all categories</strong>?",
-	"alert.confirm-copyToChildren": "Are you sure you wish to apply this privilege set to <strong>all descendant (child) categories</strong>?",
-	"alert.confirm-copyToChildrenGroup": "Are you sure you wish to apply this group's privilege set to <strong>all descendant (child) categories</strong>?",
+	"alert.confirm-copyToAll": "您确定要将此权限应用于<strong>所有类别</strong>吗？",
+	"alert.confirm-copyToAllGroup": "您确定要将此用户组权限应用于<strong>所有类别</strong>吗？",
+	"alert.confirm-copyToChildren": "您确定要将此权限应用于<strong>所有子类别</strong>吗？",
+	"alert.confirm-copyToChildrenGroup": "您确定要将此用户组权限应用于<strong>所有子类别</strong>吗？",
 	"alert.no-undo": "此操作无法撤消。"
 }

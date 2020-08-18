@@ -39,14 +39,14 @@
 	"admin-users": "Kullanıcılar",
 	"admin-settings": "Ayarlar",
 
-	"alert.confirm-moderate": "<strong>Are you sure you wish to grant the moderation privilege to this user group?</strong> This group is public, and any users can join at will.",
-	"alert.confirm-save": "Please confirm your intention to save these privileges",
-	"alert.saved": "Privilege changes saved and applied",
-	"alert.confirm-discard": "Are you sure you wish to discard your privilege changes?",
-	"alert.discarded": "Privilege changes discarded",
-	"alert.confirm-copyToAll": "Are you sure you wish to apply this privilege set to <strong>all categories</strong>?",
-	"alert.confirm-copyToAllGroup": "Are you sure you wish to apply this group's privilege set to <strong>all categories</strong>?",
-	"alert.confirm-copyToChildren": "Are you sure you wish to apply this privilege set to <strong>all descendant (child) categories</strong>?",
-	"alert.confirm-copyToChildrenGroup": "Are you sure you wish to apply this group's privilege set to <strong>all descendant (child) categories</strong>?",
-	"alert.no-undo": "<em>This action cannot be undone.</em>"
+	"alert.confirm-moderate": "<strong>Bu gruba yönetim ayrıcalıkları vermek istediğinize emin misiniz?</strong> Bu grup genele açık olduğundan her kullanıcı gruba katılabilir. ",
+	"alert.confirm-save": "Lütfen ayrıcalıkları kaydetme isteğinizi onaylayınız",
+	"alert.saved": "Ayrıcalık değişiklikleri kaydedildi ve uygulandı",
+	"alert.confirm-discard": "Ayrıcalık değişikliklerini iptal etmek istediğinize emin misiniz?",
+	"alert.discarded": "Ayrıcalık değişiklikleri iptal edildi",
+	"alert.confirm-copyToAll": "Bu ayrıcalıkları <strong>tüm kategoriler</strong> için uygulamaya emin misiniz?",
+	"alert.confirm-copyToAllGroup": "Bu grup ayrıcalıklarını <strong>tüm kategoriler</strong> için uygulamaya emin misiniz?",
+	"alert.confirm-copyToChildren": "Bu ayrıcalıkları <strong>tüm alt (aşağı) kategoriler</strong> için uygulamaya emin misiniz?",
+	"alert.confirm-copyToChildrenGroup": "Bu grup ayrıcalıklarını <strong>tüm alt (aşağı) kategoriler</strong> uygulamaya emin misiniz?",
+	"alert.no-undo": "<em>Bu işlem geri alınamaz.</em>"
 }

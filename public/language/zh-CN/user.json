@@ -179,9 +179,9 @@
     "consent.right_to_data_portability": "您拥有数据转移权",
     "consent.right_to_data_portability_description": "您也许想导出有关您和您的账号的机器可读副本。您可以点击下方的按钮来获取它们。",
     "consent.export_profile": "导出个人资料 (.json)",
-    "consent.export-profile-success": "Exporting profile, you will get a notification when it is complete.",
+    "consent.export-profile-success": "资料导出完成后，您将会收到一条通知。",
     "consent.export_uploads": "导出上传文件 (.zip)",
-    "consent.export-uploads-success": "Exporting uploads, you will get a notification when it is complete.",
+    "consent.export-uploads-success": "上传导出完成后，您将会收到一条通知。",
     "consent.export_posts": "导出帖子 (.csv)",
-    "consent.export-posts-success": "Exporting posts, you will get a notification when it is complete."
+    "consent.export-posts-success": "帖子导出完成后，您将会收到一条通知。"
 }

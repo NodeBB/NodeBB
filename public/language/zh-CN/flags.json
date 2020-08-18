@@ -43,9 +43,9 @@
 	"notes": "举报备注",
 	"add-note": "添加备注",
 	"no-notes": "没有共享的备注内容。",
-	"delete-note-confirm": "Are you sure you want to delete this flag note?",
+	"delete-note-confirm": "您确定要删除此举报备注吗？",
 	"note-added": "备注已添加",
-	"note-deleted": "Note Deleted",
+	"note-deleted": "备注已删除",
 
 	"history": "账号 &amp; 举报历史",
 	"no-history": "没有举报历史。",
