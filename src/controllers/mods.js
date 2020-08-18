@@ -71,10 +71,7 @@ modsController.flags.list = async function (req, res, next) {
 	}
 
 	// Pagination doesn't count as a filter
-	if (
-		(Object.keys(filters).length === 1 && filters.hasOwnProperty('page')) ||
-		(Object.keys(filters).length === 2 && filters.hasOwnProperty('page') && filters.hasOwnProperty('perPage'))
-	) {
+	if (Object.keys(filters).length === 1 && filters.hasOwnProperty('page')) {
 		hasFilter = false;
 	}
 
@@ -141,7 +138,7 @@ modsController.flags.detail = async function (req, res, next) {
 		}, {}),
 		title: '[[pages:flag-details, ' + req.params.flagId + ']]',
 		categories: results.categories,
-		filters: req.session.flags_filters || [],
+		filters: req.session.flags_filters || {},
 		privileges: results.privileges,
 		breadcrumbs: helpers.buildBreadcrumbs([
 			{ text: '[[pages:flags]]', url: '/flags' },
