@@ -33,7 +33,7 @@
 				<div class="available-widgets">
 					<p>[[admin/extend/widgets:explanation]]</p>
 					<!-- IF !availableWidgets.length -->
-					<div class="alert alert-info">[[none-installed, {config.relative_path}/admin/extend/plugins]]</div>
+					<div class="alert alert-info">[[admin/extend/widgets:none-installed, {config.relative_path}/admin/extend/plugins]]</div>
 					<!-- ENDIF !availableWidgets.length -->
 					<p>
 						<select id="widget-selector" class="form-control">
