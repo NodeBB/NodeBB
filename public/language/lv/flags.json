@@ -57,6 +57,11 @@
 	"state-rejected": "Noraidīts",
 	"no-assignee": "Nav piešķirts",
 
+	"sort": "Sort by",
+	"sort-newest": "Newest first",
+	"sort-oldest": "Oldest first",
+	"sort-reports": "Most reports",
+
 	"modal-title": "Ziņot par nepiemērotu saturu",
 	"modal-body": "Lūdzu, norādi iemeslu, kāpēc %1 %2 ir atzīmēts pārskatīšanai. Citādi, izmanto vienu no ātrā ziņojuma pogām.",
 	"modal-reason-spam": "Mēstule",

@@ -1,7 +1,7 @@
 {
 	"available": "Widgets Disponíveis",
 	"explanation": "Escolha um widget do menu de dropdown e então arraste e solte numa área de widget do template à esquerda.",
-	"none-installed": "Nenhum widget encontrado! Ative o plugin de widgets padrão no painel de controle de <a href=\"%1\">plugins</a>. ",
+	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",
 	"clone-from": "Copiar widgets de",
 	"containers.available": "Contêineres Disponíveis",
 	"containers.explanation": "Arrastar e soltar em cima de qualquer widget ativo",

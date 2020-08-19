@@ -57,6 +57,11 @@
 	"state-rejected": "Abgelehnt",
 	"no-assignee": "Nicht zugewiesen",
 
+	"sort": "Sort by",
+	"sort-newest": "Newest first",
+	"sort-oldest": "Oldest first",
+	"sort-reports": "Most reports",
+
 	"modal-title": "Anstößige Inhalte Melden",
 	"modal-body": "Bitte geben Sie den Grund an, weshalb Sie %1 %2 melden wollen. Alternativ können Sie einen der Schnell-Meldungs-Knöpfe verwenden, wenn anwendbar.",
 	"modal-reason-spam": "Spam",

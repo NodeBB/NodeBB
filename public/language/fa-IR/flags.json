@@ -57,6 +57,11 @@
 	"state-rejected": "رد شده",
 	"no-assignee": "اختصاص داده نشده",
 
+	"sort": "Sort by",
+	"sort-newest": "Newest first",
+	"sort-oldest": "Oldest first",
+	"sort-reports": "Most reports",
+
 	"modal-title": "گزارش محتوای نامناسب",
 	"modal-body": "لطفا علت گزارش <strong>%2</strong> <strong>%1</strong> را برای بررسی مشخص کنید. همچنین می توانید از یکی از دکمه های ارسال سریع استفاده کنید.",
 	"modal-reason-spam": "هرزنامه",

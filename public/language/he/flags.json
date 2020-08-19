@@ -57,6 +57,11 @@
 	"state-rejected": "נדחה",
 	"no-assignee": "לא הוקצה",
 
+	"sort": "Sort by",
+	"sort-newest": "Newest first",
+	"sort-oldest": "Oldest first",
+	"sort-reports": "Most reports",
+
 	"modal-title": "דווח על תוכן לא ראוי",
 	"modal-body": "אנא ציין את הסיבה לסימון %1 %2 לצורך בקרה. לחלופין, השתמש באחד מכפתורי הדיווח המהיר אם אפשר.",
 	"modal-reason-spam": "זבל",

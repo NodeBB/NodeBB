@@ -1,7 +1,7 @@
 {
 	"available": "Verfügbare Widgets",
 	"explanation": "Widget vom Dropdown-Menu auswählen und anschließend links in den Widget-Bereich einer Vorlage ziehen.",
-	"none-installed": "Keine Widgets gefunden! Aktiviere das \"Essential Widgets\"-Plugin in den <a href=\"%1\">Plugin-Einstellungen</a>.",
+	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",
 	"clone-from": "Klone Widget von",
 	"containers.available": "Verfügbare Container",
 	"containers.explanation": "Auf ein beliebiges aktives Widget ziehen",

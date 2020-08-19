@@ -1,7 +1,7 @@
 {
 	"available": "Dostupné miniaplikácie",
 	"explanation": "Vyberte si miniaplikáciu z rozbalovacej ponuky a pretiahnite ju do oblasti šablóny miniaplikácie naľavo.",
-	"none-installed": "Neboli nájdené žiadne miniaplikácie. Aktivujte rozšírenie základných miniaplikácií v ovládacom paneli <a href=\"%1\"> Rozšírenia </a>.",
+	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",
 	"clone-from": "Okopírovať miniaplikácie z",
 	"containers.available": "Dostupné moduly",
 	"containers.explanation": "Presuňte na akúkoľvek aktívnu miniaplikáciu",

@@ -1,7 +1,7 @@
 {
 	"available": "Pieejamie logrīki",
 	"explanation": "Atlasīt spraudni no nolaižamās izvēlnes, un to vilkt un nomest uz veidnes spraudņa lauku kreisajā pusē.",
-	"none-installed": "Nav logrīku! Aktivizēt nepieciešamo logrīku spraudni <a href=\"%1\">spraudņu</a> vadības panelī.",
+	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",
 	"clone-from": "Klonēt logrīkus no",
 	"containers.available": "Pieejamās tvertnes",
 	"containers.explanation": "Vilkt un nomest uz jebkura aktīvā logrīka",

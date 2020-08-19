@@ -1,7 +1,7 @@
 {
 	"available": "可用的小工具",
 	"explanation": "從下拉選單中選擇一個小工具並拖放到樣板左邊的小工具區域。",
-	"none-installed": "未發現小工具！請在<a href=\"%1\">外掛控制面板</a>中啟用必要的小工具插件。",
+	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",
 	"clone-from": "從小工具複製",
 	"containers.available": "可用的容器",
 	"containers.explanation": "拖放到任意生效中的小工具上",

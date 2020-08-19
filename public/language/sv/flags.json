@@ -57,6 +57,11 @@
 	"state-rejected": "Avvisad",
 	"no-assignee": "Ej tilldelad",
 
+	"sort": "Sort by",
+	"sort-newest": "Newest first",
+	"sort-oldest": "Oldest first",
+	"sort-reports": "Most reports",
+
 	"modal-title": "Rapportera opassande innehåll",
 	"modal-body": "Vänligen ange anledningen till att du flaggar %1 %2 för granskning. Alternativt, använd en av snabbrapporteringsknapparna.",
 	"modal-reason-spam": "Spam",

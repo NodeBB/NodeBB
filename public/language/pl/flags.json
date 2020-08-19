@@ -57,6 +57,11 @@
 	"state-rejected": "Odrzucono",
 	"no-assignee": "Nie przypisano",
 
+	"sort": "Sort by",
+	"sort-newest": "Newest first",
+	"sort-oldest": "Oldest first",
+	"sort-reports": "Most reports",
+
 	"modal-title": "Zgłoś niewłaściwe treści",
 	"modal-body": "Wskaż powód oflagowania i zgłoszenia %1 %2 do oceny. Jeśli to możliwe, użyj jednego z przycisków szybkiego zgłoszenia.",
 	"modal-reason-spam": "Spam",

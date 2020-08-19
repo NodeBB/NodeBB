@@ -57,6 +57,11 @@
 	"state-rejected": "Reddedildi",
 	"no-assignee": "Atanmadı",
 
+	"sort": "Sort by",
+	"sort-newest": "Newest first",
+	"sort-oldest": "Oldest first",
+	"sort-reports": "Most reports",
+
 	"modal-title": "Uygunsuz İçeriği Rapor Et",
 	"modal-body": "%1 %2 için şikayet nedenini belirtiniz. Alternatif olarak hızlı rapor butonlarından birini kullanabilirsiniz.",
 	"modal-reason-spam": "Gereksiz",

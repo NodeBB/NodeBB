@@ -57,6 +57,11 @@
 	"state-rejected": "Odbijeno",
 	"no-assignee": "Nije dodijeljeno",
 
+	"sort": "Sort by",
+	"sort-newest": "Newest first",
+	"sort-oldest": "Oldest first",
+	"sort-reports": "Most reports",
+
 	"modal-title": "Prijavi neprimjereni sadržaj",
 	"modal-body": "Navedite razlog označavanja zastavom %1 %2 .U suprotnom koristite jedan od dugmića za brzo prijavljivanje.",
 	"modal-reason-spam": "Spam",

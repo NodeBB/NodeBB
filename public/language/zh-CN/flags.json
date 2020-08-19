@@ -1,7 +1,7 @@
 {
 	"state": "状态",
-	"reports": "Reports",
-	"first-reported": "First Reported",
+	"reports": "报告",
+	"first-reported": "首次报告",
 	"no-flags": "啊哈！没发现任何的举报。",
 	"assignee": "受委托人",
 	"update": "更新",
@@ -56,6 +56,11 @@
 	"state-resolved": "已解决",
 	"state-rejected": "已拒绝",
 	"no-assignee": "未指派",
+
+	"sort": "Sort by",
+	"sort-newest": "Newest first",
+	"sort-oldest": "Oldest first",
+	"sort-reports": "Most reports",
 
 	"modal-title": "举报不适内容",
 	"modal-body": "请选择或者输入您举报 %1%2 的原因以便版主进行审核。",

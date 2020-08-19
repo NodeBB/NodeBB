@@ -1,7 +1,7 @@
 {
 	"available": "Widget disponibili",
 	"explanation": "Selezionare un widget dal menu a discesa e poi trascinalo e rilascialo nell'area widget di un modello a sinistra.",
-	"none-installed": "Nessun widget trovato! Attivare il plugin essenziale dei widget nel pannello di controllo <a href=\"%1\">plugin</a>.",
+	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",
 	"clone-from": "Clona i widget da",
 	"containers.available": "Contenitori disponibili",
 	"containers.explanation": "Trascina e rilascia su qualsiasi widget attivo",

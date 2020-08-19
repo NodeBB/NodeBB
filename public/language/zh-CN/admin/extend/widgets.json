@@ -1,7 +1,7 @@
 {
 	"available": "可用的窗口部件",
 	"explanation": "从下拉菜单中选择一个窗口部件并拖放到模板左边的窗口部件区域。",
-	"none-installed": "未发现窗口部件！请在<a href=\"%1\">插件控制面板</a>中启用必要的窗口部件插件。",
+	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",
 	"clone-from": "从窗口部件克隆",
 	"containers.available": "可用的容器",
 	"containers.explanation": "拖放到任意生效中的窗口部件上",

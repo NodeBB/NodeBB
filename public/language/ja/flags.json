@@ -57,6 +57,11 @@
 	"state-rejected": "拒否済",
 	"no-assignee": "割り当てられていない",
 
+	"sort": "Sort by",
+	"sort-newest": "Newest first",
+	"sort-oldest": "Oldest first",
+	"sort-reports": "Most reports",
+
 	"modal-title": "不適切なコンテンツを報告する",
 	"modal-body": "レビューのために%1 %2 にフラグを付ける理由を指定してください。または必要に応じてクイックレポートボタンの1つを使用します。",
 	"modal-reason-spam": "スパム",

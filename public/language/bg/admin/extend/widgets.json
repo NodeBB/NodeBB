@@ -1,7 +1,7 @@
 {
 	"available": "Налични джаджи",
 	"explanation": "Изберете джаджа от падащото меню, а след това я завлачете и пуснете в областта за джаджи в някой от шаблоните вляво.",
-	"none-installed": "Няма намерени джаджи! Включете добавката с основните джаджи в контролния панел за <a href=\"%1\">добавките</a>.",
+	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",
 	"clone-from": "Клониране на джаджите от",
 	"containers.available": "Налични контейнери",
 	"containers.explanation": "Завлачете и пуснете върху някоя активна джаджа",

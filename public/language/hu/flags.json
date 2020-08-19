@@ -57,6 +57,11 @@
 	"state-rejected": "Rejected",
 	"no-assignee": "Not Assigned",
 
+	"sort": "Sort by",
+	"sort-newest": "Newest first",
+	"sort-oldest": "Oldest first",
+	"sort-reports": "Most reports",
+
 	"modal-title": "Report Inappropriate Content",
 	"modal-body": "Please specify your reason for flagging %1 %2 for review. Alternatively, use one of the quick report buttons if applicable.",
 	"modal-reason-spam": "Spam",

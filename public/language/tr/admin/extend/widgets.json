@@ -1,7 +1,7 @@
 {
 	"available": "Kullanılabilir Bileşenler",
 	"explanation": "Açılır menüden bir bileşen seçin ve sol taraftaki bir şablonun bileşen alanına sürükleyip bırakın.",
-	"none-installed": "Bileşen bulunamadı! Gerekli bileşenleri <a href=\"%1\">eklentiler</a> kontrol panelinden etkinleştirin.",
+	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",
 	"clone-from": "Bileşenleri klonla",
 	"containers.available": "Kullanılabilir Kutucuklar",
 	"containers.explanation": "Aktif olan herhangi bir bileşenin üzerine sürükleyin ve bırakın",

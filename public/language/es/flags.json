@@ -57,6 +57,11 @@
 	"state-rejected": "Rechazado",
 	"no-assignee": "Sin asignar",
 
+	"sort": "Sort by",
+	"sort-newest": "Newest first",
+	"sort-oldest": "Oldest first",
+	"sort-reports": "Most reports",
+
 	"modal-title": "Reportar contenido inapropiado",
 	"modal-body": "Por favor especifica tu razón para marcar %1 %2 para revisar. Alternativamente, usa una de los botones  de reporte rápido si corresponde.",
 	"modal-reason-spam": "Correo no deseado",

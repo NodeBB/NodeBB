@@ -57,6 +57,11 @@
 	"state-rejected": "Zamítnuto",
 	"no-assignee": "Nepřiřazeno",
 
+	"sort": "Sort by",
+	"sort-newest": "Newest first",
+	"sort-oldest": "Oldest first",
+	"sort-reports": "Most reports",
+
 	"modal-title": "Nahlásit nevhodný obsah",
 	"modal-body": "Zadejte váš důvod k označení %1 %2 pro kontrolu. Nebo použijte tlačítko je-li dostupné.",
 	"modal-reason-spam": "Spam",

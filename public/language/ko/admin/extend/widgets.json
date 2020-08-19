@@ -1,7 +1,7 @@
 {
 	"available": "사용 가능 위젯",
 	"explanation": "드롭다운 메뉴에서 위젯을 고르고 왼쪽에 있는 템플렛의 위젯 위치로 드래그하여 옮기십시오.",
-	"none-installed": "위젯을 찾을 수 없습니다! 필수 위젯 플러그인들을 <a href=\"%1\">플러그인</a> 제어판에서 활성화하세요.",
+	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",
 	"clone-from": "복제할 위젯을 선택",
 	"containers.available": "사용 가능한 컨테이너",
 	"containers.explanation": "아무 활성화된 위젯 위로 드래그해서 옮겨주십시오.",

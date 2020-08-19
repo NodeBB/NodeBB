@@ -1,7 +1,7 @@
 {
 	"available": "Доступні віджети",
 	"explanation": "Оберіть віджет із випадаючого меню і перетягніть його в область зліва.",
-	"none-installed": "Віджетів не знайдено! Активуйте необхідний плагін віджетів в панелі керування  <a href=\"%1\">плагінами</a>.",
+	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",
 	"clone-from": "Клонувати віджет з",
 	"containers.available": "Доступні контейнери",
 	"containers.explanation": "Перетягніть поверх будь-якого активного віджету",

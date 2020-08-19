@@ -1,7 +1,7 @@
 {
 	"available": "Elérhető modulok",
 	"explanation": "Válassz egy modult a legördülő menüből, majd húzd rá az egyik sablon modul területére a bal oldalon.",
-	"none-installed": "Nem találhatók modulok! Aktiváld az essential widgets beépülőt a <a href=\"%1\">beépülők</a> vezérlőpulton.",
+	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",
 	"clone-from": "Modul klónozása innen",
 	"containers.available": "Elérhető tárolók",
 	"containers.explanation": "Húzd rá az alábbiakat bármely aktív modulra",
