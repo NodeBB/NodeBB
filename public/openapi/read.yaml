@@ -4954,6 +4954,8 @@ paths:
                             type: number
                           perPage:
                             type: number
+                      sort:
+                        type: string
                       title:
                         type: string
                   - $ref: components/schemas/Pagination.yaml#/Pagination
