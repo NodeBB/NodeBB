@@ -88,6 +88,9 @@ modsController.flags.list = async function (req, res, next) {
 	} else {
 		sort = sorts.includes(req.query.sort) ? req.query.sort : null;
 	}
+	if (sort === 'newest') {
+		sort = undefined;
+	}
 	hasFilter = hasFilter || !!sort;
 
 	// Save filters and sorting into session unless removed
