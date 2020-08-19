@@ -144,7 +144,10 @@ describe('Flags', function () {
 
 	describe('.list()', function () {
 		it('should show a list of flags (with one item)', function (done) {
-			Flags.list({}, 1, function (err, payload) {
+			Flags.list({
+				filters: {},
+				uid: 1,
+			}, function (err, payload) {
 				assert.ifError(err);
 				assert.ok(payload.hasOwnProperty('flags'));
 				assert.ok(payload.hasOwnProperty('page'));
@@ -164,8 +167,11 @@ describe('Flags', function () {
 		describe('(with filters)', function () {
 			it('should return a filtered list of flags if said filters are passed in', function (done) {
 				Flags.list({
-					state: 'open',
-				}, 1, function (err, payload) {
+					filters: {
+						state: 'open',
+					},
+					uid: 1,
+				}, function (err, payload) {
 					assert.ifError(err);
 					assert.ok(payload.hasOwnProperty('flags'));
 					assert.ok(payload.hasOwnProperty('page'));
@@ -178,8 +184,11 @@ describe('Flags', function () {
 
 			it('should return no flags if a filter with no matching flags is used', function (done) {
 				Flags.list({
-					state: 'rejected',
-				}, 1, function (err, payload) {
+					filters: {
+						state: 'rejected',
+					},
+					uid: 1,
+				}, function (err, payload) {
 					assert.ifError(err);
 					assert.ok(payload.hasOwnProperty('flags'));
 					assert.ok(payload.hasOwnProperty('page'));
@@ -192,8 +201,11 @@ describe('Flags', function () {
 
 			it('should return a flag when filtered by cid 1', function (done) {
 				Flags.list({
-					cid: 1,
-				}, 1, function (err, payload) {
+					filters: {
+						cid: 1,
+					},
+					uid: 1,
+				}, function (err, payload) {
 					assert.ifError(err);
 					assert.ok(payload.hasOwnProperty('flags'));
 					assert.ok(payload.hasOwnProperty('page'));
@@ -206,8 +218,11 @@ describe('Flags', function () {
 
 			it('shouldn\'t return a flag when filtered by cid 2', function (done) {
 				Flags.list({
-					cid: 2,
-				}, 1, function (err, payload) {
+					filters: {
+						cid: 2,
+					},
+					uid: 1,
+				}, function (err, payload) {
 					assert.ifError(err);
 					assert.ok(payload.hasOwnProperty('flags'));
 					assert.ok(payload.hasOwnProperty('page'));
@@ -220,8 +235,11 @@ describe('Flags', function () {
 
 			it('should return a flag when filtered by both cid 1 and 2', function (done) {
 				Flags.list({
-					cid: [1, 2],
-				}, 1, function (err, payload) {
+					filters: {
+						cid: [1, 2],
+					},
+					uid: 1,
+				}, function (err, payload) {
 					assert.ifError(err);
 					assert.ok(payload.hasOwnProperty('flags'));
 					assert.ok(payload.hasOwnProperty('page'));
@@ -234,9 +252,12 @@ describe('Flags', function () {
 
 			it('should return one flag if filtered by both cid 1 and 2 and open state', function (done) {
 				Flags.list({
-					cid: [1, 2],
-					state: 'open',
-				}, 1, function (err, payload) {
+					filters: {
+						cid: [1, 2],
+						state: 'open',
+					},
+					uid: 1,
+				}, function (err, payload) {
 					assert.ifError(err);
 					assert.ok(payload.hasOwnProperty('flags'));
 					assert.ok(payload.hasOwnProperty('page'));
@@ -249,9 +270,12 @@ describe('Flags', function () {
 
 			it('should return no flag if filtered by both cid 1 and 2 and non-open state', function (done) {
 				Flags.list({
-					cid: [1, 2],
-					state: 'resolved',
-				}, 1, function (err, payload) {
+					filters: {
+						cid: [1, 2],
+						state: 'resolved',
+					},
+					uid: 1,
+				}, function (err, payload) {
 					assert.ifError(err);
 					assert.ok(payload.hasOwnProperty('flags'));
 					assert.ok(payload.hasOwnProperty('page'));
