@@ -24,7 +24,7 @@ function updatePackageFile() {
 	const defaultPackageContents = JSON.parse(fs.readFileSync(packageDefaultFilePath, 'utf8'));
 
 	const dependencies = {};
-	Object.entries(oldPackageContents.dependencies).forEach(([dep, version]) => {
+	Object.entries(oldPackageContents.dependencies || {}).forEach(([dep, version]) => {
 		if (isPackage.test(dep)) {
 			dependencies[dep] = version;
 		}
