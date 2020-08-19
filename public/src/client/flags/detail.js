@@ -119,8 +119,6 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 					break;
 			}
 		});
-
-		FlagsList.enableFilterForm();
 	};
 
 	function postAction(action, pid, tid) {
