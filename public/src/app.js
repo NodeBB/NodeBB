@@ -147,6 +147,7 @@ app.cacheBuster = null;
 
 	app.alertSuccess = function (message, timeout) {
 		app.alert({
+			alert_id: utils.generateUUID(),
 			title: '[[global:alert.success]]',
 			message: message,
 			type: 'success',
@@ -163,6 +164,7 @@ app.cacheBuster = null;
 		}
 
 		app.alert({
+			alert_id: utils.generateUUID(),
 			title: '[[global:alert.error]]',
 			message: message,
 			type: 'danger',
