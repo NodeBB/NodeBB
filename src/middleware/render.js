@@ -7,7 +7,6 @@ const winston = require('winston');
 
 const plugins = require('../plugins');
 const meta = require('../meta');
-const privileges = require('../privileges');
 const translator = require('../translator');
 const widgets = require('../widgets');
 const utils = require('../utils');
@@ -31,9 +30,6 @@ module.exports = function (middleware) {
 			options.template = { name: template, [template]: true };
 			options.url = (req.baseUrl + req.path.replace(/^\/api/, ''));
 			options.bodyClass = buildBodyClass(req, res, options);
-
-			const privilegeSet = await Promise.all(['global', 'admin'].map(async type => privileges[type].get(req.uid)));
-			options.privileges = { ...privilegeSet[0], ...privilegeSet[1] };
 
 			const buildResult = await plugins.fireHook('filter:' + template + '.build', { req: req, res: res, templateData: options });
 			const templateToRender = buildResult.templateData.templateToRender || template;
