@@ -26,49 +26,6 @@ CommonProps:
     bodyClass:
       type: string
       description: The css class string that is appended to the body element
-    privileges:
-      type: object
-      properties:
-        chat:
-          type: boolean
-        upload:post:image:
-          type: boolean
-        upload:post:file:
-          type: boolean
-        signature:
-          type: boolean
-        ban:
-          type: boolean
-        search:content:
-          type: boolean
-        search:users:
-          type: boolean
-        search:tags:
-          type: boolean
-        view:users:
-          type: boolean
-        view:tags:
-          type: boolean
-        view:groups:
-          type: boolean
-        local:login:
-          type: boolean
-        group:create:
-          type: boolean
-        view:users:info:
-          type: boolean
-        admin:dashboard:
-          type: boolean
-        admin:categories:
-          type: boolean
-        admin:privileges:
-          type: boolean
-        admin:users:
-          type: boolean
-        admin:settings:
-          type: boolean
-        superadmin:
-          type: boolean
     _header:
       type: object
       description: List of meta and link tags that are added to the head element
