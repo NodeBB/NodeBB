@@ -1,3 +1,26 @@
+#### v1.15.0-beta.1 (2020-08-20)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.1 (4fa57fbb)
+
+##### New Features
+
+*  theme changes for #8571 (5415c01c)
+*  logic for bulk actions in flags list, #8571 (a3a22793)
+*  expose global/admin privileges to all routes (4737f937)
+
+##### Bug Fixes
+
+*  multiple alerts in the same millisecond overwrite each other (589216e7)
+*  reintroduce 20s delay for api tests (56393795)
+*  client-side error in flags/detail (b2271eb6)
+*  #8570 (7daba7dd)
+
+##### Tests
+
+* **openapi:**  missing commonprops addition (0dc55bbc)
+
 #### 1.14.3 (2020-07-08)
 
 ##### Bug Fixes
