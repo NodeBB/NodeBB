@@ -57,10 +57,10 @@
 	"state-rejected": "Rifiutato",
 	"no-assignee": "Non assegnato",
 
-	"sort": "Sort by",
-	"sort-newest": "Newest first",
-	"sort-oldest": "Oldest first",
-	"sort-reports": "Most reports",
+	"sort": "Ordina per",
+	"sort-newest": "Prima i più recenti",
+	"sort-oldest": "Prima il meno recente",
+	"sort-reports": "Più segnalazioni",
 
 	"modal-title": "Segnala Contenuto Inappropriato",
 	"modal-body": "Specifica il motivo per cui contrassegni %1 %2 per la revisione. In alternativa, utilizza uno dei pulsanti di segnalazione rapida, se applicabile.",
