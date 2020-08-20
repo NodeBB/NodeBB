@@ -102,6 +102,7 @@ define('forum/flags/list', ['components', 'Chart'], function (components, Chart)
 				var flagIds = Flags.getSelected();
 				var promises = [];
 
+				// TODO: this can be better done with flagIds.map to return promises
 				flagIds.forEach(function (flagId) {
 					promises.push(new Promise(function (resolve, reject) {
 						var handler = function (err) {
@@ -151,7 +152,6 @@ define('forum/flags/list', ['components', 'Chart'], function (components, Chart)
 						app.alertSuccess('[[flags:bulk-success, ' + fulfilled + ']]');
 					}
 
-					console.log(errors);
 					errors.forEach(function (res) {
 						app.alertError(res.reason);
 					});
