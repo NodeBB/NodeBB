@@ -8,7 +8,7 @@ const packageFilePath = path.join(__dirname, '../../package.json');
 const packageDefaultFilePath = path.join(__dirname, '../../install/package.json');
 const modulesPath = path.join(__dirname, '../../node_modules');
 
-const isPackage = /^nodebb-(plugin|theme|widget|reward)-\w+/;
+const isPackage = /^(@\w+\/)?nodebb-(plugin|theme|widget|reward)-\w+/;
 
 function updatePackageFile() {
 	let oldPackageContents = {};
