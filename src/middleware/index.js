@@ -51,7 +51,7 @@ middleware.applyCSRF = function (req, res, next) {
 
 middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login');
 
-require('./admin')(middleware);
+middleware.admin = require('./admin');
 require('./header')(middleware);
 require('./render')(middleware);
 require('./maintenance')(middleware);
