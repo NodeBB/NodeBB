@@ -115,7 +115,7 @@ define('admin/manage/privileges', [
 			return Privileges.setPrivilege(member, privilege, state);
 		});
 
-		$.when(requests).done(function () {
+		Promise.allSettled(requests).then(function () {
 			Privileges.refreshPrivilegeTable();
 			app.alertSuccess('[[admin/manage/privileges:alert.saved]]');
 		});
@@ -180,23 +180,21 @@ define('admin/manage/privileges', [
 	};
 
 	Privileges.setPrivilege = function (member, privilege, state) {
-		var deferred = $.Deferred();
+		return new Promise(function (resolve, reject) {
+			socket.emit('admin.categories.setPrivilege', {
+				cid: isNaN(cid) ? 0 : cid,
+				privilege: privilege,
+				set: state,
+				member: member,
+			}, function (err) {
+				if (err) {
+					reject(err);
+					return app.alertError(err.message);
+				}
 
-		socket.emit('admin.categories.setPrivilege', {
-			cid: isNaN(cid) ? 0 : cid,
-			privilege: privilege,
-			set: state,
-			member: member,
-		}, function (err) {
-			if (err) {
-				deferred.reject(err);
-				return app.alertError(err.message);
-			}
-
-			deferred.resolve();
+				resolve();
+			});
 		});
-
-		return deferred.promise();
 	};
 
 	Privileges.addUserToPrivilegeTable = function () {
