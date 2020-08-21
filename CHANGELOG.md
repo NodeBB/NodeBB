@@ -1,3 +1,26 @@
+#### v1.15.0-beta.2 (2020-08-21)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.2 (59b50d0a)
+*  update changelog for v1.15.0-beta.1 (aeca19d5)
+
+##### Bug Fixes
+
+*  empty "manage" menu showing in ACP (4b0cb26b)
+*  hide nodebb version in ACP for non-superadmins (cc268605)
+*  change how admin middlewares are exported (f00595b3)
+*  one less return, to appease codeclimate (ae68a254)
+*  inability to access /admin if not superadmin (03bd76de)
+*  #8560, fix old upgrade script (29e3ab24)
+*  use promises in privilege save (9cbe9389)
+*  overzealous click handler on flag list row (7a5daff4)
+*  +comment, -debug log (9608b44f)
+
+##### Refactors
+
+*  changed way middleware was exported (cf2f1e95)
+
 #### v1.15.0-beta.1 (2020-08-20)
 
 ##### Chores
