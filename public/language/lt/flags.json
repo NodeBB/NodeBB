@@ -72,5 +72,9 @@
 	"modal-submit-success": "Content has been flagged for moderation.",
 	"modal-submit-confirm": "Confirm Submission",
 	"modal-submit-confirm-text": "You have a custom reason specified already. Are you sure you wish to submit via quick-report?",
-	"modal-submit-confirm-text-help": "Submitting a quick report will overwrite any custom reasons defined."
+	"modal-submit-confirm-text-help": "Submitting a quick report will overwrite any custom reasons defined.",
+
+	"bulk-actions": "Bulk Actions",
+	"bulk-resolve": "Resolve Flag(s)",
+	"bulk-success": "%1 flags updated"
 }

@@ -72,5 +72,9 @@
 	"modal-submit-success": "התוכן סומן לצרכי בקרה",
 	"modal-submit-confirm": "אשר שליחה",
 	"modal-submit-confirm-text": "כבר ציינת סיבה. האם אתה בטוח שאתה רוצה לשלוח על ידי דיווח-מהיר?",
-	"modal-submit-confirm-text-help": "שליחת דיווח מהיר תבטל כל סיבה קודמת שהוגדרה."
+	"modal-submit-confirm-text-help": "שליחת דיווח מהיר תבטל כל סיבה קודמת שהוגדרה.",
+
+	"bulk-actions": "Bulk Actions",
+	"bulk-resolve": "Resolve Flag(s)",
+	"bulk-success": "%1 flags updated"
 }

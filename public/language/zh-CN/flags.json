@@ -72,5 +72,9 @@
 	"modal-submit-success": "已举报此内容。",
 	"modal-submit-confirm": "确认提交",
 	"modal-submit-confirm-text": "您已经指定了一个自定义原因。 您希望通过快速报告提交吗？",
-	"modal-submit-confirm-text-help": "提交快速报告将覆盖任何已定义的自定义原因。"
+	"modal-submit-confirm-text-help": "提交快速报告将覆盖任何已定义的自定义原因。",
+
+	"bulk-actions": "Bulk Actions",
+	"bulk-resolve": "Resolve Flag(s)",
+	"bulk-success": "%1 flags updated"
 }

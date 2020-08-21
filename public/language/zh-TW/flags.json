@@ -72,5 +72,9 @@
 	"modal-submit-success": "已舉報此內容。",
 	"modal-submit-confirm": "確認提交",
 	"modal-submit-confirm-text": "您已經指定了一個自訂原因。 您希望通過快速報告提交嗎？",
-	"modal-submit-confirm-text-help": "提交快速報告將覆寫任何已定義的自訂原因。"
+	"modal-submit-confirm-text-help": "提交快速報告將覆寫任何已定義的自訂原因。",
+
+	"bulk-actions": "Bulk Actions",
+	"bulk-resolve": "Resolve Flag(s)",
+	"bulk-success": "%1 flags updated"
 }

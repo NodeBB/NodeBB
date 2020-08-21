@@ -72,5 +72,9 @@
 	"modal-submit-success": "Treści zostały oflagowane i zgłoszone do moderacji.",
 	"modal-submit-confirm": "Potwierdź wysłanie",
 	"modal-submit-confirm-text": "Wskazałeś już własny powód. Czy na pewno chcesz skorzystać z szybkiego zgłoszenia?",
-	"modal-submit-confirm-text-help": "Wysłanie szybkiego zgłoszenia spowoduje nadpisanie wszelkich własnych powodów"
+	"modal-submit-confirm-text-help": "Wysłanie szybkiego zgłoszenia spowoduje nadpisanie wszelkich własnych powodów",
+
+	"bulk-actions": "Bulk Actions",
+	"bulk-resolve": "Resolve Flag(s)",
+	"bulk-success": "%1 flags updated"
 }

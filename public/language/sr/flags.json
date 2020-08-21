@@ -72,5 +72,9 @@
 	"modal-submit-success": "Садржај је означен за модерацију.",
 	"modal-submit-confirm": "Потврди подношење",
 	"modal-submit-confirm-text": "Већ имате наведени прилагођени разлог. Да ли сте сигурни да желите послати путем брзог извештаја?",
-	"modal-submit-confirm-text-help": "Подношење брзог извештаја ће заменити све прилагођене разлоге."
+	"modal-submit-confirm-text-help": "Подношење брзог извештаја ће заменити све прилагођене разлоге.",
+
+	"bulk-actions": "Bulk Actions",
+	"bulk-resolve": "Resolve Flag(s)",
+	"bulk-success": "%1 flags updated"
 }

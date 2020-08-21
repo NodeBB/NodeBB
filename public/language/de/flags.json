@@ -72,5 +72,9 @@
 	"modal-submit-success": "Der Inhalt wurde gemeldet.",
 	"modal-submit-confirm": "Einreichung bestätigen",
 	"modal-submit-confirm-text": "Du hast bereits einen benutzerdefinierten Grund angegeben. Bis du sicher, dass du per schnell-funktion abschicken willst?",
-	"modal-submit-confirm-text-help": "Das einreichen per schnell-funktion werden alle näher angegebenen Gründe ignoriert."
+	"modal-submit-confirm-text-help": "Das einreichen per schnell-funktion werden alle näher angegebenen Gründe ignoriert.",
+
+	"bulk-actions": "Bulk Actions",
+	"bulk-resolve": "Resolve Flag(s)",
+	"bulk-success": "%1 flags updated"
 }

@@ -72,5 +72,9 @@
 	"modal-submit-success": "O conteúdo foi sinalizado para moderação.",
 	"modal-submit-confirm": "Cofirmar Envio",
 	"modal-submit-confirm-text": "Você já especificou um motivo individual. Tem certeza de que deseja enviar uma denúncia rápida?",
-	"modal-submit-confirm-text-help": "O envio de uma denúncia rápida substituirá os motivos individuais especificados."
+	"modal-submit-confirm-text-help": "O envio de uma denúncia rápida substituirá os motivos individuais especificados.",
+
+	"bulk-actions": "Bulk Actions",
+	"bulk-resolve": "Resolve Flag(s)",
+	"bulk-success": "%1 flags updated"
 }

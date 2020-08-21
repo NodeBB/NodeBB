@@ -72,5 +72,9 @@
 	"modal-submit-success": "เนื้อหาถูกรายงานตามความเหมาะสมแล้ว",
 	"modal-submit-confirm": "ยืนยันการส่ง",
 	"modal-submit-confirm-text": "คุณมีเหตุผลแบบกำหนดเองที่ระบุอยู่แล้ว คุณแน่ใจหรือไม่ว่าต้องการส่งข้อมูลผ่านรายงานด่วน",
-	"modal-submit-confirm-text-help": "การส่งรายงานด่วนจะเขียนทับเหตุผลที่กำหนดเองใดๆ ที่กำหนดไว้"
+	"modal-submit-confirm-text-help": "การส่งรายงานด่วนจะเขียนทับเหตุผลที่กำหนดเองใดๆ ที่กำหนดไว้",
+
+	"bulk-actions": "Bulk Actions",
+	"bulk-resolve": "Resolve Flag(s)",
+	"bulk-success": "%1 flags updated"
 }

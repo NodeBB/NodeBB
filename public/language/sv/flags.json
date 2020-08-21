@@ -72,5 +72,9 @@
 	"modal-submit-success": "Innehållet har flaggats för moderering.",
 	"modal-submit-confirm": "Bekräfta inskickning",
 	"modal-submit-confirm-text": "Du har redan en specifik anledning vald. Vill du verkligen skicka in en snabbrapport?",
-	"modal-submit-confirm-text-help": "Om du skickar in en snabbrapport så förlorar du de specifika motivationer du angivit."
+	"modal-submit-confirm-text-help": "Om du skickar in en snabbrapport så förlorar du de specifika motivationer du angivit.",
+
+	"bulk-actions": "Bulk Actions",
+	"bulk-resolve": "Resolve Flag(s)",
+	"bulk-success": "%1 flags updated"
 }

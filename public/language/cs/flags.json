@@ -72,5 +72,9 @@
 	"modal-submit-success": "Obsah byl označen pro moderaci.",
 	"modal-submit-confirm": "Potvrdit hlášení",
 	"modal-submit-confirm-text": "Již jste zadal/a nějaký důvod. Jste si jist/a, že chcete nahlásit pomocí rychlé zprávy?",
-	"modal-submit-confirm-text-help": "Zaslání rychlé zprávy přepíše jiné zadané důvody."
+	"modal-submit-confirm-text-help": "Zaslání rychlé zprávy přepíše jiné zadané důvody.",
+
+	"bulk-actions": "Bulk Actions",
+	"bulk-resolve": "Resolve Flag(s)",
+	"bulk-success": "%1 flags updated"
 }

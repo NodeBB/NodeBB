@@ -72,5 +72,9 @@
 	"modal-submit-success": "İçerik, denetlemesi için şikayet edildi.",
 	"modal-submit-confirm": "Gönderimi Onayla",
 	"modal-submit-confirm-text": "Zaten belirtilen özel bir sebebin var. Hızlı raporla göndermek istediğinizden emin misin?",
-	"modal-submit-confirm-text-help": "Hızlı bir rapor göndermek tanımlanan özel nedenlerin üzerine yazacaktır."
+	"modal-submit-confirm-text-help": "Hızlı bir rapor göndermek tanımlanan özel nedenlerin üzerine yazacaktır.",
+
+	"bulk-actions": "Bulk Actions",
+	"bulk-resolve": "Resolve Flag(s)",
+	"bulk-success": "%1 flags updated"
 }

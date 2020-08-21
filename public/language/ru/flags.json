@@ -72,5 +72,9 @@
 	"modal-submit-success": "Содержимое было помечено для модераторов.",
 	"modal-submit-confirm": "Подтвердить отправку",
 	"modal-submit-confirm-text": "Вы уже выбрали причину. Вы уверены, что хотите отправить жалобу через быстрый отчёт?",
-	"modal-submit-confirm-text-help": "Отправка быстрого отчёта перезапишет указанную ранее причину."
+	"modal-submit-confirm-text-help": "Отправка быстрого отчёта перезапишет указанную ранее причину.",
+
+	"bulk-actions": "Bulk Actions",
+	"bulk-resolve": "Resolve Flag(s)",
+	"bulk-success": "%1 flags updated"
 }

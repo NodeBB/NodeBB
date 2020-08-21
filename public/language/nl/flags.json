@@ -72,5 +72,9 @@
 	"modal-submit-success": "Inhoud is gemarkeerd voor moderatie.",
 	"modal-submit-confirm": "Bevestig verzending",
 	"modal-submit-confirm-text": "U hebt al een aangepaste reden gegegeven. Weet u zeker dat u een wilt verzenden via quick-report?",
-	"modal-submit-confirm-text-help": "Verzenden van een quick-report overschrijft reeds gedefinieerde aangepaste redenen."
+	"modal-submit-confirm-text-help": "Verzenden van een quick-report overschrijft reeds gedefinieerde aangepaste redenen.",
+
+	"bulk-actions": "Bulk Actions",
+	"bulk-resolve": "Resolve Flag(s)",
+	"bulk-success": "%1 flags updated"
 }

@@ -72,5 +72,9 @@
 	"modal-submit-success": "Le contenu a été soumis pour examen.",
 	"modal-submit-confirm": "Confirmer l'envoi",
 	"modal-submit-confirm-text": "Vous avez déjà spécifié un signalement. Êtes-vous sûr de vouloir soumettre une demande ?",
-	"modal-submit-confirm-text-help": "La soumission d'une demande écrase tous les signalements définis."
+	"modal-submit-confirm-text-help": "La soumission d'une demande écrase tous les signalements définis.",
+
+	"bulk-actions": "Bulk Actions",
+	"bulk-resolve": "Resolve Flag(s)",
+	"bulk-success": "%1 flags updated"
 }

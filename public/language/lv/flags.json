@@ -72,5 +72,9 @@
 	"modal-submit-success": "Saturs ir atzīmēts moderēšanai.",
 	"modal-submit-confirm": "Apstiprināt iesniegšanu",
 	"modal-submit-confirm-text": "Pielāgots iemesls jau ir atzīmēts. Vai tiešām vēlies iesniegt ātro ziņojumu?",
-	"modal-submit-confirm-text-help": "Iesniedzot ātro ziņojumu, tiks pārrakstīti visi pielāgoti iemesli."
+	"modal-submit-confirm-text-help": "Iesniedzot ātro ziņojumu, tiks pārrakstīti visi pielāgoti iemesli.",
+
+	"bulk-actions": "Bulk Actions",
+	"bulk-resolve": "Resolve Flag(s)",
+	"bulk-success": "%1 flags updated"
 }
