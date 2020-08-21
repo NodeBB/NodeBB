@@ -1,9 +1,11 @@
 <nav id="menu" class="hidden-md hidden-lg">
 	<section class="menu-section quick-actions">
 		<ul class="menu-section-list">
+			{{{ if user.privileges.superadmin }}}
 			<div class="button-group">
 				<!-- IMPORT admin/partials/quick_actions/buttons.tpl -->
 			</div>
+			{{{ end }}}
 
 			<!-- IMPORT admin/partials/quick_actions/alerts.tpl -->
 		</ul>
@@ -159,7 +161,9 @@
 			</form>
 			{{{ end }}}
 
+			{{{ if user.privileges.superadmin }}}
 			<!-- IMPORT admin/partials/quick_actions/alerts.tpl -->
+			{{{ end }}}
 
 			<li class="reconnect-spinner">
 				<a href="#" id="reconnect" class="hide" title="[[admin/menu:connection-lost, {title}]]">
