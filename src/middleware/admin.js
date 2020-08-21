@@ -18,13 +18,15 @@ var controllers = {
 	helpers: require('../controllers/helpers'),
 };
 
-module.exports.buildHeader = helpers.try(async function (req, res, next) {
+const middleware = module.exports;
+
+middleware.buildHeader = helpers.try(async function (req, res, next) {
 	res.locals.renderAdminHeader = true;
 	res.locals.config = await controllers.api.loadConfig(req);
 	next();
 });
 
-module.exports.renderHeader = async (req, res, data) => {
+middleware.renderHeader = async (req, res, data) => {
 	var custom_header = {
 		plugins: [],
 		authentication: [],
@@ -96,11 +98,11 @@ async function getLatestVersion() {
 	return null;
 }
 
-module.exports.renderFooter = async function (req, res, data) {
+middleware.renderFooter = async function (req, res, data) {
 	return await req.app.renderAsync('admin/footer', data);
 };
 
-module.exports.checkPrivileges = async (req, res, next) => {
+middleware.checkPrivileges = async (req, res, next) => {
 	// Kick out guests, obviously
 	if (!req.uid) {
 		return controllers.helpers.notAllowed(req, res);
