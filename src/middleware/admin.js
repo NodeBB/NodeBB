@@ -130,6 +130,6 @@ module.exports = function (middleware) {
 			}
 		}
 
-		return next();
+		next();
 	};
 };
