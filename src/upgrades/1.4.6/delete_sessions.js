@@ -2,6 +2,7 @@
 
 var async = require('async');
 
+const nconf = require('nconf');
 var db = require('../../database');
 var batch = require('../../batch');
 
@@ -22,10 +23,14 @@ module.exports = {
 		async.waterfall([
 			function (next) {
 				if (isRedisSessionStore) {
-					var rdb = require('../../database/redis');
-					var client = rdb.connect();
+					var connection = require('../../database/redis/connection');
+					var client;
 					async.waterfall([
 						function (next) {
+							connection.connect(nconf.get('redis'), next);
+						},
+						function (_client, next) {
+							client = _client;
 							client.keys('sess:*', next);
 						},
 						function (sessionKeys, next) {
