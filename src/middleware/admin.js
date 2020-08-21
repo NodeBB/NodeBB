@@ -73,6 +73,7 @@ middleware.renderHeader = async (req, res, data) => {
 		version: version,
 		latestVersion: results.latestVersion,
 		upgradeAvailable: results.latestVersion && semver.gt(results.latestVersion, version),
+		showManageMenu: results.privileges.superadmin || ['categories', 'privileges', 'users', 'settings'].some(priv => results.privileges[`admin:${priv}`]),
 	};
 
 	templateValues.template = { name: res.locals.template };

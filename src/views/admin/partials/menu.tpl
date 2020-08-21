@@ -11,6 +11,7 @@
 		</ul>
 	</section>
 
+	{{{ if showManageMenu }}}
 	<section class="menu-section">
 		<h3 class="menu-section-title">[[admin/menu:section-manage]]</h3>
 		<ul class="menu-section-list">
@@ -30,6 +31,7 @@
 			{{{ end }}}
 		</ul>
 	</section>
+	{{{ end }}}
 
 	{{{ if user.privileges.admin:settings }}}
 	<section class="menu-section">
@@ -180,6 +182,7 @@
 			</li>
 			{{{ end }}}
 
+			{{{ if showManageMenu }}}
 			<li class="dropdown menu-item">
 				<a id="manage-menu" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin/menu:section-manage]]</a>
 				<ul class="dropdown-menu" role="menu">
@@ -199,6 +202,7 @@
 					{{{ end }}}
 				</ul>
 			</li>
+			{{{ end }}}
 
 			{{{ if user.privileges.admin:settings }}}
 			<li class="dropdown menu-item">
