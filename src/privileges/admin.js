@@ -94,8 +94,6 @@ module.exports = function (privileges) {
 	privileges.admin.resolve = (path) => {
 		if (privileges.admin.routeMap[path]) {
 			return privileges.admin.routeMap[path];
-		} else if (path === '') {
-			return 'manage:dashboard';
 		}
 
 		let privilege;

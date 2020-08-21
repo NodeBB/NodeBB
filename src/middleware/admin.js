@@ -117,9 +117,17 @@ module.exports = function (middleware) {
 
 		// Otherwise, check for privilege based on page (if not in mapping, deny access)
 		const path = req.path.replace(/^(\/api)?\/admin\/?/g, '');
-		const privilege = privileges.admin.resolve(path);
-		if (!privilege || !await privileges.admin.can(privilege, req.uid)) {
-			return controllers.helpers.notAllowed(req, res);
+		if (path) {
+			const privilege = privileges.admin.resolve(path);
+			if (!privilege || !await privileges.admin.can(privilege, req.uid)) {
+				return controllers.helpers.notAllowed(req, res);
+			}
+		} else {
+			// If accessing /admin, check for any valid admin privs
+			const privilegeSet = await privileges.admin.get(req.uid);
+			if (!Object.values(privilegeSet).some(Boolean)) {
+				return controllers.helpers.notAllowed(req, res);
+			}
 		}
 
 		return next();
