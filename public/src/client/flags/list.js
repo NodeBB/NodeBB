@@ -9,7 +9,11 @@ define('forum/flags/list', ['components', 'Chart'], function (components, Chart)
 		Flags.handleBulkActions();
 
 		components.get('flags/list')
-			.on('click', '[data-flag-id]', function () {
+			.on('click', '[data-flag-id]', function (e) {
+				if (['BUTTON', 'A'].includes(e.target.nodeName)) {
+					return;
+				}
+
 				var flagId = this.getAttribute('data-flag-id');
 				ajaxify.go('flags/' + flagId);
 			});
