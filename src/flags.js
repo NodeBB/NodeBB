@@ -348,6 +348,7 @@ Flags.create = async function (type, id, uid, reason, timestamp) {
 			flagId: flagId,
 			type: type,
 			targetId: id,
+			targetUid: targetUid,
 			datetime: timestamp,
 		}),
 		Flags.addReport(flagId, type, id, uid, reason, timestamp),
@@ -573,8 +574,7 @@ Flags.resolveFlag = async function (type, id, uid) {
 Flags.getHistory = async function (flagId) {
 	const uids = [];
 	let history = await db.getSortedSetRevRangeWithScores('flag:' + flagId + ':history', 0, -1);
-	const flagData = await db.getObjectFields('flag:' + flagId, ['type', 'targetId']);
-	const targetUid = await Flags.getTargetUid(flagData.type, flagData.targetId);
+	const targetUid = await db.getObjectField('flag:' + flagId, 'targetUid');
 
 	history = history.map(function (entry) {
 		entry.value = JSON.parse(entry.value);
