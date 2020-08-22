@@ -4924,6 +4924,8 @@ paths:
                               oneOf:
                                 - type: string
                                 - type: number
+                            targetUid:
+                              - type: number
                             datetime:
                               type: number
                             labelClass:
