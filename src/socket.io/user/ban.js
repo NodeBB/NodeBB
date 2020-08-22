@@ -23,6 +23,7 @@ module.exports = function (SocketUser) {
 		await toggleBan(socket.uid, data.uids, async function (uid) {
 			await banUser(socket.uid, uid, data.until || 0, data.reason || '');
 			await flags.resolveFlag('user', uid, socket.uid);
+			await flags.resolveUserPostFlags(uid, socket.uid);
 			await events.log({
 				type: 'user-ban',
 				uid: socket.uid,

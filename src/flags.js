@@ -16,6 +16,7 @@ const posts = require('./posts');
 const privileges = require('./privileges');
 const plugins = require('./plugins');
 const utils = require('../public/src/utils');
+const batch = require('./batch');
 
 const Flags = module.exports;
 
@@ -569,6 +570,21 @@ Flags.resolveFlag = async function (type, id, uid) {
 	if (parseInt(flagId, 10)) {
 		await Flags.update(flagId, uid, { state: 'resolved' });
 	}
+};
+
+Flags.resolveUserPostFlags = async function (uid, callerUid) {
+	await batch.processSortedSet('uid:' + uid + ':posts', async function (pids) {
+		let postData = await posts.getPostsFields(pids, ['pid', 'flagId']);
+		postData = postData.filter(p => p && p.flagId);
+		for (const postObj of postData) {
+			if (parseInt(postObj.flagId, 10)) {
+				// eslint-disable-next-line no-await-in-loop
+				await Flags.update(postObj.flagId, callerUid, { state: 'resolved' });
+			}
+		}
+	}, {
+		batch: 500,
+	});
 };
 
 Flags.getHistory = async function (flagId) {
