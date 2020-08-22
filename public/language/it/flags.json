@@ -74,7 +74,7 @@
 	"modal-submit-confirm-text": "Hai già specificato un motivo personalizzato. Sei sicuro di voler inviare una segnalazione rapida?",
 	"modal-submit-confirm-text-help": "L'invio di una segnalazione rapida sovrascrive qualsiasi motivo personalizzato definito.",
 
-	"bulk-actions": "Bulk Actions",
-	"bulk-resolve": "Resolve Flag(s)",
-	"bulk-success": "%1 flags updated"
+	"bulk-actions": "Azioni in blocco",
+	"bulk-resolve": "Risoluzione segnalazione(i)",
+	"bulk-success": "%1 segnalazioni aggiornate"
 }
