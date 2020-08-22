@@ -4925,7 +4925,7 @@ paths:
                                 - type: string
                                 - type: number
                             targetUid:
-                              - type: number
+                              type: number
                             datetime:
                               type: number
                             labelClass:
@@ -4991,6 +4991,8 @@ paths:
                       type:
                         type: string
                       targetId:
+                        type: number
+                      targetUid:
                         type: number
                       datetime:
                         type: number
