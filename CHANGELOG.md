@@ -1,3 +1,22 @@
+#### v1.15.0-beta.3 (2020-08-22)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.3 (39178c2d)
+*  update changelog for v1.15.0-beta.2 (d8a9f1c3)
+
+##### New Features
+
+*  banning a user will resolve their post flags (354e6ccc)
+
+##### Bug Fixes
+
+*  openapi spec (4f7cfd53)
+*  api spec (c4ad14cb)
+*  username, email history disappering if content was deleted (91d9333a)
+*  up composer (9fd37753)
+*  package-install clobbering scoped nodebb plugins (840cb510)
+
 #### v1.15.0-beta.2 (2020-08-21)
 
 ##### Chores
