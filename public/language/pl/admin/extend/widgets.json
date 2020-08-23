@@ -1,7 +1,7 @@
 {
 	"available": "Dostępne Widgety",
 	"explanation": "Wybierz widget z menu rozwijalnego i przeciągnij go na wybrane pole z lewej strony.",
-	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",
+	"none-installed": "Nie odnaleziono widgetów! Aktywuj wtyczkę „widget essentials w panelu sterowania <a href=\"%1\">wtyczek</a>.",
 	"clone-from": "Sklonuj widget z",
 	"containers.available": "Dostępne kontenery",
 	"containers.explanation": "Przeciągnij i upuść na dowolnym, aktywnym widżecie",

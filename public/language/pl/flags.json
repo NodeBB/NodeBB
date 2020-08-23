@@ -57,10 +57,10 @@
 	"state-rejected": "Odrzucono",
 	"no-assignee": "Nie przypisano",
 
-	"sort": "Sort by",
-	"sort-newest": "Newest first",
-	"sort-oldest": "Oldest first",
-	"sort-reports": "Most reports",
+	"sort": "Sortuj według",
+	"sort-newest": "Najpierw najnowsze",
+	"sort-oldest": "Najpierw najstarsze",
+	"sort-reports": "Najwięcej zgłoszeń",
 
 	"modal-title": "Zgłoś niewłaściwe treści",
 	"modal-body": "Wskaż powód oflagowania i zgłoszenia %1 %2 do oceny. Jeśli to możliwe, użyj jednego z przycisków szybkiego zgłoszenia.",
@@ -75,6 +75,6 @@
 	"modal-submit-confirm-text-help": "Wysłanie szybkiego zgłoszenia spowoduje nadpisanie wszelkich własnych powodów",
 
 	"bulk-actions": "Bulk Actions",
-	"bulk-resolve": "Resolve Flag(s)",
-	"bulk-success": "%1 flags updated"
+	"bulk-resolve": "Oznacz flagi jako rozwiązane",
+	"bulk-success": "Zaktualizowano %1 flag"
 }
