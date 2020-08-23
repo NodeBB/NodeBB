@@ -25,9 +25,6 @@ Emailer.transports = {
 	sendmail: nodemailer.createTransport({
 		sendmail: true,
 		newline: 'unix',
-		pool: true,
-		rateLimit: meta.config['email:sendmail:rateLimit'],
-		rateDelta: meta.config['email:sendmail:rateDelta'],
 	}),
 	smtp: undefined,
 };
