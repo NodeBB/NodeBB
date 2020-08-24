@@ -18,19 +18,6 @@
 				</p>
 				<input type="text" class="form-control input-lg" id="email:from_name" data-field="email:from_name" placeholder="NodeBB" /><br />
 			</div>
-			<div class="row">
-				<div class="form-group col-sm-6">
-					<label for="email:sendmail:rateLimit">[[admin/settings/email:sendmail-rate-limit]]</label>
-					<input type="number" data-field="email:sendmail:rateLimit" id="email:sendmail:rateLimit" class="form-control" placeholder="2" />
-				</div>
-				<div class="form-group col-sm-6">
-					<label for="email:sendmail:rateDelta">[[admin/settings/email:sendmail-rate-delta]]</label>
-					<input type="number" data-field="email:sendmail:rateDelta" id="email:sendmail:rateDelta" class="form-control" placeholder="1000" />
-				</div>
-				<p class="col-xs-12 help-block">
-					[[admin/settings/email:sendmail-rate-help]]
-				</p>
-			</div>
 		</form>
 	</div>
 </div>
@@ -49,6 +36,17 @@
 					<input class="mdl-switch__input" type="checkbox" id="email:smtpTransport:enabled" data-field="email:smtpTransport:enabled" name="email:smtpTransport:enabled" />
 					<span class="mdl-switch__label">[[admin/settings/email:smtp-transport.enabled]]</span>
 				</label>
+			</div>
+			<div class="form-group">
+				<div class="checkbox">
+					<label for="email:smtpTransport:pool" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+						<input class="mdl-switch__input" type="checkbox" id="email:smtpTransport:pool" data-field="email:smtpTransport:pool" name="email:smtpTransport:pool" />
+						<span class="mdl-switch__label">[[admin/settings/email:smtp-transport.pool]]</span>
+					</label>
+				</div>
+				<p class="col-xs-12 help-block">
+					[[admin/settings/email:smtp-transport.pool-help]]
+				</p>
 			</div>
 			<div class="form-group">
 				<label for="email:smtpTransport:service"><strong>[[admin/settings/email:smtp-transport.service]]</strong></label>
