@@ -184,7 +184,7 @@ module.exports = function (Topics) {
 			tids = topicData.filter(t => filterCids.includes(t.cid)).map(t => t.tid);
 		}
 		const scores = await db.sortedSetScores('topics:recent', tids);
-		const data = tids.map((tid, index) => ({ value: tid, score: scores[index] }));
+		const data = tids.map((tid, index) => ({ value: String(tid), score: scores[index] }));
 		return data.filter(item => item.score > params.cutoff);
 	}
 
