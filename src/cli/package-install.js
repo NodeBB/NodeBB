@@ -23,14 +23,20 @@ function updatePackageFile() {
 
 	const defaultPackageContents = JSON.parse(fs.readFileSync(packageDefaultFilePath, 'utf8'));
 
-	const dependencies = {};
+	let dependencies = {};
 	Object.entries(oldPackageContents.dependencies || {}).forEach(([dep, version]) => {
 		if (isPackage.test(dep)) {
 			dependencies[dep] = version;
 		}
 	});
 
-	const packageContents = { ...oldPackageContents, ...defaultPackageContents, dependencies: { ...dependencies, ...defaultPackageContents.dependencies } };
+	// Sort dependencies alphabetically
+	dependencies = Object.entries({ ...dependencies, ...defaultPackageContents.dependencies }).sort((a, b) => (a < b ? -1 : 1)).reduce((memo, pkg) => {
+		memo[pkg[0]] = pkg[1];
+		return memo;
+	}, {});
+
+	const packageContents = { ...oldPackageContents, ...defaultPackageContents, dependencies: dependencies };
 
 	fs.writeFileSync(packageFilePath, JSON.stringify(packageContents, null, 2));
 }
