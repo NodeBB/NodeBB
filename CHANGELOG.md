@@ -1,3 +1,19 @@
+#### v1.15.0-beta.4 (2020-08-25)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.4 (f2726a6d)
+*  update changelog for v1.15.0-beta.3 (11e2ccab)
+
+##### New Features
+
+*  up persona (af9f328c)
+
+##### Bug Fixes
+
+*  dupes in unread followed topics (55533b11)
+*  wrong data passed to getCategories (39f4bbaa)
+
 #### v1.15.0-beta.3 (2020-08-22)
 
 ##### Chores
