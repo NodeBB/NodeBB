@@ -221,7 +221,7 @@ modsController.postQueue = async function (req, res, next) {
 	const stop = start + postsPerPage - 1;
 	postData = postData.slice(start, stop + 1);
 
-	res.render('admin/manage/post-queue', {
+	res.render('post-queue', {
 		title: '[[pages:post-queue]]',
 		posts: postData,
 		allCategories: allCategories,

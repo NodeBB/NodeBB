@@ -18,7 +18,7 @@ globalModsController.ipBlacklist = async function (req, res, next) {
 		meta.blacklist.get(),
 		analytics.getBlacklistAnalytics(),
 	]);
-	res.render('admin/manage/ip-blacklist', {
+	res.render('ip-blacklist', {
 		title: '[[pages:ip-blacklist]]',
 		rules: rules,
 		analytics: analyticsData,
