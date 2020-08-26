@@ -57,6 +57,7 @@ define('forum/flags/list', ['components', 'Chart'], function (components, Chart)
 			checkboxes.forEach(function (el) {
 				el.checked = state;
 			});
+			bulkEl.disabled = !state;
 		});
 
 		flagsList.addEventListener('click', function (e) {
