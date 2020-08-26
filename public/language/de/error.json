@@ -162,6 +162,7 @@
     "invalid-session-text": "Es scheint als wäre deine Login-Sitzung nicht mehr aktiv oder sie passt nicht mehr mit der des Servers. Bitte aktualisiere diese Seite.",
     "no-topics-selected": "Keine Beiträge ausgewählt!",
     "cant-move-to-same-topic": "Du kannst den Beitrag nicht in das selbe Thema schieben!",
+    "cant-move-topic-to-same-category": "Can't move topic to the same category!",
     "cannot-block-self": "Du kannst dich nicht selbst blocken!",
     "cannot-block-privileged": "Du kannst keine Administratoren bzw. Globale Moderatoren blocken.",
     "cannot-block-guest": "Gäste können andere Nutzer nicht blockieren.",

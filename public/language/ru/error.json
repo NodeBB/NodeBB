@@ -162,6 +162,7 @@
     "invalid-session-text": "Похоже, что ваша сессия больше не активна или она не совпадает с сессией на сервере. Пожалуйста, обновите эту страницу.",
     "no-topics-selected": "Темы не выбраны!",
     "cant-move-to-same-topic": "Невозможно переместить посты в эту же тему!",
+    "cant-move-topic-to-same-category": "Can't move topic to the same category!",
     "cannot-block-self": "Вы не можете заблокировать себя!",
     "cannot-block-privileged": "Вы не можете заблокировать администраторов или глобальных модераторов",
     "cannot-block-guest": "Гости не могут блокировать пользователей",

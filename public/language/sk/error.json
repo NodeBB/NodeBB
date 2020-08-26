@@ -162,6 +162,7 @@
     "invalid-session-text": "Vyzerá to, že Vaše prihlasovacia relácia už nie je aktívna, alebo sa už nezhoduje so serverom. Aktualizujte túto stránku.",
     "no-topics-selected": "Žiadne vybrané témy.",
     "cant-move-to-same-topic": "Nie je možné presunúť príspevok do rovnakej témy!",
+    "cant-move-topic-to-same-category": "Can't move topic to the same category!",
     "cannot-block-self": "Nemôžete zablokovať seba samého!",
     "cannot-block-privileged": "Nemôžete zablokovať správcov alebo hlavných moderátorov",
     "cannot-block-guest": "Guest are not able to block other users",

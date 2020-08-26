@@ -162,6 +162,7 @@
     "invalid-session-text": "Det ser ut som din inloggningssession inte längre är aktiv eller inte längre överensstämmer med servern. Uppdatera denna sida.",
     "no-topics-selected": "Inga ämnen valda!",
     "cant-move-to-same-topic": "Kan inte flytta inlägg till samma ämne!",
+    "cant-move-topic-to-same-category": "Can't move topic to the same category!",
     "cannot-block-self": "Du kan inte blockera dig själv!",
     "cannot-block-privileged": "Du kan inte blockera administratörer eller globala moderatorer",
     "cannot-block-guest": "Guest are not able to block other users",

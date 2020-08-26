@@ -162,6 +162,7 @@
     "invalid-session-text": "Senin giriş oturumun pek aktif gözükmüyor, ya da sunucu ile eşleşmiyor. Lütfen sayfayı yenileyiniz.",
     "no-topics-selected": "Hiçbir başlık seçilmedi!",
     "cant-move-to-same-topic": "İletiyi aynı başlığa taşıyamazsın!",
+    "cant-move-topic-to-same-category": "Can't move topic to the same category!",
     "cannot-block-self": "Kendi kendinizi engelleyemezsiniz!",
     "cannot-block-privileged": "Yöneticileri veya genel moderatörleri engelleyemezsiniz",
     "cannot-block-guest": "Misafir diğer kullanıcıları engelleyemez",

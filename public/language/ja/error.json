@@ -162,6 +162,7 @@
     "invalid-session-text": "ログインセッションの期限切れ、またはサーバーとの未接続が長すぎると思われます。このページを更新してみてください。",
     "no-topics-selected": "スレッドが選択されていません!!",
     "cant-move-to-same-topic": "同じスレッドに投稿を移動することはできません!",
+    "cant-move-topic-to-same-category": "Can't move topic to the same category!",
     "cannot-block-self": "自分をブロックすることは出来ません!",
     "cannot-block-privileged": "管理者またはグローバルモデレーターはブロックできません",
     "cannot-block-guest": "ゲストは他のユーザーをブロックできません",

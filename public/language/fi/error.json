@@ -162,6 +162,7 @@
     "invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page.",
     "no-topics-selected": "Ei aiheita valittuna",
     "cant-move-to-same-topic": "Can't move post to same topic!",
+    "cant-move-topic-to-same-category": "Can't move topic to the same category!",
     "cannot-block-self": "You cannot block yourself!",
     "cannot-block-privileged": "You cannot block administrators or global moderators",
     "cannot-block-guest": "Guest are not able to block other users",

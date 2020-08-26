@@ -162,6 +162,7 @@
     "invalid-session-text": "Изглежда сесията Ви на вписване вече е изтекла или не съответства на сървъра. Моля, опреснете страницата.",
     "no-topics-selected": "Няма избрани теми!",
     "cant-move-to-same-topic": "Публикацията не може да бъде преместена в същата тема!",
+    "cant-move-topic-to-same-category": "Can't move topic to the same category!",
     "cannot-block-self": "Не можете да блокирате себе си!",
     "cannot-block-privileged": "Не можете да блокирате администратори и глобални модератори",
     "cannot-block-guest": "Гостите не могат да блокират други потребители",

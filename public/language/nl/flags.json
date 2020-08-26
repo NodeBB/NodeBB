@@ -1,7 +1,7 @@
 {
 	"state": "Status",
-	"reports": "Reports",
-	"first-reported": "First Reported",
+	"reports": "Rapportages",
+	"first-reported": "Eerste rapportage",
 	"no-flags": "Hoera! Geen markeringen gevonden.",
 	"assignee": "Toegekend aan",
 	"update": "Bijwerken",
@@ -25,17 +25,17 @@
 	"filter-quick-mine": "Toegewezen aan mij",
 	"filter-cid-all": "Alle categorieën",
 	"apply-filters": "Filters toepassen",
-	"more-filters": "More Filters",
+	"more-filters": "Meer filters",
 
 	"quick-actions": "Snelle acties",
 	"flagged-user": "Gemarkeerde gebruiker",
 	"view-profile": "Profiel bekijken",
 	"start-new-chat": "Begin een nieuwe chat",
 	"go-to-target": "Bekijk markering doel",
-	"assign-to-me": "Assign To Me",
-	"delete-post": "Delete Post",
-	"purge-post": "Purge Post",
-	"restore-post": "Restore Post",
+	"assign-to-me": "Wijs aan mij toe",
+	"delete-post": "Bericht verwijderen",
+	"purge-post": "Bericht opruimen",
+	"restore-post": "Bericht herstellen",
 
 	"user-view": "Profiel bekijken",
 	"user-edit": "Profiel wijzigen",
@@ -43,9 +43,9 @@
 	"notes": "Markering notities",
 	"add-note": "Notitie toevoegen",
 	"no-notes": "Geen gedeelde notities",
-	"delete-note-confirm": "Are you sure you want to delete this flag note?",
+	"delete-note-confirm": "Weet je zeker dat je deze markeringsnotitie wilt verwijderen?",
 	"note-added": "Notitie toegevoegd",
-	"note-deleted": "Note Deleted",
+	"note-deleted": "Notitie verwijderd",
 
 	"history": "Account &amp; markering geschiedenis",
 	"no-history": "Geen markering geschiedenis",
@@ -57,10 +57,10 @@
 	"state-rejected": "Afgewezen",
 	"no-assignee": "Niet toegewezen",
 
-	"sort": "Sort by",
-	"sort-newest": "Newest first",
-	"sort-oldest": "Oldest first",
-	"sort-reports": "Most reports",
+	"sort": "Sorteer op",
+	"sort-newest": "Nieuwste eerst",
+	"sort-oldest": "Oudste eerst",
+	"sort-reports": "Meest gerapporteerd",
 
 	"modal-title": "Rapporteer ongepaste content",
 	"modal-body": "Beschrijf de reden voor het markeren van %1 %2 voor review. Of gebruik een van de snelknoppen indien van toepassing.",
@@ -74,7 +74,7 @@
 	"modal-submit-confirm-text": "U hebt al een aangepaste reden gegegeven. Weet u zeker dat u een wilt verzenden via quick-report?",
 	"modal-submit-confirm-text-help": "Verzenden van een quick-report overschrijft reeds gedefinieerde aangepaste redenen.",
 
-	"bulk-actions": "Bulk Actions",
-	"bulk-resolve": "Resolve Flag(s)",
-	"bulk-success": "%1 flags updated"
+	"bulk-actions": "Bulk acties",
+	"bulk-resolve": "Los markering(en) op",
+	"bulk-success": "%1 markeringen aangepast"
 }

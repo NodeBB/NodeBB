@@ -162,6 +162,7 @@
     "invalid-session-text": "Zdaje się, że Twoja sesja jest nieaktywna lub nie zgadza się z serwerem. Odśwież stronę.",
     "no-topics-selected": "Nie wybrano tematów.",
     "cant-move-to-same-topic": "Nie można przenieść wpisu do tego samego tematu!",
+    "cant-move-topic-to-same-category": "Can't move topic to the same category!",
     "cannot-block-self": "Nie możesz zablokować samego siebie!",
     "cannot-block-privileged": "Nie możesz blokować administratorów ani globalnych moderatorów",
     "cannot-block-guest": "Goście nie mogą blokować innych użytkowników",

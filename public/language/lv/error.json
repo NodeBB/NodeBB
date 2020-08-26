@@ -162,6 +162,7 @@
     "invalid-session-text": "Izskatās, ka Tava sesija vairs nav aktīva vai vairs nesakrīt ar serveri. Lūdzu, atsvaidzināt šo lapu.",
     "no-topics-selected": "Nav atlasīts neviens temats",
     "cant-move-to-same-topic": "Nevar pārnest uz savu pašu tematu!",
+    "cant-move-topic-to-same-category": "Can't move topic to the same category!",
     "cannot-block-self": "Nevar pats sevi bloķēt!",
     "cannot-block-privileged": "Nevar bloķēt administratorus vai globālos moderatorus",
     "cannot-block-guest": "Guest are not able to block other users",

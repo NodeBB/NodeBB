@@ -162,6 +162,7 @@
     "invalid-session-text": "Parece que su sesión ha expirado o no concuerda con el servidor. Por favor vuelva a cargar la página.",
     "no-topics-selected": "¡No se han seleccionado temas!",
     "cant-move-to-same-topic": "¡No puedes mover el mensaje al mismo tema!",
+    "cant-move-topic-to-same-category": "Can't move topic to the same category!",
     "cannot-block-self": "¡No puedes bloquearte a tí mismo!",
     "cannot-block-privileged": "No puedes bloquear administradores o moderadores globales",
     "cannot-block-guest": "Los invitados no pueden bloquear a otros usuarios",

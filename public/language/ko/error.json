@@ -162,6 +162,7 @@
     "invalid-session-text": "로그인 세션이 비활성화 되었거나 서버와 일치하지 않습니다. 페이지를 새로 고쳐주세요.",
     "no-topics-selected": "선택된 글이 없습니다!",
     "cant-move-to-same-topic": "동일한 주제글로 게시물을 이동할 수 없습니다!",
+    "cant-move-topic-to-same-category": "Can't move topic to the same category!",
     "cannot-block-self": "자신을 차단 할 수 없습니다!",
     "cannot-block-privileged": "관리자나 글로벌 매니저는 차단할 수 없습니다",
     "cannot-block-guest": "손님은 다른 사용자를 차단할 수 없습니다",

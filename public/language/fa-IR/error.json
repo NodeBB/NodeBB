@@ -162,6 +162,7 @@
     "invalid-session-text": "به نظر می‌رسد این جلسه برای ورود دیگر فعال نیست و یا با سرور هماهنگ نیست. لطفا این صفحه را رفرش کنید.",
     "no-topics-selected": "هیچ موضوعی انتخاب نشده است !",
     "cant-move-to-same-topic": "نمی توان پست یک تاپیک را به همان تاپیک انتقال داد !",
+    "cant-move-topic-to-same-category": "Can't move topic to the same category!",
     "cannot-block-self": "شما نمی توانید خودتان را بلاک کنید!",
     "cannot-block-privileged": "شما نمی توانید ادمین ها یا مدیر ها را بلاک کنید",
     "cannot-block-guest": "Guest are not able to block other users",

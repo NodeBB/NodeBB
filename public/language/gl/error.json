@@ -162,6 +162,7 @@
     "invalid-session-text": "Parece que a súa sesión expirou ou non concorda co servidor. Por favor, recarge a páxina.",
     "no-topics-selected": "No topics selected!",
     "cant-move-to-same-topic": "Can't move post to same topic!",
+    "cant-move-topic-to-same-category": "Can't move topic to the same category!",
     "cannot-block-self": "You cannot block yourself!",
     "cannot-block-privileged": "You cannot block administrators or global moderators",
     "cannot-block-guest": "Guest are not able to block other users",

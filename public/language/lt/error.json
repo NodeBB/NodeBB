@@ -162,6 +162,7 @@
     "invalid-session-text": "Panašu, jog jūsų prisijungimo sesija nebeaktyvi arba nesutampa su serverio. Prašome perkrauti puslapį.",
     "no-topics-selected": "Nepasirinkta jokia tema!",
     "cant-move-to-same-topic": "Negalima perkelti įrašo į tą pačią temą!",
+    "cant-move-topic-to-same-category": "Can't move topic to the same category!",
     "cannot-block-self": "Savęs užblokuoti negalima!",
     "cannot-block-privileged": "Negalima blokuoti administratorių arba visuotinių moderatorių",
     "cannot-block-guest": "Guest are not able to block other users",

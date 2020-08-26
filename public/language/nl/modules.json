@@ -1,7 +1,7 @@
 {
     "chat.chatting_with": "Chat met",
     "chat.placeholder": "Typ een chatbericht hier, toets enter om te verzenden",
-    "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
+    "chat.scroll-up-alert": "Je kijkt nu naar oudere berichten. Klik hier om naar het meest recente bericht te gaan.",
     "chat.send": "Verzenden",
     "chat.no_active": "Er zijn geen actieve chats.",
     "chat.user_typing": "%1 is aan het typen ...",
@@ -59,7 +59,7 @@
     "composer.upload-file": "Upload bestand",
     "composer.zen_mode": "Zen-modus",
     "composer.select_category": "Selecteer een categorie",
-    "composer.textarea.placeholder": "Enter your post content here, drag and drop images",
+    "composer.textarea.placeholder": "Voer de berichtinhoud hier in, of sleep afbeeldingen hier naartoe",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Annuleren",
     "bootbox.confirm": "Bevestig",

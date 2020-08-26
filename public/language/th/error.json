@@ -162,6 +162,7 @@
     "invalid-session-text": "เหมือนกับว่าการเข้าสู่ระบบของคุณไม่ได้มีอยู่ในระบบ หรือไม่ก็ไม่ได้รับการตอบกลับจากเซิร์ฟเวอร์ กรุณารีเฟรชหน้าเว็บนี้",
     "no-topics-selected": "No topics selected!",
     "cant-move-to-same-topic": "Can't move post to same topic!",
+    "cant-move-topic-to-same-category": "Can't move topic to the same category!",
     "cannot-block-self": "You cannot block yourself!",
     "cannot-block-privileged": "You cannot block administrators or global moderators",
     "cannot-block-guest": "Guest are not able to block other users",

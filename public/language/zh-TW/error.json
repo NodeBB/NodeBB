@@ -162,6 +162,7 @@
     "invalid-session-text": "您的登入狀態已經失效，或者是與伺服器資訊不一致。請重載此頁面。",
     "no-topics-selected": "沒有主題被選中!",
     "cant-move-to-same-topic": "無法將貼文移動到相同的主題中！",
+    "cant-move-topic-to-same-category": "Can't move topic to the same category!",
     "cannot-block-self": "您不能把自己封鎖！",
     "cannot-block-privileged": "您不能封鎖管理員或者超級版主",
     "cannot-block-guest": "訪客無法封鎖其他使用者",

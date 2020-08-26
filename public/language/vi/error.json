@@ -162,6 +162,7 @@
     "invalid-session-text": "Có vẻ như phiên đăng nhập của bạn đã không còn hoạt động nữa, hoặc không còn đúng với thông tin trên máy chủ. Vui lòng tải lại trang này",
     "no-topics-selected": "Không có chủ đề nào đang được chọn!",
     "cant-move-to-same-topic": "Bạn không thể di chuyển bài viết vào cùng chủ đề hiện tại!",
+    "cant-move-topic-to-same-category": "Can't move topic to the same category!",
     "cannot-block-self": "Bạn không thể tự khóa tài khoản của bạn!",
     "cannot-block-privileged": "Bạn không thể khóa người quản trị hoặc là người quản lý chung.",
     "cannot-block-guest": "Guest are not able to block other users",

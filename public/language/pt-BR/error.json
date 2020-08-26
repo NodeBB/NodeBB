@@ -162,6 +162,7 @@
     "invalid-session-text": "Parece que sua sessão de login não está mais ativao ou não corresponde mais com a do servidor. Por favor, recarregue esta página.",
     "no-topics-selected": "Nenhum tópico selecionado!",
     "cant-move-to-same-topic": "Não é possível mover um post para o mesmo tópico!",
+    "cant-move-topic-to-same-category": "Can't move topic to the same category!",
     "cannot-block-self": "Você pode bloquear a si mesmo!",
     "cannot-block-privileged": "Você não pode bloquear administradores e moderadores globais",
     "cannot-block-guest": "Vistantes não podem bloquear outros usuários",

@@ -162,6 +162,7 @@
     "invalid-session-text": "Изгледа да ваша сесија пријављивања није више активна или се више не подудара са сервером. Поново учитајте ову страницу.",
     "no-topics-selected": "Нема одабраних тема!",
     "cant-move-to-same-topic": "Није могуће преместити поруку у исту тему!",
+    "cant-move-topic-to-same-category": "Can't move topic to the same category!",
     "cannot-block-self": "Не можете блокирати себе!",
     "cannot-block-privileged": "Не можете блокирати администраторе или глобалне модераторе",
     "cannot-block-guest": "Гости нису у могућности да блокирају друге кориснике",
