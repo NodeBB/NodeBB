@@ -1,3 +1,23 @@
+#### v1.15.0-beta.5 (2020-08-26)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.5 (81e4c4df)
+*  update changelog for v1.15.0-beta.4 (6c4aed8c)
+* **deps:**  update dependency mocha to v8.1.2 (#8579) (c722b0e5)
+
+##### New Features
+
+*  allow undo of topic move (abb5e81d)
+*  added alert.timeoutfn (cd8e7963)
+*  sort dependencies alphabetically (a4dbbc37)
+
+##### Bug Fixes
+
+*  missing localisation for topic move error (bacee6b4)
+*  select all checkbox does not re-enable bulk actions button (5d60dce3)
+* **deps:**  update dependency sharp to v0.26.0 (#8578) (7ca967ee)
+
 #### v1.15.0-beta.4 (2020-08-25)
 
 ##### Chores
