@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/topic/move', ['categorySelector'], function (categorySelector) {
+define('forum/topic/move', ['categorySelector', 'alerts'], function (categorySelector, alerts) {
 	var Move = {};
 	var modal;
 	var selectedCategory;
@@ -58,7 +58,22 @@ define('forum/topic/move', ['categorySelector'], function (categorySelector) {
 		if (!commitEl.prop('disabled') && selectedCategory && selectedCategory.cid) {
 			commitEl.prop('disabled', true);
 
-			moveTopics();
+			modal.modal('hide');
+
+			alerts.alert({
+				alert_id: 'tids_move_' + Move.tids.join(';'),
+				title: '[[topic:thread_tools.move]]',
+				message: '[[topic:topic_move_success, ' + selectedCategory.name + ']]',
+				type: 'success',
+				timeout: 5000,
+				timeoutfn: function () {
+					moveTopics();
+				},
+				clickfn: function (alert, params) {
+					delete params.timeoutfn;
+					app.alertSuccess('[[topic:topic_move_undone]]');
+				},
+			});
 		}
 	}
 
@@ -72,8 +87,6 @@ define('forum/topic/move', ['categorySelector'], function (categorySelector) {
 		$(window).trigger('action:topic.move', data);
 
 		socket.emit(Move.moveAll ? 'topics.moveAll' : 'topics.move', data, function (err) {
-			modal.modal('hide');
-
 			if (err) {
 				return app.alertError(err.message);
 			}

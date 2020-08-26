@@ -93,7 +93,8 @@
 	"thread_tools.merge_topics": "Merge Topics",
 	"thread_tools.merge": "Merge",
 
-	"topic_move_success": "This topic has been successfully moved to %1",
+	"topic_move_success": "This topic has been successfully moved to %1. Click here to undo.",
+	"topic_move_undone": "Topic move undone",
 
 	"post_delete_confirm": "Are you sure you want to delete this post?",
 	"post_restore_confirm": "Are you sure you want to restore this post?",
