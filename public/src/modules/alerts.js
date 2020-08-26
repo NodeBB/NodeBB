@@ -39,7 +39,7 @@ define('alerts', ['translator', 'components', 'benchpress'], function (translato
 				}
 
 				if (params.timeout) {
-					startTimeout(alert, params.timeout);
+					startTimeout(alert, params);
 				}
 
 				if (typeof params.clickfn === 'function') {
@@ -47,7 +47,7 @@ define('alerts', ['translator', 'components', 'benchpress'], function (translato
 						.addClass('pointer')
 						.on('click', function (e) {
 							if (!$(e.target).is('.close')) {
-								params.clickfn();
+								params.clickfn(alert, params);
 							}
 							fadeOut(alert);
 						});
@@ -69,7 +69,7 @@ define('alerts', ['translator', 'components', 'benchpress'], function (translato
 
 		clearTimeout(parseInt(alert.attr('timeoutId'), 10));
 		if (params.timeout) {
-			startTimeout(alert, params.timeout);
+			startTimeout(alert, params);
 		}
 
 		alert.children().fadeOut(100);
@@ -99,9 +99,15 @@ define('alerts', ['translator', 'components', 'benchpress'], function (translato
 		});
 	}
 
-	function startTimeout(alert, timeout) {
+	function startTimeout(alert, params) {
+		var timeout = params.timeout;
+
 		var timeoutId = setTimeout(function () {
 			fadeOut(alert);
+
+			if (typeof params.timeoutfn === 'function') {
+				params.timeoutfn(alert, params);
+			}
 		}, timeout);
 
 		alert.attr('timeoutId', timeoutId);
