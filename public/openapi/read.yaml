@@ -3211,6 +3211,8 @@ paths:
                   flagId:
                     type: number
                     description: The flag identifier, if this particular post has been flagged before
+                  replies:
+                    type: number
   "/api/topic/tid/{id}":
     get:
       tags:
