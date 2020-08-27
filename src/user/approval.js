@@ -13,6 +13,7 @@ const plugins = require('../plugins');
 
 module.exports = function (User) {
 	User.addToApprovalQueue = async function (userData) {
+		userData.username = userData.username.trim();
 		userData.userslug = utils.slugify(userData.username);
 		await canQueue(userData);
 		const hashedPassword = await User.hashPassword(userData.password);

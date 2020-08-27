@@ -63,9 +63,29 @@ describe('Utility Methods', function () {
 			assert.equal(utils.isUserNameValid(username), false, 'accepted as valid username');
 		});
 
+		it('should reject new lines', function () {
+			assert.equal(utils.isUserNameValid('myusername\r\n'), false);
+		});
+
+		it('should reject new lines', function () {
+			assert.equal(utils.isUserNameValid('myusername\n'), false);
+		});
+
+		it('should reject tabs', function () {
+			assert.equal(utils.isUserNameValid('myusername\t'), false);
+		});
+
 		it('accepts square brackets', function () {
 			var username = '[best clan] julian';
 			assert(utils.isUserNameValid(username), 'invalid username');
+		});
+
+		it('accepts regular username', function () {
+			assert(utils.isUserNameValid('myusername'), 'invalid username');
+		});
+
+		it('accepts quotes', function () {
+			assert(utils.isUserNameValid('baris "the best" usakli'), 'invalid username');
 		});
 	});
 

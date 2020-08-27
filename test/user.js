@@ -1805,6 +1805,23 @@ describe('User', function () {
 				});
 			});
 		});
+
+		it('should trim username and add user to registration queue', function (done) {
+			helpers.registerUser({
+				username: 'invalidname\r\n',
+				password: '123456',
+				'password-confirm': '123456',
+				email: 'invalidtest@test.com',
+				gdpr_consent: true,
+			}, function (err) {
+				assert.ifError(err);
+				db.getSortedSetRange('registration:queue', 0, -1, function (err, data) {
+					assert.ifError(err);
+					assert.equal(data[0], 'invalidname');
+					done();
+				});
+			});
+		});
 	});
 
 	describe('invites', function () {
