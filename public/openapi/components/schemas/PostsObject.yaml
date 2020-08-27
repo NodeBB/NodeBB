@@ -113,3 +113,5 @@ PostsObject:
             type: string
       isMainPost:
         type: boolean
+      replies:
+        type: number

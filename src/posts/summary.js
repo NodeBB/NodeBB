@@ -38,7 +38,7 @@ module.exports = function (Posts) {
 		const tidToTopic = toObject('tid', topicsAndCategories.topics);
 		const cidToCategory = toObject('cid', topicsAndCategories.categories);
 
-		posts.forEach(function (post) {
+		Promise.all(posts.map(async (post) => {
 			// If the post author isn't represented in the retrieved users' data, then it means they were deleted, assume guest.
 			if (!uidToUser.hasOwnProperty(post.uid)) {
 				post.uid = 0;
@@ -47,9 +47,12 @@ module.exports = function (Posts) {
 			post.topic = tidToTopic[post.tid];
 			post.category = post.topic && cidToCategory[post.topic.cid];
 			post.isMainPost = post.topic && post.pid === post.topic.mainPid;
+			post.replies = await Posts.getReplyCount(post.pid);
 			post.deleted = post.deleted === 1;
 			post.timestampISO = utils.toISOString(post.timestamp);
-		});
+
+			return post;
+		}));
 
 		posts = posts.filter(post => tidToTopic[post.tid]);
 

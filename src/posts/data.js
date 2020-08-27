@@ -53,6 +53,11 @@ module.exports = function (Posts) {
 		data.pid = pid;
 		plugins.fireHook('action:post.setFields', { data: data });
 	};
+
+	Posts.getReplyCount = async function (pid) {
+		// const keys = pids.map(pid => 'pid:' +pid + ':replies');
+		return await db.sortedSetCard(`pid:${pid}:replies`);
+	};
 };
 
 function modifyPost(post, fields) {
