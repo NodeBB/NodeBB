@@ -50,13 +50,18 @@ module.exports = function (Posts) {
 		const now = Date.now();
 		const id = type + '-' + now;
 		await canPost(type, data);
-		await db.sortedSetAdd('post:queue', now, id);
-		await db.setObject('post:queue:' + id, {
+
+		let payload = {
 			id: id,
 			uid: data.uid,
 			type: type,
-			data: JSON.stringify(data),
-		});
+			data: data,
+		};
+		payload = await plugins.fireHook('filter:post.queue', payload);
+		payload.data = JSON.stringify(data);
+
+		await db.sortedSetAdd('post:queue', now, id);
+		await db.setObject('post:queue:' + id, payload);
 		await user.setUserField(data.uid, 'lastqueuetime', now);
 
 		const cid = await getCid(type, data);
