@@ -1,3 +1,30 @@
+#### v1.15.0-beta.6 (2020-08-27)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.6 (a9019cbe)
+*  update changelog for v1.15.0-beta.5 (0e90064e)
+* **deps:**  update dependency lint-staged to v10.2.13 (efc30e97)
+
+##### New Features
+
+*  theme work for #8580, closes #8580 (6e805c1b)
+
+##### Bug Fixes
+
+*  #8582 (9f9164a9)
+*  debug logging :dog: (fb3b4a02)
+*  ip-blacklist not working after #8580 (56101ae5)
+*  ip-blacklist not working after #8580 (c681b4b2)
+*  post-queue not working after #8580 (dc5bd760)
+*  #8411 missing language sources for ip-blacklist/post-queue (a93e1955)
+*  removed invalid options for the sendmail transport (#8576) (2b785628)
+
+##### Refactors
+
+*  ip-blacklist and post-queue language files (4dc6e64a)
+*  moved ip-blacklist and post-queue styles/tpls to themes (b6b94a56)
+
 #### v1.15.0-beta.5 (2020-08-26)
 
 ##### Chores
