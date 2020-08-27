@@ -11,13 +11,23 @@ define('forum/post-queue', ['categorySelector'], function (categorySelector) {
 			var parent = $(this).parents('[data-id]');
 			var action = $(this).attr('data-action');
 			var id = parent.attr('data-id');
-			var method = action === 'accept' ? 'posts.accept' : 'posts.reject';
+			var listContainer = parent.get(0).parentNode;
 
-			socket.emit(method, { id: id }, function (err) {
+			if (!['accept', 'reject'].some(function (valid) {
+				return action === valid;
+			})) {
+				return;
+			}
+
+			socket.emit('posts.' + action, { id: id }, function (err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
 				parent.remove();
+
+				if (listContainer.childElementCount === 0) {
+					ajaxify.refresh();
+				}
 			});
 			return false;
 		});
