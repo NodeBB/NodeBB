@@ -4,10 +4,7 @@
 	"address-help": "L'adresse e-mail suivante fait référence à l'adresse que le destinataire verra dans les champs \"De :\" et \"Répondre à :\". ",
 	"from": "Nom de l’expéditeur",
 	"from-help": "Le nom de l’expéditeur à afficher dans l'e-mail",
-	"sendmail-rate-limit": "Envoyer <em>X</em> emails...",
-	"sendmail-rate-delta": ".... toutes les <em>X</em> millisecondes",
-	"sendmail-rate-help": "Indique à NodeBB la limite du nombre de mails envoyés en une seule fois afin de ne pas surcharger les services de réception d’e-mails. Ces options ne s'appliquent pas si le transport SMTP est activé (ci-dessous).",
-
+	
 	"smtp-transport": "Protocole SMTP",
 	"smtp-transport.enabled": "Utiliser un server extérieur pour envoyer les emails",
 	"smtp-transport-help": "Vous pouvez sélectionner depuis une liste de services ou entrer un service personnalisé.",
@@ -25,6 +22,8 @@
 	"smtp-transport.username": "Nom d'utilisateur",
 	"smtp-transport.username-help": "<b>Pour Gmail,</b> entrer l’adresse e-mail complète ici, surtout si vous utilisez un domaine géré par Google Apps.",
 	"smtp-transport.password": "Mot de passe",
+	"smtp-transport.pool": "Enable pooled connections",
+	"smtp-transport.pool-help": "Pooling connections prevents NodeBB from creating a new connection for every email. This option only applies if SMTP Transport is enabled.",
 
 	"template": "Modifier le modèle d'e-mail",
 	"template.select": "Sélectionner un modèle d'e-mail ",

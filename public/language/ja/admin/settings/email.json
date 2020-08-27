@@ -4,10 +4,7 @@
 	"address-help": "次の電子メールアドレスは「送信者」と「返信先」の欄に受信者が表示する電子メールを指します。",
 	"from": "名前から",
 	"from-help": "メールからの名前が表示されます。",
-	"sendmail-rate-limit": "Send <em>X</em> emails...",
-	"sendmail-rate-delta": "... every <em>X</em> milliseconds",
-	"sendmail-rate-help": "Instructs the NodeBB mailer to limit the number of messages sent at once in order to not overwhelm email receiving services. These options do not apply if SMTP Transport is enabled (below).",
-
+	
 	"smtp-transport": "SMTP Transport",
 	"smtp-transport.enabled": "Use an external email server to send emails",
 	"smtp-transport-help": "You can select from a list of well-known services or enter a custom one.",
@@ -25,6 +22,8 @@
 	"smtp-transport.username": "Username",
 	"smtp-transport.username-help": "<b>For the Gmail service,</b> enter the full email address here, especially if you are using a Google Apps managed domain.",
 	"smtp-transport.password": "Password",
+	"smtp-transport.pool": "Enable pooled connections",
+	"smtp-transport.pool-help": "Pooling connections prevents NodeBB from creating a new connection for every email. This option only applies if SMTP Transport is enabled.",
 
 	"template": "電子メールテンプレートの編集",
 	"template.select": "電子メールテンプレートを選択",

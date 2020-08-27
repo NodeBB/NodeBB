@@ -4,10 +4,7 @@
 	"address-help": "The following email address refers to the email that the recipient will see in the \"From\" and \"Reply To\" fields.",
 	"from": "From Name",
 	"from-help": "The from name to display in the email.",
-	"sendmail-rate-limit": "<em>X</em> ইমেইল পাঠাও... ",
-	"sendmail-rate-delta": "... প্রতি<em>X</em> মিলিসেকেন্ডে",
-	"sendmail-rate-help": "NodeBB মেইলার কে নির্দেশ দিন যে একবারে পাঠানো মেইলের সংখ্যা সিমিত রাখতে যাতে ইমেইল গ্রাহক সার্ভিস ওভারলোডেড না হয়ে যায়। এই অপশন কার্যকর হবে না যদি SMTP Transport চালু থাকে (নিচে দেখুন)। ",
-
+	
 	"smtp-transport": "SMTP Transport",
 	"smtp-transport.enabled": "Use an external email server to send emails",
 	"smtp-transport-help": "You can select from a list of well-known services or enter a custom one.",
@@ -25,6 +22,8 @@
 	"smtp-transport.username": "Username",
 	"smtp-transport.username-help": "<b>For the Gmail service,</b> enter the full email address here, especially if you are using a Google Apps managed domain.",
 	"smtp-transport.password": "Password",
+	"smtp-transport.pool": "Enable pooled connections",
+	"smtp-transport.pool-help": "Pooling connections prevents NodeBB from creating a new connection for every email. This option only applies if SMTP Transport is enabled.",
 
 	"template": "Edit Email Template",
 	"template.select": "Select Email Template",

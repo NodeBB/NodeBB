@@ -81,7 +81,7 @@
     "thread_tools.purge_confirm": "确认清除此主题吗？",
     "thread_tools.merge_topics": "合并主题",
     "thread_tools.merge": "合并",
-    "topic_move_success": "This topic has been successfully moved to %1. Click here to undo.",
+    "topic_move_success": "此主题已成功移到 %1。点击此处撤销",
     "topic_move_undone": "Topic move undone",
     "post_delete_confirm": "您确定要删除此回复吗？",
     "post_restore_confirm": "您确定要恢复此回复吗？",

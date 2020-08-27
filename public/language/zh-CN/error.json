@@ -162,7 +162,7 @@
     "invalid-session-text": "您的登入状态已经失效，或者是与服务器信息不匹配。请刷新此页面。",
     "no-topics-selected": "没有主题被选中!",
     "cant-move-to-same-topic": "无法将帖子移动到相同的主题中！",
-    "cant-move-topic-to-same-category": "Can't move topic to the same category!",
+    "cant-move-topic-to-same-category": "无法将主题移动到相同的版块！",
     "cannot-block-self": "您不能把自己屏蔽！",
     "cannot-block-privileged": "您不能屏蔽管理员或者全局版主",
     "cannot-block-guest": "游客无法屏蔽其他用户",

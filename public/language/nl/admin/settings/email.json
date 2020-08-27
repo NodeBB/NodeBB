@@ -4,10 +4,7 @@
 	"address-help": "Het volgende e-mailadres refereert aan de e-mail die ontvanger ziet in de \"From\" en \"Reply To\" velden.",
 	"from": "From Naam",
 	"from-help": "De from naam om te tonen in de e-mail.",
-	"sendmail-rate-limit": "Zend <em>X</em> e-mails...",
-	"sendmail-rate-delta": "... elke <em>X</em> milliseconden",
-	"sendmail-rate-help": "Instrueert de NodeBB mailer om het aantal berichten dat in een keer wordt verstuurd, om de e-mail ontvangende diensten niet te overbelasten. Deze opties zijn niet van toepassing als het SMTP Transport (hieronder) is ingeschakeld.",
-
+	
 	"smtp-transport": "SMTP Transport",
 	"smtp-transport.enabled": "Gebruik een externe mail server om mails te verzenden",
 	"smtp-transport-help": "Je kunt een bekende dienst uit de lijst selecteren of vul een aangepaste dienst in.",
@@ -25,6 +22,8 @@
 	"smtp-transport.username": "Gebruikersnaam",
 	"smtp-transport.username-help": "<b>For the Gmail service,</b> voer het volledige email adres in, in het bijzonder als je gebruik maakt van een Google Apps managed domain.",
 	"smtp-transport.password": "Wachtwoord",
+	"smtp-transport.pool": "Enable pooled connections",
+	"smtp-transport.pool-help": "Pooling connections prevents NodeBB from creating a new connection for every email. This option only applies if SMTP Transport is enabled.",
 
 	"template": "Aanpassen E-mail Template",
 	"template.select": "Selecteer E-mail Template",

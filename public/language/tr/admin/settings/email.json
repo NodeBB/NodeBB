@@ -4,10 +4,7 @@
 	"address-help": "The following email address refers to the email that the recipient will see in the \"From\" and \"Reply To\" fields.",
 	"from": "From Name",
 	"from-help": "The from name to display in the email.",
-	"sendmail-rate-limit": "<em>X</em> tane e-posta gönder...",
-	"sendmail-rate-delta": "... her <em>X</em> milisaniye için",
-	"sendmail-rate-help": "E-posta gönderim servisini boğmamak için NodeBB'nin tek seferde gönderebileceği e-posta sayısını kısıtlayabilirsiniz. Bu ayarlar eğer aşağıdaki SMTP Transport ayarları etkinleştirilmişse uygulanmaz.",
-
+	
 	"smtp-transport": "SMTP Transport",
 	"smtp-transport.enabled": "Use an external email server to send emails",
 	"smtp-transport-help": "You can select from a list of well-known services or enter a custom one.",
@@ -25,6 +22,8 @@
 	"smtp-transport.username": "Kullanıcı Adı",
 	"smtp-transport.username-help": "<b>For the Gmail service,</b> enter the full email address here, especially if you are using a Google Apps managed domain.",
 	"smtp-transport.password": "Password",
+	"smtp-transport.pool": "Enable pooled connections",
+	"smtp-transport.pool-help": "Pooling connections prevents NodeBB from creating a new connection for every email. This option only applies if SMTP Transport is enabled.",
 
 	"template": "E-posta Kalıbını Düzenle",
 	"template.select": "E-posta Kalıbını Seç",

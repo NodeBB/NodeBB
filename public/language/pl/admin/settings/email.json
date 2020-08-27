@@ -4,10 +4,7 @@
 	"address-help": "Ten adres e-mail odbiorca zobaczy w polach „Od” i „Odpowiedz”.",
 	"from": "Pole „Od”",
 	"from-help": "Nazwa „Od” widoczna w e-mailach",
-	"sendmail-rate-limit": "Wyślij <em>X</em> emaili...",
-	"sendmail-rate-delta": "co <em>X</em> milisekund",
-	"sendmail-rate-help": "Nakazuje usłudze pocztowej NodeBB ograniczenie liczby wiadomości wysyłanych jednocześnie, aby nie przytłoczyć usług odbierania wiadomości e-mail. Opcje te nie mają zastosowania, jeśli SMTP Transport jest włączony (poniżej).",
-
+	
 	"smtp-transport": "Transport SMTP",
 	"smtp-transport.enabled": "Używaj zewnętrznego serwera e-mail do wysyłania e-maili.",
 	"smtp-transport-help": "Możesz wybrać z listy dobrze znanych usług lub wskazać usługę niestandardową.",
@@ -25,6 +22,8 @@
 	"smtp-transport.username": "Nazwa użytkownika",
 	"smtp-transport.username-help": "<b>Dla usługi Gmail</b> wprowadź pełny adres e-mail tutaj, zwłaszcza jeśli korzystasz z domeny zrządzanej przez G Suite.",
 	"smtp-transport.password": "Hasło",
+	"smtp-transport.pool": "Enable pooled connections",
+	"smtp-transport.pool-help": "Pooling connections prevents NodeBB from creating a new connection for every email. This option only applies if SMTP Transport is enabled.",
 
 	"template": "Edytuj szablon e-maila",
 	"template.select": "Wybierz szablon e-maila",

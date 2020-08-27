@@ -4,10 +4,7 @@
 	"address-help": "Этот адрес получатели писем увидят в полях «От кого» и «Ответить».",
 	"from": "От кого",
 	"from-help": "Имя отправителя письма (или название форума).",
-	"sendmail-rate-limit": "Отправлять <em>Х</em> писем...",
-	"sendmail-rate-delta": "…каждые <em>X</em> миллисекунд",
-	"sendmail-rate-help": "Ограничивает кол-во писем, отправляемых за единицу времени, чтобы не перегружать службы доставки. Эта настройка не применяется, если вы используете сторонний почтовый сервис (см. ниже).",
-
+	
 	"smtp-transport": "Сервис SMTP",
 	"smtp-transport.enabled": "Использовать сторонний сервис для рассылки писем",
 	"smtp-transport-help": "Выберите один из популярных сервисов или укажите свой почтовый сервер.",
@@ -25,6 +22,8 @@
 	"smtp-transport.username": "Имя пользователя",
 	"smtp-transport.username-help": "<b>Для Gmail</b> нужно указать полный адрес электронной почты, особенно если вы используете Google Apps.",
 	"smtp-transport.password": "Пароль",
+	"smtp-transport.pool": "Enable pooled connections",
+	"smtp-transport.pool-help": "Pooling connections prevents NodeBB from creating a new connection for every email. This option only applies if SMTP Transport is enabled.",
 
 	"template": "Шаблоны писем",
 	"template.select": "Выберите шаблон письма",

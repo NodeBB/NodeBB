@@ -4,10 +4,7 @@
 	"address-help": "下面的电子邮件地址代表收件人在“发件人”和“回复”中所看到的地址。",
 	"from": "发送者",
 	"from-help": "用于邮件中显示的发送者",
-	"sendmail-rate-limit": "发送<em>X</em>电子邮件",
-	"sendmail-rate-delta": "。。。每个<em>X</em>毫秒",
-	"sendmail-rate-help": "立刻配置 NodeBB 邮件程序限制 发送的电子邮件数量，以免压倒电子邮件接收服务。 如果启用了SMTP 传输，则这些选项不适用（如下所示）。",
-
+	
 	"smtp-transport": "SMTP 通信",
 	"smtp-transport.enabled": "使用一个外部电子邮箱系统来发送邮件",
 	"smtp-transport-help": "您可以从列表中选取一个已知的服务或自定义。",
@@ -25,6 +22,8 @@
 	"smtp-transport.username": "用户名",
 	"smtp-transport.username-help": "<b>对于Gmail服务，</b>请在这里输入完整的电子邮箱地址，尤其是如果您使用的是 Google Apps 托管的域名。",
 	"smtp-transport.password": "密码",
+	"smtp-transport.pool": "Enable pooled connections",
+	"smtp-transport.pool-help": "Pooling connections prevents NodeBB from creating a new connection for every email. This option only applies if SMTP Transport is enabled.",
 
 	"template": "编辑电子邮件模板",
 	"template.select": "选择电子邮件模板",

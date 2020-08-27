@@ -4,10 +4,7 @@
 	"address-help": "Následující e-mailové adresy budou zobrazeny  příjemci v políčkách „Od” a „Odpovědět”.",
 	"from": "Jméno – od",
 	"from-help": "Zobrazené jméno v e-mailu v – Od",
-	"sendmail-rate-limit": "Odeslat <em>X</em> e-mailů...",
-	"sendmail-rate-delta": "... každých <em>X</em> milisekund",
-	"sendmail-rate-help": "Instruuje poštovní server NodeBB, aby omezil počet zpráv odeslaných najednou, aby nezahltil službu přijímání e-mailů. Tyto možnosti neplatí, je-li povolena funkce přenosu SMTP (níže).",
-
+	
 	"smtp-transport": "Přenos SMTP",
 	"smtp-transport.enabled": "Pro odesílání e-mailů použít externí e-mailový server ",
 	"smtp-transport-help": "Ze seznamu můžete vybrat známé služby nebo zadat vlastní.",
@@ -25,6 +22,8 @@
 	"smtp-transport.username": "Uživatelské jméno",
 	"smtp-transport.username-help": "<b>Pro službu Gmail,</b> zadejte plnou e-mailovou adresu, zvláště, používáte-li spravovanou doménu Google Apps.",
 	"smtp-transport.password": "Heslo",
+	"smtp-transport.pool": "Enable pooled connections",
+	"smtp-transport.pool-help": "Pooling connections prevents NodeBB from creating a new connection for every email. This option only applies if SMTP Transport is enabled.",
 
 	"template": "Upravit šablonu e-mailu",
 	"template.select": "Vybrat šablonu e-mailu",

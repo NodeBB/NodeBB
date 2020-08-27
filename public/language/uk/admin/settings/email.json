@@ -4,10 +4,7 @@
 	"address-help": "Отримувачі будуть бачити цю адресу в полях \"From\" та \"Reply To\".",
 	"from": "Ім'я відправника",
 	"from-help": "Ім'я відправника, що буде показано в електронних листах",
-	"sendmail-rate-limit": "Send <em>X</em> emails...",
-	"sendmail-rate-delta": "... every <em>X</em> milliseconds",
-	"sendmail-rate-help": "Instructs the NodeBB mailer to limit the number of messages sent at once in order to not overwhelm email receiving services. These options do not apply if SMTP Transport is enabled (below).",
-
+	
 	"smtp-transport": "Протокол SMTP",
 	"smtp-transport.enabled": "Використовувати зовнішній поштовий сервер для відправлення повідомлень",
 	"smtp-transport-help": "Ви можете обрати поштовий сервіс зі списку або використати ваш власний сервіс.",
@@ -25,6 +22,8 @@
 	"smtp-transport.username": "Ім'я користувача",
 	"smtp-transport.username-help": "<b>Для сервісу Gmail,</b> вкажіть тут повну електронну адресу, особливо якщо ви використовуєте керований домен Google Apps.",
 	"smtp-transport.password": "Пароль",
+	"smtp-transport.pool": "Enable pooled connections",
+	"smtp-transport.pool-help": "Pooling connections prevents NodeBB from creating a new connection for every email. This option only applies if SMTP Transport is enabled.",
 
 	"template": "Редагувати шаблон листа",
 	"template.select": "Обрати шаблон листа",
