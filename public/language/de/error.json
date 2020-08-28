@@ -140,6 +140,8 @@
     "not-enough-reputation-min-rep-cover-picture": "Deine Reputation ist zu niedrig um ein Deckbild hinzuzufügen.",
     "already-flagged": "Du hast diesen Beitrag bereits gemeldet",
     "self-vote": "Du kannst deine eigenen Beiträge nicht bewerten",
+    "too-many-downvotes-today": "Du kannst nur %1 mal am Tag eine schlechte Bewertung abgeben",
+    "too-many-downvotes-today-user": "Du kannst einen Benutzer nur %1 mal am Tag schlecht bewerten",
     "reload-failed": "Es ist ein Problem während des Reloads von NodeBB aufgetreten: \"%1\". NodeBB wird weiterhin clientseitige Assets bereitstellen, allerdings solltest du das, was du vor dem Reload gemacht hast, rückgängig machen.",
     "registration-error": "Registrierungsfehler",
     "parse-error": "Beim auswerten der Serverantwort ist etwas schiefgegangen",
