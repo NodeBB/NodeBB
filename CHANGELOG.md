@@ -1,3 +1,14 @@
+#### v1.15.0-beta.8 (2020-08-28)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.8 (34bb869c)
+*  update changelog for v1.15.0-beta.7 (e449ff9a)
+
+##### Bug Fixes
+
+*  accept/reject in post-queue instead of accept/delete (694f4b2b)
+
 #### v1.15.0-beta.7 (2020-08-28)
 
 ##### Chores
