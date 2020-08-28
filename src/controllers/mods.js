@@ -216,6 +216,11 @@ modsController.postQueue = async function (req, res, next) {
 	let postData = await getQueuedPosts(ids);
 	postData = postData.filter(p => p && (isAdminOrGlobalMod || moderatedCids.includes(String(p.category.cid))));
 
+	({ posts: postData } = await plugins.fireHook('filter:post-queue.get', {
+		posts: postData,
+		req: req,
+	}));
+
 	const pageCount = Math.max(1, Math.ceil(postData.length / postsPerPage));
 	const start = (page - 1) * postsPerPage;
 	const stop = start + postsPerPage - 1;

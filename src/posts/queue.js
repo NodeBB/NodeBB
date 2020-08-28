@@ -57,7 +57,7 @@ module.exports = function (Posts) {
 			type: type,
 			data: data,
 		};
-		payload = await plugins.fireHook('filter:post.queue', payload);
+		payload = await plugins.fireHook('filter:post-queue.save', payload);
 		payload.data = JSON.stringify(data);
 
 		await db.sortedSetAdd('post:queue', now, id);
