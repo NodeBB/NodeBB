@@ -1,3 +1,23 @@
+#### v1.15.0-beta.7 (2020-08-28)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.7 (fd917b8e)
+*  update changelog for v1.15.0-beta.6 (a7f03b64)
+
+##### New Features
+
+*  new filter hook prior to post queue addition (8cc36de2)
+*  add replies to getPostSummaryByPids (a9dfc9a7)
+*  add reply count to getPostSummaryByPids (de0f4aad)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency nodebb-theme-vanilla to v11.2.5 (64f4179a)
+  *  update dependency nodebb-theme-persona to v10.2.10 (777419b2)
+*  new openapi def for replies addition (b5871275)
+
 #### v1.15.0-beta.6 (2020-08-27)
 
 ##### Chores
