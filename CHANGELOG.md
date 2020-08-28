@@ -1,3 +1,14 @@
+#### v1.15.0-beta.9 (2020-08-28)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.9 (8dc513da)
+*  update changelog for v1.15.0-beta.8 (3b960c3b)
+
+##### Bug Fixes
+
+*  update post-queue hook names (0e58d2b8)
+
 #### v1.15.0-beta.8 (2020-08-28)
 
 ##### Chores
