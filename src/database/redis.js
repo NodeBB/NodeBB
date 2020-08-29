@@ -117,9 +117,10 @@ redisModule.info = function (cxn, callback) {
 
 			const keyInfo = redisData['db' + nconf.get('redis:database')];
 			if (keyInfo) {
-				redisData.keys = keyInfo.split(',')[0].replace('keys=', '');
-				redisData.expires = keyInfo.split(',')[1].replace('expires=', '');
-				redisData.avg_ttl = keyInfo.split(',')[2].replace('avg_ttl=', '');
+				const split = keyInfo.split(',');
+				redisData.keys = (split[0] || '').replace('keys=', '');
+				redisData.expires = (split[1] || '').replace('expires=', '');
+				redisData.avg_ttl = (split[2] || '').replace('avg_ttl=', '');
 			}
 
 			redisData.instantaneous_input = (redisData.instantaneous_input_kbps / 1024).toFixed(3);
