@@ -2,7 +2,7 @@
 	"posts": "Beiträge",
 	"allow-files": "Nutzern erlauben normale Dateien hochzuladen",
 	"private": "Hochgeladene Dateien privatisieren",
-	"strip-exif-data": "Strip EXIF Data",
+	"strip-exif-data": "EXIF-Daten entfernen",
 	"private-extensions": "Private Dateiendungen",
 	"private-uploads-extensions-help": "Gib eine Komma-Separierte Liste mit Dateiendungen an, die privatisiert werden sollen (z.B. <code>pdf,xls,doc</code>). Eine leere Liste bedeutet, dass alle Dateien privat sind.",
 	"resize-image-width-threshold": "Bilder zu einer bestimmten Breite runterskalieren wenn sie breiter sind als die angegebene Breite.",

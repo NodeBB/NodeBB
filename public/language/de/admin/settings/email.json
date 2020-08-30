@@ -22,8 +22,8 @@
 	"smtp-transport.username": "Benutzername",
 	"smtp-transport.username-help": "Bitte füge die komplette Email-Adresse <b>für Gmail</b> hier ein, insbesondere wenn du eine von Google Apps gemanagete domain verwendest.",
 	"smtp-transport.password": "Passwort",
-	"smtp-transport.pool": "Enable pooled connections",
-	"smtp-transport.pool-help": "Pooling connections prevents NodeBB from creating a new connection for every email. This option only applies if SMTP Transport is enabled.",
+	"smtp-transport.pool": "Gepoolte Verbindungen erlauben",
+	"smtp-transport.pool-help": "Das Poolen von Verbindungen hindert NodeBB daran für jede neu erstellte E-Mail eine eigene Verbindung aufzubauen. Diese Option ist nur zutreffend, wenn SMTP aktiviert ist.",
 
 	"template": "E-Mail Vorlage bearbeiten",
 	"template.select": "E-Mail Vorlage auswählen",

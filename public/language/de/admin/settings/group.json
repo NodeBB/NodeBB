@@ -3,7 +3,7 @@
 	"private-groups": "Private Gruppen",
 	"private-groups.help": "Wenn aktiviert, erfordert das Beitreten einer Gruppe die Bestätigung des jeweiligen Besitzers<em>(Standard: aktiviert)</em>",
 	"private-groups.warning": "<strong>Vorsicht!</strong> Wenn diese Option deaktiviert ist, und es private Gruppen gibt, werden diese automatisch öffentlich.",
-	"allow-multiple-badges": "Allow Multiple Badges",
+	"allow-multiple-badges": "Mehrere Abzeichen erlauben",
 	"allow-multiple-badges-help": "Diese Eintellung kann verwendet werden um Benutzern zu erlauben mehrere Gruppen abzeichen auszuwählen, benötigt Theme unterstützung.",
 	"max-name-length": "Maximale Länge von Gruppennamen",
 	"max-title-length": "Maximale Gruppentitellänge",
