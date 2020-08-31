@@ -19,7 +19,7 @@ modsController.flags = {};
 
 modsController.flags.list = async function (req, res, next) {
 	const validFilters = ['assignee', 'state', 'reporterId', 'type', 'targetUid', 'cid', 'quick', 'page', 'perPage'];
-	const validSorts = ['newest', 'oldest', 'reports'];
+	const validSorts = ['newest', 'oldest', 'reports', 'upvotes', 'downvotes', 'replies'];
 
 	// Reset filters if explicitly requested
 	if (parseInt(req.query.reset, 10) === 1) {

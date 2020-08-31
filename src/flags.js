@@ -191,6 +191,12 @@ Flags.list = async function (data) {
 };
 
 Flags.sort = async function (flagIds, sort) {
+	const filterPosts = async (flagIds) => {
+		const keys = flagIds.map(id => `flag:${id}`);
+		const types = await db.getObjectsFields(keys, ['type']);
+		return flagIds.filter((id, idx) => types[idx].type === 'post');
+	};
+
 	switch (sort) {
 		// 'newest' is not handled because that is default
 		case 'oldest':
@@ -209,7 +215,23 @@ Flags.sort = async function (flagIds, sort) {
 			flagIds = mapped.map(obj => flagIds[obj.index]);
 			break;
 		}
+
+		case 'upvotes':	// fall-through
+		case 'downvotes':
+		case 'replies': {
+			flagIds = await filterPosts(flagIds);
+			const keys = flagIds.map(id => `flag:${id}`);
+			const pids = (await db.getObjectsFields(keys, ['targetId'])).map(obj => obj.targetId);
+			const votes = (await posts.getPostsFields(pids, [sort])).map(obj => parseInt(obj[sort], 10) || 0);
+			const sortRef = flagIds.reduce((memo, cur, idx) => {
+				memo[cur] = votes[idx];
+				return memo;
+			}, {});
+
+			flagIds = flagIds.sort((a, b) => sortRef[b] - sortRef[a]);
+		}
 	}
+
 	return flagIds;
 };
 
