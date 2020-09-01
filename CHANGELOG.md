@@ -1,3 +1,22 @@
+#### v1.15.0-beta.10 (2020-09-01)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.10 (f252d4d7)
+*  update changelog for v1.15.0-beta.9 (affc7927)
+* **deps:**
+  *  update dependency mocha to v8.1.3 (#8588) (05efeff6)
+  *  update dependency eslint to v7.8.0 (#8594) (e1b98142)
+
+##### New Features
+
+*  additional sorting options for flags (0c203517)
+
+##### Bug Fixes
+
+* **deps:**  update dependency nodebb-plugin-markdown to v8.12.1 (27426c06)
+*  don't crash on outdated redis instances (896fe9d6)
+
 #### v1.15.0-beta.9 (2020-08-28)
 
 ##### Chores
