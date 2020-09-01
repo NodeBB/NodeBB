@@ -61,6 +61,11 @@
 	"sort-newest": "Neuste zuerst",
 	"sort-oldest": "Älteste zuerst",
 	"sort-reports": "Meiste Meldungen",
+	"sort-all": "All flag types...",
+	"sort-posts-only": "Posts only...",
+	"sort-downvotes": "Most downvotes",
+	"sort-upvotes": "Most upvotes",
+	"sort-replies": "Most replies",
 
 	"modal-title": "Anstößige Inhalte Melden",
 	"modal-body": "Bitte geben Sie den Grund an, weshalb Sie %1 %2 melden wollen. Alternativ können Sie einen der Schnell-Meldungs-Knöpfe verwenden, wenn anwendbar.",

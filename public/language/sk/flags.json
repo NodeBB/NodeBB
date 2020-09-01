@@ -61,6 +61,11 @@
 	"sort-newest": "Newest first",
 	"sort-oldest": "Oldest first",
 	"sort-reports": "Most reports",
+	"sort-all": "All flag types...",
+	"sort-posts-only": "Posts only...",
+	"sort-downvotes": "Most downvotes",
+	"sort-upvotes": "Most upvotes",
+	"sort-replies": "Most replies",
 
 	"modal-title": "Nahlásiť nevhodný obsah",
 	"modal-body": "Zadajte dôvod, pre ktorý chcete označiť %1 %2 na kontrolu. Prípadne použite jedno z tlačidiel rýchleho hlásenia, ak je to vhodné.",

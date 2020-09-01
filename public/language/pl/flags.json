@@ -61,6 +61,11 @@
 	"sort-newest": "Najpierw najnowsze",
 	"sort-oldest": "Najpierw najstarsze",
 	"sort-reports": "Najwięcej zgłoszeń",
+	"sort-all": "All flag types...",
+	"sort-posts-only": "Posts only...",
+	"sort-downvotes": "Most downvotes",
+	"sort-upvotes": "Most upvotes",
+	"sort-replies": "Most replies",
 
 	"modal-title": "Zgłoś niewłaściwe treści",
 	"modal-body": "Wskaż powód oflagowania i zgłoszenia %1 %2 do oceny. Jeśli to możliwe, użyj jednego z przycisków szybkiego zgłoszenia.",

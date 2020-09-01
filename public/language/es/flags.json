@@ -61,6 +61,11 @@
 	"sort-newest": "Newest first",
 	"sort-oldest": "Oldest first",
 	"sort-reports": "Most reports",
+	"sort-all": "All flag types...",
+	"sort-posts-only": "Posts only...",
+	"sort-downvotes": "Most downvotes",
+	"sort-upvotes": "Most upvotes",
+	"sort-replies": "Most replies",
 
 	"modal-title": "Reportar contenido inapropiado",
 	"modal-body": "Por favor especifica tu razón para marcar %1 %2 para revisar. Alternativamente, usa una de los botones  de reporte rápido si corresponde.",

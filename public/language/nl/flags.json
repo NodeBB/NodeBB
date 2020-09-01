@@ -61,6 +61,11 @@
 	"sort-newest": "Nieuwste eerst",
 	"sort-oldest": "Oudste eerst",
 	"sort-reports": "Meest gerapporteerd",
+	"sort-all": "All flag types...",
+	"sort-posts-only": "Posts only...",
+	"sort-downvotes": "Most downvotes",
+	"sort-upvotes": "Most upvotes",
+	"sort-replies": "Most replies",
 
 	"modal-title": "Rapporteer ongepaste content",
 	"modal-body": "Beschrijf de reden voor het markeren van %1 %2 voor review. Of gebruik een van de snelknoppen indien van toepassing.",

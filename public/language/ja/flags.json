@@ -61,6 +61,11 @@
 	"sort-newest": "Newest first",
 	"sort-oldest": "Oldest first",
 	"sort-reports": "Most reports",
+	"sort-all": "All flag types...",
+	"sort-posts-only": "Posts only...",
+	"sort-downvotes": "Most downvotes",
+	"sort-upvotes": "Most upvotes",
+	"sort-replies": "Most replies",
 
 	"modal-title": "不適切なコンテンツを報告する",
 	"modal-body": "レビューのために%1 %2 にフラグを付ける理由を指定してください。または必要に応じてクイックレポートボタンの1つを使用します。",
