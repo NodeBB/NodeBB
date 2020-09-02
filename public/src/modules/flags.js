@@ -63,13 +63,15 @@ define('flags', function () {
 		if (!type || !id || !reason) {
 			return;
 		}
-		socket.emit('flags.create', { type: type, id: id, reason: reason }, function (err) {
+		var data = { type: type, id: id, reason: reason };
+		socket.emit('flags.create', data, function (err, flagId) {
 			if (err) {
 				return app.alertError(err.message);
 			}
 
 			flagModal.modal('hide');
 			app.alertSuccess('[[flags:modal-submit-success]]');
+			$(window).trigger('action:flag.create', { flagId: flagId, data: data });
 		});
 	}
 
