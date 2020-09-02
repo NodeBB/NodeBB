@@ -52,7 +52,6 @@ define('forum/topic/delete-posts', ['components', 'postSelect'], function (compo
 	function deletePosts(btn, command) {
 		btn.attr('disabled', true);
 		socket.emit(command, {
-			tid: ajaxify.data.tid,
 			pids: postSelect.pids,
 		}, function (err) {
 			btn.removeAttr('disabled');
