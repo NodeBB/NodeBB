@@ -1,3 +1,14 @@
+#### v1.15.0-beta.11 (2020-09-02)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.11 (c1ce7391)
+*  update changelog for v1.15.0-beta.10 (9c34eced)
+
+##### New Features
+
+*  add client side action:flag.create (09de364e)
+
 #### v1.15.0-beta.10 (2020-09-01)
 
 ##### Chores
