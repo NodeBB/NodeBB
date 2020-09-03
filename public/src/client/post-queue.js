@@ -65,9 +65,11 @@ define('forum/post-queue', ['categorySelector'], function (categorySelector) {
 	function handleContentEdit(displayClass, editableClass, inputSelector) {
 		$('.posts-list').on('click', displayClass, function () {
 			var el = $(this);
-			el.addClass('hidden');
 			var inputEl = el.parent().find(editableClass);
-			inputEl.removeClass('hidden').find(inputSelector).focus();
+			if (inputEl.length) {
+				el.addClass('hidden');
+				inputEl.removeClass('hidden').find(inputSelector).focus();
+			}
 		});
 
 		$('.posts-list').on('blur', editableClass + ' ' + inputSelector, function () {
