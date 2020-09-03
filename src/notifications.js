@@ -8,6 +8,7 @@ const _ = require('lodash');
 
 const db = require('./database');
 const User = require('./user');
+const posts = require('./posts');
 const groups = require('./groups');
 const meta = require('./meta');
 const batch = require('./batch');
@@ -172,14 +173,16 @@ async function pushToUids(uids, notification) {
 		if (['new-reply', 'new-chat'].includes(notification.type)) {
 			notification['cta-type'] = notification.type;
 		}
-
+		let body = notification.bodyLong || '';
+		body = posts.relativeToAbsolute(body, posts.urlRegex);
+		body = posts.relativeToAbsolute(body, posts.imgRegex);
 		await async.eachLimit(uids, 3, function (uid, next) {
 			emailer.send('notification', uid, {
 				path: notification.path,
 				notification_url: notification.path.startsWith('http') ? notification.path : nconf.get('url') + notification.path,
 				subject: utils.stripHTMLTags(notification.subject || '[[notifications:new_notification]]'),
 				intro: utils.stripHTMLTags(notification.bodyShort),
-				body: notification.bodyLong || '',
+				body: body,
 				notification: notification,
 				showUnsubscribe: true,
 			}, next);

@@ -2,7 +2,6 @@
 'use strict';
 
 const db = require('../database');
-const posts = require('../posts');
 const notifications = require('../notifications');
 const privileges = require('../privileges');
 const plugins = require('../plugins');
@@ -162,9 +161,6 @@ module.exports = function (Topics) {
 		if (title) {
 			title = utils.decodeHTMLEntities(title);
 		}
-
-		postData.content = posts.relativeToAbsolute(postData.content, posts.urlRegex);
-		postData.content = posts.relativeToAbsolute(postData.content, posts.imgRegex);
 
 		const notification = await notifications.create({
 			subject: title,

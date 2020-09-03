@@ -77,7 +77,10 @@ module.exports = function (Posts) {
 	};
 
 	Posts.relativeToAbsolute = function (content, regex) {
-		// Turns relative links in post body to absolute urls
+		// Turns relative links in content to absolute urls
+		if (!content) {
+			return content;
+		}
 		var parsed;
 		var current = regex.regex.exec(content);
 		var absolute;
