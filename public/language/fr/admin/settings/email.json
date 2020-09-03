@@ -22,8 +22,8 @@
 	"smtp-transport.username": "Nom d'utilisateur",
 	"smtp-transport.username-help": "<b>Pour Gmail,</b> entrer l’adresse e-mail complète ici, surtout si vous utilisez un domaine géré par Google Apps.",
 	"smtp-transport.password": "Mot de passe",
-	"smtp-transport.pool": "Enable pooled connections",
-	"smtp-transport.pool-help": "Pooling connections prevents NodeBB from creating a new connection for every email. This option only applies if SMTP Transport is enabled.",
+	"smtp-transport.pool": "Activer les connexions groupées",
+	"smtp-transport.pool-help": "Le regroupement des connexions empêche NodeBB de créer une nouvelle connexion pour chaque e-mail. Cette option s'applique uniquement si le transport SMTP est activé.",
 
 	"template": "Modifier le modèle d'e-mail",
 	"template.select": "Sélectionner un modèle d'e-mail ",

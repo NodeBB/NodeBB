@@ -162,7 +162,7 @@
     "invalid-session-text": "Il semble que votre session ne soit plus active, ou que le serveur ne la reconnaisse plus. Merci de rafraichir cette page.",
     "no-topics-selected": "Aucun sujet sélectionné !",
     "cant-move-to-same-topic": "Impossible de déplacer le message dans le même sujet !",
-    "cant-move-topic-to-same-category": "Can't move topic to the same category!",
+    "cant-move-topic-to-same-category": "Impossible de déplacer le sujet dans la même catégorie !",
     "cannot-block-self": "Vous ne pouvez pas vous bloquer !",
     "cannot-block-privileged": "Vous ne pouvez pas bloquer les administrateurs ou les modérateurs global",
     "cannot-block-guest": "Les Invités ne peuvent pas bloquer d'autres utilisateurs",

@@ -39,14 +39,14 @@
 	"admin-users": "Utilisateurs",
 	"admin-settings": "Paramètres",
 
-	"alert.confirm-moderate": "<strong>Are you sure you wish to grant the moderation privilege to this user group?</strong> This group is public, and any users can join at will.",
-	"alert.confirm-save": "Please confirm your intention to save these privileges",
-	"alert.saved": "Privilege changes saved and applied",
-	"alert.confirm-discard": "Are you sure you wish to discard your privilege changes?",
-	"alert.discarded": "Privilege changes discarded",
-	"alert.confirm-copyToAll": "Are you sure you wish to apply this privilege set to <strong>all categories</strong>?",
-	"alert.confirm-copyToAllGroup": "Are you sure you wish to apply this group's privilege set to <strong>all categories</strong>?",
-	"alert.confirm-copyToChildren": "Are you sure you wish to apply this privilege set to <strong>all descendant (child) categories</strong>?",
-	"alert.confirm-copyToChildrenGroup": "Are you sure you wish to apply this group's privilege set to <strong>all descendant (child) categories</strong>?",
-	"alert.no-undo": "<em>This action cannot be undone.</em>"
+	"alert.confirm-moderate": "<strong>Voulez-vous vraiment accorder le privilège de modération à ce groupe d'utilisateurs ?</strong> Ce groupe est public et tous les utilisateurs peuvent le rejoindre à volonté.",
+	"alert.confirm-save": "Veuillez confirmer votre intention de sauvegarder ces privilèges",
+	"alert.saved": "Changements de privilèges enregistrés et appliqués",
+	"alert.confirm-discard": "Êtes-vous sûr de vouloir annuler vos modifications de privilèges ?",
+	"alert.discarded": "Modifications de privilèges annulés",
+	"alert.confirm-copyToAll": "Voulez-vous vraiment appliquer ce jeu de privilèges à <strong>toutes les catégories</strong> ?",
+	"alert.confirm-copyToAllGroup": "Voulez-vous vraiment appliquer le jeu de privilèges de ce groupe à <strong>toutes les catégories</strong> ?",
+	"alert.confirm-copyToChildren": "Voulez-vous vraiment appliquer ces privilèges à <strong>toutes les catégories incluses (enfants)</strong> ?",
+	"alert.confirm-copyToChildrenGroup": "Voulez-vous vraiment appliquer le jeu de privilèges de ce groupe à <strong>toutes les catégories incluses (enfants)</strong> ?",
+	"alert.no-undo": "<em>Cette action ne peut pas être annulée.</em>"
 }
