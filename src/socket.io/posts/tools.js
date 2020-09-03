@@ -63,30 +63,30 @@ module.exports = function (SocketPosts) {
 		return results;
 	};
 
-	SocketPosts.delete = async function (socket, { pid }) {
-		await deleteOrRestore(socket, pid, {
+	SocketPosts.delete = async function (socket, data) {
+		await deleteOrRestore(socket, data, {
 			command: 'delete',
 			event: 'event:post_deleted',
 			type: 'post-delete',
 		});
 	};
 
-	SocketPosts.restore = async function (socket, { pid }) {
-		await deleteOrRestore(socket, pid, {
+	SocketPosts.restore = async function (socket, data) {
+		await deleteOrRestore(socket, data, {
 			command: 'restore',
 			event: 'event:post_restored',
 			type: 'post-restore',
 		});
 	};
 
-	async function deleteOrRestore(socket, pid, params) {
-		if (!pid) {
+	async function deleteOrRestore(socket, data, params) {
+		if (!data || !data.pid) {
 			throw new Error('[[error:invalid-data]]');
 		}
-		const postData = await posts.tools[params.command](socket.uid, pid);
-		const results = await isMainAndLastPost(pid);
+		const postData = await posts.tools[params.command](socket.uid, data.pid);
+		const results = await isMainAndLastPost(data.pid);
 		if (results.isMain && results.isLast) {
-			await deleteOrRestoreTopicOf(params.command, pid, socket);
+			await deleteOrRestoreTopicOf(params.command, data.pid, socket);
 		}
 
 		websockets.in('topic_' + postData.tid).emit(params.event, postData);
@@ -94,7 +94,7 @@ module.exports = function (SocketPosts) {
 		await events.log({
 			type: params.type,
 			uid: socket.uid,
-			pid: pid,
+			pid: data.pid,
 			tid: postData.tid,
 			ip: socket.ip,
 		});
@@ -118,21 +118,21 @@ module.exports = function (SocketPosts) {
 		}
 	}
 
-	SocketPosts.purge = async function (socket, { pid }) {
-		if (!pid || !parseInt(pid, 10)) {
+	SocketPosts.purge = async function (socket, data) {
+		if (!data || !parseInt(data.pid, 10)) {
 			throw new Error('[[error:invalid-data]]');
 		}
 
-		const results = await isMainAndLastPost(pid);
+		const results = await isMainAndLastPost(data.pid);
 		if (results.isMain && !results.isLast) {
 			throw new Error('[[error:cant-purge-main-post]]');
 		}
 
 		const isMainAndLast = results.isMain && results.isLast;
-		const postData = await posts.getPostFields(pid, ['toPid', 'tid']);
-		postData.pid = pid;
+		const postData = await posts.getPostFields(data.pid, ['toPid', 'tid']);
+		postData.pid = data.pid;
 
-		await posts.tools.purge(socket.uid, pid);
+		await posts.tools.purge(socket.uid, data.pid);
 
 		websockets.in('topic_' + postData.tid).emit('event:post_purged', postData);
 		const topicData = await topics.getTopicFields(postData.tid, ['title', 'cid']);
@@ -140,7 +140,7 @@ module.exports = function (SocketPosts) {
 		await events.log({
 			type: 'post-purge',
 			uid: socket.uid,
-			pid: pid,
+			pid: data.pid,
 			ip: socket.ip,
 			tid: postData.tid,
 			title: String(topicData.title),
