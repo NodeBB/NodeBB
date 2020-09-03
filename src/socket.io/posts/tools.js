@@ -89,7 +89,7 @@ module.exports = function (SocketPosts) {
 			await deleteOrRestoreTopicOf(params.command, data.pid, socket);
 		}
 
-		websockets.in('topic_' + data.tid).emit(params.event, postData);
+		websockets.in('topic_' + postData.tid).emit(params.event, postData);
 
 		await events.log({
 			type: params.type,
@@ -114,7 +114,7 @@ module.exports = function (SocketPosts) {
 		}
 		for (const pid of data.pids) {
 			/* eslint-disable no-await-in-loop */
-			await SocketPosts[command](socket, { pid: pid, tid: data.tid });
+			await SocketPosts[command](socket, { pid: pid });
 		}
 	}
 
@@ -134,8 +134,8 @@ module.exports = function (SocketPosts) {
 
 		await posts.tools.purge(socket.uid, data.pid);
 
-		websockets.in('topic_' + data.tid).emit('event:post_purged', postData);
-		const topicData = await topics.getTopicFields(data.tid, ['title', 'cid']);
+		websockets.in('topic_' + postData.tid).emit('event:post_purged', postData);
+		const topicData = await topics.getTopicFields(postData.tid, ['title', 'cid']);
 
 		await events.log({
 			type: 'post-purge',

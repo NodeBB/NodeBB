@@ -416,7 +416,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should delete posts', function (done) {
-			socketPosts.deletePosts({ uid: globalModUid }, { pids: [replyPid, mainPid], tid: tid }, function (err) {
+			socketPosts.deletePosts({ uid: globalModUid }, { pids: [replyPid, mainPid] }, function (err) {
 				assert.ifError(err);
 				posts.getPostField(replyPid, 'deleted', function (err, deleted) {
 					assert.ifError(err);
@@ -433,7 +433,7 @@ describe('Post\'s', function () {
 		it('should delete topic if last main post is deleted', function (done) {
 			topics.post({ uid: voterUid, cid: cid, title: 'test topic', content: 'test topic' }, function (err, data) {
 				assert.ifError(err);
-				socketPosts.deletePosts({ uid: globalModUid }, { pids: [data.postData.pid], tid: data.topicData.tid }, function (err) {
+				socketPosts.deletePosts({ uid: globalModUid }, { pids: [data.postData.pid] }, function (err) {
 					assert.ifError(err);
 					topics.getTopicField(data.topicData.tid, 'deleted', function (err, deleted) {
 						assert.ifError(err);
