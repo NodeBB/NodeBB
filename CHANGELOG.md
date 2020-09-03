@@ -1,3 +1,18 @@
+#### v1.15.0-beta.12 (2020-09-03)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.12 (b852c9b7)
+*  update changelog for v1.15.0-beta.11 (f07ba866)
+
+##### Bug Fixes
+
+* **deps:**  update dependency nodebb-plugin-composer-default to v6.3.55 (#8606) (dfeb65bb)
+
+##### Refactors
+
+*  socket posts delete/restore/purge so tid is not necessary (#8607) (f743f920)
+
 #### v1.15.0-beta.11 (2020-09-02)
 
 ##### Chores
