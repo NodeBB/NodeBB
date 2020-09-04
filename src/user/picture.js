@@ -97,6 +97,7 @@ module.exports = function (User) {
 		const uploadedImage = await image.uploadImage(filename, 'profile', {
 			uid: data.uid,
 			path: newPath,
+			name: 'profileAvatar',
 		});
 
 		await User.setUserFields(data.uid, {
