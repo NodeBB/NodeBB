@@ -53,7 +53,11 @@ module.exports = function (SocketUser) {
 			// if current picture is uploaded picture, reset to user icon
 			picture: userData.uploadedpicture === userData.picture ? '' : userData.picture,
 		});
-		plugins.fireHook('action:user.removeUploadedPicture', { callerUid: socket.uid, uid: data.uid });
+		plugins.fireHook('action:user.removeUploadedPicture', {
+			callerUid: socket.uid,
+			uid: data.uid,
+			user: userData,
+		});
 	};
 
 	SocketUser.getProfilePictures = async function (socket, data) {
