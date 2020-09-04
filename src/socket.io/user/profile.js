@@ -8,6 +8,7 @@ const events = require('../../events');
 const privileges = require('../../privileges');
 const notifications = require('../../notifications');
 const db = require('../../database');
+const plugins = require('../../plugins');
 
 module.exports = function (SocketUser) {
 	SocketUser.changeUsernameEmail = async function (socket, data) {
@@ -41,7 +42,13 @@ module.exports = function (SocketUser) {
 			throw new Error('[[error:no-privileges]]');
 		}
 		await user.isAdminOrGlobalModOrSelf(socket.uid, data.uid);
+		const userData = await user.getUserFields(data.uid, ['cover:url']);
 		await user.removeCoverPicture(data);
+		plugins.fireHook('action:user.removeCoverPicture', {
+			callerUid: socket.uid,
+			uid: data.uid,
+			user: userData,
+		});
 	};
 
 	async function isPrivilegedOrSelfAndPasswordMatch(socket, data) {
