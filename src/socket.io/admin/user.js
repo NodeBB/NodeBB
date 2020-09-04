@@ -168,6 +168,7 @@ async function deleteUsers(socket, uids, method) {
 			callerUid: socket.uid,
 			uid: uid,
 			ip: socket.ip,
+			user: userData,
 		});
 	}
 	try {
