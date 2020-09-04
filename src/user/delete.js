@@ -144,6 +144,7 @@ module.exports = function (User) {
 			deleteUserIps(uid),
 			deleteBans(uid),
 			deleteUserFromFollowers(uid),
+			deleteImages(uid),
 			groups.leaveAllGroups(uid),
 		]);
 		await db.deleteAll(['followers:' + uid, 'following:' + uid, 'user:' + uid]);
@@ -206,5 +207,14 @@ module.exports = function (User) {
 			updateCount(following, 'followers:', 'followerCount'),
 			updateCount(followers, 'following:', 'followingCount'),
 		]);
+	}
+
+	async function deleteImages(uid) {
+		const extensions = User.getAllowedProfileImageExtensions();
+		const folder = path.join(nconf.get('upload_path'), 'profile');
+		await Promise.all(extensions.map(async (ext) => {
+			await file.delete(path.join(folder, uid + '-profilecover.' + ext));
+			await file.delete(path.join(folder, uid + '-profileavatar.' + ext));
+		}));
 	}
 };
