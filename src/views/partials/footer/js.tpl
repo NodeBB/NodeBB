@@ -5,9 +5,14 @@
 {{{end}}}
 
 <script>
-    window.addEventListener('DOMContentLoaded', function () {
-        require(['forum/footer']);
+    if (document.readyState === 'loading') {
+        window.addEventListener('DOMContentLoaded', prepareFooter);
+    } else {
+        prepareFooter();
+    }
 
+    function prepareFooter() {
+        require(['forum/footer']);
         <!-- IF useCustomJS -->
         {{customJS}}
         <!-- ENDIF useCustomJS -->
@@ -15,5 +20,5 @@
         $(document).ready(function () {
             ajaxify.coldLoad();
         });
-    });
+    }
 </script>
