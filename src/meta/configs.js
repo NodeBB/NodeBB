@@ -172,10 +172,10 @@ Configs.cookie = {
 };
 
 async function processConfig(data) {
-	ensurePositiveInteger(data, 'maximumUsernameLength');
-	ensurePositiveInteger(data, 'minimumUsernameLength');
-	ensurePositiveInteger(data, 'minimumPasswordLength');
-	ensurePositiveInteger(data, 'maximumAboutMeLength');
+	ensureInteger(data, 'maximumUsernameLength', 1);
+	ensureInteger(data, 'minimumUsernameLength', 1);
+	ensureInteger(data, 'minimumPasswordLength', 1);
+	ensureInteger(data, 'maximumAboutMeLength', 0);
 	if (data.minimumUsernameLength > data.maximumUsernameLength) {
 		throw new Error('[[error:invalid-data]]');
 	}
@@ -186,10 +186,10 @@ async function processConfig(data) {
 	]);
 }
 
-function ensurePositiveInteger(data, field) {
+function ensureInteger(data, field, min) {
 	if (data.hasOwnProperty(field)) {
 		data[field] = parseInt(data[field], 10);
-		if (!(data[field] > 0)) {
+		if (!(data[field] >= min)) {
 			throw new Error('[[error:invalid-data]]');
 		}
 	}
