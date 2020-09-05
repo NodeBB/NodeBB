@@ -3,9 +3,7 @@
 
 ajaxify = window.ajaxify || {};
 
-$(document).ready(function () {
-	var location = document.location || window.location;
-	var rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : '');
+(function () {
 	var apiXHR = null;
 	var ajaxifyTimer;
 
@@ -20,22 +18,6 @@ $(document).ready(function () {
 		translator = _translator;
 		translator.translate('[[error:no-connection]]');
 		Benchpress = _Benchpress;
-	});
-
-	$(window).on('popstate', function (ev) {
-		ev = ev.originalEvent;
-
-		if (ev !== null && ev.state) {
-			if (ev.state.url === null && ev.state.returnPath !== undefined) {
-				window.history.replaceState({
-					url: ev.state.returnPath,
-				}, ev.state.returnPath, config.relative_path + '/' + ev.state.returnPath);
-			} else if (ev.state.url !== undefined) {
-				ajaxify.go(ev.state.url, function () {
-					$(window).trigger('action:popstate', { url: ev.state.url });
-				}, true);
-			}
-		}
 	});
 
 	ajaxify.count = 0;
@@ -100,6 +82,14 @@ $(document).ready(function () {
 		});
 
 		return true;
+	};
+
+	// this function is called just once from footer on page load
+	ajaxify.coldLoad = function () {
+		var url = ajaxify.start(window.location.pathname.slice(1) + window.location.search + window.location.hash);
+		ajaxify.updateHistory(url, true);
+		ajaxify.end(url, app.template);
+		$(window).trigger('action:ajaxify.coldLoad');
 	};
 
 	ajaxify.isCold = function () {
@@ -334,11 +324,35 @@ $(document).ready(function () {
 		});
 	};
 
+	require(['translator', 'benchpress'], function (translator, Benchpress) {
+		translator.translate('[[error:no-connection]]');
+		Benchpress.registerLoader(ajaxify.loadTemplate);
+	});
+}());
+
+$(document).ready(function () {
+	$(window).on('popstate', function (ev) {
+		ev = ev.originalEvent;
+
+		if (ev !== null && ev.state) {
+			if (ev.state.url === null && ev.state.returnPath !== undefined) {
+				window.history.replaceState({
+					url: ev.state.returnPath,
+				}, ev.state.returnPath, config.relative_path + '/' + ev.state.returnPath);
+			} else if (ev.state.url !== undefined) {
+				ajaxify.go(ev.state.url, function () {
+					$(window).trigger('action:popstate', { url: ev.state.url });
+				}, true);
+			}
+		}
+	});
+
 	function ajaxifyAnchors() {
 		function hrefEmpty(href) {
 			return href === undefined || href === '' || href === 'javascript:;';
 		}
-
+		var location = document.location || window.location;
+		var rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : '');
 		var contentEl = document.getElementById('content');
 
 		// Enhancing all anchors to ajaxify...
@@ -412,13 +426,11 @@ $(document).ready(function () {
 					return;
 				}
 
-				translator.translate('[[global:unsaved-changes]]', function (text) {
-					bootbox.confirm(text, function (navigate) {
-						if (navigate) {
-							app.flags._unsaved = false;
-							process.call(_self);
-						}
-					});
+				bootbox.confirm('[[global:unsaved-changes]]', function (navigate) {
+					if (navigate) {
+						app.flags._unsaved = false;
+						process.call(_self);
+					}
 				});
 				return e.preventDefault();
 			}
@@ -427,14 +439,8 @@ $(document).ready(function () {
 		});
 	}
 
-	require(['benchpress'], function (Benchpress) {
-		Benchpress.registerLoader(ajaxify.loadTemplate);
-	});
-
 	if (window.history && window.history.pushState) {
 		// Progressive Enhancement, ajaxify available only to modern browsers
 		ajaxifyAnchors();
 	}
-
-	app.load();
 });
