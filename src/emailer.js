@@ -174,7 +174,7 @@ Emailer.send = async function (template, uid, params) {
 	params = { ...Emailer._defaultPayload, ...params };
 
 	const [userData, userSettings] = await Promise.all([
-		User.getUserFields(uid, ['email', 'username']),
+		User.getUserFields(uid, ['email', 'username', 'email:confirmed']),
 		User.getSettings(uid),
 	]);
 
@@ -182,6 +182,13 @@ Emailer.send = async function (template, uid, params) {
 		winston.warn('uid : ' + uid + ' has no email, not sending.');
 		return;
 	}
+
+	const allowedTpls = ['verify_email', 'welcome', 'registration_accepted'];
+	if (meta.config.requireEmailConfirmation && !userData['email:confirmed'] && !allowedTpls.includes(template)) {
+		winston.warn('uid : ' + uid + ' has not confirmed email, not sending "' + template + '" email.');
+		return;
+	}
+
 	params.uid = uid;
 	params.username = userData.username;
 	params.rtl = await translator.translate('[[language:dir]]', userSettings.userLang) === 'rtl';
