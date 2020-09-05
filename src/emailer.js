@@ -170,9 +170,6 @@ Emailer.send = async function (template, uid, params) {
 		return;
 	}
 
-	// Combined passed-in payload with default values
-	params = { ...Emailer._defaultPayload, ...params };
-
 	const [userData, userSettings] = await Promise.all([
 		User.getUserFields(uid, ['email', 'username', 'email:confirmed']),
 		User.getSettings(uid),
@@ -189,6 +186,8 @@ Emailer.send = async function (template, uid, params) {
 		return;
 	}
 
+	// Combined passed-in payload with default values
+	params = { ...Emailer._defaultPayload, ...params };
 	params.uid = uid;
 	params.username = userData.username;
 	params.rtl = await translator.translate('[[language:dir]]', userSettings.userLang) === 'rtl';
