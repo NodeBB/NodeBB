@@ -6,7 +6,7 @@
 
 <script>
     if (document.readyState === 'loading') {
-        window.addEventListener('DOMContentLoaded', prepareFooter);
+        document.addEventListener('DOMContentLoaded', prepareFooter);
     } else {
         prepareFooter();
     }
