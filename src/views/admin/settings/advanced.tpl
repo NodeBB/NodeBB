@@ -30,8 +30,11 @@
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
-				<label for="allow-from-uri">[[admin/settings/advanced:headers.allow-from]]</label>
-				<input class="form-control" id="allow-from-uri" type="text" placeholder="external-domain.com" data-field="allow-from-uri" /><br />
+				<label for="csp-frame-ancestors">[[admin/settings/advanced:headers.csp-frame-ancestors]]</label>
+				<input class="form-control" id="csp-frame-ancestors" type="text" placeholder="https://a.example.com https://b.example.com" data-field="csp-frame-ancestors" /><br />
+				<p class="help-block">
+					[[admin/settings/advanced:headers.csp-frame-ancestors-help]]
+				</p>
 			</div>
 			<div class="form-group">
 				<label for="powered-by">[[admin/settings/advanced:headers.powered-by]]</label>

@@ -12,10 +12,19 @@ module.exports = function (middleware) {
 	middleware.addHeaders = helpers.try(function addHeaders(req, res, next) {
 		const headers = {
 			'X-Powered-By': encodeURI(meta.config['powered-by'] || 'NodeBB'),
-			'X-Frame-Options': meta.config['allow-from-uri'] ? 'ALLOW-FROM ' + encodeURI(meta.config['allow-from-uri']) : 'SAMEORIGIN',
 			'Access-Control-Allow-Methods': encodeURI(meta.config['access-control-allow-methods'] || ''),
 			'Access-Control-Allow-Headers': encodeURI(meta.config['access-control-allow-headers'] || ''),
 		};
+
+		if (meta.config['csp-frame-ancestors']) {
+			headers['Content-Security-Policy'] = 'frame-ancestors ' + meta.config['csp-frame-ancestors'];
+			if (meta.config['csp-frame-ancestors'] === '\'none\'') {
+				headers['X-Frame-Options'] = 'DENY';
+			}
+		} else {
+			headers['Content-Security-Policy'] = 'frame-ancestors \'self\'';
+			headers['X-Frame-Options'] = 'SAMEORIGIN';
+		}
 
 		if (meta.config['access-control-allow-origin']) {
 			let origins = meta.config['access-control-allow-origin'].split(',');
