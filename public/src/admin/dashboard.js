@@ -521,12 +521,14 @@ define('admin/dashboard', ['semver', 'Chart', 'translator', 'benchpress'], funct
 		function buildTopicsLegend() {
 			var legend = $('#topics-legend').html('');
 			var html = '';
-			topics.forEach(function (topic, i) {
-				var	label = topic.count === '0' ? topic.title : '<a title="' + topic.title + '"href="' + RELATIVE_PATH + '/topic/' + topic.tid + '" target="_blank"> ' + topic.title + '</a>';
+			topics.forEach(function (t, i) {
+				var	label = t.count === '0' ?
+					t.title :
+					'<a title="' + t.title + '"href="' + config.relative_path + '/topic/' + t.tid + '" target="_blank"> ' + t.title + '</a>';
 
 				html += '<li>' +
 					'<div style="background-color: ' + topicColors[i] + ';"></div>' +
-					'<span> (' + topic.count + ') ' + label + '</span>' +
+					'<span> (' + t.count + ') ' + label + '</span>' +
 					'</li>';
 			});
 			legend.translateHtml(html);

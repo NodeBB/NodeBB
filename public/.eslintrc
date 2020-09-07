@@ -5,7 +5,6 @@
 		"socket": true,
 		"ajaxify": true,
 		"config": true,
-		"RELATIVE_PATH": true,
 		"utils": true,
 		"overrides": true,
 		"componentHandler": true,
