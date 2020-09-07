@@ -556,7 +556,7 @@ define('admin/dashboard', ['semver', 'Chart', 'translator', 'benchpress'], funct
 		clearInterval(intervals.graphs);
 
 		intervals.rooms = setInterval(function () {
-			if (app.isFocused && app.isConnected) {
+			if (app.isFocused && socket.connected) {
 				socket.emit('admin.rooms.getAll', Admin.updateRoomUsage);
 			}
 		}, realtime ? DEFAULTS.realtimeInterval : DEFAULTS.roomInterval);
