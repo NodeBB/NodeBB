@@ -323,7 +323,7 @@ async function buildCustomTemplates(config) {
 		Benchpress.flush();
 		winston.verbose('[emailer] Built custom email templates');
 	} catch (err) {
-		winston.error('[emailer] Failed to build custom email templates', err.stack);
+		winston.error('[emailer] Failed to build custom email templates\n' + err.stack);
 	}
 }
 

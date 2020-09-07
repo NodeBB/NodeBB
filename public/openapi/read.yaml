@@ -393,75 +393,6 @@ paths:
                         type: integer
                         description: Whether the forum will attempt to guess language based on browser's `Accept-Language` header
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
-  /api/admin/settings/sounds:
-    get:
-      tags:
-        - admin
-      summary: Get sound settings
-      responses:
-        "200":
-          description: A JSON object containing available sounds and settings
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - type: object
-                    properties:
-                      notification-sound:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            name:
-                              type: string
-                            sounds:
-                              type: array
-                              items:
-                                type: object
-                                properties:
-                                  name:
-                                    type: string
-                                  value:
-                                    type: string
-                                  selected:
-                                    type: boolean
-                      chat-incoming-sound:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            name:
-                              type: string
-                            sounds:
-                              type: array
-                              items:
-                                type: object
-                                properties:
-                                  name:
-                                    type: string
-                                  value:
-                                    type: string
-                                  selected:
-                                    type: boolean
-                      chat-outgoing-sound:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            name:
-                              type: string
-                            sounds:
-                              type: array
-                              items:
-                                type: object
-                                properties:
-                                  name:
-                                    type: string
-                                  value:
-                                    type: string
-                                  selected:
-                                    type: boolean
-                  - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/settings/navigation:
     get:
       tags:
@@ -2689,33 +2620,6 @@ paths:
                   url:
                     type: string
                     description: URL of the uploaded image for use client-side
-  /api/admin/upload/sound:
-    post:
-      tags:
-        - admin
-      summary: Upload sound file
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                files:
-                  type: array
-                  items:
-                    type: string
-                    format: binary
-              required:
-                - files
-      responses:
-        "200":
-          description: "Sound uploaded"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties: {}
   /api/admin/upload/file:
     post:
       tags:
@@ -7437,12 +7341,6 @@ paths:
                             type: string
                           scrollToMyPost:
                             type: boolean
-                          notificationSound:
-                            type: string
-                          incomingChatSound:
-                            type: string
-                          outgoingChatSound:
-                            type: string
                           notificationType_new-chat:
                             type: string
                           notificationType_new-reply:
@@ -7538,87 +7436,6 @@ paths:
                             code:
                               type: string
                             dir:
-                              type: string
-                            selected:
-                              type: boolean
-                      notification-sound:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            name:
-                              type: string
-                            sounds:
-                              type: array
-                              items:
-                                type: object
-                                properties:
-                                  name:
-                                    type: string
-                                  value:
-                                    type: string
-                                  selected:
-                                    type: boolean
-                      notificationSound:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            name:
-                              type: string
-                            selected:
-                              type: boolean
-                      chat-incoming-sound:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            name:
-                              type: string
-                            sounds:
-                              type: array
-                              items:
-                                type: object
-                                properties:
-                                  name:
-                                    type: string
-                                  value:
-                                    type: string
-                                  selected:
-                                    type: boolean
-                      incomingChatSound:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            name:
-                              type: string
-                            selected:
-                              type: boolean
-                      chat-outgoing-sound:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            name:
-                              type: string
-                            sounds:
-                              type: array
-                              items:
-                                type: object
-                                properties:
-                                  name:
-                                    type: string
-                                  value:
-                                    type: string
-                                  selected:
-                                    type: boolean
-                      outgoingChatSound:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            name:
                               type: string
                             selected:
                               type: boolean
