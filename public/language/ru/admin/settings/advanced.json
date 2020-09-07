@@ -5,6 +5,8 @@
 	"maintenance-mode.message": "Сообщение для пользователей",
 	"headers": "Заголовки",
 	"headers.allow-from": "Опция ALLOW-FROM для использования NodeBB через iFrame",
+	"headers.csp-frame-ancestors": "Set Content-Security-Policy frame-ancestors header to Place NodeBB in an iFrame",
+	"headers.csp-frame-ancestors-help": "'none', 'self'(default) or list of URIs to allow.",
 	"headers.powered-by": "Настройка заголовка «Powered By», отправляемого NodeBB",
 	"headers.acao": "Access-Control-Allow-Origin",
 	"headers.acao-regex": "Регулярное выражение для Access-Control-Allow-Origin",

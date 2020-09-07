@@ -5,6 +5,8 @@
 	"maintenance-mode.message": "メンテナンスメッセージ",
 	"headers": "ヘッダー",
 	"headers.allow-from": "NodeBBをインラインフレーム内に配置するようALLOW-FROMを設定する",
+	"headers.csp-frame-ancestors": "Set Content-Security-Policy frame-ancestors header to Place NodeBB in an iFrame",
+	"headers.csp-frame-ancestors-help": "'none', 'self'(default) or list of URIs to allow.",
 	"headers.powered-by": "NodeBBから送信された「Powered By」ヘッダーをカスタマイズする",
 	"headers.acao": "アクセス-制御-有効-原点",
 	"headers.acao-regex": "Access-Control-Allow-Origin Regular Expression",

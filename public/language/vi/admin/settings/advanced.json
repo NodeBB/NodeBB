@@ -5,6 +5,8 @@
 	"maintenance-mode.message": "Thông điệp bảo trì",
 	"headers": "Headers",
 	"headers.allow-from": "Đặt ALLOW-FROM để đặt NodeBB trong iFrame",
+	"headers.csp-frame-ancestors": "Set Content-Security-Policy frame-ancestors header to Place NodeBB in an iFrame",
+	"headers.csp-frame-ancestors-help": "'none', 'self'(default) or list of URIs to allow.",
 	"headers.powered-by": "Tùy chỉnh tiêu đề \"Powered By\" được gửi bởi NodeBB",
 	"headers.acao": "Access-Control-Allow-Origin",
 	"headers.acao-regex": "Access-Control-Allow-Origin Regular Expression",

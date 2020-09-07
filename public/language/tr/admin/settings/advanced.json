@@ -5,6 +5,8 @@
 	"maintenance-mode.message": "Bakım Mesajı",
 	"headers": "Başlıklar",
 	"headers.allow-from": "NodeBB'yi bir iFrame'e yerleştirmek için ALLOW-FROM'u ayarla",
+	"headers.csp-frame-ancestors": "Set Content-Security-Policy frame-ancestors header to Place NodeBB in an iFrame",
+	"headers.csp-frame-ancestors-help": "'none', 'self'(default) or list of URIs to allow.",
 	"headers.powered-by": "NodeBB tarafından gönderilen \"Powered By\" başlığını özelleştirin",
 	"headers.acao": "Erişim-Kontrolü-Kaynak-İzni",
 	"headers.acao-regex": "Erişim-Kontrolü-Kaynak-İzni Düzenli İfade",

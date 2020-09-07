@@ -5,6 +5,8 @@
 	"maintenance-mode.message": "점검 메세지",
 	"headers": "헤더",
 	"headers.allow-from": "NodeBB를 iFrame에 삽입할 수 있게 하시려면, ALLOW-FROM(NodeBB Embedding할 수 있는 도메인)을 설정하세요",
+	"headers.csp-frame-ancestors": "Set Content-Security-Policy frame-ancestors header to Place NodeBB in an iFrame",
+	"headers.csp-frame-ancestors-help": "'none', 'self'(default) or list of URIs to allow.",
 	"headers.powered-by": "NodeBB 의 \"Powered By\" 를 커스터마이징하기",
 	"headers.acao": "Access-Control-Allow-Origin",
 	"headers.acao-regex": "Access-Control-Allow-Origin Regular Expression",

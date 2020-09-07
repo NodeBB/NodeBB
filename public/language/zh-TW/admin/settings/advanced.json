@@ -5,6 +5,8 @@
 	"maintenance-mode.message": "維護訊息",
 	"headers": "標題",
 	"headers.allow-from": "設定 ALLOW-FROM 來放置 NodeBB 於 iFrame 中",
+	"headers.csp-frame-ancestors": "Set Content-Security-Policy frame-ancestors header to Place NodeBB in an iFrame",
+	"headers.csp-frame-ancestors-help": "'none', 'self'(default) or list of URIs to allow.",
 	"headers.powered-by": "自訂由 NodeBB 發送的 \"Powered By\" 標頭 ",
 	"headers.acao": "Access-Control-Allow-Origin",
 	"headers.acao-regex": "Access-Control-Allow-Origin 正規表示法",

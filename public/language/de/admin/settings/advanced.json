@@ -5,6 +5,8 @@
 	"maintenance-mode.message": "Wartungsnachricht",
 	"headers": "Headers",
 	"headers.allow-from": "ALLOW-FROM setzen um NodeBB in einem iFrame zu platzieren",
+	"headers.csp-frame-ancestors": "Set Content-Security-Policy frame-ancestors header to Place NodeBB in an iFrame",
+	"headers.csp-frame-ancestors-help": "'none', 'self'(default) or list of URIs to allow.",
 	"headers.powered-by": "Anpassen des \"Powered By\" Headers von NodeBB",
 	"headers.acao": "Access-Control-Allow-Origin",
 	"headers.acao-regex": "Access-Control-Allow-Origin Regulärer Ausdruck",

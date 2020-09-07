@@ -5,6 +5,8 @@
 	"maintenance-mode.message": "Message de maintenance",
 	"headers": "En-têtes",
 	"headers.allow-from": "Définissez ALLOW-FROM pour afficher NodeBB dans un iFrame",
+	"headers.csp-frame-ancestors": "Set Content-Security-Policy frame-ancestors header to Place NodeBB in an iFrame",
+	"headers.csp-frame-ancestors-help": "'none', 'self'(default) or list of URIs to allow.",
 	"headers.powered-by": "Personnaliser l'en-tête \"Propulsé par\" envoyé par NodeBB",
 	"headers.acao": "Access-Control-Allow-Origin",
 	"headers.acao-regex": "Access-Control-Allow-Origin Expression régulière",

@@ -5,6 +5,8 @@
 	"maintenance-mode.message": "Poruka održavanja",
 	"headers": "Zaglavlje",
 	"headers.allow-from": "Izaberi ALLOW-FROM da bi ste postavili NodeBB u iFrame.",
+	"headers.csp-frame-ancestors": "Set Content-Security-Policy frame-ancestors header to Place NodeBB in an iFrame",
+	"headers.csp-frame-ancestors-help": "'none', 'self'(default) or list of URIs to allow.",
 	"headers.powered-by": "Uredi \"Powered by\" zaglavlje koje šalje NodeBB",
 	"headers.acao": "Pristup-Kontrola-Dozvoli-Izvor",
 	"headers.acao-regex": "Access-Control-Allow-Origin Regular Expression",

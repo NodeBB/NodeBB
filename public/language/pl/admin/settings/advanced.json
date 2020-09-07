@@ -5,6 +5,8 @@
 	"maintenance-mode.message": "Komunikat na ekranie konserwacji",
 	"headers": "Nagłówki",
 	"headers.allow-from": "Ustaw ALLOW-FROM, aby umieścić NodeBB w ramce iFrame",
+	"headers.csp-frame-ancestors": "Set Content-Security-Policy frame-ancestors header to Place NodeBB in an iFrame",
+	"headers.csp-frame-ancestors-help": "'none', 'self'(default) or list of URIs to allow.",
 	"headers.powered-by": "Dopasuj nagłówek \"Powered By\" wysyłany przez NodeBB",
 	"headers.acao": "Kontrola-Dostępu-Zezwól-Żródło",
 	"headers.acao-regex": "Kontrola-Dostępu-Zezwól-Źródło Wyrażenie Regularne",
