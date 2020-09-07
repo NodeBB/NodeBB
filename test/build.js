@@ -220,20 +220,4 @@ describe('Build', function (done) {
 			done();
 		});
 	});
-
-	it('should build sounds', function (done) {
-		build.build(['sounds'], function (err) {
-			assert.ifError(err);
-
-			var mapFile = path.join(__dirname, '../build/public/sounds/fileMap.json');
-			assert(file.existsSync(mapFile));
-			var fileMap = JSON.parse(fs.readFileSync(mapFile));
-			assert.strictEqual(fileMap['Default | Deedle-dum'], 'nodebb-plugin-soundpack-default/notification.mp3');
-
-			var deebleDumFile = path.join(__dirname, '../build/public/sounds/nodebb-plugin-soundpack-default/notification.mp3');
-			assert(file.existsSync(deebleDumFile));
-
-			done();
-		});
-	});
 });

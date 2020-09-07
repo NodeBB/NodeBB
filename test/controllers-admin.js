@@ -496,15 +496,6 @@ describe('Admin Controllers', function () {
 		});
 	});
 
-	it('should load /admin/settings/sounds', function (done) {
-		request(nconf.get('url') + '/api/admin/settings/sounds', { jar: jar, json: true }, function (err, res, body) {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
-	});
-
 	it('should load /admin/manage/categories', function (done) {
 		request(nconf.get('url') + '/api/admin/manage/categories', { jar: jar, json: true }, function (err, res, body) {
 			assert.ifError(err);
