@@ -22,10 +22,9 @@ settingsController.get = async function (req, res, next) {
 	if (!userData) {
 		return next();
 	}
-	const [settings, languagesData, soundsMapping] = await Promise.all([
+	const [settings, languagesData] = await Promise.all([
 		user.getSettings(userData.uid),
 		languages.list(),
-		meta.sounds.getUserSoundMap(userData.uid),
 	]);
 
 	userData.settings = settings;
@@ -33,8 +32,6 @@ settingsController.get = async function (req, res, next) {
 	if (userData.isAdmin && userData.isSelf) {
 		userData.acpLanguages = _.cloneDeep(languagesData);
 	}
-
-	addSoundSettings(userData, soundsMapping);
 
 	const data = await plugins.fireHook('filter:user.customSettings', {
 		settings: settings,
@@ -123,48 +120,6 @@ settingsController.get = async function (req, res, next) {
 
 	res.render('account/settings', userData);
 };
-
-function addSoundSettings(userData, soundsMapping) {
-	const types = [
-		'notification',
-		'chat-incoming',
-		'chat-outgoing',
-	];
-	const aliases = {
-		notification: 'notificationSound',
-		'chat-incoming': 'incomingChatSound',
-		'chat-outgoing': 'outgoingChatSound',
-	};
-
-	types.forEach(function (type) {
-		const soundpacks = plugins.soundpacks.map(function (pack) {
-			const sounds = Object.keys(pack.sounds).map(function (soundName) {
-				const value = pack.name + ' | ' + soundName;
-				return {
-					name: soundName,
-					value: value,
-					selected: value === soundsMapping[type],
-				};
-			});
-
-			return {
-				name: pack.name,
-				sounds: sounds,
-			};
-		});
-
-		userData[type + '-sound'] = soundpacks;
-		// fallback
-		userData[aliases[type]] = soundpacks.concat.apply([], soundpacks.map(function (pack) {
-			return pack.sounds.map(function (sound) {
-				return {
-					name: sound.value,
-					selected: sound.selected,
-				};
-			});
-		}));
-	});
-}
 
 const unsubscribable = ['digest', 'notification'];
 const jwtVerifyAsync = util.promisify(function (token, callback) {

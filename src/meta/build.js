@@ -61,9 +61,6 @@ var targetHandlers = {
 	languages: function (parallel, callback) {
 		meta.languages.build(callback);
 	},
-	sounds: function (parallel, callback) {
-		meta.sounds.build(callback);
-	},
 };
 
 var aliases = {
@@ -81,7 +78,6 @@ var aliases = {
 	styles: ['css', 'less', 'style'],
 	templates: ['tpl'],
 	languages: ['lang', 'i18n'],
-	sounds: ['sound'],
 };
 
 exports.aliases = aliases;

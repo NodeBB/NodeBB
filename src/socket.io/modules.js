@@ -15,7 +15,6 @@ const privileges = require('../privileges');
 const SocketModules = module.exports;
 
 SocketModules.chats = {};
-SocketModules.sounds = {};
 SocketModules.settings = {};
 
 /* Chat */
@@ -288,11 +287,6 @@ SocketModules.chats.getIP = async function (socket, mid) {
 		throw new Error('[[error:no-privilege]]');
 	}
 	return await Messaging.getMessageField(mid, 'ip');
-};
-
-/* Sounds */
-SocketModules.sounds.getUserSoundMap = async function getUserSoundMap(socket) {
-	return await meta.sounds.getUserSoundMap(socket.uid);
 };
 
 require('../promisify')(SocketModules);

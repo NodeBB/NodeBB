@@ -1641,9 +1641,6 @@ describe('User', function () {
 					restrictChat: 0,
 					followTopicsOnCreate: 1,
 					followTopicsOnReply: 1,
-					notificationSound: '',
-					incomingChatSound: '',
-					outgoingChatSound: '',
 				},
 			};
 			socketUser.saveSettings({ uid: testUid }, data, function (err) {

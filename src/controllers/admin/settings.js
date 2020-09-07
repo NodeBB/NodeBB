@@ -5,7 +5,6 @@ const emailer = require('../../emailer');
 const notifications = require('../../notifications');
 const groups = require('../../groups');
 const languages = require('../../languages');
-const plugins = require('../../plugins');
 const navigationAdmin = require('../../navigation/admin');
 const social = require('../../social');
 
@@ -59,38 +58,6 @@ settingsController.languages = async function (req, res) {
 		languages: languageData,
 		autoDetectLang: meta.config.autoDetectLang,
 	});
-};
-
-settingsController.sounds = async function (req, res) {
-	const types = [
-		'notification',
-		'chat-incoming',
-		'chat-outgoing',
-	];
-	const settings = await meta.configs.getFields(types) || {};
-	var output = {};
-
-	types.forEach(function (type) {
-		var soundpacks = plugins.soundpacks.map(function (pack) {
-			var sounds = Object.keys(pack.sounds).map(function (soundName) {
-				var value = pack.name + ' | ' + soundName;
-				return {
-					name: soundName,
-					value: value,
-					selected: value === settings[type],
-				};
-			});
-
-			return {
-				name: pack.name,
-				sounds: sounds,
-			};
-		});
-
-		output[type + '-sound'] = soundpacks;
-	});
-
-	res.render('admin/settings/sounds', output);
 };
 
 settingsController.navigation = async function (req, res) {
