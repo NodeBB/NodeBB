@@ -72,6 +72,28 @@ socket = window.socket;
 		socket.on('event:alert', function (params) {
 			app.alert(params);
 		});
+
+		socket.removeAllListeners('event:nodebb.ready');
+		socket.on('event:nodebb.ready', function (data) {
+			if ((data.hostname === app.upstreamHost) && (!app.cacheBuster || app.cacheBuster !== data['cache-buster'])) {
+				app.cacheBuster = data['cache-buster'];
+
+				app.alert({
+					alert_id: 'forum_updated',
+					title: '[[global:updated.title]]',
+					message: '[[global:updated.message]]',
+					clickfn: function () {
+						window.location.reload();
+					},
+					type: 'warning',
+				});
+			}
+		});
+		socket.on('event:livereload', function () {
+			if (app.user.isAdmin && !ajaxify.currentPage.match(/admin/)) {
+				window.location.reload();
+			}
+		});
 	}
 
 	function onConnect() {

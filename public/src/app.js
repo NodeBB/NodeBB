@@ -46,39 +46,12 @@ app.cacheBuster = null;
 		});
 
 		Visibility.change(function (event, state) {
-			if (state === 'visible') {
-				app.isFocused = true;
-				app.alternatingTitle('');
-			} else if (state === 'hidden') {
-				app.isFocused = false;
-			}
+			app.isFocused = state === 'visible';
 		});
 
 		createHeaderTooltips();
 		app.showEmailConfirmWarning();
 		app.showCookieWarning();
-
-		socket.removeAllListeners('event:nodebb.ready');
-		socket.on('event:nodebb.ready', function (data) {
-			if ((data.hostname === app.upstreamHost) && (!app.cacheBuster || app.cacheBuster !== data['cache-buster'])) {
-				app.cacheBuster = data['cache-buster'];
-
-				app.alert({
-					alert_id: 'forum_updated',
-					title: '[[global:updated.title]]',
-					message: '[[global:updated.message]]',
-					clickfn: function () {
-						window.location.reload();
-					},
-					type: 'warning',
-				});
-			}
-		});
-		socket.on('event:livereload', function () {
-			if (app.user.isAdmin && !ajaxify.currentPage.match(/admin/)) {
-				window.location.reload();
-			}
-		});
 
 		require(['taskbar', 'helpers', 'forum/pagination'], function (taskbar, helpers, pagination) {
 			taskbar.init();
@@ -370,66 +343,6 @@ app.cacheBuster = null;
 				if (ok) {
 					createChat();
 				}
-			});
-		});
-	};
-
-	var	titleObj = {
-		active: false,
-		interval: undefined,
-		titles: [],
-	};
-
-	app.alternatingTitle = function (title) {
-		if (typeof title !== 'string') {
-			return;
-		}
-
-		if (title.length > 0 && !app.isFocused) {
-			if (!titleObj.titles[0]) {
-				titleObj.titles[0] = window.document.title;
-			}
-
-			require(['translator'], function (translator) {
-				translator.translate(title, function (translated) {
-					titleObj.titles[1] = translated;
-					if (titleObj.interval) {
-						clearInterval(titleObj.interval);
-					}
-
-					titleObj.interval = setInterval(function () {
-						var title = titleObj.titles[titleObj.titles.indexOf(window.document.title) ^ 1];
-						if (title) {
-							window.document.title = $('<div></div>').html(title).text();
-						}
-					}, 2000);
-				});
-			});
-		} else {
-			if (titleObj.interval) {
-				clearInterval(titleObj.interval);
-			}
-			if (titleObj.titles[0]) {
-				window.document.title = $('<div></div>').html(titleObj.titles[0]).text();
-			}
-		}
-	};
-
-	app.refreshTitle = function (title) {
-		if (!title) {
-			return;
-		}
-		require(['translator'], function (translator) {
-			title = config.titleLayout.replace(/&#123;/g, '{').replace(/&#125;/g, '}')
-				.replace('{pageTitle}', function () { return title; })
-				.replace('{browserTitle}', function () { return config.browserTitle; });
-
-			// Allow translation strings in title on ajaxify (#5927)
-			title = translator.unescape(title);
-
-			translator.translate(title, function (translated) {
-				titleObj.titles[0] = translated;
-				app.alternatingTitle('');
 			});
 		});
 	};
@@ -766,106 +679,5 @@ app.cacheBuster = null;
 				});
 			});
 		});
-	};
-
-	app.reskin = function (skinName) {
-		var clientEl = Array.prototype.filter.call(document.querySelectorAll('link[rel="stylesheet"]'), function (el) {
-			return el.href.indexOf(config.relative_path + '/assets/client') !== -1;
-		})[0] || null;
-		if (!clientEl) {
-			return;
-		}
-
-		var currentSkinClassName = $('body').attr('class').split(/\s+/).filter(function (className) {
-			return className.startsWith('skin-');
-		});
-		if (!currentSkinClassName[0]) {
-			return;
-		}
-		var currentSkin = currentSkinClassName[0].slice(5);
-		currentSkin = currentSkin !== 'noskin' ? currentSkin : '';
-
-		// Stop execution if skin didn't change
-		if (skinName === currentSkin) {
-			return;
-		}
-
-		var linkEl = document.createElement('link');
-		linkEl.rel = 'stylesheet';
-		linkEl.type = 'text/css';
-		linkEl.href = config.relative_path + '/assets/client' + (skinName ? '-' + skinName : '') + '.css';
-		linkEl.onload = function () {
-			clientEl.parentNode.removeChild(clientEl);
-
-			// Update body class with proper skin name
-			$('body').removeClass(currentSkinClassName.join(' '));
-			$('body').addClass('skin-' + (skinName || 'noskin'));
-		};
-
-		document.head.appendChild(linkEl);
-	};
-
-	app.updateTags = function () {
-		var metaWhitelist = ['title', 'description', /og:.+/, /article:.+/].map(function (val) {
-			return new RegExp(val);
-		});
-		var linkWhitelist = ['canonical', 'alternate', 'up'];
-
-		// Delete the old meta tags
-		Array.prototype.slice
-			.call(document.querySelectorAll('head meta'))
-			.filter(function (el) {
-				var name = el.getAttribute('property') || el.getAttribute('name');
-				return metaWhitelist.some(function (exp) {
-					return !!exp.test(name);
-				});
-			})
-			.forEach(function (el) {
-				document.head.removeChild(el);
-			});
-
-		// Add new meta tags
-		ajaxify.data._header.tags.meta
-			.filter(function (tagObj) {
-				var name = tagObj.name || tagObj.property;
-				return metaWhitelist.some(function (exp) {
-					return !!exp.test(name);
-				});
-			})
-			.forEach(function (tagObj) {
-				var metaEl = document.createElement('meta');
-				Object.keys(tagObj).forEach(function (prop) {
-					metaEl.setAttribute(prop, tagObj[prop]);
-				});
-				document.head.appendChild(metaEl);
-			});
-
-		// Delete the old link tags
-		Array.prototype.slice
-			.call(document.querySelectorAll('head link'))
-			.filter(function (el) {
-				var name = el.getAttribute('rel');
-				return linkWhitelist.some(function (item) {
-					return item === name;
-				});
-			})
-			.forEach(function (el) {
-				document.head.removeChild(el);
-			});
-
-		// Add new link tags
-		ajaxify.data._header.tags.link
-			.filter(function (tagObj) {
-				return linkWhitelist.some(function (item) {
-					return item === tagObj.rel;
-				});
-			})
-			.forEach(function (tagObj) {
-				var linkEl = document.createElement('link');
-				Object.keys(tagObj).forEach(function (prop) {
-					linkEl.setAttribute(prop, tagObj[prop]);
-				});
-				document.head.appendChild(linkEl);
-			});
 	};
 }());

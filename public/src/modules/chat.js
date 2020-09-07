@@ -49,7 +49,6 @@ define('chat', [
 
 
 	module.onChatMessageReceived = function (data) {
-		var username = data.message.fromUser.username;
 		var isSelf = data.self === 1;
 		data.message.self = data.self;
 
@@ -70,11 +69,7 @@ define('chat', [
 				roomData.silent = true;
 				roomData.uid = app.user.uid;
 				roomData.isSelf = isSelf;
-				module.createModal(roomData, function () {
-					if (!isSelf) {
-						updateTitleAndPlaySound(data.message.mid, username);
-					}
-				});
+				module.createModal(roomData);
 			});
 		}
 	};
@@ -99,7 +94,6 @@ define('chat', [
 			}
 
 			if (!isSelf && (!modal.is(':visible') || !app.isFocused)) {
-				updateTitleAndPlaySound(data.message.mid, username);
 				taskbar.push('chat', modal.attr('data-uuid'), {
 					title: '[[modules:chat.chatting_with]] ' + (data.roomName || username),
 					touid: data.message.fromUser.uid,
@@ -107,13 +101,6 @@ define('chat', [
 					isSelf: false,
 				});
 			}
-		});
-	}
-
-	function updateTitleAndPlaySound(mid, username) {
-		app.alternatingTitle('[[modules:chat.user_has_messaged_you, ' + username + ']]');
-		require(['sounds'], function (sounds) {
-			sounds.play('chat-incoming', 'chat.incoming:' + mid);
 		});
 	}
 

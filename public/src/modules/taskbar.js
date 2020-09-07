@@ -22,7 +22,6 @@ define('taskbar', ['benchpress', 'translator'], function (Benchpress, translator
 						minimizeAll();
 						module.load(uuid);
 						taskbar.toggleNew(uuid, false);
-						app.alternatingTitle('');
 
 						taskbar.tasklist.removeClass('active');
 						$btn.addClass('active');

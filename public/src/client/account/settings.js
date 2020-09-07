@@ -7,7 +7,7 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 	// If page skin is changed but not saved, switch the skin back
 	$(window).on('action:ajaxify.start', function () {
 		if (ajaxify.data.template.name === 'account/settings' && $('#bootswatchSkin').val() !== config.bootswatchSkin) {
-			app.reskin(config.bootswatchSkin);
+			reskin(config.bootswatchSkin);
 		}
 	});
 
@@ -116,6 +116,43 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 			$('#homePageCustom').hide();
 			$('[data-property="homePageCustom"]').val('');
 		}
+	}
+
+	function reskin(skinName) {
+		var clientEl = Array.prototype.filter.call(document.querySelectorAll('link[rel="stylesheet"]'), function (el) {
+			return el.href.indexOf(config.relative_path + '/assets/client') !== -1;
+		})[0] || null;
+		if (!clientEl) {
+			return;
+		}
+
+		var currentSkinClassName = $('body').attr('class').split(/\s+/).filter(function (className) {
+			return className.startsWith('skin-');
+		});
+		if (!currentSkinClassName[0]) {
+			return;
+		}
+		var currentSkin = currentSkinClassName[0].slice(5);
+		currentSkin = currentSkin !== 'noskin' ? currentSkin : '';
+
+		// Stop execution if skin didn't change
+		if (skinName === currentSkin) {
+			return;
+		}
+
+		var linkEl = document.createElement('link');
+		linkEl.rel = 'stylesheet';
+		linkEl.type = 'text/css';
+		linkEl.href = config.relative_path + '/assets/client' + (skinName ? '-' + skinName : '') + '.css';
+		linkEl.onload = function () {
+			clientEl.parentNode.removeChild(clientEl);
+
+			// Update body class with proper skin name
+			$('body').removeClass(currentSkinClassName.join(' '));
+			$('body').addClass('skin-' + (skinName || 'noskin'));
+		};
+
+		document.head.appendChild(linkEl);
 	}
 
 	return AccountSettings;
