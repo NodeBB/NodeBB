@@ -193,13 +193,13 @@ describe('Plugins', function () {
 	});
 
 	describe('install/activate/uninstall', function () {
-		var latest;
+		var latest = '2.0.4';
 		var pluginName = 'nodebb-plugin-imgur';
 		it('should install a plugin', function (done) {
 			this.timeout(0);
 			plugins.toggleInstall(pluginName, '1.0.16', function (err, pluginData) {
 				assert.ifError(err);
-				latest = pluginData.latest;
+				// latest = pluginData.latest;
 
 				assert.equal(pluginData.name, pluginName);
 				assert.equal(pluginData.id, pluginName);
