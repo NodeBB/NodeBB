@@ -76,7 +76,6 @@ ajaxify = window.ajaxify || {};
 			}
 
 			retry = true;
-			app.template = data.template.name;
 
 			renderTemplate(url, data.templateToRender || data.template.name, data, callback);
 		});
@@ -88,7 +87,7 @@ ajaxify = window.ajaxify || {};
 	ajaxify.coldLoad = function () {
 		var url = ajaxify.start(window.location.pathname.slice(1) + window.location.search + window.location.hash);
 		ajaxify.updateHistory(url, true);
-		ajaxify.end(url, app.template);
+		ajaxify.end(url, ajaxify.data.template.name);
 		$(window).trigger('action:ajaxify.coldLoad');
 	};
 
@@ -327,6 +326,7 @@ ajaxify = window.ajaxify || {};
 	require(['translator', 'benchpress'], function (translator, Benchpress) {
 		translator.translate('[[error:no-connection]]');
 		Benchpress.registerLoader(ajaxify.loadTemplate);
+		Benchpress.setGlobal('config', config);
 	});
 }());
 

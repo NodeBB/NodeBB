@@ -15,22 +15,6 @@ app.cacheBuster = null;
 	var registerMessage = params.register;
 	var isTouchDevice = utils.isTouchDevice();
 
-	require(['benchpress'], function (Benchpress) {
-		Benchpress.setGlobal('config', config);
-		if (Object.defineProperty) {
-			Object.defineProperty(window, 'templates', {
-				configurable: true,
-				enumerable: true,
-				get: function () {
-					console.warn('[deprecated] Accessing benchpress (formerly known as templates.js) globally is deprecated. Use `require(["benchpress"], function (Benchpress) { ... })` instead');
-					return Benchpress;
-				},
-			});
-		} else {
-			window.templates = Benchpress;
-		}
-	});
-
 	app.cacheBuster = config['cache-buster'];
 
 	bootbox.setDefaults({

@@ -3,7 +3,6 @@
 
 app = window.app || {};
 socket = window.socket;
-app.isConnected = false;
 
 (function () {
 	var reconnecting = false;
@@ -76,8 +75,6 @@ app.isConnected = false;
 	}
 
 	function onConnect() {
-		app.isConnected = true;
-
 		if (!reconnecting) {
 			app.showMessages();
 			$(window).trigger('action:connected');
@@ -155,7 +152,6 @@ app.isConnected = false;
 
 	function onDisconnect() {
 		$(window).trigger('action:disconnected');
-		app.isConnected = false;
 	}
 
 	function onEventBanned(data) {

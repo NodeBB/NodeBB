@@ -203,7 +203,7 @@ define('admin/extend/widgets', ['jqueryui'], function () {
 			return widget;
 		}
 
-		$.get(RELATIVE_PATH + '/api/admin/extend/widgets', function (data) {
+		$.get(config.relative_path + '/api/admin/extend/widgets', function (data) {
 			var areas = data.areas;
 
 			for (var i = 0; i < areas.length; i += 1) {
