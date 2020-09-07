@@ -1065,7 +1065,7 @@ describe('Controllers', function () {
 				request(nconf.get('url') + '/me', { jar: jar, json: true }, function (err, res, body) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
-					assert(body.includes('template: "account/profile"'));
+					assert(body.includes('"template":{"name":"account/profile","account/profile":true}'));
 					assert(body.includes('"username":"foo"'));
 					done();
 				});

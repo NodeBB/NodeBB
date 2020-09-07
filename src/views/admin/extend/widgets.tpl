@@ -1,5 +1,5 @@
 <div id="widgets" class="row">
-	<div class="col-md-7" id="active-widgets">
+	<div class="col-md-8" id="active-widgets">
 		<ul class="nav nav-pills">
 		<!-- BEGIN templates -->
 			<li class="<!-- IF @first -->active<!-- ENDIF @first -->"><a href="#" data-template="{../template}" data-toggle="pill">{../template}</a></li>
@@ -26,7 +26,7 @@
 		</div>
 	</div>
 
-	<div class="col-md-5">
+	<div class="col-md-4">
 		<div class="panel panel-default">
 			<div class="panel-heading">[[admin/extend/widgets:available]]</div>
 			<div class="panel-body">
