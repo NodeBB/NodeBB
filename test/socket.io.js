@@ -497,7 +497,7 @@ describe('socket.io', function () {
 		var data = [
 			{ name: 'nodebb-theme-persona', order: 0 },
 			{ name: 'nodebb-plugin-dbsearch', order: 1 },
-			{ name: 'nodebb-plugin-soundpack-default', order: 2 },
+			{ name: 'nodebb-plugin-markdown', order: 2 },
 			{ ignoreme: 'wrong data' },
 		];
 		socketAdmin.plugins.orderActivePlugins({ uid: adminUid }, data, function (err) {

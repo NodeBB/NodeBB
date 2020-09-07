@@ -347,25 +347,6 @@ describe('Upload Controllers', function () {
 			});
 		});
 
-
-		it('should fail to upload invalid sound file', function (done) {
-			helpers.uploadFile(nconf.get('url') + '/api/admin/upload/sound', path.join(__dirname, '../test/files/test.png'), { }, jar, csrf_token, function (err, res, body) {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 500);
-				assert.equal(body.error, '[[error:invalid-data]]');
-				done();
-			});
-		});
-
-		it('should upload sound file', function (done) {
-			helpers.uploadFile(nconf.get('url') + '/api/admin/upload/sound', path.join(__dirname, '../test/files/test.wav'), { }, jar, csrf_token, function (err, res, body) {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 200);
-				assert(body);
-				done();
-			});
-		});
-
 		it('should upload default avatar', function (done) {
 			helpers.uploadFile(nconf.get('url') + '/api/admin/uploadDefaultAvatar', path.join(__dirname, '../test/files/test.png'), { }, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);

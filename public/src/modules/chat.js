@@ -72,7 +72,7 @@ define('chat', [
 				roomData.isSelf = isSelf;
 				module.createModal(roomData, function () {
 					if (!isSelf) {
-						updateTitleAndPlaySound(data.message.mid, username);
+						updateTitle(data.message.mid, username);
 					}
 				});
 			});
@@ -99,7 +99,7 @@ define('chat', [
 			}
 
 			if (!isSelf && (!modal.is(':visible') || !app.isFocused)) {
-				updateTitleAndPlaySound(data.message.mid, username);
+				updateTitle(data.message.mid, username);
 				taskbar.push('chat', modal.attr('data-uuid'), {
 					title: '[[modules:chat.chatting_with]] ' + (data.roomName || username),
 					touid: data.message.fromUser.uid,
@@ -110,11 +110,8 @@ define('chat', [
 		});
 	}
 
-	function updateTitleAndPlaySound(mid, username) {
+	function updateTitle(mid, username) {
 		app.alternatingTitle('[[modules:chat.user_has_messaged_you, ' + username + ']]');
-		require(['sounds'], function (sounds) {
-			sounds.play('chat-incoming', 'chat.incoming:' + mid);
-		});
 	}
 
 	module.onUserStatusChange = function (data) {

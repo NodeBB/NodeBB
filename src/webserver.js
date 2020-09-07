@@ -103,7 +103,6 @@ async function initializeNodeBB() {
 		middleware: middleware,
 	});
 	await routes(app, middleware);
-	await meta.sounds.addUploads();
 	await meta.blacklist.load();
 	await flags.init();
 }

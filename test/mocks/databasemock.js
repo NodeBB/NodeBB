@@ -193,7 +193,6 @@ async function setupMockDefaults() {
 		'test/uploads/category',
 		'test/uploads/files',
 		'test/uploads/system',
-		'test/uploads/sounds',
 		'test/uploads/profile',
 	];
 	for (const folder of folders) {
@@ -229,7 +228,6 @@ async function enableDefaultPlugins() {
 	const testPlugins = Array.isArray(nconf.get('test_plugins')) ? nconf.get('test_plugins') : [];
 	const defaultEnabled = [
 		'nodebb-plugin-dbsearch',
-		'nodebb-plugin-soundpack-default',
 		'nodebb-widget-essentials',
 	].concat(testPlugins);
 

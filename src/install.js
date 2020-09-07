@@ -420,7 +420,6 @@ async function enableDefaultPlugins() {
 		'nodebb-plugin-mentions',
 		'nodebb-widget-essentials',
 		'nodebb-rewards-essentials',
-		'nodebb-plugin-soundpack-default',
 		'nodebb-plugin-emoji',
 		'nodebb-plugin-emoji-android',
 	];

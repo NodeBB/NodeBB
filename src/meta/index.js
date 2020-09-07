@@ -15,7 +15,6 @@ Meta.configs = require('./configs');
 Meta.themes = require('./themes');
 Meta.js = require('./js');
 Meta.css = require('./css');
-Meta.sounds = require('./sounds');
 Meta.settings = require('./settings');
 Meta.logs = require('./logs');
 Meta.errors = require('./errors');

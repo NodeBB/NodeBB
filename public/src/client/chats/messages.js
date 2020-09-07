@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/chats/messages', ['components', 'sounds', 'translator', 'benchpress'], function (components, sounds, translator, Benchpress) {
+define('forum/chats/messages', ['components', 'translator', 'benchpress'], function (components, translator, Benchpress) {
 	var messages = {};
 
 	messages.sendMessage = function (roomId, inputEl) {
@@ -41,8 +41,6 @@ define('forum/chats/messages', ['components', 'sounds', 'translator', 'benchpres
 						timeout: 10000,
 					});
 				}
-
-				sounds.play('chat-outgoing');
 			});
 		} else {
 			socket.emit('modules.chats.edit', {

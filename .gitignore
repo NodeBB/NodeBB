@@ -28,7 +28,6 @@ pidfile
 # templates
 /public/templates
 
-/public/sounds
 /public/uploads
 /test/uploads
 

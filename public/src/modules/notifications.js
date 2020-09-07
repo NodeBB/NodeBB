@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('notifications', ['sounds', 'translator', 'components', 'navigator', 'benchpress'], function (sounds, translator, components, navigator, Benchpress) {
+define('notifications', ['translator', 'components', 'navigator', 'benchpress'], function (translator, components, navigator, Benchpress) {
 	var Notifications = {};
 
 	var unreadNotifs = {};
@@ -68,7 +68,6 @@ define('notifications', ['sounds', 'translator', 'components', 'navigator', 'ben
 		});
 
 		if (!unreadNotifs[notifData.nid]) {
-			sounds.play('notification', notifData.nid);
 			unreadNotifs[notifData.nid] = true;
 		}
 	};

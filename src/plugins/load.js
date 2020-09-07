@@ -37,9 +37,6 @@ module.exports = function (Plugins) {
 			modules: function (next) {
 				Plugins.data.getModules(pluginData, next);
 			},
-			soundpack: function (next) {
-				Plugins.data.getSoundpack(pluginData, next);
-			},
 			languageData: function (next) {
 				Plugins.data.getLanguageData(pluginData, next);
 			},
@@ -63,9 +60,6 @@ module.exports = function (Plugins) {
 		add(Plugins.clientScripts, results.clientScripts);
 		add(Plugins.acpScripts, results.acpScripts);
 		Object.assign(meta.js.scripts.modules, results.modules || {});
-		if (results.soundpack) {
-			Plugins.soundpacks.push(results.soundpack);
-		}
 		if (results.languageData) {
 			Plugins.languageData.languages = _.union(Plugins.languageData.languages, results.languageData.languages);
 			Plugins.languageData.namespaces = _.union(Plugins.languageData.namespaces, results.languageData.namespaces);
@@ -81,7 +75,6 @@ module.exports = function (Plugins) {
 			'admin js bundle': ['acpScripts'],
 			'client side styles': ['cssFiles', 'lessFiles'],
 			'admin control panel styles': ['cssFiles', 'lessFiles', 'acpLessFiles'],
-			sounds: ['soundpack'],
 			languages: ['languageData'],
 		};
 
@@ -96,9 +89,6 @@ module.exports = function (Plugins) {
 				case 'lessFiles':
 				case 'acpLessFiles':
 					Plugins[field].length = 0;
-					break;
-				case 'soundpack':
-					Plugins.soundpacks.length = 0;
 					break;
 				case 'languageData':
 					Plugins.languageData.languages = [];
@@ -132,7 +122,7 @@ module.exports = function (Plugins) {
 
 		try {
 			registerHooks(pluginData);
-			await registerPluginAssets(pluginData, ['soundpack']);
+			await registerPluginAssets(pluginData);
 		} catch (err) {
 			winston.error(err.stack);
 			winston.verbose('[plugins] Could not load plugin : ' + pluginData.id);

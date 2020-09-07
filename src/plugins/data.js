@@ -216,35 +216,6 @@ Data.getModules = async function getModules(pluginData) {
 	return modules;
 };
 
-Data.getSoundpack = async function getSoundpack(pluginData) {
-	var spack = pluginData.soundpack;
-	if (!spack || !spack.dir || !spack.sounds) {
-		return;
-	}
-
-	var soundpack = {};
-	soundpack.name = spack.name || pluginData.name;
-	soundpack.id = pluginData.id;
-	soundpack.dir = path.join(pluginData.path, spack.dir);
-	soundpack.sounds = {};
-
-	async function processSoundPack(name) {
-		const soundFile = spack.sounds[name];
-		const exists = await file.exists(path.join(soundpack.dir, soundFile));
-		if (!exists) {
-			winston.warn('[plugins] Sound file not found: ' + soundFile);
-			return;
-		}
-		soundpack.sounds[name] = soundFile;
-	}
-
-	await Promise.all(Object.keys(spack.sounds).map(key => processSoundPack(key)));
-
-	const len = Object.keys(soundpack.sounds).length;
-	winston.verbose('[plugins] Found ' + len + ' sound file(s) for plugin ' + pluginData.id);
-	return soundpack;
-};
-
 Data.getLanguageData = async function getLanguageData(pluginData) {
 	if (typeof pluginData.languages !== 'string') {
 		return;
