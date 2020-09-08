@@ -32,6 +32,7 @@ var buildImports = {
 			'@import "../../public/less/generics.less";',
 			'@import "../../public/less/mixins.less";',
 			'@import "../../public/less/global.less";',
+			'@import "../../public/less/modals.less";',
 		].map(function (str) {
 			return str.replace(/\//g, path.sep);
 		}).join('\n');
