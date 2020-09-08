@@ -61,7 +61,7 @@ define('forum/topic/move', ['categorySelector', 'alerts'], function (categorySel
 			modal.modal('hide');
 
 			alerts.alert({
-				alert_id: 'tids_move_' + Move.tids.join(';'),
+				alert_id: 'tids_move_' + Move.tids.join('-'),
 				title: '[[topic:thread_tools.move]]',
 				message: '[[topic:topic_move_success, ' + selectedCategory.name + ']]',
 				type: 'success',
