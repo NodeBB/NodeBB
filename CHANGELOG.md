@@ -1,3 +1,58 @@
+#### v1.15.0-beta.13 (2020-09-08)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.13 (bdd71c51)
+*  update changelog for v1.15.0-beta.12 (0a242605)
+* **deps:**
+  *  update dependency eslint to v7.8.1 (#8597) (39110276)
+  *  update dependency lint-staged to v10.3.0 (#8608) (dc1f1db9)
+
+##### New Features
+
+*  refactor app.js (5002e0f6)
+*  remove global RELATIVE_PATH (19c44861)
+*  remove app.template (3cd3b7a1)
+*  remove global window.templates (630bac2a)
+*  remove app.isConnected, use socket.connected (fddeb5c0)
+*  use const/let (6fc31df0)
+*  allow nbb to work with cloudflare rocket loader :rocket: (4d665955)
+*  move code (53a5f151)
+*  #8602, dont send emails to unconfirmed addresses (b6917b9d)
+*  add partials/footer/js.tpl (94da9fe5)
+*  add missing name to profile image upload (54b49725)
+*  add action:user.removeCoverPicture (b0a75922)
+*  add user data to action:user.removeUploadedPicture (962446a5)
+*  add userData to action:user.delete (9542ef12)
+*  force upgrade scripts for test (1b7ba2c8)
+*  replace relative urls to absolute before sending email notifs (1e5981c0)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency nodebb-theme-vanilla to v11.2.11 (#8624) (fd6259c8)
+  *  update dependency nodebb-theme-persona to v10.2.17 (#8623) (a1d310bd)
+  *  update dependency nodebb-theme-slick to v1.2.30 (#8620) (251ea79b)
+  *  update dependency nodebb-theme-persona to v10.2.16 (#8618) (0d85dc48)
+  *  update dependency nodebb-theme-vanilla to v11.2.10 (#8619) (b52301b1)
+  *  update dependency nodebb-theme-vanilla to v11.2.9 (#8616) (69373fde)
+  *  update dependency nodebb-theme-persona to v10.2.15 (#8614) (3c0540c1)
+  *  update dependency socket.io-redis to v5.4.0 (#8600) (5ba23f24)
+  *  update dependency nodebb-theme-vanilla to v11.2.8 (#8599) (97e3543e)
+  *  update dependency nodebb-theme-persona to v10.2.12 (#8598) (1bb0896e)
+*  remove lang keys, remove sounds menu (a34b685c)
+*  lavender version (8a752364)
+*  tests (e3a0b4b1)
+*  wider widget area (4bace773)
+*  bypass nbbpm for now (33c1bd5f)
+*  #8432, add CSP frame-ancestors (46ab2711)
+*  allow setting maximumAboutMeLength to 0 (4588e521)
+*  additional commit for CF rocket loader (a38784f5)
+*  stack trace (4031a8ca)
+*  #8604 (a2638976)
+*  don't toggle elements if there is no inputEl (57f67e2b)
+* **bug:**  #8611, custom route logic corrected (#8612) (64a457a4)
+
 #### v1.15.0-beta.12 (2020-09-03)
 
 ##### Chores
