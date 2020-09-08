@@ -3,16 +3,16 @@
 	"bg-color": "Barva pozadí",
 	"text-color": "Barva textu",
 	"create-modify": "Vytvořit a upravit značky",
-	"description": "Select tags by clicking or dragging, use <code>CTRL</code> to select multiple tags.",
+	"description": "Pro výběr více značek, vyberte značky kliknutím nebo přetažením, za použití klávesy <code>CTRL</code>.",
 	"create": "Vytvořit značku",
 	"modify": "Upravit značky",
 	"rename": "Přejmenovat značky",
 	"delete": "Odstranit vybrané značky",
 	"search": "Hledat značky...",
-	"settings": "Tags Settings",
+	"settings": "Nastavení značek",
 	"name": "Název značky",
 
-	"alerts.editing": "Editing tag(s)",
+	"alerts.editing": "Upravení značky(ek)",
 	"alerts.confirm-delete": "Chcete odstranit vybranou značku?",
 	"alerts.update-success": "Značka aktualizována."
 }

@@ -9,7 +9,7 @@
 	"default": "Výchozí systémové",
 	"default-help": "Výchozí systémové znamená, že uživatel nemůže přenastavit celkové nastavení pravidel na fóru pro odesílání přehledů, které je momentálně<strong>%1</strong>",
 	"resend": "Znovu odeslat přehled",
-	"resend-all-confirm": "Are you sure you wish to manually execute this digest run?",
+	"resend-all-confirm": "Jste si jist/a, že chcete ručně spustit tento přehled.",
 	"resent-single": "Manuální znovu poslání přehledu bylo dokončeno",
 	"resent-day": "Znovu odeslat denní přehled",
 	"resent-week": "Znovu odeslat týdenní přehled",

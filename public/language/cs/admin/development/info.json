@@ -1,9 +1,9 @@
 {
-	"you-are-on": "You are on <strong>%1:%2</strong>",
+	"you-are-on": "Jste u <strong>%1:%2</strong>",
 	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "%1 vazeb odpovědělo během %2ms.",
 	"host": "host",
-	"primary": "primary / run jobs",
+	"primary": "primární / spuštěné úlohy",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "připojen",
