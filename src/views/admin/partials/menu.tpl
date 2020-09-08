@@ -222,7 +222,6 @@
 					<li><a href="{relative_path}/admin/settings/chat">[[admin/menu:settings/chat]]</a></li>
 					<li><a href="{relative_path}/admin/settings/pagination">[[admin/menu:settings/pagination]]</a></li>
 					<li><a href="{relative_path}/admin/settings/notifications">[[admin/menu:settings/notifications]]</a></li>
-					<li><a href="{relative_path}/admin/settings/sounds">[[admin/menu:settings/sounds]]</a></li>
 					<li><a href="{relative_path}/admin/settings/social">[[admin/menu:settings/social]]</a></li>
 					<li><a href="{relative_path}/admin/settings/cookies">[[admin/menu:settings/cookies]]</a></li>
 					<li><a href="{relative_path}/admin/settings/web-crawler">[[admin/menu:settings/web-crawler]]</a></li>
