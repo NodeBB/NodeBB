@@ -113,8 +113,15 @@ define('forum/category/tools', [
 		});
 
 		components.get('topic/merge').on('click', function () {
+			var tids = topicSelect.getSelectedTids();
 			require(['forum/topic/merge'], function (merge) {
-				merge.init();
+				merge.init(function () {
+					if (tids.length) {
+						tids.forEach(function (tid) {
+							merge.addTopic(tid);
+						});
+					}
+				});
 			});
 		});
 

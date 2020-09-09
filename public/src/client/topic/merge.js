@@ -22,7 +22,7 @@ define('forum/topic/merge', function () {
 
 			modal.find('.close,#merge_topics_cancel').on('click', closeModal);
 
-			$('#content').on('click', '[component="category"] [component="category/topic"] a', onTopicClicked);
+			$('#content').on('click', '[component="topic/select"]', onTopicClicked);
 
 			showTopicsSelected();
 
@@ -69,6 +69,9 @@ define('forum/topic/merge', function () {
 	};
 
 	function onTopicClicked(ev) {
+		if (!modal) {
+			return;
+		}
 		var tid = $(this).parents('[component="category/topic"]').attr('data-tid');
 		Merge.addTopic(tid);
 
@@ -98,6 +101,9 @@ define('forum/topic/merge', function () {
 	}
 
 	function showTopicsSelected() {
+		if (!modal) {
+			return;
+		}
 		var tids = Object.keys(selectedTids);
 		tids.sort(function (a, b) {
 			return a - b;
@@ -134,7 +140,7 @@ define('forum/topic/merge', function () {
 			modal = null;
 		}
 		selectedTids = {};
-		$('#content').off('click', '[component="category"] [component="category/topic"] a', onTopicClicked);
+		$('#content').off('click', '[component="topic/select"]', onTopicClicked);
 	}
 
 	return Merge;
