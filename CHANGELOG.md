@@ -1,3 +1,22 @@
+#### v1.15.0-beta.15 (2020-09-09)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.15 (10b94f9b)
+*  update changelog for v1.15.0-beta.14 (5e60d092)
+
+##### New Features
+
+*  up lavender/slick (34eb1bd2)
+*  switch to using topic/select component for merge (f6d56466)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency nodebb-theme-vanilla to v11.2.13 (#8633) (8137cdc2)
+  *  update dependency nodebb-theme-persona to v10.2.19 (#8632) (37e37c86)
+*  dont use hardcoded fontawesome icons for lock pin (632793b0)
+
 #### v1.15.0-beta.14 (2020-09-09)
 
 ##### Chores
