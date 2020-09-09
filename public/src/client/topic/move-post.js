@@ -2,8 +2,8 @@
 
 
 define('forum/topic/move-post', [
-	'components', 'postSelect', 'translator',
-], function (components, postSelect, translator) {
+	'components', 'postSelect', 'translator', 'alerts',
+], function (components, postSelect, translator, alerts) {
 	var MovePost = {};
 
 	var moveModal;
@@ -34,7 +34,23 @@ define('forum/topic/move-post', [
 				.on('action:ajaxify.end', checkMoveButtonEnable);
 
 			moveCommit.on('click', function () {
-				movePosts();
+				moveCommit.attr('disabled', true);
+
+				alerts.alert({
+					alert_id: 'pids_move_' + postSelect.pids.join('-'),
+					title: '[[topic:thread_tools.move-posts]]',
+					message: '[[topic:topic_move_posts_success]]',
+					type: 'success',
+					timeout: 10000,
+					timeoutfn: function () {
+						movePosts();
+					},
+					clickfn: function (alert, params) {
+						delete params.timeoutfn;
+						app.alertSuccess('[[topic:topic_move_posts_undone]]');
+						moveCommit.removeAttr('disabled');
+					},
+				});
 			});
 		});
 	};
