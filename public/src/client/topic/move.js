@@ -65,7 +65,7 @@ define('forum/topic/move', ['categorySelector', 'alerts'], function (categorySel
 				title: '[[topic:thread_tools.move]]',
 				message: '[[topic:topic_move_success, ' + selectedCategory.name + ']]',
 				type: 'success',
-				timeout: 5000,
+				timeout: 10000,
 				timeoutfn: function () {
 					moveTopics();
 				},
@@ -91,7 +91,6 @@ define('forum/topic/move', ['categorySelector', 'alerts'], function (categorySel
 				return app.alertError(err.message);
 			}
 
-			app.alertSuccess('[[topic:topic_move_success, ' + selectedCategory.name + ']]');
 			if (typeof Move.onComplete === 'function') {
 				Move.onComplete();
 			}
