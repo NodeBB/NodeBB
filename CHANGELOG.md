@@ -1,3 +1,25 @@
+#### v1.15.0-beta.14 (2020-09-09)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.14 (6ca4b86f)
+*  update commitlint config (61a8c6f0)
+*  update changelog for v1.15.0-beta.13 (ca8d492b)
+
+##### New Features
+
+*  undo for posts move (762e9fe8)
+*  #8626, new move posts modal (5a40d26b)
+
+##### Bug Fixes
+
+*  #8629 and change undo timeout to 10 seconds (65d94a3b)
+*  alert_id selector (2bebdf01)
+*  use text-right (a78e1df9)
+* **deps:**
+  *  update dependency nodebb-theme-vanilla to v11.2.12 (#8628) (7ab87072)
+  *  update dependency nodebb-theme-persona to v10.2.18 (#8627) (2740655d)
+
 #### v1.15.0-beta.13 (2020-09-08)
 
 ##### Chores
