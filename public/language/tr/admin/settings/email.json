@@ -22,8 +22,8 @@
 	"smtp-transport.username": "Kullanıcı Adı",
 	"smtp-transport.username-help": "<b>For the Gmail service,</b> enter the full email address here, especially if you are using a Google Apps managed domain.",
 	"smtp-transport.password": "Password",
-	"smtp-transport.pool": "Enable pooled connections",
-	"smtp-transport.pool-help": "Pooling connections prevents NodeBB from creating a new connection for every email. This option only applies if SMTP Transport is enabled.",
+	"smtp-transport.pool": "Toplu bağlantıları aktifleştir",
+	"smtp-transport.pool-help": "Toplu bağlantılar NodeBB'nin her e-posta için yeni bir bağlantı oluşturmasını engeller. Bu seçenek sadece SMTP Transport aktif ise geçerlidir.",
 
 	"template": "E-posta Kalıbını Düzenle",
 	"template.select": "E-posta Kalıbını Seç",
