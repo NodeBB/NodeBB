@@ -3194,7 +3194,7 @@ paths:
           example: 1
       responses:
         "200":
-          description: "A JSON object containing topic data"
+          description: "A JSON object containing category data"
           content:
             application/json:
               schema:
@@ -5980,6 +5980,8 @@ paths:
                         type: boolean
                       showTopicTools:
                         type: boolean
+                      topicIndex:
+                        type: number
                       rssFeedUrl:
                         type: string
                       feeds:disableRSS:
