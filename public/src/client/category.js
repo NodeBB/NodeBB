@@ -41,10 +41,9 @@ define('forum/category', [
 	};
 
 	function handleScrollToTopicIndex() {
-		var parts = window.location.pathname.split('/');
-		var topicIndex = parts[parts.length - 1];
+		var topicIndex = ajaxify.data.topicIndex;
 		if (topicIndex && utils.isNumber(topicIndex)) {
-			topicIndex = Math.max(0, parseInt(topicIndex, 10) - 1);
+			topicIndex = Math.max(0, parseInt(topicIndex, 10));
 			if (topicIndex && window.location.search.indexOf('page=') === -1) {
 				navigator.scrollToElement($('[component="category/topic"][data-index="' + topicIndex + '"]'), true, 0);
 			}
