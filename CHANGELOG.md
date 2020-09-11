@@ -1,3 +1,24 @@
+#### v1.15.0-beta.16 (2020-09-11)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.16 (6043c9cb)
+*  update changelog for v1.15.0-beta.15 (f878b92c)
+
+##### New Features
+
+*  add topicIndex to category page (c1c617b3)
+
+##### Bug Fixes
+
+*  tests (65d049c6)
+*  check if unread_tids are followed (2d5bd153)
+*  openapi (e9094094)
+* **deps:**
+  *  update dependency nodebb-theme-vanilla to v11.2.14 (31635e3e)
+  *  update dependency nodebb-theme-persona to v10.2.20 (2a13e583)
+  *  update dependency mongodb to v3.6.2 (#8634) (4969c869)
+
 #### v1.15.0-beta.15 (2020-09-09)
 
 ##### Chores
