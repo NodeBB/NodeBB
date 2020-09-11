@@ -115,7 +115,7 @@ module.exports = function (Topics) {
 
 		const unreadTopics = _.unionWith(categoryTids, followedTids, (a, b) => a.value === b.value)
 			.filter(t => !ignoredTids.includes(t.value) && (!userReadTime[t.value] || t.score > userReadTime[t.value]))
-			.concat(tids_unread)
+			.concat(tids_unread.filter(t => !ignoredTids.includes(t.value)))
 			.sort((a, b) => b.score - a.score);
 
 		let tids = _.uniq(unreadTopics.map(topic => topic.value)).slice(0, 200);

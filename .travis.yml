@@ -41,7 +41,6 @@ addons:
 node_js:
   - "14"
   - "12"
-  - "10"
 branches:
   only:
     - master
