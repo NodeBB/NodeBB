@@ -49,7 +49,6 @@ module.exports = function (SocketPosts) {
 		postData.display_change_owner_tools = results.isAdmin || results.isModerator;
 		postData.display_ip_ban = (results.isAdmin || results.isGlobalMod) && !postData.selfPost;
 		postData.display_history = results.history;
-		postData.toolsVisible = postData.tools.length || postData.display_moderator_tools;
 		postData.flags = {
 			flagId: parseInt(results.posts.flagId, 10) || null,
 			can: results.canFlag.flag,
