@@ -318,6 +318,9 @@ module.exports = function (module) {
 		if (!key) {
 			return;
 		}
+		if (!values.length) {
+			return [];
+		}
 		values = values.map(helpers.valueToString);
 		const results = await module.client.collection('objects').find({
 			_key: key, value: { $in: values },

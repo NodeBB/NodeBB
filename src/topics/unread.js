@@ -101,10 +101,21 @@ module.exports = function (Topics) {
 		]);
 
 		const userReadTime = _.mapValues(_.keyBy(userScores, 'value'), 'score');
-		const isTopicsFollowed = _.mapValues(_.keyBy(followedTids, 'value'), 'score');
+		const isTopicsFollowed = {};
+		followedTids.forEach((t) => {
+			isTopicsFollowed[t.value] = true;
+		});
+		const unreadFollowed = await db.isSortedSetMembers(
+			'uid:' + params.uid + ':followed_tids', tids_unread.map(t => t.value)
+		);
 
-		const unreadTopics = _.unionWith(categoryTids, followedTids.concat(tids_unread), (a, b) => a.value === b.value)
+		tids_unread.forEach((t, i) => {
+			isTopicsFollowed[t.value] = unreadFollowed[i];
+		});
+
+		const unreadTopics = _.unionWith(categoryTids, followedTids, (a, b) => a.value === b.value)
 			.filter(t => !ignoredTids.includes(t.value) && (!userReadTime[t.value] || t.score > userReadTime[t.value]))
+			.concat(tids_unread)
 			.sort((a, b) => b.score - a.score);
 
 		let tids = _.uniq(unreadTopics.map(topic => topic.value)).slice(0, 200);

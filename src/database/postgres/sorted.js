@@ -410,6 +410,9 @@ SELECT 1
 			return;
 		}
 
+		if (!values.length) {
+			return [];
+		}
 		values = values.map(helpers.valueToString);
 
 		const res = await module.pool.query({

@@ -203,6 +203,9 @@ module.exports = function (module) {
 	};
 
 	module.isSortedSetMembers = async function (key, values) {
+		if (!values.length) {
+			return [];
+		}
 		const batch = module.client.batch();
 		values.forEach(v => batch.zscore(key, String(v)));
 		const results = await helpers.execBatch(batch);
