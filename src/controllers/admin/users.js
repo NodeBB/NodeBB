@@ -42,7 +42,7 @@ usersController.search = async function (req, res) {
 				match: query,
 				limit: hardCap,
 			});
-			return data.map(data => data.split(':')[1]);
+			return data.map(data => data.split(':').pop());
 		},
 	});
 
