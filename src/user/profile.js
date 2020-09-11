@@ -263,6 +263,14 @@ module.exports = function (User) {
 	async function updateFullname(uid, newFullname) {
 		const fullname = await User.getUserField(uid, 'fullname');
 		await updateUidMapping('fullname', uid, newFullname, fullname);
+		if (newFullname !== fullname) {
+			if (fullname) {
+				await db.sortedSetRemove('fullname:sorted', fullname.toLowerCase() + ':' + uid);
+			}
+			if (newFullname) {
+				await db.sortedSetAdd('fullname:sorted', 0, newFullname.toLowerCase() + ':' + uid);
+			}
+		}
 	}
 
 	User.changePassword = async function (uid, data) {

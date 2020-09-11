@@ -136,6 +136,10 @@ module.exports = function (User) {
 			bulkRemove.push(['email:sorted', userData.email.toLowerCase() + ':' + uid]);
 		}
 
+		if (userData.fullname) {
+			bulkRemove.push(['fullname:sorted', userData.fullname.toLowerCase() + ':' + uid]);
+		}
+
 		await Promise.all([
 			db.sortedSetRemoveBulk(bulkRemove),
 			db.decrObjectField('global', 'userCount'),
