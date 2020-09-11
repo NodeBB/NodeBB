@@ -622,7 +622,7 @@ DELETE FROM "legacy_zset" z
 		if (match.endsWith('*')) {
 			match = match.substring(0, match.length - 1) + '%';
 		}
-
+		console.log(match);
 		const res = await module.pool.query({
 			text: `
 SELECT z."value",
@@ -632,7 +632,7 @@ SELECT z."value",
          ON o."_key" = z."_key"
         AND o."type" = z."type"
  WHERE o."_key" = $1::TEXT
-  AND z."value" LIKE $3::TEXT
+  AND z."value" LIKE '$3::TEXT'
   LIMIT $2::INTEGER`,
 			values: [params.key, params.limit, match],
 		});
