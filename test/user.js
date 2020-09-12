@@ -399,6 +399,22 @@ describe('User', function () {
 			});
 		});
 
+		it('should search users by fullname', async function () {
+			const uid = await User.create({ username: 'fullnamesearch1', fullname: 'Mr. Fullname' });
+			const data = await socketUser.search({ uid: adminUid }, { query: 'mr', searchBy: 'fullname' });
+			assert(Array.isArray(data.users));
+			assert.equal(data.users.length, 1);
+			assert.equal(uid, data.users[0].uid);
+		});
+
+		it('should search users by fullname', async function () {
+			const uid = await User.create({ username: 'fullnamesearch2', fullname: 'Baris:Usakli' });
+			const data = await socketUser.search({ uid: adminUid }, { query: 'baris:', searchBy: 'fullname' });
+			assert(Array.isArray(data.users));
+			assert.equal(data.users.length, 1);
+			assert.equal(uid, data.users[0].uid);
+		});
+
 		it('should return empty array if query is empty', function (done) {
 			socketUser.search({ uid: testUid }, { query: '' }, function (err, data) {
 				assert.ifError(err);

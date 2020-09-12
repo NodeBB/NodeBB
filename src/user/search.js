@@ -63,7 +63,7 @@ module.exports = function (User) {
 		hardCap = hardCap || resultsPerPage * 10;
 
 		const data = await db.getSortedSetRangeByLex(searchBy + ':sorted', min, max, 0, hardCap);
-		const uids = data.map(data => data.split(':')[1]);
+		const uids = data.map(data => data.split(':').pop());
 		return uids;
 	}
 

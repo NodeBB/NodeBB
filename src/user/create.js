@@ -94,6 +94,10 @@ module.exports = function (User) {
 			bulkAdd.push(['user:' + userData.uid + ':emails', timestamp, userData.email + ':' + timestamp]);
 		}
 
+		if (userData.fullname) {
+			bulkAdd.push(['fullname:sorted', 0, userData.fullname.toLowerCase() + ':' + userData.uid]);
+		}
+
 		await Promise.all([
 			db.incrObjectField('global', 'userCount'),
 			db.sortedSetAddBulk(bulkAdd),
