@@ -1416,6 +1416,15 @@ describe('Sorted Set methods', function () {
 				done();
 			});
 		});
+
+		it('should return correct result', async function () {
+			await db.sortedSetAdd('sortedSetLexSearch', [0, 0, 0], ['baris:usakli:1', 'baris usakli:2', 'baris soner:3']);
+			const query = 'baris:';
+			const min = query;
+			const max = query.substr(0, query.length - 1) + String.fromCharCode(query.charCodeAt(query.length - 1) + 1);
+			const result = await db.getSortedSetRangeByLex('sortedSetLexSearch', min, max, 0, -1);
+			assert.deepStrictEqual(result, ['baris:usakli:1']);
+		});
 	});
 
 	describe('getSortedSetRevRangeByLex', function () {
