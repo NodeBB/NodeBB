@@ -1422,7 +1422,12 @@ describe('Sorted Set methods', function () {
 			const query = 'baris:';
 			const min = query;
 			const max = query.substr(0, query.length - 1) + String.fromCharCode(query.charCodeAt(query.length - 1) + 1);
+			const d1 = await db.getSortedSetRange('sortedSetLexSearch', 0, -1);
+			console.log('------', d1);
+			const d2 = await db.getSortedSetRangeByLex('sortedSetLexSearch', '-', '+', 0, -1);
+			console.log('-----', d2);
 			const result = await db.getSortedSetRangeByLex('sortedSetLexSearch', min, max, 0, -1);
+			console.log('-----', result);
 			assert.deepStrictEqual(result, ['baris:usakli:1']);
 		});
 	});
