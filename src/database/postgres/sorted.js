@@ -622,7 +622,7 @@ DELETE FROM "legacy_zset" z
 		if (match.endsWith('*')) {
 			match = match.substring(0, match.length - 1) + '%';
 		}
-		console.log(match);
+
 		const res = await module.pool.query({
 			text: `
 SELECT z."value",
