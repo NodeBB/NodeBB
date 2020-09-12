@@ -48,7 +48,7 @@ async function getNotes(userData, start, stop) {
 	}
 	const [notes, count] = await Promise.all([
 		user.getModerationNotes(userData.uid, start, stop),
-		db.sortedSetCard('uid:' + userData.uid + ':moderati;on:notes'),
+		db.sortedSetCard('uid:' + userData.uid + ':moderation:notes'),
 	]);
 	return { notes: notes, count: count };
 }
