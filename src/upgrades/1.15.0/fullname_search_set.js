@@ -13,7 +13,7 @@ module.exports = {
 
 		await batch.processSortedSet('users:joindate', async function (uids) {
 			progress.incr(uids.length);
-			const userData = user.getUsersFields(uids, ['uid', 'fullname']);
+			const userData = await user.getUsersFields(uids, ['uid', 'fullname']);
 			const bulkAdd = userData
 				.filter(u => u.uid && u.fullname)
 				.map(u => ['fullname:sorted', 0, u.fullname.toLowerCase() + ':' + u.uid]);
