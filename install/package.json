@@ -154,8 +154,8 @@
     },
     "devDependencies": {
         "@apidevtools/swagger-parser": "10.0.2",
-        "@commitlint/cli": "9.1.2",
-        "@commitlint/config-angular": "9.1.2",
+        "@commitlint/cli": "11.0.0",
+        "@commitlint/config-angular": "11.0.0",
         "coveralls": "3.1.0",
         "eslint": "7.12.1",
         "eslint-config-airbnb-base": "14.2.0",
