@@ -900,6 +900,22 @@ describe('User', function () {
 			});
 		});
 
+		it('should not let setting an empty username', async function () {
+			await socketUser.changeUsernameEmail({ uid: uid }, { uid: uid, username: '', password: '123456' });
+			const username = await db.getObjectField('user:' + uid, 'username');
+			assert.strictEqual(username, 'updatedAgain');
+		});
+
+		it('should let updating profile if current username is above max length and it is not being changed', async function () {
+			const maxLength = meta.config.maximumUsernameLength + 1;
+			const longName = new Array(maxLength).fill('a').join('');
+			const uid = await User.create({ username: longName });
+			await socketUser.changeUsernameEmail({ uid: uid }, { uid: uid, username: longName, email: 'verylong@name.com' });
+			const userData = await db.getObject('user:' + uid);
+			assert.strictEqual(userData.username, longName);
+			assert.strictEqual(userData.email, 'verylong@name.com');
+		});
+
 		it('should not update a user\'s username if it did not change', function (done) {
 			socketUser.changeUsernameEmail({ uid: uid }, { uid: uid, username: 'updatedAgain', password: '123456' }, function (err) {
 				assert.ifError(err);

@@ -86,7 +86,9 @@ module.exports = function (User) {
 		}
 		data.username = data.username.trim();
 		const userData = await User.getUserFields(uid, ['username', 'userslug']);
-		var userslug = utils.slugify(data.username);
+		if (userData.username === data.username) {
+			return;
+		}
 
 		if (data.username.length < meta.config.minimumUsernameLength) {
 			throw new Error('[[error:username-too-short]]');
@@ -96,6 +98,7 @@ module.exports = function (User) {
 			throw new Error('[[error:username-too-long]]');
 		}
 
+		const userslug = utils.slugify(data.username);
 		if (!utils.isUserNameValid(data.username) || !userslug) {
 			throw new Error('[[error:invalid-username]]');
 		}
