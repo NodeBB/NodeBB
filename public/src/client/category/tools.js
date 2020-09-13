@@ -263,6 +263,9 @@ define('forum/category/tools', [
 	}
 
 	function handlePinnedTopicSort() {
+		if (!ajaxify.data.topics) {
+			return;
+		}
 		var numPinned = ajaxify.data.topics.reduce(function (memo, topic) {
 			memo = topic.pinned ? memo += 1 : memo;
 			return memo;
