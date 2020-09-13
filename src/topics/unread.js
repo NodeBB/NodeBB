@@ -78,6 +78,7 @@ module.exports = function (Topics) {
 			tidsByFilter: data.tidsByFilter,
 			cid: params.cid,
 			filter: params.filter,
+			query: params.query || {},
 		});
 		return result;
 	};

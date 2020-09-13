@@ -30,27 +30,21 @@ helpers.noScriptErrors = async function (req, res, error, httpStatus) {
 	});
 };
 
-helpers.validFilters = { '': true, new: true, watched: true, unreplied: true };
-
 helpers.terms = {
 	daily: 'day',
 	weekly: 'week',
 	monthly: 'month',
 };
 
-helpers.buildQueryString = function (cid, filter, term) {
-	const qs = {};
-	if (cid) {
-		qs.cid = cid;
+helpers.buildQueryString = function (query, key, value) {
+	const queryObj = _.clone(query);
+	if (value) {
+		queryObj[key] = value;
+	} else {
+		delete queryObj[key];
 	}
-	if (filter) {
-		qs.filter = filter;
-	}
-	if (term) {
-		qs.term = term;
-	}
-
-	return Object.keys(qs).length ? '?' + querystring.stringify(qs) : '';
+	delete queryObj._;
+	return Object.keys(queryObj).length ? '?' + querystring.stringify(queryObj) : '';
 };
 
 helpers.addLinkTags = function (params) {
@@ -69,25 +63,25 @@ helpers.addLinkTags = function (params) {
 helpers.buildFilters = function (url, filter, query) {
 	return [{
 		name: '[[unread:all-topics]]',
-		url: url + helpers.buildQueryString(query.cid, '', query.term),
+		url: url + helpers.buildQueryString(query, 'filter', ''),
 		selected: filter === '',
 		filter: '',
 		icon: 'fa-book',
 	}, {
 		name: '[[unread:new-topics]]',
-		url: url + helpers.buildQueryString(query.cid, 'new', query.term),
+		url: url + helpers.buildQueryString(query, 'filter', 'new'),
 		selected: filter === 'new',
 		filter: 'new',
 		icon: 'fa-clock-o',
 	}, {
 		name: '[[unread:watched-topics]]',
-		url: url + helpers.buildQueryString(query.cid, 'watched', query.term),
+		url: url + helpers.buildQueryString(query, 'filter', 'watched'),
 		selected: filter === 'watched',
 		filter: 'watched',
 		icon: 'fa-bell-o',
 	}, {
 		name: '[[unread:unreplied-topics]]',
-		url: url + helpers.buildQueryString(query.cid, 'unreplied', query.term),
+		url: url + helpers.buildQueryString(query, 'filter', 'unreplied'),
 		selected: filter === 'unreplied',
 		filter: 'unreplied',
 		icon: 'fa-reply',
@@ -97,22 +91,22 @@ helpers.buildFilters = function (url, filter, query) {
 helpers.buildTerms = function (url, term, query) {
 	return [{
 		name: '[[recent:alltime]]',
-		url: url + helpers.buildQueryString(query.cid, query.filter, ''),
+		url: url + helpers.buildQueryString(query, 'term', ''),
 		selected: term === 'alltime',
 		term: 'alltime',
 	}, {
 		name: '[[recent:day]]',
-		url: url + helpers.buildQueryString(query.cid, query.filter, 'daily'),
+		url: url + helpers.buildQueryString(query, 'term', 'daily'),
 		selected: term === 'day',
 		term: 'day',
 	}, {
 		name: '[[recent:week]]',
-		url: url + helpers.buildQueryString(query.cid, query.filter, 'weekly'),
+		url: url + helpers.buildQueryString(query, 'term', 'weekly'),
 		selected: term === 'week',
 		term: 'week',
 	}, {
 		name: '[[recent:month]]',
-		url: url + helpers.buildQueryString(query.cid, query.filter, 'monthly'),
+		url: url + helpers.buildQueryString(query, 'term', 'monthly'),
 		selected: term === 'month',
 		term: 'month',
 	}];

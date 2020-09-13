@@ -27,7 +27,7 @@ recentController.getData = async function (req, url, sort) {
 	const cid = req.query.cid;
 	const filter = req.query.filter || '';
 
-	if (!helpers.validFilters[filter] || (!term && req.query.term)) {
+	if (!term && req.query.term) {
 		return null;
 	}
 	term = term || 'alltime';
@@ -64,7 +64,7 @@ recentController.getData = async function (req, url, sort) {
 	data.showSelect = isPrivileged;
 	data.showTopicTools = isPrivileged;
 	data.categories = categoryData.categories;
-	data.allCategoriesUrl = url + helpers.buildQueryString('', filter, '');
+	data.allCategoriesUrl = url + helpers.buildQueryString(req.query, 'cid', '');
 	data.selectedCategory = categoryData.selectedCategory || null;
 	data.selectedCids = categoryData.selectedCids;
 	data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] || 0;
@@ -79,7 +79,7 @@ recentController.getData = async function (req, url, sort) {
 	data.terms = helpers.buildTerms(url, term, req.query);
 	data.selectedTerm = data.terms.find(term => term && term.selected);
 
-	var pageCount = Math.max(1, Math.ceil(data.topicCount / settings.topicsPerPage));
+	const pageCount = Math.max(1, Math.ceil(data.topicCount / settings.topicsPerPage));
 	data.pagination = pagination.create(page, pageCount, req.query);
 	helpers.addLinkTags({ url: url, res: req.res, tags: data.pagination.rel });
 
