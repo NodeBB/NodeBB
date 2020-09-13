@@ -2147,14 +2147,6 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should 404 if filter is invalid', function (done) {
-			request(nconf.get('url') + '/api/unread/total?filter=doesnotexist', { jar: jar }, function (err, res) {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 404);
-				done();
-			});
-		});
-
 		it('should return total unread count', function (done) {
 			request(nconf.get('url') + '/api/unread/total?filter=new', { jar: jar }, function (err, res, body) {
 				assert.ifError(err);
