@@ -188,6 +188,7 @@ function calculateTopicPostCount(category) {
 	category.totalPostCount = postCount;
 	category.totalTopicCount = topicCount;
 }
+Categories.calculateTopicPostCount = calculateTopicPostCount;
 
 Categories.getParents = async function (cids) {
 	const categoriesData = await Categories.getCategoriesFields(cids, ['parentCid']);
@@ -224,6 +225,8 @@ async function getChildrenTree(category, uid) {
 	});
 	Categories.getTree([category].concat(childrenData), category.parentCid);
 }
+
+Categories.getChildrenTree = getChildrenTree;
 
 Categories.getChildrenCids = async function (rootCid) {
 	let allCids = [];
