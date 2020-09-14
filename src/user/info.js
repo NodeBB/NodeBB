@@ -131,4 +131,9 @@ module.exports = function (User) {
 		});
 		return noteData;
 	};
+
+	User.appendModerationNote = async ({ uid, noteData }) => {
+		await db.sortedSetAdd('uid:' + uid + ':moderation:notes', noteData.timestamp, noteData.timestamp);
+		await db.setObject('uid:' + uid + ':moderation:note:' + noteData.timestamp, noteData);
+	};
 };

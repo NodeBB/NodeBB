@@ -301,8 +301,8 @@ SocketUser.setModerationNote = async function (socket, data) {
 	if (!canEdit) {
 		throw new Error('[[error:no-privileges]]');
 	}
-	await db.sortedSetAdd('uid:' + data.uid + ':moderation:notes', noteData.timestamp, noteData.timestamp);
-	await db.setObject('uid:' + data.uid + ':moderation:note:' + noteData.timestamp, noteData);
+
+	user.appendModerationNote({ uid: data.uid, noteData });
 };
 
 SocketUser.deleteUpload = async function (socket, data) {
