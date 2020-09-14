@@ -304,7 +304,7 @@ define('forum/topic/posts', [
 				$.timeago.settings.strings.suffixFromNow = suffixFromNow;
 				$.timeago.settings.strings.prefixFromNow = prefixFromNow;
 				app.parseAndTranslate('partials/topic/necro-post', { text: translationText }, function (html) {
-					html.prependTo(post);
+					html.insertBefore(post);
 				});
 			}
 		});
