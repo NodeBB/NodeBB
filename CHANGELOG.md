@@ -1,3 +1,24 @@
+#### v1.15.0-beta.18 (2020-09-14)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.18 (e096791e)
+*  update changelog for v1.15.0-beta.17 (d6178158)
+
+##### New Features
+
+*  expose calculateTopicPostCount and getChildrenTree (43742437)
+
+##### Bug Fixes
+
+* **deps:**  bump theme versions (685633d0)
+*  move necro-post to be in-line with posts (44309ee6)
+*  tests, because redis is TOO FAST (4fca7938)
+
+##### Refactors
+
+*  expose new method for appending moderation note (29b357bc)
+
 #### v1.15.0-beta.17 (2020-09-14)
 
 ##### Breaking Changes
