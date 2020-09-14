@@ -1,3 +1,33 @@
+#### v1.15.0-beta.17 (2020-09-14)
+
+##### Breaking Changes
+
+*  remove toolsVisible in post tools' menu [breaking] (7e7366be)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.17 (f1c28092)
+*  update changelog for v1.15.0-beta.16 (e08297ff)
+
+##### New Features
+
+*  allow custom req.query.filter on /unread /recent (de824007)
+*  fullname search (#8641) (4be693f2)
+*  sorted set lex test (9389749b)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency nodebb-plugin-composer-default to v6.3.56 (#8648) (8089387b)
+  *  update dependency nodebb-theme-persona to v10.2.22 (c5ca2609)
+  *  update dependency nodebb-theme-vanilla to v11.2.16 (8acdf3f6)
+  *  update dependency nodebb-theme-persona to v10.2.21 (ed0469b5)
+  *  update dependency nodebb-theme-vanilla to v11.2.15 (134ebba6)
+*  remove old test (5e8c3761)
+*  client side crash if there are no topics (a8e18fdb)
+*  #8418 (38d3982b)
+*  typo (08912361)
+
 #### v1.15.0-beta.16 (2020-09-11)
 
 ##### Chores
