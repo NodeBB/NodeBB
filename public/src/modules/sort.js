@@ -10,17 +10,19 @@ define('sort', ['components'], function (components) {
 		var currentSetting = threadSort.find('a[data-sort="' + config[field] + '"]');
 		currentSetting.find('i').addClass('fa-check');
 
-		$('.category, .topic').on('click', '[component="thread/sort"] a', function () {
-			var newSetting = $(this).attr('data-sort');
-			socket.emit(method, newSetting, function (err) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-				config[field] = newSetting;
-				var qs = decodeURIComponent($.param(utils.params()));
-				ajaxify.go(gotoOnSave + (qs ? '?' + qs : ''));
+		$('body')
+			.off('click', '[component="thread/sort"] a')
+			.on('click', '[component="thread/sort"] a', function () {
+				var newSetting = $(this).attr('data-sort');
+				socket.emit(method, newSetting, function (err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					config[field] = newSetting;
+					var qs = decodeURIComponent($.param(utils.params()));
+					ajaxify.go(gotoOnSave + (qs ? '?' + qs : ''));
+				});
 			});
-		});
 	};
 
 	return module;

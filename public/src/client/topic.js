@@ -46,7 +46,7 @@ define('forum/topic', [
 		posts.onTopicPageLoad(components.get('post'));
 
 		postTools.init(tid);
-		threadTools.init(tid);
+		threadTools.init(tid, $('.topic'));
 		events.init();
 
 		sort.handleSort('topicPostSort', 'user.setTopicSort', 'topic/' + ajaxify.data.slug);

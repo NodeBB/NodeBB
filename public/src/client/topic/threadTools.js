@@ -7,10 +7,8 @@ define('forum/topic/threadTools', [
 ], function (components, translator) {
 	var ThreadTools = {};
 
-	ThreadTools.init = function (tid) {
-		renderMenu();
-
-		var topicContainer = $('.topic');
+	ThreadTools.init = function (tid, topicContainer) {
+		renderMenu(topicContainer);
 
 		topicContainer.on('click', '[component="topic/delete"]', function () {
 			topicCommand('delete', tid);
@@ -139,8 +137,8 @@ define('forum/topic/threadTools', [
 		}
 	};
 
-	function renderMenu() {
-		$('.topic').on('show.bs.dropdown', '.thread-tools', function () {
+	function renderMenu(container) {
+		container.on('show.bs.dropdown', '.thread-tools', function () {
 			var $this = $(this);
 			var dropdownMenu = $this.find('.dropdown-menu');
 			if (dropdownMenu.html()) {
