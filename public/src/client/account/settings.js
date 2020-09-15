@@ -31,7 +31,7 @@ define('forum/account/settings', ['forum/account/header', 'components', 'transla
 		});
 
 		$('#bootswatchSkin').on('change', function () {
-			app.reskin($(this).val());
+			reskin($(this).val());
 		});
 
 		$('[data-property="homePageRoute"]').on('change', toggleCustomRoute);
