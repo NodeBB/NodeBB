@@ -1,3 +1,14 @@
+#### v1.15.0-beta.20 (2020-09-15)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.20 (c8e57ec1)
+*  update changelog for v1.15.0-beta.19 (9cde5105)
+
+##### Bug Fixes
+
+*  skip elements if they dont have proper index (c9c9dd2f)
+
 #### v1.15.0-beta.19 (2020-09-15)
 
 ##### Chores
