@@ -225,15 +225,17 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		var middleOfViewport = scrollTop + (windowHeight / 2);
 		var previousDistance = Number.MAX_VALUE;
 		els.each(function () {
-			var distanceToMiddle = Math.abs(middleOfViewport - $(this).offset().top);
+			var elIndex = parseInt($(this).attr('data-index'), 10);
+			if (elIndex >= 0) {
+				var distanceToMiddle = Math.abs(middleOfViewport - $(this).offset().top);
+				if (distanceToMiddle > previousDistance) {
+					return false;
+				}
 
-			if (distanceToMiddle > previousDistance) {
-				return false;
-			}
-
-			if (distanceToMiddle < previousDistance) {
-				index = parseInt($(this).attr('data-index'), 10) + 1;
-				previousDistance = distanceToMiddle;
+				if (distanceToMiddle < previousDistance) {
+					index = elIndex + 1;
+					previousDistance = distanceToMiddle;
+				}
 			}
 		});
 
