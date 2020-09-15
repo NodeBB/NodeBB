@@ -1,3 +1,19 @@
+#### v1.15.0-beta.19 (2020-09-15)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.19 (2eb7c284)
+*  update changelog for v1.15.0-beta.18 (b2ca9686)
+* **deps:**  update dependency eslint to v7.9.0 (b1d781e8)
+
+##### New Features
+
+*  allow passing in container to threadTools (7148be2f)
+
+##### Bug Fixes
+
+*  call to reskin (99f24c59)
+
 #### v1.15.0-beta.18 (2020-09-14)
 
 ##### Chores
