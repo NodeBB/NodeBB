@@ -1,3 +1,18 @@
+#### v1.15.0-beta.21 (2020-09-16)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.21 (966cdc13)
+*  update changelog for v1.15.0-beta.20 (1650f303)
+
+##### Bug Fixes
+
+*  clear old value on focus (42298fe6)
+* **deps:**
+  *  postcss and autoprefixer version incompatibility (70d3ad02)
+  *  update dependency nodebb-plugin-mentions to v2.10.0 (5ea172f9)
+  *  update dependency autoprefixer to v10 (60679481)
+
 #### v1.15.0-beta.20 (2020-09-15)
 
 ##### Chores
