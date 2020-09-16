@@ -398,9 +398,8 @@ app.cacheBuster = null;
 				$(window).trigger('action:search.quick.start', options);
 				options.searchOptions.searchOnly = 1;
 				search.api(options.searchOptions, function (data) {
-					var resultEl = options.searchElements.resultEl;
 					if (options.hideOnNoMatches && !data.posts.length) {
-						return resultEl.addClass('hidden').find('.quick-search-results-container').html('');
+						return quickSearchResults.addClass('hidden').find('.quick-search-results-container').html('');
 					}
 					data.posts.forEach(function (p) {
 						var text = $('<div>' + p.content + '</div>').text();
@@ -413,7 +412,7 @@ app.cacheBuster = null;
 						if (html.length) {
 							html.find('.timeago').timeago();
 						}
-						resultEl.toggleClass('hidden', !html.length)
+						quickSearchResults.toggleClass('hidden', !html.length || !inputEl.is(':focus'))
 							.find('.quick-search-results-container')
 							.html(html.length ? html : '');
 						$(window).trigger('action:search.quick.complete', {
@@ -456,6 +455,7 @@ app.cacheBuster = null;
 		});
 
 		inputEl.on('focus', function () {
+			oldValue = inputEl.val();
 			if (inputEl.val() && quickSearchResults.find('#quick-search-results').children().length) {
 				quickSearchResults.removeClass('hidden');
 			}
