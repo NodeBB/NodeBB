@@ -34,9 +34,11 @@ categoryController.get = async function (req, res, next) {
 
 	if (!categoryFields.slug ||
 		(categoryFields && categoryFields.disabled) ||
-		(userSettings.usePagination && currentPage < 1) ||
-		topicIndex < 0) {
+		(userSettings.usePagination && currentPage < 1)) {
 		return next();
+	}
+	if (topicIndex < 0) {
+		return helpers.redirect(res, '/category/' + categoryFields.slug);
 	}
 
 	if (!userPrivileges.read) {
