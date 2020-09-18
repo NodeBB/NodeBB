@@ -19,18 +19,23 @@ const categoryController = module.exports;
 categoryController.get = async function (req, res, next) {
 	const cid = req.params.category_id;
 
+	let currentPage = parseInt(req.query.page, 10) || 1;
+	let topicIndex = utils.isNumber(req.params.topic_index) ? parseInt(req.params.topic_index, 10) - 1 : 0;
 	if ((req.params.topic_index && !utils.isNumber(req.params.topic_index)) || !utils.isNumber(cid)) {
 		return next();
 	}
 
 	const [categoryFields, userPrivileges, userSettings, rssToken] = await Promise.all([
-		categories.getCategoryFields(cid, ['slug', 'disabled', 'topic_count']),
+		categories.getCategoryFields(cid, ['slug', 'disabled']),
 		privileges.categories.get(cid, req.uid),
 		user.getSettings(req.uid),
 		user.auth.getFeedToken(req.uid),
 	]);
 
-	if (!categoryFields.slug || (categoryFields && categoryFields.disabled)) {
+	if (!categoryFields.slug ||
+		(categoryFields && categoryFields.disabled) ||
+		(userSettings.usePagination && currentPage < 1) ||
+		topicIndex < 0) {
 		return next();
 	}
 
@@ -42,16 +47,6 @@ categoryController.get = async function (req, res, next) {
 		return helpers.redirect(res, '/category/' + categoryFields.slug, true);
 	}
 
-	const topicCount = categoryFields.topic_count;
-	let topicIndex = utils.isNumber(req.params.topic_index) ? parseInt(req.params.topic_index, 10) - 1 : 0;
-	if (topicIndex < 0 || topicIndex > Math.max(topicCount - 1, 0)) {
-		return helpers.redirect(res, '/category/' + cid + '/' + req.params.slug + (topicIndex > topicCount ? '/' + topicCount : ''));
-	}
-	let pageCount = Math.max(1, Math.ceil(topicCount / userSettings.topicsPerPage));
-	let currentPage = parseInt(req.query.page, 10) || 1;
-	if (userSettings.usePagination && (currentPage < 1 || currentPage > pageCount)) {
-		return next();
-	}
 
 	if (!userSettings.usePagination) {
 		topicIndex = Math.max(0, topicIndex - (Math.ceil(userSettings.topicsPerPage / 2) - 1));
@@ -79,6 +74,15 @@ categoryController.get = async function (req, res, next) {
 	if (!categoryData) {
 		return next();
 	}
+
+	if (topicIndex > Math.max(categoryData.topic_count - 1, 0)) {
+		return helpers.redirect(res, '/category/' + categoryData.slug + '/' + categoryData.topic_count);
+	}
+	const pageCount = Math.max(1, Math.ceil(categoryData.topic_count / userSettings.topicsPerPage));
+	if (userSettings.usePagination && currentPage > pageCount) {
+		return next();
+	}
+
 	categories.modifyTopicsByPrivilege(categoryData.topics, userPrivileges);
 	if (categoryData.link) {
 		await db.incrObjectField('category:' + categoryData.cid, 'timesClicked');
@@ -107,7 +111,6 @@ categoryController.get = async function (req, res, next) {
 
 	categoryData['feeds:disableRSS'] = meta.config['feeds:disableRSS'] || 0;
 	categoryData['reputation:disabled'] = meta.config['reputation:disabled'];
-	pageCount = Math.max(1, Math.ceil(categoryData.topic_count / userSettings.topicsPerPage));
 	categoryData.pagination = pagination.create(currentPage, pageCount, req.query);
 	categoryData.pagination.rel.forEach(function (rel) {
 		rel.href = nconf.get('url') + '/category/' + categoryData.slug + rel.href;
