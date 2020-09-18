@@ -5,7 +5,8 @@ define('admin/manage/privileges', [
 	'translator',
 	'benchpress',
 	'categorySelector',
-], function (autocomplete, translator, Benchpress, categorySelector) {
+	'mousetrap',
+], function (autocomplete, translator, Benchpress, categorySelector, mousetrap) {
 	var Privileges = {};
 
 	var cid;
@@ -93,6 +94,11 @@ define('admin/manage/privileges', [
 		$('.privilege-table-container').on('click', '[data-action="copyToAllGroup"]', function () {
 			var groupName = $(this).parents('[data-group-name]').attr('data-group-name');
 			throwConfirmModal('copyToAllGroup', Privileges.copyPrivilegesToAllCategories.bind(null, cid, groupName));
+		});
+
+		mousetrap.bind('ctrl+s', function (ev) {
+			throwConfirmModal('save', Privileges.commit);
+			ev.preventDefault();
 		});
 
 		function throwConfirmModal(method, onConfirm) {
