@@ -1,3 +1,16 @@
+#### v1.15.0-beta.22 (2020-09-18)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.22 (9c9329ee)
+*  update changelog for v1.15.0-beta.21 (8089542e)
+* **deps:**  update dependency lint-staged to v10.4.0 (2833624e)
+
+##### Bug Fixes
+
+*  tests (22cd2654)
+*  use correct topic count for category (220297d5)
+
 #### v1.15.0-beta.21 (2020-09-16)
 
 ##### Chores
