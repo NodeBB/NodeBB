@@ -444,6 +444,8 @@ $(document).ready(function () {
 				return;
 			}
 
+			var $this = $(this);
+			var href = $this.attr('href');
 			var internalLink = utils.isInternalURI(this, window.location, config.relative_path);
 
 			var process = function () {
@@ -475,7 +477,7 @@ $(document).ready(function () {
 				}
 			};
 
-			if ($(this).attr('data-ajaxify') === 'false') {
+			if ($this.attr('data-ajaxify') === 'false') {
 				if (!internalLink) {
 					return;
 				}
@@ -483,12 +485,12 @@ $(document).ready(function () {
 			}
 
 			// Default behaviour for rss feeds
-			if (internalLink && $(this).attr('href') && $(this).attr('href').endsWith('.rss')) {
+			if (internalLink && href && href.endsWith('.rss')) {
 				return;
 			}
 
 			// Default behaviour for sitemap
-			if (internalLink && $(this).attr('href') && String(_self.pathname).startsWith(config.relative_path + '/sitemap') && $(this).attr('href').endsWith('.xml')) {
+			if (internalLink && href && String(_self.pathname).startsWith(config.relative_path + '/sitemap') && href.endsWith('.xml')) {
 				return;
 			}
 
@@ -499,7 +501,7 @@ $(document).ready(function () {
 				return;
 			}
 
-			if (hrefEmpty(this.href) || this.protocol === 'javascript:' || $(this).attr('href') === '#') {
+			if (hrefEmpty(this.href) ||	this.protocol === 'javascript:' || href === '#' || href === '') {
 				return e.preventDefault();
 			}
 
