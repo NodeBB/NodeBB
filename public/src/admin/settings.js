@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/settings', ['uploader'], function (uploader) {
+define('admin/settings', ['uploader', 'mousetrap'], function (uploader, mousetrap) {
 	var Settings = {};
 
 	Settings.init = function () {
@@ -88,6 +88,11 @@ define('admin/settings', ['uploader'], function (uploader) {
 
 				$(window).trigger('action:admin.settingsSaved');
 			});
+		});
+
+		mousetrap.bind('ctrl+s', function (ev) {
+			saveBtn.click();
+			ev.preventDefault();
 		});
 
 		handleUploads();

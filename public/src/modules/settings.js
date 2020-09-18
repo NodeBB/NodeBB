@@ -509,6 +509,16 @@ define('settings', function () {
 					app.flags._unsaved = true;
 				});
 
+				var saveEl = document.getElementById('save');
+				if (saveEl) {
+					require(['mousetrap'], function (mousetrap) {
+						mousetrap.bind('ctrl+s', function (ev) {
+							saveEl.click();
+							ev.preventDefault();
+						});
+					});
+				}
+
 				callback(null, values);
 			});
 		},
