@@ -90,6 +90,11 @@ define('admin/modules/search', ['mousetrap'], function (mousetrap) {
 			return false;
 		});
 
+		mousetrap.bind('/', function (ev) {
+			input.select();
+			ev.preventDefault();
+		});
+
 		mousetrap(input[0]).bind(['up', 'down'], function (ev, key) {
 			var next;
 			if (key === 'up') {
