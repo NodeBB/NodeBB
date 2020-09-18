@@ -1,3 +1,22 @@
+#### v1.15.0-beta.23 (2020-09-18)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.23 (61a04eb9)
+*  update changelog for v1.15.0-beta.22 (59ee74c2)
+
+##### New Features
+
+*  allow adding nested replies to a target component (ddc0ac37)
+*  hotkey "/" to open ACP search (43571bac)
+*  ctr-s for save on privileges page too (763cec31)
+*  ctrl-s now saves on settingsv1/v2 forms (80931423)
+*  single href (6669b23d)
+
+##### Bug Fixes
+
+* **deps:**  update dependency nodebb-widget-essentials to v4.1.2 (#8658) (dc0a4a49)
+
 #### v1.15.0-beta.22 (2020-09-18)
 
 ##### Chores
