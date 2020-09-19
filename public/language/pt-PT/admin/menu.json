@@ -70,7 +70,7 @@
 	"logout": "Terminar sessão",
 	"view-forum": "Ver Fórum",
 
-	"search.placeholder": "Procurar por definições",
+	"search.placeholder": "Press &quot;/&quot; to search for settings",
 	"search.no-results": "Sem resultados...",
 	"search.search-forum": "Procurar no fórum por <strong></strong>",
 	"search.keep-typing": "Digita mais para veres resultados...",

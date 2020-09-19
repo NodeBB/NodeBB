@@ -70,7 +70,7 @@
 	"logout": "Đăng xuất",
 	"view-forum": "Xem diễn đàn",
 
-	"search.placeholder": "Tìm kiếm cài đặt",
+	"search.placeholder": "Press &quot;/&quot; to search for settings",
 	"search.no-results": "Ko có kết quả...",
 	"search.search-forum": "Tìm kiếm diễn đàn cho <strong></strong>",
 	"search.keep-typing": "Nhập thêm để xem kết quả...",

@@ -70,7 +70,7 @@
 	"logout": "Abmelden",
 	"view-forum": "Forum anzeigen",
 
-	"search.placeholder": "Nach Einstellungen suchen",
+	"search.placeholder": "Press &quot;/&quot; to search for settings",
 	"search.no-results": "Keine Ergebnisse...",
 	"search.search-forum": "Suche im Forum nach <strong></strong>",
 	"search.keep-typing": "Gib mehr ein, um die Ergebnisse zu sehen...",

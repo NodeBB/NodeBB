@@ -70,7 +70,7 @@
 	"logout": "ログアウト",
 	"view-forum": "フォーラムを表示",
 
-	"search.placeholder": "Search for settings",
+	"search.placeholder": "Press &quot;/&quot; to search for settings",
 	"search.no-results": "結果がありません...",
 	"search.search-forum": "フォーラムで<strong></strong>を検索",
 	"search.keep-typing": "結果を見るにはもっと入力してください...",

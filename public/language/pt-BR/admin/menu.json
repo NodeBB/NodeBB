@@ -70,7 +70,7 @@
 	"logout": "Sair da Conta",
 	"view-forum": "Ver Fórum",
 
-	"search.placeholder": "Pesquisar configurações",
+	"search.placeholder": "Press &quot;/&quot; to search for settings",
 	"search.no-results": "Sem resultados...",
 	"search.search-forum": "Pesquisar o fórum por <strong></strong>",
 	"search.keep-typing": "Digite para ver mais resultados...",

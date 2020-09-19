@@ -70,7 +70,7 @@
 	"logout": "로그아웃",
 	"view-forum": "포럼 보기",
 
-	"search.placeholder": "설정 검색",
+	"search.placeholder": "Press &quot;/&quot; to search for settings",
 	"search.no-results": "검색 결과가 없습니다...",
 	"search.search-forum": "포럼에서 <strong></strong>를 검색하세요",
 	"search.keep-typing": "검색 결과를 보기 위해 더 입력하세요...",

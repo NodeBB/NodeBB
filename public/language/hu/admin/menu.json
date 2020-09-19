@@ -70,7 +70,7 @@
 	"logout": "Kilépés",
 	"view-forum": "Fórum megtekintése",
 
-	"search.placeholder": "Beállítások keresése",
+	"search.placeholder": "Press &quot;/&quot; to search for settings",
 	"search.no-results": "Nincs eredmény...",
 	"search.search-forum": "<strong></strong> keresése a fórumon",
 	"search.keep-typing": "Gépelj többet az eredményekért...",
