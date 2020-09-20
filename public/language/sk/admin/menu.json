@@ -70,7 +70,7 @@
 	"logout": "Odhlásiť",
 	"view-forum": "Zobraziť fórum",
 
-	"search.placeholder": "Hľadať nastavenia",
+	"search.placeholder": "Press &quot;/&quot; to search for settings",
 	"search.no-results": "Žiadne výsledky...",
 	"search.search-forum": "Prehľadať fórum pre <strong></strong>",
 	"search.keep-typing": "Píšte viac pre zobrazenie výsledkov...",

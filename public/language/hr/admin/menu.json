@@ -70,7 +70,7 @@
 	"logout": "Odjava",
 	"view-forum": "Pogledaj forum",
 
-	"search.placeholder": "Search for settings",
+	"search.placeholder": "Press &quot;/&quot; to search for settings",
 	"search.no-results": "Nema rezultata ...",
 	"search.search-forum": "Pretraži forum za <strong></strong>",
 	"search.keep-typing": "Upiši više da vidiš rezultate ...",

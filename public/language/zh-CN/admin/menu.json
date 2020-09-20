@@ -70,7 +70,7 @@
 	"logout": "登出",
 	"view-forum": "查看论坛",
 
-	"search.placeholder": "搜索设置",
+	"search.placeholder": "Press &quot;/&quot; to search for settings",
 	"search.no-results": "没有可用结果…",
 	"search.search-forum": "搜索论坛为<strong></strong>",
 	"search.keep-typing": "输入更多以查看结果...",

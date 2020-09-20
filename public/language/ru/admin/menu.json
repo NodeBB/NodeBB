@@ -70,7 +70,7 @@
 	"logout": "Выйти",
 	"view-forum": "Перейти на форум",
 
-	"search.placeholder": "Поиск в настройках",
+	"search.placeholder": "Press &quot;/&quot; to search for settings",
 	"search.no-results": "Нет результата...",
 	"search.search-forum": "Искать <strong></strong> на форуме",
 	"search.keep-typing": "Наберите ещё что-нибудь, чтобы увидеть результат...",
