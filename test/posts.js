@@ -554,15 +554,20 @@ describe('Post\'s', function () {
 			});
 		});
 
-		it('should edit post', function (done) {
-			socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', title: 'edited title', tags: ['edited'] }, function (err, data) {
-				assert.ifError(err);
-				assert.equal(data.content, 'edited post content');
-				assert.equal(data.editor, voterUid);
-				assert.equal(data.topic.title, 'edited title');
-				assert.equal(data.topic.tags[0].value, 'edited');
-				done();
+		it('should edit post', async function () {
+			const data = await socketPosts.edit({ uid: voterUid }, {
+				pid: pid,
+				content: 'edited post content',
+				title: 'edited title',
+				tags: ['edited'],
 			});
+
+			assert.strictEqual(data.content, 'edited post content');
+			assert.strictEqual(data.editor, voterUid);
+			assert.strictEqual(data.topic.title, 'edited title');
+			assert.strictEqual(data.topic.tags[0].value, 'edited');
+			const res = await db.getObject('post:' + pid);
+			assert(!res.hasOwnProperty('bookmarks'));
 		});
 
 		it('should disallow post editing for new users if post was made past the threshold for editing', function (done) {
