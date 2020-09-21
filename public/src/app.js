@@ -195,7 +195,7 @@ app.cacheBuster = null;
 			$(this).tooltip({
 				placement: placement || $(this).attr('title-placement') || 'top',
 				title: $(this).attr('title'),
-				container: 'body',
+				container: '#content',
 			});
 		});
 	};
