@@ -10,7 +10,7 @@ module.exports = function (app, middleware, controllers) {
 
 	router.get('/config', middleware.applyCSRF, controllers.api.getConfig);
 
-	router.get('/me', controllers.user.getCurrentUser);
+	router.get('/self', controllers.user.getCurrentUser);
 	router.get('/user/uid/:uid', middleware.canViewUsers, controllers.user.getUserByUID);
 	router.get('/user/username/:username', middleware.canViewUsers, controllers.user.getUserByUsername);
 	router.get('/user/email/:email', middleware.canViewUsers, controllers.user.getUserByEmail);
