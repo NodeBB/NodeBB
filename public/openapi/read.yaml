@@ -3096,6 +3096,8 @@ paths:
                     type: number
                   upvotes:
                     type: number
+                  bookmarks:
+                    type: number
                   deleted:
                     type: number
                   deleterUid:
@@ -3609,6 +3611,8 @@ paths:
                             upvotes:
                               type: number
                             downvotes:
+                              type: number
+                            bookmarks:
                               type: number
                             deleterUid:
                               type: number
