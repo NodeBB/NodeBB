@@ -165,7 +165,7 @@ describe('authentication', function () {
 				assert(body);
 
 				request({
-					url: nconf.get('url') + '/api/me',
+					url: nconf.get('url') + '/api/self',
 					json: true,
 					jar: jar,
 				}, function (err, response, body) {
@@ -204,7 +204,7 @@ describe('authentication', function () {
 			assert.ifError(err);
 			assert(body);
 			request({
-				url: nconf.get('url') + '/api/me',
+				url: nconf.get('url') + '/api/self',
 				json: true,
 				jar: jar,
 			}, function (err, response, body) {
