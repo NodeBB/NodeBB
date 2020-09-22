@@ -86,6 +86,8 @@ module.exports = function (Categories) {
 		const set = await Categories.buildTopicsSortedSet(data);
 		if (Array.isArray(set)) {
 			return await db.sortedSetIntersectCard(set);
+		} else if (data.targetUid && set) {
+			return await db.sortedSetCard(set);
 		}
 		return data.category.topic_count;
 	};
