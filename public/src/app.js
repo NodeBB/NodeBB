@@ -146,7 +146,7 @@ app.cacheBuster = null;
 	};
 
 	app.enterRoom = function (room, callback) {
-		callback = callback || function () {};
+		callback = callback || function () { };
 		if (socket && app.user.uid && app.currentRoom !== room) {
 			var previousRoom = app.currentRoom;
 			app.currentRoom = room;
@@ -218,7 +218,7 @@ app.cacheBuster = null;
 
 		utils.addCommasToNumbers($('.formatted-number'));
 
-		app.createUserTooltips();
+		app.createUserTooltips($('#content'));
 
 		app.createStatusTooltips();
 
@@ -325,7 +325,7 @@ app.cacheBuster = null;
 			});
 		}
 
-		callback = callback || function () {};
+		callback = callback || function () { };
 		if (!app.user.uid) {
 			return app.alertError('[[error:not-logged-in]]');
 		}
