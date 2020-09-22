@@ -109,11 +109,15 @@ module.exports = function (Topics) {
 	}
 
 	Topics.getTagTids = async function (tag, start, stop) {
-		return await db.getSortedSetRevRange('tag:' + tag + ':topics', start, stop);
+		const tids = await db.getSortedSetRevRange('tag:' + tag + ':topics', start, stop);
+		const payload = await plugins.fireHook('filter:topics.getTagTids', { tag, start, stop, tids });
+		return payload.tids;
 	};
 
 	Topics.getTagTopicCount = async function (tag) {
-		return await db.sortedSetCard('tag:' + tag + ':topics');
+		const count = await db.sortedSetCard('tag:' + tag + ':topics');
+		const payload = await plugins.fireHook('filter:topics.getTagTopicCount', { tag, count });
+		return payload.count;
 	};
 
 	Topics.deleteTags = async function (tags) {
