@@ -21,7 +21,11 @@ module.exports = function (User) {
 		}
 		const updateUid = data.uid;
 
-		const result = await plugins.fireHook('filter:user.updateProfile', { uid: uid, data: data, fields: fields });
+		const result = await plugins.fireHook('filter:user.updateProfile', {
+			uid: uid,
+			data: data,
+			fields: fields,
+		});
 		fields = result.fields;
 		data = result.data;
 
@@ -46,8 +50,18 @@ module.exports = function (User) {
 
 			await User.setUserField(updateUid, field, data[field]);
 		});
-		plugins.fireHook('action:user.updateProfile', { uid: uid, data: data, fields: fields, oldData: oldData });
-		return await User.getUserFields(updateUid, ['email', 'username', 'userslug', 'picture', 'icon:text', 'icon:bgColor']);
+
+		plugins.fireHook('action:user.updateProfile', {
+			uid: uid,
+			data: data,
+			fields: fields,
+			oldData: oldData,
+		});
+
+		return await User.getUserFields(updateUid, [
+			'email', 'username', 'userslug',
+			'picture', 'icon:text', 'icon:bgColor',
+		]);
 	};
 
 	async function validateData(callerUid, data) {
@@ -67,6 +81,7 @@ module.exports = function (User) {
 			return;
 		}
 
+		data.email = data.email.trim();
 		if (!utils.isEmailValid(data.email)) {
 			throw new Error('[[error:invalid-email]]');
 		}
