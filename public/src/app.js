@@ -369,7 +369,7 @@ app.cacheBuster = null;
 		});
 
 
-		$('#search-form').parent().tooltip({
+		$('#search-form').tooltip({
 			placement: 'bottom',
 			trigger: 'hover',
 			title: $('#search-button i').attr('title'),
