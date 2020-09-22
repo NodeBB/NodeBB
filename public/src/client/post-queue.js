@@ -49,7 +49,7 @@ define('forum/post-queue', ['categorySelector'], function (categorySelector) {
 					if (err) {
 						return app.alertError(err.message);
 					}
-					app.parseAndTranslate('admin/manage/post-queue', 'posts', {
+					app.parseAndTranslate('post-queue', 'posts', {
 						posts: [{
 							category: category,
 						}],
