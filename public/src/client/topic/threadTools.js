@@ -229,7 +229,7 @@ define('forum/topic/threadTools', [
 		threadEl.find('[component="post"]:not(.deleted) [component="post/reply"], [component="post"]:not(.deleted) [component="post/quote"]').toggleClass('hidden', hideReply);
 
 		threadEl.toggleClass('deleted', data.isDelete);
-		ajaxify.data.deleted = data.isDelete;
+		ajaxify.data.deleted = data.isDelete ? 1 : 0;
 	};
 
 
