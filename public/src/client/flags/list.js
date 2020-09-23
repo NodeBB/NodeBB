@@ -38,9 +38,7 @@ define('forum/flags/list', ['components', 'Chart'], function (components, Chart)
 		filtersEl.find('[name="sort"]').val(ajaxify.data.sort);
 
 		document.getElementById('apply-filters').addEventListener('click', function () {
-			var payload = filtersEl.serializeArray().filter(function (item) {
-				return !!item.value;
-			});
+			var payload = filtersEl.serializeArray();
 			ajaxify.go('flags?' + (payload.length ? $.param(payload) : 'reset=1'));
 		});
 	};

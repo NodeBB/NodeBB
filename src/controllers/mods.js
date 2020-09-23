@@ -47,7 +47,11 @@ modsController.flags.list = async function (req, res, next) {
 	// Parse query string params for filters, eliminate non-valid filters
 	filters = filters.reduce(function (memo, cur) {
 		if (req.query.hasOwnProperty(cur)) {
-			memo[cur] = req.query[cur];
+			if (req.query[cur] === '') {
+				delete req.session.flags_filters[cur];
+			} else {
+				memo[cur] = req.query[cur];
+			}
 		}
 
 		return memo;
