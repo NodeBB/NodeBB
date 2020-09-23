@@ -419,6 +419,10 @@ app.cacheBuster = null;
 						quickSearchResults.toggleClass('hidden', !html.length || !inputEl.is(':focus'))
 							.find('.quick-search-results-container')
 							.html(html.length ? html : '');
+						var highlightEls = quickSearchResults.find(
+							'.quick-search-results .quick-search-title, .quick-search-results .snippet'
+						);
+						search.highlightMatches(options.searchOptions.term, highlightEls);
 						$(window).trigger('action:search.quick.complete', {
 							data: data,
 							options: options,

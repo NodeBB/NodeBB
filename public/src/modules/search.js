@@ -106,6 +106,39 @@ define('search', ['navigator', 'translator', 'storage'], function (nav, translat
 		}
 	};
 
+	Search.highlightMatches = function (searchQuery, els) {
+		if (!searchQuery || !els.length) {
+			return;
+		}
+		searchQuery = utils.escapeHTML(searchQuery.replace(/^"/, '').replace(/"$/, '').trim());
+		var regexStr = searchQuery.split(' ')
+			.map(function (word) { return utils.escapeRegexChars(word); })
+			.join('|');
+		var regex = new RegExp('(' + regexStr + ')', 'gi');
+
+		els.each(function () {
+			var result = $(this);
+			var nested = [];
+
+			result.find('*').each(function () {
+				$(this).after('<!-- ' + nested.length + ' -->');
+				nested.push($('<div></div>').append($(this)));
+			});
+
+			result.html(result.html().replace(regex, function (match, p1) {
+				return '<strong class="search-match">' + p1 + '</strong>';
+			}));
+
+			nested.forEach(function (nestedEl, i) {
+				result.html(result.html().replace('<!-- ' + i + ' -->', function () {
+					return nestedEl.html();
+				}));
+			});
+		});
+
+		$('.search-result-text').find('img:not(.not-responsive)').addClass('img-responsive');
+	};
+
 	Search.queryTopic = function (tid, term) {
 		socket.emit('topics.search', {
 			tid: tid,
