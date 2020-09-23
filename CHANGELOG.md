@@ -1,3 +1,49 @@
+#### v1.15.0-beta.24 (2020-09-23)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.24 (23ba071d)
+*  up persona (5407bf48)
+*  up persona (4c2eab4b)
+*  up persona (91133b0f)
+*  up persona (bcac0805)
+*  up persona (9dc4db1f)
+*  up persona (ba70a1bf)
+*  update changelog for v1.15.0-beta.23 (e6ea208c)
+
+##### New Features
+
+*  hightlight matches in quick search (f2f3ba49)
+*  add loading indicator (d38c8722)
+*  allow plugins to override tags and tag counts (81595095)
+*  edit test (ccddbb15)
+*  add x-posts/x-votes keys (23de5613)
+
+##### Bug Fixes
+
+*  multiword match highlight (f8ef380b)
+*  tooltip placement on navbar search (82ab6cd3)
+*  rogue tooltip on navbar profile icon (683c01b0)
+*  #8580, @julianlam (445a840b)
+*  topic count on category page if filter is author (bbf6889e)
+*  match api when modifying ajaxify.data.deleted (int, not bool) (703ac1b6)
+*  lock/unlock toggle issue (9a7c3c68)
+*  #8665, trim email before checking validity (ac43cd8b)
+*  editing posts saving uncessary data (e72fe259)
+*  api spec (654d5830)
+*  #8640, add bookmarks to intFields (4f14dc7a)
+*  change user tooltip container to content (02a48e1c)
+*  auth tests (fe2dc310)
+*  #8656, rename /api/me to /api/self (af43f0e4)
+*  add user tooltips to body (047c4148)
+* **deps:**
+  *  update dependency nodebb-plugin-composer-default to v6.3.57 (#8672) (7ecac97a)
+  *  update dependency nodebb-theme-persona to v10.2.30 (#8671) (c8a75631)
+  *  update dependency nodebb-theme-persona to v10.2.24 (#8663) (72cd5f13)
+  *  update dependency postcss to v8.0.6 (#8657) (55921ccf)
+  *  update dependency validator to v13.1.17 (#8659) (01232090)
+  *  update dependency sharp to v0.26.1 (#8660) (b175d671)
+
 #### v1.15.0-beta.23 (2020-09-18)
 
 ##### Chores
