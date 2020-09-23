@@ -53,7 +53,9 @@ define('forum/topic/threadTools', [
 				}
 
 				if (app.previousUrl && !app.previousUrl.match('^/topic')) {
-					ajaxify.go(app.previousUrl, handleBack.onBackClicked);
+					ajaxify.go(app.previousUrl, function () {
+						handleBack.onBackClicked(true);
+					});
 				} else if (ajaxify.data.category) {
 					ajaxify.go('category/' + ajaxify.data.category.slug, handleBack.onBackClicked);
 				}
