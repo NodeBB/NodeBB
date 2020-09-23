@@ -15,6 +15,8 @@ define('handleBack', [
 		$(window).off('action:popstate', onBackClicked).on('action:popstate', onBackClicked);
 	};
 
+	handleBack.onBackClicked = onBackClicked;
+
 	function saveClickedIndex() {
 		$('[component="category"]').on('click', '[component="topic/header"]', function () {
 			var clickedIndex = $(this).parents('[data-index]').attr('data-index');

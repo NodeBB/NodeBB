@@ -4,7 +4,8 @@
 define('forum/topic/threadTools', [
 	'components',
 	'translator',
-], function (components, translator) {
+	'handleBack',
+], function (components, translator, handleBack) {
 	var ThreadTools = {};
 
 	ThreadTools.init = function (tid, topicContainer) {
@@ -50,6 +51,13 @@ define('forum/topic/threadTools', [
 				if (err) {
 					return app.alertError(err);
 				}
+
+				if (app.previousUrl && !app.previousUrl.match('^/topic')) {
+					ajaxify.go(app.previousUrl, handleBack.onBackClicked);
+				} else if (ajaxify.data.category) {
+					ajaxify.go('category/' + ajaxify.data.category.slug, handleBack.onBackClicked);
+				}
+
 				app.alertSuccess('[[topic:mark_unread.success]]');
 			});
 			return false;
