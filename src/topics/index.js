@@ -146,6 +146,7 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 		deleter,
 		merger,
 		related,
+		posterCount,
 	] = await Promise.all([
 		getMainPostAndReplies(topicData, set, uid, start, stop, reverse),
 		categories.getCategoryData(topicData.cid),
@@ -157,6 +158,7 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 		getDeleter(topicData),
 		getMerger(topicData),
 		getRelated(topicData, uid),
+		db.sortedSetCard('tid:' + topicData.tid + ':posters'),
 	]);
 
 	topicData.posts = posts;
@@ -179,6 +181,7 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 		topicData.mergedTimestampISO = utils.toISOString(topicData.mergedTimestamp);
 	}
 	topicData.related = related || [];
+	topicData.posterCount = posterCount;
 	topicData.unreplied = topicData.postcount === 1;
 	topicData.icons = [];
 

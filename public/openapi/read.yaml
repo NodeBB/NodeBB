@@ -3542,6 +3542,9 @@ paths:
                         type: number
                       viewcount:
                         type: number
+                      posterCount:
+                        type: number
+                        description: The number of unique users who made a post in this topic
                       mainPid:
                         type: number
                         description: The post id of the first post in this topic (also called the
