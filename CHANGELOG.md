@@ -1,3 +1,26 @@
+#### v1.15.0-beta.25 (2020-09-23)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.25 (1124d4ee)
+*  up persona (032e6001)
+*  update changelog for v1.15.0-beta.24 (72ab5ba1)
+
+##### New Features
+
+*  add row highlighting for popular and unread (2cd5f959)
+*  return to previous page and/or category after marking topic unread (48a8ec4a)
+*  add missing lang key (bd9b6c99)
+*  add number of posters to topic (83d4e7ef)
+
+##### Bug Fixes
+
+*  language key in reset password (2ad33058)
+*  issue where the last flag filter could not be removed (0fffe289)
+* **deps:**
+  *  update dependency nodebb-theme-persona to v10.2.33 (#8675) (abe83773)
+  *  update dependency nodebb-theme-persona to v10.2.31 (#8673) (80dbf97a)
+
 #### v1.15.0-beta.24 (2020-09-23)
 
 ##### Chores
