@@ -396,9 +396,12 @@ app.cacheBuster = null;
 				/* eslint-disable-next-line */
 				options.searchOptions = Object.assign({}, searchOptions);
 				options.searchOptions.term = inputEl.val();
+				quickSearchResults.removeClass('hidden').find('.quick-search-results-container').html('');
+				quickSearchResults.find('.loading-indicator').removeClass('hidden');
 				$(window).trigger('action:search.quick.start', options);
 				options.searchOptions.searchOnly = 1;
 				search.api(options.searchOptions, function (data) {
+					quickSearchResults.find('.loading-indicator').addClass('hidden');
 					if (options.hideOnNoMatches && !data.posts.length) {
 						return quickSearchResults.addClass('hidden').find('.quick-search-results-container').html('');
 					}
