@@ -139,8 +139,10 @@ define('forum/search', ['search', 'autocomplete', 'storage'], function (searchMo
 			return;
 		}
 		searchQuery = utils.escapeHTML(searchQuery.replace(/^"/, '').replace(/"$/, '').trim());
-		var regexStr = searchQuery.split(' ').join('|');
-		var regex = new RegExp('(' + utils.escapeRegexChars(regexStr) + ')', 'gi');
+		var regexStr = searchQuery.split(' ')
+			.map(function (word) { return utils.escapeRegexChars(word); })
+			.join('|');
+		var regex = new RegExp('(' + regexStr + ')', 'gi');
 
 		$('.search-result-text p, .search-result-text h4').each(function () {
 			var result = $(this);
