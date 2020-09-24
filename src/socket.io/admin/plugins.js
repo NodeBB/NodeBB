@@ -19,6 +19,7 @@ Plugins.toggleActive = async function (socket, plugin_id) {
 
 Plugins.toggleInstall = async function (socket, data) {
 	require('../../posts/cache').reset();
+	await plugins.checkWhitelist(data.id, data.version);
 	const pluginData = await plugins.toggleInstall(data.id, data.version);
 	await events.log({
 		type: 'plugin-' + (pluginData.installed ? 'install' : 'uninstall'),

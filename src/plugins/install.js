@@ -7,6 +7,7 @@ const nconf = require('nconf');
 const os = require('os');
 const cproc = require('child_process');
 const util = require('util');
+const request = require('request-promise-native');
 
 const db = require('../database');
 const meta = require('../meta');
@@ -64,6 +65,20 @@ module.exports = function (Plugins) {
 		meta.reloadRequired = true;
 		Plugins.fireHook(isActive ? 'action:plugin.deactivate' : 'action:plugin.activate', { id: id });
 		return { id: id, active: !isActive };
+	};
+
+	Plugins.checkWhitelist = async function (id, version) {
+		const body = await request({
+			method: 'GET',
+			url: `https://packages.nodebb.org/api/v1/plugins/${encodeURIComponent(id)}`,
+			json: true,
+		});
+
+		if (body && body.code === 'ok' && (version === 'latest' || body.payload.valid.includes(version))) {
+			return;
+		}
+
+		throw new Error('[[error:plugin-not-whitelisted]]');
 	};
 
 	Plugins.toggleInstall = async function (id, version) {
