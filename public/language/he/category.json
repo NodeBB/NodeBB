@@ -10,7 +10,7 @@
     "watch": "עקוב",
     "ignore": "התעלם",
     "watching": "עוקב",
-    "not-watching": "Not Watching",
+    "not-watching": "לא עוקב",
     "ignoring": "מתעלם",
     "watching.description": "Show topics in unread and recent",
     "not-watching.description": "Do not show topics in unread, show in recent",
