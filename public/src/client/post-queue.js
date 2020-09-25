@@ -60,6 +60,8 @@ define('forum/post-queue', ['categorySelector'], function (categorySelector) {
 			});
 			return false;
 		});
+
+		$('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
 	};
 
 	function handleContentEdit(displayClass, editableClass, inputSelector) {
