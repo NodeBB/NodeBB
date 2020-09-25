@@ -1,17 +1,17 @@
 'use strict';
 
-var validator = require('validator');
-var _ = require('lodash');
+const validator = require('validator');
+const _ = require('lodash');
 
-var db = require('../database');
-var meta = require('../meta');
-var topics = require('../topics');
-var user = require('../user');
-var privileges = require('../privileges');
-var plugins = require('../plugins');
-var pubsub = require('../pubsub');
-var utils = require('../utils');
-var translator = require('../translator');
+const db = require('../database');
+const meta = require('../meta');
+const topics = require('../topics');
+const user = require('../user');
+const privileges = require('../privileges');
+const plugins = require('../plugins');
+const pubsub = require('../pubsub');
+const utils = require('../utils');
+const translator = require('../translator');
 
 module.exports = function (Posts) {
 	pubsub.on('post:edit', function (pid) {
@@ -23,27 +23,35 @@ module.exports = function (Posts) {
 		if (!canEdit.flag) {
 			throw new Error(canEdit.message);
 		}
-		let postData = await db.getObject('post:' + data.pid);
+		const postData = await Posts.getPostData(data.pid);
 		if (!postData) {
 			throw new Error('[[error:no-post]]');
 		}
 
 		const oldContent = postData.content; // for diffing purposes
-		postData.content = data.content;
-		postData.edited = Date.now();
-		postData.editor = data.uid;
+		const now = Date.now();
+		const editPostData = {
+			content: data.content,
+			edited: now,
+			editor: data.uid,
+		};
 		if (data.handle) {
-			postData.handle = data.handle;
+			editPostData.handle = data.handle;
 		}
-		const result = await plugins.fireHook('filter:post.edit', { req: data.req, post: postData, data: data, uid: data.uid });
-		postData = result.post;
+
+		const result = await plugins.fireHook('filter:post.edit', {
+			req: data.req,
+			post: editPostData,
+			data: data,
+			uid: data.uid,
+		});
 
 		const [editor, topic] = await Promise.all([
 			user.getUserFields(data.uid, ['username', 'userslug']),
 			editMainPost(data, postData),
 		]);
 
-		await Posts.setPostFields(data.pid, postData);
+		await Posts.setPostFields(data.pid, result.post);
 
 		if (meta.config.enablePostHistory === 1) {
 			await Posts.diffs.save({
@@ -54,27 +62,28 @@ module.exports = function (Posts) {
 			});
 		}
 		await Posts.uploads.sync(data.pid);
+		const returnPostData = { ...postData, ...editPostData };
+		returnPostData.cid = topic.cid;
+		returnPostData.topic = topic;
+		returnPostData.editedISO = utils.toISOString(now);
 
-		postData.cid = topic.cid;
-		postData.topic = topic;
-
-		await topics.notifyFollowers(postData, data.uid, {
+		await topics.notifyFollowers(returnPostData, data.uid, {
 			type: 'post-edit',
-			bodyShort: translator.compile('notifications:user_edited_post', editor.username, postData.topic.title),
-			nid: 'edit_post:' + postData.pid + ':uid:' + data.uid,
+			bodyShort: translator.compile('notifications:user_edited_post', editor.username, topic.title),
+			nid: 'edit_post:' + data.pid + ':uid:' + data.uid,
 		});
 
-		plugins.fireHook('action:post.edit', { post: _.clone(postData), data: data, uid: data.uid });
+		plugins.fireHook('action:post.edit', { post: _.clone(returnPostData), data: data, uid: data.uid });
 
 		require('./cache').del(String(postData.pid));
 		pubsub.publish('post:edit', String(postData.pid));
 
-		postData = await Posts.parsePost(postData);
+		await Posts.parsePost(returnPostData);
 
 		return {
 			topic: topic,
 			editor: editor,
-			post: postData,
+			post: returnPostData,
 		};
 	};
 
@@ -119,7 +128,11 @@ module.exports = function (Posts) {
 		}
 		await topics.validateTags(data.tags, topicData.cid);
 
-		const results = await plugins.fireHook('filter:topic.edit', { req: data.req, topic: newTopicData, data: data });
+		const results = await plugins.fireHook('filter:topic.edit', {
+			req: data.req,
+			topic: newTopicData,
+			data: data,
+		});
 		await db.setObject('topic:' + tid, results.topic);
 		await topics.updateTopicTags(tid, data.tags);
 		const tags = await topics.getTopicTagsObjects(tid);

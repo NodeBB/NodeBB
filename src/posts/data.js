@@ -51,8 +51,7 @@ module.exports = function (Posts) {
 
 	Posts.setPostFields = async function (pid, data) {
 		await db.setObject('post:' + pid, data);
-		data.pid = pid;
-		plugins.fireHook('action:post.setFields', { data: data });
+		plugins.fireHook('action:post.setFields', { data: { ...data, pid } });
 	};
 };
 
