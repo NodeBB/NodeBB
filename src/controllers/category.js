@@ -26,7 +26,7 @@ categoryController.get = async function (req, res, next) {
 	}
 
 	const [categoryFields, userPrivileges, userSettings, rssToken] = await Promise.all([
-		categories.getCategoryFields(cid, ['slug', 'disabled']),
+		categories.getCategoryFields(cid, ['slug', 'disabled', 'link']),
 		privileges.categories.get(cid, req.uid),
 		user.getSettings(req.uid),
 		user.auth.getFeedToken(req.uid),
@@ -43,6 +43,14 @@ categoryController.get = async function (req, res, next) {
 
 	if (!userPrivileges.read) {
 		return helpers.notAllowed(req, res);
+	}
+
+	if (categoryFields.link) {
+		if (/^http(?:s)?:\/\//.test(categoryFields.link)) {
+			return res.redirect(utils.decodeHTMLEntities(categoryFields.link));
+		} else {
+			return res.redirect(nconf.get('relative_path') + utils.decodeHTMLEntities(categoryFields.link));
+		}
 	}
 
 	if (!res.locals.isAPI && (!req.params.slug || categoryFields.slug !== cid + '/' + req.params.slug) && (categoryFields.slug && categoryFields.slug !== cid + '/')) {
