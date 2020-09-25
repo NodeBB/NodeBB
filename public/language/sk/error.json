@@ -168,5 +168,6 @@
     "cannot-block-guest": "Guest are not able to block other users",
     "already-blocked": "This user is already blocked",
     "already-unblocked": "This user is already unblocked",
-    "no-connection": "Zdá sa, že máte problém s pripojením k internetu"
+    "no-connection": "Zdá sa, že máte problém s pripojením k internetu",
+    "plugin-not-whitelisted": "Unable to install plugin &ndash; only plugins whitelisted by the NodeBB Package Manager can be installed via the ACP"
 }

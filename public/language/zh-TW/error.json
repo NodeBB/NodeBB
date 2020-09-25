@@ -168,5 +168,6 @@
     "cannot-block-guest": "訪客無法封鎖其他使用者",
     "already-blocked": "此使用者已被封鎖",
     "already-unblocked": "此使用者已被取消封鎖",
-    "no-connection": "您的網路連線似乎有問題"
+    "no-connection": "您的網路連線似乎有問題",
+    "plugin-not-whitelisted": "Unable to install plugin &ndash; only plugins whitelisted by the NodeBB Package Manager can be installed via the ACP"
 }

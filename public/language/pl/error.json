@@ -168,5 +168,6 @@
     "cannot-block-guest": "Goście nie mogą blokować innych użytkowników",
     "already-blocked": "Ten użytkownik jest już zablokowany",
     "already-unblocked": "Ten użytkownik jest już odblokowany",
-    "no-connection": "Sprawdź swoje połączenie z internetem"
+    "no-connection": "Sprawdź swoje połączenie z internetem",
+    "plugin-not-whitelisted": "Unable to install plugin &ndash; only plugins whitelisted by the NodeBB Package Manager can be installed via the ACP"
 }
