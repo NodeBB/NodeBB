@@ -1,3 +1,26 @@
+#### v1.15.0-beta.26 (2020-09-25)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.26 (62c44095)
+*  up persona (ff8a833a)
+*  up persona (4a0f54ae)
+*  update changelog for v1.15.0-beta.25 (240a04b4)
+
+##### New Features
+
+*  upon plugin installation via ACP, check against nbbpm first (5ddf7022)
+*  up benchpress (8e88ccd6)
+
+##### Bug Fixes
+
+*  add img-responsive to post queue post items (f8032cd0)
+* **deps:**
+  *  update dependency json2csv to v5.0.3 (30aa7e83)
+  *  update dependency nodebb-theme-persona to v10.2.36 (#8680) (07172b6f)
+  *  update dependency nodebb-theme-persona to v10.2.35 (#8679) (68a5e7e3)
+  *  update dependency json2csv to v5.0.2 (5a2adb42)
+
 #### v1.15.0-beta.25 (2020-09-23)
 
 ##### Chores
