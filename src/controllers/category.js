@@ -46,11 +46,11 @@ categoryController.get = async function (req, res, next) {
 	}
 
 	if (categoryFields.link) {
-		if (/^http(?:s)?:\/\//.test(categoryFields.link)) {
-			return res.redirect(utils.decodeHTMLEntities(categoryFields.link));
-		} else {
-			return res.redirect(nconf.get('relative_path') + utils.decodeHTMLEntities(categoryFields.link));
+		let link = utils.decodeHTMLEntities(categoryFields.link);
+		if (!/^http(?:s)?:\/\//.test(categoryFields.link)) {
+			link = nconf.get('relative_path') + link;
 		}
+		return res.redirect(link);
 	}
 
 	if (!res.locals.isAPI && (!req.params.slug || categoryFields.slug !== cid + '/' + req.params.slug) && (categoryFields.slug && categoryFields.slug !== cid + '/')) {
