@@ -78,7 +78,7 @@ module.exports = function (User) {
 		if (data.onlineOnly) {
 			fields.push('status', 'lastonline');
 		}
-		if (data.bannedOnly) {
+		if (data.bannedOnly || data.notBanned) {
 			fields.push('banned');
 		}
 		if (data.flaggedOnly) {
@@ -102,6 +102,10 @@ module.exports = function (User) {
 
 		if (data.bannedOnly) {
 			userData = userData.filter(user => user.banned);
+		}
+
+		if (data.notBanned) {
+			userData = userData.filter(user => !user.banned);
 		}
 
 		if (data.flaggedOnly) {

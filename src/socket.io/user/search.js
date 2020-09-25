@@ -24,6 +24,7 @@ module.exports = function (SocketUser) {
 			sortBy: data.sortBy,
 			onlineOnly: data.onlineOnly,
 			bannedOnly: data.bannedOnly,
+			notBanned: data.notBanned,
 			flaggedOnly: data.flaggedOnly,
 			paginate: data.paginate,
 			uid: socket.uid,
