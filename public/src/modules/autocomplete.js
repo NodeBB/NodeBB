@@ -5,7 +5,12 @@
 define('autocomplete', function () {
 	var module = {};
 
-	module.user = function (input, onselect) {
+	module.user = function (input, params, onselect) {
+		if (typeof params === 'function') {
+			onselect = params;
+			params = {};
+		}
+
 		app.loadJQueryUI(function () {
 			input.autocomplete({
 				delay: 200,
@@ -16,10 +21,10 @@ define('autocomplete', function () {
 					handleOnSelect(input, onselect, event, ui);
 				},
 				source: function (request, response) {
-					socket.emit('user.search', {
-						query: request.term,
-						paginate: false,
-					}, function (err, result) {
+					params.query = params.query || request.term;
+					params.paginate = params.paginate || false;
+
+					socket.emit('user.search', params, function (err, result) {
 						if (err) {
 							return app.alertError(err.message);
 						}
@@ -114,7 +119,7 @@ define('autocomplete', function () {
 	};
 
 	function handleOnSelect(input, onselect, event, ui) {
-		onselect = onselect || function () {};
+		onselect = onselect || function () { };
 		var e = jQuery.Event('keypress');
 		e.which = 13;
 		e.keyCode = 13;
