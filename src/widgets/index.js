@@ -80,6 +80,7 @@ async function renderWidget(widget, uid, options) {
 	if (typeof html !== 'string') {
 		html = data.html;
 	} else {
+		// DEPRECATED: @1.5.0, remove in version >=1.15
 		winston.warn('[widgets.render] passing a string is deprecated!, filter:widget.render:' + widget.widget + '. Please set hookData.html in your plugin.');
 	}
 

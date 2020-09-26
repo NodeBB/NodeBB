@@ -204,6 +204,7 @@ async function parseAboutMe(userData) {
 
 function filterLinks(links, states) {
 	return links.filter(function (link, index) {
+		// DEPRECATED: @1.5.0, remove in >=1.15
 		// "public" is the old property, if visibility is defined, discard `public`
 		if (link.hasOwnProperty('public') && !link.hasOwnProperty('visibility')) {
 			winston.warn('[account/profileMenu (' + link.id + ')] Use of the `.public` property is deprecated, use `visibility` now');

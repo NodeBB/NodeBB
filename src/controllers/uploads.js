@@ -26,6 +26,7 @@ uploadsController.upload = async function (req, res, filesIterator) {
 		files = files[0];
 	}
 
+	// DEPRECATED: @1.13.0, remove in >=1.15
 	// backwards compatibility
 	if (filesIterator.constructor && filesIterator.constructor.name !== 'AsyncFunction') {
 		winston.warn('[deprecated] uploadsController.upload, use an async function as iterator');
