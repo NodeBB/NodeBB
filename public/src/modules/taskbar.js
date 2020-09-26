@@ -212,11 +212,5 @@ define('taskbar', ['benchpress', 'translator'], function (Benchpress, translator
 		element.data(data);
 	};
 
-	// DEPRECATED: @1.13.0, remove in >=1.15
-	taskbar.updateTitle = function (module, uuid, newTitle) {
-		console.warn('[taskbar] .updateTitle() is deprecated, use .update() instead');
-		taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"] [component="taskbar/title"]').text(newTitle);
-	};
-
 	return taskbar;
 });
