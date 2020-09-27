@@ -6,6 +6,7 @@ const winston = require('winston');
 
 const db = require('../database');
 const file = require('../file');
+const { paths } = require('../constants');
 
 const Data = module.exports;
 
@@ -14,7 +15,7 @@ const basePath = path.join(__dirname, '../../');
 Data.getPluginPaths = async function () {
 	let plugins = await db.getSortedSetRange('plugins:active', 0, -1);
 	plugins = plugins.filter(plugin => plugin && typeof plugin === 'string')
-		.map(plugin => path.join(__dirname, '../../node_modules/', plugin));
+		.map(plugin => path.join(paths.nodeModules, plugin));
 
 	const exists = await Promise.all(plugins.map(p => file.exists(p)));
 	return plugins.filter((p, i) => exists[i]);
@@ -221,13 +222,13 @@ Data.getLanguageData = async function getLanguageData(pluginData) {
 		return;
 	}
 
-	const pathToFolder = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages);
-	const paths = await file.walk(pathToFolder);
+	const pathToFolder = path.join(paths.nodeModules, pluginData.id, pluginData.languages);
+	const filepaths = await file.walk(pathToFolder);
 
 	const namespaces = [];
 	const languages = [];
 
-	paths.forEach(function (p) {
+	filepaths.forEach(function (p) {
 		const rel = path.relative(pathToFolder, p).split(/[/\\]/);
 		const language = rel.shift().replace('_', '-').replace('@', '-x-');
 		const namespace = rel.join('/').replace(/\.json$/, '');
@@ -241,7 +242,7 @@ Data.getLanguageData = async function getLanguageData(pluginData) {
 	});
 
 	return {
-		languages: languages,
-		namespaces: namespaces,
+		languages,
+		namespaces,
 	};
 };
