@@ -100,4 +100,12 @@ module.exports = function (module) {
 	module.pexpireAt = async function (key, timestamp) {
 		await module.client.async.pexpireat(key, timestamp);
 	};
+
+	module.ttl = async function (key) {
+		return await module.client.async.ttl(key);
+	};
+
+	module.pttl = async function (key) {
+		return await module.client.async.pttl(key);
+	};
 };

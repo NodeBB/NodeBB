@@ -210,4 +210,26 @@ UPDATE "legacy_object"
 	module.pexpireAt = async function (key, timestamp) {
 		await doExpire(key, new Date(timestamp));
 	};
+
+	async function getExpire(key) {
+		const res = await module.pool.query({
+			name: 'ttl',
+			text: `
+SELECT "expireAt"::TEXT
+  FROM "legacy_object"
+ WHERE "_key" = $1::TEXT
+ LIMIT 1`,
+			values: [key],
+		});
+
+		return res.rows.length ? new Date(res.rows[0].expireAt).getTime() : null;
+	}
+
+	module.ttl = async function (key) {
+		return Math.round((await getExpire(key) - Date.now()) / 1000);
+	};
+
+	module.pttl = async function (key) {
+		return await getExpire(key) - Date.now();
+	};
 };

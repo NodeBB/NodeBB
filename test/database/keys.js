@@ -327,5 +327,27 @@ describe('Key methods', function () {
 				});
 			});
 		});
+
+		it('should expire a key using seconds', function (done) {
+			db.expire('testKey', 86400, function (err) {
+				assert.ifError(err);
+				db.ttl('testKey', function (err, ttl) {
+					assert.ifError(err);
+					assert.equal(Math.round(86400 / 1000), Math.round(ttl / 1000));
+					done();
+				});
+			});
+		});
+
+		it('should expire a key using milliseconds', function (done) {
+			db.pexpire('testKey', 86400000, function (err) {
+				assert.ifError(err);
+				db.pttl('testKey', function (err, pttl) {
+					assert.ifError(err);
+					assert.equal(Math.round(86400000 / 1000000), Math.round(pttl / 1000000));
+					done();
+				});
+			});
+		});
 	});
 });
