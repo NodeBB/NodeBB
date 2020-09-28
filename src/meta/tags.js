@@ -33,7 +33,7 @@ Tags.parse = async (req, data, meta, link) => {
 		noEscape: true,
 	}, {
 		name: 'theme-color',
-		content: meta.config.themeColor || '#ffffff',
+		content: Meta.config.themeColor || '#ffffff',
 	}];
 
 	if (Meta.config.keywords) {
