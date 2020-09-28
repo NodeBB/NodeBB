@@ -136,10 +136,10 @@ module.exports = function (module) {
 	};
 
 	module.ttl = async function (key) {
-		return Math.round((await module.getObjectField(key, 'expireAt') - Date.now()) / 1000);
+		return Math.round((new Date(await module.getObjectField(key, 'expireAt')) - Date.now()) / 1000);
 	};
 
 	module.pttl = async function (key) {
-		return await module.getObjectField(key, 'expireAt') - Date.now();
+		return new Date(await module.getObjectField(key, 'expireAt')) - Date.now();
 	};
 };
