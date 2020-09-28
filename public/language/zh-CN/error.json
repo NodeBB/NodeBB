@@ -26,6 +26,7 @@
     "invalid-pagination-value": "无效的分页数值，必须介于 %1 和 %2 之间",
     "username-taken": "此用户名已被占用",
     "email-taken": "此电子邮箱已被占用",
+    "email-invited": "Email was already invited",
     "email-not-confirmed": "在您的电子邮件账户被确认前，您不能发帖。",
     "email-not-confirmed-chat": "您的电子邮箱尚未确认，无法聊天，请点击这里确认您的电子邮箱。",
     "email-not-confirmed-email-sent": "您的电子邮件账户尚未确认，请检查您的收件箱。在电子邮件帐户被确认前您不能发帖和聊天。",

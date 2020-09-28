@@ -26,6 +26,7 @@
     "invalid-pagination-value": "Ugyldig side værdi, skal mindst være %1 og maks. %2",
     "username-taken": "Brugernavn optaget",
     "email-taken": "Emailadresse allerede i brug",
+    "email-invited": "Email was already invited",
     "email-not-confirmed": "You are unable to post until your email is confirmed, please click here to confirm your email.",
     "email-not-confirmed-chat": "Du kan ikke chatte før din email er bekræftet, klik her for at bekræfte din email.",
     "email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email. You won't be able to post or chat until your email is confirmed.",

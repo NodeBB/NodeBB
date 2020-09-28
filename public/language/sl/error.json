@@ -26,6 +26,7 @@
     "invalid-pagination-value": "Napačna vrednost za številčenje strani. Vrednost mora biti najmanj %1 in največ %2.",
     "username-taken": "Uporabniško ime je že zasedeno.",
     "email-taken": "E-poštni naslov je že zaseden.",
+    "email-invited": "Email was already invited",
     "email-not-confirmed": "You are unable to post until your email is confirmed, please click here to confirm your email.",
     "email-not-confirmed-chat": "Ne morete klepetati, dokler ne potrdite svojega e-poštnega naslova. Prosimo, kliknite tu za potrditev e-poštnega naslova.",
     "email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email. You won't be able to post or chat until your email is confirmed.",

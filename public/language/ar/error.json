@@ -26,6 +26,7 @@
     "invalid-pagination-value": "رقم الصفحة غير صحيح ، يجب أن يكون بين %1 و %2 .",
     "username-taken": "اسم المستخدم مأخوذ",
     "email-taken": "البريد الالكتروني مأخوذ",
+    "email-invited": "Email was already invited",
     "email-not-confirmed": "You are unable to post until your email is confirmed, please click here to confirm your email.",
     "email-not-confirmed-chat": "لا يمكنك الدردشة حتى تقوم بتأكيد بريدك الإلكتروني، الرجاء إضغط هنا لتأكيد بريدك اﻹلكتروني.",
     "email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email. You won't be able to post or chat until your email is confirmed.",

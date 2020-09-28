@@ -26,6 +26,7 @@
     "invalid-pagination-value": "Valor de paginação errado, deve ser no mínimo %1 e no máximo %2",
     "username-taken": "Nome de utilizar já utilizado",
     "email-taken": "E-mail já utilizado",
+    "email-invited": "Email was already invited",
     "email-not-confirmed": "You are unable to post until your email is confirmed, please click here to confirm your email.",
     "email-not-confirmed-chat": "Não podes utilizar o chat enquanto não confirmares o teu e-mail, por favor clica aqui para confirmares o teu e-mail.",
     "email-not-confirmed-email-sent": "O teu e-mail ainda não foi confirmado, por favor verifica a tua caixa de entrada para obteres o e-mail de confirmação. Não poderás publicar ou conversar até que o teu e-mail seja confirmado.",

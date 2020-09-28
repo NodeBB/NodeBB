@@ -26,6 +26,7 @@
     "invalid-pagination-value": "Ongeldig paginering waarde. De waarde moet op z'n minst %1 zijn en niet hoger dan %2 zijn.",
     "username-taken": "Gebruikersnaam is al in gebruik ",
     "email-taken": "E-mailadres is al in gebruik",
+    "email-invited": "Email was already invited",
     "email-not-confirmed": "Het plaatsen van berichten is pas toegestaan na validatie van het e-mailadres.",
     "email-not-confirmed-chat": "Het gebruik van chatfunctionaliteit is pas toegestaan na validatie van het e-mailadres.",
     "email-not-confirmed-email-sent": "Je e-mailadres is nog niet bevestigd, kijk of je de bevestigingsmail hebt ontvangen. Tot je e-mailadres is bevestigd kun je geen berichten plaatsen of aan chats deelnemen.",

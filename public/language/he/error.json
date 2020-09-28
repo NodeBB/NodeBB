@@ -26,6 +26,7 @@
     "invalid-pagination-value": "ערך דף לא חוקי, חייב להיות לפחות %1 ולא מעל %2",
     "username-taken": "שם משתמש תפוס",
     "email-taken": "כתובת אימייל תפוסה",
+    "email-invited": "Email was already invited",
     "email-not-confirmed": "אין באפשרותך לפרסם עד אישור הודעת הדוא\"ל שלך, לחץ כאן כדי לאשר את הדוא\"ל שלך.",
     "email-not-confirmed-chat": "אין באפשרותך לשוחח עד שהדוא\"ל שלך יאושר, אנא לחץ כאן כדי לאשר את הדוא\"ל שלך.",
     "email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email. You won't be able to post or chat until your email is confirmed.",

@@ -26,6 +26,7 @@
     "invalid-pagination-value": "Nombor halaman tidak sah, mesti tidak kurang dari %1 dan tidak lebih dari %2",
     "username-taken": "Nama pengguna telah digunakan",
     "email-taken": "Emel telah digunakan",
+    "email-invited": "Email was already invited",
     "email-not-confirmed": "You are unable to post until your email is confirmed, please click here to confirm your email.",
     "email-not-confirmed-chat": "Anda tidak dibenarkan sembang sehingga emel disahkan, sila sahkan emel anda.",
     "email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email. You won't be able to post or chat until your email is confirmed.",
