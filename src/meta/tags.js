@@ -55,7 +55,7 @@ Tags.parse = async (req, data, meta, link) => {
 		href: nconf.get('relative_path') + nconf.get('upload_url') + '/system/favicon.ico' + (Meta.config['cache-buster'] ? '?' + Meta.config['cache-buster'] : ''),
 	}, {
 		rel: 'manifest',
-		href: nconf.get('relative_path') + '/manifest.json',
+		href: nconf.get('relative_path') + '/manifest.webmanifest',
 	}];
 
 	if (plugins.hasListeners('filter:search.query')) {

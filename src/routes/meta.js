@@ -6,7 +6,7 @@ module.exports = function (app, middleware, controllers) {
 	app.get('/sitemap/categories.xml', controllers.sitemap.getCategories);
 	app.get(/\/sitemap\/topics\.(\d+)\.xml/, controllers.sitemap.getTopicPage);
 	app.get('/robots.txt', controllers.robots);
-	app.get('/manifest.json', controllers.manifest);
+	app.get('/manifest.webmanifest', controllers.manifest);
 	app.get('/css/previews/:theme', controllers.admin.themes.get);
 	app.get('/osd.xml', controllers.osd.handle);
 };
