@@ -248,7 +248,7 @@ Controllers.manifest = function (req, res, next) {
 	var manifest = {
 		name: meta.config.title || 'NodeBB',
 		short_name: meta.config['title:short'] || meta.config.title || 'NodeBB',
-		start_url: nconf.get('relative_path') + '/',
+		start_url: nconf.get('url'),
 		display: 'standalone',
 		orientation: 'portrait',
 		theme_color: meta.config.themeColor || '#ffffff',
