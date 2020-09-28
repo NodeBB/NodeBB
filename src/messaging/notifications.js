@@ -1,10 +1,10 @@
 'use strict';
 
-var user = require('../user');
-var notifications = require('../notifications');
-var sockets = require('../socket.io');
-var plugins = require('../plugins');
-var meta = require('../meta');
+const user = require('../user');
+const notifications = require('../notifications');
+const sockets = require('../socket.io');
+const plugins = require('../plugins');
+const meta = require('../meta');
 
 module.exports = function (Messaging) {
 	Messaging.notifyQueue = {};	// Only used to notify a user of a new chat message, see Messaging.notifyUser
@@ -34,7 +34,7 @@ module.exports = function (Messaging) {
 			return;
 		}
 		// Delayed notifications
-		var queueObj = Messaging.notifyQueue[fromUid + ':' + roomId];
+		let queueObj = Messaging.notifyQueue[fromUid + ':' + roomId];
 		if (queueObj) {
 			queueObj.message.content += '\n' + messageObj.content;
 			clearTimeout(queueObj.timeout);
