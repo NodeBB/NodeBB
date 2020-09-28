@@ -9,4 +9,8 @@ module.exports = function (app, middleware, controllers) {
 	app.get('/manifest.webmanifest', controllers.manifest);
 	app.get('/css/previews/:theme', controllers.admin.themes.get);
 	app.get('/osd.xml', controllers.osd.handle);
+	app.get('/service-worker.js', function (req, res) {
+		res.set('Content-Type', 'application/javascript');
+		res.send('self.addEventListener(\'fetch\', event => { event.respondWith( caches.match(event.request).then(response => { if (!response) { return fetch(event.request); } return response; }) ) });');
+	});
 };
