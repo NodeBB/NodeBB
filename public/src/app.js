@@ -52,6 +52,7 @@ app.cacheBuster = null;
 		createHeaderTooltips();
 		app.showEmailConfirmWarning();
 		app.showCookieWarning();
+		registerServiceWorker();
 
 		require(['taskbar', 'helpers', 'forum/pagination'], function (taskbar, helpers, pagination) {
 			taskbar.init();
@@ -688,4 +689,15 @@ app.cacheBuster = null;
 			});
 		});
 	};
+
+	function registerServiceWorker() {
+		if ('serviceWorker' in navigator) {
+			navigator.serviceWorker.register('/service-worker.js')
+				.then(function () {
+					console.log('ServiceWorker registration succeeded.');
+				}).catch(function (err) {
+					console.log('ServiceWorker registration failed: ', err);
+				});
+		}
+	}
 }());
