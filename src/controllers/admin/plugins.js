@@ -9,7 +9,7 @@ const pluginsController = module.exports;
 
 pluginsController.get = async function (req, res) {
 	const [compatible, all] = await Promise.all([
-		getCompatiblePluigns(),
+		getCompatiblePlugins(),
 		getAllPlugins(),
 	]);
 
@@ -39,7 +39,7 @@ pluginsController.get = async function (req, res) {
 	});
 };
 
-async function getCompatiblePluigns() {
+async function getCompatiblePlugins() {
 	return await getPlugins(true);
 }
 
