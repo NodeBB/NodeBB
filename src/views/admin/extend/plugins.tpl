@@ -1,21 +1,37 @@
 <ul class="nav nav-pills">
-	<li class="active"><a href="#installed" data-toggle="tab">
-		[[admin/extend/plugins:installed]]
-		<span class="badge">{installedCount}</span>
-	</a></li>
-	<li><a href="#active" data-toggle="tab">
-		[[admin/extend/plugins:active]]
-		<span class="badge">{activeCount}</span>
-	</a></li>
-	<li><a href="#deactive" data-toggle="tab">
-		[[admin/extend/plugins:inactive]]
-		<span class="badge">{inactiveCount}</span>
-	</a></li>
-	<li><a href="#upgrade" data-toggle="tab">
-		[[admin/extend/plugins:out-of-date]]
-		<span class="badge">{upgradeCount}</span>
-	</a></li>
-	<li><a href="#download" data-toggle="tab">[[admin/extend/plugins:find-plugins]]</a></li>
+	<li>
+		<a href="#trending" data-toggle="tab">
+			[[admin/extend/plugins:trending]]
+			<i class="fa fa-star"></i>
+		</a>
+	</li>
+	<li class="active">
+		<a href="#installed" data-toggle="tab">
+			[[admin/extend/plugins:installed]]
+			<span class="badge">{installedCount}</span>
+		</a>
+	</li>
+	<li>
+		<a href="#active" data-toggle="tab">
+			[[admin/extend/plugins:active]]
+			<span class="badge">{activeCount}</span>
+		</a>
+	</li>
+	<li>
+		<a href="#deactive" data-toggle="tab">
+			[[admin/extend/plugins:inactive]]
+			<span class="badge">{inactiveCount}</span>
+		</a>
+	</li>
+	<li>
+		<a href="#upgrade" data-toggle="tab">
+			[[admin/extend/plugins:out-of-date]]
+			<span class="badge">{upgradeCount}</span>
+		</a>
+	</li>
+	<li>
+		<a href="#download" data-toggle="tab">[[admin/extend/plugins:find-plugins]]</a>
+	</li>
 </ul>
 <br />
 
@@ -58,6 +74,13 @@
 
 	<div class="col-lg-9 col-lg-pull-3">
 		<div class="tab-content">
+			<div class="tab-pane fade" id="trending">
+				<ul class="trending">
+					{{{ each trending }}}
+					<!-- IMPORT admin/partials/installed_plugin_item.tpl -->
+					{{{ end }}}
+				</ul>
+			</div>
 			<div class="tab-pane fade active in" id="installed">
 				<ul class="installed">
 					<!-- BEGIN installed -->

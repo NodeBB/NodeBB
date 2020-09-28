@@ -6,7 +6,7 @@ const async = require('async');
 const winston = require('winston');
 const semver = require('semver');
 const nconf = require('nconf');
-const util = require('util');
+const request = require('request-promise-native');
 
 const user = require('../user');
 const posts = require('../posts');
@@ -141,24 +141,11 @@ Plugins.reloadRoutes = async function (params) {
 	winston.verbose('[plugins] All plugins reloaded and rerouted');
 };
 
-function request(url, callback) {
-	require('request')(url, {
-		json: true,
-	}, function (err, res, body) {
-		if (err) {
-			return callback(err);
-		}
-		if (res.statusCode === 404 || !body) {
-			return callback(null, {});
-		}
-		callback(null, body);
-	});
-}
-const requestAsync = util.promisify(request);
-
 Plugins.get = async function (id) {
 	const url = (nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugins/' + id;
-	const body = await requestAsync(url);
+	const body = await request(url, {
+		json: true,
+	});
 
 	let normalised = await Plugins.normalise([body ? body.payload : {}]);
 	normalised = normalised.filter(plugin => plugin.id === id);
@@ -172,12 +159,21 @@ Plugins.list = async function (matching) {
 	const version = require(path.join(nconf.get('base_dir'), 'package.json')).version;
 	const url = (nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugins' + (matching !== false ? '?version=' + version : '');
 	try {
-		const body = await requestAsync(url);
+		const body = await request(url, {
+			json: true,
+		});
 		return await Plugins.normalise(body);
 	} catch (err) {
 		winston.error('Error loading ' + url, err);
 		return await Plugins.normalise([]);
 	}
+};
+
+Plugins.listTrending = async () => {
+	const url = `${nconf.get('registry') || 'https://packages.nodebb.org'}/api/v1/analytics/top/week`;
+	return await request(url, {
+		json: true,
+	});
 };
 
 Plugins.normalise = async function (apiReturn) {

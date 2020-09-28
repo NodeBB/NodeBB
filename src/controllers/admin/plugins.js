@@ -8,14 +8,24 @@ const meta = require('../../meta');
 const pluginsController = module.exports;
 
 pluginsController.get = async function (req, res) {
-	const [compatible, all] = await Promise.all([
+	const [compatible, all, trending] = await Promise.all([
 		getCompatiblePlugins(),
 		getAllPlugins(),
+		plugins.listTrending(),
 	]);
 
 	const compatiblePkgNames = compatible.map(pkgData => pkgData.name);
 	const installedPlugins = compatible.filter(plugin => plugin && plugin.installed);
 	const activePlugins = all.filter(plugin => plugin && plugin.installed && plugin.active);
+
+	const trendingScores = trending.reduce((memo, cur) => {
+		memo[cur.label] = cur.value;
+		return memo;
+	}, {});
+	const trendingPlugins = all.filter(plugin => plugin && Object.keys(trendingScores).includes(plugin.id)).sort((a, b) => trendingScores[b.id] - trendingScores[a.id]).map((plugin) => {
+		plugin.downloads = trendingScores[plugin.id];
+		return plugin;
+	});
 
 	res.render('admin/extend/plugins', {
 		installed: installedPlugins,
@@ -34,6 +44,7 @@ pluginsController.get = async function (req, res) {
 		incompatible: all.filter(function (plugin) {
 			return !compatiblePkgNames.includes(plugin.name);
 		}),
+		trending: trendingPlugins,
 		submitPluginUsage: meta.config.submitPluginUsage,
 		version: nconf.get('version'),
 	});
