@@ -31,6 +31,9 @@ Tags.parse = async (req, data, meta, link) => {
 		name: 'msapplication-badge',
 		content: 'frequency=30; polling-uri=' + nconf.get('url') + '/sitemap.xml',
 		noEscape: true,
+	}, {
+		name: 'theme-color',
+		content: meta.config.themeColor || '#ffffff',
 	}];
 
 	if (Meta.config.keywords) {
