@@ -4,11 +4,10 @@ var user = require('../user');
 var notifications = require('../notifications');
 var sockets = require('../socket.io');
 var plugins = require('../plugins');
+var meta = require('../meta');
 
 module.exports = function (Messaging) {
 	Messaging.notifyQueue = {};	// Only used to notify a user of a new chat message, see Messaging.notifyUser
-
-	Messaging.notificationSendDelay = 1000 * 60;
 
 	Messaging.notifyUsersInRoom = async (fromUid, roomId, messageObj) => {
 		let uids = await Messaging.getUidsInRoom(roomId, 0, -1);
@@ -48,7 +47,7 @@ module.exports = function (Messaging) {
 
 		queueObj.timeout = setTimeout(function () {
 			sendNotifications(fromUid, uids, roomId, queueObj.message);
-		}, Messaging.notificationSendDelay);
+		}, (parseFloat(meta.config.notificationSendDelay) || 60) * 1000);
 	};
 
 	async function sendNotifications(fromuid, uids, roomId, messageObj) {
