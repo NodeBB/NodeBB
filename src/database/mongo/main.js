@@ -134,4 +134,12 @@ module.exports = function (module) {
 		timestamp = Math.min(timestamp, 8640000000000000);
 		await module.setObjectField(key, 'expireAt', new Date(timestamp));
 	};
+
+	module.ttl = async function (key) {
+		return Math.round((await module.getObjectField(key, 'expireAt') - Date.now()) / 1000);
+	};
+
+	module.pttl = async function (key) {
+		return await module.getObjectField(key, 'expireAt') - Date.now();
+	};
 };
