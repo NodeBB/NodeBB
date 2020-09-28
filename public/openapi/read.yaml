@@ -1707,6 +1707,59 @@ paths:
                             - id
                             - installed
                             - active
+                      trending:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            latest:
+                              type: string
+                            description:
+                              type: string
+                            name:
+                              type: string
+                            updated:
+                              type: string
+                            url:
+                              type: string
+                            numInstalls:
+                              type: number
+                            isCompatible:
+                              type: boolean
+                            id:
+                              type: string
+                            installed:
+                              type: boolean
+                            active:
+                              type: boolean
+                            isTheme:
+                              type: boolean
+                            error:
+                              type: boolean
+                            version:
+                              type: string
+                            license:
+                              type: object
+                              properties:
+                                name:
+                                  type: string
+                                text:
+                                  type: string
+                              nullable: true
+                            outdated:
+                              type: boolean
+                            settingsRoute:
+                              type: string
+                            downloads:
+                              type: number
+                          required:
+                            - latest
+                            - description
+                            - name
+                            - id
+                            - installed
+                            - active
+                            - downloads
                       submitPluginUsage:
                         type: number
                       version:
