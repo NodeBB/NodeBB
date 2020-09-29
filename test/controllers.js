@@ -359,8 +359,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load /manifest.json', function (done) {
-		request(nconf.get('url') + '/manifest.json', function (err, res, body) {
+	it('should load /manifest.webmanifest', function (done) {
+		request(nconf.get('url') + '/manifest.webmanifest', function (err, res, body) {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -626,15 +626,6 @@ describe('Controllers', function () {
 
 	it('should load robots.txt', function (done) {
 		request(nconf.get('url') + '/robots.txt', function (err, res, body) {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
-	});
-
-	it('should load manifest.json', function (done) {
-		request(nconf.get('url') + '/manifest.json', function (err, res, body) {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -1413,7 +1404,7 @@ describe('Controllers', function () {
 		});
 
 		it('should not increase profile view if a guest visits a profile', (done) => {
-			request(nconf.get('url') + '/api/user/foo', { }, function (err, res) {
+			request(nconf.get('url') + '/api/user/foo', {}, function (err, res) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				setTimeout(function () {
@@ -1751,7 +1742,7 @@ describe('Controllers', function () {
 				},
 			});
 
-			request(nconf.get('url') + '/users', { }, function (err, res) {
+			request(nconf.get('url') + '/users', {}, function (err, res) {
 				plugins.loadedHooks['filter:router.page'] = [];
 				assert.ifError(err);
 				assert.equal(res.statusCode, 403);
@@ -1769,7 +1760,7 @@ describe('Controllers', function () {
 				},
 			});
 
-			request(nconf.get('url') + '/users', { }, function (err, res, body) {
+			request(nconf.get('url') + '/users', {}, function (err, res, body) {
 				plugins.loadedHooks['filter:router.page'] = [];
 				assert.ifError(err);
 				assert.equal(res.statusCode, 403);
@@ -1790,7 +1781,7 @@ describe('Controllers', function () {
 				},
 			});
 
-			request(nconf.get('url') + '/users', { }, function (err, res, body) {
+			request(nconf.get('url') + '/users', {}, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
