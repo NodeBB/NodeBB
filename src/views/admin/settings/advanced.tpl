@@ -150,4 +150,19 @@
 	</div>
 </div>
 
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/advanced:analytics.settings]]</div>
+	<div class="col-sm-10 col-xs-12">
+		<form>
+			<div class="form-group">
+				<label for="analytics:maxCache">[[admin/settings/advanced:analytics.max-cache]]</label>
+				<input class="form-control" id="analytics:maxCache" type="text" value="500" placeholder="500" data-field="analytics:maxCache" />
+				<p class="help-block">
+					[[admin/settings/advanced:analytics.max-cache-help]]
+				</p>
+			</div>
+		</form>
+	</div>
+</div>
+
 <!-- IMPORT admin/partials/settings/footer.tpl -->

@@ -23,6 +23,7 @@ var helmet = require('helmet');
 
 var Benchpress = require('benchpressjs');
 var db = require('./database');
+var analytics = require('./analytics');
 var file = require('./file');
 var emailer = require('./emailer');
 var meta = require('./meta');
@@ -105,6 +106,7 @@ async function initializeNodeBB() {
 	await routes(app, middleware);
 	await meta.blacklist.load();
 	await flags.init();
+	await analytics.init();
 }
 
 function setupExpressApp(app) {
