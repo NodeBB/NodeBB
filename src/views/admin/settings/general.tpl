@@ -102,10 +102,11 @@
 
 <div class="row">
 	<div class="col-sm-2 col-xs-12 settings-header">
-		[[admin/settings/general:touch-icon]]
+		[[admin/settings/general:pwa]]
 	</div>
 	<div class="col-sm-10 col-xs-12">
 		<div class="form-group">
+			<label for="touchIconUrl">[[admin/settings/general:touch-icon]]</label>
 			<div class="input-group">
 				<input id="touchIconUrl" type="text" class="form-control" data-field="brand:touchIcon" data-action="upload" data-target="touchIconUrl" data-route="{config.relative_path}/api/admin/uploadTouchIcon" readonly />
 				<span class="input-group-btn">
@@ -119,6 +120,7 @@
 		</div>
 
 		<div class="form-group">
+			<label for="touchIconUrl">[[admin/settings/general:maskable-icon]]</label>
 			<div class="input-group">
 				<input id="maskableIconUrl" type="text" class="form-control" data-field="brand:maskableIcon" data-action="upload" data-target="maskableIconUrl" data-route="{config.relative_path}/api/admin/uploadMaskableIcon" readonly />
 				<span class="input-group-btn">
