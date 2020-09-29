@@ -14,15 +14,13 @@ var utils = require('../utils');
 let sanitizeConfig = {
 	allowedTags: sanitize.defaults.allowedTags.concat([
 		// Some safe-to-use tags to add
-		'span', 'a', 'pre', 'small',
-		'sup', 'sub', 'u', 'del',
+		'sup', 'ins', 'del', 'img', 'button',
 		'video', 'audio', 'iframe', 'embed',
-		'img', 'tfoot', 'h1', 'h2',
-		's', 'button', 'i',
+		// 'sup' still necessary until https://github.com/apostrophecms/sanitize-html/pull/422 merged
 	]),
 	allowedAttributes: {
 		...sanitize.defaults.allowedAttributes,
-		a: ['href', 'hreflang', 'media', 'rel', 'target', 'type'],
+		a: ['href', 'name', 'hreflang', 'media', 'rel', 'target', 'type'],
 		img: ['alt', 'height', 'ismap', 'src', 'usemap', 'width', 'srcset'],
 		iframe: ['height', 'name', 'src', 'width'],
 		video: ['autoplay', 'controls', 'height', 'loop', 'muted', 'poster', 'preload', 'src', 'width'],
