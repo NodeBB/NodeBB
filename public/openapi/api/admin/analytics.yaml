@@ -1,0 +1,58 @@
+get:
+  tags:
+    - admin
+  summary: Get site analytics
+  parameters:
+    - in: query
+      name: units
+      schema:
+        type: string
+        enum: [hours, days]
+      description: Whether to display dashboard data segmented daily or hourly
+      example: days
+    - in: query
+      name: until
+      schema:
+        type: number
+      description: A UNIX timestamp denoting the end of the analytics reporting period
+      example: ''
+    - in: query
+      name: count
+      schema:
+        type: number
+      description: The number of entries to return (e.g. if `units` is `hourly`, and `count` is `24`, the result set will contain 24 hours' worth of analytics)
+      example: 20
+  responses:
+    "200":
+      description: "A JSON object containing analytics data"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              query:
+                additionalProperties:
+                  description: The query string passed in
+              result:
+                type: object
+                properties:
+                  uniquevisitors:
+                    type: array
+                    items:
+                      type: number
+                  pageviews:
+                    type: array
+                    items:
+                      type: number
+                  pageviews:registered:
+                    type: array
+                    items:
+                      type: number
+                  pageviews:bot:
+                    type: array
+                    items:
+                      type: number
+                  pageviews:guest:
+                    type: array
+                    items:
+                      type: number

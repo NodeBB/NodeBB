@@ -1,0 +1,12 @@
+get:
+  tags:
+    - shorthand
+  summary: Access your profile data
+  description: This shorthand returns the data for the logged in user, identical to the data returned at this route /user/<userslug>
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/UserObject.yaml#/UserObjectFull

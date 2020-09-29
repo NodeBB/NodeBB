@@ -1,0 +1,17 @@
+get:
+  tags:
+    - admin
+  summary: Get server-side log output
+  responses:
+    "200":
+      description: "A JSON object containing the server-side log"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  data:
+                    type: string
+                    description: Output of the server-side log file
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

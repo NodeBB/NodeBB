@@ -1,0 +1,220 @@
+get:
+  tags:
+    - flags
+  summary: /api/flags/{flagId}
+  parameters:
+    - name: flagId
+      in: path
+      required: true
+      schema:
+        type: string
+      example: 1
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  state:
+                    type: string
+                  flagId:
+                    type: number
+                  type:
+                    type: string
+                  targetId:
+                    type: number
+                  targetUid:
+                    type: number
+                  datetime:
+                    type: number
+                  datetimeISO:
+                    type: string
+                  target_readable:
+                    type: string
+                  target:
+                    type: object
+                    properties: {}
+                    additionalProperties:
+                      description: Properties change depending on the target type (user, post, etc.)
+                  assignee:
+                    type: number
+                    nullable: true
+                  history:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        uid:
+                          type: number
+                          description: A user identifier
+                        fields:
+                          type: object
+                          additionalProperties: {}
+                        meta:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              key:
+                                type: string
+                              value:
+                                type: string
+                              labelClass:
+                                type: string
+                                enum: ['default', 'primary', 'success', 'info', 'danger']
+                            required:
+                              - key
+                        datetime:
+                          type: number
+                        datetimeISO:
+                          type: string
+                        user:
+                          type: object
+                          properties:
+                            username:
+                              type: string
+                              description: A friendly name for a given user account
+                            userslug:
+                              type: string
+                              description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                removed, etc.)
+                            picture:
+                              nullable: true
+                            uid:
+                              type: number
+                              description: A user identifier
+                            icon:text:
+                              type: string
+                              description: A single-letter representation of a username. This is used in the
+                                auto-generated icon given to users without
+                                an avatar
+                            icon:bgColor:
+                              type: string
+                              description: A six-character hexadecimal colour code assigned to the user. This
+                                value is used in conjunction with
+                                `icon:text` for the user's auto-generated
+                                icon
+                              example: "#f44336"
+                      required:
+                        - uid
+                        - datetime
+                        - datetimeISO
+                        - user
+                  notes:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        uid:
+                          type: number
+                        content:
+                          type: string
+                        datetime:
+                          type: number
+                        datetimeISO:
+                          type: string
+                        user:
+                          type: object
+                          properties:
+                            username:
+                              type: string
+                              description: A friendly name for a given user account
+                            userslug:
+                              type: string
+                              description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                removed, etc.)
+                            picture:
+                              type: string
+                            uid:
+                              type: number
+                              description: A user identifier
+                            icon:text:
+                              type: string
+                              description: A single-letter representation of a username. This is used in the
+                                auto-generated icon given to users without
+                                an avatar
+                            icon:bgColor:
+                              type: string
+                              description: A six-character hexadecimal colour code assigned to the user. This
+                                value is used in conjunction with
+                                `icon:text` for the user's auto-generated
+                                icon
+                              example: "#f44336"
+                  reports:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        value:
+                          type: string
+                        timestamp:
+                          type: number
+                        timestampISO:
+                          type: string
+                        reporter:
+                          type: object
+                          properties:
+                            username:
+                              type: string
+                              description: A friendly name for a given user account
+                            userslug:
+                              type: string
+                              description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                removed, etc.)
+                            picture:
+                              nullable: true
+                            reputation:
+                              type: number
+                            uid:
+                              type: number
+                              description: A user identifier
+                            icon:text:
+                              type: string
+                              description: A single-letter representation of a username. This is used in the
+                                auto-generated icon given to users without an
+                                avatar
+                            icon:bgColor:
+                              type: string
+                              description: A six-character hexadecimal colour code assigned to the user. This
+                                value is used in conjunction with `icon:text` for
+                                the user's auto-generated icon
+                              example: "#f44336"
+                  type_path:
+                    type: string
+                  assignees:
+                    type: array
+                    items:
+                      $ref: ../components/schemas/UserObject.yaml#/UserObject
+                  type_bool:
+                    type: object
+                    properties:
+                      post:
+                        type: boolean
+                      user:
+                        type: boolean
+                      empty:
+                        type: boolean
+                  title:
+                    type: string
+                  categories:
+                    type: object
+                    additionalProperties:
+                      type: string
+                  filters:
+                    type: object
+                    properties:
+                      page:
+                        type: number
+                      perPage:
+                        type: number
+                  privileges:
+                    type: object
+                    properties: {}
+                    additionalProperties:
+                      description: "A list of global and admin privileges, and whether the calling user has (or has inherited) them"
+                      type: boolean
+              - $ref: ../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../components/schemas/CommonProps.yaml#/CommonProps

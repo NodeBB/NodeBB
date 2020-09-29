@@ -1,0 +1,18 @@
+get:
+  tags:
+    - posts
+  summary: Get recent posts
+  parameters:
+    - name: term
+      in: path
+      required: true
+      schema:
+        type: string
+      example: daily
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: ../../components/schemas/PostsObject.yaml#/PostsObject

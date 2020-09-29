@@ -1,0 +1,45 @@
+get:
+  tags:
+    - admin
+  summary: Get active plugin hooks
+  responses:
+    "200":
+      description: "A JSON object containing all hooks with active listeners"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  hooks:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        hookName:
+                          type: string
+                          description: The name of the hook (also the name used in code)
+                        methods:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                                description: Plugin listening to this hook
+                              priority:
+                                type: number
+                                description: Priority level, lower priorities are executed earlier
+                              method:
+                                type: string
+                                description: Stringified method for examination
+                              index:
+                                type: string
+                                description: Internal counter used for DOM element ids
+                        index:
+                          type: string
+                          description: Internal counter used for DOM element ids
+                        count:
+                          type: number
+                          description: The number of listeners subscribed to this hook
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

@@ -1,0 +1,56 @@
+get:
+  tags:
+    - admin
+  summary: Get administrators and moderators
+  responses:
+    "200":
+      description: "A JSON object containing administrators and moderators globally and per-category"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  admins:
+                    $ref: ../../../components/schemas/GroupObject.yaml#/GroupFullObject
+                  globalMods:
+                    $ref: ../../../components/schemas/GroupObject.yaml#/GroupFullObject
+                  categories:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        cid:
+                          type: number
+                        name:
+                          type: string
+                        level:
+                          type: number
+                          example: 0
+                        icon:
+                          type: string
+                          description: A FontAwesome icon string
+                        parentCid:
+                          type: number
+                          description: The parent category's identifier
+                        color:
+                          type: string
+                          description: A six-character hexadecimal colour code
+                        bgColor:
+                          type: string
+                          description: A six-character hexadecimal colour code
+                        imageClass:
+                          type: string
+                        depth:
+                          type: number
+                          description: The depth of the category relative to the forum root (`0` is root level)
+                        moderators:
+                          type: array
+                          items:
+                            $ref: ../../../components/schemas/UserObject.yaml#/UserObjectSlim
+                  allPrivileges:
+                    type: array
+                    items:
+                      type: string
+                      description: A simple array containing user privilege names (used client-side when giving mod privilege)
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

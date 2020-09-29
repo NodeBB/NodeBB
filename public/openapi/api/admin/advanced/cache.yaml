@@ -1,0 +1,91 @@
+get:
+  tags:
+    - admin
+  summary: Get system cache info
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  postCache:
+                    type: object
+                    properties:
+                      length:
+                        type: number
+                      max:
+                        type: number
+                        nullable: true
+                      itemCount:
+                        type: number
+                      percentFull:
+                        type: number
+                      avgPostSize:
+                        type: number
+                      hits:
+                        type: string
+                      misses:
+                        type: string
+                      hitRatio:
+                        type: string
+                  groupCache:
+                    type: object
+                    properties:
+                      length:
+                        type: number
+                      max:
+                        type: number
+                      itemCount:
+                        type: number
+                      percentFull:
+                        type: number
+                      hits:
+                        type: string
+                      misses:
+                        type: string
+                      hitRatio:
+                        type: string
+                  localCache:
+                    type: object
+                    properties:
+                      length:
+                        type: number
+                      max:
+                        type: number
+                      itemCount:
+                        type: number
+                      percentFull:
+                        type: number
+                      dump:
+                        type: boolean
+                      hits:
+                        type: string
+                      misses:
+                        type: string
+                      hitRatio:
+                        type: string
+                  objectCache:
+                    type: object
+                    properties:
+                      length:
+                        type: number
+                      max:
+                        type: number
+                      itemCount:
+                        type: number
+                      percentFull:
+                        type: number
+                      hits:
+                        type: string
+                      misses:
+                        type: string
+                      hitRatio:
+                        type: string
+                required:
+                  - postCache
+                  - groupCache
+                  - localCache
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

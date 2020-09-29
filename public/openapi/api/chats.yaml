@@ -1,0 +1,20 @@
+get:
+  tags:
+    - shorthand
+  summary: Access a chat room
+  description: Redirects a request to the proper chat page URL
+  parameters:
+    - name: roomid
+      in: path
+      required: true
+      schema:
+        type: string
+      example: 1
+  responses:
+    "200":
+      description: "Chat identifier resolved"
+      content:
+        text/plain:
+          schema:
+            type: string
+            description: A relative path to the canonical URL for that chat page

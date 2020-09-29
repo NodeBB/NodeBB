@@ -1,0 +1,207 @@
+get:
+  tags:
+    - users
+  summary: Get user's watched topics
+  parameters:
+    - name: userslug
+      in: path
+      required: true
+      schema:
+        type: string
+      example: admin
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../components/schemas/UserObject.yaml#/UserObject
+              - type: object
+                properties:
+                  aboutmeParsed:
+                    type: string
+                  age:
+                    type: number
+                  emailClass:
+                    type: string
+                  ips:
+                    type: array
+                    items:
+                      type: string
+                  isBlocked:
+                    type: boolean
+                  blocksCount:
+                    type: number
+                  yourid:
+                    type: number
+                  theirid:
+                    type: number
+                  isTargetAdmin:
+                    type: boolean
+                  isAdmin:
+                    type: boolean
+                  isGlobalModerator:
+                    type: boolean
+                  isModerator:
+                    type: boolean
+                  isAdminOrGlobalModerator:
+                    type: boolean
+                  isAdminOrGlobalModeratorOrModerator:
+                    type: boolean
+                  isSelfOrAdminOrGlobalModerator:
+                    type: boolean
+                  canEdit:
+                    type: boolean
+                  canBan:
+                    type: boolean
+                  canChangePassword:
+                    type: boolean
+                  isSelf:
+                    type: boolean
+                  isFollowing:
+                    type: boolean
+                  hasPrivateChat:
+                    type: number
+                  showHidden:
+                    type: boolean
+                  groups:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        slug:
+                          type: string
+                        createtime:
+                          type: number
+                        userTitle:
+                          type: string
+                        description:
+                          type: string
+                        memberCount:
+                          type: number
+                        deleted:
+                          oneOf:
+                            - type: string
+                            - type: number
+                        hidden:
+                          type: number
+                        system:
+                          type: number
+                        private:
+                          type: number
+                        ownerUid:
+                          type: number
+                        icon:
+                          type: string
+                        labelColor:
+                          type: string
+                        userTitleEnabled:
+                          type: number
+                        disableJoinRequests:
+                          type: number
+                        disableLeave:
+                          type: number
+                        nameEncoded:
+                          type: string
+                        displayName:
+                          type: string
+                        textColor:
+                          type: string
+                        createtimeISO:
+                          type: string
+                        cover:thumb:url:
+                          type: string
+                        cover:url:
+                          type: string
+                        cover:position:
+                          type: string
+                  disableSignatures:
+                    type: boolean
+                  reputation:disabled:
+                    type: boolean
+                  downvote:disabled:
+                    type: boolean
+                  profile_links:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        route:
+                          type: string
+                        name:
+                          type: string
+                        visibility:
+                          type: object
+                          properties:
+                            self:
+                              type: boolean
+                            other:
+                              type: boolean
+                            moderator:
+                              type: boolean
+                            globalMod:
+                              type: boolean
+                            admin:
+                              type: boolean
+                            canViewInfo:
+                              type: boolean
+                        public:
+                          type: boolean
+                        icon:
+                          type: string
+                  sso:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        associated:
+                          type: boolean
+                        url:
+                          type: string
+                        deauthUrl:
+                          type: string
+                        name:
+                          type: string
+                        icon:
+                          type: string
+                  websiteLink:
+                    type: string
+                  websiteName:
+                    type: string
+                  moderationNote:
+                    type: string
+                  username:disableEdit:
+                    type: boolean
+                  email:disableEdit:
+                    type: boolean
+                  topics:
+                    type: array
+                    items:
+                      $ref: ../../components/schemas/TopicObject.yaml#/TopicObject
+                  nextStart:
+                    type: number
+                  noItemsFoundKey:
+                    type: string
+                  title:
+                    type: string
+                  showSort:
+                    type: boolean
+                  sortOptions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        url:
+                          type: string
+                        name:
+                          type: string
+                        selected:
+                          type: boolean
+              - $ref: ../../components/schemas/Pagination.yaml#/Pagination
+              - $ref: ../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../../components/schemas/CommonProps.yaml#/CommonProps

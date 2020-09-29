@@ -1,0 +1,57 @@
+get:
+  tags:
+    - admin
+  summary: Get uploaded files
+  parameters:
+    - in: query
+      name: dir
+      schema:
+        type: string
+      description: Path of the folder, relative to `public/uploads/`
+      example: /
+  responses:
+    "200":
+      description: "A JSON object containing uploaded files"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  currentFolder:
+                    type: string
+                    description: Path of the folder, relative to `public/uploads/`
+                  showPids:
+                    type: boolean
+                    description: Whether or not the post identifiers should be shown (this is `true` only for `public/uploads/files/`, as that is where post uploads go)
+                  files:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        path:
+                          type: string
+                          description: Path relative to `currentFolder`
+                        url:
+                          type: string
+                          description: Relative URL ready to be combined with `config.relative_path` on the client-side or templates
+                        fileCount:
+                          type: number
+                          description: For directories, the number of files inside
+                        size:
+                          type: number
+                          description: The size of the file/directory
+                        sizeHumanReadable:
+                          type: string
+                        isDirectory:
+                          type: boolean
+                        isFile:
+                          type: boolean
+                        mtime:
+                          type: number
+                          description: Last modified time of the file, down to the microsecond (expressed as a UNIX timestamp)
+              - $ref: ../../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../../../components/schemas/Pagination.yaml#/Pagination
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

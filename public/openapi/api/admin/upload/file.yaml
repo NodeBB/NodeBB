@@ -1,0 +1,35 @@
+post:
+  tags:
+    - admin
+  summary: Upload a file
+  requestBody:
+    required: true
+    content:
+      multipart/form-data:
+        schema:
+          type: object
+          properties:
+            folder:
+              type: string
+              description: The folder to upload the files to (relative to `public/uploads/`)
+            files:
+              type: array
+              items:
+                type: string
+                format: binary
+          required:
+            - files
+  responses:
+    "200":
+      description: "File uploaded"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                description: The filename
+              url:
+                type: string
+                description: URL of the uploaded file for use client-side
