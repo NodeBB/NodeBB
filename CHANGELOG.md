@@ -1,3 +1,14 @@
+#### v1.15.0-beta.28 (2020-09-29)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.28 (57f83162)
+*  update changelog for v1.15.0-beta.27 (70673824)
+
+##### New Features
+
+*  analytics:maxCache setting in ACP (14ba1a6d)
+
 #### v1.15.0-beta.27 (2020-09-29)
 
 ##### Chores
