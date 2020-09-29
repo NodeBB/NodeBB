@@ -1,0 +1,11 @@
+get:
+  tags:
+    - topics
+  summary: Get number of unread topics
+  responses:
+    "200":
+      description: "Success"
+      content:
+        text/plain:
+          schema:
+            type: number

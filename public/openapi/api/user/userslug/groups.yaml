@@ -1,0 +1,32 @@
+get:
+  tags:
+    - users
+  summary: Get user's groups
+  parameters:
+    - name: userslug
+      in: path
+      required: true
+      schema:
+        type: string
+      example: admin
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../../components/schemas/UserObject.yaml#/UserObjectFull
+              - type: object
+                properties:
+                  title:
+                    type: string
+                  template:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      account/groups:
+                        type: boolean
+              - $ref: ../../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

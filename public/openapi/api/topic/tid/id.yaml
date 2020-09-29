@@ -1,0 +1,62 @@
+get:
+  tags:
+    - shorthand
+  summary: Get topic data
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+      example: 1
+  responses:
+    "200":
+      description: "A JSON object containing topic data"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              tid:
+                type: number
+              uid:
+                type: number
+              cid:
+                type: number
+              mainPid:
+                type: number
+              teaserPid:
+                type: number
+                nullable: true
+              title:
+                type: string
+              slug:
+                type: string
+              timestamp:
+                type: number
+              lastposttime:
+                type: number
+              postcount:
+                type: number
+              viewcount:
+                type: number
+              deleted:
+                type: number
+              locked:
+                type: number
+              pinned:
+                type: number
+              upvotes:
+                type: number
+              downvotes:
+                type: number
+              deleterUid:
+                type: number
+              titleRaw:
+                type: string
+              timestampISO:
+                type: string
+              lastposttimeISO:
+                type: string
+              votes:
+                type: number

@@ -1,0 +1,12 @@
+get:
+  tags:
+    - admin
+  summary: Export errors (.csv)
+  responses:
+    "200":
+      description: "A CSV file containing server-side errors"
+      content:
+        text/csv:
+          schema:
+            type: string
+            format: binary

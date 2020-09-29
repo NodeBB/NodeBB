@@ -1,0 +1,63 @@
+get:
+  tags:
+    - shorthand
+  summary: Get category data
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+      example: 1
+  responses:
+    "200":
+      description: "A JSON object containing category data"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              cid:
+                type: number
+              name:
+                type: number
+              description:
+                type: string
+              descriptionParsed:
+                type: string
+              icon:
+                type: string
+              bgColor:
+                type: string
+              color:
+                type: string
+              slug:
+                type: string
+              parentCid:
+                type: number
+              topic_count:
+                type: number
+              post_count:
+                type: number
+              disabled:
+                type: number
+              order:
+                type: number
+              link:
+                type: string
+              numRecentReplies:
+                type: number
+              class:
+                type: string
+              imageClass:
+                type: string
+              isSection:
+                type: number
+              totalPostCount:
+                type: number
+              totalTopicCount:
+                type: number
+              minTags:
+                type: number
+              maxTags:
+                type: number

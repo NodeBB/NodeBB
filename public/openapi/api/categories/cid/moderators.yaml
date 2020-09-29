@@ -1,0 +1,30 @@
+get:
+  tags:
+    - categories
+  summary: Get mods for a category
+  description: >
+    This route returns an array of uids that correspond to the moderators
+    for the category in question.
+  parameters:
+    - name: cid
+      description: The category identifier for the category you wish to look up
+      in: path
+      required: true
+      schema:
+        type: number
+      example: 1
+  responses:
+    "200":
+      description: An array of moderators for the requested category
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              moderators:
+                type: array
+          example:
+            moderators:
+              - 1
+              - 2
+              - 3

@@ -1,0 +1,19 @@
+get:
+  tags:
+    - shorthand
+  summary: Access a specific post
+  description: This route comes in handy when all you have is the `pid`, and you want to redirect users to the canonical URL for the topic, with the appropriate topic slug and post index.
+  parameters:
+    - name: pid
+      in: path
+      required: true
+      schema:
+        type: string
+      example: 1
+  responses:
+    "200":
+      description: "Canonical URL of topic"
+      content:
+        text/plain:
+          schema:
+            type: string

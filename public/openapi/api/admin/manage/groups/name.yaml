@@ -1,0 +1,70 @@
+get:
+  tags:
+    - admin
+  summary: Get user group details
+  parameters:
+    - name: name
+      in: path
+      required: true
+      schema:
+        type: string
+      example: administrators
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  group:
+                    $ref: ../../../../components/schemas/GroupObject.yaml#/GroupFullObject
+                  groupNames:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        encodedName:
+                          type: string
+                        displayName:
+                          type: string
+                        selected:
+                          type: boolean
+                  categories:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        cid:
+                          type: number
+                          description: A category identifier
+                        name:
+                          type: string
+                        icon:
+                          type: string
+                        selected:
+                          type: boolean
+                        level:
+                          type: string
+                        parentCid:
+                          type: number
+                          description: The category identifier for the category that is the immediate
+                            ancestor of the current category
+                        color:
+                          type: string
+                        bgColor:
+                          type: string
+                        imageClass:
+                          type: string
+                      required:
+                        - cid
+                        - name
+                        - icon
+                  allowPrivateGroups:
+                    type: number
+                  maximumGroupNameLength:
+                    type: number
+                  maximumGroupTitleLength:
+                    type: number
+              - $ref: ../../../../components/schemas/CommonProps.yaml#/CommonProps

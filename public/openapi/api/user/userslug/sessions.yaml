@@ -1,0 +1,46 @@
+get:
+  tags:
+    - users
+  summary: Get user's active sessions
+  parameters:
+    - name: userslug
+      in: path
+      required: true
+      schema:
+        type: string
+      example: admin
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../../components/schemas/UserObject.yaml#/UserObjectFull
+              - type: object
+                properties:
+                  sessions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        ip:
+                          type: string
+                        uuid:
+                          type: string
+                        datetime:
+                          type: number
+                        platform:
+                          type: string
+                        browser:
+                          type: string
+                        version:
+                          type: string
+                        current:
+                          type: boolean
+                        datetimeISO:
+                          type: string
+                  title:
+                    type: string
+              - $ref: ../../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

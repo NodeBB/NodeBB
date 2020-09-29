@@ -1,0 +1,47 @@
+get:
+  tags:
+    - users
+  summary: Get a user's topics
+  parameters:
+    - name: userslug
+      in: path
+      required: true
+      schema:
+        type: string
+      example: admin
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../../components/schemas/UserObject.yaml#/UserObjectFull
+              - type: object
+                properties:
+                  topics:
+                    type: array
+                    items:
+                      $ref: ../../../components/schemas/TopicObject.yaml#/TopicObject
+                  nextStart:
+                    type: number
+                  noItemsFoundKey:
+                    type: string
+                  title:
+                    type: string
+                  showSort:
+                    type: boolean
+                  sortOptions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        url:
+                          type: string
+                        name:
+                          type: string
+                        selected:
+                          type: boolean
+              - $ref: ../../../components/schemas/Pagination.yaml#/Pagination
+              - $ref: ../../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

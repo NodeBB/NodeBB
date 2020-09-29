@@ -1,0 +1,32 @@
+get:
+  tags:
+    - authentication
+  summary: Get user password reset (step 2)
+  parameters:
+    - name: code
+      in: path
+      required: true
+      schema:
+        type: string
+      example: testCode
+  responses:
+    "200":
+      description: "A JSON object containing the 2nd step of the user password reset flow"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  valid:
+                    type: boolean
+                  code:
+                    type: string
+                  minimumPasswordLength:
+                    type: number
+                  minimumPasswordStrength:
+                    type: number
+                  title:
+                    type: string
+              - $ref: ../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../../components/schemas/CommonProps.yaml#/CommonProps

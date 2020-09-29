@@ -1,0 +1,85 @@
+get:
+  tags:
+    - admin
+  summary: Get rewards settings
+  responses:
+    "200":
+      description: "A JSON object containing rewards and their settings"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  active:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        condition:
+                          type: string
+                        conditional:
+                          type: string
+                        value:
+                          type: number
+                        rid:
+                          type: string
+                        claimable:
+                          type: string
+                        id:
+                          type: string
+                        disabled:
+                          type: boolean
+                        rewards:
+                          type: array
+                          items:
+                            additionalProperties: {}
+                            description: Reward-specific properties
+                  conditions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        condition:
+                          type: string
+                  conditionals:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        conditional:
+                          type: string
+                  rewards:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        rid:
+                          type: string
+                        name:
+                          type: string
+                        inputs:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                              name:
+                                type: string
+                              label:
+                                type: string
+                              values:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    name:
+                                      type: string
+                                    value:
+                                      type: string
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

@@ -1,0 +1,18 @@
+get:
+  tags:
+    - admin
+  summary: Get appearance settings
+  parameters:
+    - name: term
+      in: path
+      required: true
+      schema:
+        type: string
+      example: themes
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

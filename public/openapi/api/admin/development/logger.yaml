@@ -1,0 +1,11 @@
+get:
+  tags:
+    - admin
+  summary: Get system logger settings
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

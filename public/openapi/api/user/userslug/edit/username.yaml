@@ -1,0 +1,27 @@
+get:
+  tags:
+    - users
+  summary: Get configs for username editing
+  parameters:
+    - name: userslug
+      in: path
+      required: true
+      schema:
+        type: string
+      example: admin
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../../../components/schemas/UserObject.yaml#/UserObjectFull
+              - type: object
+                properties:
+                  hasPassword:
+                    type: boolean
+                  title:
+                    type: string
+              - $ref: ../../../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../../../../components/schemas/CommonProps.yaml#/CommonProps

@@ -1,0 +1,7 @@
+get:
+  tags:
+    - admin
+  summary: Get users with the most reputation
+  responses:
+    "418":
+      description: "TODO: A proper response needs to be added. It is not really a teapot | Replace this responses block with the block from /manage/users/latest"

@@ -1,0 +1,30 @@
+get:
+  tags:
+    - users
+  summary: Get user's blocks
+  parameters:
+    - name: userslug
+      in: path
+      required: true
+      schema:
+        type: string
+      example: admin
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../../components/schemas/UserObject.yaml#/UserObjectFull
+              - type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: ../../../components/schemas/UserObject.yaml#/UserObjectSlim
+                  title:
+                    type: string
+              - $ref: ../../../components/schemas/Pagination.yaml#/Pagination
+              - $ref: ../../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

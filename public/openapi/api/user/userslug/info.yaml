@@ -1,0 +1,181 @@
+get:
+  tags:
+    - users
+  summary: Get user moderation info
+  description: Administrators and Global Moderators get access to the `/info` page, which shows some backend data that is useful from a moderation point-of-view (such as IP addresses, recent bans, moderation history, etc).
+  parameters:
+    - name: userslug
+      in: path
+      required: true
+      schema:
+        type: string
+      example: admin
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../../components/schemas/UserObject.yaml#/UserObjectFull
+              - type: object
+                properties:
+                  history:
+                    type: object
+                    properties:
+                      flags:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            pid:
+                              type: number
+                            timestamp:
+                              type: number
+                            timestampISO:
+                              type: string
+                              description: An ISO 8601 formatted date string (complementing `timestamp`)
+                            timestampReadable:
+                              type: string
+                          additionalProperties:
+                            description: Contextual data is added to this object (such as topic data, etc.)
+                      bans:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            uid:
+                              type: number
+                            timestamp:
+                              type: number
+                            expire:
+                              type: number
+                            fromUid:
+                              type: number
+                            user:
+                              type: object
+                              properties:
+                                username:
+                                  type: string
+                                  description: A friendly name for a given user account
+                                userslug:
+                                  type: string
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
+                                picture:
+                                  type: string
+                                uid:
+                                  type: number
+                                  description: A user identifier
+                                icon:text:
+                                  type: string
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
+                                icon:bgColor:
+                                  type: string
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
+                                  example: "#f44336"
+                            until:
+                              type: number
+                            untilReadable:
+                              type: string
+                            timestampReadable:
+                              type: string
+                            timestampISO:
+                              type: string
+                            reason:
+                              type: string
+                  sessions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        ip:
+                          type: string
+                        uuid:
+                          type: string
+                        datetime:
+                          type: number
+                        platform:
+                          type: string
+                        browser:
+                          type: string
+                        version:
+                          type: string
+                        current:
+                          type: boolean
+                        datetimeISO:
+                          type: string
+                  usernames:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        value:
+                          type: string
+                        timestamp:
+                          type: number
+                        timestampISO:
+                          type: string
+                          description: An ISO 8601 formatted date string (complementing `timestamp`)
+                  emails:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        value:
+                          type: string
+                        timestamp:
+                          type: number
+                        timestampISO:
+                          type: string
+                          description: An ISO 8601 formatted date string (complementing `timestamp`)
+                  moderationNotes:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        uid:
+                          type: number
+                        note:
+                          type: string
+                        timestamp:
+                          type: number
+                        timestampISO:
+                          type: string
+                        user:
+                          type: object
+                          properties:
+                            username:
+                              type: string
+                              description: A friendly name for a given user account
+                            userslug:
+                              type: string
+                              description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                removed, etc.)
+                            picture:
+                              type: string
+                            uid:
+                              type: number
+                              description: A user identifier
+                            icon:text:
+                              type: string
+                              description: A single-letter representation of a username. This is used in the
+                                auto-generated icon given to users without
+                                an avatar
+                            icon:bgColor:
+                              type: string
+                              description: A six-character hexadecimal colour code assigned to the user. This
+                                value is used in conjunction with
+                                `icon:text` for the user's auto-generated
+                                icon
+                              example: "#f44336"
+                  title:
+                    type: string
+              - $ref: ../../../components/schemas/Pagination.yaml#/Pagination
+              - $ref: ../../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps
