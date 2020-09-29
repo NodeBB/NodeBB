@@ -79,6 +79,7 @@ function apiRoutes(router, middleware, controllers) {
 	router.post('/api/admin/category/uploadpicture', middlewares, helpers.tryRoute(controllers.admin.uploads.uploadCategoryPicture));
 	router.post('/api/admin/uploadfavicon', middlewares, helpers.tryRoute(controllers.admin.uploads.uploadFavicon));
 	router.post('/api/admin/uploadTouchIcon', middlewares, helpers.tryRoute(controllers.admin.uploads.uploadTouchIcon));
+	router.post('/api/admin/uploadMaskableIcon', middlewares, helpers.tryRoute(controllers.admin.uploads.uploadMaskableIcon));
 	router.post('/api/admin/uploadlogo', middlewares, helpers.tryRoute(controllers.admin.uploads.uploadLogo));
 	router.post('/api/admin/uploadOgImage', middlewares, helpers.tryRoute(controllers.admin.uploads.uploadOgImage));
 	router.post('/api/admin/upload/file', middlewares, helpers.tryRoute(controllers.admin.uploads.uploadFile));

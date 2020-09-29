@@ -166,6 +166,23 @@ uploadsController.uploadTouchIcon = async function (req, res, next) {
 	}
 };
 
+
+uploadsController.uploadMaskableIcon = async function (req, res, next) {
+	const uploadedFile = req.files.files[0];
+	const allowedTypes = ['image/png'];
+
+	if (validateUpload(res, uploadedFile, allowedTypes)) {
+		try {
+			const imageObj = await file.saveFileToLocal('maskableicon-orig.png', 'system', uploadedFile.path);
+			res.json([{ name: uploadedFile.name, url: imageObj.url }]);
+		} catch (err) {
+			next(err);
+		} finally {
+			file.delete(uploadedFile.path);
+		}
+	}
+};
+
 uploadsController.uploadLogo = async function (req, res, next) {
 	await upload('site-logo', req, res, next);
 };

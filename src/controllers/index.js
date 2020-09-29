@@ -294,6 +294,22 @@ Controllers.manifest = function (req, res, next) {
 			density: 10.0,
 		});
 	}
+
+
+	if (meta.config['brand:maskableIcon']) {
+		manifest.icons.push({
+			src: nconf.get('relative_path') + '/assets/uploads/system/maskableicon-orig.png',
+			type: 'image/png',
+			purpose: 'maskable',
+		});
+	} else if (meta.config['brand:touchIcon']) {
+		manifest.icons.push({
+			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-orig.png',
+			type: 'image/png',
+			purpose: 'maskable',
+		});
+	}
+
 	plugins.fireHook('filter:manifest.build', { req: req, res: res, manifest: manifest }, function (err, data) {
 		if (err) {
 			return next(err);

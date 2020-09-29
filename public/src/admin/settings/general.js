@@ -14,6 +14,9 @@ define('admin/settings/general', ['admin/settings'], function () {
 		$('button[data-action="removeTouchIcon"]').on('click', function () {
 			$('input[data-field="brand:touchIcon"]').val('');
 		});
+		$('button[data-action="removeMaskableIcon"]').on('click', function () {
+			$('input[data-field="brand:maskableIcon"]').val('');
+		});
 		$('button[data-action="removeOgImage"]').on('click', function () {
 			$('input[data-field="removeOgImage"]').val('');
 		});
