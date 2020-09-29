@@ -135,7 +135,6 @@ async function resetPlugin(pluginId) {
 		} else {
 			winston.warn('[reset] Plugin `%s` was not active on this forum', pluginId);
 			winston.info('[reset] No action taken.');
-			throw new Error('plugin-not-active');
 		}
 	} catch (err) {
 		winston.error('[reset] Could not disable plugin: ' + pluginId + ' encountered error %s', err.stack);
