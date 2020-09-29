@@ -28,10 +28,12 @@ module.exports = function (User) {
 	User.getAllInvites = async function () {
 		const uids = await User.getInvitingUsers();
 		const invitations = await async.map(uids, User.getInvites);
-		return invitations.map(function (invites, index) {
+
+		return await async.map(invitations, async function (invites) {
 			return {
-				uid: uids[index],
+				uid: uids[invitations.indexOf(invites)],
 				invitations: invites,
+				expireAt: (await async.map(invites.map(email => 'invitation:email:' + email), db.pttl)).map(ts => ts > 0 ? Date.now() + ts : 0),
 			};
 		});
 	};

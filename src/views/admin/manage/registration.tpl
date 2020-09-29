@@ -107,6 +107,7 @@
 							<th>[[admin/manage/registration:invitations.inviter-username]]</th>
 							<th>[[admin/manage/registration:invitations.invitee-email]]</th>
 							<th>[[admin/manage/registration:invitations.invitee-username]]</th>
+							<th>[[admin/manage/registration:invitations.invite-expires]]</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -116,7 +117,13 @@
 								data-invited-by="{invites.username}">
 							<td class ="invited-by"><!-- IF @first -->{invites.username}<!-- ENDIF @first --></td>
 							<td>{invites.invitations.email}</td>
-							<td>{invites.invitations.username}
+							<td>{invites.invitations.username}</td>
+							<td>
+							<!-- IF invites.invitations.expireAtISO -->
+								<span class="timeago" title="{invites.invitations.expireAtISO}"></span>
+							<!-- ELSE -->
+								<span>[[admin/manage/registration:invitations.invite-expires-never]]</span>
+							<!-- ENDIF invites.invitations.expireAtISO -->
 								<div class="btn-group pull-right">
 									<button class="btn btn-danger btn-xs" data-action="delete"><i class="fa fa-times"></i></button>
 								</div>
