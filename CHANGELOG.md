@@ -1,3 +1,53 @@
+#### v1.15.0-beta.27 (2020-09-29)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.27 (78fad240)
+*  lint notifications.js (4fc84e9f)
+*  update changelog for v1.15.0-beta.26 (5e01d288)
+* **deps:**
+  *  update dependency eslint-plugin-import to v2.22.1 (aacf8f22)
+  *  update dependency eslint to v7.10.0 (#8687) (119ab719)
+
+##### New Features
+
+* **openapi:**
+  *  refactor into indiv. files to match API & tpl routing (ffbf2d6d)
+  *  refactor into indiv. files to match API & tpl routing (84f5e4cf)
+*  #8695, allow sort for guests (ea0f3262)
+*  up recommended size to 512x512 + ACP labels for PWA (9c5b6907)
+*  upload maskable icon for PWA (6478b32d)
+*  show top 5 trending plugins in new tab in Extend > Plugins (b12e8d63)
+*  register service worker, #8126 (aa268d5e)
+*  add theme-color meta tag for browser address bar (5172d731)
+*  basic service worker, minimum requirement for for a2hs; see #8126 (f69697b3)
+*  option in ACP to configure notification/email delay for chats (5b427a0c)
+*  allow autocomplete to pass optional params to user.search (611f3c61)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency nodebb-theme-vanilla to v11.2.18 (#8697) (9bdef707)
+  *  update dependency nodebb-theme-slick to v1.2.34 (#8696) (3e2816ae)
+  *  bump persona (f17d42ed)
+  *  update dependency sanitize-html to v2 (1e5621c0)
+  *  update dependency nodebb-theme-persona to v10.2.39 (#8684) (d0010c40)
+  *  update dependency nodebb-theme-persona to v10.2.38 (#8683) (bb04f149)
+*  early button/anchor clicks do nothing (966d3f76)
+*  error on `reset -p` if plugin is not active (7f58e3ab)
+*  manifest test + remove duplicate test (bf3c1c08)
+*  typo in getCompatiblePlugins (07af6213)
+*  typo (54705cc4)
+*  manifest - use absolute URL for start_url (31528a52)
+*  prefer webmanifest extension over json (46800b66)
+*  update notification delay ACP help text (4c1e717b)
+*  #8681 change owner modal's search should check if user is banned (b6f2f0e5)
+* **openapi:**  test for new trending plugins in ACP (3fbddbe2)
+
+##### Refactors
+
+*  post edit (16039b11)
+
 #### v1.15.0-beta.26 (2020-09-25)
 
 ##### Chores
