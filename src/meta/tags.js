@@ -55,7 +55,7 @@ Tags.parse = async (req, data, meta, link) => {
 	var defaultLinks = [{
 		rel: 'icon',
 		type: 'image/x-icon',
-		href: nconf.get('relative_path') + nconf.get('upload_url') + '/system/favicon.ico' + (Meta.config['cache-buster'] ? '?' + Meta.config['cache-buster'] : ''),
+		href: nconf.get('relative_path') + '/favicon.ico' + (Meta.config['cache-buster'] ? '?' + Meta.config['cache-buster'] : ''),
 	}, {
 		rel: 'manifest',
 		href: nconf.get('relative_path') + '/manifest.webmanifest',
