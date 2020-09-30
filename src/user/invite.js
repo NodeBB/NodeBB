@@ -34,9 +34,9 @@ module.exports = function (User) {
 		const uids = await User.getInvitingUsers();
 		const invitations = await async.map(uids, User.getInvites);
 
-		return invitations.map(function (invites, i) {
+		return invitations.map(function (invites, index) {
 			return {
-				uid: uids[i],
+				uid: uids[index],
 				invitations: invites,
 			};
 		});
