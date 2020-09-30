@@ -1,4 +1,4 @@
-# <img alt="NodeBB" src="http://i.imgur.com/mYxPPtB.png" />
+# ![NodeBB](public/images/logo.svg)
 
 [![Build Status](https://travis-ci.org/NodeBB/NodeBB.svg?branch=master)](https://travis-ci.org/NodeBB/NodeBB)
 [![Coverage Status](https://coveralls.io/repos/github/NodeBB/NodeBB/badge.svg?branch=master)](https://coveralls.io/github/NodeBB/NodeBB?branch=master)

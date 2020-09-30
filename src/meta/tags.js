@@ -192,18 +192,18 @@ function addSiteOGImage(meta) {
 		// Push fallback logo
 		meta.push({
 			property: 'og:image',
-			content: nconf.get('url') + '/assets/logo.png',
+			content: nconf.get('url') + '/assets/images/logo@3x.png',
 			noEscape: true,
 		}, {
 			property: 'og:image:url',
-			content: nconf.get('url') + '/assets/logo.png',
+			content: nconf.get('url') + '/assets/images/logo@3x.png',
 			noEscape: true,
 		}, {
 			property: 'og:image:width',
-			content: '128',
+			content: '963',
 		}, {
 			property: 'og:image:height',
-			content: '128',
+			content: '225',
 		});
 	}
 }
