@@ -391,12 +391,34 @@ app.cacheBuster = null;
 		var inputEl = options.searchElements.inputEl;
 		var searchTimeoutId = 0;
 		var oldValue = inputEl.val();
+		var filterCategoryEl = quickSearchResults.find('.filter-category');
+
+		function updateCategoryFilterName() {
+			if (ajaxify.data.template.category) {
+				require(['translator'], function (translator) {
+					translator.translate('[[search:search-in-category, ' + ajaxify.data.name + ']]', function (translated) {
+						var name = $('<div></div>').html(translated).text();
+						filterCategoryEl.find('.name').text(name);
+					});
+				});
+			}
+			filterCategoryEl.toggleClass('hidden', !ajaxify.data.template.category);
+		}
 
 		function doSearch() {
 			require(['search'], function (search) {
 				/* eslint-disable-next-line */
 				options.searchOptions = Object.assign({}, searchOptions);
 				options.searchOptions.term = inputEl.val();
+				updateCategoryFilterName();
+
+				if (ajaxify.data.template.category) {
+					if (filterCategoryEl.find('input[type="checkbox"]').is(':checked')) {
+						options.searchOptions.categories = [ajaxify.data.cid];
+						options.searchOptions.searchChildren = true;
+					}
+				}
+
 				quickSearchResults.removeClass('hidden').find('.quick-search-results-container').html('');
 				quickSearchResults.find('.loading-indicator').removeClass('hidden');
 				$(window).trigger('action:search.quick.start', options);
@@ -433,6 +455,11 @@ app.cacheBuster = null;
 			});
 		}
 
+		quickSearchResults.find('.filter-category input[type="checkbox"]').on('change', function () {
+			inputEl.focus();
+			doSearch();
+		});
+
 		inputEl.off('keyup').on('keyup', function () {
 			if (searchTimeoutId) {
 				clearTimeout(searchTimeoutId);
@@ -466,7 +493,9 @@ app.cacheBuster = null;
 		inputEl.on('focus', function () {
 			oldValue = inputEl.val();
 			if (inputEl.val() && quickSearchResults.find('#quick-search-results').children().length) {
+				updateCategoryFilterName();
 				quickSearchResults.removeClass('hidden');
+				inputEl[0].setSelectionRange(0, inputEl.val().length);
 			}
 		});
 
@@ -503,8 +532,12 @@ app.cacheBuster = null;
 		});
 
 		function dismissSearch() {
-			searchFields.addClass('hidden');
-			searchButton.removeClass('hidden');
+			setTimeout(function () {
+				if (!searchInput.is(':focus')) {
+					searchFields.addClass('hidden');
+					searchButton.removeClass('hidden');
+				}
+			}, 200);
 		}
 
 		searchButton.off('click').on('click', function (e) {
