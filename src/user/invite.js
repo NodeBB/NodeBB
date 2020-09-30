@@ -14,7 +14,7 @@ var utils = require('../utils');
 module.exports = function (User) {
 	User.getInvites = async function (uid) {
 		const emails = await db.getSetMembers('invitation:uid:' + uid);
-		const expirations = (await async.map(emails.map(email => 'invitation:email:' + email), db.pttl)).map(ts => ts > 0 ? Date.now() + ts : 0);
+		const expirations = (await async.map(emails.map(email => 'invitation:email:' + email), db.pttl)).map(ts => (ts > 0 ? Date.now() + ts : 0));
 
 		return emails.map((email, i) => ({
 			email: validator.escape(String(email)),
