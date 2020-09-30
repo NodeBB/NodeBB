@@ -143,7 +143,7 @@ async function getInvites() {
 			return {
 				email: invite.email,
 				username: usernames[index][i] === '[[global:guest]]' ? '' : usernames[index][i],
-				expireAtISO: invite.expireAt[i] ? new Date(invite.expireAt[i]).toISOString() : 0,
+				expireAtISO: invite.expireAt ? new Date(invite.expireAt).toISOString() : 0,
 			};
 		});
 	});
