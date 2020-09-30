@@ -26,6 +26,40 @@ app.cacheBuster = null;
 		app.load();
 	});
 
+	app.handleEarlyClicks = function () {
+		/**
+		 * Occasionally, a button or anchor (not meant to be ajaxified) is clicked before
+		 * ajaxify is ready. Capture that event and re-click it once NodeBB is ready.
+		 *
+		 * e.g. New Topic/Reply, post tools
+		 */
+		if (document.body) {
+			var earlyQueue = [];	// once we can ES6, use Set instead
+			var earlyClick = function (ev) {
+				var btnEl = ev.target.closest('button');
+				var anchorEl = ev.target.closest('a');
+				if (!btnEl && anchorEl && (anchorEl.getAttribute('data-ajaxify') === 'false' || anchorEl.href === '#')) {
+					btnEl = anchorEl;
+				}
+				if (btnEl && !earlyQueue.includes(btnEl)) {
+					earlyQueue.push(btnEl);
+					ev.stopImmediatePropagation();
+					ev.preventDefault();
+				}
+			};
+			document.body.addEventListener('click', earlyClick);
+			$(window).on('action:ajaxify.end', function () {
+				document.body.removeEventListener('click', earlyClick);
+				earlyQueue.forEach(function (el) {
+					el.click();
+				});
+			});
+		} else {
+			setTimeout(app.handleEarlyClicks, 50);
+		}
+	};
+	app.handleEarlyClicks();
+
 	app.load = function () {
 		overrides.overrideTimeago();
 

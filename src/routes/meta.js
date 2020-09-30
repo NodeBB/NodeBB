@@ -1,5 +1,7 @@
 'use strict';
 
+const path = require('path');
+
 module.exports = function (app, middleware, controllers) {
 	app.get('/sitemap.xml', controllers.sitemap.render);
 	app.get('/sitemap/pages.xml', controllers.sitemap.getPages);
@@ -10,7 +12,6 @@ module.exports = function (app, middleware, controllers) {
 	app.get('/css/previews/:theme', controllers.admin.themes.get);
 	app.get('/osd.xml', controllers.osd.handle);
 	app.get('/service-worker.js', function (req, res) {
-		res.set('Content-Type', 'application/javascript');
-		res.send('self.addEventListener(\'fetch\', event => { event.respondWith( caches.match(event.request).then(response => { if (!response) { return fetch(event.request); } return response; }) ) });');
+		res.status(200).type('application/javascript').sendFile(path.join(__dirname, '../../public/src/service-worker.js'));
 	});
 };

@@ -6,6 +6,7 @@
 	"max-length": "Maksimum sohbet mesajı uzunluğu",
 	"max-room-size": "Sohbet odalarındaki maksimum kullanıcı sayısı",
 	"delay": "Sohbet mesajları arasındaki süre (milisaniye)",
+	"notification-delay": "Notification delay for chat messages. (0 for no delay)",
 	"restrictions.seconds-edit-after": "Sohbet mesajları kaç saniye boyunca düzenlenebilir olacak (0 - özellik aktif değil)",
 	"restrictions.seconds-delete-after": "Sohbet mesajları kaç saniye boyunca silinebilir olacak (0 - özellik aktif değil)"
 }

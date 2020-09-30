@@ -32,5 +32,9 @@
 	"sockets.settings": "WebSocket 設定",
 	"sockets.max-attempts": "最大重連次數",
 	"sockets.default-placeholder": "預設: %1",
-	"sockets.delay": "重新連線延遲時間"
+	"sockets.delay": "重新連線延遲時間",
+
+	"analytics.settings": "Analytics Settings",
+	"analytics.max-cache": "Analytics Cache Max Value",
+	"analytics.max-cache-help": "On high-traffic installs, the cache could be exhausted continuously if there are more concurrent active users than the Max Cache value. (Restart required)"
 }

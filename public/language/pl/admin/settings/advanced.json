@@ -32,5 +32,9 @@
 	"sockets.settings": "Ustawienia WebSocket",
 	"sockets.max-attempts": "Maksymalna liczba prób połączenia",
 	"sockets.default-placeholder": "Domyślnie: %1",
-	"sockets.delay": "Opóźnienie ponownego łączenia"
+	"sockets.delay": "Opóźnienie ponownego łączenia",
+
+	"analytics.settings": "Analytics Settings",
+	"analytics.max-cache": "Analytics Cache Max Value",
+	"analytics.max-cache-help": "On high-traffic installs, the cache could be exhausted continuously if there are more concurrent active users than the Max Cache value. (Restart required)"
 }
