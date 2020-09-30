@@ -100,6 +100,39 @@ Tags.parse = async (req, data, meta, link) => {
 			sizes: '192x192',
 			href: nconf.get('relative_path') + nconf.get('upload_url') + '/system/touchicon-192.png',
 		});
+	} else {
+		defaultLinks.push({
+			rel: 'apple-touch-icon',
+			href: nconf.get('relative_path') + '/assets/images/touch/512.png',
+		}, {
+			rel: 'icon',
+			sizes: '36x36',
+			href: nconf.get('relative_path') + '/assets/images/touch/192.png',
+		}, {
+			rel: 'icon',
+			sizes: '48x48',
+			href: nconf.get('relative_path') + '/assets/images/touch/144.png',
+		}, {
+			rel: 'icon',
+			sizes: '72x72',
+			href: nconf.get('relative_path') + '/assets/images/touch/96.png',
+		}, {
+			rel: 'icon',
+			sizes: '96x96',
+			href: nconf.get('relative_path') + '/assets/images/touch/72.png',
+		}, {
+			rel: 'icon',
+			sizes: '144x144',
+			href: nconf.get('relative_path') + '/assets/images/touch/48.png',
+		}, {
+			rel: 'icon',
+			sizes: '192x192',
+			href: nconf.get('relative_path') + '/assets/images/touch/36.png',
+		}, {
+			rel: 'icon',
+			sizes: '512x512',
+			href: nconf.get('relative_path') + '/assets/images/touch/512.png',
+		});
 	}
 
 	const results = await utils.promiseParallel({
