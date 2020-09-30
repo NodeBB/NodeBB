@@ -6,6 +6,7 @@
 	"max-length": "チャットメッセージの最大の長さ",
 	"max-room-size": "チャットルームの最大ユーザー数",
 	"delay": "ミリ秒単位のチャットメッセージ間の時間",
+	"notification-delay": "Notification delay for chat messages. (0 for no delay)",
 	"restrictions.seconds-edit-after": "Number of seconds a chat message will remain editable. (0 disabled)",
 	"restrictions.seconds-delete-after": "Number of seconds a chat message will remain deletable. (0 disabled)"
 }
