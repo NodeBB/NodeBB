@@ -22,6 +22,23 @@
 	.plugin-list.ui-sortable {
 		li {
 			.pointer;
+
+			.fa-chevron-up {
+				margin-right: 10px;
+			}
+
+			.fa-chevron-up, .fa-chevron-down {
+				border: 1px solid;
+				border-radius: 50%;
+				padding: 3px;
+				vertical-align: 1px;
+				background-color: white;
+			}
+
+			&:first-child .fa-chevron-up, &:last-child .fa-chevron-down {
+				pointer-events: none;
+				color: @gray-light;
+			}
 		}
 	}
 	.controls .btn {

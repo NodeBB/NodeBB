@@ -168,7 +168,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator', 'benchpress'], functio
 				}
 				var html = '';
 				activePlugins.forEach(function (plugin) {
-					html += '<li class="">' + plugin + '</li>';
+					html += '<li class="">' + plugin + '<span class="pull-right"><i class="fa fa-chevron-up"></i><i class="fa fa-chevron-down"></i></span></li>';
 				});
 				if (!activePlugins.length) {
 					translator.translate('[[admin/extend/plugins:none-active]]', function (text) {
@@ -176,7 +176,18 @@ define('admin/extend/plugins', ['jqueryui', 'translator', 'benchpress'], functio
 					});
 					return;
 				}
-				$('#order-active-plugins-modal .plugin-list').html(html).sortable();
+				var list = $('#order-active-plugins-modal .plugin-list');
+				list.html(html).sortable();
+
+				list.find('.fa-chevron-up').on('click', function () {
+					var item = $(this).parents('li');
+					item.prev().before(item);
+				});
+
+				list.find('.fa-chevron-down').on('click', function () {
+					var item = $(this).parents('li');
+					item.next().after(item);
+				});
 			});
 		});
 
