@@ -267,7 +267,7 @@
 					<!-- ENDIF authentication.length -->
 					<li class="divider"></li>
 					<li data-link="1">
-						<a href="{relative_path}/admin/extend/plugins">[[admin/menu:extend/plugins.install]]</a>
+						<a href="{relative_path}/admin/extend/plugins#download">[[admin/menu:extend/plugins.install]]</a>
 					</li>
 				</ul>
 			</li>
