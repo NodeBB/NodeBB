@@ -5,12 +5,21 @@
  * payload and throw an error otherwise.
  */
 
+const user = require('../user');
 const groups = require('../groups');
 const topics = require('../topics');
 
 const helpers = require('../controllers/helpers');
 
 module.exports = function (middleware) {
+	middleware.assertUser = async (req, res, next) => {
+		if (!await user.exists(req.params.uid)) {
+			return helpers.formatApiResponse(404, res, new Error('[[error:no-user]]'));
+		}
+
+		next();
+	};
+
 	middleware.assertGroup = async (req, res, next) => {
 		const name = await groups.getGroupNameByGroupSlug(req.params.slug);
 		if (!name || await groups.exists(name)) {
