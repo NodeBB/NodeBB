@@ -419,6 +419,43 @@ paths:
                     $ref: '#/components/schemas/Status'
                   response:
                     $ref: components/schemas/GroupObject.yaml#/GroupDataObject
+    delete:
+      tags:
+        - groups
+      summary: Delete an existing group
+      description: This operation deletes an existing group, all members within this group will cease to be members after the group is deleted.
+      responses:
+        '200':
+          description: group successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
+                    properties: {}
+  /groups/{slug}/membership/{uid}:
+    put:
+      tags:
+        - groups
+      summary: Join a group
+      description: This operation joins an existing group, or causes another user to join a group. If the group is private and you are not an administrator, this method will cause that user to request membership, instead. For user _invitations_, you'll want to call `PUT /groups/{slug}/invites/{uid}`.
+      responses:
+        '200':
+          description: group successfully joined, or membership requested
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
+                    properties: {}
 components:
   schemas:
     Status:

@@ -17,7 +17,7 @@
 		"jquery": true,
 		"amd": true,
 		"browser": true,
-		"es6": false
+		"es6": true
 	},
 	"rules": {
 		"block-scoped-var": "off",
@@ -31,9 +31,9 @@
 		"prefer-template": "off"
 	},
 	"parserOptions": {
-		"ecmaVersion": 5,
+		"ecmaVersion": 6,
 		"ecmaFeatures": {
-			"arrowFunctions": false,
+			"arrowFunctions": true,
 			"classes": false,
 			"defaultParams": false,
 			"destructuring": false,

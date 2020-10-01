@@ -190,6 +190,7 @@ Groups.getOwnersAndMembers = async function (groupName, uid, start, stop) {
 };
 
 Groups.getByGroupslug = async function (slug, options) {
+	options = options || {};
 	const groupName = await db.getObjectField('groupslug:groupname', slug);
 	if (!groupName) {
 		throw new Error('[[error:no-group]]');

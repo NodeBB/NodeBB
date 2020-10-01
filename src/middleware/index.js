@@ -60,6 +60,7 @@ require('./maintenance')(middleware);
 require('./user')(middleware);
 require('./headers')(middleware);
 require('./expose')(middleware);
+require('./assert')(middleware);
 
 middleware.stripLeadingSlashes = function stripLeadingSlashes(req, res, next) {
 	var target = req.originalUrl.replace(nconf.get('relative_path'), '');
