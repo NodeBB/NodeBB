@@ -29,7 +29,7 @@ Users.update = async (req, res) => {
 	const [isAdminOrGlobalMod, canEdit, passwordMatch] = await Promise.all([
 		user.isAdminOrGlobalMod(req.user.uid),
 		privileges.users.canEdit(req.user.uid, req.params.uid),
-		user.isPasswordCorrect(req.body.uid, req.body.password, req.ip),
+		req.body.password ? user.isPasswordCorrect(req.body.uid, req.body.password, req.ip) : false,
 	]);
 
 	// Changing own email/username requires password confirmation
