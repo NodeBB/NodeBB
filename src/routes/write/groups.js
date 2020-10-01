@@ -11,6 +11,7 @@ module.exports = function () {
 	const middlewares = [middleware.authenticate];
 
 	setupApiRoute(router, '/', middleware, [...middlewares, middleware.checkRequired.bind(null, ['name']), middleware.exposePrivilegeSet], 'post', controllers.write.groups.create);
+	// setupApiRoute(router, '/:slug', middleware, [...middlewares, middleware.exposePrivilegeSet], 'delete', controllers.write.groups.delete);
 
 	// app.delete('/:slug', apiMiddleware.requireUser, middleware.exposeGroupName, apiMiddleware.validateGroup, apiMiddleware.requireGroupOwner, function(req, res) {
 	// 	Groups.destroy(res.locals.groupName, function(err) {

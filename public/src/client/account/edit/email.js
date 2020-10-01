@@ -1,7 +1,6 @@
 'use strict';
 
-
-define('forum/account/edit/email', ['forum/account/header'], function (header) {
+define('forum/account/edit/email', ['forum/account/header', 'api'], function (header, api) {
 	var AccountEditEmail = {};
 
 	AccountEditEmail.init = function () {
@@ -27,16 +26,10 @@ define('forum/account/edit/email', ['forum/account/header'], function (header) {
 			var btn = $(this);
 			btn.addClass('disabled').find('i').removeClass('hide');
 
-			$.ajax({
-				url: config.relative_path + '/api/v1/users/' + userData.uid,
-				data: userData,
-				method: 'put',
-			}).done(function (res) {
+			api.put('/users/' + userData.uid, userData, (res) => {
 				btn.removeClass('disabled').find('i').addClass('hide');
-				ajaxify.go('user/' + res.response.userslug + '/edit');
-			}).fail(function (ev) {
-				app.alertError(ev.responseJSON.status.message);
-			});
+				ajaxify.go('user/' + res.userslug + '/edit');
+			}, err => app.alertError(err.status.message));
 
 			return false;
 		});
