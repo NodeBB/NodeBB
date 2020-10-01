@@ -88,7 +88,7 @@ describe('Read API', async () => {
 
 	readApi = await SwaggerParser.dereference(apiPath);
 
-	// Iterate through all documented paths, make a call to it, and compare the result body with what is defined in the spec
+	// Iterate through all documented paths, make a call to it, and compare the result body with what is defined in the specification
 	const paths = Object.keys(readApi.paths);
 
 	paths.forEach((path) => {
