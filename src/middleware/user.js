@@ -3,6 +3,7 @@
 const nconf = require('nconf');
 const winston = require('winston');
 const passport = require('passport');
+const util = require('util');
 
 const meta = require('../meta');
 const user = require('../user');
@@ -30,6 +31,8 @@ const passportAuthenticateAsync = function (req, res) {
 
 module.exports = function (middleware) {
 	async function authenticate(req, res) {
+		const loginAsync = util.promisify(req.login).bind(req);
+
 		if (req.loggedIn) {
 			return true;
 		} else if (req.headers.hasOwnProperty('authorization')) {
@@ -38,30 +41,24 @@ module.exports = function (middleware) {
 
 			// If the token received was a master token, a _uid must also be present for all calls
 			if (user.hasOwnProperty('uid')) {
-				req.login(user, async function (err) {
-					if (err) { throw new Error(err); }
-
-					await controllers.authentication.onSuccessfulLogin(req, user.uid);
-					req.uid = user.uid;
-					req.loggedIn = req.uid > 0;
-					return true;
-				});
+				await loginAsync(user);
+				await controllers.authentication.onSuccessfulLogin(req, user.uid);
+				req.uid = user.uid;
+				req.loggedIn = req.uid > 0;
+				return true;
 			} else if (user.hasOwnProperty('master') && user.master === true) {
 				if (req.body.hasOwnProperty('_uid') || req.query.hasOwnProperty('_uid')) {
 					user.uid = req.body._uid || req.query._uid;
 					delete user.master;
 
-					req.login(user, async function (err) {
-						if (err) { throw new Error(err); }
-
-						await controllers.authentication.onSuccessfulLogin(req, user.uid);
-						req.uid = user.uid;
-						req.loggedIn = req.uid > 0;
-						return true;
-					});
-				} else {
-					throw new Error('A master token was received without a corresponding `_uid` in the request body');
+					await loginAsync(user);
+					await controllers.authentication.onSuccessfulLogin(req, user.uid);
+					req.uid = user.uid;
+					req.loggedIn = req.uid > 0;
+					return true;
 				}
+
+				throw new Error('A master token was received without a corresponding `_uid` in the request body');
 			} else {
 				winston.warn('[api/authenticate] Unable to find user after verifying token');
 				return true;
