@@ -3,8 +3,6 @@
 const path = require('path');
 const nconf = require('nconf');
 const validator = require('validator');
-const winston = require('winston');
-const util = require('util');
 
 const db = require('../database');
 const meta = require('../meta');
@@ -24,12 +22,6 @@ uploadsController.upload = async function (req, res, filesIterator) {
 
 	if (Array.isArray(files[0])) {
 		files = files[0];
-	}
-
-	// backwards compatibility
-	if (filesIterator.constructor && filesIterator.constructor.name !== 'AsyncFunction') {
-		winston.warn('[deprecated] uploadsController.upload, use an async function as iterator');
-		filesIterator = util.promisify(filesIterator);
 	}
 
 	try {

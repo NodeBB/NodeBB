@@ -19,6 +19,7 @@ Categories.create = async function (socket, data) {
 	return await categories.create(data);
 };
 
+// DEPRECATED: @1.14.3, remove in version >=1.16
 Categories.getAll = async function () {
 	winston.warn('[deprecated] admin.categories.getAll deprecated, data is returned in the api route');
 	const cids = await categories.getAllCidsFromSet('categories:cid');

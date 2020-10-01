@@ -4,11 +4,6 @@
 define('admin/settings', ['uploader', 'mousetrap'], function (uploader, mousetrap) {
 	var Settings = {};
 
-	Settings.init = function () {
-		console.warn('[deprecation] require(\'admin/settings\').init() has been deprecated, please call require(\'admin/settings\').prepare() directly instead.');
-		Settings.prepare();
-	};
-
 	Settings.populateTOC = function () {
 		$('.settings-header').each(function () {
 			var header = $(this).text();
