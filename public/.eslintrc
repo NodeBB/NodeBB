@@ -33,10 +33,8 @@
 	"parserOptions": {
 		"ecmaVersion": 6,
 		"ecmaFeatures": {
-			"arrowFunctions": true,
 			"classes": false,
 			"defaultParams": false,
-			"destructuring": false,
 			"experimentalObjectRestSpread": false,
 			"blockBindings": false,
 			"forOf": false,
@@ -50,9 +48,7 @@
 			"objectLiteralShorthandProperties": false,
 			"impliedStrict": false,
 			"restParams": false,
-			"spread": false,
-			"superInFunctions": false,
-			"templateStrings": false
+			"superInFunctions": false
 		}
 	}
 }
