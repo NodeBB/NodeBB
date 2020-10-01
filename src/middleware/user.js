@@ -16,17 +16,41 @@ const controllers = {
 	authentication: require('../controllers/authentication'),
 };
 
+const passportAuthenticateAsync = function (req, res) {
+	return new Promise((resolve, reject) => {
+		passport.authenticate('bearer', { session: false }, (err, user) => {
+			if (err) {
+				reject(err);
+			} else {
+				resolve(user);
+			}
+		})(req, res);
+	});
+};
+
 module.exports = function (middleware) {
 	async function authenticate(req, res) {
 		if (req.loggedIn) {
 			return true;
 		} else if (req.headers.hasOwnProperty('authorization')) {
-			passport.authenticate('bearer', { session: false }, function (err, user) {
-				if (err) { throw new Error(err); }
-				if (!user) { return false; }
+			const user = await passportAuthenticateAsync(req, res);
+			if (!user) { return true; }
 
-				// If the token received was a master token, a _uid must also be present for all calls
-				if (user.hasOwnProperty('uid')) {
+			// If the token received was a master token, a _uid must also be present for all calls
+			if (user.hasOwnProperty('uid')) {
+				req.login(user, async function (err) {
+					if (err) { throw new Error(err); }
+
+					await controllers.authentication.onSuccessfulLogin(req, user.uid);
+					req.uid = user.uid;
+					req.loggedIn = req.uid > 0;
+					return true;
+				});
+			} else if (user.hasOwnProperty('master') && user.master === true) {
+				if (req.body.hasOwnProperty('_uid') || req.query.hasOwnProperty('_uid')) {
+					user.uid = req.body._uid || req.query._uid;
+					delete user.master;
+
 					req.login(user, async function (err) {
 						if (err) { throw new Error(err); }
 
@@ -35,27 +59,13 @@ module.exports = function (middleware) {
 						req.loggedIn = req.uid > 0;
 						return true;
 					});
-				} else if (user.hasOwnProperty('master') && user.master === true) {
-					if (req.body.hasOwnProperty('_uid') || req.query.hasOwnProperty('_uid')) {
-						user.uid = req.body._uid || req.query._uid;
-						delete user.master;
-
-						req.login(user, async function (err) {
-							if (err) { throw new Error(err); }
-
-							await controllers.authentication.onSuccessfulLogin(req, user.uid);
-							req.uid = user.uid;
-							req.loggedIn = req.uid > 0;
-							return true;
-						});
-					} else {
-						throw new Error('A master token was received without a corresponding `_uid` in the request body');
-					}
 				} else {
-					winston.warn('[api/authenticate] Unable to find user after verifying token');
-					return false;
+					throw new Error('A master token was received without a corresponding `_uid` in the request body');
 				}
-			})(req, res);
+			} else {
+				winston.warn('[api/authenticate] Unable to find user after verifying token');
+				return true;
+			}
 		}
 
 		await plugins.fireHook('response:middleware.authenticate', {
