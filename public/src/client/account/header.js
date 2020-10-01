@@ -8,7 +8,8 @@ define('forum/account/header', [
 	'translator',
 	'benchpress',
 	'accounts/delete',
-], function (coverPhoto, pictureCropper, components, translator, Benchpress, AccountsDelete) {
+	'api',
+], function (coverPhoto, pictureCropper, components, translator, Benchpress, AccountsDelete, api) {
 	var AccountHeader = {};
 	var isAdminOrSelfOrGlobalMod;
 
@@ -115,17 +116,11 @@ define('forum/account/header', [
 	}
 
 	function toggleFollow(type) {
-		$.ajax({
-			url: config.relative_path + '/api/v1/users/' + ajaxify.data.uid + '/follow',
-			method: type === 'follow' ? 'post' : 'delete',
-		}).done(function () {
+		api[type === 'follow' ? 'put' : 'delete']('/users/' + ajaxify.data.uid + '/follow', undefined, () => {
 			components.get('account/follow').toggleClass('hide', type === 'follow');
 			components.get('account/unfollow').toggleClass('hide', type === 'unfollow');
 			app.alertSuccess('[[global:alert.' + type + ', ' + ajaxify.data.username + ']]');
-		}).fail(function (ev) {
-			console.log(ev);
-			app.alertError(ev.responseJSON.status.message);
-		});
+		}, err => app.alertError(err.status.message));
 
 		return false;
 	}
@@ -154,22 +149,16 @@ define('forum/account/header', [
 
 							var until = formData.length > 0 ? (Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))) : 0;
 
-							$.ajax({
-								url: config.relative_path + '/api/v1/users/' + theirid + '/ban',
-								method: 'put',
-								data: {
-									until: until,
-									reason: formData.reason || '',
-								},
-							}).done(function () {
+							api.put('/users/' + theirid + '/ban', {
+								until: until,
+								reason: formData.reason || '',
+							}, () => {
 								if (typeof onSuccess === 'function') {
 									return onSuccess();
 								}
 
 								ajaxify.refresh();
-							}).fail(function (ev) {
-								app.alertError(ev.responseJSON.status.message);
-							});
+							}, err => app.alertError(err.status.message));
 						},
 					},
 				},
@@ -178,14 +167,9 @@ define('forum/account/header', [
 	}
 
 	function unbanAccount() {
-		$.ajax({
-			url: config.relative_path + '/api/v1/users/' + ajaxify.data.theirid + '/ban',
-			method: 'delete',
-		}).done(function () {
+		api.del('/users/' + ajaxify.data.theirid + '/ban', undefined, () => {
 			ajaxify.refresh();
-		}).fail(function (ev) {
-			app.alertError(ev.responseJSON.status.message);
-		});
+		}, err => app.alertError(err.status.message));
 	}
 
 	function flagAccount() {

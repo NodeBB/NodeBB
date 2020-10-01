@@ -5,7 +5,9 @@ define('admin/manage/categories', [
 	'translator',
 	'benchpress',
 	'categorySelector',
-], function (serialize, translator, Benchpress, categorySelector) {
+	'sortablejs',
+	'api',
+], function (serialize, translator, Benchpress, categorySelector, api) {
 	var	Categories = {};
 	var newCategoryId = -1;
 	var sortables;
@@ -196,12 +198,8 @@ define('admin/manage/categories', [
 
 	Categories.toggle = function (cids, disabled) {
 		var requests = cids.map(function (cid) {
-			return $.ajax({
-				url: config.relative_path + '/api/v1/categories/' + cid,
-				method: 'put',
-				data: {
-					disabled: disabled ? 1 : 0,
-				},
+			return api.put('/categories/' + cid, {
+				disabled: disabled ? 1 : 0,
 			});
 		});
 
@@ -238,11 +236,7 @@ define('admin/manage/categories', [
 			newCategoryId = -1;
 
 			Object.keys(modified).forEach(function (cid) {
-				$.ajax({
-					url: config.relative_path + '/api/v1/categories/' + cid,
-					method: 'put',
-					data: modified[cid],
-				});
+				api.put('/categories/' + cid, modified[cid]);
 			});
 		}
 	}

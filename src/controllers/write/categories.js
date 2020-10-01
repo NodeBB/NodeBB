@@ -24,7 +24,7 @@ Categories.update = async (req, res) => {
 
 Categories.delete = async (req, res) => {
 	const name = await categories.getCategoryField(req.params.cid, 'name');
-	await Categories.purge(req.params.cid, req.user.uid);
+	await categories.purge(req.params.cid, req.user.uid);
 	await events.log({
 		type: 'category-purge',
 		uid: req.user.uid,

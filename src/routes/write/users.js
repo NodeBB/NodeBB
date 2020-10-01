@@ -23,7 +23,7 @@ function authenticatedRoutes() {
 
 	setupApiRoute(router, '/:uid/password', middleware, [...middlewares, middleware.checkRequired.bind(null, ['newPassword'])], 'put', controllers.write.users.changePassword);
 
-	setupApiRoute(router, '/:uid/follow', middleware, [...middlewares], 'post', controllers.write.users.follow);
+	setupApiRoute(router, '/:uid/follow', middleware, [...middlewares], 'put', controllers.write.users.follow);
 	setupApiRoute(router, '/:uid/follow', middleware, [...middlewares], 'delete', controllers.write.users.unfollow);
 
 	setupApiRoute(router, '/:uid/ban', middleware, [...middlewares, middleware.exposePrivileges], 'put', controllers.write.users.ban);

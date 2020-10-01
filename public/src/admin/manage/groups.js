@@ -1,9 +1,9 @@
 'use strict';
 
-
 define('admin/manage/groups', [
 	'categorySelector',
-], function (categorySelector) {
+	'api',
+], function (categorySelector, api) {
 	var	Groups = {};
 
 	var intervalId = 0;
@@ -37,22 +37,18 @@ define('admin/manage/groups', [
 				hidden: $('#create-group-hidden').is(':checked') ? 1 : 0,
 			};
 
-			$.ajax({
-				url: config.relative_path + '/api/v1/groups',
-				method: 'post',
-				data: submitObj,
-			}).done(function (res) {
+			api.post('/groups', submitObj, (response) => {
 				createModalError.addClass('hide');
 				createGroupName.val('');
 				createModal.on('hidden.bs.modal', function () {
-					ajaxify.go('admin/manage/groups/' + res.response.name);
+					ajaxify.go('admin/manage/groups/' + response.name);
 				});
 				createModal.modal('hide');
-			}).fail(function (ev) {
-				if (utils.hasLanguageKey(ev.responseJSON.status.message)) {
-					ev.responseJSON.status.message = '[[admin/manage/groups:alerts.create-failure]]';
+			}, (err) => {
+				if (!utils.hasLanguageKey(err.status.message)) {
+					err.status.message = '[[admin/manage/groups:alerts.create-failure]]';
 				}
-				createModalError.translateHtml(ev.responseJSON.status.message).removeClass('hide');
+				createModalError.translateHtml(err.status.message).removeClass('hide');
 			});
 		});
 

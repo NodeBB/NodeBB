@@ -1,7 +1,12 @@
 'use strict';
 
-
-define('forum/account/edit', ['forum/account/header', 'translator', 'components', 'pictureCropper', 'benchpress'], function (header, translator, components, pictureCropper, Benchpress) {
+define('forum/account/edit', [
+	'forum/account/header',
+	'translator',
+	'pictureCropper',
+	'benchpress',
+	'api',
+], function (header, translator, pictureCropper, Benchpress, api) {
 	var AccountEdit = {};
 
 	AccountEdit.init = function () {
@@ -42,21 +47,15 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 
 		$(window).trigger('action:profile.update', userData);
 
-		$.ajax({
-			url: config.relative_path + '/api/v1/users/' + userData.uid,
-			data: userData,
-			method: 'put',
-		}).done(function (res) {
-			app.alertSuccess('[[user:profile_update_success]]');
+		api.put('/users/' + userData.uid, userData, (res) => {
+			app.alertSuccess('[[user:profile-update-success]]');
 
-			if (res.response.picture) {
-				$('#user-current-picture').attr('src', res.response.picture);
+			if (res.picture) {
+				$('#user-current-picture').attr('src', res.picture);
 			}
 
-			updateHeader(res.response.picture);
-		}).fail(function (ev) {
-			return app.alertError(ev.responseJSON.status.message);
-		});
+			updateHeader(res.picture);
+		}, err => app.alertError(err.status.message));
 
 		return false;
 	}

@@ -6,7 +6,8 @@ define('admin/manage/category', [
 	'admin/modules/colorpicker',
 	'categorySelector',
 	'benchpress',
-], function (uploader, iconSelect, colorpicker, categorySelector, Benchpress) {
+	'api',
+], function (uploader, iconSelect, colorpicker, categorySelector, Benchpress, api) {
 	var	Category = {};
 	var updateHash = {};
 
@@ -54,21 +55,17 @@ define('admin/manage/category', [
 			}
 
 			var cid = ajaxify.data.category.cid;
-			$.ajax({
-				url: config.relative_path + '/api/v1/categories/' + cid,
-				method: 'put',
-				data: updateHash,
-			}).done(function (res) {
+			api.put('/categories/' + cid, updateHash, (res) => {
 				app.flags._unsaved = false;
 				app.alert({
 					title: 'Updated Categories',
-					message: 'Category "' + res.response.name + '" was successfully updated.',
+					message: 'Category "' + res.name + '" was successfully updated.',
 					type: 'success',
 					timeout: 2000,
 				});
 				updateHash = {};
-			}).fail(function (ev) {
-				app.alertError(ev.responseJSON.status.message);
+			}, (err) => {
+				app.alertError(err.status.message);
 			});
 
 			return false;
@@ -107,18 +104,15 @@ define('admin/manage/category', [
 									});
 								}, 1000);
 
-								$.ajax({
-									url: config.relative_path + '/api/v1/categories/' + ajaxify.data.category.cid,
-									method: 'delete',
-								}).done(function () {
+								api.del('/categories/' + ajaxify.data.category.cid, undefined, () => {
 									if (intervalId) {
 										clearInterval(intervalId);
 									}
 									modal.modal('hide');
 									app.alertSuccess('[[admin/manage/categories:alert.purge-success]]');
 									ajaxify.go('admin/manage/categories');
-								}).fail(function (ev) {
-									app.alertError(ev.responseJSON.status.message);
+								}, (err) => {
+									app.alertError(err.status.message);
 								});
 
 								return false;
@@ -225,35 +219,27 @@ define('admin/manage/category', [
 
 		$('button[data-action="setParent"], button[data-action="changeParent"]').on('click', Category.launchParentSelector);
 		$('button[data-action="removeParent"]').on('click', function () {
-			$.ajax({
-				url: config.relative_path + '/api/v1/categories/' + ajaxify.data.category.cid,
-				method: 'put',
-				data: {
-					parentCid: 0,
-				},
-			}).done(function () {
+			api.put('/categories/' + ajaxify.data.category.cid, {
+				parentCid: 0,
+			}, () => {
 				$('button[data-action="removeParent"]').parent().addClass('hide');
 				$('button[data-action="changeParent"]').parent().addClass('hide');
 				$('button[data-action="setParent"]').removeClass('hide');
-			}).fail(function (ev) {
-				app.alertError(ev.responseJSON.status.message);
+			}, (err) => {
+				app.alertError(err.message);
 			});
 		});
 		$('button[data-action="toggle"]').on('click', function () {
 			var $this = $(this);
 			var disabled = $this.attr('data-disabled') === '1';
-			$.ajax({
-				url: config.relative_path + '/api/v1/categories/' + ajaxify.data.category.cid,
-				method: 'put',
-				data: {
-					disabled: disabled ? 0 : 1,
-				},
-			}).done(function () {
+			api.put('/categories/' + ajaxify.data.category.cid, {
+				disabled: disabled ? 0 : 1,
+			}, () => {
 				$this.translateText(!disabled ? '[[admin/manage/categories:enable]]' : '[[admin/manage/categories:disable]]');
 				$this.toggleClass('btn-primary', !disabled).toggleClass('btn-danger', disabled);
 				$this.attr('data-disabled', disabled ? 0 : 1);
-			}).fail(function (ev) {
-				app.alertError(ev.responseJSON.status.message);
+			}, (err) => {
+				app.alertError(err.message);
 			});
 		});
 	};
@@ -303,13 +289,9 @@ define('admin/manage/category', [
 			});
 
 			categorySelector.modal(categories, function (parentCid) {
-				$.ajax({
-					url: config.relative_path + '/api/v1/categories/' + ajaxify.data.category.cid,
-					method: 'put',
-					data: {
-						parentCid: parentCid,
-					},
-				}).done(function () {
+				api.put('/categories/' + ajaxify.data.category.cid, {
+					parentCid: parentCid,
+				}, () => {
 					var parent = allCategories.filter(function (category) {
 						return category && parseInt(category.cid, 10) === parseInt(parentCid, 10);
 					});
@@ -319,8 +301,8 @@ define('admin/manage/category', [
 					$('button[data-action="setParent"]').addClass('hide');
 					var buttonHtml = '<i class="fa ' + parent.icon + '"></i> ' + parent.name;
 					$('button[data-action="changeParent"]').html(buttonHtml).parent().removeClass('hide');
-				}).fail(function (ev) {
-					app.alertError(ev.responseJSON.status.message);
+				}, (err) => {
+					app.alertError(err.message);
 				});
 			});
 		});
