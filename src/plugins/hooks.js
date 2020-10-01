@@ -35,12 +35,15 @@ module.exports = function (Plugins) {
 			return;
 		}
 
-		if (Plugins.deprecatedHooks[data.hook]) {
-			winston.warn('[plugins/' + id + '] Hook `' + data.hook + '` is deprecated, ' +
-				(Plugins.deprecatedHooks[data.hook] ?
-					'please use `' + Plugins.deprecatedHooks[data.hook] + '` instead.' :
-					'there is no alternative.'
-				));
+		// `hasOwnProperty` needed for hooks with no alternative (set to null)
+		if (Plugins.deprecatedHooks.hasOwnProperty(data.hook)) {
+			const deprecated = Plugins.deprecatedHooks[data.hook];
+
+			if (deprecated) {
+				winston.warn(`[plugins/${id}] Hook "${data.hook}" is deprecated, please use "${deprecated}" instead.`);
+			} else {
+				winston.warn(`[plugins/${id}] Hook "${data.hook}" is deprecated, there is no alternative.`);
+			}
 		}
 
 		data.id = id;

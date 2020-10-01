@@ -1,6 +1,5 @@
 'use strict';
 
-const path = require('path');
 const semver = require('semver');
 const async = require('async');
 const winston = require('winston');
@@ -156,22 +155,16 @@ module.exports = function (Plugins) {
 	}
 
 	function registerHooks(pluginData) {
-		if (!pluginData.library) {
-			return;
-		}
-
-		const libraryPath = path.join(pluginData.path, pluginData.library);
-
 		try {
 			if (!Plugins.libraries[pluginData.id]) {
-				Plugins.requireLibrary(pluginData.id, libraryPath);
+				Plugins.requireLibrary(pluginData);
 			}
 
 			if (Array.isArray(pluginData.hooks)) {
 				pluginData.hooks.forEach(hook => Plugins.registerHook(pluginData.id, hook));
 			}
 		} catch (err) {
-			winston.warn('[plugins] Unable to parse library for: ' + pluginData.id);
+			winston.warn('[plugins] Unable to load library for: ' + pluginData.id);
 			throw err;
 		}
 	}

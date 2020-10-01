@@ -41,8 +41,28 @@ Plugins.loadedPlugins = [];
 
 Plugins.initialized = false;
 
-Plugins.requireLibrary = function (pluginID, libraryPath) {
-	Plugins.libraries[pluginID] = require(libraryPath);
+Plugins.requireLibrary = function (pluginData) {
+	let libraryPath;
+	// attempt to load a plugin directly with `require("nodebb-plugin-*")`
+	// Plugins should define their entry point in the standard `main` property of `package.json`
+	try {
+		libraryPath = pluginData.path;
+		Plugins.libraries[pluginData.id] = require(libraryPath);
+	} catch (e) {
+		// DEPRECATED: @1.15.0, remove in version >=1.17
+		// for backwards compatibility
+		// if that fails, fall back to `pluginData.library`
+		if (pluginData.library) {
+			winston.warn(`   [plugins/${pluginData.id}] The plugin.json field "library" is deprecated. Please use the package.json field "main" instead.`);
+			winston.verbose(`[plugins/${pluginData.id}] See https://github.com/NodeBB/NodeBB/issues/8686`);
+
+			libraryPath = path.join(pluginData.path, pluginData.library);
+			Plugins.libraries[pluginData.id] = require(libraryPath);
+		} else {
+			throw e;
+		}
+	}
+
 	Plugins.libraryPaths.push(libraryPath);
 };
 
