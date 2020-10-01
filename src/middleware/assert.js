@@ -6,13 +6,23 @@
  */
 
 const groups = require('../groups');
+const topics = require('../topics');
+
+const helpers = require('../controllers/helpers');
 
 module.exports = function (middleware) {
 	middleware.assertGroup = async (req, res, next) => {
 		const name = await groups.getGroupNameByGroupSlug(req.params.slug);
-		const exists = await groups.exists(name);
-		if (!exists) {
-			throw new Error('[[error:no-group]]');
+		if (!name || await groups.exists(name)) {
+			return helpers.formatApiResponse(404, res, new Error('[[error:no-group]]'));
+		}
+
+		next();
+	};
+
+	middleware.assertTopic = async (req, res, next) => {
+		if (!await topics.exists(req.params.tid)) {
+			return helpers.formatApiResponse(404, res, new Error('[[error:no-topic]]'));
 		}
 
 		next();

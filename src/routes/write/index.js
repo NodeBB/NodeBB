@@ -21,11 +21,11 @@ Write.reload = (params) => {
 	});
 
 	router.use('/api/v1/users', require('./users')());
-	// router.use('/groups', require('./groups')(coreMiddleware));
-	// router.use('/posts', require('./posts')(coreMiddleware));
-	// router.use('/topics', require('./topics')(coreMiddleware));
+	router.use('/api/v1/groups', require('./groups')());
 	router.use('/api/v1/categories', require('./categories')());
-	// router.use('/util', require('./util')(coreMiddleware));
+	router.use('/api/v1/topics', require('./topics')());
+	// router.use('/api/v1/posts', require('./posts')());
+	// router.use('/api/v1/util', require('./util')());
 
 	router.get('/api/v1/ping', function (req, res) {
 		helpers.formatApiResponse(200, res, {

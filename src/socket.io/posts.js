@@ -13,6 +13,7 @@ const utils = require('../utils');
 
 const apiController = require('../controllers/api');
 
+const sockets = require('.');
 const SocketPosts = module.exports;
 
 require('./posts/edit')(SocketPosts);
@@ -23,6 +24,8 @@ require('./posts/tools')(SocketPosts);
 require('./posts/diffs')(SocketPosts);
 
 SocketPosts.reply = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'POST /api/v1/topics/:tid');
+
 	if (!data || !data.tid || (meta.config.minimumPostLength !== 0 && !data.content)) {
 		throw new Error('[[error:invalid-data]]');
 	}
