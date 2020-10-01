@@ -1,6 +1,6 @@
 'use strict';
 
-define('admin/manage/admins-mods', ['translator', 'benchpress', 'autocomplete'], function (translator, Benchpress, autocomplete) {
+define('admin/manage/admins-mods', ['translator', 'benchpress', 'autocomplete', 'api'], function (translator, Benchpress, autocomplete, api) {
 	var AdminsMods = {};
 
 	AdminsMods.init = function () {
@@ -42,13 +42,7 @@ define('admin/manage/admins-mods', ['translator', 'benchpress', 'autocomplete'],
 		});
 
 		autocomplete.user($('#global-mod-search'), function (ev, ui) {
-			socket.emit('admin.groups.join', {
-				groupName: 'Global Moderators',
-				uid: ui.item.user.uid,
-			}, function (err) {
-				if (err) {
-					return app.alertError(err.message);
-				}
+			api.put('/groups/global-moderators/membership/' + ui.item.user.uid, undefined, () => {
 				app.alertSuccess('[[admin/manage/users:alerts.make-global-mod-success]]');
 				$('#global-mod-search').val('');
 
@@ -60,7 +54,7 @@ define('admin/manage/admins-mods', ['translator', 'benchpress', 'autocomplete'],
 					$('.global-moderator-area').prepend(html);
 					$('#no-global-mods-warning').addClass('hidden');
 				});
-			});
+			}, err => app.alertError(err.status.message));
 		});
 
 		$('.global-moderator-area').on('click', '.remove-user-icon', function () {

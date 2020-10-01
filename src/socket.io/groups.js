@@ -19,6 +19,8 @@ SocketGroups.before = async (socket, method, data) => {
 };
 
 SocketGroups.join = async (socket, data) => {
+	sockets.warnDeprecated(socket, 'PUT /api/v1/groups/:slug/membership/:uid');
+
 	if (socket.uid <= 0) {
 		throw new Error('[[error:invalid-uid]]');
 	}

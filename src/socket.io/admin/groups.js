@@ -24,6 +24,8 @@ Groups.create = async function (socket, data) {
 };
 
 Groups.join = async (socket, data) => {
+	sockets.warnDeprecated(socket, 'PUT /api/v1/groups/:slug/membership/:uid');
+
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');
 	}

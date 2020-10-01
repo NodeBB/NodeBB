@@ -93,15 +93,12 @@ define('admin/manage/users', ['translator', 'benchpress', 'autocomplete', 'api']
 					modal.on('shown.bs.modal', function () {
 						autocomplete.group(modal.find('.group-search'), function (ev, ui) {
 							var uid = $(ev.target).attr('data-uid');
-							socket.emit('admin.groups.join', { uid: uid, groupName: ui.item.value }, function (err) {
-								if (err) {
-									return app.alertError(err);
-								}
+							api.put('/groups/' + ui.item.group.slug + '/membership/' + uid, undefined, () => {
 								ui.item.group.nameEscaped = translator.escape(ui.item.group.displayName);
 								app.parseAndTranslate('admin/partials/manage_user_groups', { users: [{ groups: [ui.item.group] }] }, function (html) {
 									$('[data-uid=' + uid + '] .group-area').append(html.find('.group-area').html());
 								});
-							});
+							}, err => app.alertError(err.status.message));
 						});
 					});
 					modal.on('click', '.group-area a', function () {
