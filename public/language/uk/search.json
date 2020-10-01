@@ -44,5 +44,6 @@
     "search-preferences-saved": "Налаштування пошуку збережено",
     "search-preferences-cleared": "Налаштування пошуку очищені",
     "show-results-as": "Показати результати як",
-    "see-more-results": "Дивитись більше результатів (%1)"
+    "see-more-results": "Дивитись більше результатів (%1)",
+    "search-in-category": "Search in \"%1\""
 }

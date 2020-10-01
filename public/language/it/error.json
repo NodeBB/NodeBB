@@ -26,7 +26,7 @@
     "invalid-pagination-value": "Valore di impaginazione non valido, deve essere almeno %1 ed al massimo %2",
     "username-taken": "Nome utente già esistente",
     "email-taken": "Email già esistente",
-    "email-invited": "Email was already invited",
+    "email-invited": "L'email è già stata invitata",
     "email-not-confirmed": "Non puoi pubblicare post finché la tua email non è confermata, fai clic qui per confermare la tua email",
     "email-not-confirmed-chat": "Non puoi chattare finché non confermi la tua email, per favore clicca qui per confermare la tua email.",
     "email-not-confirmed-email-sent": "La tua email non è stata ancora confermata, controlla la tua casella di posta per l'email di conferma. Non potrai pubblicare post o chattare fino a quando la tua email non sarà confermata.",

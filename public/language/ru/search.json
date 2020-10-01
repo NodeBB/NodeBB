@@ -44,5 +44,6 @@
     "search-preferences-saved": "Настройки поиска сохранены",
     "search-preferences-cleared": "Настройки поиска очищены",
     "show-results-as": "Показать результаты как:",
-    "see-more-results": "Показать больше результатов (%1)"
+    "see-more-results": "Показать больше результатов (%1)",
+    "search-in-category": "Search in \"%1\""
 }
