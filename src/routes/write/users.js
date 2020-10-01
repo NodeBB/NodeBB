@@ -18,16 +18,16 @@ function authenticatedRoutes() {
 	setupApiRoute(router, '/', middleware, [...middlewares, middleware.checkRequired.bind(null, ['username']), middleware.isAdmin], 'post', controllers.write.users.create);
 	setupApiRoute(router, '/', middleware, [...middlewares, middleware.checkRequired.bind(null, ['uids']), middleware.isAdmin, middleware.exposePrivileges], 'delete', controllers.write.users.deleteMany);
 
-	setupApiRoute(router, '/:uid', middleware, [...middlewares], 'put', controllers.write.users.update);
-	setupApiRoute(router, '/:uid', middleware, [...middlewares, middleware.exposePrivileges], 'delete', controllers.write.users.delete);
+	setupApiRoute(router, '/:uid', middleware, [...middlewares, middleware.assertUser], 'put', controllers.write.users.update);
+	setupApiRoute(router, '/:uid', middleware, [...middlewares, middleware.assertUser, middleware.exposePrivileges], 'delete', controllers.write.users.delete);
 
-	setupApiRoute(router, '/:uid/password', middleware, [...middlewares, middleware.checkRequired.bind(null, ['newPassword'])], 'put', controllers.write.users.changePassword);
+	setupApiRoute(router, '/:uid/password', middleware, [...middlewares, middleware.checkRequired.bind(null, ['newPassword']), middleware.assertUser], 'put', controllers.write.users.changePassword);
 
-	setupApiRoute(router, '/:uid/follow', middleware, [...middlewares], 'put', controllers.write.users.follow);
-	setupApiRoute(router, '/:uid/follow', middleware, [...middlewares], 'delete', controllers.write.users.unfollow);
+	setupApiRoute(router, '/:uid/follow', middleware, [...middlewares, middleware.assertUser], 'put', controllers.write.users.follow);
+	setupApiRoute(router, '/:uid/follow', middleware, [...middlewares, middleware.assertUser], 'delete', controllers.write.users.unfollow);
 
-	setupApiRoute(router, '/:uid/ban', middleware, [...middlewares, middleware.exposePrivileges], 'put', controllers.write.users.ban);
-	setupApiRoute(router, '/:uid/ban', middleware, [...middlewares, middleware.exposePrivileges], 'delete', controllers.write.users.unban);
+	setupApiRoute(router, '/:uid/ban', middleware, [...middlewares, middleware.assertUser, middleware.exposePrivileges], 'put', controllers.write.users.ban);
+	setupApiRoute(router, '/:uid/ban', middleware, [...middlewares, middleware.assertUser, middleware.exposePrivileges], 'delete', controllers.write.users.unban);
 
 	/**
 	 * Chat routes were not migrated because chats may get refactored... also the logic is derpy
