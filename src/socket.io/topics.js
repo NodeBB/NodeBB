@@ -6,6 +6,7 @@ const user = require('../user');
 const meta = require('../meta');
 const apiController = require('../controllers/api');
 const privileges = require('../privileges');
+const sockets = require('.');
 const socketHelpers = require('./helpers');
 
 const SocketTopics = module.exports;
@@ -18,6 +19,8 @@ require('./topics/tags')(SocketTopics);
 require('./topics/merge')(SocketTopics);
 
 SocketTopics.post = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'POST /api/v1/topics');
+
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');
 	}

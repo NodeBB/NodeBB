@@ -1,4 +1,5 @@
 PostsObject:
+  description: One of the objects in the array returned from `Posts.getPostSummaryByPids`
   type: array
   items:
     type: object

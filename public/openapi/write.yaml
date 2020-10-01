@@ -456,6 +456,84 @@ paths:
                   response:
                     type: object
                     properties: {}
+  /topics:
+    post:
+      tags:
+        - topics
+      summary: Create a new topic
+      description: This operation creates a new topic with a post. Topic creation without a post is not allowed via the Write API as it is an internal-only method.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cid:
+                  type: number
+                title:
+                  type: string
+                content:
+                  type: string
+                tags:
+                  type: array
+                  items:
+                    type: string
+              required:
+                - cid
+                - title
+                - content
+            example:
+              cid: 1
+              title: Test topic
+              content: This is the test topic's content
+      responses:
+        '200':
+          description: topic successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    $ref: components/schemas/TopicObject.yaml#/TopicObject
+  /topics/{tid}:
+    post:
+      tags:
+        - topics
+      summary: Reply to a topic
+      description: This operation creates a new reply to an existing topic.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                timestamp:
+                  type: number
+                toPid:
+                  type: number
+              required:
+                - content
+            example:
+              content: This is a test reply
+      responses:
+        '200':
+          description: post successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    $ref: components/schemas/PostsObject.yaml#/PostsObject
 components:
   schemas:
     Status:
