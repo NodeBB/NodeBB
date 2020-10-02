@@ -6,6 +6,7 @@ const events = require('../../events');
 const privileges = require('../../privileges');
 const plugins = require('../../plugins');
 const socketHelpers = require('../helpers');
+const sockets = require('..');
 
 module.exports = function (SocketTopics) {
 	SocketTopics.loadTopicTools = async function (socket, data) {
@@ -34,30 +35,37 @@ module.exports = function (SocketTopics) {
 	};
 
 	SocketTopics.delete = async function (socket, data) {
+		sockets.warnDeprecated(socket, 'DELETE /api/v1/topics/state');
 		await SocketTopics.doTopicAction('delete', 'event:topic_deleted', socket, data);
 	};
 
 	SocketTopics.restore = async function (socket, data) {
+		sockets.warnDeprecated(socket, 'PUT /api/v1/topics/state');
 		await SocketTopics.doTopicAction('restore', 'event:topic_restored', socket, data);
 	};
 
 	SocketTopics.purge = async function (socket, data) {
+		sockets.warnDeprecated(socket, 'DELETE /api/v1/topics');
 		await SocketTopics.doTopicAction('purge', 'event:topic_purged', socket, data);
 	};
 
 	SocketTopics.lock = async function (socket, data) {
+		sockets.warnDeprecated(socket, 'PUT /api/v1/topics/lock');
 		await SocketTopics.doTopicAction('lock', 'event:topic_locked', socket, data);
 	};
 
 	SocketTopics.unlock = async function (socket, data) {
+		sockets.warnDeprecated(socket, 'DELETE /api/v1/topics/lock');
 		await SocketTopics.doTopicAction('unlock', 'event:topic_unlocked', socket, data);
 	};
 
 	SocketTopics.pin = async function (socket, data) {
+		sockets.warnDeprecated(socket, 'PUT /api/v1/topics/pin');
 		await SocketTopics.doTopicAction('pin', 'event:topic_pinned', socket, data);
 	};
 
 	SocketTopics.unpin = async function (socket, data) {
+		sockets.warnDeprecated(socket, 'DELETE /api/v1/topics/pin');
 		await SocketTopics.doTopicAction('unpin', 'event:topic_unpinned', socket, data);
 	};
 

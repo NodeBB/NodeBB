@@ -12,50 +12,17 @@ module.exports = function () {
 
 	setupApiRoute(router, '/', middleware, [...middlewares, middleware.checkRequired.bind(null, ['cid', 'title', 'content'])], 'post', controllers.write.topics.create);
 	setupApiRoute(router, '/:tid', middleware, [...middlewares, middleware.checkRequired.bind(null, ['content']), middleware.assertTopic], 'post', controllers.write.topics.reply);
-	// setupApiRoute(router, '/:cid', middleware, [...middlewares, middleware.isAdmin], 'put', controllers.write.categories.update);
-	// setupApiRoute(router, '/:cid', middleware, [...middlewares, middleware.isAdmin], 'delete', controllers.write.categories.delete);
+	setupApiRoute(router, '/:tid', middleware, [...middlewares, middleware.assertTopic], 'delete', controllers.write.topics.purge);
 
-	// app.route('/:tid')
-	// 	.delete(apiMiddleware.requireUser, apiMiddleware.validateTid, function(req, res) {
-	// 		Topics.purgePostsAndTopic(req.params.tid, req.params._uid, function(err) {
-	// 			errorHandler.handle(err, res);
-	// 		});
-	// 	})
-	// 	.put(apiMiddleware.requireUser, function(req, res) {
-	// 		if (!utils.checkRequired(['pid', 'content'], req, res)) {
-	// 			return false;
-	// 		}
+	setupApiRoute(router, '/:tid/state', middleware, [...middlewares, middleware.assertTopic], 'put', controllers.write.topics.restore);
+	setupApiRoute(router, '/:tid/state', middleware, [...middlewares, middleware.assertTopic], 'delete', controllers.write.topics.delete);
 
-	// 		var payload = {
-	// 			uid: req.user.uid,
-	// 			pid: req.body.pid,
-	// 			content: req.body.content,
-	// 			options: {}
-	// 		};
-	// 		console.log(payload);
+	setupApiRoute(router, '/:tid/pin', middleware, [...middlewares, middleware.assertTopic], 'put', controllers.write.topics.pin);
+	setupApiRoute(router, '/:tid/pin', middleware, [...middlewares, middleware.assertTopic], 'delete', controllers.write.topics.unpin);
 
-	// 		// Maybe a "set if available" utils method may come in handy
-	// 		if (req.body.handle) { payload.handle = req.body.handle; }
-	// 		if (req.body.title) { payload.title = req.body.title; }
-	// 		if (req.body.topic_thumb) { payload.options.topic_thumb = req.body.topic_thumb; }
-	// 		if (req.body.tags) { payload.options.tags = req.body.tags; }
+	setupApiRoute(router, '/:tid/lock', middleware, [...middlewares, middleware.assertTopic], 'put', controllers.write.topics.lock);
+	setupApiRoute(router, '/:tid/lock', middleware, [...middlewares, middleware.assertTopic], 'delete', controllers.write.topics.unlock);
 
-	// 		Posts.edit(payload, function(err, returnData) {
-	// 			errorHandler.handle(err, res, returnData);
-	// 		});
-	// 	});
-
-	// app.route('/:tid/state')
-	// 	.put(apiMiddleware.requireUser, apiMiddleware.validateTid, function (req, res) {
-	// 		Topics.restore(req.params.tid, req.params._uid, function (err) {
-	// 			errorHandler.handle(err, res);
-	// 		});
-	// 	})
-	// 	.delete(apiMiddleware.requireUser, apiMiddleware.validateTid, function (req, res) {
-	// 		Topics.delete(req.params.tid, req.params._uid, function (err) {
-	// 			errorHandler.handle(err, res);
-	// 		});
-	// 	});
 
 	// app.route('/:tid/follow')
 	// 	.put(apiMiddleware.requireUser, apiMiddleware.validateTid, function(req, res) {
@@ -81,18 +48,6 @@ module.exports = function () {
 	// 	})
 	// 	.delete(apiMiddleware.requireUser, apiMiddleware.validateTid, function(req, res) {
 	// 		Topics.deleteTopicTags(req.params.tid, function(err) {
-	// 			errorHandler.handle(err, res);
-	// 		});
-	// 	});
-
-	// app.route('/:tid/pin')
-	// 	.put(apiMiddleware.requireUser, apiMiddleware.validateTid, function(req, res) {
-	// 		Topics.tools.pin(req.params.tid, req.user.uid, function(err) {
-	// 			errorHandler.handle(err, res);
-	// 		});
-	// 	})
-	// 	.delete(apiMiddleware.requireUser, apiMiddleware.validateTid, function(req, res) {
-	// 		Topics.tools.unpin(req.params.tid, req.user.uid, function(err) {
 	// 			errorHandler.handle(err, res);
 	// 		});
 	// 	});

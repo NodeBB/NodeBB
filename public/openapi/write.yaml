@@ -534,6 +534,135 @@ paths:
                     $ref: '#/components/schemas/Status'
                   response:
                     $ref: components/schemas/PostsObject.yaml#/PostsObject
+    delete:
+      tags:
+        - topics
+      summary: Delete a topic
+      description: This operation purges a topic and all of its posts (careful, there is no confirmation!)
+      responses:
+        '200':
+          description: Topic successfully purged
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
+                    properties: {}
+  /topics/{tid}/state:
+    delete:
+      tags:
+        - topics
+      summary: Delete a topic
+      description: This operation deletes an existing topic.
+      responses:
+        '200':
+          description: Topic successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
+                    properties: {}
+    put:
+      tags:
+        - topics
+      summary: Restore a topic
+      description: This operation restores a topic.
+      responses:
+        '200':
+          description: Topic successfully restored
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
+                    properties: {}
+  /topics/{tid}/lock:
+    delete:
+      tags:
+        - topics
+      summary: Lock a topic
+      description: This operation locks an existing topic.
+      responses:
+        '200':
+          description: Topic successfully locked
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
+                    properties: {}
+    put:
+      tags:
+        - topics
+      summary: Unlock a topic
+      description: This operation unlocks a topic.
+      responses:
+        '200':
+          description: Topic successfully unlocked
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
+                    properties: {}
+  /topics/{tid}/state:
+    delete:
+      tags:
+        - topics
+      summary: Pin a topic
+      description: This operation pins an existing topic.
+      responses:
+        '200':
+          description: Topic successfully pinned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
+                    properties: {}
+    put:
+      tags:
+        - topics
+      summary: Unpin a topic
+      description: This operation unpins a topic.
+      responses:
+        '200':
+          description: Topic successfully unpinned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
+                    properties: {}
 components:
   schemas:
     Status:
