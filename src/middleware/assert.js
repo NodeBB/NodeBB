@@ -22,7 +22,7 @@ module.exports = function (middleware) {
 
 	middleware.assertGroup = async (req, res, next) => {
 		const name = await groups.getGroupNameByGroupSlug(req.params.slug);
-		if (!name || await groups.exists(name)) {
+		if (!name || !await groups.exists(name)) {
 			return helpers.formatApiResponse(404, res, new Error('[[error:no-group]]'));
 		}
 
