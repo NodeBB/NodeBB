@@ -10,6 +10,8 @@ const request = require('request-promise-native');
 
 const user = require('../user');
 const posts = require('../posts');
+const utils = require('../utils');
+
 const { pluginNamePattern, themeNamePattern, paths } = require('../constants');
 
 var app;
@@ -121,6 +123,7 @@ Plugins.reload = async function () {
 		console.log('');
 	}
 
+	// Possibly put these in a different file...
 	Plugins.registerHook('core', {
 		hook: 'filter:parse.post',
 		method: async (data) => {
@@ -144,6 +147,26 @@ Plugins.reload = async function () {
 		method: async (data) => {
 			data.userData.signature = posts.sanitize(data.userData.signature);
 			return data;
+		},
+	});
+
+	Plugins.registerHook('core', {
+		hook: 'filter:settings.set',
+		method: async ({ plugin, settings, quiet }) => {
+			if (plugin === 'core.api' && Array.isArray(settings.tokens)) {
+				// Generate tokens if not present already
+				settings.tokens.forEach((set) => {
+					if (set.token === '') {
+						set.token = utils.generateUUID();
+					}
+
+					if (isNaN(parseInt(set.uid, 10))) {
+						set.uid = 0;
+					}
+				});
+			}
+
+			return { plugin, settings, quiet };
 		},
 	});
 

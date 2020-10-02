@@ -6,7 +6,7 @@ var passportLocal = require('passport-local').Strategy;
 const BearerStrategy = require('passport-http-bearer').Strategy;
 var winston = require('winston');
 
-const db = require('../database');
+const meta = require('../meta');
 var controllers = require('../controllers');
 var helpers = require('../controllers/helpers');
 var plugins = require('../plugins');
@@ -51,9 +51,16 @@ Auth.getLoginStrategies = function () {
 };
 
 Auth.verifyToken = async function (token, done) {
-	const uid = await db.sortedSetScore('apiTokens', token);
+	let { tokens } = await meta.settings.get('core.api');
+	tokens = tokens.reduce((memo, cur) => {
+		memo[cur.token] = cur.uid;
+		return memo;
+	}, {});
 
-	if (uid !== null) {
+	const uid = tokens[token];
+
+	if (uid !== undefined) {
+		console.log('uid is', uid);
 		if (parseInt(uid, 10) > 0) {
 			done(null, {
 				uid: uid,
