@@ -60,7 +60,6 @@ Auth.verifyToken = async function (token, done) {
 	const uid = tokens[token];
 
 	if (uid !== undefined) {
-		console.log('uid is', uid);
 		if (parseInt(uid, 10) > 0) {
 			done(null, {
 				uid: uid,
