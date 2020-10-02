@@ -21,6 +21,8 @@
     "reset.notify.text1": "Vi gjør deg oppmerksom på at du endret passordet ditt den %1.",
     "reset.notify.text2": "Hvis det ikke var deg som autoriserte dette, vennligst gi beskjed til en administrator umiddelbart.",
     "digest.latest_topics": "Siste emner fra %1",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "Klikk her for å besøke %1",
     "digest.unsub.info": "Dette sammendraget er sendt til deg basert på dine innstillinger for abonnering.",
     "digest.day": "day",

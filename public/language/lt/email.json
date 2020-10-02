@@ -21,6 +21,8 @@
     "reset.notify.text1": "Mes tikriname ar jūs tikrai esate %1, jūsų slaptažodis buvo pakeistas sėkmingai",
     "reset.notify.text2": "Jeigu jūs neprašėte šito, prašome perspėti administratoriu nedelsiant",
     "digest.latest_topics": "Paskutinės temos iš %1",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "Kad aplankyti %1, spauskite čia",
     "digest.unsub.info": "Ši santrauka buvo išsiųsta į tavo prenumeratos nustatymus",
     "digest.day": "diena",

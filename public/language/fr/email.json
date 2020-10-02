@@ -21,6 +21,8 @@
     "reset.notify.text1": "Nous vous informons que le %1, votre mot de passe a été modifié.",
     "reset.notify.text2": "Si vous n'avez pas autorisé ceci, veuillez contacter immédiatement un administrateur.",
     "digest.latest_topics": "Derniers sujets de %1 :",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "Cliquez ici pour aller sur %1",
     "digest.unsub.info": "Ce message vous a été envoyé en raison de vos paramètres d'abonnement.",
     "digest.day": "jour",

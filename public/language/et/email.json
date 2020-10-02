@@ -21,6 +21,8 @@
     "reset.notify.text1": "Teatame, et sinu parooli muutmine kuupäeval %1 oli edukas.",
     "reset.notify.text2": "Kui te ei ole lubanud seda, siis teavitage koheselt administraatorit.",
     "digest.latest_topics": "Viimased teemad %1 poolt",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "Vajuta siia et külastada %1",
     "digest.unsub.info": "See uudiskiri on saadetud teile tellimuse seadistuse tõttu.",
     "digest.day": "päev",

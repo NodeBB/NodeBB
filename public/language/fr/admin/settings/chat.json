@@ -6,7 +6,7 @@
 	"max-length": "Longueur maximales des messages de discussion",
 	"max-room-size": "Nombre maximum d'utilisateurs dans une même discussion",
 	"delay": "Temps entre chaque message de discussion (en millisecondes)",
-	"notification-delay": "Notification delay for chat messages. (0 for no delay)",
+	"notification-delay": "Délai de notification pour les messages de chat. (0 pour aucun délai)",
 	"restrictions.seconds-edit-after": "Nombre de secondes pendant lesquelles un message de discussion reste modifiable. (0 désactivé)",
 	"restrictions.seconds-delete-after": "Nombre de secondes pendant lesquelles un message de discussion reste supprimable. (0 désactivé)"
 }

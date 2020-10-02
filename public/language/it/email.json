@@ -21,6 +21,8 @@
     "reset.notify.text1": "Ti informiamo che il %1, la password è stata cambiata con successo.",
     "reset.notify.text2": "Se non hai autorizzato questo, per favore informa immediatamente l'amministratore.",
     "digest.latest_topics": "Ultime discussioni da %1",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "Clicca qui per visitare %1",
     "digest.unsub.info": "Questo riepilogo ti è stato inviato perché lo hai sottoscritto nelle tue impostazioni.",
     "digest.day": "giorno",

@@ -21,6 +21,8 @@
     "reset.notify.text1": "به شما اعلام میداریم که در %1، کلمه عبور شما با موفقیت بازنشانی شد.",
     "reset.notify.text2": "اگر این را تایید نمیکنید، لطفا بلافاصله به یک مدیر اطلاع دهید.",
     "digest.latest_topics": "آخرین پست های %1:",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "برای دیدن %1 اینجا کلیک کنید",
     "digest.unsub.info": "این اعداد که برای شما فرستاده شده به علت تنظیمات اشترک شماست.",
     "digest.day": "روز",

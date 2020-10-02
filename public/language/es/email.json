@@ -21,6 +21,8 @@
     "reset.notify.text1": "Te estamos notificando que en %1, tu contraseña ha sido cambiada correctamente.",
     "reset.notify.text2": "Si no has sido tú, por favor notifica al administrador inmediatamente.",
     "digest.latest_topics": "Últimos temas de %1",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "Cliquea aquí para visitar %1",
     "digest.unsub.info": "Este compendio te fue enviado debido a tus ajustes de subscripción.",
     "digest.day": "día",
