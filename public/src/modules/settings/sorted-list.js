@@ -60,6 +60,7 @@ define('settings/sorted-list', ['benchpress', 'jqueryui'], function (benchpress)
 			});
 
 			$list.sortable().addClass('pointer');
+			$(window).trigger('action:settings.sorted-list.loaded', { element: $list.get(0) });
 		},
 	};
 

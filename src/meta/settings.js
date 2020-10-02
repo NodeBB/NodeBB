@@ -47,6 +47,8 @@ Settings.set = async function (hash, values, quiet) {
 		}
 	}
 
+	({ plugin: hash, settings: values, quiet } = await plugins.fireHook('filter:settings.set', { plugin: hash, settings: values, quiet }));
+
 	if (sortedLists.length) {
 		await db.delete('settings:' + hash + ':sorted-lists');
 		await db.setAdd('settings:' + hash + ':sorted-lists', sortedLists);
