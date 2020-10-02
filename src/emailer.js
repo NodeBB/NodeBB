@@ -19,7 +19,11 @@ const translator = require('./translator');
 const pubsub = require('./pubsub');
 const file = require('./file');
 
+const viewsDir = nconf.get('views_dir');
 const Emailer = module.exports;
+
+let prevConfig = meta.config;
+let app;
 
 Emailer.transports = {
 	sendmail: nodemailer.createTransport({
@@ -29,11 +33,64 @@ Emailer.transports = {
 	smtp: undefined,
 };
 
-var app;
+Emailer.listServices = () => Object.keys(wellKnownServices);
+Emailer._defaultPayload = {};
 
-const viewsDir = nconf.get('views_dir');
+const smtpSettingsChanged = (config) => {
+	const settings = [
+		'email:smtpTransport:enabled',
+		'email:smtpTransport:user',
+		'email:smtpTransport:pass',
+		'email:smtpTransport:service',
+		'email:smtpTransport:port',
+		'email:smtpTransport:host',
+		'email:smtpTransport:security',
+	];
 
-Emailer.getTemplates = async function (config) {
+	return settings.some(key => config[key] !== prevConfig[key]);
+};
+
+const getHostname = () => {
+	const configUrl = nconf.get('url');
+	const parsed = url.parse(configUrl);
+	return parsed.hostname;
+};
+
+const buildCustomTemplates = async (config) => {
+	try {
+		const [templates, allPaths] = await Promise.all([
+			Emailer.getTemplates(config),
+			file.walk(viewsDir),
+		]);
+
+		// If the new config contains any email override values, re-compile those templates
+		const toBuild = Object
+			.keys(config)
+			.filter(prop => prop.startsWith('email:custom:'))
+			.map(key => key.split(':')[2]);
+
+		const templatesToBuild = templates.filter(template => toBuild.includes(template.path));
+		const paths = _.fromPairs(allPaths.map((p) => {
+			const relative = path.relative(viewsDir, p).replace(/\\/g, '/');
+			return [relative, p];
+		}));
+
+		await Promise.all(templatesToBuild.map(async (template) => {
+			const source = await meta.templates.processImports(paths, template.path, template.text);
+			const compiled = await Benchpress.precompile(source, {
+				minify: global.env !== 'development',
+			});
+			await fs.promises.writeFile(template.fullpath.replace(/\.tpl$/, '.js'), compiled);
+		}));
+
+		Benchpress.flush();
+		winston.verbose('[emailer] Built custom email templates');
+	} catch (err) {
+		winston.error('[emailer] Failed to build custom email templates\n' + err.stack);
+	}
+};
+
+Emailer.getTemplates = async (config) => {
 	const emailsPath = path.join(viewsDir, 'emails');
 	let emails = await file.walk(emailsPath);
 	emails = emails.filter(email => !email.endsWith('.js'));
@@ -53,17 +110,11 @@ Emailer.getTemplates = async function (config) {
 	return templates;
 };
 
-Emailer.listServices = function () {
-	return Object.keys(wellKnownServices);
-};
-
-Emailer._defaultPayload = {};
-
-Emailer.setupFallbackTransport = function (config) {
+Emailer.setupFallbackTransport = (config) => {
 	winston.verbose('[emailer] Setting up SMTP fallback transport');
 	// Enable Gmail transport if enabled in ACP
 	if (parseInt(config['email:smtpTransport:enabled'], 10) === 1) {
-		var smtpOptions = {
+		const smtpOptions = {
 			pool: config['email:smtpTransport:pool'],
 		};
 
@@ -103,25 +154,10 @@ Emailer.setupFallbackTransport = function (config) {
 	}
 };
 
-let prevConfig = meta.config;
-function smtpSettingsChanged(config) {
-	const settings = [
-		'email:smtpTransport:enabled',
-		'email:smtpTransport:user',
-		'email:smtpTransport:pass',
-		'email:smtpTransport:service',
-		'email:smtpTransport:port',
-		'email:smtpTransport:host',
-		'email:smtpTransport:security',
-	];
-
-	return settings.some(key => config[key] !== prevConfig[key]);
-}
-
-Emailer.registerApp = function (expressApp) {
+Emailer.registerApp = (expressApp) => {
 	app = expressApp;
 
-	var logo = null;
+	let logo = null;
 	if (meta.config.hasOwnProperty('brand:emailLogo')) {
 		logo = (!meta.config['brand:emailLogo'].startsWith('http') ? nconf.get('url') : '') + meta.config['brand:emailLogo'];
 	}
@@ -140,7 +176,7 @@ Emailer.registerApp = function (expressApp) {
 	buildCustomTemplates(meta.config);
 
 	// Update default payload if new logo is uploaded
-	pubsub.on('config:update', function (config) {
+	pubsub.on('config:update', (config) => {
 		if (config) {
 			if (config['brand:emailLogo']) {
 				Emailer._defaultPayload.logo.src = config['brand:emailLogo'];
@@ -164,7 +200,7 @@ Emailer.registerApp = function (expressApp) {
 	return Emailer;
 };
 
-Emailer.send = async function (template, uid, params) {
+Emailer.send = async (template, uid, params) => {
 	if (!app) {
 		winston.warn('[emailer] App not ready!');
 		return;
@@ -198,7 +234,7 @@ Emailer.send = async function (template, uid, params) {
 	}
 };
 
-Emailer.sendToEmail = async function (template, email, language, params) {
+Emailer.sendToEmail = async (template, email, language, params) => {
 	const lang = language || meta.config.defaultLang || 'en-GB';
 	const unsubscribable = ['digest', 'notification'];
 
@@ -275,7 +311,7 @@ Emailer.sendToEmail = async function (template, email, language, params) {
 	}
 };
 
-Emailer.sendViaFallback = function (data, callback) {
+Emailer.sendViaFallback = (data, callback) => {
 	// Some minor alterations to the data to conform to nodemailer standard
 	data.text = data.plaintext;
 	delete data.plaintext;
@@ -285,7 +321,7 @@ Emailer.sendViaFallback = function (data, callback) {
 	delete data.from_name;
 
 	winston.verbose('[emailer] Sending email to uid ' + data.uid + ' (' + data.to + ')');
-	Emailer.fallbackTransport.sendMail(data, function (err) {
+	Emailer.fallbackTransport.sendMail(data, (err) => {
 		if (err) {
 			winston.error(err.stack);
 		}
@@ -293,49 +329,9 @@ Emailer.sendViaFallback = function (data, callback) {
 	});
 };
 
-async function buildCustomTemplates(config) {
-	try {
-		const [templates, allPaths] = await Promise.all([
-			Emailer.getTemplates(config),
-			file.walk(viewsDir),
-		]);
-
-		// If the new config contains any email override values, re-compile those templates
-		const toBuild = Object
-			.keys(config)
-			.filter(prop => prop.startsWith('email:custom:'))
-			.map(key => key.split(':')[2]);
-
-		const templatesToBuild = templates.filter(template => toBuild.includes(template.path));
-		const paths = _.fromPairs(allPaths.map(function (p) {
-			const relative = path.relative(viewsDir, p).replace(/\\/g, '/');
-			return [relative, p];
-		}));
-
-		await Promise.all(templatesToBuild.map(async (template) => {
-			const source = await meta.templates.processImports(paths, template.path, template.text);
-			const compiled = await Benchpress.precompile(source, {
-				minify: global.env !== 'development',
-			});
-			await fs.promises.writeFile(template.fullpath.replace(/\.tpl$/, '.js'), compiled);
-		}));
-
-		Benchpress.flush();
-		winston.verbose('[emailer] Built custom email templates');
-	} catch (err) {
-		winston.error('[emailer] Failed to build custom email templates\n' + err.stack);
-	}
-}
-
-Emailer.renderAndTranslate = async function (template, params, lang) {
+Emailer.renderAndTranslate = async (template, params, lang) => {
 	const html = await app.renderAsync('emails/' + template, params);
 	return await translator.translate(html, lang);
 };
-
-function getHostname() {
-	const configUrl = nconf.get('url');
-	const parsed = url.parse(configUrl);
-	return parsed.hostname;
-}
 
 require('./promisify')(Emailer, ['transports']);
