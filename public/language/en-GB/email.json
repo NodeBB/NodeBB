@@ -29,6 +29,8 @@
 	"reset.notify.text2": "If you did not authorise this, please notify an administrator immediately.",
 
 	"digest.latest_topics": "Latest topics from %1",
+	"digest.top-topics": "Top topics from %1",
+	"digest.popular-topics": "Popular topics from %1",
 	"digest.cta": "Click here to visit %1",
 	"digest.unsub.info": "This digest was sent to you due to your subscription settings.",
 	"digest.day": "day",
