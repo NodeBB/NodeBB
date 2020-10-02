@@ -5,19 +5,25 @@ define('admin/settings', ['uploader', 'mousetrap'], function (uploader, mousetra
 	var Settings = {};
 
 	Settings.populateTOC = function () {
-		$('.settings-header').each(function () {
-			var header = $(this).text();
-			var anchor = header.toLowerCase().replace(/ /g, '-').trim();
+		var headers = $('.settings-header');
 
-			$(this).prepend('<a name="' + anchor + '"></a>');
-			$('.section-content ul').append('<li><a href="#' + anchor + '">' + header + '</a></li>');
-		});
+		if (headers.length > 1) {
+			headers.each(function () {
+				var header = $(this).text();
+				var anchor = header.toLowerCase().replace(/ /g, '-').trim();
 
-		var scrollTo = $('a[name="' + window.location.hash.replace('#', '') + '"]');
-		if (scrollTo.length) {
-			$('html, body').animate({
-				scrollTop: (scrollTo.offset().top) + 'px',
-			}, 400);
+				$(this).prepend('<a name="' + anchor + '"></a>');
+				$('.section-content ul').append('<li><a href="#' + anchor + '">' + header + '</a></li>');
+			});
+
+			var scrollTo = $('a[name="' + window.location.hash.replace('#', '') + '"]');
+			if (scrollTo.length) {
+				$('html, body').animate({
+					scrollTop: (scrollTo.offset().top) + 'px',
+				}, 400);
+			}
+		} else {
+			$('.content-header').parents('.row').remove();
 		}
 	};
 
