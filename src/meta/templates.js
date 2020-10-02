@@ -15,6 +15,7 @@ const Benchpress = require('benchpressjs');
 const plugins = require('../plugins');
 const file = require('../file');
 const db = require('../database');
+const { themeNamePattern, paths } = require('../constants');
 
 const viewsPath = nconf.get('views_dir');
 
@@ -43,8 +44,6 @@ async function processImports(paths, templatePath, source) {
 }
 Templates.processImports = processImports;
 
-const themeNamePattern = /^(@.*?\/)?nodebb-theme-.*$/;
-
 async function getTemplateDirs(activePlugins) {
 	const pluginTemplates = activePlugins.map(function (id) {
 		if (themeNamePattern.test(id)) {
@@ -53,7 +52,7 @@ async function getTemplateDirs(activePlugins) {
 		if (!plugins.pluginsData[id]) {
 			return '';
 		}
-		return path.join(__dirname, '../../node_modules/', id, plugins.pluginsData[id].templates || 'templates');
+		return path.join(paths.nodeModules, id, plugins.pluginsData[id].templates || 'templates');
 	}).filter(Boolean);
 
 	let themeConfig = require(nconf.get('theme_config'));

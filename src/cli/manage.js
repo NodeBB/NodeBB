@@ -1,17 +1,18 @@
 'use strict';
 
-var async = require('async');
-var winston = require('winston');
-var childProcess = require('child_process');
-var _ = require('lodash');
-var CliGraph = require('cli-graph');
+const async = require('async');
+const winston = require('winston');
+const childProcess = require('child_process');
+const _ = require('lodash');
+const CliGraph = require('cli-graph');
 
-var build = require('../meta/build');
-var db = require('../database');
-var plugins = require('../plugins');
-var events = require('../events');
-var analytics = require('../analytics');
-var reset = require('./reset');
+const build = require('../meta/build');
+const db = require('../database');
+const plugins = require('../plugins');
+const events = require('../events');
+const analytics = require('../analytics');
+const reset = require('./reset');
+const { pluginNamePattern, themeNamePattern } = require('../constants');
 
 function buildTargets() {
 	var aliases = build.aliases;
@@ -33,9 +34,6 @@ function buildTargets() {
 		output + '\n'
 	);
 }
-
-var themeNamePattern = /^(@.*?\/)?nodebb-theme-.*$/;
-var pluginNamePattern = /^(@.*?\/)?nodebb-(theme|plugin|widget|rewards)-.*$/;
 
 function activate(plugin) {
 	if (themeNamePattern.test(plugin)) {
