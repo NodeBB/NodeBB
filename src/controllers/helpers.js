@@ -214,15 +214,15 @@ helpers.buildTitle = function (pageTitle) {
 
 helpers.getCategories = async function (set, uid, privilege, selectedCid) {
 	const cids = await categories.getCidsByPrivilege(set, uid, privilege);
-	return await getCategoryData(cids, uid, selectedCid);
+	return await getCategoryData(cids, uid, selectedCid, privilege);
 };
 
-helpers.getCategoriesByStates = async function (uid, selectedCid, states) {
+helpers.getCategoriesByStates = async function (uid, selectedCid, states, privilege = 'topics:read') {
 	const cids = await categories.getAllCidsFromSet('categories:cid');
-	return await getCategoryData(cids, uid, selectedCid, states);
+	return await getCategoryData(cids, uid, selectedCid, states, privilege);
 };
 
-async function getCategoryData(cids, uid, selectedCid, states) {
+async function getCategoryData(cids, uid, selectedCid, states, privilege) {
 	if (selectedCid && !Array.isArray(selectedCid)) {
 		selectedCid = [selectedCid];
 	}
@@ -230,7 +230,7 @@ async function getCategoryData(cids, uid, selectedCid, states) {
 	states = states || [categories.watchStates.watching, categories.watchStates.notwatching];
 
 	const [allowed, watchState, categoryData, isAdmin] = await Promise.all([
-		privileges.categories.isUserAllowedTo('topics:read', cids, uid),
+		privileges.categories.isUserAllowedTo(privilege, cids, uid),
 		categories.getWatchState(cids, uid),
 		categories.getCategoriesData(cids),
 		user.isAdministrator(uid),
@@ -246,6 +246,11 @@ async function getCategoryData(cids, uid, selectedCid, states) {
 		const hasVisibleChildren = checkVisibleChildren(c, cidToAllowed, cidToWatchState, states);
 		const isCategoryVisible = c && cidToAllowed[c.cid] && !c.link && !c.disabled && states.includes(cidToWatchState[c.cid]);
 		const shouldBeRemoved = !hasVisibleChildren && !isCategoryVisible;
+		const shouldBeDisaplayedAsDisabled = hasVisibleChildren && !isCategoryVisible;
+
+		if (shouldBeDisaplayedAsDisabled) {
+			c.disabledClass = true;
+		}
 
 		if (shouldBeRemoved && c && c.parent && c.parent.cid && cidToCategory[c.parent.cid]) {
 			cidToCategory[c.parent.cid].children = cidToCategory[c.parent.cid].children.filter(child => child.cid !== c.cid);
@@ -254,7 +259,7 @@ async function getCategoryData(cids, uid, selectedCid, states) {
 		return c && !shouldBeRemoved;
 	});
 
-	const categoriesData = categories.buildForSelectCategories(visibleCategories);
+	const categoriesData = categories.buildForSelectCategories(visibleCategories, ['disabledClass']);
 
 	let selectedCategory = [];
 	const selectedCids = [];

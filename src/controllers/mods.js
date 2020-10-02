@@ -202,15 +202,16 @@ modsController.postQueue = async function (req, res, next) {
 	if (!isPrivileged) {
 		return next();
 	}
-
+	const cid = req.query.cid;
 	const page = parseInt(req.query.page, 10) || 1;
 	const postsPerPage = 20;
 
-	const [ids, isAdminOrGlobalMod, moderatedCids, allCategories] = await Promise.all([
+	const [ids, isAdminOrGlobalMod, moderatedCids, allCategories, categoriesData] = await Promise.all([
 		db.getSortedSetRange('post:queue', 0, -1),
 		user.isAdminOrGlobalMod(req.uid),
 		user.getModeratedCids(req.uid),
 		categories.buildForSelect(req.uid, 'find', ['disabled', 'link', 'slug']),
+		helpers.getCategoriesByStates(req.uid, cid, null, 'moderate'),
 	]);
 
 	allCategories.forEach((c) => {
@@ -218,7 +219,9 @@ modsController.postQueue = async function (req, res, next) {
 	});
 
 	let postData = await getQueuedPosts(ids);
-	postData = postData.filter(p => p && (isAdminOrGlobalMod || moderatedCids.includes(String(p.category.cid))));
+	postData = postData.filter(p => p &&
+		(!categoriesData.selectedCids.length || categoriesData.selectedCids.includes(p.category.cid)) &&
+		(isAdminOrGlobalMod || moderatedCids.includes(String(p.category.cid))));
 
 	({ posts: postData } = await plugins.fireHook('filter:post-queue.get', {
 		posts: postData,
@@ -234,6 +237,8 @@ modsController.postQueue = async function (req, res, next) {
 		title: '[[pages:post-queue]]',
 		posts: postData,
 		allCategories: allCategories,
+		...categoriesData,
+		allCategoriesUrl: 'post-queue' + helpers.buildQueryString(req.query, 'cid', ''),
 		pagination: pagination.create(page, pageCount),
 		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[pages:post-queue]]' }]),
 	});
@@ -268,7 +273,7 @@ async function addMetaData(postData) {
 	}
 	postData.topic = { cid: 0 };
 	if (postData.data.cid) {
-		postData.topic = { cid: postData.data.cid };
+		postData.topic = { cid: parseInt(postData.data.cid, 10) };
 	} else if (postData.data.tid) {
 		postData.topic = await topics.getTopicFields(postData.data.tid, ['title', 'cid']);
 	}
