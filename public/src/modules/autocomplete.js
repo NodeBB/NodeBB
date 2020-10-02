@@ -49,7 +49,10 @@ define('autocomplete', function () {
 							});
 							response(names);
 						}
+
 						$('.ui-autocomplete a').attr('data-ajaxify', 'false');
+						delete params.query;
+						delete params.paginate;
 					});
 				},
 			});
