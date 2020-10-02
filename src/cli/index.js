@@ -1,16 +1,16 @@
 'use strict';
 
-var fs = require('fs');
-var path = require('path');
+const fs = require('fs');
+const path = require('path');
 
 require('../../require-main');
 
-var packageInstall = require('./package-install');
-var dirname = require('./paths').baseDir;
+const packageInstall = require('./package-install');
+const { paths } = require('../constants');
 
 // check to make sure dependencies are installed
 try {
-	fs.accessSync(path.join(dirname, 'package.json'), fs.constants.R_OK);
+	fs.accessSync(paths.currentPackage, fs.constants.R_OK);
 } catch (e) {
 	if (e.code === 'ENOENT') {
 		console.warn('package.json not found.');
@@ -20,7 +20,7 @@ try {
 		packageInstall.preserveExtraneousPlugins();
 
 		try {
-			fs.accessSync(path.join(dirname, 'node_modules/colors/package.json'), fs.constants.R_OK);
+			fs.accessSync(path.join(paths.nodeModules, 'colors/package.json'), fs.constants.R_OK);
 
 			require('colors');
 			console.log('OK'.green);
@@ -33,13 +33,13 @@ try {
 }
 
 try {
-	fs.accessSync(path.join(dirname, 'node_modules/semver/package.json'), fs.constants.R_OK);
+	fs.accessSync(path.join(paths.nodeModules, 'semver/package.json'), fs.constants.R_OK);
 
 	var semver = require('semver');
 	var defaultPackage = require('../../install/package.json');
 
 	var checkVersion = function (packageName) {
-		var version = JSON.parse(fs.readFileSync(path.join(dirname, 'node_modules', packageName, 'package.json'), 'utf8')).version;
+		var version = JSON.parse(fs.readFileSync(path.join(paths.nodeModules, packageName, 'package.json'), 'utf8')).version;
 		if (!semver.satisfies(version, defaultPackage.dependencies[packageName])) {
 			var e = new TypeError('Incorrect dependency version: ' + packageName);
 			e.code = 'DEP_WRONG_VERSION';
@@ -97,7 +97,7 @@ global.env = env;
 prestart.setupWinston();
 
 // Alternate configuration file support
-var	configFile = path.resolve(dirname, nconf.get('config') || 'config.json');
+var	configFile = path.resolve(paths.baseDir, nconf.get('config') || 'config.json');
 var configExists = file.existsSync(configFile) || (nconf.get('url') && nconf.get('secret') && nconf.get('database'));
 
 prestart.loadConfig(configFile);

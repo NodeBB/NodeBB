@@ -21,6 +21,8 @@
     "reset.notify.text1": "Obavještavamo vas da vam je lozinka na %1 uspješno promijenjena.",
     "reset.notify.text2": "Ako niste ovo odobrili, molimo vas obavijestite administratora.",
     "digest.latest_topics": "Posljednje teme s %1",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "Kliknite ovdje kako biste posjetili %1",
     "digest.unsub.info": "Ovaj pregled je poslan zbog Vaših postavki pretplata.",
     "digest.day": "Dan",

@@ -21,6 +21,8 @@
     "reset.notify.text1": "Informujemy, że Twoje hasło na %1 zostało zmienione.",
     "reset.notify.text2": "Jeśli nie wyraziłeś na to zgody, niezwłocznie poinformuj administratora.",
     "digest.latest_topics": "Ostatnie tematy z %1",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "Kliknij tutaj, by przejść do %1",
     "digest.unsub.info": "To podsumowanie zostało wysłane zgodnie z Twoimi ustawieniami.",
     "digest.day": "dni",

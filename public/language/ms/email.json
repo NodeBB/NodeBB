@@ -21,6 +21,8 @@
     "reset.notify.text1": "Pada %1, kata laluan anda berjaya ditukar.",
     "reset.notify.text2": "Sekiranya anda tidak pernah melakukannya, sila hubungi pendtadbir / admin dengan segera.",
     "digest.latest_topics": "Topik terkini dari %1",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "Klik sini untuk melawat %1",
     "digest.unsub.info": "Ringkasan ini dihantar berdasarkan tetapan langganan anda.",
     "digest.day": "day",

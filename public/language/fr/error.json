@@ -26,7 +26,7 @@
     "invalid-pagination-value": "Valeur de pagination invalide. Celle-ci doit être comprise entre %1 et %2.",
     "username-taken": "Nom d’utilisateur déjà utilisé",
     "email-taken": "Email déjà utilisé",
-    "email-invited": "Email was already invited",
+    "email-invited": "Cet utilisateur a déjà été invité.",
     "email-not-confirmed": "Vous ne pouvez pas publier de message tant que votre adresse e-mail n'est pas confirmée. Veuillez cliquer ici pour confirmer votre adresse e-mail.",
     "email-not-confirmed-chat": "Il ne vous est pas possible d'utiliser le chat tant que votre adresse email n'a pas été vérifiée. Veuillez cliquer ici pour confirmer votre adresse email.",
     "email-not-confirmed-email-sent": "Votre email n'a pas encore été confirmé, veuillez vérifier votre boîte mail. Vous ne pourrez pas poster ou discuter avant que votre email ne soit confirmé.",

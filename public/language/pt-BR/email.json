@@ -21,6 +21,8 @@
     "reset.notify.text1": "Nós estamos notificando você que em %1, sua senha foi alterada com sucesso.",
     "reset.notify.text2": "Se você não autorizou isso, por favor notifique um administrador imediatamente.",
     "digest.latest_topics": "Últimos tópicos de %1",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "Clique aqui para visitar %1",
     "digest.unsub.info": "Este resumo foi enviado para você devido às suas configurações de assinatura.",
     "digest.day": "dia",

@@ -21,6 +21,8 @@
     "reset.notify.text1": "Estámosche a notificar que nun %1, o seu contrasinal foi cambiado correctamente.",
     "reset.notify.text2": "Se ti non autorizache isto, por favor notifica inmediatamente a un administrador.",
     "digest.latest_topics": "Últimos temas de %1",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "Pica aquí para ir %1",
     "digest.unsub.info": "Envióuseche o seguinte resumo polas túas opcións de subscrición.",
     "digest.day": "día",

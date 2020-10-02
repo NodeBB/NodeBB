@@ -21,6 +21,8 @@
     "reset.notify.text1": "Bemærk:  %1 gang blev dit kodeord ændret.",
     "reset.notify.text2": "Hvis du ikke godkendte dette, kontakt straks en administrator.",
     "digest.latest_topics": "Nyeste emne fra %1",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "Klik her for at gå til %1",
     "digest.unsub.info": "Du har fået tilsendt dette sammendrag pga. indstillingerne i dit abonnement.",
     "digest.day": "dag",

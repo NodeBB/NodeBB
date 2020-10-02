@@ -21,6 +21,8 @@
     "reset.notify.text1": "Op %1 is het wachtwoord van je account succesvol gewijzigd.",
     "reset.notify.text2": "Neem onmiddellijk contact met een beheerder op wanneer je hiervoor geen toestemming hebt gegeven.",
     "digest.latest_topics": "De meest recente onderwerpen van %1",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "Klik hier om %1 te bezoeken ",
     "digest.unsub.info": "Deze samenvatting hebben we naar je verzonden omdat je dat hebt ingesteld.",
     "digest.day": "dag",
