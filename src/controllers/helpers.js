@@ -281,7 +281,7 @@ async function getCategoryData(cids, uid, selectedCid, states, privilege) {
 	} else if (selectedCategory.length === 1) {
 		selectedCategory = selectedCategory[0];
 	} else {
-		selectedCategory = undefined;
+		selectedCategory = null;
 	}
 
 	return {
