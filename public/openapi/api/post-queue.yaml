@@ -42,6 +42,49 @@ get:
                           type: number
                         slug:
                           type: string
+                  categories:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        bgColor:
+                          type: string
+                        cid:
+                          type: number
+                        color:
+                          type: string
+                        disabledClass:
+                          nullable: true
+                        icon:
+                          type: string
+                        imageClass:
+                          type: string
+                        level:
+                          type: string
+                        link:
+                          type: string
+                        name:
+                          type: string
+                        parentCid:
+                          type: number
+                        slug:
+                          type: string
+                  allCategoriesUrl:
+                    type: string
+                  selectedCategory:
+                    type: object
+                    properties:
+                      icon:
+                        type: string
+                      name:
+                        type: string
+                      bgColor:
+                        type: string
+                    nullable: true
+                  selectedCids:
+                    type: array
+                    items:
+                      type: number
                   posts:
                     type: array
                     items:
