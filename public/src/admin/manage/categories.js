@@ -5,7 +5,6 @@ define('admin/manage/categories', [
 	'translator',
 	'benchpress',
 	'categorySelector',
-	'sortablejs',
 	'api',
 ], function (serialize, translator, Benchpress, categorySelector, api) {
 	var	Categories = {};
