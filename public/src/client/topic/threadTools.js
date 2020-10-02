@@ -5,7 +5,8 @@ define('forum/topic/threadTools', [
 	'components',
 	'translator',
 	'handleBack',
-], function (components, translator, handleBack) {
+	'api',
+], function (components, translator, handleBack, api) {
 	var ThreadTools = {};
 
 	ThreadTools.init = function (tid, topicContainer) {
@@ -27,22 +28,22 @@ define('forum/topic/threadTools', [
 		});
 
 		topicContainer.on('click', '[component="topic/lock"]', function () {
-			socket.emit('topics.lock', { tids: [tid], cid: ajaxify.data.cid });
+			api.put(`/topics/${tid}/lock`);
 			return false;
 		});
 
 		topicContainer.on('click', '[component="topic/unlock"]', function () {
-			socket.emit('topics.unlock', { tids: [tid], cid: ajaxify.data.cid });
+			api.del(`/topics/${tid}/lock`);
 			return false;
 		});
 
 		topicContainer.on('click', '[component="topic/pin"]', function () {
-			socket.emit('topics.pin', { tids: [tid], cid: ajaxify.data.cid });
+			api.put(`/topics/${tid}/pin`);
 			return false;
 		});
 
 		topicContainer.on('click', '[component="topic/unpin"]', function () {
-			socket.emit('topics.unpin', { tids: [tid], cid: ajaxify.data.cid });
+			api.del(`/topics/${tid}/pin`);
 			return false;
 		});
 
@@ -176,11 +177,9 @@ define('forum/topic/threadTools', [
 					return;
 				}
 
-				socket.emit('topics.' + command, { tids: [tid], cid: ajaxify.data.cid }, function (err) {
-					if (err) {
-						app.alertError(err.message);
-					}
-				});
+				const method = command === 'restore' ? 'put' : 'del';
+				const suffix = command !== 'purge' ? '/state' : '';
+				api[method](`/topics/${tid}${suffix}`, undefined, undefined, err => app.alertError(err.status.message));
 			});
 		});
 	}
