@@ -42,6 +42,57 @@ get:
                           type: number
                         slug:
                           type: string
+                  categories:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        cid:
+                          type: number
+                          description: A category identifier
+                        name:
+                          type: string
+                        level:
+                          type: string
+                        icon:
+                          type: string
+                        parentCid:
+                          type: number
+                          description: The category identifier for the category that is the immediate
+                            ancestor of the current category
+                        color:
+                          type: string
+                        bgColor:
+                          type: string
+                        selected:
+                          type: boolean
+                        imageClass:
+                          type: string
+                      required:
+                        - bgColor
+                        - cid
+                        - color
+                        - icon
+                        - imageClass
+                        - level
+                        - name
+                        - parentCid
+                  allCategoriesUrl:
+                    type: string
+                  selectedCategory:
+                    type: object
+                    properties:
+                      icon:
+                        type: string
+                      name:
+                        type: string
+                      bgColor:
+                        type: string
+                    nullable: true
+                  selectedCids:
+                    type: array
+                    items:
+                      type: number
                   posts:
                     type: array
                     items:

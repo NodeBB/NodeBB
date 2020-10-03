@@ -253,6 +253,16 @@ get:
                           type: string
                   allCategoriesUrl:
                     type: string
+                  selectedCategory:
+                    type: object
+                    properties:
+                      icon:
+                        type: string
+                      name:
+                        type: string
+                      bgColor:
+                        type: string
+                    nullable: true
                   selectedCids:
                     type: array
                     items:
