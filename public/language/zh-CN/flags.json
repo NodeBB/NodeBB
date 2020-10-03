@@ -57,15 +57,15 @@
 	"state-rejected": "已拒绝",
 	"no-assignee": "未指派",
 
-	"sort": "Sort by",
-	"sort-newest": "Newest first",
-	"sort-oldest": "Oldest first",
-	"sort-reports": "Most reports",
-	"sort-all": "All flag types...",
+	"sort": "排序",
+	"sort-newest": "最新",
+	"sort-oldest": "最旧",
+	"sort-reports": "最多举报",
+	"sort-all": "全部举报类型",
 	"sort-posts-only": "Posts only...",
-	"sort-downvotes": "Most downvotes",
-	"sort-upvotes": "Most upvotes",
-	"sort-replies": "Most replies",
+	"sort-downvotes": "最多踩",
+	"sort-upvotes": "最多顶",
+	"sort-replies": "最多回复",
 
 	"modal-title": "举报不适内容",
 	"modal-body": "请选择或者输入您举报 %1%2 的原因以便版主进行审核。",
@@ -79,7 +79,7 @@
 	"modal-submit-confirm-text": "您已经指定了一个自定义原因。 您希望通过快速报告提交吗？",
 	"modal-submit-confirm-text-help": "提交快速报告将覆盖任何已定义的自定义原因。",
 
-	"bulk-actions": "Bulk Actions",
-	"bulk-resolve": "Resolve Flag(s)",
-	"bulk-success": "%1 flags updated"
+	"bulk-actions": "批量操作",
+	"bulk-resolve": "处理举报",
+	"bulk-success": "已更新%1个举报"
 }
