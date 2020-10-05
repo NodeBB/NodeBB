@@ -213,7 +213,9 @@ modsController.postQueue = async function (req, res, next) {
 		categories.buildForSelect(req.uid, 'find', ['disabled', 'link', 'slug']),
 		helpers.getCategoriesByStates(req.uid, cid, null, 'moderate'),
 	]);
-
+	if (!moderatedCids.includes(String(cid)) && !isAdminOrGlobalMod) {
+		return next();
+	}
 	allCategories.forEach((c) => {
 		c.disabledClass = !isAdminOrGlobalMod && !moderatedCids.includes(String(c.cid));
 	});
