@@ -4,6 +4,7 @@ const validator = require('validator');
 const _ = require('lodash');
 
 const meta = require('../../meta');
+const privileges = require('../../privileges');
 const groups = require('../../groups');
 const posts = require('../../posts');
 const topics = require('../../topics');
@@ -91,7 +92,13 @@ Posts.purge = async (req, res) => {
 	const isMainAndLast = results.isMain && results.isLast;
 	const postData = await posts.getPostFields(req.params.pid, ['pid', 'toPid', 'tid']);
 
-	await posts.tools.purge(req.user.uid, req.params.pid);
+	const canPurge = await privileges.posts.canPurge(req.params.pid, req.user.uid);
+	if (!canPurge) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	require('../../posts/cache').del(req.params.pid);
+
+	await posts.purge(req.params.pid, req.user.uid);
 	helpers.formatApiResponse(200, res);
 
 	sockets.in('topic_' + postData.tid).emit('event:post_purged', postData);
