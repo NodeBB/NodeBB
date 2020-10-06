@@ -13,6 +13,7 @@ const utils = require('../../utils');
 
 const helpers = require('../helpers');
 const sockets = require('../../socket.io');
+const socketPostHelpers = require('../../socket.io/posts/helpers');	// eehhh...
 const socketTopics = require('../../socket.io/topics');	// eehhh...
 
 const Posts = module.exports;
@@ -142,6 +143,31 @@ Posts.delete = async (req, res) => {
 		type: 'post-delete',
 	});
 
+	helpers.formatApiResponse(200, res);
+};
+
+Posts.vote = async (req, res) => {
+	const tid = await posts.getPostField(req.params.pid, 'tid');
+	const data = { pid: req.params.pid, room_id: `topic_${tid}` };
+	const socketMock = { uid: req.user.uid };
+
+	if (req.body.delta > 0) {
+		await socketPostHelpers.postCommand(socketMock, 'upvote', 'voted', 'notifications:upvoted_your_post_in', data);
+	} else if (req.body.delta < 0) {
+		await socketPostHelpers.postCommand(socketMock, 'downvote', 'voted', '', data);
+	} else {
+		await socketPostHelpers.postCommand(socketMock, 'unvote', 'voted', '', data);
+	}
+
+	helpers.formatApiResponse(200, res);
+};
+
+Posts.unvote = async (req, res) => {
+	const tid = await posts.getPostField(req.params.pid, 'tid');
+	const data = { pid: req.params.pid, room_id: `topic_${tid}` };
+	const socketMock = { uid: req.user.uid };
+
+	await socketPostHelpers.postCommand(socketMock, 'unvote', 'voted', '', data);
 	helpers.formatApiResponse(200, res);
 };
 

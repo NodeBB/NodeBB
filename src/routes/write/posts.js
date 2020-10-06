@@ -16,31 +16,8 @@ module.exports = function () {
 	setupApiRoute(router, '/:pid/state', middleware, [...middlewares, middleware.assertPost], 'put', controllers.write.posts.restore);
 	setupApiRoute(router, '/:pid/state', middleware, [...middlewares, middleware.assertPost], 'delete', controllers.write.posts.delete);
 
-	// app.route('/:pid/vote')
-	// 	.post(apiMiddleware.requireUser, function(req, res) {
-	// 		if (!utils.checkRequired(['delta'], req, res)) {
-	// 			return false;
-	// 		}
-
-	// 		if (req.body.delta > 0) {
-	// 			posts.upvote(req.params.pid, req.user.uid, function(err, data) {
-	// 				errorHandler.handle(err, res, data);
-	// 			})
-	// 		} else if (req.body.delta < 0) {
-	// 			posts.downvote(req.params.pid, req.user.uid, function(err, data) {
-	// 				errorHandler.handle(err, res, data);
-	// 			})
-	// 		} else {
-	// 			posts.unvote(req.params.pid, req.user.uid, function(err, data) {
-	// 				errorHandler.handle(err, res, data);
-	// 			})
-	// 		}
-	// 	})
-	// 	.delete(apiMiddleware.requireUser, function(req, res) {
-	// 		posts.unvote(req.params.pid, req.user.uid, function(err, data) {
-	// 			errorHandler.handle(err, res, data);
-	// 		})
-	// 	});
+	setupApiRoute(router, '/:pid/vote', middleware, [...middlewares, middleware.checkRequired.bind(null, ['delta']), middleware.assertPost], 'put', controllers.write.posts.vote);
+	setupApiRoute(router, '/:pid/vote', middleware, [...middlewares, middleware.assertPost], 'delete', controllers.write.posts.unvote);
 
 	// app.route('/:pid/bookmark')
 	// 	.post(apiMiddleware.requireUser, function(req, res) {

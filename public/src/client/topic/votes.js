@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/topic/votes', ['components', 'translator', 'benchpress'], function (components, translator, Benchpress) {
+define('forum/topic/votes', ['components', 'translator', 'benchpress', 'api'], function (components, translator, Benchpress, api) {
 	var Votes = {};
 
 	Votes.addVoteHandler = function () {
@@ -61,19 +61,17 @@ define('forum/topic/votes', ['components', 'translator', 'benchpress'], function
 	}
 
 
-	Votes.toggleVote = function (button, className, method) {
+	Votes.toggleVote = function (button, className, delta) {
 		var post = button.closest('[data-pid]');
 		var currentState = post.find(className).length;
 
-		socket.emit(currentState ? 'posts.unvote' : method, {
-			pid: post.attr('data-pid'),
-			room_id: 'topic_' + ajaxify.data.tid,
-		}, function (err) {
-			if (err) {
-				app.alertError(err.message);
-			}
+		const method = currentState ? 'del' : 'put';
+		api[method](`/posts/${post.attr('data-pid')}/vote`, {
+			delta: delta,
+		}, undefined, (err) => {
+			app.alertError(err.status.message);
 
-			if (err && err.message === '[[error:not-logged-in]]') {
+			if (err.status.message === '[[error:not-logged-in]]') {
 				ajaxify.go('login');
 			}
 		});

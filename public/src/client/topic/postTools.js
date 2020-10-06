@@ -109,11 +109,11 @@ define('forum/topic/postTools', [
 		});
 
 		postContainer.on('click', '[component="post/upvote"]', function () {
-			return votes.toggleVote($(this), '.upvoted', 'posts.upvote');
+			return votes.toggleVote($(this), '.upvoted', 1);
 		});
 
 		postContainer.on('click', '[component="post/downvote"]', function () {
-			return votes.toggleVote($(this), '.downvoted', 'posts.downvote');
+			return votes.toggleVote($(this), '.downvoted', -1);
 		});
 
 		postContainer.on('click', '[component="post/vote-count"]', function () {

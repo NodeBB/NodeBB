@@ -826,6 +826,110 @@ paths:
                     $ref: '#/components/schemas/Status'
                   response:
                     $ref: components/schemas/PostsObject.yaml#/PostsObject
+    delete:
+      tags:
+        - posts
+      summary: Purge a post
+      description: This operation purges a post.
+      responses:
+        '200':
+          description: Post successfully purged
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
+                    properties: {}
+  /posts/{pid}/state:
+    put:
+      tags:
+        - posts
+      summary: Restore a post
+      description: This operation restores a post.
+      responses:
+        '200':
+          description: Topic successfully restored
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
+                    properties: {}
+    delete:
+      tags:
+        - posts
+      summary: Deletes a post
+      description: This operation soft deletes a post.
+      responses:
+        '200':
+          description: Post successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
+                    properties: {}
+  /posts/{pid}/vote:
+    put:
+      tags:
+        - posts
+      summary: Vote on a post
+      description: This operation casts a vote on a post.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                delta:
+                  type: number
+                  description: Positive integer for upvote, negative integer for downvote (0 to unvote.)
+            example:
+              delta: 1
+      responses:
+        '200':
+          description: Topic successfully upvoted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
+                    properties: {}
+    delete:
+      tags:
+        - posts
+      summary: Unvote a post
+      description: This operation removes a pre-cast vote on a post.
+      responses:
+        '200':
+          description: Post successfully unvoted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
+                    properties: {}
 components:
   schemas:
     Status:
