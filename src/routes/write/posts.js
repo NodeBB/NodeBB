@@ -11,46 +11,10 @@ module.exports = function () {
 	const middlewares = [middleware.authenticate];
 
 	setupApiRoute(router, '/:pid', middleware, [...middlewares, middleware.checkRequired.bind(null, ['content'])], 'put', controllers.write.posts.edit);
+	setupApiRoute(router, '/:pid', middleware, [...middlewares, middleware.assertPost], 'delete', controllers.write.posts.purge);
 
-	// app.route('/:pid')
-	// 	.put(apiMiddleware.requireUser, function(req, res) {
-	// 		if (!utils.checkRequired(['content'], req, res)) {
-	// 			return false;
-	// 		}
-
-	// 		var payload = {
-	// 			uid: req.user.uid,
-	// 			pid: req.params.pid,
-	// 			content: req.body.content,
-	// 			options: {}
-	// 		};
-
-	// 		if (req.body.handle) { payload.handle = req.body.handle; }
-	// 		if (req.body.title) { payload.title = req.body.title; }
-	// 		if (req.body.topic_thumb) { payload.options.topic_thumb = req.body.topic_thumb; }
-	// 		if (req.body.tags) { payload.options.tags = req.body.tags; }
-
-	// 		posts.edit(payload, function(err) {
-	// 			errorHandler.handle(err, res);
-	// 		})
-	// 	})
-	// 	.delete(apiMiddleware.requireUser, apiMiddleware.validatePid, function(req, res) {
-	// 		posts.purge(req.params.pid, req.user.uid, function(err) {
-	// 			errorHandler.handle(err, res);
-	// 		});
-	// 	});
-
-	// app.route('/:pid/state')
-	// 	.put(apiMiddleware.requireUser, apiMiddleware.validatePid, function (req, res) {
-	// 		posts.restore(req.params.pid, req.user.uid, function (err) {
-	// 			errorHandler.handle(err, res);
-	// 		});
-	// 	})
-	// 	.delete(apiMiddleware.requireUser, apiMiddleware.validatePid, function (req, res) {
-	// 		posts.delete(req.params.pid, req.user.uid, function (err) {
-	// 			errorHandler.handle(err, res);
-	// 		});
-	// 	});
+	setupApiRoute(router, '/:pid/state', middleware, [...middlewares, middleware.assertPost], 'put', controllers.write.posts.restore);
+	setupApiRoute(router, '/:pid/state', middleware, [...middlewares, middleware.assertPost], 'delete', controllers.write.posts.delete);
 
 	// app.route('/:pid/vote')
 	// 	.post(apiMiddleware.requireUser, function(req, res) {

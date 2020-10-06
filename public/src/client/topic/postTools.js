@@ -7,7 +7,8 @@ define('forum/topic/postTools', [
 	'components',
 	'translator',
 	'forum/topic/votes',
-], function (share, navigator, components, translator, votes) {
+	'api',
+], function (share, navigator, components, translator, votes, api) {
 	var PostTools = {};
 
 	var staleReplyAnyway = false;
@@ -390,13 +391,9 @@ define('forum/topic/postTools', [
 					return;
 				}
 
-				socket.emit('posts.' + action, {
-					pid: pid,
-				}, function (err) {
-					if (err) {
-						app.alertError(err.message);
-					}
-				});
+				const route = action === 'purge' ? '' : '/state';
+				const method = action === 'restore' ? 'put' : 'del';
+				api[method](`/posts/${pid}${route}`, undefined, undefined, err => app.alertError(err.status.message));
 			});
 		});
 	}
