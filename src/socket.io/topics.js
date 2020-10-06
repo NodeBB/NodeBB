@@ -82,10 +82,13 @@ SocketTopics.changeWatching = async function (socket, data) {
 	if (!commands.includes(data.type)) {
 		throw new Error('[[error:invalid-command]]');
 	}
+
+	sockets.warnDeprecated(socket, 'PUT/DELETE /api/v1/topics/:tid/(follow|ignore)');
 	await followCommand(topics[data.type], socket, data.tid);
 };
 
 SocketTopics.follow = async function (socket, tid) {
+	sockets.warnDeprecated(socket, 'PUT /api/v1/topics/:tid/follow');
 	await followCommand(topics.follow, socket, tid);
 };
 

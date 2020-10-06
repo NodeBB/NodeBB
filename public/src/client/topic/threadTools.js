@@ -107,31 +107,27 @@ define('forum/topic/threadTools', [
 			changeWatching('follow');
 		});
 		topicContainer.on('click', '[component="topic/not-following"]', function () {
-			changeWatching('unfollow');
+			changeWatching('follow', 0);
 		});
 		topicContainer.on('click', '[component="topic/ignoring"]', function () {
 			changeWatching('ignore');
 		});
 
-		function changeWatching(type) {
-			socket.emit('topics.changeWatching', { tid: tid, type: type }, function (err) {
-				if (err) {
-					return app.alert({
-						type: 'danger',
-						alert_id: 'topic_follow',
-						title: '[[global:please_log_in]]',
-						message: '[[topic:login_to_subscribe]]',
-						timeout: 5000,
-					});
-				}
+		function changeWatching(type, state = 1) {
+			const method = state ? 'put' : 'del';
+			api[method](`/topics/${tid}/${type}`, {}, () => {
 				var message = '';
 				if (type === 'follow') {
-					message = '[[topic:following_topic.message]]';
-				} else if (type === 'unfollow') {
-					message = '[[topic:not_following_topic.message]]';
+					message = state ? '[[topic:following_topic.message]]' : '[[topic:not_following_topic.message]]';
 				} else if (type === 'ignore') {
-					message = '[[topic:ignoring_topic.message]]';
+					message = state ? '[[topic:ignoring_topic.message]]' : '[[topic:not_following_topic.message]]';
 				}
+
+				// From here on out, type changes to 'unfollow' if state is falsy
+				if (!state) {
+					type = 'unfollow';
+				}
+
 				setFollowState(type);
 
 				app.alert({
@@ -142,6 +138,14 @@ define('forum/topic/threadTools', [
 				});
 
 				$(window).trigger('action:topics.changeWatching', { tid: tid, type: type });
+			}, () => {
+				app.alert({
+					type: 'danger',
+					alert_id: 'topic_follow',
+					title: '[[global:please_log_in]]',
+					message: '[[topic:login_to_subscribe]]',
+					timeout: 5000,
+				});
 			});
 
 			return false;

@@ -123,6 +123,21 @@ Topics.unlock = async (req, res) => {
 	helpers.formatApiResponse(200, res);
 };
 
+Topics.follow = async (req, res) => {
+	await topics.follow(req.params.tid, req.user.uid);
+	helpers.formatApiResponse(200, res);
+};
+
+Topics.ignore = async (req, res) => {
+	await topics.ignore(req.params.tid, req.user.uid);
+	helpers.formatApiResponse(200, res);
+};
+
+Topics.unfollow = async (req, res) => {
+	await topics.unfollow(req.params.tid, req.user.uid);
+	helpers.formatApiResponse(200, res);
+};
+
 async function doTopicAction(action, event, socket, { tids }) {
 	if (!Array.isArray(tids)) {
 		throw new Error('[[error:invalid-tid]]');
