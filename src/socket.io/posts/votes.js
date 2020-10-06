@@ -7,6 +7,8 @@ const privileges = require('../../privileges');
 const meta = require('../../meta');
 const helpers = require('./helpers');
 
+const sockets = require('..');
+
 module.exports = function (SocketPosts) {
 	SocketPosts.getVoters = async function (socket, data) {
 		if (!data || !data.pid || !data.cid) {
@@ -61,14 +63,17 @@ module.exports = function (SocketPosts) {
 	};
 
 	SocketPosts.upvote = async function (socket, data) {
+		sockets.warnDeprecated(socket, 'PUT /api/v1/posts/:pid/vote');
 		return await helpers.postCommand(socket, 'upvote', 'voted', 'notifications:upvoted_your_post_in', data);
 	};
 
 	SocketPosts.downvote = async function (socket, data) {
+		sockets.warnDeprecated(socket, 'PUT /api/v1/posts/:pid/vote');
 		return await helpers.postCommand(socket, 'downvote', 'voted', '', data);
 	};
 
 	SocketPosts.unvote = async function (socket, data) {
+		sockets.warnDeprecated(socket, 'DELETE /api/v1/posts/:pid/vote');
 		return await helpers.postCommand(socket, 'unvote', 'voted', '', data);
 	};
 };
