@@ -23,6 +23,10 @@ module.exports = function () {
 	setupApiRoute(router, '/:tid/lock', middleware, [...middlewares, middleware.assertTopic], 'put', controllers.write.topics.lock);
 	setupApiRoute(router, '/:tid/lock', middleware, [...middlewares, middleware.assertTopic], 'delete', controllers.write.topics.unlock);
 
+	setupApiRoute(router, '/:tid/follow', middleware, [...middlewares, middleware.assertTopic], 'put', controllers.write.topics.follow);
+	setupApiRoute(router, '/:tid/follow', middleware, [...middlewares, middleware.assertTopic], 'delete', controllers.write.topics.unfollow);
+	setupApiRoute(router, '/:tid/ignore', middleware, [...middlewares, middleware.assertTopic], 'put', controllers.write.topics.ignore);
+	setupApiRoute(router, '/:tid/ignore', middleware, [...middlewares, middleware.assertTopic], 'delete', controllers.write.topics.unfollow);	// intentional, unignore == unfollow
 
 	// app.route('/:tid/follow')
 	// 	.put(apiMiddleware.requireUser, apiMiddleware.validateTid, function(req, res) {
