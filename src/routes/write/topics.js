@@ -28,33 +28,8 @@ module.exports = function () {
 	setupApiRoute(router, '/:tid/ignore', middleware, [...middlewares, middleware.assertTopic], 'put', controllers.write.topics.ignore);
 	setupApiRoute(router, '/:tid/ignore', middleware, [...middlewares, middleware.assertTopic], 'delete', controllers.write.topics.unfollow);	// intentional, unignore == unfollow
 
-	// app.route('/:tid/follow')
-	// 	.put(apiMiddleware.requireUser, apiMiddleware.validateTid, function(req, res) {
-	// 		Topics.follow(req.params.tid, req.user.uid, function(err) {
-	// 			errorHandler.handle(err, res);
-	// 		});
-	// 	})
-	// 	.delete(apiMiddleware.requireUser, apiMiddleware.validateTid, function(req, res) {
-	// 		Topics.unfollow(req.params.tid, req.user.uid, function(err) {
-	// 			errorHandler.handle(err, res);
-	// 		});
-	// 	});
-
-	// app.route('/:tid/tags')
-	// 	.put(apiMiddleware.requireUser, apiMiddleware.validateTid, function(req, res) {
-	// 		if (!utils.checkRequired(['tags'], req, res)) {
-	// 			return false;
-	// 		}
-
-	// 		Topics.createTags(req.body.tags, req.params.tid, Date.now(), function(err) {
-	// 			errorHandler.handle(err, res);
-	// 		});
-	// 	})
-	// 	.delete(apiMiddleware.requireUser, apiMiddleware.validateTid, function(req, res) {
-	// 		Topics.deleteTopicTags(req.params.tid, function(err) {
-	// 			errorHandler.handle(err, res);
-	// 		});
-	// 	});
+	setupApiRoute(router, '/:tid/tags', middleware, [...middlewares, middleware.checkRequired.bind(null, ['tags']), middleware.assertTopic], 'put', controllers.write.topics.addTags);
+	setupApiRoute(router, '/:tid/tags', middleware, [...middlewares, middleware.assertTopic], 'delete', controllers.write.topics.deleteTags);
 
 	return router;
 };

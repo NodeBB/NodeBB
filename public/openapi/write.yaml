@@ -590,7 +590,7 @@ paths:
                     type: object
                     properties: {}
   /topics/{tid}/lock:
-    delete:
+    put:
       tags:
         - topics
       summary: Lock a topic
@@ -608,7 +608,7 @@ paths:
                   response:
                     type: object
                     properties: {}
-    put:
+    delete:
       tags:
         - topics
       summary: Unlock a topic
@@ -626,8 +626,8 @@ paths:
                   response:
                     type: object
                     properties: {}
-  /topics/{tid}/state:
-    delete:
+  /topics/{tid}/pin:
+    put:
       tags:
         - topics
       summary: Pin a topic
@@ -645,7 +645,7 @@ paths:
                   response:
                     type: object
                     properties: {}
-    put:
+    delete:
       tags:
         - topics
       summary: Unpin a topic
@@ -653,6 +653,133 @@ paths:
       responses:
         '200':
           description: Topic successfully unpinned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
+                    properties: {}
+  /topics/{tid}/follow:
+    put:
+      tags:
+        - topics
+      summary: Follow a topic
+      description: This operation follows (or watches) a topic.
+      responses:
+        '200':
+          description: Topic successfully followed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
+                    properties: {}
+    delete:
+      tags:
+        - topics
+      summary: Unfollow a topic
+      description: This operation unfollows (or unwatches) a topic.
+      responses:
+        '200':
+          description: Topic successfully unwatched
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
+                    properties: {}
+  /topics/{tid}/ignore:
+    put:
+      tags:
+        - topics
+      summary: Ignore a topic
+      description: This operation ignores (or watches) a topic.
+      responses:
+        '200':
+          description: Topic successfully ignored
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
+                    properties: {}
+    delete:
+      tags:
+        - topics
+      summary: Unignore a topic
+      description: This operation unignores (or unfollows/unwatches) a topic. It is functionally identical to `DEL /topics/{tid}/follow`.
+      responses:
+        '200':
+          description: Topic successfully unignored/unwatched
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
+                    properties: {}
+  /topics/{tid}/tags:
+    put:
+      tags:
+        - topics
+      summary: Adds tags to a topic
+      description: This operation adds tags to a topic
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tags:
+                  type: array
+                  description: 'An array of tags'
+                  items:
+                    type: string
+            example:
+              tags:
+                - test
+                - foobar
+      responses:
+        '200':
+          description: Topic tags successfully added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
+                    properties: {}
+    delete:
+      tags:
+        - topics
+      summary: Removes all tags from a topic
+      description: This operation removed all tags associated with a topic.
+      responses:
+        '200':
+          description: Topic tags successfully removed.
           content:
             application/json:
               schema:

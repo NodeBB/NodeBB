@@ -138,6 +138,16 @@ Topics.unfollow = async (req, res) => {
 	helpers.formatApiResponse(200, res);
 };
 
+Topics.addTags = async (req, res) => {
+	await topics.createTags(req.body.tags, req.params.tid, Date.now());
+	helpers.formatApiResponse(200, res);
+};
+
+Topics.deleteTags = async (req, res) => {
+	await topics.deleteTopicTags(req.params.tid);
+	helpers.formatApiResponse(200, res);
+};
+
 async function doTopicAction(action, event, socket, { tids }) {
 	if (!Array.isArray(tids)) {
 		throw new Error('[[error:invalid-tid]]');
