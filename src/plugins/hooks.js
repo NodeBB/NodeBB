@@ -189,21 +189,20 @@ module.exports = function (Plugins) {
 		if (!Array.isArray(hookList) || !hookList.length) {
 			return;
 		}
-		await async.eachSeries(hookList, function (hookObj, next) {
+		await async.eachSeries(hookList, async (hookObj) => {
 			if (typeof hookObj.method !== 'function') {
 				if (global.env === 'development') {
 					winston.warn('[plugins] Expected method for hook \'' + hook + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
 				}
-				return next();
+				return;
 			}
 
 			// Skip remaining hooks if headers have been sent
 			if (params.res.headersSent) {
-				return next();
+				return;
 			}
 
-			hookObj.method(params);
-			next();
+			await hookObj.method(params);
 		});
 	}
 

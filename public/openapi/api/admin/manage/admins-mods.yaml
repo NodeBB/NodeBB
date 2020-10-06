@@ -44,6 +44,8 @@ get:
                         depth:
                           type: number
                           description: The depth of the category relative to the forum root (`0` is root level)
+                        disabled:
+                          type: number
                         moderators:
                           type: array
                           items:

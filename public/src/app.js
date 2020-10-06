@@ -761,9 +761,9 @@ app.cacheBuster = null;
 		if ('serviceWorker' in navigator) {
 			navigator.serviceWorker.register('/service-worker.js')
 				.then(function () {
-					console.log('ServiceWorker registration succeeded.');
+					console.info('ServiceWorker registration succeeded.');
 				}).catch(function (err) {
-					console.log('ServiceWorker registration failed: ', err);
+					console.info('ServiceWorker registration failed: ', err);
 				});
 		}
 	}

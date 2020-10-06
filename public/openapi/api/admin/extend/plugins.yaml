@@ -134,6 +134,8 @@ get:
                           type: boolean
                         active:
                           type: boolean
+                        downloads:
+                          type: number
                       required:
                         - name
                         - updated

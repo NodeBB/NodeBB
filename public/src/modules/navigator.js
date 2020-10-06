@@ -431,6 +431,7 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 
 		function highlightPost() {
 			if (highlight) {
+				$('[component="post"],[component="category/topic"]').removeClass('highlight');
 				scrollTo.addClass('highlight');
 				setTimeout(function () {
 					scrollTo.removeClass('highlight');
