@@ -6,11 +6,13 @@ const _ = require('lodash');
 const meta = require('../../meta');
 const groups = require('../../groups');
 const posts = require('../../posts');
+const topics = require('../../topics');
 const events = require('../../events');
 const utils = require('../../utils');
 
 const helpers = require('../helpers');
 const sockets = require('../../socket.io');
+const socketTopics = require('../../socket.io/topics');	// eehhh...
 
 const Posts = module.exports;
 
@@ -79,3 +81,106 @@ Posts.edit = async (req, res) => {
 	const uids = _.uniq(_.flatten(memberData).concat(req.user.uid.toString()));
 	uids.forEach(uid =>	sockets.in('uid_' + uid).emit('event:post_edited', editResult));
 };
+
+Posts.purge = async (req, res) => {
+	const results = await isMainAndLastPost(req.params.pid);
+	if (results.isMain && !results.isLast) {
+		throw new Error('[[error:cant-purge-main-post]]');
+	}
+
+	const isMainAndLast = results.isMain && results.isLast;
+	const postData = await posts.getPostFields(req.params.pid, ['pid', 'toPid', 'tid']);
+
+	await posts.tools.purge(req.user.uid, req.params.pid);
+	helpers.formatApiResponse(200, res);
+
+	sockets.in('topic_' + postData.tid).emit('event:post_purged', postData);
+	const topicData = await topics.getTopicFields(postData.tid, ['title', 'cid']);
+
+	await events.log({
+		type: 'post-purge',
+		uid: req.user.uid,
+		pid: req.params.pid,
+		ip: req.ip,
+		tid: postData.tid,
+		title: String(topicData.title),
+	});
+
+	if (isMainAndLast) {
+		await socketTopics.doTopicAction('purge', 'event:topic_purged', {
+			ip: req.ip,
+			uid: req.user.uid,
+		}, { tids: [postData.tid], cid: topicData.cid });
+	}
+};
+
+Posts.restore = async (req, res) => {
+	await deleteOrRestore(req, {
+		pid: req.params.pid,
+	}, {
+		command: 'restore',
+		event: 'event:post_restored',
+		type: 'post-restore',
+	});
+
+	helpers.formatApiResponse(200, res);
+};
+
+Posts.delete = async (req, res) => {
+	await deleteOrRestore(req, {
+		pid: req.params.pid,
+	}, {
+		command: 'delete',
+		event: 'event:post_deleted',
+		type: 'post-delete',
+	});
+
+	helpers.formatApiResponse(200, res);
+};
+
+async function isMainAndLastPost(pid) {
+	const [isMain, topicData] = await Promise.all([
+		posts.isMain(pid),
+		posts.getTopicFields(pid, ['postcount']),
+	]);
+	return {
+		isMain: isMain,
+		isLast: topicData && topicData.postcount === 1,
+	};
+}
+
+async function deleteOrRestoreTopicOf(command, pid, req) {
+	const topic = await posts.getTopicFields(pid, ['tid', 'cid', 'deleted']);
+	if (command === 'delete' && !topic.deleted) {
+		await socketTopics.doTopicAction('delete', 'event:topic_deleted', {
+			uid: req.user.uid,
+			ip: req.ip,
+		}, { tids: [topic.tid], cid: topic.cid });
+	} else if (command === 'restore' && topic.deleted) {
+		await socketTopics.doTopicAction('restore', 'event:topic_restored', {
+			uid: req.user.uid,
+			ip: req.ip,
+		}, { tids: [topic.tid], cid: topic.cid });
+	}
+}
+
+async function deleteOrRestore(req, data, params) {
+	if (!data || !data.pid) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	const postData = await posts.tools[params.command](req.user.uid, data.pid);
+	const results = await isMainAndLastPost(data.pid);
+	if (results.isMain && results.isLast) {
+		await deleteOrRestoreTopicOf(params.command, data.pid, req);
+	}
+
+	sockets.in('topic_' + postData.tid).emit(params.event, postData);
+
+	await events.log({
+		type: params.type,
+		uid: req.user.uid,
+		pid: data.pid,
+		tid: postData.tid,
+		ip: req.ip,
+	});
+}

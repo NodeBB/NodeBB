@@ -8,6 +8,7 @@
 const user = require('../user');
 const groups = require('../groups');
 const topics = require('../topics');
+const posts = require('../posts');
 
 const helpers = require('../controllers/helpers');
 
@@ -31,6 +32,14 @@ module.exports = function (middleware) {
 
 	middleware.assertTopic = async (req, res, next) => {
 		if (!await topics.exists(req.params.tid)) {
+			return helpers.formatApiResponse(404, res, new Error('[[error:no-topic]]'));
+		}
+
+		next();
+	};
+
+	middleware.assertPost = async (req, res, next) => {
+		if (!await posts.exists(req.params.pid)) {
 			return helpers.formatApiResponse(404, res, new Error('[[error:no-topic]]'));
 		}
 

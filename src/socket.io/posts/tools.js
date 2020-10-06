@@ -12,6 +12,7 @@ const social = require('../../social');
 const user = require('../../user');
 const utils = require('../../utils');
 
+const sockets = require('..');
 
 module.exports = function (SocketPosts) {
 	SocketPosts.loadPostTools = async function (socket, data) {
@@ -63,6 +64,8 @@ module.exports = function (SocketPosts) {
 	};
 
 	SocketPosts.delete = async function (socket, data) {
+		sockets.warnDeprecated(socket, 'DELETE /api/v1/posts/:pid/state');
+
 		await deleteOrRestore(socket, data, {
 			command: 'delete',
 			event: 'event:post_deleted',
@@ -71,6 +74,8 @@ module.exports = function (SocketPosts) {
 	};
 
 	SocketPosts.restore = async function (socket, data) {
+		sockets.warnDeprecated(socket, 'PUT /api/v1/posts/:pid/state');
+
 		await deleteOrRestore(socket, data, {
 			command: 'restore',
 			event: 'event:post_restored',
@@ -118,6 +123,8 @@ module.exports = function (SocketPosts) {
 	}
 
 	SocketPosts.purge = async function (socket, data) {
+		sockets.warnDeprecated(socket, 'DELETE /api/v1/posts/:pid');
+
 		if (!data || !parseInt(data.pid, 10)) {
 			throw new Error('[[error:invalid-data]]');
 		}
