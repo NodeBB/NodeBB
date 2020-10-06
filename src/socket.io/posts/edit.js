@@ -12,6 +12,8 @@ const websockets = require('../index');
 
 module.exports = function (SocketPosts) {
 	SocketPosts.edit = async function (socket, data) {
+		websockets.warnDeprecated(socket, 'PUT /api/v1/posts/:pid');
+
 		if (!socket.uid) {
 			throw new Error('[[error:not-logged-in]]');
 		} else if (!data || !data.pid || (meta.config.minimumPostLength !== 0 && !data.content)) {

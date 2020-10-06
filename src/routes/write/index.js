@@ -24,7 +24,7 @@ Write.reload = (params) => {
 	router.use('/api/v1/groups', require('./groups')());
 	router.use('/api/v1/categories', require('./categories')());
 	router.use('/api/v1/topics', require('./topics')());
-	// router.use('/api/v1/posts', require('./posts')());
+	router.use('/api/v1/posts', require('./posts')());
 	// router.use('/api/v1/util', require('./util')());
 
 	router.get('/api/v1/ping', function (req, res) {
