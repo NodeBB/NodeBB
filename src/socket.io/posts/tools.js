@@ -131,7 +131,12 @@ module.exports = function (SocketPosts) {
 		const postData = await posts.getPostFields(data.pid, ['toPid', 'tid']);
 		postData.pid = data.pid;
 
-		await posts.tools.purge(socket.uid, data.pid);
+		const canPurge = await privileges.posts.canPurge(data.pid, socket.uid);
+		if (!canPurge) {
+			throw new Error('[[error:no-privileges]]');
+		}
+		require('../../posts/cache').del(data.pid);
+		await posts.purge(data.pid, socket.uid);
 
 		websockets.in('topic_' + postData.tid).emit('event:post_purged', postData);
 		const topicData = await topics.getTopicFields(postData.tid, ['title', 'cid']);
