@@ -25,7 +25,7 @@ Write.reload = (params) => {
 	router.use('/api/v3/categories', require('./categories')());
 	router.use('/api/v3/topics', require('./topics')());
 	router.use('/api/v3/posts', require('./posts')());
-	// router.use('/api/v3/util', require('./util')());
+	router.use('/api/v3/admin', require('./admin')());
 
 	router.get('/api/v3/ping', function (req, res) {
 		helpers.formatApiResponse(200, res, {

@@ -7,3 +7,4 @@ Write.groups = require('./groups');
 Write.categories = require('./categories');
 Write.topics = require('./topics');
 Write.posts = require('./posts');
+Write.admin = require('./admin');
