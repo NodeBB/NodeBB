@@ -64,10 +64,9 @@ define('settings/sorted-list', ['benchpress', 'jqueryui'], function (benchpress)
 	};
 
 	function setupRemoveButton($container, itemUUID) {
-		var key = $container.attr('data-sorted-list');
-
-		var removeBtn = $('[data-sorted-list="' + key + '"] [data-type="remove"]');
+		var removeBtn = $container.find('[data-sorted-list-uuid="' + itemUUID + '"] [data-type="remove"]');
 		removeBtn.on('click', function () {
+			console.log(itemUUID);
 			$('[data-sorted-list-uuid="' + itemUUID + '"]').remove();
 		});
 	}
