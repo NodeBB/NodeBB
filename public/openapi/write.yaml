@@ -1,8 +1,21 @@
 openapi: 3.0.0
 info:
-  description: 'Write API for NodeBB v2.0+'
-  version: 31-03-2020
-  title: Write API
+  title: NodeBB Write API
+  description: >-
+    # Overview
+
+    The following document outlines every route exposed by the NodeBB Write API. As of NodeBB v1.15.0, NodeBB will use these routes to make changes to the database (e.g. creating new posts, editing user profiles, etc.)
+
+    We invite you to build external integrations with NodeBB using this document as a guide.
+
+    # History
+
+    Up until v1.15.0, NodeBB utilised the [WebSocket](https://en.wikipedia.org/wiki/WebSocket) protocol to communicate with the backend. However, it was decided in early 2020 that this usage of WebSocket &ndash; while functional &ndash; led to occasional wheel reinvention and disregarded an otherwise fully-featured technology (that is, REST).
+
+    Years prior to this determination, many users of NodeBB had asked for a RESTful API to call against NodeBB, which led to the creation of [`nodebb-plugin-write-api`](https://github.com/NodeBB/nodebb-plugin-write-api). In tandem with the above decision, the Write API was merged into NodeBB core in late 2020.
+
+    v3 of the Write API (this document) achieves rough feature parity with v2 of the Write API plugin.
+  version: 1.15.0
   contact:
     email: support@nodebb.org
   license:
@@ -19,7 +32,7 @@ paths:
     post:
       tags:
         - users
-      summary: creates a user account
+      summary: create a user
       description: This operation creates a new user account
       requestBody:
         required: true
@@ -66,7 +79,7 @@ paths:
     delete:
       tags:
         - users
-      summary: deletes one or more users
+      summary: delete one or more users
       description: This operation deletes one or many user accounts, including their contributions (posts, topics, etc.)
       requestBody:
         required: true
@@ -98,10 +111,34 @@ paths:
                   response:
                     type: object
   '/users/{uid}':
+    delete:
+      tags:
+        - users
+      summary: delete a single user account
+      parameters:
+        - in: path
+          name: uid
+          schema:
+            type: integer
+          required: true
+          description: uid of the user to delete
+      responses:
+        '200':
+          description: user account deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
+
     put:
       tags:
         - users
-      summary: updates a user account
+      summary: update a user account
       parameters:
         - in: path
           name: uid
@@ -135,34 +172,11 @@ paths:
           $ref: '#/components/responses/426'
         '500':
           $ref: '#/components/responses/500'
-    delete:
-      tags:
-        - users
-      summary: delete a single user account
-      parameters:
-        - in: path
-          name: uid
-          schema:
-            type: integer
-          required: true
-          description: uid of the user to delete
-      responses:
-        '200':
-          description: user account deleted
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    $ref: '#/components/schemas/Status'
-                  response:
-                    type: object
   '/users/{uid}/password':
     put:
       tags:
         - users
-      summary: changes a user's password
+      summary: change a user's password
       parameters:
         - in: path
           name: uid
@@ -202,7 +216,7 @@ paths:
     post:
       tags:
         - users
-      summary: follows a user
+      summary: follow a user
       parameters:
         - in: path
           name: uid
@@ -249,7 +263,7 @@ paths:
     put:
       tags:
         - users
-      summary: bans a user
+      summary: ban a user
       parameters:
         - in: path
           name: uid
@@ -305,11 +319,52 @@ paths:
                     $ref: '#/components/schemas/Status'
                   response:
                     type: object
+  '/users/{uid}/tokens':
+    post:
+      tags:
+        - users
+      summary: generate a user token
+      description: This route can only be used to generate tokens for the same user. In other words, you cannot use this route to generate a token for a different user than the one you are authenticated as.
+      responses:
+        '200':
+          description: successfully generated a user token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
+    delete:
+      tags:
+        - users
+      summary: delete user token
+      parameters:
+        - in: path
+          name: token
+          schema:
+            type: string
+          required: true
+          description: a valid API token
+      responses:
+        '200':
+          description: successfully deleted user token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
   /categories/:
     post:
       tags:
         - categories
-      summary: creates a category
+      summary: create a category
       description: This operation creates a new category
       requestBody:
         required: true
@@ -368,7 +423,7 @@ paths:
     post:
       tags:
         - groups
-      summary: Create a new group
+      summary: create a new group
       description: This operation creates a new group
       requestBody:
         required: true
@@ -441,7 +496,7 @@ paths:
     put:
       tags:
         - groups
-      summary: Join a group
+      summary: join a group
       description: This operation joins an existing group, or causes another user to join a group. If the group is private and you are not an administrator, this method will cause that user to request membership, instead. For user _invitations_, you'll want to call `PUT /groups/{slug}/invites/{uid}`.
       responses:
         '200':
@@ -460,7 +515,7 @@ paths:
     post:
       tags:
         - topics
-      summary: Create a new topic
+      summary: create a new topic
       description: This operation creates a new topic with a post. Topic creation without a post is not allowed via the Write API as it is an internal-only method.
       requestBody:
         required: true
@@ -503,7 +558,7 @@ paths:
     post:
       tags:
         - topics
-      summary: Reply to a topic
+      summary: peply to a topic
       description: This operation creates a new reply to an existing topic.
       requestBody:
         required: true
@@ -537,7 +592,7 @@ paths:
     delete:
       tags:
         - topics
-      summary: Delete a topic
+      summary: delete a topic
       description: This operation purges a topic and all of its posts (careful, there is no confirmation!)
       responses:
         '200':
@@ -556,7 +611,7 @@ paths:
     delete:
       tags:
         - topics
-      summary: Delete a topic
+      summary: delete a topic
       description: This operation deletes an existing topic.
       responses:
         '200':
@@ -574,7 +629,7 @@ paths:
     put:
       tags:
         - topics
-      summary: Restore a topic
+      summary: restore a topic
       description: This operation restores a topic.
       responses:
         '200':
@@ -593,7 +648,7 @@ paths:
     put:
       tags:
         - topics
-      summary: Lock a topic
+      summary: lock a topic
       description: This operation locks an existing topic.
       responses:
         '200':
@@ -611,7 +666,7 @@ paths:
     delete:
       tags:
         - topics
-      summary: Unlock a topic
+      summary: unlock a topic
       description: This operation unlocks a topic.
       responses:
         '200':
@@ -630,7 +685,7 @@ paths:
     put:
       tags:
         - topics
-      summary: Pin a topic
+      summary: pin a topic
       description: This operation pins an existing topic.
       responses:
         '200':
@@ -648,7 +703,7 @@ paths:
     delete:
       tags:
         - topics
-      summary: Unpin a topic
+      summary: unpin a topic
       description: This operation unpins a topic.
       responses:
         '200':
@@ -667,7 +722,7 @@ paths:
     put:
       tags:
         - topics
-      summary: Follow a topic
+      summary: follow a topic
       description: This operation follows (or watches) a topic.
       responses:
         '200':
@@ -685,7 +740,7 @@ paths:
     delete:
       tags:
         - topics
-      summary: Unfollow a topic
+      summary: unfollow a topic
       description: This operation unfollows (or unwatches) a topic.
       responses:
         '200':
@@ -704,7 +759,7 @@ paths:
     put:
       tags:
         - topics
-      summary: Ignore a topic
+      summary: ignore a topic
       description: This operation ignores (or watches) a topic.
       responses:
         '200':
@@ -722,7 +777,7 @@ paths:
     delete:
       tags:
         - topics
-      summary: Unignore a topic
+      summary: unignore a topic
       description: This operation unignores (or unfollows/unwatches) a topic. It is functionally identical to `DEL /topics/{tid}/follow`.
       responses:
         '200':
@@ -741,7 +796,7 @@ paths:
     put:
       tags:
         - topics
-      summary: Adds tags to a topic
+      summary: adds tags to a topic
       description: This operation adds tags to a topic
       requestBody:
         required: true
@@ -794,7 +849,7 @@ paths:
     put:
       tags:
         - posts
-      summary: Edit a post
+      summary: edit a post
       description: This operation edits a post
       requestBody:
         required: true
@@ -829,7 +884,7 @@ paths:
     delete:
       tags:
         - posts
-      summary: Purge a post
+      summary: purge a post
       description: This operation purges a post.
       responses:
         '200':
@@ -848,7 +903,7 @@ paths:
     put:
       tags:
         - posts
-      summary: Restore a post
+      summary: restore a post
       description: This operation restores a post.
       responses:
         '200':
@@ -866,7 +921,7 @@ paths:
     delete:
       tags:
         - posts
-      summary: Deletes a post
+      summary: deletes a post
       description: This operation soft deletes a post.
       responses:
         '200':
@@ -885,7 +940,7 @@ paths:
     put:
       tags:
         - posts
-      summary: Vote on a post
+      summary: vote on a post
       description: This operation casts a vote on a post.
       requestBody:
         required: true
@@ -915,7 +970,7 @@ paths:
     delete:
       tags:
         - posts
-      summary: Unvote a post
+      summary: unvote a post
       description: This operation removes a pre-cast vote on a post.
       responses:
         '200':
@@ -934,7 +989,7 @@ paths:
     put:
       tags:
         - posts
-      summary: Bookmark a post
+      summary: bookmark a post
       description: This operation bookmarks a post.
       responses:
         '200':
@@ -952,7 +1007,7 @@ paths:
     delete:
       tags:
         - posts
-      summary: Unbookmark a post
+      summary: unbookmark a post
       description: This operation unbookmarks a post.
       responses:
         '200':
