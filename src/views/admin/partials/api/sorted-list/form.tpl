@@ -1,5 +1,6 @@
 <form>
-    <input type="hidden" name="token">
+    <input type="hidden" name="token" />
+    <input type="hidden" name="timestamp" />
     <div class="form-group">
         <label for="uid">[[admin/settings/api:uid]]</label>
         <input type="number" name="uid" class="form-control" placeholder="1" min="0" />

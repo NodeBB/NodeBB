@@ -6,5 +6,7 @@
 
 	"uid": "User ID",
 	"uid-help-text": "Specify a User ID to associate with this token. If the user ID is <code>0</code>, it will be considered a <em>master</em> token, which can assume the identity of other users based on the <code>_uid</code> parameter",
-	"description": "Description"
+	"description": "Description",
+	"no-description": "No description specified.",
+	"token-on-save": "Token will be generated once form is saved"
 }

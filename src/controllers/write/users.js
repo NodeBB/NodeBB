@@ -8,6 +8,7 @@ const notifications = require('../../notifications');
 const meta = require('../../meta');
 const events = require('../../events');
 const translator = require('../../translator');
+const utils = require('../../utils');
 
 const db = require('../../database');
 const helpers = require('../helpers');
@@ -217,4 +218,41 @@ Users.unban = async (req, res) => {
 	});
 
 	helpers.formatApiResponse(200, res);
+};
+
+Users.generateToken = async (req, res) => {
+	if (!res.locals.privileges['admin:settings']) {
+		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
+	} else if (parseInt(req.params.uid, 10) !== parseInt(req.user.uid, 10)) {
+		return helpers.formatApiResponse(401, res);
+	}
+
+	const settings = await meta.settings.get('core.api');
+	const newToken = {
+		token: utils.generateUUID(),
+		uid: req.user.uid,
+		description: req.body.description || '',
+		timestamp: Date.now(),
+	};
+	settings.tokens.push(newToken);
+	await meta.settings.set('core.api', settings);
+	helpers.formatApiResponse(200, res, newToken);
+};
+
+Users.deleteToken = async (req, res) => {
+	if (!res.locals.privileges['admin:settings']) {
+		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
+	} else if (parseInt(req.params.uid, 10) !== parseInt(req.user.uid, 10)) {
+		return helpers.formatApiResponse(401, res);
+	}
+
+	const settings = await meta.settings.get('core.api');
+	const beforeLen = settings.tokens.length;
+	settings.tokens = settings.tokens.filter(tokenObj => tokenObj.token !== req.params.token);
+	if (beforeLen !== settings.tokens.length) {
+		await meta.settings.set('core.api', settings);
+		helpers.formatApiResponse(200, res);
+	} else {
+		helpers.formatApiResponse(404, res);
+	}
 };
