@@ -10,8 +10,8 @@ let versionCacheLastModified = '';
 
 const isPrerelease = /^v?\d+\.\d+\.\d+-.+$/;
 
-function getLatestVersion(callback) {
-	var headers = {
+function getLatestRelease(page, callback) {
+	const headers = {
 		Accept: 'application/vnd.github.v3+json',
 		'User-Agent': encodeURIComponent('NodeBB Admin Control Panel/' + meta.config.title),
 	};
@@ -19,8 +19,7 @@ function getLatestVersion(callback) {
 	if (versionCacheLastModified) {
 		headers['If-Modified-Since'] = versionCacheLastModified;
 	}
-
-	request('https://api.github.com/repos/NodeBB/NodeBB/tags', {
+	request('https://api.github.com/repos/NodeBB/NodeBB/tags?page=' + page, {
 		json: true,
 		headers: headers,
 		timeout: 1000,
@@ -34,7 +33,7 @@ function getLatestVersion(callback) {
 		}
 
 		if (res.statusCode !== 200) {
-			return callback(Error(res.statusMessage));
+			return callback(new Error(res.statusMessage));
 		}
 
 		releases = releases.filter(function (version) {
@@ -45,11 +44,18 @@ function getLatestVersion(callback) {
 			return semver.lt(a, b) ? 1 : -1;
 		});
 
+		if (!releases.length) {
+			return getLatestRelease(page + 1, callback);
+		}
 		versionCache = releases[0];
 		versionCacheLastModified = res.headers['last-modified'];
 
 		callback(null, versionCache);
 	});
+}
+
+function getLatestVersion(callback) {
+	getLatestRelease(1, callback);
 }
 
 exports.getLatestVersion = getLatestVersion;
