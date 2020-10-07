@@ -1,7 +1,9 @@
 openapi: 3.0.0
 info:
-  title: nodebb
-  version: 1.13.2
+  title: NodeBB Read API
+  version: 1.15.0
+  contact:
+    email: support@nodebb.org
   license:
     name: GPL-3.0
   description: >-
@@ -27,10 +29,6 @@ info:
 
       * For NodeBB v1.x, this is provided by [`nodebb-plugin-write-api`](https://github.com/NodeBB/nodebb-plugin-write-api). The Write API plugin needs to be installed before authentication via bearer token is enabled on routes provided by the Read API.
       * For NodeBB v2.x+ (in development), the Write API is available in core, and bearer authentication is available out-of-the-box
-
-    ### JSON Web Token (JWT)
-
-    The Write API also consumes valid JWTs as payload bodies, when signed with a server-generated key. The same restrictions apply as above, with Bearer Authentication (re: NodeBB v1.x vs v2.x).
 tags:
   - name: home
     description: Routes used at the forum index only
