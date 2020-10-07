@@ -19,17 +19,8 @@ module.exports = function () {
 	setupApiRoute(router, '/:pid/vote', middleware, [...middlewares, middleware.checkRequired.bind(null, ['delta']), middleware.assertPost], 'put', controllers.write.posts.vote);
 	setupApiRoute(router, '/:pid/vote', middleware, [...middlewares, middleware.assertPost], 'delete', controllers.write.posts.unvote);
 
-	// app.route('/:pid/bookmark')
-	// 	.post(apiMiddleware.requireUser, function(req, res) {
-	// 		posts.bookmark(req.params.pid, req.user.uid, function (err) {
-	// 			errorHandler.handle(err, res);
-	// 		});
-	// 	})
-	// 	.delete(apiMiddleware.requireUser, apiMiddleware.validatePid, function (req, res) {
-	// 		posts.unbookmark(req.params.pid, req.user.uid, function (err) {
-	// 			errorHandler.handle(err, res);
-	// 		});
-	// 	});
+	setupApiRoute(router, '/:pid/bookmark', middleware, [...middlewares, middleware.assertPost], 'put', controllers.write.posts.bookmark);
+	setupApiRoute(router, '/:pid/bookmark', middleware, [...middlewares, middleware.assertPost], 'delete', controllers.write.posts.unbookmark);
 
 	return router;
 };

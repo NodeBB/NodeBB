@@ -901,7 +901,7 @@ paths:
               delta: 1
       responses:
         '200':
-          description: Topic successfully upvoted
+          description: Post successfully upvoted
           content:
             application/json:
               schema:
@@ -920,6 +920,43 @@ paths:
       responses:
         '200':
           description: Post successfully unvoted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
+                    properties: {}
+  /posts/{pid}/bookmark:
+    put:
+      tags:
+        - posts
+      summary: Bookmark a post
+      description: This operation bookmarks a post.
+      responses:
+        '200':
+          description: Post successfully bookmarked
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
+                    properties: {}
+    delete:
+      tags:
+        - posts
+      summary: Unbookmark a post
+      description: This operation unbookmarks a post.
+      responses:
+        '200':
+          description: Post successfully unbookmarked
           content:
             application/json:
               schema:

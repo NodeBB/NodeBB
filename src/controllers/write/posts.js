@@ -171,6 +171,24 @@ Posts.unvote = async (req, res) => {
 	helpers.formatApiResponse(200, res);
 };
 
+Posts.bookmark = async (req, res) => {
+	const tid = await posts.getPostField(req.params.pid, 'tid');
+	const data = { pid: req.params.pid, room_id: `topic_${tid}` };
+	const socketMock = { uid: req.user.uid };
+
+	await socketPostHelpers.postCommand(socketMock, 'bookmark', 'bookmarked', '', data);
+	helpers.formatApiResponse(200, res);
+};
+
+Posts.unbookmark = async (req, res) => {
+	const tid = await posts.getPostField(req.params.pid, 'tid');
+	const data = { pid: req.params.pid, room_id: `topic_${tid}` };
+	const socketMock = { uid: req.user.uid };
+
+	await socketPostHelpers.postCommand(socketMock, 'unbookmark', 'bookmarked', '', data);
+	helpers.formatApiResponse(200, res);
+};
+
 async function isMainAndLastPost(pid) {
 	const [isMain, topicData] = await Promise.all([
 		posts.isMain(pid),
