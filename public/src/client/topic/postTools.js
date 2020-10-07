@@ -336,17 +336,9 @@ define('forum/topic/postTools', [
 	}
 
 	function bookmarkPost(button, pid) {
-		var method = button.attr('data-bookmarked') === 'false' ? 'posts.bookmark' : 'posts.unbookmark';
+		var method = button.attr('data-bookmarked') === 'false' ? 'put' : 'del';
 
-		socket.emit(method, {
-			pid: pid,
-			room_id: 'topic_' + ajaxify.data.tid,
-		}, function (err) {
-			if (err) {
-				app.alertError(err.message);
-			}
-		});
-
+		api[method](`/posts/${pid}/bookmark`, undefined, undefined, err => app.alertError(err.status.message));
 		return false;
 	}
 
