@@ -120,7 +120,7 @@ define('forum/account/header', [
 			components.get('account/follow').toggleClass('hide', type === 'follow');
 			components.get('account/unfollow').toggleClass('hide', type === 'unfollow');
 			app.alertSuccess('[[global:alert.' + type + ', ' + ajaxify.data.username + ']]');
-		}, err => app.alertError(err.status.message));
+		}, 'default');
 
 		return false;
 	}
@@ -158,7 +158,7 @@ define('forum/account/header', [
 								}
 
 								ajaxify.refresh();
-							}, err => app.alertError(err.status.message));
+							}, 'default');
 						},
 					},
 				},
@@ -169,7 +169,7 @@ define('forum/account/header', [
 	function unbanAccount() {
 		api.del('/users/' + ajaxify.data.theirid + '/ban', undefined, () => {
 			ajaxify.refresh();
-		}, err => app.alertError(err.status.message));
+		}, 'default');
 	}
 
 	function flagAccount() {

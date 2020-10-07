@@ -13,7 +13,7 @@ const sockets = require('..');
 
 module.exports = function (SocketUser) {
 	SocketUser.changeUsernameEmail = async function (socket, data) {
-		sockets.warnDeprecated(socket, 'PUT /api/v1/users/:uid');
+		sockets.warnDeprecated(socket, 'PUT /api/v3/users/:uid');
 
 		if (!data || !data.uid || !socket.uid) {
 			throw new Error('[[error:invalid-data]]');
@@ -78,7 +78,7 @@ module.exports = function (SocketUser) {
 	}
 
 	SocketUser.changePassword = async function (socket, data) {
-		sockets.warnDeprecated(socket, 'PUT /api/v1/users/:uid/password');
+		sockets.warnDeprecated(socket, 'PUT /api/v3/users/:uid/password');
 
 		if (!socket.uid) {
 			throw new Error('[[error:invalid-uid]]');
@@ -97,7 +97,7 @@ module.exports = function (SocketUser) {
 	};
 
 	SocketUser.updateProfile = async function (socket, data) {
-		sockets.warnDeprecated(socket, 'PUT /api/v1/users/:uid');
+		sockets.warnDeprecated(socket, 'PUT /api/v3/users/:uid');
 
 		if (!socket.uid) {
 			throw new Error('[[error:invalid-uid]]');

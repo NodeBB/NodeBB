@@ -24,7 +24,7 @@ require('./posts/tools')(SocketPosts);
 require('./posts/diffs')(SocketPosts);
 
 SocketPosts.reply = async function (socket, data) {
-	sockets.warnDeprecated(socket, 'POST /api/v1/topics/:tid');
+	sockets.warnDeprecated(socket, 'POST /api/v3/topics/:tid');
 
 	if (!data || !data.tid || (meta.config.minimumPostLength !== 0 && !data.content)) {
 		throw new Error('[[error:invalid-data]]');

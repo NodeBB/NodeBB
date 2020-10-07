@@ -75,7 +75,7 @@ define('forum/account/edit/password', ['forum/account/header', 'translator', 'zx
 					} else {
 						ajaxify.go('user/' + ajaxify.data.userslug + '/edit');
 					}
-				}, err => app.alertError(err.status.message)).always(() => {
+				}, 'default').always(() => {
 					btn.removeClass('disabled').find('i').addClass('hide');
 					currentPassword.val('');
 					password.val('');

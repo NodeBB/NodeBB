@@ -98,7 +98,7 @@ define('admin/manage/users', ['translator', 'benchpress', 'autocomplete', 'api']
 								app.parseAndTranslate('admin/partials/manage_user_groups', { users: [{ groups: [ui.item.group] }] }, function (html) {
 									$('[data-uid=' + uid + '] .group-area').append(html.find('.group-area').html());
 								});
-							}, err => app.alertError(err.status.message));
+							}, 'default');
 						});
 					});
 					modal.on('click', '.group-area a', function () {
@@ -110,7 +110,7 @@ define('admin/manage/users', ['translator', 'benchpress', 'autocomplete', 'api']
 						var uid = $(this).parents('[data-uid]').attr('data-uid');
 						api.del('/groups/' + utils.slugify(groupName) + '/membership/' + uid, undefined, () => {
 							groupCard.remove();
-						}, err => app.alertError(err.status.message));
+						}, 'default');
 						return false;
 					});
 				});

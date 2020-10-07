@@ -14,7 +14,7 @@ define('forum/groups/list', ['forum/infinitescroll', 'benchpress', 'api'], funct
 						name: name,
 					}, (res) => {
 						ajaxify.go('groups/' + res.slug);
-					}, err => app.alertError(err.status.message));
+					}, 'default');
 				}
 			});
 		});

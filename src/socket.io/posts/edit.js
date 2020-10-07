@@ -12,7 +12,7 @@ const websockets = require('../index');
 
 module.exports = function (SocketPosts) {
 	SocketPosts.edit = async function (socket, data) {
-		websockets.warnDeprecated(socket, 'PUT /api/v1/posts/:pid');
+		websockets.warnDeprecated(socket, 'PUT /api/v3/posts/:pid');
 
 		if (!socket.uid) {
 			throw new Error('[[error:not-logged-in]]');

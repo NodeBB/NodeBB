@@ -338,7 +338,7 @@ define('forum/topic/postTools', [
 	function bookmarkPost(button, pid) {
 		var method = button.attr('data-bookmarked') === 'false' ? 'put' : 'del';
 
-		api[method](`/posts/${pid}/bookmark`, undefined, undefined, err => app.alertError(err.status.message));
+		api[method](`/posts/${pid}/bookmark`, undefined, undefined, 'default');
 		return false;
 	}
 
@@ -385,7 +385,7 @@ define('forum/topic/postTools', [
 
 				const route = action === 'purge' ? '' : '/state';
 				const method = action === 'restore' ? 'put' : 'del';
-				api[method](`/posts/${pid}${route}`, undefined, undefined, err => app.alertError(err.status.message));
+				api[method](`/posts/${pid}${route}`, undefined, undefined, 'default');
 			});
 		});
 	}

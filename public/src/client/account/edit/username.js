@@ -36,7 +36,7 @@ define('forum/account/edit/username', ['forum/account/header', 'api'], function 
 				}
 
 				ajaxify.go('user/' + userslug + '/edit');
-			}, err => app.alertError(err.status.message));
+			}, 'default');
 
 			return false;
 		});

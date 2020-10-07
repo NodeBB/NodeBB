@@ -88,7 +88,7 @@ define('forum/groups/memberlist', ['api'], function (api) {
 
 			$.when(requests)
 				.done(done)
-				.fail(err => app.alertError(err.status.message));
+				.fail('default');
 		}
 	}
 

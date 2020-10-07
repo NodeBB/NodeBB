@@ -11,7 +11,7 @@ const flags = require('../../flags');
 
 module.exports = function (SocketUser) {
 	SocketUser.banUsers = async function (socket, data) {
-		websockets.warnDeprecated(socket, 'PUT /api/v1/users/:uid/ban');
+		websockets.warnDeprecated(socket, 'PUT /api/v3/users/:uid/ban');
 
 		if (!data || !Array.isArray(data.uids)) {
 			throw new Error('[[error:invalid-data]]');
@@ -40,7 +40,7 @@ module.exports = function (SocketUser) {
 	};
 
 	SocketUser.unbanUsers = async function (socket, uids) {
-		websockets.warnDeprecated(socket, 'DELETE /api/v1/users/:uid/ban');
+		websockets.warnDeprecated(socket, 'DELETE /api/v3/users/:uid/ban');
 
 		await toggleBan(socket.uid, uids, async function (uid) {
 			await user.bans.unban(uid);

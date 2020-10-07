@@ -58,7 +58,7 @@ User.removeAdmins = async function (socket, uids) {
 };
 
 User.createUser = async function (socket, userData) {
-	sockets.warnDeprecated(socket, 'POST /api/v1/users');
+	sockets.warnDeprecated(socket, 'POST /api/v3/users');
 
 	if (!userData) {
 		throw new Error('[[error:invalid-data]]');
@@ -139,7 +139,7 @@ User.deleteUsersContent = async function (socket, uids) {
 };
 
 User.deleteUsersAndContent = async function (socket, uids) {
-	sockets.warnDeprecated(socket, 'DELETE /api/v1/users or DELETE /api/v1/users/:uid');
+	sockets.warnDeprecated(socket, 'DELETE /api/v3/users or DELETE /api/v3/users/:uid');
 
 	await canDeleteUids(uids);
 	deleteUsers(socket, uids, async function (uid) {
