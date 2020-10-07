@@ -1022,6 +1022,32 @@ paths:
                   response:
                     type: object
                     properties: {}
+  /admin/settings/{setting}:
+    put:
+      tags:
+        - admin
+      summary: update configuration setting
+      description: This operation updates a configuration setting in the backend. The calling user must have the `admin:settings` privilege (or be a superadmin) in order for this call to proceed.
+      parameters:
+        - in: path
+          name: setting
+          schema:
+            type: string
+          required: true
+          description: backend id of the setting to update
+      responses:
+        '200':
+          description: Admin setting updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  response:
+                    type: object
+                    properties: {}
 components:
   schemas:
     Status:
