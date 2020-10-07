@@ -65,10 +65,9 @@ define('settings/sorted-list', ['benchpress', 'jqueryui'], function (benchpress)
 	};
 
 	function setupRemoveButton($container, itemUUID) {
-		var key = $container.attr('data-sorted-list');
-
-		var removeBtn = $('[data-sorted-list="' + key + '"] [data-type="remove"]');
+		var removeBtn = $container.find('[data-sorted-list-uuid="' + itemUUID + '"] [data-type="remove"]');
 		removeBtn.on('click', function () {
+			console.log(itemUUID);
 			$('[data-sorted-list-uuid="' + itemUUID + '"]').remove();
 		});
 	}
@@ -93,7 +92,7 @@ define('settings/sorted-list', ['benchpress', 'jqueryui'], function (benchpress)
 
 					var data = Settings.helper.serializeForm(form);
 
-					benchpress.parse(itemTpl, data, function (itemHtml) {
+					app.parseAndTranslate(itemTpl, data, function (itemHtml) {
 						itemHtml = $(itemHtml);
 						var oldItem = $list.find('[data-sorted-list-uuid="' + itemUUID + '"]');
 						oldItem.after(itemHtml);
@@ -112,7 +111,7 @@ define('settings/sorted-list', ['benchpress', 'jqueryui'], function (benchpress)
 		var $list = $container.find('[data-type="list"]');
 		var itemTpl = $container.attr('data-item-template');
 
-		benchpress.parse(itemTpl, data, function (itemHtml) {
+		app.parseAndTranslate(itemTpl, data, function (itemHtml) {
 			itemHtml = $(itemHtml);
 			$list.append(itemHtml);
 			itemHtml.attr('data-sorted-list-uuid', itemUUID);
