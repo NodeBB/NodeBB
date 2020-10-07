@@ -1,6 +1,5 @@
 'use strict';
 
-const semver = require('semver');
 const request = require('request');
 
 const meta = require('../meta');
@@ -10,7 +9,7 @@ let versionCacheLastModified = '';
 
 const isPrerelease = /^v?\d+\.\d+\.\d+-.+$/;
 
-function getLatestRelease(page, callback) {
+function getLatestVersion(callback) {
 	const headers = {
 		Accept: 'application/vnd.github.v3+json',
 		'User-Agent': encodeURIComponent('NodeBB Admin Control Panel/' + meta.config.title),
@@ -19,11 +18,12 @@ function getLatestRelease(page, callback) {
 	if (versionCacheLastModified) {
 		headers['If-Modified-Since'] = versionCacheLastModified;
 	}
-	request('https://api.github.com/repos/NodeBB/NodeBB/tags?page=' + page, {
+
+	request('https://api.github.com/repos/NodeBB/NodeBB/releases/latest', {
 		json: true,
 		headers: headers,
-		timeout: 1000,
-	}, function (err, res, releases) {
+		timeout: 2000,
+	}, function (err, res, latestRelease) {
 		if (err) {
 			return callback(err);
 		}
@@ -36,26 +36,14 @@ function getLatestRelease(page, callback) {
 			return callback(new Error(res.statusMessage));
 		}
 
-		releases = releases.filter(function (version) {
-			return !isPrerelease.test(version.name);	// filter out automated prerelease versions
-		}).map(function (version) {
-			return version.name.replace(/^v/, '');
-		}).sort(function (a, b) {
-			return semver.lt(a, b) ? 1 : -1;
-		});
-
-		if (!releases.length) {
-			return getLatestRelease(page + 1, callback);
+		if (!latestRelease || !latestRelease.tag_name) {
+			return callback(new Error('[[error:cant-get-latest-release]]'));
 		}
-		versionCache = releases[0];
+		const tagName = latestRelease.tag_name.replace(/^v/, '');
+		versionCache = tagName;
 		versionCacheLastModified = res.headers['last-modified'];
-
 		callback(null, versionCache);
 	});
-}
-
-function getLatestVersion(callback) {
-	getLatestRelease(1, callback);
 }
 
 exports.getLatestVersion = getLatestVersion;
