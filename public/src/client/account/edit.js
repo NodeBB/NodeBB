@@ -55,7 +55,7 @@ define('forum/account/edit', [
 			}
 
 			updateHeader(res.picture);
-		}, err => app.alertError(err.status.message));
+		}, 'default');
 
 		return false;
 	}

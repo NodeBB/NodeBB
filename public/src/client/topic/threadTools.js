@@ -183,7 +183,7 @@ define('forum/topic/threadTools', [
 
 				const method = command === 'restore' ? 'put' : 'del';
 				const suffix = command !== 'purge' ? '/state' : '';
-				api[method](`/topics/${tid}${suffix}`, undefined, undefined, err => app.alertError(err.status.message));
+				api[method](`/topics/${tid}${suffix}`, undefined, undefined, 'default');
 			});
 		});
 	}

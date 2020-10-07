@@ -19,7 +19,7 @@ SocketGroups.before = async (socket, method, data) => {
 };
 
 SocketGroups.join = async (socket, data) => {
-	sockets.warnDeprecated(socket, 'PUT /api/v1/groups/:slug/membership/:uid');
+	sockets.warnDeprecated(socket, 'PUT /api/v3/groups/:slug/membership/:uid');
 
 	if (socket.uid <= 0) {
 		throw new Error('[[error:invalid-uid]]');
@@ -69,7 +69,7 @@ SocketGroups.join = async (socket, data) => {
 };
 
 SocketGroups.leave = async (socket, data) => {
-	sockets.warnDeprecated(socket, 'DELETE /api/v1/groups/:slug/membership/:uid');
+	sockets.warnDeprecated(socket, 'DELETE /api/v3/groups/:slug/membership/:uid');
 
 	if (socket.uid <= 0) {
 		throw new Error('[[error:invalid-uid]]');
@@ -282,7 +282,7 @@ SocketGroups.kick = async (socket, data) => {
 };
 
 SocketGroups.create = async (socket, data) => {
-	sockets.warnDeprecated(socket, 'POST /api/v1/groups');
+	sockets.warnDeprecated(socket, 'POST /api/v3/groups');
 
 	if (!socket.uid) {
 		throw new Error('[[error:no-privileges]]');

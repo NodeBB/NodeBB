@@ -54,7 +54,7 @@ define('admin/manage/admins-mods', ['translator', 'benchpress', 'autocomplete', 
 					$('.global-moderator-area').prepend(html);
 					$('#no-global-mods-warning').addClass('hidden');
 				});
-			}, err => app.alertError(err.status.message));
+			}, 'default');
 		});
 
 		$('.global-moderator-area').on('click', '.remove-user-icon', function () {
@@ -69,7 +69,7 @@ define('admin/manage/admins-mods', ['translator', 'benchpress', 'autocomplete', 
 						if (!$('.global-moderator-area').children().length) {
 							$('#no-global-mods-warning').removeClass('hidden');
 						}
-					}, err => app.alertError(err.status.message));
+					}, 'default');
 				}
 			});
 		});

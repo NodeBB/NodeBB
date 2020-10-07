@@ -6,7 +6,7 @@ const sockets = require('..');
 const Groups = module.exports;
 
 Groups.create = async function (socket, data) {
-	sockets.warnDeprecated(socket, 'POST /api/v1/groups');
+	sockets.warnDeprecated(socket, 'POST /api/v3/groups');
 
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');
@@ -24,7 +24,7 @@ Groups.create = async function (socket, data) {
 };
 
 Groups.join = async (socket, data) => {
-	sockets.warnDeprecated(socket, 'PUT /api/v1/groups/:slug/membership/:uid');
+	sockets.warnDeprecated(socket, 'PUT /api/v3/groups/:slug/membership/:uid');
 
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');
@@ -39,7 +39,7 @@ Groups.join = async (socket, data) => {
 };
 
 Groups.leave = async function (socket, data) {
-	sockets.warnDeprecated(socket, 'DELETE /api/v1/groups/:slug/membership/:uid');
+	sockets.warnDeprecated(socket, 'DELETE /api/v3/groups/:slug/membership/:uid');
 
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');

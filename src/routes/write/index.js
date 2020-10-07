@@ -8,7 +8,7 @@ const Write = module.exports;
 Write.reload = (params) => {
 	const router = params.router;
 
-	router.use('/api/v1', function (req, res, next) {
+	router.use('/api/v3', function (req, res, next) {
 		// if (req.protocol !== 'https') {
 		// 	res.set('Upgrade', 'TLS/1.0, HTTP/1.1');
 		// 	return helpers.formatApiResponse(426, res);
@@ -20,20 +20,20 @@ Write.reload = (params) => {
 		next();
 	});
 
-	router.use('/api/v1/users', require('./users')());
-	router.use('/api/v1/groups', require('./groups')());
-	router.use('/api/v1/categories', require('./categories')());
-	router.use('/api/v1/topics', require('./topics')());
-	router.use('/api/v1/posts', require('./posts')());
-	// router.use('/api/v1/util', require('./util')());
+	router.use('/api/v3/users', require('./users')());
+	router.use('/api/v3/groups', require('./groups')());
+	router.use('/api/v3/categories', require('./categories')());
+	router.use('/api/v3/topics', require('./topics')());
+	router.use('/api/v3/posts', require('./posts')());
+	// router.use('/api/v3/util', require('./util')());
 
-	router.get('/api/v1/ping', function (req, res) {
+	router.get('/api/v3/ping', function (req, res) {
 		helpers.formatApiResponse(200, res, {
 			pong: true,
 		});
 	});
 
-	router.post('/api/v1/ping', middleware.authenticate, function (req, res) {
+	router.post('/api/v3/ping', middleware.authenticate, function (req, res) {
 		helpers.formatApiResponse(200, res, {
 			uid: req.user.uid,
 		});

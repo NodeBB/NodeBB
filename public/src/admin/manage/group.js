@@ -139,7 +139,7 @@ define('admin/manage/group', [
 						}
 						api.del('/groups/' + ajaxify.data.group.slug + '/membership/' + uid, undefined, () => {
 							userRow.slideUp().remove();
-						}, err => app.alertError(err.status.message));
+						}, 'default');
 					});
 					break;
 				default:

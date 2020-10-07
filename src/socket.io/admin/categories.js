@@ -13,7 +13,7 @@ const sockets = require('..');
 const Categories = module.exports;
 
 Categories.create = async function (socket, data) {
-	sockets.warnDeprecated(socket, 'POST /api/v1/categories');
+	sockets.warnDeprecated(socket, 'POST /api/v3/categories');
 
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');
@@ -40,7 +40,7 @@ Categories.getNames = async function () {
 };
 
 Categories.purge = async function (socket, cid) {
-	sockets.warnDeprecated(socket, 'DELETE /api/v1/categories/:cid');
+	sockets.warnDeprecated(socket, 'DELETE /api/v3/categories/:cid');
 
 	const name = await categories.getCategoryField(cid, 'name');
 	await categories.purge(cid, socket.uid);
@@ -54,7 +54,7 @@ Categories.purge = async function (socket, cid) {
 };
 
 Categories.update = async function (socket, data) {
-	sockets.warnDeprecated(socket, 'PUT /api/v1/categories/:cid');
+	sockets.warnDeprecated(socket, 'PUT /api/v3/categories/:cid');
 
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');

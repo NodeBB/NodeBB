@@ -64,7 +64,7 @@ module.exports = function (SocketPosts) {
 	};
 
 	SocketPosts.delete = async function (socket, data) {
-		sockets.warnDeprecated(socket, 'DELETE /api/v1/posts/:pid/state');
+		sockets.warnDeprecated(socket, 'DELETE /api/v3/posts/:pid/state');
 
 		await deleteOrRestore(socket, data, {
 			command: 'delete',
@@ -74,7 +74,7 @@ module.exports = function (SocketPosts) {
 	};
 
 	SocketPosts.restore = async function (socket, data) {
-		sockets.warnDeprecated(socket, 'PUT /api/v1/posts/:pid/state');
+		sockets.warnDeprecated(socket, 'PUT /api/v3/posts/:pid/state');
 
 		await deleteOrRestore(socket, data, {
 			command: 'restore',
@@ -123,7 +123,7 @@ module.exports = function (SocketPosts) {
 	}
 
 	SocketPosts.purge = async function (socket, data) {
-		sockets.warnDeprecated(socket, 'DELETE /api/v1/posts/:pid');
+		sockets.warnDeprecated(socket, 'DELETE /api/v3/posts/:pid');
 
 		if (!data || !parseInt(data.pid, 10)) {
 			throw new Error('[[error:invalid-data]]');

@@ -63,17 +63,17 @@ module.exports = function (SocketPosts) {
 	};
 
 	SocketPosts.upvote = async function (socket, data) {
-		sockets.warnDeprecated(socket, 'PUT /api/v1/posts/:pid/vote');
+		sockets.warnDeprecated(socket, 'PUT /api/v3/posts/:pid/vote');
 		return await helpers.postCommand(socket, 'upvote', 'voted', 'notifications:upvoted_your_post_in', data);
 	};
 
 	SocketPosts.downvote = async function (socket, data) {
-		sockets.warnDeprecated(socket, 'PUT /api/v1/posts/:pid/vote');
+		sockets.warnDeprecated(socket, 'PUT /api/v3/posts/:pid/vote');
 		return await helpers.postCommand(socket, 'downvote', 'voted', '', data);
 	};
 
 	SocketPosts.unvote = async function (socket, data) {
-		sockets.warnDeprecated(socket, 'DELETE /api/v1/posts/:pid/vote');
+		sockets.warnDeprecated(socket, 'DELETE /api/v3/posts/:pid/vote');
 		return await helpers.postCommand(socket, 'unvote', 'voted', '', data);
 	};
 };

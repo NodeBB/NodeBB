@@ -2,7 +2,7 @@
 
 define('api', () => {
 	const api = {};
-	const baseUrl = config.relative_path + '/api/v1';
+	const baseUrl = config.relative_path + '/api/v3';
 
 	function call(options, onSuccess, onError) {
 		$.ajax(options)
@@ -12,7 +12,9 @@ define('api', () => {
 				}
 			})
 			.fail((ev) => {
-				if (onError) {
+				if (onError === 'default') {
+					app.alertError(ev.responseJSON.status.message);
+				} else if (onError) {
 					onError(ev.responseJSON);
 				}
 			});
