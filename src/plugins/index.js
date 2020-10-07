@@ -169,6 +169,23 @@ Plugins.reload = async function () {
 			return { plugin, settings, quiet };
 		},
 	});
+	Plugins.registerHook('core', {
+		hook: 'filter:settings.get',
+		method: async ({ plugin, values }) => {
+			if (plugin === 'core.api' && Array.isArray(values.tokens)) {
+				values.tokens = values.tokens.map((tokenObj) => {
+					tokenObj.uid = parseInt(tokenObj.uid, 10);
+					if (tokenObj.timestamp) {
+						tokenObj.timestampISO = new Date(parseInt(tokenObj.timestamp, 10)).toISOString();
+					}
+
+					return tokenObj;
+				});
+			}
+
+			return { plugin, values };
+		},
+	});
 
 	// Lower priority runs earlier
 	Object.keys(Plugins.loadedHooks).forEach(function (hook) {
