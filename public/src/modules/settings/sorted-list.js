@@ -91,7 +91,7 @@ define('settings/sorted-list', ['benchpress', 'jqueryui'], function (benchpress)
 
 					var data = Settings.helper.serializeForm(form);
 
-					benchpress.parse(itemTpl, data, function (itemHtml) {
+					app.parseAndTranslate(itemTpl, data, function (itemHtml) {
 						itemHtml = $(itemHtml);
 						var oldItem = $list.find('[data-sorted-list-uuid="' + itemUUID + '"]');
 						oldItem.after(itemHtml);
@@ -110,7 +110,7 @@ define('settings/sorted-list', ['benchpress', 'jqueryui'], function (benchpress)
 		var $list = $container.find('[data-type="list"]');
 		var itemTpl = $container.attr('data-item-template');
 
-		benchpress.parse(itemTpl, data, function (itemHtml) {
+		app.parseAndTranslate(itemTpl, data, function (itemHtml) {
 			itemHtml = $(itemHtml);
 			$list.append(itemHtml);
 			itemHtml.attr('data-sorted-list-uuid', itemUUID);
