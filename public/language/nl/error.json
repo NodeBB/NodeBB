@@ -26,7 +26,7 @@
     "invalid-pagination-value": "Ongeldig paginering waarde. De waarde moet op z'n minst %1 zijn en niet hoger dan %2 zijn.",
     "username-taken": "Gebruikersnaam is al in gebruik ",
     "email-taken": "E-mailadres is al in gebruik",
-    "email-invited": "Email was already invited",
+    "email-invited": "E-mail was reeds uitgenodigd",
     "email-not-confirmed": "Het plaatsen van berichten is pas toegestaan na validatie van het e-mailadres.",
     "email-not-confirmed-chat": "Het gebruik van chatfunctionaliteit is pas toegestaan na validatie van het e-mailadres.",
     "email-not-confirmed-email-sent": "Je e-mailadres is nog niet bevestigd, kijk of je de bevestigingsmail hebt ontvangen. Tot je e-mailadres is bevestigd kun je geen berichten plaatsen of aan chats deelnemen.",
@@ -163,12 +163,12 @@
     "invalid-session-text": "Het lijkt erop dat je login sessie niet meer actief is of niet langer synchroon is met de server. Ververs de pagina.",
     "no-topics-selected": "Geen onderwerpen geselecteerd!",
     "cant-move-to-same-topic": "Een bericht kan niet naar hetzelfde onderwerp worden verplaatst!",
-    "cant-move-topic-to-same-category": "Can't move topic to the same category!",
+    "cant-move-topic-to-same-category": "Kan onderwerp niet verplaatsen naar dezelfde categorie",
     "cannot-block-self": "Je kan jezelf niet blokkeren!",
     "cannot-block-privileged": "Je kan geen administrators of global moderators blokkeren",
     "cannot-block-guest": "Gasten kunnen geen andere gebruikers blokkeren",
     "already-blocked": "Deze gebruiker is al geblokkeerd",
     "already-unblocked": "Deze gebruiker is al gedeblokkeerd",
     "no-connection": "Er lijkt een probleem te zijn met je internetverbinding",
-    "plugin-not-whitelisted": "Unable to install plugin &ndash; only plugins whitelisted by the NodeBB Package Manager can be installed via the ACP"
+    "plugin-not-whitelisted": "Kan plugin niet installeren &ndash; alleen plugins toegestaan door de NodeBB Package Manager kunnen via de ACP geinstalleerd worden"
 }
