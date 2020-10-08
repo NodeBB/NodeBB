@@ -125,6 +125,34 @@ module.exports = function (Posts) {
 		sanitizeConfig = await plugins.fireHook('filter:sanitize.config', sanitizeConfig);
 	};
 
+	Posts.registerHooks = () => {
+		plugins.registerHook('core', {
+			hook: 'filter:parse.post',
+			method: async (data) => {
+				data.postData.content = Posts.sanitize(data.postData.content);
+				return data;
+			},
+		});
+
+		plugins.registerHook('core', {
+			hook: 'filter:parse.raw',
+			method: async content => Posts.sanitize(content),
+		});
+
+		plugins.registerHook('core', {
+			hook: 'filter:parse.aboutme',
+			method: async content => Posts.sanitize(content),
+		});
+
+		plugins.registerHook('core', {
+			hook: 'filter:parse.signature',
+			method: async (data) => {
+				data.userData.signature = Posts.sanitize(data.userData.signature);
+				return data;
+			},
+		});
+	};
+
 	function sanitizeSignature(signature) {
 		signature = translator.escape(signature);
 		var tagsToStrip = [];

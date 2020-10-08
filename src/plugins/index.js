@@ -10,7 +10,7 @@ const request = require('request-promise-native');
 
 const user = require('../user');
 const posts = require('../posts');
-const utils = require('../utils');
+const meta = require('../meta');
 
 const { pluginNamePattern, themeNamePattern, paths } = require('../constants');
 
@@ -123,69 +123,9 @@ Plugins.reload = async function () {
 		console.log('');
 	}
 
-	// Possibly put these in a different file...
-	Plugins.registerHook('core', {
-		hook: 'filter:parse.post',
-		method: async (data) => {
-			data.postData.content = posts.sanitize(data.postData.content);
-			return data;
-		},
-	});
-
-	Plugins.registerHook('core', {
-		hook: 'filter:parse.raw',
-		method: async content => posts.sanitize(content),
-	});
-
-	Plugins.registerHook('core', {
-		hook: 'filter:parse.aboutme',
-		method: async content => posts.sanitize(content),
-	});
-
-	Plugins.registerHook('core', {
-		hook: 'filter:parse.signature',
-		method: async (data) => {
-			data.userData.signature = posts.sanitize(data.userData.signature);
-			return data;
-		},
-	});
-
-	Plugins.registerHook('core', {
-		hook: 'filter:settings.set',
-		method: async ({ plugin, settings, quiet }) => {
-			if (plugin === 'core.api' && Array.isArray(settings.tokens)) {
-				// Generate tokens if not present already
-				settings.tokens.forEach((set) => {
-					if (set.token === '') {
-						set.token = utils.generateUUID();
-					}
-
-					if (isNaN(parseInt(set.uid, 10))) {
-						set.uid = 0;
-					}
-				});
-			}
-
-			return { plugin, settings, quiet };
-		},
-	});
-	Plugins.registerHook('core', {
-		hook: 'filter:settings.get',
-		method: async ({ plugin, values }) => {
-			if (plugin === 'core.api' && Array.isArray(values.tokens)) {
-				values.tokens = values.tokens.map((tokenObj) => {
-					tokenObj.uid = parseInt(tokenObj.uid, 10);
-					if (tokenObj.timestamp) {
-						tokenObj.timestampISO = new Date(parseInt(tokenObj.timestamp, 10)).toISOString();
-					}
-
-					return tokenObj;
-				});
-			}
-
-			return { plugin, values };
-		},
-	});
+	// Core hooks
+	posts.registerHooks();
+	meta.configs.registerHooks();
 
 	// Lower priority runs earlier
 	Object.keys(Plugins.loadedHooks).forEach(function (hook) {

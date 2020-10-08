@@ -19,10 +19,6 @@ const socketTopics = require('../../socket.io/topics');	// eehhh...
 const Posts = module.exports;
 
 Posts.edit = async (req, res) => {
-	if (meta.config.minimumPostLength !== 0 && !req.body.content) {
-		throw new Error('[[error:invalid-data]]');
-	}
-
 	// Trim and remove HTML (latter for composers that send in HTML, like redactor)
 	var contentLen = utils.stripHTMLTags(req.body.content).trim().length;
 
@@ -146,10 +142,16 @@ Posts.delete = async (req, res) => {
 	helpers.formatApiResponse(200, res);
 };
 
-Posts.vote = async (req, res) => {
+async function mock(req) {
 	const tid = await posts.getPostField(req.params.pid, 'tid');
 	const data = { pid: req.params.pid, room_id: `topic_${tid}` };
 	const socketMock = { uid: req.user.uid };
+
+	return { data, socketMock };
+}
+
+Posts.vote = async (req, res) => {
+	const { data, socketMock } = await mock();
 
 	if (req.body.delta > 0) {
 		await socketPostHelpers.postCommand(socketMock, 'upvote', 'voted', 'notifications:upvoted_your_post_in', data);
@@ -163,27 +165,21 @@ Posts.vote = async (req, res) => {
 };
 
 Posts.unvote = async (req, res) => {
-	const tid = await posts.getPostField(req.params.pid, 'tid');
-	const data = { pid: req.params.pid, room_id: `topic_${tid}` };
-	const socketMock = { uid: req.user.uid };
+	const { data, socketMock } = await mock();
 
 	await socketPostHelpers.postCommand(socketMock, 'unvote', 'voted', '', data);
 	helpers.formatApiResponse(200, res);
 };
 
 Posts.bookmark = async (req, res) => {
-	const tid = await posts.getPostField(req.params.pid, 'tid');
-	const data = { pid: req.params.pid, room_id: `topic_${tid}` };
-	const socketMock = { uid: req.user.uid };
+	const { data, socketMock } = await mock();
 
 	await socketPostHelpers.postCommand(socketMock, 'bookmark', 'bookmarked', '', data);
 	helpers.formatApiResponse(200, res);
 };
 
 Posts.unbookmark = async (req, res) => {
-	const tid = await posts.getPostField(req.params.pid, 'tid');
-	const data = { pid: req.params.pid, room_id: `topic_${tid}` };
-	const socketMock = { uid: req.user.uid };
+	const { data, socketMock } = await mock();
 
 	await socketPostHelpers.postCommand(socketMock, 'unbookmark', 'bookmarked', '', data);
 	helpers.formatApiResponse(200, res);
