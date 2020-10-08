@@ -18,19 +18,19 @@ function authenticatedRoutes() {
 	setupApiRoute(router, '/', middleware, [...middlewares, middleware.checkRequired.bind(null, ['username']), middleware.isAdmin], 'post', controllers.write.users.create);
 	setupApiRoute(router, '/', middleware, [...middlewares, middleware.checkRequired.bind(null, ['uids']), middleware.isAdmin, middleware.exposePrivileges], 'delete', controllers.write.users.deleteMany);
 
-	setupApiRoute(router, '/:uid', middleware, [...middlewares, middleware.assertUser], 'put', controllers.write.users.update);
-	setupApiRoute(router, '/:uid', middleware, [...middlewares, middleware.assertUser, middleware.exposePrivileges], 'delete', controllers.write.users.delete);
+	setupApiRoute(router, '/:uid', middleware, [...middlewares, middleware.assert.user], 'put', controllers.write.users.update);
+	setupApiRoute(router, '/:uid', middleware, [...middlewares, middleware.assert.user, middleware.exposePrivileges], 'delete', controllers.write.users.delete);
 
-	setupApiRoute(router, '/:uid/password', middleware, [...middlewares, middleware.checkRequired.bind(null, ['newPassword']), middleware.assertUser], 'put', controllers.write.users.changePassword);
+	setupApiRoute(router, '/:uid/password', middleware, [...middlewares, middleware.checkRequired.bind(null, ['newPassword']), middleware.assert.user], 'put', controllers.write.users.changePassword);
 
-	setupApiRoute(router, '/:uid/follow', middleware, [...middlewares, middleware.assertUser], 'put', controllers.write.users.follow);
-	setupApiRoute(router, '/:uid/follow', middleware, [...middlewares, middleware.assertUser], 'delete', controllers.write.users.unfollow);
+	setupApiRoute(router, '/:uid/follow', middleware, [...middlewares, middleware.assert.user], 'put', controllers.write.users.follow);
+	setupApiRoute(router, '/:uid/follow', middleware, [...middlewares, middleware.assert.user], 'delete', controllers.write.users.unfollow);
 
-	setupApiRoute(router, '/:uid/ban', middleware, [...middlewares, middleware.assertUser, middleware.exposePrivileges], 'put', controllers.write.users.ban);
-	setupApiRoute(router, '/:uid/ban', middleware, [...middlewares, middleware.assertUser, middleware.exposePrivileges], 'delete', controllers.write.users.unban);
+	setupApiRoute(router, '/:uid/ban', middleware, [...middlewares, middleware.assert.user, middleware.exposePrivileges], 'put', controllers.write.users.ban);
+	setupApiRoute(router, '/:uid/ban', middleware, [...middlewares, middleware.assert.user, middleware.exposePrivileges], 'delete', controllers.write.users.unban);
 
-	setupApiRoute(router, '/:uid/tokens', middleware, [...middlewares, middleware.assertUser, middleware.exposePrivilegeSet], 'post', controllers.write.users.generateToken);
-	setupApiRoute(router, '/:uid/tokens/:token', middleware, [...middlewares, middleware.assertUser, middleware.exposePrivilegeSet], 'delete', controllers.write.users.deleteToken);
+	setupApiRoute(router, '/:uid/tokens', middleware, [...middlewares, middleware.assert.user, middleware.exposePrivilegeSet], 'post', controllers.write.users.generateToken);
+	setupApiRoute(router, '/:uid/tokens/:token', middleware, [...middlewares, middleware.assert.user, middleware.exposePrivilegeSet], 'delete', controllers.write.users.deleteToken);
 
 	/**
 	 * Implement this later...
