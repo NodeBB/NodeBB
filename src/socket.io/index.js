@@ -260,8 +260,10 @@ Sockets.reqFromSocket = function (socket, payload, event) {
 };
 
 Sockets.warnDeprecated = (socket, replacement) => {
-	socket.emit('event:deprecated_call', {
-		eventName: socket.previousEvents[socket.previousEvents.length - 1],
-		replacement: replacement,
-	});
+	if (socket.previousEvents) {
+		socket.emit('event:deprecated_call', {
+			eventName: socket.previousEvents[socket.previousEvents.length - 1],
+			replacement: replacement,
+		});
+	}
 };
