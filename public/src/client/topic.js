@@ -126,7 +126,7 @@ define('forum/topic', [
 
 		if (postIndex > 1) {
 			if (components.get('post/anchor', postIndex - 1).length) {
-				return navigator.scrollToPostIndex(postIndex - 1, true, 0);
+				return navigator.scrollToPostIndex(postIndex - 1, true);
 			}
 		} else if (bookmark && (!config.usePagination || (config.usePagination && ajaxify.data.pagination.currentPage === 1)) && ajaxify.data.postcount > ajaxify.data.bookmarkThreshold) {
 			app.alert({
@@ -205,10 +205,6 @@ define('forum/topic', [
 	Topic.navigatorCallback = function (index, elementCount) {
 		var path = ajaxify.removeRelativePath(window.location.pathname.slice(1));
 		if (!path.startsWith('topic')) {
-			return;
-		}
-
-		if (navigator.scrollActive) {
 			return;
 		}
 

@@ -223,7 +223,7 @@ define('forum/topic/posts', [
 	}
 
 	Posts.loadMorePosts = function (direction) {
-		if (!components.get('topic').length || navigator.scrollActive) {
+		if (!components.get('topic').length) {
 			return;
 		}
 
