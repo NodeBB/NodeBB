@@ -383,7 +383,7 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		// Temporarily disable navigator update on scroll
 		$(window).off('scroll', navigator.update);
 
-		const anchorId = scrollTo.find('[component="post/anchor"]').prop('id');
+		const anchorId = scrollTo.find('[component="post/anchor"], [component="topic/anchor"]').prop('id');
 		window.location.hash = anchorId;
 
 		highlightPost();
