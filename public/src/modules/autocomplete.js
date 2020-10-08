@@ -21,8 +21,7 @@ define('autocomplete', function () {
 					handleOnSelect(input, onselect, event, ui);
 				},
 				source: function (request, response) {
-					params.query = params.query || request.term;
-					params.paginate = params.paginate || false;
+					params.query = request.term;
 
 					socket.emit('user.search', params, function (err, result) {
 						if (err) {
@@ -51,8 +50,6 @@ define('autocomplete', function () {
 						}
 
 						$('.ui-autocomplete a').attr('data-ajaxify', 'false');
-						delete params.query;
-						delete params.paginate;
 					});
 				},
 			});

@@ -256,6 +256,12 @@ define('admin/manage/privileges', [
 			inputEl.focus();
 
 			autocomplete.group(inputEl, function (ev, ui) {
+				if (ui.item.group.name === 'administrators') {
+					return app.alert({
+						type: 'warning',
+						message: '[[admin/manage/privileges:alert.admin-warning]]',
+					});
+				}
 				addGroupToCategory(ui.item.group.name, function () {
 					modal.modal('hide');
 				});
