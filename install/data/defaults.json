@@ -133,5 +133,6 @@
     "timeagoCutoff": 30,
     "necroThreshold": 7,
     "categoryWatchState": "watching",
-    "submitPluginUsage": 1
+    "submitPluginUsage": 1,
+    "maxUserSessions": 10
 }
