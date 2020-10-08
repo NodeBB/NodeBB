@@ -54,6 +54,14 @@
 			</div>
 
 			<div class="form-group">
+				<label for="maxUserSessions">[[admin/settings/cookies:max-user-sessions]]</label>
+				<input class="form-control" id="maxUserSessions" type="number" placeholder="10" data-field="maxUserSessions" /><br />
+				<p class="help-block">
+					[[admin/settings/cookies:blank-default]]
+				</p>
+			</div>
+
+			<div class="form-group">
 				<button id="delete-all-sessions" class="btn btn-danger">Revoke All Sessions</button>
 				<p class="help-block">
 					This will delete all sessions, you will be logged out and will have to login again!
