@@ -206,7 +206,7 @@ define('forum/topic/threadTools', [
 
 		threadEl.find('[component="post"][data-uid="' + app.user.uid + '"].deleted [component="post/tools"]').toggleClass('hidden', isLocked);
 
-		$('[component="topic/locked"]').toggleClass('hidden', !data.isLocked);
+		$('.topic-header [component="topic/locked"]').toggleClass('hidden', !data.isLocked);
 		$('[component="post/tools"] .dropdown-menu').html('');
 		ajaxify.data.locked = data.isLocked;
 	};
@@ -251,7 +251,7 @@ define('forum/topic/threadTools', [
 
 		components.get('topic/pin').toggleClass('hidden', data.isPinned).parent().attr('hidden', data.isPinned ? '' : null);
 		components.get('topic/unpin').toggleClass('hidden', !data.isPinned).parent().attr('hidden', !data.isPinned ? '' : null);
-		$('[component="topic/pinned"]').toggleClass('hidden', !data.isPinned);
+		$('.topic-header [component="topic/pinned"]').toggleClass('hidden', !data.isPinned);
 		ajaxify.data.pinned = data.isPinned;
 	};
 
