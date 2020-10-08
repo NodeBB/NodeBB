@@ -822,9 +822,11 @@ describe('Controllers', function () {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 403);
 				assert.deepEqual(JSON.parse(body), {
-					path: '/user/doesnotexist/session/1112233',
-					loggedIn: true,
-					title: '[[global:403.title]]',
+					response: {},
+					status: {
+						code: 'forbidden',
+						message: 'You are not authorised to make this call',
+					},
 				});
 				done();
 			});
@@ -1340,7 +1342,13 @@ describe('Controllers', function () {
 				request(nconf.get('url') + '/api/user/foo', { json: true }, function (err, res, body) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 401);
-					assert.equal(body, 'not-authorized');
+					assert.deepEqual(body, {
+						response: {},
+						status: {
+							code: 'not-authorised',
+							message: 'A valid login session was not found. Please log in and try again.',
+						},
+					});
 					privileges.global.give(['groups:view:users'], 'guests', done);
 				});
 			});
