@@ -147,7 +147,7 @@ define('admin/manage/privileges', [
 					$('.privilege-table-container').html(html);
 					Privileges.exposeAssumedPrivileges();
 
-					hightlightRowByGroupName(groupToHighlight);
+					hightlightRowByDataAttr('data-group-name', groupToHighlight);
 				});
 			});
 		});
@@ -215,29 +215,7 @@ define('admin/manage/privileges', [
 			inputEl.focus();
 
 			autocomplete.user(inputEl, function (ev, ui) {
-				// Generate data for new row
-				var privilegeSet = ajaxify.data.privileges.keys.users.reduce(function (memo, cur) {
-					memo[cur] = false;
-					return memo;
-				}, {});
-
-				app.parseAndTranslate('admin/partials/privileges/' + (isNaN(cid) ? 'global' : 'category'), 'privileges.users', {
-					privileges: {
-						users: [
-							{
-								picture: ui.item.user.picture,
-								username: ui.item.user.username,
-								uid: ui.item.user.uid,
-								'icon:text': ui.item.user['icon:text'],
-								'icon:bgColor': ui.item.user['icon:bgColor'],
-								privileges: privilegeSet,
-							},
-						],
-					},
-				}, function (html) {
-					var tableEl = document.querySelectorAll('.privilege-table');
-					var rows = tableEl[1].querySelectorAll('tbody tr');
-					html.insertBefore(rows[rows.length - 1]);
+				addUserToCategory(ui.item.user, function () {
 					modal.modal('hide');
 				});
 			});
@@ -298,11 +276,12 @@ define('admin/manage/privileges', [
 		});
 	};
 
-	function hightlightRowByGroupName(groupName) {
-		if (groupName) {
-			var el = $('[data-group-name]').filter(function () {
-				return $(this).attr('data-group-name') === groupName;
+	function hightlightRowByDataAttr(attrName, attrValue) {
+		if (attrValue) {
+			var el = $('[' + attrName + ']').filter(function () {
+				return $(this).attr(attrName) === String(attrValue);
 			});
+
 			if (el.length) {
 				el.addClass('selected');
 				return true;
@@ -313,7 +292,7 @@ define('admin/manage/privileges', [
 
 	function highlightRow() {
 		if (ajaxify.data.group) {
-			if (hightlightRowByGroupName(ajaxify.data.group)) {
+			if (hightlightRowByDataAttr('data-group-name', ajaxify.data.group)) {
 				return;
 			}
 			addGroupToCategory(ajaxify.data.group);
@@ -321,6 +300,12 @@ define('admin/manage/privileges', [
 	}
 
 	function addGroupToCategory(group, cb) {
+		cb = cb || function () {};
+		var groupRow = document.querySelector('.privilege-table [data-group-name="' + group + '"]');
+		if (groupRow) {
+			hightlightRowByDataAttr('data-group-name', group);
+			return cb();
+		}
 		// Generate data for new row
 		var privilegeSet = ajaxify.data.privileges.keys.groups.reduce(function (memo, cur) {
 			memo[cur] = false;
@@ -342,10 +327,43 @@ define('admin/manage/privileges', [
 			var rows = tableEl.querySelectorAll('tbody tr');
 			html.insertBefore(rows[rows.length - 1]);
 			Privileges.exposeAssumedPrivileges();
+			hightlightRowByDataAttr('data-group-name', group);
+			cb();
+		});
+	}
 
-			if (typeof cb === 'function') {
-				cb();
-			}
+	function addUserToCategory(user, cb) {
+		cb = cb || function () {};
+		var userRow = document.querySelector('.privilege-table [data-uid="' + user.uid + '"]');
+		if (userRow) {
+			hightlightRowByDataAttr('data-uid', user.uid);
+			return cb();
+		}
+		// Generate data for new row
+		var privilegeSet = ajaxify.data.privileges.keys.users.reduce(function (memo, cur) {
+			memo[cur] = false;
+			return memo;
+		}, {});
+
+		app.parseAndTranslate('admin/partials/privileges/' + (isNaN(cid) ? 'global' : 'category'), 'privileges.users', {
+			privileges: {
+				users: [
+					{
+						picture: user.picture,
+						username: user.username,
+						uid: user.uid,
+						'icon:text': user['icon:text'],
+						'icon:bgColor': user['icon:bgColor'],
+						privileges: privilegeSet,
+					},
+				],
+			},
+		}, function (html) {
+			var tableEl = document.querySelectorAll('.privilege-table');
+			var rows = tableEl[1].querySelectorAll('tbody tr');
+			html.insertBefore(rows[rows.length - 1]);
+			hightlightRowByDataAttr('data-uid', user.uid);
+			cb();
 		});
 	}
 
