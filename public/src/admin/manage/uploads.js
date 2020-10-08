@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/manage/uploads', ['uploader'], function (uploader) {
+define('admin/manage/uploads', ['uploader', 'api'], function (uploader, api) {
 	var Uploads = {};
 
 	Uploads.init = function () {
@@ -21,12 +21,12 @@ define('admin/manage/uploads', ['uploader'], function (uploader) {
 				if (!ok) {
 					return;
 				}
-				socket.emit('admin.uploads.delete', file.attr('data-path'), function (err) {
-					if (err) {
-						return app.alertError(err.message);
-					}
+
+				api.del('/files', {
+					path: file.attr('data-path'),
+				}, () => {
 					file.remove();
-				});
+				}, 'default');
 			});
 		});
 	};
