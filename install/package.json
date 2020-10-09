@@ -120,7 +120,7 @@
         "socket.io": "2.3.0",
         "socket.io-adapter-cluster": "^1.0.1",
         "socket.io-adapter-postgres": "^1.2.1",
-        "socket.io-client": "2.3.0",
+        "socket.io-client": "2.3.1",
         "socket.io-redis": "5.4.0",
         "socketio-wildcard": "2.0.0",
         "spdx-license-list": "^6.1.0",
