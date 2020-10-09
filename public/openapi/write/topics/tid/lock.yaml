@@ -1,0 +1,36 @@
+put:
+  tags:
+    - topics
+  summary: lock a topic
+  description: This operation locks an existing topic.
+  responses:
+    '200':
+      description: Topic successfully locked
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}
+delete:
+  tags:
+    - topics
+  summary: unlock a topic
+  description: This operation unlocks a topic.
+  responses:
+    '200':
+      description: Topic successfully unlocked
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}

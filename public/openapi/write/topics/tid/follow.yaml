@@ -1,0 +1,36 @@
+put:
+  tags:
+    - topics
+  summary: follow a topic
+  description: This operation follows (or watches) a topic.
+  responses:
+    '200':
+      description: Topic successfully followed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}
+delete:
+  tags:
+    - topics
+  summary: unfollow a topic
+  description: This operation unfollows (or unwatches) a topic.
+  responses:
+    '200':
+      description: Topic successfully unwatched
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}

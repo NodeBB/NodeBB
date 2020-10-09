@@ -1,0 +1,18 @@
+put:
+  tags:
+    - groups
+  summary: join a group
+  description: This operation joins an existing group, or causes another user to join a group. If the group is private and you are not an administrator, this method will cause that user to request membership, instead. For user _invitations_, you'll want to call `PUT /groups/{slug}/invites/{uid}`.
+  responses:
+    '200':
+      description: group successfully joined, or membership requested
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}
