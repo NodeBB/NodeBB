@@ -1,0 +1,330 @@
+post:
+  tags:
+    - users
+  summary: create a user
+  description: This operation creates a new user account
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            username:
+              type: string
+              description: 'If the username is taken, a number will be appended'
+            password:
+              type: string
+            email:
+              type: string
+          required:
+            - username
+        example:
+          username: Dragon Fruit
+          password: s3cre7password
+          email: dragonfruit@example.org
+  responses:
+    '200':
+      description: user successfully created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../components/schemas/UserObj.yaml#/UserObj
+    '400':
+      $ref: ../components/responses/400.yaml#/400
+    '401':
+      $ref: ../components/responses/401.yaml#/401
+    '403':
+      $ref: ../components/responses/403.yaml#/403
+    '426':
+      $ref: ../components/responses/426.yaml#/426
+    '500':
+      $ref: ../components/responses/500.yaml#/500
+delete:
+  tags:
+    - users
+  summary: delete one or more users
+  description: This operation deletes one or many user accounts, including their contributions (posts, topics, etc.)
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            uids:
+              type: array
+              description: A collection of uids
+              items:
+                type: number
+        example:
+          uids:
+            - 1
+            - 2
+            - 3
+  responses:
+    '200':
+      description: user account(s) deleted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+  '/users/{uid}':
+    delete:
+      tags:
+        - users
+      summary: delete a single user account
+      parameters:
+        - in: path
+          name: uid
+          schema:
+            type: integer
+          required: true
+          description: uid of the user to delete
+      responses:
+        '200':
+          description: user account deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: ../components/schemas/Status.yaml#/Status
+                  response:
+                    type: object
+    put:
+      tags:
+        - users
+      summary: update a user account
+      parameters:
+        - in: path
+          name: uid
+          schema:
+            type: integer
+          required: true
+          description: uid of the user to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/UserRequest.yaml#/UserRequest
+      responses:
+        '200':
+          description: user profile updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: ../components/schemas/Status.yaml#/Status
+                  response:
+                    $ref: ../components/schemas/UserObj.yaml#/UserObj
+        '401':
+          $ref: ../components/responses/401.yaml#/401
+        '403':
+          $ref: ../components/responses/403.yaml#/403
+        '426':
+          $ref: ../components/responses/426.yaml#/426
+        '500':
+          $ref: ../components/responses/500.yaml#/500
+  '/users/{uid}/password':
+    put:
+      tags:
+        - users
+      summary: change a user's password
+      parameters:
+        - in: path
+          name: uid
+          schema:
+            type: integer
+          required: true
+          description: uid of the user to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currentPassword:
+                  type: string
+                  description: test
+                  example: oldp455word
+                newPassword:
+                  type: string
+                  example: s3cre7password
+              required:
+                - newPassword
+      responses:
+        '200':
+          description: user profile updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: ../components/schemas/Status.yaml#/Status
+                  response:
+                    type: object
+  '/users/{uid}/follow':
+    post:
+      tags:
+        - users
+      summary: follow a user
+      parameters:
+        - in: path
+          name: uid
+          schema:
+            type: integer
+          required: true
+          description: uid of the user to follow
+      responses:
+        '200':
+          description: successfully followed user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: ../components/schemas/Status.yaml#/Status
+                  response:
+                    type: object
+    delete:
+      tags:
+        - users
+      summary: unfollows a user
+      parameters:
+        - in: path
+          name: uid
+          schema:
+            type: integer
+          required: true
+          description: uid of the user to unfollow
+      responses:
+        '200':
+          description: successfully unfollowed user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: ../components/schemas/Status.yaml#/Status
+                  response:
+                    type: object
+  '/users/{uid}/ban':
+    put:
+      tags:
+        - users
+      summary: ban a user
+      parameters:
+        - in: path
+          name: uid
+          schema:
+            type: integer
+          required: true
+          description: uid of the user to ban
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                until:
+                  type: number
+                  description: UNIX timestamp of the ban expiry
+                  example: 1585775608076
+                reason:
+                  type: string
+                  example: the reason for the ban
+      responses:
+        '200':
+          description: successfully banned user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: ../components/schemas/Status.yaml#/Status
+                  response:
+                    type: object
+    delete:
+      tags:
+        - users
+      summary: unbans a user
+      parameters:
+        - in: path
+          name: uid
+          schema:
+            type: integer
+          required: true
+          description: uid of the user to unban
+      responses:
+        '200':
+          description: successfully unbanned user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: ../components/schemas/Status.yaml#/Status
+                  response:
+                    type: object
+  '/users/{uid}/tokens':
+    post:
+      tags:
+        - users
+      summary: generate a user token
+      description: This route can only be used to generate tokens for the same user. In other words, you cannot use this route to generate a token for a different user than the one you are authenticated as.
+      responses:
+        '200':
+          description: successfully generated a user token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: ../components/schemas/Status.yaml#/Status
+                  response:
+                    type: object
+    delete:
+      tags:
+        - users
+      summary: delete user token
+      parameters:
+        - in: path
+          name: token
+          schema:
+            type: string
+          required: true
+          description: a valid API token
+      responses:
+        '200':
+          description: successfully deleted user token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: ../components/schemas/Status.yaml#/Status
+                  response:
+                    type: object

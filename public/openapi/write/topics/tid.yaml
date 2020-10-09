@@ -1,0 +1,52 @@
+post:
+  tags:
+    - topics
+  summary: peply to a topic
+  description: This operation creates a new reply to an existing topic.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            content:
+              type: string
+            timestamp:
+              type: number
+            toPid:
+              type: number
+          required:
+            - content
+        example:
+          content: This is a test reply
+  responses:
+    '200':
+      description: post successfully created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../components/schemas/PostsObject.yaml#/PostsObject
+delete:
+  tags:
+    - topics
+  summary: delete a topic
+  description: This operation purges a topic and all of its posts (careful, there is no confirmation!)
+  responses:
+    '200':
+      description: Topic successfully purged
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}
