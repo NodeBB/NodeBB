@@ -22,7 +22,7 @@ const file = require('./file');
 const viewsDir = nconf.get('views_dir');
 const Emailer = module.exports;
 
-let prevConfig = meta.config;
+let prevConfig;
 let app;
 
 Emailer.transports = {
@@ -37,6 +37,10 @@ Emailer.listServices = () => Object.keys(wellKnownServices);
 Emailer._defaultPayload = {};
 
 const smtpSettingsChanged = (config) => {
+	if (!prevConfig) {
+		prevConfig = meta.config;
+	}
+
 	const settings = [
 		'email:smtpTransport:enabled',
 		'email:smtpTransport:user',
