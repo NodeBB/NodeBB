@@ -37,7 +37,6 @@ JS.scripts = {
 		'public/src/require-config.js',
 		'public/vendor/bootbox/bootbox.js',
 		'public/vendor/bootbox/wrapper.js',
-		'public/vendor/tinycon/tinycon.js',
 		'public/vendor/xregexp/xregexp.js',
 		'public/vendor/xregexp/unicode/unicode-base.js',
 		'node_modules/benchpressjs/build/benchpress.js',
@@ -106,6 +105,7 @@ JS.scripts = {
 		ace: 'node_modules/ace-builds/src-min',
 		'clipboard.js': 'node_modules/clipboard/dist/clipboard.min.js',
 		'nprogress.js': 'node_modules/nprogress/nprogress.js',
+		'tinycon.js': 'node_modules/tinycon/tinycon.js',
 	},
 };
 
