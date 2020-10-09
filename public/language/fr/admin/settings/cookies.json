@@ -8,5 +8,6 @@
 	"consent.blank-localised-default": "Laisser vide pour utiliser les textes localisés par défaut de NodeBB",
 	"settings": "Réglages",
 	"cookie-domain": "Domaine de session du cookie",
+	"max-user-sessions": "Max active sessions per user",
 	"blank-default": "Laissez vide pour utiliser les réglages par défaut"
 }

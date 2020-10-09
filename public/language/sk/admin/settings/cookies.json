@@ -8,5 +8,6 @@
 	"consent.blank-localised-default": "Pre použitie predvoleného textu NodeBB, nechajte prázdne",
 	"settings": "Nastavenia",
 	"cookie-domain": "Doména relácie cookie",
+	"max-user-sessions": "Max active sessions per user",
 	"blank-default": "Pre predvolené, zanechajte prázdne"
 }

@@ -48,5 +48,6 @@
 	"alert.confirm-copyToAllGroup": "Bu grup ayrıcalıklarını <strong>tüm kategoriler</strong> için uygulamaya emin misiniz?",
 	"alert.confirm-copyToChildren": "Bu ayrıcalıkları <strong>tüm alt (aşağı) kategoriler</strong> için uygulamaya emin misiniz?",
 	"alert.confirm-copyToChildrenGroup": "Bu grup ayrıcalıklarını <strong>tüm alt (aşağı) kategoriler</strong> uygulamaya emin misiniz?",
-	"alert.no-undo": "<em>Bu işlem geri alınamaz.</em>"
+	"alert.no-undo": "<em>Bu işlem geri alınamaz.</em>",
+	"alert.admin-warning": "Administrators implicitly get all privileges"
 }

@@ -8,5 +8,6 @@
 	"consent.blank-localised-default": "Atstāt tukšu, lai izmantotu noklusējuma NodeBB lokalizāciju",
 	"settings": "Iestatījumi",
 	"cookie-domain": "Sesiju sīkfailu domēns",
+	"max-user-sessions": "Max active sessions per user",
 	"blank-default": "Atstāt tukšu, lai izvēlētos pēc noklusējuma"
 }
