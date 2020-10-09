@@ -235,6 +235,18 @@ describe('Read API', async () => {
 	});
 });
 
-describe('Write API', () => {
+describe('Write API', async () => {
 	let writeApi;
+	const apiPath = path.resolve(__dirname, '../public/openapi/write.yaml');
+
+	it('should pass OpenAPI v3 validation', async () => {
+		try {
+			await SwaggerParser.validate(apiPath);
+		} catch (e) {
+			assert.ifError(e);
+		}
+	});
+
+	// writeApi = await SwaggerParser.dereference(apiPath);
+	// console.log(writeApi);
 });
