@@ -94,7 +94,7 @@ JS.scripts = {
 		'public/vendor/jquery/serializeObject/jquery.ba-serializeobject.min.js',
 		'public/vendor/jquery/deserialize/jquery.deserialize.min.js',
 		'public/vendor/slideout/slideout.min.js',
-		'public/vendor/nprogress.min.js',
+		'node_modules/nprogress/nprogress.js',
 	],
 
 	// modules listed below are built (/src/modules) so they can be defined anonymously
