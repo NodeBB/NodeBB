@@ -1,0 +1,53 @@
+put:
+  tags:
+    - posts
+  summary: edit a post
+  description: This operation edits a post
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            content:
+              type: string
+              description: New post content
+            title:
+              type: string
+              description: Topic title, only accepted for main posts
+          required:
+            - content
+        example:
+          content: 'New post content'
+          title: 'New title'
+  responses:
+    '200':
+      description: Post successfully edited
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../components/schemas/PostsObject.yaml#/PostsObject
+delete:
+  tags:
+    - posts
+  summary: purge a post
+  description: This operation purges a post.
+  responses:
+    '200':
+      description: Post successfully purged
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}

@@ -56,252 +56,252 @@ tags:
     description: Convenience and utility routes for accessing other part of the API
 paths:
   /api/:
-    $ref: 'api/index.yaml'
+    $ref: 'read/index.yaml'
   /api/admin/dashboard:
-    $ref: 'api/admin/dashboard.yaml'
+    $ref: 'read/admin/dashboard.yaml'
   /api/admin/settings/languages:
-    $ref: 'api/admin/settings/languages.yaml'
+    $ref: 'read/admin/settings/languages.yaml'
   /api/admin/settings/navigation:
-    $ref: 'api/admin/settings/navigation.yaml'
+    $ref: 'read/admin/settings/navigation.yaml'
   /api/admin/settings/homepage:
-    $ref: 'api/admin/settings/homepage.yaml'
+    $ref: 'read/admin/settings/homepage.yaml'
   /api/admin/settings/social:
-    $ref: 'api/admin/settings/social.yaml'
+    $ref: 'read/admin/settings/social.yaml'
   /api/admin/manage/categories:
-    $ref: 'api/admin/manage/categories.yaml'
+    $ref: 'read/admin/manage/categories.yaml'
   "/api/admin/manage/categories/{category_id}":
-    $ref: 'api/admin/manage/categories/category_id.yaml'
+    $ref: 'read/admin/manage/categories/category_id.yaml'
   "/api/admin/manage/categories/{category_id}/analytics":
-    $ref: 'api/admin/manage/categories/category_id/analytics.yaml'
+    $ref: 'read/admin/manage/categories/category_id/analytics.yaml'
   "/api/admin/manage/privileges/{cid}":
-    $ref: 'api/admin/manage/privileges/cid.yaml'
+    $ref: 'read/admin/manage/privileges/cid.yaml'
   /api/admin/manage/tags:
-    $ref: 'api/admin/manage/tags.yaml'
+    $ref: 'read/admin/manage/tags.yaml'
   /api/admin/manage/users:
-    $ref: 'api/admin/manage/users.yaml'
+    $ref: 'read/admin/manage/users.yaml'
   /api/admin/manage/users/search:
-    $ref: 'api/admin/manage/users/search.yaml'
+    $ref: 'read/admin/manage/users/search.yaml'
   /api/admin/manage/users/latest:
-    $ref: 'api/admin/manage/users/latest.yaml'
+    $ref: 'read/admin/manage/users/latest.yaml'
   /api/admin/manage/users/not-validated:
-    $ref: 'api/admin/manage/users/not-validated.yaml'
+    $ref: 'read/admin/manage/users/not-validated.yaml'
   /api/admin/manage/users/no-posts:
-    $ref: 'api/admin/manage/users/no-posts.yaml'
+    $ref: 'read/admin/manage/users/no-posts.yaml'
   /api/admin/manage/users/top-posters:
-    $ref: 'api/admin/manage/users/top-posters.yaml'
+    $ref: 'read/admin/manage/users/top-posters.yaml'
   /api/admin/manage/users/most-reputation:
-    $ref: 'api/admin/manage/users/most-reputation.yaml'
+    $ref: 'read/admin/manage/users/most-reputation.yaml'
   /api/admin/manage/users/inactive:
-    $ref: 'api/admin/manage/users/inactive.yaml'
+    $ref: 'read/admin/manage/users/inactive.yaml'
   /api/admin/manage/users/flagged:
-    $ref: 'api/admin/manage/users/flagged.yaml'
+    $ref: 'read/admin/manage/users/flagged.yaml'
   /api/admin/manage/users/banned:
-    $ref: 'api/admin/manage/users/banned.yaml'
+    $ref: 'read/admin/manage/users/banned.yaml'
   /api/admin/manage/registration:
-    $ref: 'api/admin/manage/registration.yaml'
+    $ref: 'read/admin/manage/registration.yaml'
   /api/admin/manage/admins-mods:
-    $ref: 'api/admin/manage/admins-mods.yaml'
+    $ref: 'read/admin/manage/admins-mods.yaml'
   /api/admin/manage/groups:
-    $ref: 'api/admin/manage/groups.yaml'
+    $ref: 'read/admin/manage/groups.yaml'
   "/api/admin/manage/groups/{name}":
-    $ref: 'api/admin/manage/groups/name.yaml'
+    $ref: 'read/admin/manage/groups/name.yaml'
   /api/admin/manage/uploads:
-    $ref: 'api/admin/manage/uploads.yaml'
+    $ref: 'read/admin/manage/uploads.yaml'
   /api/admin/manage/digest:
-    $ref: 'api/admin/manage/digest.yaml'
+    $ref: 'read/admin/manage/digest.yaml'
   "/api/admin/settings/{term}":
-    $ref: 'api/admin/settings/term.yaml'
+    $ref: 'read/admin/settings/term.yaml'
   "/api/admin/appearance/{term}":
-    $ref: 'api/admin/appearance/term.yaml'
+    $ref: 'read/admin/appearance/term.yaml'
   /api/admin/extend/plugins:
-    $ref: 'api/admin/extend/plugins.yaml'
+    $ref: 'read/admin/extend/plugins.yaml'
   /api/admin/extend/widgets:
-    $ref: 'api/admin/extend/widgets.yaml'
+    $ref: 'read/admin/extend/widgets.yaml'
   /api/admin/extend/rewards:
-    $ref: 'api/admin/extend/rewards.yaml'
+    $ref: 'read/admin/extend/rewards.yaml'
   /api/admin/advanced/database:
-    $ref: 'api/admin/advanced/database.yaml'
+    $ref: 'read/admin/advanced/database.yaml'
   /api/admin/advanced/events:
-    $ref: 'api/admin/advanced/events.yaml'
+    $ref: 'read/admin/advanced/events.yaml'
   /api/admin/advanced/hooks:
-    $ref: 'api/admin/advanced/hooks.yaml'
+    $ref: 'read/admin/advanced/hooks.yaml'
   /api/admin/advanced/logs:
-    $ref: 'api/admin/advanced/logs.yaml'
+    $ref: 'read/admin/advanced/logs.yaml'
   /api/admin/advanced/errors:
-    $ref: 'api/admin/advanced/errors.yaml'
+    $ref: 'read/admin/advanced/errors.yaml'
   /api/admin/advanced/errors/export:
-    $ref: 'api/admin/advanced/errors/export.yaml'
+    $ref: 'read/admin/advanced/errors/export.yaml'
   /api/admin/advanced/cache:
-    $ref: 'api/admin/advanced/cache.yaml'
+    $ref: 'read/admin/advanced/cache.yaml'
   /api/admin/development/logger:
-    $ref: 'api/admin/development/logger.yaml'
+    $ref: 'read/admin/development/logger.yaml'
   /api/admin/development/info:
-    $ref: 'api/admin/development/info.yaml'
+    $ref: 'read/admin/development/info.yaml'
   /api/admin/users/csv:
-    $ref: 'api/admin/users/csv.yaml'
+    $ref: 'read/admin/users/csv.yaml'
   /api/admin/groups/{groupname}/csv:
-    $ref: 'api/admin/groups/groupname/csv.yaml'
+    $ref: 'read/admin/groups/groupname/csv.yaml'
   /api/admin/analytics:
-    $ref: 'api/admin/analytics.yaml'
+    $ref: 'read/admin/analytics.yaml'
   /api/admin/category/uploadpicture:
-    $ref: 'api/admin/category/uploadpicture.yaml'
+    $ref: 'read/admin/category/uploadpicture.yaml'
   /api/admin/uploadfavicon:
-    $ref: 'api/admin/uploadfavicon.yaml'
+    $ref: 'read/admin/uploadfavicon.yaml'
   /api/admin/uploadTouchIcon:
-    $ref: 'api/admin/uploadTouchIcon.yaml'
+    $ref: 'read/admin/uploadTouchIcon.yaml'
   /api/admin/uploadMaskableIcon:
-    $ref: 'api/admin/uploadMaskableIcon.yaml'
+    $ref: 'read/admin/uploadMaskableIcon.yaml'
   /api/admin/uploadlogo:
-    $ref: 'api/admin/uploadlogo.yaml'
+    $ref: 'read/admin/uploadlogo.yaml'
   /api/admin/uploadOgImage:
-    $ref: 'api/admin/uploadOgImage.yaml'
+    $ref: 'read/admin/uploadOgImage.yaml'
   /api/admin/upload/file:
-    $ref: 'api/admin/upload/file.yaml'
+    $ref: 'read/admin/upload/file.yaml'
   /api/admin/uploadDefaultAvatar:
-    $ref: 'api/admin/uploadDefaultAvatar.yaml'
+    $ref: 'read/admin/uploadDefaultAvatar.yaml'
   /api/config:
-    $ref: 'api/config.yaml'
+    $ref: 'read/config.yaml'
   /api/users:
-    $ref: 'api/users.yaml'
+    $ref: 'read/users.yaml'
   "/api/user/uid/{uid}":
-    $ref: 'api/user/uid/uid.yaml'
+    $ref: 'read/user/uid/uid.yaml'
   "/api/user/username/{username}":
-    $ref: 'api/user/username/username.yaml'
+    $ref: 'read/user/username/username.yaml'
   "/api/user/email/{email}":
-    $ref: 'api/user/email/email.yaml'
+    $ref: 'read/user/email/email.yaml'
   "/api/user/uid/{userslug}/export/posts":
-    $ref: 'api/user/uid/userslug/export/posts.yaml'
+    $ref: 'read/user/uid/userslug/export/posts.yaml'
   "/api/user/uid/{userslug}/export/uploads":
-    $ref: 'api/user/uid/userslug/export/uploads.yaml'
+    $ref: 'read/user/uid/userslug/export/uploads.yaml'
   "/api/user/uid/{userslug}/export/profile":
-    $ref: 'api/user/uid/userslug/export/profile.yaml'
+    $ref: 'read/user/uid/userslug/export/profile.yaml'
   "/api/post/pid/{id}":
-    $ref: 'api/post/pid/id.yaml'
+    $ref: 'read/post/pid/id.yaml'
   "/api/topic/tid/{id}":
-    $ref: 'api/topic/tid/id.yaml'
+    $ref: 'read/topic/tid/id.yaml'
   "/api/category/cid/{id}":
-    $ref: 'api/category/cid/id.yaml'
+    $ref: 'read/category/cid/id.yaml'
   /api/categories:
-    $ref: 'api/categories.yaml'
+    $ref: 'read/categories.yaml'
   "/api/categories/{cid}/moderators":
-    $ref: 'api/categories/cid/moderators.yaml'
+    $ref: 'read/categories/cid/moderators.yaml'
   "/api/topic/{topic_id}/{slug}/{post_index}":
-    $ref: 'api/topic/topic_id/slug/post_index.yaml'
+    $ref: 'read/topic/topic_id/slug/post_index.yaml'
   /api/recent:
-    $ref: 'api/recent.yaml'
+    $ref: 'read/recent.yaml'
   "/api/recent/posts/{term}":
-    $ref: 'api/recent/posts/term.yaml'
+    $ref: 'read/recent/posts/term.yaml'
   /api/unread:
-    $ref: 'api/unread.yaml'
+    $ref: 'read/unread.yaml'
   /api/unread/total:
-    $ref: 'api/unread/total.yaml'
+    $ref: 'read/unread/total.yaml'
   "/api/topic/teaser/{topic_id}":
-    $ref: 'api/topic/teaser/topic_id.yaml'
+    $ref: 'read/topic/teaser/topic_id.yaml'
   "/api/topic/pagination/{topic_id}":
-    $ref: 'api/topic/pagination/topic_id.yaml'
+    $ref: 'read/topic/pagination/topic_id.yaml'
   /api/post/upload:
-    $ref: 'api/post/upload.yaml'
+    $ref: 'read/post/upload.yaml'
   /api/topic/thumb/upload:
-    $ref: 'api/topic/thumb/upload.yaml'
+    $ref: 'read/topic/thumb/upload.yaml'
   /api/login:
-    $ref: 'api/login.yaml'
+    $ref: 'read/login.yaml'
   /api/register:
-    $ref: 'api/register.yaml'
+    $ref: 'read/register.yaml'
   /api/search:
-    $ref: 'api/search.yaml'
+    $ref: 'read/search.yaml'
   "/api/reset":
-    $ref: 'api/reset.yaml'
+    $ref: 'read/reset.yaml'
   "/api/reset/{code}":
-    $ref: 'api/reset/code.yaml'
+    $ref: 'read/reset/code.yaml'
   "/api/email/unsubscribe/{token}":
-    $ref: 'api/email/unsubscribe/token.yaml'
+    $ref: 'read/email/unsubscribe/token.yaml'
   "/api/post/{pid}":
-    $ref: 'api/post/pid.yaml'
+    $ref: 'read/post/pid.yaml'
   /api/flags:
-    $ref: 'api/flags.yaml'
+    $ref: 'read/flags.yaml'
   "/api/flags/{flagId}":
-    $ref: 'api/flags/flagId.yaml'
+    $ref: 'read/flags/flagId.yaml'
   /api/post-queue:
-    $ref: 'api/post-queue.yaml'
+    $ref: 'read/post-queue.yaml'
   /api/ip-blacklist:
-    $ref: 'api/ip-blacklist.yaml'
+    $ref: 'read/ip-blacklist.yaml'
   /api/registration-queue:
-    $ref: 'api/registration-queue.yaml'
+    $ref: 'read/registration-queue.yaml'
   /api/tags:
-    $ref: 'api/tags.yaml'
+    $ref: 'read/tags.yaml'
   "/api/tags/{tag}":
-    $ref: 'api/tags/tag.yaml'
+    $ref: 'read/tags/tag.yaml'
   /api/popular:
-    $ref: 'api/popular.yaml'
+    $ref: 'read/popular.yaml'
   /api/top:
-    $ref: 'api/top.yaml'
+    $ref: 'read/top.yaml'
   "/api/category/{category_id}/{slug}/{topic_index}":
-    $ref: 'api/category/category_id/slug/topic_index.yaml'
+    $ref: 'read/category/category_id/slug/topic_index.yaml'
   /api/self:
-    $ref: 'api/self.yaml'
+    $ref: 'read/self.yaml'
   /api/me:
-    $ref: 'api/me.yaml'
+    $ref: 'read/me.yaml'
   /api/me/*:
-    $ref: 'api/me.yaml'
+    $ref: 'read/me.yaml'
   "/api/uid/{uid}/*":
-    $ref: 'api/uid/uid.yaml'
+    $ref: 'read/uid/uid.yaml'
   "/api/user/{userslug}":
-    $ref: 'api/user/userslug.yaml'
+    $ref: 'read/user/userslug.yaml'
   "/api/user/{userslug}/following":
-    $ref: 'api/user/userslug/following.yaml'
+    $ref: 'read/user/userslug/following.yaml'
   "/api/user/{userslug}/followers":
-    $ref: 'api/user/userslug/followers.yaml'
+    $ref: 'read/user/userslug/followers.yaml'
   "/api/user/{userslug}/categories":
-    $ref: 'api/user/userslug/categories.yaml'
+    $ref: 'read/user/userslug/categories.yaml'
   "/api/user/{userslug}/posts":
-    $ref: 'api/user/userslug/posts.yaml'
+    $ref: 'read/user/userslug/posts.yaml'
   "/api/user/{userslug}/topics":
-    $ref: 'api/user/userslug/topics.yaml'
+    $ref: 'read/user/userslug/topics.yaml'
   "/api/user/{userslug}/best":
-    $ref: 'api/user/userslug/best.yaml'
+    $ref: 'read/user/userslug/best.yaml'
   "/api/user/{userslug}/groups":
-    $ref: 'api/user/userslug/groups.yaml'
+    $ref: 'read/user/userslug/groups.yaml'
   "/api/user/{userslug}/bookmarks":
-    $ref: 'api/user/userslug/bookmarks.yaml'
+    $ref: 'read/user/userslug/bookmarks.yaml'
   "/api/user/{userslug}/watched":
-    $ref: 'api/user/userslug/watched.yaml'
+    $ref: 'read/user/userslug/watched.yaml'
   "/api/user/{userslug}/ignored":
-    $ref: 'api/user/userslug/ignored.yaml'
+    $ref: 'read/user/userslug/ignored.yaml'
   "/api/user/{userslug}/upvoted":
-    $ref: 'api/user/userslug/upvoted.yaml'
+    $ref: 'read/user/userslug/upvoted.yaml'
   "/api/user/{userslug}/downvoted":
-    $ref: 'api/user/userslug/downvoted.yaml'
+    $ref: 'read/user/userslug/downvoted.yaml'
   "/api/user/{userslug}/edit":
-    $ref: 'api/user/userslug/edit.yaml'
+    $ref: 'read/user/userslug/edit.yaml'
   "/api/user/{userslug}/edit/username":
-    $ref: 'api/user/userslug/edit/username.yaml'
+    $ref: 'read/user/userslug/edit/username.yaml'
   "/api/user/{userslug}/edit/email":
-    $ref: 'api/user/userslug/edit/email.yaml'
+    $ref: 'read/user/userslug/edit/email.yaml'
   "/api/user/{userslug}/edit/password":
-    $ref: 'api/user/userslug/edit/password.yaml'
+    $ref: 'read/user/userslug/edit/password.yaml'
   "/api/user/{userslug}/info":
-    $ref: 'api/user/userslug/info.yaml'
+    $ref: 'read/user/userslug/info.yaml'
   "/api/user/{userslug}/settings":
-    $ref: 'api/user/userslug/settings.yaml'
+    $ref: 'read/user/userslug/settings.yaml'
   "/api/user/{userslug}/uploads":
-    $ref: 'api/user/userslug/uploads.yaml'
+    $ref: 'read/user/userslug/uploads.yaml'
   "/api/user/{userslug}/consent":
-    $ref: 'api/user/userslug/consent.yaml'
+    $ref: 'read/user/userslug/consent.yaml'
   "/api/user/{userslug}/blocks":
-    $ref: 'api/user/userslug/blocks.yaml'
+    $ref: 'read/user/userslug/blocks.yaml'
   "/api/user/{userslug}/sessions":
-    $ref: 'api/user/userslug/sessions.yaml'
+    $ref: 'read/user/userslug/sessions.yaml'
   "/api/user/{userslug}/session/{uuid}":
-    $ref: 'api/user/userslug/session/uuid.yaml'
+    $ref: 'read/user/userslug/session/uuid.yaml'
   /api/notifications:
-    $ref: 'api/notifications.yaml'
+    $ref: 'read/notifications.yaml'
   "/api/user/{userslug}/chats/{roomid}":
-    $ref: 'api/user/userslug/chats/roomid.yaml'
+    $ref: 'read/user/userslug/chats/roomid.yaml'
   "/api/chats/{roomid}":
-    $ref: 'api/chats/roomid.yaml'
+    $ref: 'read/chats/roomid.yaml'
   /api/groups:
-    $ref: 'api/groups.yaml'
+    $ref: 'read/groups.yaml'
   "/api/groups/{slug}":
-    $ref: 'api/groups/slug.yaml'
+    $ref: 'read/groups/slug.yaml'
   "/api/groups/{slug}/members":
-    $ref: 'api/groups/slug/members.yaml'
+    $ref: 'read/groups/slug/members.yaml'
