@@ -30,7 +30,7 @@ JS.scripts = {
 		'node_modules/textcomplete.contenteditable/dist/textcomplete.codemirror.min.js',
 		'public/vendor/jquery/timeago/jquery.timeago.js',
 		'public/vendor/jquery/js/jquery.form.min.js',
-		'public/vendor/visibility/visibility.min.js',
+		'node_modules/visibilityjs/lib/visibility.core.js',
 		'node_modules/bootstrap/dist/js/bootstrap.js',
 		'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.min.js',
 		'node_modules/requirejs/require.js',
