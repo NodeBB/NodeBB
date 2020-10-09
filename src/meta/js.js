@@ -92,7 +92,6 @@ JS.scripts = {
 		'public/vendor/semver/semver.browser.js',
 		'public/vendor/jquery/serializeObject/jquery.ba-serializeobject.min.js',
 		'public/vendor/jquery/deserialize/jquery.deserialize.min.js',
-		'public/vendor/slideout/slideout.min.js',
 	],
 
 	// modules listed below are built (/src/modules) so they can be defined anonymously
@@ -106,6 +105,7 @@ JS.scripts = {
 		'clipboard.js': 'node_modules/clipboard/dist/clipboard.min.js',
 		'nprogress.js': 'node_modules/nprogress/nprogress.js',
 		'tinycon.js': 'node_modules/tinycon/tinycon.js',
+		'slideout.js': 'node_modules/slideout/dist/slideout.min.js',
 	},
 };
 

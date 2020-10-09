@@ -116,6 +116,7 @@
         "serve-favicon": "^2.5.0",
         "sharp": "0.26.1",
         "sitemap": "^6.1.0",
+        "slideout": "1.0.1",
         "socket.io": "2.3.0",
         "socket.io-adapter-cluster": "^1.0.1",
         "socket.io-adapter-postgres": "^1.2.1",
