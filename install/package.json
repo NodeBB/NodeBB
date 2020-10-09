@@ -107,6 +107,7 @@
         "redis": "3.0.2",
         "request": "2.88.2",
         "request-promise-native": "^1.0.8",
+        "requirejs": "^2.3.6",
         "rimraf": "3.0.2",
         "rss": "^1.2.2",
         "sanitize-html": "^2.0.0",

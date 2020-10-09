@@ -33,7 +33,7 @@ JS.scripts = {
 		'public/vendor/visibility/visibility.min.js',
 		'node_modules/bootstrap/dist/js/bootstrap.js',
 		'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.min.js',
-		'public/vendor/requirejs/require.js',
+		'node_modules/requirejs/require.js',
 		'public/src/require-config.js',
 		'public/vendor/bootbox/bootbox.js',
 		'public/vendor/bootbox/wrapper.js',
