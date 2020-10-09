@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/dashboard', ['semver', 'Chart', 'translator', 'benchpress'], function (semver, Chart, translator, Benchpress) {
+define('admin/dashboard', ['Chart', 'translator', 'benchpress'], function (Chart, translator, Benchpress) {
 	var	Admin = {};
 	var	intervals = {
 		rooms: false,

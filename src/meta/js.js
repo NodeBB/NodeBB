@@ -89,7 +89,6 @@ JS.scripts = {
 		'public/vendor/jquery/sortable/Sortable.js',
 		'public/vendor/colorpicker/colorpicker.js',
 		'public/src/admin/admin.js',
-		'public/vendor/semver/semver.browser.js',
 		'public/vendor/jquery/serializeObject/jquery.ba-serializeobject.min.js',
 		'public/vendor/jquery/deserialize/jquery.deserialize.min.js',
 	],
@@ -106,6 +105,7 @@ JS.scripts = {
 		'nprogress.js': 'node_modules/nprogress/nprogress.js',
 		'tinycon.js': 'node_modules/tinycon/tinycon.js',
 		'slideout.js': 'node_modules/slideout/dist/slideout.min.js',
+		'compare-versions.js': 'node_modules/compare-versions/index.js',
 	},
 };
 

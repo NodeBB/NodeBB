@@ -128,8 +128,9 @@ define('admin/extend/plugins', ['jqueryui', 'translator', 'benchpress'], functio
 					return bootbox.alert('[[admin/extend/plugins:alert.package-manager-unreachable]]');
 				}
 
-				require(['semver'], function (semver) {
-					if (payload.version !== 'latest' && semver.gt(payload.version, parent.find('.currentVersion').text())) {
+				require(['compare-versions'], function (compareVersions) {
+					var currentVersion = parent.find('.currentVersion').text();
+					if (payload.version !== 'latest' && compareVersions.compare(payload.version, currentVersion, '>')) {
 						upgrade(pluginID, btn, payload.version);
 					} else if (payload.version === 'latest') {
 						confirmInstall(pluginID, function () {
