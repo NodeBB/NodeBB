@@ -54,12 +54,14 @@
 	});
 
 	function setupNProgress() {
-		$(window).on('action:ajaxify.start', function () {
-			NProgress.set(0.7);
-		});
+		require(['nprogress'], function (NProgress) {
+			$(window).on('action:ajaxify.start', function () {
+				NProgress.set(0.7);
+			});
 
-		$(window).on('action:ajaxify.end', function () {
-			NProgress.done();
+			$(window).on('action:ajaxify.end', function () {
+				NProgress.done();
+			});
 		});
 	}
 

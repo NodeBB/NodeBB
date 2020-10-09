@@ -94,7 +94,6 @@ JS.scripts = {
 		'public/vendor/jquery/serializeObject/jquery.ba-serializeobject.min.js',
 		'public/vendor/jquery/deserialize/jquery.deserialize.min.js',
 		'public/vendor/slideout/slideout.min.js',
-		'node_modules/nprogress/nprogress.js',
 	],
 
 	// modules listed below are built (/src/modules) so they can be defined anonymously
@@ -106,6 +105,7 @@ JS.scripts = {
 		'zxcvbn.js': 'node_modules/zxcvbn/dist/zxcvbn.js',
 		ace: 'node_modules/ace-builds/src-min',
 		'clipboard.js': 'node_modules/clipboard/dist/clipboard.min.js',
+		'nprogress.js': 'node_modules/nprogress/nprogress.js',
 	},
 };
 
