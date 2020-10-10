@@ -101,26 +101,19 @@ app.cacheBuster = null;
 			'taskbar',
 			'helpers',
 			'forum/pagination',
-			'components',
 			'translator',
 			'forum/unread',
 			'forum/header/notifications',
 			'forum/header/chat',
 			'timeago/jquery.timeago',
 			'jquery-form',
-		], function (taskbar, helpers, pagination, components, translator, unread, notifications, chat) {
+		], function (taskbar, helpers, pagination, translator, unread, notifications, chat) {
 			notifications.prepareDOM();
 			chat.prepareDOM();
 			translator.prepareDOM();
 			taskbar.init();
 			helpers.register();
 			pagination.init();
-
-			socket.on('event:unread.updateChatCount', function (count) {
-				components.get('chat/icon')
-					.toggleClass('unread-count', count > 0)
-					.attr('data-content', count > 99 ? '99+' : count);
-			});
 
 			if (app.user.uid > 0) {
 				unread.initUnreadTopics();
