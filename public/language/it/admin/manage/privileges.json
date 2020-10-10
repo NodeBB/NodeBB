@@ -49,5 +49,5 @@
 	"alert.confirm-copyToChildren": "Sei sicuro di voler applicare questo privilegio a <strong>tutte le categorie discendenti (figli)</strong>?",
 	"alert.confirm-copyToChildrenGroup": "Sei sicuro di voler applicare il privilegio di questo gruppo a <strong>tutte le categorie discendenti (figli)</strong>?",
 	"alert.no-undo": "<em>Questa azione non può essere annullata.</em>",
-	"alert.admin-warning": "Administrators implicitly get all privileges"
+	"alert.admin-warning": "Gli amministratori ottengono implicitamente tutti i privilegi"
 }

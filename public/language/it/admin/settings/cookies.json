@@ -8,6 +8,6 @@
 	"consent.blank-localised-default": "Lascia vuoto per usare i valori predefiniti localizzati di NodeBB",
 	"settings": "Impostazioni",
 	"cookie-domain": "Dominio cookie di sessione",
-	"max-user-sessions": "Max active sessions per user",
+	"max-user-sessions": "Sessioni attive massime per utente",
 	"blank-default": "Lascia vuoto per predefinito"
 }
