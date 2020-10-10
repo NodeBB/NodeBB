@@ -4,7 +4,7 @@
 app = window.app || {};
 socket = window.socket;
 
-define('sockets', ['socket.io'], function (io) {
+(function () {
 	var reconnecting = false;
 
 	var ioParams = {
@@ -203,4 +203,4 @@ define('sockets', ['socket.io'], function (io) {
 			'For more information, see this FAQ topic: https://community.nodebb.org/topic/13388'
 		);
 	}
-});
+}());

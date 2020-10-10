@@ -24,6 +24,7 @@ var JS = module.exports;
 JS.scripts = {
 	base: [
 		'node_modules/promise-polyfill/dist/polyfill.js',
+		'node_modules/socket.io-client/dist/socket.io.js',
 		'node_modules/requirejs/require.js',
 		'public/src/require-config.js',
 		'node_modules/jquery/dist/jquery.js',
@@ -103,7 +104,6 @@ JS.scripts = {
 		'tinycon.js': 'node_modules/tinycon/tinycon.js',
 		'slideout.js': 'node_modules/slideout/dist/slideout.min.js',
 		'compare-versions.js': 'node_modules/compare-versions/index.js',
-		'socket.io.js': 'node_modules/socket.io-client/dist/socket.io.js',
 		timeago: 'node_modules/timeago',
 		'jquery-form.js': 'node_modules/jquery-form/dist/jquery.form.min.js',
 	},

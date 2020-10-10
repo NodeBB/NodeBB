@@ -108,7 +108,6 @@ app.cacheBuster = null;
 			'forum/header/chat',
 			'timeago/jquery.timeago',
 			'jquery-form',
-			'sockets',
 		], function (taskbar, helpers, pagination, components, translator, unread, notifications, chat) {
 			notifications.prepareDOM();
 			chat.prepareDOM();
