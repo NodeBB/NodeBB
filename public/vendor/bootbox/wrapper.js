@@ -1,7 +1,25 @@
 /* global bootbox */
 
-require(['translator'], function (shim) {
+require(['translator', 'bootbox'], function (shim, bootbox) {
 	'use strict';
+
+	// expose as global with a warning
+	if (Object.defineProperty) {
+		Object.defineProperty(window, 'bootbox', {
+			configurable: true,
+			enumerable: true,
+			get: function () {
+				console.warn('[deprecated] Accessing bootbox globally is deprecated. Use `require(["bootbox"], function (bootbox) { ... })` instead');
+				return bootbox;
+			},
+		});
+	} else {
+		window.bootbox = bootbox;
+	}
+
+	bootbox.setDefaults({
+		locale: config.userLang,
+	});
 
 	var translator = shim.Translator.create();
 	var dialog = bootbox.dialog;

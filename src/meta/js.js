@@ -33,7 +33,6 @@ JS.scripts = {
 		'node_modules/visibilityjs/lib/visibility.core.js',
 		'node_modules/bootstrap/dist/js/bootstrap.js',
 		'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.min.js',
-		'public/vendor/bootbox/bootbox.js',
 		'public/vendor/bootbox/wrapper.js',
 		'public/vendor/xregexp/xregexp.js',
 		'public/vendor/xregexp/unicode/unicode-base.js',
@@ -291,6 +290,10 @@ function requirejsOptimize(target, callback) {
 		{
 			baseUrl: './node_modules/nprogress',
 			name: 'nprogress',
+		},
+		{
+			baseUrl: './node_modules/bootbox',
+			name: 'bootbox',
 		},
 	];
 

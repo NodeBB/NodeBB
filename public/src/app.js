@@ -18,10 +18,6 @@ app.cacheBuster = null;
 
 	app.cacheBuster = config['cache-buster'];
 
-	bootbox.setDefaults({
-		locale: config.userLang,
-	});
-
 	$(document).ready(function () {
 		ajaxify.parseData();
 		app.load();
@@ -319,12 +315,10 @@ app.cacheBuster = null;
 					break;
 
 				case 'modal':
-					require(['translator'], function (translator) {
-						translator.translate(message || messages[type].message, function (translated) {
-							bootbox.alert({
-								title: messages[type].title,
-								message: translated,
-							});
+					require(['bootbox'], function (bootbox) {
+						bootbox.alert({
+							title: messages[type].title,
+							message: message || messages[type].message,
 						});
 					});
 					break;
