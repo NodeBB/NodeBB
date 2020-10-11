@@ -91,7 +91,11 @@ define('forum/account/settings', ['forum/account/header', 'components', 'transla
 					htmlEl.attr('data-dir', translated);
 					htmlEl.css('direction', translated);
 				});
-				$.getScript(config.relative_path + '/assets/vendor/jquery/timeago/locales/jquery.timeago.' + utils.userLangToTimeagoCode(config.userLang) + '.js', function () {
+
+				var stringsModule = 'timeago/locales/jquery.timeago.' + utils.userLangToTimeagoCode(config.userLang);
+				// without undef, requirejs won't load the strings a second time
+				require.undef(stringsModule);
+				require([stringsModule], function () {
 					overrides.overrideTimeago();
 					ajaxify.refresh();
 				});
