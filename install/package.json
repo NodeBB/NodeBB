@@ -34,7 +34,7 @@
         "async": "^3.2.0",
         "autoprefixer": "^10.0.0",
         "bcryptjs": "2.4.3",
-        "benchpressjs": "2.0.4",
+        "benchpressjs": "2.0.7",
         "body-parser": "^1.19.0",
         "bootbox": "4.4.0",
         "bootstrap": "^3.4.1",
