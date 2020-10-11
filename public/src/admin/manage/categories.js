@@ -1,13 +1,12 @@
 'use strict';
 
 define('admin/manage/categories', [
-	'vendor/jquery/serializeObject/jquery.ba-serializeobject.min',
 	'translator',
 	'benchpress',
 	'categorySelector',
 	'api',
 	'Sortable',
-], function (serialize, translator, Benchpress, categorySelector, api, Sortable) {
+], function (translator, Benchpress, categorySelector, api, Sortable) {
 	var	Categories = {};
 	var newCategoryId = -1;
 	var sortables;

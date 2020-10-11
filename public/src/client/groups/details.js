@@ -187,35 +187,33 @@ define('forum/groups/details', [
 		var checkboxes = settingsFormEl.find('input[type="checkbox"][name]');
 
 		if (settingsFormEl.length) {
-			require(['vendor/jquery/serializeObject/jquery.ba-serializeobject.min'], function () {
-				var settings = settingsFormEl.serializeObject();
+			var settings = settingsFormEl.serializeObject();
 
-				// Fix checkbox values
-				checkboxes.each(function (idx, inputEl) {
-					inputEl = $(inputEl);
-					if (inputEl.length) {
-						settings[inputEl.attr('name')] = inputEl.prop('checked');
-					}
-				});
+			// Fix checkbox values
+			checkboxes.each(function (idx, inputEl) {
+				inputEl = $(inputEl);
+				if (inputEl.length) {
+					settings[inputEl.attr('name')] = inputEl.prop('checked');
+				}
+			});
 
-				socket.emit('groups.update', {
-					groupName: groupName,
-					values: settings,
-				}, function (err) {
-					if (err) {
-						return app.alertError(err.message);
-					}
+			socket.emit('groups.update', {
+				groupName: groupName,
+				values: settings,
+			}, function (err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
 
-					if (settings.name) {
-						var pathname = window.location.pathname;
-						pathname = pathname.substr(1, pathname.lastIndexOf('/'));
-						ajaxify.go(pathname + utils.slugify(settings.name));
-					} else {
-						ajaxify.refresh();
-					}
+				if (settings.name) {
+					var pathname = window.location.pathname;
+					pathname = pathname.substr(1, pathname.lastIndexOf('/'));
+					ajaxify.go(pathname + utils.slugify(settings.name));
+				} else {
+					ajaxify.refresh();
+				}
 
-					app.alertSuccess('[[groups:event.updated]]');
-				});
+				app.alertSuccess('[[groups:event.updated]]');
 			});
 		}
 	};

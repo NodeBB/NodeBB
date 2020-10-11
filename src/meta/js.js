@@ -37,6 +37,7 @@ JS.scripts = {
 		'public/vendor/xregexp/xregexp.js',
 		'public/vendor/xregexp/unicode/unicode-base.js',
 		'node_modules/benchpressjs/build/benchpress.js',
+		'node_modules/jquery-serializeobject/jquery.serializeObject.js',
 		'public/src/utils.js',
 		'public/src/sockets.js',
 		'public/src/app.js',
@@ -84,8 +85,7 @@ JS.scripts = {
 	admin: [
 		'node_modules/material-design-lite/material.js',
 		'public/src/admin/admin.js',
-		'public/vendor/jquery/serializeObject/jquery.ba-serializeobject.min.js',
-		'public/vendor/jquery/deserialize/jquery.deserialize.min.js',
+		'node_modules/jquery-deserialize/src/jquery.deserialize.js',
 	],
 
 	// modules listed below are built (/src/modules) so they can be defined anonymously
