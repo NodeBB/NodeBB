@@ -88,7 +88,19 @@ app.cacheBuster = null;
 		app.showCookieWarning();
 		registerServiceWorker();
 
-		require(['taskbar', 'helpers', 'forum/pagination'], function (taskbar, helpers, pagination) {
+		require([
+			'taskbar',
+			'helpers',
+			'forum/pagination',
+			'translator',
+			'forum/unread',
+			'forum/header/notifications',
+			'forum/header/chat',
+			'timeago/jquery.timeago',
+		], function (taskbar, helpers, pagination, translator, unread, notifications, chat) {
+			notifications.prepareDOM();
+			chat.prepareDOM();
+			translator.prepareDOM();
 			taskbar.init();
 
 			helpers.register();

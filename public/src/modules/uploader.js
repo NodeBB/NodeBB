@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('uploader', ['translator', 'benchpress'], function (translator, Benchpress) {
+define('uploader', ['translator', 'benchpress', 'jquery-form'], function (translator, Benchpress) {
 	var module = {};
 
 	module.show = function (data, callback) {

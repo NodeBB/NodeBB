@@ -1839,7 +1839,7 @@ describe('Controllers', function () {
 
 	describe('timeago locales', function () {
 		it('should load timeago locale', function (done) {
-			request(nconf.get('url') + '/assets/vendor/jquery/timeago/locales/jquery.timeago.af.js', function (err, res, body) {
+			request(nconf.get('url') + '/assets/src/modules/timeago/locales/jquery.timeago.af.js', function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body.includes('Afrikaans'));
@@ -1848,7 +1848,7 @@ describe('Controllers', function () {
 		});
 
 		it('should return not found if NodeBB language exists but timeago locale does not exist', function (done) {
-			request(nconf.get('url') + '/assets/vendor/jquery/timeago/locales/jquery.timeago.ms.js', function (err, res, body) {
+			request(nconf.get('url') + '/assets/src/modules/timeago/locales/jquery.timeago.ms.js', function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				done();
@@ -1856,7 +1856,7 @@ describe('Controllers', function () {
 		});
 
 		it('should return not found if NodeBB language does not exist', function (done) {
-			request(nconf.get('url') + '/assets/vendor/jquery/timeago/locales/jquery.timeago.muggle.js', function (err, res, body) {
+			request(nconf.get('url') + '/assets/src/modules/timeago/locales/jquery.timeago.muggle.js', function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				done();

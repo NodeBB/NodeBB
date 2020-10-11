@@ -102,10 +102,11 @@ JS.scripts = {
 		'zxcvbn.js': 'node_modules/zxcvbn/dist/zxcvbn.js',
 		ace: 'node_modules/ace-builds/src-min',
 		'clipboard.js': 'node_modules/clipboard/dist/clipboard.min.js',
-		'nprogress.js': 'node_modules/nprogress/nprogress.js',
 		'tinycon.js': 'node_modules/tinycon/tinycon.js',
 		'slideout.js': 'node_modules/slideout/dist/slideout.min.js',
 		'compare-versions.js': 'node_modules/compare-versions/index.js',
+		'timeago/locales': 'node_modules/timeago/locales',
+		'jquery-form.js': 'node_modules/jquery-form/dist/jquery.form.min.js',
 	},
 };
 
@@ -272,6 +273,44 @@ JS.buildModules = function (fork, callback) {
 	], callback);
 };
 
+function requirejsOptimize(target, callback) {
+	const requirejs = require('requirejs');
+	let scriptText = '';
+	const sharedCfg = {
+		paths: {
+			jquery: 'empty:',
+		},
+		optimize: 'none',
+		out: function (text) {
+			scriptText += text;
+		},
+	};
+	const bundledModules = [
+		{
+			baseUrl: './node_modules',
+			name: 'timeago/jquery.timeago',
+		},
+		{
+			baseUrl: './node_modules/nprogress',
+			name: 'nprogress',
+		},
+	];
+
+	async.eachSeries(bundledModules, function (moduleCfg, next) {
+		requirejs.optimize({ ...sharedCfg, ...moduleCfg }, function () {
+			next();
+		}, function (err) {
+			next(err);
+		});
+	}, function (err) {
+		if (err) {
+			return callback(err);
+		}
+		const filePath = path.join(__dirname, '../../build/public/rjs-bundle-' + target + '.js');
+		fs.writeFile(filePath, scriptText, callback);
+	});
+}
+
 JS.linkStatics = function (callback) {
 	rimraf(path.join(__dirname, '../../build/public/plugins'), function (err) {
 		if (err) {
@@ -349,6 +388,9 @@ JS.buildBundle = function (target, fork, callback) {
 
 	async.waterfall([
 		function (next) {
+			requirejsOptimize(target, next);
+		},
+		function (next) {
 			getBundleScriptList(target, next);
 		},
 		function (files, next) {
@@ -357,6 +399,10 @@ JS.buildBundle = function (target, fork, callback) {
 			});
 		},
 		function (files, next) {
+			files.push({
+				srcPath: path.join(__dirname, '../../build/public/rjs-bundle-' + target + '.js'),
+			});
+
 			var minify = process.env.NODE_ENV !== 'development';
 			var filePath = path.join(__dirname, '../../build/public', fileNames[target]);
 

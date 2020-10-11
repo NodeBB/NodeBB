@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/register', ['translator', 'zxcvbn'], function (translator, zxcvbn) {
+define('forum/register', ['translator', 'zxcvbn', 'jquery-form'], function (translator, zxcvbn) {
 	var Register = {};
 	var validationError = false;
 	var successIcon = '';
