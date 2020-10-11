@@ -3,12 +3,11 @@
 define('admin/manage/group', [
 	'forum/groups/memberlist',
 	'iconSelect',
-	'admin/modules/colorpicker',
 	'translator',
 	'categorySelector',
 	'groupSearch',
 	'api',
-], function (memberList, iconSelect, colorpicker, translator, categorySelector, groupSearch, api) {
+], function (memberList, iconSelect, translator, categorySelector, groupSearch, api) {
 	var Groups = {};
 
 	Groups.init = function () {
@@ -27,15 +26,15 @@ define('admin/manage/group', [
 
 		memberList.init('admin/manage/group');
 
-		changeGroupUserTitle.keyup(function () {
+		changeGroupUserTitle.on('keyup', function () {
 			groupLabelPreviewText.text(changeGroupUserTitle.val());
 		});
 
-		changeGroupLabelColor.keyup(function () {
-			groupLabelPreview.css('background', changeGroupLabelColor.val() || '#000000');
+		changeGroupLabelColor.on('keyup input', function () {
+			groupLabelPreview.css('background-color', changeGroupLabelColor.val() || '#000000');
 		});
 
-		changeGroupTextColor.keyup(function () {
+		changeGroupTextColor.on('keyup input', function () {
 			groupLabelPreview.css('color', changeGroupTextColor.val() || '#ffffff');
 		});
 
@@ -62,14 +61,6 @@ define('admin/manage/group', [
 		});
 
 		groupSearch.init($('[component="group-selector"]'));
-
-		colorpicker.enable(changeGroupLabelColor, function (hsb, hex) {
-			groupLabelPreview.css('background-color', '#' + hex);
-		});
-
-		colorpicker.enable(changeGroupTextColor, function (hsb, hex) {
-			groupLabelPreview.css('color', '#' + hex);
-		});
 
 		$('form [data-property]').on('change', function () {
 			app.flags = app.flags || {};

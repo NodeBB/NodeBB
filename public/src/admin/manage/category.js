@@ -3,11 +3,10 @@
 define('admin/manage/category', [
 	'uploader',
 	'iconSelect',
-	'admin/modules/colorpicker',
 	'categorySelector',
 	'benchpress',
 	'api',
-], function (uploader, iconSelect, colorpicker, categorySelector, Benchpress, api) {
+], function (uploader, iconSelect, categorySelector, Benchpress, api) {
 	var	Category = {};
 	var updateHash = {};
 
@@ -21,21 +20,6 @@ define('admin/manage/category', [
 			ajaxify.go('admin/manage/categories/' + selectedCategory.cid);
 		});
 
-		function enableColorPicker(idx, inputEl) {
-			var $inputEl = $(inputEl);
-			var previewEl = $inputEl.parents('[data-cid]').find('.category-preview');
-
-			colorpicker.enable($inputEl, function (hsb, hex) {
-				if ($inputEl.attr('data-name') === 'bgColor') {
-					previewEl.css('background-color', '#' + hex);
-				} else if ($inputEl.attr('data-name') === 'color') {
-					previewEl.css('color', '#' + hex);
-				}
-
-				modified($inputEl[0]);
-			});
-		}
-
 		handleTags();
 
 		$('#category-settings input, #category-settings select').on('change', function (ev) {
@@ -46,7 +30,17 @@ define('admin/manage/category', [
 			$('.category-preview').css('background-size', $(this).val());
 		});
 
-		$('[data-name="bgColor"], [data-name="color"]').each(enableColorPicker);
+		$('[data-name="bgColor"], [data-name="color"]').on('input', function () {
+			var $inputEl = $(this);
+			var previewEl = $inputEl.parents('[data-cid]').find('.category-preview');
+			if ($inputEl.attr('data-name') === 'bgColor') {
+				previewEl.css('background-color', $inputEl.val());
+			} else if ($inputEl.attr('data-name') === 'color') {
+				previewEl.css('color', $inputEl.val());
+			}
+
+			modified($inputEl[0]);
+		});
 
 		$('#save').on('click', function () {
 			var tags = $('#tag-whitelist').val() ? $('#tag-whitelist').val().split(',') : [];

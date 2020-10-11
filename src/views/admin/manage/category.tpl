@@ -28,7 +28,7 @@
 							<label for="cid-{category.cid}-bgColor">
 								[[admin/manage/categories:bg-color]]
 							</label>
-							<input id="cid-{category.cid}-bgColor" placeholder="#0059b2" data-name="bgColor" value="{category.bgColor}" class="form-control category_bgColor" />
+							<input type="color" id="cid-{category.cid}-bgColor" placeholder="#0059b2" data-name="bgColor" value="{category.bgColor}" class="form-control category_bgColor" />
 						</div>
 					</div>
 					<div class="col-sm-4 col-xs-12">
@@ -36,7 +36,7 @@
 							<label for="cid-{category.cid}-color">
 								[[admin/manage/categories:text-color]]
 							</label>
-							<input id="cid-{category.cid}-color" placeholder="#fff" data-name="color" value="{category.color}" class="form-control category_color" />
+							<input type="color" id="cid-{category.cid}-color" placeholder="#ffffff" data-name="color" value="{category.color}" class="form-control category_color" />
 						</div>
 					</div>
 					<div class="col-sm-4 col-xs-12">

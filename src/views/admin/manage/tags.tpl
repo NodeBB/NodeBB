@@ -25,11 +25,16 @@
 						<div class="tag-modal hidden">
 							<div class="form-group">
 								<label for="bgColor">[[admin/manage/tags:bg-color]]</label>
-								<input id="bgColor" placeholder="#ffffff" data-name="bgColor" value="{tags.bgColor}" class="form-control category_bgColor" />
+								<input type="color" id="bgColor" placeholder="#ffffff" data-name="bgColor" value="{tags.bgColor}" class="form-control category_bgColor" />
 							</div>
 							<div class="form-group">
 								<label for="color">[[admin/manage/tags:text-color]]</label>
-								<input id="color" placeholder="#a2a2a2" data-name="color" value="{tags.color}" class="form-control category_color" />
+								<input type="color" id="color" placeholder="#a2a2a2" data-name="color" value="{tags.color}" class="form-control category_color" />
+							</div>
+							<div class="checkbox">
+								<label>
+									<input id="reset-colors" type="checkbox"> <strong>[[admin/manage/tags:reset-colors]]</strong>
+								</label>
 							</div>
 						</div>
 					</div>

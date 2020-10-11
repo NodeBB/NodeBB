@@ -83,7 +83,6 @@ JS.scripts = {
 
 	admin: [
 		'node_modules/material-design-lite/material.js',
-		'public/vendor/colorpicker/colorpicker.js',
 		'public/src/admin/admin.js',
 		'public/vendor/jquery/serializeObject/jquery.ba-serializeobject.min.js',
 		'public/vendor/jquery/deserialize/jquery.deserialize.min.js',
