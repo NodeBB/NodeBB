@@ -299,7 +299,7 @@ function requirejsOptimize(target, callback) {
 		admin: [
 			{
 				baseUrl: './node_modules/sortablejs',
-				name: 'sortable',
+				name: 'Sortable',
 			},
 		],
 		client: [
