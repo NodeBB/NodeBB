@@ -7,8 +7,8 @@ define('forum/groups/details', [
 	'coverPhoto',
 	'pictureCropper',
 	'translator',
-	'vendor/colorpicker/colorpicker',
 	'api',
+	'vendor/colorpicker/colorpicker',
 ], function (memberList, iconSelect, components, coverPhoto, pictureCropper, translator, api) {
 	var Details = {};
 	var groupName;
