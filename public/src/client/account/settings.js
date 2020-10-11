@@ -92,10 +92,7 @@ define('forum/account/settings', ['forum/account/header', 'components', 'transla
 					htmlEl.css('direction', translated);
 				});
 
-				var stringsModule = 'timeago/locales/jquery.timeago.' + utils.userLangToTimeagoCode(config.userLang);
-				// without undef, requirejs won't load the strings a second time
-				require.undef(stringsModule);
-				require([stringsModule], function () {
+				translator.switchTimeagoLanguage(utils.userLangToTimeagoCode(config.userLang), function () {
 					overrides.overrideTimeago();
 					ajaxify.refresh();
 				});
