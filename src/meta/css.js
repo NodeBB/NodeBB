@@ -25,7 +25,7 @@ var buildImports = {
 		return '@import "./theme";\n' + source + '\n' + [
 			'@import "font-awesome";',
 			'@import "../../public/less/jquery-ui.less";',
-			'@import (inline) "../public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.css";',
+			'@import (inline) "../node_modules/@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput.css";',
 			'@import (inline) "../node_modules/cropperjs/dist/cropper.css";',
 			'@import "../../public/less/flags.less";',
 			'@import "../../public/less/generics.less";',
@@ -42,7 +42,7 @@ var buildImports = {
 			'@import "../public/less/admin/admin";',
 			'@import "../public/less/generics.less";',
 			'@import "../../public/less/jquery-ui.less";',
-			'@import (inline) "../public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.css";',
+			'@import (inline) "../node_modules/@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput.css";',
 			'@import (inline) "../public/vendor/mdl/material.css";',
 		].map(function (str) {
 			return str.replace(/\//g, path.sep);
