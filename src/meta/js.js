@@ -83,7 +83,6 @@ JS.scripts = {
 
 	admin: [
 		'node_modules/material-design-lite/material.js',
-		'public/vendor/jquery/sortable/Sortable.js',
 		'public/vendor/colorpicker/colorpicker.js',
 		'public/src/admin/admin.js',
 		'public/vendor/jquery/serializeObject/jquery.ba-serializeobject.min.js',
@@ -296,8 +295,18 @@ function requirejsOptimize(target, callback) {
 			name: 'bootbox',
 		},
 	];
+	const targetModules = {
+		admin: [
+			{
+				baseUrl: './node_modules/sortablejs',
+				name: 'sortable',
+			},
+		],
+		client: [
 
-	async.eachSeries(bundledModules, function (moduleCfg, next) {
+		],
+	};
+	async.eachSeries(bundledModules.concat(targetModules[target]), function (moduleCfg, next) {
 		requirejs.optimize({ ...sharedCfg, ...moduleCfg }, function () {
 			next();
 		}, function (err) {
