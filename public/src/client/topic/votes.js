@@ -1,7 +1,9 @@
 'use strict';
 
 
-define('forum/topic/votes', ['components', 'translator', 'benchpress', 'api'], function (components, translator, Benchpress, api) {
+define('forum/topic/votes', [
+	'components', 'translator', 'benchpress', 'api',
+], function (components, translator, Benchpress, api) {
 	var Votes = {};
 
 	Votes.addVoteHandler = function () {

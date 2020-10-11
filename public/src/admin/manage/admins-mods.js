@@ -1,6 +1,8 @@
 'use strict';
 
-define('admin/manage/admins-mods', ['translator', 'benchpress', 'autocomplete', 'api'], function (translator, Benchpress, autocomplete, api) {
+define('admin/manage/admins-mods', [
+	'translator', 'benchpress', 'autocomplete', 'api',
+], function (translator, Benchpress, autocomplete, api) {
 	var AdminsMods = {};
 
 	AdminsMods.init = function () {

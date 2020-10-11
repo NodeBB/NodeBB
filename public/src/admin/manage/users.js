@@ -1,6 +1,8 @@
 'use strict';
 
-define('admin/manage/users', ['translator', 'benchpress', 'autocomplete', 'api'], function (translator, Benchpress, autocomplete, api) {
+define('admin/manage/users', [
+	'translator', 'benchpress', 'autocomplete', 'api',
+], function (translator, Benchpress, autocomplete, api) {
 	var Users = {};
 
 	Users.init = function () {

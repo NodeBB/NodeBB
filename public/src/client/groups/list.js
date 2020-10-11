@@ -1,6 +1,8 @@
 'use strict';
 
-define('forum/groups/list', ['forum/infinitescroll', 'benchpress', 'api'], function (infinitescroll, Benchpress, api) {
+define('forum/groups/list', [
+	'forum/infinitescroll', 'benchpress', 'api',
+], function (infinitescroll, Benchpress, api) {
 	var Groups = {};
 
 	Groups.init = function () {

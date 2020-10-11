@@ -1,6 +1,8 @@
 'use strict';
 
-define('forum/account/edit/password', ['forum/account/header', 'translator', 'zxcvbn', 'api'], function (header, translator, zxcvbn, api) {
+define('forum/account/edit/password', [
+	'forum/account/header', 'translator', 'zxcvbn', 'api',
+], function (header, translator, zxcvbn, api) {
 	var AccountEditPassword = {};
 
 	AccountEditPassword.init = function () {
