@@ -259,6 +259,17 @@ define('forum/topic/threadTools', [
 	};
 
 	function setFollowState(state) {
+		var titles = {
+			follow: '[[topic:watching]]',
+			unfollow: '[[topic:not-watching]]',
+			ignore: '[[topic:ignoring]]',
+		};
+		translator.translate(titles[state], function (translatedTitle) {
+			$('[component="topic/watch"] button')
+				.attr('title', translatedTitle)
+				.tooltip('fixTitle');
+		});
+
 		var menu = components.get('topic/following/menu');
 		menu.toggleClass('hidden', state !== 'follow');
 		components.get('topic/following/check').toggleClass('fa-check', state === 'follow');
