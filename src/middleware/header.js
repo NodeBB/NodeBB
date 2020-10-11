@@ -68,6 +68,7 @@ async function generateHeader(req, res, data) {
 		user: user.getUserData(req.uid),
 		isEmailConfirmSent: (!meta.config.requireEmailConfirmation || req.uid <= 0) ? false : await db.get('uid:' + req.uid + ':confirm:email:sent'),
 		languageDirection: translator.translate('[[language:dir]]', res.locals.config.userLang),
+		timeagoCode: languages.userTimeagoCode(res.locals.config.userLang),
 		browserTitle: translator.translate(controllers.helpers.buildTitle(translator.unescape(data.title))),
 		navigation: navigation.get(req.uid),
 		banned: user.bans.isBanned(req.uid),
@@ -95,6 +96,7 @@ async function generateHeader(req, res, data) {
 	results.user.isGlobalMod = results.isGlobalMod;
 	results.user.isMod = !!results.isModerator;
 	results.user.privileges = results.privileges;
+	results.user.timeagoCode = results.timeagoCode;
 	results.user[results.user.status] = true;
 
 	results.user.email = String(results.user.email);
@@ -189,25 +191,9 @@ middleware.renderFooter = async function renderFooter(req, res, templateValues) 
 		templateValues: templateValues,
 	});
 
-	const results = await utils.promiseParallel({
-		scripts: plugins.fireHook('filter:scripts.get', []),
-		timeagoLocale: (async () => {
-			const languageCodes = await languages.listCodes();
-			const userLang = res.locals.config.userLang;
-			const timeagoCode = utils.userLangToTimeagoCode(userLang);
+	const scripts = await plugins.fireHook('filter:scripts.get', []);
 
-			if (languageCodes.includes(userLang) && languages.timeagoCodes.includes(timeagoCode)) {
-				const pathToLocaleFile = '/vendor/jquery/timeago/locales/jquery.timeago.' + timeagoCode + '.js';
-				return res.locals.config.assetBaseUrl + pathToLocaleFile;
-			}
-			return false;
-		})(),
-	});
-
-	if (results.timeagoLocale) {
-		results.scripts.push(results.timeagoLocale);
-	}
-	data.templateValues.scripts = results.scripts.map(function (script) {
+	data.templateValues.scripts = scripts.map(function (script) {
 		return { src: script };
 	});
 

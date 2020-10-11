@@ -10,6 +10,7 @@ app.flags = {};
 app.cacheBuster = null;
 
 (function () {
+	var appLoaded = false;
 	var params = utils.params();
 	var showWelcomeMessage = !!params.loggedin;
 	var registerMessage = params.register;
@@ -25,6 +26,16 @@ app.cacheBuster = null;
 		ajaxify.parseData();
 		app.load();
 	});
+
+	app.coldLoad = function () {
+		if (appLoaded) {
+			ajaxify.coldLoad();
+		} else {
+			$(window).on('action:app.load', function () {
+				ajaxify.coldLoad();
+			});
+		}
+	};
 
 	app.handleEarlyClicks = function () {
 		/**
@@ -61,8 +72,6 @@ app.cacheBuster = null;
 	app.handleEarlyClicks();
 
 	app.load = function () {
-		overrides.overrideTimeago();
-
 		handleStatusChange();
 
 		if (config.searchEnabled) {
@@ -88,14 +97,38 @@ app.cacheBuster = null;
 		app.showCookieWarning();
 		registerServiceWorker();
 
-		require(['taskbar', 'helpers', 'forum/pagination'], function (taskbar, helpers, pagination) {
+		require([
+			'taskbar',
+			'helpers',
+			'forum/pagination',
+			'translator',
+			'forum/unread',
+			'forum/header/notifications',
+			'forum/header/chat',
+			'timeago/jquery.timeago',
+			'jquery-form',
+		], function (taskbar, helpers, pagination, translator, unread, notifications, chat) {
+			notifications.prepareDOM();
+			chat.prepareDOM();
+			translator.prepareDOM();
 			taskbar.init();
-
 			helpers.register();
-
 			pagination.init();
 
-			$(window).trigger('action:app.load');
+			if (app.user.uid > 0) {
+				unread.initUnreadTopics();
+			}
+
+			overrides.overrideTimeago();
+			if (app.user.timeagoCode && app.user.timeagoCode !== 'en') {
+				require(['timeago/locales/jquery.timeago.' + app.user.timeagoCode], function () {
+					$(window).trigger('action:app.load');
+					appLoaded = true;
+				});
+			} else {
+				$(window).trigger('action:app.load');
+				appLoaded = true;
+			}
 		});
 	};
 
@@ -657,12 +690,15 @@ app.cacheBuster = null;
 		if (typeof $().autocomplete === 'function') {
 			return callback();
 		}
-
-		var scriptEl = document.createElement('script');
-		scriptEl.type = 'text/javascript';
-		scriptEl.src = config.relative_path + '/assets/vendor/jquery/js/jquery-ui.js?' + config['cache-buster'];
-		scriptEl.onload = callback;
-		document.head.appendChild(scriptEl);
+		require([
+			'jquery-ui/widgets/datepicker',
+			'jquery-ui/widgets/autocomplete',
+			'jquery-ui/widgets/sortable',
+			'jquery-ui/widgets/resizable',
+			'jquery-ui/widgets/draggable',
+		], function () {
+			callback();
+		});
 	};
 
 	app.showEmailConfirmWarning = function (err) {

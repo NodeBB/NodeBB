@@ -24,7 +24,7 @@ var buildImports = {
 	client: function (source) {
 		return '@import "./theme";\n' + source + '\n' + [
 			'@import "font-awesome";',
-			'@import (inline) "../public/vendor/jquery/css/smoothness/jquery-ui.css";',
+			'@import "../../public/less/jquery-ui.less";',
 			'@import (inline) "../public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.css";',
 			'@import (inline) "../public/vendor/colorpicker/colorpicker.css";',
 			'@import (inline) "../node_modules/cropperjs/dist/cropper.css";',
@@ -43,7 +43,7 @@ var buildImports = {
 			'@import "../public/less/admin/admin";',
 			'@import "../public/less/generics.less";',
 			'@import (inline) "../public/vendor/colorpicker/colorpicker.css";',
-			'@import (inline) "../public/vendor/jquery/css/smoothness/jquery-ui.css";',
+			'@import "../../public/less/jquery-ui.less";',
 			'@import (inline) "../public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.css";',
 			'@import (inline) "../public/vendor/mdl/material.css";',
 		].map(function (str) {

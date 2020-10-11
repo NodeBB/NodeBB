@@ -24,17 +24,15 @@ var JS = module.exports;
 JS.scripts = {
 	base: [
 		'node_modules/promise-polyfill/dist/polyfill.js',
-		'node_modules/jquery/dist/jquery.js',
 		'node_modules/socket.io-client/dist/socket.io.js',
+		'node_modules/requirejs/require.js',
+		'public/src/require-config.js',
+		'node_modules/jquery/dist/jquery.js',
 		'node_modules/textcomplete/dist/textcomplete.min.js',
 		'node_modules/textcomplete.contenteditable/dist/textcomplete.codemirror.min.js',
-		'public/vendor/jquery/timeago/jquery.timeago.js',
-		'public/vendor/jquery/js/jquery.form.min.js',
 		'node_modules/visibilityjs/lib/visibility.core.js',
 		'node_modules/bootstrap/dist/js/bootstrap.js',
 		'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.min.js',
-		'node_modules/requirejs/require.js',
-		'public/src/require-config.js',
 		'public/vendor/bootbox/bootbox.js',
 		'public/vendor/bootbox/wrapper.js',
 		'public/vendor/xregexp/xregexp.js',
@@ -50,7 +48,6 @@ JS.scripts = {
 
 	// files listed below are only available client-side, or are bundled in to reduce # of network requests on cold load
 	rjs: [
-		'public/src/client/footer.js',
 		'public/src/client/header/chat.js',
 		'public/src/client/header/notifications.js',
 		'public/src/client/infinitescroll.js',
@@ -74,6 +71,7 @@ JS.scripts = {
 		'public/src/modules/navigator.js',
 		'public/src/modules/topicSelect.js',
 		'public/src/modules/topicList.js',
+		'public/src/modules/categoryFilter.js',
 		'public/src/modules/categorySelector.js',
 		'public/src/modules/categorySearch.js',
 		'public/src/modules/share.js',
@@ -98,7 +96,7 @@ JS.scripts = {
 		'Chart.js': 'node_modules/chart.js/dist/Chart.min.js',
 		'mousetrap.js': 'node_modules/mousetrap/mousetrap.min.js',
 		'cropper.js': 'node_modules/cropperjs/dist/cropper.min.js',
-		'jqueryui.js': 'public/vendor/jquery/js/jquery-ui.js',
+		'jquery-ui': 'node_modules/jquery-ui/ui',
 		'zxcvbn.js': 'node_modules/zxcvbn/dist/zxcvbn.js',
 		ace: 'node_modules/ace-builds/src-min',
 		'clipboard.js': 'node_modules/clipboard/dist/clipboard.min.js',
@@ -106,6 +104,8 @@ JS.scripts = {
 		'tinycon.js': 'node_modules/tinycon/tinycon.js',
 		'slideout.js': 'node_modules/slideout/dist/slideout.min.js',
 		'compare-versions.js': 'node_modules/compare-versions/index.js',
+		timeago: 'node_modules/timeago',
+		'jquery-form.js': 'node_modules/jquery-form/dist/jquery.form.min.js',
 	},
 };
 
