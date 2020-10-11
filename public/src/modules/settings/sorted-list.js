@@ -1,6 +1,9 @@
 'use strict';
 
-define('settings/sorted-list', ['benchpress', 'jqueryui'], function (benchpress) {
+define('settings/sorted-list', [
+	'benchpress',
+	'jquery-ui/widgets/sortable',
+], function (benchpress) {
 	var SortedList;
 	var Settings;
 

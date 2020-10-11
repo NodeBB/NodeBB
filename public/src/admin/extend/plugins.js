@@ -1,7 +1,11 @@
 'use strict';
 
 
-define('admin/extend/plugins', ['jqueryui', 'translator', 'benchpress'], function (jqueryui, translator, Benchpress) {
+define('admin/extend/plugins', [
+	'translator',
+	'benchpress',
+	'jquery-ui/widgets/sortable',
+], function (translator, Benchpress) {
 	var Plugins = {};
 	Plugins.init = function () {
 		var pluginsList = $('.plugins');
