@@ -1842,7 +1842,7 @@ describe('Controllers', function () {
 			request(nconf.get('url') + '/assets/src/modules/timeago/locales/jquery.timeago.af.js', function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
-				assert(body.includes('Afrikaans'));
+				assert(body.includes('suffixAgo:"gelede"'));
 				done();
 			});
 		});
