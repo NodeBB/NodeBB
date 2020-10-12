@@ -1706,6 +1706,37 @@ describe('User', function () {
 			});
 		});
 
+		it('should properly escape homePageRoute', function (done) {
+			var data = {
+				uid: testUid,
+				settings: {
+					bootswatchSkin: 'default',
+					homePageRoute: 'category/6/testing-ground',
+					homePageCustom: '',
+					openOutgoingLinksInNewTab: 0,
+					scrollToMyPost: 1,
+					userLang: 'en-GB',
+					usePagination: 1,
+					topicsPerPage: '10',
+					postsPerPage: '5',
+					showemail: 1,
+					showfullname: 1,
+					restrictChat: 0,
+					followTopicsOnCreate: 1,
+					followTopicsOnReply: 1,
+				},
+			};
+			socketUser.saveSettings({ uid: testUid }, data, function (err) {
+				assert.ifError(err);
+				User.getSettings(testUid, function (err, data) {
+					assert.ifError(err);
+					assert.strictEqual(data.homePageRoute, 'category/6/testing-ground');
+					done();
+				});
+			});
+		});
+
+
 		it('should error if language is invalid', function (done) {
 			var data = {
 				uid: testUid,
