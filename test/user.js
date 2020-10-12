@@ -2033,7 +2033,7 @@ describe('User', function () {
 				assert.ifError(err);
 				User.getInvites(inviterUid, function (err, data) {
 					assert.ifError(err);
-					assert.equal(data[0], '&lt;script&gt;alert(&quot;ok&quot;);&lt;&#x2F;script&gt;');
+					assert.equal(data[0].email, '&lt;script&gt;alert(&quot;ok&quot;);&lt;&#x2F;script&gt;');
 					done();
 				});
 			});
