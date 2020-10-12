@@ -1947,8 +1947,11 @@ describe('User', function () {
 		it('should get user\'s invites', function (done) {
 			User.getInvites(inviterUid, function (err, data) {
 				assert.ifError(err);
-				assert.notEqual(data.indexOf('invite1@test.com'), -1);
-				assert.notEqual(data.indexOf('invite2@test.com'), -1);
+				assert(data.length);
+				assert(data[0].email);
+				const emails = data.map(invite => invite.email);
+				assert.notEqual(emails.indexOf('invite1@test.com'), -1);
+				assert.notEqual(emails.indexOf('invite2@test.com'), -1);
 				done();
 			});
 		});
@@ -1956,9 +1959,12 @@ describe('User', function () {
 		it('should get all invites', function (done) {
 			User.getAllInvites(function (err, data) {
 				assert.ifError(err);
+				assert(data[0].invitations.length);
+				assert(data[0].invitations[0].email);
+				const emails = data[0].invitations.map(invite => invite.email);
 				assert.equal(data[0].uid, inviterUid);
-				assert.notEqual(data[0].invitations.indexOf('invite1@test.com'), -1);
-				assert.notEqual(data[0].invitations.indexOf('invite2@test.com'), -1);
+				assert.notEqual(emails.indexOf('invite1@test.com'), -1);
+				assert.notEqual(emails.indexOf('invite2@test.com'), -1);
 				done();
 			});
 		});

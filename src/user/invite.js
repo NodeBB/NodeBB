@@ -17,6 +17,7 @@ module.exports = function (User) {
 		const expirations = (await async.map(emails.map(email => 'invitation:email:' + email), db.pttl)).map(ts => (ts > 0 ? Date.now() + ts : 0));
 
 		return emails.map((email, i) => ({
+			inviter_uid: uid,
 			email: validator.escape(String(email)),
 			expireAt: expirations[i],
 		}));
