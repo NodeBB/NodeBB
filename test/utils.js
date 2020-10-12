@@ -16,21 +16,23 @@ describe('Utility Methods', function () {
 	global.jQuery = require('jquery');
 	global.$ = global.jQuery;
 	var $ = global.$;
+	require('jquery-deserialize');
+	require('jquery-serializeobject');
 
 	it('should serialize/deserialize form data properly', function () {
-		require('jquery-deserialize');
-		require('jquery-serializeobject');
-
 		const formSerialize = $(`
 			<form id="form-serialize">
 				<input name="a" value="1">
 				<input name="a" value="2">
 				<input name="bar" value="test">
+				<input name="check1" type="checkbox" checked>
+				<input name="check2" type="checkbox">
 			</form>
 		`);
 		const sampleData = {
 			a: ['1', '2'],
 			bar: 'test',
+			check1: 'on',
 		};
 		const data = formSerialize.serializeObject();
 		assert.deepStrictEqual(data, sampleData);
@@ -40,6 +42,8 @@ describe('Utility Methods', function () {
 				<input id="input1" name="a"/>
 				<input id="input2" name="a"/>
 				<input id="input3" name="bar"/>
+				<input id="input4" name="check1" type="checkbox">
+				<input id="input5" name="check2" type="checkbox">
 			</form>
 		`);
 
@@ -47,6 +51,8 @@ describe('Utility Methods', function () {
 		assert.strictEqual(formDeserialize.find('#input1').val(), sampleData.a[0]);
 		assert.strictEqual(formDeserialize.find('#input2').val(), sampleData.a[1]);
 		assert.strictEqual(formDeserialize.find('#input3').val(), sampleData.bar);
+		assert.strictEqual(formDeserialize.find('#input4').prop('checked'), true);
+		assert.strictEqual(formDeserialize.find('#input5').prop('checked'), false);
 	});
 
 	// https://github.com/jprichardson/string.js/blob/master/test/string.test.js
