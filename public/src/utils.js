@@ -330,6 +330,8 @@
 			return String(str).replace(new RegExp('<(\\/)?(' + (pattern || '[^\\s>]+') + ')(\\s+[^<>]*?)?\\s*(\\/)?>', 'gi'), '');
 		},
 
+
+		// TODO: remove XRegExp & all these in 1.16.0, they are moved to slugify module
 		invalidUnicodeChars: XRegExp('[^\\p{L}\\s\\d\\-_]', 'g'),
 		invalidLatinChars: /[^\w\s\d\-_]/g,
 		trimRegex: /^\s+|\s+$/g,
@@ -338,10 +340,15 @@
 		trimTrailingDash: /-$/g,
 		trimLeadingDash: /^-/g,
 		isLatin: /^[\w\d\s.,\-@]+$/,
-		languageKeyRegex: /\[\[[\w]+:.+\]\]/,
 
 		// http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
 		slugify: function (str, preserveCase) {
+			if (typeof module === 'object' && module.exports) {
+				console.warn('[deprecated] utils.slugify deprecated. Use `require("slugify")` instead');
+			} else {
+				console.warn('[deprecated] utils.slugify deprecated. Use `require(["slugify"], function (slugify) { ... })` instead');
+			}
+
 			if (!str) {
 				return '';
 			}
@@ -397,6 +404,7 @@
 			return !isNaN(parseFloat(n)) && isFinite(n);
 		},
 
+		languageKeyRegex: /\[\[[\w]+:.+\]\]/,
 		hasLanguageKey: function (input) {
 			return utils.languageKeyRegex.test(input);
 		},

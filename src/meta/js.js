@@ -103,6 +103,7 @@ JS.scripts = {
 		'compare-versions.js': 'node_modules/compare-versions/index.js',
 		'timeago/locales': 'node_modules/timeago/locales',
 		'jquery-form.js': 'node_modules/jquery-form/dist/jquery.form.min.js',
+		'xregexp.js': 'node_modules/xregexp/xregexp-all.js',
 	},
 };
 
