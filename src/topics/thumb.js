@@ -49,8 +49,8 @@ module.exports = function (Topics) {
 
 			await image.resizeImage({
 				path: pathToUpload,
-				width: meta.config.topicThumbSize,
-				height: meta.config.topicThumbSize,
+				width: Math.min(meta.config.topicThumbSize, meta.config.rejectImageWidth),
+				height: Math.min(meta.config.topicThumbSize, meta.config.rejectImageHeight),
 			});
 
 			if (!plugins.hasListeners('filter:uploadImage')) {

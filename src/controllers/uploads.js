@@ -119,8 +119,8 @@ uploadsController.uploadThumb = async function (req, res, next) {
 		await image.isFileTypeAllowed(uploadedFile.path);
 		await image.resizeImage({
 			path: uploadedFile.path,
-			width: meta.config.topicThumbSize,
-			height: meta.config.topicThumbSize,
+			width: Math.min(meta.config.topicThumbSize, meta.config.rejectImageWidth),
+			height: Math.min(meta.config.topicThumbSize, meta.config.rejectImageHeight),
 		});
 		if (plugins.hasListeners('filter:uploadImage')) {
 			return await plugins.fireHook('filter:uploadImage', {
