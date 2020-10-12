@@ -12,10 +12,42 @@ describe('Utility Methods', function () {
 	// create some jsdom magic to allow jQuery to work
 	var dom = new JSDOM('<html><body></body></html>');
 	var window = dom.window;
-	global.jQuery = require('jquery')(window);
+	global.window = window;
+	global.jQuery = require('jquery');
 	global.$ = global.jQuery;
 	var $ = global.$;
-	global.window = window;
+
+	it('should serialize/deserialize form data properly', function () {
+		require('jquery-deserialize');
+		require('jquery-serializeobject');
+
+		const formSerialize = $(`
+			<form id="form-serialize">
+				<input name="a" value="1">
+				<input name="a" value="2">
+				<input name="bar" value="test">
+			</form>
+		`);
+		const sampleData = {
+			a: ['1', '2'],
+			bar: 'test',
+		};
+		const data = formSerialize.serializeObject();
+		assert.deepStrictEqual(data, sampleData);
+
+		const formDeserialize = $(`
+			<form>
+				<input id="input1" name="a"/>
+				<input id="input2" name="a"/>
+				<input id="input3" name="bar"/>
+			</form>
+		`);
+
+		formDeserialize.deserialize(sampleData);
+		assert.strictEqual(formDeserialize.find('#input1').val(), sampleData.a[0]);
+		assert.strictEqual(formDeserialize.find('#input2').val(), sampleData.a[1]);
+		assert.strictEqual(formDeserialize.find('#input3').val(), sampleData.bar);
+	});
 
 	// https://github.com/jprichardson/string.js/blob/master/test/string.test.js
 	it('should decode HTML entities', function (done) {
