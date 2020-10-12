@@ -151,7 +151,7 @@ async function mock(req) {
 }
 
 Posts.vote = async (req, res) => {
-	const { data, socketMock } = await mock();
+	const { data, socketMock } = await mock(req);
 
 	if (req.body.delta > 0) {
 		await socketPostHelpers.postCommand(socketMock, 'upvote', 'voted', 'notifications:upvoted_your_post_in', data);
@@ -165,21 +165,21 @@ Posts.vote = async (req, res) => {
 };
 
 Posts.unvote = async (req, res) => {
-	const { data, socketMock } = await mock();
+	const { data, socketMock } = await mock(req);
 
 	await socketPostHelpers.postCommand(socketMock, 'unvote', 'voted', '', data);
 	helpers.formatApiResponse(200, res);
 };
 
 Posts.bookmark = async (req, res) => {
-	const { data, socketMock } = await mock();
+	const { data, socketMock } = await mock(req);
 
 	await socketPostHelpers.postCommand(socketMock, 'bookmark', 'bookmarked', '', data);
 	helpers.formatApiResponse(200, res);
 };
 
 Posts.unbookmark = async (req, res) => {
-	const { data, socketMock } = await mock();
+	const { data, socketMock } = await mock(req);
 
 	await socketPostHelpers.postCommand(socketMock, 'unbookmark', 'bookmarked', '', data);
 	helpers.formatApiResponse(200, res);
