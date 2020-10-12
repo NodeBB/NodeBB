@@ -3,6 +3,7 @@
 const zxcvbn = require('zxcvbn');
 const db = require('../database');
 const utils = require('../utils');
+const slugify = require('../slugify');
 const plugins = require('../plugins');
 const groups = require('../groups');
 const meta = require('../meta');
@@ -10,7 +11,7 @@ const meta = require('../meta');
 module.exports = function (User) {
 	User.create = async function (data) {
 		data.username = data.username.trim();
-		data.userslug = utils.slugify(data.username);
+		data.userslug = slugify(data.username);
 		if (data.email !== undefined) {
 			data.email = String(data.email).trim();
 		}
@@ -63,7 +64,7 @@ module.exports = function (User) {
 		const userNameChanged = !!renamedUsername;
 		if (userNameChanged) {
 			userData.username = renamedUsername;
-			userData.userslug = utils.slugify(renamedUsername);
+			userData.userslug = slugify(renamedUsername);
 		}
 
 		const results = await plugins.fireHook('filter:user.create', { user: userData, data: data });

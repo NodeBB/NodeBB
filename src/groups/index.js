@@ -3,7 +3,7 @@
 const user = require('../user');
 const db = require('../database');
 const plugins = require('../plugins');
-const utils = require('../utils');
+const slugify = require('../slugify');
 
 const Groups = module.exports;
 
@@ -28,7 +28,7 @@ Groups.ephemeralGroups = ['guests', 'spiders'];
 Groups.getEphemeralGroup = function (groupName) {
 	return {
 		name: groupName,
-		slug: utils.slugify(groupName),
+		slug: slugify(groupName),
 		description: '',
 		deleted: '0',
 		hidden: '0',
@@ -217,12 +217,12 @@ async function isFieldOn(groupName, field) {
 
 Groups.exists = async function (name) {
 	if (Array.isArray(name)) {
-		const slugs = name.map(groupName => utils.slugify(groupName));
+		const slugs = name.map(groupName => slugify(groupName));
 		const isMembersOfRealGroups = await db.isSortedSetMembers('groups:createtime', name);
 		const isMembersOfEphemeralGroups = slugs.map(slug => Groups.ephemeralGroups.includes(slug));
 		return name.map((n, index) => isMembersOfRealGroups[index] || isMembersOfEphemeralGroups[index]);
 	}
-	const slug = utils.slugify(name);
+	const slug = slugify(name);
 	const isMemberOfRealGroups = await db.isSortedSetMember('groups:createtime', name);
 	const isMemberOfEphemeralGroups = Groups.ephemeralGroups.includes(slug);
 	return isMemberOfRealGroups || isMemberOfEphemeralGroups;

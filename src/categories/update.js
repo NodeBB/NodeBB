@@ -5,6 +5,7 @@ const async = require('async');
 const db = require('../database');
 const meta = require('../meta');
 const utils = require('../utils');
+const slugify = require('../slugify');
 const translator = require('../translator');
 const plugins = require('../plugins');
 const cache = require('../cache');
@@ -24,7 +25,7 @@ module.exports = function (Categories) {
 
 		if (modifiedFields.hasOwnProperty('name')) {
 			const translated = await translator.translate(modifiedFields.name);
-			modifiedFields.slug = cid + '/' + utils.slugify(translated);
+			modifiedFields.slug = cid + '/' + slugify(translated);
 		}
 		const result = await plugins.fireHook('filter:category.update', { cid: cid, category: modifiedFields });
 

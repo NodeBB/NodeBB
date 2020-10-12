@@ -355,7 +355,14 @@ define('forum/topic/postTools', [
 		}
 
 		if (post.length) {
-			slug = utils.slugify(post.attr('data-username'), true);
+			slug = post.attr('data-userslug');
+			if (!slug) {
+				if (post.attr('data-uid') !== '0') {
+					slug = '[[global:former_user]]';
+				} else {
+					slug = '[[global:guest]]';
+				}
+			}
 		}
 		if (post.length && post.attr('data-uid') !== '0') {
 			slug = '@' + slug;

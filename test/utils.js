@@ -4,6 +4,7 @@
 var assert = require('assert');
 var JSDOM = require('jsdom').JSDOM;
 var utils = require('../public/src/utils.js');
+var slugify = require('../src/slugify');
 const db = require('./mocks/databasemock');
 
 describe('Utility Methods', function () {
@@ -41,14 +42,14 @@ describe('Utility Methods', function () {
 	});
 
 	it('should preserve case if requested', function (done) {
-		var slug = utils.slugify('UPPER CASE', true);
-		assert.equal(slug, 'UPPER-CASE');
+		assert.strictEqual(utils.slugify('UPPER CASE', true), 'UPPER-CASE');
+		assert.strictEqual(slugify('UPPER CASE', true), 'UPPER-CASE');
 		done();
 	});
 
 	it('should work if a number is passed in', function (done) {
-		var slug = utils.slugify(12345);
-		assert.strictEqual(slug, '12345');
+		assert.strictEqual(utils.slugify(12345), '12345');
+		assert.strictEqual(slugify(12345), '12345');
 		done();
 	});
 

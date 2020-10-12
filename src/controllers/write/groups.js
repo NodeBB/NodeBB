@@ -6,7 +6,7 @@ const user = require('../../user');
 const groups = require('../../groups');
 const events = require('../../events');
 const meta = require('../../meta');
-const utils = require('../../utils');
+const slugify = require('../../slugify');
 const notifications = require('../../notifications');
 
 const helpers = require('../helpers');
@@ -114,7 +114,7 @@ Groups.leave = async (req, res) => {
 		type: 'group-leave',
 		bodyShort: '[[groups:membership.leave.notification-title, ' + username + ', ' + group.name + ']]',
 		nid: 'group:' + validator.escape(group.name) + ':uid:' + req.params.uid + ':group-leave',
-		path: '/groups/' + utils.slugify(group.name),
+		path: '/groups/' + slugify(group.name),
 	});
 	const uids = await groups.getOwners(group.name);
 	await notifications.push(notification, uids);

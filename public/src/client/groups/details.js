@@ -8,7 +8,8 @@ define('forum/groups/details', [
 	'pictureCropper',
 	'translator',
 	'api',
-], function (memberList, iconSelect, components, coverPhoto, pictureCropper, translator, api) {
+	'slugify',
+], function (memberList, iconSelect, components, coverPhoto, pictureCropper, translator, api, slugify) {
 	var Details = {};
 	var groupName;
 
@@ -208,7 +209,7 @@ define('forum/groups/details', [
 				if (settings.name) {
 					var pathname = window.location.pathname;
 					pathname = pathname.substr(1, pathname.lastIndexOf('/'));
-					ajaxify.go(pathname + utils.slugify(settings.name));
+					ajaxify.go(pathname + slugify(settings.name));
 				} else {
 					ajaxify.refresh();
 				}

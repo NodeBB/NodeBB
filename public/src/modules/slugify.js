@@ -1,10 +1,13 @@
 'use strict';
 
+/* global XRegExp */
 (function (factory) {
-	if (typeof module === 'object' && module.exports) {
+	if (typeof define === 'function' && define.amd) {
+		define('slugify', ['xregexp'], factory);
+	} else if (typeof exports === 'object') {
 		module.exports = factory(require('xregexp'));
 	} else {
-		define('slugify', ['xregexp'], factory);
+		window.slugify = factory(XRegExp);
 	}
 }(function (XRegExp) {
 	var invalidUnicodeChars = XRegExp('[^\\p{L}\\s\\d\\-_]', 'g');

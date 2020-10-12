@@ -5,6 +5,7 @@ const async = require('async');
 const validator = require('validator');
 
 const utils = require('../utils');
+const slugify = require('../slugify');
 const meta = require('../meta');
 const db = require('../database');
 const groups = require('../groups');
@@ -113,7 +114,7 @@ module.exports = function (User) {
 			throw new Error('[[error:username-too-long]]');
 		}
 
-		const userslug = utils.slugify(data.username);
+		const userslug = slugify(data.username);
 		if (!utils.isUserNameValid(data.username) || !userslug) {
 			throw new Error('[[error:invalid-username]]');
 		}
@@ -256,7 +257,7 @@ module.exports = function (User) {
 		if (userData.username === newUsername) {
 			return;
 		}
-		const newUserslug = utils.slugify(newUsername);
+		const newUserslug = slugify(newUsername);
 		const now = Date.now();
 		await Promise.all([
 			updateUidMapping('username', uid, newUsername, userData.username),

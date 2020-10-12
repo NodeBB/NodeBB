@@ -46,8 +46,8 @@ var web = module.exports;
 
 var scripts = [
 	'node_modules/jquery/dist/jquery.js',
-	'public/vendor/xregexp/xregexp.js',
-	'public/vendor/xregexp/unicode/unicode-base.js',
+	'node_modules/xregexp/xregexp-all.js',
+	'public/src/modules/slugify.js',
 	'public/src/utils.js',
 	'public/src/installer/install.js',
 	'node_modules/zxcvbn/dist/zxcvbn.js',

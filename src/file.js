@@ -8,7 +8,7 @@ const mkdirp = require('mkdirp');
 const mime = require('mime');
 const graceful = require('graceful-fs');
 
-const utils = require('./utils');
+const slugify = require('./slugify');
 
 graceful.gracefulify(fs);
 
@@ -18,7 +18,7 @@ file.saveFileToLocal = async function (filename, folder, tempPath) {
 	/*
 	 * remarkable doesn't allow spaces in hyperlinks, once that's fixed, remove this.
 	 */
-	filename = filename.split('.').map(name => utils.slugify(name)).join('.');
+	filename = filename.split('.').map(name => slugify(name)).join('.');
 
 	const uploadPath = path.join(nconf.get('upload_path'), folder, filename);
 	if (!uploadPath.startsWith(nconf.get('upload_path'))) {

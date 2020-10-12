@@ -1,6 +1,8 @@
 'use strict';
 
-define('forum/account/edit/username', ['forum/account/header', 'api'], function (header, api) {
+define('forum/account/edit/username', [
+	'forum/account/header', 'api', 'slugify',
+], function (header, api, slugify) {
 	var AccountEditUsername = {};
 
 	AccountEditUsername.init = function () {
@@ -26,7 +28,7 @@ define('forum/account/edit/username', ['forum/account/header', 'api'], function 
 
 			api.put('/users/' + userData.uid, userData, (res) => {
 				btn.removeClass('disabled').find('i').addClass('hide');
-				var userslug = utils.slugify(userData.username);
+				var userslug = slugify(userData.username);
 				if (userData.username && userslug && parseInt(userData.uid, 10) === parseInt(app.user.uid, 10)) {
 					$('[component="header/profilelink"]').attr('href', config.relative_path + '/user/' + userslug);
 					$('[component="header/profilelink/edit"]').attr('href', config.relative_path + '/user/' + userslug + '/edit');

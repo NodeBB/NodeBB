@@ -10,6 +10,7 @@ const meta = require('../meta');
 const translator = require('../translator');
 const widgets = require('../widgets');
 const utils = require('../utils');
+const slugify = require('../slugify');
 
 module.exports = function (middleware) {
 	middleware.processRender = function processRender(req, res, next) {
@@ -111,7 +112,7 @@ module.exports = function (middleware) {
 		const parts = clean.split('/').slice(0, 3);
 		parts.forEach(function (p, index) {
 			try {
-				p = utils.slugify(decodeURIComponent(p));
+				p = slugify(decodeURIComponent(p));
 			} catch (err) {
 				winston.error(err.stack);
 				p = '';
@@ -122,7 +123,7 @@ module.exports = function (middleware) {
 
 		if (templateData.template.topic) {
 			parts.push('page-topic-category-' + templateData.category.cid);
-			parts.push('page-topic-category-' + utils.slugify(templateData.category.name));
+			parts.push('page-topic-category-' + slugify(templateData.category.name));
 		}
 		if (templateData.breadcrumbs) {
 			templateData.breadcrumbs.forEach(function (crumb) {

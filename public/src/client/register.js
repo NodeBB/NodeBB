@@ -1,7 +1,9 @@
 'use strict';
 
 
-define('forum/register', ['translator', 'zxcvbn', 'jquery-form'], function (translator, zxcvbn) {
+define('forum/register', [
+	'translator', 'zxcvbn', 'slugify', 'jquery-form',
+], function (translator, zxcvbn, slugify) {
 	var Register = {};
 	var validationError = false;
 	var successIcon = '';
@@ -32,7 +34,7 @@ define('forum/register', ['translator', 'zxcvbn', 'jquery-form'], function (tran
 
 		// Update the "others can mention you via" text
 		username.on('keyup', function () {
-			$('#yourUsername').text(this.value.length > 0 ? utils.slugify(this.value) : 'username');
+			$('#yourUsername').text(this.value.length > 0 ? slugify(this.value) : 'username');
 		});
 
 		username.on('blur', function () {
@@ -154,7 +156,7 @@ define('forum/register', ['translator', 'zxcvbn', 'jquery-form'], function (tran
 			showError(username_notify, '[[error:username-too-short]]');
 		} else if (username.length > ajaxify.data.maximumUsernameLength) {
 			showError(username_notify, '[[error:username-too-long]]');
-		} else if (!utils.isUserNameValid(username) || !utils.slugify(username)) {
+		} else if (!utils.isUserNameValid(username) || !slugify(username)) {
 			showError(username_notify, '[[error:invalid-username]]');
 		} else {
 			socket.emit('user.exists', {

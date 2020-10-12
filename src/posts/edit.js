@@ -11,6 +11,7 @@ const privileges = require('../privileges');
 const plugins = require('../plugins');
 const pubsub = require('../pubsub');
 const utils = require('../utils');
+const slugify = require('../slugify');
 const translator = require('../translator');
 
 module.exports = function (Posts) {
@@ -114,7 +115,7 @@ module.exports = function (Posts) {
 		};
 		if (title) {
 			newTopicData.title = title;
-			newTopicData.slug = tid + '/' + (utils.slugify(title) || 'topic');
+			newTopicData.slug = tid + '/' + (slugify(title) || 'topic');
 		}
 		newTopicData.thumb = data.thumb || '';
 

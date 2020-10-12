@@ -6,6 +6,7 @@ const validator = require('validator');
 
 const db = require('../database');
 const utils = require('../utils');
+const slugify = require('../slugify');
 const plugins = require('../plugins');
 const analytics = require('../analytics');
 const user = require('../user');
@@ -29,7 +30,7 @@ module.exports = function (Topics) {
 			cid: data.cid,
 			mainPid: 0,
 			title: data.title,
-			slug: tid + '/' + (utils.slugify(data.title) || 'topic'),
+			slug: tid + '/' + (slugify(data.title) || 'topic'),
 			timestamp: timestamp,
 			lastposttime: 0,
 			postcount: 0,
@@ -261,7 +262,7 @@ module.exports = function (Topics) {
 			if (data.handle.length > meta.config.maximumUsernameLength) {
 				throw new Error('[[error:guest-handle-invalid]]');
 			}
-			const exists = await user.existsBySlug(utils.slugify(data.handle));
+			const exists = await user.existsBySlug(slugify(data.handle));
 			if (exists) {
 				throw new Error('[[error:username-taken]]');
 			}

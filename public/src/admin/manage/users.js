@@ -1,8 +1,8 @@
 'use strict';
 
 define('admin/manage/users', [
-	'translator', 'benchpress', 'autocomplete', 'api',
-], function (translator, Benchpress, autocomplete, api) {
+	'translator', 'benchpress', 'autocomplete', 'api', 'slugify',
+], function (translator, Benchpress, autocomplete, api, slugify) {
 	var Users = {};
 
 	Users.init = function () {
@@ -110,7 +110,7 @@ define('admin/manage/users', [
 						var groupCard = $(this).parents('[data-group-name]');
 						var groupName = groupCard.attr('data-group-name');
 						var uid = $(this).parents('[data-uid]').attr('data-uid');
-						api.del('/groups/' + utils.slugify(groupName) + '/membership/' + uid, undefined, () => {
+						api.del('/groups/' + slugify(groupName) + '/membership/' + uid, undefined, () => {
 							groupCard.remove();
 						}, 'default');
 						return false;

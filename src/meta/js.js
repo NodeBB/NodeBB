@@ -37,8 +37,10 @@ JS.scripts = {
 		'node_modules/jquery-serializeobject/jquery.serializeObject.js',
 
 		'public/vendor/bootbox/wrapper.js',
+		// TODO: remove xregexp on 1.16.0, it is loaded via require
 		'public/vendor/xregexp/xregexp.js',
 		'public/vendor/xregexp/unicode/unicode-base.js',
+
 		'public/src/utils.js',
 		'public/src/sockets.js',
 		'public/src/app.js',

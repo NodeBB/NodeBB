@@ -9,12 +9,13 @@ const emailer = require('../emailer');
 const notifications = require('../notifications');
 const groups = require('../groups');
 const utils = require('../utils');
+const slugify = require('../slugify');
 const plugins = require('../plugins');
 
 module.exports = function (User) {
 	User.addToApprovalQueue = async function (userData) {
 		userData.username = userData.username.trim();
-		userData.userslug = utils.slugify(userData.username);
+		userData.userslug = slugify(userData.username);
 		await canQueue(userData);
 		const hashedPassword = await User.hashPassword(userData.password);
 		const data = {

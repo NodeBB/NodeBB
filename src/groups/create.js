@@ -2,7 +2,7 @@
 
 const meta = require('../meta');
 const plugins = require('../plugins');
-const utils = require('../utils');
+const slugify = require('../slugify');
 const db = require('../database');
 
 module.exports = function (Groups) {
@@ -27,7 +27,7 @@ module.exports = function (Groups) {
 		const isPrivate = data.hasOwnProperty('private') && data.private !== undefined ? parseInt(data.private, 10) === 1 : true;
 		let groupData = {
 			name: data.name,
-			slug: utils.slugify(data.name),
+			slug: slugify(data.name),
 			createtime: timestamp,
 			userTitle: data.userTitle || data.name,
 			userTitleEnabled: parseInt(data.userTitleEnabled, 10) === 1 ? 1 : 0,
@@ -88,7 +88,7 @@ module.exports = function (Groups) {
 			throw new Error('[[error:invalid-group-name]]');
 		}
 
-		if (name.includes('/') || !utils.slugify(name)) {
+		if (name.includes('/') || !slugify(name)) {
 			throw new Error('[[error:invalid-group-name]]');
 		}
 	};

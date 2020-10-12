@@ -7,6 +7,7 @@ const db = require('../database');
 const plugins = require('../plugins');
 const privileges = require('../privileges');
 const utils = require('../utils');
+const slugify = require('../slugify');
 const cache = require('../cache');
 
 module.exports = function (Categories) {
@@ -15,7 +16,7 @@ module.exports = function (Categories) {
 		const cid = await db.incrObjectField('global', 'nextCid');
 
 		data.name = data.name || 'Category ' + cid;
-		const slug = cid + '/' + utils.slugify(data.name);
+		const slug = cid + '/' + slugify(data.name);
 		const order = data.order || cid;	// If no order provided, place it at the end
 		const colours = Categories.assignColours();
 
