@@ -49,5 +49,5 @@
 	"alert.confirm-copyToChildren": "Voulez-vous vraiment appliquer ces privilèges à <strong>toutes les catégories incluses (enfants)</strong> ?",
 	"alert.confirm-copyToChildrenGroup": "Voulez-vous vraiment appliquer le jeu de privilèges de ce groupe à <strong>toutes les catégories incluses (enfants)</strong> ?",
 	"alert.no-undo": "<em>Cette action ne peut pas être annulée.</em>",
-	"alert.admin-warning": "Administrators implicitly get all privileges"
+	"alert.admin-warning": "Les administrateurs obtiennent implicitement tous les privilèges"
 }
