@@ -30,14 +30,9 @@
 		</div>
 		<hr/>
 		<ul class="nav nav-pills">
-			<li><a href='{config.relative_path}/admin/manage/users/latest?resultsPerPage={resultsPerPage}'>[[admin/manage/users:pills.latest]]</a></li>
-			<li><a href='{config.relative_path}/admin/manage/users/not-validated?resultsPerPage={resultsPerPage}'>[[admin/manage/users:pills.unvalidated]]</a></li>
-			<li><a href='{config.relative_path}/admin/manage/users/no-posts?resultsPerPage={resultsPerPage}'>[[admin/manage/users:pills.no-posts]]</a></li>
-			<li><a href='{config.relative_path}/admin/manage/users/top-posters?resultsPerPage={resultsPerPage}'>[[admin/manage/users:pills.top-posters]]</a></li>
-			<li><a href='{config.relative_path}/admin/manage/users/most-reputation?resultsPerPage={resultsPerPage}'>[[admin/manage/users:pills.top-rep]]</a></li>
-			<li><a href='{config.relative_path}/admin/manage/users/inactive?resultsPerPage={resultsPerPage}'>[[admin/manage/users:pills.inactive]]</a></li>
-			<li><a href='{config.relative_path}/admin/manage/users/flagged?resultsPerPage={resultsPerPage}'>[[admin/manage/users:pills.flagged]]</a></li>
-			<li><a href='{config.relative_path}/admin/manage/users/banned?resultsPerPage={resultsPerPage}'>[[admin/manage/users:pills.banned]]</a></li>
+			<li><a href='{config.relative_path}/admin/manage/users/?filter=not-validated&resultsPerPage={resultsPerPage}'>[[admin/manage/users:pills.unvalidated]]</a></li>
+
+			<li><a href='{config.relative_path}/admin/manage/users?filter=banned&resultsPerPage={resultsPerPage}'>[[admin/manage/users:pills.banned]]</a></li>
 			<li><a href='{config.relative_path}/admin/manage/users/search'>[[admin/manage/users:pills.search]]</a></li>
 			<li class="pull-right">
 				<form class="form-inline">
@@ -90,15 +85,14 @@
 				<thead>
 					<tr>
 						<th><input component="user/select/all" type="checkbox"/></th>
-						<th class="text-right">[[admin/manage/users:users.uid]]</th>
-						<th>[[admin/manage/users:users.username]]</th>
-						<th>[[admin/manage/users:users.email]]</th>
-						<th class="text-right">[[admin/manage/users:users.postcount]]</th>
-						<th class="text-right">[[admin/manage/users:users.reputation]]</th>
-						<th class="text-right">[[admin/manage/users:users.flags]]</th>
-						<th>[[admin/manage/users:users.joined]]</th>
-						<th>[[admin/manage/users:users.last-online]]</th>
-						<th>[[admin/manage/users:users.banned]]</th>
+						<th class="text-right text-muted">[[admin/manage/users:users.uid]]</th>
+						<th class="text-muted">[[admin/manage/users:users.username]]</th>
+						<th class="text-muted">[[admin/manage/users:users.email]]</th>
+						<th data-sort="postcount" class="text-right pointer">[[admin/manage/users:users.postcount]] {{{if sort_postcount}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
+						<th data-sort="reputation" class="text-right pointer">[[admin/manage/users:users.reputation]] {{{if sort_reputation}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
+						<th data-sort="flags" class="text-right pointer">[[admin/manage/users:users.flags]] {{{if sort_flags}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
+						<th data-sort="joindate" class="pointer">[[admin/manage/users:users.joined]] {{{if sort_joindate}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
+						<th data-sort="online" class="pointer">[[admin/manage/users:users.last-online]] {{{if sort_online}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -106,7 +100,7 @@
 					<tr class="user-row">
 						<th><input component="user/select/single" data-uid="{users.uid}" type="checkbox"/></th>
 						<td class="text-right">{users.uid}</td>
-						<td><i class="administrator fa fa-shield text-success<!-- IF !users.administrator --> hidden<!-- ENDIF !users.administrator -->"></i><a href="{config.relative_path}/user/{users.userslug}"> {users.username}</a></td>
+						<td><i title="[[admin/manage/users:users.banned]]" class="ban fa fa-gavel text-danger<!-- IF !users.banned --> hidden<!-- ENDIF !users.banned -->"></i><i class="administrator fa fa-shield text-success<!-- IF !users.administrator --> hidden<!-- ENDIF !users.administrator -->"></i><a href="{config.relative_path}/user/{users.userslug}"> {users.username}</a></td>
 
 						<td>
 						<!-- IF config.requireEmailConfirmation -->
@@ -118,7 +112,6 @@
 						<td class="text-right"><!-- IF users.flags -->{users.flags}<!-- ELSE -->0<!-- ENDIF users.flags --></td>
 						<td><span class="timeago" title="{users.joindateISO}"></span></td>
 						<td><span class="timeago" title="{users.lastonlineISO}"></span></td>
-						<td class="text-center"><i class="ban fa fa-gavel text-danger<!-- IF !users.banned --> hidden<!-- ENDIF !users.banned -->"></i></td>
 					</tr>
 					<!-- END users -->
 				</tbody>

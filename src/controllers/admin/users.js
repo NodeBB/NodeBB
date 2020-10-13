@@ -13,8 +13,107 @@ const utils = require('../../utils');
 
 const usersController = module.exports;
 
-const userFields = ['uid', 'username', 'userslug', 'email', 'postcount', 'joindate', 'banned',
-	'reputation', 'picture', 'flags', 'lastonline', 'email:confirmed'];
+const userFields = [
+	'uid', 'username', 'userslug', 'email', 'postcount', 'joindate', 'banned',
+	'reputation', 'picture', 'flags', 'lastonline', 'email:confirmed',
+];
+
+usersController.index = async function (req, res) {
+	if (req.query.query) {
+		await usersController.search(req, res);
+	} else {
+		await newGet(req, res);
+	}
+};
+
+async function newGet(req, res) {
+	const sortDirection = req.query.sortDirection || 'desc';
+	const reverse = sortDirection === 'desc';
+
+	const page = parseInt(req.query.page, 10) || 1;
+	let resultsPerPage = parseInt(req.query.resultsPerPage, 10) || 50;
+	if (![50, 100, 250, 500].includes(resultsPerPage)) {
+		resultsPerPage = 50;
+	}
+	const sortBy = validator.escape(req.query.sortBy || 'joindate');
+	const filterBy = Array.isArray(req.query.filter) ? req.query.filter : [req.query.filter];
+	const start = Math.max(0, page - 1) * resultsPerPage;
+	const stop = start + resultsPerPage - 1;
+
+	function buildSet() {
+		const sortToSet = {
+			postcount: 'users:postcount',
+			reputation: 'users:reputation',
+			joindate: 'users:joindate',
+			online: 'users:online',
+			flags: 'users:flags',
+		};
+
+		const set = [sortToSet[sortBy] || 'users:joindate'];
+		if (filterBy.includes('notvalidated')) {
+			set.push('users:notvalidated');
+		}
+		if (filterBy.includes('banned')) {
+			set.push('users:banned');
+		}
+		return set.length > 1 ? set : set[0];
+	}
+
+	async function getCount(set) {
+		if (Array.isArray(set)) {
+			return await db.sortedSetIntersectCard(set);
+		}
+		return await db.sortedSetCard(set);
+	}
+
+	async function getUids(set) {
+		let uids = [];
+		console.log('get uids', set);
+		if (Array.isArray(set)) {
+			const weights = set.map((s, index) => (index ? 0 : 1));
+			uids = await db[reverse ? 'getSortedSetRevIntersect' : 'getSortedSetIntersect']({
+				sets: set,
+				start: start,
+				stop: stop,
+				weights: weights,
+			});
+		} else {
+			uids = await db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, stop);
+		}
+		return uids;
+	}
+
+	async function getUsersWithFields(set) {
+		const uids = await getUids(set);
+		const [isAdmin, userData] = await Promise.all([
+			user.isAdministrator(uids),
+			user.getUsersWithFields(uids, userFields, req.uid),
+		]);
+		userData.forEach((user, index) => {
+			if (user) {
+				user.administrator = isAdmin[index];
+			}
+		});
+		return userData;
+	}
+	const set = buildSet();
+	const [count, users] = await Promise.all([
+		getCount(set),
+		getUsersWithFields(set),
+	]);
+
+	const data = {
+		users: users.filter(user => user && parseInt(user.uid, 10)),
+		page: page,
+		pageCount: Math.max(1, Math.ceil(count / resultsPerPage)),
+		resultsPerPage: resultsPerPage,
+		reverse: reverse,
+		sortBy: sortBy,
+	};
+	data['sort_' + sortBy] = true;
+	// data[section] = true;
+	render(req, res, data);
+}
 
 usersController.search = async function (req, res) {
 	const page = parseInt(req.query.page, 10) || 1;

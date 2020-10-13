@@ -427,6 +427,8 @@ define('admin/manage/users', [
 		handleUserCreate();
 
 		handleInvite();
+
+		handleSort();
 	};
 
 	function loadSearchPage(query) {
@@ -479,6 +481,24 @@ define('admin/manage/users', [
 		});
 	}
 
+	function handleSort() {
+		$('.users-table thead th').on('click', function () {
+			var $this = $(this);
+			var sortBy = $this.attr('data-sort');
+			if (!sortBy) {
+				return;
+			}
+			var params = utils.params();
+			params.sortBy = sortBy;
+			if (ajaxify.data.sortBy === sortBy) {
+				params.sortDirection = ajaxify.data.reverse ? 'asc' : 'desc';
+			} else {
+				params.sortDirection = 'desc';
+			}
+			var qs = decodeURIComponent($.param(params));
+			ajaxify.go('admin/manage/users?' + qs);
+		});
+	}
 
 	return Users;
 });
