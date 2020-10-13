@@ -325,6 +325,7 @@ module.exports = function (User) {
 				password: hashedPassword,
 				rss_token: utils.generateUUID(),
 			}),
+			User.reset.cleanByUid(data.uid),
 			User.reset.updateExpiry(data.uid),
 			User.auth.revokeAllSessions(data.uid),
 		]);
