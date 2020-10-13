@@ -23,10 +23,24 @@
 		</div>
 		<hr/>
 		<ul class="nav nav-pills">
-			<li><a href='{config.relative_path}/admin/manage/users/?filter=notvalidated&resultsPerPage={resultsPerPage}'>[[admin/manage/users:pills.unvalidated]]</a></li>
-
-			<li><a href='{config.relative_path}/admin/manage/users?filter=banned&resultsPerPage={resultsPerPage}'>[[admin/manage/users:pills.banned]]</a></li>
-
+			<li class="pull-right">
+				<div class="btn-group" id="filter-by">
+					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+						[[admin/manage/users:filter-by]]<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu dropdown-menu-right" role="menu">
+						<li data-filter-by="unverified" role="presentation">
+							<a role="menu-item" href="#"><i class="fa fa-fw {{{ if filterBy_unverified }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.unvalidated]]</a>
+						</li>
+						<li data-filter-by="verified" role="presentation">
+							<a role="menu-item" href="#"><i class="fa fa-fw {{{ if filterBy_verified }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.validated]]</a>
+						</li>
+						<li data-filter-by="banned" role="presentation">
+							<a role="menu-item" href="#"><i class="fa fa-fw {{{ if filterBy_banned }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.banned]]</a>
+						</li>
+					</ul>
+				</div>
+			</li>
 			<li class="pull-right">
 				<form class="form-inline">
 					<!-- IF inviteOnly -->

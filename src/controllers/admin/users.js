@@ -229,6 +229,10 @@ function render(req, res, data) {
 	data.adminInviteOnly = registrationType === 'admin-invite-only';
 	data['sort_' + data.sortBy] = true;
 	data['searchBy_' + validator.escape(String(req.query.searchBy))] = true;
+	const filterBy = Array.isArray(req.query.filter) ? req.query.filter : [req.query.filter];
+	filterBy.forEach(function (filter) {
+		data['filterBy_' + validator.escape(String(filter))] = true;
+	});
 	res.render('admin/manage/users', data);
 }
 

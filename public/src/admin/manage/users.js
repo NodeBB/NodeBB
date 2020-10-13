@@ -6,13 +6,6 @@ define('admin/manage/users', [
 	var Users = {};
 
 	Users.init = function () {
-		var navPills = $('.nav-pills li');
-		var pathname = window.location.pathname;
-		if (!navPills.find('a[href^="' + pathname + '"]').length || pathname === config.relative_path + '/admin/manage/users') {
-			pathname = config.relative_path + '/admin/manage/users/latest';
-		}
-		navPills.removeClass('active').find('a[href^="' + pathname + '"]').parent().addClass('active');
-
 		$('#results-per-page').val(ajaxify.data.resultsPerPage).on('change', function () {
 			var query = utils.params();
 			query.resultsPerPage = $('#results-per-page').val();
@@ -411,6 +404,7 @@ define('admin/manage/users', [
 		handleInvite();
 
 		handleSort();
+		handleFilter();
 	};
 
 	function handleSearch() {
@@ -505,6 +499,7 @@ define('admin/manage/users', [
 
 		return decodeURIComponent($.param(params));
 	}
+
 	function handleSort() {
 		$('.users-table thead th').on('click', function () {
 			var $this = $(this);
@@ -522,6 +517,44 @@ define('admin/manage/users', [
 
 			var qs = buildSearchQuery(params);
 			ajaxify.go('admin/manage/users?' + qs);
+		});
+	}
+
+	function handleFilter() {
+		function getFilters() {
+			var filters = [];
+			$('#filter-by').find('[data-filter-by]').each(function () {
+				if ($(this).find('.fa-check').length) {
+					filters.push($(this).attr('data-filter-by'));
+				}
+			});
+			return filters;
+		}
+
+		var currentFilters = getFilters();
+		$('#filter-by').on('click', 'li', function () {
+			var $this = $(this);
+			$this.find('i').toggleClass('fa-check', !$this.find('i').hasClass('fa-check'));
+			return false;
+		});
+
+		$('#filter-by').on('hidden.bs.dropdown', function () {
+			var filters = getFilters();
+			var changed = filters.length !== currentFilters.length;
+			if (filters.length === currentFilters.length) {
+				filters.forEach(function (filter, i) {
+					if (filter !== currentFilters[i]) {
+						changed = true;
+					}
+				});
+			}
+			currentFilters = getFilters();
+			if (changed) {
+				var params = utils.params();
+				params.filter = filters;
+				var qs = buildSearchQuery(params);
+				ajaxify.go('admin/manage/users?' + qs);
+			}
 		});
 	}
 
