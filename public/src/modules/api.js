@@ -5,7 +5,11 @@ define('api', () => {
 	const baseUrl = config.relative_path + '/api/v3';
 
 	function call(options, onSuccess, onError) {
-		$.ajax(options)
+		$.ajax(Object.assign({
+			headers: {
+				'x-csrf-token': config.csrf_token,
+			},
+		}, options))
 			.done((res) => {
 				if (onSuccess) {
 					onSuccess(res.response);
