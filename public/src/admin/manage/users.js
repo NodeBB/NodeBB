@@ -347,7 +347,7 @@ define('admin/manage/users', [
 		});
 
 		function handleUserCreate() {
-			$('#createUser').on('click', function () {
+			$('[data-action="create"]').on('click', function () {
 				Benchpress.parse('admin/partials/create_user_modal', {}, function (html) {
 					var modal = bootbox.dialog({
 						message: html,

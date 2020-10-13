@@ -22,11 +22,11 @@ usersController.index = async function (req, res) {
 	if (req.query.query) {
 		await usersController.search(req, res);
 	} else {
-		await newGet(req, res);
+		await getUsers(req, res);
 	}
 };
 
-async function newGet(req, res) {
+async function getUsers(req, res) {
 	const sortDirection = req.query.sortDirection || 'desc';
 	const reverse = sortDirection === 'desc';
 
@@ -35,7 +35,7 @@ async function newGet(req, res) {
 	if (![50, 100, 250, 500].includes(resultsPerPage)) {
 		resultsPerPage = 50;
 	}
-	const sortBy = validator.escape(req.query.sortBy || 'joindate');
+	let sortBy = validator.escape(req.query.sortBy || '');
 	const filterBy = Array.isArray(req.query.filter) ? req.query.filter : [req.query.filter];
 	const start = Math.max(0, page - 1) * resultsPerPage;
 	const stop = start + resultsPerPage - 1;
@@ -49,12 +49,19 @@ async function newGet(req, res) {
 			flags: 'users:flags',
 		};
 
-		const set = [sortToSet[sortBy] || 'users:joindate'];
+		const set = [];
+		if (sortBy) {
+			set.push(sortToSet[sortBy]);
+		}
 		if (filterBy.includes('notvalidated')) {
 			set.push('users:notvalidated');
 		}
 		if (filterBy.includes('banned')) {
 			set.push('users:banned');
+		}
+		if (!set.length) {
+			set.push('users:online');
+			sortBy = 'online';
 		}
 		return set.length > 1 ? set : set[0];
 	}
