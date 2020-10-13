@@ -21,7 +21,7 @@ info:
   license:
     name: GPL-3.0
 servers:
-  - url: /api/v1
+  - url: /api/v3
 tags:
   - name: users
     description: 'Account related calls (create, modify, delete, etc.)'
