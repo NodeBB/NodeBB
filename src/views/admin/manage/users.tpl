@@ -30,12 +30,22 @@
 		</div>
 		<hr/>
 		<ul class="nav nav-pills">
-			<li><a href='{config.relative_path}/admin/manage/users/?filter=not-validated&resultsPerPage={resultsPerPage}'>[[admin/manage/users:pills.unvalidated]]</a></li>
+			<li><a href='{config.relative_path}/admin/manage/users/?filter=notvalidated&resultsPerPage={resultsPerPage}'>[[admin/manage/users:pills.unvalidated]]</a></li>
 
 			<li><a href='{config.relative_path}/admin/manage/users?filter=banned&resultsPerPage={resultsPerPage}'>[[admin/manage/users:pills.banned]]</a></li>
-			<li><a href='{config.relative_path}/admin/manage/users/search'>[[admin/manage/users:pills.search]]</a></li>
+
 			<li class="pull-right">
 				<form class="form-inline">
+					<div class="input-group">
+						<input type="text" class="form-control" placeholder="[[global:search]]" id="user-search" value="{query}">
+						<span class="input-group-addon search-button"><i class="fa fa-search"></i></span>
+					</div>
+					<select id="user-search-by" class="form-control">
+						<option value="username" {{{if searchBy_username}}}selected{{{end}}}>[[admin/manage/users:search.username]]</option>
+						<option value="email" {{{if searchBy_email}}}selected{{{end}}}>[[admin/manage/users:search.email]]</option>
+						<option value="uid" {{{if searchBy_uid}}}selected{{{end}}}>[[admin/manage/users:search.uid]]</option>
+						<option value="ip" {{{if searchBy_ip}}}selected{{{end}}}>[[admin/manage/users:search.ip]]</option>
+					</select>
 					<select id="results-per-page" class="form-control">
 						<option value="50">[[admin/manage/users:50-per-page]]</option>
 						<option value="100">[[admin/manage/users:100-per-page]]</option>
@@ -49,24 +59,6 @@
 		<br />
 
 		<div class="search {search_display}">
-			<form class="form-inline">
-				<div class="form-group">
-					<label>[[admin/manage/users:search.uid]]</label>
-					<input class="form-control" id="search-user-uid" data-search-type="uid" type="number" placeholder="[[admin/manage/users:search.uid-placeholder]]" value="{uidQuery}"/>
-				</div>
-				<div class="form-group">
-					<label>[[admin/manage/users:search.username]]</label>
-					<input class="form-control" id="search-user-name" data-search-type="username" type="text" placeholder="[[admin/manage/users:search.username-placeholder]]" value="{usernameQuery}"/>
-				</div>
-				<div class="form-group">
-					<label>[[admin/manage/users:search.email]]</label>
-					<input class="form-control" id="search-user-email" data-search-type="email" type="text" placeholder="[[admin/manage/users:search.email-placeholder]]" value="{emailQuery}"/>
-				</div>
-				<div class="form-group">
-					<label>[[admin/manage/users:search.ip]]</label>
-					<input class="form-control" id="search-user-ip" data-search-type="ip" type="text" placeholder="[[admin/manage/users:search.ip-placeholder]]" value="{ipQuery}"/>
-				</div>
-			</form>
 			<i class="fa fa-spinner fa-spin hidden"></i>
 
 			<div id="user-found-notify" class="label label-info {{{if !matchCount}}}hidden{{{end}}}">[[admin/manage/users:alerts.x-users-found, {matchCount}, {timing}]]</div>

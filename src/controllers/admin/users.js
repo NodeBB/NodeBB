@@ -68,7 +68,6 @@ async function newGet(req, res) {
 
 	async function getUids(set) {
 		let uids = [];
-		console.log('get uids', set);
 		if (Array.isArray(set)) {
 			const weights = set.map((s, index) => (index ? 0 : 1));
 			uids = await db[reverse ? 'getSortedSetRevIntersect' : 'getSortedSetIntersect']({
@@ -102,20 +101,19 @@ async function newGet(req, res) {
 		getUsersWithFields(set),
 	]);
 
-	const data = {
+	render(req, res, {
 		users: users.filter(user => user && parseInt(user.uid, 10)),
 		page: page,
 		pageCount: Math.max(1, Math.ceil(count / resultsPerPage)),
 		resultsPerPage: resultsPerPage,
 		reverse: reverse,
 		sortBy: sortBy,
-	};
-	data['sort_' + sortBy] = true;
-	// data[section] = true;
-	render(req, res, data);
+	});
 }
 
 usersController.search = async function (req, res) {
+	const sortDirection = req.query.sortDirection || 'desc';
+	const reverse = sortDirection === 'desc';
 	const page = parseInt(req.query.page, 10) || 1;
 	let resultsPerPage = parseInt(req.query.resultsPerPage, 10) || 50;
 	if (![50, 100, 250, 500].includes(resultsPerPage)) {
@@ -125,6 +123,8 @@ usersController.search = async function (req, res) {
 		uid: req.uid,
 		query: req.query.query,
 		searchBy: req.query.searchBy,
+		sortBy: req.query.sortBy,
+		sortDirection: sortDirection,
 		page: page,
 		resultsPerPage: resultsPerPage,
 		findUids: async function (query, searchBy, hardCap) {
@@ -157,48 +157,10 @@ usersController.search = async function (req, res) {
 		}
 	});
 	searchData.query = validator.escape(String(req.query.query || ''));
-	searchData.uidQuery = req.query.searchBy === 'uid' ? searchData.query : '';
-	searchData.usernameQuery = req.query.searchBy === 'username' ? searchData.query : '';
-	searchData.emailQuery = req.query.searchBy === 'email' ? searchData.query : '';
-	searchData.ipQuery = req.query.searchBy === 'uid' ? searchData.query : '';
 	searchData.resultsPerPage = resultsPerPage;
-	searchData.pagination = pagination.create(page, searchData.pageCount, req.query);
-	searchData.search_display = '';
-	res.render('admin/manage/users', searchData);
-};
-
-usersController.sortByJoinDate = async function (req, res) {
-	await getUsers('users:joindate', 'latest', undefined, undefined, req, res);
-};
-
-usersController.notValidated = async function (req, res) {
-	await getUsers('users:notvalidated', 'notvalidated', undefined, undefined, req, res);
-};
-
-usersController.noPosts = async function (req, res) {
-	await getUsers('users:postcount', 'noposts', '-inf', 0, req, res);
-};
-
-usersController.topPosters = async function (req, res) {
-	await getUsers('users:postcount', 'topposts', 0, '+inf', req, res);
-};
-
-usersController.mostReputaion = async function (req, res) {
-	await getUsers('users:reputation', 'mostreputation', 0, '+inf', req, res);
-};
-
-usersController.flagged = async function (req, res) {
-	await getUsers('users:flags', 'mostflags', 1, '+inf', req, res);
-};
-
-usersController.inactive = async function (req, res) {
-	const timeRange = 1000 * 60 * 60 * 24 * 30 * (parseInt(req.query.months, 10) || 3);
-	const cutoff = Date.now() - timeRange;
-	await getUsers('users:online', 'inactive', '-inf', cutoff, req, res);
-};
-
-usersController.banned = async function (req, res) {
-	await getUsers('users:banned', 'banned', undefined, undefined, req, res);
+	searchData.sortBy = req.query.sortBy;
+	searchData.reverse = reverse;
+	render(req, res, searchData);
 };
 
 usersController.registrationQueue = async function (req, res) {
@@ -248,61 +210,7 @@ async function getInvites() {
 	return invitations;
 }
 
-async function getUsers(set, section, min, max, req, res) {
-	const page = parseInt(req.query.page, 10) || 1;
-	let resultsPerPage = parseInt(req.query.resultsPerPage, 10) || 50;
-	if (![50, 100, 250, 500].includes(resultsPerPage)) {
-		resultsPerPage = 50;
-	}
-	const start = Math.max(0, page - 1) * resultsPerPage;
-	const stop = start + resultsPerPage - 1;
-	const byScore = min !== undefined && max !== undefined;
-
-	async function getCount() {
-		if (byScore) {
-			return await db.sortedSetCount(set, min, max);
-		} else if (set === 'users:banned' || set === 'users:notvalidated') {
-			return await db.sortedSetCard(set);
-		}
-		return await db.getObjectField('global', 'userCount');
-	}
-
-	async function getUsersWithFields() {
-		let uids;
-		if (byScore) {
-			uids = await db.getSortedSetRevRangeByScore(set, start, resultsPerPage, max, min);
-		} else {
-			uids = await user.getUidsFromSet(set, start, stop);
-		}
-		const [isAdmin, userData] = await Promise.all([
-			user.isAdministrator(uids),
-			user.getUsersWithFields(uids, userFields, req.uid),
-		]);
-		userData.forEach((user, index) => {
-			if (user) {
-				user.administrator = isAdmin[index];
-			}
-		});
-		return userData;
-	}
-
-	const [count, users] = await Promise.all([
-		getCount(),
-		getUsersWithFields(),
-	]);
-
-	const data = {
-		users: users.filter(user => user && parseInt(user.uid, 10)),
-		page: page,
-		pageCount: Math.max(1, Math.ceil(count / resultsPerPage)),
-		resultsPerPage: resultsPerPage,
-	};
-	data[section] = true;
-	render(req, res, data);
-}
-
 function render(req, res, data) {
-	data.search_display = 'hidden';
 	data.pagination = pagination.create(data.page, data.pageCount, req.query);
 	data.requireEmailConfirmation = meta.config.requireEmailConfirmation;
 
@@ -310,7 +218,8 @@ function render(req, res, data) {
 
 	data.inviteOnly = registrationType === 'invite-only' || registrationType === 'admin-invite-only';
 	data.adminInviteOnly = registrationType === 'admin-invite-only';
-
+	data['sort_' + data.sortBy] = true;
+	data['searchBy_' + validator.escape(String(req.query.searchBy))] = true;
 	res.render('admin/manage/users', data);
 }
 

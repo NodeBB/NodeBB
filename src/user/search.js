@@ -113,25 +113,28 @@ module.exports = function (User) {
 		}
 
 		if (data.sortBy) {
-			sortUsers(userData, data.sortBy);
+			sortUsers(userData, data.sortBy, data.sortDirection);
 		}
 
 		return userData.map(user => user.uid);
 	}
 
-	function sortUsers(userData, sortBy) {
+	function sortUsers(userData, sortBy, sortDirection) {
 		if (!userData || !userData.length) {
 			return;
 		}
+		sortDirection = sortDirection || 'desc';
+		const direction = sortDirection === 'desc' ? 1 : -1;
+
 		const isNumeric = utils.isNumber(userData[0][sortBy]);
 		if (isNumeric) {
-			userData.sort((u1, u2) => u2[sortBy] - u1[sortBy]);
+			userData.sort((u1, u2) => direction * (u2[sortBy] - u1[sortBy]));
 		} else {
 			userData.sort(function (u1, u2) {
 				if (u1[sortBy] < u2[sortBy]) {
-					return -1;
+					return direction * -1;
 				} else if (u1[sortBy] > u2[sortBy]) {
-					return 1;
+					return direction * 1;
 				}
 				return 0;
 			});

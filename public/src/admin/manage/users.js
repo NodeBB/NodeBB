@@ -16,7 +16,8 @@ define('admin/manage/users', [
 		$('#results-per-page').val(ajaxify.data.resultsPerPage).on('change', function () {
 			var query = utils.params();
 			query.resultsPerPage = $('#results-per-page').val();
-			ajaxify.go(window.location.pathname + '?' + $.param(query));
+			var qs = buildSearchQuery(query);
+			ajaxify.go(window.location.pathname + '?' + qs);
 		});
 
 		function getSelectedUids() {
@@ -403,26 +404,7 @@ define('admin/manage/users', [
 			}, err => errorEl.translateHtml('[[admin/manage/users:alerts.error-x, ' + err.status.message + ']]').removeClass('hidden'));
 		}
 
-		var timeoutId = 0;
-
-		$('#search-user-uid, #search-user-name, #search-user-email, #search-user-ip').on('keyup', function () {
-			if (timeoutId !== 0) {
-				clearTimeout(timeoutId);
-				timeoutId = 0;
-			}
-
-			var $this = $(this);
-			var type = $this.attr('data-search-type');
-
-			timeoutId = setTimeout(function () {
-				$('.fa-spinner').removeClass('hidden');
-				loadSearchPage({
-					searchBy: type,
-					query: $this.val(),
-					page: 1,
-				});
-			}, 250);
-		});
+		handleSearch();
 
 		handleUserCreate();
 
@@ -431,9 +413,35 @@ define('admin/manage/users', [
 		handleSort();
 	};
 
+	function handleSearch() {
+		var timeoutId = 0;
+		function doSearch() {
+			$('.fa-spinner').removeClass('hidden');
+			loadSearchPage({
+				searchBy: $('#user-search-by').val(),
+				query: $('#user-search').val(),
+				page: 1,
+			});
+		}
+		$('#user-search').on('keyup', function () {
+			if (timeoutId !== 0) {
+				clearTimeout(timeoutId);
+				timeoutId = 0;
+			}
+			timeoutId = setTimeout(doSearch, 250);
+		});
+		$('#user-search-by').on('change', function () {
+			doSearch();
+		});
+	}
+
 	function loadSearchPage(query) {
-		var qs = decodeURIComponent($.param(query));
-		$.get(config.relative_path + '/api/admin/manage/users/search?' + qs, renderSearchResults).fail(function (xhrErr) {
+		var params = utils.params();
+		params.searchBy = query.searchBy;
+		params.query = query.query;
+		params.page = query.page;
+		var qs = decodeURIComponent($.param(params));
+		$.get(config.relative_path + '/api/admin/manage/users?' + qs, renderSearchResults).fail(function (xhrErr) {
 			if (xhrErr && xhrErr.responseJSON && xhrErr.responseJSON.error) {
 				app.alertError(xhrErr.responseJSON.error);
 			}
@@ -450,14 +458,19 @@ define('admin/manage/users', [
 			$('.users-table tbody').append(html);
 			html.find('.timeago').timeago();
 			$('.fa-spinner').addClass('hidden');
-
+			if (!$('#user-search').val()) {
+				$('#user-found-notify').addClass('hidden');
+				$('#user-notfound-notify').addClass('hidden');
+				return;
+			}
 			if (data && data.users.length === 0) {
 				$('#user-notfound-notify').translateHtml('[[admin/manage/users:search.not-found]]')
 					.removeClass('hidden');
 				$('#user-found-notify').addClass('hidden');
 			} else {
-				$('#user-found-notify').translateHtml(translator.compile('admin/manage/users:alerts.x-users-found', data.matchCount, data.timing))
-					.removeClass('hidden');
+				$('#user-found-notify').translateHtml(
+					translator.compile('admin/manage/users:alerts.x-users-found', data.matchCount, data.timing)
+				).removeClass('hidden');
 				$('#user-notfound-notify').addClass('hidden');
 			}
 		});
@@ -481,6 +494,17 @@ define('admin/manage/users', [
 		});
 	}
 
+	function buildSearchQuery(params) {
+		if ($('#user-search').val()) {
+			params.query = $('#user-search').val();
+			params.searchBy = $('#user-search-by').val();
+		} else {
+			params.query = undefined;
+			params.searchBy = undefined;
+		}
+
+		return decodeURIComponent($.param(params));
+	}
 	function handleSort() {
 		$('.users-table thead th').on('click', function () {
 			var $this = $(this);
@@ -495,7 +519,8 @@ define('admin/manage/users', [
 			} else {
 				params.sortDirection = 'desc';
 			}
-			var qs = decodeURIComponent($.param(params));
+
+			var qs = buildSearchQuery(params);
 			ajaxify.go('admin/manage/users?' + qs);
 		});
 	}
