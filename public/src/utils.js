@@ -343,7 +343,7 @@
 
 		// http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
 		slugify: function (str, preserveCase) {
-			var stack = new Error('utils.slugify').stack.split('\n')[1];
+			var stack = new Error('utils.slugify').stack.split('\n').slice(0, 4).join('\n');
 			if (typeof module === 'object' && module.exports) {
 				console.warn('[deprecated] utils.slugify deprecated. Use `require("slugify")` instead.\n' + stack);
 			} else {
