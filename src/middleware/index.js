@@ -48,6 +48,7 @@ middleware.applyCSRF = function (req, res, next) {
 		next();
 	}
 };
+middleware.applyCSRFasync = util.promisify(middleware.applyCSRF);
 
 middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login');
 
