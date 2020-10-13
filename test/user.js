@@ -2073,34 +2073,23 @@ describe('User', function () {
 			});
 		});
 
-		it('should confirm email of user', function (done) {
-			var email = 'confirm@me.com';
-			User.create({
+		it('should confirm email of user', async function () {
+			const email = 'confirm@me.com';
+			const uid = await User.create({
 				username: 'confirme',
 				email: email,
-			}, function (err, uid) {
-				assert.ifError(err);
-				User.email.sendValidationEmail(uid, email, function (err, code) {
-					assert.ifError(err);
-					User.email.confirm(code, function (err) {
-						assert.ifError(err);
-
-						async.parallel({
-							confirmed: function (next) {
-								db.getObjectField('user:' + uid, 'email:confirmed', next);
-							},
-							isMember: function (next) {
-								db.isSortedSetMember('users:notvalidated', uid, next);
-							},
-						}, function (err, results) {
-							assert.ifError(err);
-							assert.equal(results.confirmed, 1);
-							assert.equal(results.isMember, false);
-							done();
-						});
-					});
-				});
 			});
+
+			const code = await User.email.sendValidationEmail(uid, email);
+			const unverified = await groups.isMember(uid, 'unverified-users');
+			assert.strictEqual(unverified, true);
+			await User.email.confirm(code);
+			const [confirmed, isVerified] = await Promise.all([
+				db.getObjectField('user:' + uid, 'email:confirmed'),
+				groups.isMember(uid, 'verified-users', uid),
+			]);
+			assert.strictEqual(parseInt(confirmed, 10), 1);
+			assert.strictEqual(isVerified, true);
 		});
 	});
 

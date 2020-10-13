@@ -4,6 +4,7 @@ var nconf = require('nconf');
 var winston = require('winston');
 
 var user = require('./index');
+const groups = require('../groups');
 var utils = require('../utils');
 var batch = require('../batch');
 
@@ -70,11 +71,12 @@ UserReset.commit = async function (code, password) {
 	const hash = await user.hashPassword(password);
 
 	await user.setUserFields(uid, { password: hash, 'email:confirmed': 1 });
+	await groups.join('verified-users', uid);
+	await groups.leave('unverified-users', uid);
 	await db.deleteObjectField('reset:uid', code);
 	await db.sortedSetRemoveBulk([
 		['reset:issueDate', code],
 		['reset:issueDate:uid', uid],
-		['users:notvalidated', uid],
 	]);
 	await user.reset.updateExpiry(uid);
 	await user.auth.resetLockout(uid);

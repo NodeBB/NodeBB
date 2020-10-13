@@ -53,8 +53,11 @@ async function getUsers(req, res) {
 		if (sortBy) {
 			set.push(sortToSet[sortBy]);
 		}
-		if (filterBy.includes('notvalidated')) {
-			set.push('users:notvalidated');
+		if (filterBy.includes('unverified')) {
+			set.push('group:unverified-users:members');
+		}
+		if (filterBy.includes('verified')) {
+			set.push('group:verified-users:members');
 		}
 		if (filterBy.includes('banned')) {
 			set.push('users:banned');
@@ -219,9 +222,8 @@ async function getInvites() {
 
 function render(req, res, data) {
 	data.pagination = pagination.create(data.page, data.pageCount, req.query);
-	data.requireEmailConfirmation = meta.config.requireEmailConfirmation;
 
-	var registrationType = meta.config.registrationType;
+	const registrationType = meta.config.registrationType;
 
 	data.inviteOnly = registrationType === 'invite-only' || registrationType === 'admin-invite-only';
 	data.adminInviteOnly = registrationType === 'admin-invite-only';

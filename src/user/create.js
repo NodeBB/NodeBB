@@ -86,9 +86,6 @@ module.exports = function (User) {
 			['users:reputation', 0, userData.uid],
 		];
 
-		if (parseInt(userData.uid, 10) !== 1) {
-			bulkAdd.push(['users:notvalidated', timestamp, userData.uid]);
-		}
 		if (userData.email) {
 			bulkAdd.push(['email:uid', userData.uid, userData.email.toLowerCase()]);
 			bulkAdd.push(['email:sorted', 0, userData.email.toLowerCase() + ':' + userData.uid]);
@@ -99,10 +96,15 @@ module.exports = function (User) {
 			bulkAdd.push(['fullname:sorted', 0, userData.fullname.toLowerCase() + ':' + userData.uid]);
 		}
 
+		const groupsToJoin = ['registered-users'].concat(
+			parseInt(userData.uid, 10) !== 1 ?
+				'unverified-users' : 'verified-users'
+		);
+
 		await Promise.all([
 			db.incrObjectField('global', 'userCount'),
 			db.sortedSetAddBulk(bulkAdd),
-			groups.join('registered-users', userData.uid),
+			groups.join(groupsToJoin, userData.uid),
 			User.notifications.sendWelcomeNotification(userData.uid),
 			storePassword(userData.uid, data.password),
 			User.updateDigestSetting(userData.uid, meta.config.dailyDigestFreq),

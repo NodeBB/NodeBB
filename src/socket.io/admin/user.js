@@ -80,7 +80,10 @@ User.validateEmail = async function (socket, uids) {
 
 	uids = uids.filter(uid => parseInt(uid, 10));
 	await db.setObjectField(uids.map(uid => 'user:' + uid), 'email:confirmed', 1);
-	await db.sortedSetRemove('users:notvalidated', uids);
+	for (const uid of uids) {
+		await groups.join('verified-users', uid);
+		await groups.leave('unverified-users', uid);
+	}
 };
 
 User.sendValidationEmail = async function (socket, uids) {
