@@ -26,7 +26,7 @@
 			<li class="pull-right">
 				<div class="btn-group" id="filter-by">
 					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-						[[admin/manage/users:filter-by]]<span class="caret"></span>
+						[[admin/manage/users:filter-by]] <span class="caret"></span>
 					</button>
 					<ul class="dropdown-menu dropdown-menu-right" role="menu">
 						<li data-filter-by="unverified" role="presentation">
