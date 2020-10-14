@@ -15,7 +15,7 @@ const usersController = module.exports;
 
 const userFields = [
 	'uid', 'username', 'userslug', 'email', 'postcount', 'joindate', 'banned',
-	'reputation', 'picture', 'flags', 'email:confirmed',
+	'reputation', 'picture', 'flags', 'lastonline', 'email:confirmed',
 ];
 
 usersController.index = async function (req, res) {
@@ -102,8 +102,9 @@ async function getUsers(req, res) {
 		userData.forEach((user, index) => {
 			if (user) {
 				user.administrator = isAdmin[index];
-				user.lastonline = lastonline[index];
-				user.lastonlineISO = utils.toISOString(lastonline[index]);
+				const timestamp = lastonline[index] || userData.joindate;
+				user.lastonline = timestamp;
+				user.timestampISO = utils.toISOString(lastonline);
 			}
 		});
 		return userData;
