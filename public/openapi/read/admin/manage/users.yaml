@@ -21,12 +21,12 @@ get:
                     type: number
                   resultsPerPage:
                     type: number
-                  latest:
+                  reverse:
                     type: boolean
-                  search_display:
+                  sortBy:
                     type: string
-                  requireEmailConfirmation:
-                    type: number
+                  sort_online:
+                    type: boolean
                   inviteOnly:
                     type: boolean
                   adminInviteOnly:

@@ -36,7 +36,7 @@ async function getUsers(req, res) {
 		resultsPerPage = 50;
 	}
 	let sortBy = validator.escape(req.query.sortBy || '');
-	const filterBy = Array.isArray(req.query.filters) ? req.query.filters : [req.query.filters];
+	const filterBy = Array.isArray(req.query.filters || []) ? (req.query.filters || []) : [req.query.filters];
 	const start = Math.max(0, page - 1) * resultsPerPage;
 	const stop = start + resultsPerPage - 1;
 
@@ -230,8 +230,10 @@ function render(req, res, data) {
 	data.inviteOnly = registrationType === 'invite-only' || registrationType === 'admin-invite-only';
 	data.adminInviteOnly = registrationType === 'admin-invite-only';
 	data['sort_' + data.sortBy] = true;
-	data['searchBy_' + validator.escape(String(req.query.searchBy))] = true;
-	const filterBy = Array.isArray(req.query.filters) ? req.query.filters : [req.query.filters];
+	if (req.query.searchBy) {
+		data['searchBy_' + validator.escape(String(req.query.searchBy))] = true;
+	}
+	const filterBy = Array.isArray(req.query.filters || []) ? (req.query.filters || []) : [req.query.filters];
 	filterBy.forEach(function (filter) {
 		data['filterBy_' + validator.escape(String(filter))] = true;
 	});

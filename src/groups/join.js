@@ -90,7 +90,10 @@ module.exports = function (Groups) {
 	}
 
 	async function setGroupTitleIfNotSet(groupNames, uid) {
-		groupNames = groupNames.filter(groupName => groupName !== 'registered-users' && !Groups.isPrivilegeGroup(groupName));
+		const ignore = ['registered-users', 'verified-users', 'unverified-users'];
+		groupNames = groupNames.filter(
+			groupName => !ignore.includes(groupName) && !Groups.isPrivilegeGroup(groupName)
+		);
 		if (!groupNames.length) {
 			return;
 		}
