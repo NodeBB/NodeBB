@@ -15,7 +15,7 @@ const usersController = module.exports;
 
 const userFields = [
 	'uid', 'username', 'userslug', 'email', 'postcount', 'joindate', 'banned',
-	'reputation', 'picture', 'flags', 'lastonline', 'email:confirmed',
+	'reputation', 'picture', 'flags', 'email:confirmed',
 ];
 
 usersController.index = async function (req, res) {
@@ -94,13 +94,16 @@ async function getUsers(req, res) {
 
 	async function getUsersWithFields(set) {
 		const uids = await getUids(set);
-		const [isAdmin, userData] = await Promise.all([
+		const [isAdmin, userData, lastonline] = await Promise.all([
 			user.isAdministrator(uids),
 			user.getUsersWithFields(uids, userFields, req.uid),
+			db.sortedSetScores('users:online', uids),
 		]);
 		userData.forEach((user, index) => {
 			if (user) {
 				user.administrator = isAdmin[index];
+				user.lastonline = lastonline[index];
+				user.lastonlineISO = utils.toISOString(lastonline[index]);
 			}
 		});
 		return userData;
