@@ -1,11 +1,6 @@
 'use strict';
 
-const fs = require('fs');
-
-const path = require('path');
-const nconf = require('nconf');
-const benchpress = require('benchpressjs');
-
+const app = require('../webserver').app;
 const plugins = require('../plugins');
 const groups = require('../groups');
 const index = require('./index');
@@ -57,16 +52,9 @@ async function getAvailableWidgets() {
 }
 
 async function renderAdminTemplate() {
-	const [source, groupsData] = await Promise.all([
-		getSource(),
-		groups.getNonPrivilegeGroups('groups:createtime', 0, -1),
-	]);
+	const groupsData = await groups.getNonPrivilegeGroups('groups:createtime', 0, -1);
 	groupsData.sort((a, b) => b.system - a.system);
-	return await benchpress.compileRender(source, { groups: groupsData });
-}
-
-async function getSource() {
-	return await fs.promises.readFile(path.resolve(nconf.get('views_dir'), 'admin/partials/widget-settings.tpl'), 'utf8');
+	return await app.renderAsync('admin/partials/widget-settings', { groups: groupsData });
 }
 
 function buildTemplatesFromAreas(areas) {
