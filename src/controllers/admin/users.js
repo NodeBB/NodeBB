@@ -102,9 +102,9 @@ async function getUsers(req, res) {
 		userData.forEach((user, index) => {
 			if (user) {
 				user.administrator = isAdmin[index];
-				const timestamp = lastonline[index] || userData.joindate;
+				const timestamp = lastonline[index] || user.joindate;
 				user.lastonline = timestamp;
-				user.lastonlineISO = utils.toISOString(lastonline);
+				user.lastonlineISO = utils.toISOString(timestamp);
 			}
 		});
 		return userData;
