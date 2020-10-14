@@ -10,11 +10,7 @@ define('api', () => {
 			baseUrl + options.url;
 
 		function doAjax(cb) {
-			$.ajax(Object.assign({
-				headers: {
-					'x-csrf-token': config.csrf_token,
-				},
-			}, options))
+			$.ajax(options)
 				.done((res) => {
 					cb(null,
 						res.hasOwnProperty('status') && res.hasOwnProperty('response') ?
@@ -57,18 +53,27 @@ define('api', () => {
 		url: route,
 		method: 'post',
 		data: payload,
+		headers: {
+			'x-csrf-token': config.csrf_token,
+		},
 	}, onSuccess);
 
 	api.put = (route, payload, onSuccess) => call({
 		url: route,
 		method: 'put',
 		data: payload,
+		headers: {
+			'x-csrf-token': config.csrf_token,
+		},
 	}, onSuccess);
 
 	api.del = (route, payload, onSuccess) => call({
 		url: route,
 		method: 'delete',
 		data: payload,
+		headers: {
+			'x-csrf-token': config.csrf_token,
+		},
 	}, onSuccess);
 
 	return api;
