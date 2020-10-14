@@ -5,55 +5,71 @@ define('api', () => {
 	const baseUrl = config.relative_path + '/api/v3';
 
 	function call(options, callback) {
-		return new Promise((resolve, reject) => {
+		options.url = options.url.startsWith('/api') ?
+			config.relative_path + options.url :
+			baseUrl + options.url;
+
+		function doAjax(cb) {
 			$.ajax(Object.assign({
 				headers: {
 					'x-csrf-token': config.csrf_token,
 				},
 			}, options))
 				.done((res) => {
-					resolve(res.response);
-
-					if (callback) {
-						callback(undefined, res.response);
-					}
+					cb(null,
+						res.hasOwnProperty('status') && res.hasOwnProperty('response') ?
+							res.response : res
+					);
 				})
 				.fail((ev) => {
-					const error = new Error(ev.responseJSON.status.message);
-					reject(error);
+					const errMessage = ev.responseJSON.status && ev.responseJSON.status.message ?
+						ev.responseJSON.status.message :
+						ev.responseJSON.error;
 
-					if (!utils.hasLanguageKey(ev.responseJSON.status.message)) {
-						app.alertError(ev.responseJSON.status.message);
+					const error = new Error(errMessage || ev.statusText);
+
+					if (!utils.hasLanguageKey(error.message)) {
+						app.alertError(error.message);
 					}
 
-					if (callback) {
-						callback(error);
-					}
+					cb(error);
 				});
+		}
+
+		if (typeof callback === 'function') {
+			doAjax(callback);
+			return;
+		}
+
+		return new Promise((resolve, reject) => {
+			doAjax(function (err, data) {
+				if (err) reject(err);
+				else resolve(data);
+			});
 		});
 	}
 
-	api.get = (route, payload, onSuccess, onError) => call({
-		url: baseUrl + route + '?' + $.param(payload),
-	}, onSuccess, onError);
+	api.get = (route, payload, onSuccess) => call({
+		url: route + (Object.keys(payload).length ? ('?' + $.param(payload)) : ''),
+	}, onSuccess);
 
-	api.post = (route, payload, onSuccess, onError) => call({
-		url: baseUrl + route,
+	api.post = (route, payload, onSuccess) => call({
+		url: route,
 		method: 'post',
 		data: payload,
-	}, onSuccess, onError);
+	}, onSuccess);
 
-	api.put = (route, payload, onSuccess, onError) => call({
-		url: baseUrl + route,
+	api.put = (route, payload, onSuccess) => call({
+		url: route,
 		method: 'put',
 		data: payload,
-	}, onSuccess, onError);
+	}, onSuccess);
 
-	api.del = (route, payload, onSuccess, onError) => call({
-		url: baseUrl + route,
+	api.del = (route, payload, onSuccess) => call({
+		url: route,
 		method: 'delete',
 		data: payload,
-	}, onSuccess, onError);
+	}, onSuccess);
 
 	return api;
 });
