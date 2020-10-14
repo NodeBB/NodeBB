@@ -34,6 +34,10 @@ module.exports = function (middleware) {
 		const loginAsync = util.promisify(req.login).bind(req);
 
 		if (req.loggedIn) {
+			if (res.locals.isAPI) {
+				await middleware.applyCSRFasync(req, res);
+			}
+
 			return true;
 		} else if (req.headers.hasOwnProperty('authorization')) {
 			const user = await passportAuthenticateAsync(req, res);
