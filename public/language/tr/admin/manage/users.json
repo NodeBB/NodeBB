@@ -20,16 +20,10 @@
 	"add-group": "Grup ekle",
 	"invite": "Davet et",
 	"new": "Yeni Kullanıcı",
-
-	"pills.latest": "En Yeni Kullanıcılar",
+	"filter-by": "Filter by",
 	"pills.unvalidated": "Onaylanmamış",
-	"pills.no-posts": "İleti Yok",
-	"pills.top-posters": "En Çok Gönderim Yapanlar",
-	"pills.top-rep": "En Saygın",
-	"pills.inactive": "Etkin değil",
-	"pills.flagged": "En Çok İşaretlenenler",
+	"pills.validated": "Validated",
 	"pills.banned": "Yasaklandı",
-	"pills.search": "Kullanıcı Ara",
 
 	"50-per-page": "Sayfa başına 50",
 	"100-per-page": "Sayfa başına 100",
