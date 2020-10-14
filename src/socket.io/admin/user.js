@@ -80,7 +80,10 @@ User.validateEmail = async function (socket, uids) {
 
 	uids = uids.filter(uid => parseInt(uid, 10));
 	await db.setObjectField(uids.map(uid => 'user:' + uid), 'email:confirmed', 1);
-	await db.sortedSetRemove('users:notvalidated', uids);
+	for (const uid of uids) {
+		await groups.join('verified-users', uid);
+		await groups.leave('unverified-users', uid);
+	}
 };
 
 User.sendValidationEmail = async function (socket, uids) {
@@ -182,32 +185,6 @@ async function deleteUsers(socket, uids, method) {
 		winston.error(err.stack);
 	}
 }
-
-User.search = async function (socket, data) {
-	// TODO: deprecate
-	const searchData = await user.search({
-		query: data.query,
-		searchBy: data.searchBy,
-		uid: socket.uid,
-	});
-
-	if (!searchData.users.length) {
-		return searchData;
-	}
-
-	const uids = searchData.users.map(user => user && user.uid);
-	const userInfo = await user.getUsersFields(uids, ['email', 'flags', 'lastonline', 'joindate']);
-
-	searchData.users.forEach(function (user, index) {
-		if (user && userInfo[index]) {
-			user.email = userInfo[index].email;
-			user.flags = userInfo[index].flags || 0;
-			user.lastonlineISO = userInfo[index].lastonlineISO;
-			user.joindateISO = userInfo[index].joindateISO;
-		}
-	});
-	return searchData;
-};
 
 User.restartJobs = async function () {
 	user.startJobs();

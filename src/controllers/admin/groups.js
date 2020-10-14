@@ -67,7 +67,11 @@ groupsController.get = async function (req, res, next) {
 
 async function getGroupNames() {
 	const groupNames = await db.getSortedSetRange('groups:createtime', 0, -1);
-	return groupNames.filter(name => name !== 'registered-users' && !groups.isPrivilegeGroup(name));
+	return groupNames.filter(name => name !== 'registered-users' &&
+		name !== 'verified-users' &&
+		name !== 'unverified-users' &&
+		!groups.isPrivilegeGroup(name)
+	);
 }
 
 groupsController.getCSV = async function (req, res) {

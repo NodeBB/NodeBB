@@ -79,6 +79,8 @@ get:
                                 description: Each privilege will have a key in this object
                             isPrivate:
                               type: boolean
+                            isSystem:
+                              type: boolean
                       columnCountUser:
                         type: number
                       columnCountUserOther:

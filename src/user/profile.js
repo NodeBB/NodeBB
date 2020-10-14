@@ -234,9 +234,10 @@ module.exports = function (User) {
 				['email:uid', uid, newEmail.toLowerCase()],
 				['email:sorted', 0, newEmail.toLowerCase() + ':' + uid],
 				['user:' + uid + ':emails', Date.now(), newEmail + ':' + Date.now()],
-				['users:notvalidated', Date.now(), uid],
 			]),
 			User.setUserFields(uid, { email: newEmail, 'email:confirmed': 0 }),
+			groups.leave('verified-users', uid),
+			groups.join('unverified-users', uid),
 			User.reset.cleanByUid(uid),
 		]);
 

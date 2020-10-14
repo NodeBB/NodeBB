@@ -369,14 +369,14 @@ describe('User', function () {
 		});
 
 		it('should error for unprivileged user', function (done) {
-			socketUser.search({ uid: testUid }, { bannedOnly: true, query: '123' }, function (err) {
+			socketUser.search({ uid: testUid }, { filters: ['banned'], query: '123' }, function (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');
 				done();
 			});
 		});
 
 		it('should error for unprivileged user', function (done) {
-			socketUser.search({ uid: testUid }, { flaggedOnly: true, query: '123' }, function (err) {
+			socketUser.search({ uid: testUid }, { filters: ['flagged'], query: '123' }, function (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');
 				done();
 			});
@@ -430,9 +430,7 @@ describe('User', function () {
 					assert.ifError(err);
 					socketUser.search({ uid: adminUid }, {
 						query: 'ipsearch',
-						onlineOnly: true,
-						bannedOnly: true,
-						flaggedOnly: true,
+						filters: ['online', 'banned', 'flagged'],
 					}, function (err, data) {
 						assert.ifError(err);
 						assert.equal(data.users[0].username, 'ipsearch_filter');
@@ -2073,34 +2071,23 @@ describe('User', function () {
 			});
 		});
 
-		it('should confirm email of user', function (done) {
-			var email = 'confirm@me.com';
-			User.create({
+		it('should confirm email of user', async function () {
+			const email = 'confirm@me.com';
+			const uid = await User.create({
 				username: 'confirme',
 				email: email,
-			}, function (err, uid) {
-				assert.ifError(err);
-				User.email.sendValidationEmail(uid, email, function (err, code) {
-					assert.ifError(err);
-					User.email.confirm(code, function (err) {
-						assert.ifError(err);
-
-						async.parallel({
-							confirmed: function (next) {
-								db.getObjectField('user:' + uid, 'email:confirmed', next);
-							},
-							isMember: function (next) {
-								db.isSortedSetMember('users:notvalidated', uid, next);
-							},
-						}, function (err, results) {
-							assert.ifError(err);
-							assert.equal(results.confirmed, 1);
-							assert.equal(results.isMember, false);
-							done();
-						});
-					});
-				});
 			});
+
+			const code = await User.email.sendValidationEmail(uid, email);
+			const unverified = await groups.isMember(uid, 'unverified-users');
+			assert.strictEqual(unverified, true);
+			await User.email.confirm(code);
+			const [confirmed, isVerified] = await Promise.all([
+				db.getObjectField('user:' + uid, 'email:confirmed'),
+				groups.isMember(uid, 'verified-users', uid),
+			]);
+			assert.strictEqual(parseInt(confirmed, 10), 1);
+			assert.strictEqual(isVerified, true);
 		});
 	});
 

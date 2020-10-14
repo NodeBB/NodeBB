@@ -79,7 +79,6 @@ module.exports = function (privileges) {
 		'admin.user.deleteUsers': 'admin:users',
 		'admin.user.deleteUsersAndContent': 'admin:users',
 		'admin.user.createUser': 'admin:users',
-		'admin.user.search': 'admin:users',
 		'admin.user.invite': 'admin:users',
 
 		'admin.getSearchDict': 'admin:settings',

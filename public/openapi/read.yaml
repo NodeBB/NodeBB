@@ -79,24 +79,6 @@ paths:
     $ref: 'read/admin/manage/tags.yaml'
   /api/admin/manage/users:
     $ref: 'read/admin/manage/users.yaml'
-  /api/admin/manage/users/search:
-    $ref: 'read/admin/manage/users/search.yaml'
-  /api/admin/manage/users/latest:
-    $ref: 'read/admin/manage/users/latest.yaml'
-  /api/admin/manage/users/not-validated:
-    $ref: 'read/admin/manage/users/not-validated.yaml'
-  /api/admin/manage/users/no-posts:
-    $ref: 'read/admin/manage/users/no-posts.yaml'
-  /api/admin/manage/users/top-posters:
-    $ref: 'read/admin/manage/users/top-posters.yaml'
-  /api/admin/manage/users/most-reputation:
-    $ref: 'read/admin/manage/users/most-reputation.yaml'
-  /api/admin/manage/users/inactive:
-    $ref: 'read/admin/manage/users/inactive.yaml'
-  /api/admin/manage/users/flagged:
-    $ref: 'read/admin/manage/users/flagged.yaml'
-  /api/admin/manage/users/banned:
-    $ref: 'read/admin/manage/users/banned.yaml'
   /api/admin/manage/registration:
     $ref: 'read/admin/manage/registration.yaml'
   /api/admin/manage/admins-mods:

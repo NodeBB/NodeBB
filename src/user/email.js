@@ -9,6 +9,7 @@ var plugins = require('../plugins');
 var db = require('../database');
 var meta = require('../meta');
 var emailer = require('../emailer');
+const groups = require('../groups');
 
 var UserEmail = module.exports;
 
@@ -96,8 +97,9 @@ UserEmail.confirm = async function (code) {
 		throw new Error('[[error:invalid-email]]');
 	}
 	await user.setUserField(confirmObj.uid, 'email:confirmed', 1);
+	await groups.join('verified-users', confirmObj.uid);
+	await groups.leave('unverified-users', confirmObj.uid);
 	await db.delete('confirm:' + code);
 	await db.delete('uid:' + confirmObj.uid + ':confirm:email:sent');
-	await db.sortedSetRemove('users:notvalidated', confirmObj.uid);
 	await plugins.fireHook('action:user.email.confirmed', { uid: confirmObj.uid, email: confirmObj.email });
 };

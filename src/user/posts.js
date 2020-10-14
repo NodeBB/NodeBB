@@ -18,7 +18,7 @@ module.exports = function (User) {
 			return;
 		}
 		const [userData, isAdminOrMod] = await Promise.all([
-			User.getUserFields(uid, ['uid', 'banned', 'joindate', 'email', 'email:confirmed', 'reputation'].concat([field])),
+			User.getUserFields(uid, ['uid', 'banned', 'joindate', 'email', 'reputation'].concat([field])),
 			privileges.categories.isAdminOrMod(cid, uid),
 		]);
 
@@ -34,16 +34,12 @@ module.exports = function (User) {
 			throw new Error('[[error:user-banned]]');
 		}
 
-		if (meta.config.requireEmailConfirmation && !userData['email:confirmed']) {
-			throw new Error('[[error:email-not-confirmed]]');
-		}
-
-		var now = Date.now();
+		const now = Date.now();
 		if (now - userData.joindate < meta.config.initialPostDelay * 1000) {
 			throw new Error('[[error:user-too-new, ' + meta.config.initialPostDelay + ']]');
 		}
 
-		var lasttime = userData[field] || 0;
+		const lasttime = userData[field] || 0;
 
 		if (meta.config.newbiePostDelay > 0 && meta.config.newbiePostDelayThreshold > userData.reputation && now - lasttime < meta.config.newbiePostDelay * 1000) {
 			throw new Error('[[error:too-many-posts-newbie, ' + meta.config.newbiePostDelay + ', ' + meta.config.newbiePostDelayThreshold + ']]');

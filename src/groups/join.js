@@ -82,7 +82,7 @@ module.exports = function (Groups) {
 				});
 			} catch (err) {
 				if (err && err.message !== '[[error:group-already-exists]]') {
-					winston.error('[groups.join] Could not create new hidden group', err.stack);
+					winston.error('[groups.join] Could not create new hidden group (' + groupName + ')\n' + err.stack);
 					throw err;
 				}
 			}
@@ -90,7 +90,10 @@ module.exports = function (Groups) {
 	}
 
 	async function setGroupTitleIfNotSet(groupNames, uid) {
-		groupNames = groupNames.filter(groupName => groupName !== 'registered-users' && !Groups.isPrivilegeGroup(groupName));
+		const ignore = ['registered-users', 'verified-users', 'unverified-users'];
+		groupNames = groupNames.filter(
+			groupName => !ignore.includes(groupName) && !Groups.isPrivilegeGroup(groupName)
+		);
 		if (!groupNames.length) {
 			return;
 		}

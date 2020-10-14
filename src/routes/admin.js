@@ -16,16 +16,7 @@ module.exports = function (app, middleware, controllers) {
 	helpers.setupAdminPageRoute(app, '/admin/manage/privileges/:cid?', middleware, middlewares, controllers.admin.privileges.get);
 	helpers.setupAdminPageRoute(app, '/admin/manage/tags', middleware, middlewares, controllers.admin.tags.get);
 
-	helpers.setupAdminPageRoute(app, '/admin/manage/users', middleware, middlewares, controllers.admin.users.sortByJoinDate);
-	helpers.setupAdminPageRoute(app, '/admin/manage/users/search', middleware, middlewares, controllers.admin.users.search);
-	helpers.setupAdminPageRoute(app, '/admin/manage/users/latest', middleware, middlewares, controllers.admin.users.sortByJoinDate);
-	helpers.setupAdminPageRoute(app, '/admin/manage/users/not-validated', middleware, middlewares, controllers.admin.users.notValidated);
-	helpers.setupAdminPageRoute(app, '/admin/manage/users/no-posts', middleware, middlewares, controllers.admin.users.noPosts);
-	helpers.setupAdminPageRoute(app, '/admin/manage/users/top-posters', middleware, middlewares, controllers.admin.users.topPosters);
-	helpers.setupAdminPageRoute(app, '/admin/manage/users/most-reputation', middleware, middlewares, controllers.admin.users.mostReputaion);
-	helpers.setupAdminPageRoute(app, '/admin/manage/users/inactive', middleware, middlewares, controllers.admin.users.inactive);
-	helpers.setupAdminPageRoute(app, '/admin/manage/users/flagged', middleware, middlewares, controllers.admin.users.flagged);
-	helpers.setupAdminPageRoute(app, '/admin/manage/users/banned', middleware, middlewares, controllers.admin.users.banned);
+	helpers.setupAdminPageRoute(app, '/admin/manage/users', middleware, middlewares, controllers.admin.users.index);
 	helpers.setupAdminPageRoute(app, '/admin/manage/registration', middleware, middlewares, controllers.admin.users.registrationQueue);
 
 	helpers.setupAdminPageRoute(app, '/admin/manage/admins-mods', middleware, middlewares, controllers.admin.adminsMods.get);

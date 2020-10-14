@@ -70,7 +70,7 @@ Groups.join = async (req, res) => {
 
 	if (!res.locals.privileges.isAdmin) {
 		// Admin and privilege groups unjoinable client-side
-		if (group.name === 'administrators' || groups.isPrivilegeGroup(group.name)) {
+		if (groups.systemGroups.includes(group.name) || groups.isPrivilegeGroup(group.name)) {
 			throw new Error('[[error:not-allowed]]');
 		}
 

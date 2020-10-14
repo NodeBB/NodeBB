@@ -67,7 +67,7 @@ module.exports = function (Groups) {
 
 	function isSystemGroup(data) {
 		return data.system === true || parseInt(data.system, 10) === 1 ||
-			data.name === 'administrators' || data.name === 'registered-users' || data.name === 'Global Moderators' ||
+			Groups.systemGroups.includes(data.name) ||
 			Groups.isPrivilegeGroup(data.name);
 	}
 

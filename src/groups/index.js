@@ -25,14 +25,22 @@ require('./cache')(Groups);
 
 Groups.ephemeralGroups = ['guests', 'spiders'];
 
+Groups.systemGroups = [
+	'registered-users',
+	'verified-users',
+	'unverified-users',
+	'administrators',
+	'Global Moderators',
+];
+
 Groups.getEphemeralGroup = function (groupName) {
 	return {
 		name: groupName,
 		slug: slugify(groupName),
 		description: '',
-		deleted: '0',
-		hidden: '0',
-		system: '1',
+		deleted: 0,
+		hidden: 0,
+		system: 1,
 	};
 };
 

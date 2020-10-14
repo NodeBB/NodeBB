@@ -661,7 +661,7 @@ describe('Controllers', function () {
 	});
 
 	it('should error if guests do not have search privilege', function (done) {
-		request(nconf.get('url') + '/api/users?term=bar&section=sort-posts', { json: true }, function (err, res, body) {
+		request(nconf.get('url') + '/api/users?query=bar&section=sort-posts', { json: true }, function (err, res, body) {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 500);
 			assert(body);
@@ -673,7 +673,7 @@ describe('Controllers', function () {
 	it('should load users search page', function (done) {
 		privileges.global.give(['groups:search:users'], 'guests', function (err) {
 			assert.ifError(err);
-			request(nconf.get('url') + '/users?term=bar&section=sort-posts', function (err, res, body) {
+			request(nconf.get('url') + '/users?query=bar&section=sort-posts', function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1509,6 +1509,7 @@ describe('Controllers', function () {
 						assert.ifError(err);
 						request(nconf.get('url') + '/api/user/groupie', { json: true }, function (err, res, body) {
 							assert.ifError(err);
+							console.log(body);
 							assert.equal(res.statusCode, 200);
 							assert(Array.isArray(body.selectedGroup));
 							assert.equal(body.selectedGroup[0].name, 'selectedGroup');

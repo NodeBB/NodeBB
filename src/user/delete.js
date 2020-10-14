@@ -81,7 +81,6 @@ module.exports = function (User) {
 			'users:banned:expire',
 			'users:flags',
 			'users:online',
-			'users:notvalidated',
 			'digest:day:uids',
 			'digest:week:uids',
 			'digest:month:uids',

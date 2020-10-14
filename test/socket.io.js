@@ -277,15 +277,6 @@ describe('socket.io', function () {
 		});
 	});
 
-	it('should search users', function (done) {
-		socketAdmin.user.search({ uid: adminUid }, { query: 'reg', searchBy: 'username' }, function (err, data) {
-			assert.ifError(err);
-			assert.equal(data.matchCount, 1);
-			assert.equal(data.users[0].username, 'regular');
-			done();
-		});
-	});
-
 	it('should push unread notifications on reconnect', function (done) {
 		var socketMeta = require('../src/socket.io/meta');
 		socketMeta.reconnected({ uid: 1 }, {}, function (err) {

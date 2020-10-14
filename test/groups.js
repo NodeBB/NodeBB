@@ -48,6 +48,16 @@ describe('Groups', function () {
 					disableLeave: 1,
 				});
 			},
+			async () => {
+				await Groups.create({
+					name: 'Global Moderators',
+					userTitle: 'Global Moderator',
+					description: 'Forum wide moderators',
+					hidden: 0,
+					private: 1,
+					disableJoinRequests: 1,
+				});
+			},
 			function (next) {
 				// Create a new user
 				User.create({
@@ -72,8 +82,8 @@ describe('Groups', function () {
 			},
 		], function (err, results) {
 			assert.ifError(err);
-			testUid = results[4];
-			adminUid = results[5];
+			testUid = results[5];
+			adminUid = results[6];
 			Groups.join('administrators', adminUid, done);
 		});
 	});
@@ -698,6 +708,29 @@ describe('Groups', function () {
 					});
 				});
 			});
+		});
+
+		it('should fail to add user to system group', async function () {
+			const uid = await User.create({ username: 'eviluser' });
+			const oldValue = meta.config.allowPrivateGroups;
+			meta.config.allowPrivateGroups = 0;
+			async function test(groupName) {
+				let err;
+				try {
+					await socketGroups.join({ uid: uid }, { groupName: groupName });
+					const isMember = await Groups.isMember(uid, groupName);
+					assert.strictEqual(isMember, false);
+				} catch (_err) {
+					err = _err;
+				}
+				assert.strictEqual(err.message, '[[error:not-allowed]]');
+			}
+			const groups = ['Global Moderators', 'verified-users', 'unverified-users'];
+			for (const g of groups) {
+				// eslint-disable-next-line no-await-in-loop
+				await test(g);
+			}
+			meta.config.allowPrivateGroups = oldValue;
 		});
 	});
 

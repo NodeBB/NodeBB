@@ -6,6 +6,7 @@ const privileges = require('../../privileges');
 
 module.exports = function (SocketUser) {
 	SocketUser.search = async function (socket, data) {
+		// TODO: depracate and use usersController.search
 		if (!data) {
 			throw new Error('[[error:invalid-data]]');
 		}
@@ -14,7 +15,16 @@ module.exports = function (SocketUser) {
 			user.isPrivileged(socket.uid),
 		]);
 
-		if (!allowed || ((data.searchBy === 'ip' || data.searchBy === 'email' || data.bannedOnly || data.flaggedOnly) && !isPrivileged)) {
+		let filters = data.filters || [];
+		filters = Array.isArray(filters) ? filters : [filters];
+		if (!allowed ||
+			((
+				data.searchBy === 'ip' ||
+				data.searchBy === 'email' ||
+				filters.includes('banned') ||
+				filters.includes('flagged')
+			) && !isPrivileged)
+		) {
 			throw new Error('[[error:no-privileges]]');
 		}
 		const result = await user.search({
@@ -22,10 +32,7 @@ module.exports = function (SocketUser) {
 			page: data.page,
 			searchBy: data.searchBy,
 			sortBy: data.sortBy,
-			onlineOnly: data.onlineOnly,
-			bannedOnly: data.bannedOnly,
-			notBanned: data.notBanned,
-			flaggedOnly: data.flaggedOnly,
+			filters: data.filters,
 			paginate: data.paginate,
 			uid: socket.uid,
 		});
