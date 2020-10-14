@@ -1,5 +1,6 @@
 'use strict';
 
+const nconf = require('nconf');
 const middleware = require('../../middleware');
 const helpers = require('../../controllers/helpers');
 
@@ -9,12 +10,11 @@ Write.reload = (params) => {
 	const router = params.router;
 
 	router.use('/api/v3', function (req, res, next) {
-		// if (req.protocol !== 'https') {
-		// 	res.set('Upgrade', 'TLS/1.0, HTTP/1.1');
-		// 	return helpers.formatApiResponse(426, res);
-		// } else {
-		// 	next();
-		// }
+		// Require https if configured so
+		if (nconf.get('secure') && req.protocol !== 'https') {
+			res.set('Upgrade', 'TLS/1.0, HTTP/1.1');
+			return helpers.formatApiResponse(426, res);
+		}
 
 		res.locals.isAPI = true;
 		next();
