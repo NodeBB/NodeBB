@@ -16,6 +16,11 @@
         "test": "npx nyc --reporter=html --reporter=text-summary npx mocha",
         "coveralls": "nyc report --reporter=text-lcov | coveralls && rm -r coverage"
     },
+    "nyc": {
+        "exclude": [
+          "src/upgrades/*"
+        ]
+    },
     "husky": {
         "hooks": {
             "pre-commit": "npx lint-staged",
