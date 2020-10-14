@@ -60,34 +60,36 @@ module.exports = {
 		});
 
 		await db.delete('users:notvalidated');
-
-
-		const cids = await db.getSortedSetRevRange('categories:cid', 0, -1);
-		const canChat = await privileges.global.canGroup('chat', 'registered-users');
-		// if email confirmation is required
-		//   give chat, posting privs to "verified-users" group
-		//   remove chat, posting privs from "registered-users" group
-		if (1 || meta.config.requireEmailConfirmation) {
-			if (canChat) {
-				await privileges.global.give(['groups:chat'], 'verified-users');
-				await privileges.global.rescind(['groups:chat'], 'registered-users');
-			}
-			for (const cid of cids) {
-				/* eslint-disable no-await-in-loop */
-				const data = await privileges.categories.list(cid);
-
-				const registeredUsersPrivs = data.groups.find(d => d.name === 'registered-users').privileges;
-
-				if (registeredUsersPrivs['groups:topics:create']) {
-					await privileges.categories.give(['groups:topics:create'], cid, 'verified-users');
-					await privileges.categories.rescind(['groups:topics:create'], cid, 'registered-users');
-				}
-
-				if (registeredUsersPrivs['groups:topics:reply']) {
-					await privileges.categories.give(['groups:topics:reply'], cid, 'verified-users');
-					await privileges.categories.rescind(['groups:topics:reply'], cid, 'registered-users');
-				}
-			}
-		}
+		await updatePrivilges();
 	},
 };
+
+async function updatePrivilges() {
+	// if email confirmation is required
+	//   give chat, posting privs to "verified-users" group
+	//   remove chat, posting privs from "registered-users" group
+	if (meta.config.requireEmailConfirmation) {
+		const cids = await db.getSortedSetRevRange('categories:cid', 0, -1);
+		const canChat = await privileges.global.canGroup('chat', 'registered-users');
+		if (canChat) {
+			await privileges.global.give(['groups:chat'], 'verified-users');
+			await privileges.global.rescind(['groups:chat'], 'registered-users');
+		}
+		for (const cid of cids) {
+			/* eslint-disable no-await-in-loop */
+			const data = await privileges.categories.list(cid);
+
+			const registeredUsersPrivs = data.groups.find(d => d.name === 'registered-users').privileges;
+
+			if (registeredUsersPrivs['groups:topics:create']) {
+				await privileges.categories.give(['groups:topics:create'], cid, 'verified-users');
+				await privileges.categories.rescind(['groups:topics:create'], cid, 'registered-users');
+			}
+
+			if (registeredUsersPrivs['groups:topics:reply']) {
+				await privileges.categories.give(['groups:topics:reply'], cid, 'verified-users');
+				await privileges.categories.rescind(['groups:topics:reply'], cid, 'registered-users');
+			}
+		}
+	}
+}
