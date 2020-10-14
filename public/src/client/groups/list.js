@@ -14,9 +14,9 @@ define('forum/groups/list', [
 				if (name && name.length) {
 					api.post('/groups', {
 						name: name,
-					}, (res) => {
+					}).then((res) => {
 						ajaxify.go('groups/' + res.slug);
-					}, 'default');
+					});
 				}
 			});
 		});

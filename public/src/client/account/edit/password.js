@@ -71,22 +71,24 @@ define('forum/account/edit/password', [
 				api.put('/users/' + ajaxify.data.theirid + '/password', {
 					currentPassword: currentPassword.val(),
 					newPassword: password.val(),
-				}, () => {
-					if (parseInt(app.user.uid, 10) === parseInt(ajaxify.data.uid, 10)) {
-						window.location.href = config.relative_path + '/login';
-					} else {
-						ajaxify.go('user/' + ajaxify.data.userslug + '/edit');
-					}
-				}, 'default').always(() => {
-					btn.removeClass('disabled').find('i').addClass('hide');
-					currentPassword.val('');
-					password.val('');
-					password_confirm.val('');
-					password_notify.parent().removeClass('show-success show-danger');
-					password_confirm_notify.parent().removeClass('show-success show-danger');
-					passwordsmatch = false;
-					passwordvalid = false;
-				});
+				})
+					.then(() => {
+						if (parseInt(app.user.uid, 10) === parseInt(ajaxify.data.uid, 10)) {
+							window.location.href = config.relative_path + '/login';
+						} else {
+							ajaxify.go('user/' + ajaxify.data.userslug + '/edit');
+						}
+					})
+					.finally(() => {
+						btn.removeClass('disabled').find('i').addClass('hide');
+						currentPassword.val('');
+						password.val('');
+						password_confirm.val('');
+						password_notify.parent().removeClass('show-success show-danger');
+						password_confirm_notify.parent().removeClass('show-success show-danger');
+						passwordsmatch = false;
+						passwordvalid = false;
+					});
 			} else {
 				if (!passwordsmatch) {
 					app.alertError('[[user:change_password_error_match]]');

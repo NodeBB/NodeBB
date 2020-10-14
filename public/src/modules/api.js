@@ -4,24 +4,33 @@ define('api', () => {
 	const api = {};
 	const baseUrl = config.relative_path + '/api/v3';
 
-	function call(options, onSuccess, onError) {
-		$.ajax(Object.assign({
-			headers: {
-				'x-csrf-token': config.csrf_token,
-			},
-		}, options))
-			.done((res) => {
-				if (onSuccess) {
-					onSuccess(res.response);
-				}
-			})
-			.fail((ev) => {
-				if (onError === 'default') {
-					app.alertError(ev.responseJSON.status.message);
-				} else if (onError) {
-					onError(ev.responseJSON);
-				}
-			});
+	function call(options, callback) {
+		return new Promise((resolve, reject) => {
+			$.ajax(Object.assign({
+				headers: {
+					'x-csrf-token': config.csrf_token,
+				},
+			}, options))
+				.done((res) => {
+					resolve(res.response);
+
+					if (callback) {
+						callback(undefined, res.response);
+					}
+				})
+				.fail((ev) => {
+					const error = new Error(ev.responseJSON.status.message);
+					reject(error);
+
+					if (!utils.hasLanguageKey(ev.responseJSON.status.message)) {
+						app.alertError(ev.responseJSON.status.message);
+					}
+
+					if (callback) {
+						callback(error);
+					}
+				});
+		});
 	}
 
 	api.get = (route, payload, onSuccess, onError) => call({

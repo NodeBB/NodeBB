@@ -106,13 +106,14 @@ define('forum/groups/details', [
 					break;
 
 				case 'join':	// intentional fall-throughs!
-					api.put('/groups/' + ajaxify.data.group.slug + '/membership/' + (uid || app.user.uid), undefined, () => ajaxify.refresh(), 'default');
+					api.put('/groups/' + ajaxify.data.group.slug + '/membership/' + (uid || app.user.uid), undefined).then(() => ajaxify.refresh());
 					break;
 
 				case 'leave':
-					api.del('/groups/' + ajaxify.data.group.slug + '/membership/' + (uid || app.user.uid), undefined, () => ajaxify.refresh(), 'default');
+					api.del('/groups/' + ajaxify.data.group.slug + '/membership/' + (uid || app.user.uid), undefined).then(() => ajaxify.refresh());
 					break;
 
+				// TODO (14/10/2020): rewrite these to use api module and merge with above 2 case blocks
 				case 'accept':	// intentional fall-throughs!
 				case 'reject':
 				case 'issueInvite':

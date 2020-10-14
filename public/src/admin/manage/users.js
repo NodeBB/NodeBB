@@ -40,7 +40,7 @@ define('admin/manage/users', [
 			$('.users-table [component="user/select/single"]:checked').parents('.user-row').remove();
 		}
 
-		// use onSuccess/onFail instead
+		// use onSuccess instead
 		function done(successMessage, className, flag) {
 			return function (err) {
 				if (err) {
@@ -60,10 +60,6 @@ define('admin/manage/users', [
 				update(className, flag);
 			}
 			unselectAll();
-		}
-
-		function onFail(err) {
-			app.alertError(err.message);
 		}
 
 		$('[component="user/select/all"]').on('click', function () {
@@ -89,12 +85,12 @@ define('admin/manage/users', [
 					modal.on('shown.bs.modal', function () {
 						autocomplete.group(modal.find('.group-search'), function (ev, ui) {
 							var uid = $(ev.target).attr('data-uid');
-							api.put('/groups/' + ui.item.group.slug + '/membership/' + uid, undefined, () => {
+							api.put('/groups/' + ui.item.group.slug + '/membership/' + uid, undefined).then(() => {
 								ui.item.group.nameEscaped = translator.escape(ui.item.group.displayName);
 								app.parseAndTranslate('admin/partials/manage_user_groups', { users: [{ groups: [ui.item.group] }] }, function (html) {
 									$('[data-uid=' + uid + '] .group-area').append(html.find('.group-area').html());
 								});
-							}, 'default');
+							});
 						});
 					});
 					modal.on('click', '.group-area a', function () {
@@ -104,9 +100,9 @@ define('admin/manage/users', [
 						var groupCard = $(this).parents('[data-group-name]');
 						var groupName = groupCard.attr('data-group-name');
 						var uid = $(this).parents('[data-uid]').attr('data-uid');
-						api.del('/groups/' + slugify(groupName) + '/membership/' + uid, undefined, () => {
+						api.del('/groups/' + slugify(groupName) + '/membership/' + uid).then(() => {
 							groupCard.remove();
-						}, 'default');
+						});
 						return false;
 					});
 				});
@@ -122,17 +118,11 @@ define('admin/manage/users', [
 
 			bootbox.confirm((uids.length > 1 ? '[[admin/manage/users:alerts.confirm-ban-multi]]' : '[[admin/manage/users:alerts.confirm-ban]]'), function (confirm) {
 				if (confirm) {
-					var requests = uids.map(function (uid) {
+					Promise.all(uids.map(function (uid) {
 						return api.put('/users/' + uid + '/ban');
+					})).then(() => {
+						onSuccess('[[admin/manage/users:alerts.ban-success]]', '.ban', true);
 					});
-
-					$.when(requests)
-						.done(function () {
-							onSuccess('[[admin/manage/users:alerts.ban-success]]', '.ban', true);
-						})
-						.fail(function (ev) {
-							onFail(ev.responseJSON.status);
-						});
 				}
 			});
 		});
@@ -164,19 +154,14 @@ define('admin/manage/users', [
 								}, {});
 								var until = formData.length > 0 ? (Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))) : 0;
 
-								var requests = uids.map(function (uid) {
+								Promise.all(uids.map(function (uid) {
 									return api.put('/users/' + uid + '/ban', {
 										until: until,
 										reason: formData.reason,
 									});
+								})).then(() => {
+									onSuccess('[[admin/manage/users:alerts.ban-success]]', '.ban', true);
 								});
-
-								$.when(requests)
-									.done(function () {
-										onSuccess('[[admin/manage/users:alerts.ban-success]]', '.ban', true);
-									}).fail(function (ev) {
-										onFail(ev.responseJSON.status);
-									});
 							},
 						},
 					},
@@ -191,16 +176,11 @@ define('admin/manage/users', [
 				return false;	// specifically to keep the menu open
 			}
 
-			var requests = uids.map(function (uid) {
+			Promise.all(uids.map(function (uid) {
 				return api.delete('/users/' + uid + '/ban');
+			})).then(() => {
+				onSuccess('[[admin/manage/users:alerts.unban-success]]', '.ban', false);
 			});
-
-			$.when(requests)
-				.done(function () {
-					onSuccess('[[admin/manage/users:alerts.unban-success]]', '.ban', false);
-				}).fail(function (ev) {
-					onFail(ev.responseJSON.status);
-				});
 		});
 
 		$('.reset-lockout').on('click', function () {
@@ -388,13 +368,15 @@ define('admin/manage/users', [
 				password: password,
 			};
 
-			api.post('/users', user, () => {
-				modal.modal('hide');
-				modal.on('hidden.bs.modal', function () {
-					ajaxify.refresh();
-				});
-				app.alertSuccess('[[admin/manage/users:alerts.create-success]]');
-			}, err => errorEl.translateHtml('[[admin/manage/users:alerts.error-x, ' + err.status.message + ']]').removeClass('hidden'));
+			api.post('/users', user)
+				.then(() => {
+					modal.modal('hide');
+					modal.on('hidden.bs.modal', function () {
+						ajaxify.refresh();
+					});
+					app.alertSuccess('[[admin/manage/users:alerts.create-success]]');
+				})
+				.catch(err => errorEl.translateHtml('[[admin/manage/users:alerts.error-x, ' + err.status.message + ']]').removeClass('hidden'));
 		}
 
 		handleSearch();

@@ -44,7 +44,7 @@ define('admin/manage/groups', [
 					ajaxify.go('admin/manage/groups/' + response.name);
 				});
 				createModal.modal('hide');
-			}, (err) => {
+			}).catch((err) => {
 				if (!utils.hasLanguageKey(err.status.message)) {
 					err.status.message = '[[admin/manage/groups:alerts.create-failure]]';
 				}

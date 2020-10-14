@@ -24,9 +24,9 @@ define('admin/manage/uploads', ['uploader', 'api'], function (uploader, api) {
 
 				api.del('/files', {
 					path: file.attr('data-path'),
-				}, () => {
+				}).then(() => {
 					file.remove();
-				}, 'default');
+				});
 			});
 		});
 	};

@@ -196,15 +196,9 @@ define('admin/manage/categories', [
 	};
 
 	Categories.toggle = function (cids, disabled) {
-		var requests = cids.map(function (cid) {
-			return api.put('/categories/' + cid, {
-				disabled: disabled ? 1 : 0,
-			});
-		});
-
-		$.when(requests).fail(function (ev) {
-			app.alertError(ev.responseJSON.status.message);
-		});
+		Promise.all(cids.map(cid => api.put('/categories/' + cid, {
+			disabled: disabled ? 1 : 0,
+		})));
 	};
 
 	function itemDidAdd(e) {
@@ -234,9 +228,7 @@ define('admin/manage/categories', [
 
 			newCategoryId = -1;
 
-			Object.keys(modified).forEach(function (cid) {
-				api.put('/categories/' + cid, modified[cid]);
-			});
+			Object.keys(modified).map(cid => api.put('/categories/' + cid, modified[cid]));
 		}
 	}
 

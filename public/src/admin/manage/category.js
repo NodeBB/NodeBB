@@ -49,17 +49,15 @@ define('admin/manage/category', [
 			}
 
 			var cid = ajaxify.data.category.cid;
-			api.put('/categories/' + cid, updateHash, (res) => {
+			api.put('/categories/' + cid, updateHash).then((res) => {
 				app.flags._unsaved = false;
 				app.alert({
 					title: 'Updated Categories',
 					message: 'Category "' + res.name + '" was successfully updated.',
 					type: 'success',
-					timeout: 2000,
+					timeout: 5000,
 				});
 				updateHash = {};
-			}, (err) => {
-				app.alertError(err.status.message);
 			});
 
 			return false;
@@ -98,15 +96,13 @@ define('admin/manage/category', [
 									});
 								}, 1000);
 
-								api.del('/categories/' + ajaxify.data.category.cid, undefined, () => {
+								api.del('/categories/' + ajaxify.data.category.cid).then(() => {
 									if (intervalId) {
 										clearInterval(intervalId);
 									}
 									modal.modal('hide');
 									app.alertSuccess('[[admin/manage/categories:alert.purge-success]]');
 									ajaxify.go('admin/manage/categories');
-								}, (err) => {
-									app.alertError(err.status.message);
 								});
 
 								return false;
@@ -215,12 +211,10 @@ define('admin/manage/category', [
 		$('button[data-action="removeParent"]').on('click', function () {
 			api.put('/categories/' + ajaxify.data.category.cid, {
 				parentCid: 0,
-			}, () => {
+			}).then(() => {
 				$('button[data-action="removeParent"]').parent().addClass('hide');
 				$('button[data-action="changeParent"]').parent().addClass('hide');
 				$('button[data-action="setParent"]').removeClass('hide');
-			}, (err) => {
-				app.alertError(err.message);
 			});
 		});
 		$('button[data-action="toggle"]').on('click', function () {
@@ -228,12 +222,10 @@ define('admin/manage/category', [
 			var disabled = $this.attr('data-disabled') === '1';
 			api.put('/categories/' + ajaxify.data.category.cid, {
 				disabled: disabled ? 0 : 1,
-			}, () => {
+			}).then(() => {
 				$this.translateText(!disabled ? '[[admin/manage/categories:enable]]' : '[[admin/manage/categories:disable]]');
 				$this.toggleClass('btn-primary', !disabled).toggleClass('btn-danger', disabled);
 				$this.attr('data-disabled', disabled ? 0 : 1);
-			}, (err) => {
-				app.alertError(err.message);
 			});
 		});
 	};
@@ -285,7 +277,7 @@ define('admin/manage/category', [
 			categorySelector.modal(categories, function (parentCid) {
 				api.put('/categories/' + ajaxify.data.category.cid, {
 					parentCid: parentCid,
-				}, () => {
+				}).then(() => {
 					var parent = allCategories.filter(function (category) {
 						return category && parseInt(category.cid, 10) === parseInt(parentCid, 10);
 					});
@@ -295,8 +287,6 @@ define('admin/manage/category', [
 					$('button[data-action="setParent"]').addClass('hide');
 					var buttonHtml = '<i class="fa ' + parent.icon + '"></i> ' + parent.name;
 					$('button[data-action="changeParent"]').html(buttonHtml).parent().removeClass('hide');
-				}, (err) => {
-					app.alertError(err.message);
 				});
 			});
 		});

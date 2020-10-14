@@ -152,13 +152,13 @@ define('forum/account/header', [
 							api.put('/users/' + theirid + '/ban', {
 								until: until,
 								reason: formData.reason || '',
-							}, () => {
+							}).then(() => {
 								if (typeof onSuccess === 'function') {
 									return onSuccess();
 								}
 
 								ajaxify.refresh();
-							}, 'default');
+							});
 						},
 					},
 				},
@@ -167,9 +167,9 @@ define('forum/account/header', [
 	}
 
 	function unbanAccount() {
-		api.del('/users/' + ajaxify.data.theirid + '/ban', undefined, () => {
+		api.del('/users/' + ajaxify.data.theirid + '/ban').then(() => {
 			ajaxify.refresh();
-		}, 'default');
+		});
 	}
 
 	function flagAccount() {

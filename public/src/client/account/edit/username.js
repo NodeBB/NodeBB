@@ -26,7 +26,7 @@ define('forum/account/edit/username', [
 			var btn = $(this);
 			btn.addClass('disabled').find('i').removeClass('hide');
 
-			api.put('/users/' + userData.uid, userData, (res) => {
+			api.put('/users/' + userData.uid, userData).then((res) => {
 				btn.removeClass('disabled').find('i').addClass('hide');
 				var userslug = slugify(userData.username);
 				if (userData.username && userslug && parseInt(userData.uid, 10) === parseInt(app.user.uid, 10)) {
@@ -38,7 +38,7 @@ define('forum/account/edit/username', [
 				}
 
 				ajaxify.go('user/' + userslug + '/edit');
-			}, 'default');
+			});
 
 			return false;
 		});

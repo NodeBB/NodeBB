@@ -82,13 +82,7 @@ define('forum/groups/memberlist', ['api'], function (api) {
 		if (groupName === 'administrators') {
 			socket.emit('admin.user.makeAdmins', uids, done);
 		} else {
-			var requests = uids.map(function (uid) {
-				return api.put('/groups/' + ajaxify.data.group.slug + '/membership/' + uid);
-			});
-
-			$.when(requests)
-				.done(done)
-				.fail('default');
+			Promise.all(uids.map(uid => api.put('/groups/' + ajaxify.data.group.slug + '/membership/' + uid))).then(done);
 		}
 	}
 

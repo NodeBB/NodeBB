@@ -128,9 +128,9 @@ define('admin/manage/group', [
 						if (!confirm) {
 							return;
 						}
-						api.del('/groups/' + ajaxify.data.group.slug + '/membership/' + uid, undefined, () => {
+						api.del('/groups/' + ajaxify.data.group.slug + '/membership/' + uid).then(() => {
 							userRow.slideUp().remove();
-						}, 'default');
+						});
 					});
 					break;
 				default:

@@ -26,10 +26,10 @@ define('forum/account/edit/email', ['forum/account/header', 'api'], function (he
 			var btn = $(this);
 			btn.addClass('disabled').find('i').removeClass('hide');
 
-			api.put('/users/' + userData.uid, userData, (res) => {
+			api.put('/users/' + userData.uid, userData).then((res) => {
 				btn.removeClass('disabled').find('i').addClass('hide');
 				ajaxify.go('user/' + res.userslug + '/edit');
-			}, 'default');
+			});
 
 			return false;
 		});

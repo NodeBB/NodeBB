@@ -47,7 +47,7 @@ define('forum/account/edit', [
 
 		$(window).trigger('action:profile.update', userData);
 
-		api.put('/users/' + userData.uid, userData, (res) => {
+		api.put('/users/' + userData.uid, userData).then((res) => {
 			app.alertSuccess('[[user:profile-update-success]]');
 
 			if (res.picture) {
@@ -55,7 +55,7 @@ define('forum/account/edit', [
 			}
 
 			updateHeader(res.picture);
-		}, 'default');
+		});
 
 		return false;
 	}
