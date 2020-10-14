@@ -493,8 +493,8 @@ define('admin/manage/users', [
 			params.query = $('#user-search').val();
 			params.searchBy = $('#user-search-by').val();
 		} else {
-			params.query = undefined;
-			params.searchBy = undefined;
+			delete params.query;
+			delete params.searchBy;
 		}
 
 		return decodeURIComponent($.param(params));
@@ -520,17 +520,17 @@ define('admin/manage/users', [
 		});
 	}
 
-	function handleFilter() {
-		function getFilters() {
-			var filters = [];
-			$('#filter-by').find('[data-filter-by]').each(function () {
-				if ($(this).find('.fa-check').length) {
-					filters.push($(this).attr('data-filter-by'));
-				}
-			});
-			return filters;
-		}
+	function getFilters() {
+		var filters = [];
+		$('#filter-by').find('[data-filter-by]').each(function () {
+			if ($(this).find('.fa-check').length) {
+				filters.push($(this).attr('data-filter-by'));
+			}
+		});
+		return filters;
+	}
 
+	function handleFilter() {
 		var currentFilters = getFilters();
 		$('#filter-by').on('click', 'li', function () {
 			var $this = $(this);
@@ -551,7 +551,7 @@ define('admin/manage/users', [
 			currentFilters = getFilters();
 			if (changed) {
 				var params = utils.params();
-				params.filter = filters;
+				params.filters = filters;
 				var qs = buildSearchQuery(params);
 				ajaxify.go('admin/manage/users?' + qs);
 			}

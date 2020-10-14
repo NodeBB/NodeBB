@@ -36,7 +36,7 @@ async function getUsers(req, res) {
 		resultsPerPage = 50;
 	}
 	let sortBy = validator.escape(req.query.sortBy || '');
-	const filterBy = Array.isArray(req.query.filter) ? req.query.filter : [req.query.filter];
+	const filterBy = Array.isArray(req.query.filters) ? req.query.filters : [req.query.filters];
 	const start = Math.max(0, page - 1) * resultsPerPage;
 	const stop = start + resultsPerPage - 1;
 
@@ -129,12 +129,14 @@ usersController.search = async function (req, res) {
 	if (![50, 100, 250, 500].includes(resultsPerPage)) {
 		resultsPerPage = 50;
 	}
+
 	const searchData = await user.search({
 		uid: req.uid,
 		query: req.query.query,
 		searchBy: req.query.searchBy,
 		sortBy: req.query.sortBy,
 		sortDirection: sortDirection,
+		filters: req.query.filters,
 		page: page,
 		resultsPerPage: resultsPerPage,
 		findUids: async function (query, searchBy, hardCap) {
@@ -229,7 +231,7 @@ function render(req, res, data) {
 	data.adminInviteOnly = registrationType === 'admin-invite-only';
 	data['sort_' + data.sortBy] = true;
 	data['searchBy_' + validator.escape(String(req.query.searchBy))] = true;
-	const filterBy = Array.isArray(req.query.filter) ? req.query.filter : [req.query.filter];
+	const filterBy = Array.isArray(req.query.filters) ? req.query.filters : [req.query.filters];
 	filterBy.forEach(function (filter) {
 		data['filterBy_' + validator.escape(String(filter))] = true;
 	});

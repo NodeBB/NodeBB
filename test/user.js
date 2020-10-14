@@ -369,14 +369,14 @@ describe('User', function () {
 		});
 
 		it('should error for unprivileged user', function (done) {
-			socketUser.search({ uid: testUid }, { bannedOnly: true, query: '123' }, function (err) {
+			socketUser.search({ uid: testUid }, { filters: ['banned'], query: '123' }, function (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');
 				done();
 			});
 		});
 
 		it('should error for unprivileged user', function (done) {
-			socketUser.search({ uid: testUid }, { flaggedOnly: true, query: '123' }, function (err) {
+			socketUser.search({ uid: testUid }, { filters: ['flagged'], query: '123' }, function (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');
 				done();
 			});
@@ -430,9 +430,7 @@ describe('User', function () {
 					assert.ifError(err);
 					socketUser.search({ uid: adminUid }, {
 						query: 'ipsearch',
-						onlineOnly: true,
-						bannedOnly: true,
-						flaggedOnly: true,
+						filters: ['online', 'banned', 'flagged'],
 					}, function (err, data) {
 						assert.ifError(err);
 						assert.equal(data.users[0].username, 'ipsearch_filter');

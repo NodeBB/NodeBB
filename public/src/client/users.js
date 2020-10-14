@@ -61,17 +61,20 @@ define('forum/users', ['translator', 'benchpress'], function (translator, Benchp
 			return loadPage(query);
 		}
 
-		query.term = username;
+		query.query = username;
 		query.sortBy = getSortBy();
-
+		var filters = [];
 		if ($('.search .online-only').is(':checked') || (activeSection === 'online')) {
-			query.onlineOnly = true;
+			filters.push('online');
 		}
 		if (activeSection === 'banned') {
-			query.bannedOnly = true;
+			filters.push('banned');
 		}
 		if (activeSection === 'flagged') {
-			query.flaggedOnly = true;
+			filters.push('flagged');
+		}
+		if (filters.length) {
+			query.filters = filters;
 		}
 
 		loadPage(query);

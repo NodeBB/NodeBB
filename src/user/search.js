@@ -10,6 +10,25 @@ const groups = require('../groups');
 const utils = require('../utils');
 
 module.exports = function (User) {
+	const filterFnMap = {
+		online: user => user.status !== 'offline' && (Date.now() - user.lastonline < 300000),
+		banned: user => user.banned,
+		notbanned: user => !user.banned,
+		flagged: user => parseInt(user.flags, 10) > 0,
+		verified: user => !!user['email:confirmed'],
+		unverified: user => !user['email:confirmed'],
+	};
+
+	const filterFieldMap = {
+		online: ['status', 'lastonline'],
+		banned: ['banned'],
+		notbanned: ['banned'],
+		flagged: ['flags'],
+		verified: ['email:confirmed'],
+		unverified: ['email:confirmed'],
+	};
+
+
 	User.search = async function (data) {
 		const query = data.query || '';
 		const searchBy = data.searchBy || 'username';
@@ -69,21 +88,19 @@ module.exports = function (User) {
 
 	async function filterAndSortUids(uids, data) {
 		uids = uids.filter(uid => parseInt(uid, 10));
-
+		let filters = data.filters || [];
+		filters = Array.isArray(filters) ? filters : [data.filters];
 		const fields = [];
 
 		if (data.sortBy) {
 			fields.push(data.sortBy);
 		}
-		if (data.onlineOnly) {
-			fields.push('status', 'lastonline');
-		}
-		if (data.bannedOnly || data.notBanned) {
-			fields.push('banned');
-		}
-		if (data.flaggedOnly) {
-			fields.push('flags');
-		}
+
+		filters.forEach(function (filter) {
+			if (filterFieldMap[filter]) {
+				fields.push(...filterFieldMap[filter]);
+			}
+		});
 
 		if (data.groupName) {
 			const isMembers = await groups.isMembers(uids, data.groupName);
@@ -96,21 +113,12 @@ module.exports = function (User) {
 
 		fields.push('uid');
 		let userData = await User.getUsersFields(uids, fields);
-		if (data.onlineOnly) {
-			userData = userData.filter(user => user.status !== 'offline' && (Date.now() - user.lastonline < 300000));
-		}
 
-		if (data.bannedOnly) {
-			userData = userData.filter(user => user.banned);
-		}
-
-		if (data.notBanned) {
-			userData = userData.filter(user => !user.banned);
-		}
-
-		if (data.flaggedOnly) {
-			userData = userData.filter(user => parseInt(user.flags, 10) > 0);
-		}
+		filters.forEach(function (filter) {
+			if (filterFnMap[filter]) {
+				userData = userData.filter(filterFnMap[filter]);
+			}
+		});
 
 		if (data.sortBy) {
 			sortUsers(userData, data.sortBy, data.sortDirection);
