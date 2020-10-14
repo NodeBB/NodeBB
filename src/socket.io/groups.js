@@ -30,7 +30,7 @@ SocketGroups.join = async (socket, data) => {
 		throw new Error('[[error:invalid-group-name]]');
 	}
 
-	if (data.groupName === 'administrators' || groups.isPrivilegeGroup(data.groupName)) {
+	if (groups.systemGroups.includes(data.groupName) || groups.isPrivilegeGroup(data.groupName)) {
 		throw new Error('[[error:not-allowed]]');
 	}
 

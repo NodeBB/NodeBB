@@ -38,9 +38,9 @@ Groups.getEphemeralGroup = function (groupName) {
 		name: groupName,
 		slug: slugify(groupName),
 		description: '',
-		deleted: '0',
-		hidden: '0',
-		system: '1',
+		deleted: 0,
+		hidden: 0,
+		system: 1,
 	};
 };
 
