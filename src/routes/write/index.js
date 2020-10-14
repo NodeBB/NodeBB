@@ -1,12 +1,14 @@
 'use strict';
 
 const nconf = require('nconf');
+const winston = require('winston');
+const plugins = require('../../plugins');
 const middleware = require('../../middleware');
 const helpers = require('../../controllers/helpers');
 
 const Write = module.exports;
 
-Write.reload = (params) => {
+Write.reload = async (params) => {
 	const router = params.router;
 
 	router.use('/api/v3', function (req, res, next) {
@@ -40,19 +42,17 @@ Write.reload = (params) => {
 		});
 	});
 
-	// This router is reserved exclusively for plugins to add their own routes into the write api plugin. Confused yet? :trollface:
-	// var customRouter = require('express').Router();
-	// plugins.fireHook('filter:plugin.write-api.routes', {
-	// 	router: customRouter,
-	// 	apiMiddleware: apiMiddleware,
-	// 	middleware: coreMiddleware,
-	// 	errorHandler: errorHandler
-	// }, function (err, payload) {
-	// 	router.use('/', payload.router);
-
-	// 	router.use(function(req, res) {
-	// 		// Catch-all
-	// 		errorHandler.respond(404, res);
-	// 	});
-	// });
+	/**
+	 * Plugins can add routes to the Write API by attaching a listener to the
+	 * below hook. The hooks added to the passed-in router will be mounted to
+	 * `/api/v3/plugins`.
+	 */
+	const pluginRouter = require('express').Router();
+	await plugins.fireHook('static:api.routes', {
+		router: pluginRouter,
+		middleware,
+		helpers,
+	});
+	winston.info(`[api] Adding ${pluginRouter.stack.length} route(s) to \`api/v3/plugins\``);
+	router.use('/api/v3/plugins', pluginRouter);
 };
