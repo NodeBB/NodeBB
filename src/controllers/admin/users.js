@@ -104,7 +104,7 @@ async function getUsers(req, res) {
 				user.administrator = isAdmin[index];
 				const timestamp = lastonline[index] || userData.joindate;
 				user.lastonline = timestamp;
-				user.timestampISO = utils.toISOString(lastonline);
+				user.lastonlineISO = utils.toISOString(lastonline);
 			}
 		});
 		return userData;
