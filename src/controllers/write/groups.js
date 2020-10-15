@@ -112,7 +112,7 @@ Groups.leave = async (req, res) => {
 	const username = await user.getUserField(req.params.uid, 'username');
 	const notification = await notifications.create({
 		type: 'group-leave',
-		bodyShort: '[[groups:membership.leave.notification-title, ' + username + ', ' + group.name + ']]',
+		bodyShort: '[[groups:membership.leave.notification_title, ' + username + ', ' + group.name + ']]',
 		nid: 'group:' + validator.escape(group.name) + ':uid:' + req.params.uid + ':group-leave',
 		path: '/groups/' + slugify(group.name),
 	});
