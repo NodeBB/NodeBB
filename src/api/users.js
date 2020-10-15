@@ -5,6 +5,8 @@ const groups = require('../groups');
 const meta = require('../meta');
 const flags = require('../flags');
 const privileges = require('../privileges');
+const notifications = require('../notifications');
+const plugins = require('../plugins');
 const events = require('../events');
 
 const usersAPI = module.exports;
@@ -72,6 +74,47 @@ usersAPI.deleteMany = async function (caller, data) {
 	if (await canDeleteUids(data.uids)) {
 		await Promise.all(data.uids.map(uid => processDeletion(uid, caller)));
 	}
+};
+
+usersAPI.changePassword = async function (caller, data) {
+	await user.changePassword(caller.uid, Object.assign(data, { ip: caller.ip }));
+	await events.log({
+		type: 'password-change',
+		uid: caller.uid,
+		targetUid: data.uid,
+		ip: caller.ip,
+	});
+};
+
+usersAPI.follow = async function (caller, data) {
+	await user.follow(caller.uid, data.uid);
+	plugins.fireHook('action:user.follow', {
+		fromUid: caller.uid,
+		toUid: data.uid,
+	});
+
+	const userData = await user.getUserFields(caller.uid, ['username', 'userslug']);
+	const notifObj = await notifications.create({
+		type: 'follow',
+		bodyShort: '[[notifications:user_started_following_you, ' + userData.username + ']]',
+		nid: 'follow:' + data.uid + ':uid:' + caller.uid,
+		from: caller.uid,
+		path: '/uid/' + data.uid + '/followers',
+		mergeId: 'notifications:user_started_following_you',
+	});
+	if (!notifObj) {
+		return;
+	}
+	notifObj.user = userData;
+	await notifications.push(notifObj, [data.uid]);
+};
+
+usersAPI.unfollow = async function (caller, data) {
+	await user.unfollow(caller.uid, data.uid);
+	plugins.fireHook('action:user.unfollow', {
+		fromUid: caller.uid,
+		toUid: data.uid,
+	});
 };
 
 async function processDeletion(uid, caller) {

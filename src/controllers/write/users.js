@@ -4,7 +4,6 @@ const api = require('../../api');
 const user = require('../../user');
 const plugins = require('../../plugins');
 const privileges = require('../../privileges');
-const notifications = require('../../notifications');
 const flags = require('../../flags');
 const meta = require('../../meta');
 const events = require('../../events');
@@ -38,49 +37,17 @@ Users.deleteMany = async (req, res) => {
 };
 
 Users.changePassword = async (req, res) => {
-	req.body.uid = req.params.uid;
-	await user.changePassword(req.user.uid, Object.assign(req.body, { ip: req.ip }));
-	await events.log({
-		type: 'password-change',
-		uid: req.user.uid,
-		targetUid: req.params.uid,
-		ip: req.ip,
-	});
-
+	await api.users.changePassword(req, { ...req.body, uid: req.params.uid });
 	helpers.formatApiResponse(200, res);
 };
 
 Users.follow = async (req, res) => {
-	await user.follow(req.user.uid, req.params.uid);
-	plugins.fireHook('action:user.follow', {
-		fromUid: req.user.uid,
-		toUid: req.params.uid,
-	});
-
-	const userData = await user.getUserFields(req.user.uid, ['username', 'userslug']);
-	const notifObj = await notifications.create({
-		type: 'follow',
-		bodyShort: '[[notifications:user_started_following_you, ' + userData.username + ']]',
-		nid: 'follow:' + req.params.uid + ':uid:' + req.user.uid,
-		from: req.user.uid,
-		path: '/uid/' + req.params.uid + '/followers',
-		mergeId: 'notifications:user_started_following_you',
-	});
-	if (!notifObj) {
-		return;
-	}
-	notifObj.user = userData;
-	await notifications.push(notifObj, [req.params.uid]);
-
+	await api.users.follow(req, req.params);
 	helpers.formatApiResponse(200, res);
 };
 
 Users.unfollow = async (req, res) => {
-	await user.unfollow(req.user.uid, req.params.uid);
-	plugins.fireHook('action:user.unfollow', {
-		fromUid: req.user.uid,
-		toUid: req.params.uid,
-	});
+	await api.users.unfollow(req, req.params);
 	helpers.formatApiResponse(200, res);
 };
 
