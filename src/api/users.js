@@ -27,7 +27,7 @@ usersAPI.update = async function (caller, data) {
 	]);
 
 	// Changing own email/username requires password confirmation
-	if (caller.uid === targetUid && !passwordMatch) {
+	if (['email', 'username'].some(prop => Object.keys(data).includes(prop)) && !isAdminOrGlobalMod && caller.uid === targetUid && !passwordMatch) {
 		throw new Error('[[error:invalid-password]]');
 	}
 
