@@ -1,7 +1,9 @@
 'use strict';
 
 const user = require('../user');
+const groups = require('../groups');
 const meta = require('../meta');
+const flags = require('../flags');
 const privileges = require('../privileges');
 const events = require('../events');
 
@@ -60,3 +62,50 @@ usersAPI.update = async function (caller, data) {
 		await log('username-change', { oldUsername: oldUserData.username, newUsername: userData.username });
 	}
 };
+
+usersAPI.delete = async function (caller, data) {
+	processDeletion(data.uid, caller);
+};
+
+usersAPI.deleteMany = async function (caller, data) {
+	console.log(data.uids);
+	if (await canDeleteUids(data.uids)) {
+		await Promise.all(data.uids.map(uid => processDeletion(uid, caller)));
+	}
+};
+
+async function processDeletion(uid, caller) {
+	const isTargetAdmin = await user.isAdministrator(uid);
+	const isSelf = parseInt(uid, 10) === caller.uid;
+	const isAdmin = await user.isAdministrator(caller.uid);
+
+	if (!isSelf && !isAdmin) {
+		throw new Error('[[error:no-privileges]]');
+	} else if (!isSelf && isTargetAdmin) {
+		throw new Error('[[error:cant-delete-other-admins]]');
+	}
+
+	// TODO: clear user tokens for this uid
+	await flags.resolveFlag('user', uid, caller.uid);
+	const userData = await user.delete(caller.uid, uid);
+	await events.log({
+		type: 'user-delete',
+		uid: caller.uid,
+		targetUid: uid,
+		ip: caller.ip,
+		username: userData.username,
+		email: userData.email,
+	});
+}
+
+async function canDeleteUids(uids) {
+	if (!Array.isArray(uids)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	const isMembers = await groups.isMembers(uids, 'administrators');
+	if (isMembers.includes(true)) {
+		throw new Error('[[error:cant-delete-other-admins]]');
+	}
+
+	return true;
+}

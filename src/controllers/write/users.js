@@ -2,7 +2,6 @@
 
 const api = require('../../api');
 const user = require('../../user');
-const groups = require('../../groups');
 const plugins = require('../../plugins');
 const privileges = require('../../privileges');
 const notifications = require('../../notifications');
@@ -24,56 +23,19 @@ Users.create = async (req, res) => {
 };
 
 Users.update = async (req, res) => {
-	const userObj = await api.users.update(req, { ...req.body, ...req.params });
+	const userObj = await api.users.update(req, { ...req.body, uid: req.params.uid });
 	helpers.formatApiResponse(200, res, userObj);
 };
 
 Users.delete = async (req, res) => {
-	processDeletion(req.params.uid, req, res);
+	await api.users.delete(req, req.params);
 	helpers.formatApiResponse(200, res);
 };
 
 Users.deleteMany = async (req, res) => {
-	if (await canDeleteUids(req.body.uids, res)) {
-		await Promise.all(req.body.uids.map(uid => processDeletion(uid, req, res)));
-		helpers.formatApiResponse(200, res);
-	}
+	await api.users.deleteMany(req, req.body);
+	helpers.formatApiResponse(200, res);
 };
-
-async function canDeleteUids(uids, res) {
-	if (!Array.isArray(uids)) {
-		helpers.formatApiResponse(400, res, new Error('[[error:invalid-data]]'));
-		return false;
-	}
-	const isMembers = await groups.isMembers(uids, 'administrators');
-	if (isMembers.includes(true)) {
-		helpers.formatApiResponse(403, res, new Error('[[error:cant-delete-other-admins]]'));
-		return false;
-	}
-
-	return true;
-}
-
-async function processDeletion(uid, req, res) {
-	const isTargetAdmin = await user.isAdministrator(uid);
-	if (!res.locals.privileges.isSelf && !res.locals.privileges.isAdmin) {
-		return helpers.formatApiResponse(403, res);
-	} else if (!res.locals.privileges.isSelf && isTargetAdmin) {
-		return helpers.formatApiResponse(403, res, new Error('[[error:cant-delete-other-admins]]'));
-	}
-
-	// TODO: clear user tokens for this uid
-	await flags.resolveFlag('user', uid, req.user.uid);
-	const userData = await user.delete(req.user.uid, uid);
-	await events.log({
-		type: 'user-delete',
-		uid: req.user.uid,
-		targetUid: uid,
-		ip: req.ip,
-		username: userData.username,
-		email: userData.email,
-	});
-}
 
 Users.changePassword = async (req, res) => {
 	req.body.uid = req.params.uid;
