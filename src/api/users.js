@@ -20,6 +20,12 @@ usersAPI.create = async function (caller, data) {
 };
 
 usersAPI.update = async function (caller, data) {
+	if (!data || !data.uid) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	if (!caller.uid) {
+		throw new Error('[[error:invalid-uid]]');
+	}
 	const oldUserData = await user.getUserFields(data.uid, ['email', 'username']);
 	if (!oldUserData || !oldUserData.username) {
 		throw new Error('[[error:invalid-data]]');
@@ -66,6 +72,7 @@ usersAPI.update = async function (caller, data) {
 	if (userData.username !== oldUserData.username) {
 		await log('username-change', { oldUsername: oldUserData.username, newUsername: userData.username });
 	}
+	return userData;
 };
 
 usersAPI.delete = async function (caller, data) {

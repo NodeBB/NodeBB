@@ -755,7 +755,7 @@ describe('User', function () {
 
 	describe('not logged in', function () {
 		it('should return error if not logged in', function (done) {
-			socketUser.updateProfile({ uid: 0 }, {}, function (err) {
+			socketUser.updateProfile({ uid: 0 }, { uid: 1 }, function (err) {
 				assert.equal(err.message, '[[error:invalid-uid]]');
 				done();
 			});
@@ -806,7 +806,7 @@ describe('User', function () {
 					birthday: '01/01/1980',
 					signature: 'nodebb is good',
 				};
-				socketUser.updateProfile({ uid: uid }, data, function (err, result) {
+				socketUser.updateProfile({ uid: uid }, { ...data, password: '123456' }, function (err, result) {
 					assert.ifError(err);
 
 					assert.equal(result.username, 'updatedUserName');
