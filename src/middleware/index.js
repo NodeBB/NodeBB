@@ -208,8 +208,7 @@ middleware.buildSkinAsset = helpers.try(async function buildSkinAsset(req, res, 
 	}
 
 	await plugins.prepareForBuild(['client side styles']);
-	const buildBundle = util.promisify(meta.css.buildBundle);
-	const css = await buildBundle(target[0], true);
+	const css = await meta.css.buildBundle(target[0], true);
 	require('../meta/minifier').killAll();
 	res.status(200).type('text/css').send(css);
 });
