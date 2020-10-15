@@ -8,28 +8,15 @@ const events = require('../../events');
 const meta = require('../../meta');
 const slugify = require('../../slugify');
 const notifications = require('../../notifications');
+const api = require('../../api');
 
 const helpers = require('../helpers');
 
 const Groups = module.exports;
 
 Groups.create = async (req, res) => {
-	if (typeof req.body.name !== 'string' || groups.isPrivilegeGroup(req.body.name)) {
-		throw new Error('[[error:invalid-group-name]]');
-	}
-
-	if (!res.locals.privileges['group:create']) {
-		throw new Error('[[error:no-privileges]]');
-	}
-
-	req.body.ownerUid = req.user.uid;
-	req.body.system = false;
-
-	const groupObj = await groups.create(req.body);
+	const groupObj = await api.groups.create(req, req.body);
 	helpers.formatApiResponse(200, res, groupObj);
-	logGroupEvent(req, 'group-create', {
-		groupName: req.body.name,
-	});
 };
 
 Groups.delete = async (req, res) => {

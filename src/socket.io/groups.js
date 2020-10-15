@@ -7,7 +7,7 @@ const user = require('../user');
 const utils = require('../utils');
 const slugify = require('../slugify');
 const events = require('../events');
-const privileges = require('../privileges');
+const api = require('../api');
 const notifications = require('../notifications');
 const sockets = require('.');
 
@@ -284,24 +284,7 @@ SocketGroups.kick = async (socket, data) => {
 
 SocketGroups.create = async (socket, data) => {
 	sockets.warnDeprecated(socket, 'POST /api/v3/groups');
-
-	if (!socket.uid) {
-		throw new Error('[[error:no-privileges]]');
-	} else if (typeof data.name !== 'string' || groups.isPrivilegeGroup(data.name)) {
-		throw new Error('[[error:invalid-group-name]]');
-	}
-
-	const canCreate = await privileges.global.can('group:create', socket.uid);
-	if (!canCreate) {
-		throw new Error('[[error:no-privileges]]');
-	}
-	data.ownerUid = socket.uid;
-	data.system = false;
-	const groupData = await groups.create(data);
-	logGroupEvent(socket, 'group-create', {
-		groupName: data.name,
-	});
-
+	const groupData = await api.groups.create(socket, data);
 	return groupData;
 };
 
