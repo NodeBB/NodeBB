@@ -204,10 +204,11 @@ async function getModuleList() {
 			};
 		});
 
-		moduleFiles.concat(mods).forEach(function (mod) {
-			mod.filename = path.relative(basePath, mod.srcPath).replace(/\\/g, '/');
-		});
+		moduleFiles.push(...mods);
 	}));
+	moduleFiles.forEach(function (mod) {
+		mod.filename = path.relative(basePath, mod.srcPath).replace(/\\/g, '/');
+	});
 	return moduleFiles;
 }
 
