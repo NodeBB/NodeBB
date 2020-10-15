@@ -1,6 +1,5 @@
 'use strict';
 
-const async = require('async');
 const validator = require('validator');
 
 const db = require('../database');
@@ -116,14 +115,12 @@ module.exports = function (User) {
 			delete user.hashedPassword;
 			return user;
 		});
-
-		users = await async.map(users, async function (user) {
+		await Promise.all(users.map(async (user) => {
 			// temporary: see http://www.stopforumspam.com/forum/viewtopic.php?id=6392
 			// need to keep this for getIPMatchedUsers
 			user.ip = user.ip.replace('::ffff:', '');
 			await getIPMatchedUsers(user);
 			user.customActions = [].concat(user.customActions);
-			return user;
 			/*
 				// then spam prevention plugins, using the "filter:user.getRegistrationQueue" hook can be like:
 				user.customActions.push({
@@ -133,7 +130,8 @@ module.exports = function (User) {
 					icon: 'fa-flag'
 				});
 			 */
-		});
+		}));
+
 		const results = await plugins.fireHook('filter:user.getRegistrationQueue', { users: users });
 		return results.users;
 	};
