@@ -35,11 +35,11 @@ Users.update = async (req, res) => {
 
 	// Changing own email/username requires password confirmation
 	if (req.user.uid === req.body.uid && !passwordMatch) {
-		helpers.formatApiResponse(403, res, new Error('[[error:invalid-password]]'));
+		return helpers.formatApiResponse(403, res, new Error('[[error:invalid-password]]'));
 	}
 
 	if (!canEdit) {
-		helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
+		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
 	}
 
 	if (!isAdminOrGlobalMod && meta.config['username:disableEdit']) {
@@ -79,19 +79,24 @@ Users.delete = async (req, res) => {
 };
 
 Users.deleteMany = async (req, res) => {
-	await canDeleteUids(req.body.uids, res);
-	await Promise.all(req.body.uids.map(uid => processDeletion(uid, req, res)));
-	helpers.formatApiResponse(200, res);
+	if (await canDeleteUids(req.body.uids, res)) {
+		await Promise.all(req.body.uids.map(uid => processDeletion(uid, req, res)));
+		helpers.formatApiResponse(200, res);
+	}
 };
 
 async function canDeleteUids(uids, res) {
 	if (!Array.isArray(uids)) {
 		helpers.formatApiResponse(400, res, new Error('[[error:invalid-data]]'));
+		return false;
 	}
 	const isMembers = await groups.isMembers(uids, 'administrators');
 	if (isMembers.includes(true)) {
 		helpers.formatApiResponse(403, res, new Error('[[error:cant-delete-other-admins]]'));
+		return false;
 	}
+
+	return true;
 }
 
 async function processDeletion(uid, req, res) {
