@@ -24,7 +24,7 @@ Users.create = async (req, res) => {
 };
 
 Users.update = async (req, res) => {
-	const userObj = await api.users.update(req, req.body);
+	const userObj = await api.users.update(req, { ...req.body, ...req.params });
 	helpers.formatApiResponse(200, res, userObj);
 };
 
