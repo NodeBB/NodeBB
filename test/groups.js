@@ -640,7 +640,7 @@ describe('Groups', function () {
 				const isMember = await Groups.isMember(newUid, 'administrators');
 				assert(!isMember);
 			} catch (err) {
-				assert.strictEqual(err.message, '[[error:invalid-group-name]]');
+				assert.strictEqual(err.message, '[[error:no-group]]');
 			}
 			meta.config.allowPrivateGroups = oldValue;
 		});

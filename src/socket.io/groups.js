@@ -2,7 +2,6 @@
 
 const validator = require('validator');
 const groups = require('../groups');
-const meta = require('../meta');
 const user = require('../user');
 const utils = require('../utils');
 const slugify = require('../slugify');
@@ -21,52 +20,8 @@ SocketGroups.before = async (socket, method, data) => {
 
 SocketGroups.join = async (socket, data) => {
 	sockets.warnDeprecated(socket, 'PUT /api/v3/groups/:slug/membership/:uid');
-
-	if (socket.uid <= 0) {
-		throw new Error('[[error:invalid-uid]]');
-	}
-
-	if (typeof data.groupName !== 'string') {
-		throw new Error('[[error:invalid-group-name]]');
-	}
-
-	if (groups.systemGroups.includes(data.groupName) || groups.isPrivilegeGroup(data.groupName)) {
-		throw new Error('[[error:not-allowed]]');
-	}
-
-	const exists = await groups.exists(data.groupName);
-	if (!exists) {
-		throw new Error('[[error:no-group]]');
-	}
-
-	if (!meta.config.allowPrivateGroups) {
-		await groups.join(data.groupName, socket.uid);
-		logGroupEvent(socket, 'group-join', {
-			groupName: data.groupName,
-		});
-		return;
-	}
-
-	const results = await utils.promiseParallel({
-		isAdmin: await user.isAdministrator(socket.uid),
-		groupData: await groups.getGroupData(data.groupName),
-	});
-
-	if (results.groupData.private && results.groupData.disableJoinRequests) {
-		throw new Error('[[error:group-join-disabled]]');
-	}
-
-	if (!results.groupData.private || results.isAdmin) {
-		await groups.join(data.groupName, socket.uid);
-		logGroupEvent(socket, 'group-join', {
-			groupName: data.groupName,
-		});
-	} else {
-		await groups.requestMembership(data.groupName, socket.uid);
-		logGroupEvent(socket, 'group-request-membership', {
-			groupName: data.groupName,
-		});
-	}
+	const slug = await groups.getGroupField(data.groupName, 'slug');
+	await api.groups.join(socket, { slug: slug, uid: data.uid || socket.uid });
 };
 
 SocketGroups.leave = async (socket, data) => {

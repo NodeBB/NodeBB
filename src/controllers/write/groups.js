@@ -5,7 +5,6 @@ const validator = require('validator');
 const user = require('../../user');
 const groups = require('../../groups');
 const events = require('../../events');
-const meta = require('../../meta');
 const slugify = require('../../slugify');
 const notifications = require('../../notifications');
 const api = require('../../api');
@@ -40,40 +39,8 @@ Groups.delete = async (req, res) => {
 };
 
 Groups.join = async (req, res) => {
-	const group = await groups.getByGroupslug(req.params.slug, {
-		uid: req.params.uid,
-	});
-	const [isCallerOwner, userExists] = await Promise.all([
-		groups.ownership.isOwner(req.user.uid, group.name),
-		user.exists(req.params.uid),
-	]);
-
-	if (!userExists) {
-		throw new Error('[[error:invalid-uid]]');
-	} else if (group.isMember) {
-		// No change
-		return helpers.formatApiResponse(200, res);
-	}
-
-	if (!res.locals.privileges.isAdmin) {
-		// Admin and privilege groups unjoinable client-side
-		if (groups.systemGroups.includes(group.name) || groups.isPrivilegeGroup(group.name)) {
-			throw new Error('[[error:not-allowed]]');
-		}
-
-		if (!isCallerOwner && parseInt(meta.config.allowPrivateGroups, 10) !== 0 && group.private) {
-			await groups.requestMembership(group.name, req.params.uid);
-		} else {
-			await groups.join(group.name, req.params.uid);
-		}
-	} else {
-		await groups.join(group.name, req.params.uid);
-	}
-
+	await api.groups.join(req, req.params);
 	helpers.formatApiResponse(200, res);
-	logGroupEvent(req, 'group-join', {
-		groupName: group.name,
-	});
 };
 
 Groups.leave = async (req, res) => {
