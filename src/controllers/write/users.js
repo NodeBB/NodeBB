@@ -1,10 +1,12 @@
 'use strict';
 
+const api = require('../../api');
 const user = require('../../user');
 const groups = require('../../groups');
 const plugins = require('../../plugins');
 const privileges = require('../../privileges');
 const notifications = require('../../notifications');
+const flags = require('../../flags');
 const meta = require('../../meta');
 const events = require('../../events');
 const translator = require('../../translator');
@@ -17,60 +19,13 @@ const sockets = require('../../socket.io');
 const Users = module.exports;
 
 Users.create = async (req, res) => {
-	const uid = await user.create(req.body);
-	helpers.formatApiResponse(200, res, await user.getUserData(uid));
+	const userObj = await api.users.create(req, req.body);
+	helpers.formatApiResponse(200, res, userObj);
 };
 
 Users.update = async (req, res) => {
-	const oldUserData = await user.getUserFields(req.params.uid, ['email', 'username']);
-	if (!oldUserData || !oldUserData.username) {
-		throw new Error('[[error:invalid-data]]');
-	}
-
-	const [isAdminOrGlobalMod, canEdit, passwordMatch] = await Promise.all([
-		user.isAdminOrGlobalMod(req.user.uid),
-		privileges.users.canEdit(req.user.uid, req.params.uid),
-		req.body.password ? user.isPasswordCorrect(req.body.uid, req.body.password, req.ip) : false,
-	]);
-
-	// Changing own email/username requires password confirmation
-	if (req.user.uid === req.body.uid && !passwordMatch) {
-		return helpers.formatApiResponse(403, res, new Error('[[error:invalid-password]]'));
-	}
-
-	if (!canEdit) {
-		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
-	}
-
-	if (!isAdminOrGlobalMod && meta.config['username:disableEdit']) {
-		req.body.username = oldUserData.username;
-	}
-
-	if (!isAdminOrGlobalMod && meta.config['email:disableEdit']) {
-		req.body.email = oldUserData.email;
-	}
-
-	req.body.uid = req.params.uid;	// The `uid` argument in `updateProfile` refers to calling user, not target user
-	await user.updateProfile(req.user.uid, req.body);
-	const userData = await user.getUserData(req.body.uid);
-
-	async function log(type, eventData) {
-		eventData.type = type;
-		eventData.uid = req.user.uid;
-		eventData.targetUid = req.params.uid;
-		eventData.ip = req.ip;
-		await events.log(eventData);
-	}
-
-	if (userData.email !== oldUserData.email) {
-		await log('email-change', { oldEmail: oldUserData.email, newEmail: userData.email });
-	}
-
-	if (userData.username !== oldUserData.username) {
-		await log('username-change', { oldUsername: oldUserData.username, newUsername: userData.username });
-	}
-
-	helpers.formatApiResponse(200, res, userData);
+	const userObj = await api.users.update(req, req.body);
+	helpers.formatApiResponse(200, res, userObj);
 };
 
 Users.delete = async (req, res) => {
@@ -108,6 +63,7 @@ async function processDeletion(uid, req, res) {
 	}
 
 	// TODO: clear user tokens for this uid
+	await flags.resolveFlag('user', uid, req.user.uid);
 	const userData = await user.delete(req.user.uid, uid);
 	await events.log({
 		type: 'user-delete',
@@ -185,6 +141,7 @@ Users.ban = async (req, res) => {
 		reason: req.body.reason,
 	});
 
+	await flags.resolveFlag('user', req.params.uid, req.user.uid);
 	await events.log({
 		type: 'user-ban',
 		uid: req.user.uid,

@@ -4,6 +4,7 @@ const async = require('async');
 const winston = require('winston');
 
 const db = require('../../database');
+const api = require('../../api');
 const groups = require('../../groups');
 const user = require('../../user');
 const events = require('../../events');
@@ -59,11 +60,7 @@ User.removeAdmins = async function (socket, uids) {
 
 User.createUser = async function (socket, userData) {
 	sockets.warnDeprecated(socket, 'POST /api/v3/users');
-
-	if (!userData) {
-		throw new Error('[[error:invalid-data]]');
-	}
-	return await user.create(userData);
+	return await api.users.create(socket, userData);
 };
 
 User.resetLockouts = async function (socket, uids) {
