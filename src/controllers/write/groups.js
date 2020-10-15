@@ -19,23 +19,8 @@ Groups.create = async (req, res) => {
 };
 
 Groups.delete = async (req, res) => {
-	const group = await groups.getByGroupslug(req.params.slug, {
-		uid: req.user.uid,
-	});
-
-	if (groups.ephemeralGroups.includes(group.slug)) {
-		throw new Error('[[error:not-allowed]]');
-	}
-
-	if (group.system || (!group.isOwner && !res.locals.privileges.isAdmin && !res.locals.privileges.isGmod)) {
-		throw new Error('[[error:no-privileges]]');
-	}
-
-	await groups.destroy(group.name);
+	await api.groups.delete(req, req.params);
 	helpers.formatApiResponse(200, res);
-	logGroupEvent(req, 'group-delete', {
-		groupName: group.name,
-	});
 };
 
 Groups.join = async (req, res) => {

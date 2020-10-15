@@ -29,6 +29,22 @@ groupsAPI.create = async function (caller, data) {
 	return groupData;
 };
 
+groupsAPI.delete = async function (caller, data) {
+	const groupName = await groups.getGroupNameByGroupSlug(data.slug);
+	await isOwner(caller, groupName);
+	if (
+		groups.systemGroups.includes(groupName) ||
+		groups.ephemeralGroups.includes(groupName)
+	) {
+		throw new Error('[[error:not-allowed]]');
+	}
+
+	await groups.destroy(groupName);
+	logGroupEvent(caller, 'group-delete', {
+		groupName: groupName,
+	});
+};
+
 groupsAPI.join = async function (caller, data) {
 	if (caller.uid <= 0 || !data.uid) {
 		throw new Error('[[error:invalid-uid]]');
@@ -88,9 +104,23 @@ groupsAPI.join = async function (caller, data) {
 // 	// TODO:
 // };
 
-// groupsAPI.delete = async function (caller, data) {
-// 	// TODO:
-// };
+
+async function isOwner(caller, groupName) {
+	if (typeof groupName !== 'string') {
+		throw new Error('[[error:invalid-group-name]]');
+	}
+	const [isAdmin, isGlobalModerator, isOwner, group] = await Promise.all([
+		user.isAdministrator(caller.uid),
+		user.isGlobalModerator(caller.uid),
+		groups.ownership.isOwner(caller.uid, groupName),
+		groups.getGroupData(groupName),
+	]);
+
+	const check = isOwner || isAdmin || (isGlobalModerator && !group.system);
+	if (!check) {
+		throw new Error('[[error:no-privileges]]');
+	}
+}
 
 function logGroupEvent(caller, event, additional) {
 	events.log({

@@ -244,18 +244,9 @@ SocketGroups.create = async (socket, data) => {
 };
 
 SocketGroups.delete = async (socket, data) => {
-	await isOwner(socket, data);
-	if (
-		data.groupName === 'administrators' || data.groupName === 'registered-users' ||
-		data.groupName === 'guests' || data.groupName === 'Global Moderators'
-	) {
-		throw new Error('[[error:not-allowed]]');
-	}
-
-	await groups.destroy(data.groupName);
-	logGroupEvent(socket, 'group-delete', {
-		groupName: data.groupName,
-	});
+	sockets.warnDeprecated(socket, 'DEL /api/v3/groups');
+	const slug = await groups.getGroupField(data.groupName, 'slug');
+	await api.groups.delete(socket, { slug: slug });
 };
 
 SocketGroups.search = async (socket, data) => {

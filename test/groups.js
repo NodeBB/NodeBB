@@ -1237,7 +1237,7 @@ describe('Groups', function () {
 
 		it('should fail to delete group if name is special', function (done) {
 			socketGroups.delete({ uid: adminUid }, { groupName: 'guests' }, function (err) {
-				assert.equal(err.message, '[[error:not-allowed]]');
+				assert.equal(err.message, '[[error:invalid-group-name]]');
 				done();
 			});
 		});
