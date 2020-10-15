@@ -13,21 +13,19 @@ usersAPI.create = async function (caller, data) {
 };
 
 usersAPI.update = async function (caller, data) {
-	const targetUid = caller.params ? caller.params.uid : data.uid;
-
-	const oldUserData = await user.getUserFields(targetUid, ['email', 'username']);
+	const oldUserData = await user.getUserFields(data.uid, ['email', 'username']);
 	if (!oldUserData || !oldUserData.username) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
 	const [isAdminOrGlobalMod, canEdit, passwordMatch] = await Promise.all([
 		user.isAdminOrGlobalMod(caller.uid),
-		privileges.users.canEdit(caller.uid, targetUid),
-		data.password ? user.isPasswordCorrect(targetUid, data.password, caller.ip) : false,
+		privileges.users.canEdit(caller.uid, data.uid),
+		data.password ? user.isPasswordCorrect(data.uid, data.password, caller.ip) : false,
 	]);
 
 	// Changing own email/username requires password confirmation
-	if (['email', 'username'].some(prop => Object.keys(data).includes(prop)) && !isAdminOrGlobalMod && caller.uid === targetUid && !passwordMatch) {
+	if (['email', 'username'].some(prop => Object.keys(data).includes(prop)) && !isAdminOrGlobalMod && caller.uid === data.uid && !passwordMatch) {
 		throw new Error('[[error:invalid-password]]');
 	}
 
@@ -43,14 +41,13 @@ usersAPI.update = async function (caller, data) {
 		data.email = oldUserData.email;
 	}
 
-	data.uid = targetUid;	// The `uid` argument in `updateProfile` refers to calling user, not target user
 	await user.updateProfile(caller.uid, data);
 	const userData = await user.getUserData(data.uid);
 
 	async function log(type, eventData) {
 		eventData.type = type;
 		eventData.uid = caller.uid;
-		eventData.targetUid = targetUid;
+		eventData.targetUid = data.uid;
 		eventData.ip = caller.ip;
 		await events.log(eventData);
 	}
