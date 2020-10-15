@@ -8,6 +8,7 @@ var os = require('os');
 var nconf = require('nconf');
 var express = require('express');
 var app = express();
+app.renderAsync = util.promisify((tpl, data, callback) => app.render(tpl, data, callback));
 var server;
 var winston = require('winston');
 var async = require('async');
@@ -115,8 +116,6 @@ function setupExpressApp(app) {
 
 	const relativePath = nconf.get('relative_path');
 	const viewsDir = nconf.get('views_dir');
-
-	app.renderAsync = util.promisify((tpl, data, callback) => app.render(tpl, data, callback));
 
 	app.engine('tpl', function (filepath, data, next) {
 		filepath = filepath.replace(/\.tpl$/, '.js');

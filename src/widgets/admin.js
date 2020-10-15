@@ -1,6 +1,6 @@
 'use strict';
 
-const app = require('../webserver').app;
+const webserver = require('../webserver');
 const plugins = require('../plugins');
 const groups = require('../groups');
 const index = require('./index');
@@ -54,7 +54,7 @@ async function getAvailableWidgets() {
 async function renderAdminTemplate() {
 	const groupsData = await groups.getNonPrivilegeGroups('groups:createtime', 0, -1);
 	groupsData.sort((a, b) => b.system - a.system);
-	return await app.renderAsync('admin/partials/widget-settings', { groups: groupsData });
+	return await webserver.app.renderAsync('admin/partials/widget-settings', { groups: groupsData });
 }
 
 function buildTemplatesFromAreas(areas) {
