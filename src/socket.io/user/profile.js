@@ -78,21 +78,7 @@ module.exports = function (SocketUser) {
 
 	SocketUser.changePassword = async function (socket, data) {
 		sockets.warnDeprecated(socket, 'PUT /api/v3/users/:uid/password');
-
-		if (!socket.uid) {
-			throw new Error('[[error:invalid-uid]]');
-		}
-
-		if (!data || !data.uid) {
-			throw new Error('[[error:invalid-data]]');
-		}
-		await user.changePassword(socket.uid, Object.assign(data, { ip: socket.ip }));
-		await events.log({
-			type: 'password-change',
-			uid: socket.uid,
-			targetUid: data.uid,
-			ip: socket.ip,
-		});
+		await api.users.changePassword(socket, data);
 	};
 
 	SocketUser.updateProfile = async function (socket, data) {

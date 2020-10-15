@@ -2,10 +2,8 @@
 
 const api = require('../../api');
 const user = require('../../user');
-const groups = require('../../groups');
 const plugins = require('../../plugins');
 const privileges = require('../../privileges');
-const notifications = require('../../notifications');
 const flags = require('../../flags');
 const meta = require('../../meta');
 const events = require('../../events');
@@ -24,101 +22,32 @@ Users.create = async (req, res) => {
 };
 
 Users.update = async (req, res) => {
-	const userObj = await api.users.update(req, { ...req.body, ...req.params });
+	const userObj = await api.users.update(req, { ...req.body, uid: req.params.uid });
 	helpers.formatApiResponse(200, res, userObj);
 };
 
 Users.delete = async (req, res) => {
-	processDeletion(req.params.uid, req, res);
+	await api.users.delete(req, req.params);
 	helpers.formatApiResponse(200, res);
 };
 
 Users.deleteMany = async (req, res) => {
-	if (await canDeleteUids(req.body.uids, res)) {
-		await Promise.all(req.body.uids.map(uid => processDeletion(uid, req, res)));
-		helpers.formatApiResponse(200, res);
-	}
+	await api.users.deleteMany(req, req.body);
+	helpers.formatApiResponse(200, res);
 };
 
-async function canDeleteUids(uids, res) {
-	if (!Array.isArray(uids)) {
-		helpers.formatApiResponse(400, res, new Error('[[error:invalid-data]]'));
-		return false;
-	}
-	const isMembers = await groups.isMembers(uids, 'administrators');
-	if (isMembers.includes(true)) {
-		helpers.formatApiResponse(403, res, new Error('[[error:cant-delete-other-admins]]'));
-		return false;
-	}
-
-	return true;
-}
-
-async function processDeletion(uid, req, res) {
-	const isTargetAdmin = await user.isAdministrator(uid);
-	if (!res.locals.privileges.isSelf && !res.locals.privileges.isAdmin) {
-		return helpers.formatApiResponse(403, res);
-	} else if (!res.locals.privileges.isSelf && isTargetAdmin) {
-		return helpers.formatApiResponse(403, res, new Error('[[error:cant-delete-other-admins]]'));
-	}
-
-	// TODO: clear user tokens for this uid
-	await flags.resolveFlag('user', uid, req.user.uid);
-	const userData = await user.delete(req.user.uid, uid);
-	await events.log({
-		type: 'user-delete',
-		uid: req.user.uid,
-		targetUid: uid,
-		ip: req.ip,
-		username: userData.username,
-		email: userData.email,
-	});
-}
-
 Users.changePassword = async (req, res) => {
-	req.body.uid = req.params.uid;
-	await user.changePassword(req.user.uid, Object.assign(req.body, { ip: req.ip }));
-	await events.log({
-		type: 'password-change',
-		uid: req.user.uid,
-		targetUid: req.params.uid,
-		ip: req.ip,
-	});
-
+	await api.users.changePassword(req, { ...req.body, uid: req.params.uid });
 	helpers.formatApiResponse(200, res);
 };
 
 Users.follow = async (req, res) => {
-	await user.follow(req.user.uid, req.params.uid);
-	plugins.fireHook('action:user.follow', {
-		fromUid: req.user.uid,
-		toUid: req.params.uid,
-	});
-
-	const userData = await user.getUserFields(req.user.uid, ['username', 'userslug']);
-	const notifObj = await notifications.create({
-		type: 'follow',
-		bodyShort: '[[notifications:user_started_following_you, ' + userData.username + ']]',
-		nid: 'follow:' + req.params.uid + ':uid:' + req.user.uid,
-		from: req.user.uid,
-		path: '/uid/' + req.params.uid + '/followers',
-		mergeId: 'notifications:user_started_following_you',
-	});
-	if (!notifObj) {
-		return;
-	}
-	notifObj.user = userData;
-	await notifications.push(notifObj, [req.params.uid]);
-
+	await api.users.follow(req, req.params);
 	helpers.formatApiResponse(200, res);
 };
 
 Users.unfollow = async (req, res) => {
-	await user.unfollow(req.user.uid, req.params.uid);
-	plugins.fireHook('action:user.unfollow', {
-		fromUid: req.user.uid,
-		toUid: req.params.uid,
-	});
+	await api.users.unfollow(req, req.params);
 	helpers.formatApiResponse(200, res);
 };
 
