@@ -23,19 +23,28 @@ usersAPI.create = async function (caller, data) {
 };
 
 usersAPI.update = async function (caller, data) {
+	if (!caller.uid) {
+		throw new Error('[[error:invalid-uid]]');
+	}
+
+	if (!data || !data.uid) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
 	const oldUserData = await user.getUserFields(data.uid, ['email', 'username']);
 	if (!oldUserData || !oldUserData.username) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	const [isAdminOrGlobalMod, canEdit, passwordMatch] = await Promise.all([
+	const [isAdminOrGlobalMod, canEdit, hasPassword, passwordMatch] = await Promise.all([
 		user.isAdminOrGlobalMod(caller.uid),
 		privileges.users.canEdit(caller.uid, data.uid),
+		user.hasPassword(data.uid),
 		data.password ? user.isPasswordCorrect(data.uid, data.password, caller.ip) : false,
 	]);
 
 	// Changing own email/username requires password confirmation
-	if (['email', 'username'].some(prop => Object.keys(data).includes(prop)) && !isAdminOrGlobalMod && caller.uid === data.uid && !passwordMatch) {
+	if (['email', 'username'].some(prop => Object.keys(data).includes(prop)) && !isAdminOrGlobalMod && caller.uid === data.uid && hasPassword && !passwordMatch) {
 		throw new Error('[[error:invalid-password]]');
 	}
 
@@ -69,6 +78,8 @@ usersAPI.update = async function (caller, data) {
 	if (userData.username !== oldUserData.username) {
 		await log('username-change', { oldUsername: oldUserData.username, newUsername: userData.username });
 	}
+
+	return userData;
 };
 
 usersAPI.delete = async function (caller, data) {
