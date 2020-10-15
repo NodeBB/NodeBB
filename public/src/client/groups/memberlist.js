@@ -66,10 +66,7 @@ define('forum/groups/memberlist', ['api'], function (api) {
 	}
 
 	function addUserToGroup(users, callback) {
-		function done(err) {
-			if (err) {
-				return app.alertError(err);
-			}
+		function done() {
 			users = users.filter(function (user) {
 				return !$('[component="groups/members"] [data-uid="' + user.uid + '"]').length;
 			});
@@ -80,7 +77,12 @@ define('forum/groups/memberlist', ['api'], function (api) {
 		}
 		var uids = users.map(function (user) { return user.uid; });
 		if (groupName === 'administrators') {
-			socket.emit('admin.user.makeAdmins', uids, done);
+			socket.emit('admin.user.makeAdmins', uids, function (err) {
+				if (err) {
+					return app.alertError(err);
+				}
+				done();
+			});
 		} else {
 			Promise.all(uids.map(uid => api.put('/groups/' + ajaxify.data.group.slug + '/membership/' + uid))).then(done);
 		}
