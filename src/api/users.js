@@ -1,5 +1,6 @@
 'use strict';
 
+const db = require('../database');
 const user = require('../user');
 const groups = require('../groups');
 const meta = require('../meta');
@@ -8,6 +9,8 @@ const privileges = require('../privileges');
 const notifications = require('../notifications');
 const plugins = require('../plugins');
 const events = require('../events');
+const translator = require('../translator');
+const sockets = require('../socket.io');
 
 const usersAPI = module.exports;
 
@@ -117,6 +120,63 @@ usersAPI.unfollow = async function (caller, data) {
 	plugins.fireHook('action:user.unfollow', {
 		fromUid: caller.uid,
 		toUid: data.uid,
+	});
+};
+
+usersAPI.ban = async function (caller, data) {
+	if (!await privileges.users.hasBanPrivilege(caller.uid)) {
+		throw new Error('[[error:no-privileges]]');
+	} else if (await user.isAdministrator(data.uid)) {
+		throw new Error('[[error:cant-ban-other-admins]]');
+	}
+
+	const banData = await user.bans.ban(data.uid, data.until, data.reason);
+	await db.setObjectField('uid:' + data.uid + ':ban:' + banData.timestamp, 'fromUid', caller.uid);
+
+	if (!data.reason) {
+		data.reason = await translator.translate('[[user:info.banned-no-reason]]');
+	}
+
+	sockets.in('uid_' + data.uid).emit('event:banned', {
+		until: data.until,
+		reason: data.reason,
+	});
+
+	await flags.resolveFlag('user', data.uid, caller.uid);
+	await flags.resolveUserPostFlags(data.uid, caller.uid);
+	await events.log({
+		type: 'user-ban',
+		uid: caller.uid,
+		targetUid: data.uid,
+		ip: caller.ip,
+		reason: data.reason || undefined,
+	});
+	plugins.fireHook('action:user.banned', {
+		callerUid: caller.uid,
+		ip: caller.ip,
+		uid: data.uid,
+		until: data.until > 0 ? data.until : undefined,
+		reason: data.reason || undefined,
+	});
+	await user.auth.revokeAllSessions(data.uid);
+};
+
+usersAPI.unban = async function (caller, data) {
+	if (!await privileges.users.hasBanPrivilege(caller.uid)) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	await user.bans.unban(data.uid);
+	await events.log({
+		type: 'user-unban',
+		uid: caller.uid,
+		targetUid: data.uid,
+		ip: caller.ip,
+	});
+	plugins.fireHook('action:user.unbanned', {
+		callerUid: caller.uid,
+		ip: caller.ip,
+		uid: data.uid,
 	});
 };
 
