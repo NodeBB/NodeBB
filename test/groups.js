@@ -1320,9 +1320,9 @@ describe('Groups', function () {
 			});
 		});
 
-		it('should fail to if user is already member', function (done) {
+		it('should not error if user is already member', function (done) {
 			socketGroups.join({ uid: adminUid }, { uid: testUid, groupName: 'newgroup' }, function (err) {
-				assert.equal(err.message, '[[error:group-already-member]]');
+				assert.ifError(err);
 				done();
 			});
 		});
@@ -1341,9 +1341,16 @@ describe('Groups', function () {
 			});
 		});
 
-		it('should fail if user is not member', function (done) {
+		it('should not error if user is not member', function (done) {
 			socketGroups.leave({ uid: adminUid }, { uid: 3, groupName: 'newgroup' }, function (err) {
-				assert.equal(err.message, '[[error:group-not-member]]');
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should fail if trying to remove someone else from group', function (done) {
+			socketGroups.leave({ uid: testUid }, { uid: adminUid, groupName: 'newgroup' }, function (err) {
+				assert.strictEqual(err.message, '[[error:no-privileges]]');
 				done();
 			});
 		});

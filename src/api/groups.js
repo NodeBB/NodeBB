@@ -1,10 +1,14 @@
 'use strict';
 
+const validator = require('validator');
+
 const privileges = require('../privileges');
 const events = require('../events');
 const groups = require('../groups');
 const user = require('../user');
 const meta = require('../meta');
+const notifications = require('../notifications');
+const slugify = require('../slugify');
 
 const groupsAPI = module.exports;
 
@@ -100,10 +104,64 @@ groupsAPI.join = async function (caller, data) {
 	}
 };
 
-// groupsAPI.leave = async function (caller, data) {
-// 	// TODO:
-// };
+groupsAPI.leave = async function (caller, data) {
+	if (caller.uid <= 0) {
+		throw new Error('[[error:invalid-uid]]');
+	}
+	const isSelf = parseInt(caller.uid, 10) === parseInt(data.uid, 10);
+	const groupName = await groups.getGroupNameByGroupSlug(data.slug);
+	if (!groupName) {
+		throw new Error('[[error:no-group]]');
+	}
 
+	if (typeof groupName !== 'string') {
+		throw new Error('[[error:invalid-group-name]]');
+	}
+
+	if (groupName === 'administrators' && isSelf) {
+		throw new Error('[[error:cant-remove-self-as-admin]]');
+	}
+
+	const [groupData, isCallerAdmin, isCallerOwner, userExists, isMember] = await Promise.all([
+		groups.getGroupData(groupName),
+		user.isAdministrator(caller.uid),
+		groups.ownership.isOwner(caller.uid, groupName),
+		user.exists(data.uid),
+		groups.isMember(data.uid, groupName),
+	]);
+
+	if (!userExists) {
+		throw new Error('[[error:invalid-uid]]');
+	}
+	if (!isMember) {
+		return;
+	}
+
+	if (groupData.disableLeave && isSelf) {
+		throw new Error('[[error:group-leave-disabled]]');
+	}
+
+	if (isSelf || isCallerAdmin || isCallerOwner) {
+		await groups.leave(groupName, data.uid);
+	} else {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	const username = await user.getUserField(data.uid, 'username');
+	const notification = await notifications.create({
+		type: 'group-leave',
+		bodyShort: '[[groups:membership.leave.notification_title, ' + username + ', ' + groupName + ']]',
+		nid: 'group:' + validator.escape(groupName) + ':uid:' + data.uid + ':group-leave',
+		path: '/groups/' + slugify(groupName),
+	});
+	const uids = await groups.getOwners(groupName);
+	await notifications.push(notification, uids);
+
+	logGroupEvent(caller, 'group-leave', {
+		groupName: groupName,
+		targetUid: data.uid,
+	});
+};
 
 async function isOwner(caller, groupName) {
 	if (typeof groupName !== 'string') {

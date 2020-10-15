@@ -12,6 +12,9 @@ const events = require('../events');
 const usersAPI = module.exports;
 
 usersAPI.create = async function (caller, data) {
+	if (!data) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	const uid = await user.create(data);
 	return await user.getUserData(uid);
 };

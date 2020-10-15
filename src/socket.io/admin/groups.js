@@ -2,6 +2,7 @@
 
 const groups = require('../../groups');
 const sockets = require('..');
+const api = require('../../api');
 
 const Groups = module.exports;
 
@@ -25,34 +26,20 @@ Groups.create = async function (socket, data) {
 
 Groups.join = async (socket, data) => {
 	sockets.warnDeprecated(socket, 'PUT /api/v3/groups/:slug/membership/:uid');
-
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');
 	}
-
-	const isMember = await groups.isMember(data.uid, data.groupName);
-	if (isMember) {
-		throw new Error('[[error:group-already-member]]');
-	}
-
-	return await groups.join(data.groupName, data.uid);
+	const slug = await groups.getGroupField(data.groupName, 'slug');
+	return await api.groups.join(socket, { slug: slug, uid: data.uid });
 };
 
 Groups.leave = async function (socket, data) {
 	sockets.warnDeprecated(socket, 'DELETE /api/v3/groups/:slug/membership/:uid');
-
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');
 	}
-
-	if (socket.uid === parseInt(data.uid, 10) && data.groupName === 'administrators') {
-		throw new Error('[[error:cant-remove-self-as-admin]]');
-	}
-	const isMember = await groups.isMember(data.uid, data.groupName);
-	if (!isMember) {
-		throw new Error('[[error:group-not-member]]');
-	}
-	await groups.leave(data.groupName, data.uid);
+	const slug = await groups.getGroupField(data.groupName, 'slug');
+	await api.groups.leave(socket, { slug: slug, uid: data.uid });
 };
 
 Groups.update = async function (socket, data) {

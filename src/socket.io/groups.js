@@ -1,13 +1,10 @@
 'use strict';
 
-const validator = require('validator');
 const groups = require('../groups');
 const user = require('../user');
 const utils = require('../utils');
-const slugify = require('../slugify');
 const events = require('../events');
 const api = require('../api');
-const notifications = require('../notifications');
 const sockets = require('.');
 
 const SocketGroups = module.exports;
@@ -26,38 +23,8 @@ SocketGroups.join = async (socket, data) => {
 
 SocketGroups.leave = async (socket, data) => {
 	sockets.warnDeprecated(socket, 'DELETE /api/v3/groups/:slug/membership/:uid');
-
-	if (socket.uid <= 0) {
-		throw new Error('[[error:invalid-uid]]');
-	}
-
-	if (typeof data.groupName !== 'string') {
-		throw new Error('[[error:invalid-group-name]]');
-	}
-
-	if (data.groupName === 'administrators') {
-		throw new Error('[[error:cant-remove-self-as-admin]]');
-	}
-
-	const groupData = await groups.getGroupData(data.groupName);
-	if (groupData.disableLeave) {
-		throw new Error('[[error:group-leave-disabled]]');
-	}
-
-	await groups.leave(data.groupName, socket.uid);
-	const username = await user.getUserField(socket.uid, 'username');
-	const notification = await notifications.create({
-		type: 'group-leave',
-		bodyShort: '[[groups:membership.leave.notification_title, ' + username + ', ' + data.groupName + ']]',
-		nid: 'group:' + validator.escape(data.groupName) + ':uid:' + socket.uid + ':group-leave',
-		path: '/groups/' + slugify(data.groupName),
-	});
-	const uids = await groups.getOwners(data.groupName);
-	await notifications.push(notification, uids);
-
-	logGroupEvent(socket, 'group-leave', {
-		groupName: data.groupName,
-	});
+	const slug = await groups.getGroupField(data.groupName, 'slug');
+	await api.groups.leave(socket, { slug: slug, uid: data.uid || socket.uid });
 };
 
 SocketGroups.addMember = async (socket, data) => {
