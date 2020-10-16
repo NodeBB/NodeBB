@@ -1,13 +1,12 @@
 'use strict';
 
+const api = require('../api');
 const topics = require('../topics');
-const posts = require('../posts');
 const user = require('../user');
 const meta = require('../meta');
 const apiController = require('../controllers/api');
 const privileges = require('../privileges');
 const sockets = require('.');
-const socketHelpers = require('./helpers');
 
 const SocketTopics = module.exports;
 
@@ -20,29 +19,8 @@ require('./topics/merge')(SocketTopics);
 
 SocketTopics.post = async function (socket, data) {
 	sockets.warnDeprecated(socket, 'POST /api/v3/topics');
-
-	if (!data) {
-		throw new Error('[[error:invalid-data]]');
-	}
-
-	socketHelpers.setDefaultPostData(data, socket);
-	await meta.blacklist.test(data.req.ip);
-	const shouldQueue = await posts.shouldQueue(socket.uid, data);
-	if (shouldQueue) {
-		return await posts.addToQueue(data);
-	}
-	return await postTopic(socket, data);
+	return await api.topics.create(socket, data);
 };
-
-async function postTopic(socket, data) {
-	const result = await topics.post(data);
-
-	socket.emit('event:new_post', { posts: [result.postData] });
-	socket.emit('event:new_topic', result.topicData);
-
-	socketHelpers.notifyNew(socket.uid, 'newTopic', { posts: [result.postData], topic: result.topicData });
-	return result.topicData;
-}
 
 SocketTopics.postcount = async function (socket, tid) {
 	const canRead = await privileges.topics.can('topics:read', tid, socket.uid);

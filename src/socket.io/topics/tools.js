@@ -88,7 +88,7 @@ module.exports = function (SocketTopics) {
 			const title = await topics.getTopicField(tid, 'title');
 			const data = await topics.tools[action](tid, socket.uid);
 			const notifyUids = await privileges.categories.filterUids('topics:read', data.cid, uids);
-			socketHelpers.emitToTopicAndCategory(event, data, notifyUids);
+			socketHelpers.emitToUids(event, data, notifyUids);
 			await logTopicAction(action, socket, tid, title);
 		}));
 	};

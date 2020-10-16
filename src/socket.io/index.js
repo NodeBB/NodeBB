@@ -13,7 +13,6 @@ const logger = require('../logger');
 const plugins = require('../plugins');
 const ratelimit = require('../middleware/ratelimit');
 
-
 const Namespaces = {};
 
 const Sockets = module.exports;

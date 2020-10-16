@@ -14,6 +14,8 @@ const meta = require('../meta');
 const middleware = require('../middleware');
 const translator = require('../translator');
 
+const websockets = require('../socket.io');
+
 const isLanguageKey = /^\[\[[\w.\-_:]+]]$/;
 const helpers = module.exports;
 
@@ -341,8 +343,8 @@ helpers.getHomePageRoutes = async function (uid) {
 };
 
 helpers.formatApiResponse = async (statusCode, res, payload) => {
-	if (statusCode === 200) {
-		res.status(200).json({
+	if (String(statusCode).startsWith('2')) {
+		res.status(statusCode).json({
 			status: {
 				code: 'ok',
 				message: 'OK',
@@ -426,6 +428,11 @@ helpers.generateError = (statusCode, message) => {
 };
 
 helpers.buildReqObject = (req) => {
+	// If a socket object is received instead, handle accordingly
+	if (req.id) {
+		return websockets.reqFromSocket(req);
+	}
+
 	var headers = req.headers;
 	var encrypted = !!req.connection.encrypted;
 	var host = headers.host;

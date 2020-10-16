@@ -191,7 +191,7 @@ SocketHelpers.rescindUpvoteNotification = async function (pid, fromuid) {
 	websockets.in('uid_' + uid).emit('event:notifications.updateCount', count);
 };
 
-SocketHelpers.emitToTopicAndCategory = async function (event, data, uids) {
+SocketHelpers.emitToUids = async function (event, data, uids) {
 	uids.forEach(toUid => websockets.in('uid_' + toUid).emit(event, data));
 };
 

@@ -1,5 +1,6 @@
 'use strict';
 
+const api = require('../../api');
 const topics = require('../../topics');
 const posts = require('../../posts');
 const user = require('../../user');
@@ -13,29 +14,12 @@ const socketHelpers = require('../../socket.io/helpers');
 const Topics = module.exports;
 
 Topics.create = async (req, res) => {
-	const payload = { ...req.body };
-	payload.tags = payload.tags || [];
-	payload.uid = req.user.uid;
-	payload.uid = req.user.uid;
-	payload.req = req;
-	payload.timestamp = Date.now();
-	payload.fromQueue = false;
-
-	// Blacklist & Post Queue
-	await meta.blacklist.test(req.ip);
-	const shouldQueue = await posts.shouldQueue(req.user.uid, payload);
-	if (shouldQueue) {
-		const queueObj = await posts.addToQueue(payload);
-		return helpers.formatApiResponse(202, res, queueObj);
+	const payload = await api.topics.create(req, req.body);
+	if (payload.queued) {
+		helpers.formatApiResponse(202, res, payload);
+	} else {
+		helpers.formatApiResponse(200, res, payload);
 	}
-
-	const result = await topics.post(payload);
-	helpers.formatApiResponse(200, res, result.topicData);
-
-	// TODO
-	// socket.emit('event:new_post', { posts: [result.postData] });
-	// socket.emit('event:new_topic', result.topicData);
-	socketHelpers.notifyNew(req.user.uid, 'newTopic', { posts: [result.postData], topic: result.topicData });
 };
 
 Topics.reply = async (req, res) => {
@@ -54,7 +38,8 @@ Topics.reply = async (req, res) => {
 	await meta.blacklist.test(req.ip);
 	const shouldQueue = await posts.shouldQueue(req.user.uid, payload);
 	if (shouldQueue) {
-		return await posts.addToQueue(payload);
+		const queueObj = await posts.addToQueue(payload);
+		return helpers.formatApiResponse(202, res, queueObj);
 	}
 
 	const postData = await topics.reply(payload);	// postData seems to be a subset of postObj, refactor?
@@ -163,7 +148,7 @@ async function doTopicAction(action, event, socket, { tids }) {
 		const title = await topics.getTopicField(tid, 'title');
 		const data = await topics.tools[action](tid, socket.uid);
 		const notifyUids = await privileges.categories.filterUids('topics:read', data.cid, uids);
-		socketHelpers.emitToTopicAndCategory(event, data, notifyUids);
+		socketHelpers.emitToUids(event, data, notifyUids);
 		await logTopicAction(action, socket, tid, title);
 	}));
 }
