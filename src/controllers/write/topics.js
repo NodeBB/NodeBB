@@ -2,9 +2,7 @@
 
 const api = require('../../api');
 const topics = require('../../topics');
-const posts = require('../../posts');
 const user = require('../../user');
-const meta = require('../../meta');
 const events = require('../../events');
 const privileges = require('../../privileges');
 
@@ -23,40 +21,8 @@ Topics.create = async (req, res) => {
 };
 
 Topics.reply = async (req, res) => {
-	var payload = {
-		tid: req.params.tid,
-		uid: req.user.uid,
-		req: helpers.buildReqObject(req),	// For IP recording
-		content: req.body.content,
-		timestamp: req.body.timestamp,
-		fromQueue: false,
-	};
-
-	if (req.body.toPid) { payload.toPid = req.body.toPid; }
-
-	// Blacklist & Post Queue
-	await meta.blacklist.test(req.ip);
-	const shouldQueue = await posts.shouldQueue(req.user.uid, payload);
-	if (shouldQueue) {
-		const queueObj = await posts.addToQueue(payload);
-		return helpers.formatApiResponse(202, res, queueObj);
-	}
-
-	const postData = await topics.reply(payload);	// postData seems to be a subset of postObj, refactor?
-	const postObj = await posts.getPostSummaryByPids([postData.pid], req.user.uid, {});
-	helpers.formatApiResponse(200, res, postObj[0]);
-
-	const result = {
-		posts: [postData],
-		'reputation:disabled': meta.config['reputation:disabled'] === 1,
-		'downvote:disabled': meta.config['downvote:disabled'] === 1,
-	};
-
-	// TODO
-	// socket.emit('event:new_post', result);
-
-	user.updateOnlineUsers(req.user.uid);
-	socketHelpers.notifyNew(req.user.uid, 'newPost', result);
+	const payload = await api.topics.reply(req, { ...req.body, tid: req.params.tid });
+	helpers.formatApiResponse(200, res, payload);
 };
 
 Topics.delete = async (req, res) => {
