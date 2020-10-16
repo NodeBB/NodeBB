@@ -18,7 +18,8 @@
     },
     "nyc": {
         "exclude": [
-          "src/upgrades/*"
+          "src/upgrades/*",
+          "test/*"
         ]
     },
     "husky": {
