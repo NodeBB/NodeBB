@@ -7,7 +7,10 @@ module.exports = function (SocketUser) {
 	SocketUser.banUsers = async function (socket, data) {
 		websockets.warnDeprecated(socket, 'PUT /api/v3/users/:uid/ban');
 		await Promise.all(data.uids.map(async (uid) => {
-			await api.users.ban(socket, { uid });
+			const payload = { ...data };
+			delete payload.uids;
+			payload.uid = uid;
+			await api.users.ban(socket, payload);
 		}));
 	};
 

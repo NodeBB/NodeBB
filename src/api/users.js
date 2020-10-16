@@ -87,7 +87,6 @@ usersAPI.delete = async function (caller, data) {
 };
 
 usersAPI.deleteMany = async function (caller, data) {
-	console.log(data.uids);
 	if (await canDeleteUids(data.uids)) {
 		await Promise.all(data.uids.map(uid => processDeletion(uid, caller)));
 	}
