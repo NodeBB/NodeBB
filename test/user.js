@@ -1920,18 +1920,24 @@ describe('User', function () {
 
 	describe('invites', function () {
 		var socketUser = require('../src/socket.io/user');
+		var notAnInviterUid;
 		var inviterUid;
 		var adminUid;
 
 		before(function (done) {
 			async.parallel({
+				notAnInviter: async.apply(User.create, { username: 'notAnInviter', email: 'notaninviter@nodebb.org' }),
 				inviter: async.apply(User.create, { username: 'inviter', email: 'inviter@nodebb.org' }),
 				admin: async.apply(User.create, { username: 'adminInvite' }),
 			}, function (err, results) {
 				assert.ifError(err);
+				notAnInviterUid = results.notAnInviter;
 				inviterUid = results.inviter;
 				adminUid = results.admin;
-				groups.join('administrators', adminUid, done);
+				async.parallel([
+					async.apply(groups.join, 'administrators', adminUid),
+					async.apply(groups.join, 'cid:0:privileges:invite', inviterUid),
+				], done);
 			});
 		});
 
@@ -1942,9 +1948,9 @@ describe('User', function () {
 			});
 		});
 
-		it('should eror if forum is not invite only', function (done) {
-			socketUser.invite({ uid: inviterUid }, 'invite1@test.com', function (err) {
-				assert.equal(err.message, '[[error:forum-not-invite-only]]');
+		it('should error if user has not invite privilege', function (done) {
+			socketUser.invite({ uid: notAnInviterUid }, 'invite1@test.com', function (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
 				done();
 			});
 		});
@@ -1958,7 +1964,7 @@ describe('User', function () {
 		});
 
 		it('should send invitation email', function (done) {
-			meta.config.registrationType = 'invite-only';
+			meta.config.registrationType = 'normal';
 			socketUser.invite({ uid: inviterUid }, 'invite1@test.com', function (err) {
 				assert.ifError(err);
 				done();

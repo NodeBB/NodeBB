@@ -228,11 +228,12 @@ SocketUser.invite = async function (socket, email) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	const registrationType = meta.config.registrationType;
-	if (registrationType !== 'invite-only' && registrationType !== 'admin-invite-only') {
-		throw new Error('[[error:forum-not-invite-only]]');
+	const canInvite = await privileges.users.hasInvitePrivilege(socket.uid);
+	if (!canInvite) {
+		throw new Error('[[error:no-privileges]]');
 	}
 
+	const registrationType = meta.config.registrationType;
 	const isAdmin = await user.isAdministrator(socket.uid);
 	if (registrationType === 'admin-invite-only' && !isAdmin) {
 		throw new Error('[[error:no-privileges]]');

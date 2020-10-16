@@ -115,4 +115,13 @@ module.exports = function (privileges) {
 		});
 		return data.canBan;
 	};
+
+	privileges.users.hasInvitePrivilege = async function (uid) {
+		const canInvite = await privileges.global.can('invite', uid);
+		const data = await plugins.fireHook('filter:user.hasInvitePrivilege', {
+			uid: uid,
+			canInvite: canInvite,
+		});
+		return data.canInvite;
+	};
 };

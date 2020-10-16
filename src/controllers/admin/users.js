@@ -9,6 +9,7 @@ const db = require('../../database');
 const pagination = require('../../pagination');
 const events = require('../../events');
 const plugins = require('../../plugins');
+const privileges = require('../../privileges');
 const utils = require('../../utils');
 
 const usersController = module.exports;
@@ -115,7 +116,7 @@ async function getUsers(req, res) {
 		getUsersWithFields(set),
 	]);
 
-	render(req, res, {
+	await render(req, res, {
 		users: users.filter(user => user && parseInt(user.uid, 10)),
 		page: page,
 		pageCount: Math.max(1, Math.ceil(count / resultsPerPage)),
@@ -176,7 +177,7 @@ usersController.search = async function (req, res) {
 	searchData.resultsPerPage = resultsPerPage;
 	searchData.sortBy = req.query.sortBy;
 	searchData.reverse = reverse;
-	render(req, res, searchData);
+	await render(req, res, searchData);
 };
 
 usersController.registrationQueue = async function (req, res) {
@@ -226,7 +227,7 @@ async function getInvites() {
 	return invitations;
 }
 
-function render(req, res, data) {
+async function render(req, res, data) {
 	data.pagination = pagination.create(data.page, data.pageCount, req.query);
 
 	const registrationType = meta.config.registrationType;
@@ -241,6 +242,12 @@ function render(req, res, data) {
 	filterBy.forEach(function (filter) {
 		data['filterBy_' + validator.escape(String(filter))] = true;
 	});
+
+	data.showInviteButton = await privileges.users.hasInvitePrivilege(req.uid);
+	if (data.adminInviteOnly) {
+		data.showInviteButton = await privileges.users.isAdministrator(req.uid);
+	}
+
 	res.render('admin/manage/users', data);
 }
 

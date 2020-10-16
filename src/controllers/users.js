@@ -171,10 +171,15 @@ async function render(req, res, data) {
 	data.inviteOnly = registrationType === 'invite-only' || registrationType === 'admin-invite-only';
 	data.adminInviteOnly = registrationType === 'admin-invite-only';
 	data.invites = await user.getInvitesNumber(req.uid);
-	data.showInviteButton = req.loggedIn && (
-		(registrationType === 'invite-only' && (data.isAdmin || !data.maximumInvites || data.invites < data.maximumInvites)) ||
-		(registrationType === 'admin-invite-only' && data.isAdmin)
-	);
+
+	data.showInviteButton = false;
+	if (data.adminInviteOnly) {
+		data.showInviteButton = await privileges.users.isAdministrator(req.uid);
+	} else if (req.loggedIn) {
+		const canInvite = await privileges.users.hasInvitePrivilege(req.uid);
+		data.showInviteButton = canInvite && (!data.maximumInvites || data.invites < data.maximumInvites);
+	}
+
 	data['reputation:disabled'] = meta.config['reputation:disabled'];
 
 	res.append('X-Total-Count', data.userCount);

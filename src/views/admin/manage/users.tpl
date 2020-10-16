@@ -3,9 +3,9 @@
 		<div class="clearfix">
 
 			<div class="pull-left">
-				<!-- IF inviteOnly -->
+				<!-- IF showInviteButton -->
 				<button component="user/invite" class="btn btn-success"><i class="fa fa-users"></i> [[admin/manage/users:invite]]</button>
-				<!-- ENDIF inviteOnly -->
+				<!-- ENDIF showInviteButton -->
 				<a target="_blank" href="{config.relative_path}/api/admin/users/csv" class="btn btn-primary">[[admin/manage/users:download-csv]]</a>
 				<div class="btn-group">
 					<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">[[admin/manage/users:edit]] <span class="caret"></span></button>
