@@ -62,12 +62,12 @@ SocketTopics.changeWatching = async function (socket, data) {
 	}
 
 	sockets.warnDeprecated(socket, 'PUT/DELETE /api/v3/topics/:tid/(follow|ignore)');
-	await followCommand(topics[data.type], socket, data.tid);
+	await followCommand(data.type, socket, data.tid);
 };
 
 SocketTopics.follow = async function (socket, tid) {
 	sockets.warnDeprecated(socket, 'PUT /api/v3/topics/:tid/follow');
-	await followCommand(topics.follow, socket, tid);
+	await followCommand('follow', socket, tid);
 };
 
 async function followCommand(method, socket, tid) {
@@ -75,7 +75,7 @@ async function followCommand(method, socket, tid) {
 		throw new Error('[[error:not-logged-in]]');
 	}
 
-	await method(tid, socket.uid);
+	await api.topics[method](socket, { tid });
 }
 
 SocketTopics.isFollowed = async function (socket, tid) {

@@ -120,6 +120,18 @@ topicsAPI.unlock = async function (caller, data) {
 	});
 };
 
+topicsAPI.follow = async function (caller, data) {
+	await topics.follow(data.tid, caller.uid);
+};
+
+topicsAPI.ignore = async function (caller, data) {
+	await topics.ignore(data.tid, caller.uid);
+};
+
+topicsAPI.unfollow = async function (caller, data) {
+	await topics.unfollow(data.tid, caller.uid);
+};
+
 async function doTopicAction(action, event, caller, { tids }) {
 	if (!Array.isArray(tids)) {
 		throw new Error('[[error:invalid-tid]]');
