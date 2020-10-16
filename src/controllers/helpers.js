@@ -357,6 +357,13 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 			message = payload.message;
 		}
 
+		// Update status code based on some common error codes
+		switch (payload.message) {
+			case '[[error:no-privileges]]':
+				statusCode = 403;
+				break;
+		}
+
 		const returnPayload = helpers.generateError(statusCode, message);
 
 		if (global.env === 'development') {

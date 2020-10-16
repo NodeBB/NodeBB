@@ -805,6 +805,7 @@ describe('User', function () {
 					groupTitle: 'testGroup',
 					birthday: '01/01/1980',
 					signature: 'nodebb is good',
+					password: '123456',
 				};
 				socketUser.updateProfile({ uid: uid }, { ...data, password: '123456' }, function (err, result) {
 					assert.ifError(err);
@@ -816,7 +817,11 @@ describe('User', function () {
 					db.getObject('user:' + uid, function (err, userData) {
 						assert.ifError(err);
 						Object.keys(data).forEach(function (key) {
-							assert.equal(data[key], userData[key]);
+							if (key !== 'password') {
+								assert.equal(data[key], userData[key]);
+							} else {
+								assert(userData[key].startsWith('$2a$'));
+							}
 						});
 						done();
 					});
