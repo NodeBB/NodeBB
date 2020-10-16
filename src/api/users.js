@@ -36,16 +36,14 @@ usersAPI.update = async function (caller, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	const [isAdminOrGlobalMod, canEdit, hasPassword, passwordMatch] = await Promise.all([
+	const [isAdminOrGlobalMod, canEdit] = await Promise.all([
 		user.isAdminOrGlobalMod(caller.uid),
 		privileges.users.canEdit(caller.uid, data.uid),
-		user.hasPassword(data.uid),
-		data.password ? user.isPasswordCorrect(data.uid, data.password, caller.ip) : false,
 	]);
 
 	// Changing own email/username requires password confirmation
-	if (['email', 'username'].some(prop => Object.keys(data).includes(prop)) && !isAdminOrGlobalMod && caller.uid === data.uid && hasPassword && !passwordMatch) {
-		throw new Error('[[error:invalid-password]]');
+	if (['email', 'username'].some(prop => Object.keys(data).includes(prop))) {
+		await isPrivilegedOrSelfAndPasswordMatch(caller, data);
 	}
 
 	if (!canEdit) {
@@ -188,6 +186,29 @@ usersAPI.unban = async function (caller, data) {
 		uid: data.uid,
 	});
 };
+
+async function isPrivilegedOrSelfAndPasswordMatch(caller, data) {
+	const uid = caller.uid;
+	const isSelf = parseInt(uid, 10) === parseInt(data.uid, 10);
+
+	const [isAdmin, isTargetAdmin, isGlobalMod] = await Promise.all([
+		user.isAdministrator(uid),
+		user.isAdministrator(data.uid),
+		user.isGlobalModerator(uid),
+	]);
+
+	if ((isTargetAdmin && !isAdmin) || (!isSelf && !(isAdmin || isGlobalMod))) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	const [hasPassword, passwordMatch] = await Promise.all([
+		user.hasPassword(data.uid),
+		data.password ? user.isPasswordCorrect(data.uid, data.password, caller.ip) : false,
+	]);
+
+	if (isSelf && hasPassword && !passwordMatch) {
+		throw new Error('[[error:invalid-password]]');
+	}
+}
 
 async function processDeletion(uid, caller) {
 	const isTargetAdmin = await user.isAdministrator(uid);

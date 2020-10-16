@@ -931,6 +931,18 @@ describe('User', function () {
 			});
 		});
 
+		it('should not update a user\'s username if a password is not supplied', async () => {
+			let _err;
+			try {
+				await socketUser.updateProfile({ uid: uid }, { uid: uid, username: 'updatedAgain', password: '' });
+			} catch (err) {
+				_err = err;
+			}
+
+			assert(_err);
+			assert.strictEqual(_err.message, '[[error:invalid-password]]');
+		});
+
 		it('should change email', function (done) {
 			User.create({ username: 'pooremailupdate', email: 'poor@update.me', password: '123456' }, function (err, uid) {
 				assert.ifError(err);
