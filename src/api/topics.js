@@ -4,6 +4,8 @@ const user = require('../user');
 const topics = require('../topics');
 const posts = require('../posts');
 const meta = require('../meta');
+const events = require('../events');
+const privileges = require('../privileges');
 
 const controllerHelpers = require('../controllers/helpers');
 const socketHelpers = require('../socket.io/helpers');
@@ -75,3 +77,84 @@ topicsAPI.reply = async function (caller, data) {
 
 	return postObj[0];
 };
+
+topicsAPI.delete = async function (caller, data) {
+	await doTopicAction('delete', 'event:topic_deleted', caller, {
+		tids: [data.tid],
+	});
+};
+
+topicsAPI.restore = async function (caller, data) {
+	await doTopicAction('restore', 'event:topic_restored', caller, {
+		tids: [data.tid],
+	});
+};
+
+topicsAPI.purge = async function (caller, data) {
+	await doTopicAction('purge', 'event:topic_purged', caller, {
+		tids: [data.tid],
+	});
+};
+
+topicsAPI.pin = async function (caller, data) {
+	await doTopicAction('pin', 'event:topic_pinned', caller, {
+		tids: [data.tid],
+	});
+};
+
+topicsAPI.unpin = async function (caller, data) {
+	await doTopicAction('unpin', 'event:topic_unpinned', caller, {
+		tids: [data.tid],
+	});
+};
+
+topicsAPI.lock = async function (caller, data) {
+	await doTopicAction('lock', 'event:topic_locked', caller, {
+		tids: [data.tid],
+	});
+};
+
+topicsAPI.unlock = async function (caller, data) {
+	await doTopicAction('unlock', 'event:topic_unlocked', caller, {
+		tids: [data.tid],
+	});
+};
+
+async function doTopicAction(action, event, caller, { tids }) {
+	if (!Array.isArray(tids)) {
+		throw new Error('[[error:invalid-tid]]');
+	}
+
+	const exists = (await Promise.all(tids.map(async tid => await topics.exists(tid)))).every(Boolean);
+	if (!exists) {
+		throw new Error('[[error:no-topic]]');
+	}
+
+	if (typeof topics.tools[action] !== 'function') {
+		return;
+	}
+
+	const uids = await user.getUidsFromSet('users:online', 0, -1);
+
+	await Promise.all(tids.map(async function (tid) {
+		const title = await topics.getTopicField(tid, 'title');
+		const data = await topics.tools[action](tid, caller.uid);
+		const notifyUids = await privileges.categories.filterUids('topics:read', data.cid, uids);
+		socketHelpers.emitToUids(event, data, notifyUids);
+		await logTopicAction(action, caller, tid, title);
+	}));
+}
+
+async function logTopicAction(action, req, tid, title) {
+	var actionsToLog = ['delete', 'restore', 'purge'];
+	if (!actionsToLog.includes(action)) {
+		return;
+	}
+	await events.log({
+		type: 'topic-' + action,
+		uid: req.uid,
+		ip: req.ip,
+		tid: tid,
+		title: String(title),
+	});
+}
