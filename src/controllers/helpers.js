@@ -362,6 +362,10 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 			case '[[error:no-privileges]]':
 				statusCode = 403;
 				break;
+
+			case '[[error:invalid-uid]]':
+				statusCode = 401;
+				break;
 		}
 
 		const returnPayload = helpers.generateError(statusCode, message);
