@@ -10,10 +10,10 @@ const setupApiRoute = routeHelpers.setupApiRoute;
 module.exports = function () {
 	const middlewares = [middleware.authenticate];
 
-	setupApiRoute(router, '/', middleware, [...middlewares, middleware.checkRequired.bind(null, ['name'])], 'post', controllers.write.groups.create);
-	setupApiRoute(router, '/:slug', middleware, [...middlewares, middleware.assert.group], 'delete', controllers.write.groups.delete);
-	setupApiRoute(router, '/:slug/membership/:uid', middleware, [...middlewares, middleware.assert.group], 'put', controllers.write.groups.join);
-	setupApiRoute(router, '/:slug/membership/:uid', middleware, [...middlewares, middleware.assert.group], 'delete', controllers.write.groups.leave);
+	setupApiRoute(router, 'post', '/', [...middlewares, middleware.checkRequired.bind(null, ['name'])], controllers.write.groups.create);
+	setupApiRoute(router, 'delete', '/:slug', [...middlewares, middleware.assert.group], controllers.write.groups.delete);
+	setupApiRoute(router, 'put', '/:slug/membership/:uid', [...middlewares, middleware.assert.group], controllers.write.groups.join);
+	setupApiRoute(router, 'delete', '/:slug/membership/:uid', [...middlewares, middleware.assert.group], controllers.write.groups.leave);
 
 	return router;
 };

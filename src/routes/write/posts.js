@@ -10,17 +10,17 @@ const setupApiRoute = routeHelpers.setupApiRoute;
 module.exports = function () {
 	const middlewares = [middleware.authenticate];
 
-	setupApiRoute(router, '/:pid', middleware, [...middlewares, middleware.checkRequired.bind(null, ['content'])], 'put', controllers.write.posts.edit);
-	setupApiRoute(router, '/:pid', middleware, [...middlewares, middleware.assert.post], 'delete', controllers.write.posts.purge);
+	setupApiRoute(router, 'put', '/:pid', [...middlewares, middleware.checkRequired.bind(null, ['content'])], controllers.write.posts.edit);
+	setupApiRoute(router, 'delete', '/:pid', [...middlewares, middleware.assert.post], controllers.write.posts.purge);
 
-	setupApiRoute(router, '/:pid/state', middleware, [...middlewares, middleware.assert.post], 'put', controllers.write.posts.restore);
-	setupApiRoute(router, '/:pid/state', middleware, [...middlewares, middleware.assert.post], 'delete', controllers.write.posts.delete);
+	setupApiRoute(router, 'put', '/:pid/state', [...middlewares, middleware.assert.post], controllers.write.posts.restore);
+	setupApiRoute(router, 'delete', '/:pid/state', [...middlewares, middleware.assert.post], controllers.write.posts.delete);
 
-	setupApiRoute(router, '/:pid/vote', middleware, [...middlewares, middleware.checkRequired.bind(null, ['delta']), middleware.assert.post], 'put', controllers.write.posts.vote);
-	setupApiRoute(router, '/:pid/vote', middleware, [...middlewares, middleware.assert.post], 'delete', controllers.write.posts.unvote);
+	setupApiRoute(router, 'put', '/:pid/vote', [...middlewares, middleware.checkRequired.bind(null, ['delta']), middleware.assert.post], controllers.write.posts.vote);
+	setupApiRoute(router, 'delete', '/:pid/vote', [...middlewares, middleware.assert.post], controllers.write.posts.unvote);
 
-	setupApiRoute(router, '/:pid/bookmark', middleware, [...middlewares, middleware.assert.post], 'put', controllers.write.posts.bookmark);
-	setupApiRoute(router, '/:pid/bookmark', middleware, [...middlewares, middleware.assert.post], 'delete', controllers.write.posts.unbookmark);
+	setupApiRoute(router, 'put', '/:pid/bookmark', [...middlewares, middleware.assert.post], controllers.write.posts.bookmark);
+	setupApiRoute(router, 'delete', '/:pid/bookmark', [...middlewares, middleware.assert.post], controllers.write.posts.unbookmark);
 
 	return router;
 };

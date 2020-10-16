@@ -15,7 +15,7 @@ helpers.setupAdminPageRoute = function (router, name, middleware, middlewares, c
 	router.get('/api' + name, middlewares, helpers.tryRoute(controller));
 };
 
-helpers.setupApiRoute = function (router, name, middleware, middlewares, verb, controller) {
+helpers.setupApiRoute = function (router, verb, name, middlewares, controller) {
 	router[verb](name, middlewares, helpers.tryRoute(controller, (err, res) => {
 		controllerHelpers.formatApiResponse(400, res, err);
 	}));

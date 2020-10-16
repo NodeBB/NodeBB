@@ -1509,7 +1509,6 @@ describe('Controllers', function () {
 						assert.ifError(err);
 						request(nconf.get('url') + '/api/user/groupie', { json: true }, function (err, res, body) {
 							assert.ifError(err);
-							console.log(body);
 							assert.equal(res.statusCode, 200);
 							assert(Array.isArray(body.selectedGroup));
 							assert.equal(body.selectedGroup[0].name, 'selectedGroup');

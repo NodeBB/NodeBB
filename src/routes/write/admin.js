@@ -10,7 +10,7 @@ const setupApiRoute = routeHelpers.setupApiRoute;
 module.exports = function () {
 	const middlewares = [middleware.authenticate];
 
-	setupApiRoute(router, '/settings/:setting', middleware, [...middlewares, middleware.checkRequired.bind(null, ['value']), middleware.exposePrivilegeSet], 'put', controllers.write.admin.updateSetting);
+	setupApiRoute(router, 'put', '/settings/:setting', [...middlewares, middleware.checkRequired.bind(null, ['value']), middleware.exposePrivilegeSet], controllers.write.admin.updateSetting);
 
 	return router;
 };
