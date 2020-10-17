@@ -162,7 +162,7 @@ define('admin/manage/categories', [
 	};
 
 	Categories.create = function (payload) {
-		socket.emit('admin.categories.create', payload, function (err, data) {
+		api.post('/categories', payload, function (err, data) {
 			if (err) {
 				return app.alertError(err.message);
 			}

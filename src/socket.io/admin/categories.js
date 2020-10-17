@@ -8,6 +8,7 @@ const categories = require('../../categories');
 const privileges = require('../../privileges');
 const plugins = require('../../plugins');
 const events = require('../../events');
+const api = require('../../api');
 const sockets = require('..');
 
 const Categories = module.exports;
@@ -18,8 +19,7 @@ Categories.create = async function (socket, data) {
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');
 	}
-
-	return await categories.create(data);
+	return await api.categories.create(socket, data);
 };
 
 // DEPRECATED: @1.14.3, remove in version >=1.16
@@ -42,15 +42,7 @@ Categories.getNames = async function () {
 Categories.purge = async function (socket, cid) {
 	sockets.warnDeprecated(socket, 'DELETE /api/v3/categories/:cid');
 
-	const name = await categories.getCategoryField(cid, 'name');
-	await categories.purge(cid, socket.uid);
-	await events.log({
-		type: 'category-purge',
-		uid: socket.uid,
-		ip: socket.ip,
-		cid: cid,
-		name: name,
-	});
+	await api.categories.delete(socket, { cid: cid });
 };
 
 Categories.update = async function (socket, data) {
@@ -59,8 +51,7 @@ Categories.update = async function (socket, data) {
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');
 	}
-
-	return await categories.update(data);
+	return await api.categories.update(socket, data);
 };
 
 Categories.setPrivilege = async function (socket, data) {

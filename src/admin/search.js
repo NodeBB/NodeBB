@@ -131,7 +131,6 @@ async function buildNamespace(language, namespace) {
 const cache = {};
 
 async function getDictionary(language) {
-	console.log('get dictionary', language);
 	if (cache[language]) {
 		return cache[language];
 	}
