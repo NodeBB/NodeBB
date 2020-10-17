@@ -55,4 +55,9 @@ Write.reload = async (params) => {
 	});
 	winston.info(`[api] Adding ${pluginRouter.stack.length} route(s) to \`api/v3/plugins\``);
 	router.use('/api/v3/plugins', pluginRouter);
+
+	// 404 handling
+	router.use('/api/v3', (req, res) => {
+		helpers.formatApiResponse(404, res);
+	});
 };
