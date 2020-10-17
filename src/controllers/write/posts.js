@@ -13,8 +13,8 @@ const utils = require('../../utils');
 
 const helpers = require('../helpers');
 const sockets = require('../../socket.io');
+const apiHelpers = require('../../api/helpers');
 const socketPostHelpers = require('../../socket.io/posts/helpers');	// eehhh...
-const socketTopics = require('../../socket.io/topics');	// eehhh...
 
 const Posts = module.exports;
 
@@ -111,7 +111,7 @@ Posts.purge = async (req, res) => {
 	});
 
 	if (isMainAndLast) {
-		await socketTopics.doTopicAction('purge', 'event:topic_purged', {
+		await apiHelpers.doTopicAction('purge', 'event:topic_purged', {
 			ip: req.ip,
 			uid: req.user.uid,
 		}, { tids: [postData.tid], cid: topicData.cid });
@@ -199,12 +199,12 @@ async function isMainAndLastPost(pid) {
 async function deleteOrRestoreTopicOf(command, pid, req) {
 	const topic = await posts.getTopicFields(pid, ['tid', 'cid', 'deleted']);
 	if (command === 'delete' && !topic.deleted) {
-		await socketTopics.doTopicAction('delete', 'event:topic_deleted', {
+		await apiHelpers.doTopicAction('delete', 'event:topic_deleted', {
 			uid: req.user.uid,
 			ip: req.ip,
 		}, { tids: [topic.tid], cid: topic.cid });
 	} else if (command === 'restore' && topic.deleted) {
-		await socketTopics.doTopicAction('restore', 'event:topic_restored', {
+		await apiHelpers.doTopicAction('restore', 'event:topic_restored', {
 			uid: req.user.uid,
 			ip: req.ip,
 		}, { tids: [topic.tid], cid: topic.cid });

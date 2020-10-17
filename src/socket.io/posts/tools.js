@@ -5,7 +5,7 @@ const topics = require('../../topics');
 const flags = require('../../flags');
 const events = require('../../events');
 const websockets = require('../index');
-const socketTopics = require('../topics');
+const apiHelpers = require('../../api/helpers');
 const privileges = require('../../privileges');
 const plugins = require('../../plugins');
 const social = require('../../social');
@@ -158,16 +158,16 @@ module.exports = function (SocketPosts) {
 		});
 
 		if (isMainAndLast) {
-			await socketTopics.doTopicAction('purge', 'event:topic_purged', socket, { tids: [postData.tid], cid: topicData.cid });
+			await apiHelpers.doTopicAction('purge', 'event:topic_purged', socket, { tids: [postData.tid], cid: topicData.cid });
 		}
 	};
 
 	async function deleteOrRestoreTopicOf(command, pid, socket) {
 		const topic = await posts.getTopicFields(pid, ['tid', 'cid', 'deleted']);
 		if (command === 'delete' && !topic.deleted) {
-			await socketTopics.doTopicAction('delete', 'event:topic_deleted', socket, { tids: [topic.tid], cid: topic.cid });
+			await apiHelpers.doTopicAction('delete', 'event:topic_deleted', socket, { tids: [topic.tid], cid: topic.cid });
 		} else if (command === 'restore' && topic.deleted) {
-			await socketTopics.doTopicAction('restore', 'event:topic_restored', socket, { tids: [topic.tid], cid: topic.cid });
+			await apiHelpers.doTopicAction('restore', 'event:topic_restored', socket, { tids: [topic.tid], cid: topic.cid });
 		}
 	}
 

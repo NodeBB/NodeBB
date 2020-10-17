@@ -22,37 +22,37 @@ Topics.reply = async (req, res) => {
 };
 
 Topics.delete = async (req, res) => {
-	await api.topics.delete(req, req.params);
+	await api.topics.delete(req, { tids: [req.params.tid] });
 	helpers.formatApiResponse(200, res);
 };
 
 Topics.restore = async (req, res) => {
-	await api.topics.restore(req, req.params);
+	await api.topics.restore(req, { tids: [req.params.tid] });
 	helpers.formatApiResponse(200, res);
 };
 
 Topics.purge = async (req, res) => {
-	await api.topics.purge(req, req.params);
+	await api.topics.purge(req, { tids: [req.params.tid] });
 	helpers.formatApiResponse(200, res);
 };
 
 Topics.pin = async (req, res) => {
-	await api.topics.pin(req, req.params);
+	await api.topics.pin(req, { tids: [req.params.tid] });
 	helpers.formatApiResponse(200, res);
 };
 
 Topics.unpin = async (req, res) => {
-	await api.topics.unpin(req, req.params);
+	await api.topics.unpin(req, { tids: [req.params.tid] });
 	helpers.formatApiResponse(200, res);
 };
 
 Topics.lock = async (req, res) => {
-	await api.topics.lock(req, req.params);
+	await api.topics.lock(req, { tids: [req.params.tid] });
 	helpers.formatApiResponse(200, res);
 };
 
 Topics.unlock = async (req, res) => {
-	await api.topics.unlock(req, req.params);
+	await api.topics.unlock(req, { tids: [req.params.tid] });
 	helpers.formatApiResponse(200, res);
 };
 
