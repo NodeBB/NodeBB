@@ -7,7 +7,7 @@ const meta = require('../meta');
 const events = require('../events');
 const privileges = require('../privileges');
 
-const controllerHelpers = require('../controllers/helpers');
+const apiHelpers = require('./helpers');
 const socketHelpers = require('../socket.io/helpers');
 
 const topicsAPI = module.exports;
@@ -21,7 +21,7 @@ topicsAPI.create = async function (caller, data) {
 	payload.tags = payload.tags || [];
 	payload.uid = caller.uid;
 	payload.uid = caller.uid;
-	payload.req = controllerHelpers.buildReqObject(caller);
+	payload.req = apiHelpers.buildReqObject(caller);
 	payload.timestamp = Date.now();
 	payload.fromQueue = false;
 
@@ -46,7 +46,7 @@ topicsAPI.reply = async function (caller, data) {
 	var payload = {
 		tid: data.tid,
 		uid: caller.uid,
-		req: controllerHelpers.buildReqObject(caller),	// For IP recording
+		req: apiHelpers.buildReqObject(caller),	// For IP recording
 		content: data.content,
 		timestamp: data.timestamp,
 		fromQueue: false,

@@ -69,7 +69,7 @@ Sockets.init = function (server) {
 
 function onConnection(socket) {
 	socket.ip = (socket.request.headers['x-forwarded-for'] || socket.request.connection.remoteAddress || '').split(',')[0];
-
+	socket.request.ip = socket.ip;
 	logger.io_one(socket, socket.uid);
 
 	onConnect(socket);
@@ -214,7 +214,7 @@ async function authorize(socket, callback) {
 	} else {
 		socket.uid = 0;
 	}
-
+	request.uid = socket.uid;
 	callback();
 }
 
@@ -229,33 +229,6 @@ Sockets.getUserSocketCount = function (uid) {
 
 	const room = Sockets.server.sockets.adapter.rooms['uid_' + uid];
 	return room ? room.length : 0;
-};
-
-
-Sockets.reqFromSocket = function (socket, payload, event) {
-	var headers = socket.request ? socket.request.headers : {};
-	var encrypted = socket.request ? !!socket.request.connection.encrypted : false;
-	var host = headers.host;
-	var referer = headers.referer || '';
-	var data = ((payload || {}).data || []);
-
-	if (!host) {
-		host = url.parse(referer).host || '';
-	}
-
-	return {
-		uid: socket.uid,
-		params: data[1],
-		method: event || data[0],
-		body: payload,
-		ip: socket.ip,
-		host: host,
-		protocol: encrypted ? 'https' : 'http',
-		secure: encrypted,
-		url: referer,
-		path: referer.substr(referer.indexOf(host) + host.length),
-		headers: headers,
-	};
 };
 
 Sockets.warnDeprecated = (socket, replacement) => {

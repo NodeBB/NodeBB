@@ -8,6 +8,7 @@ const groups = require('../../groups');
 const events = require('../../events');
 const meta = require('../../meta');
 const utils = require('../../utils');
+const apiHelpers = require('../../api/helpers');
 const websockets = require('../index');
 
 module.exports = function (SocketPosts) {
@@ -34,7 +35,7 @@ module.exports = function (SocketPosts) {
 		}
 
 		data.uid = socket.uid;
-		data.req = websockets.reqFromSocket(socket);
+		data.req = apiHelpers.buildReqObject(socket);
 
 		const editResult = await posts.edit(data);
 		if (editResult.topic.renamed) {

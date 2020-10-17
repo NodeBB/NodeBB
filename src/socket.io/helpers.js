@@ -13,12 +13,13 @@ const notifications = require('../notifications');
 const plugins = require('../plugins');
 const utils = require('../utils');
 const batch = require('../batch');
+const apiHelpers = require('../api/helpers');
 
 const SocketHelpers = module.exports;
 
 SocketHelpers.setDefaultPostData = function (data, socket) {
 	data.uid = socket.uid;
-	data.req = websockets.reqFromSocket(socket);
+	data.req = apiHelpers.buildReqObject(socket);
 	data.timestamp = Date.now();
 	data.fromQueue = false;
 };

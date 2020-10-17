@@ -3,7 +3,6 @@
 const nconf = require('nconf');
 const validator = require('validator');
 const querystring = require('querystring');
-const url = require('url');
 const _ = require('lodash');
 
 const user = require('../user');
@@ -13,8 +12,6 @@ const plugins = require('../plugins');
 const meta = require('../meta');
 const middleware = require('../middleware');
 const translator = require('../translator');
-
-const websockets = require('../socket.io');
 
 const isLanguageKey = /^\[\[[\w.\-_:]+]]$/;
 const helpers = module.exports;
@@ -425,35 +422,6 @@ helpers.generateError = (statusCode, message) => {
 	}
 
 	return payload;
-};
-
-helpers.buildReqObject = (req) => {
-	// If a socket object is received instead, handle accordingly
-	if (req.id) {
-		return websockets.reqFromSocket(req);
-	}
-
-	var headers = req.headers;
-	var encrypted = !!req.connection.encrypted;
-	var host = headers.host;
-	var referer = headers.referer || '';
-	if (!host) {
-		host = url.parse(referer).host || '';
-	}
-
-	return {
-		uid: req.uid,
-		params: req.params,
-		method: req.method,
-		body: req.body,
-		ip: req.ip,
-		host: host,
-		protocol: encrypted ? 'https' : 'http',
-		secure: encrypted,
-		url: referer,
-		path: referer.substr(referer.indexOf(host) + host.length),
-		headers: headers,
-	};
 };
 
 require('../promisify')(helpers);
