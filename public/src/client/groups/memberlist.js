@@ -46,7 +46,7 @@ define('forum/groups/memberlist', ['api'], function (api) {
 					$(this).find('i').toggleClass('invisible');
 				});
 				modal.find('input').on('keyup', function () {
-					socket.emit('user.search', {
+					api.get('/api/users', {
 						query: $(this).val(),
 						paginate: false,
 					}, function (err, result) {

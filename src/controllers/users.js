@@ -7,6 +7,7 @@ const db = require('../database');
 const pagination = require('../pagination');
 const privileges = require('../privileges');
 const helpers = require('./helpers');
+const api = require('../api');
 
 const usersController = module.exports;
 
@@ -31,35 +32,10 @@ usersController.index = async function (req, res, next) {
 };
 
 usersController.search = async function (req, res) {
-	const [allowed, isPrivileged] = await Promise.all([
-		privileges.global.can('search:users', req.uid),
-		user.isPrivileged(req.uid),
-	]);
-	let filters = req.query.filters || [];
-	filters = Array.isArray(filters) ? filters : [filters];
-	if (!allowed ||
-		((
-			req.query.searchBy === 'ip' ||
-			req.query.searchBy === 'email' ||
-			filters.includes('banned') ||
-			filters.includes('flagged')
-		) && !isPrivileged)
-	) {
-		throw new Error('[[error:no-privileges]]');
-	}
-	const [searchData, isAdminOrGlobalMod] = await Promise.all([
-		user.search({
-			query: req.query.query,
-			searchBy: req.query.searchBy || 'username',
-			page: req.query.page || 1,
-			sortBy: req.query.sortBy || 'joindate',
-			filters: filters,
-		}),
-		user.isAdminOrGlobalMod(req.uid),
-	]);
+	const searchData = await api.users.search(req, req.query);
+
 	const section = req.query.section || 'joindate';
 
-	searchData.isAdminOrGlobalMod = isAdminOrGlobalMod;
 	searchData.pagination = pagination.create(req.query.page, searchData.pageCount, req.query);
 	searchData['section_' + section] = true;
 	searchData.displayUserSearch = true;

@@ -2,7 +2,7 @@
 'use strict';
 
 
-define('autocomplete', function () {
+define('autocomplete', ['api'], function (api) {
 	var module = {};
 
 	module.user = function (input, params, onselect) {
@@ -23,7 +23,7 @@ define('autocomplete', function () {
 				source: function (request, response) {
 					params.query = request.term;
 
-					socket.emit('user.search', params, function (err, result) {
+					api.get('/api/users', params, function (err, result) {
 						if (err) {
 							return app.alertError(err.message);
 						}

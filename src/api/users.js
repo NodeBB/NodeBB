@@ -245,3 +245,29 @@ async function canDeleteUids(uids) {
 
 	return true;
 }
+
+usersAPI.search = async function (caller, data) {
+	const [allowed, isPrivileged] = await Promise.all([
+		privileges.global.can('search:users', caller.uid),
+		user.isPrivileged(caller.uid),
+	]);
+	let filters = data.filters || [];
+	filters = Array.isArray(filters) ? filters : [filters];
+	if (!allowed ||
+		((
+			data.searchBy === 'ip' ||
+			data.searchBy === 'email' ||
+			filters.includes('banned') ||
+			filters.includes('flagged')
+		) && !isPrivileged)
+	) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	return await user.search({
+		query: data.query,
+		searchBy: data.searchBy || 'username',
+		page: data.page || 1,
+		sortBy: data.sortBy || 'lastonline',
+		filters: filters,
+	});
+};

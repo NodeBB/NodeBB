@@ -45,7 +45,7 @@ async function getUsers(req, res) {
 			postcount: 'users:postcount',
 			reputation: 'users:reputation',
 			joindate: 'users:joindate',
-			online: 'users:online',
+			lastonline: 'users:online',
 			flags: 'users:flags',
 		};
 

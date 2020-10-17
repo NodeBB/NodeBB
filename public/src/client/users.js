@@ -1,7 +1,9 @@
 'use strict';
 
 
-define('forum/users', ['translator', 'benchpress'], function (translator, Benchpress) {
+define('forum/users', [
+	'translator', 'benchpress', 'api',
+], function (translator, Benchpress, api) {
 	var	Users = {};
 
 	var searchTimeoutID = 0;
@@ -95,12 +97,9 @@ define('forum/users', ['translator', 'benchpress'], function (translator, Benchp
 
 
 	function loadPage(query) {
-		var qs = decodeURIComponent($.param(query));
-		$.get(config.relative_path + '/api/users?' + qs, renderSearchResults).fail(function (xhrErr) {
-			if (xhrErr && xhrErr.responseJSON && xhrErr.responseJSON.error) {
-				app.alertError(xhrErr.responseJSON.error);
-			}
-		});
+		api.get('/api/users', query)
+			.then(renderSearchResults)
+			.catch(app.alertError);
 	}
 
 	function renderSearchResults(data) {
@@ -112,6 +111,7 @@ define('forum/users', ['translator', 'benchpress'], function (translator, Benchp
 			data.users = data.users.slice(0, searchResultCount);
 		}
 
+		data.isAdminOrGlobalMod = app.user.isAdmin || app.user.isGlobalMod;
 		Benchpress.parse('users', 'users', data, function (html) {
 			translator.translate(html, function (translated) {
 				translated = $(translated);
