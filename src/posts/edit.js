@@ -67,6 +67,7 @@ module.exports = function (Posts) {
 		returnPostData.cid = topic.cid;
 		returnPostData.topic = topic;
 		returnPostData.editedISO = utils.toISOString(now);
+		returnPostData.changed = oldContent !== data.content;
 
 		await topics.notifyFollowers(returnPostData, data.uid, {
 			type: 'post-edit',
