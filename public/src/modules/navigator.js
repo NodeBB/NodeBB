@@ -222,7 +222,9 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		var scrollTop = $(window).scrollTop();
 		var windowHeight = $(window).height();
 		var documentHeight = $(document).height();
-		var middleOfViewport = scrollTop + (windowHeight / 2);
+		var navbarHeight = components.get('navbar').outerHeight(true);
+		var topicHeaderHeight = $('.topic-header').height() || 0;
+		var middleOfViewport = scrollTop + (windowHeight / 2) - navbarHeight - topicHeaderHeight;
 		var previousDistance = Number.MAX_VALUE;
 		els.each(function () {
 			var elIndex = parseInt($(this).attr('data-index'), 10);
@@ -387,23 +389,27 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 			return;
 		}
 		var postHeight = scrollTo.height();
-		var viewportHeight = $(window).height();
-		var navbarHeight = components.get('navbar').height();
+		var navbarHeight = components.get('navbar').outerHeight(true);
+		var topicHeaderHeight = $('.topic-header').height() || 0;
+		var viewportHeight = $(window).height() - navbarHeight - topicHeaderHeight;
 
 		// Temporarily disable navigator update on scroll
-		$(window).off('scroll', navigator.update);
+		$(window).off('scroll', navigator.delayedUpdate);
 
 		duration = duration !== undefined ? duration : 400;
 		navigator.scrollActive = true;
 		var done = false;
 
 		function animateScroll() {
+			function reenableScroll() {
+				// Re-enable onScroll behaviour
+				$(window).on('scroll', navigator.delayedUpdate);
+				var scrollToRect = scrollTo.get(0).getBoundingClientRect();
+				navigator.update(scrollToRect.top);
+			}
 			function onAnimateComplete() {
 				if (done) {
-					// Re-enable onScroll behaviour
-					$(window).on('scroll', navigator.update);
-					var scrollToRect = scrollTo.get(0).getBoundingClientRect();
-					navigator.update(scrollToRect.top);
+					reenableScroll();
 					return;
 				}
 				done = true;
@@ -416,13 +422,16 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 
 			var scrollTop = 0;
 			if (postHeight < viewportHeight) {
-				scrollTop = (scrollTo.offset().top - (viewportHeight / 2) + (postHeight / 2));
+				scrollTop = (scrollTo.offset().top - (viewportHeight / 2) + (postHeight / 2)) - topicHeaderHeight;
 			} else {
-				scrollTop = scrollTo.offset().top - navbarHeight;
+				scrollTop = scrollTo.offset().top - navbarHeight - topicHeaderHeight;
 			}
+
 			if (duration === 0) {
 				$(window).scrollTop(scrollTop);
-				return onAnimateComplete();
+				onAnimateComplete();
+				reenableScroll();
+				return;
 			}
 			$('html, body').animate({
 				scrollTop: scrollTop + 'px',
@@ -444,3 +453,4 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 
 	return navigator;
 });
+

@@ -284,11 +284,6 @@ app.cacheBuster = null;
 		app.createUserTooltips($('#content'));
 
 		app.createStatusTooltips();
-
-		// Scroll back to top of page
-		if (!ajaxify.isCold()) {
-			window.scrollTo(0, 0);
-		}
 	};
 
 	app.showMessages = function () {
