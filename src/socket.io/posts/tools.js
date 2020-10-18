@@ -1,16 +1,14 @@
 'use strict';
 
 const posts = require('../../posts');
-const topics = require('../../topics');
 const flags = require('../../flags');
 const events = require('../../events');
-const websockets = require('../index');
-const apiHelpers = require('../../api/helpers');
 const privileges = require('../../privileges');
 const plugins = require('../../plugins');
 const social = require('../../social');
 const user = require('../../user');
 const utils = require('../../utils');
+const api = require('../../api');
 
 const sockets = require('..');
 
@@ -65,44 +63,13 @@ module.exports = function (SocketPosts) {
 
 	SocketPosts.delete = async function (socket, data) {
 		sockets.warnDeprecated(socket, 'DELETE /api/v3/posts/:pid/state');
-
-		await deleteOrRestore(socket, data, {
-			command: 'delete',
-			event: 'event:post_deleted',
-			type: 'post-delete',
-		});
+		await api.posts.delete(socket, data);
 	};
 
 	SocketPosts.restore = async function (socket, data) {
 		sockets.warnDeprecated(socket, 'PUT /api/v3/posts/:pid/state');
-
-		await deleteOrRestore(socket, data, {
-			command: 'restore',
-			event: 'event:post_restored',
-			type: 'post-restore',
-		});
+		await api.posts.restore(socket, data);
 	};
-
-	async function deleteOrRestore(socket, data, params) {
-		if (!data || !data.pid) {
-			throw new Error('[[error:invalid-data]]');
-		}
-		const postData = await posts.tools[params.command](socket.uid, data.pid);
-		const results = await isMainAndLastPost(data.pid);
-		if (results.isMain && results.isLast) {
-			await deleteOrRestoreTopicOf(params.command, data.pid, socket);
-		}
-
-		websockets.in('topic_' + postData.tid).emit(params.event, postData);
-
-		await events.log({
-			type: params.type,
-			uid: socket.uid,
-			pid: data.pid,
-			tid: postData.tid,
-			ip: socket.ip,
-		});
-	}
 
 	SocketPosts.deletePosts = async function (socket, data) {
 		await deletePurgePosts(socket, data, 'delete');
@@ -124,63 +91,8 @@ module.exports = function (SocketPosts) {
 
 	SocketPosts.purge = async function (socket, data) {
 		sockets.warnDeprecated(socket, 'DELETE /api/v3/posts/:pid');
-
-		if (!data || !parseInt(data.pid, 10)) {
-			throw new Error('[[error:invalid-data]]');
-		}
-
-		const results = await isMainAndLastPost(data.pid);
-		if (results.isMain && !results.isLast) {
-			throw new Error('[[error:cant-purge-main-post]]');
-		}
-
-		const isMainAndLast = results.isMain && results.isLast;
-		const postData = await posts.getPostFields(data.pid, ['toPid', 'tid']);
-		postData.pid = data.pid;
-
-		const canPurge = await privileges.posts.canPurge(data.pid, socket.uid);
-		if (!canPurge) {
-			throw new Error('[[error:no-privileges]]');
-		}
-		require('../../posts/cache').del(data.pid);
-		await posts.purge(data.pid, socket.uid);
-
-		websockets.in('topic_' + postData.tid).emit('event:post_purged', postData);
-		const topicData = await topics.getTopicFields(postData.tid, ['title', 'cid']);
-
-		await events.log({
-			type: 'post-purge',
-			uid: socket.uid,
-			pid: data.pid,
-			ip: socket.ip,
-			tid: postData.tid,
-			title: String(topicData.title),
-		});
-
-		if (isMainAndLast) {
-			await apiHelpers.doTopicAction('purge', 'event:topic_purged', socket, { tids: [postData.tid], cid: topicData.cid });
-		}
+		await api.posts.purge(socket, data);
 	};
-
-	async function deleteOrRestoreTopicOf(command, pid, socket) {
-		const topic = await posts.getTopicFields(pid, ['tid', 'cid', 'deleted']);
-		if (command === 'delete' && !topic.deleted) {
-			await apiHelpers.doTopicAction('delete', 'event:topic_deleted', socket, { tids: [topic.tid], cid: topic.cid });
-		} else if (command === 'restore' && topic.deleted) {
-			await apiHelpers.doTopicAction('restore', 'event:topic_restored', socket, { tids: [topic.tid], cid: topic.cid });
-		}
-	}
-
-	async function isMainAndLastPost(pid) {
-		const [isMain, topicData] = await Promise.all([
-			posts.isMain(pid),
-			posts.getTopicFields(pid, ['postcount']),
-		]);
-		return {
-			isMain: isMain,
-			isLast: topicData && topicData.postcount === 1,
-		};
-	}
 
 	SocketPosts.changeOwner = async function (socket, data) {
 		if (!data || !Array.isArray(data.pids) || !data.toUid) {

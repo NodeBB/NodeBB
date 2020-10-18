@@ -5,9 +5,11 @@ const _ = require('lodash');
 
 const utils = require('../utils');
 const posts = require('../posts');
+const topics = require('../topics');
 const groups = require('../groups');
 const meta = require('../meta');
 const events = require('../events');
+const privileges = require('../privileges');
 const apiHelpers = require('./helpers');
 const websockets = require('../socket.io');
 
@@ -63,3 +65,103 @@ postsAPI.edit = async function (caller, data) {
 	uids.forEach(uid =>	websockets.in('uid_' + uid).emit('event:post_edited', editResult));
 	return returnData;
 };
+
+postsAPI.delete = async function (caller, data) {
+	await deleteOrRestore(caller, data, {
+		command: 'delete',
+		event: 'event:post_deleted',
+		type: 'post-delete',
+	});
+};
+
+postsAPI.restore = async function (caller, data) {
+	await deleteOrRestore(caller, data, {
+		command: 'restore',
+		event: 'event:post_restored',
+		type: 'post-restore',
+	});
+};
+
+async function deleteOrRestore(caller, data, params) {
+	if (!data || !data.pid) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	const postData = await posts.tools[params.command](caller.uid, data.pid);
+	const results = await isMainAndLastPost(data.pid);
+	if (results.isMain && results.isLast) {
+		await deleteOrRestoreTopicOf(params.command, data.pid, caller);
+	}
+
+	websockets.in('topic_' + postData.tid).emit(params.event, postData);
+
+	await events.log({
+		type: params.type,
+		uid: caller.uid,
+		pid: data.pid,
+		tid: postData.tid,
+		ip: caller.ip,
+	});
+}
+
+async function deleteOrRestoreTopicOf(command, pid, caller) {
+	const topic = await posts.getTopicFields(pid, ['tid', 'cid', 'deleted']);
+	// command: delete/restore
+	await apiHelpers.doTopicAction(command,
+		topic.deleted ? 'event:topic_restored' : 'event:topic_deleted',
+		caller,
+		{ tids: [topic.tid], cid: topic.cid }
+	);
+}
+
+postsAPI.purge = async function (caller, data) {
+	if (!data || !parseInt(data.pid, 10)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	const results = await isMainAndLastPost(data.pid);
+	if (results.isMain && !results.isLast) {
+		throw new Error('[[error:cant-purge-main-post]]');
+	}
+
+	const isMainAndLast = results.isMain && results.isLast;
+	const postData = await posts.getPostFields(data.pid, ['toPid', 'tid']);
+	postData.pid = data.pid;
+
+	const canPurge = await privileges.posts.canPurge(data.pid, caller.uid);
+	if (!canPurge) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	require('../posts/cache').del(data.pid);
+	await posts.purge(data.pid, caller.uid);
+
+	websockets.in('topic_' + postData.tid).emit('event:post_purged', postData);
+	const topicData = await topics.getTopicFields(postData.tid, ['title', 'cid']);
+
+	await events.log({
+		type: 'post-purge',
+		pid: data.pid,
+		uid: caller.uid,
+		ip: caller.ip,
+		tid: postData.tid,
+		title: String(topicData.title),
+	});
+
+	if (isMainAndLast) {
+		await apiHelpers.doTopicAction('purge', 'event:topic_purged',
+			caller,
+			{ tids: [postData.tid], cid: topicData.cid }
+		);
+	}
+};
+
+async function isMainAndLastPost(pid) {
+	const [isMain, topicData] = await Promise.all([
+		posts.isMain(pid),
+		posts.getTopicFields(pid, ['postcount']),
+	]);
+	return {
+		isMain: isMain,
+		isLast: topicData && topicData.postcount === 1,
+	};
+}
+

@@ -384,16 +384,14 @@ define('forum/topic/postTools', [
 	}
 
 	function postAction(action, pid) {
-		translator.translate('[[topic:post_' + action + '_confirm]]', function (msg) {
-			bootbox.confirm(msg, function (confirm) {
-				if (!confirm) {
-					return;
-				}
+		bootbox.confirm('[[topic:post_' + action + '_confirm]]', function (confirm) {
+			if (!confirm) {
+				return;
+			}
 
-				const route = action === 'purge' ? '' : '/state';
-				const method = action === 'restore' ? 'put' : 'del';
-				api[method](`/posts/${pid}${route}`, undefined, undefined, 'default');
-			});
+			const route = action === 'purge' ? '' : '/state';
+			const method = action === 'restore' ? 'put' : 'del';
+			api[method](`/posts/${pid}${route}`).catch(app.alertError);
 		});
 	}
 
@@ -411,36 +409,34 @@ define('forum/topic/postTools', [
 			return callback();
 		}
 
-		translator.translate('[[topic:stale.warning]]', function (translated) {
-			var warning = bootbox.dialog({
-				title: '[[topic:stale.title]]',
-				message: translated,
-				buttons: {
-					reply: {
-						label: '[[topic:stale.reply_anyway]]',
-						className: 'btn-link',
-						callback: function () {
-							staleReplyAnyway = true;
-							callback();
-						},
-					},
-					create: {
-						label: '[[topic:stale.create]]',
-						className: 'btn-primary',
-						callback: function () {
-							translator.translate('[[topic:link_back, ' + ajaxify.data.title + ', ' + config.relative_path + '/topic/' + ajaxify.data.slug + ']]', function (body) {
-								$(window).trigger('action:composer.topic.new', {
-									cid: ajaxify.data.cid,
-									body: body,
-								});
-							});
-						},
+		var warning = bootbox.dialog({
+			title: '[[topic:stale.title]]',
+			message: '[[topic:stale.warning]]',
+			buttons: {
+				reply: {
+					label: '[[topic:stale.reply_anyway]]',
+					className: 'btn-link',
+					callback: function () {
+						staleReplyAnyway = true;
+						callback();
 					},
 				},
-			});
-
-			warning.modal();
+				create: {
+					label: '[[topic:stale.create]]',
+					className: 'btn-primary',
+					callback: function () {
+						translator.translate('[[topic:link_back, ' + ajaxify.data.title + ', ' + config.relative_path + '/topic/' + ajaxify.data.slug + ']]', function (body) {
+							$(window).trigger('action:composer.topic.new', {
+								cid: ajaxify.data.cid,
+								body: body,
+							});
+						});
+					},
+				},
+			},
 		});
+
+		warning.modal();
 	}
 
 	return PostTools;
