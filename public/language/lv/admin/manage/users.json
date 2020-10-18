@@ -20,16 +20,10 @@
 	"add-group": "Add Group",
 	"invite": "Uzaicināt",
 	"new": "Izveidot jaunu lietotāju",
-
-	"pills.latest": "Jaunākie",
+	"filter-by": "Filter by",
 	"pills.unvalidated": "Neapstiprinātie",
-	"pills.no-posts": "Nav rakstu",
-	"pills.top-posters": "Visvairāk rakstu",
-	"pills.top-rep": "Visvairāk ranga punktu",
-	"pills.inactive": "Neaktīvie",
-	"pills.flagged": "Visvairāk atzīmēto",
+	"pills.validated": "Validated",
 	"pills.banned": "Bloķētie",
-	"pills.search": "Meklēt lietotājos",
 
 	"50-per-page": "50 per page",
 	"100-per-page": "100 per page",

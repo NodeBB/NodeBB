@@ -44,5 +44,6 @@
     "search-preferences-saved": "Vyhľadávacie predvoľby uložené",
     "search-preferences-cleared": "Vyhľadávacie predvoľby vyčistené",
     "show-results-as": "Zobraziť výsledky ako",
-    "see-more-results": "See more results (%1)"
+    "see-more-results": "See more results (%1)",
+    "search-in-category": "Search in \"%1\""
 }

@@ -1,0 +1,58 @@
+post:
+  tags:
+    - categories
+  summary: create a category
+  description: This operation creates a new category
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+            parentCid:
+              type: number
+            cloneFromCid:
+              type: number
+            icon:
+              type: string
+              description: A ForkAwesome icon without the `fa-` prefix
+            bgColor:
+              type: string
+            color:
+              type: string
+            link:
+              type: string
+            class:
+              type: string
+            backgroundImage:
+              type: string
+          required:
+            - name
+        example:
+          name: My New Category
+          description: Lorem ipsum, dolor sit amet
+          parentCid: 0
+          cloneFromCid: 0
+          icon: bullhorn
+          bgColor: '#ffffff'
+          color: '#000000'
+          link: 'https://example.org'
+          class: 'col-md-3 col-xs-6'
+          backgroundImage: '/assets/relative/path/to/image'
+  responses:
+    '200':
+      description: category successfully created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../components/schemas/CategoryObj.yaml#/CategoryObj

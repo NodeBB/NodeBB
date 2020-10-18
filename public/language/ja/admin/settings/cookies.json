@@ -8,5 +8,6 @@
 	"consent.blank-localised-default": "空白のままにして、NodeBBのローカライズされたデフォルトを使用する",
 	"settings": "設定",
 	"cookie-domain": "セッションCookieドメイン",
+	"max-user-sessions": "Max active sessions per user",
 	"blank-default": "デフォルトの場合は空白のまま"
 }

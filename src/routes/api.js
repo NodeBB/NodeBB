@@ -8,7 +8,7 @@ module.exports = function (app, middleware, controllers) {
 	var router = express.Router();
 	app.use('/api', router);
 
-	router.get('/config', middleware.applyCSRF, controllers.api.getConfig);
+	router.get('/config', middleware.applyCSRF, middleware.authenticateOrGuest, controllers.api.getConfig);
 
 	router.get('/self', controllers.user.getCurrentUser);
 	router.get('/user/uid/:uid', middleware.canViewUsers, controllers.user.getUserByUID);

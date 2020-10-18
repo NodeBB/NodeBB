@@ -75,7 +75,7 @@ module.exports = function (module) {
 		if (cachedData[key]) {
 			return cachedData[key].hasOwnProperty(field) ? cachedData[key][field] : null;
 		}
-		return await module.client.async.hget(key, field);
+		return await module.client.async.hget(key, String(field));
 	};
 
 	module.getObjectFields = async function (key, fields) {

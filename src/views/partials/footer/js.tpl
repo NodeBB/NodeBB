@@ -12,13 +12,12 @@
     }
 
     function prepareFooter() {
-        require(['forum/footer']);
         <!-- IF useCustomJS -->
         {{customJS}}
         <!-- ENDIF useCustomJS -->
 
         $(document).ready(function () {
-            ajaxify.coldLoad();
+            app.coldLoad();
         });
     }
 </script>

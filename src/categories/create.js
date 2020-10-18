@@ -7,6 +7,7 @@ const db = require('../database');
 const plugins = require('../plugins');
 const privileges = require('../privileges');
 const utils = require('../utils');
+const slugify = require('../slugify');
 const cache = require('../cache');
 
 module.exports = function (Categories) {
@@ -15,7 +16,7 @@ module.exports = function (Categories) {
 		const cid = await db.incrObjectField('global', 'nextCid');
 
 		data.name = data.name || 'Category ' + cid;
-		const slug = cid + '/' + utils.slugify(data.name);
+		const slug = cid + '/' + slugify(data.name);
 		const order = data.order || cid;	// If no order provided, place it at the end
 		const colours = Categories.assignColours();
 
@@ -111,7 +112,7 @@ module.exports = function (Categories) {
 
 	Categories.assignColours = function () {
 		const backgrounds = ['#AB4642', '#DC9656', '#F7CA88', '#A1B56C', '#86C1B9', '#7CAFC2', '#BA8BAF', '#A16946'];
-		const text = ['#fff', '#fff', '#333', '#fff', '#333', '#fff', '#fff', '#fff'];
+		const text = ['#ffffff', '#ffffff', '#333333', '#ffffff', '#333333', '#ffffff', '#ffffff', '#ffffff'];
 		const index = Math.floor(Math.random() * backgrounds.length);
 		return [backgrounds[index], text[index]];
 	};

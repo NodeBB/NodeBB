@@ -275,6 +275,10 @@ ajaxify = window.ajaxify || {};
 	}
 
 	ajaxify.end = function (url, tpl_url) {
+		// Scroll back to top of page
+		if (!ajaxify.isCold()) {
+			window.scrollTo(0, 0);
+		}
 		ajaxify.loadScript(tpl_url, function done() {
 			$(window).trigger('action:ajaxify.end', { url: url, tpl_url: tpl_url, title: ajaxify.data.title });
 		});

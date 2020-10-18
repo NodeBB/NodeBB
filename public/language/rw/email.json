@@ -21,6 +21,8 @@
     "reset.notify.text1": "Turakumenyesha ko kuri %1, ijambobanga wakoreshaga ryahinduwe nk'uko byari byasabwe.",
     "reset.notify.text2": "Niba atari wowe wari wabisabye ku bushake bwawe, bimenyeshe umuyobozi w'urubuga aka kanya. ",
     "digest.latest_topics": "Ibiganiro biheruka bya %1",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "Kanda hano kugirango usure %1",
     "digest.unsub.info": "Izi ngingo z'ingenzi zakohererejwe kuko waziyandikishijeho",
     "digest.day": "umunsi",

@@ -76,12 +76,8 @@ async function renderWidget(widget, uid, options) {
 	if (!data) {
 		return;
 	}
-	let html = data;
-	if (typeof html !== 'string') {
-		html = data.html;
-	} else {
-		winston.warn('[widgets.render] passing a string is deprecated!, filter:widget.render:' + widget.widget + '. Please set hookData.html in your plugin.');
-	}
+
+	let html = data.html;
 
 	if (widget.data.container && widget.data.container.match('{body}')) {
 		html = await Benchpress.compileRender(widget.data.container, {
@@ -91,11 +87,11 @@ async function renderWidget(widget, uid, options) {
 		});
 	}
 
-	if (html !== undefined) {
+	if (html) {
 		html = await translator.translate(html, userLang);
 	}
 
-	return { html: html };
+	return { html };
 }
 
 async function checkVisibility(widget, uid) {

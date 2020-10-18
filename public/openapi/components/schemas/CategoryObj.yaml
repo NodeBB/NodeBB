@@ -1,0 +1,72 @@
+CategoryObj:
+  properties:
+    cid:
+      type: number
+      example: 1
+    name:
+      type: string
+      example: My New Category
+    description:
+      type: string
+      example: Lorem ipsum, dolor sit amet
+    descriptionParsed:
+      type: string
+      example: Lorem ipsum, dolor sit amet
+    icon:
+      type: string
+      example: bullhorn
+    bgColor:
+      type: string
+      example: '#ffffff'
+    color:
+      type: string
+      example: '#000000'
+    slug:
+      type: string
+      example: 1/my-new-category
+    parentCid:
+      type: number
+      example: 0
+    topic_count:
+      type: number
+      example: 0
+    post_count:
+      type: number
+      example: 0
+    disabled:
+      type: number
+      example: 0
+    order:
+      type: number
+      example: 5
+    link:
+      type: number
+      example: 'https://example.org'
+    numRecentReplies:
+      type: number
+      example: 1
+    class:
+      type: string
+      example: col-md-3 col-xs-6
+    imageClass:
+      type: string
+      example: cover
+    isSection:
+      type: number
+      example: 0
+    totalPostCount:
+      type: number
+      example: 0
+    totalTopicCount:
+      type: number
+      example: 0
+    tagWhitelist:
+      type: array
+      example:
+        - some-tag
+        - another-tag
+    unread-class:
+      type: string
+    backgroundImage:
+      type: string
+      example: '/assets/images/covers/Circuit1.png'

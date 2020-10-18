@@ -17,7 +17,7 @@ const topics = require('../src/topics');
 const plugins = require('../src/plugins');
 const flags = require('../src/flags');
 const messaging = require('../src/messaging');
-const socketUser = require('../src/socket.io/user');
+
 
 describe('Read API', async () => {
 	let readApi = false;
@@ -61,6 +61,7 @@ describe('Read API', async () => {
 		// Create a new chat room
 		await messaging.newRoom(1, [2]);
 
+		const socketUser = require('../src/socket.io/user');
 		// export data for admin user
 		await socketUser.exportProfile({ uid: adminUid }, { uid: adminUid });
 		await socketUser.exportPosts({ uid: adminUid }, { uid: adminUid });
@@ -235,6 +236,16 @@ describe('Read API', async () => {
 	});
 });
 
-describe('Write API', () => {
-	let writeApi;
+describe('Write API', async () => {
+	const apiPath = path.resolve(__dirname, '../public/openapi/write.yaml');
+
+	it('should pass OpenAPI v3 validation', async () => {
+		try {
+			await SwaggerParser.validate(apiPath);
+		} catch (e) {
+			assert.ifError(e);
+		}
+	});
+
+	console.log(await SwaggerParser.dereference(apiPath));
 });

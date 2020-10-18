@@ -21,6 +21,8 @@
     "reset.notify.text1": "Ilmoitamme sinua että %1, salasanasi vaihdettiin onnistuneesti.",
     "reset.notify.text2": "Jos et tunnista tätä toimintoa, ilmoita välittömästi ylläpitäjälle.",
     "digest.latest_topics": "Viimeisimmät viestiketjut henkilöltä %1",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "Click here to visit %1",
     "digest.unsub.info": "Tämä kooste lähetettiin sinulle tilin tilausasetusten perusteella",
     "digest.day": "päivä",

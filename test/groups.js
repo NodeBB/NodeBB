@@ -48,6 +48,16 @@ describe('Groups', function () {
 					disableLeave: 1,
 				});
 			},
+			async () => {
+				await Groups.create({
+					name: 'Global Moderators',
+					userTitle: 'Global Moderator',
+					description: 'Forum wide moderators',
+					hidden: 0,
+					private: 1,
+					disableJoinRequests: 1,
+				});
+			},
 			function (next) {
 				// Create a new user
 				User.create({
@@ -72,8 +82,8 @@ describe('Groups', function () {
 			},
 		], function (err, results) {
 			assert.ifError(err);
-			testUid = results[4];
-			adminUid = results[5];
+			testUid = results[5];
+			adminUid = results[6];
 			Groups.join('administrators', adminUid, done);
 		});
 	});
@@ -630,7 +640,7 @@ describe('Groups', function () {
 				const isMember = await Groups.isMember(newUid, 'administrators');
 				assert(!isMember);
 			} catch (err) {
-				assert.strictEqual(err.message, '[[error:invalid-group-name]]');
+				assert.strictEqual(err.message, '[[error:no-group]]');
 			}
 			meta.config.allowPrivateGroups = oldValue;
 		});
@@ -698,6 +708,29 @@ describe('Groups', function () {
 					});
 				});
 			});
+		});
+
+		it('should fail to add user to system group', async function () {
+			const uid = await User.create({ username: 'eviluser' });
+			const oldValue = meta.config.allowPrivateGroups;
+			meta.config.allowPrivateGroups = 0;
+			async function test(groupName) {
+				let err;
+				try {
+					await socketGroups.join({ uid: uid }, { groupName: groupName });
+					const isMember = await Groups.isMember(uid, groupName);
+					assert.strictEqual(isMember, false);
+				} catch (_err) {
+					err = _err;
+				}
+				assert.strictEqual(err.message, '[[error:not-allowed]]');
+			}
+			const groups = ['Global Moderators', 'verified-users', 'unverified-users'];
+			for (const g of groups) {
+				// eslint-disable-next-line no-await-in-loop
+				await test(g);
+			}
+			meta.config.allowPrivateGroups = oldValue;
 		});
 	});
 
@@ -1204,7 +1237,7 @@ describe('Groups', function () {
 
 		it('should fail to delete group if name is special', function (done) {
 			socketGroups.delete({ uid: adminUid }, { groupName: 'guests' }, function (err) {
-				assert.equal(err.message, '[[error:not-allowed]]');
+				assert.equal(err.message, '[[error:invalid-group-name]]');
 				done();
 			});
 		});
@@ -1262,7 +1295,6 @@ describe('Groups', function () {
 				assert.ifError(err);
 				assert.equal(groupData.name, 'newgroup');
 				assert.equal(groupData.description, 'group created by admin');
-				assert.equal(groupData.ownerUid, adminUid);
 				assert.equal(groupData.private, 1);
 				assert.equal(groupData.hidden, 0);
 				assert.equal(groupData.memberCount, 1);
@@ -1288,9 +1320,9 @@ describe('Groups', function () {
 			});
 		});
 
-		it('should fail to if user is already member', function (done) {
+		it('should not error if user is already member', function (done) {
 			socketGroups.join({ uid: adminUid }, { uid: testUid, groupName: 'newgroup' }, function (err) {
-				assert.equal(err.message, '[[error:group-already-member]]');
+				assert.ifError(err);
 				done();
 			});
 		});
@@ -1309,9 +1341,16 @@ describe('Groups', function () {
 			});
 		});
 
-		it('should fail if user is not member', function (done) {
+		it('should not error if user is not member', function (done) {
 			socketGroups.leave({ uid: adminUid }, { uid: 3, groupName: 'newgroup' }, function (err) {
-				assert.equal(err.message, '[[error:group-not-member]]');
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should fail if trying to remove someone else from group', function (done) {
+			socketGroups.leave({ uid: testUid }, { uid: adminUid, groupName: 'newgroup' }, function (err) {
+				assert.strictEqual(err.message, '[[error:no-privileges]]');
 				done();
 			});
 		});

@@ -21,6 +21,8 @@
     "reset.notify.text1": "Mēs Tevi informējam, ka %1 Tava parole tika veiksmīgi mainīta.",
     "reset.notify.text2": "Ja neesi to pilnvarojis, nekavējoties informē administratoru par to.",
     "digest.latest_topics": "Jaunākie temati no %1",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "Noklikšķini, lai apmeklētu %1",
     "digest.unsub.info": "Šis kopsavilkums tika nosūtīts Tev Tavu abonēšanas iestatījumu dēļ.",
     "digest.day": "diena",

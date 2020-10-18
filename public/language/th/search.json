@@ -44,5 +44,6 @@
     "search-preferences-saved": "ค้นหาการตั้งค่าที่บันทึกไว้",
     "search-preferences-cleared": "ค้นหาการตั้งค่าที่ลบล้างไป",
     "show-results-as": "แสดงผลลัพธ์แบบ",
-    "see-more-results": "See more results (%1)"
+    "see-more-results": "See more results (%1)",
+    "search-in-category": "Search in \"%1\""
 }

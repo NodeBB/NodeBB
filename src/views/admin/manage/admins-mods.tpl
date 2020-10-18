@@ -40,7 +40,7 @@
 
 	<!-- BEGIN categories -->
 	<div class="categories category-wrapper category-depth-{categories.depth}">
-	<h4><!-- IF categories.icon --><i class="fa {categories.icon}"></i> <!-- ENDIF categories.icon -->[[admin/manage/admins-mods:moderators-of-category, {categories.name}]]</h4>
+	<h4><!-- IF categories.icon --><i class="fa {categories.icon}"></i> <!-- ENDIF categories.icon -->[[admin/manage/admins-mods:moderators-of-category, {categories.name}]]{{{if categories.disabled}}}<span class="badge badge-primary">[[admin/manage/admins-mods:disabled]]</span>{{{end}}}</h4>
 	<div class="moderator-area" data-cid="{categories.cid}">
 		<!-- BEGIN categories.moderators -->
 			<div class="user-card pull-left" data-uid="{categories.moderators.uid}">

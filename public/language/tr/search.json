@@ -44,5 +44,6 @@
     "search-preferences-saved": "Arama tercihleri kaydedildi",
     "search-preferences-cleared": "Arama tercihleri temizlendi",
     "show-results-as": "Sonuçları göster : ",
-    "see-more-results": "Daha fazla sonuç gör (%1)"
+    "see-more-results": "Daha fazla sonuç gör (%1)",
+    "search-in-category": "Search in \"%1\""
 }

@@ -20,16 +20,10 @@
 	"add-group": "Add Group",
 	"invite": "Запросити",
 	"new": "Новий користувач",
-
-	"pills.latest": "Останні користувачі",
+	"filter-by": "Filter by",
 	"pills.unvalidated": "Не підтверджені",
-	"pills.no-posts": "Без постів",
-	"pills.top-posters": "Кращі автори",
-	"pills.top-rep": "Найбільша репутація",
-	"pills.inactive": "Неактивні",
-	"pills.flagged": "Найбільш оскаржувані",
+	"pills.validated": "Validated",
 	"pills.banned": "Забанені",
-	"pills.search": "Пошук користувачів",
 
 	"50-per-page": "50 per page",
 	"100-per-page": "100 per page",

@@ -44,5 +44,6 @@
     "search-preferences-saved": "Tìm kiếm tuỳ chọn đã lưu",
     "search-preferences-cleared": "Tìm kiếm tuỳ chọn đã xoá",
     "show-results-as": "Hiện thị kết quả theo",
-    "see-more-results": "Xem thêm kết quả (%1)"
+    "see-more-results": "Xem thêm kết quả (%1)",
+    "search-in-category": "Search in \"%1\""
 }

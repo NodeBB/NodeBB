@@ -21,6 +21,8 @@
     "reset.notify.text1": "Xin thông báo với bạn: mật khẩu của bạn trên %1 đã được thay đổi thành công.",
     "reset.notify.text2": "Nếu bạn không cho phép điều này, vui lòng thông báo cho quản trị viên ngay lập tức.",
     "digest.latest_topics": "Chủ đề mới nhất từ %1",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "Click vào đây để truy cập %1",
     "digest.unsub.info": "Tập san này được gửi đến bạn dựa theo cài đặt theo dõi của bạn.",
     "digest.day": "ngày",

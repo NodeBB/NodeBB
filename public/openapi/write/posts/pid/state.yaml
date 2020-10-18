@@ -1,0 +1,36 @@
+put:
+  tags:
+    - posts
+  summary: restore a post
+  description: This operation restores a post.
+  responses:
+    '200':
+      description: Topic successfully restored
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}
+delete:
+  tags:
+    - posts
+  summary: deletes a post
+  description: This operation soft deletes a post.
+  responses:
+    '200':
+      description: Post successfully deleted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}

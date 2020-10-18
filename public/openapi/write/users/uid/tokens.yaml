@@ -1,0 +1,40 @@
+post:
+  tags:
+    - users
+  summary: generate a user token
+  description: This route can only be used to generate tokens for the same user. In other words, you cannot use this route to generate a token for a different user than the one you are authenticated as.
+  responses:
+    '200':
+      description: successfully generated a user token
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+delete:
+  tags:
+    - users
+  summary: delete user token
+  parameters:
+    - in: path
+      name: token
+      schema:
+        type: string
+      required: true
+      description: a valid API token
+  responses:
+    '200':
+      description: successfully deleted user token
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object

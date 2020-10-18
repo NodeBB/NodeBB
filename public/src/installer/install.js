@@ -1,6 +1,6 @@
 'use strict';
 
-/* global zxcvbn */
+/* global zxcvbn, slugify */
 
 $('document').ready(function () {
 	setupInputs();
@@ -61,7 +61,7 @@ $('document').ready(function () {
 		var help = parent.children('.help-text');
 
 		function validateUsername(field) {
-			if (!utils.isUserNameValid(field) || !utils.slugify(field)) {
+			if (!utils.isUserNameValid(field) || !slugify(field)) {
 				parent.addClass('error');
 				help.html('Invalid Username.');
 			} else {

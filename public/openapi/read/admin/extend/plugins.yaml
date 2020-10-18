@@ -1,0 +1,206 @@
+get:
+  tags:
+    - admin
+  summary: Get system plugin settings
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  installed:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        latest:
+                          type: string
+                        description:
+                          type: string
+                        name:
+                          type: string
+                        updated:
+                          type: string
+                        url:
+                          type: string
+                        numInstalls:
+                          type: number
+                        isCompatible:
+                          type: boolean
+                        id:
+                          type: string
+                        installed:
+                          type: boolean
+                        active:
+                          type: boolean
+                        isTheme:
+                          type: boolean
+                        error:
+                          type: boolean
+                        version:
+                          type: string
+                        license:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            text:
+                              type: string
+                          nullable: true
+                        outdated:
+                          type: boolean
+                        settingsRoute:
+                          type: string
+                      required:
+                        - latest
+                        - description
+                        - name
+                        - id
+                        - installed
+                        - active
+                        - isTheme
+                        - error
+                        - version
+                        - license
+                        - outdated
+                  installedCount:
+                    type: number
+                  activeCount:
+                    type: number
+                  inactiveCount:
+                    type: number
+                  upgradeCount:
+                    type: number
+                  download:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        updated:
+                          type: string
+                        description:
+                          type: string
+                        latest:
+                          type: string
+                        url:
+                          type: string
+                        numInstalls:
+                          type: number
+                        isCompatible:
+                          type: boolean
+                        id:
+                          type: string
+                        installed:
+                          type: boolean
+                        active:
+                          type: boolean
+                      required:
+                        - name
+                        - updated
+                        - latest
+                        - url
+                        - numInstalls
+                        - isCompatible
+                        - id
+                        - installed
+                        - active
+                  incompatible:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        latest:
+                          type: string
+                        description:
+                          type: string
+                        name:
+                          type: string
+                        updated:
+                          type: string
+                        url:
+                          type: string
+                        numInstalls:
+                          type: number
+                        isCompatible:
+                          type: boolean
+                        id:
+                          type: string
+                        installed:
+                          type: boolean
+                        active:
+                          type: boolean
+                        downloads:
+                          type: number
+                      required:
+                        - name
+                        - updated
+                        - latest
+                        - url
+                        - numInstalls
+                        - isCompatible
+                        - id
+                        - installed
+                        - active
+                  trending:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        latest:
+                          type: string
+                        description:
+                          type: string
+                        name:
+                          type: string
+                        updated:
+                          type: string
+                        url:
+                          type: string
+                        numInstalls:
+                          type: number
+                        isCompatible:
+                          type: boolean
+                        id:
+                          type: string
+                        installed:
+                          type: boolean
+                        active:
+                          type: boolean
+                        isTheme:
+                          type: boolean
+                        error:
+                          type: boolean
+                        version:
+                          type: string
+                        license:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            text:
+                              type: string
+                          nullable: true
+                        outdated:
+                          type: boolean
+                        settingsRoute:
+                          type: string
+                        downloads:
+                          type: number
+                      required:
+                        - latest
+                        - description
+                        - name
+                        - id
+                        - installed
+                        - active
+                        - downloads
+                  submitPluginUsage:
+                    type: number
+                  version:
+                    type: string
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

@@ -20,16 +20,10 @@
 	"add-group": "Add Group",
 	"invite": "Pozivnica",
 	"new": "Novi korisnik",
-
-	"pills.latest": "Posljednji korisnici",
+	"filter-by": "Filter by",
 	"pills.unvalidated": "Nije potvrđen",
-	"pills.no-posts": "Nema objava",
-	"pills.top-posters": "Najviše objava",
-	"pills.top-rep": "Najviše reputacije",
-	"pills.inactive": "Neaktivan",
-	"pills.flagged": "Najviše zastava",
+	"pills.validated": "Validated",
 	"pills.banned": "Blokirani",
-	"pills.search": "Pretraga korisnika",
 
 	"50-per-page": "50 per page",
 	"100-per-page": "100 per page",

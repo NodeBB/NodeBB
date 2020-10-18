@@ -48,6 +48,7 @@ middleware.applyCSRF = function (req, res, next) {
 		next();
 	}
 };
+middleware.applyCSRFasync = util.promisify(middleware.applyCSRF);
 
 middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login');
 
@@ -59,6 +60,8 @@ require('./render')(middleware);
 require('./maintenance')(middleware);
 require('./user')(middleware);
 require('./headers')(middleware);
+require('./expose')(middleware);
+middleware.assert = require('./assert');
 
 middleware.stripLeadingSlashes = function stripLeadingSlashes(req, res, next) {
 	var target = req.originalUrl.replace(nconf.get('relative_path'), '');
@@ -205,8 +208,7 @@ middleware.buildSkinAsset = helpers.try(async function buildSkinAsset(req, res, 
 	}
 
 	await plugins.prepareForBuild(['client side styles']);
-	const buildBundle = util.promisify(meta.css.buildBundle);
-	const css = await buildBundle(target[0], true);
+	const css = await meta.css.buildBundle(target[0], true);
 	require('../meta/minifier').killAll();
 	res.status(200).type('text/css').send(css);
 });
@@ -237,3 +239,14 @@ middleware.validateAuth = helpers.try(async function validateAuth(req, res, next
 		next(err);
 	}
 });
+
+middleware.checkRequired = function (fields, req, res, next) {
+	// Used in API calls to ensure that necessary parameters/data values are present
+	const missing = fields.filter(field => !req.body.hasOwnProperty(field));
+
+	if (!missing.length) {
+		return next();
+	}
+
+	controllers.helpers.formatApiResponse(400, res, new Error('Required parameters were missing from this API call: ' + missing.join(', ')));
+};

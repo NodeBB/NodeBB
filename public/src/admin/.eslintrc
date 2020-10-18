@@ -1,7 +1,5 @@
 {
 	"globals": {
-		"Sortable": true,
-		"Slideout": true,
-		"NProgress": true
+		"Sortable": true
 	}
 }

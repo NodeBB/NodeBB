@@ -44,5 +44,6 @@
     "search-preferences-saved": "搜尋偏好設定已儲存",
     "search-preferences-cleared": "搜尋偏好設定已清除",
     "show-results-as": "結果顯示為",
-    "see-more-results": "查看更多結果 (%1)"
+    "see-more-results": "查看更多結果 (%1)",
+    "search-in-category": "Search in \"%1\""
 }

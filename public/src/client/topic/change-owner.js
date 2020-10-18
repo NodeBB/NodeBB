@@ -37,7 +37,7 @@ define('forum/topic/change-owner', [
 				changeOwner();
 			});
 
-			autocomplete.user(modal.find('#username'), { notBanned: true }, function (ev, ui) {
+			autocomplete.user(modal.find('#username'), { filters: ['notbanned'] }, function (ev, ui) {
 				toUid = ui.item.user.uid;
 				checkButtonEnable();
 			});

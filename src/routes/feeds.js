@@ -279,6 +279,10 @@ async function generateTopicsFeed(feedOptions, feedTopics) {
 			date: new Date(topicData.lastposttime).toUTCString(),
 		};
 
+		if (topicData.deleted) {
+			return;
+		}
+
 		if (topicData.teaser && topicData.teaser.user && !feedOptions.useMainPost) {
 			feedItem.description = topicData.teaser.content;
 			feedItem.author = topicData.teaser.user.username;

@@ -22,8 +22,8 @@
 	"smtp-transport.username": "用户名",
 	"smtp-transport.username-help": "<b>对于Gmail服务，</b>请在这里输入完整的电子邮箱地址，尤其是如果您使用的是 Google Apps 托管的域名。",
 	"smtp-transport.password": "密码",
-	"smtp-transport.pool": "Enable pooled connections",
-	"smtp-transport.pool-help": "Pooling connections prevents NodeBB from creating a new connection for every email. This option only applies if SMTP Transport is enabled.",
+	"smtp-transport.pool": "启用池式连接",
+	"smtp-transport.pool-help": "池式连接可防止 NodeBB 为每封邮件创建新的连接。此选项仅适用于启用SMTP传输的情况下。",
 
 	"template": "编辑电子邮件模板",
 	"template.select": "选择电子邮件模板",

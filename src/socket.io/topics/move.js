@@ -30,7 +30,7 @@ module.exports = function (SocketTopics) {
 			await topics.tools.move(tid, data);
 
 			const notifyUids = await privileges.categories.filterUids('topics:read', topicData.cid, uids);
-			socketHelpers.emitToTopicAndCategory('event:topic_moved', topicData, notifyUids);
+			socketHelpers.emitToUids('event:topic_moved', topicData, notifyUids);
 			if (!topicData.deleted) {
 				socketHelpers.sendNotificationToTopicOwner(tid, socket.uid, 'move', 'notifications:moved_your_topic');
 			}

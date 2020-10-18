@@ -4,8 +4,7 @@
 define('admin/manage/tags', [
 	'forum/infinitescroll',
 	'admin/modules/selectable',
-	'admin/modules/colorpicker',
-], function (infinitescroll, selectable, colorpicker) {
+], function (infinitescroll, selectable) {
 	var	Tags = {};
 	var timeoutId = 0;
 
@@ -91,7 +90,7 @@ define('admin/manage/tags', [
 			}
 
 			var firstTag = $(tagsToModify[0]);
-			var modal = bootbox.dialog({
+			bootbox.dialog({
 				title: '[[admin/manage/tags:alerts.editing]]',
 				message: firstTag.find('.tag-modal').html(),
 				buttons: {
@@ -100,15 +99,17 @@ define('admin/manage/tags', [
 						className: 'btn-primary save',
 						callback: function () {
 							var modal = $('.bootbox');
-							var bgColor = modal.find('[data-name="bgColor"]').val();
-							var color = modal.find('[data-name="color"]').val();
+							var resetColors = modal.find('#reset-colors').is(':checked');
+							var bgColor = resetColors ? '' : modal.find('[data-name="bgColor"]').val();
+							var color = resetColors ? '' : modal.find('[data-name="color"]').val();
+
 							var data = [];
 							tagsToModify.each(function (idx, tag) {
 								tag = $(tag);
 								data.push({
 									value: tag.attr('data-tag'),
-									color: modal.find('[data-name="color"]').val(),
-									bgColor: modal.find('[data-name="bgColor"]').val(),
+									color: color,
+									bgColor: bgColor,
 								});
 
 								tag.find('[data-name="bgColor"]').val(bgColor);
@@ -126,8 +127,6 @@ define('admin/manage/tags', [
 					},
 				},
 			});
-
-			handleColorPickers(modal);
 		});
 	}
 
@@ -193,15 +192,6 @@ define('admin/manage/tags', [
 				});
 			});
 		});
-	}
-
-	function handleColorPickers(modal) {
-		function enableColorPicker(idx, inputEl) {
-			var $inputEl = $(inputEl);
-			colorpicker.enable($inputEl);
-		}
-
-		modal.find('[data-name="bgColor"], [data-name="color"]').each(enableColorPicker);
 	}
 
 	return Tags;

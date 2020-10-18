@@ -13,7 +13,7 @@ AdminsMods.get = async function (req, res) {
 	const [admins, globalMods, categories] = await Promise.all([
 		groups.get('administrators', { uid: req.uid }),
 		groups.get('Global Moderators', { uid: req.uid }),
-		getModeratorsOfCategories(req.uid),
+		getModeratorsOfCategories(),
 	]);
 
 	res.render('admin/manage/admins-mods', {
@@ -24,8 +24,8 @@ AdminsMods.get = async function (req, res) {
 	});
 };
 
-async function getModeratorsOfCategories(uid) {
-	const categoryData = await categories.buildForSelect(uid, 'find', ['depth']);
+async function getModeratorsOfCategories() {
+	const categoryData = await categories.buildForSelectAll(['depth', 'disabled']);
 	const moderatorUids = await categories.getModeratorUids(categoryData.map(c => c.cid));
 	const uids = _.uniq(_.flatten(moderatorUids));
 	const moderatorData = await user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture']);

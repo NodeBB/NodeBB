@@ -17,7 +17,6 @@ settingsController.get = async function (req, res) {
 	res.render('admin/settings/' + term);
 };
 
-
 settingsController.email = async (req, res) => {
 	const emails = await emailer.getTemplates(meta.config);
 

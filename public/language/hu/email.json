@@ -21,6 +21,8 @@
     "reset.notify.text1": "Értesítünk, hogy a(z) %1 névhez tartozó jelszavad sikeresen megváltozott.",
     "reset.notify.text2": "Ha nem te voltál az, kérlek, azonnal értesíts egy adminisztrátort.",
     "digest.latest_topics": "Legutóbbi témakörök a következőből: %1",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "Kattints ide a(z) %1 meglátogatásához",
     "digest.unsub.info": "Ez a hírlevél a feliratkozási beállításaid miatt lett kiküldve.",
     "digest.day": "napban",

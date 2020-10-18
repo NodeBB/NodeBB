@@ -21,6 +21,8 @@
     "reset.notify.text1": "আপনাকে জানাচ্ছি যে %1 এ আপনার পাসওয়ার্ড পরিবর্তন হয়েছে",
     "reset.notify.text2": "এটা আপনার অজান্তে হলে এখনই প্রশাসককে আবহিত করুন",
     "digest.latest_topics": "%1 এর সর্বশেষ টপিকসমূহ",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "%1 ভিজিট করতে এখানে ক্লিক করুন",
     "digest.unsub.info": "আপনার সাবস্ক্রীপশন সেটিংসের কারনে আপনাকে এই ডাইজেষ্টটি পাঠানো হয়েছে।",
     "digest.day": "দিন",

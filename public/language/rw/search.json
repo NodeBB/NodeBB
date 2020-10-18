@@ -44,5 +44,6 @@
     "search-preferences-saved": "Ibyo wahisemo mu gihe cy'ishaka byabitswe",
     "search-preferences-cleared": "Ibyo wahisemo mu gihe cy'ishaka byahanaguwe",
     "show-results-as": "Ibiboneka bigaragazwe nk'",
-    "see-more-results": "See more results (%1)"
+    "see-more-results": "See more results (%1)",
+    "search-in-category": "Search in \"%1\""
 }

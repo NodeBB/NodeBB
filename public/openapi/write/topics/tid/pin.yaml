@@ -1,0 +1,36 @@
+put:
+  tags:
+    - topics
+  summary: pin a topic
+  description: This operation pins an existing topic.
+  responses:
+    '200':
+      description: Topic successfully pinned
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}
+delete:
+  tags:
+    - topics
+  summary: unpin a topic
+  description: This operation unpins a topic.
+  responses:
+    '200':
+      description: Topic successfully unpinned
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}

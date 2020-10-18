@@ -20,16 +20,10 @@
 	"add-group": "Add Group",
 	"invite": "招待",
 	"new": "新しいユーザー",
-
-	"pills.latest": "新しいユーザー",
+	"filter-by": "Filter by",
 	"pills.unvalidated": "検証されていない",
-	"pills.no-posts": "投稿がありません",
-	"pills.top-posters": "最も投稿したユーザー",
-	"pills.top-rep": "最も評価されたユーザー",
-	"pills.inactive": "非アクティブ",
-	"pills.flagged": "最もフラグが付けられたもの",
+	"pills.validated": "Validated",
 	"pills.banned": "BANされた",
-	"pills.search": "ユーザーを検索",
 
 	"50-per-page": "1ページあたり50 件",
 	"100-per-page": "1ページあたり100 件",

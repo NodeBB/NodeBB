@@ -30,13 +30,13 @@
 						<fieldset>
 							<label for="change-group-label-color">[[admin/manage/groups:edit.label-color]]</label>
 
-							<input id="change-group-label-color" placeholder="#0059b2" data-name="bgColor" value="{group.labelColor}" class="form-control" data-property/><br />
+							<input type="color" id="change-group-label-color" placeholder="#0059b2" data-name="bgColor" value="{group.labelColor}" class="form-control" data-property/><br />
 						</fieldset>
 					</div>
 					<div class="col-md-3">
 						<fieldset>
 							<label for="change-group-text-color">[[admin/manage/groups:edit.text-color]]</label>
-							<input id="change-group-text-color" placeholder="#ffffff" data-name="textColor" value="{group.textColor}" class="form-control" data-property/><br />
+							<input type="color" id="change-group-text-color" placeholder="#ffffff" data-name="textColor" value="{group.textColor}" class="form-control" data-property/><br />
 						</fieldset>
 					</div>
 				</div>

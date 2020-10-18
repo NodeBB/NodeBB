@@ -1,3 +1,49 @@
+#### v1.15.0-beta.29 (2020-10-05)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.29 (fca176d2)
+*  refactor src/emailer.js (75459517)
+*  update changelog for v1.15.0-beta.28 (fd975a66)
+
+##### New Features
+
+*  category filter on post queue (#8710) (5d9a8681)
+*  #6594, add top/popular sections to digest email (#8709) (e60357d2)
+*  dedicated sorting buttons for plugin ordering in ACP (1761e13d)
+*  #8233, search sub categories (54737d30)
+*  move service-worker.js into its own file (f4d76f1e)
+
+##### Bug Fixes
+
+*  spec (7cd83b9a)
+*  spec (6924eb6c)
+*  test (cb2f6f7c)
+*  dont let mods load postqueue for a cid they are not a mod of (7bf6d3b8)
+*  show disabled categories in admin&mods (2ea9768e)
+*  prevent mutiple highlighted rows on category/topic pages (60afb110)
+*  spec (fbd85680)
+*  do not show TOC if fewer than 2 headings (f1de084d)
+*  params cached in autocomplete module (caa8c00f)
+*  #8686, deprecate `plugin.json/library` (#8705) (017af63f)
+*  updating minimum node version in readme (d3951ebe)
+*  update "install plugins" link to go to the download tab (5441651e)
+*  overflow on submitPluginUsage field (c56236f0)
+*  #8699 tags route is case sensitive, though tags are not (38f88fc5)
+*  early button/anchor clicks do nothing (8437130e)
+* **deps:**
+  *  update dependency nodebb-plugin-composer-default to v6.4.0 (#8716) (b3a24f74)
+  *  update dependency nodebb-plugin-mentions to v2.11.0 (#8714) (c95a3898)
+  *  update dependency nodebb-theme-slick to v1.2.36 (#8713) (fc2795d3)
+  *  update dependency nodebb-theme-vanilla to v11.2.20 (#8715) (2b0deeb7)
+  *  update dependency nodebb-theme-persona to v10.2.45 (#8711) (f14b4945)
+  *  update dependency nodebb-theme-persona to v10.2.43 (#8701) (1d0eaafb)
+  *  update dependency nodebb-theme-persona to v10.2.42 (2a1da61c)
+
+##### Refactors
+
+*  shared constants (#8707) (1aa336d8)
+
 #### v1.15.0-beta.28 (2020-09-29)
 
 ##### Chores

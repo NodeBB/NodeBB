@@ -121,12 +121,7 @@ helpers.notAllowed = async function (req, res, error) {
 
 	if (req.loggedIn || req.uid === -1) {
 		if (res.locals.isAPI) {
-			res.status(403).json({
-				path: req.path.replace(/^\/api/, ''),
-				loggedIn: req.loggedIn,
-				error: data.error,
-				title: '[[global:403.title]]',
-			});
+			helpers.formatApiResponse(403, res, error);
 		} else {
 			await middleware.buildHeaderAsync(req, res);
 			res.status(403).render('403', {
@@ -138,7 +133,7 @@ helpers.notAllowed = async function (req, res, error) {
 		}
 	} else if (res.locals.isAPI) {
 		req.session.returnTo = req.url.replace(/^\/api/, '');
-		res.status(401).json('not-authorized');
+		helpers.formatApiResponse(401, res, error);
 	} else {
 		req.session.returnTo = req.url;
 		res.redirect(nconf.get('relative_path') + '/login');
@@ -214,15 +209,15 @@ helpers.buildTitle = function (pageTitle) {
 
 helpers.getCategories = async function (set, uid, privilege, selectedCid) {
 	const cids = await categories.getCidsByPrivilege(set, uid, privilege);
-	return await getCategoryData(cids, uid, selectedCid);
+	return await getCategoryData(cids, uid, selectedCid, privilege);
 };
 
-helpers.getCategoriesByStates = async function (uid, selectedCid, states) {
+helpers.getCategoriesByStates = async function (uid, selectedCid, states, privilege = 'topics:read') {
 	const cids = await categories.getAllCidsFromSet('categories:cid');
-	return await getCategoryData(cids, uid, selectedCid, states);
+	return await getCategoryData(cids, uid, selectedCid, states, privilege);
 };
 
-async function getCategoryData(cids, uid, selectedCid, states) {
+async function getCategoryData(cids, uid, selectedCid, states, privilege) {
 	if (selectedCid && !Array.isArray(selectedCid)) {
 		selectedCid = [selectedCid];
 	}
@@ -230,7 +225,7 @@ async function getCategoryData(cids, uid, selectedCid, states) {
 	states = states || [categories.watchStates.watching, categories.watchStates.notwatching];
 
 	const [allowed, watchState, categoryData, isAdmin] = await Promise.all([
-		privileges.categories.isUserAllowedTo('topics:read', cids, uid),
+		privileges.categories.isUserAllowedTo(privilege, cids, uid),
 		categories.getWatchState(cids, uid),
 		categories.getCategoriesData(cids),
 		user.isAdministrator(uid),
@@ -246,6 +241,11 @@ async function getCategoryData(cids, uid, selectedCid, states) {
 		const hasVisibleChildren = checkVisibleChildren(c, cidToAllowed, cidToWatchState, states);
 		const isCategoryVisible = c && cidToAllowed[c.cid] && !c.link && !c.disabled && states.includes(cidToWatchState[c.cid]);
 		const shouldBeRemoved = !hasVisibleChildren && !isCategoryVisible;
+		const shouldBeDisaplayedAsDisabled = hasVisibleChildren && !isCategoryVisible;
+
+		if (shouldBeDisaplayedAsDisabled) {
+			c.disabledClass = true;
+		}
 
 		if (shouldBeRemoved && c && c.parent && c.parent.cid && cidToCategory[c.parent.cid]) {
 			cidToCategory[c.parent.cid].children = cidToCategory[c.parent.cid].children.filter(child => child.cid !== c.cid);
@@ -254,7 +254,7 @@ async function getCategoryData(cids, uid, selectedCid, states) {
 		return c && !shouldBeRemoved;
 	});
 
-	const categoriesData = categories.buildForSelectCategories(visibleCategories);
+	const categoriesData = categories.buildForSelectCategories(visibleCategories, ['disabledClass']);
 
 	let selectedCategory = [];
 	const selectedCids = [];
@@ -276,7 +276,7 @@ async function getCategoryData(cids, uid, selectedCid, states) {
 	} else if (selectedCategory.length === 1) {
 		selectedCategory = selectedCategory[0];
 	} else {
-		selectedCategory = undefined;
+		selectedCategory = null;
 	}
 
 	return {
@@ -335,6 +335,86 @@ helpers.getHomePageRoutes = async function (uid) {
 	]);
 	const data = await plugins.fireHook('filter:homepage.get', { routes: routes });
 	return data.routes;
+};
+
+helpers.formatApiResponse = async (statusCode, res, payload) => {
+	if (String(statusCode).startsWith('2')) {
+		res.status(statusCode).json({
+			status: {
+				code: 'ok',
+				message: 'OK',
+			},
+			response: payload || {},
+		});
+	} else if (payload instanceof Error) {
+		const message = payload.message;
+
+		// Update status code based on some common error codes
+		switch (payload.message) {
+			case '[[error:no-privileges]]':
+				statusCode = 403;
+				break;
+
+			case '[[error:invalid-uid]]':
+				statusCode = 401;
+				break;
+		}
+
+		const returnPayload = helpers.generateError(statusCode, message);
+
+		if (global.env === 'development') {
+			returnPayload.stack = payload.stack;
+			process.stdout.write(payload.stack);
+		}
+		res.status(statusCode).json(returnPayload);
+	} else if (!payload) {
+		// Non-2xx statusCode, generate predefined error
+		res.status(statusCode).json(helpers.generateError(statusCode));
+	}
+};
+
+helpers.generateError = (statusCode, message) => {
+	var payload = {
+		status: {
+			code: 'internal-server-error',
+			message: 'An unexpected error was encountered while attempting to service your request.',
+		},
+		response: {},
+	};
+
+	// Need to turn all these into translation strings
+	switch (statusCode) {
+		case 400:
+			payload.status.code = 'bad-request';
+			payload.status.message = message || 'Something was wrong with the request payload you passed in.';
+			break;
+
+		case 401:
+			payload.status.code = 'not-authorised';
+			payload.status.message = message || 'A valid login session was not found. Please log in and try again.';
+			break;
+
+		case 403:
+			payload.status.code = 'forbidden';
+			payload.status.message = message || 'You are not authorised to make this call';
+			break;
+
+		case 404:
+			payload.status.code = 'not-found';
+			payload.status.message = message || 'Invalid API call';
+			break;
+
+		case 426:
+			payload.status.code = 'upgrade-required';
+			payload.status.message = message || 'HTTPS is required for requests to the write api, please re-send your request via HTTPS';
+			break;
+
+		case 500:
+			payload.status.code = 'internal-server-error';
+			payload.status.message = message || payload.status.message;
+	}
+
+	return payload;
 };
 
 require('../promisify')(helpers);

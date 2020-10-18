@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/login', [], function () {
+define('forum/login', ['jquery-form'], function () {
 	var	Login = {};
 
 	Login.init = function () {

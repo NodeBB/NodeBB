@@ -5,7 +5,8 @@ define('forum/topic/threadTools', [
 	'components',
 	'translator',
 	'handleBack',
-], function (components, translator, handleBack) {
+	'api',
+], function (components, translator, handleBack, api) {
 	var ThreadTools = {};
 
 	ThreadTools.init = function (tid, topicContainer) {
@@ -27,22 +28,22 @@ define('forum/topic/threadTools', [
 		});
 
 		topicContainer.on('click', '[component="topic/lock"]', function () {
-			socket.emit('topics.lock', { tids: [tid], cid: ajaxify.data.cid });
+			api.put(`/topics/${tid}/lock`);
 			return false;
 		});
 
 		topicContainer.on('click', '[component="topic/unlock"]', function () {
-			socket.emit('topics.unlock', { tids: [tid], cid: ajaxify.data.cid });
+			api.del(`/topics/${tid}/lock`);
 			return false;
 		});
 
 		topicContainer.on('click', '[component="topic/pin"]', function () {
-			socket.emit('topics.pin', { tids: [tid], cid: ajaxify.data.cid });
+			api.put(`/topics/${tid}/pin`);
 			return false;
 		});
 
 		topicContainer.on('click', '[component="topic/unpin"]', function () {
-			socket.emit('topics.unpin', { tids: [tid], cid: ajaxify.data.cid });
+			api.del(`/topics/${tid}/pin`);
 			return false;
 		});
 
@@ -106,31 +107,27 @@ define('forum/topic/threadTools', [
 			changeWatching('follow');
 		});
 		topicContainer.on('click', '[component="topic/not-following"]', function () {
-			changeWatching('unfollow');
+			changeWatching('follow', 0);
 		});
 		topicContainer.on('click', '[component="topic/ignoring"]', function () {
 			changeWatching('ignore');
 		});
 
-		function changeWatching(type) {
-			socket.emit('topics.changeWatching', { tid: tid, type: type }, function (err) {
-				if (err) {
-					return app.alert({
-						type: 'danger',
-						alert_id: 'topic_follow',
-						title: '[[global:please_log_in]]',
-						message: '[[topic:login_to_subscribe]]',
-						timeout: 5000,
-					});
-				}
+		function changeWatching(type, state = 1) {
+			const method = state ? 'put' : 'del';
+			api[method](`/topics/${tid}/${type}`, {}, () => {
 				var message = '';
 				if (type === 'follow') {
-					message = '[[topic:following_topic.message]]';
-				} else if (type === 'unfollow') {
-					message = '[[topic:not_following_topic.message]]';
+					message = state ? '[[topic:following_topic.message]]' : '[[topic:not_following_topic.message]]';
 				} else if (type === 'ignore') {
-					message = '[[topic:ignoring_topic.message]]';
+					message = state ? '[[topic:ignoring_topic.message]]' : '[[topic:not_following_topic.message]]';
 				}
+
+				// From here on out, type changes to 'unfollow' if state is falsy
+				if (!state) {
+					type = 'unfollow';
+				}
+
 				setFollowState(type);
 
 				app.alert({
@@ -141,6 +138,14 @@ define('forum/topic/threadTools', [
 				});
 
 				$(window).trigger('action:topics.changeWatching', { tid: tid, type: type });
+			}, () => {
+				app.alert({
+					type: 'danger',
+					alert_id: 'topic_follow',
+					title: '[[global:please_log_in]]',
+					message: '[[topic:login_to_subscribe]]',
+					timeout: 5000,
+				});
 			});
 
 			return false;
@@ -176,11 +181,9 @@ define('forum/topic/threadTools', [
 					return;
 				}
 
-				socket.emit('topics.' + command, { tids: [tid], cid: ajaxify.data.cid }, function (err) {
-					if (err) {
-						app.alertError(err.message);
-					}
-				});
+				const method = command === 'restore' ? 'put' : 'del';
+				const suffix = command !== 'purge' ? '/state' : '';
+				api[method](`/topics/${tid}${suffix}`, undefined, undefined, 'default');
 			});
 		});
 	}
@@ -206,7 +209,7 @@ define('forum/topic/threadTools', [
 
 		threadEl.find('[component="post"][data-uid="' + app.user.uid + '"].deleted [component="post/tools"]').toggleClass('hidden', isLocked);
 
-		$('[component="post/header"] [component="topic/locked"]').toggleClass('hidden', !data.isLocked);
+		$('.topic-header [component="topic/locked"]').toggleClass('hidden', !data.isLocked);
 		$('[component="post/tools"] .dropdown-menu').html('');
 		ajaxify.data.locked = data.isLocked;
 	};
@@ -251,11 +254,22 @@ define('forum/topic/threadTools', [
 
 		components.get('topic/pin').toggleClass('hidden', data.isPinned).parent().attr('hidden', data.isPinned ? '' : null);
 		components.get('topic/unpin').toggleClass('hidden', !data.isPinned).parent().attr('hidden', !data.isPinned ? '' : null);
-		$('[component="post/header"] [component="topic/pinned"]').toggleClass('hidden', !data.isPinned);
+		$('.topic-header [component="topic/pinned"]').toggleClass('hidden', !data.isPinned);
 		ajaxify.data.pinned = data.isPinned;
 	};
 
 	function setFollowState(state) {
+		var titles = {
+			follow: '[[topic:watching]]',
+			unfollow: '[[topic:not-watching]]',
+			ignore: '[[topic:ignoring]]',
+		};
+		translator.translate(titles[state], function (translatedTitle) {
+			$('[component="topic/watch"] button')
+				.attr('title', translatedTitle)
+				.tooltip('fixTitle');
+		});
+
 		var menu = components.get('topic/following/menu');
 		menu.toggleClass('hidden', state !== 'follow');
 		components.get('topic/following/check').toggleClass('fa-check', state === 'follow');

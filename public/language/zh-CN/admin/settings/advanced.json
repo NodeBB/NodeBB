@@ -34,7 +34,7 @@
 	"sockets.default-placeholder": "默认：%1",
 	"sockets.delay": "重连等待时间",
 
-	"analytics.settings": "Analytics Settings",
-	"analytics.max-cache": "Analytics Cache Max Value",
+	"analytics.settings": "分析设置",
+	"analytics.max-cache": "分析缓存最大值",
 	"analytics.max-cache-help": "On high-traffic installs, the cache could be exhausted continuously if there are more concurrent active users than the Max Cache value. (Restart required)"
 }

@@ -93,7 +93,7 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], 
 
 		if (!avatars.find('[data-uid="' + post.uid + '"]').length && count < 7) {
 			app.parseAndTranslate('topic', 'posts', { posts: [{ replies: { users: [post.user] } }] }, function (html) {
-				avatars.prepend(html.find('[component="post/reply-count/avatars"] [component="user/picture"]'));
+				avatars.prepend(html.find('[component="post/reply-count/avatars"] [component="avatar/picture"]'));
 			});
 		}
 

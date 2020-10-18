@@ -21,6 +21,8 @@
     "reset.notify.text1": "Vi vill uppmärksamma dig på att ditt lösenord ändrades den %1.",
     "reset.notify.text2": "Om du inte godkänt det här så vänligen kontakta en administratör snarast. ",
     "digest.latest_topics": "Senaste ämnen från %1",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "Klicka här för att besöka %1",
     "digest.unsub.info": "Det här meddelandet fick du på grund av dina inställningar för prenumeration. ",
     "digest.day": "dag",

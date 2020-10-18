@@ -5,9 +5,9 @@ const async = require('async');
 const util = require('util');
 const sleep = util.promisify(setTimeout);
 
+const api = require('../api');
 const user = require('../user');
 const topics = require('../topics');
-const notifications = require('../notifications');
 const messaging = require('../messaging');
 const plugins = require('../plugins');
 const meta = require('../meta');
@@ -18,6 +18,7 @@ const userController = require('../controllers/user');
 const privileges = require('../privileges');
 const utils = require('../utils');
 const flags = require('../flags');
+const sockets = require('.');
 
 const SocketUser = module.exports;
 
@@ -157,41 +158,14 @@ SocketUser.isFollowing = async function (socket, data) {
 };
 
 SocketUser.follow = async function (socket, data) {
-	if (!socket.uid || !data) {
-		throw new Error('[[error:invalid-data]]');
-	}
-
-	await toggleFollow('follow', socket.uid, data.uid);
-	const userData = await user.getUserFields(socket.uid, ['username', 'userslug']);
-	const notifObj = await notifications.create({
-		type: 'follow',
-		bodyShort: '[[notifications:user_started_following_you, ' + userData.username + ']]',
-		nid: 'follow:' + data.uid + ':uid:' + socket.uid,
-		from: socket.uid,
-		path: '/uid/' + data.uid + '/followers',
-		mergeId: 'notifications:user_started_following_you',
-	});
-	if (!notifObj) {
-		return;
-	}
-	notifObj.user = userData;
-	await notifications.push(notifObj, [data.uid]);
+	sockets.warnDeprecated(socket, 'POST /api/v3/users/follow');
+	await api.users.follow(socket, data);
 };
 
 SocketUser.unfollow = async function (socket, data) {
-	if (!socket.uid || !data) {
-		throw new Error('[[error:invalid-data]]');
-	}
-	await toggleFollow('unfollow', socket.uid, data.uid);
+	sockets.warnDeprecated(socket, 'DELETE /api/v3/users/unfollow');
+	await api.users.unfollow(socket, data);
 };
-
-async function toggleFollow(method, uid, theiruid) {
-	await user[method](uid, theiruid);
-	plugins.fireHook('action:user.' + method, {
-		fromUid: uid,
-		toUid: theiruid,
-	});
-}
 
 SocketUser.saveSettings = async function (socket, data) {
 	if (!socket.uid || !data || !data.settings) {

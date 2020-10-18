@@ -10,11 +10,10 @@ const file = require('../file');
 const db = require('../database');
 const Meta = require('./index');
 const events = require('../events');
-const utils = require('../../public/src/utils');
+const utils = require('../utils');
+const { themeNamePattern } = require('../constants');
 
 const Themes = module.exports;
-
-const themeNamePattern = /^(@.*?\/)?nodebb-theme-.*$/;
 
 Themes.get = async () => {
 	const themePath = nconf.get('themes_path');

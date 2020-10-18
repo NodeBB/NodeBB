@@ -3,7 +3,7 @@
 const user = require('../user');
 const db = require('../database');
 const plugins = require('../plugins');
-const utils = require('../utils');
+const slugify = require('../slugify');
 
 const Groups = module.exports;
 
@@ -25,14 +25,22 @@ require('./cache')(Groups);
 
 Groups.ephemeralGroups = ['guests', 'spiders'];
 
+Groups.systemGroups = [
+	'registered-users',
+	'verified-users',
+	'unverified-users',
+	'administrators',
+	'Global Moderators',
+];
+
 Groups.getEphemeralGroup = function (groupName) {
 	return {
 		name: groupName,
-		slug: utils.slugify(groupName),
+		slug: slugify(groupName),
 		description: '',
-		deleted: '0',
-		hidden: '0',
-		system: '1',
+		deleted: 0,
+		hidden: 0,
+		system: 1,
 	};
 };
 
@@ -190,6 +198,7 @@ Groups.getOwnersAndMembers = async function (groupName, uid, start, stop) {
 };
 
 Groups.getByGroupslug = async function (slug, options) {
+	options = options || {};
 	const groupName = await db.getObjectField('groupslug:groupname', slug);
 	if (!groupName) {
 		throw new Error('[[error:no-group]]');
@@ -216,12 +225,12 @@ async function isFieldOn(groupName, field) {
 
 Groups.exists = async function (name) {
 	if (Array.isArray(name)) {
-		const slugs = name.map(groupName => utils.slugify(groupName));
+		const slugs = name.map(groupName => slugify(groupName));
 		const isMembersOfRealGroups = await db.isSortedSetMembers('groups:createtime', name);
 		const isMembersOfEphemeralGroups = slugs.map(slug => Groups.ephemeralGroups.includes(slug));
 		return name.map((n, index) => isMembersOfRealGroups[index] || isMembersOfEphemeralGroups[index]);
 	}
-	const slug = utils.slugify(name);
+	const slug = slugify(name);
 	const isMemberOfRealGroups = await db.isSortedSetMember('groups:createtime', name);
 	const isMemberOfEphemeralGroups = Groups.ephemeralGroups.includes(slug);
 	return isMemberOfRealGroups || isMemberOfEphemeralGroups;

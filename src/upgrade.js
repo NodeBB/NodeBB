@@ -9,6 +9,7 @@ const winston = require('winston');
 
 const db = require('./database');
 const file = require('./file');
+const { paths } = require('./constants');
 
 /*
  * Need to write an upgrade script for NodeBB? Cool.
@@ -61,7 +62,7 @@ Upgrade.appendPluginScripts = async function (files) {
 	// Find all active plugins
 	const plugins = await db.getSortedSetRange('plugins:active', 0, -1);
 	plugins.forEach((plugin) => {
-		const configPath = path.join(__dirname, '../node_modules', plugin, 'plugin.json');
+		const configPath = path.join(paths.nodeModules, plugin, 'plugin.json');
 		try {
 			const pluginConfig = require(configPath);
 			if (pluginConfig.hasOwnProperty('upgrades') && Array.isArray(pluginConfig.upgrades)) {
@@ -128,6 +129,7 @@ Upgrade.process = async function (files, skipCount) {
 		const version = path.dirname(file).split('/').pop();
 		const progress = {
 			current: 0,
+			counter: 0,
 			total: 0,
 			incr: Upgrade.incrementProgress,
 			script: scriptExport,
@@ -176,9 +178,11 @@ Upgrade.incrementProgress = function (value) {
 	}
 
 	this.current += value || 1;
+	this.counter += value || 1;
+	const step = (this.total ? Math.floor(this.total / 100) : 100);
 
-	// Redraw the progress bar every 100 units
-	if (this.current % (this.total ? Math.floor(this.total / 100) : 100) === 0 || this.current === this.total) {
+	if (this.counter > step || this.current >= this.total) {
+		this.counter -= step;
 		var percentage = 0;
 		var filled = 0;
 		var unfilled = 15;

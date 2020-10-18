@@ -1,18 +1,18 @@
 'use strict';
 
-var winston = require('winston');
-var async = require('async');
-var path = require('path');
-var nconf = require('nconf');
+const winston = require('winston');
+const async = require('async');
+const path = require('path');
+const nconf = require('nconf');
 
-var install = require('../../install/web').install;
+const { install } = require('../../install/web');
 
 function setup(initConfig) {
-	var paths = require('./paths');
-	var install = require('../install');
-	var build = require('../meta/build');
-	var prestart = require('../prestart');
-	var pkg = require('../../package.json');
+	const { paths } = require('../constants');
+	const install = require('../install');
+	const build = require('../meta/build');
+	const prestart = require('../prestart');
+	const pkg = require('../../package.json');
 
 	winston.info('NodeBB Setup Triggered via Command Line');
 

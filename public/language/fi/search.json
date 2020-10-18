@@ -44,5 +44,6 @@
     "search-preferences-saved": "Haun asetukset tallennettu",
     "search-preferences-cleared": "Haun asetukset nollattu",
     "show-results-as": "Näytä tulokset",
-    "see-more-results": "Näytä lisää tuloksia (%1)"
+    "see-more-results": "Näytä lisää tuloksia (%1)",
+    "search-in-category": "Search in \"%1\""
 }

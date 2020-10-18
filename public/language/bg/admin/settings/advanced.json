@@ -34,7 +34,7 @@
 	"sockets.default-placeholder": "По подразбиране: %1",
 	"sockets.delay": "Забавяне при повторно свързване",
 
-	"analytics.settings": "Analytics Settings",
-	"analytics.max-cache": "Analytics Cache Max Value",
-	"analytics.max-cache-help": "On high-traffic installs, the cache could be exhausted continuously if there are more concurrent active users than the Max Cache value. (Restart required)"
+	"analytics.settings": "Настройки за анализите",
+	"analytics.max-cache": "Макс. стойност на кеша за анализите",
+	"analytics.max-cache-help": "При инсталации с натоварен трафик, кешът може да бъде изразходен, ако има повече едновременни потребители, от колкото е максималната стойност на кеша. (Изисква рестартиране)"
 }

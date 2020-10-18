@@ -21,6 +21,8 @@
     "reset.notify.text1": "نحيطك علما أن كلمة مرورك قد تم تغييرها في %1",
     "reset.notify.text2": "إن لم يكن لديك علم بهذا، المرجو إشعار مدبر النظام بأسرع مايمكن.",
     "digest.latest_topics": "آخر المستجدات من %1",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "انقر هنا لمشاهدة %1",
     "digest.unsub.info": "تم إرسال هذا الإشعار بآخر المستجدات وفقا لخيارات تسجيلكم.",
     "digest.day": "يوم",

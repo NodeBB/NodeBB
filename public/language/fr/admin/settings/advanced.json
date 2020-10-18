@@ -34,7 +34,7 @@
 	"sockets.default-placeholder": "Défaut : %1",
 	"sockets.delay": "Délai de reconnexion",
 
-	"analytics.settings": "Analytics Settings",
-	"analytics.max-cache": "Analytics Cache Max Value",
-	"analytics.max-cache-help": "On high-traffic installs, the cache could be exhausted continuously if there are more concurrent active users than the Max Cache value. (Restart required)"
+	"analytics.settings": "Paramètres d'analytique",
+	"analytics.max-cache": "Valeur maximale du cache Analytique",
+	"analytics.max-cache-help": "Sur les installations à fort trafic, le cache peut être utilisé en permanence s'il y a plus d'utilisateurs actifs simultanément que la valeur Max Cache. (Redémarrage requis)"
 }

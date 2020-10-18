@@ -8,7 +8,7 @@ const pubsub = require('../pubsub');
 const Settings = module.exports;
 
 Settings.get = async function (hash) {
-	const data = await db.getObject('settings:' + hash) || {};
+	let data = await db.getObject('settings:' + hash) || {};
 	const sortedLists = await db.getSetMembers('settings:' + hash + ':sorted-lists');
 
 	await Promise.all(sortedLists.map(async function (list) {
@@ -26,6 +26,7 @@ Settings.get = async function (hash) {
 		});
 	}));
 
+	({ values: data } = await plugins.fireHook('filter:settings.get', { plugin: hash, values: data }));
 	return data;
 };
 
@@ -46,6 +47,8 @@ Settings.set = async function (hash, values, quiet) {
 			}
 		}
 	}
+
+	({ plugin: hash, settings: values, quiet } = await plugins.fireHook('filter:settings.set', { plugin: hash, settings: values, quiet }));
 
 	if (sortedLists.length) {
 		await db.delete('settings:' + hash + ':sorted-lists');

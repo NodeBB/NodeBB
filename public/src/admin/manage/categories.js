@@ -1,11 +1,12 @@
 'use strict';
 
 define('admin/manage/categories', [
-	'vendor/jquery/serializeObject/jquery.ba-serializeobject.min',
 	'translator',
 	'benchpress',
 	'categorySelector',
-], function (serialize, translator, Benchpress, categorySelector) {
+	'api',
+	'Sortable',
+], function (translator, Benchpress, categorySelector, api, Sortable) {
 	var	Categories = {};
 	var newCategoryId = -1;
 	var sortables;
@@ -161,7 +162,7 @@ define('admin/manage/categories', [
 	};
 
 	Categories.create = function (payload) {
-		socket.emit('admin.categories.create', payload, function (err, data) {
+		api.post('/categories', payload, function (err, data) {
 			if (err) {
 				return app.alertError(err.message);
 			}
@@ -195,19 +196,9 @@ define('admin/manage/categories', [
 	};
 
 	Categories.toggle = function (cids, disabled) {
-		var payload = {};
-
-		cids.forEach(function (cid) {
-			payload[cid] = {
-				disabled: disabled ? 1 : 0,
-			};
-		});
-
-		socket.emit('admin.categories.update', payload, function (err) {
-			if (err) {
-				return app.alertError(err.message);
-			}
-		});
+		Promise.all(cids.map(cid => api.put('/categories/' + cid, {
+			disabled: disabled ? 1 : 0,
+		})));
 	};
 
 	function itemDidAdd(e) {
@@ -236,7 +227,8 @@ define('admin/manage/categories', [
 			}
 
 			newCategoryId = -1;
-			socket.emit('admin.categories.update', modified);
+
+			Object.keys(modified).map(cid => api.put('/categories/' + cid, modified[cid]));
 		}
 	}
 
