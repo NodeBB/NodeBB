@@ -27,10 +27,7 @@ function updatePackageFile() {
 	});
 
 	// Sort dependencies alphabetically
-	dependencies = Object.entries({ ...dependencies, ...defaultPackageContents.dependencies }).sort((a, b) => (a < b ? -1 : 1)).reduce((memo, pkg) => {
-		memo[pkg[0]] = pkg[1];
-		return memo;
-	}, {});
+	dependencies = sortDependencies({ ...dependencies, ...defaultPackageContents.dependencies });
 
 	const packageContents = { ...oldPackageContents, ...defaultPackageContents, dependencies: dependencies };
 
@@ -95,9 +92,9 @@ function preserveExtraneousPlugins() {
 		return;
 	}
 
-	const packages = fs.readdirSync(paths.nodeModules).filter(function (pkgName) {
-		return pluginNamePattern.test(pkgName);
-	});
+	const packages = fs.readdirSync(paths.nodeModules)
+		.filter(pkgName => pluginNamePattern.test(pkgName));
+
 	const packageContents = JSON.parse(fs.readFileSync(paths.currentPackage, 'utf8'));
 
 	const extraneous = packages
@@ -116,8 +113,18 @@ function preserveExtraneousPlugins() {
 		}, {});
 
 	// Add those packages to package.json
-	Object.assign(packageContents.dependencies, extraneous);
+	packageContents.dependencies = sortDependencies({ ...packageContents.dependencies, ...extraneous });
+
 	fs.writeFileSync(paths.currentPackage, JSON.stringify(packageContents, null, 2));
+}
+
+function sortDependencies(dependencies) {
+	return Object.entries(dependencies)
+		.sort((a, b) => (a < b ? -1 : 1))
+		.reduce((memo, pkg) => {
+			memo[pkg[0]] = pkg[1];
+			return memo;
+		}, {});
 }
 
 exports.preserveExtraneousPlugins = preserveExtraneousPlugins;
