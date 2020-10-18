@@ -208,7 +208,7 @@ async function getInvites() {
 	});
 
 	async function getUsernamesByEmails(emails) {
-		const uids = await db.sortedSetScore('email:uid', emails.map(email => String(email).toLowerCase()));
+		const uids = await db.sortedSetScores('email:uid', emails.map(email => String(email).toLowerCase()));
 		const usernames = await user.getUsersFields(uids, ['username']);
 		return usernames.map(user => user.username);
 	}
