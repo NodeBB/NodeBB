@@ -55,7 +55,7 @@ Tags.parse = async (req, data, meta, link) => {
 	var defaultLinks = [{
 		rel: 'icon',
 		type: 'image/x-icon',
-		href: nconf.get('relative_path') + nconf.get('upload_url') + '/system/favicon.ico' + (Meta.config['cache-buster'] ? '?' + Meta.config['cache-buster'] : ''),
+		href: nconf.get('relative_path') + '/favicon.ico' + (Meta.config['cache-buster'] ? '?' + Meta.config['cache-buster'] : ''),
 	}, {
 		rel: 'manifest',
 		href: nconf.get('relative_path') + '/manifest.webmanifest',
@@ -99,6 +99,39 @@ Tags.parse = async (req, data, meta, link) => {
 			rel: 'icon',
 			sizes: '192x192',
 			href: nconf.get('relative_path') + nconf.get('upload_url') + '/system/touchicon-192.png',
+		});
+	} else {
+		defaultLinks.push({
+			rel: 'apple-touch-icon',
+			href: nconf.get('relative_path') + '/assets/images/touch/512.png',
+		}, {
+			rel: 'icon',
+			sizes: '36x36',
+			href: nconf.get('relative_path') + '/assets/images/touch/192.png',
+		}, {
+			rel: 'icon',
+			sizes: '48x48',
+			href: nconf.get('relative_path') + '/assets/images/touch/144.png',
+		}, {
+			rel: 'icon',
+			sizes: '72x72',
+			href: nconf.get('relative_path') + '/assets/images/touch/96.png',
+		}, {
+			rel: 'icon',
+			sizes: '96x96',
+			href: nconf.get('relative_path') + '/assets/images/touch/72.png',
+		}, {
+			rel: 'icon',
+			sizes: '144x144',
+			href: nconf.get('relative_path') + '/assets/images/touch/48.png',
+		}, {
+			rel: 'icon',
+			sizes: '192x192',
+			href: nconf.get('relative_path') + '/assets/images/touch/36.png',
+		}, {
+			rel: 'icon',
+			sizes: '512x512',
+			href: nconf.get('relative_path') + '/assets/images/touch/512.png',
 		});
 	}
 
@@ -192,18 +225,18 @@ function addSiteOGImage(meta) {
 		// Push fallback logo
 		meta.push({
 			property: 'og:image',
-			content: nconf.get('url') + '/assets/logo.png',
+			content: nconf.get('url') + '/assets/images/logo@3x.png',
 			noEscape: true,
 		}, {
 			property: 'og:image:url',
-			content: nconf.get('url') + '/assets/logo.png',
+			content: nconf.get('url') + '/assets/images/logo@3x.png',
 			noEscape: true,
 		}, {
 			property: 'og:image:width',
-			content: '128',
+			content: '963',
 		}, {
 			property: 'og:image:height',
-			content: '128',
+			content: '225',
 		});
 	}
 }
