@@ -22,13 +22,7 @@ define('api', () => {
 						ev.responseJSON.status.message :
 						ev.responseJSON.error;
 
-					const error = new Error(errMessage || ev.statusText);
-
-					if (!utils.hasLanguageKey(error.message)) {
-						app.alertError(error.message);
-					}
-
-					cb(error);
+					cb(new Error(errMessage || ev.statusText));
 				});
 		}
 

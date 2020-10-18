@@ -8,15 +8,6 @@ define('forum/topic/votes', [
 
 	Votes.addVoteHandler = function () {
 		components.get('topic').on('mouseenter', '[data-pid] [component="post/vote-count"]', loadDataAndCreateTooltip);
-		components.get('topic').on('mouseout', '[data-pid] [component="post/vote-count"]', function () {
-			var el = $(this).parent();
-			el.on('shown.bs.tooltip', function () {
-				$('.tooltip').tooltip('destroy');
-				el.off('shown.bs.tooltip');
-			});
-
-			$('.tooltip').tooltip('destroy');
-		});
 	};
 
 	function loadDataAndCreateTooltip(e) {
@@ -26,18 +17,14 @@ define('forum/topic/votes', [
 		var el = $this.parent();
 		var pid = el.parents('[data-pid]').attr('data-pid');
 
-		$('.tooltip').tooltip('destroy');
-		$this.off('mouseenter', loadDataAndCreateTooltip);
-
 		socket.emit('posts.getUpvoters', [pid], function (err, data) {
 			if (err) {
 				return app.alertError(err.message);
 			}
 
 			if (data.length) {
-				createTooltip(el, data[0]);
+				createTooltip($this, data[0]);
 			}
-			$this.off('mouseenter').on('mouseenter', loadDataAndCreateTooltip);
 		});
 		return false;
 	}
@@ -46,7 +33,8 @@ define('forum/topic/votes', [
 		function doCreateTooltip(title) {
 			el.attr('title', title).tooltip('fixTitle').tooltip('show');
 		}
-		var usernames = data.usernames;
+		var usernames = data.usernames
+			.filter(name => name !== '[[global:former_user]]');
 		if (!usernames.length) {
 			return;
 		}
@@ -70,10 +58,10 @@ define('forum/topic/votes', [
 		const method = currentState ? 'del' : 'put';
 		api[method](`/posts/${post.attr('data-pid')}/vote`, {
 			delta: delta,
-		}, undefined, (err) => {
-			app.alertError(err.status.message);
+		}).catch((err) => {
+			app.alertError(err.message);
 
-			if (err.status.message === '[[error:not-logged-in]]') {
+			if (err.message === '[[error:not-logged-in]]') {
 				ajaxify.go('login');
 			}
 		});

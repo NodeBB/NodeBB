@@ -5,7 +5,6 @@ const posts = require('../../posts');
 const api = require('../../api');
 const helpers = require('../helpers');
 const apiHelpers = require('../../api/helpers');
-const socketPostHelpers = require('../../socket.io/posts/helpers');	// eehhh...
 
 const Posts = module.exports;
 
@@ -37,43 +36,36 @@ Posts.delete = async (req, res) => {
 
 async function mock(req) {
 	const tid = await posts.getPostField(req.params.pid, 'tid');
-	const data = { pid: req.params.pid, room_id: `topic_${tid}` };
-	const socketMock = { uid: req.user.uid };
-
-	return { data, socketMock };
+	return { pid: req.params.pid, room_id: `topic_${tid}` };
 }
 
 Posts.vote = async (req, res) => {
-	const { data, socketMock } = await mock(req);
-
+	const data = await mock(req);
 	if (req.body.delta > 0) {
-		await socketPostHelpers.postCommand(socketMock, 'upvote', 'voted', 'notifications:upvoted_your_post_in', data);
+		await api.posts.upvote(req, data);
 	} else if (req.body.delta < 0) {
-		await socketPostHelpers.postCommand(socketMock, 'downvote', 'voted', '', data);
+		await api.posts.downvote(req, data);
 	} else {
-		await socketPostHelpers.postCommand(socketMock, 'unvote', 'voted', '', data);
+		await api.posts.unvote(req, data);
 	}
 
 	helpers.formatApiResponse(200, res);
 };
 
 Posts.unvote = async (req, res) => {
-	const { data, socketMock } = await mock(req);
-
-	await socketPostHelpers.postCommand(socketMock, 'unvote', 'voted', '', data);
+	const data = await mock(req);
+	await api.posts.unvote(req, data);
 	helpers.formatApiResponse(200, res);
 };
 
 Posts.bookmark = async (req, res) => {
-	const { data, socketMock } = await mock(req);
-
-	await socketPostHelpers.postCommand(socketMock, 'bookmark', 'bookmarked', '', data);
+	const data = await mock(req);
+	await api.posts.bookmark(req, data);
 	helpers.formatApiResponse(200, res);
 };
 
 Posts.unbookmark = async (req, res) => {
-	const { data, socketMock } = await mock(req);
-
-	await socketPostHelpers.postCommand(socketMock, 'unbookmark', 'bookmarked', '', data);
+	const data = await mock(req);
+	await api.posts.unbookmark(req, data);
 	helpers.formatApiResponse(200, res);
 };

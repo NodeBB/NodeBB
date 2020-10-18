@@ -11,9 +11,7 @@ const categories = require('../categories');
 const plugins = require('../plugins');
 const meta = require('../meta');
 const middleware = require('../middleware');
-const translator = require('../translator');
 
-const isLanguageKey = /^\[\[[\w.\-_:]+]]$/;
 const helpers = module.exports;
 
 helpers.noScriptErrors = async function (req, res, error, httpStatus) {
@@ -349,12 +347,7 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 			response: payload || {},
 		});
 	} else if (payload instanceof Error) {
-		let message = '';
-		if (isLanguageKey.test(payload.message)) {
-			message = await translator.translate(payload.message, 'en-GB');
-		} else {
-			message = payload.message;
-		}
+		const message = payload.message;
 
 		// Update status code based on some common error codes
 		switch (payload.message) {
