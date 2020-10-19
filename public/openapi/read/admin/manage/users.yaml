@@ -25,7 +25,7 @@ get:
                     type: boolean
                   sortBy:
                     type: string
-                  sort_online:
+                  sort_lastonline:
                     type: boolean
                   inviteOnly:
                     type: boolean
