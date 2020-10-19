@@ -64,7 +64,7 @@ async function getUsers(req, res) {
 		}
 		if (!set.length) {
 			set.push('users:online');
-			sortBy = 'online';
+			sortBy = 'lastonline';
 		}
 		return set.length > 1 ? set : set[0];
 	}
