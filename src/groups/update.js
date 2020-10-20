@@ -232,7 +232,7 @@ module.exports = function (Groups) {
 				navItem.groups.splice(navItem.groups.indexOf(oldName), 1, newName);
 			}
 		});
-
+		navigation.unescapeFields(navItems);
 		await navigation.save(navItems);
 	}
 

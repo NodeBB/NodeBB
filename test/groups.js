@@ -11,81 +11,67 @@ var Groups = require('../src/groups');
 var User = require('../src/user');
 var socketGroups = require('../src/socket.io/groups');
 var meta = require('../src/meta');
+var navigation = require('../src/navigation/admin');
+
 
 describe('Groups', function () {
 	var adminUid;
 	var testUid;
-	before(function (done) {
-		async.series([
-			function (next) {
-				// Create a group to play around with
-				Groups.create({
-					name: 'Test',
-					description: 'Foobar!',
-				}, next);
-			},
-			function (next) {
-				Groups.create({
-					name: 'PrivateNoJoin',
-					description: 'Private group',
-					private: 1,
-					disableJoinRequests: 1,
-				}, next);
-			},
-			function (next) {
-				Groups.create({
-					name: 'PrivateCanJoin',
-					description: 'Private group',
-					private: 1,
-					disableJoinRequests: 0,
-				}, next);
-			},
-			async () => {
-				await Groups.create({
-					name: 'PrivateNoLeave',
-					description: 'Private group',
-					private: 1,
-					disableLeave: 1,
-				});
-			},
-			async () => {
-				await Groups.create({
-					name: 'Global Moderators',
-					userTitle: 'Global Moderator',
-					description: 'Forum wide moderators',
-					hidden: 0,
-					private: 1,
-					disableJoinRequests: 1,
-				});
-			},
-			function (next) {
-				// Create a new user
-				User.create({
-					username: 'testuser',
-					email: 'b@c.com',
-				}, next);
-			},
-			function (next) {
-				User.create({
-					username: 'admin',
-					email: 'admin@admin.com',
-					password: '123456',
-				}, next);
-			},
-			function (next) {
-				// Also create a hidden group
-				Groups.join('Hidden', 'Test', next);
-			},
-			function (next) {
-				// create another group that starts with test for search/sort
-				Groups.create({	name: 'Test2', description: 'Foobar!' }, next);
-			},
-		], function (err, results) {
-			assert.ifError(err);
-			testUid = results[5];
-			adminUid = results[6];
-			Groups.join('administrators', adminUid, done);
+	before(async function () {
+		const navData = require('../install/data/navigation.json');
+		await navigation.save(navData);
+
+		await Groups.create({
+			name: 'Test',
+			description: 'Foobar!',
 		});
+
+		await Groups.create({
+			name: 'PrivateNoJoin',
+			description: 'Private group',
+			private: 1,
+			disableJoinRequests: 1,
+		});
+
+		await Groups.create({
+			name: 'PrivateCanJoin',
+			description: 'Private group',
+			private: 1,
+			disableJoinRequests: 0,
+		});
+
+		await Groups.create({
+			name: 'PrivateNoLeave',
+			description: 'Private group',
+			private: 1,
+			disableLeave: 1,
+		});
+
+		await Groups.create({
+			name: 'Global Moderators',
+			userTitle: 'Global Moderator',
+			description: 'Forum wide moderators',
+			hidden: 0,
+			private: 1,
+			disableJoinRequests: 1,
+		});
+
+		// Also create a hidden group
+		await Groups.join('Hidden', 'Test');
+		// create another group that starts with test for search/sort
+		await Groups.create({	name: 'Test2', description: 'Foobar!' });
+
+		testUid = await User.create({
+			username: 'testuser',
+			email: 'b@c.com',
+		});
+
+		adminUid = await User.create({
+			username: 'admin',
+			email: 'admin@admin.com',
+			password: '123456',
+		});
+		await Groups.join('administrators', adminUid);
 	});
 
 	describe('.list()', function () {
@@ -457,19 +443,19 @@ describe('Groups', function () {
 			});
 		});
 
-		it('should rename a group if the name was updated', function (done) {
-			Groups.update('updateTestGroup', {
+		it('should rename a group and not break navigation routes', async function () {
+			await Groups.update('updateTestGroup', {
 				name: 'updateTestGroup?',
-			}, function (err) {
-				assert.ifError(err);
-
-				Groups.get('updateTestGroup?', {}, function (err, groupObj) {
-					assert.ifError(err);
-					assert.strictEqual('updateTestGroup?', groupObj.name);
-					assert.strictEqual('updatetestgroup', groupObj.slug);
-					done();
-				});
 			});
+
+			const groupObj = await Groups.get('updateTestGroup?', {});
+			assert.strictEqual('updateTestGroup?', groupObj.name);
+			assert.strictEqual('updatetestgroup', groupObj.slug);
+
+			const navigation = require('../src/navigation/admin');
+			const navItems = await navigation.get();
+			assert.strictEqual(navItems[0].route, '&#x2F;categories');
+			console.log(navItems[0]);
 		});
 
 		it('should fail if system groups is being renamed', function (done) {
