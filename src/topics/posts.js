@@ -240,7 +240,11 @@ module.exports = function (Topics) {
 		const uniquePids = _.uniq(_.flatten(arrayOfReplyPids));
 
 		let replyData = await posts.getPostsFields(uniquePids, ['pid', 'uid', 'timestamp']);
-		replyData = await user.blocks.filter(callerUid, replyData);
+		const result = await plugins.fireHook('filter:topics.getPostReplies', {
+			uid: callerUid,
+			replies: replyData,
+		});
+		replyData = await user.blocks.filter(callerUid, result.replies);
 
 		const uids = replyData.map(replyData => replyData && replyData.uid);
 
