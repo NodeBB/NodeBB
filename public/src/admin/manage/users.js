@@ -416,6 +416,7 @@ define('admin/manage/users', [
 		params.searchBy = query.searchBy;
 		params.query = query.query;
 		params.page = query.page;
+		params.sortBy = params.sortBy || 'lastonline';
 		var qs = decodeURIComponent($.param(params));
 		$.get(config.relative_path + '/api/admin/manage/users?' + qs, renderSearchResults).fail(function (xhrErr) {
 			if (xhrErr && xhrErr.responseJSON && xhrErr.responseJSON.error) {
