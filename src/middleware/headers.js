@@ -2,6 +2,7 @@
 
 const os = require('os');
 const winston = require('winston');
+const nconf = require('nconf');
 const _ = require('lodash');
 
 const meta = require('../meta');
@@ -34,6 +35,7 @@ module.exports = function (middleware) {
 
 			if (origins.includes(req.get('origin'))) {
 				headers['Access-Control-Allow-Origin'] = encodeURI(req.get('origin'));
+				headers.Vary = headers.Vary ? `${headers.Vary}, Origin` : 'Origin';
 			}
 		}
 
@@ -52,8 +54,13 @@ module.exports = function (middleware) {
 			originsRegex.forEach(function (regex) {
 				if (regex && regex.test(req.get('origin'))) {
 					headers['Access-Control-Allow-Origin'] = encodeURI(req.get('origin'));
+					headers.Vary = headers.Vary ? `${headers.Vary}, Origin` : 'Origin';
 				}
 			});
+		}
+
+		if (!headers.hasOwnProperty('Access-Control-Allow-Origin')) {
+			headers['Access-Control-Allow-Origin'] = nconf.get('url');
 		}
 
 		if (meta.config['access-control-allow-credentials']) {
