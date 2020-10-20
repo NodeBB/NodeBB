@@ -655,6 +655,13 @@ describe('Groups', function () {
 			});
 		});
 
+		it('should add user to Global Moderators group', async function () {
+			const uid = await User.create({ username: 'glomod' });
+			await socketGroups.join({ uid: adminUid }, { groupName: 'Global Moderators', uid: uid });
+			const isGlobalMod = await User.isGlobalModerator(uid);
+			assert.strictEqual(isGlobalMod, true);
+		});
+
 		it('should add user to multiple groups', function (done) {
 			var groupNames = ['test-hidden1', 'Test', 'test-hidden2', 'empty group'];
 			Groups.create({ name: 'empty group' }, function (err) {
@@ -804,7 +811,7 @@ describe('Groups', function () {
 		});
 
 		it('should return error if group name is special', function (done) {
-			socketGroups.join({ uid: adminUid }, { groupName: 'administrators' }, function (err) {
+			socketGroups.join({ uid: testUid }, { groupName: 'administrators' }, function (err) {
 				assert.equal(err.message, '[[error:not-allowed]]');
 				done();
 			});

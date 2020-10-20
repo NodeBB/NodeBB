@@ -54,19 +54,21 @@ groupsAPI.join = async function (caller, data) {
 		throw new Error('[[error:invalid-uid]]');
 	}
 
-	const isSelf = parseInt(caller.uid, 10) === parseInt(data.uid, 10);
 	const groupName = await groups.getGroupNameByGroupSlug(data.slug);
 	if (!groupName) {
 		throw new Error('[[error:no-group]]');
 	}
 
-	if (groups.systemGroups.includes(groupName) || groups.isPrivilegeGroup(groupName)) {
+	const isCallerAdmin = await user.isAdministrator(caller.uid);
+	if (!isCallerAdmin && (
+		groups.systemGroups.includes(groupName) ||
+		groups.isPrivilegeGroup(groupName)
+	)) {
 		throw new Error('[[error:not-allowed]]');
 	}
 
-	const [groupData, isCallerAdmin, isCallerOwner, userExists] = await Promise.all([
+	const [groupData, isCallerOwner, userExists] = await Promise.all([
 		groups.getGroupData(groupName),
-		user.isAdministrator(caller.uid),
 		groups.ownership.isOwner(caller.uid, groupName),
 		user.exists(data.uid),
 	]);
@@ -75,6 +77,7 @@ groupsAPI.join = async function (caller, data) {
 		throw new Error('[[error:invalid-uid]]');
 	}
 
+	const isSelf = parseInt(caller.uid, 10) === parseInt(data.uid, 10);
 	if (!meta.config.allowPrivateGroups && isSelf) {
 		// all groups are public!
 		await groups.join(groupName, data.uid);
@@ -85,7 +88,7 @@ groupsAPI.join = async function (caller, data) {
 		return;
 	}
 
-	if (groupData.private && groupData.disableJoinRequests) {
+	if (isSelf && groupData.private && groupData.disableJoinRequests) {
 		throw new Error('[[error:group-join-disabled]]');
 	}
 
