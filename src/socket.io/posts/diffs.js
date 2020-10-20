@@ -19,7 +19,7 @@ module.exports = function (SocketPosts) {
 		usernames = usernames.map(userObj => (userObj.uid ? userObj.username : null));
 
 		const cid = await posts.getCidByPid(data.pid);
-		const canEdit = await privileges.categories.can('edit', cid, socket.uid);
+		const canEdit = await privileges.categories.can('posts:edit', cid, socket.uid);
 		timestamps.push(post.timestamp);
 
 		return {
