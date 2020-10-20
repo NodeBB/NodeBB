@@ -18,8 +18,13 @@ module.exports = function (SocketPosts) {
 		let usernames = await user.getUsersFields(uids, ['username']);
 		usernames = usernames.map(userObj => (userObj.uid ? userObj.username : null));
 
-		const cid = await posts.getCidByPid(data.pid);
-		const canEdit = await privileges.categories.can('posts:edit', cid, socket.uid);
+		let canEdit = true;
+		try {
+			await user.isPrivilegedOrSelf(socket.uid, post.uid);
+		} catch (e) {
+			canEdit = false;
+		}
+
 		timestamps.push(post.timestamp);
 
 		return {
