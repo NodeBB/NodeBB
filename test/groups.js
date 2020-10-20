@@ -452,10 +452,8 @@ describe('Groups', function () {
 			assert.strictEqual('updateTestGroup?', groupObj.name);
 			assert.strictEqual('updatetestgroup', groupObj.slug);
 
-			const navigation = require('../src/navigation/admin');
 			const navItems = await navigation.get();
 			assert.strictEqual(navItems[0].route, '&#x2F;categories');
-			console.log(navItems[0]);
 		});
 
 		it('should fail if system groups is being renamed', function (done) {
