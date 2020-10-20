@@ -10,7 +10,7 @@ define('autocomplete', ['api'], function (api) {
 			onselect = params;
 			params = {};
 		}
-
+		params = params || {};
 		app.loadJQueryUI(function () {
 			input.autocomplete({
 				delay: 200,
