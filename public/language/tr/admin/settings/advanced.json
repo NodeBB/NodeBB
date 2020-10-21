@@ -34,7 +34,7 @@
 	"sockets.default-placeholder": "Varsayılan: %1",
 	"sockets.delay": "Yeniden Bağlanma Gecikmesi",
 
-	"analytics.settings": "Analytics Settings",
+	"analytics.settings": "Analitik Ayarlar",
 	"analytics.max-cache": "Analytics Cache Max Value",
 	"analytics.max-cache-help": "On high-traffic installs, the cache could be exhausted continuously if there are more concurrent active users than the Max Cache value. (Restart required)"
 }

@@ -26,7 +26,7 @@
     "invalid-pagination-value": "Geçersiz sayfa numarası girdiniz, en az %1 ve en fazla %2 olabilir",
     "username-taken": "Kullanıcı İsmi Alınmış",
     "email-taken": "E-posta Alınmış",
-    "email-invited": "Email was already invited",
+    "email-invited": "E-posta halihazırda davet edilmiş",
     "email-not-confirmed": "E-posta adresiniz onaylanmadan ileti gönderemezsiniz, onay e-postası için buraya tıklayınız!",
     "email-not-confirmed-chat": "E-postanız onaylanana kadar sohbet edemezsiniz, onaylamak için lütfen buraya tıklayın.",
     "email-not-confirmed-email-sent": "E-posta adresiniz henüz onaylanmamış, lütfen onay e-postası için gelen kutunuzu kontrol ediniz. E-posta adresinizi onaylayana kadar foruma ileti gönderemeyeceksiniz veya sohbet edemeyeceksiniz!",
@@ -170,5 +170,5 @@
     "already-blocked": "Bu kullanıcı zaten engellendi",
     "already-unblocked": "Bu kullanıcı zaten engellenmedi",
     "no-connection": "İnternet bağlantınızda sorun var gibi görünüyor",
-    "plugin-not-whitelisted": "Unable to install plugin &ndash; only plugins whitelisted by the NodeBB Package Manager can be installed via the ACP"
+    "plugin-not-whitelisted": "&ndash; eklentisi yüklenemedi, sadece NodeBB Paket Yöneticisi tarafından onaylanan eklentiler kontrol panelinden kurulabilir"
 }

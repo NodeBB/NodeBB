@@ -8,6 +8,6 @@
 	"consent.blank-localised-default": "NodeBB yerelleştirilmiş varsayılanlarını kullanmak için boş bırakın",
 	"settings": "Ayarlar",
 	"cookie-domain": "Oturum çerezi alanı",
-	"max-user-sessions": "Max active sessions per user",
+	"max-user-sessions": "Kullanıcı başı maksimum aktif oturum ",
 	"blank-default": "Varsayılan için boş bırakın"
 }
