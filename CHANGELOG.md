@@ -1,3 +1,20 @@
+#### v1.15.0-rc.0 (2020-10-21)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-rc.0 (8d48455b)
+*  update changelog for v1.15.0-beta.30 (39648722)
+
+##### New Features
+
+*  new filter filter:teasers.configureStripTags (177a9610)
+*  send 'Vary' header when ACAO header set (d68ffea8)
+
+##### Bug Fixes
+
+*  #8781 (db63f5e3)
+*  reset button loading html (1a4c0dec)
+
 #### v1.15.0-beta.30 (2020-10-21)
 
 ##### Chores
