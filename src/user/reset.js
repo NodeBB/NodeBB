@@ -1,20 +1,20 @@
 'use strict';
 
-var nconf = require('nconf');
-var winston = require('winston');
+const nconf = require('nconf');
+const winston = require('winston');
 
-var user = require('./index');
+const user = require('./index');
 const groups = require('../groups');
-var utils = require('../utils');
-var batch = require('../batch');
+const utils = require('../utils');
+const batch = require('../batch');
 
-var db = require('../database');
-var meta = require('../meta');
-var emailer = require('../emailer');
+const db = require('../database');
+const meta = require('../meta');
+const emailer = require('../emailer');
 
-var UserReset = module.exports;
+const UserReset = module.exports;
 
-var twoHours = 7200000;
+const twoHours = 7200000;
 
 UserReset.validate = async function (code) {
 	const uid = await db.getObjectField('reset:uid', code);
@@ -85,11 +85,13 @@ UserReset.commit = async function (code, password) {
 };
 
 UserReset.updateExpiry = async function (uid) {
-	const oneDay = 1000 * 60 * 60 * 24;
 	const expireDays = meta.config.passwordExpiryDays;
-	const expiry = Date.now() + (oneDay * expireDays);
 	if (expireDays > 0) {
+		const oneDay = 1000 * 60 * 60 * 24;
+		const expiry = Date.now() + (oneDay * expireDays);
 		await user.setUserField(uid, 'passwordExpiry', expiry);
+	} else {
+		await db.deleteObjectField('user:' + uid, 'passwordExpiry');
 	}
 };
 
