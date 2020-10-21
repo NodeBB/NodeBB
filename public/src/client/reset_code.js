@@ -26,7 +26,7 @@ define('forum/reset_code', ['zxcvbn'], function (zxcvbn) {
 				$('#notice').removeClass('hidden');
 				$('#notice strong').translateText('[[user:weak_password]]');
 			} else {
-				resetEl.prop('disabled', true).translateText('<i class="fa fa-spin fa-refresh"></i> [[reset_password:changing_password]]');
+				resetEl.prop('disabled', true).translateHtml('<i class="fa fa-spin fa-refresh"></i> [[reset_password:changing_password]]');
 				socket.emit('user.reset.commit', {
 					code: reset_code,
 					password: password.val(),
