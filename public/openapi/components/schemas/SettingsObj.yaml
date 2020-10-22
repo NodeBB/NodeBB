@@ -30,83 +30,82 @@ Settings:
       description: Automatically be notified of new posts in a topic, when you create a topic
     followTopicsOnReply:
       type: boolean
-      description:
+      description: Automatically be notified of new posts in a topic, when you reply to that topic
     restrictChat:
       type: boolean
-      description:
+      description: Do not allow other users to start chats with you (or add you to other chat rooms)
     topicSearchEnabled:
       type: boolean
-      description:
+      description: Enable keyword searching within topics
     categoryTopicSort:
       type: string
-      description:
+      description: Default sorting strategy of the topics in a category
     userLang:
       type: string
-      description:
+      description: Override the system localised language in favour of the language defined here
     bootswatchSkin:
       type: string
-      description:
+      description: Set a custom bootswatch skin
     homePageRoute:
       type: string
-      description:
+      description: Override the behaviour of the home page route (`/`) to go to a specific page
     scrollToMyPost:
       type: boolean
-      description:
+      description: Automatically center the viewport to you new post after posting
     notificationType_new-chat:
       type: string
-      description:
+      description: Notification type for new chat messages
     notificationType_new-reply:
       type: string
-      description:
+      description: Notification type for new topic replies
     notificationType_post-edit:
       type: string
-      description:
+      description: Notification type for post edits
     sendChatNotifications:
       nullable: true
     sendPostNotifications:
       nullable: true
     notificationType_upvote:
       type: string
-      description:
+      description: Notification type for upvotes
     notificationType_new-topic:
       type: string
-      description:
+      description: Notification type for new topics
     notificationType_follow:
       type: string
-      description:
+      description: Notification type for another user following you
     notificationType_group-invite:
       type: string
-      description:
+      description: Notification type for group invitations
     upvoteNotifFreq:
       type: string
-      description:
+      description: How often to notify you when your posts are upvoted
     notificationType_mention:
       type: string
-      description:
+      description: Notification type for mentions in a post
     acpLang:
       type: string
-      description:
+      description: Language localisation for the admin control panel
     notificationType_new-register:
       type: string
-      description:
+      description: Notification type for new registration in queue
     notificationType_post-queue:
       type: string
-      description:
+      description: Notification type for new post in post queue
     notificationType_new-post-flag:
       type: string
-      description:
+      description: Notification type for post flagged
     notificationType_new-user-flag:
       type: string
-      description:
+      description: Notification type for user flagged
     categoryWatchState:
       type: string
-      description:
+      description: Default watch state for categories
     notificationType_group-request-membership:
       type: string
-      description:
+      description: Notification type for group membership requests
     uid:
       type: number
-      description:
       description: A user identifier
   required:
     - showemail
