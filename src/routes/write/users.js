@@ -21,6 +21,9 @@ function authenticatedRoutes() {
 	setupApiRoute(router, 'put', '/:uid', [...middlewares, middleware.assert.user], controllers.write.users.update);
 	setupApiRoute(router, 'delete', '/:uid', [...middlewares, middleware.assert.user, middleware.exposePrivileges], controllers.write.users.delete);
 
+	setupApiRoute(router, 'put', '/:uid/settings', [...middlewares, middleware.checkRequired.bind(null, ['settings'])], controllers.write.users.updateSettings);
+	setupApiRoute(router, 'put', '/:uid/settings/:setting', [...middlewares, middleware.checkRequired.bind(null, ['value'])], controllers.write.users.updateSetting);
+
 	setupApiRoute(router, 'put', '/:uid/password', [...middlewares, middleware.checkRequired.bind(null, ['newPassword']), middleware.assert.user], controllers.write.users.changePassword);
 
 	setupApiRoute(router, 'put', '/:uid/follow', [...middlewares, middleware.assert.user], controllers.write.users.follow);

@@ -28,6 +28,16 @@ Users.deleteMany = async (req, res) => {
 	helpers.formatApiResponse(200, res);
 };
 
+Users.updateSettings = async (req, res) => {
+	const settings = await api.users.updateSettings(req, { ...req.body, uid: req.params.uid });
+	helpers.formatApiResponse(200, res, settings);
+};
+
+Users.updateSetting = async (req, res) => {
+	await api.users.updateSetting(req, { ...req.params, value: req.body.value });
+	helpers.formatApiResponse(200, res);
+};
+
 Users.changePassword = async (req, res) => {
 	await api.users.changePassword(req, { ...req.body, uid: req.params.uid });
 	helpers.formatApiResponse(200, res);

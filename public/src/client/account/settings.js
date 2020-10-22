@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/account/settings', ['forum/account/header', 'components', 'translator'], function (header, components, translator) {
+define('forum/account/settings', ['forum/account/header', 'components', 'translator', 'api'], function (header, components, translator, api) {
 	var	AccountSettings = {};
 
 	// If page skin is changed but not saved, switch the skin back
@@ -67,11 +67,7 @@ define('forum/account/settings', ['forum/account/header', 'components', 'transla
 	}
 
 	function saveSettings(settings) {
-		socket.emit('user.saveSettings', { uid: ajaxify.data.theirid, settings: settings }, function (err, newSettings) {
-			if (err) {
-				return app.alertError(err.message);
-			}
-
+		api.put(`/users/${ajaxify.data.uid}/settings`, { settings }).then((newSettings) => {
 			app.alertSuccess('[[success:settings-saved]]');
 			var languageChanged = false;
 			for (var key in newSettings) {

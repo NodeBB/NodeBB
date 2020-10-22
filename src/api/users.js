@@ -89,6 +89,23 @@ usersAPI.deleteMany = async function (caller, data) {
 	}
 };
 
+usersAPI.updateSettings = async function (caller, data) {
+	if (!caller.uid || !data || !data.settings) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	const canEdit = await privileges.users.canEdit(caller.uid, data.uid);
+	if (!canEdit) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	return await user.saveSettings(data.uid, data.settings);
+};
+
+usersAPI.updateSetting = async function (caller, data) {
+	await user.setSetting(data.uid, data.setting, data.value);
+};
+
 usersAPI.changePassword = async function (caller, data) {
 	await user.changePassword(caller.uid, Object.assign(data, { ip: caller.ip }));
 	await events.log({

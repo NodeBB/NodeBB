@@ -1,0 +1,40 @@
+put:
+  tags:
+    - users
+  summary: update one user setting
+  parameters:
+    - in: path
+      name: uid
+      schema:
+        type: integer
+      required: true
+      description: uid of the user
+      example: '1'
+    - in: path
+      name: setting
+      schema:
+        type: string
+      required: true
+      description: name of the setting you wish to update
+      example: 'showemail'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            value:
+              type: string
+              example: '1'
+  responses:
+    '200':
+      description: successfully updated user settings
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object

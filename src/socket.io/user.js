@@ -168,22 +168,27 @@ SocketUser.unfollow = async function (socket, data) {
 };
 
 SocketUser.saveSettings = async function (socket, data) {
-	if (!socket.uid || !data || !data.settings) {
-		throw new Error('[[error:invalid-data]]');
-	}
-	const canEdit = await privileges.users.canEdit(socket.uid, data.uid);
-	if (!canEdit) {
-		throw new Error('[[error:no-privileges]]');
-	}
-	return await user.saveSettings(data.uid, data.settings);
+	sockets.warnDeprecated(socket, 'PUT /api/v3/users/:uid/settings');
+	const settings = await api.users.updateSettings(socket, data);
+	return settings;
 };
 
 SocketUser.setTopicSort = async function (socket, sort) {
-	await user.setSetting(socket.uid, 'topicPostSort', sort);
+	sockets.warnDeprecated(socket, 'PUT /api/v3/users/:uid/setting/topicPostSort');
+	await api.users.updateSetting(socket, {
+		uid: socket.uid,
+		setting: 'topicPostSort',
+		value: sort,
+	});
 };
 
 SocketUser.setCategorySort = async function (socket, sort) {
-	await user.setSetting(socket.uid, 'categoryTopicSort', sort);
+	sockets.warnDeprecated(socket, 'PUT /api/v3/users/:uid/setting/categoryTopicSort');
+	await api.users.updateSetting(socket, {
+		uid: socket.uid,
+		setting: 'categoryTopicSort',
+		value: sort,
+	});
 };
 
 SocketUser.getUnreadCount = async function (socket) {

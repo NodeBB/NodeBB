@@ -49,7 +49,7 @@ define('forum/topic', [
 		threadTools.init(tid, $('.topic'));
 		events.init();
 
-		sort.handleSort('topicPostSort', 'user.setTopicSort', 'topic/' + ajaxify.data.slug);
+		sort.handleSort('topicPostSort', 'setTopicSort', 'topic/' + ajaxify.data.slug);
 
 		if (!config.usePagination) {
 			infinitescroll.init($('[component="topic"]'), posts.loadMorePosts);

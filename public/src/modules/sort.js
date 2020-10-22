@@ -1,10 +1,10 @@
 'use strict';
 
 
-define('sort', ['components'], function (components) {
+define('sort', ['components', 'api'], function (components, api) {
 	var module = {};
 
-	module.handleSort = function (field, method, gotoOnSave) {
+	module.handleSort = function (field, key, gotoOnSave) {
 		var threadSort = components.get('thread/sort');
 		threadSort.find('i').removeClass('fa-check');
 		var currentSetting = threadSort.find('a[data-sort="' + config[field] + '"]');
@@ -20,10 +20,9 @@ define('sort', ['components'], function (components) {
 				}
 				var newSetting = $(this).attr('data-sort');
 				if (app.user.uid) {
-					socket.emit(method, newSetting, function (err) {
-						if (err) {
-							return app.alertError(err.message);
-						}
+					api.put(`/users/${app.user.uid}/settings/${key}`, {
+						value: newSetting,
+					}).then(() => {
 						refresh(newSetting, utils.params());
 					});
 				} else {
