@@ -84,6 +84,10 @@ get:
                             load:
                               type: string
                               description: CPU load
+                            freemem:
+                              type: string
+                            totalmem:
+                              type: string
                         nodebb:
                           type: object
                           properties:
