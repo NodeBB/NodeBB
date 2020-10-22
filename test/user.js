@@ -1924,8 +1924,16 @@ describe('User', function () {
 		var inviterUid;
 		var adminUid;
 
+		var PUBLIC_GROUP = 'publicGroup';
+		var PRIVATE_GROUP = 'privateGroup';
+		var OWN_PRIVATE_GROUP = 'ownPrivateGroup';
+		var HIDDEN_GROUP = 'hiddenGroup';
+
 		before(function (done) {
 			async.parallel({
+				publicGroup: async.apply(groups.create, { name: PUBLIC_GROUP, private: 0 }),
+				privateGroup: async.apply(groups.create, { name: PRIVATE_GROUP, private: 1 }),
+				hiddenGroup: async.apply(groups.create, { name: HIDDEN_GROUP, hidden: 1 }),
 				notAnInviter: async.apply(User.create, { username: 'notAnInviter', email: 'notaninviter@nodebb.org' }),
 				inviter: async.apply(User.create, { username: 'inviter', email: 'inviter@nodebb.org' }),
 				admin: async.apply(User.create, { username: 'adminInvite' }),
@@ -1935,6 +1943,7 @@ describe('User', function () {
 				inviterUid = results.inviter;
 				adminUid = results.admin;
 				async.parallel([
+					async.apply(groups.create, { name: OWN_PRIVATE_GROUP, ownerUid: inviterUid, private: 1 }),
 					async.apply(groups.join, 'administrators', adminUid),
 					async.apply(groups.join, 'cid:0:privileges:invite', inviterUid),
 				], done);
@@ -1949,7 +1958,7 @@ describe('User', function () {
 		});
 
 		it('should error if user has not invite privilege', function (done) {
-			socketUser.invite({ uid: notAnInviterUid }, 'invite1@test.com', function (err) {
+			socketUser.invite({ uid: notAnInviterUid }, { emails: 'invite1@test.com', groupsToJoin: [] }, function (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');
 				done();
 			});
@@ -1957,38 +1966,87 @@ describe('User', function () {
 
 		it('should error if user is not admin and type is admin-invite-only', function (done) {
 			meta.config.registrationType = 'admin-invite-only';
-			socketUser.invite({ uid: inviterUid }, 'invite1@test.com', function (err) {
+			socketUser.invite({ uid: inviterUid }, { emails: 'invite1@test.com', groupsToJoin: [] }, function (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');
 				done();
 			});
 		});
 
-		it('should send invitation email', function (done) {
+		it('should send invitation email (without groups to be joined)', function (done) {
 			meta.config.registrationType = 'normal';
-			socketUser.invite({ uid: inviterUid }, 'invite1@test.com', function (err) {
+			socketUser.invite({ uid: inviterUid }, { emails: 'invite1@test.com', groupsToJoin: [] }, function (err) {
 				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should send multiple invitation emails (with a public group to be joined)', function (done) {
+			socketUser.invite({ uid: inviterUid }, { emails: 'invite2@test.com,invite3@test.com', groupsToJoin: [PUBLIC_GROUP] }, function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should error if the user has not permission to invite to the group', function (done) {
+			socketUser.invite({ uid: inviterUid }, { emails: 'invite4@test.com', groupsToJoin: [PRIVATE_GROUP] }, function (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+				done();
+			});
+		});
+
+		it('should error if a non-admin tries to invite to the administrators group', function (done) {
+			socketUser.invite({ uid: inviterUid }, { emails: 'invite4@test.com', groupsToJoin: ['administrators'] }, function (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+				done();
+			});
+		});
+
+		it('should invite to the administrators group if inviter is an admin', function (done) {
+			socketUser.invite({ uid: adminUid }, { emails: 'invite99@test.com', groupsToJoin: ['administrators'] }, function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should to invite to own private group', function (done) {
+			socketUser.invite({ uid: inviterUid }, { emails: 'invite4@test.com', groupsToJoin: [OWN_PRIVATE_GROUP] }, function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should to invite to multiple groups', function (done) {
+			socketUser.invite({ uid: inviterUid }, { emails: 'invite5@test.com', groupsToJoin: [PUBLIC_GROUP, OWN_PRIVATE_GROUP] }, function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should error if tries to invite to hidden group', function (done) {
+			socketUser.invite({ uid: inviterUid }, { emails: 'invite6@test.com', groupsToJoin: [HIDDEN_GROUP] }, function (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
 				done();
 			});
 		});
 
 		it('should error if ouf of invitations', function (done) {
 			meta.config.maximumInvites = 1;
-			socketUser.invite({ uid: inviterUid }, 'invite2@test.com', function (err) {
-				assert.equal(err.message, '[[error:invite-maximum-met, ' + 1 + ', ' + 1 + ']]');
-				meta.config.maximumInvites = 5;
+			socketUser.invite({ uid: inviterUid }, { emails: 'invite6@test.com', groupsToJoin: [] }, function (err) {
+				assert.equal(err.message, '[[error:invite-maximum-met, ' + 5 + ', ' + 1 + ']]');
+				meta.config.maximumInvites = 6;
 				done();
 			});
 		});
 
 		it('should error if email exists', function (done) {
-			socketUser.invite({ uid: inviterUid }, 'inviter@nodebb.org', function (err) {
+			socketUser.invite({ uid: inviterUid }, { emails: 'inviter@nodebb.org', groupsToJoin: [] }, function (err) {
 				assert.equal(err.message, '[[error:email-taken]]');
 				done();
 			});
 		});
 
 		it('should send invitation email', function (done) {
-			socketUser.invite({ uid: inviterUid }, 'invite2@test.com', function (err) {
+			socketUser.invite({ uid: inviterUid }, { emails: 'invite6@test.com', groupsToJoin: [] }, function (err) {
 				assert.ifError(err);
 				done();
 			});
@@ -1997,8 +2055,9 @@ describe('User', function () {
 		it('should get user\'s invites', function (done) {
 			User.getInvites(inviterUid, function (err, data) {
 				assert.ifError(err);
-				assert.notEqual(data.indexOf('invite1@test.com'), -1);
-				assert.notEqual(data.indexOf('invite2@test.com'), -1);
+				Array.from(Array(6)).forEach((_, i) => {
+					assert.notEqual(data.indexOf('invite' + (i + 1) + '@test.com'), -1);
+				});
 				done();
 			});
 		});
@@ -2007,8 +2066,9 @@ describe('User', function () {
 			User.getAllInvites(function (err, data) {
 				assert.ifError(err);
 				assert.equal(data[0].uid, inviterUid);
-				assert.notEqual(data[0].invitations.indexOf('invite1@test.com'), -1);
-				assert.notEqual(data[0].invitations.indexOf('invite2@test.com'), -1);
+				Array.from(Array(6)).forEach((_, i) => {
+					assert.notEqual(data[0].invitations.indexOf('invite' + (i + 1) + '@test.com'), -1);
+				});
 				done();
 			});
 		});
@@ -2029,7 +2089,7 @@ describe('User', function () {
 
 		it('should verify installation with no errors', function (done) {
 			var email = 'invite1@test.com';
-			db.get('invitation:email:' + email, function (err, token) {
+			db.getObjectField('invitation:email:' + email, 'token', function (err, token) {
 				assert.ifError(err);
 				User.verifyInvitation({ token: token, email: 'invite1@test.com' }, function (err) {
 					assert.ifError(err);
@@ -2058,12 +2118,12 @@ describe('User', function () {
 		});
 
 		it('should delete invitation key', function (done) {
-			User.deleteInvitationKey('invite2@test.com', function (err) {
+			User.deleteInvitationKey('invite99@test.com', function (err) {
 				assert.ifError(err);
-				db.isSetMember('invitation:uid:' + inviterUid, 'invite2@test.com', function (err, isMember) {
+				db.isSetMember('invitation:uid:' + adminUid, 'invite99@test.com', function (err, isMember) {
 					assert.ifError(err);
 					assert.equal(isMember, false);
-					db.isSetMember('invitation:uids', inviterUid, function (err, isMember) {
+					db.isSetMember('invitation:uids', adminUid, function (err, isMember) {
 						assert.ifError(err);
 						assert.equal(isMember, false);
 						done();
@@ -2073,9 +2133,9 @@ describe('User', function () {
 		});
 
 		it('should escape email', function (done) {
-			socketUser.invite({ uid: inviterUid }, '<script>alert("ok");</script>', function (err) {
+			socketUser.invite({ uid: adminUid }, { emails: '<script>alert("ok");</script>', groupsToJoin: [] }, function (err) {
 				assert.ifError(err);
-				User.getInvites(inviterUid, function (err, data) {
+				User.getInvites(adminUid, function (err, data) {
 					assert.ifError(err);
 					assert.equal(data[0], '&lt;script&gt;alert(&quot;ok&quot;);&lt;&#x2F;script&gt;');
 					done();

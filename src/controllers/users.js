@@ -96,7 +96,7 @@ async function renderIfAdminOrGlobalMod(set, req, res) {
 
 usersController.renderUsersPage = async function (set, req, res) {
 	const userData = await usersController.getUsers(set, req.uid, req.query);
-	render(req, res, userData);
+	await render(req, res, userData);
 };
 
 usersController.getUsers = async function (set, uid, query) {

@@ -18,6 +18,7 @@ const userController = require('../controllers/user');
 const privileges = require('../privileges');
 const utils = require('../utils');
 const flags = require('../flags');
+const SocketGroups = require('./groups');
 const sockets = require('.');
 
 const SocketUser = module.exports;
@@ -223,10 +224,11 @@ SocketUser.getUnreadCounts = async function (socket) {
 	return results;
 };
 
-SocketUser.invite = async function (socket, email) {
-	if (!email || !socket.uid) {
+SocketUser.invite = async function (socket, data) {
+	if (!data || !data.emails || !data.groupsToJoin || !Array.isArray(data.groupsToJoin) || !socket.uid) {
 		throw new Error('[[error:invalid-data]]');
 	}
+	const { emails, groupsToJoin } = data;
 
 	const canInvite = await privileges.users.hasInvitePrivilege(socket.uid);
 	if (!canInvite) {
@@ -239,10 +241,16 @@ SocketUser.invite = async function (socket, email) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	const max = meta.config.maximumInvites;
-	email = email.split(',').map(email => email.trim()).filter(Boolean);
+	const inviteGroups = await SocketGroups.getInviteGroups(socket, {});
+	const cannotInvite = groupsToJoin.some(group => !inviteGroups.includes(group));
+	if (groupsToJoin.length > 0 && cannotInvite) {
+		throw new Error('[[error:no-privileges]]');
+	}
 
-	await async.eachSeries(email, async function (email) {
+	const max = meta.config.maximumInvites;
+	const emailsArr = emails.split(',').map(email => email.trim()).filter(Boolean);
+
+	await async.eachSeries(emailsArr, async function (email) {
 		let invites = 0;
 		if (max) {
 			invites = await user.getInvitesNumber(socket.uid);
@@ -251,7 +259,7 @@ SocketUser.invite = async function (socket, email) {
 			throw new Error('[[error:invite-maximum-met, ' + invites + ', ' + max + ']]');
 		}
 
-		await user.sendInvitationEmail(socket.uid, email);
+		await user.sendInvitationEmail(socket.uid, email, groupsToJoin);
 	});
 };
 

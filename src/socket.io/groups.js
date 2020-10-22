@@ -280,6 +280,40 @@ SocketGroups.loadMoreMembers = async (socket, data) => {
 	};
 };
 
+SocketGroups.getInviteGroups = async (socket, data) => {
+	if (!socket.uid) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	let allGroups = await groups.getNonPrivilegeGroups('groups:createtime', 0, -1);
+	allGroups = allGroups.filter(group => !groups.ephemeralGroups.includes(group.name));
+
+	const publicGroups = allGroups.filter(group => group.hidden === 0 && group.system === 0 && group.private === 0);
+	const adminModGroups = [{ name: 'administrators' }, { name: 'Global Moderators' }];
+	// Private (but not hidden)
+	const privateGroups = allGroups.filter(group => group.hidden === 0 && group.system === 0 && group.private === 1);
+
+	const [ownership, isAdmin, isGlobalMod] = await Promise.all([
+		Promise.all(privateGroups.map(group => groups.ownership.isOwner(socket.uid, group.name))),
+		user.isAdministrator(socket.uid),
+		user.isGlobalModerator(socket.uid),
+	]);
+	const ownGroups = privateGroups.filter((group, index) => ownership[index]);
+
+	let inviteGroups = [];
+	if (isAdmin) {
+		inviteGroups = inviteGroups.concat(adminModGroups).concat(privateGroups);
+	} else if (isGlobalMod) {
+		inviteGroups = inviteGroups.concat(privateGroups);
+	} else {
+		inviteGroups = inviteGroups.concat(ownGroups);
+	}
+
+	return inviteGroups
+		.concat(publicGroups)
+		.map(group => group.name);
+};
+
 SocketGroups.cover = {};
 
 SocketGroups.cover.update = async (socket, data) => {
