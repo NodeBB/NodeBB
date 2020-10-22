@@ -39,7 +39,7 @@
 					</td>
 					<td>{info.git.branch}@<a href="https://github.com/NodeBB/NodeBB/commit/{info.git.hash}" target="_blank">{info.git.hashShort}</a></td>
 					<td>{info.process.cpuUsage.user} / {info.process.cpuUsage.system}</td>
-					<td>{info.process.memoryUsage.humanReadable} mb</td>
+					<td>{info.process.memoryUsage.humanReadable} mb / {info.os.freemem} mb</td>
 					<td>{info.os.load}</td>
 					<td>{info.process.uptime}</td>
 				</tr>
