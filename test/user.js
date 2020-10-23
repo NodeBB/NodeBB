@@ -2132,6 +2132,36 @@ describe('User', function () {
 			});
 		});
 
+		it('should joined the groups from invitation after registration', async function () {
+			var email = 'invite5@test.com';
+			var groupsToJoin = [PUBLIC_GROUP, OWN_PRIVATE_GROUP];
+			var token = await db.getObjectField('invitation:email:' + email, 'token');
+
+			await new Promise(function (resolve, reject) {
+				helpers.registerUser({
+					username: 'invite5',
+					password: '123456',
+					'password-confirm': '123456',
+					email: email,
+					gdpr_consent: true,
+					token: token,
+				}, async function (err, jar, response, body) {
+					if (err) {
+						reject(err);
+					}
+
+					var memberships = await groups.isMemberOfGroups(body.uid, groupsToJoin);
+					var joinedToAll = memberships.filter(Boolean);
+
+					if (joinedToAll.length !== groupsToJoin.length) {
+						reject(new Error('Not joined to the groups'));
+					}
+
+					resolve();
+				});
+			});
+		});
+
 		it('should escape email', function (done) {
 			socketUser.invite({ uid: adminUid }, { emails: '<script>alert("ok");</script>', groupsToJoin: [] }, function (err) {
 				assert.ifError(err);

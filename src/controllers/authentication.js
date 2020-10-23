@@ -57,9 +57,9 @@ async function registerAndLoginUser(req, res, userData) {
 
 	// Distinguish registrations through invites from direct ones
 	if (userData.token) {
-		user.joinGroupsFromInvitation(uid, userData.email);
+		await user.joinGroupsFromInvitation(uid, userData.email);
 	}
-	user.deleteInvitationKey(userData.email);
+	await user.deleteInvitationKey(userData.email);
 	const referrer = req.body.referrer || req.session.referrer || nconf.get('relative_path') + '/';
 	const complete = await plugins.fireHook('filter:register.complete', { uid: uid, referrer: referrer });
 	req.session.returnTo = complete.referrer;
