@@ -280,7 +280,7 @@ SocketGroups.loadMoreMembers = async (socket, data) => {
 	};
 };
 
-SocketGroups.getInviteGroups = async (socket, data) => {
+SocketGroups.getInviteGroups = async (socket) => {
 	if (!socket.uid) {
 		throw new Error('[[error:no-privileges]]');
 	}
