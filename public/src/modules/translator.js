@@ -2,17 +2,9 @@
 
 (function (factory) {
 	function loadClient(language, namespace) {
-		return Promise.resolve(
-			jQuery.getJSON(
-				[config.assetBaseUrl, 'language', language, namespace].join('/') +
-					'.json?' +
-					config['cache-buster']
-			)
-		);
+		return Promise.resolve(jQuery.getJSON([config.assetBaseUrl, 'language', language, namespace].join('/') + '.json?' + config['cache-buster']));
 	}
-	var warn = function () {
-		console.warn.apply(console, arguments);
-	};
+	var warn = function () { console.warn.apply(console, arguments); };
 	if (typeof define === 'function' && define.amd) {
 		// AMD. Register as a named module
 		define('translator', [], function () {
@@ -37,13 +29,11 @@
 	var assign = Object.assign || jQuery.extend;
 
 	function escapeHTML(str) {
-		return utils.escapeHTML(
-			utils.decodeHTMLEntities(
-				String(str)
-					.replace(/[\s\xa0]+/g, ' ')
-					.replace(/^\s+|\s+$/g, '')
-			)
-		);
+		return utils.escapeHTML(utils.decodeHTMLEntities(
+			String(str)
+				.replace(/[\s\xa0]+/g, ' ')
+				.replace(/^\s+|\s+$/g, '')
+		));
 	}
 
 	var Translator = (function () {
@@ -56,25 +46,19 @@
 			var self = this;
 
 			if (!language) {
-				throw new TypeError(
-					'Parameter `language` must be a language string. Received ' +
-						language +
-						(language === '' ? '(empty string)' : '')
-				);
+				throw new TypeError('Parameter `language` must be a language string. Received ' + language + (language === '' ? '(empty string)' : ''));
 			}
 
-			self.modules = Object.keys(Translator.moduleFactories)
-				.map(function (namespace) {
-					var factory = Translator.moduleFactories[namespace];
-					return [namespace, factory(language)];
-				})
-				.reduce(function (prev, elem) {
-					var namespace = elem[0];
-					var module = elem[1];
-					prev[namespace] = module;
+			self.modules = Object.keys(Translator.moduleFactories).map(function (namespace) {
+				var factory = Translator.moduleFactories[namespace];
+				return [namespace, factory(language)];
+			}).reduce(function (prev, elem) {
+				var namespace = elem[0];
+				var module = elem[1];
+				prev[namespace] = module;
 
-					return prev;
-				}, {});
+				return prev;
+			}, {});
 
 			self.lang = language;
 			self.translations = {};
@@ -171,37 +155,22 @@
 					if (!textBeforeColonFound && validTextRegex.test(char0)) {
 						textBeforeColonFound = true;
 						cursor += 1;
-						// found a colon, so this is probably a translation string
+					// found a colon, so this is probably a translation string
 					} else if (textBeforeColonFound && !colonFound && char0 === ':') {
 						colonFound = true;
 						cursor += 1;
-						// found some text after the colon,
-						// so this is probably a translation string
-					} else if (
-						colonFound &&
-						!textAfterColonFound &&
-						validTextRegex.test(char0)
-					) {
+					// found some text after the colon,
+					// so this is probably a translation string
+					} else if (colonFound && !textAfterColonFound && validTextRegex.test(char0)) {
 						textAfterColonFound = true;
 						cursor += 1;
-					} else if (
-						textAfterColonFound &&
-						!commaAfterNameFound &&
-						char0 === ','
-					) {
+					} else if (textAfterColonFound && !commaAfterNameFound && char0 === ',') {
 						commaAfterNameFound = true;
 						cursor += 1;
-						// a space or comma was found before the name
-						// this isn't a translation string, so back out
-					} else if (
-						!(
-							textBeforeColonFound &&
-							colonFound &&
-							textAfterColonFound &&
-							commaAfterNameFound
-						) &&
-						invalidTextRegex.test(char0)
-					) {
+					// a space or comma was found before the name
+					// this isn't a translation string, so back out
+					} else if (!(textBeforeColonFound && colonFound && textAfterColonFound && commaAfterNameFound) &&
+							invalidTextRegex.test(char0)) {
 						cursor += 1;
 						lastBreak -= 2;
 						// no longer in a token
@@ -211,12 +180,12 @@
 						} else {
 							break;
 						}
-						// if we're at the beginning of another translation string,
-						// we're nested, so add to our level
+					// if we're at the beginning of another translation string,
+					// we're nested, so add to our level
 					} else if (char0 === '[' && char1 === '[') {
 						level += 1;
 						cursor += 2;
-						// if we're at the end of a translation string
+					// if we're at the end of a translation string
 					} else if (char0 === ']' && char1 === ']') {
 						// if we're at the base level, then this is the end
 						if (level === 0) {
@@ -281,11 +250,7 @@
 		 * @param {string|Promise<string>} backup - Text to use in case the key can't be found
 		 * @returns {Promise<string>}
 		 */
-		Translator.prototype.translateKey = function translateKey(
-			name,
-			args,
-			backup
-		) {
+		Translator.prototype.translateKey = function translateKey(name, args, backup) {
 			var self = this;
 
 			var result = name.split(':', 2);
@@ -301,13 +266,7 @@
 			}
 
 			if (namespace && !key) {
-				warn(
-					'Missing key in translation token "' +
-						name +
-						'" for language "' +
-						self.lang +
-						'"'
-				);
+				warn('Missing key in translation token "' + name + '" for language "' + self.lang + '"');
 				return Promise.resolve('[[' + namespace + ']]');
 			}
 
@@ -315,13 +274,7 @@
 			return translation.then(function (translated) {
 				// check if the translation is missing first
 				if (!translated) {
-					warn(
-						'Missing translation "' +
-							name +
-							'" for language "' +
-							self.lang +
-							'"'
-					);
+					warn('Missing translation "' + name + '" for language "' + self.lang + '"');
 					return backup || key;
 				}
 
@@ -332,9 +285,7 @@
 				return Promise.all(argsToTranslate).then(function (translatedArgs) {
 					var out = translated;
 					translatedArgs.forEach(function (arg, i) {
-						var escaped = arg
-							.replace(/%(?=\d)/g, '&#37;')
-							.replace(/\\,/g, '&#44;');
+						var escaped = arg.replace(/%(?=\d)/g, '&#37;').replace(/\\,/g, '&#44;');
 						out = out.replace(new RegExp('%' + (i + 1), 'g'), escaped);
 					});
 					return out;
@@ -348,24 +299,13 @@
 		 * @param {string} [key] - The key of the specific translation to getJSON
 		 * @returns {Promise<{ [key: string]: string } | string>}
 		 */
-		Translator.prototype.getTranslation = function getTranslation(
-			namespace,
-			key
-		) {
+		Translator.prototype.getTranslation = function getTranslation(namespace, key) {
 			var translation;
 			if (!namespace) {
-				warn(
-					'[translator] Parameter `namespace` is ' +
-						namespace +
-						(namespace === '' ? '(empty string)' : '')
-				);
+				warn('[translator] Parameter `namespace` is ' + namespace + (namespace === '' ? '(empty string)' : ''));
 				translation = Promise.resolve({});
 			} else {
-				this.translations[namespace] =
-					this.translations[namespace] ||
-					this.load(this.lang, namespace).catch(function () {
-						return {};
-					});
+				this.translations[namespace] = this.translations[namespace] || this.load(this.lang, namespace).catch(function () { return {}; });
 				translation = this.translations[namespace];
 			}
 
@@ -420,50 +360,41 @@
 		 * @param {string[]} [attributes] - Array of node attributes to translate
 		 * @returns {Promise<void>}
 		 */
-		Translator.prototype.translateInPlace = function translateInPlace(
-			element,
-			attributes
-		) {
+		Translator.prototype.translateInPlace = function translateInPlace(element, attributes) {
 			attributes = attributes || ['placeholder', 'title'];
 
 			var nodes = descendantTextNodes(element);
-			var text = nodes
-				.map(function (node) {
-					return utils.escapeHTML(node.nodeValue);
-				})
-				.join('  ||  ');
+			var text = nodes.map(function (node) {
+				return utils.escapeHTML(node.nodeValue);
+			}).join('  ||  ');
 
 			var attrNodes = attributes.reduce(function (prev, attr) {
-				var tuples = Array.prototype.map.call(
-					element.querySelectorAll('[' + attr + '*="[["]'),
-					function (el) {
-						return [attr, el];
-					}
-				);
+				var tuples = Array.prototype.map.call(element.querySelectorAll('[' + attr + '*="[["]'), function (el) {
+					return [attr, el];
+				});
 				return prev.concat(tuples);
 			}, []);
-			var attrText = attrNodes
-				.map(function (node) {
-					return node[1].getAttribute(node[0]);
-				})
-				.join('  ||  ');
+			var attrText = attrNodes.map(function (node) {
+				return node[1].getAttribute(node[0]);
+			}).join('  ||  ');
 
-			return Promise.all([this.translate(text), this.translate(attrText)]).then(
-				function (ref) {
-					var translated = ref[0];
-					var translatedAttrs = ref[1];
-					if (translated) {
-						translated.split('  ||  ').forEach(function (html, i) {
-							$(nodes[i]).replaceWith(html);
-						});
-					}
-					if (translatedAttrs) {
-						translatedAttrs.split('  ||  ').forEach(function (text, i) {
-							attrNodes[i][1].setAttribute(attrNodes[i][0], text);
-						});
-					}
+			return Promise.all([
+				this.translate(text),
+				this.translate(attrText),
+			]).then(function (ref) {
+				var translated = ref[0];
+				var translatedAttrs = ref[1];
+				if (translated) {
+					translated.split('  ||  ').forEach(function (html, i) {
+						$(nodes[i]).replaceWith(html);
+					});
 				}
-			);
+				if (translatedAttrs) {
+					translatedAttrs.split('  ||  ').forEach(function (text, i) {
+						attrNodes[i][1].setAttribute(attrNodes[i][0], text);
+					});
+				}
+			});
 		};
 
 		/**
@@ -474,17 +405,10 @@
 			var lang;
 
 			if (typeof window === 'object' && window.config && window.utils) {
-				lang =
-					utils.params().lang ||
-					config.userLang ||
-					config.defaultLang ||
-					'en-GB';
+				lang = utils.params().lang || config.userLang || config.defaultLang || 'en-GB';
 			} else {
 				var meta = require('../../../src/meta');
-				lang =
-					meta.config && meta.config.defaultLang ?
-						meta.config.defaultLang :
-						'en-GB';
+				lang = meta.config && meta.config.defaultLang ? meta.config.defaultLang : 'en-GB';
 			}
 
 			return lang;
@@ -500,8 +424,7 @@
 				language = Translator.getLanguage();
 			}
 
-			Translator.cache[language] =
-				Translator.cache[language] || new Translator(language);
+			Translator.cache[language] = Translator.cache[language] || new Translator(language);
 
 			return Translator.cache[language];
 		};
@@ -565,9 +488,7 @@
 		 * @returns {string}
 		 */
 		Translator.escape = function escape(text) {
-			return typeof text === 'string' ?
-				text.replace(/\[\[/g, '&lsqb;&lsqb;').replace(/\]\]/g, '&rsqb;&rsqb;') :
-				text;
+			return typeof text === 'string' ? text.replace(/\[\[/g, '&lsqb;&lsqb;').replace(/\]\]/g, '&rsqb;&rsqb;') : text;
 		};
 
 		/**
@@ -632,40 +553,30 @@
 				lang = null;
 			}
 
-			if (
-				!(typeof text === 'string' || text instanceof String) ||
-				text === ''
-			) {
+			if (!(typeof text === 'string' || text instanceof String) || text === '') {
 				if (cb) {
 					return setTimeout(cb, 0, '');
 				}
 				return '';
 			}
 
-			return Translator.create(lang)
-				.translate(text)
-				.then(
-					function (output) {
-						if (cb) {
-							setTimeout(cb, 0, output);
-						}
-						return output;
-					},
-					function (err) {
-						warn('Translation failed: ' + err.stack);
-					}
-				);
+			return Translator.create(lang).translate(text).then(function (output) {
+				if (cb) {
+					setTimeout(cb, 0, output);
+				}
+				return output;
+			}, function (err) {
+				warn('Translation failed: ' + err.stack);
+			});
 		},
 
 		/**
 		 * Add translations to the cache
 		 */
 		addTranslation: function addTranslation(language, namespace, translation) {
-			Translator.create(language)
-				.getTranslation(namespace)
-				.then(function (translations) {
-					assign(translations, translation);
-				});
+			Translator.create(language).getTranslation(namespace).then(function (translations) {
+				assign(translations, translation);
+			});
 		},
 
 		/**
