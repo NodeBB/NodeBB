@@ -9,6 +9,7 @@ put:
         type: integer
       required: true
       description: uid of the user to ban
+      example: 1
   requestBody:
     content:
       application/json:
@@ -45,6 +46,7 @@ delete:
         type: integer
       required: true
       description: uid of the user to unban
+      example: 1
   responses:
     '200':
       description: successfully unbanned user

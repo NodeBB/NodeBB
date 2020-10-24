@@ -3,6 +3,14 @@ put:
     - posts
   summary: bookmark a post
   description: This operation bookmarks a post.
+  parameters:
+    - in: path
+      name: pid
+      schema:
+        type: string
+      required: true
+      description: a valid post id
+      example: 1
   responses:
     '200':
       description: Post successfully bookmarked
@@ -21,6 +29,14 @@ delete:
     - posts
   summary: unbookmark a post
   description: This operation unbookmarks a post.
+  parameters:
+    - in: path
+      name: pid
+      schema:
+        type: string
+      required: true
+      description: a valid post id
+      example: 1
   responses:
     '200':
       description: Post successfully unbookmarked

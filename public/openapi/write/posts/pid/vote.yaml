@@ -3,6 +3,14 @@ put:
     - posts
   summary: vote on a post
   description: This operation casts a vote on a post.
+  parameters:
+    - in: path
+      name: pid
+      schema:
+        type: string
+      required: true
+      description: a valid post id
+      example: 1
   requestBody:
     required: true
     content:

@@ -3,6 +3,14 @@ put:
     - groups
   summary: join a group
   description: This operation joins an existing group, or causes another user to join a group. If the group is private and you are not an administrator, this method will cause that user to request membership, instead. For user _invitations_, you'll want to call `PUT /groups/{slug}/invites/{uid}`.
+  parameters:
+    - in: path
+      name: slug
+      schema:
+        type: string
+      required: true
+      description: slug of the group you would like to join
+      example: my-group
   responses:
     '200':
       description: group successfully joined, or membership requested
