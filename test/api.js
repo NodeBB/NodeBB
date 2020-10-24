@@ -94,26 +94,32 @@ describe('Read API', async () => {
 	writeApi = await SwaggerParser.dereference(writeApiPath);
 
 	// Iterate through all documented paths, make a call to it, and compare the result body with what is defined in the spec
-	const paths = Object.keys(writeApi.paths);
-	// const paths = Object.keys(readApi.paths);
+	// const paths = Object.keys(writeApi.paths);
+	const paths = Object.keys(readApi.paths);
 
 	paths.forEach((path) => {
-		const context = writeApi.paths[path];
-		// const context = readApi.paths[path];
+		// const context = writeApi.paths[path];
+		const context = readApi.paths[path];
 		let schema;
 		let response;
-		const urls = [];
-		const methods = [];
+		let url;
+		let method;
 		const headers = {};
 		const qs = {};
 
-		it('should have examples when parameters are present', () => {
-			Object.keys(context).forEach((method) => {
+		Object.keys(context).forEach((_method) => {
+			if (_method !== 'get') {
+				return;
+			}
+
+			it('should have examples when parameters are present', () => {
+				method = _method;
 				const parameters = context[method].parameters;
 				let testPath = path;
+
 				if (parameters) {
 					parameters.forEach((param) => {
-						assert(param.example !== null && param.example !== undefined, path + ' has parameters without examples');
+						assert(param.example !== null && param.example !== undefined, `${method.toUpperCase()} ${path} has parameters without examples`);
 
 						switch (param.in) {
 							case 'path':
@@ -129,40 +135,41 @@ describe('Read API', async () => {
 					});
 				}
 
-				urls.push = nconf.get('url') + testPath;
-				methods.push(method);
+				url = nconf.get('url') + testPath;
 			});
-		});
 
-		it('should resolve with a 200 when called', async () => {
-			await setupData();
+			it('should resolve with a 200 when called', async () => {
+				await setupData();
 
-			try {
-				response = await request(url, {
-					jar: !unauthenticatedRoutes.includes(path) ? jar : undefined,
-					json: true,
-					headers: headers,
-					qs: qs,
-				});
-			} catch (e) {
-				assert(!e, path + ' resolved with ' + e.message);
-			}
-		});
+				try {
+					response = await request(url, {
+						method: method,
+						jar: !unauthenticatedRoutes.includes(path) ? jar : undefined,
+						json: true,
+						headers: headers,
+						qs: qs,
+					});
+				} catch (e) {
+					assert(!e, `${method.toUpperCase()} ${path} resolved with ${e.message}`);
+				}
+			});
+			console.log(response);
 
-		// Recursively iterate through schema properties, comparing type
-		it('response should match schema definition', () => {
-			const has200 = context.get.responses['200'];
-			if (!has200) {
-				return;
-			}
+			// Recursively iterate through schema properties, comparing type
+			it('response should match schema definition', () => {
+				const has200 = context[method].responses['200'];
+				if (!has200) {
+					return;
+				}
 
-			const hasJSON = has200.content && has200.content['application/json'];
-			if (hasJSON) {
-				schema = context.get.responses['200'].content['application/json'].schema;
-				compare(schema, response, 'root');
-			}
+				const hasJSON = has200.content && has200.content['application/json'];
+				if (hasJSON) {
+					schema = context[method].responses['200'].content['application/json'].schema;
+					compare(schema, response, 'root');
+				}
 
-			// TODO someday: text/csv, binary file type checking?
+				// TODO someday: text/csv, binary file type checking?
+			});
 		});
 	});
 
