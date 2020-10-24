@@ -9,6 +9,7 @@ put:
         type: integer
       required: true
       description: uid of the user
+      example: 1
   requestBody:
     content:
       application/json:

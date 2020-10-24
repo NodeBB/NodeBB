@@ -3,6 +3,14 @@ put:
     - posts
   summary: edit a post
   description: This operation edits a post
+  parameters:
+    - in: path
+      name: pid
+      schema:
+        type: string
+      required: true
+      description: a valid post id
+      example: 1
   requestBody:
     required: true
     content:
@@ -38,6 +46,14 @@ delete:
     - posts
   summary: purge a post
   description: This operation purges a post.
+  parameters:
+    - in: path
+      name: pid
+      schema:
+        type: string
+      required: true
+      description: a valid post id
+      example: 1
   responses:
     '200':
       description: Post successfully purged

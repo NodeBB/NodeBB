@@ -26,6 +26,7 @@ delete:
         type: string
       required: true
       description: a valid API token
+      example: 6d03a630-86fd-4515-9a35-e957502f4f89
   responses:
     '200':
       description: successfully deleted user token

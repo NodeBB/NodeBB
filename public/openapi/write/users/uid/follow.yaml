@@ -9,6 +9,7 @@ post:
         type: integer
       required: true
       description: uid of the user to follow
+      example: 1
   responses:
     '200':
       description: successfully followed user
@@ -32,6 +33,7 @@ delete:
         type: integer
       required: true
       description: uid of the user to unfollow
+      example: 1
   responses:
     '200':
       description: successfully unfollowed user

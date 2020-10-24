@@ -3,6 +3,14 @@ put:
     - posts
   summary: restore a post
   description: This operation restores a post.
+  parameters:
+    - in: path
+      name: pid
+      schema:
+        type: string
+      required: true
+      description: a valid post id
+      example: 1
   responses:
     '200':
       description: Topic successfully restored
@@ -21,6 +29,14 @@ delete:
     - posts
   summary: deletes a post
   description: This operation soft deletes a post.
+  parameters:
+    - in: path
+      name: pid
+      schema:
+        type: string
+      required: true
+      description: a valid post id
+      example: 1
   responses:
     '200':
       description: Post successfully deleted
