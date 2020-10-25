@@ -113,7 +113,18 @@ authenticationController.register = async function (req, res) {
 async function addToApprovalQueue(req, userData) {
 	userData.ip = req.ip;
 	await user.addToApprovalQueue(userData);
-	return { message: '[[register:registration-added-to-queue]]' };
+	let message = '[[register:registration-added-to-queue]]';
+	if (meta.config.showAverageApprovalTime) {
+		const times = await db.getListRange('registration:queue:approval:times', 0, -1);
+		if (times.length > 0) {
+			const average_time = times.reduce((avg, value, i) => ((avg * i) + value) / (i + 1));
+			message += ` [[register:registration-queue-average-time, ${average_time < 3600000 ? '<1' : Math.round(average_time / 3600000)}]]`;
+		}
+	}
+	if (meta.config.autoApproveTime > 0) {
+		message += ` [[register:registration-queue-auto-approve-time, ${meta.config.autoApproveTime}]]`;
+	}
+	return { message: message };
 }
 
 authenticationController.registerComplete = function (req, res, next) {

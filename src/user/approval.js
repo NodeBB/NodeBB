@@ -2,6 +2,7 @@
 
 const async = require('async');
 const validator = require('validator');
+const cronJob = require('cron').CronJob;
 
 const db = require('../database');
 const meta = require('../meta');
@@ -12,6 +13,10 @@ const utils = require('../utils');
 const plugins = require('../plugins');
 
 module.exports = function (User) {
+	new cronJob('0 * * * * *', function () {
+		User.autoApprove();
+	}, null, true);
+
 	User.addToApprovalQueue = async function (userData) {
 		userData.username = userData.username.trim();
 		userData.userslug = utils.slugify(userData.username);
@@ -59,7 +64,7 @@ module.exports = function (User) {
 		if (!userData) {
 			throw new Error('[[error:invalid-data]]');
 		}
-
+		const creation_time = await db.sortedSetScore('registration:queue', username);
 		const uid = await User.create(userData);
 		await User.setUserField(uid, 'password', userData.hashedPassword);
 		await removeFromQueue(username);
@@ -71,6 +76,7 @@ module.exports = function (User) {
 			template: 'registration_accepted',
 			uid: uid,
 		});
+		await db.listAppend('registration:queue:approval:times', Date.now() - creation_time);
 		return uid;
 	};
 
@@ -141,4 +147,15 @@ module.exports = function (User) {
 		const uids = await User.getUidsFromSet('ip:' + user.ip + ':uid', 0, -1);
 		user.ipMatch = await User.getUsersFields(uids, ['uid', 'username', 'picture']);
 	}
+
+	User.autoApprove = async function () {
+		if (meta.config.autoApproveTime <= 0) {
+			return;
+		}
+		const users = await db.getSortedSetRevRangeWithScores('registration:queue', 0, -1);
+		const now = Date.now();
+		await Promise.all(users
+			.filter(user => now - user.score >= meta.config.autoApproveTime * 3600000)
+			.map(user => User.acceptRegistration(user.value)));
+	};
 };
