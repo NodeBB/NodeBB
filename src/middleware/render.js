@@ -98,7 +98,7 @@ module.exports = function (middleware) {
 		let str = '';
 		const lang = getLang(req, res);
 		if (req.uid === 0 && res.locals.renderHeader) {
-			str = cache.get('render:cache:' + lang + ':' + method);
+			str = cache.get('render' + options.template.name + lang + method);
 			if (str) {
 				return str;
 			}
@@ -114,7 +114,7 @@ module.exports = function (middleware) {
 		}
 		const translated = await translate(str, lang);
 		if (req.uid === 0 && res.locals.renderHeader) {
-			cache.set('render:cache:' + lang + ':' + method, translated, 300000);
+			cache.set('render' + options.template.name + lang + method, translated, 300000);
 		}
 		return translated;
 	}
