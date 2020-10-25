@@ -36,6 +36,8 @@ get:
                 type: number
               lastposttime:
                 type: number
+              postercount:
+                type: number
               postcount:
                 type: number
               viewcount:

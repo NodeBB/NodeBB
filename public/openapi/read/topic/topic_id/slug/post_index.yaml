@@ -53,7 +53,7 @@ get:
                     type: number
                   viewcount:
                     type: number
-                  posterCount:
+                  postercount:
                     type: number
                     description: The number of unique users who made a post in this topic
                   mainPid:

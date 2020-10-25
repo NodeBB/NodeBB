@@ -174,6 +174,8 @@ module.exports = function (Topics) {
 		}
 		await Topics.increasePostCount(tid);
 		await db.sortedSetIncrBy('tid:' + tid + ':posters', 1, postData.uid);
+		const posterCount = await db.sortedSetCard('tid:' + tid + ':posters');
+		await Topics.setTopicField(tid, 'postercount', posterCount);
 		await Topics.updateTeaser(tid);
 	};
 
@@ -184,6 +186,9 @@ module.exports = function (Topics) {
 		], postData.pid);
 		await Topics.decreasePostCount(tid);
 		await db.sortedSetIncrBy('tid:' + tid + ':posters', -1, postData.uid);
+		await db.sortedSetsRemoveRangeByScore(['tid:' + tid + ':posters'], '-inf', 0);
+		const posterCount = await db.sortedSetCard('tid:' + tid + ':posters');
+		await Topics.setTopicField(tid, 'postercount', posterCount);
 		await Topics.updateTeaser(tid);
 	};
 
