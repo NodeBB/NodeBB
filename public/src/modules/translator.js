@@ -493,7 +493,10 @@
 		 * @returns {string}
 		 */
 		Translator.unescape = function unescape(text) {
-			return typeof text === 'string' ? text.replace(/&lsqb;|\\\[/g, '[').replace(/&rsqb;|\\\]/g, ']') : text;
+			return typeof text === 'string' ?
+				text.replace(/&lsqb;/g, '[').replace(/\\\[/g, '[')
+					.replace(/&rsqb;/g, ']').replace(/\\\]/g, ']') :
+				text;
 		};
 
 		/**
