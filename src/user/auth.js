@@ -31,7 +31,7 @@ module.exports = function (User) {
 
 		await db.delete('loginAttempts:' + uid);
 		await db.pexpire('lockout:' + uid, duration);
-		events.log({
+		await events.log({
 			type: 'account-locked',
 			uid: uid,
 			ip: ip,
