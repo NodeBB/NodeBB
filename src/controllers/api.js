@@ -16,7 +16,7 @@ const languages = require('../languages');
 const apiController = module.exports;
 
 const relative_path = nconf.get('relative_path');
-const upload_url = nconf.get('relative_path');
+const upload_url = nconf.get('upload_url');
 const socketioTransports = nconf.get('socket.io:transports') || ['polling', 'websocket'];
 const socketioOrigins = nconf.get('socket.io:origins');
 const websocketAddress = nconf.get('socket.io:address') || '';
