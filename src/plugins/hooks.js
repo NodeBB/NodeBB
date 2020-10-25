@@ -87,9 +87,9 @@ module.exports = function (Plugins) {
 	Plugins.fireHook = async function (hook, params) {
 		const hookList = Plugins.loadedHooks[hook];
 		const hookType = hook.split(':')[0];
-		// if (hook !== 'action:plugins.firehook') {
-		// 	winston.verbose('[plugins/fireHook] ' + hook);
-		// }
+		if (global.env === 'development' && hook !== 'action:plugins.firehook') {
+			winston.verbose('[plugins/fireHook] ' + hook);
+		}
 
 		if (!hookTypeToMethod[hookType]) {
 			winston.warn('[plugins] Unknown hookType: ' + hookType + ', hook : ' + hook);

@@ -56,7 +56,7 @@ async function generateHeader(req, res, data) {
 		allowRegistration: registrationType === 'normal',
 		searchEnabled: plugins.hasListeners('filter:search.query'),
 		config: res.locals.config,
-		relative_path: relative_path,
+		relative_path,
 		bodyClass: data.bodyClass,
 	};
 

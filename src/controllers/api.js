@@ -23,8 +23,8 @@ const websocketAddress = nconf.get('socket.io:address') || '';
 
 apiController.loadConfig = async function (req) {
 	let config = {
-		relative_path: relative_path,
-		upload_url: upload_url,
+		relative_path,
+		upload_url,
 		assetBaseUrl: `${relative_path}/assets`,
 		siteTitle: validator.escape(String(meta.config.title || meta.config.browserTitle || 'NodeBB')),
 		browserTitle: validator.escape(String(meta.config.browserTitle || meta.config.title || 'NodeBB')),
@@ -46,9 +46,9 @@ apiController.loadConfig = async function (req) {
 		disableChat: meta.config.disableChat === 1,
 		disableChatMessageEditing: meta.config.disableChatMessageEditing === 1,
 		maximumChatMessageLength: meta.config.maximumChatMessageLength || 1000,
-		socketioTransports: socketioTransports,
-		socketioOrigins: socketioOrigins,
-		websocketAddress: websocketAddress,
+		socketioTransports,
+		socketioOrigins,
+		websocketAddress,
 		maxReconnectionAttempts: meta.config.maxReconnectionAttempts || 5,
 		reconnectionDelay: meta.config.reconnectionDelay || 1500,
 		topicsPerPage: meta.config.topicsPerPage || 20,
