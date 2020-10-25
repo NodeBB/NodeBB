@@ -14,6 +14,10 @@ const analytics = require('../analytics');
 
 const topicsController = module.exports;
 
+const url = nconf.get('url');
+const relative_path = nconf.get('relative_path');
+const upload_url = nconf.get('upload_url');
+
 topicsController.get = async function getTopic(req, res, callback) {
 	const tid = req.params.topic_id;
 
@@ -79,7 +83,7 @@ topicsController.get = async function getTopic(req, res, callback) {
 	topicData.scrollToMyPost = settings.scrollToMyPost;
 	topicData.allowMultipleBadges = meta.config.allowMultipleBadges === 1;
 	topicData.privateUploads = meta.config.privateUploads === 1;
-	topicData.rssFeedUrl = nconf.get('relative_path') + '/topic/' + topicData.tid + '.rss';
+	topicData.rssFeedUrl = relative_path + '/topic/' + topicData.tid + '.rss';
 	if (req.loggedIn) {
 		topicData.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;
 	}
@@ -96,7 +100,7 @@ topicsController.get = async function getTopic(req, res, callback) {
 
 	topicData.pagination = pagination.create(currentPage, pageCount, req.query);
 	topicData.pagination.rel.forEach(function (rel) {
-		rel.href = nconf.get('url') + '/topic/' + topicData.slug + rel.href;
+		rel.href = url + '/topic/' + topicData.slug + rel.href;
 		res.locals.linkTags.push(rel);
 	});
 
@@ -147,7 +151,7 @@ async function buildBreadcrumbs(topicData) {
 	const breadcrumbs = [
 		{
 			text: topicData.category.name,
-			url: nconf.get('relative_path') + '/category/' + topicData.category.slug,
+			url: relative_path + '/category/' + topicData.category.slug,
 			cid: topicData.category.cid,
 		},
 		{
@@ -211,7 +215,7 @@ async function addTags(topicData, req, res) {
 	res.locals.linkTags = [
 		{
 			rel: 'canonical',
-			href: nconf.get('url') + '/topic/' + topicData.slug,
+			href: url + '/topic/' + topicData.slug,
 		},
 	];
 
@@ -226,7 +230,7 @@ async function addTags(topicData, req, res) {
 	if (topicData.category) {
 		res.locals.linkTags.push({
 			rel: 'up',
-			href: nconf.get('url') + '/category/' + topicData.category.slug,
+			href: url + '/category/' + topicData.category.slug,
 		});
 	}
 }
@@ -234,7 +238,7 @@ async function addTags(topicData, req, res) {
 async function addOGImageTags(res, topicData, postAtIndex) {
 	const uploads = postAtIndex ? await posts.uploads.listWithSizes(postAtIndex.pid) : [];
 	const images = uploads.map((upload) => {
-		upload.name = nconf.get('url') + nconf.get('upload_url') + '/files/' + upload.name;
+		upload.name = url + upload_url + '/files/' + upload.name;
 		return upload;
 	});
 	if (topicData.thumb) {
@@ -252,7 +256,7 @@ async function addOGImageTags(res, topicData, postAtIndex) {
 function addOGImageTag(res, image) {
 	let imageUrl;
 	if (typeof image === 'string' && !image.startsWith('http')) {
-		imageUrl = nconf.get('url') + image.replace(new RegExp('^' + nconf.get('relative_path')), '');
+		imageUrl = url + image.replace(new RegExp('^' + relative_path), '');
 	} else if (typeof image === 'object') {
 		imageUrl = image.name;
 	} else {
@@ -327,7 +331,7 @@ topicsController.pagination = async function (req, res, callback) {
 
 	const paginationData = pagination.create(currentPage, pageCount);
 	paginationData.rel.forEach(function (rel) {
-		rel.href = nconf.get('url') + '/topic/' + topic.slug + rel.href;
+		rel.href = url + '/topic/' + topic.slug + rel.href;
 	});
 
 	res.json({ pagination: paginationData });

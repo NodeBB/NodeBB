@@ -50,7 +50,7 @@ module.exports.app = app;
 
 server.on('error', function (err) {
 	if (err.code === 'EADDRINUSE') {
-		winston.error('NodeBB address in use, exiting...', err.stack);
+		winston.error('NodeBB address in use, exiting...\n' + err.stack);
 	} else {
 		winston.error(err.stack);
 	}

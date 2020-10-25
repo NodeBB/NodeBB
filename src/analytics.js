@@ -14,6 +14,8 @@ const meta = require('./meta');
 
 const Analytics = module.exports;
 
+const secret = nconf.get('secret');
+
 const counters = {};
 
 let pageViews = 0;
@@ -64,10 +66,10 @@ Analytics.pageView = async function (payload) {
 
 	if (payload.ip) {
 		// Retrieve hash or calculate if not present
-		let hash = ipCache.get(payload.ip + nconf.get('secret'));
+		let hash = ipCache.get(payload.ip + secret);
 		if (!hash) {
-			hash = crypto.createHash('sha1').update(payload.ip + nconf.get('secret')).digest('hex');
-			ipCache.set(payload.ip + nconf.get('secret'), hash);
+			hash = crypto.createHash('sha1').update(payload.ip + secret).digest('hex');
+			ipCache.set(payload.ip + secret, hash);
 		}
 
 		const score = await db.sortedSetScore('ip:recent', hash);

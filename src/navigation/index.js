@@ -6,6 +6,8 @@ const groups = require('../groups');
 
 const navigation = module.exports;
 
+const relative_path = nconf.get('relative_path');
+
 navigation.get = async function (uid) {
 	let data = await admin.get();
 
@@ -13,7 +15,7 @@ navigation.get = async function (uid) {
 		item.originalRoute = item.route;
 
 		if (!item.route.startsWith('http')) {
-			item.route = nconf.get('relative_path') + item.route;
+			item.route = relative_path + item.route;
 		}
 
 		return item;
