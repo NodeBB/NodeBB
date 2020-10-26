@@ -99,7 +99,11 @@ usersAPI.updateSettings = async function (caller, data) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	return await user.saveSettings(data.uid, data.settings);
+	const current = await user.getSettings(data.uid);
+	const payload = { ...current, ...data.settings };
+	delete payload.uid;
+
+	return await user.saveSettings(data.uid, payload);
 };
 
 usersAPI.updateSetting = async function (caller, data) {
