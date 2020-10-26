@@ -1,7 +1,7 @@
 {
 	"available": "Доступные виджеты",
 	"explanation": "Выберите виджет из выпадающего меню и перетащите его в подходящую область слева.",
-	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",
+	"none-installed": "Виджеты не найдены! Включите плагин с основными виджетами в панели управления <a href=\"%1\">плагинами</a>",
 	"clone-from": "Скопировать виджеты из",
 	"containers.available": "Доступные контейнеры",
 	"containers.explanation": "Перетащите поверх любого активного виджета",

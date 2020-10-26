@@ -111,7 +111,7 @@
     "posts_per_page": "Сообщений на странице",
     "max_items_per_page": "максимум %1",
     "acp_language": "Язык панели администратора",
-    "notifications": "Notifications",
+    "notifications": "Уведомления",
     "upvote-notif-freq": "Частота уведомлений об изменении рейтинга сообщения",
     "upvote-notif-freq.all": "Все уведомления",
     "upvote-notif-freq.first": "Только первое",
