@@ -71,6 +71,8 @@ Users.generateToken = async (req, res) => {
 	}
 
 	const settings = await meta.settings.get('core.api');
+	settings.tokens = settings.tokens || [];
+
 	const newToken = {
 		token: utils.generateUUID(),
 		uid: req.user.uid,
