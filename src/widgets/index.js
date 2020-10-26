@@ -3,14 +3,12 @@
 const winston = require('winston');
 const _ = require('lodash');
 const Benchpress = require('benchpressjs');
-const util = require('util');
 
 const plugins = require('../plugins');
 const groups = require('../groups');
 const translator = require('../translator');
 const db = require('../database');
 const apiController = require('../controllers/api');
-const loadConfigAsync = util.promisify(apiController.loadConfig);
 const meta = require('../meta');
 
 const widgets = module.exports;
@@ -59,7 +57,7 @@ async function renderWidget(widget, uid, options) {
 
 	let config = options.res.locals.config || {};
 	if (options.res.locals.isAPI) {
-		config = await loadConfigAsync(options.req);
+		config = await apiController.loadConfig(options.req);
 	}
 
 	const userLang = config.userLang || meta.config.defaultLang || 'en-GB';

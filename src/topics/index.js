@@ -62,7 +62,14 @@ Topics.getTopicsByTids = async function (tids, options) {
 		uid = options.uid;
 	}
 
-	let topics = await Topics.getTopicsData(tids);
+	const [tags, topics, hasRead, isIgnored, bookmarks, callerSettings] = await Promise.all([
+		Topics.getTopicsTagsObjects(tids),
+		Topics.getTopicsData(tids),
+		Topics.hasReadTopics(tids, uid),
+		Topics.isIgnoring(tids, uid),
+		Topics.getUserBookmarks(tids, uid),
+		user.getSettings(uid),
+	]);
 
 	const uids = _.uniq(topics.map(t => t && t.uid && t.uid.toString()).filter(v => utils.isNumber(v)));
 	const cids = _.uniq(topics.map(t => t && t.cid && t.cid.toString()).filter(v => utils.isNumber(v)));
@@ -72,26 +79,16 @@ Topics.getTopicsByTids = async function (tids, options) {
 		return await Promise.all(guestTopics.map(topic => posts.getPostField(topic.mainPid, 'handle')));
 	}
 	const [
-		callerSettings,
 		users,
 		userSettings,
 		categoriesData,
-		hasRead,
-		isIgnored,
-		bookmarks,
 		teasers,
-		tags,
 		guestHandles,
 	] = await Promise.all([
-		user.getSettings(uid),
 		user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status']),
 		user.getMultipleUserSettings(uids),
 		categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'backgroundImage', 'imageClass', 'bgColor', 'color', 'disabled']),
-		Topics.hasReadTopics(tids, uid),
-		Topics.isIgnoring(tids, uid),
-		Topics.getUserBookmarks(tids, uid),
 		Topics.getTeasers(topics, options),
-		Topics.getTopicsTagsObjects(tids),
 		loadGuestHandles(),
 	]);
 
@@ -128,9 +125,9 @@ Topics.getTopicsByTids = async function (tids, options) {
 		}
 	});
 
-	topics = topics.filter(topic => topic && topic.category && !topic.category.disabled);
+	const filteredTopics = topics.filter(topic => topic && topic.category && !topic.category.disabled);
 
-	const result = await plugins.fireHook('filter:topics.get', { topics: topics, uid: uid });
+	const result = await plugins.fireHook('filter:topics.get', { topics: filteredTopics, uid: uid });
 	return result.topics;
 };
 
