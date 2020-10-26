@@ -44,7 +44,7 @@ module.exports = function (Posts) {
 	};
 
 	Posts.uploads.list = async function (pid) {
-		return await db.getSortedSetRange('post:' + pid + ':uploads', 0, -1);
+		return await db.getSortedSetMembers('post:' + pid + ':uploads');
 	};
 
 	Posts.uploads.listWithSizes = async function (pid) {

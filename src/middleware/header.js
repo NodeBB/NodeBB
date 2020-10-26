@@ -26,6 +26,8 @@ var controllers = {
 
 const middleware = module.exports;
 
+const relative_path = nconf.get('relative_path');
+
 middleware.buildHeader = helpers.try(async function buildHeader(req, res, next) {
 	res.locals.renderHeader = true;
 	res.locals.isAPI = false;
@@ -54,7 +56,7 @@ async function generateHeader(req, res, data) {
 		allowRegistration: registrationType === 'normal',
 		searchEnabled: plugins.hasListeners('filter:search.query'),
 		config: res.locals.config,
-		relative_path: nconf.get('relative_path'),
+		relative_path,
 		bodyClass: data.bodyClass,
 	};
 

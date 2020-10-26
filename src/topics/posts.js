@@ -56,7 +56,7 @@ module.exports = function (Topics) {
 
 		postData.forEach(function (postObj, i) {
 			if (postObj) {
-				postObj.user = postObj.uid ? userData[postObj.uid] : _.clone(userData[postObj.uid]);
+				postObj.user = postObj.uid ? userData[postObj.uid] : { ...userData[postObj.uid] };
 				postObj.editor = postObj.editor ? editors[postObj.editor] : null;
 				postObj.bookmarked = bookmarks[i];
 				postObj.upvoted = voteData.upvotes[i];

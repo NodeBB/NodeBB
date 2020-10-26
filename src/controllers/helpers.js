@@ -14,6 +14,9 @@ const middleware = require('../middleware');
 
 const helpers = module.exports;
 
+const relative_path = nconf.get('relative_path');
+const url = nconf.get('url');
+
 helpers.noScriptErrors = async function (req, res, error, httpStatus) {
 	if (req.body.noscript !== 'true') {
 		return res.status(httpStatus).send(error);
@@ -37,7 +40,7 @@ helpers.terms = {
 };
 
 helpers.buildQueryString = function (query, key, value) {
-	const queryObj = _.clone(query);
+	const queryObj = { ...query };
 	if (value) {
 		queryObj[key] = value;
 	} else {
@@ -51,11 +54,11 @@ helpers.addLinkTags = function (params) {
 	params.res.locals.linkTags = params.res.locals.linkTags || [];
 	params.res.locals.linkTags.push({
 		rel: 'canonical',
-		href: nconf.get('url') + '/' + params.url,
+		href: url + '/' + params.url,
 	});
 
 	params.tags.forEach(function (rel) {
-		rel.href = nconf.get('url') + '/' + params.url + rel.href;
+		rel.href = url + '/' + params.url + rel.href;
 		params.res.locals.linkTags.push(rel);
 	});
 };
@@ -136,7 +139,7 @@ helpers.notAllowed = async function (req, res, error) {
 		helpers.formatApiResponse(401, res, error);
 	} else {
 		req.session.returnTo = req.url;
-		res.redirect(nconf.get('relative_path') + '/login');
+		res.redirect(relative_path + '/login');
 	}
 };
 
@@ -144,7 +147,7 @@ helpers.redirect = function (res, url, permanent) {
 	if (res.locals.isAPI) {
 		res.set('X-Redirect', encodeURI(url)).status(200).json(url);
 	} else {
-		res.redirect(permanent ? 308 : 307, nconf.get('relative_path') + encodeURI(url));
+		res.redirect(permanent ? 308 : 307, relative_path + encodeURI(url));
 	}
 };
 
@@ -157,7 +160,7 @@ helpers.buildCategoryBreadcrumbs = async function (cid) {
 		if (!data.disabled && !data.isSection) {
 			breadcrumbs.unshift({
 				text: String(data.name),
-				url: nconf.get('relative_path') + '/category/' + data.slug,
+				url: relative_path + '/category/' + data.slug,
 				cid: cid,
 			});
 		}
@@ -166,13 +169,13 @@ helpers.buildCategoryBreadcrumbs = async function (cid) {
 	if (meta.config.homePageRoute && meta.config.homePageRoute !== 'categories') {
 		breadcrumbs.unshift({
 			text: '[[global:header.categories]]',
-			url: nconf.get('relative_path') + '/categories',
+			url: relative_path + '/categories',
 		});
 	}
 
 	breadcrumbs.unshift({
 		text: '[[global:home]]',
-		url: nconf.get('relative_path') + '/',
+		url: relative_path + '/',
 	});
 
 	return breadcrumbs;
@@ -182,14 +185,14 @@ helpers.buildBreadcrumbs = function (crumbs) {
 	const breadcrumbs = [
 		{
 			text: '[[global:home]]',
-			url: nconf.get('relative_path') + '/',
+			url: relative_path + '/',
 		},
 	];
 
 	crumbs.forEach(function (crumb) {
 		if (crumb) {
 			if (crumb.url) {
-				crumb.url = nconf.get('relative_path') + crumb.url;
+				crumb.url = relative_path + crumb.url;
 			}
 			breadcrumbs.push(crumb);
 		}

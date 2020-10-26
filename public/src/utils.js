@@ -324,9 +324,7 @@
 		},
 		// https://github.com/jprichardson/string.js/blob/master/lib/string.js
 		stripHTMLTags: function (str, tags) {
-			var pattern = (tags || ['']).map(function (tag) {
-				return utils.escapeRegexChars(tag);
-			}).join('|');
+			var pattern = (tags || ['']).join('|');
 			return String(str).replace(new RegExp('<(\\/)?(' + (pattern || '[^\\s>]+') + ')(\\s+[^<>]*?)?\\s*(\\/)?>', 'gi'), '');
 		},
 

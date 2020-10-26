@@ -29,6 +29,8 @@ var delayCache = new LRU({
 
 var middleware = module.exports;
 
+const relative_path = nconf.get('relative_path');
+
 middleware.regexes = {
 	timestampedUpload: /^\d+-.+$/,
 };
@@ -50,7 +52,7 @@ middleware.applyCSRF = function (req, res, next) {
 };
 middleware.applyCSRFasync = util.promisify(middleware.applyCSRF);
 
-middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login');
+middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn(relative_path + '/login');
 
 Object.assign(middleware, {
 	admin: require('./admin'),
@@ -64,24 +66,23 @@ require('./expose')(middleware);
 middleware.assert = require('./assert');
 
 middleware.stripLeadingSlashes = function stripLeadingSlashes(req, res, next) {
-	var target = req.originalUrl.replace(nconf.get('relative_path'), '');
+	var target = req.originalUrl.replace(relative_path, '');
 	if (target.startsWith('//')) {
-		return res.redirect(nconf.get('relative_path') + target.replace(/^\/+/, '/'));
+		return res.redirect(relative_path + target.replace(/^\/+/, '/'));
 	}
 	next();
 };
 
 middleware.pageView = helpers.try(async function pageView(req, res, next) {
-	const promises = [
-		analytics.pageView({ ip: req.ip, uid: req.uid }),
-	];
 	if (req.loggedIn) {
-		promises.push(user.updateOnlineUsers(req.uid));
-		promises.push(user.updateLastOnlineTime(req.uid));
+		await Promise.all([
+			user.updateOnlineUsers(req.uid),
+			user.updateLastOnlineTime(req.uid),
+		]);
 	}
-	await Promise.all(promises);
-	plugins.fireHook('action:middleware.pageView', { req: req });
 	next();
+	await analytics.pageView({ ip: req.ip, uid: req.uid });
+	plugins.fireHook('action:middleware.pageView', { req: req });
 });
 
 middleware.pluginHooks = helpers.try(async function pluginHooks(req, res, next) {

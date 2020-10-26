@@ -3,7 +3,6 @@
 const os = require('os');
 const nconf = require('nconf');
 const winston = require('winston');
-const url = require('url');
 const util = require('util');
 const cookieParser = require('cookie-parser')(nconf.get('secret'));
 
@@ -47,14 +46,7 @@ Sockets.init = function (server) {
 	 * Can be overridden via config (socket.io:origins)
 	 */
 	if (process.env.NODE_ENV !== 'development') {
-		const parsedUrl = url.parse(nconf.get('url'));
-
-		// cookies don't provide isolation by port: http://stackoverflow.com/a/16328399/122353
-		const domain = nconf.get('cookieDomain') || parsedUrl.hostname;
-
-		const origins = nconf.get('socket.io:origins') || `${parsedUrl.protocol}//${domain}:*`;
-		nconf.set('socket.io:origins', origins);
-
+		const origins = nconf.get('socket.io:origins');
 		io.origins(origins);
 		winston.info('[socket.io] Restricting access to origin: ' + origins);
 	}

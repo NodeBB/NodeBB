@@ -9,6 +9,8 @@ const meta = require('../meta');
 const plugins = require('../plugins');
 const utils = require('../utils');
 
+const relative_path = nconf.get('relative_path');
+
 const intFields = [
 	'uid', 'postcount', 'topiccount', 'reputation', 'profileviews',
 	'banned', 'banned:expire', 'email:confirmed', 'joindate', 'lastonline',
@@ -104,7 +106,7 @@ module.exports = function (User) {
 	function uidsToUsers(uids, uniqueUids, usersData) {
 		const uidToUser = _.zipObject(uniqueUids, usersData);
 		const users = uids.map(function (uid) {
-			const returnPayload = uidToUser[uid] || _.clone(User.guestData);
+			const returnPayload = uidToUser[uid] || { ...User.guestData };
 			if (uid > 0 && !returnPayload.uid) {
 				returnPayload.oldUid = parseInt(uid, 10);
 			}
@@ -164,10 +166,10 @@ module.exports = function (User) {
 			}
 
 			if (user.picture && user.picture === user.uploadedpicture) {
-				user.uploadedpicture = user.picture.startsWith('http') ? user.picture : nconf.get('relative_path') + user.picture;
+				user.uploadedpicture = user.picture.startsWith('http') ? user.picture : relative_path + user.picture;
 				user.picture = user.uploadedpicture;
 			} else if (user.uploadedpicture) {
-				user.uploadedpicture = user.uploadedpicture.startsWith('http') ? user.uploadedpicture : nconf.get('relative_path') + user.uploadedpicture;
+				user.uploadedpicture = user.uploadedpicture.startsWith('http') ? user.uploadedpicture : relative_path + user.uploadedpicture;
 			}
 			if (meta.config.defaultAvatar && !user.picture) {
 				user.picture = User.getDefaultAvatar();
@@ -240,7 +242,7 @@ module.exports = function (User) {
 		if (!meta.config.defaultAvatar) {
 			return '';
 		}
-		return meta.config.defaultAvatar.startsWith('http') ? meta.config.defaultAvatar : nconf.get('relative_path') + meta.config.defaultAvatar;
+		return meta.config.defaultAvatar.startsWith('http') ? meta.config.defaultAvatar : relative_path + meta.config.defaultAvatar;
 	};
 
 	User.setUserField = async function (uid, field, value) {

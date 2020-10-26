@@ -38,6 +38,13 @@ nconf.defaults({
 const urlObject = url.parse(nconf.get('url'));
 const relativePath = urlObject.pathname !== '/' ? urlObject.pathname : '';
 nconf.set('relative_path', relativePath);
+nconf.set('upload_path', path.join(nconf.get('base_dir'), nconf.get('upload_path')));
+nconf.set('upload_url', '/assets/uploads');
+
+// cookies don't provide isolation by port: http://stackoverflow.com/a/16328399/122353
+const domain = nconf.get('cookieDomain') || urlObject.hostname;
+const origins = nconf.get('socket.io:origins') || `${urlObject.protocol}//${domain}:*`;
+nconf.set('socket.io:origins', origins);
 
 if (nconf.get('isCluster') === undefined) {
 	nconf.set('isPrimary', true);
@@ -125,10 +132,7 @@ before(async function () {
 	nconf.set('base_url', urlObject.protocol + '//' + urlObject.host);
 	nconf.set('secure', urlObject.protocol === 'https:');
 	nconf.set('use_port', !!urlObject.port);
-	nconf.set('relative_path', relativePath);
 	nconf.set('port', urlObject.port || nconf.get('port') || (nconf.get('PORT_ENV_VAR') ? nconf.get(nconf.get('PORT_ENV_VAR')) : false) || 4567);
-	nconf.set('upload_path', path.join(nconf.get('base_dir'), nconf.get('upload_path')));
-	nconf.set('upload_url', '/assets/uploads');
 
 	nconf.set('core_templates_path', path.join(__dirname, '../../src/views'));
 	nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-persona/templates'));

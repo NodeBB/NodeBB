@@ -100,7 +100,6 @@ module.exports = function (middleware) {
 		const defaultLang = meta.config.defaultLang || 'en-GB';
 		try {
 			const codes = await languages.listCodes();
-			winston.verbose('[middleware/autoLocale] Retrieves languages list for middleware');
 			return _.uniq([defaultLang, ...codes]);
 		} catch (err) {
 			winston.error('[middleware/autoLocale] Could not retrieve languages codes list! ' + err.stack);

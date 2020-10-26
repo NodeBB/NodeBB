@@ -16,6 +16,9 @@ const analytics = require('../analytics');
 
 const categoryController = module.exports;
 
+const url = nconf.get('url');
+const relative_path = nconf.get('relative_path');
+
 categoryController.get = async function (req, res, next) {
 	const cid = req.params.category_id;
 
@@ -103,7 +106,7 @@ categoryController.get = async function (req, res, next) {
 	categoryData.showSelect = userPrivileges.editable;
 	categoryData.showTopicTools = userPrivileges.editable;
 	categoryData.topicIndex = topicIndex;
-	categoryData.rssFeedUrl = nconf.get('url') + '/category/' + categoryData.cid + '.rss';
+	categoryData.rssFeedUrl = url + '/category/' + categoryData.cid + '.rss';
 	if (parseInt(req.uid, 10)) {
 		categories.markAsRead([cid], req.uid);
 		categoryData.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;
@@ -115,7 +118,7 @@ categoryController.get = async function (req, res, next) {
 	categoryData['reputation:disabled'] = meta.config['reputation:disabled'];
 	categoryData.pagination = pagination.create(currentPage, pageCount, req.query);
 	categoryData.pagination.rel.forEach(function (rel) {
-		rel.href = nconf.get('url') + '/category/' + categoryData.slug + rel.href;
+		rel.href = url + '/category/' + categoryData.slug + rel.href;
 		res.locals.linkTags.push(rel);
 	});
 
@@ -128,12 +131,12 @@ async function buildBreadcrumbs(req, categoryData) {
 	const breadcrumbs = [
 		{
 			text: categoryData.name,
-			url: nconf.get('relative_path') + '/category/' + categoryData.slug,
+			url: relative_path + '/category/' + categoryData.slug,
 			cid: categoryData.cid,
 		},
 	];
 	const crumbs = await helpers.buildCategoryBreadcrumbs(categoryData.parentCid);
-	if (req.originalUrl.startsWith(nconf.get('relative_path') + '/api/category') || req.originalUrl.startsWith(nconf.get('relative_path') + '/category')) {
+	if (req.originalUrl.startsWith(relative_path + '/api/category') || req.originalUrl.startsWith(relative_path + '/category')) {
 		categoryData.breadcrumbs = crumbs.concat(breadcrumbs);
 	}
 }
@@ -160,7 +163,7 @@ function addTags(categoryData, res) {
 
 	if (categoryData.backgroundImage) {
 		if (!categoryData.backgroundImage.startsWith('http')) {
-			categoryData.backgroundImage = nconf.get('url') + categoryData.backgroundImage;
+			categoryData.backgroundImage = url + categoryData.backgroundImage;
 		}
 		res.locals.metaTags.push({
 			property: 'og:image',
@@ -171,7 +174,7 @@ function addTags(categoryData, res) {
 	res.locals.linkTags = [
 		{
 			rel: 'up',
-			href: nconf.get('url'),
+			href: url,
 		},
 	];
 

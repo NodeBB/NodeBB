@@ -95,6 +95,11 @@ function loadConfig(configFile) {
 		nconf.set('use_port', !!urlObject.port);
 		nconf.set('relative_path', relativePath);
 		nconf.set('port', nconf.get('PORT') || nconf.get('port') || urlObject.port || (nconf.get('PORT_ENV_VAR') ? nconf.get(nconf.get('PORT_ENV_VAR')) : false) || 4567);
+
+		// cookies don't provide isolation by port: http://stackoverflow.com/a/16328399/122353
+		const domain = nconf.get('cookieDomain') || urlObject.hostname;
+		const origins = nconf.get('socket.io:origins') || `${urlObject.protocol}//${domain}:*`;
+		nconf.set('socket.io:origins', origins);
 	}
 }
 

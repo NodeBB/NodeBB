@@ -1,6 +1,5 @@
 'use strict';
 
-const _ = require('lodash');
 const winston = require('winston');
 const validator = require('validator');
 const cronJob = require('cron').CronJob;
@@ -18,7 +17,7 @@ new cronJob('0 * * * * *', function () {
 
 Errors.writeData = async function () {
 	try {
-		const _counters = _.clone(counters);
+		const _counters = { ...counters };
 		counters = {};
 		const keys = Object.keys(_counters);
 		if (!keys.length) {

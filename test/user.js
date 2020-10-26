@@ -1161,10 +1161,8 @@ describe('User', function () {
 			meta.config.defaultAvatar = 'https://path/to/default/avatar';
 			assert.strictEqual(User.getDefaultAvatar(), meta.config.defaultAvatar);
 			meta.config.defaultAvatar = '/path/to/default/avatar';
-			nconf.set('relative_path', '/community');
-			assert.strictEqual(User.getDefaultAvatar(), '/community' + meta.config.defaultAvatar);
+			assert.strictEqual(User.getDefaultAvatar(), nconf.get('relative_path') + meta.config.defaultAvatar);
 			meta.config.defaultAvatar = '';
-			nconf.set('relative_path', '');
 			done();
 		});
 
