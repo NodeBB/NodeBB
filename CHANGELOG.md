@@ -1,3 +1,24 @@
+#### v1.15.0-rc.1 (2020-10-26)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-rc.1 (943424b5)
+*  update changelog for v1.15.0-rc.0 (aab5f018)
+
+##### New Features
+
+*  move postercount to topic hash (0db0231c)
+*  add free and total mem usage to info (a7b6d0df)
+* **writeapi:**  user settings API (c26f2b65)
+
+##### Bug Fixes
+
+* **deps:**  update dependency nodebb-theme-persona to v10.2.61 (#8794) (9de8497d)
+*  return early for guests/spiders (203db47b)
+*  #8789,cache meta.settings (156e1396)
+*  spec (7a318352)
+*  tests (63e07c94)
+
 #### v1.15.0-rc.0 (2020-10-21)
 
 ##### Chores
