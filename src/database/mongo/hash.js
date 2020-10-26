@@ -1,9 +1,8 @@
 'use strict';
 
 module.exports = function (module) {
-	var helpers = require('./helpers');
+	const helpers = require('./helpers');
 
-	var _ = require('lodash');
 	const cache = require('../cache').create('mongo');
 
 	module.objectCache = cache;
@@ -17,7 +16,7 @@ module.exports = function (module) {
 		const writeData = helpers.serializeData(data);
 		try {
 			if (isArray) {
-				var bulk = module.client.collection('objects').initializeUnorderedBulkOp();
+				const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
 				key.forEach(key => bulk.find({ _key: key }).upsert().updateOne({ $set: writeData }));
 				await bulk.execute();
 			} else {
@@ -85,42 +84,33 @@ module.exports = function (module) {
 			return [];
 		}
 		const cachedData = {};
-		function returnData() {
-			var mapped = keys.map(function (key) {
-				if (!fields.length) {
-					return _.clone(cachedData[key]);
-				}
-
-				const item = cachedData[key] || {};
-				const result = {};
-				fields.forEach((field) => {
-					result[field] = item[field] !== undefined ? item[field] : null;
-				});
-				return result;
-			});
-
-			return mapped;
-		}
-
 		const unCachedKeys = cache.getUnCachedKeys(keys, cachedData);
-		if (!unCachedKeys.length) {
-			return returnData();
+		let data = [];
+		if (unCachedKeys.length >= 1) {
+			data = await module.client.collection('objects').find(
+				{ _key: unCachedKeys.length === 1 ? unCachedKeys[0] : { $in: unCachedKeys } },
+				{ projection: { _id: 0 } }
+			).toArray();
+			data = data.map(helpers.deserializeData);
 		}
 
-		var query = { _key: { $in: unCachedKeys } };
-		if (unCachedKeys.length === 1) {
-			query._key = unCachedKeys[0];
-		}
-		let data = await module.client.collection('objects').find(query, { projection: { _id: 0 } }).toArray();
-
-		data = data.map(helpers.deserializeData);
-		var map = helpers.toMap(data);
+		const map = helpers.toMap(data);
 		unCachedKeys.forEach(function (key) {
 			cachedData[key] = map[key] || null;
 			cache.set(key, cachedData[key]);
 		});
 
-		return returnData();
+		if (!fields.length) {
+			return keys.map(key => (cachedData[key] ? { ...cachedData[key] } : null));
+		}
+		return keys.map(function (key) {
+			const item = cachedData[key] || {};
+			const result = {};
+			fields.forEach((field) => {
+				result[field] = item[field] !== undefined ? item[field] : null;
+			});
+			return result;
+		});
 	};
 
 	module.getObjectKeys = async function (key) {

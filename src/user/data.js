@@ -106,7 +106,7 @@ module.exports = function (User) {
 	function uidsToUsers(uids, uniqueUids, usersData) {
 		const uidToUser = _.zipObject(uniqueUids, usersData);
 		const users = uids.map(function (uid) {
-			const returnPayload = uidToUser[uid] || _.clone(User.guestData);
+			const returnPayload = uidToUser[uid] || { ...User.guestData };
 			if (uid > 0 && !returnPayload.uid) {
 				returnPayload.oldUid = parseInt(uid, 10);
 			}

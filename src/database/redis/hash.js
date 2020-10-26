@@ -1,9 +1,7 @@
 'use strict';
 
 module.exports = function (module) {
-	var helpers = require('./helpers');
-
-	const _ = require('lodash');
+	const helpers = require('./helpers');
 
 	const cache = require('../cache').create('redis');
 
@@ -110,11 +108,10 @@ module.exports = function (module) {
 			cache.set(key, cachedData[key]);
 		});
 
-		const mapped = keys.map(function (key) {
-			if (!fields.length) {
-				return _.clone(cachedData[key]);
-			}
-
+		if (!fields.length) {
+			return keys.map(key => (cachedData[key] ? { ...cachedData[key] } : null));
+		}
+		return keys.map(function (key) {
 			const item = cachedData[key] || {};
 			const result = {};
 			fields.forEach((field) => {
@@ -122,7 +119,6 @@ module.exports = function (module) {
 			});
 			return result;
 		});
-		return mapped;
 	};
 
 	module.getObjectKeys = async function (key) {

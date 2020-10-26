@@ -38,7 +38,7 @@ pagination.create = function (currentPage, pageCount, queryObj) {
 		return a - b;
 	});
 
-	queryObj = _.clone(queryObj || {});
+	queryObj = { ...(queryObj || {}) };
 
 	delete queryObj._;
 

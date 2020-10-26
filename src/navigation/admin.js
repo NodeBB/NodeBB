@@ -1,6 +1,5 @@
 'use strict';
 
-const _ = require('lodash');
 const validator = require('validator');
 
 const plugins = require('../plugins');
@@ -54,7 +53,7 @@ function toggleEscape(navItems, flag) {
 
 admin.get = async function () {
 	if (cache) {
-		return _.cloneDeep(cache);
+		return cache.map(item => ({ ...item }));
 	}
 	const data = await db.getSortedSetRange('navigation:enabled', 0, -1);
 	cache = data.map(function (item) {
@@ -67,7 +66,7 @@ admin.get = async function () {
 	});
 	admin.escapeFields(cache);
 
-	return _.cloneDeep(cache);
+	return cache.map(item => ({ ...item }));
 };
 
 async function getAvailable() {

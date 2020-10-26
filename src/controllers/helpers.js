@@ -40,7 +40,7 @@ helpers.terms = {
 };
 
 helpers.buildQueryString = function (query, key, value) {
-	const queryObj = _.clone(query);
+	const queryObj = { ...query };
 	if (value) {
 		queryObj[key] = value;
 	} else {
