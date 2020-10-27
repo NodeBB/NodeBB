@@ -15,7 +15,7 @@
 				<!-- IMPORT admin/partials/privileges/category.tpl -->
 				{{{ else }}}
 				<!-- IMPORT admin/partials/privileges/global.tpl -->
-				{{{ endif }}}
+				{{{ end }}}
 			</div>
 		</div>
 	</form>
