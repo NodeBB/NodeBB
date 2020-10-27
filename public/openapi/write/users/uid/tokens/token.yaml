@@ -1,0 +1,31 @@
+delete:
+  tags:
+    - users
+  summary: delete user token
+  parameters:
+    - in: path
+      name: uid
+      schema:
+        type: integer
+      required: true
+      description: uid of the user whose token you want to delete
+      example: 1
+    - in: path
+      name: token
+      schema:
+        type: string
+      required: true
+      description: a valid API token
+      example: 6d03a630-86fd-4515-9a35-e957502f4f89
+  responses:
+    '200':
+      description: successfully deleted user token
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
