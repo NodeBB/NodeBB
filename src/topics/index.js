@@ -62,55 +62,60 @@ Topics.getTopicsByTids = async function (tids, options) {
 		uid = options.uid;
 	}
 
-	const [tags, topics, hasRead, isIgnored, bookmarks, callerSettings] = await Promise.all([
+	async function loadTopics() {
+		const topics = await Topics.getTopicsData(tids);
+		const uids = _.uniq(topics.map(t => t && t.uid && t.uid.toString()).filter(v => utils.isNumber(v)));
+		const cids = _.uniq(topics.map(t => t && t.cid && t.cid.toString()).filter(v => utils.isNumber(v)));
+		const guestTopics = topics.filter(t => t && t.uid === 0);
+
+		async function loadGuestHandles() {
+			const mainPids = guestTopics.map(t => t.mainPid);
+			const postData = await posts.getPostsFields(mainPids, ['handle']);
+			return postData.map(p => p.handle);
+		}
+
+		const [teasers, users, userSettings, categoriesData, guestHandles] = await Promise.all([
+			Topics.getTeasers(topics, options),
+			user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status']),
+			user.getMultipleUserSettings(uids),
+			categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'backgroundImage', 'imageClass', 'bgColor', 'color', 'disabled']),
+			loadGuestHandles(),
+		]);
+
+		users.forEach((userObj, idx) => {
+			// Hide fullname if needed
+			if (meta.config.hideFullname || !userSettings[idx].showfullname) {
+				userObj.fullname = undefined;
+			}
+		});
+
+		return {
+			topics,
+			teasers,
+			usersMap: _.zipObject(uids, users),
+			categoriesMap: _.zipObject(cids, categoriesData),
+			tidToGuestHandle: _.zipObject(guestTopics.map(t => t.tid), guestHandles),
+		};
+	}
+
+	const [result, tags, hasRead, isIgnored, bookmarks, callerSettings] = await Promise.all([
+		loadTopics(),
 		Topics.getTopicsTagsObjects(tids),
-		Topics.getTopicsData(tids),
 		Topics.hasReadTopics(tids, uid),
 		Topics.isIgnoring(tids, uid),
 		Topics.getUserBookmarks(tids, uid),
 		user.getSettings(uid),
 	]);
 
-	const uids = _.uniq(topics.map(t => t && t.uid && t.uid.toString()).filter(v => utils.isNumber(v)));
-	const cids = _.uniq(topics.map(t => t && t.cid && t.cid.toString()).filter(v => utils.isNumber(v)));
-
-	const guestTopics = topics.filter(t => t && t.uid === 0);
-	async function loadGuestHandles() {
-		return await Promise.all(guestTopics.map(topic => posts.getPostField(topic.mainPid, 'handle')));
-	}
-	const [
-		users,
-		userSettings,
-		categoriesData,
-		teasers,
-		guestHandles,
-	] = await Promise.all([
-		user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status']),
-		user.getMultipleUserSettings(uids),
-		categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'backgroundImage', 'imageClass', 'bgColor', 'color', 'disabled']),
-		Topics.getTeasers(topics, options),
-		loadGuestHandles(),
-	]);
-
-	users.forEach((userObj, idx) => {
-		// Hide fullname if needed
-		if (meta.config.hideFullname || !userSettings[idx].showfullname) {
-			userObj.fullname = undefined;
-		}
-	});
-
-	const usersMap = _.zipObject(uids, users);
-	const categoriesMap = _.zipObject(cids, categoriesData);
-	const tidToGuestHandle = _.zipObject(guestTopics.map(t => t.tid), guestHandles);
 	const sortOldToNew = callerSettings.topicPostSort === 'newest_to_oldest';
-	topics.forEach(function (topic, i) {
+	result.topics.forEach(function (topic, i) {
 		if (topic) {
-			topic.category = categoriesMap[topic.cid];
-			topic.user = usersMap[topic.uid];
-			if (tidToGuestHandle[topic.tid]) {
-				topic.user.username = tidToGuestHandle[topic.tid];
+			topic.category = result.categoriesMap[topic.cid];
+			topic.user = result.usersMap[topic.uid];
+			if (result.tidToGuestHandle[topic.tid]) {
+				topic.user.username = result.tidToGuestHandle[topic.tid];
 			}
-			topic.teaser = teasers[i] || null;
+			topic.teaser = result.teasers[i] || null;
 			topic.tags = tags[i];
 
 			topic.isOwner = topic.uid === parseInt(uid, 10);
@@ -125,10 +130,10 @@ Topics.getTopicsByTids = async function (tids, options) {
 		}
 	});
 
-	const filteredTopics = topics.filter(topic => topic && topic.category && !topic.category.disabled);
+	const filteredTopics = result.topics.filter(topic => topic && topic.category && !topic.category.disabled);
 
-	const result = await plugins.fireHook('filter:topics.get', { topics: filteredTopics, uid: uid });
-	return result.topics;
+	const hookResult = await plugins.fireHook('filter:topics.get', { topics: filteredTopics, uid: uid });
+	return hookResult.topics;
 };
 
 Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, reverse) {
