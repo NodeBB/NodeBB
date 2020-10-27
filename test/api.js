@@ -2,6 +2,7 @@
 
 const assert = require('assert');
 const path = require('path');
+const fs = require('fs');
 const SwaggerParser = require('@apidevtools/swagger-parser');
 const request = require('request-promise-native');
 const nconf = require('nconf');
@@ -96,12 +97,21 @@ describe('Read API', async () => {
 			title: 'Test Topic',
 			content: 'Test topic content',
 		});
+		const unprivTopic = await topics.post({
+			uid: unprivUid,
+			cid: testCategory.cid,
+			title: 'Test Topic 2',
+			content: 'Test topic 2 content',
+		});
 
 		// Create a sample flag
 		await flags.create('post', 1, unprivUid, 'sample reasons', Date.now());
 
 		// Create a new chat room
 		await messaging.newRoom(1, [2]);
+
+		// Create an empty file to test DELETE /files
+		fs.closeSync(fs.openSync(path.resolve(nconf.get('upload_path'), 'files/test.txt'), 'w'));
 
 		const socketUser = require('../src/socket.io/user');
 		// export data for admin user
@@ -142,7 +152,7 @@ describe('Read API', async () => {
 	readApi = await SwaggerParser.dereference(readApiPath);
 	writeApi = await SwaggerParser.dereference(writeApiPath);
 
-	// generateTests(readApi, Object.keys(readApi.paths));
+	generateTests(readApi, Object.keys(readApi.paths));
 	generateTests(writeApi, Object.keys(writeApi.paths), writeApi.servers[0].url);
 
 	function generateTests(api, paths, prefix) {
@@ -157,9 +167,9 @@ describe('Read API', async () => {
 			const qs = {};
 
 			Object.keys(context).forEach((_method) => {
-				// if (_method !== 'get') {
-				// 	return;
-				// }
+				if (api.info.title === 'NodeBB Read API' && _method !== 'get') {
+					return;
+				}
 
 				it('should have examples when parameters are present', () => {
 					method = _method;
@@ -187,7 +197,7 @@ describe('Read API', async () => {
 						});
 					}
 
-					url = nconf.get('url') + prefix + testPath;
+					url = nconf.get('url') + (prefix || '') + testPath;
 				});
 
 				it('may contain a request body with application/json type if POST/PUT/DELETE', () => {

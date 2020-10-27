@@ -51,9 +51,12 @@ get:
                           type: number
                         teaserPid:
                           type: number
+                          nullable: true
                         upvotes:
                           type: number
                         downvotes:
+                          type: number
+                        deleterUid:
                           type: number
                         deleted:
                           type: number
@@ -84,7 +87,7 @@ get:
                               type: string
                             icon:
                               type: string
-                            image:
+                            backgroundImage:
                               nullable: true
                             imageClass:
                               nullable: true
@@ -138,8 +141,22 @@ get:
                               example: "#f44336"
                             banned_until_readable:
                               type: string
+                          required:
+                            - uid
+                            - username
+                            - userslug
+                            - reputation
+                            - postcount
+                            - picture
+                            - signature
+                            - banned
+                            - status
+                            - icon:text
+                            - icon:bgColor
+                            - banned_until_readable
                         teaser:
                           type: object
+                          nullable: true
                           properties:
                             pid:
                               type: number
@@ -206,8 +223,6 @@ get:
                             type: string
                         index:
                           type: number
-                        isQuestion:
-                          nullable: true
                   topicCount:
                     type: number
                   title:

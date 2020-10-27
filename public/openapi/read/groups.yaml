@@ -20,10 +20,6 @@ get:
                           type: string
                         description:
                           type: string
-                        deleted:
-                          oneOf:
-                            - type: number
-                            - type: string
                         hidden:
                           type: number
                         system:
@@ -94,8 +90,6 @@ get:
                                 example: "#f44336"
                         truncated:
                           type: boolean
-                        ownerUid:
-                          type: number
                   allowGroupCreation:
                     type: boolean
                   nextStart:

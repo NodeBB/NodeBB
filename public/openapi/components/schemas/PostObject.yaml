@@ -90,7 +90,7 @@ PostObject:
         isMainPost:
           type: boolean
         renamed:
-          type: true
+          type: boolean
         tags:
           type: array
           items:
