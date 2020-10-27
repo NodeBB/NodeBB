@@ -118,8 +118,9 @@ module.exports = function (Topics) {
 			await Topics.follow(postData.tid, uid);
 		}
 		const topicData = topics[0];
-		topicData.unreplied = 1;
+		topicData.unreplied = true;
 		topicData.mainPost = postData;
+		topicData.index = 0;
 		postData.index = 0;
 
 		analytics.increment(['topics', 'topics:byCid:' + topicData.cid]);
