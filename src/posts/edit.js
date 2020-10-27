@@ -63,6 +63,10 @@ module.exports = function (Posts) {
 			});
 		}
 		await Posts.uploads.sync(data.pid);
+
+		// Normalize data prior to constructing returnPostData (match types with getPostSummaryByPids)
+		postData.deleted = !!postData.deleted;
+
 		const returnPostData = { ...postData, ...editPostData };
 		returnPostData.cid = topic.cid;
 		returnPostData.topic = topic;
