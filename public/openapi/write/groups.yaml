@@ -12,6 +12,7 @@ post:
           properties:
             name:
               type: string
+              example: 'My Test Group'
             timestamp:
               type: number
             disableJoinRequests:
@@ -23,6 +24,7 @@ post:
             hidden:
               type: number
               enum: [0, 1]
+              example: 1
             ownerUid:
               type: number
             private:
@@ -37,9 +39,6 @@ post:
               type: number
           required:
             - name
-        example:
-          name: 'My Test Group'
-          hidden: 1
   responses:
     '200':
       description: group successfully created
@@ -52,21 +51,3 @@ post:
                 $ref: ../components/schemas/Status.yaml#/Status
               response:
                 $ref: ../components/schemas/GroupObject.yaml#/GroupDataObject
-delete:
-  tags:
-    - groups
-  summary: Delete an existing group
-  description: This operation deletes an existing group, all members within this group will cease to be members after the group is deleted.
-  responses:
-    '200':
-      description: group successfully deleted
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                $ref: ../components/schemas/Status.yaml#/Status
-              response:
-                type: object
-                properties: {}

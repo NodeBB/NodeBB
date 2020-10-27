@@ -23,10 +23,7 @@ put:
               description: 'An array of tags'
               items:
                 type: string
-        example:
-          tags:
-            - test
-            - foobar
+              example: [test, foobar]
   responses:
     '200':
       description: Topic tags successfully added

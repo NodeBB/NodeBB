@@ -1,7 +1,7 @@
 post:
   tags:
     - topics
-  summary: peply to a topic
+  summary: reply to a topic
   description: This operation creates a new reply to an existing topic.
   parameters:
     - in: path
@@ -10,7 +10,7 @@ post:
         type: string
       required: true
       description: a valid topic id
-      example: 1
+      example: 2
   requestBody:
     required: true
     content:
@@ -20,14 +20,13 @@ post:
           properties:
             content:
               type: string
+              example: This is a test reply
             timestamp:
               type: number
             toPid:
               type: number
           required:
             - content
-        example:
-          content: This is a test reply
   responses:
     '200':
       description: post successfully created
@@ -39,7 +38,7 @@ post:
               status:
                 $ref: ../../components/schemas/Status.yaml#/Status
               response:
-                $ref: ../../components/schemas/PostsObject.yaml#/PostsObject
+                $ref: ../../components/schemas/PostObject.yaml#/PostObject
 delete:
   tags:
     - topics
@@ -52,7 +51,7 @@ delete:
         type: string
       required: true
       description: a valid topic id
-      example: 1
+      example: 2
   responses:
     '200':
       description: Topic successfully purged

@@ -9,7 +9,7 @@ delete:
         type: integer
       required: true
       description: uid of the user to delete
-      example: 1
+      example: 3
   responses:
     '200':
       description: user account deleted
@@ -39,7 +39,35 @@ put:
     content:
       application/json:
         schema:
-          $ref: ../../components/schemas/UserRequest.yaml#/UserRequest
+          type: object
+          properties:
+            fullname:
+              type: string
+              example: Mr. Dragon Fruit Jr.
+            website:
+              type: string
+              example: 'https://example.org'
+            location:
+              type: string
+              example: 'Toronto, Canada'
+            groupTitle:
+              type: string
+              example: '["administrators","Staff"]'
+            birthday:
+              type: string
+              description: A birthdate given in an ISO format parseable by the Date object
+              example: 03/27/2020
+            signature:
+              type: string
+              example: |
+                This is an example signature
+                It can span multiple lines.
+            aboutme:
+              type: string
+              example: |
+                This is a paragraph all about how my life got twist-turned upside-down
+                and I'd like to take a minute and sit right here,
+                to tell you all about how I because the administrator of NodeBB
   responses:
     '200':
       description: user profile updated

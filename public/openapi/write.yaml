@@ -28,6 +28,8 @@ tags:
   - name: categories
     description: Administrative calls to manage categories
 paths:
+  /users/:
+    $ref: 'write/users.yaml'
   /users/{uid}:
     $ref: 'write/users/uid.yaml'
   /users/{uid}/settings:
@@ -40,12 +42,14 @@ paths:
     $ref: 'write/users/uid/follow.yaml'
   /users/{uid}/ban:
     $ref: 'write/users/uid/ban.yaml'
-  /users/{uid}/tokens:
-    $ref: 'write/users/uid/tokens.yaml'
+  /users/{uid}/tokens/{token}:
+    $ref: 'write/users/uid/tokens/token.yaml'
   /categories/:
     $ref: 'write/categories.yaml'
   /groups/:
     $ref: 'write/groups.yaml'
+  /groups/{slug}:
+    $ref: 'write/groups/slug.yaml'
   /groups/{slug}/membership/{uid}:
     $ref: 'write/groups/slug/membership/uid.yaml'
   /topics:

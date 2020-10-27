@@ -12,22 +12,22 @@ post:
           properties:
             cid:
               type: number
+              example: 1
             title:
               type: string
+              example: Test topic
             content:
               type: string
+              example: This is the test topic's content
             tags:
               type: array
               items:
                 type: string
+              example: [test, topic]
           required:
             - cid
             - title
             - content
-        example:
-          cid: 1
-          title: Test topic
-          content: This is the test topic's content
   responses:
     '200':
       description: topic successfully created
@@ -39,4 +39,8 @@ post:
               status:
                 $ref: ../components/schemas/Status.yaml#/Status
               response:
-                $ref: ../components/schemas/TopicObject.yaml#/TopicObject
+                allOf:
+                  - $ref: ../components/schemas/TopicObject.yaml#/TopicObject
+                  - type: object
+                    properties:
+                      mainPost: {}
