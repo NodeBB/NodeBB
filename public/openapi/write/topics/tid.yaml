@@ -51,7 +51,7 @@ delete:
         type: string
       required: true
       description: a valid topic id
-      example: 2
+      example: 3
   responses:
     '200':
       description: Topic successfully purged

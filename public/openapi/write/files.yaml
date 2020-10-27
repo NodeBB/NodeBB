@@ -13,10 +13,9 @@ delete:
             path:
               type: string
               description: Path to the file (relative to the configured `upload_path`)
+              example: files/test.txt
           required:
             - path
-        example:
-          path: files/uploaded_file.jpg
   responses:
     '200':
       description: File deleted
