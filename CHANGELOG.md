@@ -1,3 +1,25 @@
+#### v1.15.0-rc.2 (2020-10-27)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-rc.2 (7c084134)
+*  update changelog for v1.15.0-rc.1 (4f49b3da)
+* **deps:**  update dependency eslint to v7.12.0 (#8791) (3108f628)
+
+##### New Features
+
+*  add filter:category.getFields (88a07e69)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency nodebb-theme-persona to v10.2.62 (#8798) (12c590ad)
+  *  update dependency nodebb-plugin-mentions to v2.13.1 (#8790) (8353857b)
+
+##### Performance Improvements
+
+*  reorder async calls (93bdfe2f)
+
 #### v1.15.0-rc.1 (2020-10-26)
 
 ##### Chores
