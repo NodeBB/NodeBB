@@ -10,7 +10,7 @@ put:
         type: string
       required: true
       description: a valid post id
-      example: 1
+      example: 2
   responses:
     '200':
       description: Post successfully bookmarked
@@ -36,7 +36,7 @@ delete:
         type: string
       required: true
       description: a valid post id
-      example: 1
+      example: 2
   responses:
     '200':
       description: Post successfully unbookmarked
