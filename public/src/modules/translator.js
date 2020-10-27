@@ -22,19 +22,7 @@
 				};
 			}
 
-			function loadServer(language, namespace) {
-				return new Promise(function (resolve, reject) {
-					languages.get(language, namespace, function (err, data) {
-						if (err) {
-							reject(err);
-						} else {
-							resolve(data);
-						}
-					});
-				});
-			}
-
-			module.exports = factory(require('../utils'), loadServer, warn);
+			module.exports = factory(require('../utils'), languages.get, warn);
 		}());
 	}
 }(function (utils, load, warn) {
