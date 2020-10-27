@@ -49,6 +49,8 @@ get:
                           type: number
                         viewcount:
                           type: number
+                        postercount:
+                          type: number
                         teaserPid:
                           type: number
                           nullable: true
