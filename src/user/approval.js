@@ -76,7 +76,9 @@ module.exports = function (User) {
 			template: 'registration_accepted',
 			uid: uid,
 		});
-		await db.listAppend('registration:queue:approval:times', Date.now() - creation_time);
+		const total = await db.incrObjectField('registration:queue:approval:times', 'totalTime', Date.now() - creation_time);
+		const counter = await db.incrObjectField('registration:queue:approval:times', 'counter', 1);
+		await db.setObjectField('registration:queue:approval:times', 'average', total / counter);
 		return uid;
 	};
 
@@ -154,8 +156,9 @@ module.exports = function (User) {
 		}
 		const users = await db.getSortedSetRevRangeWithScores('registration:queue', 0, -1);
 		const now = Date.now();
-		await Promise.all(users
-			.filter(user => now - user.score >= meta.config.autoApproveTime * 3600000)
-			.map(user => User.acceptRegistration(user.value)));
+		for (const user of users.filter(user => now - user.score >= meta.config.autoApproveTime * 3600000)) {
+			// eslint-disable-next-line no-await-in-loop
+			await User.acceptRegistration(user.value);
+		}
 	};
 };
