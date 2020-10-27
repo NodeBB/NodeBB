@@ -12,38 +12,37 @@ post:
           properties:
             name:
               type: string
+              example: My New Category
             description:
               type: string
+              example: Lorem ipsum, dolor sit amet
             parentCid:
               type: number
+              example: 0
             cloneFromCid:
               type: number
+              example: 0
             icon:
               type: string
+              example: bullhorn
               description: A ForkAwesome icon without the `fa-` prefix
             bgColor:
               type: string
+              example: '#ffffff'
             color:
               type: string
+              example: '#000000'
             link:
               type: string
+              example: 'https://example.org'
             class:
               type: string
+              example: 'col-md-3 col-xs-6'
             backgroundImage:
               type: string
+              example: '/assets/relative/path/to/image'
           required:
             - name
-        example:
-          name: My New Category
-          description: Lorem ipsum, dolor sit amet
-          parentCid: 0
-          cloneFromCid: 0
-          icon: bullhorn
-          bgColor: '#ffffff'
-          color: '#000000'
-          link: 'https://example.org'
-          class: 'col-md-3 col-xs-6'
-          backgroundImage: '/assets/relative/path/to/image'
   responses:
     '200':
       description: category successfully created

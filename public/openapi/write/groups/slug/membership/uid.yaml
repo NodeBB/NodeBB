@@ -10,10 +10,50 @@ put:
         type: string
       required: true
       description: slug of the group you would like to join
-      example: my-group
+      example: test-group
+    - in: path
+      name: uid
+      schema:
+        type: number
+      required: true
+      description: uid of the user to join the group
+      example: 1
   responses:
     '200':
       description: group successfully joined, or membership requested
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}
+delete:
+  tags:
+    - groups
+  summary: leave a group
+  description: This operation leaves a group.
+  parameters:
+    - in: path
+      name: slug
+      schema:
+        type: string
+      required: true
+      description: slug of the group you would like to leave
+      example: test-group
+    - in: path
+      name: uid
+      schema:
+        type: number
+      required: true
+      description: uid of the user to leave the group
+      example: 1
+  responses:
+    '200':
+      description: group successfully left
       content:
         application/json:
           schema:

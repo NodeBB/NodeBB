@@ -21,14 +21,13 @@ put:
             content:
               type: string
               description: New post content
+              example: New post content
             title:
               type: string
               description: Topic title, only accepted for main posts
+              example: New title
           required:
             - content
-        example:
-          content: 'New post content'
-          title: 'New title'
   responses:
     '200':
       description: Post successfully edited
@@ -40,7 +39,7 @@ put:
               status:
                 $ref: ../../components/schemas/Status.yaml#/Status
               response:
-                $ref: ../../components/schemas/PostsObject.yaml#/PostsObject
+                $ref: ../../components/schemas/PostObject.yaml#/PostObject
 delete:
   tags:
     - posts

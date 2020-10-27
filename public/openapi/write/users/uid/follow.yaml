@@ -1,4 +1,4 @@
-post:
+put:
   tags:
     - users
   summary: follow a user
@@ -9,7 +9,7 @@ post:
         type: integer
       required: true
       description: uid of the user to follow
-      example: 1
+      example: 2
   responses:
     '200':
       description: successfully followed user
@@ -33,7 +33,7 @@ delete:
         type: integer
       required: true
       description: uid of the user to unfollow
-      example: 1
+      example: 2
   responses:
     '200':
       description: successfully unfollowed user
