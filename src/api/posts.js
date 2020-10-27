@@ -48,6 +48,7 @@ postsAPI.edit = async function (caller, data) {
 	}
 	const postObj = await posts.getPostSummaryByPids([editResult.post.pid], caller.uid, {});
 	const returnData = { ...postObj[0], ...editResult.post };
+	returnData.topic = { ...postObj[0].topic, ...editResult.post.topic };
 
 	if (!editResult.post.deleted) {
 		websockets.in('topic_' + editResult.topic.tid).emit('event:post_edited', editResult);
