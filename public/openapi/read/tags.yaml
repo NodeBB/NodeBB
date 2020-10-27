@@ -16,21 +16,7 @@ get:
                     type: array
                     description: An array of tags sorted by the most topics
                     items:
-                      type: object
-                      properties:
-                        value:
-                          type: string
-                          description: The raw tag
-                        score:
-                          type: number
-                          description: Number of topics tagged by this tag
-                        valueEscaped:
-                          type: string
-                          description: This is the escaped tag value, equal to validator.escape(value)
-                        color:
-                          type: string
-                        bgColor:
-                          type: string
+                      $ref: ../components/schemas/TagObject.yaml#/TagObject
                   displayTagSearch:
                     type: boolean
                   nextStart:

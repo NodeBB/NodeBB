@@ -200,18 +200,7 @@ get:
                         tags:
                           type: array
                           items:
-                            type: object
-                            properties:
-                              value:
-                                type: string
-                              valueEscaped:
-                                type: string
-                              color:
-                                type: string
-                              bgColor:
-                                type: string
-                              score:
-                                type: number
+                            $ref: ../../components/schemas/TagObject.yaml#/TagObject
                         isOwner:
                           type: boolean
                         ignored:

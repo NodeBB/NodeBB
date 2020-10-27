@@ -85,6 +85,22 @@ PostObject:
           nullable: true
         titleRaw:
           type: string
+        oldTitle:
+          type: string
+        isMainPost:
+          type: boolean
+        renamed:
+          type: true
+        tags:
+          type: array
+          items:
+            $ref: ../../components/schemas/TagObject.yaml#/TagObject
+      required:
+        - uid
+        - tid
+        - cid
+        - title
+        - slug
     category:
       type: object
       properties:

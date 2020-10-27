@@ -39,7 +39,14 @@ put:
               status:
                 $ref: ../../components/schemas/Status.yaml#/Status
               response:
-                $ref: ../../components/schemas/PostObject.yaml#/PostObject
+                allOf:
+                  - $ref: ../../components/schemas/PostObject.yaml#/PostObject
+                  - type: object
+                    properties:
+                      edited:
+                        type: boolean
+                      deleterUid:
+                        type: number
 delete:
   tags:
     - posts
