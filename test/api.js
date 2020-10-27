@@ -324,7 +324,7 @@ describe('Read API', async () => {
 						assert.strictEqual(Array.isArray(response[prop]), true, '"' + prop + '" was expected to be an array, but was ' + typeof response[prop] + ' instead (path: ' + method + ' ' + path + ', context: ' + context + ')');
 
 						if (schema[prop].items) {
-						// Ensure the array items have a schema defined
+							// Ensure the array items have a schema defined
 							assert(schema[prop].items.type || schema[prop].items.allOf, '"' + prop + '" is defined to be an array, but its items have no schema defined (path: ' + method + ' ' + path + ', context: ' + context + ')');
 
 							// Compare types
