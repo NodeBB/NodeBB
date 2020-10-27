@@ -324,7 +324,7 @@ describe('Read API', async () => {
 								});
 							} else if (response[prop].length) { // for now
 								response[prop].forEach((item) => {
-									assert.strictEqual(typeof item, schema[prop].items.type, '"' + prop + '" should have ' + schema[prop].items.type + ' items, but found ' + typeof items + ' instead (path: ' + path + ', context: ' + context + ')');
+									assert.strictEqual(typeof item, schema[prop].items.type, '"' + prop + '" should have ' + schema[prop].items.type + ' items, but found ' + typeof items + ' instead (path: ' + method + ' ' + path + ', context: ' + context + ')');
 								});
 							}
 						}
@@ -339,7 +339,7 @@ describe('Read API', async () => {
 				return;
 			}
 
-			assert(schema[prop], '"' + prop + '" was found in response, but is not defined in schema (path: ' + path + ', context: ' + context + ')');
+			assert(schema[prop], '"' + prop + '" was found in response, but is not defined in schema (path: ' + method + ' ' + path + ', context: ' + context + ')');
 		});
 	}
 });
