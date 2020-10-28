@@ -106,10 +106,6 @@ usersAPI.updateSettings = async function (caller, data) {
 	return await user.saveSettings(data.uid, payload);
 };
 
-usersAPI.updateSetting = async function (caller, data) {
-	await user.setSetting(data.uid, data.setting, data.value);
-};
-
 usersAPI.changePassword = async function (caller, data) {
 	await user.changePassword(caller.uid, Object.assign(data, { ip: caller.ip }));
 	await events.log({
