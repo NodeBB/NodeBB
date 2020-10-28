@@ -20,9 +20,9 @@ define('sort', ['components', 'api'], function (components, api) {
 				}
 				var newSetting = $(this).attr('data-sort');
 				if (app.user.uid) {
-					api.put(`/users/${app.user.uid}/settings/${field}`, {
-						value: newSetting,
-					}).then(() => {
+					const payload = { settings: {} };
+					payload.settings[field] = newSetting;
+					api.put(`/users/${app.user.uid}/settings`, payload).then(() => {
 						refresh(newSetting, utils.params());
 					});
 				} else {

@@ -121,6 +121,10 @@ module.exports = function (User) {
 			upvoteNotifFreq: data.upvoteNotifFreq,
 			bootswatchSkin: data.bootswatchSkin,
 			categoryWatchState: data.categoryWatchState,
+			categoryTopicSort: data.categoryTopicSort,
+			topicPostSort: data.topicPostSort,
+			setCategorySort: data.setCategorySort,
+			setTopicSort: data.setTopicSort,
 		};
 		const notificationTypes = await notifications.getAllNotificationTypes();
 		notificationTypes.forEach(function (notificationType) {
