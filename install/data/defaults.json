@@ -134,5 +134,6 @@
     "necroThreshold": 7,
     "categoryWatchState": "watching",
     "submitPluginUsage": 1,
-    "maxUserSessions": 10
+    "maxUserSessions": 10,
+    "useCompression": 0
 }

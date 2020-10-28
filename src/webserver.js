@@ -13,7 +13,6 @@ var server;
 var winston = require('winston');
 var async = require('async');
 var flash = require('connect-flash');
-var compression = require('compression');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
@@ -134,7 +133,10 @@ function setupExpressApp(app) {
 		app.enable('minification');
 	}
 
-	app.use(compression());
+	if (meta.config.useCompression) {
+		const compression = require('compression');
+		app.use(compression());
+	}
 
 	app.get(relativePath + '/ping', pingController.ping);
 	app.get(relativePath + '/sping', pingController.ping);
