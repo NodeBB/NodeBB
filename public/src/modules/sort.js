@@ -4,7 +4,7 @@
 define('sort', ['components', 'api'], function (components, api) {
 	var module = {};
 
-	module.handleSort = function (field, key, gotoOnSave) {
+	module.handleSort = function (field, gotoOnSave) {
 		var threadSort = components.get('thread/sort');
 		threadSort.find('i').removeClass('fa-check');
 		var currentSetting = threadSort.find('a[data-sort="' + config[field] + '"]');
@@ -20,7 +20,7 @@ define('sort', ['components', 'api'], function (components, api) {
 				}
 				var newSetting = $(this).attr('data-sort');
 				if (app.user.uid) {
-					api.put(`/users/${app.user.uid}/settings/${key}`, {
+					api.put(`/users/${app.user.uid}/settings/${field}`, {
 						value: newSetting,
 					}).then(() => {
 						refresh(newSetting, utils.params());

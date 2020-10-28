@@ -24,7 +24,7 @@ define('forum/category', [
 
 		topicList.init('category', loadTopicsAfter);
 
-		sort.handleSort('categoryTopicSort', 'setCategorySort', 'category/' + ajaxify.data.slug);
+		sort.handleSort('categoryTopicSort', 'category/' + ajaxify.data.slug);
 
 		if (!config.usePagination) {
 			navigator.init('[component="category/topic"]', ajaxify.data.topic_count, Category.toTop, Category.toBottom, Category.navigatorCallback);
