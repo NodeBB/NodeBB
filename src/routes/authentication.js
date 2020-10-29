@@ -87,7 +87,7 @@ Auth.reloadRoutes = async function (params) {
 	}
 
 	// HTTP bearer authentication
-	passport.use(new BearerStrategy({}, Auth.verifyToken));
+	passport.use('core.api', new BearerStrategy({}, Auth.verifyToken));
 
 	// Additional logins via SSO plugins
 	try {

@@ -19,7 +19,7 @@ const controllers = {
 
 const passportAuthenticateAsync = function (req, res) {
 	return new Promise((resolve, reject) => {
-		passport.authenticate('bearer', { session: false }, (err, user) => {
+		passport.authenticate('core.api', { session: false }, (err, user) => {
 			if (err) {
 				reject(err);
 			} else {
