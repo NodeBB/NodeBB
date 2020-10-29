@@ -1,6 +1,50 @@
 <div class="row manage-users">
 	<div class="col-lg-12">
 		<div class="clearfix">
+
+			<div class="pull-left">
+				<!-- IF inviteOnly -->
+				<button component="user/invite" class="btn btn-success"><i class="fa fa-users"></i> [[admin/manage/users:invite]]</button>
+				<!-- ENDIF inviteOnly -->
+				<a target="_blank" href="{config.relative_path}/api/admin/users/csv" class="btn btn-primary">[[admin/manage/users:download-csv]]</a>
+				<div class="btn-group">
+					<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">[[admin/manage/users:edit]] <span class="caret"></span></button>
+					<ul class="dropdown-menu">
+						<li><a href="#" class="validate-email"><i class="fa fa-fw fa-check"></i> [[admin/manage/users:validate-email]]</a></li>
+						<li><a href="#" class="send-validation-email"><i class="fa fa-fw fa-mail-forward"></i> [[admin/manage/users:send-validation-email]]</a></li>
+						<li><a href="#" class="password-reset-email"><i class="fa fa-fw fa-key"></i> [[admin/manage/users:password-reset-email]]</a></li>
+						<li><a href="#" class="force-password-reset"><i class="fa fa-fw fa-unlock-alt"></i> [[admin/manage/users:force-password-reset]]</a></li>
+						<li><a href="#" class="manage-groups"><i class="fa fa-fw fa-users"></i> [[admin/manage/users:manage-groups]]</a></li>
+						<li class="divider"></li>
+						<li><a href="#" class="ban-user"><i class="fa fa-fw fa-gavel"></i> [[admin/manage/users:ban]]</a></li>
+						<li><a href="#" class="ban-user-temporary"><i class="fa fa-fw fa-clock-o"></i> [[admin/manage/users:temp-ban]]</a></li>
+						<li><a href="#" class="unban-user"><i class="fa fa-fw fa-comment-o"></i> [[admin/manage/users:unban]]</a></li>
+						<li><a href="#" class="reset-lockout"><i class="fa fa-fw fa-unlock"></i> [[admin/manage/users:reset-lockout]]</a></li>
+						<li class="divider"></li>
+						<li><a href="#" class="delete-user"><i class="fa fa-fw fa-trash-o"></i> [[admin/manage/users:delete]]</a></li>
+						<li><a href="#" class="delete-user-content"><i class="fa fa-fw fa-trash-o"></i> [[admin/manage/users:delete-content]]</a></li>
+						<li><a href="#" class="delete-user-and-content"><i class="fa fa-fw fa-trash-o"></i> [[admin/manage/users:purge]]</a></li>
+					</ul>
+				</div>
+
+				<div class="btn-group" id="filter-by">
+					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+						[[admin/manage/users:filter-by]] <span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" role="menu">
+						<li data-filter-by="unverified" role="presentation">
+							<a role="menu-item" href="#"><i class="fa fa-fw {{{ if filterBy_unverified }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.unvalidated]]</a>
+						</li>
+						<li data-filter-by="verified" role="presentation">
+							<a role="menu-item" href="#"><i class="fa fa-fw {{{ if filterBy_verified }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.validated]]</a>
+						</li>
+						<li data-filter-by="banned" role="presentation">
+							<a role="menu-item" href="#"><i class="fa fa-fw {{{ if filterBy_banned }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.banned]]</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+
 			<form class="form-inline pull-right">
 				<div class="input-group">
 					<input type="text" class="form-control" placeholder="[[global:search]]" id="user-search" value="{query}">
@@ -19,58 +63,9 @@
 					<option value="500">[[admin/manage/users:500-per-page]]</option>
 				</select>
 			</form>
-
 		</div>
-		<hr/>
-		<ul class="nav nav-pills">
-			<li class="pull-right">
-				<div class="btn-group" id="filter-by">
-					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-						[[admin/manage/users:filter-by]] <span class="caret"></span>
-					</button>
-					<ul class="dropdown-menu dropdown-menu-right" role="menu">
-						<li data-filter-by="unverified" role="presentation">
-							<a role="menu-item" href="#"><i class="fa fa-fw {{{ if filterBy_unverified }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.unvalidated]]</a>
-						</li>
-						<li data-filter-by="verified" role="presentation">
-							<a role="menu-item" href="#"><i class="fa fa-fw {{{ if filterBy_verified }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.validated]]</a>
-						</li>
-						<li data-filter-by="banned" role="presentation">
-							<a role="menu-item" href="#"><i class="fa fa-fw {{{ if filterBy_banned }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.banned]]</a>
-						</li>
-					</ul>
-				</div>
-			</li>
-			<li class="pull-right">
-				<form class="form-inline">
-					<!-- IF inviteOnly -->
-					<button component="user/invite" class="btn btn-success"><i class="fa fa-users"></i> [[admin/manage/users:invite]]</button>
-					<!-- ENDIF inviteOnly -->
-					<a target="_blank" href="{config.relative_path}/api/admin/users/csv" class="btn btn-primary">[[admin/manage/users:download-csv]]</a>
-					<div class="btn-group">
-						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">[[admin/manage/users:edit]] <span class="caret"></span></button>
-						<ul class="dropdown-menu dropdown-menu-right">
-							<li><a href="#" class="validate-email"><i class="fa fa-fw fa-check"></i> [[admin/manage/users:validate-email]]</a></li>
-							<li><a href="#" class="send-validation-email"><i class="fa fa-fw fa-mail-forward"></i> [[admin/manage/users:send-validation-email]]</a></li>
-							<li><a href="#" class="password-reset-email"><i class="fa fa-fw fa-key"></i> [[admin/manage/users:password-reset-email]]</a></li>
-							<li><a href="#" class="force-password-reset"><i class="fa fa-fw fa-unlock-alt"></i> [[admin/manage/users:force-password-reset]]</a></li>
-							<li><a href="#" class="manage-groups"><i class="fa fa-fw fa-users"></i> [[admin/manage/users:manage-groups]]</a></li>
-							<li class="divider"></li>
-							<li><a href="#" class="ban-user"><i class="fa fa-fw fa-gavel"></i> [[admin/manage/users:ban]]</a></li>
-							<li><a href="#" class="ban-user-temporary"><i class="fa fa-fw fa-clock-o"></i> [[admin/manage/users:temp-ban]]</a></li>
-							<li><a href="#" class="unban-user"><i class="fa fa-fw fa-comment-o"></i> [[admin/manage/users:unban]]</a></li>
-							<li><a href="#" class="reset-lockout"><i class="fa fa-fw fa-unlock"></i> [[admin/manage/users:reset-lockout]]</a></li>
-							<li class="divider"></li>
-							<li><a href="#" class="delete-user"><i class="fa fa-fw fa-trash-o"></i> [[admin/manage/users:delete]]</a></li>
-							<li><a href="#" class="delete-user-content"><i class="fa fa-fw fa-trash-o"></i> [[admin/manage/users:delete-content]]</a></li>
-							<li><a href="#" class="delete-user-and-content"><i class="fa fa-fw fa-trash-o"></i> [[admin/manage/users:purge]]</a></li>
-						</ul>
-					</div>
-				</form>
-			</li>
-		</ul>
 
-		<br />
+		<hr/>
 
 		<div class="search {search_display}">
 			<i class="fa fa-spinner fa-spin hidden"></i>
