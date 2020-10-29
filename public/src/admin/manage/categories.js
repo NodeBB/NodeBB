@@ -27,11 +27,6 @@ define('admin/manage/categories', [
 				return $(this).attr('data-cid');
 			}).get();
 
-			parentEl.toggleClass('disabled', !disabled);
-			childrenEls.toggleClass('disabled', !disabled);
-			$this.translateText(!disabled ? '[[admin/manage/categories:enable]]' : '[[admin/manage/categories:disable]]');
-			childrenEls.find('li a[data-action="toggle"]').translateText(!disabled ? '[[admin/manage/categories:enable]]' : '[[admin/manage/categories:disable]]');
-
 			Categories.toggle([cid].concat(childrenCids), !disabled);
 		});
 
@@ -196,8 +191,13 @@ define('admin/manage/categories', [
 	};
 
 	Categories.toggle = function (cids, disabled) {
+		const listEl = document.querySelector('.categories ul');
 		Promise.all(cids.map(cid => api.put('/categories/' + cid, {
 			disabled: disabled ? 1 : 0,
+		}).then(() => {
+			const categoryEl = listEl.querySelector(`li[data-cid="${cid}"]`);
+			categoryEl.classList[disabled ? 'add' : 'remove']('disabled');
+			$(categoryEl).find('li a[data-action="toggle"]').first().translateText(disabled ? '[[admin/manage/categories:enable]]' : '[[admin/manage/categories:disable]]');
 		})));
 	};
 
