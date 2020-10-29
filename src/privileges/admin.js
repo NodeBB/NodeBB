@@ -158,8 +158,11 @@ module.exports = function (privileges) {
 	};
 
 	privileges.admin.can = async function (privilege, uid) {
-		const isUserAllowedTo = await helpers.isUserAllowedTo(privilege, uid, [0]);
-		return isUserAllowedTo[0];
+		const [isUserAllowedTo, isAdministrator] = await Promise.all([
+			helpers.isUserAllowedTo(privilege, uid, [0]),
+			user.isAdministrator(uid),
+		]);
+		return isAdministrator || isUserAllowedTo[0];
 	};
 
 	// privileges.admin.canGroup = async function (privilege, groupName) {

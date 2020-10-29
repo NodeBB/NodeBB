@@ -2,13 +2,22 @@
 
 const api = require('../../api');
 const meta = require('../../meta');
+const privileges = require('../../privileges');
 const utils = require('../../utils');
 
 const helpers = require('../helpers');
 
 const Users = module.exports;
 
+const hasAdminPrivilege = async (uid, privilege) => {
+	const ok = await privileges.admin.can(`admin:${privilege}`, uid);
+	if (!ok) {
+		throw new Error('[[error:no-privileges]]');
+	}
+};
+
 Users.create = async (req, res) => {
+	await hasAdminPrivilege(req.uid, 'users');
 	const userObj = await api.users.create(req, req.body);
 	helpers.formatApiResponse(200, res, userObj);
 };
@@ -24,6 +33,7 @@ Users.delete = async (req, res) => {
 };
 
 Users.deleteMany = async (req, res) => {
+	await hasAdminPrivilege(req.uid, 'users');
 	await api.users.deleteMany(req, req.body);
 	helpers.formatApiResponse(200, res);
 };
@@ -49,19 +59,20 @@ Users.unfollow = async (req, res) => {
 };
 
 Users.ban = async (req, res) => {
+	await hasAdminPrivilege(req.uid, 'users');
 	await api.users.ban(req, { ...req.body, uid: req.params.uid });
 	helpers.formatApiResponse(200, res);
 };
 
 Users.unban = async (req, res) => {
+	await hasAdminPrivilege(req.uid, 'users');
 	await api.users.unban(req, { ...req.body, uid: req.params.uid });
 	helpers.formatApiResponse(200, res);
 };
 
 Users.generateToken = async (req, res) => {
-	if (!res.locals.privileges['admin:settings']) {
-		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
-	} else if (parseInt(req.params.uid, 10) !== parseInt(req.user.uid, 10)) {
+	await hasAdminPrivilege(req.uid, 'settings');
+	if (parseInt(req.params.uid, 10) !== parseInt(req.user.uid, 10)) {
 		return helpers.formatApiResponse(401, res);
 	}
 
@@ -80,9 +91,8 @@ Users.generateToken = async (req, res) => {
 };
 
 Users.deleteToken = async (req, res) => {
-	if (!res.locals.privileges['admin:settings']) {
-		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
-	} else if (parseInt(req.params.uid, 10) !== parseInt(req.user.uid, 10)) {
+	await hasAdminPrivilege(req.uid, 'settings');
+	if (parseInt(req.params.uid, 10) !== parseInt(req.user.uid, 10)) {
 		return helpers.formatApiResponse(401, res);
 	}
 

@@ -1,13 +1,16 @@
 'use strict';
 
 const meta = require('../../meta');
+const privileges = require('../../privileges');
 
 const helpers = require('../helpers');
 
 const Admin = module.exports;
 
 Admin.updateSetting = async (req, res) => {
-	if (!res.locals.privileges['admin:settings']) {
+	const ok = await privileges.admin.can('admin:settings', req.uid);
+
+	if (!ok) {
 		return helpers.formatApiResponse(403, res);
 	}
 

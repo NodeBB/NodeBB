@@ -201,6 +201,7 @@ module.exports = function (middleware) {
 
 	middleware.isAdmin = helpers.try(async function isAdmin(req, res, next) {
 		const isAdmin = await user.isAdministrator(req.uid);
+
 		if (!isAdmin) {
 			return controllers.helpers.notAllowed(req, res);
 		}
