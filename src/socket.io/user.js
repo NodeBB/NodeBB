@@ -1,7 +1,5 @@
 'use strict';
 
-const async = require('async');
-
 const util = require('util');
 const sleep = util.promisify(setTimeout);
 
@@ -18,7 +16,6 @@ const userController = require('../controllers/user');
 const privileges = require('../privileges');
 const utils = require('../utils');
 const flags = require('../flags');
-const SocketGroups = require('./groups');
 const sockets = require('.');
 
 const SocketUser = module.exports;

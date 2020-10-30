@@ -44,6 +44,8 @@ paths:
     $ref: 'write/users/uid/tokens/token.yaml'
   /users/{uid}/sessions/{uuid}:
     $ref: 'write/users/uid/sessions/uuid.yaml'
+  /users/invite:
+    $ref: 'write/users/invite.yaml'
   /categories/:
     $ref: 'write/categories.yaml'
   /groups/:
