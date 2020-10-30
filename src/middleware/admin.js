@@ -113,7 +113,7 @@ middleware.checkPrivileges = helpers.try(async (req, res, next) => {
 	const path = req.path.replace(/^(\/api)?\/admin\/?/g, '');
 	if (path) {
 		const privilege = privileges.admin.resolve(path);
-		if (!privilege || !await privileges.admin.can(privilege, req.uid)) {
+		if (!await privileges.admin.can(privilege, req.uid)) {
 			return controllers.helpers.notAllowed(req, res);
 		}
 	} else {
@@ -132,7 +132,6 @@ middleware.checkPrivileges = helpers.try(async (req, res, next) => {
 		const timeLeft = parseInt(loginTime, 10) - (Date.now() - adminReloginDuration);
 		if (req.session.meta && timeLeft < Math.min(300000, adminReloginDuration)) {
 			req.session.meta.datetime += Math.min(300000, adminReloginDuration);
-			console.log('dateitme updated, now', req.session.meta.datetime);
 		}
 
 		return next();
