@@ -100,14 +100,7 @@ module.exports = function (User) {
 			property = 'uid';
 		}
 
-		if (!Array.isArray(set) || !set.length || !set.every((item) => {
-			if (!item) {
-				return false;
-			}
-
-			const check = item.hasOwnProperty(property) ? item[property] : item;
-			return ['number', 'string'].includes(typeof check);
-		})) {
+		if (!Array.isArray(set) || !set.length) {
 			return set;
 		}
 
@@ -116,7 +109,7 @@ module.exports = function (User) {
 		const blockedSet = new Set(blocked_uids);
 
 		set = set.filter(function (item) {
-			return !blockedSet.has(parseInt(isPlain ? item : item[property], 10));
+			return !blockedSet.has(parseInt(isPlain ? item : (item && item[property]), 10));
 		});
 		const data = await plugins.fireHook('filter:user.blocks.filter', { set: set, property: property, uid: uid, blockedSet: blockedSet });
 
