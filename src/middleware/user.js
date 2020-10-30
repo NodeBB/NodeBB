@@ -200,6 +200,9 @@ module.exports = function (middleware) {
 	});
 
 	middleware.isAdmin = helpers.try(async function isAdmin(req, res, next) {
+		// TODO: Remove in v1.16.0
+		winston.warn('[middleware] middleware.isAdmin deprecated, use middleware.admin.checkPrivileges instead');
+
 		const isAdmin = await user.isAdministrator(req.uid);
 
 		if (!isAdmin) {
