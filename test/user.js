@@ -2131,25 +2131,25 @@ describe('User', function () {
 				});
 			});
 
-			it('should invite to the administrators group if inviter is an admin', function (done) {
-				helpers.invite({ emails: 'invite99@test.com', groupsToJoin: ['administrators'] }, jar, csrf_token, function (err, res) {
-					assert.ifError(err);
-					assert.equal(res.statusCode, 200);
-					done();
-				});
-			});
-
 			it('should escape email', function (done) {
 				helpers.invite({ emails: '<script>alert("ok");</script>', groupsToJoin: [] }, jar, csrf_token, function (err, res) {
 					assert.ifError(err);
 					User.getInvites(adminUid, function (err, data) {
 						assert.ifError(err);
-						assert.equal(data[1], '&lt;script&gt;alert(&quot;ok&quot;);&lt;&#x2F;script&gt;');
+						assert.equal(data[0], '&lt;script&gt;alert(&quot;ok&quot;);&lt;&#x2F;script&gt;');
 						User.deleteInvitationKey('<script>alert("ok");</script>', function (err) {
 							assert.ifError(err);
 							done();
 						});
 					});
+				});
+			});
+
+			it('should invite to the administrators group if inviter is an admin', function (done) {
+				helpers.invite({ emails: 'invite99@test.com', groupsToJoin: ['administrators'] }, jar, csrf_token, function (err, res) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					done();
 				});
 			});
 		});
