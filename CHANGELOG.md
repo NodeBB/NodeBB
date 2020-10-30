@@ -1,3 +1,58 @@
+#### v1.15.0-rc.3 (2020-10-30)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-rc.3 (6de7760a)
+*  bump persona (e0b67817)
+*  update changelog for v1.15.0-rc.2 (c3a7ab54)
+* **deps:**
+  *  update dependency eslint to v7.12.1 (#8799) (224502d8)
+  *  update dependency lint-staged to v10.5.0 (#8797) (1f2eca6a)
+
+##### New Features
+
+*  rearrange buttons on manage/users (27016d22)
+*  #8801, disable express compression by default (6ac73ccb)
+*  allow passing subset of user settings on update route (ec03af7a)
+*  wip, write api tests framework (b156b8b5)
+
+##### Bug Fixes
+
+*  #8805 define our own name for write API v3 (57ed6be7)
+*  removed superfluous assignment (a08fb8e5)
+*  createNewPosts to build tpl with ajaxify.data (0b6ef61e)
+*  handle ACP category enable/disable states after call success (bff53de0)
+*  remove setCategorySort and setTopicSort (a6a52430)
+*  sort setting not using correct field name (9082062e)
+*  update readme to include psql (2d29e603)
+*  breaking test from 0db0231cff097a6e983683e61284a72d42bd594d (cc1c7220)
+*  indentation (04185d94)
+*  add back derpy 20 second sleep (8e7914ff)
+*  missing method in test error output (3ebb3a34)
+*  topic object in post editing data return (3c98cd3d)
+*  bug where token generation route would fail on null case (618e0983)
+*  typo (2e9f27d8)
+* **deps:**
+  *  update dependency jsesc to v3.0.2 (#8802) (c4431294)
+  *  update dependency nodebb-plugin-composer-default to v6.4.5 (7d0d0005)
+  *  update dependency nodebb-theme-persona to v10.2.63 (b3ca7de0)
+* **openapi:**  final fixes to schemas (14e5c24e)
+* **writeapi:**
+  *  more tweaks to schema files (b2e9e3e0)
+  *  fix components, + tag object schema (9f9e3c15)
+  *  missing files for tests (a4f3270f)
+  *  normalizing data (1392d064)
+  *  tests (b092f65d)
+  *  added examples to all parameter objects in schema (93f65f89)
+
+##### Refactors
+
+*  simpler check in user.blocks.filter (a02ae6f5)
+*  remove usage of middlewares (266d7587)
+*  remove /users/{uid}/settings/{setting} route (aa8faf58)
+*  api test suite to accept methods other than GET (843aff58)
+*  remove unnecessary wrapper (a512d994)
+
 #### v1.15.0-rc.2 (2020-10-27)
 
 ##### Chores
