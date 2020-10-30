@@ -67,7 +67,7 @@ module.exports = function (Posts) {
 		// Normalize data prior to constructing returnPostData (match types with getPostSummaryByPids)
 		postData.deleted = !!postData.deleted;
 
-		const returnPostData = { ...postData, ...editPostData };
+		const returnPostData = { ...postData, ...result.post };
 		returnPostData.cid = topic.cid;
 		returnPostData.topic = topic;
 		returnPostData.editedISO = utils.toISOString(now);
