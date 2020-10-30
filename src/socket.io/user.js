@@ -224,45 +224,6 @@ SocketUser.getUnreadCounts = async function (socket) {
 	return results;
 };
 
-SocketUser.invite = async function (socket, data) {
-	if (!data || !data.emails || !data.groupsToJoin || !Array.isArray(data.groupsToJoin) || !socket.uid) {
-		throw new Error('[[error:invalid-data]]');
-	}
-	const { emails, groupsToJoin } = data;
-
-	const canInvite = await privileges.users.hasInvitePrivilege(socket.uid);
-	if (!canInvite) {
-		throw new Error('[[error:no-privileges]]');
-	}
-
-	const registrationType = meta.config.registrationType;
-	const isAdmin = await user.isAdministrator(socket.uid);
-	if (registrationType === 'admin-invite-only' && !isAdmin) {
-		throw new Error('[[error:no-privileges]]');
-	}
-
-	const inviteGroups = await SocketGroups.getInviteGroups(socket, {});
-	const cannotInvite = groupsToJoin.some(group => !inviteGroups.includes(group));
-	if (groupsToJoin.length > 0 && cannotInvite) {
-		throw new Error('[[error:no-privileges]]');
-	}
-
-	const max = meta.config.maximumInvites;
-	const emailsArr = emails.split(',').map(email => email.trim()).filter(Boolean);
-
-	await async.eachSeries(emailsArr, async function (email) {
-		let invites = 0;
-		if (max) {
-			invites = await user.getInvitesNumber(socket.uid);
-		}
-		if (!isAdmin && max && invites >= max) {
-			throw new Error('[[error:invite-maximum-met, ' + invites + ', ' + max + ']]');
-		}
-
-		await user.sendInvitationEmail(socket.uid, email, groupsToJoin);
-	});
-};
-
 SocketUser.getUserByUID = async function (socket, uid) {
 	return await userController.getUserDataByField(socket.uid, 'uid', uid);
 };

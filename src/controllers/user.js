@@ -2,6 +2,7 @@
 
 const path = require('path');
 
+const groups = require('../groups');
 const user = require('../user');
 const meta = require('../meta');
 const privileges = require('../privileges');
@@ -106,7 +107,12 @@ function sendExport(filename, type, res, next) {
 	});
 }
 
+userController.getInviteGroups = async function (req, res) {
+	const userInviteGroups = await groups.getUserInviteGroups(req.uid);
+	res.json(userInviteGroups);
+};
+
 require('../promisify')(userController, [
 	'getCurrentUser', 'getUserByUID', 'getUserByUsername', 'getUserByEmail',
-	'exportPosts', 'exportUploads', 'exportProfile',
+	'exportPosts', 'exportUploads', 'exportProfile', 'getInviteGroups',
 ]);

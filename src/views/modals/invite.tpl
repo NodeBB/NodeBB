@@ -1,6 +1,6 @@
 <div class="form-group">
 	<label for="invite-modal-emails">[[users:prompt-email]]</label>
-	<input id="invite-modal-emails" type="text" class="form-control" placeholder="friend1@email.net,friend2@email.net" />
+	<input id="invite-modal-emails" type="text" class="form-control" placeholder="friend1@example.com,friend2@example.com" />
 </div>
 <div class="form-group">
 	<label for="invite-modal-groups">[[users:groups-to-join]]</label>

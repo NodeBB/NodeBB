@@ -138,10 +138,7 @@ define('forum/users', [
 	function handleInvite() {
 		$('[component="user/invite"]').on('click', function (e) {
 			e.preventDefault();
-			socket.emit('groups.getInviteGroups', {}, function (err, groups) {
-				if (err) {
-					return app.alertError(err.message);
-				}
+			api.get('/api/user/invite-groups', {}).then((groups) => {
 				Benchpress.parse('modals/invite', { groups: groups }, function (html) {
 					bootbox.dialog({
 						message: html,
@@ -160,6 +157,8 @@ define('forum/users', [
 						},
 					});
 				});
+			}).catch((err) => {
+				app.alertError(err.message);
 			});
 		});
 	}
@@ -182,11 +181,10 @@ define('forum/users', [
 			return;
 		}
 
-		socket.emit('user.invite', data, function (err) {
-			if (err) {
-				return app.alertError(err.message);
-			}
+		api.post('/api/v3/users/invite', data).then(() => {
 			app.alertSuccess('[[users:invitation-email-sent, ' + data.emails.replace(/,/g, '&#44; ') + ']]');
+		}).catch((err) => {
+			app.alertError(err.message);
 		});
 	}
 

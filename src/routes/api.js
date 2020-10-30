@@ -2,6 +2,7 @@
 
 var express = require('express');
 
+const helpers = require('./helpers');
 var uploadsController = require('../controllers/uploads');
 
 module.exports = function (app, middleware, controllers) {
@@ -36,4 +37,6 @@ module.exports = function (app, middleware, controllers) {
 	router.post('/topic/thumb/upload', middlewares, uploadsController.uploadThumb);
 
 	router.post('/user/:userslug/uploadpicture', middlewares.concat([middleware.exposeUid, middleware.authenticate, middleware.canViewUsers, middleware.checkAccountPermissions]), controllers.accounts.edit.uploadPicture);
+
+	helpers.setupApiRoute(router, 'get', '/user/invite-groups', [middleware.authenticate], controllers.user.getInviteGroups);
 };
