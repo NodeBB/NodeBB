@@ -1,0 +1,204 @@
+name: Lint and test
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+    branches:
+      - master
+      - develop
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  test:
+    name: Lint and test
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        node: [10, 12, 14]
+        database: [mongo-dev, mongo, redis, postgres]
+        include:
+          # only run coverage once
+          - os: ubuntu-latest
+            node: 14
+            coverage: true
+          # test under development once
+          - database: mongo-dev
+            test_env: development
+          # only run eslint once
+          - os: ubuntu-latest
+            node: 14
+            database: mongo-dev
+            lint: true
+    runs-on: ${{ matrix.os }}
+    env:
+      TEST_ENV: ${{ matrix.test_env || 'production' }}
+
+    services:
+      postgres:
+        image: 'postgres:10-alpine'
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps port 5432 on service container to the host
+          - 5432:5432
+
+      redis:
+        image: 'redis:2.8.9'
+        # Set health checks to wait until redis has started
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps port 6379 on service container to the host
+          - 6379:6379
+
+      mongo:
+        image: 'mongo:3.2'
+        ports:
+          # Maps port 27017 on service container to the host
+          - 27017:27017
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: cp install/package.json package.json
+
+      - name: Install Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: NPM Install
+        uses: bahmutov/npm-install@v1
+        with:
+          useLockFile: false
+
+      - name: Setup on MongoDB
+        if: startsWith(matrix.database, 'mongo')
+        env:
+          SETUP: >-
+            {
+              "url": "http://127.0.0.1:4567",
+              "secret": "abcdef",
+              "admin:username": "admin",
+              "admin:email": "test@example.org",
+              "admin:password": "hAN3Eg8W",
+              "admin:password:confirm": "hAN3Eg8W",
+
+              "database": "mongo",
+              "mongo:host": "127.0.0.1",
+              "mongo:port": 27017,
+              "mongo:username": "",
+              "mongo:password": "",
+              "mongo:database": "nodebb"
+            }
+          CI: >-
+            {
+              "host": "127.0.0.1",
+              "port": 27017,
+              "database": "ci_test"
+            }
+        run: |
+          node app --setup="${SETUP}" --ci="${CI}"
+
+      - name: Setup on PostgreSQL
+        if: startsWith(matrix.database, 'postgres')
+        env:
+          SETUP: >-
+            {
+              "url": "http://127.0.0.1:4567",
+              "secret": "abcdef",
+              "admin:username": "admin",
+              "admin:email": "test@example.org",
+              "admin:password": "hAN3Eg8W",
+              "admin:password:confirm": "hAN3Eg8W",
+
+              "database": "postgres",
+              "postgres:host": "127.0.0.1",
+              "postgres:port": 5432,
+              "postgres:username": "postgres",
+              "postgres:password": "postgres",
+              "postgres:database": "nodebb"
+            }
+          CI: >-
+            {
+              "host": "127.0.0.1",
+              "database": "ci_test",
+              "port": 5432,
+              "username": "postgres",
+              "password": "postgres"
+            }
+        run: |
+          node -e "const { Client } = require('pg'); const c = new Client({ host: '127.0.0.1', port: 5432, user: 'postgres', password: 'postgres' }); c.connect().then(() => c.query('CREATE DATABASE nodebb')).then(() => c.query('CREATE DATABASE ci_test')).then(() => c.end())"
+          node app --setup="${SETUP}" --ci="${CI}"
+
+      - name: Setup on Redis
+        if: startsWith(matrix.database, 'redis')
+        env:
+          SETUP: >-
+            {
+              "url": "http://127.0.0.1:4567/forum",
+              "secret": "abcdef",
+              "admin:username": "admin",
+              "admin:email": "test@example.org",
+              "admin:password": "hAN3Eg8W",
+              "admin:password:confirm": "hAN3Eg8W",
+
+              "database": "redis",
+              "redis:host": "127.0.0.1",
+              "redis:port": 6379,
+              "redis:password": "",
+              "redis:database": 0
+            }
+          CI: >-
+            {
+              "host": "127.0.0.1",
+              "database": 1,
+              "port": 6379
+            }
+        run: |
+          node app --setup="${SETUP}" --ci="${CI}"
+
+      - name: Run ESLint
+        if: matrix.lint
+        run: npm run lint
+
+      - name: Node tests
+        run: npm test
+
+      - name: Extract coverage info
+        run: npm run coverage
+
+      - name: Test coverage
+        uses: coverallsapp/github-action@v1.1.2
+        if: matrix.coverage
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          flag-name: ${{ matrix.os }}-node-${{ matrix.node }}-db-${{ matrix.database }}
+          parallel: true
+  
+  finish:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Coveralls Finished
+        uses: coverallsapp/github-action@v1.1.2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          parallel-finished: true
