@@ -18,7 +18,7 @@ nconf.argv().env().file({
 	file: pathToConfig,
 });
 
-var	pidFilePath = path.join(__dirname, 'pidfile');
+var	pidFilePath = path.join(__dirname, 'pidfile');;
 
 var outputLogFilePath = path.join(__dirname, nconf.get('logFile') || 'logs/output.log');
 
