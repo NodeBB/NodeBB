@@ -37,7 +37,7 @@
 	"analytics.settings": "Impostazioni di analisi",
 	"analytics.max-cache": "Analisi valore massimo cache",
 	"analytics.max-cache-help": "Nelle installazioni ad alto traffico, la cache potrebbe esaurirsi continuamente se ci sono più utenti attivi contemporanei rispetto al valore Max Cache. (Riavvio richiesto)",
-	"compression.settings": "Compression Settings",
-	"compression.enable": "Enable Compression",
-	"compression.help": "This setting enables gzip compression. For a high-traffic website in production, the best way to put compression in place is to implement it at a reverse proxy level. You can enable it here for testing purposes."
+	"compression.settings": "Impostazioni compressione",
+	"compression.enable": "Abilita compressione",
+	"compression.help": "Questa impostazione abilita la compressione gzip. Per un sito Web ad alto traffico in produzione, il modo migliore per implementare la compressione a livello di proxy inverso. È possibile abilitarlo qui a scopo di test."
 }
