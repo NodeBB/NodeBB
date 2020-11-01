@@ -116,7 +116,7 @@ async function addToApprovalQueue(req, userData) {
 	let message = '[[register:registration-added-to-queue]]';
 	if (meta.config.showAverageApprovalTime) {
 		const average_time = await db.getObjectField('registration:queue:approval:times', 'average');
-		message += ` [[register:registration-queue-average-time, ${Math.floor(average_time / 3600000)}, ${Math.round((average_time % 3600000) / 60000)}]]`;
+		message += ` [[register:registration-queue-average-time, ${Math.floor(average_time / 60)}, ${average_time % 60}]]`;
 	}
 	if (meta.config.autoApproveTime > 0) {
 		message += ` [[register:registration-queue-auto-approve-time, ${meta.config.autoApproveTime}]]`;

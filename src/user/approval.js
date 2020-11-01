@@ -76,7 +76,7 @@ module.exports = function (User) {
 			template: 'registration_accepted',
 			uid: uid,
 		});
-		const total = await db.incrObjectField('registration:queue:approval:times', 'totalTime', Date.now() - creation_time);
+		const total = await db.incrObjectField('registration:queue:approval:times', 'totalTime', Math.floor((Date.now() - creation_time) / 60000));
 		const counter = await db.incrObjectField('registration:queue:approval:times', 'counter', 1);
 		await db.setObjectField('registration:queue:approval:times', 'average', total / counter);
 		return uid;
