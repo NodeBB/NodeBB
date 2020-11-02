@@ -27,7 +27,7 @@ module.exports = function (User) {
 		await User.auth.logAttempt(uid, ip);
 		const ok = await Password.compare(password, hashedPassword);
 		if (ok) {
-			User.auth.clearLoginAttempts(uid);
+			await User.auth.clearLoginAttempts(uid);
 		}
 		return ok;
 	};
