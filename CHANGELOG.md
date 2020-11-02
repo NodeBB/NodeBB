@@ -1,3 +1,24 @@
+#### v1.15.0-rc.4 (2020-11-02)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-rc.4 (57b49320)
+*  update changelog for v1.15.0-rc.3 (2738041b)
+
+##### New Features
+
+*  use github actions for ci (#8811) (eddf4a4f)
+*  allow mods/admins to see deleted posts on user profile (6e85920c)
+
+##### Bug Fixes
+
+*  broken test (87bff6cd)
+*  updated commitlint config to allow longer subjects, because nobody anywhere uses an email client that limits subject lines to 72 characters (a53d49a2)
+*  restore old behaviour of empty json w/ 401 code in admin middleware (dda5d426)
+*  deprecate middleware.isAdmin (15e0731d)
+*  post editing not taking plugin hook results into account (4439864c)
+* **deps:**  update dependency nodebb-theme-persona to v10.2.65 (0c7d5860)
+
 #### v1.15.0-rc.3 (2020-10-30)
 
 ##### Chores
