@@ -323,7 +323,12 @@
 								x = x[keyParts[i]];
 								break;
 							case 'string':
-								return x[keyParts[i]];
+								if (i === keyParts.length - 1) {
+									return x[keyParts[i]];
+								}
+
+								return false;
+
 							default:
 								return false;
 						}
