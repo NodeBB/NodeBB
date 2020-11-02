@@ -1,6 +1,7 @@
 'use strict';
 
 const nconf = require('nconf');
+const _ = require('lodash');
 
 const db = require('../../database');
 const user = require('../../user');
@@ -86,6 +87,13 @@ async function getPosts(callerUid, userData, setSuffix) {
 	let start = 0;
 	const count = 10;
 	const postData = [];
+
+	const [isAdmin, isModOfCids] = await Promise.all([
+		user.isAdministrator(callerUid),
+		user.isModerator(callerUid, cids),
+	]);
+	const cidToIsMod = _.zipObject(cids, isModOfCids);
+
 	do {
 		/* eslint-disable no-await-in-loop */
 		const pids = await db.getSortedSetRevRange(keys, start, start + count - 1);
@@ -94,7 +102,7 @@ async function getPosts(callerUid, userData, setSuffix) {
 		}
 		if (pids.length) {
 			const p = await posts.getPostSummaryByPids(pids, callerUid, { stripTags: false });
-			postData.push(...p.filter(p => p && !p.deleted && p.topic && !p.topic.deleted));
+			postData.push(...p.filter(p => p && p.topic && (isAdmin || cidToIsMod[p.topic.cid] || (!p.deleted && !p.topic.deleted))));
 		}
 		start += count;
 	} while (postData.length < count && hasMorePosts);
