@@ -1,8 +1,10 @@
 'use strict';
 
 const path = require('path');
-const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 const util = require('util');
+
+const bcrypt = require('bcryptjs');
 
 const fork = require('./meta/debugFork');
 
@@ -19,11 +21,17 @@ function forkChild(message, callback) {
 const forkChildAsync = util.promisify(forkChild);
 
 exports.hash = async function (rounds, password) {
+	password = crypto.createHash('sha512').update(password).digest('hex');
 	return await forkChildAsync({ type: 'hash', rounds: rounds, password: password });
 };
 
-exports.compare = async function (password, hash) {
+exports.compare = async function (password, hash, shaWrapped) {
 	const fakeHash = await getFakeHash();
+
+	if (shaWrapped) {
+		password = crypto.createHash('sha512').update(password).digest('hex');
+	}
+
 	return await forkChildAsync({ type: 'compare', password: password, hash: hash || fakeHash });
 };
 

@@ -584,7 +584,7 @@ describe('User', function () {
 					},
 				}, function (err, results) {
 					assert.ifError(err);
-					Password.compare('newpassword', results.password, function (err, match) {
+					Password.compare('newpassword', results.password, true, function (err, match) {
 						assert.ifError(err);
 						assert(match);
 						assert.strictEqual(results.userData['email:confirmed'], 1);

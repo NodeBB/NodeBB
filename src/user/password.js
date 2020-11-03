@@ -17,7 +17,7 @@ module.exports = function (User) {
 
 	User.isPasswordCorrect = async function (uid, password, ip) {
 		password = password || '';
-		var hashedPassword = await db.getObjectField('user:' + uid, 'password');
+		var { password: hashedPassword, 'password:shaWrapped': shaWrapped } = await db.getObjectFields('user:' + uid, ['password', 'password:shaWrapped']);
 		if (!hashedPassword) {
 			// Non-existant user, submit fake hash for comparison
 			hashedPassword = '';
@@ -25,7 +25,7 @@ module.exports = function (User) {
 
 		User.isPasswordValid(password, 0);
 		await User.auth.logAttempt(uid, ip);
-		const ok = await Password.compare(password, hashedPassword);
+		const ok = await Password.compare(password, hashedPassword, !!parseInt(shaWrapped, 10));
 		if (ok) {
 			await User.auth.clearLoginAttempts(uid);
 		}
