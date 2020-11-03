@@ -46,7 +46,6 @@ describe('Password', () => {
 			await password.hash(12, arr.join('a'));
 			const end = Date.now();
 
-			console.log(end - start);
 			assert(end - start < 5000);
 		});
 	});
