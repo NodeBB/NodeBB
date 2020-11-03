@@ -94,6 +94,10 @@ authenticationController.register = async function (req, res) {
 			throw new Error('[[user:change_password_error_match]]');
 		}
 
+		if (userData.password.length > 4096) {
+			throw new Error('[[error:password-too-long]]');
+		}
+
 		user.isPasswordValid(userData.password);
 
 		res.locals.processLogin = true;	// set it to false in plugin if you wish to just register only
