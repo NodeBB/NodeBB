@@ -216,6 +216,7 @@ async function setupDefaultConfigs(meta) {
 }
 
 async function giveDefaultGlobalPrivileges() {
+	winston.info('Giving default global privileges...\n');
 	const privileges = require('../../src/privileges');
 	await privileges.global.give([
 		'groups:chat', 'groups:upload:post:image', 'groups:signature', 'groups:search:content',
