@@ -37,7 +37,7 @@ define('admin/manage/groups', [
 				hidden: $('#create-group-hidden').is(':checked') ? 1 : 0,
 			};
 
-			api.post('/groups', submitObj, (response) => {
+			api.post('/groups', submitObj).then((response) => {
 				createModalError.addClass('hide');
 				createGroupName.val('');
 				createModal.on('hidden.bs.modal', function () {
