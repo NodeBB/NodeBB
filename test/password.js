@@ -37,5 +37,17 @@ describe('Password', () => {
 			const match = await password.compare(arr.join('a'), hash, true);
 			assert.strictEqual(match, false);
 		});
+
+		it('should process a million-character long password quickly', async () => {
+			// ... because sha512 reduces it to a constant size
+			const arr = [];
+			const start = Date.now();
+			arr.length = 1000000;
+			await password.hash(12, arr.join('a'));
+			const end = Date.now();
+
+			console.log(end - start);
+			assert(end - start < 5000);
+		});
 	});
 });
