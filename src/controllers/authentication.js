@@ -94,6 +94,10 @@ authenticationController.register = async function (req, res) {
 			throw new Error('[[user:change_password_error_match]]');
 		}
 
+		if (userData.password.length > 512) {
+			throw new Error('[[error:password-too-long]]');
+		}
+
 		user.isPasswordValid(userData.password);
 
 		res.locals.processLogin = true;	// set it to false in plugin if you wish to just register only
@@ -351,6 +355,10 @@ authenticationController.localLogin = async function (req, username, password, n
 
 	if (!password || !utils.isPasswordValid(password)) {
 		return next(new Error('[[error:invalid-password]]'));
+	}
+
+	if (password.length > 512) {
+		return next(new Error('[[error:password-too-long]]'));
 	}
 
 	const userslug = slugify(username);
