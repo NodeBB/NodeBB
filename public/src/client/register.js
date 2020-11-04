@@ -184,6 +184,8 @@ define('forum/register', [
 
 		if (password.length < ajaxify.data.minimumPasswordLength) {
 			showError(password_notify, '[[reset_password:password_too_short]]');
+		} else if (password.length > 512) {
+			showError(password_notify, '[[error:password-too-long]]');
 		} else if (!utils.isPasswordValid(password)) {
 			showError(password_notify, '[[user:change_password_error]]');
 		} else if (password === $('#username').val()) {

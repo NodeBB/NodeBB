@@ -43,6 +43,7 @@
 
 	"username-too-short": "Username too short",
 	"username-too-long": "Username too long",
+	"password-too-long": "Password too long",
 	"reset-rate-limited": "Too many password reset requests (rate limited)",
 
 	"user-banned": "User banned",

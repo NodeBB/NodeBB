@@ -16,6 +16,9 @@ define('forum/reset_code', ['zxcvbn'], function (zxcvbn) {
 			if (password.val().length < ajaxify.data.minimumPasswordLength) {
 				$('#notice').removeClass('hidden');
 				$('#notice strong').translateText('[[reset_password:password_too_short]]');
+			} else if (password.val().length > 512) {
+				$('#notice').removeClass('hidden');
+				$('#notice strong').translateText('[[error:password-too-long]]');
 			} else if (password.val() !== repeat.val()) {
 				$('#notice').removeClass('hidden');
 				$('#notice strong').translateText('[[reset_password:passwords_do_not_match]]');

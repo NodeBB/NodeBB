@@ -316,6 +316,19 @@ describe('authentication', function () {
 		});
 	});
 
+	it('should fail to login if password is longer than 4096', function (done) {
+		var longPassword;
+		for (var i = 0; i < 5000; i++) {
+			longPassword += 'a';
+		}
+		loginUser('someuser', longPassword, function (err, response, body) {
+			assert.ifError(err);
+			assert.equal(response.statusCode, 403);
+			assert.equal(body, '[[error:password-too-long]]');
+			done();
+		});
+	});
+
 	it('should fail to login if local login is disabled', function (done) {
 		privileges.global.rescind(['groups:local:login'], 'registered-users', function (err) {
 			assert.ifError(err);

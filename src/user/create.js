@@ -169,6 +169,10 @@ module.exports = function (User) {
 			throw new Error('[[reset_password:password_too_short]]');
 		}
 
+		if (password.length > 512) {
+			throw new Error('[[error:password-too-long]]');
+		}
+
 		const strength = zxcvbn(password);
 		if (strength.score < minStrength) {
 			throw new Error('[[user:weak_password]]');

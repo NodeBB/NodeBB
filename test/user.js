@@ -90,6 +90,17 @@ describe('User', function () {
 			});
 		});
 
+		it('should error with a too long password', function (done) {
+			var toolong = '';
+			for (var i = 0; i < 5000; i++) {
+				toolong += 'a';
+			}
+			User.create({ username: 'test', password: toolong }, function (err) {
+				assert.equal(err.message, '[[error:password-too-long]]');
+				done();
+			});
+		});
+
 		it('should error if username is already taken or rename user', async function () {
 			let err;
 			async function tryCreate(data) {

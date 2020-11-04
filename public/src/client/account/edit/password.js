@@ -25,6 +25,8 @@ define('forum/account/edit/password', [
 			passwordvalid = false;
 			if (password.val().length < ajaxify.data.minimumPasswordLength) {
 				showError(password_notify, '[[reset_password:password_too_short]]');
+			} else if (password.val().length > 512) {
+				showError(password_notify, '[[error:password-too-long]]');
 			} else if (!utils.isPasswordValid(password.val())) {
 				showError(password_notify, '[[user:change_password_error]]');
 			} else if (password.val() === ajaxify.data.username) {
