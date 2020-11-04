@@ -183,7 +183,9 @@ async function generateHeader(req, res, data) {
 }
 
 middleware.renderHeader = async function renderHeader(req, res, data) {
-	return await req.app.renderAsync('header', await generateHeader(req, res, data));
+	const header = await generateHeader(req, res, data);
+	if (res.headersSent) return;
+	return await req.app.renderAsync('header', header);
 };
 
 middleware.renderFooter = async function renderFooter(req, res, templateValues) {
