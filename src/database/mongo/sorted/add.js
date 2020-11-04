@@ -17,7 +17,7 @@ module.exports = function (module) {
 		value = helpers.valueToString(value);
 
 		try {
-			await module.client.collection('objects').updateOne({ _key: key, value: value }, { $set: { score: parseFloat(score) } }, { upsert: true, w: 1 });
+			await module.client.collection('objects').updateOne({ _key: key, value: value }, { $set: { score: parseFloat(score) } }, { upsert: true });
 		} catch (err) {
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
 				return await module.sortedSetAdd(key, score, value);

@@ -20,7 +20,7 @@ module.exports = function (module) {
 				key.forEach(key => bulk.find({ _key: key }).upsert().updateOne({ $set: writeData }));
 				await bulk.execute();
 			} else {
-				await module.client.collection('objects').updateOne({ _key: key }, { $set: writeData }, { upsert: true, w: 1 });
+				await module.client.collection('objects').updateOne({ _key: key }, { $set: writeData }, { upsert: true });
 			}
 		} catch (err) {
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
