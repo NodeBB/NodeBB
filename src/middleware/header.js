@@ -31,17 +31,23 @@ const relative_path = nconf.get('relative_path');
 middleware.buildHeader = helpers.try(async function buildHeader(req, res, next) {
 	res.locals.renderHeader = true;
 	res.locals.isAPI = false;
-	const [config] = await Promise.all([
+	const [config, isBanned] = await Promise.all([
 		controllers.api.loadConfig(req),
+		user.bans.isBanned(req.uid),
 		plugins.fireHook('filter:middleware.buildHeader', { req: req, locals: res.locals }),
 	]);
+
+	if (isBanned) {
+		req.logout();
+		return res.redirect('/');
+	}
 	res.locals.config = config;
 	next();
 });
 
 middleware.buildHeaderAsync = util.promisify(middleware.buildHeader);
 
-async function generateHeader(req, res, data) {
+middleware.renderHeader = async function renderHeader(req, res, data) {
 	var registrationType = meta.config.registrationType || 'normal';
 	res.locals.config = res.locals.config || {};
 	var templateValues = {
@@ -73,18 +79,10 @@ async function generateHeader(req, res, data) {
 		timeagoCode: languages.userTimeagoCode(res.locals.config.userLang),
 		browserTitle: translator.translate(controllers.helpers.buildTitle(translator.unescape(data.title))),
 		navigation: navigation.get(req.uid),
-		banned: user.bans.isBanned(req.uid),
-		banReason: user.bans.getReason(req.uid),
-
 		unreadData: topics.getUnreadData({ uid: req.uid }),
 		unreadChatCount: messaging.getUnreadCount(req.uid),
 		unreadNotificationCount: user.notifications.getUnreadCount(req.uid),
 	});
-
-	if (results.banned) {
-		req.logout();
-		return res.redirect('/');
-	}
 
 	const unreadData = {
 		'': {},
@@ -179,11 +177,7 @@ async function generateHeader(req, res, data) {
 		data: data,
 	});
 
-	return hookReturn.templateValues;
-}
-
-middleware.renderHeader = async function renderHeader(req, res, data) {
-	return await req.app.renderAsync('header', await generateHeader(req, res, data));
+	return await req.app.renderAsync('header', hookReturn.templateValues);
 };
 
 middleware.renderFooter = async function renderFooter(req, res, templateValues) {
