@@ -38,7 +38,7 @@ define('forum/account/edit/username', [
 				}
 
 				ajaxify.go('user/' + userslug + '/edit');
-			});
+			}).catch(app.alertError);
 
 			return false;
 		});

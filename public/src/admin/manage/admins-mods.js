@@ -1,8 +1,8 @@
 'use strict';
 
 define('admin/manage/admins-mods', [
-	'translator', 'benchpress', 'autocomplete', 'api',
-], function (translator, Benchpress, autocomplete, api) {
+	'translator', 'benchpress', 'autocomplete', 'api', 'bootbox',
+], function (translator, Benchpress, autocomplete, api, bootbox) {
 	var AdminsMods = {};
 
 	AdminsMods.init = function () {
@@ -44,7 +44,7 @@ define('admin/manage/admins-mods', [
 		});
 
 		autocomplete.user($('#global-mod-search'), function (ev, ui) {
-			api.put('/groups/global-moderators/membership/' + ui.item.user.uid, () => {
+			api.put('/groups/global-moderators/membership/' + ui.item.user.uid).then(() => {
 				app.alertSuccess('[[admin/manage/users:alerts.make-global-mod-success]]');
 				$('#global-mod-search').val('');
 
@@ -56,7 +56,7 @@ define('admin/manage/admins-mods', [
 					$('.global-moderator-area').prepend(html);
 					$('#no-global-mods-warning').addClass('hidden');
 				});
-			});
+			}).catch(app.alertError);
 		});
 
 		$('.global-moderator-area').on('click', '.remove-user-icon', function () {
@@ -71,7 +71,7 @@ define('admin/manage/admins-mods', [
 						if (!$('.global-moderator-area').children().length) {
 							$('#no-global-mods-warning').removeClass('hidden');
 						}
-					});
+					}).catch(app.alertError);
 				}
 			});
 		});

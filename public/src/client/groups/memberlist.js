@@ -84,7 +84,7 @@ define('forum/groups/memberlist', ['api'], function (api) {
 				done();
 			});
 		} else {
-			Promise.all(uids.map(uid => api.put('/groups/' + ajaxify.data.group.slug + '/membership/' + uid))).then(done);
+			Promise.all(uids.map(uid => api.put('/groups/' + ajaxify.data.group.slug + '/membership/' + uid))).then(done).catch(app.alertError);
 		}
 	}
 

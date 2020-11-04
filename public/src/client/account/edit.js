@@ -55,7 +55,7 @@ define('forum/account/edit', [
 			}
 
 			updateHeader(res.picture);
-		});
+		}).catch(app.alertError);
 
 		return false;
 	}

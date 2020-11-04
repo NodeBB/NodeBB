@@ -16,7 +16,7 @@ define('forum/groups/list', [
 						name: name,
 					}).then((res) => {
 						ajaxify.go('groups/' + res.slug);
-					});
+					}).catch(app.alertError);
 				}
 			});
 		});

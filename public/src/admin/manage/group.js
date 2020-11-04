@@ -130,7 +130,7 @@ define('admin/manage/group', [
 						}
 						api.del('/groups/' + ajaxify.data.group.slug + '/membership/' + uid).then(() => {
 							userRow.slideUp().remove();
-						});
+						}).catch(app.alertError);
 					});
 					break;
 				default:

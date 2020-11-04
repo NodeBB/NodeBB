@@ -158,7 +158,7 @@ define('forum/account/header', [
 								}
 
 								ajaxify.refresh();
-							});
+							}).catch(app.alertError);
 						},
 					},
 				},
@@ -169,7 +169,7 @@ define('forum/account/header', [
 	function unbanAccount() {
 		api.del('/users/' + ajaxify.data.theirid + '/ban').then(() => {
 			ajaxify.refresh();
-		});
+		}).catch(app.alertError);
 	}
 
 	function flagAccount() {

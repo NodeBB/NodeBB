@@ -198,7 +198,7 @@ define('admin/manage/categories', [
 			const categoryEl = listEl.querySelector(`li[data-cid="${cid}"]`);
 			categoryEl.classList[disabled ? 'add' : 'remove']('disabled');
 			$(categoryEl).find('li a[data-action="toggle"]').first().translateText(disabled ? '[[admin/manage/categories:enable]]' : '[[admin/manage/categories:disable]]');
-		})));
+		}).catch(app.alertError)));
 	};
 
 	function itemDidAdd(e) {
