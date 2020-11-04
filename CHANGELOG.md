@@ -1,3 +1,32 @@
+#### v1.15.0-rc.5 (2020-11-04)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-rc.5 (4bd2788b)
+*  add info log into tests (b6d86878)
+*  update renovate config to automatically merge non-major version bumps #yolo (1c8b8ce1)
+*  update changelog for v1.15.0-rc.4 (16882941)
+* **deps:**
+  *  update dependency mocha to v8.2.1 (35e725d1)
+  *  update dependency lint-staged to v10.5.1 (2fa78e43)
+
+##### New Features
+
+*  #8823, remove hardcoded write concern (a338f527)
+*  #8817, add login clientside hooks (715775a7)
+* **acp:**  autocomplete user search for welcome notifications (d40779a4)
+
+##### Bug Fixes
+
+*  undefined call (518d4fa1)
+*  missing await (08ff4041)
+*  client side crash when creating groups (5a2b14b7)
+*  disallow registration attempts with password length > 4096 (c0f699e6)
+*  missing await (4818ec37)
+* **deps:**
+  *  update dependency nodebb-theme-vanilla to v11.3.0 (0d80190f)
+  *  update dependency textcomplete to ^0.18.0 (df5d66e5)
+
 #### v1.15.0-rc.4 (2020-11-02)
 
 ##### Chores
