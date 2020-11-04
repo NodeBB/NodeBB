@@ -177,7 +177,7 @@ define('admin/manage/users', [
 			}
 
 			Promise.all(uids.map(function (uid) {
-				return api.delete('/users/' + uid + '/ban');
+				return api.del('/users/' + uid + '/ban');
 			})).then(() => {
 				onSuccess('[[admin/manage/users:alerts.unban-success]]', '.ban', false);
 			});
