@@ -90,7 +90,7 @@
         "morgan": "^1.10.0",
         "mousetrap": "^1.6.5",
         "@nodebb/bootswatch": "3.4.2",
-        "@nodebb/mubsub": "1.7.0",
+        "@nodebb/mubsub": "1.7.1",
         "@nodebb/socket.io-adapter-mongo": "3.1.0",
         "nconf": "^0.10.0",
         "nodebb-plugin-composer-default": "6.4.6",
