@@ -59,13 +59,11 @@ Users.unfollow = async (req, res) => {
 };
 
 Users.ban = async (req, res) => {
-	await hasAdminPrivilege(req.uid, 'users');
 	await api.users.ban(req, { ...req.body, uid: req.params.uid });
 	helpers.formatApiResponse(200, res);
 };
 
 Users.unban = async (req, res) => {
-	await hasAdminPrivilege(req.uid, 'users');
 	await api.users.unban(req, { ...req.body, uid: req.params.uid });
 	helpers.formatApiResponse(200, res);
 };

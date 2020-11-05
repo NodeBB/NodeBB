@@ -69,8 +69,6 @@ module.exports = function (privileges) {
 		'admin.user.loadGroups': 'admin:users',
 		'admin.groups.join': 'admin:users',
 		'admin.groups.leave': 'admin:users',
-		'user.banUsers': 'admin:users',
-		'user.unbanUsers': 'admin:users',
 		'admin.user.resetLockouts': 'admin:users',
 		'admin.user.validateEmail': 'admin:users',
 		'admin.user.sendValidationEmail': 'admin:users',
