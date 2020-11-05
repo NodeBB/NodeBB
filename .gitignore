@@ -40,6 +40,7 @@ pidfile
 /public/acp.min.js.map
 /public/installer.css
 /public/installer.min.js
+/public/bootstrap.min.css
 /public/logo.png
 
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio

@@ -15,6 +15,7 @@ const uglify = require('uglify-es');
 const nconf = require('nconf');
 
 const Benchpress = require('benchpressjs');
+const mkdirp = require('mkdirp');
 const { paths } = require('../src/constants');
 
 const app = express();
@@ -63,6 +64,8 @@ let success = false;
 let error = false;
 let launchUrl;
 
+const viewsDir = path.join(paths.baseDir, 'build/public/templates');
+
 web.install = async function (port) {
 	port = port || 4567;
 	winston.info('Launching web installer on port ' + port);
@@ -74,13 +77,13 @@ web.install = async function (port) {
 		Benchpress.__express(filepath, options, callback);
 	});
 	app.set('view engine', 'tpl');
-	const viewsDir = path.join(paths.baseDir, 'build/public/templates');
 	app.set('views', viewsDir);
 	app.use(bodyParser.urlencoded({
 		extended: true,
 	}));
 	try {
 		await Promise.all([
+			compileTemplate(),
 			compileLess(),
 			compileJS(),
 			copyCSS(),
@@ -226,6 +229,25 @@ async function launch(req, res) {
 		winston.error(err.stack);
 		throw err;
 	}
+}
+
+// this is necessary because otherwise the compiled templates won't be available on a clean install
+async function compileTemplate() {
+	const sourceFile = path.join(__dirname, '../src/views/install/index.tpl');
+	const destTpl = path.join(viewsDir, 'install/index.tpl');
+	const destJs = path.join(viewsDir, 'install/index.js');
+
+	const source = await fs.promises.readFile(sourceFile, 'utf8');
+
+	const [compiled] = await Promise.all([
+		Benchpress.precompile(source),
+		mkdirp(path.dirname(destJs)),
+	]);
+
+	await Promise.all([
+		fs.promises.writeFile(destJs, compiled),
+		fs.promises.writeFile(destTpl, source),
+	]);
 }
 
 async function compileLess() {
