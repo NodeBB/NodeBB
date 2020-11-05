@@ -249,7 +249,7 @@
 			<!-- IF plugins.length -->
 			<li class="dropdown menu-item">
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin/menu:section-plugins]]</a>
-				<ul class="dropdown-menu" role="menu">
+				<ul class="dropdown-menu plugins-menu" role="menu">
 					<li class="dropdown-header">[[admin/menu:section-plugins]]</li>
 					<!-- BEGIN plugins -->
 					<li>
