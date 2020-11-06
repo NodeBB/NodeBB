@@ -22,6 +22,9 @@ exports.get = async function (req, res, callback) {
 		templateData: {},
 	});
 
+	if (res.headersSent) {
+		return;
+	}
 	if (!data || !data.templateData) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
