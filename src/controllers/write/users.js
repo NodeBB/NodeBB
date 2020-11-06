@@ -22,7 +22,7 @@ Users.redirectBySlug = async (req, res) => {
 
 	if (uid) {
 		const path = req.path.split('/').slice(3).join('/');
-		helpers.redirect(res, `/api/v3/users/${uid}/${path}`, false);
+		helpers.redirect(res, `/api/v3/users/${uid}/${path}`, true);
 	} else {
 		helpers.formatApiResponse(404, res);
 	}
@@ -32,6 +32,10 @@ Users.create = async (req, res) => {
 	await hasAdminPrivilege(req.uid, 'users');
 	const userObj = await api.users.create(req, req.body);
 	helpers.formatApiResponse(200, res, userObj);
+};
+
+Users.exists = async (req, res) => {
+	helpers.formatApiResponse(200, res);
 };
 
 Users.update = async (req, res) => {
