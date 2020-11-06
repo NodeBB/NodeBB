@@ -33,6 +33,9 @@ function authenticatedRoutes() {
 
 	setupApiRoute(router, 'post', '/:uid/tokens', [...middlewares, middleware.assert.user], controllers.write.users.generateToken);
 	setupApiRoute(router, 'delete', '/:uid/tokens/:token', [...middlewares, middleware.assert.user], controllers.write.users.deleteToken);
+
+	// Shorthand route to access user routes by userslug
+	router.all('/+bySlug/:userslug*?', [...middlewares], controllers.write.users.redirectBySlug);
 }
 
 module.exports = function () {

@@ -1,6 +1,7 @@
 'use strict';
 
 const api = require('../../api');
+const user = require('../../user');
 const meta = require('../../meta');
 const privileges = require('../../privileges');
 const utils = require('../../utils');
@@ -13,6 +14,17 @@ const hasAdminPrivilege = async (uid, privilege) => {
 	const ok = await privileges.admin.can(`admin:${privilege}`, uid);
 	if (!ok) {
 		throw new Error('[[error:no-privileges]]');
+	}
+};
+
+Users.redirectBySlug = async (req, res) => {
+	const uid = await user.getUidByUserslug(req.params.userslug);
+
+	if (uid) {
+		const path = req.path.split('/').slice(3).join('/');
+		helpers.redirect(res, `/api/v3/users/${uid}/${path}`, false);
+	} else {
+		helpers.formatApiResponse(404, res);
 	}
 };
 

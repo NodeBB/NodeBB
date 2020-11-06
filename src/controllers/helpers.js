@@ -144,7 +144,7 @@ helpers.notAllowed = async function (req, res, error) {
 };
 
 helpers.redirect = function (res, url, permanent) {
-	if (res.locals.isAPI) {
+	if (res.locals.isAPI && !url.startsWith('/api/v3/')) {
 		res.set('X-Redirect', encodeURI(url)).status(200).json(url);
 	} else {
 		res.redirect(permanent ? 308 : 307, relative_path + encodeURI(url));
