@@ -19,7 +19,7 @@ const Sockets = module.exports;
 Sockets.init = function (server) {
 	requireModules();
 
-	const SocketIO = require('socket.io');
+	const SocketIO = require('socket.io').Server;
 	const socketioWildcard = require('socketio-wildcard')();
 	const io = new SocketIO({
 		path: nconf.get('relative_path') + '/socket.io',
@@ -40,6 +40,10 @@ Sockets.init = function (server) {
 
 	io.on('connection', onConnection);
 
+	const opts = {
+		transports: nconf.get('socket.io:transports') || ['polling', 'websocket'],
+		cookie: false,
+	};
 	/*
 	 * Restrict socket.io listener to cookie domain. If none is set, infer based on url.
 	 * Production only so you don't get accidentally locked out.
@@ -47,15 +51,15 @@ Sockets.init = function (server) {
 	 */
 	if (process.env.NODE_ENV !== 'development') {
 		const origins = nconf.get('socket.io:origins');
-		io.origins(origins);
+		opts.cors = {
+			origin: origins,
+			methods: ['GET', 'POST'],
+			allowedHeaders: ['content-type'],
+		};
 		winston.info('[socket.io] Restricting access to origin: ' + origins);
 	}
 
-	io.listen(server, {
-		transports: nconf.get('socket.io:transports'),
-		cookie: false,
-	});
-
+	io.listen(server, opts);
 	Sockets.server = io;
 };
 
@@ -80,8 +84,8 @@ function onConnect(socket) {
 	}
 
 	socket.join('sess_' + socket.request.signedCookies[nconf.get('sessionKey')]);
-	Sockets.server.sockets.sockets[socket.id].emit('checkSession', socket.uid);
-	Sockets.server.sockets.sockets[socket.id].emit('setHostname', os.hostname());
+	socket.emit('checkSession', socket.uid);
+	socket.emit('setHostname', os.hostname());
 }
 
 async function onMessage(socket, payload) {
@@ -215,12 +219,15 @@ Sockets.in = function (room) {
 };
 
 Sockets.getUserSocketCount = function (uid) {
+	return Sockets.getCountInRoom('uid_' + uid);
+};
+
+Sockets.getCountInRoom = function (room) {
 	if (!Sockets.server) {
 		return 0;
 	}
-
-	const room = Sockets.server.sockets.adapter.rooms['uid_' + uid];
-	return room ? room.length : 0;
+	const roomMap = Sockets.server.sockets.adapter.rooms.get(room);
+	return roomMap ? roomMap.size : 0;
 };
 
 Sockets.warnDeprecated = (socket, replacement) => {
