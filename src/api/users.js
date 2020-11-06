@@ -1,5 +1,7 @@
 'use strict';
 
+const validator = require('validator');
+
 const db = require('../database');
 const user = require('../user');
 const groups = require('../groups');
@@ -163,7 +165,7 @@ usersAPI.ban = async function (caller, data) {
 
 	sockets.in('uid_' + data.uid).emit('event:banned', {
 		until: data.until,
-		reason: data.reason,
+		reason: validator.escape(String(data.reason || '')),
 	});
 
 	await flags.resolveFlag('user', data.uid, caller.uid);
