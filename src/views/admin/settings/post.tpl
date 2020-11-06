@@ -170,6 +170,13 @@
 					[[admin/settings/post:timestamp.necro-threshold-help]]
 				</p>
 			</div>
+			<div class="form-group">
+				<label for="incrementTopicViewsInterval">[[admin/settings/post:timestamp.topic-views-interval]]</label>
+				<input type="number" class="form-control" id="incrementTopicViewsInterval" data-field="incrementTopicViewsInterval"  />
+				<p class="help-block">
+					[[admin/settings/post:timestamp.topic-views-interval-help]]
+				</p>
+			</div>
 		</form>
 	</div>
 </div>

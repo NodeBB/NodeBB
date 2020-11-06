@@ -127,11 +127,14 @@ function calculateStartStop(page, postIndex, settings) {
 }
 
 async function incrementViewCount(req, tid) {
-	if (req.uid >= 1) {
+	const allow = req.uid > 0 || (meta.config.guestsIncrementTopicViews && req.uid === 0);
+	if (allow) {
 		req.session.tids_viewed = req.session.tids_viewed || {};
-		if (!req.session.tids_viewed[tid] || req.session.tids_viewed[tid] < Date.now() - 3600000) {
+		const now = Date.now();
+		const interval = meta.config.incrementTopicViewsInterval * 60000;
+		if (!req.session.tids_viewed[tid] || req.session.tids_viewed[tid] < now - interval) {
 			await topics.increaseViewCount(tid);
-			req.session.tids_viewed[tid] = Date.now();
+			req.session.tids_viewed[tid] = now;
 		}
 	}
 }
