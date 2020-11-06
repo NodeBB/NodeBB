@@ -1,5 +1,7 @@
 {
 	"handles": "Nome utente Ospite",
 	"handles.enabled": "Consenti nome utente ospite",
-	"handles.enabled-help": "Questa opzione mostra un nuovo campo che permette agli ospiti di scegliere un nome da associare ad ogni post che fanno. Se disabilitata, saranno semplicemente chiamati \"Ospite\"."
+	"handles.enabled-help": "Questa opzione mostra un nuovo campo che permette agli ospiti di scegliere un nome da associare ad ogni post che fanno. Se disabilitata, saranno semplicemente chiamati \"Ospite\".",
+	"topic-views": "Topic views",
+	"topic-views.enabled": "Allow guests to increase topic view counts"
 }

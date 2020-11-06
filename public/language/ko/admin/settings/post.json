@@ -34,6 +34,8 @@
 	"timestamp.cut-off-help": "날짜 및 시간은 상대시간으로 표기 (예: \"3시간 전\" / \"5일 전\"). 표기 기간이 지나면 지역시간으로 변환(예: 2016년 11월 5일 15:30). <br /><em>(기본값: <code>30일</code>, 또는 한달). 0으로 지정 시 항상 날짜 표기, 비워둘 시 항상 상대시간 표기.</em>",
 	"timestamp.necro-threshold": "Necro Threshold (in days)",
 	"timestamp.necro-threshold-help": "A message will be shown between posts if the time between them is longer than the necro threshold. (Default: <code>7</code>, or one week). Set to 0 to disable.</em>",
+	"timestamp.topic-views-interval": "Increment topic views interval (in minutes)",
+	"timestamp.topic-views-interval-help": "Topic views will only increment once every X minutes as defined by this setting.",
 	"teaser": "미리보기",
 	"teaser.last-post": "최근 글 - 가장 최근 글 보여주기. 답글이 없을 시 게시물 본문 보여주기",
 	"teaser.last-reply": "최근 글 - 가장 최근 글 보여주기. 답글이 없을 시 \"답글 없음\" 표기",

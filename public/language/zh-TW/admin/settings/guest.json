@@ -1,5 +1,7 @@
 {
 	"handles": "訪客使用者名",
 	"handles.enabled": "允許訪客使用者名",
-	"handles.enabled-help": "這個選項將允許訪客使用一個額外的輸入框來設置發文時的使用者名，如果被禁用，僅會統一顯示為“訪客”"
+	"handles.enabled-help": "這個選項將允許訪客使用一個額外的輸入框來設置發文時的使用者名，如果被禁用，僅會統一顯示為“訪客”",
+	"topic-views": "Topic views",
+	"topic-views.enabled": "Allow guests to increase topic view counts"
 }

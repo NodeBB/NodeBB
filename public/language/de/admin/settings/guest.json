@@ -1,5 +1,7 @@
 {
 	"handles": "Gastzugang",
 	"handles.enabled": "Gastzugänge erlauben",
-	"handles.enabled-help": "Diese Option offenbart ein neues Feld, welches Gästen erlaubt einen Nutzernamen zu wählen, welcher sie mit jedem Beitrag assoziiert den sie erstellen. Wenn diese Option deaktiviert ist, werden sie einfach \"Gast\" genannt"
+	"handles.enabled-help": "Diese Option offenbart ein neues Feld, welches Gästen erlaubt einen Nutzernamen zu wählen, welcher sie mit jedem Beitrag assoziiert den sie erstellen. Wenn diese Option deaktiviert ist, werden sie einfach \"Gast\" genannt",
+	"topic-views": "Topic views",
+	"topic-views.enabled": "Allow guests to increase topic view counts"
 }

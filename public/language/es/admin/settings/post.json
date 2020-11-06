@@ -34,6 +34,8 @@
 	"timestamp.cut-off-help": "Las fechas  &amp; horas serán mostradas de una forma relativa (e.g. \"hace 3 horas\"/\"hace 5 días\"), y localizadas en varios\n\t\t\t\t\tlenguajes. Después de cierto punto, este texto puede ser cambiado para mostrar la propia fecha localizada\n\t\t\t\t\t\t(e.g. 5 Nov 2016 15:30).<br /><em>(Por defecto: <code>30</code>, o un mes). Ponla a 0 para mostrar siempre las fechas exactas. Déjala en blanco para siempre mostrar las fechas relativas.</em>",
 	"timestamp.necro-threshold": "Necro Threshold (in days)",
 	"timestamp.necro-threshold-help": "A message will be shown between posts if the time between them is longer than the necro threshold. (Default: <code>7</code>, or one week). Set to 0 to disable.</em>",
+	"timestamp.topic-views-interval": "Increment topic views interval (in minutes)",
+	"timestamp.topic-views-interval-help": "Topic views will only increment once every X minutes as defined by this setting.",
 	"teaser": "Entrada de muestra",
 	"teaser.last-post": "Último &ndash; Muestra la última entrada, incluyendo la entrada original, si no hay respuestas.",
 	"teaser.last-reply": "Última &ndash; Muestra la última respuesta, o un texto \"No hay respuestas\" si no hay respuestas.",

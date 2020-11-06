@@ -34,6 +34,8 @@
 	"timestamp.cut-off-help": "Дата і час показуються відносно (тобто \"3 години тому\" / \"5 днів тому\"). Після певного періоду часу, цей текст може бути змінено на звичайну дати (тобто 5 Лис 2016 15:30). <br /><em>(Типово: <code>30</code>, або один місяць). Вкажіть 0, щоб завжди показувати дати або залиште пустим, щоб завжди показувати відносний час.</em>",
 	"timestamp.necro-threshold": "Necro Threshold (in days)",
 	"timestamp.necro-threshold-help": "A message will be shown between posts if the time between them is longer than the necro threshold. (Default: <code>7</code>, or one week). Set to 0 to disable.</em>",
+	"timestamp.topic-views-interval": "Increment topic views interval (in minutes)",
+	"timestamp.topic-views-interval-help": "Topic views will only increment once every X minutes as defined by this setting.",
 	"teaser": "Пост тизер",
 	"teaser.last-post": "Останній &mdash; показувати останній пост або перший, якщо немає відповідей",
 	"teaser.last-reply": "Останній &mdash; показувати останній пост або \"Немає відповідей\", якщо немає відповідей",

@@ -34,6 +34,8 @@
 	"timestamp.cut-off-help": "Сначала дата и время сообщения будут отображаться в относительном виде: &laquo;3 часа назад&raquo; / &laquo;5 дней назад&raquo;, локализованным в соответствии с языковыми настройками форума. Затем формат изменится на обычный: 5 Ноября 2016 15:30. <br /><em>(Стандартная отсечка: <code>30</code>, или один месяц). Введите 0, чтобы всегда отображать обычные дату и время, или оставьте поле пустым, чтобы всегда использовать относительный вид</em>",
 	"timestamp.necro-threshold": "Порог устаревания (в днях)",
 	"timestamp.necro-threshold-help": "Сообщение будет отображаться между сообщениями, если время между ними превышает пороговое значение. (По умолчанию: <code>7</code>, или одна неделя). Установите 0 чтобы отключить.</em>",
+	"timestamp.topic-views-interval": "Increment topic views interval (in minutes)",
+	"timestamp.topic-views-interval-help": "Topic views will only increment once every X minutes as defined by this setting.",
 	"teaser": "Сообщение-анонс",
 	"teaser.last-post": "Последнее &ndash; показать последнее сообщение в теме (первое, если ответов нет).",
 	"teaser.last-reply": "Последнее &ndash; показать последнее сообщение или пометку &laquo;Ответов нет&raquo;",

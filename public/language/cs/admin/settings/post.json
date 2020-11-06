@@ -34,6 +34,8 @@
 	"timestamp.cut-off-help": "Datum a čas bude zobrazen relativně (tj. „před 3 hodinami” / „před 5 dny”), a dle toho lokalizován do různých\n\t\t\t\t\tjazyků. Za určitých okolností, může tento text být přepnut na lokalizované datum\n\t\t\t\t\t(tj. 5 Led 2017 15:30)<br /><em>(výchozí: <code>30</code>,nebo měsíc). Nastavte na 0, pro zobrazení datumů, zanecháte-li prázdné, bude vždy zobrazen relativní čas.</em>",
 	"timestamp.necro-threshold": "Necro Threshold (in days)",
 	"timestamp.necro-threshold-help": "A message will be shown between posts if the time between them is longer than the necro threshold. (Default: <code>7</code>, or one week). Set to 0 to disable.</em>",
+	"timestamp.topic-views-interval": "Increment topic views interval (in minutes)",
+	"timestamp.topic-views-interval-help": "Topic views will only increment once every X minutes as defined by this setting.",
 	"teaser": "Ukázka příspěvku",
 	"teaser.last-post": "Poslední – zobrazení posledního příspěvku, včetně hlavního příspěvku, nejsou-li odpovědi",
 	"teaser.last-reply": "Poslední – zobrazení poslední odpovědi, nebo nejsou-li žádné odpovědi textu „Bez odpovědi”",

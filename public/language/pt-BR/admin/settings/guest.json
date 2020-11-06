@@ -1,5 +1,7 @@
 {
 	"handles": "Nome para Visitantes",
 	"handles.enabled": "Permitir que visitantes escolham um nome",
-	"handles.enabled-help": "Esta opção mostra um novo campo que permite visitantes de escolher um nome para associar a cada post que eles fizerem. Se desabilitado, eles serão simplesmente chamados de \"Visitante\"."
+	"handles.enabled-help": "Esta opção mostra um novo campo que permite visitantes de escolher um nome para associar a cada post que eles fizerem. Se desabilitado, eles serão simplesmente chamados de \"Visitante\".",
+	"topic-views": "Topic views",
+	"topic-views.enabled": "Allow guests to increase topic view counts"
 }
