@@ -336,9 +336,9 @@ JS.buildBundle = async function (target, fork) {
 		client: 'nodebb.min.js',
 		admin: 'acp.min.js',
 	};
+	await mkdirp(path.join(__dirname, '../../build/public'));
 	await requirejsOptimize(target);
 	const files = await getBundleScriptList(target);
-	await mkdirp(path.join(__dirname, '../../build/public'));
 
 	files.push({
 		srcPath: path.join(__dirname, '../../build/public/rjs-bundle-' + target + '.js'),
