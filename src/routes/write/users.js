@@ -18,6 +18,7 @@ function authenticatedRoutes() {
 	setupApiRoute(router, 'post', '/', [...middlewares, middleware.checkRequired.bind(null, ['username'])], controllers.write.users.create);
 	setupApiRoute(router, 'delete', '/', [...middlewares, middleware.checkRequired.bind(null, ['uids'])], controllers.write.users.deleteMany);
 
+	setupApiRoute(router, 'head', '/:uid', [middleware.assert.user], controllers.write.users.exists);
 	setupApiRoute(router, 'put', '/:uid', [...middlewares, middleware.assert.user], controllers.write.users.update);
 	setupApiRoute(router, 'delete', '/:uid', [...middlewares, middleware.assert.user, middleware.exposePrivileges], controllers.write.users.delete);
 
@@ -35,7 +36,7 @@ function authenticatedRoutes() {
 	setupApiRoute(router, 'delete', '/:uid/tokens/:token', [...middlewares, middleware.assert.user], controllers.write.users.deleteToken);
 
 	// Shorthand route to access user routes by userslug
-	router.all('/+bySlug/:userslug*?', [...middlewares], controllers.write.users.redirectBySlug);
+	router.all('/+bySlug/:userslug*?', [], controllers.write.users.redirectBySlug);
 }
 
 module.exports = function () {
