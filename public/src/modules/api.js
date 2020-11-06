@@ -13,14 +13,17 @@ define('api', () => {
 			$.ajax(options)
 				.done((res) => {
 					cb(null,
-						res.hasOwnProperty('status') && res.hasOwnProperty('response') ?
-							res.response : res
+						res && res.hasOwnProperty('status') && res.hasOwnProperty('response') ?
+							res.response : (res || {})
 					);
 				})
 				.fail((ev) => {
-					const errMessage = ev.responseJSON.status && ev.responseJSON.status.message ?
-						ev.responseJSON.status.message :
-						ev.responseJSON.error;
+					let errMessage;
+					if (ev.responseJSON) {
+						errMessage = ev.responseJSON.status && ev.responseJSON.status.message ?
+							ev.responseJSON.status.message :
+							ev.responseJSON.error;
+					}
 
 					cb(new Error(errMessage || ev.statusText));
 				});
@@ -39,8 +42,13 @@ define('api', () => {
 		});
 	}
 
-	api.get = (route, payload, onSuccess) => call({
+	api.get = (route, payload = {}, onSuccess) => call({
 		url: route + (Object.keys(payload).length ? ('?' + $.param(payload)) : ''),
+	}, onSuccess);
+
+	api.head = (route, payload, onSuccess) => call({
+		url: route + (Object.keys(payload).length ? ('?' + $.param(payload)) : ''),
+		method: 'head',
 	}, onSuccess);
 
 	api.post = (route, payload, onSuccess) => call({

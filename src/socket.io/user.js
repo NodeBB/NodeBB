@@ -30,6 +30,8 @@ require('./user/ban')(SocketUser);
 require('./user/registration')(SocketUser);
 
 SocketUser.exists = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'HEAD /api/v3/users/bySlug/:userslug');
+
 	if (!data || !data.username) {
 		throw new Error('[[error:invalid-data]]');
 	}

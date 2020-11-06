@@ -2,8 +2,8 @@
 
 
 define('forum/register', [
-	'translator', 'zxcvbn', 'slugify', 'jquery-form',
-], function (translator, zxcvbn, slugify) {
+	'translator', 'zxcvbn', 'slugify', 'api', 'jquery-form',
+], function (translator, zxcvbn, slugify, api) {
 	var Register = {};
 	var validationError = false;
 	var successIcon = '';
@@ -159,21 +159,14 @@ define('forum/register', [
 		} else if (!utils.isUserNameValid(username) || !slugify(username)) {
 			showError(username_notify, '[[error:invalid-username]]');
 		} else {
-			socket.emit('user.exists', {
-				username: username,
-			}, function (err, exists) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-
-				if (exists) {
+			api.head(`/users/bySlug/${username}`, {})
+				.then(() => {
 					showError(username_notify, '[[error:username-taken]]');
-				} else {
+				})
+				.catch(() => {
 					showSuccess(username_notify, successIcon);
-				}
-
-				callback();
-			});
+				})
+				.finally(callback);
 		}
 	}
 
