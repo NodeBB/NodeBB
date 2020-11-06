@@ -159,14 +159,18 @@ define('forum/register', [
 		} else if (!utils.isUserNameValid(username) || !slugify(username)) {
 			showError(username_notify, '[[error:invalid-username]]');
 		} else {
-			api.head(`/users/bySlug/${username}`, {})
-				.then(() => {
-					showError(username_notify, '[[error:username-taken]]');
-				})
-				.catch(() => {
+			Promise.allSettled([
+				api.head(`/users/bySlug/${username}`, {}),
+				api.head(`/groups/${username}`, {}),
+			]).then((results) => {
+				if (results.every(obj => obj.status === 'rejected')) {
 					showSuccess(username_notify, successIcon);
-				})
-				.finally(callback);
+				} else {
+					showError(username_notify, '[[error:username-taken]]');
+				}
+
+				callback();
+			});
 		}
 	}
 
