@@ -42,7 +42,7 @@ define('api', () => {
 		});
 	}
 
-	api.get = (route, payload = {}, onSuccess) => call({
+	api.get = (route, payload, onSuccess) => call({
 		url: route + (Object.keys(payload).length ? ('?' + $.param(payload)) : ''),
 	}, onSuccess);
 
