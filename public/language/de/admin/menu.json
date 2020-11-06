@@ -33,6 +33,7 @@
 	"settings/notifications": "Benachrichtigungen",
 	"settings/sounds": "Sounds",
 	"settings/social": "Social",
+	"settings/api": "API-Zugang",
 	"settings/cookies": "Cookies",
 	"settings/web-crawler": "Web Crawler",
 	"settings/sockets": "Sockets",
