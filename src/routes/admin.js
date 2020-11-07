@@ -61,6 +61,7 @@ function apiRoutes(router, middleware, controllers) {
 	router.get('/api/admin/users/csv', middleware.authenticate, helpers.tryRoute(controllers.admin.users.getCSV));
 	router.get('/api/admin/groups/:groupname/csv', middleware.authenticate, helpers.tryRoute(controllers.admin.groups.getCSV));
 	router.get('/api/admin/analytics', middleware.authenticate, helpers.tryRoute(controllers.admin.dashboard.getAnalytics));
+	router.get('/api/admin/advanced/cache/dump', middleware.authenticate, helpers.tryRoute(controllers.admin.cache.dump));
 
 	const multipart = require('connect-multiparty');
 	const multipartMiddleware = multipart();

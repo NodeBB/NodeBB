@@ -1,11 +1,11 @@
 {
 	"post-cache": "Pamięć podręczna postów",
-	"posts-in-cache": "Posty w pamięci podręcznej",
-	"average-post-size": "Średnia wielkość posta",
-	"length-to-max": "Długość / Maks.",
 	"percent-full": "%1%",
 	"post-cache-size": "Rozmiar pamięci podręcznej postów",
 	"items-in-cache": "Elementów w pamięci podręcznej",
 	"control-panel": "Panel administracyjny",
-	"update-settings": "Zaktualizuj ustawienia pamięci"
+	"update-settings": "Zaktualizuj ustawienia pamięci",
+	"clear": "Clear",
+	"download": "Download",
+	"enabled": "Enabled"
 }

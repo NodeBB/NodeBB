@@ -4,6 +4,8 @@ const os = require('os');
 const winston = require('winston');
 const nconf = require('nconf');
 const _ = require('lodash');
+const path = require('path');
+const mkdirp = require('mkdirp');
 
 const cacheBuster = require('./cacheBuster');
 let meta;
@@ -83,6 +85,7 @@ async function beforeBuild(targets) {
 		await meta.themes.setupPaths();
 		const plugins = require('../plugins');
 		await plugins.prepareForBuild(targets);
+		await mkdirp(path.join(__dirname, '../../build/public'));
 	} catch (err) {
 		winston.error('[build] Encountered error preparing for build\n' + err.stack);
 		throw err;

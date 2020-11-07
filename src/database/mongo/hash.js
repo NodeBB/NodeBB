@@ -29,7 +29,7 @@ module.exports = function (module) {
 			throw err;
 		}
 
-		cache.delObjectCache(key);
+		cache.del(key);
 	};
 
 	module.setObjectField = async function (key, field, value) {
@@ -164,7 +164,7 @@ module.exports = function (module) {
 		});
 
 		await module.client.collection('objects').updateOne({ _key: key }, { $unset: data });
-		cache.delObjectCache(key);
+		cache.del(key);
 	};
 
 	module.incrObjectField = async function (key, field) {
@@ -191,13 +191,13 @@ module.exports = function (module) {
 				bulk.find({ _key: key }).upsert().update({ $inc: increment });
 			});
 			await bulk.execute();
-			cache.delObjectCache(key);
+			cache.del(key);
 			const result = await module.getObjectsFields(key, [field]);
 			return result.map(data => data && data[field]);
 		}
 
 		const result = await module.client.collection('objects').findOneAndUpdate({ _key: key }, { $inc: increment }, { returnOriginal: false, upsert: true });
-		cache.delObjectCache(key);
+		cache.del(key);
 		return result && result.value ? result.value[field] : null;
 	};
 };

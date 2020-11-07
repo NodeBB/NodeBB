@@ -15,6 +15,16 @@ define('admin/advanced/cache', function () {
 				ajaxify.refresh();
 			});
 		});
+		$('.checkbox').on('change', function () {
+			var input = $(this).find('input');
+			var flag = input.is(':checked');
+			var name = $(this).attr('data-name');
+			socket.emit('admin.cache.toggle', { name: name, enabled: flag }, function (err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+			});
+		});
 	};
 	return Cache;
 });

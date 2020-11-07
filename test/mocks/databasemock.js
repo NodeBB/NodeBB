@@ -168,7 +168,7 @@ async function setupMockDefaults() {
 	const meta = require('../../src/meta');
 	await db.emptydb();
 
-	require('../../src/groups').resetCache();
+	require('../../src/groups').cache.reset();
 	require('../../src/posts/cache').reset();
 	require('../../src/cache').reset();
 	winston.info('test_database flushed');

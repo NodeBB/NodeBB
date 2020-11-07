@@ -6,6 +6,10 @@ const helpers = require('../helpers');
 
 const Groups = module.exports;
 
+Groups.exists = async (req, res) => {
+	helpers.formatApiResponse(200, res);
+};
+
 Groups.create = async (req, res) => {
 	const groupObj = await api.groups.create(req, req.body);
 	helpers.formatApiResponse(200, res, groupObj);
