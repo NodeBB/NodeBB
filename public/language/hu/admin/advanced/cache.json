@@ -1,11 +1,11 @@
 {
 	"post-cache": "Hozzászólás gyorsítótár",
-	"posts-in-cache": "Hozzászólások a gyorsítótárban",
-	"average-post-size": "Átlagos hozzászólás-méret",
-	"length-to-max": "Hossz / Max",
 	"percent-full": "%1% Tele",
 	"post-cache-size": "Hozzászólás gyorsítótáras mérete",
 	"items-in-cache": "Elemek a gyorsítótárban",
 	"control-panel": "Vezérlőpult",
-	"update-settings": "Gyorsítótár beállítások frissítése"
+	"update-settings": "Gyorsítótár beállítások frissítése",
+	"clear": "Clear",
+	"download": "Download",
+	"enabled": "Enabled"
 }

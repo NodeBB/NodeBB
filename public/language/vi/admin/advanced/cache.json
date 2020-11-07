@@ -1,11 +1,11 @@
 {
 	"post-cache": "Bộ nhớ đệm bài viết",
-	"posts-in-cache": "Cache cho bài viết",
-	"average-post-size": "Kích thước bài viết",
-	"length-to-max": "Độ dài / Tối Đa",
 	"percent-full": "%1% Đầy",
 	"post-cache-size": "Kích thước cache bài viết",
 	"items-in-cache": "Thành phần trong Cache",
 	"control-panel": "Bảng điều khiển",
-	"update-settings": "Cập nhật thiết lập Cache"
+	"update-settings": "Cập nhật thiết lập Cache",
+	"clear": "Clear",
+	"download": "Download",
+	"enabled": "Enabled"
 }

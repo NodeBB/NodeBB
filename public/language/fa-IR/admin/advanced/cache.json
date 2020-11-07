@@ -1,11 +1,11 @@
 {
 	"post-cache": "کش دیدگاه ",
-	"posts-in-cache": "پست های موجود در کش",
-	"average-post-size": "اندازه متوسط دیدگاه",
-	"length-to-max": "طول / حداکثر",
 	"percent-full": "%1% تمام شده",
 	"post-cache-size": "سایز کش دیدگاه",
 	"items-in-cache": "موارد موجود در کش",
 	"control-panel": "کنترل پنل",
-	"update-settings": "به روز رسانی تنظیمات کش"
+	"update-settings": "به روز رسانی تنظیمات کش",
+	"clear": "Clear",
+	"download": "Download",
+	"enabled": "Enabled"
 }

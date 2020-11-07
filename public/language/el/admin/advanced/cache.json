@@ -1,11 +1,11 @@
 {
 	"post-cache": "Προσωρινή μνήμη ανάρτησης",
-	"posts-in-cache": "Αναρτήσεις στην προσωρινή μνήμη",
-	"average-post-size": "Μέσο Μέγεθος Ανάρτησης",
-	"length-to-max": "Μήκος / Μέγ",
 	"percent-full": "%1% Πλήρες",
 	"post-cache-size": "Μέγεθος προσωρινής μνήμης ανάρτησης",
 	"items-in-cache": "Αντικείμενα στην προσωρινή μνήμη",
 	"control-panel": "Πίνακας Ελέγχου",
-	"update-settings": "Ενημέρωση ρυθμίσεων προσωρινής μνήμης"
+	"update-settings": "Ενημέρωση ρυθμίσεων προσωρινής μνήμης",
+	"clear": "Clear",
+	"download": "Download",
+	"enabled": "Enabled"
 }
