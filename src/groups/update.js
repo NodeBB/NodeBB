@@ -197,7 +197,7 @@ module.exports = function (Groups) {
 			old: oldName,
 			new: newName,
 		});
-		Groups.resetCache();
+		Groups.cache.reset();
 	};
 
 	async function updateMemberGroupTitles(oldName, newName) {

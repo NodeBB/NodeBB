@@ -31,10 +31,8 @@ module.exports = function (Groups) {
 		const cacheKey = uid + ':' + groupName;
 		let isMember = Groups.cache.get(cacheKey);
 		if (isMember !== undefined) {
-			Groups.cache.hits += 1;
 			return isMember;
 		}
-		Groups.cache.misses += 1;
 		isMember = await db.isSortedSetMember('group:' + groupName + ':members', uid);
 		Groups.cache.set(cacheKey, isMember);
 		return isMember;
@@ -88,10 +86,7 @@ module.exports = function (Groups) {
 		const isMember = Groups.cache.get(uid + ':' + groupName);
 		const isInCache = isMember !== undefined;
 		if (isInCache) {
-			Groups.cache.hits += 1;
 			cachedData[uid + ':' + groupName] = isMember;
-		} else {
-			Groups.cache.misses += 1;
 		}
 		return !isInCache;
 	}

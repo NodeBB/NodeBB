@@ -16,7 +16,7 @@ describe('meta', function () {
 	var herpUid;
 
 	before(function (done) {
-		Groups.resetCache();
+		Groups.cache.reset();
 		// Create 3 users: 1 admin, 2 regular
 		async.series([
 			async.apply(User.create, { username: 'foo', password: 'barbar' }),	// admin

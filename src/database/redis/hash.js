@@ -33,7 +33,7 @@ module.exports = function (module) {
 			await module.client.async.hmset(key, data);
 		}
 
-		cache.delObjectCache(key);
+		cache.del(key);
 	};
 
 	module.setObjectField = async function (key, field, value) {
@@ -48,7 +48,7 @@ module.exports = function (module) {
 			await module.client.async.hset(key, field, value);
 		}
 
-		cache.delObjectCache(key);
+		cache.del(key);
 	};
 
 	module.getObject = async function (key) {
@@ -146,7 +146,7 @@ module.exports = function (module) {
 			return;
 		}
 		await module.client.async.hdel(key, field);
-		cache.delObjectCache(key);
+		cache.del(key);
 	};
 
 	module.deleteObjectFields = async function (key, fields) {
@@ -158,7 +158,7 @@ module.exports = function (module) {
 			return;
 		}
 		await module.client.async.hdel(key, fields);
-		cache.delObjectCache(key);
+		cache.del(key);
 	};
 
 	module.incrObjectField = async function (key, field) {
@@ -182,7 +182,7 @@ module.exports = function (module) {
 		} else {
 			result = await module.client.async.hincrby(key, field, value);
 		}
-		cache.delObjectCache(key);
+		cache.del(key);
 		return Array.isArray(result) ? result.map(value => parseInt(value, 10)) : parseInt(result, 10);
 	};
 };
