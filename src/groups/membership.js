@@ -88,10 +88,7 @@ module.exports = function (Groups) {
 		const isMember = Groups.cache.get(uid + ':' + groupName);
 		const isInCache = isMember !== undefined;
 		if (isInCache) {
-			Groups.cache.hits += 1;
 			cachedData[uid + ':' + groupName] = isMember;
-		} else {
-			Groups.cache.misses += 1;
 		}
 		return !isInCache;
 	}

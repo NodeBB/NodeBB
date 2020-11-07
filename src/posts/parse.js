@@ -63,7 +63,7 @@ module.exports = function (Posts) {
 		cache.misses += 1;
 		const data = await plugins.fireHook('filter:parse.post', { postData: postData });
 		data.postData.content = translator.escape(data.postData.content);
-		if (global.env === 'production' && data.postData.pid) {
+		if (data.postData.pid) {
 			cache.set(pid, data.postData.content);
 		}
 		return data.postData;

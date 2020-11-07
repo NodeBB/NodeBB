@@ -23,14 +23,14 @@ get:
                         type: number
                       percentFull:
                         type: number
-                      avgPostSize:
-                        type: number
                       hits:
                         type: string
                       misses:
                         type: string
                       hitRatio:
                         type: string
+                      enabled:
+                        type: boolean
                   groupCache:
                     type: object
                     properties:
@@ -48,6 +48,8 @@ get:
                         type: string
                       hitRatio:
                         type: string
+                      enabled:
+                        type: boolean
                   localCache:
                     type: object
                     properties:
@@ -59,14 +61,14 @@ get:
                         type: number
                       percentFull:
                         type: number
-                      dump:
-                        type: boolean
                       hits:
                         type: string
                       misses:
                         type: string
                       hitRatio:
                         type: string
+                      enabled:
+                        type: boolean
                   objectCache:
                     type: object
                     properties:
@@ -84,6 +86,8 @@ get:
                         type: string
                       hitRatio:
                         type: string
+                      enabled:
+                        type: boolean
                 required:
                   - postCache
                   - groupCache

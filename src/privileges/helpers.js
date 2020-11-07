@@ -41,6 +41,9 @@ helpers.isUserAllowedTo = async function (privilege, uid, cid) {
 };
 
 async function isUserAllowedToCids(privilege, uid, cids) {
+	if (!privilege) {
+		return cids.map(() => false);
+	}
 	if (parseInt(uid, 10) <= 0) {
 		return await isSystemGroupAllowedToCids(privilege, uid, cids);
 	}
