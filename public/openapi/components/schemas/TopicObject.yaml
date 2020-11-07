@@ -26,6 +26,8 @@ TopicObject:
       type: number
     viewcount:
       type: number
+    postercount:
+      type: number
     teaserPid:
       oneOf:
         - type: number

@@ -20,16 +20,10 @@
 	"add-group": "Добавить группу",
 	"invite": "Пригласить",
 	"new": "Новый пользователь",
-
-	"pills.latest": "Последние",
+	"filter-by": "Filter by",
 	"pills.unvalidated": "Не подтверждены",
-	"pills.no-posts": "Без сообщений",
-	"pills.top-posters": "Самые активные",
-	"pills.top-rep": "Лучшая репутация",
-	"pills.inactive": "Неактивные",
-	"pills.flagged": "Больше всего жалоб",
+	"pills.validated": "Validated",
 	"pills.banned": "Заблокированные",
-	"pills.search": "Поиск пользователей",
 
 	"50-per-page": "50 на страницу",
 	"100-per-page": "100 на страницу",

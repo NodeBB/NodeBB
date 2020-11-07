@@ -111,7 +111,7 @@
     "posts_per_page": "每页帖子数",
     "max_items_per_page": "最大值 %1",
     "acp_language": "管理员页面语言",
-    "notifications": "Notifications",
+    "notifications": "通知",
     "upvote-notif-freq": "帖子被顶的通知频率",
     "upvote-notif-freq.all": "每一次被顶都通知我",
     "upvote-notif-freq.first": "首次顶贴",

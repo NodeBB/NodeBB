@@ -6,6 +6,7 @@
 	"max-length": "Maksimalna dužina poruka u razgovoru",
 	"max-room-size": "Maksimalan broj korisnika u sobama za razgovor",
 	"delay": "Vrijeme između poruka razgovora u milisekundama",
+	"notification-delay": "Notification delay for chat messages. (0 for no delay)",
 	"restrictions.seconds-edit-after": "Number of seconds a chat message will remain editable. (0 disabled)",
 	"restrictions.seconds-delete-after": "Number of seconds a chat message will remain deletable. (0 disabled)"
 }

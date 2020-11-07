@@ -20,16 +20,10 @@
 	"add-group": "Add Group",
 	"invite": "הזמן",
 	"new": "משתמש חדש",
-
-	"pills.latest": "משתמשים אחרונים",
+	"filter-by": "Filter by",
 	"pills.unvalidated": "לא מאומת",
-	"pills.no-posts": "אין פוסטים",
-	"pills.top-posters": "מפרסמים הכי הרבה",
-	"pills.top-rep": "מוניטין הכי גבוה",
-	"pills.inactive": "לא-פעיל",
-	"pills.flagged": "Most Flagged",
+	"pills.validated": "Validated",
 	"pills.banned": "מורחק",
-	"pills.search": "חיפוש משתמשים",
 
 	"50-per-page": "50 per page",
 	"100-per-page": "100 per page",

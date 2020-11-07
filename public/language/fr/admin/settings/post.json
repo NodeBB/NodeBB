@@ -34,6 +34,8 @@
 	"timestamp.cut-off-help": "Les dates et heures seront affichées de façon relative (par exemple \"il y a 3 heures\", \"il y a 5 jours\"), et localisées. Après un certain point, le texte peut afficher la date emlle-même (par exemple 5 Novembre 2016, 15:30).<br /><em>(Défaut : <code>30</code>, ou un mois). Régler à 0 pour toujours afficher des dates, laisser vide pour toujours afficher des dates relatives.</em>",
 	"timestamp.necro-threshold": "Seuil d'archivage (en jours)",
 	"timestamp.necro-threshold-help": "Un message sera affiché entre les messages si le temps qui les sépare est plus long que le seuil d'archivage. (Par défaut: 7 ou une semaine). Définissez sur 0 pour désactiver.",
+	"timestamp.topic-views-interval": "Increment topic views interval (in minutes)",
+	"timestamp.topic-views-interval-help": "Topic views will only increment once every X minutes as defined by this setting.",
 	"teaser": "Message d'aperçu",
 	"teaser.last-post": "Dernier &ndash; Affiche le dernier message, ou celui d'origine, si il n'y a pas de réponse",
 	"teaser.last-reply": "Dernier &ndash; Affiche le dernier message, ou \"Aucune réponse\" si il n'y a pas de réponse",

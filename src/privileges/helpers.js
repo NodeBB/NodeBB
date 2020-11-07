@@ -41,6 +41,9 @@ helpers.isUserAllowedTo = async function (privilege, uid, cid) {
 };
 
 async function isUserAllowedToCids(privilege, uid, cids) {
+	if (!privilege) {
+		return cids.map(() => false);
+	}
 	if (parseInt(uid, 10) <= 0) {
 		return await isSystemGroupAllowedToCids(privilege, uid, cids);
 	}
@@ -119,13 +122,15 @@ helpers.getGroupPrivileges = async function (cid, groupPrivileges) {
 
 	groupNames = groups.ephemeralGroups.concat(groupNames);
 	moveToFront(groupNames, 'Global Moderators');
+	moveToFront(groupNames, 'unverified-users');
+	moveToFront(groupNames, 'verified-users');
 	moveToFront(groupNames, 'registered-users');
 
 	const adminIndex = groupNames.indexOf('administrators');
 	if (adminIndex !== -1) {
 		groupNames.splice(adminIndex, 1);
 	}
-	const groupData = await groups.getGroupsFields(groupNames, ['private']);
+	const groupData = await groups.getGroupsFields(groupNames, ['private', 'system']);
 	const memberData = groupNames.map(function (member, index) {
 		const memberPrivs = {};
 
@@ -137,6 +142,7 @@ helpers.getGroupPrivileges = async function (cid, groupPrivileges) {
 			nameEscaped: translator.escape(validator.escape(member)),
 			privileges: memberPrivs,
 			isPrivate: groupData[index] && !!groupData[index].private,
+			isSystem: groupData[index] && !!groupData[index].system,
 		};
 	});
 	return memberData;

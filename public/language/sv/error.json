@@ -26,6 +26,7 @@
     "invalid-pagination-value": "Ogiltigt värde för siduppdelning. Värdet måste vara mellan %1 och %2",
     "username-taken": "Användarnamn upptaget",
     "email-taken": "Epostadress upptagen",
+    "email-invited": "Email was already invited",
     "email-not-confirmed": "Du kan inte posta förrän din epost är bekräftad. Vänligen klicka här för att bekräfta din epost.",
     "email-not-confirmed-chat": "Du kan ej använda chatten förrän din epostadress har blivit bekräftad, var god klicka här för att bekräfta din epostadress.",
     "email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email. You won't be able to post or chat until your email is confirmed.",

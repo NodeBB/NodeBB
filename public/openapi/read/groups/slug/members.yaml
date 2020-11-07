@@ -1,0 +1,25 @@
+get:
+  tags:
+    - groups
+  summary: Get user group members
+  parameters:
+    - name: slug
+      in: path
+      required: true
+      schema:
+        type: string
+      example: administrators
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  users:
+                    type: array
+              - $ref: ../../../components/schemas/Pagination.yaml#/Pagination
+              - $ref: ../../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

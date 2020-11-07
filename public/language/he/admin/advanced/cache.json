@@ -1,11 +1,11 @@
 {
 	"post-cache": "מטמון פוסטים",
-	"posts-in-cache": "פוסטים במטמון",
-	"average-post-size": "גודל פוסט ממוצע",
-	"length-to-max": "אורך / מקסימום",
 	"percent-full": "%1% מלא",
 	"post-cache-size": "גודל מטמון פוסטים",
 	"items-in-cache": "פריטים במטמון",
 	"control-panel": "לוח הבקרה",
-	"update-settings": "עדכן הגדרות מטמון"
+	"update-settings": "עדכן הגדרות מטמון",
+	"clear": "Clear",
+	"download": "Download",
+	"enabled": "Enabled"
 }

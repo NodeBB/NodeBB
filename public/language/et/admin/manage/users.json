@@ -20,16 +20,10 @@
 	"add-group": "Add Group",
 	"invite": "Kutsu",
 	"new": "Uus kasutaja",
-
-	"pills.latest": "Hiljutised kasutajad",
+	"filter-by": "Filter by",
 	"pills.unvalidated": "Valideerimata",
-	"pills.no-posts": "Pole postitusi",
-	"pills.top-posters": "Top postitajad",
-	"pills.top-rep": "Kõige rohkem reputatsiooni",
-	"pills.inactive": "Ebaaktiivne",
-	"pills.flagged": "Enim raporteeritud",
+	"pills.validated": "Validated",
 	"pills.banned": "Keelustatud",
-	"pills.search": "Kasutajate otsing",
 
 	"50-per-page": "50 per page",
 	"100-per-page": "100 per page",

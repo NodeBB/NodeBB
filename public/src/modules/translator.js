@@ -22,19 +22,7 @@
 				};
 			}
 
-			function loadServer(language, namespace) {
-				return new Promise(function (resolve, reject) {
-					languages.get(language, namespace, function (err, data) {
-						if (err) {
-							reject(err);
-						} else {
-							resolve(data);
-						}
-					});
-				});
-			}
-
-			module.exports = factory(require('../utils'), loadServer, warn);
+			module.exports = factory(require('../utils'), languages.get, warn);
 		}());
 	}
 }(function (utils, load, warn) {
@@ -493,7 +481,10 @@
 		 * @returns {string}
 		 */
 		Translator.unescape = function unescape(text) {
-			return typeof text === 'string' ? text.replace(/&lsqb;|\\\[/g, '[').replace(/&rsqb;|\\\]/g, ']') : text;
+			return typeof text === 'string' ?
+				text.replace(/&lsqb;/g, '[').replace(/\\\[/g, '[')
+					.replace(/&rsqb;/g, ']').replace(/\\\]/g, ']') :
+				text;
 		};
 
 		/**
@@ -605,7 +596,7 @@
 				}
 
 				var originalSettings = assign({}, jQuery.timeago.settings.strings);
-				jQuery.getScript(config.assetBaseUrl + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '-short.js').done(function () {
+				adaptor.switchTimeagoLanguage(languageCode + '-short', function () {
 					adaptor.timeagoShort = assign({}, jQuery.timeago.settings.strings);
 					jQuery.timeago.settings.strings = assign({}, originalSettings);
 					toggle();
@@ -615,12 +606,16 @@
 			}
 		},
 
-		switchTimeagoLanguage: function switchTimeagoLanguage(callback) {
+		switchTimeagoLanguage: function switchTimeagoLanguage(langCode, callback) {
 			// Delete the cached shorthand strings if present
 			delete adaptor.timeagoShort;
 
-			var languageCode = utils.userLangToTimeagoCode(config.userLang);
-			jQuery.getScript(config.assetBaseUrl + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').done(callback);
+			var stringsModule = 'timeago/locales/jquery.timeago.' + langCode;
+			// without undef, requirejs won't load the strings a second time
+			require.undef(stringsModule);
+			require([stringsModule], function () {
+				callback();
+			});
 		},
 
 		prepareDOM: function prepareDOM() {

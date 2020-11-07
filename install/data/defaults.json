@@ -114,6 +114,8 @@
     "hideFullname": 0,
     "hideEmail": 0,
     "allowGuestHandles": 0,
+    "guestsIncrementTopicViews": 1,
+    "incrementTopicViewsInterval": 60,
     "recentMaxTopics": 200,
     "disableRecentCategoryFilter": 0,
     "maximumRelatedTopics": 0,
@@ -135,5 +137,7 @@
     "categoryWatchState": "watching",
     "submitPluginUsage": 1,
     "showAverageApprovalTime": true,
-    "autoApproveTime": 0
+    "autoApproveTime": 0,
+    "maxUserSessions": 10,
+    "useCompression": 0
 }

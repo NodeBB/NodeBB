@@ -1,7 +1,12 @@
 'use strict';
 
-
-define('forum/account/edit', ['forum/account/header', 'translator', 'components', 'pictureCropper', 'benchpress'], function (header, translator, components, pictureCropper, Benchpress) {
+define('forum/account/edit', [
+	'forum/account/header',
+	'translator',
+	'pictureCropper',
+	'benchpress',
+	'api',
+], function (header, translator, pictureCropper, Benchpress, api) {
 	var AccountEdit = {};
 
 	AccountEdit.init = function () {
@@ -42,19 +47,15 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 
 		$(window).trigger('action:profile.update', userData);
 
-		socket.emit('user.updateProfile', userData, function (err, data) {
-			if (err) {
-				return app.alertError(err.message);
+		api.put('/users/' + userData.uid, userData).then((res) => {
+			app.alertSuccess('[[user:profile-update-success]]');
+
+			if (res.picture) {
+				$('#user-current-picture').attr('src', res.picture);
 			}
 
-			app.alertSuccess('[[user:profile_update_success]]');
-
-			if (data.picture) {
-				$('#user-current-picture').attr('src', data.picture);
-			}
-
-			updateHeader(data.picture);
-		});
+			updateHeader(res.picture);
+		}).catch(app.alertError);
 
 		return false;
 	}

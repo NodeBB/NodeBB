@@ -1,0 +1,19 @@
+get:
+  tags:
+    - users
+  summary: Get user by uid
+  description: This route retrieves a user's public profile data. If the calling user is the same as the profile, then it will also return data the user elected to hide (e.g. email/fullname)
+  parameters:
+    - name: uid
+      in: path
+      required: true
+      schema:
+        type: string
+      example: 1
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: ../../../components/schemas/UserObject.yaml#/UserObject

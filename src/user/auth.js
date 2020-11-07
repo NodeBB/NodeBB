@@ -31,7 +31,7 @@ module.exports = function (User) {
 
 		await db.delete('loginAttempts:' + uid);
 		await db.pexpire('lockout:' + uid, duration);
-		events.log({
+		await events.log({
 			type: 'account-locked',
 			uid: uid,
 			ip: ip,
@@ -107,8 +107,17 @@ module.exports = function (User) {
 			return;
 		}
 		await cleanExpiredSessions(uid);
+		await revokeSessionsAboveThreshold(uid, meta.config.maxUserSessions);
 		await db.sortedSetAdd('uid:' + uid + ':sessions', Date.now(), sessionId);
 	};
+
+	async function revokeSessionsAboveThreshold(uid, maxUserSessions) {
+		const activeSessions = await db.getSortedSetRange('uid:' + uid + ':sessions', 0, -1);
+		if (activeSessions.length > maxUserSessions) {
+			const sessionsToRevoke = activeSessions.slice(0, activeSessions.length - maxUserSessions);
+			await Promise.all(sessionsToRevoke.map(sessionId => User.auth.revokeSession(sessionId, uid)));
+		}
+	}
 
 	User.auth.revokeSession = async function (sessionId, uid) {
 		winston.verbose('[user.auth] Revoking session ' + sessionId + ' for user ' + uid);

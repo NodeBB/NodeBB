@@ -263,7 +263,7 @@ define('forum/category/tools', [
 	}
 
 	function handlePinnedTopicSort() {
-		if (!ajaxify.data.topics) {
+		if (!ajaxify.data.topics || !ajaxify.data.template.category) {
 			return;
 		}
 		var numPinned = ajaxify.data.topics.reduce(function (memo, topic) {

@@ -2,16 +2,18 @@
 
 const winston = require('winston');
 
+const api = require('../../api');
 const user = require('../../user');
-const meta = require('../../meta');
 const events = require('../../events');
-const privileges = require('../../privileges');
 const notifications = require('../../notifications');
 const db = require('../../database');
 const plugins = require('../../plugins');
+const sockets = require('..');
 
 module.exports = function (SocketUser) {
 	SocketUser.changeUsernameEmail = async function (socket, data) {
+		sockets.warnDeprecated(socket, 'PUT /api/v3/users/:uid');
+
 		if (!data || !data.uid || !socket.uid) {
 			throw new Error('[[error:invalid-data]]');
 		}
@@ -75,71 +77,13 @@ module.exports = function (SocketUser) {
 	}
 
 	SocketUser.changePassword = async function (socket, data) {
-		if (!socket.uid) {
-			throw new Error('[[error:invalid-uid]]');
-		}
-
-		if (!data || !data.uid) {
-			throw new Error('[[error:invalid-data]]');
-		}
-		await user.changePassword(socket.uid, Object.assign(data, { ip: socket.ip }));
-		await events.log({
-			type: 'password-change',
-			uid: socket.uid,
-			targetUid: data.uid,
-			ip: socket.ip,
-		});
+		sockets.warnDeprecated(socket, 'PUT /api/v3/users/:uid/password');
+		await api.users.changePassword(socket, data);
 	};
 
 	SocketUser.updateProfile = async function (socket, data) {
-		if (!socket.uid) {
-			throw new Error('[[error:invalid-uid]]');
-		}
-
-		if (!data || !data.uid) {
-			throw new Error('[[error:invalid-data]]');
-		}
-
-		const oldUserData = await user.getUserFields(data.uid, ['email', 'username']);
-		if (!oldUserData || !oldUserData.username) {
-			throw new Error('[[error:invalid-data]]');
-		}
-
-		const [isAdminOrGlobalMod, canEdit] = await Promise.all([
-			user.isAdminOrGlobalMod(socket.uid),
-			privileges.users.canEdit(socket.uid, data.uid),
-		]);
-
-		if (!canEdit) {
-			throw new Error('[[error:no-privileges]]');
-		}
-
-		if (!isAdminOrGlobalMod && meta.config['username:disableEdit']) {
-			data.username = oldUserData.username;
-		}
-
-		if (!isAdminOrGlobalMod && meta.config['email:disableEdit']) {
-			data.email = oldUserData.email;
-		}
-
-		const userData = await user.updateProfile(socket.uid, data);
-
-		async function log(type, eventData) {
-			eventData.type = type;
-			eventData.uid = socket.uid;
-			eventData.targetUid = data.uid;
-			eventData.ip = socket.ip;
-			await events.log(eventData);
-		}
-
-		if (userData.email !== oldUserData.email) {
-			await log('email-change', { oldEmail: oldUserData.email, newEmail: userData.email });
-		}
-
-		if (userData.username !== oldUserData.username) {
-			await log('username-change', { oldUsername: oldUserData.username, newUsername: userData.username });
-		}
-		return userData;
+		sockets.warnDeprecated(socket, 'PUT /api/v3/users/:uid');
+		return await api.users.update(socket, data);
 	};
 
 	SocketUser.toggleBlock = async function (socket, data) {

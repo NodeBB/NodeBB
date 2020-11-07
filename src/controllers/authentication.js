@@ -13,6 +13,7 @@ const meta = require('../meta');
 const user = require('../user');
 const plugins = require('../plugins');
 const utils = require('../utils');
+const slugify = require('../slugify');
 const translator = require('../translator');
 const helpers = require('./helpers');
 const privileges = require('../privileges');
@@ -81,7 +82,7 @@ authenticationController.register = async function (req, res) {
 			throw new Error('[[error:invalid-email]]');
 		}
 
-		if (!userData.username || userData.username.length < meta.config.minimumUsernameLength || utils.slugify(userData.username).length < meta.config.minimumUsernameLength) {
+		if (!userData.username || userData.username.length < meta.config.minimumUsernameLength || slugify(userData.username).length < meta.config.minimumUsernameLength) {
 			throw new Error('[[error:username-too-short]]');
 		}
 
@@ -91,6 +92,10 @@ authenticationController.register = async function (req, res) {
 
 		if (userData.password !== userData['password-confirm']) {
 			throw new Error('[[user:change_password_error_match]]');
+		}
+
+		if (userData.password.length > 512) {
+			throw new Error('[[error:password-too-long]]');
 		}
 
 		user.isPasswordValid(userData.password);
@@ -360,11 +365,11 @@ authenticationController.localLogin = async function (req, username, password, n
 		return next(new Error('[[error:invalid-password]]'));
 	}
 
-	if (password.length > 4096) {
+	if (password.length > 512) {
 		return next(new Error('[[error:password-too-long]]'));
 	}
 
-	const userslug = utils.slugify(username);
+	const userslug = slugify(username);
 	const uid = await user.getUidByUserslug(userslug);
 	try {
 		const [userData, isAdminOrGlobalMod, banned, hasLoginPrivilege] = await Promise.all([

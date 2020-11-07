@@ -369,14 +369,14 @@ describe('User', function () {
 		});
 
 		it('should error for unprivileged user', function (done) {
-			socketUser.search({ uid: testUid }, { bannedOnly: true, query: '123' }, function (err) {
+			socketUser.search({ uid: testUid }, { filters: ['banned'], query: '123' }, function (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');
 				done();
 			});
 		});
 
 		it('should error for unprivileged user', function (done) {
-			socketUser.search({ uid: testUid }, { flaggedOnly: true, query: '123' }, function (err) {
+			socketUser.search({ uid: testUid }, { filters: ['flagged'], query: '123' }, function (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');
 				done();
 			});
@@ -430,9 +430,7 @@ describe('User', function () {
 					assert.ifError(err);
 					socketUser.search({ uid: adminUid }, {
 						query: 'ipsearch',
-						onlineOnly: true,
-						bannedOnly: true,
-						flaggedOnly: true,
+						filters: ['online', 'banned', 'flagged'],
 					}, function (err, data) {
 						assert.ifError(err);
 						assert.equal(data.users[0].username, 'ipsearch_filter');
@@ -586,7 +584,7 @@ describe('User', function () {
 					},
 				}, function (err, results) {
 					assert.ifError(err);
-					Password.compare('newpassword', results.password, function (err, match) {
+					Password.compare('newpassword', results.password, true, function (err, match) {
 						assert.ifError(err);
 						assert(match);
 						assert.strictEqual(results.userData['email:confirmed'], 1);
@@ -757,7 +755,7 @@ describe('User', function () {
 
 	describe('not logged in', function () {
 		it('should return error if not logged in', function (done) {
-			socketUser.updateProfile({ uid: 0 }, {}, function (err) {
+			socketUser.updateProfile({ uid: 0 }, { uid: 1 }, function (err) {
 				assert.equal(err.message, '[[error:invalid-uid]]');
 				done();
 			});
@@ -807,8 +805,9 @@ describe('User', function () {
 					groupTitle: 'testGroup',
 					birthday: '01/01/1980',
 					signature: 'nodebb is good',
+					password: '123456',
 				};
-				socketUser.updateProfile({ uid: uid }, data, function (err, result) {
+				socketUser.updateProfile({ uid: uid }, { ...data, password: '123456' }, function (err, result) {
 					assert.ifError(err);
 
 					assert.equal(result.username, 'updatedUserName');
@@ -818,7 +817,11 @@ describe('User', function () {
 					db.getObject('user:' + uid, function (err, userData) {
 						assert.ifError(err);
 						Object.keys(data).forEach(function (key) {
-							assert.equal(data[key], userData[key]);
+							if (key !== 'password') {
+								assert.equal(data[key], userData[key]);
+							} else {
+								assert(userData[key].startsWith('$2a$'));
+							}
 						});
 						done();
 					});
@@ -926,6 +929,18 @@ describe('User', function () {
 					done();
 				});
 			});
+		});
+
+		it('should not update a user\'s username if a password is not supplied', async () => {
+			let _err;
+			try {
+				await socketUser.updateProfile({ uid: uid }, { uid: uid, username: 'updatedAgain', password: '' });
+			} catch (err) {
+				_err = err;
+			}
+
+			assert(_err);
+			assert.strictEqual(_err.message, '[[error:invalid-password]]');
 		});
 
 		it('should change email', function (done) {
@@ -1146,10 +1161,8 @@ describe('User', function () {
 			meta.config.defaultAvatar = 'https://path/to/default/avatar';
 			assert.strictEqual(User.getDefaultAvatar(), meta.config.defaultAvatar);
 			meta.config.defaultAvatar = '/path/to/default/avatar';
-			nconf.set('relative_path', '/community');
-			assert.strictEqual(User.getDefaultAvatar(), '/community' + meta.config.defaultAvatar);
+			assert.strictEqual(User.getDefaultAvatar(), nconf.get('relative_path') + meta.config.defaultAvatar);
 			meta.config.defaultAvatar = '';
-			nconf.set('relative_path', '');
 			done();
 		});
 
@@ -1706,6 +1719,37 @@ describe('User', function () {
 			});
 		});
 
+		it('should properly escape homePageRoute', function (done) {
+			var data = {
+				uid: testUid,
+				settings: {
+					bootswatchSkin: 'default',
+					homePageRoute: 'category/6/testing-ground',
+					homePageCustom: '',
+					openOutgoingLinksInNewTab: 0,
+					scrollToMyPost: 1,
+					userLang: 'en-GB',
+					usePagination: 1,
+					topicsPerPage: '10',
+					postsPerPage: '5',
+					showemail: 1,
+					showfullname: 1,
+					restrictChat: 0,
+					followTopicsOnCreate: 1,
+					followTopicsOnReply: 1,
+				},
+			};
+			socketUser.saveSettings({ uid: testUid }, data, function (err) {
+				assert.ifError(err);
+				User.getSettings(testUid, function (err, data) {
+					assert.ifError(err);
+					assert.strictEqual(data.homePageRoute, 'category/6/testing-ground');
+					done();
+				});
+			});
+		});
+
+
 		it('should error if language is invalid', function (done) {
 			var data = {
 				uid: testUid,
@@ -2042,34 +2086,23 @@ describe('User', function () {
 			});
 		});
 
-		it('should confirm email of user', function (done) {
-			var email = 'confirm@me.com';
-			User.create({
+		it('should confirm email of user', async function () {
+			const email = 'confirm@me.com';
+			const uid = await User.create({
 				username: 'confirme',
 				email: email,
-			}, function (err, uid) {
-				assert.ifError(err);
-				User.email.sendValidationEmail(uid, email, function (err, code) {
-					assert.ifError(err);
-					User.email.confirm(code, function (err) {
-						assert.ifError(err);
-
-						async.parallel({
-							confirmed: function (next) {
-								db.getObjectField('user:' + uid, 'email:confirmed', next);
-							},
-							isMember: function (next) {
-								db.isSortedSetMember('users:notvalidated', uid, next);
-							},
-						}, function (err, results) {
-							assert.ifError(err);
-							assert.equal(results.confirmed, 1);
-							assert.equal(results.isMember, false);
-							done();
-						});
-					});
-				});
 			});
+
+			const code = await User.email.sendValidationEmail(uid, email);
+			const unverified = await groups.isMember(uid, 'unverified-users');
+			assert.strictEqual(unverified, true);
+			await User.email.confirm(code);
+			const [confirmed, isVerified] = await Promise.all([
+				db.getObjectField('user:' + uid, 'email:confirmed'),
+				groups.isMember(uid, 'verified-users', uid),
+			]);
+			assert.strictEqual(parseInt(confirmed, 10), 1);
+			assert.strictEqual(isVerified, true);
 		});
 	});
 

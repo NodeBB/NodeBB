@@ -44,5 +44,6 @@
     "search-preferences-saved": "Søkeinnstillinger lagret",
     "search-preferences-cleared": "Søkeinnstillinger tømt",
     "show-results-as": "Vis resultater som",
-    "see-more-results": "See more results (%1)"
+    "see-more-results": "See more results (%1)",
+    "search-in-category": "Search in \"%1\""
 }

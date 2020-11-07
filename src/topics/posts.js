@@ -56,7 +56,7 @@ module.exports = function (Topics) {
 
 		postData.forEach(function (postObj, i) {
 			if (postObj) {
-				postObj.user = postObj.uid ? userData[postObj.uid] : _.clone(userData[postObj.uid]);
+				postObj.user = postObj.uid ? userData[postObj.uid] : { ...userData[postObj.uid] };
 				postObj.editor = postObj.editor ? editors[postObj.editor] : null;
 				postObj.bookmarked = bookmarks[i];
 				postObj.upvoted = voteData.upvotes[i];
@@ -174,6 +174,8 @@ module.exports = function (Topics) {
 		}
 		await Topics.increasePostCount(tid);
 		await db.sortedSetIncrBy('tid:' + tid + ':posters', 1, postData.uid);
+		const posterCount = await db.sortedSetCard('tid:' + tid + ':posters');
+		await Topics.setTopicField(tid, 'postercount', posterCount);
 		await Topics.updateTeaser(tid);
 	};
 
@@ -184,6 +186,9 @@ module.exports = function (Topics) {
 		], postData.pid);
 		await Topics.decreasePostCount(tid);
 		await db.sortedSetIncrBy('tid:' + tid + ':posters', -1, postData.uid);
+		await db.sortedSetsRemoveRangeByScore(['tid:' + tid + ':posters'], '-inf', 0);
+		const posterCount = await db.sortedSetCard('tid:' + tid + ':posters');
+		await Topics.setTopicField(tid, 'postercount', posterCount);
 		await Topics.updateTeaser(tid);
 	};
 
@@ -240,7 +245,11 @@ module.exports = function (Topics) {
 		const uniquePids = _.uniq(_.flatten(arrayOfReplyPids));
 
 		let replyData = await posts.getPostsFields(uniquePids, ['pid', 'uid', 'timestamp']);
-		replyData = await user.blocks.filter(callerUid, replyData);
+		const result = await plugins.fireHook('filter:topics.getPostReplies', {
+			uid: callerUid,
+			replies: replyData,
+		});
+		replyData = await user.blocks.filter(callerUid, result.replies);
 
 		const uids = replyData.map(replyData => replyData && replyData.uid);
 

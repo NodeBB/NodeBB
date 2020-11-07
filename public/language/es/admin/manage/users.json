@@ -20,16 +20,10 @@
 	"add-group": "Add Group",
 	"invite": "Invitar",
 	"new": "Nuevo Usuario",
-
-	"pills.latest": "Últimos Usuarios",
+	"filter-by": "Filter by",
 	"pills.unvalidated": "No Validado",
-	"pills.no-posts": "Sin Posts",
-	"pills.top-posters": "Top Posteadores",
-	"pills.top-rep": "Mayor Reputación",
-	"pills.inactive": "Inactivo",
-	"pills.flagged": "Más Reportado",
+	"pills.validated": "Validated",
 	"pills.banned": "Baneado",
-	"pills.search": "Buscar Usuario",
 
 	"50-per-page": "50 per page",
 	"100-per-page": "100 per page",

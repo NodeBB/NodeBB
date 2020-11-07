@@ -44,5 +44,6 @@
     "search-preferences-saved": "검색 설정이 저장되었습니다.",
     "search-preferences-cleared": "검색 설정이 초기화되었습니다.",
     "show-results-as": "검색결과 표시방법",
-    "see-more-results": "See more results (%1)"
+    "see-more-results": "See more results (%1)",
+    "search-in-category": "Search in \"%1\""
 }

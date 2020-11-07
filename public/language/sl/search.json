@@ -44,5 +44,6 @@
     "search-preferences-saved": "Poišči shranjene nastavitve",
     "search-preferences-cleared": "Poišči počiščene nastavitve",
     "show-results-as": "Prikaži rezultate kot",
-    "see-more-results": "See more results (%1)"
+    "see-more-results": "See more results (%1)",
+    "search-in-category": "Search in \"%1\""
 }

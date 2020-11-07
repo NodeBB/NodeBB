@@ -1,7 +1,7 @@
 'use strict';
 
 const plugins = require('../plugins');
-const utils = require('../utils');
+const slugify = require('../slugify');
 const db = require('../database');
 const batch = require('../batch');
 
@@ -27,7 +27,7 @@ module.exports = function (Groups) {
 			);
 		});
 		const sets = groupNames.map(groupName => groupName.toLowerCase() + ':' + groupName);
-		const fields = groupNames.map(groupName => utils.slugify(groupName));
+		const fields = groupNames.map(groupName => slugify(groupName));
 
 		await Promise.all([
 			db.deleteAll(keys),
@@ -40,7 +40,7 @@ module.exports = function (Groups) {
 			db.deleteObjectFields('groupslug:groupname', fields),
 			removeGroupsFromPrivilegeGroups(groupNames),
 		]);
-		Groups.resetCache();
+		Groups.cache.reset();
 		plugins.fireHook('action:groups.destroy', { groups: groupsData });
 	};
 

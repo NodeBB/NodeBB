@@ -20,16 +20,10 @@
 	"add-group": "Add Group",
 	"invite": "Pozvať",
 	"new": "Nový používateľ",
-
-	"pills.latest": "Posledný používatelia",
+	"filter-by": "Filter by",
 	"pills.unvalidated": "Neoverené",
-	"pills.no-posts": "Žiadne príspevky",
-	"pills.top-posters": "Najviac príspevkov",
-	"pills.top-rep": "Najviac reputácie",
-	"pills.inactive": "Neaktívny",
-	"pills.flagged": "Najviac označované",
+	"pills.validated": "Validated",
 	"pills.banned": "Zablokovaný",
-	"pills.search": "Hľadať používateľa",
 
 	"50-per-page": "50 per page",
 	"100-per-page": "100 per page",

@@ -9,7 +9,7 @@ const fs = require('fs');
 const path = require('path');
 const nconf = require('nconf');
 
-const paths = require('./paths');
+const { paths, pluginNamePattern } = require('../constants');
 const packageManager = nconf.get('package_manager');
 
 const supportedPackageManagerList = require('./package-install').supportedPackageManager; // load config from src/cli/package-install.js
@@ -21,13 +21,11 @@ if (process.platform === 'win32') {
 	packageManagerExecutable += '.cmd';
 }
 
-const dirname = paths.baseDir;
-
 function getModuleVersions(modules, callback) {
 	const versionHash = {};
 
 	async.eachLimit(modules, 50, function (module, next) {
-		fs.readFile(path.join(dirname, 'node_modules', module, 'package.json'), { encoding: 'utf-8' }, function (err, pkg) {
+		fs.readFile(path.join(paths.nodeModules, module, 'package.json'), { encoding: 'utf-8' }, function (err, pkg) {
 			if (err) {
 				return next(err);
 			}
@@ -47,19 +45,16 @@ function getModuleVersions(modules, callback) {
 
 function getInstalledPlugins(callback) {
 	async.parallel({
-		files: async.apply(fs.readdir, path.join(dirname, 'node_modules')),
-		deps: async.apply(fs.readFile, path.join(dirname, 'package.json'), { encoding: 'utf-8' }),
-		bundled: async.apply(fs.readFile, path.join(dirname, 'install/package.json'), { encoding: 'utf-8' }),
+		files: async.apply(fs.readdir, paths.nodeModules),
+		deps: async.apply(fs.readFile, paths.currentPackage, { encoding: 'utf-8' }),
+		bundled: async.apply(fs.readFile, paths.installPackage, { encoding: 'utf-8' }),
 	}, function (err, payload) {
 		if (err) {
 			return callback(err);
 		}
 
-		const isNbbModule = /^nodebb-(?:plugin|theme|widget|rewards)-[\w-]+$/;
-
-
 		payload.files = payload.files.filter(function (file) {
-			return isNbbModule.test(file);
+			return pluginNamePattern.test(file);
 		});
 
 		try {
@@ -70,10 +65,10 @@ function getInstalledPlugins(callback) {
 		}
 
 		payload.bundled = payload.bundled.filter(function (pkgName) {
-			return isNbbModule.test(pkgName);
+			return pluginNamePattern.test(pkgName);
 		});
 		payload.deps = payload.deps.filter(function (pkgName) {
-			return isNbbModule.test(pkgName);
+			return pluginNamePattern.test(pkgName);
 		});
 
 		// Whittle down deps to send back only extraneously installed plugins/themes/etc
@@ -84,7 +79,7 @@ function getInstalledPlugins(callback) {
 
 			// Ignore git repositories
 			try {
-				fs.accessSync(path.join(dirname, 'node_modules', pkgName, '.git'));
+				fs.accessSync(path.join(paths.nodeModules, pkgName, '.git'));
 				return false;
 			} catch (e) {
 				return true;
@@ -96,7 +91,7 @@ function getInstalledPlugins(callback) {
 }
 
 function getCurrentVersion(callback) {
-	fs.readFile(path.join(dirname, 'install/package.json'), { encoding: 'utf-8' }, function (err, pkg) {
+	fs.readFile(paths.installPackage, { encoding: 'utf-8' }, function (err, pkg) {
 		if (err) {
 			return callback(err);
 		}

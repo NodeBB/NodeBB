@@ -43,10 +43,16 @@ module.exports = function (User) {
 		const expireDays = meta.config.inviteExpiration;
 		const expireIn = expireDays * 86400000;
 
-		const exists = await User.getUidByEmail(email);
-		if (exists) {
+		const email_exists = await User.getUidByEmail(email);
+		if (email_exists) {
 			throw new Error('[[error:email-taken]]');
 		}
+
+		const invitation_exists = await db.exists('invitation:email:' + email);
+		if (invitation_exists) {
+			throw new Error('[[error:email-invited]]');
+		}
+
 		await db.setAdd('invitation:uid:' + uid, email);
 		await db.setAdd('invitation:uids', uid);
 		await db.set('invitation:email:' + email, token);

@@ -21,6 +21,8 @@
     "reset.notify.text1": "%1에 관해 통지합니다. 귀하의 비밀번호가 성공적으로 변경되었습니다.",
     "reset.notify.text2": "만약 이 인증을 요청하지 않았다면 즉시 관리자에게 통보하시기 바랍니다.",
     "digest.latest_topics": "%1의 최근 주제",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "%1에 방문하시려면 클릭하세요.",
     "digest.unsub.info": "이 대화는 사용자의 구독 설정에 따라 전송되었습니다.",
     "digest.day": "일",

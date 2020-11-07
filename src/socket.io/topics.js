@@ -1,12 +1,12 @@
 'use strict';
 
+const api = require('../api');
 const topics = require('../topics');
-const posts = require('../posts');
 const user = require('../user');
 const meta = require('../meta');
 const apiController = require('../controllers/api');
 const privileges = require('../privileges');
-const socketHelpers = require('./helpers');
+const sockets = require('.');
 
 const SocketTopics = module.exports;
 
@@ -18,28 +18,9 @@ require('./topics/tags')(SocketTopics);
 require('./topics/merge')(SocketTopics);
 
 SocketTopics.post = async function (socket, data) {
-	if (!data) {
-		throw new Error('[[error:invalid-data]]');
-	}
-
-	socketHelpers.setDefaultPostData(data, socket);
-	await meta.blacklist.test(data.req.ip);
-	const shouldQueue = await posts.shouldQueue(socket.uid, data);
-	if (shouldQueue) {
-		return await posts.addToQueue(data);
-	}
-	return await postTopic(socket, data);
+	sockets.warnDeprecated(socket, 'POST /api/v3/topics');
+	return await api.topics.create(socket, data);
 };
-
-async function postTopic(socket, data) {
-	const result = await topics.post(data);
-
-	socket.emit('event:new_post', { posts: [result.postData] });
-	socket.emit('event:new_topic', result.topicData);
-
-	socketHelpers.notifyNew(socket.uid, 'newTopic', { posts: [result.postData], topic: result.topicData });
-	return result.topicData;
-}
 
 SocketTopics.postcount = async function (socket, tid) {
 	const canRead = await privileges.topics.can('topics:read', tid, socket.uid);
@@ -79,11 +60,14 @@ SocketTopics.changeWatching = async function (socket, data) {
 	if (!commands.includes(data.type)) {
 		throw new Error('[[error:invalid-command]]');
 	}
-	await followCommand(topics[data.type], socket, data.tid);
+
+	sockets.warnDeprecated(socket, 'PUT/DELETE /api/v3/topics/:tid/(follow|ignore)');
+	await followCommand(data.type, socket, data.tid);
 };
 
 SocketTopics.follow = async function (socket, tid) {
-	await followCommand(topics.follow, socket, tid);
+	sockets.warnDeprecated(socket, 'PUT /api/v3/topics/:tid/follow');
+	await followCommand('follow', socket, tid);
 };
 
 async function followCommand(method, socket, tid) {
@@ -91,7 +75,7 @@ async function followCommand(method, socket, tid) {
 		throw new Error('[[error:not-logged-in]]');
 	}
 
-	await method(tid, socket.uid);
+	await api.topics[method](socket, { tid });
 }
 
 SocketTopics.isFollowed = async function (socket, tid) {

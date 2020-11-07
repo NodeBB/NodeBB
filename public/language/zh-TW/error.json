@@ -26,6 +26,7 @@
     "invalid-pagination-value": "無效的分頁數，必須介於 %1 和 %2 之間",
     "username-taken": "此使用者名已被使用",
     "email-taken": "此電子信箱已被使用",
+    "email-invited": "Email was already invited",
     "email-not-confirmed": "在您的電子信箱被確認前，您不能貼文。",
     "email-not-confirmed-chat": "您的電子信箱尚未確認，無法聊天，請點擊這裡確認您的電子信箱。",
     "email-not-confirmed-email-sent": "您的電子信箱尚未確認，請檢查您的收件匣。在電子信箱被確認前您不能貼文和聊天。",

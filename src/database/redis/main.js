@@ -9,7 +9,7 @@ module.exports = function (module) {
 
 	module.emptydb = async function () {
 		await module.flushdb();
-		module.objectCache.resetObjectCache();
+		module.objectCache.reset();
 	};
 
 	module.exists = async function (key) {
@@ -45,7 +45,7 @@ module.exports = function (module) {
 
 	module.delete = async function (key) {
 		await module.client.async.del(key);
-		module.objectCache.delObjectCache(key);
+		module.objectCache.del(key);
 	};
 
 	module.deleteAll = async function (keys) {
@@ -53,7 +53,7 @@ module.exports = function (module) {
 			return;
 		}
 		await module.client.async.del(keys);
-		module.objectCache.delObjectCache(keys);
+		module.objectCache.del(keys);
 	};
 
 	module.get = async function (key) {
@@ -77,7 +77,7 @@ module.exports = function (module) {
 			}
 		}
 
-		module.objectCache.delObjectCache([oldKey, newKey]);
+		module.objectCache.del([oldKey, newKey]);
 	};
 
 	module.type = async function (key) {
@@ -99,5 +99,13 @@ module.exports = function (module) {
 
 	module.pexpireAt = async function (key, timestamp) {
 		await module.client.async.pexpireat(key, timestamp);
+	};
+
+	module.ttl = async function (key) {
+		return await module.client.async.ttl(key);
+	};
+
+	module.pttl = async function (key) {
+		return await module.client.async.pttl(key);
 	};
 };

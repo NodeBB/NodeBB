@@ -26,20 +26,28 @@ var controllers = {
 
 const middleware = module.exports;
 
+const relative_path = nconf.get('relative_path');
+
 middleware.buildHeader = helpers.try(async function buildHeader(req, res, next) {
 	res.locals.renderHeader = true;
 	res.locals.isAPI = false;
-	const [config] = await Promise.all([
+	const [config, isBanned] = await Promise.all([
 		controllers.api.loadConfig(req),
+		user.bans.isBanned(req.uid),
 		plugins.fireHook('filter:middleware.buildHeader', { req: req, locals: res.locals }),
 	]);
+
+	if (isBanned) {
+		req.logout();
+		return res.redirect('/');
+	}
 	res.locals.config = config;
 	next();
 });
 
 middleware.buildHeaderAsync = util.promisify(middleware.buildHeader);
 
-async function generateHeader(req, res, data) {
+middleware.renderHeader = async function renderHeader(req, res, data) {
 	var registrationType = meta.config.registrationType || 'normal';
 	res.locals.config = res.locals.config || {};
 	var templateValues = {
@@ -54,7 +62,7 @@ async function generateHeader(req, res, data) {
 		allowRegistration: registrationType === 'normal',
 		searchEnabled: plugins.hasListeners('filter:search.query'),
 		config: res.locals.config,
-		relative_path: nconf.get('relative_path'),
+		relative_path,
 		bodyClass: data.bodyClass,
 	};
 
@@ -68,20 +76,13 @@ async function generateHeader(req, res, data) {
 		user: user.getUserData(req.uid),
 		isEmailConfirmSent: (!meta.config.requireEmailConfirmation || req.uid <= 0) ? false : await db.get('uid:' + req.uid + ':confirm:email:sent'),
 		languageDirection: translator.translate('[[language:dir]]', res.locals.config.userLang),
+		timeagoCode: languages.userTimeagoCode(res.locals.config.userLang),
 		browserTitle: translator.translate(controllers.helpers.buildTitle(translator.unescape(data.title))),
 		navigation: navigation.get(req.uid),
-		banned: user.bans.isBanned(req.uid),
-		banReason: user.bans.getReason(req.uid),
-
 		unreadData: topics.getUnreadData({ uid: req.uid }),
 		unreadChatCount: messaging.getUnreadCount(req.uid),
 		unreadNotificationCount: user.notifications.getUnreadCount(req.uid),
 	});
-
-	if (results.banned) {
-		req.logout();
-		return res.redirect('/');
-	}
 
 	const unreadData = {
 		'': {},
@@ -95,6 +96,7 @@ async function generateHeader(req, res, data) {
 	results.user.isGlobalMod = results.isGlobalMod;
 	results.user.isMod = !!results.isModerator;
 	results.user.privileges = results.privileges;
+	results.user.timeagoCode = results.timeagoCode;
 	results.user[results.user.status] = true;
 
 	results.user.email = String(results.user.email);
@@ -175,11 +177,7 @@ async function generateHeader(req, res, data) {
 		data: data,
 	});
 
-	return hookReturn.templateValues;
-}
-
-middleware.renderHeader = async function renderHeader(req, res, data) {
-	return await req.app.renderAsync('header', await generateHeader(req, res, data));
+	return await req.app.renderAsync('header', hookReturn.templateValues);
 };
 
 middleware.renderFooter = async function renderFooter(req, res, templateValues) {
@@ -189,25 +187,9 @@ middleware.renderFooter = async function renderFooter(req, res, templateValues) 
 		templateValues: templateValues,
 	});
 
-	const results = await utils.promiseParallel({
-		scripts: plugins.fireHook('filter:scripts.get', []),
-		timeagoLocale: (async () => {
-			const languageCodes = await languages.listCodes();
-			const userLang = res.locals.config.userLang;
-			const timeagoCode = utils.userLangToTimeagoCode(userLang);
+	const scripts = await plugins.fireHook('filter:scripts.get', []);
 
-			if (languageCodes.includes(userLang) && languages.timeagoCodes.includes(timeagoCode)) {
-				const pathToLocaleFile = '/vendor/jquery/timeago/locales/jquery.timeago.' + timeagoCode + '.js';
-				return res.locals.config.assetBaseUrl + pathToLocaleFile;
-			}
-			return false;
-		})(),
-	});
-
-	if (results.timeagoLocale) {
-		results.scripts.push(results.timeagoLocale);
-	}
-	data.templateValues.scripts = results.scripts.map(function (script) {
+	data.templateValues.scripts = scripts.map(function (script) {
 		return { src: script };
 	});
 

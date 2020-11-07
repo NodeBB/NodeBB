@@ -10,6 +10,7 @@ app.flags = {};
 app.cacheBuster = null;
 
 (function () {
+	var appLoaded = false;
 	var params = utils.params();
 	var showWelcomeMessage = !!params.loggedin;
 	var registerMessage = params.register;
@@ -17,18 +18,56 @@ app.cacheBuster = null;
 
 	app.cacheBuster = config['cache-buster'];
 
-	bootbox.setDefaults({
-		locale: config.userLang,
-	});
-
 	$(document).ready(function () {
 		ajaxify.parseData();
 		app.load();
 	});
 
-	app.load = function () {
-		overrides.overrideTimeago();
+	app.coldLoad = function () {
+		if (appLoaded) {
+			ajaxify.coldLoad();
+		} else {
+			$(window).on('action:app.load', function () {
+				ajaxify.coldLoad();
+			});
+		}
+	};
 
+	app.handleEarlyClicks = function () {
+		/**
+		 * Occasionally, a button or anchor (not meant to be ajaxified) is clicked before
+		 * ajaxify is ready. Capture that event and re-click it once NodeBB is ready.
+		 *
+		 * e.g. New Topic/Reply, post tools
+		 */
+		if (document.body) {
+			var earlyQueue = [];	// once we can ES6, use Set instead
+			var earlyClick = function (ev) {
+				var btnEl = ev.target.closest('button');
+				var anchorEl = ev.target.closest('a');
+				if (!btnEl && anchorEl && (anchorEl.getAttribute('data-ajaxify') === 'false' || anchorEl.href === '#')) {
+					btnEl = anchorEl;
+				}
+				if (btnEl && !earlyQueue.includes(btnEl)) {
+					earlyQueue.push(btnEl);
+					ev.stopImmediatePropagation();
+					ev.preventDefault();
+				}
+			};
+			document.body.addEventListener('click', earlyClick);
+			$(window).on('action:ajaxify.end', function () {
+				document.body.removeEventListener('click', earlyClick);
+				earlyQueue.forEach(function (el) {
+					el.click();
+				});
+			});
+		} else {
+			setTimeout(app.handleEarlyClicks, 50);
+		}
+	};
+	app.handleEarlyClicks();
+
+	app.load = function () {
 		handleStatusChange();
 
 		if (config.searchEnabled) {
@@ -52,15 +91,39 @@ app.cacheBuster = null;
 		createHeaderTooltips();
 		app.showEmailConfirmWarning();
 		app.showCookieWarning();
+		registerServiceWorker();
 
-		require(['taskbar', 'helpers', 'forum/pagination'], function (taskbar, helpers, pagination) {
+		require([
+			'taskbar',
+			'helpers',
+			'forum/pagination',
+			'translator',
+			'forum/unread',
+			'forum/header/notifications',
+			'forum/header/chat',
+			'timeago/jquery.timeago',
+		], function (taskbar, helpers, pagination, translator, unread, notifications, chat) {
+			notifications.prepareDOM();
+			chat.prepareDOM();
+			translator.prepareDOM();
 			taskbar.init();
-
 			helpers.register();
-
 			pagination.init();
 
-			$(window).trigger('action:app.load');
+			if (app.user.uid > 0) {
+				unread.initUnreadTopics();
+			}
+
+			overrides.overrideTimeago();
+			if (app.user.timeagoCode && app.user.timeagoCode !== 'en') {
+				require(['timeago/locales/jquery.timeago.' + app.user.timeagoCode], function () {
+					$(window).trigger('action:app.load');
+					appLoaded = true;
+				});
+			} else {
+				$(window).trigger('action:app.load');
+				appLoaded = true;
+			}
 		});
 	};
 
@@ -221,11 +284,6 @@ app.cacheBuster = null;
 		app.createUserTooltips($('#content'));
 
 		app.createStatusTooltips();
-
-		// Scroll back to top of page
-		if (!ajaxify.isCold()) {
-			window.scrollTo(0, 0);
-		}
 	};
 
 	app.showMessages = function () {
@@ -252,12 +310,10 @@ app.cacheBuster = null;
 					break;
 
 				case 'modal':
-					require(['translator'], function (translator) {
-						translator.translate(message || messages[type].message, function (translated) {
-							bootbox.alert({
-								title: messages[type].title,
-								message: translated,
-							});
+					require(['bootbox'], function (bootbox) {
+						bootbox.alert({
+							title: messages[type].title,
+							message: message || messages[type].message,
 						});
 					});
 					break;
@@ -390,12 +446,34 @@ app.cacheBuster = null;
 		var inputEl = options.searchElements.inputEl;
 		var searchTimeoutId = 0;
 		var oldValue = inputEl.val();
+		var filterCategoryEl = quickSearchResults.find('.filter-category');
+
+		function updateCategoryFilterName() {
+			if (ajaxify.data.template.category) {
+				require(['translator'], function (translator) {
+					translator.translate('[[search:search-in-category, ' + ajaxify.data.name + ']]', function (translated) {
+						var name = $('<div></div>').html(translated).text();
+						filterCategoryEl.find('.name').text(name);
+					});
+				});
+			}
+			filterCategoryEl.toggleClass('hidden', !ajaxify.data.template.category);
+		}
 
 		function doSearch() {
 			require(['search'], function (search) {
 				/* eslint-disable-next-line */
 				options.searchOptions = Object.assign({}, searchOptions);
 				options.searchOptions.term = inputEl.val();
+				updateCategoryFilterName();
+
+				if (ajaxify.data.template.category) {
+					if (filterCategoryEl.find('input[type="checkbox"]').is(':checked')) {
+						options.searchOptions.categories = [ajaxify.data.cid];
+						options.searchOptions.searchChildren = true;
+					}
+				}
+
 				quickSearchResults.removeClass('hidden').find('.quick-search-results-container').html('');
 				quickSearchResults.find('.loading-indicator').removeClass('hidden');
 				$(window).trigger('action:search.quick.start', options);
@@ -432,6 +510,11 @@ app.cacheBuster = null;
 			});
 		}
 
+		quickSearchResults.find('.filter-category input[type="checkbox"]').on('change', function () {
+			inputEl.focus();
+			doSearch();
+		});
+
 		inputEl.off('keyup').on('keyup', function () {
 			if (searchTimeoutId) {
 				clearTimeout(searchTimeoutId);
@@ -465,7 +548,9 @@ app.cacheBuster = null;
 		inputEl.on('focus', function () {
 			oldValue = inputEl.val();
 			if (inputEl.val() && quickSearchResults.find('#quick-search-results').children().length) {
+				updateCategoryFilterName();
 				quickSearchResults.removeClass('hidden');
+				inputEl[0].setSelectionRange(0, inputEl.val().length);
 			}
 		});
 
@@ -502,8 +587,12 @@ app.cacheBuster = null;
 		});
 
 		function dismissSearch() {
-			searchFields.addClass('hidden');
-			searchButton.removeClass('hidden');
+			setTimeout(function () {
+				if (!searchInput.is(':focus')) {
+					searchFields.addClass('hidden');
+					searchButton.removeClass('hidden');
+				}
+			}, 200);
 		}
 
 		searchButton.off('click').on('click', function (e) {
@@ -589,12 +678,15 @@ app.cacheBuster = null;
 		if (typeof $().autocomplete === 'function') {
 			return callback();
 		}
-
-		var scriptEl = document.createElement('script');
-		scriptEl.type = 'text/javascript';
-		scriptEl.src = config.relative_path + '/assets/vendor/jquery/js/jquery-ui.js?' + config['cache-buster'];
-		scriptEl.onload = callback;
-		document.head.appendChild(scriptEl);
+		require([
+			'jquery-ui/widgets/datepicker',
+			'jquery-ui/widgets/autocomplete',
+			'jquery-ui/widgets/sortable',
+			'jquery-ui/widgets/resizable',
+			'jquery-ui/widgets/draggable',
+		], function () {
+			callback();
+		});
 	};
 
 	app.showEmailConfirmWarning = function (err) {
@@ -688,4 +780,15 @@ app.cacheBuster = null;
 			});
 		});
 	};
+
+	function registerServiceWorker() {
+		if ('serviceWorker' in navigator) {
+			navigator.serviceWorker.register('/service-worker.js')
+				.then(function () {
+					console.info('ServiceWorker registration succeeded.');
+				}).catch(function (err) {
+					console.info('ServiceWorker registration failed: ', err);
+				});
+		}
+	}
 }());

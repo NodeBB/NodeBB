@@ -1,9 +1,7 @@
 'use strict';
 
 module.exports = function (module) {
-	var helpers = require('./helpers');
-
-	const _ = require('lodash');
+	const helpers = require('./helpers');
 
 	const cache = require('../cache').create('redis');
 
@@ -35,7 +33,7 @@ module.exports = function (module) {
 			await module.client.async.hmset(key, data);
 		}
 
-		cache.delObjectCache(key);
+		cache.del(key);
 	};
 
 	module.setObjectField = async function (key, field, value) {
@@ -50,7 +48,7 @@ module.exports = function (module) {
 			await module.client.async.hset(key, field, value);
 		}
 
-		cache.delObjectCache(key);
+		cache.del(key);
 	};
 
 	module.getObject = async function (key) {
@@ -75,7 +73,7 @@ module.exports = function (module) {
 		if (cachedData[key]) {
 			return cachedData[key].hasOwnProperty(field) ? cachedData[key][field] : null;
 		}
-		return await module.client.async.hget(key, field);
+		return await module.client.async.hget(key, String(field));
 	};
 
 	module.getObjectFields = async function (key, fields) {
@@ -110,11 +108,10 @@ module.exports = function (module) {
 			cache.set(key, cachedData[key]);
 		});
 
-		const mapped = keys.map(function (key) {
-			if (!fields.length) {
-				return _.clone(cachedData[key]);
-			}
-
+		if (!fields.length) {
+			return keys.map(key => (cachedData[key] ? { ...cachedData[key] } : null));
+		}
+		return keys.map(function (key) {
 			const item = cachedData[key] || {};
 			const result = {};
 			fields.forEach((field) => {
@@ -122,7 +119,6 @@ module.exports = function (module) {
 			});
 			return result;
 		});
-		return mapped;
 	};
 
 	module.getObjectKeys = async function (key) {
@@ -150,7 +146,7 @@ module.exports = function (module) {
 			return;
 		}
 		await module.client.async.hdel(key, field);
-		cache.delObjectCache(key);
+		cache.del(key);
 	};
 
 	module.deleteObjectFields = async function (key, fields) {
@@ -162,7 +158,7 @@ module.exports = function (module) {
 			return;
 		}
 		await module.client.async.hdel(key, fields);
-		cache.delObjectCache(key);
+		cache.del(key);
 	};
 
 	module.incrObjectField = async function (key, field) {
@@ -186,7 +182,7 @@ module.exports = function (module) {
 		} else {
 			result = await module.client.async.hincrby(key, field, value);
 		}
-		cache.delObjectCache(key);
+		cache.del(key);
 		return Array.isArray(result) ? result.map(value => parseInt(value, 10)) : parseInt(result, 10);
 	};
 };

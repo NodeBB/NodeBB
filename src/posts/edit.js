@@ -11,6 +11,7 @@ const privileges = require('../privileges');
 const plugins = require('../plugins');
 const pubsub = require('../pubsub');
 const utils = require('../utils');
+const slugify = require('../slugify');
 const translator = require('../translator');
 
 module.exports = function (Posts) {
@@ -62,10 +63,15 @@ module.exports = function (Posts) {
 			});
 		}
 		await Posts.uploads.sync(data.pid);
-		const returnPostData = { ...postData, ...editPostData };
+
+		// Normalize data prior to constructing returnPostData (match types with getPostSummaryByPids)
+		postData.deleted = !!postData.deleted;
+
+		const returnPostData = { ...postData, ...result.post };
 		returnPostData.cid = topic.cid;
 		returnPostData.topic = topic;
 		returnPostData.editedISO = utils.toISOString(now);
+		returnPostData.changed = oldContent !== data.content;
 
 		await topics.notifyFollowers(returnPostData, data.uid, {
 			type: 'post-edit',
@@ -114,7 +120,7 @@ module.exports = function (Posts) {
 		};
 		if (title) {
 			newTopicData.title = title;
-			newTopicData.slug = tid + '/' + (utils.slugify(title) || 'topic');
+			newTopicData.slug = tid + '/' + (slugify(title) || 'topic');
 		}
 		newTopicData.thumb = data.thumb || '';
 

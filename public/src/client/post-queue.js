@@ -1,11 +1,15 @@
 'use strict';
 
 
-define('forum/post-queue', ['categorySelector'], function (categorySelector) {
+define('forum/post-queue', [
+	'categoryFilter', 'categorySelector',
+], function (categoryFilter, categorySelector) {
 	var PostQueue = {};
 
 	PostQueue.init = function () {
 		$('[data-toggle="tooltip"]').tooltip();
+
+		categoryFilter.init($('[component="category/dropdown"]'));
 
 		$('.posts-list').on('click', '[data-action]', function () {
 			var parent = $(this).parents('[data-id]');

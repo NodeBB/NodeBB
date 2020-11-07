@@ -20,16 +20,10 @@
 	"add-group": "Добавяне на група",
 	"invite": "Покана",
 	"new": "Нов потребител",
-
-	"pills.latest": "Последни потребители",
+	"filter-by": "Филтриране по",
 	"pills.unvalidated": "Няма потвърдена е-поща",
-	"pills.no-posts": "Няма публикации",
-	"pills.top-posters": "С най-много публикации",
-	"pills.top-rep": "С най-много репутация",
-	"pills.inactive": "Недеен",
-	"pills.flagged": "С най-много доклади",
+	"pills.validated": "Потвърдена",
 	"pills.banned": "Блокиран",
-	"pills.search": "Търсене на потребители",
 
 	"50-per-page": "50 на страница",
 	"100-per-page": "100 на страница",

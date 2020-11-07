@@ -4,6 +4,7 @@ const validator = require('validator');
 
 const db = require('../database');
 const meta = require('../meta');
+const plugins = require('../plugins');
 
 const intFields = [
 	'cid', 'parentCid', 'disabled', 'isSection', 'order',
@@ -19,8 +20,14 @@ module.exports = function (Categories) {
 
 		const keys = cids.map(cid => 'category:' + cid);
 		const categories = await (fields.length ? db.getObjectsFields(keys, fields) : db.getObjects(keys));
-		categories.forEach(category => modifyCategory(category, fields));
-		return categories;
+		const result = await plugins.fireHook('filter:category.getFields', {
+			cids: cids,
+			categories: categories,
+			fields: fields,
+			keys: keys,
+		});
+		result.categories.forEach(category => modifyCategory(category, fields));
+		return result.categories;
 	};
 
 	Categories.getCategoryData = async function (cid) {

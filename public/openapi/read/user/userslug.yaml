@@ -1,0 +1,86 @@
+get:
+  tags:
+    - users
+  summary: Get user profile
+  parameters:
+    - name: userslug
+      in: path
+      required: true
+      schema:
+        type: string
+      example: admin
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../components/schemas/UserObject.yaml#/UserObjectFull
+              - type: object
+                properties:
+                  posts:
+                    $ref: ../../components/schemas/PostsObject.yaml#/PostsObject
+                  latestPosts:
+                    $ref: ../../components/schemas/PostsObject.yaml#/PostsObject
+                  bestPosts:
+                    $ref: ../../components/schemas/PostsObject.yaml#/PostsObject
+                  hasPrivateChat:
+                    type: number
+                  title:
+                    type: string
+                  allowCoverPicture:
+                    type: boolean
+                  selectedGroup:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        slug:
+                          type: string
+                        createtime:
+                          type: number
+                        userTitle:
+                          type: string
+                        description:
+                          type: string
+                        memberCount:
+                          type: number
+                        deleted:
+                          type: string
+                        hidden:
+                          type: number
+                        system:
+                          type: number
+                        private:
+                          type: number
+                        ownerUid:
+                          type: number
+                        icon:
+                          type: string
+                        labelColor:
+                          type: string
+                        cover:url:
+                          type: string
+                        cover:position:
+                          type: string
+                        userTitleEnabled:
+                          type: number
+                        disableJoinRequests:
+                          type: number
+                        disableLeave:
+                          type: number
+                        nameEncoded:
+                          type: string
+                        displayName:
+                          type: string
+                        textColor:
+                          type: string
+                        createtimeISO:
+                          type: string
+                        cover:thumb:url:
+                          type: string
+              - $ref: ../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../../components/schemas/CommonProps.yaml#/CommonProps

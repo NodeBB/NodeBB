@@ -103,23 +103,17 @@ middleware.renderFooter = async function (req, res, data) {
 	return await req.app.renderAsync('admin/footer', data);
 };
 
-middleware.checkPrivileges = async (req, res, next) => {
+middleware.checkPrivileges = helpers.try(async (req, res, next) => {
 	// Kick out guests, obviously
-	if (!req.uid) {
+	if (req.uid <= 0) {
 		return controllers.helpers.notAllowed(req, res);
-	}
-
-	// Users in "administrators" group are considered super admins
-	const isAdmin = await user.isAdministrator(req.uid);
-	if (isAdmin) {
-		return next();
 	}
 
 	// Otherwise, check for privilege based on page (if not in mapping, deny access)
 	const path = req.path.replace(/^(\/api)?\/admin\/?/g, '');
 	if (path) {
 		const privilege = privileges.admin.resolve(path);
-		if (!privilege || !await privileges.admin.can(privilege, req.uid)) {
+		if (!await privileges.admin.can(privilege, req.uid)) {
 			return controllers.helpers.notAllowed(req, res);
 		}
 	} else {
@@ -130,5 +124,30 @@ middleware.checkPrivileges = async (req, res, next) => {
 		}
 	}
 
-	next();
-};
+	// Reject if they need to re-login (due to ACP timeout), otherwise extend logout timer
+	const loginTime = req.session.meta ? req.session.meta.datetime : 0;
+	const adminReloginDuration = meta.config.adminReloginDuration * 60000;
+	const disabled = meta.config.adminReloginDuration === 0;
+	if (disabled || (loginTime && parseInt(loginTime, 10) > Date.now() - adminReloginDuration)) {
+		const timeLeft = parseInt(loginTime, 10) - (Date.now() - adminReloginDuration);
+		if (req.session.meta && timeLeft < Math.min(300000, adminReloginDuration)) {
+			req.session.meta.datetime += Math.min(300000, adminReloginDuration);
+		}
+
+		return next();
+	}
+
+	let returnTo = req.path;
+	if (nconf.get('relative_path')) {
+		returnTo = req.path.replace(new RegExp('^' + nconf.get('relative_path')), '');
+	}
+	returnTo = returnTo.replace(/^\/api/, '');
+
+	req.session.returnTo = returnTo;
+	req.session.forceLogin = 1;
+	if (res.locals.isAPI) {
+		res.status(401).json({});
+	} else {
+		res.redirect(nconf.get('relative_path') + '/login?local=1');
+	}
+});

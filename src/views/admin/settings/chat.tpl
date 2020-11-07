@@ -48,6 +48,11 @@
 			<label>[[admin/settings/chat:delay]]</label>
 			<input type="text" class="form-control" value="200" data-field="chatMessageDelay">
 		</div>
+
+		<div class="form-group">
+			<label>[[admin/settings/chat:notification-delay]]</label>
+			<input type="text" class="form-control" value="60" data-field="notificationSendDelay">
+		</div>
 	</div>
 </div>
 

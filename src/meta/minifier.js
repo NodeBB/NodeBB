@@ -1,24 +1,24 @@
 'use strict';
 
-var fs = require('fs');
-var os = require('os');
-var uglify = require('uglify-es');
-var async = require('async');
-var winston = require('winston');
-var less = require('less');
-var postcss = require('postcss');
-var autoprefixer = require('autoprefixer');
-var clean = require('postcss-clean');
+const fs = require('fs');
+const os = require('os');
+const uglify = require('uglify-es');
+const async = require('async');
+const winston = require('winston');
+const less = require('less');
+const postcss = require('postcss');
+const autoprefixer = require('autoprefixer');
+const clean = require('postcss-clean');
 
-var fork = require('./debugFork');
+const fork = require('./debugFork');
 require('../file'); // for graceful-fs
 
-var Minifier = module.exports;
+const Minifier = module.exports;
 
-var pool = [];
-var free = [];
+const pool = [];
+const free = [];
 
-var maxThreads = 0;
+let maxThreads = 0;
 
 Object.defineProperty(Minifier, 'maxThreads', {
 	get: function () {
@@ -300,3 +300,5 @@ Minifier.css.bundle = function (source, paths, minify, fork, callback) {
 		minify: minify,
 	}, fork, callback);
 };
+
+require('../promisify')(exports);

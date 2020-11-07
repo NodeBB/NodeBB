@@ -26,6 +26,7 @@
     "invalid-pagination-value": "Ungültige Seitennummerierung, muss mindestens %1 und maximal %2 sein",
     "username-taken": "Der Benutzername ist bereits vergeben",
     "email-taken": "Die E-Mail-Adresse ist bereits vergeben",
+    "email-invited": "Email was already invited",
     "email-not-confirmed": "Du kannst keine Beiträge erstellen, solange deine Email-Adresse nicht bestätigt wurde. Bitte klicke hier um deine Email-Adresse zu bestätigen.",
     "email-not-confirmed-chat": "Du kannst den Chat erst nutzen wenn deine E-Mail bestätigt wurde, bitte klicke hier, um deine E-Mail zu bestätigen.",
     "email-not-confirmed-email-sent": "Deine Email-Adresse wurde noch nicht bestätigt, bitte kontrolliere dein Postfach nach einer Bestätigungsmail. Du kannst keine Beiträge erstellen oder chatten bis deine Email-Adresse bestätigt wurde.",

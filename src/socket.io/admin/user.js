@@ -4,6 +4,7 @@ const async = require('async');
 const winston = require('winston');
 
 const db = require('../../database');
+const api = require('../../api');
 const groups = require('../../groups');
 const user = require('../../user');
 const events = require('../../events');
@@ -11,6 +12,7 @@ const meta = require('../../meta');
 const plugins = require('../../plugins');
 const translator = require('../../translator');
 const flags = require('../../flags');
+const sockets = require('..');
 
 const User = module.exports;
 
@@ -57,10 +59,8 @@ User.removeAdmins = async function (socket, uids) {
 };
 
 User.createUser = async function (socket, userData) {
-	if (!userData) {
-		throw new Error('[[error:invalid-data]]');
-	}
-	return await user.create(userData);
+	sockets.warnDeprecated(socket, 'POST /api/v3/users');
+	return await api.users.create(socket, userData);
 };
 
 User.resetLockouts = async function (socket, uids) {
@@ -77,7 +77,10 @@ User.validateEmail = async function (socket, uids) {
 
 	uids = uids.filter(uid => parseInt(uid, 10));
 	await db.setObjectField(uids.map(uid => 'user:' + uid), 'email:confirmed', 1);
-	await db.sortedSetRemove('users:notvalidated', uids);
+	for (const uid of uids) {
+		await groups.join('verified-users', uid);
+		await groups.leave('unverified-users', uid);
+	}
 };
 
 User.sendValidationEmail = async function (socket, uids) {
@@ -136,10 +139,8 @@ User.deleteUsersContent = async function (socket, uids) {
 };
 
 User.deleteUsersAndContent = async function (socket, uids) {
-	await canDeleteUids(uids);
-	deleteUsers(socket, uids, async function (uid) {
-		return await user.delete(socket.uid, uid);
-	});
+	sockets.warnDeprecated(socket, 'DELETE /api/v3/users or DELETE /api/v3/users/:uid');
+	await api.users.deleteMany(socket, { uids });
 };
 
 async function canDeleteUids(uids) {
@@ -177,32 +178,6 @@ async function deleteUsers(socket, uids, method) {
 		winston.error(err.stack);
 	}
 }
-
-User.search = async function (socket, data) {
-	// TODO: deprecate
-	const searchData = await user.search({
-		query: data.query,
-		searchBy: data.searchBy,
-		uid: socket.uid,
-	});
-
-	if (!searchData.users.length) {
-		return searchData;
-	}
-
-	const uids = searchData.users.map(user => user && user.uid);
-	const userInfo = await user.getUsersFields(uids, ['email', 'flags', 'lastonline', 'joindate']);
-
-	searchData.users.forEach(function (user, index) {
-		if (user && userInfo[index]) {
-			user.email = userInfo[index].email;
-			user.flags = userInfo[index].flags || 0;
-			user.lastonlineISO = userInfo[index].lastonlineISO;
-			user.joindateISO = userInfo[index].joindateISO;
-		}
-	});
-	return searchData;
-};
 
 User.restartJobs = async function () {
 	user.startJobs();

@@ -157,7 +157,7 @@ Categories.getTagWhitelist = async function (cids) {
 	});
 
 	if (!nonCachedCids.length) {
-		return _.clone(cids.map(cid => cachedData[cid]));
+		return cids.map(cid => cachedData[cid]);
 	}
 
 	const keys = nonCachedCids.map(cid => 'cid:' + cid + ':tag:whitelist');
@@ -167,7 +167,7 @@ Categories.getTagWhitelist = async function (cids) {
 		cachedData[cid] = data[index];
 		cache.set('cid:' + cid + ':tag:whitelist', data[index]);
 	});
-	return _.clone(cids.map(cid => cachedData[cid]));
+	return cids.map(cid => cachedData[cid]);
 };
 
 function calculateTopicPostCount(category) {
@@ -280,7 +280,7 @@ Categories.getTree = function (categories, parentCid) {
 		if (cid) {
 			categories[index].children = undefined;
 			cidToCategory[cid] = categories[index];
-			parents[cid] = _.clone(categories[index]);
+			parents[cid] = { ...categories[index] };
 		}
 	});
 

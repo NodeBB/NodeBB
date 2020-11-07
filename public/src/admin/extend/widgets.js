@@ -1,7 +1,12 @@
 'use strict';
 
 
-define('admin/extend/widgets', ['jqueryui'], function () {
+define('admin/extend/widgets', [
+	'jquery-ui/widgets/sortable',
+	'jquery-ui/widgets/draggable',
+	'jquery-ui/widgets/droppable',
+	'jquery-ui/widgets/datepicker',
+], function () {
 	var Widgets = {};
 
 	Widgets.init = function () {

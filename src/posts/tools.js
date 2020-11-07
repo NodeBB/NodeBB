@@ -41,13 +41,4 @@ module.exports = function (Posts) {
 		}
 		return post;
 	}
-
-	Posts.tools.purge = async function (uid, pid) {
-		const canPurge = await privileges.posts.canPurge(pid, uid);
-		if (!canPurge) {
-			throw new Error('[[error:no-privileges]]');
-		}
-		require('./cache').del(pid);
-		await Posts.purge(pid, uid);
-	};
 };

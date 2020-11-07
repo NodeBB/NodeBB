@@ -8,5 +8,6 @@
 	"consent.blank-localised-default": "Deixar em branco para utilizar os padrões de localidade do NodeBB",
 	"settings": "Configurações",
 	"cookie-domain": "Domínio da sessão de cookie",
+	"max-user-sessions": "Max active sessions per user",
 	"blank-default": "Deixe em branco para o valor padrão"
 }

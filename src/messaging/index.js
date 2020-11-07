@@ -5,6 +5,7 @@ const validator = require('validator');
 
 const db = require('../database');
 const user = require('../user');
+const privileges = require('../privileges');
 const plugins = require('../plugins');
 const meta = require('../meta');
 const utils = require('../utils');
@@ -201,13 +202,13 @@ Messaging.canMessageUser = async (uid, toUid) => {
 		throw new Error('[[error:no-user]]');
 	}
 
-	const userData = await user.getUserFields(uid, ['banned', 'email:confirmed']);
+	const userData = await user.getUserFields(uid, ['banned']);
 	if (userData.banned) {
 		throw new Error('[[error:user-banned]]');
 	}
-
-	if (meta.config.requireEmailConfirmation && !userData['email:confirmed']) {
-		throw new Error('[[error:email-not-confirmed-chat]]');
+	const canChat = await privileges.global.can('chat', uid);
+	if (!canChat) {
+		throw new Error('[[error:no-privileges]]');
 	}
 
 	const results = await utils.promiseParallel({
@@ -237,13 +238,13 @@ Messaging.canMessageRoom = async (uid, roomId) => {
 		throw new Error('[[error:not-in-room]]');
 	}
 
-	const userData = await user.getUserFields(uid, ['banned', 'email:confirmed']);
+	const userData = await user.getUserFields(uid, ['banned']);
 	if (userData.banned) {
 		throw new Error('[[error:user-banned]]');
 	}
-
-	if (meta.config.requireEmailConfirmation && !userData['email:confirmed']) {
-		throw new Error('[[error:email-not-confirmed-chat]]');
+	const canChat = await privileges.global.can('chat', uid);
+	if (!canChat) {
+		throw new Error('[[error:no-privileges]]');
 	}
 
 	await plugins.fireHook('static:messaging.canMessageRoom', {

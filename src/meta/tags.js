@@ -9,6 +9,10 @@ const utils = require('../utils');
 
 const Tags = module.exports;
 
+const url = nconf.get('url');
+const relative_path = nconf.get('relative_path');
+const upload_url = nconf.get('upload_url');
+
 Tags.parse = async (req, data, meta, link) => {
 	// Meta tags
 	const defaultTags = [{
@@ -29,8 +33,11 @@ Tags.parse = async (req, data, meta, link) => {
 		content: Meta.config.title || 'NodeBB',
 	}, {
 		name: 'msapplication-badge',
-		content: 'frequency=30; polling-uri=' + nconf.get('url') + '/sitemap.xml',
+		content: 'frequency=30; polling-uri=' + url + '/sitemap.xml',
 		noEscape: true,
+	}, {
+		name: 'theme-color',
+		content: Meta.config.themeColor || '#ffffff',
 	}];
 
 	if (Meta.config.keywords) {
@@ -52,10 +59,10 @@ Tags.parse = async (req, data, meta, link) => {
 	var defaultLinks = [{
 		rel: 'icon',
 		type: 'image/x-icon',
-		href: nconf.get('relative_path') + nconf.get('upload_url') + '/system/favicon.ico' + (Meta.config['cache-buster'] ? '?' + Meta.config['cache-buster'] : ''),
+		href: relative_path + '/favicon.ico' + (Meta.config['cache-buster'] ? '?' + Meta.config['cache-buster'] : ''),
 	}, {
 		rel: 'manifest',
-		href: nconf.get('relative_path') + '/manifest.json',
+		href: relative_path + '/manifest.webmanifest',
 	}];
 
 	if (plugins.hasListeners('filter:search.query')) {
@@ -63,7 +70,7 @@ Tags.parse = async (req, data, meta, link) => {
 			rel: 'search',
 			type: 'application/opensearchdescription+xml',
 			title: utils.escapeHTML(String(Meta.config.title || Meta.config.browserTitle || 'NodeBB')),
-			href: nconf.get('relative_path') + '/osd.xml',
+			href: relative_path + '/osd.xml',
 		});
 	}
 
@@ -71,31 +78,64 @@ Tags.parse = async (req, data, meta, link) => {
 	if (Meta.config['brand:touchIcon']) {
 		defaultLinks.push({
 			rel: 'apple-touch-icon',
-			href: nconf.get('relative_path') + nconf.get('upload_url') + '/system/touchicon-orig.png',
+			href: relative_path + upload_url + '/system/touchicon-orig.png',
 		}, {
 			rel: 'icon',
 			sizes: '36x36',
-			href: nconf.get('relative_path') + nconf.get('upload_url') + '/system/touchicon-36.png',
+			href: relative_path + upload_url + '/system/touchicon-36.png',
 		}, {
 			rel: 'icon',
 			sizes: '48x48',
-			href: nconf.get('relative_path') + nconf.get('upload_url') + '/system/touchicon-48.png',
+			href: relative_path + upload_url + '/system/touchicon-48.png',
 		}, {
 			rel: 'icon',
 			sizes: '72x72',
-			href: nconf.get('relative_path') + nconf.get('upload_url') + '/system/touchicon-72.png',
+			href: relative_path + upload_url + '/system/touchicon-72.png',
 		}, {
 			rel: 'icon',
 			sizes: '96x96',
-			href: nconf.get('relative_path') + nconf.get('upload_url') + '/system/touchicon-96.png',
+			href: relative_path + upload_url + '/system/touchicon-96.png',
 		}, {
 			rel: 'icon',
 			sizes: '144x144',
-			href: nconf.get('relative_path') + nconf.get('upload_url') + '/system/touchicon-144.png',
+			href: relative_path + upload_url + '/system/touchicon-144.png',
 		}, {
 			rel: 'icon',
 			sizes: '192x192',
-			href: nconf.get('relative_path') + nconf.get('upload_url') + '/system/touchicon-192.png',
+			href: relative_path + upload_url + '/system/touchicon-192.png',
+		});
+	} else {
+		defaultLinks.push({
+			rel: 'apple-touch-icon',
+			href: relative_path + '/assets/images/touch/512.png',
+		}, {
+			rel: 'icon',
+			sizes: '36x36',
+			href: relative_path + '/assets/images/touch/192.png',
+		}, {
+			rel: 'icon',
+			sizes: '48x48',
+			href: relative_path + '/assets/images/touch/144.png',
+		}, {
+			rel: 'icon',
+			sizes: '72x72',
+			href: relative_path + '/assets/images/touch/96.png',
+		}, {
+			rel: 'icon',
+			sizes: '96x96',
+			href: relative_path + '/assets/images/touch/72.png',
+		}, {
+			rel: 'icon',
+			sizes: '144x144',
+			href: relative_path + '/assets/images/touch/48.png',
+		}, {
+			rel: 'icon',
+			sizes: '192x192',
+			href: relative_path + '/assets/images/touch/36.png',
+		}, {
+			rel: 'icon',
+			sizes: '512x512',
+			href: relative_path + '/assets/images/touch/512.png',
 		});
 	}
 
@@ -120,7 +160,7 @@ Tags.parse = async (req, data, meta, link) => {
 	addSiteOGImage(meta);
 
 	addIfNotExists(meta, 'property', 'og:title', Meta.config.title || 'NodeBB');
-	var ogUrl = nconf.get('url') + (req.originalUrl !== '/' ? stripRelativePath(req.originalUrl) : '');
+	var ogUrl = url + (req.originalUrl !== '/' ? stripRelativePath(req.originalUrl) : '');
 	addIfNotExists(meta, 'property', 'og:url', ogUrl);
 	addIfNotExists(meta, 'name', 'description', Meta.config.description);
 	addIfNotExists(meta, 'property', 'og:description', Meta.config.description);
@@ -151,8 +191,8 @@ function addIfNotExists(meta, keyName, tagName, value) {
 }
 
 function stripRelativePath(url) {
-	if (url.startsWith(nconf.get('relative_path'))) {
-		return url.slice(nconf.get('relative_path').length);
+	if (url.startsWith(relative_path)) {
+		return url.slice(relative_path.length);
 	}
 
 	return url;
@@ -162,7 +202,7 @@ function addSiteOGImage(meta) {
 	const key = Meta.config['og:image'] ? 'og:image' : 'brand:logo';
 	var ogImage = stripRelativePath(Meta.config[key] || '');
 	if (ogImage && !ogImage.startsWith('http')) {
-		ogImage = nconf.get('url') + ogImage;
+		ogImage = url + ogImage;
 	}
 
 	if (ogImage) {
@@ -189,18 +229,18 @@ function addSiteOGImage(meta) {
 		// Push fallback logo
 		meta.push({
 			property: 'og:image',
-			content: nconf.get('url') + '/assets/logo.png',
+			content: url + '/assets/images/logo@3x.png',
 			noEscape: true,
 		}, {
 			property: 'og:image:url',
-			content: nconf.get('url') + '/assets/logo.png',
+			content: url + '/assets/images/logo@3x.png',
 			noEscape: true,
 		}, {
 			property: 'og:image:width',
-			content: '128',
+			content: '963',
 		}, {
 			property: 'og:image:height',
-			content: '128',
+			content: '225',
 		});
 	}
 }

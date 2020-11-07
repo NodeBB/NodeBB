@@ -1,20 +1,13 @@
 'use strict';
 
 
-define('forum/topic/votes', ['components', 'translator', 'benchpress'], function (components, translator, Benchpress) {
+define('forum/topic/votes', [
+	'components', 'translator', 'benchpress', 'api',
+], function (components, translator, Benchpress, api) {
 	var Votes = {};
 
 	Votes.addVoteHandler = function () {
 		components.get('topic').on('mouseenter', '[data-pid] [component="post/vote-count"]', loadDataAndCreateTooltip);
-		components.get('topic').on('mouseout', '[data-pid] [component="post/vote-count"]', function () {
-			var el = $(this).parent();
-			el.on('shown.bs.tooltip', function () {
-				$('.tooltip').tooltip('destroy');
-				el.off('shown.bs.tooltip');
-			});
-
-			$('.tooltip').tooltip('destroy');
-		});
 	};
 
 	function loadDataAndCreateTooltip(e) {
@@ -24,18 +17,14 @@ define('forum/topic/votes', ['components', 'translator', 'benchpress'], function
 		var el = $this.parent();
 		var pid = el.parents('[data-pid]').attr('data-pid');
 
-		$('.tooltip').tooltip('destroy');
-		$this.off('mouseenter', loadDataAndCreateTooltip);
-
 		socket.emit('posts.getUpvoters', [pid], function (err, data) {
 			if (err) {
 				return app.alertError(err.message);
 			}
 
 			if (data.length) {
-				createTooltip(el, data[0]);
+				createTooltip($this, data[0]);
 			}
-			$this.off('mouseenter').on('mouseenter', loadDataAndCreateTooltip);
 		});
 		return false;
 	}
@@ -44,7 +33,8 @@ define('forum/topic/votes', ['components', 'translator', 'benchpress'], function
 		function doCreateTooltip(title) {
 			el.attr('title', title).tooltip('fixTitle').tooltip('show');
 		}
-		var usernames = data.usernames;
+		var usernames = data.usernames
+			.filter(name => name !== '[[global:former_user]]');
 		if (!usernames.length) {
 			return;
 		}
@@ -61,19 +51,17 @@ define('forum/topic/votes', ['components', 'translator', 'benchpress'], function
 	}
 
 
-	Votes.toggleVote = function (button, className, method) {
+	Votes.toggleVote = function (button, className, delta) {
 		var post = button.closest('[data-pid]');
 		var currentState = post.find(className).length;
 
-		socket.emit(currentState ? 'posts.unvote' : method, {
-			pid: post.attr('data-pid'),
-			room_id: 'topic_' + ajaxify.data.tid,
-		}, function (err) {
-			if (err) {
-				app.alertError(err.message);
-			}
+		const method = currentState ? 'del' : 'put';
+		api[method](`/posts/${post.attr('data-pid')}/vote`, {
+			delta: delta,
+		}).catch((err) => {
+			app.alertError(err.message);
 
-			if (err && err.message === '[[error:not-logged-in]]') {
+			if (err.message === '[[error:not-logged-in]]') {
 				ajaxify.go('login');
 			}
 		});

@@ -77,7 +77,7 @@ GroupFullObject:
   nullable: true
 GroupDataObject:
   type: object
-  description: The response from an internal call to `Groups.getGroupData(<groupname>, [])` with **explicitly** no fields passed in
+  description: The response from an internal call to `Groups.getGroupsFields(<groupname>, [])` with **explicitly** no fields passed in
   properties:
     name:
       type: string

@@ -110,7 +110,7 @@ define('forum/topic/events', [
 		var navbarTitle = components.get('navbar/title').find('span');
 		var breadCrumb = components.get('breadcrumb/current');
 
-		if (topicTitle.length && data.topic.title && topicTitle.html() !== data.topic.title) {
+		if (topicTitle.length && data.topic.title && data.topic.renamed) {
 			ajaxify.data.title = data.topic.title;
 			var newUrl = 'topic/' + data.topic.slug + (window.location.search ? window.location.search : '');
 			history.replaceState({ url: newUrl }, null, window.location.protocol + '//' + window.location.host + config.relative_path + '/' + newUrl);
@@ -126,27 +126,29 @@ define('forum/topic/events', [
 			});
 		}
 
-		editedPostEl.fadeOut(250, function () {
-			editedPostEl.html(translator.unescape(data.post.content));
-			editedPostEl.find('img:not(.not-responsive)').addClass('img-responsive');
-			images.wrapImagesInLinks(editedPostEl.parent());
-			posts.addBlockquoteEllipses(editedPostEl.parent());
-			editedPostEl.fadeIn(250);
+		if (data.post.changed) {
+			editedPostEl.fadeOut(250, function () {
+				editedPostEl.html(translator.unescape(data.post.content));
+				editedPostEl.find('img:not(.not-responsive)').addClass('img-responsive');
+				images.wrapImagesInLinks(editedPostEl.parent());
+				posts.addBlockquoteEllipses(editedPostEl.parent());
+				editedPostEl.fadeIn(250);
 
-			var editData = {
-				editor: data.editor,
-				editedISO: utils.toISOString(data.post.edited),
-			};
+				var editData = {
+					editor: data.editor,
+					editedISO: utils.toISOString(data.post.edited),
+				};
 
-			Benchpress.parse('partials/topic/post-editor', editData, function (html) {
-				translator.translate(html, function (translated) {
-					html = $(translated);
-					editorEl.replaceWith(html);
-					$('[data-pid="' + data.post.pid + '"] [component="post/editor"] .timeago').timeago();
-					$(window).trigger('action:posts.edited', data);
+				Benchpress.parse('partials/topic/post-editor', editData, function (html) {
+					translator.translate(html, function (translated) {
+						html = $(translated);
+						editorEl.replaceWith(html);
+						$('[data-pid="' + data.post.pid + '"] [component="post/editor"] .timeago').timeago();
+						$(window).trigger('action:posts.edited', data);
+					});
 				});
 			});
-		});
+		}
 
 		if (data.topic.tags && tagsUpdated(data.topic.tags)) {
 			Benchpress.parse('partials/topic/tags', { tags: data.topic.tags }, function (html) {

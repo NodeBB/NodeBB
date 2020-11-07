@@ -1,0 +1,20 @@
+delete:
+  tags:
+    - users
+  summary: Revoke a user session
+  parameters:
+    - name: userslug
+      in: path
+      required: true
+      schema:
+        type: string
+      example: admin
+    - name: uuid
+      in: path
+      required: true
+      schema:
+        type: string
+      example: testuuid
+  responses:
+    "200":
+      description: User session revoked

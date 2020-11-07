@@ -20,16 +20,10 @@
 	"add-group": "Add Group",
 	"invite": "초대",
 	"new": "새로운 사용자",
-
-	"pills.latest": "최근 사용자",
+	"filter-by": "Filter by",
 	"pills.unvalidated": "인증되지 않음",
-	"pills.no-posts": "글 없음",
-	"pills.top-posters": "가장 많은 글을 올린 사용자",
-	"pills.top-rep": "가장 등급이 높은",
-	"pills.inactive": "휴면",
-	"pills.flagged": "가장 신고가 많은",
+	"pills.validated": "Validated",
 	"pills.banned": "차단됨",
-	"pills.search": "사용자 검색",
 
 	"50-per-page": "50 per page",
 	"100-per-page": "100 per page",

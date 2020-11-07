@@ -12,6 +12,7 @@ const request = require('request-promise-native');
 const db = require('../database');
 const meta = require('../meta');
 const pubsub = require('../pubsub');
+const { paths } = require('../constants');
 
 const supportedPackageManagerList = require('../cli/package-install').supportedPackageManager; // load config from src/cli/package-install.js
 const packageManager = supportedPackageManagerList.indexOf(nconf.get('package_manager')) >= 0 ? nconf.get('package_manager') : 'npm';
@@ -132,7 +133,7 @@ module.exports = function (Plugins) {
 	}
 
 	Plugins.isInstalled = async function (id) {
-		const pluginDir = path.join(__dirname, '../../node_modules', id);
+		const pluginDir = path.join(paths.nodeModules, id);
 		try {
 			const stats = await fs.promises.stat(pluginDir);
 			return stats.isDirectory();

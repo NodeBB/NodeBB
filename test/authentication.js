@@ -193,7 +193,7 @@ describe('authentication', function () {
 			}, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 401);
-				assert.equal(body, 'not-authorized');
+				assert.strictEqual(body.status.code, 'not-authorised');
 				done();
 			});
 		});

@@ -1,0 +1,14 @@
+get:
+  tags:
+    - admin
+  summary: Get database information
+  responses:
+    "200":
+      description: "A JSON object with database status information"
+      content:
+        application/json:
+          schema:
+            properties: {}
+            additionalProperties:
+              type: object
+              description: Each database configured will have an entry here with information about its runtime status

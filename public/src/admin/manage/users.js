@@ -1,20 +1,16 @@
 'use strict';
 
-define('admin/manage/users', ['translator', 'benchpress', 'autocomplete'], function (translator, Benchpress, autocomplete) {
+define('admin/manage/users', [
+	'translator', 'benchpress', 'autocomplete', 'api', 'slugify',
+], function (translator, Benchpress, autocomplete, api, slugify) {
 	var Users = {};
 
 	Users.init = function () {
-		var navPills = $('.nav-pills li');
-		var pathname = window.location.pathname;
-		if (!navPills.find('a[href^="' + pathname + '"]').length || pathname === config.relative_path + '/admin/manage/users') {
-			pathname = config.relative_path + '/admin/manage/users/latest';
-		}
-		navPills.removeClass('active').find('a[href^="' + pathname + '"]').parent().addClass('active');
-
 		$('#results-per-page').val(ajaxify.data.resultsPerPage).on('change', function () {
 			var query = utils.params();
 			query.resultsPerPage = $('#results-per-page').val();
-			ajaxify.go(window.location.pathname + '?' + $.param(query));
+			var qs = buildSearchQuery(query);
+			ajaxify.go(window.location.pathname + '?' + qs);
 		});
 
 		function getSelectedUids() {
@@ -44,6 +40,7 @@ define('admin/manage/users', ['translator', 'benchpress', 'autocomplete'], funct
 			$('.users-table [component="user/select/single"]:checked').parents('.user-row').remove();
 		}
 
+		// use onSuccess instead
 		function done(successMessage, className, flag) {
 			return function (err) {
 				if (err) {
@@ -55,6 +52,14 @@ define('admin/manage/users', ['translator', 'benchpress', 'autocomplete'], funct
 				}
 				unselectAll();
 			};
+		}
+
+		function onSuccess(successMessage, className, flag) {
+			app.alertSuccess(successMessage);
+			if (className) {
+				update(className, flag);
+			}
+			unselectAll();
 		}
 
 		$('[component="user/select/all"]').on('click', function () {
@@ -80,15 +85,12 @@ define('admin/manage/users', ['translator', 'benchpress', 'autocomplete'], funct
 					modal.on('shown.bs.modal', function () {
 						autocomplete.group(modal.find('.group-search'), function (ev, ui) {
 							var uid = $(ev.target).attr('data-uid');
-							socket.emit('admin.groups.join', { uid: uid, groupName: ui.item.value }, function (err) {
-								if (err) {
-									return app.alertError(err);
-								}
+							api.put('/groups/' + ui.item.group.slug + '/membership/' + uid, undefined).then(() => {
 								ui.item.group.nameEscaped = translator.escape(ui.item.group.displayName);
 								app.parseAndTranslate('admin/partials/manage_user_groups', { users: [{ groups: [ui.item.group] }] }, function (html) {
 									$('[data-uid=' + uid + '] .group-area').append(html.find('.group-area').html());
 								});
-							});
+							}).catch(app.alertError);
 						});
 					});
 					modal.on('click', '.group-area a', function () {
@@ -98,12 +100,9 @@ define('admin/manage/users', ['translator', 'benchpress', 'autocomplete'], funct
 						var groupCard = $(this).parents('[data-group-name]');
 						var groupName = groupCard.attr('data-group-name');
 						var uid = $(this).parents('[data-uid]').attr('data-uid');
-						socket.emit('admin.groups.leave', { uid: uid, groupName: groupName }, function (err) {
-							if (err) {
-								return app.alertError(err);
-							}
+						api.del('/groups/' + slugify(groupName) + '/membership/' + uid).then(() => {
 							groupCard.remove();
-						});
+						}).catch(app.alertError);
 						return false;
 					});
 				});
@@ -119,7 +118,11 @@ define('admin/manage/users', ['translator', 'benchpress', 'autocomplete'], funct
 
 			bootbox.confirm((uids.length > 1 ? '[[admin/manage/users:alerts.confirm-ban-multi]]' : '[[admin/manage/users:alerts.confirm-ban]]'), function (confirm) {
 				if (confirm) {
-					socket.emit('user.banUsers', { uids: uids, reason: '' }, done('[[admin/manage/users:alerts.ban-success]]', '.ban', true));
+					Promise.all(uids.map(function (uid) {
+						return api.put('/users/' + uid + '/ban');
+					})).then(() => {
+						onSuccess('[[admin/manage/users:alerts.ban-success]]', '.ban', true);
+					}).catch(app.alertError);
 				}
 			});
 		});
@@ -150,7 +153,15 @@ define('admin/manage/users', ['translator', 'benchpress', 'autocomplete'], funct
 									return data;
 								}, {});
 								var until = formData.length > 0 ? (Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))) : 0;
-								socket.emit('user.banUsers', { uids: uids, until: until, reason: formData.reason }, done('[[admin/manage/users:alerts.ban-success]]', '.ban', true));
+
+								Promise.all(uids.map(function (uid) {
+									return api.put('/users/' + uid + '/ban', {
+										until: until,
+										reason: formData.reason,
+									});
+								})).then(() => {
+									onSuccess('[[admin/manage/users:alerts.ban-success]]', '.ban', true);
+								}).catch(app.alertError);
 							},
 						},
 					},
@@ -165,7 +176,11 @@ define('admin/manage/users', ['translator', 'benchpress', 'autocomplete'], funct
 				return false;	// specifically to keep the menu open
 			}
 
-			socket.emit('user.unbanUsers', uids, done('[[admin/manage/users:alerts.unban-success]]', '.ban', false));
+			Promise.all(uids.map(function (uid) {
+				return api.del('/users/' + uid + '/ban');
+			})).then(() => {
+				onSuccess('[[admin/manage/users:alerts.unban-success]]', '.ban', false);
+			});
 		});
 
 		$('.reset-lockout').on('click', function () {
@@ -305,7 +320,7 @@ define('admin/manage/users', ['translator', 'benchpress', 'autocomplete'], funct
 		});
 
 		function handleUserCreate() {
-			$('#createUser').on('click', function () {
+			$('[data-action="create"]').on('click', function () {
 				Benchpress.parse('admin/partials/create_user_modal', {}, function (html) {
 					var modal = bootbox.dialog({
 						message: html,
@@ -353,48 +368,57 @@ define('admin/manage/users', ['translator', 'benchpress', 'autocomplete'], funct
 				password: password,
 			};
 
-			socket.emit('admin.user.createUser', user, function (err) {
-				if (err) {
-					return errorEl.translateHtml('[[admin/manage/users:alerts.error-x, ' + err.message + ']]').removeClass('hide');
-				}
-
-				modal.modal('hide');
-				modal.on('hidden.bs.modal', function () {
-					ajaxify.refresh();
-				});
-				app.alertSuccess('[[admin/manage/users:alerts.create-success]]');
-			});
+			api.post('/users', user)
+				.then(() => {
+					modal.modal('hide');
+					modal.on('hidden.bs.modal', function () {
+						ajaxify.refresh();
+					});
+					app.alertSuccess('[[admin/manage/users:alerts.create-success]]');
+				})
+				.catch(err => errorEl.translateHtml('[[admin/manage/users:alerts.error-x, ' + err.status.message + ']]').removeClass('hidden'));
 		}
 
-		var timeoutId = 0;
-
-		$('#search-user-uid, #search-user-name, #search-user-email, #search-user-ip').on('keyup', function () {
-			if (timeoutId !== 0) {
-				clearTimeout(timeoutId);
-				timeoutId = 0;
-			}
-
-			var $this = $(this);
-			var type = $this.attr('data-search-type');
-
-			timeoutId = setTimeout(function () {
-				$('.fa-spinner').removeClass('hidden');
-				loadSearchPage({
-					searchBy: type,
-					query: $this.val(),
-					page: 1,
-				});
-			}, 250);
-		});
+		handleSearch();
 
 		handleUserCreate();
 
 		handleInvite();
+
+		handleSort();
+		handleFilter();
 	};
 
+	function handleSearch() {
+		var timeoutId = 0;
+		function doSearch() {
+			$('.fa-spinner').removeClass('hidden');
+			loadSearchPage({
+				searchBy: $('#user-search-by').val(),
+				query: $('#user-search').val(),
+				page: 1,
+			});
+		}
+		$('#user-search').on('keyup', function () {
+			if (timeoutId !== 0) {
+				clearTimeout(timeoutId);
+				timeoutId = 0;
+			}
+			timeoutId = setTimeout(doSearch, 250);
+		});
+		$('#user-search-by').on('change', function () {
+			doSearch();
+		});
+	}
+
 	function loadSearchPage(query) {
-		var qs = decodeURIComponent($.param(query));
-		$.get(config.relative_path + '/api/admin/manage/users/search?' + qs, renderSearchResults).fail(function (xhrErr) {
+		var params = utils.params();
+		params.searchBy = query.searchBy;
+		params.query = query.query;
+		params.page = query.page;
+		params.sortBy = params.sortBy || 'lastonline';
+		var qs = decodeURIComponent($.param(params));
+		$.get(config.relative_path + '/api/admin/manage/users?' + qs, renderSearchResults).fail(function (xhrErr) {
 			if (xhrErr && xhrErr.responseJSON && xhrErr.responseJSON.error) {
 				app.alertError(xhrErr.responseJSON.error);
 			}
@@ -411,14 +435,19 @@ define('admin/manage/users', ['translator', 'benchpress', 'autocomplete'], funct
 			$('.users-table tbody').append(html);
 			html.find('.timeago').timeago();
 			$('.fa-spinner').addClass('hidden');
-
+			if (!$('#user-search').val()) {
+				$('#user-found-notify').addClass('hidden');
+				$('#user-notfound-notify').addClass('hidden');
+				return;
+			}
 			if (data && data.users.length === 0) {
 				$('#user-notfound-notify').translateHtml('[[admin/manage/users:search.not-found]]')
 					.removeClass('hidden');
 				$('#user-found-notify').addClass('hidden');
 			} else {
-				$('#user-found-notify').translateHtml(translator.compile('admin/manage/users:alerts.x-users-found', data.matchCount, data.timing))
-					.removeClass('hidden');
+				$('#user-found-notify').translateHtml(
+					translator.compile('admin/manage/users:alerts.x-users-found', data.matchCount, data.timing)
+				).removeClass('hidden');
 				$('#user-notfound-notify').addClass('hidden');
 			}
 		});
@@ -442,6 +471,75 @@ define('admin/manage/users', ['translator', 'benchpress', 'autocomplete'], funct
 		});
 	}
 
+	function buildSearchQuery(params) {
+		if ($('#user-search').val()) {
+			params.query = $('#user-search').val();
+			params.searchBy = $('#user-search-by').val();
+		} else {
+			delete params.query;
+			delete params.searchBy;
+		}
+
+		return decodeURIComponent($.param(params));
+	}
+
+	function handleSort() {
+		$('.users-table thead th').on('click', function () {
+			var $this = $(this);
+			var sortBy = $this.attr('data-sort');
+			if (!sortBy) {
+				return;
+			}
+			var params = utils.params();
+			params.sortBy = sortBy;
+			if (ajaxify.data.sortBy === sortBy) {
+				params.sortDirection = ajaxify.data.reverse ? 'asc' : 'desc';
+			} else {
+				params.sortDirection = 'desc';
+			}
+
+			var qs = buildSearchQuery(params);
+			ajaxify.go('admin/manage/users?' + qs);
+		});
+	}
+
+	function getFilters() {
+		var filters = [];
+		$('#filter-by').find('[data-filter-by]').each(function () {
+			if ($(this).find('.fa-check').length) {
+				filters.push($(this).attr('data-filter-by'));
+			}
+		});
+		return filters;
+	}
+
+	function handleFilter() {
+		var currentFilters = getFilters();
+		$('#filter-by').on('click', 'li', function () {
+			var $this = $(this);
+			$this.find('i').toggleClass('fa-check', !$this.find('i').hasClass('fa-check'));
+			return false;
+		});
+
+		$('#filter-by').on('hidden.bs.dropdown', function () {
+			var filters = getFilters();
+			var changed = filters.length !== currentFilters.length;
+			if (filters.length === currentFilters.length) {
+				filters.forEach(function (filter, i) {
+					if (filter !== currentFilters[i]) {
+						changed = true;
+					}
+				});
+			}
+			currentFilters = getFilters();
+			if (changed) {
+				var params = utils.params();
+				params.filters = filters;
+				var qs = buildSearchQuery(params);
+				ajaxify.go('admin/manage/users?' + qs);
+			}
+		});
+	}
 
 	return Users;
 });

@@ -26,6 +26,7 @@
     "invalid-pagination-value": "Błędna wartość paginacji, zakres od %1 do %2",
     "username-taken": "Login zajęty",
     "email-taken": "Email zajęty",
+    "email-invited": "Email was already invited",
     "email-not-confirmed": "Nie możesz opublikować, dopóki Twój adres e-mail nie zostanie potwierdzony, kliknij tutaj, aby potwierdzić swój adres e-mail.",
     "email-not-confirmed-chat": "Nie możesz prowadzić rozmów, dopóki twój email nie zostanie potwierdzony. Kliknij tutaj, aby potwierdzić swój email.",
     "email-not-confirmed-email-sent": "Twój e-mail nie został jeszcze potwierdzony, sprawdź swoją skrzynkę pocztową, aby znaleźć e-mail z potwierdzeniem. Nie będziesz mógł dodawać postów ani czatować, dopóki Twój adres e-mail nie zostanie potwierdzony.",

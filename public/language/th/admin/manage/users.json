@@ -20,16 +20,10 @@
 	"add-group": "Add Group",
 	"invite": "เชิญ",
 	"new": "ผู้ใช้งานใหม่",
-
-	"pills.latest": "ผู้ใช้งานคนล่าสุด",
+	"filter-by": "Filter by",
 	"pills.unvalidated": "ยังไม่ได้ยืนยัน",
-	"pills.no-posts": "ไม่มีกระทู้",
-	"pills.top-posters": "ผู้ที่โพสกระทู้มากที่สุด",
-	"pills.top-rep": "ชื่อเสียงมากที่สุด",
-	"pills.inactive": "ไม่มีการใช้งาน",
-	"pills.flagged": "ได้รับการติดตาม",
+	"pills.validated": "Validated",
 	"pills.banned": "แบน",
-	"pills.search": "ค้นหาผู้ใช้งาน",
 
 	"50-per-page": "50 per page",
 	"100-per-page": "100 per page",

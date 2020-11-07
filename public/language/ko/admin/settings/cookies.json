@@ -8,5 +8,6 @@
 	"consent.blank-localised-default": "NodeBB 의 번역을 사용하시려면 빈칸으로 두세요",
 	"settings": "설정",
 	"cookie-domain": "세션 쿠키 도메인",
+	"max-user-sessions": "Max active sessions per user",
 	"blank-default": "기본값을 사용하시려면 빈칸으로 두세요"
 }

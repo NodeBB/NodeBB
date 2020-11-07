@@ -361,7 +361,7 @@ describe('Messaging Library', function () {
 		it('should return invalid-data error', function (done) {
 			socketModules.chats.getRaw({ uid: fooUid }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
-				socketModules.chats.getRaw({ uid: fooUid }, { }, function (err) {
+				socketModules.chats.getRaw({ uid: fooUid }, {}, function (err) {
 					assert.equal(err.message, '[[error:invalid-data]]');
 					done();
 				});
@@ -394,7 +394,7 @@ describe('Messaging Library', function () {
 
 
 		it('should notify offline users of message', function (done) {
-			Messaging.notificationSendDelay = 100;
+			meta.config.notificationSendDelay = 0.1;
 
 			db.sortedSetAdd('users:online', Date.now() - ((meta.config.onlineCutoff * 60000) + 50000), herpUid, function (err) {
 				assert.ifError(err);

@@ -8,7 +8,7 @@ module.exports = function (module) {
 
 	module.emptydb = async function () {
 		await module.client.collection('objects').deleteMany({});
-		module.objectCache.resetObjectCache();
+		module.objectCache.reset();
 	};
 
 	module.exists = async function (key) {
@@ -47,7 +47,7 @@ module.exports = function (module) {
 			return;
 		}
 		await module.client.collection('objects').deleteMany({ _key: key });
-		module.objectCache.delObjectCache(key);
+		module.objectCache.del(key);
 	};
 
 	module.deleteAll = async function (keys) {
@@ -55,7 +55,7 @@ module.exports = function (module) {
 			return;
 		}
 		await module.client.collection('objects').deleteMany({ _key: { $in: keys } });
-		module.objectCache.delObjectCache(keys);
+		module.objectCache.del(keys);
 	};
 
 	module.get = async function (key) {
@@ -96,7 +96,7 @@ module.exports = function (module) {
 
 	module.rename = async function (oldKey, newKey) {
 		await module.client.collection('objects').updateMany({ _key: oldKey }, { $set: { _key: newKey } });
-		module.objectCache.delObjectCache([oldKey, newKey]);
+		module.objectCache.del([oldKey, newKey]);
 	};
 
 	module.type = async function (key) {
@@ -133,5 +133,13 @@ module.exports = function (module) {
 	module.pexpireAt = async function (key, timestamp) {
 		timestamp = Math.min(timestamp, 8640000000000000);
 		await module.setObjectField(key, 'expireAt', new Date(timestamp));
+	};
+
+	module.ttl = async function (key) {
+		return Math.round((await module.getObjectField(key, 'expireAt') - Date.now()) / 1000);
+	};
+
+	module.pttl = async function (key) {
+		return await module.getObjectField(key, 'expireAt') - Date.now();
 	};
 };

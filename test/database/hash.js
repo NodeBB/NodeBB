@@ -211,6 +211,11 @@ describe('Hash methods', function () {
 				done();
 			});
 		});
+
+		it('should return null and not error', async () => {
+			const data = await db.getObjectField('hashTestObject', ['field1', 'field2']);
+			assert.strictEqual(data, null);
+		});
 	});
 
 	describe('getObjectFields()', function () {

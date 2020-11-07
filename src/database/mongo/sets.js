@@ -22,7 +22,6 @@ module.exports = function (module) {
 			},
 		}, {
 			upsert: true,
-			w: 1,
 		});
 	};
 

@@ -1,7 +1,6 @@
 'use strict';
 
 const validator = require('validator');
-const winston = require('winston');
 const nconf = require('nconf');
 
 const user = require('../../user');
@@ -204,12 +203,6 @@ async function parseAboutMe(userData) {
 
 function filterLinks(links, states) {
 	return links.filter(function (link, index) {
-		// "public" is the old property, if visibility is defined, discard `public`
-		if (link.hasOwnProperty('public') && !link.hasOwnProperty('visibility')) {
-			winston.warn('[account/profileMenu (' + link.id + ')] Use of the `.public` property is deprecated, use `visibility` now');
-			return link && (link.public || states.self);
-		}
-
 		// Default visibility
 		link.visibility = { self: true,
 			other: true,

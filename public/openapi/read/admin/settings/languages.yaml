@@ -1,0 +1,35 @@
+get:
+  tags:
+    - admin
+  summary: Get language settings
+  responses:
+    "200":
+      description: A JSON object containing available languages and settings
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  languages:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          description: Localised name of the language
+                        code:
+                          type: string
+                          description: A language code (similar to ISO-639)
+                        dir:
+                          type: string
+                          description: Directionality of the language
+                          enum: [ltr, rtl]
+                        selected:
+                          type: boolean
+                          description: Denotes the currently selected default system language on the forum
+                  autoDetectLang:
+                    type: integer
+                    description: Whether the forum will attempt to guess language based on browser's `Accept-Language` header
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

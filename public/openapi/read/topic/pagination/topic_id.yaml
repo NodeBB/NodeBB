@@ -1,0 +1,19 @@
+get:
+  tags:
+    - topics
+  summary: Get topic pagination data
+  description: This route retrieves pagination data for a given topic. It is used mainly client-side, as it return data necessary to update a pagination block client-side.
+  parameters:
+    - name: topic_id
+      in: path
+      required: true
+      schema:
+        type: string
+      example: 1
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: ../../../components/schemas/Pagination.yaml#/Pagination

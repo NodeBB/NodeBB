@@ -4,7 +4,7 @@ const _ = require('lodash');
 
 const db = require('../database');
 const user = require('../user');
-const utils = require('../utils');
+const slugify = require('../slugify');
 const plugins = require('../plugins');
 const notifications = require('../notifications');
 
@@ -18,7 +18,7 @@ module.exports = function (Groups) {
 				bodyShort: '[[groups:request.notification_title, ' + username + ']]',
 				bodyLong: '[[groups:request.notification_text, ' + username + ', ' + groupName + ']]',
 				nid: 'group:' + groupName + ':uid:' + uid + ':request',
-				path: '/groups/' + utils.slugify(groupName),
+				path: '/groups/' + slugify(groupName),
 				from: uid,
 			}),
 			Groups.getOwners(groupName),
@@ -35,7 +35,7 @@ module.exports = function (Groups) {
 			type: 'group-invite',
 			bodyShort: '[[groups:membership.accept.notification_title, ' + groupName + ']]',
 			nid: 'group:' + groupName + ':uid:' + uid + ':invite-accepted',
-			path: '/groups/' + utils.slugify(groupName),
+			path: '/groups/' + slugify(groupName),
 		});
 		await notifications.push(notification, [uid]);
 	};
@@ -58,7 +58,7 @@ module.exports = function (Groups) {
 			bodyShort: '[[groups:invited.notification_title, ' + groupName + ']]',
 			bodyLong: '',
 			nid: 'group:' + groupName + ':uid:' + uid + ':invite',
-			path: '/groups/' + utils.slugify(groupName),
+			path: '/groups/' + slugify(groupName),
 		})));
 
 		await Promise.all(uids.map((uid, index) => notifications.push(notificationData[index], uid)));

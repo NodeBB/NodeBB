@@ -21,6 +21,8 @@
     "reset.notify.text1": "We are notifying you that on %1, your password was changed successfully.",
     "reset.notify.text2": "If you did not authorise this, please notify an administrator immediately.",
     "digest.latest_topics": "Πρόσφατα θέματα στο %1",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "Κάνε κλικ εδώ για να επισκεφτείς το %1",
     "digest.unsub.info": "Αυτή η σύνοψη σου στάλθηκε λόγω των ρυθμίσεών σου.",
     "digest.day": "day",

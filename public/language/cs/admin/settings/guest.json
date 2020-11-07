@@ -1,5 +1,7 @@
 {
 	"handles": "Zacházení s hosty",
 	"handles.enabled": "Povolit upravení zacházení s hosty",
-	"handles.enabled-help": "Tato možnost odkryje nové pole, které umožňuje hostům vybrat jméno, které se připojí ke každému příspěvku, který vytvoří. Bude-li zakázáno, budou jednoduše nazýváni „Host”"
+	"handles.enabled-help": "Tato možnost odkryje nové pole, které umožňuje hostům vybrat jméno, které se připojí ke každému příspěvku, který vytvoří. Bude-li zakázáno, budou jednoduše nazýváni „Host”",
+	"topic-views": "Topic views",
+	"topic-views.enabled": "Allow guests to increase topic view counts"
 }

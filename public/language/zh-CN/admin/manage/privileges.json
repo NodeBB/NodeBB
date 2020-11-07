@@ -48,5 +48,6 @@
 	"alert.confirm-copyToAllGroup": "您确定要将此用户组权限应用于<strong>所有类别</strong>吗？",
 	"alert.confirm-copyToChildren": "您确定要将此权限应用于<strong>所有子类别</strong>吗？",
 	"alert.confirm-copyToChildrenGroup": "您确定要将此用户组权限应用于<strong>所有子类别</strong>吗？",
-	"alert.no-undo": "此操作无法撤消。"
+	"alert.no-undo": "此操作无法撤消。",
+	"alert.admin-warning": "管理员隐性获得全部权限"
 }

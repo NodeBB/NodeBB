@@ -3,6 +3,7 @@
 const zxcvbn = require('zxcvbn');
 const db = require('../database');
 const utils = require('../utils');
+const slugify = require('../slugify');
 const plugins = require('../plugins');
 const groups = require('../groups');
 const meta = require('../meta');
@@ -10,7 +11,7 @@ const meta = require('../meta');
 module.exports = function (User) {
 	User.create = async function (data) {
 		data.username = data.username.trim();
-		data.userslug = utils.slugify(data.username);
+		data.userslug = slugify(data.username);
 		if (data.email !== undefined) {
 			data.email = String(data.email).trim();
 		}
@@ -63,7 +64,7 @@ module.exports = function (User) {
 		const userNameChanged = !!renamedUsername;
 		if (userNameChanged) {
 			userData.username = renamedUsername;
-			userData.userslug = utils.slugify(renamedUsername);
+			userData.userslug = slugify(renamedUsername);
 		}
 
 		const results = await plugins.fireHook('filter:user.create', { user: userData, data: data });
@@ -85,9 +86,6 @@ module.exports = function (User) {
 			['users:reputation', 0, userData.uid],
 		];
 
-		if (parseInt(userData.uid, 10) !== 1) {
-			bulkAdd.push(['users:notvalidated', timestamp, userData.uid]);
-		}
 		if (userData.email) {
 			bulkAdd.push(['email:uid', userData.uid, userData.email.toLowerCase()]);
 			bulkAdd.push(['email:sorted', 0, userData.email.toLowerCase() + ':' + userData.uid]);
@@ -98,10 +96,15 @@ module.exports = function (User) {
 			bulkAdd.push(['fullname:sorted', 0, userData.fullname.toLowerCase() + ':' + userData.uid]);
 		}
 
+		const groupsToJoin = ['registered-users'].concat(
+			parseInt(userData.uid, 10) !== 1 ?
+				'unverified-users' : 'verified-users'
+		);
+
 		await Promise.all([
 			db.incrObjectField('global', 'userCount'),
 			db.sortedSetAddBulk(bulkAdd),
-			groups.join('registered-users', userData.uid),
+			groups.join(groupsToJoin, userData.uid),
 			User.notifications.sendWelcomeNotification(userData.uid),
 			storePassword(userData.uid, data.password),
 			User.updateDigestSetting(userData.uid, meta.config.dailyDigestFreq),
@@ -125,7 +128,10 @@ module.exports = function (User) {
 		}
 		const hash = await User.hashPassword(password);
 		await Promise.all([
-			User.setUserField(uid, 'password', hash),
+			User.setUserFields(uid, {
+				password: hash,
+				'password:shaWrapped': 1,
+			}),
 			User.reset.updateExpiry(uid),
 		]);
 	}

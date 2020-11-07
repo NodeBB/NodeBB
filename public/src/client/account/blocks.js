@@ -1,6 +1,9 @@
 'use strict';
 
-define('forum/account/blocks', ['forum/account/header'], function (header) {
+define('forum/account/blocks', [
+	'forum/account/header',
+	'api',
+], function (header, api) {
 	var Blocks = {};
 
 	Blocks.init = function () {
@@ -9,9 +12,10 @@ define('forum/account/blocks', ['forum/account/header'], function (header) {
 		$('#user-search').on('keyup', function () {
 			var username = this.value;
 
-			socket.emit('user.search', {
+			api.get('/api/users', {
 				query: username,
 				searchBy: 'username',
+				paginate: false,
 			}, function (err, data) {
 				if (err) {
 					return app.alertError(err.message);

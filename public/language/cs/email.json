@@ -21,6 +21,8 @@
     "reset.notify.text1": "Informujeme Vás, že na %1 vaše heslo bylo úspěšně změněno.",
     "reset.notify.text2": "Pokud jste to neschválil, prosíme neprodleně kontaktujte správce.",
     "digest.latest_topics": "Nejnovější témata od %1",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "Kliknutím zde navštívíte %1",
     "digest.unsub.info": "Tento výtah vám byl odeslán, protože jste si to nastavili ve vašich odběrech.",
     "digest.day": "den",

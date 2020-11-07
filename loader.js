@@ -1,6 +1,6 @@
 'use strict';
 
-var	nconf = require('nconf');
+var nconf = require('nconf');
 var fs = require('fs');
 var url = require('url');
 var path = require('path');
@@ -18,7 +18,7 @@ nconf.argv().env().file({
 	file: pathToConfig,
 });
 
-var	pidFilePath = path.join(__dirname, 'pidfile');
+var pidFilePath = path.join(__dirname, 'pidfile');
 
 var outputLogFilePath = path.join(__dirname, nconf.get('logFile') || 'logs/output.log');
 

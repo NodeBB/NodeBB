@@ -1,0 +1,7 @@
+get:
+  tags:
+    - admin
+  summary: Get IP blacklist settings
+  responses:
+    "418":
+      description: "TODO: A proper response needs to be added. It is not really a teapot | Copy response from corresponding admin route"

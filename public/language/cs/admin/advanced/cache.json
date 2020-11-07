@@ -1,11 +1,11 @@
 {
 	"post-cache": "Mezipaměť příspěvku",
-	"posts-in-cache": "Příspěvků v mezipaměti",
-	"average-post-size": "Průměrná velikost příspěvku",
-	"length-to-max": "Délka / Maximum",
 	"percent-full": "%1% plný",
 	"post-cache-size": "Velikost mezipaměti příspěvku",
 	"items-in-cache": "Položek v mezipaměti",
 	"control-panel": "Ovládací panel",
-	"update-settings": "Aktualizovat nastavení mezipaměti"
+	"update-settings": "Aktualizovat nastavení mezipaměti",
+	"clear": "Clear",
+	"download": "Download",
+	"enabled": "Enabled"
 }

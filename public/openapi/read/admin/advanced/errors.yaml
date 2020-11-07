@@ -1,0 +1,38 @@
+get:
+  tags:
+    - admin
+  summary: Get server-side errors
+  responses:
+    "200":
+      description: "A JSON object containing server-side errors"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  not-found:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        value:
+                          type: string
+                          description: Path to the requested URL that returned a 404
+                        score:
+                          type: number
+                          description: The number of times that URL was requested
+                  analytics:
+                    type: object
+                    properties:
+                      not-found:
+                        type: array
+                        description: 404 responses groups by day, from 6 days ago, to present day
+                        items:
+                          type: number
+                      toobusy:
+                        type: array
+                        description: 503 responses groups by day, from 6 days ago, to present day
+                        items:
+                          type: number
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

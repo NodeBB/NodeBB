@@ -26,6 +26,7 @@
     "invalid-pagination-value": "Neplatná stránkovania hodnota, musí byť najmenej %1 a najviac %2",
     "username-taken": "Užívateľské meno je už obsadené",
     "email-taken": "Tento e-mail je už obsadený",
+    "email-invited": "Email was already invited",
     "email-not-confirmed": "You are unable to post until your email is confirmed, please click here to confirm your email.",
     "email-not-confirmed-chat": "Nemôžete vytvoriť konverzáciu pokiaľ Váš e-mail nebude overený. Prosím kliknite sem, pre overenie Vášho e-mailu.",
     "email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email. You won't be able to post or chat until your email is confirmed.",

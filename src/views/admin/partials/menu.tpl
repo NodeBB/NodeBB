@@ -52,6 +52,7 @@
 			<li><a href="{relative_path}/admin/settings/chat">[[admin/menu:settings/chat]]</a></li>
 			<li><a href="{relative_path}/admin/settings/pagination">[[admin/menu:settings/pagination]]</a></li>
 			<li><a href="{relative_path}/admin/settings/notifications">[[admin/menu:settings/notifications]]</a></li>
+			<li><a href="{relative_path}/admin/settings/api">[[admin/menu:settings/api]]</a></li>
 			<li><a href="{relative_path}/admin/settings/social">[[admin/menu:settings/social]]</a></li>
 			<li><a href="{relative_path}/admin/settings/cookies">[[admin/menu:settings/cookies]]</a></li>
 			<li><a href="{relative_path}/admin/settings/web-crawler">[[admin/menu:settings/web-crawler]]</a></li>
@@ -222,6 +223,7 @@
 					<li><a href="{relative_path}/admin/settings/chat">[[admin/menu:settings/chat]]</a></li>
 					<li><a href="{relative_path}/admin/settings/pagination">[[admin/menu:settings/pagination]]</a></li>
 					<li><a href="{relative_path}/admin/settings/notifications">[[admin/menu:settings/notifications]]</a></li>
+					<li><a href="{relative_path}/admin/settings/api">[[admin/menu:settings/api]]</a></li>
 					<li><a href="{relative_path}/admin/settings/social">[[admin/menu:settings/social]]</a></li>
 					<li><a href="{relative_path}/admin/settings/cookies">[[admin/menu:settings/cookies]]</a></li>
 					<li><a href="{relative_path}/admin/settings/web-crawler">[[admin/menu:settings/web-crawler]]</a></li>
@@ -247,7 +249,7 @@
 			<!-- IF plugins.length -->
 			<li class="dropdown menu-item">
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin/menu:section-plugins]]</a>
-				<ul class="dropdown-menu" role="menu">
+				<ul class="dropdown-menu plugins-menu" role="menu">
 					<li class="dropdown-header">[[admin/menu:section-plugins]]</li>
 					<!-- BEGIN plugins -->
 					<li>
@@ -267,7 +269,7 @@
 					<!-- ENDIF authentication.length -->
 					<li class="divider"></li>
 					<li data-link="1">
-						<a href="{relative_path}/admin/extend/plugins">[[admin/menu:extend/plugins.install]]</a>
+						<a href="{relative_path}/admin/extend/plugins#download">[[admin/menu:extend/plugins.install]]</a>
 					</li>
 				</ul>
 			</li>

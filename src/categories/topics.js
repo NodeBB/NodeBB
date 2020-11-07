@@ -1,7 +1,5 @@
 'use strict';
 
-const _ = require('lodash');
-
 const db = require('../database');
 const topics = require('../topics');
 const plugins = require('../plugins');
@@ -25,7 +23,7 @@ module.exports = function (Categories) {
 	};
 
 	Categories.getTopicIds = async function (data) {
-		const dataForPinned = _.cloneDeep(data);
+		const dataForPinned = { ...data };
 		dataForPinned.start = 0;
 		dataForPinned.stop = -1;
 

@@ -5,7 +5,7 @@ const os = require('os');
 const nconf = require('nconf');
 
 const pubsub = require('../pubsub');
-const utils = require('../utils');
+const slugify = require('../slugify');
 
 const Meta = module.exports;
 
@@ -29,7 +29,7 @@ Meta.languages = require('./languages');
 Meta.userOrGroupExists = async function (slug) {
 	const user = require('../user');
 	const groups = require('../groups');
-	slug = utils.slugify(slug);
+	slug = slugify(slug);
 	const [userExists, groupExists] = await Promise.all([
 		user.existsBySlug(slug),
 		groups.existsBySlug(slug),

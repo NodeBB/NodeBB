@@ -20,16 +20,10 @@
 	"add-group": "新增至群組",
 	"invite": "邀請",
 	"new": "新建使用者",
-
-	"pills.latest": "最近的使用者",
+	"filter-by": "Filter by",
 	"pills.unvalidated": "未驗證",
-	"pills.no-posts": "沒有貼文",
-	"pills.top-posters": "發文最多",
-	"pills.top-rep": "聲望最高",
-	"pills.inactive": "不活躍",
-	"pills.flagged": "舉報最多",
+	"pills.validated": "Validated",
 	"pills.banned": "被封鎖",
-	"pills.search": "搜尋使用者",
 
 	"50-per-page": "每頁50",
 	"100-per-page": "每頁100",

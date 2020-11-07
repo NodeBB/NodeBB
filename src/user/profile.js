@@ -5,6 +5,7 @@ const async = require('async');
 const validator = require('validator');
 
 const utils = require('../utils');
+const slugify = require('../slugify');
 const meta = require('../meta');
 const db = require('../database');
 const groups = require('../groups');
@@ -113,7 +114,7 @@ module.exports = function (User) {
 			throw new Error('[[error:username-too-long]]');
 		}
 
-		const userslug = utils.slugify(data.username);
+		const userslug = slugify(data.username);
 		if (!utils.isUserNameValid(data.username) || !userslug) {
 			throw new Error('[[error:invalid-username]]');
 		}
@@ -233,9 +234,10 @@ module.exports = function (User) {
 				['email:uid', uid, newEmail.toLowerCase()],
 				['email:sorted', 0, newEmail.toLowerCase() + ':' + uid],
 				['user:' + uid + ':emails', Date.now(), newEmail + ':' + Date.now()],
-				['users:notvalidated', Date.now(), uid],
 			]),
 			User.setUserFields(uid, { email: newEmail, 'email:confirmed': 0 }),
+			groups.leave('verified-users', uid),
+			groups.join('unverified-users', uid),
 			User.reset.cleanByUid(uid),
 		]);
 
@@ -256,7 +258,7 @@ module.exports = function (User) {
 		if (userData.username === newUsername) {
 			return;
 		}
-		const newUserslug = utils.slugify(newUsername);
+		const newUserslug = slugify(newUsername);
 		const now = Date.now();
 		await Promise.all([
 			updateUidMapping('username', uid, newUsername, userData.username),
@@ -322,8 +324,10 @@ module.exports = function (User) {
 		await Promise.all([
 			User.setUserFields(data.uid, {
 				password: hashedPassword,
+				'password:shaWrapped': 1,
 				rss_token: utils.generateUUID(),
 			}),
+			User.reset.cleanByUid(data.uid),
 			User.reset.updateExpiry(data.uid),
 			User.auth.revokeAllSessions(data.uid),
 		]);

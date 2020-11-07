@@ -78,6 +78,8 @@ async function getNodeInfo() {
 			arch: os.arch(),
 			release: os.release(),
 			load: os.loadavg().map(function (load) { return load.toFixed(2); }).join(', '),
+			freemem: os.freemem(),
+			totalmem: os.totalmem(),
 		},
 		nodebb: {
 			isCluster: nconf.get('isCluster'),
@@ -91,7 +93,8 @@ async function getNodeInfo() {
 	data.process.cpuUsage.system /= 1000000;
 	data.process.cpuUsage.system = data.process.cpuUsage.system.toFixed(2);
 	data.process.memoryUsage.humanReadable = (data.process.memoryUsage.rss / (1024 * 1024)).toFixed(2);
-
+	data.os.freemem = (data.os.freemem / 1000000).toFixed(2);
+	data.os.totalmem = (data.os.totalmem / 1000000).toFixed(2);
 	const [stats, gitInfo] = await Promise.all([
 		rooms.getLocalStats(),
 		getGitInfo(),

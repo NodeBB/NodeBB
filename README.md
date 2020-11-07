@@ -1,15 +1,16 @@
-# <img alt="NodeBB" src="http://i.imgur.com/mYxPPtB.png" />
+# ![NodeBB](public/images/logo.svg)
 
 [![Build Status](https://travis-ci.org/NodeBB/NodeBB.svg?branch=master)](https://travis-ci.org/NodeBB/NodeBB)
 [![Coverage Status](https://coveralls.io/repos/github/NodeBB/NodeBB/badge.svg?branch=master)](https://coveralls.io/github/NodeBB/NodeBB?branch=master)
 [![Dependency Status](https://david-dm.org/nodebb/nodebb.svg?path=install)](https://david-dm.org/nodebb/nodebb?path=install)
 [![Code Climate](https://codeclimate.com/github/NodeBB/NodeBB/badges/gpa.svg)](https://codeclimate.com/github/NodeBB/NodeBB)
 
-[**NodeBB Forum Software**](https://nodebb.org) is powered by Node.js and built on either a Redis or MongoDB database. It utilizes web sockets for instant interactions and real-time notifications. NodeBB has many modern features out of the box such as social network integration and streaming discussions, while still making sure to be compatible with older browsers.
+[**NodeBB Forum Software**](https://nodebb.org) is powered by Node.js and supports either Redis, MongoDB, or a PostgreSQL database. It utilizes web sockets for instant interactions and real-time notifications. NodeBB has many modern features out of the box such as social network integration and streaming discussions, while still making sure to be compatible with older browsers.
 
 Additional functionality is enabled through the use of third-party plugins.
 
-* [Demo & Meta Discussion](http://community.nodebb.org)
+* [Demo](https://try.nodebb.org)
+* [Developer Community](http://community.nodebb.org)
 * [Documentation & Installation Instructions](http://docs.nodebb.org)
 * [Help translate NodeBB](https://www.transifex.com/projects/p/nodebb/)
 * [NodeBB Blog](http://blog.nodebb.org)
@@ -48,8 +49,8 @@ Our minimalist "Persona" theme gets you going right away, no coding experience r
 
 NodeBB requires the following software to be installed:
 
-* A version of Node.js at least 10 or greater ([installation/upgrade instructions](https://github.com/nodesource/distributions))
-* Redis, version 2.8.9 or greater **or** MongoDB, version 2.6 or greater
+* A version of Node.js at least 12 or greater ([installation/upgrade instructions](https://github.com/nodesource/distributions))
+* MongoDB, version 2.6 or greater **or** Redis, version 2.8.9 or greater
 * nginx, version 1.3.13 or greater (**only if** intending to use nginx to proxy requests to a NodeBB)
 
 ## Installation

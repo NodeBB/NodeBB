@@ -1,9 +1,9 @@
 'use strict';
 
-var plugins = require('./plugins');
-var db = require('./database');
+const plugins = require('./plugins');
+const db = require('./database');
 
-var social = module.exports;
+const social = module.exports;
 
 social.postSharing = null;
 
@@ -12,7 +12,7 @@ social.getPostSharing = async function () {
 		return social.postSharing;
 	}
 
-	var networks = [
+	let networks = [
 		{
 			id: 'facebook',
 			name: 'Facebook',

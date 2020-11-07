@@ -1,11 +1,11 @@
 {
 	"post-cache": "Beitrags Cache",
-	"posts-in-cache": "Beiträge im Cache",
-	"average-post-size": "Durchschnittliche Beitragsgröße",
-	"length-to-max": "Länge / Maximum",
 	"percent-full": "%1% Voll",
 	"post-cache-size": "Beitrags Cache Größe",
 	"items-in-cache": "Objekte im Cache",
 	"control-panel": "Systemsteuerung",
-	"update-settings": "Aktualisiere Zwischenspeicher Einstellungen"
+	"update-settings": "Aktualisiere Zwischenspeicher Einstellungen",
+	"clear": "Clear",
+	"download": "Download",
+	"enabled": "Enabled"
 }

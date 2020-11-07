@@ -1,6 +1,9 @@
 'use strict';
 
 const nconf = require('nconf');
+const winston = require('winston');
+const passport = require('passport');
+const util = require('util');
 
 const meta = require('../meta');
 const user = require('../user');
@@ -11,12 +14,59 @@ const auth = require('../routes/authentication');
 
 const controllers = {
 	helpers: require('../controllers/helpers'),
+	authentication: require('../controllers/authentication'),
+};
+
+const passportAuthenticateAsync = function (req, res) {
+	return new Promise((resolve, reject) => {
+		passport.authenticate('core.api', { session: false }, (err, user) => {
+			if (err) {
+				reject(err);
+			} else {
+				resolve(user);
+			}
+		})(req, res);
+	});
 };
 
 module.exports = function (middleware) {
 	async function authenticate(req, res) {
+		const loginAsync = util.promisify(req.login).bind(req);
+
 		if (req.loggedIn) {
+			if (res.locals.isAPI) {
+				await middleware.applyCSRFasync(req, res);
+			}
+
 			return true;
+		} else if (req.headers.hasOwnProperty('authorization')) {
+			const user = await passportAuthenticateAsync(req, res);
+			if (!user) { return true; }
+
+			// If the token received was a master token, a _uid must also be present for all calls
+			if (user.hasOwnProperty('uid')) {
+				await loginAsync(user);
+				await controllers.authentication.onSuccessfulLogin(req, user.uid);
+				req.uid = user.uid;
+				req.loggedIn = req.uid > 0;
+				return true;
+			} else if (user.hasOwnProperty('master') && user.master === true) {
+				if (req.body.hasOwnProperty('_uid') || req.query.hasOwnProperty('_uid')) {
+					user.uid = req.body._uid || req.query._uid;
+					delete user.master;
+
+					await loginAsync(user);
+					await controllers.authentication.onSuccessfulLogin(req, user.uid);
+					req.uid = user.uid;
+					req.loggedIn = req.uid > 0;
+					return true;
+				}
+
+				throw new Error('A master token was received without a corresponding `_uid` in the request body');
+			} else {
+				winston.warn('[api/authenticate] Unable to find user after verifying token');
+				return true;
+			}
 		}
 
 		await plugins.fireHook('response:middleware.authenticate', {
@@ -150,7 +200,11 @@ module.exports = function (middleware) {
 	});
 
 	middleware.isAdmin = helpers.try(async function isAdmin(req, res, next) {
+		// TODO: Remove in v1.16.0
+		winston.warn('[middleware] middleware.isAdmin deprecated, use middleware.admin.checkPrivileges instead');
+
 		const isAdmin = await user.isAdministrator(req.uid);
+
 		if (!isAdmin) {
 			return controllers.helpers.notAllowed(req, res);
 		}
@@ -180,7 +234,7 @@ module.exports = function (middleware) {
 		req.session.returnTo = returnTo;
 		req.session.forceLogin = 1;
 		if (res.locals.isAPI) {
-			res.status(401).json({});
+			controllers.helpers.formatApiResponse(401, res);
 		} else {
 			res.redirect(nconf.get('relative_path') + '/login?local=1');
 		}

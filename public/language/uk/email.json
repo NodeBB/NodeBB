@@ -21,6 +21,8 @@
     "reset.notify.text1": "Ми повідомляємо вас, що на %1, ваш пароль було успішно змінено",
     "reset.notify.text2": "Якщо ви не авторизували це, повідомте негайно адміністратора",
     "digest.latest_topics": "Останні теми від %1",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "Натисніть, щоб відвідати %1",
     "digest.unsub.info": "Цей дайджест був висланий вам, згідно ваших налаштувань підписки",
     "digest.day": "день",

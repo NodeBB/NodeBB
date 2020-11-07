@@ -69,8 +69,6 @@ module.exports = function (privileges) {
 		'admin.user.loadGroups': 'admin:users',
 		'admin.groups.join': 'admin:users',
 		'admin.groups.leave': 'admin:users',
-		'user.banUsers': 'admin:users',
-		'user.unbanUsers': 'admin:users',
 		'admin.user.resetLockouts': 'admin:users',
 		'admin.user.validateEmail': 'admin:users',
 		'admin.user.sendValidationEmail': 'admin:users',
@@ -79,7 +77,6 @@ module.exports = function (privileges) {
 		'admin.user.deleteUsers': 'admin:users',
 		'admin.user.deleteUsersAndContent': 'admin:users',
 		'admin.user.createUser': 'admin:users',
-		'admin.user.search': 'admin:users',
 		'admin.user.invite': 'admin:users',
 
 		'admin.getSearchDict': 'admin:settings',
@@ -159,8 +156,11 @@ module.exports = function (privileges) {
 	};
 
 	privileges.admin.can = async function (privilege, uid) {
-		const isUserAllowedTo = await helpers.isUserAllowedTo(privilege, uid, [0]);
-		return isUserAllowedTo[0];
+		const [isUserAllowedTo, isAdministrator] = await Promise.all([
+			helpers.isUserAllowedTo(privilege, uid, [0]),
+			user.isAdministrator(uid),
+		]);
+		return isAdministrator || isUserAllowedTo[0];
 	};
 
 	// privileges.admin.canGroup = async function (privilege, groupName) {

@@ -26,6 +26,7 @@
     "invalid-pagination-value": "ارزش گذاری صفحه نامعتبر است، کمترین مقدار <strong>%1</strong> و بیشترین مقدار <strong>%2</strong> باید باشد",
     "username-taken": "این نام کاربری گرفته شده است.",
     "email-taken": "این ایمیل گرفته شده است.",
+    "email-invited": "Email was already invited",
     "email-not-confirmed": "You are unable to post until your email is confirmed, please click here to confirm your email.",
     "email-not-confirmed-chat": "شما تا قبل از تایید ایمیل قادر به چت نیستید، لطفا برای تایید ایمیل خود اینجا کلیک کنید",
     "email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email. You won't be able to post or chat until your email is confirmed.",

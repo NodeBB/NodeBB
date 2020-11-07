@@ -1,0 +1,25 @@
+post:
+  tags:
+    - users
+  summary: generate a user token
+  description: This route can only be used to generate tokens for the same user. In other words, you cannot use this route to generate a token for a different user than the one you are authenticated as.
+  parameters:
+    - in: path
+      name: uid
+      schema:
+        type: integer
+      required: true
+      description: uid of the user to generate a token for
+      example: 1
+  responses:
+    '200':
+      description: successfully generated a user token
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object

@@ -1,0 +1,28 @@
+get:
+  tags:
+    - admin
+  summary: Get post social sharing settings
+  responses:
+    "200":
+      description: "A JSON object containing post social sharing settings"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  posts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                        class:
+                          type: string
+                          description: A FontAwesome icon string
+                        activated:
+                          type: boolean
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

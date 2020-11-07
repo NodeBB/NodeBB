@@ -3,17 +3,19 @@
 const validator = require('validator');
 const nconf = require('nconf');
 
+const meta = require('../meta');
 const user = require('../user');
 const categories = require('../categories');
 const topics = require('../topics');
 const privileges = require('../privileges');
 const pagination = require('../pagination');
+const utils = require('../utils');
 const helpers = require('./helpers');
 
 const tagsController = module.exports;
 
 tagsController.getTag = async function (req, res) {
-	const tag = validator.escape(String(req.params.tag));
+	const tag = validator.escape(utils.cleanUpTag(req.params.tag, meta.config.maximumTagLength));
 	const page = parseInt(req.query.page, 10) || 1;
 
 	const templateData = {
@@ -27,8 +29,8 @@ tagsController.getTag = async function (req, res) {
 	const stop = start + settings.topicsPerPage - 1;
 	const states = [categories.watchStates.watching, categories.watchStates.notwatching, categories.watchStates.ignoring];
 	const [topicCount, tids, categoriesData] = await Promise.all([
-		topics.getTagTopicCount(req.params.tag),
-		topics.getTagTids(req.params.tag, start, stop),
+		topics.getTagTopicCount(tag),
+		topics.getTagTids(tag, start, stop),
 		helpers.getCategoriesByStates(req.uid, '', states),
 	]);
 

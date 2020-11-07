@@ -15,6 +15,7 @@ var apiRoutes = require('./api');
 var adminRoutes = require('./admin');
 var feedRoutes = require('./feeds');
 var authRoutes = require('./authentication');
+const writeRoutes = require('./write');
 var helpers = require('./helpers');
 
 var setupPageRoute = helpers.setupPageRoute;
@@ -111,6 +112,7 @@ module.exports = async function (app, middleware) {
 
 	await plugins.reloadRoutes({ router: router });
 	await authRoutes.reloadRoutes({ router: router });
+	await writeRoutes.reload({ router: router });
 	addCoreRoutes(app, router, middleware);
 
 	winston.info('Routes added');

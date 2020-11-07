@@ -6,6 +6,7 @@
 	"max-length": "聊天訊息的最大長度",
 	"max-room-size": "聊天室的最多使用者數",
 	"delay": "聊天訊息間的毫秒數",
+	"notification-delay": "Notification delay for chat messages. (0 for no delay)",
 	"restrictions.seconds-edit-after": "使用者在發佈聊天訊息後允許編輯貼文的秒數（0為禁用）",
 	"restrictions.seconds-delete-after": "使用者在發佈聊天訊息後允許刪除貼文的秒數（0為禁用）"
 }

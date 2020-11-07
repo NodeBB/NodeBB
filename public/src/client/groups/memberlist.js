@@ -1,7 +1,6 @@
 'use strict';
 
-
-define('forum/groups/memberlist', function () {
+define('forum/groups/memberlist', ['api'], function (api) {
 	var MemberList = {};
 	var searchInterval;
 	var groupName;
@@ -47,7 +46,7 @@ define('forum/groups/memberlist', function () {
 					$(this).find('i').toggleClass('invisible');
 				});
 				modal.find('input').on('keyup', function () {
-					socket.emit('user.search', {
+					api.get('/api/users', {
 						query: $(this).val(),
 						paginate: false,
 					}, function (err, result) {
@@ -67,10 +66,7 @@ define('forum/groups/memberlist', function () {
 	}
 
 	function addUserToGroup(users, callback) {
-		function done(err) {
-			if (err) {
-				return app.alertError(err);
-			}
+		function done() {
 			users = users.filter(function (user) {
 				return !$('[component="groups/members"] [data-uid="' + user.uid + '"]').length;
 			});
@@ -81,9 +77,14 @@ define('forum/groups/memberlist', function () {
 		}
 		var uids = users.map(function (user) { return user.uid; });
 		if (groupName === 'administrators') {
-			socket.emit('admin.user.makeAdmins', uids, done);
+			socket.emit('admin.user.makeAdmins', uids, function (err) {
+				if (err) {
+					return app.alertError(err);
+				}
+				done();
+			});
 		} else {
-			socket.emit('groups.addMember', { groupName: groupName, uid: uids }, done);
+			Promise.all(uids.map(uid => api.put('/groups/' + ajaxify.data.group.slug + '/membership/' + uid))).then(done).catch(app.alertError);
 		}
 	}
 

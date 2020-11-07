@@ -10,8 +10,11 @@ const LRU = require('lru-cache');
 const db = require('./database');
 const utils = require('./utils');
 const plugins = require('./plugins');
+const meta = require('./meta');
 
 const Analytics = module.exports;
+
+const secret = nconf.get('secret');
 
 const counters = {};
 
@@ -21,21 +24,19 @@ let pageViewsGuest = 0;
 let pageViewsBot = 0;
 let uniqueIPCount = 0;
 let uniquevisitors = 0;
+let ipCache;
 
-/**
- * TODO: allow the cache's max value to be configurable. On high-traffic installs,
- * the cache could be exhausted continuously if there are more than 500 concurrently
- * active users
- */
-var ipCache = new LRU({
-	max: 500,
-	length: function () { return 1; },
-	maxAge: 0,
-});
+Analytics.init = async function () {
+	ipCache = new LRU({
+		max: parseInt(meta.config['analytics:maxCache'], 10) || 500,
+		length: function () { return 1; },
+		maxAge: 0,
+	});
 
-new cronJob('*/10 * * * * *', function () {
-	Analytics.writeData();
-}, null, true);
+	new cronJob('*/10 * * * * *', function () {
+		Analytics.writeData();
+	}, null, true);
+};
 
 Analytics.increment = function (keys, callback) {
 	keys = Array.isArray(keys) ? keys : [keys];
@@ -65,10 +66,10 @@ Analytics.pageView = async function (payload) {
 
 	if (payload.ip) {
 		// Retrieve hash or calculate if not present
-		let hash = ipCache.get(payload.ip + nconf.get('secret'));
+		let hash = ipCache.get(payload.ip + secret);
 		if (!hash) {
-			hash = crypto.createHash('sha1').update(payload.ip + nconf.get('secret')).digest('hex');
-			ipCache.set(payload.ip + nconf.get('secret'), hash);
+			hash = crypto.createHash('sha1').update(payload.ip + secret).digest('hex');
+			ipCache.set(payload.ip + secret, hash);
 		}
 
 		const score = await db.sortedSetScore('ip:recent', hash);

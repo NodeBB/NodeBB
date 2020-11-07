@@ -44,5 +44,6 @@
     "search-preferences-saved": "تم حفظ تفضيلات البحث",
     "search-preferences-cleared": "تم ازالة تفضيلات البحث",
     "show-results-as": "عرض النتائج كـ",
-    "see-more-results": "See more results (%1)"
+    "see-more-results": "See more results (%1)",
+    "search-in-category": "Search in \"%1\""
 }

@@ -1,6 +1,5 @@
 'use strict';
 
-
 define('forum/groups/details', [
 	'forum/groups/memberlist',
 	'iconSelect',
@@ -8,8 +7,9 @@ define('forum/groups/details', [
 	'coverPhoto',
 	'pictureCropper',
 	'translator',
-	'vendor/colorpicker/colorpicker',
-], function (memberList, iconSelect, components, coverPhoto, pictureCropper, translator) {
+	'api',
+	'slugify',
+], function (memberList, iconSelect, components, coverPhoto, pictureCropper, translator, api, slugify) {
 	var Details = {};
 	var groupName;
 
@@ -106,8 +106,15 @@ define('forum/groups/details', [
 					break;
 
 				case 'join':	// intentional fall-throughs!
+					api.put('/groups/' + ajaxify.data.group.slug + '/membership/' + (uid || app.user.uid), undefined).then(() => ajaxify.refresh()).catch(app.alertError);
+					break;
+
 				case 'leave':
-				case 'accept':
+					api.del('/groups/' + ajaxify.data.group.slug + '/membership/' + (uid || app.user.uid), undefined).then(() => ajaxify.refresh()).catch(app.alertError);
+					break;
+
+				// TODO (14/10/2020): rewrite these to use api module and merge with above 2 case blocks
+				case 'accept':	// intentional fall-throughs!
 				case 'reject':
 				case 'issueInvite':
 				case 'rescindInvite':
@@ -132,8 +139,6 @@ define('forum/groups/details', [
 
 	Details.prepareSettings = function () {
 		var settingsFormEl = components.get('groups/settings');
-		var labelColorBtn = settingsFormEl.find('[data-action="label-color-select"]');
-		var textColorBtn = settingsFormEl.find('[data-action="text-color-select"]');
 		var labelColorValueEl = settingsFormEl.find('[name="labelColor"]');
 		var textColorValueEl = settingsFormEl.find('[name="textColor"]');
 		var iconBtn = settingsFormEl.find('[data-action="icon-select"]');
@@ -143,27 +148,12 @@ define('forum/groups/details', [
 		var userTitleEnabledEl = settingsFormEl.find('[name="userTitleEnabled"]');
 		var iconValueEl = settingsFormEl.find('[name="icon"]');
 
-		// Add color picker to settings form
-		labelColorBtn.ColorPicker({
-			color: labelColorValueEl.val() || '#000',
-			onChange: function (hsb, hex) {
-				labelColorValueEl.val('#' + hex);
-				previewEl.css('background-color', '#' + hex);
-			},
-			onShow: function (colpkr) {
-				$(colpkr).css('z-index', 1051);
-			},
+		labelColorValueEl.on('input', function () {
+			previewEl.css('background-color', labelColorValueEl.val());
 		});
 
-		textColorBtn.ColorPicker({
-			color: textColorValueEl.val() || '#fff',
-			onChange: function (hsb, hex) {
-				textColorValueEl.val('#' + hex);
-				previewEl.css('color', '#' + hex);
-			},
-			onShow: function (colpkr) {
-				$(colpkr).css('z-index', 1051);
-			},
+		textColorValueEl.on('input', function () {
+			previewEl.css('color', textColorValueEl.val());
 		});
 
 		// Add icon selection interface
@@ -199,35 +189,33 @@ define('forum/groups/details', [
 		var checkboxes = settingsFormEl.find('input[type="checkbox"][name]');
 
 		if (settingsFormEl.length) {
-			require(['vendor/jquery/serializeObject/jquery.ba-serializeobject.min'], function () {
-				var settings = settingsFormEl.serializeObject();
+			var settings = settingsFormEl.serializeObject();
 
-				// Fix checkbox values
-				checkboxes.each(function (idx, inputEl) {
-					inputEl = $(inputEl);
-					if (inputEl.length) {
-						settings[inputEl.attr('name')] = inputEl.prop('checked');
-					}
-				});
+			// Fix checkbox values
+			checkboxes.each(function (idx, inputEl) {
+				inputEl = $(inputEl);
+				if (inputEl.length) {
+					settings[inputEl.attr('name')] = inputEl.prop('checked');
+				}
+			});
 
-				socket.emit('groups.update', {
-					groupName: groupName,
-					values: settings,
-				}, function (err) {
-					if (err) {
-						return app.alertError(err.message);
-					}
+			socket.emit('groups.update', {
+				groupName: groupName,
+				values: settings,
+			}, function (err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
 
-					if (settings.name) {
-						var pathname = window.location.pathname;
-						pathname = pathname.substr(1, pathname.lastIndexOf('/'));
-						ajaxify.go(pathname + utils.slugify(settings.name));
-					} else {
-						ajaxify.refresh();
-					}
+				if (settings.name) {
+					var pathname = window.location.pathname;
+					pathname = pathname.substr(1, pathname.lastIndexOf('/'));
+					ajaxify.go(pathname + slugify(settings.name));
+				} else {
+					ajaxify.refresh();
+				}
 
-					app.alertSuccess('[[groups:event.updated]]');
-				});
+				app.alertSuccess('[[groups:event.updated]]');
 			});
 		}
 	};

@@ -1,7 +1,14 @@
 'use strict';
 
 
-define('admin/settings/navigation', ['translator', 'iconSelect', 'benchpress', 'jqueryui'], function (translator, iconSelect, Benchpress) {
+define('admin/settings/navigation', [
+	'translator',
+	'iconSelect',
+	'benchpress',
+	'jquery-ui/widgets/draggable',
+	'jquery-ui/widgets/droppable',
+	'jquery-ui/widgets/sortable',
+], function (translator, iconSelect, Benchpress) {
 	var navigation = {};
 	var available;
 

@@ -1,0 +1,32 @@
+post:
+  tags:
+    - admin
+  summary: Upload default avatar
+  requestBody:
+    required: true
+    content:
+      multipart/form-data:
+        schema:
+          type: object
+          properties:
+            files:
+              type: array
+              items:
+                type: string
+                format: binary
+          required:
+            - files
+  responses:
+    "200":
+      description: "Image uploaded"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                description: The filename
+              url:
+                type: string
+                description: URL of the uploaded image for use client-side

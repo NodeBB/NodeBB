@@ -21,6 +21,8 @@
     "reset.notify.text1": "Kami beritahukan bahwa pada %1 password anda berhasil diubah.",
     "reset.notify.text2": "Jika ini bukan kehendak anda, silakan segera hubungi administrator.",
     "digest.latest_topics": "Topik-topik terbaru dari %1",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "Klik di sini untuk mengunjungi %1",
     "digest.unsub.info": "Sesuai  pengaturan langganan anda, maka ringkasan ini di kirimkan untuk anda ",
     "digest.day": "day",

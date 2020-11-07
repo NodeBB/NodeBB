@@ -1,0 +1,19 @@
+get:
+  tags:
+    - admin
+  summary: Get users export (.csv)
+  parameters:
+    - in: header
+      name: referer
+      schema:
+        type: string
+      required: true
+      example: /admin/manage/users
+  responses:
+    "200":
+      description: "A CSV file containing all registered users"
+      content:
+        text/csv:
+          schema:
+            type: string
+            format: binary

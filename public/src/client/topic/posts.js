@@ -187,11 +187,9 @@ define('forum/topic/posts', [
 			before = repliesSelector.first();
 		}
 
-		data.slug = ajaxify.data.slug;
-
 		$(window).trigger('action:posts.loading', { posts: data.posts, after: after, before: before });
 
-		app.parseAndTranslate('topic', 'posts', data, function (html) {
+		app.parseAndTranslate('topic', 'posts', Object.assign({}, ajaxify.data, data), function (html) {
 			html = html.filter(function () {
 				var pid = $(this).attr('data-pid');
 				return pid && $('[component="post"][data-pid="' + pid + '"]').length === 0;

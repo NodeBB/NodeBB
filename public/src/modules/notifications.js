@@ -1,7 +1,13 @@
 'use strict';
 
 
-define('notifications', ['translator', 'components', 'navigator', 'benchpress'], function (translator, components, navigator, Benchpress) {
+define('notifications', [
+	'translator',
+	'components',
+	'navigator',
+	'benchpress',
+	'tinycon',
+], function (translator, components, navigator, Benchpress, Tinycon) {
 	var Notifications = {};
 
 	var unreadNotifs = {};

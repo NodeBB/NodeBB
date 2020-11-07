@@ -21,6 +21,8 @@
     "reset.notify.text1": "Wir benachrichtigen dich, dass dein Passwort am %1 erfolgreich geändert wurde.",
     "reset.notify.text2": "Bitte benachrichtige umgehend einen Administrator, wenn du dies nicht autorisiert hast.",
     "digest.latest_topics": "Neueste Themen auf %1",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "Klicke hier, um %1 zu besuchen",
     "digest.unsub.info": "Diese Zusammenfassung wurde dir aufgrund deiner Abonnement-Einstellungen gesendet.",
     "digest.day": "des letzten Tages",

@@ -1,11 +1,11 @@
 {
 	"post-cache": "Cache de Publicações",
-	"posts-in-cache": "Publicações em Cache",
-	"average-post-size": "Média do Tamanho das Publicações",
-	"length-to-max": "Comprimento / Máximo",
 	"percent-full": "%1% Cheio",
 	"post-cache-size": "Tamanho da Cache de Publicações",
 	"items-in-cache": "Itens em Cache",
 	"control-panel": "Painel de Controlo",
-	"update-settings": "Atualizar Definições de Cache"
+	"update-settings": "Atualizar Definições de Cache",
+	"clear": "Clear",
+	"download": "Download",
+	"enabled": "Enabled"
 }

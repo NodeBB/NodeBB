@@ -38,6 +38,8 @@ Controllers['404'] = require('./404');
 Controllers.errors = require('./errors');
 Controllers.composer = require('./composer');
 
+Controllers.write = require('./write');
+
 Controllers.reset = function (req, res, next) {
 	if (meta.config['password:disableEdit']) {
 		return helpers.notAllowed(req, res);
@@ -248,7 +250,7 @@ Controllers.manifest = function (req, res, next) {
 	var manifest = {
 		name: meta.config.title || 'NodeBB',
 		short_name: meta.config['title:short'] || meta.config.title || 'NodeBB',
-		start_url: nconf.get('relative_path') + '/',
+		start_url: nconf.get('url'),
 		display: 'standalone',
 		orientation: 'portrait',
 		theme_color: meta.config.themeColor || '#ffffff',
@@ -294,6 +296,22 @@ Controllers.manifest = function (req, res, next) {
 			density: 10.0,
 		});
 	}
+
+
+	if (meta.config['brand:maskableIcon']) {
+		manifest.icons.push({
+			src: nconf.get('relative_path') + '/assets/uploads/system/maskableicon-orig.png',
+			type: 'image/png',
+			purpose: 'maskable',
+		});
+	} else if (meta.config['brand:touchIcon']) {
+		manifest.icons.push({
+			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-orig.png',
+			type: 'image/png',
+			purpose: 'maskable',
+		});
+	}
+
 	plugins.fireHook('filter:manifest.build', { req: req, res: res, manifest: manifest }, function (err, data) {
 		if (err) {
 			return next(err);

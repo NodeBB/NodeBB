@@ -35,12 +35,15 @@ module.exports = function (Plugins) {
 			return;
 		}
 
-		if (Plugins.deprecatedHooks[data.hook]) {
-			winston.warn('[plugins/' + id + '] Hook `' + data.hook + '` is deprecated, ' +
-				(Plugins.deprecatedHooks[data.hook] ?
-					'please use `' + Plugins.deprecatedHooks[data.hook] + '` instead.' :
-					'there is no alternative.'
-				));
+		// `hasOwnProperty` needed for hooks with no alternative (set to null)
+		if (Plugins.deprecatedHooks.hasOwnProperty(data.hook)) {
+			const deprecated = Plugins.deprecatedHooks[data.hook];
+
+			if (deprecated) {
+				winston.warn(`[plugins/${id}] Hook "${data.hook}" is deprecated, please use "${deprecated}" instead.`);
+			} else {
+				winston.warn(`[plugins/${id}] Hook "${data.hook}" is deprecated, there is no alternative.`);
+			}
 		}
 
 		data.id = id;
@@ -84,7 +87,7 @@ module.exports = function (Plugins) {
 	Plugins.fireHook = async function (hook, params) {
 		const hookList = Plugins.loadedHooks[hook];
 		const hookType = hook.split(':')[0];
-		if (hook !== 'action:plugins.firehook') {
+		if (global.env === 'development' && hook !== 'action:plugins.firehook') {
 			winston.verbose('[plugins/fireHook] ' + hook);
 		}
 
@@ -186,21 +189,20 @@ module.exports = function (Plugins) {
 		if (!Array.isArray(hookList) || !hookList.length) {
 			return;
 		}
-		await async.eachSeries(hookList, function (hookObj, next) {
+		await async.eachSeries(hookList, async (hookObj) => {
 			if (typeof hookObj.method !== 'function') {
 				if (global.env === 'development') {
 					winston.warn('[plugins] Expected method for hook \'' + hook + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
 				}
-				return next();
+				return;
 			}
 
 			// Skip remaining hooks if headers have been sent
 			if (params.res.headersSent) {
-				return next();
+				return;
 			}
 
-			hookObj.method(params);
-			next();
+			await hookObj.method(params);
 		});
 	}
 

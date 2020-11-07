@@ -20,16 +20,10 @@
 	"add-group": "Add Group",
 	"invite": "Meghívás",
 	"new": "Új felhasználó",
-
-	"pills.latest": "Legutóbbiak",
+	"filter-by": "Filter by",
 	"pills.unvalidated": "Nem igazoltak",
-	"pills.no-posts": "Hozzászólás nélküliek",
-	"pills.top-posters": "Legaktívabbak",
-	"pills.top-rep": "Legnépszerűbbek",
-	"pills.inactive": "Inaktívak",
-	"pills.flagged": "Legtöbbet megjelöltek",
+	"pills.validated": "Validated",
 	"pills.banned": "Kitiltottak",
-	"pills.search": "Keresés",
 
 	"50-per-page": "50 per page",
 	"100-per-page": "100 per page",

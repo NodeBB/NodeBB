@@ -13,12 +13,13 @@ const notifications = require('../notifications');
 const plugins = require('../plugins');
 const utils = require('../utils');
 const batch = require('../batch');
+const apiHelpers = require('../api/helpers');
 
 const SocketHelpers = module.exports;
 
 SocketHelpers.setDefaultPostData = function (data, socket) {
 	data.uid = socket.uid;
-	data.req = websockets.reqFromSocket(socket);
+	data.req = apiHelpers.buildReqObject(socket);
 	data.timestamp = Date.now();
 	data.fromQueue = false;
 };
@@ -191,7 +192,7 @@ SocketHelpers.rescindUpvoteNotification = async function (pid, fromuid) {
 	websockets.in('uid_' + uid).emit('event:notifications.updateCount', count);
 };
 
-SocketHelpers.emitToTopicAndCategory = async function (event, data, uids) {
+SocketHelpers.emitToUids = async function (event, data, uids) {
 	uids.forEach(toUid => websockets.in('uid_' + toUid).emit(event, data));
 };
 

@@ -12,8 +12,6 @@ var plugins = require('../plugins');
 var utils = require('../utils');
 
 module.exports = function (Topics) {
-	var stripTeaserTags = utils.stripTags.concat(['img']);
-
 	Topics.getTeasers = async function (topics, options) {
 		if (!Array.isArray(topics) || !topics.length) {
 			return [];
@@ -69,6 +67,8 @@ module.exports = function (Topics) {
 		});
 		await Promise.all(postData.map(p => posts.parsePost(p)));
 
+		const { tags } = await plugins.fireHook('filter:teasers.configureStripTags', { tags: utils.stripTags.concat(['img']) });
+
 		var teasers = topics.map(function (topic, index) {
 			if (!topic) {
 				return null;
@@ -76,7 +76,7 @@ module.exports = function (Topics) {
 			if (tidToPost[topic.tid]) {
 				tidToPost[topic.tid].index = meta.config.teaserPost === 'first' ? 1 : counts[index];
 				if (tidToPost[topic.tid].content) {
-					tidToPost[topic.tid].content = utils.stripHTMLTags(tidToPost[topic.tid].content, stripTeaserTags);
+					tidToPost[topic.tid].content = utils.stripHTMLTags(tidToPost[topic.tid].content, tags);
 				}
 			}
 			return tidToPost[topic.tid];

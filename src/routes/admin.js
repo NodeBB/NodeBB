@@ -16,16 +16,7 @@ module.exports = function (app, middleware, controllers) {
 	helpers.setupAdminPageRoute(app, '/admin/manage/privileges/:cid?', middleware, middlewares, controllers.admin.privileges.get);
 	helpers.setupAdminPageRoute(app, '/admin/manage/tags', middleware, middlewares, controllers.admin.tags.get);
 
-	helpers.setupAdminPageRoute(app, '/admin/manage/users', middleware, middlewares, controllers.admin.users.sortByJoinDate);
-	helpers.setupAdminPageRoute(app, '/admin/manage/users/search', middleware, middlewares, controllers.admin.users.search);
-	helpers.setupAdminPageRoute(app, '/admin/manage/users/latest', middleware, middlewares, controllers.admin.users.sortByJoinDate);
-	helpers.setupAdminPageRoute(app, '/admin/manage/users/not-validated', middleware, middlewares, controllers.admin.users.notValidated);
-	helpers.setupAdminPageRoute(app, '/admin/manage/users/no-posts', middleware, middlewares, controllers.admin.users.noPosts);
-	helpers.setupAdminPageRoute(app, '/admin/manage/users/top-posters', middleware, middlewares, controllers.admin.users.topPosters);
-	helpers.setupAdminPageRoute(app, '/admin/manage/users/most-reputation', middleware, middlewares, controllers.admin.users.mostReputaion);
-	helpers.setupAdminPageRoute(app, '/admin/manage/users/inactive', middleware, middlewares, controllers.admin.users.inactive);
-	helpers.setupAdminPageRoute(app, '/admin/manage/users/flagged', middleware, middlewares, controllers.admin.users.flagged);
-	helpers.setupAdminPageRoute(app, '/admin/manage/users/banned', middleware, middlewares, controllers.admin.users.banned);
+	helpers.setupAdminPageRoute(app, '/admin/manage/users', middleware, middlewares, controllers.admin.users.index);
 	helpers.setupAdminPageRoute(app, '/admin/manage/registration', middleware, middlewares, controllers.admin.users.registrationQueue);
 
 	helpers.setupAdminPageRoute(app, '/admin/manage/admins-mods', middleware, middlewares, controllers.admin.adminsMods.get);
@@ -70,6 +61,7 @@ function apiRoutes(router, middleware, controllers) {
 	router.get('/api/admin/users/csv', middleware.authenticate, helpers.tryRoute(controllers.admin.users.getCSV));
 	router.get('/api/admin/groups/:groupname/csv', middleware.authenticate, helpers.tryRoute(controllers.admin.groups.getCSV));
 	router.get('/api/admin/analytics', middleware.authenticate, helpers.tryRoute(controllers.admin.dashboard.getAnalytics));
+	router.get('/api/admin/advanced/cache/dump', middleware.authenticate, helpers.tryRoute(controllers.admin.cache.dump));
 
 	const multipart = require('connect-multiparty');
 	const multipartMiddleware = multipart();
@@ -79,6 +71,7 @@ function apiRoutes(router, middleware, controllers) {
 	router.post('/api/admin/category/uploadpicture', middlewares, helpers.tryRoute(controllers.admin.uploads.uploadCategoryPicture));
 	router.post('/api/admin/uploadfavicon', middlewares, helpers.tryRoute(controllers.admin.uploads.uploadFavicon));
 	router.post('/api/admin/uploadTouchIcon', middlewares, helpers.tryRoute(controllers.admin.uploads.uploadTouchIcon));
+	router.post('/api/admin/uploadMaskableIcon', middlewares, helpers.tryRoute(controllers.admin.uploads.uploadMaskableIcon));
 	router.post('/api/admin/uploadlogo', middlewares, helpers.tryRoute(controllers.admin.uploads.uploadLogo));
 	router.post('/api/admin/uploadOgImage', middlewares, helpers.tryRoute(controllers.admin.uploads.uploadOgImage));
 	router.post('/api/admin/upload/file', middlewares, helpers.tryRoute(controllers.admin.uploads.uploadFile));
