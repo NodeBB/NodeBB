@@ -66,6 +66,9 @@ module.exports = function (opts) {
 	});
 
 	cache.getUnCachedKeys = function (keys, cachedData) {
+		if (!cache.enabled) {
+			return keys;
+		}
 		let data;
 		let isCached;
 		const unCachedKeys = keys.filter(function (key) {

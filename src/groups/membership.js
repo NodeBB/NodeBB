@@ -31,10 +31,8 @@ module.exports = function (Groups) {
 		const cacheKey = uid + ':' + groupName;
 		let isMember = Groups.cache.get(cacheKey);
 		if (isMember !== undefined) {
-			Groups.cache.hits += 1;
 			return isMember;
 		}
-		Groups.cache.misses += 1;
 		isMember = await db.isSortedSetMember('group:' + groupName + ':members', uid);
 		Groups.cache.set(cacheKey, isMember);
 		return isMember;
