@@ -1085,7 +1085,7 @@ describe('Controllers', function () {
 				request(nconf.get('url') + '/me/bookmarks', { json: true }, function (err, res, body) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
-					assert(body.includes('Login to your account'));
+					assert(body.includes('Login to your account'), body.substr(0, 500));
 					done();
 				});
 			});
