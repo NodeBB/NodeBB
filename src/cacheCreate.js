@@ -16,11 +16,11 @@ module.exports = function (opts) {
 	const cacheDel = cache.del;
 	const cacheReset = cache.reset;
 
-	cache.set = function (key, value) {
+	cache.set = function (key, value, maxAge) {
 		if (!cache.enabled) {
 			return;
 		}
-		cacheSet.apply(cache, [key, value]);
+		cacheSet.apply(cache, [key, value, maxAge]);
 	};
 
 	cache.get = function (key) {
@@ -80,8 +80,8 @@ module.exports = function (opts) {
 			return !isCached;
 		});
 
-		var hits = keys.length - unCachedKeys.length;
-		var misses = keys.length - hits;
+		const hits = keys.length - unCachedKeys.length;
+		const misses = keys.length - hits;
 		cache.hits += hits;
 		cache.misses += misses;
 		return unCachedKeys;
