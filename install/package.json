@@ -63,7 +63,7 @@
         "cropperjs": "^1.5.6",
         "csurf": "^1.11.0",
         "daemon": "^1.1.0",
-        "diff": "^4.0.2",
+        "diff": "^5.0.0",
         "express": "^4.17.1",
         "express-session": "^1.17.0",
         "express-useragent": "^1.0.13",
