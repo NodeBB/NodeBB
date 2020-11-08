@@ -10,11 +10,18 @@ const translator = require('../translator');
 const widgets = require('../widgets');
 const utils = require('../utils');
 const slugify = require('../slugify');
-const cache = require('../cache');
+const cacheCreate = require('../cacheCreate');
+const cache = cacheCreate({
+	name: 'header-footer',
+	max: 1000,
+	maxAge: 0,
+});
 
 const relative_path = nconf.get('relative_path');
 
 module.exports = function (middleware) {
+	middleware.headerFooterCache = cache;
+
 	middleware.processRender = function processRender(req, res, next) {
 		// res.render post-processing, modified from here: https://gist.github.com/mrlannigan/5051687
 		const render = res.render;
@@ -97,8 +104,15 @@ module.exports = function (middleware) {
 	async function renderHeaderFooter(method, req, res, options) {
 		let str = '';
 		const lang = getLang(req, res);
+		function getCacheKey() {
+			return [lang, method]
+				.concat(req.path.split('/').slice(0, 4))
+				.join('/');
+		}
+		let cacheKey;
 		if (req.uid === 0 && res.locals.renderHeader) {
-			str = cache.get('render' + options.template.name + lang + method);
+			cacheKey = getCacheKey();
+			str = cache.get(cacheKey);
 			if (str) {
 				return str;
 			}
@@ -114,7 +128,7 @@ module.exports = function (middleware) {
 		}
 		const translated = await translate(str, lang);
 		if (req.uid === 0 && res.locals.renderHeader) {
-			cache.set('render' + options.template.name + lang + method, translated, 300000);
+			cache.set(cacheKey, translated, 300000);
 		}
 		return translated;
 	}

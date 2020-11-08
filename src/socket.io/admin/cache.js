@@ -2,11 +2,18 @@
 
 const SocketCache = module.exports;
 
-SocketCache.clear = async function () {
-	require('../../posts/cache').reset();
-	require('../../database').objectCache.reset();
-	require('../../groups').cache.reset();
-	require('../../cache').reset();
+SocketCache.clear = async function (socket, data) {
+	if (data.name === 'post') {
+		require('../../posts/cache').reset();
+	} else if (data.name === 'object') {
+		require('../../database').objectCache.reset();
+	} else if (data.name === 'group') {
+		require('../../groups').cache.reset();
+	} else if (data.name === 'local') {
+		require('../../cache').reset();
+	} else if (data.name === 'headerfooter') {
+		require('../../middleware').headerFooterCache.reset();
+	}
 };
 
 SocketCache.toggle = async function (socket, data) {
@@ -15,6 +22,7 @@ SocketCache.toggle = async function (socket, data) {
 		object: require('../../database').objectCache,
 		group: require('../../groups').cache,
 		local: require('../../cache'),
+		headerfooter: require('../../middleware').headerFooterCache,
 	};
 	if (!caches[data.name]) {
 		return;

@@ -9,56 +9,30 @@ cacheController.get = function (req, res) {
 	const groupCache = require('../../groups').cache;
 	const objectCache = require('../../database').objectCache;
 	const localCache = require('../../cache');
+	const headerFooterCache = require('../../middleware').headerFooterCache;
 
-	let percentFull = 0;
-	if (postCache.itemCount > 0) {
-		percentFull = ((postCache.length / postCache.max) * 100).toFixed(2);
+	function getInfo(cache) {
+		return {
+			length: cache.length,
+			max: cache.max,
+			itemCount: cache.itemCount,
+			percentFull: ((cache.length / cache.max) * 100).toFixed(2),
+			hits: utils.addCommas(String(cache.hits)),
+			misses: utils.addCommas(String(cache.misses)),
+			hitRatio: ((cache.hits / (cache.hits + cache.misses) || 0)).toFixed(4),
+			enabled: cache.enabled,
+		};
 	}
 
 	const data = {
-		postCache: {
-			length: postCache.length,
-			max: postCache.max,
-			itemCount: postCache.itemCount,
-			percentFull: percentFull,
-			hits: utils.addCommas(String(postCache.hits)),
-			misses: utils.addCommas(String(postCache.misses)),
-			hitRatio: ((postCache.hits / (postCache.hits + postCache.misses) || 0)).toFixed(4),
-			enabled: postCache.enabled,
-		},
-		groupCache: {
-			length: groupCache.length,
-			max: groupCache.max,
-			itemCount: groupCache.itemCount,
-			percentFull: ((groupCache.length / groupCache.max) * 100).toFixed(2),
-			hits: utils.addCommas(String(groupCache.hits)),
-			misses: utils.addCommas(String(groupCache.misses)),
-			hitRatio: (groupCache.hits / (groupCache.hits + groupCache.misses)).toFixed(4),
-			enabled: groupCache.enabled,
-		},
-		localCache: {
-			length: localCache.length,
-			max: localCache.max,
-			itemCount: localCache.itemCount,
-			percentFull: ((localCache.length / localCache.max) * 100).toFixed(2),
-			hits: utils.addCommas(String(localCache.hits)),
-			misses: utils.addCommas(String(localCache.misses)),
-			hitRatio: ((localCache.hits / (localCache.hits + localCache.misses) || 0)).toFixed(4),
-			enabled: localCache.enabled,
-		},
+		postCache: getInfo(postCache),
+		groupCache: getInfo(groupCache),
+		localCache: getInfo(localCache),
+		headerFooterCache: getInfo(headerFooterCache),
 	};
 
 	if (objectCache) {
-		data.objectCache = {
-			length: objectCache.length,
-			max: objectCache.max,
-			itemCount: objectCache.itemCount,
-			percentFull: ((objectCache.length / objectCache.max) * 100).toFixed(2),
-			hits: utils.addCommas(String(objectCache.hits)),
-			misses: utils.addCommas(String(objectCache.misses)),
-			hitRatio: (objectCache.hits / (objectCache.hits + objectCache.misses)).toFixed(4),
-			enabled: objectCache.enabled,
-		};
+		data.objectCache = getInfo(objectCache);
 	}
 
 	res.render('admin/advanced/cache', data);
@@ -70,6 +44,7 @@ cacheController.dump = function (req, res, next) {
 		object: require('../../database').objectCache,
 		group: require('../../groups').cache,
 		local: require('../../cache'),
+		headerfooter: require('../../middleware').headerFooterCache,
 	};
 	if (!caches[req.query.name]) {
 		return next();
