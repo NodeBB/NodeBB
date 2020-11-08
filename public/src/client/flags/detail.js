@@ -144,9 +144,9 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 
 	Detail.reloadNotes = function (notes) {
 		ajaxify.data.notes = notes;
-		Benchpress.parse('flags/detail', 'notes', {
+		Benchpress.render('flags/detail', 'notes', {
 			notes: notes,
-		}, function (html) {
+		}).then(function (html) {
 			var wrapperEl = components.get('flag/notes');
 			wrapperEl.empty();
 			wrapperEl.html(html);
@@ -156,15 +156,13 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 	};
 
 	Detail.reloadHistory = function (history) {
-		Benchpress.parse('flags/detail', 'history', {
+		app.parseAndTranslate('flags/detail', 'history', {
 			history: history,
 		}, function (html) {
-			translator.translate(html, function (translated) {
-				var wrapperEl = components.get('flag/history');
-				wrapperEl.empty();
-				wrapperEl.html(translated);
-				wrapperEl.find('span.timeago').timeago();
-			});
+			var wrapperEl = components.get('flag/history');
+			wrapperEl.empty();
+			wrapperEl.html(html);
+			wrapperEl.find('span.timeago').timeago();
 		});
 	};
 

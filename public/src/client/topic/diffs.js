@@ -1,6 +1,6 @@
 'use strict';
 
-define('forum/topic/diffs', ['forum/topic/images', 'benchpress', 'translator'], function (Images, Benchpress, translator) {
+define('forum/topic/diffs', ['forum/topic/images'], function () {
 	var Diffs = {};
 
 	Diffs.open = function (pid) {
@@ -15,7 +15,7 @@ define('forum/topic/diffs', ['forum/topic/images', 'benchpress', 'translator'], 
 				return app.alertError(err.message);
 			}
 
-			Benchpress.parse('partials/modals/post_history', {
+			app.parseAndTranslate('partials/modals/post_history', {
 				diffs: data.revisions.map(function (revision) {
 					var timestamp = parseInt(revision.timestamp, 10);
 
@@ -28,34 +28,32 @@ define('forum/topic/diffs', ['forum/topic/images', 'benchpress', 'translator'], 
 				numDiffs: data.timestamps.length,
 				editable: data.editable,
 			}, function (html) {
-				translator.translate(html, function (html) {
-					var modal = bootbox.dialog({
-						title: '[[topic:diffs.title]]',
-						message: html,
-						size: 'large',
-					});
+				var modal = bootbox.dialog({
+					title: '[[topic:diffs.title]]',
+					message: html,
+					size: 'large',
+				});
 
-					if (!data.timestamps.length) {
-						return;
-					}
+				if (!data.timestamps.length) {
+					return;
+				}
 
-					var selectEl = modal.find('select');
-					var revertEl = modal.find('button[data-action="restore"]');
-					var postContainer = modal.find('ul.posts-list');
+				var selectEl = modal.find('select');
+				var revertEl = modal.find('button[data-action="restore"]');
+				var postContainer = modal.find('ul.posts-list');
 
-					selectEl.on('change', function () {
-						Diffs.load(pid, this.value, postContainer);
-						revertEl.prop('disabled', data.timestamps.indexOf(this.value) === 0);
-					});
+				selectEl.on('change', function () {
+					Diffs.load(pid, this.value, postContainer);
+					revertEl.prop('disabled', data.timestamps.indexOf(this.value) === 0);
+				});
 
-					revertEl.on('click', function () {
-						Diffs.restore(pid, selectEl.val(), modal);
-					});
+				revertEl.on('click', function () {
+					Diffs.restore(pid, selectEl.val(), modal);
+				});
 
-					modal.on('shown.bs.modal', function () {
-						Diffs.load(pid, selectEl.val(), postContainer);
-						revertEl.prop('disabled', true);
-					});
+				modal.on('shown.bs.modal', function () {
+					Diffs.load(pid, selectEl.val(), postContainer);
+					revertEl.prop('disabled', true);
 				});
 			});
 		});

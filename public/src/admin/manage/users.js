@@ -76,7 +76,7 @@ define('admin/manage/users', [
 				if (err) {
 					return app.alertError(err);
 				}
-				Benchpress.parse('admin/partials/manage_user_groups', data, function (html) {
+				Benchpress.render('admin/partials/manage_user_groups', data).then(function (html) {
 					var modal = bootbox.dialog({
 						message: html,
 						title: '[[admin/manage/users:manage-groups]]',
@@ -134,7 +134,7 @@ define('admin/manage/users', [
 				return false;	// specifically to keep the menu open
 			}
 
-			Benchpress.parse('admin/partials/temporary-ban', {}, function (html) {
+			Benchpress.render('admin/partials/temporary-ban', {}).then(function (html) {
 				bootbox.dialog({
 					className: 'ban-modal',
 					title: '[[user:ban_account]]',
@@ -321,7 +321,7 @@ define('admin/manage/users', [
 
 		function handleUserCreate() {
 			$('[data-action="create"]').on('click', function () {
-				Benchpress.parse('admin/partials/create_user_modal', {}, function (html) {
+				Benchpress.render('admin/partials/create_user_modal', {}).then(function (html) {
 					var modal = bootbox.dialog({
 						message: html,
 						title: '[[admin/manage/users:alerts.create]]',
@@ -426,7 +426,7 @@ define('admin/manage/users', [
 	}
 
 	function renderSearchResults(data) {
-		Benchpress.parse('partials/paginator', { pagination: data.pagination }, function (html) {
+		Benchpress.render('partials/paginator', { pagination: data.pagination }).then(function (html) {
 			$('.pagination-container').replaceWith(html);
 		});
 

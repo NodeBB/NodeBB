@@ -32,7 +32,7 @@ define('forum/ip-blacklist', ['Chart', 'benchpress'], function (Chart, Benchpres
 					return app.alertError(err.message);
 				}
 
-				Benchpress.parse('admin/partials/blacklist-validate', data, function (html) {
+				Benchpress.render('admin/partials/blacklist-validate', data).then(function (html) {
 					bootbox.alert(html);
 				});
 			});

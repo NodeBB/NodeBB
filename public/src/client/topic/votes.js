@@ -80,18 +80,16 @@ define('forum/topic/votes', [
 				return app.alertError(err.message);
 			}
 
-			Benchpress.parse('partials/modals/votes_modal', data, function (html) {
-				translator.translate(html, function (translated) {
-					var dialog = bootbox.dialog({
-						title: '[[global:voters]]',
-						message: translated,
-						className: 'vote-modal',
-						show: true,
-					});
+			app.parseAndTranslate('partials/modals/votes_modal', data, function (html) {
+				var dialog = bootbox.dialog({
+					title: '[[global:voters]]',
+					message: html,
+					className: 'vote-modal',
+					show: true,
+				});
 
-					dialog.on('click', function () {
-						dialog.modal('hide');
-					});
+				dialog.on('click', function () {
+					dialog.modal('hide');
 				});
 			});
 		});

@@ -128,7 +128,7 @@ define('forum/account/header', [
 	function banAccount(theirid, onSuccess) {
 		theirid = theirid || ajaxify.data.theirid;
 
-		Benchpress.parse('admin/partials/temporary-ban', {}, function (html) {
+		Benchpress.render('admin/partials/temporary-ban', {}).then(function (html) {
 			bootbox.dialog({
 				className: 'ban-modal',
 				title: '[[user:ban_account]]',

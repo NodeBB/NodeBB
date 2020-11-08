@@ -29,7 +29,7 @@ define('settings/sorted-list', [
 			var key = $container.attr('data-sorted-list');
 			var formTpl = $container.attr('data-form-template');
 
-			benchpress.parse(formTpl, {}, function (formHtml) {
+			benchpress.render(formTpl, {}).then(function (formHtml) {
 				var addBtn = $('[data-sorted-list="' + key + '"] [data-type="add"]');
 
 				addBtn.on('click', function () {

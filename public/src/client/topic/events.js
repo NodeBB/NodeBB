@@ -139,19 +139,17 @@ define('forum/topic/events', [
 					editedISO: utils.toISOString(data.post.edited),
 				};
 
-				Benchpress.parse('partials/topic/post-editor', editData, function (html) {
-					translator.translate(html, function (translated) {
-						html = $(translated);
-						editorEl.replaceWith(html);
-						$('[data-pid="' + data.post.pid + '"] [component="post/editor"] .timeago').timeago();
-						$(window).trigger('action:posts.edited', data);
-					});
+				app.parseAndTranslate('partials/topic/post-editor', editData, function (html) {
+					html = $(html);
+					editorEl.replaceWith(html);
+					$('[data-pid="' + data.post.pid + '"] [component="post/editor"] .timeago').timeago();
+					$(window).trigger('action:posts.edited', data);
 				});
 			});
 		}
 
 		if (data.topic.tags && tagsUpdated(data.topic.tags)) {
-			Benchpress.parse('partials/topic/tags', { tags: data.topic.tags }, function (html) {
+			Benchpress.render('partials/topic/tags', { tags: data.topic.tags }).then(function (html) {
 				var tags = $('.tags');
 
 				tags.fadeOut(250, function () {

@@ -727,24 +727,19 @@ app.cacheBuster = null;
 
 	app.parseAndTranslate = function (template, blockName, data, callback) {
 		require(['translator', 'benchpress'], function (translator, Benchpress) {
-			function translate(html, callback) {
-				translator.translate(html, function (translatedHTML) {
-					translatedHTML = translator.unescape(translatedHTML);
-					callback($(translatedHTML));
-				});
-			}
-
-			if (typeof blockName === 'string') {
-				Benchpress.parse(template, blockName, data, function (html) {
-					translate(html, callback);
-				});
-			} else {
+			if (typeof blockName !== 'string') {
 				callback = data;
 				data = blockName;
-				Benchpress.parse(template, data, function (html) {
-					translate(html, callback);
-				});
+				blockName = undefined;
 			}
+
+			Benchpress.render(template, data, blockName)
+				.then(rendered => translator.translate(rendered))
+				.then(translated => translator.unescape(translated))
+				.then(
+					result => setTimeout(callback, 0, result),
+					err => console.error(err)
+				);
 		});
 	};
 

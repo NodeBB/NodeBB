@@ -41,9 +41,9 @@ define('forum/groups/list', [
 			after: $('[component="groups/container"]').attr('data-nextstart'),
 		}, function (data, done) {
 			if (data && data.groups.length) {
-				Benchpress.parse('partials/groups/list', {
+				Benchpress.render('partials/groups/list', {
 					groups: data.groups,
-				}, function (html) {
+				}).then(function (html) {
 					$('#groups-list').append(html);
 					done();
 				});
@@ -77,9 +77,9 @@ define('forum/groups/list', [
 			groups = groups.filter(function (group) {
 				return group.name !== 'registered-users' && group.name !== 'guests';
 			});
-			Benchpress.parse('partials/groups/list', {
+			Benchpress.render('partials/groups/list', {
 				groups: groups,
-			}, function (html) {
+			}).then(function (html) {
 				groupsEl.empty().append(html);
 			});
 		});

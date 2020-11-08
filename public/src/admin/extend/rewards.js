@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/extend/rewards', ['translator', 'benchpress'], function (translator, Benchpress) {
+define('admin/extend/rewards', [], function () {
 	var rewards = {};
 
 
@@ -139,12 +139,10 @@ define('admin/extend/rewards', ['translator', 'benchpress'], function (translato
 			rewards: available,
 		};
 
-		Benchpress.parse('admin/extend/rewards', 'active', data, function (li) {
-			translator.translate(li, function (li) {
-				li = $(li);
-				ul.append(li);
-				li.find('select').val('');
-			});
+		app.parseAndTranslate('admin/extend/rewards', 'active', data, function (li) {
+			li = $(li);
+			ul.append(li);
+			li.find('select').val('');
 		});
 	}
 
