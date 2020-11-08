@@ -171,11 +171,12 @@ ajaxify = window.ajaxify || {};
 	function renderTemplate(url, tpl_url, data, callback) {
 		$(window).trigger('action:ajaxify.loadingTemplates', {});
 
-		Benchpress.parse(tpl_url, data, function (template) {
-			translator.translate(template, function (translatedTemplate) {
-				translatedTemplate = translator.unescape(translatedTemplate);
+		Benchpress.render(tpl_url, data)
+			.then(rendered => translator.translate(rendered))
+			.then(function (translated) {
+				translated = translator.unescape(translated);
 				$('body').removeClass(previousBodyClass).addClass(data.bodyClass);
-				$('#content').html(translatedTemplate);
+				$('#content').html(translated);
 
 				ajaxify.end(url, tpl_url);
 
@@ -189,7 +190,6 @@ ajaxify = window.ajaxify || {};
 				updateTitle(data.title);
 				updateTags();
 			});
-		});
 	}
 
 	function updateTitle(title) {

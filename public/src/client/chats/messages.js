@@ -102,13 +102,13 @@ define('forum/chats/messages', ['components', 'translator', 'benchpress'], funct
 		}
 
 		if (Array.isArray(data)) {
-			Benchpress.parse('partials/chats/message' + (Array.isArray(data) ? 's' : ''), {
+			Benchpress.render('partials/chats/message' + (Array.isArray(data) ? 's' : ''), {
 				messages: data,
-			}, done);
+			}).then(done);
 		} else {
-			Benchpress.parse('partials/chats/' + (data.system ? 'system-message' : 'message'), {
+			Benchpress.render('partials/chats/' + (data.system ? 'system-message' : 'message'), {
 				messages: data,
-			}, done);
+			}).then(done);
 		}
 	};
 

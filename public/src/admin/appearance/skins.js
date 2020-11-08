@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/appearance/skins', ['translator', 'benchpress'], function (translator, Benchpress) {
+define('admin/appearance/skins', ['translator'], function (translator) {
 	var Skins = {};
 
 	Skins.init = function () {
@@ -52,7 +52,7 @@ define('admin/appearance/skins', ['translator', 'benchpress'], function (transla
 	Skins.render = function (bootswatch) {
 		var themeContainer = $('#bootstrap_themes');
 
-		Benchpress.parse('admin/partials/theme_list', {
+		app.parseAndTranslate('admin/partials/theme_list', {
 			themes: bootswatch.themes.map(function (theme) {
 				return {
 					type: 'bootswatch',
@@ -67,17 +67,15 @@ define('admin/appearance/skins', ['translator', 'benchpress'], function (transla
 			}),
 			showRevert: true,
 		}, function (html) {
-			translator.translate(html, function (html) {
-				themeContainer.html(html);
+			themeContainer.html(html);
 
-				if (config['theme:src']) {
-					var skin = config['theme:src']
-						.match(/latest\/(\S+)\/bootstrap.min.css/)[1]
-						.replace(/(^|\s)([a-z])/g, function (m, p1, p2) { return p1 + p2.toUpperCase(); });
+			if (config['theme:src']) {
+				var skin = config['theme:src']
+					.match(/latest\/(\S+)\/bootstrap.min.css/)[1]
+					.replace(/(^|\s)([a-z])/g, function (m, p1, p2) { return p1 + p2.toUpperCase(); });
 
-					highlightSelectedTheme(skin);
-				}
-			});
+				highlightSelectedTheme(skin);
+			}
 		});
 	};
 

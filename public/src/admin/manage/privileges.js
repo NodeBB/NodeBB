@@ -140,15 +140,13 @@ define('admin/manage/privileges', [
 
 			ajaxify.data.privileges = privileges;
 			var tpl = parseInt(cid, 10) ? 'admin/partials/privileges/category' : 'admin/partials/privileges/global';
-			Benchpress.parse(tpl, {
+			app.parseAndTranslate(tpl, {
 				privileges: privileges,
 			}, function (html) {
-				translator.translate(html, function (html) {
-					$('.privilege-table-container').html(html);
-					Privileges.exposeAssumedPrivileges();
+				$('.privilege-table-container').html(html);
+				Privileges.exposeAssumedPrivileges();
 
-					hightlightRowByDataAttr('data-group-name', groupToHighlight);
-				});
+				hightlightRowByDataAttr('data-group-name', groupToHighlight);
 			});
 		});
 	};

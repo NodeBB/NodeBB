@@ -109,9 +109,9 @@ define('admin/manage/categories', [
 				name: '[[admin/manage/categories:parent-category-none]]',
 				icon: 'fa-none',
 			});
-			Benchpress.parse('admin/partials/categories/create', {
+			Benchpress.render('admin/partials/categories/create', {
 				categories: categories,
-			}, function (html) {
+			}).then(function (html) {
 				var modal = bootbox.dialog({
 					title: '[[admin/manage/categories:alert.create]]',
 					message: html,
@@ -261,28 +261,26 @@ define('admin/manage/categories', [
 		}
 
 		function continueRender() {
-			Benchpress.parse('admin/partials/categories/category-rows', {
+			app.parseAndTranslate('admin/partials/categories/category-rows', {
 				cid: parentId,
 				categories: categories,
 			}, function (html) {
-				translator.translate(html, function (html) {
-					container.append(html);
+				container.append(html);
 
-					// Handle and children categories in this level have
-					for (var x = 0, numCategories = categories.length; x < numCategories; x += 1) {
-						renderList(categories[x].children, $('li[data-cid="' + categories[x].cid + '"]'), categories[x].cid);
-					}
+				// Handle and children categories in this level have
+				for (var x = 0, numCategories = categories.length; x < numCategories; x += 1) {
+					renderList(categories[x].children, $('li[data-cid="' + categories[x].cid + '"]'), categories[x].cid);
+				}
 
-					// Make list sortable
-					sortables[parentId] = Sortable.create($('ul[data-cid="' + parentId + '"]')[0], {
-						group: 'cross-categories',
-						animation: 150,
-						handle: '.information',
-						dataIdAttr: 'data-cid',
-						ghostClass: 'placeholder',
-						onAdd: itemDidAdd,
-						onEnd: itemDragDidEnd,
-					});
+				// Make list sortable
+				sortables[parentId] = Sortable.create($('ul[data-cid="' + parentId + '"]')[0], {
+					group: 'cross-categories',
+					animation: 150,
+					handle: '.information',
+					dataIdAttr: 'data-cid',
+					ghostClass: 'placeholder',
+					onAdd: itemDidAdd,
+					onEnd: itemDragDidEnd,
 				});
 			});
 		}

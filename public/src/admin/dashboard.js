@@ -343,7 +343,7 @@ define('admin/dashboard', ['Chart', 'translator', 'benchpress'], function (Chart
 			$('[data-action="updateGraph"][data-units="custom"]').on('click', function () {
 				var targetEl = $(this);
 
-				Benchpress.parse('admin/partials/pageviews-range-select', {}, function (html) {
+				Benchpress.render('admin/partials/pageviews-range-select', {}).then(function (html) {
 					var modal = bootbox.dialog({
 						title: '[[admin/dashboard:page-views-custom]]',
 						message: html,

@@ -1,12 +1,12 @@
 'use strict';
 
 
-define('uploader', ['translator', 'benchpress', 'jquery-form'], function (translator, Benchpress) {
+define('uploader', ['jquery-form'], function () {
 	var module = {};
 
 	module.show = function (data, callback) {
 		var fileSize = data.hasOwnProperty('fileSize') && data.fileSize !== undefined ? parseInt(data.fileSize, 10) : false;
-		parseModal({
+		app.parseAndTranslate('partials/modals/upload_file_modal', {
 			showHelp: data.hasOwnProperty('showHelp') && data.showHelp !== undefined ? data.showHelp : true,
 			fileSize: fileSize,
 			title: data.title || '[[global:upload_file]]',
@@ -95,12 +95,6 @@ define('uploader', ['translator', 'benchpress', 'jquery-form'], function (transl
 			},
 		});
 	};
-
-	function parseModal(tplVals, callback) {
-		Benchpress.parse('partials/modals/upload_file_modal', tplVals, function (html) {
-			translator.translate(html, callback);
-		});
-	}
 
 	function maybeParse(response) {
 		if (typeof response === 'string') {

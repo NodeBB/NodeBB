@@ -7,7 +7,7 @@ define('taskbar', ['benchpress', 'translator'], function (Benchpress, translator
 	taskbar.init = function () {
 		var self = this;
 
-		Benchpress.parse('modules/taskbar', {}, function (html) {
+		Benchpress.render('modules/taskbar', {}).then(function (html) {
 			self.taskbar = $(html);
 			self.tasklist = self.taskbar.find('ul');
 			$(document.body).append(self.taskbar);

@@ -88,70 +88,68 @@ define('forum/account/edit', [
 					return memo || cur.type === 'uploaded';
 				}, false);
 
-				Benchpress.parse('partials/modals/change_picture_modal', {
+				app.parseAndTranslate('partials/modals/change_picture_modal', {
 					pictures: pictures,
 					uploaded: uploaded,
 					icon: { text: ajaxify.data['icon:text'], bgColor: ajaxify.data['icon:bgColor'] },
 					defaultAvatar: ajaxify.data.defaultAvatar,
 					allowProfileImageUploads: ajaxify.data.allowProfileImageUploads,
 				}, function (html) {
-					translator.translate(html, function (html) {
-						var modal = bootbox.dialog({
-							className: 'picture-switcher',
-							title: '[[user:change_picture]]',
-							message: html,
-							show: true,
-							buttons: {
-								close: {
-									label: '[[global:close]]',
-									callback: onCloseModal,
-									className: 'btn-link',
-								},
-								update: {
-									label: '[[global:save_changes]]',
-									callback: saveSelection,
-								},
+					var modal = bootbox.dialog({
+						className: 'picture-switcher',
+						title: '[[user:change_picture]]',
+						message: html,
+						show: true,
+						buttons: {
+							close: {
+								label: '[[global:close]]',
+								callback: onCloseModal,
+								className: 'btn-link',
 							},
-						});
+							update: {
+								label: '[[global:save_changes]]',
+								callback: saveSelection,
+							},
+						},
+					});
 
-						modal.on('shown.bs.modal', updateImages);
-						modal.on('click', '.list-group-item', function selectImageType() {
-							modal.find('.list-group-item').removeClass('active');
-							$(this).addClass('active');
-						});
+					modal.on('shown.bs.modal', updateImages);
+					modal.on('click', '.list-group-item', function selectImageType() {
+						modal.find('.list-group-item').removeClass('active');
+						$(this).addClass('active');
+					});
 
-						handleImageUpload(modal);
+					handleImageUpload(modal);
 
-						function updateImages() {
-							// Check to see which one is the active picture
-							if (!ajaxify.data.picture) {
-								modal.find('.list-group-item .user-icon').parents('.list-group-item').addClass('active');
-							} else {
-								modal.find('.list-group-item img').each(function () {
-									if (this.getAttribute('src') === ajaxify.data.picture) {
-										$(this).parents('.list-group-item').addClass('active');
-									}
-								});
-							}
-						}
-
-						function saveSelection() {
-							var type = modal.find('.list-group-item.active').attr('data-type');
-
-							changeUserPicture(type, function (err) {
-								if (err) {
-									return app.alertError(err.message);
+					function updateImages() {
+						// Check to see which one is the active picture
+						if (!ajaxify.data.picture) {
+							modal.find('.list-group-item .user-icon').parents('.list-group-item').addClass('active');
+						} else {
+							modal.find('.list-group-item img').each(function () {
+								if (this.getAttribute('src') === ajaxify.data.picture) {
+									$(this).parents('.list-group-item').addClass('active');
 								}
-
-								updateHeader(type === 'default' ? '' : modal.find('.list-group-item.active img').attr('src'));
-								ajaxify.refresh();
 							});
 						}
+					}
 
-						function onCloseModal() {
-							modal.modal('hide');
-						}
-					});
+					function saveSelection() {
+						var type = modal.find('.list-group-item.active').attr('data-type');
+
+						changeUserPicture(type, function (err) {
+							if (err) {
+								return app.alertError(err.message);
+							}
+
+							updateHeader(type === 'default' ? '' : modal.find('.list-group-item.active img').attr('src'));
+							ajaxify.refresh();
+						});
+					}
+
+					function onCloseModal() {
+						modal.modal('hide');
+					}
 				});
 			});
 
@@ -247,30 +245,28 @@ define('forum/account/edit', [
 
 		modal.find('[data-action="upload-url"]').on('click', function () {
 			modal.modal('hide');
-			Benchpress.parse('partials/modals/upload_picture_from_url_modal', {}, function (html) {
-				translator.translate(html, function (html) {
-					var uploadModal = $(html);
-					uploadModal.modal('show');
+			app.parseAndTranslate('partials/modals/upload_picture_from_url_modal', {}, function (html) {
+				var uploadModal = $(html);
+				uploadModal.modal('show');
 
-					uploadModal.find('.upload-btn').on('click', function () {
-						var url = uploadModal.find('#uploadFromUrl').val();
-						if (!url) {
-							return false;
-						}
-
-						uploadModal.modal('hide');
-
-						pictureCropper.handleImageCrop({
-							url: url,
-							socketMethod: 'user.uploadCroppedPicture',
-							aspectRatio: 1,
-							allowSkippingCrop: false,
-							paramName: 'uid',
-							paramValue: ajaxify.data.theirid,
-						}, onUploadComplete);
-
+				uploadModal.find('.upload-btn').on('click', function () {
+					var url = uploadModal.find('#uploadFromUrl').val();
+					if (!url) {
 						return false;
-					});
+					}
+
+					uploadModal.modal('hide');
+
+					pictureCropper.handleImageCrop({
+						url: url,
+						socketMethod: 'user.uploadCroppedPicture',
+						aspectRatio: 1,
+						allowSkippingCrop: false,
+						paramName: 'uid',
+						paramValue: ajaxify.data.theirid,
+					}, onUploadComplete);
+
+					return false;
 				});
 			});
 

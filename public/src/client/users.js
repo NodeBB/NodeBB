@@ -103,7 +103,7 @@ define('forum/users', [
 	}
 
 	function renderSearchResults(data) {
-		Benchpress.parse('partials/paginator', { pagination: data.pagination }, function (html) {
+		Benchpress.render('partials/paginator', { pagination: data.pagination }).then(function (html) {
 			$('.pagination-container').replaceWith(html);
 		});
 
@@ -112,13 +112,11 @@ define('forum/users', [
 		}
 
 		data.isAdminOrGlobalMod = app.user.isAdmin || app.user.isGlobalMod;
-		Benchpress.parse('users', 'users', data, function (html) {
-			translator.translate(html, function (translated) {
-				translated = $(translated);
-				$('#users-container').html(translated);
-				translated.find('span.timeago').timeago();
-				$('[component="user/search/icon"]').addClass('fa-search').removeClass('fa-spinner fa-spin');
-			});
+		app.parseAndTranslate('users', 'users', data, function (translated) {
+			translated = $(translated);
+			$('#users-container').html(translated);
+			translated.find('span.timeago').timeago();
+			$('[component="user/search/icon"]').addClass('fa-search').removeClass('fa-spinner fa-spin');
 		});
 	}
 
