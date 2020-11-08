@@ -2,10 +2,5 @@
 	"post-cache": "포스트 캐시",
 	"percent-full": "%1%꽉참",
 	"post-cache-size": "포스트 캐시 크기",
-	"items-in-cache": "캐시된 항목들",
-	"control-panel": "제어판",
-	"update-settings": "캐시 설정 변경",
-	"clear": "Clear",
-	"download": "Download",
-	"enabled": "Enabled"
+	"items-in-cache": "캐시된 항목들"
 }

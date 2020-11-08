@@ -2,10 +2,5 @@
 	"post-cache": "Objava predmemorija",
 	"percent-full": "%1% Puno",
 	"post-cache-size": "Veličina predmemorije objave",
-	"items-in-cache": "Artikli u predmemoriji",
-	"control-panel": "Kontrolna ploča",
-	"update-settings": "Obnovi postavke predmemorije",
-	"clear": "Clear",
-	"download": "Download",
-	"enabled": "Enabled"
+	"items-in-cache": "Artikli u predmemoriji"
 }

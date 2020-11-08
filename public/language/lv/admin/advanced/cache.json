@@ -2,10 +2,5 @@
 	"post-cache": "Rakstu kešatmiņa",
 	"percent-full": "%1% Aizņemts",
 	"post-cache-size": "Rakstu kešatmiņas lielums",
-	"items-in-cache": "Rakstu skaits kešatmiņā",
-	"control-panel": "Vadības panelis",
-	"update-settings": "Saglabāt iestatījumus",
-	"clear": "Clear",
-	"download": "Download",
-	"enabled": "Enabled"
+	"items-in-cache": "Rakstu skaits kešatmiņā"
 }

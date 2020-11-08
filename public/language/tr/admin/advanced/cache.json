@@ -2,10 +2,5 @@
 	"post-cache": "İleti Önbelleği",
 	"percent-full": "%1% Tam",
 	"post-cache-size": "İleti Önbellek Boyutu",
-	"items-in-cache": "Önbellekteki Öğeler",
-	"control-panel": "Kontrol Paneli",
-	"update-settings": "Önbellek Ayarlarını Güncelle",
-	"clear": "Clear",
-	"download": "Download",
-	"enabled": "Enabled"
+	"items-in-cache": "Önbellekteki Öğeler"
 }

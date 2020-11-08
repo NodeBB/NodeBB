@@ -2,10 +2,5 @@
 	"post-cache": "Προσωρινή μνήμη ανάρτησης",
 	"percent-full": "%1% Πλήρες",
 	"post-cache-size": "Μέγεθος προσωρινής μνήμης ανάρτησης",
-	"items-in-cache": "Αντικείμενα στην προσωρινή μνήμη",
-	"control-panel": "Πίνακας Ελέγχου",
-	"update-settings": "Ενημέρωση ρυθμίσεων προσωρινής μνήμης",
-	"clear": "Clear",
-	"download": "Download",
-	"enabled": "Enabled"
+	"items-in-cache": "Αντικείμενα στην προσωρινή μνήμη"
 }

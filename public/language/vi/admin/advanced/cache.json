@@ -2,10 +2,5 @@
 	"post-cache": "Bộ nhớ đệm bài viết",
 	"percent-full": "%1% Đầy",
 	"post-cache-size": "Kích thước cache bài viết",
-	"items-in-cache": "Thành phần trong Cache",
-	"control-panel": "Bảng điều khiển",
-	"update-settings": "Cập nhật thiết lập Cache",
-	"clear": "Clear",
-	"download": "Download",
-	"enabled": "Enabled"
+	"items-in-cache": "Thành phần trong Cache"
 }

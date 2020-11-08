@@ -2,10 +2,5 @@
 	"post-cache": "Hozzászólás gyorsítótár",
 	"percent-full": "%1% Tele",
 	"post-cache-size": "Hozzászólás gyorsítótáras mérete",
-	"items-in-cache": "Elemek a gyorsítótárban",
-	"control-panel": "Vezérlőpult",
-	"update-settings": "Gyorsítótár beállítások frissítése",
-	"clear": "Clear",
-	"download": "Download",
-	"enabled": "Enabled"
+	"items-in-cache": "Elemek a gyorsítótárban"
 }

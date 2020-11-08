@@ -2,10 +2,5 @@
 	"post-cache": "Postituste vahemälu",
 	"percent-full": "%1% Täis",
 	"post-cache-size": "Postituse vahemälu suurus",
-	"items-in-cache": "Esemed vahemälus",
-	"control-panel": "Kontrollpaneel",
-	"update-settings": "Uuendatud vahemälu seaded",
-	"clear": "Clear",
-	"download": "Download",
-	"enabled": "Enabled"
+	"items-in-cache": "Esemed vahemälus"
 }

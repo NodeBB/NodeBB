@@ -2,10 +2,5 @@
 	"post-cache": "Кеш за публикации",
 	"percent-full": "Запълненост: %1%",
 	"post-cache-size": "Размер на кеша за публикации",
-	"items-in-cache": "Елементи в кеша",
-	"control-panel": "Контролен панел",
-	"update-settings": "Обновяване на настройките на кеша",
-	"clear": "Clear",
-	"download": "Download",
-	"enabled": "Enabled"
+	"items-in-cache": "Елементи в кеша"
 }

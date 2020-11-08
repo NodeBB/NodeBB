@@ -2,10 +2,5 @@
 	"post-cache": "Vyrovnávacia pamäť príspevku",
 	"percent-full": "%1% plné",
 	"post-cache-size": "Veľkosť vyrovnávacej pamäti príspevku",
-	"items-in-cache": "Položky vo vyrovnávacej pamäti",
-	"control-panel": "Ovládací panel",
-	"update-settings": "Aktualizovať nastavenia vyrovnávacej pamäti",
-	"clear": "Clear",
-	"download": "Download",
-	"enabled": "Enabled"
+	"items-in-cache": "Položky vo vyrovnávacej pamäti"
 }

@@ -2,10 +2,5 @@
 	"post-cache": "التخزين المؤقت للمشاركات",
 	"percent-full": "1% كاملة",
 	"post-cache-size": "حجم التخزين المؤقت للمشاركات",
-	"items-in-cache": "العناصر في التخزين المؤقت",
-	"control-panel": "لوحة التحكم",
-	"update-settings": "تحديث إعدادات التخزين المؤقت",
-	"clear": "Clear",
-	"download": "Download",
-	"enabled": "Enabled"
+	"items-in-cache": "العناصر في التخزين المؤقت"
 }

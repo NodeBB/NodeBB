@@ -2,10 +2,5 @@
 	"post-cache": "Post Cache",
 	"percent-full": "%1% Full",
 	"post-cache-size": "Post Cache Size",
-	"items-in-cache": "Items in Cache",
-	"control-panel": "Control Panel",
-	"update-settings": "Update Cache Settings",
-	"clear": "Clear",
-	"download": "Download",
-	"enabled": "Enabled"
+	"items-in-cache": "Items in Cache"
 }

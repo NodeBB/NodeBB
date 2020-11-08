@@ -1,12 +1,12 @@
 {
-	"tokens": "Tokens",
-	"lead-text": "From this page you can configure access to the Write API in NodeBB.",
-	"intro": "By default, the Write API authenticates users based on their session cookie, but NodeBB also supports Bearer authentication via tokens generated via this page.",
-	"docs": "Click here to access the full API specification",
+	"tokens": "令牌",
+	"lead-text": "从此处，您可以配置对 NodeBB 中 Write API 的访问。",
+	"intro": "默认情况下，Write API根据用户的会话cookie对用户进行身份验证，但 NodeBB 也支持通过此页面生成的令牌进行身份验证。",
+	"docs": "单击此处访问完整的 API 规范",
 
-	"uid": "User ID",
-	"uid-help-text": "Specify a User ID to associate with this token. If the user ID is <code>0</code>, it will be considered a <em>master</em> token, which can assume the identity of other users based on the <code>_uid</code> parameter",
-	"description": "Description",
-	"no-description": "No description specified.",
-	"token-on-save": "Token will be generated once form is saved"
+	"uid": "用户ID",
+	"uid-help-text": "指定要与此令牌关联的用户ID。如果用户ID是 <code>0</code>, 它将被实危 <em>最高</em> 令牌，可以通过 <code>_uid</code> 参数假定其他用户的身份",
+	"description": "说明",
+	"no-description": "未指定说明。",
+	"token-on-save": "保存表单后将生成令牌"
 }

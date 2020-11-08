@@ -2,10 +2,5 @@
 	"post-cache": "Кэш сообщений",
 	"percent-full": "Заполнен на%1%",
 	"post-cache-size": "Размер кэша сообщений",
-	"items-in-cache": "Закешировано элементов",
-	"control-panel": "Панель управления",
-	"update-settings": "Обновить настройки кэша",
-	"clear": "Clear",
-	"download": "Download",
-	"enabled": "Enabled"
+	"items-in-cache": "Закешировано элементов"
 }

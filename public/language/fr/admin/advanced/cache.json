@@ -2,10 +2,5 @@
 	"post-cache": "Cache des messages",
 	"percent-full": "Plein à %1%",
 	"post-cache-size": "Taille du cache des messages",
-	"items-in-cache": "Objets en cache",
-	"control-panel": "Panneau de contrôle",
-	"update-settings": "Mettre à jour les réglages du cache",
-	"clear": "Clear",
-	"download": "Download",
-	"enabled": "Enabled"
+	"items-in-cache": "Objets en cache"
 }

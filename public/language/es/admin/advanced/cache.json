@@ -2,10 +2,5 @@
 	"post-cache": "Publicar Cache",
 	"percent-full": "%1% Completo",
 	"post-cache-size": "Tamaño de cache del post",
-	"items-in-cache": "Artículos en cache",
-	"control-panel": "Panel de Control",
-	"update-settings": "Actualizar opciones de cache",
-	"clear": "Clear",
-	"download": "Download",
-	"enabled": "Enabled"
+	"items-in-cache": "Artículos en cache"
 }

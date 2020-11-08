@@ -2,10 +2,5 @@
 	"post-cache": "מטמון פוסטים",
 	"percent-full": "%1% מלא",
 	"post-cache-size": "גודל מטמון פוסטים",
-	"items-in-cache": "פריטים במטמון",
-	"control-panel": "לוח הבקרה",
-	"update-settings": "עדכן הגדרות מטמון",
-	"clear": "Clear",
-	"download": "Download",
-	"enabled": "Enabled"
+	"items-in-cache": "פריטים במטמון"
 }

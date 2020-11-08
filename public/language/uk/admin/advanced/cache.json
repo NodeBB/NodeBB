@@ -2,10 +2,5 @@
 	"post-cache": "Кеш постів",
 	"percent-full": "Заповнений на %1%",
 	"post-cache-size": "Розмір кешу постів",
-	"items-in-cache": "Елементів у кеші",
-	"control-panel": "Панель керування",
-	"update-settings": "Оновити налаштування кешу",
-	"clear": "Clear",
-	"download": "Download",
-	"enabled": "Enabled"
+	"items-in-cache": "Елементів у кеші"
 }

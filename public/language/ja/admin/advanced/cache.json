@@ -2,10 +2,5 @@
 	"post-cache": "投稿キャッシュ",
 	"percent-full": "%1% がフル",
 	"post-cache-size": "投稿キャッシュのサイズ",
-	"items-in-cache": "キャッシュ内のアイテム",
-	"control-panel": "コントロールパネル",
-	"update-settings": "キャッシュの設定を更新",
-	"clear": "Clear",
-	"download": "Download",
-	"enabled": "Enabled"
+	"items-in-cache": "キャッシュ内のアイテム"
 }

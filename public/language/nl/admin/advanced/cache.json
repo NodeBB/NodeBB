@@ -2,10 +2,5 @@
 	"post-cache": "Onderwerpcache",
 	"percent-full": "%1%vol",
 	"post-cache-size": "Onderwerpcache grootte",
-	"items-in-cache": "Items in cache",
-	"control-panel": "Controlepaneel",
-	"update-settings": "Update cache instellingen",
-	"clear": "Clear",
-	"download": "Download",
-	"enabled": "Enabled"
+	"items-in-cache": "Items in cache"
 }
