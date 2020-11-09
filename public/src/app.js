@@ -737,7 +737,7 @@ app.cacheBuster = null;
 				.then(rendered => translator.translate(rendered))
 				.then(translated => translator.unescape(translated))
 				.then(
-					result => setTimeout(callback, 0, result),
+					result => setTimeout(callback, 0, $(result)),
 					err => console.error(err)
 				);
 		});
