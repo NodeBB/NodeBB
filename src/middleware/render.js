@@ -15,6 +15,7 @@ const cache = cacheCreate({
 	name: 'header-footer',
 	max: 1000,
 	maxAge: 0,
+	enabled: global.env === 'production',
 });
 
 const relative_path = nconf.get('relative_path');
