@@ -1,12 +1,12 @@
 {
 	"tokens": "Tokens",
-	"lead-text": "From this page you can configure access to the Write API in NodeBB.",
-	"intro": "By default, the Write API authenticates users based on their session cookie, but NodeBB also supports Bearer authentication via tokens generated via this page.",
-	"docs": "Click here to access the full API specification",
+	"lead-text": "À partir de cette page, vous pouvez configurer l'accès à l'API d'écriture dans NodeBB.",
+	"intro": "Par défaut, l'API d'écriture authentifie les utilisateurs en fonction de leur cookie de session, mais NodeBB prend également en charge l'authentification du porteur via des tokens générés via cette page.",
+	"docs": "Cliquez ici pour accéder à la spécification complète de l'API",
 
-	"uid": "User ID",
-	"uid-help-text": "Specify a User ID to associate with this token. If the user ID is <code>0</code>, it will be considered a <em>master</em> token, which can assume the identity of other users based on the <code>_uid</code> parameter",
+	"uid": "ID Utilisateur",
+	"uid-help-text": "Spécifiez un ID utilisateur à associer à ce token. Si l'ID utilisateur est 0, il sera considéré comme un token <code>maître<em>, qui peut prendre l'identité d'autres utilisateurs en fonction du paramètre <code>_uid</code>",
 	"description": "Description",
-	"no-description": "No description specified.",
-	"token-on-save": "Token will be generated once form is saved"
+	"no-description": "Aucune description spécifiée.",
+	"token-on-save": "Le token sera généré une fois le formulaire enregistré"
 }
