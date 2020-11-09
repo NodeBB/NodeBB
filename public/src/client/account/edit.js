@@ -245,8 +245,7 @@ define('forum/account/edit', [
 
 		modal.find('[data-action="upload-url"]').on('click', function () {
 			modal.modal('hide');
-			app.parseAndTranslate('partials/modals/upload_picture_from_url_modal', {}, function (html) {
-				var uploadModal = $(html);
+			app.parseAndTranslate('partials/modals/upload_picture_from_url_modal', {}, function (uploadModal) {
 				uploadModal.modal('show');
 
 				uploadModal.find('.upload-btn').on('click', function () {

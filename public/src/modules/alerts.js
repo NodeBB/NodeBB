@@ -24,7 +24,7 @@ define('alerts', ['translator', 'components'], function (translator, components)
 			if (alert.length) {
 				return updateAlert(alert, params);
 			}
-			alert = $(html);
+			alert = html;
 			alert.fadeIn(200);
 
 			components.get('toaster/tray').prepend(alert);

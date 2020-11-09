@@ -140,7 +140,6 @@ define('admin/extend/rewards', [], function () {
 		};
 
 		app.parseAndTranslate('admin/extend/rewards', 'active', data, function (li) {
-			li = $(li);
 			ul.append(li);
 			li.find('select').val('');
 		});

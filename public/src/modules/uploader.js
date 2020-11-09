@@ -14,8 +14,6 @@ define('uploader', ['jquery-form'], function () {
 			button: data.button || '[[global:upload]]',
 			accept: data.accept ? data.accept.replace(/,/g, '&#44; ') : '',
 		}, function (uploadModal) {
-			uploadModal = $(uploadModal);
-
 			uploadModal.modal('show');
 			uploadModal.on('hidden.bs.modal', function () {
 				uploadModal.remove();

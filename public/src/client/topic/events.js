@@ -140,7 +140,6 @@ define('forum/topic/events', [
 				};
 
 				app.parseAndTranslate('partials/topic/post-editor', editData, function (html) {
-					html = $(html);
 					editorEl.replaceWith(html);
 					$('[data-pid="' + data.post.pid + '"] [component="post/editor"] .timeago').timeago();
 					$(window).trigger('action:posts.edited', data);

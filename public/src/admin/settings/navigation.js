@@ -4,10 +4,11 @@
 define('admin/settings/navigation', [
 	'translator',
 	'iconSelect',
+	'benchpress',
 	'jquery-ui/widgets/draggable',
 	'jquery-ui/widgets/droppable',
 	'jquery-ui/widgets/sortable',
-], function (translator, iconSelect) {
+], function (translator, iconSelect, Benchpress) {
 	var navigation = {};
 	var available;
 
@@ -69,16 +70,19 @@ define('admin/settings/navigation', [
 		data.title = translator.escape(data.title);
 		data.text = translator.escape(data.text);
 		data.groups = ajaxify.data.groups;
-		app.parseAndTranslate('admin/settings/navigation', 'navigation', { navigation: [data] }, function (li) {
-			li = $(translator.unescape(li));
-			el.after(li);
-			el.remove();
+		Benchpress.parse('admin/settings/navigation', 'navigation', { navigation: [data] }, function (li) {
+			translator.translate(li, function (li) {
+				li = $(translator.unescape(li));
+				el.after(li);
+				el.remove();
+			});
 		});
-
-		app.parseAndTranslate('admin/settings/navigation', 'enabled', { enabled: [data] }, function (li) {
-			li = $(translator.unescape(li));
-			$('#enabled').append(li);
-			componentHandler.upgradeDom();
+		Benchpress.parse('admin/settings/navigation', 'enabled', { enabled: [data] }, function (li) {
+			translator.translate(li, function (li) {
+				li = $(translator.unescape(li));
+				$('#enabled').append(li);
+				componentHandler.upgradeDom();
+			});
 		});
 	}
 

@@ -112,10 +112,9 @@ define('forum/users', [
 		}
 
 		data.isAdminOrGlobalMod = app.user.isAdmin || app.user.isGlobalMod;
-		app.parseAndTranslate('users', 'users', data, function (translated) {
-			translated = $(translated);
-			$('#users-container').html(translated);
-			translated.find('span.timeago').timeago();
+		app.parseAndTranslate('users', 'users', data, function (html) {
+			$('#users-container').html(html);
+			html.find('span.timeago').timeago();
 			$('[component="user/search/icon"]').addClass('fa-search').removeClass('fa-spinner fa-spin');
 		});
 	}
