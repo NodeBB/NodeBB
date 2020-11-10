@@ -8,6 +8,7 @@ const db = require('./database');
 const batch = require('./batch');
 const user = require('./user');
 const utils = require('./utils');
+const plugins = require('./plugins');
 
 const events = module.exports;
 
@@ -78,6 +79,7 @@ events.log = async function (data) {
 		], data.timestamp, eid),
 		db.setObject('event:' + eid, data),
 	]);
+	plugins.fireHook('action:events.log', { data: data });
 };
 
 events.getEvents = async function (filter, start, stop, from, to) {
