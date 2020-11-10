@@ -820,13 +820,12 @@ describe('Controllers', function () {
 				},
 			}, function (err, res, body) {
 				assert.ifError(err);
-				assert.equal(res.statusCode, 404);
-				assert.deepEqual(JSON.parse(body), {
-					response: {},
-					status: {
-						code: 'not-found',
-						message: '[[error:no-user]]',
-					},
+				assert.strictEqual(res.statusCode, 404);
+				const parsedResponse = JSON.parse(body);
+				assert.deepStrictEqual(parsedResponse.response, {});
+				assert.deepStrictEqual(parsedResponse.status, {
+					code: 'not-found',
+					message: '[[error:no-user]]',
 				});
 				done();
 			});
