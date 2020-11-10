@@ -1,5 +1,8 @@
 'use strict';
 
+const util = require('util');
+
+const db = require('../../database');
 const api = require('../../api');
 const user = require('../../user');
 const meta = require('../../meta');
@@ -119,4 +122,33 @@ Users.deleteToken = async (req, res) => {
 	} else {
 		helpers.formatApiResponse(404, res);
 	}
+};
+
+const getSessionAsync = util.promisify(function (sid, callback) {
+	db.sessionStore.get(sid, (err, sessionObj) => callback(err, sessionObj || null));
+});
+
+Users.revokeSession = async (req, res) => {
+	// Only admins or global mods (besides the user themselves) can revoke sessions
+	if (parseInt(req.params.uid, 10) !== req.uid && !await user.isAdminOrGlobalMod(req.uid)) {
+		return helpers.formatApiResponse(404, res);
+	}
+
+	const sids = await db.getSortedSetRange('uid:' + req.params.uid + ':sessions', 0, -1);
+	let _id;
+	for (const sid of sids) {
+		/* eslint-disable no-await-in-loop */
+		const sessionObj = await getSessionAsync(sid);
+		if (sessionObj && sessionObj.meta && sessionObj.meta.uuid === req.params.uuid) {
+			_id = sid;
+			break;
+		}
+	}
+
+	if (!_id) {
+		throw new Error('[[error:no-session-found]]');
+	}
+
+	await user.auth.revokeSession(_id, req.params.uid);
+	helpers.formatApiResponse(200, res);
 };

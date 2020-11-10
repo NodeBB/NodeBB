@@ -1,5 +1,8 @@
 'use strict';
 
+const winston = require('winston');
+const nconf = require('nconf');
+
 var helpers = require('./helpers');
 var setupPageRoute = helpers.setupPageRoute;
 
@@ -39,7 +42,14 @@ module.exports = function (app, middleware, controllers) {
 	setupPageRoute(app, '/user/:userslug/consent', middleware, accountMiddlewares, controllers.accounts.consent.get);
 	setupPageRoute(app, '/user/:userslug/blocks', middleware, accountMiddlewares, controllers.accounts.blocks.getBlocks);
 	setupPageRoute(app, '/user/:userslug/sessions', middleware, accountMiddlewares, controllers.accounts.sessions.get);
-	app.delete('/api/user/:userslug/session/:uuid', [middleware.exposeUid, middleware.ensureSelfOrGlobalPrivilege], controllers.accounts.sessions.revoke);
+	app.delete('/api/user/:userslug/session/:uuid', [middleware.exposeUid], function (req, res, next) {
+		// TODO: Remove this entire route in v1.16.0
+		winston.warn('[router] `/api/user/:userslug/session/:uuid` has been deprecated, use `DELETE /api/v3/users/:uid/sessions/:uuid` or `DELETE /api/v3/users/bySlug/:userslug/sessions/:uuid` instead');
+		if (!res.locals.uid) {
+			return next();
+		}
+		res.redirect(`${nconf.get('relative_path')}/api/v3/users/${res.locals.uid}/sessions/${req.params.uuid}`);
+	});
 
 	setupPageRoute(app, '/notifications', middleware, [middleware.authenticate], controllers.accounts.notifications.get);
 	setupPageRoute(app, '/user/:userslug/chats/:roomid?', middleware, middlewares, controllers.accounts.chats.get);
