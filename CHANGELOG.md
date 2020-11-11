@@ -1,3 +1,74 @@
+#### v1.15.1 (2020-11-11)
+
+##### Chores
+
+*  incrementing version number - v1.15.1-beta.0 (e033da8a)
+*  fallback l10n for admin-settings-api (8368c25b)
+* **deps:**
+  *  update dependency eslint to v7.13.0 (bcbc0854)
+  *  update dependency eslint-config-airbnb-base to v14.2.1 (d227fe9f)
+  *  update commitlint monorepo to v11 (90bcfa6d)
+
+##### New Features
+
+*  #8864, add action:events.log (9c5c32d4)
+*  show db info side by side (62c0454c)
+*  add language keys for admin-settings-api (d32e4e02)
+*  #8824, cache refactor (#8851) (f1f9b225)
+*  move mkdirp to beforeBuild so it doesnt get called twice (6255874e)
+*  group exists API call in write api (d2631922)
+*  user exist route in write api (1446cec7)
+*  new shorthand route /api/v3/users/bySlug/:userslug (60e1e99b)
+*  allow passwords with length > 73 characters (#8818) (512f6de6)
+*  #8821, allow guest topic views (9e3eb5d4)
+
+##### Bug Fixes
+
+*  #8869, dont escape category title,description twice (567c5f20)
+*  refresh flags list on bulk action success (769aba0a)
+*  test breakage from f300c933a50263039a57811f8cc716df39a138b0 (ee4d90f6)
+*  remove some unnecessary jquery wrappers (9f7902ef)
+*  send back jquery object to keep backwards compat (978f1ee0)
+*  use header/footer cache in prod (a0164b1c)
+*  add missing maxAge to cache (05a92885)
+*  clear header-cache after each suite (3f5f38dd)
+*  show msg on fail (255cf43e)
+*  spec (fe63c6ae)
+*  guest header/footer cache (2e446392)
+*  #8846, possible fix (74951f59)
+*  winston error message (16d03975)
+*  permanent redirect on user api redirect shorthand (6b196a20)
+*  user exist route needs no authentication (f2bb42c0)
+*  #8840, don't crash if /compose route is called with no query params (c61dee4b)
+*  XSS in event:banned messaging modal (f68bce86)
+*  #8838, fix chat dropdown timestamps (78ee8332)
+*  #8836, truncate fullname (76cd5b0f)
+*  #8827, do not require admin:users privilege to ban users (891a1ea2)
+* **deps:**
+  *  update dependency nodebb-plugin-mentions to v2.13.4 (1460a7a8)
+  *  update dependency diff to v5 (72d1b3cd)
+  *  update dependency nodebb-theme-persona to v10.2.67 (#8847) (e250c3f1)
+  *  update dependency json2csv to v5.0.4 (#8865) (ba7b23ac)
+  *  update dependency postcss to v8.1.7 (#8866) (2946bb16)
+  *  update dependency nodebb-theme-slick to v1.2.40 (#8863) (20f4fe08)
+  *  update dependency nodebb-plugin-mentions to v2.13.3 (#8862) (c18f4491)
+  *  update dependency benchpressjs to v2.1.0 (14ba6383)
+  *  update dependency benchpressjs to v2.0.9 (381a32ab)
+  *  update dependency mongodb to v3.6.3 (#8841) (7e273e77)
+  *  update dependency nodebb-theme-persona to v10.2.66 (#8839) (00f90cd9)
+  *  update dependency nodebb-plugin-mentions to v2.13.2 (#8835) (064c99cd)
+  *  update dependency postcss to v8.1.6 (e0cf9740)
+  *  update dependency @nodebb/socket.io-adapter-mongo to v3.1.1 (#8831) (40eb658b)
+  *  update dependency @nodebb/mubsub to v1.7.1 (#8830) (7b8a5567)
+  *  update dependency postcss to v8.1.5 (9f5ef9d0)
+* **#8828:**  web install templates now compiled (#8832) (de5a21f1)
+* **acp:**  max-height for plugin menu list (eec630f1)
+
+##### Refactors
+
+*  move session revocation route to write api (f300c933)
+*  change Benchpress.parse to .render (#8856) (e128264b)
+
 #### v1.15.0 (2020-11-04)
 
 ##### Breaking Changes
