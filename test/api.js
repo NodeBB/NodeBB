@@ -132,7 +132,7 @@ describe('API', async () => {
 		await socketUser.exportPosts({ uid: adminUid }, { uid: adminUid });
 		await socketUser.exportUploads({ uid: adminUid }, { uid: adminUid });
 		// wait for export child process to complete
-		// await wait(5000);
+		await wait(5000);
 
 		// Attach a search hook so /api/search is enabled
 		plugins.registerHook('core', {
