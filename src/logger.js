@@ -158,18 +158,15 @@ Logger.io_close = function (socket) {
 		return;
 	}
 
-	var clients = socket.io.sockets.sockets;
+	const clientsMap = socket.io.sockets.sockets;
 
-	for (var sid in clients) {
-		if (clients.hasOwnProperty(sid)) {
-			var client = clients[sid];
-			if (client.oEmit && client.oEmit !== client.emit) {
-				client.emit = client.oEmit;
-			}
+	for (const [, client] of clientsMap) {
+		if (client.oEmit && client.oEmit !== client.emit) {
+			client.emit = client.oEmit;
+		}
 
-			if (client.$onevent && client.$onevent !== client.onevent) {
-				client.onevent = client.$onevent;
-			}
+		if (client.$onevent && client.$onevent !== client.onevent) {
+			client.onevent = client.$onevent;
 		}
 	}
 };
