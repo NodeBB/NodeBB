@@ -21,7 +21,7 @@ const flags = require('../src/flags');
 const messaging = require('../src/messaging');
 const utils = require('../src/utils');
 
-describe('Read API', async () => {
+describe('API', async () => {
 	let readApi = false;
 	let writeApi = false;
 	const readApiPath = path.resolve(__dirname, '../public/openapi/read.yaml');
@@ -32,6 +32,7 @@ describe('Read API', async () => {
 	const unauthenticatedRoutes = ['/api/login', '/api/register'];	// Everything else will be called with the admin user
 
 	const mocks = {
+		head: {},
 		get: {},
 		post: {},
 		put: {},
@@ -200,7 +201,7 @@ describe('Read API', async () => {
 					url = nconf.get('url') + (prefix || '') + testPath;
 				});
 
-				it('may contain a request body with application/json type if POST/PUT/DELETE', () => {
+				it('should contain a valid request body (if present) with application/json type if POST/PUT/DELETE', () => {
 					if (['post', 'put', 'delete'].includes(method) && context[method].hasOwnProperty('requestBody')) {
 						assert(context[method].requestBody);
 						assert(context[method].requestBody.content);
