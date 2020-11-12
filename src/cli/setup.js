@@ -53,7 +53,7 @@ function setup(initConfig) {
 		console.log('\n' + separator + '\n');
 
 		if (err) {
-			winston.error('There was a problem completing NodeBB setup', err.stack);
+			winston.error('There was a problem completing NodeBB setup\n' + err.stack);
 			throw err;
 		} else {
 			if (data.hasOwnProperty('password')) {

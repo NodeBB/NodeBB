@@ -1,11 +1,6 @@
 {
 	"post-cache": "Rakstu kešatmiņa",
-	"posts-in-cache": "Rakstu skaits kešatmiņā",
-	"average-post-size": "Vidējais rakstu garums",
-	"length-to-max": "Aizņemts / Maksimums",
 	"percent-full": "%1% Aizņemts",
 	"post-cache-size": "Rakstu kešatmiņas lielums",
-	"items-in-cache": "Rakstu skaits kešatmiņā",
-	"control-panel": "Vadības panelis",
-	"update-settings": "Saglabāt iestatījumus"
+	"items-in-cache": "Rakstu skaits kešatmiņā"
 }

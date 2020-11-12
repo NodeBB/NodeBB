@@ -1,5 +1,7 @@
 {
 	"handles": "Ziyaretçi Kolları",
 	"handles.enabled": "Misafir üyelere izin ver",
-	"handles.enabled-help": "Bu seçenek, misafirlerin yaptıkları her gönderiyle ilişkilendirebilecekleri bir isim alanı sunar. Devre dışı bırakılırsa, gönderenin ismi basitçe \"Misafir\" olarak adlandırılacaktır."
+	"handles.enabled-help": "Bu seçenek, misafirlerin yaptıkları her gönderiyle ilişkilendirebilecekleri bir isim alanı sunar. Devre dışı bırakılırsa, gönderenin ismi basitçe \"Misafir\" olarak adlandırılacaktır.",
+	"topic-views": "Topic views",
+	"topic-views.enabled": "Allow guests to increase topic view counts"
 }

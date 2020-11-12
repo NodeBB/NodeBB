@@ -34,6 +34,8 @@
 	"timestamp.cut-off-help": "日期&amp;時間將以相對方式 (例如，“3小時前” / “5天前”) 顯示，並且會依照訪客語言時區轉換。在某一時刻之後，可以切換該文字以顯示本地化日期本身 (例如2016年11月5日15:30) 。<br /> <em> (預設值：<code> 30 </code>或一個月) 。 設定為0可總是顯示日期，留白以總是顯示相對時間。</em>",
 	"timestamp.necro-threshold": "挖墳警告（單位：天）",
 	"timestamp.necro-threshold-help": "若進行回覆的貼文最後回覆的時間早於挖墳警告設定的天數，則在嘗試回覆前顯示挖墳警告（預設：<code>7</code>天）。可以設定為 0 來禁用。</em>",
+	"timestamp.topic-views-interval": "Increment topic views interval (in minutes)",
+	"timestamp.topic-views-interval-help": "Topic views will only increment once every X minutes as defined by this setting.",
 	"teaser": "貼文預覽",
 	"teaser.last-post": "最後&ndash; 顯示最新的貼文，包括原帖，如果沒有回覆",
 	"teaser.last-reply": "最後&ndash; 顯示最新回覆，如果沒有回覆，則顯示“無回覆”佔位符",

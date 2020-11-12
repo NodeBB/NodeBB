@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/appearance/themes', ['translator', 'benchpress'], function (translator, Benchpress) {
+define('admin/appearance/themes', ['translator'], function (translator) {
 	var Themes = {};
 
 	Themes.init = function () {
@@ -75,13 +75,11 @@ define('admin/appearance/themes', ['translator', 'benchpress'], function (transl
 			if (!themes.length) {
 				instListEl.append($('<li/ >').addClass('no-themes').translateHtml('[[admin/appearance/themes:no-themes]]'));
 			} else {
-				Benchpress.parse('admin/partials/theme_list', {
+				app.parseAndTranslate('admin/partials/theme_list', {
 					themes: themes,
 				}, function (html) {
-					translator.translate(html, function (html) {
-						instListEl.html(html);
-						highlightSelectedTheme(config['theme:id']);
-					});
+					instListEl.html(html);
+					highlightSelectedTheme(config['theme:id']);
 				});
 			}
 		});

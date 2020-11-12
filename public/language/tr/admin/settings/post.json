@@ -34,6 +34,8 @@
 	"timestamp.cut-off-help": "Tarihler ve &amp; zamanlar göreli bir şekilde (ör. \"3 saat önce\" / \"5 gün önce\") gösterilecek ve çeşitli dillerde yerleştirilecektir.\n\t\t\t\t\tBelirli bir noktadan sonra, bu metin yerelleştirilmiş tarihi göstermek için değiştirilebilir.\n\t\t\t\t\t(ör. 5 Kasım 2016 15:30).<br /><em>(Varsayılan: <code>30</code>, veya bir ay). Tarihleri her zaman görüntülemek için 0'a ayarlayın, her zaman göreli zamanları görüntülemek için boş bırakın.</em>",
 	"timestamp.necro-threshold": "Ardışık iletiler arasında geçen gün sayısı (Necro Sınırı)",
 	"timestamp.necro-threshold-help": "Eğer iki ardışık ileti arasında geçen süre Necro Sınırı'ndan fazlaysa, geçen süre yazıyla belirtilecek. (Varsayılan: <code>7</code>, yani bir hafta). Etkinsizleştirmek için 0 yazınız.</em>",
+	"timestamp.topic-views-interval": "Increment topic views interval (in minutes)",
+	"timestamp.topic-views-interval-help": "Topic views will only increment once every X minutes as defined by this setting.",
 	"teaser": "Teaser İleti",
 	"teaser.last-post": "Son &ndash; cevap yoksa orijinal gönderi de dahil olmak üzere en son gönderiyi gösterir.",
 	"teaser.last-reply": "Son &ndash; cevap yoksa en son yanıtı veya \"Yanıt yok\" yertutucusunu gösterir.",

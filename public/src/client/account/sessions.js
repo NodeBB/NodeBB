@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/account/sessions', ['forum/account/header', 'components'], function (header, components) {
+define('forum/account/sessions', ['forum/account/header', 'components', 'api'], function (header, components, api) {
 	var Sessions = {};
 
 	Sessions.init = function () {
@@ -17,15 +17,9 @@ define('forum/account/sessions', ['forum/account/header', 'components'], functio
 			if (uuid) {
 				// This is done via DELETE because a user shouldn't be able to
 				// revoke his own session! This is what logout is for
-				$.ajax({
-					url: config.relative_path + '/api/user/' + ajaxify.data.userslug + '/session/' + uuid,
-					method: 'delete',
-					headers: {
-						'x-csrf-token': config.csrf_token,
-					},
-				}).done(function () {
+				api.del(`/users/${ajaxify.data.uid}/sessions/${uuid}`, {}).then(() => {
 					parentEl.remove();
-				}).fail(function (err) {
+				}).catch((err) => {
 					try {
 						var errorObj = JSON.parse(err.responseText);
 						if (errorObj.loggedIn === false) {

@@ -70,7 +70,7 @@ UserReset.commit = async function (code, password) {
 
 	const hash = await user.hashPassword(password);
 
-	await user.setUserFields(uid, { password: hash, 'email:confirmed': 1 });
+	await user.setUserFields(uid, { password: hash, 'email:confirmed': 1, 'password:shaWrapped': 1 });
 	await groups.join('verified-users', uid);
 	await groups.leave('unverified-users', uid);
 	await db.deleteObjectField('reset:uid', code);

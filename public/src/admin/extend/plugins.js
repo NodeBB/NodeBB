@@ -62,7 +62,7 @@ define('admin/extend/plugins', [
 			}
 
 			if (pluginData.license && pluginData.active !== true) {
-				Benchpress.parse('admin/partials/plugins/license', pluginData, function (html) {
+				Benchpress.render('admin/partials/plugins/license', pluginData).then(function (html) {
 					bootbox.dialog({
 						title: '[[admin/extend/plugins:license.title]]',
 						message: html,

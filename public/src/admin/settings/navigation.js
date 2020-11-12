@@ -77,7 +77,6 @@ define('admin/settings/navigation', [
 				el.remove();
 			});
 		});
-
 		Benchpress.parse('admin/settings/navigation', 'enabled', { enabled: [data] }, function (li) {
 			translator.translate(li, function (li) {
 				li = $(translator.unescape(li));

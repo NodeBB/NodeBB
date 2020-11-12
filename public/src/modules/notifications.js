@@ -27,8 +27,8 @@ define('notifications', [
 					notifs[i].timeago = $.timeago(new Date(parseInt(notifs[i].datetime, 10)));
 				}
 				translator.toggleTimeagoShorthand();
-				Benchpress.parse('partials/notifications_list', { notifications: notifs }, function (html) {
-					notifList.translateHtml(html);
+				app.parseAndTranslate('partials/notifications_list', { notifications: notifs }, function (html) {
+					notifList.html(html);
 					notifList.off('click').on('click', '[data-nid]', function (ev) {
 						var notifEl = $(this);
 						if (scrollToPostIndexIfOnPage(notifEl)) {

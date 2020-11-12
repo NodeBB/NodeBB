@@ -338,7 +338,6 @@ JS.buildBundle = async function (target, fork) {
 	};
 	await requirejsOptimize(target);
 	const files = await getBundleScriptList(target);
-	await mkdirp(path.join(__dirname, '../../build/public'));
 
 	files.push({
 		srcPath: path.join(__dirname, '../../build/public/rjs-bundle-' + target + '.js'),

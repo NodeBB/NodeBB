@@ -324,6 +324,7 @@ module.exports = function (User) {
 		await Promise.all([
 			User.setUserFields(data.uid, {
 				password: hashedPassword,
+				'password:shaWrapped': 1,
 				rss_token: utils.generateUUID(),
 			}),
 			User.reset.cleanByUid(data.uid),

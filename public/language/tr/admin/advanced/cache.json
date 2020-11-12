@@ -1,11 +1,6 @@
 {
 	"post-cache": "İleti Önbelleği",
-	"posts-in-cache": "Önbellekteki İletiler",
-	"average-post-size": "Ortalama İleti Boyutu",
-	"length-to-max": "Uzunluk / En Fazla",
 	"percent-full": "%1% Tam",
 	"post-cache-size": "İleti Önbellek Boyutu",
-	"items-in-cache": "Önbellekteki Öğeler",
-	"control-panel": "Kontrol Paneli",
-	"update-settings": "Önbellek Ayarlarını Güncelle"
+	"items-in-cache": "Önbellekteki Öğeler"
 }

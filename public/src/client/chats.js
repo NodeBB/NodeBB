@@ -219,36 +219,34 @@ define('forum/chats', [
 		var modal;
 
 		buttonEl.on('click', function () {
-			Benchpress.parse('partials/modals/manage_room', {}, function (html) {
-				translator.translate(html, function (html) {
-					modal = bootbox.dialog({
-						title: '[[modules:chat.manage-room]]',
-						message: html,
-					});
+			app.parseAndTranslate('partials/modals/manage_room', {}, function (html) {
+				modal = bootbox.dialog({
+					title: '[[modules:chat.manage-room]]',
+					message: html,
+				});
 
-					modal.attr('component', 'chat/manage-modal');
+				modal.attr('component', 'chat/manage-modal');
 
-					Chats.refreshParticipantsList(roomId, modal);
-					Chats.addKickHandler(roomId, modal);
+				Chats.refreshParticipantsList(roomId, modal);
+				Chats.addKickHandler(roomId, modal);
 
-					var searchInput = modal.find('input');
-					var errorEl = modal.find('.text-danger');
-					require(['autocomplete', 'translator'], function (autocomplete, translator) {
-						autocomplete.user(searchInput, function (event, selected) {
-							errorEl.text('');
-							socket.emit('modules.chats.addUserToRoom', {
-								roomId: roomId,
-								username: selected.item.user.name,
-							}, function (err) {
-								if (err) {
-									translator.translate(err.message, function (translated) {
-										errorEl.text(translated);
-									});
-								}
+				var searchInput = modal.find('input');
+				var errorEl = modal.find('.text-danger');
+				require(['autocomplete', 'translator'], function (autocomplete, translator) {
+					autocomplete.user(searchInput, function (event, selected) {
+						errorEl.text('');
+						socket.emit('modules.chats.addUserToRoom', {
+							roomId: roomId,
+							username: selected.item.user.name,
+						}, function (err) {
+							if (err) {
+								translator.translate(err.message, function (translated) {
+									errorEl.text(translated);
+								});
+							}
 
-								Chats.refreshParticipantsList(roomId, modal);
-								searchInput.val('');
-							});
+							Chats.refreshParticipantsList(roomId, modal);
+							searchInput.val('');
 						});
 					});
 				});
@@ -324,21 +322,19 @@ define('forum/chats', [
 		var modal;
 
 		buttonEl.on('click', function () {
-			Benchpress.parse('partials/modals/rename_room', {
+			app.parseAndTranslate('partials/modals/rename_room', {
 				name: roomName || ajaxify.data.roomName,
 			}, function (html) {
-				translator.translate(html, function (html) {
-					modal = bootbox.dialog({
-						title: '[[modules:chat.rename-room]]',
-						message: html,
-						buttons: {
-							save: {
-								label: '[[global:save]]',
-								className: 'btn-primary',
-								callback: submit,
-							},
+				modal = bootbox.dialog({
+					title: '[[modules:chat.rename-room]]',
+					message: html,
+					buttons: {
+						save: {
+							label: '[[global:save]]',
+							className: 'btn-primary',
+							callback: submit,
 						},
-					});
+					},
 				});
 			});
 		});
@@ -478,7 +474,7 @@ define('forum/chats', [
 					roomEl.addClass('unread');
 				} else {
 					var recentEl = components.get('chat/recent');
-					Benchpress.parse('partials/chats/recent_room', {
+					app.parseAndTranslate('partials/chats/recent_room', {
 						rooms: {
 							roomId: data.roomId,
 							lastUser: data.message.fromUser,
@@ -486,9 +482,7 @@ define('forum/chats', [
 							unread: true,
 						},
 					}, function (html) {
-						translator.translate(html, function (translated) {
-							recentEl.prepend(translated);
-						});
+						recentEl.prepend(html);
 					});
 				}
 			}

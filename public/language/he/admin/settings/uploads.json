@@ -1,8 +1,8 @@
 {
-	"posts": "Posts",
-	"allow-files": "Allow users to upload regular files",
-	"private": "Make uploaded files private",
-	"strip-exif-data": "Strip EXIF Data",
+	"posts": "פוסטים",
+	"allow-files": "אפשר למשתמשים להעלות קבצים רגילים",
+	"private": "הפוך קבצים שהועלו לפרטיים",
+	"strip-exif-data": "הפשט נתוני EXIF",
 	"private-extensions": "File extensions to make private",
 	"private-uploads-extensions-help": "Enter comma-separated list of file extensions to make private here (e.g. <code>pdf,xls,doc</code>). An empty list means all files are private.",
 	"resize-image-width-threshold": "Resize images if they are wider than specified width",

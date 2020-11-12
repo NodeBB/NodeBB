@@ -94,7 +94,7 @@ authenticationController.register = async function (req, res) {
 			throw new Error('[[user:change_password_error_match]]');
 		}
 
-		if (userData.password.length > 4096) {
+		if (userData.password.length > 512) {
 			throw new Error('[[error:password-too-long]]');
 		}
 
@@ -357,7 +357,7 @@ authenticationController.localLogin = async function (req, username, password, n
 		return next(new Error('[[error:invalid-password]]'));
 	}
 
-	if (password.length > 4096) {
+	if (password.length > 512) {
 		return next(new Error('[[error:password-too-long]]'));
 	}
 

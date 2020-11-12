@@ -34,6 +34,8 @@
 	"timestamp.cut-off-help": "Dates &amp; הזמנים יוצגו באופן יחסי (למשל \"לפני 3 שעות\" / \"לפני 5 ימים\"), לפי שעה ושפה מקומית. לאחר זמן זה, יוצג התאריך המקומי עצמו\n\t\t\t\t\t(לדוגמא, 5 בנובמבר 2016, 15:30).<br /><em>(ברירת מחדל: <code>30</code>, או חודש אחד). הגדר ל 0 כדי להציג תמיד תאריכים, השאר ריק כדי להציג תמיד זמנים יחסית.</em>",
 	"timestamp.necro-threshold": "סף ה-Necro (בימים)",
 	"timestamp.necro-threshold-help": "הודעה תוצג בין פוסטים אם הזמן ביניהם ארוך יותר מסף ה-necro . (ברירת מחדל: <code>7</code>, או שבוע אחד). כתוב 0 בכדי להפוך ללא זמין.</em>",
+	"timestamp.topic-views-interval": "Increment topic views interval (in minutes)",
+	"timestamp.topic-views-interval-help": "Topic views will only increment once every X minutes as defined by this setting.",
 	"teaser": "פוסט טיזר",
 	"teaser.last-post": "Last &ndash; הצג את הפוסט האחרון, כולל הפוסט המקורי, אם אין תגובות",
 	"teaser.last-reply": "Last &ndash; הצג את התשובה האחרונה, או ציין \"ללא תשובות\" אם אין תשובות",

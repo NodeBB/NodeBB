@@ -1,5 +1,7 @@
 {
 	"handles": "Upravljanje gostima",
 	"handles.enabled": "Dozvoli upravljanje gostima",
-	"handles.enabled-help": "Ova opcija omogućava gostima da izaberi ime za svaku objavu koju naprave.Ako je onemogućena gosti će se zvati \"gost\"."
+	"handles.enabled-help": "Ova opcija omogućava gostima da izaberi ime za svaku objavu koju naprave.Ako je onemogućena gosti će se zvati \"gost\".",
+	"topic-views": "Topic views",
+	"topic-views.enabled": "Allow guests to increase topic view counts"
 }

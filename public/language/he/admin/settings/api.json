@@ -1,0 +1,12 @@
+{
+	"tokens": "Tokens",
+	"lead-text": "From this page you can configure access to the Write API in NodeBB.",
+	"intro": "כברירת מחדל, ה- API של כתיבה מאמת משתמשים בהתבסס על קובץ ה-cookie של ההפעלה שלהם, אך NodeBB תומך גם באימות נושא באמצעות אסימונים שנוצרו באמצעות דף זה.",
+	"docs": "לחץ כאן כדי לגשת למפרט ה- API המלא",
+
+	"uid": "User ID",
+	"uid-help-text": "Specify a User ID to associate with this token. If the user ID is <code>0</code>, it will be considered a <em>master</em> token, which can assume the identity of other users based on the <code>_uid</code> parameter",
+	"description": "תיאור",
+	"no-description": "לא צוין תיאור.",
+	"token-on-save": "Token will be generated once form is saved"
+}

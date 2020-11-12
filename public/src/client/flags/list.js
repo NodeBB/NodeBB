@@ -153,6 +153,7 @@ define('forum/flags/list', ['components', 'Chart'], function (components, Chart)
 					});
 					if (fulfilled) {
 						app.alertSuccess('[[flags:bulk-success, ' + fulfilled + ']]');
+						ajaxify.refresh();
 					}
 
 					errors.forEach(function (res) {

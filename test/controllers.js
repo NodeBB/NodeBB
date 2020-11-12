@@ -813,20 +813,19 @@ describe('Controllers', function () {
 		});
 
 		it('should fail if user doesn\'t exist', function (done) {
-			request.del(nconf.get('url') + '/api/user/doesnotexist/session/1112233', {
+			request.del(`${nconf.get('url')}/api/v3/users/doesnotexist/sessions/1112233`, {
 				jar: jar,
 				headers: {
 					'x-csrf-token': csrf_token,
 				},
 			}, function (err, res, body) {
 				assert.ifError(err);
-				assert.equal(res.statusCode, 403);
-				assert.deepEqual(JSON.parse(body), {
-					response: {},
-					status: {
-						code: 'forbidden',
-						message: 'You are not authorised to make this call',
-					},
+				assert.strictEqual(res.statusCode, 404);
+				const parsedResponse = JSON.parse(body);
+				assert.deepStrictEqual(parsedResponse.response, {});
+				assert.deepStrictEqual(parsedResponse.status, {
+					code: 'not-found',
+					message: '[[error:no-user]]',
 				});
 				done();
 			});
@@ -839,15 +838,21 @@ describe('Controllers', function () {
 
 				db.sessionStore.get(sid, function (err, sessionObj) {
 					assert.ifError(err);
-					request.del(nconf.get('url') + '/api/user/revokeme/session/' + sessionObj.meta.uuid, {
+					request.del(`${nconf.get('url')}/api/v3/users/${uid}/sessions/${sessionObj.meta.uuid}`, {
 						jar: jar,
 						headers: {
 							'x-csrf-token': csrf_token,
 						},
 					}, function (err, res, body) {
 						assert.ifError(err);
-						assert.equal(res.statusCode, 200);
-						assert.equal(body, 'OK');
+						assert.strictEqual(res.statusCode, 200);
+						assert.deepStrictEqual(JSON.parse(body), {
+							status: {
+								code: 'ok',
+								message: 'OK',
+							},
+							response: {},
+						});
 						done();
 					});
 				});
@@ -1085,7 +1090,7 @@ describe('Controllers', function () {
 				request(nconf.get('url') + '/me/bookmarks', { json: true }, function (err, res, body) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
-					assert(body.includes('Login to your account'));
+					assert(body.includes('Login to your account'), body.substr(0, 500));
 					done();
 				});
 			});
