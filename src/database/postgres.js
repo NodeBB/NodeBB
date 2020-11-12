@@ -406,13 +406,6 @@ postgresModule.close = function (callback) {
 	postgresModule.pool.end(callback);
 };
 
-postgresModule.socketAdapter = function () {
-	var postgresAdapter = require('socket.io-adapter-postgres');
-	return postgresAdapter(connection.getConnectionOptions(), {
-		pubClient: postgresModule.pool,
-	});
-};
-
 require('./postgres/main')(postgresModule);
 require('./postgres/hash')(postgresModule);
 require('./postgres/sets')(postgresModule);

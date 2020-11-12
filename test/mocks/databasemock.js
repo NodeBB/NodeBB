@@ -48,7 +48,8 @@ nconf.set('socket.io:origins', origins);
 
 if (nconf.get('isCluster') === undefined) {
 	nconf.set('isPrimary', true);
-	nconf.set('isCluster', true);
+	nconf.set('isCluster', false);
+	nconf.set('singleHostCluster', false);
 }
 
 const dbType = nconf.get('database');

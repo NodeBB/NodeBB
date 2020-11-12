@@ -25,12 +25,14 @@ Sockets.init = function (server) {
 	});
 
 	if (nconf.get('isCluster')) {
-		if (nconf.get('singleHostCluster')) {
-			io.adapter(require('./single-host-cluster'));
-		} else if (nconf.get('redis')) {
+		// socket.io-adapter-cluster needs update
+		// if (nconf.get('singleHostCluster')) {
+		// 	io.adapter(require('./single-host-cluster'));
+		// } else if (nconf.get('redis')) {
+		if (nconf.get('redis')) {
 			io.adapter(require('../database/redis').socketAdapter());
 		} else {
-			io.adapter(db.socketAdapter());
+			winston.warn('clustering detected, you should setup redis!');
 		}
 	}
 
