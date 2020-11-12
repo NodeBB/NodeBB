@@ -395,7 +395,7 @@ describe('socket.io', function () {
 				setTimeout(function () {
 					socketAdmin.rooms.getAll({ uid: 10 }, {}, function (err, data) {
 						assert.ifError(err);
-						assert.equal(data.users.category, 1);
+						assert.equal(data.users.category, 1, data);
 						done();
 					});
 				}, 1000);
