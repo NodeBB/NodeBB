@@ -83,7 +83,7 @@ describe('API', async () => {
 			tokens: [{
 				token: mocks.delete['/users/{uid}/tokens/{token}'][1].example,
 				uid: 1,
-				description: 'for testing of token deletion rotue',
+				description: 'for testing of token deletion route',
 				timestamp: Date.now(),
 			}],
 		});
@@ -172,8 +172,17 @@ describe('API', async () => {
 					return;
 				}
 
-				it('should have examples when parameters are present', () => {
+				it('should have each path parameter defined in its context', () => {
 					method = _method;
+					if (!context[method].parameters) {
+						return;
+					}
+
+					const names = (path.match(/{[\w\-_]+}?/g) || []).map(match => match.slice(1, -1));
+					assert(context[method].parameters.map(param => (param.in === 'path' ? param.name : null)).filter(Boolean).every(name => names.includes(name)), `${method.toUpperCase()} ${path} has parameter(s) in path that are not defined in schema`);
+				});
+
+				it('should have examples when parameters are present', () => {
 					let parameters = context[method].parameters;
 					let testPath = path;
 
@@ -255,9 +264,11 @@ describe('API', async () => {
 				});
 
 				it('should successfully re-login if needed', async () => {
-					const reloginPaths = ['/users/{uid}/password'];
-					if (method === 'put' && reloginPaths.includes(path)) {
+					const reloginPaths = ['PUT /users/{uid}/password', 'DELETE /users/{uid}/sessions/{uuid}'];
+					if (reloginPaths.includes(`${method.toUpperCase()} ${path}`)) {
 						jar = await helpers.loginUser('admin', '123456');
+						const sessionUUIDs = await db.getObject('uid:1:sessionUUID:sessionId');
+						mocks.delete['/users/{uid}/sessions/{uuid}'][1].example = Object.keys(sessionUUIDs).pop();
 
 						// Retrieve CSRF token using cookie, to test Write API
 						const config = await request({
