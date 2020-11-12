@@ -183,11 +183,9 @@ Logger.io = function (socket) {
 		return;
 	}
 
-	var clients = socket.io.sockets.sockets;
-	for (var sid in clients) {
-		if (clients.hasOwnProperty(sid)) {
-			Logger.io_one(clients[sid], clients[sid].uid);
-		}
+	const clientsMap = socket.io.sockets.sockets;
+	for (const [, socketObj] of clientsMap) {
+		Logger.io_one(socketObj, socketObj.uid);
 	}
 };
 
