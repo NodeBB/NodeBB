@@ -20,7 +20,6 @@ Sockets.init = function (server) {
 	requireModules();
 
 	const SocketIO = require('socket.io').Server;
-	const socketioWildcard = require('socketio-wildcard')();
 	const io = new SocketIO({
 		path: nconf.get('relative_path') + '/socket.io',
 	});
@@ -35,7 +34,6 @@ Sockets.init = function (server) {
 		}
 	}
 
-	io.use(socketioWildcard);
 	io.use(authorize);
 
 	io.on('connection', onConnection);
@@ -69,8 +67,8 @@ function onConnection(socket) {
 	logger.io_one(socket, socket.uid);
 
 	onConnect(socket);
-
-	socket.on('*', function (payload) {
+	socket.onAny((event, ...args) => {
+		const payload = { data: [event].concat(args) };
 		onMessage(socket, payload);
 	});
 }
