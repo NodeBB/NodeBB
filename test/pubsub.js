@@ -21,7 +21,6 @@ describe('pubsub', function () {
 	it('should use same event emitter', function (done) {
 		pubsub.on('dummyEvent', function (message) {
 			assert.equal(message.foo, 2);
-			nconf.set('isCluster', true);
 			pubsub.removeAllListeners('dummyEvent');
 			pubsub.reset();
 			done();
