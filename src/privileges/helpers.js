@@ -46,20 +46,11 @@ async function isAllowedToCids(privilege, uidOrGroupName, cids) {
 		return cids.map(() => false);
 	}
 
+	const groupKeys = cids.map(cid => 'cid:' + cid + ':privileges:groups:' + privilege);
+
 	// Group handling
 	if (isNaN(parseInt(uidOrGroupName, 10)) && (uidOrGroupName || '').length) {
-		const groupKeys = [];
-		cids.forEach(function (cid) {
-			groupKeys.push('cid:' + cid + ':privileges:groups:' + privilege);
-		});
-		const sets = await Promise.all([
-			groups.isMemberOfGroups(uidOrGroupName, groupKeys),
-			groups.isMemberOfGroups('registered-users', groupKeys),
-		]);
-		return sets[0].reduce((memo, cur, idx) => {
-			memo.push(cur || sets[1][idx]);
-			return memo;
-		}, []);
+		return await checkIfAllowedGroup(uidOrGroupName, groupKeys);
 	}
 
 	// User handling
@@ -67,31 +58,15 @@ async function isAllowedToCids(privilege, uidOrGroupName, cids) {
 		return await isSystemGroupAllowedToCids(privilege, uidOrGroupName, cids);
 	}
 
-	const userKeys = [];
-	const groupKeys = [];
-	cids.forEach(function (cid) {
-		userKeys.push('cid:' + cid + ':privileges:' + privilege);
-		groupKeys.push('cid:' + cid + ':privileges:groups:' + privilege);
-	});
-
-	return await checkIfAllowed(uidOrGroupName, userKeys, groupKeys);
+	const userKeys = cids.map(cid => 'cid:' + cid + ':privileges:' + privilege);
+	return await checkIfAllowedUser(uidOrGroupName, userKeys, groupKeys);
 }
 
 async function isAllowedToPrivileges(privileges, uidOrGroupName, cid) {
+	const groupKeys = privileges.map(privilege => 'cid:' + cid + ':privileges:groups:' + privilege);
 	// Group handling
 	if (isNaN(parseInt(uidOrGroupName, 10)) && (uidOrGroupName || '').length) {
-		const groupKeys = [];
-		privileges.forEach(function (privilege) {
-			groupKeys.push('cid:' + cid + ':privileges:groups:' + privilege);
-		});
-		const sets = await Promise.all([
-			groups.isMemberOfGroups(uidOrGroupName, groupKeys),
-			groups.isMemberOfGroups('registered-users', groupKeys),
-		]);
-		return sets[0].reduce((memo, cur, idx) => {
-			memo.push(cur || sets[1][idx]);
-			return memo;
-		}, []);
+		return await checkIfAllowedGroup(uidOrGroupName, groupKeys);
 	}
 
 	// User handling
@@ -99,22 +74,24 @@ async function isAllowedToPrivileges(privileges, uidOrGroupName, cid) {
 		return await isSystemGroupAllowedToPrivileges(privileges, uidOrGroupName, cid);
 	}
 
-	const userKeys = [];
-	const groupKeys = [];
-	privileges.forEach(function (privilege) {
-		userKeys.push('cid:' + cid + ':privileges:' + privilege);
-		groupKeys.push('cid:' + cid + ':privileges:groups:' + privilege);
-	});
-
-	return await checkIfAllowed(uidOrGroupName, userKeys, groupKeys);
+	const userKeys = privileges.map(privilege => 'cid:' + cid + ':privileges:' + privilege);
+	return await checkIfAllowedUser(uidOrGroupName, userKeys, groupKeys);
 }
 
-async function checkIfAllowed(uid, userKeys, groupKeys) {
+async function checkIfAllowedUser(uid, userKeys, groupKeys) {
 	const [hasUserPrivilege, hasGroupPrivilege] = await Promise.all([
 		groups.isMemberOfGroups(uid, userKeys),
 		groups.isMemberOfGroupsList(uid, groupKeys),
 	]);
 	return userKeys.map((key, index) => hasUserPrivilege[index] || hasGroupPrivilege[index]);
+}
+
+async function checkIfAllowedGroup(groupName, groupKeys) {
+	const sets = await Promise.all([
+		groups.isMemberOfGroups(groupName, groupKeys),
+		groups.isMemberOfGroups('registered-users', groupKeys),
+	]);
+	return groupKeys.map((key, index) => sets[0][index] || sets[1][index]);
 }
 
 async function isSystemGroupAllowedToCids(privilege, uid, cids) {
