@@ -82,12 +82,20 @@ usersAPI.update = async function (caller, data) {
 };
 
 usersAPI.delete = async function (caller, data) {
-	processDeletion(data.uid, caller);
+	processDeletion(data.uid, 'delete', caller);
+};
+
+usersAPI.deleteContent = async function (caller, data) {
+	processDeletion(data.uid, 'deleteContent', caller);
+};
+
+usersAPI.deleteAccount = async function (caller, data) {
+	processDeletion(data.uid, 'deleteAccount', caller);
 };
 
 usersAPI.deleteMany = async function (caller, data) {
 	if (await canDeleteUids(data.uids)) {
-		await Promise.all(data.uids.map(uid => processDeletion(uid, caller)));
+		await Promise.all(data.uids.map(uid => processDeletion(uid, 'delete', caller)));
 	}
 };
 
@@ -229,7 +237,7 @@ async function isPrivilegedOrSelfAndPasswordMatch(caller, data) {
 	}
 }
 
-async function processDeletion(uid, caller) {
+async function processDeletion(uid, method, caller) {
 	const isTargetAdmin = await user.isAdministrator(uid);
 	const isSelf = parseInt(uid, 10) === caller.uid;
 	const isAdmin = await user.isAdministrator(caller.uid);
@@ -242,7 +250,13 @@ async function processDeletion(uid, caller) {
 
 	// TODO: clear user tokens for this uid
 	await flags.resolveFlag('user', uid, caller.uid);
-	const userData = await user.delete(caller.uid, uid);
+
+	let userData;
+	if (method === 'deleteAccount') {
+		userData = await user[method](uid);
+	} else {
+		userData = await user[method](caller.uid, uid);
+	}
 	await events.log({
 		type: 'user-delete',
 		uid: caller.uid,

@@ -53,6 +53,16 @@ Users.delete = async (req, res) => {
 	helpers.formatApiResponse(200, res);
 };
 
+Users.deleteContent = async (req, res) => {
+	await api.users.deleteContent(req, req.params);
+	helpers.formatApiResponse(200, res);
+};
+
+Users.deleteAccount = async (req, res) => {
+	await api.users.deleteAccount(req, req.params);
+	helpers.formatApiResponse(200, res);
+};
+
 Users.deleteMany = async (req, res) => {
 	await hasAdminPrivilege(req.uid, 'users');
 	await api.users.deleteMany(req, req.body);
