@@ -136,6 +136,8 @@
     "necroThreshold": 7,
     "categoryWatchState": "watching",
     "submitPluginUsage": 1,
+    "showAverageApprovalTime": true,
+    "autoApproveTime": 0,
     "maxUserSessions": 10,
     "useCompression": 0
 }
