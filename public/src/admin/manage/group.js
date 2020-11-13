@@ -80,6 +80,7 @@ define('admin/manage/group', [
 					userTitleEnabled: $('#group-userTitleEnabled').is(':checked'),
 					private: $('#group-private').is(':checked'),
 					hidden: $('#group-hidden').is(':checked'),
+					memberPostCids: $('#memberPostCids').val(),
 					disableJoinRequests: $('#group-disableJoinRequests').is(':checked'),
 					disableLeave: $('#group-disableLeave').is(':checked'),
 				},

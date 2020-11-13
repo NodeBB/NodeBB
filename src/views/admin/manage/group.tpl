@@ -95,6 +95,22 @@
 					</div>
 				</fieldset>
 
+				<hr />
+
+				<div class="form-group">
+					<label for="memberPostCids">[[groups:details.member-post-cids]]</label>
+					<select multiple="true" name="memberPostCids" id="memberPostCids" class="form-control" size="15">
+						{{{each group.categories}}}
+						<option value="{categories.cid}"{{{ if ../selected }}} selected{{{ end }}}>
+							{../level}{../name}
+						</option>
+						{{{end}}}
+					</select>
+					<p class="help-block">[[groups:details.member-post-cids-help]]</p>
+				</div>
+
+				<hr />
+
 				<fieldset>
 					<div class="panel panel-default">
 						<div class="panel-heading">

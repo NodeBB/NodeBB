@@ -144,7 +144,7 @@ module.exports = function (privileges) {
 
 	privileges.admin.get = async function (uid) {
 		const [userPrivileges, isAdministrator] = await Promise.all([
-			helpers.isUserAllowedTo(privileges.admin.userPrivilegeList, uid, 0),
+			helpers.isAllowedTo(privileges.admin.userPrivilegeList, uid, 0),
 			user.isAdministrator(uid),
 		]);
 
@@ -157,7 +157,7 @@ module.exports = function (privileges) {
 
 	privileges.admin.can = async function (privilege, uid) {
 		const [isUserAllowedTo, isAdministrator] = await Promise.all([
-			helpers.isUserAllowedTo(privilege, uid, [0]),
+			helpers.isAllowedTo(privilege, uid, [0]),
 			user.isAdministrator(uid),
 		]);
 		return isAdministrator || isUserAllowedTo[0];

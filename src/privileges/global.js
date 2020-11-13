@@ -75,7 +75,7 @@ module.exports = function (privileges) {
 
 	privileges.global.get = async function (uid) {
 		const [userPrivileges, isAdministrator] = await Promise.all([
-			helpers.isUserAllowedTo(privileges.global.userPrivilegeList, uid, 0),
+			helpers.isAllowedTo(privileges.global.userPrivilegeList, uid, 0),
 			user.isAdministrator(uid),
 		]);
 
@@ -88,7 +88,7 @@ module.exports = function (privileges) {
 	privileges.global.can = async function (privilege, uid) {
 		const [isAdministrator, isUserAllowedTo] = await Promise.all([
 			user.isAdministrator(uid),
-			helpers.isUserAllowedTo(privilege, uid, [0]),
+			helpers.isAllowedTo(privilege, uid, [0]),
 		]);
 		return isAdministrator || isUserAllowedTo[0];
 	};

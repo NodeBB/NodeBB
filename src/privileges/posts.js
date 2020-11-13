@@ -25,11 +25,11 @@ module.exports = function (privileges) {
 			isAdmin: user.isAdministrator(uid),
 			isModerator: user.isModerator(uid, uniqueCids),
 			isOwner: posts.isOwner(pids, uid),
-			'topics:read': helpers.isUserAllowedTo('topics:read', uid, uniqueCids),
-			read: helpers.isUserAllowedTo('read', uid, uniqueCids),
-			'posts:edit': helpers.isUserAllowedTo('posts:edit', uid, uniqueCids),
-			'posts:history': helpers.isUserAllowedTo('posts:history', uid, uniqueCids),
-			'posts:view_deleted': helpers.isUserAllowedTo('posts:view_deleted', uid, uniqueCids),
+			'topics:read': helpers.isAllowedTo('topics:read', uid, uniqueCids),
+			read: helpers.isAllowedTo('read', uid, uniqueCids),
+			'posts:edit': helpers.isAllowedTo('posts:edit', uid, uniqueCids),
+			'posts:history': helpers.isAllowedTo('posts:history', uid, uniqueCids),
+			'posts:view_deleted': helpers.isAllowedTo('posts:view_deleted', uid, uniqueCids),
 		});
 
 		const isModerator = _.zipObject(uniqueCids, results.isModerator);

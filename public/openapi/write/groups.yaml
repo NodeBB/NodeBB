@@ -37,6 +37,11 @@ post:
               enum: [0, 1]
             createtime:
               type: number
+            memberPostCids:
+              type: array
+              items:
+                type: number
+                example: [1, 2, 3]
           required:
             - name
   responses:

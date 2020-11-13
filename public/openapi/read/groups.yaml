@@ -58,6 +58,11 @@ get:
                           type: string
                         cover:position:
                           type: string
+                        memberPostCids:
+                          type: array
+                          items:
+                            type: number
+                            example: [1, 2, 3]
                         members:
                           type: array
                           items:
