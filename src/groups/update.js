@@ -18,11 +18,10 @@ module.exports = function (Groups) {
 			throw new Error('[[error:no-group]]');
 		}
 
-		const result = await plugins.fireHook('filter:group.update', {
+		({ values } = await plugins.fireHook('filter:group.update', {
 			groupName: groupName,
 			values: values,
-		});
-		values = result.values;
+		}));
 
 		const payload = {
 			description: values.description || '',
@@ -66,6 +65,11 @@ module.exports = function (Groups) {
 		if (values.hasOwnProperty('hidden')) {
 			await updateVisibility(groupName, values.hidden);
 		}
+
+		if (values.hasOwnProperty('memberPostCids')) {
+			payload.memberPostCids = values.memberPostCids.join(',') || '';
+		}
+
 		await db.setObject('group:' + groupName, payload);
 		await Groups.renameGroup(groupName, values.name);
 

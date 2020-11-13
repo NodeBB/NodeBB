@@ -75,6 +75,7 @@ function modifyGroup(group, fields) {
 		group.icon = validator.escape(String(group.icon || ''));
 		group.createtimeISO = utils.toISOString(group.createtime);
 		group.private = ([null, undefined].includes(group.private)) ? 1 : group.private;
+		group.memberPostCids = (group.memberPostCids || '').split(',').map(cid => parseInt(cid, 10)).filter(Boolean);
 
 		group['cover:thumb:url'] = group['cover:thumb:url'] || group['cover:url'];
 
