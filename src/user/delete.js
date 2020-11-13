@@ -7,6 +7,7 @@ const nconf = require('nconf');
 
 const db = require('../database');
 const posts = require('../posts');
+const flags = require('../flags');
 const topics = require('../topics');
 const groups = require('../groups');
 const messaging = require('../messaging');
@@ -149,6 +150,7 @@ module.exports = function (User) {
 			deleteUserFromFollowers(uid),
 			deleteImages(uid),
 			groups.leaveAllGroups(uid),
+			flags.resolveFlag('user', uid, uid),
 		]);
 		await db.deleteAll(['followers:' + uid, 'following:' + uid, 'user:' + uid]);
 		delete deletesInProgress[uid];

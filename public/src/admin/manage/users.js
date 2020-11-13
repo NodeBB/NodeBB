@@ -36,8 +36,12 @@ define('admin/manage/users', [
 			$('.users-table [component="user/select/all"]').prop('checked', false);
 		}
 
-		function removeSelected() {
-			$('.users-table [component="user/select/single"]:checked').parents('.user-row').remove();
+		function removeRow(uid) {
+			const checkboxEl = document.querySelector(`.users-table [component="user/select/single"][data-uid="${uid}"]`);
+			if (checkboxEl) {
+				const rowEl = checkboxEl.closest('.user-row');
+				rowEl.parentNode.removeChild(rowEl);
+			}
 		}
 
 		// use onSuccess instead
@@ -261,18 +265,17 @@ define('admin/manage/users', [
 
 			bootbox.confirm('[[admin/manage/users:alerts.confirm-delete]]', function (confirm) {
 				if (confirm) {
-					socket.emit('admin.user.deleteUsers', uids, function (err) {
-						if (err) {
-							return app.alertError(err.message);
-						}
-
+					Promise.all(uids.map(uid => api.del(`/users/${uid}/account`, {})
+						.then(() => {
+							removeRow(uid);
+						})
+					)).then(() => {
 						app.alertSuccess('[[admin/manage/users:alerts.delete-success]]');
-						removeSelected();
 						unselectAll();
 						if (!$('.users-table [component="user/select/single"]').length) {
 							ajaxify.refresh();
 						}
-					});
+					}).catch(app.alertError);
 				}
 			});
 		});
@@ -285,13 +288,9 @@ define('admin/manage/users', [
 
 			bootbox.confirm('[[admin/manage/users:alerts.confirm-delete-content]]', function (confirm) {
 				if (confirm) {
-					socket.emit('admin.user.deleteUsersContent', uids, function (err) {
-						if (err) {
-							return app.alertError(err.message);
-						}
-
+					Promise.all(uids.map(uid => api.del(`/users/${uid}/content`, {}))).then(() => {
 						app.alertSuccess('[[admin/manage/users:alerts.delete-content-success]]');
-					});
+					}).catch(app.alertError);
 				}
 			});
 		});
@@ -303,18 +302,17 @@ define('admin/manage/users', [
 			}
 			bootbox.confirm('[[admin/manage/users:alerts.confirm-purge]]', function (confirm) {
 				if (confirm) {
-					socket.emit('admin.user.deleteUsersAndContent', uids, function (err) {
-						if (err) {
-							return app.alertError(err.message);
-						}
-
+					Promise.all(uids.map(uid => api.del(`/users/${uid}`, {})
+						.then(() => {
+							removeRow(uid);
+						})
+					)).then(() => {
 						app.alertSuccess('[[admin/manage/users:alerts.delete-success]]');
-						removeSelected();
 						unselectAll();
 						if (!$('.users-table [component="user/select/single"]').length) {
 							ajaxify.refresh();
 						}
-					});
+					}).catch(app.alertError);
 				}
 			});
 		});
