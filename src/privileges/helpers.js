@@ -46,7 +46,7 @@ async function isAllowedToCids(privilege, uidOrGroupName, cids) {
 	}
 
 	// Group handling
-	if (isNaN(parseInt(uidOrGroupName, 10))) {
+	if (isNaN(parseInt(uidOrGroupName, 10)) && (uidOrGroupName || '').length) {
 		const groupKeys = [];
 		cids.forEach(function (cid) {
 			groupKeys.push('cid:' + cid + ':privileges:groups:' + privilege);
