@@ -2,6 +2,7 @@
 
 const winston = require('winston');
 
+const categories = require('../categories');
 const plugins = require('../plugins');
 const slugify = require('../slugify');
 const db = require('../database');
@@ -67,7 +68,8 @@ module.exports = function (Groups) {
 		}
 
 		if (values.hasOwnProperty('memberPostCids')) {
-			payload.memberPostCids = values.memberPostCids.join(',') || '';
+			const validCids = await categories.getCidsByPrivilege('categories:cid', groupName, 'topics:read');
+			payload.memberPostCids = values.memberPostCids.filter(cid => validCids.includes(cid)).join(',') || '';
 		}
 
 		await db.setObject('group:' + groupName, payload);
