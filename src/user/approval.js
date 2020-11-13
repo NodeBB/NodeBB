@@ -13,7 +13,7 @@ const slugify = require('../slugify');
 const plugins = require('../plugins');
 
 module.exports = function (User) {
-	new cronJob('0 * * * * *', function () {
+	new cronJob('0 * * * *', function () {
 		User.autoApprove();
 	}, null, true);
 
