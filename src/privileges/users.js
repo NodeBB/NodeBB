@@ -41,7 +41,7 @@ module.exports = function (privileges) {
 			return await filterIsModerator(cids, uid, cids.map(() => true));
 		}
 		const uniqueCids = _.uniq(cids);
-		const isAllowed = await helpers.isUserAllowedTo('moderate', uid, uniqueCids);
+		const isAllowed = await helpers.isAllowedTo('moderate', uid, uniqueCids);
 
 		const cidToIsAllowed = _.zipObject(uniqueCids, isAllowed);
 		const isModerator = cids.map(cid => cidToIsAllowed[cid]);
