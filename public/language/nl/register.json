@@ -18,6 +18,8 @@
     "agree_to_terms_of_use": "Ik ga akkoord met de gebruiksvoorwaarden",
     "terms_of_use_error": "Je moet akkoord gaan met de service voorwaarden.",
     "registration-added-to-queue": "Het registratieverzoek is toegevoegd aan de wachtrij. Een bericht wordt naar het opgegeven emailadres gestuurd wanneer de registratie is goedgekeurd.",
+    "registration-queue-average-time": "Our average time for approving memberships is %1 hours %2 minutes.",
+    "registration-queue-auto-approve-time": "Your membership to this forum will be fully activated in up to %1 hours.",
     "interstitial.intro": "Je hebben meer informatie van je nodig voordat we je account kunnen aanmaken.",
     "interstitial.errors-found": "Je konden jouw registratie niet afronden.",
     "gdpr_agree_data": "Ik geef toestemming voor het verzamelen en verwerken van mijn persoonlijke informatie op deze website.",

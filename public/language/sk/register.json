@@ -18,6 +18,8 @@
     "agree_to_terms_of_use": "Súhlasím s podmienkami používania",
     "terms_of_use_error": "Musíte súhlasiť s podmienkami použitia",
     "registration-added-to-queue": "Vaša registrácia bola pridaná do fronty na schválenie. Obdržíte e-mail, keď Vaša registrácia bude prijatá správcom.",
+    "registration-queue-average-time": "Our average time for approving memberships is %1 hours %2 minutes.",
+    "registration-queue-auto-approve-time": "Your membership to this forum will be fully activated in up to %1 hours.",
     "interstitial.intro": "Pred vytvorením účtu požadujeme nejaké dodatočné informácie.",
     "interstitial.errors-found": "Nepodarilo sa nám dokončiť Vašu registráciu:",
     "gdpr_agree_data": "Dávam súhlas so zberom a spracovaním mojich osobných údajov na tejto webovej stránke.",

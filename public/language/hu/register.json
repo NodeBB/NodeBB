@@ -18,6 +18,8 @@
     "agree_to_terms_of_use": "Elfogadom a Használati feltételeket",
     "terms_of_use_error": "El kell fogadnod a Használati feltételeket",
     "registration-added-to-queue": "A regisztráció jóváhagyásra vár. Kapni fogsz egy e-mailt, amint az adminisztrátor elfogadja.",
+    "registration-queue-average-time": "Our average time for approving memberships is %1 hours %2 minutes.",
+    "registration-queue-auto-approve-time": "Your membership to this forum will be fully activated in up to %1 hours.",
     "interstitial.intro": "Szükségünk van még további információkra a profilod létrehozásához.",
     "interstitial.errors-found": "Nem tudtuk teljesíteni a regisztrációd:",
     "gdpr_agree_data": "I consent to the collection and processing of my personal information on this website.",

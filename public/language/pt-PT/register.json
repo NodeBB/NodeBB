@@ -18,6 +18,8 @@
     "agree_to_terms_of_use": "Eu aceito os Termos de Utilização",
     "terms_of_use_error": "Deves aceitar os Termos de Utilização",
     "registration-added-to-queue": "O teu registo foi adicionado à fila de aprovação. Receberás um e-mail quando fores aceite por um administrador.",
+    "registration-queue-average-time": "Our average time for approving memberships is %1 hours %2 minutes.",
+    "registration-queue-auto-approve-time": "Your membership to this forum will be fully activated in up to %1 hours.",
     "interstitial.intro": "Requeremos informação adicional antes de criarmos a tua conta.",
     "interstitial.errors-found": "Não pudemos completar o teu registro:",
     "gdpr_agree_data": "Autorizo a recolha e o processamento das minhas informações pessoais neste website.",

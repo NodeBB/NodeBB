@@ -18,6 +18,8 @@
     "agree_to_terms_of_use": "Я соглашаюсь с условиями",
     "terms_of_use_error": "Для регистрации на нашем сайте необходимо согласиться с условиями",
     "registration-added-to-queue": "Ваша регистрация была добавлена в очередь на утверждение. Вы получите уведомление по электронной почте, когда она будет одобрена администратором.",
+    "registration-queue-average-time": "Our average time for approving memberships is %1 hours %2 minutes.",
+    "registration-queue-auto-approve-time": "Your membership to this forum will be fully activated in up to %1 hours.",
     "interstitial.intro": "Нам потребуется дополнительная информация, прежде чем мы сможем создать вашу учётную запись.",
     "interstitial.errors-found": "Мы не смогли завершить регистрацию:",
     "gdpr_agree_data": "Я соглашаюсь на сбор и обработку моей личной информации на этом веб-сайте.",

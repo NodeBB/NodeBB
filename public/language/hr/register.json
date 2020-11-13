@@ -18,6 +18,8 @@
     "agree_to_terms_of_use": "Prihvaćam uvjete korištenja",
     "terms_of_use_error": "Morate prihvatiti uvjete korištenja",
     "registration-added-to-queue": "Vaša registracija je dodana u listu zahtjeva za registraciju. Biti ćete obaviješteni kad Vas administrator prihvati.",
+    "registration-queue-average-time": "Our average time for approving memberships is %1 hours %2 minutes.",
+    "registration-queue-auto-approve-time": "Your membership to this forum will be fully activated in up to %1 hours.",
     "interstitial.intro": "Treba nam još par dodatnih informacija prije nego kreirate novi račun.",
     "interstitial.errors-found": "Nismo uspijeli dovršiti registraciju:",
     "gdpr_agree_data": "I consent to the collection and processing of my personal information on this website.",
