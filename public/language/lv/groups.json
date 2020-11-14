@@ -35,6 +35,8 @@
     "details.member_count": "Pēc biedru skaita",
     "details.creation_date": "Pēc datuma",
     "details.description": "Apraksts",
+    "details.member-post-cids": "Categories to display posts from",
+    "details.member-post-cids-help": "<strong>Note</strong>: Selecting no categories will assume all categories are included. Use <code>ctrl</code> and <code>shift</code> to select multiple options.",
     "details.badge_preview": "Etiķetes priekšskats",
     "details.change_icon": "Mainīt ikonu",
     "details.change_label_colour": "Change Label Colour",
