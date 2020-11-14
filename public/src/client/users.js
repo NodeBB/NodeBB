@@ -138,7 +138,7 @@ define('forum/users', [
 	function handleInvite() {
 		$('[component="user/invite"]').on('click', function (e) {
 			e.preventDefault();
-			api.get('/api/user/invite-groups', {}).then((groups) => {
+			api.get('/api/v3/users/' + app.user.uid + '/inviteGroups', {}).then((groups) => {
 				Benchpress.parse('modals/invite', { groups: groups }, function (html) {
 					bootbox.dialog({
 						message: html,

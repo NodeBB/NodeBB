@@ -46,6 +46,8 @@ paths:
     $ref: 'write/users/uid/sessions/uuid.yaml'
   /users/invite:
     $ref: 'write/users/invite.yaml'
+  /users/{uid}/inviteGroups:
+    $ref: 'write/users/uid/inviteGroups.yaml'
   /categories/:
     $ref: 'write/categories.yaml'
   /groups/:
