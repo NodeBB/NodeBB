@@ -173,7 +173,6 @@ async function setupMockDefaults() {
 	require('../../src/groups').cache.reset();
 	require('../../src/posts/cache').reset();
 	require('../../src/cache').reset();
-	require('../../src/middleware').headerFooterCache.reset();
 
 	winston.info('test_database flushed');
 	await setupDefaultConfigs(meta);

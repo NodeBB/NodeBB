@@ -9,7 +9,6 @@ cacheController.get = function (req, res) {
 	const groupCache = require('../../groups').cache;
 	const objectCache = require('../../database').objectCache;
 	const localCache = require('../../cache');
-	const headerFooterCache = require('../../middleware').headerFooterCache;
 
 	function getInfo(cache) {
 		return {
@@ -28,7 +27,6 @@ cacheController.get = function (req, res) {
 		postCache: getInfo(postCache),
 		groupCache: getInfo(groupCache),
 		localCache: getInfo(localCache),
-		headerFooterCache: getInfo(headerFooterCache),
 	};
 
 	if (objectCache) {
@@ -44,7 +42,6 @@ cacheController.dump = function (req, res, next) {
 		object: require('../../database').objectCache,
 		group: require('../../groups').cache,
 		local: require('../../cache'),
-		headerfooter: require('../../middleware').headerFooterCache,
 	};
 	if (!caches[req.query.name]) {
 		return next();
