@@ -1,6 +1,7 @@
 'use strict';
 
 const util = require('util');
+const nconf = require('nconf');
 
 const db = require('../../database');
 const api = require('../../api');
@@ -25,7 +26,7 @@ Users.redirectBySlug = async (req, res) => {
 
 	if (uid) {
 		const path = req.path.split('/').slice(3).join('/');
-		helpers.redirect(res, `/api/v3/users/${uid}/${path}`, true);
+		res.redirect(308, nconf.get('relative_path') + encodeURI(`/api/v3/users/${uid}/${path}`));
 	} else {
 		helpers.formatApiResponse(404, res);
 	}
