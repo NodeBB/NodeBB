@@ -107,21 +107,14 @@ module.exports = function (privileges) {
 		return data.canBan;
 	};
 
-	privileges.users.hasBanPrivilege = async function (uid) {
-		const canBan = await privileges.global.can('ban', uid);
-		const data = await plugins.fireHook('filter:user.hasBanPrivilege', {
-			uid: uid,
-			canBan: canBan,
-		});
-		return data.canBan;
-	};
+	privileges.users.hasBanPrivilege = async uid => await hasGlobalPrivilege('ban', uid);
+	privileges.users.hasInvitePrivilege = async uid => await hasGlobalPrivilege('invite', uid);
 
-	privileges.users.hasInvitePrivilege = async function (uid) {
-		const canInvite = await privileges.global.can('invite', uid);
-		const data = await plugins.fireHook('filter:user.hasInvitePrivilege', {
-			uid: uid,
-			canInvite: canInvite,
-		});
-		return data.canInvite;
-	};
+	async function hasGlobalPrivilege(privilege, uid) {
+		const privilegeName = privilege.split('-').map(word => word.slice(0, 1).toUpperCase() + word.slice(1)).join('');
+		let payload = { uid };
+		payload[`can${privilegeName}`] = await privileges.global.can(privilege, uid);
+		payload = await plugins.fireHook(`filter:user.has${privilegeName}Privilege`, payload);
+		return payload[`can${privilegeName}`];
+	}
 };

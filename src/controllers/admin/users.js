@@ -243,9 +243,10 @@ async function render(req, res, data) {
 		data['filterBy_' + validator.escape(String(filter))] = true;
 	});
 
-	data.showInviteButton = await privileges.users.hasInvitePrivilege(req.uid);
 	if (data.adminInviteOnly) {
 		data.showInviteButton = await privileges.users.isAdministrator(req.uid);
+	} else {
+		data.showInviteButton = await privileges.users.hasInvitePrivilege(req.uid);
 	}
 
 	res.render('admin/manage/users', data);
