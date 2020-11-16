@@ -41,7 +41,7 @@ function authenticatedRoutes() {
 	router.all('/+bySlug/:userslug*?', [], controllers.write.users.redirectBySlug);
 
 	setupApiRoute(router, 'post', '/:uid/invites', middlewares, controllers.write.users.invite);
-	setupApiRoute(router, 'get', '/:uid/invites/groups', [...middlewares, middleware.assert.user], controllers.users.getInviteGroups);
+	setupApiRoute(router, 'get', '/:uid/invites/groups', [...middlewares, middleware.assert.user], controllers.write.users.getInviteGroups);
 }
 
 module.exports = function () {

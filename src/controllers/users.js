@@ -4,7 +4,6 @@ const user = require('../user');
 const meta = require('../meta');
 
 const db = require('../database');
-const groups = require('../groups');
 const pagination = require('../pagination');
 const privileges = require('../privileges');
 const helpers = require('./helpers');
@@ -163,15 +162,6 @@ usersController.getUsersAndCount = async function (set, uid, start, stop) {
 		users: usersData.filter(user => user && parseInt(user.uid, 10)),
 		count: count,
 	};
-};
-
-usersController.getInviteGroups = async function (req, res) {
-	if (parseInt(req.params.uid, 10) !== parseInt(req.user.uid, 10)) {
-		return helpers.formatApiResponse(401, res);
-	}
-
-	const userInviteGroups = await groups.getUserInviteGroups(req.params.uid);
-	return helpers.formatApiResponse(200, res, userInviteGroups);
 };
 
 async function render(req, res, data) {

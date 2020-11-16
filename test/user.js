@@ -5,6 +5,7 @@ var async = require('async');
 var path = require('path');
 var nconf = require('nconf');
 var request = require('request');
+const requestAsync = require('request-promise-native');
 var jwt = require('jsonwebtoken');
 
 var db = require('./mocks/databasemock');
@@ -2234,6 +2235,59 @@ describe('User', function () {
 
 						resolve();
 					});
+				});
+			});
+		});
+
+		describe('invite groups', () => {
+			var csrf_token;
+			var jar;
+
+			before(function (done) {
+				helpers.loginUser('inviter', COMMON_PW, function (err, _jar) {
+					assert.ifError(err);
+					jar = _jar;
+
+					request({
+						url: nconf.get('url') + '/api/config',
+						json: true,
+						jar: jar,
+					}, function (err, response, body) {
+						assert.ifError(err);
+						csrf_token = body.csrf_token;
+						done();
+					});
+				});
+			});
+
+			it('should show a list of groups for adding to an invite', async () => {
+				const body = await requestAsync({
+					url: `${nconf.get('url')}/api/v3/users/${inviterUid}/invites/groups`,
+					json: true,
+					jar,
+				});
+
+				assert(Array.isArray(body.response));
+				assert.strictEqual(2, body.response.length);
+				assert.deepStrictEqual(body.response, ['ownPrivateGroup', 'publicGroup']);
+			});
+
+			it('should error out if you request invite groups for another uid', async () => {
+				const res = await requestAsync({
+					url: `${nconf.get('url')}/api/v3/users/${adminUid}/invites/groups`,
+					json: true,
+					jar,
+					simple: false,
+					resolveWithFullResponse: true,
+				});
+
+				assert.strictEqual(res.statusCode, 401);
+				assert.deepStrictEqual(res.body, {
+					status: {
+						code: 'not-authorised',
+						message: 'A valid login session was not found. Please log in and try again.',
+					},
+					response: {},
 				});
 			});
 		});

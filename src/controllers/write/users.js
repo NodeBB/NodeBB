@@ -201,3 +201,12 @@ Users.invite = async (req, res) => {
 
 	return helpers.formatApiResponse(200, res);
 };
+
+Users.getInviteGroups = async function (req, res) {
+	if (parseInt(req.params.uid, 10) !== parseInt(req.user.uid, 10)) {
+		return helpers.formatApiResponse(401, res);
+	}
+
+	const userInviteGroups = await groups.getUserInviteGroups(req.params.uid);
+	return helpers.formatApiResponse(200, res, userInviteGroups);
+};
