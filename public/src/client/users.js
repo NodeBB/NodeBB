@@ -2,8 +2,8 @@
 
 
 define('forum/users', [
-	'translator', 'benchpress', 'api',
-], function (translator, Benchpress, api) {
+	'translator', 'benchpress', 'api', 'bootbox',
+], function (translator, Benchpress, api, bootbox) {
 	var	Users = {};
 
 	var searchTimeoutID = 0;
@@ -136,19 +136,55 @@ define('forum/users', [
 	}
 
 	function handleInvite() {
-		$('[component="user/invite"]').on('click', function () {
-			bootbox.prompt('[[users:prompt-email]]', function (email) {
-				if (!email) {
-					return;
-				}
-
-				socket.emit('user.invite', email, function (err) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-					app.alertSuccess('[[users:invitation-email-sent, ' + email + ']]');
+		$('[component="user/invite"]').on('click', function (e) {
+			e.preventDefault();
+			api.get(`/api/v3/users/${app.user.uid}/invites/groups`, {}).then((groups) => {
+				Benchpress.parse('modals/invite', { groups: groups }, function (html) {
+					bootbox.dialog({
+						message: html,
+						title: '[[users:invite]]',
+						onEscape: true,
+						buttons: {
+							cancel: {
+								label: '[[modules:bootbox.cancel]]',
+								className: 'btn-default',
+							},
+							invite: {
+								label: '[[users:invite]]',
+								className: 'btn-primary',
+								callback: sendInvites,
+							},
+						},
+					});
 				});
+			}).catch((err) => {
+				app.alertError(err.message);
 			});
+		});
+	}
+
+	function sendInvites() {
+		var $emails = $('#invite-modal-emails');
+		var $groups = $('#invite-modal-groups');
+
+		var data = {
+			emails: $emails.val()
+				.split(',')
+				.map(m => m.trim())
+				.filter(Boolean)
+				.filter((m, i, arr) => i === arr.indexOf(m))
+				.join(','),
+			groupsToJoin: $groups.val(),
+		};
+
+		if (!data.emails) {
+			return;
+		}
+
+		api.post(`/users/${app.user.uid}/invites`, data).then(() => {
+			app.alertSuccess('[[users:invitation-email-sent, ' + data.emails.replace(/,/g, '&#44; ') + ']]');
+		}).catch((err) => {
+			app.alertError(err.message);
 		});
 	}
 

@@ -55,7 +55,11 @@ async function registerAndLoginUser(req, res, userData) {
 		await authenticationController.doLogin(req, uid);
 	}
 
-	user.deleteInvitationKey(userData.email);
+	// Distinguish registrations through invites from direct ones
+	if (userData.token) {
+		await user.joinGroupsFromInvitation(uid, userData.email);
+	}
+	await user.deleteInvitationKey(userData.email);
 	const referrer = req.body.referrer || req.session.referrer || nconf.get('relative_path') + '/';
 	const complete = await plugins.fireHook('filter:register.complete', { uid: uid, referrer: referrer });
 	req.session.returnTo = complete.referrer;
@@ -74,7 +78,7 @@ authenticationController.register = async function (req, res) {
 
 	const userData = req.body;
 	try {
-		if (registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
+		if (userData.token || registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
 			await user.verifyInvitation(userData);
 		}
 
