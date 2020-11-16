@@ -1,5 +1,5 @@
 {
-    "test-email.subject": "Test Email",
+    "test-email.subject": "מייל בדיקה",
     "password-reset-requested": "נדרש איפוס סיסמה!",
     "welcome-to": "ברוכים הבאים ל%1",
     "invite": "הזמנה מ%1",
@@ -13,7 +13,7 @@
     "welcome.cta": "לחץ כאן על מנת לאשר את כתובת המייל שלך.",
     "invitation.text1": "%1 הזמין אותך להצתרף ל%2",
     "invitation.text2": "ההזמנה של תפוג ב %1 ימים",
-    "invitation.cta": "Click here to create your account.",
+    "invitation.cta": "לחץ כאן ליצירת החשבון שלך.",
     "reset.text1": "קיבלנו בקשה לאפס את הסיסמה לחשבון שלך, כנראה מפני ששכחת אותה. אם לא ביקשת לאפס את הסיסמה, אנא התעלם ממייל זה.",
     "reset.text2": "על מנת להמשיך עם תהליך איפוס הסיסמה, אנא לחץ על הלינק הבא:",
     "reset.cta": "לחץ כאן לאפס את הסיסמה שלך.",

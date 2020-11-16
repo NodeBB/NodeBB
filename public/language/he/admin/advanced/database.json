@@ -22,7 +22,7 @@
 	"mongo.bytes-out": "ביטים יוצאים",
 	"mongo.num-requests": "מספר בקשות",
 	"mongo.raw-info": "מידע לא מעובד מMongoDB",
-	"mongo.unauthorized": "NodeBB was unable to query the MongoDB database for relevant statistics. Please ensure that the user in use by NodeBB contains the &quot;clusterMonitor&quot; role for the &quot;admin&quot; database.",
+	"mongo.unauthorized": "NodeBB לא הצליחה לקבל את המידע הדרוש מMongoDB. אנא בדוק שלמשתמש יש הרשאת clusterMonitor לadmin database.",
 
 	"redis": "Redis",
 	"redis.version": "גרסת Redis",
