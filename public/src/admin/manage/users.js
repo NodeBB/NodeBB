@@ -456,7 +456,7 @@ define('admin/manage/users', [
 	function handleInvite() {
 		$('[component="user/invite"]').on('click', function (e) {
 			e.preventDefault();
-			api.get('/api/v3/users/' + app.user.uid + '/inviteGroups', {}).then((groups) => {
+			api.get(`/api/v3/users/${app.user.uid}/invites/groups`, {}).then((groups) => {
 				Benchpress.parse('modals/invite', { groups: groups }, function (html) {
 					bootbox.dialog({
 						message: html,

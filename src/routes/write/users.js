@@ -40,8 +40,8 @@ function authenticatedRoutes() {
 	// Shorthand route to access user routes by userslug
 	router.all('/+bySlug/:userslug*?', [], controllers.write.users.redirectBySlug);
 
-	setupApiRoute(router, 'get', '/:uid/inviteGroups', [...middlewares, middleware.assert.user], controllers.users.getInviteGroups);
 	setupApiRoute(router, 'post', '/invite', middlewares, controllers.write.users.invite);
+	setupApiRoute(router, 'get', '/:uid/invites/groups', [...middlewares, middleware.assert.user], controllers.users.getInviteGroups);
 }
 
 module.exports = function () {
