@@ -81,9 +81,7 @@ const buildCustomTemplates = async (config) => {
 
 		await Promise.all(templatesToBuild.map(async (template) => {
 			const source = await meta.templates.processImports(paths, template.path, template.text);
-			const compiled = await Benchpress.precompile(source, {
-				minify: global.env !== 'development',
-			});
+			const compiled = await Benchpress.precompile(source, { filename: template.path });
 			await fs.promises.writeFile(template.fullpath.replace(/\.tpl$/, '.js'), compiled);
 		}));
 

@@ -111,9 +111,7 @@ async function compileTemplate(filename, source) {
 	}));
 
 	source = await processImports(paths, filename, source);
-	const compiled = await Benchpress.precompile(source, {
-		minify: process.env.NODE_ENV !== 'development',
-	});
+	const compiled = await Benchpress.precompile(source, { filename });
 	return await fs.promises.writeFile(path.join(viewsPath, filename.replace(/\.tpl$/, '.js')), compiled);
 }
 Templates.compileTemplate = compileTemplate;
@@ -136,7 +134,7 @@ async function compile() {
 		await mkdirp(path.join(viewsPath, path.dirname(name)));
 
 		await fs.promises.writeFile(path.join(viewsPath, name), imported);
-		const compiled = await Benchpress.precompile(imported, { minify: process.env.NODE_ENV !== 'development' });
+		const compiled = await Benchpress.precompile(imported, { filename: name });
 		await fs.promises.writeFile(path.join(viewsPath, name.replace(/\.tpl$/, '.js')), compiled);
 	}));
 
