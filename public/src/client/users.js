@@ -181,7 +181,7 @@ define('forum/users', [
 			return;
 		}
 
-		api.post('/api/v3/users/invite', data).then(() => {
+		api.post('/users/invite', data).then(() => {
 			app.alertSuccess('[[users:invitation-email-sent, ' + data.emails.replace(/,/g, '&#44; ') + ']]');
 		}).catch((err) => {
 			app.alertError(err.message);
