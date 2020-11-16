@@ -2072,6 +2072,14 @@ describe('User', function () {
 				assert.strictEqual(res.statusCode, 200);
 			});
 
+			it('should error if invite is sent via API with a different UID', async () => {
+				const { res } = await helpers.invite({ emails: 'inviter@nodebb.org', groupsToJoin: [] }, adminUid, jar, csrf_token);
+				const numInvites = await User.getInvitesNumber(adminUid);
+				assert.strictEqual(res.statusCode, 403);
+				assert.strictEqual(res.body.status.message, '[[error:no-privileges]]');
+				assert.strictEqual(numInvites, 0);
+			});
+
 			it('should error if email exists', async () => {
 				const { res } = await helpers.invite({ emails: 'inviter@nodebb.org', groupsToJoin: [] }, inviterUid, jar, csrf_token);
 				assert.strictEqual(res.statusCode, 400);

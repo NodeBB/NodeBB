@@ -161,6 +161,11 @@ Users.invite = async (req, res) => {
 		return helpers.formatApiResponse(400, res, new Error('[[error:invalid-data]]'));
 	}
 
+	// For simplicity, this API route is restricted to self-use only. This can change if needed.
+	if (parseInt(req.user.uid, 10) !== parseInt(req.params.uid, 10)) {
+		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
+	}
+
 	const canInvite = await privileges.users.hasInvitePrivilege(req.uid);
 	if (!canInvite) {
 		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
