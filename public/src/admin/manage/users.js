@@ -1,8 +1,8 @@
 'use strict';
 
 define('admin/manage/users', [
-	'translator', 'benchpress', 'autocomplete', 'api', 'slugify', 'bootbox',
-], function (translator, Benchpress, autocomplete, api, slugify, bootbox) {
+	'translator', 'benchpress', 'autocomplete', 'api', 'slugify', 'bootbox', 'accounts/invite',
+], function (translator, Benchpress, autocomplete, api, slugify, bootbox, AccountInvite) {
 	var Users = {};
 
 	Users.init = function () {
@@ -380,13 +380,10 @@ define('admin/manage/users', [
 		}
 
 		handleSearch();
-
 		handleUserCreate();
-
-		handleInvite();
-
 		handleSort();
 		handleFilter();
+		AccountInvite.handle();
 	};
 
 	function handleSearch() {
@@ -450,59 +447,6 @@ define('admin/manage/users', [
 				).removeClass('hidden');
 				$('#user-notfound-notify').addClass('hidden');
 			}
-		});
-	}
-
-	function handleInvite() {
-		$('[component="user/invite"]').on('click', function (e) {
-			e.preventDefault();
-			api.get(`/api/v3/users/${app.user.uid}/invites/groups`, {}).then((groups) => {
-				Benchpress.parse('modals/invite', { groups: groups }, function (html) {
-					bootbox.dialog({
-						message: html,
-						title: '[[admin/manage/users:invite]]',
-						onEscape: true,
-						buttons: {
-							cancel: {
-								label: '[[admin/manage/users:alerts.button-cancel]]',
-								className: 'btn-default',
-							},
-							invite: {
-								label: '[[admin/manage/users:invite]]',
-								className: 'btn-primary',
-								callback: sendInvites,
-							},
-						},
-					});
-				});
-			}).catch((err) => {
-				app.alertError(err.message);
-			});
-		});
-	}
-
-	function sendInvites() {
-		var $emails = $('#invite-modal-emails');
-		var $groups = $('#invite-modal-groups');
-
-		var data = {
-			emails: $emails.val()
-				.split(',')
-				.map(m => m.trim())
-				.filter(Boolean)
-				.filter((m, i, arr) => i === arr.indexOf(m))
-				.join(','),
-			groupsToJoin: $groups.val(),
-		};
-
-		if (!data.emails) {
-			return;
-		}
-
-		api.post(`/users/${app.user.uid}/invites`, data).then(() => {
-			app.alertSuccess('[[admin/manage/users:alerts.email-sent-to, ' + data.emails.replace(/,/g, '&#44; ') + ']]');
-		}).catch((err) => {
-			app.alertError(err.message);
 		});
 	}
 
