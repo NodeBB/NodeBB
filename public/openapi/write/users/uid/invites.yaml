@@ -29,12 +29,12 @@ post:
             type: object
             properties:
               status:
-                $ref: ../../components/schemas/Status.yaml#/Status
+                $ref: ../../../components/schemas/Status.yaml#/Status
               response:
                 type: object
     '400':
-      $ref: ../../components/responses/400.yaml#/400
+      $ref: ../../../components/responses/400.yaml#/400
     '401':
-      $ref: ../../components/responses/401.yaml#/401
+      $ref: ../../../components/responses/401.yaml#/401
     '403':
-      $ref: ../../components/responses/403.yaml#/403
+      $ref: ../../../components/responses/403.yaml#/403

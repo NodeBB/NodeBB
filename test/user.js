@@ -1973,7 +1973,7 @@ describe('User', function () {
 			});
 
 			it('should error if user has not invite privilege', function (done) {
-				helpers.invite({ emails: 'invite1@test.com', groupsToJoin: [] }, jar, csrf_token, function (err, res) {
+				helpers.invite({ emails: 'invite1@test.com', groupsToJoin: [] }, notAnInviterUid, jar, csrf_token, function (err, res) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 403);
 					assert.equal(res.body.status.message, '[[error:no-privileges]]');
@@ -2004,7 +2004,7 @@ describe('User', function () {
 			});
 
 			it('should error with invalid data', function (done) {
-				helpers.invite({}, jar, csrf_token, function (err, res) {
+				helpers.invite({}, inviterUid, jar, csrf_token, function (err, res) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 400);
 					assert.equal(res.body.status.message, '[[error:invalid-data]]');
@@ -2014,7 +2014,7 @@ describe('User', function () {
 
 			it('should error if user is not admin and type is admin-invite-only', function (done) {
 				meta.config.registrationType = 'admin-invite-only';
-				helpers.invite({ emails: 'invite1@test.com', groupsToJoin: [] }, jar, csrf_token, function (err, res) {
+				helpers.invite({ emails: 'invite1@test.com', groupsToJoin: [] }, inviterUid, jar, csrf_token, function (err, res) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 403);
 					assert.equal(res.body.status.message, '[[error:no-privileges]]');
@@ -2024,7 +2024,7 @@ describe('User', function () {
 
 			it('should send invitation email (without groups to be joined)', function (done) {
 				meta.config.registrationType = 'normal';
-				helpers.invite({ emails: 'invite1@test.com', groupsToJoin: [] }, jar, csrf_token, function (err, res) {
+				helpers.invite({ emails: 'invite1@test.com', groupsToJoin: [] }, inviterUid, jar, csrf_token, function (err, res) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 					done();
@@ -2032,7 +2032,7 @@ describe('User', function () {
 			});
 
 			it('should send multiple invitation emails (with a public group to be joined)', function (done) {
-				helpers.invite({ emails: 'invite2@test.com,invite3@test.com', groupsToJoin: [PUBLIC_GROUP] }, jar, csrf_token, function (err, res) {
+				helpers.invite({ emails: 'invite2@test.com,invite3@test.com', groupsToJoin: [PUBLIC_GROUP] }, inviterUid, jar, csrf_token, function (err, res) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 					done();
@@ -2040,7 +2040,7 @@ describe('User', function () {
 			});
 
 			it('should error if the user has not permission to invite to the group', function (done) {
-				helpers.invite({ emails: 'invite4@test.com', groupsToJoin: [PRIVATE_GROUP] }, jar, csrf_token, function (err, res) {
+				helpers.invite({ emails: 'invite4@test.com', groupsToJoin: [PRIVATE_GROUP] }, inviterUid, jar, csrf_token, function (err, res) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 403);
 					assert.equal(res.body.status.message, '[[error:no-privileges]]');
@@ -2049,7 +2049,7 @@ describe('User', function () {
 			});
 
 			it('should error if a non-admin tries to invite to the administrators group', function (done) {
-				helpers.invite({ emails: 'invite4@test.com', groupsToJoin: ['administrators'] }, jar, csrf_token, function (err, res) {
+				helpers.invite({ emails: 'invite4@test.com', groupsToJoin: ['administrators'] }, inviterUid, jar, csrf_token, function (err, res) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 403);
 					assert.equal(res.body.status.message, '[[error:no-privileges]]');
@@ -2058,7 +2058,7 @@ describe('User', function () {
 			});
 
 			it('should to invite to own private group', function (done) {
-				helpers.invite({ emails: 'invite4@test.com', groupsToJoin: [OWN_PRIVATE_GROUP] }, jar, csrf_token, function (err, res) {
+				helpers.invite({ emails: 'invite4@test.com', groupsToJoin: [OWN_PRIVATE_GROUP] }, inviterUid, jar, csrf_token, function (err, res) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 					done();
@@ -2066,7 +2066,7 @@ describe('User', function () {
 			});
 
 			it('should to invite to multiple groups', function (done) {
-				helpers.invite({ emails: 'invite5@test.com', groupsToJoin: [PUBLIC_GROUP, OWN_PRIVATE_GROUP] }, jar, csrf_token, function (err, res) {
+				helpers.invite({ emails: 'invite5@test.com', groupsToJoin: [PUBLIC_GROUP, OWN_PRIVATE_GROUP] }, inviterUid, jar, csrf_token, function (err, res) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 					done();
@@ -2074,7 +2074,7 @@ describe('User', function () {
 			});
 
 			it('should error if tries to invite to hidden group', function (done) {
-				helpers.invite({ emails: 'invite6@test.com', groupsToJoin: [HIDDEN_GROUP] }, jar, csrf_token, function (err, res) {
+				helpers.invite({ emails: 'invite6@test.com', groupsToJoin: [HIDDEN_GROUP] }, inviterUid, jar, csrf_token, function (err, res) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 403);
 					done();
@@ -2083,7 +2083,7 @@ describe('User', function () {
 
 			it('should error if ouf of invitations', function (done) {
 				meta.config.maximumInvites = 1;
-				helpers.invite({ emails: 'invite6@test.com', groupsToJoin: [] }, jar, csrf_token, function (err, res) {
+				helpers.invite({ emails: 'invite6@test.com', groupsToJoin: [] }, inviterUid, jar, csrf_token, function (err, res) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 403);
 					assert.equal(res.body.status.message, '[[error:invite-maximum-met, ' + 5 + ', ' + 1 + ']]');
@@ -2093,7 +2093,7 @@ describe('User', function () {
 			});
 
 			it('should send invitation email after maximumInvites increased', function (done) {
-				helpers.invite({ emails: 'invite6@test.com', groupsToJoin: [] }, jar, csrf_token, function (err, res) {
+				helpers.invite({ emails: 'invite6@test.com', groupsToJoin: [] }, inviterUid, jar, csrf_token, function (err, res) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 					done();
@@ -2101,7 +2101,7 @@ describe('User', function () {
 			});
 
 			it('should error if email exists', function (done) {
-				helpers.invite({ emails: 'inviter@nodebb.org', groupsToJoin: [] }, jar, csrf_token, function (err, res) {
+				helpers.invite({ emails: 'inviter@nodebb.org', groupsToJoin: [] }, inviterUid, jar, csrf_token, function (err, res) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 400);
 					assert.equal(res.body.status.message, '[[error:email-taken]]');
@@ -2132,7 +2132,7 @@ describe('User', function () {
 			});
 
 			it('should escape email', function (done) {
-				helpers.invite({ emails: '<script>alert("ok");</script>', groupsToJoin: [] }, jar, csrf_token, function (err, res) {
+				helpers.invite({ emails: '<script>alert("ok");</script>', groupsToJoin: [] }, adminUid, jar, csrf_token, function (err, res) {
 					assert.ifError(err);
 					User.getInvites(adminUid, function (err, data) {
 						assert.ifError(err);
@@ -2146,7 +2146,7 @@ describe('User', function () {
 			});
 
 			it('should invite to the administrators group if inviter is an admin', function (done) {
-				helpers.invite({ emails: 'invite99@test.com', groupsToJoin: ['administrators'] }, jar, csrf_token, function (err, res) {
+				helpers.invite({ emails: 'invite99@test.com', groupsToJoin: ['administrators'] }, adminUid, jar, csrf_token, function (err, res) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 					done();

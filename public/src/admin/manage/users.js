@@ -499,7 +499,7 @@ define('admin/manage/users', [
 			return;
 		}
 
-		api.post('/users/invite', data).then(() => {
+		api.post(`/users/${app.user.uid}/invites`, data).then(() => {
 			app.alertSuccess('[[admin/manage/users:alerts.email-sent-to, ' + data.emails.replace(/,/g, '&#44; ') + ']]');
 		}).catch((err) => {
 			app.alertError(err.message);

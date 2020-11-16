@@ -162,8 +162,8 @@ helpers.copyFile = function (source, target, callback) {
 	}
 };
 
-helpers.invite = function (body, jar, csrf_token, callback) {
-	request.post(nconf.get('url') + '/api/v3/users/invite', {
+helpers.invite = function (body, uid, jar, csrf_token, callback) {
+	request.post(`${nconf.get('url')}/api/v3/users/${uid}/invites`, {
 		jar: jar,
 		// using "form" since client "api" module make requests with "application/x-www-form-urlencoded" content-type
 		form: body,
