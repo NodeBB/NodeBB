@@ -1972,13 +1972,18 @@ describe('User', function () {
 				});
 			});
 
-			it('should error if user has not invite privilege', function (done) {
-				helpers.invite({ emails: 'invite1@test.com', groupsToJoin: [] }, notAnInviterUid, jar, csrf_token, function (err, res) {
-					assert.ifError(err);
-					assert.equal(res.statusCode, 403);
-					assert.equal(res.body.status.message, '[[error:no-privileges]]');
-					done();
-				});
+			it('should error if user does not have invite privilege', async () => {
+				const { res } = await helpers.invite({ emails: 'invite1@test.com', groupsToJoin: [] }, notAnInviterUid, jar, csrf_token);
+				assert.strictEqual(res.statusCode, 403);
+				assert.strictEqual(res.body.status.message, '[[error:no-privileges]]');
+			});
+
+			it('should error out if user tries to use an inviter\'s uid via the API', async () => {
+				const { res } = await helpers.invite({ emails: 'invite1@test.com', groupsToJoin: [] }, inviterUid, jar, csrf_token);
+				const numInvites = await User.getInvitesNumber(inviterUid);
+				assert.strictEqual(res.statusCode, 403);
+				assert.strictEqual(res.body.status.message, '[[error:no-privileges]]');
+				assert.strictEqual(numInvites, 0);
 			});
 		});
 
@@ -2003,110 +2008,74 @@ describe('User', function () {
 				});
 			});
 
-			it('should error with invalid data', function (done) {
-				helpers.invite({}, inviterUid, jar, csrf_token, function (err, res) {
-					assert.ifError(err);
-					assert.equal(res.statusCode, 400);
-					assert.equal(res.body.status.message, '[[error:invalid-data]]');
-					done();
-				});
+			it('should error with invalid data', async () => {
+				const { res } = await helpers.invite({}, inviterUid, jar, csrf_token);
+				assert.strictEqual(res.statusCode, 400);
+				assert.strictEqual(res.body.status.message, '[[error:invalid-data]]');
 			});
 
-			it('should error if user is not admin and type is admin-invite-only', function (done) {
+			it('should error if user is not admin and type is admin-invite-only', async () => {
 				meta.config.registrationType = 'admin-invite-only';
-				helpers.invite({ emails: 'invite1@test.com', groupsToJoin: [] }, inviterUid, jar, csrf_token, function (err, res) {
-					assert.ifError(err);
-					assert.equal(res.statusCode, 403);
-					assert.equal(res.body.status.message, '[[error:no-privileges]]');
-					done();
-				});
+				const { res } = await helpers.invite({ emails: 'invite1@test.com', groupsToJoin: [] }, inviterUid, jar, csrf_token);
+				assert.strictEqual(res.statusCode, 403);
+				assert.strictEqual(res.body.status.message, '[[error:no-privileges]]');
 			});
 
-			it('should send invitation email (without groups to be joined)', function (done) {
+			it('should send invitation email (without groups to be joined)', async () => {
 				meta.config.registrationType = 'normal';
-				helpers.invite({ emails: 'invite1@test.com', groupsToJoin: [] }, inviterUid, jar, csrf_token, function (err, res) {
-					assert.ifError(err);
-					assert.equal(res.statusCode, 200);
-					done();
-				});
+				const { res } = await helpers.invite({ emails: 'invite1@test.com', groupsToJoin: [] }, inviterUid, jar, csrf_token);
+				assert.strictEqual(res.statusCode, 200);
 			});
 
-			it('should send multiple invitation emails (with a public group to be joined)', function (done) {
-				helpers.invite({ emails: 'invite2@test.com,invite3@test.com', groupsToJoin: [PUBLIC_GROUP] }, inviterUid, jar, csrf_token, function (err, res) {
-					assert.ifError(err);
-					assert.equal(res.statusCode, 200);
-					done();
-				});
+			it('should send multiple invitation emails (with a public group to be joined)', async () => {
+				const { res } = await helpers.invite({ emails: 'invite2@test.com,invite3@test.com', groupsToJoin: [PUBLIC_GROUP] }, inviterUid, jar, csrf_token);
+				assert.strictEqual(res.statusCode, 200);
 			});
 
-			it('should error if the user has not permission to invite to the group', function (done) {
-				helpers.invite({ emails: 'invite4@test.com', groupsToJoin: [PRIVATE_GROUP] }, inviterUid, jar, csrf_token, function (err, res) {
-					assert.ifError(err);
-					assert.equal(res.statusCode, 403);
-					assert.equal(res.body.status.message, '[[error:no-privileges]]');
-					done();
-				});
+			it('should error if the user has not permission to invite to the group', async () => {
+				const { res } = await helpers.invite({ emails: 'invite4@test.com', groupsToJoin: [PRIVATE_GROUP] }, inviterUid, jar, csrf_token);
+				assert.strictEqual(res.statusCode, 403);
+				assert.strictEqual(res.body.status.message, '[[error:no-privileges]]');
 			});
 
-			it('should error if a non-admin tries to invite to the administrators group', function (done) {
-				helpers.invite({ emails: 'invite4@test.com', groupsToJoin: ['administrators'] }, inviterUid, jar, csrf_token, function (err, res) {
-					assert.ifError(err);
-					assert.equal(res.statusCode, 403);
-					assert.equal(res.body.status.message, '[[error:no-privileges]]');
-					done();
-				});
+			it('should error if a non-admin tries to invite to the administrators group', async () => {
+				const { res } = await helpers.invite({ emails: 'invite4@test.com', groupsToJoin: ['administrators'] }, inviterUid, jar, csrf_token);
+				assert.strictEqual(res.statusCode, 403);
+				assert.strictEqual(res.body.status.message, '[[error:no-privileges]]');
 			});
 
-			it('should to invite to own private group', function (done) {
-				helpers.invite({ emails: 'invite4@test.com', groupsToJoin: [OWN_PRIVATE_GROUP] }, inviterUid, jar, csrf_token, function (err, res) {
-					assert.ifError(err);
-					assert.equal(res.statusCode, 200);
-					done();
-				});
+			it('should to invite to own private group', async () => {
+				const { res } = await helpers.invite({ emails: 'invite4@test.com', groupsToJoin: [OWN_PRIVATE_GROUP] }, inviterUid, jar, csrf_token);
+				assert.strictEqual(res.statusCode, 200);
 			});
 
-			it('should to invite to multiple groups', function (done) {
-				helpers.invite({ emails: 'invite5@test.com', groupsToJoin: [PUBLIC_GROUP, OWN_PRIVATE_GROUP] }, inviterUid, jar, csrf_token, function (err, res) {
-					assert.ifError(err);
-					assert.equal(res.statusCode, 200);
-					done();
-				});
+			it('should to invite to multiple groups', async () => {
+				const { res } = await helpers.invite({ emails: 'invite5@test.com', groupsToJoin: [PUBLIC_GROUP, OWN_PRIVATE_GROUP] }, inviterUid, jar, csrf_token);
+				assert.strictEqual(res.statusCode, 200);
 			});
 
-			it('should error if tries to invite to hidden group', function (done) {
-				helpers.invite({ emails: 'invite6@test.com', groupsToJoin: [HIDDEN_GROUP] }, inviterUid, jar, csrf_token, function (err, res) {
-					assert.ifError(err);
-					assert.equal(res.statusCode, 403);
-					done();
-				});
+			it('should error if tries to invite to hidden group', async () => {
+				const { res } = await helpers.invite({ emails: 'invite6@test.com', groupsToJoin: [HIDDEN_GROUP] }, inviterUid, jar, csrf_token);
+				assert.strictEqual(res.statusCode, 403);
 			});
 
-			it('should error if ouf of invitations', function (done) {
+			it('should error if ouf of invitations', async () => {
 				meta.config.maximumInvites = 1;
-				helpers.invite({ emails: 'invite6@test.com', groupsToJoin: [] }, inviterUid, jar, csrf_token, function (err, res) {
-					assert.ifError(err);
-					assert.equal(res.statusCode, 403);
-					assert.equal(res.body.status.message, '[[error:invite-maximum-met, ' + 5 + ', ' + 1 + ']]');
-					meta.config.maximumInvites = 10;
-					done();
-				});
+				const { res } = await helpers.invite({ emails: 'invite6@test.com', groupsToJoin: [] }, inviterUid, jar, csrf_token);
+				assert.strictEqual(res.statusCode, 403);
+				assert.strictEqual(res.body.status.message, '[[error:invite-maximum-met, ' + 5 + ', ' + 1 + ']]');
+				meta.config.maximumInvites = 10;
 			});
 
-			it('should send invitation email after maximumInvites increased', function (done) {
-				helpers.invite({ emails: 'invite6@test.com', groupsToJoin: [] }, inviterUid, jar, csrf_token, function (err, res) {
-					assert.ifError(err);
-					assert.equal(res.statusCode, 200);
-					done();
-				});
+			it('should send invitation email after maximumInvites increased', async () => {
+				const { res } = await helpers.invite({ emails: 'invite6@test.com', groupsToJoin: [] }, inviterUid, jar, csrf_token);
+				assert.strictEqual(res.statusCode, 200);
 			});
 
-			it('should error if email exists', function (done) {
-				helpers.invite({ emails: 'inviter@nodebb.org', groupsToJoin: [] }, inviterUid, jar, csrf_token, function (err, res) {
-					assert.ifError(err);
-					assert.equal(res.statusCode, 400);
-					assert.equal(res.body.status.message, '[[error:email-taken]]');
-					done();
-				});
+			it('should error if email exists', async () => {
+				const { res } = await helpers.invite({ emails: 'inviter@nodebb.org', groupsToJoin: [] }, inviterUid, jar, csrf_token);
+				assert.strictEqual(res.statusCode, 400);
+				assert.strictEqual(res.body.status.message, '[[error:email-taken]]');
 			});
 		});
 
@@ -2131,26 +2100,16 @@ describe('User', function () {
 				});
 			});
 
-			it('should escape email', function (done) {
-				helpers.invite({ emails: '<script>alert("ok");</script>', groupsToJoin: [] }, adminUid, jar, csrf_token, function (err, res) {
-					assert.ifError(err);
-					User.getInvites(adminUid, function (err, data) {
-						assert.ifError(err);
-						assert.equal(data[0], '&lt;script&gt;alert(&quot;ok&quot;);&lt;&#x2F;script&gt;');
-						User.deleteInvitationKey('<script>alert("ok");</script>', function (err) {
-							assert.ifError(err);
-							done();
-						});
-					});
-				});
+			it('should escape email', async () => {
+				await helpers.invite({ emails: '<script>alert("ok");</script>', groupsToJoin: [] }, adminUid, jar, csrf_token);
+				const data = await User.getInvites(adminUid);
+				assert.strictEqual(data[0], '&lt;script&gt;alert(&quot;ok&quot;);&lt;&#x2F;script&gt;');
+				await User.deleteInvitationKey('<script>alert("ok");</script>');
 			});
 
-			it('should invite to the administrators group if inviter is an admin', function (done) {
-				helpers.invite({ emails: 'invite99@test.com', groupsToJoin: ['administrators'] }, adminUid, jar, csrf_token, function (err, res) {
-					assert.ifError(err);
-					assert.equal(res.statusCode, 200);
-					done();
-				});
+			it('should invite to the administrators group if inviter is an admin', async () => {
+				const { res } = await helpers.invite({ emails: 'invite99@test.com', groupsToJoin: ['administrators'] }, adminUid, jar, csrf_token);
+				assert.strictEqual(res.statusCode, 200);
 			});
 		});
 
