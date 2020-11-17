@@ -58,6 +58,9 @@ Settings:
     notificationType_new-chat:
       type: string
       description: Notification type for new chat messages
+    notificationType_new-group-chat:
+      type: string
+      description: Notification type for new group chat messages
     notificationType_new-reply:
       type: string
       description: Notification type for new topic replies

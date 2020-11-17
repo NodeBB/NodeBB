@@ -86,6 +86,7 @@
     "notificationType_post-edit": "notification",
     "notificationType_follow": "notification",
     "notificationType_new-chat": "notification",
+    "notificationType_new-group-chat": "notification",
     "notificationType_group-invite": "notification",
     "notificationType_group-request-membership": "notification",
     "notificationType_mention": "notification",
