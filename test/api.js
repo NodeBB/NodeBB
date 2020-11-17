@@ -80,9 +80,9 @@ describe('API', async () => {
 		// Create sample users
 		const adminUid = await user.create({ username: 'admin', password: '123456', email: 'test@example.org' });
 		const unprivUid = await user.create({ username: 'unpriv', password: '123456', email: 'unpriv@example.org' });
-		for (let x = 0; x < 3; x++) {
+		for (let x = 0; x < 4; x++) {
 			// eslint-disable-next-line no-await-in-loop
-			await user.create({ username: 'deleteme', password: '123456' });	// for testing of user deletion routes (uids 4-6)
+			await user.create({ username: 'deleteme', password: '123456' });	// for testing of DELETE /users (uids 5, 6) and DELETE /user/:uid/account (uid 7)
 		}
 		await groups.join('administrators', adminUid);
 

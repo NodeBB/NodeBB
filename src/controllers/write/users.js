@@ -49,7 +49,17 @@ Users.update = async (req, res) => {
 };
 
 Users.delete = async (req, res) => {
-	await api.users.delete(req, req.params);
+	await api.users.delete(req, { ...req.params, password: req.body.password });
+	helpers.formatApiResponse(200, res);
+};
+
+Users.deleteContent = async (req, res) => {
+	await api.users.deleteContent(req, { ...req.params, password: req.body.password });
+	helpers.formatApiResponse(200, res);
+};
+
+Users.deleteAccount = async (req, res) => {
+	await api.users.deleteAccount(req, { ...req.params, password: req.body.password });
 	helpers.formatApiResponse(200, res);
 };
 

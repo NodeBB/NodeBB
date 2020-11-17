@@ -36,8 +36,12 @@ define('admin/manage/users', [
 			$('.users-table [component="user/select/all"]').prop('checked', false);
 		}
 
-		function removeSelected() {
-			$('.users-table [component="user/select/single"]:checked').parents('.user-row').remove();
+		function removeRow(uid) {
+			const checkboxEl = document.querySelector(`.users-table [component="user/select/single"][data-uid="${uid}"]`);
+			if (checkboxEl) {
+				const rowEl = checkboxEl.closest('.user-row');
+				rowEl.parentNode.removeChild(rowEl);
+			}
 		}
 
 		// use onSuccess instead
@@ -253,71 +257,46 @@ define('admin/manage/users', [
 			});
 		});
 
-		$('.delete-user').on('click', function () {
+		$('.delete-user').on('click', () => {
+			handleDelete('[[admin/manage/users:alerts.confirm-delete]]', '/account');
+		});
+
+		$('.delete-user-content').on('click', () => {
+			handleDelete('[[admin/manage/users:alerts.confirm-delete-content]]', '/content');
+		});
+
+		$('.delete-user-and-content').on('click', () => {
+			handleDelete('[[admin/manage/users:alerts.confirm-purge]]', '');
+		});
+
+		function handleDelete(confirmMsg, path) {
 			var uids = getSelectedUids();
 			if (!uids.length) {
 				return;
 			}
 
-			bootbox.confirm('[[admin/manage/users:alerts.confirm-delete]]', function (confirm) {
+			bootbox.confirm(confirmMsg, function (confirm) {
 				if (confirm) {
-					socket.emit('admin.user.deleteUsers', uids, function (err) {
-						if (err) {
-							return app.alertError(err.message);
+					Promise.all(uids.map(uid => api.del(`/users/${uid}${path}`, {})
+						.then(() => {
+							if (path !== '/content') {
+								removeRow(uid);
+							}
+						})
+					)).then(() => {
+						if (path !== '/content') {
+							app.alertSuccess('[[admin/manage/users:alerts.delete-success]]');
+						} else {
+							app.alertSuccess('[[admin/manage/users:alerts.delete-content-success]]');
 						}
-
-						app.alertSuccess('[[admin/manage/users:alerts.delete-success]]');
-						removeSelected();
 						unselectAll();
 						if (!$('.users-table [component="user/select/single"]').length) {
 							ajaxify.refresh();
 						}
-					});
+					}).catch(app.alertError);
 				}
 			});
-		});
-
-		$('.delete-user-content').on('click', function () {
-			var uids = getSelectedUids();
-			if (!uids.length) {
-				return;
-			}
-
-			bootbox.confirm('[[admin/manage/users:alerts.confirm-delete-content]]', function (confirm) {
-				if (confirm) {
-					socket.emit('admin.user.deleteUsersContent', uids, function (err) {
-						if (err) {
-							return app.alertError(err.message);
-						}
-
-						app.alertSuccess('[[admin/manage/users:alerts.delete-content-success]]');
-					});
-				}
-			});
-		});
-
-		$('.delete-user-and-content').on('click', function () {
-			var uids = getSelectedUids();
-			if (!uids.length) {
-				return;
-			}
-			bootbox.confirm('[[admin/manage/users:alerts.confirm-purge]]', function (confirm) {
-				if (confirm) {
-					socket.emit('admin.user.deleteUsersAndContent', uids, function (err) {
-						if (err) {
-							return app.alertError(err.message);
-						}
-
-						app.alertSuccess('[[admin/manage/users:alerts.delete-success]]');
-						removeSelected();
-						unselectAll();
-						if (!$('.users-table [component="user/select/single"]').length) {
-							ajaxify.refresh();
-						}
-					});
-				}
-			});
-		});
+		}
 
 		function handleUserCreate() {
 			$('[data-action="create"]').on('click', function () {
