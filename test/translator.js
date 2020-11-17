@@ -322,4 +322,12 @@ describe('Translator static methods', function () {
 			done();
 		});
 	});
+
+	describe('add translation', function () {
+		it('should add custom translations', async function () {
+			shim.addTranslation('en-GB', 'my-namespace', { foo: 'a custom translation' });
+			const t = await shim.translate('this is best [[my-namespace:foo]]');
+			assert.strictEqual(t, 'this is best a custom translation');
+		});
+	});
 });
