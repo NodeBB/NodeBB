@@ -299,6 +299,13 @@
 				</label>
 			</div>
 
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="updateUrlWithPostIndex">
+					<span class="mdl-switch__label"><strong>[[admin/settings/user:update-url-with-post-index]]</strong></span>
+				</label>
+			</div>
+
 			<div class="form-group">
 				<label>[[admin/settings/user:digest-freq]]</label>
 				<select class="form-control" data-field="dailyDigestFreq">

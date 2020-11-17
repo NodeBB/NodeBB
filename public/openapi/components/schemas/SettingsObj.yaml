@@ -37,6 +37,9 @@ Settings:
     topicSearchEnabled:
       type: boolean
       description: Enable keyword searching within topics
+    updateUrlWithPostIndex:
+      type: boolean
+      description: Update url with post index while browsing topics
     categoryTopicSort:
       type: string
       description: Default sorting strategy of the topics in a category

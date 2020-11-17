@@ -139,5 +139,6 @@
     "showAverageApprovalTime": true,
     "autoApproveTime": 0,
     "maxUserSessions": 10,
-    "useCompression": 0
+    "useCompression": 0,
+    "updateUrlWithPostIndex": 1
 }

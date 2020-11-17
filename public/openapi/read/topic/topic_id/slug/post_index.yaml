@@ -388,6 +388,8 @@ get:
                     type: number
                   scrollToMyPost:
                     type: boolean
+                  updateUrlWithPostIndex:
+                    type: boolean
                   allowMultipleBadges:
                     type: boolean
                   privateUploads:
