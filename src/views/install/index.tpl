@@ -134,18 +134,18 @@
 	</div>
 
 	<div class="hide">
-		<!-- BEGIN databases -->
+		{{{ each databases }}}
 		<div data-database="{databases.name}">
-			<!-- BEGIN questions -->
+			 {{{ each databases.questions }}}
 				<div class="row input-row">
 					<div class="col-sm-7 col-xs-12 input-field">
 						<label for="{databases.questions.name}">{databases.questions.description}</label>
 						<input type="<!-- IF hidden -->password<!-- ELSE -->text<!-- ENDIF hidden -->" class="form-control" name="{databases.questions.name}" placeholder="{databases.questions.default}" value="{databases.questions.default}" />
 					</div>
 				</div>
-			<!-- END questions -->
+			{{{ end }}}
 		</div>
-		<!-- END databases -->
+		{{{ end }}}
 	</div>
 </body>
 </html>
