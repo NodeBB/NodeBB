@@ -4,23 +4,23 @@
 			<div class="panel-heading">[[admin/extend/rewards:rewards]]</div>
 			<div class="panel-body">
 				<ul id="active">
-					<!-- BEGIN active -->
+					{{{ each active }}}
 					<li data-rid="{active.rid}" data-id="{active.id}">
 						<form class="main inline-block">
 							<div class="well inline-block">
 								<label for="condition">[[admin/extend/rewards:condition-if-users]]</label><br />
 								<select name="condition" data-selected="{active.condition}">
-									<!-- BEGIN conditions -->
+									{{{ each conditions }}}
 									<option value="{conditions.condition}">{conditions.name}</option>
-									<!-- END conditions -->
+									{{{ end }}}
 								</select>
 							</div>
 							<div class="well inline-block">
 								<label for="condition">[[admin/extend/rewards:condition-is]]</label><br />
 								<select name="conditional" data-selected="{active.conditional}">
-									<!-- BEGIN conditionals -->
+									{{{ each  conditionals }}}
 									<option value="{conditionals.conditional}">{conditionals.name}</option>
-									<!-- END conditionals -->
+									{{{ end }}}
 								</select>
 								<input type="text" name="value" value="{active.value}" />
 							</div>
@@ -58,7 +58,7 @@
 						</div>
 						<div class="clearfix"></div>
 					</li>
-					<!-- END active -->
+					{{{ end }}}
 				</ul>
 			</div>
 		</div>

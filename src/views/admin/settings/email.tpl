@@ -54,9 +54,9 @@
 					<option value="nodebb-custom-smtp" style="font-weight: bold">[[admin/settings/email:smtp-transport.service-custom]]</option>
 					<option style="font-size: 10px" disabled>&nbsp;</option>
 
-					<!-- BEGIN services -->
-					<option value="@value">@value</option>
-					<!-- END services -->
+					{{{ each services }}}
+					<option value="{@value}">{@value}</option>
+					{{{ end }}}
 				</select>
 				<p class="help-block">
 					[[admin/settings/email:smtp-transport.service-help]]

@@ -30,9 +30,9 @@
 
 				<!-- IF showPids -->
 				<td class="col-md-3 text-right">
-					<!-- BEGIN ../inPids -->
-					<a target="_blank" href="{config.relative_path}/post/@value"><span class="label label-default">@value</span></a>
-					<!-- END -->
+					{{{ each ../inPids }}}
+					<a target="_blank" href="{config.relative_path}/post/{@value}"><span class="label label-default">{@value}</span></a>
+					{{{ end }}}
 					<!-- IF !../inPids.length -->
 					<span class="label label-danger">[[admin/manage/uploads:orphaned]]</span>
 					<!-- END -->

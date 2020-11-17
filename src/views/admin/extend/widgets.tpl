@@ -1,26 +1,26 @@
 <div id="widgets" class="row">
 	<div class="col-md-8" id="active-widgets">
 		<ul class="nav nav-pills">
-		<!-- BEGIN templates -->
+		{{{ each templates }}}
 			<li class="<!-- IF @first -->active<!-- ENDIF @first -->"><a href="#" data-template="{../template}" data-toggle="pill">{../template}</a></li>
-		<!-- END templates -->
+		{{{ end }}}
 		</ul>
 
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="tab-content">
-				<!-- BEGIN templates -->
+				{{{ each templates }}}
 					<div class="tab-pane <!-- IF @first -->active<!-- ENDIF @first -->" data-template="{../template}">
-					<!-- BEGIN areas -->
+					{{{ each templates.areas }}}
 						<div class="area" data-template="{templates.template}" data-location="{../location}">
 							<h4>{../name} <small>{templates.template} / {../location}</small></h4>
 							<div class="well widget-area">
 
 							</div>
 						</div>
-					<!-- END areas -->
+					{{{ end }}}
 					</div>
-				<!-- END templates -->
+				{{{ end }}}
 				</div>
 			</div>
 		</div>
