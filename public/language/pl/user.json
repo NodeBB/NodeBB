@@ -123,6 +123,7 @@
     "open_links_in_new_tab": "Otwieraj odnośniki wychodzące w nowej karcie",
     "enable_topic_searching": "Włącz szukanie w temacie",
     "topic_search_help": "Zaznacz, jeśli chcesz, by wyszukiwanie w temacie zastąpiło przeszukiwanie strony poprzez przeglądarkę, a tym samym umożliwiło przeszukiwanie całego tematu, a nie tylko treści aktualnie wyświetlanych na ekranie",
+    "update_url_with_post_index": "Update url with post index while browsing topics",
     "scroll_to_my_post": "Wyświetl nowy post po zamieszczeniu odpowiedzi",
     "follow_topics_you_reply_to": "Obserwuj tematy, w których uczestniczysz",
     "follow_topics_you_create": "Obserwuj tematy, które utworzyłeś",

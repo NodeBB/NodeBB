@@ -123,6 +123,7 @@
     "open_links_in_new_tab": "Otvárať odchádzajúce odkazy v novom liste",
     "enable_topic_searching": "Povoliť vyhľadávanie priamo v téme",
     "topic_search_help": "Ak je funkcia povolená, predvolené nastavenia vyhľadávania v prehliadači budú pre nastavené, a umožnia Vám prechádzať cez všetky vstupy, nie iba cez tie, ktoré budú zobrazené na obrazovke",
+    "update_url_with_post_index": "Update url with post index while browsing topics",
     "scroll_to_my_post": "Po odoslaní odpovede, ukázať nový príspevok",
     "follow_topics_you_reply_to": "Sledovať témy na ktoré ste odpovedali",
     "follow_topics_you_create": "Sledovať témy ktoré ste vytvorili",

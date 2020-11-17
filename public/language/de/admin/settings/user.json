@@ -65,6 +65,7 @@
 	"restrict-chat": "Erlaube nur Chatnachrichten von Benutzern denen ich folge",
 	"outgoing-new-tab": "Öffne externe Links in einem neuen Tab",
 	"topic-search": "Suchen innerhalb von Themen aktivieren",
+	"update-url-with-post-index": "Update url with post index while browsing topics",
 	"digest-freq": "Zusammenfassung abonnieren",
 	"digest-freq.off": "Aus",
 	"digest-freq.daily": "Täglich",

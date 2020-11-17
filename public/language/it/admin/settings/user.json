@@ -65,6 +65,7 @@
 	"restrict-chat": "Permetti messaggi in chat solo da utenti che seguo",
 	"outgoing-new-tab": "Apri link esterni in una nuova scheda",
 	"topic-search": "Abilita ricerca nella Discussione",
+	"update-url-with-post-index": "Update url with post index while browsing topics",
 	"digest-freq": "Iscriviti al Riepilogo",
 	"digest-freq.off": "Spento",
 	"digest-freq.daily": "Quotidiano",

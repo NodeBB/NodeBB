@@ -11,6 +11,7 @@
     "online-only": "オンラインのみ",
     "invite": "招待",
     "prompt-email": "Emails:",
+    "groups-to-join": "Groups to be joined when invite is accepted:",
     "invitation-email-sent": "招待メールが%1に送られました。",
     "user_list": "ユーザー一覧",
     "recent_topics": "最新スレッド",

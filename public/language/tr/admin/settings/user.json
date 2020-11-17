@@ -65,6 +65,7 @@
 	"restrict-chat": "Sadece takip ettiğim kişilerden sohbetleri kabul et",
 	"outgoing-new-tab": "Dışarı giden bağlantıları yeni sekmede aç",
 	"topic-search": "Konu içi aramayı etkinleştir",
+	"update-url-with-post-index": "Update url with post index while browsing topics",
 	"digest-freq": "Özet e-postalarına abone ol",
 	"digest-freq.off": "Kapalı",
 	"digest-freq.daily": "Günlük",

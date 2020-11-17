@@ -11,6 +11,7 @@
     "online-only": "En ligne uniquement",
     "invite": "Invitation",
     "prompt-email": "Emails:",
+    "groups-to-join": "Groups to be joined when invite is accepted:",
     "invitation-email-sent": "Un email d'invitation a été envoyé à %1",
     "user_list": "Liste d'Utilisateurs",
     "recent_topics": "Sujets Récents",

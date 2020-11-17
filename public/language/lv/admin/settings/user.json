@@ -65,6 +65,7 @@
 	"restrict-chat": "Atļaut sarunas tikai no tiem lietotājiem, kurus es sekoju",
 	"outgoing-new-tab": "Atvērt izejošās saites jaunā cilnē",
 	"topic-search": "Iespējot meklēšanu tematu saturā",
+	"update-url-with-post-index": "Update url with post index while browsing topics",
 	"digest-freq": "Sakopojumu abonements",
 	"digest-freq.off": "Nav",
 	"digest-freq.daily": "Ik dienu",

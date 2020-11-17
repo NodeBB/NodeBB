@@ -65,6 +65,7 @@
 	"restrict-chat": "Autoriser uniquement les discussions aux utilisateurs que je suis",
 	"outgoing-new-tab": "Ouvrir les liens sortants dans un nouvel onglet",
 	"topic-search": "Activer la recherche au sein des sujets",
+	"update-url-with-post-index": "Update url with post index while browsing topics",
 	"digest-freq": "S'inscrire aux compte rendus",
 	"digest-freq.off": "Désactivé",
 	"digest-freq.daily": "Quotidien",

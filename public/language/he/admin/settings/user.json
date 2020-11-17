@@ -65,6 +65,7 @@
 	"restrict-chat": "Only allow chat messages from users I follow",
 	"outgoing-new-tab": "Open outgoing links in new tab",
 	"topic-search": "Enable In-Topic Searching",
+	"update-url-with-post-index": "Update url with post index while browsing topics",
 	"digest-freq": "Subscribe to Digest",
 	"digest-freq.off": "Off",
 	"digest-freq.daily": "Daily",

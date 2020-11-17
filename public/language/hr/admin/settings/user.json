@@ -65,6 +65,7 @@
 	"restrict-chat": "Dozvoli poruke samo od ljudi koje praim",
 	"outgoing-new-tab": "Otvori odlazne poveznive u novom prozoru ",
 	"topic-search": "Dopusti pretragu po temama",
+	"update-url-with-post-index": "Update url with post index while browsing topics",
 	"digest-freq": "Pretplatite se na pregled",
 	"digest-freq.off": "Isključi",
 	"digest-freq.daily": "Dnevno",

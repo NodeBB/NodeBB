@@ -65,6 +65,7 @@
 	"restrict-chat": "Разрешить чат только с теми, на кого подписаны",
 	"outgoing-new-tab": "Открывать внешние ссылки в новой вкладке",
 	"topic-search": "Включить поиск по сообщениям внутри тем",
+	"update-url-with-post-index": "Update url with post index while browsing topics",
 	"digest-freq": "Подписка на дайджест",
 	"digest-freq.off": "Отключена",
 	"digest-freq.daily": "Ежедневная",

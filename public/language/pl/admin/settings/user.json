@@ -65,6 +65,7 @@
 	"restrict-chat": "Przyjmuj wiadomości na czacie tylko od osób, które obserwuję",
 	"outgoing-new-tab": "Otwieraj odnośniki wychodzące na nowej karcie",
 	"topic-search": "Włącz wyszukiwanie wewnątrz tematów",
+	"update-url-with-post-index": "Update url with post index while browsing topics",
 	"digest-freq": "Podsumowania - tryb",
 	"digest-freq.off": "Wyłączone",
 	"digest-freq.daily": "Dzienny ",

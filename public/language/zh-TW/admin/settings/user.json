@@ -65,6 +65,7 @@
 	"restrict-chat": "只允許我追隨的使用者給我發送聊天訊息",
 	"outgoing-new-tab": "在新頁籤打開外部連結",
 	"topic-search": "啟用主題內搜尋",
+	"update-url-with-post-index": "Update url with post index while browsing topics",
 	"digest-freq": "訂閱摘要",
 	"digest-freq.off": "關閉",
 	"digest-freq.daily": "每日",

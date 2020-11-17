@@ -123,6 +123,7 @@
     "open_links_in_new_tab": "Open uitgaande links naar een externe site in een nieuw tabblad",
     "enable_topic_searching": "Inschakelen mogelijkheid op onderwerp te kunnen zoeken",
     "topic_search_help": "Wanneer ingeschakeld zal de standaard zoekfunctie, met een aangepaste methode voor onderwerpen, overschreven worden",
+    "update_url_with_post_index": "Update url with post index while browsing topics",
     "scroll_to_my_post": "Toon het nieuwe bericht na het plaatsen van een antwoord",
     "follow_topics_you_reply_to": "Ontvang meldingen van berichten waar je op hebt gereageerd",
     "follow_topics_you_create": "Ontvang meldingen van berichten die je hebt gemaakt",

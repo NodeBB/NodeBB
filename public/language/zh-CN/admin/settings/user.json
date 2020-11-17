@@ -65,6 +65,7 @@
 	"restrict-chat": "只允许我关注的用户给我发送聊天消息",
 	"outgoing-new-tab": "在新标签打开外部链接",
 	"topic-search": "启用主题内搜索",
+	"update-url-with-post-index": "Update url with post index while browsing topics",
 	"digest-freq": "订阅摘要",
 	"digest-freq.off": "关闭",
 	"digest-freq.daily": "每日",

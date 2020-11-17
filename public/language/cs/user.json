@@ -123,6 +123,7 @@
     "open_links_in_new_tab": "Otevřít odchozí odkaz v nové záložce",
     "enable_topic_searching": "Povolit vyhledávání v tématu",
     "topic_search_help": "Je-li povoleno, hledání v tématu přepíše výchozí chování vyhledávání v prohlížeči a umožní vám prohledávat celé téma, namísto pouze toho, co je zobrazeno na obrazovce",
+    "update_url_with_post_index": "Update url with post index while browsing topics",
     "scroll_to_my_post": "Po odeslání odpovědi, zobrazit nový příspěvek",
     "follow_topics_you_reply_to": "Sledovat témata, do kterých přispějete",
     "follow_topics_you_create": "Sledovat témata, která vytvoříte",

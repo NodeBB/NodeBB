@@ -65,6 +65,7 @@
 	"restrict-chat": "Povolit chatové zprávy jen od uživatelů, které sleduji",
 	"outgoing-new-tab": "Otevřít odchozí odkazy v nové záložce",
 	"topic-search": "Povolit hledání v tématu",
+	"update-url-with-post-index": "Update url with post index while browsing topics",
 	"digest-freq": "Přihlásit k přehledu",
 	"digest-freq.off": "Vypnuto",
 	"digest-freq.daily": "Denně",

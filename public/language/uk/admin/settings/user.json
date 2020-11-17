@@ -65,6 +65,7 @@
 	"restrict-chat": "Дозволяти чат повідомлення лише від користувачів за якими я стежу",
 	"outgoing-new-tab": "Відкривати зовнішні посилання у новій вкладці",
 	"topic-search": "Увімкнути пошук у темах",
+	"update-url-with-post-index": "Update url with post index while browsing topics",
 	"digest-freq": "Підписатися на дайджест",
 	"digest-freq.off": "Ніколи",
 	"digest-freq.daily": "Щоденно",

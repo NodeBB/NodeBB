@@ -65,6 +65,7 @@
 	"restrict-chat": "Solo permitir mensajes de chat de usuarios a los que sigo",
 	"outgoing-new-tab": "Abrir enlaces externos en una pestaña nueva",
 	"topic-search": "Habilitar Búsqueda Dentro de Tema",
+	"update-url-with-post-index": "Update url with post index while browsing topics",
 	"digest-freq": "Suscribirse a Informes",
 	"digest-freq.off": "Apagado",
 	"digest-freq.daily": "Diario",

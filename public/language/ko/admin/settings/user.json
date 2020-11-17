@@ -65,6 +65,7 @@
 	"restrict-chat": "내가 팔로우하는 이용자로부터만 대화를 허용",
 	"outgoing-new-tab": "외부 링크를 새로운 탭에서 열람",
 	"topic-search": "토픽 내 검색 허용",
+	"update-url-with-post-index": "Update url with post index while browsing topics",
 	"digest-freq": "포럼 이메일 정기구독",
 	"digest-freq.off": "해제",
 	"digest-freq.daily": "매일",

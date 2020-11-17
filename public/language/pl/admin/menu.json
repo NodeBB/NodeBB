@@ -31,7 +31,7 @@
 	"settings/pagination": "Paginacja",
 	"settings/tags": "Tagi",
 	"settings/notifications": "Powiadomienia",
-	"settings/api": "API Access",
+	"settings/api": "Dostęp do API",
 	"settings/sounds": "Dźwięki",
 	"settings/social": "Społecznościowe",
 	"settings/cookies": "Ciasteczka",
@@ -71,7 +71,7 @@
 	"logout": "Wyloguj się",
 	"view-forum": "Zobacz forum",
 
-	"search.placeholder": "Press &quot;/&quot; to search for settings",
+	"search.placeholder": "Naciśnij &quot;/&quot; aby wyszukać ustawienia",
 	"search.no-results": "Brak wyników...",
 	"search.search-forum": "Szukaj w forum <strong></strong>",
 	"search.keep-typing": "Wpisz więcej, aby zobaczyć wyniki ...",

@@ -65,6 +65,7 @@
 	"restrict-chat": "フォローしたユーザーからのチャットメッセージだけを許可する",
 	"outgoing-new-tab": "外部リンクを新しいタブで開く",
 	"topic-search": "スレッド内検索を有効にする",
+	"update-url-with-post-index": "Update url with post index while browsing topics",
 	"digest-freq": "お知らせを購読する",
 	"digest-freq.off": "オフ",
 	"digest-freq.daily": "デイリー",

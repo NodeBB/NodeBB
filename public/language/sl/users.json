@@ -11,6 +11,7 @@
     "online-only": "Samo dosegljivi",
     "invite": "Povabi",
     "prompt-email": "Emails:",
+    "groups-to-join": "Groups to be joined when invite is accepted:",
     "invitation-email-sent": "Povabilo je bilo poslano na e-mail naslov %1",
     "user_list": "Sezam uporabnikov",
     "recent_topics": "Zadnje teme",
