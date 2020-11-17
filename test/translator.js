@@ -330,4 +330,36 @@ describe('Translator static methods', function () {
 			assert.strictEqual(t, 'this is best a custom translation');
 		});
 	});
+
+	describe('translate nested keys', function () {
+		it('should handle nested translations', async function () {
+			shim.addTranslation('en-GB', 'my-namespace', {
+				key: {
+					key1: 'key1 translated',
+					key2: {
+						key3: 'key3 translated',
+					},
+				},
+			});
+			const t1 = await shim.translate('this is best [[my-namespace:key.key1]]');
+			const t2 = await shim.translate('this is best [[my-namespace:key.key2.key3]]');
+			assert.strictEqual(t1, 'this is best key1 translated');
+			assert.strictEqual(t2, 'this is best key3 translated');
+		});
+		it("should try the defaults if it didn't reach a string in a nested translation", async function () {
+			shim.addTranslation('en-GB', 'my-namespace', {
+				default1: {
+					default1: 'default1 translated',
+					'': 'incorrect priority',
+				},
+				default2: {
+					'': 'default2 translated',
+				},
+			});
+			const d1 = await shim.translate('this is best [[my-namespace:default1]]');
+			const d2 = await shim.translate('this is best [[my-namespace:default2]]');
+			assert.strictEqual(d1, 'this is best default1 translated');
+			assert.strictEqual(d2, 'this is best default2 translated');
+		});
+	});
 });
