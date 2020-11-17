@@ -257,20 +257,38 @@ define('admin/manage/users', [
 			});
 		});
 
-		$('.delete-user').on('click', function () {
+		$('.delete-user').on('click', () => {
+			handleDelete('[[admin/manage/users:alerts.confirm-delete]]', '/account');
+		});
+
+		$('.delete-user-content').on('click', () => {
+			handleDelete('[[admin/manage/users:alerts.confirm-delete-content]]', '/content');
+		});
+
+		$('.delete-user-and-content').on('click', () => {
+			handleDelete('[[admin/manage/users:alerts.confirm-purge]]', '');
+		});
+
+		function handleDelete(confirmMsg, path) {
 			var uids = getSelectedUids();
 			if (!uids.length) {
 				return;
 			}
 
-			bootbox.confirm('[[admin/manage/users:alerts.confirm-delete]]', function (confirm) {
+			bootbox.confirm(confirmMsg, function (confirm) {
 				if (confirm) {
-					Promise.all(uids.map(uid => api.del(`/users/${uid}/account`, {})
+					Promise.all(uids.map(uid => api.del(`/users/${uid}${path}`, {})
 						.then(() => {
-							removeRow(uid);
+							if (path !== '/content') {
+								removeRow(uid);
+							}
 						})
 					)).then(() => {
-						app.alertSuccess('[[admin/manage/users:alerts.delete-success]]');
+						if (path !== '/content') {
+							app.alertSuccess('[[admin/manage/users:alerts.delete-success]]');
+						} else {
+							app.alertSuccess('[[admin/manage/users:alerts.delete-content-success]]');
+						}
 						unselectAll();
 						if (!$('.users-table [component="user/select/single"]').length) {
 							ajaxify.refresh();
@@ -278,44 +296,7 @@ define('admin/manage/users', [
 					}).catch(app.alertError);
 				}
 			});
-		});
-
-		$('.delete-user-content').on('click', function () {
-			var uids = getSelectedUids();
-			if (!uids.length) {
-				return;
-			}
-
-			bootbox.confirm('[[admin/manage/users:alerts.confirm-delete-content]]', function (confirm) {
-				if (confirm) {
-					Promise.all(uids.map(uid => api.del(`/users/${uid}/content`, {}))).then(() => {
-						app.alertSuccess('[[admin/manage/users:alerts.delete-content-success]]');
-					}).catch(app.alertError);
-				}
-			});
-		});
-
-		$('.delete-user-and-content').on('click', function () {
-			var uids = getSelectedUids();
-			if (!uids.length) {
-				return;
-			}
-			bootbox.confirm('[[admin/manage/users:alerts.confirm-purge]]', function (confirm) {
-				if (confirm) {
-					Promise.all(uids.map(uid => api.del(`/users/${uid}`, {})
-						.then(() => {
-							removeRow(uid);
-						})
-					)).then(() => {
-						app.alertSuccess('[[admin/manage/users:alerts.delete-success]]');
-						unselectAll();
-						if (!$('.users-table [component="user/select/single"]').length) {
-							ajaxify.refresh();
-						}
-					}).catch(app.alertError);
-				}
-			});
-		});
+		}
 
 		function handleUserCreate() {
 			$('[data-action="create"]').on('click', function () {

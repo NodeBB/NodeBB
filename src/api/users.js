@@ -238,7 +238,6 @@ async function isPrivilegedOrSelfAndPasswordMatch(caller, data) {
 }
 
 async function processDeletion({ uid, method, password, caller }) {
-	console.log('in processDeletion', uid, method, password);
 	const isTargetAdmin = await user.isAdministrator(uid);
 	const isSelf = parseInt(uid, 10) === caller.uid;
 	const isAdmin = await user.isAdministrator(caller.uid);
