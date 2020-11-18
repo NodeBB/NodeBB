@@ -4,7 +4,7 @@
 	"address-help": "Ten adres e-mail odbiorca zobaczy w polach „Od” i „Odpowiedz”.",
 	"from": "Pole „Od”",
 	"from-help": "Nazwa „Od” widoczna w e-mailach",
-	
+
 	"smtp-transport": "Transport SMTP",
 	"smtp-transport.enabled": "Używaj zewnętrznego serwera e-mail do wysyłania e-maili.",
 	"smtp-transport-help": "Możesz wybrać z listy dobrze znanych usług lub wskazać usługę niestandardową.",
@@ -35,5 +35,7 @@
 	"subscriptions": "Podsumowania e-mail",
 	"subscriptions.disable": "Wyłącz podsumowania e-maili",
 	"subscriptions.hour": "Godzina podsumowania",
-	"subscriptions.hour-help": "Wprowadź liczbę odpowiadającą godzinie, o której mają być wysyłane regularne e-maile z podsumowaniem (np. <code>0</code> dla północy lub <code>17</code> dla 17:00). Pamiętaj, że godzina jest godziną serwera i nie musi zgadzać się z czasem lokalnym administratora. Przybliżony czas serwera to: <span id=\"serverTime\"></span><br /> Wysłanie kolejnego e-maila z podsumowaniem zaplanowano na <span id=\"nextDigestTime\"></span>"
+	"subscriptions.hour-help": "Wprowadź liczbę odpowiadającą godzinie, o której mają być wysyłane regularne e-maile z podsumowaniem (np. <code>0</code> dla północy lub <code>17</code> dla 17:00). Pamiętaj, że godzina jest godziną serwera i nie musi zgadzać się z czasem lokalnym administratora. Przybliżony czas serwera to: <span id=\"serverTime\"></span><br /> Wysłanie kolejnego e-maila z podsumowaniem zaplanowano na <span id=\"nextDigestTime\"></span>",
+	"notifications.settings": "Email notification settings",
+	"notifications.remove-images": "Remove images from email notifications"
 }

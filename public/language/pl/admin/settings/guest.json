@@ -1,7 +1,7 @@
 {
-	"handles": "Podpisywanie się gości",
+	"settings": "Settings",
 	"handles.enabled": "Zezwalaj gościom na podpisywanie się",
 	"handles.enabled-help": "Opcja ta udostępnia gościom nowe pole, w którym mogą wybrać nazwę, pod jaką będą publikować posty. Jeśli opcja jest wyłączona, stosowana będzie po prostu nazwa „Gość”",
-	"topic-views": "Topic views",
-	"topic-views.enabled": "Allow guests to increase topic view counts"
+	"topic-views.enabled": "Allow guests to increase topic view counts",
+	"reply-notifications.enabled": "Allow guests to generate reply notifications"
 }

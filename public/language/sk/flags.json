@@ -67,7 +67,7 @@
 	"sort-upvotes": "Most upvotes",
 	"sort-replies": "Most replies",
 
-	"modal-title": "Nahlásiť nevhodný obsah",
+	"modal-title": "Report Content",
 	"modal-body": "Zadajte dôvod, pre ktorý chcete označiť %1 %2 na kontrolu. Prípadne použite jedno z tlačidiel rýchleho hlásenia, ak je to vhodné.",
 	"modal-reason-spam": "Spam",
 	"modal-reason-offensive": "Urážlivý",

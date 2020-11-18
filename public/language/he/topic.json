@@ -30,6 +30,7 @@
     "locked": "נעול",
     "pinned": "נעוץ",
     "moved": "הועבר",
+    "moved-from": "Moved from %1",
     "copy-ip": "העתק כתובת IP",
     "ban-ip": "הרחק כתובת IP",
     "view-history": "ערוך היסטוריה",

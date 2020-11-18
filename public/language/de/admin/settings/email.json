@@ -4,7 +4,7 @@
 	"address-help": "Die folgende E-Mail Adresse ist die E-Mail Adresse, welche dem Empfänger im \"Von\" und \"Antworten\" Bereich sehen wird.",
 	"from": "Name des Absenders",
 	"from-help": "Der Name des Absenders, welcher in der E-Mail angezeigt werden soll.",
-	
+
 	"smtp-transport": "SMTP Konfiguration",
 	"smtp-transport.enabled": "Benutze einen externen Email-Server",
 	"smtp-transport-help": "Du kannst aus einer Liste bekannter Email-Provider auswählen, oder einen benutzerdefinierten eingeben.",
@@ -35,5 +35,7 @@
 	"subscriptions": "Email Zusammenfassungen",
 	"subscriptions.disable": "Deaktivierung der Email Zusammenfassungen",
 	"subscriptions.hour": "Sende Zeit",
-	"subscriptions.hour-help": "Bitte geben Sie eine Nummer ein, welche die Stunde repräsentiert zu welcher geplante Emails versandt werden sollen (z.B. <code>0</code> für Mitternacht, <code>17</code> für 5 Uhr Nachmittags). Beachten Sie, dass die Zeit auf der Serverzeit basiert und daher nicht umbedingt mit ihrer Systemzeit übereinstimmen muss.<br>Die ungefähre Serverzeit ist: <span id=\"serverTime\"></span><br>Die nächste tägliche Sendung ist um <span id=\"nextDigestTime\"></span> geplant"
+	"subscriptions.hour-help": "Bitte geben Sie eine Nummer ein, welche die Stunde repräsentiert zu welcher geplante Emails versandt werden sollen (z.B. <code>0</code> für Mitternacht, <code>17</code> für 5 Uhr Nachmittags). Beachten Sie, dass die Zeit auf der Serverzeit basiert und daher nicht umbedingt mit ihrer Systemzeit übereinstimmen muss.<br>Die ungefähre Serverzeit ist: <span id=\"serverTime\"></span><br>Die nächste tägliche Sendung ist um <span id=\"nextDigestTime\"></span> geplant",
+	"notifications.settings": "Email notification settings",
+	"notifications.remove-images": "Remove images from email notifications"
 }

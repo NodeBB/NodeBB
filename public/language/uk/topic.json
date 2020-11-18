@@ -30,6 +30,7 @@
     "locked": "Заблокована",
     "pinned": "Закріплена",
     "moved": "Переміщена",
+    "moved-from": "Moved from %1",
     "copy-ip": "Копіювати IP",
     "ban-ip": "Заблокувати IP",
     "view-history": "Редагувати історію",

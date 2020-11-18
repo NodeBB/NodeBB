@@ -30,6 +30,7 @@
     "locked": "Закључано",
     "pinned": "Закачено",
     "moved": "Премештено",
+    "moved-from": "Moved from %1",
     "copy-ip": "Копирај IP",
     "ban-ip": "Бануј IP",
     "view-history": "Уреди историју",

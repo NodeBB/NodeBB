@@ -30,6 +30,7 @@
     "locked": "Închis",
     "pinned": "Pinned",
     "moved": "Moved",
+    "moved-from": "Moved from %1",
     "copy-ip": "Copy IP",
     "ban-ip": "Ban IP",
     "view-history": "Edit History",

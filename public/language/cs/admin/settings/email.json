@@ -4,7 +4,7 @@
 	"address-help": "Následující e-mailové adresy budou zobrazeny  příjemci v políčkách „Od” a „Odpovědět”.",
 	"from": "Jméno – od",
 	"from-help": "Zobrazené jméno v e-mailu v – Od",
-	
+
 	"smtp-transport": "Přenos SMTP",
 	"smtp-transport.enabled": "Pro odesílání e-mailů použít externí e-mailový server ",
 	"smtp-transport-help": "Ze seznamu můžete vybrat známé služby nebo zadat vlastní.",
@@ -35,5 +35,7 @@
 	"subscriptions": "E-mailové odběry",
 	"subscriptions.disable": "Zakázat e-mailové odběry",
 	"subscriptions.hour": "Hodina přehledu",
-	"subscriptions.hour-help": "Zadejte číslo odpovídající hodině, kdy mají být odeslány přehledové e-maily (tj. <code>0</code> pro půlnoc, <code>17</code> pro 5:00pm).  Mějte na paměti, že tato hodina závisí na hodinách samotného serveru a nemusí tak souhlasit se systémovými hodinami. <br />Přibližný čas serveru je: <span id=\"serverTime\"></span>.<br />Další odeslání přehledů je plánováno na <span id=\"nextDigestTime\"></span>."
+	"subscriptions.hour-help": "Zadejte číslo odpovídající hodině, kdy mají být odeslány přehledové e-maily (tj. <code>0</code> pro půlnoc, <code>17</code> pro 5:00pm).  Mějte na paměti, že tato hodina závisí na hodinách samotného serveru a nemusí tak souhlasit se systémovými hodinami. <br />Přibližný čas serveru je: <span id=\"serverTime\"></span>.<br />Další odeslání přehledů je plánováno na <span id=\"nextDigestTime\"></span>.",
+	"notifications.settings": "Email notification settings",
+	"notifications.remove-images": "Remove images from email notifications"
 }

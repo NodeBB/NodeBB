@@ -4,7 +4,7 @@
 	"address-help": "O seguinte endereço de e-mail se refere ao e-mail que o destinatário verá nos campos \"De\" e \"Responder Para\".",
 	"from": "Por Nome (From)",
 	"from-help": "O nome que será mostrado em \"De\" no e-mail.",
-	
+
 	"smtp-transport": "Trasporte por SMTP",
 	"smtp-transport.enabled": "Utilizar um servidor de e-mail externo para enviar e-mails",
 	"smtp-transport-help": "Você pode escolher entre uma lista de serviços conhecidos ou adicionar um personalizado.",
@@ -35,5 +35,7 @@
 	"subscriptions": "Email Digests",
 	"subscriptions.disable": "Disable email digests",
 	"subscriptions.hour": "Hora de Envio dos Resumos",
-	"subscriptions.hour-help": "Por favor, entre um número representando a hora para enviar os resumos agendados via e-mail (por exemplo: <code>0</code> para meia-noite, <code>17</code> para 5:00pm). Tenha em mente que esta é a hora de acordo com o servidor e pode não combinar exatamente com o relógio do seu sistema.<br /> O horário aproximado do servidor é: <span id=\"serverTime\"></span><br /> O próximo resumo diário está agendado para ser enviado <span id=\"nextDigestTime\"></span>"
+	"subscriptions.hour-help": "Por favor, entre um número representando a hora para enviar os resumos agendados via e-mail (por exemplo: <code>0</code> para meia-noite, <code>17</code> para 5:00pm). Tenha em mente que esta é a hora de acordo com o servidor e pode não combinar exatamente com o relógio do seu sistema.<br /> O horário aproximado do servidor é: <span id=\"serverTime\"></span><br /> O próximo resumo diário está agendado para ser enviado <span id=\"nextDigestTime\"></span>",
+	"notifications.settings": "Email notification settings",
+	"notifications.remove-images": "Remove images from email notifications"
 }

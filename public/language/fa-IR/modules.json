@@ -59,7 +59,7 @@
     "composer.upload-file": "بارگذاری فایل",
     "composer.zen_mode": "حالت ذن",
     "composer.select_category": "یک دسته‌بندی انتخاب کنید",
-    "composer.textarea.placeholder": "Enter your post content here, drag and drop images",
+    "composer.textarea.placeholder": "محتوای پست خود را اینجا وارد کنید یا تصاویر را به اینجا بکشید و رها کنید",
     "bootbox.ok": "باشه",
     "bootbox.cancel": "انصراف",
     "bootbox.confirm": "تایید",

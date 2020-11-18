@@ -60,6 +60,7 @@
     "notificationType_post-edit": "When a post is edited in a topic you are watching",
     "notificationType_follow": "Mikor valaki elkezd követni téged",
     "notificationType_new-chat": "Mikor chat üzenetet kapsz",
+    "notificationType_new-group-chat": "When you receive a group chat message",
     "notificationType_group-invite": "Mikor csoportmeghívást kapsz",
     "notificationType_group-request-membership": "When someone requests to join a group you own",
     "notificationType_new-register": "Mikor valaki a regisztrációs várólistára kerül",

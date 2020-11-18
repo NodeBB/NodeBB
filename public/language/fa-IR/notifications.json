@@ -60,6 +60,7 @@
     "notificationType_post-edit": "When a post is edited in a topic you are watching",
     "notificationType_follow": "هنگامی که کسی شما را دنبال می کند",
     "notificationType_new-chat": "هنگامی که شما پیام چتی دریافت می کنید",
+    "notificationType_new-group-chat": "When you receive a group chat message",
     "notificationType_group-invite": "هنگامی که شما دعوتنامه گروه دریافت می کنید",
     "notificationType_group-request-membership": "When someone requests to join a group you own",
     "notificationType_new-register": "وقتی کسی به صف ثبت نام اضافه می شود",

@@ -67,7 +67,7 @@
 	"sort-upvotes": "Demandes positives",
 	"sort-replies": "Réponses",
 
-	"modal-title": "Signaler un contenu inapproprié",
+	"modal-title": "Report Content",
 	"modal-body": "Veuillez saisir le motif de votre signalement pour %1 %2 et sélectionner le bouton ci-dessous le plus approprié.",
 	"modal-reason-spam": "Spam",
 	"modal-reason-offensive": "Choquant",

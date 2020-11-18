@@ -1,7 +1,7 @@
 {
-	"handles": "게스트 처리",
+	"settings": "Settings",
 	"handles.enabled": "미가입 사용자 닉네임 설정 허가",
 	"handles.enabled-help": "이 옵션은 게스트들이 포스트를 작성할 때 이름을 적는 공간을 제공합니다. 이 옵션이 비활성화 돼있다면 \"Guest\" 라고 표시될 것입니다.",
-	"topic-views": "Topic views",
-	"topic-views.enabled": "Allow guests to increase topic view counts"
+	"topic-views.enabled": "Allow guests to increase topic view counts",
+	"reply-notifications.enabled": "Allow guests to generate reply notifications"
 }

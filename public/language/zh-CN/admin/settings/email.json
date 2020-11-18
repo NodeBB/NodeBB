@@ -4,7 +4,7 @@
 	"address-help": "下面的电子邮件地址代表收件人在“发件人”和“回复”中所看到的地址。",
 	"from": "发送者",
 	"from-help": "用于邮件中显示的发送者",
-	
+
 	"smtp-transport": "SMTP 通信",
 	"smtp-transport.enabled": "使用一个外部电子邮箱系统来发送邮件",
 	"smtp-transport-help": "您可以从列表中选取一个已知的服务或自定义。",
@@ -35,5 +35,7 @@
 	"subscriptions": "电子邮件摘要",
 	"subscriptions.disable": "禁用电子邮件摘要",
 	"subscriptions.hour": "摘要小时",
-	"subscriptions.hour-help": "请输入一个代表小时的数字来发送计划的电子邮件摘要 (例如，对于午夜，<code>0</code>，对于下午5:00，<code>17</code>)。 请记住，这是根据服务器本身的时间，可能与您的系统时钟不完全匹配。<br />服务器的大致时间为：<span id =\"serverTime\"></ span><br /> 下一个每日摘要被计划在<span id =\"nextDigestTime\"></span>发送"
+	"subscriptions.hour-help": "请输入一个代表小时的数字来发送计划的电子邮件摘要 (例如，对于午夜，<code>0</code>，对于下午5:00，<code>17</code>)。 请记住，这是根据服务器本身的时间，可能与您的系统时钟不完全匹配。<br />服务器的大致时间为：<span id =\"serverTime\"></ span><br /> 下一个每日摘要被计划在<span id =\"nextDigestTime\"></span>发送",
+	"notifications.settings": "Email notification settings",
+	"notifications.remove-images": "Remove images from email notifications"
 }

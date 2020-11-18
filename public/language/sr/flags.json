@@ -67,7 +67,7 @@
 	"sort-upvotes": "Most upvotes",
 	"sort-replies": "Most replies",
 
-	"modal-title": "Пријави неприкладан садржај",
+	"modal-title": "Report Content",
 	"modal-body": "Наведите разлог за означавање %1 %2 за проверу. Алтернативно, користите један од тастера за брзу пријаву ко је применљиво.",
 	"modal-reason-spam": "Непожељно",
 	"modal-reason-offensive": "Увредљиво",

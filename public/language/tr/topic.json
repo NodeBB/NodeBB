@@ -30,6 +30,7 @@
     "locked": "Kilitli",
     "pinned": "Sabitlendi",
     "moved": "Taşındı",
+    "moved-from": "Şuradan taşındı: %1",
     "copy-ip": "IP Kopyala",
     "ban-ip": "IP Yasakla",
     "view-history": "Geçmişi Düzenle",

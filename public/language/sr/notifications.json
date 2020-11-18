@@ -60,6 +60,7 @@
     "notificationType_post-edit": "Када је порука уређена у теми коју надгледате",
     "notificationType_follow": "Када неко почне да вас прати",
     "notificationType_new-chat": "Када примите поруку за ћаскање",
+    "notificationType_new-group-chat": "When you receive a group chat message",
     "notificationType_group-invite": "Када примите позивницу за групу",
     "notificationType_group-request-membership": "Када неко затражи да се придружи групи коју поседујете",
     "notificationType_new-register": "Када је неко додат на чекање за регистрацију",

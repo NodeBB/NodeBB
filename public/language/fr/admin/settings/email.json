@@ -4,7 +4,7 @@
 	"address-help": "L'adresse e-mail suivante fait référence à l'adresse que le destinataire verra dans les champs \"De :\" et \"Répondre à :\". ",
 	"from": "Nom de l’expéditeur",
 	"from-help": "Le nom de l’expéditeur à afficher dans l'e-mail",
-	
+
 	"smtp-transport": "Protocole SMTP",
 	"smtp-transport.enabled": "Utiliser un server extérieur pour envoyer les emails",
 	"smtp-transport-help": "Vous pouvez sélectionner depuis une liste de services ou entrer un service personnalisé.",
@@ -35,5 +35,7 @@
 	"subscriptions": "Actualités du forum ",
 	"subscriptions.disable": "Désactiver les actualités du forum ",
 	"subscriptions.hour": "Heure d'envoi",
-	"subscriptions.hour-help": "Veuillez entrer un nombre représentant l'heure à laquelle envoyer les emails de résumé (c'est à dire <code>0</code> pour minuit, <code>17</code> pour 5:00 pm). Gardez à l'esprit qu'il s'agit de l'heure du serveur, et peut ne pas correspondre à votre heure locale.<br /> L'heure du serveur est : <span id=\"serverTime\"></span><br /> Le prochain mail de resumé sera envoyé à <span id=\"nextDigestTime\"></span>"
+	"subscriptions.hour-help": "Veuillez entrer un nombre représentant l'heure à laquelle envoyer les emails de résumé (c'est à dire <code>0</code> pour minuit, <code>17</code> pour 5:00 pm). Gardez à l'esprit qu'il s'agit de l'heure du serveur, et peut ne pas correspondre à votre heure locale.<br /> L'heure du serveur est : <span id=\"serverTime\"></span><br /> Le prochain mail de resumé sera envoyé à <span id=\"nextDigestTime\"></span>",
+	"notifications.settings": "Email notification settings",
+	"notifications.remove-images": "Remove images from email notifications"
 }

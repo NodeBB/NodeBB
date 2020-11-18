@@ -30,6 +30,7 @@
     "locked": "已锁定",
     "pinned": "已固定",
     "moved": "已移动",
+    "moved-from": "Moved from %1",
     "copy-ip": "复制IP",
     "ban-ip": "封禁IP",
     "view-history": "编辑历史",

@@ -30,6 +30,7 @@
     "locked": "Pechado",
     "pinned": "Fixo",
     "moved": "Movido",
+    "moved-from": "Moved from %1",
     "copy-ip": "Copy IP",
     "ban-ip": "Ban IP",
     "view-history": "Edit History",

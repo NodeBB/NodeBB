@@ -31,7 +31,7 @@
 	"settings/pagination": "Sayfalama",
 	"settings/tags": "Etiketler",
 	"settings/notifications": "Bildirimler",
-	"settings/api": "API Access",
+	"settings/api": "API Erişimi",
 	"settings/sounds": "Sesler",
 	"settings/social": "Sosyal",
 	"settings/cookies": "Çerezler",
@@ -71,7 +71,7 @@
 	"logout": "Çıkış",
 	"view-forum": "Forumu Görüntüle",
 
-	"search.placeholder": "Press &quot;/&quot; to search for settings",
+	"search.placeholder": "Ayarları aramak için &quot;/&quot; işaretine tıklayın",
 	"search.no-results": "Sonuç yok...",
 	"search.search-forum": "Forumda ara: <strong></strong>",
 	"search.keep-typing": "Sonuçları görmek için daha fazla yazın...",

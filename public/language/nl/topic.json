@@ -30,6 +30,7 @@
     "locked": "Gesloten",
     "pinned": "Pinned",
     "moved": "Verplaatst",
+    "moved-from": "Moved from %1",
     "copy-ip": "Kopieer IP",
     "ban-ip": "Verban IP",
     "view-history": "Revisie geschiedenis",
