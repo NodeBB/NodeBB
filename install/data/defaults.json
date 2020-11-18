@@ -116,6 +116,7 @@
     "hideEmail": 0,
     "allowGuestHandles": 0,
     "guestsIncrementTopicViews": 1,
+    "allowGuestReplyNotifications": 1,
     "incrementTopicViewsInterval": 60,
     "recentMaxTopics": 200,
     "disableRecentCategoryFilter": 0,
