@@ -42,6 +42,11 @@ GroupFullObject:
     textColor:
       type: string
       description: A six-character hexadecimal colour code
+    memberPostCids:
+      type: array
+      items:
+        type: number
+        example: [1, 2, 3]
     icon:
       type: string
       description: A FontAwesome icon string
@@ -56,6 +61,32 @@ GroupFullObject:
       type: string
     descriptionParsed:
       type: string
+    categories:
+      type: array
+      items:
+        type: object
+        properties:
+          cid:
+            type: number
+            description: A category identifier
+          name:
+            type: string
+          level:
+            type: string
+          icon:
+            type: string
+          parentCid:
+            type: number
+            description: The category identifier for the category that is the immediate
+              ancestor of the current category
+          color:
+            type: string
+          bgColor:
+            type: string
+          selected:
+            type: boolean
+          imageClass:
+            type: string
     members:
       type: array
       items:
@@ -131,3 +162,8 @@ GroupDataObject:
       description: "`createtime` rendered as an ISO 8601 format"
     cover:position:
       type: string
+    memberPostCids:
+      type: array
+      items:
+        type: number
+        example: [1, 2, 3]

@@ -4,7 +4,7 @@
 	"address-help": "次の電子メールアドレスは「送信者」と「返信先」の欄に受信者が表示する電子メールを指します。",
 	"from": "名前から",
 	"from-help": "メールからの名前が表示されます。",
-	
+
 	"smtp-transport": "SMTP Transport",
 	"smtp-transport.enabled": "Use an external email server to send emails",
 	"smtp-transport-help": "You can select from a list of well-known services or enter a custom one.",
@@ -35,5 +35,7 @@
 	"subscriptions": "Email Digests",
 	"subscriptions.disable": "Disable email digests",
 	"subscriptions.hour": "ダイジェストアワー",
-	"subscriptions.hour-help": "スケジュールされたメールのダイジェストを送信する時間を表す数字を入力してください(深夜は<code>0</ code>、午後5:00は<code>17</code>)これはサーバー自体に基づく時間であり、システムの時計と正確に一致しない場合があります。<span id=\"serverTime\"></ span> <br />次の日のダイジェストは<span id=\"nextDigestTime\"></span>"
+	"subscriptions.hour-help": "スケジュールされたメールのダイジェストを送信する時間を表す数字を入力してください(深夜は<code>0</ code>、午後5:00は<code>17</code>)これはサーバー自体に基づく時間であり、システムの時計と正確に一致しない場合があります。<span id=\"serverTime\"></ span> <br />次の日のダイジェストは<span id=\"nextDigestTime\"></span>",
+	"notifications.settings": "Email notification settings",
+	"notifications.remove-images": "Remove images from email notifications"
 }

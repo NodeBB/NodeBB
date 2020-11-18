@@ -30,6 +30,7 @@
     "locked": "مقفل",
     "pinned": "مثبت",
     "moved": "منقول",
+    "moved-from": "Moved from %1",
     "copy-ip": "Copy IP",
     "ban-ip": "Ban IP",
     "view-history": "Edit History",

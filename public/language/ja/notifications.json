@@ -60,6 +60,7 @@
     "notificationType_post-edit": "When a post is edited in a topic you are watching",
     "notificationType_follow": "誰かがあなたをフォローしたとき",
     "notificationType_new-chat": "チャットメッセージを受信したとき",
+    "notificationType_new-group-chat": "When you receive a group chat message",
     "notificationType_group-invite": "グループ招待を受けたとき",
     "notificationType_group-request-membership": "誰かがあなたのグループへの参加を要求したとき",
     "notificationType_new-register": "誰かが登録キューに追加されたとき",

@@ -182,7 +182,7 @@ describe('feeds', function () {
 				request(nconf.get('url') + '/category/' + cid + '.rss?uid=' + fooUid + '&token=' + rssToken, { }, function (err, res, body) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
-					assert(body);
+					assert(body.startsWith('<?xml version="1.0"'));
 					done();
 				});
 			});

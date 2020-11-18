@@ -1,3 +1,20 @@
+head:
+  tags:
+    - users
+  summary: check if a user exists
+  parameters:
+    - in: path
+      name: uid
+      schema:
+        type: integer
+      required: true
+      description: uid of the user to check
+      example: 3
+  responses:
+    '200':
+      description: user found
+    '404':
+      description: user not found
 delete:
   tags:
     - users

@@ -11,6 +11,7 @@
     "online-only": "접속한 사용자",
     "invite": "초대",
     "prompt-email": "이메일:",
+    "groups-to-join": "Groups to be joined when invite is accepted:",
     "invitation-email-sent": "%1님에게 초대 메일을 보냈습니다.",
     "user_list": "사용자 목록",
     "recent_topics": "최근 게시물",

@@ -1,7 +1,5 @@
 'use strict';
 
-const async = require('async');
-
 const util = require('util');
 const sleep = util.promisify(setTimeout);
 
@@ -17,7 +15,6 @@ const db = require('../database');
 const userController = require('../controllers/user');
 const privileges = require('../privileges');
 const utils = require('../utils');
-const flags = require('../flags');
 const sockets = require('.');
 
 const SocketUser = module.exports;
@@ -39,37 +36,8 @@ SocketUser.exists = async function (socket, data) {
 };
 
 SocketUser.deleteAccount = async function (socket, data) {
-	if (!socket.uid) {
-		throw new Error('[[error:no-privileges]]');
-	}
-	const hasPassword = await user.hasPassword(socket.uid);
-	if (hasPassword) {
-		const ok = await user.isPasswordCorrect(socket.uid, data.password, socket.ip);
-		if (!ok) {
-			throw new Error('[[error:invalid-password]]');
-		}
-	}
-	const isAdmin = await user.isAdministrator(socket.uid);
-	if (isAdmin) {
-		throw new Error('[[error:cant-delete-admin]]');
-	}
-	if (meta.config.allowAccountDelete !== 1) {
-		throw new Error('[[error:no-privileges]]');
-	}
-
-	await flags.resolveFlag('user', socket.uid, socket.uid);
-	const userData = await user.deleteAccount(socket.uid);
-
-	require('./index').server.sockets.emit('event:user_status_change', { uid: socket.uid, status: 'offline' });
-
-	await events.log({
-		type: 'user-delete',
-		uid: socket.uid,
-		targetUid: socket.uid,
-		ip: socket.ip,
-		username: userData.username,
-		email: userData.email,
-	});
+	sockets.warnDeprecated(socket, 'DELETE /api/v3/users/:uid/account');
+	await api.users.deleteAccount(socket, data);
 };
 
 SocketUser.emailExists = async function (socket, data) {
@@ -221,37 +189,6 @@ SocketUser.getUnreadCounts = async function (socket) {
 	results.unreadWatchedTopicCount = results.unreadCounts.watched;
 	results.unreadUnrepliedTopicCount = results.unreadCounts.unreplied;
 	return results;
-};
-
-SocketUser.invite = async function (socket, email) {
-	if (!email || !socket.uid) {
-		throw new Error('[[error:invalid-data]]');
-	}
-
-	const registrationType = meta.config.registrationType;
-	if (registrationType !== 'invite-only' && registrationType !== 'admin-invite-only') {
-		throw new Error('[[error:forum-not-invite-only]]');
-	}
-
-	const isAdmin = await user.isAdministrator(socket.uid);
-	if (registrationType === 'admin-invite-only' && !isAdmin) {
-		throw new Error('[[error:no-privileges]]');
-	}
-
-	const max = meta.config.maximumInvites;
-	email = email.split(',').map(email => email.trim()).filter(Boolean);
-
-	await async.eachSeries(email, async function (email) {
-		let invites = 0;
-		if (max) {
-			invites = await user.getInvitesNumber(socket.uid);
-		}
-		if (!isAdmin && max && invites >= max) {
-			throw new Error('[[error:invite-maximum-met, ' + invites + ', ' + max + ']]');
-		}
-
-		await user.sendInvitationEmail(socket.uid, email);
-	});
 };
 
 SocketUser.getUserByUID = async function (socket, uid) {

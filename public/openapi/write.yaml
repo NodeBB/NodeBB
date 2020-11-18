@@ -32,6 +32,10 @@ paths:
     $ref: 'write/users.yaml'
   /users/{uid}:
     $ref: 'write/users/uid.yaml'
+  /users/{uid}/content:
+    $ref: 'write/users/uid/content.yaml'
+  /users/{uid}/account:
+    $ref: 'write/users/uid/account.yaml'
   /users/{uid}/settings:
     $ref: 'write/users/uid/settings.yaml'
   /users/{uid}/password:
@@ -42,6 +46,12 @@ paths:
     $ref: 'write/users/uid/ban.yaml'
   /users/{uid}/tokens/{token}:
     $ref: 'write/users/uid/tokens/token.yaml'
+  /users/{uid}/sessions/{uuid}:
+    $ref: 'write/users/uid/sessions/uuid.yaml'
+  /users/{uid}/invites:
+    $ref: 'write/users/uid/invites.yaml'
+  /users/{uid}/invites/groups:
+    $ref: 'write/users/uid/invites/groups.yaml'
   /categories/:
     $ref: 'write/categories.yaml'
   /groups/:

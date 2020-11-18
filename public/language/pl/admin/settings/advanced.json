@@ -34,10 +34,10 @@
 	"sockets.default-placeholder": "Domyślnie: %1",
 	"sockets.delay": "Opóźnienie ponownego łączenia",
 
-	"analytics.settings": "Analytics Settings",
+	"analytics.settings": "Ustawienia Analityki",
 	"analytics.max-cache": "Analytics Cache Max Value",
 	"analytics.max-cache-help": "On high-traffic installs, the cache could be exhausted continuously if there are more concurrent active users than the Max Cache value. (Restart required)",
-	"compression.settings": "Compression Settings",
-	"compression.enable": "Enable Compression",
+	"compression.settings": "Ustawienia Kompresji",
+	"compression.enable": "Włącz Kompresję",
 	"compression.help": "This setting enables gzip compression. For a high-traffic website in production, the best way to put compression in place is to implement it at a reverse proxy level. You can enable it here for testing purposes."
 }

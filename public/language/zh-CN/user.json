@@ -123,6 +123,7 @@
     "open_links_in_new_tab": "在新标签打开外部链接",
     "enable_topic_searching": "启用主题内搜索",
     "topic_search_help": "如果启用此项，主题内搜索会替代浏览器默认的页面搜索，您将可以在整个主题内搜索，而不仅仅只搜索页面上展现的内容。",
+    "update_url_with_post_index": "Update url with post index while browsing topics",
     "scroll_to_my_post": "在提交回复之后显示新回复",
     "follow_topics_you_reply_to": "关注您回复过的主题",
     "follow_topics_you_create": "关注您创建的主题",

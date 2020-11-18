@@ -18,6 +18,8 @@
     "agree_to_terms_of_use": "Jeg godtar vilkårene for bruk",
     "terms_of_use_error": "You must agree to the Terms of Use",
     "registration-added-to-queue": "Din registrering har blitt lagt til i godkjenningskøen. Du vil motta en e-post når denne blir akseptert av en administrator.",
+    "registration-queue-average-time": "Our average time for approving memberships is %1 hours %2 minutes.",
+    "registration-queue-auto-approve-time": "Your membership to this forum will be fully activated in up to %1 hours.",
     "interstitial.intro": "We require some additional information before we can create your account.",
     "interstitial.errors-found": "We could not complete your registration:",
     "gdpr_agree_data": "I consent to the collection and processing of my personal information on this website.",

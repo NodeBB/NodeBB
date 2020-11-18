@@ -55,7 +55,11 @@ async function registerAndLoginUser(req, res, userData) {
 		await authenticationController.doLogin(req, uid);
 	}
 
-	user.deleteInvitationKey(userData.email);
+	// Distinguish registrations through invites from direct ones
+	if (userData.token) {
+		await user.joinGroupsFromInvitation(uid, userData.email);
+	}
+	await user.deleteInvitationKey(userData.email);
 	const referrer = req.body.referrer || req.session.referrer || nconf.get('relative_path') + '/';
 	const complete = await plugins.fireHook('filter:register.complete', { uid: uid, referrer: referrer });
 	req.session.returnTo = complete.referrer;
@@ -74,7 +78,7 @@ authenticationController.register = async function (req, res) {
 
 	const userData = req.body;
 	try {
-		if (registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
+		if (userData.token || registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
 			await user.verifyInvitation(userData);
 		}
 
@@ -118,7 +122,17 @@ authenticationController.register = async function (req, res) {
 async function addToApprovalQueue(req, userData) {
 	userData.ip = req.ip;
 	await user.addToApprovalQueue(userData);
-	return { message: '[[register:registration-added-to-queue]]' };
+	let message = '[[register:registration-added-to-queue]]';
+	if (meta.config.showAverageApprovalTime) {
+		const average_time = await db.getObjectField('registration:queue:approval:times', 'average');
+		if (average_time > 0) {
+			message += ` [[register:registration-queue-average-time, ${Math.floor(average_time / 60)}, ${average_time % 60}]]`;
+		}
+	}
+	if (meta.config.autoApproveTime > 0) {
+		message += ` [[register:registration-queue-auto-approve-time, ${meta.config.autoApproveTime}]]`;
+	}
+	return { message: message };
 }
 
 authenticationController.registerComplete = function (req, res, next) {

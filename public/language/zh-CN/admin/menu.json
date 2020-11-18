@@ -31,6 +31,7 @@
 	"settings/pagination": "分页",
 	"settings/tags": "话题",
 	"settings/notifications": "通知",
+	"settings/api": "API Access",
 	"settings/sounds": "铃声",
 	"settings/social": "社交",
 	"settings/cookies": "Cookies",

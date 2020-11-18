@@ -67,7 +67,7 @@
 	"sort-upvotes": "Most upvotes",
 	"sort-replies": "Most replies",
 
-	"modal-title": "รายงานเนื้อหาไม่เหมาะสม",
+	"modal-title": "Report Content",
 	"modal-body": "กรุณาระเหตุผลสำหรับการปักธง %1 %2 สำหรับการรีวิว หรือไม่ก็ใช้หนึ่งในปุ่มกดรายงานด่วนถ้าเป็นไปได้",
 	"modal-reason-spam": "สแปม",
 	"modal-reason-offensive": "น่ารังเกียจ",

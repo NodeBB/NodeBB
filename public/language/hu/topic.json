@@ -30,6 +30,7 @@
     "locked": "Zárolva",
     "pinned": "Rögzített",
     "moved": "Áthelyezett",
+    "moved-from": "Moved from %1",
     "copy-ip": "IP-cím másolása",
     "ban-ip": "IP-cím kitiltása",
     "view-history": "Edit History",

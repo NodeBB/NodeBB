@@ -4,7 +4,7 @@
 	"address-help": "Il seguente indirizzo email si riferisce all'email che il destinatario vedrà nei campi  \"Da\" e \"Rispondi a\".",
 	"from": "Da Nome",
 	"from-help": "Il nome da visualizzare nell'email.",
-	
+
 	"smtp-transport": "Trasporto SMTP",
 	"smtp-transport.enabled": "Utilizza un server di posta elettronica esterno per inviare le email",
 	"smtp-transport-help": "Puoi selezionare da un elenco di servizi noti o inserirne uno personalizzato.",
@@ -35,5 +35,7 @@
 	"subscriptions": "Email riepilogo",
 	"subscriptions.disable": "Disabilita email riepilogo",
 	"subscriptions.hour": "Orario riepilogo",
-	"subscriptions.hour-help": "Si prega di inserire un numero che rappresenta l'ora per l'invio dell'email programmate (es. <code>0</code>per mezzanotte, <code>17</code>per le 17: 00). Tieni presente che questa è l'ora secondo il server stesso, e potrebbe non combaciare esattamente al tuo orologio di sistema.<br /> L'orario approssimativo del server è: <span id=\"serverTime\"></span> <br /> La prossima trasmissione giornaliera è prevista alle <span id=\"nextDigestTime\"></span>"
+	"subscriptions.hour-help": "Si prega di inserire un numero che rappresenta l'ora per l'invio dell'email programmate (es. <code>0</code>per mezzanotte, <code>17</code>per le 17: 00). Tieni presente che questa è l'ora secondo il server stesso, e potrebbe non combaciare esattamente al tuo orologio di sistema.<br /> L'orario approssimativo del server è: <span id=\"serverTime\"></span> <br /> La prossima trasmissione giornaliera è prevista alle <span id=\"nextDigestTime\"></span>",
+	"notifications.settings": "Email notification settings",
+	"notifications.remove-images": "Remove images from email notifications"
 }

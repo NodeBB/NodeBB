@@ -123,6 +123,7 @@
     "open_links_in_new_tab": "Abrir ligazóns externos nunca nova pestaña",
     "enable_topic_searching": "Permitir buscar dentro dun tema",
     "topic_search_help": "Se se activa, o buscador do NodeBB superporase ao propio do navegador dentro de cada tema, permitindo buscar en todo o tema e non só naquilo que se presenta na pantalla.",
+    "update_url_with_post_index": "Update url with post index while browsing topics",
     "scroll_to_my_post": "Logo de enviar unha resposta, mostrar a nova mensaxe",
     "follow_topics_you_reply_to": "Segui-los temas aos que respondes",
     "follow_topics_you_create": "Segui-los temas que creaches ti",

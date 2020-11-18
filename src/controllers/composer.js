@@ -77,7 +77,7 @@ exports.post = async function (req, res) {
 			throw new Error('[[error:invalid-data]]');
 		}
 		if (result.queued) {
-			return res.redirect((nconf.get('relative_path') || '/'));
+			return res.redirect((nconf.get('relative_path') || '/') + '?noScriptMessage=[[success:post-queued]]');
 		}
 		const uid = result.uid ? result.uid : result.topicData.uid;
 		user.updateOnlineUsers(uid);

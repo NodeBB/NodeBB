@@ -123,6 +123,7 @@
     "open_links_in_new_tab": "Åpne utgående lenker i en ny fane",
     "enable_topic_searching": "Aktiver søk-i-emne",
     "topic_search_help": "Hvis søk-i-emne er aktivert, overstyres nettleserens standard sidesøk og gir mulighet til å søke gjennom hele emnet, ikke bare det som vises på skjermen",
+    "update_url_with_post_index": "Update url with post index while browsing topics",
     "scroll_to_my_post": "After posting a reply, show the new post",
     "follow_topics_you_reply_to": "Watch topics that you reply to",
     "follow_topics_you_create": "Watch topics you create",

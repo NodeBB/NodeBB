@@ -41,7 +41,7 @@ module.exports = function (privileges) {
 			return await filterIsModerator(cids, uid, cids.map(() => true));
 		}
 		const uniqueCids = _.uniq(cids);
-		const isAllowed = await helpers.isUserAllowedTo('moderate', uid, uniqueCids);
+		const isAllowed = await helpers.isAllowedTo('moderate', uid, uniqueCids);
 
 		const cidToIsAllowed = _.zipObject(uniqueCids, isAllowed);
 		const isModerator = cids.map(cid => cidToIsAllowed[cid]);
@@ -107,12 +107,14 @@ module.exports = function (privileges) {
 		return data.canBan;
 	};
 
-	privileges.users.hasBanPrivilege = async function (uid) {
-		const canBan = await privileges.global.can('ban', uid);
-		const data = await plugins.fireHook('filter:user.hasBanPrivilege', {
-			uid: uid,
-			canBan: canBan,
-		});
-		return data.canBan;
-	};
+	privileges.users.hasBanPrivilege = async uid => await hasGlobalPrivilege('ban', uid);
+	privileges.users.hasInvitePrivilege = async uid => await hasGlobalPrivilege('invite', uid);
+
+	async function hasGlobalPrivilege(privilege, uid) {
+		const privilegeName = privilege.split('-').map(word => word.slice(0, 1).toUpperCase() + word.slice(1)).join('');
+		let payload = { uid };
+		payload[`can${privilegeName}`] = await privileges.global.can(privilege, uid);
+		payload = await plugins.fireHook(`filter:user.has${privilegeName}Privilege`, payload);
+		return payload[`can${privilegeName}`];
+	}
 };

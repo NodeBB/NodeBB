@@ -31,6 +31,7 @@
 	"settings/pagination": "Pagination",
 	"settings/tags": "תגיות",
 	"settings/notifications": "התראות",
+	"settings/api": "API Access",
 	"settings/sounds": "Sounds",
 	"settings/social": "Social",
 	"settings/cookies": "עוגיות",
@@ -42,7 +43,7 @@
 
 	"section-appearance": "Appearance",
 	"appearance/themes": "Themes",
-	"appearance/skins": "Skins",
+	"appearance/skins": "עיצובים",
 	"appearance/customise": "Custom Content (HTML/JS/CSS)",
 
 	"section-extend": "Extend",

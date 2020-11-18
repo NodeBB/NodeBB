@@ -30,6 +30,7 @@
     "locked": "Låst",
     "pinned": "Fäst",
     "moved": "Flyttad",
+    "moved-from": "Moved from %1",
     "copy-ip": "Kopiera IP",
     "ban-ip": "Banna IP",
     "view-history": "Redigera historik",

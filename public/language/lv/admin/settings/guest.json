@@ -1,7 +1,7 @@
 {
-	"handles": "Viesu iesaukas",
+	"settings": "Settings",
 	"handles.enabled": "Atļaut viesu iesaukas",
 	"handles.enabled-help": "Parādīt lauku, kas viesiem ļaus izvēlēties savu iesauku, kas saistīts ar katru viņu publicēto rakstu. Ja ir atspējots, viņus vienkārši sauks par \"Viesiem\"",
-	"topic-views": "Topic views",
-	"topic-views.enabled": "Allow guests to increase topic view counts"
+	"topic-views.enabled": "Allow guests to increase topic view counts",
+	"reply-notifications.enabled": "Allow guests to generate reply notifications"
 }

@@ -1,7 +1,6 @@
 'use strict';
 
 const async = require('async');
-const winston = require('winston');
 
 const db = require('../../database');
 const api = require('../../api');
@@ -9,9 +8,7 @@ const groups = require('../../groups');
 const user = require('../../user');
 const events = require('../../events');
 const meta = require('../../meta');
-const plugins = require('../../plugins');
 const translator = require('../../translator');
-const flags = require('../../flags');
 const sockets = require('..');
 
 const User = module.exports;
@@ -125,16 +122,16 @@ User.forcePasswordReset = async function (socket, uids) {
 };
 
 User.deleteUsers = async function (socket, uids) {
-	await canDeleteUids(uids);
-	deleteUsers(socket, uids, async function (uid) {
-		return await user.deleteAccount(uid);
-	});
+	sockets.warnDeprecated(socket, 'DELETE /api/v3/users/:uid/account');
+	await Promise.all(uids.map(async (uid) => {
+		await api.users.deleteAccount(socket, { uid });
+	}));
 };
 
 User.deleteUsersContent = async function (socket, uids) {
-	await canDeleteUids(uids);
+	sockets.warnDeprecated(socket, 'DELETE /api/v3/users/:uid/content');
 	await Promise.all(uids.map(async (uid) => {
-		await user.deleteContent(socket.uid, uid);
+		await api.users.deleteContent(socket, { uid });
 	}));
 };
 
@@ -142,42 +139,6 @@ User.deleteUsersAndContent = async function (socket, uids) {
 	sockets.warnDeprecated(socket, 'DELETE /api/v3/users or DELETE /api/v3/users/:uid');
 	await api.users.deleteMany(socket, { uids });
 };
-
-async function canDeleteUids(uids) {
-	if (!Array.isArray(uids)) {
-		throw new Error('[[error:invalid-data]]');
-	}
-	const isMembers = await groups.isMembers(uids, 'administrators');
-	if (isMembers.includes(true)) {
-		throw new Error('[[error:cant-delete-other-admins]]');
-	}
-}
-
-async function deleteUsers(socket, uids, method) {
-	async function doDelete(uid) {
-		await flags.resolveFlag('user', uid, socket.uid);
-		const userData = await method(uid);
-		await events.log({
-			type: 'user-delete',
-			uid: socket.uid,
-			targetUid: uid,
-			ip: socket.ip,
-			username: userData.username,
-			email: userData.email,
-		});
-		plugins.fireHook('action:user.delete', {
-			callerUid: socket.uid,
-			uid: uid,
-			ip: socket.ip,
-			user: userData,
-		});
-	}
-	try {
-		await Promise.all(uids.map(uid => doDelete(uid)));
-	} catch (err) {
-		winston.error(err.stack);
-	}
-}
 
 User.restartJobs = async function () {
 	user.startJobs();

@@ -22,12 +22,13 @@ module.exports = function (Messaging) {
 		}
 
 		const maximumChatMessageLength = meta.config.maximumChatMessageLength || 1000;
-		const data = await plugins.fireHook('filter:messaging.checkContent', { content: content });
-		content = String(data.content).trim();
+		content = String(content).trim();
+		let length = String(content.length).trim();
+		({ content, length } = await plugins.fireHook('filter:messaging.checkContent', { content, length }));
 		if (!content) {
 			throw new Error('[[error:invalid-chat-message]]');
 		}
-		if (content.length > maximumChatMessageLength) {
+		if (length > maximumChatMessageLength) {
 			throw new Error('[[error:chat-message-too-long, ' + maximumChatMessageLength + ']]');
 		}
 	};

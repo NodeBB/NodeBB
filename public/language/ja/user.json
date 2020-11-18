@@ -123,6 +123,7 @@
     "open_links_in_new_tab": "外部リンクを新しいタブで開く",
     "enable_topic_searching": "スレッド内検索を有効にする",
     "topic_search_help": "有効にしたら、インースレッドの検索はブラウザの既定機能を無視して、スクリーンに示したよりスレッド内からの全部を検索します",
+    "update_url_with_post_index": "Update url with post index while browsing topics",
     "scroll_to_my_post": "返信を投稿した後、新しい投稿を表示する",
     "follow_topics_you_reply_to": "あなたが返信したスレッドをウォッチする",
     "follow_topics_you_create": "あなたが作成したスレッドをウォッチする",

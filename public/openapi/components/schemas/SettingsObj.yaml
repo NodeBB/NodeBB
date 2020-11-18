@@ -37,6 +37,9 @@ Settings:
     topicSearchEnabled:
       type: boolean
       description: Enable keyword searching within topics
+    updateUrlWithPostIndex:
+      type: boolean
+      description: Update url with post index while browsing topics
     categoryTopicSort:
       type: string
       description: Default sorting strategy of the topics in a category
@@ -55,6 +58,9 @@ Settings:
     notificationType_new-chat:
       type: string
       description: Notification type for new chat messages
+    notificationType_new-group-chat:
+      type: string
+      description: Notification type for new group chat messages
     notificationType_new-reply:
       type: string
       description: Notification type for new topic replies

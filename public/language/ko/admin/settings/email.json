@@ -4,7 +4,7 @@
 	"address-help": "아래 이메일 주소는 수신인의 \"보낸 사람\"과 \"답장하기\" 항목에서 보이게 됩니다.",
 	"from": "보낸 사람 이름",
 	"from-help": "이메일에 표시할 보낸 사람 이름",
-	
+
 	"smtp-transport": "SMTP Transport",
 	"smtp-transport.enabled": "Use an external email server to send emails",
 	"smtp-transport-help": "You can select from a list of well-known services or enter a custom one.",
@@ -35,5 +35,7 @@
 	"subscriptions": "Email Digests",
 	"subscriptions.disable": "Disable email digests",
 	"subscriptions.hour": "발송 시간",
-	"subscriptions.hour-help": "정기 이메일을 보낼 시간을 기입해 주세요(예: <code>0</code>은 자정, <code>17</code>은 오후 5시 입니다. 이 시간은 서버기준이며, 귀하의 시스템 시간과 일치하지 않을 수 있습니다. <br />서버 시간은 <span id=\"serverTime\"></span> 입니다. <br /> 다음 정기 이메일은 <span id=\"nextDigestTime\"></span> 에 발송 예정입니다."
+	"subscriptions.hour-help": "정기 이메일을 보낼 시간을 기입해 주세요(예: <code>0</code>은 자정, <code>17</code>은 오후 5시 입니다. 이 시간은 서버기준이며, 귀하의 시스템 시간과 일치하지 않을 수 있습니다. <br />서버 시간은 <span id=\"serverTime\"></span> 입니다. <br /> 다음 정기 이메일은 <span id=\"nextDigestTime\"></span> 에 발송 예정입니다.",
+	"notifications.settings": "Email notification settings",
+	"notifications.remove-images": "Remove images from email notifications"
 }

@@ -38,11 +38,11 @@
 
 	<br/>
 
-	<!-- BEGIN categories -->
+	{{{ each categories }}}
 	<div class="categories category-wrapper category-depth-{categories.depth}">
 	<h4><!-- IF categories.icon --><i class="fa {categories.icon}"></i> <!-- ENDIF categories.icon -->[[admin/manage/admins-mods:moderators-of-category, {categories.name}]]{{{if categories.disabled}}}<span class="badge badge-primary">[[admin/manage/admins-mods:disabled]]</span>{{{end}}}</h4>
 	<div class="moderator-area" data-cid="{categories.cid}">
-		<!-- BEGIN categories.moderators -->
+		{{{ each categories.moderators }}}
 			<div class="user-card pull-left" data-uid="{categories.moderators.uid}">
 				<!-- IF categories.moderators.picture -->
 				<img class="avatar avatar-sm" src="{categories.moderators.picture}" />
@@ -52,7 +52,7 @@
 				<a href="{config.relative_path}/user/{categories.moderators.userslug}">{categories.moderators.username}</a>
 				<i class="remove-user-icon fa fa-times" role="button"></i>
 			</div>
-		<!-- END categories.moderators -->
+		{{{ end }}}
 	</div>
 
 	<div data-cid="{categories.cid}" class="no-moderator-warning <!-- IF categories.moderators.length -->hidden<!-- ENDIF categories.moderators.length -->">[[admin/manage/admins-mods:no-moderators]]</div>
@@ -60,5 +60,5 @@
 	<input data-cid="{categories.cid}" class="form-control moderator-search" placeholder="[[admin/manage/admins-mods:add-moderator]]" />
 	</div>
 	<br/>
-	<!-- END categories -->
+	{{{ end }}}
 </div>

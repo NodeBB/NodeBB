@@ -21,7 +21,7 @@ const flags = require('../src/flags');
 const messaging = require('../src/messaging');
 const utils = require('../src/utils');
 
-describe('Read API', async () => {
+describe('API', async () => {
 	let readApi = false;
 	let writeApi = false;
 	const readApiPath = path.resolve(__dirname, '../public/openapi/read.yaml');
@@ -32,6 +32,7 @@ describe('Read API', async () => {
 	const unauthenticatedRoutes = ['/api/login', '/api/register'];	// Everything else will be called with the admin user
 
 	const mocks = {
+		head: {},
 		get: {},
 		post: {},
 		put: {},
@@ -46,6 +47,18 @@ describe('Read API', async () => {
 					in: 'path',
 					name: 'token',
 					example: utils.generateUUID(),
+				},
+			],
+			'/users/{uid}/sessions/{uuid}': [
+				{
+					in: 'path',
+					name: 'uid',
+					example: 1,
+				},
+				{
+					in: 'path',
+					name: 'uuid',
+					example: '',	// to be defined below...
 				},
 			],
 		},
@@ -67,9 +80,9 @@ describe('Read API', async () => {
 		// Create sample users
 		const adminUid = await user.create({ username: 'admin', password: '123456', email: 'test@example.org' });
 		const unprivUid = await user.create({ username: 'unpriv', password: '123456', email: 'unpriv@example.org' });
-		for (let x = 0; x < 3; x++) {
+		for (let x = 0; x < 4; x++) {
 			// eslint-disable-next-line no-await-in-loop
-			await user.create({ username: 'deleteme', password: '123456' });	// for testing of user deletion routes (uids 4-6)
+			await user.create({ username: 'deleteme', password: '123456' });	// for testing of DELETE /users (uids 5, 6) and DELETE /user/:uid/account (uid 7)
 		}
 		await groups.join('administrators', adminUid);
 
@@ -82,7 +95,7 @@ describe('Read API', async () => {
 			tokens: [{
 				token: mocks.delete['/users/{uid}/tokens/{token}'][1].example,
 				uid: 1,
-				description: 'for testing of token deletion rotue',
+				description: 'for testing of token deletion route',
 				timestamp: Date.now(),
 			}],
 		});
@@ -171,8 +184,17 @@ describe('Read API', async () => {
 					return;
 				}
 
-				it('should have examples when parameters are present', () => {
+				it('should have each path parameter defined in its context', () => {
 					method = _method;
+					if (!context[method].parameters) {
+						return;
+					}
+
+					const names = (path.match(/{[\w\-_]+}?/g) || []).map(match => match.slice(1, -1));
+					assert(context[method].parameters.map(param => (param.in === 'path' ? param.name : null)).filter(Boolean).every(name => names.includes(name)), `${method.toUpperCase()} ${path} has parameter(s) in path that are not defined in schema`);
+				});
+
+				it('should have examples when parameters are present', () => {
 					let parameters = context[method].parameters;
 					let testPath = path;
 
@@ -200,7 +222,7 @@ describe('Read API', async () => {
 					url = nconf.get('url') + (prefix || '') + testPath;
 				});
 
-				it('may contain a request body with application/json type if POST/PUT/DELETE', () => {
+				it('should contain a valid request body (if present) with application/json type if POST/PUT/DELETE', () => {
 					if (['post', 'put', 'delete'].includes(method) && context[method].hasOwnProperty('requestBody')) {
 						assert(context[method].requestBody);
 						assert(context[method].requestBody.content);
@@ -254,9 +276,11 @@ describe('Read API', async () => {
 				});
 
 				it('should successfully re-login if needed', async () => {
-					const reloginPaths = ['/users/{uid}/password'];
-					if (method === 'put' && reloginPaths.includes(path)) {
+					const reloginPaths = ['PUT /users/{uid}/password', 'DELETE /users/{uid}/sessions/{uuid}'];
+					if (reloginPaths.includes(`${method.toUpperCase()} ${path}`)) {
 						jar = await helpers.loginUser('admin', '123456');
+						const sessionUUIDs = await db.getObject('uid:1:sessionUUID:sessionId');
+						mocks.delete['/users/{uid}/sessions/{uuid}'][1].example = Object.keys(sessionUUIDs).pop();
 
 						// Retrieve CSRF token using cookie, to test Write API
 						const config = await request({

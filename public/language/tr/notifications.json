@@ -60,6 +60,7 @@
     "notificationType_post-edit": "Takip ettiğiniz bir konudaki bir ileti değiştirildiğinde",
     "notificationType_follow": "Biri sizi takip etmeye başlayınca",
     "notificationType_new-chat": "Bir sohbet mesajı aldığınızda",
+    "notificationType_new-group-chat": "Grup sohbet mesajı aldığınızda",
     "notificationType_group-invite": "Bir gruba katılım davetiyesi aldığınızda",
     "notificationType_group-request-membership": "Biri size ait bir gruba üye olmak istediğinde",
     "notificationType_new-register": "Biri kayıt kuyruğuna eklendiğinde",

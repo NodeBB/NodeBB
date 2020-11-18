@@ -1,13 +1,13 @@
 'use strict';
 
-define('accounts/delete', [], function () {
+define('accounts/delete', ['api', 'bootbox'], function (api) {
 	var Delete = {};
 
 	Delete.account = function (uid, callback) {
 		executeAction(
 			uid,
 			'[[user:delete_this_account_confirm]]',
-			'admin.user.deleteUsers',
+			'/account',
 			'[[user:account-deleted]]',
 			callback
 		);
@@ -17,7 +17,7 @@ define('accounts/delete', [], function () {
 		executeAction(
 			uid,
 			'[[user:delete_account_content_confirm]]',
-			'admin.user.deleteUsersContent',
+			'/content',
 			'[[user:account-content-deleted]]',
 			callback
 		);
@@ -27,22 +27,19 @@ define('accounts/delete', [], function () {
 		executeAction(
 			uid,
 			'[[user:delete_all_confirm]]',
-			'admin.user.deleteUsersAndContent',
+			'',
 			'[[user:account-deleted]]',
 			callback
 		);
 	};
 
-	function executeAction(uid, confirmText, action, successText, callback) {
+	function executeAction(uid, confirmText, path, successText, callback) {
 		bootbox.confirm(confirmText, function (confirm) {
 			if (!confirm) {
 				return;
 			}
 
-			socket.emit(action, [uid], function (err) {
-				if (err) {
-					return app.alertError(err.message);
-				}
+			api.del(`/users/${uid}${path}`, {}).then(() => {
 				app.alertSuccess(successText);
 
 				if (typeof callback === 'function') {

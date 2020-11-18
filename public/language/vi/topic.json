@@ -30,6 +30,7 @@
     "locked": "Khóa",
     "pinned": "Đã ghim",
     "moved": "Chuyển đi",
+    "moved-from": "Moved from %1",
     "copy-ip": "Sao chép IP",
     "ban-ip": "Cấm IP",
     "view-history": "Lịch sử chỉnh sửa",

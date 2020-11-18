@@ -187,6 +187,19 @@
 				</p>
 			</div>
 			<div class="form-group">
+				<label>[[admin/settings/user:registration-queue-auto-approve-time]]</label>
+				<input type="number" class="form-control" data-field="autoApproveTime" placeholder="0">
+				<p class="help-block">
+					[[admin/settings/user:registration-queue-auto-approve-time-help]]
+				</p>
+			</div>
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="showAverageApprovalTime">
+					<span class="mdl-switch__label"><strong>[[admin/settings/user:registration-queue-show-average-time]]</strong></span>
+				</label>
+			</div>
+			<div class="form-group">
 				<label>[[admin/settings/user:max-invites]]</label>
 				<input type="number" class="form-control" data-field="maximumInvites" placeholder="0">
 				<p class="help-block">
@@ -283,6 +296,13 @@
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="topicSearchEnabled">
 					<span class="mdl-switch__label"><strong>[[admin/settings/user:topic-search]]</strong></span>
+				</label>
+			</div>
+
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="updateUrlWithPostIndex">
+					<span class="mdl-switch__label"><strong>[[admin/settings/user:update-url-with-post-index]]</strong></span>
 				</label>
 			</div>
 

@@ -30,6 +30,7 @@
     "locked": "Закрыта",
     "pinned": "Прикреплена",
     "moved": "Перенесена",
+    "moved-from": "Moved from %1",
     "copy-ip": "Копировать IP",
     "ban-ip": "Забанить IP",
     "view-history": "История правок",

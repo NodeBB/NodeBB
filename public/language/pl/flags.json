@@ -67,7 +67,7 @@
 	"sort-upvotes": "Most upvotes",
 	"sort-replies": "Most replies",
 
-	"modal-title": "Zgłoś niewłaściwe treści",
+	"modal-title": "Report Content",
 	"modal-body": "Wskaż powód oflagowania i zgłoszenia %1 %2 do oceny. Jeśli to możliwe, użyj jednego z przycisków szybkiego zgłoszenia.",
 	"modal-reason-spam": "Spam",
 	"modal-reason-offensive": "Treści obraźliwe",

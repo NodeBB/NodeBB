@@ -123,6 +123,7 @@
     "open_links_in_new_tab": "فتح الروابط الخارجية في نافدة جديدة",
     "enable_topic_searching": "تفعيل خاصية البحث داخل المواضيع",
     "topic_search_help": "إذا قمت بتفعيل ميزة البحث في-الموضوع،  سيتم تجاوز الخيار الافتراضي للمتصفح مما يؤدي للبحث بكامل الموضوع بدلا عن البحث في الجزء الظاهر في الشاشة.",
+    "update_url_with_post_index": "Update url with post index while browsing topics",
     "scroll_to_my_post": "بعد اضافة رد على المشاركة, قم بإظهار المشاركة",
     "follow_topics_you_reply_to": "متابعة المواضيع التي تقوم بالرد عليها",
     "follow_topics_you_create": "متابعة المواضيع التي تقوم بإنشائها",

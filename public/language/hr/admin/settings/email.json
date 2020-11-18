@@ -4,7 +4,7 @@
 	"address-help": "Sljedeća email adresa je adresa koju će primatelj vidjeti u \"Od\" i \"Odgovori na\" poljima.",
 	"from": "Od imena",
 	"from-help": "Ime prikazano u dolaznom emailu.",
-	
+
 	"smtp-transport": "SMTP Transport",
 	"smtp-transport.enabled": "Use an external email server to send emails",
 	"smtp-transport-help": "You can select from a list of well-known services or enter a custom one.",
@@ -35,5 +35,7 @@
 	"subscriptions": "Email Digests",
 	"subscriptions.disable": "Disable email digests",
 	"subscriptions.hour": "Pregled Sati.",
-	"subscriptions.hour-help": "Unesite broj koji pretstavlja vrijeme kada će se poslati pregled mailom (npr. <code>0</code> za ponoć, <code>17</code>za 5 popodne).Imajte na umu da to vrijeme predstavlja vrijeme servera te ne mora predstavljati vrijeme na Vašem sistemu. Vrijeme servera je: <span id=\"serverTime\"></span><br />  Sljedeći pregled će biti poslan <span id=\"nextDigestTime\"></span> ."
+	"subscriptions.hour-help": "Unesite broj koji pretstavlja vrijeme kada će se poslati pregled mailom (npr. <code>0</code> za ponoć, <code>17</code>za 5 popodne).Imajte na umu da to vrijeme predstavlja vrijeme servera te ne mora predstavljati vrijeme na Vašem sistemu. Vrijeme servera je: <span id=\"serverTime\"></span><br />  Sljedeći pregled će biti poslan <span id=\"nextDigestTime\"></span> .",
+	"notifications.settings": "Email notification settings",
+	"notifications.remove-images": "Remove images from email notifications"
 }

@@ -1,6 +1,7 @@
 'use strict';
 
 var request = require('request');
+const requestAsync = require('request-promise-native');
 var nconf = require('nconf');
 var fs = require('fs');
 var winston = require('winston');
@@ -160,6 +161,22 @@ helpers.copyFile = function (source, target, callback) {
 			cbCalled = true;
 		}
 	}
+};
+
+helpers.invite = async function (body, uid, jar, csrf_token) {
+	const res = await requestAsync.post(`${nconf.get('url')}/api/v3/users/${uid}/invites`, {
+		jar: jar,
+		// using "form" since client "api" module make requests with "application/x-www-form-urlencoded" content-type
+		form: body,
+		headers: {
+			'x-csrf-token': csrf_token,
+		},
+		simple: false,
+		resolveWithFullResponse: true,
+	});
+
+	res.body = JSON.parse(res.body);
+	return { res, body };
 };
 
 require('../../src/promisify')(helpers);

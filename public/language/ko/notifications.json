@@ -60,6 +60,7 @@
     "notificationType_post-edit": "When a post is edited in a topic you are watching",
     "notificationType_follow": "누군가 사용자님을 팔로우 하면",
     "notificationType_new-chat": "채팅 메시지를 받으면",
+    "notificationType_new-group-chat": "When you receive a group chat message",
     "notificationType_group-invite": "그룹 초대를 받으면",
     "notificationType_group-request-membership": "누군가가 당신이 소유한 그룹에 참여를 요청했을 때",
     "notificationType_new-register": "When someone gets added to registration queue",

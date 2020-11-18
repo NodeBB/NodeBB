@@ -67,7 +67,7 @@
 	"sort-upvotes": "Most upvotes",
 	"sort-replies": "Most replies",
 
-	"modal-title": "گزارش محتوای نامناسب",
+	"modal-title": "Report Content",
 	"modal-body": "لطفا علت گزارش <strong>%2</strong> <strong>%1</strong> را برای بررسی مشخص کنید. همچنین می توانید از یکی از دکمه های ارسال سریع استفاده کنید.",
 	"modal-reason-spam": "هرزنامه",
 	"modal-reason-offensive": "توهین آمیز",

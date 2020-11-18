@@ -123,6 +123,7 @@
     "open_links_in_new_tab": "在新頁籤打開外部連結",
     "enable_topic_searching": "啟用主題內搜索",
     "topic_search_help": "如果啟用此項，主題內搜索會替代瀏覽器預設的頁面搜索，您將可以在整個主題內搜索，而不僅僅只搜索頁面上展現的內容。",
+    "update_url_with_post_index": "Update url with post index while browsing topics",
     "scroll_to_my_post": "在提交回覆之後顯示新回覆",
     "follow_topics_you_reply_to": "關注您回覆過的主題",
     "follow_topics_you_create": "關注您建立的主題",

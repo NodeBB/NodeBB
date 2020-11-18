@@ -123,6 +123,7 @@
     "open_links_in_new_tab": "Zunanje povezave odpri v novem zavihku",
     "enable_topic_searching": "Omogoči iskanje znotraj teme",
     "topic_search_help": "Če omogočite, bo iskanje prepisalo brskalnikove prevzete nastavitve in vam omogočilo iskanje skozi celotno temo.",
+    "update_url_with_post_index": "Update url with post index while browsing topics",
     "scroll_to_my_post": "After posting a reply, show the new post",
     "follow_topics_you_reply_to": "Spremljanj teme, na katere si odgovoril",
     "follow_topics_you_create": "Spremljanj teme, ki si jih ustvaril",

@@ -1,3 +1,20 @@
+head:
+  tags:
+    - groups
+  summary: check if a group exists
+  parameters:
+    - in: path
+      name: slug
+      schema:
+        type: string
+      required: true
+      description: group slug (that also acts as its identifier) to check
+      example: my-test-group
+  responses:
+    '200':
+      description: group found
+    '404':
+      description: group not found
 delete:
   tags:
     - groups

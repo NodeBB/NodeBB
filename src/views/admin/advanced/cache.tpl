@@ -2,7 +2,7 @@
 <div class="row post-cache">
 	<div class="col-lg-12">
 		<div class="row">
-			<div class="col-lg-2">
+			<div class="col-lg-3">
 				<div class="panel panel-default">
 					<div class="panel-heading">[[admin/advanced/cache:post-cache]]</div>
 					<div class="panel-body">
@@ -37,7 +37,7 @@
 			</div>
 
 			<!-- IF objectCache -->
-			<div class="col-lg-2">
+			<div class="col-lg-3">
 				<div class="panel panel-default">
 					<div class="panel-heading">Object Cache</div>
 					<div class="panel-body">
@@ -63,7 +63,7 @@
 			</div>
 			<!-- ENDIF objectCache -->
 
-			<div class="col-lg-2">
+			<div class="col-lg-3">
 				<div class="panel panel-default">
 					<div class="panel-heading">Group Cache</div>
 					<div class="panel-body">
@@ -89,7 +89,7 @@
 				</div>
 			</div>
 
-			<div class="col-lg-2">
+			<div class="col-lg-3">
 				<div class="panel panel-default">
 					<div class="panel-heading">Local Cache</div>
 					<div class="panel-body">
@@ -111,32 +111,6 @@
 						<label>Hit Ratio:</label> <span>{localCache.hitRatio}</span><br/>
 						<a href="{config.relative_path}/api/admin/advanced/cache/dump?name=local" class="btn btn-sm btn-default"><i class="fa fa-download"></i></a>
 						<a class="btn btn-sm btn-danger clear" data-name="local"><i class="fa fa-trash"></i></a>
-					</div>
-				</div>
-			</div>
-
-			<div class="col-lg-2">
-				<div class="panel panel-default">
-					<div class="panel-heading">Header Footer Cache</div>
-					<div class="panel-body">
-						<div class="checkbox" data-name="headerfooter">
-							<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-								<input class="mdl-switch__input" type="checkbox" {{{if headerFooterCache.enabled}}}checked{{{end}}}>
-							</label>
-						</div>
-						<span>{headerFooterCache.length} / {headerFooterCache.max}</span><br/>
-
-						<div class="progress">
-							<div class="progress-bar" role="progressbar" aria-valuenow="{headerFooterCache.percentFull}" aria-valuemin="0" aria-valuemax="100" style="width: {headerFooterCache.percentFull}%;">
-								[[admin/advanced/cache:percent-full, {headerFooterCache.percentFull}]]
-							</div>
-						</div>
-
-						<label>Hits:</label> <span>{headerFooterCache.hits}</span><br/>
-						<label>Misses:</label> <span>{headerFooterCache.misses}</span><br/>
-						<label>Hit Ratio:</label> <span>{headerFooterCache.hitRatio}</span><br/>
-						<a href="{config.relative_path}/api/admin/advanced/cache/dump?name=headerfooter" class="btn btn-sm btn-default"><i class="fa fa-download"></i></a>
-						<a class="btn btn-sm btn-danger clear" data-name="headerfooter"><i class="fa fa-trash"></i></a>
 					</div>
 				</div>
 			</div>

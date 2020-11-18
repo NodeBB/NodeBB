@@ -27,6 +27,8 @@ get:
                     type: string
                   sort_lastonline:
                     type: boolean
+                  showInviteButton:
+                    type: boolean
                   inviteOnly:
                     type: boolean
                   adminInviteOnly:

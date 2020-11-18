@@ -123,6 +123,7 @@
     "open_links_in_new_tab": "پیوندهای به بیرون را در برگ جدید باز کن",
     "enable_topic_searching": "فعال کردن جستجوی داخل-موضوع",
     "topic_search_help": "If enabled, in-topic searching will override the browser's default page search behaviour and allow you to search through the entire topic, instead of what is only shown on screen",
+    "update_url_with_post_index": "Update url with post index while browsing topics",
     "scroll_to_my_post": "پس از ارسال پست، اولین پست جدید نشان بده",
     "follow_topics_you_reply_to": "موضوع‌های که جواب دادید را پیگیری نمائید",
     "follow_topics_you_create": "موضوع‌های که ایجاد کردید را پیگیری نمائید",

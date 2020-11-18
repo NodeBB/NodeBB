@@ -60,6 +60,7 @@
     "notificationType_post-edit": "Когда сообщение было отредактировано в теме, на которую вы подписаны",
     "notificationType_follow": "Когда кто-то подписался на вас",
     "notificationType_new-chat": "Когда вы получаете сообщение в чат",
+    "notificationType_new-group-chat": "When you receive a group chat message",
     "notificationType_group-invite": "Когда вы получаете приглашение в группу",
     "notificationType_group-request-membership": "Когда кто-то хочет присоединиться к группе, которой вы управляете",
     "notificationType_new-register": "Когда в очереди на регистрацию появляется новый пользователь",

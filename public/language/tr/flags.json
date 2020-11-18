@@ -67,7 +67,7 @@
 	"sort-upvotes": "En çok artılanan",
 	"sort-replies": "En çok cevap verilen",
 
-	"modal-title": "Uygunsuz İçeriği Rapor Et",
+	"modal-title": "İçeriği Şikayet Et",
 	"modal-body": "%1 %2 için şikayet nedenini belirtiniz. Alternatif olarak hızlı rapor butonlarından birini kullanabilirsiniz.",
 	"modal-reason-spam": "Gereksiz",
 	"modal-reason-offensive": "Saldırgan",

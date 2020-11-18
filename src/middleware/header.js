@@ -157,6 +157,9 @@ middleware.renderHeader = async function renderHeader(req, res, data) {
 	templateValues.defaultLang = meta.config.defaultLang || 'en-GB';
 	templateValues.userLang = res.locals.config.userLang;
 	templateValues.languageDirection = results.languageDirection;
+	if (req.query.noScriptMessage) {
+		templateValues.noScriptMessage = validator.escape(String(req.query.noScriptMessage));
+	}
 
 	templateValues.template = { name: res.locals.template };
 	templateValues.template[res.locals.template] = true;

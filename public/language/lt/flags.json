@@ -67,7 +67,7 @@
 	"sort-upvotes": "Most upvotes",
 	"sort-replies": "Most replies",
 
-	"modal-title": "Report Inappropriate Content",
+	"modal-title": "Report Content",
 	"modal-body": "Please specify your reason for flagging %1 %2 for review. Alternatively, use one of the quick report buttons if applicable.",
 	"modal-reason-spam": "Šlamštas",
 	"modal-reason-offensive": "Offensive",

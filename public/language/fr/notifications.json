@@ -60,6 +60,7 @@
     "notificationType_post-edit": "Lorsqu'un article est modifié dans un sujet que vous regardez",
     "notificationType_follow": "Lorsque quelqu'un commence à vous suivre",
     "notificationType_new-chat": "Lorsque vous recevez un message du chat ",
+    "notificationType_new-group-chat": "Lorsque vous recevez un message de discussion de groupe",
     "notificationType_group-invite": "Lorsque vous recevez une invitation d'un groupe",
     "notificationType_group-request-membership": "Quand quelqu'un demande à rejoindre un groupe que vous administrez",
     "notificationType_new-register": "Lorsque quelqu'un est ajouté à la file d'attente d'inscription",

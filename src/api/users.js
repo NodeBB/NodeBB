@@ -81,13 +81,21 @@ usersAPI.update = async function (caller, data) {
 	return userData;
 };
 
-usersAPI.delete = async function (caller, data) {
-	processDeletion(data.uid, caller);
+usersAPI.delete = async function (caller, { uid, password }) {
+	processDeletion({ uid: uid, method: 'delete', password, caller });
+};
+
+usersAPI.deleteContent = async function (caller, { uid, password }) {
+	processDeletion({ uid, method: 'deleteContent', password, caller });
+};
+
+usersAPI.deleteAccount = async function (caller, { uid, password }) {
+	processDeletion({ uid, method: 'deleteAccount', password, caller });
 };
 
 usersAPI.deleteMany = async function (caller, data) {
 	if (await canDeleteUids(data.uids)) {
-		await Promise.all(data.uids.map(uid => processDeletion(uid, caller)));
+		await Promise.all(data.uids.map(uid => processDeletion({ uid, method: 'delete', caller })));
 	}
 };
 
@@ -229,22 +237,56 @@ async function isPrivilegedOrSelfAndPasswordMatch(caller, data) {
 	}
 }
 
-async function processDeletion(uid, caller) {
+async function processDeletion({ uid, method, password, caller }) {
 	const isTargetAdmin = await user.isAdministrator(uid);
 	const isSelf = parseInt(uid, 10) === caller.uid;
 	const isAdmin = await user.isAdministrator(caller.uid);
 
-	if (!isSelf && !isAdmin) {
+	if (meta.config.allowAccountDelete !== 1) {
 		throw new Error('[[error:no-privileges]]');
-	} else if (!isSelf && isTargetAdmin) {
+	} else if (!isSelf && !isAdmin) {
+		throw new Error('[[error:no-privileges]]');
+	} else if (isTargetAdmin) {
 		throw new Error('[[error:cant-delete-other-admins]]');
+	}
+
+	// Privilege checks -- only deleteAccount is available for non-admins
+	const hasAdminPrivilege = await privileges.admin.can('admin:users', caller.uid);
+	if (!hasAdminPrivilege && ['delete', 'deleteContent'].includes(method)) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	// Self-deletions require a password
+	const hasPassword = await user.hasPassword(uid);
+	if (isSelf && hasPassword) {
+		const ok = await user.isPasswordCorrect(uid, password, caller.ip);
+		if (!ok) {
+			throw new Error('[[error:invalid-password]]');
+		}
 	}
 
 	// TODO: clear user tokens for this uid
 	await flags.resolveFlag('user', uid, caller.uid);
-	const userData = await user.delete(caller.uid, uid);
+
+	let userData;
+	if (method === 'deleteAccount') {
+		userData = await user[method](uid);
+	} else {
+		userData = await user[method](caller.uid, uid);
+	}
+	userData = userData || {};
+
+	sockets.server.sockets.emit('event:user_status_change', { uid: caller.uid, status: 'offline' });
+
+	plugins.fireHook('action:user.delete', {
+		callerUid: caller.uid,
+		uid: uid,
+		ip: caller.ip,
+		user: userData,
+	});
+
 	await events.log({
-		type: 'user-delete',
+		type: `user-${method}`,
 		uid: caller.uid,
 		targetUid: uid,
 		ip: caller.ip,

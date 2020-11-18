@@ -30,6 +30,7 @@
     "locked": "Bloccato",
     "pinned": "Appeso",
     "moved": "Spostato",
+    "moved-from": "Moved from %1",
     "copy-ip": "Copia indirizzo IP",
     "ban-ip": "Banna indirizzo IP",
     "view-history": "Modifica storico",

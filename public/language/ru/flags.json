@@ -67,7 +67,7 @@
 	"sort-upvotes": "Most upvotes",
 	"sort-replies": "Most replies",
 
-	"modal-title": "Сообщить о недопустимом контенте",
+	"modal-title": "Report Content",
 	"modal-body": "Укажите причину для жалобы на %1 %2. Вы можете использовать одну из подходящих стандартных причин.",
 	"modal-reason-spam": "Спам",
 	"modal-reason-offensive": "Оскорбительное содержимое",

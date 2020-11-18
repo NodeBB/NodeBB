@@ -58,6 +58,7 @@ module.exports = function (User) {
 		settings.upvoteNotifFreq = getSetting(settings, 'upvoteNotifFreq', 'all');
 		settings.restrictChat = parseInt(getSetting(settings, 'restrictChat', 0), 10) === 1;
 		settings.topicSearchEnabled = parseInt(getSetting(settings, 'topicSearchEnabled', 0), 10) === 1;
+		settings.updateUrlWithPostIndex = parseInt(getSetting(settings, 'updateUrlWithPostIndex', 1), 10) === 1;
 		settings.bootswatchSkin = validator.escape(String(settings.bootswatchSkin || ''));
 		settings.homePageRoute = validator.escape(String(settings.homePageRoute || '')).replace(/&#x2F;/g, '/');
 		settings.scrollToMyPost = parseInt(getSetting(settings, 'scrollToMyPost', 1), 10) === 1;
@@ -116,6 +117,7 @@ module.exports = function (User) {
 			followTopicsOnReply: data.followTopicsOnReply,
 			restrictChat: data.restrictChat,
 			topicSearchEnabled: data.topicSearchEnabled,
+			updateUrlWithPostIndex: data.updateUrlWithPostIndex,
 			homePageRoute: ((data.homePageRoute === 'custom' ? data.homePageCustom : data.homePageRoute) || '').replace(/^\//, ''),
 			scrollToMyPost: data.scrollToMyPost,
 			upvoteNotifFreq: data.upvoteNotifFreq,

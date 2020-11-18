@@ -123,6 +123,7 @@
     "open_links_in_new_tab": "외부 링크를 새로운 탭에서 열람",
     "enable_topic_searching": "게시물 내 검색 허용",
     "topic_search_help": "만약 활성화된다면, 브라우저의 기본 검색 기능은 무효화되고 게시물 내 검색을 통해 화면에 보여지는 것 뿐만 아니라 게시물 전체의 내용을 검색할 수 있습니다.",
+    "update_url_with_post_index": "Update url with post index while browsing topics",
     "scroll_to_my_post": "답글 게시 후 새 포스트 보여주기",
     "follow_topics_you_reply_to": "내가 답글을 단 게시물을 관심 목록에 추가",
     "follow_topics_you_create": "내가 작성한 게시물을 관심 목록에 추가",

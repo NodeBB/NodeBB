@@ -11,8 +11,6 @@ SocketCache.clear = async function (socket, data) {
 		require('../../groups').cache.reset();
 	} else if (data.name === 'local') {
 		require('../../cache').reset();
-	} else if (data.name === 'headerfooter') {
-		require('../../middleware').headerFooterCache.reset();
 	}
 };
 
@@ -22,7 +20,6 @@ SocketCache.toggle = async function (socket, data) {
 		object: require('../../database').objectCache,
 		group: require('../../groups').cache,
 		local: require('../../cache'),
-		headerfooter: require('../../middleware').headerFooterCache,
 	};
 	if (!caches[data.name]) {
 		return;

@@ -1,0 +1,48 @@
+post:
+  tags:
+    - users
+  summary: invite users with email by email
+  description: This operation sends an invitation email to the given addresses, with an option to join selected groups on acceptance
+  parameters:
+  - in: path
+    name: uid
+    schema:
+      type: integer
+    required: true
+    description: uid of the user sending invitations
+    example: 1
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            emails:
+              type: string
+              description: A single or list of comma separated email addresses
+              example: friend01@example.com,friend02@example.com
+            groupsToJoin:
+              type: array
+              description: A collection of group names
+              example: ['administrators']
+          required:
+            - emails
+  responses:
+    '200':
+      description: invitation email(s) sent
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+    '400':
+      $ref: ../../../components/responses/400.yaml#/400
+    '401':
+      $ref: ../../../components/responses/401.yaml#/401
+    '403':
+      $ref: ../../../components/responses/403.yaml#/403
