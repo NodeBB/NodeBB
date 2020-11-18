@@ -175,6 +175,9 @@ async function pushToUids(uids, notification) {
 			notification['cta-type'] = notification.type;
 		}
 		let body = notification.bodyLong || '';
+		if (meta.config.removeEmailNotificationImages) {
+			body = body.replace(/<img[^>]*>/, '');
+		}
 		body = posts.relativeToAbsolute(body, posts.urlRegex);
 		body = posts.relativeToAbsolute(body, posts.imgRegex);
 		await async.eachLimit(uids, 3, function (uid, next) {

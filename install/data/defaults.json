@@ -123,6 +123,7 @@
     "maximumRelatedTopics": 0,
     "disableEmailSubscriptions": 0,
     "emailConfirmInterval": 10,
+    "removeEmailNotificationImages": 0,
     "inviteExpiration": 7,
     "digestHour": 17,
     "passwordExpiryDays": 0,
