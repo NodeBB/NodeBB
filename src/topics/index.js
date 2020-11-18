@@ -189,18 +189,20 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 };
 
 async function getMainPostAndReplies(topic, set, uid, start, stop, reverse) {
+	let repliesStart = start;
+	let repliesStop = stop;
 	if (stop > 0) {
-		stop -= 1;
+		repliesStop -= 1;
 		if (start > 0) {
-			start -= 1;
+			repliesStart -= 1;
 		}
 	}
-	const pids = await posts.getPidsFromSet(set, start, stop, reverse);
+	const pids = await posts.getPidsFromSet(set, repliesStart, repliesStop, reverse);
 	if (!pids.length && !topic.mainPid) {
 		return [];
 	}
 
-	if (parseInt(topic.mainPid, 10) && start === 0) {
+	if (topic.mainPid && start === 0) {
 		pids.unshift(topic.mainPid);
 	}
 	const postData = await posts.getPostsByPids(pids, uid);
@@ -213,7 +215,7 @@ async function getMainPostAndReplies(topic, set, uid, start, stop, reverse) {
 		replies = postData.slice(1);
 	}
 
-	Topics.calculatePostIndices(replies, start);
+	Topics.calculatePostIndices(replies, repliesStart);
 
 	return await Topics.addPostData(postData, uid);
 }

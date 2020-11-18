@@ -256,23 +256,124 @@ describe('Topic\'s', function () {
 		});
 
 		describe('.getTopicWithPosts', function () {
-			it('should get a topic with posts and other data', function (done) {
-				topics.getTopicData(newTopic.tid, function (err, topicData) {
-					if (err) {
-						return done(err);
-					}
-					topics.getTopicWithPosts(topicData, 'tid:' + newTopic.tid + ':posts', topic.userId, 0, -1, false, function (err, data) {
-						if (err) {
-							return done(err);
-						}
-						assert(data);
-						assert.equal(data.category.cid, topic.categoryId);
-						assert.equal(data.unreplied, true);
-						assert.equal(data.deleted, false);
-						assert.equal(data.locked, false);
-						assert.equal(data.pinned, false);
-						done();
-					});
+			let tid;
+			before(async function () {
+				const result = await topics.post({ uid: topic.userId, title: 'page test', content: 'main post', cid: topic.categoryId });
+				tid = result.topicData.tid;
+				for (let i = 0; i < 30; i++) {
+					// eslint-disable-next-line no-await-in-loop
+					await topics.reply({ uid: adminUid, content: 'topic reply ' + (i + 1), tid: tid });
+				}
+			});
+
+			it('should get a topic with posts and other data', async function () {
+				const topicData = await topics.getTopicData(tid);
+				const data = await topics.getTopicWithPosts(topicData, 'tid:' + tid + ':posts', topic.userId, 0, -1, false);
+				assert(data);
+				assert.equal(data.category.cid, topic.categoryId);
+				assert.equal(data.unreplied, false);
+				assert.equal(data.deleted, false);
+				assert.equal(data.locked, false);
+				assert.equal(data.pinned, false);
+			});
+
+			it('should return first 3 posts including main post', async function () {
+				const topicData = await topics.getTopicData(tid);
+				const data = await topics.getTopicWithPosts(topicData, 'tid:' + tid + ':posts', topic.userId, 0, 2, false);
+				assert.strictEqual(data.posts.length, 3);
+				assert.strictEqual(data.posts[0].content, 'main post');
+				assert.strictEqual(data.posts[1].content, 'topic reply 1');
+				assert.strictEqual(data.posts[2].content, 'topic reply 2');
+				data.posts.forEach((post, index) => {
+					assert.strictEqual(post.index, index);
+				});
+			});
+
+			it('should return 3 posts from 1 to 3 excluding main post', async function () {
+				const topicData = await topics.getTopicData(tid);
+				const start = 1;
+				const data = await topics.getTopicWithPosts(topicData, 'tid:' + tid + ':posts', topic.userId, start, 3, false);
+				assert.strictEqual(data.posts.length, 3);
+				assert.strictEqual(data.posts[0].content, 'topic reply 1');
+				assert.strictEqual(data.posts[1].content, 'topic reply 2');
+				assert.strictEqual(data.posts[2].content, 'topic reply 3');
+				data.posts.forEach((post, index) => {
+					assert.strictEqual(post.index, index + start);
+				});
+			});
+
+			it('should return main post and last 2 posts', async function () {
+				const topicData = await topics.getTopicData(tid);
+				const data = await topics.getTopicWithPosts(topicData, 'tid:' + tid + ':posts', topic.userId, 0, 2, true);
+				assert.strictEqual(data.posts.length, 3);
+				assert.strictEqual(data.posts[0].content, 'main post');
+				assert.strictEqual(data.posts[1].content, 'topic reply 30');
+				assert.strictEqual(data.posts[2].content, 'topic reply 29');
+				data.posts.forEach((post, index) => {
+					assert.strictEqual(post.index, index);
+				});
+			});
+
+			it('should return last 3 posts and not main post', async function () {
+				const topicData = await topics.getTopicData(tid);
+				const start = 1;
+				const data = await topics.getTopicWithPosts(topicData, 'tid:' + tid + ':posts', topic.userId, start, 3, true);
+				assert.strictEqual(data.posts.length, 3);
+				assert.strictEqual(data.posts[0].content, 'topic reply 30');
+				assert.strictEqual(data.posts[1].content, 'topic reply 29');
+				assert.strictEqual(data.posts[2].content, 'topic reply 28');
+				data.posts.forEach((post, index) => {
+					assert.strictEqual(post.index, index + start);
+				});
+			});
+
+			it('should return posts 29 to 27 posts and not main post', async function () {
+				const topicData = await topics.getTopicData(tid);
+				const start = 2;
+				const data = await topics.getTopicWithPosts(topicData, 'tid:' + tid + ':posts', topic.userId, start, 4, true);
+				assert.strictEqual(data.posts.length, 3);
+				assert.strictEqual(data.posts[0].content, 'topic reply 29');
+				assert.strictEqual(data.posts[1].content, 'topic reply 28');
+				assert.strictEqual(data.posts[2].content, 'topic reply 27');
+				data.posts.forEach((post, index) => {
+					assert.strictEqual(post.index, index + start);
+				});
+			});
+
+			it('should return 3 posts in reverse', async function () {
+				const topicData = await topics.getTopicData(tid);
+				const start = 28;
+				const data = await topics.getTopicWithPosts(topicData, 'tid:' + tid + ':posts', topic.userId, start, 30, true);
+				assert.strictEqual(data.posts.length, 3);
+				assert.strictEqual(data.posts[0].content, 'topic reply 3');
+				assert.strictEqual(data.posts[1].content, 'topic reply 2');
+				assert.strictEqual(data.posts[2].content, 'topic reply 1');
+				data.posts.forEach((post, index) => {
+					assert.strictEqual(post.index, index + start);
+				});
+			});
+
+			it('should get all posts with main post at the start', async function () {
+				const topicData = await topics.getTopicData(tid);
+				const data = await topics.getTopicWithPosts(topicData, 'tid:' + tid + ':posts', topic.userId, 0, -1, false);
+				assert.strictEqual(data.posts.length, 31);
+				assert.strictEqual(data.posts[0].content, 'main post');
+				assert.strictEqual(data.posts[1].content, 'topic reply 1');
+				assert.strictEqual(data.posts[data.posts.length - 1].content, 'topic reply 30');
+				data.posts.forEach((post, index) => {
+					assert.strictEqual(post.index, index);
+				});
+			});
+
+			it('should get all posts in reverse with main post at the start followed by reply 30', async function () {
+				const topicData = await topics.getTopicData(tid);
+				const data = await topics.getTopicWithPosts(topicData, 'tid:' + tid + ':posts', topic.userId, 0, -1, true);
+				assert.strictEqual(data.posts.length, 31);
+				assert.strictEqual(data.posts[0].content, 'main post');
+				assert.strictEqual(data.posts[1].content, 'topic reply 30');
+				assert.strictEqual(data.posts[data.posts.length - 1].content, 'topic reply 1');
+				data.posts.forEach((post, index) => {
+					assert.strictEqual(post.index, index);
 				});
 			});
 		});
