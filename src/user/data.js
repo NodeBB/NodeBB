@@ -154,8 +154,12 @@ module.exports = function (User) {
 
 			if (user.hasOwnProperty('username')) {
 				let showfullname = parseInt(meta.config.showfullname, 10) === 1;
-				if (uidToSettings[user.uid] && parseInt(uidToSettings[user.uid].showfullname, 10) === 0) {
-					showfullname = false;
+				if (uidToSettings[user.uid]) {
+					if (parseInt(uidToSettings[user.uid].showfullname, 10) === 0) {
+						showfullname = false;
+					} else if (parseInt(uidToSettings[user.uid].showfullname, 10) === 1) {
+						showfullname = true;
+					}
 				}
 
 				user.displayname = validator.escape(String(
