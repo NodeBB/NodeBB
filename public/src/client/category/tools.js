@@ -37,7 +37,7 @@ define('forum/category/tools', [
 		});
 
 		components.get('topic/unlock').on('click', function () {
-			categoryCommand('del', '/lock', 'lock', false, onCommandComplete);
+			categoryCommand('del', '/lock', 'unlock', false, onCommandComplete);
 			return false;
 		});
 
@@ -47,10 +47,11 @@ define('forum/category/tools', [
 		});
 
 		components.get('topic/unpin').on('click', function () {
-			categoryCommand('del', '/pin', 'pin', false, onCommandComplete);
+			categoryCommand('del', '/pin', 'unpin', false, onCommandComplete);
 			return false;
 		});
 
+		// todo: should also use categoryCommand, but no write api call exists for this yet
 		components.get('topic/mark-unread-for-all').on('click', function () {
 			var tids = topicSelect.getSelectedTids();
 			if (!tids.length) {
