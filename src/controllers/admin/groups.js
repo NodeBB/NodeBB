@@ -10,7 +10,6 @@ const groups = require('../../groups');
 const meta = require('../../meta');
 const pagination = require('../../pagination');
 const events = require('../../events');
-const translator = require('../../translator');
 
 const groupsController = module.exports;
 
@@ -46,7 +45,7 @@ groupsController.get = async function (req, res, next) {
 		return next();
 	}
 	group.isOwner = true;
-	group.userTitleEscaped = translator.escape(group.userTitle);
+
 	const groupNameData = groupNames.map(function (name) {
 		return {
 			encodedName: encodeURIComponent(name),

@@ -9,7 +9,6 @@ const user = require('../user');
 const helpers = require('./helpers');
 const pagination = require('../pagination');
 const privileges = require('../privileges');
-const translator = require('../translator');
 
 const groupsController = module.exports;
 
@@ -73,7 +72,7 @@ groupsController.details = async function (req, res, next) {
 		return next();
 	}
 	groupData.isOwner = groupData.isOwner || isAdmin || (isGlobalMod && !groupData.system);
-	groupData.userTitleEscaped = translator.escape(groupData.userTitle);
+
 	res.render('groups/details', {
 		title: '[[pages:group, ' + groupData.displayName + ']]',
 		group: groupData,

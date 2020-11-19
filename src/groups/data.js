@@ -6,6 +6,7 @@ const nconf = require('nconf');
 const db = require('../database');
 const plugins = require('../plugins');
 const utils = require('../utils');
+const translator = require('../translator');
 
 const intFields = [
 	'createtime', 'memberCount', 'hidden', 'system', 'private',
@@ -101,5 +102,6 @@ function escapeGroupData(group) {
 		group.displayName = validator.escape(String(group.name));
 		group.description = validator.escape(String(group.description || ''));
 		group.userTitle = validator.escape(String(group.userTitle || ''));
+		group.userTitleEscaped = translator.escape(group.userTitle);
 	}
 }
