@@ -27,6 +27,10 @@ UserObj:
     fullname:
       type: string
       example: Mr. Dragon Fruit Jr.
+    displayname:
+      type: string
+      description: This is either username or fullname depending on forum and user settings
+      example: Dragon Fruit
     location:
       type: string
       example: 'Toronto, Canada'
