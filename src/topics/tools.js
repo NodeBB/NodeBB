@@ -101,11 +101,17 @@ module.exports = function (Topics) {
 	}
 
 	topicTools.pin = async function (tid, uid) {
-		return await togglePin(tid, uid, true);
+		if (!await privileges.topics.can('moderate', tid, uid)) {
+			throw new Error('[[error:no-privileges]]');
+		}
+		return await togglePin(tid, true);
 	};
 
 	topicTools.unpin = async function (tid, uid) {
-		return await togglePin(tid, uid, false);
+		if (!await privileges.topics.can('moderate', tid, uid)) {
+			throw new Error('[[error:no-privileges]]');
+		}
+		return await togglePin(tid, false);
 	};
 
 	topicTools.setPinExpiry = async (tid, expiry, uid) => {
@@ -127,14 +133,10 @@ module.exports = function (Topics) {
 
 	// };
 
-	async function togglePin(tid, uid, pin) {
+	async function togglePin(tid, pin) {
 		const topicData = await Topics.getTopicData(tid);
 		if (!topicData) {
 			throw new Error('[[error:no-topic]]');
-		}
-		const isAdminOrMod = await privileges.categories.isAdminOrMod(topicData.cid, uid);
-		if (!isAdminOrMod) {
-			throw new Error('[[error:no-privileges]]');
 		}
 
 		const promises = [
@@ -161,7 +163,7 @@ module.exports = function (Topics) {
 		topicData.isPinned = pin; // deprecate in v2.0
 		topicData.pinned = pin;
 
-		plugins.fireHook('action:topic.pin', { topic: _.clone(topicData), uid: uid });
+		plugins.fireHook('action:topic.pin', { topic: _.clone(topicData) });
 
 		return topicData;
 	}
