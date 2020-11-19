@@ -16,6 +16,7 @@
 	"allow-account-deletion": "אפשר מחיקת חשבונות",
 	"hide-fullname": "החבא שם מלא ממשתמשים",
 	"hide-email": "החבא כתובת מייל ממשתמשים",
+	"show-fullname-as-displayname": "Show user's full name as their display name if available",
 	"themes": "ערכות נושא",
 	"disable-user-skins": "אל תאפשר למשתמשים לבחור ערכת נושא",
 	"account-protection": "Account Protection",

@@ -16,6 +16,7 @@
 	"allow-account-deletion": "アカウントが解除されました",
 	"hide-fullname": "ユーザーから、フルネームが見えないようにする。",
 	"hide-email": "ユーザーから、Emailが見えないようにする。",
+	"show-fullname-as-displayname": "Show user's full name as their display name if available",
 	"themes": "テーマ",
 	"disable-user-skins": "ユーザーがカスタムスキンを選択できないようにする",
 	"account-protection": "アカウント保護",

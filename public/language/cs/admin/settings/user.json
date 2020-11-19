@@ -16,6 +16,7 @@
 	"allow-account-deletion": "Povolit smazání účtu",
 	"hide-fullname": "Skrýt jméno před uživateli",
 	"hide-email": "Skrýt e-mail před uživateli",
+	"show-fullname-as-displayname": "Show user's full name as their display name if available",
 	"themes": "Motivy",
 	"disable-user-skins": "Zabránit uživateli ve výběru vlastního vzhledu",
 	"account-protection": "Ochrana účtu",

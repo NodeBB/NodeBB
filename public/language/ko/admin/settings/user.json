@@ -16,6 +16,7 @@
 	"allow-account-deletion": "계정 삭제 허용",
 	"hide-fullname": "사용자에게서 이름 숨기기",
 	"hide-email": "사용자에게서 이메일 숨기기",
+	"show-fullname-as-displayname": "Show user's full name as their display name if available",
 	"themes": "테마",
 	"disable-user-skins": "일반 사용자가 스킨 지정 금지",
 	"account-protection": "계정 보호",

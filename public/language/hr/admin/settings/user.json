@@ -16,6 +16,7 @@
 	"allow-account-deletion": "Dozvoli brisanje računa korisnicima",
 	"hide-fullname": "Hide fullname from users",
 	"hide-email": "Hide email from users",
+	"show-fullname-as-displayname": "Show user's full name as their display name if available",
 	"themes": "Predlošci",
 	"disable-user-skins": "Onemogući korisnicima odabir predloška",
 	"account-protection": "Zaštita računa",

@@ -16,6 +16,7 @@
 	"allow-account-deletion": "Allow account deletion",
 	"hide-fullname": "Hide fullname from users",
 	"hide-email": "Hide email from users",
+	"show-fullname-as-displayname": "Show user's full name as their display name if available",
 	"themes": "Themes",
 	"disable-user-skins": "Prevent users from choosing a custom skin",
 	"account-protection": "Account Protection",

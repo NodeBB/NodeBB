@@ -16,6 +16,7 @@
 	"allow-account-deletion": "Hesap silmeye izin ver",
 	"hide-fullname": "Kullanıcı adını gizle",
 	"hide-email": "E-posta adresini kullanıcılardan gizle",
+	"show-fullname-as-displayname": "Show user's full name as their display name if available",
 	"themes": "Temalar",
 	"disable-user-skins": "Kullanıcıların özel bir deri seçmesini engelle",
 	"account-protection": "Hesap Koruma",

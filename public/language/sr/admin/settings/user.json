@@ -16,6 +16,7 @@
 	"allow-account-deletion": "Dozvoli brisanje naloga",
 	"hide-fullname": "Hide fullname from users",
 	"hide-email": "Hide email from users",
+	"show-fullname-as-displayname": "Show user's full name as their display name if available",
 	"themes": "Teme",
 	"disable-user-skins": "Onemogući korisnike da izaberu određenu temu",
 	"account-protection": "Začtita naloga",

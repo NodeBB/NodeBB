@@ -16,6 +16,7 @@
 	"allow-account-deletion": "Permitir borrar cuenta",
 	"hide-fullname": "Esconder nombre completo de los usuarios",
 	"hide-email": "Esconder email de los usuarios",
+	"show-fullname-as-displayname": "Show user's full name as their display name if available",
 	"themes": "Plantillas",
 	"disable-user-skins": "Impedir que los usuarios elijan plantilla",
 	"account-protection": "Protección de Cuenta",

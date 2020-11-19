@@ -16,6 +16,7 @@
 	"allow-account-deletion": "Atļaut konta izdzēšanu",
 	"hide-fullname": "Slēpt vārdu un uzvārdu no lietotājiem",
 	"hide-email": "Slēpt e-pasta adresi no lietotājiem",
+	"show-fullname-as-displayname": "Show user's full name as their display name if available",
 	"themes": "Tēmas",
 	"disable-user-skins": "Neļaut lietotājiem izvēlēties pielāgotu ādiņu",
 	"account-protection": "Konta aizsardzība",
