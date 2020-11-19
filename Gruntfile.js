@@ -143,8 +143,17 @@ module.exports = function (grunt) {
 		if (worker) {
 			worker.kill();
 		}
+
+		const execArgv = [];
+		const inspect = process.argv.find(a => a.startsWith('--inspect'));
+
+		if (inspect) {
+			execArgv.push(inspect);
+		}
+
 		worker = fork('app.js', args, {
-			env: env,
+			env,
+			execArgv,
 		});
 	}
 
