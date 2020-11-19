@@ -60,6 +60,7 @@ app.cacheBuster = null;
 				earlyQueue.forEach(function (el) {
 					el.click();
 				});
+				earlyQueue = [];
 			});
 		} else {
 			setTimeout(app.handleEarlyClicks, 50);
