@@ -143,6 +143,7 @@ define('forum/groups/details', [
 		var textColorValueEl = settingsFormEl.find('[name="textColor"]');
 		var iconBtn = settingsFormEl.find('[data-action="icon-select"]');
 		var previewEl = settingsFormEl.find('.label');
+		var previewElText = settingsFormEl.find('.label-text');
 		var previewIcon = previewEl.find('i');
 		var userTitleEl = settingsFormEl.find('[name="userTitle"]');
 		var userTitleEnabledEl = settingsFormEl.find('[name="userTitleEnabled"]');
@@ -165,9 +166,7 @@ define('forum/groups/details', [
 
 		// If the user title changes, update that too
 		userTitleEl.on('keyup', function () {
-			var icon = previewIcon.detach();
-			previewEl.text(' ' + (this.value || settingsFormEl.find('#name').val()));
-			previewEl.prepend(icon);
+			previewElText.translateText((this.value || settingsFormEl.find('#name').val()));
 		});
 
 		// Disable user title customisation options if the the user title itself is disabled
