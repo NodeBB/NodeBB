@@ -3,6 +3,7 @@
 const _ = require('lodash');
 
 const db = require('../database');
+const topics = require('.');
 const categories = require('../categories');
 const user = require('../user');
 const plugins = require('../plugins');
@@ -129,9 +130,23 @@ module.exports = function (Topics) {
 		plugins.fireHook('action:topic.setPinExpiry', { topic: _.clone(topicData), uid: uid });
 	};
 
-	// topicTools.findExpiredPins = async () => {
+	topicTools.findExpiredPins = async () => {
+		const cids = await categories.getAllCidsFromSet('categories:cid');
+		let tids = await Promise.all(cids.map(async cid => await db.getSortedSetRange(`cid:${cid}:tids:pinned`, 0, -1)));
+		tids = tids.reduce((memo, cur) => memo.concat(cur), []);
+		const expiry = (await topics.getTopicsFields(tids, ['pinExpiry'])).map(obj => obj.pinExpiry);
+		const now = Date.now();
+		let expired = 0;
 
-	// };
+		tids = await Promise.all(tids.map(async (tid, idx) => {
+			if (expiry[idx] && parseInt(expiry[idx], 10) <= now) {
+				expired += 1;
+				await togglePin(tid, false);
+			}
+		}));
+
+		return expired;
+	};
 
 	async function togglePin(tid, pin) {
 		const topicData = await Topics.getTopicData(tid);
@@ -151,6 +166,7 @@ module.exports = function (Topics) {
 			], tid));
 		} else {
 			promises.push(db.sortedSetRemove('cid:' + topicData.cid + ':tids:pinned', tid));
+			promises.push(Topics.deleteTopicField(tid, 'pinExpiry'));
 			promises.push(db.sortedSetAddBulk([
 				['cid:' + topicData.cid + ':tids', topicData.lastposttime, tid],
 				['cid:' + topicData.cid + ':tids:posts', topicData.postcount, tid],
