@@ -17,37 +17,37 @@ define('forum/category/tools', [
 		handlePinnedTopicSort();
 
 		components.get('topic/delete').on('click', function () {
-			categoryCommand('del', '/state', 'delete', true, onDeletePurgeComplete);
+			categoryCommand('del', '/state', 'delete', onDeletePurgeComplete);
 			return false;
 		});
 
 		components.get('topic/restore').on('click', function () {
-			categoryCommand('put', '/state', 'restore', true, onDeletePurgeComplete);
+			categoryCommand('put', '/state', 'restore', onDeletePurgeComplete);
 			return false;
 		});
 
 		components.get('topic/purge').on('click', function () {
-			categoryCommand('del', '', 'purge', true, onDeletePurgeComplete);
+			categoryCommand('del', '', 'purge', onDeletePurgeComplete);
 			return false;
 		});
 
 		components.get('topic/lock').on('click', function () {
-			categoryCommand('put', '/lock', 'lock', false, onCommandComplete);
+			categoryCommand('put', '/lock', 'lock', onCommandComplete);
 			return false;
 		});
 
 		components.get('topic/unlock').on('click', function () {
-			categoryCommand('del', '/lock', 'unlock', false, onCommandComplete);
+			categoryCommand('del', '/lock', 'unlock', onCommandComplete);
 			return false;
 		});
 
 		components.get('topic/pin').on('click', function () {
-			categoryCommand('put', '/pin', 'pin', false, onCommandComplete);
+			categoryCommand('put', '/pin', 'pin', onCommandComplete);
 			return false;
 		});
 
 		components.get('topic/unpin').on('click', function () {
-			categoryCommand('del', '/pin', 'unpin', false, onCommandComplete);
+			categoryCommand('del', '/pin', 'unpin', onCommandComplete);
 			return false;
 		});
 
@@ -123,14 +123,15 @@ define('forum/category/tools', [
 		socket.on('event:topic_moved', onTopicMoved);
 	};
 
-	function categoryCommand(method, path, command, confirm, onComplete) {
+	function categoryCommand(method, path, command, onComplete) {
 		if (!onComplete) {
 			onComplete = function () {};
 		}
 		const tids = topicSelect.getSelectedTids();
+		const body = {};
 		const execute = function (ok) {
 			if (ok) {
-				Promise.all(tids.map(tid => api[method](`/topics/${tid}${path}`)))
+				Promise.all(tids.map(tid => api[method](`/topics/${tid}${path}`, body)))
 					.then(onComplete)
 					.catch(app.alertError);
 			}
@@ -140,13 +141,57 @@ define('forum/category/tools', [
 			return app.alertError('[[error:no-topics-selected]]');
 		}
 
-		if (confirm) {
-			translator.translate('[[topic:thread_tools.' + command + '_confirm]]', function (msg) {
-				bootbox.confirm(msg, execute);
-			});
-		} else {
-			execute(true);
+		switch (command) {
+			case 'delete':
+			case 'restore':
+			case 'purge':
+				bootbox.confirm(`[[topic:thread_tools.${command}_confirm]]`, execute);
+				break;
+
+			case 'pin':
+				requestPinExpiry(body, execute.bind(null, true));
+				break;
+
+			default:
+				execute(true);
+				break;
 		}
+	}
+
+	function requestPinExpiry(body, onSuccess) {
+		app.parseAndTranslate('modals/set-pin-expiry', {}, function (html) {
+			const modal = bootbox.dialog({
+				title: '[[topic:thread_tools.pin]]',
+				message: html,
+				onEscape: true,
+				size: 'small',
+				buttons: {
+					save: {
+						label: '[[global:save]]',
+						className: 'btn-primary',
+						callback: function () {
+							const expiryEl = modal.get(0).querySelector('#expiry');
+							let expiry = expiryEl.value;
+
+							// No expiry set
+							if (expiry === '') {
+								return onSuccess();
+							}
+
+							// Expiration date set
+							expiry = new Date(expiry);
+
+							if (expiry && expiry.getTime() > Date.now()) {
+								body.expiry = expiry.getTime();
+								onSuccess();
+							} else {
+								app.alertError('[[error:invalid-date]]');
+							}
+						},
+					},
+				},
+			});
+		});
 	}
 
 	CategoryTools.removeListeners = function () {
