@@ -31,6 +31,7 @@ require('./tools')(Topics);
 require('./thumb')(Topics);
 require('./bookmarks')(Topics);
 require('./merge')(Topics);
+require('./jobs')(Topics);
 
 Topics.exists = async function (tid) {
 	return await db.exists('topic:' + tid);

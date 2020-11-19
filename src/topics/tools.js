@@ -108,6 +108,25 @@ module.exports = function (Topics) {
 		return await togglePin(tid, uid, false);
 	};
 
+	topicTools.setPinExpiry = async (tid, expiry, uid) => {
+		if (isNaN(parseInt(expiry, 10)) || expiry <= Date.now()) {
+			throw new Error('[[error:invalid-data]]');
+		}
+
+		const topicData = await Topics.getTopicFields(tid, ['tid', 'uid', 'cid']);
+		const isAdminOrMod = await privileges.categories.isAdminOrMod(topicData.cid, uid);
+		if (!isAdminOrMod) {
+			throw new Error('[[error:no-privileges]]');
+		}
+
+		await Topics.setTopicField(tid, 'pinExpiry', expiry);
+		plugins.fireHook('action:topic.setPinExpiry', { topic: _.clone(topicData), uid: uid });
+	};
+
+	// topicTools.findExpiredPins = async () => {
+
+	// };
+
 	async function togglePin(tid, uid, pin) {
 		const topicData = await Topics.getTopicData(tid);
 		if (!topicData) {
