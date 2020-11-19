@@ -136,6 +136,15 @@ module.exports = function (User) {
 	};
 
 	async function modifyUserData(users, requestedFields, fieldsToRemove) {
+		let uidToSettings = {};
+		if (meta.config.showFullnameAsDisplayName) {
+			const uids = _.uniq(users.map(user => user.uid));
+			uidToSettings = _.zipObject(uids, await db.getObjectsFields(
+				uids.map(uid => 'user:' + uid + ':settings'),
+				['showfullname']
+			));
+		}
+
 		users = await Promise.all(users.map(async function (user) {
 			if (!user) {
 				return user;
@@ -144,6 +153,16 @@ module.exports = function (User) {
 			db.parseIntFields(user, intFields, requestedFields);
 
 			if (user.hasOwnProperty('username')) {
+				let showfullname = parseInt(meta.config.showfullname, 10) === 1;
+				if (uidToSettings[user.uid] && parseInt(uidToSettings[user.uid].showfullname, 10) === 0) {
+					showfullname = false;
+				}
+
+				user.displayname = validator.escape(String(
+					meta.config.showFullnameAsDisplayName && showfullname && user.fullname ?
+						user.fullname :
+						user.username
+				));
 				user.username = validator.escape(user.username ? user.username.toString() : '');
 			}
 

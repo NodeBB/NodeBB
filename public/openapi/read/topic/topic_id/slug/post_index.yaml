@@ -137,6 +137,9 @@ get:
                             username:
                               type: string
                               description: A friendly name for a given user account
+                            displayname:
+                              type: string
+                              description: This is either username or fullname depending on forum and user settings
                             userslug:
                               type: string
                               description: An URL-safe variant of the username (i.e. lower-cased, spaces
