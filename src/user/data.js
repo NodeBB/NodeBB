@@ -101,6 +101,10 @@ module.exports = function (User) {
 		if (fields.includes('banned') && !fields.includes('banned:expire')) {
 			addField('banned:expire');
 		}
+
+		if (fields.includes('username') && !fields.includes('fullname')) {
+			addField('fullname');
+		}
 	}
 
 	function uidsToUsers(uids, uniqueUids, usersData) {
@@ -144,29 +148,21 @@ module.exports = function (User) {
 				['showfullname']
 			));
 		}
+		const uidToUser = {};
+		users.forEach(function (user) {
+			uidToUser[user.uid] = user;
+		});
 
-		users = await Promise.all(users.map(async function (user) {
+		await Promise.all(Object.keys(uidToUser).map(async function (uid) {
+			const user = uidToUser[uid];
 			if (!user) {
-				return user;
+				return;
 			}
 
 			db.parseIntFields(user, intFields, requestedFields);
 
 			if (user.hasOwnProperty('username')) {
-				let showfullname = parseInt(meta.config.showfullname, 10) === 1;
-				if (uidToSettings[user.uid]) {
-					if (parseInt(uidToSettings[user.uid].showfullname, 10) === 0) {
-						showfullname = false;
-					} else if (parseInt(uidToSettings[user.uid].showfullname, 10) === 1) {
-						showfullname = true;
-					}
-				}
-
-				user.displayname = validator.escape(String(
-					meta.config.showFullnameAsDisplayName && showfullname && user.fullname ?
-						user.fullname :
-						user.username
-				));
+				parseDisplayName(user, uidToSettings);
 				user.username = validator.escape(user.username ? user.username.toString() : '');
 			}
 
@@ -232,10 +228,26 @@ module.exports = function (User) {
 					user.banned = false;
 				}
 			}
-			return user;
 		}));
 
 		return await plugins.fireHook('filter:users.get', users);
+	}
+
+	function parseDisplayName(user, uidToSettings) {
+		let showfullname = parseInt(meta.config.showfullname, 10) === 1;
+		if (uidToSettings[user.uid]) {
+			if (parseInt(uidToSettings[user.uid].showfullname, 10) === 0) {
+				showfullname = false;
+			} else if (parseInt(uidToSettings[user.uid].showfullname, 10) === 1) {
+				showfullname = true;
+			}
+		}
+
+		user.displayname = validator.escape(String(
+			meta.config.showFullnameAsDisplayName && showfullname && user.fullname ?
+				user.fullname :
+				user.username
+		));
 	}
 
 	function parseGroupTitle(user) {
