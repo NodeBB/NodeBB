@@ -56,7 +56,7 @@ module.exports = function (Messaging) {
 
 		const users = await user.getUsersFields(
 			messages.map(msg => msg && msg.fromuid),
-			['uid', 'username', 'userslug', 'picture', 'status', 'banned']
+			['uid', 'username', 'fullname', 'userslug', 'picture', 'status', 'banned']
 		);
 
 		messages.forEach(function (message, index) {
