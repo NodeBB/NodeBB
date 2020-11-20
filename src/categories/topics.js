@@ -134,10 +134,6 @@ module.exports = function (Categories) {
 	};
 
 	Categories.getPinnedTids = async function (data) {
-		if (!Array.isArray(data.cid)) {
-			data.cid = [data.cid];
-		}
-
 		if (plugins.hasListeners('filter:categories.getPinnedTids')) {
 			const result = await plugins.fireHook('filter:categories.getPinnedTids', {
 				pinnedTids: [],
@@ -145,10 +141,8 @@ module.exports = function (Categories) {
 			});
 			return result && result.pinnedTids;
 		}
-
-		const pinnedSets = data.cid.map(cid => `cid:${cid}:tids:pinned`);
-		const pinnedTids = await db.getSortedSetRevRange(pinnedSets, data.start, data.stop);
-		return topics.tools.checkPinExpiry(pinnedTids);
+		const pinnedTids = await db.getSortedSetRevRange('cid:' + data.cid + ':tids:pinned', data.start, data.stop);
+		return await topics.tools.checkPinExpiry(pinnedTids);
 	};
 
 	Categories.modifyTopicsByPrivilege = function (topics, privileges) {
