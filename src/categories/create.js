@@ -45,7 +45,7 @@ module.exports = function (Categories) {
 			category.backgroundImage = data.backgroundImage;
 		}
 
-		const result = await plugins.fireHook('filter:category.create', { category: category, data: data });
+		const result = await plugins.hooks.fire('filter:category.create', { category: category, data: data });
 		category = result.category;
 
 
@@ -86,7 +86,7 @@ module.exports = function (Categories) {
 			await duplicateCategoriesChildren(category.cid, data.cloneFromCid, data.uid);
 		}
 
-		plugins.fireHook('action:category.create', { category: category });
+		plugins.hooks.fire('action:category.create', { category: category });
 		return category;
 	};
 
@@ -170,7 +170,7 @@ module.exports = function (Categories) {
 	Categories.copyPrivilegesFrom = async function (fromCid, toCid, group) {
 		group = group || '';
 
-		const data = await plugins.fireHook('filter:categories.copyPrivilegesFrom', {
+		const data = await plugins.hooks.fire('filter:categories.copyPrivilegesFrom', {
 			privileges: group ? privileges.groupPrivilegeList.slice() : privileges.privilegeList.slice(),
 			fromCid: fromCid,
 			toCid: toCid,

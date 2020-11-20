@@ -179,7 +179,7 @@ async function validateSession(socket) {
 	if (!sessionData) {
 		throw new Error('[[error:invalid-session]]');
 	}
-	const result = await plugins.fireHook('static:sockets.validateSession', {
+	const result = await plugins.hooks.fire('static:sockets.validateSession', {
 		req: req,
 		socket: socket,
 		session: sessionData,

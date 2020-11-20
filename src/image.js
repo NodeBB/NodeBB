@@ -23,8 +23,8 @@ function requireSharp() {
 
 image.isFileTypeAllowed = async function (path) {
 	const plugins = require('./plugins');
-	if (plugins.hasListeners('filter:image.isFileTypeAllowed')) {
-		return await plugins.fireHook('filter:image.isFileTypeAllowed', path);
+	if (plugins.hooks.hasListeners('filter:image.isFileTypeAllowed')) {
+		return await plugins.hooks.fire('filter:image.isFileTypeAllowed', path);
 	}
 	const sharp = require('sharp');
 	await sharp(path, {
@@ -33,8 +33,8 @@ image.isFileTypeAllowed = async function (path) {
 };
 
 image.resizeImage = async function (data) {
-	if (plugins.hasListeners('filter:image.resize')) {
-		await plugins.fireHook('filter:image.resize', {
+	if (plugins.hooks.hasListeners('filter:image.resize')) {
+		await plugins.hooks.fire('filter:image.resize', {
 			path: data.path,
 			target: data.target,
 			width: data.width,
@@ -61,8 +61,8 @@ image.resizeImage = async function (data) {
 };
 
 image.normalise = async function (path) {
-	if (plugins.hasListeners('filter:image.normalise')) {
-		await plugins.fireHook('filter:image.normalise', {
+	if (plugins.hooks.hasListeners('filter:image.normalise')) {
+		await plugins.hooks.fire('filter:image.normalise', {
 			path: path,
 		});
 	} else {
@@ -74,8 +74,8 @@ image.normalise = async function (path) {
 
 image.size = async function (path) {
 	let imageData;
-	if (plugins.hasListeners('filter:image.size')) {
-		imageData = await plugins.fireHook('filter:image.size', {
+	if (plugins.hooks.hasListeners('filter:image.size')) {
+		imageData = await plugins.hooks.fire('filter:image.size', {
 			path: path,
 		});
 	} else {
@@ -138,8 +138,8 @@ image.sizeFromBase64 = function (imageData) {
 };
 
 image.uploadImage = async function (filename, folder, imageData) {
-	if (plugins.hasListeners('filter:uploadImage')) {
-		return await plugins.fireHook('filter:uploadImage', {
+	if (plugins.hooks.hasListeners('filter:uploadImage')) {
+		return await plugins.hooks.fire('filter:uploadImage', {
 			image: imageData,
 			uid: imageData.uid,
 			folder: folder,

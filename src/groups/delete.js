@@ -41,7 +41,7 @@ module.exports = function (Groups) {
 			removeGroupsFromPrivilegeGroups(groupNames),
 		]);
 		Groups.cache.reset();
-		plugins.fireHook('action:groups.destroy', { groups: groupsData });
+		plugins.hooks.fire('action:groups.destroy', { groups: groupsData });
 	};
 
 	async function removeGroupsFromPrivilegeGroups(groupNames) {

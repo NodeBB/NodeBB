@@ -23,7 +23,7 @@ module.exports = function (User) {
 		}
 		await db.sortedSetAdd('users:online', now, uid);
 		topics.pushUnreadCount(uid);
-		plugins.fireHook('action:user.online', { uid: uid, timestamp: now });
+		plugins.hooks.fire('action:user.online', { uid: uid, timestamp: now });
 	};
 
 	User.isOnline = async function (uid) {

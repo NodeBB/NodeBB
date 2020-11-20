@@ -53,12 +53,12 @@ module.exports = function (Topics) {
 				height: meta.config.topicThumbSize,
 			});
 
-			if (!plugins.hasListeners('filter:uploadImage')) {
+			if (!plugins.hooks.hasListeners('filter:uploadImage')) {
 				data.thumb = '/assets/uploads/' + folder + '/' + filename;
 				return;
 			}
 
-			const uploadedFile = await plugins.fireHook('filter:uploadImage', {
+			const uploadedFile = await plugins.hooks.fire('filter:uploadImage', {
 				image: { path: pathToUpload, name: '' },
 				uid: data.uid,
 				folder: folder,

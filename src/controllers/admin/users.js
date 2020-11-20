@@ -189,7 +189,7 @@ usersController.registrationQueue = async function (req, res) {
 	const data = await utils.promiseParallel({
 		registrationQueueCount: db.sortedSetCard('registration:queue'),
 		users: user.getRegistrationQueue(start, stop),
-		customHeaders: plugins.fireHook('filter:admin.registrationQueue.customHeaders', { headers: [] }),
+		customHeaders: plugins.hooks.fire('filter:admin.registrationQueue.customHeaders', { headers: [] }),
 		invites: getInvites(),
 	});
 	var pageCount = Math.max(1, Math.ceil(data.registrationQueueCount / itemsPerPage));

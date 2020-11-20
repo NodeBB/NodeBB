@@ -78,7 +78,7 @@ async function getAvailable() {
 		return item;
 	});
 
-	return await plugins.fireHook('filter:navigation.available', core);
+	return await plugins.hooks.fire('filter:navigation.available', core);
 }
 
 require('../promisify')(admin);

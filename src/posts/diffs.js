@@ -55,7 +55,7 @@ module.exports = function (Posts) {
 		const post = await postDiffLoad(pid, since, uid);
 		post.content = String(post.content || '');
 
-		const result = await plugins.fireHook('filter:parse.post', { postData: post });
+		const result = await plugins.hooks.fire('filter:parse.post', { postData: post });
 		result.postData.content = translator.escape(result.postData.content);
 		return result.postData;
 	};

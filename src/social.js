@@ -24,7 +24,7 @@ social.getPostSharing = async function () {
 			class: 'fa-twitter',
 		},
 	];
-	networks = await plugins.fireHook('filter:social.posts', networks);
+	networks = await plugins.hooks.fire('filter:social.posts', networks);
 	const activated = await db.getSetMembers('social:posts.activated');
 	networks.forEach(function (network) {
 		network.activated = activated.includes(network.id);

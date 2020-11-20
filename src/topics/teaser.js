@@ -67,7 +67,7 @@ module.exports = function (Topics) {
 		});
 		await Promise.all(postData.map(p => posts.parsePost(p)));
 
-		const { tags } = await plugins.fireHook('filter:teasers.configureStripTags', { tags: utils.stripTags.concat(['img']) });
+		const { tags } = await plugins.hooks.fire('filter:teasers.configureStripTags', { tags: utils.stripTags.concat(['img']) });
 
 		var teasers = topics.map(function (topic, index) {
 			if (!topic) {
@@ -82,7 +82,7 @@ module.exports = function (Topics) {
 			return tidToPost[topic.tid];
 		});
 
-		const result = await plugins.fireHook('filter:teasers.get', { teasers: teasers, uid: uid });
+		const result = await plugins.hooks.fire('filter:teasers.get', { teasers: teasers, uid: uid });
 		return result.teasers;
 	};
 

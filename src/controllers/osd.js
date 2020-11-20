@@ -7,7 +7,7 @@ const plugins = require('../plugins');
 const meta = require('../meta');
 
 module.exports.handle = function (req, res, next) {
-	if (plugins.hasListeners('filter:search.query')) {
+	if (plugins.hooks.hasListeners('filter:search.query')) {
 		res.type('application/opensearchdescription+xml').send(generateXML());
 	} else {
 		next();

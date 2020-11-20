@@ -30,7 +30,7 @@ admin.getAreas = async function () {
 		{ name: 'Group Page (Right)', template: 'groups/details.tpl', location: 'right' },
 	];
 
-	const areas = await plugins.fireHook('filter:widgets.getAreas', defaultAreas);
+	const areas = await plugins.hooks.fire('filter:widgets.getAreas', defaultAreas);
 
 	areas.push({ name: 'Draft Zone', template: 'global', location: 'drafts' });
 	const areaData = await Promise.all(areas.map(area => index.getArea(area.template, area.location)));
@@ -42,7 +42,7 @@ admin.getAreas = async function () {
 
 async function getAvailableWidgets() {
 	const [availableWidgets, adminTemplate] = await Promise.all([
-		plugins.fireHook('filter:widgets.getWidgets', []),
+		plugins.hooks.fire('filter:widgets.getWidgets', []),
 		renderAdminTemplate(),
 	]);
 	availableWidgets.forEach(function (w) {

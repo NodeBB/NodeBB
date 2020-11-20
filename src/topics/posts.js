@@ -72,7 +72,7 @@ module.exports = function (Topics) {
 			}
 		});
 
-		const result = await plugins.fireHook('filter:topics.addPostData', {
+		const result = await plugins.hooks.fire('filter:topics.addPostData', {
 			posts: postData,
 			uid: uid,
 		});
@@ -245,7 +245,7 @@ module.exports = function (Topics) {
 		const uniquePids = _.uniq(_.flatten(arrayOfReplyPids));
 
 		let replyData = await posts.getPostsFields(uniquePids, ['pid', 'uid', 'timestamp']);
-		const result = await plugins.fireHook('filter:topics.getPostReplies', {
+		const result = await plugins.hooks.fire('filter:topics.getPostReplies', {
 			uid: callerUid,
 			replies: replyData,
 		});

@@ -33,7 +33,7 @@ settingsController.get = async function (req, res, next) {
 		userData.acpLanguages = _.cloneDeep(languagesData);
 	}
 
-	const data = await plugins.fireHook('filter:user.customSettings', {
+	const data = await plugins.hooks.fire('filter:user.customSettings', {
 		settings: settings,
 		customSettings: [],
 		uid: req.uid,
@@ -110,7 +110,7 @@ settingsController.get = async function (req, res, next) {
 	userData.hideFullname = meta.config.hideFullname || 0;
 	userData.hideEmail = meta.config.hideEmail || 0;
 
-	userData.inTopicSearchAvailable = plugins.hasListeners('filter:topic.search');
+	userData.inTopicSearchAvailable = plugins.hooks.hasListeners('filter:topic.search');
 
 	userData.maxTopicsPerPage = meta.config.maxTopicsPerPage;
 	userData.maxPostsPerPage = meta.config.maxPostsPerPage;
@@ -191,7 +191,7 @@ async function getNotificationSettings(userData) {
 	if (privileges.isAdmin || privileges.isGlobalMod) {
 		privilegedTypes.push('notificationType_new-user-flag');
 	}
-	const results = await plugins.fireHook('filter:user.notificationTypes', {
+	const results = await plugins.hooks.fire('filter:user.notificationTypes', {
 		types: notifications.baseTypes.slice(),
 		privilegedTypes: privilegedTypes,
 	});

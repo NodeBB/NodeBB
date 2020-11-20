@@ -22,7 +22,7 @@ module.exports = function (User) {
 		}
 		const updateUid = data.uid;
 
-		const result = await plugins.fireHook('filter:user.updateProfile', {
+		const result = await plugins.hooks.fire('filter:user.updateProfile', {
 			uid: uid,
 			data: data,
 			fields: fields,
@@ -52,7 +52,7 @@ module.exports = function (User) {
 			await User.setUserField(updateUid, field, data[field]);
 		});
 
-		plugins.fireHook('action:user.updateProfile', {
+		plugins.hooks.fire('action:user.updateProfile', {
 			uid: uid,
 			data: data,
 			fields: fields,
@@ -332,6 +332,6 @@ module.exports = function (User) {
 			User.auth.revokeAllSessions(data.uid),
 		]);
 
-		plugins.fireHook('action:password.change', { uid: uid, targetUid: data.uid });
+		plugins.hooks.fire('action:password.change', { uid: uid, targetUid: data.uid });
 	};
 };

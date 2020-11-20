@@ -264,7 +264,7 @@ Emailer.sendToEmail = async (template, email, language, params) => {
 		params.unsubUrl = unsubUrl;
 	}
 
-	const result = await Plugins.fireHook('filter:email.params', {
+	const result = await Plugins.hooks.fire('filter:email.params', {
 		template: template,
 		email: email,
 		language: lang,
@@ -280,7 +280,7 @@ Emailer.sendToEmail = async (template, email, language, params) => {
 		translator.translate(params.subject, result.language),
 	]);
 
-	const data = await Plugins.fireHook('filter:email.modify', {
+	const data = await Plugins.hooks.fire('filter:email.modify', {
 		_raw: params,
 		to: email,
 		from: meta.config['email:from'] || 'no-reply@' + getHostname(),
@@ -299,8 +299,8 @@ Emailer.sendToEmail = async (template, email, language, params) => {
 	});
 
 	try {
-		if (Plugins.hasListeners('filter:email.send')) {
-			await Plugins.fireHook('filter:email.send', data);
+		if (Plugins.hooks.hasListeners('filter:email.send')) {
+			await Plugins.hooks.fire('filter:email.send', data);
 		} else {
 			await Emailer.sendViaFallback(data);
 		}

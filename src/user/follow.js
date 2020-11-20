@@ -72,7 +72,7 @@ module.exports = function (User) {
 			return [];
 		}
 		const uids = await db.getSortedSetRevRange(type + ':' + uid, start, stop);
-		const data = await plugins.fireHook('filter:user.' + type, {
+		const data = await plugins.hooks.fire('filter:user.' + type, {
 			uids: uids,
 			uid: uid,
 			start: start,

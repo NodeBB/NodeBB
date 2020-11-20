@@ -121,7 +121,7 @@ module.exports = function (Messaging) {
 			messages = [];
 		}
 
-		const data = await plugins.fireHook('filter:messaging.getMessages', {
+		const data = await plugins.hooks.fire('filter:messaging.getMessages', {
 			messages: messages,
 			uid: uid,
 			roomId: roomId,
@@ -144,7 +144,7 @@ async function modifyMessage(message, fields, mid) {
 		}
 	}
 
-	const payload = await plugins.fireHook('filter:messaging.getFields', {
+	const payload = await plugins.hooks.fire('filter:messaging.getFields', {
 		mid: mid,
 		message: message,
 		fields: fields,

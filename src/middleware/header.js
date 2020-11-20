@@ -34,7 +34,7 @@ middleware.buildHeader = helpers.try(async function buildHeader(req, res, next) 
 	const [config, isBanned] = await Promise.all([
 		controllers.api.loadConfig(req),
 		user.bans.isBanned(req.uid),
-		plugins.fireHook('filter:middleware.buildHeader', { req: req, locals: res.locals }),
+		plugins.hooks.fire('filter:middleware.buildHeader', { req: req, locals: res.locals }),
 	]);
 
 	if (isBanned) {
@@ -60,7 +60,7 @@ middleware.renderHeader = async function renderHeader(req, res, data) {
 		'brand:logo:alt': meta.config['brand:logo:alt'] || '',
 		'brand:logo:display': meta.config['brand:logo'] ? '' : 'hide',
 		allowRegistration: registrationType === 'normal',
-		searchEnabled: plugins.hasListeners('filter:search.query'),
+		searchEnabled: plugins.hooks.hasListeners('filter:search.query'),
 		config: res.locals.config,
 		relative_path,
 		bodyClass: data.bodyClass,
@@ -173,7 +173,7 @@ middleware.renderHeader = async function renderHeader(req, res, data) {
 		modifyTitle(templateValues);
 	}
 
-	const hookReturn = await plugins.fireHook('filter:middleware.renderHeader', {
+	const hookReturn = await plugins.hooks.fire('filter:middleware.renderHeader', {
 		req: req,
 		res: res,
 		templateValues: templateValues,
@@ -184,13 +184,13 @@ middleware.renderHeader = async function renderHeader(req, res, data) {
 };
 
 middleware.renderFooter = async function renderFooter(req, res, templateValues) {
-	const data = await plugins.fireHook('filter:middleware.renderFooter', {
+	const data = await plugins.hooks.fire('filter:middleware.renderFooter', {
 		req: req,
 		res: res,
 		templateValues: templateValues,
 	});
 
-	const scripts = await plugins.fireHook('filter:scripts.get', []);
+	const scripts = await plugins.hooks.fire('filter:scripts.get', []);
 
 	data.templateValues.scripts = scripts.map(function (script) {
 		return { src: script };

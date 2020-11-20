@@ -31,7 +31,7 @@ module.exports = function (User) {
 	User.getUsersCSV = async function () {
 		winston.verbose('[user/getUsersCSV] Compiling User CSV data');
 
-		const data = await plugins.fireHook('filter:user.csvFields', { fields: ['uid', 'email', 'username'] });
+		const data = await plugins.hooks.fire('filter:user.csvFields', { fields: ['uid', 'email', 'username'] });
 		let csvContent = data.fields.join(',') + '\n';
 		await batch.processSortedSet('users:joindate', async (uids) => {
 			const usersData = await User.getUsersFields(uids, data.fields);

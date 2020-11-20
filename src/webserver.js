@@ -89,7 +89,7 @@ exports.listen = async function () {
 		hostname: os.hostname(),
 	});
 
-	plugins.fireHook('action:nodebb.ready');
+	plugins.hooks.fire('action:nodebb.ready');
 
 	await util.promisify(listen)();
 };
@@ -98,8 +98,8 @@ async function initializeNodeBB() {
 	const middleware = require('./middleware');
 	await meta.themes.setupPaths();
 	await plugins.init(app, middleware);
-	await plugins.fireHook('static:assets.prepare', {});
-	await plugins.fireHook('static:app.preload', {
+	await plugins.hooks.fire('static:assets.prepare', {});
+	await plugins.hooks.fire('static:app.preload', {
 		app: app,
 		middleware: middleware,
 	});

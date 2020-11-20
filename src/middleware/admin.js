@@ -36,7 +36,7 @@ middleware.renderHeader = async (req, res, data) => {
 	const results = await utils.promiseParallel({
 		userData: user.getUserFields(req.uid, ['username', 'userslug', 'email', 'picture', 'email:confirmed']),
 		scripts: getAdminScripts(),
-		custom_header: plugins.fireHook('filter:admin.header.build', custom_header),
+		custom_header: plugins.hooks.fire('filter:admin.header.build', custom_header),
 		configs: meta.configs.list(),
 		latestVersion: getLatestVersion(),
 		privileges: privileges.admin.get(req.uid),
@@ -83,7 +83,7 @@ middleware.renderHeader = async (req, res, data) => {
 };
 
 async function getAdminScripts() {
-	const scripts = await plugins.fireHook('filter:admin.scripts.get', []);
+	const scripts = await plugins.hooks.fire('filter:admin.scripts.get', []);
 	return scripts.map(function (script) {
 		return { src: script };
 	});

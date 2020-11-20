@@ -41,7 +41,7 @@ module.exports = function (Posts) {
 		postData.bookmarks = await db.setCount('pid:' + pid + ':users_bookmarked');
 		await Posts.setPostField(pid, 'bookmarks', postData.bookmarks);
 
-		plugins.fireHook('action:post.' + type, {
+		plugins.hooks.fire('action:post.' + type, {
 			pid: pid,
 			uid: uid,
 			owner: postData.uid,

@@ -22,7 +22,7 @@ module.exports = function (Posts) {
 
 	async function deleteOrRestore(type, pid, uid) {
 		const isDeleting = type === 'delete';
-		await plugins.fireHook('filter:post.' + type, { pid: pid, uid: uid });
+		await plugins.hooks.fire('filter:post.' + type, { pid: pid, uid: uid });
 		await Posts.setPostFields(pid, {
 			deleted: isDeleting ? 1 : 0,
 			deleterUid: isDeleting ? uid : 0,
@@ -38,7 +38,7 @@ module.exports = function (Posts) {
 				db.sortedSetAdd('cid:' + topicData.cid + ':pids', postData.timestamp, pid),
 		]);
 		await categories.updateRecentTidForCid(postData.cid);
-		plugins.fireHook('action:post.' + type, { post: _.clone(postData), uid: uid });
+		plugins.hooks.fire('action:post.' + type, { post: _.clone(postData), uid: uid });
 		if (type === 'delete') {
 			await flags.resolveFlag('post', pid, uid);
 		}
@@ -52,7 +52,7 @@ module.exports = function (Posts) {
 		}
 		const topicData = await topics.getTopicFields(postData.tid, ['tid', 'cid', 'pinned']);
 		postData.cid = topicData.cid;
-		await plugins.fireHook('filter:post.purge', { post: postData, pid: pid, uid: uid });
+		await plugins.hooks.fire('filter:post.purge', { post: postData, pid: pid, uid: uid });
 		await Promise.all([
 			deletePostFromTopicUserNotification(postData, topicData),
 			deletePostFromCategoryRecentPosts(postData),
@@ -64,7 +64,7 @@ module.exports = function (Posts) {
 			Posts.uploads.dissociateAll(pid),
 		]);
 		await flags.resolveFlag('post', pid, uid);
-		plugins.fireHook('action:post.purge', { post: postData, uid: uid });
+		plugins.hooks.fire('action:post.purge', { post: postData, uid: uid });
 		await db.delete('post:' + pid);
 	};
 

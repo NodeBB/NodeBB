@@ -27,7 +27,7 @@ module.exports = function (SocketTopics) {
 			throw new Error('[[error:no-privileges]]');
 		}
 		topicData.privileges = userPrivileges;
-		const result = await plugins.fireHook('filter:topic.thread_tools', { topic: topicData, uid: socket.uid, tools: [] });
+		const result = await plugins.hooks.fire('filter:topic.thread_tools', { topic: topicData, uid: socket.uid, tools: [] });
 		result.topic.thread_tools = result.tools;
 		return result.topic;
 	};

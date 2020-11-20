@@ -22,7 +22,7 @@ module.exports = function (Categories) {
 			await topics.purgePostsAndTopic(tid, uid);
 		});
 		await purgeCategory(cid);
-		plugins.fireHook('action:category.delete', { cid: cid, uid: uid });
+		plugins.hooks.fire('action:category.delete', { cid: cid, uid: uid });
 	};
 
 	async function purgeCategory(cid) {
