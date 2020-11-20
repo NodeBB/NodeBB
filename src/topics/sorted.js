@@ -57,18 +57,20 @@ module.exports = function (Topics) {
 
 	async function getCidTids(params) {
 		const sets = [];
-		const pinnedSets = [];
 		params.cids.forEach(function (cid) {
 			if (params.sort === 'recent') {
 				sets.push('cid:' + cid + ':tids');
 			} else {
 				sets.push('cid:' + cid + ':tids' + (params.sort ? ':' + params.sort : ''));
 			}
-			pinnedSets.push('cid:' + cid + ':tids:pinned');
 		});
 		const [tids, pinnedTids] = await Promise.all([
 			db.getSortedSetRevRange(sets, 0, meta.config.recentMaxTopics - 1),
-			db.getSortedSetRevRange(pinnedSets, 0, -1),
+			categories.getPinnedTids({
+				cid: params.cids,
+				start: 0,
+				stop: -1,
+			}),
 		]);
 		return pinnedTids.concat(tids);
 	}
