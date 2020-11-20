@@ -173,6 +173,7 @@ module.exports = function (User) {
 			if (!parseInt(user.uid, 10)) {
 				user.uid = 0;
 				user.username = (user.hasOwnProperty('oldUid') && parseInt(user.oldUid, 10)) ? '[[global:former_user]]' : '[[global:guest]]';
+				user.displayname = user.username;
 				user.userslug = '';
 				user.picture = User.getDefaultAvatar();
 				user['icon:text'] = '?';
