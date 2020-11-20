@@ -147,7 +147,8 @@ module.exports = function (Categories) {
 		}
 
 		const pinnedSets = data.cid.map(cid => `cid:${cid}:tids:pinned`);
-		return await db.getSortedSetRevRange(pinnedSets, data.start, data.stop);
+		const pinnedTids = await db.getSortedSetRevRange(pinnedSets, data.start, data.stop);
+		return topics.tools.checkPinExpiry(pinnedTids);
 	};
 
 	Categories.modifyTopicsByPrivilege = function (topics, privileges) {

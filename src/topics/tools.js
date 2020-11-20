@@ -130,22 +130,20 @@ module.exports = function (Topics) {
 		plugins.fireHook('action:topic.setPinExpiry', { topic: _.clone(topicData), uid: uid });
 	};
 
-	topicTools.findExpiredPins = async () => {
-		const cids = await categories.getAllCidsFromSet('categories:cid');
-		let tids = await Promise.all(cids.map(async cid => await db.getSortedSetRange(`cid:${cid}:tids:pinned`, 0, -1)));
-		tids = tids.reduce((memo, cur) => memo.concat(cur), []);
+	topicTools.checkPinExpiry = async (tids) => {
 		const expiry = (await topics.getTopicsFields(tids, ['pinExpiry'])).map(obj => obj.pinExpiry);
 		const now = Date.now();
-		let expired = 0;
 
 		tids = await Promise.all(tids.map(async (tid, idx) => {
 			if (expiry[idx] && parseInt(expiry[idx], 10) <= now) {
-				expired += 1;
 				await togglePin(tid, false);
+				return null;
 			}
+
+			return tid;
 		}));
 
-		return expired;
+		return tids.filter(Boolean);
 	};
 
 	async function togglePin(tid, pin) {
