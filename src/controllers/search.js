@@ -15,7 +15,7 @@ const helpers = require('./helpers');
 const searchController = module.exports;
 
 searchController.search = async function (req, res, next) {
-	if (!plugins.hasListeners('filter:search.query')) {
+	if (!plugins.hooks.hasListeners('filter:search.query')) {
 		return next();
 	}
 	const page = Math.max(1, parseInt(req.query.page, 10)) || 1;

@@ -96,7 +96,7 @@ UserNotifications.getNotifications = async function (nids, uid) {
 
 	await deleteUserNids(deletedNids, uid);
 	notificationData = await notifications.merge(notificationData);
-	const result = await plugins.fireHook('filter:user.notifications.getNotifications', {
+	const result = await plugins.hooks.fire('filter:user.notifications.getNotifications', {
 		uid: uid,
 		notifications: notificationData,
 	});

@@ -184,7 +184,7 @@ Controllers.registerInterstitial = async function (req, res, next) {
 		return res.redirect(nconf.get('relative_path') + '/register');
 	}
 	try {
-		const data = await plugins.fireHook('filter:register.interstitial', {
+		const data = await plugins.hooks.fire('filter:register.interstitial', {
 			userData: req.session.registration,
 			interstitials: [],
 		});
@@ -298,7 +298,7 @@ Controllers.manifest = async function (req, res) {
 		});
 	}
 
-	const data = await plugins.fireHook('filter:manifest.build', {
+	const data = await plugins.hooks.fire('filter:manifest.build', {
 		req: req,
 		res: res,
 		manifest: manifest,
@@ -331,7 +331,7 @@ Controllers.termsOfUse = async function (req, res, next) {
 	if (!meta.config.termsOfUse) {
 		return next();
 	}
-	const termsOfUse = await plugins.fireHook('filter:parse.post', {
+	const termsOfUse = await plugins.hooks.fire('filter:parse.post', {
 		postData: {
 			content: meta.config.termsOfUse || '',
 		},

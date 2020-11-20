@@ -64,10 +64,10 @@ User.getUsersFromSet = async function (set, uid, start, stop) {
 };
 
 User.getUsersWithFields = async function (uids, fields, uid) {
-	let results = await plugins.fireHook('filter:users.addFields', { fields: fields });
+	let results = await plugins.hooks.fire('filter:users.addFields', { fields: fields });
 	results.fields = _.uniq(results.fields);
 	const userData = await User.getUsersFields(uids, results.fields);
-	results = await plugins.fireHook('filter:userlist.get', { users: userData, uid: uid });
+	results = await plugins.hooks.fire('filter:userlist.get', { users: userData, uid: uid });
 	return results.users;
 };
 
@@ -219,7 +219,7 @@ User.getModeratedCids = async function (uid) {
 };
 
 User.addInterstitials = function (callback) {
-	plugins.registerHook('core', {
+	plugins.hooks.register('core', {
 		hook: 'filter:register.interstitial',
 		method: [
 			// GDPR information collection/processing consent + email consent
@@ -272,7 +272,7 @@ User.addInterstitials = function (callback) {
 					}
 				}
 
-				const termsOfUse = await plugins.fireHook('filter:parse.post', {
+				const termsOfUse = await plugins.hooks.fire('filter:parse.post', {
 					postData: {
 						content: meta.config.termsOfUse || '',
 					},

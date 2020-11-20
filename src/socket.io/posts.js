@@ -67,7 +67,7 @@ SocketPosts.getRawPost = async function (socket, pid) {
 		throw new Error('[[error:no-post]]');
 	}
 	postData.pid = pid;
-	const result = await plugins.fireHook('filter:post.getRawPost', { uid: socket.uid, postData: postData });
+	const result = await plugins.hooks.fire('filter:post.getRawPost', { uid: socket.uid, postData: postData });
 	return result.postData.content;
 };
 
@@ -182,7 +182,7 @@ SocketPosts.editQueuedContent = async function (socket, data) {
 	}
 	await posts.editQueuedContent(socket.uid, data);
 	if (data.content) {
-		return await plugins.fireHook('filter:parse.post', { postData: data });
+		return await plugins.hooks.fire('filter:parse.post', { postData: data });
 	}
 	return { postData: data };
 };

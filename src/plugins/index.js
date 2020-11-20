@@ -21,9 +21,16 @@ const Plugins = module.exports;
 
 require('./install')(Plugins);
 require('./load')(Plugins);
-require('./hooks')(Plugins);
 require('./usage')(Plugins);
 Plugins.data = require('./data');
+Plugins.hooks = require('./hooks');
+
+// Backwards compatibility for hooks, remove in v1.16.0
+Plugins.registerHook = Plugins.hooks.register;
+Plugins.unregisterHook = Plugins.hooks.unregister;
+Plugins.fireHook = Plugins.hooks.fire;
+Plugins.hasListeners = Plugins.hooks.hasListeners;
+// end
 
 Plugins.getPluginPaths = Plugins.data.getPluginPaths;
 Plugins.loadPluginInfo = Plugins.data.loadPluginInfo;
@@ -138,7 +145,7 @@ Plugins.reload = async function () {
 
 Plugins.reloadRoutes = async function (params) {
 	var controllers = require('../controllers');
-	await Plugins.fireHook('static:app.load', { app: app, router: params.router, middleware: middleware, controllers: controllers });
+	await Plugins.hooks.fire('static:app.load', { app: app, router: params.router, middleware: middleware, controllers: controllers });
 	winston.verbose('[plugins] All plugins reloaded and rerouted');
 };
 

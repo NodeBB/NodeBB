@@ -8,7 +8,7 @@ const user = require('../user');
 
 module.exports = function (Categories) {
 	Categories.getCategoryTopics = async function (data) {
-		let results = await plugins.fireHook('filter:category.topics.prepare', data);
+		let results = await plugins.hooks.fire('filter:category.topics.prepare', data);
 		const tids = await Categories.getTopicIds(results);
 		let topicsData = await topics.getTopicsByTids(tids, data.uid);
 		topicsData = await user.blocks.filter(data.uid, topicsData);
@@ -18,7 +18,7 @@ module.exports = function (Categories) {
 		}
 		topics.calculateTopicIndices(topicsData, data.start);
 
-		results = await plugins.fireHook('filter:category.topics.get', { cid: data.cid, topics: topicsData, uid: data.uid });
+		results = await plugins.hooks.fire('filter:category.topics.get', { cid: data.cid, topics: topicsData, uid: data.uid });
 		return { topics: results.topics, nextStart: data.stop + 1 };
 	};
 
@@ -43,8 +43,8 @@ module.exports = function (Categories) {
 			return pinnedTidsOnPage;
 		}
 
-		if (plugins.hasListeners('filter:categories.getTopicIds')) {
-			const result = await plugins.fireHook('filter:categories.getTopicIds', {
+		if (plugins.hooks.hasListeners('filter:categories.getTopicIds')) {
+			const result = await plugins.hooks.fire('filter:categories.getTopicIds', {
 				tids: [],
 				data: data,
 				pinnedTids: pinnedTidsOnPage,
@@ -74,8 +74,8 @@ module.exports = function (Categories) {
 	};
 
 	Categories.getTopicCount = async function (data) {
-		if (plugins.hasListeners('filter:categories.getTopicCount')) {
-			const result = await plugins.fireHook('filter:categories.getTopicCount', {
+		if (plugins.hooks.hasListeners('filter:categories.getTopicCount')) {
+			const result = await plugins.hooks.fire('filter:categories.getTopicCount', {
 				topicCount: data.category.topic_count,
 				data: data,
 			});
@@ -112,7 +112,7 @@ module.exports = function (Categories) {
 				set = [set, 'tag:' + data.tag + ':topics'];
 			}
 		}
-		const result = await plugins.fireHook('filter:categories.buildTopicsSortedSet', {
+		const result = await plugins.hooks.fire('filter:categories.buildTopicsSortedSet', {
 			set: set,
 			data: data,
 		});
@@ -122,7 +122,7 @@ module.exports = function (Categories) {
 	Categories.getSortedSetRangeDirection = async function (sort) {
 		sort = sort || 'newest_to_oldest';
 		const direction = sort === 'newest_to_oldest' || sort === 'most_posts' || sort === 'most_votes' ? 'highest-to-lowest' : 'lowest-to-highest';
-		const result = await plugins.fireHook('filter:categories.getSortedSetRangeDirection', {
+		const result = await plugins.hooks.fire('filter:categories.getSortedSetRangeDirection', {
 			sort: sort,
 			direction: direction,
 		});
@@ -134,8 +134,8 @@ module.exports = function (Categories) {
 	};
 
 	Categories.getPinnedTids = async function (data) {
-		if (plugins.hasListeners('filter:categories.getPinnedTids')) {
-			const result = await plugins.fireHook('filter:categories.getPinnedTids', {
+		if (plugins.hooks.hasListeners('filter:categories.getPinnedTids')) {
+			const result = await plugins.hooks.fire('filter:categories.getPinnedTids', {
 				pinnedTids: [],
 				data: data,
 			});

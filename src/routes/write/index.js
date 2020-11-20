@@ -48,7 +48,7 @@ Write.reload = async (params) => {
 	 * `/api/v3/plugins`.
 	 */
 	const pluginRouter = require('express').Router();
-	await plugins.fireHook('static:api.routes', {
+	await plugins.hooks.fire('static:api.routes', {
 		router: pluginRouter,
 		middleware,
 		helpers,

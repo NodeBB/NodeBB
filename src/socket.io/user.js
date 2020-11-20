@@ -100,7 +100,7 @@ SocketUser.reset.commit = async function (socket, data) {
 	const [uid] = await Promise.all([
 		db.getObjectField('reset:uid', data.code),
 		user.reset.commit(data.code, data.password),
-		plugins.fireHook('action:password.reset', { uid: socket.uid }),
+		plugins.hooks.fire('action:password.reset', { uid: socket.uid }),
 	]);
 
 	await events.log({

@@ -56,8 +56,8 @@ async function uploadAsImage(req, uploadedFile) {
 	await image.checkDimensions(uploadedFile.path);
 	await image.stripEXIF(uploadedFile.path);
 
-	if (plugins.hasListeners('filter:uploadImage')) {
-		return await plugins.fireHook('filter:uploadImage', {
+	if (plugins.hooks.hasListeners('filter:uploadImage')) {
+		return await plugins.hooks.fire('filter:uploadImage', {
 			image: uploadedFile,
 			uid: req.uid,
 			folder: 'files',
@@ -122,8 +122,8 @@ uploadsController.uploadThumb = async function (req, res, next) {
 			width: meta.config.topicThumbSize,
 			height: meta.config.topicThumbSize,
 		});
-		if (plugins.hasListeners('filter:uploadImage')) {
-			return await plugins.fireHook('filter:uploadImage', {
+		if (plugins.hooks.hasListeners('filter:uploadImage')) {
+			return await plugins.hooks.fire('filter:uploadImage', {
 				image: uploadedFile,
 				uid: req.uid,
 				folder: 'files',
@@ -135,8 +135,8 @@ uploadsController.uploadThumb = async function (req, res, next) {
 };
 
 uploadsController.uploadFile = async function (uid, uploadedFile) {
-	if (plugins.hasListeners('filter:uploadFile')) {
-		return await plugins.fireHook('filter:uploadFile', {
+	if (plugins.hooks.hasListeners('filter:uploadFile')) {
+		return await plugins.hooks.fire('filter:uploadFile', {
 			file: uploadedFile,
 			uid: uid,
 			folder: 'files',
@@ -175,7 +175,7 @@ async function saveFileToLocal(uid, folder, uploadedFile) {
 	};
 	const fileKey = upload.url.replace(nconf.get('upload_url'), '');
 	await db.sortedSetAdd('uid:' + uid + ':uploads', Date.now(), fileKey);
-	const data = await plugins.fireHook('filter:uploadStored', { uid: uid, uploadedFile: uploadedFile, storedFile: storedFile });
+	const data = await plugins.hooks.fire('filter:uploadStored', { uid: uid, uploadedFile: uploadedFile, storedFile: storedFile });
 	return data.storedFile;
 }
 

@@ -60,7 +60,7 @@ module.exports = function (Topics) {
 			db.sortedSetsAdd(['topics:votes', 'cid:' + cid + ':tids:votes'], postData.votes, tid),
 		]);
 
-		plugins.fireHook('action:topic.fork', { tid: tid, fromTid: fromTid, uid: uid });
+		plugins.hooks.fire('action:topic.fork', { tid: tid, fromTid: fromTid, uid: uid });
 
 		return await Topics.getTopicData(tid);
 	};
@@ -93,7 +93,7 @@ module.exports = function (Topics) {
 			Topics.updateLastPostTimeFromLastPid(tid),
 			Topics.updateLastPostTimeFromLastPid(postData.tid),
 		]);
-		plugins.fireHook('action:post.move', { uid: callerUid, post: postData, tid: tid });
+		plugins.hooks.fire('action:post.move', { uid: callerUid, post: postData, tid: tid });
 	};
 
 	async function updateCategory(postData, toTid) {

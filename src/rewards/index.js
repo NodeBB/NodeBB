@@ -64,7 +64,7 @@ async function checkCondition(reward, method) {
 		method = util.promisify(method);
 	}
 	const value = await method();
-	const bool = await plugins.fireHook('filter:rewards.checkConditional:' + reward.conditional, { left: value, right: reward.value });
+	const bool = await plugins.hooks.fire('filter:rewards.checkConditional:' + reward.conditional, { left: value, right: reward.value });
 	return bool;
 }
 
@@ -72,7 +72,7 @@ async function giveRewards(uid, rewards) {
 	const rewardData = await getRewardsByRewardData(rewards);
 	for (let i = 0; i < rewards.length; i++) {
 		/* eslint-disable no-await-in-loop */
-		await plugins.fireHook('action:rewards.award:' + rewards[i].rid, { uid: uid, reward: rewardData[i] });
+		await plugins.hooks.fire('action:rewards.award:' + rewards[i].rid, { uid: uid, reward: rewardData[i] });
 		await db.sortedSetIncrBy('uid:' + uid + ':rewards', 1, rewards[i].id);
 	}
 }

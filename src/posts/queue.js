@@ -18,7 +18,7 @@ module.exports = function (Posts) {
 		const userData = await user.getUserFields(uid, ['uid', 'reputation', 'postcount']);
 		const isMemberOfExempt = await groups.isMemberOfAny(userData.uid, meta.config.groupsExemptFromPostQueue);
 		const shouldQueue = meta.config.postQueue && !isMemberOfExempt && (!userData.uid || userData.reputation < meta.config.postQueueReputationThreshold || userData.postcount <= 0);
-		const result = await plugins.fireHook('filter:post.shouldQueue', {
+		const result = await plugins.hooks.fire('filter:post.shouldQueue', {
 			shouldQueue: !!shouldQueue,
 			uid: uid,
 			data: data,
@@ -57,7 +57,7 @@ module.exports = function (Posts) {
 			type: type,
 			data: data,
 		};
-		payload = await plugins.fireHook('filter:post-queue.save', payload);
+		payload = await plugins.hooks.fire('filter:post-queue.save', payload);
 		payload.data = JSON.stringify(data);
 
 		await db.sortedSetAdd('post:queue', now, id);

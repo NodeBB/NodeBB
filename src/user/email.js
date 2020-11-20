@@ -60,7 +60,7 @@ UserEmail.sendValidationEmail = async function (uid, options) {
 	}
 	await db.set('uid:' + uid + ':confirm:email:sent', 1);
 	await db.pexpireAt('uid:' + uid + ':confirm:email:sent', Date.now() + (emailInterval * 60 * 1000));
-	confirm_code = await plugins.fireHook('filter:user.verify.code', confirm_code);
+	confirm_code = await plugins.hooks.fire('filter:user.verify.code', confirm_code);
 
 	await db.setObject('confirm:' + confirm_code, {
 		email: options.email.toLowerCase(),
@@ -79,8 +79,8 @@ UserEmail.sendValidationEmail = async function (uid, options) {
 		uid: uid,
 	};
 
-	if (plugins.hasListeners('action:user.verify')) {
-		plugins.fireHook('action:user.verify', { uid: uid, data: data });
+	if (plugins.hooks.hasListeners('action:user.verify')) {
+		plugins.hooks.fire('action:user.verify', { uid: uid, data: data });
 	} else {
 		await emailer.send(data.template, uid, data);
 	}
@@ -101,5 +101,5 @@ UserEmail.confirm = async function (code) {
 	await groups.leave('unverified-users', confirmObj.uid);
 	await db.delete('confirm:' + code);
 	await db.delete('uid:' + confirmObj.uid + ':confirm:email:sent');
-	await plugins.fireHook('action:user.email.confirmed', { uid: confirmObj.uid, email: confirmObj.email });
+	await plugins.hooks.fire('action:user.email.confirmed', { uid: confirmObj.uid, email: confirmObj.email });
 };

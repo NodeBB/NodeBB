@@ -79,9 +79,9 @@ Auth.reloadRoutes = async function (params) {
 	const router = params.router;
 
 	// Local Logins
-	if (plugins.hasListeners('action:auth.overrideLogin')) {
+	if (plugins.hooks.hasListeners('action:auth.overrideLogin')) {
 		winston.warn('[authentication] Login override detected, skipping local login strategy.');
-		plugins.fireHook('action:auth.overrideLogin');
+		plugins.hooks.fire('action:auth.overrideLogin');
 	} else {
 		passport.use(new passportLocal({ passReqToCallback: true }, controllers.authentication.localLogin));
 	}
@@ -91,7 +91,7 @@ Auth.reloadRoutes = async function (params) {
 
 	// Additional logins via SSO plugins
 	try {
-		loginStrategies = await plugins.fireHook('filter:auth.init', loginStrategies);
+		loginStrategies = await plugins.hooks.fire('filter:auth.init', loginStrategies);
 	} catch (err) {
 		winston.error('[authentication] ' + err.stack);
 	}

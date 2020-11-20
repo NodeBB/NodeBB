@@ -33,10 +33,10 @@ module.exports = function (middleware) {
 			options.url = (req.baseUrl + req.path.replace(/^\/api/, ''));
 			options.bodyClass = buildBodyClass(req, res, options);
 
-			const buildResult = await plugins.fireHook('filter:' + template + '.build', { req: req, res: res, templateData: options });
+			const buildResult = await plugins.hooks.fire('filter:' + template + '.build', { req: req, res: res, templateData: options });
 			const templateToRender = buildResult.templateData.templateToRender || template;
 
-			const renderResult = await plugins.fireHook('filter:middleware.render', { req: req, res: res, templateData: buildResult.templateData });
+			const renderResult = await plugins.hooks.fire('filter:middleware.render', { req: req, res: res, templateData: buildResult.templateData });
 			options = renderResult.templateData;
 			options._header = {
 				tags: await meta.tags.parse(req, renderResult, res.locals.metaTags, res.locals.linkTags),

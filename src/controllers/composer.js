@@ -15,7 +15,7 @@ exports.get = async function (req, res, callback) {
 		content: 'noindex',
 	};
 
-	const data = await plugins.fireHook('filter:composer.build', {
+	const data = await plugins.hooks.fire('filter:composer.build', {
 		req: req,
 		res: res,
 		next: callback,

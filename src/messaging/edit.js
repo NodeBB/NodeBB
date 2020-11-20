@@ -16,7 +16,7 @@ module.exports = function (Messaging) {
 			return;
 		}
 
-		const payload = await plugins.fireHook('filter:messaging.edit', {
+		const payload = await plugins.hooks.fire('filter:messaging.edit', {
 			content: content,
 			edited: Date.now(),
 		});

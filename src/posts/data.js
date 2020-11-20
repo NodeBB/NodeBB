@@ -17,7 +17,7 @@ module.exports = function (Posts) {
 		}
 		const keys = pids.map(pid => 'post:' + pid);
 		const postData = await (fields.length ? db.getObjectsFields(keys, fields) : db.getObjects(keys));
-		const result = await plugins.fireHook('filter:post.getFields', {
+		const result = await plugins.hooks.fire('filter:post.getFields', {
 			pids: pids,
 			posts: postData,
 			fields: fields,
@@ -51,7 +51,7 @@ module.exports = function (Posts) {
 
 	Posts.setPostFields = async function (pid, data) {
 		await db.setObject('post:' + pid, data);
-		plugins.fireHook('action:post.setFields', { data: { ...data, pid } });
+		plugins.hooks.fire('action:post.setFields', { data: { ...data, pid } });
 	};
 };
 

@@ -101,7 +101,7 @@ module.exports = function (privileges) {
 				((!post.topic.deleted && !post.deleted) || canViewDeleted[post.topic.cid] || results.isAdmin);
 		}).map(post => post.pid);
 
-		const data = await plugins.fireHook('filter:privileges.posts.filter', {
+		const data = await plugins.hooks.fire('filter:privileges.posts.filter', {
 			privilege: privilege,
 			uid: uid,
 			pids: pids,
@@ -144,7 +144,7 @@ module.exports = function (privileges) {
 		results.pid = parseInt(pid, 10);
 		results.uid = uid;
 
-		const result = await plugins.fireHook('filter:privileges.posts.edit', results);
+		const result = await plugins.hooks.fire('filter:privileges.posts.edit', results);
 		return { flag: result.edit && (result.owner || result.isMod), message: '[[error:no-privileges]]' };
 	};
 

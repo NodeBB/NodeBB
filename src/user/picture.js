@@ -16,7 +16,7 @@ module.exports = function (User) {
 
 	User.getAllowedImageTypes = function () {
 		const allowedTypes = ['image/png', 'image/jpeg', 'image/bmp'];
-		if (plugins.hasListeners('filter:image.isFileTypeAllowed')) {
+		if (plugins.hooks.hasListeners('filter:image.isFileTypeAllowed')) {
 			allowedTypes.push('image/gif');
 		}
 		return allowedTypes;

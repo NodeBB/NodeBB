@@ -47,7 +47,7 @@ async function getNotices() {
 			notDoneText: '[[admin/dashboard:restart-required]]',
 		},
 		{
-			done: plugins.hasListeners('filter:search.query'),
+			done: plugins.hooks.hasListeners('filter:search.query'),
 			doneText: '[[admin/dashboard:search-plugin-installed]]',
 			notDoneText: '[[admin/dashboard:search-plugin-not-installed]]',
 			tooltip: '[[admin/dashboard:search-plugin-tooltip]]',
@@ -62,7 +62,7 @@ async function getNotices() {
 		});
 	}
 
-	return await plugins.fireHook('filter:admin.notices', notices);
+	return await plugins.hooks.fire('filter:admin.notices', notices);
 }
 
 async function getLatestVersion() {

@@ -65,7 +65,7 @@ exports.handleErrors = function handleErrors(err, req, res, next) { // eslint-di
 		}
 	};
 
-	plugins.fireHook('filter:error.handle', {
+	plugins.hooks.fire('filter:error.handle', {
 		cases: cases,
 	}, function (_err, data) {
 		if (_err) {

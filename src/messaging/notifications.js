@@ -19,7 +19,7 @@ module.exports = function (Messaging) {
 			message: messageObj,
 			uids: uids,
 		};
-		data = await plugins.fireHook('filter:messaging.notify', data);
+		data = await plugins.hooks.fire('filter:messaging.notify', data);
 		if (!data || !data.uids || !data.uids.length) {
 			return;
 		}

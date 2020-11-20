@@ -34,8 +34,8 @@ module.exports = function (Topics) {
 	};
 
 	async function getTids(params) {
-		if (plugins.hasListeners('filter:topics.getSortedTids')) {
-			const result = await plugins.fireHook('filter:topics.getSortedTids', { params: params, tids: [] });
+		if (plugins.hooks.hasListeners('filter:topics.getSortedTids')) {
+			const result = await plugins.hooks.fire('filter:topics.getSortedTids', { params: params, tids: [] });
 			return result.tids;
 		}
 		let tids = [];
@@ -153,7 +153,7 @@ module.exports = function (Topics) {
 		const cids = params.cids && params.cids.map(String);
 		tids = topicData.filter(t => t && t.cid && !isCidIgnored[t.cid] && (!cids || cids.includes(String(t.cid)))).map(t => t.tid);
 
-		const result = await plugins.fireHook('filter:topics.filterSortedTids', { tids: tids, params: params });
+		const result = await plugins.hooks.fire('filter:topics.filterSortedTids', { tids: tids, params: params });
 		return result.tids;
 	}
 

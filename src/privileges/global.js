@@ -53,14 +53,14 @@ module.exports = function (privileges) {
 	privileges.global.list = async function () {
 		async function getLabels() {
 			return await utils.promiseParallel({
-				users: plugins.fireHook('filter:privileges.global.list_human', privileges.global.privilegeLabels.slice()),
-				groups: plugins.fireHook('filter:privileges.global.groups.list_human', privileges.global.privilegeLabels.slice()),
+				users: plugins.hooks.fire('filter:privileges.global.list_human', privileges.global.privilegeLabels.slice()),
+				groups: plugins.hooks.fire('filter:privileges.global.groups.list_human', privileges.global.privilegeLabels.slice()),
 			});
 		}
 
 		const keys = await utils.promiseParallel({
-			users: plugins.fireHook('filter:privileges.global.list', privileges.global.userPrivilegeList.slice()),
-			groups: plugins.fireHook('filter:privileges.global.groups.list', privileges.global.groupPrivilegeList.slice()),
+			users: plugins.hooks.fire('filter:privileges.global.list', privileges.global.userPrivilegeList.slice()),
+			groups: plugins.hooks.fire('filter:privileges.global.groups.list', privileges.global.groupPrivilegeList.slice()),
 		});
 
 		const payload = await utils.promiseParallel({
@@ -84,7 +84,7 @@ module.exports = function (privileges) {
 		const combined = userPrivileges.map(allowed => allowed || isAdministrator);
 		const privData = _.zipObject(privileges.global.userPrivilegeList, combined);
 
-		return await plugins.fireHook('filter:privileges.global.get', privData);
+		return await plugins.hooks.fire('filter:privileges.global.get', privData);
 	};
 
 	privileges.global.can = async function (privilege, uid) {
@@ -101,7 +101,7 @@ module.exports = function (privileges) {
 
 	privileges.global.give = async function (privileges, groupName) {
 		await helpers.giveOrRescind(groups.join, privileges, 0, groupName);
-		plugins.fireHook('action:privileges.global.give', {
+		plugins.hooks.fire('action:privileges.global.give', {
 			privileges: privileges,
 			groupNames: Array.isArray(groupName) ? groupName : [groupName],
 		});
@@ -109,7 +109,7 @@ module.exports = function (privileges) {
 
 	privileges.global.rescind = async function (privileges, groupName) {
 		await helpers.giveOrRescind(groups.leave, privileges, 0, groupName);
-		plugins.fireHook('action:privileges.global.rescind', {
+		plugins.hooks.fire('action:privileges.global.rescind', {
 			privileges: privileges,
 			groupNames: Array.isArray(groupName) ? groupName : [groupName],
 		});

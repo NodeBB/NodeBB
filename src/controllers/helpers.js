@@ -116,7 +116,7 @@ helpers.buildTerms = function (url, term, query) {
 };
 
 helpers.notAllowed = async function (req, res, error) {
-	const data = await plugins.fireHook('filter:helpers.notAllowed', {
+	const data = await plugins.hooks.fire('filter:helpers.notAllowed', {
 		req: req,
 		res: res,
 		error: error,
@@ -336,7 +336,7 @@ helpers.getHomePageRoutes = async function (uid) {
 			name: 'Custom',
 		},
 	]);
-	const data = await plugins.fireHook('filter:homepage.get', { routes: routes });
+	const data = await plugins.hooks.fire('filter:homepage.get', { routes: routes });
 	return data.routes;
 };
 

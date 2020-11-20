@@ -112,7 +112,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID) {
 	userData['cover:position'] = validator.escape(String(userData['cover:position'] || '50% 50%'));
 	userData['username:disableEdit'] = !userData.isAdmin && meta.config['username:disableEdit'];
 	userData['email:disableEdit'] = !userData.isAdmin && meta.config['email:disableEdit'];
-	const hookData = await plugins.fireHook('filter:helpers.getUserDataByUserSlug', { userData: userData, callerUID: callerUID });
+	const hookData = await plugins.hooks.fire('filter:helpers.getUserDataByUserSlug', { userData: userData, callerUID: callerUID });
 	return hookData.userData;
 };
 
@@ -128,7 +128,7 @@ async function getAllData(uid, callerUID) {
 		ips: user.getIPs(uid, 4),
 		profile_menu: getProfileMenu(uid, callerUID),
 		groups: groups.getUserGroups([uid]),
-		sso: plugins.fireHook('filter:auth.list', { uid: uid, associations: [] }),
+		sso: plugins.hooks.fire('filter:auth.list', { uid: uid, associations: [] }),
 		canEdit: privileges.users.canEdit(callerUID, uid),
 		canBanUser: privileges.users.canBanUser(callerUID, uid),
 		isBlocked: user.blocks.is(uid, callerUID),
@@ -183,7 +183,7 @@ async function getProfileMenu(uid, callerUID) {
 		});
 	}
 
-	return await plugins.fireHook('filter:user.profileMenu', {
+	return await plugins.hooks.fire('filter:user.profileMenu', {
 		uid: uid,
 		callerUID: callerUID,
 		links: links,
@@ -197,7 +197,7 @@ async function parseAboutMe(userData) {
 		return;
 	}
 	userData.aboutme = validator.escape(String(userData.aboutme || ''));
-	const parsed = await plugins.fireHook('filter:parse.aboutme', userData.aboutme);
+	const parsed = await plugins.hooks.fire('filter:parse.aboutme', userData.aboutme);
 	userData.aboutmeParsed = translator.escape(parsed);
 }
 
