@@ -37,7 +37,6 @@ start.start = async function () {
 			require('./notifications').startJobs();
 			require('./user').startJobs();
 			require('./plugins').startJobs();
-			require('./topics').startJobs();
 		}
 
 		await webserver.listen();
