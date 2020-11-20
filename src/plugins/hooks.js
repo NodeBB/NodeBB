@@ -6,7 +6,8 @@ const utils = require('../utils');
 
 module.exports = function (Plugins) {
 	Plugins.deprecatedHooks = {
-		'filter:privileges:isUserAllowedTo': 'filter:privileges:isAllowedTo',
+		'filter:privileges:isUserAllowedTo': 'filter:privileges:isAllowedTo',	// 👋 @ 1.16.0
+		'filter:router.page': 'response:router.page',	// 👋 @ 2.0.0
 	};
 
 	Plugins.internals = {
