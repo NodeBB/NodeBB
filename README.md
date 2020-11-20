@@ -51,6 +51,7 @@ NodeBB requires the following software to be installed:
 
 * A version of Node.js at least 12 or greater ([installation/upgrade instructions](https://github.com/nodesource/distributions))
 * MongoDB, version 2.6 or greater **or** Redis, version 2.8.9 or greater
+* If you are using [clustering](https://docs.nodebb.org/configuring/scaling/) you need Redis installed and configured.
 * nginx, version 1.3.13 or greater (**only if** intending to use nginx to proxy requests to a NodeBB)
 
 ## Installation
