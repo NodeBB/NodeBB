@@ -23,7 +23,7 @@ module.exports = function (privileges) {
 		];
 		const topicData = await topics.getTopicFields(tid, ['cid', 'uid', 'locked', 'deleted']);
 		const [userPrivileges, isAdministrator, isModerator, disabled] = await Promise.all([
-			helpers.isUserAllowedTo(privs, uid, topicData.cid),
+			helpers.isAllowedTo(privs, uid, topicData.cid),
 			user.isAdministrator(uid),
 			user.isModerator(uid, topicData.cid),
 			categories.getCategoryField(topicData.cid, 'disabled'),
@@ -121,7 +121,7 @@ module.exports = function (privileges) {
 			user.isModerator(uid, topicData.cid),
 			user.isAdministrator(uid),
 			topics.isOwner(tid, uid),
-			helpers.isUserAllowedTo('topics:delete', uid, [topicData.cid]),
+			helpers.isAllowedTo('topics:delete', uid, [topicData.cid]),
 		]);
 
 		if (isAdministrator) {

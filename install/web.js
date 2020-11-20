@@ -240,7 +240,7 @@ async function compileTemplate() {
 	const source = await fs.promises.readFile(sourceFile, 'utf8');
 
 	const [compiled] = await Promise.all([
-		Benchpress.precompile(source),
+		Benchpress.precompile(source, { filename: 'install/index.tpl' }),
 		mkdirp(path.dirname(destJs)),
 	]);
 

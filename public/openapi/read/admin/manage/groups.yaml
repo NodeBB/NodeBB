@@ -30,6 +30,8 @@ get:
                           type: number
                         userTitle:
                           type: string
+                        userTitleEscaped:
+                          type: string
                         icon:
                           type: string
                         labelColor:
@@ -64,6 +66,11 @@ get:
                           type: string
                         ownerUid:
                           type: number
+                        memberPostCids:
+                          type: array
+                          items:
+                            type: number
+                            example: [1, 2, 3]
                       required:
                         - name
                         - description

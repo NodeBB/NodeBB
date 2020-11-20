@@ -18,6 +18,8 @@
     "agree_to_terms_of_use": "Tôi đồng ý với các điều khoản sử dụng",
     "terms_of_use_error": "Bạn phải đồng ý với các điều khoản sử dụng",
     "registration-added-to-queue": "Yêu cầu đăng ký của bạn đang chờ được chấp thuận. Bạn sẽ nhận được email khi tài khoản của bạn đã được chấp thuận bởi quản trị viên.",
+    "registration-queue-average-time": "Our average time for approving memberships is %1 hours %2 minutes.",
+    "registration-queue-auto-approve-time": "Your membership to this forum will be fully activated in up to %1 hours.",
     "interstitial.intro": "Chúng tôi cần thêm một số thông tin trước khi bạn có thể tạo tài khoản.",
     "interstitial.errors-found": "Chúng tôi không thể hoàn thành đăng ký của bạn:",
     "gdpr_agree_data": "Tôi đồng ý với việc thu thập và xử lý thông tin cá nhân của tôi trên trang web này.",

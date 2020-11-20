@@ -53,7 +53,7 @@ async function validateTokenIfRequiresLogin(requiresLogin, cid, req, res) {
 		await user.auth.logAttempt(uid, req.ip);
 		return helpers.notAllowed(req, res);
 	}
-	const userPrivileges = privileges.categories.get(cid, uid);
+	const userPrivileges = await privileges.categories.get(cid, uid);
 	if (!userPrivileges.read) {
 		return helpers.notAllowed(req, res);
 	}
@@ -77,7 +77,7 @@ async function generateForTopic(req, res) {
 	}
 
 	if (await validateTokenIfRequiresLogin(!userPrivileges['topics:read'], topic.cid, req, res)) {
-		const topicData = await topics.getTopicWithPosts(topic, 'tid:' + tid + ':posts', req.uid || req.query.uid || 0, 0, 25, false);
+		const topicData = await topics.getTopicWithPosts(topic, 'tid:' + tid + ':posts', req.uid || req.query.uid || 0, 0, 24, true);
 
 		topics.modifyPostsByPrivilege(topicData, userPrivileges);
 
@@ -94,8 +94,8 @@ async function generateForTopic(req, res) {
 		if (topicData.posts.length > 0) {
 			feed.pubDate = new Date(parseInt(topicData.posts[0].timestamp, 10)).toUTCString();
 		}
-
-		topicData.posts.forEach(function (postData) {
+		const replies = topicData.posts.slice(1);
+		replies.forEach(function (postData) {
 			if (!postData.deleted) {
 				const dateStamp = new Date(parseInt(parseInt(postData.edited, 10) === 0 ? postData.timestamp : postData.edited, 10)).toUTCString();
 

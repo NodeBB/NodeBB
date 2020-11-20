@@ -18,6 +18,8 @@
     "agree_to_terms_of_use": "Hyväksyn käyttöehdot",
     "terms_of_use_error": "Sinun täytyy hyväksyä sopimusehdot",
     "registration-added-to-queue": "Rekisteröintisi on lisätty listalle odottamaan hyväksyntää. Saat ilmoituksen sähköpostiisi, kun ylläpitäjä on hyväksynyt rekisteröitymisesin.",
+    "registration-queue-average-time": "Our average time for approving memberships is %1 hours %2 minutes.",
+    "registration-queue-auto-approve-time": "Your membership to this forum will be fully activated in up to %1 hours.",
     "interstitial.intro": "Sivusto vaatii lisätietoja ennenkuin voi luoda tunnuksen.",
     "interstitial.errors-found": "Rekisteröitymisesi keskeytyi",
     "gdpr_agree_data": "Annan hyväksyntäni henkilökohtaisten tietojen keräämiseen ja prosessointiin tälle verkkosivulle.",

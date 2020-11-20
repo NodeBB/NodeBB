@@ -35,6 +35,8 @@
     "details.member_count": "Conta de Membros",
     "details.creation_date": "Data de Creación",
     "details.description": "Descripción",
+    "details.member-post-cids": "Categories to display posts from",
+    "details.member-post-cids-help": "<strong>Note</strong>: Selecting no categories will assume all categories are included. Use <code>ctrl</code> and <code>shift</code> to select multiple options.",
     "details.badge_preview": "Vista Previa da Insignia",
     "details.change_icon": "Cambiar Icona",
     "details.change_label_colour": "Change Label Colour",

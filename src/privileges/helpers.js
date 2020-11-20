@@ -26,59 +26,72 @@ helpers.isUsersAllowedTo = async function (privilege, uids, cid) {
 	return result.allowed;
 };
 
-helpers.isUserAllowedTo = async function (privilege, uid, cid) {
+helpers.isAllowedTo = async function (privilege, uidOrGroupName, cid) {
 	let allowed;
 	if (Array.isArray(privilege) && !Array.isArray(cid)) {
-		allowed = await isUserAllowedToPrivileges(privilege, uid, cid);
+		allowed = await isAllowedToPrivileges(privilege, uidOrGroupName, cid);
 	} else if (Array.isArray(cid) && !Array.isArray(privilege)) {
-		allowed = await isUserAllowedToCids(privilege, uid, cid);
+		allowed = await isAllowedToCids(privilege, uidOrGroupName, cid);
 	}
 	if (allowed) {
-		const result = await plugins.fireHook('filter:privileges:isUserAllowedTo', { allowed: allowed, privilege: privilege, uid: uid, cid: cid });
-		return result.allowed;
+		({ allowed } = await plugins.fireHook('filter:privileges:isUserAllowedTo', { allowed: allowed, privilege: privilege, uid: uidOrGroupName, cid: cid }));
+		({ allowed } = await plugins.fireHook('filter:privileges:isAllowedTo', { allowed: allowed, privilege: privilege, uid: uidOrGroupName, cid: cid }));
+		return allowed;
 	}
 	throw new Error('[[error:invalid-data]]');
 };
 
-async function isUserAllowedToCids(privilege, uid, cids) {
+async function isAllowedToCids(privilege, uidOrGroupName, cids) {
 	if (!privilege) {
 		return cids.map(() => false);
 	}
-	if (parseInt(uid, 10) <= 0) {
-		return await isSystemGroupAllowedToCids(privilege, uid, cids);
+
+	const groupKeys = cids.map(cid => 'cid:' + cid + ':privileges:groups:' + privilege);
+
+	// Group handling
+	if (isNaN(parseInt(uidOrGroupName, 10)) && (uidOrGroupName || '').length) {
+		return await checkIfAllowedGroup(uidOrGroupName, groupKeys);
 	}
 
-	const userKeys = [];
-	const groupKeys = [];
-	cids.forEach(function (cid) {
-		userKeys.push('cid:' + cid + ':privileges:' + privilege);
-		groupKeys.push('cid:' + cid + ':privileges:groups:' + privilege);
-	});
-
-	return await checkIfAllowed(uid, userKeys, groupKeys);
-}
-
-async function isUserAllowedToPrivileges(privileges, uid, cid) {
-	if (parseInt(uid, 10) <= 0) {
-		return await isSystemGroupAllowedToPrivileges(privileges, uid, cid);
+	// User handling
+	if (parseInt(uidOrGroupName, 10) <= 0) {
+		return await isSystemGroupAllowedToCids(privilege, uidOrGroupName, cids);
 	}
 
-	const userKeys = [];
-	const groupKeys = [];
-	privileges.forEach(function (privilege) {
-		userKeys.push('cid:' + cid + ':privileges:' + privilege);
-		groupKeys.push('cid:' + cid + ':privileges:groups:' + privilege);
-	});
-
-	return await checkIfAllowed(uid, userKeys, groupKeys);
+	const userKeys = cids.map(cid => 'cid:' + cid + ':privileges:' + privilege);
+	return await checkIfAllowedUser(uidOrGroupName, userKeys, groupKeys);
 }
 
-async function checkIfAllowed(uid, userKeys, groupKeys) {
+async function isAllowedToPrivileges(privileges, uidOrGroupName, cid) {
+	const groupKeys = privileges.map(privilege => 'cid:' + cid + ':privileges:groups:' + privilege);
+	// Group handling
+	if (isNaN(parseInt(uidOrGroupName, 10)) && (uidOrGroupName || '').length) {
+		return await checkIfAllowedGroup(uidOrGroupName, groupKeys);
+	}
+
+	// User handling
+	if (parseInt(uidOrGroupName, 10) <= 0) {
+		return await isSystemGroupAllowedToPrivileges(privileges, uidOrGroupName, cid);
+	}
+
+	const userKeys = privileges.map(privilege => 'cid:' + cid + ':privileges:' + privilege);
+	return await checkIfAllowedUser(uidOrGroupName, userKeys, groupKeys);
+}
+
+async function checkIfAllowedUser(uid, userKeys, groupKeys) {
 	const [hasUserPrivilege, hasGroupPrivilege] = await Promise.all([
 		groups.isMemberOfGroups(uid, userKeys),
 		groups.isMemberOfGroupsList(uid, groupKeys),
 	]);
 	return userKeys.map((key, index) => hasUserPrivilege[index] || hasGroupPrivilege[index]);
+}
+
+async function checkIfAllowedGroup(groupName, groupKeys) {
+	const sets = await Promise.all([
+		groups.isMemberOfGroups(groupName, groupKeys),
+		groups.isMemberOfGroups('registered-users', groupKeys),
+	]);
+	return groupKeys.map((key, index) => sets[0][index] || sets[1][index]);
 }
 
 async function isSystemGroupAllowedToCids(privilege, uid, cids) {

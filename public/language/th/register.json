@@ -18,6 +18,8 @@
     "agree_to_terms_of_use": "ยอมรับข้อตกลงในการใช้งาน",
     "terms_of_use_error": "คุณต้องยอมรับเงื่อนไขการใช้งานก่อน",
     "registration-added-to-queue": "การสมัครใช้งานของถูกเพิ่มเข้าไปยังระบบเพิ่อรอการอนุมัติแล้ว คุณจะได้รับอีเมล์เมื่อการสมัครใช้งานของคุณถูกยอมรับโดยผู้ดูแลระบบหรือแอดมิน",
+    "registration-queue-average-time": "Our average time for approving memberships is %1 hours %2 minutes.",
+    "registration-queue-auto-approve-time": "Your membership to this forum will be fully activated in up to %1 hours.",
     "interstitial.intro": "เราต้องการข้อมูลบางอย่างเพิ่มเติมก่อนที่เราจะสร้างบัญชีให้คุณ",
     "interstitial.errors-found": "เราไม่สามารถทำให้การสมัครสมาชิกของคุณสำเร็จได้:",
     "gdpr_agree_data": "I consent to the collection and processing of my personal information on this website.",

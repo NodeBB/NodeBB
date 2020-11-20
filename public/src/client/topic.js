@@ -227,7 +227,7 @@ define('forum/topic', [
 				updateUserBookmark(index);
 
 				Topic.replaceURLTimeout = 0;
-				if (history.replaceState) {
+				if (ajaxify.data.updateUrlWithPostIndex && history.replaceState) {
 					var search = window.location.search || '';
 					if (!config.usePagination) {
 						search = (search && !/^\?page=\d+$/.test(search) ? search : '');

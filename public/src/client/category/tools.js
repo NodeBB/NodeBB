@@ -6,7 +6,9 @@ define('forum/category/tools', [
 	'topicSelect',
 	'components',
 	'translator',
-], function (topicSelect, components, translator) {
+	'api',
+	'bootbox',
+], function (topicSelect, components, translator, api, bootbox) {
 	var CategoryTools = {};
 
 	CategoryTools.init = function () {
@@ -15,56 +17,41 @@ define('forum/category/tools', [
 		handlePinnedTopicSort();
 
 		components.get('topic/delete').on('click', function () {
-			categoryCommand('delete', topicSelect.getSelectedTids());
+			categoryCommand('del', '/state', 'delete', true, onDeletePurgeComplete);
 			return false;
 		});
 
 		components.get('topic/restore').on('click', function () {
-			categoryCommand('restore', topicSelect.getSelectedTids());
+			categoryCommand('put', '/state', 'restore', true, onDeletePurgeComplete);
 			return false;
 		});
 
 		components.get('topic/purge').on('click', function () {
-			categoryCommand('purge', topicSelect.getSelectedTids());
+			categoryCommand('del', '', 'purge', true, onDeletePurgeComplete);
 			return false;
 		});
 
 		components.get('topic/lock').on('click', function () {
-			var tids = topicSelect.getSelectedTids();
-			if (!tids.length) {
-				return app.alertError('[[error:no-topics-selected]]');
-			}
-			socket.emit('topics.lock', { tids: tids }, onCommandComplete);
+			categoryCommand('put', '/lock', 'lock', false, onCommandComplete);
 			return false;
 		});
 
 		components.get('topic/unlock').on('click', function () {
-			var tids = topicSelect.getSelectedTids();
-			if (!tids.length) {
-				return app.alertError('[[error:no-topics-selected]]');
-			}
-			socket.emit('topics.unlock', { tids: tids }, onCommandComplete);
+			categoryCommand('del', '/lock', 'unlock', false, onCommandComplete);
 			return false;
 		});
 
 		components.get('topic/pin').on('click', function () {
-			var tids = topicSelect.getSelectedTids();
-			if (!tids.length) {
-				return app.alertError('[[error:no-topics-selected]]');
-			}
-			socket.emit('topics.pin', { tids: tids }, onCommandComplete);
+			categoryCommand('put', '/pin', 'pin', false, onCommandComplete);
 			return false;
 		});
 
 		components.get('topic/unpin').on('click', function () {
-			var tids = topicSelect.getSelectedTids();
-			if (!tids.length) {
-				return app.alertError('[[error:no-topics-selected]]');
-			}
-			socket.emit('topics.unpin', { tids: tids }, onCommandComplete);
+			categoryCommand('del', '/pin', 'unpin', false, onCommandComplete);
 			return false;
 		});
 
+		// todo: should also use categoryCommand, but no write api call exists for this yet
 		components.get('topic/mark-unread-for-all').on('click', function () {
 			var tids = topicSelect.getSelectedTids();
 			if (!tids.length) {
@@ -136,20 +123,30 @@ define('forum/category/tools', [
 		socket.on('event:topic_moved', onTopicMoved);
 	};
 
-	function categoryCommand(command, tids) {
+	function categoryCommand(method, path, command, confirm, onComplete) {
+		if (!onComplete) {
+			onComplete = function () {};
+		}
+		const tids = topicSelect.getSelectedTids();
+		const execute = function (ok) {
+			if (ok) {
+				Promise.all(tids.map(tid => api[method](`/topics/${tid}${path}`)))
+					.then(onComplete)
+					.catch(app.alertError);
+			}
+		};
+
 		if (!tids.length) {
 			return app.alertError('[[error:no-topics-selected]]');
 		}
 
-		translator.translate('[[topic:thread_tools.' + command + '_confirm]]', function (msg) {
-			bootbox.confirm(msg, function (confirm) {
-				if (!confirm) {
-					return;
-				}
-
-				socket.emit('topics.' + command, { tids: tids }, onDeletePurgeComplete);
+		if (confirm) {
+			translator.translate('[[topic:thread_tools.' + command + '_confirm]]', function (msg) {
+				bootbox.confirm(msg, execute);
 			});
-		});
+		} else {
+			execute(true);
+		}
 	}
 
 	CategoryTools.removeListeners = function () {
@@ -167,18 +164,12 @@ define('forum/category/tools', [
 		$('.thread-tools.open').find('.dropdown-toggle').trigger('click');
 	}
 
-	function onCommandComplete(err) {
-		if (err) {
-			return app.alertError(err.message);
-		}
+	function onCommandComplete() {
 		closeDropDown();
 		topicSelect.unselectAll();
 	}
 
-	function onDeletePurgeComplete(err) {
-		if (err) {
-			return app.alertError(err.message);
-		}
+	function onDeletePurgeComplete() {
 		closeDropDown();
 		updateDropdownOptions();
 	}

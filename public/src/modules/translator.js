@@ -311,7 +311,28 @@
 
 			if (key) {
 				return translation.then(function (x) {
-					return x[key];
+					if (typeof x[key] === 'string') return x[key];
+					const keyParts = key.split('.');
+					for (let i = 0; i <= keyParts.length; i++) {
+						if (i === keyParts.length) {
+							// default to trying to find key with the same name as parent or equal to empty string
+							return x[keyParts[i - 1]] !== undefined ? x[keyParts[i - 1]] : x[''];
+						}
+						switch (typeof x[keyParts[i]]) {
+							case 'object':
+								x = x[keyParts[i]];
+								break;
+							case 'string':
+								if (i === keyParts.length - 1) {
+									return x[keyParts[i]];
+								}
+
+								return false;
+
+							default:
+								return false;
+						}
+					}
 				});
 			}
 			return translation;

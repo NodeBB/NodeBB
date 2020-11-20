@@ -2,6 +2,7 @@
 
 const winston = require('winston');
 
+const categories = require('../categories');
 const plugins = require('../plugins');
 const slugify = require('../slugify');
 const db = require('../database');
@@ -18,11 +19,10 @@ module.exports = function (Groups) {
 			throw new Error('[[error:no-group]]');
 		}
 
-		const result = await plugins.fireHook('filter:group.update', {
+		({ values } = await plugins.fireHook('filter:group.update', {
 			groupName: groupName,
 			values: values,
-		});
-		values = result.values;
+		}));
 
 		const payload = {
 			description: values.description || '',
@@ -66,6 +66,12 @@ module.exports = function (Groups) {
 		if (values.hasOwnProperty('hidden')) {
 			await updateVisibility(groupName, values.hidden);
 		}
+
+		if (values.hasOwnProperty('memberPostCids')) {
+			const validCids = await categories.getCidsByPrivilege('categories:cid', groupName, 'topics:read');
+			payload.memberPostCids = values.memberPostCids.filter(cid => validCids.includes(cid)).join(',') || '';
+		}
+
 		await db.setObject('group:' + groupName, payload);
 		await Groups.renameGroup(groupName, values.name);
 

@@ -30,6 +30,7 @@
     "locked": "Uzamknuto",
     "pinned": "Připnuto",
     "moved": "Přesunuto",
+    "moved-from": "Moved from %1",
     "copy-ip": "Kopírovat IP",
     "ban-ip": "Zakázat IP",
     "view-history": "Upravit historii",

@@ -123,6 +123,7 @@
     "open_links_in_new_tab": "Ausgehende Links in neuem Tab öffnen",
     "enable_topic_searching": "Suchen innerhalb von Themen aktivieren",
     "topic_search_help": "Wenn aktiviert, ersetzt die im-Thema-Suche die Standardsuche des Browsers. Dadurch kannst du im ganzen Thema suchen, nicht nur im sichtbaren Abschnitt.",
+    "update_url_with_post_index": "Update url with post index while browsing topics",
     "scroll_to_my_post": "Zeige eigene Antwort nach dem Erstellen im Thema an",
     "follow_topics_you_reply_to": "Themen folgen, in denen du geantwortet hast",
     "follow_topics_you_create": "Themen folgen, die du erstellst",

@@ -20,7 +20,9 @@ function authenticatedRoutes() {
 
 	setupApiRoute(router, 'head', '/:uid', [middleware.assert.user], controllers.write.users.exists);
 	setupApiRoute(router, 'put', '/:uid', [...middlewares, middleware.assert.user], controllers.write.users.update);
-	setupApiRoute(router, 'delete', '/:uid', [...middlewares, middleware.assert.user, middleware.exposePrivileges], controllers.write.users.delete);
+	setupApiRoute(router, 'delete', '/:uid', [...middlewares, middleware.assert.user], controllers.write.users.delete);
+	setupApiRoute(router, 'delete', '/:uid/content', [...middlewares, middleware.assert.user], controllers.write.users.deleteContent);
+	setupApiRoute(router, 'delete', '/:uid/account', [...middlewares, middleware.assert.user], controllers.write.users.deleteAccount);
 
 	setupApiRoute(router, 'put', '/:uid/settings', [...middlewares, middleware.checkRequired.bind(null, ['settings'])], controllers.write.users.updateSettings);
 
@@ -39,6 +41,9 @@ function authenticatedRoutes() {
 
 	// Shorthand route to access user routes by userslug
 	router.all('/+bySlug/:userslug*?', [], controllers.write.users.redirectBySlug);
+
+	setupApiRoute(router, 'post', '/:uid/invites', middlewares, controllers.write.users.invite);
+	setupApiRoute(router, 'get', '/:uid/invites/groups', [...middlewares, middleware.assert.user], controllers.write.users.getInviteGroups);
 }
 
 module.exports = function () {

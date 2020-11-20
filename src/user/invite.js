@@ -8,6 +8,7 @@ var validator = require('validator');
 var db = require('../database');
 var meta = require('../meta');
 var emailer = require('../emailer');
+var groups = require('../groups');
 var translator = require('../translator');
 var utils = require('../utils');
 
@@ -36,13 +37,7 @@ module.exports = function (User) {
 		});
 	};
 
-	User.sendInvitationEmail = async function (uid, email) {
-		const token = utils.generateUUID();
-		const registerLink = nconf.get('url') + '/register?token=' + token + '&email=' + encodeURIComponent(email);
-
-		const expireDays = meta.config.inviteExpiration;
-		const expireIn = expireDays * 86400000;
-
+	User.sendInvitationEmail = async function (uid, email, groupsToJoin) {
 		const email_exists = await User.getUidByEmail(email);
 		if (email_exists) {
 			throw new Error('[[error:email-taken]]');
@@ -53,24 +48,7 @@ module.exports = function (User) {
 			throw new Error('[[error:email-invited]]');
 		}
 
-		await db.setAdd('invitation:uid:' + uid, email);
-		await db.setAdd('invitation:uids', uid);
-		await db.set('invitation:email:' + email, token);
-		await db.pexpireAt('invitation:email:' + email, Date.now() + expireIn);
-		const username = await User.getUserField(uid, 'username');
-		const title = meta.config.title || meta.config.browserTitle || 'NodeBB';
-		const subject = await translator.translate('[[email:invite, ' + title + ']]', meta.config.defaultLang);
-		let data = {
-			site_title: title,
-			registerLink: registerLink,
-			subject: subject,
-			username: username,
-			template: 'invitation',
-			expireDays: expireDays,
-		};
-
-		// Append default data to this email payload
-		data = { ...emailer._defaultPayload, ...data };
+		const data = await prepareInvitation(uid, email, groupsToJoin);
 
 		await emailer.sendToEmail('invitation', email, meta.config.defaultLang, data);
 	};
@@ -79,10 +57,26 @@ module.exports = function (User) {
 		if (!query.token || !query.email) {
 			throw new Error('[[error:invalid-data]]');
 		}
-		const token = await db.get('invitation:email:' + query.email);
+		const token = await db.getObjectField('invitation:email:' + query.email, 'token');
 		if (!token || token !== query.token) {
 			throw new Error('[[error:invalid-token]]');
 		}
+	};
+
+	User.joinGroupsFromInvitation = async function (uid, email) {
+		let groupsToJoin = await db.getObjectField('invitation:email:' + email, 'groupsToJoin');
+
+		try {
+			groupsToJoin = JSON.parse(groupsToJoin);
+		} catch (e) {
+			return;
+		}
+
+		if (!groupsToJoin || groupsToJoin.length < 1) {
+			return;
+		}
+
+		await groups.join(groupsToJoin, uid);
 	};
 
 	User.deleteInvitation = async function (invitedBy, email) {
@@ -108,5 +102,35 @@ module.exports = function (User) {
 		if (count === 0) {
 			await db.setRemove('invitation:uids', uid);
 		}
+	}
+
+	async function prepareInvitation(uid, email, groupsToJoin) {
+		const token = utils.generateUUID();
+		const registerLink = nconf.get('url') + '/register?token=' + token + '&email=' + encodeURIComponent(email);
+
+		const expireDays = meta.config.inviteExpiration;
+		const expireIn = expireDays * 86400000;
+
+		await db.setAdd('invitation:uid:' + uid, email);
+		await db.setAdd('invitation:uids', uid);
+		await db.setObject('invitation:email:' + email, {
+			token,
+			groupsToJoin: JSON.stringify(groupsToJoin),
+		});
+		await db.pexpireAt('invitation:email:' + email, Date.now() + expireIn);
+
+		const username = await User.getUserField(uid, 'username');
+		const title = meta.config.title || meta.config.browserTitle || 'NodeBB';
+		const subject = await translator.translate('[[email:invite, ' + title + ']]', meta.config.defaultLang);
+
+		return {
+			...emailer._defaultPayload, // Append default data to this email payload
+			site_title: title,
+			registerLink: registerLink,
+			subject: subject,
+			username: username,
+			template: 'invitation',
+			expireDays: expireDays,
+		};
 	}
 };

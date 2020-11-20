@@ -67,7 +67,7 @@
 	"sort-upvotes": "Most upvotes",
 	"sort-replies": "Most replies",
 
-	"modal-title": "Rapportera opassande innehåll",
+	"modal-title": "Report Content",
 	"modal-body": "Vänligen ange anledningen till att du flaggar %1 %2 för granskning. Alternativt, använd en av snabbrapporteringsknapparna.",
 	"modal-reason-spam": "Spam",
 	"modal-reason-offensive": "Kränkande",

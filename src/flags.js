@@ -257,6 +257,9 @@ Flags.validate = async function (payload) {
 			throw new Error('[[error:not-enough-reputation-to-flag]]');
 		}
 	} else if (payload.type === 'user') {
+		if (parseInt(payload.id, 10) === parseInt(payload.uid, 10)) {
+			throw new Error('[[error:cant-flag-self]]');
+		}
 		const editable = await privileges.users.canEdit(payload.uid, payload.id);
 		if (!editable && !meta.config['reputation:disabled'] && reporter.reputation < meta.config['min:rep:flag']) {
 			throw new Error('[[error:not-enough-reputation-to-flag]]');
@@ -395,7 +398,7 @@ Flags.create = async function (type, id, uid, reason, timestamp) {
 			posts.setPostField(id, 'flagId', flagId)
 		);
 
-		if (targetUid) {
+		if (targetUid && parseInt(targetUid, 10) !== parseInt(uid, 10)) {
 			batched.push(user.incrementUserFlagsBy(targetUid, 1));
 		}
 	} else if (type === 'user') {

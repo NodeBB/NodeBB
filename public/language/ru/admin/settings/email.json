@@ -4,7 +4,7 @@
 	"address-help": "Этот адрес получатели писем увидят в полях «От кого» и «Ответить».",
 	"from": "От кого",
 	"from-help": "Имя отправителя письма (или название форума).",
-	
+
 	"smtp-transport": "Сервис SMTP",
 	"smtp-transport.enabled": "Использовать сторонний сервис для рассылки писем",
 	"smtp-transport-help": "Выберите один из популярных сервисов или укажите свой почтовый сервер.",
@@ -35,5 +35,7 @@
 	"subscriptions": "Новостные рассылки",
 	"subscriptions.disable": "Отключить новостные рассылки",
 	"subscriptions.hour": "Час отправки",
-	"subscriptions.hour-help": "Введите число, соответствующее номеру часа (например, <code>0</code> для полуночи, <code>17</code> для 17:00). Имейте в виду, что время определяется по часовому поясу сервера.<br /> Текущее время сервера: <span id=\"serverTime\"></span><br /> Следующая рассылка запланирована на  <span id=\"nextDigestTime\"></span>"
+	"subscriptions.hour-help": "Введите число, соответствующее номеру часа (например, <code>0</code> для полуночи, <code>17</code> для 17:00). Имейте в виду, что время определяется по часовому поясу сервера.<br /> Текущее время сервера: <span id=\"serverTime\"></span><br /> Следующая рассылка запланирована на  <span id=\"nextDigestTime\"></span>",
+	"notifications.settings": "Email notification settings",
+	"notifications.remove-images": "Remove images from email notifications"
 }

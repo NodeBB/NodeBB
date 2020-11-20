@@ -9,6 +9,7 @@
 
 - **NodeBB version:** 
 - **NodeBB git hash:** 
+- **NodeJS version:**
 <!-- (to find your git hash, execute `git rev-parse HEAD` from the main NodeBB directory) -->
 - **Installed NodeBB Plugins:** 
 <!-- (to find installed plugins run ./nodebb plugins) -->

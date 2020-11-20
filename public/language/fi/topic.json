@@ -30,6 +30,7 @@
     "locked": "Lukittu",
     "pinned": "Kiinnitetty",
     "moved": "Siirretty",
+    "moved-from": "Moved from %1",
     "copy-ip": "Kopioi IP",
     "ban-ip": "Ban IP",
     "view-history": "Muokkaa historiaa",

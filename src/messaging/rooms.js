@@ -83,15 +83,7 @@ module.exports = function (Messaging) {
 		}
 
 		await db.sortedSetAdd('chat:room:' + roomId + ':uids', timestamps, uids);
-		const [userCount, roomData] = await Promise.all([
-			db.sortedSetCard('chat:room:' + roomId + ':uids'),
-			db.getObject('chat:room:' + roomId),
-		]);
-
-		if (!roomData.hasOwnProperty('groupChat') && userCount > 2) {
-			await db.setObjectField('chat:room:' + roomId, 'groupChat', 1);
-		}
-
+		await updateGroupChatField([roomId]);
 		await Promise.all(uids.map(uid => Messaging.addSystemMessage('user-join', uid, roomId)));
 	};
 
@@ -111,6 +103,20 @@ module.exports = function (Messaging) {
 		await Messaging.leaveRoom(uids, roomId);
 	};
 
+	Messaging.isGroupChat = async function (roomId) {
+		return (await Messaging.getRoomData(roomId)).groupChat;
+	};
+
+	async function updateGroupChatField(roomIds) {
+		const userCounts = await db.sortedSetsCard(roomIds.map(roomId => 'chat:room:' + roomId + ':uids'));
+		const groupChats = roomIds.filter((roomId, index) => userCounts[index] > 2);
+		const privateChats = roomIds.filter((roomId, index) => userCounts[index] <= 2);
+		await Promise.all([
+			db.setObjectField(groupChats.map(id => 'chat:room:' + id, 'groupChat', 1)),
+			db.setObjectField(privateChats.map(id => 'chat:room:' + id, 'groupChat', 0)),
+		]);
+	}
+
 	Messaging.leaveRoom = async (uids, roomId) => {
 		const isInRoom = await Promise.all(uids.map(uid => Messaging.isUserInRoom(uid, roomId)));
 		uids = uids.filter((uid, index) => isInRoom[index]);
@@ -126,6 +132,7 @@ module.exports = function (Messaging) {
 
 		await Promise.all(uids.map(uid => Messaging.addSystemMessage('user-leave', uid, roomId)));
 		await updateOwner(roomId);
+		await updateGroupChatField([roomId]);
 	};
 
 	Messaging.leaveRooms = async (uid, roomIds) => {
@@ -145,6 +152,7 @@ module.exports = function (Messaging) {
 			roomIds.map(roomId => updateOwner(roomId))
 				.concat(roomIds.map(roomId => Messaging.addSystemMessage('user-leave', uid, roomId)))
 		);
+		await updateGroupChatField(roomIds);
 	};
 
 	async function updateOwner(roomId) {

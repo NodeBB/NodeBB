@@ -67,7 +67,7 @@
 	"sort-upvotes": "Most upvotes",
 	"sort-replies": "Most replies",
 
-	"modal-title": "부적절한 컨텐츠 신고",
+	"modal-title": "Report Content",
 	"modal-body": "%1 %2 에 대한 신고 사유를 적어주시거나, 빠른 신고 버튼 중 하나를 사용해 주세요.",
 	"modal-reason-spam": "스팸",
 	"modal-reason-offensive": "부적절한 글",

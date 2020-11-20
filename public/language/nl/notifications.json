@@ -60,6 +60,7 @@
     "notificationType_post-edit": "Als een bericht wordt aangepast in een onderwerp dat je volgt",
     "notificationType_follow": "Als iemand begint met jou te volgen",
     "notificationType_new-chat": "Als je een chat-bericht ontvangt",
+    "notificationType_new-group-chat": "When you receive a group chat message",
     "notificationType_group-invite": "Als je een uitnodiging voor een groep ontvangt",
     "notificationType_group-request-membership": "Als iemand vraagt om lid te worden van een groep waarvan je eigenaar bent",
     "notificationType_new-register": "Als iemand wordt toegevoegd aan een registratiewachtrij",

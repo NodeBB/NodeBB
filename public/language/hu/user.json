@@ -123,6 +123,7 @@
     "open_links_in_new_tab": "Kimenő hivatkozások megnyitása új lapon",
     "enable_topic_searching": "Témakörön belüli keresés engedélyezése",
     "topic_search_help": "Ha engedélyezett, a témakörön belüli keresés felülírja az alapértelmezett keresési viselkedést, és ezáltal az egész témakörben keresel, nem csak a képernyőn megjelenőkben",
+    "update_url_with_post_index": "Update url with post index while browsing topics",
     "scroll_to_my_post": "Válaszolást követően az új hozzászólás megjelenítése",
     "follow_topics_you_reply_to": "Témakör figyelése, melyre válaszolsz",
     "follow_topics_you_create": "Témakör figyelése, amit létrehozol",

@@ -11,6 +11,7 @@
     "online-only": "Только онлайн",
     "invite": "Пригласить",
     "prompt-email": "Адреса электронной почты:",
+    "groups-to-join": "Groups to be joined when invite is accepted:",
     "invitation-email-sent": "Письмо с приглашением для %1 отправлено",
     "user_list": "Список пользователей",
     "recent_topics": "Последние темы",

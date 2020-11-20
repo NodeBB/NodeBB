@@ -123,6 +123,7 @@
     "open_links_in_new_tab": "Ava väljaminevad lingid uues aknas",
     "enable_topic_searching": "Võimalda teemasisene otsing",
     "topic_search_help": "Kui see on sisse lükatud, siis teemasisene otsing võtab üle brauseri tavapärase otsingu ning võimaldab otsida ainult ekraanile mahtuva teema asemel terve teema ulatuses.",
+    "update_url_with_post_index": "Update url with post index while browsing topics",
     "scroll_to_my_post": "Pärast vastuse postitamist, näita uut postitust",
     "follow_topics_you_reply_to": "Jälgi teemasid, millele vastad",
     "follow_topics_you_create": "Jälgi teemasid, mille lood",

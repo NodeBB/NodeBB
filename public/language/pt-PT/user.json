@@ -123,6 +123,7 @@
     "open_links_in_new_tab": "Abrir links externos num novo separador",
     "enable_topic_searching": "Permitir pesquisa dentro dos tópicos",
     "topic_search_help": "Se ativada, a pesquisa dentro de tópicos irá sobrepor-se ao comportamento normal de pesquisa do browser pré-definido e irá permitir-te pesquisar ao longo de todo o tópico, em vez de pesquisar somente no que é mostrado no ecrã",
+    "update_url_with_post_index": "Update url with post index while browsing topics",
     "scroll_to_my_post": "Depois de publicar uma resposta, mostrar a nova publicação",
     "follow_topics_you_reply_to": "Visualizar tópicos aos quais respondeste",
     "follow_topics_you_create": "Visualizar tópicos que criaste",

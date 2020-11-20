@@ -6,6 +6,7 @@ const nconf = require('nconf');
 const db = require('../database');
 const plugins = require('../plugins');
 const utils = require('../utils');
+const translator = require('../translator');
 
 const intFields = [
 	'createtime', 'memberCount', 'hidden', 'system', 'private',
@@ -75,6 +76,7 @@ function modifyGroup(group, fields) {
 		group.icon = validator.escape(String(group.icon || ''));
 		group.createtimeISO = utils.toISOString(group.createtime);
 		group.private = ([null, undefined].includes(group.private)) ? 1 : group.private;
+		group.memberPostCids = (group.memberPostCids || '').split(',').map(cid => parseInt(cid, 10)).filter(Boolean);
 
 		group['cover:thumb:url'] = group['cover:thumb:url'] || group['cover:url'];
 
@@ -100,5 +102,6 @@ function escapeGroupData(group) {
 		group.displayName = validator.escape(String(group.name));
 		group.description = validator.escape(String(group.description || ''));
 		group.userTitle = validator.escape(String(group.userTitle || ''));
+		group.userTitleEscaped = translator.escape(group.userTitle);
 	}
 }

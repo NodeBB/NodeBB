@@ -2,8 +2,8 @@
 
 
 define('forum/users', [
-	'translator', 'benchpress', 'api',
-], function (translator, Benchpress, api) {
+	'translator', 'benchpress', 'api', 'accounts/invite',
+], function (translator, Benchpress, api, AccountInvite) {
 	var	Users = {};
 
 	var searchTimeoutID = 0;
@@ -25,7 +25,7 @@ define('forum/users', [
 
 		Users.handleSearch();
 
-		handleInvite();
+		AccountInvite.handle();
 
 		socket.removeListener('event:user_status_change', onUserStatusChange);
 		socket.on('event:user_status_change', onUserStatusChange);
@@ -133,23 +133,6 @@ define('forum/users', [
 
 	function getActiveSection() {
 		return utils.params().section || '';
-	}
-
-	function handleInvite() {
-		$('[component="user/invite"]').on('click', function () {
-			bootbox.prompt('[[users:prompt-email]]', function (email) {
-				if (!email) {
-					return;
-				}
-
-				socket.emit('user.invite', email, function (err) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-					app.alertSuccess('[[users:invitation-email-sent, ' + email + ']]');
-				});
-			});
-		});
 	}
 
 	return Users;

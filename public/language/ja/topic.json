@@ -30,6 +30,7 @@
     "locked": "ロック",
     "pinned": "ピンされた",
     "moved": "移動しました",
+    "moved-from": "Moved from %1",
     "copy-ip": "IPをコピー",
     "ban-ip": "IPをBan",
     "view-history": "履歴を編集",

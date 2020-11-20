@@ -85,6 +85,8 @@ Settings.set = async function (hash, values, quiet) {
 		await db.setObject('settings:' + hash, values);
 	}
 
+	cache.del('settings:' + hash);
+
 	plugins.fireHook('action:settings.set', {
 		plugin: hash,
 		settings: values,
@@ -92,7 +94,6 @@ Settings.set = async function (hash, values, quiet) {
 
 	pubsub.publish('action:settings.set.' + hash, values);
 	Meta.reloadRequired = !quiet;
-	cache.del('settings:' + hash);
 };
 
 Settings.setOne = async function (hash, field, value) {

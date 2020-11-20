@@ -46,7 +46,7 @@ module.exports = function (privileges) {
 		const privs = ['topics:create', 'topics:read', 'topics:tag', 'read'];
 
 		const [userPrivileges, isAdministrator, isModerator] = await Promise.all([
-			helpers.isUserAllowedTo(privs, uid, cid),
+			helpers.isAllowedTo(privs, uid, cid),
 			user.isAdministrator(uid),
 			user.isModerator(uid, cid),
 		]);
@@ -80,7 +80,7 @@ module.exports = function (privileges) {
 		if (!cid) {
 			return false;
 		}
-		const results = await helpers.isUserAllowedTo(privilege, uid, Array.isArray(cid) ? cid : [cid]);
+		const results = await helpers.isAllowedTo(privilege, uid, Array.isArray(cid) ? cid : [cid]);
 
 		if (Array.isArray(results) && results.length) {
 			return Array.isArray(cid) ? results : results[0];
@@ -113,8 +113,8 @@ module.exports = function (privileges) {
 	privileges.categories.getBase = async function (privilege, cids, uid) {
 		return await utils.promiseParallel({
 			categories: categories.getCategoriesFields(cids, ['disabled']),
-			allowedTo: helpers.isUserAllowedTo(privilege, uid, cids),
-			view_deleted: helpers.isUserAllowedTo('posts:view_deleted', uid, cids),
+			allowedTo: helpers.isAllowedTo(privilege, uid, cids),
+			view_deleted: helpers.isAllowedTo('posts:view_deleted', uid, cids),
 			isAdmin: user.isAdministrator(uid),
 		});
 	};

@@ -1,7 +1,7 @@
 {
-	"handles": "Zaobchádzanie s hosťami",
+	"settings": "Settings",
 	"handles.enabled": "Povoliť upravovanie zaobchádzania s hosťami",
 	"handles.enabled-help": "Táto možnosť odkryje nové pole, ktoré umožňuje hosťom vybrať meno, ktoré sa pripojí ku každému príspevku, ktorý vytvorí. Ak bude zakázané, budú jednoducho nazývaní 'Hosť'",
-	"topic-views": "Topic views",
-	"topic-views.enabled": "Allow guests to increase topic view counts"
+	"topic-views.enabled": "Allow guests to increase topic view counts",
+	"reply-notifications.enabled": "Allow guests to generate reply notifications"
 }

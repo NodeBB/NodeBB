@@ -67,7 +67,7 @@
 	"sort-upvotes": "最多顶",
 	"sort-replies": "最多回复",
 
-	"modal-title": "举报不适内容",
+	"modal-title": "Report Content",
 	"modal-body": "请选择或者输入您举报 %1%2 的原因以便版主进行审核。",
 	"modal-reason-spam": "垃圾信息",
 	"modal-reason-offensive": "人身攻击",

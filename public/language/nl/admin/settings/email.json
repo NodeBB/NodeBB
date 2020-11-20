@@ -4,7 +4,7 @@
 	"address-help": "Het volgende e-mailadres refereert aan de e-mail die ontvanger ziet in de \"From\" en \"Reply To\" velden.",
 	"from": "From Naam",
 	"from-help": "De from naam om te tonen in de e-mail.",
-	
+
 	"smtp-transport": "SMTP Transport",
 	"smtp-transport.enabled": "Gebruik een externe mail server om mails te verzenden",
 	"smtp-transport-help": "Je kunt een bekende dienst uit de lijst selecteren of vul een aangepaste dienst in.",
@@ -35,5 +35,7 @@
 	"subscriptions": "E-mail digests",
 	"subscriptions.disable": "Schakel e-mail digests uit",
 	"subscriptions.hour": "Uur van Digest",
-	"subscriptions.hour-help": "Voer het nummer in dat het uur representeerd waarop scheduled email digests worden verstuurd (bv. <code>0</code> voor middernacht, <code>17</code> voor 17:00). Neem er s.v.p. notie van dat dit het uur is van de server self, dit hoeft niet exact overeen te komen met de klok van uw systeem.<br /> De tijd op de server is bij benadering: <span id=\"serverTime\"></span><br /> De volgende dagelijkse digest staat gepland om <span id=\"nextDigestTime\"></span>"
+	"subscriptions.hour-help": "Voer het nummer in dat het uur representeerd waarop scheduled email digests worden verstuurd (bv. <code>0</code> voor middernacht, <code>17</code> voor 17:00). Neem er s.v.p. notie van dat dit het uur is van de server self, dit hoeft niet exact overeen te komen met de klok van uw systeem.<br /> De tijd op de server is bij benadering: <span id=\"serverTime\"></span><br /> De volgende dagelijkse digest staat gepland om <span id=\"nextDigestTime\"></span>",
+	"notifications.settings": "Email notification settings",
+	"notifications.remove-images": "Remove images from email notifications"
 }

@@ -35,7 +35,7 @@
 	"timestamp.necro-threshold": "Ardışık iletiler arasında geçen gün sayısı (Necro Sınırı)",
 	"timestamp.necro-threshold-help": "Eğer iki ardışık ileti arasında geçen süre Necro Sınırı'ndan fazlaysa, geçen süre yazıyla belirtilecek. (Varsayılan: <code>7</code>, yani bir hafta). Etkinsizleştirmek için 0 yazınız.</em>",
 	"timestamp.topic-views-interval": "Increment topic views interval (in minutes)",
-	"timestamp.topic-views-interval-help": "Topic views will only increment once every X minutes as defined by this setting.",
+	"timestamp.topic-views-interval-help": "Başlıkların bakış sayısı bu ayarların belirttiği her X dakikada bir güncellenecek. ",
 	"teaser": "Teaser İleti",
 	"teaser.last-post": "Son &ndash; cevap yoksa orijinal gönderi de dahil olmak üzere en son gönderiyi gösterir.",
 	"teaser.last-reply": "Son &ndash; cevap yoksa en son yanıtı veya \"Yanıt yok\" yertutucusunu gösterir.",

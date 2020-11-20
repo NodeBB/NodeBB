@@ -30,6 +30,7 @@
     "locked": "ถูกล็อก",
     "pinned": "ถูกปักหมุด",
     "moved": "ถูกย้าย",
+    "moved-from": "Moved from %1",
     "copy-ip": "คัดลอก IP",
     "ban-ip": "แบน IP",
     "view-history": "แก้ไขประวัติ",

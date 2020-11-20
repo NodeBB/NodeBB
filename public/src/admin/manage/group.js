@@ -27,7 +27,7 @@ define('admin/manage/group', [
 		memberList.init('admin/manage/group');
 
 		changeGroupUserTitle.on('keyup', function () {
-			groupLabelPreviewText.text(changeGroupUserTitle.val());
+			groupLabelPreviewText.translateText(changeGroupUserTitle.val());
 		});
 
 		changeGroupLabelColor.on('keyup input', function () {
@@ -80,6 +80,7 @@ define('admin/manage/group', [
 					userTitleEnabled: $('#group-userTitleEnabled').is(':checked'),
 					private: $('#group-private').is(':checked'),
 					hidden: $('#group-hidden').is(':checked'),
+					memberPostCids: $('#memberPostCids').val(),
 					disableJoinRequests: $('#group-disableJoinRequests').is(':checked'),
 					disableLeave: $('#group-disableLeave').is(':checked'),
 				},

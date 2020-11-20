@@ -18,6 +18,8 @@
     "agree_to_terms_of_use": "Ich stimme den Nutzungsbedingungen zu",
     "terms_of_use_error": "Du musst den Nutzungsbedingungen zustimmen",
     "registration-added-to-queue": "Deine Registration wurde abgeschickt. Du wirst eine E-Mail erhalten, sobald sie von einem Administrator akzeptiert wird.",
+    "registration-queue-average-time": "Our average time for approving memberships is %1 hours %2 minutes.",
+    "registration-queue-auto-approve-time": "Your membership to this forum will be fully activated in up to %1 hours.",
     "interstitial.intro": "Wir benötigen ein wenig mehr Informationen bevor wir dein Konto erstellen können.",
     "interstitial.errors-found": "Wir konnten deinen Registrierungsvorgang nicht abschließen:",
     "gdpr_agree_data": "Ich stimme der Sammlung und Verarbeitung meiner Persönlichen Daten auf dieser Website zu.",

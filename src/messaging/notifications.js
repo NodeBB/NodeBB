@@ -57,8 +57,9 @@ module.exports = function (Messaging) {
 			return;
 		}
 
+		const isGroupChat = await Messaging.isGroupChat(roomId);
 		const notification = await notifications.create({
-			type: 'new-chat',
+			type: isGroupChat ? 'new-group-chat' : 'new-chat',
 			subject: '[[email:notif.chat.subject, ' + messageObj.fromUser.username + ']]',
 			bodyShort: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
 			bodyLong: messageObj.content,

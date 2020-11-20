@@ -96,7 +96,7 @@ define('forum/topic/events', [
 	}
 
 	function onPostEdited(data) {
-		if (!data || !data.post) {
+		if (!data || !data.post || parseInt(data.post.tid, 10) !== parseInt(ajaxify.data.tid, 10)) {
 			return;
 		}
 		var editedPostEl = components.get('post/content', data.post.pid).filter(function (index, el) {
@@ -174,6 +174,9 @@ define('forum/topic/events', [
 	}
 
 	function onPostPurged(postData) {
+		if (!postData || parseInt(postData.tid, 10) !== parseInt(ajaxify.data.tid, 10)) {
+			return;
+		}
 		components.get('post', 'pid', postData.pid).fadeOut(500, function () {
 			$(this).remove();
 			posts.showBottomPostBar();

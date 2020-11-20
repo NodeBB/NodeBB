@@ -1,11 +1,11 @@
 {
-	"post-queue": "Post Queue",
-	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
-	"user": "User",
-	"category": "Category",
-	"title": "Title",
-	"content": "Content",
-	"posted": "Posted",
-	"reply-to": "Reply to \"%1\"",
-	"content-editable": "You can click on individual content to edit before posting."
+	"post-queue": "פוסטים ממתינים",
+	"description": "אין פוסטים בתור. <br> כדי לאפשר את תור ההרשמה, גשו ל<a href=\"%1\">הגדרות &rarr; פוסט &rarr; תור פוסטים</a> ואפשרו את <strong>תור פוסט</strong>.",
+	"user": "משתמש",
+	"category": "קטגוריה",
+	"title": "כותרת",
+	"content": "תוכן",
+	"posted": "נשלח",
+	"reply-to": "תגובה ל %1",
+	"content-editable": "אתה יכול ללחוץ על התוכן כדי לערוך אותו."
 }

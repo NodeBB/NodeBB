@@ -5,6 +5,7 @@ const nconf = require('nconf');
 const user = require('../user');
 const meta = require('../meta');
 const topics = require('../topics');
+const categories = require('../categories');
 const posts = require('../posts');
 const privileges = require('../privileges');
 const helpers = require('./helpers');
@@ -81,6 +82,7 @@ topicsController.get = async function getTopic(req, res, callback) {
 	topicData.postEditDuration = meta.config.postEditDuration;
 	topicData.postDeleteDuration = meta.config.postDeleteDuration;
 	topicData.scrollToMyPost = settings.scrollToMyPost;
+	topicData.updateUrlWithPostIndex = settings.updateUrlWithPostIndex;
 	topicData.allowMultipleBadges = meta.config.allowMultipleBadges === 1;
 	topicData.privateUploads = meta.config.privateUploads === 1;
 	topicData.rssFeedUrl = relative_path + '/topic/' + topicData.tid + '.rss';
@@ -92,6 +94,7 @@ topicsController.get = async function getTopic(req, res, callback) {
 
 	await Promise.all([
 		buildBreadcrumbs(topicData),
+		addOldCategory(topicData, userPrivileges),
 		addTags(topicData, req, res),
 		incrementViewCount(req, tid),
 		markAsRead(req, tid),
@@ -163,6 +166,14 @@ async function buildBreadcrumbs(topicData) {
 	];
 	const parentCrumbs = await helpers.buildCategoryBreadcrumbs(topicData.category.parentCid);
 	topicData.breadcrumbs = parentCrumbs.concat(breadcrumbs);
+}
+
+async function addOldCategory(topicData, userPrivileges) {
+	if (userPrivileges.isAdminOrMod && topicData.oldCid) {
+		topicData.oldCategory = await categories.getCategoryFields(
+			topicData.oldCid, ['cid', 'name', 'icon', 'bgColor', 'color', 'slug']
+		);
+	}
 }
 
 async function addTags(topicData, req, res) {

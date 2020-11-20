@@ -9,6 +9,7 @@
 	"upload-files": "Przesyłanie plików",
 	"signature": "Dodanie sygnatury",
 	"ban": "Banowanie",
+	"invite": "Invite",
 	"search-content": "Szukanie treści",
 	"search-users": "Szukanie użytkowników",
 	"search-tags": "Szukanie tagów",
@@ -49,5 +50,5 @@
 	"alert.confirm-copyToChildren": "Czy na pewno chcesz zastosować ten zbiór uprawnień dla <strong>wszystkich podkategorii</strong>?",
 	"alert.confirm-copyToChildrenGroup": "Czy na pewno chcesz zastosować zbiór uprawnień tej grupy dla <strong>wszystkich podkategorii</strong>?",
 	"alert.no-undo": "<em>Tej czynności nie można cofnąć.</em>",
-	"alert.admin-warning": "Administrators implicitly get all privileges"
+	"alert.admin-warning": "Administratorzy domyślnie otrzymują wszelkie uprawnienia"
 }

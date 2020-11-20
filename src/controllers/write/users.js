@@ -1,12 +1,14 @@
 'use strict';
 
 const util = require('util');
+const nconf = require('nconf');
 
 const db = require('../../database');
 const api = require('../../api');
-const user = require('../../user');
+const groups = require('../../groups');
 const meta = require('../../meta');
 const privileges = require('../../privileges');
+const user = require('../../user');
 const utils = require('../../utils');
 
 const helpers = require('../helpers');
@@ -25,7 +27,7 @@ Users.redirectBySlug = async (req, res) => {
 
 	if (uid) {
 		const path = req.path.split('/').slice(3).join('/');
-		helpers.redirect(res, `/api/v3/users/${uid}/${path}`, true);
+		res.redirect(308, nconf.get('relative_path') + encodeURI(`/api/v3/users/${uid}/${path}`));
 	} else {
 		helpers.formatApiResponse(404, res);
 	}
@@ -47,7 +49,17 @@ Users.update = async (req, res) => {
 };
 
 Users.delete = async (req, res) => {
-	await api.users.delete(req, req.params);
+	await api.users.delete(req, { ...req.params, password: req.body.password });
+	helpers.formatApiResponse(200, res);
+};
+
+Users.deleteContent = async (req, res) => {
+	await api.users.deleteContent(req, { ...req.params, password: req.body.password });
+	helpers.formatApiResponse(200, res);
+};
+
+Users.deleteAccount = async (req, res) => {
+	await api.users.deleteAccount(req, { ...req.params, password: req.body.password });
 	helpers.formatApiResponse(200, res);
 };
 
@@ -151,4 +163,61 @@ Users.revokeSession = async (req, res) => {
 
 	await user.auth.revokeSession(_id, req.params.uid);
 	helpers.formatApiResponse(200, res);
+};
+
+Users.invite = async (req, res) => {
+	const { emails, groupsToJoin = [] } = req.body;
+
+	if (!emails || !Array.isArray(groupsToJoin)) {
+		return helpers.formatApiResponse(400, res, new Error('[[error:invalid-data]]'));
+	}
+
+	// For simplicity, this API route is restricted to self-use only. This can change if needed.
+	if (parseInt(req.user.uid, 10) !== parseInt(req.params.uid, 10)) {
+		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
+	}
+
+	const canInvite = await privileges.users.hasInvitePrivilege(req.uid);
+	if (!canInvite) {
+		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
+	}
+
+	const registrationType = meta.config.registrationType;
+	const isAdmin = await user.isAdministrator(req.uid);
+	if (registrationType === 'admin-invite-only' && !isAdmin) {
+		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
+	}
+
+	const inviteGroups = await groups.getUserInviteGroups(req.uid);
+	const cannotInvite = groupsToJoin.some(group => !inviteGroups.includes(group));
+	if (groupsToJoin.length > 0 && cannotInvite) {
+		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
+	}
+
+	const max = meta.config.maximumInvites;
+	const emailsArr = emails.split(',').map(email => email.trim()).filter(Boolean);
+
+	for (const email of emailsArr) {
+		/* eslint-disable no-await-in-loop */
+		let invites = 0;
+		if (max) {
+			invites = await user.getInvitesNumber(req.uid);
+		}
+		if (!isAdmin && max && invites >= max) {
+			return helpers.formatApiResponse(403, res, new Error('[[error:invite-maximum-met, ' + invites + ', ' + max + ']]'));
+		}
+
+		await user.sendInvitationEmail(req.uid, email, groupsToJoin);
+	}
+
+	return helpers.formatApiResponse(200, res);
+};
+
+Users.getInviteGroups = async function (req, res) {
+	if (parseInt(req.params.uid, 10) !== parseInt(req.user.uid, 10)) {
+		return helpers.formatApiResponse(401, res);
+	}
+
+	const userInviteGroups = await groups.getUserInviteGroups(req.params.uid);
+	return helpers.formatApiResponse(200, res, userInviteGroups);
 };

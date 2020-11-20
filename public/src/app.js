@@ -60,6 +60,7 @@ app.cacheBuster = null;
 				earlyQueue.forEach(function (el) {
 					el.click();
 				});
+				earlyQueue = [];
 			});
 		} else {
 			setTimeout(app.handleEarlyClicks, 50);
@@ -113,16 +114,16 @@ app.cacheBuster = null;
 			if (app.user.uid > 0) {
 				unread.initUnreadTopics();
 			}
-
+			function finishLoad() {
+				$(window).trigger('action:app.load');
+				app.showMessages();
+				appLoaded = true;
+			}
 			overrides.overrideTimeago();
 			if (app.user.timeagoCode && app.user.timeagoCode !== 'en') {
-				require(['timeago/locales/jquery.timeago.' + app.user.timeagoCode], function () {
-					$(window).trigger('action:app.load');
-					appLoaded = true;
-				});
+				require(['timeago/locales/jquery.timeago.' + app.user.timeagoCode], finishLoad);
 			} else {
-				$(window).trigger('action:app.load');
-				appLoaded = true;
+				finishLoad();
 			}
 		});
 	};
@@ -244,7 +245,10 @@ app.cacheBuster = null;
 		$('#main-nav li')
 			.removeClass('active')
 			.find('a')
-			.filter(function (i, x) { return window.location.pathname.startsWith(x.getAttribute('href')); })
+			.filter(function (i, x) {
+				return window.location.pathname === x.pathname ||
+					window.location.pathname.startsWith(x.pathname + '/');
+			})
 			.parent()
 			.addClass('active');
 	}

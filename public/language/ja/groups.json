@@ -35,6 +35,8 @@
     "details.member_count": "メンバー数",
     "details.creation_date": "作成日",
     "details.description": "説明",
+    "details.member-post-cids": "Categories to display posts from",
+    "details.member-post-cids-help": "<strong>Note</strong>: Selecting no categories will assume all categories are included. Use <code>ctrl</code> and <code>shift</code> to select multiple options.",
     "details.badge_preview": "バッジプレビュー",
     "details.change_icon": "アイコンを変更",
     "details.change_label_colour": "Change Label Colour",

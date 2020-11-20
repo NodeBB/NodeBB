@@ -1,5 +1,5 @@
 					<!-- IF !../error -->
-					<li id="{../id}" data-plugin-index="@index" data-plugin-id="{../id}" data-version="{../version}" class="clearfix <!-- IF ../active -->active<!-- ENDIF ../active -->">
+					<li id="{../id}" data-plugin-index="{@index}" data-plugin-id="{../id}" data-version="{../version}" class="clearfix <!-- IF ../active -->active<!-- ENDIF ../active -->">
 						<div class="pull-right controls">
 							{{{ if ../installed }}}
 								<!-- IF ../isTheme -->

@@ -11,6 +11,7 @@
     "online-only": "Ainult seesolevad",
     "invite": "Kutsuge",
     "prompt-email": "Emails:",
+    "groups-to-join": "Groups to be joined when invite is accepted:",
     "invitation-email-sent": "Kutse on saadetud e-mailile %1",
     "user_list": "Kasutajate list",
     "recent_topics": "Viimased teemad",

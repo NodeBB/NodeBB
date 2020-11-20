@@ -60,6 +60,7 @@
     "notificationType_post-edit": "When a post is edited in a topic you are watching",
     "notificationType_follow": "Začne-li vás někdo sledovat",
     "notificationType_new-chat": "Obdržíte-li novou konverzační zprávu",
+    "notificationType_new-group-chat": "When you receive a group chat message",
     "notificationType_group-invite": "Obdržíte-li pozvání ke skupině",
     "notificationType_group-request-membership": "Pokud někdo požaduje připojení se do vaší skupiny",
     "notificationType_new-register": "Bude-li někdo přidán do registrační fronty",

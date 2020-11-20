@@ -4,7 +4,7 @@
 	"address-help": "Отримувачі будуть бачити цю адресу в полях \"From\" та \"Reply To\".",
 	"from": "Ім'я відправника",
 	"from-help": "Ім'я відправника, що буде показано в електронних листах",
-	
+
 	"smtp-transport": "Протокол SMTP",
 	"smtp-transport.enabled": "Використовувати зовнішній поштовий сервер для відправлення повідомлень",
 	"smtp-transport-help": "Ви можете обрати поштовий сервіс зі списку або використати ваш власний сервіс.",
@@ -35,5 +35,7 @@
 	"subscriptions": "Email Digests",
 	"subscriptions.disable": "Disable email digests",
 	"subscriptions.hour": "Година дайджесту",
-	"subscriptions.hour-help": "Вкажіть, будь ласка, годину о котрій кожного дня буде надсилатися дайджест (наприклад <code>0</code> — це північ, а <code>17</code> — п'ята година вечора). Зверніть увагу, що година визначається згідно налаштувань сервера і може не співпадати з часом вашого комп'ютера. <br /> Приблизний час сервера: <span id=\"serverTime\"></span><br /> Наступний дайджест заплановано до відправки <span id=\"nextDigestTime\"></span>"
+	"subscriptions.hour-help": "Вкажіть, будь ласка, годину о котрій кожного дня буде надсилатися дайджест (наприклад <code>0</code> — це північ, а <code>17</code> — п'ята година вечора). Зверніть увагу, що година визначається згідно налаштувань сервера і може не співпадати з часом вашого комп'ютера. <br /> Приблизний час сервера: <span id=\"serverTime\"></span><br /> Наступний дайджест заплановано до відправки <span id=\"nextDigestTime\"></span>",
+	"notifications.settings": "Email notification settings",
+	"notifications.remove-images": "Remove images from email notifications"
 }
