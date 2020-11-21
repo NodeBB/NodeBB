@@ -9,6 +9,7 @@
     "invalid-tid": "Geçersiz Konu ID",
     "invalid-pid": "Geçersiz İleti ID",
     "invalid-uid": "Geçersiz Kullanıcı ID",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "Geçersiz Kullanıcı İsmi",
     "invalid-email": "Geçersiz E-posta",
     "invalid-fullname": "Hatalı İsim",

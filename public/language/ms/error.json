@@ -9,6 +9,7 @@
     "invalid-tid": "Topik ID Tak Sah",
     "invalid-pid": "Kiriman ID Tak Sah",
     "invalid-uid": "ID Pengguna Tak Sah",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "Nama Pengguna Tak Sah",
     "invalid-email": "Emel Tak Sah",
     "invalid-fullname": "Invalid Fullname",

@@ -89,6 +89,8 @@
     "post_delete_confirm": "Bạn có chắc là muốn xóa bài gửi này không?",
     "post_restore_confirm": "Bạn có chắc là muốn phục hồi bài gửi này không?",
     "post_purge_confirm": "Bạn có chắc muốn xóa hẳn bài này?",
+    "pin-modal-expiry": "Expiration Date",
+    "pin-modal-help": "You can optionally set an expiration date for the pinned topic(s) here. Alternatively, you can leave this field blank to have the topic stay pinned until it is manually unpinned.",
     "load_categories": "Đang tải các phần mục",
     "confirm_move": "Di chuyển",
     "confirm_fork": "Tạo bảo sao",

@@ -89,6 +89,8 @@
     "post_delete_confirm": "Ești sigur că vrei să ștergi acest mesaj?",
     "post_restore_confirm": "Esti sigur că vrei să restaurezi acest mesaj?",
     "post_purge_confirm": "Ești sigur că vrei să cureți acest mesaj?",
+    "pin-modal-expiry": "Expiration Date",
+    "pin-modal-help": "You can optionally set an expiration date for the pinned topic(s) here. Alternatively, you can leave this field blank to have the topic stay pinned until it is manually unpinned.",
     "load_categories": "Se Încarcă Categoriile",
     "confirm_move": "Mută",
     "confirm_fork": "Bifurcă",

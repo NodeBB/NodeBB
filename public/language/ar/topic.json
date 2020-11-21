@@ -89,6 +89,8 @@
     "post_delete_confirm": "هل أنت متأكد أنك تريد حذف هذه المشاركة؟",
     "post_restore_confirm": "هل أنت متأكد أنك تريد استعادة هذه المشاركة؟",
     "post_purge_confirm": "هل أنت متأكد أنك تريد تطهير هذه المشاركة؟",
+    "pin-modal-expiry": "Expiration Date",
+    "pin-modal-help": "You can optionally set an expiration date for the pinned topic(s) here. Alternatively, you can leave this field blank to have the topic stay pinned until it is manually unpinned.",
     "load_categories": "تحميل الفئات",
     "confirm_move": "انقل",
     "confirm_fork": "فرع",

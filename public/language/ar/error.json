@@ -9,6 +9,7 @@
     "invalid-tid": "موضوع غير متواجد",
     "invalid-pid": "رد غير موجود",
     "invalid-uid": "مستخدم غير موجود",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "اسم المستخدم غير مقبول",
     "invalid-email": "البريد الاكتروني غير مقبول",
     "invalid-fullname": "Invalid Fullname",

@@ -9,6 +9,7 @@
     "invalid-tid": "Ugyldig emne-ID",
     "invalid-pid": "Ugyldig innlegg-ID",
     "invalid-uid": "Ugyldig bruker-ID",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "Ugyldig brukernavn",
     "invalid-email": "Ugyldig e-post",
     "invalid-fullname": "Invalid Fullname",

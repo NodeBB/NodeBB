@@ -89,6 +89,8 @@
     "post_delete_confirm": "Haluatko varmasti poistaa tämän viestin?",
     "post_restore_confirm": "Haluatko varmasti palauttaa tämän viestin?",
     "post_purge_confirm": "Oletko varma, että haluat poistaa pysyvästi tämän viestin?",
+    "pin-modal-expiry": "Expiration Date",
+    "pin-modal-help": "You can optionally set an expiration date for the pinned topic(s) here. Alternatively, you can leave this field blank to have the topic stay pinned until it is manually unpinned.",
     "load_categories": "Ladataan aihealueita",
     "confirm_move": "Siirrä",
     "confirm_fork": "Haaroita",

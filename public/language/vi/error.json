@@ -9,6 +9,7 @@
     "invalid-tid": "ID chủ đề không hợp lệ",
     "invalid-pid": "ID bài viết không hợp lệ",
     "invalid-uid": "ID tài khoản không hợp lệ",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "Tên đăng nhập không hợp lệ",
     "invalid-email": "Email không hợp lệ",
     "invalid-fullname": "Invalid Fullname",

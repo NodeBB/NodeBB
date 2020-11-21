@@ -89,6 +89,8 @@
     "post_delete_confirm": "Êtes-vous sûr de bien vouloir supprimer ce message ?",
     "post_restore_confirm": "Êtes-vous sûr de bien vouloir restaurer ce message ?",
     "post_purge_confirm": "Êtes-vous sûr de bien vouloir supprimer définitivement ce sujet ?",
+    "pin-modal-expiry": "Date d'expiration",
+    "pin-modal-help": "Vous pouvez éventuellement définir une date d'expiration pour le(s) sujet(s) épinglé(s) ici. Vous pouvez également laisser ce champ vide pour que le sujet reste épinglé jusqu'à ce qu'il soit supprimé manuellement.",
     "load_categories": "Chargement des catégories en cours",
     "confirm_move": "Déplacer",
     "confirm_fork": "Scinder",

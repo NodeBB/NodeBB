@@ -9,6 +9,7 @@
     "invalid-tid": "ID Subiect Invalid",
     "invalid-pid": "ID Mesaj Invalid",
     "invalid-uid": "ID Utilizator Invalid",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "Utilizator Invalid",
     "invalid-email": "Email Invalid",
     "invalid-fullname": "Invalid Fullname",

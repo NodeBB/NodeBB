@@ -89,6 +89,8 @@
     "post_delete_confirm": "Είσαι σίγουρος/η πως θέλεις να διαγράψεις αυτή την δημοσίευση;",
     "post_restore_confirm": "Είσαι σίγουρος/η πως θέλεις να επαναφέρεις αυτή την δημοσίευση;",
     "post_purge_confirm": "Είσαι σίγουρος/η πως θέλεις να εκκαθαρίσεις αυτή την δημοσίευση;",
+    "pin-modal-expiry": "Expiration Date",
+    "pin-modal-help": "You can optionally set an expiration date for the pinned topic(s) here. Alternatively, you can leave this field blank to have the topic stay pinned until it is manually unpinned.",
     "load_categories": "Οι Κατηγορίες Φορτώνουν",
     "confirm_move": "Μετακίνηση",
     "confirm_fork": "Διαχωρισμός",

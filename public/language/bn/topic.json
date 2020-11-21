@@ -89,6 +89,8 @@
     "post_delete_confirm": "আপনি নিশ্চিত যে আপনি এই পোষ্টটি মুছে ফেলতে চান ?",
     "post_restore_confirm": "আপনি নিশ্চিত যে আপনি এই পোষ্টটি পুনরূূদ্ধার করতে চান ? ",
     "post_purge_confirm": "আপনি নিশ্চিত যে আপনি এই পোষ্টটি পার্জ করতে চান ? ",
+    "pin-modal-expiry": "Expiration Date",
+    "pin-modal-help": "You can optionally set an expiration date for the pinned topic(s) here. Alternatively, you can leave this field blank to have the topic stay pinned until it is manually unpinned.",
     "load_categories": "ক্যাটাগরী লোড করা হচ্ছে",
     "confirm_move": "সরান",
     "confirm_fork": "ফর্ক",

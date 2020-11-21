@@ -89,6 +89,8 @@
     "post_delete_confirm": "Sind Sie sicher, dass Sie diesen Beitrag löschen möchten?",
     "post_restore_confirm": "Sind Sie sicher, dass Sie diesen Beitrag wiederherstellen möchten?",
     "post_purge_confirm": "Sind Sie sicher, dass Sie diesen Beitrag endgültig löschen möchten?",
+    "pin-modal-expiry": "Expiration Date",
+    "pin-modal-help": "You can optionally set an expiration date for the pinned topic(s) here. Alternatively, you can leave this field blank to have the topic stay pinned until it is manually unpinned.",
     "load_categories": "Kategorien laden",
     "confirm_move": "Verschieben",
     "confirm_fork": "Aufspalten",

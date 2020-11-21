@@ -9,6 +9,7 @@
     "invalid-tid": "Neplatné ID témy",
     "invalid-pid": "Neplatné ID príspevku",
     "invalid-uid": "Nesprávne  ID užívateľa",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "Nesprávne používateľské meno",
     "invalid-email": "Nesprávny e-mail",
     "invalid-fullname": "Invalid Fullname",

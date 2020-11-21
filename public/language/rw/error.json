@@ -9,6 +9,7 @@
     "invalid-tid": "Nimero y'Ikiganiro Ntiyemewe",
     "invalid-pid": "Nimero y'Icyashyizweho Ntiyemewe",
     "invalid-uid": "Nimero y'Umuntu Ntiyemewe",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "Izina Ntiryemewe",
     "invalid-email": "Email Ntiyemewe",
     "invalid-fullname": "Invalid Fullname",

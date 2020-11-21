@@ -9,6 +9,7 @@
     "invalid-tid": "無效主題 ID",
     "invalid-pid": "無效貼文 ID",
     "invalid-uid": "無效使用者 ID",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "無效使用者名",
     "invalid-email": "無效的電子信箱",
     "invalid-fullname": "無效全名",

@@ -89,6 +89,8 @@
     "post_delete_confirm": "Oled kindel, et soovid kustutada selle postituse?",
     "post_restore_confirm": "Oled kindel, et soovid taastada antud postituse?",
     "post_purge_confirm": "Oled kindel, et soovid täielikult selle teema kustutada?",
+    "pin-modal-expiry": "Expiration Date",
+    "pin-modal-help": "You can optionally set an expiration date for the pinned topic(s) here. Alternatively, you can leave this field blank to have the topic stay pinned until it is manually unpinned.",
     "load_categories": "Laen kategooriaid",
     "confirm_move": "Liiguta",
     "confirm_fork": "Fork",

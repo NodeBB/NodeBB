@@ -9,6 +9,7 @@
     "invalid-tid": "Klaidingas temos ID",
     "invalid-pid": "Klaidingas pranešimo ID",
     "invalid-uid": "Klaidingas vartotojo ID",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "Klaidingas vartotojo vardas",
     "invalid-email": "Klaidingas el. pašto adresas",
     "invalid-fullname": "Invalid Fullname",

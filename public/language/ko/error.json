@@ -9,6 +9,7 @@
     "invalid-tid": "올바르지 않은 게시물 ID입니다.",
     "invalid-pid": "올바르지 않은 포스트 ID입니다.",
     "invalid-uid": "올바르지 않은 사용자 ID입니다.",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "올바르지 않은 사용자명 입니다.",
     "invalid-email": "올바르지 않은 이메일입니다.",
     "invalid-fullname": "Invalid Fullname",

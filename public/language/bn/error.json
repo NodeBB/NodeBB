@@ -9,6 +9,7 @@
     "invalid-tid": "ভুল টপিক নাম্বার",
     "invalid-pid": "ভুল পোস্ট নাম্বার",
     "invalid-uid": "ভুল ব্যবহারকারী নাম্বার",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "ভুল ইউজারনেম",
     "invalid-email": "ভুল ইমেইল",
     "invalid-fullname": "Invalid Fullname",

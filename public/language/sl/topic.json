@@ -89,6 +89,8 @@
     "post_delete_confirm": "Ste prepričani, da želite izbrisati to objavo?",
     "post_restore_confirm": "Ste prepričani, da želite razveljaviti to objavo?",
     "post_purge_confirm": "Ste prepričani, da želite očistiti to objavo?",
+    "pin-modal-expiry": "Expiration Date",
+    "pin-modal-help": "You can optionally set an expiration date for the pinned topic(s) here. Alternatively, you can leave this field blank to have the topic stay pinned until it is manually unpinned.",
     "load_categories": "Nalagam kategorije",
     "confirm_move": "Premakni",
     "confirm_fork": "Razcepi",

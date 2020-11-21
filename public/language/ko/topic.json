@@ -89,6 +89,8 @@
     "post_delete_confirm": "이 포스트를 삭제 하시겠습니까?",
     "post_restore_confirm": "이 포스트를 복원 하시겠습니까?",
     "post_purge_confirm": "이 포스트를 폐기 하시겠습니까?",
+    "pin-modal-expiry": "Expiration Date",
+    "pin-modal-help": "You can optionally set an expiration date for the pinned topic(s) here. Alternatively, you can leave this field blank to have the topic stay pinned until it is manually unpinned.",
     "load_categories": "게시판들을 읽어오는 중입니다.",
     "confirm_move": "이동",
     "confirm_fork": "분리",

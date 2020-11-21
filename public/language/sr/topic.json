@@ -89,6 +89,8 @@
     "post_delete_confirm": "Да ли сте сигурни да желите да избришете ову поруку?",
     "post_restore_confirm": "Да ли сте сигурни да желите да обновите ову поруку?",
     "post_purge_confirm": "Да ли сте сигурни да желите да очистите овај пост?",
+    "pin-modal-expiry": "Expiration Date",
+    "pin-modal-help": "You can optionally set an expiration date for the pinned topic(s) here. Alternatively, you can leave this field blank to have the topic stay pinned until it is manually unpinned.",
     "load_categories": "Учитавање категорија",
     "confirm_move": "Премести",
     "confirm_fork": "Рачвај",

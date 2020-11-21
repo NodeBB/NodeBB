@@ -9,6 +9,7 @@
     "invalid-tid": "Неисправан ID теме",
     "invalid-pid": "Неисправан ID поруке",
     "invalid-uid": "Неисправан ИД корисника",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "Неисправно корисничко име",
     "invalid-email": "Неисправна е-пошта",
     "invalid-fullname": "Неисправно пуно име",

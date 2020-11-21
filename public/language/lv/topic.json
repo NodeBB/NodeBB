@@ -89,6 +89,8 @@
     "post_delete_confirm": "Vai tiešām vēlies izdzēst šo rakstu?",
     "post_restore_confirm": "Vai tiešām vēlies atjaunot šo rakstu?",
     "post_purge_confirm": "Vai tiešām vēlies iztīrīt šo rakstu?",
+    "pin-modal-expiry": "Expiration Date",
+    "pin-modal-help": "You can optionally set an expiration date for the pinned topic(s) here. Alternatively, you can leave this field blank to have the topic stay pinned until it is manually unpinned.",
     "load_categories": "Ielādē kategorijas",
     "confirm_move": "Pārvietot",
     "confirm_fork": "Nozarot",

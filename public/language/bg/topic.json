@@ -89,6 +89,8 @@
     "post_delete_confirm": "Наистина ли искате да изтриете тази публикация?",
     "post_restore_confirm": "Наистина ли искате да възстановите тази публикация?",
     "post_purge_confirm": "Наистина ли искате да изчистите тази публикация?",
+    "pin-modal-expiry": "Expiration Date",
+    "pin-modal-help": "You can optionally set an expiration date for the pinned topic(s) here. Alternatively, you can leave this field blank to have the topic stay pinned until it is manually unpinned.",
     "load_categories": "Зареждане на категориите",
     "confirm_move": "Преместване",
     "confirm_fork": "Разделяне",

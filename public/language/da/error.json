@@ -9,6 +9,7 @@
     "invalid-tid": "Ugyldig Tråd ID",
     "invalid-pid": "Ugyldig Indlæg ID",
     "invalid-uid": "Ugyldig Bruger ID",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "Ugyldig Brugernavn",
     "invalid-email": "Ugyldig Email",
     "invalid-fullname": "Invalid Fullname",

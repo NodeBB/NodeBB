@@ -89,6 +89,8 @@
     "post_delete_confirm": "Tens a certeza que desejas eliminar esta publicação?",
     "post_restore_confirm": "Tens a certeza que desejas restaurar esta publicação?",
     "post_purge_confirm": "Tens a certeza que queres eliminar esta publicação?",
+    "pin-modal-expiry": "Expiration Date",
+    "pin-modal-help": "You can optionally set an expiration date for the pinned topic(s) here. Alternatively, you can leave this field blank to have the topic stay pinned until it is manually unpinned.",
     "load_categories": "Carregando Categorias",
     "confirm_move": "Mover",
     "confirm_fork": "Clonar",

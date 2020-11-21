@@ -9,6 +9,7 @@
     "invalid-tid": "Érvénytelen témakör azonosító",
     "invalid-pid": "Érvénytelen hozzászólás azonosító",
     "invalid-uid": "Érvénytelen felhasználó azonosító",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "Érvénytelen felhasználónév",
     "invalid-email": "Érvénytelen e-mail cím",
     "invalid-fullname": "Invalid Fullname",

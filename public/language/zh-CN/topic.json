@@ -89,6 +89,8 @@
     "post_delete_confirm": "您确定要删除此回复吗？",
     "post_restore_confirm": "您确定要恢复此回复吗？",
     "post_purge_confirm": "您确定要清除此回复吗？",
+    "pin-modal-expiry": "Expiration Date",
+    "pin-modal-help": "You can optionally set an expiration date for the pinned topic(s) here. Alternatively, you can leave this field blank to have the topic stay pinned until it is manually unpinned.",
     "load_categories": "正在载入版块",
     "confirm_move": "移动",
     "confirm_fork": "分割",

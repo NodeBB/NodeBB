@@ -1,7 +1,7 @@
 {
-	"settings": "Settings",
+	"settings": "Paramètres",
 	"handles.enabled": "Autoriser les invités à poster",
 	"handles.enabled-help": "Cette option affiche un nouveau champ qui permet aux invités de choisir un nom qui sera associé à chaque message qu'ils rédigent. Si désactivé, il seront simplement nommés \"Invité\".",
 	"topic-views.enabled": "Autoriser les invités à augmenter le nombre de consultations de sujets",
-	"reply-notifications.enabled": "Allow guests to generate reply notifications"
+	"reply-notifications.enabled": "Autoriser les invités à générer des notifications de réponse"
 }

@@ -9,6 +9,7 @@
     "invalid-tid": "Неправильный ID темы",
     "invalid-pid": "Неправильный ID сообщения",
     "invalid-uid": "Неправильный ID пользователя",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "Неправильное имя пользователя",
     "invalid-email": "Неправильный адрес электронной почты",
     "invalid-fullname": "Некорректное полное имя",

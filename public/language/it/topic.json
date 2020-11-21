@@ -89,6 +89,8 @@
     "post_delete_confirm": "Sei sicuro di voler eliminare questo post?",
     "post_restore_confirm": "Sei sicuro di voler ripristinare questo post?",
     "post_purge_confirm": "Sei sicuro di voler eliminare definitivamente questo post?",
+    "pin-modal-expiry": "Data di scadenza",
+    "pin-modal-help": "Facoltativamente, è possibile impostare una data di scadenza per le discussioni appuntate qui. In alternativa, è possibile lasciare vuoto questo campo per mantenere la discussione bloccata fino a quando non viene sbloccata manualmente.",
     "load_categories": "Caricamento Categorie",
     "confirm_move": "Sposta",
     "confirm_fork": "Dividi",

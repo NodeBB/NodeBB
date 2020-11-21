@@ -9,6 +9,7 @@
     "invalid-tid": "Невірний ID теми",
     "invalid-pid": "Невірний ID поста",
     "invalid-uid": "Невірний ID користувача",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "Невірне ім'я користувача",
     "invalid-email": "Невірна електронна адреса",
     "invalid-fullname": "Невірне повне ім'я",
