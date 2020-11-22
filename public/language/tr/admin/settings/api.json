@@ -1,6 +1,6 @@
 {
-	"tokens": "Tokens",
-	"lead-text": "From this page you can configure access to the Write API in NodeBB.",
+	"tokens": "Jetonlar (Tokens)",
+	"lead-text": "Bu sayfadan NodeBB'deki \"Write API\"e erişimi yapılandırabilirsiniz.",
 	"intro": "By default, the Write API authenticates users based on their session cookie, but NodeBB also supports Bearer authentication via tokens generated via this page.",
 	"docs": "Tüm API özeliklerine erişmek için buraya tıklayın. ",
 
@@ -8,5 +8,5 @@
 	"uid-help-text": "Specify a User ID to associate with this token. If the user ID is <code>0</code>, it will be considered a <em>master</em> token, which can assume the identity of other users based on the <code>_uid</code> parameter",
 	"description": "Açıklama",
 	"no-description": "Hiçbir açıklama belirtilmemiş.",
-	"token-on-save": "Token will be generated once form is saved"
+	"token-on-save": "Form kaydedildikten sonra bir jeton oluşturulacak"
 }
