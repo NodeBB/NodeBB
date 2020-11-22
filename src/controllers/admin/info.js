@@ -93,6 +93,7 @@ async function getNodeInfo() {
 	data.process.cpuUsage.system /= 1000000;
 	data.process.cpuUsage.system = data.process.cpuUsage.system.toFixed(2);
 	data.process.memoryUsage.humanReadable = (data.process.memoryUsage.rss / (1024 * 1024)).toFixed(2);
+	data.process.uptimeHumanReadable = humanReadableUptime(data.process.uptime);
 	data.os.freemem = (data.os.freemem / 1000000).toFixed(2);
 	data.os.totalmem = (data.os.totalmem / 1000000).toFixed(2);
 	const [stats, gitInfo] = await Promise.all([
@@ -102,6 +103,17 @@ async function getNodeInfo() {
 	data.git = gitInfo;
 	data.stats = stats;
 	return data;
+}
+
+function humanReadableUptime(seconds) {
+	if (seconds < 60) {
+		return Math.floor(seconds) + 's';
+	} else if (seconds < 3600) {
+		return Math.floor(seconds / 60) + 'm';
+	} else if (seconds < 3600 * 24) {
+		return Math.floor(seconds / (60 * 60)) + 'h';
+	}
+	return Math.floor(seconds / (60 * 60 * 24)) + 'd';
 }
 
 async function getGitInfo() {
