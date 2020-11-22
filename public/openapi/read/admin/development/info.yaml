@@ -61,6 +61,8 @@ get:
                                 - humanReadable
                             uptime:
                               type: number
+                            uptimeHumanReadable:
+                              type: string
                             cpuUsage:
                               type: object
                               properties:
