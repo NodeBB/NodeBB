@@ -23,6 +23,8 @@ module.exports = function (Topics) {
 	const pipeToFileAsync = util.promisify(pipeToFile);
 
 	Topics.resizeAndUploadThumb = async function (data) {
+		const allowedExtensions = file.allowedExtensions();
+
 		// Handle protocol-relative URLs
 		if (data.thumb && data.thumb.startsWith('//')) {
 			data.thumb = `${nconf.get('secure') ? 'https' : 'http'}:${data.thumb}`;
@@ -45,6 +47,11 @@ module.exports = function (Topics) {
 			if (!extension) {
 				extension = '.' + mime.getExtension(type);
 			}
+
+			if (!allowedExtensions.includes(extension)) {
+				throw new Error('[[error:invalid-file]]');
+			}
+
 			const filename = Date.now() + '-topic-thumb' + extension;
 			const folder = 'files';
 			pathToUpload = path.join(nconf.get('upload_path'), folder, filename);
