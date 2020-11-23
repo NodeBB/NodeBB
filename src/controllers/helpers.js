@@ -145,9 +145,11 @@ helpers.notAllowed = async function (req, res, error) {
 
 helpers.redirect = function (res, url, permanent) {
 	if (res.locals.isAPI) {
-		res.set('X-Redirect', encodeURI(url)).status(200).json(url);
+		res.set('X-Redirect', encodeURI(url)).status(200).json(encodeURI(url));
 	} else {
-		res.redirect(permanent ? 308 : 307, relative_path + encodeURI(url));
+		const redirectUrl = url.startsWith('http://') || url.startsWith('https://') ?
+			url : relative_path + url;
+		res.redirect(permanent ? 308 : 307, encodeURI(redirectUrl));
 	}
 };
 

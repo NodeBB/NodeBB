@@ -2,6 +2,7 @@
 
 
 const nconf = require('nconf');
+const validator = require('validator');
 
 const db = require('../database');
 const privileges = require('../privileges');
@@ -29,7 +30,7 @@ categoryController.get = async function (req, res, next) {
 	}
 
 	const [categoryFields, userPrivileges, userSettings, rssToken] = await Promise.all([
-		categories.getCategoryFields(cid, ['slug', 'disabled']),
+		categories.getCategoryFields(cid, ['slug', 'disabled', 'link']),
 		privileges.categories.get(cid, req.uid),
 		user.getSettings(req.uid),
 		user.auth.getFeedToken(req.uid),
@@ -52,6 +53,10 @@ categoryController.get = async function (req, res, next) {
 		return helpers.redirect(res, '/category/' + categoryFields.slug, true);
 	}
 
+	if (categoryFields.link) {
+		await db.incrObjectField('category:' + cid, 'timesClicked');
+		return helpers.redirect(res, validator.unescape(categoryFields.link));
+	}
 
 	if (!userSettings.usePagination) {
 		topicIndex = Math.max(0, topicIndex - (Math.ceil(userSettings.topicsPerPage / 2) - 1));
@@ -89,10 +94,7 @@ categoryController.get = async function (req, res, next) {
 	}
 
 	categories.modifyTopicsByPrivilege(categoryData.topics, userPrivileges);
-	if (categoryData.link) {
-		await db.incrObjectField('category:' + categoryData.cid, 'timesClicked');
-		return helpers.redirect(res, categoryData.link);
-	}
+
 	await buildBreadcrumbs(req, categoryData);
 	if (categoryData.children.length) {
 		const allCategories = [];

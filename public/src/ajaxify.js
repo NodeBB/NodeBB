@@ -160,7 +160,11 @@ ajaxify = window.ajaxify || {};
 					window.location.href = data.responseJSON.external;
 				} else if (typeof data.responseJSON === 'string') {
 					ajaxifyTimer = undefined;
-					ajaxify.go(data.responseJSON.slice(1), callback, quiet);
+					if (data.responseJSON.startsWith('http://') || data.responseJSON.startsWith('https://')) {
+						window.location.href = data.responseJSON;
+					} else {
+						ajaxify.go(data.responseJSON.slice(1), callback, quiet);
+					}
 				}
 			}
 		} else if (textStatus !== 'abort') {
