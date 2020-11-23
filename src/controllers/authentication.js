@@ -328,6 +328,7 @@ authenticationController.onSuccessfulLogin = async function (req, uid) {
 		req.loggedIn = true;
 		await meta.blacklist.test(req.ip);
 		await user.logIP(uid, req.ip);
+		await user.bans.unbanIfExpired([uid]);
 
 		req.session.meta = {};
 
