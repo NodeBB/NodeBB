@@ -9,7 +9,7 @@
     "invalid-tid": "Грешен идентификатор на тема",
     "invalid-pid": "Грешен идентификатор на публикация",
     "invalid-uid": "Грешен идентификатор на потребител",
-    "invalid-date": "A valid date must be provided",
+    "invalid-date": "Трябва да бъде посочена правилна дата",
     "invalid-username": "Грешно потребителско име",
     "invalid-email": "Грешна е-поща",
     "invalid-fullname": "Грешно пълно име",
