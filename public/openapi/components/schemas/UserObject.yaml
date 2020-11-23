@@ -355,6 +355,37 @@ UserObjectFull:
         type: string
     moderationNote:
       type: string
+    counts:
+      type: object
+      properties:
+        best:
+          type: number
+        blocks:
+          type: number
+        bookmarks:
+          type: number
+        categoriesWatched:
+          type: number
+        downvoted:
+          type: number
+        followers:
+          type: number
+        following:
+          type: number
+        groups:
+          type: number
+        ignored:
+          type: number
+        posts:
+          type: number
+        topics:
+          type: number
+        uploaded:
+          type: number
+        upvoted:
+          type: number
+        watched:
+          type: number
     isBlocked:
       type: boolean
     blocksCount:
