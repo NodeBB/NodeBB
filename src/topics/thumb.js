@@ -24,7 +24,7 @@ module.exports = function (Topics) {
 
 	Topics.resizeAndUploadThumb = async function (data) {
 		// Handle protocol-relative URLs
-		if (data.thumb.startsWith('//')) {
+		if (data.thumb && data.thumb.startsWith('//')) {
 			data.thumb = `${nconf.get('secure') ? 'https' : 'http'}:${data.thumb}`;
 		}
 
