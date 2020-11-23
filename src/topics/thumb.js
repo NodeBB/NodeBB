@@ -23,6 +23,11 @@ module.exports = function (Topics) {
 	const pipeToFileAsync = util.promisify(pipeToFile);
 
 	Topics.resizeAndUploadThumb = async function (data) {
+		// Handle protocol-relative URLs
+		if (data.thumb.startsWith('//')) {
+			data.thumb = `${nconf.get('secure') ? 'https' : 'http'}:${data.thumb}`;
+		}
+
 		// Only continue if passed in thumbnail exists and is a URL. A system path means an upload is not necessary.
 		if (!data.thumb || !validator.isURL(data.thumb)) {
 			return;
