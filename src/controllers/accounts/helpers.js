@@ -3,6 +3,7 @@
 const validator = require('validator');
 const nconf = require('nconf');
 
+const db = require('../../database');
 const user = require('../../user');
 const groups = require('../../groups');
 const plugins = require('../../plugins');
@@ -11,6 +12,7 @@ const utils = require('../../utils');
 const privileges = require('../../privileges');
 const translator = require('../../translator');
 const messaging = require('../../messaging');
+const categories = require('../../categories');
 
 const helpers = module.exports;
 
@@ -57,10 +59,6 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID) {
 	}
 
 	userData.isBlocked = results.isBlocked;
-	if (isAdmin || isSelf) {
-		userData.blocksCount = await user.getUserField(userData.uid, 'blocksCount');
-	}
-
 	userData.yourid = callerUID;
 	userData.theirid = userData.uid;
 	userData.isTargetAdmin = results.isTargetAdmin;
@@ -112,6 +110,9 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID) {
 	userData['cover:position'] = validator.escape(String(userData['cover:position'] || '50% 50%'));
 	userData['username:disableEdit'] = !userData.isAdmin && meta.config['username:disableEdit'];
 	userData['email:disableEdit'] = !userData.isAdmin && meta.config['email:disableEdit'];
+
+	await getCounts(userData, callerUID);
+
 	const hookData = await plugins.hooks.fire('filter:helpers.getUserDataByUserSlug', { userData: userData, callerUID: callerUID });
 	return hookData.userData;
 };
@@ -135,6 +136,32 @@ async function getAllData(uid, callerUID) {
 		canViewInfo: privileges.global.can('view:users:info', callerUID),
 		hasPrivateChat: messaging.hasPrivateChat(callerUID, uid),
 	});
+}
+
+async function getCounts(userData, callerUID) {
+	const uid = userData.uid;
+	const cids = await categories.getCidsByPrivilege('categories:cid', callerUID, 'topics:read');
+	const promises = {
+		posts: db.sortedSetsCardSum(cids.map(c => 'cid:' + c + ':uid:' + uid + ':pids')),
+		best: db.sortedSetsCardSum(cids.map(c => 'cid:' + c + ':uid:' + uid + ':pids:votes')),
+		topics: db.sortedSetsCardSum(cids.map(c => 'cid:' + c + ':uid:' + uid + ':tids')),
+	};
+	if (userData.isAdmin || userData.isSelf) {
+		promises.ignored = db.sortedSetCard('uid:' + uid + ':ignored_tids');
+		promises.watched = db.sortedSetCard('uid:' + uid + ':followed_tids');
+		promises.upvoted = db.sortedSetCard('uid:' + uid + ':upvote');
+		promises.downvoted = db.sortedSetCard('uid:' + uid + ':downvote');
+		promises.bookmarks = db.sortedSetCard('uid:' + uid + ':bookmarks');
+		promises.uploaded = db.sortedSetCard('uid:' + uid + ':uploads');
+		promises.categoriesWatched = user.getWatchedCategories(uid);
+		promises.blocks = user.getUserField(userData.uid, 'blocksCount');
+	}
+	const counts = await utils.promiseParallel(promises);
+	counts.categoriesWatched = counts.categoriesWatched && counts.categoriesWatched.length;
+	counts.groups = userData.groups.length;
+	counts.following = userData.followingCount;
+	counts.followers = userData.followerCount;
+	userData.counts = counts;
 }
 
 async function getProfileMenu(uid, callerUID) {
