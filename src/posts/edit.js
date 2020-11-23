@@ -122,7 +122,11 @@ module.exports = function (Posts) {
 			newTopicData.title = title;
 			newTopicData.slug = tid + '/' + (slugify(title) || 'topic');
 		}
-		newTopicData.thumb = data.thumb || '';
+
+		if (data.thumb) {
+			await topics.resizeAndUploadThumb(data);
+			newTopicData.thumb = data.thumb;
+		}
 
 		data.tags = data.tags || [];
 

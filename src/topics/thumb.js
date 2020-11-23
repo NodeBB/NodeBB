@@ -23,6 +23,7 @@ module.exports = function (Topics) {
 	const pipeToFileAsync = util.promisify(pipeToFile);
 
 	Topics.resizeAndUploadThumb = async function (data) {
+		// Only continue if passed in thumbnail exists and is a URL. A system path means an upload is not necessary.
 		if (!data.thumb || !validator.isURL(data.thumb)) {
 			return;
 		}
