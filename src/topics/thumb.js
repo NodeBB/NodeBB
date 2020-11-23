@@ -47,6 +47,7 @@ module.exports = function (Topics) {
 
 			await image.isFileTypeAllowed(pathToUpload);
 
+			await image.checkDimensions(pathToUpload);
 			await image.resizeImage({
 				path: pathToUpload,
 				width: meta.config.topicThumbSize,

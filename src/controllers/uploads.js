@@ -117,6 +117,7 @@ uploadsController.uploadThumb = async function (req, res, next) {
 			throw new Error('[[error:invalid-file]]');
 		}
 		await image.isFileTypeAllowed(uploadedFile.path);
+		await image.checkDimensions(uploadedFile.path);
 		await image.resizeImage({
 			path: uploadedFile.path,
 			width: meta.config.topicThumbSize,
