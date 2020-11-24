@@ -403,6 +403,17 @@ get:
                     type: number
                   loggedInUser:
                     $ref: ../../components/schemas/UserObject.yaml#/UserObject
+              - type: object
+                description: Optional properties that may or may not be present (except for `tid`, which is always present, and is only here as a hack to pass validation)
+                properties:
+                  tid:
+                    type: number
+                    description: A topic identifier
+                  thumb:
+                    type: string
+                    description: An uploaded topic thumbnail
+                required:
+                  - tid
               - $ref: ../../components/schemas/Pagination.yaml#/Pagination
               - $ref: ../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
               - $ref: ../../components/schemas/CommonProps.yaml#/CommonProps
