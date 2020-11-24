@@ -218,7 +218,7 @@ paths:
   /api/top:
     $ref: 'read/top.yaml'
   "/api/category/{category_id}/{slug}/{topic_index}":
-    $ref: 'read/category/category_id/slug/topic_index.yaml'
+    $ref: 'read/category/category_id.yaml'
   /api/self:
     $ref: 'read/self.yaml'
   /api/me:
