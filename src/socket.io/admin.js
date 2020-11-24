@@ -109,4 +109,13 @@ SocketAdmin.reloadAllSessions = function (socket, data, callback) {
 	callback();
 };
 
+SocketAdmin.getServerTime = function (socket, data, callback) {
+	const now = new Date();
+
+	callback(null, {
+		timestamp: now.getTime(),
+		offset: now.getTimezoneOffset(),
+	});
+};
+
 require('../promisify')(SocketAdmin);

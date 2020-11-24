@@ -82,7 +82,7 @@ define('admin/settings/email', ['ace/ace', 'admin/settings'], function (ace) {
 			hour = 0;
 		}
 
-		socket.emit('meta.getServerTime', {}, function (err, now) {
+		socket.emit('admin.getServerTime', {}, function (err, now) {
 			if (err) {
 				return app.alertError(err.message);
 			}
