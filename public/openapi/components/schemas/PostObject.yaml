@@ -74,6 +74,9 @@ PostObject:
           description: A category identifier
         slug:
           type: string
+        thumb:
+          type: string
+          description: An uploaded topic thumbnail
         deleted:
           type: number
         postcount:

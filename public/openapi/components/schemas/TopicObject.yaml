@@ -41,6 +41,9 @@ TopicObject:
       type: number
     locked:
       type: number
+    thumb:
+      type: string
+      description: An uploaded topic thumbnail
     pinned:
       type: number
       description: Whether or not this particular topic is pinned to the top of the
@@ -221,8 +224,6 @@ TopicObject:
         description: HTML injected into the theme
     index:
       type: number
-    thumb:
-      type: string
   required:
     - tid
     - uid
