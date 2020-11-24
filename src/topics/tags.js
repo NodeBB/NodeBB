@@ -120,7 +120,7 @@ module.exports = function (Topics) {
 		await Topics.createEmptyTag(newTagName);
 		const allCids = {};
 		await batch.processSortedSet('tag:' + tag + ':topics', async function (tids) {
-			const topicData = await Topics.getTopicsFields(tids, ['cid']);
+			const topicData = await Topics.getTopicsFields(tids, ['tid', 'cid']);
 			const cids = topicData.map(t => t.cid);
 			topicData.forEach((t) => { allCids[t.cid] = true; });
 			const scores = await db.sortedSetScores('tag:' + tag + ':topics', tids);
@@ -129,7 +129,9 @@ module.exports = function (Topics) {
 			await db.sortedSetRemove('tag:' + tag + ':topics', tids);
 
 			// update cid:<cid>:tag:<tag>:topics
-			await db.sortedSetAdd(cids.map(cid => 'cid:' + cid + ':tag:' + newTagName + ':topics'), scores, tids);
+			await db.sortedSetAddBulk(topicData.map(
+				(t, index) => ['cid:' + t.cid + ':tag:' + newTagName + ':topics', scores[index], t.tid]
+			));
 			await db.sortedSetRemove(cids.map(cid => 'cid:' + cid + ':tag:' + tag + ':topics'), tids);
 
 			// update topic:<tid>:tags

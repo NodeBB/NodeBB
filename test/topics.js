@@ -1991,23 +1991,30 @@ describe('Topic\'s', function () {
 			const title = 'test title';
 			const postResult = await topics.post({ uid: adminUid, tags: ['movedtag1', 'movedtag2'], title: title, content: 'topic 1 content', cid: cid1 });
 
+			await topics.post({ uid: adminUid, tags: ['movedtag1'], title: title, content: 'topic 1 content', cid: cid1 });
+			await topics.post({ uid: adminUid, tags: ['movedtag2'], title: title, content: 'topic 1 content', cid: cid2 });
+
 			let result1 = await topics.getCategoryTagsData(cid1, 0, -1);
 			let result2 = await topics.getCategoryTagsData(cid2, 0, -1);
 			assert.deepStrictEqual(result1, [
-				{ value: 'movedtag1', score: 1, bgColor: '', color: '', valueEscaped: 'movedtag1' },
+				{ value: 'movedtag1', score: 2, bgColor: '', color: '', valueEscaped: 'movedtag1' },
 				{ value: 'movedtag2', score: 1, bgColor: '', color: '', valueEscaped: 'movedtag2' },
 			]);
-			assert.deepStrictEqual(result2, []);
+			assert.deepStrictEqual(result2, [
+				{ value: 'movedtag2', score: 1, bgColor: '', color: '', valueEscaped: 'movedtag2' },
+			]);
 
 			// after moving values should update properly
 			await topics.tools.move(postResult.topicData.tid, { cid: cid2, uid: adminUid });
 
 			result1 = await topics.getCategoryTagsData(cid1, 0, -1);
 			result2 = await topics.getCategoryTagsData(cid2, 0, -1);
-			assert.deepStrictEqual(result1, []);
-			assert.deepStrictEqual(result2, [
+			assert.deepStrictEqual(result1, [
 				{ value: 'movedtag1', score: 1, bgColor: '', color: '', valueEscaped: 'movedtag1' },
-				{ value: 'movedtag2', score: 1, bgColor: '', color: '', valueEscaped: 'movedtag2' },
+			]);
+			assert.deepStrictEqual(result2, [
+				{ value: 'movedtag2', score: 2, bgColor: '', color: '', valueEscaped: 'movedtag2' },
+				{ value: 'movedtag1', score: 1, bgColor: '', color: '', valueEscaped: 'movedtag1' },
 			]);
 		});
 	});
