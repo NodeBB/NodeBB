@@ -13,17 +13,6 @@ const utils = require('../utils');
 const batch = require('../batch');
 const cache = require('../cache');
 
-// search ?
-
-
-// 'cid:<cid>:tags:<tag>:topics' timestamp <tid> (done)
-// topic move, update cid tags on both cids (done)
-// 'cid:<cid>:tags' numTags '<tag>' (done)
-// on topic create add tags to cid:<cid>:tags (done)
-// topic purge remove tags from cid:<cid>:tags (done)
-// upgrade script to create the 2 zsets (done)
-
-
 module.exports = function (Topics) {
 	Topics.createTags = async function (tags, tid, timestamp) {
 		if (!Array.isArray(tags) || !tags.length) {
