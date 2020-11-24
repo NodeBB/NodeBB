@@ -124,7 +124,7 @@ module.exports = function (Posts) {
 		}
 
 		if (data.thumb) {
-			await topics.resizeAndUploadThumb(data);
+			await topics.thumbs.resizeAndUpload(data);
 			newTopicData.thumb = data.thumb;
 		}
 

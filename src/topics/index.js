@@ -29,7 +29,7 @@ require('./tags')(Topics);
 require('./teaser')(Topics);
 require('./suggested')(Topics);
 require('./tools')(Topics);
-require('./thumb')(Topics);
+Topics.thumbs = require('./thumbs');
 require('./bookmarks')(Topics);
 require('./merge')(Topics);
 
