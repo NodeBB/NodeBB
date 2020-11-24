@@ -1876,10 +1876,11 @@ describe('Topic\'s', function () {
 			const cid = category.cid;
 			await topics.post({ uid: adminUid, tags: ['willbedeleted', 'notthis'], title: 'tag topic', content: 'topic 1 content', cid: cid });
 			let categoryTags = await topics.getCategoryTags(cid, 0, -1);
-			assert.deepStrictEqual(categoryTags, ['willbedeleted', 'notthis']);
+			assert(categoryTags.includes('willbedeleted'));
+			assert(categoryTags.includes('notthis'));
 			await topics.deleteTags(['willbedeleted']);
 			categoryTags = await topics.getCategoryTags(cid, 0, -1);
-			assert.deepStrictEqual(categoryTags, ['notthis']);
+			assert(categoryTags.includes('notthis'));
 		});
 
 		it('should add and remove tags from topics properly', async () => {

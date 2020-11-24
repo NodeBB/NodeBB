@@ -28,6 +28,7 @@ module.exports = function (Categories) {
 	async function purgeCategory(cid) {
 		await db.sortedSetRemove('categories:cid', cid);
 		await removeFromParent(cid);
+		await deleteTags(cid);
 		await db.deleteAll([
 			'cid:' + cid + ':tids',
 			'cid:' + cid + ':tids:pinned',
@@ -70,5 +71,11 @@ module.exports = function (Categories) {
 			'cid:' + cid + ':children',
 			'cid:' + cid + ':tag:whitelist',
 		]);
+	}
+
+	async function deleteTags(cid) {
+		const tags = await db.getSortedSetMembers('cid:' + cid + ':tags');
+		await db.deleteAll(tags.map(tag => 'cid:' + cid + ':tag:' + tag + ':topics'));
+		await db.delete('cid:' + cid + ':tags');
 	}
 };
