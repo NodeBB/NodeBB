@@ -49,9 +49,6 @@ get:
                           type: number
                         viewcount:
                           type: number
-                        thumb:
-                          type: string
-                          description: An uploaded topic thumbnail
                         postercount:
                           type: number
                         teaserPid:

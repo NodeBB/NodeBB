@@ -42,9 +42,6 @@ get:
                 type: number
               viewcount:
                 type: number
-              thumb:
-                type: string
-                description: An uploaded topic thumbnail
               deleted:
                 type: number
               locked:

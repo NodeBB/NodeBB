@@ -53,9 +53,6 @@ get:
                     type: number
                   viewcount:
                     type: number
-                  thumb:
-                    type: string
-                    description: An uploaded topic thumbnail
                   postercount:
                     type: number
                     description: The number of unique users who made a post in this topic
