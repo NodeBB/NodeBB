@@ -168,7 +168,7 @@ paths:
   "/api/categories/{cid}/moderators":
     $ref: 'read/categories/cid/moderators.yaml'
   "/api/topic/{topic_id}/{slug}/{post_index}":
-    $ref: 'read/topic/topic_id/slug/post_index.yaml'
+    $ref: 'read/topic/topic_id.yaml'
   /api/recent:
     $ref: 'read/recent.yaml'
   "/api/recent/posts/{term}":

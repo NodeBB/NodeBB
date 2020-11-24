@@ -89,7 +89,7 @@ get:
                   tags:
                     type: array
                     items:
-                      $ref: ../../../../components/schemas/TagObject.yaml#/TagObject
+                      $ref: ../../components/schemas/TagObject.yaml#/TagObject
                   posts:
                     type: array
                     items:
@@ -277,7 +277,7 @@ get:
                           type: number
                           description: The flag identifier, if this particular post has been flagged before
                   category:
-                    $ref: ../../../../components/schemas/CategoryObject.yaml#/CategoryObject
+                    $ref: ../../components/schemas/CategoryObject.yaml#/CategoryObject
                   tagWhitelist:
                     type: array
                     items:
@@ -325,7 +325,7 @@ get:
                   related:
                     type: array
                     items:
-                      $ref: ../../../../components/schemas/TopicObject.yaml#/TopicObject
+                      $ref: ../../components/schemas/TopicObject.yaml#/TopicObject
                   unreplied:
                     type: boolean
                   icons:
@@ -402,7 +402,7 @@ get:
                   postIndex:
                     type: number
                   loggedInUser:
-                    $ref: ../../../../components/schemas/UserObject.yaml#/UserObject
-              - $ref: ../../../../components/schemas/Pagination.yaml#/Pagination
-              - $ref: ../../../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
-              - $ref: ../../../../components/schemas/CommonProps.yaml#/CommonProps
+                    $ref: ../../components/schemas/UserObject.yaml#/UserObject
+              - $ref: ../../components/schemas/Pagination.yaml#/Pagination
+              - $ref: ../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../../components/schemas/CommonProps.yaml#/CommonProps
