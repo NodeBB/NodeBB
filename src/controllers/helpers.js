@@ -357,9 +357,26 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 		});
 	} else if (payload instanceof Error) {
 		const message = payload.message;
+		const response = {};
 
 		// Update status code based on some common error codes
 		switch (payload.message) {
+			case '[[error:user-banned]]': {
+				const [reason, expiry] = await Promise.all([
+					user.bans.getReason(res.req.uid),
+					user.getUserField(res.req.uid, 'banned:expire'),
+				]);
+
+				response.reason = reason;
+				if (expiry) {
+					Object.assign(response, {
+						expiry,
+						expiryISO: new Date(expiry).toISOString(),
+						expiryLocaleString: new Date(expiry).toLocaleString(),
+					});
+				}
+			} // intentional fall through
+
 			case '[[error:no-privileges]]':
 				statusCode = 403;
 				break;
@@ -370,6 +387,7 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 		}
 
 		const returnPayload = helpers.generateError(statusCode, message);
+		returnPayload.response = response;
 
 		if (global.env === 'development') {
 			returnPayload.stack = payload.stack;
