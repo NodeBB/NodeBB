@@ -91,7 +91,7 @@ UserNotifications.getNotifications = async function (nids, uid) {
 			notification.readClass = !notification.read ? 'unread' : '';
 		}
 
-		return notification && notification.path;
+		return notification;
 	});
 
 	await deleteUserNids(deletedNids, uid);
