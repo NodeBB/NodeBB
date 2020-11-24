@@ -9,8 +9,23 @@ const path = require('path');
 module.exports = function (app) {
 	var router = express.Router();
 
-	router.get('/test', function (req, res) {
-		res.redirect(404);
+	router.get('/test', async function (req, res) {
+		// res.redirect(404);
+		var db = require('../database');
+		// await upgrade();
+
+		const cids = await db.getSortedSetRevRange('categories:cid', 0, -1);
+		console.log('cids.length', cids.length);
+		var st = process.hrtime();
+		const result = await db.getSortedSetRevUnion({
+			// sets: ['cid:3:tags', 'cid:4:tags'],
+			sets: cids.map(cid => 'cid:' + cid + ':tags'),
+			withScores: true,
+			start: 0,
+			stop: 99,
+		});
+		process.profile('st', st);
+		res.json(result);
 	});
 
 	// Redoc

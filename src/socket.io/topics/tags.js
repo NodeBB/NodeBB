@@ -16,6 +16,13 @@ module.exports = function (SocketTopics) {
 	};
 
 	SocketTopics.autocompleteTags = async function (socket, data) {
+		if (data.cid) {
+			const canRead = await privileges.categories.can('topics:read', data.cid, socket.uid);
+			if (!canRead) {
+				throw new Error('[[error:no-privileges]]');
+			}
+		}
+		data.cids = await categories.getCidsByPrivilege('categories:cid', socket.uid, 'topics:read');
 		return await topics.autocompleteTags(data);
 	};
 
@@ -32,6 +39,13 @@ module.exports = function (SocketTopics) {
 		if (!allowed) {
 			throw new Error('[[error:no-privileges]]');
 		}
+		if (data.cid) {
+			const canRead = await privileges.categories.can('topics:read', data.cid, uid);
+			if (!canRead) {
+				throw new Error('[[error:no-privileges]]');
+			}
+		}
+		data.cids = await categories.getCidsByPrivilege('categories:cid', uid, 'topics:read');
 		return await method(data);
 	}
 
