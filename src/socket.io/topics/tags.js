@@ -23,11 +23,13 @@ module.exports = function (SocketTopics) {
 			}
 		}
 		data.cids = await categories.getCidsByPrivilege('categories:cid', socket.uid, 'topics:read');
-		return await topics.autocompleteTags(data);
+		const result = await topics.autocompleteTags(data);
+		return result.map(tag => tag.value);
 	};
 
 	SocketTopics.searchTags = async function (socket, data) {
-		return await searchTags(socket.uid, topics.searchTags, data);
+		const result = await searchTags(socket.uid, topics.searchTags, data);
+		return result.map(tag => tag.value);
 	};
 
 	SocketTopics.searchAndLoadTags = async function (socket, data) {
