@@ -405,7 +405,7 @@ module.exports = function (Topics) {
 		if (cached !== undefined) {
 			return cached;
 		}
-		const tags = await db.getSortedSetRevRange('tags:topic:count', 0, -1);
+		const tags = await db.getSortedSetRevRangeWithScores('tags:topic:count', 0, -1);
 		cache.set('tags:topic:count', tags);
 		return tags;
 	}
@@ -418,15 +418,15 @@ module.exports = function (Topics) {
 		}
 		let tags = [];
 		if (Array.isArray(tagWhitelist[0]) && tagWhitelist[0].length) {
-			tags = tagWhitelist[0];
+			const scores = await db.sortedSetScores('cid:' + data.cid + ':tags', tagWhitelist[0]);
+			tags = tagWhitelist[0].map((tag, index) => ({ value: tag, score: scores[index] }));
 		} else if (data.cids) {
-			var st = process.hrtime();
 			tags = await db.getSortedSetRevUnion({
 				sets: data.cids.map(cid => 'cid:' + cid + ':tags'),
 				start: 0,
 				stop: -1,
+				withScores: true,
 			});
-			process.profile('gg', st);
 		} else {
 			tags = await getAllTags();
 		}
@@ -435,7 +435,7 @@ module.exports = function (Topics) {
 
 		const matches = [];
 		for (let i = 0; i < tags.length; i += 1) {
-			if (tags[i].toLowerCase().startsWith(query)) {
+			if (tags[i].value && tags[i].value.toLowerCase().startsWith(query)) {
 				matches.push(tags[i]);
 				if (matches.length > 39) {
 					break;
@@ -443,7 +443,7 @@ module.exports = function (Topics) {
 			}
 		}
 
-		matches.sort();
+		matches.sort((a, b) => b.score - a.score);
 		return { matches: matches };
 	}
 
@@ -459,13 +459,10 @@ module.exports = function (Topics) {
 		}
 		const tags = await Topics.searchTags(data);
 
-		const [counts, tagData] = await Promise.all([
-			db.sortedSetScores('tags:topic:count', tags),
-			Topics.getTagData(tags.map(tag => ({ value: tag }))),
-		]);
+		const tagData = await Topics.getTagData(tags.map(tag => ({ value: tag.value })));
 
 		tagData.forEach(function (tag, index) {
-			tag.score = counts[index];
+			tag.score = tags[index].score;
 		});
 		tagData.sort((a, b) => b.score - a.score);
 		searchResult.tags = tagData;

@@ -56,8 +56,8 @@ module.exports = function (SocketTopics) {
 
 		const start = parseInt(data.after, 10);
 		const stop = start + 99;
-		const tags = await topics.getTags(start, stop);
-
+		const cids = await categories.getCidsByPrivilege('categories:cid', socket.uid, 'topics:read');
+		const tags = await topics.getCategoryTagsData(cids, start, stop);
 		return { tags: tags.filter(Boolean), nextStart: stop + 1 };
 	};
 };
