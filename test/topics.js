@@ -1880,6 +1880,7 @@ describe('Topic\'s', function () {
 			assert(categoryTags.includes('notthis'));
 			await topics.deleteTags(['willbedeleted']);
 			categoryTags = await topics.getCategoryTags(cid, 0, -1);
+			assert(!categoryTags.includes('willbedeleted'));
 			assert(categoryTags.includes('notthis'));
 		});
 
