@@ -1,5 +1,6 @@
 'use strict';
 
+const colors = require('colors/safe');
 const nconf = require('nconf');
 const validator = require('validator');
 const querystring = require('querystring');
@@ -357,9 +358,14 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 		});
 	} else if (payload instanceof Error) {
 		const message = payload.message;
+		const response = {};
 
 		// Update status code based on some common error codes
 		switch (payload.message) {
+			case '[[error:user-banned]]':
+				Object.assign(response, await generateBannedResponse(res));
+				// intentional fall through
+
 			case '[[error:no-privileges]]':
 				statusCode = 403;
 				break;
@@ -370,9 +376,11 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 		}
 
 		const returnPayload = helpers.generateError(statusCode, message);
+		returnPayload.response = response;
 
 		if (global.env === 'development') {
 			returnPayload.stack = payload.stack;
+			process.stdout.write(`[${colors.yellow('api')}] Exception caught, error with stack trace follows:\n`);
 			process.stdout.write(payload.stack);
 		}
 		res.status(statusCode).json(returnPayload);
@@ -381,6 +389,25 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 		res.status(statusCode).json(helpers.generateError(statusCode));
 	}
 };
+
+async function generateBannedResponse(res) {
+	const response = {};
+	const [reason, expiry] = await Promise.all([
+		user.bans.getReason(res.req.uid),
+		user.getUserField(res.req.uid, 'banned:expire'),
+	]);
+
+	response.reason = reason;
+	if (expiry) {
+		Object.assign(response, {
+			expiry,
+			expiryISO: new Date(expiry).toISOString(),
+			expiryLocaleString: new Date(expiry).toLocaleString(),
+		});
+	}
+
+	return response;
+}
 
 helpers.generateError = (statusCode, message) => {
 	var payload = {

@@ -60,14 +60,4 @@ function leaveCurrentRoom(socket) {
 	}
 }
 
-SocketMeta.getServerTime = function (socket, data, callback) {
-	// Returns server time in milliseconds
-	const now = new Date();
-
-	callback(null, {
-		timestamp: now.getTime(),
-		offset: now.getTimezoneOffset(),
-	});
-};
-
 module.exports = SocketMeta;
