@@ -65,7 +65,6 @@ define('admin/settings', ['uploader', 'mousetrap'], function (uploader, mousetra
 
 		saveBtn.off('click').on('click', function (e) {
 			e.preventDefault();
-			console.log(fields);
 
 			saveFields(fields, function onFieldsSaved(err) {
 				if (err) {
