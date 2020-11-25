@@ -8,3 +8,5 @@ if (require.main !== module) {
 		return require(path);
 	};
 }
+// this forces the current working directory to always be the directory containing NodeBB
+process.chdir(__dirname);
