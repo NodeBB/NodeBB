@@ -37,6 +37,7 @@ SocketUser.exists = async function (socket, data) {
 
 SocketUser.deleteAccount = async function (socket, data) {
 	sockets.warnDeprecated(socket, 'DELETE /api/v3/users/:uid/account');
+	data.uid = socket.uid;
 	await api.users.deleteAccount(socket, data);
 };
 

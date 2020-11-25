@@ -82,15 +82,15 @@ usersAPI.update = async function (caller, data) {
 };
 
 usersAPI.delete = async function (caller, { uid, password }) {
-	processDeletion({ uid: uid, method: 'delete', password, caller });
+	await processDeletion({ uid: uid, method: 'delete', password, caller });
 };
 
 usersAPI.deleteContent = async function (caller, { uid, password }) {
-	processDeletion({ uid, method: 'deleteContent', password, caller });
+	await processDeletion({ uid, method: 'deleteContent', password, caller });
 };
 
 usersAPI.deleteAccount = async function (caller, { uid, password }) {
-	processDeletion({ uid, method: 'deleteAccount', password, caller });
+	await processDeletion({ uid, method: 'deleteAccount', password, caller });
 };
 
 usersAPI.deleteMany = async function (caller, data) {
