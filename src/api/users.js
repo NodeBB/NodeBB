@@ -265,7 +265,6 @@ async function processDeletion({ uid, method, password, caller }) {
 		}
 	}
 
-	// TODO: clear user tokens for this uid
 	await flags.resolveFlag('user', uid, caller.uid);
 
 	let userData;
