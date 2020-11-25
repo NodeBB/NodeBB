@@ -28,7 +28,7 @@ module.exports = function (Topics) {
 		if (!Array.isArray(postData) || !postData.length) {
 			return [];
 		}
-		var pids = postData.map(post => post && post.pid);
+		const pids = postData.map(post => post && post.pid);
 
 		async function getPostUserData(field, method) {
 			const uids = _.uniq(postData.filter(p => p && parseInt(p[field], 10) >= 0).map(p => p[field]));
@@ -80,9 +80,10 @@ module.exports = function (Topics) {
 	};
 
 	Topics.modifyPostsByPrivilege = function (topicData, topicPrivileges) {
-		var loggedIn = parseInt(topicPrivileges.uid, 10) > 0;
+		const loggedIn = parseInt(topicPrivileges.uid, 10) > 0;
 		topicData.posts.forEach(function (post) {
 			if (post) {
+				post.topicOwnerPost = parseInt(topicData.uid, 10) === parseInt(post.uid, 10);
 				post.display_edit_tools = topicPrivileges.isAdminOrMod || (post.selfPost && topicPrivileges['posts:edit']);
 				post.display_delete_tools = topicPrivileges.isAdminOrMod || (post.selfPost && topicPrivileges['posts:delete']);
 				post.display_moderator_tools = post.display_edit_tools || post.display_delete_tools;

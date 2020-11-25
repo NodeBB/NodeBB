@@ -263,6 +263,8 @@ get:
                               type: number
                         selfPost:
                           type: boolean
+                        topicOwnerPost:
+                          type: boolean
                         display_edit_tools:
                           type: boolean
                         display_delete_tools:
