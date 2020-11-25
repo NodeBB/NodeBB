@@ -6,13 +6,16 @@ define('admin/manage/privileges', [
 	'benchpress',
 	'categorySelector',
 	'mousetrap',
-], function (autocomplete, translator, Benchpress, categorySelector, mousetrap) {
+	'admin/modules/checkboxRowSelector',
+], function (autocomplete, translator, Benchpress, categorySelector, mousetrap, checkboxRowSelector) {
 	var Privileges = {};
 
 	var cid;
 
 	Privileges.init = function () {
 		cid = isNaN(parseInt(ajaxify.data.selectedCategory.cid, 10)) ? 'admin' : ajaxify.data.selectedCategory.cid;
+
+		checkboxRowSelector.init('.privilege-table-container');
 
 		categorySelector.init($('[component="category-selector"]'), function (category) {
 			cid = parseInt(category.cid, 10);
@@ -52,12 +55,14 @@ define('admin/manage/privileges', [
 					wrapperEl.attr('data-delta', delta);
 					Privileges.exposeAssumedPrivileges();
 				}
+				checkboxRowSelector.updateState(checkboxEl);
 			} else {
 				app.alertError('[[error:invalid-data]]');
 			}
 		});
 
 		Privileges.exposeAssumedPrivileges();
+		checkboxRowSelector.updateAll();
 		Privileges.addEvents();	// events with confirmation modals
 	};
 
@@ -145,6 +150,7 @@ define('admin/manage/privileges', [
 			}, function (html) {
 				$('.privilege-table-container').html(html);
 				Privileges.exposeAssumedPrivileges();
+				checkboxRowSelector.updateAll();
 
 				hightlightRowByDataAttr('data-group-name', groupToHighlight);
 			});
@@ -158,7 +164,7 @@ define('admin/manage/privileges', [
 			this arrangement in the table
 		*/
 		var privs = [];
-		$('.privilege-table tr[data-group-name="registered-users"] td input[type="checkbox"]').parent().each(function (idx, el) {
+		$('.privilege-table tr[data-group-name="registered-users"] td input[type="checkbox"]:not(.checkbox-helper)').parent().each(function (idx, el) {
 			if ($(el).find('input').prop('checked')) {
 				privs.push(el.getAttribute('data-privilege'));
 			}

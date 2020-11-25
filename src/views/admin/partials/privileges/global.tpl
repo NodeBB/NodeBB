@@ -3,6 +3,7 @@
 						<thead>
 							<tr>
 								<th colspan="2">[[admin/manage/categories:privileges.section-group]]</th>
+								<th class="text-center">Select/Clear All</th>
 								<!-- BEGIN privileges.labels.groups -->
 								<th class="text-center">{privileges.labels.groups.name}</th>
 								<!-- END privileges.labels.groups -->
@@ -18,6 +19,7 @@
 									{privileges.groups.name}
 								</td>
 								<td></td>
+								<td class="text-center"><input autocomplete="off" type="checkbox" class="checkbox-helper"></td>
 								{function.spawnPrivilegeStates, privileges.groups.name, ../privileges}
 							</tr>
 							<!-- END privileges.groups -->
@@ -45,6 +47,7 @@
 							</tr><tr><!-- zebrastripe reset --></tr>
 							<tr>
 								<th colspan="2">[[admin/manage/categories:privileges.section-user]]</th>
+								<th class="text-center">Select/Clear All</th>
 								<!-- BEGIN privileges.labels.users -->
 								<th class="text-center">{privileges.labels.users.name}</th>
 								<!-- END privileges.labels.users -->
@@ -61,6 +64,7 @@
 									<!-- ENDIF ../picture -->
 								</td>
 								<td>{privileges.users.username}</td>
+								<td class="text-center"><input autocomplete="off" type="checkbox" class="checkbox-helper"></td>
 								{function.spawnPrivilegeStates, privileges.users.username, ../privileges}
 							</tr>
 							<!-- END privileges.users -->
