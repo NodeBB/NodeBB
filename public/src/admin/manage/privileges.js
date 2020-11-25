@@ -3,11 +3,10 @@
 define('admin/manage/privileges', [
 	'autocomplete',
 	'translator',
-	'benchpress',
 	'categorySelector',
 	'mousetrap',
 	'admin/modules/checkboxRowSelector',
-], function (autocomplete, translator, Benchpress, categorySelector, mousetrap, checkboxRowSelector) {
+], function (autocomplete, translator, categorySelector, mousetrap, checkboxRowSelector) {
 	var Privileges = {};
 
 	var cid;
