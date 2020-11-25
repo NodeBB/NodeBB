@@ -194,7 +194,7 @@ app.cacheBuster = null;
 	};
 
 	app.handleInvalidSession = function () {
-		if (app.flags._logout) {
+		if (app.flags._login || app.flags._logout) {
 			return;
 		}
 
