@@ -15,7 +15,7 @@ module.exports = function (SocketTopics) {
 
 		const [userPrivileges, topicData] = await Promise.all([
 			privileges.topics.get(data.tid, socket.uid),
-			topics.getTopicFields(data.tid, ['postcount', 'deleted']),
+			topics.getTopicFields(data.tid, ['postcount', 'deleted', 'uid']),
 		]);
 
 		if (!userPrivileges['topics:read'] || (topicData.deleted && !userPrivileges.view_deleted)) {
