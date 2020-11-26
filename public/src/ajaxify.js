@@ -423,16 +423,34 @@ ajaxify = window.ajaxify || {};
 $(document).ready(function () {
 	$(window).on('popstate', function (ev) {
 		ev = ev.originalEvent;
+		let url = ev.state.url;
+		const execute = function () {
+			ajaxify.go(url, function () {
+				$(window).trigger('action:popstate', { url: url });
+			}, true);
+		};
 
 		if (ev !== null && ev.state) {
-			if (ev.state.url === null && ev.state.returnPath !== undefined) {
+			if (url === null && ev.state.returnPath !== undefined) {
 				window.history.replaceState({
 					url: ev.state.returnPath,
 				}, ev.state.returnPath, config.relative_path + '/' + ev.state.returnPath);
-			} else if (ev.state.url !== undefined) {
-				ajaxify.go(ev.state.url, function () {
-					$(window).trigger('action:popstate', { url: ev.state.url });
-				}, true);
+			} else if (url !== undefined) {
+				if (url.startsWith('topic/')) {
+					// Check topic exists
+					fetch(`${config.relative_path}/${url}`, {
+						method: 'HEAD',
+						cache: 'no-cache',
+					}).then((res) => {
+						if (res.status === 404) {
+							url = '';
+						}
+
+						execute();
+					});
+				} else {
+					execute();
+				}
 			}
 		}
 	});
