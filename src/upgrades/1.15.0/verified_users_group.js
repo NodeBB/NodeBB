@@ -7,7 +7,7 @@ const user = require('../../user');
 const groups = require('../../groups');
 const meta = require('../../meta');
 const privileges = require('../../privileges');
-
+const now = Date.now();
 module.exports = {
 	name: 'Create verified/unverified user groups',
 	timestamp: Date.UTC(2020, 9, 13),
@@ -46,14 +46,17 @@ module.exports = {
 			const verified = userData.filter(u => parseInt(u['email:confirmed'], 10) === 1);
 			const unverified = userData.filter(u => parseInt(u['email:confirmed'], 10) !== 1);
 
-			for (const user of verified) {
-				// eslint-disable-next-line no-await-in-loop
-				await groups.join('verified-users', user.uid);
-			}
-			for (const user of unverified) {
-				// eslint-disable-next-line no-await-in-loop
-				await groups.join('unverified-users', user.uid);
-			}
+			await db.sortedSetAdd(
+				'group:verified-users:members',
+				verified.map(() => now),
+				verified.map(u => u.uid)
+			);
+
+			await db.sortedSetAdd(
+				'group:unverified-users:members',
+				verified.map(() => now),
+				unverified.map(u => u.uid)
+			);
 		}, {
 			batch: 500,
 			progress: this.progress,
@@ -61,6 +64,11 @@ module.exports = {
 
 		await db.delete('users:notvalidated');
 		await updatePrivilges();
+
+		const verifiedCount = await db.sortedSetCard('group:verified-users:members');
+		const unverifiedCount = await db.sortedSetCard('group:unverified-users:members');
+		await db.setObjectField('group:verified-users', 'memberCount', verifiedCount);
+		await db.setObjectField('group:unverified-users', 'memberCount', unverifiedCount);
 	},
 };
 
