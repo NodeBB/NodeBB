@@ -190,6 +190,22 @@ describe('Topic\'s', function () {
 				done();
 			});
 		});
+
+		it('should delete nested relies properly', async function () {
+			const result = await topics.post({ uid: fooUid, title: 'nested test', content: 'main post', cid: topic.categoryId });
+			const reply1 = await topics.reply({ uid: fooUid, content: 'reply post 1', tid: result.topicData.tid });
+			const reply2 = await topics.reply({ uid: fooUid, content: 'reply post 2', tid: result.topicData.tid, toPid: reply1.pid });
+			let replies = await socketPosts.getReplies({ uid: fooUid }, reply1.pid);
+			assert.strictEqual(replies.length, 1);
+			assert.strictEqual(replies[0].content, 'reply post 2');
+			let toPid = await posts.getPostField(reply2.pid, 'toPid');
+			assert.strictEqual(parseInt(toPid, 10), parseInt(reply1.pid, 10));
+			await posts.purge(reply1.pid, fooUid);
+			replies = await socketPosts.getReplies({ uid: fooUid }, reply1.pid);
+			assert.strictEqual(replies.length, 0);
+			toPid = await posts.getPostField(reply2.pid, 'toPid');
+			assert.strictEqual(toPid, null);
+		});
 	});
 
 	describe('Get methods', function () {

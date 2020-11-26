@@ -122,13 +122,18 @@ module.exports = function (Posts) {
 	}
 
 	async function deletePostFromReplies(postData) {
-		if (!parseInt(postData.toPid, 10)) {
-			return;
+		const replyPids = await db.getSortedSetMembers('pid:' + postData.pid + ':replies');
+		const promises = [
+			db.deleteObjectFields(
+				replyPids.map(pid => 'post:' + pid), ['toPid']
+			),
+			db.delete('pid:' + postData.pid + ':replies'),
+		];
+		if (parseInt(postData.toPid, 10)) {
+			promises.push(db.sortedSetRemove('pid:' + postData.toPid + ':replies', postData.pid));
+			promises.push(db.decrObjectField('post:' + postData.toPid, 'replies'));
 		}
-		await Promise.all([
-			db.sortedSetRemove('pid:' + postData.toPid + ':replies', postData.pid),
-			db.decrObjectField('post:' + postData.toPid, 'replies'),
-		]);
+		await Promise.all(promises);
 	}
 
 	async function deletePostFromGroups(postData) {
