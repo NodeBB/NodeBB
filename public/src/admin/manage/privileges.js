@@ -29,7 +29,7 @@ define('admin/manage/privileges', [
 	};
 
 	Privileges.setupPrivilegeTable = function () {
-		$('.privilege-table-container').on('change', 'input[type="checkbox"]', function () {
+		$('.privilege-table-container').on('change', 'input[type="checkbox"]:not(.checkbox-helper)', function () {
 			var checkboxEl = $(this);
 			var wrapperEl = checkboxEl.parent();
 			var privilege = wrapperEl.attr('data-privilege');
