@@ -13,6 +13,20 @@ function setupWinston() {
 		return;
 	}
 
+	// allow winton.error to log error objects properly
+	// https://github.com/NodeBB/NodeBB/issues/6848
+	// const winstonError = winston.error;
+	// winston.error = function (msg, error) {
+	// 	if (msg instanceof Error) {
+	// 		winstonError(msg);
+	// 	} else if (error instanceof Error) {
+	// 		msg = msg + '\n' + error.stack;
+	// 		winstonError(msg);
+	// 	} else {
+	// 		winstonError.apply(null, arguments);
+	// 	}
+	// };
+
 	var formats = [];
 	if (nconf.get('log-colorize') !== 'false') {
 		formats.push(winston.format.colorize());
