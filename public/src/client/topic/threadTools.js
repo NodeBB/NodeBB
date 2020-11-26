@@ -215,6 +215,10 @@ define('forum/topic/threadTools', [
 				onEscape: true,
 				size: 'small',
 				buttons: {
+					cancel: {
+						label: '[[modules:bootbox.cancel]]',
+						className: 'btn-link',
+					},
 					save: {
 						label: '[[global:save]]',
 						className: 'btn-primary',
