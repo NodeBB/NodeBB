@@ -12,41 +12,43 @@ define('forum/topic/threadTools', [
 	ThreadTools.init = function (tid, topicContainer) {
 		renderMenu(topicContainer);
 
+		// function topicCommand(method, path, command, onComplete) {
 		topicContainer.on('click', '[component="topic/delete"]', function () {
-			topicCommand('delete', tid);
+			topicCommand('del', '/state', 'delete');
 			return false;
 		});
 
 		topicContainer.on('click', '[component="topic/restore"]', function () {
-			topicCommand('restore', tid);
+			topicCommand('put', '/state', 'restore');
 			return false;
 		});
 
 		topicContainer.on('click', '[component="topic/purge"]', function () {
-			topicCommand('purge', tid);
+			topicCommand('del', '', 'purge');
 			return false;
 		});
 
 		topicContainer.on('click', '[component="topic/lock"]', function () {
-			api.put(`/topics/${tid}/lock`);
+			topicCommand('put', '/lock', 'lock');
 			return false;
 		});
 
 		topicContainer.on('click', '[component="topic/unlock"]', function () {
-			api.del(`/topics/${tid}/lock`);
+			topicCommand('del', '/lock', 'unlock');
 			return false;
 		});
 
 		topicContainer.on('click', '[component="topic/pin"]', function () {
-			api.put(`/topics/${tid}/pin`);
+			topicCommand('put', '/pin', 'pin');
 			return false;
 		});
 
 		topicContainer.on('click', '[component="topic/unpin"]', function () {
-			api.del(`/topics/${tid}/pin`);
+			topicCommand('del', '/pin', 'unpin');
 			return false;
 		});
 
+		// todo: should also use topicCommand, but no write api call exists for this yet
 		topicContainer.on('click', '[component="topic/mark-unread"]', function () {
 			socket.emit('topics.markUnread', tid, function (err) {
 				if (err) {
@@ -174,19 +176,72 @@ define('forum/topic/threadTools', [
 		});
 	}
 
-	function topicCommand(command, tid) {
-		translator.translate('[[topic:thread_tools.' + command + '_confirm]]', function (msg) {
-			bootbox.confirm(msg, function (confirm) {
-				if (!confirm) {
-					return;
-				}
+	function topicCommand(method, path, command, onComplete) {
+		if (!onComplete) {
+			onComplete = function () {};
+		}
+		const tid = ajaxify.data.tid;
+		const body = {};
+		const execute = function (ok) {
+			if (ok) {
+				api[method](`/topics/${tid}${path}`, body)
+					.then(onComplete)
+					.catch(app.alertError);
+			}
+		};
 
-				const method = command === 'restore' ? 'put' : 'del';
-				const suffix = command !== 'purge' ? '/state' : '';
-				api[method](`/topics/${tid}${suffix}`, undefined, undefined, 'default');
+		switch (command) {
+			case 'delete':
+			case 'restore':
+			case 'purge':
+				bootbox.confirm(`[[topic:thread_tools.${command}_confirm]]`, execute);
+				break;
+
+			case 'pin':
+				ThreadTools.requestPinExpiry(body, execute.bind(null, true));
+				break;
+
+			default:
+				execute(true);
+				break;
+		}
+	}
+
+	ThreadTools.requestPinExpiry = function (body, onSuccess) {
+		app.parseAndTranslate('modals/set-pin-expiry', {}, function (html) {
+			const modal = bootbox.dialog({
+				title: '[[topic:thread_tools.pin]]',
+				message: html,
+				onEscape: true,
+				size: 'small',
+				buttons: {
+					save: {
+						label: '[[global:save]]',
+						className: 'btn-primary',
+						callback: function () {
+							const expiryEl = modal.get(0).querySelector('#expiry');
+							let expiry = expiryEl.value;
+
+							// No expiry set
+							if (expiry === '') {
+								return onSuccess();
+							}
+
+							// Expiration date set
+							expiry = new Date(expiry);
+
+							if (expiry && expiry.getTime() > Date.now()) {
+								body.expiry = expiry.getTime();
+								onSuccess();
+							} else {
+								app.alertError('[[error:invalid-date]]');
+							}
+						},
+					},
+				},
 			});
 		});
-	}
+	};
 
 	ThreadTools.setLockedState = function (data) {
 		var threadEl = components.get('topic');
