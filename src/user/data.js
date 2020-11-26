@@ -60,7 +60,7 @@ module.exports = function (User) {
 
 		const uniqueUids = _.uniq(uids).filter(uid => uid > 0);
 
-		const results = await plugins.fireHook('filter:user.whitelistFields', { uids: uids, whitelist: fieldWhitelist.slice() });
+		const results = await plugins.hooks.fire('filter:user.whitelistFields', { uids: uids, whitelist: fieldWhitelist.slice() });
 		if (!fields.length) {
 			fields = results.whitelist;
 		} else {
@@ -69,7 +69,7 @@ module.exports = function (User) {
 		}
 
 		let users = await db.getObjectsFields(uniqueUids.map(uid => 'user:' + uid), fields);
-		const result = await plugins.fireHook('filter:user.getFields', {
+		const result = await plugins.hooks.fire('filter:user.getFields', {
 			uids: uniqueUids,
 			users: users,
 			fields: fields,
@@ -100,6 +100,10 @@ module.exports = function (User) {
 
 		if (fields.includes('banned') && !fields.includes('banned:expire')) {
 			addField('banned:expire');
+		}
+
+		if (fields.includes('username') && !fields.includes('fullname')) {
+			addField('fullname');
 		}
 	}
 
@@ -136,14 +140,29 @@ module.exports = function (User) {
 	};
 
 	async function modifyUserData(users, requestedFields, fieldsToRemove) {
-		users = await Promise.all(users.map(async function (user) {
+		let uidToSettings = {};
+		if (meta.config.showFullnameAsDisplayName) {
+			const uids = _.uniq(users.map(user => user.uid));
+			uidToSettings = _.zipObject(uids, await db.getObjectsFields(
+				uids.map(uid => 'user:' + uid + ':settings'),
+				['showfullname']
+			));
+		}
+		const uidToUser = {};
+		users.forEach(function (user) {
+			uidToUser[user.uid] = user;
+		});
+
+		await Promise.all(Object.keys(uidToUser).map(async function (uid) {
+			const user = uidToUser[uid];
 			if (!user) {
-				return user;
+				return;
 			}
 
 			db.parseIntFields(user, intFields, requestedFields);
 
 			if (user.hasOwnProperty('username')) {
+				parseDisplayName(user, uidToSettings);
 				user.username = validator.escape(user.username ? user.username.toString() : '');
 			}
 
@@ -154,6 +173,7 @@ module.exports = function (User) {
 			if (!parseInt(user.uid, 10)) {
 				user.uid = 0;
 				user.username = (user.hasOwnProperty('oldUid') && parseInt(user.oldUid, 10)) ? '[[global:former_user]]' : '[[global:guest]]';
+				user.displayname = user.username;
 				user.userslug = '';
 				user.picture = User.getDefaultAvatar();
 				user['icon:text'] = '?';
@@ -209,10 +229,26 @@ module.exports = function (User) {
 					user.banned = false;
 				}
 			}
-			return user;
 		}));
 
-		return await plugins.fireHook('filter:users.get', users);
+		return await plugins.hooks.fire('filter:users.get', users);
+	}
+
+	function parseDisplayName(user, uidToSettings) {
+		let showfullname = parseInt(meta.config.showfullname, 10) === 1;
+		if (uidToSettings[user.uid]) {
+			if (parseInt(uidToSettings[user.uid].showfullname, 10) === 0) {
+				showfullname = false;
+			} else if (parseInt(uidToSettings[user.uid].showfullname, 10) === 1) {
+				showfullname = true;
+			}
+		}
+
+		user.displayname = validator.escape(String(
+			meta.config.showFullnameAsDisplayName && showfullname && user.fullname ?
+				user.fullname :
+				user.username
+		));
 	}
 
 	function parseGroupTitle(user) {
@@ -253,7 +289,7 @@ module.exports = function (User) {
 		await db.setObject('user:' + uid, data);
 		for (const field in data) {
 			if (data.hasOwnProperty(field)) {
-				plugins.fireHook('action:user.set', { uid: uid, field: field, value: data[field], type: 'set' });
+				plugins.hooks.fire('action:user.set', { uid: uid, field: field, value: data[field], type: 'set' });
 			}
 		}
 	};
@@ -268,7 +304,7 @@ module.exports = function (User) {
 
 	async function incrDecrUserFieldBy(uid, field, value, type) {
 		const newValue = await db.incrObjectFieldBy('user:' + uid, field, value);
-		plugins.fireHook('action:user.set', { uid: uid, field: field, value: newValue, type: type });
+		plugins.hooks.fire('action:user.set', { uid: uid, field: field, value: newValue, type: type });
 		return newValue;
 	}
 };

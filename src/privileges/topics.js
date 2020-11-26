@@ -34,7 +34,7 @@ module.exports = function (privileges) {
 		const editable = isAdminOrMod;
 		const deletable = (privData['topics:delete'] && (isOwner || isModerator)) || isAdministrator;
 
-		return await plugins.fireHook('filter:privileges.topics.get', {
+		return await plugins.hooks.fire('filter:privileges.topics.get', {
 			'topics:reply': (privData['topics:reply'] && ((!topicData.locked && !topicData.deleted) || isModerator)) || isAdministrator,
 			'topics:read': privData['topics:read'] || isAdministrator,
 			'topics:tag': privData['topics:tag'] || isAdministrator,
@@ -78,7 +78,7 @@ module.exports = function (privileges) {
 
 		tids = topicsData.filter(t => cidsSet.has(t.cid) &&	(!t.deleted || canViewDeleted[t.cid] || results.isAdmin)).map(t => t.tid);
 
-		const data = await plugins.fireHook('filter:privileges.topics.filter', {
+		const data = await plugins.hooks.fire('filter:privileges.topics.filter', {
 			privilege: privilege,
 			uid: uid,
 			tids: tids,

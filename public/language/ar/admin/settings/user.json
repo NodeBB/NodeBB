@@ -16,6 +16,7 @@
 	"allow-account-deletion": "السماح بحذف الحساب",
 	"hide-fullname": "إخفاء الإسم الكامل عن المستخدمين",
 	"hide-email": "إخفاء البريد الإلكتروني عن المستخدمين",
+	"show-fullname-as-displayname": "Show user's full name as their display name if available",
 	"themes": "القوالب",
 	"disable-user-skins": "منع المستخدمين من اختيار سمة مخصص",
 	"account-protection": "حماية الحساب",

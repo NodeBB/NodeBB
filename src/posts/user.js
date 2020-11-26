@@ -36,7 +36,7 @@ module.exports = function (Posts) {
 			const [isMemberOfGroups, signature, customProfileInfo] = await Promise.all([
 				checkGroupMembership(userData.uid, userData.groupTitleArray),
 				parseSignature(userData, uid, canUseSignature),
-				plugins.fireHook('filter:posts.custom_profile_info', { profile: [], uid: userData.uid }),
+				plugins.hooks.fire('filter:posts.custom_profile_info', { profile: [], uid: userData.uid }),
 			]);
 
 			if (isMemberOfGroups && userData.groupTitleArray) {
@@ -49,7 +49,7 @@ module.exports = function (Posts) {
 			userData.signature = signature;
 			userData.custom_profile_info = customProfileInfo.profile;
 
-			return await plugins.fireHook('filter:posts.modifyUserInfo', userData);
+			return await plugins.hooks.fire('filter:posts.modifyUserInfo', userData);
 		}));
 	};
 
@@ -94,7 +94,7 @@ module.exports = function (Posts) {
 			'signature', 'banned', 'banned:expire', 'status',
 			'lastonline', 'groupTitle',
 		];
-		const result = await plugins.fireHook('filter:posts.addUserFields', {
+		const result = await plugins.hooks.fire('filter:posts.addUserFields', {
 			fields: fields,
 			uid: uid,
 			uids: uids,
@@ -166,7 +166,7 @@ module.exports = function (Posts) {
 			updateTopicPosters(postData, toUid),
 		]);
 
-		plugins.fireHook('action:post.changeOwner', {
+		plugins.hooks.fire('action:post.changeOwner', {
 			posts: _.cloneDeep(postData),
 			toUid: toUid,
 		});
@@ -228,7 +228,7 @@ module.exports = function (Posts) {
 		]);
 
 		const changedTopics = mainPosts.map(p => tidToTopic[p.tid]);
-		plugins.fireHook('action:topic.changeOwner', {
+		plugins.hooks.fire('action:topic.changeOwner', {
 			topics: _.cloneDeep(changedTopics),
 			toUid: toUid,
 		});

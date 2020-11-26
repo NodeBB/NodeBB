@@ -9,6 +9,7 @@
     "invalid-tid": "ID Topik Salah",
     "invalid-pid": "ID Post Salah",
     "invalid-uid": "ID User Salah",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "Username Salah",
     "invalid-email": "Email Salah",
     "invalid-fullname": "Invalid Fullname",

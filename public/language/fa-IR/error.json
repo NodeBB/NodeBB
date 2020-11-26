@@ -9,6 +9,7 @@
     "invalid-tid": "شناسه موضوع نامعتبر است.",
     "invalid-pid": "شناسه پست نامعتبر است.",
     "invalid-uid": "شناسه کاربر نامعتبر است.",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "نام کاربری نامعتبر است.",
     "invalid-email": "ایمیل نامعتبر است.",
     "invalid-fullname": "Invalid Fullname",

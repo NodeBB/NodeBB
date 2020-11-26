@@ -3,6 +3,7 @@
 const validator = require('validator');
 const nconf = require('nconf');
 
+const db = require('../../database');
 const user = require('../../user');
 const groups = require('../../groups');
 const plugins = require('../../plugins');
@@ -11,6 +12,7 @@ const utils = require('../../utils');
 const privileges = require('../../privileges');
 const translator = require('../../translator');
 const messaging = require('../../messaging');
+const categories = require('../../categories');
 
 const helpers = module.exports;
 
@@ -57,10 +59,6 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID) {
 	}
 
 	userData.isBlocked = results.isBlocked;
-	if (isAdmin || isSelf) {
-		userData.blocksCount = await user.getUserField(userData.uid, 'blocksCount');
-	}
-
 	userData.yourid = callerUID;
 	userData.theirid = userData.uid;
 	userData.isTargetAdmin = results.isTargetAdmin;
@@ -112,7 +110,10 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID) {
 	userData['cover:position'] = validator.escape(String(userData['cover:position'] || '50% 50%'));
 	userData['username:disableEdit'] = !userData.isAdmin && meta.config['username:disableEdit'];
 	userData['email:disableEdit'] = !userData.isAdmin && meta.config['email:disableEdit'];
-	const hookData = await plugins.fireHook('filter:helpers.getUserDataByUserSlug', { userData: userData, callerUID: callerUID });
+
+	await getCounts(userData, callerUID);
+
+	const hookData = await plugins.hooks.fire('filter:helpers.getUserDataByUserSlug', { userData: userData, callerUID: callerUID });
 	return hookData.userData;
 };
 
@@ -128,13 +129,40 @@ async function getAllData(uid, callerUID) {
 		ips: user.getIPs(uid, 4),
 		profile_menu: getProfileMenu(uid, callerUID),
 		groups: groups.getUserGroups([uid]),
-		sso: plugins.fireHook('filter:auth.list', { uid: uid, associations: [] }),
+		sso: plugins.hooks.fire('filter:auth.list', { uid: uid, associations: [] }),
 		canEdit: privileges.users.canEdit(callerUID, uid),
 		canBanUser: privileges.users.canBanUser(callerUID, uid),
 		isBlocked: user.blocks.is(uid, callerUID),
 		canViewInfo: privileges.global.can('view:users:info', callerUID),
 		hasPrivateChat: messaging.hasPrivateChat(callerUID, uid),
 	});
+}
+
+async function getCounts(userData, callerUID) {
+	const uid = userData.uid;
+	const cids = await categories.getCidsByPrivilege('categories:cid', callerUID, 'topics:read');
+	const promises = {
+		posts: db.sortedSetsCardSum(cids.map(c => 'cid:' + c + ':uid:' + uid + ':pids')),
+		best: db.sortedSetsCardSum(cids.map(c => 'cid:' + c + ':uid:' + uid + ':pids:votes')),
+		topics: db.sortedSetsCardSum(cids.map(c => 'cid:' + c + ':uid:' + uid + ':tids')),
+	};
+	if (userData.isAdmin || userData.isSelf) {
+		promises.ignored = db.sortedSetCard('uid:' + uid + ':ignored_tids');
+		promises.watched = db.sortedSetCard('uid:' + uid + ':followed_tids');
+		promises.upvoted = db.sortedSetCard('uid:' + uid + ':upvote');
+		promises.downvoted = db.sortedSetCard('uid:' + uid + ':downvote');
+		promises.bookmarks = db.sortedSetCard('uid:' + uid + ':bookmarks');
+		promises.uploaded = db.sortedSetCard('uid:' + uid + ':uploads');
+		promises.categoriesWatched = user.getWatchedCategories(uid);
+		promises.blocks = user.getUserField(userData.uid, 'blocksCount');
+	}
+	const counts = await utils.promiseParallel(promises);
+	counts.categoriesWatched = counts.categoriesWatched && counts.categoriesWatched.length;
+	counts.groups = userData.groups.length;
+	counts.following = userData.followingCount;
+	counts.followers = userData.followerCount;
+	userData.blocksCount = counts.blocks || 0; // for backwards compatibility, remove in 1.16.0
+	userData.counts = counts;
 }
 
 async function getProfileMenu(uid, callerUID) {
@@ -183,7 +211,7 @@ async function getProfileMenu(uid, callerUID) {
 		});
 	}
 
-	return await plugins.fireHook('filter:user.profileMenu', {
+	return await plugins.hooks.fire('filter:user.profileMenu', {
 		uid: uid,
 		callerUID: callerUID,
 		links: links,
@@ -197,7 +225,7 @@ async function parseAboutMe(userData) {
 		return;
 	}
 	userData.aboutme = validator.escape(String(userData.aboutme || ''));
-	const parsed = await plugins.fireHook('filter:parse.aboutme', userData.aboutme);
+	const parsed = await plugins.hooks.fire('filter:parse.aboutme', userData.aboutme);
 	userData.aboutmeParsed = translator.escape(parsed);
 }
 

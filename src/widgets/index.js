@@ -62,7 +62,7 @@ async function renderWidget(widget, uid, options) {
 
 	const userLang = config.userLang || meta.config.defaultLang || 'en-GB';
 	const templateData = _.assign({ }, options.templateData, { config: config });
-	const data = await plugins.fireHook('filter:widget.render:' + widget.widget, {
+	const data = await plugins.hooks.fire('filter:widget.render:' + widget.widget, {
 		uid: uid,
 		area: options,
 		templateData: templateData,
@@ -175,7 +175,7 @@ widgets.reset = async function () {
 	];
 
 	const [areas, drafts] = await Promise.all([
-		plugins.fireHook('filter:widgets.getAreas', defaultAreas),
+		plugins.hooks.fire('filter:widgets.getAreas', defaultAreas),
 		widgets.getArea('global', 'drafts'),
 	]);
 

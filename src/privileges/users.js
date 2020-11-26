@@ -64,7 +64,7 @@ module.exports = function (privileges) {
 	}
 
 	async function filterIsModerator(cid, uid, isModerator) {
-		const data = await plugins.fireHook('filter:user.isModerator', { uid: uid, cid: cid, isModerator: isModerator });
+		const data = await plugins.hooks.fire('filter:user.isModerator', { uid: uid, cid: cid, isModerator: isModerator });
 		if ((Array.isArray(uid) || Array.isArray(cid)) && !Array.isArray(data.isModerator)) {
 			throw new Error('filter:user.isModerator - i/o mismatch');
 		}
@@ -82,7 +82,7 @@ module.exports = function (privileges) {
 			privileges.users.isAdministrator(uid),
 		]);
 
-		const data = await plugins.fireHook('filter:user.canEdit', {
+		const data = await plugins.hooks.fire('filter:user.canEdit', {
 			isAdmin: isAdmin,
 			isGlobalMod: isGlobalMod,
 			isTargetAdmin: isTargetAdmin,
@@ -99,7 +99,7 @@ module.exports = function (privileges) {
 			privileges.users.isAdministrator(uid),
 		]);
 
-		const data = await plugins.fireHook('filter:user.canBanUser', {
+		const data = await plugins.hooks.fire('filter:user.canBanUser', {
 			canBan: canBan && !isTargetAdmin,
 			callerUid: callerUid,
 			uid: uid,
@@ -114,7 +114,7 @@ module.exports = function (privileges) {
 		const privilegeName = privilege.split('-').map(word => word.slice(0, 1).toUpperCase() + word.slice(1)).join('');
 		let payload = { uid };
 		payload[`can${privilegeName}`] = await privileges.global.can(privilege, uid);
-		payload = await plugins.fireHook(`filter:user.has${privilegeName}Privilege`, payload);
+		payload = await plugins.hooks.fire(`filter:user.has${privilegeName}Privilege`, payload);
 		return payload[`can${privilegeName}`];
 	}
 };

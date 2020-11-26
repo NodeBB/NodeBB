@@ -35,9 +35,10 @@ groupsController.list = async function (req, res) {
 
 groupsController.get = async function (req, res, next) {
 	const groupName = req.params.name;
-	const [groupNames, group] = await Promise.all([
+	const [groupNames, group, allCategories] = await Promise.all([
 		getGroupNames(),
 		groups.get(groupName, { uid: req.uid, truncateUserList: true, userListCount: 20 }),
+		categories.buildForSelectAll(),
 	]);
 
 	if (!group) {
@@ -52,8 +53,6 @@ groupsController.get = async function (req, res, next) {
 			selected: name === groupName,
 		};
 	});
-
-	const allCategories = await categories.buildForSelectAll();
 
 	res.render('admin/manage/group', {
 		group: group,

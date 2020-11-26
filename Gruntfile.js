@@ -89,6 +89,7 @@ module.exports = function (grunt) {
 			clientUpdated: {
 				files: [
 					'public/src/**/*.js',
+					'public/vendor/**/*.js',
 					...clientUpdated,
 					'node_modules/benchpressjs/build/benchpress.js',
 				],
@@ -143,8 +144,17 @@ module.exports = function (grunt) {
 		if (worker) {
 			worker.kill();
 		}
+
+		const execArgv = [];
+		const inspect = process.argv.find(a => a.startsWith('--inspect'));
+
+		if (inspect) {
+			execArgv.push(inspect);
+		}
+
 		worker = fork('app.js', args, {
-			env: env,
+			env,
+			execArgv,
 		});
 	}
 

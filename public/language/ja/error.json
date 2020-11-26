@@ -9,6 +9,7 @@
     "invalid-tid": "無効なスレッドID",
     "invalid-pid": "無効な投稿ID",
     "invalid-uid": "無効なユーザーID",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "無効なユーザー名",
     "invalid-email": "無効なメール",
     "invalid-fullname": "Invalid Fullname",

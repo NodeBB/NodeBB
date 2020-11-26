@@ -141,8 +141,7 @@ async function onMessage(socket, payload) {
 			});
 		}
 	} catch (err) {
-		const event = JSON.stringify({ eventName, params });
-		winston.error(event + '\n' + (err.stack ? err.stack : err.message));
+		winston.error(eventName + '\n' + (err.stack ? err.stack : err.message));
 		callback({ message: err.message });
 	}
 }
@@ -180,7 +179,7 @@ async function validateSession(socket) {
 	if (!sessionData) {
 		throw new Error('[[error:invalid-session]]');
 	}
-	const result = await plugins.fireHook('static:sockets.validateSession', {
+	const result = await plugins.hooks.fire('static:sockets.validateSession', {
 		req: req,
 		socket: socket,
 		session: sessionData,

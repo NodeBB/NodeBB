@@ -54,7 +54,7 @@ sitemap.getPages = async function () {
 		priority: 0.4,
 	}];
 
-	const data = await plugins.fireHook('filter:sitemap.getPages', { urls: urls });
+	const data = await plugins.hooks.fire('filter:sitemap.getPages', { urls: urls });
 
 	const smStream = new SitemapStream({ hostname: nconf.get('url') });
 	data.urls.forEach(url => smStream.write(url));

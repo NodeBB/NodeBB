@@ -37,6 +37,10 @@ UserObject:
     fullname:
       type: string
       example: Mr. Dragon Fruit Jr.
+    displayname:
+      type: string
+      description: This is either username or fullname depending on forum and user settings
+      example: Dragon Fruit
     location:
       type: string
       example: 'Toronto, Canada'
@@ -227,6 +231,10 @@ UserObjectFull:
     fullname:
       type: string
       example: Mr. Dragon Fruit Jr.
+    displayname:
+      type: string
+      description: This is either username or fullname depending on forum and user settings
+      example: Dragon Fruit
     location:
       type: string
       example: 'Toronto, Canada'
@@ -347,6 +355,37 @@ UserObjectFull:
         type: string
     moderationNote:
       type: string
+    counts:
+      type: object
+      properties:
+        best:
+          type: number
+        blocks:
+          type: number
+        bookmarks:
+          type: number
+        categoriesWatched:
+          type: number
+        downvoted:
+          type: number
+        followers:
+          type: number
+        following:
+          type: number
+        groups:
+          type: number
+        ignored:
+          type: number
+        posts:
+          type: number
+        topics:
+          type: number
+        uploaded:
+          type: number
+        upvoted:
+          type: number
+        watched:
+          type: number
     isBlocked:
       type: boolean
     blocksCount:
@@ -463,6 +502,10 @@ UserObjectSlim:
       type: string
       description: A friendly name for a given user account
       example: Dragon Fruit
+    displayname:
+      type: string
+      description: This is either username or fullname depending on forum and user settings
+      example: Dragon Fruit
     userslug:
       type: string
       description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
@@ -543,6 +586,10 @@ UserObjectACP:
     username:
       type: string
       description: A friendly name for a given user account
+      example: Dragon Fruit
+    displayname:
+      type: string
+      description: This is either username or fullname depending on forum and user settings
       example: Dragon Fruit
     userslug:
       type: string

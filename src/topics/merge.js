@@ -32,7 +32,7 @@ module.exports = function (Topics) {
 			});
 		});
 
-		plugins.fireHook('action:topic.merge', { uid: uid, tids: tids, mergeIntoTid: mergeIntoTid, otherTids: otherTids });
+		plugins.hooks.fire('action:topic.merge', { uid: uid, tids: tids, mergeIntoTid: mergeIntoTid, otherTids: otherTids });
 		return mergeIntoTid;
 	};
 

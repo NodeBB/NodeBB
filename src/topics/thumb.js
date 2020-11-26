@@ -23,6 +23,14 @@ module.exports = function (Topics) {
 	const pipeToFileAsync = util.promisify(pipeToFile);
 
 	Topics.resizeAndUploadThumb = async function (data) {
+		const allowedExtensions = file.allowedExtensions();
+
+		// Handle protocol-relative URLs
+		if (data.thumb && data.thumb.startsWith('//')) {
+			data.thumb = `${nconf.get('secure') ? 'https' : 'http'}:${data.thumb}`;
+		}
+
+		// Only continue if passed in thumbnail exists and is a URL. A system path means an upload is not necessary.
 		if (!data.thumb || !validator.isURL(data.thumb)) {
 			return;
 		}
@@ -39,6 +47,11 @@ module.exports = function (Topics) {
 			if (!extension) {
 				extension = '.' + mime.getExtension(type);
 			}
+
+			if (!allowedExtensions.includes(extension)) {
+				throw new Error('[[error:invalid-file]]');
+			}
+
 			const filename = Date.now() + '-topic-thumb' + extension;
 			const folder = 'files';
 			pathToUpload = path.join(nconf.get('upload_path'), folder, filename);
@@ -47,18 +60,19 @@ module.exports = function (Topics) {
 
 			await image.isFileTypeAllowed(pathToUpload);
 
+			await image.checkDimensions(pathToUpload);
 			await image.resizeImage({
 				path: pathToUpload,
 				width: meta.config.topicThumbSize,
 				height: meta.config.topicThumbSize,
 			});
 
-			if (!plugins.hasListeners('filter:uploadImage')) {
+			if (!plugins.hooks.hasListeners('filter:uploadImage')) {
 				data.thumb = '/assets/uploads/' + folder + '/' + filename;
 				return;
 			}
 
-			const uploadedFile = await plugins.fireHook('filter:uploadImage', {
+			const uploadedFile = await plugins.hooks.fire('filter:uploadImage', {
 				image: { path: pathToUpload, name: '' },
 				uid: data.uid,
 				folder: folder,

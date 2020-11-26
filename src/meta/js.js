@@ -245,22 +245,22 @@ async function requirejsOptimize(target) {
 	};
 	const bundledModules = [
 		{
-			baseUrl: './node_modules',
+			baseUrl: path.join(basePath, 'node_modules'),
 			name: 'timeago/jquery.timeago',
 		},
 		{
-			baseUrl: './node_modules/nprogress',
+			baseUrl: path.join(basePath, 'node_modules/nprogress'),
 			name: 'nprogress',
 		},
 		{
-			baseUrl: './node_modules/bootbox',
+			baseUrl: path.join(basePath, 'node_modules/bootbox'),
 			name: 'bootbox',
 		},
 	];
 	const targetModules = {
 		admin: [
 			{
-				baseUrl: './node_modules/sortablejs',
+				baseUrl: path.join(basePath, 'node_modules/sortablejs'),
 				name: 'Sortable',
 			},
 		],

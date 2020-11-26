@@ -9,6 +9,7 @@
     "invalid-tid": "ID de Tópico Inválido",
     "invalid-pid": "ID de Publicação Inválido",
     "invalid-uid": "ID de Utilizador Inválido",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "Utilizador Inválido",
     "invalid-email": "E-mail Inválido",
     "invalid-fullname": "Nome Completo Inválido",

@@ -43,7 +43,7 @@ async function searchInContent(data) {
 
 	async function doSearch(type, searchIn) {
 		if (searchIn.includes(data.searchIn)) {
-			return await plugins.fireHook('filter:search.query', {
+			return await plugins.hooks.fire('filter:search.query', {
 				index: type,
 				content: data.query,
 				matchWords: data.matchWords || 'all',
@@ -70,7 +70,7 @@ async function searchInContent(data) {
 	allPids = await privileges.posts.filter('topics:read', allPids, data.uid);
 	allPids = await filterAndSort(allPids, data);
 
-	const metadata = await plugins.fireHook('filter:search.inContent', {
+	const metadata = await plugins.hooks.fire('filter:search.inContent', {
 		pids: allPids,
 	});
 
@@ -87,13 +87,13 @@ async function searchInContent(data) {
 	}
 
 	returnData.posts = await posts.getPostSummaryByPids(metadata.pids, data.uid, {});
-	await plugins.fireHook('filter:search.contentGetResult', { result: returnData, data: data });
+	await plugins.hooks.fire('filter:search.contentGetResult', { result: returnData, data: data });
 	delete metadata.pids;
 	return Object.assign(returnData, metadata);
 }
 
 async function filterAndSort(pids, data) {
-	if (data.sortBy === 'relevance' && !data.replies && !data.timeRange && !data.hasTags && !plugins.hasListeners('filter:search.filterAndSort')) {
+	if (data.sortBy === 'relevance' && !data.replies && !data.timeRange && !data.hasTags && !plugins.hooks.hasListeners('filter:search.filterAndSort')) {
 		return pids;
 	}
 	let postsData = await getMatchedPosts(pids, data);
@@ -108,7 +108,7 @@ async function filterAndSort(pids, data) {
 
 	sortPosts(postsData, data);
 
-	const result = await plugins.fireHook('filter:search.filterAndSort', { pids: pids, posts: postsData, data: data });
+	const result = await plugins.hooks.fire('filter:search.filterAndSort', { pids: pids, posts: postsData, data: data });
 	return result.posts.map(post => post && post.pid);
 }
 

@@ -101,7 +101,6 @@ socket = window.socket;
 
 	function onConnect() {
 		if (!reconnecting) {
-			app.showMessages();
 			$(window).trigger('action:connected');
 		}
 

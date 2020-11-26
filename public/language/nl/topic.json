@@ -89,6 +89,8 @@
     "post_delete_confirm": "Is het absoluut de bedoeling dit bericht te verwijderen?",
     "post_restore_confirm": "Is het de bedoeling dit bericht te herstellen?",
     "post_purge_confirm": "Is het absoluut zeker dat dit bericht volledig verwijderd kan worden?",
+    "pin-modal-expiry": "Expiration Date",
+    "pin-modal-help": "You can optionally set an expiration date for the pinned topic(s) here. Alternatively, you can leave this field blank to have the topic stay pinned until it is manually unpinned.",
     "load_categories": "Categorieën laden",
     "confirm_move": "Verplaatsen",
     "confirm_fork": "Splits",

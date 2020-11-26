@@ -9,6 +9,7 @@
     "invalid-tid": "זהוי נושא שגוי",
     "invalid-pid": "זהוי פוסט שגוי",
     "invalid-uid": "זהוי משתמש שגוי",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "שם משתמש שגוי",
     "invalid-email": "אימייל שגוי",
     "invalid-fullname": "שם מלא לא תקין",

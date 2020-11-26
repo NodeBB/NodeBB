@@ -26,6 +26,8 @@ get:
                           type: number
                         userTitle:
                           type: string
+                        userTitleEscaped:
+                          type: string
                         icon:
                           type: string
                         labelColor:

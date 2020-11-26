@@ -103,6 +103,9 @@
 	"post_restore_confirm": "Are you sure you want to restore this post?",
 	"post_purge_confirm": "Are you sure you want to purge this post?",
 
+	"pin-modal-expiry": "Expiration Date",
+	"pin-modal-help": "You can optionally set an expiration date for the pinned topic(s) here. Alternatively, you can leave this field blank to have the topic stay pinned until it is manually unpinned.",
+
 	"load_categories": "Loading Categories",
 	"confirm_move": "Move",
 	"confirm_fork": "Fork",

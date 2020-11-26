@@ -41,7 +41,7 @@ Analytics.init = async function () {
 Analytics.increment = function (keys, callback) {
 	keys = Array.isArray(keys) ? keys : [keys];
 
-	plugins.fireHook('action:analytics.increment', { keys: keys });
+	plugins.hooks.fire('action:analytics.increment', { keys: keys });
 
 	keys.forEach(function (key) {
 		counters[key] = counters[key] || 0;

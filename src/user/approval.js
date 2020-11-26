@@ -28,7 +28,7 @@ module.exports = function (User) {
 			ip: userData.ip,
 			hashedPassword: hashedPassword,
 		};
-		const results = await plugins.fireHook('filter:user.addToApprovalQueue', { data: data, userData: userData });
+		const results = await plugins.hooks.fire('filter:user.addToApprovalQueue', { data: data, userData: userData });
 		await db.setObject('registration:queue:name:' + userData.username, results.data);
 		await db.sortedSetAdd('registration:queue', Date.now(), userData.username);
 		await sendNotificationToAdmins(userData.username);
@@ -69,7 +69,7 @@ module.exports = function (User) {
 		await User.setUserField(uid, 'password', userData.hashedPassword);
 		await removeFromQueue(username);
 		await markNotificationRead(username);
-		await plugins.fireHook('filter:register.complete', { uid: uid });
+		await plugins.hooks.fire('filter:register.complete', { uid: uid });
 		await emailer.send('registration_accepted', uid, {
 			username: username,
 			subject: '[[email:welcome-to, ' + (meta.config.title || meta.config.browserTitle || 'NodeBB') + ']]',
@@ -140,7 +140,7 @@ module.exports = function (User) {
 			 */
 		}));
 
-		const results = await plugins.fireHook('filter:user.getRegistrationQueue', { users: users });
+		const results = await plugins.hooks.fire('filter:user.getRegistrationQueue', { users: users });
 		return results.users;
 	};
 

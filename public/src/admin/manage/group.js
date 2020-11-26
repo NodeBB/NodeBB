@@ -27,7 +27,7 @@ define('admin/manage/group', [
 		memberList.init('admin/manage/group');
 
 		changeGroupUserTitle.on('keyup', function () {
-			groupLabelPreviewText.text(changeGroupUserTitle.val());
+			groupLabelPreviewText.translateText(changeGroupUserTitle.val());
 		});
 
 		changeGroupLabelColor.on('keyup input', function () {

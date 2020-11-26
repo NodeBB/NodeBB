@@ -89,6 +89,8 @@
     "post_delete_confirm": "Er du sikker på at du vil slette dette innlegget?",
     "post_restore_confirm": "Er du sikker på at du vil gjenopprette dette innlegget?",
     "post_purge_confirm": "Er du sikker på at du vil renske dette innlegget?",
+    "pin-modal-expiry": "Expiration Date",
+    "pin-modal-help": "You can optionally set an expiration date for the pinned topic(s) here. Alternatively, you can leave this field blank to have the topic stay pinned until it is manually unpinned.",
     "load_categories": "Laster kategorier",
     "confirm_move": "Flytt",
     "confirm_fork": "Forgren",

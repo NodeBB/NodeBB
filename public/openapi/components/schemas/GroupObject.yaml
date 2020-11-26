@@ -14,6 +14,9 @@ GroupFullObject:
     userTitle:
       type: number
       description: Label text for the user badge
+    userTitleEscaped:
+      type: number
+      description: Same as userTitle but with translation tokens escaped, used to display raw userTitle in group management
     userTitleEnabled:
       type: number
     description:
@@ -122,6 +125,9 @@ GroupDataObject:
     userTitle:
       type: number
       description: Label text for the user badge
+    userTitleEscaped:
+      type: number
+      description: Same as userTitle but with translation tokens escaped, used to display raw userTitle in group management
     userTitleEnabled:
       type: number
     description:

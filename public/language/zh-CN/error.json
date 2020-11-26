@@ -9,6 +9,7 @@
     "invalid-tid": "无效主题 ID",
     "invalid-pid": "无效帖子 ID",
     "invalid-uid": "无效用户 ID",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "无效用户名",
     "invalid-email": "无效的电子邮箱",
     "invalid-fullname": "无效全名",

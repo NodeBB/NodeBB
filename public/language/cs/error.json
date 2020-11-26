@@ -9,6 +9,7 @@
     "invalid-tid": "Neplatné ID tématu",
     "invalid-pid": "Neplatné ID příspěvku",
     "invalid-uid": "Neplatné ID uživatele",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "Neplatné uživatelské jméno",
     "invalid-email": "Neplatný e-mail",
     "invalid-fullname": "Neplatný celý název",

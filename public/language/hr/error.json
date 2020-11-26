@@ -9,6 +9,7 @@
     "invalid-tid": "Netočan ID teme",
     "invalid-pid": "Netočan ID objave",
     "invalid-uid": "Netočan ID korisnika",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "Netočno korisničko ime",
     "invalid-email": "Netočan email",
     "invalid-fullname": "Invalid Fullname",

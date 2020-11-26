@@ -16,6 +16,7 @@
 	"allow-account-deletion": "Дозволити видалення акаунту",
 	"hide-fullname": "Приховати повне ім'я від користувачів",
 	"hide-email": "Приховати електронну пошту від користувачів",
+	"show-fullname-as-displayname": "Show user's full name as their display name if available",
 	"themes": "Теми",
 	"disable-user-skins": "Заборонити користувачам обирати стиль сайту",
 	"account-protection": "Захист акаунту",

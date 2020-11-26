@@ -24,7 +24,7 @@ module.exports = function (Groups) {
 	Groups.ownership.grant = async function (toUid, groupName) {
 		// Note: No ownership checking is done here on purpose!
 		await db.setAdd('group:' + groupName + ':owners', toUid);
-		plugins.fireHook('action:group.grantOwnership', { uid: toUid, groupName: groupName });
+		plugins.hooks.fire('action:group.grantOwnership', { uid: toUid, groupName: groupName });
 	};
 
 	Groups.ownership.rescind = async function (toUid, groupName) {
@@ -35,6 +35,6 @@ module.exports = function (Groups) {
 			throw new Error('[[error:group-needs-owner]]');
 		}
 		await db.setRemove('group:' + groupName + ':owners', toUid);
-		plugins.fireHook('action:group.rescindOwnership', { uid: toUid, groupName: groupName });
+		plugins.hooks.fire('action:group.rescindOwnership', { uid: toUid, groupName: groupName });
 	};
 };

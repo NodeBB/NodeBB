@@ -22,7 +22,7 @@ module.exports = function (Topics) {
 		}
 		const keys = tids.map(tid => 'topic:' + tid);
 		const topics = await (fields.length ? db.getObjectsFields(keys, fields) : db.getObjects(keys));
-		const result = await plugins.fireHook('filter:topic.getFields', {
+		const result = await plugins.hooks.fire('filter:topic.getFields', {
 			tids: tids,
 			topics: topics,
 			fields: fields,

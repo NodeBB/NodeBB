@@ -9,6 +9,7 @@
     "invalid-tid": "Άκυρο ID Θέματος",
     "invalid-pid": "Άκυρο ID Δημοσίευσης",
     "invalid-uid": "Άκυρο ID Χρήστη",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "Άκυρο Όνομα Χρήστη",
     "invalid-email": "Άκυρο Email",
     "invalid-fullname": "Invalid Fullname",

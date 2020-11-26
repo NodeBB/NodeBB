@@ -9,6 +9,7 @@
     "invalid-tid": "Ongeldig onderwerp ID",
     "invalid-pid": "Ongeldig berichtkenmerk",
     "invalid-uid": "Ongeldig gebruikerskenmerk",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "Ongeldige gebruikersnaam",
     "invalid-email": "Ongeldig e-mailadres",
     "invalid-fullname": "Ongeldige volledige naam",

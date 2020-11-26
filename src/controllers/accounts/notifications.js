@@ -30,7 +30,7 @@ notificationsController.get = async function (req, res, next) {
 	const stop = start + itemsPerPage - 1;
 
 	const [filters, isPrivileged] = await Promise.all([
-		plugins.fireHook('filter:notifications.addFilters', {
+		plugins.hooks.fire('filter:notifications.addFilters', {
 			regularFilters: regularFilters,
 			moderatorFilters: moderatorFilters,
 			uid: req.uid,

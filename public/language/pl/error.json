@@ -9,6 +9,7 @@
     "invalid-tid": "Nieprawidłowy ID tematu",
     "invalid-pid": "Nieprawidłowy ID posta",
     "invalid-uid": "Nieprawidłowy ID użytkownika",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "Nieprawidłowy login",
     "invalid-email": "Nieprawidłowy adres e-mail",
     "invalid-fullname": "Nieprawidłowa nazwa",

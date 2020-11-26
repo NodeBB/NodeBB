@@ -2034,16 +2034,32 @@ describe('Controllers', function () {
 		});
 
 		it('should redirect if category is a link', function (done) {
+			let cid;
+			let category;
 			async.waterfall([
 				function (next) {
 					categories.create({ name: 'redirect', link: 'https://nodebb.org' }, next);
 				},
-				function (category, next) {
+				function (_category, next) {
+					category = _category;
+					cid = category.cid;
 					request(nconf.get('url') + '/api/category/' + category.slug, { jar: jar, json: true }, function (err, res, body) {
 						assert.ifError(err);
 						assert.equal(res.statusCode, 200);
-						assert.equal(res.headers['x-redirect'], 'https:&#x2F;&#x2F;nodebb.org');
-						assert.equal(body, 'https:&#x2F;&#x2F;nodebb.org');
+						assert.equal(res.headers['x-redirect'], 'https://nodebb.org');
+						assert.equal(body, 'https://nodebb.org');
+						next();
+					});
+				},
+				function (next) {
+					categories.setCategoryField(cid, 'link', '/recent', next);
+				},
+				function (next) {
+					request(nconf.get('url') + '/api/category/' + category.slug, { jar: jar, json: true }, function (err, res, body) {
+						assert.ifError(err);
+						assert.equal(res.statusCode, 200);
+						assert.equal(res.headers['x-redirect'], '/recent');
+						assert.equal(body, '/recent');
 						next();
 					});
 				},

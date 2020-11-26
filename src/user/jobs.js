@@ -9,7 +9,7 @@ var jobs = {};
 
 module.exports = function (User) {
 	User.startJobs = function () {
-		winston.verbose('[user/jobs] (Re-)starting user jobs...');
+		winston.verbose('[user/jobs] (Re-)starting jobs...');
 
 		var started = 0;
 		var digestHour = meta.config.digestHour;

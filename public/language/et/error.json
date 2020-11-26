@@ -9,6 +9,7 @@
     "invalid-tid": "Vigane teema ID",
     "invalid-pid": "Vigane postituse ID",
     "invalid-uid": "Vigane kasutaja ID",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "Vigane kasutajanimi",
     "invalid-email": "Vigane emaili aadress",
     "invalid-fullname": "Invalid Fullname",

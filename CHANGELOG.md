@@ -1,3 +1,80 @@
+#### v1.15.2 (2020-11-18)
+
+##### Chores
+
+*  incrementing version number - v1.15.2-beta.1 (20c05e80)
+*  remove debug log (0a0b4661)
+*  incrementing version number - v1.15.2-beta.0 (996174a1)
+* **deps:**  update dependency smtp-server to v3.8.0 (5f5f0edb)
+
+##### Documentation Changes
+
+*  openapi schema for user/group exist check, session deletion (bcccb331)
+
+##### New Features
+
+*  #5274 (4e9b10ab)
+*  #4456 (fb567a7a)
+*  #8475, allow flagging self posts (a6afcfd5)
+*  #7550, show message if post is queued when js is disabled (120999bf)
+*  #8171, add oldCategory if topic is moved (35f932cd)
+*  #8204, separate notification type for group chats (b44ddecd)
+*  add test for custom translations (7928036a)
+*  https://github.com/NodeBB/NodeBB/issues/8147 (1d6bcbeb)
+*  invites regardless of registration type, invite privilege, groups to join on acceptance (#8786) (3ccebf11)
+*  add nodejs version to issue template (29c2ca94)
+*  allow groups to specify which cids to show member posts from (#8875) (8518404e)
+* **api:**  account deletion routes for the Write API (#8881) (a0b7a823)
+* **deps:**  benchpressjs@2.2.1 (#8887) (d30ea256)
+
+##### Bug Fixes
+
+*  #6407, fix feeds (fa4177c3)
+*  navigation highlight (62b62821)
+*  benchpress warnings (a87ccccc)
+*  benchpress warnings (dfdc0c42)
+*  internal helper method hasGlobalPrivilege, DRY (e1d7c4d8)
+*  spec (2f4653a3)
+*  #8884, remove header/footer cache (e4d2764d)
+*  check tid in event handlers client side (9dac9630)
+*  #8883 (f14e42d8)
+*  #8872 missing admin/menu language key+fallback (fdab76f8)
+*  run every hour, dont show message if average_time is 0 (51b7eca1)
+*  add back test timeout for exports (b3e00489)
+*  pass length to messaging checkContent hook (dc9668e4)
+* **deps:**
+  *  update dependency nodebb-theme-persona to v10.2.74 (#8905) (5f6137f0)
+  *  update dependency nodebb-theme-persona to v10.2.73 (#8904) (c2019b7b)
+  *  update dependency nodebb-plugin-composer-default to v6.4.7 (#8902) (b7b1f203)
+  *  update dependency nodebb-theme-persona to v10.2.72 (#8903) (bee8cfe4)
+  *  update dependency nodebb-theme-vanilla to v11.3.3 (422aa7f0)
+  *  update dependency nodebb-theme-persona to v10.2.71 (3b6e71d5)
+  *  update dependency nodebb-theme-persona to v10.2.70 (d6dd1cb6)
+  *  update dependency nodebb-theme-slick to v1.3.2 (2ce1fcd3)
+  *  update dependency nodebb-theme-vanilla to v11.3.2 (9f2d0d42)
+  *  update dependency nodebb-theme-persona to v10.2.69 (15810643)
+  *  update dependency sharp to v0.26.3 (84d54577)
+  *  update dependency nodebb-plugin-mentions to v2.13.5 (dde9f189)
+  *  update dependency json2csv to v5.0.5 (b63b7ae5)
+  *  update dependency benchpressjs to v2.2.2 (d1e804aa)
+  *  update dependency nodebb-theme-vanilla to v11.3.1 (#8878) (85aaeded)
+  *  update dependency nodebb-theme-slick to v1.3.1 (bbfb276a)
+  *  update dependency nodebb-theme-persona to v10.2.68 (ec70329a)
+  *  update dependency nodebb-plugin-spam-be-gone to v0.7.6 (#8877) (45922fae)
+  *  update dependency nodebb-plugin-spam-be-gone to v0.7.5 (#8876) (48e82520)
+  *  update dependency nodebb-plugin-spam-be-gone to v0.7.4 (#8874) (eab27f23)
+
+##### Refactors
+
+*  client-side handlers for user invitations (d83eb7f8)
+*  async/await controllers/index.js (5598130a)
+*  less dupe code (8fbe8324)
+
+##### Tests
+
+*  new api test to ensure each path's parameters are defined in context (97842c43)
+*  updated test name to be more specific (319cfeaa)
+
 #### v1.15.1 (2020-11-11)
 
 ##### Chores

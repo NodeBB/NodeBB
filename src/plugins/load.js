@@ -160,7 +160,7 @@ module.exports = function (Plugins) {
 			}
 
 			if (Array.isArray(pluginData.hooks)) {
-				pluginData.hooks.forEach(hook => Plugins.registerHook(pluginData.id, hook));
+				pluginData.hooks.forEach(hook => Plugins.hooks.register(pluginData.id, hook));
 			}
 		} catch (err) {
 			winston.warn('[plugins] Unable to load library for: ' + pluginData.id);

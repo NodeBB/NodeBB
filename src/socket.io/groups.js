@@ -4,6 +4,7 @@ const groups = require('../groups');
 const user = require('../user');
 const utils = require('../utils');
 const events = require('../events');
+const privileges = require('../privileges');
 const api = require('../api');
 const sockets = require('.');
 
@@ -241,12 +242,11 @@ SocketGroups.loadMore = async (socket, data) => {
 };
 
 SocketGroups.searchMembers = async (socket, data) => {
-	const [isOwner, isMember, isAdmin] = await Promise.all([
-		groups.ownership.isOwner(socket.uid, data.groupName),
-		groups.isMember(socket.uid, data.groupName),
-		user.isAdministrator(socket.uid),
-	]);
-	if (!isOwner && !isMember && !isAdmin) {
+	if (!data.groupName) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	await canSearchMembers(socket.uid, data.groupName);
+	if (!await privileges.global.can('search:users', socket.uid)) {
 		throw new Error('[[error:no-privileges]]');
 	}
 	return await groups.searchMembers({
@@ -260,18 +260,7 @@ SocketGroups.loadMoreMembers = async (socket, data) => {
 	if (!data.groupName || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const [isHidden, isAdmin, isGlobalMod] = await Promise.all([
-		groups.isHidden(data.groupName),
-		user.isAdministrator(socket.uid),
-		user.isGlobalModerator(socket.uid),
-	]);
-	if (isHidden && !isAdmin && !isGlobalMod) {
-		const isMember = await groups.isMember(socket.uid, data.groupName);
-		if (!isMember) {
-			throw new Error('[[error:no-privileges]]');
-		}
-	}
-
+	await canSearchMembers(socket.uid, data.groupName);
 	data.after = parseInt(data.after, 10);
 	const users = await groups.getOwnersAndMembers(data.groupName, socket.uid, data.after, data.after + 9);
 	return {
@@ -279,6 +268,20 @@ SocketGroups.loadMoreMembers = async (socket, data) => {
 		nextStart: data.after + 10,
 	};
 };
+
+async function canSearchMembers(uid, groupName) {
+	const [isHidden, isMember, isAdmin, isGlobalMod, viewGroups] = await Promise.all([
+		groups.isHidden(groupName),
+		groups.isMember(uid, groupName),
+		user.isAdministrator(uid),
+		user.isGlobalModerator(uid),
+		privileges.global.can('view:groups', uid),
+	]);
+
+	if (!viewGroups || (isHidden && !isMember && !isAdmin && !isGlobalMod)) {
+		throw new Error('[[error:no-privileges]]');
+	}
+}
 
 SocketGroups.cover = {};
 

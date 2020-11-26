@@ -9,6 +9,7 @@
     "invalid-tid": "Ogiltigt id för ämne",
     "invalid-pid": "Ogiltigt id för inlägg",
     "invalid-uid": "Ogiltigt id för användare",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "Ogiltigt användarnamn",
     "invalid-email": "Ogiltig epostadress",
     "invalid-fullname": "Ogiltigt namn",

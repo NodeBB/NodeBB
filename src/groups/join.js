@@ -63,7 +63,7 @@ module.exports = function (Groups) {
 
 		await setGroupTitleIfNotSet(groupsToJoin, uid);
 
-		plugins.fireHook('action:group.join', {
+		plugins.hooks.fire('action:group.join', {
 			groupNames: groupsToJoin,
 			uid: uid,
 		});

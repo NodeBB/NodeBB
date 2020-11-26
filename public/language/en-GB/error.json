@@ -11,6 +11,7 @@
 	"invalid-tid": "Invalid Topic ID",
 	"invalid-pid": "Invalid Post ID",
 	"invalid-uid": "Invalid User ID",
+	"invalid-date": "A valid date must be provided",
 
 	"invalid-username": "Invalid Username",
 	"invalid-email": "Invalid Email",

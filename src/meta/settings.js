@@ -31,7 +31,7 @@ Settings.get = async function (hash) {
 		});
 	}));
 
-	({ values: data } = await plugins.fireHook('filter:settings.get', { plugin: hash, values: data }));
+	({ values: data } = await plugins.hooks.fire('filter:settings.get', { plugin: hash, values: data }));
 	cache.set('settings:' + hash, data);
 	return data;
 };
@@ -54,7 +54,7 @@ Settings.set = async function (hash, values, quiet) {
 		}
 	}
 
-	({ plugin: hash, settings: values, quiet } = await plugins.fireHook('filter:settings.set', { plugin: hash, settings: values, quiet }));
+	({ plugin: hash, settings: values, quiet } = await plugins.hooks.fire('filter:settings.set', { plugin: hash, settings: values, quiet }));
 
 	if (sortedLists.length) {
 		await db.delete('settings:' + hash + ':sorted-lists');
@@ -87,7 +87,7 @@ Settings.set = async function (hash, values, quiet) {
 
 	cache.del('settings:' + hash);
 
-	plugins.fireHook('action:settings.set', {
+	plugins.hooks.fire('action:settings.set', {
 		plugin: hash,
 		settings: values,
 	});

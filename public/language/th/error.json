@@ -9,6 +9,7 @@
     "invalid-tid": "Topic ID ไม่ถูกต้อง",
     "invalid-pid": "Post ID ไม่ถูกต้อง",
     "invalid-uid": "User ID ไม่ถูกต้อง",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "ชื่อผู้ใช้ไม่ถูกต้อง",
     "invalid-email": "อีเมลไม่ถูกต้อง",
     "invalid-fullname": "Invalid Fullname",

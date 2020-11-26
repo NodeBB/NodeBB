@@ -24,7 +24,7 @@
     "upvoted_your_post_in_dual": "<strong>%1</strong> ו<strong>%2</strong> הצביעו בעד הפוסט שלך ב<strong>%3</strong>",
     "upvoted_your_post_in_multiple": "<strong>%1</strong> ו%2 אחרים הצביעו לפוסט שלך ב<strong>%3</strong>.",
     "moved_your_post": "<strong>%1</strong> העביר את הפוסט שלך ל<strong>%2</strong>",
-    "moved_your_topic": "<strong>%1</strong> הוזז ל<strong>%2</strong>",
+    "moved_your_topic": "<strong>%1</strong> הזיז את <strong>%2</strong>",
     "user_flagged_post_in": "<strong>%1</strong> דיווח על פוסט ב <strong>%2</strong>",
     "user_flagged_post_in_dual": "<strong>%1</strong> ו<strong>%2</strong> סימנו פוסט ב<strong>%3</strong>",
     "user_flagged_post_in_multiple": "<strong>%1</strong> ו%2 נוספים סימנו פוסט ב<strong>%3</strong>",

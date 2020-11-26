@@ -48,7 +48,7 @@ module.exports = function (Topics) {
 
 	Topics.unreadCutoff = async function (uid) {
 		const cutoff = Date.now() - (meta.config.unreadCutoff * 86400000);
-		const data = await plugins.fireHook('filter:topics.unreadCutoff', { uid: uid, cutoff: cutoff });
+		const data = await plugins.hooks.fire('filter:topics.unreadCutoff', { uid: uid, cutoff: cutoff });
 		return parseInt(data.cutoff, 10);
 	};
 
@@ -71,7 +71,7 @@ module.exports = function (Topics) {
 			return data;
 		}
 
-		const result = await plugins.fireHook('filter:topics.getUnreadTids', {
+		const result = await plugins.hooks.fire('filter:topics.getUnreadTids', {
 			uid: uid,
 			tids: data.tids,
 			counts: data.counts,
@@ -176,8 +176,8 @@ module.exports = function (Topics) {
 	}
 
 	async function getCategoryTids(params) {
-		if (plugins.hasListeners('filter:topics.unread.getCategoryTids')) {
-			const result = await plugins.fireHook('filter:topics.unread.getCategoryTids', { params: params, tids: [] });
+		if (plugins.hooks.hasListeners('filter:topics.unread.getCategoryTids')) {
+			const result = await plugins.hooks.fire('filter:topics.unread.getCategoryTids', { params: params, tids: [] });
 			return result.tids;
 		}
 		if (params.filter === 'watched') {
@@ -297,7 +297,7 @@ module.exports = function (Topics) {
 		const cids = _.uniq(topicData.map(t => t && t.cid).filter(Boolean));
 		await categories.markAsRead(cids, uid);
 
-		plugins.fireHook('action:topics.markAsRead', { uid: uid, tids: tids });
+		plugins.hooks.fire('action:topics.markAsRead', { uid: uid, tids: tids });
 		return true;
 	};
 

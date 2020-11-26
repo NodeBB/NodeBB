@@ -16,6 +16,7 @@
 	"allow-account-deletion": "允许消除帐号",
 	"hide-fullname": "隐藏用户的全名",
 	"hide-email": "隐藏用户的电子邮箱",
+	"show-fullname-as-displayname": "Show user's full name as their display name if available",
 	"themes": "主题",
 	"disable-user-skins": "阻止用户选择自定义皮肤",
 	"account-protection": "帐号保护",

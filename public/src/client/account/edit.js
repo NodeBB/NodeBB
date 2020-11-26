@@ -48,7 +48,7 @@ define('forum/account/edit', [
 		$(window).trigger('action:profile.update', userData);
 
 		api.put('/users/' + userData.uid, userData).then((res) => {
-			app.alertSuccess('[[user:profile-update-success]]');
+			app.alertSuccess('[[user:profile_update_success]]');
 
 			if (res.picture) {
 				$('#user-current-picture').attr('src', res.picture);

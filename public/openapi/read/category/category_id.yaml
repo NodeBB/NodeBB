@@ -31,7 +31,7 @@ get:
         application/json:
           schema:
             allOf:
-              - $ref: ../../../../components/schemas/CategoryObject.yaml#/CategoryObject
+              - $ref: ../../components/schemas/CategoryObject.yaml#/CategoryObject
               - type: object
                 properties:
                   tagWhitelist:
@@ -43,11 +43,11 @@ get:
                   children:
                     type: array
                     items:
-                      $ref: ../../../../components/schemas/CategoryObject.yaml#/CategoryObject
+                      $ref: ../../components/schemas/CategoryObject.yaml#/CategoryObject
                   topics:
                     type: array
                     items:
-                      $ref: ../../../../components/schemas/TopicObject.yaml#/TopicObject
+                      $ref: ../../components/schemas/TopicObject.yaml#/TopicObject
                   nextStart:
                     type: number
                   isWatched:
@@ -92,6 +92,6 @@ get:
                     type: number
                   reputation:disabled:
                     type: number
-              - $ref: ../../../../components/schemas/Pagination.yaml#/Pagination
-              - $ref: ../../../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
-              - $ref: ../../../../components/schemas/CommonProps.yaml#/CommonProps
+              - $ref: ../../components/schemas/Pagination.yaml#/Pagination
+              - $ref: ../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../../components/schemas/CommonProps.yaml#/CommonProps

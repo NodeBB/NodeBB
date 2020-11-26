@@ -9,6 +9,7 @@
     "invalid-tid": "Nederīgs temata ID",
     "invalid-pid": "Nederīgs raksta ID",
     "invalid-uid": "Nederīgs lietotāja ID",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "Nederīgs lietotājvārds",
     "invalid-email": "Nederīga e-pasta adrese",
     "invalid-fullname": "Invalid Fullname",

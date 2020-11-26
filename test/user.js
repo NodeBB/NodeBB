@@ -1593,18 +1593,29 @@ describe('User', function () {
 			});
 		});
 
-		it('should delete user', function (done) {
-			User.create({ username: 'tobedeleted' }, function (err, _uid) {
-				assert.ifError(err);
-				socketUser.deleteAccount({ uid: _uid }, {}, function (err) {
-					assert.ifError(err);
-					socketUser.exists({ uid: testUid }, { username: 'doesnot exist' }, function (err, exists) {
-						assert.ifError(err);
-						assert(!exists);
-						done();
-					});
-				});
-			});
+		it('should delete user', async function () {
+			const uid = await User.create({ username: 'willbedeleted' });
+			await socketUser.deleteAccount({ uid: uid }, {});
+			const exists = await socketUser.exists({ uid: testUid }, { username: 'willbedeleted' });
+			assert(!exists);
+		});
+
+		it('should fail to delete user with wrong password', async function () {
+			const uid = await User.create({ username: 'willbedeletedpwd', password: '123456' });
+			let err;
+			try {
+				await socketUser.deleteAccount({ uid: uid }, { password: '654321' });
+			} catch (_err) {
+				err = _err;
+			}
+			assert.strictEqual(err.message, '[[error:invalid-password]]');
+		});
+
+		it('should delete user with correct password', async function () {
+			const uid = await User.create({ username: 'willbedeletedcorrectpwd', password: '123456' });
+			await socketUser.deleteAccount({ uid: uid }, { password: '123456' });
+			const exists = await User.exists(uid);
+			assert(!exists);
 		});
 
 		it('should fail to delete user if account deletion is not allowed', async function () {

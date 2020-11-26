@@ -1,8 +1,12 @@
 {
 	"tokens": "Кодове",
+	"settings": "Settings",
 	"lead-text": "На тази страница можете да настроите достъпа до ППИ за писане в NodeBB.",
 	"intro": "По подразбиране ППИ за писане удостоверява потребителите чрез бисквитката им за сесията, но NodeBB поддържа и удостоверяване чрез метода „Bearer“, използвайки кодовете от тази страница.",
 	"docs": "Щракнете тук за достъп до пълната документация на ППИ",
+
+	"require-https": "Require API usage via HTTPS only",
+	"require-https-caveat": "<strong>Note</strong>: Some installations involving load balancers may proxy their requests to NodeBB using HTTP, in which case this option should remain disabled.",
 
 	"uid": "Потребителски ИД",
 	"uid-help-text": "Посочете потребителски ИД, който да бъде свързан с този код. Ако ИД е <code>0</code>, това ще се счита за <em>главен</em> код, който може да приема идентичността на всеки от другите потребители чрез параметъра <code>_uid</code>",

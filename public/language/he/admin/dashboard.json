@@ -24,9 +24,9 @@
 
 	"updates": "עדכונים",
 	"running-version": "הפורום מעודכן ל<strong>גרסה <span id=\"version\">%1</span></strong>",
-	"keep-updated": "תוודא תמיד שהפורום שלך עדכני, בכדי שעדכוני אבטחה ותיקוני באגים יהיו מעודכנים.",
+	"keep-updated": "לעדכוני אבטחה מעודכנים ותיקוני באגים, וודא שהפורום שלך עדכני לגרסה האחרונה.",
 	"up-to-date": "<p>אתה <strong>מעודכן<i class=\"fa fa-check\"></i></strong></p>",
-	"upgrade-available": "<p>גרסה חדשה (v%1) שוחרר. שקול  <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">האם לעדכן את הפורום שלך</a>.</p>",
+	"upgrade-available": "<p>גרסה חדשה (v%1) שוחררה. שקול  <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">האם לעדכן את הפורום שלך</a>.</p>",
 	"prerelease-upgrade-available": "<p>זוהי גירסת קדם-הפצה מיושנת של NodeBB. גרסה חדשה (v%1) שוחרר. שקול <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">האם לעדכן את ה-NodeBB שלך</a>.</p>",
 	"prerelease-warning": "<p>זוהי <strong>גירסת קדם-הפצה</strong> של NodeBB. באגים בלתי צפויים עלולים להתרחש. <i class=\"fa fa-exclamation-triangle\"></i> </p>",
 	"running-in-development": "<span>הפורום פועל במצב פיתוח. הפורום עשוי להיות חשוף לפגיעות פוטנציאליות; פנה אל מנהל המערכת שלך.</span>",

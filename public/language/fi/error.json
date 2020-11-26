@@ -9,6 +9,7 @@
     "invalid-tid": "Virheellinen aiheen ID",
     "invalid-pid": "Virheellinen viestin ID",
     "invalid-uid": "Virheellinen käyttäjän ID",
+    "invalid-date": "A valid date must be provided",
     "invalid-username": "Virheellinen käyttäjänimi",
     "invalid-email": "Virheellinen sähköpostiosoite",
     "invalid-fullname": "Kokonimi on virheellinen",

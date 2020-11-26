@@ -59,7 +59,7 @@ Categories.getCategoryById = async function (data) {
 
 
 	calculateTopicPostCount(category);
-	const result = await plugins.fireHook('filter:category.get', { category: category, uid: data.uid });
+	const result = await plugins.hooks.fire('filter:category.get', { category: category, uid: data.uid });
 	return result.category;
 };
 

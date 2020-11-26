@@ -89,6 +89,8 @@
     "post_delete_confirm": "Bu iletiyi gerçekten silmek istediğinize emin misiniz?",
     "post_restore_confirm": "Bu iletiyi gerçekten geri getirmek istiyor musunuz?",
     "post_purge_confirm": "Bu iletiyi temizlemek istediğinize emin misiniz?",
+    "pin-modal-expiry": "Sona erme tarihi",
+    "pin-modal-help": "Sabitlenen konular için bir bitiş tarihi belirleyebilirsiniz. Eğer bu tarihi boş bırakırsanız, konular siz sabitliğini kaldırana kadar sabitlenmiş olarak kalır.",
     "load_categories": "Kategoriler Yükleniyor",
     "confirm_move": "Taşı",
     "confirm_fork": "Ayır",

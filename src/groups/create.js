@@ -40,7 +40,7 @@ module.exports = function (Groups) {
 			disableLeave: disableLeave,
 		};
 
-		await plugins.fireHook('filter:group.create', { group: groupData, data: data });
+		await plugins.hooks.fire('filter:group.create', { group: groupData, data: data });
 
 		await db.sortedSetAdd('groups:createtime', groupData.createtime, groupData.name);
 		await db.setObject('group:' + groupData.name, groupData);
@@ -61,7 +61,7 @@ module.exports = function (Groups) {
 		await db.setObjectField('groupslug:groupname', groupData.slug, groupData.name);
 
 		groupData = await Groups.getGroupData(groupData.name);
-		plugins.fireHook('action:group.create', { group: groupData });
+		plugins.hooks.fire('action:group.create', { group: groupData });
 		return groupData;
 	};
 

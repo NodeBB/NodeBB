@@ -89,7 +89,7 @@ get:
                   tags:
                     type: array
                     items:
-                      $ref: ../../../../components/schemas/TagObject.yaml#/TagObject
+                      $ref: ../../components/schemas/TagObject.yaml#/TagObject
                   posts:
                     type: array
                     items:
@@ -137,6 +137,9 @@ get:
                             username:
                               type: string
                               description: A friendly name for a given user account
+                            displayname:
+                              type: string
+                              description: This is either username or fullname depending on forum and user settings
                             userslug:
                               type: string
                               description: An URL-safe variant of the username (i.e. lower-cased, spaces
@@ -260,6 +263,8 @@ get:
                               type: number
                         selfPost:
                           type: boolean
+                        topicOwnerPost:
+                          type: boolean
                         display_edit_tools:
                           type: boolean
                         display_delete_tools:
@@ -274,7 +279,7 @@ get:
                           type: number
                           description: The flag identifier, if this particular post has been flagged before
                   category:
-                    $ref: ../../../../components/schemas/CategoryObject.yaml#/CategoryObject
+                    $ref: ../../components/schemas/CategoryObject.yaml#/CategoryObject
                   tagWhitelist:
                     type: array
                     items:
@@ -322,7 +327,7 @@ get:
                   related:
                     type: array
                     items:
-                      $ref: ../../../../components/schemas/TopicObject.yaml#/TopicObject
+                      $ref: ../../components/schemas/TopicObject.yaml#/TopicObject
                   unreplied:
                     type: boolean
                   icons:
@@ -399,7 +404,18 @@ get:
                   postIndex:
                     type: number
                   loggedInUser:
-                    $ref: ../../../../components/schemas/UserObject.yaml#/UserObject
-              - $ref: ../../../../components/schemas/Pagination.yaml#/Pagination
-              - $ref: ../../../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
-              - $ref: ../../../../components/schemas/CommonProps.yaml#/CommonProps
+                    $ref: ../../components/schemas/UserObject.yaml#/UserObject
+              - type: object
+                description: Optional properties that may or may not be present (except for `tid`, which is always present, and is only here as a hack to pass validation)
+                properties:
+                  tid:
+                    type: number
+                    description: A topic identifier
+                  thumb:
+                    type: string
+                    description: An uploaded topic thumbnail
+                required:
+                  - tid
+              - $ref: ../../components/schemas/Pagination.yaml#/Pagination
+              - $ref: ../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../../components/schemas/CommonProps.yaml#/CommonProps

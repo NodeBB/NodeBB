@@ -109,7 +109,7 @@ exports.postCommand = async function (caller, command, eventName, notification, 
 		filter:post.bookmark
 		filter:post.unbookmark
 	 */
-	const filteredData = await plugins.fireHook('filter:post.' + command, {
+	const filteredData = await plugins.hooks.fire('filter:post.' + command, {
 		data: data,
 		uid: caller.uid,
 	});

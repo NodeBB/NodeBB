@@ -64,8 +64,8 @@ unreadController.get = async function (req, res) {
 };
 
 async function getWatchedCategories(uid, cid, filter) {
-	if (plugins.hasListeners('filter:unread.categories')) {
-		return await plugins.fireHook('filter:unread.categories', { uid: uid, cid: cid });
+	if (plugins.hooks.hasListeners('filter:unread.categories')) {
+		return await plugins.hooks.fire('filter:unread.categories', { uid: uid, cid: cid });
 	}
 	const states = [categories.watchStates.watching];
 	if (filter === 'watched') {
