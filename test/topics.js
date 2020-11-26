@@ -199,7 +199,7 @@ describe('Topic\'s', function () {
 			assert.strictEqual(replies.length, 1);
 			assert.strictEqual(replies[0].content, 'reply post 2');
 			let toPid = await posts.getPostField(reply2.pid, 'toPid');
-			assert.strictEqual(toPid, reply1.pid);
+			assert.strictEqual(parseInt(toPid, 10), parseInt(reply1.pid, 10));
 			await posts.purge(reply1.pid, fooUid);
 			replies = await socketPosts.getReplies({ uid: fooUid }, reply1.pid);
 			assert.strictEqual(replies.length, 0);
