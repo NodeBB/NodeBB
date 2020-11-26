@@ -36,6 +36,7 @@ module.exports = function (User) {
 		await deleteTopics(callerUid, uid);
 		await deleteUploads(uid);
 		await deleteQueued(uid);
+		delete deletesInProgress[uid];
 	};
 
 	async function deletePosts(callerUid, uid) {
