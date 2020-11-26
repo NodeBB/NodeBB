@@ -415,6 +415,16 @@ describe('Hash methods', function () {
 			});
 		});
 
+		it('should delete multiple fields of multiple objects', async function () {
+			await db.setObject('deleteFields1', { foo: 'foo1', baz: '2' });
+			await db.setObject('deleteFields2', { foo: 'foo2', baz: '3' });
+			await db.deleteObjectFields(['deleteFields1', 'deleteFields2'], ['baz']);
+			const obj1 = await db.getObject('deleteFields1');
+			const obj2 = await db.getObject('deleteFields2');
+			assert.deepStrictEqual(obj1, { foo: 'foo1' });
+			assert.deepStrictEqual(obj2, { foo: 'foo2' });
+		});
+
 		it('should not error if fields is empty array', async () => {
 			await db.deleteObjectFields('someKey', []);
 		});
