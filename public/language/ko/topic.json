@@ -29,6 +29,7 @@
     "tools": "도구",
     "locked": "잠긴 게시물",
     "pinned": "고정된 게시물",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "이동된 게시물",
     "moved-from": "Moved from %1",
     "copy-ip": "IP 복사",

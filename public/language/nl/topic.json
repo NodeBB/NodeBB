@@ -29,6 +29,7 @@
     "tools": "Extra",
     "locked": "Gesloten",
     "pinned": "Pinned",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "Verplaatst",
     "moved-from": "Moved from %1",
     "copy-ip": "Kopieer IP",

@@ -29,6 +29,7 @@
     "tools": "כלים",
     "locked": "נעול",
     "pinned": "נעוץ",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "הועבר",
     "moved-from": "הועבר מ-%1",
     "copy-ip": "העתק IP",

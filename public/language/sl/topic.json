@@ -29,6 +29,7 @@
     "tools": "Orodja",
     "locked": "Zaklenjeno",
     "pinned": "Pripeto",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "Premaknjeno",
     "moved-from": "Moved from %1",
     "copy-ip": "Copy IP",
