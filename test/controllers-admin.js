@@ -17,8 +17,10 @@ describe('Admin Controllers', function () {
 	var tid;
 	var cid;
 	var pid;
+	let regularPid;
 	var adminUid;
 	var regularUid;
+	let regular2Uid;
 	var moderatorUid;
 	var jar;
 
@@ -36,24 +38,30 @@ describe('Admin Controllers', function () {
 			regularUid: function (next) {
 				user.create({ username: 'regular' }, next);
 			},
+			regular2Uid: function (next) {
+				user.create({ username: 'regular2' }, next);
+			},
 			moderatorUid: function (next) {
 				user.create({ username: 'moderator', password: 'modmod' }, next);
 			},
-		}, function (err, results) {
+		}, async function (err, results) {
 			if (err) {
 				return done(err);
 			}
 			adminUid = results.adminUid;
 			regularUid = results.regularUid;
+			regular2Uid = results.regular2Uid;
 			moderatorUid = results.moderatorUid;
 			cid = results.category.cid;
 
-			topics.post({ uid: adminUid, title: 'test topic title', content: 'test topic content', cid: results.category.cid }, function (err, result) {
-				assert.ifError(err);
-				tid = result.topicData.tid;
-				pid = result.postData.pid;
-				done();
-			});
+			const adminPost = await topics.post({ uid: adminUid, title: 'test topic title', content: 'test topic content', cid: results.category.cid });
+			assert.ifError(err);
+			tid = adminPost.topicData.tid;
+			pid = adminPost.postData.pid;
+
+			const regularPost = await topics.post({ uid: regular2Uid, title: 'regular user\'s test topic title', content: 'test topic content', cid: results.category.cid });
+			regularPid = regularPost.postData.pid;
+			done();
 		});
 	});
 
@@ -610,12 +618,22 @@ describe('Admin Controllers', function () {
 			});
 		});
 
+		it('should error when you attempt to flag a privileged user\'s post', async () => {
+			var socketFlags = require('../src/socket.io/flags');
+			var oldValue = meta.config['min:rep:flag'];
+			try {
+				await socketFlags.create({ uid: regularUid }, { id: pid, type: 'post', reason: 'spam' });
+			} catch (err) {
+				assert.strictEqual(err.message, '[[error:cant-flag-privileged]]');
+			}
+		});
+
 		it('should error with not enough reputation to flag', function (done) {
 			var socketFlags = require('../src/socket.io/flags');
 			var oldValue = meta.config['min:rep:flag'];
 			meta.config['min:rep:flag'] = 1000;
-			socketFlags.create({ uid: regularUid }, { id: pid, type: 'post', reason: 'spam' }, function (err) {
-				assert.equal(err.message, '[[error:not-enough-reputation-to-flag]]');
+			socketFlags.create({ uid: regularUid }, { id: regularPid, type: 'post', reason: 'spam' }, function (err) {
+				assert.strictEqual(err.message, '[[error:not-enough-reputation-to-flag]]');
 				meta.config['min:rep:flag'] = oldValue;
 				done();
 			});
@@ -625,7 +643,7 @@ describe('Admin Controllers', function () {
 			var socketFlags = require('../src/socket.io/flags');
 			var oldValue = meta.config['min:rep:flag'];
 			meta.config['min:rep:flag'] = 0;
-			socketFlags.create({ uid: regularUid }, { id: pid, type: 'post', reason: 'spam' }, function (err, flagId) {
+			socketFlags.create({ uid: regularUid }, { id: regularPid, type: 'post', reason: 'spam' }, function (err, flagId) {
 				meta.config['min:rep:flag'] = oldValue;
 				assert.ifError(err);
 				request(nconf.get('url') + '/api/flags/' + flagId, { jar: moderatorJar, json: true }, function (err, res, body) {
@@ -633,7 +651,7 @@ describe('Admin Controllers', function () {
 					assert(body);
 					assert(body.reports);
 					assert(Array.isArray(body.reports));
-					assert.equal(body.reports[0].reporter.username, 'regular');
+					assert.strictEqual(body.reports[0].reporter.username, 'regular');
 					done();
 				});
 			});
