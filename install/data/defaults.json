@@ -104,6 +104,7 @@
     "maximumGroupTitleLength": 40,
     "preventTopicDeleteAfterReplies": 0,
     "feeds:disableSitemap": 0,
+    "feeds:disableRSS": 0,
     "sitemapTopics": 500,
     "maintenanceMode": 0,
     "maintenanceModeStatus": 503,
