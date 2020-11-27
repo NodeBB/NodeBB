@@ -444,6 +444,9 @@ app.cacheBuster = null;
 	}
 
 	app.enableTopicSearch = function (options) {
+		if (!config.searchEnabled) {
+			return;
+		}
 		/* eslint-disable-next-line */
 		var searchOptions = Object.assign({ in: 'titles' }, options.searchOptions);
 		var quickSearchResults = options.searchElements.resultEl;
