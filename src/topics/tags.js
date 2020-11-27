@@ -89,8 +89,8 @@ module.exports = function (Topics) {
 			return;
 		}
 		newTagName = utils.cleanUpTag(newTagName, meta.config.maximumTagLength);
-		await Topics.createEmptyTag(newTagName);
 		const targetExists = await db.isSortedSetMember('tags:topic:count', newTagName);
+		await Topics.createEmptyTag(newTagName);
 		const tagData = await db.getObject('tag:' + tag);
 		if (tagData && !targetExists) {
 			await db.setObject('tag:' + newTagName, {
