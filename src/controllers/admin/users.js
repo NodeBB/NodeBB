@@ -241,7 +241,7 @@ async function render(req, res, data) {
 	filterBy.forEach(function (filter) {
 		data['filterBy_' + validator.escape(String(filter))] = true;
 	});
-	data.userCount = await db.getObjectField('global', 'userCount');
+	data.userCount = parseInt(await db.getObjectField('global', 'userCount'), 10);
 	if (data.adminInviteOnly) {
 		data.showInviteButton = await privileges.users.isAdministrator(req.uid);
 	} else {
