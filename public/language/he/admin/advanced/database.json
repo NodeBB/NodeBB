@@ -1,12 +1,12 @@
 {
-	"x-b": "%1 בתים",
+	"x-b": "%1 ביטים",
 	"x-mb": "%1 מגה בייט",
 	"x-gb": "%1 ג'יגה בייט",
 	"uptime-seconds": "זמן מאתחול אחרון בשניות",
 	"uptime-days": "זמן מאתחול אחרון בימים",
 
 	"mongo": "Mongo",
-	"mongo.version": "גרסאת MongoDB",
+	"mongo.version": "גרסת MongoDB",
 	"mongo.storage-engine": "מנוע אחסון",
 	"mongo.collections": "אוסף",
 	"mongo.objects": "אובייקטים",
@@ -36,7 +36,7 @@
 	"redis.memory-frag-ratio": "יחס פיצול זכרון",
 	"redis.total-connections-recieved": "סך כל החיבורים שהתקבלו",
 	"redis.total-commands-processed": "סך כל הפקודות שעובדו",
-	"redis.iops": "Instantaneous Ops. Per Second",
+	"redis.iops": "אפשרויות מידיות לשניה",
 	"redis.iinput": "Instantaneous Input Per Second",
 	"redis.ioutput": "Instantaneous Output Per Second",
 	"redis.total-input": "סך הכל  מידע נכנס",

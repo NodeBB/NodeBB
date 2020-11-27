@@ -4,6 +4,7 @@
 	"group-privileges": "Privilèges de groupe",
 	"user-privileges": "Privilèges d'utilisateur",
 	"edit-privileges": "Éditer les privilèges",
+  	"select-clear-all": "Select/Clear All",
 	"chat": "Chat",
 	"upload-images": "Images envoyées",
 	"upload-files": "Fichiers envoyés",

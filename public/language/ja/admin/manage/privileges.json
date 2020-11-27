@@ -4,6 +4,7 @@
 	"group-privileges": "Group Privileges",
 	"user-privileges": "User Privileges",
 	"edit-privileges": "Edit Privileges",
+  	"select-clear-all": "Select/Clear All",
 	"chat": "チャット",
 	"upload-images": "画像をアップロード",
 	"upload-files": "ファイルをアップロード",

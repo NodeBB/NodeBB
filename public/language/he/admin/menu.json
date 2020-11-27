@@ -13,7 +13,7 @@
 	"manage/groups": "קבוצות",
 	"manage/ip-blacklist": "רשימה שחורה של כתובות IP",
 	"manage/uploads": "העלאות",
-	"manage/digest": "Digests",
+	"manage/digest": "תקצירים",
 
 	"section-settings": "הגדרות",
 	"settings/general": "כללי",
@@ -44,14 +44,14 @@
 	"section-appearance": "מראה חיצוני",
 	"appearance/themes": "ערכות נושא",
 	"appearance/skins": "עיצובים",
-	"appearance/customise": "תוכן מותאם אישי (HTML/JS/CSS)",
+	"appearance/customise": "תוכן מותאם אישית (HTML/JS/CSS)",
 
-	"section-extend": "Extend",
+	"section-extend": "הרחב",
 	"extend/plugins": "תוספים",
 	"extend/widgets": "וידג'טים",
-	"extend/rewards": "תגמולים",
+	"extend/rewards": "פרסים",
 
-	"section-social-auth": "אימות חברתי",
+	"section-social-auth": "אימות חיצוני",
 
 	"section-plugins": "תוספים",
 	"extend/plugins.install": "תוספים מותקנים",
@@ -60,16 +60,16 @@
 	"advanced/database": "מסד נתונים",
 	"advanced/events": "ארועים",
 	"advanced/hooks": "Hooks",
-	"advanced/logs": "Logs",
+	"advanced/logs": "רישומים",
 	"advanced/errors": "שגיאות",
 	"advanced/cache": "עוגיות",
-	"development/logger": "Logger",
+	"development/logger": "כותב הרישומים",
 	"development/info": "מידע",
 
 	"rebuild-and-restart-forum": "בנה והפעל מחדש את הפורום",
 	"restart-forum": "הפעל מחדש את הפורום",
 	"logout": "התנתק",
-	"view-forum": "צפה בפורום",
+	"view-forum": "כניסה לפורום",
 
 	"search.placeholder": "לחץ &quot;/&quot; בכדי לחפש הגדרה",
 	"search.no-results": "אין תוצאות...",
