@@ -29,6 +29,7 @@
     "tools": "Herramientas",
     "locked": "Cerrado",
     "pinned": "Fijo",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "Movido",
     "moved-from": "Moved from %1",
     "copy-ip": "Copiar IP",

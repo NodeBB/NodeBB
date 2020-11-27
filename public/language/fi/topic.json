@@ -29,6 +29,7 @@
     "tools": "Työkalut",
     "locked": "Lukittu",
     "pinned": "Kiinnitetty",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "Siirretty",
     "moved-from": "Moved from %1",
     "copy-ip": "Kopioi IP",

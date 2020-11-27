@@ -29,6 +29,7 @@
     "tools": "工具",
     "locked": "已锁定",
     "pinned": "已固定",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "已移动",
     "moved-from": "移自1%版 ",
     "copy-ip": "复制IP",

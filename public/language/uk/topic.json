@@ -29,6 +29,7 @@
     "tools": "Інструменти",
     "locked": "Заблокована",
     "pinned": "Закріплена",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "Переміщена",
     "moved-from": "Moved from %1",
     "copy-ip": "Копіювати IP",

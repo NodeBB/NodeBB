@@ -29,6 +29,7 @@
     "tools": "Ibikoresho",
     "locked": "Birafungiranye",
     "pinned": "Pinned",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "Moved",
     "moved-from": "Moved from %1",
     "copy-ip": "Copy IP",

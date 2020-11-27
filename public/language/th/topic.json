@@ -29,6 +29,7 @@
     "tools": "เครื่องมือ",
     "locked": "ถูกล็อก",
     "pinned": "ถูกปักหมุด",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "ถูกย้าย",
     "moved-from": "Moved from %1",
     "copy-ip": "คัดลอก IP",

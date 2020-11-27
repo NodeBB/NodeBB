@@ -29,6 +29,7 @@
     "tools": "Tööriistad",
     "locked": "Lukustatud",
     "pinned": "Märgistatud",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "Liigutatud",
     "moved-from": "Moved from %1",
     "copy-ip": "Copy IP",

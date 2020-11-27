@@ -29,6 +29,7 @@
     "tools": "Alati",
     "locked": "Zaključano",
     "pinned": "Zakačeno",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "Premješteno",
     "moved-from": "Moved from %1",
     "copy-ip": "Copy IP",

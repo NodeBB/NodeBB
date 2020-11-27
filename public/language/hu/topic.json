@@ -29,6 +29,7 @@
     "tools": "Eszközök",
     "locked": "Zárolva",
     "pinned": "Rögzített",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "Áthelyezett",
     "moved-from": "Moved from %1",
     "copy-ip": "IP-cím másolása",

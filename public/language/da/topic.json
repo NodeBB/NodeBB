@@ -29,6 +29,7 @@
     "tools": "Værktøjer",
     "locked": "Låst",
     "pinned": "Pinned",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "Flyttet",
     "moved-from": "Moved from %1",
     "copy-ip": "Copy IP",

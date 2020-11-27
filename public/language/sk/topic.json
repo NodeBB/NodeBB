@@ -29,6 +29,7 @@
     "tools": "Nástroje",
     "locked": "Uzamknuté",
     "pinned": "Pripnuté",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "Presunuté",
     "moved-from": "Moved from %1",
     "copy-ip": "Kopírovať IP adresu",

@@ -29,6 +29,7 @@
     "tools": "Алатке",
     "locked": "Закључано",
     "pinned": "Закачено",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "Премештено",
     "moved-from": "Moved from %1",
     "copy-ip": "Копирај IP",
