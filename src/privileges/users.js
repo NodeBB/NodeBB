@@ -3,6 +3,8 @@
 
 const _ = require('lodash');
 
+const user = require('../user');
+const meta = require('../meta');
 const groups = require('../groups');
 const plugins = require('../plugins');
 const helpers = require('./helpers');
@@ -105,6 +107,22 @@ module.exports = function (privileges) {
 			uid: uid,
 		});
 		return data.canBan;
+	};
+
+	privileges.users.canFlag = async function (callerUid, uid) {
+		const [userReputation, targetPrivileged, reporterPrivileged] = await Promise.all([
+			user.getUserField(callerUid, 'reputation'),
+			user.isPrivileged(uid),
+			user.isPrivileged(callerUid),
+		]);
+		const minimumReputation = meta.config['min:rep:flag'];
+		let canFlag = reporterPrivileged || (userReputation >= minimumReputation);
+
+		if (targetPrivileged && !reporterPrivileged) {
+			canFlag = false;
+		}
+
+		return { flag: canFlag };
 	};
 
 	privileges.users.hasBanPrivilege = async uid => await hasGlobalPrivilege('ban', uid);

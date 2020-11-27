@@ -70,6 +70,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID) {
 	userData.isSelfOrAdminOrGlobalModerator = isSelf || isAdmin || isGlobalModerator;
 	userData.canEdit = results.canEdit;
 	userData.canBan = results.canBanUser;
+	userData.canFlag = (await privileges.users.canFlag(callerUID, userData.uid)).flag;
 	userData.canChangePassword = isAdmin || (isSelf && !meta.config['password:disableEdit']);
 	userData.isSelf = isSelf;
 	userData.isFollowing = results.isFollowing;

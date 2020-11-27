@@ -176,12 +176,20 @@ module.exports = function (privileges) {
 	};
 
 	privileges.posts.canFlag = async function (pid, uid) {
-		const [userReputation, isAdminOrModerator] = await Promise.all([
+		const targetUid = await posts.getPostField(pid, 'uid');
+		const [userReputation, isAdminOrModerator, targetPrivileged, reporterPrivileged] = await Promise.all([
 			user.getUserField(uid, 'reputation'),
 			isAdminOrMod(pid, uid),
+			user.isPrivileged(targetUid),
+			user.isPrivileged(uid),
 		]);
 		const minimumReputation = meta.config['min:rep:flag'];
-		const canFlag = isAdminOrModerator || (userReputation >= minimumReputation);
+		let canFlag = isAdminOrModerator || (userReputation >= minimumReputation);
+
+		if (targetPrivileged && !reporterPrivileged) {
+			canFlag = false;
+		}
+
 		return { flag: canFlag };
 	};
 

@@ -251,6 +251,15 @@ Flags.validate = async function (payload) {
 		throw new Error('[[error:user-banned]]');
 	}
 
+	// Disallow flagging of profiles/content of privileged users
+	const [targetPrivileged, reporterPrivileged] = await Promise.all([
+		user.isPrivileged(target.uid),
+		user.isPrivileged(reporter.uid),
+	]);
+	if (targetPrivileged && !reporterPrivileged) {
+		throw new Error('[[error:cant-flag-privileged]]');
+	}
+
 	if (payload.type === 'post') {
 		const editable = await privileges.posts.canEdit(payload.id, payload.uid);
 		if (!editable.flag && !meta.config['reputation:disabled'] && reporter.reputation < meta.config['min:rep:flag']) {
