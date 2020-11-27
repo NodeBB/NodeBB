@@ -15,6 +15,8 @@ get:
                     type: array
                     items:
                       $ref: ../../../components/schemas/UserObject.yaml#/UserObjectACP
+                  userCount:
+                    type: number
                   page:
                     type: number
                   pageCount:
