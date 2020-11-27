@@ -179,7 +179,7 @@ socket = window.socket;
 	}
 
 	function onEventBanned(data) {
-		var message = data.until ? '[[error:user-banned-reason-until, ' + $.timeago(data.until) + ', ' + data.reason + ']]' : '[[error:user-banned-reason, ' + data.reason + ']]';
+		var message = data.until ? '[[error:user-banned-reason-until, ' + utils.toISOString(data.until) + ', ' + data.reason + ']]' : '[[error:user-banned-reason, ' + data.reason + ']]';
 
 		bootbox.alert({
 			title: '[[error:user-banned]]',
