@@ -50,6 +50,7 @@
 	"profile-exported": "<strong>%1</strong> profile exported, click to download",
 	"posts-exported": "<strong>%1</strong> posts exported, click to download",
 	"uploads-exported": "<strong>%1</strong> uploads exported, click to download",
+	"users-csv-exported": "Users csv exported, click to download",
 
 	"email-confirmed": "Email Confirmed",
 	"email-confirmed-message": "Thank you for validating your email. Your account is now fully activated.",

@@ -13,6 +13,34 @@ define('admin/manage/users', [
 			ajaxify.go(window.location.pathname + '?' + qs);
 		});
 
+		$('.export-csv').on('click', function () {
+			socket.once('event:export-users-csv', function () {
+				app.removeAlert('export-users-start');
+				app.alert({
+					alert_id: 'export-users',
+					type: 'success',
+					title: '[[global:alert.success]]',
+					message: '[[admin/manage/users:export-users-completed]]',
+					clickfn: function () {
+						window.location.href = config.relative_path + '/api/admin/users/csv';
+					},
+					timeout: 0,
+				});
+			});
+			socket.emit('admin.user.exportUsersCSV', {}, function (err) {
+				if (err) {
+					return app.alertError(err);
+				}
+				app.alert({
+					alert_id: 'export-users-start',
+					message: '[[admin/manage/users:export-users-started]]',
+					timeout: (ajaxify.data.userCount / 5000) * 500,
+				});
+			});
+
+			return false;
+		});
+
 		function getSelectedUids() {
 			var uids = [];
 

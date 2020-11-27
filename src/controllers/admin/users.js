@@ -1,6 +1,5 @@
 'use strict';
 
-const nconf = require('nconf');
 const validator = require('validator');
 
 const user = require('../../user');
@@ -242,7 +241,7 @@ async function render(req, res, data) {
 	filterBy.forEach(function (filter) {
 		data['filterBy_' + validator.escape(String(filter))] = true;
 	});
-
+	data.userCount = await db.getObjectField('global', 'userCount');
 	if (data.adminInviteOnly) {
 		data.showInviteButton = await privileges.users.isAdministrator(req.uid);
 	} else {
@@ -252,19 +251,27 @@ async function render(req, res, data) {
 	res.render('admin/manage/users', data);
 }
 
-usersController.getCSV = async function (req, res) {
-	var referer = req.headers.referer;
-
-	if (!referer || !referer.replace(nconf.get('url'), '').startsWith('/admin/manage/users')) {
-		return res.status(403).send('[[error:invalid-origin]]');
-	}
-	events.log({
+usersController.getCSV = async function (req, res, next) {
+	await events.log({
 		type: 'getUsersCSV',
 		uid: req.uid,
 		ip: req.ip,
 	});
-	const data = await user.getUsersCSV();
-	res.attachment('users.csv');
-	res.setHeader('Content-Type', 'text/csv');
-	res.end(data);
+	const path = require('path');
+	const { baseDir } = require('../../constants').paths;
+	res.sendFile('users.csv', {
+		root: path.join(baseDir, 'build/export'),
+		headers: {
+			'Content-Type': 'text/csv',
+			'Content-Disposition': 'attachment; filename=users.csv',
+		},
+	}, function (err) {
+		if (err) {
+			if (err.code === 'ENOENT') {
+				res.locals.isAPI = false;
+				return next();
+			}
+			return next(err);
+		}
+	});
 };
