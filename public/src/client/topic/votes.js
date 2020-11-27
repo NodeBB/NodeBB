@@ -15,6 +15,7 @@ define('forum/topic/votes', [
 
 		var $this = $(this);
 		var el = $this.parent();
+		el.find('.tooltip').css('display', 'none');
 		var pid = el.parents('[data-pid]').attr('data-pid');
 
 		socket.emit('posts.getUpvoters', [pid], function (err, data) {
@@ -32,6 +33,7 @@ define('forum/topic/votes', [
 	function createTooltip(el, data) {
 		function doCreateTooltip(title) {
 			el.attr('title', title).tooltip('fixTitle').tooltip('show');
+			el.parent().find('.tooltip').css('display', '');
 		}
 		var usernames = data.usernames
 			.filter(name => name !== '[[global:former_user]]');
