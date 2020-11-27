@@ -144,6 +144,7 @@
     "user-already-flagged": "Вече сте докладвали този потребител",
     "post-flagged-too-many-times": "Тази публикация вече е докладвана от други хора",
     "user-flagged-too-many-times": "Този потребител вече е докладван от други хора",
+    "cant-flag-privileged": "You are not allowed to flag the profiles or content of privileged users (moderators/global moderators/admins)",
     "self-vote": "Не можете да гласувате за собствената си публикация",
     "too-many-downvotes-today": "Можете да гласувате отрицателно не повече от %1 пъти на ден",
     "too-many-downvotes-today-user": "Можете да гласувате отрицателно за потребител не повече от %1 пъти на ден",

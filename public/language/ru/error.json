@@ -144,6 +144,7 @@
     "user-already-flagged": "Вы уже пожаловались на этого пользователя",
     "post-flagged-too-many-times": "На это сообщение уже пожаловались другие пользователи",
     "user-flagged-too-many-times": "This user has been flagged by others already",
+    "cant-flag-privileged": "You are not allowed to flag the profiles or content of privileged users (moderators/global moderators/admins)",
     "self-vote": "Вы не можете голосовать за свои собственные сообщения",
     "too-many-downvotes-today": "Вы можете проголосовать против только %1 раз за день",
     "too-many-downvotes-today-user": "Вы можете проголосовать против участника только %1 раз за день.",

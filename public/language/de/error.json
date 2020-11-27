@@ -144,6 +144,7 @@
     "user-already-flagged": "Du hast diesen Benutzer bereits gemeldet",
     "post-flagged-too-many-times": "Dieser Beitrag wurde bereits von anderen Benutzern gemeldet",
     "user-flagged-too-many-times": "Dieser Benutzer wurde bereits von anderen Benutzern gemeldet",
+    "cant-flag-privileged": "You are not allowed to flag the profiles or content of privileged users (moderators/global moderators/admins)",
     "self-vote": "Du kannst deine eigenen Beiträge nicht bewerten",
     "too-many-downvotes-today": "Du kannst nur %1 mal am Tag eine schlechte Bewertung abgeben",
     "too-many-downvotes-today-user": "Du kannst einen Benutzer nur %1 mal am Tag schlecht bewerten",

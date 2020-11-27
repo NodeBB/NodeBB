@@ -144,6 +144,7 @@
     "user-already-flagged": "כבר דיווחת על המשתמש הזה",
     "post-flagged-too-many-times": "התקבל כבר דיווח על פוסט זה.",
     "user-flagged-too-many-times": "התקבל דיווח על משתמש זה.",
+    "cant-flag-privileged": "You are not allowed to flag the profiles or content of privileged users (moderators/global moderators/admins)",
     "self-vote": "אי אפשר להצביע בפרסום שיצרת",
     "too-many-downvotes-today": "אתה יכול להצביע נגד %1 פעמים ביום",
     "too-many-downvotes-today-user": "אתה יכול להצביע נגד משתמש %1 פעמים ביום",

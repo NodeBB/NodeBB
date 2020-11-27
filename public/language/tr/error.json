@@ -144,6 +144,7 @@
     "user-already-flagged": "Bu kullanıcıyı önceden şikayet etmişsiniz.",
     "post-flagged-too-many-times": "Bu ileti başkaları tarafından halihazırda şikayet edilmiş.",
     "user-flagged-too-many-times": "Bu kullanıcı başkaları tarafından halihazırda şikayet edilmiş.",
+    "cant-flag-privileged": "You are not allowed to flag the profiles or content of privileged users (moderators/global moderators/admins)",
     "self-vote": "Kendi iletinize oy veremezsiniz",
     "too-many-downvotes-today": "Bir günde sadece %1 eksi oy verebilirsiniz",
     "too-many-downvotes-today-user": "Bir kullanıcıya bir günde sadece %1 eksi oy verebilirsiniz",

@@ -144,6 +144,7 @@
     "user-already-flagged": "You have already flagged this user",
     "post-flagged-too-many-times": "This post has been flagged by others already",
     "user-flagged-too-many-times": "This user has been flagged by others already",
+    "cant-flag-privileged": "You are not allowed to flag the profiles or content of privileged users (moderators/global moderators/admins)",
     "self-vote": "自分のポストに評価することはできません。",
     "too-many-downvotes-today": "You can only downvote %1 times a day",
     "too-many-downvotes-today-user": "You can only downvote a user %1 times a day",

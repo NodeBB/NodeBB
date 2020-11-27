@@ -144,6 +144,7 @@
     "user-already-flagged": "Ten użytkownik został już przez ciebie oflagowany",
     "post-flagged-too-many-times": "Ten post został już oflagowany przez innych użytkowników",
     "user-flagged-too-many-times": "Ten użytkownik został już oflagowany przez innych użytkowników",
+    "cant-flag-privileged": "You are not allowed to flag the profiles or content of privileged users (moderators/global moderators/admins)",
     "self-vote": "Nie możesz głosować na swój własny wpis.",
     "too-many-downvotes-today": "Możesz głosować przeciw postowi tylko %1 razy dziennie",
     "too-many-downvotes-today-user": "Możesz głosować przeciwko użytkownikowi tylko %1 razy dziennie",

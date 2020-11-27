@@ -144,6 +144,7 @@
     "user-already-flagged": "Hai già segnalato questo utente",
     "post-flagged-too-many-times": "Questo post è già stato segnalato da altri",
     "user-flagged-too-many-times": "Questo utente è già stato segnalato da altri",
+    "cant-flag-privileged": "You are not allowed to flag the profiles or content of privileged users (moderators/global moderators/admins)",
     "self-vote": "Non puoi votare la tua stessa discussione",
     "too-many-downvotes-today": "È possibile votare negativamente solo %1 volta al giorno",
     "too-many-downvotes-today-user": "È possibile votare negativamente un utente solo %1 volta al giorno",

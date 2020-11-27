@@ -144,6 +144,7 @@
     "user-already-flagged": "您已举报此用户",
     "post-flagged-too-many-times": "此贴已被其他用户举报",
     "user-flagged-too-many-times": "此用户已被其他用户举报",
+    "cant-flag-privileged": "You are not allowed to flag the profiles or content of privileged users (moderators/global moderators/admins)",
     "self-vote": "您不能对您自己的帖子投票",
     "too-many-downvotes-today": "您每天只能踩 %1 次",
     "too-many-downvotes-today-user": "您每天只能对一个用户踩 %1 次",
