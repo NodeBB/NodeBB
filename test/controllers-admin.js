@@ -264,16 +264,22 @@ describe('Admin Controllers', function () {
 	});
 
 	it('should load /admin/users/csv', function (done) {
-		request(nconf.get('url') + '/api/admin/users/csv', {
-			jar: jar,
-			headers: {
-				referer: nconf.get('url') + '/admin/manage/users',
-			},
-		}, function (err, res, body) {
+		const socketAdmin = require('../src/socket.io/admin');
+		socketAdmin.user.exportUsersCSV({ uid: adminUid }, {}, function (err) {
 			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
+			setTimeout(function () {
+				request(nconf.get('url') + '/api/admin/users/csv', {
+					jar: jar,
+					headers: {
+						referer: nconf.get('url') + '/admin/manage/users',
+					},
+				}, function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert(body);
+					done();
+				});
+			}, 2000);
 		});
 	});
 
