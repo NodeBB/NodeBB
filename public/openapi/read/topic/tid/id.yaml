@@ -15,50 +15,16 @@ get:
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              tid:
-                type: number
-              uid:
-                type: number
-              cid:
-                type: number
-              mainPid:
-                type: number
-              teaserPid:
-                type: number
-                nullable: true
-              title:
-                type: string
-              slug:
-                type: string
-              timestamp:
-                type: number
-              lastposttime:
-                type: number
-              postercount:
-                type: number
-              postcount:
-                type: number
-              viewcount:
-                type: number
-              deleted:
-                type: number
-              locked:
-                type: number
-              pinned:
-                type: number
-              upvotes:
-                type: number
-              downvotes:
-                type: number
-              deleterUid:
-                type: number
-              titleRaw:
-                type: string
-              timestampISO:
-                type: string
-              lastposttimeISO:
-                type: string
-              votes:
-                type: number
+            allOf:
+              - $ref: ../../../components/schemas/TopicObject.yaml#/TopicObjectSlim
+              - type: object
+                properties:
+                  teaserPid:
+                    type: number
+                    nullable: true
+                  title:
+                    type: string
+                  slug:
+                    type: string
+                  titleRaw:
+                    type: string
