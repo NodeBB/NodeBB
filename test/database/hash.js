@@ -471,7 +471,7 @@ describe('Hash methods', function () {
 			db.incrObjectField('testObject12', 'field1', function (err, newValue) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.equal(newValue, 1);
+				assert.strictEqual(newValue, 1);
 				done();
 			});
 		});
@@ -480,7 +480,7 @@ describe('Hash methods', function () {
 			db.incrObjectField('testObject11', 'age', function (err, newValue) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.equal(newValue, 100);
+				assert.strictEqual(newValue, 100);
 				done();
 			});
 		});
