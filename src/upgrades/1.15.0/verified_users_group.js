@@ -54,7 +54,7 @@ module.exports = {
 
 			await db.sortedSetAdd(
 				'group:unverified-users:members',
-				verified.map(() => now),
+				unverified.map(() => now),
 				unverified.map(u => u.uid)
 			);
 		}, {
