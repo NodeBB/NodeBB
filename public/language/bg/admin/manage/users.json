@@ -102,5 +102,7 @@
 
 	"alerts.prompt-email": "Е-пощи: ",
 	"alerts.email-sent-to": "Беше изпратено е-писмо за потвърждение до %1",
-	"alerts.x-users-found": "Намерени потребители: %1 (%2 секунди)"
+	"alerts.x-users-found": "Намерени потребители: %1 (%2 секунди)",
+	"export-users-started": "Exporting users as csv, this might take a while. You will receive a notification when it is complete.",
+	"export-users-completed": "Users exported as csv, click here to download."
 }

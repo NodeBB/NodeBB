@@ -46,6 +46,7 @@
     "profile-exported": "<strong>%1</strong> profile exported, click to download",
     "posts-exported": "<strong>%1</strong> posts exported, click to download",
     "uploads-exported": "<strong>%1</strong> uploads exported, click to download",
+    "users-csv-exported": "Users csv exported, click to download",
     "email-confirmed": "E-mail bol potvrdený",
     "email-confirmed-message": "Ďakujeme za potvrdenie Vášho e-mailu. Váš účet je teraz aktivovaný.",
     "email-confirm-error-message": "Vyskytla sa chyba pri overení Vašej e-mailovej adresy. ",

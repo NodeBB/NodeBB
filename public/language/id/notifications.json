@@ -46,6 +46,7 @@
     "profile-exported": "<strong>%1</strong> profile exported, click to download",
     "posts-exported": "<strong>%1</strong> posts exported, click to download",
     "uploads-exported": "<strong>%1</strong> uploads exported, click to download",
+    "users-csv-exported": "Users csv exported, click to download",
     "email-confirmed": "Email telah Dikonfirmasi",
     "email-confirmed-message": "Terimakasih telah melakukan validasi email. Akunmu saat ini telah aktif sepenuhnya.",
     "email-confirm-error-message": "Terjadi masalah saat melakukan validasi emailmu. Mungkin terjadi kesalahan kode atau waktu habis.",

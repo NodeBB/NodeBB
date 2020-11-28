@@ -46,6 +46,7 @@
     "profile-exported": "<strong>%1</strong>资料已导出，点击下载",
     "posts-exported": "<strong>%1</strong>帖子已导出，点击下载",
     "uploads-exported": "<strong>%1</strong>上传已导出，点击下载",
+    "users-csv-exported": "Users csv exported, click to download",
     "email-confirmed": "电子邮箱已确认",
     "email-confirmed-message": "感谢您验证您的电子邮箱。您的帐户现已完全激活。",
     "email-confirm-error-message": "验证的您电子邮箱地址时出现了问题。可能是因为验证码无效或已过期。",

@@ -14,5 +14,6 @@
 
 	"alerts.editing": "Редактиране на етикет(и)",
 	"alerts.confirm-delete": "Наистина ли искате да изтриете избраните етикети?",
-	"alerts.update-success": "Етикетът е променен!"
+	"alerts.update-success": "Етикетът е променен!",
+	"reset-colors": "Reset colors"
 }

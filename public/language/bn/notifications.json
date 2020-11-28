@@ -46,6 +46,7 @@
     "profile-exported": "<strong>%1</strong> profile exported, click to download",
     "posts-exported": "<strong>%1</strong> posts exported, click to download",
     "uploads-exported": "<strong>%1</strong> uploads exported, click to download",
+    "users-csv-exported": "Users csv exported, click to download",
     "email-confirmed": "ইমেইল নিশ্চিত করা হয়েছে",
     "email-confirmed-message": "আপনার ইমেইল যাচাই করার জন্য আপনাকে ধন্যবাদ। আপনার অ্যাকাউন্টটি এখন সম্পূর্ণরূপে সক্রিয়।",
     "email-confirm-error-message": "আপনার ইমেল ঠিকানার বৈধতা যাচাইয়ে একটি সমস্যা হয়েছে। সম্ভবত কোডটি ভুল ছিল অথবা কোডের মেয়াদ শেষ হয়ে গিয়েছে।",

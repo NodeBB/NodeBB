@@ -14,5 +14,6 @@
 
 	"alerts.editing": "編輯(多個)標籤",
 	"alerts.confirm-delete": "是否要刪除所選標籤？",
-	"alerts.update-success": "標籤已更新！"
+	"alerts.update-success": "標籤已更新！",
+	"reset-colors": "Reset colors"
 }
