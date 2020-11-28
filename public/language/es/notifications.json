@@ -46,6 +46,7 @@
     "profile-exported": "<strong>%1</strong> profile exported, click to download",
     "posts-exported": "<strong>%1</strong> posts exported, click to download",
     "uploads-exported": "<strong>%1</strong> uploads exported, click to download",
+    "users-csv-exported": "Users csv exported, click to download",
     "email-confirmed": "Correo electrónico confirmado",
     "email-confirmed-message": "Gracias por validar tu correo electrónico. Tu cuenta ya está completamente activa.",
     "email-confirm-error-message": "Hubo un problema al validar tu cuenta de correo electrónico. Quizá el código era erróneo o expiró...",

@@ -46,6 +46,7 @@
     "profile-exported": "<strong>%1</strong> profile exported, click to download",
     "posts-exported": "<strong>%1</strong> posts exported, click to download",
     "uploads-exported": "<strong>%1</strong> uploads exported, click to download",
+    "users-csv-exported": "Users csv exported, click to download",
     "email-confirmed": "E-pasta adrese ir apstiprināta",
     "email-confirmed-message": "Paldies, ka apstiprināji e-pasta adresi. Tavs konts tagad ir pilnībā aktivizēts.",
     "email-confirm-error-message": "Tavā e-pasta adreses apstiprināšanā radās problēma. Iespējams, kods ir nederīgs vai ir beidzies derīguma termiņš.",

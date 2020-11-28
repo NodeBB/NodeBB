@@ -14,5 +14,6 @@
 
 	"alerts.editing": "Editing tag(s)",
 	"alerts.confirm-delete": "Бажаєте видалити декілька тегів?",
-	"alerts.update-success": "Тег оновлено!"
+	"alerts.update-success": "Тег оновлено!",
+	"reset-colors": "Reset colors"
 }

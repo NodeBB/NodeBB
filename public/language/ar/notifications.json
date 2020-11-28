@@ -46,6 +46,7 @@
     "profile-exported": "<strong>%1</strong> profile exported, click to download",
     "posts-exported": "<strong>%1</strong> posts exported, click to download",
     "uploads-exported": "<strong>%1</strong> uploads exported, click to download",
+    "users-csv-exported": "Users csv exported, click to download",
     "email-confirmed": "تم التحقق من عنوان البريد الإلكتروني",
     "email-confirmed-message": "شكرًا على إثبات صحة عنوان بريدك الإلكتروني. صار حسابك مفعلًا بالكامل.",
     "email-confirm-error-message": "حدث خطأ أثناء التحقق من عنوان بريدك الإلكتروني. ربما رمز التفعيل خاطئ أو انتهت صلاحيته.",

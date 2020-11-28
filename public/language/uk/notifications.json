@@ -46,6 +46,7 @@
     "profile-exported": "<strong>%1</strong> profile exported, click to download",
     "posts-exported": "<strong>%1</strong> posts exported, click to download",
     "uploads-exported": "<strong>%1</strong> uploads exported, click to download",
+    "users-csv-exported": "Users csv exported, click to download",
     "email-confirmed": "Електронну пошту підтверджено",
     "email-confirmed-message": "Дякуємо за підтвердження електронної пошти. Ваш акаунт тепер повністю активовано.",
     "email-confirm-error-message": "При перевірці вашої електронної пошти сталася проблема. Можливо код був недійсним або простроченим.",

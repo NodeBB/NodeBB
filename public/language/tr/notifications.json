@@ -46,6 +46,7 @@
     "profile-exported": "<strong>%1</strong> profili hazırlandı, indirmek için tıklayınız",
     "posts-exported": "<strong>%1</strong> iletileri hazırlandı, indirmek için tıklayınız",
     "uploads-exported": "<strong>%1</strong> yüklemeleri hazırlandı, indirmek için tıklayınız",
+    "users-csv-exported": "Users csv exported, click to download",
     "email-confirmed": "E-posta onaylandı",
     "email-confirmed-message": "E-postanızı onayladığınız için teşekkürler. Hesabınız tamamen aktif edildi.",
     "email-confirm-error-message": "E-posta adresinizi onaylarken bir hata oluştu. Kodunuz geçersiz ya da eski olabilir.",

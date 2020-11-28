@@ -46,6 +46,7 @@
     "profile-exported": "<strong>%1</strong>profil wyeksportowany, kliknij tutaj by pobrać",
     "posts-exported": "<strong>%1</strong>postów wyeksportowane, kliknij tutaj by pobrać",
     "uploads-exported": "<strong>%1</strong>przesłanych plików wyeksportowane, kliknij tutaj by pobrać",
+    "users-csv-exported": "Users csv exported, click to download",
     "email-confirmed": "E-mail potwierdzony",
     "email-confirmed-message": "Dziękujemy za potwierdzenie maila. Twoje konto zostało aktywowane.",
     "email-confirm-error-message": "Wystąpił problem przy aktywacji - kod jest błędny lub przestarzały",

@@ -46,6 +46,7 @@
     "profile-exported": "<strong>%1</strong> profile exported, click to download",
     "posts-exported": "<strong>%1</strong> posts exported, click to download",
     "uploads-exported": "<strong>%1</strong> uploads exported, click to download",
+    "users-csv-exported": "Users csv exported, click to download",
     "email-confirmed": "Emel Disahkan",
     "email-confirmed-message": "Terima kasih kerana mengesahkan emel anda. Akaun anda telah diaktifkan sepenuhnya.",
     "email-confirm-error-message": "Berlaku masalah semasa mengesahkan emel anda. Mungkin kod tidak sah atau tamat tempoh.",

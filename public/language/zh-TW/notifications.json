@@ -46,6 +46,7 @@
     "profile-exported": "<strong>%1</strong> profile exported, click to download",
     "posts-exported": "<strong>%1</strong> posts exported, click to download",
     "uploads-exported": "<strong>%1</strong> uploads exported, click to download",
+    "users-csv-exported": "Users csv exported, click to download",
     "email-confirmed": "電子信箱已確認",
     "email-confirmed-message": "感謝您驗證您的電子信箱。您的帳戶現已完全啟用。",
     "email-confirm-error-message": "驗證的您電子信箱地址時出現了問題。可能是因為驗證碼無效或已過期。",

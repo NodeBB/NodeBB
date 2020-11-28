@@ -46,6 +46,7 @@
     "profile-exported": "Профиль <strong>%1</strong> экспортирован, нажмите для загрузки",
     "posts-exported": "Посты <strong>%1</strong> экспортированы, нажмите для загрузки",
     "uploads-exported": "Вложения <strong>%1</strong> экспортированы, нажмите для загрузки",
+    "users-csv-exported": "Users csv exported, click to download",
     "email-confirmed": "Электронная почта подтверждена",
     "email-confirmed-message": "Спасибо за подтверждение адреса электронной почты. Ваша учётная запись активирована.",
     "email-confirm-error-message": "Ошибка проверки адреса электронной почты. Возможно, код подтверждения введён неправильно или у него истёк срок действия.",

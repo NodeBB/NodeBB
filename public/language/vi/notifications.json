@@ -46,6 +46,7 @@
     "profile-exported": "<strong>%1</strong> profile exported, click to download",
     "posts-exported": "<strong>%1</strong> posts exported, click to download",
     "uploads-exported": "<strong>%1</strong> uploads exported, click to download",
+    "users-csv-exported": "Users csv exported, click to download",
     "email-confirmed": "Đã xác nhận email",
     "email-confirmed-message": "Cảm ơn bạn đã xác nhận địa chỉ email của bạn. Tài khoản của bạn đã được kích hoạt đầy đủ.",
     "email-confirm-error-message": "Đã có lỗi khi xác nhận địa chỉ email. Có thể đoạn mã không đúng hoặc đã hết hạn.",
