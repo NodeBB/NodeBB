@@ -46,7 +46,7 @@
     "profile-exported": "<strong>%1</strong> profilo esportato, clicca per scaricare",
     "posts-exported": "<strong>%1</strong> post esportati, clicca per scaricare",
     "uploads-exported": "<strong>%1</strong> caricamenti esportati, clicca per scaricare",
-    "users-csv-exported": "Users csv exported, click to download",
+    "users-csv-exported": "Utenti esportati in CSV, clicca per scaricare",
     "email-confirmed": "Email Confermata",
     "email-confirmed-message": "Grazie per aver validato la tua email. Il tuo account è ora completamente attivato.",
     "email-confirm-error-message": "C'è stato un problema nella validazione del tuo indirizzo email. Potrebbe essere il codice non valido o scaduto.",
