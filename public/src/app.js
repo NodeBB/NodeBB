@@ -444,7 +444,7 @@ app.cacheBuster = null;
 	}
 
 	app.enableTopicSearch = function (options) {
-		if (!config.searchEnabled) {
+		if (!config.searchEnabled || !app.user.privileges['search:content']) {
 			return;
 		}
 		/* eslint-disable-next-line */
