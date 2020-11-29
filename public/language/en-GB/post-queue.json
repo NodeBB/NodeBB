@@ -8,5 +8,11 @@
 	"content": "Content",
 	"posted": "Posted",
 	"reply-to": "Reply to \"%1\"",
-	"content-editable": "You can click on individual content to edit before posting."
+	"content-editable": "You can click on individual content to edit before posting.",
+	"category-editable": "Click on category to edit",
+	"title-editable": "Click on title to edit",
+	"reply": "Reply",
+	"topic": "Topic",
+	"accept": "Accept",
+	"reject": "Reject"
 }
