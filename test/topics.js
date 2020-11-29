@@ -5,6 +5,7 @@ const assert = require('assert');
 const validator = require('validator');
 const nconf = require('nconf');
 const request = require('request');
+const util = require('util');
 
 const db = require('./mocks/databasemock');
 const topics = require('../src/topics');
@@ -17,6 +18,11 @@ const groups = require('../src/groups');
 const helpers = require('./helpers');
 const socketPosts = require('../src/socket.io/posts');
 const socketTopics = require('../src/socket.io/topics');
+
+
+const requestType = util.promisify(function (type, url, opts, cb) {
+	request[type](url, opts, (err, res, body) => cb(err, { res: res, body: body }));
+});
 
 describe('Topic\'s', function () {
 	var topic;
@@ -110,6 +116,52 @@ describe('Topic\'s', function () {
 				assert(!isOwner);
 				done();
 			});
+		});
+
+		it('should fail to post a topic as guest if no privileges', async function () {
+			const categoryObj = await categories.create({
+				name: 'Test Category',
+				description: 'Test category created by testing script',
+			});
+			const result = await requestType('post', nconf.get('url') + '/api/v3/topics', {
+				form: {
+					title: 'just a title',
+					cid: categoryObj.cid,
+					content: 'content for the main post',
+				},
+				json: true,
+			});
+			assert.strictEqual(result.body.status.message, '[[error:no-privileges]]');
+		});
+
+		it('should post a topic as guest if guest group has privileges', async function () {
+			const categoryObj = await categories.create({
+				name: 'Test Category',
+				description: 'Test category created by testing script',
+			});
+			await privileges.categories.give(['groups:topics:create'], categoryObj.cid, 'guests');
+			await privileges.categories.give(['groups:topics:reply'], categoryObj.cid, 'guests');
+
+			const result = await requestType('post', nconf.get('url') + '/api/v3/topics', {
+				form: {
+					title: 'just a title',
+					cid: categoryObj.cid,
+					content: 'content for the main post',
+				},
+				json: true,
+			});
+
+			assert.strictEqual(result.body.status.code, 'ok');
+			assert.strictEqual(result.body.response.title, 'just a title');
+			assert.strictEqual(result.body.response.user.username, '[[global:guest]]');
+
+			const replyResult = await requestType('post', nconf.get('url') + '/api/v3/topics/' + result.body.response.tid, {
+				form: {
+					content: 'a reply by guest',
+				},
+				json: true,
+			});
+			assert.strictEqual(replyResult.body.response.content, 'a reply by guest');
 		});
 	});
 
