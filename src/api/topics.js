@@ -48,7 +48,7 @@ topicsAPI.reply = async function (caller, data) {
 		uid: caller.uid,
 		req: apiHelpers.buildReqObject(caller),	// For IP recording
 		content: data.content,
-		timestamp: data.timestamp,
+		timestamp: Date.now(),
 		fromQueue: false,
 	};
 
