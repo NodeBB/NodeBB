@@ -71,7 +71,7 @@ module.exports = function (privileges) {
 		payload.keys = keys;
 
 		// This is a hack because I can't do {labels.users.length} to echo the count in templates.js
-		payload.columnCount = payload.labels.users.length + 2;
+		payload.columnCount = payload.labels.users.length + 3;
 		return payload;
 	};
 

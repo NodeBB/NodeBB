@@ -35,9 +35,9 @@ module.exports = function (privileges) {
 		payload.keys = keys;
 
 		// This is a hack because I can't do {labels.users.length} to echo the count in templates.js
-		payload.columnCountUser = payload.labels.users.length + 2;
+		payload.columnCountUser = payload.labels.users.length + 3;
 		payload.columnCountUserOther = payload.labels.users.length - privileges.privilegeLabels.length;
-		payload.columnCountGroup = payload.labels.groups.length + 2;
+		payload.columnCountGroup = payload.labels.groups.length + 3;
 		payload.columnCountGroupOther = payload.labels.groups.length - privileges.privilegeLabels.length;
 		return payload;
 	};

@@ -2,7 +2,7 @@
 					<table class="table table-striped privilege-table">
 						<thead>
 							<tr class="privilege-table-header">
-								<th colspan="2"></th>
+								<th colspan="3"></th>
 								<th class="arrowed" colspan="3">
 									[[admin/manage/categories:privileges.section-viewing]]
 								</th>
@@ -83,7 +83,7 @@
 					<table class="table table-striped privilege-table">
 						<thead>
 							<tr class="privilege-table-header">
-								<th colspan="2"></th>
+								<th colspan="3"></th>
 								<th class="arrowed" colspan="3">
 									[[admin/manage/categories:privileges.section-viewing]]
 								</th>
