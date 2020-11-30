@@ -46,7 +46,7 @@
     "profile-exported": "Профилът на <strong>%1</strong> е изнесен, щракнете за сваляне",
     "posts-exported": "Публикациите на <strong>%1</strong> са изнесени, щракнете за сваляне",
     "uploads-exported": "Качванията на <strong>%1</strong> са изнесени, щракнете за сваляне",
-    "users-csv-exported": "Users csv exported, click to download",
+    "users-csv-exported": "Потребителите са изнесени във формат „csv“, щракнете за сваляне",
     "email-confirmed": "Е-пощата беше потвърдена",
     "email-confirmed-message": "Благодарим Ви, че потвърдихте е-пощата си. Акаунтът Ви е вече напълно активиран.",
     "email-confirm-error-message": "Възникна проблем при потвърждаването на е-пощата Ви. Може кодът да е грешен или давността му да е изтекла.",

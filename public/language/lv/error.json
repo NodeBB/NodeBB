@@ -40,6 +40,7 @@
     "username-too-long": "Pārāk garš lietotājvārds",
     "password-too-long": "Pārāk gara parole",
     "reset-rate-limited": "Too many password reset requests (rate limited)",
+    "reset-same-password": "Please use a password that is different from your current one",
     "user-banned": "Lietotājs ir bloķēts",
     "user-banned-reason": "Diemžēl šis konts ir bloķēts (Iemesls: %1)",
     "user-banned-reason-until": "Diemžēl šis konts ir bloķēts līdz %1 (Iemesls: %2)",

@@ -40,6 +40,7 @@
     "username-too-long": "Användarnamnet är för långt",
     "password-too-long": "Lösenordet är för långt",
     "reset-rate-limited": "Too many password reset requests (rate limited)",
+    "reset-same-password": "Please use a password that is different from your current one",
     "user-banned": "Användare bannlyst",
     "user-banned-reason": "Vi beklagar, men detta konto har blivit bannlyst (Anledning: %1)",
     "user-banned-reason-until": "Vi beklagar, men detta konto har blivit bannlyst till %1 (Anledning: %2)",

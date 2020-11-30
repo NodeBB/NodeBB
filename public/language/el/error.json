@@ -40,6 +40,7 @@
     "username-too-long": "Το όνομα χρήστη είναι πολύ μεγάλο",
     "password-too-long": "Password too long",
     "reset-rate-limited": "Too many password reset requests (rate limited)",
+    "reset-same-password": "Please use a password that is different from your current one",
     "user-banned": "Ο Χρήστης είναι αποκλεισμένος/η",
     "user-banned-reason": "Sorry, this account has been banned (Reason: %1)",
     "user-banned-reason-until": "Sorry, this account has been banned until %1 (Reason: %2)",

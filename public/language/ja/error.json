@@ -40,6 +40,7 @@
     "username-too-long": "ユーザー名が長すぎます",
     "password-too-long": "パスワードが長すぎます",
     "reset-rate-limited": "パスワードのリセット要求が多すぎます。(料金制限あり)",
+    "reset-same-password": "Please use a password that is different from your current one",
     "user-banned": "ユーザーは停止されています",
     "user-banned-reason": "申し訳ありませんが、このアカウントは停止されています。 (理由: %1)",
     "user-banned-reason-until": "申し訳ありませんが、このアカウントは％1(理由：％2)まで禁止されています。",

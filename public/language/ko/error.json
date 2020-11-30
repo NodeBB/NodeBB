@@ -40,6 +40,7 @@
     "username-too-long": "사용자 이름이 너무 깁니다.",
     "password-too-long": "패스워드가 너무 깁니다.",
     "reset-rate-limited": "Too many password reset requests (rate limited)",
+    "reset-same-password": "Please use a password that is different from your current one",
     "user-banned": "차단된 사용자입니다.",
     "user-banned-reason": "죄송합니다. 해당 계정은 차단되었습니다. (사유: %1)",
     "user-banned-reason-until": "죄송합니다. 해당 계정은 %1 까지 차단되었습니다. (사유: %2)",

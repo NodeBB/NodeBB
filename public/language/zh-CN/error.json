@@ -40,6 +40,7 @@
     "username-too-long": "用户名太长",
     "password-too-long": "密码太长",
     "reset-rate-limited": "太多密码重置请求（总数有限）",
+    "reset-same-password": "Please use a password that is different from your current one",
     "user-banned": "用户已禁止",
     "user-banned-reason": "抱歉，此帐号已经被封禁 (原因：%1)",
     "user-banned-reason-until": "抱歉，此帐户已被封禁，直到%1（原因：%2）",

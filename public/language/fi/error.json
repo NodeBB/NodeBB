@@ -40,6 +40,7 @@
     "username-too-long": "Käyttäjänimi on liian pitkä",
     "password-too-long": "Salasana on liian pitkä",
     "reset-rate-limited": "Liian monta salasanan nollaus pyyntöä (määrärajoitus)",
+    "reset-same-password": "Please use a password that is different from your current one",
     "user-banned": "Käyttäjä on estetty",
     "user-banned-reason": "Sorry, this account has been banned (Reason: %1)",
     "user-banned-reason-until": "Sorry, this account has been banned until %1 (Reason: %2)",

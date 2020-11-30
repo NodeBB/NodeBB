@@ -40,6 +40,7 @@
     "username-too-long": "Имя пользователя слишком длинное",
     "password-too-long": "Пароль слишком длинный",
     "reset-rate-limited": "Слишком много запросов на восстановление пароля (установлена блокировка)",
+    "reset-same-password": "Please use a password that is different from your current one",
     "user-banned": "Пользователь заблокирован",
     "user-banned-reason": "Учетная запись заблокирована (Причина: %1)",
     "user-banned-reason-until": "Извините, эта учётная запись заблокирована до %1 (Причина: %2)",

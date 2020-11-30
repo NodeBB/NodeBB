@@ -40,6 +40,7 @@
     "username-too-long": "Gebruikersnaam is te lang",
     "password-too-long": "Wachtwoord is te lang",
     "reset-rate-limited": "Te veel verzoeken voor wachtwoordherstel (snelheid beperkt)",
+    "reset-same-password": "Please use a password that is different from your current one",
     "user-banned": "Gebruiker verbannen",
     "user-banned-reason": "Sorry, dit account is verbannen (Reden: %1)",
     "user-banned-reason-until": "Sorry, dit account is verbannen tot %1 (Reden: %2)",

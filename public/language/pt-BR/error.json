@@ -40,6 +40,7 @@
     "username-too-long": "Nome de usuário muito longo",
     "password-too-long": "A senha é muito grande",
     "reset-rate-limited": "Muitas solicitações de redefinição de senha (taxa de ação limitada)",
+    "reset-same-password": "Please use a password that is different from your current one",
     "user-banned": "Usuário banido",
     "user-banned-reason": "Desculpa, esta conta foi banida (Motivo: %1)",
     "user-banned-reason-until": "Desculpa, esta conta foi banida até %1 (Motivo: %2)",

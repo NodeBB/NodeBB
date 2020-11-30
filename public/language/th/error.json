@@ -40,6 +40,7 @@
     "username-too-long": "ชื่อบัญชีผู้ใช้ ยาวเกินไป",
     "password-too-long": "รหัสผ่านยาวเกินไป",
     "reset-rate-limited": "Too many password reset requests (rate limited)",
+    "reset-same-password": "Please use a password that is different from your current one",
     "user-banned": "ผู้ใช้ได้รับการแบน",
     "user-banned-reason": "ขออภัย บัญชีผู้ใช้นี้ได้รับการแบน (เหตุผล : %1)",
     "user-banned-reason-until": "ขออภัย บัญชีผู้ใช้นี้ได้รับการแบนจนถึง  %1  (เหตุผล : %2)",

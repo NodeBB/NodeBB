@@ -40,6 +40,7 @@
     "username-too-long": "Uporabniško ime je predolgo.",
     "password-too-long": "Geslo je predolgo.",
     "reset-rate-limited": "Too many password reset requests (rate limited)",
+    "reset-same-password": "Please use a password that is different from your current one",
     "user-banned": "Uporabnik je izločen.",
     "user-banned-reason": "Sorry, this account has been banned (Reason: %1)",
     "user-banned-reason-until": "Sorry, this account has been banned until %1 (Reason: %2)",

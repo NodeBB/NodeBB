@@ -40,6 +40,7 @@
     "username-too-long": "Корисничко име је предуго",
     "password-too-long": "Шифра је предугачка.",
     "reset-rate-limited": "Превише захтева за поништавање лозинке (ограничена стопа)",
+    "reset-same-password": "Please use a password that is different from your current one",
     "user-banned": "Корисник је забрањен",
     "user-banned-reason": "Овај налог је забрањен (Разлог: %1)",
     "user-banned-reason-until": "Овај налог је забрањен до %1 (Разлог: %2)",

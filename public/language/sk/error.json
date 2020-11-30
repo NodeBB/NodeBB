@@ -40,6 +40,7 @@
     "username-too-long": "Užívateľské meno je príliš dlhé",
     "password-too-long": "Heslo je príliš dlhé",
     "reset-rate-limited": "Too many password reset requests (rate limited)",
+    "reset-same-password": "Please use a password that is different from your current one",
     "user-banned": "Užívateľ je zablokovaný",
     "user-banned-reason": "Prepáčte, tento účet bol zablokovaný (Dôvod: %1)",
     "user-banned-reason-until": "Ospravedlňujeme sa, tento účet bol zablokovaný do %1 (Dôvod: %2)",

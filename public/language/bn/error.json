@@ -40,6 +40,7 @@
     "username-too-long": "ইউজারনেম বড় হয়ে গিয়েছে",
     "password-too-long": "Password too long",
     "reset-rate-limited": "Too many password reset requests (rate limited)",
+    "reset-same-password": "Please use a password that is different from your current one",
     "user-banned": "ব্যবহারকারী নিষিদ্ধ",
     "user-banned-reason": "Sorry, this account has been banned (Reason: %1)",
     "user-banned-reason-until": "Sorry, this account has been banned until %1 (Reason: %2)",

@@ -40,6 +40,7 @@
     "username-too-long": "نام کاربری بسیار طولانیست",
     "password-too-long": "کلمه عبور بسیار طولانیست",
     "reset-rate-limited": "Too many password reset requests (rate limited)",
+    "reset-same-password": "Please use a password that is different from your current one",
     "user-banned": "کاربر اخراج شد",
     "user-banned-reason": "با عرض پوزش، این حساب کاربری از انجمن اخراج شده است (دلیل: %1)",
     "user-banned-reason-until": "با عرض پوزش، این حساب کاربری تا %1 اخراج شده است (دلیل: %2)",

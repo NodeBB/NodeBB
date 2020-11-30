@@ -40,6 +40,7 @@
     "username-too-long": "Kullanıcı ismi çok uzun",
     "password-too-long": "Şifre çok uzun",
     "reset-rate-limited": "Aşırı fazla sayıda şifre sıfırlama isteği (kısıtlayıcı)",
+    "reset-same-password": "Please use a password that is different from your current one",
     "user-banned": "Kullanıcı Yasaklı",
     "user-banned-reason": "Maalesef, bu hesap yasaklandı (Sebep: %1)",
     "user-banned-reason-until": "Maalesef, bu hesap %1 tarihine kadar yasaklandı (Sebep:  %2)",

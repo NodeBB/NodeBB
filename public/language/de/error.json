@@ -40,6 +40,7 @@
     "username-too-long": "Benutzername ist zu lang",
     "password-too-long": "Passwort ist zu lang",
     "reset-rate-limited": "Zu viele Anfragen zum Zurücksetzen des Passworts (Rate begrenzt)",
+    "reset-same-password": "Please use a password that is different from your current one",
     "user-banned": "Benutzer ist gesperrt",
     "user-banned-reason": "Entschuldige, dieses Konto wurde gesperrt (Grund: %1)",
     "user-banned-reason-until": "Entschuldigung, dieses Konto wurde bis %1 (Reason: %2) gesperrt.",

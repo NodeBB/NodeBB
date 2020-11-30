@@ -40,6 +40,7 @@
     "username-too-long": "Vartotojo vardas per ilgas",
     "password-too-long": "Slaptažodis per ilgas",
     "reset-rate-limited": "Too many password reset requests (rate limited)",
+    "reset-same-password": "Please use a password that is different from your current one",
     "user-banned": "Vartotojas užblokuotas",
     "user-banned-reason": "Atsiprašome, ši paskyra buvo užblokuota (Priežastis: %1)",
     "user-banned-reason-until": "Atsiprašome, ši paskyra užblokuota iki %1 (Priežastis: %2)",

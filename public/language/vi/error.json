@@ -40,6 +40,7 @@
     "username-too-long": "Tên đăng nhập quá dài",
     "password-too-long": "Mật khẩu quá dài",
     "reset-rate-limited": "Too many password reset requests (rate limited)",
+    "reset-same-password": "Please use a password that is different from your current one",
     "user-banned": "Tài khoản bị ban",
     "user-banned-reason": "Xin lỗi, tài khoản này đã bị khóa (Lí do: %1)",
     "user-banned-reason-until": "Rất tiếc, tài khoản này đã bị cấm cho đến %1 (Lý do: %2)",

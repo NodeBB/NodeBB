@@ -40,6 +40,7 @@
     "username-too-long": "Ім'я користувача задовге",
     "password-too-long": "Пароль задовгий",
     "reset-rate-limited": "Занадто багато запитів на скидання паролю (кількість за період часу обмежена)",
+    "reset-same-password": "Please use a password that is different from your current one",
     "user-banned": "Користувача забанено",
     "user-banned-reason": "Вибачте, але цей акаунт було забанено (Причина: %1)",
     "user-banned-reason-until": "Вибачте, цей акаунт забанений до %1 (Причина: %2)",
