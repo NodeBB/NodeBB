@@ -500,10 +500,14 @@ define('admin/dashboard', ['Chart', 'translator', 'benchpress'], function (Chart
 
 	function updateTopicsGraph(topics) {
 		if (!topics.length) {
-			topics = [{
-				title: '[[admin/dashboard:no-users-browsing]]',
-				count: 1,
-			}];
+			translator.translate('[[admin/dashboard:no-users-browsing]]', function (translated) {
+				topics = [{
+					title: translated,
+					count: 1,
+				}];
+				updateTopicsGraph(topics);
+			});
+			return;
 		}
 
 		graphs.topics.data.labels = [];
