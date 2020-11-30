@@ -628,6 +628,35 @@ describe('User', function () {
 				},
 			], done);
 		});
+
+		it('.should error if same password is used for reset', async function () {
+			const uid = await User.create({ username: 'badmemory', email: 'bad@memory.com', password: '123456' });
+			const code = await User.reset.generate(uid);
+			let err;
+			try {
+				await User.reset.commit(code, '123456');
+			} catch (_err) {
+				err = _err;
+			}
+			assert.strictEqual(err.message, '[[error:reset-same-password]]');
+		});
+
+		it('should not validate email if password reset is due to expiry', async function () {
+			const uid = await User.create({ username: 'resetexpiry', email: 'reset@expiry.com', password: '123456' });
+			let confirmed = await User.getUserField(uid, 'email:confirmed');
+			let [verified, unverified] = await groups.isMemberOfGroups(uid, ['verified-users', 'unverified-users']);
+			assert.strictEqual(confirmed, 0);
+			assert.strictEqual(verified, false);
+			assert.strictEqual(unverified, true);
+			await User.setUserField(uid, 'passwordExpiry', Date.now());
+			const code = await User.reset.generate(uid);
+			await User.reset.commit(code, '654321');
+			confirmed = await User.getUserField(uid, 'email:confirmed');
+			[verified, unverified] = await groups.isMemberOfGroups(uid, ['verified-users', 'unverified-users']);
+			assert.strictEqual(confirmed, 0);
+			assert.strictEqual(verified, false);
+			assert.strictEqual(unverified, true);
+		});
 	});
 
 	describe('hash methods', function () {

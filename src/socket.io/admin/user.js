@@ -120,6 +120,7 @@ User.forcePasswordReset = async function (socket, uids) {
 
 	await db.setObjectField(uids.map(uid => 'user:' + uid), 'passwordExpiry', Date.now());
 	await user.auth.revokeAllSessions(uids);
+	uids.forEach(uid => sockets.in('uid_' + uid).emit('event:logout'));
 };
 
 User.deleteUsers = async function (socket, uids) {

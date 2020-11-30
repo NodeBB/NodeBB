@@ -46,6 +46,7 @@
 	"username-too-long": "Username too long",
 	"password-too-long": "Password too long",
 	"reset-rate-limited": "Too many password reset requests (rate limited)",
+	"reset-same-password": "Please use a password that is different from your current one",
 
 	"user-banned": "User banned",
 	"user-banned-reason": "Sorry, this account has been banned (Reason: %1)",

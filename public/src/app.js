@@ -180,8 +180,9 @@ app.cacheBuster = null;
 		message = message.message || message;
 
 		if (message === '[[error:invalid-session]]') {
+			app.handleInvalidSession();
 			app.logout(false);
-			return app.handleInvalidSession();
+			return;
 		}
 
 		app.alert({

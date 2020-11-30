@@ -69,6 +69,9 @@ socket = window.socket;
 		});
 
 		socket.on('event:banned', onEventBanned);
+		socket.on('event:logout', function () {
+			app.logout();
+		});
 		socket.on('event:alert', function (params) {
 			app.alert(params);
 		});
