@@ -3,7 +3,6 @@
 const winston = require('winston');
 
 const meta = require('../meta');
-const utils = require('../utils');
 const emailer = require('../emailer');
 const db = require('../database');
 
@@ -47,10 +46,11 @@ module.exports = function (User) {
 		// Email notification of ban
 		const username = await User.getUserField(uid, 'username');
 		const siteTitle = meta.config.title || 'NodeBB';
+
 		const data = {
 			subject: '[[email:banned.subject, ' + siteTitle + ']]',
 			username: username,
-			until: until ? utils.toISOString(until) : false,
+			until: until ? (new Date(until)).toUTCString().replace(/,/g, '\\,') : false,
 			reason: reason,
 		};
 		try {
