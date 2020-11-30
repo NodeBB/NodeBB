@@ -526,9 +526,8 @@ define('admin/dashboard', ['Chart', 'translator', 'benchpress'], function (Chart
 			var legend = $('#topics-legend').html('');
 			var html = '';
 			topics.forEach(function (t, i) {
-				var	label = t.count === '0' ?
-					t.title :
-					'<a title="' + t.title + '"href="' + config.relative_path + '/topic/' + t.tid + '" target="_blank"> ' + t.title + '</a>';
+				var link = t.tid ? '<a title="' + t.title + '"href="' + config.relative_path + '/topic/' + t.tid + '" target="_blank"> ' + t.title + '</a>' : t.title;
+				var	label = t.count === '0' ? t.title : link;
 
 				html += '<li>' +
 					'<div style="background-color: ' + topicColors[i] + ';"></div>' +
