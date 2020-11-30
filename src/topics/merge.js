@@ -32,7 +32,14 @@ module.exports = function (Topics) {
 			});
 		});
 
-		plugins.hooks.fire('action:topic.merge', { uid: uid, tids: tids, mergeIntoTid: mergeIntoTid, otherTids: otherTids });
+		await updateViewCount(mergeIntoTid, tids);
+
+		plugins.hooks.fire('action:topic.merge', {
+			uid: uid,
+			tids: tids,
+			mergeIntoTid: mergeIntoTid,
+			otherTids: otherTids,
+		});
 		return mergeIntoTid;
 	};
 
@@ -44,6 +51,14 @@ module.exports = function (Topics) {
 			title: title,
 		});
 		return tid;
+	}
+
+	async function updateViewCount(mergeIntoTid, tids) {
+		const topicData = await Topics.getTopicsFields(tids, ['viewcount']);
+		const totalViewCount = topicData.reduce(
+			(count, topic) => count + parseInt(topic.viewcount, 10), 0
+		);
+		await Topics.setTopicField(mergeIntoTid, 'viewcount', totalViewCount);
 	}
 
 	function findOldestTopic(tids) {
