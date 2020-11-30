@@ -1722,7 +1722,7 @@ describe('User', function () {
 		it('should commit reset', function (done) {
 			db.getObject('reset:uid', function (err, data) {
 				assert.ifError(err);
-				var code = Object.keys(data)[0];
+				var code = Object.keys(data).find(code => parseInt(data[code], 10) === parseInt(testUid, 10));
 				socketUser.reset.commit({ uid: 0 }, { code: code, password: 'pwdchange' }, function (err) {
 					assert.ifError(err);
 					done();
