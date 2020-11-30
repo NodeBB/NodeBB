@@ -1723,7 +1723,7 @@ describe('User', function () {
 			db.getObject('reset:uid', function (err, data) {
 				assert.ifError(err);
 				var code = Object.keys(data)[0];
-				socketUser.reset.commit({ uid: 0 }, { code: code, password: 'swordfish' }, function (err) {
+				socketUser.reset.commit({ uid: 0 }, { code: code, password: 'pwdchange' }, function (err) {
 					assert.ifError(err);
 					done();
 				});
