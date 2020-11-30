@@ -31,6 +31,7 @@ uploadsController.upload = async function (req, res, filesIterator) {
 			images.push(await filesIterator(fileObj));
 		}
 		res.status(200).json(images);
+		return images;
 	} catch (err) {
 		res.status(500).json({ path: req.path, error: err.message });
 	} finally {
@@ -112,7 +113,7 @@ uploadsController.uploadThumb = async function (req, res, next) {
 		return next(new Error('[[error:topic-thumbnails-are-disabled]]'));
 	}
 
-	await uploadsController.upload(req, res, async function (uploadedFile) {
+	return await uploadsController.upload(req, res, async function (uploadedFile) {
 		if (!uploadedFile.type.match(/image./)) {
 			throw new Error('[[error:invalid-file]]');
 		}
