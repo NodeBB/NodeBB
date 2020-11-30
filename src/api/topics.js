@@ -75,8 +75,8 @@ topicsAPI.reply = async function (caller, data) {
 	user.updateOnlineUsers(caller.uid);
 	if (caller.uid) {
 		socketHelpers.emitToUids('event:new_post', result, [caller.uid]);
-	} else if (caller.uid === 0 && caller.sessionID) {
-		websockets.in('sess_' + caller.sessionID).emit('event:new_post', result);
+	} else if (caller.uid === 0) {
+		websockets.in('online_guests').emit('event:new_post', result);
 	}
 
 	socketHelpers.notifyNew(caller.uid, 'newPost', result);

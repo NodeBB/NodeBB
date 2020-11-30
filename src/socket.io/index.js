@@ -198,15 +198,13 @@ async function authorize(socket, callback) {
 	}
 
 	await cookieParserAsync(request);
-	const sid = request.signedCookies[nconf.get('sessionKey')];
-	const sessionData = await getSessionAsync(sid);
+	const sessionData = await getSessionAsync(request.signedCookies[nconf.get('sessionKey')]);
 	if (sessionData && sessionData.passport && sessionData.passport.user) {
 		request.session = sessionData;
 		socket.uid = parseInt(sessionData.passport.user, 10);
 	} else {
 		socket.uid = 0;
 	}
-	socket.sessionID = sid;
 	request.uid = socket.uid;
 	callback();
 }
