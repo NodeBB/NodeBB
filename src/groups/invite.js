@@ -67,12 +67,11 @@ module.exports = function (Groups) {
 	async function inviteOrRequestMembership(groupName, uids, type) {
 		uids = Array.isArray(uids) ? uids : [uids];
 		uids = uids.filter(uid => parseInt(uid, 10) > 0);
-		const [exists, isMember, isPending, isInvited, canAutojoin] = await Promise.all([
+		const [exists, isMember, isPending, isInvited] = await Promise.all([
 			Groups.exists(groupName),
 			Groups.isMembers(uids, groupName),
 			Groups.isPending(uids, groupName),
 			Groups.isInvited(uids, groupName),
-			Groups.getGroupField(groupName, 'autojoin'),
 		]);
 
 		if (!exists) {
@@ -80,11 +79,6 @@ module.exports = function (Groups) {
 		}
 
 		uids = uids.filter((uid, i) => !isMember[i] && ((type === 'invite' && !isInvited[i]) || (type === 'request' && !isPending[i])));
-
-		if (canAutojoin) {
-			await Promise.all(uids.map(uid => Groups.join([groupName], uid)));
-			return uids;
-		}
 
 		const set = type === 'invite' ? 'group:' + groupName + ':invited' : 'group:' + groupName + ':pending';
 		await db.setAdd(set, uids);

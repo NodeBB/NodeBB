@@ -83,7 +83,6 @@ define('admin/manage/group', [
 					memberPostCids: $('#memberPostCids').val(),
 					disableJoinRequests: $('#group-disableJoinRequests').is(':checked'),
 					disableLeave: $('#group-disableLeave').is(':checked'),
-					autojoin: $('#group-autojoin').is(':checked'),
 				},
 			}, function (err) {
 				if (err) {

@@ -95,18 +95,6 @@
 					</div>
 				</fieldset>
 
-				<fieldset>
-					<div class="checkbox">
-						<label>
-							<input id="group-autojoin" name="hidden" data-property type="checkbox"<!-- IF group.autojoin --> checked<!-- ENDIF group.autojoin -->>
-							<strong>[[admin/manage/groups:edit.autojoin]]</strong>
-							<p class="help-block">
-								[[admin/manage/groups:edit.autojoin-details]]
-							</p>
-						</label>
-					</div>
-				</fieldset>
-
 				<hr />
 
 				<div class="form-group">
