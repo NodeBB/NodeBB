@@ -34,6 +34,7 @@ topicsAPI.create = async function (caller, data) {
 	}
 
 	const result = await topics.post(payload);
+	await topics.thumbs.commit(data.uuid, result.topicData.tid);
 
 	socketHelpers.emitToUids('event:new_post', { posts: [result.postData] }, [caller.uid]);
 	socketHelpers.emitToUids('event:new_topic', result.topicData, [caller.uid]);

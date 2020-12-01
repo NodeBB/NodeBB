@@ -44,6 +44,15 @@ Assert.topic = helpers.try(async (req, res, next) => {
 	next();
 });
 
+Assert.topicThumb = helpers.try(async (req, res, next) => {
+	// thumbs are parsed out of req.query
+	if (!await topics.thumbs.exists(req.params.tid, req.query.path)) {
+		return controllerHelpers.formatApiResponse(404, res, new Error('[[error:invalid-file]]'));
+	}
+
+	next();
+});
+
 Assert.post = helpers.try(async (req, res, next) => {
 	if (!await posts.exists(req.params.pid)) {
 		return controllerHelpers.formatApiResponse(404, res, new Error('[[error:no-topic]]'));
