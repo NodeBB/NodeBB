@@ -52,6 +52,8 @@ get:
                           type: number
                         disableJoinRequests:
                           type: number
+                        autojoin:
+                          type: number
                         disableLeave:
                           type: number
                         nameEncoded:
@@ -87,6 +89,7 @@ get:
                         - cover:position
                         - userTitleEnabled
                         - disableJoinRequests
+                        - autojoin
                         - disableLeave
                         - nameEncoded
                         - displayName

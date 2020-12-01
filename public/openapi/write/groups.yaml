@@ -18,6 +18,9 @@ post:
             disableJoinRequests:
               type: number
               enum: [0, 1]
+            autojoin:
+              type: number
+              enum: [0, 1]
             disableLeave:
               type: number
               enum: [0, 1]

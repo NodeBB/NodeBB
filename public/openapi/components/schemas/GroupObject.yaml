@@ -32,6 +32,8 @@ GroupFullObject:
       type: number
     disableJoinRequests:
       type: number
+    autojoin:
+      type: number
     disableLeave:
       type: number
     nameEncoded:
@@ -142,6 +144,8 @@ GroupDataObject:
     private:
       type: number
     disableJoinRequests:
+      type: number
+    autojoin:
       type: number
     disableLeave:
       type: number
