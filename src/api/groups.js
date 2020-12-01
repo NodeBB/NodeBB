@@ -156,6 +156,7 @@ groupsAPI.leave = async function (caller, data) {
 		bodyShort: '[[groups:membership.leave.notification_title, ' + username + ', ' + groupName + ']]',
 		nid: 'group:' + validator.escape(groupName) + ':uid:' + data.uid + ':group-leave',
 		path: '/groups/' + slugify(groupName),
+		from: data.uid,
 	});
 	const uids = await groups.getOwners(groupName);
 	await notifications.push(notification, uids);
