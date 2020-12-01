@@ -36,6 +36,9 @@ postsAPI.edit = async function (caller, data) {
 	data.req = apiHelpers.buildReqObject(caller);
 
 	const editResult = await posts.edit(data);
+	if (editResult.topic.isMainPost) {
+		await topics.thumbs.commit(data.uuid, editResult.topic.tid);
+	}
 	if (editResult.topic.renamed) {
 		await events.log({
 			type: 'topic-rename',

@@ -1,9 +1,12 @@
 'use strict';
 
+const validator = require('validator');
+
 const api = require('../../api');
 const topics = require('../../topics');
 
 const helpers = require('../helpers');
+const uploadsController = require('../uploads');
 
 const Topics = module.exports;
 
@@ -84,4 +87,34 @@ Topics.addTags = async (req, res) => {
 Topics.deleteTags = async (req, res) => {
 	await topics.deleteTopicTags(req.params.tid);
 	helpers.formatApiResponse(200, res);
+};
+
+Topics.addThumb = async (req, res) => {
+	// req.params.tid could be either a tid (pushing a new thumb to an existing topic) or a post UUID (a new topic being composed)
+	const id = req.params.tid;
+	const isUUID = validator.isUUID(id);
+
+	// Sanity-check the tid if it's strictly not a uuid
+	if (!isUUID && (isNaN(parseInt(id, 10)) || !await topics.exists(req.params.tid))) {
+		return helpers.formatApiResponse(404, res, new Error('[[error:no-topic]]'));
+	}
+	/**
+	 * todo test:
+	 *   - uuid
+	 *   - tid
+	 *   - number but not tid
+	 *   - random garbage
+	 */
+
+	const files = await uploadsController.uploadThumb(req, res);	// response is handled here, fix this?
+
+	// Add uploaded files to topic zset
+	await Promise.all(files.map(async (fileObj) => {
+		await topics.thumbs.associate(id, fileObj.path, isUUID);
+	}));
+};
+
+Topics.deleteThumb = async (req, res) => {
+	await topics.thumbs.delete(req.params.tid, req.query.path);
+	helpers.formatApiResponse(200, res, await topics.thumbs.get(req.params.tid));
 };

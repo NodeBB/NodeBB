@@ -10,6 +10,9 @@ const setupApiRoute = routeHelpers.setupApiRoute;
 module.exports = function () {
 	const middlewares = [middleware.authenticate];
 
+	var multipart = require('connect-multiparty');
+	var multipartMiddleware = multipart();
+
 	setupApiRoute(router, 'post', '/', [middleware.authenticateOrGuest, middleware.checkRequired.bind(null, ['cid', 'title', 'content'])], controllers.write.topics.create);
 	setupApiRoute(router, 'post', '/:tid', [middleware.authenticateOrGuest, middleware.checkRequired.bind(null, ['content']), middleware.assert.topic], controllers.write.topics.reply);
 	setupApiRoute(router, 'delete', '/:tid', [...middlewares], controllers.write.topics.purge);
@@ -30,6 +33,9 @@ module.exports = function () {
 
 	setupApiRoute(router, 'put', '/:tid/tags', [...middlewares, middleware.checkRequired.bind(null, ['tags']), middleware.assert.topic], controllers.write.topics.addTags);
 	setupApiRoute(router, 'delete', '/:tid/tags', [...middlewares, middleware.assert.topic], controllers.write.topics.deleteTags);
+
+	setupApiRoute(router, 'post', '/:tid/thumbs', [multipartMiddleware, middleware.validateFiles, ...middlewares], controllers.write.topics.addThumb);
+	setupApiRoute(router, 'delete', '/:tid/thumbs', [...middlewares, middleware.assert.topic, middleware.assert.topicThumb], controllers.write.topics.deleteThumb);
 
 	return router;
 };

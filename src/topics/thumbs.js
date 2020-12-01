@@ -9,6 +9,7 @@ var mime = require('mime');
 var validator = require('validator');
 var util = require('util');
 
+const db = require('../database');
 var meta = require('../meta');
 var image = require('../image');
 var file = require('../file');
@@ -23,6 +24,49 @@ function pipeToFile(source, destination, callback) {
 	request(source).pipe(fs.createWriteStream(destination)).on('close', callback);
 }
 const pipeToFileAsync = util.promisify(pipeToFile);
+
+Thumbs.exists = async function (tid, path) {
+	// TODO: tests
+	return db.isSortedSetMember(`topic:${tid}:thumbs`, path);
+};
+
+Thumbs.get = async function (tid) {
+	const thumbs = await db.getSortedSetRange(`topic:${tid}:thumbs`, 0, -1);
+	return thumbs.map(thumb => path.join(nconf.get('upload_path'), thumb));
+};
+
+Thumbs.associate = async function (id, path, isDraft) {
+	// Associates a newly uploaded file as a thumb to the passed-in tid
+	const set = `${isDraft ? 'draft' : 'topic'}:${id}:thumbs`;
+	const numThumbs = await db.sortedSetCard(set);
+	path = path.replace(nconf.get('upload_path'), '');
+	db.sortedSetAdd(set, numThumbs, path);
+};
+
+Thumbs.commit = async function (uuid, tid) {
+	// Converts the draft thumb zset to the topic zset (combines thumbs if applicable)
+	const set = `draft:${uuid}:thumbs`;
+	const thumbs = await db.getSortedSetRange(set, 0, -1);
+	await Promise.all(thumbs.map(async path => await Thumbs.associate(tid, path, false)));
+	await db.delete(set);
+};
+
+Thumbs.delete = async function (tid, relativePath) {
+	// TODO: tests
+	const set = `topic:${tid}:thumbs`;
+	const absolutePath = path.join(nconf.get('upload_path'), relativePath);
+	const [associated, existsOnDisk] = await Promise.all([
+		db.isSortedSetMember(set, relativePath),
+		file.exists(absolutePath),
+	]);
+
+	if (associated) {
+		await db.sortedSetRemove(set, relativePath);
+	}
+	if (existsOnDisk) {
+		await file.delete(absolutePath);
+	}
+};
 
 Thumbs.resizeAndUpload = async function (data) {
 	const allowedExtensions = file.allowedExtensions();
