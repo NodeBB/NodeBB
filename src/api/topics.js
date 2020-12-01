@@ -21,7 +21,6 @@ topicsAPI.create = async function (caller, data) {
 	const payload = { ...data };
 	payload.tags = payload.tags || [];
 	payload.uid = caller.uid;
-	payload.uid = caller.uid;
 	payload.req = apiHelpers.buildReqObject(caller);
 	payload.timestamp = Date.now();
 	payload.fromQueue = false;

@@ -15,9 +15,15 @@ const socketHelpers = require('../socket.io/helpers');
 
 module.exports = function (Posts) {
 	Posts.shouldQueue = async function (uid, data) {
-		const userData = await user.getUserFields(uid, ['uid', 'reputation', 'postcount']);
-		const isMemberOfExempt = await groups.isMemberOfAny(userData.uid, meta.config.groupsExemptFromPostQueue);
-		const shouldQueue = meta.config.postQueue && !isMemberOfExempt && (!userData.uid || userData.reputation < meta.config.postQueueReputationThreshold || userData.postcount <= 0);
+		const [userData, isMemberOfExempt, categoryQueueEnabled] = await Promise.all([
+			user.getUserFields(uid, ['uid', 'reputation', 'postcount']),
+			groups.isMemberOfAny(uid, meta.config.groupsExemptFromPostQueue),
+			isCategoryQueueEnabled(data),
+		]);
+
+		const shouldQueue = meta.config.postQueue && categoryQueueEnabled &&
+			!isMemberOfExempt &&
+			(!userData.uid || userData.reputation < meta.config.postQueueReputationThreshold || userData.postcount <= 0);
 		const result = await plugins.hooks.fire('filter:post.shouldQueue', {
 			shouldQueue: !!shouldQueue,
 			uid: uid,
@@ -25,6 +31,24 @@ module.exports = function (Posts) {
 		});
 		return result.shouldQueue;
 	};
+
+	async function isCategoryQueueEnabled(data) {
+		const type = getType(data);
+		const cid = await getCid(type, data);
+		if (!cid) {
+			throw new Error('[[error:invalid-cid]]');
+		}
+		return await categories.getCategoryField(cid, 'postQueue');
+	}
+
+	function getType(data) {
+		if (data.tid && data.content) {
+			return 'reply';
+		} else if (data.cid && data.title && data.content) {
+			return 'topic';
+		}
+		throw new Error('[[error:invalid-type]]');
+	}
 
 	async function removeQueueNotification(id) {
 		await notifications.rescind('post-queue-' + id);
@@ -46,7 +70,7 @@ module.exports = function (Posts) {
 	}
 
 	Posts.addToQueue = async function (data) {
-		const type = data.title ? 'topic' : 'reply';
+		const type = getType(data);
 		const now = Date.now();
 		const id = type + '-' + now;
 		await canPost(type, data);

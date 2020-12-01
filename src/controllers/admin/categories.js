@@ -4,6 +4,7 @@ const categories = require('../../categories');
 const analytics = require('../../analytics');
 const plugins = require('../../plugins');
 const translator = require('../../translator');
+const meta = require('../../meta');
 
 const categoriesController = module.exports;
 
@@ -42,6 +43,7 @@ categoriesController.get = async function (req, res, next) {
 		categories: data.allCategories,
 		selectedCategory: selectedCategory,
 		customClasses: data.customClasses,
+		postQueueEnabled: !!meta.config.postQueue,
 	});
 };
 

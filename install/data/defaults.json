@@ -20,6 +20,7 @@
     "chatDeleteDuration": 0,
     "chatMessageDelay": 200,
     "newbiePostDelayThreshold": 3,
+    "postQueue": 0,
     "postQueueReputationThreshold": 0,
     "groupsExemptFromPostQueue": ["administrators", "Global Moderators"],
     "minimumPostLength": 8,
