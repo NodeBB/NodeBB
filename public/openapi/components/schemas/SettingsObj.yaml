@@ -83,6 +83,9 @@ Settings:
     notificationType_group-invite:
       type: string
       description: Notification type for group invitations
+    notificationType_group-leave:
+      type: string
+      description: Notification type for when users leave your group
     upvoteNotifFreq:
       type: string
       description: How often to notify you when your posts are upvoted
@@ -137,6 +140,7 @@ Settings:
     - notificationType_new-topic
     - notificationType_follow
     - notificationType_group-invite
+    - notificationType_group-leave
     - upvoteNotifFreq
     - acpLang
     - notificationType_new-register
