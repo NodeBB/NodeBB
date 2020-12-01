@@ -311,10 +311,17 @@ define('forum/topic/threadTools', [
 			return;
 		}
 
-		components.get('topic/pin').toggleClass('hidden', data.isPinned).parent().attr('hidden', data.isPinned ? '' : null);
-		components.get('topic/unpin').toggleClass('hidden', !data.isPinned).parent().attr('hidden', !data.isPinned ? '' : null);
-		$('.topic-header [component="topic/pinned"]').toggleClass('hidden', !data.isPinned);
-		ajaxify.data.pinned = data.isPinned;
+		components.get('topic/pin').toggleClass('hidden', data.pinned).parent().attr('hidden', data.pinned ? '' : null);
+		components.get('topic/unpin').toggleClass('hidden', !data.pinned).parent().attr('hidden', !data.pinned ? '' : null);
+		var icon = $('.topic-header [component="topic/pinned"]');
+		icon.toggleClass('hidden', !data.pinned);
+		if (data.pinned) {
+			icon.translateAttr('title', data.pinExpiry && data.pinExpiryISO ?
+				'[[topic:pinned-with-expiry, ' + data.pinExpiryISO + ']]' :
+				'[[topic:pinned]]'
+			);
+		}
+		ajaxify.data.pinned = data.pinned;
 	};
 
 	function setFollowState(state) {
