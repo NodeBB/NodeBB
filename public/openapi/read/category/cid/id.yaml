@@ -53,6 +53,8 @@ get:
                 type: string
               isSection:
                 type: number
+              postQueue:
+                type: number
               totalPostCount:
                 type: number
               totalTopicCount:
