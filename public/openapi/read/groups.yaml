@@ -44,8 +44,6 @@ get:
                           type: number
                         disableJoinRequests:
                           type: number
-                        autojoin:
-                          type: number
                         disableLeave:
                           type: number
                         nameEncoded:
