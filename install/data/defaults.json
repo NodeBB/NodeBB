@@ -128,6 +128,7 @@
     "emailConfirmInterval": 10,
     "removeEmailNotificationImages": 0,
     "inviteExpiration": 7,
+    "dailyDigestFreq": "off",
     "digestHour": 17,
     "passwordExpiryDays": 0,
     "hsts-maxage": 31536000,
