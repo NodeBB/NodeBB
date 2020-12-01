@@ -55,6 +55,10 @@ module.exports = function (Groups) {
 			payload.disableLeave = values.disableLeave ? '1' : '0';
 		}
 
+		if (values.hasOwnProperty('autojoin')) {
+			payload.autojoin = values.autojoin ? '1' : '0';
+		}
+
 		if (values.hasOwnProperty('name')) {
 			await checkNameChange(groupName, values.name);
 		}

@@ -53,6 +53,8 @@
 	"details.hidden_help": "If enabled, this group will not be found in the groups listing, and users will have to be invited manually",
 	"details.delete_group": "Delete Group",
 	"details.private_system_help": "Private groups is disabled at system level, this option does not do anything",
+	"details.autojoin": "Enable Auto-Join",
+	"details.autojoin_help": "Allow any user with access to the group to join without confirmation",
 
 	"event.updated": "Group details have been updated",
 	"event.deleted": "The group \"%1\" has been deleted",

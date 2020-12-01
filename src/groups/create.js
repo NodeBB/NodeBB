@@ -14,6 +14,7 @@ module.exports = function (Groups) {
 			disableJoinRequests = 1;
 		}
 		const disableLeave = parseInt(data.disableLeave, 10) === 1 ? 1 : 0;
+		const autojoin = parseInt(data.autojoin, 10) === 1 ? 1 : 0;
 		const isHidden = parseInt(data.hidden, 10) === 1;
 
 		Groups.validateGroupName(data.name);
@@ -38,6 +39,7 @@ module.exports = function (Groups) {
 			private: isPrivate ? 1 : 0,
 			disableJoinRequests: disableJoinRequests,
 			disableLeave: disableLeave,
+			autojoin: autojoin,
 		};
 
 		await plugins.hooks.fire('filter:group.create', { group: groupData, data: data });

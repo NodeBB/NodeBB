@@ -34,6 +34,8 @@
 	"edit.hidden-details": "If enabled, this group will not be found in the groups listing, and users will have to be invited manually",
 	"edit.add-user": "Add User to Group",
 	"edit.add-user-search": "Search Users",
+	"edit.autojoin": "Enable Auto-Join",
+	"edit.autojoin-details": "Allow any user with access to the group to join without confirmation",
 	"edit.members": "Member List",
 	"control-panel": "Groups Control Panel",
 	"revert": "Revert",
