@@ -40,7 +40,7 @@
     "username-too-long": "Nome utente troppo lungo",
     "password-too-long": "Password troppo lunga",
     "reset-rate-limited": "Troppe richieste di reimpostazione password (richieste limitate)",
-    "reset-same-password": "Please use a password that is different from your current one",
+    "reset-same-password": "Si prega di utilizzare una password diversa da quella attuale",
     "user-banned": "Utente bannato",
     "user-banned-reason": "Spiacente, questo account è stato bannato (Motivazione: %1)",
     "user-banned-reason-until": "Spiacente, questo account è stato bannato fino a %1 (Motivazione: %2)",

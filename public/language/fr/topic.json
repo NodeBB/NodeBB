@@ -29,7 +29,7 @@
     "tools": "Outils",
     "locked": "Verrouillé",
     "pinned": "Épinglé",
-    "pinned-with-expiry": "Pinned until %1",
+    "pinned-with-expiry": "Épinglé jusqu'au %1",
     "moved": "Déplacé",
     "moved-from": "Déplacé de %1",
     "copy-ip": "Copier l'IP",
