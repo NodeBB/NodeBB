@@ -27,6 +27,7 @@ Notifications.baseTypes = [
 	'notificationType_new-chat',
 	'notificationType_new-group-chat',
 	'notificationType_group-invite',
+	'notificationType_group-leave',
 	'notificationType_group-request-membership',
 ];
 

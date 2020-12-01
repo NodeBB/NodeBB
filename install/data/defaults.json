@@ -89,6 +89,7 @@
     "notificationType_new-chat": "notification",
     "notificationType_new-group-chat": "notification",
     "notificationType_group-invite": "notification",
+    "notificationType_group-leave": "notification",
     "notificationType_group-request-membership": "notification",
     "notificationType_mention": "notification",
     "notificationType_new-register": "notification",
