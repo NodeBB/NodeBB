@@ -7,10 +7,10 @@
 	"custom-js.description": "הזן כאן javascript משלך. זה יבוצע לאחר טעינת הדף לחלוטין.",
 	"custom-js.enable": "אפשר Javascript מותאם אישית",
 
-	"custom-header": "Custom Header",
-	"custom-header.description": "Enter custom HTML here (ex. Meta Tags, etc.), which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup. Script tags are allowed, but are discouraged, as the <a href=\"#custom-js\" data-toggle=\"tab\">Custom Javascript</a> tab is available.",
-	"custom-header.enable": "Enable Custom Header",
+	"custom-header": "HTML מותאם אישית",
+	"custom-header.description": "הזן כאן HTML משלך (לדוגמא תגיות מטא), שיתווספו לתגית ה-<code>head</code> של הפורום. ניתן להכניס סקריפטים, אך מומלץ להכניס אותם בכרטיסיית <a href=\"#custom-js\" data-toggle=\"tab\">Javascript מותאם אישית</a>.",
+	"custom-header.enable": "אפשר HTML מותאם אישית",
 
-	"custom-css.livereload": "Enable Live Reload",
-	"custom-css.livereload.description": "Enable this to force all sessions on every device under your account to refresh whenever you click save"
+	"custom-css.livereload": "אפשר טעינה מחדש אוטומטית.",
+	"custom-css.livereload.description": "אפשר זאת כדי שכל החיבורים מכל מכשיר יתרעננו כאשר אתה שומר."
 }

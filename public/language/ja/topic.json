@@ -29,6 +29,7 @@
     "tools": "ツール",
     "locked": "ロック",
     "pinned": "ピンされた",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "移動しました",
     "moved-from": "Moved from %1",
     "copy-ip": "IPをコピー",

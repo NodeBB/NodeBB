@@ -29,6 +29,7 @@
     "tools": "Verktyg",
     "locked": "Låst",
     "pinned": "Fäst",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "Flyttad",
     "moved-from": "Moved from %1",
     "copy-ip": "Kopiera IP",

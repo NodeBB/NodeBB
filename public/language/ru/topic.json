@@ -29,6 +29,7 @@
     "tools": "Действия",
     "locked": "Закрыта",
     "pinned": "Прикреплена",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "Перенесена",
     "moved-from": "Moved from %1",
     "copy-ip": "Копировать IP",

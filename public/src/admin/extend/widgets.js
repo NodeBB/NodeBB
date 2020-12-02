@@ -10,14 +10,13 @@ define('admin/extend/widgets', [
 	var Widgets = {};
 
 	Widgets.init = function () {
-		$('#widgets .nav-pills a').on('click', function (ev) {
+		$('#widgets .nav-pills .dropdown-menu a').on('click', function (ev) {
 			var $this = $(this);
-			$('#widgets .nav-pills li').removeClass('active');
-			$this.parent().addClass('active');
-
 			$('#widgets .tab-pane').removeClass('active');
-			$('#widgets .tab-pane[data-template="' + $this.attr('data-template') + '"]').addClass('active');
-
+			var templateName = $this.attr('data-template');
+			$('#widgets .tab-pane[data-template="' + templateName + '"]').addClass('active');
+			$('#widgets .selected-template').text(templateName);
+			$('#widgets .nav-pills .dropdown').trigger('click');
 			ev.preventDefault();
 			return false;
 		});

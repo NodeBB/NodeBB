@@ -14,5 +14,6 @@
 
 	"alerts.editing": "编辑标签",
 	"alerts.confirm-delete": "是否要删除所选话题？",
-	"alerts.update-success": "话题已更新！"
+	"alerts.update-success": "话题已更新！",
+	"reset-colors": "Reset colors"
 }

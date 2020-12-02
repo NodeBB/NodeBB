@@ -29,6 +29,7 @@
     "tools": "Araçlar",
     "locked": "Kilitli",
     "pinned": "Sabitlendi",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "Taşındı",
     "moved-from": "Şuradan taşındı: %1",
     "copy-ip": "IP Kopyala",

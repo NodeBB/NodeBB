@@ -247,20 +247,26 @@ SELECT (h."data" ? $2::TEXT AND h."data"->>$2::TEXT IS NOT NULL) b
 	};
 
 	module.deleteObjectFields = async function (key, fields) {
-		if (!key || !Array.isArray(fields) || !fields.length) {
+		if (!key || (Array.isArray(key) && !key.length) || !Array.isArray(fields) || !fields.length) {
 			return;
 		}
-
-		await module.pool.query({
-			name: 'deleteObjectFields',
-			text: `
-UPDATE "legacy_hash"
-   SET "data" = COALESCE((SELECT jsonb_object_agg("key", "value")
-                            FROM jsonb_each("data")
-                           WHERE "key" <> ALL ($2::TEXT[])), '{}')
- WHERE "_key" = $1::TEXT`,
-			values: [key, fields],
-		});
+		async function delKey(key, fields) {
+			await module.pool.query({
+				name: 'deleteObjectFields',
+				text: `
+	UPDATE "legacy_hash"
+	   SET "data" = COALESCE((SELECT jsonb_object_agg("key", "value")
+								FROM jsonb_each("data")
+							   WHERE "key" <> ALL ($2::TEXT[])), '{}')
+	 WHERE "_key" = $1::TEXT`,
+				values: [key, fields],
+			});
+		}
+		if (Array.isArray(key)) {
+			await Promise.all(key.map(k => delKey(k, fields)));
+		} else {
+			await delKey(key, fields);
+		}
 	};
 
 	module.incrObjectField = async function (key, field) {

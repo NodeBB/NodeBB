@@ -29,6 +29,7 @@
     "tools": "Įrankiai",
     "locked": "Užrakinta",
     "pinned": "Pinned",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "Perkelta",
     "moved-from": "Moved from %1",
     "copy-ip": "Copy IP",

@@ -29,6 +29,7 @@
     "tools": "Rīki",
     "locked": "Slēgtie",
     "pinned": "Piespraustie",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "Pārvietots",
     "moved-from": "Moved from %1",
     "copy-ip": "Kopēt IP adresi",

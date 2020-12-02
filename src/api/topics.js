@@ -8,6 +8,7 @@ const meta = require('../meta');
 const apiHelpers = require('./helpers');
 const doTopicAction = apiHelpers.doTopicAction;
 
+const websockets = require('../socket.io');
 const socketHelpers = require('../socket.io/helpers');
 
 const topicsAPI = module.exports;
@@ -19,7 +20,6 @@ topicsAPI.create = async function (caller, data) {
 
 	const payload = { ...data };
 	payload.tags = payload.tags || [];
-	payload.uid = caller.uid;
 	payload.uid = caller.uid;
 	payload.req = apiHelpers.buildReqObject(caller);
 	payload.timestamp = Date.now();
@@ -48,7 +48,7 @@ topicsAPI.reply = async function (caller, data) {
 		uid: caller.uid,
 		req: apiHelpers.buildReqObject(caller),	// For IP recording
 		content: data.content,
-		timestamp: data.timestamp,
+		timestamp: Date.now(),
 		fromQueue: false,
 	};
 
@@ -72,7 +72,12 @@ topicsAPI.reply = async function (caller, data) {
 	};
 
 	user.updateOnlineUsers(caller.uid);
-	socketHelpers.emitToUids('event:new_post', result, [caller.uid]);
+	if (caller.uid) {
+		socketHelpers.emitToUids('event:new_post', result, [caller.uid]);
+	} else if (caller.uid === 0) {
+		websockets.in('online_guests').emit('event:new_post', result);
+	}
+
 	socketHelpers.notifyNew(caller.uid, 'newPost', result);
 
 	return postObj[0];

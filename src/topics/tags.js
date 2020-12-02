@@ -89,7 +89,16 @@ module.exports = function (Topics) {
 			return;
 		}
 		newTagName = utils.cleanUpTag(newTagName, meta.config.maximumTagLength);
+		const targetExists = await db.isSortedSetMember('tags:topic:count', newTagName);
 		await Topics.createEmptyTag(newTagName);
+		const tagData = await db.getObject('tag:' + tag);
+		if (tagData && !targetExists) {
+			await db.setObject('tag:' + newTagName, {
+				color: tagData.color,
+				bgColor: tagData.bgColor,
+			});
+		}
+
 		await batch.processSortedSet('tag:' + tag + ':topics', async function (tids) {
 			const scores = await db.sortedSetScores('tag:' + tag + ':topics', tids);
 			await db.sortedSetAdd('tag:' + newTagName + ':topics', scores, tids);

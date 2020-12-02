@@ -30,62 +30,18 @@ get:
         application/json:
           schema:
             allOf:
+              - $ref: ../../components/schemas/TopicObject.yaml#/TopicObjectSlim
               - type: object
                 properties:
-                  tid:
-                    type: number
-                    description: A topic identifier
-                  uid:
-                    type: number
-                    description: A user identifier
-                  cid:
-                    type: number
-                    description: A category identifier
                   title:
                     type: string
                   slug:
                     type: string
-                  timestamp:
-                    type: number
-                  lastposttime:
-                    type: number
-                  postcount:
-                    type: number
-                  viewcount:
-                    type: number
-                  postercount:
-                    type: number
-                    description: The number of unique users who made a post in this topic
-                  mainPid:
-                    type: number
-                    description: The post id of the first post in this topic (also called the
-                      "original post")
                   teaserPid:
                     type: number
                     nullable: true
-                  upvotes:
-                    type: number
-                  downvotes:
-                    type: number
-                  deleted:
-                    type: number
-                  locked:
-                    type: number
-                  pinned:
-                    type: number
-                    description: Whether or not this particular topic is pinned to the top of the
-                      category
-                  deleterUid:
-                    type: number
                   titleRaw:
                     type: string
-                  timestampISO:
-                    type: string
-                    description: An ISO 8601 formatted date string (complementing `timestamp`)
-                  lastposttimeISO:
-                    type: string
-                  votes:
-                    type: number
                   tags:
                     type: array
                     items:

@@ -165,7 +165,8 @@ async function checkMaintenance(socket) {
 	if (isAdmin) {
 		return;
 	}
-	throw new Error('[[error:forum-maintenance]]');
+	const validator = require('validator');
+	throw new Error('[[pages:maintenance.text, ' + validator.escape(String(meta.config.title || 'NodeBB')) + ']]');
 }
 
 const getSessionAsync = util.promisify((sid, callback) => db.sessionStore.get(sid, (err, sessionObj) => callback(err, sessionObj || null)));
@@ -197,7 +198,6 @@ async function authorize(socket, callback) {
 	}
 
 	await cookieParserAsync(request);
-
 	const sessionData = await getSessionAsync(request.signedCookies[nconf.get('sessionKey')]);
 	if (sessionData && sessionData.passport && sessionData.passport.user) {
 		request.session = sessionData;

@@ -448,6 +448,12 @@ helpers.generateError = (statusCode, message) => {
 		case 500:
 			payload.status.code = 'internal-server-error';
 			payload.status.message = message || payload.status.message;
+			break;
+
+		case 501:
+			payload.status.code = 'not-implemented';
+			payload.status.message = message || 'The route you are trying to call is not implemented yet, please try again tomorrow';
+			break;
 	}
 
 	return payload;

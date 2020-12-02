@@ -53,6 +53,7 @@ tagsController.getTag = async function (req, res) {
 	templateData.pagination = pagination.create(page, pageCount);
 	helpers.addLinkTags({ url: 'tags/' + tag, res: req.res, tags: templateData.pagination.rel });
 
+	templateData['feeds:disableRSS'] = meta.config['feeds:disableRSS'];
 	templateData.rssFeedUrl = nconf.get('relative_path') + '/tags/' + tag + '.rss';
 	res.render('tag', templateData);
 };

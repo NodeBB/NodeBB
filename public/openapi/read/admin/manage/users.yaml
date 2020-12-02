@@ -27,6 +27,8 @@ get:
                     type: string
                   sort_lastonline:
                     type: boolean
+                  userCount:
+                    type: number
                   showInviteButton:
                     type: boolean
                   inviteOnly:

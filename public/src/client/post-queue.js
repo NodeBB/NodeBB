@@ -58,7 +58,12 @@ define('forum/post-queue', [
 							category: category,
 						}],
 					}, function (html) {
-						$this.replaceWith(html.find('.topic-category'));
+						if ($this.find('.category-text').length) {
+							$this.find('.category-text').text(html.find('.topic-category .category-text').text());
+						} else {
+							// for backwards compatibility, remove in 1.16.0
+							$this.replaceWith(html.find('.topic-category'));
+						}
 					});
 				});
 			});
@@ -92,7 +97,17 @@ define('forum/post-queue', [
 				if (err) {
 					return app.alertError(err);
 				}
-				preview.html(titleEdit ? data.postData.title : data.postData.content);
+				if (titleEdit) {
+					if (preview.find('.title-text').length) {
+						preview.find('.title-text').text(data.postData.title);
+					} else {
+						// for backwards compatibility, remove in 1.16.0
+						preview.html(data.postData.title);
+					}
+				} else {
+					preview.html(data.postData.content);
+				}
+
 				textarea.parent().addClass('hidden');
 				preview.removeClass('hidden');
 			});

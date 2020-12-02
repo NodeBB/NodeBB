@@ -19,6 +19,11 @@ module.exports = function (SocketPosts) {
 			throw new Error('[[error:invalid-data]]');
 		}
 
+		const canMove = await privileges.topics.isAdminOrMod(data.tid, socket.uid);
+		if (!canMove) {
+			throw new Error('[[error:no-privileges]]');
+		}
+
 		for (const pid of data.pids) {
 			/* eslint-disable no-await-in-loop */
 			const canMove = await privileges.posts.canMove(pid, socket.uid);

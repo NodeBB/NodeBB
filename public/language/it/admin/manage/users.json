@@ -102,5 +102,7 @@
 
 	"alerts.prompt-email": "Emails:",
 	"alerts.email-sent-to": "Un invito è stato inviato tramite mail a %1",
-	"alerts.x-users-found": "%1 utente(i) trovato(i), (%2 secondi)"
+	"alerts.x-users-found": "%1 utente(i) trovato(i), (%2 secondi)",
+	"export-users-started": "L'esportazione di utenti come csv potrebbe richiedere del tempo. Riceverai una notifica al termine.",
+	"export-users-completed": "Utenti esportati come csv, clicca qui per scaricare."
 }

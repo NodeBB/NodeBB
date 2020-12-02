@@ -81,5 +81,6 @@
 
 	"bulk-actions": "Bulk Actions",
 	"bulk-resolve": "Oznacz flagi jako rozwiązane",
-	"bulk-success": "Zaktualizowano %1 flag"
+	"bulk-success": "Zaktualizowano %1 flag",
+	"flagged-timeago-readable": "Flagged <span class=\"timeago\" title=\"%1\"></span> (%2)"
 }

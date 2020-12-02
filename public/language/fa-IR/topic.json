@@ -29,6 +29,7 @@
     "tools": "ابزارها",
     "locked": "قفل شده است",
     "pinned": "سنجاق شده",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "منتقل شده",
     "moved-from": "Moved from %1",
     "copy-ip": "کپی IP",

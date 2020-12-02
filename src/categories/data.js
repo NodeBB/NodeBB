@@ -5,11 +5,12 @@ const validator = require('validator');
 const db = require('../database');
 const meta = require('../meta');
 const plugins = require('../plugins');
+const utils = require('../utils');
 
 const intFields = [
 	'cid', 'parentCid', 'disabled', 'isSection', 'order',
 	'topic_count', 'post_count', 'numRecentReplies',
-	'minTags', 'maxTags',
+	'minTags', 'maxTags', 'postQueue',
 ];
 
 module.exports = function (Categories) {
@@ -63,12 +64,13 @@ module.exports = function (Categories) {
 	};
 };
 
-function defaultMinMaxTags(category, fields, fieldName, defaultField) {
+function defaultIntField(category, fields, fieldName, defaultField) {
 	if (!fields.length || fields.includes(fieldName)) {
 		const useDefault = !category.hasOwnProperty(fieldName) ||
 			category[fieldName] === null ||
 			category[fieldName] === '' ||
-			!parseInt(category[fieldName], 10);
+			!utils.isNumber(category[fieldName]);
+
 		category[fieldName] = useDefault ? meta.config[defaultField] : category[fieldName];
 	}
 }
@@ -78,8 +80,9 @@ function modifyCategory(category, fields) {
 		return;
 	}
 
-	defaultMinMaxTags(category, fields, 'minTags', 'minimumTagsPerTopic');
-	defaultMinMaxTags(category, fields, 'maxTags', 'maximumTagsPerTopic');
+	defaultIntField(category, fields, 'minTags', 'minimumTagsPerTopic');
+	defaultIntField(category, fields, 'maxTags', 'maximumTagsPerTopic');
+	defaultIntField(category, fields, 'postQueue', 'postQueue');
 
 	db.parseIntFields(category, intFields, fields);
 

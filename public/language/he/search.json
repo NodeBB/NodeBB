@@ -31,7 +31,7 @@
     "sort-by": "סדר על-פי",
     "last-reply-time": "תאריך תגובה אחרון",
     "topic-title": "כותרת הנושא",
-    "topic-votes": "Topic votes",
+    "topic-votes": "הצבעות בנושא",
     "number-of-replies": "מספר התגובות",
     "number-of-views": "מספר הצפיות",
     "topic-start-date": "זמן תחילת הנושא",
@@ -44,6 +44,6 @@
     "search-preferences-saved": "חפש העדפות שנשמרו",
     "search-preferences-cleared": "חפש העדפות שנוקו",
     "show-results-as": "צפה בתוצאות בתור",
-    "see-more-results": "See more results (%1)",
-    "search-in-category": "Search in \"%1\""
+    "see-more-results": "צפה בתוצאות נוספות (%1)",
+    "search-in-category": "חפש ב-\"%1\""
 }

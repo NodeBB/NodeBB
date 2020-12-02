@@ -29,6 +29,7 @@
     "tools": "أدوات",
     "locked": "مقفل",
     "pinned": "مثبت",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "منقول",
     "moved-from": "Moved from %1",
     "copy-ip": "Copy IP",

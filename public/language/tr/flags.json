@@ -81,5 +81,6 @@
 
 	"bulk-actions": "Toplu Aksiyonlar",
 	"bulk-resolve": "Şikayetleri Çözümle",
-	"bulk-success": "%1 şikayet güncellendi"
+	"bulk-success": "%1 şikayet güncellendi",
+	"flagged-timeago-readable": "Flagged <span class=\"timeago\" title=\"%1\"></span> (%2)"
 }

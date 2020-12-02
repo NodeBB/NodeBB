@@ -27,6 +27,7 @@ Notifications.baseTypes = [
 	'notificationType_new-chat',
 	'notificationType_new-group-chat',
 	'notificationType_group-invite',
+	'notificationType_group-leave',
 	'notificationType_group-request-membership',
 ];
 
@@ -333,7 +334,7 @@ Notifications.prune = async function () {
 		}, { batch: 500, interval: 100 });
 	} catch (err) {
 		if (err) {
-			winston.error('Encountered error pruning notifications', err.stack);
+			winston.error('Encountered error pruning notifications\n' + err.stack);
 		}
 	}
 };

@@ -29,6 +29,7 @@
     "tools": "Narzędzia",
     "locked": "Zablokowany",
     "pinned": "Przypięty",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "Przeniesiony",
     "moved-from": "Moved from %1",
     "copy-ip": "Kopiuj IP",

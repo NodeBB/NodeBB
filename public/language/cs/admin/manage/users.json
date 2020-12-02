@@ -102,5 +102,7 @@
 
 	"alerts.prompt-email": "E-maily:",
 	"alerts.email-sent-to": "E-mail s pozvánkou byl odeslán na %1",
-	"alerts.x-users-found": "%1 user(s) found, (%2 seconds)"
+	"alerts.x-users-found": "%1 user(s) found, (%2 seconds)",
+	"export-users-started": "Exporting users as csv, this might take a while. You will receive a notification when it is complete.",
+	"export-users-completed": "Users exported as csv, click here to download."
 }

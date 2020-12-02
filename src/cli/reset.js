@@ -133,7 +133,7 @@ async function resetPlugin(pluginId) {
 			winston.info('[reset] No action taken.');
 		}
 	} catch (err) {
-		winston.error('[reset] Could not disable plugin: ' + pluginId + ' encountered error %s', err.stack);
+		winston.error('[reset] Could not disable plugin: ' + pluginId + ' encountered error %s\n' + err.stack);
 		throw err;
 	}
 }

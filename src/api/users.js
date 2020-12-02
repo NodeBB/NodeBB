@@ -247,7 +247,7 @@ async function processDeletion({ uid, method, password, caller }) {
 	} else if (!isSelf && !isAdmin) {
 		throw new Error('[[error:no-privileges]]');
 	} else if (isTargetAdmin) {
-		throw new Error('[[error:cant-delete-other-admins]]');
+		throw new Error('[[error:cant-delete-admin]');
 	}
 
 	// Privilege checks -- only deleteAccount is available for non-admins

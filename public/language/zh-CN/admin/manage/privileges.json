@@ -4,6 +4,7 @@
 	"group-privileges": "群组权限",
 	"user-privileges": "用户权限",
 	"edit-privileges": "编辑权限",
+  	"select-clear-all": "Select/Clear All",
 	"chat": "对话",
 	"upload-images": "上传图片",
 	"upload-files": "上传文件",

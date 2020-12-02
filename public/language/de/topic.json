@@ -29,6 +29,7 @@
     "tools": "Werkzeuge",
     "locked": "Gesperrt",
     "pinned": "Angeheftet",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "Verschoben",
     "moved-from": "Moved from %1",
     "copy-ip": "IP-Adresse Kopieren",

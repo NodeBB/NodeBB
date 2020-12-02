@@ -255,6 +255,8 @@ get:
                           type: string
                   rssFeedUrl:
                     type: string
+                  feeds:disableRSS:
+                    type: boolean
                 required:
                   - topics
                   - tag
