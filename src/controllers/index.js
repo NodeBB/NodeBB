@@ -125,12 +125,7 @@ Controllers.login = async function (req, res) {
 	data.allowLocalLogin = hasLoginPrivilege || parseInt(req.query.local, 10) === 1;
 
 	if (!data.allowLocalLogin && !data.allowRegistration && data.alternate_logins && data.authentication.length === 1) {
-		if (res.locals.isAPI) {
-			return helpers.redirect(res, {
-				external: nconf.get('relative_path') + data.authentication[0].url,
-			});
-		}
-		return res.redirect(nconf.get('relative_path') + data.authentication[0].url);
+		return helpers.redirect(res, data.authentication[0].url);
 	}
 
 	if (req.loggedIn) {
