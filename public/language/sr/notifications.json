@@ -63,6 +63,7 @@
     "notificationType_new-chat": "Када примите поруку за ћаскање",
     "notificationType_new-group-chat": "When you receive a group chat message",
     "notificationType_group-invite": "Када примите позивницу за групу",
+    "notificationType_group-leave": "When a user leaves your group",
     "notificationType_group-request-membership": "Када неко затражи да се придружи групи коју поседујете",
     "notificationType_new-register": "Када је неко додат на чекање за регистрацију",
     "notificationType_post-queue": "Када је нова порука на чекању",

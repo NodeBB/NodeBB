@@ -63,6 +63,7 @@
     "notificationType_new-chat": "När du får ett chattmeddelande",
     "notificationType_new-group-chat": "When you receive a group chat message",
     "notificationType_group-invite": "När du får en gruppinbjudan",
+    "notificationType_group-leave": "When a user leaves your group",
     "notificationType_group-request-membership": "När någon ber om att få gå med i en grupp du äger",
     "notificationType_new-register": "När någon läggs till i registreringskön",
     "notificationType_post-queue": "När ett nytt inlägg läggs i kön",

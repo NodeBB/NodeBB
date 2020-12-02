@@ -63,6 +63,7 @@
     "notificationType_new-chat": "هنگامی که شما پیام چتی دریافت می کنید",
     "notificationType_new-group-chat": "When you receive a group chat message",
     "notificationType_group-invite": "هنگامی که شما دعوتنامه گروه دریافت می کنید",
+    "notificationType_group-leave": "When a user leaves your group",
     "notificationType_group-request-membership": "When someone requests to join a group you own",
     "notificationType_new-register": "وقتی کسی به صف ثبت نام اضافه می شود",
     "notificationType_post-queue": "هنگامی که یک پست جدید در صف قرار می گیرد",

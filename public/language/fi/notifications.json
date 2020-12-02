@@ -63,6 +63,7 @@
     "notificationType_new-chat": "Kun saat viestin keskusteluun",
     "notificationType_new-group-chat": "When you receive a group chat message",
     "notificationType_group-invite": "Kun saat kutsun ryhmään",
+    "notificationType_group-leave": "When a user leaves your group",
     "notificationType_group-request-membership": "Kun joku pyytää lupaa liittyä ryhmään, jonka omistaja olet",
     "notificationType_new-register": "Kun joku lisätään rekisteröintijonoon",
     "notificationType_post-queue": "Kun uusi viesti tulee jonoon",

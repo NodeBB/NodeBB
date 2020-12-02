@@ -63,6 +63,7 @@
     "notificationType_new-chat": "Bir sohbet mesajı aldığınızda",
     "notificationType_new-group-chat": "Grup sohbet mesajı aldığınızda",
     "notificationType_group-invite": "Bir gruba katılım davetiyesi aldığınızda",
+    "notificationType_group-leave": "When a user leaves your group",
     "notificationType_group-request-membership": "Biri size ait bir gruba üye olmak istediğinde",
     "notificationType_new-register": "Biri kayıt kuyruğuna eklendiğinde",
     "notificationType_post-queue": "Yeni bir ileti sıraya alındığında",

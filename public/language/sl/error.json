@@ -92,6 +92,7 @@
     "cant-ban-other-admins": "Ne morete izločati drugih skrbnikov!",
     "cant-remove-last-admin": "Ste edini skrbnik.  Preden se odstranite, dodajte novega skrbnika.",
     "cant-delete-admin": "Pred brisanjem tega računa morate odstraniti skrbniške pravice.",
+    "already-deleting": "Already deleting",
     "invalid-image": "Invalid image",
     "invalid-image-type": "Nedovoljen format slike. Dovoljeni formati: %1.",
     "invalid-image-extension": "Nedovoljena pripona slike.",

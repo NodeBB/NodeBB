@@ -92,6 +92,7 @@
     "cant-ban-other-admins": "Du kan ikke utestenge andre administratorer!",
     "cant-remove-last-admin": "Du er den eneste administratoren. Legg til en annen bruker som administrator før du fjerner deg selv.",
     "cant-delete-admin": "Remove administrator privileges from this account before attempting to delete it.",
+    "already-deleting": "Already deleting",
     "invalid-image": "Invalid image",
     "invalid-image-type": "Ugyldig bildetype. Tilatte typer er: %1",
     "invalid-image-extension": "Ugyldig bildefiltype",

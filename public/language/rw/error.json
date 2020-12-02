@@ -92,6 +92,7 @@
     "cant-ban-other-admins": "Ntabwo wakwirukana abandi bayobozi!",
     "cant-remove-last-admin": "Ni wowe muyobozi wenyine. Ongeramo undi muntu nk'umuyobozi mbere y'uko wikura ku buyobozi",
     "cant-delete-admin": "Remove administrator privileges from this account before attempting to delete it.",
+    "already-deleting": "Already deleting",
     "invalid-image": "Invalid image",
     "invalid-image-type": "Ubwoko bw'ifoto wahisemo ntibwemewe. Hemewe gusa: %1",
     "invalid-image-extension": "Impera itemewe igaragaza foruma y'ifoto",

@@ -92,6 +92,7 @@
     "cant-ban-other-admins": "Anda tidak boleh haramkan admin / pentadbir!",
     "cant-remove-last-admin": "Anda satu-satunya pentadbir. Tambah pentadbir lain sebelum membuang diri anda sebagai pentadbir",
     "cant-delete-admin": "Remove administrator privileges from this account before attempting to delete it.",
+    "already-deleting": "Already deleting",
     "invalid-image": "Invalid image",
     "invalid-image-type": "Jenis imej tak sah. Jenis yang dibenarkan ialah: %1",
     "invalid-image-extension": "Sambungan imej tak sah",

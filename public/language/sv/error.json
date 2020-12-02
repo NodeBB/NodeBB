@@ -92,6 +92,7 @@
     "cant-ban-other-admins": "Du kan inte bannlysa andra administratörer!",
     "cant-remove-last-admin": "Du är den enda administratören. Lägg till en annan användare som administratör innan du tar bort dig själv.",
     "cant-delete-admin": "Ta bort administratörsbehörighet från detta konto innan du försöker ta bort den.",
+    "already-deleting": "Already deleting",
     "invalid-image": "Ogiltig bild",
     "invalid-image-type": "Ogiltig bildtyp. Tillåtna typer är: %1",
     "invalid-image-extension": "Ogiltigt bildformat",

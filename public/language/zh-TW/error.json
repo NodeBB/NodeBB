@@ -92,6 +92,7 @@
     "cant-ban-other-admins": "您不能封鎖其他管理員！",
     "cant-remove-last-admin": "您是唯一的管理員。在刪除您的管理員權限前，請增加另一個管理員。",
     "cant-delete-admin": "在刪除該帳戶之前，請先移除其管理權限。",
+    "already-deleting": "Already deleting",
     "invalid-image": "無效的圖檔",
     "invalid-image-type": "無效的圖檔類型。允許的類型有：%1",
     "invalid-image-extension": "無效的圖檔副檔名",

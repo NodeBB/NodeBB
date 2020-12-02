@@ -92,6 +92,7 @@
     "cant-ban-other-admins": "ほかの管理者を停止することはできません！",
     "cant-remove-last-admin": "あなたが唯一の管理者です。管理者としてあなた自身を削除する前に、管理者として別のユーザーを追加します。",
     "cant-delete-admin": "削除する前に、このアカウントから管理者権限を削除してください。",
+    "already-deleting": "Already deleting",
     "invalid-image": "無効な画像",
     "invalid-image-type": "無効なイメージタイプです。許可された種類は: %1",
     "invalid-image-extension": "無効なイメージのエクステンション",

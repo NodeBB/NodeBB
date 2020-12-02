@@ -92,6 +92,7 @@
     "cant-ban-other-admins": "Vous ne pouvez pas bannir les autres administrateurs !",
     "cant-remove-last-admin": "Vous êtes le seul administrateur. Ajoutez un autre utilisateur en tant qu'administrateur avant de vous retirer.",
     "cant-delete-admin": "Veuillez retirer les droits d'administration de ce compte avant de tenter de le supprimer.",
+    "already-deleting": "Already deleting",
     "invalid-image": "Image invalide",
     "invalid-image-type": "Type d'image invalide. Les types autorisés sont: %1",
     "invalid-image-extension": "Extension d'image invalide",

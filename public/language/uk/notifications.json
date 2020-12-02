@@ -63,6 +63,7 @@
     "notificationType_new-chat": "Коли ви отримуєте повідомлення чату",
     "notificationType_new-group-chat": "When you receive a group chat message",
     "notificationType_group-invite": "Коли ви отримуєте запрошення до групи",
+    "notificationType_group-leave": "When a user leaves your group",
     "notificationType_group-request-membership": "Коли хтось подає запит на приєднання до групи, якою ви володієте",
     "notificationType_new-register": "Коли когось додано до черги на реєстрацію",
     "notificationType_post-queue": "Коли новий пост знаходиться в черзі",

@@ -92,6 +92,7 @@
     "cant-ban-other-admins": "Bạn không thể cấm được các quản trị viên khác",
     "cant-remove-last-admin": "Bạn là quản trị viên duy nhất. Hãy cho thành viên khác làm quản trị viên trước khi huỷ bỏ quyền quản trị của bạn.",
     "cant-delete-admin": "Hủy quyền quản trị của tài khoản này trước khi xóa",
+    "already-deleting": "Already deleting",
     "invalid-image": "Hình ảnh không hợp lệ",
     "invalid-image-type": "Định dạng ảnh không hợp lệ. Những định dạng được cho phép là: %1",
     "invalid-image-extension": "Định dạng ảnh không hợp lệ",

@@ -92,6 +92,7 @@
     "cant-ban-other-admins": "Du kannst andere Administratoren nicht sperren!",
     "cant-remove-last-admin": "Du bist der einzige Administrator. Füge zuerst einen anderen Administrator hinzu, bevor du dich selbst als Administrator entfernst",
     "cant-delete-admin": "Bevor du versuchst dieses Konto zu löschen, entferne die zugehörigen Administratorrechte.",
+    "already-deleting": "Already deleting",
     "invalid-image": "Ungültiges Bild",
     "invalid-image-type": "Falsche Bildart. Erlaubte Arten sind: %1",
     "invalid-image-extension": "Ungültige Dateinamenerweiterung",

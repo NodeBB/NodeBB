@@ -92,6 +92,7 @@
     "cant-ban-other-admins": "Nemůžete zablokovat jiné správce.",
     "cant-remove-last-admin": "Jste jediným správcem. Před vlastním odebráním oprávnění správce nejdříve přidejte jiného uživatele jako správce",
     "cant-delete-admin": "Před odstraněním účtu mu nejprve odeberte oprávnění správce.",
+    "already-deleting": "Already deleting",
     "invalid-image": "Neplatný obrázek",
     "invalid-image-type": "Neplatný typ obrázku. Povolené typy jsou: %1",
     "invalid-image-extension": "Neplatná přípona obrázku",

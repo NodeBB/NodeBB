@@ -63,6 +63,7 @@
     "notificationType_new-chat": "Mikor chat üzenetet kapsz",
     "notificationType_new-group-chat": "When you receive a group chat message",
     "notificationType_group-invite": "Mikor csoportmeghívást kapsz",
+    "notificationType_group-leave": "When a user leaves your group",
     "notificationType_group-request-membership": "When someone requests to join a group you own",
     "notificationType_new-register": "Mikor valaki a regisztrációs várólistára kerül",
     "notificationType_post-queue": "Mikor egy új hozzászólás várólistára kerül",

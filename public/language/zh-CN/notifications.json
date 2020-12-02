@@ -63,6 +63,7 @@
     "notificationType_new-chat": "当您收到聊天消息时",
     "notificationType_new-group-chat": "When you receive a group chat message",
     "notificationType_group-invite": "当您收到群组邀请时",
+    "notificationType_group-leave": "When a user leaves your group",
     "notificationType_group-request-membership": "当有人请求加入您拥有的用户组时",
     "notificationType_new-register": "当有人被添加到申请队列时",
     "notificationType_post-queue": "当有新帖子等待审核时",

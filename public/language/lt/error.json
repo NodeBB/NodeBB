@@ -92,6 +92,7 @@
     "cant-ban-other-admins": "Jūs negalite užblokuoti kitų administratorių!",
     "cant-remove-last-admin": "Jūs esate vienintelis administratorius. Pridėkite kitą vartotoja kaip administratorių prieš pašalindamas save",
     "cant-delete-admin": "Pašalinkite administratoriaus teises šiai paskyrai prieš bandydami ją ištrinti.",
+    "already-deleting": "Already deleting",
     "invalid-image": "Blogas paveikslėlis",
     "invalid-image-type": "Neteisingas vaizdo tipas. Leidžiami tipai :%1",
     "invalid-image-extension": "Neteisingas vaizdo plėtinys",

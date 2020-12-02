@@ -92,6 +92,7 @@
     "cant-ban-other-admins": "Sa ei saa bannida teisi administraatoreid!",
     "cant-remove-last-admin": "Te olete ainus administraator. Lisage keegi teine administraatoriks, enne kui eemaldate endalt administraatori.",
     "cant-delete-admin": "Eemalda sellelt kasutajalt administraatori õigused enne selle kustutamist",
+    "already-deleting": "Already deleting",
     "invalid-image": "Invalid image",
     "invalid-image-type": "Vigane pildi formaat. Lubatud formaadid on: %1",
     "invalid-image-extension": "Vigane pildi formaat",

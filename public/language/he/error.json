@@ -92,6 +92,7 @@
     "cant-ban-other-admins": "אינך יכול לחסום מנהלים אחרים!",
     "cant-remove-last-admin": "אתה המנהל היחיד. הוסף משתמש אחר לניהול לפני שאתה מוריד את עצמך מניהול",
     "cant-delete-admin": "משתמש זה מוגדר כמנהל. על מנת למחוק את המשתמש, עליך להסיר קודם את גישותיו.",
+    "already-deleting": "Already deleting",
     "invalid-image": "תמונה לא תקינה",
     "invalid-image-type": "פורמט תמונה לא תקין. הפורמטים המורשים הם: %1",
     "invalid-image-extension": "פורמט תמונה לא תקין",

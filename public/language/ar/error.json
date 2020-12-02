@@ -92,6 +92,7 @@
     "cant-ban-other-admins": "لايمكن حظر مدبر نظام آخر.",
     "cant-remove-last-admin": "رجاءًا ، أضف مدير أخر قبل حذف صلاحيات الإدارة من حسابك.",
     "cant-delete-admin": "رجاءًا أزل صلاحيات الإدارة قبل حذف الحساب. ",
+    "already-deleting": "Already deleting",
     "invalid-image": "Invalid image",
     "invalid-image-type": "نوع الصورة غير مدعوم. الأنواع المدعومة هي :  %1",
     "invalid-image-extension": "امتداد الصورة غير مدعوم.",

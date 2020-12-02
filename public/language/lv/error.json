@@ -92,6 +92,7 @@
     "cant-ban-other-admins": "Nevar bloķēt citus administratorus!",
     "cant-remove-last-admin": "Tu esi vienīgais administrators. Pievieno vēl vienu lietotāju kā administratoru, pirms noņemi sevi kā administratoru",
     "cant-delete-admin": "Noņemi administratora tiesības no šī konta, pirms mēģināt to izdzēst.",
+    "already-deleting": "Already deleting",
     "invalid-image": "Nederīgs attēls",
     "invalid-image-type": "Nederīgs attēla veids. Atļautie veidi ir: %1",
     "invalid-image-extension": "Nederīgs attēla paplašinājums",

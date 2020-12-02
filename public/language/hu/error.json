@@ -92,6 +92,7 @@
     "cant-ban-other-admins": "Nem tilthatsz ki másik adminisztrátort!",
     "cant-remove-last-admin": "You are the only administrator. Add another user as an administrator before removing yourself as admin",
     "cant-delete-admin": "Remove administrator privileges from this account before attempting to delete it.",
+    "already-deleting": "Already deleting",
     "invalid-image": "Invalid image",
     "invalid-image-type": "Érvénytelen a kép típusa. Engedett kiterjesztések: %1",
     "invalid-image-extension": "Érvénytelen a kép kiterjesztése",

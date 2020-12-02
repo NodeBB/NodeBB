@@ -92,6 +92,7 @@
     "cant-ban-other-admins": "Başka yöneticileri yasaklayamazsınız!",
     "cant-remove-last-admin": "Tek yönetici sizsiniz. Kendinizi adminlikten çıkarmadan önce başka bir kullanıcıyı admin olarak ekleyiniz",
     "cant-delete-admin": "Öncelikle yönetici izinlerini kaldırman gerekiyor.",
+    "already-deleting": "Already deleting",
     "invalid-image": "Geçersiz görsel",
     "invalid-image-type": "Geçersiz görsel uzantısı. Izin verilen uzantılar: %1",
     "invalid-image-extension": "Geçersiz görsel uzantısı",

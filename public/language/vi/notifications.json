@@ -63,6 +63,7 @@
     "notificationType_new-chat": "Khi bạn nhận được thông điệp chat",
     "notificationType_new-group-chat": "When you receive a group chat message",
     "notificationType_group-invite": "Khi bạn nhận được lời mời gia nhập nhóm",
+    "notificationType_group-leave": "When a user leaves your group",
     "notificationType_group-request-membership": "Khi ai đó yêu cầu tham gia một nhóm bạn sở hữu",
     "notificationType_new-register": "Khi ai đó được thêm vào lượt chờ đăng ký",
     "notificationType_post-queue": "Khi bài đăng được thêm vào lượt chờ",

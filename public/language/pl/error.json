@@ -92,6 +92,7 @@
     "cant-ban-other-admins": "Nie możesz zbanować innych adminów!",
     "cant-remove-last-admin": "Jesteś jedynym administratorem. Dodaj innego użytkownika jako administratora przed usunięciem siebie z tej grupy",
     "cant-delete-admin": "Usuń uprawnienia administratora z tego konta przed próbą jego usunięcia.",
+    "already-deleting": "Already deleting",
     "invalid-image": "Błędny obraz.",
     "invalid-image-type": "Błędny typ obrazka. Dozwolone typy to: %1",
     "invalid-image-extension": "Błędne rozszerzenie pliku",

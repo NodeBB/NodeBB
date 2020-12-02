@@ -63,6 +63,7 @@
     "notificationType_new-chat": "Когато получите съобщение в разговор",
     "notificationType_new-group-chat": "Когато получите съобщение в групов разговор",
     "notificationType_group-invite": "Когато получите покана за група",
+    "notificationType_group-leave": "Когато потребител напусне групата Ви",
     "notificationType_group-request-membership": "Когато някой поиска да се включи в група, на която Вие сте собственик",
     "notificationType_new-register": "Когато някой бъде добавен в опашката за регистрация",
     "notificationType_post-queue": "Когато бъде добавена нова публикация в опашката",

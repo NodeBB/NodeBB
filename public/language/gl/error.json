@@ -92,6 +92,7 @@
     "cant-ban-other-admins": "Non podes botar outros administradores!",
     "cant-remove-last-admin": "Eres o único administrador. Engade outros administradores antes de quitarte a ti mesmo como administrador.",
     "cant-delete-admin": "Retirar privilexios de administrador desta conta antes de intentar borrala",
+    "already-deleting": "Already deleting",
     "invalid-image": "Invalid image",
     "invalid-image-type": "Tipo de imaxe inválida. Tipos admitidos: %1",
     "invalid-image-extension": "Extensión de imaxe inválida",

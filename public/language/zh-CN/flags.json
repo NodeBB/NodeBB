@@ -81,5 +81,6 @@
 
 	"bulk-actions": "批量操作",
 	"bulk-resolve": "处理举报",
-	"bulk-success": "已更新%1个举报"
+	"bulk-success": "已更新%1个举报",
+	"flagged-timeago-readable": "Flagged <span class=\"timeago\" title=\"%1\"></span> (%2)"
 }

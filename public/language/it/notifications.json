@@ -63,6 +63,7 @@
     "notificationType_new-chat": "Quando ricevi un messaggio in chat",
     "notificationType_new-group-chat": "Quando ricevi un messaggio di chat di gruppo",
     "notificationType_group-invite": "Quando ricevi un invito ad un gruppo",
+    "notificationType_group-leave": "When a user leaves your group",
     "notificationType_group-request-membership": "Quando qualcuno richiede di iscriversi a un gruppo di tua proprietà",
     "notificationType_new-register": "Quando qualcuno è in attesa della registrazione",
     "notificationType_post-queue": "Quando un nuovo post è in attesa",

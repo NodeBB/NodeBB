@@ -92,6 +92,7 @@
     "cant-ban-other-admins": "Nemožete blokirati ostale administratore!",
     "cant-remove-last-admin": "Vi ste jedini administrator. Dodajte korisnika kao administratora prije nego sebe odjavite kao administratora.",
     "cant-delete-admin": "Ukloni administratorske privilegije sa ovog računa prije brisanja.",
+    "already-deleting": "Already deleting",
     "invalid-image": "Invalid image",
     "invalid-image-type": "Pogrešan format slike. Dozvoljeni formati: %1",
     "invalid-image-extension": "Kriva ekstezija slike",
