@@ -30,9 +30,22 @@ Thumbs.exists = async function (tid, path) {
 	return db.isSortedSetMember(`topic:${tid}:thumbs`, path);
 };
 
-Thumbs.get = async function (tid) {
-	const thumbs = await db.getSortedSetRange(`topic:${tid}:thumbs`, 0, -1);
-	return thumbs.map(thumb => path.join(nconf.get('upload_path'), thumb));
+Thumbs.get = async function (tids) {
+	// Allow singular or plural usage
+	let singular = false;
+	if (!Array.isArray(tids)) {
+		tids = [tids];
+		singular = true;
+	}
+
+	const sets = tids.map(tid => `topic:${tid}:thumbs`);
+	const thumbs = await db.getSortedSetsMembers(sets);
+	let response = thumbs.map(thumbSet => thumbSet.map(thumb => ({
+		url: path.join(nconf.get('upload_url'), thumb),
+	})));
+
+	({ thumbs: response } = await plugins.hooks.fire('filter:topics.getThumbs', { tids, thumbs: response }));
+	return singular ? response.pop() : response;
 };
 
 Thumbs.associate = async function (id, path, isDraft) {

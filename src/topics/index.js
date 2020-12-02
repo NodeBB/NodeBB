@@ -75,12 +75,13 @@ Topics.getTopicsByTids = async function (tids, options) {
 			return postData.map(p => p.handle);
 		}
 
-		const [teasers, users, userSettings, categoriesData, guestHandles] = await Promise.all([
+		const [teasers, users, userSettings, categoriesData, guestHandles, thumbs] = await Promise.all([
 			Topics.getTeasers(topics, options),
 			user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status']),
 			user.getMultipleUserSettings(uids),
 			categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'backgroundImage', 'imageClass', 'bgColor', 'color', 'disabled']),
 			loadGuestHandles(),
+			Topics.thumbs.get(tids),
 		]);
 
 		users.forEach((userObj, idx) => {
@@ -96,6 +97,7 @@ Topics.getTopicsByTids = async function (tids, options) {
 			usersMap: _.zipObject(uids, users),
 			categoriesMap: _.zipObject(cids, categoriesData),
 			tidToGuestHandle: _.zipObject(guestTopics.map(t => t.tid), guestHandles),
+			thumbs,
 		};
 	}
 
@@ -111,6 +113,7 @@ Topics.getTopicsByTids = async function (tids, options) {
 	const sortOldToNew = callerSettings.topicPostSort === 'newest_to_oldest';
 	result.topics.forEach(function (topic, i) {
 		if (topic) {
+			topic.thumbs = result.thumbs[i];
 			topic.category = result.categoriesMap[topic.cid];
 			topic.user = topic.uid ? result.usersMap[topic.uid] : { ...result.usersMap[topic.uid] };
 			if (result.tidToGuestHandle[topic.tid]) {
@@ -150,6 +153,7 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 		deleter,
 		merger,
 		related,
+		thumbs,
 	] = await Promise.all([
 		getMainPostAndReplies(topicData, set, uid, start, stop, reverse),
 		categories.getCategoryData(topicData.cid),
@@ -161,7 +165,19 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 		getDeleter(topicData),
 		getMerger(topicData),
 		getRelated(topicData, uid),
+		Topics.thumbs.get(topicData.tid),
 	]);
+
+	topicData.thumbs = thumbs;
+	// Note: Backwards compatibility with old thumb logic, remove in v1.16.0
+	if (topicData.thumb && !topicData.thumbs.length) {
+		topicData.thumbs = [{
+			url: topicData.thumb,
+		}];
+	} else if (topicData.thumbs.length) {
+		topicData.thumb = topicData.thumbs[0].url;
+	}
+	// end
 
 	topicData.posts = posts;
 	topicData.category = category;
