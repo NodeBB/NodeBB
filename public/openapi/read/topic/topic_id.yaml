@@ -46,6 +46,14 @@ get:
                     type: array
                     items:
                       $ref: ../../components/schemas/TagObject.yaml#/TagObject
+                  thumbs:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        url:
+                          type: string
+                          description: Relative path to the topic thumbnail
                   posts:
                     type: array
                     items:
