@@ -57,6 +57,14 @@ TopicObject:
           description: An ISO 8601 formatted date string (complementing `lastposttime`)
         votes:
           type: number
+        thumbs:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+                description: Relative path to the topic thumbnail
         category:
           type: object
           properties:
