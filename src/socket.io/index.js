@@ -69,6 +69,14 @@ function onConnection(socket) {
 	socket.on('*', function (payload) {
 		onMessage(socket, payload);
 	});
+
+	socket.on('disconnect', function () {
+		onDisconnect(socket);
+	});
+}
+
+function onDisconnect(socket) {
+	require('./uploads').clear(socket.id);
 }
 
 function onConnect(socket) {
@@ -148,7 +156,8 @@ async function onMessage(socket, payload) {
 
 function requireModules() {
 	var modules = ['admin', 'categories', 'groups', 'meta', 'modules',
-		'notifications', 'plugins', 'posts', 'topics', 'user', 'blacklist', 'flags',
+		'notifications', 'plugins', 'posts', 'topics', 'user', 'blacklist',
+		'flags', 'uploads',
 	];
 
 	modules.forEach(function (module) {
