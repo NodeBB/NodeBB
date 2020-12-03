@@ -95,18 +95,9 @@ Topics.getThumbs = async (req, res) => {
 };
 
 Topics.addThumb = async (req, res) => {
-	// req.params.tid could be either a tid (pushing a new thumb to an existing topic) or a post UUID (a new topic being composed)
-	const id = req.params.tid;
-	const isUUID = validator.isUUID(id);
-
-	// Sanity-check the tid if it's strictly not a uuid
-	if (!isUUID && (isNaN(parseInt(id, 10)) || !await topics.exists(req.params.tid))) {
-		return helpers.formatApiResponse(404, res, new Error('[[error:no-topic]]'));
-	}
-
-	// While drafts are not protected, tids are
-	if (!isUUID && !await privileges.topics.canEdit(req.params.tid, req.user.uid)) {
-		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
+	await checkThumbPrivileges(req, res);
+	if (res.headersSent) {
+		return;
 	}
 
 	/**
@@ -122,15 +113,31 @@ Topics.addThumb = async (req, res) => {
 
 	// Add uploaded files to topic zset
 	await Promise.all(files.map(async (fileObj) => {
-		await topics.thumbs.associate(id, fileObj.path);
+		await topics.thumbs.associate(req.params.tid, fileObj.path);
 	}));
 };
 
 Topics.deleteThumb = async (req, res) => {
-	if (!await privileges.topics.canEdit(req.params.tid, req.user.uid)) {
-		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
+	await checkThumbPrivileges(req, res);
+	if (res.headersSent) {
+		return;
 	}
 
 	await topics.thumbs.delete(req.params.tid, req.body.path);
 	helpers.formatApiResponse(200, res, await topics.thumbs.get(req.params.tid));
 };
+
+async function checkThumbPrivileges(req, res) {
+	// req.params.tid could be either a tid (pushing a new thumb to an existing topic) or a post UUID (a new topic being composed)
+	const isUUID = validator.isUUID(req.params.tid);
+
+	// Sanity-check the tid if it's strictly not a uuid
+	if (!isUUID && (isNaN(parseInt(req.params.tid, 10)) || !await topics.exists(req.params.tid))) {
+		return helpers.formatApiResponse(404, res, new Error('[[error:no-topic]]'));
+	}
+
+	// While drafts are not protected, tids are
+	if (!isUUID && !await privileges.topics.canEdit(req.params.tid, req.user.uid)) {
+		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
+	}
+}

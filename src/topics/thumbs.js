@@ -53,9 +53,10 @@ Thumbs.commit = async function (uuid, tid) {
 	await db.delete(set);
 };
 
-Thumbs.delete = async function (tid, relativePath) {
+Thumbs.delete = async function (id, relativePath) {
 	// TODO: tests
-	const set = `topic:${tid}:thumbs`;
+	const isDraft = validator.isUUID(String(id));
+	const set = `${isDraft ? 'draft' : 'topic'}:${id}:thumbs`;
 	const absolutePath = path.join(nconf.get('upload_path'), relativePath);
 	const [associated, existsOnDisk] = await Promise.all([
 		db.isSortedSetMember(set, relativePath),
