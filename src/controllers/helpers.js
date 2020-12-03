@@ -145,23 +145,30 @@ helpers.notAllowed = async function (req, res, error) {
 };
 
 helpers.redirect = function (res, url, permanent) {
-	let redirectUrl;
 	// this is used by sso plugins to redirect to the auth route
+	// { external: '/auth/sso' } or { external: 'https://domain/auth/sso' }
 	if (url.hasOwnProperty('external')) {
-		redirectUrl = res.local.isAPI ? relative_path + url.external : url.external;
-		url.external = encodeURI(redirectUrl);
-	} else {
-		redirectUrl = url;
-		url = encodeURI(url);
+		const redirectUrl = encodeURI(prependRelativePath(url.external));
+		if (res.locals.isAPI) {
+			res.set('X-Redirect', redirectUrl).status(200).json({ external: redirectUrl });
+		} else {
+			res.redirect(permanent ? 308 : 307, redirectUrl);
+		}
+		return;
 	}
+
 	if (res.locals.isAPI) {
-		res.set('X-Redirect', encodeURI(redirectUrl)).status(200).json(url);
+		url = encodeURI(url);
+		res.set('X-Redirect', url).status(200).json(url);
 	} else {
-		redirectUrl = redirectUrl.startsWith('http://') || redirectUrl.startsWith('https://') ?
-			redirectUrl : relative_path + redirectUrl;
-		res.redirect(permanent ? 308 : 307, encodeURI(redirectUrl));
+		res.redirect(permanent ? 308 : 307, encodeURI(prependRelativePath(url)));
 	}
 };
+
+function prependRelativePath(url) {
+	return url.startsWith('http://') || url.startsWith('https://') ?
+		url : relative_path + url;
+}
 
 helpers.buildCategoryBreadcrumbs = async function (cid) {
 	const breadcrumbs = [];
