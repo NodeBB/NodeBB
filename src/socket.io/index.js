@@ -69,6 +69,15 @@ function onConnection(socket) {
 	socket.on('*', function (payload) {
 		onMessage(socket, payload);
 	});
+
+	socket.on('disconnect', function () {
+		onDisconnect(socket);
+	});
+}
+
+function onDisconnect(socket) {
+	require('./uploads').clear(socket.id);
+	plugins.hooks.fire('action:sockets.disconnect', { socket: socket });
 }
 
 function onConnect(socket) {
@@ -82,6 +91,7 @@ function onConnect(socket) {
 	socket.join('sess_' + socket.request.signedCookies[nconf.get('sessionKey')]);
 	Sockets.server.sockets.sockets[socket.id].emit('checkSession', socket.uid);
 	Sockets.server.sockets.sockets[socket.id].emit('setHostname', os.hostname());
+	plugins.hooks.fire('action:sockets.connect', { socket: socket });
 }
 
 async function onMessage(socket, payload) {
@@ -148,7 +158,8 @@ async function onMessage(socket, payload) {
 
 function requireModules() {
 	var modules = ['admin', 'categories', 'groups', 'meta', 'modules',
-		'notifications', 'plugins', 'posts', 'topics', 'user', 'blacklist', 'flags',
+		'notifications', 'plugins', 'posts', 'topics', 'user', 'blacklist',
+		'flags', 'uploads',
 	];
 
 	modules.forEach(function (module) {

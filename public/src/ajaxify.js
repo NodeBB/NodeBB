@@ -145,12 +145,18 @@ ajaxify = window.ajaxify || {};
 				app.alertError('[[global:please_log_in]]');
 				app.previousUrl = url;
 				window.location.href = config.relative_path + '/login';
-			} else if ((status === 302 || status === 308) && typeof data.responseJSON === 'string') {
-				ajaxifyTimer = undefined;
-				if (data.responseJSON.startsWith('http://') || data.responseJSON.startsWith('https://')) {
-					window.location.href = data.responseJSON;
-				} else {
-					ajaxify.go(data.responseJSON.slice(1), callback, quiet);
+			} else if (status === 302 || status === 308) {
+				if (data.responseJSON && data.responseJSON.external) {
+					// this is used by sso plugins to redirect to the auth route
+					// cant use ajaxify.go for /auth/sso routes
+					window.location.href = data.responseJSON.external;
+				} else if (typeof data.responseJSON === 'string') {
+					ajaxifyTimer = undefined;
+					if (data.responseJSON.startsWith('http://') || data.responseJSON.startsWith('https://')) {
+						window.location.href = data.responseJSON;
+					} else {
+						ajaxify.go(data.responseJSON.slice(1), callback, quiet);
+					}
 				}
 			}
 		} else if (textStatus !== 'abort') {
@@ -194,8 +200,9 @@ ajaxify = window.ajaxify || {};
 
 			// Allow translation strings in title on ajaxify (#5927)
 			title = translator.unescape(title);
-
-			translator.translate(title, function (translated) {
+			var data = { title: title };
+			$(window).trigger('action:ajaxify.updateTitle', data);
+			translator.translate(data.title, function (translated) {
 				window.document.title = $('<div></div>').html(translated).text();
 			});
 		});
