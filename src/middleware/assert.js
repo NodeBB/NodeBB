@@ -58,6 +58,11 @@ Assert.path = helpers.try(async (req, res, next) => {
 		req.body.path = new URL(req.body.path).pathname;
 	}
 
+	// Strip upload_url if found
+	if (req.body.path.startsWith(nconf.get('upload_url'))) {
+		req.body.path = req.body.path.slice(nconf.get('upload_url').length);
+	}
+
 	const pathToFile = path.join(nconf.get('upload_path'), req.body.path);
 	res.locals.cleanedPath = pathToFile;
 

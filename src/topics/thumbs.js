@@ -1,12 +1,13 @@
 
 'use strict';
 
-var nconf = require('nconf');
-var path = require('path');
+const nconf = require('nconf');
+const path = require('path');
+const validator = require('validator');
 
 const db = require('../database');
-var file = require('../file');
-var plugins = require('../plugins');
+const file = require('../file');
+const plugins = require('../plugins');
 
 const Thumbs = {};
 module.exports = Thumbs;
@@ -25,7 +26,7 @@ Thumbs.get = async function (tids) {
 		singular = true;
 	}
 
-	const sets = tids.map(tid => `topic:${tid}:thumbs`);
+	const sets = tids.map(tid => `${validator.isUUID(String(tid)) ? 'draft' : 'topic'}:${tid}:thumbs`);
 	const thumbs = await db.getSortedSetsMembers(sets);
 	let response = thumbs.map(thumbSet => thumbSet.map(thumb => ({
 		url: path.join(nconf.get('upload_url'), thumb),
@@ -35,8 +36,9 @@ Thumbs.get = async function (tids) {
 	return singular ? response.pop() : response;
 };
 
-Thumbs.associate = async function (id, path, isDraft) {
-	// Associates a newly uploaded file as a thumb to the passed-in tid
+Thumbs.associate = async function (id, path) {
+	// Associates a newly uploaded file as a thumb to the passed-in draft or topic
+	const isDraft = validator.isUUID(String(id));
 	const set = `${isDraft ? 'draft' : 'topic'}:${id}:thumbs`;
 	const numThumbs = await db.sortedSetCard(set);
 	path = path.replace(nconf.get('upload_path'), '');
@@ -47,7 +49,7 @@ Thumbs.commit = async function (uuid, tid) {
 	// Converts the draft thumb zset to the topic zset (combines thumbs if applicable)
 	const set = `draft:${uuid}:thumbs`;
 	const thumbs = await db.getSortedSetRange(set, 0, -1);
-	await Promise.all(thumbs.map(async path => await Thumbs.associate(tid, path, false)));
+	await Promise.all(thumbs.map(async path => await Thumbs.associate(tid, path)));
 	await db.delete(set);
 };
 

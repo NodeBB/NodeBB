@@ -4,6 +4,7 @@ const validator = require('validator');
 
 const api = require('../../api');
 const topics = require('../../topics');
+const privileges = require('../../privileges');
 
 const helpers = require('../helpers');
 const uploadsController = require('../uploads');
@@ -89,6 +90,10 @@ Topics.deleteTags = async (req, res) => {
 	helpers.formatApiResponse(200, res);
 };
 
+Topics.getThumbs = async (req, res) => {
+	helpers.formatApiResponse(200, res, await topics.thumbs.get(req.params.tid));
+};
+
 Topics.addThumb = async (req, res) => {
 	// req.params.tid could be either a tid (pushing a new thumb to an existing topic) or a post UUID (a new topic being composed)
 	const id = req.params.tid;
@@ -98,23 +103,34 @@ Topics.addThumb = async (req, res) => {
 	if (!isUUID && (isNaN(parseInt(id, 10)) || !await topics.exists(req.params.tid))) {
 		return helpers.formatApiResponse(404, res, new Error('[[error:no-topic]]'));
 	}
+
+	// While drafts are not protected, tids are
+	if (!isUUID && !await privileges.topics.canEdit(req.params.tid, req.user.uid)) {
+		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
+	}
+
 	/**
 	 * todo test:
 	 *   - uuid
 	 *   - tid
 	 *   - number but not tid
 	 *   - random garbage
+	 *   - wrong caller uid (unpriv)
 	 */
 
 	const files = await uploadsController.uploadThumb(req, res);	// response is handled here, fix this?
 
 	// Add uploaded files to topic zset
 	await Promise.all(files.map(async (fileObj) => {
-		await topics.thumbs.associate(id, fileObj.path, isUUID);
+		await topics.thumbs.associate(id, fileObj.path);
 	}));
 };
 
 Topics.deleteThumb = async (req, res) => {
+	if (!await privileges.topics.canEdit(req.params.tid, req.user.uid)) {
+		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
+	}
+
 	await topics.thumbs.delete(req.params.tid, req.body.path);
 	helpers.formatApiResponse(200, res, await topics.thumbs.get(req.params.tid));
 };
