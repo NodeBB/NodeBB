@@ -15,7 +15,7 @@ uploads.upload = async function (socket, data) {
 		'user.updateCover': socketUser.updateCover,
 		'groups.cover.update': socketGroup.cover.update,
 	};
-	if (!data || !data.chunk || !data.params || !data.params.method || !methodToFunc[data.params.method]) {
+	if (!socket.uid || !data || !data.chunk || !data.params || !data.params.method || !methodToFunc[data.params.method]) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
