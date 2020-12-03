@@ -1,3 +1,25 @@
+#### v1.15.5 (2020-12-03)
+
+##### Chores
+
+*  up persona (c111bde1)
+*  incrementing version number - v1.15.4 (a1b658d9)
+*  update changelog for v1.15.4 (252dddfc)
+
+##### New Features
+
+*  add socket connect/disconnect action hooks (fcb10ebd)
+*  allow modifiying browser title on ajaxify (698718f8)
+
+##### Bug Fixes
+
+*  #9032 (64ac483d)
+*  sso redirect on /login & /api/login (5d00b089)
+*  use file lib instead of directly accessing fs (for Assert.path) (3ea66f84)
+*  check uid as well (ef6c3b00)
+*  #7597, fix progress bar of cover/profile uploads (7e867cf9)
+* **deps:**  update dependency nodebb-plugin-spam-be-gone to v0.7.7 (#9039) (c7f2640a)
+
 #### v1.15.4 (2020-12-02)
 
 ##### Chores
