@@ -20,7 +20,6 @@ module.exports = function (Topics) {
 	Topics.create = async function (data) {
 		// This is an internal method, consider using Topics.post instead
 		const timestamp = data.timestamp || Date.now();
-		await Topics.thumbs.resizeAndUpload(data);
 
 		const tid = await db.incrObjectField('global', 'nextTid');
 
