@@ -148,8 +148,8 @@ helpers.redirect = function (res, url, permanent) {
 	let redirectUrl;
 	// this is used by sso plugins to redirect to the auth route
 	if (url.hasOwnProperty('external')) {
-		redirectUrl = url.external;
-		url.external = encodeURI(url.external);
+		redirectUrl = res.local.isAPI ? relative_path + url.external : url.external;
+		url.external = encodeURI(redirectUrl);
 	} else {
 		redirectUrl = url;
 		url = encodeURI(url);
