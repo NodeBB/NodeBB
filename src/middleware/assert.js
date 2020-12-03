@@ -44,15 +44,6 @@ Assert.topic = helpers.try(async (req, res, next) => {
 	next();
 });
 
-Assert.topicThumb = helpers.try(async (req, res, next) => {
-	// thumbs are parsed out of req.query
-	if (!await topics.thumbs.exists(req.params.tid, req.query.path)) {
-		return controllerHelpers.formatApiResponse(404, res, new Error('[[error:invalid-file]]'));
-	}
-
-	next();
-});
-
 Assert.post = helpers.try(async (req, res, next) => {
 	if (!await posts.exists(req.params.pid)) {
 		return controllerHelpers.formatApiResponse(404, res, new Error('[[error:no-topic]]'));
@@ -67,7 +58,6 @@ Assert.path = helpers.try(async (req, res, next) => {
 		req.body.path = new URL(req.body.path).pathname;
 	}
 
-	// Checks file exists and is within bounds of upload_path
 	const pathToFile = path.join(nconf.get('upload_path'), req.body.path);
 	res.locals.cleanedPath = pathToFile;
 

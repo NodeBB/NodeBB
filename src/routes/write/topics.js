@@ -35,7 +35,7 @@ module.exports = function () {
 	setupApiRoute(router, 'delete', '/:tid/tags', [...middlewares, middleware.assert.topic], controllers.write.topics.deleteTags);
 
 	setupApiRoute(router, 'post', '/:tid/thumbs', [multipartMiddleware, middleware.validateFiles, ...middlewares], controllers.write.topics.addThumb);
-	setupApiRoute(router, 'delete', '/:tid/thumbs', [...middlewares, middleware.assert.topic, middleware.assert.topicThumb], controllers.write.topics.deleteThumb);
+	setupApiRoute(router, 'delete', '/:tid/thumbs', [...middlewares, middleware.assert.topic, middleware.assert.path], controllers.write.topics.deleteThumb);
 
 	return router;
 };

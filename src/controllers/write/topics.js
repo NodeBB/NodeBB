@@ -115,6 +115,6 @@ Topics.addThumb = async (req, res) => {
 };
 
 Topics.deleteThumb = async (req, res) => {
-	await topics.thumbs.delete(req.params.tid, req.query.path);
+	await topics.thumbs.delete(req.params.tid, req.body.path);
 	helpers.formatApiResponse(200, res, await topics.thumbs.get(req.params.tid));
 };
