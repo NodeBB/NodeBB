@@ -194,8 +194,9 @@ ajaxify = window.ajaxify || {};
 
 			// Allow translation strings in title on ajaxify (#5927)
 			title = translator.unescape(title);
-
-			translator.translate(title, function (translated) {
+			var data = { title: title };
+			$(window).trigger('action:ajaxify.updateTitle', data);
+			translator.translate(data.title, function (translated) {
 				window.document.title = $('<div></div>').html(translated).text();
 			});
 		});
