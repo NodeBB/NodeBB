@@ -148,14 +148,14 @@ helpers.redirect = function (res, url, permanent) {
 	let redirectUrl;
 	// this is used by sso plugins to redirect to the auth route
 	if (url.hasOwnProperty('external')) {
-		url.external = encodeURI(url.external);
 		redirectUrl = url.external;
+		url.external = encodeURI(url.external);
 	} else {
-		url = encodeURI(url);
 		redirectUrl = url;
+		url = encodeURI(url);
 	}
 	if (res.locals.isAPI) {
-		res.set('X-Redirect', redirectUrl).status(200).json(url);
+		res.set('X-Redirect', encodeURI(redirectUrl)).status(200).json(url);
 	} else {
 		redirectUrl = redirectUrl.startsWith('http://') || redirectUrl.startsWith('https://') ?
 			redirectUrl : relative_path + redirectUrl;
