@@ -145,11 +145,20 @@ helpers.notAllowed = async function (req, res, error) {
 };
 
 helpers.redirect = function (res, url, permanent) {
-	if (res.locals.isAPI) {
-		res.set('X-Redirect', encodeURI(url)).status(200).json(encodeURI(url));
+	let redirectUrl;
+	// this is used by sso plugins to redirect to the auth route
+	if (url.hasOwnProperty('external')) {
+		url.external = encodeURI(url.external);
+		redirectUrl = url.external;
 	} else {
-		const redirectUrl = url.startsWith('http://') || url.startsWith('https://') ?
-			url : relative_path + url;
+		url = encodeURI(url);
+		redirectUrl = url;
+	}
+	if (res.locals.isAPI) {
+		res.set('X-Redirect', redirectUrl).status(200).json(url);
+	} else {
+		redirectUrl = redirectUrl.startsWith('http://') || redirectUrl.startsWith('https://') ?
+			redirectUrl : relative_path + redirectUrl;
 		res.redirect(permanent ? 308 : 307, encodeURI(redirectUrl));
 	}
 };

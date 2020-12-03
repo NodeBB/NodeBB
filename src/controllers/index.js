@@ -125,7 +125,7 @@ Controllers.login = async function (req, res) {
 	data.allowLocalLogin = hasLoginPrivilege || parseInt(req.query.local, 10) === 1;
 
 	if (!data.allowLocalLogin && !data.allowRegistration && data.alternate_logins && data.authentication.length === 1) {
-		return helpers.redirect(res, data.authentication[0].url);
+		return helpers.redirect(res, { external: data.authentication[0].url });
 	}
 
 	if (req.loggedIn) {
