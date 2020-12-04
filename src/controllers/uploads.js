@@ -11,6 +11,8 @@ const plugins = require('../plugins');
 const image = require('../image');
 const privileges = require('../privileges');
 
+const helpers = require('./helpers');
+
 const uploadsController = module.exports;
 
 uploadsController.upload = async function (req, res, filesIterator) {
@@ -18,7 +20,7 @@ uploadsController.upload = async function (req, res, filesIterator) {
 
 	// These checks added because of odd behaviour by request: https://github.com/request/request/issues/2445
 	if (!Array.isArray(files)) {
-		return res.status(500).json('invalid files');
+		return helpers.formatApiResponse(500, res, new Error('[[error:invalid-file]]'));
 	}
 	if (Array.isArray(files[0])) {
 		files = files[0];
@@ -30,10 +32,10 @@ uploadsController.upload = async function (req, res, filesIterator) {
 			/* eslint-disable no-await-in-loop */
 			images.push(await filesIterator(fileObj));
 		}
-		res.status(200).json(images);
+		helpers.formatApiResponse(200, res, { images });
 		return images;
 	} catch (err) {
-		res.status(500).json({ path: req.path, error: err.message });
+		return helpers.formatApiResponse(500, res, err);
 	} finally {
 		deleteTempFiles(files);
 	}

@@ -9,51 +9,17 @@ post:
       content:
         application/json:
           schema:
-            type: array
-            items:
-              type: object
-              properties:
-                name:
-                  type: string
-                url:
-                  type: string
-        text/plain:
-          schema:
-            type: array
-            items:
-              type: object
-              properties:
-                name:
-                  type: string
-                url:
-                  type: string
-    "403":
-      description: ""
-      content:
-        application/json:
-          schema:
-            type: string
-            example: Forbidden
-        text/plain:
-          schema:
-            type: string
-            example: Forbidden
-    "500":
-      description: ""
-      content:
-        application/json:
-          schema:
             type: object
             properties:
-              path:
-                type: string
-              error:
-                type: string
-        text/plain:
-          schema:
-            type: object
-            properties:
-              path:
-                type: string
-              error:
-                type: string
+              status:
+                $ref: ../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  images:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        url:
+                          type: string
