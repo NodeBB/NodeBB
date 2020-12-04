@@ -45,11 +45,11 @@ Thumbs.associate = async function (id, path) {
 	db.sortedSetAdd(set, numThumbs, path);
 };
 
-Thumbs.commit = async function (uuid, tid) {
+Thumbs.migrate = async function (uuid, id) {
 	// Converts the draft thumb zset to the topic zset (combines thumbs if applicable)
 	const set = `draft:${uuid}:thumbs`;
 	const thumbs = await db.getSortedSetRange(set, 0, -1);
-	await Promise.all(thumbs.map(async path => await Thumbs.associate(tid, path)));
+	await Promise.all(thumbs.map(async path => await Thumbs.associate(id, path)));
 	await db.delete(set);
 };
 
