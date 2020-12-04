@@ -214,9 +214,6 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 				navigator.updateTextAndProgressBar();
 			}
 			firstMove = false;
-
-			ev.stopPropagation();
-			return false;
 		});
 
 		thumb.on('touchend', function () {
