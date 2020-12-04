@@ -54,7 +54,6 @@ Thumbs.migrate = async function (uuid, id) {
 };
 
 Thumbs.delete = async function (id, relativePath) {
-	// TODO: tests
 	const isDraft = validator.isUUID(String(id));
 	const set = `${isDraft ? 'draft' : 'topic'}:${id}:thumbs`;
 	const absolutePath = path.join(nconf.get('upload_path'), relativePath);
