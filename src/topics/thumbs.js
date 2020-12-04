@@ -64,8 +64,9 @@ Thumbs.delete = async function (id, relativePath) {
 
 	if (associated) {
 		await db.sortedSetRemove(set, relativePath);
-	}
-	if (existsOnDisk) {
-		await file.delete(absolutePath);
+
+		if (existsOnDisk) {
+			await file.delete(absolutePath);
+		}
 	}
 };
