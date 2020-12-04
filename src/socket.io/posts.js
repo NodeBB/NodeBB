@@ -71,7 +71,7 @@ SocketPosts.getRawPost = async function (socket, pid) {
 	return result.postData.content;
 };
 
-SocketPosts.getTimestampByIndex = async function (socket, data) {
+SocketPosts.getPostSummaryByIndex = async function (socket, data) {
 	if (data.index < 0) {
 		data.index = 0;
 	}
@@ -90,7 +90,9 @@ SocketPosts.getTimestampByIndex = async function (socket, data) {
 	if (!canRead) {
 		throw new Error('[[error:no-privileges]]');
 	}
-	return await posts.getPostField(pid, 'timestamp');
+
+	const postsData = await posts.getPostSummaryByPids([pid], socket.uid, { stripTags: true });
+	return postsData[0];
 };
 
 SocketPosts.getPost = async function (socket, pid) {
