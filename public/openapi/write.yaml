@@ -76,6 +76,8 @@ paths:
     $ref: 'write/topics/tid/ignore.yaml'
   /topics/{tid}/tags:
     $ref: 'write/topics/tid/tags.yaml'
+  /topics/{tid}/thumbs:
+    $ref: 'write/topics/tid/thumbs.yaml'
   /posts/{pid}:
     $ref: 'write/posts/pid.yaml'
   /posts/{pid}/state:

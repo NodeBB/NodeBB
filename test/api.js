@@ -99,6 +99,7 @@ describe('API', async () => {
 				timestamp: Date.now(),
 			}],
 		});
+		meta.config.allowTopicsThumbnail = 1;
 
 		// Create a category
 		const testCategory = await categories.create({ name: 'test' });
@@ -123,8 +124,9 @@ describe('API', async () => {
 		// Create a new chat room
 		await messaging.newRoom(1, [2]);
 
-		// Create an empty file to test DELETE /files
+		// Create an empty file to test DELETE /files and thumb deletion
 		fs.closeSync(fs.openSync(path.resolve(nconf.get('upload_path'), 'files/test.txt'), 'w'));
+		fs.closeSync(fs.openSync(path.resolve(nconf.get('upload_path'), 'files/test.png'), 'w'));
 
 		const socketUser = require('../src/socket.io/user');
 		const socketAdmin = require('../src/socket.io/admin');
@@ -172,6 +174,7 @@ describe('API', async () => {
 
 	function generateTests(api, paths, prefix) {
 		// Iterate through all documented paths, make a call to it, and compare the result body with what is defined in the spec
+		const pathLib = path;	// for calling path module from inside this forEach
 		paths.forEach((path) => {
 			const context = api.paths[path];
 			let schema;
@@ -224,13 +227,20 @@ describe('API', async () => {
 					url = nconf.get('url') + (prefix || '') + testPath;
 				});
 
-				it('should contain a valid request body (if present) with application/json type if POST/PUT/DELETE', () => {
+				it('should contain a valid request body (if present) with application/json or multipart/form-data type if POST/PUT/DELETE', () => {
 					if (['post', 'put', 'delete'].includes(method) && context[method].hasOwnProperty('requestBody')) {
 						assert(context[method].requestBody);
 						assert(context[method].requestBody.content);
-						assert(context[method].requestBody.content['application/json']);
-						assert(context[method].requestBody.content['application/json'].schema);
-						assert(context[method].requestBody.content['application/json'].schema.properties);
+
+						if (context[method].requestBody.content.hasOwnProperty('application/json')) {
+							assert(context[method].requestBody.content['application/json']);
+							assert(context[method].requestBody.content['application/json'].schema);
+							assert(context[method].requestBody.content['application/json'].schema.properties);
+						} else if (context[method].requestBody.content.hasOwnProperty('multipart/form-data')) {
+							assert(context[method].requestBody.content['multipart/form-data']);
+							assert(context[method].requestBody.content['multipart/form-data'].schema);
+							assert(context[method].requestBody.content['multipart/form-data'].schema.properties);
+						}
 					}
 				});
 
@@ -242,20 +252,34 @@ describe('API', async () => {
 					}
 
 					let body = {};
-					if (context[method].hasOwnProperty('requestBody')) {
+					let type = 'json';
+					if (context[method].hasOwnProperty('requestBody') && context[method].requestBody.content['application/json']) {
 						body = buildBody(context[method].requestBody.content['application/json'].schema.properties);
+					} else if (context[method].hasOwnProperty('requestBody') && context[method].requestBody.content['multipart/form-data']) {
+						type = 'form';
 					}
 
 					try {
-						// console.log(`calling ${method} ${url} with`, body);
-						response = await request(url, {
-							method: method,
-							jar: !unauthenticatedRoutes.includes(path) ? jar : undefined,
-							json: true,
-							headers: headers,
-							qs: qs,
-							body: body,
-						});
+						if (type === 'json') {
+							// console.log(`calling ${method} ${url} with`, body);
+							response = await request(url, {
+								method: method,
+								jar: !unauthenticatedRoutes.includes(path) ? jar : undefined,
+								json: true,
+								headers: headers,
+								qs: qs,
+								body: body,
+							});
+						} else if (type === 'form') {
+							response = await new Promise((resolve, reject) => {
+								helpers.uploadFile(url, pathLib.join(__dirname, './files/test.png'), {}, jar, csrfToken, function (err, res, body) {
+									if (err) {
+										return reject(err);
+									}
+									resolve(body);
+								});
+							});
+						}
 					} catch (e) {
 						assert(!e, `${method.toUpperCase()} ${path} resolved with ${e.message}`);
 					}
