@@ -20,6 +20,10 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 	var paginationBlockMeterEl = paginationBlockEl.find('meter');
 	var paginationBlockProgressEl = paginationBlockEl.find('.progress-bar');
 	var thumb;
+	var thumbText;
+	var thumbIcon;
+	var thumbIconHeight;
+	var thumbIconHalfHeight;
 
 	$(window).on('action:ajaxify.start', function () {
 		$(window).off('keydown', onKeyDown);
@@ -37,7 +41,12 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		paginationBlockMeterEl = paginationBlockEl.find('meter');
 		paginationBlockProgressEl = paginationBlockEl.find('.progress-bar');
 
+		thumbIcon = $('.scroller-thumb-icon');
+		thumbIconHeight = thumbIcon.height();
+		thumbIconHalfHeight = thumbIconHeight / 2;
 		thumb = $('.scroller-thumb');
+		thumbText = thumb.find('.thumb-text');
+
 
 		$(window).off('scroll', navigator.delayedUpdate).on('scroll', navigator.delayedUpdate);
 
@@ -86,8 +95,8 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		var parentOffset = parent.offset();
 		if (newTop < parentOffset.top) {
 			newTop = parentOffset.top;
-		} else if (newTop > parentOffset.top + parent.height() - thumb.height()) {
-			newTop = parentOffset.top + parent.height() - thumb.height();
+		} else if (newTop > parentOffset.top + parent.height() - thumbIconHeight) {
+			newTop = parentOffset.top + parent.height() - thumbIconHeight;
 		}
 		return newTop;
 	}
@@ -97,13 +106,12 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 			return;
 		}
 		var parent = thumb.parent();
-		var thumbText = thumb.find('.thumb-text');
 		var parentOffset = parent.offset();
 		var percent = (index - 1) / ajaxify.data.postcount;
 		if (index === count) {
 			percent = 1;
 		}
-		var newTop = clampTop(parentOffset.top + ((parent.height() - thumb.height()) * percent));
+		var newTop = clampTop(parentOffset.top + ((parent.height() - thumbIconHeight) * percent));
 
 		var offset = { top: newTop, left: thumb.offset().left };
 		thumb.offset(offset);
@@ -115,11 +123,8 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		if (!thumb.length) {
 			return;
 		}
-		var thumbText = thumb.find('.thumb-text');
-		var thumbHeight = thumb.height();
-		var thumbHalfHeight = thumbHeight / 2;
+
 		var parent = thumb.parent();
-		var parentHeight = parent.height();
 		var mouseDragging = false;
 		$(window).on('action:ajaxify.end', function () {
 			renderPostIndex = null;
@@ -146,13 +151,13 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		}
 
 		function mousemove(ev) {
-			var newTop = clampTop(ev.pageY - thumbHalfHeight);
+			var newTop = clampTop(ev.pageY - thumbIconHalfHeight);
 			var parentOffset = parent.offset();
 
 			var offset = { top: newTop, left: thumb.offset().left };
 			thumb.offset(offset);
 
-			var percent = (newTop - parentOffset.top) / (parentHeight - thumbHeight);
+			var percent = (newTop - parentOffset.top) / (parent.height() - thumbIconHeight);
 			index = Math.max(1, Math.ceil(ajaxify.data.postcount * percent));
 			navigator.updateTextAndProgressBar();
 			thumbText.text(index + '/' + ajaxify.data.postcount);
@@ -197,12 +202,12 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 			if (isNavigating && ev.cancelable) {
 				ev.preventDefault();
 				ev.stopPropagation();
-				var newTop = clampTop(touchY + $(window).scrollTop() - thumbHalfHeight);
+				var newTop = clampTop(touchY + $(window).scrollTop() - thumbIconHalfHeight);
 				var parentOffset = thumb.parent().offset();
 				var offset = { top: newTop, left: thumb.offset().left };
 				thumb.offset(offset);
 
-				var percent = (newTop - parentOffset.top) / (parentHeight - thumbHeight);
+				var percent = (newTop - parentOffset.top) / (parent.height() - thumbIconHeight);
 				index = Math.max(1, Math.ceil(count * percent));
 				index = index > count ? count : index;
 
