@@ -193,5 +193,30 @@ describe('Topic thumbs', () => {
 				done();
 			});
 		});
+
+		it('should fail if thumbnails are not enabled', (done) => {
+			meta.config.allowTopicsThumbnail = 0;
+
+			helpers.uploadFile(`${nconf.get('url')}/api/v3/topics/${uuid}/thumbs`, path.join(__dirname, '../files/test.png'), {}, adminJar, adminCSRF, function (err, res, body) {
+				assert.ifError(err);
+				assert.strictEqual(res.statusCode, 503);
+				assert(body && body.status);
+				assert.strictEqual(body.status.message, '[[error:topic-thumbnails-are-disabled]]');
+				done();
+			});
+		});
+
+		it('should fail if file is not image', function (done) {
+			meta.config.allowTopicsThumbnail = 1;
+
+			helpers.uploadFile(`${nconf.get('url')}/api/v3/topics/${uuid}/thumbs`, path.join(__dirname, '../files/503.html'), {}, adminJar, adminCSRF, function (err, res, body) {
+				assert.ifError(err);
+				console.log(body);
+				assert.strictEqual(res.statusCode, 500);
+				assert(body && body.status);
+				assert.strictEqual(body.status.message, '[[error:invalid-file]]');
+				done();
+			});
+		});
 	});
 });

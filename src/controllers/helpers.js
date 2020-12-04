@@ -470,6 +470,11 @@ helpers.generateError = (statusCode, message) => {
 			payload.status.code = 'not-implemented';
 			payload.status.message = message || 'The route you are trying to call is not implemented yet, please try again tomorrow';
 			break;
+
+		case 503:
+			payload.status.code = 'service-unavailable';
+			payload.status.message = message || 'The route you are trying to call is not currently available due to a server configuration';
+			break;
 	}
 
 	return payload;

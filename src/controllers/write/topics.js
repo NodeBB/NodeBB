@@ -94,13 +94,13 @@ Topics.getThumbs = async (req, res) => {
 	helpers.formatApiResponse(200, res, await topics.thumbs.get(req.params.tid));
 };
 
-Topics.addThumb = async (req, res, next) => {
+Topics.addThumb = async (req, res) => {
 	await checkThumbPrivileges({ tid: req.params.tid, uid: req.user.uid, res });
 	if (res.headersSent) {
 		return;
 	}
 
-	const files = await uploadsController.uploadThumb(req, res, next);	// response is handled here
+	const files = await uploadsController.uploadThumb(req, res);	// response is handled here
 
 	// Add uploaded files to topic zset
 	if (files && files.length) {
