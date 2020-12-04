@@ -194,7 +194,7 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 				delayedRenderPost();
 			}
 
-			if (isNavigating) {
+			if (isNavigating && ev.cancelable) {
 				ev.preventDefault();
 				ev.stopPropagation();
 				var newTop = clampTop(touchY + $(window).scrollTop() - thumbHalfHeight);
