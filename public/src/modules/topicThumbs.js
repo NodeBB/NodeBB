@@ -5,6 +5,8 @@ define('topicThumbs', ['api'], function (api) {
 
 	Thumbs.get = id => api.get(`/topics/${id}/thumbs`, {});
 
+	Thumbs.getByPid = pid => fetch(`${config.relative_path}/api/post/pid/${pid}`).then(res => res.json()).then(res => Thumbs.get(res.tid));
+
 	Thumbs.delete = (id, path) => api.del(`/topics/${id}/thumbs`, {
 		path: path,
 	});
