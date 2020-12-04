@@ -16,10 +16,10 @@ const uploadsController = module.exports;
 uploadsController.upload = async function (req, res, filesIterator) {
 	let files = req.files.files;
 
+	// These checks added because of odd behaviour by request: https://github.com/request/request/issues/2445
 	if (!Array.isArray(files)) {
 		return res.status(500).json('invalid files');
 	}
-
 	if (Array.isArray(files[0])) {
 		files = files[0];
 	}
