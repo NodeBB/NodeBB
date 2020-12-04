@@ -95,7 +95,7 @@ Topics.getThumbs = async (req, res) => {
 };
 
 Topics.addThumb = async (req, res) => {
-	await checkThumbPrivileges(req, res);
+	await checkThumbPrivileges({ tid: req.params.tid, uid: req.user.uid, res });
 	if (res.headersSent) {
 		return;
 	}
@@ -117,8 +117,21 @@ Topics.addThumb = async (req, res) => {
 	}));
 };
 
+Topics.migrateThumbs = async (req, res) => {
+	await Promise.all([
+		checkThumbPrivileges({ tid: req.params.tid, uid: req.user.uid, res }),
+		checkThumbPrivileges({ tid: req.body.tid, uid: req.user.uid, res }),
+	]);
+	if (res.headersSent) {
+		return;
+	}
+
+	await topics.thumbs.migrate(req.params.tid, req.body.tid);
+	helpers.formatApiResponse(200, res);
+};
+
 Topics.deleteThumb = async (req, res) => {
-	await checkThumbPrivileges(req, res);
+	await checkThumbPrivileges({ tid: req.params.tid, uid: req.user.uid, res });
 	if (res.headersSent) {
 		return;
 	}
@@ -127,17 +140,17 @@ Topics.deleteThumb = async (req, res) => {
 	helpers.formatApiResponse(200, res, await topics.thumbs.get(req.params.tid));
 };
 
-async function checkThumbPrivileges(req, res) {
+async function checkThumbPrivileges({ tid, uid, res }) {
 	// req.params.tid could be either a tid (pushing a new thumb to an existing topic) or a post UUID (a new topic being composed)
-	const isUUID = validator.isUUID(req.params.tid);
+	const isUUID = validator.isUUID(tid);
 
 	// Sanity-check the tid if it's strictly not a uuid
-	if (!isUUID && (isNaN(parseInt(req.params.tid, 10)) || !await topics.exists(req.params.tid))) {
+	if (!isUUID && (isNaN(parseInt(tid, 10)) || !await topics.exists(tid))) {
 		return helpers.formatApiResponse(404, res, new Error('[[error:no-topic]]'));
 	}
 
 	// While drafts are not protected, tids are
-	if (!isUUID && !await privileges.topics.canEdit(req.params.tid, req.user.uid)) {
+	if (!isUUID && !await privileges.topics.canEdit(tid, uid)) {
 		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
 	}
 }
