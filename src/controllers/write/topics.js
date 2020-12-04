@@ -100,7 +100,7 @@ Topics.addThumb = async (req, res, next) => {
 		return;
 	}
 
-	const files = await uploadsController.uploadThumb(req, res, next);	// response is handled here, fix this?
+	const files = await uploadsController.uploadThumb(req, res, next);	// response is handled here
 
 	// Add uploaded files to topic zset
 	if (files && files.length) {
