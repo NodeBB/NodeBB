@@ -94,27 +94,20 @@ Topics.getThumbs = async (req, res) => {
 	helpers.formatApiResponse(200, res, await topics.thumbs.get(req.params.tid));
 };
 
-Topics.addThumb = async (req, res) => {
+Topics.addThumb = async (req, res, next) => {
 	await checkThumbPrivileges({ tid: req.params.tid, uid: req.user.uid, res });
 	if (res.headersSent) {
 		return;
 	}
 
-	/**
-	 * todo test:
-	 *   - uuid
-	 *   - tid
-	 *   - number but not tid
-	 *   - random garbage
-	 *   - wrong caller uid (unpriv)
-	 */
-
-	const files = await uploadsController.uploadThumb(req, res);	// response is handled here, fix this?
+	const files = await uploadsController.uploadThumb(req, res, next);	// response is handled here, fix this?
 
 	// Add uploaded files to topic zset
-	await Promise.all(files.map(async (fileObj) => {
-		await topics.thumbs.associate(req.params.tid, fileObj.path);
-	}));
+	if (files && files.length) {
+		await Promise.all(files.map(async (fileObj) => {
+			await topics.thumbs.associate(req.params.tid, fileObj.path);
+		}));
+	}
 };
 
 Topics.migrateThumbs = async (req, res) => {
