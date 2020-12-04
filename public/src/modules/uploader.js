@@ -65,7 +65,9 @@ define('uploader', ['jquery-form'], function () {
 	}
 
 	module.ajaxSubmit = function (uploadModal, callback) {
-		uploadModal.find('#uploadForm').ajaxSubmit({
+		const uploadForm = uploadModal.find('#uploadForm');
+		const v3 = uploadForm.attr('action').startsWith(config.relative_path + '/api/v3/');
+		uploadForm.ajaxSubmit({
 			headers: {
 				'x-csrf-token': config.csrf_token,
 			},
@@ -78,6 +80,17 @@ define('uploader', ['jquery-form'], function () {
 			},
 			success: function (response) {
 				response = maybeParse(response);
+
+				// Appropriately handle v3 API responses
+				if (v3) {
+					if (response.status.code === 'ok') {
+						response = response.response.images;
+					} else {
+						response = {
+							error: response.status.code,
+						};
+					}
+				}
 
 				if (response.error) {
 					return showAlert(uploadModal, 'error', response.error);
