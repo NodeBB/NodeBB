@@ -127,6 +127,7 @@ describe('Topic thumbs', () => {
 
 	describe(`.delete()`, () => {
 		it('should remove a file from sorted set AND disk', async () => {
+			await topics.thumbs.associate(1, thumbPaths[0]);
 			await topics.thumbs.delete(1, thumbPaths[0]);
 
 			assert.strictEqual(await db.isSortedSetMember('topic:1:thumbs', thumbPaths[0]), false);
@@ -139,6 +140,12 @@ describe('Topic thumbs', () => {
 
 			assert.strictEqual(await db.isSortedSetMember(`draft:${uuid}:thumbs`, thumbPaths[1]), false);
 			assert.strictEqual(await file.exists(`${nconf.get('upload_path')}/${thumbPaths[1]}`), false);
+		});
+
+		it('should not delete the file from disk if not associated with the tid', async () => {
+			createFiles();
+			await topics.thumbs.delete(uuid, thumbPaths[0]);
+			assert.strictEqual(await file.exists(`${nconf.get('upload_path')}/${thumbPaths[0]}`), true);
 		});
 	});
 
