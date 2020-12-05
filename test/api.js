@@ -68,9 +68,13 @@ describe('API', async () => {
 	async function dummySearchHook(data) {
 		return [1];
 	}
+	async function dummyEmailerHook(data) {
+		// pretend to handle sending emails
+	}
 
 	after(async function () {
 		plugins.unregisterHook('core', 'filter:search.query', dummySearchHook);
+		plugins.unregisterHook('emailer-test', 'filter:email.send');
 	});
 
 	async function setupData() {
@@ -144,6 +148,11 @@ describe('API', async () => {
 		plugins.registerHook('core', {
 			hook: 'filter:search.query',
 			method: dummySearchHook,
+		});
+		// Attach an emailer hook so related requests do not error
+		plugins.registerHook('emailer-test', {
+			hook: 'filter:email.send',
+			method: dummyEmailerHook,
 		});
 
 		jar = await helpers.loginUser('admin', '123456');

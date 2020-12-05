@@ -1,6 +1,7 @@
 'use strict';
 
 const util = require('util');
+const winston = require('winston');
 const sleep = util.promisify(setTimeout);
 
 const api = require('../api');
@@ -117,7 +118,7 @@ SocketUser.reset.commit = async function (socket, data) {
 		username: username,
 		date: parsedDate,
 		subject: '[[email:reset.notify.subject]]',
-	});
+	}).catch(err => winston.error('[emailer.send] ' + err.stack));
 };
 
 SocketUser.isFollowing = async function (socket, data) {

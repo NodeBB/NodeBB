@@ -49,7 +49,6 @@ module.exports = function (User) {
 		}
 
 		const data = await prepareInvitation(uid, email, groupsToJoin);
-
 		await emailer.sendToEmail('invitation', email, meta.config.defaultLang, data);
 	};
 

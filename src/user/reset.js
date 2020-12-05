@@ -55,7 +55,7 @@ UserReset.send = async function (email) {
 		subject: '[[email:password-reset-requested]]',
 		template: 'reset',
 		uid: uid,
-	});
+	}).catch(err => winston.error('[emailer.send] ' + err.stack));
 };
 
 UserReset.commit = async function (code, password) {

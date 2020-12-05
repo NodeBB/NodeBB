@@ -87,9 +87,18 @@ User.sendValidationEmail = async function (socket, uids) {
 		throw new Error('[[error:email-confirmations-are-disabled]]');
 	}
 
+	const failed = [];
+
 	await async.eachLimit(uids, 50, async function (uid) {
-		await user.email.sendValidationEmail(uid, { force: true });
+		await user.email.sendValidationEmail(uid, { force: true }).catch((err) => {
+			winston.error('[user.create] Validation email failed to send\n[emailer.send] ' + err.stack);
+			failed.push(uid);
+		});
 	});
+
+	if (failed.length) {
+		throw Error(`Email sending failed for the following uids, check server logs for more info: ${failed.join(',')}`);
+	}
 };
 
 User.sendPasswordResetEmail = async function (socket, uids) {
