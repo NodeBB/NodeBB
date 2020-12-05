@@ -4,9 +4,7 @@ define('admin/settings/api', ['settings'], function (settings) {
 	var ACP = {};
 
 	ACP.init = function () {
-		const saveEl = $('#save');
 		settings.load('core.api', $('.core-api-settings'));
-		saveEl.off('click');	// override settingsv1 handling
 		$('#save').on('click', saveSettings);
 
 		$(window).on('action:settings.sorted-list.loaded', (ev, { element }) => {

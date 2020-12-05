@@ -1,5 +1,3 @@
-<!-- IMPORT admin/partials/settings/header.tpl -->
-
 <form role="form" class="core-api-settings">
 	<p class="lead">[[admin/settings/api:lead-text]]</p>
 	<p>[[admin/settings/api:intro]]</p>
@@ -37,4 +35,6 @@
 	</div>
 </form>
 
-<!-- IMPORT admin/partials/settings/footer.tpl -->
+<button id="save" class="floating-button mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+	<i class="material-icons">save</i>
+</button>
