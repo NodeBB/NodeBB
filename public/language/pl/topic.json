@@ -155,5 +155,7 @@
     "diffs.restore-description": "Nowa wersja zostanie dodana do historii edycji tego postu",
     "diffs.post-restored": "Post został przywrócony do poprzedniej wersji",
     "timeago_later": "%1 później",
-    "timeago_earlier": "%1 wcześniej"
+    "timeago_earlier": "%1 wcześniej",
+    "first-post": "First post",
+    "last-post": "Last post"
 }

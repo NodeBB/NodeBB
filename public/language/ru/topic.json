@@ -155,5 +155,7 @@
     "diffs.restore-description": "Новая ревизия будет добавлена ​​к истории редактирования этого сообщения.",
     "diffs.post-restored": "Сообщение успешно восстановлено до более ранней версии",
     "timeago_later": "через %1",
-    "timeago_earlier": "на %1 раньше"
+    "timeago_earlier": "на %1 раньше",
+    "first-post": "First post",
+    "last-post": "Last post"
 }

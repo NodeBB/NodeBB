@@ -155,5 +155,7 @@
     "diffs.restore-description": "Yeni bir revizyon bu iletinın geçmişine eklenecek. ",
     "diffs.post-restored": "İleti önceki revizyona başarıyla geri getirildi",
     "timeago_later": "%1 sonra",
-    "timeago_earlier": "%1 önce"
+    "timeago_earlier": "%1 önce",
+    "first-post": "First post",
+    "last-post": "Last post"
 }

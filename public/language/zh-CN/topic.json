@@ -155,5 +155,7 @@
     "diffs.restore-description": "新的修订版本将被添加到此帖子的编辑历史记录中。",
     "diffs.post-restored": "帖子成功恢复到更早的修订版本",
     "timeago_later": "%1 后",
-    "timeago_earlier": "%1 前"
+    "timeago_earlier": "%1 前",
+    "first-post": "First post",
+    "last-post": "Last post"
 }

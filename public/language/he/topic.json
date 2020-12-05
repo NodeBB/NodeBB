@@ -155,5 +155,7 @@
     "diffs.restore-description": "גרסה חדשה תצורף להיסטוריית העריכות של פוסט זה.",
     "diffs.post-restored": "הפוסט שוחזר בהצלחה לגרסה קודמת",
     "timeago_later": "אחרי %1",
-    "timeago_earlier": "לפני %1 "
+    "timeago_earlier": "לפני %1 ",
+    "first-post": "First post",
+    "last-post": "Last post"
 }

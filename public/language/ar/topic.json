@@ -155,5 +155,7 @@
     "diffs.restore-description": "A new revision will be appended to this post's edit history.",
     "diffs.post-restored": "Post successfully restored to earlier revision",
     "timeago_later": "%1 later",
-    "timeago_earlier": "%1 earlier"
+    "timeago_earlier": "%1 earlier",
+    "first-post": "First post",
+    "last-post": "Last post"
 }

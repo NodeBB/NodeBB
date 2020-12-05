@@ -155,5 +155,7 @@
     "diffs.restore-description": "Una nuova revisione sarà aggiunta alla cronologia delle modifiche di questo post.",
     "diffs.post-restored": "Post ripristinato con successo alla revisione precedente",
     "timeago_later": "%1 dopo",
-    "timeago_earlier": "%1 precedente"
+    "timeago_earlier": "%1 precedente",
+    "first-post": "First post",
+    "last-post": "Last post"
 }

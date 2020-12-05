@@ -155,5 +155,7 @@
     "diffs.restore-description": "Нова корекција биће додата историји уређивања ове поруке.",
     "diffs.post-restored": "Порука  је успешно враћена на ранију корекцију",
     "timeago_later": "%1 касније",
-    "timeago_earlier": "%1 раније"
+    "timeago_earlier": "%1 раније",
+    "first-post": "First post",
+    "last-post": "Last post"
 }

@@ -155,5 +155,7 @@
     "diffs.restore-description": "Eine neue Revision wird dem Beitragsänderungsverlauf hinzugefügt.",
     "diffs.post-restored": "Post erfolgreich auf eine frühere Version zurückgesetzt",
     "timeago_later": "%1 später",
-    "timeago_earlier": "%1 früher"
+    "timeago_earlier": "%1 früher",
+    "first-post": "First post",
+    "last-post": "Last post"
 }

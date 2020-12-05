@@ -155,5 +155,7 @@
     "diffs.restore-description": "Een nieuwe revisie zal worden toegevoegd aan de wijzigingshistorie van dit bericht",
     "diffs.post-restored": "Bericht was succesvol hersteld naar een eerdere revisie",
     "timeago_later": "%1 later",
-    "timeago_earlier": "%1 eerder"
+    "timeago_earlier": "%1 eerder",
+    "first-post": "First post",
+    "last-post": "Last post"
 }
