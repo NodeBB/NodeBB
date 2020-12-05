@@ -341,14 +341,13 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		var scrollTop = $(window).scrollTop();
 		var windowHeight = $(window).height();
 		var documentHeight = $(document).height();
-		var navbarHeight = components.get('navbar').outerHeight(true);
-		var topicHeaderHeight = $('.topic-header').height() || 0;
-		var middleOfViewport = scrollTop + (windowHeight / 2) - navbarHeight - topicHeaderHeight;
+		var middleOfViewport = scrollTop + (windowHeight / 2);
 		var previousDistance = Number.MAX_VALUE;
 		els.each(function () {
-			var elIndex = parseInt($(this).attr('data-index'), 10);
+			var $this = $(this);
+			var elIndex = parseInt($this.attr('data-index'), 10);
 			if (elIndex >= 0) {
-				var distanceToMiddle = Math.abs(middleOfViewport - $(this).offset().top);
+				var distanceToMiddle = Math.abs(middleOfViewport - ($this.offset().top + ($this.outerHeight(true) / 2)));
 				if (distanceToMiddle > previousDistance) {
 					return false;
 				}
@@ -512,10 +511,11 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 			navigator.scrollActive = false;
 			return;
 		}
-		var postHeight = scrollTo.height();
+
+		var postHeight = scrollTo.outerHeight(true);
 		var navbarHeight = components.get('navbar').outerHeight(true);
-		var topicHeaderHeight = $('.topic-header').height() || 0;
-		var viewportHeight = $(window).height() - navbarHeight - topicHeaderHeight;
+		var topicHeaderHeight = $('.topic-header').outerHeight(true) || 0;
+		var viewportHeight = $(window).height();
 
 		// Temporarily disable navigator update on scroll
 		$(window).off('scroll', navigator.delayedUpdate);
@@ -545,8 +545,8 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 			}
 
 			var scrollTop = 0;
-			if (postHeight < viewportHeight) {
-				scrollTop = (scrollTo.offset().top - (viewportHeight / 2) + (postHeight)) - topicHeaderHeight;
+			if (postHeight < viewportHeight - navbarHeight - topicHeaderHeight) {
+				scrollTop = scrollTo.offset().top - (viewportHeight / 2) + (postHeight / 2);
 			} else {
 				scrollTop = scrollTo.offset().top - navbarHeight - topicHeaderHeight;
 			}
