@@ -124,6 +124,12 @@ middleware.checkPrivileges = helpers.try(async (req, res, next) => {
 		}
 	}
 
+	// If user does not have password
+	const hasPassword = await user.hasPassword(req.uid);
+	if (!hasPassword) {
+		return next();
+	}
+
 	// Reject if they need to re-login (due to ACP timeout), otherwise extend logout timer
 	const loginTime = req.session.meta ? req.session.meta.datetime : 0;
 	const adminReloginDuration = meta.config.adminReloginDuration * 60000;
