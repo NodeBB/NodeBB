@@ -1,6 +1,8 @@
 'use strict';
 
 const zxcvbn = require('zxcvbn');
+const winston = require('winston');
+
 const db = require('../database');
 const utils = require('../utils');
 const slugify = require('../slugify');
@@ -116,7 +118,7 @@ module.exports = function (User) {
 		if (userData.email && userData.uid > 1 && meta.config.requireEmailConfirmation) {
 			User.email.sendValidationEmail(userData.uid, {
 				email: userData.email,
-			});
+			}).catch(err => winston.error('[user.create] Validation email failed to send\n[emailer.send] ' + err.stack));
 		}
 		if (userNameChanged) {
 			await User.notifications.sendNameChangeNotification(userData.uid, userData.username);

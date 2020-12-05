@@ -181,8 +181,8 @@ async function pushToUids(uids, notification) {
 		}
 		body = posts.relativeToAbsolute(body, posts.urlRegex);
 		body = posts.relativeToAbsolute(body, posts.imgRegex);
-		await async.eachLimit(uids, 3, function (uid, next) {
-			emailer.send('notification', uid, {
+		await async.eachLimit(uids, 3, async (uid) => {
+			await emailer.send('notification', uid, {
 				path: notification.path,
 				notification_url: notification.path.startsWith('http') ? notification.path : nconf.get('url') + notification.path,
 				subject: utils.stripHTMLTags(notification.subject || '[[notifications:new_notification]]'),
@@ -190,7 +190,7 @@ async function pushToUids(uids, notification) {
 				body: body,
 				notification: notification,
 				showUnsubscribe: true,
-			}, next);
+			}).catch(err => winston.error('[emailer.send] ' + err.stack));
 		});
 	}
 

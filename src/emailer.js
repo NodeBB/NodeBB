@@ -37,12 +37,9 @@ Emailer.listServices = () => Object.keys(wellKnownServices);
 Emailer._defaultPayload = {};
 
 const smtpSettingsChanged = (config) => {
-	if (!prevConfig) {
-		prevConfig = meta.config;
-	}
-
 	const settings = [
 		'email:smtpTransport:enabled',
+		'email:smtpTransport:pool',
 		'email:smtpTransport:user',
 		'email:smtpTransport:pass',
 		'email:smtpTransport:service',
@@ -113,8 +110,8 @@ Emailer.getTemplates = async (config) => {
 };
 
 Emailer.setupFallbackTransport = (config) => {
-	winston.verbose('[emailer] Setting up SMTP fallback transport');
-	// Enable Gmail transport if enabled in ACP
+	winston.verbose('[emailer] Setting up fallback transport');
+	// Enable SMTP transport if enabled in ACP
 	if (parseInt(config['email:smtpTransport:enabled'], 10) === 1) {
 		const smtpOptions = {
 			pool: config['email:smtpTransport:pool'],
@@ -177,6 +174,11 @@ Emailer.registerApp = (expressApp) => {
 	Emailer.setupFallbackTransport(meta.config);
 	buildCustomTemplates(meta.config);
 
+	// need to shallow clone the config object
+	// otherwise prevConfig holds reference to meta.config object,
+	// which is updated before the pubsub handler is called
+	prevConfig = { ...meta.config };
+
 	// Update default payload if new logo is uploaded
 	pubsub.on('config:update', (config) => {
 		if (config) {
@@ -204,8 +206,7 @@ Emailer.registerApp = (expressApp) => {
 
 Emailer.send = async (template, uid, params) => {
 	if (!app) {
-		winston.warn('[emailer] App not ready!');
-		return;
+		throw Error('[emailer] App not ready!');
 	}
 
 	const [userData, userSettings] = await Promise.all([
@@ -214,13 +215,13 @@ Emailer.send = async (template, uid, params) => {
 	]);
 
 	if (!userData || !userData.email) {
-		winston.warn('uid : ' + uid + ' has no email, not sending.');
+		winston.warn(`uid : ${uid} has no email, not sending "${template}" email.`);
 		return;
 	}
 
 	const allowedTpls = ['verify_email', 'welcome', 'registration_accepted'];
 	if (meta.config.requireEmailConfirmation && !userData['email:confirmed'] && !allowedTpls.includes(template)) {
-		winston.warn('uid : ' + uid + ' has not confirmed email, not sending "' + template + '" email.');
+		winston.warn(`uid : ${uid} (${userData.email}) has not confirmed email, not sending "${template}" email.`);
 		return;
 	}
 
@@ -229,11 +230,7 @@ Emailer.send = async (template, uid, params) => {
 	params.uid = uid;
 	params.username = userData.username;
 	params.rtl = await translator.translate('[[language:dir]]', userSettings.userLang) === 'rtl';
-	try {
-		await Emailer.sendToEmail(template, userData.email, userSettings.userLang, params);
-	} catch (err) {
-		winston.error(err.stack);
-	}
+	await Emailer.sendToEmail(template, userData.email, userSettings.userLang, params);
 };
 
 Emailer.sendToEmail = async (template, email, language, params) => {
@@ -313,7 +310,7 @@ Emailer.sendToEmail = async (template, email, language, params) => {
 	}
 };
 
-Emailer.sendViaFallback = (data, callback) => {
+Emailer.sendViaFallback = async (data) => {
 	// Some minor alterations to the data to conform to nodemailer standard
 	data.text = data.plaintext;
 	delete data.plaintext;
@@ -323,12 +320,7 @@ Emailer.sendViaFallback = (data, callback) => {
 	delete data.from_name;
 
 	winston.verbose('[emailer] Sending email to uid ' + data.uid + ' (' + data.to + ')');
-	Emailer.fallbackTransport.sendMail(data, (err) => {
-		if (err) {
-			winston.error(err.stack);
-		}
-		callback();
-	});
+	await Emailer.fallbackTransport.sendMail(data);
 };
 
 Emailer.renderAndTranslate = async (template, params, lang) => {
