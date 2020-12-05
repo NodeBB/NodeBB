@@ -250,8 +250,10 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 				return app.alertError(err.message);
 			}
 			app.parseAndTranslate('partials/topic/navigation-post', { post: postData }, function (html) {
-				html.find('.timeago').timeago();
-				paginationBlockEl.find('.post-content').html(html);
+				paginationBlockEl
+					.find('.post-content')
+					.html(html)
+					.find('.timeago').timeago();
 			});
 
 			callback();
