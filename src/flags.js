@@ -79,7 +79,7 @@ Flags.init = async function () {
 		const data = await plugins.hooks.fire('filter:flags.getFilters', hookData);
 		Flags._filters = data.filters;
 	} catch (err) {
-		winston.error('[flags/init] Could not retrieve filters', err.stack);
+		winston.error('[flags/init] Could not retrieve filters\n' + err.stack);
 		Flags._filters = {};
 	}
 };
@@ -249,6 +249,15 @@ Flags.validate = async function (payload) {
 		throw new Error('[[error:no-user]]');
 	} else if (reporter.banned) {
 		throw new Error('[[error:user-banned]]');
+	}
+
+	// Disallow flagging of profiles/content of privileged users
+	const [targetPrivileged, reporterPrivileged] = await Promise.all([
+		user.isPrivileged(target.uid),
+		user.isPrivileged(reporter.uid),
+	]);
+	if (targetPrivileged && !reporterPrivileged) {
+		throw new Error('[[error:cant-flag-privileged]]');
 	}
 
 	if (payload.type === 'post') {

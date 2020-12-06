@@ -106,14 +106,14 @@ define('pictureCropper', ['cropper'], function (Cropper) {
 							return;
 						}
 
-						cropperModal.find('#upload-progress-bar').css('width', '100%');
+						cropperModal.find('#upload-progress-bar').css('width', '0%');
 						cropperModal.find('#upload-progress-box').show().removeClass('hide');
 
-						var socketData = {};
-						socketData[data.paramName] = data.paramValue;
-						socketData.imageData = imageData;
-
-						socket.emit(data.socketMethod, socketData, function (err, imageData) {
+						socketUpload({
+							data: data,
+							imageData: imageData,
+							progressBarEl: cropperModal.find('#upload-progress-bar'),
+						}, function (err, result) {
 							if (err) {
 								cropperModal.find('#upload-progress-box').hide();
 								cropperModal.find('.upload-btn').removeClass('disabled');
@@ -121,7 +121,7 @@ define('pictureCropper', ['cropper'], function (Cropper) {
 								return app.alertError(err.message);
 							}
 
-							callback(imageData.url);
+							callback(result.url);
 							cropperModal.modal('hide');
 						});
 					});
@@ -142,6 +142,36 @@ define('pictureCropper', ['cropper'], function (Cropper) {
 			});
 		});
 	};
+
+	function socketUpload(params, callback) {
+		var socketData = {};
+		socketData[params.data.paramName] = params.data.paramValue;
+		socketData.method = params.data.socketMethod;
+		socketData.size = params.imageData.length;
+		socketData.progress = 0;
+
+		var chunkSize = 100000;
+		function doUpload() {
+			var chunk = params.imageData.slice(socketData.progress, socketData.progress + chunkSize);
+			socket.emit('uploads.upload', {
+				chunk: chunk,
+				params: socketData,
+			}, function (err, result) {
+				if (err) {
+					return app.alertError(err);
+				}
+
+				if (socketData.progress + chunkSize < socketData.size) {
+					socketData.progress += chunk.length;
+					params.progressBarEl.css('width', (socketData.progress / socketData.size * 100).toFixed(2) + '%');
+					return setTimeout(doUpload, 100);
+				}
+				params.progressBarEl.css('width', '100%');
+				callback(null, result);
+			});
+		}
+		doUpload();
+	}
 
 	function checkCORS(cropperTool, data) {
 		var imageData;
@@ -177,7 +207,7 @@ define('pictureCropper', ['cropper'], function (Cropper) {
 		var file = fileInput[0].files[0];
 		var fileSize = data.hasOwnProperty('fileSize') && data.fileSize !== undefined ? parseInt(data.fileSize, 10) : false;
 		if (fileSize && file.size > fileSize * 1024) {
-			return app.alertError('[[error:file-too-big, ' + fileSize + ']]');
+			return showAlert('error', '[[error:file-too-big, ' + fileSize + ']]');
 		}
 
 		if (file.name.endsWith('.gif')) {

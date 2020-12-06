@@ -4,11 +4,12 @@
 
 define('forum/category/tools', [
 	'topicSelect',
+	'forum/topic/threadTools',
 	'components',
 	'translator',
 	'api',
 	'bootbox',
-], function (topicSelect, components, translator, api, bootbox) {
+], function (topicSelect, threadTools, components, translator, api, bootbox) {
 	var CategoryTools = {};
 
 	CategoryTools.init = function () {
@@ -149,49 +150,13 @@ define('forum/category/tools', [
 				break;
 
 			case 'pin':
-				requestPinExpiry(body, execute.bind(null, true));
+				threadTools.requestPinExpiry(body, execute.bind(null, true));
 				break;
 
 			default:
 				execute(true);
 				break;
 		}
-	}
-
-	function requestPinExpiry(body, onSuccess) {
-		app.parseAndTranslate('modals/set-pin-expiry', {}, function (html) {
-			const modal = bootbox.dialog({
-				title: '[[topic:thread_tools.pin]]',
-				message: html,
-				onEscape: true,
-				size: 'small',
-				buttons: {
-					save: {
-						label: '[[global:save]]',
-						className: 'btn-primary',
-						callback: function () {
-							const expiryEl = modal.get(0).querySelector('#expiry');
-							let expiry = expiryEl.value;
-
-							// No expiry set
-							if (expiry === '') {
-								return onSuccess();
-							}
-
-							// Expiration date set
-							expiry = new Date(expiry);
-
-							if (expiry && expiry.getTime() > Date.now()) {
-								body.expiry = expiry.getTime();
-								onSuccess();
-							} else {
-								app.alertError('[[error:invalid-date]]');
-							}
-						},
-					},
-				},
-			});
-		});
 	}
 
 	CategoryTools.removeListeners = function () {

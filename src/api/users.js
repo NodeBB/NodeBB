@@ -82,15 +82,15 @@ usersAPI.update = async function (caller, data) {
 };
 
 usersAPI.delete = async function (caller, { uid, password }) {
-	processDeletion({ uid: uid, method: 'delete', password, caller });
+	await processDeletion({ uid: uid, method: 'delete', password, caller });
 };
 
 usersAPI.deleteContent = async function (caller, { uid, password }) {
-	processDeletion({ uid, method: 'deleteContent', password, caller });
+	await processDeletion({ uid, method: 'deleteContent', password, caller });
 };
 
 usersAPI.deleteAccount = async function (caller, { uid, password }) {
-	processDeletion({ uid, method: 'deleteAccount', password, caller });
+	await processDeletion({ uid, method: 'deleteAccount', password, caller });
 };
 
 usersAPI.deleteMany = async function (caller, data) {
@@ -247,7 +247,7 @@ async function processDeletion({ uid, method, password, caller }) {
 	} else if (!isSelf && !isAdmin) {
 		throw new Error('[[error:no-privileges]]');
 	} else if (isTargetAdmin) {
-		throw new Error('[[error:cant-delete-other-admins]]');
+		throw new Error('[[error:cant-delete-admin]');
 	}
 
 	// Privilege checks -- only deleteAccount is available for non-admins
@@ -265,7 +265,6 @@ async function processDeletion({ uid, method, password, caller }) {
 		}
 	}
 
-	// TODO: clear user tokens for this uid
 	await flags.resolveFlag('user', uid, caller.uid);
 
 	let userData;

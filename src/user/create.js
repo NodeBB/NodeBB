@@ -71,8 +71,12 @@ module.exports = function (User) {
 		userData = results.user;
 
 		const uid = await db.incrObjectField('global', 'nextUid');
+		const isFirstUser = uid === 1;
 		userData.uid = uid;
 
+		if (isFirstUser) {
+			userData['email:confirmed'] = 1;
+		}
 		await db.setObject('user:' + uid, userData);
 
 		const bulkAdd = [
@@ -97,8 +101,7 @@ module.exports = function (User) {
 		}
 
 		const groupsToJoin = ['registered-users'].concat(
-			parseInt(userData.uid, 10) !== 1 ?
-				'unverified-users' : 'verified-users'
+			isFirstUser ? 'verified-users' : 'unverified-users'
 		);
 
 		await Promise.all([

@@ -14,5 +14,6 @@
 
 	"alerts.editing": "Редактирование меток",
 	"alerts.confirm-delete": "Вы хотите удалить выбранные метки?",
-	"alerts.update-success": "Метка обновлена!"
+	"alerts.update-success": "Метка обновлена!",
+	"reset-colors": "Reset colors"
 }

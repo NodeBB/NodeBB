@@ -14,5 +14,6 @@
 
 	"alerts.editing": "Editing tag(s)",
 	"alerts.confirm-delete": "선택된 태그들을 삭제하시겠습니까?",
-	"alerts.update-success": "태그가 업데이트 됐습니다! "
+	"alerts.update-success": "태그가 업데이트 됐습니다! ",
+	"reset-colors": "Reset colors"
 }

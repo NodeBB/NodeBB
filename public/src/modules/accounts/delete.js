@@ -45,8 +45,6 @@ define('accounts/delete', ['api', 'bootbox'], function (api) {
 				if (typeof callback === 'function') {
 					return callback();
 				}
-
-				history.back();
 			});
 		});
 	}

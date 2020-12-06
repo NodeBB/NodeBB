@@ -81,5 +81,6 @@
 
 	"bulk-actions": "Massenaktionen",
 	"bulk-resolve": "Meldungen bereiningen",
-	"bulk-success": "%1 Meldungen aktualisiert"
+	"bulk-success": "%1 Meldungen aktualisiert",
+	"flagged-timeago-readable": "Flagged <span class=\"timeago\" title=\"%1\"></span> (%2)"
 }

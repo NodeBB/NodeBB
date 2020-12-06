@@ -628,6 +628,35 @@ describe('User', function () {
 				},
 			], done);
 		});
+
+		it('.should error if same password is used for reset', async function () {
+			const uid = await User.create({ username: 'badmemory', email: 'bad@memory.com', password: '123456' });
+			const code = await User.reset.generate(uid);
+			let err;
+			try {
+				await User.reset.commit(code, '123456');
+			} catch (_err) {
+				err = _err;
+			}
+			assert.strictEqual(err.message, '[[error:reset-same-password]]');
+		});
+
+		it('should not validate email if password reset is due to expiry', async function () {
+			const uid = await User.create({ username: 'resetexpiry', email: 'reset@expiry.com', password: '123456' });
+			let confirmed = await User.getUserField(uid, 'email:confirmed');
+			let [verified, unverified] = await groups.isMemberOfGroups(uid, ['verified-users', 'unverified-users']);
+			assert.strictEqual(confirmed, 0);
+			assert.strictEqual(verified, false);
+			assert.strictEqual(unverified, true);
+			await User.setUserField(uid, 'passwordExpiry', Date.now());
+			const code = await User.reset.generate(uid);
+			await User.reset.commit(code, '654321');
+			confirmed = await User.getUserField(uid, 'email:confirmed');
+			[verified, unverified] = await groups.isMemberOfGroups(uid, ['verified-users', 'unverified-users']);
+			assert.strictEqual(confirmed, 0);
+			assert.strictEqual(verified, false);
+			assert.strictEqual(unverified, true);
+		});
 	});
 
 	describe('hash methods', function () {
@@ -1593,18 +1622,29 @@ describe('User', function () {
 			});
 		});
 
-		it('should delete user', function (done) {
-			User.create({ username: 'tobedeleted' }, function (err, _uid) {
-				assert.ifError(err);
-				socketUser.deleteAccount({ uid: _uid }, {}, function (err) {
-					assert.ifError(err);
-					socketUser.exists({ uid: testUid }, { username: 'doesnot exist' }, function (err, exists) {
-						assert.ifError(err);
-						assert(!exists);
-						done();
-					});
-				});
-			});
+		it('should delete user', async function () {
+			const uid = await User.create({ username: 'willbedeleted' });
+			await socketUser.deleteAccount({ uid: uid }, {});
+			const exists = await socketUser.exists({ uid: testUid }, { username: 'willbedeleted' });
+			assert(!exists);
+		});
+
+		it('should fail to delete user with wrong password', async function () {
+			const uid = await User.create({ username: 'willbedeletedpwd', password: '123456' });
+			let err;
+			try {
+				await socketUser.deleteAccount({ uid: uid }, { password: '654321' });
+			} catch (_err) {
+				err = _err;
+			}
+			assert.strictEqual(err.message, '[[error:invalid-password]]');
+		});
+
+		it('should delete user with correct password', async function () {
+			const uid = await User.create({ username: 'willbedeletedcorrectpwd', password: '123456' });
+			await socketUser.deleteAccount({ uid: uid }, { password: '123456' });
+			const exists = await User.exists(uid);
+			assert(!exists);
 		});
 
 		it('should fail to delete user if account deletion is not allowed', async function () {
@@ -1682,8 +1722,8 @@ describe('User', function () {
 		it('should commit reset', function (done) {
 			db.getObject('reset:uid', function (err, data) {
 				assert.ifError(err);
-				var code = Object.keys(data)[0];
-				socketUser.reset.commit({ uid: 0 }, { code: code, password: 'swordfish' }, function (err) {
+				var code = Object.keys(data).find(code => parseInt(data[code], 10) === parseInt(testUid, 10));
+				socketUser.reset.commit({ uid: 0 }, { code: code, password: 'pwdchange' }, function (err) {
 					assert.ifError(err);
 					done();
 				});

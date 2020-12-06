@@ -31,7 +31,7 @@ get:
                     type: boolean
                   allowProfileImageUploads:
                     type: number
-                  allowedProfileImageExtensios:
+                  allowedProfileImageExtensions:
                     type: string
                   allowMultipleBadges:
                     type: boolean

@@ -7,6 +7,9 @@ var meta = require('../meta');
 
 module.exports = function (User) {
 	User.updateLastOnlineTime = async function (uid) {
+		if (!(parseInt(uid, 10) > 0)) {
+			return;
+		}
 		const userData = await db.getObjectFields('user:' + uid, ['status', 'lastonline']);
 		const now = Date.now();
 		if (userData.status === 'offline' || now - parseInt(userData.lastonline, 10) < 300000) {
@@ -16,6 +19,9 @@ module.exports = function (User) {
 	};
 
 	User.updateOnlineUsers = async function (uid) {
+		if (!(parseInt(uid, 10) > 0)) {
+			return;
+		}
 		const now = Date.now();
 		const userOnlineTime = await db.sortedSetScore('users:online', uid);
 		if (now - parseInt(userOnlineTime, 10) < 300000) {

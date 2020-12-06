@@ -235,7 +235,7 @@ define('forum/account/edit', [
 				allowSkippingCrop: false,
 				title: '[[user:upload_picture]]',
 				description: '[[user:upload_a_picture]]',
-				accept: ajaxify.data.allowedProfileImageExtensios,
+				accept: ajaxify.data.allowedProfileImageExtensions,
 			}, function (url) {
 				onUploadComplete(url);
 			});

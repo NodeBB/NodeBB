@@ -1,6 +1,7 @@
 'use strict';
 
 const async = require('async');
+const winston = require('winston');
 
 const db = require('../../database');
 const api = require('../../api');
@@ -119,6 +120,7 @@ User.forcePasswordReset = async function (socket, uids) {
 
 	await db.setObjectField(uids.map(uid => 'user:' + uid), 'passwordExpiry', Date.now());
 	await user.auth.revokeAllSessions(uids);
+	uids.forEach(uid => sockets.in('uid_' + uid).emit('event:logout'));
 };
 
 User.deleteUsers = async function (socket, uids) {
@@ -156,4 +158,28 @@ User.loadGroups = async function (socket, uids) {
 		});
 	});
 	return { users: userData };
+};
+
+User.exportUsersCSV = async function (socket) {
+	await events.log({
+		type: 'exportUsersCSV',
+		uid: socket.uid,
+		ip: socket.ip,
+	});
+	setTimeout(async function () {
+		try {
+			await user.exportUsersCSV();
+			socket.emit('event:export-users-csv');
+			const notifications = require('../../notifications');
+			const n = await notifications.create({
+				bodyShort: '[[notifications:users-csv-exported]]',
+				path: '/api/admin/users/csv',
+				nid: 'users:csv:export',
+				from: socket.uid,
+			});
+			await notifications.push(n, [socket.uid]);
+		} catch (err) {
+			winston.error(err);
+		}
+	}, 0);
 };

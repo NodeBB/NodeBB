@@ -29,6 +29,7 @@
     "tools": "Інструменти",
     "locked": "Заблокована",
     "pinned": "Закріплена",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "Переміщена",
     "moved-from": "Moved from %1",
     "copy-ip": "Копіювати IP",
@@ -154,5 +155,7 @@
     "diffs.restore-description": "A new revision will be appended to this post's edit history.",
     "diffs.post-restored": "Post successfully restored to earlier revision",
     "timeago_later": "%1 пізніше",
-    "timeago_earlier": "%1 раніше"
+    "timeago_earlier": "%1 раніше",
+    "first-post": "First post",
+    "last-post": "Last post"
 }

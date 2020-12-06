@@ -29,6 +29,7 @@
     "tools": "Narzędzia",
     "locked": "Zablokowany",
     "pinned": "Przypięty",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "Przeniesiony",
     "moved-from": "Moved from %1",
     "copy-ip": "Kopiuj IP",
@@ -154,5 +155,7 @@
     "diffs.restore-description": "Nowa wersja zostanie dodana do historii edycji tego postu",
     "diffs.post-restored": "Post został przywrócony do poprzedniej wersji",
     "timeago_later": "%1 później",
-    "timeago_earlier": "%1 wcześniej"
+    "timeago_earlier": "%1 wcześniej",
+    "first-post": "First post",
+    "last-post": "Last post"
 }

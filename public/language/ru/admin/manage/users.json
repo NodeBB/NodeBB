@@ -102,5 +102,7 @@
 
 	"alerts.prompt-email": "Адреса электронной почты:",
 	"alerts.email-sent-to": "Письмо с приглашением для %1 отправлено",
-	"alerts.x-users-found": "%1 пользователь(ей) найдено, (%2 секунды)"
+	"alerts.x-users-found": "%1 пользователь(ей) найдено, (%2 секунды)",
+	"export-users-started": "Exporting users as csv, this might take a while. You will receive a notification when it is complete.",
+	"export-users-completed": "Users exported as csv, click here to download."
 }

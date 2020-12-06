@@ -13,8 +13,7 @@ TopicObject:
           description: A category identifier
         mainPid:
           type: number
-          description: The post id of the first post in this topic (also called the
-            "original post")
+          description: The post id of the first post in this topic (also called the "original post")
         title:
           type: string
         slug:
@@ -55,6 +54,7 @@ TopicObject:
           description: An ISO 8601 formatted date string (complementing `timestamp`)
         lastposttimeISO:
           type: string
+          description: An ISO 8601 formatted date string (complementing `lastposttime`)
         votes:
           type: number
         category:
@@ -230,5 +230,65 @@ TopicObject:
           description: A topic identifier
         thumb:
           type: string
+        pinExpiry:
+          type: number
+          description: A UNIX timestamp indicating when a pinned topic will no longer be pinned (i.e. the pin has expired)
+        pinExpiryISO:
+          type: string
+          description: "`pinExpiry` rendered as an ISO 8601 format"
       required:
         - tid
+TopicObjectSlim:
+  description: The output of a call to `Topics.getTopicField`, these properties are always present no matter the fields passed in
+  type: object
+  properties:
+    tid:
+      type: number
+      description: A topic identifier
+    uid:
+      type: number
+      description: A user identifier
+    cid:
+      type: number
+      description: A category identifier
+    mainPid:
+      type: number
+      description: The post id of the first post in this topic (also called the "original post")
+    postcount:
+      type: number
+    viewcount:
+      type: number
+    postercount:
+      type: number
+    deleted:
+      type: number
+    deleterUid:
+      type: number
+    locked:
+      type: number
+    pinned:
+      type: number
+      description: Whether or not this particular topic is pinned to the top of the
+        category
+    timestamp:
+      type: number
+    timestampISO:
+      type: string
+      description: An ISO 8601 formatted date string (complementing `timestamp`)
+    lastposttime:
+      type: number
+    lastposttimeISO:
+      type: string
+      description: An ISO 8601 formatted date string (complementing `lastposttime`)
+    pinExpiry:
+      type: number
+      description: A UNIX timestamp indicating when a pinned topic will no longer be pinned (i.e. the pin has expired)
+    pinExpiryISO:
+      type: string
+      description: "`pinExpiry` rendered as an ISO 8601 format"
+    upvotes:
+      type: number
+    downvotes:
+      type: number
+    votes:
+      type: number

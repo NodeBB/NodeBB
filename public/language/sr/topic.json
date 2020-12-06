@@ -29,6 +29,7 @@
     "tools": "Алатке",
     "locked": "Закључано",
     "pinned": "Закачено",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "Премештено",
     "moved-from": "Moved from %1",
     "copy-ip": "Копирај IP",
@@ -154,5 +155,7 @@
     "diffs.restore-description": "Нова корекција биће додата историји уређивања ове поруке.",
     "diffs.post-restored": "Порука  је успешно враћена на ранију корекцију",
     "timeago_later": "%1 касније",
-    "timeago_earlier": "%1 раније"
+    "timeago_earlier": "%1 раније",
+    "first-post": "First post",
+    "last-post": "Last post"
 }

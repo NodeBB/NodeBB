@@ -278,7 +278,7 @@ function listen(callback) {
 		oldUmask = process.umask('0000');
 		module.exports.testSocket(socketPath, function (err) {
 			if (err) {
-				winston.error('[startup] NodeBB was unable to secure domain socket access (' + socketPath + ')', err.stack);
+				winston.error('[startup] NodeBB was unable to secure domain socket access (' + socketPath + ')\n' + err.stack);
 				throw err;
 			}
 

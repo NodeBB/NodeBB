@@ -1,8 +1,12 @@
 {
 	"tokens": "טוקנים - Tokens",
+	"settings": "Settings",
 	"lead-text": "מעמוד זה תוכלו להגדיר גישת כתיבה ל-API ב- NodeBB.",
 	"intro": "כברירת מחדל, ה- API של כתיבה מאמת משתמשים בהתבסס על קובץ ה-cookie של ההפעלה שלהם, אך NodeBB תומך גם באימות נושא באמצעות טוקנים (אישורי אבטחה) שנוצרו באמצעות דף זה.",
 	"docs": "לחץ כאן כדי לגשת למפרט ה- API המלא",
+
+	"require-https": "Require API usage via HTTPS only",
+	"require-https-caveat": "<strong>Note</strong>: Some installations involving load balancers may proxy their requests to NodeBB using HTTP, in which case this option should remain disabled.",
 
 	"uid": "ID משתמש",
 	"uid-help-text": "ציין מזהה משתמש בכדי לשייך לטוקן זה. אם מזהה המשתמש הוא <code>0</code>, זה ייחשב כטוקן<em>ראשי</em>, שיכול לשער את זהותם של משתמשים אחרים על בסיס פרמטר<code>_uid</code> .",

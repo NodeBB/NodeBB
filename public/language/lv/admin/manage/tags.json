@@ -14,5 +14,6 @@
 
 	"alerts.editing": "Editing tag(s)",
 	"alerts.confirm-delete": "Vai vēlies izdzēst šīs birkas?",
-	"alerts.update-success": "Birka atjaunināta!"
+	"alerts.update-success": "Birka atjaunināta!",
+	"reset-colors": "Reset colors"
 }

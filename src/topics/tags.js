@@ -117,8 +117,17 @@ module.exports = function (Topics) {
 			return;
 		}
 		newTagName = utils.cleanUpTag(newTagName, meta.config.maximumTagLength);
+		const targetExists = await db.isSortedSetMember('tags:topic:count', newTagName);
 		await Topics.createEmptyTag(newTagName);
 		const allCids = {};
+		const tagData = await db.getObject('tag:' + tag);
+		if (tagData && !targetExists) {
+			await db.setObject('tag:' + newTagName, {
+				color: tagData.color,
+				bgColor: tagData.bgColor,
+			});
+		}
+
 		await batch.processSortedSet('tag:' + tag + ':topics', async function (tids) {
 			const topicData = await Topics.getTopicsFields(tids, ['tid', 'cid']);
 			const cids = topicData.map(t => t.cid);

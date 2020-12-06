@@ -29,6 +29,7 @@
     "tools": "工具",
     "locked": "已鎖定",
     "pinned": "已置頂",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "已移動",
     "moved-from": "Moved from %1",
     "copy-ip": "複製IP",
@@ -154,5 +155,7 @@
     "diffs.restore-description": "A new revision will be appended to this post's edit history.",
     "diffs.post-restored": "Post successfully restored to earlier revision",
     "timeago_later": "%1 後",
-    "timeago_earlier": "%1 前"
+    "timeago_earlier": "%1 前",
+    "first-post": "First post",
+    "last-post": "Last post"
 }

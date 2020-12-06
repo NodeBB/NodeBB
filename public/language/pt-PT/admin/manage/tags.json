@@ -14,5 +14,6 @@
 
 	"alerts.editing": "Editar etiqueta(s)",
 	"alerts.confirm-delete": "Queres mesmo apagar os marcadores selecionados?",
-	"alerts.update-success": "Etiqueta Atualizada!"
+	"alerts.update-success": "Etiqueta Atualizada!",
+	"reset-colors": "Reset colors"
 }

@@ -29,6 +29,7 @@
     "tools": "Rīki",
     "locked": "Slēgtie",
     "pinned": "Piespraustie",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "Pārvietots",
     "moved-from": "Moved from %1",
     "copy-ip": "Kopēt IP adresi",
@@ -154,5 +155,7 @@
     "diffs.restore-description": "A new revision will be appended to this post's edit history.",
     "diffs.post-restored": "Post successfully restored to earlier revision",
     "timeago_later": "%1 later",
-    "timeago_earlier": "%1 earlier"
+    "timeago_earlier": "%1 earlier",
+    "first-post": "First post",
+    "last-post": "Last post"
 }

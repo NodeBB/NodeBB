@@ -10,8 +10,8 @@ const setupApiRoute = routeHelpers.setupApiRoute;
 module.exports = function () {
 	const middlewares = [middleware.authenticate];
 
-	setupApiRoute(router, 'post', '/', [...middlewares, middleware.checkRequired.bind(null, ['cid', 'title', 'content'])], controllers.write.topics.create);
-	setupApiRoute(router, 'post', '/:tid', [...middlewares, middleware.checkRequired.bind(null, ['content']), middleware.assert.topic], controllers.write.topics.reply);
+	setupApiRoute(router, 'post', '/', [middleware.authenticateOrGuest, middleware.checkRequired.bind(null, ['cid', 'title', 'content'])], controllers.write.topics.create);
+	setupApiRoute(router, 'post', '/:tid', [middleware.authenticateOrGuest, middleware.checkRequired.bind(null, ['content']), middleware.assert.topic], controllers.write.topics.reply);
 	setupApiRoute(router, 'delete', '/:tid', [...middlewares], controllers.write.topics.purge);
 
 	setupApiRoute(router, 'put', '/:tid/state', [...middlewares], controllers.write.topics.restore);

@@ -66,7 +66,10 @@ module.exports = function (User) {
 		}
 		const creation_time = await db.sortedSetScore('registration:queue', username);
 		const uid = await User.create(userData);
-		await User.setUserField(uid, 'password', userData.hashedPassword);
+		await User.setUserFields(uid, {
+			password: userData.hashedPassword,
+			'password:shaWrapped': 1,
+		});
 		await removeFromQueue(username);
 		await markNotificationRead(username);
 		await plugins.hooks.fire('filter:register.complete', { uid: uid });

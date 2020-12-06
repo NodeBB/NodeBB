@@ -412,6 +412,8 @@ UserObjectFull:
       type: boolean
     canBan:
       type: boolean
+    canFlag:
+      type: boolean
     canChangePassword:
       type: boolean
     isSelf:

@@ -32,6 +32,7 @@
 	"tools": "Tools",
 	"locked": "Locked",
 	"pinned": "Pinned",
+	"pinned-with-expiry": "Pinned until %1",
 	"moved": "Moved",
 	"moved-from": "Moved from %1",
 	"copy-ip": "Copy IP",
@@ -179,5 +180,7 @@
 	"diffs.post-restored": "Post successfully restored to earlier revision",
 
 	"timeago_later": "%1 later",
-	"timeago_earlier": "%1 earlier"
+	"timeago_earlier": "%1 earlier",
+	"first-post": "First post",
+	"last-post": "Last post"
 }

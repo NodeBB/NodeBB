@@ -57,6 +57,8 @@ CategoryObject:
       description: The `background-position` of the category background image, if one is set
     isSection:
       type: number
+    postQueue:
+      type: number
     totalPostCount:
       type: number
       description: The number of posts in the category

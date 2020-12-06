@@ -7,18 +7,8 @@ ajaxify = window.ajaxify || {};
 	var apiXHR = null;
 	var ajaxifyTimer;
 
-	var translator;
-	var Benchpress;
 	var retry = true;
 	var previousBodyClass = '';
-
-	// Dumb hack to fool ajaxify into thinking translator is still a global
-	// When ajaxify is migrated to a require.js module, then this can be merged into the "define" call
-	require(['translator', 'benchpress'], function (_translator, _Benchpress) {
-		translator = _translator;
-		translator.translate('[[error:no-connection]]');
-		Benchpress = _Benchpress;
-	});
 
 	ajaxify.count = 0;
 	ajaxify.currentPage = null;
@@ -157,6 +147,8 @@ ajaxify = window.ajaxify || {};
 				window.location.href = config.relative_path + '/login';
 			} else if (status === 302 || status === 308) {
 				if (data.responseJSON && data.responseJSON.external) {
+					// this is used by sso plugins to redirect to the auth route
+					// cant use ajaxify.go for /auth/sso routes
 					window.location.href = data.responseJSON.external;
 				} else if (typeof data.responseJSON === 'string') {
 					ajaxifyTimer = undefined;
@@ -174,26 +166,27 @@ ajaxify = window.ajaxify || {};
 
 	function renderTemplate(url, tpl_url, data, callback) {
 		$(window).trigger('action:ajaxify.loadingTemplates', {});
+		require(['translator', 'benchpress'], function (translator, Benchpress) {
+			Benchpress.render(tpl_url, data)
+				.then(rendered => translator.translate(rendered))
+				.then(function (translated) {
+					translated = translator.unescape(translated);
+					$('body').removeClass(previousBodyClass).addClass(data.bodyClass);
+					$('#content').html(translated);
 
-		Benchpress.render(tpl_url, data)
-			.then(rendered => translator.translate(rendered))
-			.then(function (translated) {
-				translated = translator.unescape(translated);
-				$('body').removeClass(previousBodyClass).addClass(data.bodyClass);
-				$('#content').html(translated);
+					ajaxify.end(url, tpl_url);
 
-				ajaxify.end(url, tpl_url);
+					if (typeof callback === 'function') {
+						callback();
+					}
 
-				if (typeof callback === 'function') {
-					callback();
-				}
+					$('#content, #footer').removeClass('ajaxifying');
 
-				$('#content, #footer').removeClass('ajaxifying');
-
-				// Only executed on ajaxify. Otherwise these'd be in ajaxify.end()
-				updateTitle(data.title);
-				updateTags();
-			});
+					// Only executed on ajaxify. Otherwise these'd be in ajaxify.end()
+					updateTitle(data.title);
+					updateTags();
+				});
+		});
 	}
 
 	function updateTitle(title) {
@@ -207,8 +200,9 @@ ajaxify = window.ajaxify || {};
 
 			// Allow translation strings in title on ajaxify (#5927)
 			title = translator.unescape(title);
-
-			translator.translate(title, function (translated) {
+			var data = { title: title };
+			$(window).trigger('action:ajaxify.updateTitle', data);
+			translator.translate(data.title, function (translated) {
 				window.document.title = $('<div></div>').html(translated).text();
 			});
 		});

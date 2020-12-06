@@ -127,10 +127,12 @@ describe('API', async () => {
 		fs.closeSync(fs.openSync(path.resolve(nconf.get('upload_path'), 'files/test.txt'), 'w'));
 
 		const socketUser = require('../src/socket.io/user');
+		const socketAdmin = require('../src/socket.io/admin');
 		// export data for admin user
 		await socketUser.exportProfile({ uid: adminUid }, { uid: adminUid });
 		await socketUser.exportPosts({ uid: adminUid }, { uid: adminUid });
 		await socketUser.exportUploads({ uid: adminUid }, { uid: adminUid });
+		await socketAdmin.user.exportUsersCSV({ uid: adminUid }, {});
 		// wait for export child process to complete
 		await wait(5000);
 

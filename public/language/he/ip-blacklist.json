@@ -1,6 +1,6 @@
 {
 	"lead": "רשימת IP שחורה",
-	"description": "Occasionally, a user account ban is not enough of a deterrant. Other times, restricting access to the forum to a specific IP or a range of IPs is the best way to protect a forum. In these scenarios, you can add troublesome IP addresses or entire CIDR blocks to this blacklist, and they will be prevented from logging in to or registering a new account.",
+	"description": "לעיתים, הרחקת חשבון משתמש אינו מספיק כדי להרתיע. בפעמים אחרות, הגבלת הגישה לפורום ל- IP ספציפי או לטווח של IP היא הדרך הטובה ביותר להגן על הפורום. בתרחישים אלה, תוכלו להוסיף כתובות IP מטרידות או טווחי CIDR שלמים לרשימה השחורה הזו, וימנע מהם להיכנס לחשבון חדש או לרשום אותו.",
 	"active-rules": "כללים פעילים",
 	"validate": "בדיקת רשימה",
 	"apply": "החל רשימה",
@@ -14,6 +14,6 @@
 	"alerts.applied-success": "הרשימה השחורה נשמרה",
 
 	"analytics.blacklist-hourly": "<strong>Figure 1</strong> &ndash; כתובות נחסמו ביחס לשעה.",
-	"analytics.blacklist-daily": "<strong>Figure 2</strong> &ndash; Blacklist hits per day",
+	"analytics.blacklist-daily": "<strong>Figure 2</strong> &ndash; כתובות נחסמו ביחס ליום.",
 	"ip-banned": "כתובת הIP הורחקה."
 }

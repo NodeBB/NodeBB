@@ -14,5 +14,6 @@
 
 	"alerts.editing": "edytowanie tagu/tagów",
 	"alerts.confirm-delete": "Czy na pewno chcesz usunąć zaznaczone tagi?",
-	"alerts.update-success": "Zaktualizowano tag-a!"
+	"alerts.update-success": "Zaktualizowano tag-a!",
+	"reset-colors": "Reset colors"
 }

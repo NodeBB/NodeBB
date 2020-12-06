@@ -145,14 +145,30 @@ helpers.notAllowed = async function (req, res, error) {
 };
 
 helpers.redirect = function (res, url, permanent) {
+	// this is used by sso plugins to redirect to the auth route
+	// { external: '/auth/sso' } or { external: 'https://domain/auth/sso' }
+	if (url.hasOwnProperty('external')) {
+		const redirectUrl = encodeURI(prependRelativePath(url.external));
+		if (res.locals.isAPI) {
+			res.set('X-Redirect', redirectUrl).status(200).json({ external: redirectUrl });
+		} else {
+			res.redirect(permanent ? 308 : 307, redirectUrl);
+		}
+		return;
+	}
+
 	if (res.locals.isAPI) {
-		res.set('X-Redirect', encodeURI(url)).status(200).json(encodeURI(url));
+		url = encodeURI(url);
+		res.set('X-Redirect', url).status(200).json(url);
 	} else {
-		const redirectUrl = url.startsWith('http://') || url.startsWith('https://') ?
-			url : relative_path + url;
-		res.redirect(permanent ? 308 : 307, encodeURI(redirectUrl));
+		res.redirect(permanent ? 308 : 307, encodeURI(prependRelativePath(url)));
 	}
 };
+
+function prependRelativePath(url) {
+	return url.startsWith('http://') || url.startsWith('https://') ?
+		url : relative_path + url;
+}
 
 helpers.buildCategoryBreadcrumbs = async function (cid) {
 	const breadcrumbs = [];
@@ -448,6 +464,12 @@ helpers.generateError = (statusCode, message) => {
 		case 500:
 			payload.status.code = 'internal-server-error';
 			payload.status.message = message || payload.status.message;
+			break;
+
+		case 501:
+			payload.status.code = 'not-implemented';
+			payload.status.message = message || 'The route you are trying to call is not implemented yet, please try again tomorrow';
+			break;
 	}
 
 	return payload;

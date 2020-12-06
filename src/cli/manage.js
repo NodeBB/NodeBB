@@ -65,7 +65,7 @@ async function activate(plugin) {
 		});
 		process.exit(0);
 	} catch (err) {
-		winston.error('An error occurred during plugin activation', err.stack);
+		winston.error('An error occurred during plugin activation\n' + err.stack);
 		throw err;
 	}
 }

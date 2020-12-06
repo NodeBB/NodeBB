@@ -168,6 +168,8 @@ module.exports = function (Topics) {
 				['cid:' + topicData.cid + ':tids:posts', topicData.postcount, tid],
 				['cid:' + topicData.cid + ':tids:votes', parseInt(topicData.votes, 10) || 0, tid],
 			]));
+			topicData.pinExpiry = undefined;
+			topicData.pinExpiryISO = undefined;
 		}
 
 		await Promise.all(promises);

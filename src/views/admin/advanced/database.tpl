@@ -1,13 +1,12 @@
-<!-- IF error -->
-<div class="alert alert-warning">
-	{error.friendlyMessage}
-	<hr />
-	<code>{error.errmsg}</code>
-</div>
-<!-- END -->
+
 <div class="row database">
 	{{{ if mongo }}}
 	<div class="col-lg-6">
+		{{{ if mongo.serverStatusError }}}
+		<div class="alert alert-warning">
+			{mongo.serverStatusError}
+		</div>
+		{{{ end }}}
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-hdd-o"></i> [[admin/advanced/database:mongo]]</div>
 			<div class="panel-body">

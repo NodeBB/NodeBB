@@ -29,6 +29,7 @@
     "tools": "כלים",
     "locked": "נעול",
     "pinned": "נעוץ",
+    "pinned-with-expiry": "נעוץ עד %1",
     "moved": "הועבר",
     "moved-from": "הועבר מ-%1",
     "copy-ip": "העתק IP",
@@ -154,5 +155,7 @@
     "diffs.restore-description": "גרסה חדשה תצורף להיסטוריית העריכות של פוסט זה.",
     "diffs.post-restored": "הפוסט שוחזר בהצלחה לגרסה קודמת",
     "timeago_later": "אחרי %1",
-    "timeago_earlier": "לפני %1 "
+    "timeago_earlier": "לפני %1 ",
+    "first-post": "First post",
+    "last-post": "Last post"
 }

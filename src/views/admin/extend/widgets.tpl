@@ -1,9 +1,17 @@
 <div id="widgets" class="row">
 	<div class="col-md-8" id="active-widgets">
 		<ul class="nav nav-pills">
-		{{{ each templates }}}
-			<li class="<!-- IF @first -->active<!-- ENDIF @first -->"><a href="#" data-template="{../template}" data-toggle="pill">{../template}</a></li>
-		{{{ end }}}
+
+			<li role="presentation" class="dropdown">
+				<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+				<span class="selected-template">{templates.0.template}</span> <span class="caret"></span>
+				</a>
+				<ul class="dropdown-menu">
+					{{{ each templates }}}
+					<li><a href="#" data-template="{../template}" data-toggle="pill">{../template}</a></li>
+					{{{ end }}}
+				</ul>
+			</li>
 		</ul>
 
 		<div class="row">

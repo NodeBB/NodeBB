@@ -159,6 +159,7 @@ define('admin/manage/tags', [
 									return app.alertError(err.message);
 								}
 								app.alertSuccess('[[admin/manage/tags:alerts.update-success]]');
+								ajaxify.refresh();
 							});
 						},
 					},

@@ -14,5 +14,6 @@
 
 	"alerts.editing": "Editing tag(s)",
 	"alerts.confirm-delete": "Do you want to delete the selected tags?",
-	"alerts.update-success": "Tag Updated!"
+	"alerts.update-success": "Tag Updated!",
+	"reset-colors": "Reset colors"
 }

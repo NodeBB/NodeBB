@@ -24,7 +24,7 @@ editController.get = async function (req, res, next) {
 	userData.allowProfilePicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:profile-picture'];
 	userData.allowCoverPicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:cover-picture'];
 	userData.allowProfileImageUploads = meta.config.allowProfileImageUploads;
-	userData.allowedProfileImageExtensios = user.getAllowedProfileImageExtensions().map(ext => '.' + ext).join(', ');
+	userData.allowedProfileImageExtensions = user.getAllowedProfileImageExtensions().map(ext => '.' + ext).join(', ');
 	userData.allowMultipleBadges = meta.config.allowMultipleBadges === 1;
 	userData.allowAccountDelete = meta.config.allowAccountDelete === 1;
 	userData.allowWebsite = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:website'];

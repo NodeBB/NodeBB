@@ -2,6 +2,8 @@
 
 const winston = require('winston');
 const mime = require('mime');
+const path = require('path');
+const nconf = require('nconf');
 
 const db = require('../database');
 const file = require('../file');
@@ -11,7 +13,11 @@ const plugins = require('../plugins');
 
 module.exports = function (User) {
 	User.getAllowedProfileImageExtensions = function () {
-		return User.getAllowedImageTypes().map(type => mime.getExtension(type));
+		const exts = User.getAllowedImageTypes().map(type => mime.getExtension(type));
+		if (exts.includes('jpeg')) {
+			exts.push('jpg');
+		}
+		return exts;
 	};
 
 	User.getAllowedImageTypes = function () {
@@ -48,9 +54,10 @@ module.exports = function (User) {
 			picture.path = await image.writeImageDataToTempFile(data.imageData);
 
 			const extension = file.typeToExtension(image.mimeFromBase64(data.imageData));
-			const filename = data.uid + '-profilecover' + extension;
+			const filename = data.uid + '-profilecover-' + Date.now() + extension;
 			const uploadData = await image.uploadImage(filename, 'profile', picture);
 
+			await deleteCurrentPicture(data.uid, 'cover:url');
 			await User.setUserField(data.uid, 'cover:url', uploadData.url);
 
 			if (data.position) {
@@ -100,6 +107,7 @@ module.exports = function (User) {
 			name: 'profileAvatar',
 		});
 
+		await deleteCurrentPicture(data.uid, 'uploadedpicture');
 		await User.setUserFields(data.uid, {
 			uploadedpicture: uploadedImage.url,
 			picture: uploadedImage.url,
@@ -138,6 +146,7 @@ module.exports = function (User) {
 			const filename = generateProfileImageFilename(data.uid, extension);
 			const uploadedImage = await image.uploadImage(filename, 'profile', picture);
 
+			await deleteCurrentPicture(data.uid, 'uploadedpicture');
 			await User.setUserFields(data.uid, {
 				uploadedpicture: uploadedImage.url,
 				picture: uploadedImage.url,
@@ -147,6 +156,18 @@ module.exports = function (User) {
 			await file.delete(picture.path);
 		}
 	};
+
+	async function deleteCurrentPicture(uid, field) {
+		if (meta.config['profile:keepAllUserImages']) {
+			return;
+		}
+		const value = await User.getUserField(uid, field);
+		if (value && value.startsWith('/assets/uploads/profile/')) {
+			const filename = value.split('/').pop();
+			const uploadPath = path.join(nconf.get('upload_path'), 'profile', filename);
+			await file.delete(uploadPath);
+		}
+	}
 
 	function validateUpload(data, maxSize, allowedTypes) {
 		if (!data.imageData) {
@@ -174,9 +195,8 @@ module.exports = function (User) {
 	}
 
 	function generateProfileImageFilename(uid, extension) {
-		const keepAllVersions = meta.config['profile:keepAllUserImages'] === 1;
 		const convertToPNG = meta.config['profile:convertProfileImageToPNG'] === 1;
-		return uid + '-profileavatar' + (keepAllVersions ? '-' + Date.now() : '') + (convertToPNG ? '.png' : extension);
+		return uid + '-profileavatar-' + Date.now() + (convertToPNG ? '.png' : extension);
 	}
 
 	User.removeCoverPicture = async function (data) {

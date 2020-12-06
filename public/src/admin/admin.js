@@ -6,11 +6,20 @@
 		if (logoutTimer) {
 			clearTimeout(logoutTimer);
 		}
+		// pre-translate language string gh#9046
+		var translated;
+		if (!translated) {
+			require(['translator'], function (translator) {
+				translator.translate('[[login:logged-out-due-to-inactivity]]', function (_translated) {
+					translated = _translated;
+				});
+			});
+		}
 
 		logoutTimer = setTimeout(function () {
 			bootbox.alert({
 				closeButton: false,
-				message: '[[login:logged-out-due-to-inactivity]]',
+				message: translated,
 				callback: function () {
 					window.location.reload();
 				},
