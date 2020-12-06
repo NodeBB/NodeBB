@@ -42,9 +42,9 @@ module.exports = function (Posts) {
 	}
 
 	function getType(data) {
-		if (data.tid && data.content) {
+		if (data.hasOwnProperty('tid')) {
 			return 'reply';
-		} else if (data.cid && data.title && data.content) {
+		} else if (data.hasOwnProperty('cid')) {
 			return 'topic';
 		}
 		throw new Error('[[error:invalid-type]]');
