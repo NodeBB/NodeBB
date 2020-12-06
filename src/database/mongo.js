@@ -181,11 +181,6 @@ mongoModule.close = function (callback) {
 	client.close(err => callback(err));
 };
 
-mongoModule.socketAdapter = function () {
-	const mongoAdapter = require('@nodebb/socket.io-adapter-mongo');
-	return mongoAdapter(connection.getConnectionString(), connection.getConnectionOptions());
-};
-
 require('./mongo/main')(mongoModule);
 require('./mongo/hash')(mongoModule);
 require('./mongo/sets')(mongoModule);
