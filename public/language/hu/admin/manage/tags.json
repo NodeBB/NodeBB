@@ -14,5 +14,6 @@
 
 	"alerts.editing": "Editing tag(s)",
 	"alerts.confirm-delete": "Biztosan törölni akarod a kijelölt címkéket?",
-	"alerts.update-success": "Címke frissítve!"
+	"alerts.update-success": "Címke frissítve!",
+	"reset-colors": "Reset colors"
 }

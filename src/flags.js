@@ -76,10 +76,10 @@ Flags.init = async function () {
 	};
 
 	try {
-		const data = await plugins.fireHook('filter:flags.getFilters', hookData);
+		const data = await plugins.hooks.fire('filter:flags.getFilters', hookData);
 		Flags._filters = data.filters;
 	} catch (err) {
-		winston.error('[flags/init] Could not retrieve filters', err.stack);
+		winston.error('[flags/init] Could not retrieve filters\n' + err.stack);
 		Flags._filters = {};
 	}
 };
@@ -107,7 +107,7 @@ Flags.get = async function (flagId) {
 		reports: reports,
 	};
 
-	const data = await plugins.fireHook('filter:flags.get', {
+	const data = await plugins.hooks.fire('filter:flags.get', {
 		flag: flagObj,
 	});
 	return data.flag;
@@ -177,7 +177,7 @@ Flags.list = async function (data) {
 		});
 	}));
 
-	const payload = await plugins.fireHook('filter:flags.list', {
+	const payload = await plugins.hooks.fire('filter:flags.list', {
 		flags: flags,
 		page: filters.page,
 		uid: data.uid,
@@ -249,6 +249,15 @@ Flags.validate = async function (payload) {
 		throw new Error('[[error:no-user]]');
 	} else if (reporter.banned) {
 		throw new Error('[[error:user-banned]]');
+	}
+
+	// Disallow flagging of profiles/content of privileged users
+	const [targetPrivileged, reporterPrivileged] = await Promise.all([
+		user.isPrivileged(target.uid),
+		user.isPrivileged(reporter.uid),
+	]);
+	if (targetPrivileged && !reporterPrivileged) {
+		throw new Error('[[error:cant-flag-privileged]]');
 	}
 
 	if (payload.type === 'post') {
@@ -587,7 +596,7 @@ Flags.update = async function (flagId, uid, changeset) {
 	tasks.push(Flags.appendHistory(flagId, uid, changeset));
 	await Promise.all(tasks);
 
-	plugins.fireHook('action:flags.update', { flagId: flagId, changeset: changeset, uid: uid });
+	plugins.hooks.fire('action:flags.update', { flagId: flagId, changeset: changeset, uid: uid });
 };
 
 Flags.resolveFlag = async function (type, id, uid) {
@@ -712,7 +721,7 @@ Flags.notify = async function (flagObj, uid) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	plugins.fireHook('action:flags.create', {
+	plugins.hooks.fire('action:flags.create', {
 		flag: flagObj,
 	});
 	uids = uids.filter(_uid => parseInt(_uid, 10) !== parseInt(uid, 10));

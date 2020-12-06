@@ -143,7 +143,7 @@
     "sso.dissociate-confirm-title": "Confirm Dissociation",
     "sso.dissociate-confirm": "Are you sure you wish to dissociate your account from %1?",
     "info.latest-flags": "آخرین نشانه گذاری‌ها",
-    "info.no-flags": "هیچ پست‌ نشانه‌گذاری شده یافت نشد",
+    "info.no-flags": "پست گزارش شده ای یافت نشد",
     "info.ban-history": "تاریخچه مسدودیت های اخیر",
     "info.no-ban-history": "این کاربر هرگز مسدود نشده است",
     "info.banned-until": "مسدود شده تا %1",

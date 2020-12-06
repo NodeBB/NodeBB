@@ -82,7 +82,7 @@ middleware.pageView = helpers.try(async function pageView(req, res, next) {
 	}
 	next();
 	await analytics.pageView({ ip: req.ip, uid: req.uid });
-	plugins.fireHook('action:middleware.pageView', { req: req });
+	plugins.hooks.fire('action:middleware.pageView', { req: req });
 });
 
 middleware.pluginHooks = helpers.try(async function pluginHooks(req, res, next) {
@@ -91,7 +91,7 @@ middleware.pluginHooks = helpers.try(async function pluginHooks(req, res, next) 
 		hookObj.method(req, res, next);
 	});
 
-	await plugins.fireHook('response:router.page', {
+	await plugins.hooks.fire('response:router.page', {
 		req: req,
 		res: res,
 	});
@@ -227,7 +227,7 @@ middleware.trimUploadTimestamps = function trimUploadTimestamps(req, res, next) 
 
 middleware.validateAuth = helpers.try(async function validateAuth(req, res, next) {
 	try {
-		await plugins.fireHook('static:auth.validate', {
+		await plugins.hooks.fire('static:auth.validate', {
 			user: res.locals.user,
 			strategy: res.locals.strategy,
 		});

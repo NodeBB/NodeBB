@@ -4,6 +4,7 @@ const categories = require('../../categories');
 const analytics = require('../../analytics');
 const plugins = require('../../plugins');
 const translator = require('../../translator');
+const meta = require('../../meta');
 
 const categoriesController = module.exports;
 
@@ -27,7 +28,7 @@ categoriesController.get = async function (req, res, next) {
 	});
 	const selectedCategory = allCategories.find(c => c.selected);
 
-	const data = await plugins.fireHook('filter:admin.category.get', {
+	const data = await plugins.hooks.fire('filter:admin.category.get', {
 		req: req,
 		res: res,
 		category: category,
@@ -42,6 +43,7 @@ categoriesController.get = async function (req, res, next) {
 		categories: data.allCategories,
 		selectedCategory: selectedCategory,
 		customClasses: data.customClasses,
+		postQueueEnabled: !!meta.config.postQueue,
 	});
 };
 
@@ -53,7 +55,7 @@ categoriesController.getAll = async function (req, res) {
 		'color', 'bgColor', 'backgroundImage', 'imageClass',
 	];
 	const categoriesData = await categories.getCategoriesFields(cids, fields);
-	const result = await plugins.fireHook('filter:admin.categories.get', { categories: categoriesData, fields: fields });
+	const result = await plugins.hooks.fire('filter:admin.categories.get', { categories: categoriesData, fields: fields });
 	const tree = categories.getTree(result.categories, 0);
 	res.render('admin/manage/categories', {
 		categories: tree,

@@ -150,7 +150,7 @@ Configs.remove = async function (field) {
 };
 
 Configs.registerHooks = () => {
-	plugins.registerHook('core', {
+	plugins.hooks.register('core', {
 		hook: 'filter:settings.set',
 		method: async ({ plugin, settings, quiet }) => {
 			if (plugin === 'core.api' && Array.isArray(settings.tokens)) {
@@ -170,7 +170,7 @@ Configs.registerHooks = () => {
 		},
 	});
 
-	plugins.registerHook('core', {
+	plugins.hooks.register('core', {
 		hook: 'filter:settings.get',
 		method: async ({ plugin, values }) => {
 			if (plugin === 'core.api' && Array.isArray(values.tokens)) {

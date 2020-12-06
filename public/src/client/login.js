@@ -29,6 +29,9 @@ define('forum/login', ['jquery-form'], function () {
 					headers: {
 						'x-csrf-token': config.csrf_token,
 					},
+					beforeSend: function () {
+						app.flags._login = true;
+					},
 					success: function (data) {
 						$(window).trigger('action:app.loggedIn', data);
 						var pathname = utils.urlToLocation(data.next).pathname;

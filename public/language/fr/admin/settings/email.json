@@ -36,6 +36,6 @@
 	"subscriptions.disable": "Désactiver les actualités du forum ",
 	"subscriptions.hour": "Heure d'envoi",
 	"subscriptions.hour-help": "Veuillez entrer un nombre représentant l'heure à laquelle envoyer les emails de résumé (c'est à dire <code>0</code> pour minuit, <code>17</code> pour 5:00 pm). Gardez à l'esprit qu'il s'agit de l'heure du serveur, et peut ne pas correspondre à votre heure locale.<br /> L'heure du serveur est : <span id=\"serverTime\"></span><br /> Le prochain mail de resumé sera envoyé à <span id=\"nextDigestTime\"></span>",
-	"notifications.settings": "Email notification settings",
-	"notifications.remove-images": "Remove images from email notifications"
+	"notifications.settings": "Paramètres de notification par e-mail",
+	"notifications.remove-images": "Supprimer les images des notifications par e-mail"
 }

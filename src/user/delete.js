@@ -36,6 +36,7 @@ module.exports = function (User) {
 		await deleteTopics(callerUid, uid);
 		await deleteUploads(uid);
 		await deleteQueued(uid);
+		delete deletesInProgress[uid];
 	};
 
 	async function deletePosts(callerUid, uid) {
@@ -102,7 +103,7 @@ module.exports = function (User) {
 			throw new Error('[[error:no-user]]');
 		}
 
-		await plugins.fireHook('static:user.delete', { uid: uid });
+		await plugins.hooks.fire('static:user.delete', { uid: uid });
 		await deleteVotes(uid);
 		await deleteChats(uid);
 		await User.auth.revokeAllSessions(uid);
@@ -151,6 +152,7 @@ module.exports = function (User) {
 			deleteImages(uid),
 			groups.leaveAllGroups(uid),
 			flags.resolveFlag('user', uid, uid),
+			User.reset.cleanByUid(uid),
 		]);
 		await db.deleteAll(['followers:' + uid, 'following:' + uid, 'user:' + uid]);
 		delete deletesInProgress[uid];

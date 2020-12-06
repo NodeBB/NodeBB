@@ -30,8 +30,8 @@ modsController.flags.list = async function (req, res, next) {
 	const results = await Promise.all([
 		user.isAdminOrGlobalMod(req.uid),
 		user.getModeratedCids(req.uid),
-		plugins.fireHook('filter:flags.validateFilters', { filters: validFilters }),
-		plugins.fireHook('filter:flags.validateSort', { sorts: validSorts }),
+		plugins.hooks.fire('filter:flags.validateFilters', { filters: validFilters }),
+		plugins.hooks.fire('filter:flags.validateSort', { sorts: validSorts }),
 	]);
 	const [isAdminOrGlobalMod, moderatedCids,, { sorts }] = results;
 	let [,, { filters }] = results;
@@ -226,7 +226,7 @@ modsController.postQueue = async function (req, res, next) {
 		(!categoriesData.selectedCids.length || categoriesData.selectedCids.includes(p.category.cid)) &&
 		(isAdminOrGlobalMod || moderatedCids.includes(String(p.category.cid))));
 
-	({ posts: postData } = await plugins.fireHook('filter:post-queue.get', {
+	({ posts: postData } = await plugins.hooks.fire('filter:post-queue.get', {
 		posts: postData,
 		req: req,
 	}));
@@ -281,6 +281,6 @@ async function addMetaData(postData) {
 		postData.topic = await topics.getTopicFields(postData.data.tid, ['title', 'cid']);
 	}
 	postData.category = await categories.getCategoryData(postData.topic.cid);
-	const result = await plugins.fireHook('filter:parse.post', { postData: postData.data });
+	const result = await plugins.hooks.fire('filter:parse.post', { postData: postData.data });
 	postData.data.content = result.postData.content;
 }

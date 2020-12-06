@@ -149,7 +149,7 @@ module.exports = function (module) {
 	};
 
 	module.deleteObjectFields = async function (key, fields) {
-		if (!key || !Array.isArray(fields) || !fields.length) {
+		if (!key || (Array.isArray(key) && !key.length) || !Array.isArray(fields) || !fields.length) {
 			return;
 		}
 		fields = fields.filter(Boolean);
@@ -162,8 +162,12 @@ module.exports = function (module) {
 			field = helpers.fieldToString(field);
 			data[field] = '';
 		});
+		if (Array.isArray(key)) {
+			await module.client.collection('objects').updateMany({ _key: { $in: key } }, { $unset: data });
+		} else {
+			await module.client.collection('objects').updateOne({ _key: key }, { $unset: data });
+		}
 
-		await module.client.collection('objects').updateOne({ _key: key }, { $unset: data });
 		cache.del(key);
 	};
 

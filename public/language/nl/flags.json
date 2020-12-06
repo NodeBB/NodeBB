@@ -81,5 +81,6 @@
 
 	"bulk-actions": "Bulk acties",
 	"bulk-resolve": "Los markering(en) op",
-	"bulk-success": "%1 markeringen aangepast"
+	"bulk-success": "%1 markeringen aangepast",
+	"flagged-timeago-readable": "Flagged <span class=\"timeago\" title=\"%1\"></span> (%2)"
 }

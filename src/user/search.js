@@ -49,7 +49,7 @@ module.exports = function (User) {
 		}
 
 		uids = await filterAndSortUids(uids, data);
-		const result = await plugins.fireHook('filter:users.search', { uids: uids, uid: uid });
+		const result = await plugins.hooks.fire('filter:users.search', { uids: uids, uid: uid });
 		uids = result.uids;
 
 		const searchResult = {

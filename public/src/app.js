@@ -180,8 +180,9 @@ app.cacheBuster = null;
 		message = message.message || message;
 
 		if (message === '[[error:invalid-session]]') {
+			app.handleInvalidSession();
 			app.logout(false);
-			return app.handleInvalidSession();
+			return;
 		}
 
 		app.alert({
@@ -194,7 +195,7 @@ app.cacheBuster = null;
 	};
 
 	app.handleInvalidSession = function () {
-		if (app.flags._logout) {
+		if (app.flags._login || app.flags._logout) {
 			return;
 		}
 
@@ -444,6 +445,9 @@ app.cacheBuster = null;
 	}
 
 	app.enableTopicSearch = function (options) {
+		if (!config.searchEnabled || !app.user.privileges['search:content']) {
+			return;
+		}
 		/* eslint-disable-next-line */
 		var searchOptions = Object.assign({ in: 'titles' }, options.searchOptions);
 		var quickSearchResults = options.searchElements.resultEl;

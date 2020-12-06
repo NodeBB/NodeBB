@@ -44,7 +44,7 @@ module.exports = function (Topics) {
 		}
 		await method1(tid, uid);
 		await method2(tid, uid);
-		plugins.fireHook(hook, { uid: uid, tid: tid });
+		plugins.hooks.fire(hook, { uid: uid, tid: tid });
 	}
 
 	async function follow(tid, uid) {

@@ -4,6 +4,6 @@
 	"select-skin": "סקין נבחר",
 	"current-skin": "סקין נוכחי",
 	"skin-updated": "סקין מעודכן",
-	"applied-success": "%1 skin was succesfully applied",
-	"revert-success": "Skin reverted to base colours"
+	"applied-success": "העיצוב %1 הוחל בהצלחה",
+	"revert-success": "העיצובהוחזר לצבעים הבסיסיים"
 }

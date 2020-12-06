@@ -4,6 +4,7 @@
 	"group-privileges": "Group Privileges",
 	"user-privileges": "User Privileges",
 	"edit-privileges": "Edit Privileges",
+  	"select-clear-all": "Select/Clear All",
 	"chat": "대화",
 	"upload-images": "이미지 업로드",
 	"upload-files": "파일 업로드",

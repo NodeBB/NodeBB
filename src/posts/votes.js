@@ -144,7 +144,7 @@ module.exports = function (Posts) {
 			current = 'unvote';
 		}
 
-		plugins.fireHook('action:post.' + hook, {
+		plugins.hooks.fire('action:post.' + hook, {
 			pid: pid,
 			uid: uid,
 			owner: owner,
@@ -251,7 +251,7 @@ module.exports = function (Posts) {
 				downvotes: postData.downvotes,
 			}),
 		]);
-		plugins.fireHook('action:post.updatePostVoteCount', { post: postData });
+		plugins.hooks.fire('action:post.updatePostVoteCount', { post: postData });
 	};
 
 	async function updateTopicVoteCount(postData) {

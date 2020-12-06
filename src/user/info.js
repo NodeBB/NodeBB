@@ -87,7 +87,9 @@ module.exports = function (User) {
 
 			delete flagObj.value;
 			delete flagObj.score;
-
+			if (!tids[idx]) {
+				flagObj.targetPurged = true;
+			}
 			return _.extend(flagObj, topicData[idx]);
 		});
 		return flags;

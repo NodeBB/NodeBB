@@ -11,6 +11,7 @@ const batch = require('../batch');
 const db = require('../database');
 const meta = require('../meta');
 const emailer = require('../emailer');
+const Password = require('../password');
 
 const UserReset = module.exports;
 
@@ -67,12 +68,28 @@ UserReset.commit = async function (code, password) {
 	if (!uid) {
 		throw new Error('[[error:reset-code-not-valid]]');
 	}
-
+	const userData = await db.getObjectFields(
+		'user:' + uid,
+		['password', 'passwordExpiry', 'password:shaWrapped']
+	);
+	const ok = await Password.compare(password, userData.password, !!parseInt(userData['password:shaWrapped'], 10));
+	if (ok) {
+		throw new Error('[[error:reset-same-password]]');
+	}
 	const hash = await user.hashPassword(password);
+	const data = {
+		password: hash,
+		'password:shaWrapped': 1,
+	};
 
-	await user.setUserFields(uid, { password: hash, 'email:confirmed': 1, 'password:shaWrapped': 1 });
-	await groups.join('verified-users', uid);
-	await groups.leave('unverified-users', uid);
+	// don't verify email if password reset is due to expiry
+	const isPasswordExpired = userData.passwordExpiry && userData.passwordExpiry < Date.now();
+	if (!isPasswordExpired) {
+		data['email:confirmed']	= 1;
+		await groups.join('verified-users', uid);
+		await groups.leave('unverified-users', uid);
+	}
+	await user.setUserFields(uid, data);
 	await db.deleteObjectField('reset:uid', code);
 	await db.sortedSetRemoveBulk([
 		['reset:issueDate', code],

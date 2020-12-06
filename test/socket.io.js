@@ -315,8 +315,7 @@ describe('socket.io', function () {
 	});
 
 	it('should get server time', function (done) {
-		var socketMeta = require('../src/socket.io/meta');
-		socketMeta.getServerTime({ uid: 1 }, null, function (err, time) {
+		io.emit('admin.getServerTime', null, function (err, time) {
 			assert.ifError(err);
 			assert(time);
 			done();

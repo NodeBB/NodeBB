@@ -1,7 +1,7 @@
 {
     "category": "Kategori",
     "subcategories": "Alt kategoriler",
-    "new_topic_button": "Yeni Konu Aç",
+    "new_topic_button": "Yeni Başlık",
     "guest-login-post": "İleti göndermek için giriş yapın",
     "no_topics": "<strong> Bu kategoride hiç konu yok. </strong> <br /> Yeni bir konu oluşturmak istemez misiniz?",
     "browsing": "gözden geçiriliyor",

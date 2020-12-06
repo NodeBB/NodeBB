@@ -27,6 +27,7 @@ Notifications.baseTypes = [
 	'notificationType_new-chat',
 	'notificationType_new-group-chat',
 	'notificationType_group-invite',
+	'notificationType_group-leave',
 	'notificationType_group-request-membership',
 ];
 
@@ -38,7 +39,7 @@ Notifications.privilegedTypes = [
 ];
 
 Notifications.getAllNotificationTypes = async function () {
-	const results = await plugins.fireHook('filter:user.notificationTypes', {
+	const results = await plugins.hooks.fire('filter:user.notificationTypes', {
 		types: Notifications.baseTypes.slice(),
 		privilegedTypes: Notifications.privilegedTypes.slice(),
 	});
@@ -213,7 +214,7 @@ async function pushToUids(uids, notification) {
 
 	// Remove uid from recipients list if they have blocked the user triggering the notification
 	uids = await User.blocks.filterUids(notification.from, uids);
-	const data = await plugins.fireHook('filter:notification.push', { notification: notification, uids: uids });
+	const data = await plugins.hooks.fire('filter:notification.push', { notification: notification, uids: uids });
 	if (!data || !data.notification || !data.uids || !data.uids.length) {
 		return;
 	}
@@ -227,7 +228,7 @@ async function pushToUids(uids, notification) {
 		sendNotification(results.uidsToNotify),
 		sendEmail(results.uidsToEmail),
 	]);
-	plugins.fireHook('action:notification.pushed', {
+	plugins.hooks.fire('action:notification.pushed', {
 		notification: notification,
 		uids: results.uidsToNotify,
 		uidsNotified: results.uidsToNotify,
@@ -333,7 +334,7 @@ Notifications.prune = async function () {
 		}, { batch: 500, interval: 100 });
 	} catch (err) {
 		if (err) {
-			winston.error('Encountered error pruning notifications', err.stack);
+			winston.error('Encountered error pruning notifications\n' + err.stack);
 		}
 	}
 };
@@ -419,7 +420,7 @@ Notifications.merge = async function (notifications) {
 		return notifications;
 	}, notifications);
 
-	const data = await plugins.fireHook('filter:notifications.merge', {
+	const data = await plugins.hooks.fire('filter:notifications.merge', {
 		notifications: notifications,
 	});
 	return data && data.notifications;

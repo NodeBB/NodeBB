@@ -65,7 +65,7 @@ apiController.loadConfig = async function (req) {
 		topicPostSort: meta.config.topicPostSort || 'oldest_to_newest',
 		categoryTopicSort: meta.config.categoryTopicSort || 'newest_to_oldest',
 		csrf_token: req.uid >= 0 && req.csrfToken && req.csrfToken(),
-		searchEnabled: plugins.hasListeners('filter:search.query'),
+		searchEnabled: plugins.hooks.hasListeners('filter:search.query'),
 		bootswatchSkin: meta.config.bootswatchSkin || '',
 		enablePostHistory: meta.config.enablePostHistory === 1,
 		timeagoCutoff: meta.config.timeagoCutoff !== '' ? Math.max(0, parseInt(meta.config.timeagoCutoff, 10)) : meta.config.timeagoCutoff,
@@ -98,7 +98,7 @@ apiController.loadConfig = async function (req) {
 	config.categoryTopicSort = settings.categoryTopicSort || config.categoryTopicSort;
 	config.topicSearchEnabled = settings.topicSearchEnabled || false;
 	config.bootswatchSkin = (meta.config.disableCustomUserSkins !== 1 && settings.bootswatchSkin && settings.bootswatchSkin !== '') ? settings.bootswatchSkin : '';
-	config = await plugins.fireHook('filter:config.get', config);
+	config = await plugins.hooks.fire('filter:config.get', config);
 	return config;
 };
 

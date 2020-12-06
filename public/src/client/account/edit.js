@@ -48,7 +48,7 @@ define('forum/account/edit', [
 		$(window).trigger('action:profile.update', userData);
 
 		api.put('/users/' + userData.uid, userData).then((res) => {
-			app.alertSuccess('[[user:profile-update-success]]');
+			app.alertSuccess('[[user:profile_update_success]]');
 
 			if (res.picture) {
 				$('#user-current-picture').attr('src', res.picture);
@@ -235,7 +235,7 @@ define('forum/account/edit', [
 				allowSkippingCrop: false,
 				title: '[[user:upload_picture]]',
 				description: '[[user:upload_a_picture]]',
-				accept: ajaxify.data.allowedProfileImageExtensios,
+				accept: ajaxify.data.allowedProfileImageExtensions,
 			}, function (url) {
 				onUploadComplete(url);
 			});

@@ -82,15 +82,15 @@ usersAPI.update = async function (caller, data) {
 };
 
 usersAPI.delete = async function (caller, { uid, password }) {
-	processDeletion({ uid: uid, method: 'delete', password, caller });
+	await processDeletion({ uid: uid, method: 'delete', password, caller });
 };
 
 usersAPI.deleteContent = async function (caller, { uid, password }) {
-	processDeletion({ uid, method: 'deleteContent', password, caller });
+	await processDeletion({ uid, method: 'deleteContent', password, caller });
 };
 
 usersAPI.deleteAccount = async function (caller, { uid, password }) {
-	processDeletion({ uid, method: 'deleteAccount', password, caller });
+	await processDeletion({ uid, method: 'deleteAccount', password, caller });
 };
 
 usersAPI.deleteMany = async function (caller, data) {
@@ -128,7 +128,7 @@ usersAPI.changePassword = async function (caller, data) {
 
 usersAPI.follow = async function (caller, data) {
 	await user.follow(caller.uid, data.uid);
-	plugins.fireHook('action:user.follow', {
+	plugins.hooks.fire('action:user.follow', {
 		fromUid: caller.uid,
 		toUid: data.uid,
 	});
@@ -151,7 +151,7 @@ usersAPI.follow = async function (caller, data) {
 
 usersAPI.unfollow = async function (caller, data) {
 	await user.unfollow(caller.uid, data.uid);
-	plugins.fireHook('action:user.unfollow', {
+	plugins.hooks.fire('action:user.unfollow', {
 		fromUid: caller.uid,
 		toUid: data.uid,
 	});
@@ -185,7 +185,7 @@ usersAPI.ban = async function (caller, data) {
 		ip: caller.ip,
 		reason: data.reason || undefined,
 	});
-	plugins.fireHook('action:user.banned', {
+	plugins.hooks.fire('action:user.banned', {
 		callerUid: caller.uid,
 		ip: caller.ip,
 		uid: data.uid,
@@ -207,7 +207,7 @@ usersAPI.unban = async function (caller, data) {
 		targetUid: data.uid,
 		ip: caller.ip,
 	});
-	plugins.fireHook('action:user.unbanned', {
+	plugins.hooks.fire('action:user.unbanned', {
 		callerUid: caller.uid,
 		ip: caller.ip,
 		uid: data.uid,
@@ -247,7 +247,7 @@ async function processDeletion({ uid, method, password, caller }) {
 	} else if (!isSelf && !isAdmin) {
 		throw new Error('[[error:no-privileges]]');
 	} else if (isTargetAdmin) {
-		throw new Error('[[error:cant-delete-other-admins]]');
+		throw new Error('[[error:cant-delete-admin]');
 	}
 
 	// Privilege checks -- only deleteAccount is available for non-admins
@@ -265,7 +265,6 @@ async function processDeletion({ uid, method, password, caller }) {
 		}
 	}
 
-	// TODO: clear user tokens for this uid
 	await flags.resolveFlag('user', uid, caller.uid);
 
 	let userData;
@@ -278,7 +277,7 @@ async function processDeletion({ uid, method, password, caller }) {
 
 	sockets.server.sockets.emit('event:user_status_change', { uid: caller.uid, status: 'offline' });
 
-	plugins.fireHook('action:user.delete', {
+	plugins.hooks.fire('action:user.delete', {
 		callerUid: caller.uid,
 		uid: uid,
 		ip: caller.ip,

@@ -1,6 +1,7 @@
 'use strict';
 
 var _ = require('lodash');
+const validator = require('validator');
 
 var db = require('../database');
 var posts = require('../posts');
@@ -111,9 +112,10 @@ Topics.getTopicsByTids = async function (tids, options) {
 	result.topics.forEach(function (topic, i) {
 		if (topic) {
 			topic.category = result.categoriesMap[topic.cid];
-			topic.user = result.usersMap[topic.uid];
+			topic.user = topic.uid ? result.usersMap[topic.uid] : { ...result.usersMap[topic.uid] };
 			if (result.tidToGuestHandle[topic.tid]) {
-				topic.user.username = result.tidToGuestHandle[topic.tid];
+				topic.user.username = validator.escape(result.tidToGuestHandle[topic.tid]);
+				topic.user.displayname = topic.user.username;
 			}
 			topic.teaser = result.teasers[i] || null;
 			topic.tags = tags[i];
@@ -132,7 +134,7 @@ Topics.getTopicsByTids = async function (tids, options) {
 
 	const filteredTopics = result.topics.filter(topic => topic && topic.category && !topic.category.disabled);
 
-	const hookResult = await plugins.fireHook('filter:topics.get', { topics: filteredTopics, uid: uid });
+	const hookResult = await plugins.hooks.fire('filter:topics.get', { topics: filteredTopics, uid: uid });
 	return hookResult.topics;
 };
 
@@ -152,7 +154,7 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 		getMainPostAndReplies(topicData, set, uid, start, stop, reverse),
 		categories.getCategoryData(topicData.cid),
 		categories.getTagWhitelist([topicData.cid]),
-		plugins.fireHook('filter:topic.thread_tools', { topic: topicData, uid: uid, tools: [] }),
+		plugins.hooks.fire('filter:topic.thread_tools', { topic: topicData, uid: uid, tools: [] }),
 		Topics.getFollowData([topicData.tid], uid),
 		Topics.getUserBookmark(topicData.tid, uid),
 		social.getActivePostSharing(),
@@ -184,7 +186,7 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 	topicData.unreplied = topicData.postcount === 1;
 	topicData.icons = [];
 
-	const result = await plugins.fireHook('filter:topic.get', { topic: topicData, uid: uid });
+	const result = await plugins.hooks.fire('filter:topic.get', { topic: topicData, uid: uid });
 	return result.topic;
 };
 
@@ -282,7 +284,7 @@ Topics.isLocked = async function (tid) {
 };
 
 Topics.search = async function (tid, term) {
-	const pids = await plugins.fireHook('filter:topic.search', {
+	const pids = await plugins.hooks.fire('filter:topic.search', {
 		tid: tid,
 		term: term,
 	});

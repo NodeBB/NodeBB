@@ -29,6 +29,7 @@
     "tools": "Outils",
     "locked": "Verrouillé",
     "pinned": "Épinglé",
+    "pinned-with-expiry": "Épinglé jusqu'au %1",
     "moved": "Déplacé",
     "moved-from": "Déplacé de %1",
     "copy-ip": "Copier l'IP",
@@ -89,6 +90,8 @@
     "post_delete_confirm": "Êtes-vous sûr de bien vouloir supprimer ce message ?",
     "post_restore_confirm": "Êtes-vous sûr de bien vouloir restaurer ce message ?",
     "post_purge_confirm": "Êtes-vous sûr de bien vouloir supprimer définitivement ce sujet ?",
+    "pin-modal-expiry": "Date d'expiration",
+    "pin-modal-help": "Vous pouvez éventuellement définir une date d'expiration pour le(s) sujet(s) épinglé(s) ici. Vous pouvez également laisser ce champ vide pour que le sujet reste épinglé jusqu'à ce qu'il soit supprimé manuellement.",
     "load_categories": "Chargement des catégories en cours",
     "confirm_move": "Déplacer",
     "confirm_fork": "Scinder",
@@ -152,5 +155,7 @@
     "diffs.restore-description": "Une nouvelle révision sera ajoutée à l'historique des modifications de ce message.",
     "diffs.post-restored": "Restauration avec succès dans une révision antérieure",
     "timeago_later": "%1",
-    "timeago_earlier": "il y a %1"
+    "timeago_earlier": "il y a %1",
+    "first-post": "First post",
+    "last-post": "Last post"
 }

@@ -14,5 +14,6 @@
 
 	"alerts.editing": "Editing tag(s)",
 	"alerts.confirm-delete": "Chcete odstrániť vybranú značku?",
-	"alerts.update-success": "Značka bola aktualizovaná!"
+	"alerts.update-success": "Značka bola aktualizovaná!",
+	"reset-colors": "Reset colors"
 }

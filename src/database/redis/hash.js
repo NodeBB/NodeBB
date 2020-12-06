@@ -150,14 +150,21 @@ module.exports = function (module) {
 	};
 
 	module.deleteObjectFields = async function (key, fields) {
-		if (!key || !Array.isArray(fields) || !fields.length) {
+		if (!key || (Array.isArray(key) && !key.length) || !Array.isArray(fields) || !fields.length) {
 			return;
 		}
 		fields = fields.filter(Boolean);
 		if (!fields.length) {
 			return;
 		}
-		await module.client.async.hdel(key, fields);
+		if (Array.isArray(key)) {
+			const batch = module.client.batch();
+			key.forEach(k => batch.hdel(k, fields));
+			await helpers.execBatch(batch);
+		} else {
+			await module.client.async.hdel(key, fields);
+		}
+
 		cache.del(key);
 	};
 

@@ -81,5 +81,6 @@
 
 	"bulk-actions": "Azioni in blocco",
 	"bulk-resolve": "Risoluzione segnalazione(i)",
-	"bulk-success": "%1 segnalazioni aggiornate"
+	"bulk-success": "%1 segnalazioni aggiornate",
+	"flagged-timeago-readable": "Flagged <span class=\"timeago\" title=\"%1\"></span> (%2)"
 }

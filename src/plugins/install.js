@@ -64,7 +64,7 @@ module.exports = function (Plugins) {
 			await db.sortedSetAdd('plugins:active', count, id);
 		}
 		meta.reloadRequired = true;
-		Plugins.fireHook(isActive ? 'action:plugin.deactivate' : 'action:plugin.activate', { id: id });
+		Plugins.hooks.fire(isActive ? 'action:plugin.deactivate' : 'action:plugin.activate', { id: id });
 		return { id: id, active: !isActive };
 	};
 
@@ -100,7 +100,7 @@ module.exports = function (Plugins) {
 		}
 		await runPackageManagerCommandAsync(type, id, version || 'latest');
 		const pluginData = await Plugins.get(id);
-		Plugins.fireHook('action:plugin.' + type, { id: id, version: version });
+		Plugins.hooks.fire('action:plugin.' + type, { id: id, version: version });
 		return pluginData;
 	}
 

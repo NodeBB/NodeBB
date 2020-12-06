@@ -46,7 +46,7 @@ module.exports = function (SocketUser) {
 		await user.isAdminOrGlobalModOrSelf(socket.uid, data.uid);
 		const userData = await user.getUserFields(data.uid, ['cover:url']);
 		await user.removeCoverPicture(data);
-		plugins.fireHook('action:user.removeCoverPicture', {
+		plugins.hooks.fire('action:user.removeCoverPicture', {
 			callerUid: socket.uid,
 			uid: data.uid,
 			user: userData,

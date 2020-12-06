@@ -69,7 +69,7 @@ module.exports = function (middleware) {
 			}
 		}
 
-		await plugins.fireHook('response:middleware.authenticate', {
+		await plugins.hooks.fire('response:middleware.authenticate', {
 			req: req,
 			res: res,
 			next: function () {},	// no-op for backwards compatibility

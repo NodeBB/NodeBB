@@ -1,8 +1,12 @@
 {
 	"tokens": "令牌",
+	"settings": "Settings",
 	"lead-text": "从此处，您可以配置对 NodeBB 中 Write API 的访问。",
 	"intro": "默认情况下，Write API根据用户的会话cookie对用户进行身份验证，但 NodeBB 也支持通过此页面生成的令牌进行身份验证。",
 	"docs": "单击此处访问完整的 API 规范",
+
+	"require-https": "Require API usage via HTTPS only",
+	"require-https-caveat": "<strong>Note</strong>: Some installations involving load balancers may proxy their requests to NodeBB using HTTP, in which case this option should remain disabled.",
 
 	"uid": "用户ID",
 	"uid-help-text": "指定要与此令牌关联的用户ID。如果用户ID是 <code>0</code>, 它将被实危 <em>最高</em> 令牌，可以通过 <code>_uid</code> 参数假定其他用户的身份",

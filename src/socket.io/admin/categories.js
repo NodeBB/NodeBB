@@ -31,7 +31,7 @@ Categories.getAll = async function () {
 		'color', 'bgColor', 'backgroundImage', 'imageClass',
 	];
 	const categoriesData = await categories.getCategoriesFields(cids, fields);
-	const result = await plugins.fireHook('filter:admin.categories.get', { categories: categoriesData, fields: fields });
+	const result = await plugins.hooks.fire('filter:admin.categories.get', { categories: categoriesData, fields: fields });
 	return categories.getTree(result.categories, 0);
 };
 

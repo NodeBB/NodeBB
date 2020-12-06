@@ -237,8 +237,8 @@ function validateUpload(res, uploadedFile, allowedTypes) {
 async function uploadImage(filename, folder, uploadedFile, req, res, next) {
 	let imageData;
 	try {
-		if (plugins.hasListeners('filter:uploadImage')) {
-			imageData = await plugins.fireHook('filter:uploadImage', { image: uploadedFile, uid: req.uid, folder: folder });
+		if (plugins.hooks.hasListeners('filter:uploadImage')) {
+			imageData = await plugins.hooks.fire('filter:uploadImage', { image: uploadedFile, uid: req.uid, folder: folder });
 		} else {
 			imageData = await file.saveFileToLocal(filename, folder, uploadedFile.path);
 		}

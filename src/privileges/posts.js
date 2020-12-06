@@ -101,7 +101,7 @@ module.exports = function (privileges) {
 				((!post.topic.deleted && !post.deleted) || canViewDeleted[post.topic.cid] || results.isAdmin);
 		}).map(post => post.pid);
 
-		const data = await plugins.fireHook('filter:privileges.posts.filter', {
+		const data = await plugins.hooks.fire('filter:privileges.posts.filter', {
 			privilege: privilege,
 			uid: uid,
 			pids: pids,
@@ -144,7 +144,7 @@ module.exports = function (privileges) {
 		results.pid = parseInt(pid, 10);
 		results.uid = uid;
 
-		const result = await plugins.fireHook('filter:privileges.posts.edit', results);
+		const result = await plugins.hooks.fire('filter:privileges.posts.edit', results);
 		return { flag: result.edit && (result.owner || result.isMod), message: '[[error:no-privileges]]' };
 	};
 
@@ -176,12 +176,20 @@ module.exports = function (privileges) {
 	};
 
 	privileges.posts.canFlag = async function (pid, uid) {
-		const [userReputation, isAdminOrModerator] = await Promise.all([
+		const targetUid = await posts.getPostField(pid, 'uid');
+		const [userReputation, isAdminOrModerator, targetPrivileged, reporterPrivileged] = await Promise.all([
 			user.getUserField(uid, 'reputation'),
 			isAdminOrMod(pid, uid),
+			user.isPrivileged(targetUid),
+			user.isPrivileged(uid),
 		]);
 		const minimumReputation = meta.config['min:rep:flag'];
-		const canFlag = isAdminOrModerator || (userReputation >= minimumReputation);
+		let canFlag = isAdminOrModerator || (userReputation >= minimumReputation);
+
+		if (targetPrivileged && !reporterPrivileged) {
+			canFlag = false;
+		}
+
 		return { flag: canFlag };
 	};
 

@@ -29,6 +29,7 @@
     "tools": "Інструменти",
     "locked": "Заблокована",
     "pinned": "Закріплена",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "Переміщена",
     "moved-from": "Moved from %1",
     "copy-ip": "Копіювати IP",
@@ -89,6 +90,8 @@
     "post_delete_confirm": "Ви точно бажаєте видалити цей пост?",
     "post_restore_confirm": "Ви точно бажаєте відновити цей пост?",
     "post_purge_confirm": "Ви точно бажаєте стерти цей пост?",
+    "pin-modal-expiry": "Expiration Date",
+    "pin-modal-help": "You can optionally set an expiration date for the pinned topic(s) here. Alternatively, you can leave this field blank to have the topic stay pinned until it is manually unpinned.",
     "load_categories": "Завантаження категорій",
     "confirm_move": "Перемістити",
     "confirm_fork": "Відгалужити",
@@ -152,5 +155,7 @@
     "diffs.restore-description": "A new revision will be appended to this post's edit history.",
     "diffs.post-restored": "Post successfully restored to earlier revision",
     "timeago_later": "%1 пізніше",
-    "timeago_earlier": "%1 раніше"
+    "timeago_earlier": "%1 раніше",
+    "first-post": "First post",
+    "last-post": "Last post"
 }

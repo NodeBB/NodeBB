@@ -89,4 +89,6 @@ get:
                     type: array
                     items:
                       type: string
+                  postQueueEnabled:
+                    type: boolean
               - $ref: ../../../../components/schemas/CommonProps.yaml#/CommonProps

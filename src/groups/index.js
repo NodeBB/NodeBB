@@ -135,7 +135,7 @@ Groups.get = async function (groupName, options) {
 	if (!groupData) {
 		return null;
 	}
-	const descriptionParsed = await plugins.fireHook('filter:parse.raw', groupData.description);
+	const descriptionParsed = await plugins.hooks.fire('filter:parse.raw', groupData.description);
 	groupData.descriptionParsed = descriptionParsed;
 	groupData.categories = selectCategories.map((category) => {
 		category.selected = groupData.memberPostCids.includes(category.cid);
@@ -149,7 +149,7 @@ Groups.get = async function (groupName, options) {
 	groupData.isPending = isPending;
 	groupData.isInvited = isInvited;
 	groupData.isOwner = isOwner;
-	const results = await plugins.fireHook('filter:group.get', { group: groupData });
+	const results = await plugins.hooks.fire('filter:group.get', { group: groupData });
 	return results.group;
 };
 
@@ -194,7 +194,7 @@ Groups.getOwnersAndMembers = async function (groupName, uid, start, stop) {
 		}
 	}
 	returnUsers = countToReturn > 0 ? returnUsers.slice(0, countToReturn) : returnUsers;
-	const result = await plugins.fireHook('filter:group.getOwnersAndMembers', {
+	const result = await plugins.hooks.fire('filter:group.getOwnersAndMembers', {
 		users: returnUsers,
 		uid: uid,
 		start: start,

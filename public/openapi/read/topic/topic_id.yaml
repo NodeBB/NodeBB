@@ -30,66 +30,22 @@ get:
         application/json:
           schema:
             allOf:
+              - $ref: ../../components/schemas/TopicObject.yaml#/TopicObjectSlim
               - type: object
                 properties:
-                  tid:
-                    type: number
-                    description: A topic identifier
-                  uid:
-                    type: number
-                    description: A user identifier
-                  cid:
-                    type: number
-                    description: A category identifier
                   title:
                     type: string
                   slug:
                     type: string
-                  timestamp:
-                    type: number
-                  lastposttime:
-                    type: number
-                  postcount:
-                    type: number
-                  viewcount:
-                    type: number
-                  postercount:
-                    type: number
-                    description: The number of unique users who made a post in this topic
-                  mainPid:
-                    type: number
-                    description: The post id of the first post in this topic (also called the
-                      "original post")
                   teaserPid:
                     type: number
                     nullable: true
-                  upvotes:
-                    type: number
-                  downvotes:
-                    type: number
-                  deleted:
-                    type: number
-                  locked:
-                    type: number
-                  pinned:
-                    type: number
-                    description: Whether or not this particular topic is pinned to the top of the
-                      category
-                  deleterUid:
-                    type: number
                   titleRaw:
                     type: string
-                  timestampISO:
-                    type: string
-                    description: An ISO 8601 formatted date string (complementing `timestamp`)
-                  lastposttimeISO:
-                    type: string
-                  votes:
-                    type: number
                   tags:
                     type: array
                     items:
-                      $ref: ../../../../components/schemas/TagObject.yaml#/TagObject
+                      $ref: ../../components/schemas/TagObject.yaml#/TagObject
                   posts:
                     type: array
                     items:
@@ -263,6 +219,8 @@ get:
                               type: number
                         selfPost:
                           type: boolean
+                        topicOwnerPost:
+                          type: boolean
                         display_edit_tools:
                           type: boolean
                         display_delete_tools:
@@ -277,7 +235,7 @@ get:
                           type: number
                           description: The flag identifier, if this particular post has been flagged before
                   category:
-                    $ref: ../../../../components/schemas/CategoryObject.yaml#/CategoryObject
+                    $ref: ../../components/schemas/CategoryObject.yaml#/CategoryObject
                   tagWhitelist:
                     type: array
                     items:
@@ -325,7 +283,7 @@ get:
                   related:
                     type: array
                     items:
-                      $ref: ../../../../components/schemas/TopicObject.yaml#/TopicObject
+                      $ref: ../../components/schemas/TopicObject.yaml#/TopicObject
                   unreplied:
                     type: boolean
                   icons:
@@ -402,7 +360,18 @@ get:
                   postIndex:
                     type: number
                   loggedInUser:
-                    $ref: ../../../../components/schemas/UserObject.yaml#/UserObject
-              - $ref: ../../../../components/schemas/Pagination.yaml#/Pagination
-              - $ref: ../../../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
-              - $ref: ../../../../components/schemas/CommonProps.yaml#/CommonProps
+                    $ref: ../../components/schemas/UserObject.yaml#/UserObject
+              - type: object
+                description: Optional properties that may or may not be present (except for `tid`, which is always present, and is only here as a hack to pass validation)
+                properties:
+                  tid:
+                    type: number
+                    description: A topic identifier
+                  thumb:
+                    type: string
+                    description: An uploaded topic thumbnail
+                required:
+                  - tid
+              - $ref: ../../components/schemas/Pagination.yaml#/Pagination
+              - $ref: ../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../../components/schemas/CommonProps.yaml#/CommonProps

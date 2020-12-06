@@ -29,6 +29,7 @@
     "tools": "Strumenti",
     "locked": "Bloccato",
     "pinned": "Appeso",
+    "pinned-with-expiry": "Bloccato fino al %1",
     "moved": "Spostato",
     "moved-from": "Spostato da %1",
     "copy-ip": "Copia indirizzo IP",
@@ -89,6 +90,8 @@
     "post_delete_confirm": "Sei sicuro di voler eliminare questo post?",
     "post_restore_confirm": "Sei sicuro di voler ripristinare questo post?",
     "post_purge_confirm": "Sei sicuro di voler eliminare definitivamente questo post?",
+    "pin-modal-expiry": "Data di scadenza",
+    "pin-modal-help": "Facoltativamente, è possibile impostare una data di scadenza per le discussioni appuntate qui. In alternativa, è possibile lasciare vuoto questo campo per mantenere la discussione bloccata fino a quando non viene sbloccata manualmente.",
     "load_categories": "Caricamento Categorie",
     "confirm_move": "Sposta",
     "confirm_fork": "Dividi",
@@ -152,5 +155,7 @@
     "diffs.restore-description": "Una nuova revisione sarà aggiunta alla cronologia delle modifiche di questo post.",
     "diffs.post-restored": "Post ripristinato con successo alla revisione precedente",
     "timeago_later": "%1 dopo",
-    "timeago_earlier": "%1 precedente"
+    "timeago_earlier": "%1 precedente",
+    "first-post": "First post",
+    "last-post": "Last post"
 }

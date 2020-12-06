@@ -51,7 +51,7 @@ module.exports = function (Groups) {
 
 	Groups.invite = async function (groupName, uids) {
 		uids = Array.isArray(uids) ? uids : [uids];
-		await inviteOrRequestMembership(groupName, uids, 'invite');
+		uids = await inviteOrRequestMembership(groupName, uids, 'invite');
 
 		const notificationData = await Promise.all(uids.map(uid => notifications.create({
 			type: 'group-invite',
@@ -83,10 +83,11 @@ module.exports = function (Groups) {
 		const set = type === 'invite' ? 'group:' + groupName + ':invited' : 'group:' + groupName + ':pending';
 		await db.setAdd(set, uids);
 		const hookName = type === 'invite' ? 'action:group.inviteMember' : 'action:group.requestMembership';
-		plugins.fireHook(hookName, {
+		plugins.hooks.fire(hookName, {
 			groupName: groupName,
 			uids: uids,
 		});
+		return uids;
 	}
 
 	Groups.isInvited = async function (uids, groupName) {

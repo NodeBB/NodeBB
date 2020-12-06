@@ -36,7 +36,7 @@ middleware.renderHeader = async (req, res, data) => {
 	const results = await utils.promiseParallel({
 		userData: user.getUserFields(req.uid, ['username', 'userslug', 'email', 'picture', 'email:confirmed']),
 		scripts: getAdminScripts(),
-		custom_header: plugins.fireHook('filter:admin.header.build', custom_header),
+		custom_header: plugins.hooks.fire('filter:admin.header.build', custom_header),
 		configs: meta.configs.list(),
 		latestVersion: getLatestVersion(),
 		privileges: privileges.admin.get(req.uid),
@@ -83,7 +83,7 @@ middleware.renderHeader = async (req, res, data) => {
 };
 
 async function getAdminScripts() {
-	const scripts = await plugins.fireHook('filter:admin.scripts.get', []);
+	const scripts = await plugins.hooks.fire('filter:admin.scripts.get', []);
 	return scripts.map(function (script) {
 		return { src: script };
 	});
@@ -122,6 +122,12 @@ middleware.checkPrivileges = helpers.try(async (req, res, next) => {
 		if (!Object.values(privilegeSet).some(Boolean)) {
 			return controllers.helpers.notAllowed(req, res);
 		}
+	}
+
+	// If user does not have password
+	const hasPassword = await user.hasPassword(req.uid);
+	if (!hasPassword) {
+		return next();
 	}
 
 	// Reject if they need to re-login (due to ACP timeout), otherwise extend logout timer

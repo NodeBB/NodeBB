@@ -125,12 +125,7 @@ Controllers.login = async function (req, res) {
 	data.allowLocalLogin = hasLoginPrivilege || parseInt(req.query.local, 10) === 1;
 
 	if (!data.allowLocalLogin && !data.allowRegistration && data.alternate_logins && data.authentication.length === 1) {
-		if (res.locals.isAPI) {
-			return helpers.redirect(res, {
-				external: nconf.get('relative_path') + data.authentication[0].url,
-			});
-		}
-		return res.redirect(nconf.get('relative_path') + data.authentication[0].url);
+		return helpers.redirect(res, { external: data.authentication[0].url });
 	}
 
 	if (req.loggedIn) {
@@ -184,7 +179,7 @@ Controllers.registerInterstitial = async function (req, res, next) {
 		return res.redirect(nconf.get('relative_path') + '/register');
 	}
 	try {
-		const data = await plugins.fireHook('filter:register.interstitial', {
+		const data = await plugins.hooks.fire('filter:register.interstitial', {
 			userData: req.session.registration,
 			interstitials: [],
 		});
@@ -298,7 +293,7 @@ Controllers.manifest = async function (req, res) {
 		});
 	}
 
-	const data = await plugins.fireHook('filter:manifest.build', {
+	const data = await plugins.hooks.fire('filter:manifest.build', {
 		req: req,
 		res: res,
 		manifest: manifest,
@@ -331,7 +326,7 @@ Controllers.termsOfUse = async function (req, res, next) {
 	if (!meta.config.termsOfUse) {
 		return next();
 	}
-	const termsOfUse = await plugins.fireHook('filter:parse.post', {
+	const termsOfUse = await plugins.hooks.fire('filter:parse.post', {
 		postData: {
 			content: meta.config.termsOfUse || '',
 		},

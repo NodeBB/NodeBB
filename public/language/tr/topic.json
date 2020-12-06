@@ -29,6 +29,7 @@
     "tools": "Araçlar",
     "locked": "Kilitli",
     "pinned": "Sabitlendi",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "Taşındı",
     "moved-from": "Şuradan taşındı: %1",
     "copy-ip": "IP Kopyala",
@@ -89,6 +90,8 @@
     "post_delete_confirm": "Bu iletiyi gerçekten silmek istediğinize emin misiniz?",
     "post_restore_confirm": "Bu iletiyi gerçekten geri getirmek istiyor musunuz?",
     "post_purge_confirm": "Bu iletiyi temizlemek istediğinize emin misiniz?",
+    "pin-modal-expiry": "Sona erme tarihi",
+    "pin-modal-help": "Sabitlenen konular için bir bitiş tarihi belirleyebilirsiniz. Eğer bu tarihi boş bırakırsanız, konular siz sabitliğini kaldırana kadar sabitlenmiş olarak kalır.",
     "load_categories": "Kategoriler Yükleniyor",
     "confirm_move": "Taşı",
     "confirm_fork": "Ayır",
@@ -152,5 +155,7 @@
     "diffs.restore-description": "Yeni bir revizyon bu iletinın geçmişine eklenecek. ",
     "diffs.post-restored": "İleti önceki revizyona başarıyla geri getirildi",
     "timeago_later": "%1 sonra",
-    "timeago_earlier": "%1 önce"
+    "timeago_earlier": "%1 önce",
+    "first-post": "First post",
+    "last-post": "Last post"
 }

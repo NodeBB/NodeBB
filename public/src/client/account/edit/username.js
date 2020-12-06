@@ -26,7 +26,7 @@ define('forum/account/edit/username', [
 			var btn = $(this);
 			btn.addClass('disabled').find('i').removeClass('hide');
 
-			api.put('/users/' + userData.uid, userData).then((res) => {
+			api.put('/users/' + userData.uid, userData).then((response) => {
 				btn.removeClass('disabled').find('i').addClass('hide');
 				var userslug = slugify(userData.username);
 				if (userData.username && userslug && parseInt(userData.uid, 10) === parseInt(app.user.uid, 10)) {
@@ -34,7 +34,7 @@ define('forum/account/edit/username', [
 					$('[component="header/profilelink/edit"]').attr('href', config.relative_path + '/user/' + userslug + '/edit');
 					$('[component="header/profilelink/settings"]').attr('href', config.relative_path + '/user/' + userslug + '/settings');
 					$('[component="header/username"]').text(userData.username);
-					$('[component="header/usericon"]').css('background-color', res.response['icon:bgColor']).text(res.response['icon:text']);
+					$('[component="header/usericon"]').css('background-color', response['icon:bgColor']).text(response['icon:text']);
 				}
 
 				ajaxify.go('user/' + userslug + '/edit');

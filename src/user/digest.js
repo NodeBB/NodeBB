@@ -87,7 +87,7 @@ Digest.getSubscribers = async function (interval) {
 		batch: 500,
 	});
 
-	const results = await plugins.fireHook('filter:digest.subscribers', {
+	const results = await plugins.hooks.fire('filter:digest.subscribers', {
 		interval: interval,
 		subscribers: subscribers,
 	});

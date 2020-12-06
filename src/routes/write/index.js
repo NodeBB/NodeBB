@@ -1,7 +1,7 @@
 'use strict';
 
-const nconf = require('nconf');
 const winston = require('winston');
+const meta = require('../../meta');
 const plugins = require('../../plugins');
 const middleware = require('../../middleware');
 const helpers = require('../../controllers/helpers');
@@ -10,10 +10,19 @@ const Write = module.exports;
 
 Write.reload = async (params) => {
 	const router = params.router;
+	let apiSettings = await meta.settings.get('core.api');
+	plugins.registerHook('core', {
+		hook: 'action:settings.set',
+		method: async (data) => {
+			if (data.plugin === 'core.api') {
+				apiSettings = await meta.settings.get('core.api');
+			}
+		},
+	});
 
 	router.use('/api/v3', function (req, res, next) {
 		// Require https if configured so
-		if (nconf.get('secure') && req.protocol !== 'https') {
+		if (apiSettings.requireHttps === 'on') {
 			res.set('Upgrade', 'TLS/1.0, HTTP/1.1');
 			return helpers.formatApiResponse(426, res);
 		}
@@ -48,7 +57,7 @@ Write.reload = async (params) => {
 	 * `/api/v3/plugins`.
 	 */
 	const pluginRouter = require('express').Router();
-	await plugins.fireHook('static:api.routes', {
+	await plugins.hooks.fire('static:api.routes', {
 		router: pluginRouter,
 		middleware,
 		helpers,

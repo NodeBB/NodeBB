@@ -67,11 +67,11 @@ SocketPosts.getRawPost = async function (socket, pid) {
 		throw new Error('[[error:no-post]]');
 	}
 	postData.pid = pid;
-	const result = await plugins.fireHook('filter:post.getRawPost', { uid: socket.uid, postData: postData });
+	const result = await plugins.hooks.fire('filter:post.getRawPost', { uid: socket.uid, postData: postData });
 	return result.postData.content;
 };
 
-SocketPosts.getTimestampByIndex = async function (socket, data) {
+SocketPosts.getPostSummaryByIndex = async function (socket, data) {
 	if (data.index < 0) {
 		data.index = 0;
 	}
@@ -90,7 +90,9 @@ SocketPosts.getTimestampByIndex = async function (socket, data) {
 	if (!canRead) {
 		throw new Error('[[error:no-privileges]]');
 	}
-	return await posts.getPostField(pid, 'timestamp');
+
+	const postsData = await posts.getPostSummaryByPids([pid], socket.uid, { stripTags: false });
+	return postsData[0];
 };
 
 SocketPosts.getPost = async function (socket, pid) {
@@ -182,7 +184,7 @@ SocketPosts.editQueuedContent = async function (socket, data) {
 	}
 	await posts.editQueuedContent(socket.uid, data);
 	if (data.content) {
-		return await plugins.fireHook('filter:parse.post', { postData: data });
+		return await plugins.hooks.fire('filter:parse.post', { postData: data });
 	}
 	return { postData: data };
 };

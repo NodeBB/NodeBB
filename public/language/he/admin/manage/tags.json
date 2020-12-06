@@ -14,5 +14,6 @@
 
 	"alerts.editing": "Editing tag(s)",
 	"alerts.confirm-delete": "האם תרצה למחוק את התגים שנבחרו?",
-	"alerts.update-success": "תג עודכן!"
+	"alerts.update-success": "תג עודכן!",
+	"reset-colors": "Reset colors"
 }

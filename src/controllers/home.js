@@ -39,7 +39,7 @@ async function rewrite(req, res, next) {
 
 	const pathname = parsedUrl.pathname;
 	const hook = 'action:homepage.get:' + pathname;
-	if (!plugins.hasListeners(hook)) {
+	if (!plugins.hooks.hasListeners(hook)) {
 		req.url = req.path + (!req.path.endsWith('/') ? '/' : '') + pathname;
 	} else {
 		res.locals.homePageRoute = pathname;
@@ -54,7 +54,7 @@ exports.rewrite = rewrite;
 function pluginHook(req, res, next) {
 	var hook = 'action:homepage.get:' + res.locals.homePageRoute;
 
-	plugins.fireHook(hook, {
+	plugins.hooks.fire(hook, {
 		req: req,
 		res: res,
 		next: next,

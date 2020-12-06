@@ -36,7 +36,7 @@ module.exports = function (Groups) {
 
 		groupData.forEach(group => modifyGroup(group, fields));
 
-		const results = await plugins.fireHook('filter:groups.get', { groups: groupData });
+		const results = await plugins.hooks.fire('filter:groups.get', { groups: groupData });
 		return results.groups;
 	};
 
@@ -61,7 +61,7 @@ module.exports = function (Groups) {
 
 	Groups.setGroupField = async function (groupName, field, value) {
 		await db.setObjectField('group:' + groupName, field, value);
-		plugins.fireHook('action:group.set', { field: field, value: value, type: 'set' });
+		plugins.hooks.fire('action:group.set', { field: field, value: value, type: 'set' });
 	};
 };
 

@@ -74,7 +74,7 @@ Blacklist.test = async function (clientIp) {
 	) {
 		try {
 			// To return test failure, pass back an error in callback
-			await plugins.fireHook('filter:blacklist.test', { ip: clientIp });
+			await plugins.hooks.fire('filter:blacklist.test', { ip: clientIp });
 		} catch (err) {
 			analytics.increment('blacklist');
 			throw err;

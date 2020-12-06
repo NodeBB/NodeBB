@@ -110,14 +110,29 @@ mongoModule.info = async function (db) {
 		db = client.db();
 	}
 	mongoModule.client = mongoModule.client || db;
+	let serverStatusError = '';
+
+	async function getServerStatus() {
+		try {
+			return await db.command({ serverStatus: 1 });
+		} catch (err) {
+			serverStatusError = err.message;
+			// Override mongo error with more human-readable error
+			if (err.name === 'MongoError' && err.codeName === 'Unauthorized') {
+				serverStatusError = '[[admin/advanced/database:mongo.unauthorized]]';
+			}
+			winston.error(err.stack);
+		}
+	}
 
 	let [serverStatus, stats, listCollections] = await Promise.all([
-		db.command({ serverStatus: 1 }),
+		getServerStatus(),
 		db.command({ dbStats: 1 }),
 		getCollectionStats(db),
 	]);
 	stats = stats || {};
 	serverStatus = serverStatus || {};
+	stats.serverStatusError = serverStatusError;
 	const scale = 1024 * 1024 * 1024;
 
 	listCollections = listCollections.map(function (collectionInfo) {
@@ -132,12 +147,12 @@ mongoModule.info = async function (db) {
 		};
 	});
 
-	stats.mem = serverStatus.mem || {};
+	stats.mem = serverStatus.mem || { resident: 0, virtual: 0, mapped: 0 };
 	stats.mem.resident = (stats.mem.resident / 1024).toFixed(3);
 	stats.mem.virtual = (stats.mem.virtual / 1024).toFixed(3);
 	stats.mem.mapped = (stats.mem.mapped / 1024).toFixed(3);
 	stats.collectionData = listCollections;
-	stats.network = serverStatus.network || {};
+	stats.network = serverStatus.network || { bytesIn: 0, bytesOut: 0, numRequests: 0 };
 	stats.network.bytesIn = (stats.network.bytesIn / scale).toFixed(3);
 	stats.network.bytesOut = (stats.network.bytesOut / scale).toFixed(3);
 	stats.network.numRequests = utils.addCommas(stats.network.numRequests);

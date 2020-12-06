@@ -45,6 +45,8 @@ define('forum/topic', [
 
 		posts.onTopicPageLoad(components.get('post'));
 
+		navigator.init('[component="post"]', ajaxify.data.postcount, Topic.toTop, Topic.toBottom, Topic.navigatorCallback);
+
 		postTools.init(tid);
 		threadTools.init(tid, $('.topic'));
 		events.init();
@@ -60,7 +62,7 @@ define('forum/topic', [
 		addDropupHandler();
 		addRepliesHandler();
 
-		navigator.init('[component="post"]', ajaxify.data.postcount, Topic.toTop, Topic.toBottom, Topic.navigatorCallback);
+
 
 		handleBookmark(tid);
 
@@ -213,12 +215,12 @@ define('forum/topic', [
 		}
 
 		var newUrl = 'topic/' + ajaxify.data.slug + (index > 1 ? ('/' + index) : '');
-
 		if (newUrl !== currentUrl) {
 			if (Topic.replaceURLTimeout) {
 				clearTimeout(Topic.replaceURLTimeout);
+				Topic.replaceURLTimeout = 0;
 			}
-
+			currentUrl = newUrl;
 			Topic.replaceURLTimeout = setTimeout(function () {
 				if (index >= elementCount && app.user.uid) {
 					socket.emit('topics.markAsRead', [ajaxify.data.tid]);
@@ -237,7 +239,6 @@ define('forum/topic', [
 						url: newUrl + search,
 					}, null, window.location.protocol + '//' + window.location.host + config.relative_path + '/' + newUrl + search);
 				}
-				currentUrl = newUrl;
 			}, 500);
 		}
 	};

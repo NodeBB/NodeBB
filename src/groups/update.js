@@ -19,7 +19,7 @@ module.exports = function (Groups) {
 			throw new Error('[[error:no-group]]');
 		}
 
-		({ values } = await plugins.fireHook('filter:group.update', {
+		({ values } = await plugins.hooks.fire('filter:group.update', {
 			groupName: groupName,
 			values: values,
 		}));
@@ -75,7 +75,7 @@ module.exports = function (Groups) {
 		await db.setObject('group:' + groupName, payload);
 		await Groups.renameGroup(groupName, values.name);
 
-		plugins.fireHook('action:group.update', {
+		plugins.hooks.fire('action:group.update', {
 			name: groupName,
 			values: values,
 		});
@@ -199,7 +199,7 @@ module.exports = function (Groups) {
 		await renameGroupsMember(['groups:createtime', 'groups:visible:createtime', 'groups:visible:memberCount'], oldName, newName);
 		await renameGroupsMember(['groups:visible:name'], oldName.toLowerCase() + ':' + oldName, newName.toLowerCase() + ':' + newName);
 
-		plugins.fireHook('action:group.rename', {
+		plugins.hooks.fire('action:group.rename', {
 			old: oldName,
 			new: newName,
 		});

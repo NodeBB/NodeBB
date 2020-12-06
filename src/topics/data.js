@@ -11,7 +11,7 @@ const plugins = require('../plugins');
 const intFields = [
 	'tid', 'cid', 'uid', 'mainPid', 'postcount',
 	'viewcount', 'postercount', 'deleted', 'locked', 'pinned',
-	'timestamp', 'upvotes', 'downvotes', 'lastposttime',
+	'pinExpiry', 'timestamp', 'upvotes', 'downvotes', 'lastposttime',
 	'deleterUid',
 ];
 
@@ -22,7 +22,7 @@ module.exports = function (Topics) {
 		}
 		const keys = tids.map(tid => 'topic:' + tid);
 		const topics = await (fields.length ? db.getObjectsFields(keys, fields) : db.getObjects(keys));
-		const result = await plugins.fireHook('filter:topic.getFields', {
+		const result = await plugins.hooks.fire('filter:topic.getFields', {
 			tids: tids,
 			topics: topics,
 			fields: fields,
@@ -108,6 +108,10 @@ function modifyTopic(topic, fields) {
 
 	if (topic.hasOwnProperty('lastposttime')) {
 		topic.lastposttimeISO = utils.toISOString(topic.lastposttime);
+	}
+
+	if (topic.hasOwnProperty('pinExpiry')) {
+		topic.pinExpiryISO = utils.toISOString(topic.pinExpiry);
 	}
 
 	if (topic.hasOwnProperty('upvotes') && topic.hasOwnProperty('downvotes')) {

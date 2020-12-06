@@ -107,8 +107,8 @@ module.exports = function (User) {
 			return;
 		}
 		await cleanExpiredSessions(uid);
-		await revokeSessionsAboveThreshold(uid, meta.config.maxUserSessions);
 		await db.sortedSetAdd('uid:' + uid + ':sessions', Date.now(), sessionId);
+		await revokeSessionsAboveThreshold(uid, meta.config.maxUserSessions);
 	};
 
 	async function revokeSessionsAboveThreshold(uid, maxUserSessions) {

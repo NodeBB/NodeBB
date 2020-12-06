@@ -60,7 +60,7 @@ module.exports = function (User) {
 
 		const uniqueUids = _.uniq(uids).filter(uid => uid > 0);
 
-		const results = await plugins.fireHook('filter:user.whitelistFields', { uids: uids, whitelist: fieldWhitelist.slice() });
+		const results = await plugins.hooks.fire('filter:user.whitelistFields', { uids: uids, whitelist: fieldWhitelist.slice() });
 		if (!fields.length) {
 			fields = results.whitelist;
 		} else {
@@ -69,7 +69,7 @@ module.exports = function (User) {
 		}
 
 		let users = await db.getObjectsFields(uniqueUids.map(uid => 'user:' + uid), fields);
-		const result = await plugins.fireHook('filter:user.getFields', {
+		const result = await plugins.hooks.fire('filter:user.getFields', {
 			uids: uniqueUids,
 			users: users,
 			fields: fields,
@@ -173,6 +173,7 @@ module.exports = function (User) {
 			if (!parseInt(user.uid, 10)) {
 				user.uid = 0;
 				user.username = (user.hasOwnProperty('oldUid') && parseInt(user.oldUid, 10)) ? '[[global:former_user]]' : '[[global:guest]]';
+				user.displayname = user.username;
 				user.userslug = '';
 				user.picture = User.getDefaultAvatar();
 				user['icon:text'] = '?';
@@ -230,7 +231,7 @@ module.exports = function (User) {
 			}
 		}));
 
-		return await plugins.fireHook('filter:users.get', users);
+		return await plugins.hooks.fire('filter:users.get', users);
 	}
 
 	function parseDisplayName(user, uidToSettings) {
@@ -288,7 +289,7 @@ module.exports = function (User) {
 		await db.setObject('user:' + uid, data);
 		for (const field in data) {
 			if (data.hasOwnProperty(field)) {
-				plugins.fireHook('action:user.set', { uid: uid, field: field, value: data[field], type: 'set' });
+				plugins.hooks.fire('action:user.set', { uid: uid, field: field, value: data[field], type: 'set' });
 			}
 		}
 	};
@@ -303,7 +304,7 @@ module.exports = function (User) {
 
 	async function incrDecrUserFieldBy(uid, field, value, type) {
 		const newValue = await db.incrObjectFieldBy('user:' + uid, field, value);
-		plugins.fireHook('action:user.set', { uid: uid, field: field, value: newValue, type: type });
+		plugins.hooks.fire('action:user.set', { uid: uid, field: field, value: newValue, type: type });
 		return newValue;
 	}
 };

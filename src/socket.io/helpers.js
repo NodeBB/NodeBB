@@ -48,7 +48,7 @@ async function notifyUids(uid, uids, type, result) {
 	uids = filterTidCidIgnorers(watchStateUids, watchStates);
 	uids = await user.blocks.filterUids(uid, uids);
 	uids = await user.blocks.filterUids(post.topic.uid, uids);
-	const data = await plugins.fireHook('filter:sockets.sendNewPostToUids', { uidsTo: uids, uidFrom: uid, type: type });
+	const data = await plugins.hooks.fire('filter:sockets.sendNewPostToUids', { uidsTo: uids, uidFrom: uid, type: type });
 
 	post.ip = undefined;
 

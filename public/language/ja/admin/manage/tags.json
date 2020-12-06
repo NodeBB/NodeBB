@@ -14,5 +14,6 @@
 
 	"alerts.editing": "Editing tag(s)",
 	"alerts.confirm-delete": "選択したタグを削除しますか？",
-	"alerts.update-success": "タグが更新されました!"
+	"alerts.update-success": "タグが更新されました!",
+	"reset-colors": "Reset colors"
 }

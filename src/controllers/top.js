@@ -20,7 +20,7 @@ topController.get = async function (req, res, next) {
 	}
 
 	const feedQs = data.rssFeedUrl.split('?')[1];
-	data.rssFeedUrl = nconf.get('relative_path') + '/top/' + (validator.escape(String(req.query.term)) || 'alltime') + '.rss';
+	data.rssFeedUrl = nconf.get('relative_path') + '/top/' + validator.escape(String(req.query.term || 'alltime')) + '.rss';
 	if (req.loggedIn) {
 		data.rssFeedUrl += '?' + feedQs;
 	}

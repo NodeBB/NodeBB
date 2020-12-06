@@ -39,7 +39,7 @@ module.exports = function (Topics) {
 		if (data.thumb) {
 			topicData.thumb = data.thumb;
 		}
-		const result = await plugins.fireHook('filter:topic.create', { topic: topicData, data: data });
+		const result = await plugins.hooks.fire('filter:topic.create', { topic: topicData, data: data });
 		topicData = result.topic;
 		await db.setObject('topic:' + topicData.tid, topicData);
 
@@ -61,7 +61,7 @@ module.exports = function (Topics) {
 			Topics.createTags(data.tags, topicData.tid, timestamp),
 		]);
 
-		plugins.fireHook('action:topic.save', { topic: _.clone(topicData), data: data });
+		plugins.hooks.fire('action:topic.save', { topic: _.clone(topicData), data: data });
 		return topicData.tid;
 	};
 
@@ -94,7 +94,7 @@ module.exports = function (Topics) {
 		if (!data.fromQueue) {
 			await user.isReadyToPost(data.uid, data.cid);
 		}
-		const filteredData = await plugins.fireHook('filter:topic.post', data);
+		const filteredData = await plugins.hooks.fire('filter:topic.post', data);
 		data = filteredData;
 		const tid = await Topics.create(data);
 
@@ -124,7 +124,7 @@ module.exports = function (Topics) {
 		postData.index = 0;
 
 		analytics.increment(['topics', 'topics:byCid:' + topicData.cid]);
-		plugins.fireHook('action:topic.post', { topic: topicData, post: postData, data: data });
+		plugins.hooks.fire('action:topic.post', { topic: topicData, post: postData, data: data });
 
 		if (parseInt(uid, 10)) {
 			user.notifications.sendTopicNotificationToFollowers(uid, topicData, postData);
@@ -168,7 +168,7 @@ module.exports = function (Topics) {
 		if (!data.fromQueue) {
 			await user.isReadyToPost(uid, data.cid);
 		}
-		await plugins.fireHook('filter:topic.reply', data);
+		await plugins.hooks.fire('filter:topic.reply', data);
 		if (data.content) {
 			data.content = utils.rtrim(data.content);
 		}
@@ -197,7 +197,7 @@ module.exports = function (Topics) {
 		}
 
 		analytics.increment(['posts', 'posts:byCid:' + data.cid]);
-		plugins.fireHook('action:topic.reply', { post: _.clone(postData), data: data });
+		plugins.hooks.fire('action:topic.reply', { post: _.clone(postData), data: data });
 
 		return postData;
 	};
