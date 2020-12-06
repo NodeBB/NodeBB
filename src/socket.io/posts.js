@@ -91,7 +91,7 @@ SocketPosts.getPostSummaryByIndex = async function (socket, data) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	const postsData = await posts.getPostSummaryByPids([pid], socket.uid, { stripTags: true });
+	const postsData = await posts.getPostSummaryByPids([pid], socket.uid, { stripTags: false });
 	return postsData[0];
 };
 
