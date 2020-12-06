@@ -213,6 +213,7 @@ module.exports = function (Topics) {
 		if (cid === topicData.cid) {
 			throw new Error('[[error:cant-move-topic-to-same-category]]');
 		}
+		const tags = await Topics.getTopicTags(tid);
 		await db.sortedSetsRemove([
 			'cid:' + topicData.cid + ':tids',
 			'cid:' + topicData.cid + ':tids:pinned',
@@ -221,6 +222,7 @@ module.exports = function (Topics) {
 			'cid:' + topicData.cid + ':tids:lastposttime',
 			'cid:' + topicData.cid + ':recent_tids',
 			'cid:' + topicData.cid + ':uid:' + topicData.uid + ':tids',
+			...tags.map(tag => 'cid:' + topicData.cid + ':tag:' + tag + ':topics'),
 		], tid);
 
 		topicData.postcount = topicData.postcount || 0;
@@ -229,6 +231,7 @@ module.exports = function (Topics) {
 		const bulk = [
 			['cid:' + cid + ':tids:lastposttime', topicData.lastposttime, tid],
 			['cid:' + cid + ':uid:' + topicData.uid + ':tids', topicData.timestamp, tid],
+			...tags.map(tag => ['cid:' + cid + ':tag:' + tag + ':topics', topicData.timestamp, tid]),
 		];
 		if (topicData.pinned) {
 			bulk.push(['cid:' + cid + ':tids:pinned', Date.now(), tid]);
@@ -251,6 +254,7 @@ module.exports = function (Topics) {
 				cid: cid,
 				oldCid: oldCid,
 			}),
+			Topics.updateCategoryTagsCount([oldCid, cid], tags),
 		]);
 		const hookData = _.clone(data);
 		hookData.fromCid = oldCid;

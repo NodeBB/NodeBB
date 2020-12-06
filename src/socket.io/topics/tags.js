@@ -16,11 +16,20 @@ module.exports = function (SocketTopics) {
 	};
 
 	SocketTopics.autocompleteTags = async function (socket, data) {
-		return await topics.autocompleteTags(data);
+		if (data.cid) {
+			const canRead = await privileges.categories.can('topics:read', data.cid, socket.uid);
+			if (!canRead) {
+				throw new Error('[[error:no-privileges]]');
+			}
+		}
+		data.cids = await categories.getCidsByPrivilege('categories:cid', socket.uid, 'topics:read');
+		const result = await topics.autocompleteTags(data);
+		return result.map(tag => tag.value);
 	};
 
 	SocketTopics.searchTags = async function (socket, data) {
-		return await searchTags(socket.uid, topics.searchTags, data);
+		const result = await searchTags(socket.uid, topics.searchTags, data);
+		return result.map(tag => tag.value);
 	};
 
 	SocketTopics.searchAndLoadTags = async function (socket, data) {
@@ -32,6 +41,13 @@ module.exports = function (SocketTopics) {
 		if (!allowed) {
 			throw new Error('[[error:no-privileges]]');
 		}
+		if (data.cid) {
+			const canRead = await privileges.categories.can('topics:read', data.cid, uid);
+			if (!canRead) {
+				throw new Error('[[error:no-privileges]]');
+			}
+		}
+		data.cids = await categories.getCidsByPrivilege('categories:cid', uid, 'topics:read');
 		return await method(data);
 	}
 
@@ -42,8 +58,8 @@ module.exports = function (SocketTopics) {
 
 		const start = parseInt(data.after, 10);
 		const stop = start + 99;
-		const tags = await topics.getTags(start, stop);
-
+		const cids = await categories.getCidsByPrivilege('categories:cid', socket.uid, 'topics:read');
+		const tags = await topics.getCategoryTagsData(cids, start, stop);
 		return { tags: tags.filter(Boolean), nextStart: stop + 1 };
 	};
 };

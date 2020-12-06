@@ -1939,17 +1939,41 @@ describe('Topic\'s', function () {
 			});
 		});
 
+		it('should delete category tag as well', async function () {
+			const category = await categories.create({ name: 'delete category' });
+			const cid = category.cid;
+			await topics.post({ uid: adminUid, tags: ['willbedeleted', 'notthis'], title: 'tag topic', content: 'topic 1 content', cid: cid });
+			let categoryTags = await topics.getCategoryTags(cid, 0, -1);
+			assert(categoryTags.includes('willbedeleted'));
+			assert(categoryTags.includes('notthis'));
+			await topics.deleteTags(['willbedeleted']);
+			categoryTags = await topics.getCategoryTags(cid, 0, -1);
+			assert(!categoryTags.includes('willbedeleted'));
+			assert(categoryTags.includes('notthis'));
+		});
+
 		it('should add and remove tags from topics properly', async () => {
-			const result = await topics.post({ uid: adminUid, tags: ['tag4', 'tag2', 'tag1', 'tag3'], title: 'tag topic', content: 'topic 1 content', cid: topic.categoryId });
+			const category = await categories.create({ name: 'add/remove category' });
+			const cid = category.cid;
+			const result = await topics.post({ uid: adminUid, tags: ['tag4', 'tag2', 'tag1', 'tag3'], title: 'tag topic', content: 'topic 1 content', cid: cid });
 			const tid = result.topicData.tid;
+
 			let tags = await topics.getTopicTags(tid);
+			let categoryTags = await topics.getCategoryTags(cid, 0, -1);
 			assert.deepStrictEqual(tags, ['tag1', 'tag2', 'tag3', 'tag4']);
+			assert.deepStrictEqual(categoryTags.sort(), ['tag1', 'tag2', 'tag3', 'tag4']);
+
 			await topics.addTags(['tag7', 'tag6', 'tag5'], [tid]);
 			tags = await topics.getTopicTags(tid);
+			categoryTags = await topics.getCategoryTags(cid, 0, -1);
 			assert.deepStrictEqual(tags, ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag6', 'tag7']);
+			assert.deepStrictEqual(categoryTags.sort(), ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag6', 'tag7']);
+
 			await topics.removeTags(['tag1', 'tag3', 'tag5', 'tag7'], [tid]);
 			tags = await topics.getTopicTags(tid);
+			categoryTags = await topics.getCategoryTags(cid, 0, -1);
 			assert.deepStrictEqual(tags, ['tag2', 'tag4', 'tag6']);
+			assert.deepStrictEqual(categoryTags.sort(), ['tag2', 'tag4', 'tag6']);
 		});
 
 		it('should respect minTags', async () => {
@@ -2002,6 +2026,66 @@ describe('Topic\'s', function () {
 			}
 			assert.equal(err.message, '[[error:too-many-tags, ' + maxTags + ']]');
 			await db.deleteObjectField('category:' + topic.categoryId, 'maxTags');
+		});
+
+		it('should create and delete category tags properly', async () => {
+			const category = await categories.create({ name: 'tag category 2' });
+			const cid = category.cid;
+			const title = 'test title';
+			const postResult = await topics.post({ uid: adminUid, tags: ['cattag1', 'cattag2', 'cattag3'], title: title, content: 'topic 1 content', cid: cid });
+			await topics.post({ uid: adminUid, tags: ['cattag1', 'cattag2'], title: title, content: 'topic 1 content', cid: cid });
+			await topics.post({ uid: adminUid, tags: ['cattag1'], title: title, content: 'topic 1 content', cid: cid });
+			let result = await topics.getCategoryTagsData(cid, 0, -1);
+			assert.deepStrictEqual(result, [
+				{ value: 'cattag1', score: 3, bgColor: '', color: '', valueEscaped: 'cattag1' },
+				{ value: 'cattag2', score: 2, bgColor: '', color: '', valueEscaped: 'cattag2' },
+				{ value: 'cattag3', score: 1, bgColor: '', color: '', valueEscaped: 'cattag3' },
+			]);
+
+			// after purging values should update properly
+			await topics.purge(postResult.topicData.tid, adminUid);
+			result = await topics.getCategoryTagsData(cid, 0, -1);
+
+			assert.deepStrictEqual(result, [
+				{ value: 'cattag1', score: 2, bgColor: '', color: '', valueEscaped: 'cattag1' },
+				{ value: 'cattag2', score: 1, bgColor: '', color: '', valueEscaped: 'cattag2' },
+			]);
+		});
+
+		it('should update counts correctly if topic is moved between categories', async function () {
+			const category1 = await categories.create({ name: 'tag category 2' });
+			const category2 = await categories.create({ name: 'tag category 2' });
+			const cid1 = category1.cid;
+			const cid2 = category2.cid;
+
+			const title = 'test title';
+			const postResult = await topics.post({ uid: adminUid, tags: ['movedtag1', 'movedtag2'], title: title, content: 'topic 1 content', cid: cid1 });
+
+			await topics.post({ uid: adminUid, tags: ['movedtag1'], title: title, content: 'topic 1 content', cid: cid1 });
+			await topics.post({ uid: adminUid, tags: ['movedtag2'], title: title, content: 'topic 1 content', cid: cid2 });
+
+			let result1 = await topics.getCategoryTagsData(cid1, 0, -1);
+			let result2 = await topics.getCategoryTagsData(cid2, 0, -1);
+			assert.deepStrictEqual(result1, [
+				{ value: 'movedtag1', score: 2, bgColor: '', color: '', valueEscaped: 'movedtag1' },
+				{ value: 'movedtag2', score: 1, bgColor: '', color: '', valueEscaped: 'movedtag2' },
+			]);
+			assert.deepStrictEqual(result2, [
+				{ value: 'movedtag2', score: 1, bgColor: '', color: '', valueEscaped: 'movedtag2' },
+			]);
+
+			// after moving values should update properly
+			await topics.tools.move(postResult.topicData.tid, { cid: cid2, uid: adminUid });
+
+			result1 = await topics.getCategoryTagsData(cid1, 0, -1);
+			result2 = await topics.getCategoryTagsData(cid2, 0, -1);
+			assert.deepStrictEqual(result1, [
+				{ value: 'movedtag1', score: 1, bgColor: '', color: '', valueEscaped: 'movedtag1' },
+			]);
+			assert.deepStrictEqual(result2, [
+				{ value: 'movedtag2', score: 2, bgColor: '', color: '', valueEscaped: 'movedtag2' },
+				{ value: 'movedtag1', score: 1, bgColor: '', color: '', valueEscaped: 'movedtag1' },
+			]);
 		});
 	});
 

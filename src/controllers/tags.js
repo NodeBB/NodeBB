@@ -24,13 +24,17 @@ tagsController.getTag = async function (req, res) {
 		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[tags:tags]]', url: '/tags' }, { text: tag }]),
 		title: '[[pages:tag, ' + tag + ']]',
 	};
-	const settings = await user.getSettings(req.uid);
+	const [settings, cids] = await Promise.all([
+		user.getSettings(req.uid),
+		categories.getCidsByPrivilege('categories:cid', req.uid, 'topics:read'),
+	]);
 	const start = Math.max(0, (page - 1) * settings.topicsPerPage);
 	const stop = start + settings.topicsPerPage - 1;
 	const states = [categories.watchStates.watching, categories.watchStates.notwatching, categories.watchStates.ignoring];
+
 	const [topicCount, tids, categoriesData] = await Promise.all([
-		topics.getTagTopicCount(tag),
-		topics.getTagTids(tag, start, stop),
+		topics.getTagTopicCount(tag, cids),
+		topics.getTagTidsByCids(tag, cids, start, stop),
 		helpers.getCategoriesByStates(req.uid, '', states),
 	]);
 
@@ -59,9 +63,10 @@ tagsController.getTag = async function (req, res) {
 };
 
 tagsController.getTags = async function (req, res) {
+	const cids = await categories.getCidsByPrivilege('categories:cid', req.uid, 'topics:read');
 	const [canSearch, tags] = await Promise.all([
 		privileges.global.can('search:tags', req.uid),
-		topics.getTags(0, 99),
+		topics.getCategoryTagsData(cids, 0, 99),
 	]);
 
 	res.render('tags', {
