@@ -80,13 +80,11 @@ describe('Utility Methods', function () {
 	});
 
 	it('should preserve case if requested', function (done) {
-		assert.strictEqual(utils.slugify('UPPER CASE', true), 'UPPER-CASE');
 		assert.strictEqual(slugify('UPPER CASE', true), 'UPPER-CASE');
 		done();
 	});
 
 	it('should work if a number is passed in', function (done) {
-		assert.strictEqual(utils.slugify(12345), '12345');
 		assert.strictEqual(slugify(12345), '12345');
 		done();
 	});
