@@ -12,14 +12,14 @@
 	"manage/post-queue": "File d’attente des messages",
 	"manage/groups": "Groupes",
 	"manage/ip-blacklist": "Liste noire d'IPs",
-	"manage/uploads": "Téléversements",
-	"manage/digest": "Résumés",
+	"manage/uploads": "Fichiers envoyés",
+	"manage/digest": "Lettres d'activités",
 
 	"section-settings": "Réglages",
 	"settings/general": "Général",
 	"settings/homepage": "Page d'accueil",
 	"settings/navigation": "Navigation",
-	"settings/reputation": "Réputation & Signalements",
+	"settings/reputation": "Réputation",
 	"settings/email": "Email",
 	"settings/user": "Utilisateurs",
 	"settings/group": "Groupes",
@@ -75,7 +75,7 @@
 	"search.no-results": "Aucun résultat…",
 	"search.search-forum": "Rechercher <strong></strong> dans le forum",
 	"search.keep-typing": "Continuez de taper pour afficher les résultats…",
-	"search.start-typing": "Écrivez votre recherche pour afficher les résultats…",
+	"search.start-typing": "Écrivez pour lancer la recherche...",
 
 	"connection-lost": "La connexion à %1 a été perdue, tentative de reconnexion…",
 

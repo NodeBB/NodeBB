@@ -1,6 +1,6 @@
 {
-	"lead": "Configurez votre liste noire d'adresses IP ici.",
-	"description": "Quelques fois, bannir un utilisateur ne suffit pas. Restreindre l'accès au forum à une adresse IP ou un ensemble d'adresses IP peut être le meilleur moyen de protection. Dans ce cas, vous pouvez ajouter les adresses IP problématiques ou des blocks CIDR entiers à cette liste noire, et ceux ci ne pourront ni s'identifier ni créer un nouveau compte.",
+	"lead": "Configurez votre liste noire ici.",
+	"description": "Quelques fois, bannir un utilisateur ne suffit pas. Restreindre l'accès au forum à une adresse IP ou à un ensemble d'adresses IP peut être le meilleur moyen de protection. Dans ce cas, vous pouvez ajouter les adresses IP problématiques ou des plages d'adresses à cette liste noire, ce qui empêchera l'identification et la création de nouveau compte.",
 	"active-rules": "Règles actives",
 	"validate": "Valider la liste noire",
 	"apply": "Appliquer la liste noire",

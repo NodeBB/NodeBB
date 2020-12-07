@@ -7,9 +7,9 @@
 	"create": "Créer le mot-clés",
 	"modify": "Modifier les mots-clés",
 	"rename": "Renommer les mots-clés",
-	"delete": "Supprimer les mots-clés sélectionnés",
+	"delete": "Supprimer la sélection",
 	"search": "Chercher des mots-clés...",
-	"settings": "Configuration des Tags",
+	"settings": "Paramètres",
 	"name": "Nom du mot-clés",
 
 	"alerts.editing": "Modification des tag(s)",

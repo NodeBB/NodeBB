@@ -1,9 +1,9 @@
 {
 	"tokens": "Tokens",
 	"settings": "Paramètres",
-	"lead-text": "À partir de cette page, vous pouvez configurer l'accès à l'API d'écriture dans NodeBB.",
-	"intro": "Par défaut, l'API d'écriture authentifie les utilisateurs en fonction de leur cookie de session, mais NodeBB prend également en charge l'authentification du porteur via des tokens générés via cette page.",
-	"docs": "Cliquez ici pour accéder à la spécification complète de l'API",
+	"lead-text": "À partir de cette page, vous pouvez paramétrer l'accès à l'API dans NodeBB.",
+	"intro": "Par défaut, l'API authentifie les utilisateurs en fonction de leur cookie de session, mais NodeBB prend également en charge l'authentification du porteur via des tokens générés via cette page.",
+	"docs": "Cliquez ici pour accéder à la documentation de l'API",
 
 	"require-https": "Forcer l'utilisation de l'API via HTTPS uniquement",
 	"require-https-caveat": "<strong>Remarque</strong>: certaines installations impliquant des load balancer peuvent transmettre leurs requêtes à NodeBB via HTTP, auquel cas cette option doit rester désactivée.",

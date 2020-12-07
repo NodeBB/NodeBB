@@ -156,6 +156,6 @@
     "diffs.post-restored": "Restauration avec succès dans une révision antérieure",
     "timeago_later": "%1",
     "timeago_earlier": "il y a %1",
-    "first-post": "First post",
-    "last-post": "Last post"
+    "first-post": "Premier message",
+    "last-post": "Dernier message"
 }

@@ -1,7 +1,7 @@
 {
     "latest_users": "Derniers inscrits",
     "top_posters": "Utilisateurs les plus actifs",
-    "most_reputation": "Les plus Réputés",
+    "most_reputation": "Meilleur Réputation",
     "most_flags": "Les plus signalés",
     "search": "Rechercher",
     "enter_username": "Entrez le nom d'un utilisateur",
@@ -13,7 +13,7 @@
     "prompt-email": "Emails:",
     "groups-to-join": "Groupes à rejoindre lorsque l'invitation est acceptée:",
     "invitation-email-sent": "Un email d'invitation a été envoyé à %1",
-    "user_list": "Liste d'Utilisateurs",
+    "user_list": "Liste d'utilisateurs",
     "recent_topics": "Sujets Récents",
     "popular_topics": "Sujets Populaires",
     "unread_topics": "Sujets Non-Lus",

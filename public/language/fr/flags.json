@@ -8,7 +8,7 @@
 	"updated": "Mis à jour",
 	"target-purged": "Le contenu référencé par ce signalement a été supprimé et n'est plus accessible",
 
-	"graph-label": "Résumé des signalements",
+	"graph-label": "Signalements du jour",
 	"quick-filters": "Filtres rapides",
 	"filter-active": "Il y a un ou plusieurs filtres actifs dans cette liste de signalements",
 	"filter-reset": "Supprimer les filtres",
@@ -82,5 +82,5 @@
 	"bulk-actions": "Actions",
 	"bulk-resolve": "Signalement(s) résolu(s)",
 	"bulk-success": "%1 signalement mis à jour",
-	"flagged-timeago-readable": "Flagged <span class=\"timeago\" title=\"%1\"></span> (%2)"
+	"flagged-timeago-readable": "Signalé <span class=\"timeago\" title=\"%1\"></span> (%2)"
 }
