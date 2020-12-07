@@ -42,15 +42,6 @@ socket = window.socket;
 	function addHandlers() {
 		socket.on('connect', onConnect);
 
-		socket.on('reconnecting', function () {
-			// Wait 2s before firing
-			setTimeout(function () {
-				if (socket.disconnected) {
-					onReconnecting();
-				}
-			}, 2000);
-		});
-
 		socket.on('disconnect', onDisconnect);
 
 		socket.on('reconnect_failed', function () {
@@ -178,6 +169,12 @@ socket = window.socket;
 	}
 
 	function onDisconnect() {
+		setTimeout(function () {
+			if (socket.disconnected) {
+				onReconnecting();
+			}
+		}, 2000);
+
 		$(window).trigger('action:disconnected');
 	}
 
