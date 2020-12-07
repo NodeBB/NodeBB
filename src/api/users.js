@@ -109,7 +109,8 @@ usersAPI.updateSettings = async function (caller, data) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	const current = await user.getSettings(data.uid);
+	// load raw settings without parsing values to booleans
+	const current = await db.getObject('user:' + data.uid + ':settings');
 	const payload = { ...current, ...data.settings };
 	delete payload.uid;
 
