@@ -109,9 +109,16 @@ usersAPI.updateSettings = async function (caller, data) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
+	let defaults = await user.getSettings(0);
+	defaults = {
+		postsPerPage: defaults.postsPerPage,
+		topicsPerPage: defaults.topicsPerPage,
+		userLang: defaults.userLang,
+		acpLang: defaults.acpLang,
+	};
 	// load raw settings without parsing values to booleans
 	const current = await db.getObject('user:' + data.uid + ':settings');
-	const payload = { ...current, ...data.settings };
+	const payload = { ...defaults, ...current, ...data.settings };
 	delete payload.uid;
 
 	return await user.saveSettings(data.uid, payload);
