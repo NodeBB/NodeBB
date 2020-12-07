@@ -125,6 +125,22 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		}
 
 		var parent = thumb.parent();
+		parent.on('click', function (ev) {
+			if ($(ev.target).hasClass('scroller-container')) {
+				var index = calculateIndexFromY(ev.pageY);
+				navigator.scrollToIndex(index - 1, true, 0);
+				return false;
+			}
+		});
+
+		function calculateIndexFromY(y) {
+			var newTop = clampTop(y - thumbIconHalfHeight);
+			var parentOffset = parent.offset();
+			var percent = (newTop - parentOffset.top) / (parent.height() - thumbIconHeight);
+			index = Math.max(1, Math.ceil(ajaxify.data.postcount * percent));
+			return index > ajaxify.data.postcount ? ajaxify.data.count : index;
+		}
+
 		var mouseDragging = false;
 		$(window).on('action:ajaxify.end', function () {
 			renderPostIndex = null;
@@ -152,13 +168,8 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 
 		function mousemove(ev) {
 			var newTop = clampTop(ev.pageY - thumbIconHalfHeight);
-			var parentOffset = parent.offset();
-
-			var offset = { top: newTop, left: thumb.offset().left };
-			thumb.offset(offset);
-
-			var percent = (newTop - parentOffset.top) / (parent.height() - thumbIconHeight);
-			index = Math.max(1, Math.ceil(ajaxify.data.postcount * percent));
+			thumb.offset({ top: newTop, left: thumb.offset().left });
+			var index = calculateIndexFromY(ev.pageY);
 			navigator.updateTextAndProgressBar();
 			thumbText.text(index + '/' + ajaxify.data.postcount);
 			if (firstMove) {
@@ -203,20 +214,13 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 				ev.preventDefault();
 				ev.stopPropagation();
 				var newTop = clampTop(touchY + $(window).scrollTop() - thumbIconHalfHeight);
-				var parentOffset = thumb.parent().offset();
-				var offset = { top: newTop, left: thumb.offset().left };
-				thumb.offset(offset);
-
-				var percent = (newTop - parentOffset.top) / (parent.height() - thumbIconHeight);
-				index = Math.max(1, Math.ceil(count * percent));
-				index = index > count ? count : index;
-
+				thumb.offset({ top: newTop, left: thumb.offset().left });
+				var index = calculateIndexFromY(touchY + $(window).scrollTop());
+				navigator.updateTextAndProgressBar();
 				thumbText.text(index + '/' + ajaxify.data.postcount);
-
 				if (firstMove) {
 					renderPost(index);
 				}
-				navigator.updateTextAndProgressBar();
 			}
 			firstMove = false;
 		});
