@@ -107,12 +107,12 @@ async function addPlugin(translations, pluginData, lang, namespace) {
 	//  2. old language string (en_GB)
 	//  3. corrected plugin defaultLang (en-US)
 	//  4. old plugin defaultLang (en_US)
-	const langs = [
+	const langs = _.uniq([
 		defaultLang.replace('-', '_').replace('-x-', '@'),
 		defaultLang.replace('_', '-').replace('@', '-x-'),
 		lang.replace('-', '_').replace('-x-', '@'),
 		lang,
-	];
+	]);
 
 	for (const language of langs) {
 		/* eslint-disable no-await-in-loop */
