@@ -34,6 +34,7 @@ module.exports = function (middleware) {
 		const loginAsync = util.promisify(req.login).bind(req);
 
 		if (req.loggedIn) {
+			// If authenticated via cookie (express-session), protect routes with CSRF checking
 			if (res.locals.isAPI) {
 				await middleware.applyCSRFasync(req, res);
 			}
