@@ -121,6 +121,11 @@ get:
                     type: string
                   link_url:
                     type: string
+              thumbs:
+                type: object
+                properties:
+                  size:
+                    type: number
               acpLang:
                 type: string
               openOutgoingLinksInNewTab:
