@@ -1,7 +1,7 @@
 {
-	"settings": "Settings",
+	"settings": "הגדרות",
 	"handles.enabled": "Allow guest handles",
 	"handles.enabled-help": "This option exposes a new field that allows guests to pick a name to associate with each post they make. If disabled, they will simply be called \"Guest\"",
-	"topic-views.enabled": "Allow guests to increase topic view counts",
-	"reply-notifications.enabled": "Allow guests to generate reply notifications"
+	"topic-views.enabled": "הגדל מספר צפיות בנושא על-ידי צפיות של אורחים",
+	"reply-notifications.enabled": "אפשר לאורחים ליצור הודעות תשובה"
 }

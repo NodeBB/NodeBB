@@ -1,9 +1,9 @@
 {
-    "upload-file": "Upload File",
-    "filename": "Filename",
-    "usage": "Post Usage",
-    "orphaned": "Orphaned",
-    "size/filecount": "Size / Filecount",
-    "confirm-delete": "Do you really want to delete this file?",
-    "filecount": "%1 files"
+    "upload-file": "העלה קובץ",
+    "filename": "שם קובץ",
+    "usage": "שימוש בפוסט",
+    "orphaned": "מיותם",
+    "size/filecount": "גודל / ספירת קבצים",
+    "confirm-delete": "האם אתה בטוח שאתה רוצה למחוק קובץ זה?",
+    "filecount": "%1 קבצים"
 }

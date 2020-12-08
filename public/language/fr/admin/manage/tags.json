@@ -3,7 +3,7 @@
 	"bg-color": "Couleur d'arrière plan",
 	"text-color": "Couleur du texte",
 	"create-modify": "Créer et modifier les mots-clés",
-	"description": "Sélectionnez des mots-clés en cliquant ou en faisant glisser, utilisez <code>CTRL</code> pour une sélection multiple.",
+	"description": "Pour une sélection multiple :\nSélectionnez des mots-clés en cliquant ou en sélectionnant avec votre souris ou utilisez la touche <code>CTRL</code> .",
 	"create": "Créer le mot-clés",
 	"modify": "Modifier les mots-clés",
 	"rename": "Renommer les mots-clés",
@@ -12,7 +12,7 @@
 	"settings": "Paramètres",
 	"name": "Nom du mot-clés",
 
-	"alerts.editing": "Modification des tag(s)",
+	"alerts.editing": "Édition des mots-clés",
 	"alerts.confirm-delete": "Vous-voulez réellement supprimer les mots-clés sélectionnés ?",
 	"alerts.update-success": "Mot-clés mis à jour !",
 	"reset-colors": "Réinitialiser les couleurs"

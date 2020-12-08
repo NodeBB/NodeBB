@@ -7,7 +7,7 @@
 	"manage/privileges": "Privilèges",
 	"manage/tags": "Mots-clés",
 	"manage/users": "Utilisateurs",
-	"manage/admins-mods": "Admins & Modos",
+	"manage/admins-mods": "Modération",
 	"manage/registration": "File d'inscription",
 	"manage/post-queue": "File d’attente des messages",
 	"manage/groups": "Groupes",
@@ -35,7 +35,7 @@
 	"settings/sounds": "Sons",
 	"settings/social": "Social",
 	"settings/cookies": "Cookies",
-	"settings/web-crawler": "Robot d'indexation Web",
+	"settings/web-crawler": "Indexation",
 	"settings/sockets": "Sockets",
 	"settings/advanced": "Avancé",
 
@@ -43,7 +43,7 @@
 
 	"section-appearance": "Apparence",
 	"appearance/themes": "Thèmes",
-	"appearance/skins": "Skins",
+	"appearance/skins": "Apparence",
 	"appearance/customise": "Contenu personnalisé (HTML/JS/CSS)",
 
 	"section-extend": "Extensions",
@@ -79,6 +79,6 @@
 
 	"connection-lost": "La connexion à %1 a été perdue, tentative de reconnexion…",
 
-	"alerts.version": "Version actuelle <strong>NodeBB v%1</strong>",
+	"alerts.version": "<strong>NodeBB v%1</strong>",
 	"alerts.upgrade": "Mettre à jour en v%1"
 }

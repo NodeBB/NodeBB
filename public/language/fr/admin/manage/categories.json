@@ -78,7 +78,7 @@
 	"alert.user-search": "Chercher un utilisateur ici...",
 	"alert.find-group": "Trouver un groupe",
 	"alert.group-search": "Chercher un groupe ici...",
-	"alert.not-enough-whitelisted-tags": "Vous devez ajouter plus de tag dans votre liste blanche ! Le nombre minimal de tag requis est inférieur à ceux de votre liste blanche",
+	"alert.not-enough-whitelisted-tags": "Vous devez ajouter plus de mot-clés dans votre liste blanche ! Le nombre minimal requis est inférieur à ceux de votre liste blanche",
 	"collapse-all": "Tout réduire",
 	"expand-all": "Tout développer",
 	"disable-on-create": "Désactiver lors de la création",

@@ -5,5 +5,5 @@
     "maximum-file-size": "%1 Ko maximum",
     "no-uploads-found": "Aucun fichiers envoyés",
     "public-uploads-info": "Les téléchargements sont publics, tous les visiteurs peuvent les voir.",
-    "private-uploads-info": "Les téléchargements sont privés, seuls les utilisateurs connectés peuvent les voir."
+    "private-uploads-info": "Les envois sont privés, seuls les utilisateurs connectés peuvent les voir."
 }

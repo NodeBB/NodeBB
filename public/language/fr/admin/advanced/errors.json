@@ -6,7 +6,7 @@
 	"manage-error-log": "Gestion des journaux d'erreurs",
 	"export-error-log": "Exporter les journaux d'erreurs (CSV)",
 	"clear-error-log": "Effacer les journaux d'erreurs",
-	"route": "Route",
+	"route": "Chemin",
 	"count": "Nombre",
 	"no-routes-not-found": "Hourrah ! Aucune erreur 404 !",
 	"clear404-confirm": "Êtes-vous sûr de vouloir effacer les journaux d'erreurs 404 ?",

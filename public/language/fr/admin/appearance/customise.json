@@ -8,7 +8,7 @@
 	"custom-js.enable": "Activer le Javascript personnalisé",
 
 	"custom-header": "En-tête personnalisé",
-	"custom-header.description": "Saisissez le code HTML personnalisé ici (par exemple, les balises Meta, etc.), qui sera ajouté au section <code>&lt;head&gt;</code> du balisage de votre forum. Les Tags sont autorisées, mais sont déconseillées, dans la mesure où le <a href=\"#custom-js\" data-toggle=\"tab\">Javascript personnalisé</a> est disponible.",
+	"custom-header.description": "Saisissez votre code HTML personnalisé ici (par exemple, les balises Meta, etc.), qui sera ajouté au section <code>&lt;head&gt;</code> du balisage de votre forum. Les mots clés sont autorisés, mais sont déconseillés, dans la mesure où le <a href=\"#custom-js\" data-toggle=\"tab\">Javascript personnalisé</a> est disponible.",
 	"custom-header.enable": "Activer les en-têtes personnalisés",
 
 	"custom-css.livereload": "Activer le rechargement en direct",

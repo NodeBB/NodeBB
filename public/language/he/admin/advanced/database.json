@@ -44,9 +44,9 @@
 
 	"redis.keyspace-hits": "Keyspace Hits",
 	"redis.keyspace-misses": "Keyspace Misses",
-	"redis.raw-info": "מידע לא מעובד מRedis",
+	"redis.raw-info": "מידע לא מעובד מ-Redis",
 
 	"postgres": "Postgres",
 	"postgres.version": "גרסאת PostgreSQL",
-	"postgres.raw-info": "מידע לא מעובד מ Postgres"
+	"postgres.raw-info": "מידע לא מעובד מ-Postgres"
 }

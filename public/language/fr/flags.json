@@ -2,11 +2,11 @@
 	"state": "Etat",
 	"reports": "Rapports",
 	"first-reported": "Premier rapport",
-	"no-flags": "Hourra ! Aucun signalement trouvé.",
+	"no-flags": "Excellent ! Aucun signalement trouvé.",
 	"assignee": "Assigné",
-	"update": "Mise à jour",
+	"update": "Mettre à jour",
 	"updated": "Mis à jour",
-	"target-purged": "Le contenu référencé par ce signalement a été supprimé et n'est plus accessible",
+	"target-purged": "Le rapport pour ce signalement a été supprimé et n'est plus accessible",
 
 	"graph-label": "Signalements du jour",
 	"quick-filters": "Filtres rapides",
@@ -48,7 +48,7 @@
 	"note-deleted": "Note supprimée",
 
 	"history": "Compte &amp; Historique des signalements",
-	"no-history": "aucun historique de signalements",
+	"no-history": "Aucun historique de signalements",
 
 	"state-all": "Tous les états",
 	"state-open": "Nouveau/Ouvert",
@@ -68,15 +68,15 @@
 	"sort-replies": "Réponses",
 
 	"modal-title": "Contenu du rapport",
-	"modal-body": "Veuillez saisir le motif de votre signalement pour %1 %2 et sélectionner le bouton ci-dessous le plus approprié.",
+	"modal-body": "Veuillez saisir le motif de votre signalement pour %1 %2 et valider à l'aide du bouton <strong>soumettre</strong> ci-dessous.",
 	"modal-reason-spam": "Spam",
 	"modal-reason-offensive": "Choquant",
 	"modal-reason-other": "Autre (précisez ci-dessous)",
 	"modal-reason-custom": "Motif du signalement...",
-	"modal-submit": "Soumettre le signalement",
+	"modal-submit": "Soumettre",
 	"modal-submit-success": "Le contenu a été soumis pour examen.",
 	"modal-submit-confirm": "Confirmer l'envoi",
-	"modal-submit-confirm-text": "Vous avez déjà spécifié un signalement. Êtes-vous sûr de vouloir soumettre une demande ?",
+	"modal-submit-confirm-text": "Vous avez déjà spécifié une raison personnalisée. Êtes-vous sûr de vouloir soumettre via un rapport rapide?",
 	"modal-submit-confirm-text-help": "La soumission d'une demande écrase tous les signalements définis.",
 
 	"bulk-actions": "Actions",

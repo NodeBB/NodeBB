@@ -1,10 +1,10 @@
 {
-    "tag": "Tag Settings",
-    "link-to-manage": "Manage Tags",
-    "min-per-topic": "Minimum Tags per Topic",
-    "max-per-topic": "Maximum Tags per Topic",
-    "min-length": "Minimum Tag Length",
-    "max-length": "Maximum Tag Length",
-    "related-topics": "Related Topics",
-    "max-related-topics": "Maximum related topics to display (if supported by theme)"
+    "tag": "הגדרות תגיות",
+    "link-to-manage": "נהל תגיות",
+    "min-per-topic": "מינימום תגיות לנושא",
+    "max-per-topic": "מקסימום תגיות לנושא",
+    "min-length": "אורך תגית מינימלי",
+    "max-length": "אורך תגית מקסימלי",
+    "related-topics": "נושאים קשורים",
+    "max-related-topics": "מספר מרבי של נושאים קשורים להצגה (אם נתמך על-ידי ערכת הנושא)"
 }

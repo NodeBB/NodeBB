@@ -28,7 +28,7 @@
 	"settings/languages": "שפות",
 	"settings/post": "פוסטים",
 	"settings/chat": "צ'אטים",
-	"settings/pagination": "עימוד",
+	"settings/pagination": "עמודים",
 	"settings/tags": "תגיות",
 	"settings/notifications": "התראות",
 	"settings/api": "גישת API",
@@ -46,10 +46,10 @@
 	"appearance/skins": "עיצובים",
 	"appearance/customise": "תוכן מותאם אישית (HTML/JS/CSS)",
 
-	"section-extend": "הרחב",
+	"section-extend": "הרחבות",
 	"extend/plugins": "תוספים",
 	"extend/widgets": "וידג'טים",
-	"extend/rewards": "פרסים",
+	"extend/rewards": "תגמולים",
 
 	"section-social-auth": "אימות חיצוני",
 
@@ -71,14 +71,14 @@
 	"logout": "התנתק",
 	"view-forum": "כניסה לפורום",
 
-	"search.placeholder": "לחץ &quot;/&quot; בכדי לחפש הגדרה",
+	"search.placeholder": "הקלד &quot;/&quot; בכדי לחפש הגדרה",
 	"search.no-results": "אין תוצאות...",
 	"search.search-forum": "חפש בפורום <strong></strong>",
-	"search.keep-typing": "הקלד עוד על מנת למצוא תוצאות...",
+	"search.keep-typing": "המשך להקליד על מנת למצוא תוצאות...",
 	"search.start-typing": "התחל להקליד על מנת לראות תוצאות...",
 
 	"connection-lost": "החיבור ל-%1 אבד, מנסה להתחבר מחדש...",
 
-	"alerts.version": "מריץ <strong>NodeBB v%1</strong>",
+	"alerts.version": "מעודכן ל-<strong>NodeBB v%1</strong>",
 	"alerts.upgrade": "שדרג ל v%1"
 }
