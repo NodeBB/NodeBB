@@ -29,7 +29,7 @@ Thumbs.get = async function (tids) {
 
 	const sets = tids.map(tid => `${validator.isUUID(String(tid)) ? 'draft' : 'topic'}:${tid}:thumbs`);
 	const thumbs = await db.getSortedSetsMembers(sets);
-	let response = thumbs.map(thumbSet => thumbSet.map((thumb, idx) => ({
+	let response = thumbs.map((thumbSet, idx) => thumbSet.map(thumb => ({
 		id: tids[idx],
 		name: path.basename(thumb),
 		url: path.join(nconf.get('upload_url'), thumb),
