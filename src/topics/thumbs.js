@@ -8,6 +8,7 @@ const validator = require('validator');
 const db = require('../database');
 const file = require('../file');
 const plugins = require('../plugins');
+const posts = require('../posts');
 
 const Thumbs = {};
 module.exports = Thumbs;
@@ -36,13 +37,20 @@ Thumbs.get = async function (tids) {
 	return singular ? response.pop() : response;
 };
 
-Thumbs.associate = async function (id, path) {
+Thumbs.associate = async function (id, relativePath) {
 	// Associates a newly uploaded file as a thumb to the passed-in draft or topic
 	const isDraft = validator.isUUID(String(id));
 	const set = `${isDraft ? 'draft' : 'topic'}:${id}:thumbs`;
 	const numThumbs = await db.sortedSetCard(set);
-	path = path.replace(nconf.get('upload_path'), '');
-	db.sortedSetAdd(set, numThumbs, path);
+	relativePath = relativePath.replace(nconf.get('upload_path'), '');
+	db.sortedSetAdd(set, numThumbs, relativePath);
+
+	// Associate thumbnails with the main pid
+	if (!isDraft) {
+		const topics = require('.');
+		const mainPid = (await topics.getMainPids([id]))[0];
+		posts.uploads.associate(mainPid, relativePath.replace('/files/', ''));
+	}
 };
 
 Thumbs.migrate = async function (uuid, id) {
@@ -67,6 +75,13 @@ Thumbs.delete = async function (id, relativePath) {
 
 		if (existsOnDisk) {
 			await file.delete(absolutePath);
+		}
+
+		// Dissociate thumbnails with the main pid
+		if (!isDraft) {
+			const topics = require('.');
+			const mainPid = (await topics.getMainPids([id]))[0];
+			posts.uploads.dissociate(mainPid, relativePath.replace('/files/', ''));
 		}
 	}
 };
