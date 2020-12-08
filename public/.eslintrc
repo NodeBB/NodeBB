@@ -31,11 +31,10 @@
 		"prefer-template": "off"
 	},
 	"parserOptions": {
-		"ecmaVersion": 6,
+		"ecmaVersion": 2018,
 		"ecmaFeatures": {
 			"classes": false,
 			"defaultParams": false,
-			"experimentalObjectRestSpread": false,
 			"blockBindings": false,
 			"forOf": false,
 			"generators": false,
