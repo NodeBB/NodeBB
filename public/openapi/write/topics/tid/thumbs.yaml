@@ -22,8 +22,18 @@ get:
               status:
                 $ref: ../../../components/schemas/Status.yaml#/Status
               response:
-                type: object
-                properties: {}
+                type: array
+                description: A list of the topic thumbnails that still remain
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    url:
+                      type: string
+                      description: Path to a topic thumbnail
 post:
   tags:
     - topics
@@ -141,6 +151,10 @@ delete:
                 items:
                   type: object
                   properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
                     url:
                       type: string
                       description: Path to a topic thumbnail
