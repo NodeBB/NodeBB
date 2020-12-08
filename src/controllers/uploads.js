@@ -120,12 +120,14 @@ uploadsController.uploadThumb = async function (req, res) {
 			throw new Error('[[error:invalid-file]]');
 		}
 		await image.isFileTypeAllowed(uploadedFile.path);
-		await image.checkDimensions(uploadedFile.path);
-		await image.resizeImage({
-			path: uploadedFile.path,
-			width: meta.config.topicThumbSize,
-			height: meta.config.topicThumbSize,
-		});
+		const dimensions = await image.checkDimensions(uploadedFile.path);
+
+		if (dimensions.width > parseInt(meta.config.topicThumbSize, 10)) {
+			await image.resizeImage({
+				path: uploadedFile.path,
+				width: meta.config.topicThumbSize,
+			});
+		}
 		if (plugins.hooks.hasListeners('filter:uploadImage')) {
 			return await plugins.hooks.fire('filter:uploadImage', {
 				image: uploadedFile,

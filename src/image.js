@@ -105,6 +105,8 @@ image.checkDimensions = async function (path) {
 	if (result.width > meta.config.rejectImageWidth || result.height > meta.config.rejectImageHeight) {
 		throw new Error('[[error:invalid-image-dimensions]]');
 	}
+
+	return result;
 };
 
 image.convertImageToBase64 = async function (path) {
