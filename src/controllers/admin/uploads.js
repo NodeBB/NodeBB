@@ -46,7 +46,7 @@ uploadsController.get = async function (req, res, next) {
 		});
 
 		// Add post usage info if in /files
-		if (req.query.dir === '/files') {
+		if (['/files', '/files/'].includes(req.query.dir)) {
 			const usage = await posts.uploads.getUsage(files);
 			files.forEach(function (file, idx) {
 				file.inPids = usage[idx].map(pid => parseInt(pid, 10));
