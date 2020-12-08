@@ -3,13 +3,13 @@
 const async = require('async');
 const nconf = require('nconf');
 const crypto = require('crypto');
-const fs = require('fs');
 const path = require('path');
 const winston = require('winston');
 const mime = require('mime');
 
 const db = require('../database');
 const image = require('../image');
+const file = require('../file');
 
 module.exports = function (Posts) {
 	Posts.uploads = {};
@@ -78,12 +78,8 @@ module.exports = function (Posts) {
 		if (!filePaths.length) {
 			return;
 		}
-		filePaths = await async.filter(filePaths, function (filePath, next) {
-			// Only process files that exist
-			fs.access(path.join(pathPrefix, filePath), fs.constants.F_OK | fs.constants.R_OK, function (err) {
-				next(null, !err);
-			});
-		});
+		// Only process files that exist
+		filePaths = await async.filter(filePaths, async filePath => await file.exists(path.join(pathPrefix, filePath)));
 
 		const now = Date.now();
 		const scores = filePaths.map(() => now);
