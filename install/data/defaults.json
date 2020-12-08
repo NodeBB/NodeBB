@@ -44,7 +44,7 @@
     "rejectImageWidth": 5000,
     "rejectImageHeight": 5000,
     "resizeImageQuality": 80,
-    "topicThumbSize": 120,
+    "topicThumbSize": 512,
     "minimumTitleLength": 3,
     "maximumTitleLength": 255,
     "minimumUsernameLength": 2,
