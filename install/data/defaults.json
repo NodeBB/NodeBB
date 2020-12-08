@@ -29,7 +29,7 @@
     "maximumTagsPerTopic": 5,
     "minimumTagLength": 3,
     "maximumTagLength": 15,
-    "allowTopicsThumbnail": 0,
+    "allowTopicsThumbnail": 1,
     "registrationType": "normal",
     "registrationApprovalType": "normal",
     "allowAccountDelete": 1,
