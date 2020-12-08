@@ -77,6 +77,9 @@ apiController.loadConfig = async function (req) {
 			link: translator.escape(validator.escape(meta.config.cookieConsentLink || '[[global:cookies.learn_more]]')).replace(/\\/g, '\\\\'),
 			link_url: translator.escape(validator.escape(meta.config.cookieConsentLinkUrl || 'https://www.cookiesandyou.com')).replace(/\\/g, '\\\\'),
 		},
+		thumbs: {
+			size: meta.config.topicThumbSize,
+		},
 	};
 
 	let settings = config;
