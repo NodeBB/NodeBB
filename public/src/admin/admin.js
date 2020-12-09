@@ -3,6 +3,9 @@
 (function () {
 	var logoutTimer = 0;
 	function startLogoutTimer() {
+		if (app.config.adminReloginDuration <= 0) {
+			return;
+		}
 		if (logoutTimer) {
 			clearTimeout(logoutTimer);
 		}
