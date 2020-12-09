@@ -73,24 +73,32 @@ describe('Topic thumbs', () => {
 
 		// Touch a couple files and associate it to a topic
 		createFiles();
-		db.sortedSetAdd(`topic:${topicObj.tid}:thumbs`, 0, `/${thumbPaths[0]}`);
+		db.sortedSetAdd(`topic:${topicObj.topicData.tid}:thumbs`, 0, `/${thumbPaths[0]}`);
 	});
 
 	it('should return bool for whether a thumb exists', async () => {
-		const exists = await topics.thumbs.exists(topicObj.tid, `/${thumbPaths[0]}`);
+		const exists = await topics.thumbs.exists(topicObj.topicData.tid, `/${thumbPaths[0]}`);
 		assert.strictEqual(exists, true);
 	});
 
 	describe('.get()', () => {
 		it('should return an array of thumbs', async () => {
-			const thumbs = await topics.thumbs.get(topicObj.tid);
-			assert.deepStrictEqual(thumbs, [{ url: `${nconf.get('upload_url')}/${thumbPaths[0]}` }]);
+			const thumbs = await topics.thumbs.get(topicObj.topicData.tid);
+			assert.deepStrictEqual(thumbs, [{
+				id: 1,
+				name: 'test.png',
+				url: `${nconf.get('upload_url')}/${thumbPaths[0]}`,
+			}]);
 		});
 
 		it('should return an array of an array of thumbs if multiple tids are passed in', async () => {
-			const thumbs = await topics.thumbs.get([topicObj.tid, topicObj.tid + 1]);
+			const thumbs = await topics.thumbs.get([topicObj.topicData.tid, topicObj.topicData.tid + 1]);
 			assert.deepStrictEqual(thumbs, [
-				[{ url: `${nconf.get('upload_url')}/${thumbPaths[0]}` }],
+				[{
+					id: 1,
+					name: 'test.png',
+					url: `${nconf.get('upload_url')}/${thumbPaths[0]}`,
+				}],
 				[],
 			]);
 		});
@@ -119,8 +127,16 @@ describe('Topic thumbs', () => {
 			const thumbs = await topics.thumbs.get(2);
 			assert.strictEqual(thumbs.length, 2);
 			assert.deepStrictEqual(thumbs, [
-				{ url: `${nconf.get('upload_url')}/${thumbPaths[0]}` },
-				{ url: `${nconf.get('upload_url')}/${thumbPaths[1]}` },
+				{
+					id: 2,
+					name: 'test.png',
+					url: `${nconf.get('upload_url')}/${thumbPaths[0]}`,
+				},
+				{
+					id: 2,
+					name: 'test2.png',
+					url: `${nconf.get('upload_url')}/${thumbPaths[1]}`,
+				},
 			]);
 		});
 	});
