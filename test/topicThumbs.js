@@ -28,7 +28,7 @@ describe('Topic thumbs', () => {
 	let fooJar;
 	let fooCSRF;
 	let fooUid;
-	const thumbPaths = ['files/test.png', 'files/test2.png', 'https://example.org'];
+	const thumbPaths = [`${nconf.get('upload_path')}/files/test.png`, `${nconf.get('upload_path')}/files/test2.png`, 'https://example.org'];
 	const uuid = utils.generateUUID();
 
 	function createFiles() {
@@ -88,7 +88,7 @@ describe('Topic thumbs', () => {
 			assert.deepStrictEqual(thumbs, [{
 				id: 1,
 				name: 'test.png',
-				url: `${nconf.get('upload_url')}/${thumbPaths[0]}`,
+				url: `${nconf.get('upload_url')}${thumbPaths[0]}`,
 			}]);
 		});
 
@@ -98,7 +98,7 @@ describe('Topic thumbs', () => {
 				[{
 					id: 1,
 					name: 'test.png',
-					url: `${nconf.get('upload_url')}/${thumbPaths[0]}`,
+					url: `${nconf.get('upload_url')}${thumbPaths[0]}`,
 				}],
 				[],
 			]);
@@ -147,7 +147,7 @@ describe('Topic thumbs', () => {
 				{
 					id: 2,
 					name: 'test.png',
-					url: `${nconf.get('upload_url')}/${thumbPaths[0]}`,
+					url: `${nconf.get('upload_url')}${thumbPaths[0]}`,
 				},
 				{
 					id: 2,
@@ -157,7 +157,7 @@ describe('Topic thumbs', () => {
 				{
 					id: 2,
 					name: 'test2.png',
-					url: `${nconf.get('upload_url')}/${thumbPaths[1]}`,
+					url: `${nconf.get('upload_url')}${thumbPaths[1]}`,
 				},
 			]);
 		});
@@ -172,7 +172,7 @@ describe('Topic thumbs', () => {
 			await topics.thumbs.delete(1, thumbPaths[0]);
 
 			assert.strictEqual(await db.isSortedSetMember('topic:1:thumbs', thumbPaths[0]), false);
-			assert.strictEqual(await file.exists(`${nconf.get('upload_path')}/${thumbPaths[0]}`), false);
+			assert.strictEqual(await file.exists(`${nconf.get('upload_path')}${thumbPaths[0]}`), false);
 		});
 
 		it('should also work with UUIDs', async () => {
@@ -183,7 +183,7 @@ describe('Topic thumbs', () => {
 			await topics.thumbs.delete(uuid, thumbPaths[1]);
 
 			assert.strictEqual(await db.isSortedSetMember(`draft:${uuid}:thumbs`, thumbPaths[1]), false);
-			assert.strictEqual(await file.exists(`${nconf.get('upload_path')}/${thumbPaths[1]}`), false);
+			assert.strictEqual(await file.exists(`${nconf.get('upload_path')}${thumbPaths[1]}`), false);
 		});
 
 		it('should also work with URLs', async () => {
@@ -199,7 +199,7 @@ describe('Topic thumbs', () => {
 		it('should not delete the file from disk if not associated with the tid', async () => {
 			createFiles();
 			await topics.thumbs.delete(uuid, thumbPaths[0]);
-			assert.strictEqual(await file.exists(`${nconf.get('upload_path')}/${thumbPaths[0]}`), true);
+			assert.strictEqual(await file.exists(`${nconf.get('upload_path')}${thumbPaths[0]}`), true);
 		});
 	});
 
