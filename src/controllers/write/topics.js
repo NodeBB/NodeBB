@@ -7,7 +7,7 @@ const topics = require('../../topics');
 const privileges = require('../../privileges');
 
 const helpers = require('../helpers');
-const middleware = require('../../middleware/assert');
+const middleware = require('../../middleware');
 const uploadsController = require('../uploads');
 
 const Topics = module.exports;
@@ -130,7 +130,7 @@ Topics.migrateThumbs = async (req, res) => {
 
 Topics.deleteThumb = async (req, res) => {
 	if (!req.body.path.startsWith('http')) {
-		await middleware.assert.path(req, res);
+		await middleware.assert.path(req, res, function () {});
 		if (res.headersSent) {
 			return;
 		}

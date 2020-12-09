@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 const validator = require('validator');
+const path = require('path');
 
 var db = require('../database');
 var posts = require('../posts');
@@ -172,6 +173,8 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 	// Note: Backwards compatibility with old thumb logic, remove in v1.16.0
 	if (topicData.thumb && !topicData.thumbs.length) {
 		topicData.thumbs = [{
+			id: topicData.tid,
+			name: path.basename(topicData.thumb),
 			url: topicData.thumb,
 		}];
 	} else if (topicData.thumbs.length) {
