@@ -250,8 +250,8 @@ async function processDeletion({ uid, method, password, caller }) {
 	const isSelf = parseInt(uid, 10) === caller.uid;
 	const isAdmin = await user.isAdministrator(caller.uid);
 
-	if (meta.config.allowAccountDelete !== 1) {
-		throw new Error('[[error:no-privileges]]');
+	if (isSelf && meta.config.allowAccountDelete !== 1) {
+		throw new Error('[[error:account-deletion-disabled]]');
 	} else if (!isSelf && !isAdmin) {
 		throw new Error('[[error:no-privileges]]');
 	} else if (isTargetAdmin) {
