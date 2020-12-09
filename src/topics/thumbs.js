@@ -42,13 +42,13 @@ Thumbs.get = async function (tids) {
 Thumbs.associate = async function ({ id, path: relativePath, url }) {
 	// Associates a newly uploaded file as a thumb to the passed-in draft or topic
 	const isDraft = validator.isUUID(String(id));
-	const value = relativePath || url;
+	let value = relativePath || url;
 	const set = `${isDraft ? 'draft' : 'topic'}:${id}:thumbs`;
 	const numThumbs = await db.sortedSetCard(set);
 
 	// Normalize the path to allow for changes in upload_path (and so upload_url can be appended if needed)
 	if (relativePath) {
-		relativePath = relativePath.replace(nconf.get('upload_path'), '');
+		value = value.replace(nconf.get('upload_path'), '');
 	}
 
 	db.sortedSetAdd(set, numThumbs, value);
