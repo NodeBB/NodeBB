@@ -115,17 +115,7 @@ Topics.getTopicsByTids = async function (tids, options) {
 	result.topics.forEach(function (topic, i) {
 		if (topic) {
 			topic.thumbs = result.thumbs[i];
-			// Note: Backwards compatibility with old thumb logic, remove in v1.16.0
-			if (topic.thumb && !topic.thumbs.length) {
-				topic.thumbs = [{
-					id: topic.tid,
-					name: path.basename(topic.thumb),
-					url: topic.thumb,
-				}];
-			} else if (topic.thumbs.length) {
-				topic.thumb = topic.thumbs[0].url;
-			}
-			// end
+			restoreThumbValue(topic);
 			topic.category = result.categoriesMap[topic.cid];
 			topic.user = topic.uid ? result.usersMap[topic.uid] : { ...result.usersMap[topic.uid] };
 			if (result.tidToGuestHandle[topic.tid]) {
@@ -152,6 +142,20 @@ Topics.getTopicsByTids = async function (tids, options) {
 	const hookResult = await plugins.hooks.fire('filter:topics.get', { topics: filteredTopics, uid: uid });
 	return hookResult.topics;
 };
+
+// Note: Backwards compatibility with old thumb logic, remove in v1.16.0
+function restoreThumbValue(topic) {
+	if (topic.thumb && !topic.thumbs.length) {
+		topic.thumbs = [{
+			id: topic.tid,
+			name: path.basename(topic.thumb),
+			url: topic.thumb,
+		}];
+	} else if (topic.thumbs.length) {
+		topic.thumb = topic.thumbs[0].url;
+	}
+}
+// end
 
 Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, reverse) {
 	const [
@@ -181,18 +185,7 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 	]);
 
 	topicData.thumbs = thumbs;
-	// Note: Backwards compatibility with old thumb logic, remove in v1.16.0
-	if (topicData.thumb && !topicData.thumbs.length) {
-		topicData.thumbs = [{
-			id: topicData.tid,
-			name: path.basename(topicData.thumb),
-			url: topicData.thumb,
-		}];
-	} else if (topicData.thumbs.length) {
-		topicData.thumb = topicData.thumbs[0].url;
-	}
-	// end
-
+	restoreThumbValue(topicData);
 	topicData.posts = posts;
 	topicData.category = category;
 	topicData.tagWhitelist = tagWhitelist[0];
