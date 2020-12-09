@@ -28,7 +28,7 @@ Thumbs.get = async function (tids) {
 	}
 
 	const sets = tids.map(tid => `${validator.isUUID(String(tid)) ? 'draft' : 'topic'}:${tid}:thumbs`);
-	const thumbs = await db.getSortedSetsMembers(sets);
+	const thumbs = await Promise.all(sets.map(async set => db.getSortedSetRange(set, 0, -1)));
 	let response = thumbs.map((thumbSet, idx) => thumbSet.map(thumb => ({
 		id: tids[idx],
 		name: path.basename(thumb),
