@@ -115,6 +115,17 @@ Topics.getTopicsByTids = async function (tids, options) {
 	result.topics.forEach(function (topic, i) {
 		if (topic) {
 			topic.thumbs = result.thumbs[i];
+			// Note: Backwards compatibility with old thumb logic, remove in v1.16.0
+			if (topic.thumb && !topic.thumbs.length) {
+				topic.thumbs = [{
+					id: topic.tid,
+					name: path.basename(topic.thumb),
+					url: topic.thumb,
+				}];
+			} else if (topic.thumbs.length) {
+				topic.thumb = topic.thumbs[0].url;
+			}
+			// end
 			topic.category = result.categoriesMap[topic.cid];
 			topic.user = topic.uid ? result.usersMap[topic.uid] : { ...result.usersMap[topic.uid] };
 			if (result.tidToGuestHandle[topic.tid]) {
