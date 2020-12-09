@@ -32,23 +32,29 @@ Thumbs.get = async function (tids) {
 	let response = thumbs.map((thumbSet, idx) => thumbSet.map(thumb => ({
 		id: tids[idx],
 		name: path.basename(thumb),
-		url: path.join(nconf.get('upload_url'), thumb),
+		url: thumb.startsWith('http') ? thumb : path.join(nconf.get('upload_url'), thumb),
 	})));
 
 	({ thumbs: response } = await plugins.hooks.fire('filter:topics.getThumbs', { tids, thumbs: response }));
 	return singular ? response.pop() : response;
 };
 
-Thumbs.associate = async function (id, relativePath) {
+Thumbs.associate = async function ({ id, path: relativePath, url }) {
 	// Associates a newly uploaded file as a thumb to the passed-in draft or topic
 	const isDraft = validator.isUUID(String(id));
+	const value = relativePath || url;
 	const set = `${isDraft ? 'draft' : 'topic'}:${id}:thumbs`;
 	const numThumbs = await db.sortedSetCard(set);
-	relativePath = relativePath.replace(nconf.get('upload_path'), '');
-	db.sortedSetAdd(set, numThumbs, relativePath);
 
-	// Associate thumbnails with the main pid
-	if (!isDraft) {
+	// Normalize the path to allow for changes in upload_path (and so upload_url can be appended if needed)
+	if (relativePath) {
+		relativePath = relativePath.replace(nconf.get('upload_path'), '');
+	}
+
+	db.sortedSetAdd(set, numThumbs, value);
+
+	// Associate thumbnails with the main pid (only on local upload)
+	if (!isDraft && relativePath) {
 		const topics = require('.');
 		const mainPid = (await topics.getMainPids([id]))[0];
 		posts.uploads.associate(mainPid, relativePath.replace('/files/', ''));
@@ -59,7 +65,7 @@ Thumbs.migrate = async function (uuid, id) {
 	// Converts the draft thumb zset to the topic zset (combines thumbs if applicable)
 	const set = `draft:${uuid}:thumbs`;
 	const thumbs = await db.getSortedSetRange(set, 0, -1);
-	await Promise.all(thumbs.map(async path => await Thumbs.associate(id, path)));
+	await Promise.all(thumbs.map(async path => await Thumbs.associate({ id, path })));
 	await db.delete(set);
 };
 

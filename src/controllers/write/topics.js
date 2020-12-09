@@ -7,6 +7,7 @@ const topics = require('../../topics');
 const privileges = require('../../privileges');
 
 const helpers = require('../helpers');
+const middleware = require('../../middleware/assert');
 const uploadsController = require('../uploads');
 
 const Topics = module.exports;
@@ -105,7 +106,11 @@ Topics.addThumb = async (req, res) => {
 	// Add uploaded files to topic zset
 	if (files && files.length) {
 		await Promise.all(files.map(async (fileObj) => {
-			await topics.thumbs.associate(req.params.tid, fileObj.path);
+			await topics.thumbs.associate({
+				id: req.params.tid,
+				path: fileObj.path || null,
+				url: fileObj.url,
+			});
 		}));
 	}
 };
@@ -124,6 +129,13 @@ Topics.migrateThumbs = async (req, res) => {
 };
 
 Topics.deleteThumb = async (req, res) => {
+	if (!req.body.path.startsWith('http')) {
+		await middleware.assert.path(req, res);
+		if (res.headersSent) {
+			return;
+		}
+	}
+
 	await checkThumbPrivileges({ tid: req.params.tid, uid: req.user.uid, res });
 	if (res.headersSent) {
 		return;

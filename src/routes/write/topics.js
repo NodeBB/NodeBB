@@ -37,7 +37,7 @@ module.exports = function () {
 	setupApiRoute(router, 'get', '/:tid/thumbs', [], controllers.write.topics.getThumbs);
 	setupApiRoute(router, 'post', '/:tid/thumbs', [multipartMiddleware, middleware.validateFiles, ...middlewares], controllers.write.topics.addThumb);
 	setupApiRoute(router, 'put', '/:tid/thumbs', [], controllers.write.topics.migrateThumbs);
-	setupApiRoute(router, 'delete', '/:tid/thumbs', [...middlewares, middleware.assert.path], controllers.write.topics.deleteThumb);
+	setupApiRoute(router, 'delete', '/:tid/thumbs', [...middlewares, middleware.checkRequired.bind(null, ['path'])], controllers.write.topics.deleteThumb);
 
 	return router;
 };

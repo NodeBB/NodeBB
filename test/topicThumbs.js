@@ -13,6 +13,7 @@ const user = require('../src/user');
 const groups = require('../src/groups');
 const topics = require('../src/topics');
 const categories = require('../src/categories');
+const plugins = require('../src/plugins');
 const file = require('../src/file');
 const utils = require('../src/utils');
 
@@ -27,7 +28,7 @@ describe('Topic thumbs', () => {
 	let fooJar;
 	let fooCSRF;
 	let fooUid;
-	const thumbPaths = ['files/test.png', 'files/test2.png'];
+	const thumbPaths = ['files/test.png', 'files/test2.png', 'https://example.org'];
 	const uuid = utils.generateUUID();
 
 	function createFiles() {
@@ -106,16 +107,32 @@ describe('Topic thumbs', () => {
 
 	describe('.associate()', () => {
 		it('should add an uploaded file to a zset', async () => {
-			await topics.thumbs.associate(2, thumbPaths[0]);
+			await topics.thumbs.associate({
+				id: 2,
+				path: thumbPaths[0],
+			});
 
 			const exists = await db.isSortedSetMember(`topic:2:thumbs`, thumbPaths[0]);
 			assert(exists);
 		});
 
 		it('should also work with UUIDs', async () => {
-			await topics.thumbs.associate(uuid, thumbPaths[1]);
+			await topics.thumbs.associate({
+				id: uuid,
+				path: thumbPaths[1],
+			});
 
 			const exists = await db.isSortedSetMember(`draft:${uuid}:thumbs`, thumbPaths[1]);
+			assert(exists);
+		});
+
+		it('should also work with a URL', async () => {
+			await topics.thumbs.associate({
+				id: 2,
+				path: thumbPaths[2],
+			});
+
+			const exists = await db.isSortedSetMember(`topic:2:thumbs`, thumbPaths[2]);
 			assert(exists);
 		});
 	});
@@ -125,12 +142,17 @@ describe('Topic thumbs', () => {
 			await topics.thumbs.migrate(uuid, 2);
 
 			const thumbs = await topics.thumbs.get(2);
-			assert.strictEqual(thumbs.length, 2);
+			assert.strictEqual(thumbs.length, 3);
 			assert.deepStrictEqual(thumbs, [
 				{
 					id: 2,
 					name: 'test.png',
 					url: `${nconf.get('upload_url')}/${thumbPaths[0]}`,
+				},
+				{
+					id: 2,
+					name: 'example.org',
+					url: 'https://example.org',
 				},
 				{
 					id: 2,
@@ -143,7 +165,10 @@ describe('Topic thumbs', () => {
 
 	describe(`.delete()`, () => {
 		it('should remove a file from sorted set AND disk', async () => {
-			await topics.thumbs.associate(1, thumbPaths[0]);
+			await topics.thumbs.associate({
+				id: 1,
+				path: thumbPaths[0],
+			});
 			await topics.thumbs.delete(1, thumbPaths[0]);
 
 			assert.strictEqual(await db.isSortedSetMember('topic:1:thumbs', thumbPaths[0]), false);
@@ -151,11 +176,24 @@ describe('Topic thumbs', () => {
 		});
 
 		it('should also work with UUIDs', async () => {
-			await topics.thumbs.associate(uuid, thumbPaths[1]);
+			await topics.thumbs.associate({
+				id: uuid,
+				path: thumbPaths[1],
+			});
 			await topics.thumbs.delete(uuid, thumbPaths[1]);
 
 			assert.strictEqual(await db.isSortedSetMember(`draft:${uuid}:thumbs`, thumbPaths[1]), false);
 			assert.strictEqual(await file.exists(`${nconf.get('upload_path')}/${thumbPaths[1]}`), false);
+		});
+
+		it('should also work with URLs', async () => {
+			await topics.thumbs.associate({
+				id: uuid,
+				path: thumbPaths[2],
+			});
+			await topics.thumbs.delete(uuid, thumbPaths[2]);
+
+			assert.strictEqual(await db.isSortedSetMember(`draft:${uuid}:thumbs`, thumbPaths[2]), false);
 		});
 
 		it('should not delete the file from disk if not associated with the tid', async () => {
@@ -184,6 +222,27 @@ describe('Topic thumbs', () => {
 				assert.strictEqual(res.statusCode, 200);
 				done();
 			});
+		});
+
+		it('should succeed with uploader plugins', async () => {
+			const hookMethod = async () => ({
+				name: 'test.png',
+				url: 'https://example.org',
+			});
+			await plugins.hooks.register('test', {
+				hook: 'filter:uploadFile',
+				method: hookMethod,
+			});
+
+			await new Promise((resolve) => {
+				helpers.uploadFile(`${nconf.get('url')}/api/v3/topics/${uuid}/thumbs`, path.join(__dirname, './files/test.png'), {}, adminJar, adminCSRF, function (err, res, body) {
+					assert.ifError(err);
+					assert.strictEqual(res.statusCode, 200);
+					resolve();
+				});
+			});
+
+			await plugins.hooks.unregister('test', 'filter:uploadFile', hookMethod);
 		});
 
 		it('should fail with a non-existant tid', (done) => {
