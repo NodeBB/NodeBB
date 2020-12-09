@@ -75,11 +75,11 @@ describe('Topic thumbs', () => {
 
 		// Touch a couple files and associate it to a topic
 		createFiles();
-		db.sortedSetAdd(`topic:${topicObj.topicData.tid}:thumbs`, 0, `/${thumbPaths[0]}`);
+		db.sortedSetAdd(`topic:${topicObj.topicData.tid}:thumbs`, 0, `/${relativeThumbPaths[0]}`);
 	});
 
 	it('should return bool for whether a thumb exists', async () => {
-		const exists = await topics.thumbs.exists(topicObj.topicData.tid, `/${thumbPaths[0]}`);
+		const exists = await topics.thumbs.exists(topicObj.topicData.tid, `/${relativeThumbPaths[0]}`);
 		assert.strictEqual(exists, true);
 	});
 
@@ -89,7 +89,7 @@ describe('Topic thumbs', () => {
 			assert.deepStrictEqual(thumbs, [{
 				id: 1,
 				name: 'test.png',
-				url: `${nconf.get('upload_url')}${thumbPaths[0]}`,
+				url: `${nconf.get('upload_url')}${relativeThumbPaths[0]}`,
 			}]);
 		});
 
@@ -99,7 +99,7 @@ describe('Topic thumbs', () => {
 				[{
 					id: 1,
 					name: 'test.png',
-					url: `${nconf.get('upload_url')}${thumbPaths[0]}`,
+					url: `${nconf.get('upload_url')}${relativeThumbPaths[0]}`,
 				}],
 				[],
 			]);
