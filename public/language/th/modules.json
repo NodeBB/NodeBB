@@ -65,5 +65,11 @@
     "bootbox.confirm": "ยืนยัน",
     "cover.dragging_title": "ตำแหน่งภาพหน้าปก",
     "cover.dragging_message": "ลากภาพหน้าปกเพื่อเลือกตำแหน่งแล้วกด \"บันทึก\"",
-    "cover.saved": "ภาพหน้าปกและตำแหน่งได้รับการบันทึกแล้ว"
+    "cover.saved": "ภาพหน้าปกและตำแหน่งได้รับการบันทึกแล้ว",
+    "thumbs.modal.title": "Manage topic thumbnails",
+    "thumbs.modal.no-thumbs": "No thumbnails found.",
+    "thumbs.modal.resize-note": "<strong>Note</strong>: This forum is configured to resize topic thumbnails down to a maximum width of %1px",
+    "thumbs.modal.add": "Add thumbnail",
+    "thumbs.modal.remove": "Remove thumbnail",
+    "thumbs.modal.confirm-remove": "Are you sure you want to remove this thumbnail?"
 }
