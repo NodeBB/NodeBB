@@ -75,7 +75,7 @@ describe('Topic thumbs', () => {
 
 		// Touch a couple files and associate it to a topic
 		createFiles();
-		db.sortedSetAdd(`topic:${topicObj.topicData.tid}:thumbs`, 0, `/${relativeThumbPaths[0]}`);
+		await db.sortedSetAdd(`topic:${topicObj.topicData.tid}:thumbs`, 0, `/${relativeThumbPaths[0]}`);
 	});
 
 	it('should return bool for whether a thumb exists', async () => {
