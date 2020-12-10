@@ -51,7 +51,7 @@ Thumbs.associate = async function ({ id, path: relativePath, url }) {
 		value = value.replace(nconf.get('upload_path'), '');
 	}
 
-	db.sortedSetAdd(set, numThumbs, value);
+	await db.sortedSetAdd(set, numThumbs, value);
 
 	// Associate thumbnails with the main pid (only on local upload)
 	if (!isDraft && relativePath) {
