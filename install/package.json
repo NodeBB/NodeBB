@@ -141,7 +141,7 @@
         "tinycon": "0.6.8",
         "toobusy-js": "^0.5.1",
         "uglify-es": "^3.3.9",
-        "validator": "13.5.1",
+        "validator": "13.5.2",
         "visibilityjs": "2.0.2",
         "winston": "3.3.3",
         "xml": "^1.0.1",
