@@ -91,6 +91,7 @@
     "already-unbookmarked": "Du hast diesen Beitrag bereits aus deinen Lesezeichen entfernt",
     "cant-ban-other-admins": "Du kannst andere Administratoren nicht sperren!",
     "cant-remove-last-admin": "Du bist der einzige Administrator. Füge zuerst einen anderen Administrator hinzu, bevor du dich selbst als Administrator entfernst",
+    "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "Bevor du versuchst dieses Konto zu löschen, entferne die zugehörigen Administratorrechte.",
     "already-deleting": "Already deleting",
     "invalid-image": "Ungültiges Bild",

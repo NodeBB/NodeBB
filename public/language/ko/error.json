@@ -91,6 +91,7 @@
     "already-unbookmarked": "이미 즐겨찾기를 해제한 포스트 입니다.",
     "cant-ban-other-admins": "다른 관리자를 차단할 수 없습니다.",
     "cant-remove-last-admin": "귀하는 유일한 관리자입니다. 관리자를 그만두시기 전에 다른 사용자를 관리자로 임명하세요.",
+    "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "해당 계정을 삭제하기 전에 관리자 권한을 해제 해주십시오.",
     "already-deleting": "Already deleting",
     "invalid-image": "올바르지 않은 이미지입니다.",

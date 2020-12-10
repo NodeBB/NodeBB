@@ -91,6 +91,7 @@
     "already-unbookmarked": "Већ сте одстранили ову поруку из обележивача",
     "cant-ban-other-admins": "Не можете забранити друге администраторе!",
     "cant-remove-last-admin": "Ви сте једини администратор. Додајте другог корисника као администратора пре него што уклоните себе као администратора.",
+    "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "Уклоните администраторске привилегије овом налогу пре него што покушате да га избришете.",
     "already-deleting": "Already deleting",
     "invalid-image": "Неважећа слика",

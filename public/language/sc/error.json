@@ -91,6 +91,7 @@
     "already-unbookmarked": "You have already unbookmarked this post",
     "cant-ban-other-admins": "You can't ban other admins!",
     "cant-remove-last-admin": "You are the only administrator. Add another user as an administrator before removing yourself as admin",
+    "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "Remove administrator privileges from this account before attempting to delete it.",
     "already-deleting": "Already deleting",
     "invalid-image": "Invalid image",

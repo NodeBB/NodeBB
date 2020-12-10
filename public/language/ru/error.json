@@ -91,6 +91,7 @@
     "already-unbookmarked": "Вы уже удалили это сообщение из закладок",
     "cant-ban-other-admins": "Вы не можете заблокировать других администраторов!",
     "cant-remove-last-admin": "Вы единственный администратор. Чтобы отказаться от своих полномочий, пожалуйста, назначьте администратором другого участника.",
+    "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "Чтобы удалить эту учётную запись, сначала надо снять с неё полномочия администратора.",
     "already-deleting": "Already deleting",
     "invalid-image": "Некорректное изображение",

@@ -91,6 +91,7 @@
     "already-unbookmarked": "Vous avez déjà retiré un marque-page",
     "cant-ban-other-admins": "Vous ne pouvez pas bannir les autres administrateurs !",
     "cant-remove-last-admin": "Vous êtes le seul administrateur. Ajoutez un autre utilisateur en tant qu'administrateur avant de vous retirer.",
+    "account-deletion-disabled": "La suppression du compte est désactivée",
     "cant-delete-admin": "Veuillez retirer les droits d'administration de ce compte avant de tenter de le supprimer.",
     "already-deleting": "Déjà supprimé",
     "invalid-image": "Image invalide",

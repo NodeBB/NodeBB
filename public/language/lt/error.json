@@ -91,6 +91,7 @@
     "already-unbookmarked": "Jūs jau nuėmėte žymeklį šiam įrašui",
     "cant-ban-other-admins": "Jūs negalite užblokuoti kitų administratorių!",
     "cant-remove-last-admin": "Jūs esate vienintelis administratorius. Pridėkite kitą vartotoja kaip administratorių prieš pašalindamas save",
+    "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "Pašalinkite administratoriaus teises šiai paskyrai prieš bandydami ją ištrinti.",
     "already-deleting": "Already deleting",
     "invalid-image": "Blogas paveikslėlis",

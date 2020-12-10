@@ -91,6 +91,7 @@
     "already-unbookmarked": "Już usunąłeś ten post z zakładek",
     "cant-ban-other-admins": "Nie możesz zbanować innych adminów!",
     "cant-remove-last-admin": "Jesteś jedynym administratorem. Dodaj innego użytkownika jako administratora przed usunięciem siebie z tej grupy",
+    "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "Usuń uprawnienia administratora z tego konta przed próbą jego usunięcia.",
     "already-deleting": "Already deleting",
     "invalid-image": "Błędny obraz.",

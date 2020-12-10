@@ -91,6 +91,7 @@
     "already-unbookmarked": "Hai già rimosso questa discussione dai preferiti",
     "cant-ban-other-admins": "Non puoi bannare altri amministratori!",
     "cant-remove-last-admin": "Sei l'unico Amministratore. Aggiungi un altro amministratore prima di rimuovere il tuo ruolo",
+    "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "Togli i privilegi amministrativi da questo account prima di provare ad eliminarlo.",
     "already-deleting": "Già eliminando",
     "invalid-image": "Immagine non Valida",

@@ -91,6 +91,7 @@
     "already-unbookmarked": "คุณได้ลบบุ๊กมาร์คของโพสต์นี้แล้ว",
     "cant-ban-other-admins": "คุณแบนแอดมินไม่ได้!!!",
     "cant-remove-last-admin": "คุณเป็นแอดมินเพียงคนเดียว กรุณาเพิ่มผู้ใช้คนอื่นเป็นแอดมิน ก่อนการลบตัวเองออกจากแอดมิน",
+    "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "ลบสิทธิพิเศษของแอดมินจากบัญชีผู้ใช้นี้ ก่อนทำการลบ",
     "already-deleting": "Already deleting",
     "invalid-image": "Invalid image",

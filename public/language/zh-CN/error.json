@@ -91,6 +91,7 @@
     "already-unbookmarked": "您已取消了此贴的书签",
     "cant-ban-other-admins": "您不能封禁其他管理员！",
     "cant-remove-last-admin": "您是唯一的管理员。在删除您的管理员权限前，请添加另一个管理员。",
+    "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "在删除该账号之前，请先移除其管理权限。",
     "already-deleting": "Already deleting",
     "invalid-image": "无效的图片",

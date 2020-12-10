@@ -91,6 +91,7 @@
     "already-unbookmarked": "您已移除了此貼文的書籤",
     "cant-ban-other-admins": "您不能封鎖其他管理員！",
     "cant-remove-last-admin": "您是唯一的管理員。在刪除您的管理員權限前，請增加另一個管理員。",
+    "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "在刪除該帳戶之前，請先移除其管理權限。",
     "already-deleting": "Already deleting",
     "invalid-image": "無效的圖檔",

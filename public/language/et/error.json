@@ -91,6 +91,7 @@
     "already-unbookmarked": "You have already unbookmarked this post",
     "cant-ban-other-admins": "Sa ei saa bannida teisi administraatoreid!",
     "cant-remove-last-admin": "Te olete ainus administraator. Lisage keegi teine administraatoriks, enne kui eemaldate endalt administraatori.",
+    "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "Eemalda sellelt kasutajalt administraatori õigused enne selle kustutamist",
     "already-deleting": "Already deleting",
     "invalid-image": "Invalid image",

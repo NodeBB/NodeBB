@@ -91,6 +91,7 @@
     "already-unbookmarked": "Tento príspevok už nemáte medzi záložkami",
     "cant-ban-other-admins": "Nemôžte zablokovať iných správcov.",
     "cant-remove-last-admin": "Momentálne ste jediný správca. Najskôr pridajte ďalšieho užívateľa za správcu predtým, ako zrušíte svoje výsady správcu",
+    "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "Odobrať oprávnenie správcu z tohto účtu pred pokusom ho odstrániť.",
     "already-deleting": "Already deleting",
     "invalid-image": "Neplatný obrázok",

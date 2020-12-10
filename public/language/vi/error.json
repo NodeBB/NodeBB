@@ -91,6 +91,7 @@
     "already-unbookmarked": "Bạn đã hủy bookmark chủ đề này rồi",
     "cant-ban-other-admins": "Bạn không thể cấm được các quản trị viên khác",
     "cant-remove-last-admin": "Bạn là quản trị viên duy nhất. Hãy cho thành viên khác làm quản trị viên trước khi huỷ bỏ quyền quản trị của bạn.",
+    "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "Hủy quyền quản trị của tài khoản này trước khi xóa",
     "already-deleting": "Already deleting",
     "invalid-image": "Hình ảnh không hợp lệ",

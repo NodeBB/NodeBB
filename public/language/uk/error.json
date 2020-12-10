@@ -91,6 +91,7 @@
     "already-unbookmarked": "Ви вже видалили цей пост із закладок",
     "cant-ban-other-admins": "Ви не можете банити інших адмінів!",
     "cant-remove-last-admin": "Ви єдиний адміністратор. Додайте іншого користувача в якості адміністратора перш ніж  знімати з себе ці обов'язки.",
+    "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "Зніміть обов'язки адміністратора з цього акаунту перш ніж видаляти його.",
     "already-deleting": "Already deleting",
     "invalid-image": "Невірне зображення",

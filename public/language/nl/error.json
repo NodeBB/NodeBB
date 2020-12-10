@@ -91,6 +91,7 @@
     "already-unbookmarked": "Je hebt dit bericht al verwijderd uit je favorieten",
     "cant-ban-other-admins": "Het is niet toegestaan andere beheerders te verbannen!",
     "cant-remove-last-admin": "Je bent de enige beheerder. Stel eerst een andere gebruiker als beheerder in voordat je jezelf geen beheerder meer maakt.",
+    "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "Verwijder administratieve rechten van dit account voordat je probeert deze te verwijderen",
     "already-deleting": "Already deleting",
     "invalid-image": "Ongeldige afbeelding",

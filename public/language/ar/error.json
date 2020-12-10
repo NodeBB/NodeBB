@@ -91,6 +91,7 @@
     "already-unbookmarked": "You have already unbookmarked this post",
     "cant-ban-other-admins": "لايمكن حظر مدبر نظام آخر.",
     "cant-remove-last-admin": "رجاءًا ، أضف مدير أخر قبل حذف صلاحيات الإدارة من حسابك.",
+    "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "رجاءًا أزل صلاحيات الإدارة قبل حذف الحساب. ",
     "already-deleting": "Already deleting",
     "invalid-image": "Invalid image",

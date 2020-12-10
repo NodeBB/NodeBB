@@ -91,6 +91,7 @@
     "already-unbookmarked": "Xa desmarcaches esta mensaxe",
     "cant-ban-other-admins": "Non podes botar outros administradores!",
     "cant-remove-last-admin": "Eres o único administrador. Engade outros administradores antes de quitarte a ti mesmo como administrador.",
+    "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "Retirar privilexios de administrador desta conta antes de intentar borrala",
     "already-deleting": "Already deleting",
     "invalid-image": "Invalid image",

@@ -91,6 +91,7 @@
     "already-unbookmarked": "You have already unbookmarked this post",
     "cant-ban-other-admins": "Anda tidak boleh haramkan admin / pentadbir!",
     "cant-remove-last-admin": "Anda satu-satunya pentadbir. Tambah pentadbir lain sebelum membuang diri anda sebagai pentadbir",
+    "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "Remove administrator privileges from this account before attempting to delete it.",
     "already-deleting": "Already deleting",
     "invalid-image": "Invalid image",

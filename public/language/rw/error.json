@@ -91,6 +91,7 @@
     "already-unbookmarked": "You have already unbookmarked this post",
     "cant-ban-other-admins": "Ntabwo wakwirukana abandi bayobozi!",
     "cant-remove-last-admin": "Ni wowe muyobozi wenyine. Ongeramo undi muntu nk'umuyobozi mbere y'uko wikura ku buyobozi",
+    "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "Remove administrator privileges from this account before attempting to delete it.",
     "already-deleting": "Already deleting",
     "invalid-image": "Invalid image",

@@ -91,6 +91,7 @@
     "already-unbookmarked": "Ya desmarcarste este mensaje",
     "cant-ban-other-admins": "¡No puedes expulsar a otros administradores!",
     "cant-remove-last-admin": "Tu eres el unico administrador. Añade otro usuario como administrador antes de eliminarte a ti mismo.",
+    "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "Quitar privilegios de administrador de ésta cuenta antes de intentar borrarla",
     "already-deleting": "Already deleting",
     "invalid-image": "Imagen inválida",

@@ -91,6 +91,7 @@
     "already-unbookmarked": "Bu iletiyi yer iminden çıkardın",
     "cant-ban-other-admins": "Başka yöneticileri yasaklayamazsınız!",
     "cant-remove-last-admin": "Tek yönetici sizsiniz. Kendinizi adminlikten çıkarmadan önce başka bir kullanıcıyı admin olarak ekleyiniz",
+    "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "Öncelikle yönetici izinlerini kaldırman gerekiyor.",
     "already-deleting": "Already deleting",
     "invalid-image": "Geçersiz görsel",

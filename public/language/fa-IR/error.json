@@ -91,6 +91,7 @@
     "already-unbookmarked": "شما قبلا این پست را از نشانک در آوردید",
     "cant-ban-other-admins": "شما نمی‌توانید دیگر مدیران را محروم کنید!",
     "cant-remove-last-admin": "شما تنها مدیر می باشید . شما باید قبل از عزل خود از مدیریت یک کاربر دیگر را مدیر کنید",
+    "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "قبل از حذف این کاربر دسترسی های مدیریت را از وی بگیرید.",
     "already-deleting": "Already deleting",
     "invalid-image": "عکس نامعتبر",
