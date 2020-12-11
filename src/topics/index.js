@@ -143,7 +143,7 @@ Topics.getTopicsByTids = async function (tids, options) {
 	return hookResult.topics;
 };
 
-// Note: Backwards compatibility with old thumb logic, remove in v1.16.0
+// Note: Backwards compatibility with old thumb logic, remove in v1.17.0
 function restoreThumbValue(topic) {
 	if (topic.thumb && !topic.thumbs.length) {
 		topic.thumbs = [{

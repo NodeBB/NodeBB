@@ -25,7 +25,7 @@ require('./usage')(Plugins);
 Plugins.data = require('./data');
 Plugins.hooks = require('./hooks');
 
-// Backwards compatibility for hooks, remove in v1.16.0
+// Backwards compatibility for hooks, remove in v1.17.0
 Plugins.registerHook = Plugins.hooks.register;
 Plugins.unregisterHook = Plugins.hooks.unregister;
 Plugins.fireHook = Plugins.hooks.fire;
