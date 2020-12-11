@@ -151,6 +151,12 @@ middleware.checkPrivileges = helpers.try(async (req, res, next) => {
 
 	req.session.returnTo = returnTo;
 	req.session.forceLogin = 1;
+
+	await plugins.hooks.fire('response:auth.relogin', { req, res });
+	if (res.headersSent) {
+		return;
+	}
+
 	if (res.locals.isAPI) {
 		res.status(401).json({});
 	} else {
