@@ -73,11 +73,8 @@ User.validateEmail = async function (socket, uids) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	uids = uids.filter(uid => parseInt(uid, 10));
-	await db.setObjectField(uids.map(uid => 'user:' + uid), 'email:confirmed', 1);
 	for (const uid of uids) {
-		await groups.join('verified-users', uid);
-		await groups.leave('unverified-users', uid);
+		await user.email.confirmByUid(uid);
 	}
 };
 

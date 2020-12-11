@@ -2335,7 +2335,7 @@ describe('User', function () {
 
 	describe('email confirm', function () {
 		it('should error with invalid code', function (done) {
-			User.email.confirm('asdasda', function (err) {
+			User.email.confirmByCode('asdasda', function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
@@ -2351,7 +2351,25 @@ describe('User', function () {
 			const code = await User.email.sendValidationEmail(uid, email);
 			const unverified = await groups.isMember(uid, 'unverified-users');
 			assert.strictEqual(unverified, true);
-			await User.email.confirm(code);
+			await User.email.confirmByCode(code);
+			const [confirmed, isVerified] = await Promise.all([
+				db.getObjectField('user:' + uid, 'email:confirmed'),
+				groups.isMember(uid, 'verified-users', uid),
+			]);
+			assert.strictEqual(parseInt(confirmed, 10), 1);
+			assert.strictEqual(isVerified, true);
+		});
+
+		it('should confirm email of user by uid', async function () {
+			const email = 'confirm2@me.com';
+			const uid = await User.create({
+				username: 'confirme2',
+				email: email,
+			});
+
+			const unverified = await groups.isMember(uid, 'unverified-users');
+			assert.strictEqual(unverified, true);
+			await User.email.confirmByUid(uid);
 			const [confirmed, isVerified] = await Promise.all([
 				db.getObjectField('user:' + uid, 'email:confirmed'),
 				groups.isMember(uid, 'verified-users', uid),

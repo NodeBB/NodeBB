@@ -205,7 +205,7 @@ Controllers.registerInterstitial = async function (req, res, next) {
 };
 
 Controllers.confirmEmail = function (req, res) {
-	user.email.confirm(req.params.code, function (err) {
+	user.email.confirmByCode(req.params.code, function (err) {
 		res.render('confirm', {
 			error: err ? err.message : '',
 			title: '[[pages:confirm]]',

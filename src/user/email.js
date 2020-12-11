@@ -1,17 +1,18 @@
 
 'use strict';
 
-var nconf = require('nconf');
+const nconf = require('nconf');
+const winston = require('winston');
 
-var user = require('./index');
-var utils = require('../utils');
-var plugins = require('../plugins');
-var db = require('../database');
-var meta = require('../meta');
-var emailer = require('../emailer');
+const user = require('./index');
+const utils = require('../utils');
+const plugins = require('../plugins');
+const db = require('../database');
+const meta = require('../meta');
+const emailer = require('../emailer');
 const groups = require('../groups');
 
-var UserEmail = module.exports;
+const UserEmail = module.exports;
 
 UserEmail.exists = async function (email) {
 	const uid = await user.getUidByEmail(email.toLowerCase());
@@ -88,6 +89,13 @@ UserEmail.sendValidationEmail = async function (uid, options) {
 };
 
 UserEmail.confirm = async function (code) {
+	// TODO: remove in 1.17.0
+	winston.warn('[deprecated] User.email.confirm deprecated use User.email.confirmByCode');
+	await UserEmail.confirmByCode(code);
+};
+
+// confirm email by code sent by confirmation email
+UserEmail.confirmByCode = async function (code) {
 	const confirmObj = await db.getObject('confirm:' + code);
 	if (!confirmObj || !confirmObj.uid || !confirmObj.email) {
 		throw new Error('[[error:invalid-data]]');
@@ -96,10 +104,24 @@ UserEmail.confirm = async function (code) {
 	if (!currentEmail || currentEmail.toLowerCase() !== confirmObj.email) {
 		throw new Error('[[error:invalid-email]]');
 	}
-	await user.setUserField(confirmObj.uid, 'email:confirmed', 1);
-	await groups.join('verified-users', confirmObj.uid);
-	await groups.leave('unverified-users', confirmObj.uid);
+	await UserEmail.confirmByUid(confirmObj.uid);
 	await db.delete('confirm:' + code);
-	await db.delete('uid:' + confirmObj.uid + ':confirm:email:sent');
-	await plugins.hooks.fire('action:user.email.confirmed', { uid: confirmObj.uid, email: confirmObj.email });
+};
+
+// confirm uid's email
+UserEmail.confirmByUid = async function (uid) {
+	if (!(parseInt(uid, 10) > 0)) {
+		throw new Error('[[error:invalid-uid]]');
+	}
+	const currentEmail = await user.getUserField(uid, 'email');
+	if (!currentEmail) {
+		throw new Error('[[error:invalid-email]]');
+	}
+	await Promise.all([
+		user.setUserField(uid, 'email:confirmed', 1),
+		groups.join('verified-users', uid),
+		groups.leave('unverified-users', uid),
+		db.delete('uid:' + uid + ':confirm:email:sent'),
+	]);
+	await plugins.hooks.fire('action:user.email.confirmed', { uid: uid, email: currentEmail });
 };
