@@ -255,8 +255,8 @@ async function addOGImageTags(res, topicData, postAtIndex) {
 		upload.name = url + upload_url + '/files/' + upload.name;
 		return upload;
 	});
-	if (topicData.thumb) {
-		images.push(topicData.thumb);
+	if (topicData.thumbs) {
+		images.push(...topicData.thumbs.map(thumbObj => ({ name: nconf.get('url') + thumbObj.url })));
 	}
 	if (topicData.category.backgroundImage && (!postAtIndex || !postAtIndex.index)) {
 		images.push(topicData.category.backgroundImage);
