@@ -86,7 +86,7 @@ image.size = async function (path) {
 };
 
 image.stripEXIF = async function (path) {
-	if (!meta.config.stripEXIFData || path.endsWith('.gif')) {
+	if (!meta.config.stripEXIFData || path.endsWith('.gif') || path.endsWith('.svg')) {
 		return;
 	}
 	try {
