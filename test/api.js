@@ -169,8 +169,40 @@ describe('API', async () => {
 	readApi = await SwaggerParser.dereference(readApiPath);
 	writeApi = await SwaggerParser.dereference(writeApiPath);
 
-	generateTests(readApi, Object.keys(readApi.paths));
-	generateTests(writeApi, Object.keys(writeApi.paths), writeApi.servers[0].url);
+	it('should grab all mounted routes and ensure a schema exists', async () => {
+		const webserver = require('../src/webserver');
+		const buildPaths = function (stack, prefix) {
+			const paths = stack.reduce((memo, cur) => {
+				if (cur.route && cur.route.path && typeof cur.route.path === 'string' && cur.route.path.startsWith('/api/')) {
+					memo.push({
+						method: Object.keys(cur.route.methods)[0],
+						path: (prefix || '') + cur.route.path,
+					});
+				} else if (cur.name === 'router') {
+					const prefix = cur.regexp.toString().replace('/^', '').replace('\\/?(?=\\/|$)/i', '').replace(/\\\//g, '/');
+					memo = memo.concat(buildPaths(cur.handle.stack, prefix));
+				}
+				return memo;
+			}, []);
+
+			return paths;
+		};
+		const paths = buildPaths(webserver.app._router.stack);
+
+		// For each express path, query for existence in read and write api schemas
+		paths.forEach((pathObj) => {
+			describe(`${pathObj.method.toUpperCase()} ${pathObj.path}`, () => {
+				it('should be defined in schema docs', () => {
+					const schema = pathObj.path.startsWith('/api/v3') ? writeApi : readApi;
+					const normalizedPath = pathObj.path.replace(/\/:([^\\/]+)/g, '/{$1}').replace(/\?/g, '');
+					assert(schema.paths.hasOwnProperty(normalizedPath));
+				});
+			});
+		});
+	});
+
+	// generateTests(readApi, Object.keys(readApi.paths));
+	// generateTests(writeApi, Object.keys(writeApi.paths), writeApi.servers[0].url);
 
 	function generateTests(api, paths, prefix) {
 		// Iterate through all documented paths, make a call to it, and compare the result body with what is defined in the spec
