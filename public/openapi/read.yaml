@@ -225,7 +225,7 @@ paths:
     $ref: 'read/me.yaml'
   /api/me/*:
     $ref: 'read/me.yaml'
-  "/api/uid/{uid}/*":
+  "/api/uid/{uid*}":
     $ref: 'read/uid/uid.yaml'
   "/api/user/{userslug}":
     $ref: 'read/user/userslug.yaml'

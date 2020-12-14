@@ -187,7 +187,10 @@ describe('API', async () => {
 
 			return paths;
 		};
-		const paths = buildPaths(webserver.app._router.stack);
+		const paths = buildPaths(webserver.app._router.stack).map(function normalize(pathObj) {
+			pathObj.path = pathObj.path.replace(/\/:([^\\/]+)/g, '/{$1}');
+			return pathObj;
+		});
 
 		// For each express path, query for existence in read and write api schemas
 		paths.forEach((pathObj) => {
