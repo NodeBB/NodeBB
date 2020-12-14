@@ -76,7 +76,7 @@ module.exports = function (Topics) {
 			if (tidToPost[topic.tid]) {
 				tidToPost[topic.tid].index = meta.config.teaserPost === 'first' ? 1 : counts[index];
 				if (tidToPost[topic.tid].content) {
-					tidToPost[topic.tid].content = utils.stripHTMLTags(tidToPost[topic.tid].content, tags);
+					tidToPost[topic.tid].content = utils.stripHTMLTags(replaceImgWithAltText(tidToPost[topic.tid].content), tags);
 				}
 			}
 			return tidToPost[topic.tid];
@@ -85,6 +85,10 @@ module.exports = function (Topics) {
 		const result = await plugins.hooks.fire('filter:teasers.get', { teasers: teasers, uid: uid });
 		return result.teasers;
 	};
+
+	function replaceImgWithAltText(str) {
+		return String(str).replace(/<img .*?alt="(.*?)"[^>]*>/gi, '$1');
+	}
 
 	async function handleBlocks(uid, teasers) {
 		const blockedUids = await user.blocks.list(uid);
