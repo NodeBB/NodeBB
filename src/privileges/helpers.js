@@ -110,7 +110,7 @@ helpers.getUserPrivileges = async function (cid, userPrivileges) {
 	});
 
 	const members = _.uniq(_.flatten(memberSets));
-	const memberData = await user.getUsersFields(members, ['picture', 'username']);
+	const memberData = await user.getUsersFields(members, ['picture', 'username', 'banned']);
 
 	memberData.forEach(function (member) {
 		member.privileges = {};
@@ -133,6 +133,7 @@ helpers.getGroupPrivileges = async function (cid, groupPrivileges) {
 	let groupNames = allGroupNames.filter(groupName => !groupName.includes(':privileges:') && uniqueGroups.includes(groupName));
 
 	groupNames = groups.ephemeralGroups.concat(groupNames);
+	moveToFront(groupNames, groups.BANNED_USERS);
 	moveToFront(groupNames, 'Global Moderators');
 	moveToFront(groupNames, 'unverified-users');
 	moveToFront(groupNames, 'verified-users');

@@ -30,9 +30,13 @@
 							<!-- BEGIN privileges.groups -->
 							<tr data-group-name="{privileges.groups.nameEscaped}" data-private="<!-- IF privileges.groups.isPrivate -->1<!-- ELSE -->0<!-- ENDIF privileges.groups.isPrivate -->">
 								<td>
-									<!-- IF privileges.groups.isPrivate -->
-									<i class="fa fa-lock text-muted" title="[[admin/manage/categories:privileges.group-private]]"></i>
-									<!-- ENDIF privileges.groups.isPrivate -->
+									{{{ if privileges.groups.isPrivate }}}
+										{{{ if (privileges.groups.name == "banned-users") }}}
+										<i class="fa fa-exclamation-triangle text-muted" title="[[admin/manage/categories:privileges.inheritance-exception]]"></i>
+										{{{ else }}}
+										<i class="fa fa-lock text-muted" title="[[admin/manage/categories:privileges.group-private]]"></i>
+										{{{ end }}}
+									{{{ end }}}
 									{privileges.groups.name}
 								</td>
 								<td>
@@ -109,7 +113,7 @@
 						</thead>
 						<tbody>
 							<!-- BEGIN privileges.users -->
-							<tr data-uid="{privileges.users.uid}">
+							<tr data-uid="{privileges.users.uid}"{{{ if privileges.users.banned }}} data-banned{{{ end }}}>
 								<td>
 									<!-- IF ../picture -->
 									<img class="avatar avatar-sm" src="{privileges.users.picture}" title="{privileges.users.username}" />
@@ -117,7 +121,12 @@
 									<div class="avatar avatar-sm" style="background-color: {../icon:bgColor};">{../icon:text}</div>
 									<!-- ENDIF ../picture -->
 								</td>
-								<td>{privileges.users.username}</td>
+								<td>
+									{{{ if privileges.users.banned }}}
+									<i class="ban fa fa-gavel text-danger" title="[[admin/manage/categories:privileges.banned-user-inheritance]]"></i>
+									{{{ end }}}
+									{privileges.users.username}
+								</td>
 								<td class="text-center"><input autocomplete="off" type="checkbox" class="checkbox-helper"></td>
 								{function.spawnPrivilegeStates, privileges.users.username, ../privileges}
 							</tr>

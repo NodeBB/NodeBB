@@ -382,22 +382,23 @@ authenticationController.localLogin = async function (req, username, password, n
 	const userslug = slugify(username);
 	const uid = await user.getUidByUserslug(userslug);
 	try {
-		const [userData, isAdminOrGlobalMod, banned, hasLoginPrivilege] = await Promise.all([
+		const [userData, isAdminOrGlobalMod, canLoginIfBanned] = await Promise.all([
 			user.getUserFields(uid, ['uid', 'passwordExpiry']),
 			user.isAdminOrGlobalMod(uid),
-			user.bans.isBanned(uid),
-			privileges.global.can('local:login', uid),
+			user.bans.canLoginIfBanned(uid),
 		]);
 
 		userData.isAdminOrGlobalMod = isAdminOrGlobalMod;
 
-		if (parseInt(uid, 10) && !hasLoginPrivilege) {
-			return next(new Error('[[error:local-login-disabled]]'));
-		}
-
-		if (banned) {
+		if (!canLoginIfBanned) {
 			const banMesage = await getBanInfo(uid);
 			return next(new Error(banMesage));
+		}
+
+		// Doing this after the ban check, because user's privileges might change after a ban expires
+		const hasLoginPrivilege = await privileges.global.can('local:login', uid);
+		if (parseInt(uid, 10) && !hasLoginPrivilege) {
+			return next(new Error('[[error:local-login-disabled]]'));
 		}
 
 		const passwordMatch = await user.isPasswordCorrect(uid, password, req.ip);

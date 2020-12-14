@@ -41,6 +41,7 @@ define('autocomplete', ['api'], function (api) {
 										username: user.username,
 										userslug: user.userslug,
 										picture: user.picture,
+										banned: user.banned,
 										'icon:text': user['icon:text'],
 										'icon:bgColor': user['icon:bgColor'],
 									},

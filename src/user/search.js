@@ -12,8 +12,6 @@ const utils = require('../utils');
 module.exports = function (User) {
 	const filterFnMap = {
 		online: user => user.status !== 'offline' && (Date.now() - user.lastonline < 300000),
-		banned: user => user.banned,
-		notbanned: user => !user.banned,
 		flagged: user => parseInt(user.flags, 10) > 0,
 		verified: user => !!user['email:confirmed'],
 		unverified: user => !user['email:confirmed'],
@@ -21,8 +19,6 @@ module.exports = function (User) {
 
 	const filterFieldMap = {
 		online: ['status', 'lastonline'],
-		banned: ['banned'],
-		notbanned: ['banned'],
 		flagged: ['flags'],
 		verified: ['email:confirmed'],
 		unverified: ['email:confirmed'],
@@ -109,6 +105,12 @@ module.exports = function (User) {
 
 		if (!fields.length) {
 			return uids;
+		}
+
+		if (filters.includes('banned') || filters.includes('notbanned')) {
+			const isMembersOfBanned = await groups.isMembers(uids, groups.BANNED_USERS);
+			const checkBanned = filters.includes('banned');
+			uids = uids.filter((uid, index) => (checkBanned ? isMembersOfBanned[index] : !isMembersOfBanned[index]));
 		}
 
 		fields.push('uid');
