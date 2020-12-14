@@ -2,9 +2,10 @@
 
 
 var assert = require('assert');
+var async = require('async');
 var nconf = require('nconf');
 var request = require('request');
-var async = require('async');
+const util = require('util');
 
 var db = require('./mocks/databasemock');
 var user = require('../src/user');
@@ -40,6 +41,7 @@ describe('authentication', function () {
 			});
 		});
 	}
+	const loginUserPromisified = util.promisify(loginUser);
 
 	function registerUser(email, username, password, callback) {
 		var jar = request.jar();
@@ -453,21 +455,30 @@ describe('authentication', function () {
 		});
 	});
 
-	it('should prevent banned user from logging in', function (done) {
-		user.create({ username: 'banme', password: '123456', email: 'ban@me.com' }, function (err, uid) {
-			assert.ifError(err);
-			user.bans.ban(uid, 0, 'spammer', function (err) {
+	describe('banned user authentication', function () {
+		const bannedUser = {
+			username: 'banme',
+			pw: '123456',
+			uid: null,
+		};
+
+		before(async function () {
+			bannedUser.uid = await user.create({ username: 'banme', password: '123456', email: 'ban@me.com' });
+		});
+
+		it('should prevent banned user from logging in', function (done) {
+			user.bans.ban(bannedUser.uid, 0, 'spammer', function (err) {
 				assert.ifError(err);
-				loginUser('banme', '123456', function (err, res, body) {
+				loginUser(bannedUser.username, bannedUser.pw, function (err, res, body) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 403);
 					assert.equal(body, '[[error:user-banned-reason, spammer]]');
-					user.bans.unban(uid, function (err) {
+					user.bans.unban(bannedUser.uid, function (err) {
 						assert.ifError(err);
 						var expiry = Date.now() + 10000;
-						user.bans.ban(uid, expiry, '', function (err) {
+						user.bans.ban(bannedUser.uid, expiry, '', function (err) {
 							assert.ifError(err);
-							loginUser('banme', '123456', function (err, res, body) {
+							loginUser(bannedUser.username, bannedUser.pw, function (err, res, body) {
 								assert.ifError(err);
 								assert.equal(res.statusCode, 403);
 								assert.equal(body, '[[error:user-banned-reason-until, ' + utils.toISOString(expiry) + ', No reason given.]]');
@@ -477,6 +488,19 @@ describe('authentication', function () {
 					});
 				});
 			});
+		});
+
+		it('should allow banned user to log in if the "banned-users" group has "local-login" privilege', async function () {
+			await privileges.global.give(['groups:local:login'], 'banned-users');
+			const res = await loginUserPromisified(bannedUser.username, bannedUser.pw);
+			assert.strictEqual(res.statusCode, 200);
+		});
+
+		it('should allow banned user to log in if the user herself has "local-login" privilege', async function () {
+			await privileges.global.rescind(['groups:local:login'], 'banned-users');
+			await privileges.categories.give(['local:login'], 0, bannedUser.uid);
+			const res = await loginUserPromisified(bannedUser.username, bannedUser.pw);
+			assert.strictEqual(res.statusCode, 200);
 		});
 	});
 

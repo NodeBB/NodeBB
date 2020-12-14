@@ -32,13 +32,13 @@ const relative_path = nconf.get('relative_path');
 middleware.buildHeader = helpers.try(async function buildHeader(req, res, next) {
 	res.locals.renderHeader = true;
 	res.locals.isAPI = false;
-	const [config, isBanned] = await Promise.all([
+	const [config, canLoginIfBanned] = await Promise.all([
 		controllers.api.loadConfig(req),
-		user.bans.isBanned(req.uid),
+		user.bans.canLoginIfBanned(req.uid),
 		plugins.hooks.fire('filter:middleware.buildHeader', { req: req, locals: res.locals }),
 	]);
 
-	if (isBanned) {
+	if (!canLoginIfBanned && req.loggedIn) {
 		req.logout();
 		return res.redirect('/');
 	}

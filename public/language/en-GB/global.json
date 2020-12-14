@@ -57,7 +57,10 @@
 	"alert.error": "Error",
 
 	"alert.banned": "Banned",
-	"alert.banned.message": "You have just been banned, you will now be logged out.",
+	"alert.banned.message": "You have just been banned, your access is now restricted.",
+
+	"alert.unbanned": "Unbanned",
+	"alert.unbanned.message": "Your ban is just lifted, you may continue participating in the forum as usual.",
 
 	"alert.unfollow": "You are no longer following %1!",
 	"alert.follow": "You are now following %1!",

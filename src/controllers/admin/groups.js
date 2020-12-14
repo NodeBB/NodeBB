@@ -41,7 +41,7 @@ groupsController.get = async function (req, res, next) {
 		categories.buildForSelectAll(),
 	]);
 
-	if (!group) {
+	if (!group || groupName === groups.BANNED_USERS) {
 		return next();
 	}
 	group.isOwner = true;
@@ -69,6 +69,7 @@ async function getGroupNames() {
 	return groupNames.filter(name => name !== 'registered-users' &&
 		name !== 'verified-users' &&
 		name !== 'unverified-users' &&
+		name !== groups.BANNED_USERS &&
 		!groups.isPrivilegeGroup(name)
 	);
 }

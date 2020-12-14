@@ -18,12 +18,10 @@ User.makeAdmins = async function (socket, uids) {
 	if (!Array.isArray(uids)) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const userData = await user.getUsersFields(uids, ['banned']);
-	userData.forEach((userData) => {
-		if (userData && userData.banned) {
-			throw new Error('[[error:cant-make-banned-users-admin]]');
-		}
-	});
+	const isMembersOfBanned = await groups.isMembers(uids, groups.BANNED_USERS);
+	if (isMembersOfBanned.includes(true)) {
+		throw new Error('[[error:cant-make-banned-users-admin]]');
+	}
 	for (const uid of uids) {
 		/* eslint-disable no-await-in-loop */
 		await groups.join('administrators', uid);
