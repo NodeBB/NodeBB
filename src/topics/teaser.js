@@ -76,7 +76,7 @@ module.exports = function (Topics) {
 			if (tidToPost[topic.tid]) {
 				tidToPost[topic.tid].index = meta.config.teaserPost === 'first' ? 1 : counts[index];
 				if (tidToPost[topic.tid].content) {
-					tidToPost[topic.tid].content = utils.stripHTMLTags(tidToPost[topic.tid].content, tags);
+					tidToPost[topic.tid].content = utils.stripHTMLTags(utils.replaceImgWithAltText(tidToPost[topic.tid].content), tags);
 				}
 			}
 			return tidToPost[topic.tid];

@@ -328,6 +328,10 @@
 			return String(str).replace(new RegExp('<(\\/)?(' + (pattern || '[^\\s>]+') + ')(\\s+[^<>]*?)?\\s*(\\/)?>', 'gi'), '');
 		},
 
+		replaceImgWithAltText: function (str) {
+			return String(str).replace(/<img .*?alt="(.*?)"[^>]*>/gi, '$1');
+		},
+
 		cleanUpTag: function (tag, maxLength) {
 			if (typeof tag !== 'string' || !tag.length) {
 				return '';
