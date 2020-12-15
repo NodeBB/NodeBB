@@ -145,13 +145,14 @@ Topics.getTopicsByTids = async function (tids, options) {
 
 // Note: Backwards compatibility with old thumb logic, remove in v1.17.0
 function restoreThumbValue(topic) {
-	if (topic.thumb && !topic.thumbs.length) {
+	const isArray = Array.isArray(topic.thumbs);
+	if (isArray && !topic.thumbs.length && topic.thumb) {
 		topic.thumbs = [{
 			id: topic.tid,
 			name: path.basename(topic.thumb),
 			url: topic.thumb,
 		}];
-	} else if (topic.thumbs.length) {
+	} else if (isArray && topic.thumbs.length) {
 		topic.thumb = topic.thumbs[0].url;
 	}
 }

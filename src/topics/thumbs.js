@@ -9,10 +9,10 @@ const db = require('../database');
 const file = require('../file');
 const plugins = require('../plugins');
 const posts = require('../posts');
+const meta = require('../meta');
+const cache = require('../cache');
 
-const Thumbs = {};
-module.exports = Thumbs;
-
+const Thumbs = module.exports;
 
 Thumbs.exists = async function (tid, path) {
 	// TODO: tests
@@ -27,17 +27,32 @@ Thumbs.get = async function (tids) {
 		singular = true;
 	}
 
+	if (!meta.config.allowTopicsThumbnail) {
+		return singular ? null : tids.map(() => []);
+	}
+
+	const upload_url = nconf.get('upload_url');
 	const sets = tids.map(tid => `${validator.isUUID(String(tid)) ? 'draft' : 'topic'}:${tid}:thumbs`);
-	const thumbs = await Promise.all(sets.map(async set => db.getSortedSetRange(set, 0, -1)));
+	const thumbs = await Promise.all(sets.map(set => getThumbs(set)));
 	let response = thumbs.map((thumbSet, idx) => thumbSet.map(thumb => ({
 		id: tids[idx],
 		name: path.basename(thumb),
-		url: thumb.startsWith('http') ? thumb : path.join(nconf.get('upload_url'), thumb),
+		url: thumb.startsWith('http') ? thumb : path.join(upload_url, thumb),
 	})));
 
 	({ thumbs: response } = await plugins.hooks.fire('filter:topics.getThumbs', { tids, thumbs: response }));
 	return singular ? response.pop() : response;
 };
+
+async function getThumbs(set) {
+	const cached = cache.get(set);
+	if (cached !== undefined) {
+		return cached.slice();
+	}
+	const thumbs = await db.getSortedSetRange(set, 0, -1);
+	cache.set(set, thumbs, 600000);
+	return thumbs.slice();
+}
 
 Thumbs.associate = async function ({ id, path: relativePath, url }) {
 	// Associates a newly uploaded file as a thumb to the passed-in draft or topic
@@ -52,6 +67,7 @@ Thumbs.associate = async function ({ id, path: relativePath, url }) {
 	}
 
 	await db.sortedSetAdd(set, numThumbs, value);
+	cache.del(set);
 
 	// Associate thumbnails with the main pid (only on local upload)
 	if (!isDraft && relativePath) {
@@ -67,6 +83,7 @@ Thumbs.migrate = async function (uuid, id) {
 	const thumbs = await db.getSortedSetRange(set, 0, -1);
 	await Promise.all(thumbs.map(async path => await Thumbs.associate({ id, path })));
 	await db.delete(set);
+	cache.del(set);
 };
 
 Thumbs.delete = async function (id, relativePath) {
@@ -80,6 +97,7 @@ Thumbs.delete = async function (id, relativePath) {
 
 	if (associated) {
 		await db.sortedSetRemove(set, relativePath);
+		cache.del(set);
 
 		if (existsOnDisk) {
 			await file.delete(absolutePath);
