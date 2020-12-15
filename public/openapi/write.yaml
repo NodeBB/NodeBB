@@ -23,11 +23,25 @@ info:
 servers:
   - url: /api/v3
 tags:
+  - name: utilities
+    description: Utility calls to test Write API functionality
   - name: users
-    description: 'Account related calls (create, modify, delete, etc.)'
+    description: Account related calls (create, modify, delete, etc.)
+  - name: groups
+    description: Calls related to user groups
   - name: categories
     description: Administrative calls to manage categories
+  - name: topics
+    description: Topic-based calls (create, modify, delete, etc.)
+  - name: posts
+    description: Individual post-related calls (create, modify, delete, etc.)
+  - name: admin
+    description: Administrative calls
+  - name: files
+    description: File upload routes
 paths:
+  /ping:
+    $ref: 'write/ping.yaml'
   /users/:
     $ref: 'write/users.yaml'
   /users/{uid}:

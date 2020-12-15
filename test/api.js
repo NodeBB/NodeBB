@@ -172,31 +172,46 @@ describe('API', async () => {
 	it('should grab all mounted routes and ensure a schema exists', async () => {
 		const webserver = require('../src/webserver');
 		const buildPaths = function (stack, prefix) {
-			const paths = stack.reduce((memo, cur) => {
-				if (cur.route && cur.route.path && typeof cur.route.path === 'string' && cur.route.path.startsWith('/api/')) {
-					memo.push({
-						method: Object.keys(cur.route.methods)[0],
-						path: (prefix || '') + cur.route.path,
-					});
-				} else if (cur.name === 'router') {
-					const prefix = cur.regexp.toString().replace('/^', '').replace('\\/?(?=\\/|$)/i', '').replace(/\\\//g, '/');
-					memo = memo.concat(buildPaths(cur.handle.stack, prefix));
+			const paths = stack.map((dispatch) => {
+				if (dispatch.route && dispatch.route.path && typeof dispatch.route.path === 'string') {
+					if (!prefix && !dispatch.route.path.startsWith('/api/')) {
+						return null;
+					}
+					return {
+						method: Object.keys(dispatch.route.methods)[0],
+						path: (prefix || '') + dispatch.route.path,
+					};
+				} else if (dispatch.name === 'router') {
+					const prefix = dispatch.regexp.toString().replace('/^', '').replace('\\/?(?=\\/|$)/i', '').replace(/\\\//g, '/');
+					return buildPaths(dispatch.handle.stack, prefix);
 				}
-				return memo;
-			}, []);
 
-			return paths;
+				// Drop any that aren't actual routes (middlewares, error handlers, etc.)
+				return null;
+			});
+
+			return paths.flat();
 		};
-		const paths = buildPaths(webserver.app._router.stack).map(function normalize(pathObj) {
+
+		let paths = buildPaths(webserver.app._router.stack).filter(Boolean).map(function normalize(pathObj) {
 			pathObj.path = pathObj.path.replace(/\/:([^\\/]+)/g, '/{$1}');
 			return pathObj;
 		});
+		const exclusionPrefixes = ['/api/admin/plugins'];
+		paths = paths.filter(function filterExclusions(path) {
+			return !exclusionPrefixes.some(prefix => path.path.startsWith(prefix));
+		});
+
 
 		// For each express path, query for existence in read and write api schemas
 		paths.forEach((pathObj) => {
 			describe(`${pathObj.method.toUpperCase()} ${pathObj.path}`, () => {
 				it('should be defined in schema docs', () => {
-					const schema = pathObj.path.startsWith('/api/v3') ? writeApi : readApi;
+					let schema = readApi;
+					if (pathObj.path.startsWith('/api/v3')) {
+						schema = writeApi;
+						pathObj.path = pathObj.path.replace('/api/v3', '');
+					}
 					const normalizedPath = pathObj.path.replace(/\/:([^\\/]+)/g, '/{$1}').replace(/\?/g, '');
 					assert(schema.paths.hasOwnProperty(normalizedPath));
 				});

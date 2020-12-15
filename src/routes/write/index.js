@@ -48,6 +48,7 @@ Write.reload = async (params) => {
 	router.post('/api/v3/ping', middleware.authenticate, function (req, res) {
 		helpers.formatApiResponse(200, res, {
 			uid: req.user.uid,
+			received: req.body,
 		});
 	});
 
