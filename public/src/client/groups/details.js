@@ -190,6 +190,11 @@ define('forum/groups/details', [
 		if (settingsFormEl.length) {
 			var settings = settingsFormEl.serializeObject();
 
+			// serializeObject doesnt return array for multi selects if only one item is selected
+			if (!Array.isArray(settings.memberPostCids)) {
+				settings.memberPostCids = $('#memberPostCids').val();
+			}
+
 			// Fix checkbox values
 			checkboxes.each(function (idx, inputEl) {
 				inputEl = $(inputEl);
