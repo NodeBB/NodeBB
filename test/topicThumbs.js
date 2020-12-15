@@ -28,7 +28,11 @@ describe('Topic thumbs', () => {
 	let fooJar;
 	let fooCSRF;
 	let fooUid;
-	const thumbPaths = [`${nconf.get('upload_path')}/files/test.png`, `${nconf.get('upload_path')}/files/test2.png`, 'https://example.org'];
+	const thumbPaths = [
+		`${nconf.get('upload_path')}/files/test.png`,
+		`${nconf.get('upload_path')}/files/test2.png`,
+		'https://example.org',
+	];
 	const relativeThumbPaths = thumbPaths.map(path => path.replace(nconf.get('upload_path'), ''));
 	const uuid = utils.generateUUID();
 
@@ -85,6 +89,7 @@ describe('Topic thumbs', () => {
 
 	describe('.get()', () => {
 		it('should return an array of thumbs', async () => {
+			require('../src/cache').del(`topic:${topicObj.topicData.tid}:thumbs`);
 			const thumbs = await topics.thumbs.get(topicObj.topicData.tid);
 			assert.deepStrictEqual(thumbs, [{
 				id: 1,
@@ -287,7 +292,6 @@ describe('Topic thumbs', () => {
 
 			helpers.uploadFile(`${nconf.get('url')}/api/v3/topics/${uuid}/thumbs`, path.join(__dirname, './files/503.html'), {}, adminJar, adminCSRF, function (err, res, body) {
 				assert.ifError(err);
-				console.log(body);
 				assert.strictEqual(res.statusCode, 500);
 				assert(body && body.status);
 				assert.strictEqual(body.status.message, '[[error:invalid-file]]');
