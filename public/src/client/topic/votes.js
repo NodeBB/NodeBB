@@ -58,14 +58,22 @@ define('forum/topic/votes', [
 		var currentState = post.find(className).length;
 
 		const method = currentState ? 'del' : 'put';
-		api[method](`/posts/${post.attr('data-pid')}/vote`, {
+		var pid = post.attr('data-pid');
+		api[method](`/posts/${pid}/vote`, {
 			delta: delta,
-		}).catch((err) => {
-			app.alertError(err.message);
-
-			if (err.message === '[[error:not-logged-in]]') {
-				ajaxify.go('login');
+		}, function (err) {
+			if (err) {
+				if (err.message === '[[error:not-logged-in]]') {
+					ajaxify.go('login');
+					return;
+				}
+				return app.alertError(err.message);
 			}
+			$(window).trigger('action:post.toggleVote', {
+				pid: pid,
+				delta: delta,
+				unvote: method === 'del',
+			});
 		});
 
 		return false;
