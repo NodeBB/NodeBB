@@ -50,7 +50,7 @@ async function getThumbs(set) {
 		return cached.slice();
 	}
 	const thumbs = await db.getSortedSetRange(set, 0, -1);
-	cache.set(set, thumbs, 600000);
+	cache.set(set, thumbs);
 	return thumbs.slice();
 }
 
