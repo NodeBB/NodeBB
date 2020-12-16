@@ -9,6 +9,10 @@ define('share', function () {
 
 		function openShare(url, urlToPost, width, height) {
 			window.open(url + encodeURIComponent(baseUrl + config.relative_path + urlToPost), '_blank', 'width=' + width + ',height=' + height + ',scrollbars=no,status=no');
+			$(window).trigger('action:share.open', {
+				url: url,
+				urlToPost: urlToPost,
+			});
 			return false;
 		}
 
