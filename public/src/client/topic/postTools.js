@@ -338,7 +338,13 @@ define('forum/topic/postTools', [
 	function bookmarkPost(button, pid) {
 		var method = button.attr('data-bookmarked') === 'false' ? 'put' : 'del';
 
-		api[method](`/posts/${pid}/bookmark`, undefined, undefined, 'default');
+		api[method](`/posts/${pid}/bookmark`, undefined, function (err) {
+			if (err) {
+				return app.alertError(err);
+			}
+			var type = method === 'put' ? 'bookmark' : 'unbookmark';
+			$(window).trigger('action:post.' + type, { pid: pid });
+		});
 		return false;
 	}
 
@@ -429,6 +435,7 @@ define('forum/topic/postTools', [
 							$(window).trigger('action:composer.topic.new', {
 								cid: ajaxify.data.cid,
 								body: body,
+								fromStaleTopic: true,
 							});
 						});
 					},
