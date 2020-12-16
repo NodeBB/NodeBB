@@ -1,6 +1,6 @@
 {
 	"post-cache": "Cache Kiriman",
-	"percent-full": "%1% Full",
-	"post-cache-size": "Post Cache Size",
-	"items-in-cache": "Items in Cache"
+	"percent-full": "%1% Penuh",
+	"post-cache-size": "Ukuran Cache Kiriman",
+	"items-in-cache": "Item di Cache"
 }
