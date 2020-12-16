@@ -148,7 +148,7 @@ usersController.search = async function (req, res) {
 			if (!query || query.length < 2) {
 				return [];
 			}
-			hardCap = hardCap || resultsPerPage * 10;
+			query = String(query).toLowerCase();
 			if (!query.endsWith('*')) {
 				query += '*';
 			}
@@ -156,7 +156,7 @@ usersController.search = async function (req, res) {
 			const data = await db.getSortedSetScan({
 				key: searchBy + ':sorted',
 				match: query,
-				limit: hardCap,
+				limit: hardCap || (resultsPerPage * 10),
 			});
 			return data.map(data => data.split(':').pop());
 		},
