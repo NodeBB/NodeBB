@@ -199,7 +199,7 @@ describe('API', async () => {
 		});
 		const exclusionPrefixes = ['/api/admin/plugins'];
 		paths = paths.filter(function filterExclusions(path) {
-			return !exclusionPrefixes.some(prefix => path.path.startsWith(prefix));
+			return path.method !== '_all' && !exclusionPrefixes.some(prefix => path.path.startsWith(prefix));
 		});
 
 
