@@ -123,6 +123,8 @@ paths:
     $ref: 'read/admin/advanced/errors/export.yaml'
   /api/admin/advanced/cache:
     $ref: 'read/admin/advanced/cache.yaml'
+  /api/admin/advanced/cache/dump:
+    $ref: 'read/admin/advanced/cache.yaml'  # todo: @baris to fix, see gh#9122
   /api/admin/development/logger:
     $ref: 'read/admin/development/logger.yaml'
   /api/admin/development/info:
@@ -165,11 +167,11 @@ paths:
     $ref: 'read/user/uid/userslug/export/uploads.yaml'
   "/api/user/uid/{userslug}/export/profile":
     $ref: 'read/user/uid/userslug/export/profile.yaml'
-  "/api/post/pid/{id}":
+  "/api/{type}/pid/{id}":
     $ref: 'read/post/pid/id.yaml'
-  "/api/topic/tid/{id}":
+  "/api/{type}/tid/{id}":
     $ref: 'read/topic/tid/id.yaml'
-  "/api/category/cid/{id}":
+  "/api/{type}/cid/{id}":
     $ref: 'read/category/cid/id.yaml'
   /api/categories:
     $ref: 'read/categories.yaml'
@@ -197,6 +199,8 @@ paths:
     $ref: 'read/login.yaml'
   /api/register:
     $ref: 'read/register.yaml'
+  /api/register/complete:
+    $ref: 'read/register/complete.yaml'
   /api/search:
     $ref: 'read/search.yaml'
   "/api/reset":
