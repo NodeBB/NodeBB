@@ -54,4 +54,13 @@ post:
               status:
                 $ref: ../components/schemas/Status.yaml#/Status
               response:
-                $ref: ../components/schemas/CategoryObj.yaml#/CategoryObj
+                allOf:
+                  - $ref: ../components/schemas/CategoryObject.yaml#/CategoryObject
+                  - type: object
+                    properties:
+                      tagWhitelist:
+                        type: array
+                        items:
+                          type: string
+                      unread-class:
+                        type: string
