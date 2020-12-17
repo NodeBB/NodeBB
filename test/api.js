@@ -212,6 +212,12 @@ describe('API', async () => {
 						schema = writeApi;
 						pathObj.path = pathObj.path.replace('/api/v3', '');
 					}
+
+					// Don't check non-GET routes in Read API
+					if (schema === readApi && pathObj.method !== 'get') {
+						return;
+					}
+
 					const normalizedPath = pathObj.path.replace(/\/:([^\\/]+)/g, '/{$1}').replace(/\?/g, '');
 					assert(schema.paths.hasOwnProperty(normalizedPath));
 				});

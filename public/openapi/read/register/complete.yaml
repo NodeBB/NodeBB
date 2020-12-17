@@ -1,0 +1,23 @@
+get:
+  tags:
+    - authentication
+  summary: /api/register/complete
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  title:
+                    type: string
+                  errors:
+                    type: array
+                    items: {}
+                  sections:
+                    type: array
+                    items:
+                      type: string
+              - $ref: ../../components/schemas/CommonProps.yaml#/CommonProps
