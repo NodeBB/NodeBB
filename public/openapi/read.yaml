@@ -57,8 +57,12 @@ tags:
 paths:
   /api/:
     $ref: 'read/index.yaml'
+  /api/admin:
+    $ref: 'read/admin.yaml'
   /api/admin/dashboard:
     $ref: 'read/admin/dashboard.yaml'
+  "/api/admin/settings/{term}":
+    $ref: 'read/admin/settings/term.yaml'
   /api/admin/settings/languages:
     $ref: 'read/admin/settings/languages.yaml'
   /api/admin/settings/navigation:
@@ -67,6 +71,12 @@ paths:
     $ref: 'read/admin/settings/homepage.yaml'
   /api/admin/settings/social:
     $ref: 'read/admin/settings/social.yaml'
+  /api/admin/settings/email:
+    $ref: 'read/admin/settings/email.yaml'
+  /api/admin/settings/user:
+    $ref: 'read/admin/settings/user.yaml'
+  /api/admin/settings/post:
+    $ref: 'read/admin/settings/post.yaml'
   /api/admin/manage/categories:
     $ref: 'read/admin/manage/categories.yaml'
   "/api/admin/manage/categories/{category_id}":
@@ -91,8 +101,6 @@ paths:
     $ref: 'read/admin/manage/uploads.yaml'
   /api/admin/manage/digest:
     $ref: 'read/admin/manage/digest.yaml'
-  "/api/admin/settings/{term}":
-    $ref: 'read/admin/settings/term.yaml'
   "/api/admin/appearance/{term}":
     $ref: 'read/admin/appearance/term.yaml'
   /api/admin/extend/plugins:

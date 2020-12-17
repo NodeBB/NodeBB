@@ -1,0 +1,19 @@
+get:
+  tags:
+    - admin
+  summary: Get administrative index
+  description: |
+    Internally, NodeBB will redirect you to a different page based on your privilege levels.
+
+    The default is "dashboard" for superadmins and those with the "dashboard" privilege. If the requesting user is neither, then they will be redirected to a page that they have privileges to view (e.g. `/categories`, `/privileges`, `/users`, or `/settings/general`).
+
+    Failing that, the request will be denied.
+  responses:
+    "200":
+      description: |
+        A JSON object containing data for the default admin index.
+      content:
+        application/json:
+          schema:
+            properties: {}
+            additionalProperties: {}
