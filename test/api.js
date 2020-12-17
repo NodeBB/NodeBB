@@ -235,6 +235,7 @@ describe('API', async () => {
 			const qs = {};
 
 			Object.keys(context).forEach((_method) => {
+				// Only test GET routes in the Read API
 				if (api.info.title === 'NodeBB Read API' && _method !== 'get') {
 					return;
 				}
@@ -279,17 +280,18 @@ describe('API', async () => {
 
 				it('should contain a valid request body (if present) with application/json or multipart/form-data type if POST/PUT/DELETE', () => {
 					if (['post', 'put', 'delete'].includes(method) && context[method].hasOwnProperty('requestBody')) {
-						assert(context[method].requestBody);
-						assert(context[method].requestBody.content);
+						const failMessage = `${method.toUpperCase()} ${path} has a malformed request body`;
+						assert(context[method].requestBody, failMessage);
+						assert(context[method].requestBody.content, failMessage);
 
 						if (context[method].requestBody.content.hasOwnProperty('application/json')) {
-							assert(context[method].requestBody.content['application/json']);
-							assert(context[method].requestBody.content['application/json'].schema);
-							assert(context[method].requestBody.content['application/json'].schema.properties);
+							assert(context[method].requestBody.content['application/json'], failMessage);
+							assert(context[method].requestBody.content['application/json'].schema, failMessage);
+							assert(context[method].requestBody.content['application/json'].schema.properties, failMessage);
 						} else if (context[method].requestBody.content.hasOwnProperty('multipart/form-data')) {
-							assert(context[method].requestBody.content['multipart/form-data']);
-							assert(context[method].requestBody.content['multipart/form-data'].schema);
-							assert(context[method].requestBody.content['multipart/form-data'].schema.properties);
+							assert(context[method].requestBody.content['multipart/form-data'], failMessage);
+							assert(context[method].requestBody.content['multipart/form-data'].schema, failMessage);
+							assert(context[method].requestBody.content['multipart/form-data'].schema.properties, failMessage);
 						}
 					}
 				});
