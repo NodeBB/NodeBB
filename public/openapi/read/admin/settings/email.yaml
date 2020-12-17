@@ -1,0 +1,43 @@
+get:
+  tags:
+    - admin
+  summary: Get emailer settings
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  emails:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        path:
+                          type: string
+                          description: The name of the email template
+                        fullpath:
+                          type: string
+                          description: Full system path to the email template
+                        text:
+                          type: string
+                          description: Customized email template text, if applicable, otherwise identical to `original`
+                        original:
+                          type: string
+                          description: The email template text as provided by NodeBB core
+                        isCustom:
+                          type: boolean
+                  sendable:
+                    type: array
+                    items:
+                      type: string
+                      description: The name of the email template
+                  services:
+                    type: array
+                    items:
+                      type: string
+                      description: A list of email services which can be used to send emails on behalf of NodeBB
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

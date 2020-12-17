@@ -1,0 +1,25 @@
+get:
+  tags:
+    - admin
+  summary: Get user settings
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  notificationSettings:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          description: The notification type
+                        label:
+                          type: string
+                          description: The language key for the notification type (for localisation client-side)
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps
