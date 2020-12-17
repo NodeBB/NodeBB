@@ -22,7 +22,7 @@ settingsController.email = async (req, res) => {
 
 	res.render('admin/settings/email', {
 		emails: emails,
-		sendable: emails.filter(e => !e.path.includes('_plaintext') && !e.path.includes('partials')),
+		sendable: emails.filter(e => !e.path.includes('_plaintext') && !e.path.includes('partials')).map(tpl => tpl.path),
 		services: emailer.listServices(),
 	});
 };
