@@ -10,7 +10,7 @@ put:
         type: number
       required: true
       description: a valid category id
-      example: 1
+      example: 2
   requestBody:
     required: true
     content:
@@ -52,7 +52,7 @@ delete:
         type: number
       required: true
       description: a valid category id
-      example: 1
+      example: 2
   responses:
     '200':
       description: Category successfully deleted
