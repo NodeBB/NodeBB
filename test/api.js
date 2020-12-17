@@ -246,7 +246,7 @@ describe('API', async () => {
 						return;
 					}
 
-					const names = (path.match(/{[\w\-_]+}?/g) || []).map(match => match.slice(1, -1));
+					const names = (path.match(/{[\w\-_*]+}?/g) || []).map(match => match.slice(1, -1));
 					assert(context[method].parameters.map(param => (param.in === 'path' ? param.name : null)).filter(Boolean).every(name => names.includes(name)), `${method.toUpperCase()} ${path} has parameter(s) in path that are not defined in schema`);
 				});
 
