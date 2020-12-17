@@ -78,7 +78,7 @@ paths:
     $ref: 'write/categories.yaml'
   /categories/{cid}:
     $ref: 'write/categories/cid.yaml'
-  /topics:
+  /topics/:
     $ref: 'write/topics.yaml'
   /topics/{tid}:
     $ref: 'write/topics/tid.yaml'
@@ -106,5 +106,5 @@ paths:
     $ref: 'write/posts/pid/bookmark.yaml'
   /admin/settings/{setting}:
     $ref: 'write/admin/settings/setting.yaml'
-  /files:
+  /files/:
     $ref: 'write/files.yaml'
