@@ -68,16 +68,16 @@ paths:
     $ref: 'write/users/uid/invites.yaml'
   /users/{uid}/invites/groups:
     $ref: 'write/users/uid/invites/groups.yaml'
-  /categories/:
-    $ref: 'write/categories.yaml'
-  /categories/{cid}:
-    $ref: 'write/categories/cid.yaml'
   /groups/:
     $ref: 'write/groups.yaml'
   /groups/{slug}:
     $ref: 'write/groups/slug.yaml'
   /groups/{slug}/membership/{uid}:
     $ref: 'write/groups/slug/membership/uid.yaml'
+  /categories/:
+    $ref: 'write/categories.yaml'
+  /categories/{cid}:
+    $ref: 'write/categories/cid.yaml'
   /topics:
     $ref: 'write/topics.yaml'
   /topics/{tid}:
