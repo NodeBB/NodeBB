@@ -57,6 +57,12 @@ CategoryObject:
       description: The `background-position` of the category background image, if one is set
     isSection:
       type: number
+    minTags:
+      type: number
+      description: Minimum tags per topic in this category
+    maxTags:
+      type: number
+      description: Maximum tags per topic in this category
     postQueue:
       type: number
     totalPostCount:
@@ -65,9 +71,3 @@ CategoryObject:
     totalTopicCount:
       type: number
       description: The number of topics in the category
-    minTags:
-      type: number
-      description: Minimum tags per topic in this category
-    maxTags:
-      type: number
-      description: Maximum tags per topic in this category

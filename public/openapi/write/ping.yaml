@@ -33,6 +33,7 @@ post:
       application/json:
         schema:
           type: object
+          properties: {}
           additionalProperties: {}
   responses:
     '200':

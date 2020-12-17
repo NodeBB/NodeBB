@@ -70,6 +70,8 @@ paths:
     $ref: 'write/users/uid/invites/groups.yaml'
   /categories/:
     $ref: 'write/categories.yaml'
+  /categories/{cid}:
+    $ref: 'write/categories/cid.yaml'
   /groups/:
     $ref: 'write/groups.yaml'
   /groups/{slug}:
