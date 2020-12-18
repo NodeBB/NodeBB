@@ -69,7 +69,7 @@
         "express-useragent": "^1.0.13",
         "graceful-fs": "^4.2.3",
         "helmet": "^4.0.0",
-        "html-to-text": "^5.1.1",
+        "html-to-text": "6.0.0",
         "ipaddr.js": "^2.0.0",
         "jquery": "3.5.1",
         "jquery-deserialize": "2.0.0-rc1",

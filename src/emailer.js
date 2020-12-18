@@ -5,7 +5,7 @@ const nconf = require('nconf');
 const Benchpress = require('benchpressjs');
 const nodemailer = require('nodemailer');
 const wellKnownServices = require('nodemailer/lib/well-known/services');
-const htmlToText = require('html-to-text');
+const { htmlToText } = require('html-to-text');
 const url = require('url');
 const path = require('path');
 const fs = require('fs');
@@ -287,8 +287,8 @@ Emailer.sendToEmail = async (template, email, language, params) => {
 		from_name: meta.config['email:from_name'] || 'NodeBB',
 		subject: '[' + meta.config.title + '] ' + _.unescape(subject),
 		html: html,
-		plaintext: htmlToText.fromString(html, {
-			ignoreImage: true,
+		plaintext: htmlToText(html, {
+			tags: { img: { format: 'skip' } },
 		}),
 		template: template,
 		uid: params.uid,
