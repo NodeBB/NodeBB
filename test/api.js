@@ -324,6 +324,9 @@ describe('API', async () => {
 								method: method,
 								jar: !unauthenticatedRoutes.includes(path) ? jar : undefined,
 								json: true,
+								followRedirect: false,	// all responses are significant (e.g. 302)
+								simple: false,	// don't throw on non-200 (e.g. 302)
+								resolveWithFullResponse: true,	// send full request back (to check statusCode)
 								headers: headers,
 								qs: qs,
 								body: body,
@@ -343,17 +346,39 @@ describe('API', async () => {
 					}
 				});
 
+				it('response status code should match one of the schema defined responses', () => {
+					// HACK: allow HTTP 418 I am a teapot, for now   👇
+					assert(context[method].responses.hasOwnProperty('418') || Object.keys(context[method].responses).includes(String(response.statusCode)), `${method.toUpperCase()} ${path} sent back unexpected HTTP status code: ${response.statusCode}`);
+				});
+
 				// Recursively iterate through schema properties, comparing type
-				it('response should match schema definition', () => {
-					const has200 = context[method].responses['200'];
-					if (!has200) {
+				it('response body should match schema definition', () => {
+					const http302 = context[method].responses['302'];
+					if (http302 && response.statusCode === 302) {
+						// Compare headers instead
+						const expectedHeaders = Object.keys(http302.headers).reduce((memo, name) => {
+							memo[name] = http302.headers[name].schema.example;
+							return memo;
+						}, {});
+
+						for (const header in expectedHeaders) {
+							if (expectedHeaders.hasOwnProperty(header)) {
+								assert(response.headers[header.toLowerCase()]);
+								assert(response.headers[header.toLowerCase()] === expectedHeaders[header]);
+							}
+						}
 						return;
 					}
 
-					const hasJSON = has200.content && has200.content['application/json'];
+					const http200 = context[method].responses['200'];
+					if (!http200) {
+						return;
+					}
+
+					const hasJSON = http200.content && http200.content['application/json'];
 					if (hasJSON) {
 						schema = context[method].responses['200'].content['application/json'].schema;
-						compare(schema, response, method.toUpperCase(), path, 'root');
+						compare(schema, response.body, method.toUpperCase(), path, 'root');
 					}
 
 					// TODO someday: text/csv, binary file type checking?

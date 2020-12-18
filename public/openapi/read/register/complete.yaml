@@ -3,8 +3,15 @@ get:
     - authentication
   summary: /api/register/complete
   responses:
+    "302":
+      description: If there are no additional registration steps to complete, then the user is redirected back to the registration page (`/register`)
+      headers:
+        Location:
+          schema:
+            type: string
+            example: /register
     "200":
-      description: ""
+      description: ''
       content:
         application/json:
           schema:
