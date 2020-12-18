@@ -179,6 +179,11 @@ describe('API', async () => {
 					if (!prefix && !dispatch.route.path.startsWith('/api/')) {
 						return null;
 					}
+
+					if (prefix === nconf.get('relative_path')) {
+						prefix = '';
+					}
+
 					return {
 						method: Object.keys(dispatch.route.methods)[0],
 						path: (prefix || '') + dispatch.route.path,
@@ -360,7 +365,8 @@ describe('API', async () => {
 					if (http302 && response.statusCode === 302) {
 						// Compare headers instead
 						const expectedHeaders = Object.keys(http302.headers).reduce((memo, name) => {
-							memo[name] = http302.headers[name].schema.example;
+							const value = http302.headers[name].schema.example;
+							memo[name] = value.startsWith(nconf.get('relative_path')) ? value : nconf.get('relative_path') + value;
 							return memo;
 						}, {});
 
