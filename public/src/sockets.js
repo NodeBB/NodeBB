@@ -44,7 +44,7 @@ socket = window.socket;
 
 		socket.on('disconnect', onDisconnect);
 
-		socket.on('reconnect_failed', function () {
+		socket.io.on('reconnect_failed', function () {
 			// Wait ten times the reconnection delay and then start over
 			setTimeout(socket.connect.bind(socket), parseInt(config.reconnectionDelay, 10) * 10);
 		});
