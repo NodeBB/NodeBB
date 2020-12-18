@@ -367,7 +367,7 @@ describe('API', async () => {
 						for (const header in expectedHeaders) {
 							if (expectedHeaders.hasOwnProperty(header)) {
 								assert(response.headers[header.toLowerCase()]);
-								assert(response.headers[header.toLowerCase()] === expectedHeaders[header]);
+								assert.strictEqual(response.headers[header.toLowerCase()], expectedHeaders[header]);
 							}
 						}
 						return;
