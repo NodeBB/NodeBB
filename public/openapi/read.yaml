@@ -201,6 +201,8 @@ paths:
     $ref: 'read/register.yaml'
   /api/register/complete:
     $ref: 'read/register/complete.yaml'
+  "/api/confirm/{code}":
+    $ref: 'read/confirm/code.yaml'
   /api/search:
     $ref: 'read/search.yaml'
   "/api/reset":
