@@ -1,5 +1,6 @@
 'use strict';
 
+const _ = require('lodash');
 const assert = require('assert');
 const path = require('path');
 const fs = require('fs');
@@ -191,14 +192,14 @@ describe('API', async () => {
 				return null;
 			});
 
-			return paths.flat();
+			return _.flatten(paths);
 		};
 
 		let paths = buildPaths(webserver.app._router.stack).filter(Boolean).map(function normalize(pathObj) {
 			pathObj.path = pathObj.path.replace(/\/:([^\\/]+)/g, '/{$1}');
 			return pathObj;
 		});
-		const exclusionPrefixes = ['/api/admin/plugins', '/api/compose'];
+		const exclusionPrefixes = ['/api/admin/plugins', '/api/compose', '/debug'];
 		paths = paths.filter(function filterExclusions(path) {
 			return path.method !== '_all' && !exclusionPrefixes.some(prefix => path.path.startsWith(prefix));
 		});
