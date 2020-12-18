@@ -1,7 +1,7 @@
 get:
   tags:
     - authentication
-  summary: /api/register/complete
+  summary: Complete a user's registration
   responses:
     "302":
       description: If there are no additional registration steps to complete, then the user is redirected back to the registration page (`/register`)

@@ -197,7 +197,7 @@ describe('API', async () => {
 			pathObj.path = pathObj.path.replace(/\/:([^\\/]+)/g, '/{$1}');
 			return pathObj;
 		});
-		const exclusionPrefixes = ['/api/admin/plugins'];
+		const exclusionPrefixes = ['/api/admin/plugins', '/api/compose'];
 		paths = paths.filter(function filterExclusions(path) {
 			return path.method !== '_all' && !exclusionPrefixes.some(prefix => path.path.startsWith(prefix));
 		});

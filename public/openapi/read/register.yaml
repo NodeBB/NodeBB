@@ -1,7 +1,7 @@
 get:
   tags:
     - authentication
-  summary: /api/register
+  summary: Register a new user
   responses:
     "200":
       description: ""

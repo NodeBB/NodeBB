@@ -1,7 +1,7 @@
 get:
   tags:
     - authentication
-  summary: /api/login
+  summary: Log in a user
   responses:
     "200":
       description: ""
