@@ -100,6 +100,7 @@ describe('API', async () => {
 			}],
 		});
 		meta.config.allowTopicsThumbnail = 1;
+		meta.config.termsOfUse = 'I, for one, welcome our new test-drive overlords';
 
 		// Create a category
 		const testCategory = await categories.create({ name: 'test' });
@@ -225,8 +226,8 @@ describe('API', async () => {
 		});
 	});
 
-	// generateTests(readApi, Object.keys(readApi.paths));
-	// generateTests(writeApi, Object.keys(writeApi.paths), writeApi.servers[0].url);
+	generateTests(readApi, Object.keys(readApi.paths));
+	generateTests(writeApi, Object.keys(writeApi.paths), writeApi.servers[0].url);
 
 	function generateTests(api, paths, prefix) {
 		// Iterate through all documented paths, make a call to it, and compare the result body with what is defined in the spec
@@ -252,8 +253,9 @@ describe('API', async () => {
 						return;
 					}
 
-					const names = (path.match(/{[\w\-_*]+}?/g) || []).map(match => match.slice(1, -1));
-					assert(context[method].parameters.map(param => (param.in === 'path' ? param.name : null)).filter(Boolean).every(name => names.includes(name)), `${method.toUpperCase()} ${path} has parameter(s) in path that are not defined in schema`);
+					const pathParams = (path.match(/{[\w\-_*]+}?/g) || []).map(match => match.slice(1, -1));
+					const schemaParams = context[method].parameters.map(param => (param.in === 'path' ? param.name : null)).filter(Boolean);
+					assert(pathParams.every(param => schemaParams.includes(param)), `${method.toUpperCase()} ${path} has path parameters specified but not defined`);
 				});
 
 				it('should have examples when parameters are present', () => {
@@ -333,11 +335,11 @@ describe('API', async () => {
 							});
 						} else if (type === 'form') {
 							response = await new Promise((resolve, reject) => {
-								helpers.uploadFile(url, pathLib.join(__dirname, './files/test.png'), {}, jar, csrfToken, function (err, res, body) {
+								helpers.uploadFile(url, pathLib.join(__dirname, './files/test.png'), {}, jar, csrfToken, function (err, res) {
 									if (err) {
 										return reject(err);
 									}
-									resolve(body);
+									resolve(res);
 								});
 							});
 						}

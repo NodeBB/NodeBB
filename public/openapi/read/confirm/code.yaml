@@ -18,5 +18,4 @@ get:
                     description: Translation key for client-side localisation
                 required:
                   - title
-              - $ref: ../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
               - $ref: ../../components/schemas/CommonProps.yaml#/CommonProps

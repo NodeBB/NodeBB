@@ -1,0 +1,29 @@
+get:
+  tags:
+    - other
+  summary: Warn before navigating externally
+  parameters:
+    - in: query
+      name: url
+      schema:
+        type: string
+      description: URL of the page to warn the user about
+      example: https://example.org
+  description: This route presents a warning to a user notifying them that the page they are about to view is hosted externally. They then have the option of continuing onwards or going back to where they came from.
+  responses:
+    "200":
+      description: Warning page presented
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  outgoing:
+                    type: string
+                    description: Escaped URL of the page to navigate to
+                  title:
+                    description: The page title
+                    type: string
+              - $ref: ../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../components/schemas/CommonProps.yaml#/CommonProps

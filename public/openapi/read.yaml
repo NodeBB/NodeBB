@@ -54,6 +54,8 @@ tags:
     description: Disparate method of categorizing topics
   - name: shorthand
     description: Convenience and utility routes for accessing other part of the API
+  - name: other
+    description: Other one-off routes that do not fit in a section of their own
 paths:
   /api/:
     $ref: 'read/index.yaml'
@@ -177,6 +179,8 @@ paths:
     $ref: 'read/categories.yaml'
   "/api/categories/{cid}/moderators":
     $ref: 'read/categories/cid/moderators.yaml'
+  "/api/topic/{topic_id}/{slug}":
+    $ref: 'read/topic/topic_id.yaml'
   "/api/topic/{topic_id}/{slug}/{post_index}":
     $ref: 'read/topic/topic_id.yaml'
   /api/recent:
@@ -203,6 +207,8 @@ paths:
     $ref: 'read/register/complete.yaml'
   "/api/confirm/{code}":
     $ref: 'read/confirm/code.yaml'
+  /api/tos:
+    $ref: 'read/tos.yaml'
   /api/search:
     $ref: 'read/search.yaml'
   "/api/reset":
@@ -231,6 +237,8 @@ paths:
     $ref: 'read/popular.yaml'
   /api/top:
     $ref: 'read/top.yaml'
+  "/api/category/{category_id}/{slug}":
+    $ref: 'read/category/category_id.yaml'
   "/api/category/{category_id}/{slug}/{topic_index}":
     $ref: 'read/category/category_id.yaml'
   /api/self:
@@ -301,3 +309,5 @@ paths:
     $ref: 'read/groups/slug.yaml'
   "/api/groups/{slug}/members":
     $ref: 'read/groups/slug/members.yaml'
+  /api/outgoing:
+    $ref: 'read/outgoing.yaml'
