@@ -37,7 +37,7 @@ Thumbs.get = async function (tids) {
 	let response = thumbs.map((thumbSet, idx) => thumbSet.map(thumb => ({
 		id: tids[idx],
 		name: path.basename(thumb),
-		url: thumb.startsWith('http') ? thumb : path.join(upload_url, thumb),
+		url: thumb.startsWith('http') ? thumb : path.posix.join(upload_url, thumb),
 	})));
 
 	({ thumbs: response } = await plugins.hooks.fire('filter:topics.getThumbs', { tids, thumbs: response }));
