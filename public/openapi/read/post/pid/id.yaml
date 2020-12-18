@@ -3,6 +3,12 @@ get:
     - shorthand
   summary: Get post data
   parameters:
+    - name: type
+      in: path
+      required: true
+      schema:
+        type: string
+      example: post
     - name: id
       in: path
       required: true

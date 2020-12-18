@@ -124,7 +124,7 @@ paths:
   /api/admin/advanced/cache:
     $ref: 'read/admin/advanced/cache.yaml'
   /api/admin/advanced/cache/dump:
-    $ref: 'read/admin/advanced/cache.yaml'  # todo: @baris to fix, see gh#9122
+    $ref: 'read/admin/advanced/cache/dump.yaml'
   /api/admin/development/logger:
     $ref: 'read/admin/development/logger.yaml'
   /api/admin/development/info:
