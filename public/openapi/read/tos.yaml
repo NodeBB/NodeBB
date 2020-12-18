@@ -1,0 +1,18 @@
+get:
+  tags:
+    - authentication
+  summary: Get forum terms of service
+  description: This route allows you to view the forum terms of service.
+  responses:
+    "200":
+      description: Terms of service retrieved.
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  termsOfUse:
+                    type: string
+                    description: Full text of the configured terms of service/terms of use.
+              - $ref: ../components/schemas/CommonProps.yaml#/CommonProps
