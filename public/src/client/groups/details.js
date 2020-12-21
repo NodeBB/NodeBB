@@ -229,16 +229,10 @@ define('forum/groups/details', [
 			if (confirm) {
 				bootbox.prompt('Please enter the name of this group in order to delete it:', function (response) {
 					if (response === groupName) {
-						socket.emit('groups.delete', {
-							groupName: groupName,
-						}, function (err) {
-							if (!err) {
-								app.alertSuccess('[[groups:event.deleted, ' + utils.escapeHTML(groupName) + ']]');
-								ajaxify.go('groups');
-							} else {
-								app.alertError(err.message);
-							}
-						});
+						api.del(`/groups/${slugify(groupName)}`, {}).then(() => {
+							app.alertSuccess('[[groups:event.deleted, ' + utils.escapeHTML(groupName) + ']]');
+							ajaxify.go('groups');
+						}).catch(app.alertError);
 					}
 				});
 			}
