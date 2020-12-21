@@ -30,12 +30,18 @@ define('forum/topic/move-post', [
 				postSelect.togglePostSelection(postEl, postEl.attr('data-pid'));
 			}
 
-			$(window).off('action:axajify.end', checkMoveButtonEnable)
+			$(window).off('action:ajaxify.end', checkMoveButtonEnable)
 				.on('action:ajaxify.end', checkMoveButtonEnable);
 
 			moveCommit.on('click', function () {
+				if (!ajaxify.data.template.topic || !ajaxify.data.tid) {
+					return;
+				}
 				moveCommit.attr('disabled', true);
-
+				var data = {
+					pids: postSelect.pids.slice(),
+					tid: ajaxify.data.tid,
+				};
 				alerts.alert({
 					alert_id: 'pids_move_' + postSelect.pids.join('-'),
 					title: '[[topic:thread_tools.move-posts]]',
@@ -43,7 +49,7 @@ define('forum/topic/move-post', [
 					type: 'success',
 					timeout: 10000,
 					timeoutfn: function () {
-						movePosts();
+						movePosts(data);
 					},
 					clickfn: function (alert, params) {
 						delete params.timeoutfn;
@@ -90,15 +96,15 @@ define('forum/topic/move-post', [
 		checkMoveButtonEnable();
 	}
 
-	function movePosts() {
-		if (!ajaxify.data.template.topic || !ajaxify.data.tid) {
+	function movePosts(data) {
+		if (!ajaxify.data.template.topic || !data.tid) {
 			return;
 		}
-		socket.emit('posts.movePosts', { pids: postSelect.pids, tid: ajaxify.data.tid }, function (err) {
+		socket.emit('posts.movePosts', { pids: data.pids, tid: data.tid }, function (err) {
 			if (err) {
 				return app.alertError(err.message);
 			}
-			postSelect.pids.forEach(function (pid) {
+			data.pids.forEach(function (pid) {
 				components.get('post', 'pid', pid).fadeOut(500, function () {
 					$(this).remove();
 				});
@@ -115,7 +121,6 @@ define('forum/topic/move-post', [
 			postSelect.disable();
 		}
 	}
-
 
 	return MovePost;
 });
