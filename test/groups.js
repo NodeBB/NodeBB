@@ -1189,7 +1189,7 @@ describe('Groups', function () {
 				},
 			};
 			socketGroups.update({ uid: adminUid }, data, function (err) {
-				assert.equal(err.message, '[[error:no-group]]');
+				assert.equal(err.message, '[[error:invalid-group-name]]');
 				done();
 			});
 		});

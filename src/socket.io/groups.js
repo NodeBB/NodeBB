@@ -195,7 +195,6 @@ SocketGroups.update = async (socket, data) => {
 
 	const slug = await groups.getGroupField(data.groupName, 'slug');
 	await api.groups.update(socket, { slug, ...data.values });
-	// await groups.update(data.groupName, data.values);
 };
 
 
