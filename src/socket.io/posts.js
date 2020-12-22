@@ -86,12 +86,13 @@ SocketPosts.getPostSummaryByIndex = async function (socket, data) {
 		return 0;
 	}
 
-	const canRead = await privileges.posts.can('topics:read', pid, socket.uid);
-	if (!canRead) {
+	const topicPrivileges = await privileges.topics.get(data.tid, socket.uid);
+	if (!topicPrivileges['topics:read']) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
 	const postsData = await posts.getPostSummaryByPids([pid], socket.uid, { stripTags: false });
+	posts.modifyPostByPrivilege(postsData[0], topicPrivileges);
 	return postsData[0];
 };
 
