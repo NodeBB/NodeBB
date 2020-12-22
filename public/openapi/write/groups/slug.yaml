@@ -15,6 +15,43 @@ head:
       description: group found
     '404':
       description: group not found
+put:
+  tags:
+    - groups
+  summary: update group data
+  parameters:
+    - in: path
+      name: slug
+      schema:
+        type: string
+      required: true
+      description: slug of the group you wish to update
+      example: my-test-group
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            icon:
+              type: string
+              example: fa-times
+          additionalProperties:
+            description: An object of group properties you wish to update
+            example:
+  responses:
+    '200':
+      description: group successfully updated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../components/schemas/GroupObject.yaml#/GroupDataObject
 delete:
   tags:
     - groups
