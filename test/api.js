@@ -7,6 +7,7 @@ const fs = require('fs');
 const SwaggerParser = require('@apidevtools/swagger-parser');
 const request = require('request-promise-native');
 const nconf = require('nconf');
+const jwt = require('jsonwebtoken');
 const util = require('util');
 const wait = util.promisify(setTimeout);
 
@@ -34,7 +35,18 @@ describe('API', async () => {
 
 	const mocks = {
 		head: {},
-		get: {},
+		get: {
+			'/api/email/unsubscribe/{token}': [
+				{
+					in: 'path',
+					name: 'token',
+					example: (() => jwt.sign({
+						template: 'digest',
+						uid: 1,
+					}, nconf.get('secret')))(),
+				},
+			],
+		},
 		post: {},
 		put: {},
 		delete: {
