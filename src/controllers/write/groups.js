@@ -37,3 +37,13 @@ Groups.leave = async (req, res) => {
 	await api.groups.leave(req, req.params);
 	helpers.formatApiResponse(200, res);
 };
+
+Groups.grant = async (req, res) => {
+	await api.groups.grant(req, req.params);
+	helpers.formatApiResponse(200, res);
+};
+
+Groups.rescind = async (req, res) => {
+	await api.groups.rescind(req, req.params);
+	helpers.formatApiResponse(200, res);
+};

@@ -79,6 +79,8 @@ async function isInvited(socket, data) {
 }
 
 SocketGroups.grant = async (socket, data) => {
+	sockets.warnDeprecated(socket, 'PUT /api/v3/groups/:slug/ownership/:uid');
+
 	await isOwner(socket, data);
 	await groups.ownership.grant(data.toUid, data.groupName);
 	logGroupEvent(socket, 'group-owner-grant', {
@@ -88,6 +90,8 @@ SocketGroups.grant = async (socket, data) => {
 };
 
 SocketGroups.rescind = async (socket, data) => {
+	sockets.warnDeprecated(socket, 'DELETE /api/v3/groups/:slug/ownership/:uid');
+
 	await isOwner(socket, data);
 	await groups.ownership.rescind(data.toUid, data.groupName);
 	logGroupEvent(socket, 'group-owner-rescind', {

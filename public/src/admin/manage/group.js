@@ -39,7 +39,7 @@ define('admin/manage/group', [
 			groupLabelPreview.css('color', changeGroupTextColor.val() || '#ffffff');
 		});
 
-		setupGroupMembersMenu(groupName);
+		setupGroupMembersMenu();
 
 		$('#group-icon, #group-icon-label').on('click', function () {
 			var currentIcon = groupIcon.attr('value');
@@ -96,7 +96,7 @@ define('admin/manage/group', [
 		});
 	};
 
-	function setupGroupMembersMenu(groupName) {
+	function setupGroupMembersMenu() {
 		$('[component="groups/members"]').on('click', '[data-action]', function () {
 			var btnEl = $(this);
 			var userRow = btnEl.parents('[data-uid]');
@@ -107,15 +107,9 @@ define('admin/manage/group', [
 
 			switch (action) {
 				case 'toggleOwnership':
-					socket.emit('groups.' + (isOwner ? 'rescind' : 'grant'), {
-						toUid: uid,
-						groupName: groupName,
-					}, function (err) {
-						if (err) {
-							return app.alertError(err.message);
-						}
+					api[isOwner ? 'del' : 'put'](`/groups/${ajaxify.data.group.slug}/ownership/${uid}`, {}).then(() => {
 						ownerFlagEl.toggleClass('invisible');
-					});
+					}).catch(app.alertError);
 					break;
 
 				case 'kick':

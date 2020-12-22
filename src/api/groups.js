@@ -177,6 +177,28 @@ groupsAPI.leave = async function (caller, data) {
 	});
 };
 
+groupsAPI.grant = async (caller, data) => {
+	const groupName = await groups.getGroupNameByGroupSlug(data.slug);
+	await isOwner(caller, groupName);
+
+	await groups.ownership.grant(data.uid, groupName);
+	logGroupEvent(caller, 'group-owner-grant', {
+		groupName: groupName,
+		targetUid: data.uid,
+	});
+};
+
+groupsAPI.rescind = async (caller, data) => {
+	const groupName = await groups.getGroupNameByGroupSlug(data.slug);
+	await isOwner(caller, groupName);
+
+	await groups.ownership.rescind(data.uid, groupName);
+	logGroupEvent(caller, 'group-owner-rescind', {
+		groupName: groupName,
+		targetUid: data.uid,
+	});
+};
+
 async function isOwner(caller, groupName) {
 	if (typeof groupName !== 'string') {
 		throw new Error('[[error:invalid-group-name]]');
