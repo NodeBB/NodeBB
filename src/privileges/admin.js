@@ -17,6 +17,7 @@ module.exports = function (privileges) {
 		{ name: '[[admin/manage/privileges:admin-categories]]' },
 		{ name: '[[admin/manage/privileges:admin-privileges]]' },
 		{ name: '[[admin/manage/privileges:admin-users]]' },
+		{ name: '[[admin/manage/privileges:admin-groups]]' },
 		{ name: '[[admin/manage/privileges:admin-settings]]' },
 	];
 
@@ -25,6 +26,7 @@ module.exports = function (privileges) {
 		'admin:categories',
 		'admin:privileges',
 		'admin:users',
+		'admin:groups',
 		'admin:settings',
 	];
 
@@ -36,6 +38,7 @@ module.exports = function (privileges) {
 		'manage/categories': 'admin:categories',
 		'manage/privileges': 'admin:privileges',
 		'manage/users': 'admin:users',
+		'manage/groups': 'admin:groups',
 		'extend/plugins': 'admin:settings',
 		'extend/widgets': 'admin:settings',
 		'extend/rewards': 'admin:settings',
@@ -43,6 +46,7 @@ module.exports = function (privileges) {
 	privileges.admin.routeRegexpMap = {
 		'^manage/categories/\\d+': 'admin:categories',
 		'^manage/privileges/(\\d+|admin)': 'admin:privileges',
+		'^manage/groups/.+$': 'admin:groups',
 		'^settings/[\\w\\-]+$': 'admin:settings',
 		'^appearance/[\\w]+$': 'admin:settings',
 		'^plugins/[\\w\\-]+$': 'admin:settings',
@@ -138,7 +142,7 @@ module.exports = function (privileges) {
 		payload.keys = keys;
 
 		// This is a hack because I can't do {labels.users.length} to echo the count in templates.js
-		payload.columnCount = payload.labels.users.length + 2;
+		payload.columnCount = payload.labels.users.length + 3;
 		return payload;
 	};
 
