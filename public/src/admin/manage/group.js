@@ -6,8 +6,9 @@ define('admin/manage/group', [
 	'translator',
 	'categorySelector',
 	'groupSearch',
+	'slugify',
 	'api',
-], function (memberList, iconSelect, translator, categorySelector, groupSearch, api) {
+], function (memberList, iconSelect, translator, categorySelector, groupSearch, slugify, api) {
 	var Groups = {};
 
 	Groups.init = function () {
@@ -68,27 +69,20 @@ define('admin/manage/group', [
 		});
 
 		$('#save').on('click', function () {
-			socket.emit('admin.groups.update', {
-				groupName: groupName,
-				values: {
-					name: $('#change-group-name').val(),
-					userTitle: changeGroupUserTitle.val(),
-					description: $('#change-group-desc').val(),
-					icon: groupIcon.attr('value'),
-					labelColor: changeGroupLabelColor.val(),
-					textColor: changeGroupTextColor.val(),
-					userTitleEnabled: $('#group-userTitleEnabled').is(':checked'),
-					private: $('#group-private').is(':checked'),
-					hidden: $('#group-hidden').is(':checked'),
-					memberPostCids: $('#memberPostCids').val(),
-					disableJoinRequests: $('#group-disableJoinRequests').is(':checked'),
-					disableLeave: $('#group-disableLeave').is(':checked'),
-				},
-			}, function (err) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-
+			api.put(`/groups/${slugify(groupName)}`, {
+				name: $('#change-group-name').val(),
+				userTitle: changeGroupUserTitle.val(),
+				description: $('#change-group-desc').val(),
+				icon: groupIcon.attr('value'),
+				labelColor: changeGroupLabelColor.val(),
+				textColor: changeGroupTextColor.val(),
+				userTitleEnabled: $('#group-userTitleEnabled').is(':checked'),
+				private: $('#group-private').is(':checked'),
+				hidden: $('#group-hidden').is(':checked'),
+				memberPostCids: $('#memberPostCids').val(),
+				disableJoinRequests: $('#group-disableJoinRequests').is(':checked'),
+				disableLeave: $('#group-disableLeave').is(':checked'),
+			}).then(() => {
 				var newName = $('#change-group-name').val();
 
 				// If the group name changed, change url
@@ -97,7 +91,7 @@ define('admin/manage/group', [
 				}
 
 				app.alertSuccess('[[admin/manage/groups:edit.save-success]]');
-			});
+			}).catch(app.alertError);
 			return false;
 		});
 	};

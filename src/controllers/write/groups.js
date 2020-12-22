@@ -15,6 +15,14 @@ Groups.create = async (req, res) => {
 	helpers.formatApiResponse(200, res, groupObj);
 };
 
+Groups.update = async (req, res) => {
+	const groupObj = await api.groups.update(req, {
+		...req.body,
+		slug: req.params.slug,
+	});
+	helpers.formatApiResponse(200, res, groupObj);
+};
+
 Groups.delete = async (req, res) => {
 	await api.groups.delete(req, req.params);
 	helpers.formatApiResponse(200, res);

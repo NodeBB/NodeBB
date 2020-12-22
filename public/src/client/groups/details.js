@@ -203,14 +203,7 @@ define('forum/groups/details', [
 				}
 			});
 
-			socket.emit('groups.update', {
-				groupName: groupName,
-				values: settings,
-			}, function (err) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-
+			api.put(`/groups/${slugify(groupName)}`, settings).then(() => {
 				if (settings.name) {
 					var pathname = window.location.pathname;
 					pathname = pathname.substr(1, pathname.lastIndexOf('/'));
@@ -220,7 +213,7 @@ define('forum/groups/details', [
 				}
 
 				app.alertSuccess('[[groups:event.updated]]');
-			});
+			}).catch(app.alertError);
 		}
 	};
 

@@ -33,6 +33,16 @@ groupsAPI.create = async function (caller, data) {
 	return groupData;
 };
 
+groupsAPI.update = async function (caller, data) {
+	const groupName = await groups.getGroupNameByGroupSlug(data.slug);
+	await isOwner(caller, groupName);
+
+	delete data.slug;
+	await groups.update(groupName, data);
+
+	return await groups.getGroupData(data.name || groupName);
+};
+
 groupsAPI.delete = async function (caller, data) {
 	const groupName = await groups.getGroupNameByGroupSlug(data.slug);
 	await isOwner(caller, groupName);

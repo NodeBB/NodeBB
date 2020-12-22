@@ -186,8 +186,12 @@ SocketGroups.rejectInvite = async (socket, data) => {
 };
 
 SocketGroups.update = async (socket, data) => {
+	sockets.warnDeprecated(socket, 'PUT /api/v3/groups/:slug');
 	await isOwner(socket, data);
-	await groups.update(data.groupName, data.values);
+
+	const slug = await groups.getGroupField(data.groupName, 'slug');
+	await api.groups.update(socket, { slug, ...data.values });
+	// await groups.update(data.groupName, data.values);
 };
 
 
