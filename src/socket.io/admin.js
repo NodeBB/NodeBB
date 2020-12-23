@@ -41,7 +41,7 @@ SocketAdmin.before = async function (socket, method) {
 	}
 
 	// Check admin privileges mapping (if not in mapping, deny access)
-	const privilegeSet = privileges.admin.socketMap[method].split(';');
+	const privilegeSet = privileges.admin.socketMap.hasOwnProperty(method) ? privileges.admin.socketMap[method].split(';') : [];
 	const hasPrivilege = (await Promise.all(privilegeSet.map(async privilege => privileges.admin.can(privilege, socket.uid)))).some(Boolean);
 	if (privilegeSet.length && hasPrivilege) {
 		return;
