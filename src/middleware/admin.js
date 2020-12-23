@@ -78,9 +78,14 @@ middleware.renderHeader = async (req, res, data) => {
 
 	templateValues.template = { name: res.locals.template };
 	templateValues.template[res.locals.template] = true;
-
-	// Normally this should hook be automatically added by middleware.processRender(), but it seems to only be fired for page hooks, and not when called internally.
+	// remove @1.17.0
 	({ templateData: templateValues } = await plugins.hooks.fire('filter:admin/header.build', { req, res, templateData: templateValues }));
+	({ templateData: templateValues } = await plugins.hooks.fire('filter:middleware.renderAdminHeader', {
+		req,
+		res,
+		templateData: templateValues,
+		data,
+	}));
 
 	return await req.app.renderAsync('admin/header', templateValues);
 };
