@@ -39,6 +39,7 @@
 	"admin-categories": "Categorias",
 	"admin-privileges": "Privilégios",
 	"admin-users": "Utilizadores",
+	"admin-groups": "Groups",
 	"admin-settings": "Definições",
 
 	"alert.confirm-moderate": "<strong>Are you sure you wish to grant the moderation privilege to this user group?</strong> This group is public, and any users can join at will.",

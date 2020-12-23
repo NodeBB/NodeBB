@@ -39,6 +39,7 @@
 	"admin-categories": "版块",
 	"admin-privileges": "权限",
 	"admin-users": "用户",
+	"admin-groups": "Groups",
 	"admin-settings": "设置",
 
 	"alert.confirm-moderate": "<strong>您确定要将审核权限授予此用户组吗？</strong>此用户组是公开的，任何用户都可以随意加入。",

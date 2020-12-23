@@ -1,12 +1,12 @@
 {
-	"logger-settings": "Logger Settings",
-	"description": "By enabling the check boxes, you will receive logs to your terminal. If you specify a path, logs will then be saved to a file instead. HTTP logging is useful for collecting statistics about who, when, and what people access on your forum. In addition to logging HTTP requests, we can also log socket.io events. Socket.io logging, in combination with redis-cli monitor, can be very helpful for learning NodeBB's internals.",
-	"explanation": "Simply check/uncheck the logging settings to enable or disable logging on the fly. No restart needed.",
-	"enable-http": "Enable HTTP logging",
-	"enable-socket": "Enable socket.io event logging",
-	"file-path": "Path to log file",
+	"logger-settings": "הגדרות מנהל הרישום",
+	"description": "על-ידי הפיכת תיבות הסימון לזמינות, תקבל יומני רישום למסוף שלך. אם תציין נתיב, יומני הרישום יישמרו בקובץ במקום זאת. רישום HTTP שימושי לאיסוף נתונים סטטיסטיים אודות מי ומתי  אנשים נכנסים לפורום שלך. בנוסף לרישום בקשות ה-HTTP, אנו יכולים גם לרשום אירועי Socket.io, אשר בשילוב עם מודד redis-cli, יכול להיות מאוד מועיל ללימוד הפנימיים של NodeBB.",
+	"explanation": "הפעל או ​בטל את סימון הגדרות הרישום בכדי לאפשר או להשבית כניסה במהירות. אין צורך בהפעלה מחדש.",
+	"enable-http": "הפעל רישום HTTP",
+	"enable-socket": "הפעל רישום אירועים ב-socket.io",
+	"file-path": "נתיב קובץ יומן רישום",
 	"file-path-placeholder": "/path/to/log/file.log ::: leave blank to log to your terminal",
 
-	"control-panel": "Logger Control Panel",
-	"update-settings": "Update Logger Settings"
+	"control-panel": "לוח בקרת מנהל רישום",
+	"update-settings": "עדכן הגדרות מנהל רישום"
 }

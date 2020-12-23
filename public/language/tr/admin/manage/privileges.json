@@ -39,6 +39,7 @@
 	"admin-categories": "Kategoriler",
 	"admin-privileges": "Ayrıcalıklar",
 	"admin-users": "Kullanıcılar",
+	"admin-groups": "Groups",
 	"admin-settings": "Ayarlar",
 
 	"alert.confirm-moderate": "<strong>Bu gruba yönetim ayrıcalıkları vermek istediğinize emin misiniz?</strong> Bu grup genele açık olduğundan her kullanıcı gruba katılabilir. ",

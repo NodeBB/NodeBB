@@ -39,6 +39,7 @@
 	"admin-categories": "版面",
 	"admin-privileges": "權限",
 	"admin-users": "使用者",
+	"admin-groups": "Groups",
 	"admin-settings": "設定",
 
 	"alert.confirm-moderate": "<strong>Are you sure you wish to grant the moderation privilege to this user group?</strong> This group is public, and any users can join at will.",

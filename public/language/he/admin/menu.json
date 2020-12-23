@@ -2,7 +2,7 @@
 	"dashboard": "לוח מחוונים",
 	"section-general": "כללי",
 
-	"section-manage": "נהל",
+	"section-manage": "ניהול",
 	"manage/categories": "קטגוריות",
 	"manage/privileges": "הרשאות",
 	"manage/tags": "תגיות",
@@ -63,7 +63,7 @@
 	"advanced/logs": "רישומים",
 	"advanced/errors": "שגיאות",
 	"advanced/cache": "עוגיות",
-	"development/logger": "כותב הרישומים",
+	"development/logger": "מנהל הרישומים",
 	"development/info": "מידע",
 
 	"rebuild-and-restart-forum": "בנה והפעל מחדש את הפורום",

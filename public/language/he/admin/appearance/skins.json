@@ -1,9 +1,9 @@
 {
-	"loading": "טוען סקין...",
-	"homepage": "דף הבית",
-	"select-skin": "סקין נבחר",
-	"current-skin": "סקין נוכחי",
-	"skin-updated": "סקין מעודכן",
-	"applied-success": "העיצוב %1 הוחל בהצלחה",
-	"revert-success": "העיצובהוחזר לצבעים הבסיסיים"
+	"loading": "טוען עיצובים",
+	"homepage": "דף הפרוייקט",
+	"select-skin": "בחר עיצוב זה",
+	"current-skin": "עיצוב נוכחי",
+	"skin-updated": "עיצוב עודכן",
+	"applied-success": "עיצוב %1 הוחל בהצלחה",
+	"revert-success": "עיצוב הוחזר לצבעים בסיסיים"
 }

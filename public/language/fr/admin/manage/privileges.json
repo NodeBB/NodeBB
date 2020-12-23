@@ -39,6 +39,7 @@
 	"admin-categories": "Catégories",
 	"admin-privileges": "Privilèges",
 	"admin-users": "Utilisateurs",
+	"admin-groups": "Groups",
 	"admin-settings": "Paramètres",
 
 	"alert.confirm-moderate": "<strong>Voulez-vous vraiment accorder le privilège de modération à ce groupe d'utilisateurs ?</strong> Ce groupe est public et tous les utilisateurs peuvent le rejoindre à volonté.",

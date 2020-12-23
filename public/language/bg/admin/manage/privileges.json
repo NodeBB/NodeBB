@@ -39,6 +39,7 @@
 	"admin-categories": "Категории",
 	"admin-privileges": "Правомощия",
 	"admin-users": "Потребители",
+	"admin-groups": "Groups",
 	"admin-settings": "Настройки",
 
 	"alert.confirm-moderate": "<strong>Наистина ли искате да дадете правомощието за модериране на тази потребителска група?</strong> Тази група е публична и всеки може свободно да се присъедини към нея.",

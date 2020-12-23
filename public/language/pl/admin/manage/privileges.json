@@ -39,6 +39,7 @@
 	"admin-categories": "Kategorie",
 	"admin-privileges": "Uprawnienia",
 	"admin-users": "Użytkownicy",
+	"admin-groups": "Groups",
 	"admin-settings": "Ustawienia",
 
 	"alert.confirm-moderate": "<strong>Czy na pewno chcesz przyznać uprawnienia moderacji dla tej grupy użytkowników?</strong> Ta grupa jest publiczna i każdy użytkownik może do niej dołączyć.",

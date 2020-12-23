@@ -39,6 +39,7 @@
 	"admin-categories": "Kategorie",
 	"admin-privileges": "Oprávnění",
 	"admin-users": "Uživatelé",
+	"admin-groups": "Groups",
 	"admin-settings": "Nastavení",
 
 	"alert.confirm-moderate": "<strong>Are you sure you wish to grant the moderation privilege to this user group?</strong> This group is public, and any users can join at will.",

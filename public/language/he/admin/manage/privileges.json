@@ -39,6 +39,7 @@
 	"admin-categories": "קטגוריות",
 	"admin-privileges": "הרשאות",
 	"admin-users": "משתמשים",
+	"admin-groups": "Groups",
 	"admin-settings": "הגדרות",
 
 	"alert.confirm-moderate": "<strong>האם אתה בטוח שברצונך להעניק הרשאות מודרטור לקבוצת משתמשים זו?</strong> הקבוצה היא ציבורית, וכל משתמש יכול להצטרף כרצונו.",
