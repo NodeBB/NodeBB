@@ -44,6 +44,8 @@ adminController.routeIndex = async (req, res) => {
 		return helpers.redirect(res, 'admin/manage/users');
 	} else if (privilegeSet['admin:groups']) {
 		return helpers.redirect(res, 'admin/manage/groups');
+	} else if (privilegeSet['admin:admins-mods']) {
+		return helpers.redirect(res, 'admin/manage/admins-mods');
 	} else if (privilegeSet['admin:settings']) {
 		return helpers.redirect(res, 'admin/settings/general');
 	}

@@ -16,6 +16,7 @@ module.exports = function (privileges) {
 		{ name: '[[admin/manage/privileges:admin-dashboard]]' },
 		{ name: '[[admin/manage/privileges:admin-categories]]' },
 		{ name: '[[admin/manage/privileges:admin-privileges]]' },
+		{ name: '[[admin/manage/privileges:admin-admins-mods]]' },
 		{ name: '[[admin/manage/privileges:admin-users]]' },
 		{ name: '[[admin/manage/privileges:admin-groups]]' },
 		{ name: '[[admin/manage/privileges:admin-settings]]' },
@@ -25,6 +26,7 @@ module.exports = function (privileges) {
 		'admin:dashboard',
 		'admin:categories',
 		'admin:privileges',
+		'admin:admins-mods',
 		'admin:users',
 		'admin:groups',
 		'admin:settings',
@@ -37,6 +39,7 @@ module.exports = function (privileges) {
 		dashboard: 'admin:dashboard',
 		'manage/categories': 'admin:categories',
 		'manage/privileges': 'admin:privileges',
+		'manage/admins-mods': 'admin:admins-mods',
 		'manage/users': 'admin:users',
 		'manage/groups': 'admin:groups',
 		'extend/plugins': 'admin:settings',
@@ -65,10 +68,13 @@ module.exports = function (privileges) {
 		'admin.categories.copySettingsFrom': 'admin:categories',
 
 		'admin.categories.getPrivilegeSettings': 'admin:privileges',
-		'admin.categories.setPrivilege': 'admin:privileges',
+		'admin.categories.setPrivilege': 'admin:privileges;admin:admins-mods',
 		'admin.categories.copyPrivilegesToChildren': 'admin:privileges',
 		'admin.categories.copyPrivilegesFrom': 'admin:privileges',
 		'admin.categories.copyPrivilegesToAllCategories': 'admin:privileges',
+
+		'admin.user.makeAdmins': 'admin:admins-mods',
+		'admin.user.removeAdmins': 'admin:admins-mods',
 
 		'admin.user.loadGroups': 'admin:users',
 		'admin.groups.join': 'admin:users',
