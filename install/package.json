@@ -91,7 +91,7 @@
         "mousetrap": "^1.6.5",
         "@nodebb/bootswatch": "3.4.2",
         "nconf": "^0.11.0",
-        "nodebb-plugin-composer-default": "6.5.4",
+        "nodebb-plugin-composer-default": "6.5.5",
         "nodebb-plugin-dbsearch": "4.1.2",
         "nodebb-plugin-emoji": "^3.3.0",
         "nodebb-plugin-emoji-android": "2.0.0",
