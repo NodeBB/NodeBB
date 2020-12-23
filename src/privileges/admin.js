@@ -19,6 +19,7 @@ module.exports = function (privileges) {
 		{ name: '[[admin/manage/privileges:admin-admins-mods]]' },
 		{ name: '[[admin/manage/privileges:admin-users]]' },
 		{ name: '[[admin/manage/privileges:admin-groups]]' },
+		{ name: '[[admin/manage/privileges:admin-tags]]' },
 		{ name: '[[admin/manage/privileges:admin-settings]]' },
 	];
 
@@ -29,6 +30,7 @@ module.exports = function (privileges) {
 		'admin:admins-mods',
 		'admin:users',
 		'admin:groups',
+		'admin:tags',
 		'admin:settings',
 	];
 
@@ -42,6 +44,8 @@ module.exports = function (privileges) {
 		'manage/admins-mods': 'admin:admins-mods',
 		'manage/users': 'admin:users',
 		'manage/groups': 'admin:groups',
+		'manage/tags': 'admin:tags',
+		'settings/tags': 'admin:tags',
 		'extend/plugins': 'admin:settings',
 		'extend/widgets': 'admin:settings',
 		'extend/rewards': 'admin:settings',
@@ -88,6 +92,11 @@ module.exports = function (privileges) {
 		'admin.user.deleteUsersAndContent': 'admin:users',
 		'admin.user.createUser': 'admin:users',
 		'admin.user.invite': 'admin:users',
+
+		'admin.tags.create': 'admin:tags',
+		'admin.tags.update': 'admin:tags',
+		'admin.tags.rename': 'admin:tags',
+		'admin.tags.deleteTags': 'admin:tags',
 
 		'admin.getSearchDict': 'admin:settings',
 		'admin.config.setMultiple': 'admin:settings',

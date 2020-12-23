@@ -41,6 +41,7 @@
 	"admin-users": "Users",
 	"admin-admins-mods": "Admins &amp; Mods",
 	"admin-groups": "Groups",
+	"admin-tags": "Tags",
 	"admin-settings": "Settings",
 
 	"alert.confirm-moderate": "<strong>Are you sure you wish to grant the moderation privilege to this user group?</strong> This group is public, and any users can join at will.",

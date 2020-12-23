@@ -20,9 +20,9 @@
 			{{{ if user.privileges.admin:users }}}<li><a href="{relative_path}/admin/manage/users">[[admin/menu:manage/users]]</a></li>{{{ end }}}
 			{{{ if user.privileges.admin:groups }}}<li><a href="{relative_path}/admin/manage/groups">[[admin/menu:manage/groups]]</a></li>{{{ end }}}
 			{{{ if user.privileges.admin:admins-mods }}}<li><a href="{relative_path}/admin/manage/admins-mods">[[admin/menu:manage/admins-mods]]</a></li>{{{ end }}}
+			{{{ if user.privileges.admin:tags }}}<li><a href="{relative_path}/admin/manage/tags">[[admin/menu:manage/tags]]</a></li>{{{ end }}}
 			{{{ if user.privileges.superadmin }}}
 			<li><a href="{relative_path}/admin/manage/registration">[[admin/menu:manage/registration]]</a></li>
-			<li><a href="{relative_path}/admin/manage/tags">[[admin/menu:manage/tags]]</a></li>
 			<li><a href="{relative_path}/admin/manage/uploads">[[admin/menu:manage/uploads]]</a></li>
 			<li><a href="{relative_path}/admin/manage/digest">[[admin/menu:manage/digest]]</a></li>
 
@@ -191,9 +191,9 @@
 					{{{ if user.privileges.admin:users }}}<li><a id="manage-users" href="{relative_path}/admin/manage/users">[[admin/menu:manage/users]]</a></li>{{{ end }}}
 					{{{ if user.privileges.admin:groups }}}<li><a href="{relative_path}/admin/manage/groups">[[admin/menu:manage/groups]]</a></li>{{{ end }}}
 					{{{ if user.privileges.admin:admins-mods }}}<li><a href="{relative_path}/admin/manage/admins-mods">[[admin/menu:manage/admins-mods]]</a></li>{{{ end }}}
+					{{{ if user.privileges.admin:tags }}}<li><a href="{relative_path}/admin/manage/tags">[[admin/menu:manage/tags]]</a></li>{{{ end }}}
 					{{{ if user.privileges.superadmin }}}
 					<li><a href="{relative_path}/admin/manage/registration">[[admin/menu:manage/registration]]</a></li>
-					<li><a href="{relative_path}/admin/manage/tags">[[admin/menu:manage/tags]]</a></li>
 					<li><a href="{relative_path}/admin/manage/uploads">[[admin/menu:manage/uploads]]</a></li>
 					<li><a href="{relative_path}/admin/manage/digest">[[admin/menu:manage/digest]]</a></li>
 					<li role="separator" class="divider"></li>
