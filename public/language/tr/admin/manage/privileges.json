@@ -39,10 +39,13 @@
 	"admin-categories": "Kategoriler",
 	"admin-privileges": "Ayrıcalıklar",
 	"admin-users": "Kullanıcılar",
+	"admin-admins-mods": "Admins &amp; Mods",
 	"admin-groups": "Groups",
+	"admin-tags": "Tags",
 	"admin-settings": "Ayarlar",
 
 	"alert.confirm-moderate": "<strong>Bu gruba yönetim ayrıcalıkları vermek istediğinize emin misiniz?</strong> Bu grup genele açık olduğundan her kullanıcı gruba katılabilir. ",
+	"alert.confirm-admins-mods": "<strong>Are you sure you wish to grant the &quot;Admins &amp; Mods&quot; privilege to this user/group?</strong> Users with this privilege are able to promote and demote other users into privileged positions, <em>including super administrator</em>",
 	"alert.confirm-save": "Lütfen ayrıcalıkları kaydetme isteğinizi onaylayınız",
 	"alert.saved": "Ayrıcalık değişiklikleri kaydedildi ve uygulandı",
 	"alert.confirm-discard": "Ayrıcalık değişikliklerini iptal etmek istediğinize emin misiniz?",

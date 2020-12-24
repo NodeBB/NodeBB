@@ -39,10 +39,13 @@
 	"admin-categories": "版块",
 	"admin-privileges": "权限",
 	"admin-users": "用户",
+	"admin-admins-mods": "Admins &amp; Mods",
 	"admin-groups": "Groups",
+	"admin-tags": "Tags",
 	"admin-settings": "设置",
 
 	"alert.confirm-moderate": "<strong>您确定要将审核权限授予此用户组吗？</strong>此用户组是公开的，任何用户都可以随意加入。",
+	"alert.confirm-admins-mods": "<strong>Are you sure you wish to grant the &quot;Admins &amp; Mods&quot; privilege to this user/group?</strong> Users with this privilege are able to promote and demote other users into privileged positions, <em>including super administrator</em>",
 	"alert.confirm-save": "请验证您保存这些权限的目的",
 	"alert.saved": "权限修改已保存并应用",
 	"alert.confirm-discard": "您确定要取消权限修改吗？",

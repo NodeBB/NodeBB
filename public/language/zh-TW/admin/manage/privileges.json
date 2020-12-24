@@ -39,10 +39,13 @@
 	"admin-categories": "版面",
 	"admin-privileges": "權限",
 	"admin-users": "使用者",
+	"admin-admins-mods": "Admins &amp; Mods",
 	"admin-groups": "Groups",
+	"admin-tags": "Tags",
 	"admin-settings": "設定",
 
 	"alert.confirm-moderate": "<strong>Are you sure you wish to grant the moderation privilege to this user group?</strong> This group is public, and any users can join at will.",
+	"alert.confirm-admins-mods": "<strong>Are you sure you wish to grant the &quot;Admins &amp; Mods&quot; privilege to this user/group?</strong> Users with this privilege are able to promote and demote other users into privileged positions, <em>including super administrator</em>",
 	"alert.confirm-save": "Please confirm your intention to save these privileges",
 	"alert.saved": "Privilege changes saved and applied",
 	"alert.confirm-discard": "Are you sure you wish to discard your privilege changes?",
