@@ -105,6 +105,7 @@ module.exports = function (privileges) {
 		'admin.themes.set': 'admin:settings',
 		'admin.reloadAllSessions': 'admin:settings',
 		'admin.settings.get': 'admin:settings',
+		'admin.settings.set': 'admin:settings',
 	};
 
 	privileges.admin.resolve = (path) => {
