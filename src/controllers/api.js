@@ -22,7 +22,7 @@ const socketioOrigins = nconf.get('socket.io:origins');
 const websocketAddress = nconf.get('socket.io:address') || '';
 
 apiController.loadConfig = async function (req) {
-	let config = {
+	const config = {
 		relative_path,
 		upload_url,
 		assetBaseUrl: `${relative_path}/assets`,
@@ -83,8 +83,12 @@ apiController.loadConfig = async function (req) {
 	};
 
 	let settings = config;
+	let isAdminOrGlobalMod;
 	if (req.loggedIn) {
-		settings = await user.getSettings(req.uid);
+		([settings, isAdminOrGlobalMod] = await Promise.all([
+			user.getSettings(req.uid),
+			user.isAdminOrGlobalMod(req.uid),
+		]));
 	}
 
 	// Handle old skin configs
@@ -101,8 +105,11 @@ apiController.loadConfig = async function (req) {
 	config.categoryTopicSort = settings.categoryTopicSort || config.categoryTopicSort;
 	config.topicSearchEnabled = settings.topicSearchEnabled || false;
 	config.bootswatchSkin = (meta.config.disableCustomUserSkins !== 1 && settings.bootswatchSkin && settings.bootswatchSkin !== '') ? settings.bootswatchSkin : '';
-	config = await plugins.hooks.fire('filter:config.get', config);
-	return config;
+
+	// Overrides based on privilege
+	config.disableChatMessageEditing = isAdminOrGlobalMod ? false : config.disableChatMessageEditing;
+
+	return await plugins.hooks.fire('filter:config.get', config);
 };
 
 apiController.getConfig = async function (req, res) {
