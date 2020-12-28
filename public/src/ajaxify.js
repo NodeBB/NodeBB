@@ -409,6 +409,7 @@ ajaxify = window.ajaxify || {};
 
 	require(['translator', 'benchpress'], function (translator, Benchpress) {
 		translator.translate('[[error:no-connection]]');
+		translator.translate('[[error:socket-reconnect-failed]]');
 		Benchpress.registerLoader(ajaxify.loadTemplate);
 		Benchpress.setGlobal('config', config);
 	});

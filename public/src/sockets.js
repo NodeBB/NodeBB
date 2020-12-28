@@ -45,8 +45,10 @@ socket = window.socket;
 		socket.on('disconnect', onDisconnect);
 
 		socket.io.on('reconnect_failed', function () {
-			// Wait ten times the reconnection delay and then start over
-			setTimeout(socket.connect.bind(socket), parseInt(config.reconnectionDelay, 10) * 10);
+			$('#reconnect-alert').removeClass('alert-warning')
+				.addClass('alert-danger')
+				.find('p')
+				.translateText('[[error:socket-reconnect-failed]]');
 		});
 
 		socket.on('checkSession', function (uid) {
