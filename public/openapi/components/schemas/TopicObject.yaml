@@ -1,62 +1,21 @@
 TopicObject:
   allOf:
+    - $ref: '#/TopicObjectSlim'
     - type: object
       properties:
-        tid:
-          type: number
-          description: A topic identifier
-        uid:
-          type: number
-          description: A user identifier
-        cid:
-          type: number
-          description: A category identifier
-        mainPid:
-          type: number
-          description: The post id of the first post in this topic (also called the "original post")
         title:
           type: string
         slug:
           type: string
-        timestamp:
-          type: number
         lastposttime:
-          type: number
-        postcount:
-          type: number
-        viewcount:
-          type: number
-        postercount:
           type: number
         teaserPid:
           oneOf:
             - type: number
             - type: string
           nullable: true
-        upvotes:
-          type: number
-        downvotes:
-          type: number
-        deleted:
-          type: number
-        locked:
-          type: number
-        pinned:
-          type: number
-          description: Whether or not this particular topic is pinned to the top of the
-            category
-        deleterUid:
-          type: number
         titleRaw:
           type: string
-        timestampISO:
-          type: string
-          description: An ISO 8601 formatted date string (complementing `timestamp`)
-        lastposttimeISO:
-          type: string
-          description: An ISO 8601 formatted date string (complementing `lastposttime`)
-        votes:
-          type: number
         thumbs:
           type: array
           items:
