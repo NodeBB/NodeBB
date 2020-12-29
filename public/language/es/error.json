@@ -175,5 +175,6 @@
     "already-blocked": "Este usuario ya está bloqueado.",
     "already-unblocked": "Este usuario ya está desbloqueado.",
     "no-connection": "Parece haber un problema con tu conexión a internet",
+    "socket-reconnect-failed": "Reconnect failed, please try again later",
     "plugin-not-whitelisted": "Unable to install plugin &ndash; only plugins whitelisted by the NodeBB Package Manager can be installed via the ACP"
 }
