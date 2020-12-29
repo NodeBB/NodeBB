@@ -6,9 +6,7 @@ const winston = require('winston');
 
 const meta = require('../meta');
 const user = require('../user');
-const topics = require('../topics');
 const categories = require('../categories');
-const privileges = require('../privileges');
 const plugins = require('../plugins');
 const translator = require('../translator');
 const languages = require('../languages');
@@ -120,29 +118,8 @@ apiController.getConfig = async function (req, res) {
 
 // TODO: Deprecate these four controllers in 1.17.0
 apiController.getPostData = async (pid, uid) => api.posts.get({ uid }, { pid });
-
-apiController.getTopicData = async function (tid, uid) {
-	const [userPrivileges, topic] = await Promise.all([
-		privileges.topics.get(tid, uid),
-		topics.getTopicData(tid),
-	]);
-	if (!topic || !userPrivileges.read || !userPrivileges['topics:read'] || (topic.deleted && !userPrivileges.view_deleted)) {
-		return null;
-	}
-	return topic;
-};
-
-apiController.getCategoryData = async function (cid, uid) {
-	const [userPrivileges, category] = await Promise.all([
-		privileges.categories.get(cid, uid),
-		categories.getCategoryData(cid),
-	]);
-	if (!category || !userPrivileges.read) {
-		return null;
-	}
-	return category;
-};
-
+apiController.getTopicData = async (tid, uid) => api.topics.get({ uid }, { tid });
+apiController.getCategoryData = async (cid, uid) => api.categories.get({ uid }, { cid });
 apiController.getObject = async function (req, res, next) {
 	const methods = {
 		post: apiController.getPostData,
