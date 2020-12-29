@@ -117,7 +117,7 @@ describe('API', async () => {
 			}],
 		});
 		meta.config.allowTopicsThumbnail = 1;
-		meta.config.termsOfUse = 'I, for one, welcome our new test-drive overlords';
+		meta.config.termsOfUse = 'I, for one, welcome our new test-driven overlords';
 
 		// Create a category
 		const testCategory = await categories.create({ name: 'test' });
@@ -446,12 +446,20 @@ describe('API', async () => {
 		let required = [];
 		const additionalProperties = schema.hasOwnProperty('additionalProperties');
 
-		if (schema.allOf) {
-			schema = schema.allOf.reduce((memo, obj) => {
-				required = required.concat(obj.required ? obj.required : Object.keys(obj.properties));
-				memo = { ...memo, ...obj.properties };
-				return memo;
+		function flattenAllOf(obj) {
+			return obj.reduce((memo, obj) => {
+				if (obj.allOf) {
+					obj = { properties: flattenAllOf(obj.allOf) };
+				} else {
+					required = required.concat(obj.required ? obj.required : Object.keys(obj.properties));
+				}
+
+				return { ...memo, ...obj.properties };
 			}, {});
+		}
+
+		if (schema.allOf) {
+			schema = flattenAllOf(schema.allOf);
 		} else if (schema.properties) {
 			required = schema.required || Object.keys(schema.properties);
 			schema = schema.properties;
