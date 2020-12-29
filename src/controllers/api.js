@@ -2,6 +2,7 @@
 
 const validator = require('validator');
 const nconf = require('nconf');
+const winston = require('winston');
 
 const meta = require('../meta');
 const user = require('../user');
@@ -152,6 +153,10 @@ apiController.getObject = async function (req, res, next) {
 	if (!method) {
 		return next();
 	}
+
+	winston.warn('[api] This route has been deprecated and will likely be removed in v1.17.0');
+	winston.warn('[api] Use GET /api/v3/(posts|topics|categories)/:id instead');
+
 	try {
 		const result = await method(req.params.id, req.uid);
 		if (!result) {
