@@ -5,13 +5,13 @@ const nconf = require('nconf');
 
 const meta = require('../meta');
 const user = require('../user');
-const posts = require('../posts');
 const topics = require('../topics');
 const categories = require('../categories');
 const privileges = require('../privileges');
 const plugins = require('../plugins');
 const translator = require('../translator');
 const languages = require('../languages');
+const api = require('../api');
 
 const apiController = module.exports;
 
@@ -117,29 +117,8 @@ apiController.getConfig = async function (req, res) {
 	res.json(config);
 };
 
-apiController.getPostData = async function (pid, uid) {
-	const [userPrivileges, post, voted] = await Promise.all([
-		privileges.posts.get([pid], uid),
-		posts.getPostData(pid),
-		posts.hasVoted(pid, uid),
-	]);
-	if (!post) {
-		return null;
-	}
-	Object.assign(post, voted);
-
-	const userPrivilege = userPrivileges[0];
-	if (!userPrivilege.read || !userPrivilege['topics:read']) {
-		return null;
-	}
-
-	post.ip = userPrivilege.isAdminOrMod ? post.ip : undefined;
-	const selfPost = uid && uid === parseInt(post.uid, 10);
-	if (post.deleted && !(userPrivilege.isAdminOrMod || selfPost)) {
-		post.content = '[[topic:post_is_deleted]]';
-	}
-	return post;
-};
+// TODO: Deprecate these four controllers in 1.17.0
+apiController.getPostData = async (pid, uid) => api.posts.get({ uid }, { pid });
 
 apiController.getTopicData = async function (tid, uid) {
 	const [userPrivileges, topic] = await Promise.all([

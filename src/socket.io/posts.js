@@ -10,8 +10,7 @@ const categories = require('../categories');
 const user = require('../user');
 const socketHelpers = require('./helpers');
 const utils = require('../utils');
-
-const apiController = require('../controllers/api');
+const api = require('../api');
 
 const sockets = require('.');
 const SocketPosts = module.exports;
@@ -97,7 +96,8 @@ SocketPosts.getPostSummaryByIndex = async function (socket, data) {
 };
 
 SocketPosts.getPost = async function (socket, pid) {
-	return await apiController.getPostData(pid, socket.uid);
+	sockets.warnDeprecated(socket, 'GET /api/v3/posts/:pid');
+	return await api.posts.get(socket, { pid });
 };
 
 SocketPosts.loadMoreBookmarks = async function (socket, data) {
