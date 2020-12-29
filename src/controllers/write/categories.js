@@ -15,6 +15,10 @@ const hasAdminPrivilege = async (uid) => {
 	}
 };
 
+Categories.get = async (req, res) => {
+	helpers.formatApiResponse(200, res, await api.categories.get(req, req.params));
+};
+
 Categories.create = async (req, res) => {
 	await hasAdminPrivilege(req.uid);
 

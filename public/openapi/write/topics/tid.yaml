@@ -1,3 +1,28 @@
+get:
+  tags:
+    - topics
+  summary: get a topic
+  description: This operation retrieves a topic's data
+  parameters:
+    - in: path
+      name: tid
+      schema:
+        type: string
+      required: true
+      description: a valid topic id
+      example: 1
+  responses:
+    '200':
+      description: Topic successfully retrieved
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../components/schemas/TopicObject.yaml#/TopicObjectSlim
 post:
   tags:
     - topics

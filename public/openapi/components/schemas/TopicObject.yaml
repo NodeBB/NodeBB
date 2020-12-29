@@ -3,19 +3,8 @@ TopicObject:
     - $ref: '#/TopicObjectSlim'
     - type: object
       properties:
-        title:
-          type: string
-        slug:
-          type: string
         lastposttime:
           type: number
-        teaserPid:
-          oneOf:
-            - type: number
-            - type: string
-          nullable: true
-        titleRaw:
-          type: string
         thumbs:
           type: array
           items:
@@ -218,6 +207,10 @@ TopicObjectSlim:
     cid:
       type: number
       description: A category identifier
+    title:
+      type: string
+    slug:
+      type: string
     mainPid:
       type: number
       description: The post id of the first post in this topic (also called the "original post")
@@ -231,6 +224,8 @@ TopicObjectSlim:
       type: number
     deleterUid:
       type: number
+    titleRaw:
+      type: string
     locked:
       type: number
     pinned:
@@ -259,3 +254,8 @@ TopicObjectSlim:
       type: number
     votes:
       type: number
+    teaserPid:
+      oneOf:
+        - type: number
+        - type: string
+      nullable: true

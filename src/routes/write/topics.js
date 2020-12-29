@@ -14,6 +14,7 @@ module.exports = function () {
 	var multipartMiddleware = multipart();
 
 	setupApiRoute(router, 'post', '/', [middleware.authenticateOrGuest, middleware.checkRequired.bind(null, ['cid', 'title', 'content'])], controllers.write.topics.create);
+	setupApiRoute(router, 'get', '/:tid', [middleware.authenticateOrGuest], controllers.write.topics.get);
 	setupApiRoute(router, 'post', '/:tid', [middleware.authenticateOrGuest, middleware.checkRequired.bind(null, ['content']), middleware.assert.topic], controllers.write.topics.reply);
 	setupApiRoute(router, 'delete', '/:tid', [...middlewares], controllers.write.topics.purge);
 
