@@ -39,16 +39,37 @@ socket = window.socket;
 		addHandlers();
 	}
 
+	window.app.reconnect = () => {
+		if (socket.connected) {
+			return;
+		}
+
+		var reconnectEl = $('#reconnect');
+		$('#reconnect-alert')
+			.removeClass('alert-danger pointer')
+			.addClass('alert-warning')
+			.find('p')
+			.translateText(`[[global:reconnecting-message, ${config.siteTitle}]]`);
+
+		reconnectEl.html('<i class="fa fa-spinner fa-spin"></i>');
+		socket.connect();
+	};
+
 	function addHandlers() {
 		socket.on('connect', onConnect);
 
 		socket.on('disconnect', onDisconnect);
 
 		socket.io.on('reconnect_failed', function () {
-			$('#reconnect-alert').removeClass('alert-warning')
-				.addClass('alert-danger')
+			var reconnectEl = $('#reconnect');
+			reconnectEl.html('<i class="fa fa-plug text-danger"></i>');
+
+			$('#reconnect-alert')
+				.removeClass('alert-warning')
+				.addClass('alert-danger pointer')
 				.find('p')
-				.translateText('[[error:socket-reconnect-failed]]');
+				.translateText('[[error:socket-reconnect-failed]]')
+				.one('click', app.reconnect);
 		});
 
 		socket.on('checkSession', function (uid) {
@@ -105,7 +126,7 @@ socket = window.socket;
 			var reconnectAlert = $('#reconnect-alert');
 
 			reconnectEl.tooltip('destroy');
-			reconnectEl.html('<i class="fa fa-check"></i>');
+			reconnectEl.html('<i class="fa fa-check text-success"></i>');
 			reconnectAlert.fadeOut(500);
 			reconnecting = false;
 
