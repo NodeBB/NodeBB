@@ -14,7 +14,10 @@ ajaxify = window.ajaxify || {};
 	ajaxify.currentPage = null;
 
 	ajaxify.go = function (url, callback, quiet) {
+		// Automatically reconnect to socket and re-ajaxify on success
 		if (!socket.connected) {
+			app.reconnect();
+
 			if (ajaxify.reconnectAction) {
 				$(window).off('action:reconnected', ajaxify.reconnectAction);
 			}
@@ -410,6 +413,7 @@ ajaxify = window.ajaxify || {};
 	require(['translator', 'benchpress'], function (translator, Benchpress) {
 		translator.translate('[[error:no-connection]]');
 		translator.translate('[[error:socket-reconnect-failed]]');
+		translator.translate(`[[global:reconnecting-message, ${config.siteTitle}]]`);
 		Benchpress.registerLoader(ajaxify.loadTemplate);
 		Benchpress.setGlobal('config', config);
 	});
