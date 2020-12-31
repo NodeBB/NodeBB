@@ -175,6 +175,6 @@
     "already-blocked": "此用户已被屏蔽",
     "already-unblocked": "此用户已被取消屏蔽",
     "no-connection": "您的网络连接似乎存在问题",
-    "socket-reconnect-failed": "Reconnect failed, please try again later",
+    "socket-reconnect-failed": "Unable to reach the server at this time. Click here to try again, or try again later",
     "plugin-not-whitelisted": "无法安装插件 &ndash; 只有被NodeBB包管理器列入白名单的插件才能通过ACP安装。"
 }

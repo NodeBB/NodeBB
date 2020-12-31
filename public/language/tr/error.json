@@ -175,6 +175,6 @@
     "already-blocked": "Bu kullanıcı zaten engellendi",
     "already-unblocked": "Bu kullanıcı zaten engellenmedi",
     "no-connection": "İnternet bağlantınızda sorun var gibi görünüyor",
-    "socket-reconnect-failed": "Reconnect failed, please try again later",
+    "socket-reconnect-failed": "Unable to reach the server at this time. Click here to try again, or try again later",
     "plugin-not-whitelisted": "&ndash; eklentisi yüklenemedi, sadece NodeBB Paket Yöneticisi tarafından onaylanan eklentiler kontrol panelinden kurulabilir"
 }

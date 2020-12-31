@@ -175,6 +175,6 @@
     "already-blocked": "המשתמש כבר חסום",
     "already-unblocked": "המשתמש כבר לא חסום",
     "no-connection": "נראה שיש בעיות בחיבור האינטרנט שלך..",
-    "socket-reconnect-failed": "Reconnect failed, please try again later",
+    "socket-reconnect-failed": "Unable to reach the server at this time. Click here to try again, or try again later",
     "plugin-not-whitelisted": "לא ניתן להתקין את התוסף &ndash; ניתן להתקין דרך הניהול רק תוספים שנמצאים ברשימה הלבנה של מנהל החבילות של NodeBB."
 }
