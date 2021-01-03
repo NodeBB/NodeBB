@@ -33,6 +33,7 @@ require('./tools')(Topics);
 Topics.thumbs = require('./thumbs');
 require('./bookmarks')(Topics);
 require('./merge')(Topics);
+Topics.events = require('./events');
 
 Topics.exists = async function (tid) {
 	return await db.exists('topic:' + tid);
@@ -171,6 +172,7 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 		merger,
 		related,
 		thumbs,
+		events,
 	] = await Promise.all([
 		getMainPostAndReplies(topicData, set, uid, start, stop, reverse),
 		categories.getCategoryData(topicData.cid),
@@ -183,11 +185,13 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 		getMerger(topicData),
 		getRelated(topicData, uid),
 		Topics.thumbs.get(topicData.tid),
+		Topics.events.get(topicData.tid),
 	]);
 
 	topicData.thumbs = thumbs;
 	restoreThumbValue(topicData);
 	topicData.posts = posts;
+	topicData.events = events;
 	topicData.category = category;
 	topicData.tagWhitelist = tagWhitelist[0];
 	topicData.minTags = category.minTags;
