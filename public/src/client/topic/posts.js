@@ -271,8 +271,37 @@ define('forum/topic/posts', [
 		posts.find('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
 		Posts.addBlockquoteEllipses(posts);
 		hidePostToolsForDeletedPosts(posts);
+		addTopicEvents();
 		addNecroPostMessage();
 	};
+
+	function addTopicEvents() {
+		if (config.topicPostSort !== 'newest_to_oldest' && config.topicPostSort !== 'oldest_to_newest') {
+			return;
+		}
+
+		// TODO: Handle oldest_to_newest
+		const postTimestamps = ajaxify.data.posts.map(post => post.timestamp);
+		ajaxify.data.events.forEach((event) => {
+			const beforeIdx = postTimestamps.findIndex(timestamp => timestamp > event.timestamp);
+			let postEl;
+			if (beforeIdx > -1) {
+				postEl = document.querySelector(`[component="post"][data-pid="${ajaxify.data.posts[beforeIdx].pid}"]`);
+			}
+
+			app.parseAndTranslate('partials/topic/event', event, function (html) {
+				html = html.get(0);
+
+				if (postEl) {
+					document.querySelector('[component="topic"]').insertBefore(html, postEl);
+				} else {
+					document.querySelector('[component="topic"]').append(html);
+				}
+
+				$(html).find('.timeago').timeago();
+			});
+		});
+	}
 
 	function addNecroPostMessage() {
 		var necroThreshold = ajaxify.data.necroThreshold * 24 * 60 * 60 * 1000;

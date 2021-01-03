@@ -63,6 +63,12 @@ exports.doTopicAction = async function (action, event, caller, { tids }) {
 };
 
 async function logTopicAction(action, req, tid, title) {
+	// No 'purge' topic event (since topic is now gone)
+	if (action !== 'purge') {
+		await topics.events.log(tid, { type: action });
+	}
+
+	// Only log certain actions to system event log
 	var actionsToLog = ['delete', 'restore', 'purge'];
 	if (!actionsToLog.includes(action)) {
 		return;
