@@ -44,6 +44,7 @@ module.exports = function (Topics) {
 		} else {
 			await Topics.restore(data.topicData.tid);
 		}
+		await Topics.events.log(tid, { type: isDelete ? 'delete' : 'restore', uid });
 
 		data.topicData.deleted = data.isDelete ? 1 : 0;
 
@@ -94,6 +95,7 @@ module.exports = function (Topics) {
 			throw new Error('[[error:no-privileges]]');
 		}
 		await Topics.setTopicField(tid, 'locked', lock ? 1 : 0);
+		await Topics.events.log(tid, { type: lock ? 'lock' : 'unlock', uid });
 		topicData.isLocked = lock; // deprecate in v2.0
 		topicData.locked = lock;
 
@@ -152,6 +154,7 @@ module.exports = function (Topics) {
 
 		const promises = [
 			Topics.setTopicField(tid, 'pinned', pin ? 1 : 0),
+			Topics.events.log(tid, { type: pin ? 'pin' : 'unpin', uid }),
 		];
 		if (pin) {
 			promises.push(db.sortedSetAdd('cid:' + topicData.cid + ':tids:pinned', Date.now(), tid));
