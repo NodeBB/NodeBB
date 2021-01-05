@@ -115,6 +115,8 @@
 	"guest": "Guest",
 	"guests": "Guests",
 	"former_user": "A Former User",
+	"system-user": "System",
+	"unknown-user": "Unknown user",
 
 	"updated.title": "Forum Updated",
 	"updated.message": "This forum has just been updated to the latest version. Click here to refresh the page.",
