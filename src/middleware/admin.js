@@ -73,11 +73,19 @@ middleware.renderHeader = async (req, res, data) => {
 		version: version,
 		latestVersion: results.latestVersion,
 		upgradeAvailable: results.latestVersion && semver.gt(results.latestVersion, version),
-		showManageMenu: results.privileges.superadmin || ['categories', 'privileges', 'users', 'settings'].some(priv => results.privileges[`admin:${priv}`]),
+		showManageMenu: results.privileges.superadmin || ['categories', 'privileges', 'users', 'admins-mods', 'groups', 'tags', 'settings'].some(priv => results.privileges[`admin:${priv}`]),
 	};
 
 	templateValues.template = { name: res.locals.template };
 	templateValues.template[res.locals.template] = true;
+	// remove @1.17.0
+	({ templateData: templateValues } = await plugins.hooks.fire('filter:admin/header.build', { req, res, templateData: templateValues }));
+	({ templateData: templateValues } = await plugins.hooks.fire('filter:middleware.renderAdminHeader', {
+		req,
+		res,
+		templateData: templateValues,
+		data,
+	}));
 
 	return await req.app.renderAsync('admin/header', templateValues);
 };

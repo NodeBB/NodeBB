@@ -1,17 +1,17 @@
 {
-	"rewards": "פרסים",
-	"condition-if-users": "אם המשתמשים",
-	"condition-is": "הוא:",
-	"condition-then": "אז:",
-	"max-claims": "מספר הפעמים הניתן לדרוש פרס",
+	"rewards": "תגמולים",
+	"condition-if-users": "אם משתמש",
+	"condition-is": "Is:",
+	"condition-then": "תגמל ב:",
+	"max-claims": "מספר פעמים בה ניתן לדרוש תגמול",
 	"zero-infinite": "הזן 0 לאינסוף",
 	"delete": "מחק",
 	"enable": "הפעל",
-	"disable": "בטל",
-	"control-panel": "בקרת פרסים",
-	"new-reward": "פרס חדש",
+	"disable": "השבת",
+	"control-panel": "בקרת תגמולים",
+	"new-reward": "תגמול חדש",
 
-	"alert.delete-success": "הפרס נמחק בהצלחה",
-	"alert.no-inputs-found": "פרס לא חוקי - לא נמצא מידע!",
-	"alert.save-success": "הפרסים נשמרו בהצלחה"
+	"alert.delete-success": "תגמול נמחק בהצלחה",
+	"alert.no-inputs-found": "תגמול לא חוקי - לא נמצא מידע!",
+	"alert.save-success": "תגמולים נשמרו בהצלחה"
 }

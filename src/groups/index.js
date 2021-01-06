@@ -39,7 +39,6 @@ Groups.getEphemeralGroup = function (groupName) {
 		name: groupName,
 		slug: slugify(groupName),
 		description: '',
-		deleted: 0,
 		hidden: 0,
 		system: 1,
 	};
@@ -55,7 +54,7 @@ Groups.removeEphemeralGroups = function (groups) {
 	return groups;
 };
 
-var isPrivilegeGroupRegex = /^cid:\d+:privileges:[\w:]+$/;
+var isPrivilegeGroupRegex = /^cid:\d+:privileges:[\w\-:]+$/;
 Groups.isPrivilegeGroup = function (groupName) {
 	return isPrivilegeGroupRegex.test(groupName);
 };

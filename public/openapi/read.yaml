@@ -54,11 +54,17 @@ tags:
     description: Disparate method of categorizing topics
   - name: shorthand
     description: Convenience and utility routes for accessing other part of the API
+  - name: other
+    description: Other one-off routes that do not fit in a section of their own
 paths:
   /api/:
     $ref: 'read/index.yaml'
+  /api/admin:
+    $ref: 'read/admin.yaml'
   /api/admin/dashboard:
     $ref: 'read/admin/dashboard.yaml'
+  "/api/admin/settings/{term}":
+    $ref: 'read/admin/settings/term.yaml'
   /api/admin/settings/languages:
     $ref: 'read/admin/settings/languages.yaml'
   /api/admin/settings/navigation:
@@ -67,6 +73,12 @@ paths:
     $ref: 'read/admin/settings/homepage.yaml'
   /api/admin/settings/social:
     $ref: 'read/admin/settings/social.yaml'
+  /api/admin/settings/email:
+    $ref: 'read/admin/settings/email.yaml'
+  /api/admin/settings/user:
+    $ref: 'read/admin/settings/user.yaml'
+  /api/admin/settings/post:
+    $ref: 'read/admin/settings/post.yaml'
   /api/admin/manage/categories:
     $ref: 'read/admin/manage/categories.yaml'
   "/api/admin/manage/categories/{category_id}":
@@ -91,8 +103,6 @@ paths:
     $ref: 'read/admin/manage/uploads.yaml'
   /api/admin/manage/digest:
     $ref: 'read/admin/manage/digest.yaml'
-  "/api/admin/settings/{term}":
-    $ref: 'read/admin/settings/term.yaml'
   "/api/admin/appearance/{term}":
     $ref: 'read/admin/appearance/term.yaml'
   /api/admin/extend/plugins:
@@ -115,6 +125,8 @@ paths:
     $ref: 'read/admin/advanced/errors/export.yaml'
   /api/admin/advanced/cache:
     $ref: 'read/admin/advanced/cache.yaml'
+  /api/admin/advanced/cache/dump:
+    $ref: 'read/admin/advanced/cache/dump.yaml'
   /api/admin/development/logger:
     $ref: 'read/admin/development/logger.yaml'
   /api/admin/development/info:
@@ -157,16 +169,18 @@ paths:
     $ref: 'read/user/uid/userslug/export/uploads.yaml'
   "/api/user/uid/{userslug}/export/profile":
     $ref: 'read/user/uid/userslug/export/profile.yaml'
-  "/api/post/pid/{id}":
+  "/api/{type}/pid/{id}":
     $ref: 'read/post/pid/id.yaml'
-  "/api/topic/tid/{id}":
+  "/api/{type}/tid/{id}":
     $ref: 'read/topic/tid/id.yaml'
-  "/api/category/cid/{id}":
+  "/api/{type}/cid/{id}":
     $ref: 'read/category/cid/id.yaml'
   /api/categories:
     $ref: 'read/categories.yaml'
   "/api/categories/{cid}/moderators":
     $ref: 'read/categories/cid/moderators.yaml'
+  "/api/topic/{topic_id}/{slug}":
+    $ref: 'read/topic/topic_id.yaml'
   "/api/topic/{topic_id}/{slug}/{post_index}":
     $ref: 'read/topic/topic_id.yaml'
   /api/recent:
@@ -189,6 +203,12 @@ paths:
     $ref: 'read/login.yaml'
   /api/register:
     $ref: 'read/register.yaml'
+  /api/register/complete:
+    $ref: 'read/register/complete.yaml'
+  "/api/confirm/{code}":
+    $ref: 'read/confirm/code.yaml'
+  /api/tos:
+    $ref: 'read/tos.yaml'
   /api/search:
     $ref: 'read/search.yaml'
   "/api/reset":
@@ -217,6 +237,8 @@ paths:
     $ref: 'read/popular.yaml'
   /api/top:
     $ref: 'read/top.yaml'
+  "/api/category/{category_id}/{slug}":
+    $ref: 'read/category/category_id.yaml'
   "/api/category/{category_id}/{slug}/{topic_index}":
     $ref: 'read/category/category_id.yaml'
   /api/self:
@@ -225,7 +247,7 @@ paths:
     $ref: 'read/me.yaml'
   /api/me/*:
     $ref: 'read/me.yaml'
-  "/api/uid/{uid}/*":
+  "/api/uid/{uid*}":
     $ref: 'read/uid/uid.yaml'
   "/api/user/{userslug}":
     $ref: 'read/user/userslug.yaml'
@@ -287,3 +309,5 @@ paths:
     $ref: 'read/groups/slug.yaml'
   "/api/groups/{slug}/members":
     $ref: 'read/groups/slug/members.yaml'
+  /api/outgoing:
+    $ref: 'read/outgoing.yaml'

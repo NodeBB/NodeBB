@@ -1,0 +1,30 @@
+get:
+  tags:
+    - authentication
+  summary: Complete a user's registration
+  responses:
+    "302":
+      description: If there are no additional registration steps to complete, then the user is redirected back to the registration page (`/register`)
+      headers:
+        Location:
+          schema:
+            type: string
+            example: /register
+    "200":
+      description: ''
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  title:
+                    type: string
+                  errors:
+                    type: array
+                    items: {}
+                  sections:
+                    type: array
+                    items:
+                      type: string
+              - $ref: ../../components/schemas/CommonProps.yaml#/CommonProps

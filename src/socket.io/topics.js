@@ -4,7 +4,6 @@ const api = require('../api');
 const topics = require('../topics');
 const user = require('../user');
 const meta = require('../meta');
-const apiController = require('../controllers/api');
 const privileges = require('../privileges');
 const sockets = require('.');
 
@@ -96,7 +95,8 @@ SocketTopics.isModerator = async function (socket, tid) {
 };
 
 SocketTopics.getTopic = async function (socket, tid) {
-	return await apiController.getTopicData(tid, socket.uid);
+	sockets.warnDeprecated(socket, 'GET /api/v3/topics/:tid');
+	return await api.topics.get(socket, { tid });
 };
 
 require('../promisify')(SocketTopics);

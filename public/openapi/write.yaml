@@ -23,11 +23,25 @@ info:
 servers:
   - url: /api/v3
 tags:
+  - name: utilities
+    description: Utility calls to test Write API functionality
   - name: users
-    description: 'Account related calls (create, modify, delete, etc.)'
+    description: Account related calls (create, modify, delete, etc.)
+  - name: groups
+    description: Calls related to user groups
   - name: categories
     description: Administrative calls to manage categories
+  - name: topics
+    description: Topic-based calls (create, modify, delete, etc.)
+  - name: posts
+    description: Individual post-related calls (create, modify, delete, etc.)
+  - name: admin
+    description: Administrative calls
+  - name: files
+    description: File upload routes
 paths:
+  /ping:
+    $ref: 'write/ping.yaml'
   /users/:
     $ref: 'write/users.yaml'
   /users/{uid}:
@@ -44,6 +58,8 @@ paths:
     $ref: 'write/users/uid/follow.yaml'
   /users/{uid}/ban:
     $ref: 'write/users/uid/ban.yaml'
+  /users/{uid}/tokens:
+    $ref: 'write/users/uid/tokens.yaml'
   /users/{uid}/tokens/{token}:
     $ref: 'write/users/uid/tokens/token.yaml'
   /users/{uid}/sessions/{uuid}:
@@ -52,15 +68,19 @@ paths:
     $ref: 'write/users/uid/invites.yaml'
   /users/{uid}/invites/groups:
     $ref: 'write/users/uid/invites/groups.yaml'
-  /categories/:
-    $ref: 'write/categories.yaml'
   /groups/:
     $ref: 'write/groups.yaml'
   /groups/{slug}:
     $ref: 'write/groups/slug.yaml'
   /groups/{slug}/membership/{uid}:
     $ref: 'write/groups/slug/membership/uid.yaml'
-  /topics:
+  /groups/{slug}/ownership/{uid}:
+    $ref: 'write/groups/slug/ownership/uid.yaml'
+  /categories/:
+    $ref: 'write/categories.yaml'
+  /categories/{cid}:
+    $ref: 'write/categories/cid.yaml'
+  /topics/:
     $ref: 'write/topics.yaml'
   /topics/{tid}:
     $ref: 'write/topics/tid.yaml'
@@ -88,5 +108,5 @@ paths:
     $ref: 'write/posts/pid/bookmark.yaml'
   /admin/settings/{setting}:
     $ref: 'write/admin/settings/setting.yaml'
-  /files:
+  /files/:
     $ref: 'write/files.yaml'

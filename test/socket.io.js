@@ -240,6 +240,21 @@ describe('socket.io', function () {
 
 	describe('validation emails', function () {
 		var meta = require('../src/meta');
+		var plugins = require('../src/plugins');
+
+		async function dummyEmailerHook(data) {
+			// pretend to handle sending emails
+		}
+		before(function () {
+			// Attach an emailer hook so related requests do not error
+			plugins.registerHook('emailer-test', {
+				hook: 'filter:email.send',
+				method: dummyEmailerHook,
+			});
+		});
+		after(function () {
+			plugins.unregisterHook('emailer-test', 'filter:email.send');
+		});
 
 		it('should validate emails', function (done) {
 			socketAdmin.user.validateEmail({ uid: adminUid }, [regularUid], function (err) {

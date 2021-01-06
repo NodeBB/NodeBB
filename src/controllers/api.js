@@ -2,16 +2,15 @@
 
 const validator = require('validator');
 const nconf = require('nconf');
+const winston = require('winston');
 
 const meta = require('../meta');
 const user = require('../user');
-const posts = require('../posts');
-const topics = require('../topics');
 const categories = require('../categories');
-const privileges = require('../privileges');
 const plugins = require('../plugins');
 const translator = require('../translator');
 const languages = require('../languages');
+const api = require('../api');
 
 const apiController = module.exports;
 
@@ -22,7 +21,7 @@ const socketioOrigins = nconf.get('socket.io:origins');
 const websocketAddress = nconf.get('socket.io:address') || '';
 
 apiController.loadConfig = async function (req) {
-	let config = {
+	const config = {
 		relative_path,
 		upload_url,
 		assetBaseUrl: `${relative_path}/assets`,
@@ -49,8 +48,8 @@ apiController.loadConfig = async function (req) {
 		socketioTransports,
 		socketioOrigins,
 		websocketAddress,
-		maxReconnectionAttempts: meta.config.maxReconnectionAttempts || 5,
-		reconnectionDelay: meta.config.reconnectionDelay || 1500,
+		maxReconnectionAttempts: meta.config.maxReconnectionAttempts,
+		reconnectionDelay: meta.config.reconnectionDelay,
 		topicsPerPage: meta.config.topicsPerPage || 20,
 		postsPerPage: meta.config.postsPerPage || 20,
 		maximumFileSize: meta.config.maximumFileSize,
@@ -83,8 +82,12 @@ apiController.loadConfig = async function (req) {
 	};
 
 	let settings = config;
+	let isAdminOrGlobalMod;
 	if (req.loggedIn) {
-		settings = await user.getSettings(req.uid);
+		([settings, isAdminOrGlobalMod] = await Promise.all([
+			user.getSettings(req.uid),
+			user.isAdminOrGlobalMod(req.uid),
+		]));
 	}
 
 	// Handle old skin configs
@@ -101,8 +104,11 @@ apiController.loadConfig = async function (req) {
 	config.categoryTopicSort = settings.categoryTopicSort || config.categoryTopicSort;
 	config.topicSearchEnabled = settings.topicSearchEnabled || false;
 	config.bootswatchSkin = (meta.config.disableCustomUserSkins !== 1 && settings.bootswatchSkin && settings.bootswatchSkin !== '') ? settings.bootswatchSkin : '';
-	config = await plugins.hooks.fire('filter:config.get', config);
-	return config;
+
+	// Overrides based on privilege
+	config.disableChatMessageEditing = isAdminOrGlobalMod ? false : config.disableChatMessageEditing;
+
+	return await plugins.hooks.fire('filter:config.get', config);
 };
 
 apiController.getConfig = async function (req, res) {
@@ -110,52 +116,10 @@ apiController.getConfig = async function (req, res) {
 	res.json(config);
 };
 
-apiController.getPostData = async function (pid, uid) {
-	const [userPrivileges, post, voted] = await Promise.all([
-		privileges.posts.get([pid], uid),
-		posts.getPostData(pid),
-		posts.hasVoted(pid, uid),
-	]);
-	if (!post) {
-		return null;
-	}
-	Object.assign(post, voted);
-
-	const userPrivilege = userPrivileges[0];
-	if (!userPrivilege.read || !userPrivilege['topics:read']) {
-		return null;
-	}
-
-	post.ip = userPrivilege.isAdminOrMod ? post.ip : undefined;
-	const selfPost = uid && uid === parseInt(post.uid, 10);
-	if (post.deleted && !(userPrivilege.isAdminOrMod || selfPost)) {
-		post.content = '[[topic:post_is_deleted]]';
-	}
-	return post;
-};
-
-apiController.getTopicData = async function (tid, uid) {
-	const [userPrivileges, topic] = await Promise.all([
-		privileges.topics.get(tid, uid),
-		topics.getTopicData(tid),
-	]);
-	if (!topic || !userPrivileges.read || !userPrivileges['topics:read'] || (topic.deleted && !userPrivileges.view_deleted)) {
-		return null;
-	}
-	return topic;
-};
-
-apiController.getCategoryData = async function (cid, uid) {
-	const [userPrivileges, category] = await Promise.all([
-		privileges.categories.get(cid, uid),
-		categories.getCategoryData(cid),
-	]);
-	if (!category || !userPrivileges.read) {
-		return null;
-	}
-	return category;
-};
-
+// TODO: Deprecate these four controllers in 1.17.0
+apiController.getPostData = async (pid, uid) => api.posts.get({ uid }, { pid });
+apiController.getTopicData = async (tid, uid) => api.topics.get({ uid }, { tid });
+apiController.getCategoryData = async (cid, uid) => api.categories.get({ uid }, { cid });
 apiController.getObject = async function (req, res, next) {
 	const methods = {
 		post: apiController.getPostData,
@@ -166,6 +130,10 @@ apiController.getObject = async function (req, res, next) {
 	if (!method) {
 		return next();
 	}
+
+	winston.warn('[api] This route has been deprecated and will likely be removed in v1.17.0');
+	winston.warn('[api] Use GET /api/v3/(posts|topics|categories)/:id instead');
+
 	try {
 		const result = await method(req.params.id, req.uid);
 		if (!result) {

@@ -43,9 +43,12 @@ Groups.leave = async function (socket, data) {
 };
 
 Groups.update = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'PUT /api/v3/groups/:slug');
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	await groups.update(data.groupName, data.values);
+	const slug = await groups.getGroupField(data.groupName, 'slug');
+	await api.groups.update(socket, { slug, ...data.values });
+	// await groups.update(data.groupName, data.values);
 };

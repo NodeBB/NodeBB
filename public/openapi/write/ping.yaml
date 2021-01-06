@@ -1,0 +1,57 @@
+get:
+  tags:
+    - utilities
+  summary: test route
+  description: This route responds with a simple `200 OK` if the Write API is enabled. Since there is no way of disabling the Write API, this will always return a success. However, it is also a good way to ensure the instance you are calling supports v3 of the Write API.
+  responses:
+    '200':
+      description: pingback
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  pong:
+                    type: boolean
+                    example: true
+post:
+  tags:
+    - utilities
+  summary: test route
+  description: |
+    Requires authentication. This route bounces back the data payload sent to it, and the uid the token resolved to.
+
+    It is also a good way to ensure the instance you are calling supports v3 of the Write API. Also, as it requires authentication, it is a good way to check if the passed-in token is a valid token.
+  requestBody:
+    required: false
+    content:
+      application/json:
+        schema:
+          type: object
+          properties: {}
+          additionalProperties: {}
+  responses:
+    '200':
+      description: pingback
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  uid:
+                    type: number
+                    description: The `uid` that the passed-in token resolves to.
+                  received:
+                    type: object
+                    description: A free-form object containing the data that was passed to it. It reflects the data payload as the Write API understands it, and it may be useful to call this route to see how a request body is parsed, if at all.
+                    additionalProperties: {}

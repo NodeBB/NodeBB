@@ -131,10 +131,10 @@ SocketRooms.getLocalStats = function () {
 		topics: {},
 	};
 
-	if (io) {
+	if (io && io.sockets) {
 		socketData.onlineGuestCount = Sockets.getCountInRoom('online_guests');
 		socketData.onlineRegisteredCount = SocketRooms.getOnlineUserCount(io);
-		socketData.socketCount = Object.keys(io.sockets.sockets).length;
+		socketData.socketCount = io.sockets.sockets.size;
 		socketData.users.categories = Sockets.getCountInRoom('categories');
 		socketData.users.recent = Sockets.getCountInRoom('recent_topics');
 		socketData.users.unread = Sockets.getCountInRoom('unread_topics');

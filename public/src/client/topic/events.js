@@ -145,6 +145,8 @@ define('forum/topic/events', [
 					$(window).trigger('action:posts.edited', data);
 				});
 			});
+		} else {
+			$(window).trigger('action:posts.edited', data);
 		}
 
 		if (data.topic.tags && tagsUpdated(data.topic.tags)) {

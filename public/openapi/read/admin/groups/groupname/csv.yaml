@@ -9,6 +9,12 @@ get:
         type: string
       required: true
       example: /admin/manage/groups
+    - in: path
+      name: groupname
+      schema:
+        type: string
+      required: true
+      example: registered-users
   responses:
     "200":
       description: "A CSV file containing all users in the group"

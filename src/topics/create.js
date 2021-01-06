@@ -35,9 +35,6 @@ module.exports = function (Topics) {
 			postcount: 0,
 			viewcount: 0,
 		};
-		if (data.thumb) {
-			topicData.thumb = data.thumb;
-		}
 		const result = await plugins.hooks.fire('filter:topic.create', { topic: topicData, data: data });
 		topicData = result.topic;
 		await db.setObject('topic:' + topicData.tid, topicData);

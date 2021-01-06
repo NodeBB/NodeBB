@@ -4,6 +4,7 @@ const user = require('../user');
 const topics = require('../topics');
 const posts = require('../posts');
 const meta = require('../meta');
+const privileges = require('../privileges');
 
 const apiHelpers = require('./helpers');
 const doTopicAction = apiHelpers.doTopicAction;
@@ -12,6 +13,18 @@ const websockets = require('../socket.io');
 const socketHelpers = require('../socket.io/helpers');
 
 const topicsAPI = module.exports;
+
+topicsAPI.get = async function (caller, data) {
+	const [userPrivileges, topic] = await Promise.all([
+		privileges.topics.get(data.tid, caller.uid),
+		topics.getTopicData(data.tid),
+	]);
+	if (!topic || !userPrivileges.read || !userPrivileges['topics:read'] || (topic.deleted && !userPrivileges.view_deleted)) {
+		return null;
+	}
+
+	return topic;
+};
 
 topicsAPI.create = async function (caller, data) {
 	if (!data) {

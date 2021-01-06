@@ -125,21 +125,17 @@ Digest.send = async function (data) {
 
 		emailsSent += 1;
 		const now = new Date();
-		try {
-			await emailer.send('digest', userObj.uid, {
-				subject: '[[email:digest.subject, ' + (now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate()) + ']]',
-				username: userObj.username,
-				userslug: userObj.userslug,
-				notifications: unreadNotifs,
-				recent: recentTopics,
-				topTopics: topTopics,
-				popularTopics: popularTopics,
-				interval: data.interval,
-				showUnsubscribe: true,
-			});
-		} catch (err) {
-			winston.error('[user/jobs] Could not send digest email\n' + err.stack);
-		}
+		await emailer.send('digest', userObj.uid, {
+			subject: '[[email:digest.subject, ' + (now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate()) + ']]',
+			username: userObj.username,
+			userslug: userObj.userslug,
+			notifications: unreadNotifs,
+			recent: recentTopics,
+			topTopics: topTopics,
+			popularTopics: popularTopics,
+			interval: data.interval,
+			showUnsubscribe: true,
+		}).catch(err => winston.error('[user/jobs] Could not send digest email\n[emailer.send] ' + err.stack));
 
 		if (data.interval !== 'alltime') {
 			await db.sortedSetAdd('digest:delivery', now.getTime(), userObj.uid);

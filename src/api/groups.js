@@ -33,6 +33,16 @@ groupsAPI.create = async function (caller, data) {
 	return groupData;
 };
 
+groupsAPI.update = async function (caller, data) {
+	const groupName = await groups.getGroupNameByGroupSlug(data.slug);
+	await isOwner(caller, groupName);
+
+	delete data.slug;
+	await groups.update(groupName, data);
+
+	return await groups.getGroupData(data.name || groupName);
+};
+
 groupsAPI.delete = async function (caller, data) {
 	const groupName = await groups.getGroupNameByGroupSlug(data.slug);
 	await isOwner(caller, groupName);
@@ -162,6 +172,28 @@ groupsAPI.leave = async function (caller, data) {
 	await notifications.push(notification, uids);
 
 	logGroupEvent(caller, 'group-leave', {
+		groupName: groupName,
+		targetUid: data.uid,
+	});
+};
+
+groupsAPI.grant = async (caller, data) => {
+	const groupName = await groups.getGroupNameByGroupSlug(data.slug);
+	await isOwner(caller, groupName);
+
+	await groups.ownership.grant(data.uid, groupName);
+	logGroupEvent(caller, 'group-owner-grant', {
+		groupName: groupName,
+		targetUid: data.uid,
+	});
+};
+
+groupsAPI.rescind = async (caller, data) => {
+	const groupName = await groups.getGroupNameByGroupSlug(data.slug);
+	await isOwner(caller, groupName);
+
+	await groups.ownership.rescind(data.uid, groupName);
+	logGroupEvent(caller, 'group-owner-rescind', {
 		groupName: groupName,
 		targetUid: data.uid,
 	});

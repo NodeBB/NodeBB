@@ -150,5 +150,7 @@
     "useCompression": 0,
     "updateUrlWithPostIndex": 1,
     "composer:showHelpTab": 1,
-    "composer:allowPluginHelp": 1
+    "composer:allowPluginHelp": 1,
+    "maxReconnectionAttempts": 5,
+    "reconnectionDelay": 1500
 }

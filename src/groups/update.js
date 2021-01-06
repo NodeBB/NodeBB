@@ -24,6 +24,13 @@ module.exports = function (Groups) {
 			values: values,
 		}));
 
+		// Case some values as bool (if not boolean already)
+		['userTitleEnabled', 'private', 'hidden', 'disableJoinRequests', 'disableLeave'].forEach((prop) => {
+			if (values.hasOwnProperty(prop) && typeof values[prop] !== 'boolean') {
+				values[prop] = !!parseInt(values[prop], 10);
+			}
+		});
+
 		const payload = {
 			description: values.description || '',
 			icon: values.icon || '',

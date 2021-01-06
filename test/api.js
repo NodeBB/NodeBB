@@ -1,11 +1,13 @@
 'use strict';
 
+const _ = require('lodash');
 const assert = require('assert');
 const path = require('path');
 const fs = require('fs');
 const SwaggerParser = require('@apidevtools/swagger-parser');
 const request = require('request-promise-native');
 const nconf = require('nconf');
+const jwt = require('jsonwebtoken');
 const util = require('util');
 const wait = util.promisify(setTimeout);
 
@@ -33,7 +35,18 @@ describe('API', async () => {
 
 	const mocks = {
 		head: {},
-		get: {},
+		get: {
+			'/api/email/unsubscribe/{token}': [
+				{
+					in: 'path',
+					name: 'token',
+					example: (() => jwt.sign({
+						template: 'digest',
+						uid: 1,
+					}, nconf.get('secret')))(),
+				},
+			],
+		},
 		post: {},
 		put: {},
 		delete: {
@@ -67,9 +80,13 @@ describe('API', async () => {
 	async function dummySearchHook(data) {
 		return [1];
 	}
+	async function dummyEmailerHook(data) {
+		// pretend to handle sending emails
+	}
 
 	after(async function () {
 		plugins.unregisterHook('core', 'filter:search.query', dummySearchHook);
+		plugins.unregisterHook('emailer-test', 'filter:email.send');
 	});
 
 	async function setupData() {
@@ -100,6 +117,7 @@ describe('API', async () => {
 			}],
 		});
 		meta.config.allowTopicsThumbnail = 1;
+		meta.config.termsOfUse = 'I, for one, welcome our new test-driven overlords';
 
 		// Create a category
 		const testCategory = await categories.create({ name: 'test' });
@@ -143,6 +161,11 @@ describe('API', async () => {
 			hook: 'filter:search.query',
 			method: dummySearchHook,
 		});
+		// Attach an emailer hook so related requests do not error
+		plugins.registerHook('emailer-test', {
+			hook: 'filter:email.send',
+			method: dummyEmailerHook,
+		});
 
 		jar = await helpers.loginUser('admin', '123456');
 
@@ -169,6 +192,68 @@ describe('API', async () => {
 	readApi = await SwaggerParser.dereference(readApiPath);
 	writeApi = await SwaggerParser.dereference(writeApiPath);
 
+	it('should grab all mounted routes and ensure a schema exists', async () => {
+		const webserver = require('../src/webserver');
+		const buildPaths = function (stack, prefix) {
+			const paths = stack.map((dispatch) => {
+				if (dispatch.route && dispatch.route.path && typeof dispatch.route.path === 'string') {
+					if (!prefix && !dispatch.route.path.startsWith('/api/')) {
+						return null;
+					}
+
+					if (prefix === nconf.get('relative_path')) {
+						prefix = '';
+					}
+
+					return {
+						method: Object.keys(dispatch.route.methods)[0],
+						path: (prefix || '') + dispatch.route.path,
+					};
+				} else if (dispatch.name === 'router') {
+					const prefix = dispatch.regexp.toString().replace('/^', '').replace('\\/?(?=\\/|$)/i', '').replace(/\\\//g, '/');
+					return buildPaths(dispatch.handle.stack, prefix);
+				}
+
+				// Drop any that aren't actual routes (middlewares, error handlers, etc.)
+				return null;
+			});
+
+			return _.flatten(paths);
+		};
+
+		let paths = buildPaths(webserver.app._router.stack).filter(Boolean).map(function normalize(pathObj) {
+			pathObj.path = pathObj.path.replace(/\/:([^\\/]+)/g, '/{$1}');
+			return pathObj;
+		});
+		const exclusionPrefixes = ['/api/admin/plugins', '/api/compose', '/debug'];
+		paths = paths.filter(function filterExclusions(path) {
+			return path.method !== '_all' && !exclusionPrefixes.some(prefix => path.path.startsWith(prefix));
+		});
+
+
+		// For each express path, query for existence in read and write api schemas
+		paths.forEach((pathObj) => {
+			describe(`${pathObj.method.toUpperCase()} ${pathObj.path}`, () => {
+				it('should be defined in schema docs', () => {
+					let schema = readApi;
+					if (pathObj.path.startsWith('/api/v3')) {
+						schema = writeApi;
+						pathObj.path = pathObj.path.replace('/api/v3', '');
+					}
+
+					// Don't check non-GET routes in Read API
+					if (schema === readApi && pathObj.method !== 'get') {
+						return;
+					}
+
+					const normalizedPath = pathObj.path.replace(/\/:([^\\/]+)/g, '/{$1}').replace(/\?/g, '');
+					assert(schema.paths.hasOwnProperty(normalizedPath), `${pathObj.path} is not defined in schema docs`);
+					assert(schema.paths[normalizedPath].hasOwnProperty(pathObj.method), `${pathObj.path} was found in schema docs, but ${pathObj.method.toUpperCase()} method is not defined`);
+				});
+			});
+		});
+	});
+
 	generateTests(readApi, Object.keys(readApi.paths));
 	generateTests(writeApi, Object.keys(writeApi.paths), writeApi.servers[0].url);
 
@@ -185,6 +270,7 @@ describe('API', async () => {
 			const qs = {};
 
 			Object.keys(context).forEach((_method) => {
+				// Only test GET routes in the Read API
 				if (api.info.title === 'NodeBB Read API' && _method !== 'get') {
 					return;
 				}
@@ -195,8 +281,9 @@ describe('API', async () => {
 						return;
 					}
 
-					const names = (path.match(/{[\w\-_]+}?/g) || []).map(match => match.slice(1, -1));
-					assert(context[method].parameters.map(param => (param.in === 'path' ? param.name : null)).filter(Boolean).every(name => names.includes(name)), `${method.toUpperCase()} ${path} has parameter(s) in path that are not defined in schema`);
+					const pathParams = (path.match(/{[\w\-_*]+}?/g) || []).map(match => match.slice(1, -1));
+					const schemaParams = context[method].parameters.map(param => (param.in === 'path' ? param.name : null)).filter(Boolean);
+					assert(pathParams.every(param => schemaParams.includes(param)), `${method.toUpperCase()} ${path} has path parameters specified but not defined`);
 				});
 
 				it('should have examples when parameters are present', () => {
@@ -229,17 +316,18 @@ describe('API', async () => {
 
 				it('should contain a valid request body (if present) with application/json or multipart/form-data type if POST/PUT/DELETE', () => {
 					if (['post', 'put', 'delete'].includes(method) && context[method].hasOwnProperty('requestBody')) {
-						assert(context[method].requestBody);
-						assert(context[method].requestBody.content);
+						const failMessage = `${method.toUpperCase()} ${path} has a malformed request body`;
+						assert(context[method].requestBody, failMessage);
+						assert(context[method].requestBody.content, failMessage);
 
 						if (context[method].requestBody.content.hasOwnProperty('application/json')) {
-							assert(context[method].requestBody.content['application/json']);
-							assert(context[method].requestBody.content['application/json'].schema);
-							assert(context[method].requestBody.content['application/json'].schema.properties);
+							assert(context[method].requestBody.content['application/json'], failMessage);
+							assert(context[method].requestBody.content['application/json'].schema, failMessage);
+							assert(context[method].requestBody.content['application/json'].schema.properties, failMessage);
 						} else if (context[method].requestBody.content.hasOwnProperty('multipart/form-data')) {
-							assert(context[method].requestBody.content['multipart/form-data']);
-							assert(context[method].requestBody.content['multipart/form-data'].schema);
-							assert(context[method].requestBody.content['multipart/form-data'].schema.properties);
+							assert(context[method].requestBody.content['multipart/form-data'], failMessage);
+							assert(context[method].requestBody.content['multipart/form-data'].schema, failMessage);
+							assert(context[method].requestBody.content['multipart/form-data'].schema.properties, failMessage);
 						}
 					}
 				});
@@ -266,17 +354,20 @@ describe('API', async () => {
 								method: method,
 								jar: !unauthenticatedRoutes.includes(path) ? jar : undefined,
 								json: true,
+								followRedirect: false,	// all responses are significant (e.g. 302)
+								simple: false,	// don't throw on non-200 (e.g. 302)
+								resolveWithFullResponse: true,	// send full request back (to check statusCode)
 								headers: headers,
 								qs: qs,
 								body: body,
 							});
 						} else if (type === 'form') {
 							response = await new Promise((resolve, reject) => {
-								helpers.uploadFile(url, pathLib.join(__dirname, './files/test.png'), {}, jar, csrfToken, function (err, res, body) {
+								helpers.uploadFile(url, pathLib.join(__dirname, './files/test.png'), {}, jar, csrfToken, function (err, res) {
 									if (err) {
 										return reject(err);
 									}
-									resolve(body);
+									resolve(res);
 								});
 							});
 						}
@@ -285,17 +376,40 @@ describe('API', async () => {
 					}
 				});
 
+				it('response status code should match one of the schema defined responses', () => {
+					// HACK: allow HTTP 418 I am a teapot, for now   👇
+					assert(context[method].responses.hasOwnProperty('418') || Object.keys(context[method].responses).includes(String(response.statusCode)), `${method.toUpperCase()} ${path} sent back unexpected HTTP status code: ${response.statusCode}`);
+				});
+
 				// Recursively iterate through schema properties, comparing type
-				it('response should match schema definition', () => {
-					const has200 = context[method].responses['200'];
-					if (!has200) {
+				it('response body should match schema definition', () => {
+					const http302 = context[method].responses['302'];
+					if (http302 && response.statusCode === 302) {
+						// Compare headers instead
+						const expectedHeaders = Object.keys(http302.headers).reduce((memo, name) => {
+							const value = http302.headers[name].schema.example;
+							memo[name] = value.startsWith(nconf.get('relative_path')) ? value : nconf.get('relative_path') + value;
+							return memo;
+						}, {});
+
+						for (const header in expectedHeaders) {
+							if (expectedHeaders.hasOwnProperty(header)) {
+								assert(response.headers[header.toLowerCase()]);
+								assert.strictEqual(response.headers[header.toLowerCase()], expectedHeaders[header]);
+							}
+						}
 						return;
 					}
 
-					const hasJSON = has200.content && has200.content['application/json'];
+					const http200 = context[method].responses['200'];
+					if (!http200) {
+						return;
+					}
+
+					const hasJSON = http200.content && http200.content['application/json'];
 					if (hasJSON) {
 						schema = context[method].responses['200'].content['application/json'].schema;
-						compare(schema, response, method.toUpperCase(), path, 'root');
+						compare(schema, response.body, method.toUpperCase(), path, 'root');
 					}
 
 					// TODO someday: text/csv, binary file type checking?
@@ -332,12 +446,20 @@ describe('API', async () => {
 		let required = [];
 		const additionalProperties = schema.hasOwnProperty('additionalProperties');
 
-		if (schema.allOf) {
-			schema = schema.allOf.reduce((memo, obj) => {
-				required = required.concat(obj.required ? obj.required : Object.keys(obj.properties));
-				memo = { ...memo, ...obj.properties };
-				return memo;
+		function flattenAllOf(obj) {
+			return obj.reduce((memo, obj) => {
+				if (obj.allOf) {
+					obj = { properties: flattenAllOf(obj.allOf) };
+				} else {
+					required = required.concat(obj.required ? obj.required : Object.keys(obj.properties));
+				}
+
+				return { ...memo, ...obj.properties };
 			}, {});
+		}
+
+		if (schema.allOf) {
+			schema = flattenAllOf(schema.allOf);
 		} else if (schema.properties) {
 			required = schema.required || Object.keys(schema.properties);
 			schema = schema.properties;

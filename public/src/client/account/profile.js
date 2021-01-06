@@ -19,7 +19,7 @@ define('forum/account/profile', [
 	};
 
 	function processPage() {
-		$('[component="posts"] img:not(.not-responsive), [component="aboutme"] img:not(.not-responsive)').addClass('img-responsive');
+		$('[component="posts"] [component="post/content"] img:not(.not-responsive), [component="aboutme"] img:not(.not-responsive)').addClass('img-responsive');
 	}
 
 	function onUserStatusChange(data) {

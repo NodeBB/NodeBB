@@ -20,6 +20,9 @@
 <!--
 	1. First I did this...
 	2. Then, I clicked on this item...
+
+	A quick note: MP4 and MOV formatted video files are now allowed to be uploaded to GH.
+	Please upload if reproduction steps are hard to describe or reproduce reliably.
 -->
 - **What you expected:**
 <!-- e.g. I expected *abc* to *xyz* -->

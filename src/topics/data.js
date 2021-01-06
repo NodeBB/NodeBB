@@ -98,6 +98,7 @@ function modifyTopic(topic, fields) {
 
 	escapeTitle(topic);
 
+	// TODO: Remove in v1.17.0
 	if (topic.hasOwnProperty('thumb')) {
 		topic.thumb = validator.escape(String(topic.thumb));
 	}

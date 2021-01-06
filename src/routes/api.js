@@ -19,6 +19,7 @@ module.exports = function (app, middleware, controllers) {
 	router.get('/user/uid/:userslug/export/uploads', middleware.checkAccountPermissions, middleware.exposeUid, controllers.user.exportUploads);
 	router.get('/user/uid/:userslug/export/profile', middleware.checkAccountPermissions, middleware.exposeUid, controllers.user.exportProfile);
 
+	// TODO: Deprecate in v1.17.0
 	router.get('/:type/pid/:id', middleware.authenticateOrGuest, controllers.api.getObject);
 	router.get('/:type/tid/:id', middleware.authenticateOrGuest, controllers.api.getObject);
 	router.get('/:type/cid/:id', middleware.authenticateOrGuest, controllers.api.getObject);

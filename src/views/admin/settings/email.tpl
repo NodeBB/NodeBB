@@ -121,7 +121,7 @@
 			<label>[[admin/settings/email:testing.select]]</label>
 			<select id="test-email" class="form-control">
 				<!-- BEGIN sendable -->
-				<option value="{sendable.path}">{sendable.path}</option>
+				<option value="{@value}">{@value}</option>
 				<!-- END sendable -->
 			</select>
 		</div>

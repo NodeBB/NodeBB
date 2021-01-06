@@ -12,6 +12,10 @@ const uploadsController = require('../uploads');
 
 const Topics = module.exports;
 
+Topics.get = async (req, res) => {
+	helpers.formatApiResponse(200, res, await api.topics.get(req, req.params));
+};
+
 Topics.create = async (req, res) => {
 	const payload = await api.topics.create(req, req.body);
 	if (payload.queued) {

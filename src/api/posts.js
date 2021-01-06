@@ -15,6 +15,31 @@ const websockets = require('../socket.io');
 
 const postsAPI = module.exports;
 
+postsAPI.get = async function (caller, data) {
+	const [userPrivileges, post, voted] = await Promise.all([
+		privileges.posts.get([data.pid], caller.uid),
+		posts.getPostData(data.pid),
+		posts.hasVoted(data.pid, caller.uid),
+	]);
+	if (!post) {
+		return null;
+	}
+	Object.assign(post, voted);
+
+	const userPrivilege = userPrivileges[0];
+	if (!userPrivilege.read || !userPrivilege['topics:read']) {
+		return null;
+	}
+
+	post.ip = userPrivilege.isAdminOrMod ? post.ip : undefined;
+	const selfPost = caller.uid && caller.uid === parseInt(post.uid, 10);
+	if (post.deleted && !(userPrivilege.isAdminOrMod || selfPost)) {
+		post.content = '[[topic:post_is_deleted]]';
+	}
+
+	return post;
+};
+
 postsAPI.edit = async function (caller, data) {
 	if (!data || !data.pid || (meta.config.minimumPostLength !== 0 && !data.content)) {
 		throw new Error('[[error:invalid-data]]');

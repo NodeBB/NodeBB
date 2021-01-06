@@ -60,6 +60,12 @@ define('forum/topic/move', ['categorySelector', 'alerts'], function (categorySel
 			} else if (!Move.tids) {
 				message = '[[topic:topic_move_all_success, ' + selectedCategory.name + ']]';
 			}
+			var data = {
+				tids: Move.tids ? Move.tids.slice() : null,
+				cid: selectedCategory.cid,
+				currentCid: Move.currentCid,
+				onComplete: Move.onComplete,
+			};
 			alerts.alert({
 				alert_id: 'tids_move_' + (Move.tids ? Move.tids.join('-') : 'all'),
 				title: '[[topic:thread_tools.move]]',
@@ -67,7 +73,7 @@ define('forum/topic/move', ['categorySelector', 'alerts'], function (categorySel
 				type: 'success',
 				timeout: 10000,
 				timeoutfn: function () {
-					moveTopics();
+					moveTopics(data);
 				},
 				clickfn: function (alert, params) {
 					delete params.timeoutfn;
@@ -77,26 +83,19 @@ define('forum/topic/move', ['categorySelector', 'alerts'], function (categorySel
 		}
 	}
 
-	function moveTopics() {
-		var data = {
-			tids: Move.tids,
-			cid: selectedCategory.cid,
-			currentCid: Move.currentCid,
-		};
-
+	function moveTopics(data) {
 		$(window).trigger('action:topic.move', data);
 
-		socket.emit(Move.moveAll ? 'topics.moveAll' : 'topics.move', data, function (err) {
+		socket.emit(!data.tids ? 'topics.moveAll' : 'topics.move', data, function (err) {
 			if (err) {
 				return app.alertError(err.message);
 			}
 
-			if (typeof Move.onComplete === 'function') {
-				Move.onComplete();
+			if (typeof data.onComplete === 'function') {
+				data.onComplete();
 			}
 		});
 	}
-
 
 	return Move;
 });

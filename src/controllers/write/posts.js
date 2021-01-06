@@ -8,6 +8,10 @@ const apiHelpers = require('../../api/helpers');
 
 const Posts = module.exports;
 
+Posts.get = async (req, res) => {
+	helpers.formatApiResponse(200, res, await api.posts.get(req, { pid: req.params.pid }));
+};
+
 Posts.edit = async (req, res) => {
 	const editResult = await api.posts.edit(req, {
 		...req.body,

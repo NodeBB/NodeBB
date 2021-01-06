@@ -10,8 +10,7 @@ const categories = require('../categories');
 const user = require('../user');
 const socketHelpers = require('./helpers');
 const utils = require('../utils');
-
-const apiController = require('../controllers/api');
+const api = require('../api');
 
 const sockets = require('.');
 const SocketPosts = module.exports;
@@ -86,17 +85,19 @@ SocketPosts.getPostSummaryByIndex = async function (socket, data) {
 		return 0;
 	}
 
-	const canRead = await privileges.posts.can('topics:read', pid, socket.uid);
-	if (!canRead) {
+	const topicPrivileges = await privileges.topics.get(data.tid, socket.uid);
+	if (!topicPrivileges['topics:read']) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
 	const postsData = await posts.getPostSummaryByPids([pid], socket.uid, { stripTags: false });
+	posts.modifyPostByPrivilege(postsData[0], topicPrivileges);
 	return postsData[0];
 };
 
 SocketPosts.getPost = async function (socket, pid) {
-	return await apiController.getPostData(pid, socket.uid);
+	sockets.warnDeprecated(socket, 'GET /api/v3/posts/:pid');
+	return await api.posts.get(socket, { pid });
 };
 
 SocketPosts.loadMoreBookmarks = async function (socket, data) {

@@ -50,6 +50,15 @@ define('admin/manage/privileges', [
 							checkboxEl.prop('checked', !checkboxEl.prop('checked'));
 						}
 					});
+				} else if (privilege.endsWith('admin:admins-mods') && state) {
+					bootbox.confirm('[[admin/manage/privileges:alert.confirm-admins-mods]]', function (confirm) {
+						if (confirm) {
+							wrapperEl.attr('data-delta', delta);
+							Privileges.exposeAssumedPrivileges();
+						} else {
+							checkboxEl.prop('checked', !checkboxEl.prop('checked'));
+						}
+					});
 				} else {
 					wrapperEl.attr('data-delta', delta);
 					Privileges.exposeAssumedPrivileges();

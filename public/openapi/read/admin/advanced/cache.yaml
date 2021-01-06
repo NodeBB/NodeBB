@@ -2,6 +2,15 @@ get:
   tags:
     - admin
   summary: Get system cache info
+  parameters:
+    - in: query
+      name: name
+      schema:
+        type: string
+        enum: ['post', 'object', 'group', 'local']
+      required: false
+      description: Specify cache to dump if calling `/dump`
+      example: 'post'
   responses:
     "200":
       description: ""

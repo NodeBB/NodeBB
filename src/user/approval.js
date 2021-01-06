@@ -1,6 +1,7 @@
 'use strict';
 
 const validator = require('validator');
+const winston = require('winston');
 const cronJob = require('cron').CronJob;
 
 const db = require('../database');
@@ -78,7 +79,7 @@ module.exports = function (User) {
 			subject: '[[email:welcome-to, ' + (meta.config.title || meta.config.browserTitle || 'NodeBB') + ']]',
 			template: 'registration_accepted',
 			uid: uid,
-		});
+		}).catch(err => winston.error('[emailer.send] ' + err.stack));
 		const total = await db.incrObjectField('registration:queue:approval:times', 'totalTime', Math.floor((Date.now() - creation_time) / 60000));
 		const counter = await db.incrObjectField('registration:queue:approval:times', 'counter', 1);
 		await db.setObjectField('registration:queue:approval:times', 'average', total / counter);

@@ -597,12 +597,15 @@ describe('Messaging Library', function () {
 	describe('edit/delete', function () {
 		var socketModules = require('../src/socket.io/modules');
 		var mid;
-		before(function (done) {
-			socketModules.chats.send({ uid: fooUid }, { roomId: roomId, message: 'first chat message' }, function (err, messageData) {
-				assert.ifError(err);
-				mid = messageData.mid;
-				done();
-			});
+		let mid2;
+		before(async function () {
+			await socketModules.chats.addUserToRoom({ uid: fooUid }, { roomId: roomId, username: 'baz' });
+			mid = (await socketModules.chats.send({ uid: fooUid }, { roomId: roomId, message: 'first chat message' })).mid;
+			mid2 = (await socketModules.chats.send({ uid: bazUid }, { roomId: roomId, message: 'second chat message' })).mid;
+		});
+
+		after(async () => {
+			await socketModules.chats.leave({ uid: bazUid }, roomId);
 		});
 
 		it('should fail to edit message with invalid data', function (done) {
@@ -721,6 +724,38 @@ describe('Messaging Library', function () {
 			socketModules.chats.restore({ uid: fooUid }, { messageId: mid, roomId: roomId }, function (err) {
 				assert.strictEqual('[[error:chat-restored-already]]', err.message);
 				done();
+			});
+		});
+
+		describe('disabled via ACP', () => {
+			before(async () => {
+				meta.config.disableChatMessageEditing = true;
+			});
+
+			after(async () => {
+				meta.config.disableChatMessageEditing = false;
+			});
+
+			it('should error out for regular users', async () => {
+				try {
+					await socketModules.chats.delete({ uid: bazUid }, { messageId: mid2, roomId: roomId });
+				} catch (err) {
+					assert.strictEqual('[[error:chat-message-editing-disabled]]', err.message);
+				}
+			});
+
+			it('should succeed for administrators', async () => {
+				await socketModules.chats.delete({ uid: fooUid }, { messageId: mid2, roomId: roomId });
+				await socketModules.chats.restore({ uid: fooUid }, { messageId: mid2, roomId: roomId });
+			});
+
+			it('should succeed for global moderators', async () => {
+				await Groups.join(['Global Moderators'], bazUid);
+
+				await socketModules.chats.delete({ uid: fooUid }, { messageId: mid2, roomId: roomId });
+				await socketModules.chats.restore({ uid: fooUid }, { messageId: mid2, roomId: roomId });
+
+				await Groups.leave(['Global Moderators'], bazUid);
 			});
 		});
 	});
