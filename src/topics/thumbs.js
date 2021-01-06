@@ -31,12 +31,16 @@ Thumbs.get = async function (tids) {
 		return singular ? null : tids.map(() => []);
 	}
 
+	const hasTimestampPrefix = /^\d+-/;
 	const upload_url = nconf.get('upload_url');
 	const sets = tids.map(tid => `${validator.isUUID(String(tid)) ? 'draft' : 'topic'}:${tid}:thumbs`);
 	const thumbs = await Promise.all(sets.map(set => getThumbs(set)));
 	let response = thumbs.map((thumbSet, idx) => thumbSet.map(thumb => ({
 		id: tids[idx],
-		name: path.basename(thumb),
+		name: (() => {
+			const name = path.basename(thumb);
+			return hasTimestampPrefix.test(name) ? name.slice(14) : name;
+		})(),
 		url: thumb.startsWith('http') ? thumb : path.posix.join(upload_url, thumb),
 	})));
 
