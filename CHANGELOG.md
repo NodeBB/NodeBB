@@ -1,3 +1,115 @@
+#### v1.16.1 (2021-01-06)
+
+##### Chores
+
+*  increase test timeout (0d7dfeeb)
+*  incrementing version number - v1.16.1-beta.0 (5fcf3ea6)
+*  add deprecation notice to topic thumb tpl value (05d8b3c3)
+*  minor reordering of lines (8e5a413e)
+*  incrementing version number - v1.16.0 (6d01fd50)
+*  update changelog for v1.16.0 (1437c62f)
+* **deps:**
+  *  update dependency eslint to v7.17.0 (18ae7cf7)
+  *  update dependency eslint to v7.16.0 (2610dfcf)
+  *  update actions/setup-node action to v2 (#9115) (55a55ea2)
+* **api:**  add deprecation notices re: #9123 (cdff8d28)
+
+##### New Features
+
+*  #9173, show installed plugin versions in ./nodebb plugins (8c31afae)
+*  added note that you can now upload videos (4d6ddf6d)
+*  automatically attempt socket.io reconnection on ajaxify (e5edbc6f)
+*  #9135, don't try to reconnect forever (c1ecfd1e)
+*  add confirmation modal when assigning admin:admins-mods privilege (d90aa958)
+*  allow dashes in privilege group names (5b8558e9)
+*  allow multiple privileges to be defined for a given admin socket call (3aa5beb8)
+*  rename admin middleware header hook (fcc1e24a)
+*  explicitly add filter:admin/header.build hook (75b1bbd0)
+*  fix more tests, add more routes, update api test suite (cb32e32a)
+*  add registration/complete route, fix some other tests (14c51e3c)
+*  add missing schemas for various ACP settings routes (9de35ec5)
+*  add missing schema for category update and deletion (d6de9253)
+*  add schema for api ping routes (d85181e0)
+*  normalize paths before comparison (df8d62ba)
+*  additional test to ensure any new routes added to express have a corresponding schema doc (dbe85630)
+*  update html-to-text closes https://github.com/NodeBB/NodeBB/pull/8810 (a2152dd1)
+* **api:**
+  *  closes #9123 category and topic routes migrated to Write API (edb8da1e)
+  *  #9123, migrate rest of the getObject controllers to Write API (9ecfac9b)
+  *  #9123, migrate /api/post/pid/:pid to Write API (e267f295)
+  *  group ownership API route, switch client-side to use API route (32e36f7b)
+  *  add schema for groups update route (98550d61)
+  *  added schema for email unsubscribe token (4fc13377)
+* **acp:**
+  *  admin tags privilege (223f0a55)
+  *  admins-mods privilege (fb46a8d9)
+  *  added new admin privilege for groups management (da191341)
+
+##### Bug Fixes
+
+*  #9130, remove timestamp prefix from thumbnail names in API response (171017c3)
+*  #9166 missing relative path in topic thumbs modal and topic list (b9ba44ed)
+*  #9163, fix total connection count on ACP (1968bf50)
+*  genericise .necro-post, bump persona to latest (041d45c3)
+*  #9126, skip base64 and long values (33290850)
+*   #9127, use assets path (3121215e)
+*  inability for admins with setting privilege to save plugin settings (a555f024)
+*  #9149, server-side handling of disableChatMessageEditing (895e3d93)
+*  #9149, incorrect client-side `disableChatMessageEditing` value for admins/gmods (d27815a8)
+*  #9151, dont use service worker for posts requests (20c1b684)
+*  #9150, fix selector so it doesn't add img-responsive to profile pics (183cabe9)
+*  tests (28740360)
+*  dont show deleted posts in navigator (931105e6)
+*  bug in api path existence test (501a7b77)
+*  #9136, fix move topic/post timeout errors (2ef72a94)
+*  bad assignment logic in middleware.renderHeader (34ccabe3)
+*  #9113, wrong path separator used in thumbs.get (da4f9118)
+*  email testing and settings change from ACP (2be396ff)
+*  removing ability to specify deprecated topic 'thumb' on topic creation (713f029d)
+*  #9129, event is fired on socket.io (b369dc88)
+*  subfolder handling in tests (bbd97ccb)
+*  .flat() not defined in v10, added debug router to exclusion list (6062039d)
+*  all tests, wrap up work (f416dc17)
+*  two more routes (9c2de86a)
+*  api tests (b9a61d2d)
+*  don't return deleted: 0 for ephemeral groups (600807fb)
+*  send fewer items to client-side for ACP settings/email page (438fa5c8)
+*  errors in write-api schema (c079051b)
+*  broken tests from last round of fixes (990f1077)
+*  bad error message for request body api test (a9629357)
+*  modify backreference test to not check router.all() calls (7fc329de)
+*  add missing token generation route to write api spec (eef052c1)
+*  trigger action:posts.edited (b7b588f5)
+* **deps:**
+  *  update dependency autoprefixer to v10.2.0 (e445ae5a)
+  *  update socket.io packages to v3.0.5 (fd045c67)
+  *  update dependency nodebb-theme-persona to v10.3.16 (87e333b4)
+  *  update dependency benchpressjs to v2.4.0 (4524f825)
+  *  update dependency nodebb-theme-persona to v10.3.15 (189be9e0)
+  *  update dependency nodebb-widget-essentials to v5.0.2 (1dd1d3b0)
+  *  update dependency nodebb-widget-essentials to v5.0.1 (#9144) (f55dddb2)
+  *  update dependency nodebb-plugin-composer-default to v6.5.5 (6d980d26)
+  *  update dependency sharp to v0.27.0 (4919e596)
+  *  update dependency nodebb-theme-persona to v10.3.12 (37b35f7d)
+  *  update dependency nodebb-theme-persona to v10.3.11 (db4c6863)
+* **tests:**  handle nested allOf blocks (77a5adb6)
+* **api:**
+  *  failing test due to missing file (3959a7bd)
+  *  tests (80ee3dfb)
+* **pwa:**  #9127 service-worker.js missing on subfolder installs (b8d4709e)
+
+##### Refactors
+
+* **openapi:**  update TopicObject component to reference TopicObjectSlim in its schema (fb3f3f72)
+* **api:**
+  *  deprecated groups update socket in favour of API lib (1cd2689c)
+  *  update group deletion calls to use write API (e640a41a)
+*  schema backreference test to use map instead of reduce, properly check write-api routes (878ee067)
+
+##### Tests
+
+*  changed test a bit to see what is going on (5f038dff)
+
 #### v1.16.0 (2020-12-17)
 
 ##### Breaking Changes
