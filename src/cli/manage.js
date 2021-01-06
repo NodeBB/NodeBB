@@ -77,7 +77,7 @@ async function listPlugins() {
 	const active = await db.getSortedSetRange('plugins:active', 0, -1);
 
 	// Merge the two sets, defer to plugins in  `installed` if already present
-	let combined = installed.concat(active.reduce((memo, cur) => {
+	const combined = installed.concat(active.reduce((memo, cur) => {
 		if (!installedList.includes(cur)) {
 			memo.push({
 				id: cur,
@@ -90,12 +90,12 @@ async function listPlugins() {
 	}, []));
 
 	// Alphabetical sort
-	combined = combined.sort((a, b) => (a.id > b.id ? 1 : -1));
+	combined.sort((a, b) => (a.id > b.id ? 1 : -1));
 
 	// Pretty output
 	process.stdout.write('Active plugins:\n');
 	combined.forEach((plugin) => {
-		process.stdout.write('\t* ' + plugin.id + ' (');
+		process.stdout.write('\t* ' + plugin.id + (plugin.version ? '@' + plugin.version : '') + ' (');
 		process.stdout.write(plugin.installed ? 'installed'.green : 'not installed'.red);
 		process.stdout.write(', ');
 		process.stdout.write(plugin.active ? 'enabled'.green : 'disabled'.yellow);
