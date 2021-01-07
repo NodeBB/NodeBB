@@ -1,5 +1,6 @@
 'use strict';
 
+const { loadFiles } = require('nconf');
 const db = require('../database');
 const meta = require('../meta');
 const privileges = require('../privileges');
