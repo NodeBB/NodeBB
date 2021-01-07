@@ -27,7 +27,16 @@ Utilities.login = (req, res) => {
 
 		const userslug = slugify(username);
 		const uid = await user.getUidByUserslug(userslug);
-		const ok = await user.isPasswordCorrect(uid, password, req.ip);
+		let ok = false;
+		try {
+			ok = await user.isPasswordCorrect(uid, password, req.ip);
+		} catch (err) {
+			if (err.message === '[[error:account-locked]]') {
+				helpers.formatApiResponse(429, res, err);
+			} else {
+				helpers.formatApiResponse(500, res, err);
+			}
+		}
 
 		if (ok) {
 			const userData = await user.getUsers([uid], uid);

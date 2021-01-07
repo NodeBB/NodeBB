@@ -461,6 +461,11 @@ helpers.generateError = (statusCode, message) => {
 			payload.status.message = message || 'HTTPS is required for requests to the write api, please re-send your request via HTTPS';
 			break;
 
+		case 429:
+			payload.status.code = 'too-many-requests';
+			payload.status.message = message || 'You have made too many requests, please try again later';
+			break;
+
 		case 500:
 			payload.status.code = 'internal-server-error';
 			payload.status.message = message || payload.status.message;
