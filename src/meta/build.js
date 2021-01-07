@@ -8,6 +8,7 @@ const path = require('path');
 const mkdirp = require('mkdirp');
 
 const cacheBuster = require('./cacheBuster');
+const { aliases } = require('./aliases');
 let meta;
 
 const targetHandlers = {
@@ -47,26 +48,7 @@ const targetHandlers = {
 	},
 };
 
-let aliases = {
-	'plugin static dirs': ['staticdirs'],
-	'requirejs modules': ['rjs', 'modules'],
-	'client js bundle': ['clientjs', 'clientscript', 'clientscripts'],
-	'admin js bundle': ['adminjs', 'adminscript', 'adminscripts'],
-	javascript: ['js'],
-	'client side styles': [
-		'clientcss', 'clientless', 'clientstyles', 'clientstyle',
-	],
-	'admin control panel styles': [
-		'admincss', 'adminless', 'adminstyles', 'adminstyle', 'acpcss', 'acpless', 'acpstyles', 'acpstyle',
-	],
-	styles: ['css', 'less', 'style'],
-	templates: ['tpl'],
-	languages: ['lang', 'i18n'],
-};
-
-exports.aliases = aliases;
-
-aliases = Object.keys(aliases).reduce(function (prev, key) {
+const aliasMap = Object.keys(aliases).reduce(function (prev, key) {
 	var arr = aliases[key];
 	arr.forEach(function (alias) {
 		prev[alias] = key;
@@ -151,7 +133,7 @@ exports.build = async function (targets, options) {
 		// get full target name
 		.map(function (target) {
 			target = target.toLowerCase().replace(/-/g, '');
-			if (!aliases[target]) {
+			if (!aliasMap[target]) {
 				winston.warn('[build] Unknown target: ' + target);
 				if (target.includes(',')) {
 					winston.warn('[build] Are you specifying multiple targets? Separate them with spaces:');
@@ -161,7 +143,7 @@ exports.build = async function (targets, options) {
 				return false;
 			}
 
-			return aliases[target];
+			return aliasMap[target];
 		})
 		// filter nonexistent targets
 		.filter(Boolean);
