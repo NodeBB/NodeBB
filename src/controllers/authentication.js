@@ -226,7 +226,7 @@ authenticationController.login = function (req, res, next) {
 
 	plugins.hooks.fire('filter:login.check', { req: req, res: res, userData: req.body }, (err) => {
 		if (err) {
-			return helpers.noScriptErrors(req, res, err.message, 403);
+			return (res.locals.noScriptErrors || helpers.noScriptErrors)(req, res, err.message, 403);
 		}
 		if (req.body.username && utils.isEmailValid(req.body.username) && loginWith.includes('email')) {
 			async.waterfall([
@@ -235,14 +235,14 @@ authenticationController.login = function (req, res, next) {
 				},
 				function (username, next) {
 					req.body.username = username || req.body.username;
-					continueLogin(req, res, next);
+					(res.locals.continueLogin || continueLogin)(req, res, next);
 				},
 			], next);
 		} else if (loginWith.includes('username') && !validator.isEmail(req.body.username)) {
-			continueLogin(req, res, next);
+			(res.locals.continueLogin || continueLogin)(req, res, next);
 		} else {
 			err = '[[error:wrong-login-type-' + loginWith + ']]';
-			helpers.noScriptErrors(req, res, err, 500);
+			(res.locals.noScriptErrors || helpers.noScriptErrors)(req, res, err, 400);
 		}
 	});
 };
