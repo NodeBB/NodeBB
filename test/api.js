@@ -332,7 +332,7 @@ describe('API', async () => {
 					}
 				});
 
-				it('should resolve with a 200 when called', async () => {
+				it('should not error out when called', async () => {
 					await setupData();
 
 					if (csrfToken) {
@@ -372,7 +372,7 @@ describe('API', async () => {
 							});
 						}
 					} catch (e) {
-						assert(!e, `${method.toUpperCase()} ${path} resolved with ${e.message}`);
+						assert(!e, `${method.toUpperCase()} ${path} errored with: ${e.message}`);
 					}
 				});
 

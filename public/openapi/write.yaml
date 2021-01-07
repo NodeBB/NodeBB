@@ -42,6 +42,8 @@ tags:
 paths:
   /ping:
     $ref: 'write/ping.yaml'
+  /utilities/login:
+    $ref: 'write/login.yaml'
   /users/:
     $ref: 'write/users.yaml'
   /users/{uid}:
