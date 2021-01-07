@@ -101,6 +101,7 @@
     "maxPostsPerPage": 20,
     "topicsPerPage": 20,
     "postsPerPage": 20,
+    "categoriesPerPage": 50,
     "userSearchResultsPerPage": 50,
     "maximumGroupNameLength": 255,
     "maximumGroupTitleLength": 40,
