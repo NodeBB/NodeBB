@@ -32,9 +32,7 @@ Utilities.login = (req, res) => {
 			ok = await user.isPasswordCorrect(uid, password, req.ip);
 		} catch (err) {
 			if (err.message === '[[error:account-locked]]') {
-				helpers.formatApiResponse(429, res, err);
-			} else {
-				helpers.formatApiResponse(500, res, err);
+				return helpers.formatApiResponse(429, res, err);
 			}
 		}
 
