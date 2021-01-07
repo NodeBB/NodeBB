@@ -38,7 +38,7 @@ Utilities.login = (req, res) => {
 
 		if (ok) {
 			const userData = await user.getUsers([uid], uid);
-			helpers.formatApiResponse(200, res, userData);
+			helpers.formatApiResponse(200, res, userData.pop());
 		} else {
 			helpers.formatApiResponse(403, res);
 		}
