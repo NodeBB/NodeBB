@@ -95,17 +95,17 @@ describe('Controllers', function () {
 			assert(hookData.res);
 			assert(hookData.next);
 
-			hookData.res.render('custom', {
+			hookData.res.render('mycustompage', {
 				works: true,
 			});
 		}
 		var message = utils.generateUUID();
-		var name = 'custom.tpl';
+		var name = 'mycustompage.tpl';
 		var tplPath = path.join(nconf.get('views_dir'), name);
 
 		before(async () => {
 			plugins.registerHook('myTestPlugin', {
-				hook: 'action:homepage.get:custom',
+				hook: 'action:homepage.get:mycustompage',
 				method: hookMethod,
 			});
 
@@ -224,14 +224,14 @@ describe('Controllers', function () {
 		});
 
 		it('api should work with hook', function (done) {
-			meta.configs.set('homePageRoute', 'custom', function (err) {
+			meta.configs.set('homePageRoute', 'mycustompage', function (err) {
 				assert.ifError(err);
 
 				request(nconf.get('url') + '/api', { json: true }, function (err, res, body) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 					assert.equal(body.works, true);
-					assert.equal(body.template.custom, true);
+					assert.equal(body.template.mycustompage, true);
 
 					done();
 				});
@@ -239,7 +239,7 @@ describe('Controllers', function () {
 		});
 
 		it('should render with hook', function (done) {
-			meta.configs.set('homePageRoute', 'custom', function (err) {
+			meta.configs.set('homePageRoute', 'mycustompage', function (err) {
 				assert.ifError(err);
 
 				request(nconf.get('url'), function (err, res, body) {
