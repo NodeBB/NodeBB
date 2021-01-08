@@ -36,7 +36,7 @@ middleware.renderHeader = async (req, res, data) => {
 	const results = await utils.promiseParallel({
 		userData: user.getUserFields(req.uid, ['username', 'userslug', 'email', 'picture', 'email:confirmed']),
 		scripts: getAdminScripts(),
-		custom_header: plugins.fireHook('filter:admin.header.build', custom_header),
+		custom_header: plugins.hooks.fire('filter:admin.header.build', custom_header),
 		configs: meta.configs.list(),
 		latestVersion: getLatestVersion(),
 		privileges: privileges.admin.get(req.uid),
@@ -73,17 +73,25 @@ middleware.renderHeader = async (req, res, data) => {
 		version: version,
 		latestVersion: results.latestVersion,
 		upgradeAvailable: results.latestVersion && semver.gt(results.latestVersion, version),
-		showManageMenu: results.privileges.superadmin || ['categories', 'privileges', 'users', 'settings'].some(priv => results.privileges[`admin:${priv}`]),
+		showManageMenu: results.privileges.superadmin || ['categories', 'privileges', 'users', 'admins-mods', 'groups', 'tags', 'settings'].some(priv => results.privileges[`admin:${priv}`]),
 	};
 
 	templateValues.template = { name: res.locals.template };
 	templateValues.template[res.locals.template] = true;
+	// remove @1.17.0
+	({ templateData: templateValues } = await plugins.hooks.fire('filter:admin/header.build', { req, res, templateData: templateValues }));
+	({ templateData: templateValues } = await plugins.hooks.fire('filter:middleware.renderAdminHeader', {
+		req,
+		res,
+		templateData: templateValues,
+		data,
+	}));
 
 	return await req.app.renderAsync('admin/header', templateValues);
 };
 
 async function getAdminScripts() {
-	const scripts = await plugins.fireHook('filter:admin.scripts.get', []);
+	const scripts = await plugins.hooks.fire('filter:admin.scripts.get', []);
 	return scripts.map(function (script) {
 		return { src: script };
 	});
@@ -103,23 +111,17 @@ middleware.renderFooter = async function (req, res, data) {
 	return await req.app.renderAsync('admin/footer', data);
 };
 
-middleware.checkPrivileges = async (req, res, next) => {
+middleware.checkPrivileges = helpers.try(async (req, res, next) => {
 	// Kick out guests, obviously
-	if (!req.uid) {
+	if (req.uid <= 0) {
 		return controllers.helpers.notAllowed(req, res);
-	}
-
-	// Users in "administrators" group are considered super admins
-	const isAdmin = await user.isAdministrator(req.uid);
-	if (isAdmin) {
-		return next();
 	}
 
 	// Otherwise, check for privilege based on page (if not in mapping, deny access)
 	const path = req.path.replace(/^(\/api)?\/admin\/?/g, '');
 	if (path) {
 		const privilege = privileges.admin.resolve(path);
-		if (!privilege || !await privileges.admin.can(privilege, req.uid)) {
+		if (!await privileges.admin.can(privilege, req.uid)) {
 			return controllers.helpers.notAllowed(req, res);
 		}
 	} else {
@@ -130,5 +132,42 @@ middleware.checkPrivileges = async (req, res, next) => {
 		}
 	}
 
-	next();
-};
+	// If user does not have password
+	const hasPassword = await user.hasPassword(req.uid);
+	if (!hasPassword) {
+		return next();
+	}
+
+	// Reject if they need to re-login (due to ACP timeout), otherwise extend logout timer
+	const loginTime = req.session.meta ? req.session.meta.datetime : 0;
+	const adminReloginDuration = meta.config.adminReloginDuration * 60000;
+	const disabled = meta.config.adminReloginDuration === 0;
+	if (disabled || (loginTime && parseInt(loginTime, 10) > Date.now() - adminReloginDuration)) {
+		const timeLeft = parseInt(loginTime, 10) - (Date.now() - adminReloginDuration);
+		if (req.session.meta && timeLeft < Math.min(300000, adminReloginDuration)) {
+			req.session.meta.datetime += Math.min(300000, adminReloginDuration);
+		}
+
+		return next();
+	}
+
+	let returnTo = req.path;
+	if (nconf.get('relative_path')) {
+		returnTo = req.path.replace(new RegExp('^' + nconf.get('relative_path')), '');
+	}
+	returnTo = returnTo.replace(/^\/api/, '');
+
+	req.session.returnTo = returnTo;
+	req.session.forceLogin = 1;
+
+	await plugins.hooks.fire('response:auth.relogin', { req, res });
+	if (res.headersSent) {
+		return;
+	}
+
+	if (res.locals.isAPI) {
+		res.status(401).json({});
+	} else {
+		res.redirect(nconf.get('relative_path') + '/login?local=1');
+	}
+});

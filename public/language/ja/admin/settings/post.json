@@ -34,6 +34,8 @@
 	"timestamp.cut-off-help": "日付&amp;時間は相対的な方法で表示されます(例:「3時間前」/「5日前」)。そしてさまざまな地域にローカライズされています。\n\\t\\t\\t\\t\\t言語。特定のポイントの後、このテキストは、ローカライズされた日付自体を表示するように切り替えることができます。\n\\t\\t\\t\\t\\t(例:2016年11月5日15:30)<br /><em>(デフォルト：<code>30 </code>、または1か月)。日付を常に表示するには0に設定し、常に相対時間を表示するには空白のままにします。</em>",
 	"timestamp.necro-threshold": "Necro Threshold (in days)",
 	"timestamp.necro-threshold-help": "A message will be shown between posts if the time between them is longer than the necro threshold. (Default: <code>7</code>, or one week). Set to 0 to disable.</em>",
+	"timestamp.topic-views-interval": "Increment topic views interval (in minutes)",
+	"timestamp.topic-views-interval-help": "Topic views will only increment once every X minutes as defined by this setting.",
 	"teaser": "ティーザーの投稿",
 	"teaser.last-post": "最後＆ndash;返信がない場合は、元の投稿を含む最新の投稿を表示",
 	"teaser.last-reply": "最後＆ndash;最新の返信を表示するか、返信がない場合は「返信なし」のプレースホルダを表示する",

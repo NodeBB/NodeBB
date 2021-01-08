@@ -1,12 +1,12 @@
 {
-	"x-b": "%1 בתים",
+	"x-b": "%1 ביטים",
 	"x-mb": "%1 מגה בייט",
 	"x-gb": "%1 ג'יגה בייט",
 	"uptime-seconds": "זמן מאתחול אחרון בשניות",
 	"uptime-days": "זמן מאתחול אחרון בימים",
 
 	"mongo": "Mongo",
-	"mongo.version": "גרסאת MongoDB",
+	"mongo.version": "גרסת MongoDB",
 	"mongo.storage-engine": "מנוע אחסון",
 	"mongo.collections": "אוסף",
 	"mongo.objects": "אובייקטים",
@@ -22,7 +22,7 @@
 	"mongo.bytes-out": "ביטים יוצאים",
 	"mongo.num-requests": "מספר בקשות",
 	"mongo.raw-info": "מידע לא מעובד מMongoDB",
-	"mongo.unauthorized": "NodeBB was unable to query the MongoDB database for relevant statistics. Please ensure that the user in use by NodeBB contains the &quot;clusterMonitor&quot; role for the &quot;admin&quot; database.",
+	"mongo.unauthorized": "NodeBB לא הצליחה לקבל את המידע הדרוש מMongoDB. אנא בדוק שלמשתמש יש הרשאת clusterMonitor לadmin database.",
 
 	"redis": "Redis",
 	"redis.version": "גרסת Redis",
@@ -36,7 +36,7 @@
 	"redis.memory-frag-ratio": "יחס פיצול זכרון",
 	"redis.total-connections-recieved": "סך כל החיבורים שהתקבלו",
 	"redis.total-commands-processed": "סך כל הפקודות שעובדו",
-	"redis.iops": "Instantaneous Ops. Per Second",
+	"redis.iops": "אפשרויות מידיות לשניה",
 	"redis.iinput": "Instantaneous Input Per Second",
 	"redis.ioutput": "Instantaneous Output Per Second",
 	"redis.total-input": "סך הכל  מידע נכנס",
@@ -44,9 +44,9 @@
 
 	"redis.keyspace-hits": "Keyspace Hits",
 	"redis.keyspace-misses": "Keyspace Misses",
-	"redis.raw-info": "מידע לא מעובד מRedis",
+	"redis.raw-info": "מידע לא מעובד מ-Redis",
 
 	"postgres": "Postgres",
 	"postgres.version": "גרסאת PostgreSQL",
-	"postgres.raw-info": "מידע לא מעובד מ Postgres"
+	"postgres.raw-info": "מידע לא מעובד מ-Postgres"
 }

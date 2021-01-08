@@ -3,14 +3,26 @@
 (function () {
 	var logoutTimer = 0;
 	function startLogoutTimer() {
+		if (app.config.adminReloginDuration <= 0) {
+			return;
+		}
 		if (logoutTimer) {
 			clearTimeout(logoutTimer);
+		}
+		// pre-translate language string gh#9046
+		var translated;
+		if (!translated) {
+			require(['translator'], function (translator) {
+				translator.translate('[[login:logged-out-due-to-inactivity]]', function (_translated) {
+					translated = _translated;
+				});
+			});
 		}
 
 		logoutTimer = setTimeout(function () {
 			bootbox.alert({
 				closeButton: false,
-				message: '[[login:logged-out-due-to-inactivity]]',
+				message: translated,
 				callback: function () {
 					window.location.reload();
 				},
@@ -54,12 +66,14 @@
 	});
 
 	function setupNProgress() {
-		$(window).on('action:ajaxify.start', function () {
-			NProgress.set(0.7);
-		});
+		require(['nprogress'], function (NProgress) {
+			$(window).on('action:ajaxify.start', function () {
+				NProgress.set(0.7);
+			});
 
-		$(window).on('action:ajaxify.end', function () {
-			NProgress.done();
+			$(window).on('action:ajaxify.end', function () {
+				NProgress.done();
+			});
 		});
 	}
 
@@ -149,58 +163,60 @@
 	}
 
 	function configureSlidemenu() {
-		var env = utils.findBootstrapEnvironment();
+		require(['slideout'], function (Slideout) {
+			var env = utils.findBootstrapEnvironment();
 
-		var slideout = new Slideout({
-			panel: document.getElementById('panel'),
-			menu: document.getElementById('menu'),
-			padding: 256,
-			tolerance: 70,
-		});
-
-		if (env === 'md' || env === 'lg') {
-			slideout.disableTouch();
-		}
-
-		$('#mobile-menu').on('click', function () {
-			slideout.toggle();
-		});
-
-		$('#menu a').on('click', function () {
-			slideout.close();
-		});
-
-		$(window).on('resize', function () {
-			slideout.close();
-
-			env = utils.findBootstrapEnvironment();
+			var slideout = new Slideout({
+				panel: document.getElementById('panel'),
+				menu: document.getElementById('menu'),
+				padding: 256,
+				tolerance: 70,
+			});
 
 			if (env === 'md' || env === 'lg') {
 				slideout.disableTouch();
+			}
+
+			$('#mobile-menu').on('click', function () {
+				slideout.toggle();
+			});
+
+			$('#menu a').on('click', function () {
+				slideout.close();
+			});
+
+			$(window).on('resize', function () {
+				slideout.close();
+
+				env = utils.findBootstrapEnvironment();
+
+				if (env === 'md' || env === 'lg') {
+					slideout.disableTouch();
+					$('#header').css({
+						position: 'relative',
+					});
+				} else {
+					slideout.enableTouch();
+					$('#header').css({
+						position: 'fixed',
+					});
+				}
+			});
+
+			function onOpeningMenu() {
 				$('#header').css({
-					position: 'relative',
-				});
-			} else {
-				slideout.enableTouch();
-				$('#header').css({
-					position: 'fixed',
+					top: ($('#panel').position().top * -1) + 'px',
+					position: 'absolute',
 				});
 			}
-		});
 
-		function onOpeningMenu() {
-			$('#header').css({
-				top: ($('#panel').position().top * -1) + 'px',
-				position: 'absolute',
-			});
-		}
+			slideout.on('open', onOpeningMenu);
 
-		slideout.on('open', onOpeningMenu);
-
-		slideout.on('close', function () {
-			$('#header').css({
-				top: '0px',
-				position: 'fixed',
+			slideout.on('close', function () {
+				$('#header').css({
+					top: '0px',
+					position: 'fixed',
+				});
 			});
 		});
 	}

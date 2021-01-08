@@ -44,5 +44,6 @@
     "search-preferences-saved": "Предпочитанията за търсене бяха запазени",
     "search-preferences-cleared": "Предпочитанията за търсене бяха изчистени",
     "show-results-as": "Показване на резултатите като",
-    "see-more-results": "Показване на още резултати (%1)"
+    "see-more-results": "Показване на още резултати (%1)",
+    "search-in-category": "Търсене в „%1“"
 }

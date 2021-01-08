@@ -22,19 +22,7 @@
 				};
 			}
 
-			function loadServer(language, namespace) {
-				return new Promise(function (resolve, reject) {
-					languages.get(language, namespace, function (err, data) {
-						if (err) {
-							reject(err);
-						} else {
-							resolve(data);
-						}
-					});
-				});
-			}
-
-			module.exports = factory(require('../utils'), loadServer, warn);
+			module.exports = factory(require('../utils'), languages.get, warn);
 		}());
 	}
 }(function (utils, load, warn) {
@@ -323,7 +311,28 @@
 
 			if (key) {
 				return translation.then(function (x) {
-					return x[key];
+					if (typeof x[key] === 'string') return x[key];
+					const keyParts = key.split('.');
+					for (let i = 0; i <= keyParts.length; i++) {
+						if (i === keyParts.length) {
+							// default to trying to find key with the same name as parent or equal to empty string
+							return x[keyParts[i - 1]] !== undefined ? x[keyParts[i - 1]] : x[''];
+						}
+						switch (typeof x[keyParts[i]]) {
+							case 'object':
+								x = x[keyParts[i]];
+								break;
+							case 'string':
+								if (i === keyParts.length - 1) {
+									return x[keyParts[i]];
+								}
+
+								return false;
+
+							default:
+								return false;
+						}
+					}
 				});
 			}
 			return translation;
@@ -493,7 +502,10 @@
 		 * @returns {string}
 		 */
 		Translator.unescape = function unescape(text) {
-			return typeof text === 'string' ? text.replace(/&lsqb;|\\\[/g, '[').replace(/&rsqb;|\\\]/g, ']') : text;
+			return typeof text === 'string' ?
+				text.replace(/&lsqb;/g, '[').replace(/\\\[/g, '[')
+					.replace(/&rsqb;/g, ']').replace(/\\\]/g, ']') :
+				text;
 		};
 
 		/**
@@ -605,7 +617,7 @@
 				}
 
 				var originalSettings = assign({}, jQuery.timeago.settings.strings);
-				jQuery.getScript(config.assetBaseUrl + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '-short.js').done(function () {
+				adaptor.switchTimeagoLanguage(languageCode + '-short', function () {
 					adaptor.timeagoShort = assign({}, jQuery.timeago.settings.strings);
 					jQuery.timeago.settings.strings = assign({}, originalSettings);
 					toggle();
@@ -615,12 +627,16 @@
 			}
 		},
 
-		switchTimeagoLanguage: function switchTimeagoLanguage(callback) {
+		switchTimeagoLanguage: function switchTimeagoLanguage(langCode, callback) {
 			// Delete the cached shorthand strings if present
 			delete adaptor.timeagoShort;
 
-			var languageCode = utils.userLangToTimeagoCode(config.userLang);
-			jQuery.getScript(config.assetBaseUrl + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').done(callback);
+			var stringsModule = 'timeago/locales/jquery.timeago.' + langCode;
+			// without undef, requirejs won't load the strings a second time
+			require.undef(stringsModule);
+			require([stringsModule], function () {
+				callback();
+			});
 		},
 
 		prepareDOM: function prepareDOM() {

@@ -29,6 +29,8 @@ var delayCache = new LRU({
 
 var middleware = module.exports;
 
+const relative_path = nconf.get('relative_path');
+
 middleware.regexes = {
 	timestampedUpload: /^\d+-.+$/,
 };
@@ -48,8 +50,9 @@ middleware.applyCSRF = function (req, res, next) {
 		next();
 	}
 };
+middleware.applyCSRFasync = util.promisify(middleware.applyCSRF);
 
-middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login');
+middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn(relative_path + '/login');
 
 Object.assign(middleware, {
 	admin: require('./admin'),
@@ -59,26 +62,27 @@ require('./render')(middleware);
 require('./maintenance')(middleware);
 require('./user')(middleware);
 require('./headers')(middleware);
+require('./expose')(middleware);
+middleware.assert = require('./assert');
 
 middleware.stripLeadingSlashes = function stripLeadingSlashes(req, res, next) {
-	var target = req.originalUrl.replace(nconf.get('relative_path'), '');
+	var target = req.originalUrl.replace(relative_path, '');
 	if (target.startsWith('//')) {
-		return res.redirect(nconf.get('relative_path') + target.replace(/^\/+/, '/'));
+		return res.redirect(relative_path + target.replace(/^\/+/, '/'));
 	}
 	next();
 };
 
 middleware.pageView = helpers.try(async function pageView(req, res, next) {
-	const promises = [
-		analytics.pageView({ ip: req.ip, uid: req.uid }),
-	];
 	if (req.loggedIn) {
-		promises.push(user.updateOnlineUsers(req.uid));
-		promises.push(user.updateLastOnlineTime(req.uid));
+		await Promise.all([
+			user.updateOnlineUsers(req.uid),
+			user.updateLastOnlineTime(req.uid),
+		]);
 	}
-	await Promise.all(promises);
-	plugins.fireHook('action:middleware.pageView', { req: req });
 	next();
+	await analytics.pageView({ ip: req.ip, uid: req.uid });
+	plugins.hooks.fire('action:middleware.pageView', { req: req });
 });
 
 middleware.pluginHooks = helpers.try(async function pluginHooks(req, res, next) {
@@ -87,7 +91,7 @@ middleware.pluginHooks = helpers.try(async function pluginHooks(req, res, next) 
 		hookObj.method(req, res, next);
 	});
 
-	await plugins.fireHook('response:router.page', {
+	await plugins.hooks.fire('response:router.page', {
 		req: req,
 		res: res,
 	});
@@ -118,7 +122,7 @@ middleware.routeTouchIcon = function routeTouchIcon(req, res) {
 	if (meta.config['brand:touchIcon']) {
 		iconPath = path.join(nconf.get('upload_path'), meta.config['brand:touchIcon'].replace(/assets\/uploads/, ''));
 	} else {
-		iconPath = path.join(nconf.get('base_dir'), 'public/logo.png');
+		iconPath = path.join(nconf.get('base_dir'), 'public/images/touch/512.png');
 	}
 
 	return res.sendFile(iconPath, {
@@ -205,8 +209,7 @@ middleware.buildSkinAsset = helpers.try(async function buildSkinAsset(req, res, 
 	}
 
 	await plugins.prepareForBuild(['client side styles']);
-	const buildBundle = util.promisify(meta.css.buildBundle);
-	const css = await buildBundle(target[0], true);
+	const css = await meta.css.buildBundle(target[0], true);
 	require('../meta/minifier').killAll();
 	res.status(200).type('text/css').send(css);
 });
@@ -224,7 +227,7 @@ middleware.trimUploadTimestamps = function trimUploadTimestamps(req, res, next) 
 
 middleware.validateAuth = helpers.try(async function validateAuth(req, res, next) {
 	try {
-		await plugins.fireHook('static:auth.validate', {
+		await plugins.hooks.fire('static:auth.validate', {
 			user: res.locals.user,
 			strategy: res.locals.strategy,
 		});
@@ -237,3 +240,14 @@ middleware.validateAuth = helpers.try(async function validateAuth(req, res, next
 		next(err);
 	}
 });
+
+middleware.checkRequired = function (fields, req, res, next) {
+	// Used in API calls to ensure that necessary parameters/data values are present
+	const missing = fields.filter(field => !req.body.hasOwnProperty(field));
+
+	if (!missing.length) {
+		return next();
+	}
+
+	controllers.helpers.formatApiResponse(400, res, new Error('Required parameters were missing from this API call: ' + missing.join(', ')));
+};

@@ -1,0 +1,42 @@
+get:
+  tags:
+    - admin
+  summary: Get category anayltics
+  parameters:
+    - name: category_id
+      in: path
+      required: true
+      schema:
+        type: string
+      example: 1
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  name:
+                    type: string
+                  analytics:
+                    type: object
+                    properties:
+                      pageviews:hourly:
+                        type: array
+                        items:
+                          type: number
+                      pageviews:daily:
+                        type: array
+                        items:
+                          type: number
+                      topics:daily:
+                        type: array
+                        items:
+                          type: number
+                      posts:daily:
+                        type: array
+                        items:
+                          type: number
+              - $ref: ../../../../../components/schemas/CommonProps.yaml#/CommonProps

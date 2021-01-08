@@ -4,11 +4,13 @@
 	"group-privileges": "Grup Ayrıcalıkları",
 	"user-privileges": "Kullanıcı Ayrıcalıkları",
 	"edit-privileges": "Ayrıcalıkları Düzenle",
+  	"select-clear-all": "Select/Clear All",
 	"chat": "Sohbet",
 	"upload-images": "Resim Yükle",
 	"upload-files": "Dosya Yükle",
 	"signature": "İmza",
 	"ban": "Ban",
+	"invite": "Davet et",
 	"search-content": "İçerik Arama",
 	"search-users": "Kullanıcıları Ara",
 	"search-tags": "Etiketleri Ara",
@@ -37,9 +39,13 @@
 	"admin-categories": "Kategoriler",
 	"admin-privileges": "Ayrıcalıklar",
 	"admin-users": "Kullanıcılar",
+	"admin-admins-mods": "Admins &amp; Mods",
+	"admin-groups": "Groups",
+	"admin-tags": "Tags",
 	"admin-settings": "Ayarlar",
 
 	"alert.confirm-moderate": "<strong>Bu gruba yönetim ayrıcalıkları vermek istediğinize emin misiniz?</strong> Bu grup genele açık olduğundan her kullanıcı gruba katılabilir. ",
+	"alert.confirm-admins-mods": "<strong>Are you sure you wish to grant the &quot;Admins &amp; Mods&quot; privilege to this user/group?</strong> Users with this privilege are able to promote and demote other users into privileged positions, <em>including super administrator</em>",
 	"alert.confirm-save": "Lütfen ayrıcalıkları kaydetme isteğinizi onaylayınız",
 	"alert.saved": "Ayrıcalık değişiklikleri kaydedildi ve uygulandı",
 	"alert.confirm-discard": "Ayrıcalık değişikliklerini iptal etmek istediğinize emin misiniz?",
@@ -48,5 +54,6 @@
 	"alert.confirm-copyToAllGroup": "Bu grup ayrıcalıklarını <strong>tüm kategoriler</strong> için uygulamaya emin misiniz?",
 	"alert.confirm-copyToChildren": "Bu ayrıcalıkları <strong>tüm alt (aşağı) kategoriler</strong> için uygulamaya emin misiniz?",
 	"alert.confirm-copyToChildrenGroup": "Bu grup ayrıcalıklarını <strong>tüm alt (aşağı) kategoriler</strong> uygulamaya emin misiniz?",
-	"alert.no-undo": "<em>Bu işlem geri alınamaz.</em>"
+	"alert.no-undo": "<em>Bu işlem geri alınamaz.</em>",
+	"alert.admin-warning": "Yöneticiler dolaylı olarak tüm ayrıcalıklara sahiptirler"
 }

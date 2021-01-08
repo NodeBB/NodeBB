@@ -34,6 +34,7 @@ module.exports = function (middleware) {
 
 			if (origins.includes(req.get('origin'))) {
 				headers['Access-Control-Allow-Origin'] = encodeURI(req.get('origin'));
+				headers.Vary = headers.Vary ? `${headers.Vary}, Origin` : 'Origin';
 			}
 		}
 
@@ -52,6 +53,7 @@ module.exports = function (middleware) {
 			originsRegex.forEach(function (regex) {
 				if (regex && regex.test(req.get('origin'))) {
 					headers['Access-Control-Allow-Origin'] = encodeURI(req.get('origin'));
+					headers.Vary = headers.Vary ? `${headers.Vary}, Origin` : 'Origin';
 				}
 			});
 		}
@@ -98,7 +100,6 @@ module.exports = function (middleware) {
 		const defaultLang = meta.config.defaultLang || 'en-GB';
 		try {
 			const codes = await languages.listCodes();
-			winston.verbose('[middleware/autoLocale] Retrieves languages list for middleware');
 			return _.uniq([defaultLang, ...codes]);
 		} catch (err) {
 			winston.error('[middleware/autoLocale] Could not retrieve languages codes list! ' + err.stack);

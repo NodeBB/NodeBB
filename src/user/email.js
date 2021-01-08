@@ -1,16 +1,18 @@
 
 'use strict';
 
-var nconf = require('nconf');
+const nconf = require('nconf');
+const winston = require('winston');
 
-var user = require('./index');
-var utils = require('../utils');
-var plugins = require('../plugins');
-var db = require('../database');
-var meta = require('../meta');
-var emailer = require('../emailer');
+const user = require('./index');
+const utils = require('../utils');
+const plugins = require('../plugins');
+const db = require('../database');
+const meta = require('../meta');
+const emailer = require('../emailer');
+const groups = require('../groups');
 
-var UserEmail = module.exports;
+const UserEmail = module.exports;
 
 UserEmail.exists = async function (email) {
 	const uid = await user.getUidByEmail(email.toLowerCase());
@@ -59,7 +61,7 @@ UserEmail.sendValidationEmail = async function (uid, options) {
 	}
 	await db.set('uid:' + uid + ':confirm:email:sent', 1);
 	await db.pexpireAt('uid:' + uid + ':confirm:email:sent', Date.now() + (emailInterval * 60 * 1000));
-	confirm_code = await plugins.fireHook('filter:user.verify.code', confirm_code);
+	confirm_code = await plugins.hooks.fire('filter:user.verify.code', confirm_code);
 
 	await db.setObject('confirm:' + confirm_code, {
 		email: options.email.toLowerCase(),
@@ -78,8 +80,8 @@ UserEmail.sendValidationEmail = async function (uid, options) {
 		uid: uid,
 	};
 
-	if (plugins.hasListeners('action:user.verify')) {
-		plugins.fireHook('action:user.verify', { uid: uid, data: data });
+	if (plugins.hooks.hasListeners('action:user.verify')) {
+		plugins.hooks.fire('action:user.verify', { uid: uid, data: data });
 	} else {
 		await emailer.send(data.template, uid, data);
 	}
@@ -87,6 +89,13 @@ UserEmail.sendValidationEmail = async function (uid, options) {
 };
 
 UserEmail.confirm = async function (code) {
+	// TODO: remove in 1.17.0
+	winston.warn('[deprecated] User.email.confirm deprecated use User.email.confirmByCode');
+	await UserEmail.confirmByCode(code);
+};
+
+// confirm email by code sent by confirmation email
+UserEmail.confirmByCode = async function (code) {
 	const confirmObj = await db.getObject('confirm:' + code);
 	if (!confirmObj || !confirmObj.uid || !confirmObj.email) {
 		throw new Error('[[error:invalid-data]]');
@@ -95,9 +104,24 @@ UserEmail.confirm = async function (code) {
 	if (!currentEmail || currentEmail.toLowerCase() !== confirmObj.email) {
 		throw new Error('[[error:invalid-email]]');
 	}
-	await user.setUserField(confirmObj.uid, 'email:confirmed', 1);
+	await UserEmail.confirmByUid(confirmObj.uid);
 	await db.delete('confirm:' + code);
-	await db.delete('uid:' + confirmObj.uid + ':confirm:email:sent');
-	await db.sortedSetRemove('users:notvalidated', confirmObj.uid);
-	await plugins.fireHook('action:user.email.confirmed', { uid: confirmObj.uid, email: confirmObj.email });
+};
+
+// confirm uid's email
+UserEmail.confirmByUid = async function (uid) {
+	if (!(parseInt(uid, 10) > 0)) {
+		throw new Error('[[error:invalid-uid]]');
+	}
+	const currentEmail = await user.getUserField(uid, 'email');
+	if (!currentEmail) {
+		throw new Error('[[error:invalid-email]]');
+	}
+	await Promise.all([
+		user.setUserField(uid, 'email:confirmed', 1),
+		groups.join('verified-users', uid),
+		groups.leave('unverified-users', uid),
+		db.delete('uid:' + uid + ':confirm:email:sent'),
+	]);
+	await plugins.hooks.fire('action:user.email.confirmed', { uid: uid, email: currentEmail });
 };

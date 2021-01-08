@@ -5,6 +5,7 @@ const async = require('async');
 const db = require('../database');
 const meta = require('../meta');
 const utils = require('../utils');
+const slugify = require('../slugify');
 const translator = require('../translator');
 const plugins = require('../plugins');
 const cache = require('../cache');
@@ -24,9 +25,9 @@ module.exports = function (Categories) {
 
 		if (modifiedFields.hasOwnProperty('name')) {
 			const translated = await translator.translate(modifiedFields.name);
-			modifiedFields.slug = cid + '/' + utils.slugify(translated);
+			modifiedFields.slug = cid + '/' + slugify(translated);
 		}
-		const result = await plugins.fireHook('filter:category.update', { cid: cid, category: modifiedFields });
+		const result = await plugins.hooks.fire('filter:category.update', { cid: cid, category: modifiedFields });
 
 		const category = result.category;
 		var fields = Object.keys(category);
@@ -39,7 +40,7 @@ module.exports = function (Categories) {
 		await async.eachSeries(fields, async function (key) {
 			await updateCategoryField(cid, key, category[key]);
 		});
-		plugins.fireHook('action:category.update', { cid: cid, modified: category });
+		plugins.hooks.fire('action:category.update', { cid: cid, modified: category });
 	}
 
 	async function updateCategoryField(cid, key, value) {
@@ -91,7 +92,7 @@ module.exports = function (Categories) {
 	}
 
 	Categories.parseDescription = async function (cid, description) {
-		const parsedDescription = await plugins.fireHook('filter:parse.raw', description);
+		const parsedDescription = await plugins.hooks.fire('filter:parse.raw', description);
 		await Categories.setCategoryField(cid, 'descriptionParsed', parsedDescription);
 	};
 };

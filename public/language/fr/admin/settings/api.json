@@ -1,0 +1,16 @@
+{
+	"tokens": "Tokens",
+	"settings": "Paramètres",
+	"lead-text": "À partir de cette page, vous pouvez paramétrer l'accès à l'API dans NodeBB.",
+	"intro": "Par défaut, l'API authentifie les utilisateurs en fonction de leur cookie de session, mais NodeBB prend également en charge l'authentification du porteur via des tokens générés via cette page.",
+	"docs": "Cliquez ici pour accéder à la documentation de l'API",
+
+	"require-https": "Forcer l'utilisation de l'API via HTTPS uniquement",
+	"require-https-caveat": "<strong>Remarque</strong>: certaines installations impliquant des load balancer peuvent transmettre leurs requêtes à NodeBB via HTTP, auquel cas cette option doit rester désactivée.",
+
+	"uid": "ID Utilisateur",
+	"uid-help-text": "Spécifiez un ID utilisateur à associer à ce token. Si l'ID utilisateur est 0, il sera considéré comme un token <code>maître<em>, qui peut prendre l'identité d'autres utilisateurs en fonction du paramètre <code>_uid</code>",
+	"description": "Description",
+	"no-description": "Aucune description spécifiée.",
+	"token-on-save": "Le token sera généré une fois le formulaire enregistré"
+}

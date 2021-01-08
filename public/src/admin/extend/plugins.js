@@ -1,7 +1,11 @@
 'use strict';
 
 
-define('admin/extend/plugins', ['jqueryui', 'translator', 'benchpress'], function (jqueryui, translator, Benchpress) {
+define('admin/extend/plugins', [
+	'translator',
+	'benchpress',
+	'jquery-ui/widgets/sortable',
+], function (translator, Benchpress) {
 	var Plugins = {};
 	Plugins.init = function () {
 		var pluginsList = $('.plugins');
@@ -58,7 +62,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator', 'benchpress'], functio
 			}
 
 			if (pluginData.license && pluginData.active !== true) {
-				Benchpress.parse('admin/partials/plugins/license', pluginData, function (html) {
+				Benchpress.render('admin/partials/plugins/license', pluginData).then(function (html) {
 					bootbox.dialog({
 						title: '[[admin/extend/plugins:license.title]]',
 						message: html,
@@ -128,8 +132,9 @@ define('admin/extend/plugins', ['jqueryui', 'translator', 'benchpress'], functio
 					return bootbox.alert('[[admin/extend/plugins:alert.package-manager-unreachable]]');
 				}
 
-				require(['semver'], function (semver) {
-					if (payload.version !== 'latest' && semver.gt(payload.version, parent.find('.currentVersion').text())) {
+				require(['compare-versions'], function (compareVersions) {
+					var currentVersion = parent.find('.currentVersion').text();
+					if (payload.version !== 'latest' && compareVersions.compare(payload.version, currentVersion, '>')) {
 						upgrade(pluginID, btn, payload.version);
 					} else if (payload.version === 'latest') {
 						confirmInstall(pluginID, function () {
@@ -168,7 +173,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator', 'benchpress'], functio
 				}
 				var html = '';
 				activePlugins.forEach(function (plugin) {
-					html += '<li class="">' + plugin + '</li>';
+					html += '<li class="">' + plugin + '<span class="pull-right"><i class="fa fa-chevron-up"></i><i class="fa fa-chevron-down"></i></span></li>';
 				});
 				if (!activePlugins.length) {
 					translator.translate('[[admin/extend/plugins:none-active]]', function (text) {
@@ -176,7 +181,18 @@ define('admin/extend/plugins', ['jqueryui', 'translator', 'benchpress'], functio
 					});
 					return;
 				}
-				$('#order-active-plugins-modal .plugin-list').html(html).sortable();
+				var list = $('#order-active-plugins-modal .plugin-list');
+				list.html(html).sortable();
+
+				list.find('.fa-chevron-up').on('click', function () {
+					var item = $(this).parents('li');
+					item.prev().before(item);
+				});
+
+				list.find('.fa-chevron-down').on('click', function () {
+					var item = $(this).parents('li');
+					item.next().after(item);
+				});
 			});
 		});
 

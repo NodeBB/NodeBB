@@ -16,7 +16,10 @@ module.exports = function (privileges) {
 		{ name: '[[admin/manage/privileges:admin-dashboard]]' },
 		{ name: '[[admin/manage/privileges:admin-categories]]' },
 		{ name: '[[admin/manage/privileges:admin-privileges]]' },
+		{ name: '[[admin/manage/privileges:admin-admins-mods]]' },
 		{ name: '[[admin/manage/privileges:admin-users]]' },
+		{ name: '[[admin/manage/privileges:admin-groups]]' },
+		{ name: '[[admin/manage/privileges:admin-tags]]' },
 		{ name: '[[admin/manage/privileges:admin-settings]]' },
 	];
 
@@ -24,7 +27,10 @@ module.exports = function (privileges) {
 		'admin:dashboard',
 		'admin:categories',
 		'admin:privileges',
+		'admin:admins-mods',
 		'admin:users',
+		'admin:groups',
+		'admin:tags',
 		'admin:settings',
 	];
 
@@ -35,7 +41,11 @@ module.exports = function (privileges) {
 		dashboard: 'admin:dashboard',
 		'manage/categories': 'admin:categories',
 		'manage/privileges': 'admin:privileges',
+		'manage/admins-mods': 'admin:admins-mods',
 		'manage/users': 'admin:users',
+		'manage/groups': 'admin:groups',
+		'manage/tags': 'admin:tags',
+		'settings/tags': 'admin:tags',
 		'extend/plugins': 'admin:settings',
 		'extend/widgets': 'admin:settings',
 		'extend/rewards': 'admin:settings',
@@ -43,6 +53,7 @@ module.exports = function (privileges) {
 	privileges.admin.routeRegexpMap = {
 		'^manage/categories/\\d+': 'admin:categories',
 		'^manage/privileges/(\\d+|admin)': 'admin:privileges',
+		'^manage/groups/.+$': 'admin:groups',
 		'^settings/[\\w\\-]+$': 'admin:settings',
 		'^appearance/[\\w]+$': 'admin:settings',
 		'^plugins/[\\w\\-]+$': 'admin:settings',
@@ -61,16 +72,17 @@ module.exports = function (privileges) {
 		'admin.categories.copySettingsFrom': 'admin:categories',
 
 		'admin.categories.getPrivilegeSettings': 'admin:privileges',
-		'admin.categories.setPrivilege': 'admin:privileges',
+		'admin.categories.setPrivilege': 'admin:privileges;admin:admins-mods',
 		'admin.categories.copyPrivilegesToChildren': 'admin:privileges',
 		'admin.categories.copyPrivilegesFrom': 'admin:privileges',
 		'admin.categories.copyPrivilegesToAllCategories': 'admin:privileges',
 
+		'admin.user.makeAdmins': 'admin:admins-mods',
+		'admin.user.removeAdmins': 'admin:admins-mods',
+
 		'admin.user.loadGroups': 'admin:users',
 		'admin.groups.join': 'admin:users',
 		'admin.groups.leave': 'admin:users',
-		'user.banUsers': 'admin:users',
-		'user.unbanUsers': 'admin:users',
 		'admin.user.resetLockouts': 'admin:users',
 		'admin.user.validateEmail': 'admin:users',
 		'admin.user.sendValidationEmail': 'admin:users',
@@ -79,8 +91,12 @@ module.exports = function (privileges) {
 		'admin.user.deleteUsers': 'admin:users',
 		'admin.user.deleteUsersAndContent': 'admin:users',
 		'admin.user.createUser': 'admin:users',
-		'admin.user.search': 'admin:users',
 		'admin.user.invite': 'admin:users',
+
+		'admin.tags.create': 'admin:tags',
+		'admin.tags.update': 'admin:tags',
+		'admin.tags.rename': 'admin:tags',
+		'admin.tags.deleteTags': 'admin:tags',
 
 		'admin.getSearchDict': 'admin:settings',
 		'admin.config.setMultiple': 'admin:settings',
@@ -89,6 +105,7 @@ module.exports = function (privileges) {
 		'admin.themes.set': 'admin:settings',
 		'admin.reloadAllSessions': 'admin:settings',
 		'admin.settings.get': 'admin:settings',
+		'admin.settings.set': 'admin:settings',
 	};
 
 	privileges.admin.resolve = (path) => {
@@ -123,14 +140,14 @@ module.exports = function (privileges) {
 
 		async function getLabels() {
 			return await utils.promiseParallel({
-				users: plugins.fireHook('filter:privileges.admin.list_human', privilegeLabels.slice()),
-				groups: plugins.fireHook('filter:privileges.admin.groups.list_human', privilegeLabels.slice()),
+				users: plugins.hooks.fire('filter:privileges.admin.list_human', privilegeLabels.slice()),
+				groups: plugins.hooks.fire('filter:privileges.admin.groups.list_human', privilegeLabels.slice()),
 			});
 		}
 
 		const keys = await utils.promiseParallel({
-			users: plugins.fireHook('filter:privileges.admin.list', userPrivilegeList.slice()),
-			groups: plugins.fireHook('filter:privileges.admin.groups.list', groupPrivilegeList.slice()),
+			users: plugins.hooks.fire('filter:privileges.admin.list', userPrivilegeList.slice()),
+			groups: plugins.hooks.fire('filter:privileges.admin.groups.list', groupPrivilegeList.slice()),
 		});
 
 		const payload = await utils.promiseParallel({
@@ -141,13 +158,13 @@ module.exports = function (privileges) {
 		payload.keys = keys;
 
 		// This is a hack because I can't do {labels.users.length} to echo the count in templates.js
-		payload.columnCount = payload.labels.users.length + 2;
+		payload.columnCount = payload.labels.users.length + 3;
 		return payload;
 	};
 
 	privileges.admin.get = async function (uid) {
 		const [userPrivileges, isAdministrator] = await Promise.all([
-			helpers.isUserAllowedTo(privileges.admin.userPrivilegeList, uid, 0),
+			helpers.isAllowedTo(privileges.admin.userPrivilegeList, uid, 0),
 			user.isAdministrator(uid),
 		]);
 
@@ -155,12 +172,15 @@ module.exports = function (privileges) {
 		const privData = _.zipObject(privileges.admin.userPrivilegeList, combined);
 
 		privData.superadmin = isAdministrator;
-		return await plugins.fireHook('filter:privileges.admin.get', privData);
+		return await plugins.hooks.fire('filter:privileges.admin.get', privData);
 	};
 
 	privileges.admin.can = async function (privilege, uid) {
-		const isUserAllowedTo = await helpers.isUserAllowedTo(privilege, uid, [0]);
-		return isUserAllowedTo[0];
+		const [isUserAllowedTo, isAdministrator] = await Promise.all([
+			helpers.isAllowedTo(privilege, uid, [0]),
+			user.isAdministrator(uid),
+		]);
+		return isAdministrator || isUserAllowedTo[0];
 	};
 
 	// privileges.admin.canGroup = async function (privilege, groupName) {
@@ -169,7 +189,7 @@ module.exports = function (privileges) {
 
 	privileges.admin.give = async function (privileges, groupName) {
 		await helpers.giveOrRescind(groups.join, privileges, 'admin', groupName);
-		plugins.fireHook('action:privileges.admin.give', {
+		plugins.hooks.fire('action:privileges.admin.give', {
 			privileges: privileges,
 			groupNames: Array.isArray(groupName) ? groupName : [groupName],
 		});
@@ -177,7 +197,7 @@ module.exports = function (privileges) {
 
 	privileges.admin.rescind = async function (privileges, groupName) {
 		await helpers.giveOrRescind(groups.leave, privileges, 'admin', groupName);
-		plugins.fireHook('action:privileges.admin.rescind', {
+		plugins.hooks.fire('action:privileges.admin.rescind', {
 			privileges: privileges,
 			groupNames: Array.isArray(groupName) ? groupName : [groupName],
 		});

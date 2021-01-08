@@ -15,7 +15,7 @@
 		<hr/>
 
 		<ul id="enabled">
-			<!-- BEGIN enabled -->
+			{{{ each enabled }}}
 			<li data-index="{enabled.index}" class="well <!-- IF !enabled.selected -->hidden<!-- ENDIF !enabled.selected -->">
 				<form>
 					<div class="row">
@@ -76,9 +76,9 @@
 					<strong>[[admin/settings/navigation:groups]]</strong>
 					<div>
 						<select name="groups" class="form-control" size="10" multiple>
-							<!-- BEGIN enabled.groups -->
+							{{{ each enabled.groups }}}
 							<option value="{enabled.groups.displayName}"<!-- IF enabled.groups.selected --> selected<!-- ENDIF enabled.groups.selected -->>{enabled.groups.displayName}</option>
-							<!-- END enabled.groups -->
+							{{{ end }}}
 						</select>
 					</div>
 
@@ -98,7 +98,7 @@
 					<input type="hidden" name="enabled" value="{enabled.enabled}" />
 				</form>
 			</li>
-			<!-- END enabled -->
+			{{{ end }}}
 		</ul>
 	</div>
 
@@ -115,9 +115,9 @@
 							<strong>[[admin/settings/navigation:custom-route]]</strong>
 						</p>
 					</li>
-					<!-- BEGIN available -->
-					<li data-id="@index" class="clearfix">
-						<div data-id="@index" class="drag-item alert <!-- IF available.core -->alert-warning<!-- ELSE -->alert-info<!-- ENDIF available.core --> pull-left">
+					{{{ each available }}}
+					<li data-id="{@index}" class="clearfix">
+						<div data-id="{@index}" class="drag-item alert <!-- IF available.core -->alert-warning<!-- ELSE -->alert-info<!-- ENDIF available.core --> pull-left">
 							<i class="fa fa-fw <!-- IF available.iconClass -->{available.iconClass}<!-- ELSE -->fa-navicon<!-- ENDIF available.iconClass -->"></i>
 						</div>
 						<p>
@@ -125,7 +125,7 @@
 							<!-- IF available.core --> [[admin/settings/navigation:core]] <!-- ELSE --> [[admin/settings/navigation:plugin]] <!-- ENDIF available.core -->
 						</p>
 					</li>
-					<!-- END available -->
+					{{{ end }}}
 				</ul>
 			</div>
 		</div>

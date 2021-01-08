@@ -740,9 +740,10 @@ describe('Flags', function () {
 				const category = await Categories.create({ name: 'private category' });
 
 				await Privileges.categories.rescind(['groups:topics:read'], category.cid, 'registered-users');
+				await Groups.join('private category', uid3);
 				const result = await Topics.post({
 					cid: category.cid,
-					uid: adminUid,
+					uid: uid3,
 					title: 'private topic',
 					content: 'private post',
 				});

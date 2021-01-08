@@ -17,14 +17,14 @@ module.exports = function (privileges) {
 	privileges.categories.list = async function (cid) {
 		async function getLabels() {
 			return await utils.promiseParallel({
-				users: plugins.fireHook('filter:privileges.list_human', privileges.privilegeLabels.slice()),
-				groups: plugins.fireHook('filter:privileges.groups.list_human', privileges.privilegeLabels.slice()),
+				users: plugins.hooks.fire('filter:privileges.list_human', privileges.privilegeLabels.slice()),
+				groups: plugins.hooks.fire('filter:privileges.groups.list_human', privileges.privilegeLabels.slice()),
 			});
 		}
 
 		const keys = await utils.promiseParallel({
-			users: plugins.fireHook('filter:privileges.list', privileges.userPrivilegeList.slice()),
-			groups: plugins.fireHook('filter:privileges.groups.list', privileges.groupPrivilegeList.slice()),
+			users: plugins.hooks.fire('filter:privileges.list', privileges.userPrivilegeList.slice()),
+			groups: plugins.hooks.fire('filter:privileges.groups.list', privileges.groupPrivilegeList.slice()),
 		});
 
 		const payload = await utils.promiseParallel({
@@ -35,9 +35,9 @@ module.exports = function (privileges) {
 		payload.keys = keys;
 
 		// This is a hack because I can't do {labels.users.length} to echo the count in templates.js
-		payload.columnCountUser = payload.labels.users.length + 2;
+		payload.columnCountUser = payload.labels.users.length + 3;
 		payload.columnCountUserOther = payload.labels.users.length - privileges.privilegeLabels.length;
-		payload.columnCountGroup = payload.labels.groups.length + 2;
+		payload.columnCountGroup = payload.labels.groups.length + 3;
 		payload.columnCountGroupOther = payload.labels.groups.length - privileges.privilegeLabels.length;
 		return payload;
 	};
@@ -46,7 +46,7 @@ module.exports = function (privileges) {
 		const privs = ['topics:create', 'topics:read', 'topics:tag', 'read'];
 
 		const [userPrivileges, isAdministrator, isModerator] = await Promise.all([
-			helpers.isUserAllowedTo(privs, uid, cid),
+			helpers.isAllowedTo(privs, uid, cid),
 			user.isAdministrator(uid),
 			user.isModerator(uid, cid),
 		]);
@@ -55,7 +55,7 @@ module.exports = function (privileges) {
 		const privData = _.zipObject(privs, combined);
 		const isAdminOrMod = isAdministrator || isModerator;
 
-		return await plugins.fireHook('filter:privileges.categories.get', {
+		return await plugins.hooks.fire('filter:privileges.categories.get', {
 			...privData,
 			cid: cid,
 			uid: uid,
@@ -80,7 +80,7 @@ module.exports = function (privileges) {
 		if (!cid) {
 			return false;
 		}
-		const results = await helpers.isUserAllowedTo(privilege, uid, Array.isArray(cid) ? cid : [cid]);
+		const results = await helpers.isAllowedTo(privilege, uid, Array.isArray(cid) ? cid : [cid]);
 
 		if (Array.isArray(results) && results.length) {
 			return Array.isArray(cid) ? results : results[0];
@@ -106,15 +106,21 @@ module.exports = function (privileges) {
 		}
 
 		cids = _.uniq(cids);
-		const results = await privileges.categories.getBase(privilege, cids, uid);
-		return cids.filter((cid, index) => !!cid && !results.categories[index].disabled && (results.allowedTo[index] || results.isAdmin));
+		const [categoryData, allowedTo, isAdmin] = await Promise.all([
+			categories.getCategoriesFields(cids, ['disabled']),
+			helpers.isAllowedTo(privilege, uid, cids),
+			user.isAdministrator(uid),
+		]);
+		return cids.filter(
+			(cid, index) => !!cid && !categoryData[index].disabled && (allowedTo[index] || isAdmin)
+		);
 	};
 
 	privileges.categories.getBase = async function (privilege, cids, uid) {
 		return await utils.promiseParallel({
 			categories: categories.getCategoriesFields(cids, ['disabled']),
-			allowedTo: helpers.isUserAllowedTo(privilege, uid, cids),
-			view_deleted: helpers.isUserAllowedTo('posts:view_deleted', uid, cids),
+			allowedTo: helpers.isAllowedTo(privilege, uid, cids),
+			view_deleted: helpers.isAllowedTo('posts:view_deleted', uid, cids),
 			isAdmin: user.isAdministrator(uid),
 		});
 	};
@@ -135,7 +141,7 @@ module.exports = function (privileges) {
 
 	privileges.categories.give = async function (privileges, cid, members) {
 		await helpers.giveOrRescind(groups.join, privileges, cid, members);
-		plugins.fireHook('action:privileges.categories.give', {
+		plugins.hooks.fire('action:privileges.categories.give', {
 			privileges: privileges,
 			cids: Array.isArray(cid) ? cid : [cid],
 			members: Array.isArray(members) ? members : [members],
@@ -144,7 +150,7 @@ module.exports = function (privileges) {
 
 	privileges.categories.rescind = async function (privileges, cid, members) {
 		await helpers.giveOrRescind(groups.leave, privileges, cid, members);
-		plugins.fireHook('action:privileges.categories.rescind', {
+		plugins.hooks.fire('action:privileges.categories.rescind', {
 			privileges: privileges,
 			cids: Array.isArray(cid) ? cid : [cid],
 			members: Array.isArray(members) ? members : [members],

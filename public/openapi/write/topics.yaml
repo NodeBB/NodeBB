@@ -1,0 +1,46 @@
+post:
+  tags:
+    - topics
+  summary: create a new topic
+  description: This operation creates a new topic with a post. Topic creation without a post is not allowed via the Write API as it is an internal-only method.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            cid:
+              type: number
+              example: 1
+            title:
+              type: string
+              example: Test topic
+            content:
+              type: string
+              example: This is the test topic's content
+            tags:
+              type: array
+              items:
+                type: string
+              example: [test, topic]
+          required:
+            - cid
+            - title
+            - content
+  responses:
+    '200':
+      description: topic successfully created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../components/schemas/Status.yaml#/Status
+              response:
+                allOf:
+                  - $ref: ../components/schemas/TopicObject.yaml#/TopicObject
+                  - type: object
+                    properties:
+                      mainPost: {}

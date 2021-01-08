@@ -91,12 +91,12 @@ UserNotifications.getNotifications = async function (nids, uid) {
 			notification.readClass = !notification.read ? 'unread' : '';
 		}
 
-		return notification && notification.path;
+		return notification;
 	});
 
 	await deleteUserNids(deletedNids, uid);
 	notificationData = await notifications.merge(notificationData);
-	const result = await plugins.fireHook('filter:user.notifications.getNotifications', {
+	const result = await plugins.hooks.fire('filter:user.notifications.getNotifications', {
 		uid: uid,
 		notifications: notificationData,
 	});

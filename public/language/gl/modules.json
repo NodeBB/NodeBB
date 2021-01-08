@@ -65,5 +65,11 @@
     "bootbox.confirm": "Confirmar",
     "cover.dragging_title": "Colocar foto de portada",
     "cover.dragging_message": "Arrastra a foto d portada ó lugar que desexes e fai clic en \"Gardar\"",
-    "cover.saved": "Imaxe e posición da foto de portada gardadas."
+    "cover.saved": "Imaxe e posición da foto de portada gardadas.",
+    "thumbs.modal.title": "Manage topic thumbnails",
+    "thumbs.modal.no-thumbs": "No thumbnails found.",
+    "thumbs.modal.resize-note": "<strong>Note</strong>: This forum is configured to resize topic thumbnails down to a maximum width of %1px",
+    "thumbs.modal.add": "Add thumbnail",
+    "thumbs.modal.remove": "Remove thumbnail",
+    "thumbs.modal.confirm-remove": "Are you sure you want to remove this thumbnail?"
 }

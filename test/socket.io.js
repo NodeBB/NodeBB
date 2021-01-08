@@ -5,6 +5,8 @@
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
+const util = require('util');
+const sleep = util.promisify(setTimeout);
 var assert = require('assert');
 var async = require('async');
 var nconf = require('nconf');
@@ -191,37 +193,34 @@ describe('socket.io', function () {
 	});
 
 	describe('user create/delete', function () {
-		var uid;
-		it('should create a user', function (done) {
-			socketAdmin.user.createUser({ uid: adminUid }, { username: 'foo1' }, function (err, _uid) {
-				assert.ifError(err);
-				uid = _uid;
-				groups.isMember(uid, 'registered-users', function (err, isMember) {
-					assert.ifError(err);
-					assert(isMember);
-					done();
-				});
-			});
+		let uid;
+		it('should create a user', async function () {
+			const userData = await socketAdmin.user.createUser({ uid: adminUid }, { username: 'foo1' });
+			uid = userData.uid;
+			const isMember = await groups.isMember(userData.uid, 'registered-users');
+			assert(isMember);
 		});
 
-		it('should delete users', function (done) {
-			socketAdmin.user.deleteUsers({ uid: adminUid }, [uid], function (err) {
-				assert.ifError(err);
-				setTimeout(function () {
-					groups.isMember(uid, 'registered-users', function (err, isMember) {
-						assert.ifError(err);
-						assert(!isMember);
-						done();
-					});
-				}, 500);
-			});
+		it('should delete users', async function () {
+			await socketAdmin.user.deleteUsers({ uid: adminUid }, [uid]);
+			await sleep(500);
+			const isMember = await groups.isMember(uid, 'registered-users');
+			assert(!isMember);
 		});
 
-		it('should delete users and their content', function (done) {
+		it('should error if user does not exist', function (done) {
 			socketAdmin.user.deleteUsersAndContent({ uid: adminUid }, [uid], function (err) {
-				assert.ifError(err);
+				assert.strictEqual(err.message, '[[error:no-user]]');
 				done();
 			});
+		});
+
+		it('should delete users and their content', async function () {
+			const userData = await socketAdmin.user.createUser({ uid: adminUid }, { username: 'foo2' });
+			await socketAdmin.user.deleteUsersAndContent({ uid: adminUid }, [userData.uid]);
+			await sleep(500);
+			const isMember = await groups.isMember(userData.uid, 'registered-users');
+			assert(!isMember);
 		});
 	});
 
@@ -241,6 +240,21 @@ describe('socket.io', function () {
 
 	describe('validation emails', function () {
 		var meta = require('../src/meta');
+		var plugins = require('../src/plugins');
+
+		async function dummyEmailerHook(data) {
+			// pretend to handle sending emails
+		}
+		before(function () {
+			// Attach an emailer hook so related requests do not error
+			plugins.registerHook('emailer-test', {
+				hook: 'filter:email.send',
+				method: dummyEmailerHook,
+			});
+		});
+		after(function () {
+			plugins.unregisterHook('emailer-test', 'filter:email.send');
+		});
 
 		it('should validate emails', function (done) {
 			socketAdmin.user.validateEmail({ uid: adminUid }, [regularUid], function (err) {
@@ -274,15 +288,6 @@ describe('socket.io', function () {
 				meta.config.requireEmailConfirmation = 0;
 				done();
 			});
-		});
-	});
-
-	it('should search users', function (done) {
-		socketAdmin.user.search({ uid: adminUid }, { query: 'reg', searchBy: 'username' }, function (err, data) {
-			assert.ifError(err);
-			assert.equal(data.matchCount, 1);
-			assert.equal(data.users[0].username, 'regular');
-			done();
 		});
 	});
 
@@ -325,8 +330,7 @@ describe('socket.io', function () {
 	});
 
 	it('should get server time', function (done) {
-		var socketMeta = require('../src/socket.io/meta');
-		socketMeta.getServerTime({ uid: 1 }, null, function (err, time) {
+		io.emit('admin.getServerTime', null, function (err, time) {
 			assert.ifError(err);
 			assert(time);
 			done();
@@ -405,7 +409,7 @@ describe('socket.io', function () {
 				setTimeout(function () {
 					socketAdmin.rooms.getAll({ uid: 10 }, {}, function (err, data) {
 						assert.ifError(err);
-						assert.equal(data.users.category, 1);
+						assert.equal(data.users.category, 1, JSON.stringify(data, null, 4));
 						done();
 					});
 				}, 1000);

@@ -11,7 +11,7 @@
 	<script>
 		window.addEventListener('DOMContentLoaded', function () {
 			$(document).ready(function () {
-				ajaxify.coldLoad();
+				app.coldLoad();
 			});
 		});
 	</script>

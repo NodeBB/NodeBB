@@ -1,11 +1,6 @@
 {
 	"post-cache": "Onderwerpcache",
-	"posts-in-cache": "Onderwerpen in cache",
-	"average-post-size": "Gemiddelde onderwerp grootte",
-	"length-to-max": "Lengte / Max",
 	"percent-full": "%1%vol",
 	"post-cache-size": "Onderwerpcache grootte",
-	"items-in-cache": "Items in cache",
-	"control-panel": "Controlepaneel",
-	"update-settings": "Update cache instellingen"
+	"items-in-cache": "Items in cache"
 }

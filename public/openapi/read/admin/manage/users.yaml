@@ -1,0 +1,39 @@
+get:
+  tags:
+    - admin
+  summary: Get users
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: ../../../components/schemas/UserObject.yaml#/UserObjectACP
+                  page:
+                    type: number
+                  pageCount:
+                    type: number
+                  resultsPerPage:
+                    type: number
+                  reverse:
+                    type: boolean
+                  sortBy:
+                    type: string
+                  sort_lastonline:
+                    type: boolean
+                  userCount:
+                    type: number
+                  showInviteButton:
+                    type: boolean
+                  inviteOnly:
+                    type: boolean
+                  adminInviteOnly:
+                    type: boolean
+              - $ref: ../../../components/schemas/Pagination.yaml#/Pagination
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

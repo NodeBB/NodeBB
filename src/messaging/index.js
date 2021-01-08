@@ -5,6 +5,7 @@ const validator = require('validator');
 
 const db = require('../database');
 const user = require('../user');
+const privileges = require('../privileges');
 const plugins = require('../plugins');
 const meta = require('../meta');
 const utils = require('../utils');
@@ -53,7 +54,7 @@ Messaging.getMessages = async (params) => {
 };
 
 async function canGet(hook, callerUid, uid) {
-	const data = await plugins.fireHook(hook, {
+	const data = await plugins.hooks.fire(hook, {
 		callerUid: callerUid,
 		uid: uid,
 		canGet: parseInt(callerUid, 10) === parseInt(uid, 10),
@@ -63,7 +64,7 @@ async function canGet(hook, callerUid, uid) {
 }
 
 Messaging.parse = async (message, fromuid, uid, roomId, isNew) => {
-	const parsed = await plugins.fireHook('filter:parse.raw', message);
+	const parsed = await plugins.hooks.fire('filter:parse.raw', message);
 	let messageData = {
 		message: message,
 		parsed: parsed,
@@ -74,7 +75,7 @@ Messaging.parse = async (message, fromuid, uid, roomId, isNew) => {
 		parsedMessage: parsed,
 	};
 
-	messageData = await plugins.fireHook('filter:messaging.parse', messageData);
+	messageData = await plugins.hooks.fire('filter:messaging.parse', messageData);
 	return messageData ? messageData.parsedMessage : '';
 };
 
@@ -128,7 +129,7 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 
 	results.roomData = results.roomData.filter(Boolean);
 	const ref = { rooms: results.roomData, nextStart: stop + 1 };
-	return await plugins.fireHook('filter:messaging.getRecentChats', {
+	return await plugins.hooks.fire('filter:messaging.getRecentChats', {
 		rooms: ref.rooms,
 		nextStart: ref.nextStart,
 		uid: uid,
@@ -159,7 +160,7 @@ Messaging.getTeaser = async (uid, roomId) => {
 		teaser.content = validator.escape(String(teaser.content));
 	}
 
-	const payload = await plugins.fireHook('filter:messaging.getTeaser', { teaser: teaser });
+	const payload = await plugins.hooks.fire('filter:messaging.getTeaser', { teaser: teaser });
 	return payload.teaser;
 };
 
@@ -201,13 +202,13 @@ Messaging.canMessageUser = async (uid, toUid) => {
 		throw new Error('[[error:no-user]]');
 	}
 
-	const userData = await user.getUserFields(uid, ['banned', 'email:confirmed']);
+	const userData = await user.getUserFields(uid, ['banned']);
 	if (userData.banned) {
 		throw new Error('[[error:user-banned]]');
 	}
-
-	if (meta.config.requireEmailConfirmation && !userData['email:confirmed']) {
-		throw new Error('[[error:email-not-confirmed-chat]]');
+	const canChat = await privileges.global.can('chat', uid);
+	if (!canChat) {
+		throw new Error('[[error:no-privileges]]');
 	}
 
 	const results = await utils.promiseParallel({
@@ -221,7 +222,7 @@ Messaging.canMessageUser = async (uid, toUid) => {
 		throw new Error('[[error:chat-restricted]]');
 	}
 
-	await plugins.fireHook('static:messaging.canMessageUser', {
+	await plugins.hooks.fire('static:messaging.canMessageUser', {
 		uid: uid,
 		toUid: toUid,
 	});
@@ -237,16 +238,16 @@ Messaging.canMessageRoom = async (uid, roomId) => {
 		throw new Error('[[error:not-in-room]]');
 	}
 
-	const userData = await user.getUserFields(uid, ['banned', 'email:confirmed']);
+	const userData = await user.getUserFields(uid, ['banned']);
 	if (userData.banned) {
 		throw new Error('[[error:user-banned]]');
 	}
-
-	if (meta.config.requireEmailConfirmation && !userData['email:confirmed']) {
-		throw new Error('[[error:email-not-confirmed-chat]]');
+	const canChat = await privileges.global.can('chat', uid);
+	if (!canChat) {
+		throw new Error('[[error:no-privileges]]');
 	}
 
-	await plugins.fireHook('static:messaging.canMessageRoom', {
+	await plugins.hooks.fire('static:messaging.canMessageRoom', {
 		uid: uid,
 		roomId: roomId,
 	});

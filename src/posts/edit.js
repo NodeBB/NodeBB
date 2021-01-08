@@ -11,6 +11,7 @@ const privileges = require('../privileges');
 const plugins = require('../plugins');
 const pubsub = require('../pubsub');
 const utils = require('../utils');
+const slugify = require('../slugify');
 const translator = require('../translator');
 
 module.exports = function (Posts) {
@@ -39,7 +40,7 @@ module.exports = function (Posts) {
 			editPostData.handle = data.handle;
 		}
 
-		const result = await plugins.fireHook('filter:post.edit', {
+		const result = await plugins.hooks.fire('filter:post.edit', {
 			req: data.req,
 			post: editPostData,
 			data: data,
@@ -62,10 +63,15 @@ module.exports = function (Posts) {
 			});
 		}
 		await Posts.uploads.sync(data.pid);
-		const returnPostData = { ...postData, ...editPostData };
+
+		// Normalize data prior to constructing returnPostData (match types with getPostSummaryByPids)
+		postData.deleted = !!postData.deleted;
+
+		const returnPostData = { ...postData, ...result.post };
 		returnPostData.cid = topic.cid;
 		returnPostData.topic = topic;
 		returnPostData.editedISO = utils.toISOString(now);
+		returnPostData.changed = oldContent !== data.content;
 
 		await topics.notifyFollowers(returnPostData, data.uid, {
 			type: 'post-edit',
@@ -73,7 +79,7 @@ module.exports = function (Posts) {
 			nid: 'edit_post:' + data.pid + ':uid:' + data.uid,
 		});
 
-		plugins.fireHook('action:post.edit', { post: _.clone(returnPostData), data: data, uid: data.uid });
+		plugins.hooks.fire('action:post.edit', { post: _.clone(returnPostData), data: data, uid: data.uid });
 
 		require('./cache').del(String(postData.pid));
 		pubsub.publish('post:edit', String(postData.pid));
@@ -114,9 +120,8 @@ module.exports = function (Posts) {
 		};
 		if (title) {
 			newTopicData.title = title;
-			newTopicData.slug = tid + '/' + (utils.slugify(title) || 'topic');
+			newTopicData.slug = tid + '/' + (slugify(title) || 'topic');
 		}
-		newTopicData.thumb = data.thumb || '';
 
 		data.tags = data.tags || [];
 
@@ -128,7 +133,7 @@ module.exports = function (Posts) {
 		}
 		await topics.validateTags(data.tags, topicData.cid);
 
-		const results = await plugins.fireHook('filter:topic.edit', {
+		const results = await plugins.hooks.fire('filter:topic.edit', {
 			req: data.req,
 			topic: newTopicData,
 			data: data,
@@ -141,7 +146,7 @@ module.exports = function (Posts) {
 		newTopicData.oldTitle = topicData.title;
 		newTopicData.timestamp = topicData.timestamp;
 		const renamed = translator.escape(validator.escape(String(title))) !== topicData.title;
-		plugins.fireHook('action:topic.edit', { topic: newTopicData, uid: data.uid });
+		plugins.hooks.fire('action:topic.edit', { topic: newTopicData, uid: data.uid });
 		return {
 			tid: tid,
 			cid: newTopicData.cid,

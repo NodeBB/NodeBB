@@ -1,0 +1,104 @@
+get:
+  tags:
+    - admin
+  summary: Get system cache info
+  parameters:
+    - in: query
+      name: name
+      schema:
+        type: string
+        enum: ['post', 'object', 'group', 'local']
+      required: false
+      description: Specify cache to dump if calling `/dump`
+      example: 'post'
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  postCache:
+                    type: object
+                    properties:
+                      length:
+                        type: number
+                      max:
+                        type: number
+                        nullable: true
+                      itemCount:
+                        type: number
+                      percentFull:
+                        type: number
+                      hits:
+                        type: string
+                      misses:
+                        type: string
+                      hitRatio:
+                        type: string
+                      enabled:
+                        type: boolean
+                  groupCache:
+                    type: object
+                    properties:
+                      length:
+                        type: number
+                      max:
+                        type: number
+                      itemCount:
+                        type: number
+                      percentFull:
+                        type: number
+                      hits:
+                        type: string
+                      misses:
+                        type: string
+                      hitRatio:
+                        type: string
+                      enabled:
+                        type: boolean
+                  localCache:
+                    type: object
+                    properties:
+                      length:
+                        type: number
+                      max:
+                        type: number
+                      itemCount:
+                        type: number
+                      percentFull:
+                        type: number
+                      hits:
+                        type: string
+                      misses:
+                        type: string
+                      hitRatio:
+                        type: string
+                      enabled:
+                        type: boolean
+                  objectCache:
+                    type: object
+                    properties:
+                      length:
+                        type: number
+                      max:
+                        type: number
+                      itemCount:
+                        type: number
+                      percentFull:
+                        type: number
+                      hits:
+                        type: string
+                      misses:
+                        type: string
+                      hitRatio:
+                        type: string
+                      enabled:
+                        type: boolean
+                required:
+                  - postCache
+                  - groupCache
+                  - localCache
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

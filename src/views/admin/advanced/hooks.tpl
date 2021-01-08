@@ -1,5 +1,5 @@
 <div class="hooks-list panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-	<!-- BEGIN hooks -->
+	{{{ each hooks }}}
 	<div class="panel panel-default">
 		<div class="panel-heading" role="tab">
 		<div class="panel-title">
@@ -11,7 +11,7 @@
 		</div>
 		<div id="{hooks.index}" class="panel-collapse collapse" role="tabpanel">
 		<div class="panel-body clearfix">
-			<!-- BEGIN hooks.methods -->
+			{{{ each hooks.methods }}}
 			<div class="clearfix">
 				<strong>{hooks.methods.id}</strong>
 				Priority: {hooks.methods.priority}
@@ -23,9 +23,9 @@
 			<div class="collapse" id="{hooks.methods.index}">
 				<pre>{hooks.methods.method}</pre>
 			</div>
-			<!-- END hooks.methods -->
+			{{{ end }}}
 		</div>
 		</div>
 	</div>
-	<!-- END hooks -->
+	{{{ end }}}
 </div>

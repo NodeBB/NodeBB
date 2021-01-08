@@ -6,6 +6,7 @@
 	"max-length": "채팅 메세지의 최대 길이",
 	"max-room-size": "채팅방의 최대 인원 수",
 	"delay": "채팅 메세지 간 시간 간격(단위: 1/1000초)",
+	"notification-delay": "Notification delay for chat messages. (0 for no delay)",
 	"restrictions.seconds-edit-after": "Number of seconds a chat message will remain editable. (0 disabled)",
 	"restrictions.seconds-delete-after": "Number of seconds a chat message will remain deletable. (0 disabled)"
 }

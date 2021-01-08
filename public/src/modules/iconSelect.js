@@ -19,7 +19,7 @@ define('iconSelect', ['benchpress'], function (Benchpress) {
 			}
 		}
 
-		Benchpress.parse('partials/fontawesome', {}, function (html) {
+		Benchpress.render('partials/fontawesome', {}).then(function (html) {
 			html = $(html);
 			html.find('.fa-icons').prepend($('<i class="fa fa-nbb-none"></i>'));
 

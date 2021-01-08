@@ -14,15 +14,13 @@ var utils = require('../utils');
 let sanitizeConfig = {
 	allowedTags: sanitize.defaults.allowedTags.concat([
 		// Some safe-to-use tags to add
-		'span', 'a', 'pre', 'small',
-		'sup', 'sub', 'u', 'del',
+		'sup', 'ins', 'del', 'img', 'button',
 		'video', 'audio', 'iframe', 'embed',
-		'img', 'tfoot', 'h1', 'h2',
-		's', 'button', 'i',
+		// 'sup' still necessary until https://github.com/apostrophecms/sanitize-html/pull/422 merged
 	]),
 	allowedAttributes: {
 		...sanitize.defaults.allowedAttributes,
-		a: ['href', 'hreflang', 'media', 'rel', 'target', 'type'],
+		a: ['href', 'name', 'hreflang', 'media', 'rel', 'target', 'type'],
 		img: ['alt', 'height', 'ismap', 'src', 'usemap', 'width', 'srcset'],
 		iframe: ['height', 'name', 'src', 'width'],
 		video: ['autoplay', 'controls', 'height', 'loop', 'muted', 'poster', 'preload', 'src', 'width'],
@@ -59,13 +57,12 @@ module.exports = function (Posts) {
 		const cachedContent = cache.get(pid);
 		if (postData.pid && cachedContent !== undefined) {
 			postData.content = cachedContent;
-			cache.hits += 1;
 			return postData;
 		}
-		cache.misses += 1;
-		const data = await plugins.fireHook('filter:parse.post', { postData: postData });
+
+		const data = await plugins.hooks.fire('filter:parse.post', { postData: postData });
 		data.postData.content = translator.escape(data.postData.content);
-		if (global.env === 'production' && data.postData.pid) {
+		if (data.postData.pid) {
 			cache.set(pid, data.postData.content);
 		}
 		return data.postData;
@@ -73,7 +70,7 @@ module.exports = function (Posts) {
 
 	Posts.parseSignature = async function (userData, uid) {
 		userData.signature = sanitizeSignature(userData.signature || '');
-		return await plugins.fireHook('filter:parse.signature', { userData: userData, uid: uid });
+		return await plugins.hooks.fire('filter:parse.signature', { userData: userData, uid: uid });
 	};
 
 	Posts.relativeToAbsolute = function (content, regex) {
@@ -124,7 +121,35 @@ module.exports = function (Posts) {
 		});
 
 		// Some plugins might need to adjust or whitelist their own tags...
-		sanitizeConfig = await plugins.fireHook('filter:sanitize.config', sanitizeConfig);
+		sanitizeConfig = await plugins.hooks.fire('filter:sanitize.config', sanitizeConfig);
+	};
+
+	Posts.registerHooks = () => {
+		plugins.hooks.register('core', {
+			hook: 'filter:parse.post',
+			method: async (data) => {
+				data.postData.content = Posts.sanitize(data.postData.content);
+				return data;
+			},
+		});
+
+		plugins.hooks.register('core', {
+			hook: 'filter:parse.raw',
+			method: async content => Posts.sanitize(content),
+		});
+
+		plugins.hooks.register('core', {
+			hook: 'filter:parse.aboutme',
+			method: async content => Posts.sanitize(content),
+		});
+
+		plugins.hooks.register('core', {
+			hook: 'filter:parse.signature',
+			method: async (data) => {
+				data.userData.signature = Posts.sanitize(data.userData.signature);
+				return data;
+			},
+		});
 	};
 
 	function sanitizeSignature(signature) {

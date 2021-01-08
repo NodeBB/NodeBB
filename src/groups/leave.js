@@ -53,7 +53,7 @@ module.exports = function (Groups) {
 
 		await clearGroupTitleIfSet(groupsToLeave, uid);
 
-		plugins.fireHook('action:group.leave', {
+		plugins.hooks.fire('action:group.leave', {
 			groupNames: groupsToLeave,
 			uid: uid,
 		});

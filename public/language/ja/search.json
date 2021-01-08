@@ -44,5 +44,6 @@
     "search-preferences-saved": "検索設定は保存されました",
     "search-preferences-cleared": "検索設定をクリア",
     "show-results-as": "結果を表示",
-    "see-more-results": "See more results (%1)"
+    "see-more-results": "See more results (%1)",
+    "search-in-category": "Search in \"%1\""
 }

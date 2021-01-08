@@ -44,5 +44,6 @@
     "search-preferences-saved": "Preferencias de búsqueda gardadas",
     "search-preferences-cleared": "Preferencias de búsqueda desbotadas",
     "show-results-as": "Amosar resultados como",
-    "see-more-results": "See more results (%1)"
+    "see-more-results": "See more results (%1)",
+    "search-in-category": "Search in \"%1\""
 }

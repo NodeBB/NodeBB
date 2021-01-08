@@ -38,7 +38,7 @@ Config.setMultiple = async function (socket, data) {
 				key: field,
 				value: data[field],
 			};
-			plugins.fireHook('action:config.set', setting);
+			plugins.hooks.fire('action:config.set', setting);
 			logger.monitorConfig({ io: index.server }, setting);
 		}
 	}

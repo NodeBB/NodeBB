@@ -35,6 +35,8 @@
     "details.member_count": "Nombre de membres",
     "details.creation_date": "Date de création",
     "details.description": "Description",
+    "details.member-post-cids": "Catégories ou seront affichés les articles",
+    "details.member-post-cids-help": "<strong>Note</strong>: si aucune catégorie n'est sélectionnée, toutes les catégories sont incluses. Utilisez <code>ctrl</code> et <code>shift</code> pour sélectionner plusieurs options.",
     "details.badge_preview": "Aperçu du badge",
     "details.change_icon": "Modifier l'icône",
     "details.change_label_colour": "Changer la couleur de l'étiquette",

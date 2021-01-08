@@ -4,7 +4,7 @@ const _ = require('lodash');
 
 const db = require('../database');
 const user = require('../user');
-const utils = require('../utils');
+const slugify = require('../slugify');
 const plugins = require('../plugins');
 const notifications = require('../notifications');
 
@@ -18,7 +18,7 @@ module.exports = function (Groups) {
 				bodyShort: '[[groups:request.notification_title, ' + username + ']]',
 				bodyLong: '[[groups:request.notification_text, ' + username + ', ' + groupName + ']]',
 				nid: 'group:' + groupName + ':uid:' + uid + ':request',
-				path: '/groups/' + utils.slugify(groupName),
+				path: '/groups/' + slugify(groupName),
 				from: uid,
 			}),
 			Groups.getOwners(groupName),
@@ -35,7 +35,7 @@ module.exports = function (Groups) {
 			type: 'group-invite',
 			bodyShort: '[[groups:membership.accept.notification_title, ' + groupName + ']]',
 			nid: 'group:' + groupName + ':uid:' + uid + ':invite-accepted',
-			path: '/groups/' + utils.slugify(groupName),
+			path: '/groups/' + slugify(groupName),
 		});
 		await notifications.push(notification, [uid]);
 	};
@@ -51,14 +51,14 @@ module.exports = function (Groups) {
 
 	Groups.invite = async function (groupName, uids) {
 		uids = Array.isArray(uids) ? uids : [uids];
-		await inviteOrRequestMembership(groupName, uids, 'invite');
+		uids = await inviteOrRequestMembership(groupName, uids, 'invite');
 
 		const notificationData = await Promise.all(uids.map(uid => notifications.create({
 			type: 'group-invite',
 			bodyShort: '[[groups:invited.notification_title, ' + groupName + ']]',
 			bodyLong: '',
 			nid: 'group:' + groupName + ':uid:' + uid + ':invite',
-			path: '/groups/' + utils.slugify(groupName),
+			path: '/groups/' + slugify(groupName),
 		})));
 
 		await Promise.all(uids.map((uid, index) => notifications.push(notificationData[index], uid)));
@@ -83,10 +83,11 @@ module.exports = function (Groups) {
 		const set = type === 'invite' ? 'group:' + groupName + ':invited' : 'group:' + groupName + ':pending';
 		await db.setAdd(set, uids);
 		const hookName = type === 'invite' ? 'action:group.inviteMember' : 'action:group.requestMembership';
-		plugins.fireHook(hookName, {
+		plugins.hooks.fire(hookName, {
 			groupName: groupName,
 			uids: uids,
 		});
+		return uids;
 	}
 
 	Groups.isInvited = async function (uids, groupName) {

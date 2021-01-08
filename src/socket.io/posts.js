@@ -10,9 +10,9 @@ const categories = require('../categories');
 const user = require('../user');
 const socketHelpers = require('./helpers');
 const utils = require('../utils');
+const api = require('../api');
 
-const apiController = require('../controllers/api');
-
+const sockets = require('.');
 const SocketPosts = module.exports;
 
 require('./posts/edit')(SocketPosts);
@@ -23,6 +23,8 @@ require('./posts/tools')(SocketPosts);
 require('./posts/diffs')(SocketPosts);
 
 SocketPosts.reply = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'POST /api/v3/topics/:tid');
+
 	if (!data || !data.tid || (meta.config.minimumPostLength !== 0 && !data.content)) {
 		throw new Error('[[error:invalid-data]]');
 	}
@@ -64,11 +66,11 @@ SocketPosts.getRawPost = async function (socket, pid) {
 		throw new Error('[[error:no-post]]');
 	}
 	postData.pid = pid;
-	const result = await plugins.fireHook('filter:post.getRawPost', { uid: socket.uid, postData: postData });
+	const result = await plugins.hooks.fire('filter:post.getRawPost', { uid: socket.uid, postData: postData });
 	return result.postData.content;
 };
 
-SocketPosts.getTimestampByIndex = async function (socket, data) {
+SocketPosts.getPostSummaryByIndex = async function (socket, data) {
 	if (data.index < 0) {
 		data.index = 0;
 	}
@@ -83,15 +85,19 @@ SocketPosts.getTimestampByIndex = async function (socket, data) {
 		return 0;
 	}
 
-	const canRead = await privileges.posts.can('topics:read', pid, socket.uid);
-	if (!canRead) {
+	const topicPrivileges = await privileges.topics.get(data.tid, socket.uid);
+	if (!topicPrivileges['topics:read']) {
 		throw new Error('[[error:no-privileges]]');
 	}
-	return await posts.getPostField(pid, 'timestamp');
+
+	const postsData = await posts.getPostSummaryByPids([pid], socket.uid, { stripTags: false });
+	posts.modifyPostByPrivilege(postsData[0], topicPrivileges);
+	return postsData[0];
 };
 
 SocketPosts.getPost = async function (socket, pid) {
-	return await apiController.getPostData(pid, socket.uid);
+	sockets.warnDeprecated(socket, 'GET /api/v3/posts/:pid');
+	return await api.posts.get(socket, { pid });
 };
 
 SocketPosts.loadMoreBookmarks = async function (socket, data) {
@@ -179,7 +185,7 @@ SocketPosts.editQueuedContent = async function (socket, data) {
 	}
 	await posts.editQueuedContent(socket.uid, data);
 	if (data.content) {
-		return await plugins.fireHook('filter:parse.post', { postData: data });
+		return await plugins.hooks.fire('filter:parse.post', { postData: data });
 	}
 	return { postData: data };
 };

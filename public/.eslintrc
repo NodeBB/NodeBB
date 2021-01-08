@@ -17,7 +17,7 @@
 		"jquery": true,
 		"amd": true,
 		"browser": true,
-		"es6": false
+		"es6": true
 	},
 	"rules": {
 		"block-scoped-var": "off",
@@ -31,13 +31,10 @@
 		"prefer-template": "off"
 	},
 	"parserOptions": {
-		"ecmaVersion": 5,
+		"ecmaVersion": 2018,
 		"ecmaFeatures": {
-			"arrowFunctions": false,
 			"classes": false,
 			"defaultParams": false,
-			"destructuring": false,
-			"experimentalObjectRestSpread": false,
 			"blockBindings": false,
 			"forOf": false,
 			"generators": false,
@@ -50,9 +47,7 @@
 			"objectLiteralShorthandProperties": false,
 			"impliedStrict": false,
 			"restParams": false,
-			"spread": false,
-			"superInFunctions": false,
-			"templateStrings": false
+			"superInFunctions": false
 		}
 	}
 }

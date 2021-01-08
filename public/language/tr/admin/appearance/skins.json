@@ -1,9 +1,9 @@
 {
-	"loading": "Deriler yükleniyor...",
+	"loading": "Görünümler yükleniyor...",
 	"homepage": "Anasayfa",
-	"select-skin": "Deri Seç",
-	"current-skin": "Mevcut Deri",
-	"skin-updated": "Deri Güncellendi",
-	"applied-success": "%1 isimli deri başarıyla uygulandı",
-	"revert-success": "Deri taban renkleri geri döndürüldü"
+	"select-skin": "Görünüm Seç",
+	"current-skin": "Mevcut Görünüm",
+	"skin-updated": "Görünüm Güncellendi",
+	"applied-success": "%1 isimli görünüm başarıyla uygulandı",
+	"revert-success": "Görünüm temel renkleri geri döndürüldü"
 }

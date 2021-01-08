@@ -1,0 +1,66 @@
+put:
+  tags:
+    - groups
+  summary: join a group
+  description: This operation joins an existing group, or causes another user to join a group. If the group is private and you are not an administrator, this method will cause that user to request membership, instead. For user _invitations_, you'll want to call `PUT /groups/{slug}/invites/{uid}`.
+  parameters:
+    - in: path
+      name: slug
+      schema:
+        type: string
+      required: true
+      description: slug of the group you would like to join
+      example: test-group
+    - in: path
+      name: uid
+      schema:
+        type: number
+      required: true
+      description: uid of the user to join the group
+      example: 1
+  responses:
+    '200':
+      description: group successfully joined, or membership requested
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}
+delete:
+  tags:
+    - groups
+  summary: leave a group
+  description: This operation leaves a group.
+  parameters:
+    - in: path
+      name: slug
+      schema:
+        type: string
+      required: true
+      description: slug of the group you would like to leave
+      example: test-group
+    - in: path
+      name: uid
+      schema:
+        type: number
+      required: true
+      description: uid of the user to leave the group
+      example: 1
+  responses:
+    '200':
+      description: group successfully left
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}

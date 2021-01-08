@@ -4,7 +4,7 @@
 	"address-help": "E-pasta adrese, ko saņēmējs redzēs laukos \"No:\" un \"Atbildēt:\".",
 	"from": "Sūtītāja vārds vai nosaukums",
 	"from-help": "Vārds vai nosaukums, ko saņēmējs redzēs kā sūtītāju.",
-	
+
 	"smtp-transport": "SMTP transports",
 	"smtp-transport.enabled": "Izmantot atsevišķu e-pasta serveri, lai nosūtītu e-pastus",
 	"smtp-transport-help": "Izvēlies no labi zināmu pakalpojumu saraksta vai ievadi pielāgotu pakalpojumu.",
@@ -35,5 +35,7 @@
 	"subscriptions": "Email Digests",
 	"subscriptions.disable": "Disable email digests",
 	"subscriptions.hour": "Kopsavilkumu nosūtīšanas stunda",
-	"subscriptions.hour-help": "Ievadīt skaitli, kas norāda stundu, kurā nosūtītu e-pasta rakstu apkopojumu (piemēram, <code>0</code> nozīmē pusnakts, <code>17</code> nozīmē plkst.1700). Paturēt prātā, ka šī ir stunda servera laikā, un tā var neatbilst Tavam pulkstenim. Aptuvens servera laiks ir: <span id=\"serverTime\"></span><br />Nākamais ikdienas apkopojums tiks nosūtīts <span id=\"nextDigestTime\"></span>"
+	"subscriptions.hour-help": "Ievadīt skaitli, kas norāda stundu, kurā nosūtītu e-pasta rakstu apkopojumu (piemēram, <code>0</code> nozīmē pusnakts, <code>17</code> nozīmē plkst.1700). Paturēt prātā, ka šī ir stunda servera laikā, un tā var neatbilst Tavam pulkstenim. Aptuvens servera laiks ir: <span id=\"serverTime\"></span><br />Nākamais ikdienas apkopojums tiks nosūtīts <span id=\"nextDigestTime\"></span>",
+	"notifications.settings": "Email notification settings",
+	"notifications.remove-images": "Remove images from email notifications"
 }

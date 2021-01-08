@@ -2,11 +2,13 @@
 
 const fs = require('fs');
 const path = require('path');
+const utils = require('./utils');
+const paths = require('./constants').paths;
 
 const Languages = module.exports;
 const languagesPath = path.join(__dirname, '../build/public/language');
 
-const files = fs.readdirSync(path.join(__dirname, '../public/vendor/jquery/timeago/locales'));
+const files = fs.readdirSync(path.join(paths.nodeModules, '/timeago/locales'));
 Languages.timeagoCodes = files.filter(f => f.startsWith('jquery.timeago')).map(f => f.split('.')[2]);
 
 Languages.get = async function (language, namespace) {
@@ -60,6 +62,15 @@ Languages.list = async function () {
 
 	listCache = languages;
 	return languages;
+};
+
+Languages.userTimeagoCode = async function (userLang) {
+	const languageCodes = await Languages.listCodes();
+	const timeagoCode = utils.userLangToTimeagoCode(userLang);
+	if (languageCodes.includes(userLang) && Languages.timeagoCodes.includes(timeagoCode)) {
+		return timeagoCode;
+	}
+	return '';
 };
 
 require('./promisify')(Languages);

@@ -15,16 +15,40 @@ const socketHelpers = require('../socket.io/helpers');
 
 module.exports = function (Posts) {
 	Posts.shouldQueue = async function (uid, data) {
-		const userData = await user.getUserFields(uid, ['uid', 'reputation', 'postcount']);
-		const isMemberOfExempt = await groups.isMemberOfAny(userData.uid, meta.config.groupsExemptFromPostQueue);
-		const shouldQueue = meta.config.postQueue && !isMemberOfExempt && (!userData.uid || userData.reputation < meta.config.postQueueReputationThreshold || userData.postcount <= 0);
-		const result = await plugins.fireHook('filter:post.shouldQueue', {
+		const [userData, isMemberOfExempt, categoryQueueEnabled] = await Promise.all([
+			user.getUserFields(uid, ['uid', 'reputation', 'postcount']),
+			groups.isMemberOfAny(uid, meta.config.groupsExemptFromPostQueue),
+			isCategoryQueueEnabled(data),
+		]);
+
+		const shouldQueue = meta.config.postQueue && categoryQueueEnabled &&
+			!isMemberOfExempt &&
+			(!userData.uid || userData.reputation < meta.config.postQueueReputationThreshold || userData.postcount <= 0);
+		const result = await plugins.hooks.fire('filter:post.shouldQueue', {
 			shouldQueue: !!shouldQueue,
 			uid: uid,
 			data: data,
 		});
 		return result.shouldQueue;
 	};
+
+	async function isCategoryQueueEnabled(data) {
+		const type = getType(data);
+		const cid = await getCid(type, data);
+		if (!cid) {
+			throw new Error('[[error:invalid-cid]]');
+		}
+		return await categories.getCategoryField(cid, 'postQueue');
+	}
+
+	function getType(data) {
+		if (data.hasOwnProperty('tid')) {
+			return 'reply';
+		} else if (data.hasOwnProperty('cid')) {
+			return 'topic';
+		}
+		throw new Error('[[error:invalid-type]]');
+	}
 
 	async function removeQueueNotification(id) {
 		await notifications.rescind('post-queue-' + id);
@@ -46,7 +70,7 @@ module.exports = function (Posts) {
 	}
 
 	Posts.addToQueue = async function (data) {
-		const type = data.title ? 'topic' : 'reply';
+		const type = getType(data);
 		const now = Date.now();
 		const id = type + '-' + now;
 		await canPost(type, data);
@@ -57,7 +81,7 @@ module.exports = function (Posts) {
 			type: type,
 			data: data,
 		};
-		payload = await plugins.fireHook('filter:post-queue.save', payload);
+		payload = await plugins.hooks.fire('filter:post-queue.save', payload);
 		payload.data = JSON.stringify(data);
 
 		await db.sortedSetAdd('post:queue', now, id);

@@ -6,6 +6,7 @@ const validator = require('validator');
 
 const db = require('../database');
 const utils = require('../utils');
+const slugify = require('../slugify');
 const plugins = require('../plugins');
 const analytics = require('../analytics');
 const user = require('../user');
@@ -19,7 +20,6 @@ module.exports = function (Topics) {
 	Topics.create = async function (data) {
 		// This is an internal method, consider using Topics.post instead
 		const timestamp = data.timestamp || Date.now();
-		await Topics.resizeAndUploadThumb(data);
 
 		const tid = await db.incrObjectField('global', 'nextTid');
 
@@ -29,16 +29,13 @@ module.exports = function (Topics) {
 			cid: data.cid,
 			mainPid: 0,
 			title: data.title,
-			slug: tid + '/' + (utils.slugify(data.title) || 'topic'),
+			slug: tid + '/' + (slugify(data.title) || 'topic'),
 			timestamp: timestamp,
 			lastposttime: 0,
 			postcount: 0,
 			viewcount: 0,
 		};
-		if (data.thumb) {
-			topicData.thumb = data.thumb;
-		}
-		const result = await plugins.fireHook('filter:topic.create', { topic: topicData, data: data });
+		const result = await plugins.hooks.fire('filter:topic.create', { topic: topicData, data: data });
 		topicData = result.topic;
 		await db.setObject('topic:' + topicData.tid, topicData);
 
@@ -60,7 +57,7 @@ module.exports = function (Topics) {
 			Topics.createTags(data.tags, topicData.tid, timestamp),
 		]);
 
-		plugins.fireHook('action:topic.save', { topic: _.clone(topicData), data: data });
+		plugins.hooks.fire('action:topic.save', { topic: _.clone(topicData), data: data });
 		return topicData.tid;
 	};
 
@@ -93,7 +90,7 @@ module.exports = function (Topics) {
 		if (!data.fromQueue) {
 			await user.isReadyToPost(data.uid, data.cid);
 		}
-		const filteredData = await plugins.fireHook('filter:topic.post', data);
+		const filteredData = await plugins.hooks.fire('filter:topic.post', data);
 		data = filteredData;
 		const tid = await Topics.create(data);
 
@@ -117,12 +114,13 @@ module.exports = function (Topics) {
 			await Topics.follow(postData.tid, uid);
 		}
 		const topicData = topics[0];
-		topicData.unreplied = 1;
+		topicData.unreplied = true;
 		topicData.mainPost = postData;
+		topicData.index = 0;
 		postData.index = 0;
 
 		analytics.increment(['topics', 'topics:byCid:' + topicData.cid]);
-		plugins.fireHook('action:topic.post', { topic: topicData, post: postData, data: data });
+		plugins.hooks.fire('action:topic.post', { topic: topicData, post: postData, data: data });
 
 		if (parseInt(uid, 10)) {
 			user.notifications.sendTopicNotificationToFollowers(uid, topicData, postData);
@@ -166,7 +164,7 @@ module.exports = function (Topics) {
 		if (!data.fromQueue) {
 			await user.isReadyToPost(uid, data.cid);
 		}
-		await plugins.fireHook('filter:topic.reply', data);
+		await plugins.hooks.fire('filter:topic.reply', data);
 		if (data.content) {
 			data.content = utils.rtrim(data.content);
 		}
@@ -185,15 +183,17 @@ module.exports = function (Topics) {
 			user.setUserField(uid, 'lastonline', Date.now());
 		}
 
-		Topics.notifyFollowers(postData, uid, {
-			type: 'new-reply',
-			bodyShort: translator.compile('notifications:user_posted_to', postData.user.username, postData.topic.title),
-			nid: 'new_post:tid:' + postData.topic.tid + ':pid:' + postData.pid + ':uid:' + uid,
-			mergeId: 'notifications:user_posted_to|' + postData.topic.tid,
-		});
+		if (parseInt(uid, 10) || meta.config.allowGuestReplyNotifications) {
+			Topics.notifyFollowers(postData, uid, {
+				type: 'new-reply',
+				bodyShort: translator.compile('notifications:user_posted_to', postData.user.username, postData.topic.title),
+				nid: 'new_post:tid:' + postData.topic.tid + ':pid:' + postData.pid + ':uid:' + uid,
+				mergeId: 'notifications:user_posted_to|' + postData.topic.tid,
+			});
+		}
 
 		analytics.increment(['posts', 'posts:byCid:' + data.cid]);
-		plugins.fireHook('action:topic.reply', { post: _.clone(postData), data: data });
+		plugins.hooks.fire('action:topic.reply', { post: _.clone(postData), data: data });
 
 		return postData;
 	};
@@ -261,7 +261,7 @@ module.exports = function (Topics) {
 			if (data.handle.length > meta.config.maximumUsernameLength) {
 				throw new Error('[[error:guest-handle-invalid]]');
 			}
-			const exists = await user.existsBySlug(utils.slugify(data.handle));
+			const exists = await user.existsBySlug(slugify(data.handle));
 			if (exists) {
 				throw new Error('[[error:username-taken]]');
 			}

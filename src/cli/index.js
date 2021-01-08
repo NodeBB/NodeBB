@@ -1,16 +1,18 @@
+/* eslint-disable import/order */
+
 'use strict';
 
-var fs = require('fs');
-var path = require('path');
+const fs = require('fs');
+const path = require('path');
 
 require('../../require-main');
 
-var packageInstall = require('./package-install');
-var dirname = require('./paths').baseDir;
+const packageInstall = require('./package-install');
+const { paths } = require('../constants');
 
 // check to make sure dependencies are installed
 try {
-	fs.accessSync(path.join(dirname, 'package.json'), fs.constants.R_OK);
+	fs.accessSync(paths.currentPackage, fs.constants.R_OK);
 } catch (e) {
 	if (e.code === 'ENOENT') {
 		console.warn('package.json not found.');
@@ -20,7 +22,7 @@ try {
 		packageInstall.preserveExtraneousPlugins();
 
 		try {
-			fs.accessSync(path.join(dirname, 'node_modules/colors/package.json'), fs.constants.R_OK);
+			fs.accessSync(path.join(paths.nodeModules, 'colors/package.json'), fs.constants.R_OK);
 
 			require('colors');
 			console.log('OK'.green);
@@ -33,15 +35,15 @@ try {
 }
 
 try {
-	fs.accessSync(path.join(dirname, 'node_modules/semver/package.json'), fs.constants.R_OK);
+	fs.accessSync(path.join(paths.nodeModules, 'semver/package.json'), fs.constants.R_OK);
 
-	var semver = require('semver');
-	var defaultPackage = require('../../install/package.json');
+	const semver = require('semver');
+	const defaultPackage = require('../../install/package.json');
 
-	var checkVersion = function (packageName) {
-		var version = JSON.parse(fs.readFileSync(path.join(dirname, 'node_modules', packageName, 'package.json'), 'utf8')).version;
+	const checkVersion = function (packageName) {
+		const version = JSON.parse(fs.readFileSync(path.join(paths.nodeModules, packageName, 'package.json'), 'utf8')).version;
 		if (!semver.satisfies(version, defaultPackage.dependencies[packageName])) {
-			var e = new TypeError('Incorrect dependency version: ' + packageName);
+			const e = new TypeError('Incorrect dependency version: ' + packageName);
 			e.code = 'DEP_WRONG_VERSION';
 			throw e;
 		}
@@ -67,14 +69,13 @@ try {
 }
 
 require('colors');
-// eslint-disable-next-line
-var nconf = require('nconf');
-// eslint-disable-next-line
-var program = require('commander');
+const nconf = require('nconf');
+const { program } = require('commander');
+const yargs = require('yargs');
 
-var pkg = require('../../package.json');
-var file = require('../file');
-var prestart = require('../prestart');
+const pkg = require('../../package.json');
+const file = require('../file');
+const prestart = require('../prestart');
 
 program
 	.name('./nodebb')
@@ -86,19 +87,23 @@ program
 	.option('-d, --dev', 'Development mode, including verbose logging', false)
 	.option('-l, --log', 'Log subprocess output to console', false);
 
-nconf.argv().env({
+// provide a yargs object ourselves
+// otherwise yargs will consume `--help` or `help`
+// and `nconf` will exit with useless usage info
+const opts = yargs(process.argv.slice(2)).help(false).exitProcess(false);
+nconf.argv(opts).env({
 	separator: '__',
 });
 
-var env = program.dev ? 'development' : (process.env.NODE_ENV || 'production');
+const env = program.dev ? 'development' : (process.env.NODE_ENV || 'production');
 process.env.NODE_ENV = env;
 global.env = env;
 
 prestart.setupWinston();
 
 // Alternate configuration file support
-var	configFile = path.resolve(dirname, nconf.get('config') || 'config.json');
-var configExists = file.existsSync(configFile) || (nconf.get('url') && nconf.get('secret') && nconf.get('database'));
+const	configFile = path.resolve(paths.baseDir, nconf.get('config') || 'config.json');
+const configExists = file.existsSync(configFile) || (nconf.get('url') && nconf.get('secret') && nconf.get('database'));
 
 prestart.loadConfig(configFile);
 prestart.versionCheck();
@@ -195,7 +200,7 @@ program
 		require('./manage').build(targets.length ? targets : true, options);
 	})
 	.on('--help', function () {
-		require('./manage').buildTargets();
+		require('../meta/aliases').buildTargets();
 	});
 program
 	.command('activate [plugin]')
@@ -223,7 +228,7 @@ program
 	});
 
 // reset
-var resetCommand = program.command('reset');
+const resetCommand = program.command('reset');
 
 resetCommand
 	.description('Reset plugins, themes, settings, etc')
@@ -233,7 +238,7 @@ resetCommand
 	.option('-s, --settings', 'Reset settings to their default values')
 	.option('-a, --all', 'All of the above')
 	.action(function (options) {
-		var valid = ['theme', 'plugin', 'widgets', 'settings', 'all'].some(function (x) {
+		const valid = ['theme', 'plugin', 'widgets', 'settings', 'all'].some(function (x) {
 			return options[x];
 		});
 		if (!valid) {
@@ -295,10 +300,11 @@ program
 			return program.help();
 		}
 
-		var command = program.commands.find(function (command) { return command._name === name; });
+		const command = program.commands.find(function (command) { return command._name === name; });
 		if (command) {
 			command.help();
 		} else {
+			console.log(`error: unknown command '${command}'.`);
 			program.help();
 		}
 	});
@@ -311,4 +317,4 @@ if (process.argv.length === 2) {
 
 program.executables = false;
 
-program.parse(process.argv);
+program.parse();

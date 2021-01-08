@@ -4,6 +4,7 @@
 var assert = require('assert');
 var JSDOM = require('jsdom').JSDOM;
 var utils = require('../public/src/utils.js');
+var slugify = require('../src/slugify');
 const db = require('./mocks/databasemock');
 
 describe('Utility Methods', function () {
@@ -11,10 +12,48 @@ describe('Utility Methods', function () {
 	// create some jsdom magic to allow jQuery to work
 	var dom = new JSDOM('<html><body></body></html>');
 	var window = dom.window;
-	global.jQuery = require('jquery')(window);
+	global.window = window;
+	global.jQuery = require('jquery');
 	global.$ = global.jQuery;
 	var $ = global.$;
-	global.window = window;
+	require('jquery-deserialize');
+	require('jquery-serializeobject');
+
+	it('should serialize/deserialize form data properly', function () {
+		const formSerialize = $(`
+			<form id="form-serialize">
+				<input name="a" value="1">
+				<input name="a" value="2">
+				<input name="bar" value="test">
+				<input name="check1" type="checkbox" checked>
+				<input name="check2" type="checkbox">
+			</form>
+		`);
+		const sampleData = {
+			a: ['1', '2'],
+			bar: 'test',
+			check1: 'on',
+		};
+		const data = formSerialize.serializeObject();
+		assert.deepStrictEqual(data, sampleData);
+
+		const formDeserialize = $(`
+			<form>
+				<input id="input1" name="a"/>
+				<input id="input2" name="a"/>
+				<input id="input3" name="bar"/>
+				<input id="input4" name="check1" type="checkbox">
+				<input id="input5" name="check2" type="checkbox">
+			</form>
+		`);
+
+		formDeserialize.deserialize(sampleData);
+		assert.strictEqual(formDeserialize.find('#input1').val(), sampleData.a[0]);
+		assert.strictEqual(formDeserialize.find('#input2').val(), sampleData.a[1]);
+		assert.strictEqual(formDeserialize.find('#input3').val(), sampleData.bar);
+		assert.strictEqual(formDeserialize.find('#input4').prop('checked'), true);
+		assert.strictEqual(formDeserialize.find('#input5').prop('checked'), false);
+	});
 
 	// https://github.com/jprichardson/string.js/blob/master/test/string.test.js
 	it('should decode HTML entities', function (done) {
@@ -41,14 +80,12 @@ describe('Utility Methods', function () {
 	});
 
 	it('should preserve case if requested', function (done) {
-		var slug = utils.slugify('UPPER CASE', true);
-		assert.equal(slug, 'UPPER-CASE');
+		assert.strictEqual(slugify('UPPER CASE', true), 'UPPER-CASE');
 		done();
 	});
 
 	it('should work if a number is passed in', function (done) {
-		var slug = utils.slugify(12345);
-		assert.strictEqual(slug, '12345');
+		assert.strictEqual(slugify(12345), '12345');
 		done();
 	});
 

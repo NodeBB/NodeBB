@@ -9,6 +9,8 @@ const meta = require('../meta');
 const plugins = require('../plugins');
 const utils = require('../utils');
 
+const relative_path = nconf.get('relative_path');
+
 const intFields = [
 	'uid', 'postcount', 'topiccount', 'reputation', 'profileviews',
 	'banned', 'banned:expire', 'email:confirmed', 'joindate', 'lastonline',
@@ -35,12 +37,14 @@ module.exports = function (User) {
 	User.guestData = {
 		uid: 0,
 		username: '[[global:guest]]',
+		displayname: '[[global:guest]]',
 		userslug: '',
 		fullname: '[[global:guest]]',
 		email: '',
 		'icon:text': '?',
 		'icon:bgColor': '#aaa',
 		groupTitle: '',
+		groupTitleArray: [],
 		status: 'offline',
 		reputation: 0,
 		'email:confirmed': 0,
@@ -58,7 +62,7 @@ module.exports = function (User) {
 
 		const uniqueUids = _.uniq(uids).filter(uid => uid > 0);
 
-		const results = await plugins.fireHook('filter:user.whitelistFields', { uids: uids, whitelist: fieldWhitelist.slice() });
+		const results = await plugins.hooks.fire('filter:user.whitelistFields', { uids: uids, whitelist: fieldWhitelist.slice() });
 		if (!fields.length) {
 			fields = results.whitelist;
 		} else {
@@ -66,14 +70,19 @@ module.exports = function (User) {
 			fields = fields.filter(value => value !== 'password');
 		}
 
-		let users = await db.getObjectsFields(uniqueUids.map(uid => 'user:' + uid), fields);
-		const result = await plugins.fireHook('filter:user.getFields', {
+		const users = await db.getObjectsFields(uniqueUids.map(uid => 'user:' + uid), fields);
+		const result = await plugins.hooks.fire('filter:user.getFields', {
 			uids: uniqueUids,
 			users: users,
 			fields: fields,
 		});
-		users = uidsToUsers(uids, uniqueUids, result.users);
-		return await modifyUserData(users, fields, fieldsToRemove);
+		result.users.forEach((user, index) => {
+			if (uniqueUids[index] > 0 && !user.uid) {
+				user.oldUid = uniqueUids[index];
+			}
+		});
+		await modifyUserData(result.users, fields, fieldsToRemove);
+		return uidsToUsers(uids, uniqueUids, result.users);
 	};
 
 	function ensureRequiredFields(fields, fieldsToRemove) {
@@ -99,17 +108,22 @@ module.exports = function (User) {
 		if (fields.includes('banned') && !fields.includes('banned:expire')) {
 			addField('banned:expire');
 		}
+
+		if (fields.includes('username') && !fields.includes('fullname')) {
+			addField('fullname');
+		}
 	}
 
 	function uidsToUsers(uids, uniqueUids, usersData) {
 		const uidToUser = _.zipObject(uniqueUids, usersData);
 		const users = uids.map(function (uid) {
-			const returnPayload = uidToUser[uid] || _.clone(User.guestData);
-			if (uid > 0 && !returnPayload.uid) {
-				returnPayload.oldUid = parseInt(uid, 10);
+			const user = uidToUser[uid] || { ...User.guestData };
+			if (!parseInt(user.uid, 10)) {
+				user.username = (user.hasOwnProperty('oldUid') && parseInt(user.oldUid, 10)) ? '[[global:former_user]]' : '[[global:guest]]';
+				user.displayname = user.username;
 			}
 
-			return returnPayload;
+			return user;
 		});
 		return users;
 	}
@@ -134,14 +148,24 @@ module.exports = function (User) {
 	};
 
 	async function modifyUserData(users, requestedFields, fieldsToRemove) {
-		users = await Promise.all(users.map(async function (user) {
+		let uidToSettings = {};
+		if (meta.config.showFullnameAsDisplayName) {
+			const uids = users.map(user => user.uid);
+			uidToSettings = _.zipObject(uids, await db.getObjectsFields(
+				uids.map(uid => 'user:' + uid + ':settings'),
+				['showfullname']
+			));
+		}
+
+		await Promise.all(users.map(async function (user) {
 			if (!user) {
-				return user;
+				return;
 			}
 
 			db.parseIntFields(user, intFields, requestedFields);
 
 			if (user.hasOwnProperty('username')) {
+				parseDisplayName(user, uidToSettings);
 				user.username = validator.escape(user.username ? user.username.toString() : '');
 			}
 
@@ -150,13 +174,10 @@ module.exports = function (User) {
 			}
 
 			if (!parseInt(user.uid, 10)) {
-				user.uid = 0;
-				user.username = (user.hasOwnProperty('oldUid') && parseInt(user.oldUid, 10)) ? '[[global:former_user]]' : '[[global:guest]]';
-				user.userslug = '';
+				for (const [key, value] of Object.entries(User.guestData)) {
+					user[key] = value;
+				}
 				user.picture = User.getDefaultAvatar();
-				user['icon:text'] = '?';
-				user['icon:bgColor'] = '#aaa';
-				user.groupTitle = '';
 			}
 
 			if (user.hasOwnProperty('groupTitle')) {
@@ -164,10 +185,10 @@ module.exports = function (User) {
 			}
 
 			if (user.picture && user.picture === user.uploadedpicture) {
-				user.uploadedpicture = user.picture.startsWith('http') ? user.picture : nconf.get('relative_path') + user.picture;
+				user.uploadedpicture = user.picture.startsWith('http') ? user.picture : relative_path + user.picture;
 				user.picture = user.uploadedpicture;
 			} else if (user.uploadedpicture) {
-				user.uploadedpicture = user.uploadedpicture.startsWith('http') ? user.uploadedpicture : nconf.get('relative_path') + user.uploadedpicture;
+				user.uploadedpicture = user.uploadedpicture.startsWith('http') ? user.uploadedpicture : relative_path + user.uploadedpicture;
 			}
 			if (meta.config.defaultAvatar && !user.picture) {
 				user.picture = User.getDefaultAvatar();
@@ -207,10 +228,26 @@ module.exports = function (User) {
 					user.banned = false;
 				}
 			}
-			return user;
 		}));
 
-		return await plugins.fireHook('filter:users.get', users);
+		return await plugins.hooks.fire('filter:users.get', users);
+	}
+
+	function parseDisplayName(user, uidToSettings) {
+		let showfullname = parseInt(meta.config.showfullname, 10) === 1;
+		if (uidToSettings[user.uid]) {
+			if (parseInt(uidToSettings[user.uid].showfullname, 10) === 0) {
+				showfullname = false;
+			} else if (parseInt(uidToSettings[user.uid].showfullname, 10) === 1) {
+				showfullname = true;
+			}
+		}
+
+		user.displayname = validator.escape(String(
+			meta.config.showFullnameAsDisplayName && showfullname && user.fullname ?
+				user.fullname :
+				user.username
+		));
 	}
 
 	function parseGroupTitle(user) {
@@ -240,7 +277,7 @@ module.exports = function (User) {
 		if (!meta.config.defaultAvatar) {
 			return '';
 		}
-		return meta.config.defaultAvatar.startsWith('http') ? meta.config.defaultAvatar : nconf.get('relative_path') + meta.config.defaultAvatar;
+		return meta.config.defaultAvatar.startsWith('http') ? meta.config.defaultAvatar : relative_path + meta.config.defaultAvatar;
 	};
 
 	User.setUserField = async function (uid, field, value) {
@@ -251,7 +288,7 @@ module.exports = function (User) {
 		await db.setObject('user:' + uid, data);
 		for (const field in data) {
 			if (data.hasOwnProperty(field)) {
-				plugins.fireHook('action:user.set', { uid: uid, field: field, value: data[field], type: 'set' });
+				plugins.hooks.fire('action:user.set', { uid: uid, field: field, value: data[field], type: 'set' });
 			}
 		}
 	};
@@ -266,7 +303,7 @@ module.exports = function (User) {
 
 	async function incrDecrUserFieldBy(uid, field, value, type) {
 		const newValue = await db.incrObjectFieldBy('user:' + uid, field, value);
-		plugins.fireHook('action:user.set', { uid: uid, field: field, value: newValue, type: type });
+		plugins.hooks.fire('action:user.set', { uid: uid, field: field, value: newValue, type: type });
 		return newValue;
 	}
 };

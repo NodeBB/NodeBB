@@ -123,6 +123,7 @@
     "open_links_in_new_tab": "Abrir los enlaces externos en una nueva pestaña",
     "enable_topic_searching": "Activar la búsqueda \"dentro del tema\"",
     "topic_search_help": "Si está activada, la búsqueda 'dentro del tema' al usar el buscador de la barra de navegación automáticamente buscaras solo en el tema actual.",
+    "update_url_with_post_index": "Update url with post index while browsing topics",
     "scroll_to_my_post": "Luego de enviar una respuesta, mostrar el nuevo mensaje",
     "follow_topics_you_reply_to": "Seguir temas a los que respondes",
     "follow_topics_you_create": "Seguir temas creados por ti",

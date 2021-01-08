@@ -11,8 +11,8 @@
 	"list.ip-spam": "Fréquence : %1 Apparait : %2",
 
 	"invitations": "Invitations",
-	"invitations.description": "Ci-dessous se trouve une liste complète des invitations envoyées. Utilisez ctrl-f pour rechercher un email ou nom d'utilisateur dans la liste. <br>\n<br>Le nom d'utilisateur sera affiché à droite des emails pour les utilisateurs qui ont accepté leur invitation.",
-	"invitations.inviter-username": "Nom d'utilisateur qui a invité",
+	"invitations.description": "Ci-dessous se trouve une liste complète des invitations envoyées. Utilisez CTRL + F pour rechercher un email ou nom d'utilisateur dans la liste. <br>\n<br>Le nom d'utilisateur sera affiché à droite des emails pour les utilisateurs qui ont accepté leur invitation.",
+	"invitations.inviter-username": "Invité par l'utilisateur",
 	"invitations.invitee-email": "Email invité",
 	"invitations.invitee-username": "Nom d'utilisateur de l'invité (si inscrit)",
 

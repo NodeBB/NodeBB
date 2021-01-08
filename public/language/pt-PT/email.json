@@ -21,6 +21,8 @@
     "reset.notify.text1": "Estamos a notificar-te que a %1, a tua palavra-passe foi alterada com sucesso.",
     "reset.notify.text2": "Se não autorizaste isto, por favor notifica o administrador imediatamente.",
     "digest.latest_topics": "Tópicos recentes de %1",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "Clica aqui para visitares %1",
     "digest.unsub.info": "Este resumo foi-te enviado devido às tuas definições de subscrição.",
     "digest.day": "dia",

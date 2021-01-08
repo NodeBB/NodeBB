@@ -1,0 +1,66 @@
+put:
+  tags:
+    - groups
+  summary: grant group ownership
+  description: This operation grants ownership privilege to a user.
+  parameters:
+    - in: path
+      name: slug
+      schema:
+        type: string
+      required: true
+      description: slug of the group you would like to grant ownership
+      example: test-group
+    - in: path
+      name: uid
+      schema:
+        type: number
+      required: true
+      description: uid of the user to grant ownership
+      example: 1
+  responses:
+    '200':
+      description: ownership successfully granted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}
+delete:
+  tags:
+    - groups
+  summary: rescind group ownership
+  description: 'This operation rescinds ownership privilege from a user. **Note**: Every group needs at least one owner, so if you are attempting to remove the last owner of a group, this call will fail.'
+  parameters:
+    - in: path
+      name: slug
+      schema:
+        type: string
+      required: true
+      description: slug of the group you would like to rescind ownership
+      example: test-group
+    - in: path
+      name: uid
+      schema:
+        type: number
+      required: true
+      description: uid of the user to rescind ownership from
+      example: 2
+  responses:
+    '200':
+      description: ownership successfully rescinded
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}

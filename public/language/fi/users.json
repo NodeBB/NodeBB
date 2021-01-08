@@ -11,6 +11,7 @@
     "online-only": "Vain verkossa olevat",
     "invite": "Kutsu",
     "prompt-email": "Sähköpostit:",
+    "groups-to-join": "Groups to be joined when invite is accepted:",
     "invitation-email-sent": "Kutsusähköposti on lähetetty %1",
     "user_list": "Käyttäjälista",
     "recent_topics": "Viimeisimmät aiheet",

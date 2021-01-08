@@ -1,0 +1,107 @@
+get:
+  tags:
+    - admin
+  summary: Get navigation bar settings
+  responses:
+    "200":
+      description: A JSON object containing navigation settings
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  enabled:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        route:
+                          type: string
+                          description: Relative URL to the page the navigation item goes to
+                        title:
+                          type: string
+                          description: Tooltip text
+                        enabled:
+                          type: boolean
+                        iconClass:
+                          type: string
+                          description: A FontAwesome icon string
+                        textClass:
+                          type: string
+                          description: HTML class applied to the text label for this navigation item
+                        text:
+                          type: string
+                          description: Label text for this navigation item
+                        order:
+                          type: integer
+                          description: Ordinality of this item, lower value appears earlier
+                        groups:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              displayName:
+                                type: string
+                              selected:
+                                type: boolean
+                        index:
+                          type: integer
+                          description: Seemingly identical to order, but an integer instead of a string
+                        selected:
+                          type: boolean
+                  available:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          description: Unique ID that will be added to the navigation element's `id` property in the DOM
+                        route:
+                          type: string
+                          description: Relative URL to the page the navigation item goes to
+                        title:
+                          type: string
+                          description: Tooltip text
+                        enabled:
+                          type: boolean
+                        iconClass:
+                          type: string
+                          description: A FontAwesome icon string
+                        textClass:
+                          type: string
+                          description: HTML class applied to the text label for this navigation item
+                        text:
+                          type: string
+                          description: Label text for this navigation item
+                        core:
+                          type: boolean
+                          description: Whether the navigation item is provided by core or not (a plugin)
+                        groups:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                              displayName:
+                                type: string
+                        properties:
+                          type: object
+                          properties:
+                            targetBlank:
+                              type: boolean
+                  groups:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        displayName:
+                          type: string
+                  navigation:
+                    type: array
+                    description: A clone of `enabled`
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

@@ -10,11 +10,10 @@ const file = require('../file');
 const db = require('../database');
 const Meta = require('./index');
 const events = require('../events');
-const utils = require('../../public/src/utils');
+const utils = require('../utils');
+const { themeNamePattern } = require('../constants');
 
 const Themes = module.exports;
-
-const themeNamePattern = /^(@.*?\/)?nodebb-theme-.*$/;
 
 Themes.get = async () => {
 	const themePath = nconf.get('themes_path');
@@ -26,9 +25,16 @@ Themes.get = async () => {
 	themes = _.flatten(themes).filter(Boolean);
 	themes = await Promise.all(themes.map(async (theme) => {
 		const config = path.join(themePath, theme, 'theme.json');
+		const pack = path.join(themePath, theme, 'package.json');
 		try {
-			const file = await fs.promises.readFile(config, 'utf8');
-			const configObj = JSON.parse(file);
+			const [configFile, packageFile] = await Promise.all([
+				fs.promises.readFile(config, 'utf8'),
+				fs.promises.readFile(pack, 'utf8'),
+			]);
+			const configObj = JSON.parse(configFile);
+			const packageObj = JSON.parse(packageFile);
+
+			configObj.id = packageObj.name;
 
 			// Minor adjustments for API output
 			configObj.type = 'local';

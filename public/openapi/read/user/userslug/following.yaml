@@ -1,0 +1,91 @@
+get:
+  tags:
+    - users
+  summary: Get followed users
+  parameters:
+    - name: userslug
+      in: path
+      required: true
+      schema:
+        type: string
+      example: admin
+    - name: page
+      in: query
+      schema:
+        type: number
+      example: ''
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../../components/schemas/UserObject.yaml#/UserObjectFull
+              - type: object
+                properties:
+                  title:
+                    type: string
+                  users:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        uid:
+                          type: number
+                          description: A user identifier
+                        username:
+                          type: string
+                          description: A friendly name for a given user account
+                        userslug:
+                          type: string
+                          description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                            removed, etc.)
+                        picture:
+                          nullable: true
+                          type: string
+                        status:
+                          type: string
+                        postcount:
+                          type: number
+                        reputation:
+                          type: number
+                        email:confirmed:
+                          type: number
+                          description: Whether the user has confirmed their email address or not
+                        lastonline:
+                          type: number
+                        flags:
+                          nullable: true
+                        banned:
+                          type: number
+                        banned:expire:
+                          type: number
+                        joindate:
+                          type: number
+                          description: A UNIX timestamp representing the moment the user's account was
+                            created
+                        icon:text:
+                          type: string
+                          description: A single-letter representation of a username. This is used in the
+                            auto-generated icon given to users without an
+                            avatar
+                        icon:bgColor:
+                          type: string
+                          description: A six-character hexadecimal colour code assigned to the user. This
+                            value is used in conjunction with `icon:text`
+                            for the user's auto-generated icon
+                          example: "#f44336"
+                        joindateISO:
+                          type: string
+                        lastonlineISO:
+                          type: string
+                        banned_until:
+                          type: number
+                        banned_until_readable:
+                          type: string
+                        administrator:
+                          type: boolean
+              - $ref: ../../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../../../components/schemas/Pagination.yaml#/Pagination
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

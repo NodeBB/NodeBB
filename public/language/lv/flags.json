@@ -67,7 +67,7 @@
 	"sort-upvotes": "Most upvotes",
 	"sort-replies": "Most replies",
 
-	"modal-title": "Ziņot par nepiemērotu saturu",
+	"modal-title": "Report Content",
 	"modal-body": "Lūdzu, norādi iemeslu, kāpēc %1 %2 ir atzīmēts pārskatīšanai. Citādi, izmanto vienu no ātrā ziņojuma pogām.",
 	"modal-reason-spam": "Mēstule",
 	"modal-reason-offensive": "Aizskarošs",
@@ -81,5 +81,6 @@
 
 	"bulk-actions": "Bulk Actions",
 	"bulk-resolve": "Resolve Flag(s)",
-	"bulk-success": "%1 flags updated"
+	"bulk-success": "%1 flags updated",
+	"flagged-timeago-readable": "Flagged <span class=\"timeago\" title=\"%1\"></span> (%2)"
 }

@@ -1,46 +1,40 @@
 'use strict';
 
-var path = require('path');
-var async = require('async');
-var fs = require('fs');
+const path = require('path');
+const fs = require('fs');
 const util = require('util');
-var mkdirp = require('mkdirp');
-var mkdirpCallback;
-if (mkdirp.hasOwnProperty('native')) {
-	mkdirpCallback = util.callbackify(mkdirp);
-} else {
-	mkdirpCallback = mkdirp;
+let mkdirp = require('mkdirp');
+// TODO: remove in 1.16.0
+if (!mkdirp.hasOwnProperty('native')) {
 	mkdirp = util.promisify(mkdirp);
 }
 
-var rimraf = require('rimraf');
+const rimraf = require('rimraf');
+const rimrafAsync = util.promisify(rimraf);
 
-var file = require('../file');
-var plugins = require('../plugins');
-var minifier = require('./minifier');
+const file = require('../file');
+const plugins = require('../plugins');
+const minifier = require('./minifier');
 
-var JS = module.exports;
+const JS = module.exports;
 
 JS.scripts = {
 	base: [
 		'node_modules/promise-polyfill/dist/polyfill.js',
-		'node_modules/jquery/dist/jquery.js',
 		'node_modules/socket.io-client/dist/socket.io.js',
+		'node_modules/requirejs/require.js',
+		'public/src/require-config.js',
+		'node_modules/jquery/dist/jquery.js',
 		'node_modules/textcomplete/dist/textcomplete.min.js',
 		'node_modules/textcomplete.contenteditable/dist/textcomplete.codemirror.min.js',
-		'public/vendor/jquery/timeago/jquery.timeago.js',
-		'public/vendor/jquery/js/jquery.form.min.js',
-		'public/vendor/visibility/visibility.min.js',
+		'node_modules/visibilityjs/lib/visibility.core.js',
 		'node_modules/bootstrap/dist/js/bootstrap.js',
-		'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.min.js',
-		'public/vendor/requirejs/require.js',
-		'public/src/require-config.js',
-		'public/vendor/bootbox/bootbox.js',
-		'public/vendor/bootbox/wrapper.js',
-		'public/vendor/tinycon/tinycon.js',
-		'public/vendor/xregexp/xregexp.js',
-		'public/vendor/xregexp/unicode/unicode-base.js',
+		'node_modules/@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput.js',
 		'node_modules/benchpressjs/build/benchpress.js',
+		'node_modules/jquery-serializeobject/jquery.serializeObject.js',
+
+		'public/vendor/bootbox/wrapper.js',
+
 		'public/src/utils.js',
 		'public/src/sockets.js',
 		'public/src/app.js',
@@ -51,7 +45,6 @@ JS.scripts = {
 
 	// files listed below are only available client-side, or are bundled in to reduce # of network requests on cold load
 	rjs: [
-		'public/src/client/footer.js',
 		'public/src/client/header/chat.js',
 		'public/src/client/header/notifications.js',
 		'public/src/client/infinitescroll.js',
@@ -75,6 +68,7 @@ JS.scripts = {
 		'public/src/modules/navigator.js',
 		'public/src/modules/topicSelect.js',
 		'public/src/modules/topicList.js',
+		'public/src/modules/categoryFilter.js',
 		'public/src/modules/categorySelector.js',
 		'public/src/modules/categorySearch.js',
 		'public/src/modules/share.js',
@@ -87,14 +81,8 @@ JS.scripts = {
 
 	admin: [
 		'node_modules/material-design-lite/material.js',
-		'public/vendor/jquery/sortable/Sortable.js',
-		'public/vendor/colorpicker/colorpicker.js',
 		'public/src/admin/admin.js',
-		'public/vendor/semver/semver.browser.js',
-		'public/vendor/jquery/serializeObject/jquery.ba-serializeobject.min.js',
-		'public/vendor/jquery/deserialize/jquery.deserialize.min.js',
-		'public/vendor/slideout/slideout.min.js',
-		'public/vendor/nprogress.min.js',
+		'node_modules/jquery-deserialize/src/jquery.deserialize.js',
 	],
 
 	// modules listed below are built (/src/modules) so they can be defined anonymously
@@ -102,100 +90,87 @@ JS.scripts = {
 		'Chart.js': 'node_modules/chart.js/dist/Chart.min.js',
 		'mousetrap.js': 'node_modules/mousetrap/mousetrap.min.js',
 		'cropper.js': 'node_modules/cropperjs/dist/cropper.min.js',
-		'jqueryui.js': 'public/vendor/jquery/js/jquery-ui.js',
+		'jquery-ui': 'node_modules/jquery-ui/ui',
 		'zxcvbn.js': 'node_modules/zxcvbn/dist/zxcvbn.js',
 		ace: 'node_modules/ace-builds/src-min',
 		'clipboard.js': 'node_modules/clipboard/dist/clipboard.min.js',
+		'tinycon.js': 'node_modules/tinycon/tinycon.js',
+		'slideout.js': 'node_modules/slideout/dist/slideout.min.js',
+		'compare-versions.js': 'node_modules/compare-versions/index.js',
+		'timeago/locales': 'node_modules/timeago/locales',
+		'jquery-form.js': 'node_modules/jquery-form/dist/jquery.form.min.js',
+		'xregexp.js': 'node_modules/xregexp/xregexp-all.js',
 	},
 };
 
-function linkIfLinux(srcPath, destPath, next) {
+async function linkIfLinux(srcPath, destPath) {
 	if (process.platform === 'win32') {
-		fs.copyFile(srcPath, destPath, next);
+		await fs.promises.copyFile(srcPath, destPath);
 	} else {
-		file.link(srcPath, destPath, true, next);
+		await file.link(srcPath, destPath, true);
 	}
 }
 
-var basePath = path.resolve(__dirname, '../..');
+const basePath = path.resolve(__dirname, '../..');
 
-function minifyModules(modules, fork, callback) {
-	var moduleDirs = modules.reduce(function (prev, mod) {
-		var dir = path.resolve(path.dirname(mod.destPath));
+async function minifyModules(modules, fork) {
+	const moduleDirs = modules.reduce(function (prev, mod) {
+		const dir = path.resolve(path.dirname(mod.destPath));
 		if (!prev.includes(dir)) {
 			prev.push(dir);
 		}
 		return prev;
 	}, []);
 
-	async.each(moduleDirs, mkdirpCallback, function (err) {
-		if (err) {
-			return callback(err);
+	await Promise.all(moduleDirs.map(dir => mkdirp(dir)));
+
+	const filtered = modules.reduce(function (prev, mod) {
+		if (mod.srcPath.endsWith('.min.js') || path.dirname(mod.srcPath).endsWith('min')) {
+			prev.skip.push(mod);
+		} else {
+			prev.minify.push(mod);
 		}
 
-		var filtered = modules.reduce(function (prev, mod) {
-			if (mod.srcPath.endsWith('.min.js') || path.dirname(mod.srcPath).endsWith('min')) {
-				prev.skip.push(mod);
-			} else {
-				prev.minify.push(mod);
-			}
+		return prev;
+	}, { minify: [], skip: [] });
 
-			return prev;
-		}, { minify: [], skip: [] });
-
-		async.parallel([
-			function (cb) {
-				minifier.js.minifyBatch(filtered.minify, fork, cb);
-			},
-			function (cb) {
-				async.each(filtered.skip, function (mod, next) {
-					linkIfLinux(mod.srcPath, mod.destPath, next);
-				}, cb);
-			},
-		], callback);
-	});
+	await Promise.all([
+		minifier.js.minifyBatch(filtered.minify, fork),
+		...filtered.skip.map(mod => linkIfLinux(mod.srcPath, mod.destPath)),
+	]);
 }
 
-function linkModules(callback) {
-	var modules = JS.scripts.modules;
+async function linkModules() {
+	const modules = JS.scripts.modules;
 
-	async.each(Object.keys(modules), function (relPath, next) {
-		var srcPath = path.join(__dirname, '../../', modules[relPath]);
-		var destPath = path.join(__dirname, '../../build/public/src/modules', relPath);
+	await Promise.all(Object.keys(modules).map(async function (relPath) {
+		const srcPath = path.join(__dirname, '../../', modules[relPath]);
+		const destPath = path.join(__dirname, '../../build/public/src/modules', relPath);
+		const [stats] = await Promise.all([
+			fs.promises.stat(srcPath),
+			mkdirp(path.dirname(destPath)),
+		]);
 
-		async.parallel({
-			dir: function (cb) {
-				mkdirpCallback(path.dirname(destPath), function (err) {
-					cb(err);
-				});
-			},
-			stats: function (cb) {
-				fs.stat(srcPath, cb);
-			},
-		}, function (err, res) {
-			if (err) {
-				return next(err);
-			}
-			if (res.stats.isDirectory()) {
-				return file.linkDirs(srcPath, destPath, true, next);
-			}
+		if (stats.isDirectory()) {
+			await file.linkDirs(srcPath, destPath, true);
+			return;
+		}
 
-			linkIfLinux(srcPath, destPath, next);
-		});
-	}, callback);
+		await linkIfLinux(srcPath, destPath);
+	}));
 }
 
-var moduleDirs = ['modules', 'admin', 'client'];
+const moduleDirs = ['modules', 'admin', 'client'];
 
-function getModuleList(callback) {
-	var modules = Object.keys(JS.scripts.modules).map(function (relPath) {
+async function getModuleList() {
+	let modules = Object.keys(JS.scripts.modules).map(function (relPath) {
 		return {
 			srcPath: path.join(__dirname, '../../', JS.scripts.modules[relPath]),
 			destPath: path.join(__dirname, '../../build/public/src/modules', relPath),
 		};
 	});
 
-	var coreDirs = moduleDirs.map(function (dir) {
+	const coreDirs = moduleDirs.map(function (dir) {
 		return {
 			srcPath: path.join(__dirname, '../../public/src', dir),
 			destPath: path.join(__dirname, '../../build/public/src', dir),
@@ -204,101 +179,123 @@ function getModuleList(callback) {
 
 	modules = modules.concat(coreDirs);
 
-	var moduleFiles = [];
-	async.each(modules, function (module, next) {
-		var srcPath = module.srcPath;
-		var destPath = module.destPath;
+	const moduleFiles = [];
+	await Promise.all(modules.map(async function (module) {
+		const srcPath = module.srcPath;
+		const destPath = module.destPath;
 
-		fs.stat(srcPath, function (err, stats) {
-			if (err) {
-				return next(err);
-			}
-			if (!stats.isDirectory()) {
-				moduleFiles.push(module);
-				return next();
-			}
-
-			file.walk(srcPath, function (err, files) {
-				if (err) {
-					return next(err);
-				}
-
-				var mods = files.filter(function (filePath) {
-					return path.extname(filePath) === '.js';
-				}).map(function (filePath) {
-					return {
-						srcPath: path.normalize(filePath),
-						destPath: path.join(destPath, path.relative(srcPath, filePath)),
-					};
-				});
-
-				moduleFiles = moduleFiles.concat(mods).map(function (mod) {
-					mod.filename = path.relative(basePath, mod.srcPath).replace(/\\/g, '/');
-					return mod;
-				});
-
-				next();
-			});
-		});
-	}, function (err) {
-		callback(err, moduleFiles);
-	});
-}
-
-function clearModules(callback) {
-	var builtPaths = moduleDirs.map(function (p) {
-		return path.join(__dirname, '../../build/public/src', p);
-	});
-	async.each(builtPaths, function (builtPath, next) {
-		rimraf(builtPath, next);
-	}, function (err) {
-		callback(err);
-	});
-}
-
-JS.buildModules = function (fork, callback) {
-	async.waterfall([
-		clearModules,
-		function (next) {
-			if (process.env.NODE_ENV === 'development') {
-				return linkModules(callback);
-			}
-
-			getModuleList(next);
-		},
-		function (modules, next) {
-			minifyModules(modules, fork, next);
-		},
-	], callback);
-};
-
-JS.linkStatics = function (callback) {
-	rimraf(path.join(__dirname, '../../build/public/plugins'), function (err) {
-		if (err) {
-			return callback(err);
+		const stats = await fs.promises.stat(srcPath);
+		if (!stats.isDirectory()) {
+			moduleFiles.push(module);
+			return;
 		}
-		async.each(Object.keys(plugins.staticDirs), function (mappedPath, next) {
-			var sourceDir = plugins.staticDirs[mappedPath];
-			var destDir = path.join(__dirname, '../../build/public/plugins', mappedPath);
 
-			mkdirpCallback(path.dirname(destDir), function (err) {
-				if (err) {
-					return next(err);
-				}
+		const files = await file.walk(srcPath);
 
-				file.linkDirs(sourceDir, destDir, true, next);
-			});
-		}, callback);
+		const mods = files.filter(
+			filePath => path.extname(filePath) === '.js'
+		).map(function (filePath) {
+			return {
+				srcPath: path.normalize(filePath),
+				destPath: path.join(destPath, path.relative(srcPath, filePath)),
+			};
+		});
+
+		moduleFiles.push(...mods);
+	}));
+	moduleFiles.forEach(function (mod) {
+		mod.filename = path.relative(basePath, mod.srcPath).replace(/\\/g, '/');
 	});
+	return moduleFiles;
+}
+
+async function clearModules() {
+	const builtPaths = moduleDirs.map(
+		p => path.join(__dirname, '../../build/public/src', p)
+	);
+	await Promise.all(
+		builtPaths.map(builtPath => rimrafAsync(builtPath))
+	);
+}
+
+JS.buildModules = async function (fork) {
+	await clearModules();
+	if (process.env.NODE_ENV === 'development') {
+		await linkModules();
+		return;
+	}
+	const modules = await getModuleList();
+	await minifyModules(modules, fork);
 };
 
-function getBundleScriptList(target, callback) {
-	var pluginDirectories = [];
+async function requirejsOptimize(target) {
+	const requirejs = require('requirejs');
+	let scriptText = '';
+	const sharedCfg = {
+		paths: {
+			jquery: 'empty:',
+		},
+		optimize: 'none',
+		out: function (text) {
+			scriptText += text;
+		},
+	};
+	const bundledModules = [
+		{
+			baseUrl: path.join(basePath, 'node_modules'),
+			name: 'timeago/jquery.timeago',
+		},
+		{
+			baseUrl: path.join(basePath, 'node_modules/nprogress'),
+			name: 'nprogress',
+		},
+		{
+			baseUrl: path.join(basePath, 'node_modules/bootbox'),
+			name: 'bootbox',
+		},
+	];
+	const targetModules = {
+		admin: [
+			{
+				baseUrl: path.join(basePath, 'node_modules/sortablejs'),
+				name: 'Sortable',
+			},
+		],
+		client: [],
+	};
+	const optimizeAsync = util.promisify(function (config, cb) {
+		requirejs.optimize(config, () => cb(), err => cb(err));
+	});
+
+	const allModules = bundledModules.concat(targetModules[target]);
+
+	for (const moduleCfg of allModules) {
+		// eslint-disable-next-line no-await-in-loop
+		await optimizeAsync({ ...sharedCfg, ...moduleCfg });
+	}
+	const filePath = path.join(__dirname, '../../build/public/rjs-bundle-' + target + '.js');
+	await fs.promises.writeFile(filePath, scriptText);
+}
+
+JS.linkStatics = async function () {
+	await rimrafAsync(path.join(__dirname, '../../build/public/plugins'));
+
+	await Promise.all(Object.keys(plugins.staticDirs).map(async function (mappedPath) {
+		const sourceDir = plugins.staticDirs[mappedPath];
+		const destDir = path.join(__dirname, '../../build/public/plugins', mappedPath);
+
+		await mkdirp(path.dirname(destDir));
+		await file.linkDirs(sourceDir, destDir, true);
+	}));
+};
+
+async function getBundleScriptList(target) {
+	const pluginDirectories = [];
 
 	if (target === 'admin') {
 		target = 'acp';
 	}
-	var pluginScripts = plugins[target + 'Scripts'].filter(function (path) {
+	let pluginScripts = plugins[target + 'Scripts'].filter(function (path) {
 		if (path.endsWith('.js')) {
 			return true;
 		}
@@ -307,66 +304,50 @@ function getBundleScriptList(target, callback) {
 		return false;
 	});
 
-	async.each(pluginDirectories, function (directory, next) {
-		file.walk(directory, function (err, scripts) {
-			if (err) {
-				return next(err);
-			}
+	await Promise.all(pluginDirectories.map(async function (directory) {
+		const scripts = await file.walk(directory);
+		pluginScripts = pluginScripts.concat(scripts);
+	}));
 
-			pluginScripts = pluginScripts.concat(scripts);
-			next();
-		});
-	}, function (err) {
-		if (err) {
-			return callback(err);
-		}
+	let scripts = JS.scripts.base;
 
-		var scripts = JS.scripts.base;
+	if (target === 'client' && process.env.NODE_ENV !== 'development') {
+		scripts = scripts.concat(JS.scripts.rjs);
+	} else if (target === 'acp') {
+		scripts = scripts.concat(JS.scripts.admin);
+	}
 
-		if (target === 'client' && process.env.NODE_ENV !== 'development') {
-			scripts = scripts.concat(JS.scripts.rjs);
-		} else if (target === 'acp') {
-			scripts = scripts.concat(JS.scripts.admin);
-		}
-
-		scripts = scripts.concat(pluginScripts).map(function (script) {
-			var srcPath = path.resolve(basePath, script).replace(/\\/g, '/');
-			return {
-				srcPath: srcPath,
-				filename: path.relative(basePath, srcPath).replace(/\\/g, '/'),
-			};
-		});
-
-		callback(null, scripts);
+	scripts = scripts.concat(pluginScripts).map(function (script) {
+		const srcPath = path.resolve(basePath, script).replace(/\\/g, '/');
+		return {
+			srcPath: srcPath,
+			filename: path.relative(basePath, srcPath).replace(/\\/g, '/'),
+		};
 	});
+
+	return scripts;
 }
 
-JS.buildBundle = function (target, fork, callback) {
-	var fileNames = {
+JS.buildBundle = async function (target, fork) {
+	const fileNames = {
 		client: 'nodebb.min.js',
 		admin: 'acp.min.js',
 	};
+	await requirejsOptimize(target);
+	const files = await getBundleScriptList(target);
 
-	async.waterfall([
-		function (next) {
-			getBundleScriptList(target, next);
-		},
-		function (files, next) {
-			mkdirpCallback(path.join(__dirname, '../../build/public'), function (err) {
-				next(err, files);
-			});
-		},
-		function (files, next) {
-			var minify = process.env.NODE_ENV !== 'development';
-			var filePath = path.join(__dirname, '../../build/public', fileNames[target]);
+	files.push({
+		srcPath: path.join(__dirname, '../../build/public/rjs-bundle-' + target + '.js'),
+	});
 
-			minifier.js.bundle({
-				files: files,
-				filename: fileNames[target],
-				destPath: filePath,
-			}, minify, fork, next);
-		},
-	], callback);
+	const minify = process.env.NODE_ENV !== 'development';
+	const filePath = path.join(__dirname, '../../build/public', fileNames[target]);
+
+	await minifier.js.bundle({
+		files: files,
+		filename: fileNames[target],
+		destPath: filePath,
+	}, minify, fork);
 };
 
 JS.killMinifier = function () {

@@ -32,5 +32,12 @@
 	"sockets.settings": "WebSocket Ayarları",
 	"sockets.max-attempts": "Maksimum Tekrar Bağlanma Denemesi",
 	"sockets.default-placeholder": "Varsayılan: %1",
-	"sockets.delay": "Yeniden Bağlanma Gecikmesi"
+	"sockets.delay": "Yeniden Bağlanma Gecikmesi",
+
+	"analytics.settings": "Analitik Ayarlar",
+	"analytics.max-cache": "Analitik Önbellek Maksimum Değeri",
+	"analytics.max-cache-help": "On high-traffic installs, the cache could be exhausted continuously if there are more concurrent active users than the Max Cache value. (Restart required)",
+	"compression.settings": "Sıkıştırma Ayarları",
+	"compression.enable": "Sıkıştırmayı Aktifleştir",
+	"compression.help": "This setting enables gzip compression. For a high-traffic website in production, the best way to put compression in place is to implement it at a reverse proxy level. You can enable it here for testing purposes."
 }

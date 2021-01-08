@@ -65,5 +65,11 @@
     "bootbox.confirm": "Conferma",
     "cover.dragging_title": "Posizionando la foto copertina",
     "cover.dragging_message": "Trascina l'immagine di copertina nella posizione desiderata e clicca su \"Salva\"",
-    "cover.saved": "Immagine di copertina e posizione salvati"
+    "cover.saved": "Immagine di copertina e posizione salvati",
+    "thumbs.modal.title": "Gestisci le miniature della discussione",
+    "thumbs.modal.no-thumbs": "Non sono state trovate miniature.",
+    "thumbs.modal.resize-note": "<strong>Nota</strong>: Questo forum è configurato per ridimensionare le miniature degli argomenti fino ad una larghezza massima di %1px",
+    "thumbs.modal.add": "Aggiungi miniatura",
+    "thumbs.modal.remove": "Rimuovi miniatura",
+    "thumbs.modal.confirm-remove": "Sei sicuro di voler rimuovere questa miniatura?"
 }

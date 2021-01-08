@@ -1,0 +1,23 @@
+get:
+  tags:
+    - users
+  summary: Get group names that the user can invite
+  parameters:
+    - in: path
+      name: uid
+      schema:
+        type: integer
+      required: true
+      description: uid of the user to make the query for
+      example: 1
+  responses:
+    '200':
+      description: A collection of group names returned
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: string
+    '401':
+      $ref: ../../../../components/responses/401.yaml#/401

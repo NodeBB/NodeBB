@@ -65,5 +65,11 @@
     "bootbox.confirm": "Confirmar",
     "cover.dragging_title": "Posicionamento da Foto de Capa",
     "cover.dragging_message": "Arraste a foto de capa na posição desejada e clique em \"Salvar\"",
-    "cover.saved": "Imagem de foto da capa e posição foram gravadas"
+    "cover.saved": "Imagem de foto da capa e posição foram gravadas",
+    "thumbs.modal.title": "Manage topic thumbnails",
+    "thumbs.modal.no-thumbs": "No thumbnails found.",
+    "thumbs.modal.resize-note": "<strong>Note</strong>: This forum is configured to resize topic thumbnails down to a maximum width of %1px",
+    "thumbs.modal.add": "Add thumbnail",
+    "thumbs.modal.remove": "Remove thumbnail",
+    "thumbs.modal.confirm-remove": "Are you sure you want to remove this thumbnail?"
 }

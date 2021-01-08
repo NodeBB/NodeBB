@@ -3,16 +3,18 @@
 define('admin/manage/privileges', [
 	'autocomplete',
 	'translator',
-	'benchpress',
 	'categorySelector',
 	'mousetrap',
-], function (autocomplete, translator, Benchpress, categorySelector, mousetrap) {
+	'admin/modules/checkboxRowSelector',
+], function (autocomplete, translator, categorySelector, mousetrap, checkboxRowSelector) {
 	var Privileges = {};
 
 	var cid;
 
 	Privileges.init = function () {
 		cid = isNaN(parseInt(ajaxify.data.selectedCategory.cid, 10)) ? 'admin' : ajaxify.data.selectedCategory.cid;
+
+		checkboxRowSelector.init('.privilege-table-container');
 
 		categorySelector.init($('[component="category-selector"]'), function (category) {
 			cid = parseInt(category.cid, 10);
@@ -27,7 +29,7 @@ define('admin/manage/privileges', [
 	};
 
 	Privileges.setupPrivilegeTable = function () {
-		$('.privilege-table-container').on('change', 'input[type="checkbox"]', function () {
+		$('.privilege-table-container').on('change', 'input[type="checkbox"]:not(.checkbox-helper)', function () {
 			var checkboxEl = $(this);
 			var wrapperEl = checkboxEl.parent();
 			var privilege = wrapperEl.attr('data-privilege');
@@ -48,16 +50,27 @@ define('admin/manage/privileges', [
 							checkboxEl.prop('checked', !checkboxEl.prop('checked'));
 						}
 					});
+				} else if (privilege.endsWith('admin:admins-mods') && state) {
+					bootbox.confirm('[[admin/manage/privileges:alert.confirm-admins-mods]]', function (confirm) {
+						if (confirm) {
+							wrapperEl.attr('data-delta', delta);
+							Privileges.exposeAssumedPrivileges();
+						} else {
+							checkboxEl.prop('checked', !checkboxEl.prop('checked'));
+						}
+					});
 				} else {
 					wrapperEl.attr('data-delta', delta);
 					Privileges.exposeAssumedPrivileges();
 				}
+				checkboxRowSelector.updateState(checkboxEl);
 			} else {
 				app.alertError('[[error:invalid-data]]');
 			}
 		});
 
 		Privileges.exposeAssumedPrivileges();
+		checkboxRowSelector.updateAll();
 		Privileges.addEvents();	// events with confirmation modals
 	};
 
@@ -140,15 +153,14 @@ define('admin/manage/privileges', [
 
 			ajaxify.data.privileges = privileges;
 			var tpl = parseInt(cid, 10) ? 'admin/partials/privileges/category' : 'admin/partials/privileges/global';
-			Benchpress.parse(tpl, {
+			app.parseAndTranslate(tpl, {
 				privileges: privileges,
 			}, function (html) {
-				translator.translate(html, function (html) {
-					$('.privilege-table-container').html(html);
-					Privileges.exposeAssumedPrivileges();
+				$('.privilege-table-container').html(html);
+				Privileges.exposeAssumedPrivileges();
+				checkboxRowSelector.updateAll();
 
-					hightlightRowByGroupName(groupToHighlight);
-				});
+				hightlightRowByDataAttr('data-group-name', groupToHighlight);
 			});
 		});
 	};
@@ -160,7 +172,7 @@ define('admin/manage/privileges', [
 			this arrangement in the table
 		*/
 		var privs = [];
-		$('.privilege-table tr[data-group-name="registered-users"] td input[type="checkbox"]').parent().each(function (idx, el) {
+		$('.privilege-table tr[data-group-name="registered-users"] td input[type="checkbox"]:not(.checkbox-helper)').parent().each(function (idx, el) {
 			if ($(el).find('input').prop('checked')) {
 				privs.push(el.getAttribute('data-privilege'));
 			}
@@ -215,29 +227,7 @@ define('admin/manage/privileges', [
 			inputEl.focus();
 
 			autocomplete.user(inputEl, function (ev, ui) {
-				// Generate data for new row
-				var privilegeSet = ajaxify.data.privileges.keys.users.reduce(function (memo, cur) {
-					memo[cur] = false;
-					return memo;
-				}, {});
-
-				app.parseAndTranslate('admin/partials/privileges/' + (isNaN(cid) ? 'global' : 'category'), 'privileges.users', {
-					privileges: {
-						users: [
-							{
-								picture: ui.item.user.picture,
-								username: ui.item.user.username,
-								uid: ui.item.user.uid,
-								'icon:text': ui.item.user['icon:text'],
-								'icon:bgColor': ui.item.user['icon:bgColor'],
-								privileges: privilegeSet,
-							},
-						],
-					},
-				}, function (html) {
-					var tableEl = document.querySelectorAll('.privilege-table');
-					var rows = tableEl[1].querySelectorAll('tbody tr');
-					html.insertBefore(rows[rows.length - 1]);
+				addUserToCategory(ui.item.user, function () {
 					modal.modal('hide');
 				});
 			});
@@ -256,6 +246,12 @@ define('admin/manage/privileges', [
 			inputEl.focus();
 
 			autocomplete.group(inputEl, function (ev, ui) {
+				if (ui.item.group.name === 'administrators') {
+					return app.alert({
+						type: 'warning',
+						message: '[[admin/manage/privileges:alert.admin-warning]]',
+					});
+				}
 				addGroupToCategory(ui.item.group.name, function () {
 					modal.modal('hide');
 				});
@@ -292,11 +288,12 @@ define('admin/manage/privileges', [
 		});
 	};
 
-	function hightlightRowByGroupName(groupName) {
-		if (groupName) {
-			var el = $('[data-group-name]').filter(function () {
-				return $(this).attr('data-group-name') === groupName;
+	function hightlightRowByDataAttr(attrName, attrValue) {
+		if (attrValue) {
+			var el = $('[' + attrName + ']').filter(function () {
+				return $(this).attr(attrName) === String(attrValue);
 			});
+
 			if (el.length) {
 				el.addClass('selected');
 				return true;
@@ -307,7 +304,7 @@ define('admin/manage/privileges', [
 
 	function highlightRow() {
 		if (ajaxify.data.group) {
-			if (hightlightRowByGroupName(ajaxify.data.group)) {
+			if (hightlightRowByDataAttr('data-group-name', ajaxify.data.group)) {
 				return;
 			}
 			addGroupToCategory(ajaxify.data.group);
@@ -315,6 +312,12 @@ define('admin/manage/privileges', [
 	}
 
 	function addGroupToCategory(group, cb) {
+		cb = cb || function () {};
+		var groupRow = document.querySelector('.privilege-table [data-group-name="' + group + '"]');
+		if (groupRow) {
+			hightlightRowByDataAttr('data-group-name', group);
+			return cb();
+		}
 		// Generate data for new row
 		var privilegeSet = ajaxify.data.privileges.keys.groups.reduce(function (memo, cur) {
 			memo[cur] = false;
@@ -336,10 +339,43 @@ define('admin/manage/privileges', [
 			var rows = tableEl.querySelectorAll('tbody tr');
 			html.insertBefore(rows[rows.length - 1]);
 			Privileges.exposeAssumedPrivileges();
+			hightlightRowByDataAttr('data-group-name', group);
+			cb();
+		});
+	}
 
-			if (typeof cb === 'function') {
-				cb();
-			}
+	function addUserToCategory(user, cb) {
+		cb = cb || function () {};
+		var userRow = document.querySelector('.privilege-table [data-uid="' + user.uid + '"]');
+		if (userRow) {
+			hightlightRowByDataAttr('data-uid', user.uid);
+			return cb();
+		}
+		// Generate data for new row
+		var privilegeSet = ajaxify.data.privileges.keys.users.reduce(function (memo, cur) {
+			memo[cur] = false;
+			return memo;
+		}, {});
+
+		app.parseAndTranslate('admin/partials/privileges/' + (isNaN(cid) ? 'global' : 'category'), 'privileges.users', {
+			privileges: {
+				users: [
+					{
+						picture: user.picture,
+						username: user.username,
+						uid: user.uid,
+						'icon:text': user['icon:text'],
+						'icon:bgColor': user['icon:bgColor'],
+						privileges: privilegeSet,
+					},
+				],
+			},
+		}, function (html) {
+			var tableEl = document.querySelectorAll('.privilege-table');
+			var rows = tableEl[1].querySelectorAll('tbody tr');
+			html.insertBefore(rows[rows.length - 1]);
+			hightlightRowByDataAttr('data-uid', user.uid);
+			cb();
 		});
 	}
 

@@ -1,0 +1,61 @@
+put:
+  tags:
+    - users
+  summary: ban a user
+  parameters:
+    - in: path
+      name: uid
+      schema:
+        type: integer
+      required: true
+      description: uid of the user to ban
+      example: 2
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            until:
+              type: number
+              description: UNIX timestamp of the ban expiry
+              example: 1585775608076
+            reason:
+              type: string
+              example: the reason for the ban
+  responses:
+    '200':
+      description: successfully banned user
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+delete:
+  tags:
+    - users
+  summary: unbans a user
+  parameters:
+    - in: path
+      name: uid
+      schema:
+        type: integer
+      required: true
+      description: uid of the user to unban
+      example: 2
+  responses:
+    '200':
+      description: successfully unbanned user
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object

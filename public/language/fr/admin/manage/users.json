@@ -15,21 +15,15 @@
 	"delete": "Supprimer <strong>le(s) utilisateur(s)</strong>",
 	"delete-content": "Supprimer <strong>le contenu</strong> du compte",
 	"purge": "Supprimer <strong>le(s) compte(s)</strong> et <strong>le contenu</strong>",
-	"download-csv": "Télécharger au format CSV",
+	"download-csv": "Exporter en CSV",
 	"manage-groups": "Gérer les groupes",
 	"add-group": "Ajouter un groupe",
 	"invite": "Inviter",
 	"new": "Nouvel utilisateur",
-
-	"pills.latest": "Derniers utilisateurs",
-	"pills.unvalidated": "Non vérifiée",
-	"pills.no-posts": "Aucun sujet",
-	"pills.top-posters": "Nombre de sujets",
-	"pills.top-rep": "Réputation",
-	"pills.inactive": "Inactif ",
-	"pills.flagged": "Le plus signalé",
+	"filter-by": "Filtrer par",
+	"pills.unvalidated": "Non vérifié",
+	"pills.validated": "Validé",
 	"pills.banned": "Banni",
-	"pills.search": "Recherche d'utilisateur",
 
 	"50-per-page": "50 par page",
 	"100-per-page": "100 par page",
@@ -108,5 +102,7 @@
 
 	"alerts.prompt-email": "Emails: ",
 	"alerts.email-sent-to": "Un e-mail d'invitation a été envoyé à %1",
-	"alerts.x-users-found": "%1 utilisateur(s) trouvé(s), (%2 secondes)"
+	"alerts.x-users-found": "%1 utilisateur(s) trouvé(s), (%2 secondes)",
+	"export-users-started": "L'exportation d'utilisateurs au format CSV peut prendre un certain temps. Vous recevrez une notification lorsqu'elle sera terminée.",
+	"export-users-completed": "Utilisateurs exportés au format CSV, cliquez ici pour télécharger."
 }

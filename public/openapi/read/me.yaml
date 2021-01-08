@@ -1,0 +1,10 @@
+get:
+  tags:
+    - shorthand
+  summary: Access your own profile's sub-pages
+  description: >-
+    This shorthand is useful if you want to link to pages in your own account profile, but do not want (or have) the `userslug`. It is also especially useful as a
+    means to instruct users on how to do things, as you can easily redirect them to their own profile pages.
+  responses:
+    "200":
+      description: "Canonical URL to your requested profile page"

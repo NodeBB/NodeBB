@@ -1,0 +1,34 @@
+get:
+  tags:
+    - users
+  summary: Get user's GDPR consent settings
+  parameters:
+    - name: userslug
+      in: path
+      required: true
+      schema:
+        type: string
+      example: admin
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../../components/schemas/UserObject.yaml#/UserObjectFull
+              - type: object
+                properties:
+                  gdpr_consent:
+                    type: boolean
+                  digest:
+                    type: object
+                    properties:
+                      frequency:
+                        type: string
+                      enabled:
+                        type: boolean
+                  title:
+                    type: string
+              - $ref: ../../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

@@ -1,0 +1,152 @@
+Settings:
+  type: object
+  properties:
+    showemail:
+      type: boolean
+      description: Show user email in profile page
+    usePagination:
+      type: boolean
+      description: Toggles between pagination (when enabled), or infinite scrolling (when disabled)
+    topicsPerPage:
+      type: number
+      description: Number of topics displayed on a category page
+    postsPerPage:
+      type: number
+      description: Number of posts displayed on a topic page
+    topicPostSort:
+      type: string
+      description: Default sorting strategy of the posts in of a topic
+    openOutgoingLinksInNewTab:
+      type: boolean
+      description: Whether to automatically open all external links in a new tab
+    dailyDigestFreq:
+      type: string
+      description: How often to receive the scheduled digest from this forum
+    showfullname:
+      type: boolean
+      description: Show user full name in profile page
+    followTopicsOnCreate:
+      type: boolean
+      description: Automatically be notified of new posts in a topic, when you create a topic
+    followTopicsOnReply:
+      type: boolean
+      description: Automatically be notified of new posts in a topic, when you reply to that topic
+    restrictChat:
+      type: boolean
+      description: Do not allow other users to start chats with you (or add you to other chat rooms)
+    topicSearchEnabled:
+      type: boolean
+      description: Enable keyword searching within topics
+    updateUrlWithPostIndex:
+      type: boolean
+      description: Update url with post index while browsing topics
+    categoryTopicSort:
+      type: string
+      description: Default sorting strategy of the topics in a category
+    userLang:
+      type: string
+      description: Override the system localised language in favour of the language defined here
+    bootswatchSkin:
+      type: string
+      description: Set a custom bootswatch skin
+    homePageRoute:
+      type: string
+      description: Override the behaviour of the home page route (`/`) to go to a specific page
+    scrollToMyPost:
+      type: boolean
+      description: Automatically center the viewport to you new post after posting
+    notificationType_new-chat:
+      type: string
+      description: Notification type for new chat messages
+    notificationType_new-group-chat:
+      type: string
+      description: Notification type for new group chat messages
+    notificationType_new-reply:
+      type: string
+      description: Notification type for new topic replies
+    notificationType_post-edit:
+      type: string
+      description: Notification type for post edits
+    sendChatNotifications:
+      nullable: true
+    sendPostNotifications:
+      nullable: true
+    notificationType_upvote:
+      type: string
+      description: Notification type for upvotes
+    notificationType_new-topic:
+      type: string
+      description: Notification type for new topics
+    notificationType_follow:
+      type: string
+      description: Notification type for another user following you
+    notificationType_group-invite:
+      type: string
+      description: Notification type for group invitations
+    notificationType_group-leave:
+      type: string
+      description: Notification type for when users leave your group
+    upvoteNotifFreq:
+      type: string
+      description: How often to notify you when your posts are upvoted
+    notificationType_mention:
+      type: string
+      description: Notification type for mentions in a post
+    acpLang:
+      type: string
+      description: Language localisation for the admin control panel
+    notificationType_new-register:
+      type: string
+      description: Notification type for new registration in queue
+    notificationType_post-queue:
+      type: string
+      description: Notification type for new post in post queue
+    notificationType_new-post-flag:
+      type: string
+      description: Notification type for post flagged
+    notificationType_new-user-flag:
+      type: string
+      description: Notification type for user flagged
+    categoryWatchState:
+      type: string
+      description: Default watch state for categories
+    notificationType_group-request-membership:
+      type: string
+      description: Notification type for group membership requests
+    uid:
+      type: number
+      description: A user identifier
+  required:
+    - showemail
+    - usePagination
+    - topicsPerPage
+    - postsPerPage
+    - topicPostSort
+    - openOutgoingLinksInNewTab
+    - dailyDigestFreq
+    - showfullname
+    - followTopicsOnCreate
+    - followTopicsOnReply
+    - restrictChat
+    - topicSearchEnabled
+    - categoryTopicSort
+    - userLang
+    - bootswatchSkin
+    - homePageRoute
+    - scrollToMyPost
+    - notificationType_new-chat
+    - notificationType_new-reply
+    - notificationType_upvote
+    - notificationType_new-topic
+    - notificationType_follow
+    - notificationType_group-invite
+    - notificationType_group-leave
+    - upvoteNotifFreq
+    - acpLang
+    - notificationType_new-register
+    - notificationType_post-queue
+    - notificationType_new-post-flag
+    - notificationType_new-user-flag
+    - categoryWatchState
+    - notificationType_group-request-membership
+    - uid

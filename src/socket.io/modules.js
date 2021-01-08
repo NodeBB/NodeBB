@@ -71,7 +71,7 @@ SocketModules.chats.send = async function (socket, data) {
 	if (!canChat) {
 		throw new Error('[[error:no-privileges]]');
 	}
-	const results = await plugins.fireHook('filter:messaging.send', {
+	const results = await plugins.hooks.fire('filter:messaging.send', {
 		data: data,
 		uid: socket.uid,
 	});

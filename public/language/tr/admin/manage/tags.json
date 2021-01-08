@@ -14,5 +14,6 @@
 
 	"alerts.editing": "Etiket(ler)i Düzenle",
 	"alerts.confirm-delete": "Seçilen etiketleri gerçekten silmek istiyor musunuz?",
-	"alerts.update-success": "Etiket Güncellendi!"
+	"alerts.update-success": "Etiket Güncellendi!",
+	"reset-colors": "Reset colors"
 }

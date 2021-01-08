@@ -65,5 +65,11 @@
     "bootbox.confirm": "确认",
     "cover.dragging_title": "设置封面照片位置",
     "cover.dragging_message": "拖拽封面照片到期望的位置，然后点击“保存”",
-    "cover.saved": "封面照片和位置已保存"
+    "cover.saved": "封面照片和位置已保存",
+    "thumbs.modal.title": "Manage topic thumbnails",
+    "thumbs.modal.no-thumbs": "No thumbnails found.",
+    "thumbs.modal.resize-note": "<strong>Note</strong>: This forum is configured to resize topic thumbnails down to a maximum width of %1px",
+    "thumbs.modal.add": "Add thumbnail",
+    "thumbs.modal.remove": "Remove thumbnail",
+    "thumbs.modal.confirm-remove": "Are you sure you want to remove this thumbnail?"
 }

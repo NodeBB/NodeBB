@@ -4,7 +4,7 @@
 	"address-help": "Označena email adresa se odnosi na email koga će primalac videti \"Od\" i \"Odgovori\" poljima.",
 	"from": "Od koga",
 	"from-help": "The from name to display in the email.",
-	
+
 	"smtp-transport": "SMTP Transport",
 	"smtp-transport.enabled": "Use an external email server to send emails",
 	"smtp-transport-help": "You can select from a list of well-known services or enter a custom one.",
@@ -35,5 +35,7 @@
 	"subscriptions": "Email Digests",
 	"subscriptions.disable": "Disable email digests",
 	"subscriptions.hour": "Digest Hour",
-	"subscriptions.hour-help": "Molim unesite broj koji označava satnicu kada da pošalje zakazani sažeti email (nrp. <code>0</code> za ponoć, <code>17</code> za 5:00 pm). Uzmite u obzir da će se slanje događati po satnici samog servara, i da vrlo verovatno se ne poklapa sa satnicom vašeg sistema. <br /> Trenutno vreme servera je: <span id=\"serverTime\"></span><br /> Sledeći dnevni sažeti email zakazan je za slanje u <span id=\"nextDigestTime\"></span>"
+	"subscriptions.hour-help": "Molim unesite broj koji označava satnicu kada da pošalje zakazani sažeti email (nrp. <code>0</code> za ponoć, <code>17</code> za 5:00 pm). Uzmite u obzir da će se slanje događati po satnici samog servara, i da vrlo verovatno se ne poklapa sa satnicom vašeg sistema. <br /> Trenutno vreme servera je: <span id=\"serverTime\"></span><br /> Sledeći dnevni sažeti email zakazan je za slanje u <span id=\"nextDigestTime\"></span>",
+	"notifications.settings": "Email notification settings",
+	"notifications.remove-images": "Remove images from email notifications"
 }

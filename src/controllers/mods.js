@@ -30,8 +30,8 @@ modsController.flags.list = async function (req, res, next) {
 	const results = await Promise.all([
 		user.isAdminOrGlobalMod(req.uid),
 		user.getModeratedCids(req.uid),
-		plugins.fireHook('filter:flags.validateFilters', { filters: validFilters }),
-		plugins.fireHook('filter:flags.validateSort', { sorts: validSorts }),
+		plugins.hooks.fire('filter:flags.validateFilters', { filters: validFilters }),
+		plugins.hooks.fire('filter:flags.validateSort', { sorts: validSorts }),
 	]);
 	const [isAdminOrGlobalMod, moderatedCids,, { sorts }] = results;
 	let [,, { filters }] = results;
@@ -202,25 +202,31 @@ modsController.postQueue = async function (req, res, next) {
 	if (!isPrivileged) {
 		return next();
 	}
-
+	const cid = req.query.cid;
 	const page = parseInt(req.query.page, 10) || 1;
 	const postsPerPage = 20;
 
-	const [ids, isAdminOrGlobalMod, moderatedCids, allCategories] = await Promise.all([
+	const [ids, isAdminOrGlobalMod, moderatedCids, allCategories, categoriesData] = await Promise.all([
 		db.getSortedSetRange('post:queue', 0, -1),
 		user.isAdminOrGlobalMod(req.uid),
 		user.getModeratedCids(req.uid),
 		categories.buildForSelect(req.uid, 'find', ['disabled', 'link', 'slug']),
+		helpers.getCategoriesByStates(req.uid, cid, null, 'moderate'),
 	]);
 
+	if (cid && !moderatedCids.includes(String(cid)) && !isAdminOrGlobalMod) {
+		return next();
+	}
 	allCategories.forEach((c) => {
 		c.disabledClass = !isAdminOrGlobalMod && !moderatedCids.includes(String(c.cid));
 	});
 
 	let postData = await getQueuedPosts(ids);
-	postData = postData.filter(p => p && (isAdminOrGlobalMod || moderatedCids.includes(String(p.category.cid))));
+	postData = postData.filter(p => p &&
+		(!categoriesData.selectedCids.length || categoriesData.selectedCids.includes(p.category.cid)) &&
+		(isAdminOrGlobalMod || moderatedCids.includes(String(p.category.cid))));
 
-	({ posts: postData } = await plugins.fireHook('filter:post-queue.get', {
+	({ posts: postData } = await plugins.hooks.fire('filter:post-queue.get', {
 		posts: postData,
 		req: req,
 	}));
@@ -234,6 +240,8 @@ modsController.postQueue = async function (req, res, next) {
 		title: '[[pages:post-queue]]',
 		posts: postData,
 		allCategories: allCategories,
+		...categoriesData,
+		allCategoriesUrl: 'post-queue' + helpers.buildQueryString(req.query, 'cid', ''),
 		pagination: pagination.create(page, pageCount),
 		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[pages:post-queue]]' }]),
 	});
@@ -268,11 +276,11 @@ async function addMetaData(postData) {
 	}
 	postData.topic = { cid: 0 };
 	if (postData.data.cid) {
-		postData.topic = { cid: postData.data.cid };
+		postData.topic = { cid: parseInt(postData.data.cid, 10) };
 	} else if (postData.data.tid) {
 		postData.topic = await topics.getTopicFields(postData.data.tid, ['title', 'cid']);
 	}
 	postData.category = await categories.getCategoryData(postData.topic.cid);
-	const result = await plugins.fireHook('filter:parse.post', { postData: postData.data });
+	const result = await plugins.hooks.fire('filter:parse.post', { postData: postData.data });
 	postData.data.content = result.postData.content;
 }

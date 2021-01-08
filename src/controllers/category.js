@@ -2,6 +2,7 @@
 
 
 const nconf = require('nconf');
+const validator = require('validator');
 
 const db = require('../database');
 const privileges = require('../privileges');
@@ -16,6 +17,9 @@ const analytics = require('../analytics');
 
 const categoryController = module.exports;
 
+const url = nconf.get('url');
+const relative_path = nconf.get('relative_path');
+
 categoryController.get = async function (req, res, next) {
 	const cid = req.params.category_id;
 
@@ -26,7 +30,7 @@ categoryController.get = async function (req, res, next) {
 	}
 
 	const [categoryFields, userPrivileges, userSettings, rssToken] = await Promise.all([
-		categories.getCategoryFields(cid, ['slug', 'disabled']),
+		categories.getCategoryFields(cid, ['slug', 'disabled', 'link']),
 		privileges.categories.get(cid, req.uid),
 		user.getSettings(req.uid),
 		user.auth.getFeedToken(req.uid),
@@ -49,6 +53,10 @@ categoryController.get = async function (req, res, next) {
 		return helpers.redirect(res, '/category/' + categoryFields.slug, true);
 	}
 
+	if (categoryFields.link) {
+		await db.incrObjectField('category:' + cid, 'timesClicked');
+		return helpers.redirect(res, validator.unescape(categoryFields.link));
+	}
 
 	if (!userSettings.usePagination) {
 		topicIndex = Math.max(0, topicIndex - (Math.ceil(userSettings.topicsPerPage / 2) - 1));
@@ -86,10 +94,7 @@ categoryController.get = async function (req, res, next) {
 	}
 
 	categories.modifyTopicsByPrivilege(categoryData.topics, userPrivileges);
-	if (categoryData.link) {
-		await db.incrObjectField('category:' + categoryData.cid, 'timesClicked');
-		return helpers.redirect(res, categoryData.link);
-	}
+
 	await buildBreadcrumbs(req, categoryData);
 	if (categoryData.children.length) {
 		const allCategories = [];
@@ -103,7 +108,7 @@ categoryController.get = async function (req, res, next) {
 	categoryData.showSelect = userPrivileges.editable;
 	categoryData.showTopicTools = userPrivileges.editable;
 	categoryData.topicIndex = topicIndex;
-	categoryData.rssFeedUrl = nconf.get('url') + '/category/' + categoryData.cid + '.rss';
+	categoryData.rssFeedUrl = url + '/category/' + categoryData.cid + '.rss';
 	if (parseInt(req.uid, 10)) {
 		categories.markAsRead([cid], req.uid);
 		categoryData.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;
@@ -115,7 +120,7 @@ categoryController.get = async function (req, res, next) {
 	categoryData['reputation:disabled'] = meta.config['reputation:disabled'];
 	categoryData.pagination = pagination.create(currentPage, pageCount, req.query);
 	categoryData.pagination.rel.forEach(function (rel) {
-		rel.href = nconf.get('url') + '/category/' + categoryData.slug + rel.href;
+		rel.href = url + '/category/' + categoryData.slug + rel.href;
 		res.locals.linkTags.push(rel);
 	});
 
@@ -128,12 +133,12 @@ async function buildBreadcrumbs(req, categoryData) {
 	const breadcrumbs = [
 		{
 			text: categoryData.name,
-			url: nconf.get('relative_path') + '/category/' + categoryData.slug,
+			url: relative_path + '/category/' + categoryData.slug,
 			cid: categoryData.cid,
 		},
 	];
 	const crumbs = await helpers.buildCategoryBreadcrumbs(categoryData.parentCid);
-	if (req.originalUrl.startsWith(nconf.get('relative_path') + '/api/category') || req.originalUrl.startsWith(nconf.get('relative_path') + '/category')) {
+	if (req.originalUrl.startsWith(relative_path + '/api/category') || req.originalUrl.startsWith(relative_path + '/category')) {
 		categoryData.breadcrumbs = crumbs.concat(breadcrumbs);
 	}
 }
@@ -143,14 +148,17 @@ function addTags(categoryData, res) {
 		{
 			name: 'title',
 			content: categoryData.name,
+			noEscape: true,
 		},
 		{
 			property: 'og:title',
 			content: categoryData.name,
+			noEscape: true,
 		},
 		{
 			name: 'description',
 			content: categoryData.description,
+			noEscape: true,
 		},
 		{
 			property: 'og:type',
@@ -160,7 +168,7 @@ function addTags(categoryData, res) {
 
 	if (categoryData.backgroundImage) {
 		if (!categoryData.backgroundImage.startsWith('http')) {
-			categoryData.backgroundImage = nconf.get('url') + categoryData.backgroundImage;
+			categoryData.backgroundImage = url + categoryData.backgroundImage;
 		}
 		res.locals.metaTags.push({
 			property: 'og:image',
@@ -171,7 +179,7 @@ function addTags(categoryData, res) {
 	res.locals.linkTags = [
 		{
 			rel: 'up',
-			href: nconf.get('url'),
+			href: url,
 		},
 	];
 

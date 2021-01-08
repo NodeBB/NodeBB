@@ -19,7 +19,7 @@ blocksController.getBlocks = async function (req, res, next) {
 		return next();
 	}
 	const uids = await user.blocks.list(userData.uid);
-	const data = await plugins.fireHook('filter:user.getBlocks', {
+	const data = await plugins.hooks.fire('filter:user.getBlocks', {
 		uids: uids,
 		uid: userData.uid,
 		start: start,
@@ -30,7 +30,7 @@ blocksController.getBlocks = async function (req, res, next) {
 	userData.users = await user.getUsers(data.uids, req.uid);
 	userData.title = '[[pages:account/blocks, ' + userData.username + ']]';
 
-	const pageCount = Math.ceil(userData.blocksCount / resultsPerPage);
+	const pageCount = Math.ceil(userData.counts.blocks / resultsPerPage);
 	userData.pagination = pagination.create(page, pageCount);
 
 	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[user:blocks]]' }]);

@@ -4,7 +4,8 @@ const categories = require('../categories');
 const privileges = require('../privileges');
 const user = require('../user');
 const topics = require('../topics');
-const apiController = require('../controllers/api');
+const api = require('../api');
+const sockets = require('.');
 
 const SocketCategories = module.exports;
 
@@ -147,7 +148,9 @@ SocketCategories.isModerator = async function (socket, cid) {
 };
 
 SocketCategories.getCategory = async function (socket, cid) {
-	return await apiController.getCategoryData(cid, socket.uid);
+	sockets.warnDeprecated(socket, 'GET /api/v3/categories/:tid');
+	return await api.categories.get(socket, { cid });
+	// return await apiController.getCategoryData(cid, socket.uid);
 };
 
 require('../promisify')(SocketCategories);

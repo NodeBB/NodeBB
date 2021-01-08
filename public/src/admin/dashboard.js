@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/dashboard', ['semver', 'Chart', 'translator', 'benchpress'], function (semver, Chart, translator, Benchpress) {
+define('admin/dashboard', ['Chart', 'translator', 'benchpress'], function (Chart, translator, Benchpress) {
 	var	Admin = {};
 	var	intervals = {
 		rooms: false,
@@ -343,7 +343,7 @@ define('admin/dashboard', ['semver', 'Chart', 'translator', 'benchpress'], funct
 			$('[data-action="updateGraph"][data-units="custom"]').on('click', function () {
 				var targetEl = $(this);
 
-				Benchpress.parse('admin/partials/pageviews-range-select', {}, function (html) {
+				Benchpress.render('admin/partials/pageviews-range-select', {}).then(function (html) {
 					var modal = bootbox.dialog({
 						title: '[[admin/dashboard:page-views-custom]]',
 						message: html,
@@ -500,10 +500,14 @@ define('admin/dashboard', ['semver', 'Chart', 'translator', 'benchpress'], funct
 
 	function updateTopicsGraph(topics) {
 		if (!topics.length) {
-			topics = [{
-				title: '[[admin/dashboard:no-users-browsing]]',
-				count: 1,
-			}];
+			translator.translate('[[admin/dashboard:no-users-browsing]]', function (translated) {
+				topics = [{
+					title: translated,
+					count: 1,
+				}];
+				updateTopicsGraph(topics);
+			});
+			return;
 		}
 
 		graphs.topics.data.labels = [];
@@ -522,9 +526,8 @@ define('admin/dashboard', ['semver', 'Chart', 'translator', 'benchpress'], funct
 			var legend = $('#topics-legend').html('');
 			var html = '';
 			topics.forEach(function (t, i) {
-				var	label = t.count === '0' ?
-					t.title :
-					'<a title="' + t.title + '"href="' + config.relative_path + '/topic/' + t.tid + '" target="_blank"> ' + t.title + '</a>';
+				var link = t.tid ? '<a title="' + t.title + '"href="' + config.relative_path + '/topic/' + t.tid + '" target="_blank"> ' + t.title + '</a>' : t.title;
+				var	label = t.count === '0' ? t.title : link;
 
 				html += '<li>' +
 					'<div style="background-color: ' + topicColors[i] + ';"></div>' +

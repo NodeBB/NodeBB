@@ -324,39 +324,8 @@
 		},
 		// https://github.com/jprichardson/string.js/blob/master/lib/string.js
 		stripHTMLTags: function (str, tags) {
-			var pattern = (tags || ['']).map(function (tag) {
-				return utils.escapeRegexChars(tag);
-			}).join('|');
+			var pattern = (tags || ['']).join('|');
 			return String(str).replace(new RegExp('<(\\/)?(' + (pattern || '[^\\s>]+') + ')(\\s+[^<>]*?)?\\s*(\\/)?>', 'gi'), '');
-		},
-
-		invalidUnicodeChars: XRegExp('[^\\p{L}\\s\\d\\-_]', 'g'),
-		invalidLatinChars: /[^\w\s\d\-_]/g,
-		trimRegex: /^\s+|\s+$/g,
-		collapseWhitespace: /\s+/g,
-		collapseDash: /-+/g,
-		trimTrailingDash: /-$/g,
-		trimLeadingDash: /^-/g,
-		isLatin: /^[\w\d\s.,\-@]+$/,
-		languageKeyRegex: /\[\[[\w]+:.+\]\]/,
-
-		// http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
-		slugify: function (str, preserveCase) {
-			if (!str) {
-				return '';
-			}
-			str = String(str).replace(utils.trimRegex, '');
-			if (utils.isLatin.test(str)) {
-				str = str.replace(utils.invalidLatinChars, '-');
-			} else {
-				str = XRegExp.replace(str, utils.invalidUnicodeChars, '-');
-			}
-			str = !preserveCase ? str.toLocaleLowerCase() : str;
-			str = str.replace(utils.collapseWhitespace, '-');
-			str = str.replace(utils.collapseDash, '-');
-			str = str.replace(utils.trimTrailingDash, '');
-			str = str.replace(utils.trimLeadingDash, '');
-			return str;
 		},
 
 		cleanUpTag: function (tag, maxLength) {
@@ -397,6 +366,7 @@
 			return !isNaN(parseFloat(n)) && isFinite(n);
 		},
 
+		languageKeyRegex: /\[\[[\w]+:.+\]\]/,
 		hasLanguageKey: function (input) {
 			return utils.languageKeyRegex.test(input);
 		},

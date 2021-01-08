@@ -36,7 +36,11 @@ Flags.init = async function () {
 		if (!Array.isArray(value)) {
 			sets.push(prefix + value);
 		} else if (value.length) {
-			value.forEach(x => orSets.push(prefix + x));
+			if (value.length === 1) {
+				sets.push(prefix + value[0]);
+			} else {
+				value.forEach(x => orSets.push(prefix + x));
+			}
 		}
 	}
 
@@ -67,6 +71,10 @@ Flags.init = async function () {
 					case 'mine':
 						sets.push('flags:byAssignee:' + uid);
 						break;
+
+					case 'unresolved':
+						prepareSets(sets, orSets, 'flags:byState:', ['open', 'wip']);
+						break;
 				}
 			},
 		},
@@ -76,10 +84,10 @@ Flags.init = async function () {
 	};
 
 	try {
-		const data = await plugins.fireHook('filter:flags.getFilters', hookData);
+		const data = await plugins.hooks.fire('filter:flags.getFilters', hookData);
 		Flags._filters = data.filters;
 	} catch (err) {
-		winston.error('[flags/init] Could not retrieve filters', err.stack);
+		winston.error('[flags/init] Could not retrieve filters\n' + err.stack);
 		Flags._filters = {};
 	}
 };
@@ -107,15 +115,19 @@ Flags.get = async function (flagId) {
 		reports: reports,
 	};
 
-	const data = await plugins.fireHook('filter:flags.get', {
+	const data = await plugins.hooks.fire('filter:flags.get', {
 		flag: flagObj,
 	});
 	return data.flag;
 };
 
-Flags.list = async function (data) {
-	const filters = data.filters || {};
+Flags.getCount = async function ({ uid, filters }) {
+	filters = filters || {};
+	const flagIds = await Flags.getFlagIdsWithFilters({ filters, uid });
+	return flagIds.length;
+};
 
+Flags.getFlagIdsWithFilters = async function ({ filters, uid }) {
 	let sets = [];
 	const orSets = [];
 
@@ -126,7 +138,7 @@ Flags.list = async function (data) {
 	for (var type in filters) {
 		if (filters.hasOwnProperty(type)) {
 			if (Flags._filters.hasOwnProperty(type)) {
-				Flags._filters[type](sets, orSets, filters[type], data.uid);
+				Flags._filters[type](sets, orSets, filters[type], uid);
 			} else {
 				winston.warn('[flags/list] No flag filter type found: ' + type);
 			}
@@ -152,6 +164,15 @@ Flags.list = async function (data) {
 		}
 	}
 
+	return flagIds;
+};
+
+Flags.list = async function (data) {
+	const filters = data.filters || {};
+	let flagIds = await Flags.getFlagIdsWithFilters({
+		filters,
+		uid: data.uid,
+	});
 	flagIds = await Flags.sort(flagIds, data.sort);
 
 	// Create subset for parsing based on page number (n=20)
@@ -177,7 +198,7 @@ Flags.list = async function (data) {
 		});
 	}));
 
-	const payload = await plugins.fireHook('filter:flags.list', {
+	const payload = await plugins.hooks.fire('filter:flags.list', {
 		flags: flags,
 		page: filters.page,
 		uid: data.uid,
@@ -251,12 +272,24 @@ Flags.validate = async function (payload) {
 		throw new Error('[[error:user-banned]]');
 	}
 
+	// Disallow flagging of profiles/content of privileged users
+	const [targetPrivileged, reporterPrivileged] = await Promise.all([
+		user.isPrivileged(target.uid),
+		user.isPrivileged(reporter.uid),
+	]);
+	if (targetPrivileged && !reporterPrivileged) {
+		throw new Error('[[error:cant-flag-privileged]]');
+	}
+
 	if (payload.type === 'post') {
 		const editable = await privileges.posts.canEdit(payload.id, payload.uid);
 		if (!editable.flag && !meta.config['reputation:disabled'] && reporter.reputation < meta.config['min:rep:flag']) {
 			throw new Error('[[error:not-enough-reputation-to-flag]]');
 		}
 	} else if (payload.type === 'user') {
+		if (parseInt(payload.id, 10) === parseInt(payload.uid, 10)) {
+			throw new Error('[[error:cant-flag-self]]');
+		}
 		const editable = await privileges.users.canEdit(payload.uid, payload.id);
 		if (!editable && !meta.config['reputation:disabled'] && reporter.reputation < meta.config['min:rep:flag']) {
 			throw new Error('[[error:not-enough-reputation-to-flag]]');
@@ -395,7 +428,7 @@ Flags.create = async function (type, id, uid, reason, timestamp) {
 			posts.setPostField(id, 'flagId', flagId)
 		);
 
-		if (targetUid) {
+		if (targetUid && parseInt(targetUid, 10) !== parseInt(uid, 10)) {
 			batched.push(user.incrementUserFlagsBy(targetUid, 1));
 		}
 	} else if (type === 'user') {
@@ -584,7 +617,7 @@ Flags.update = async function (flagId, uid, changeset) {
 	tasks.push(Flags.appendHistory(flagId, uid, changeset));
 	await Promise.all(tasks);
 
-	plugins.fireHook('action:flags.update', { flagId: flagId, changeset: changeset, uid: uid });
+	plugins.hooks.fire('action:flags.update', { flagId: flagId, changeset: changeset, uid: uid });
 };
 
 Flags.resolveFlag = async function (type, id, uid) {
@@ -709,7 +742,7 @@ Flags.notify = async function (flagObj, uid) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	plugins.fireHook('action:flags.create', {
+	plugins.hooks.fire('action:flags.create', {
 		flag: flagObj,
 	});
 	uids = uids.filter(_uid => parseInt(_uid, 10) !== parseInt(uid, 10));

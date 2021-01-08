@@ -1,21 +1,21 @@
 {
-	"lead": "Une liste des statistiques des résumés envoyés est affichée ci-dessous.",
-	"disclaimer": "Veuillez noter que l'envoi par courrier électronique n'est pas garantie en raison de la nature de la technologie de votre messagerie. De nombreuses variables déterminent si un courrier électronique envoyé au serveur destinataire arrive dans la boîte de réception de l'utilisateur, y compris la réputation du serveur, les adresses IP figurant sur la liste noire et si les DKIM / SPF / DMARC sont configurés.",
+	"lead": "Une liste des statistiques des lettres d'activités envoyées est affichée ci-dessous.",
+	"disclaimer": "Veuillez noter que l'envoi par email n'est pas garantie en raison de la nature de la technologie de votre serveur de messagerie. De nombreuses variables déterminent si un email envoyé au serveur destinataire arrive dans la boîte de réception de l'utilisateur, y compris la réputation du serveur, les adresses IP figurant sur la liste noire et si les DKIM / SPF / DMARC sont configurés.",
 	"disclaimer-continued": "Un envoi réussie signifie que le message a été envoyé avec succès par NodeBB et acquitté par le serveur destinataire. Cela ne signifie pas que l'e-mail a atterri dans la boîte de réception. Pour de meilleurs résultats, nous vous recommandons d'utiliser un service de messagerie tiers, tel que <a href=\"https://sendgrid.com/why-sendgrid/\">SendGrid</a>.",
 
 	"user": "Utilisateur",
 	"subscription": "Type d'abonnement",
 	"last-delivery": "Dernier envoi réussi",
 	"default": "Valeur par défaut",
-	"default-help": "<em>La valeur par défaut</em> signifie que l'utilisateur n'a pas explicitement modifié ses paramètres pour les résumés; qui sont : &quot;<strong>%1</strong>&quot;",
+	"default-help": "<em>La valeur par défaut</em> signifie que l'utilisateur n'a pas explicitement modifié ses paramètres pour les lettres d'activités, qui sont : &quot;<strong>%1</strong>&quot;",
 	"resend": "Renvoi",
 	"resend-all-confirm": "Voulez-vous vraiment exécuter manuellement cette envoi ?",
-	"resent-single": "Renvoi manuel du Résumé terminé",
-	"resent-day": "Résumé quotidienne renvoyé",
-	"resent-week": "Résumé hebdomadaire renvoyé",
-	"resent-month": "Résumé mensuel renvoyé",
+	"resent-single": "Lettre d'activité envoyée",
+	"resent-day": "Lettre d'activités quotidienne envoyée",
+	"resent-week": "Lettre d'activité hebdomadaire envoyée",
+	"resent-month": "Lettre d'activité mensuel envoyé",
 	"null": "<em>Jamais</em>",
-	"manual-run": "Lancer le résumé manuellement:",
+	"manual-run": "Lancer manuellement l'envoi:",
 
 	"no-delivery-data": "Aucune donnée d'envoi trouvée"
 }

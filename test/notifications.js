@@ -450,10 +450,10 @@ describe('Notifications', function () {
 					user.notifications.getAll(uid, '', function (err, data) {
 						meta.config.welcomeNotification = '';
 						assert.ifError(err);
-						assert(data.includes('welcome_' + uid));
+						assert(data.includes('welcome_' + uid), data);
 						done();
 					});
-				}, 1100);
+				}, 2000);
 			});
 		});
 	});

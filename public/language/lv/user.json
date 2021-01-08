@@ -123,6 +123,7 @@
     "open_links_in_new_tab": "Atvērt izejošās saites jaunā cilnē",
     "enable_topic_searching": "Iespējot meklēšanu tematu saturā",
     "topic_search_help": "Ja ir iespējots, meklēšana tematos ignorē pārlūka noklusējuma lapu meklēšanas uzvedību un meklē visā tematā, ne tikai tā temata daļā, kas tiek rādīta ekrānā",
+    "update_url_with_post_index": "Update url with post index while browsing topics",
     "scroll_to_my_post": "Rādīt jauno rakstu pēc publicēšanas",
     "follow_topics_you_reply_to": "Novērot tematus, kuros esi rakstījis(-jusi)",
     "follow_topics_you_create": "Novērot tematus, kurus esi izveidojis(-jusi)",

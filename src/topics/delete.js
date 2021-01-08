@@ -100,7 +100,7 @@ module.exports = function (Topics) {
 			Topics.deleteTopicTags(tid),
 			reduceCounters(tid),
 		]);
-		plugins.fireHook('action:topic.purge', { topic: deletedTopic, uid: uid });
+		plugins.hooks.fire('action:topic.purge', { topic: deletedTopic, uid: uid });
 		await db.delete('topic:' + tid);
 	};
 

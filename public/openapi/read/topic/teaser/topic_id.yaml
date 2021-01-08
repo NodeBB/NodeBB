@@ -1,0 +1,18 @@
+get:
+  tags:
+    - topics
+  summary: Get a topic's teaser post
+  parameters:
+    - name: topic_id
+      in: path
+      required: true
+      schema:
+        type: string
+      example: 1
+  responses:
+    "200":
+      description: "A JSON object containing the teaser post for a topic"
+      content:
+        application/json:
+          schema:
+            $ref: ../../../components/schemas/PostsObject.yaml#/PostsObject

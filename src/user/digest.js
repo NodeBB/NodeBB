@@ -87,7 +87,7 @@ Digest.getSubscribers = async function (interval) {
 		batch: 500,
 	});
 
-	const results = await plugins.fireHook('filter:digest.subscribers', {
+	const results = await plugins.hooks.fire('filter:digest.subscribers', {
 		interval: interval,
 		subscribers: subscribers,
 	});
@@ -102,17 +102,19 @@ Digest.send = async function (data) {
 
 	await async.eachLimit(data.subscribers, 100, async function (uid) {
 		const userObj = await user.getUserFields(uid, ['uid', 'username', 'userslug', 'lastonline']);
-		let [notifications, topicsData] = await Promise.all([
+		const [notifications, topTopics, popularTopics, recentTopics] = await Promise.all([
 			user.notifications.getUnreadInterval(userObj.uid, data.interval),
-			getTermTopics(data.interval, userObj.uid, 0, 9),
+			getTermTopics(data.interval, userObj.uid, 0, 9, 'votes'),
+			getTermTopics(data.interval, userObj.uid, 0, 9, 'posts'),
+			getTermTopics(data.interval, userObj.uid, 0, 9, 'recent'),
 		]);
-		notifications = notifications.filter(Boolean);
+		const unreadNotifs = notifications.filter(Boolean);
 		// If there are no notifications and no new topics, don't bother sending a digest
-		if (!notifications.length && !topicsData.length) {
+		if (!unreadNotifs.length && !topTopics.length && !popularTopics.length && !recentTopics.length) {
 			return;
 		}
 
-		notifications.forEach(function (n) {
+		unreadNotifs.forEach(function (n) {
 			if (n.image && !n.image.startsWith('http')) {
 				n.image = nconf.get('base_url') + n.image;
 			}
@@ -121,29 +123,19 @@ Digest.send = async function (data) {
 			}
 		});
 
-		// Fix relative paths in topic data
-		topicsData = topicsData.map(function (topicObj) {
-			const user = topicObj.hasOwnProperty('teaser') && topicObj.teaser && topicObj.teaser.user ? topicObj.teaser.user : topicObj.user;
-			if (user && user.picture && utils.isRelativeUrl(user.picture)) {
-				user.picture = nconf.get('base_url') + user.picture;
-			}
-			return topicObj;
-		});
 		emailsSent += 1;
 		const now = new Date();
-		try {
-			await emailer.send('digest', userObj.uid, {
-				subject: '[[email:digest.subject, ' + (now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate()) + ']]',
-				username: userObj.username,
-				userslug: userObj.userslug,
-				notifications: notifications,
-				recent: topicsData,
-				interval: data.interval,
-				showUnsubscribe: true,
-			});
-		} catch (err) {
-			winston.error('[user/jobs] Could not send digest email\n' + err.stack);
-		}
+		await emailer.send('digest', userObj.uid, {
+			subject: '[[email:digest.subject, ' + (now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate()) + ']]',
+			username: userObj.username,
+			userslug: userObj.userslug,
+			notifications: unreadNotifs,
+			recent: recentTopics,
+			topTopics: topTopics,
+			popularTopics: popularTopics,
+			interval: data.interval,
+			showUnsubscribe: true,
+		}).catch(err => winston.error('[user/jobs] Could not send digest email\n[emailer.send] ' + err.stack));
 
 		if (data.interval !== 'alltime') {
 			await db.sortedSetAdd('digest:delivery', now.getTime(), userObj.uid);
@@ -179,22 +171,30 @@ Digest.getDeliveryTimes = async (start, stop) => {
 	};
 };
 
-async function getTermTopics(term, uid, start, stop) {
+async function getTermTopics(term, uid, start, stop, sort) {
 	const options = {
 		uid: uid,
 		start: start,
 		stop: stop,
 		term: term,
-		sort: 'posts',
+		sort: sort,
 		teaserPost: 'last-post',
 	};
-	let data = await topics.getSortedTopics(options);
-	if (!data.topics.length) {
-		data = await topics.getLatestTopics(options);
-	}
+	const data = sort === 'recent' ?
+		await topics.getLatestTopics(options) :
+		await topics.getSortedTopics(options);
+
 	data.topics.forEach(function (topicObj) {
-		if (topicObj && topicObj.teaser && topicObj.teaser.content && topicObj.teaser.content.length > 255) {
-			topicObj.teaser.content = topicObj.teaser.content.slice(0, 255) + '...';
+		if (topicObj) {
+			if (topicObj.teaser && topicObj.teaser.content && topicObj.teaser.content.length > 255) {
+				topicObj.teaser.content = topicObj.teaser.content.slice(0, 255) + '...';
+			}
+			// Fix relative paths in topic data
+			const user = topicObj.hasOwnProperty('teaser') && topicObj.teaser && topicObj.teaser.user ?
+				topicObj.teaser.user : topicObj.user;
+			if (user && user.picture && utils.isRelativeUrl(user.picture)) {
+				user.picture = nconf.get('base_url') + user.picture;
+			}
 		}
 	});
 	return data.topics.filter(topic => topic && !topic.deleted);

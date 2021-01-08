@@ -44,5 +44,6 @@
     "search-preferences-saved": "Paieškos nustatymai išsaugoti",
     "search-preferences-cleared": "Paieškos nuostatos išvalytos",
     "show-results-as": "Rodyti rezultatus kaip",
-    "see-more-results": "See more results (%1)"
+    "see-more-results": "See more results (%1)",
+    "search-in-category": "Search in \"%1\""
 }

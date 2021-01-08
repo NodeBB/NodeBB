@@ -1,0 +1,23 @@
+get:
+  tags:
+    - admin
+  summary: Get homepage settings
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  routes:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        route:
+                          type: string
+                        name:
+                          type: string
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

@@ -211,6 +211,11 @@ describe('Hash methods', function () {
 				done();
 			});
 		});
+
+		it('should return null and not error', async () => {
+			const data = await db.getObjectField('hashTestObject', ['field1', 'field2']);
+			assert.strictEqual(data, null);
+		});
 	});
 
 	describe('getObjectFields()', function () {
@@ -410,6 +415,16 @@ describe('Hash methods', function () {
 			});
 		});
 
+		it('should delete multiple fields of multiple objects', async function () {
+			await db.setObject('deleteFields1', { foo: 'foo1', baz: '2' });
+			await db.setObject('deleteFields2', { foo: 'foo2', baz: '3' });
+			await db.deleteObjectFields(['deleteFields1', 'deleteFields2'], ['baz']);
+			const obj1 = await db.getObject('deleteFields1');
+			const obj2 = await db.getObject('deleteFields2');
+			assert.deepStrictEqual(obj1, { foo: 'foo1' });
+			assert.deepStrictEqual(obj2, { foo: 'foo2' });
+		});
+
 		it('should not error if fields is empty array', async () => {
 			await db.deleteObjectFields('someKey', []);
 		});
@@ -456,7 +471,7 @@ describe('Hash methods', function () {
 			db.incrObjectField('testObject12', 'field1', function (err, newValue) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.equal(newValue, 1);
+				assert.strictEqual(newValue, 1);
 				done();
 			});
 		});
@@ -465,7 +480,7 @@ describe('Hash methods', function () {
 			db.incrObjectField('testObject11', 'age', function (err, newValue) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.equal(newValue, 100);
+				assert.strictEqual(newValue, 100);
 				done();
 			});
 		});

@@ -20,16 +20,10 @@
 	"add-group": "Add Group",
 	"invite": "Meghívás",
 	"new": "Új felhasználó",
-
-	"pills.latest": "Legutóbbiak",
+	"filter-by": "Filter by",
 	"pills.unvalidated": "Nem igazoltak",
-	"pills.no-posts": "Hozzászólás nélküliek",
-	"pills.top-posters": "Legaktívabbak",
-	"pills.top-rep": "Legnépszerűbbek",
-	"pills.inactive": "Inaktívak",
-	"pills.flagged": "Legtöbbet megjelöltek",
+	"pills.validated": "Validated",
 	"pills.banned": "Kitiltottak",
-	"pills.search": "Keresés",
 
 	"50-per-page": "50 per page",
 	"100-per-page": "100 per page",
@@ -108,5 +102,7 @@
 
 	"alerts.prompt-email": "Emails: ",
 	"alerts.email-sent-to": "Meghívó email elküldve %1 részére",
-	"alerts.x-users-found": "%1 user(s) found, (%2 seconds)"
+	"alerts.x-users-found": "%1 user(s) found, (%2 seconds)",
+	"export-users-started": "Exporting users as csv, this might take a while. You will receive a notification when it is complete.",
+	"export-users-completed": "Users exported as csv, click here to download."
 }

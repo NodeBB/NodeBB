@@ -1,7 +1,8 @@
 'use strict';
 
-
-define('forum/account/edit/password', ['forum/account/header', 'translator', 'zxcvbn'], function (header, translator, zxcvbn) {
+define('forum/account/edit/password', [
+	'forum/account/header', 'translator', 'zxcvbn', 'api',
+], function (header, translator, zxcvbn, api) {
 	var AccountEditPassword = {};
 
 	AccountEditPassword.init = function () {
@@ -67,29 +68,27 @@ define('forum/account/edit/password', ['forum/account/header', 'translator', 'zx
 			var btn = $(this);
 			if (passwordvalid && passwordsmatch) {
 				btn.addClass('disabled').find('i').removeClass('hide');
-				socket.emit('user.changePassword', {
+				api.put('/users/' + ajaxify.data.theirid + '/password', {
 					currentPassword: currentPassword.val(),
 					newPassword: password.val(),
-					uid: ajaxify.data.theirid,
-				}, function (err) {
-					btn.removeClass('disabled').find('i').addClass('hide');
-					currentPassword.val('');
-					password.val('');
-					password_confirm.val('');
-					password_notify.parent().removeClass('show-success show-danger');
-					password_confirm_notify.parent().removeClass('show-success show-danger');
-					passwordsmatch = false;
-					passwordvalid = false;
-
-					if (err) {
-						return app.alertError(err.message);
-					}
-					if (parseInt(app.user.uid, 10) === parseInt(ajaxify.data.uid, 10)) {
-						window.location.href = config.relative_path + '/login';
-					} else {
-						ajaxify.go('user/' + ajaxify.data.userslug + '/edit');
-					}
-				});
+				})
+					.then(() => {
+						if (parseInt(app.user.uid, 10) === parseInt(ajaxify.data.uid, 10)) {
+							window.location.href = config.relative_path + '/login';
+						} else {
+							ajaxify.go('user/' + ajaxify.data.userslug + '/edit');
+						}
+					})
+					.finally(() => {
+						btn.removeClass('disabled').find('i').addClass('hide');
+						currentPassword.val('');
+						password.val('');
+						password_confirm.val('');
+						password_notify.parent().removeClass('show-success show-danger');
+						password_confirm_notify.parent().removeClass('show-success show-danger');
+						passwordsmatch = false;
+						passwordvalid = false;
+					});
 			} else {
 				if (!passwordsmatch) {
 					app.alertError('[[user:change_password_error_match]]');

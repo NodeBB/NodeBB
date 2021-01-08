@@ -34,6 +34,8 @@
 	"timestamp.cut-off-help": "Daty oraz godziny będą wyświetlane w sposób relatywny  (np. \"3 godziny temu\" / \"5 dni temu\"), oraz przetłumaczone na różne\n\t\t\t\t\tjęzyki. Po określonym czasie, ten tekst może zostać zmieniony, aby wyświetlać sformatowane daty.\n\t\t\t\t\t(np. 4 Lut 2017 12:45).<br /><em>(domyślnie: <code>30</code>, lub jeden miesiąc). Ustaw 0, aby zawsze wyświetlać daty; pozostaw puste, aby korzystać z tylko z relatywnych opisów.</em>",
 	"timestamp.necro-threshold": "Próg nekro (w dniach)",
 	"timestamp.necro-threshold-help": "Komunikat zostanie wyświetlony między postami, jeśli czas między nimi jest dłuższy niż próg nekro. (Domyślnie: <code>7</code> lub jeden tydzień). Ustaw na 0, aby wyłączyć.</em>",
+	"timestamp.topic-views-interval": "Increment topic views interval (in minutes)",
+	"timestamp.topic-views-interval-help": "Topic views will only increment once every X minutes as defined by this setting.",
 	"teaser": "Zwiastun postu",
 	"teaser.last-post": "Ostatni &ndash; Pokaż ostatni post, włączając pierwszy post, w razie braku odpowiedzi",
 	"teaser.last-reply": "Ostatni &ndash; Pokaż ostatnią odpowiedź lub komunikat „Brak odpowiedzi” w razie ich braku",

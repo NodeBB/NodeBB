@@ -1,0 +1,90 @@
+get:
+  tags:
+    - admin
+  summary: Get widget settings
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  templates:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        template:
+                          type: string
+                        areas:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                              location:
+                                type: string
+                  areas:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        template:
+                          type: string
+                        location:
+                          type: string
+                        data:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              widget:
+                                type: string
+                              data:
+                                type: object
+                                properties:
+                                  html:
+                                    type: string
+                                  cid:
+                                    type: string
+                                  title:
+                                    type: string
+                                  container:
+                                    type: string
+                                  groups:
+                                    type: array
+                                    items: {}
+                                  groupsHideFrom:
+                                    type: array
+                                    items: {}
+                                  hide-mobile:
+                                    type: string
+                                  numTags:
+                                    type: string
+                                  numUsers:
+                                    type: string
+                                  text:
+                                    type: string
+                                  parseAsPost:
+                                    type: string
+                                  numTopics:
+                                    type: string
+                  availableWidgets:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        widget:
+                          type: string
+                        name:
+                          type: string
+                        description:
+                          type: string
+                        content:
+                          type: string
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

@@ -16,26 +16,28 @@
     "last_reply_time": "آخرین پاسخ",
     "reply-as-topic": "پاسخ به موضوع",
     "guest-login-reply": "وارد شوید تا پست بفرستید",
-    "login-to-view": "🔒 Log in to view",
+    "login-to-view": "🔒 برای مشاهده وارد شوید ",
     "edit": "ویرایش",
     "delete": "حذف",
     "purge": "پاک کردن",
     "restore": "برگرداندن",
     "move": "جابه‌جا کردن",
-    "change-owner": "Change Owner",
+    "change-owner": "تغییر مالک پست",
     "fork": "شاخه ساختن",
     "link": "پیوند",
     "share": "اشتراک‌گذاری",
     "tools": "ابزارها",
     "locked": "قفل شده است",
     "pinned": "سنجاق شده",
+    "pinned-with-expiry": "Pinned until %1",
     "moved": "منتقل شده",
+    "moved-from": "Moved from %1",
     "copy-ip": "کپی IP",
     "ban-ip": "مسدود کردن IP",
     "view-history": "تاریخچه ویرایش",
     "bookmark_instructions": "برای بازگشت به آخرین پست در این موضوع اینجا را کلیک کنید.",
-    "flag-post": "Flag this post",
-    "flag-user": "Flag this user",
+    "flag-post": "گزارش این پست",
+    "flag-user": "گزارش این کاربر",
     "already-flagged": "Already Flagged",
     "view-flag-report": "View Flag Report",
     "merged_message": "This topic has been merged into <a href=\"%1\">%2</a>",
@@ -59,7 +61,7 @@
     "not-watching.description": "به من پس از ارسال هر پاسخی جدیدی اطلاع نده.<br/>تاپیک به صورت خوانده نشده قرار بگیرد ولی نادیده گرفته نشود.",
     "ignoring.description": "به من پس از ارسال هر پاسخی جدیدی اطلاع نده.<br/>دیگر تاپیک را به صورت خوانده نشده نشان نده.",
     "thread_tools.title": "ابزارهای موضوع",
-    "thread_tools.markAsUnreadForAll": "برای همه به عنوان خوانده نشده علامت بزن",
+    "thread_tools.markAsUnreadForAll": "برای همه کاربران نخوانده شده علامت بزن",
     "thread_tools.pin": "سنجاق زدن موضوع",
     "thread_tools.unpin": "برداشتن سنجاق موضوع",
     "thread_tools.lock": "قفل کردن موضوع",
@@ -67,7 +69,7 @@
     "thread_tools.move": "جابجا کردن موضوع",
     "thread_tools.move-posts": "انتقال پست ها",
     "thread_tools.move_all": "جابجایی همه",
-    "thread_tools.change_owner": "Change Owner",
+    "thread_tools.change_owner": "تغییر مالک پست",
     "thread_tools.select_category": "انتخاب دسته",
     "thread_tools.fork": "شاخه ساختن از موضوع",
     "thread_tools.delete": "پاک کردن موضوع",
@@ -79,13 +81,17 @@
     "thread_tools.purge_confirm": "آیا مطمئنید که میمید این موضوع را پاکسازی کنید؟",
     "thread_tools.merge_topics": "ادغام موضوع ها",
     "thread_tools.merge": "ادغام",
-    "topic_move_success": "This topic will be moved shortly. Click here to undo.",
+    "topic_move_success": "تاپیک به \"%1\" منتقل خواهد شد. برای جلوگیری از انتقال کلیک کنید.",
+    "topic_move_multiple_success": "تاپیک ها به \"%1\" منتقل خواهد شد. برای جلوگیری از انتقال کلیک کنید.",
+    "topic_move_all_success": "تمام تاپیک ها به \"%1\" منتقل خواهند شد. برای جلوگیری از انتقال کلیک کنید.",
     "topic_move_undone": "Topic move undone",
-    "topic_move_posts_success": "Posts will be moved shortly. Click here to undo.",
+    "topic_move_posts_success": "پست ها منتقل خواهند شد. برای جلوگیری از انتقال کلیک کنید.",
     "topic_move_posts_undone": "Post move undone",
     "post_delete_confirm": "آیا از پاک کردن این پست اطمینان دارید؟",
     "post_restore_confirm": "آیا از بازگردانی این پست اطمینان دارید؟",
     "post_purge_confirm": "آیا از پاک کردن این پست اطمینان دارید؟",
+    "pin-modal-expiry": "Expiration Date",
+    "pin-modal-help": "You can optionally set an expiration date for the pinned topic(s) here. Alternatively, you can leave this field blank to have the topic stay pinned until it is manually unpinned.",
     "load_categories": "بارگذاری دسته‌ها",
     "confirm_move": "جابه‌جا کردن",
     "confirm_fork": "شاخه ساختن",
@@ -100,23 +106,23 @@
     "fork_topic": "شاخه ساختن از موضوع",
     "fork_topic_instruction": "پست‌هایی را که می‌خواهید به موضوع تازه ببرید، انتخاب کنید",
     "fork_no_pids": "هیچ پستی انتخاب نشده!",
-    "no-posts-selected": "No posts selected!",
-    "x-posts-selected": "%1 post(s) selected",
+    "no-posts-selected": "هیچ پستی انتخاب نشده!",
+    "x-posts-selected": "%1 پست انتخاب شده",
     "x-posts-will-be-moved-to-y": "%1 post(s) will be moved to \"%2\"",
-    "fork_pid_count": "%1 پست (ها) انتخاب شده اند",
+    "fork_pid_count": "%1 پست انتخاب شده",
     "fork_success": "موضوع با موفقیت منشعب شد! برای رفتن به موضوع انشعابی اینجا را کلیک کنید.",
     "delete_posts_instruction": "با کلیک بر روی پست شما می خواهید به حذف/پاکسازی",
-    "merge_topics_instruction": "Click the topics you want to merge or search for them",
-    "merge-topic-list-title": "List of topics to be merged",
-    "merge-options": "Merge options",
-    "merge-select-main-topic": "Select the main topic",
-    "merge-new-title-for-topic": "New title for topic",
-    "move_posts_instruction": "Click the posts you want to move then go to target topic and click move.",
+    "merge_topics_instruction": "تاپیک های مورد نظر برای ادغام را انتخاب کنید یا آن ها را جستجو کنید",
+    "merge-topic-list-title": "لیست تاپیک هایی که با هم ادغام می شوند",
+    "merge-options": "تنظیمات ادغام",
+    "merge-select-main-topic": "تاپیک اصلی را انتخاب کنید",
+    "merge-new-title-for-topic": "عنوان جدید برای تاپیک",
+    "move_posts_instruction": "پست های مورد نظر را انتخاب کنید سپس به تاپیک مقصد بروید و گزینه جابه‌جا کردن را بزنید.",
     "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "عنوان موضوعتان را اینجا بنویسید...",
     "composer.handle_placeholder": "Enter your name/handle here",
-    "composer.discard": "دور بیانداز",
-    "composer.submit": "بفرست",
+    "composer.discard": "انصراف",
+    "composer.submit": "ارسال",
     "composer.replying_to": "پاسخ به %1",
     "composer.new_topic": "موضوع تازه",
     "composer.uploading": "بارگذاری...",
@@ -134,7 +140,7 @@
     "oldest_to_newest": "قدیمی‌ترین به جدید‌ترین",
     "newest_to_oldest": "جدید‌ترین به قدیمی‌ترین",
     "most_votes": "بیشترین رای ها",
-    "most_posts": "Most Posts",
+    "most_posts": "بیشترین پست",
     "stale.title": "آیا مایلید به جای آن یک موضوع جدید ایجاد کنید؟",
     "stale.warning": "موضوعی که شما در حال پاسخگویی به آن هستید قدیمی می باشد. آیا میلید به جای آن یک موضوع جدید ایجاد کنید و در آن به این موضوع ارجاع دهید؟",
     "stale.create": "ایجاد یک موضوع جدید",
@@ -149,5 +155,7 @@
     "diffs.restore-description": "A new revision will be appended to this post's edit history.",
     "diffs.post-restored": "Post successfully restored to earlier revision",
     "timeago_later": "%1 later",
-    "timeago_earlier": "%1 earlier"
+    "timeago_earlier": "%1 earlier",
+    "first-post": "First post",
+    "last-post": "Last post"
 }

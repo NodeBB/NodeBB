@@ -67,7 +67,7 @@
 	"sort-upvotes": "En çok artılanan",
 	"sort-replies": "En çok cevap verilen",
 
-	"modal-title": "Uygunsuz İçeriği Rapor Et",
+	"modal-title": "İçeriği Şikayet Et",
 	"modal-body": "%1 %2 için şikayet nedenini belirtiniz. Alternatif olarak hızlı rapor butonlarından birini kullanabilirsiniz.",
 	"modal-reason-spam": "Gereksiz",
 	"modal-reason-offensive": "Saldırgan",
@@ -81,5 +81,6 @@
 
 	"bulk-actions": "Toplu Aksiyonlar",
 	"bulk-resolve": "Şikayetleri Çözümle",
-	"bulk-success": "%1 şikayet güncellendi"
+	"bulk-success": "%1 şikayet güncellendi",
+	"flagged-timeago-readable": "Flagged <span class=\"timeago\" title=\"%1\"></span> (%2)"
 }

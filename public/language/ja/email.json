@@ -21,6 +21,8 @@
     "reset.notify.text1": "%1にてパスワードのリセットが行われたことをお知らせします。",
     "reset.notify.text2": "もしあなたがリセットを行っていない場合は、すぐに管理者に通報してください。",
     "digest.latest_topics": "%1からの新しいスレッド",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "クリックで%1を見る",
     "digest.unsub.info": "このまとめはあなたの購読設定により送られました。",
     "digest.day": "日",

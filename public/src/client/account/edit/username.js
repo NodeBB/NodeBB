@@ -1,7 +1,8 @@
 'use strict';
 
-
-define('forum/account/edit/username', ['forum/account/header'], function (header) {
+define('forum/account/edit/username', [
+	'forum/account/header', 'api', 'slugify',
+], function (header, api, slugify) {
 	var AccountEditUsername = {};
 
 	AccountEditUsername.init = function () {
@@ -24,23 +25,20 @@ define('forum/account/edit/username', ['forum/account/header'], function (header
 
 			var btn = $(this);
 			btn.addClass('disabled').find('i').removeClass('hide');
-			socket.emit('user.changeUsernameEmail', userData, function (err, data) {
-				btn.removeClass('disabled').find('i').addClass('hide');
-				if (err) {
-					return app.alertError(err.message);
-				}
 
-				var userslug = utils.slugify(userData.username);
+			api.put('/users/' + userData.uid, userData).then((response) => {
+				btn.removeClass('disabled').find('i').addClass('hide');
+				var userslug = slugify(userData.username);
 				if (userData.username && userslug && parseInt(userData.uid, 10) === parseInt(app.user.uid, 10)) {
 					$('[component="header/profilelink"]').attr('href', config.relative_path + '/user/' + userslug);
 					$('[component="header/profilelink/edit"]').attr('href', config.relative_path + '/user/' + userslug + '/edit');
 					$('[component="header/profilelink/settings"]').attr('href', config.relative_path + '/user/' + userslug + '/settings');
 					$('[component="header/username"]').text(userData.username);
-					$('[component="header/usericon"]').css('background-color', data['icon:bgColor']).text(data['icon:text']);
+					$('[component="header/usericon"]').css('background-color', response['icon:bgColor']).text(response['icon:text']);
 				}
 
 				ajaxify.go('user/' + userslug + '/edit');
-			});
+			}).catch(app.alertError);
 
 			return false;
 		});

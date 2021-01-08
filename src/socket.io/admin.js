@@ -41,8 +41,9 @@ SocketAdmin.before = async function (socket, method) {
 	}
 
 	// Check admin privileges mapping (if not in mapping, deny access)
-	const privilege = privileges.admin.socketMap[method];
-	if (privilege && await privileges.admin.can(privilege, socket.uid)) {
+	const privilegeSet = privileges.admin.socketMap.hasOwnProperty(method) ? privileges.admin.socketMap[method].split(';') : [];
+	const hasPrivilege = (await Promise.all(privilegeSet.map(async privilege => privileges.admin.can(privilege, socket.uid)))).some(Boolean);
+	if (privilegeSet.length && hasPrivilege) {
 		return;
 	}
 
@@ -107,6 +108,15 @@ SocketAdmin.deleteAllSessions = function (socket, data, callback) {
 SocketAdmin.reloadAllSessions = function (socket, data, callback) {
 	websockets.in('uid_' + socket.uid).emit('event:livereload');
 	callback();
+};
+
+SocketAdmin.getServerTime = function (socket, data, callback) {
+	const now = new Date();
+
+	callback(null, {
+		timestamp: now.getTime(),
+		offset: now.getTimezoneOffset(),
+	});
 };
 
 require('../promisify')(SocketAdmin);

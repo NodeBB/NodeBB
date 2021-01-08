@@ -6,6 +6,7 @@
 	"max-length": "Maximale Chatnachrichtenlänge",
 	"max-room-size": "Maximale Anzahl an Nutzern pro Chat-Room",
 	"delay": "Zeit zwischen Chatnachrichten in Millisekunden",
+	"notification-delay": "Notification delay for chat messages. (0 for no delay)",
 	"restrictions.seconds-edit-after": "Dauer in Sekunden, die eine Chat-Nachricht editiert werden kann. (0 deaktiviert)",
 	"restrictions.seconds-delete-after": "Dauer in Sekunden, die eine Chat-Nachricht gelöscht werden kann. (0 deaktiviert)"
 }

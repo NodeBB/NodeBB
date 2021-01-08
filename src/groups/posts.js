@@ -1,6 +1,7 @@
 'use strict';
 
 const db = require('../database');
+const groups = require('.');
 const privileges = require('../privileges');
 const posts = require('../posts');
 
@@ -12,6 +13,10 @@ module.exports = function (Groups) {
 
 		let groupNames = await Groups.getUserGroupMembership('groups:visible:createtime', [postData.uid]);
 		groupNames = groupNames[0];
+
+		// Only process those groups that have the cid in its memberPostCids setting (or no setting at all)
+		const groupsCids = await groups.getGroupsFields(groupNames, ['memberPostCids']);
+		groupNames = groupNames.filter((groupName, idx) => !groupsCids[idx].memberPostCids.length || groupsCids[idx].memberPostCids.includes(postData.cid));
 
 		const keys = groupNames.map(groupName => 'group:' + groupName + ':member:pids');
 		await db.sortedSetsAdd(keys, postData.timestamp, postData.pid);

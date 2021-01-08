@@ -1,23 +1,23 @@
 {
-	"icon": "Icon:",
-	"change-icon": "change",
-	"route": "Route:",
-	"tooltip": "Tooltip:",
-	"text": "Text:",
-	"text-class": "Text Class: <small>optional</small>",
-	"class": "Class: <small>optional</small>",
-	"id": "ID: <small>optional</small>",
+	"icon": "אייקון:",
+	"change-icon": "שנה",
+	"route": "נתיב:",
+	"tooltip": "טולטיפ:",
+	"text": "טקסט:",
+	"text-class": "מחלקת טקסט: <small>אופציונאלי</small>",
+	"class": "מחלקה: <small>אופציונאלי</small>",
+	"id": "ID: <small>אופציונאלי</small>",
 
-	"properties": "Properties:",
-	"groups": "Groups:",
-	"open-new-window": "Open in a new window",
+	"properties": "הרשאות:",
+	"groups": "קבוצות:",
+	"open-new-window": "פתח בחלון חדש",
 
-	"btn.delete": "Delete",
-	"btn.disable": "Disable",
-	"btn.enable": "Enable",
+	"btn.delete": "מחק",
+	"btn.disable": "השבת",
+	"btn.enable": "הפעל",
 
-	"available-menu-items": "Available Menu Items",
-	"custom-route": "Custom Route",
-	"core": "core",
-	"plugin": "plugin"
+	"available-menu-items": "פריטי תפריט זמינים",
+	"custom-route": "נתיב מותאם אישית",
+	"core": "ליבה",
+	"plugin": "תוסף"
 }

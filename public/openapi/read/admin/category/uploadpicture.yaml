@@ -1,0 +1,37 @@
+post:
+  tags:
+    - admin
+  summary: Update category picture (via image upload)
+  requestBody:
+    required: true
+    content:
+      multipart/form-data:
+        schema:
+          type: object
+          properties:
+            cid:
+              type: number
+              description: Category identifier whose picture will be set after successful upload
+              example: 1
+            files:
+              type: array
+              items:
+                type: string
+                format: binary
+          required:
+            - cid
+            - files
+  responses:
+    "200":
+      description: "Image uploaded"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                description: The filename
+              url:
+                type: string
+                description: URL of the uploaded image for use client-side

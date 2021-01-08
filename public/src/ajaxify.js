@@ -7,24 +7,17 @@ ajaxify = window.ajaxify || {};
 	var apiXHR = null;
 	var ajaxifyTimer;
 
-	var translator;
-	var Benchpress;
 	var retry = true;
 	var previousBodyClass = '';
-
-	// Dumb hack to fool ajaxify into thinking translator is still a global
-	// When ajaxify is migrated to a require.js module, then this can be merged into the "define" call
-	require(['translator', 'benchpress'], function (_translator, _Benchpress) {
-		translator = _translator;
-		translator.translate('[[error:no-connection]]');
-		Benchpress = _Benchpress;
-	});
 
 	ajaxify.count = 0;
 	ajaxify.currentPage = null;
 
 	ajaxify.go = function (url, callback, quiet) {
+		// Automatically reconnect to socket and re-ajaxify on success
 		if (!socket.connected) {
+			app.reconnect();
+
 			if (ajaxify.reconnectAction) {
 				$(window).off('action:reconnected', ajaxify.reconnectAction);
 			}
@@ -157,10 +150,16 @@ ajaxify = window.ajaxify || {};
 				window.location.href = config.relative_path + '/login';
 			} else if (status === 302 || status === 308) {
 				if (data.responseJSON && data.responseJSON.external) {
+					// this is used by sso plugins to redirect to the auth route
+					// cant use ajaxify.go for /auth/sso routes
 					window.location.href = data.responseJSON.external;
 				} else if (typeof data.responseJSON === 'string') {
 					ajaxifyTimer = undefined;
-					ajaxify.go(data.responseJSON.slice(1), callback, quiet);
+					if (data.responseJSON.startsWith('http://') || data.responseJSON.startsWith('https://')) {
+						window.location.href = data.responseJSON;
+					} else {
+						ajaxify.go(data.responseJSON.slice(1), callback, quiet);
+					}
 				}
 			}
 		} else if (textStatus !== 'abort') {
@@ -170,25 +169,26 @@ ajaxify = window.ajaxify || {};
 
 	function renderTemplate(url, tpl_url, data, callback) {
 		$(window).trigger('action:ajaxify.loadingTemplates', {});
+		require(['translator', 'benchpress'], function (translator, Benchpress) {
+			Benchpress.render(tpl_url, data)
+				.then(rendered => translator.translate(rendered))
+				.then(function (translated) {
+					translated = translator.unescape(translated);
+					$('body').removeClass(previousBodyClass).addClass(data.bodyClass);
+					$('#content').html(translated);
 
-		Benchpress.parse(tpl_url, data, function (template) {
-			translator.translate(template, function (translatedTemplate) {
-				translatedTemplate = translator.unescape(translatedTemplate);
-				$('body').removeClass(previousBodyClass).addClass(data.bodyClass);
-				$('#content').html(translatedTemplate);
+					ajaxify.end(url, tpl_url);
 
-				ajaxify.end(url, tpl_url);
+					if (typeof callback === 'function') {
+						callback();
+					}
 
-				if (typeof callback === 'function') {
-					callback();
-				}
+					$('#content, #footer').removeClass('ajaxifying');
 
-				$('#content, #footer').removeClass('ajaxifying');
-
-				// Only executed on ajaxify. Otherwise these'd be in ajaxify.end()
-				updateTitle(data.title);
-				updateTags();
-			});
+					// Only executed on ajaxify. Otherwise these'd be in ajaxify.end()
+					updateTitle(data.title);
+					updateTags();
+				});
 		});
 	}
 
@@ -203,8 +203,9 @@ ajaxify = window.ajaxify || {};
 
 			// Allow translation strings in title on ajaxify (#5927)
 			title = translator.unescape(title);
-
-			translator.translate(title, function (translated) {
+			var data = { title: title };
+			$(window).trigger('action:ajaxify.updateTitle', data);
+			translator.translate(data.title, function (translated) {
 				window.document.title = $('<div></div>').html(translated).text();
 			});
 		});
@@ -275,6 +276,10 @@ ajaxify = window.ajaxify || {};
 	}
 
 	ajaxify.end = function (url, tpl_url) {
+		// Scroll back to top of page
+		if (!ajaxify.isCold()) {
+			window.scrollTo(0, 0);
+		}
 		ajaxify.loadScript(tpl_url, function done() {
 			$(window).trigger('action:ajaxify.end', { url: url, tpl_url: tpl_url, title: ajaxify.data.title });
 		});
@@ -407,6 +412,8 @@ ajaxify = window.ajaxify || {};
 
 	require(['translator', 'benchpress'], function (translator, Benchpress) {
 		translator.translate('[[error:no-connection]]');
+		translator.translate('[[error:socket-reconnect-failed]]');
+		translator.translate(`[[global:reconnecting-message, ${config.siteTitle}]]`);
 		Benchpress.registerLoader(ajaxify.loadTemplate);
 		Benchpress.setGlobal('config', config);
 	});

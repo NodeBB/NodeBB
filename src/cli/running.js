@@ -1,12 +1,12 @@
 'use strict';
 
-var fs = require('fs');
-var childProcess = require('child_process');
+const fs = require('fs');
+const childProcess = require('child_process');
 
-var fork = require('../meta/debugFork');
-var paths = require('./paths');
+const fork = require('../meta/debugFork');
+const { paths } = require('../constants');
 
-var dirname = paths.baseDir;
+const cwd = paths.baseDir;
 
 function getRunningPid(callback) {
 	fs.readFile(paths.pidfile, {
@@ -32,8 +32,8 @@ function start(options) {
 		process.env.NODE_ENV = 'development';
 		fork(paths.loader, ['--no-daemon', '--no-silent'], {
 			env: process.env,
-			cwd: dirname,
 			stdio: 'inherit',
+			cwd,
 		});
 		return;
 	}
@@ -56,12 +56,12 @@ function start(options) {
 	// Spawn a new NodeBB process
 	var child = fork(paths.loader, process.argv.slice(3), {
 		env: process.env,
-		cwd: dirname,
+		cwd,
 	});
 	if (options.log) {
 		childProcess.spawn('tail', ['-F', './logs/output.log'], {
-			cwd: dirname,
 			stdio: 'inherit',
+			cwd,
 		});
 	}
 
@@ -112,8 +112,8 @@ function status() {
 function log() {
 	console.log('\nHit '.red + 'Ctrl-C '.bold + 'to exit\n'.red + '\n'.reset);
 	childProcess.spawn('tail', ['-F', './logs/output.log'], {
-		cwd: dirname,
 		stdio: 'inherit',
+		cwd,
 	});
 }
 

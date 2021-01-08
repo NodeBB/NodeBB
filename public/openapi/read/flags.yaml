@@ -1,0 +1,70 @@
+get:
+  tags:
+    - flags
+  summary: Get flags list
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  flags:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        state:
+                          type: string
+                        heat:
+                          type: number
+                          description: The number of reports that make up this flag
+                        flagId:
+                          type: number
+                        type:
+                          type: string
+                        targetId:
+                          oneOf:
+                            - type: string
+                            - type: number
+                        targetUid:
+                          type: number
+                        datetime:
+                          type: number
+                        labelClass:
+                          type: string
+                        target_readable:
+                          type: string
+                        datetimeISO:
+                          type: string
+                        assignee:
+                          type: string
+                          nullable: true
+                  analytics:
+                    type: array
+                    items:
+                      type: number
+                  categories:
+                    type: object
+                    properties: {}
+                    additionalProperties:
+                      type: string
+                      description: All categories will be listed here, with the `cid` as the key, and the category name as the value
+                  hasFilter:
+                    type: boolean
+                  filters:
+                    type: object
+                    properties:
+                      page:
+                        type: number
+                      perPage:
+                        type: number
+                  sort:
+                    type: string
+                  title:
+                    type: string
+              - $ref: ../components/schemas/Pagination.yaml#/Pagination
+              - $ref: ../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../components/schemas/CommonProps.yaml#/CommonProps

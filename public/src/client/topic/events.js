@@ -96,7 +96,7 @@ define('forum/topic/events', [
 	}
 
 	function onPostEdited(data) {
-		if (!data || !data.post) {
+		if (!data || !data.post || parseInt(data.post.tid, 10) !== parseInt(ajaxify.data.tid, 10)) {
 			return;
 		}
 		var editedPostEl = components.get('post/content', data.post.pid).filter(function (index, el) {
@@ -110,7 +110,7 @@ define('forum/topic/events', [
 		var navbarTitle = components.get('navbar/title').find('span');
 		var breadCrumb = components.get('breadcrumb/current');
 
-		if (topicTitle.length && data.topic.title && topicTitle.html() !== data.topic.title) {
+		if (topicTitle.length && data.topic.title && data.topic.renamed) {
 			ajaxify.data.title = data.topic.title;
 			var newUrl = 'topic/' + data.topic.slug + (window.location.search ? window.location.search : '');
 			history.replaceState({ url: newUrl }, null, window.location.protocol + '//' + window.location.host + config.relative_path + '/' + newUrl);
@@ -126,30 +126,31 @@ define('forum/topic/events', [
 			});
 		}
 
-		editedPostEl.fadeOut(250, function () {
-			editedPostEl.html(translator.unescape(data.post.content));
-			editedPostEl.find('img:not(.not-responsive)').addClass('img-responsive');
-			images.wrapImagesInLinks(editedPostEl.parent());
-			posts.addBlockquoteEllipses(editedPostEl.parent());
-			editedPostEl.fadeIn(250);
+		if (data.post.changed) {
+			editedPostEl.fadeOut(250, function () {
+				editedPostEl.html(translator.unescape(data.post.content));
+				editedPostEl.find('img:not(.not-responsive)').addClass('img-responsive');
+				images.wrapImagesInLinks(editedPostEl.parent());
+				posts.addBlockquoteEllipses(editedPostEl.parent());
+				editedPostEl.fadeIn(250);
 
-			var editData = {
-				editor: data.editor,
-				editedISO: utils.toISOString(data.post.edited),
-			};
+				var editData = {
+					editor: data.editor,
+					editedISO: utils.toISOString(data.post.edited),
+				};
 
-			Benchpress.parse('partials/topic/post-editor', editData, function (html) {
-				translator.translate(html, function (translated) {
-					html = $(translated);
+				app.parseAndTranslate('partials/topic/post-editor', editData, function (html) {
 					editorEl.replaceWith(html);
 					$('[data-pid="' + data.post.pid + '"] [component="post/editor"] .timeago').timeago();
 					$(window).trigger('action:posts.edited', data);
 				});
 			});
-		});
+		} else {
+			$(window).trigger('action:posts.edited', data);
+		}
 
 		if (data.topic.tags && tagsUpdated(data.topic.tags)) {
-			Benchpress.parse('partials/topic/tags', { tags: data.topic.tags }, function (html) {
+			Benchpress.render('partials/topic/tags', { tags: data.topic.tags }).then(function (html) {
 				var tags = $('.tags');
 
 				tags.fadeOut(250, function () {
@@ -175,6 +176,9 @@ define('forum/topic/events', [
 	}
 
 	function onPostPurged(postData) {
+		if (!postData || parseInt(postData.tid, 10) !== parseInt(ajaxify.data.tid, 10)) {
+			return;
+		}
 		components.get('post', 'pid', postData.pid).fadeOut(500, function () {
 			$(this).remove();
 			posts.showBottomPostBar();

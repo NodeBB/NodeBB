@@ -20,16 +20,10 @@
 	"add-group": "Add Group",
 	"invite": "Pozvať",
 	"new": "Nový používateľ",
-
-	"pills.latest": "Posledný používatelia",
+	"filter-by": "Filter by",
 	"pills.unvalidated": "Neoverené",
-	"pills.no-posts": "Žiadne príspevky",
-	"pills.top-posters": "Najviac príspevkov",
-	"pills.top-rep": "Najviac reputácie",
-	"pills.inactive": "Neaktívny",
-	"pills.flagged": "Najviac označované",
+	"pills.validated": "Validated",
 	"pills.banned": "Zablokovaný",
-	"pills.search": "Hľadať používateľa",
 
 	"50-per-page": "50 per page",
 	"100-per-page": "100 per page",
@@ -108,5 +102,7 @@
 
 	"alerts.prompt-email": "Emails: ",
 	"alerts.email-sent-to": "E-mail s pozvánkou bol odoslaný na %1",
-	"alerts.x-users-found": "%1 user(s) found, (%2 seconds)"
+	"alerts.x-users-found": "%1 user(s) found, (%2 seconds)",
+	"export-users-started": "Exporting users as csv, this might take a while. You will receive a notification when it is complete.",
+	"export-users-completed": "Users exported as csv, click here to download."
 }

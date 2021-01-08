@@ -1,0 +1,119 @@
+get:
+  tags:
+    - users
+  summary: Get users
+  parameters:
+    - in: query
+      name: section
+      schema:
+        type: string
+        enum: ['joindate', 'online', 'sort-posts', 'sort-reputation', 'banned', 'flagged']
+      required: false
+      description: Allows filtering of the user list via pre-defined sections
+      example: 'joindate'
+    - in: query
+      name: term
+      schema:
+        type: string
+      required: false
+      description: Allows for searching of user list
+      example: ''
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        uid:
+                          type: number
+                          description: A user identifier
+                        username:
+                          type: string
+                          description: A friendly name for a given user account
+                        displayname:
+                          type: string
+                          description: This is either username or fullname depending on forum and user settings
+                        userslug:
+                          type: string
+                          description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                            removed, etc.)
+                        picture:
+                          nullable: true
+                          type: string
+                        status:
+                          type: string
+                        postcount:
+                          type: number
+                        reputation:
+                          type: number
+                        email:confirmed:
+                          type: number
+                          description: Whether the user has confirmed their email address or not
+                        lastonline:
+                          type: number
+                        flags:
+                          nullable: true
+                        banned:
+                          type: number
+                        banned:expire:
+                          type: number
+                        joindate:
+                          type: number
+                          description: A UNIX timestamp representing the moment the user's account was
+                            created
+                        icon:text:
+                          type: string
+                          description: A single-letter representation of a username. This is used in the
+                            auto-generated icon given to users without an
+                            avatar
+                        icon:bgColor:
+                          type: string
+                          description: A six-character hexadecimal colour code assigned to the user. This
+                            value is used in conjunction with `icon:text`
+                            for the user's auto-generated icon
+                          example: "#f44336"
+                        joindateISO:
+                          type: string
+                        lastonlineISO:
+                          type: string
+                        banned_until:
+                          type: number
+                        banned_until_readable:
+                          type: string
+                  userCount:
+                    type: number
+                  title:
+                    type: string
+                  isAdminOrGlobalMod:
+                    type: boolean
+                  isAdmin:
+                    type: boolean
+                  isGlobalMod:
+                    type: boolean
+                  displayUserSearch:
+                    type: boolean
+                  section_joindate:
+                    type: boolean
+                  maximumInvites:
+                    type: number
+                  inviteOnly:
+                    type: boolean
+                  adminInviteOnly:
+                    type: boolean
+                  invites:
+                    type: number
+                  showInviteButton:
+                    type: boolean
+                  reputation:disabled:
+                    type: number
+              - $ref: ../components/schemas/Pagination.yaml#/Pagination
+              - $ref: ../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../components/schemas/CommonProps.yaml#/CommonProps

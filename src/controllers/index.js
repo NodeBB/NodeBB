@@ -38,7 +38,9 @@ Controllers['404'] = require('./404');
 Controllers.errors = require('./errors');
 Controllers.composer = require('./composer');
 
-Controllers.reset = function (req, res, next) {
+Controllers.write = require('./write');
+
+Controllers.reset = async function (req, res) {
 	if (meta.config['password:disableEdit']) {
 		return helpers.notAllowed(req, res);
 	}
@@ -76,14 +78,9 @@ Controllers.reset = function (req, res, next) {
 
 	if (req.session.reset_code) {
 		// Validate and save to local variable before removing from session
-		user.reset.validate(req.session.reset_code, function (err, valid) {
-			if (err) {
-				return next(err);
-			}
-
-			renderReset(req.session.reset_code, valid);
-			delete req.session.reset_code;
-		});
+		const valid = await user.reset.validate(req.session.reset_code);
+		renderReset(req.session.reset_code, valid);
+		delete req.session.reset_code;
 	} else {
 		res.render('reset', {
 			code: null,
@@ -95,14 +92,14 @@ Controllers.reset = function (req, res, next) {
 	}
 };
 
-Controllers.login = function (req, res, next) {
-	var data = { loginFormEntry: [] };
-	var loginStrategies = require('../routes/authentication').getLoginStrategies();
-	var registrationType = meta.config.registrationType || 'normal';
-	var allowLoginWith = (meta.config.allowLoginWith || 'username-email');
-	var returnTo = (req.headers['x-return-to'] || '').replace(nconf.get('base_url') + nconf.get('relative_path'), '');
+Controllers.login = async function (req, res) {
+	const data = { loginFormEntry: [] };
+	const loginStrategies = require('../routes/authentication').getLoginStrategies();
+	const registrationType = meta.config.registrationType || 'normal';
+	const allowLoginWith = (meta.config.allowLoginWith || 'username-email');
+	const returnTo = (req.headers['x-return-to'] || '').replace(nconf.get('base_url') + nconf.get('relative_path'), '');
 
-	var errorText;
+	let errorText;
 	if (req.query.error === 'csrf-invalid') {
 		errorText = '[[error:csrf-invalid]]';
 	} else if (req.query.error) {
@@ -124,33 +121,19 @@ Controllers.login = function (req, res, next) {
 	data.title = '[[pages:login]]';
 	data.allowPasswordReset = !meta.config['password:disableEdit'];
 
-	privileges.global.canGroup('local:login', 'registered-users', function (err, hasLoginPrivilege) {
-		if (err) {
-			return next(err);
-		}
+	const hasLoginPrivilege = await privileges.global.canGroup('local:login', 'registered-users');
+	data.allowLocalLogin = hasLoginPrivilege || parseInt(req.query.local, 10) === 1;
 
-		data.allowLocalLogin = hasLoginPrivilege || parseInt(req.query.local, 10) === 1;
-		if (!data.allowLocalLogin && !data.allowRegistration && data.alternate_logins && data.authentication.length === 1) {
-			if (res.locals.isAPI) {
-				return helpers.redirect(res, {
-					external: nconf.get('relative_path') + data.authentication[0].url,
-				});
-			}
-			return res.redirect(nconf.get('relative_path') + data.authentication[0].url);
-		}
-		if (req.loggedIn) {
-			user.getUserFields(req.uid, ['username', 'email'], function (err, user) {
-				if (err) {
-					return next(err);
-				}
-				data.username = allowLoginWith === 'email' ? user.email : user.username;
-				data.alternate_logins = false;
-				res.render('login', data);
-			});
-		} else {
-			res.render('login', data);
-		}
-	});
+	if (!data.allowLocalLogin && !data.allowRegistration && data.alternate_logins && data.authentication.length === 1) {
+		return helpers.redirect(res, { external: data.authentication[0].url });
+	}
+
+	if (req.loggedIn) {
+		const userData = await user.getUserFields(req.uid, ['username', 'email']);
+		data.username = allowLoginWith === 'email' ? userData.email : userData.username;
+		data.alternate_logins = false;
+	}
+	res.render('login', data);
 };
 
 Controllers.register = async function (req, res, next) {
@@ -196,7 +179,7 @@ Controllers.registerInterstitial = async function (req, res, next) {
 		return res.redirect(nconf.get('relative_path') + '/register');
 	}
 	try {
-		const data = await plugins.fireHook('filter:register.interstitial', {
+		const data = await plugins.hooks.fire('filter:register.interstitial', {
 			userData: req.session.registration,
 			interstitials: [],
 		});
@@ -222,7 +205,7 @@ Controllers.registerInterstitial = async function (req, res, next) {
 };
 
 Controllers.confirmEmail = function (req, res) {
-	user.email.confirm(req.params.code, function (err) {
+	user.email.confirmByCode(req.params.code, function (err) {
 		res.render('confirm', {
 			error: err ? err.message : '',
 			title: '[[pages:confirm]]',
@@ -244,8 +227,8 @@ Controllers.robots = function (req, res) {
 	}
 };
 
-Controllers.manifest = function (req, res, next) {
-	var manifest = {
+Controllers.manifest = async function (req, res) {
+	const manifest = {
 		name: meta.config.title || 'NodeBB',
 		short_name: meta.config['title:short'] || meta.config.title || 'NodeBB',
 		start_url: nconf.get('url'),
@@ -294,18 +277,37 @@ Controllers.manifest = function (req, res, next) {
 			density: 10.0,
 		});
 	}
-	plugins.fireHook('filter:manifest.build', { req: req, res: res, manifest: manifest }, function (err, data) {
-		if (err) {
-			return next(err);
-		}
-		res.status(200).json(data.manifest);
+
+
+	if (meta.config['brand:maskableIcon']) {
+		manifest.icons.push({
+			src: nconf.get('relative_path') + '/assets/uploads/system/maskableicon-orig.png',
+			type: 'image/png',
+			purpose: 'maskable',
+		});
+	} else if (meta.config['brand:touchIcon']) {
+		manifest.icons.push({
+			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-orig.png',
+			type: 'image/png',
+			purpose: 'maskable',
+		});
+	}
+
+	const data = await plugins.hooks.fire('filter:manifest.build', {
+		req: req,
+		res: res,
+		manifest: manifest,
 	});
+	res.status(200).json(data.manifest);
 };
 
 Controllers.outgoing = function (req, res, next) {
-	var url = req.query.url || '';
-	var allowedProtocols = ['http', 'https', 'ftp', 'ftps', 'mailto', 'news', 'irc', 'gopher', 'nntp', 'feed', 'telnet', 'mms', 'rtsp', 'svn', 'tel', 'fax', 'xmpp', 'webcal'];
-	var parsed = require('url').parse(url);
+	const url = req.query.url || '';
+	const allowedProtocols = [
+		'http', 'https', 'ftp', 'ftps', 'mailto', 'news', 'irc', 'gopher',
+		'nntp', 'feed', 'telnet', 'mms', 'rtsp', 'svn', 'tel', 'fax', 'xmpp', 'webcal',
+	];
+	const parsed = require('url').parse(url);
 
 	if (!url || !parsed.protocol || !allowedProtocols.includes(parsed.protocol.slice(0, -1))) {
 		return next();
@@ -324,7 +326,7 @@ Controllers.termsOfUse = async function (req, res, next) {
 	if (!meta.config.termsOfUse) {
 		return next();
 	}
-	const termsOfUse = await plugins.fireHook('filter:parse.post', {
+	const termsOfUse = await plugins.hooks.fire('filter:parse.post', {
 		postData: {
 			content: meta.config.termsOfUse || '',
 		},

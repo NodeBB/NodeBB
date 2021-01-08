@@ -3,6 +3,7 @@
 const posts = require('../../posts');
 const user = require('../../user');
 const privileges = require('../../privileges');
+const apiHelpers = require('../../api/helpers');
 const websockets = require('..');
 
 module.exports = function (SocketPosts) {
@@ -17,8 +18,13 @@ module.exports = function (SocketPosts) {
 		let usernames = await user.getUsersFields(uids, ['username']);
 		usernames = usernames.map(userObj => (userObj.uid ? userObj.username : null));
 
-		const cid = await posts.getCidByPid(data.pid);
-		const canEdit = await privileges.categories.can('edit', cid, socket.uid);
+		let canEdit = true;
+		try {
+			await user.isPrivilegedOrSelf(socket.uid, post.uid);
+		} catch (e) {
+			canEdit = false;
+		}
+
 		timestamps.push(post.timestamp);
 
 		return {
@@ -55,7 +61,7 @@ module.exports = function (SocketPosts) {
 			throw new Error('[[error:no-privileges]]');
 		}
 
-		const edit = await posts.diffs.restore(data.pid, data.since, socket.uid, websockets.reqFromSocket(socket));
+		const edit = await posts.diffs.restore(data.pid, data.since, socket.uid, apiHelpers.buildReqObject(socket));
 		websockets.in('topic_' + edit.topic.tid).emit('event:post_edited', edit);
 	};
 };

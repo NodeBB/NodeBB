@@ -18,11 +18,11 @@
 			{{{ if user.privileges.admin:categories }}}<li><a href="{relative_path}/admin/manage/categories">[[admin/menu:manage/categories]]</a></li>{{{ end }}}
 			{{{ if user.privileges.admin:privileges }}}<li><a href="{relative_path}/admin/manage/privileges">[[admin/menu:manage/privileges]]</a></li>{{{ end }}}
 			{{{ if user.privileges.admin:users }}}<li><a href="{relative_path}/admin/manage/users">[[admin/menu:manage/users]]</a></li>{{{ end }}}
+			{{{ if user.privileges.admin:groups }}}<li><a href="{relative_path}/admin/manage/groups">[[admin/menu:manage/groups]]</a></li>{{{ end }}}
+			{{{ if user.privileges.admin:admins-mods }}}<li><a href="{relative_path}/admin/manage/admins-mods">[[admin/menu:manage/admins-mods]]</a></li>{{{ end }}}
+			{{{ if user.privileges.admin:tags }}}<li><a href="{relative_path}/admin/manage/tags">[[admin/menu:manage/tags]]</a></li>{{{ end }}}
 			{{{ if user.privileges.superadmin }}}
-			<li><a href="{relative_path}/admin/manage/groups">[[admin/menu:manage/groups]]</a></li>
-			<li><a href="{relative_path}/admin/manage/admins-mods">[[admin/menu:manage/admins-mods]]</a></li>
 			<li><a href="{relative_path}/admin/manage/registration">[[admin/menu:manage/registration]]</a></li>
-			<li><a href="{relative_path}/admin/manage/tags">[[admin/menu:manage/tags]]</a></li>
 			<li><a href="{relative_path}/admin/manage/uploads">[[admin/menu:manage/uploads]]</a></li>
 			<li><a href="{relative_path}/admin/manage/digest">[[admin/menu:manage/digest]]</a></li>
 
@@ -52,6 +52,7 @@
 			<li><a href="{relative_path}/admin/settings/chat">[[admin/menu:settings/chat]]</a></li>
 			<li><a href="{relative_path}/admin/settings/pagination">[[admin/menu:settings/pagination]]</a></li>
 			<li><a href="{relative_path}/admin/settings/notifications">[[admin/menu:settings/notifications]]</a></li>
+			<li><a href="{relative_path}/admin/settings/api">[[admin/menu:settings/api]]</a></li>
 			<li><a href="{relative_path}/admin/settings/social">[[admin/menu:settings/social]]</a></li>
 			<li><a href="{relative_path}/admin/settings/cookies">[[admin/menu:settings/cookies]]</a></li>
 			<li><a href="{relative_path}/admin/settings/web-crawler">[[admin/menu:settings/web-crawler]]</a></li>
@@ -188,11 +189,11 @@
 					{{{ if user.privileges.admin:categories }}}<li><a id="manage-categories" href="{relative_path}/admin/manage/categories">[[admin/menu:manage/categories]]</a></li>{{{ end }}}
 					{{{ if user.privileges.admin:privileges }}}<li><a href="{relative_path}/admin/manage/privileges">[[admin/menu:manage/privileges]]</a></li>{{{ end }}}
 					{{{ if user.privileges.admin:users }}}<li><a id="manage-users" href="{relative_path}/admin/manage/users">[[admin/menu:manage/users]]</a></li>{{{ end }}}
+					{{{ if user.privileges.admin:groups }}}<li><a href="{relative_path}/admin/manage/groups">[[admin/menu:manage/groups]]</a></li>{{{ end }}}
+					{{{ if user.privileges.admin:admins-mods }}}<li><a href="{relative_path}/admin/manage/admins-mods">[[admin/menu:manage/admins-mods]]</a></li>{{{ end }}}
+					{{{ if user.privileges.admin:tags }}}<li><a href="{relative_path}/admin/manage/tags">[[admin/menu:manage/tags]]</a></li>{{{ end }}}
 					{{{ if user.privileges.superadmin }}}
-					<li><a href="{relative_path}/admin/manage/groups">[[admin/menu:manage/groups]]</a></li>
-					<li><a href="{relative_path}/admin/manage/admins-mods">[[admin/menu:manage/admins-mods]]</a></li>
 					<li><a href="{relative_path}/admin/manage/registration">[[admin/menu:manage/registration]]</a></li>
-					<li><a href="{relative_path}/admin/manage/tags">[[admin/menu:manage/tags]]</a></li>
 					<li><a href="{relative_path}/admin/manage/uploads">[[admin/menu:manage/uploads]]</a></li>
 					<li><a href="{relative_path}/admin/manage/digest">[[admin/menu:manage/digest]]</a></li>
 					<li role="separator" class="divider"></li>
@@ -222,6 +223,7 @@
 					<li><a href="{relative_path}/admin/settings/chat">[[admin/menu:settings/chat]]</a></li>
 					<li><a href="{relative_path}/admin/settings/pagination">[[admin/menu:settings/pagination]]</a></li>
 					<li><a href="{relative_path}/admin/settings/notifications">[[admin/menu:settings/notifications]]</a></li>
+					<li><a href="{relative_path}/admin/settings/api">[[admin/menu:settings/api]]</a></li>
 					<li><a href="{relative_path}/admin/settings/social">[[admin/menu:settings/social]]</a></li>
 					<li><a href="{relative_path}/admin/settings/cookies">[[admin/menu:settings/cookies]]</a></li>
 					<li><a href="{relative_path}/admin/settings/web-crawler">[[admin/menu:settings/web-crawler]]</a></li>
@@ -247,7 +249,7 @@
 			<!-- IF plugins.length -->
 			<li class="dropdown menu-item">
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin/menu:section-plugins]]</a>
-				<ul class="dropdown-menu" role="menu">
+				<ul class="dropdown-menu plugins-menu" role="menu">
 					<li class="dropdown-header">[[admin/menu:section-plugins]]</li>
 					<!-- BEGIN plugins -->
 					<li>
@@ -267,7 +269,7 @@
 					<!-- ENDIF authentication.length -->
 					<li class="divider"></li>
 					<li data-link="1">
-						<a href="{relative_path}/admin/extend/plugins">[[admin/menu:extend/plugins.install]]</a>
+						<a href="{relative_path}/admin/extend/plugins#download">[[admin/menu:extend/plugins.install]]</a>
 					</li>
 				</ul>
 			</li>

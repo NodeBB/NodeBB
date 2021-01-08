@@ -12,9 +12,10 @@ const rimrafAsync = util.promisify(rimraf);
 
 const file = require('../file');
 const Plugins = require('../plugins');
+const { paths } = require('../constants');
 
-const buildLanguagesPath = path.join(__dirname, '../../build/public/language');
-const coreLanguagesPath = path.join(__dirname, '../../public/language');
+const buildLanguagesPath = path.join(paths.baseDir, 'build/public/language');
+const coreLanguagesPath = path.join(paths.baseDir, 'public/language');
 
 async function getTranslationMetadata() {
 	const paths = await file.walk(coreLanguagesPath);
@@ -98,7 +99,7 @@ async function buildNamespaceLanguage(lang, namespace, plugins) {
 }
 
 async function addPlugin(translations, pluginData, lang, namespace) {
-	const pluginLanguages = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages);
+	const pluginLanguages = path.join(paths.nodeModules, pluginData.id, pluginData.languages);
 	const defaultLang = pluginData.defaultLang || 'en-GB';
 
 	// for each plugin, fallback in this order:
@@ -106,12 +107,12 @@ async function addPlugin(translations, pluginData, lang, namespace) {
 	//  2. old language string (en_GB)
 	//  3. corrected plugin defaultLang (en-US)
 	//  4. old plugin defaultLang (en_US)
-	const langs = [
+	const langs = _.uniq([
 		defaultLang.replace('-', '_').replace('-x-', '@'),
 		defaultLang.replace('_', '-').replace('@', '-x-'),
 		lang.replace('-', '_').replace('-x-', '@'),
 		lang,
-	];
+	]);
 
 	for (const language of langs) {
 		/* eslint-disable no-await-in-loop */

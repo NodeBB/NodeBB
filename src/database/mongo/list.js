@@ -12,7 +12,7 @@ module.exports = function (module) {
 
 		const exists = await module.isObjectField(key, 'array');
 		if (exists) {
-			await module.client.collection('objects').updateOne({ _key: key }, { $push: { array: { $each: [value], $position: 0 } } }, { upsert: true, w: 1 });
+			await module.client.collection('objects').updateOne({ _key: key }, { $push: { array: { $each: [value], $position: 0 } } }, { upsert: true });
 		} else {
 			await module.listAppend(key, value);
 		}
@@ -23,7 +23,7 @@ module.exports = function (module) {
 			return;
 		}
 		value = helpers.valueToString(value);
-		await module.client.collection('objects').updateOne({ _key: key }, { $push: { array: value } }, { upsert: true, w: 1 });
+		await module.client.collection('objects').updateOne({ _key: key }, { $push: { array: value } }, { upsert: true });
 	};
 
 	module.listRemoveLast = async function (key) {

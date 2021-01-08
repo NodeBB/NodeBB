@@ -1,0 +1,20 @@
+get:
+  tags:
+    - authentication
+  summary: Get user password reset (step 1)
+  responses:
+    "200":
+      description: "A JSON object containing the 1st step of the user password reset flow"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  code:
+                    type: string
+                    nullable: true
+                  title:
+                    type: string
+              - $ref: ../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../components/schemas/CommonProps.yaml#/CommonProps

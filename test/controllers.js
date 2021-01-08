@@ -95,17 +95,17 @@ describe('Controllers', function () {
 			assert(hookData.res);
 			assert(hookData.next);
 
-			hookData.res.render('custom', {
+			hookData.res.render('mycustompage', {
 				works: true,
 			});
 		}
 		var message = utils.generateUUID();
-		var name = 'custom.tpl';
+		var name = 'mycustompage.tpl';
 		var tplPath = path.join(nconf.get('views_dir'), name);
 
 		before(async () => {
 			plugins.registerHook('myTestPlugin', {
-				hook: 'action:homepage.get:custom',
+				hook: 'action:homepage.get:mycustompage',
 				method: hookMethod,
 			});
 
@@ -224,14 +224,14 @@ describe('Controllers', function () {
 		});
 
 		it('api should work with hook', function (done) {
-			meta.configs.set('homePageRoute', 'custom', function (err) {
+			meta.configs.set('homePageRoute', 'mycustompage', function (err) {
 				assert.ifError(err);
 
 				request(nconf.get('url') + '/api', { json: true }, function (err, res, body) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 					assert.equal(body.works, true);
-					assert.equal(body.template.custom, true);
+					assert.equal(body.template.mycustompage, true);
 
 					done();
 				});
@@ -239,7 +239,7 @@ describe('Controllers', function () {
 		});
 
 		it('should render with hook', function (done) {
-			meta.configs.set('homePageRoute', 'custom', function (err) {
+			meta.configs.set('homePageRoute', 'mycustompage', function (err) {
 				assert.ifError(err);
 
 				request(nconf.get('url'), function (err, res, body) {
@@ -661,7 +661,7 @@ describe('Controllers', function () {
 	});
 
 	it('should error if guests do not have search privilege', function (done) {
-		request(nconf.get('url') + '/api/users?term=bar&section=sort-posts', { json: true }, function (err, res, body) {
+		request(nconf.get('url') + '/api/users?query=bar&section=sort-posts', { json: true }, function (err, res, body) {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 500);
 			assert(body);
@@ -673,7 +673,7 @@ describe('Controllers', function () {
 	it('should load users search page', function (done) {
 		privileges.global.give(['groups:search:users'], 'guests', function (err) {
 			assert.ifError(err);
-			request(nconf.get('url') + '/users?term=bar&section=sort-posts', function (err, res, body) {
+			request(nconf.get('url') + '/users?query=bar&section=sort-posts', function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -813,18 +813,19 @@ describe('Controllers', function () {
 		});
 
 		it('should fail if user doesn\'t exist', function (done) {
-			request.del(nconf.get('url') + '/api/user/doesnotexist/session/1112233', {
+			request.del(`${nconf.get('url')}/api/v3/users/doesnotexist/sessions/1112233`, {
 				jar: jar,
 				headers: {
 					'x-csrf-token': csrf_token,
 				},
 			}, function (err, res, body) {
 				assert.ifError(err);
-				assert.equal(res.statusCode, 403);
-				assert.deepEqual(JSON.parse(body), {
-					path: '/user/doesnotexist/session/1112233',
-					loggedIn: true,
-					title: '[[global:403.title]]',
+				assert.strictEqual(res.statusCode, 404);
+				const parsedResponse = JSON.parse(body);
+				assert.deepStrictEqual(parsedResponse.response, {});
+				assert.deepStrictEqual(parsedResponse.status, {
+					code: 'not-found',
+					message: '[[error:no-user]]',
 				});
 				done();
 			});
@@ -837,15 +838,21 @@ describe('Controllers', function () {
 
 				db.sessionStore.get(sid, function (err, sessionObj) {
 					assert.ifError(err);
-					request.del(nconf.get('url') + '/api/user/revokeme/session/' + sessionObj.meta.uuid, {
+					request.del(`${nconf.get('url')}/api/v3/users/${uid}/sessions/${sessionObj.meta.uuid}`, {
 						jar: jar,
 						headers: {
 							'x-csrf-token': csrf_token,
 						},
 					}, function (err, res, body) {
 						assert.ifError(err);
-						assert.equal(res.statusCode, 200);
-						assert.equal(body, 'OK');
+						assert.strictEqual(res.statusCode, 200);
+						assert.deepStrictEqual(JSON.parse(body), {
+							status: {
+								code: 'ok',
+								message: 'OK',
+							},
+							response: {},
+						});
 						done();
 					});
 				});
@@ -1083,7 +1090,7 @@ describe('Controllers', function () {
 				request(nconf.get('url') + '/me/bookmarks', { json: true }, function (err, res, body) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
-					assert(body.includes('Login to your account'));
+					assert(body.includes('Login to your account'), body.substr(0, 500));
 					done();
 				});
 			});
@@ -1340,7 +1347,13 @@ describe('Controllers', function () {
 				request(nconf.get('url') + '/api/user/foo', { json: true }, function (err, res, body) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 401);
-					assert.equal(body, 'not-authorized');
+					assert.deepEqual(body, {
+						response: {},
+						status: {
+							code: 'not-authorised',
+							message: 'A valid login session was not found. Please log in and try again.',
+						},
+					});
 					privileges.global.give(['groups:view:users'], 'guests', done);
 				});
 			});
@@ -1831,16 +1844,16 @@ describe('Controllers', function () {
 
 	describe('timeago locales', function () {
 		it('should load timeago locale', function (done) {
-			request(nconf.get('url') + '/assets/vendor/jquery/timeago/locales/jquery.timeago.af.js', function (err, res, body) {
+			request(nconf.get('url') + '/assets/src/modules/timeago/locales/jquery.timeago.af.js', function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
-				assert(body.includes('Afrikaans'));
+				assert(body.includes('"gelede"'));
 				done();
 			});
 		});
 
 		it('should return not found if NodeBB language exists but timeago locale does not exist', function (done) {
-			request(nconf.get('url') + '/assets/vendor/jquery/timeago/locales/jquery.timeago.ms.js', function (err, res, body) {
+			request(nconf.get('url') + '/assets/src/modules/timeago/locales/jquery.timeago.ms.js', function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				done();
@@ -1848,7 +1861,7 @@ describe('Controllers', function () {
 		});
 
 		it('should return not found if NodeBB language does not exist', function (done) {
-			request(nconf.get('url') + '/assets/vendor/jquery/timeago/locales/jquery.timeago.muggle.js', function (err, res, body) {
+			request(nconf.get('url') + '/assets/src/modules/timeago/locales/jquery.timeago.muggle.js', function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				done();
@@ -2021,16 +2034,32 @@ describe('Controllers', function () {
 		});
 
 		it('should redirect if category is a link', function (done) {
+			let cid;
+			let category;
 			async.waterfall([
 				function (next) {
 					categories.create({ name: 'redirect', link: 'https://nodebb.org' }, next);
 				},
-				function (category, next) {
+				function (_category, next) {
+					category = _category;
+					cid = category.cid;
 					request(nconf.get('url') + '/api/category/' + category.slug, { jar: jar, json: true }, function (err, res, body) {
 						assert.ifError(err);
 						assert.equal(res.statusCode, 200);
-						assert.equal(res.headers['x-redirect'], 'https:&#x2F;&#x2F;nodebb.org');
-						assert.equal(body, 'https:&#x2F;&#x2F;nodebb.org');
+						assert.equal(res.headers['x-redirect'], 'https://nodebb.org');
+						assert.equal(body, 'https://nodebb.org');
+						next();
+					});
+				},
+				function (next) {
+					categories.setCategoryField(cid, 'link', '/recent', next);
+				},
+				function (next) {
+					request(nconf.get('url') + '/api/category/' + category.slug, { jar: jar, json: true }, function (err, res, body) {
+						assert.ifError(err);
+						assert.equal(res.statusCode, 200);
+						assert.equal(res.headers['x-redirect'], '/recent');
+						assert.equal(body, '/recent');
 						next();
 					});
 				},

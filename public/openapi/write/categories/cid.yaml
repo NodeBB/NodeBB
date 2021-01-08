@@ -1,0 +1,93 @@
+get:
+  tags:
+    - categories
+  summary: get a category
+  description: This operation retrieves a category's data
+  parameters:
+    - in: path
+      name: cid
+      schema:
+        type: string
+      required: true
+      description: a valid category id
+      example: 2
+  responses:
+    '200':
+      description: Category successfully retrieved
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../components/schemas/CategoryObject.yaml#/CategoryObject
+put:
+  tags:
+    - categories
+  summary: update a category
+  description: This operation updates an existing category.
+  parameters:
+    - in: path
+      name: cid
+      schema:
+        type: number
+      required: true
+      description: a valid category id
+      example: 2
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties: {}
+          additionalProperties: {}
+  responses:
+    '200':
+      description: category successfully updated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                allOf:
+                  - $ref: ../../components/schemas/CategoryObject.yaml#/CategoryObject
+                  - type: object
+                    properties:
+                      tagWhitelist:
+                        type: array
+                        items:
+                          type: string
+                      unread-class:
+                        type: string
+delete:
+  tags:
+    - categories
+  summary: delete a category
+  description: This operation deletes and purges a category and all of its topics and posts (careful, there is no confirmation!)
+  parameters:
+    - in: path
+      name: cid
+      schema:
+        type: number
+      required: true
+      description: a valid category id
+      example: 2
+  responses:
+    '200':
+      description: Category successfully deleted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}

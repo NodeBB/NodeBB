@@ -4,11 +4,13 @@
 	"group-privileges": "Privilèges de groupe",
 	"user-privileges": "Privilèges d'utilisateur",
 	"edit-privileges": "Éditer les privilèges",
+  	"select-clear-all": "Tout Sélectionner / Tout effacer",
 	"chat": "Chat",
 	"upload-images": "Images envoyées",
 	"upload-files": "Fichiers envoyés",
 	"signature": "Signature",
 	"ban": "Bannir",
+	"invite": "Inviter",
 	"search-content": "Rechercher un contenu",
 	"search-users": "Rechercher des utilisateurs",
 	"search-tags": "Rechercher les tags",
@@ -37,9 +39,13 @@
 	"admin-categories": "Catégories",
 	"admin-privileges": "Privilèges",
 	"admin-users": "Utilisateurs",
+	"admin-admins-mods": "Admin &amp; Modo",
+	"admin-groups": "Groupes",
+	"admin-tags": "Mots Clés",
 	"admin-settings": "Paramètres",
 
 	"alert.confirm-moderate": "<strong>Voulez-vous vraiment accorder le privilège de modération à ce groupe d'utilisateurs ?</strong> Ce groupe est public et tous les utilisateurs peuvent le rejoindre à volonté.",
+	"alert.confirm-admins-mods": "<strong>Voulez-vous vraiment attribuer les droits aux & quot; d'Administrations & amp; Modérations & quot;  à cet utilisateur / groupe? </strong>Les utilisateurs disposant de ce privilège peuvent promouvoir et rétrograder d'autres utilisateurs à des postes privilégiés, <em>y compris le super administrateur</em>",
 	"alert.confirm-save": "Veuillez confirmer votre intention de sauvegarder ces privilèges",
 	"alert.saved": "Changements de privilèges enregistrés et appliqués",
 	"alert.confirm-discard": "Êtes-vous sûr de vouloir annuler vos modifications de privilèges ?",
@@ -48,5 +54,6 @@
 	"alert.confirm-copyToAllGroup": "Voulez-vous vraiment appliquer le jeu de privilèges de ce groupe à <strong>toutes les catégories</strong> ?",
 	"alert.confirm-copyToChildren": "Voulez-vous vraiment appliquer ces privilèges à <strong>toutes les catégories incluses (enfants)</strong> ?",
 	"alert.confirm-copyToChildrenGroup": "Voulez-vous vraiment appliquer le jeu de privilèges de ce groupe à <strong>toutes les catégories incluses (enfants)</strong> ?",
-	"alert.no-undo": "<em>Cette action ne peut pas être annulée.</em>"
+	"alert.no-undo": "<em>Cette action ne peut pas être annulée.</em>",
+	"alert.admin-warning": "Les administrateurs obtiennent implicitement tous les privilèges"
 }

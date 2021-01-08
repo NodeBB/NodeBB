@@ -1,0 +1,76 @@
+post:
+  tags:
+    - users
+  summary: create a user
+  description: This operation creates a new user account
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            username:
+              type: string
+              description: 'If the username is taken, a number will be appended'
+              example: Dragon Fruit
+            password:
+              type: string
+              example: s3cre7password
+            email:
+              type: string
+              example: dragonfruit@example.org
+          required:
+            - username
+  responses:
+    '200':
+      description: user successfully created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../components/schemas/UserObj.yaml#/UserObj
+    '400':
+      $ref: ../components/responses/400.yaml#/400
+    '401':
+      $ref: ../components/responses/401.yaml#/401
+    '403':
+      $ref: ../components/responses/403.yaml#/403
+    '426':
+      $ref: ../components/responses/426.yaml#/426
+    '500':
+      $ref: ../components/responses/500.yaml#/500
+delete:
+  tags:
+    - users
+  summary: delete one or more users
+  description: This operation deletes one or many user accounts, including their contributions (posts, topics, etc.)
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            uids:
+              type: array
+              description: A collection of uids
+              items:
+                type: number
+              example: [5, 6]
+  responses:
+    '200':
+      description: user account(s) deleted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../components/schemas/Status.yaml#/Status
+              response:
+                type: object

@@ -7,7 +7,7 @@ define('taskbar', ['benchpress', 'translator'], function (Benchpress, translator
 	taskbar.init = function () {
 		var self = this;
 
-		Benchpress.parse('modules/taskbar', {}, function (html) {
+		Benchpress.render('modules/taskbar', {}).then(function (html) {
 			self.taskbar = $(html);
 			self.tasklist = self.taskbar.find('ul');
 			$(document.body).append(self.taskbar);
@@ -210,11 +210,6 @@ define('taskbar', ['benchpress', 'translator'], function (Benchpress, translator
 		});
 
 		element.data(data);
-	};
-
-	taskbar.updateTitle = function (module, uuid, newTitle) {
-		console.warn('[taskbar] .updateTitle() is deprecated, use .update() instead');
-		taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"] [component="taskbar/title"]').text(newTitle);
 	};
 
 	return taskbar;

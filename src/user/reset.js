@@ -1,19 +1,21 @@
 'use strict';
 
-var nconf = require('nconf');
-var winston = require('winston');
+const nconf = require('nconf');
+const winston = require('winston');
 
-var user = require('./index');
-var utils = require('../utils');
-var batch = require('../batch');
+const user = require('./index');
+const groups = require('../groups');
+const utils = require('../utils');
+const batch = require('../batch');
 
-var db = require('../database');
-var meta = require('../meta');
-var emailer = require('../emailer');
+const db = require('../database');
+const meta = require('../meta');
+const emailer = require('../emailer');
+const Password = require('../password');
 
-var UserReset = module.exports;
+const UserReset = module.exports;
 
-var twoHours = 7200000;
+const twoHours = 7200000;
 
 UserReset.validate = async function (code) {
 	const uid = await db.getObjectField('reset:uid', code);
@@ -53,7 +55,7 @@ UserReset.send = async function (email) {
 		subject: '[[email:password-reset-requested]]',
 		template: 'reset',
 		uid: uid,
-	});
+	}).catch(err => winston.error('[emailer.send] ' + err.stack));
 };
 
 UserReset.commit = async function (code, password) {
@@ -66,15 +68,32 @@ UserReset.commit = async function (code, password) {
 	if (!uid) {
 		throw new Error('[[error:reset-code-not-valid]]');
 	}
-
+	const userData = await db.getObjectFields(
+		'user:' + uid,
+		['password', 'passwordExpiry', 'password:shaWrapped']
+	);
+	const ok = await Password.compare(password, userData.password, !!parseInt(userData['password:shaWrapped'], 10));
+	if (ok) {
+		throw new Error('[[error:reset-same-password]]');
+	}
 	const hash = await user.hashPassword(password);
+	const data = {
+		password: hash,
+		'password:shaWrapped': 1,
+	};
 
-	await user.setUserFields(uid, { password: hash, 'email:confirmed': 1 });
+	// don't verify email if password reset is due to expiry
+	const isPasswordExpired = userData.passwordExpiry && userData.passwordExpiry < Date.now();
+	if (!isPasswordExpired) {
+		data['email:confirmed']	= 1;
+		await groups.join('verified-users', uid);
+		await groups.leave('unverified-users', uid);
+	}
+	await user.setUserFields(uid, data);
 	await db.deleteObjectField('reset:uid', code);
 	await db.sortedSetRemoveBulk([
 		['reset:issueDate', code],
 		['reset:issueDate:uid', uid],
-		['users:notvalidated', uid],
 	]);
 	await user.reset.updateExpiry(uid);
 	await user.auth.resetLockout(uid);
@@ -83,11 +102,13 @@ UserReset.commit = async function (code, password) {
 };
 
 UserReset.updateExpiry = async function (uid) {
-	const oneDay = 1000 * 60 * 60 * 24;
 	const expireDays = meta.config.passwordExpiryDays;
-	const expiry = Date.now() + (oneDay * expireDays);
 	if (expireDays > 0) {
+		const oneDay = 1000 * 60 * 60 * 24;
+		const expiry = Date.now() + (oneDay * expireDays);
 		await user.setUserField(uid, 'passwordExpiry', expiry);
+	} else {
+		await db.deleteObjectField('user:' + uid, 'passwordExpiry');
 	}
 };
 

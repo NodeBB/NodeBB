@@ -1,0 +1,24 @@
+get:
+  tags:
+    - admin
+  summary: Get system settings
+  parameters:
+    - name: term
+      in: path
+      required: true
+      schema:
+        type: string
+      example: general
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties: {}
+                additionalProperties:
+                  type: object
+                  description: Most of the settings pages have their values loaded on the client-side, so the settings are not exposed server-side.
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

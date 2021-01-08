@@ -721,6 +721,21 @@ describe('Post\'s', function () {
 				});
 			});
 		});
+
+		it('should fail to move post if not moderator of target category', async function () {
+			const cat1 = await categories.create({ name: 'Test Category', description: 'Test category created by testing script' });
+			const cat2 = await categories.create({ name: 'Test Category', description: 'Test category created by testing script' });
+			const result = await socketTopics.post({ uid: globalModUid }, { title: 'target topic', content: 'queued topic', cid: cat2.cid });
+			const modUid = await user.create({ username: 'modofcat1' });
+			await privileges.categories.give(privileges.userPrivilegeList, cat1.cid, modUid);
+			let err;
+			try {
+				await socketPosts.movePost({ uid: modUid }, { pid: replyPid, tid: result.tid });
+			} catch (_err) {
+				err = _err;
+			}
+			assert.strictEqual(err.message, '[[error:no-privileges]]');
+		});
 	});
 
 	describe('getPostSummaryByPids', function () {

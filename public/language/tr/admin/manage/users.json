@@ -20,16 +20,10 @@
 	"add-group": "Grup ekle",
 	"invite": "Davet et",
 	"new": "Yeni Kullanıcı",
-
-	"pills.latest": "En Yeni Kullanıcılar",
+	"filter-by": "Filtreleme",
 	"pills.unvalidated": "Onaylanmamış",
-	"pills.no-posts": "İleti Yok",
-	"pills.top-posters": "En Çok Gönderim Yapanlar",
-	"pills.top-rep": "En Saygın",
-	"pills.inactive": "Etkin değil",
-	"pills.flagged": "En Çok İşaretlenenler",
+	"pills.validated": "Onaylandı",
 	"pills.banned": "Yasaklandı",
-	"pills.search": "Kullanıcı Ara",
 
 	"50-per-page": "Sayfa başına 50",
 	"100-per-page": "Sayfa başına 100",
@@ -108,5 +102,7 @@
 
 	"alerts.prompt-email": "Eposta:",
 	"alerts.email-sent-to": "%1'e bir davet e-postası gönderildi",
-	"alerts.x-users-found": "%1 kullanıcı bulundu, (%2 saniye)"
+	"alerts.x-users-found": "%1 kullanıcı bulundu, (%2 saniye)",
+	"export-users-started": "Exporting users as csv, this might take a while. You will receive a notification when it is complete.",
+	"export-users-completed": "Users exported as csv, click here to download."
 }

@@ -1,0 +1,27 @@
+get:
+  tags:
+    - tags
+  summary: Get tags
+  description: Returns a list of tags sorted by the most topics
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  tags:
+                    type: array
+                    description: An array of tags sorted by the most topics
+                    items:
+                      $ref: ../components/schemas/TagObject.yaml#/TagObject
+                  displayTagSearch:
+                    type: boolean
+                  nextStart:
+                    type: number
+                  title:
+                    type: string
+              - $ref: ../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../components/schemas/CommonProps.yaml#/CommonProps

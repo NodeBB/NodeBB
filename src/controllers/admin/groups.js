@@ -35,9 +35,10 @@ groupsController.list = async function (req, res) {
 
 groupsController.get = async function (req, res, next) {
 	const groupName = req.params.name;
-	const [groupNames, group] = await Promise.all([
+	const [groupNames, group, allCategories] = await Promise.all([
 		getGroupNames(),
 		groups.get(groupName, { uid: req.uid, truncateUserList: true, userListCount: 20 }),
+		categories.buildForSelectAll(),
 	]);
 
 	if (!group) {
@@ -53,8 +54,6 @@ groupsController.get = async function (req, res, next) {
 		};
 	});
 
-	const allCategories = await categories.buildForSelectAll();
-
 	res.render('admin/manage/group', {
 		group: group,
 		groupNames: groupNameData,
@@ -67,7 +66,11 @@ groupsController.get = async function (req, res, next) {
 
 async function getGroupNames() {
 	const groupNames = await db.getSortedSetRange('groups:createtime', 0, -1);
-	return groupNames.filter(name => name !== 'registered-users' && !groups.isPrivilegeGroup(name));
+	return groupNames.filter(name => name !== 'registered-users' &&
+		name !== 'verified-users' &&
+		name !== 'unverified-users' &&
+		!groups.isPrivilegeGroup(name)
+	);
 }
 
 groupsController.getCSV = async function (req, res) {

@@ -17,13 +17,12 @@ settingsController.get = async function (req, res) {
 	res.render('admin/settings/' + term);
 };
 
-
 settingsController.email = async (req, res) => {
 	const emails = await emailer.getTemplates(meta.config);
 
 	res.render('admin/settings/email', {
 		emails: emails,
-		sendable: emails.filter(e => !e.path.includes('_plaintext') && !e.path.includes('partials')),
+		sendable: emails.filter(e => !e.path.includes('_plaintext') && !e.path.includes('partials')).map(tpl => tpl.path),
 		services: emailer.listServices(),
 	});
 };

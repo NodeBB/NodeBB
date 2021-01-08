@@ -10,6 +10,9 @@ const request = require('request-promise-native');
 
 const user = require('../user');
 const posts = require('../posts');
+const meta = require('../meta');
+
+const { pluginNamePattern, themeNamePattern, paths } = require('../constants');
 
 var app;
 var middleware;
@@ -18,9 +21,16 @@ const Plugins = module.exports;
 
 require('./install')(Plugins);
 require('./load')(Plugins);
-require('./hooks')(Plugins);
 require('./usage')(Plugins);
 Plugins.data = require('./data');
+Plugins.hooks = require('./hooks');
+
+// Backwards compatibility for hooks, remove in v1.17.0
+Plugins.registerHook = Plugins.hooks.register;
+Plugins.unregisterHook = Plugins.hooks.unregister;
+Plugins.fireHook = Plugins.hooks.fire;
+Plugins.hasListeners = Plugins.hooks.hasListeners;
+// end
 
 Plugins.getPluginPaths = Plugins.data.getPluginPaths;
 Plugins.loadPluginInfo = Plugins.data.loadPluginInfo;
@@ -41,8 +51,28 @@ Plugins.loadedPlugins = [];
 
 Plugins.initialized = false;
 
-Plugins.requireLibrary = function (pluginID, libraryPath) {
-	Plugins.libraries[pluginID] = require(libraryPath);
+Plugins.requireLibrary = function (pluginData) {
+	let libraryPath;
+	// attempt to load a plugin directly with `require("nodebb-plugin-*")`
+	// Plugins should define their entry point in the standard `main` property of `package.json`
+	try {
+		libraryPath = pluginData.path;
+		Plugins.libraries[pluginData.id] = require(libraryPath);
+	} catch (e) {
+		// DEPRECATED: @1.15.0, remove in version >=1.17
+		// for backwards compatibility
+		// if that fails, fall back to `pluginData.library`
+		if (pluginData.library) {
+			winston.warn(`   [plugins/${pluginData.id}] The plugin.json field "library" is deprecated. Please use the package.json field "main" instead.`);
+			winston.verbose(`[plugins/${pluginData.id}] See https://github.com/NodeBB/NodeBB/issues/8686`);
+
+			libraryPath = path.join(pluginData.path, pluginData.library);
+			Plugins.libraries[pluginData.id] = require(libraryPath);
+		} else {
+			throw e;
+		}
+	}
+
 	Plugins.libraryPaths.push(libraryPath);
 };
 
@@ -100,31 +130,9 @@ Plugins.reload = async function () {
 		console.log('');
 	}
 
-	Plugins.registerHook('core', {
-		hook: 'filter:parse.post',
-		method: async (data) => {
-			data.postData.content = posts.sanitize(data.postData.content);
-			return data;
-		},
-	});
-
-	Plugins.registerHook('core', {
-		hook: 'filter:parse.raw',
-		method: async content => posts.sanitize(content),
-	});
-
-	Plugins.registerHook('core', {
-		hook: 'filter:parse.aboutme',
-		method: async content => posts.sanitize(content),
-	});
-
-	Plugins.registerHook('core', {
-		hook: 'filter:parse.signature',
-		method: async (data) => {
-			data.userData.signature = posts.sanitize(data.userData.signature);
-			return data;
-		},
-	});
+	// Core hooks
+	posts.registerHooks();
+	meta.configs.registerHooks();
 
 	// Lower priority runs earlier
 	Object.keys(Plugins.loadedHooks).forEach(function (hook) {
@@ -137,7 +145,7 @@ Plugins.reload = async function () {
 
 Plugins.reloadRoutes = async function (params) {
 	var controllers = require('../controllers');
-	await Plugins.fireHook('static:app.load', { app: app, router: params.router, middleware: middleware, controllers: controllers });
+	await Plugins.hooks.fire('static:app.load', { app: app, router: params.router, middleware: middleware, controllers: controllers });
 	winston.verbose('[plugins] All plugins reloaded and rerouted');
 };
 
@@ -156,7 +164,7 @@ Plugins.list = async function (matching) {
 	if (matching === undefined) {
 		matching = true;
 	}
-	const version = require(path.join(nconf.get('base_dir'), 'package.json')).version;
+	const version = require(paths.currentPackage).version;
 	const url = (nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugins' + (matching !== false ? '?version=' + version : '');
 	try {
 		const body = await request(url, {
@@ -177,9 +185,8 @@ Plugins.listTrending = async () => {
 };
 
 Plugins.normalise = async function (apiReturn) {
-	const themeNamePattern = /^(@.*?\/)?nodebb-theme-.*$/;
 	const pluginMap = {};
-	const dependencies = require(path.join(nconf.get('base_dir'), 'package.json')).dependencies;
+	const dependencies = require(paths.currentPackage).dependencies;
 	apiReturn = Array.isArray(apiReturn) ? apiReturn : [];
 	apiReturn.forEach(function (packageData) {
 		packageData.id = packageData.name;
@@ -243,7 +250,7 @@ Plugins.normalise = async function (apiReturn) {
 	return pluginArray;
 };
 
-Plugins.nodeModulesPath = path.join(__dirname, '../../node_modules');
+Plugins.nodeModulesPath = paths.nodeModules;
 
 Plugins.showInstalled = async function () {
 	const dirs = await fs.promises.readdir(Plugins.nodeModulesPath);
@@ -270,7 +277,6 @@ Plugins.showInstalled = async function () {
 };
 
 async function findNodeBBModules(dirs) {
-	const pluginNamePattern = /^(@.*?\/)?nodebb-(theme|plugin|widget|rewards)-.*$/;
 	const pluginPaths = [];
 	await async.each(dirs, function (dirname, next) {
 		var dirPath = path.join(Plugins.nodeModulesPath, dirname);

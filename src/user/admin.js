@@ -1,9 +1,12 @@
 
 'use strict';
 
+const fs = require('fs');
+const path = require('path');
 const winston = require('winston');
 const validator = require('validator');
 
+const { baseDir } = require('../constants').paths;
 const db = require('../database');
 const plugins = require('../plugins');
 const batch = require('../batch');
@@ -31,16 +34,40 @@ module.exports = function (User) {
 	User.getUsersCSV = async function () {
 		winston.verbose('[user/getUsersCSV] Compiling User CSV data');
 
-		const data = await plugins.fireHook('filter:user.csvFields', { fields: ['uid', 'email', 'username'] });
+		const data = await plugins.hooks.fire('filter:user.csvFields', { fields: ['uid', 'email', 'username'] });
 		let csvContent = data.fields.join(',') + '\n';
 		await batch.processSortedSet('users:joindate', async (uids) => {
 			const usersData = await User.getUsersFields(uids, data.fields);
 			csvContent += usersData.reduce((memo, user) => {
-				memo += user.email + ',' + user.username + ',' + user.uid + '\n';
+				memo += data.fields.map(field => user[field]).join(',') + '\n';
 				return memo;
 			}, '');
 		}, {});
 
 		return csvContent;
+	};
+
+	User.exportUsersCSV = async function () {
+		winston.verbose('[user/exportUsersCSV] Exporting User CSV data');
+
+		const data = await plugins.hooks.fire('filter:user.csvFields', { fields: ['email', 'username', 'uid'] });
+		const fd = await fs.promises.open(
+			path.join(baseDir, 'build/export', 'users.csv'),
+			'w'
+		);
+		fs.promises.appendFile(fd, data.fields.join(',') + '\n');
+		await batch.processSortedSet('users:joindate', async (uids) => {
+			const usersData = await User.getUsersFields(uids, data.fields.slice());
+			let line = '';
+			usersData.forEach(function (user) {
+				line += data.fields.map(field => user[field]).join(',') + '\n';
+			});
+
+			await fs.promises.appendFile(fd, line);
+		}, {
+			batch: 5000,
+			interval: 250,
+		});
+		await fd.close();
 	};
 };

@@ -6,9 +6,9 @@
     <sitemap>
         <loc>{url}/sitemap/categories.xml</loc>
     </sitemap>
-    <!-- BEGIN topics -->
+    {{{ each  topics }}}
     <sitemap>
-        <loc>{url}/sitemap/topics.@value.xml</loc>
+        <loc>{url}/sitemap/topics.{@value}.xml</loc>
     </sitemap>
-    <!-- END topics -->
+    {{{ end }}}
 </sitemapindex>

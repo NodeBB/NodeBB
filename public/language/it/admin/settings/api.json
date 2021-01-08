@@ -1,0 +1,16 @@
+{
+	"tokens": "Token",
+	"settings": "Impostazioni",
+	"lead-text": "Da questa pagina è possibile configurare l'accesso alle API di scrittura in NodeBB.",
+	"intro": "Per impostazione predefinita, l'API di scrittura autentica gli utenti in base al cookie di sessione, ma NodeBB supporta anche l'autenticazione Bearer tramite token generati tramite questa pagina.",
+	"docs": "Clicca qui per accedere alle specifiche complete dell'API",
+
+	"require-https": "Richiedi utilizzo API solo tramite HTTPS",
+	"require-https-caveat": "<strong>Nota</strong>:Alcune installazioni che coinvolgono bilanciatori del carico possono inviare tramite proxy le loro richieste a NodeBB utilizzando HTTP, nel qual caso questa opzione dovrebbe rimanere disabilitata.",
+
+	"uid": "ID utente",
+	"uid-help-text": "Specificare un ID utente da associare a questo token. Se l'ID utente è <code>0</code>, sarà considerato un token <em>master</em>, che può assumere l'identità di altri utenti in base al parametro <code>_uid</code>",
+	"description": "Descrizione",
+	"no-description": "Nessuna descrizione specificata.",
+	"token-on-save": "Il token sarà generato una volta salvato il modulo"
+}

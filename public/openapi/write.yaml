@@ -1,0 +1,114 @@
+openapi: 3.0.0
+info:
+  title: NodeBB Write API
+  description: >-
+    # Overview
+
+    The following document outlines every route exposed by the NodeBB Write API. As of NodeBB v1.15.0, NodeBB will use these routes to make changes to the database (e.g. creating new posts, editing user profiles, etc.)
+
+    We invite you to build external integrations with NodeBB using this document as a guide.
+
+    # History
+
+    Up until v1.15.0, NodeBB utilised the [WebSocket](https://en.wikipedia.org/wiki/WebSocket) protocol to communicate with the backend. However, it was decided in early 2020 that this usage of WebSocket &ndash; while functional &ndash; led to occasional wheel reinvention and disregarded an otherwise fully-featured technology (that is, REST).
+
+    Years prior to this determination, many users of NodeBB had asked for a RESTful API to call against NodeBB, which led to the creation of [`nodebb-plugin-write-api`](https://github.com/NodeBB/nodebb-plugin-write-api). In tandem with the above decision, the Write API was merged into NodeBB core in late 2020.
+
+    v3 of the Write API (this document) achieves rough feature parity with v2 of the Write API plugin.
+  version: 1.15.0
+  contact:
+    email: support@nodebb.org
+  license:
+    name: GPL-3.0
+servers:
+  - url: /api/v3
+tags:
+  - name: utilities
+    description: Utility calls to test Write API functionality
+  - name: users
+    description: Account related calls (create, modify, delete, etc.)
+  - name: groups
+    description: Calls related to user groups
+  - name: categories
+    description: Administrative calls to manage categories
+  - name: topics
+    description: Topic-based calls (create, modify, delete, etc.)
+  - name: posts
+    description: Individual post-related calls (create, modify, delete, etc.)
+  - name: admin
+    description: Administrative calls
+  - name: files
+    description: File upload routes
+paths:
+  /ping:
+    $ref: 'write/ping.yaml'
+  /utilities/login:
+    $ref: 'write/login.yaml'
+  /users/:
+    $ref: 'write/users.yaml'
+  /users/{uid}:
+    $ref: 'write/users/uid.yaml'
+  /users/{uid}/content:
+    $ref: 'write/users/uid/content.yaml'
+  /users/{uid}/account:
+    $ref: 'write/users/uid/account.yaml'
+  /users/{uid}/settings:
+    $ref: 'write/users/uid/settings.yaml'
+  /users/{uid}/password:
+    $ref: 'write/users/uid/password.yaml'
+  /users/{uid}/follow:
+    $ref: 'write/users/uid/follow.yaml'
+  /users/{uid}/ban:
+    $ref: 'write/users/uid/ban.yaml'
+  /users/{uid}/tokens:
+    $ref: 'write/users/uid/tokens.yaml'
+  /users/{uid}/tokens/{token}:
+    $ref: 'write/users/uid/tokens/token.yaml'
+  /users/{uid}/sessions/{uuid}:
+    $ref: 'write/users/uid/sessions/uuid.yaml'
+  /users/{uid}/invites:
+    $ref: 'write/users/uid/invites.yaml'
+  /users/{uid}/invites/groups:
+    $ref: 'write/users/uid/invites/groups.yaml'
+  /groups/:
+    $ref: 'write/groups.yaml'
+  /groups/{slug}:
+    $ref: 'write/groups/slug.yaml'
+  /groups/{slug}/membership/{uid}:
+    $ref: 'write/groups/slug/membership/uid.yaml'
+  /groups/{slug}/ownership/{uid}:
+    $ref: 'write/groups/slug/ownership/uid.yaml'
+  /categories/:
+    $ref: 'write/categories.yaml'
+  /categories/{cid}:
+    $ref: 'write/categories/cid.yaml'
+  /topics/:
+    $ref: 'write/topics.yaml'
+  /topics/{tid}:
+    $ref: 'write/topics/tid.yaml'
+  /topics/{tid}/state:
+    $ref: 'write/topics/tid/state.yaml'
+  /topics/{tid}/lock:
+    $ref: 'write/topics/tid/lock.yaml'
+  /topics/{tid}/pin:
+    $ref: 'write/topics/tid/pin.yaml'
+  /topics/{tid}/follow:
+    $ref: 'write/topics/tid/follow.yaml'
+  /topics/{tid}/ignore:
+    $ref: 'write/topics/tid/ignore.yaml'
+  /topics/{tid}/tags:
+    $ref: 'write/topics/tid/tags.yaml'
+  /topics/{tid}/thumbs:
+    $ref: 'write/topics/tid/thumbs.yaml'
+  /posts/{pid}:
+    $ref: 'write/posts/pid.yaml'
+  /posts/{pid}/state:
+    $ref: 'write/posts/pid/state.yaml'
+  /posts/{pid}/vote:
+    $ref: 'write/posts/pid/vote.yaml'
+  /posts/{pid}/bookmark:
+    $ref: 'write/posts/pid/bookmark.yaml'
+  /admin/settings/{setting}:
+    $ref: 'write/admin/settings/setting.yaml'
+  /files/:
+    $ref: 'write/files.yaml'

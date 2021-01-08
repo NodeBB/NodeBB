@@ -2,7 +2,7 @@
 
 const meta = require('../meta');
 const plugins = require('../plugins');
-const utils = require('../utils');
+const slugify = require('../slugify');
 const db = require('../database');
 
 module.exports = function (Groups) {
@@ -25,9 +25,9 @@ module.exports = function (Groups) {
 
 		const memberCount = data.hasOwnProperty('ownerUid') ? 1 : 0;
 		const isPrivate = data.hasOwnProperty('private') && data.private !== undefined ? parseInt(data.private, 10) === 1 : true;
-		const groupData = {
+		let groupData = {
 			name: data.name,
-			slug: utils.slugify(data.name),
+			slug: slugify(data.name),
 			createtime: timestamp,
 			userTitle: data.userTitle || data.name,
 			userTitleEnabled: parseInt(data.userTitleEnabled, 10) === 1 ? 1 : 0,
@@ -40,7 +40,7 @@ module.exports = function (Groups) {
 			disableLeave: disableLeave,
 		};
 
-		plugins.fireHook('filter:group.create', { group: groupData, data: data });
+		await plugins.hooks.fire('filter:group.create', { group: groupData, data: data });
 
 		await db.sortedSetAdd('groups:createtime', groupData.createtime, groupData.name);
 		await db.setObject('group:' + groupData.name, groupData);
@@ -48,8 +48,6 @@ module.exports = function (Groups) {
 		if (data.hasOwnProperty('ownerUid')) {
 			await db.setAdd('group:' + groupData.name + ':owners', data.ownerUid);
 			await db.sortedSetAdd('group:' + groupData.name + ':members', timestamp, data.ownerUid);
-
-			groupData.ownerUid = data.ownerUid;
 		}
 
 		if (!isHidden && !isSystem) {
@@ -62,13 +60,14 @@ module.exports = function (Groups) {
 
 		await db.setObjectField('groupslug:groupname', groupData.slug, groupData.name);
 
-		plugins.fireHook('action:group.create', { group: groupData });
+		groupData = await Groups.getGroupData(groupData.name);
+		plugins.hooks.fire('action:group.create', { group: groupData });
 		return groupData;
 	};
 
 	function isSystemGroup(data) {
 		return data.system === true || parseInt(data.system, 10) === 1 ||
-			data.name === 'administrators' || data.name === 'registered-users' || data.name === 'Global Moderators' ||
+			Groups.systemGroups.includes(data.name) ||
 			Groups.isPrivilegeGroup(data.name);
 	}
 
@@ -89,7 +88,7 @@ module.exports = function (Groups) {
 			throw new Error('[[error:invalid-group-name]]');
 		}
 
-		if (name.includes('/') || !utils.slugify(name)) {
+		if (name.includes('/') || !slugify(name)) {
 			throw new Error('[[error:invalid-group-name]]');
 		}
 	};

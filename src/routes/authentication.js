@@ -3,8 +3,10 @@
 var async = require('async');
 var passport = require('passport');
 var passportLocal = require('passport-local').Strategy;
+const BearerStrategy = require('passport-http-bearer').Strategy;
 var winston = require('winston');
 
+const meta = require('../meta');
 var controllers = require('../controllers');
 var helpers = require('../controllers/helpers');
 var plugins = require('../plugins');
@@ -48,21 +50,51 @@ Auth.getLoginStrategies = function () {
 	return loginStrategies;
 };
 
+Auth.verifyToken = async function (token, done) {
+	let { tokens } = await meta.settings.get('core.api');
+	tokens = tokens.reduce((memo, cur) => {
+		memo[cur.token] = cur.uid;
+		return memo;
+	}, {});
+
+	const uid = tokens[token];
+
+	if (uid !== undefined) {
+		if (parseInt(uid, 10) > 0) {
+			done(null, {
+				uid: uid,
+			});
+		} else {
+			done(null, {
+				master: true,
+			});
+		}
+	} else {
+		done(false);
+	}
+};
+
 Auth.reloadRoutes = async function (params) {
 	loginStrategies.length = 0;
 	const router = params.router;
-	if (plugins.hasListeners('action:auth.overrideLogin')) {
+
+	// Local Logins
+	if (plugins.hooks.hasListeners('action:auth.overrideLogin')) {
 		winston.warn('[authentication] Login override detected, skipping local login strategy.');
-		plugins.fireHook('action:auth.overrideLogin');
+		plugins.hooks.fire('action:auth.overrideLogin');
 	} else {
 		passport.use(new passportLocal({ passReqToCallback: true }, controllers.authentication.localLogin));
 	}
+
+	// HTTP bearer authentication
+	passport.use('core.api', new BearerStrategy({}, Auth.verifyToken));
+
+	// Additional logins via SSO plugins
 	try {
-		loginStrategies = await plugins.fireHook('filter:auth.init', loginStrategies);
+		loginStrategies = await plugins.hooks.fire('filter:auth.init', loginStrategies);
 	} catch (err) {
 		winston.error('[authentication] ' + err.stack);
 	}
-
 	loginStrategies = loginStrategies || [];
 	loginStrategies.forEach(function (strategy) {
 		if (strategy.url) {

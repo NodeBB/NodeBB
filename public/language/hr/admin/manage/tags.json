@@ -14,5 +14,6 @@
 
 	"alerts.editing": "Editing tag(s)",
 	"alerts.confirm-delete": "Želite li obrisati odabrane oznake?",
-	"alerts.update-success": "Oznake promijenjene!"
+	"alerts.update-success": "Oznake promijenjene!",
+	"reset-colors": "Reset colors"
 }

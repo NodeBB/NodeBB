@@ -10,7 +10,7 @@
 	"git": "git",
 	"memory": "זיכרון",
 	"load": "system load",
-	"cpu-usage": "cpu usage",
+	"cpu-usage": "שימוש ב-CPU",
 	"uptime": "uptime",
 
 	"registered": "רשום",

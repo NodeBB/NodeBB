@@ -1,0 +1,166 @@
+get:
+  tags:
+    - admin
+  summary: Get process/system information
+  responses:
+    "200":
+      description: "A JSON object containing process and system information"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  info:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        process:
+                          type: object
+                          properties:
+                            port:
+                              description: An array containing the port numbers configured to be used by NodeBB processes
+                              oneOf:
+                                - type: array
+                                  items:
+                                    oneOf:
+                                      - type: string
+                                      - type: number
+                                - type: string
+                                - type: number
+                            pid:
+                              type: number
+                              description: Process id
+                            title:
+                              type: number
+                              description: Executable
+                            version:
+                              type: number
+                              description: NodeBB version
+                            memoryUsage:
+                              type: object
+                              properties:
+                                rss:
+                                  type: number
+                                heapTotal:
+                                  type: number
+                                heapUsed:
+                                  type: number
+                                external:
+                                  type: number
+                                arrayBuffers:
+                                  type: number
+                                humanReadable:
+                                  type: number
+                              required:
+                                - rss
+                                - heapTotal
+                                - heapUsed
+                                - external
+                                - humanReadable
+                            uptime:
+                              type: number
+                            uptimeHumanReadable:
+                              type: string
+                            cpuUsage:
+                              type: object
+                              properties:
+                                user:
+                                  type: string
+                                system:
+                                  type: string
+                        os:
+                          type: object
+                          properties:
+                            hostname:
+                              type: string
+                            type:
+                              type: string
+                            platform:
+                              type: string
+                            arch:
+                              type: string
+                            release:
+                              type: string
+                            load:
+                              type: string
+                              description: CPU load
+                            freemem:
+                              type: string
+                            totalmem:
+                              type: string
+                        nodebb:
+                          type: object
+                          properties:
+                            isPrimary:
+                              type: boolean
+                            isCluster:
+                              type: boolean
+                            runJobs:
+                              type: boolean
+                            jobsDisabled:
+                              type: boolean
+                        git:
+                          type: object
+                          properties:
+                            hash:
+                              type: string
+                            hashShort:
+                              type: string
+                            branch:
+                              type: string
+                        stats:
+                          type: object
+                          properties:
+                            onlineGuestCount:
+                              type: number
+                            onlineRegisteredCount:
+                              type: number
+                            socketCount:
+                              type: number
+                            users:
+                              type: object
+                              properties:
+                                categories:
+                                  type: number
+                                recent:
+                                  type: number
+                                unread:
+                                  type: number
+                                topics:
+                                  type: number
+                                category:
+                                  type: number
+                            topics:
+                              type: array
+                        id:
+                          type: string
+                  infoJSON:
+                    type: string
+                    description: "`info`, but stringified"
+                  host:
+                    type: string
+                    description: Server hostname
+                  port:
+                    description: An array containing the port numbers configured to be used by NodeBB processes
+                    oneOf:
+                      - type: array
+                        items:
+                          oneOf:
+                            - type: string
+                            - type: number
+                      - type: string
+                      - type: number
+                  nodeCount:
+                    type: number
+                    description: The number of NodeBB application processes currently running
+                  timeout:
+                    type: number
+                  ip:
+                    type: string
+                  loggedIn:
+                    type: boolean
+                  relative_path:
+                    type: string
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

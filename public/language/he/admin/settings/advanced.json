@@ -1,10 +1,10 @@
 {
-	"maintenance-mode": "Maintenance Mode",
-	"maintenance-mode.help": "When the forum is in maintenance mode, all requests will be redirected to a static holding page. Administrators are exempt from this redirection, and are able to access the site normally.",
-	"maintenance-mode.status": "Maintenance Mode Status Code",
-	"maintenance-mode.message": "Maintenance Message",
-	"headers": "Headers",
-	"headers.allow-from": "Set ALLOW-FROM to Place NodeBB in an iFrame",
+	"maintenance-mode": "מצב תחזוקה",
+	"maintenance-mode.help": "כאשר הפורום נמצא במצב תחזוקה, כל הבקשות יופנו לדף אחזקה סטטי. מנהלים לא יגיעו להפניה זו, והם יוכלו לגשת לאתר כרגיל.",
+	"maintenance-mode.status": "קוד מצב תחזוקה",
+	"maintenance-mode.message": "הודעת תחזוקה",
+	"headers": "כותרות",
+	"headers.allow-from": "הגדר ALLOW-FROM למקם NodeBB ב- iFrame",
 	"headers.csp-frame-ancestors": "Set Content-Security-Policy frame-ancestors header to Place NodeBB in an iFrame",
 	"headers.csp-frame-ancestors-help": "'none', 'self'(default) or list of URIs to allow.",
 	"headers.powered-by": "Customise the \"Powered By\" header sent by NodeBB",
@@ -32,5 +32,12 @@
 	"sockets.settings": "WebSocket Settings",
 	"sockets.max-attempts": "Max Reconnection Attempts",
 	"sockets.default-placeholder": "Default: %1",
-	"sockets.delay": "Reconnection Delay"
+	"sockets.delay": "Reconnection Delay",
+
+	"analytics.settings": "Analytics Settings",
+	"analytics.max-cache": "Analytics Cache Max Value",
+	"analytics.max-cache-help": "On high-traffic installs, the cache could be exhausted continuously if there are more concurrent active users than the Max Cache value. (Restart required)",
+	"compression.settings": "Compression Settings",
+	"compression.enable": "Enable Compression",
+	"compression.help": "This setting enables gzip compression. For a high-traffic website in production, the best way to put compression in place is to implement it at a reverse proxy level. You can enable it here for testing purposes."
 }

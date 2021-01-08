@@ -17,7 +17,7 @@
 						<fieldset>
 							<label for="change-group-user-title">[[admin/manage/groups:edit.user-title]]</label>
 							<span id="group-label-preview" class="label label-default" style="color:<!-- IF group.textColor -->{group.textColor}<!-- ELSE -->#ffffff<!-- ENDIF group.textColor -->; background:<!-- IF group.labelColor -->{group.labelColor}<!-- ELSE -->#000000<!-- ENDIF group.labelColor -->;"><i id="group-icon-preview" class="fa {group.icon} <!-- IF !group.icon -->hidden<!-- ENDIF -->"></i> <span id="group-label-preview-text">{group.userTitle}</span></span>
-							<input type="text" class="form-control" id="change-group-user-title" placeholder="The title of users if they are a member of this group" value="{group.userTitle}" maxlength="{maximumGroupTitleLength}" data-property /><br />
+							<input type="text" class="form-control" id="change-group-user-title" placeholder="The title of users if they are a member of this group" value="{group.userTitleEscaped}" maxlength="{maximumGroupTitleLength}" data-property /><br />
 						</fieldset>
 					</div>
 					<div class="col-md-2">
@@ -30,13 +30,13 @@
 						<fieldset>
 							<label for="change-group-label-color">[[admin/manage/groups:edit.label-color]]</label>
 
-							<input id="change-group-label-color" placeholder="#0059b2" data-name="bgColor" value="{group.labelColor}" class="form-control" data-property/><br />
+							<input type="color" id="change-group-label-color" placeholder="#0059b2" data-name="bgColor" value="{group.labelColor}" class="form-control" data-property/><br />
 						</fieldset>
 					</div>
 					<div class="col-md-3">
 						<fieldset>
 							<label for="change-group-text-color">[[admin/manage/groups:edit.text-color]]</label>
-							<input id="change-group-text-color" placeholder="#ffffff" data-name="textColor" value="{group.textColor}" class="form-control" data-property/><br />
+							<input type="color" id="change-group-text-color" placeholder="#ffffff" data-name="textColor" value="{group.textColor}" class="form-control" data-property/><br />
 						</fieldset>
 					</div>
 				</div>
@@ -94,6 +94,22 @@
 						</label>
 					</div>
 				</fieldset>
+
+				<hr />
+
+				<div class="form-group">
+					<label for="memberPostCids">[[groups:details.member-post-cids]]</label>
+					<select multiple="true" name="memberPostCids" id="memberPostCids" class="form-control" size="15">
+						{{{each group.categories}}}
+						<option value="{categories.cid}"{{{ if ../selected }}} selected{{{ end }}}>
+							{../level}{../name}
+						</option>
+						{{{end}}}
+					</select>
+					<p class="help-block">[[groups:details.member-post-cids-help]]</p>
+				</div>
+
+				<hr />
 
 				<fieldset>
 					<div class="panel panel-default">

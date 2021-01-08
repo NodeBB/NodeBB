@@ -18,6 +18,8 @@
     "agree_to_terms_of_use": "با شرایط استفاده موافقم",
     "terms_of_use_error": "شما باید با شرایط انجمن موافقت کنید",
     "registration-added-to-queue": "ثبت نام شما به صف تایید اضافه شد. وقتی توسط یک مدیر تایید شد شما ایمیلی دریافت خواهید کرد.",
+    "registration-queue-average-time": "Our average time for approving memberships is %1 hours %2 minutes.",
+    "registration-queue-auto-approve-time": "Your membership to this forum will be fully activated in up to %1 hours.",
     "interstitial.intro": "ما نیاز به برخی اطلاعات اضافی شما قبل از ایجاد شناسه کاربری داریم.",
     "interstitial.errors-found": "شما نمی‌توانید ثبت نام خود را تکمیل کنید:",
     "gdpr_agree_data": "من با جمع آوری و پرداز اطلاعات شخصی در این وبسایت موافقم.",

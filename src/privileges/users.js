@@ -3,6 +3,8 @@
 
 const _ = require('lodash');
 
+const user = require('../user');
+const meta = require('../meta');
 const groups = require('../groups');
 const plugins = require('../plugins');
 const helpers = require('./helpers');
@@ -41,7 +43,7 @@ module.exports = function (privileges) {
 			return await filterIsModerator(cids, uid, cids.map(() => true));
 		}
 		const uniqueCids = _.uniq(cids);
-		const isAllowed = await helpers.isUserAllowedTo('moderate', uid, uniqueCids);
+		const isAllowed = await helpers.isAllowedTo('moderate', uid, uniqueCids);
 
 		const cidToIsAllowed = _.zipObject(uniqueCids, isAllowed);
 		const isModerator = cids.map(cid => cidToIsAllowed[cid]);
@@ -64,7 +66,7 @@ module.exports = function (privileges) {
 	}
 
 	async function filterIsModerator(cid, uid, isModerator) {
-		const data = await plugins.fireHook('filter:user.isModerator', { uid: uid, cid: cid, isModerator: isModerator });
+		const data = await plugins.hooks.fire('filter:user.isModerator', { uid: uid, cid: cid, isModerator: isModerator });
 		if ((Array.isArray(uid) || Array.isArray(cid)) && !Array.isArray(data.isModerator)) {
 			throw new Error('filter:user.isModerator - i/o mismatch');
 		}
@@ -82,7 +84,7 @@ module.exports = function (privileges) {
 			privileges.users.isAdministrator(uid),
 		]);
 
-		const data = await plugins.fireHook('filter:user.canEdit', {
+		const data = await plugins.hooks.fire('filter:user.canEdit', {
 			isAdmin: isAdmin,
 			isGlobalMod: isGlobalMod,
 			isTargetAdmin: isTargetAdmin,
@@ -99,7 +101,7 @@ module.exports = function (privileges) {
 			privileges.users.isAdministrator(uid),
 		]);
 
-		const data = await plugins.fireHook('filter:user.canBanUser', {
+		const data = await plugins.hooks.fire('filter:user.canBanUser', {
 			canBan: canBan && !isTargetAdmin,
 			callerUid: callerUid,
 			uid: uid,
@@ -107,12 +109,30 @@ module.exports = function (privileges) {
 		return data.canBan;
 	};
 
-	privileges.users.hasBanPrivilege = async function (uid) {
-		const canBan = await privileges.global.can('ban', uid);
-		const data = await plugins.fireHook('filter:user.hasBanPrivilege', {
-			uid: uid,
-			canBan: canBan,
-		});
-		return data.canBan;
+	privileges.users.canFlag = async function (callerUid, uid) {
+		const [userReputation, targetPrivileged, reporterPrivileged] = await Promise.all([
+			user.getUserField(callerUid, 'reputation'),
+			user.isPrivileged(uid),
+			user.isPrivileged(callerUid),
+		]);
+		const minimumReputation = meta.config['min:rep:flag'];
+		let canFlag = reporterPrivileged || (userReputation >= minimumReputation);
+
+		if (targetPrivileged && !reporterPrivileged) {
+			canFlag = false;
+		}
+
+		return { flag: canFlag };
 	};
+
+	privileges.users.hasBanPrivilege = async uid => await hasGlobalPrivilege('ban', uid);
+	privileges.users.hasInvitePrivilege = async uid => await hasGlobalPrivilege('invite', uid);
+
+	async function hasGlobalPrivilege(privilege, uid) {
+		const privilegeName = privilege.split('-').map(word => word.slice(0, 1).toUpperCase() + word.slice(1)).join('');
+		let payload = { uid };
+		payload[`can${privilegeName}`] = await privileges.global.can(privilege, uid);
+		payload = await plugins.hooks.fire(`filter:user.has${privilegeName}Privilege`, payload);
+		return payload[`can${privilegeName}`];
+	}
 };

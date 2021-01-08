@@ -22,12 +22,13 @@ module.exports = function (Messaging) {
 		}
 
 		const maximumChatMessageLength = meta.config.maximumChatMessageLength || 1000;
-		const data = await plugins.fireHook('filter:messaging.checkContent', { content: content });
-		content = String(data.content).trim();
+		content = String(content).trim();
+		let length = String(content.length).trim();
+		({ content, length } = await plugins.hooks.fire('filter:messaging.checkContent', { content, length }));
 		if (!content) {
 			throw new Error('[[error:invalid-chat-message]]');
 		}
-		if (content.length > maximumChatMessageLength) {
+		if (length > maximumChatMessageLength) {
 			throw new Error('[[error:chat-message-too-long, ' + maximumChatMessageLength + ']]');
 		}
 	};
@@ -48,7 +49,7 @@ module.exports = function (Messaging) {
 			message.ip = data.ip;
 		}
 
-		message = await plugins.fireHook('filter:messaging.save', message);
+		message = await plugins.hooks.fire('filter:messaging.save', message);
 		await db.setObject('message:' + mid, message);
 		const isNewSet = await Messaging.isNewSet(data.uid, data.roomId, timestamp);
 		let uids = await db.getSortedSetRange('chat:room:' + data.roomId + ':uids', 0, -1);
@@ -68,7 +69,7 @@ module.exports = function (Messaging) {
 		messages[0].newSet = isNewSet;
 		messages[0].mid = mid;
 		messages[0].roomId = data.roomId;
-		plugins.fireHook('action:messaging.save', { message: messages[0], data: data });
+		plugins.hooks.fire('action:messaging.save', { message: messages[0], data: data });
 		return messages[0];
 	};
 

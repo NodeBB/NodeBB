@@ -32,5 +32,12 @@
 	"sockets.settings": "Impostazioni WebSocket",
 	"sockets.max-attempts": "Tentativi massimi di riconnessione ",
 	"sockets.default-placeholder": "Predefinito: %1",
-	"sockets.delay": "Ritardo di riconnessione"
+	"sockets.delay": "Ritardo di riconnessione",
+
+	"analytics.settings": "Impostazioni di analisi",
+	"analytics.max-cache": "Analisi valore massimo cache",
+	"analytics.max-cache-help": "Nelle installazioni ad alto traffico, la cache potrebbe esaurirsi continuamente se ci sono più utenti attivi contemporanei rispetto al valore Max Cache. (Riavvio richiesto)",
+	"compression.settings": "Impostazioni compressione",
+	"compression.enable": "Abilita compressione",
+	"compression.help": "Questa impostazione abilita la compressione gzip. Per un sito Web ad alto traffico in produzione, il modo migliore per implementare la compressione a livello di proxy inverso. È possibile abilitarlo qui a scopo di test."
 }

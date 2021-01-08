@@ -1,0 +1,54 @@
+get:
+  tags:
+    - admin
+  summary: Get system digest info/settings
+  responses:
+    "200":
+      description: "A JSON object containing recent digest sends and settings"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  title:
+                    type: string
+                  delivery:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        username:
+                          type: string
+                          description: A friendly name for a given user account
+                        displayname:
+                          type: string
+                          description: This is either username or fullname depending on forum and user settings
+                        picture:
+                          nullable: true
+                          type: string
+                        uid:
+                          type: number
+                          description: A user identifier
+                        icon:text:
+                          type: string
+                          description: A single-letter representation of a username. This is used in the
+                            auto-generated icon given to users without an
+                            avatar
+                        icon:bgColor:
+                          type: string
+                          description: A six-character hexadecimal colour code assigned to the user. This
+                            value is used in conjunction with `icon:text`
+                            for the user's auto-generated icon
+                          example: "#f44336"
+                        lastDelivery:
+                          type: string
+                        setting:
+                          type: boolean
+                  default:
+                    type: string
+                required:
+                  - title
+                  - delivery
+              - $ref: ../../../components/schemas/Pagination.yaml#/Pagination
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

@@ -1,0 +1,25 @@
+get:
+  tags:
+    - admin
+  summary: Get members of a group (.csv)
+  parameters:
+    - in: header
+      name: referer
+      schema:
+        type: string
+      required: true
+      example: /admin/manage/groups
+    - in: path
+      name: groupname
+      schema:
+        type: string
+      required: true
+      example: registered-users
+  responses:
+    "200":
+      description: "A CSV file containing all users in the group"
+      content:
+        text/csv:
+          schema:
+            type: string
+            format: binary

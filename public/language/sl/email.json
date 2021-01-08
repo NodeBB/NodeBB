@@ -21,6 +21,8 @@
     "reset.notify.text1": "Obveščamo vas, da je bilo na forumu %1 uspešno spremenjeno vaše geslo.",
     "reset.notify.text2": "Če tega niste zahtevali, prosimo, da nemudoma obvestite skrbnika.",
     "digest.latest_topics": "Zadnje teme na forumu %1",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "Kliknite tu za obisk foruma %1.",
     "digest.unsub.info": "Ta povzetek vam je bil poslan zaradi nastavitev vaše naročnine.",
     "digest.day": "Dan",

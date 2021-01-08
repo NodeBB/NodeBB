@@ -3,6 +3,7 @@
 const meta = require('../meta');
 const user = require('../user');
 const plugins = require('../plugins');
+const privileges = require('../privileges');
 
 const sockets = require('../socket.io');
 
@@ -15,7 +16,7 @@ module.exports = function (Messaging) {
 			return;
 		}
 
-		const payload = await plugins.fireHook('filter:messaging.edit', {
+		const payload = await plugins.hooks.fire('filter:messaging.edit', {
 			content: content,
 			edited: Date.now(),
 		});
@@ -46,28 +47,29 @@ module.exports = function (Messaging) {
 			durationConfig = 'chatDeleteDuration';
 		}
 
+		const isAdminOrGlobalMod = await user.isAdminOrGlobalMod(uid);
+
 		if (meta.config.disableChat) {
 			throw new Error('[[error:chat-disabled]]');
-		} else if (meta.config.disableChatMessageEditing) {
+		} else if (!isAdminOrGlobalMod && meta.config.disableChatMessageEditing) {
 			throw new Error('[[error:chat-message-editing-disabled]]');
 		}
 
-		const userData = await user.getUserFields(uid, ['banned', 'email:confirmed']);
+		const userData = await user.getUserFields(uid, ['banned']);
 		if (userData.banned) {
 			throw new Error('[[error:user-banned]]');
 		}
-		if (meta.config.requireEmailConfirmation && !userData['email:confirmed']) {
-			throw new Error('[[error:email-not-confirmed]]');
+
+		const canChat = await privileges.global.can('chat', uid);
+		if (!canChat) {
+			throw new Error('[[error:no-privileges]]');
 		}
 
-		const [isAdmin, messageData] = await Promise.all([
-			user.isAdministrator(uid),
-			Messaging.getMessageFields(messageId, ['fromuid', 'timestamp', 'system']),
-		]);
-
-		if (isAdmin && !messageData.system) {
+		const messageData = await Messaging.getMessageFields(messageId, ['fromuid', 'timestamp', 'system']);
+		if (isAdminOrGlobalMod && !messageData.system) {
 			return;
 		}
+
 		const chatConfigDuration = meta.config[durationConfig];
 		if (chatConfigDuration && Date.now() - messageData.timestamp > chatConfigDuration * 1000) {
 			throw new Error('[[error:chat-' + type + '-duration-expired, ' + meta.config[durationConfig] + ']]');

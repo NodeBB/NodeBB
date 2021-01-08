@@ -1,0 +1,12 @@
+Error:
+  type: object
+  properties:
+    status:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    response:
+      type: object

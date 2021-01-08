@@ -21,6 +21,8 @@
     "reset.notify.text1": "เรากำลังแจ้งคุณว่าตอน %1 รหัสผ่านของคุณถูกเปลี่ยนเรียบร้อยแล้ว",
     "reset.notify.text2": "หากคุณไม่ได้เป็นคนอนุญาตสิ่งนี้ กรุณาแจ้งไปยังผู้ดูแลระบบโดยทันที",
     "digest.latest_topics": "หัวข้อสนทนาล่าสุดจาก %1",
+    "digest.top-topics": "Top topics from %1",
+    "digest.popular-topics": "Popular topics from %1",
     "digest.cta": "กดตรงนี้เพื่อเข้าดู %1",
     "digest.unsub.info": "คำชี้แจงถูกส่งไปให้คุณแล้ว เนื่องมาจากการตั้งค่าสมาชิกของคุณ",
     "digest.day": "วัน",

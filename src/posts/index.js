@@ -48,7 +48,7 @@ Posts.getPostsByPids = async function (pids, uid) {
 	let posts = await Posts.getPostsData(pids);
 	posts = await Promise.all(posts.map(p => Posts.parsePost(p)));
 	posts = await user.blocks.filter(uid, posts);
-	const data = await plugins.fireHook('filter:post.getPosts', { posts: posts, uid: uid });
+	const data = await plugins.hooks.fire('filter:post.getPosts', { posts: posts, uid: uid });
 	if (!data || !Array.isArray(data.posts)) {
 		return [];
 	}

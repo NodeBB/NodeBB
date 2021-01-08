@@ -8,7 +8,7 @@
 </p>
 <ul>
 	<!-- BEGIN invalid -->
-	<li><code>@value</code></li>
+	<li><code>{@value}</code></li>
 	<!-- END invalid -->
 </ul>
 <!-- ENDIF invalid.length -->

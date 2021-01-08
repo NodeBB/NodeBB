@@ -15,13 +15,16 @@ exports.get = async function (req, res, callback) {
 		content: 'noindex',
 	};
 
-	const data = await plugins.fireHook('filter:composer.build', {
+	const data = await plugins.hooks.fire('filter:composer.build', {
 		req: req,
 		res: res,
 		next: callback,
 		templateData: {},
 	});
 
+	if (res.headersSent) {
+		return;
+	}
 	if (!data || !data.templateData) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
@@ -74,7 +77,7 @@ exports.post = async function (req, res) {
 			throw new Error('[[error:invalid-data]]');
 		}
 		if (result.queued) {
-			return res.redirect((nconf.get('relative_path') || '/'));
+			return res.redirect((nconf.get('relative_path') || '/') + '?noScriptMessage=[[success:post-queued]]');
 		}
 		const uid = result.uid ? result.uid : result.topicData.uid;
 		user.updateOnlineUsers(uid);

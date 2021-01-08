@@ -1,0 +1,31 @@
+delete:
+  tags:
+    - users
+  summary: revoke a user session
+  parameters:
+    - in: path
+      name: uid
+      schema:
+        type: integer
+      required: true
+      description: uid of the user's session
+      example: 3
+    - in: path
+      name: uuid
+      schema:
+        type: string
+      required: true
+      description: uuid of the user's session
+      example: 7c1a66b3-90e1-41f4-9f74-2b2edaebf917
+  responses:
+    '200':
+      description: user session revoked
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object

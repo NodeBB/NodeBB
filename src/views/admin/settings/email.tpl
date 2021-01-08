@@ -54,9 +54,9 @@
 					<option value="nodebb-custom-smtp" style="font-weight: bold">[[admin/settings/email:smtp-transport.service-custom]]</option>
 					<option style="font-size: 10px" disabled>&nbsp;</option>
 
-					<!-- BEGIN services -->
-					<option value="@value">@value</option>
-					<!-- END services -->
+					{{{ each services }}}
+					<option value="{@value}">{@value}</option>
+					{{{ end }}}
 				</select>
 				<p class="help-block">
 					[[admin/settings/email:smtp-transport.service-help]]
@@ -121,7 +121,7 @@
 			<label>[[admin/settings/email:testing.select]]</label>
 			<select id="test-email" class="form-control">
 				<!-- BEGIN sendable -->
-				<option value="{sendable.path}">{sendable.path}</option>
+				<option value="{@value}">{@value}</option>
 				<!-- END sendable -->
 			</select>
 		</div>
@@ -149,6 +149,20 @@
 				<p class="help-block">
 					[[admin/settings/email:subscriptions.hour-help]]
 				</p>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/email:notifications.settings]]</div>
+	<div class="col-sm-10 col-xs-12">
+		<form>
+			<div class="checkbox">
+				<label for="removeEmailNotificationImages" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" id="removeEmailNotificationImages" data-field="removeEmailNotificationImages" name="removeEmailNotificationImages" />
+					<span class="mdl-switch__label">[[admin/settings/email:notifications.remove-images]]</span>
+				</label>
 			</div>
 		</form>
 	</div>

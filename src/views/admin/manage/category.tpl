@@ -28,7 +28,7 @@
 							<label for="cid-{category.cid}-bgColor">
 								[[admin/manage/categories:bg-color]]
 							</label>
-							<input id="cid-{category.cid}-bgColor" placeholder="#0059b2" data-name="bgColor" value="{category.bgColor}" class="form-control category_bgColor" />
+							<input type="color" id="cid-{category.cid}-bgColor" placeholder="#0059b2" data-name="bgColor" value="{category.bgColor}" class="form-control category_bgColor" />
 						</div>
 					</div>
 					<div class="col-sm-4 col-xs-12">
@@ -36,7 +36,7 @@
 							<label for="cid-{category.cid}-color">
 								[[admin/manage/categories:text-color]]
 							</label>
-							<input id="cid-{category.cid}-color" placeholder="#fff" data-name="color" value="{category.color}" class="form-control category_color" />
+							<input type="color" id="cid-{category.cid}-color" placeholder="#ffffff" data-name="color" value="{category.color}" class="form-control category_color" />
 						</div>
 					</div>
 					<div class="col-sm-4 col-xs-12">
@@ -80,16 +80,6 @@
 							<input id="cid-{category.cid}-link" type="text" class="form-control" placeholder="http://domain.com" data-name="link" value="{category.link}" />
 						</div>
 					</div>
-					<div class="col-sm-6 col-xs-12">
-						<div class="form-group">
-							<div class="checkbox">
-								<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-									<input type="checkbox" class="mdl-switch__input" id="cid-{category.cid}-isSection" data-name="isSection" <!-- IF category.isSection -->checked<!-- ENDIF category.isSection --> />
-									<span class="mdl-switch__label"><strong>[[admin/manage/categories:is-section]]</strong></span>
-								</label>
-							</div>
-						</div>
-					</div>
 				</fieldset>
 				<fieldset class="row">
 					<div class="col-sm-6 col-xs-12">
@@ -111,9 +101,35 @@
 				</fieldset>
 				<fieldset class="row">
 					<div class="col-lg-12">
-						<label for="tag-whitelist">[[admin/manage/categories:tag-whitelist]]</label><br />
-						<input id="tag-whitelist" type="text" class="form-control" data-name="tagWhitelist" value="" />
+						<div class="form-group">
+							<label for="tag-whitelist">[[admin/manage/categories:tag-whitelist]]</label><br />
+							<input id="tag-whitelist" type="text" class="form-control" data-name="tagWhitelist" value="" />
+						</div>
 					</div>
+				</fieldset>
+				<fieldset class="row">
+					<div class="col-lg-6">
+						<div class="form-group">
+							<div class="checkbox">
+								<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+									<input type="checkbox" class="mdl-switch__input" id="cid-{category.cid}-isSection" data-name="isSection" <!-- IF category.isSection -->checked<!-- ENDIF category.isSection --> />
+									<span class="mdl-switch__label"><strong>[[admin/manage/categories:is-section]]</strong></span>
+								</label>
+							</div>
+						</div>
+					</div>
+					{{{ if postQueueEnabled }}}
+					<div class="col-lg-6">
+						<div class="form-group">
+							<div class="checkbox">
+								<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+									<input type="checkbox" class="mdl-switch__input" data-name="postQueue" {{{ if category.postQueue }}}checked{{{ end }}} />
+									<span class="mdl-switch__label"><strong>[[admin/manage/categories:post-queue]]</strong></span>
+								</label>
+							</div>
+						</div>
+					</div>
+					{{{ end }}}
 				</fieldset>
 			</div>
 		</div>

@@ -59,7 +59,7 @@ Categories.getCategoryById = async function (data) {
 
 
 	calculateTopicPostCount(category);
-	const result = await plugins.fireHook('filter:category.get', { category: category, uid: data.uid });
+	const result = await plugins.hooks.fire('filter:category.get', { category: category, uid: data.uid });
 	return result.category;
 };
 
@@ -157,7 +157,7 @@ Categories.getTagWhitelist = async function (cids) {
 	});
 
 	if (!nonCachedCids.length) {
-		return _.clone(cids.map(cid => cachedData[cid]));
+		return cids.map(cid => cachedData[cid]);
 	}
 
 	const keys = nonCachedCids.map(cid => 'cid:' + cid + ':tag:whitelist');
@@ -167,7 +167,7 @@ Categories.getTagWhitelist = async function (cids) {
 		cachedData[cid] = data[index];
 		cache.set('cid:' + cid + ':tag:whitelist', data[index]);
 	});
-	return _.clone(cids.map(cid => cachedData[cid]));
+	return cids.map(cid => cachedData[cid]);
 };
 
 function calculateTopicPostCount(category) {
@@ -280,7 +280,7 @@ Categories.getTree = function (categories, parentCid) {
 		if (cid) {
 			categories[index].children = undefined;
 			cidToCategory[cid] = categories[index];
-			parents[cid] = _.clone(categories[index]);
+			parents[cid] = { ...categories[index] };
 		}
 	});
 

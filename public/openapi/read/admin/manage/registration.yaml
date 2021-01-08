@@ -1,0 +1,90 @@
+get:
+  tags:
+    - admin
+  summary: Get registration queue/invites
+  responses:
+    "200":
+      description: "A JSON object containing the registration queue and invites"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  registrationQueueCount:
+                    type: number
+                  users:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        username:
+                          type: string
+                        email:
+                          type: string
+                        ip:
+                          type: string
+                        timestampISO:
+                          type: string
+                        usernameEscaped:
+                          type: string
+                        ipMatch:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              username:
+                                type: string
+                                description: A friendly name for a given user account
+                              userslug:
+                                type: string
+                                description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                  removed, etc.)
+                              picture:
+                                type: string
+                              uid:
+                                type: number
+                                description: A user identifier
+                              icon:text:
+                                type: string
+                                description: A single-letter representation of a username. This is used in the
+                                  auto-generated icon given to users without
+                                  an avatar
+                              icon:bgColor:
+                                type: string
+                                description: A six-character hexadecimal colour code assigned to the user. This
+                                  value is used in conjunction with
+                                  `icon:text` for the user's auto-generated
+                                  icon
+                                example: "#f44336"
+                        customActions:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              title:
+                                type: string
+                              id:
+                                type: string
+                              class:
+                                type: string
+                              icon:
+                                type: string
+                  customHeaders:
+                    type: array
+                  invites:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        uid:
+                          type: number
+                        invitations:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              email:
+                                type: string
+              - $ref: ../../../components/schemas/Pagination.yaml#/Pagination
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

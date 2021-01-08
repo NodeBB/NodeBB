@@ -4,9 +4,9 @@ define('topicList', [
 	'forum/infinitescroll',
 	'handleBack',
 	'topicSelect',
-	'categorySearch',
+	'categoryFilter',
 	'forum/category/tools',
-], function (infinitescroll, handleBack, topicSelect, categorySearch, categoryTools) {
+], function (infinitescroll, handleBack, topicSelect, categoryFilter, categoryTools) {
 	var TopicList = {};
 	var templateName = '';
 
@@ -38,7 +38,7 @@ define('topicList', [
 
 		TopicList.watchForNewPosts();
 
-		TopicList.handleCategorySelection();
+		categoryFilter.init($('[component="category/dropdown"]'));
 
 		if (!config.usePagination) {
 			infinitescroll.init(TopicList.loadMoreTopics);
@@ -158,64 +158,6 @@ define('topicList', [
 		$('#new-topics-alert').translateText(text).removeClass('hide').fadeIn('slow');
 		$('#category-no-topics').addClass('hide');
 	}
-
-	TopicList.handleCategorySelection = function () {
-		function getSelectedCids() {
-			var cids = [];
-			$('[component="category/list"] [data-cid]').each(function (index, el) {
-				if ($(el).find('i.fa-check').length) {
-					cids.push(parseInt($(el).attr('data-cid'), 10));
-				}
-			});
-			cids.sort(function (a, b) {
-				return a - b;
-			});
-			return cids;
-		}
-
-		categorySearch.init($('[component="category/dropdown"]'));
-
-		$('[component="category/dropdown"]').on('hidden.bs.dropdown', function () {
-			var cids = getSelectedCids();
-			var changed = ajaxify.data.selectedCids.length !== cids.length;
-			ajaxify.data.selectedCids.forEach(function (cid, index) {
-				if (cid !== cids[index]) {
-					changed = true;
-				}
-			});
-
-			if (changed) {
-				var url = window.location.pathname;
-				var currentParams = utils.params();
-				if (cids.length) {
-					currentParams.cid = cids;
-					url += '?' + decodeURIComponent($.param(currentParams));
-				}
-				ajaxify.go(url);
-			}
-		});
-
-		$('[component="category/list"]').on('click', '[data-cid]', function (ev) {
-			function selectChildren(parentCid, flag) {
-				$('[component="category/list"] [data-parent-cid="' + parentCid + '"] [component="category/select/icon"]').toggleClass('fa-check', flag);
-				$('[component="category/list"] [data-parent-cid="' + parentCid + '"]').each(function (index, el) {
-					selectChildren($(el).attr('data-cid'), flag);
-				});
-			}
-			var categoryEl = $(this);
-			var link = categoryEl.find('a').attr('href');
-			if (link && link !== '#' && link.length) {
-				return;
-			}
-			var cid = categoryEl.attr('data-cid');
-			if (ev.ctrlKey) {
-				selectChildren(cid, !categoryEl.find('[component="category/select/icon"]').hasClass('fa-check'));
-			}
-			categoryEl.find('[component="category/select/icon"]').toggleClass('fa-check');
-			$('[component="category/list"] li').first().find('i').toggleClass('fa-check', !getSelectedCids().length);
-			return false;
-		});
-	};
 
 	TopicList.loadMoreTopics = function (direction) {
 		if (!topicListEl.length || !topicListEl.children().length) {
