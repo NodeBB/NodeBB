@@ -37,7 +37,7 @@ Flags.init = async function () {
 			sets.push(prefix + value);
 		} else if (value.length) {
 			if (value.length === 1) {
-				sets.push(prefix + value.pop());
+				sets.push(prefix + value[0]);
 			} else {
 				value.forEach(x => orSets.push(prefix + x));
 			}
@@ -169,7 +169,7 @@ Flags.getFlagIdsWithFilters = async function ({ filters, uid }) {
 
 Flags.list = async function (data) {
 	const filters = data.filters || {};
-	let flagIds = Flags.getFlagIdsWithFilters({
+	let flagIds = await Flags.getFlagIdsWithFilters({
 		filters,
 		uid: data.uid,
 	});
