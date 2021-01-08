@@ -10,6 +10,7 @@ var db = require('../database');
 var user = require('../user');
 var topics = require('../topics');
 var messaging = require('../messaging');
+var flags = require('../flags');
 var meta = require('../meta');
 var plugins = require('../plugins');
 var navigation = require('../navigation');
@@ -152,11 +153,25 @@ middleware.renderHeader = async function renderHeader(req, res, data) {
 };
 
 async function appendUnreadCounts({ uid, navigation, unreadData }) {
-	const results = await utils.promiseParallel({
+	const originalRoutes = navigation.map(nav => nav.originalRoute);
+	const calls = {
 		unreadData: topics.getUnreadData({ uid: uid }),
 		unreadChatCount: messaging.getUnreadCount(uid),
 		unreadNotificationCount: user.notifications.getUnreadCount(uid),
-	});
+		unreadFlagCount: (async function () {
+			if (originalRoutes.includes('/flags') && await user.isPrivileged(uid)) {
+				return flags.getCount({
+					uid,
+					filters: {
+						quick: 'unresolved',
+						cid: (await user.isAdminOrGlobalMod(uid)) ? [] : (await user.getModeratedCids(uid)),
+					},
+				});
+			}
+			return 0;
+		}()),
+	};
+	const results = await utils.promiseParallel(calls);
 
 	const unreadCounts = results.unreadData.counts;
 	const unreadCount = {
@@ -166,6 +181,7 @@ async function appendUnreadCounts({ uid, navigation, unreadData }) {
 		unrepliedTopic: unreadCounts.unreplied || 0,
 		chat: results.unreadChatCount || 0,
 		notification: results.unreadNotificationCount || 0,
+		flags: results.unreadFlagCount || 0,
 	};
 
 	Object.keys(unreadCount).forEach(function (key) {
@@ -189,6 +205,14 @@ async function appendUnreadCounts({ uid, navigation, unreadData }) {
 		modifyNavItem(item, '/unread?filter=new', 'new', unreadCount.newTopic);
 		modifyNavItem(item, '/unread?filter=watched', 'watched', unreadCount.watchedTopic);
 		modifyNavItem(item, '/unread?filter=unreplied', 'unreplied', unreadCount.unrepliedTopic);
+
+		['flags'].forEach((prop) => {
+			if (item && item.originalRoute === `/${prop}` && unreadCount[prop] > 0) {
+				item.iconClass += ' unread-count';
+				item.content = unreadCount.flags;
+			}
+		});
+
 		return item;
 	});
 
