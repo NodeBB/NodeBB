@@ -177,7 +177,7 @@ async function appendUnreadCounts({ uid, navigation, unreadData }) {
 	const tidsByFilter = results.unreadData.tidsByFilter;
 	navigation = navigation.map(function (item) {
 		function modifyNavItem(item, route, filter, content) {
-			if (item && validator.unescape(item.originalRoute) === route) {
+			if (item && item.originalRoute === route) {
 				unreadData[filter] = _.zipObject(tidsByFilter[filter], tidsByFilter[filter].map(() => true));
 				item.content = content;
 				if (unreadCounts[filter] > 0) {
