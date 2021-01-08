@@ -10,6 +10,7 @@ var db = require('../database');
 var user = require('../user');
 var topics = require('../topics');
 var messaging = require('../messaging');
+var flags = require('../flags');
 var meta = require('../meta');
 var plugins = require('../plugins');
 var navigation = require('../navigation');
@@ -79,9 +80,6 @@ middleware.renderHeader = async function renderHeader(req, res, data) {
 		timeagoCode: languages.userTimeagoCode(res.locals.config.userLang),
 		browserTitle: translator.translate(controllers.helpers.buildTitle(translator.unescape(data.title))),
 		navigation: navigation.get(req.uid),
-		unreadData: topics.getUnreadData({ uid: req.uid }),
-		unreadChatCount: messaging.getUnreadCount(req.uid),
-		unreadNotificationCount: user.notifications.getUnreadCount(req.uid),
 	});
 
 	const unreadData = {
@@ -105,44 +103,15 @@ middleware.renderHeader = async function renderHeader(req, res, data) {
 
 	templateValues.bootswatchSkin = (parseInt(meta.config.disableCustomUserSkins, 10) !== 1 ? res.locals.config.bootswatchSkin : '') || meta.config.bootswatchSkin || '';
 	templateValues.config.bootswatchSkin = templateValues.bootswatchSkin || 'noskin';	// TODO remove in v1.12.0+
-
-	const unreadCounts = results.unreadData.counts;
-	const unreadCount = {
-		topic: unreadCounts[''] || 0,
-		newTopic: unreadCounts.new || 0,
-		watchedTopic: unreadCounts.watched || 0,
-		unrepliedTopic: unreadCounts.unreplied || 0,
-		chat: results.unreadChatCount || 0,
-		notification: results.unreadNotificationCount || 0,
-	};
-
-	Object.keys(unreadCount).forEach(function (key) {
-		if (unreadCount[key] > 99) {
-			unreadCount[key] = '99+';
-		}
-	});
-
-	const tidsByFilter = results.unreadData.tidsByFilter;
-	results.navigation = results.navigation.map(function (item) {
-		function modifyNavItem(item, route, filter, content) {
-			if (item && validator.unescape(item.originalRoute) === route) {
-				unreadData[filter] = _.zipObject(tidsByFilter[filter], tidsByFilter[filter].map(() => true));
-				item.content = content;
-				if (unreadCounts[filter] > 0) {
-					item.iconClass += ' unread-count';
-				}
-			}
-		}
-		modifyNavItem(item, '/unread', '', unreadCount.topic);
-		modifyNavItem(item, '/unread?filter=new', 'new', unreadCount.newTopic);
-		modifyNavItem(item, '/unread?filter=watched', 'watched', unreadCount.watchedTopic);
-		modifyNavItem(item, '/unread?filter=unreplied', 'unreplied', unreadCount.unrepliedTopic);
-		return item;
-	});
-
 	templateValues.browserTitle = results.browserTitle;
-	templateValues.navigation = results.navigation;
-	templateValues.unreadCount = unreadCount;
+	({
+		navigation: templateValues.navigation,
+		unreadCount: templateValues.unreadCount,
+	} = await appendUnreadCounts({
+		uid: req.uid,
+		navigation: results.navigation,
+		unreadData,
+	}));
 	templateValues.isAdmin = results.user.isAdmin;
 	templateValues.isGlobalMod = results.user.isGlobalMod;
 	templateValues.showModMenu = results.user.isAdmin || results.user.isGlobalMod || results.user.isMod;
@@ -182,6 +151,73 @@ middleware.renderHeader = async function renderHeader(req, res, data) {
 
 	return await req.app.renderAsync('header', hookReturn.templateValues);
 };
+
+async function appendUnreadCounts({ uid, navigation, unreadData }) {
+	const originalRoutes = navigation.map(nav => nav.originalRoute);
+	const calls = {
+		unreadData: topics.getUnreadData({ uid: uid }),
+		unreadChatCount: messaging.getUnreadCount(uid),
+		unreadNotificationCount: user.notifications.getUnreadCount(uid),
+		unreadFlagCount: (async function () {
+			if (originalRoutes.includes('/flags') && await user.isPrivileged(uid)) {
+				return flags.getCount({
+					uid,
+					filters: {
+						quick: 'unresolved',
+						cid: (await user.isAdminOrGlobalMod(uid)) ? [] : (await user.getModeratedCids(uid)),
+					},
+				});
+			}
+			return 0;
+		}()),
+	};
+	const results = await utils.promiseParallel(calls);
+
+	const unreadCounts = results.unreadData.counts;
+	const unreadCount = {
+		topic: unreadCounts[''] || 0,
+		newTopic: unreadCounts.new || 0,
+		watchedTopic: unreadCounts.watched || 0,
+		unrepliedTopic: unreadCounts.unreplied || 0,
+		chat: results.unreadChatCount || 0,
+		notification: results.unreadNotificationCount || 0,
+		flags: results.unreadFlagCount || 0,
+	};
+
+	Object.keys(unreadCount).forEach(function (key) {
+		if (unreadCount[key] > 99) {
+			unreadCount[key] = '99+';
+		}
+	});
+
+	const tidsByFilter = results.unreadData.tidsByFilter;
+	navigation = navigation.map(function (item) {
+		function modifyNavItem(item, route, filter, content) {
+			if (item && item.originalRoute === route) {
+				unreadData[filter] = _.zipObject(tidsByFilter[filter], tidsByFilter[filter].map(() => true));
+				item.content = content;
+				if (unreadCounts[filter] > 0) {
+					item.iconClass += ' unread-count';
+				}
+			}
+		}
+		modifyNavItem(item, '/unread', '', unreadCount.topic);
+		modifyNavItem(item, '/unread?filter=new', 'new', unreadCount.newTopic);
+		modifyNavItem(item, '/unread?filter=watched', 'watched', unreadCount.watchedTopic);
+		modifyNavItem(item, '/unread?filter=unreplied', 'unreplied', unreadCount.unrepliedTopic);
+
+		['flags'].forEach((prop) => {
+			if (item && item.originalRoute === `/${prop}` && unreadCount[prop] > 0) {
+				item.iconClass += ' unread-count';
+				item.content = unreadCount.flags;
+			}
+		});
+
+		return item;
+	});
+
+	return { navigation, unreadCount };
+}
 
 middleware.renderFooter = async function renderFooter(req, res, templateValues) {
 	const data = await plugins.hooks.fire('filter:middleware.renderFooter', {
