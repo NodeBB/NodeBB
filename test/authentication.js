@@ -422,7 +422,7 @@ describe('authentication', function () {
 		loginUser('ginger@nodebb.org', '123456', function (err, response, body) {
 			meta.config.allowLoginWith = 'username-email';
 			assert.ifError(err);
-			assert.equal(response.statusCode, 500);
+			assert.equal(response.statusCode, 400);
 			assert.equal(body, '[[error:wrong-login-type-username]]');
 			done();
 		});
