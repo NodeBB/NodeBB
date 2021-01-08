@@ -132,7 +132,7 @@
         "socket.io-adapter-cluster": "^1.0.1",
         "socket.io-client": "3.0.5",
         "socket.io-redis": "6.0.1",
-        "sortablejs": "1.10.2",
+        "sortablejs": "1.13.0",
         "spdx-license-list": "^6.1.0",
         "spider-detector": "2.0.0",
         "textcomplete": "^0.17.1",
