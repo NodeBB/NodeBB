@@ -37,12 +37,14 @@ module.exports = function (User) {
 	User.guestData = {
 		uid: 0,
 		username: '[[global:guest]]',
+		displayname: '[[global:guest]]',
 		userslug: '',
 		fullname: '[[global:guest]]',
 		email: '',
 		'icon:text': '?',
 		'icon:bgColor': '#aaa',
 		groupTitle: '',
+		groupTitleArray: [],
 		status: 'offline',
 		reputation: 0,
 		'email:confirmed': 0,
@@ -68,14 +70,19 @@ module.exports = function (User) {
 			fields = fields.filter(value => value !== 'password');
 		}
 
-		let users = await db.getObjectsFields(uniqueUids.map(uid => 'user:' + uid), fields);
+		const users = await db.getObjectsFields(uniqueUids.map(uid => 'user:' + uid), fields);
 		const result = await plugins.hooks.fire('filter:user.getFields', {
 			uids: uniqueUids,
 			users: users,
 			fields: fields,
 		});
-		users = uidsToUsers(uids, uniqueUids, result.users);
-		return await modifyUserData(users, fields, fieldsToRemove);
+		result.users.forEach((user, index) => {
+			if (uniqueUids[index] > 0 && !user.uid) {
+				user.oldUid = uniqueUids[index];
+			}
+		});
+		await modifyUserData(result.users, fields, fieldsToRemove);
+		return uidsToUsers(uids, uniqueUids, result.users);
 	};
 
 	function ensureRequiredFields(fields, fieldsToRemove) {
@@ -110,12 +117,13 @@ module.exports = function (User) {
 	function uidsToUsers(uids, uniqueUids, usersData) {
 		const uidToUser = _.zipObject(uniqueUids, usersData);
 		const users = uids.map(function (uid) {
-			const returnPayload = uidToUser[uid] || { ...User.guestData };
-			if (uid > 0 && !returnPayload.uid) {
-				returnPayload.oldUid = parseInt(uid, 10);
+			const user = uidToUser[uid] || { ...User.guestData };
+			if (!parseInt(user.uid, 10)) {
+				user.username = (user.hasOwnProperty('oldUid') && parseInt(user.oldUid, 10)) ? '[[global:former_user]]' : '[[global:guest]]';
+				user.displayname = user.username;
 			}
 
-			return returnPayload;
+			return user;
 		});
 		return users;
 	}
@@ -142,19 +150,14 @@ module.exports = function (User) {
 	async function modifyUserData(users, requestedFields, fieldsToRemove) {
 		let uidToSettings = {};
 		if (meta.config.showFullnameAsDisplayName) {
-			const uids = _.uniq(users.map(user => user.uid));
+			const uids = users.map(user => user.uid);
 			uidToSettings = _.zipObject(uids, await db.getObjectsFields(
 				uids.map(uid => 'user:' + uid + ':settings'),
 				['showfullname']
 			));
 		}
-		const uidToUser = {};
-		users.forEach(function (user) {
-			uidToUser[user.uid] = user;
-		});
 
-		await Promise.all(Object.keys(uidToUser).map(async function (uid) {
-			const user = uidToUser[uid];
+		await Promise.all(users.map(async function (user) {
 			if (!user) {
 				return;
 			}
@@ -171,14 +174,10 @@ module.exports = function (User) {
 			}
 
 			if (!parseInt(user.uid, 10)) {
-				user.uid = 0;
-				user.username = (user.hasOwnProperty('oldUid') && parseInt(user.oldUid, 10)) ? '[[global:former_user]]' : '[[global:guest]]';
-				user.displayname = user.username;
-				user.userslug = '';
+				for (const [key, value] of Object.entries(User.guestData)) {
+					user[key] = value;
+				}
 				user.picture = User.getDefaultAvatar();
-				user['icon:text'] = '?';
-				user['icon:bgColor'] = '#aaa';
-				user.groupTitle = '';
 			}
 
 			if (user.hasOwnProperty('groupTitle')) {
