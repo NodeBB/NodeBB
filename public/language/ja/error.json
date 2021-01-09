@@ -133,6 +133,7 @@
     "chat-delete-duration-expired": "投稿後、あなたは %1秒間(s)だけチャットメッセージを削除することを許可されています",
     "chat-deleted-already": "このチャットメッセージは既に削除されています",
     "chat-restored-already": "このチャットメッセージは既に削除されています",
+    "chat-room-does-not-exist": "Chat room does not exist.",
     "already-voting-for-this-post": "あなたはすでにこの投稿を評価しました。",
     "reputation-system-disabled": "Reputation system is disabled.",
     "downvoting-disabled": "Downvoting is disabled",

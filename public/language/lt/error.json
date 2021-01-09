@@ -133,6 +133,7 @@
     "chat-delete-duration-expired": "Trinti žinutes galima tik %1 sekundę(-es/-ių) po paskelbimo",
     "chat-deleted-already": "Ši žinutė buvo pašalinta",
     "chat-restored-already": "This chat message has already been restored.",
+    "chat-room-does-not-exist": "Chat room does not exist.",
     "already-voting-for-this-post": "Jūs jau balsavote už šį pranešimą.",
     "reputation-system-disabled": "Reputacijos sistema išjungta.",
     "downvoting-disabled": "Downvoting yra išjungtas",

@@ -133,6 +133,7 @@
     "chat-delete-duration-expired": "Ви можете видаляти повідомлення чату лише через %1 секунд після публікації",
     "chat-deleted-already": "Це повідомлення чату вже було видалено.",
     "chat-restored-already": "Це чат повідомлення вже було відновлене",
+    "chat-room-does-not-exist": "Chat room does not exist.",
     "already-voting-for-this-post": "Ви вже проголосували за цей пост.",
     "reputation-system-disabled": "Система репутацій вимкнена.",
     "downvoting-disabled": "Голосування проти вимкнено",

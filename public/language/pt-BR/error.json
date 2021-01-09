@@ -133,6 +133,7 @@
     "chat-delete-duration-expired": "Você só pode deletar mensagens de chat %1 segundo(s) após postar",
     "chat-deleted-already": "Essa mensagem de chat já foi deletada",
     "chat-restored-already": "Essa mensagem de chat já foi restaurada.",
+    "chat-room-does-not-exist": "Chat room does not exist.",
     "already-voting-for-this-post": "Você já votou neste post.",
     "reputation-system-disabled": "O sistema de reputação está desabilitado.",
     "downvoting-disabled": "Negativação está desabilitada",

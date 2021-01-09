@@ -133,6 +133,7 @@
     "chat-delete-duration-expired": "您只能在發佈 %1 秒後刪除聊天訊息",
     "chat-deleted-already": "聊天訊息已經被刪除",
     "chat-restored-already": "此聊天訊息已經恢復。",
+    "chat-room-does-not-exist": "Chat room does not exist.",
     "already-voting-for-this-post": "您已讚過此貼文回覆了。",
     "reputation-system-disabled": "聲望系統已停用。",
     "downvoting-disabled": "倒讚已被停用",

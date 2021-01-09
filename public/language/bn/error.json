@@ -133,6 +133,7 @@
     "chat-delete-duration-expired": "You are only allowed to delete chat messages for %1 second(s) after posting",
     "chat-deleted-already": "This chat message has already been deleted.",
     "chat-restored-already": "This chat message has already been restored.",
+    "chat-room-does-not-exist": "Chat room does not exist.",
     "already-voting-for-this-post": "You have already voted for this post.",
     "reputation-system-disabled": "সম্মাননা ব্যাবস্থা নিস্ক্রীয় রাখা হয়েছে",
     "downvoting-disabled": "ঋণাত্মক ভোট নিস্ক্রীয় রাখা হয়েছে।",

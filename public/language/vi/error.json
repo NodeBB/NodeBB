@@ -133,6 +133,7 @@
     "chat-delete-duration-expired": "Bạn chỉ được phép xóa cuộc trò chuyện này sau %1 giây(s) sau khi viết bài.",
     "chat-deleted-already": "Cuộc trò chuyện này đã được xóa.",
     "chat-restored-already": "This chat message has already been restored.",
+    "chat-room-does-not-exist": "Chat room does not exist.",
     "already-voting-for-this-post": "Bạn đã bỏ phiếu cho bài viết này",
     "reputation-system-disabled": "Hệ thống tín nhiệm đã bị vô hiệu hóa.",
     "downvoting-disabled": "Downvote đã bị tắt",
