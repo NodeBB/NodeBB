@@ -280,26 +280,39 @@ define('forum/topic/posts', [
 			return;
 		}
 
-		// TODO: Handle oldest_to_newest
-		const postTimestamps = ajaxify.data.posts.map(post => post.timestamp);
-		ajaxify.data.events.forEach((event) => {
-			const beforeIdx = postTimestamps.findIndex(timestamp => timestamp > event.timestamp);
+		let postTimestamps = ajaxify.data.posts.map(post => post.timestamp);
+
+		const reverse = config.topicPostSort === 'newest_to_oldest';
+		const events = ajaxify.data.events.slice(0);
+		if (reverse) {
+			events.reverse();
+			postTimestamps = postTimestamps.slice(1);	// OP is always at top, so exclude from calculations
+		}
+
+		Promise.all(events.map((event) => {
+			const beforeIdx = postTimestamps.findIndex(timestamp => (reverse ? (timestamp < event.timestamp) : (timestamp > event.timestamp)));
 			let postEl;
 			if (beforeIdx > -1) {
-				postEl = document.querySelector(`[component="post"][data-pid="${ajaxify.data.posts[beforeIdx].pid}"]`);
+				postEl = document.querySelector(`[component="post"][data-pid="${ajaxify.data.posts[beforeIdx + (reverse ? 1 : 0)].pid}"]`);
 			}
 
-			app.parseAndTranslate('partials/topic/event', event, function (html) {
-				html = html.get(0);
+			return new Promise((resolve) => {
+				app.parseAndTranslate('partials/topic/event', event, function (html) {
+					html = html.get(0);
 
-				if (postEl) {
-					document.querySelector('[component="topic"]').insertBefore(html, postEl);
-				} else {
-					document.querySelector('[component="topic"]').append(html);
-				}
+					if (postEl) {
+						console.log('insert before', ajaxify.data.posts[beforeIdx].pid);
+						document.querySelector('[component="topic"]').insertBefore(html, postEl);
+					} else {
+						console.log('append to bttom?');
+						document.querySelector('[component="topic"]').append(html);
+					}
 
-				$(html).find('.timeago').timeago();
+					resolve();
+				});
 			});
+		})).then(() => {
+			$('[component="topic/event"] .timeago').timeago();
 		});
 	}
 
