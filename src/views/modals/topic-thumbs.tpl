@@ -5,7 +5,7 @@
 	{{{ each thumbs }}}
 	<div class="media" data-id="{./id}" data-path="{./url}">
 		<div class="media-left">
-			<img class="media-object" src="{config.relative_path}{./url}" />
+			<img class="media-object" src="{./url}" />
 		</div>
 		<div class="media-body">
 			<p>
