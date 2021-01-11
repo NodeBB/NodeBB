@@ -1,3 +1,4 @@
+
 {
 	"post-queue": "Опашка за публикации",
 	"description": "Няма публикации в опашката. <br> За да включите тази функционалност, идете в <a href=\"%1\">Настройки &rarr; Публикуване &rarr; Опашка за публикации</a> и включете <strong>Опашката за публикации</strong>.",
@@ -7,5 +8,11 @@
 	"content": "Съдържание",
 	"posted": "Публикувано",
 	"reply-to": "Отговор на „%1“",
-	"content-editable": "Можете да щракнете върху всеки от текстовете, за да ги редактирате преди публикуване."
+	"content-editable": "Click on content to edit",
+	"category-editable": "Click on category to edit",
+	"title-editable": "Click on title to edit",
+	"reply": "Reply",
+	"topic": "Topic",
+	"accept": "Accept",
+	"reject": "Reject"
 }

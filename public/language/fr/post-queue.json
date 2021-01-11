@@ -1,3 +1,4 @@
+
 {
 	"post-queue": "File d’attente des messages",
 	"description": "Aucun messages dans la file d'attente. <br> Pour activer cette fonctionnalité, accédez aux <a href=\"%1\">Paramètres &rarr; Messages &rarr; File d'attente </a> et activez <strong>la file d'attente.",
@@ -7,5 +8,11 @@
 	"content": "Contenu",
 	"posted": "Posté",
 	"reply-to": "Répondre à \"%1\"",
-	"content-editable": "Vous pouvez cliquer sur le contenu pour le modifier avant de le poster."
+	"content-editable": "Click on content to edit",
+	"category-editable": "Click on category to edit",
+	"title-editable": "Click on title to edit",
+	"reply": "Reply",
+	"topic": "Topic",
+	"accept": "Accept",
+	"reject": "Reject"
 }

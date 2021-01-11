@@ -1,3 +1,4 @@
+
 {
 	"post-queue": "Hozzászólási várósor",
 	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
@@ -7,5 +8,11 @@
 	"content": "Tartalom",
 	"posted": "Posted",
 	"reply-to": "Reply to \"%1\"",
-	"content-editable": "You can click on individual content to edit before posting."
+	"content-editable": "Click on content to edit",
+	"category-editable": "Click on category to edit",
+	"title-editable": "Click on title to edit",
+	"reply": "Reply",
+	"topic": "Topic",
+	"accept": "Accept",
+	"reject": "Reject"
 }

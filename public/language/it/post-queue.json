@@ -1,3 +1,4 @@
+
 {
 	"post-queue": "Post in attesa",
 	"description": "Non ci sono post nella coda della post. <br> Per abilitare questa funzione, vai in <a href=\"%1\">Impostazioni &rarr; Post &rarr; Codice post</a> e abilita <strong>Post in attesa</strong>.",
@@ -7,5 +8,11 @@
 	"content": "Contenuto",
 	"posted": "Pubblicato",
 	"reply-to": "Rispondi a \"%1\"",
-	"content-editable": "Puoi cliccare su singoli contenuti per modificarli prima della pubblicazione."
+	"content-editable": "Click on content to edit",
+	"category-editable": "Click on category to edit",
+	"title-editable": "Click on title to edit",
+	"reply": "Reply",
+	"topic": "Topic",
+	"accept": "Accept",
+	"reject": "Reject"
 }
