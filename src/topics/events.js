@@ -60,9 +60,10 @@ Events.get = async (tid) => {
 		throw new Error('[[error:no-topic]]');
 	}
 
-	const eventIds = await db.getSortedSetRangeWithScores(`topic:${tid}:events`, 0, -1);
+	let eventIds = await db.getSortedSetRangeWithScores(`topic:${tid}:events`, 0, -1);
 	const keys = eventIds.map(obj => `topicEvent:${obj.value}`);
 	const timestamps = eventIds.map(obj => obj.score);
+	eventIds = eventIds.map(obj => obj.value);
 	let events = await db.getObjects(keys);
 	events = await modifyEvent({ eventIds, timestamps, events });
 
@@ -88,7 +89,7 @@ async function modifyEvent({ eventIds, timestamps, events }) {
 
 	// Add user & metadata
 	events.forEach((event, idx) => {
-		event.id = parseInt(eventIds[idx].value, 10);
+		event.id = parseInt(eventIds[idx], 10);
 		event.timestamp = timestamps[idx];
 		event.timestampISO = new Date(timestamps[idx]).toISOString();
 		if (event.hasOwnProperty('uid')) {
@@ -136,5 +137,5 @@ Events.purge = async (tid) => {
 	const eventIds = await db.getSortedSetRange(keys[0], 0, -1);
 	keys.push(...eventIds.map(id => `topicEvent:${id}`));
 
-	db.deleteAll(keys);
+	await db.deleteAll(keys);
 };
