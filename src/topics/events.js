@@ -64,6 +64,23 @@ Events.get = async (tid) => {
 	const keys = eventIds.map(obj => `topicEvent:${obj.value}`);
 	const timestamps = eventIds.map(obj => obj.score);
 	let events = await db.getObjects(keys);
+	events = await modifyEvent({ eventIds, timestamps, events });
+
+	return events;
+};
+
+async function getUserInfo(uids) {
+	uids = uids.filter((uid, idx) => !isNaN(parseInt(uid, 10)) && uids.indexOf(uid) === idx);
+	const userData = await user.getUsersFields(uids, ['picture', 'username', 'userslug']);
+	const userMap = userData.reduce((memo, cur) => memo.set(cur.uid, cur), new Map());
+	userMap.set('system', {
+		system: true,
+	});
+
+	return userMap;
+}
+
+async function modifyEvent({ eventIds, timestamps, events }) {
 	const users = await getUserInfo(events.map(event => event.uid).filter(Boolean));
 
 	// Remove events whose types no longer exist (e.g. plugin uninstalled)
@@ -82,17 +99,6 @@ Events.get = async (tid) => {
 	});
 
 	return events;
-};
-
-async function getUserInfo(uids) {
-	uids = uids.filter((uid, idx) => !isNaN(parseInt(uid, 10)) && uids.indexOf(uid) === idx);
-	const userData = await user.getUsersFields(uids, ['picture', 'username', 'userslug']);
-	const userMap = userData.reduce((memo, cur) => memo.set(cur.uid, cur), new Map());
-	userMap.set('system', {
-		system: true,
-	});
-
-	return userMap;
 }
 
 Events.log = async (tid, payload) => {
@@ -113,4 +119,13 @@ Events.log = async (tid, payload) => {
 		db.setObject(`topicEvent:${eventId}`, payload),
 		db.sortedSetAdd(`topic:${tid}:events`, now, eventId),
 	]);
+
+	let events = await modifyEvent({
+		eventIds: [eventId],
+		timestamps: [now],
+		events: [payload],
+	});
+
+	({ events } = plugins.hooks.fire('filter:topic.events.log', { events }));
+	return events;
 };
