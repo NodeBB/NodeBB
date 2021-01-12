@@ -285,6 +285,10 @@ define('forum/topic/posts', [
 			return;
 		}
 
+		// Filter out events already in DOM
+		const eventIdsInDOM = Array.from(document.querySelectorAll('[component="topic/event"]')).map(el => parseInt(el.getAttribute('data-topic-event-id'), 10));
+		events = events.filter(event => !eventIdsInDOM.includes(event.id));
+
 		let postTimestamps = ajaxify.data.posts.map(post => post.timestamp);
 
 		const reverse = config.topicPostSort === 'newest_to_oldest';

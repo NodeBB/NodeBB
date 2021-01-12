@@ -126,6 +126,6 @@ Events.log = async (tid, payload) => {
 		events: [payload],
 	});
 
-	({ events } = plugins.hooks.fire('filter:topic.events.log', { events }));
+	({ events } = await plugins.hooks.fire('filter:topic.events.log', { events }));
 	return events;
 };
