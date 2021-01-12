@@ -44,7 +44,7 @@ module.exports = function (Topics) {
 		} else {
 			await Topics.restore(data.topicData.tid);
 		}
-		await Topics.events.log(tid, { type: isDelete ? 'delete' : 'restore', uid });
+		const events = await Topics.events.log(tid, { type: isDelete ? 'delete' : 'restore', uid });
 
 		data.topicData.deleted = data.isDelete ? 1 : 0;
 
@@ -60,6 +60,7 @@ module.exports = function (Topics) {
 			isDelete: data.isDelete,
 			uid: data.uid,
 			user: userData,
+			events,
 		};
 	}
 
@@ -95,7 +96,7 @@ module.exports = function (Topics) {
 			throw new Error('[[error:no-privileges]]');
 		}
 		await Topics.setTopicField(tid, 'locked', lock ? 1 : 0);
-		await Topics.events.log(tid, { type: lock ? 'lock' : 'unlock', uid });
+		topicData.events = await Topics.events.log(tid, { type: lock ? 'lock' : 'unlock', uid });
 		topicData.isLocked = lock; // deprecate in v2.0
 		topicData.locked = lock;
 
@@ -175,10 +176,11 @@ module.exports = function (Topics) {
 			topicData.pinExpiryISO = undefined;
 		}
 
-		await Promise.all(promises);
+		const results = await Promise.all(promises);
 
 		topicData.isPinned = pin; // deprecate in v2.0
 		topicData.pinned = pin;
+		topicData.events = results[1];
 
 		plugins.hooks.fire('action:topic.pin', { topic: _.clone(topicData), uid });
 
