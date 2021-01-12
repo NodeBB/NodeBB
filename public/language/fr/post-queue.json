@@ -8,11 +8,11 @@
 	"content": "Contenu",
 	"posted": "Posté",
 	"reply-to": "Répondre à \"%1\"",
-	"content-editable": "Click on content to edit",
-	"category-editable": "Click on category to edit",
-	"title-editable": "Click on title to edit",
-	"reply": "Reply",
-	"topic": "Topic",
-	"accept": "Accept",
-	"reject": "Reject"
+	"content-editable": "Cliquez sur le contenu pour modifier",
+	"category-editable": "Cliquez sur la catégorie pour modifier",
+	"title-editable": "Cliquez sur le titre pour modifier",
+	"reply": "Répondre",
+	"topic": "Sujet",
+	"accept": "Accepter",
+	"reject": "Refuser"
 }
