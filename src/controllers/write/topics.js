@@ -86,16 +86,28 @@ Topics.unfollow = async (req, res) => {
 };
 
 Topics.addTags = async (req, res) => {
+	if (!await privileges.topics.canEdit(req.params.tid, req.user.uid)) {
+		return helpers.formatApiResponse(403, res);
+	}
+
 	await topics.createTags(req.body.tags, req.params.tid, Date.now());
 	helpers.formatApiResponse(200, res);
 };
 
 Topics.deleteTags = async (req, res) => {
+	if (!await privileges.topics.canEdit(req.params.tid, req.user.uid)) {
+		return helpers.formatApiResponse(403, res);
+	}
+
 	await topics.deleteTopicTags(req.params.tid);
 	helpers.formatApiResponse(200, res);
 };
 
 Topics.getThumbs = async (req, res) => {
+	if (!await privileges.topics.can('topics:read', req.params.tid, req.uid)) {
+		return helpers.formatApiResponse(403, res);
+	}
+
 	helpers.formatApiResponse(200, res, await topics.thumbs.get(req.params.tid));
 };
 
