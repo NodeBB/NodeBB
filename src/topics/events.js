@@ -129,3 +129,12 @@ Events.log = async (tid, payload) => {
 	({ events } = await plugins.hooks.fire('filter:topic.events.log', { events }));
 	return events;
 };
+
+Events.purge = async (tid) => {
+	// Should only be called on topic purge
+	const keys = [`topic:${tid}:events`];
+	const eventIds = await db.getSortedSetRange(keys[0], 0, -1);
+	keys.push(...eventIds.map(id => `topicEvent:${id}`));
+
+	db.deleteAll(keys);
+};
