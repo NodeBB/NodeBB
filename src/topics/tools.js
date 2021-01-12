@@ -146,7 +146,7 @@ module.exports = function (Topics) {
 			throw new Error('[[error:no-topic]]');
 		}
 
-		if (uid !== 'system' && !await privileges.topics.can('moderate', tid, uid)) {
+		if (uid !== 'system' && !await privileges.topics.isAdminOrMod(tid, uid)) {
 			throw new Error('[[error:no-privileges]]');
 		}
 
