@@ -271,11 +271,16 @@ define('forum/topic/posts', [
 		posts.find('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
 		Posts.addBlockquoteEllipses(posts);
 		hidePostToolsForDeletedPosts(posts);
-		addTopicEvents();
+		Posts.addTopicEvents();
 		addNecroPostMessage();
 	};
 
-	function addTopicEvents() {
+	Posts.addTopicEvents = function (events) {
+		events = events || ajaxify.data.events;
+		if (!events || !Array.isArray(events)) {
+			return;
+		}
+
 		if (config.topicPostSort !== 'newest_to_oldest' && config.topicPostSort !== 'oldest_to_newest') {
 			return;
 		}
@@ -283,7 +288,7 @@ define('forum/topic/posts', [
 		let postTimestamps = ajaxify.data.posts.map(post => post.timestamp);
 
 		const reverse = config.topicPostSort === 'newest_to_oldest';
-		const events = ajaxify.data.events.slice(0);
+		events = events.slice(0);
 		if (reverse) {
 			events.reverse();
 			postTimestamps = postTimestamps.slice(1);	// OP is always at top, so exclude from calculations
@@ -314,7 +319,7 @@ define('forum/topic/posts', [
 		})).then(() => {
 			$('[component="topic/event"] .timeago').timeago();
 		});
-	}
+	};
 
 	function addNecroPostMessage() {
 		var necroThreshold = ajaxify.data.necroThreshold * 24 * 60 * 60 * 1000;
