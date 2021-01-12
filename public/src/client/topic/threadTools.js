@@ -5,8 +5,9 @@ define('forum/topic/threadTools', [
 	'components',
 	'translator',
 	'handleBack',
+	'forum/topic/posts',
 	'api',
-], function (components, translator, handleBack, api) {
+], function (components, translator, handleBack, posts, api) {
 	var ThreadTools = {};
 
 	ThreadTools.init = function (tid, topicContainer) {
@@ -271,6 +272,8 @@ define('forum/topic/threadTools', [
 		$('.topic-header [component="topic/locked"]').toggleClass('hidden', !data.isLocked);
 		$('[component="post/tools"] .dropdown-menu').html('');
 		ajaxify.data.locked = data.isLocked;
+
+		posts.addTopicEvents(data.events);
 	};
 
 	ThreadTools.setDeleteState = function (data) {
@@ -302,6 +305,8 @@ define('forum/topic/threadTools', [
 
 		threadEl.toggleClass('deleted', data.isDelete);
 		ajaxify.data.deleted = data.isDelete ? 1 : 0;
+
+		posts.addTopicEvents(data.events);
 	};
 
 
@@ -322,6 +327,8 @@ define('forum/topic/threadTools', [
 			);
 		}
 		ajaxify.data.pinned = data.pinned;
+
+		posts.addTopicEvents(data.events);
 	};
 
 	function setFollowState(state) {
