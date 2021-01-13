@@ -28,6 +28,10 @@ describe('Topic Events', () => {
 	});
 
 	describe('.init()', () => {
+		before(() => {
+			topics.events._ready = false;
+		});
+
 		it('should allow a plugin to expose new event types', async () => {
 			await plugins.hooks.register('core', {
 				hook: 'filter:topicEvents.init',
@@ -45,6 +49,11 @@ describe('Topic Events', () => {
 			await topics.events.init();
 
 			assert(topics.events._types.foo);
+			assert.deepStrictEqual(topics.events._types.foo, {
+				icon: 'bar',
+				text: 'baz',
+				quux: 'quux',
+			});
 		});
 
 		it('should do nothing if called a second time', async () => {
