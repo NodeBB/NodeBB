@@ -17,6 +17,14 @@ checks:
   similar-code:
     config:
       threshold: 65
+plugins:
+  duplication:
+    enabled: true
+    config:
+      languages:
+        javascript:
+          mass_threshold: 110
+          count_threshold: 3
 exclude_paths:
 - "public/vendor/*"
 - "test/*"
