@@ -103,7 +103,7 @@ Auth.reloadRoutes = async function (params) {
 				passport.authenticate(strategy.name, {
 					scope: strategy.scope,
 					prompt: strategy.prompt || undefined,
-					state: req.session.ssoState,
+					state: strategy.checkState ? req.session.ssoState : undefined,
 				})(req, res, next);
 			});
 		}
