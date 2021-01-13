@@ -1,10 +1,10 @@
 {
 	"rewards": "תגמולים",
 	"condition-if-users": "אם משתמש",
-	"condition-is": "Is:",
+	"condition-is": "לערך:",
 	"condition-then": "תגמל ב:",
 	"max-claims": "מספר פעמים בה ניתן לדרוש תגמול",
-	"zero-infinite": "הזן 0 לאינסוף",
+	"zero-infinite": "הזן 0 ללא הגבלה",
 	"delete": "מחק",
 	"enable": "הפעל",
 	"disable": "השבת",
