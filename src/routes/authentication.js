@@ -98,13 +98,21 @@ Auth.reloadRoutes = async function (params) {
 	loginStrategies = loginStrategies || [];
 	loginStrategies.forEach(function (strategy) {
 		if (strategy.url) {
-			router.get(strategy.url, Auth.middleware.applyCSRF, function (req, res, next) {
-				req.session.ssoState = req.csrfToken && req.csrfToken();
-				passport.authenticate(strategy.name, {
+			router.get(strategy.url, Auth.middleware.applyCSRF, async function (req, res, next) {
+				let opts = {
 					scope: strategy.scope,
 					prompt: strategy.prompt || undefined,
-					state: strategy.checkState ? req.session.ssoState : undefined,
-				})(req, res, next);
+				};
+
+				if (strategy.checkState) {
+					req.session.ssoState = req.csrfToken && req.csrfToken();
+					opts.state = req.session.ssoState;
+				}
+
+				// Allow SSO plugins to override/append options (for use in passport prototype authorizationParams)
+				({ opts } = await plugins.hooks.fire('filter:auth.options', { req, res, opts }));
+
+				passport.authenticate(strategy.name, opts)(req, res, next);
 			});
 		}
 
