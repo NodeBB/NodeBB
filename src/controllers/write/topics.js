@@ -181,3 +181,11 @@ async function checkThumbPrivileges({ tid, uid, res }) {
 		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
 	}
 }
+
+Topics.getEvents = async (req, res) => {
+	if (!await privileges.topics.can('topics:read', req.params.tid, req.uid)) {
+		return helpers.formatApiResponse(403, res);
+	}
+
+	helpers.formatApiResponse(200, res, await topics.events.get(req.params.tid));
+};

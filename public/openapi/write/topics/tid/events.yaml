@@ -1,0 +1,85 @@
+get:
+  tags:
+    - topics
+  summary: get topic events
+  description: This operation retrieves a topic's events
+  parameters:
+    - in: path
+      name: tid
+      schema:
+        type: string
+      required: true
+      description: a valid topic id
+      example: 1
+  responses:
+    '200':
+      description: Topic events successfully retrieved
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: array
+                description: A list of the topic events that still remain
+                items:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                      description: A valid event type
+                    id:
+                      type: number
+                      description: Unique identifier for this topic event
+                    timestamp:
+                      type: number
+                    timestampISO:
+                      type: string
+                      description: An ISO 8601 formatted date string (complementing `timestamp`)
+                    icon:
+                      type: string
+                      description: FontAwesome icon name
+                      example: fa-bullhorn
+                    text:
+                      type: string
+                      description: A language key
+                    uid:
+                      type: number
+                    user:
+                      type: object
+                      properties:
+                        uid:
+                          type: number
+                          description: A user identifier
+                        username:
+                          type: string
+                          description: A friendly name for a given user account
+                        displayname:
+                          type: string
+                          description: This is either username or fullname depending on forum and user settings
+                        userslug:
+                          type: string
+                          description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                            removed, etc.)
+                        picture:
+                          nullable: true
+                          type: string
+                        icon:text:
+                          type: string
+                          description: A single-letter representation of a username. This is used in the
+                            auto-generated icon given to users
+                            without an avatar
+                        icon:bgColor:
+                          type: string
+                          description: A six-character hexadecimal colour code assigned to the user. This
+                            value is used in conjunction with
+                            `icon:text` for the user's
+                            auto-generated icon
+                          example: "#f44336"
+                  required:
+                    - type
+                    - id
+                    - timestamp
+                    - timestampISO

@@ -100,6 +100,8 @@ paths:
     $ref: 'write/topics/tid/tags.yaml'
   /topics/{tid}/thumbs:
     $ref: 'write/topics/tid/thumbs.yaml'
+  /topics/{tid}/events:
+    $ref: 'write/topics/tid/events.yaml'
   /posts/{pid}:
     $ref: 'write/posts/pid.yaml'
   /posts/{pid}/state:
