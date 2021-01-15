@@ -327,10 +327,9 @@ Notifications.prune = async function () {
 		]);
 
 		await batch.processSortedSet('users:joindate', async function (uids) {
-			await Promise.all([
-				db.sortedSetsRemoveRangeByScore(uids.map(uid => 'uid:' + uid + ':notifications:unread'), '-inf', cutoffTime),
-				db.sortedSetsRemoveRangeByScore(uids.map(uid => 'uid:' + uid + ':notifications:read'), '-inf', cutoffTime),
-			]);
+			const unread = uids.map(uid => 'uid:' + uid + ':notifications:unread');
+			const read = uids.map(uid => 'uid:' + uid + ':notifications:read');
+			db.sortedSetsRemoveRangeByScore(unread.concat(read), '-inf', cutoffTime);
 		}, { batch: 500, interval: 100 });
 	} catch (err) {
 		if (err) {
