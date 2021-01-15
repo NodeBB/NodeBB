@@ -329,7 +329,7 @@ Notifications.prune = async function () {
 		await batch.processSortedSet('users:joindate', async function (uids) {
 			const unread = uids.map(uid => 'uid:' + uid + ':notifications:unread');
 			const read = uids.map(uid => 'uid:' + uid + ':notifications:read');
-			db.sortedSetsRemoveRangeByScore(unread.concat(read), '-inf', cutoffTime);
+			await db.sortedSetsRemoveRangeByScore(unread.concat(read), '-inf', cutoffTime);
 		}, { batch: 500, interval: 100 });
 	} catch (err) {
 		if (err) {
