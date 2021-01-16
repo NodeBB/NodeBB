@@ -1,26 +1,26 @@
 'use strict';
 
-var nconf = require('nconf');
-var jsesc = require('jsesc');
-var _ = require('lodash');
+const nconf = require('nconf');
+const jsesc = require('jsesc');
+const _ = require('lodash');
 const validator = require('validator');
-var util = require('util');
+const util = require('util');
 
-var db = require('../database');
-var user = require('../user');
-var topics = require('../topics');
-var messaging = require('../messaging');
-var flags = require('../flags');
-var meta = require('../meta');
-var plugins = require('../plugins');
-var navigation = require('../navigation');
-var translator = require('../translator');
-var privileges = require('../privileges');
-var languages = require('../languages');
-var utils = require('../utils');
-var helpers = require('./helpers');
+const db = require('../database');
+const user = require('../user');
+const topics = require('../topics');
+const messaging = require('../messaging');
+const flags = require('../flags');
+const meta = require('../meta');
+const plugins = require('../plugins');
+const navigation = require('../navigation');
+const translator = require('../translator');
+const privileges = require('../privileges');
+const languages = require('../languages');
+const utils = require('../utils');
+const helpers = require('./helpers');
 
-var controllers = {
+const controllers = {
 	api: require('../controllers/api'),
 	helpers: require('../controllers/helpers'),
 };
@@ -49,9 +49,9 @@ middleware.buildHeader = helpers.try(async function buildHeader(req, res, next) 
 middleware.buildHeaderAsync = util.promisify(middleware.buildHeader);
 
 middleware.renderHeader = async function renderHeader(req, res, data) {
-	var registrationType = meta.config.registrationType || 'normal';
+	const registrationType = meta.config.registrationType || 'normal';
 	res.locals.config = res.locals.config || {};
-	var templateValues = {
+	const templateValues = {
 		title: meta.config.title || '',
 		'title:url': meta.config['title:url'] || '',
 		description: meta.config.description || '',
@@ -240,7 +240,7 @@ middleware.renderFooter = async function renderFooter(req, res, templateValues) 
 };
 
 function modifyTitle(obj) {
-	var title = controllers.helpers.buildTitle(meta.config.homePageTitle || '[[pages:home]]');
+	const title = controllers.helpers.buildTitle(meta.config.homePageTitle || '[[pages:home]]');
 	obj.browserTitle = title;
 
 	if (obj.metaTags) {
