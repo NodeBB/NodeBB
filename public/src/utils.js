@@ -294,11 +294,13 @@
 
 	var utils = {
 		generateUUID: function () {
+			/* eslint-disable no-bitwise */
 			return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
 				var r = Math.random() * 16 | 0;
 				var v = c === 'x' ? r : ((r & 0x3) | 0x8);
 				return v.toString(16);
 			});
+			/* eslint-enable no-bitwise */
 		},
 		// https://github.com/substack/node-ent/blob/master/index.js
 		decodeHTMLEntities: function (html) {
@@ -644,7 +646,9 @@
 			params.forEach(function (param) {
 				var val = param.split('=');
 				var key = decodeURI(val[0]);
-				var value = options.disableToType || options.skipToType[key] ? decodeURI(val[1]) : utils.toType(decodeURI(val[1]));
+				var value = options.disableToType || options.skipToType[key] ?
+					decodeURI(val[1]) :
+					utils.toType(decodeURI(val[1]));
 
 				if (key) {
 					if (key.substr(-2, 2) === '[]') {
@@ -730,8 +734,10 @@
 		isInternalURI: function (targetLocation, referenceLocation, relative_path) {
 			return targetLocation.host === '' ||	// Relative paths are always internal links
 				(
-					targetLocation.host === referenceLocation.host && targetLocation.protocol === referenceLocation.protocol &&	// Otherwise need to check if protocol and host match
-					(relative_path.length > 0 ? targetLocation.pathname.indexOf(relative_path) === 0 : true)	// Subfolder installs need this additional check
+					// Otherwise need to check if protocol and host match
+					targetLocation.host === referenceLocation.host && targetLocation.protocol === referenceLocation.protocol &&
+					// Subfolder installs need this additional check
+					(relative_path.length > 0 ? targetLocation.pathname.indexOf(relative_path) === 0 : true)
 				);
 		},
 

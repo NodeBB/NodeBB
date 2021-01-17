@@ -26,7 +26,7 @@ exports.read = async function read() {
 	try {
 		const buster = await fs.promises.readFile(filePath, 'utf8');
 		if (!buster || buster.length !== 11) {
-			winston.warn('[cache-buster] cache buster string invalid: expected /[a-z0-9]{11}/, got `' + buster + '`');
+			winston.warn(`[cache-buster] cache buster string invalid: expected /[a-z0-9]{11}/, got \`${buster}\``);
 			return generate();
 		}
 

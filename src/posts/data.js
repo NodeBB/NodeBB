@@ -15,12 +15,12 @@ module.exports = function (Posts) {
 		if (!Array.isArray(pids) || !pids.length) {
 			return [];
 		}
-		const keys = pids.map(pid => 'post:' + pid);
+		const keys = pids.map(pid => `post:${pid}`);
 		const postData = await (fields.length ? db.getObjectsFields(keys, fields) : db.getObjects(keys));
 		const result = await plugins.hooks.fire('filter:post.getFields', {
-			pids: pids,
+			pids,
 			posts: postData,
-			fields: fields,
+			fields,
 		});
 		result.posts.forEach(post => modifyPost(post, fields));
 		return Array.isArray(result.posts) ? result.posts : null;
@@ -50,7 +50,7 @@ module.exports = function (Posts) {
 	};
 
 	Posts.setPostFields = async function (pid, data) {
-		await db.setObject('post:' + pid, data);
+		await db.setObject(`post:${pid}`, data);
 		plugins.hooks.fire('action:post.setFields', { data: { ...data, pid } });
 	};
 };

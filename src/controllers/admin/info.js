@@ -3,7 +3,7 @@
 const os = require('os');
 const winston = require('winston');
 const nconf = require('nconf');
-const exec = require('child_process').exec;
+const { exec } = require('child_process');
 
 const pubsub = require('../../pubsub');
 const rooms = require('../../socket.io/admin/rooms');
@@ -16,10 +16,10 @@ infoController.get = function (req, res) {
 	info = {};
 	pubsub.publish('sync:node:info:start');
 	const timeoutMS = 1000;
-	setTimeout(function () {
+	setTimeout(() => {
 		const data = [];
 		Object.keys(info).forEach(key => data.push(info[key]));
-		data.sort(function (a, b) {
+		data.sort((a, b) => {
 			if (a.id < b.id) {
 				return -1;
 			}
@@ -38,7 +38,7 @@ infoController.get = function (req, res) {
 			info: data,
 			infoJSON: JSON.stringify(data, null, 4),
 			host: os.hostname(),
-			port: port,
+			port,
 			nodeCount: data.length,
 			timeout: timeoutMS,
 			ip: req.ip,
@@ -46,17 +46,17 @@ infoController.get = function (req, res) {
 	}, timeoutMS);
 };
 
-pubsub.on('sync:node:info:start', async function () {
+pubsub.on('sync:node:info:start', async () => {
 	try {
 		const data = await getNodeInfo();
-		data.id = os.hostname() + ':' + nconf.get('port');
-		pubsub.publish('sync:node:info:end', { data: data, id: data.id });
+		data.id = `${os.hostname()}:${nconf.get('port')}`;
+		pubsub.publish('sync:node:info:end', { data, id: data.id });
 	} catch (err) {
 		winston.error(err.stack);
 	}
 });
 
-pubsub.on('sync:node:info:end', function (data) {
+pubsub.on('sync:node:info:end', (data) => {
 	info[data.id] = data.data;
 });
 
@@ -77,7 +77,7 @@ async function getNodeInfo() {
 			platform: os.platform(),
 			arch: os.arch(),
 			release: os.release(),
-			load: os.loadavg().map(function (load) { return load.toFixed(2); }).join(', '),
+			load: os.loadavg().map(load => load.toFixed(2)).join(', '),
 			freemem: os.freemem(),
 			totalmem: os.totalmem(),
 		},
@@ -107,18 +107,18 @@ async function getNodeInfo() {
 
 function humanReadableUptime(seconds) {
 	if (seconds < 60) {
-		return Math.floor(seconds) + 's';
+		return `${Math.floor(seconds)}s`;
 	} else if (seconds < 3600) {
-		return Math.floor(seconds / 60) + 'm';
+		return `${Math.floor(seconds / 60)}m`;
 	} else if (seconds < 3600 * 24) {
-		return Math.floor(seconds / (60 * 60)) + 'h';
+		return `${Math.floor(seconds / (60 * 60))}h`;
 	}
-	return Math.floor(seconds / (60 * 60 * 24)) + 'd';
+	return `${Math.floor(seconds / (60 * 60 * 24))}d`;
 }
 
 async function getGitInfo() {
 	function get(cmd, callback) {
-		exec(cmd, function (err, stdout) {
+		exec(cmd, (err, stdout) => {
 			if (err) {
 				winston.error(err.stack);
 			}
@@ -130,5 +130,5 @@ async function getGitInfo() {
 		getAsync('git rev-parse HEAD'),
 		getAsync('git rev-parse --abbrev-ref HEAD'),
 	]);
-	return { hash: hash, hashShort: hash.substr(0, 6), branch: branch };
+	return { hash, hashShort: hash.substr(0, 6), branch };
 }

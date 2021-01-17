@@ -21,9 +21,9 @@ connection.getConnectionOptions = function (redis) {
 connection.connect = function (options, callback) {
 	callback = callback || function () {};
 	options = options || nconf.get('redis');
-	var redis_socket_or_host = options.host;
-	var cxn;
-	var callbackCalled = false;
+	const redis_socket_or_host = options.host;
+	let cxn;
+	let callbackCalled = false;
 
 	const connOptions = connection.getConnectionOptions(options);
 
@@ -35,7 +35,7 @@ connection.connect = function (options, callback) {
 		cxn = redis.createClient(options.port, options.host, connOptions);
 	}
 
-	cxn.on('error', function (err) {
+	cxn.on('error', (err) => {
 		winston.error(err.stack);
 		if (!callbackCalled) {
 			callbackCalled = true;
@@ -43,7 +43,7 @@ connection.connect = function (options, callback) {
 		}
 	});
 
-	cxn.on('ready', function () {
+	cxn.on('ready', () => {
 		if (!callbackCalled) {
 			callbackCalled = true;
 			callback(null, cxn);
@@ -54,11 +54,11 @@ connection.connect = function (options, callback) {
 		cxn.auth(options.password);
 	}
 
-	var dbIdx = parseInt(options.database, 10);
+	const dbIdx = parseInt(options.database, 10);
 	if (dbIdx >= 0) {
-		cxn.select(dbIdx, function (err) {
+		cxn.select(dbIdx, (err) => {
 			if (err) {
-				winston.error('NodeBB could not select Redis database. Redis returned the following error\n' + err.stack);
+				winston.error(`NodeBB could not select Redis database. Redis returned the following error\n${err.stack}`);
 				throw err;
 			}
 		});

@@ -1,6 +1,6 @@
 'use strict';
 
-var privileges = module.exports;
+const privileges = module.exports;
 
 privileges.privilegeLabels = [
 	{ name: '[[admin/manage/privileges:find-category]]' },
@@ -38,7 +38,7 @@ privileges.userPrivilegeList = [
 	'moderate',
 ];
 
-privileges.groupPrivilegeList = privileges.userPrivilegeList.map(privilege => 'groups:' + privilege);
+privileges.groupPrivilegeList = privileges.userPrivilegeList.map(privilege => `groups:${privilege}`);
 
 privileges.privilegeList = privileges.userPrivilegeList.concat(privileges.groupPrivilegeList);
 

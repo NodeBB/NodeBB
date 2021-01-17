@@ -1,6 +1,6 @@
 'use strict';
 
-var db = require('../database');
+const db = require('../database');
 
 module.exports = function (Topics) {
 	Topics.isOwner = async function (tid, uid) {
@@ -13,6 +13,6 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getUids = async function (tid) {
-		return await db.getSortedSetRevRangeByScore('tid:' + tid + ':posters', 0, -1, '+inf', 1);
+		return await db.getSortedSetRevRangeByScore(`tid:${tid}:posters`, 0, -1, '+inf', 1);
 	};
 };

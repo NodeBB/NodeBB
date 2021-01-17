@@ -46,16 +46,14 @@ groupsController.get = async function (req, res, next) {
 	}
 	group.isOwner = true;
 
-	const groupNameData = groupNames.map(function (name) {
-		return {
-			encodedName: encodeURIComponent(name),
-			displayName: validator.escape(String(name)),
-			selected: name === groupName,
-		};
-	});
+	const groupNameData = groupNames.map(name => ({
+		encodedName: encodeURIComponent(name),
+		displayName: validator.escape(String(name)),
+		selected: name === groupName,
+	}));
 
 	res.render('admin/manage/group', {
-		group: group,
+		group,
 		groupNames: groupNameData,
 		allowPrivateGroups: meta.config.allowPrivateGroups,
 		maximumGroupNameLength: meta.config.maximumGroupNameLength,
@@ -66,15 +64,16 @@ groupsController.get = async function (req, res, next) {
 
 async function getGroupNames() {
 	const groupNames = await db.getSortedSetRange('groups:createtime', 0, -1);
-	return groupNames.filter(name => name !== 'registered-users' &&
-		name !== 'verified-users' &&
-		name !== 'unverified-users' &&
-		!groups.isPrivilegeGroup(name)
+	return groupNames.filter(
+		name => name !== 'registered-users' &&
+			name !== 'verified-users' &&
+			name !== 'unverified-users' &&
+			!groups.isPrivilegeGroup(name)
 	);
 }
 
 groupsController.getCSV = async function (req, res) {
-	const referer = req.headers.referer;
+	const { referer } = req.headers;
 
 	if (!referer || !referer.replace(nconf.get('url'), '').startsWith('/admin/manage/groups')) {
 		return res.status(403).send('[[error:invalid-origin]]');
@@ -88,13 +87,13 @@ groupsController.getCSV = async function (req, res) {
 	const members = (await groups.getMembersOfGroups([groupName]))[0];
 	const fields = ['email', 'username', 'uid'];
 	const userData = await user.getUsersFields(members, fields);
-	let csvContent = fields.join(',') + '\n';
+	let csvContent = `${fields.join(',')}\n`;
 	csvContent += userData.reduce((memo, user) => {
-		memo += user.email + ',' + user.username + ',' + user.uid + '\n';
+		memo += `${user.email},${user.username},${user.uid}\n`;
 		return memo;
 	}, '');
 
-	res.attachment(validator.escape(groupName) + '_members.csv');
+	res.attachment(`${validator.escape(groupName)}_members.csv`);
 	res.setHeader('Content-Type', 'text/csv');
 	res.end(csvContent);
 };

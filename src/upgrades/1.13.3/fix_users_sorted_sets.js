@@ -6,8 +6,8 @@ const batch = require('../../batch');
 module.exports = {
 	name: 'Fix user sorted sets',
 	timestamp: Date.UTC(2020, 4, 2),
-	method: async function () {
-		const progress = this.progress;
+	async method() {
+		const { progress } = this;
 		const nextUid = await db.getObjectField('global', 'nextUid');
 		const allUids = [];
 		for (let i = 1; i <= nextUid; i++) {
@@ -25,11 +25,11 @@ module.exports = {
 			'users:flags',
 		], 'null');
 
-		await batch.processArray(allUids, async function (uids) {
+		await batch.processArray(allUids, async (uids) => {
 			progress.incr(uids.length);
-			const userData = await db.getObjects(uids.map(id => 'user:' + id));
+			const userData = await db.getObjects(uids.map(id => `user:${id}`));
 
-			await Promise.all(userData.map(async function (userData, index) {
+			await Promise.all(userData.map(async (userData, index) => {
 				if (!userData || !userData.uid) {
 					await db.sortedSetsRemove([
 						'users:joindate',
@@ -38,7 +38,7 @@ module.exports = {
 						'users:flags',
 					], uids[index]);
 					if (userData && !userData.uid) {
-						await db.delete('user:' + uids[index]);
+						await db.delete(`user:${uids[index]}`);
 					}
 					return;
 				}
@@ -53,7 +53,7 @@ module.exports = {
 				}
 			}));
 		}, {
-			progress: progress,
+			progress,
 			batch: 500,
 		});
 

@@ -12,7 +12,8 @@ define('api', () => {
 		function doAjax(cb) {
 			$.ajax(options)
 				.done((res) => {
-					cb(null,
+					cb(
+						null,
 						res && res.hasOwnProperty('status') && res.hasOwnProperty('response') ?
 							res.response : (res || {})
 					);

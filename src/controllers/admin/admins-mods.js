@@ -17,9 +17,9 @@ AdminsMods.get = async function (req, res) {
 	]);
 
 	res.render('admin/manage/admins-mods', {
-		admins: admins,
-		globalMods: globalMods,
-		categories: categories,
+		admins,
+		globalMods,
+		categories,
 		allPrivileges: privileges.userPrivilegeList,
 	});
 };

@@ -5,68 +5,107 @@
 	},
 
 	"rules": {
-		// Customized
+		// === Configure rules for our style ===
+		// imports must be resolvable
+		"import/no-unresolved": "error",
+		// use single quotes,
+		// unless a different style allows avoiding escapes
+		"quotes": ["error", "single", {
+			"avoidEscape": true,
+			"allowTemplateLiterals": true
+		}],
+		// allow else-if return
+		"no-else-return": [ "error", { "allowElseIf": true } ],
+		// expressions split over multiple lines
+		// should break after the operator
+		"operator-linebreak": [ "error", "after" ],
+		// require arrow parens only when needed
+		// and whenever the body is a block
+		"arrow-parens": ["error", "as-needed", { "requireForBlockBody": true }],
+		// what variables are errors in callbacks
 		"handle-callback-err": [ "error","^(e$|(e|(.*(_e|E)))rr)" ],
+		// allow dangling commas in functions
+		// require them everywhere else
 		"comma-dangle": ["error", {
 			"arrays": "always-multiline",
 			"objects": "always-multiline",
 			"imports": "always-multiline",
 			"exports": "always-multiline",
-			"functions": "never"
+			"functions": "only-multiline"
 		}],
+		// we actually encourage `return await`
 		"no-return-await": "off",
-		"no-constant-condition": "off",
+		// allow `while (true)`
+		"no-constant-condition": ["error", { "checkLoops": false }],
+		// allow ignoring an error with `catch`
 		"no-empty": ["error", { "allowEmptyCatch": true }],
-		"no-underscore-dangle": "off",
-		"no-console": "off",
+		// allow `3 + 5 - 1`, but not `3 * 5 - 1`
 		"no-mixed-operators": ["error", { "allowSamePrecedence": true }],
+		// require `'use strict';`
 		"strict": ["error", "global"],
-		"consistent-return": "off",
-		"func-names": "off",
-		"no-tabs": "off",
+		// we actually use tabs for indentation
 		"indent": ["error", "tab", { "SwitchCase": 1 }],
+		"no-tabs": "off",
+		// we want `== null` to also handle undefined
 		"no-eq-null": "off",
-		"camelcase": "off",
-		"no-new": "off",
-		"no-shadow": "off",
-		"no-use-before-define": ["error", "nofunc"],
-		"no-prototype-builtins": "off",
-		"new-cap": "off",
+		// allow `for (..; i++)`
 		"no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
-		"object-curly-newline": "off",
-		"no-restricted-globals": "off",
-		"function-paren-newline": "off",
-		"import/no-unresolved": "error",
-		"quotes": ["error", "single", {
-			"avoidEscape": true,
-			"allowTemplateLiterals": true
-		}],
-		"no-else-return": [ "error", { "allowElseIf": true } ],
-		"operator-linebreak": [ "error", "after" ],
-		"arrow-parens": ["error", "as-needed", { "requireForBlockBody": true }],
-
-		// ES6
-		"prefer-rest-params": "off",
-		"prefer-spread": "off",
-		"prefer-arrow-callback": "off",
-		"prefer-template": "off",
-		"no-var": "off",
-		"object-shorthand": "off",
-		"vars-on-top": "off",
-		"prefer-destructuring": "off",
+		// allow using functions defined later
+		"no-use-before-define": ["error", "nofunc"],
+		// require consistent newlines before and after braces
+		// if contents are multiline
+		"object-curly-newline": ["error", { "consistent": true, "multiline": true }],
+		// require consistent linebreaks inline function parenthesis (arguments or params)
+		"function-paren-newline": ["error", "consistent"],
+		// only require const if all parts of destructuring can be const
+		"prefer-const": ["error", { "destructuring": "all" }],
+		// don't require destructuring when assigning
+		"prefer-destructuring": ["error", { "AssignmentExpression": { "array": false, "object": false } }],
+		// identical to airbnb rule, except for allowing for..of, because we want to use it
+		"no-restricted-syntax": [
+			"error",
+			{
+				"selector": "ForInStatement",
+				"message": "for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array."
+			},
+			{
+				"selector": "LabeledStatement",
+				"message": "Labels are a form of GOTO; using them makes code confusing and hard to maintain and understand."
+			},
+			{
+				"selector": "WithStatement",
+				"message": "`with` is disallowed in strict mode because it makes code impossible to predict and optimize."
+			}
+		],
+		// allow lines of up to 120 characters
+		"max-len": ["error", { "code": 120, "tabWidth": 2, "ignoreUrls": true, "ignoreStrings": true, "ignoreTemplateLiterals": true, "ignoreRegExpLiterals": true }],
+		
+		// === Disable rules ===
+		// more liberal naming
+		"camelcase": "off",
+		"no-underscore-dangle": "off",
+		// don't require anonymous function names
+		"func-names": "off",
+		// allow console
+		"no-console": "off",
+		// allow new for side effects
+		// allow new with non-capitalized
+		"no-new": "off",
+		"new-cap": "off",
+		// allow shadowing variables (usually callbacks)
+		"no-shadow": "off",
+		// allow multiple empty lines in a row
+		"no-multiple-empty-lines": "off",
 
 		// TODO
+		"consistent-return": "off",
+		"no-restricted-globals": "off",
+		"no-prototype-builtins": "off",
 		"import/no-extraneous-dependencies": "off",
 		"import/no-dynamic-require": "off",
-		"import/newline-after-import": "off",
-		"no-bitwise": "off",
 		"global-require": "off",
-		"max-len": "off",
 		"no-param-reassign": "off",
-		"no-restricted-syntax": "off",
-		"no-script-url": "off",
-		"default-case": "off",
-		"linebreak-style": "off",
+		"default-case": "off"
 
 		// "no-multi-assign": "off",
 		// "one-var": "off",
@@ -121,7 +160,6 @@
 		// "comma-spacing": "off",
 		// "no-trailing-spaces": "off",
 		// "key-spacing": "off",
-		"no-multiple-empty-lines": "off"
 		// "spaced-comment": "off",
 		// "space-in-parens": "off",
 		// "block-spacing": "off",

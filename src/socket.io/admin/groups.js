@@ -30,7 +30,7 @@ Groups.join = async (socket, data) => {
 		throw new Error('[[error:invalid-data]]');
 	}
 	const slug = await groups.getGroupField(data.groupName, 'slug');
-	return await api.groups.join(socket, { slug: slug, uid: data.uid });
+	return await api.groups.join(socket, { slug, uid: data.uid });
 };
 
 Groups.leave = async function (socket, data) {
@@ -39,7 +39,7 @@ Groups.leave = async function (socket, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	const slug = await groups.getGroupField(data.groupName, 'slug');
-	await api.groups.leave(socket, { slug: slug, uid: data.uid });
+	await api.groups.leave(socket, { slug, uid: data.uid });
 };
 
 Groups.update = async function (socket, data) {

@@ -1,18 +1,18 @@
 'use strict';
 
-var EventEmitter = require('events');
-var nconf = require('nconf');
+const EventEmitter = require('events');
+const nconf = require('nconf');
 
-var real;
-var noCluster;
-var singleHost;
+let real;
+let noCluster;
+let singleHost;
 
 function get() {
 	if (real) {
 		return real;
 	}
 
-	var pubsub;
+	let pubsub;
 
 	if (!nconf.get('isCluster')) {
 		if (noCluster) {
@@ -34,11 +34,11 @@ function get() {
 			singleHost.publish = function (event, data) {
 				process.send({
 					action: 'pubsub',
-					event: event,
-					data: data,
+					event,
+					data,
 				});
 			};
-			process.on('message', function (message) {
+			process.on('message', (message) => {
 				if (message && typeof message === 'object' && message.action === 'pubsub') {
 					singleHost.emit(message.event, message.data);
 				}
@@ -56,16 +56,16 @@ function get() {
 }
 
 module.exports = {
-	publish: function (event, data) {
+	publish(event, data) {
 		get().publish(event, data);
 	},
-	on: function (event, callback) {
+	on(event, callback) {
 		get().on(event, callback);
 	},
-	removeAllListeners: function (event) {
+	removeAllListeners(event) {
 		get().removeAllListeners(event);
 	},
-	reset: function () {
+	reset() {
 		real = null;
 	},
 };

@@ -25,22 +25,22 @@ module.exports = function (Categories) {
 
 		if (modifiedFields.hasOwnProperty('name')) {
 			const translated = await translator.translate(modifiedFields.name);
-			modifiedFields.slug = cid + '/' + slugify(translated);
+			modifiedFields.slug = `${cid}/${slugify(translated)}`;
 		}
-		const result = await plugins.hooks.fire('filter:category.update', { cid: cid, category: modifiedFields });
+		const result = await plugins.hooks.fire('filter:category.update', { cid, category: modifiedFields });
 
-		const category = result.category;
-		var fields = Object.keys(category);
+		const { category } = result;
+		const fields = Object.keys(category);
 		// move parent to front, so its updated first
-		var parentCidIndex = fields.indexOf('parentCid');
+		const parentCidIndex = fields.indexOf('parentCid');
 		if (parentCidIndex !== -1 && fields.length > 1) {
 			fields.splice(0, 0, fields.splice(parentCidIndex, 1)[0]);
 		}
 
-		await async.eachSeries(fields, async function (key) {
+		await async.eachSeries(fields, async (key) => {
 			await updateCategoryField(cid, key, category[key]);
 		});
-		plugins.hooks.fire('action:category.update', { cid: cid, modified: category });
+		plugins.hooks.fire('action:category.update', { cid, modified: category });
 	}
 
 	async function updateCategoryField(cid, key, value) {
@@ -49,7 +49,7 @@ module.exports = function (Categories) {
 		} else if (key === 'tagWhitelist') {
 			return await updateTagWhitelist(cid, value);
 		}
-		await db.setObjectField('category:' + cid, key, value);
+		await db.setObjectField(`category:${cid}`, key, value);
 		if (key === 'order') {
 			await updateOrder(cid, value);
 		} else if (key === 'description') {
@@ -68,27 +68,27 @@ module.exports = function (Categories) {
 		}
 		const oldParent = await Categories.getCategoryField(cid, 'parentCid');
 		await Promise.all([
-			db.sortedSetRemove('cid:' + oldParent + ':children', cid),
-			db.sortedSetAdd('cid:' + newParent + ':children', cid, cid),
-			db.setObjectField('category:' + cid, 'parentCid', newParent),
+			db.sortedSetRemove(`cid:${oldParent}:children`, cid),
+			db.sortedSetAdd(`cid:${newParent}:children`, cid, cid),
+			db.setObjectField(`category:${cid}`, 'parentCid', newParent),
 		]);
 
-		cache.del(['cid:' + oldParent + ':children', 'cid:' + newParent + ':children']);
+		cache.del([`cid:${oldParent}:children`, `cid:${newParent}:children`]);
 	}
 
 	async function updateTagWhitelist(cid, tags) {
 		tags = tags.split(',').map(tag => utils.cleanUpTag(tag, meta.config.maximumTagLength))
 			.filter(Boolean);
-		await db.delete('cid:' + cid + ':tag:whitelist');
+		await db.delete(`cid:${cid}:tag:whitelist`);
 		const scores = tags.map((tag, index) => index);
-		await db.sortedSetAdd('cid:' + cid + ':tag:whitelist', scores, tags);
-		cache.del('cid:' + cid + ':tag:whitelist');
+		await db.sortedSetAdd(`cid:${cid}:tag:whitelist`, scores, tags);
+		cache.del(`cid:${cid}:tag:whitelist`);
 	}
 
 	async function updateOrder(cid, order) {
 		const parentCid = await Categories.getCategoryField(cid, 'parentCid');
-		await db.sortedSetsAdd(['categories:cid', 'cid:' + parentCid + ':children'], order, cid);
-		cache.del(['categories:cid', 'cid:' + parentCid + ':children']);
+		await db.sortedSetsAdd(['categories:cid', `cid:${parentCid}:children`], order, cid);
+		cache.del(['categories:cid', `cid:${parentCid}:children`]);
 	}
 
 	Categories.parseDescription = async function (cid, description) {

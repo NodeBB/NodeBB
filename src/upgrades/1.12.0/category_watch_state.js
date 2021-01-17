@@ -1,28 +1,28 @@
 'use strict';
 
-var async = require('async');
+const async = require('async');
 
-var db = require('../../database');
-var batch = require('../../batch');
-var categories = require('../../categories');
+const db = require('../../database');
+const batch = require('../../batch');
+const categories = require('../../categories');
 
 module.exports = {
 	name: 'Update category watch data',
 	timestamp: Date.UTC(2018, 11, 13),
-	method: function (callback) {
-		const progress = this.progress;
+	method(callback) {
+		const { progress } = this;
 		let keys;
 		async.waterfall([
 			function (next) {
 				db.getSortedSetRange('categories:cid', 0, -1, next);
 			},
 			function (cids, next) {
-				keys = cids.map(cid => 'cid:' + cid + ':ignorers');
-				batch.processSortedSet('users:joindate', function (uids, next) {
+				keys = cids.map(cid => `cid:${cid}:ignorers`);
+				batch.processSortedSet('users:joindate', (uids, next) => {
 					progress.incr(uids.length);
 
-					async.eachSeries(cids, function (cid, next) {
-						db.isSortedSetMembers('cid:' + cid + ':ignorers', uids, function (err, isMembers) {
+					async.eachSeries(cids, (cid, next) => {
+						db.isSortedSetMembers(`cid:${cid}:ignorers`, uids, (err, isMembers) => {
 							if (err) {
 								return next(err);
 							}
@@ -31,11 +31,11 @@ module.exports = {
 								return setImmediate(next);
 							}
 							const states = uids.map(() => categories.watchStates.ignoring);
-							db.sortedSetAdd('cid:' + cid + ':uid:watch:state', states, uids, next);
+							db.sortedSetAdd(`cid:${cid}:uid:watch:state`, states, uids, next);
 						});
 					}, next);
 				}, {
-					progress: progress,
+					progress,
 					batch: 500,
 				}, next);
 			},

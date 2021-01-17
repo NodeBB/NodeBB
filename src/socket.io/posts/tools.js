@@ -85,7 +85,7 @@ module.exports = function (SocketPosts) {
 		}
 		for (const pid of data.pids) {
 			/* eslint-disable no-await-in-loop */
-			await SocketPosts[command](socket, { pid: pid });
+			await SocketPosts[command](socket, { pid });
 		}
 	}
 
@@ -103,15 +103,15 @@ module.exports = function (SocketPosts) {
 			throw new Error('[[error:no-privileges]]');
 		}
 
-		var postData = await posts.changeOwner(data.pids, data.toUid);
-		var logs = postData.map(({ pid, uid, cid }) => (events.log({
+		const postData = await posts.changeOwner(data.pids, data.toUid);
+		const logs = postData.map(({ pid, uid, cid }) => (events.log({
 			type: 'post-change-owner',
 			uid: socket.uid,
 			ip: socket.ip,
 			targetUid: data.toUid,
-			pid: pid,
+			pid,
 			originalUid: uid,
-			cid: cid,
+			cid,
 		})));
 
 		await Promise.all(logs);

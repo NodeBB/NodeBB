@@ -10,10 +10,10 @@ const topics = require('../../topics');
 module.exports = {
 	name: 'Create zsets for user posts per category',
 	timestamp: Date.UTC(2019, 5, 23),
-	method: function (callback) {
-		const progress = this.progress;
+	method(callback) {
+		const { progress } = this;
 
-		batch.processSortedSet('posts:pid', function (pids, next) {
+		batch.processSortedSet('posts:pid', (pids, next) => {
 			progress.incr(pids.length);
 			let postData;
 			async.waterfall([
@@ -27,11 +27,11 @@ module.exports = {
 				},
 				function (topicData, next) {
 					const bulk = [];
-					postData.forEach(function (p, index) {
+					postData.forEach((p, index) => {
 						if (p && p.uid && p.pid && p.tid && p.timestamp) {
-							bulk.push(['cid:' + topicData[index].cid + ':uid:' + p.uid + ':pids', p.timestamp, p.pid]);
+							bulk.push([`cid:${topicData[index].cid}:uid:${p.uid}:pids`, p.timestamp, p.pid]);
 							if (p.votes > 0) {
-								bulk.push(['cid:' + topicData[index].cid + ':uid:' + p.uid + ':pids:votes', p.votes, p.pid]);
+								bulk.push([`cid:${topicData[index].cid}:uid:${p.uid}:pids:votes`, p.votes, p.pid]);
 							}
 						}
 					});
@@ -39,7 +39,7 @@ module.exports = {
 				},
 			], next);
 		}, {
-			progress: progress,
+			progress,
 		}, callback);
 	},
 };

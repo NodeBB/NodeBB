@@ -31,7 +31,7 @@ postgresModule.questions = [
 		description: 'Password of your PostgreSQL database',
 		hidden: true,
 		default: nconf.get('postgres:password') || '',
-		before: function (value) { value = value || nconf.get('postgres:password') || ''; return value; },
+		before(value) { value = value || nconf.get('postgres:password') || ''; return value; },
 	},
 	{
 		name: 'postgres:database',
@@ -48,25 +48,25 @@ postgresModule.questions = [
 postgresModule.init = function (callback) {
 	callback = callback || function () { };
 
-	const Pool = require('pg').Pool;
+	const { Pool } = require('pg');
 
 	const connOptions = connection.getConnectionOptions();
 
 	const db = new Pool(connOptions);
 
-	db.connect(function (err, client, release) {
+	db.connect((err, client, release) => {
 		if (err) {
-			winston.error('NodeBB could not connect to your PostgreSQL database. PostgreSQL returned the following error: ' + err.message);
+			winston.error(`NodeBB could not connect to your PostgreSQL database. PostgreSQL returned the following error: ${err.message}`);
 			return callback(err);
 		}
 
 		postgresModule.pool = db;
 		postgresModule.client = db;
 
-		checkUpgrade(client).then(function () {
+		checkUpgrade(client).then(() => {
 			release();
 			callback(null);
-		}, function (err) {
+		}, (err) => {
 			release();
 			callback(err);
 		});
@@ -75,7 +75,7 @@ postgresModule.init = function (callback) {
 
 
 async function checkUpgrade(client) {
-	var res = await client.query(`
+	const res = await client.query(`
 SELECT EXISTS(SELECT *
                 FROM "information_schema"."columns"
                WHERE "table_schema" = 'public'
@@ -301,7 +301,7 @@ PARALLEL SAFE`);
 }
 
 postgresModule.createSessionStore = function (options, callback) {
-	var meta = require('../meta');
+	const meta = require('../meta');
 
 	function done(db) {
 		const sessionStore = require('connect-pg-simple')(session);
@@ -313,7 +313,7 @@ postgresModule.createSessionStore = function (options, callback) {
 		callback(null, store);
 	}
 
-	connection.connect(options, function (err, db) {
+	connection.connect(options, (err, db) => {
 		if (err) {
 			return callback(err);
 		}
@@ -333,7 +333,7 @@ CREATE INDEX IF NOT EXISTS "session_expire_idx" ON "session"("expire");
 
 ALTER TABLE "session"
 	ALTER "sid" SET STORAGE MAIN,
-	CLUSTER ON "session_expire_idx";`, function (err) {
+	CLUSTER ON "session_expire_idx";`, (err) => {
 			if (err) {
 				return callback(err);
 			}
@@ -349,15 +349,15 @@ postgresModule.createIndices = function (callback) {
 		return callback();
 	}
 
-	var query = postgresModule.pool.query.bind(postgresModule.pool);
+	const query = postgresModule.pool.query.bind(postgresModule.pool);
 
 	winston.info('[database] Checking database indices.');
 	async.series([
 		async.apply(query, `CREATE INDEX IF NOT EXISTS "idx__legacy_zset__key__score" ON "legacy_zset"("_key" ASC, "score" DESC)`),
 		async.apply(query, `CREATE INDEX IF NOT EXISTS "idx__legacy_object__expireAt" ON "legacy_object"("expireAt" ASC)`),
-	], function (err) {
+	], (err) => {
 		if (err) {
-			winston.error('Error creating index ' + err.message);
+			winston.error(`Error creating index ${err.message}`);
 			return callback(err);
 		}
 		winston.info('[database] Checking database indices done!');
@@ -366,7 +366,7 @@ postgresModule.createIndices = function (callback) {
 };
 
 postgresModule.checkCompatibility = function (callback) {
-	var postgresPkg = require('pg/package.json');
+	const postgresPkg = require('pg/package.json');
 	postgresModule.checkCompatibilityVersion(postgresPkg.version, callback);
 };
 

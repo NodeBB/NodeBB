@@ -18,11 +18,11 @@ const uidToSystemGroup = {
 
 helpers.isUsersAllowedTo = async function (privilege, uids, cid) {
 	const [hasUserPrivilege, hasGroupPrivilege] = await Promise.all([
-		groups.isMembers(uids, 'cid:' + cid + ':privileges:' + privilege),
-		groups.isMembersOfGroupList(uids, 'cid:' + cid + ':privileges:groups:' + privilege),
+		groups.isMembers(uids, `cid:${cid}:privileges:${privilege}`),
+		groups.isMembersOfGroupList(uids, `cid:${cid}:privileges:groups:${privilege}`),
 	]);
 	const allowed = uids.map((uid, index) => hasUserPrivilege[index] || hasGroupPrivilege[index]);
-	const result = await plugins.hooks.fire('filter:privileges:isUsersAllowedTo', { allowed: allowed, privilege: privilege, uids: uids, cid: cid });
+	const result = await plugins.hooks.fire('filter:privileges:isUsersAllowedTo', { allowed, privilege, uids, cid });
 	return result.allowed;
 };
 
@@ -34,8 +34,8 @@ helpers.isAllowedTo = async function (privilege, uidOrGroupName, cid) {
 		allowed = await isAllowedToCids(privilege, uidOrGroupName, cid);
 	}
 	if (allowed) {
-		({ allowed } = await plugins.hooks.fire('filter:privileges:isUserAllowedTo', { allowed: allowed, privilege: privilege, uid: uidOrGroupName, cid: cid }));
-		({ allowed } = await plugins.hooks.fire('filter:privileges:isAllowedTo', { allowed: allowed, privilege: privilege, uid: uidOrGroupName, cid: cid }));
+		({ allowed } = await plugins.hooks.fire('filter:privileges:isUserAllowedTo', { allowed, privilege, uid: uidOrGroupName, cid }));
+		({ allowed } = await plugins.hooks.fire('filter:privileges:isAllowedTo', { allowed, privilege, uid: uidOrGroupName, cid }));
 		return allowed;
 	}
 	throw new Error('[[error:invalid-data]]');
@@ -46,7 +46,7 @@ async function isAllowedToCids(privilege, uidOrGroupName, cids) {
 		return cids.map(() => false);
 	}
 
-	const groupKeys = cids.map(cid => 'cid:' + cid + ':privileges:groups:' + privilege);
+	const groupKeys = cids.map(cid => `cid:${cid}:privileges:groups:${privilege}`);
 
 	// Group handling
 	if (isNaN(parseInt(uidOrGroupName, 10)) && (uidOrGroupName || '').length) {
@@ -58,12 +58,12 @@ async function isAllowedToCids(privilege, uidOrGroupName, cids) {
 		return await isSystemGroupAllowedToCids(privilege, uidOrGroupName, cids);
 	}
 
-	const userKeys = cids.map(cid => 'cid:' + cid + ':privileges:' + privilege);
+	const userKeys = cids.map(cid => `cid:${cid}:privileges:${privilege}`);
 	return await checkIfAllowedUser(uidOrGroupName, userKeys, groupKeys);
 }
 
 async function isAllowedToPrivileges(privileges, uidOrGroupName, cid) {
-	const groupKeys = privileges.map(privilege => 'cid:' + cid + ':privileges:groups:' + privilege);
+	const groupKeys = privileges.map(privilege => `cid:${cid}:privileges:groups:${privilege}`);
 	// Group handling
 	if (isNaN(parseInt(uidOrGroupName, 10)) && (uidOrGroupName || '').length) {
 		return await checkIfAllowedGroup(uidOrGroupName, groupKeys);
@@ -74,7 +74,7 @@ async function isAllowedToPrivileges(privileges, uidOrGroupName, cid) {
 		return await isSystemGroupAllowedToPrivileges(privileges, uidOrGroupName, cid);
 	}
 
-	const userKeys = privileges.map(privilege => 'cid:' + cid + ':privileges:' + privilege);
+	const userKeys = privileges.map(privilege => `cid:${cid}:privileges:${privilege}`);
 	return await checkIfAllowedUser(uidOrGroupName, userKeys, groupKeys);
 }
 
@@ -95,27 +95,25 @@ async function checkIfAllowedGroup(groupName, groupKeys) {
 }
 
 async function isSystemGroupAllowedToCids(privilege, uid, cids) {
-	const groupKeys = cids.map(cid => 'cid:' + cid + ':privileges:groups:' + privilege);
+	const groupKeys = cids.map(cid => `cid:${cid}:privileges:groups:${privilege}`);
 	return await groups.isMemberOfGroups(uidToSystemGroup[uid], groupKeys);
 }
 
 async function isSystemGroupAllowedToPrivileges(privileges, uid, cid) {
-	const groupKeys = privileges.map(privilege => 'cid:' + cid + ':privileges:groups:' + privilege);
+	const groupKeys = privileges.map(privilege => `cid:${cid}:privileges:groups:${privilege}`);
 	return await groups.isMemberOfGroups(uidToSystemGroup[uid], groupKeys);
 }
 
 helpers.getUserPrivileges = async function (cid, userPrivileges) {
-	let memberSets = await groups.getMembersOfGroups(userPrivileges.map(privilege => 'cid:' + cid + ':privileges:' + privilege));
-	memberSets = memberSets.map(function (set) {
-		return set.map(uid => parseInt(uid, 10));
-	});
+	let memberSets = await groups.getMembersOfGroups(userPrivileges.map(privilege => `cid:${cid}:privileges:${privilege}`));
+	memberSets = memberSets.map(set => set.map(uid => parseInt(uid, 10)));
 
 	const members = _.uniq(_.flatten(memberSets));
 	const memberData = await user.getUsersFields(members, ['picture', 'username']);
 
-	memberData.forEach(function (member) {
+	memberData.forEach((member) => {
 		member.privileges = {};
-		for (var x = 0, numPrivs = userPrivileges.length; x < numPrivs; x += 1) {
+		for (let x = 0, numPrivs = userPrivileges.length; x < numPrivs; x += 1) {
 			member.privileges[userPrivileges[x]] = memberSets[x].includes(parseInt(member.uid, 10));
 		}
 	});
@@ -125,7 +123,7 @@ helpers.getUserPrivileges = async function (cid, userPrivileges) {
 
 helpers.getGroupPrivileges = async function (cid, groupPrivileges) {
 	const [memberSets, allGroupNames] = await Promise.all([
-		groups.getMembersOfGroups(groupPrivileges.map(privilege => 'cid:' + cid + ':privileges:' + privilege)),
+		groups.getMembersOfGroups(groupPrivileges.map(privilege => `cid:${cid}:privileges:${privilege}`)),
 		groups.getGroups('groups:createtime', 0, -1),
 	]);
 
@@ -144,10 +142,10 @@ helpers.getGroupPrivileges = async function (cid, groupPrivileges) {
 		groupNames.splice(adminIndex, 1);
 	}
 	const groupData = await groups.getGroupsFields(groupNames, ['private', 'system']);
-	const memberData = groupNames.map(function (member, index) {
+	const memberData = groupNames.map((member, index) => {
 		const memberPrivs = {};
 
-		for (var x = 0, numPrivs = groupPrivileges.length; x < numPrivs; x += 1) {
+		for (let x = 0, numPrivs = groupPrivileges.length; x < numPrivs; x += 1) {
 			memberPrivs[groupPrivileges[x]] = memberSets[x].includes(member);
 		}
 		return {
@@ -177,7 +175,7 @@ helpers.giveOrRescind = async function (method, privileges, cids, members) {
 		const groupKeys = [];
 		cids.forEach((cid) => {
 			privileges.forEach((privilege) => {
-				groupKeys.push('cid:' + cid + ':privileges:' + privilege);
+				groupKeys.push(`cid:${cid}:privileges:${privilege}`);
 			});
 		});
 		/* eslint-disable no-await-in-loop */

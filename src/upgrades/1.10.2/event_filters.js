@@ -1,21 +1,21 @@
 'use strict';
 
-var async = require('async');
-var db = require('../../database');
+const async = require('async');
+const db = require('../../database');
 
-var batch = require('../../batch');
+const batch = require('../../batch');
 
 module.exports = {
 	name: 'add filters to events',
 	timestamp: Date.UTC(2018, 9, 4),
-	method: function (callback) {
-		const progress = this.progress;
+	method(callback) {
+		const { progress } = this;
 
-		batch.processSortedSet('events:time', function (eids, next) {
-			async.eachSeries(eids, function (eid, next) {
+		batch.processSortedSet('events:time', (eids, next) => {
+			async.eachSeries(eids, (eid, next) => {
 				progress.incr();
 
-				db.getObject('event:' + eid, function (err, eventData) {
+				db.getObject(`event:${eid}`, (err, eventData) => {
 					if (err) {
 						return next(err);
 					}
@@ -27,16 +27,16 @@ module.exports = {
 						eventData.type = 'privilege-change';
 						async.waterfall([
 							function (next) {
-								db.setObjectField('event:' + eid, 'type', 'privilege-change', next);
+								db.setObjectField(`event:${eid}`, 'type', 'privilege-change', next);
 							},
 							function (next) {
-								db.sortedSetAdd('events:time:' + eventData.type, eventData.timestamp, eid, next);
+								db.sortedSetAdd(`events:time:${eventData.type}`, eventData.timestamp, eid, next);
 							},
 						], next);
 						return;
 					}
 
-					db.sortedSetAdd('events:time:' + (eventData.type || ''), eventData.timestamp, eid, next);
+					db.sortedSetAdd(`events:time:${eventData.type || ''}`, eventData.timestamp, eid, next);
 				});
 			}, next);
 		}, {

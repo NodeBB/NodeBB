@@ -16,10 +16,10 @@ const relative_path = nconf.get('relative_path');
 module.exports = function (middleware) {
 	middleware.processRender = function processRender(req, res, next) {
 		// res.render post-processing, modified from here: https://gist.github.com/mrlannigan/5051687
-		const render = res.render;
+		const { render } = res;
 		res.render = async function renderOverride(template, options, fn) {
 			const self = this;
-			const req = this.req;
+			const { req } = this;
 
 			options = options || {};
 			if (typeof options === 'function') {
@@ -33,20 +33,20 @@ module.exports = function (middleware) {
 			options.url = (req.baseUrl + req.path.replace(/^\/api/, ''));
 			options.bodyClass = buildBodyClass(req, res, options);
 
-			const buildResult = await plugins.hooks.fire('filter:' + template + '.build', { req: req, res: res, templateData: options });
+			const buildResult = await plugins.hooks.fire(`filter:${template}.build`, { req, res, templateData: options });
 			const templateToRender = buildResult.templateData.templateToRender || template;
 
-			const renderResult = await plugins.hooks.fire('filter:middleware.render', { req: req, res: res, templateData: buildResult.templateData });
+			const renderResult = await plugins.hooks.fire('filter:middleware.render', { req, res, templateData: buildResult.templateData });
 			options = renderResult.templateData;
 			options._header = {
 				tags: await meta.tags.parse(req, renderResult, res.locals.metaTags, res.locals.linkTags),
 			};
 			options.widgets = await widgets.render(req.uid, {
-				template: template + '.tpl',
+				template: `${template}.tpl`,
 				url: options.url,
 				templateData: options,
-				req: req,
-				res: res,
+				req,
+				res,
 			});
 			res.locals.template = template;
 			options._locals = undefined;
@@ -65,14 +65,14 @@ module.exports = function (middleware) {
 				footer: renderHeaderFooter('renderFooter', req, res, options),
 			});
 
-			const str = results.header +
+			const str = `${results.header +
 				(res.locals.postHeader || '') +
-				results.content +
-				'<script id="ajaxify-data" type="application/json">' +
-					JSON.stringify(options).replace(/<\//g, '<\\/') +
-				'</script>' +
-				(res.locals.preFooter || '') +
-				results.footer;
+				results.content
+			}<script id="ajaxify-data" type="application/json">${
+				JSON.stringify(options).replace(/<\//g, '<\\/')
+			}</script>${
+				res.locals.preFooter || ''
+			}${results.footer}`;
 
 			if (typeof fn !== 'function') {
 				self.send(str);
@@ -85,8 +85,8 @@ module.exports = function (middleware) {
 	};
 
 	async function renderContent(render, tpl, req, res, options) {
-		return new Promise(function (resolve, reject) {
-			render.call(res, tpl, options, async function (err, str) {
+		return new Promise((resolve, reject) => {
+			render.call(res, tpl, options, async (err, str) => {
 				if (err) reject(err);
 				else resolve(await translate(str, getLang(req, res)));
 			});
@@ -121,7 +121,7 @@ module.exports = function (middleware) {
 	function buildBodyClass(req, res, templateData) {
 		const clean = req.path.replace(/^\/api/, '').replace(/^\/|\/$/g, '');
 		const parts = clean.split('/').slice(0, 3);
-		parts.forEach(function (p, index) {
+		parts.forEach((p, index) => {
 			try {
 				p = slugify(decodeURIComponent(p));
 			} catch (err) {
@@ -129,22 +129,22 @@ module.exports = function (middleware) {
 				p = '';
 			}
 			p = validator.escape(String(p));
-			parts[index] = index ? parts[0] + '-' + p : 'page-' + (p || 'home');
+			parts[index] = index ? `${parts[0]}-${p}` : `page-${p || 'home'}`;
 		});
 
 		if (templateData.template.topic) {
-			parts.push('page-topic-category-' + templateData.category.cid);
-			parts.push('page-topic-category-' + slugify(templateData.category.name));
+			parts.push(`page-topic-category-${templateData.category.cid}`);
+			parts.push(`page-topic-category-${slugify(templateData.category.name)}`);
 		}
 		if (templateData.breadcrumbs) {
-			templateData.breadcrumbs.forEach(function (crumb) {
+			templateData.breadcrumbs.forEach((crumb) => {
 				if (crumb.hasOwnProperty('cid')) {
-					parts.push('parent-category-' + crumb.cid);
+					parts.push(`parent-category-${crumb.cid}`);
 				}
 			});
 		}
 
-		parts.push('page-status-' + res.statusCode);
+		parts.push(`page-status-${res.statusCode}`);
 		return parts.join(' ');
 	}
 };

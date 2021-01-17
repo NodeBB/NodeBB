@@ -1,15 +1,15 @@
 
 'use strict';
 
-var async = require('async');
-var _ = require('lodash');
+const async = require('async');
+const _ = require('lodash');
 
-var db = require('../database');
-var meta = require('../meta');
-var user = require('../user');
-var posts = require('../posts');
-var plugins = require('../plugins');
-var utils = require('../utils');
+const db = require('../database');
+const meta = require('../meta');
+const user = require('../user');
+const posts = require('../posts');
+const plugins = require('../plugins');
+const utils = require('../utils');
 
 module.exports = function (Topics) {
 	Topics.getTeasers = async function (topics, options) {
@@ -17,17 +17,17 @@ module.exports = function (Topics) {
 			return [];
 		}
 		let uid = options;
-		let teaserPost = meta.config.teaserPost;
+		let { teaserPost } = meta.config;
 		if (typeof options === 'object') {
 			uid = options.uid;
 			teaserPost = options.teaserPost || meta.config.teaserPost;
 		}
 
-		var counts = [];
-		var teaserPids = [];
-		var tidToPost = {};
+		const counts = [];
+		const teaserPids = [];
+		const tidToPost = {};
 
-		topics.forEach(function (topic) {
+		topics.forEach((topic) => {
 			counts.push(topic && topic.postcount);
 			if (topic) {
 				if (topic.teaserPid === 'null') {
@@ -51,12 +51,13 @@ module.exports = function (Topics) {
 
 		const usersData = await user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture']);
 
-		var users = {};
-		usersData.forEach(function (user) {
+		const users = {};
+		usersData.forEach((user) => {
 			users[user.uid] = user;
 		});
-		postData.forEach(function (post) {
-			// If the post author isn't represented in the retrieved users' data, then it means they were deleted, assume guest.
+		postData.forEach((post) => {
+			// If the post author isn't represented in the retrieved users' data
+			// then it means they were deleted, assume guest.
 			if (!users.hasOwnProperty(post.uid)) {
 				post.uid = 0;
 			}
@@ -69,7 +70,7 @@ module.exports = function (Topics) {
 
 		const { tags } = await plugins.hooks.fire('filter:teasers.configureStripTags', { tags: utils.stripTags.concat(['img']) });
 
-		var teasers = topics.map(function (topic, index) {
+		const teasers = topics.map((topic, index) => {
 			if (!topic) {
 				return null;
 			}
@@ -82,7 +83,7 @@ module.exports = function (Topics) {
 			return tidToPost[topic.tid];
 		});
 
-		const result = await plugins.hooks.fire('filter:teasers.get', { teasers: teasers, uid: uid });
+		const result = await plugins.hooks.fire('filter:teasers.get', { teasers, uid });
 		return result.teasers;
 	};
 
@@ -96,7 +97,7 @@ module.exports = function (Topics) {
 			return teasers;
 		}
 
-		return await async.mapSeries(teasers, async function (postData) {
+		return await async.mapSeries(teasers, async (postData) => {
 			if (blockedUids.includes(parseInt(postData.uid, 10))) {
 				return await getPreviousNonBlockedPost(postData, blockedUids);
 			}
@@ -120,7 +121,7 @@ module.exports = function (Topics) {
 
 		do {
 			/* eslint-disable no-await-in-loop */
-			let pids = await db.getSortedSetRevRange('tid:' + postData.tid + ':posts', start, stop);
+			let pids = await db.getSortedSetRevRange(`tid:${postData.tid}:posts`, start, stop);
 			if (!pids.length) {
 				checkedAllReplies = true;
 				const mainPid = await Topics.getTopicField(postData.tid, 'mainPid');

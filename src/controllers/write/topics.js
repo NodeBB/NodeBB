@@ -152,7 +152,7 @@ Topics.migrateThumbs = async (req, res) => {
 
 Topics.deleteThumb = async (req, res) => {
 	if (!req.body.path.startsWith('http')) {
-		await middleware.assert.path(req, res, function () {});
+		await middleware.assert.path(req, res, () => {});
 		if (res.headersSent) {
 			return;
 		}
@@ -168,7 +168,8 @@ Topics.deleteThumb = async (req, res) => {
 };
 
 async function checkThumbPrivileges({ tid, uid, res }) {
-	// req.params.tid could be either a tid (pushing a new thumb to an existing topic) or a post UUID (a new topic being composed)
+	// req.params.tid could be either a tid (pushing a new thumb to an existing topic)
+	// or a post UUID (a new topic being composed)
 	const isUUID = validator.isUUID(tid);
 
 	// Sanity-check the tid if it's strictly not a uuid

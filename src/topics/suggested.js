@@ -1,12 +1,12 @@
 
 'use strict';
 
-var _ = require('lodash');
+const _ = require('lodash');
 
 const db = require('../database');
 const user = require('../user');
-var privileges = require('../privileges');
-var search = require('../search');
+const privileges = require('../privileges');
+const search = require('../search');
 
 module.exports = function (Topics) {
 	Topics.getSuggestedTopics = async function (tid, uid, start, stop) {
@@ -34,7 +34,7 @@ module.exports = function (Topics) {
 
 	async function getTidsWithSameTags(tid) {
 		const tags = await Topics.getTopicTags(tid);
-		const tids = await db.getSortedSetRevRange(tags.map(tag => 'tag:' + tag + ':topics'), 0, -1);
+		const tids = await db.getSortedSetRevRange(tags.map(tag => `tag:${tag}:topics`), 0, -1);
 		return _.shuffle(_.uniq(tids)).slice(0, 10).map(Number);
 	}
 
@@ -45,7 +45,7 @@ module.exports = function (Topics) {
 			searchIn: 'titles',
 			matchWords: 'any',
 			categories: [topicData.cid],
-			uid: uid,
+			uid,
 			returnIds: true,
 		});
 		return _.shuffle(data.tids).slice(0, 10).map(Number);
@@ -53,7 +53,7 @@ module.exports = function (Topics) {
 
 	async function getCategoryTids(tid) {
 		const cid = await Topics.getTopicField(tid, 'cid');
-		const tids = await db.getSortedSetRevRange('cid:' + cid + ':tids:lastposttime', 0, 9);
+		const tids = await db.getSortedSetRevRange(`cid:${cid}:tids:lastposttime`, 0, 9);
 		return _.shuffle(tids.map(Number).filter(_tid => _tid !== tid));
 	}
 };

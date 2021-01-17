@@ -29,21 +29,21 @@ let ipCache;
 Analytics.init = async function () {
 	ipCache = new LRU({
 		max: parseInt(meta.config['analytics:maxCache'], 10) || 500,
-		length: function () { return 1; },
+		length() { return 1; },
 		maxAge: 0,
 	});
 
-	new cronJob('*/10 * * * * *', function () {
+	new cronJob('*/10 * * * * *', (() => {
 		Analytics.writeData();
-	}, null, true);
+	}), null, true);
 };
 
 Analytics.increment = function (keys, callback) {
 	keys = Array.isArray(keys) ? keys : [keys];
 
-	plugins.hooks.fire('action:analytics.increment', { keys: keys });
+	plugins.hooks.fire('action:analytics.increment', { keys });
 
-	keys.forEach(function (key) {
+	keys.forEach((key) => {
 		counters[key] = counters[key] || 0;
 		counters[key] += 1;
 	});
@@ -128,18 +128,15 @@ Analytics.writeData = async function () {
 		uniqueIPCount = 0;
 	}
 
-	if (Object.keys(counters).length > 0) {
-		for (const key in counters) {
-			if (counters.hasOwnProperty(key)) {
-				dbQueue.push(db.sortedSetIncrBy('analytics:' + key, counters[key], today.getTime()));
-				delete counters[key];
-			}
-		}
-	}
+	Object.keys(counters).forEach((key) => {
+		dbQueue.push(db.sortedSetIncrBy(`analytics:${key}`, counters[key], today.getTime()));
+		delete counters[key];
+	});
+
 	try {
 		await Promise.all(dbQueue);
 	} catch (err) {
-		winston.error('[analytics] Encountered error while writing analytics to data store\n' + err.stack);
+		winston.error(`[analytics] Encountered error while writing analytics to data store\n${err.stack}`);
 		throw err;
 	}
 };
@@ -147,7 +144,7 @@ Analytics.writeData = async function () {
 Analytics.getHourlyStatsForSet = async function (set, hour, numHours) {
 	// Guard against accidental ommission of `analytics:` prefix
 	if (!set.startsWith('analytics:')) {
-		set = 'analytics:' + set;
+		set = `analytics:${set}`;
 	}
 
 	const terms = {};
@@ -163,14 +160,14 @@ Analytics.getHourlyStatsForSet = async function (set, hour, numHours) {
 
 	const counts = await db.sortedSetScores(set, hoursArr);
 
-	hoursArr.forEach(function (term, index) {
+	hoursArr.forEach((term, index) => {
 		terms[term] = parseInt(counts[index], 10) || 0;
 	});
 
 	const termsArr = [];
 
 	hoursArr.reverse();
-	hoursArr.forEach(function (hour) {
+	hoursArr.forEach((hour) => {
 		termsArr.push(terms[hour]);
 	});
 
@@ -180,17 +177,22 @@ Analytics.getHourlyStatsForSet = async function (set, hour, numHours) {
 Analytics.getDailyStatsForSet = async function (set, day, numDays) {
 	// Guard against accidental ommission of `analytics:` prefix
 	if (!set.startsWith('analytics:')) {
-		set = 'analytics:' + set;
+		set = `analytics:${set}`;
 	}
 
 	const daysArr = [];
 	day = new Date(day);
-	day.setDate(day.getDate() + 1);	// set the date to tomorrow, because getHourlyStatsForSet steps *backwards* 24 hours to sum up the values
+	// set the date to tomorrow, because getHourlyStatsForSet steps *backwards* 24 hours to sum up the values
+	day.setDate(day.getDate() + 1);
 	day.setHours(0, 0, 0, 0);
 
 	while (numDays > 0) {
 		/* eslint-disable no-await-in-loop */
-		const dayData = await Analytics.getHourlyStatsForSet(set, day.getTime() - (1000 * 60 * 60 * 24 * (numDays - 1)), 24);
+		const dayData = await Analytics.getHourlyStatsForSet(
+			set,
+			day.getTime() - (1000 * 60 * 60 * 24 * (numDays - 1)),
+			24
+		);
 		daysArr.push(dayData.reduce((cur, next) => cur + next));
 		numDays -= 1;
 	}
@@ -218,10 +220,10 @@ Analytics.getSummary = async function () {
 
 Analytics.getCategoryAnalytics = async function (cid) {
 	return await utils.promiseParallel({
-		'pageviews:hourly': Analytics.getHourlyStatsForSet('analytics:pageviews:byCid:' + cid, Date.now(), 24),
-		'pageviews:daily': Analytics.getDailyStatsForSet('analytics:pageviews:byCid:' + cid, Date.now(), 30),
-		'topics:daily': Analytics.getDailyStatsForSet('analytics:topics:byCid:' + cid, Date.now(), 7),
-		'posts:daily': Analytics.getDailyStatsForSet('analytics:posts:byCid:' + cid, Date.now(), 7),
+		'pageviews:hourly': Analytics.getHourlyStatsForSet(`analytics:pageviews:byCid:${cid}`, Date.now(), 24),
+		'pageviews:daily': Analytics.getDailyStatsForSet(`analytics:pageviews:byCid:${cid}`, Date.now(), 30),
+		'topics:daily': Analytics.getDailyStatsForSet(`analytics:topics:byCid:${cid}`, Date.now(), 7),
+		'posts:daily': Analytics.getDailyStatsForSet(`analytics:posts:byCid:${cid}`, Date.now(), 7),
 	});
 };
 

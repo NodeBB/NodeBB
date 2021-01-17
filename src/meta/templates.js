@@ -2,6 +2,7 @@
 
 const util = require('util');
 let mkdirp = require('mkdirp');
+
 mkdirp = mkdirp.hasOwnProperty('native') ? mkdirp : util.promisify(mkdirp);
 const rimraf = require('rimraf');
 const winston = require('winston');
@@ -22,22 +23,22 @@ const viewsPath = nconf.get('views_dir');
 const Templates = module.exports;
 
 async function processImports(paths, templatePath, source) {
-	var regex = /<!-- IMPORT (.+?) -->/;
+	const regex = /<!-- IMPORT (.+?) -->/;
 
-	var matches = source.match(regex);
+	const matches = source.match(regex);
 
 	if (!matches) {
 		return source;
 	}
 
-	var partial = matches[1];
+	const partial = matches[1];
 	if (paths[partial] && templatePath !== partial) {
 		const partialSource = await fs.promises.readFile(paths[partial], 'utf8');
 		source = source.replace(regex, partialSource);
 		return await processImports(paths, templatePath, source);
 	}
 
-	winston.warn('[meta/templates] Partial not loaded: ' + matches[1]);
+	winston.warn(`[meta/templates] Partial not loaded: ${matches[1]}`);
 	source = source.replace(regex, '');
 
 	return await processImports(paths, templatePath, source);
@@ -45,7 +46,7 @@ async function processImports(paths, templatePath, source) {
 Templates.processImports = processImports;
 
 async function getTemplateDirs(activePlugins) {
-	const pluginTemplates = activePlugins.map(function (id) {
+	const pluginTemplates = activePlugins.map((id) => {
 		if (themeNamePattern.test(id)) {
 			return nconf.get('theme_templates_path');
 		}
@@ -71,9 +72,9 @@ async function getTemplateDirs(activePlugins) {
 	themeTemplates.push(nconf.get('base_templates_path'));
 	themeTemplates = _.uniq(themeTemplates.reverse());
 
-	var coreTemplatesPath = nconf.get('core_templates_path');
+	const coreTemplatesPath = nconf.get('core_templates_path');
 
-	var templateDirs = _.uniq([coreTemplatesPath].concat(themeTemplates, pluginTemplates));
+	let templateDirs = _.uniq([coreTemplatesPath].concat(themeTemplates, pluginTemplates));
 
 	templateDirs = await Promise.all(templateDirs.map(async path => (await file.exists(path) ? path : false)));
 	return templateDirs.filter(Boolean);
@@ -82,20 +83,16 @@ async function getTemplateDirs(activePlugins) {
 async function getTemplateFiles(dirs) {
 	const buckets = await Promise.all(dirs.map(async (dir) => {
 		let files = await file.walk(dir);
-		files = files.filter(function (path) {
-			return path.endsWith('.tpl');
-		}).map(function (file) {
-			return {
-				name: path.relative(dir, file).replace(/\\/g, '/'),
-				path: file,
-			};
-		});
+		files = files.filter(path => path.endsWith('.tpl')).map(file => ({
+			name: path.relative(dir, file).replace(/\\/g, '/'),
+			path: file,
+		}));
 		return files;
 	}));
 
-	var dict = {};
-	buckets.forEach(function (files) {
-		files.forEach(function (file) {
+	const dict = {};
+	buckets.forEach((files) => {
+		files.forEach((file) => {
 			dict[file.name] = file.path;
 		});
 	});
@@ -105,8 +102,8 @@ async function getTemplateFiles(dirs) {
 
 async function compileTemplate(filename, source) {
 	let paths = await file.walk(viewsPath);
-	paths = _.fromPairs(paths.map(function (p) {
-		var relative = path.relative(viewsPath, p).replace(/\\/g, '/');
+	paths = _.fromPairs(paths.map((p) => {
+		const relative = path.relative(viewsPath, p).replace(/\\/g, '/');
 		return [relative, p];
 	}));
 

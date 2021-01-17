@@ -14,9 +14,9 @@ const slugify = require('../slugify');
 const plugins = require('../plugins');
 
 module.exports = function (User) {
-	new cronJob('0 * * * *', function () {
+	new cronJob('0 * * * *', (() => {
 		User.autoApprove();
-	}, null, true);
+	}), null, true);
 
 	User.addToApprovalQueue = async function (userData) {
 		userData.username = userData.username.trim();
@@ -27,10 +27,10 @@ module.exports = function (User) {
 			username: userData.username,
 			email: userData.email,
 			ip: userData.ip,
-			hashedPassword: hashedPassword,
+			hashedPassword,
 		};
-		const results = await plugins.hooks.fire('filter:user.addToApprovalQueue', { data: data, userData: userData });
-		await db.setObject('registration:queue:name:' + userData.username, results.data);
+		const results = await plugins.hooks.fire('filter:user.addToApprovalQueue', { data, userData });
+		await db.setObject(`registration:queue:name:${userData.username}`, results.data);
 		await db.sortedSetAdd('registration:queue', Date.now(), userData.username);
 		await sendNotificationToAdmins(userData.username);
 	};
@@ -41,7 +41,7 @@ module.exports = function (User) {
 		if (usernames.includes(userData.username)) {
 			throw new Error('[[error:username-taken]]');
 		}
-		const keys = usernames.filter(Boolean).map(username => 'registration:queue:name:' + username);
+		const keys = usernames.filter(Boolean).map(username => `registration:queue:name:${username}`);
 		const data = await db.getObjectsFields(keys, ['email']);
 		const emails = data.map(data => data && data.email);
 		if (emails.includes(userData.email)) {
@@ -52,8 +52,8 @@ module.exports = function (User) {
 	async function sendNotificationToAdmins(username) {
 		const notifObj = await notifications.create({
 			type: 'new-register',
-			bodyShort: '[[notifications:new_register, ' + username + ']]',
-			nid: 'new_register:' + username,
+			bodyShort: `[[notifications:new_register, ${username}]]`,
+			nid: `new_register:${username}`,
 			path: '/admin/manage/registration',
 			mergeId: 'new_register',
 		});
@@ -61,7 +61,7 @@ module.exports = function (User) {
 	}
 
 	User.acceptRegistration = async function (username) {
-		const userData = await db.getObject('registration:queue:name:' + username);
+		const userData = await db.getObject(`registration:queue:name:${username}`);
 		if (!userData) {
 			throw new Error('[[error:invalid-data]]');
 		}
@@ -73,13 +73,13 @@ module.exports = function (User) {
 		});
 		await removeFromQueue(username);
 		await markNotificationRead(username);
-		await plugins.hooks.fire('filter:register.complete', { uid: uid });
+		await plugins.hooks.fire('filter:register.complete', { uid });
 		await emailer.send('registration_accepted', uid, {
-			username: username,
-			subject: '[[email:welcome-to, ' + (meta.config.title || meta.config.browserTitle || 'NodeBB') + ']]',
+			username,
+			subject: `[[email:welcome-to, ${meta.config.title || meta.config.browserTitle || 'NodeBB'}]]`,
 			template: 'registration_accepted',
-			uid: uid,
-		}).catch(err => winston.error('[emailer.send] ' + err.stack));
+			uid,
+		}).catch(err => winston.error(`[emailer.send] ${err.stack}`));
 		const total = await db.incrObjectField('registration:queue:approval:times', 'totalTime', Math.floor((Date.now() - creation_time) / 60000));
 		const counter = await db.incrObjectField('registration:queue:approval:times', 'counter', 1);
 		await db.setObjectField('registration:queue:approval:times', 'average', total / counter);
@@ -87,7 +87,7 @@ module.exports = function (User) {
 	};
 
 	async function markNotificationRead(username) {
-		const nid = 'new_register:' + username;
+		const nid = `new_register:${username}`;
 		const uids = await groups.getMembers('administrators', 0, -1);
 		const promises = uids.map(uid => notifications.markRead(nid, uid));
 		await Promise.all(promises);
@@ -101,16 +101,16 @@ module.exports = function (User) {
 	async function removeFromQueue(username) {
 		await Promise.all([
 			db.sortedSetRemove('registration:queue', username),
-			db.delete('registration:queue:name:' + username),
+			db.delete(`registration:queue:name:${username}`),
 		]);
 	}
 
 	User.shouldQueueUser = async function (ip) {
-		const registrationApprovalType = meta.config.registrationApprovalType;
+		const { registrationApprovalType } = meta.config;
 		if (registrationApprovalType === 'admin-approval') {
 			return true;
 		} else if (registrationApprovalType === 'admin-approval-ip') {
-			const count = await db.sortedSetCard('ip:' + ip + ':uid');
+			const count = await db.sortedSetCard(`ip:${ip}:uid`);
 			return !!count;
 		}
 		return false;
@@ -118,9 +118,9 @@ module.exports = function (User) {
 
 	User.getRegistrationQueue = async function (start, stop) {
 		const data = await db.getSortedSetRevRangeWithScores('registration:queue', start, stop);
-		const keys = data.filter(Boolean).map(user => 'registration:queue:name:' + user.value);
+		const keys = data.filter(Boolean).map(user => `registration:queue:name:${user.value}`);
 		let users = await db.getObjects(keys);
-		users = users.filter(Boolean).map(function (user, index) {
+		users = users.filter(Boolean).map((user, index) => {
 			user.timestampISO = utils.toISOString(data[index].score);
 			user.email = validator.escape(String(user.email));
 			user.usernameEscaped = validator.escape(String(user.username));
@@ -144,12 +144,12 @@ module.exports = function (User) {
 			 */
 		}));
 
-		const results = await plugins.hooks.fire('filter:user.getRegistrationQueue', { users: users });
+		const results = await plugins.hooks.fire('filter:user.getRegistrationQueue', { users });
 		return results.users;
 	};
 
 	async function getIPMatchedUsers(user) {
-		const uids = await User.getUidsFromSet('ip:' + user.ip + ':uid', 0, -1);
+		const uids = await User.getUidsFromSet(`ip:${user.ip}:uid`, 0, -1);
 		user.ipMatch = await User.getUsersFields(uids, ['uid', 'username', 'picture']);
 	}
 

@@ -7,23 +7,23 @@ const nconf = require('nconf');
 const winston = require('winston');
 
 const file = require('../file');
-const Translator = require('../translator').Translator;
+const { Translator } = require('../translator');
 
 function filterDirectories(directories) {
-	return directories.map(function (dir) {
+	return directories.map(
 		// get the relative path
 		// convert dir to use forward slashes
-		return dir.replace(/^.*(admin.*?).tpl$/, '$1').split(path.sep).join('/');
-	}).filter(function (dir) {
+		dir => dir.replace(/^.*(admin.*?).tpl$/, '$1').split(path.sep).join('/')
+	).filter(
 		// exclude .js files
 		// exclude partials
 		// only include subpaths
 		// exclude category.tpl, group.tpl, category-analytics.tpl
-		return !dir.endsWith('.js') &&
+		dir => !dir.endsWith('.js') &&
 			!dir.includes('/partials/') &&
 			/\/.*\//.test(dir) &&
-			!/manage\/(category|group|category-analytics)$/.test(dir);
-	});
+			!/manage\/(category|group|category-analytics)$/.test(dir)
+	);
 }
 
 async function getAdminNamespaces() {
@@ -50,27 +50,29 @@ function simplify(translations) {
 }
 
 function nsToTitle(namespace) {
-	return namespace.replace('admin/', '').split('/').map(function (str) {
-		return str[0].toUpperCase() + str.slice(1);
-	}).join(' > ')
+	return namespace
+		.replace('admin/', '')
+		.split('/')
+		.map(str => str[0].toUpperCase() + str.slice(1))
+		.join(' > ')
 		.replace(/[^a-zA-Z> ]/g, ' ');
 }
 
 const fallbackCache = {};
 
 async function initFallback(namespace) {
-	const template = await fs.promises.readFile(path.resolve(nconf.get('views_dir'), namespace + '.tpl'), 'utf8');
+	const template = await fs.promises.readFile(path.resolve(nconf.get('views_dir'), `${namespace}.tpl`), 'utf8');
 
-	var title = nsToTitle(namespace);
-	var translations = sanitize(template);
+	const title = nsToTitle(namespace);
+	let translations = sanitize(template);
 	translations = Translator.removePatterns(translations);
 	translations = simplify(translations);
-	translations += '\n' + title;
+	translations += `\n${title}`;
 
 	return {
-		namespace: namespace,
-		translations: translations,
-		title: title,
+		namespace,
+		translations,
+		title,
 	};
 }
 
@@ -97,9 +99,7 @@ async function buildNamespace(language, namespace) {
 			return await fallback(namespace);
 		}
 		// join all translations into one string separated by newlines
-		let str = Object.keys(translations).map(function (key) {
-			return translations[key];
-		}).join('\n');
+		let str = Object.keys(translations).map(key => translations[key]).join('\n');
 		str = sanitize(str);
 
 		let title = namespace;
@@ -107,22 +107,22 @@ async function buildNamespace(language, namespace) {
 			title = '[[admin/menu:dashboard]]';
 		} else {
 			title = title.match(/admin\/(.+?)\/(.+?)$/);
-			title = '[[admin/menu:section-' +
-				(title[1] === 'development' ? 'advanced' : title[1]) +
-				']]' + (title[2] ? (' > [[admin/menu:' +
-				title[1] + '/' + title[2] + ']]') : '');
+			title = `[[admin/menu:section-${
+				title[1] === 'development' ? 'advanced' : title[1]
+			}]]${title[2] ? (` > [[admin/menu:${
+				title[1]}/${title[2]}]]`) : ''}`;
 		}
 
 		title = await translator.translate(title);
 		return {
-			namespace: namespace,
-			translations: str + '\n' + title,
-			title: title,
+			namespace,
+			translations: `${str}\n${title}`,
+			title,
 		};
 	} catch (err) {
 		winston.error(err.stack);
 		return {
-			namespace: namespace,
+			namespace,
 			translations: '',
 		};
 	}

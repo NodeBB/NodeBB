@@ -20,8 +20,8 @@ module.exports = function (SocketPosts) {
 			throw new Error('[[error:no-privileges]]');
 		}
 		const [upvoteUids, downvoteUids] = await Promise.all([
-			db.getSetMembers('pid:' + data.pid + ':upvote'),
-			showDownvotes ? db.getSetMembers('pid:' + data.pid + ':downvote') : [],
+			db.getSetMembers(`pid:${data.pid}:upvote`),
+			showDownvotes ? db.getSetMembers(`pid:${data.pid}:downvote`) : [],
 		]);
 
 		const [upvoters, downvoters] = await Promise.all([
@@ -32,9 +32,9 @@ module.exports = function (SocketPosts) {
 		return {
 			upvoteCount: upvoters.length,
 			downvoteCount: downvoters.length,
-			showDownvotes: showDownvotes,
-			upvoters: upvoters,
-			downvoters: downvoters,
+			showDownvotes,
+			upvoters,
+			downvoters,
 		};
 	};
 
@@ -47,7 +47,7 @@ module.exports = function (SocketPosts) {
 			return [];
 		}
 
-		const result = await Promise.all(data.map(async function (uids) {
+		const result = await Promise.all(data.map(async (uids) => {
 			let otherCount = 0;
 			if (uids.length > 6) {
 				otherCount = uids.length - 5;
@@ -55,8 +55,8 @@ module.exports = function (SocketPosts) {
 			}
 			const usernames = await user.getUsernamesByUids(uids);
 			return {
-				otherCount: otherCount,
-				usernames: usernames,
+				otherCount,
+				usernames,
 			};
 		}));
 		return result;

@@ -24,45 +24,45 @@ module.exports = function (Topics) {
 		const tid = await db.incrObjectField('global', 'nextTid');
 
 		let topicData = {
-			tid: tid,
+			tid,
 			uid: data.uid,
 			cid: data.cid,
 			mainPid: 0,
 			title: data.title,
-			slug: tid + '/' + (slugify(data.title) || 'topic'),
-			timestamp: timestamp,
+			slug: `${tid}/${slugify(data.title) || 'topic'}`,
+			timestamp,
 			lastposttime: 0,
 			postcount: 0,
 			viewcount: 0,
 		};
-		const result = await plugins.hooks.fire('filter:topic.create', { topic: topicData, data: data });
+		const result = await plugins.hooks.fire('filter:topic.create', { topic: topicData, data });
 		topicData = result.topic;
-		await db.setObject('topic:' + topicData.tid, topicData);
+		await db.setObject(`topic:${topicData.tid}`, topicData);
 
 		await Promise.all([
 			db.sortedSetsAdd([
 				'topics:tid',
-				'cid:' + topicData.cid + ':tids',
-				'cid:' + topicData.cid + ':uid:' + topicData.uid + ':tids',
+				`cid:${topicData.cid}:tids`,
+				`cid:${topicData.cid}:uid:${topicData.uid}:tids`,
 			], timestamp, topicData.tid),
 			db.sortedSetsAdd([
 				'topics:views', 'topics:posts', 'topics:votes',
-				'cid:' + topicData.cid + ':tids:votes',
-				'cid:' + topicData.cid + ':tids:posts',
+				`cid:${topicData.cid}:tids:votes`,
+				`cid:${topicData.cid}:tids:posts`,
 			], 0, topicData.tid),
 			categories.updateRecentTid(topicData.cid, topicData.tid),
 			user.addTopicIdToUser(topicData.uid, topicData.tid, timestamp),
-			db.incrObjectField('category:' + topicData.cid, 'topic_count'),
+			db.incrObjectField(`category:${topicData.cid}`, 'topic_count'),
 			db.incrObjectField('global', 'topicCount'),
 			Topics.createTags(data.tags, topicData.tid, timestamp),
 		]);
 
-		plugins.hooks.fire('action:topic.save', { topic: _.clone(topicData), data: data });
+		plugins.hooks.fire('action:topic.save', { topic: _.clone(topicData), data });
 		return topicData.tid;
 	};
 
 	Topics.post = async function (data) {
-		var uid = data.uid;
+		const { uid } = data;
 		data.title = String(data.title).trim();
 		data.tags = data.tags || [];
 		if (data.content) {
@@ -119,22 +119,22 @@ module.exports = function (Topics) {
 		topicData.index = 0;
 		postData.index = 0;
 
-		analytics.increment(['topics', 'topics:byCid:' + topicData.cid]);
-		plugins.hooks.fire('action:topic.post', { topic: topicData, post: postData, data: data });
+		analytics.increment(['topics', `topics:byCid:${topicData.cid}`]);
+		plugins.hooks.fire('action:topic.post', { topic: topicData, post: postData, data });
 
 		if (parseInt(uid, 10)) {
 			user.notifications.sendTopicNotificationToFollowers(uid, topicData, postData);
 		}
 
 		return {
-			topicData: topicData,
-			postData: postData,
+			topicData,
+			postData,
 		};
 	};
 
 	Topics.reply = async function (data) {
-		const tid = data.tid;
-		const uid = data.uid;
+		const { tid } = data;
+		const { uid } = data;
 
 		const topicData = await Topics.getTopicData(tid);
 		if (!topicData) {
@@ -187,20 +187,20 @@ module.exports = function (Topics) {
 			Topics.notifyFollowers(postData, uid, {
 				type: 'new-reply',
 				bodyShort: translator.compile('notifications:user_posted_to', postData.user.username, postData.topic.title),
-				nid: 'new_post:tid:' + postData.topic.tid + ':pid:' + postData.pid + ':uid:' + uid,
-				mergeId: 'notifications:user_posted_to|' + postData.topic.tid,
+				nid: `new_post:tid:${postData.topic.tid}:pid:${postData.pid}:uid:${uid}`,
+				mergeId: `notifications:user_posted_to|${postData.topic.tid}`,
 			});
 		}
 
-		analytics.increment(['posts', 'posts:byCid:' + data.cid]);
-		plugins.hooks.fire('action:topic.reply', { post: _.clone(postData), data: data });
+		analytics.increment(['posts', `posts:byCid:${data.cid}`]);
+		plugins.hooks.fire('action:topic.reply', { post: _.clone(postData), data });
 
 		return postData;
 	};
 
 	async function onNewPost(postData, data) {
-		var tid = postData.tid;
-		var uid = postData.uid;
+		const { tid } = postData;
+		const { uid } = postData;
 		await Topics.markAsUnreadForAll(tid);
 		await Topics.markAsRead([tid], uid);
 		const [
@@ -250,9 +250,9 @@ module.exports = function (Topics) {
 		}
 
 		if (item === null || item === undefined || item.length < parseInt(min, 10)) {
-			throw new Error('[[error:' + minError + ', ' + min + ']]');
+			throw new Error(`[[error:${minError}, ${min}]]`);
 		} else if (item.length > parseInt(max, 10)) {
-			throw new Error('[[error:' + maxError + ', ' + max + ']]');
+			throw new Error(`[[error:${maxError}, ${max}]]`);
 		}
 	}
 

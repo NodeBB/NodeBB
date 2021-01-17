@@ -20,9 +20,9 @@ tagsController.getTag = async function (req, res) {
 
 	const templateData = {
 		topics: [],
-		tag: tag,
+		tag,
 		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[tags:tags]]', url: '/tags' }, { text: tag }]),
-		title: '[[pages:tag, ' + tag + ']]',
+		title: `[[pages:tag, ${tag}]]`,
 	};
 	const [settings, cids] = await Promise.all([
 		user.getSettings(req.uid),
@@ -55,10 +55,10 @@ tagsController.getTag = async function (req, res) {
 
 	const pageCount = Math.max(1, Math.ceil(topicCount / settings.topicsPerPage));
 	templateData.pagination = pagination.create(page, pageCount);
-	helpers.addLinkTags({ url: 'tags/' + tag, res: req.res, tags: templateData.pagination.rel });
+	helpers.addLinkTags({ url: `tags/${tag}`, res: req.res, tags: templateData.pagination.rel });
 
 	templateData['feeds:disableRSS'] = meta.config['feeds:disableRSS'];
-	templateData.rssFeedUrl = nconf.get('relative_path') + '/tags/' + tag + '.rss';
+	templateData.rssFeedUrl = `${nconf.get('relative_path')}/tags/${tag}.rss`;
 	res.render('tag', templateData);
 };
 

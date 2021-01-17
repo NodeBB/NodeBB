@@ -21,7 +21,7 @@ Meta.config = {};
 // called after data is loaded from db
 function deserialize(config) {
 	const deserialized = {};
-	Object.keys(config).forEach(function (key) {
+	Object.keys(config).forEach((key) => {
 		const defaultType = typeof defaults[key];
 		const type = typeof config[key];
 		const number = parseFloat(config[key]);
@@ -59,7 +59,7 @@ function deserialize(config) {
 // called before data is saved to db
 function serialize(config) {
 	const serialized = {};
-	Object.keys(config).forEach(function (key) {
+	Object.keys(config).forEach((key) => {
 		const defaultType = typeof defaults[key];
 		const type = typeof config[key];
 		const number = parseFloat(config[key]);
@@ -91,7 +91,7 @@ Configs.serialize = serialize;
 Configs.init = async function () {
 	const config = await Configs.list();
 	const buster = await cacheBuster.read();
-	config['cache-buster'] = 'v=' + (buster || Date.now());
+	config['cache-buster'] = `v=${buster || Date.now()}`;
 	Meta.config = config;
 };
 
@@ -201,7 +201,7 @@ Configs.cookie = {
 			cookie.secure = true;
 		}
 
-		var relativePath = nconf.get('relative_path');
+		const relativePath = nconf.get('relative_path');
 		if (relativePath !== '') {
 			cookie.path = relativePath;
 		}
@@ -290,7 +290,7 @@ function updateLocalConfig(config) {
 	Object.assign(Meta.config, config);
 }
 
-pubsub.on('config:update', function onConfigReceived(config) {
+pubsub.on('config:update', (config) => {
 	if (typeof config === 'object' && Meta.config) {
 		updateLocalConfig(config);
 	}

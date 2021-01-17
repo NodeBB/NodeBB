@@ -14,8 +14,8 @@ const meta = require('../meta');
 
 const { pluginNamePattern, themeNamePattern, paths } = require('../constants');
 
-var app;
-var middleware;
+let app;
+let middleware;
 
 const Plugins = module.exports;
 
@@ -124,7 +124,7 @@ Plugins.reload = async function () {
 	if (Plugins.versionWarning.length && nconf.get('isPrimary')) {
 		console.log('');
 		winston.warn('[plugins/load] The following plugins may not be compatible with your version of NodeBB. This may cause unintended behaviour or crashing. In the event of an unresponsive NodeBB caused by this plugin, run `./nodebb reset -p PLUGINNAME` to disable it.');
-		for (var x = 0, numPlugins = Plugins.versionWarning.length; x < numPlugins; x += 1) {
+		for (let x = 0, numPlugins = Plugins.versionWarning.length; x < numPlugins; x += 1) {
 			console.log('  * '.yellow + Plugins.versionWarning[x]);
 		}
 		console.log('');
@@ -135,7 +135,7 @@ Plugins.reload = async function () {
 	meta.configs.registerHooks();
 
 	// Lower priority runs earlier
-	Object.keys(Plugins.loadedHooks).forEach(function (hook) {
+	Object.keys(Plugins.loadedHooks).forEach((hook) => {
 		Plugins.loadedHooks[hook].sort((a, b) => a.priority - b.priority);
 	});
 
@@ -144,13 +144,13 @@ Plugins.reload = async function () {
 };
 
 Plugins.reloadRoutes = async function (params) {
-	var controllers = require('../controllers');
-	await Plugins.hooks.fire('static:app.load', { app: app, router: params.router, middleware: middleware, controllers: controllers });
+	const controllers = require('../controllers');
+	await Plugins.hooks.fire('static:app.load', { app, router: params.router, middleware, controllers });
 	winston.verbose('[plugins] All plugins reloaded and rerouted');
 };
 
 Plugins.get = async function (id) {
-	const url = (nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugins/' + id;
+	const url = `${nconf.get('registry') || 'https://packages.nodebb.org'}/api/v1/plugins/${id}`;
 	const body = await request(url, {
 		json: true,
 	});
@@ -164,15 +164,15 @@ Plugins.list = async function (matching) {
 	if (matching === undefined) {
 		matching = true;
 	}
-	const version = require(paths.currentPackage).version;
-	const url = (nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugins' + (matching !== false ? '?version=' + version : '');
+	const { version } = require(paths.currentPackage);
+	const url = `${nconf.get('registry') || 'https://packages.nodebb.org'}/api/v1/plugins${matching !== false ? `?version=${version}` : ''}`;
 	try {
 		const body = await request(url, {
 			json: true,
 		});
 		return await Plugins.normalise(body);
 	} catch (err) {
-		winston.error('Error loading ' + url, err);
+		winston.error(`Error loading ${url}`, err);
 		return await Plugins.normalise([]);
 	}
 };
@@ -186,9 +186,9 @@ Plugins.listTrending = async () => {
 
 Plugins.normalise = async function (apiReturn) {
 	const pluginMap = {};
-	const dependencies = require(paths.currentPackage).dependencies;
+	const { dependencies } = require(paths.currentPackage);
 	apiReturn = Array.isArray(apiReturn) ? apiReturn : [];
-	apiReturn.forEach(function (packageData) {
+	apiReturn.forEach((packageData) => {
 		packageData.id = packageData.name;
 		packageData.installed = false;
 		packageData.active = false;
@@ -199,7 +199,7 @@ Plugins.normalise = async function (apiReturn) {
 	let installedPlugins = await Plugins.showInstalled();
 	installedPlugins = installedPlugins.filter(plugin => plugin && !plugin.system);
 
-	installedPlugins.forEach(function (plugin) {
+	installedPlugins.forEach((plugin) => {
 		// If it errored out because a package.json or plugin.json couldn't be read, no need to do this stuff
 		if (plugin.error) {
 			pluginMap[plugin.id] = pluginMap[plugin.id] || {};
@@ -230,15 +230,9 @@ Plugins.normalise = async function (apiReturn) {
 		pluginMap[plugin.id].outdated = semver.gt(pluginMap[plugin.id].latest, pluginMap[plugin.id].version);
 	});
 
-	const pluginArray = [];
+	const pluginArray = Object.values(pluginMap);
 
-	for (var key in pluginMap) {
-		if (pluginMap.hasOwnProperty(key)) {
-			pluginArray.push(pluginMap[key]);
-		}
-	}
-
-	pluginArray.sort(function (a, b) {
+	pluginArray.sort((a, b) => {
 		if (a.name > b.name) {
 			return 1;
 		} else if (a.name < b.name) {
@@ -278,12 +272,12 @@ Plugins.showInstalled = async function () {
 
 async function findNodeBBModules(dirs) {
 	const pluginPaths = [];
-	await async.each(dirs, function (dirname, next) {
-		var dirPath = path.join(Plugins.nodeModulesPath, dirname);
+	await async.each(dirs, (dirname, next) => {
+		const dirPath = path.join(Plugins.nodeModulesPath, dirname);
 
 		async.waterfall([
 			function (cb) {
-				fs.stat(dirPath, function (err, stats) {
+				fs.stat(dirPath, (err, stats) => {
 					if (err && err.code !== 'ENOENT') {
 						return cb(err);
 					}
@@ -303,13 +297,13 @@ async function findNodeBBModules(dirs) {
 				});
 			},
 			function (subdirs, cb) {
-				async.each(subdirs, function (subdir, next) {
+				async.each(subdirs, (subdir, next) => {
 					if (!pluginNamePattern.test(subdir)) {
 						return next();
 					}
 
-					var subdirPath = path.join(dirPath, subdir);
-					fs.stat(subdirPath, function (err, stats) {
+					const subdirPath = path.join(dirPath, subdir);
+					fs.stat(subdirPath, (err, stats) => {
 						if (err && err.code !== 'ENOENT') {
 							return next(err);
 						}
@@ -318,7 +312,7 @@ async function findNodeBBModules(dirs) {
 							return next();
 						}
 
-						pluginPaths.push(dirname + '/' + subdir);
+						pluginPaths.push(`${dirname}/${subdir}`);
 						next();
 					});
 				}, cb);

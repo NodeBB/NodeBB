@@ -1,22 +1,22 @@
 'use strict';
 
-var db = require('../../database');
-var meta = require('../../meta');
+const db = require('../../database');
+const meta = require('../../meta');
 
 module.exports = {
 	name: 'Generate customHTML block from old customJS setting',
 	timestamp: Date.UTC(2017, 9, 12),
-	method: function (callback) {
-		db.getObjectField('config', 'customJS', function (err, newHTML) {
+	method(callback) {
+		db.getObjectField('config', 'customJS', (err, newHTML) => {
 			if (err) {
 				return callback(err);
 			}
 
-			var newJS = [];
+			let newJS = [];
 
 			// Forgive me for parsing HTML with regex...
-			var scriptMatch = /^<script\s?(?!async|deferred)?>([\s\S]+?)<\/script>/m;
-			var match = scriptMatch.exec(newHTML);
+			const scriptMatch = /^<script\s?(?!async|deferred)?>([\s\S]+?)<\/script>/m;
+			let match = scriptMatch.exec(newHTML);
 
 			while (match) {
 				if (match[1]) {

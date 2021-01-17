@@ -1,15 +1,15 @@
 
 'use strict';
 
-var _ = require('lodash');
-var validator = require('validator');
+const _ = require('lodash');
+const validator = require('validator');
 
-var db = require('../database');
-var user = require('../user');
-var posts = require('../posts');
-var meta = require('../meta');
-var plugins = require('../plugins');
-var utils = require('../../public/src/utils');
+const db = require('../database');
+const user = require('../user');
+const posts = require('../posts');
+const meta = require('../meta');
+const plugins = require('../plugins');
+const utils = require('../../public/src/utils');
 
 module.exports = function (Topics) {
 	Topics.onNewPostMade = async function (postData) {
@@ -44,17 +44,13 @@ module.exports = function (Topics) {
 		] = await Promise.all([
 			posts.hasBookmarked(pids, uid),
 			posts.getVoteStatusByPostIDs(pids, uid),
-			getPostUserData('uid', async function (uids) {
-				return await posts.getUserInfoForPosts(uids, uid);
-			}),
-			getPostUserData('editor', async function (uids) {
-				return await user.getUsersFields(uids, ['uid', 'username', 'userslug']);
-			}),
+			getPostUserData('uid', async uids => await posts.getUserInfoForPosts(uids, uid)),
+			getPostUserData('editor', async uids => await user.getUsersFields(uids, ['uid', 'username', 'userslug'])),
 			getPostReplies(pids, uid),
 			Topics.addParentPosts(postData),
 		]);
 
-		postData.forEach(function (postObj, i) {
+		postData.forEach((postObj, i) => {
 			if (postObj) {
 				postObj.user = postObj.uid ? userData[postObj.uid] : { ...userData[postObj.uid] };
 				postObj.editor = postObj.editor ? editors[postObj.editor] : null;
@@ -75,14 +71,14 @@ module.exports = function (Topics) {
 
 		const result = await plugins.hooks.fire('filter:topics.addPostData', {
 			posts: postData,
-			uid: uid,
+			uid,
 		});
 		return result.posts;
 	};
 
 	Topics.modifyPostsByPrivilege = function (topicData, topicPrivileges) {
 		const loggedIn = parseInt(topicPrivileges.uid, 10) > 0;
-		topicData.posts.forEach(function (post) {
+		topicData.posts.forEach((post) => {
 			if (post) {
 				post.topicOwnerPost = parseInt(topicData.uid, 10) === parseInt(post.uid, 10);
 				post.display_edit_tools = topicPrivileges.isAdminOrMod || (post.selfPost && topicPrivileges['posts:edit']);
@@ -101,9 +97,7 @@ module.exports = function (Topics) {
 	};
 
 	Topics.addParentPosts = async function (postData) {
-		var parentPids = postData.map(function (postObj) {
-			return postObj && postObj.hasOwnProperty('toPid') ? parseInt(postObj.toPid, 10) : null;
-		}).filter(Boolean);
+		let parentPids = postData.map(postObj => (postObj && postObj.hasOwnProperty('toPid') ? parseInt(postObj.toPid, 10) : null)).filter(Boolean);
 
 		if (!parentPids.length) {
 			return;
@@ -113,22 +107,22 @@ module.exports = function (Topics) {
 		const parentUids = _.uniq(parentPosts.map(postObj => postObj && postObj.uid));
 		const userData = await user.getUsersFields(parentUids, ['username']);
 
-		var usersMap = {};
-		userData.forEach(function (user) {
+		const usersMap = {};
+		userData.forEach((user) => {
 			usersMap[user.uid] = user.username;
 		});
-		var parents = {};
-		parentPosts.forEach(function (post, i) {
+		const parents = {};
+		parentPosts.forEach((post, i) => {
 			parents[parentPids[i]] = { username: usersMap[post.uid] };
 		});
 
-		postData.forEach(function (post) {
+		postData.forEach((post) => {
 			post.parent = parents[post.toPid];
 		});
 	};
 
 	Topics.calculatePostIndices = function (posts, start) {
-		posts.forEach(function (post, index) {
+		posts.forEach((post, index) => {
 			if (post) {
 				post.index = start + index + 1;
 			}
@@ -146,11 +140,11 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getLatestUndeletedReply = async function (tid) {
-		var isDeleted = false;
-		var index = 0;
+		let isDeleted = false;
+		let index = 0;
 		do {
 			/* eslint-disable no-await-in-loop */
-			const pids = await db.getSortedSetRevRange('tid:' + tid + ':posts', index, index);
+			const pids = await db.getSortedSetRevRange(`tid:${tid}:posts`, index, index);
 			if (!pids.length) {
 				return null;
 			}
@@ -171,33 +165,33 @@ module.exports = function (Topics) {
 			const downvotes = parseInt(postData.downvotes, 10) || 0;
 			const votes = upvotes - downvotes;
 			await db.sortedSetsAdd([
-				'tid:' + tid + ':posts', 'tid:' + tid + ':posts:votes',
+				`tid:${tid}:posts`, `tid:${tid}:posts:votes`,
 			], [postData.timestamp, votes], postData.pid);
 		}
 		await Topics.increasePostCount(tid);
-		await db.sortedSetIncrBy('tid:' + tid + ':posters', 1, postData.uid);
-		const posterCount = await db.sortedSetCard('tid:' + tid + ':posters');
+		await db.sortedSetIncrBy(`tid:${tid}:posters`, 1, postData.uid);
+		const posterCount = await db.sortedSetCard(`tid:${tid}:posters`);
 		await Topics.setTopicField(tid, 'postercount', posterCount);
 		await Topics.updateTeaser(tid);
 	};
 
 	Topics.removePostFromTopic = async function (tid, postData) {
 		await db.sortedSetsRemove([
-			'tid:' + tid + ':posts',
-			'tid:' + tid + ':posts:votes',
+			`tid:${tid}:posts`,
+			`tid:${tid}:posts:votes`,
 		], postData.pid);
 		await Topics.decreasePostCount(tid);
-		await db.sortedSetIncrBy('tid:' + tid + ':posters', -1, postData.uid);
-		await db.sortedSetsRemoveRangeByScore(['tid:' + tid + ':posters'], '-inf', 0);
-		const posterCount = await db.sortedSetCard('tid:' + tid + ':posters');
+		await db.sortedSetIncrBy(`tid:${tid}:posters`, -1, postData.uid);
+		await db.sortedSetsRemoveRangeByScore([`tid:${tid}:posters`], '-inf', 0);
+		const posterCount = await db.sortedSetCard(`tid:${tid}:posters`);
 		await Topics.setTopicField(tid, 'postercount', posterCount);
 		await Topics.updateTeaser(tid);
 	};
 
 	Topics.getPids = async function (tid) {
-		var [mainPid, pids] = await Promise.all([
+		let [mainPid, pids] = await Promise.all([
 			Topics.getTopicField(tid, 'mainPid'),
-			db.getSortedSetRange('tid:' + tid + ':posts', 0, -1),
+			db.getSortedSetRange(`tid:${tid}:posts`, 0, -1),
 		]);
 		if (parseInt(mainPid, 10)) {
 			pids = [mainPid].concat(pids);
@@ -218,7 +212,7 @@ module.exports = function (Topics) {
 	};
 
 	async function incrementFieldAndUpdateSortedSet(tid, field, by, set) {
-		const value = await db.incrObjectFieldBy('topic:' + tid, field, by);
+		const value = await db.incrObjectFieldBy(`topic:${tid}`, field, by);
 		await db.sortedSetAdd(set, value, tid);
 	}
 
@@ -237,11 +231,11 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getPostCount = async function (tid) {
-		return await db.getObjectField('topic:' + tid, 'postcount');
+		return await db.getObjectField(`topic:${tid}`, 'postcount');
 	};
 
 	async function getPostReplies(pids, callerUid) {
-		const keys = pids.map(pid => 'pid:' + pid + ':replies');
+		const keys = pids.map(pid => `pid:${pid}:replies`);
 		const arrayOfReplyPids = await db.getSortedSetsMembers(keys);
 
 		const uniquePids = _.uniq(_.flatten(arrayOfReplyPids));
@@ -262,20 +256,20 @@ module.exports = function (Topics) {
 		const uidMap = _.zipObject(uniqueUids, userData);
 		const pidMap = _.zipObject(replyData.map(r => r.pid), replyData);
 
-		const returnData = arrayOfReplyPids.map(function (replyPids) {
+		const returnData = arrayOfReplyPids.map((replyPids) => {
 			replyPids = replyPids.filter(pid => pidMap[pid]);
 			const uidsUsed = {};
 			const currentData = {
 				hasMore: false,
 				users: [],
-				text: replyPids.length > 1 ? '[[topic:replies_to_this_post, ' + replyPids.length + ']]' : '[[topic:one_reply_to_this_post]]',
+				text: replyPids.length > 1 ? `[[topic:replies_to_this_post, ${replyPids.length}]]` : '[[topic:one_reply_to_this_post]]',
 				count: replyPids.length,
 				timestampISO: replyPids.length ? utils.toISOString(pidMap[replyPids[0]].timestamp) : undefined,
 			};
 
 			replyPids.sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
 
-			replyPids.forEach(function (replyPid) {
+			replyPids.forEach((replyPid) => {
 				const replyData = pidMap[replyPid];
 				if (!uidsUsed[replyData.uid] && currentData.users.length < 6) {
 					currentData.users.push(uidMap[replyData.uid]);

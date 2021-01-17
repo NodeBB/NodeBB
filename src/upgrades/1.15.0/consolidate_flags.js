@@ -8,15 +8,15 @@ const user = require('../../user');
 module.exports = {
 	name: 'Consolidate multiple flags reports, going forward',
 	timestamp: Date.UTC(2020, 6, 16),
-	method: async function () {
-		const progress = this.progress;
+	async method() {
+		const { progress } = this;
 
 		let flags = await db.getSortedSetRange('flags:datetime', 0, -1);
 		flags = flags.map(flagId => `flag:${flagId}`);
 		flags = await db.getObjectsFields(flags, ['flagId', 'type', 'targetId', 'uid', 'description', 'datetime']);
 		progress.total = flags.length;
 
-		await batch.processArray(flags, async function (subset) {
+		await batch.processArray(flags, async (subset) => {
 			progress.incr(subset.length);
 
 			await Promise.all(subset.map(async (flagObj) => {
@@ -39,7 +39,7 @@ module.exports = {
 				await Promise.all(methods.map(async method => method()));
 			}));
 		}, {
-			progress: progress,
+			progress,
 			batch: 500,
 		});
 	},

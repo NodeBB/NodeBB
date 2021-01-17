@@ -1,31 +1,31 @@
 'use strict';
 
-var async = require('async');
-var passport = require('passport');
-var passportLocal = require('passport-local').Strategy;
+const async = require('async');
+const passport = require('passport');
+const passportLocal = require('passport-local').Strategy;
 const BearerStrategy = require('passport-http-bearer').Strategy;
-var winston = require('winston');
+const winston = require('winston');
 
 const meta = require('../meta');
-var controllers = require('../controllers');
-var helpers = require('../controllers/helpers');
-var plugins = require('../plugins');
+const controllers = require('../controllers');
+const helpers = require('../controllers/helpers');
+const plugins = require('../plugins');
 
-var loginStrategies = [];
+let loginStrategies = [];
 
-var Auth = module.exports;
+const Auth = module.exports;
 
 Auth.initialize = function (app, middleware) {
 	const passportInitMiddleware = passport.initialize();
-	app.use(function passportInitialize(req, res, next) {
+	app.use((req, res, next) => {
 		passportInitMiddleware(req, res, next);
 	});
 	const passportSessionMiddleware = passport.session();
-	app.use(function passportSession(req, res, next) {
+	app.use((req, res, next) => {
 		passportSessionMiddleware(req, res, next);
 	});
 
-	app.use(function (req, res, next) {
+	app.use((req, res, next) => {
 		Auth.setAuthVars(req, res);
 		next();
 	});
@@ -62,7 +62,7 @@ Auth.verifyToken = async function (token, done) {
 	if (uid !== undefined) {
 		if (parseInt(uid, 10) > 0) {
 			done(null, {
-				uid: uid,
+				uid,
 			});
 		} else {
 			done(null, {
@@ -76,7 +76,7 @@ Auth.verifyToken = async function (token, done) {
 
 Auth.reloadRoutes = async function (params) {
 	loginStrategies.length = 0;
-	const router = params.router;
+	const { router } = params;
 
 	// Local Logins
 	if (plugins.hooks.hasListeners('action:auth.overrideLogin')) {
@@ -93,12 +93,12 @@ Auth.reloadRoutes = async function (params) {
 	try {
 		loginStrategies = await plugins.hooks.fire('filter:auth.init', loginStrategies);
 	} catch (err) {
-		winston.error('[authentication] ' + err.stack);
+		winston.error(`[authentication] ${err.stack}`);
 	}
 	loginStrategies = loginStrategies || [];
-	loginStrategies.forEach(function (strategy) {
+	loginStrategies.forEach((strategy) => {
 		if (strategy.url) {
-			router.get(strategy.url, Auth.middleware.applyCSRF, async function (req, res, next) {
+			router.get(strategy.url, Auth.middleware.applyCSRF, async (req, res, next) => {
 				let opts = {
 					scope: strategy.scope,
 					prompt: strategy.prompt || undefined,
@@ -116,21 +116,21 @@ Auth.reloadRoutes = async function (params) {
 			});
 		}
 
-		router[strategy.callbackMethod || 'get'](strategy.callbackURL, function (req, res, next) {
+		router[strategy.callbackMethod || 'get'](strategy.callbackURL, (req, res, next) => {
 			// Ensure the passed-back state value is identical to the saved ssoState (unless explicitly skipped)
 			if (strategy.checkState === false) {
 				return next();
 			}
 
 			next(req.query.state !== req.session.ssoState ? new Error('[[error:csrf-invalid]]') : null);
-		}, function (req, res, next) {
+		}, (req, res, next) => {
 			// Trigger registration interstitial checks
 			req.session.registration = req.session.registration || {};
 			// save returnTo for later usage in /register/complete
 			// passport seems to remove `req.session.returnTo` after it redirects
 			req.session.registration.returnTo = req.session.returnTo;
 
-			passport.authenticate(strategy.name, function (err, user) {
+			passport.authenticate(strategy.name, (err, user) => {
 				if (err) {
 					delete req.session.registration;
 					return next(err);
@@ -151,7 +151,7 @@ Auth.reloadRoutes = async function (params) {
 			async.waterfall([
 				async.apply(req.login.bind(req), res.locals.user),
 				async.apply(controllers.authentication.onSuccessfulLogin, req, req.uid),
-			], function (err) {
+			], (err) => {
 				if (err) {
 					return next(err);
 				}
@@ -161,9 +161,9 @@ Auth.reloadRoutes = async function (params) {
 		});
 	});
 
-	var multipart = require('connect-multiparty');
-	var multipartMiddleware = multipart();
-	var middlewares = [multipartMiddleware, Auth.middleware.applyCSRF, Auth.middleware.applyBlacklist];
+	const multipart = require('connect-multiparty');
+	const multipartMiddleware = multipart();
+	const middlewares = [multipartMiddleware, Auth.middleware.applyCSRF, Auth.middleware.applyBlacklist];
 
 	router.post('/register', middlewares, controllers.authentication.register);
 	router.post('/register/complete', middlewares, controllers.authentication.registerComplete);
@@ -172,12 +172,12 @@ Auth.reloadRoutes = async function (params) {
 	router.post('/logout', Auth.middleware.applyCSRF, controllers.authentication.logout);
 };
 
-passport.serializeUser(function (user, done) {
+passport.serializeUser((user, done) => {
 	done(null, user.uid);
 });
 
-passport.deserializeUser(function (uid, done) {
+passport.deserializeUser((uid, done) => {
 	done(null, {
-		uid: uid,
+		uid,
 	});
 });

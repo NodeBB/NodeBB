@@ -15,7 +15,7 @@ const slugify = require('../slugify');
 const translator = require('../translator');
 
 module.exports = function (Posts) {
-	pubsub.on('post:edit', function (pid) {
+	pubsub.on('post:edit', (pid) => {
 		require('./cache').del(pid);
 	});
 
@@ -43,7 +43,7 @@ module.exports = function (Posts) {
 		const result = await plugins.hooks.fire('filter:post.edit', {
 			req: data.req,
 			post: editPostData,
-			data: data,
+			data,
 			uid: data.uid,
 		});
 
@@ -58,7 +58,7 @@ module.exports = function (Posts) {
 			await Posts.diffs.save({
 				pid: data.pid,
 				uid: data.uid,
-				oldContent: oldContent,
+				oldContent,
 				newContent: data.content,
 			});
 		}
@@ -76,10 +76,10 @@ module.exports = function (Posts) {
 		await topics.notifyFollowers(returnPostData, data.uid, {
 			type: 'post-edit',
 			bodyShort: translator.compile('notifications:user_edited_post', editor.username, topic.title),
-			nid: 'edit_post:' + data.pid + ':uid:' + data.uid,
+			nid: `edit_post:${data.pid}:uid:${data.uid}`,
 		});
 
-		plugins.hooks.fire('action:post.edit', { post: _.clone(returnPostData), data: data, uid: data.uid });
+		plugins.hooks.fire('action:post.edit', { post: _.clone(returnPostData), data, uid: data.uid });
 
 		require('./cache').del(String(postData.pid));
 		pubsub.publish('post:edit', String(postData.pid));
@@ -87,14 +87,14 @@ module.exports = function (Posts) {
 		await Posts.parsePost(returnPostData);
 
 		return {
-			topic: topic,
-			editor: editor,
+			topic,
+			editor,
 			post: returnPostData,
 		};
 	};
 
 	async function editMainPost(data, postData) {
-		const tid = postData.tid;
+		const { tid } = postData;
 		const title = data.title ? data.title.trim() : '';
 
 		const [topicData, isMain] = await Promise.all([
@@ -104,7 +104,7 @@ module.exports = function (Posts) {
 
 		if (!isMain) {
 			return {
-				tid: tid,
+				tid,
 				cid: topicData.cid,
 				title: validator.escape(String(topicData.title)),
 				isMainPost: false,
@@ -113,14 +113,14 @@ module.exports = function (Posts) {
 		}
 
 		const newTopicData = {
-			tid: tid,
+			tid,
 			cid: topicData.cid,
 			uid: postData.uid,
 			mainPid: data.pid,
 		};
 		if (title) {
 			newTopicData.title = title;
-			newTopicData.slug = tid + '/' + (slugify(title) || 'topic');
+			newTopicData.slug = `${tid}/${slugify(title) || 'topic'}`;
 		}
 
 		data.tags = data.tags || [];
@@ -136,9 +136,9 @@ module.exports = function (Posts) {
 		const results = await plugins.hooks.fire('filter:topic.edit', {
 			req: data.req,
 			topic: newTopicData,
-			data: data,
+			data,
 		});
-		await db.setObject('topic:' + tid, results.topic);
+		await db.setObject(`topic:${tid}`, results.topic);
 		await topics.updateTopicTags(tid, data.tags);
 		const tags = await topics.getTopicTagsObjects(tid);
 
@@ -148,15 +148,15 @@ module.exports = function (Posts) {
 		const renamed = translator.escape(validator.escape(String(title))) !== topicData.title;
 		plugins.hooks.fire('action:topic.edit', { topic: newTopicData, uid: data.uid });
 		return {
-			tid: tid,
+			tid,
 			cid: newTopicData.cid,
 			uid: postData.uid,
 			title: validator.escape(String(title)),
 			oldTitle: topicData.title,
 			slug: newTopicData.slug,
 			isMainPost: true,
-			renamed: renamed,
-			tags: tags,
+			renamed,
+			tags,
 		};
 	}
 };

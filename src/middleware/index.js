@@ -1,33 +1,33 @@
 'use strict';
 
-var async = require('async');
-var path = require('path');
-var csrf = require('csurf');
-var validator = require('validator');
-var nconf = require('nconf');
-var ensureLoggedIn = require('connect-ensure-login');
-var toobusy = require('toobusy-js');
-var LRU = require('lru-cache');
-var util = require('util');
+const async = require('async');
+const path = require('path');
+const csrf = require('csurf');
+const validator = require('validator');
+const nconf = require('nconf');
+const ensureLoggedIn = require('connect-ensure-login');
+const toobusy = require('toobusy-js');
+const LRU = require('lru-cache');
+const util = require('util');
 
-var plugins = require('../plugins');
-var meta = require('../meta');
-var user = require('../user');
-var groups = require('../groups');
-var analytics = require('../analytics');
-var privileges = require('../privileges');
-var helpers = require('./helpers');
+const plugins = require('../plugins');
+const meta = require('../meta');
+const user = require('../user');
+const groups = require('../groups');
+const analytics = require('../analytics');
+const privileges = require('../privileges');
+const helpers = require('./helpers');
 
-var controllers = {
+const controllers = {
 	api: require('../controllers/api'),
 	helpers: require('../controllers/helpers'),
 };
 
-var delayCache = new LRU({
+const delayCache = new LRU({
 	maxAge: 1000 * 60,
 });
 
-var middleware = module.exports;
+const middleware = module.exports;
 
 const relative_path = nconf.get('relative_path');
 
@@ -52,7 +52,7 @@ middleware.applyCSRF = function (req, res, next) {
 };
 middleware.applyCSRFasync = util.promisify(middleware.applyCSRF);
 
-middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn(relative_path + '/login');
+middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn(`${relative_path}/login`);
 
 Object.assign(middleware, {
 	admin: require('./admin'),
@@ -66,14 +66,14 @@ require('./expose')(middleware);
 middleware.assert = require('./assert');
 
 middleware.stripLeadingSlashes = function stripLeadingSlashes(req, res, next) {
-	var target = req.originalUrl.replace(relative_path, '');
+	const target = req.originalUrl.replace(relative_path, '');
 	if (target.startsWith('//')) {
 		return res.redirect(relative_path + target.replace(/^\/+/, '/'));
 	}
 	next();
 };
 
-middleware.pageView = helpers.try(async function pageView(req, res, next) {
+middleware.pageView = helpers.try(async (req, res, next) => {
 	if (req.loggedIn) {
 		await Promise.all([
 			user.updateOnlineUsers(req.uid),
@@ -82,18 +82,18 @@ middleware.pageView = helpers.try(async function pageView(req, res, next) {
 	}
 	next();
 	await analytics.pageView({ ip: req.ip, uid: req.uid });
-	plugins.hooks.fire('action:middleware.pageView', { req: req });
+	plugins.hooks.fire('action:middleware.pageView', { req });
 });
 
-middleware.pluginHooks = helpers.try(async function pluginHooks(req, res, next) {
+middleware.pluginHooks = helpers.try(async (req, res, next) => {
 	// TODO: Deprecate in v2.0
-	await async.each(plugins.loadedHooks['filter:router.page'] || [], function (hookObj, next) {
+	await async.each(plugins.loadedHooks['filter:router.page'] || [], (hookObj, next) => {
 		hookObj.method(req, res, next);
 	});
 
 	await plugins.hooks.fire('response:router.page', {
-		req: req,
-		res: res,
+		req,
+		res,
 	});
 
 	if (!res.headersSent) {
@@ -118,7 +118,7 @@ middleware.routeTouchIcon = function routeTouchIcon(req, res) {
 	if (meta.config['brand:touchIcon'] && validator.isURL(meta.config['brand:touchIcon'])) {
 		return res.redirect(meta.config['brand:touchIcon']);
 	}
-	var iconPath = '';
+	let iconPath = '';
 	if (meta.config['brand:touchIcon']) {
 		iconPath = path.join(nconf.get('upload_path'), meta.config['brand:touchIcon'].replace(/assets\/uploads/, ''));
 	} else {
@@ -130,7 +130,7 @@ middleware.routeTouchIcon = function routeTouchIcon(req, res) {
 	});
 };
 
-middleware.privateTagListing = helpers.try(async function privateTagListing(req, res, next) {
+middleware.privateTagListing = helpers.try(async (req, res, next) => {
 	const canView = await privileges.global.can('view:tags', req.uid);
 	if (!canView) {
 		return controllers.helpers.notAllowed(req, res);
@@ -138,11 +138,11 @@ middleware.privateTagListing = helpers.try(async function privateTagListing(req,
 	next();
 });
 
-middleware.exposeGroupName = helpers.try(async function exposeGroupName(req, res, next) {
+middleware.exposeGroupName = helpers.try(async (req, res, next) => {
 	await expose('groupName', groups.getGroupNameByGroupSlug, 'slug', req, res, next);
 });
 
-middleware.exposeUid = helpers.try(async function exposeUid(req, res, next) {
+middleware.exposeUid = helpers.try(async (req, res, next) => {
 	await expose('uid', user.getUidByUserslug, 'userslug', req, res, next);
 });
 
@@ -159,9 +159,9 @@ middleware.privateUploads = function privateUploads(req, res, next) {
 		return next();
 	}
 
-	if (req.path.startsWith(nconf.get('relative_path') + '/assets/uploads/files')) {
-		var extensions = (meta.config.privateUploadsExtensions || '').split(',').filter(Boolean);
-		var ext = path.extname(req.path);
+	if (req.path.startsWith(`${nconf.get('relative_path')}/assets/uploads/files`)) {
+		const extensions = (meta.config.privateUploadsExtensions || '').split(',').filter(Boolean);
+		let ext = path.extname(req.path);
 		ext = ext ? ext.replace(/^\./, '') : ext;
 		if (!extensions.length || extensions.includes(ext)) {
 			return res.status(403).json('not-allowed');
@@ -192,7 +192,7 @@ middleware.delayLoading = function delayLoading(req, res, next) {
 	// Introduces an artificial delay during load so that brute force attacks are effectively mitigated
 
 	// Add IP to cache so if too many requests are made, subsequent requests are blocked for a minute
-	var timesSeen = delayCache.get(req.ip) || 0;
+	let timesSeen = delayCache.get(req.ip) || 0;
 	if (timesSeen > 10) {
 		return res.sendStatus(429);
 	}
@@ -201,7 +201,7 @@ middleware.delayLoading = function delayLoading(req, res, next) {
 	setTimeout(next, 1000);
 };
 
-middleware.buildSkinAsset = helpers.try(async function buildSkinAsset(req, res, next) {
+middleware.buildSkinAsset = helpers.try(async (req, res, next) => {
 	// If this middleware is reached, a skin was requested, so it is built on-demand
 	const target = path.basename(req.originalUrl).match(/(client-[a-z]+)/);
 	if (!target) {
@@ -219,13 +219,13 @@ middleware.trimUploadTimestamps = function trimUploadTimestamps(req, res, next) 
 	let basename = path.basename(req.path);
 	if (req.path.startsWith('/uploads/files/') && middleware.regexes.timestampedUpload.test(basename)) {
 		basename = basename.slice(14);
-		res.header('Content-Disposition', 'inline; filename="' + basename + '"');
+		res.header('Content-Disposition', `inline; filename="${basename}"`);
 	}
 
 	next();
 };
 
-middleware.validateAuth = helpers.try(async function validateAuth(req, res, next) {
+middleware.validateAuth = helpers.try(async (req, res, next) => {
 	try {
 		await plugins.hooks.fire('static:auth.validate', {
 			user: res.locals.user,
@@ -249,5 +249,5 @@ middleware.checkRequired = function (fields, req, res, next) {
 		return next();
 	}
 
-	controllers.helpers.formatApiResponse(400, res, new Error('Required parameters were missing from this API call: ' + missing.join(', ')));
+	controllers.helpers.formatApiResponse(400, res, new Error(`Required parameters were missing from this API call: ${missing.join(', ')}`));
 };

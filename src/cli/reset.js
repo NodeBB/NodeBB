@@ -15,27 +15,27 @@ const { paths, pluginNamePattern, themeNamePattern } = require('../constants');
 
 exports.reset = async function (options) {
 	const map = {
-		theme: async function () {
+		async theme() {
 			let themeId = options.theme;
 			if (themeId === true) {
 				await resetThemes();
 			} else {
 				if (!themeNamePattern.test(themeId)) {
 					// Allow omission of `nodebb-theme-`
-					themeId = 'nodebb-theme-' + themeId;
+					themeId = `nodebb-theme-${themeId}`;
 				}
 
 				await resetTheme(themeId);
 			}
 		},
-		plugin: async function () {
+		async plugin() {
 			let pluginId = options.plugin;
 			if (pluginId === true) {
 				await resetPlugins();
 			} else {
 				if (!pluginNamePattern.test(pluginId)) {
 					// Allow omission of `nodebb-plugin-`
-					pluginId = 'nodebb-plugin-' + pluginId;
+					pluginId = `nodebb-plugin-${pluginId}`;
 				}
 
 				await resetPlugin(pluginId);
@@ -43,7 +43,7 @@ exports.reset = async function (options) {
 		},
 		widgets: resetWidgets,
 		settings: resetSettings,
-		all: async function () {
+		async all() {
 			await resetWidgets();
 			await resetThemes();
 			await resetPlugin();
@@ -56,7 +56,7 @@ exports.reset = async function (options) {
 	if (!tasks.length) {
 		console.log([
 			'No arguments passed in, so nothing was reset.\n'.yellow,
-			'Use ./nodebb reset ' + '{-t|-p|-w|-s|-a}'.red,
+			`Use ./nodebb reset ${'{-t|-p|-w|-s|-a}'.red}`,
 			'    -t\tthemes',
 			'    -p\tplugins',
 			'    -w\twidgets',
@@ -80,7 +80,7 @@ exports.reset = async function (options) {
 		winston.info('[reset] Reset complete. Please run `./nodebb build` to rebuild assets.');
 		process.exit(0);
 	} catch (err) {
-		winston.error('[reset] Errors were encountered during reset -- ' + err.message);
+		winston.error(`[reset] Errors were encountered during reset -- ${err.message}`);
 		process.exit(1);
 	}
 };
@@ -111,7 +111,7 @@ async function resetThemeTo(themeId) {
 		id: themeId,
 	});
 	await meta.configs.set('bootswatchSkin', '');
-	winston.info('[reset] Theme reset to ' + themeId + ' and default skin');
+	winston.info(`[reset] Theme reset to ${themeId} and default skin`);
 }
 
 async function resetPlugin(pluginId) {
@@ -133,7 +133,7 @@ async function resetPlugin(pluginId) {
 			winston.info('[reset] No action taken.');
 		}
 	} catch (err) {
-		winston.error('[reset] Could not disable plugin: ' + pluginId + ' encountered error %s\n' + err.stack);
+		winston.error(`[reset] Could not disable plugin: ${pluginId} encountered error %s\n${err.stack}`);
 		throw err;
 	}
 }

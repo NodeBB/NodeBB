@@ -28,9 +28,9 @@ helpers.noScriptErrors = async function (req, res, error, httpStatus) {
 	res.status(httpStatus).render(httpStatusString, {
 		path: req.path,
 		loggedIn: req.loggedIn,
-		error: error,
+		error,
 		returnLink: true,
-		title: '[[global:' + httpStatusString + '.title]]',
+		title: `[[global:${httpStatusString}.title]]`,
 	});
 };
 
@@ -48,18 +48,18 @@ helpers.buildQueryString = function (query, key, value) {
 		delete queryObj[key];
 	}
 	delete queryObj._;
-	return Object.keys(queryObj).length ? '?' + querystring.stringify(queryObj) : '';
+	return Object.keys(queryObj).length ? `?${querystring.stringify(queryObj)}` : '';
 };
 
 helpers.addLinkTags = function (params) {
 	params.res.locals.linkTags = params.res.locals.linkTags || [];
 	params.res.locals.linkTags.push({
 		rel: 'canonical',
-		href: url + '/' + params.url,
+		href: `${url}/${params.url}`,
 	});
 
-	params.tags.forEach(function (rel) {
-		rel.href = url + '/' + params.url + rel.href;
+	params.tags.forEach((rel) => {
+		rel.href = `${url}/${params.url}${rel.href}`;
 		params.res.locals.linkTags.push(rel);
 	});
 };
@@ -118,9 +118,9 @@ helpers.buildTerms = function (url, term, query) {
 
 helpers.notAllowed = async function (req, res, error) {
 	const data = await plugins.hooks.fire('filter:helpers.notAllowed', {
-		req: req,
-		res: res,
-		error: error,
+		req,
+		res,
+		error,
 	});
 
 	if (req.loggedIn || req.uid === -1) {
@@ -140,7 +140,7 @@ helpers.notAllowed = async function (req, res, error) {
 		helpers.formatApiResponse(401, res, error);
 	} else {
 		req.session.returnTo = req.url;
-		res.redirect(relative_path + '/login');
+		res.redirect(`${relative_path}/login`);
 	}
 };
 
@@ -179,8 +179,8 @@ helpers.buildCategoryBreadcrumbs = async function (cid) {
 		if (!data.disabled && !data.isSection) {
 			breadcrumbs.unshift({
 				text: String(data.name),
-				url: relative_path + '/category/' + data.slug,
-				cid: cid,
+				url: `${relative_path}/category/${data.slug}`,
+				cid,
 			});
 		}
 		cid = data.parentCid;
@@ -188,13 +188,13 @@ helpers.buildCategoryBreadcrumbs = async function (cid) {
 	if (meta.config.homePageRoute && meta.config.homePageRoute !== 'categories') {
 		breadcrumbs.unshift({
 			text: '[[global:header.categories]]',
-			url: relative_path + '/categories',
+			url: `${relative_path}/categories`,
 		});
 	}
 
 	breadcrumbs.unshift({
 		text: '[[global:home]]',
-		url: relative_path + '/',
+		url: `${relative_path}/`,
 	});
 
 	return breadcrumbs;
@@ -204,11 +204,11 @@ helpers.buildBreadcrumbs = function (crumbs) {
 	const breadcrumbs = [
 		{
 			text: '[[global:home]]',
-			url: relative_path + '/',
+			url: `${relative_path}/`,
 		},
 	];
 
-	crumbs.forEach(function (crumb) {
+	crumbs.forEach((crumb) => {
 		if (crumb) {
 			if (crumb.url) {
 				crumb.url = relative_path + crumb.url;
@@ -259,9 +259,13 @@ async function getCategoryData(cids, uid, selectedCid, states, privilege) {
 	const cidToCategory = _.zipObject(cids, categoryData);
 	const cidToWatchState = _.zipObject(cids, watchState);
 
-	const visibleCategories = categoryData.filter(function (c) {
+	const visibleCategories = categoryData.filter((c) => {
 		const hasVisibleChildren = checkVisibleChildren(c, cidToAllowed, cidToWatchState, states);
-		const isCategoryVisible = c && cidToAllowed[c.cid] && !c.link && !c.disabled && states.includes(cidToWatchState[c.cid]);
+		const isCategoryVisible = c &&
+			cidToAllowed[c.cid] &&
+			!c.link &&
+			!c.disabled &&
+			states.includes(cidToWatchState[c.cid]);
 		const shouldBeRemoved = !hasVisibleChildren && !isCategoryVisible;
 		const shouldBeDisaplayedAsDisabled = hasVisibleChildren && !isCategoryVisible;
 
@@ -280,7 +284,7 @@ async function getCategoryData(cids, uid, selectedCid, states, privilege) {
 
 	let selectedCategory = [];
 	const selectedCids = [];
-	categoriesData.forEach(function (category) {
+	categoriesData.forEach((category) => {
 		category.selected = selectedCid ? selectedCid.includes(String(category.cid)) : false;
 		if (category.selected) {
 			selectedCategory.push(category);
@@ -303,8 +307,8 @@ async function getCategoryData(cids, uid, selectedCid, states, privilege) {
 
 	return {
 		categories: categoriesData,
-		selectedCategory: selectedCategory,
-		selectedCids: selectedCids,
+		selectedCategory,
+		selectedCids,
 	};
 }
 
@@ -313,7 +317,8 @@ function checkVisibleChildren(c, cidToAllowed, cidToWatchState, states) {
 		return false;
 	}
 	return c.children.some(c => c && !c.disabled && (
-		(cidToAllowed[c.cid] && states.includes(cidToWatchState[c.cid])) || checkVisibleChildren(c, cidToAllowed, cidToWatchState, states)
+		(cidToAllowed[c.cid] && states.includes(cidToWatchState[c.cid])) ||
+		checkVisibleChildren(c, cidToAllowed, cidToWatchState, states)
 	));
 }
 
@@ -322,12 +327,10 @@ helpers.getHomePageRoutes = async function (uid) {
 	cids = await privileges.categories.filterCids('find', cids, uid);
 	const categoryData = await categories.getCategoriesFields(cids, ['name', 'slug']);
 
-	const categoryRoutes = categoryData.map(function (category) {
-		return {
-			route: 'category/' + category.slug,
-			name: 'Category: ' + category.name,
-		};
-	});
+	const categoryRoutes = categoryData.map(category => ({
+		route: `category/${category.slug}`,
+		name: `Category: ${category.name}`,
+	}));
 	const routes = [
 		{
 			route: 'categories',
@@ -355,7 +358,7 @@ helpers.getHomePageRoutes = async function (uid) {
 			name: 'Custom',
 		},
 	]);
-	const data = await plugins.hooks.fire('filter:homepage.get', { routes: routes });
+	const data = await plugins.hooks.fire('filter:homepage.get', { routes });
 	return data.routes;
 };
 
@@ -373,7 +376,7 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 			response: payload || {},
 		});
 	} else if (payload instanceof Error) {
-		const message = payload.message;
+		const { message } = payload;
 		const response = {};
 
 		// Update status code based on some common error codes
@@ -426,7 +429,7 @@ async function generateBannedResponse(res) {
 }
 
 helpers.generateError = (statusCode, message) => {
-	var payload = {
+	const payload = {
 		status: {
 			code: 'internal-server-error',
 			message: 'An unexpected error was encountered while attempting to service your request.',

@@ -1,33 +1,33 @@
 'use strict';
 
-var winston = require('winston');
-var jsesc = require('jsesc');
-var nconf = require('nconf');
-var semver = require('semver');
+const winston = require('winston');
+const jsesc = require('jsesc');
+const nconf = require('nconf');
+const semver = require('semver');
 
-var user = require('../user');
-var meta = require('../meta');
-var plugins = require('../plugins');
-var privileges = require('../privileges');
-var utils = require('../../public/src/utils');
-var versions = require('../admin/versions');
-var helpers = require('./helpers');
+const user = require('../user');
+const meta = require('../meta');
+const plugins = require('../plugins');
+const privileges = require('../privileges');
+const utils = require('../../public/src/utils');
+const versions = require('../admin/versions');
+const helpers = require('./helpers');
 
-var controllers = {
+const controllers = {
 	api: require('../controllers/api'),
 	helpers: require('../controllers/helpers'),
 };
 
 const middleware = module.exports;
 
-middleware.buildHeader = helpers.try(async function (req, res, next) {
+middleware.buildHeader = helpers.try(async (req, res, next) => {
 	res.locals.renderAdminHeader = true;
 	res.locals.config = await controllers.api.loadConfig(req);
 	next();
 });
 
 middleware.renderHeader = async (req, res, data) => {
-	var custom_header = {
+	const custom_header = {
 		plugins: [],
 		authentication: [],
 	};
@@ -42,21 +42,21 @@ middleware.renderHeader = async (req, res, data) => {
 		privileges: privileges.admin.get(req.uid),
 	});
 
-	var userData = results.userData;
+	const { userData } = results;
 	userData.uid = req.uid;
 	userData['email:confirmed'] = userData['email:confirmed'] === 1;
 	userData.privileges = results.privileges;
 
-	var acpPath = req.path.slice(1).split('/');
-	acpPath.forEach(function (path, i) {
+	let acpPath = req.path.slice(1).split('/');
+	acpPath.forEach((path, i) => {
 		acpPath[i] = path.charAt(0).toUpperCase() + path.slice(1);
 	});
 	acpPath = acpPath.join(' > ');
 
-	var version = nconf.get('version');
+	const version = nconf.get('version');
 
 	res.locals.config.userLang = res.locals.config.acpLang || res.locals.config.userLang;
-	var templateValues = {
+	let templateValues = {
 		config: res.locals.config,
 		configJSON: jsesc(JSON.stringify(res.locals.config), { isScriptContext: true }),
 		relative_path: res.locals.config.relative_path,
@@ -68,9 +68,9 @@ middleware.renderHeader = async (req, res, data) => {
 		scripts: results.scripts,
 		'cache-buster': meta.config['cache-buster'] || '',
 		env: !!process.env.NODE_ENV,
-		title: (acpPath || 'Dashboard') + ' | NodeBB Admin Control Panel',
+		title: `${acpPath || 'Dashboard'} | NodeBB Admin Control Panel`,
 		bodyClass: data.bodyClass,
-		version: version,
+		version,
 		latestVersion: results.latestVersion,
 		upgradeAvailable: results.latestVersion && semver.gt(results.latestVersion, version),
 		showManageMenu: results.privileges.superadmin || ['categories', 'privileges', 'users', 'admins-mods', 'groups', 'tags', 'settings'].some(priv => results.privileges[`admin:${priv}`]),
@@ -92,9 +92,7 @@ middleware.renderHeader = async (req, res, data) => {
 
 async function getAdminScripts() {
 	const scripts = await plugins.hooks.fire('filter:admin.scripts.get', []);
-	return scripts.map(function (script) {
-		return { src: script };
-	});
+	return scripts.map(script => ({ src: script }));
 }
 
 async function getLatestVersion() {
@@ -102,7 +100,7 @@ async function getLatestVersion() {
 		const result = await versions.getLatestVersion();
 		return result;
 	} catch (err) {
-		winston.error('[acp] Failed to fetch latest version' + err.stack);
+		winston.error(`[acp] Failed to fetch latest version${err.stack}`);
 	}
 	return null;
 }
@@ -153,7 +151,7 @@ middleware.checkPrivileges = helpers.try(async (req, res, next) => {
 
 	let returnTo = req.path;
 	if (nconf.get('relative_path')) {
-		returnTo = req.path.replace(new RegExp('^' + nconf.get('relative_path')), '');
+		returnTo = req.path.replace(new RegExp(`^${nconf.get('relative_path')}`), '');
 	}
 	returnTo = returnTo.replace(/^\/api/, '');
 
@@ -168,6 +166,6 @@ middleware.checkPrivileges = helpers.try(async (req, res, next) => {
 	if (res.locals.isAPI) {
 		res.status(401).json({});
 	} else {
-		res.redirect(nconf.get('relative_path') + '/login?local=1');
+		res.redirect(`${nconf.get('relative_path')}/login?local=1`);
 	}
 });

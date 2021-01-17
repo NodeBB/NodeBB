@@ -1,14 +1,14 @@
 'use strict';
 
 module.exports = function (module) {
-	var helpers = require('./helpers');
+	const helpers = require('./helpers');
 
 	module.listPrepend = async function (key, value) {
 		if (!key) {
 			return;
 		}
 
-		await module.transaction(async function (client) {
+		await module.transaction(async (client) => {
 			await helpers.ensureLegacyObjectType(client, key, 'list');
 			await client.query({
 				name: 'listPrepend',
@@ -27,7 +27,7 @@ DO UPDATE SET "array" = ARRAY[$2::TEXT] || "legacy_list"."array"`,
 			return;
 		}
 
-		await module.transaction(async function (client) {
+		await module.transaction(async (client) => {
 			await helpers.ensureLegacyObjectType(client, key, 'list');
 			await client.query({
 				name: 'listAppend',

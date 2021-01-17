@@ -1,27 +1,27 @@
 'use strict';
 
-var nconf = require('nconf');
-var winston = require('winston');
-var path = require('path');
-var express = require('express');
+const nconf = require('nconf');
+const winston = require('winston');
+const path = require('path');
+const express = require('express');
 
-var meta = require('../meta');
-var controllers = require('../controllers');
-var plugins = require('../plugins');
+const meta = require('../meta');
+const controllers = require('../controllers');
+const plugins = require('../plugins');
 
-var accountRoutes = require('./accounts');
-var metaRoutes = require('./meta');
-var apiRoutes = require('./api');
-var adminRoutes = require('./admin');
-var feedRoutes = require('./feeds');
-var authRoutes = require('./authentication');
+const accountRoutes = require('./accounts');
+const metaRoutes = require('./meta');
+const apiRoutes = require('./api');
+const adminRoutes = require('./admin');
+const feedRoutes = require('./feeds');
+const authRoutes = require('./authentication');
 const writeRoutes = require('./write');
-var helpers = require('./helpers');
+const helpers = require('./helpers');
 
-var setupPageRoute = helpers.setupPageRoute;
+const { setupPageRoute } = helpers;
 
 function mainRoutes(app, middleware, controllers) {
-	var loginRegisterMiddleware = [middleware.redirectToAccountIfLoggedIn];
+	const loginRegisterMiddleware = [middleware.redirectToAccountIfLoggedIn];
 
 	setupPageRoute(app, '/login', middleware, loginRegisterMiddleware, controllers.login);
 	setupPageRoute(app, '/register', middleware, loginRegisterMiddleware, controllers.register);
@@ -78,13 +78,13 @@ function categoryRoutes(app, middleware, controllers) {
 }
 
 function userRoutes(app, middleware, controllers) {
-	var middlewares = [middleware.canViewUsers];
+	const middlewares = [middleware.canViewUsers];
 
 	setupPageRoute(app, '/users', middleware, middlewares, controllers.users.index);
 }
 
 function groupRoutes(app, middleware, controllers) {
-	var middlewares = [middleware.canViewGroups];
+	const middlewares = [middleware.canViewGroups];
 
 	setupPageRoute(app, '/groups', middleware, middlewares, controllers.groups.list);
 	setupPageRoute(app, '/groups/:slug', middleware, middlewares, controllers.groups.details);
@@ -93,14 +93,14 @@ function groupRoutes(app, middleware, controllers) {
 
 module.exports = async function (app, middleware) {
 	const router = express.Router();
-	router.render = function () {
-		app.render.apply(app, arguments);
+	router.render = function (...args) {
+		app.render(...args);
 	};
-	var ensureLoggedIn = require('connect-ensure-login');
+	const ensureLoggedIn = require('connect-ensure-login');
 
 	router.all('(/+api|/+api/*?)', middleware.prepareAPI);
 	router.all('(/+api/admin|/+api/admin/*?)', middleware.authenticate, middleware.admin.checkPrivileges);
-	router.all('(/+admin|/+admin/*?)', ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login?local=1'), middleware.applyCSRF, middleware.admin.checkPrivileges);
+	router.all('(/+admin|/+admin/*?)', ensureLoggedIn.ensureLoggedIn(`${nconf.get('relative_path')}/login?local=1`), middleware.applyCSRF, middleware.admin.checkPrivileges);
 
 	app.use(middleware.stripLeadingSlashes);
 
@@ -110,9 +110,9 @@ module.exports = async function (app, middleware) {
 	// homepage handled by `action:homepage.get:[route]`
 	setupPageRoute(router, '/', middleware, [], controllers.home.pluginHook);
 
-	await plugins.reloadRoutes({ router: router });
-	await authRoutes.reloadRoutes({ router: router });
-	await writeRoutes.reload({ router: router });
+	await plugins.reloadRoutes({ router });
+	await authRoutes.reloadRoutes({ router });
+	await writeRoutes.reload({ router });
 	addCoreRoutes(app, router, middleware);
 
 	winston.info('Routes added');
@@ -135,7 +135,7 @@ function addCoreRoutes(app, router, middleware) {
 	userRoutes(router, middleware, controllers);
 	groupRoutes(router, middleware, controllers);
 
-	var relativePath = nconf.get('relative_path');
+	const relativePath = nconf.get('relative_path');
 	app.use(relativePath || '/', router);
 
 	if (process.env.NODE_ENV === 'development') {
@@ -144,12 +144,12 @@ function addCoreRoutes(app, router, middleware) {
 
 	app.use(middleware.privateUploads);
 
-	var statics = [
+	const statics = [
 		{ route: '/assets', path: path.join(__dirname, '../../build/public') },
 		{ route: '/assets', path: path.join(__dirname, '../../public') },
 		{ route: '/plugins', path: path.join(__dirname, '../../build/public/plugins') },
 	];
-	var staticOptions = {
+	const staticOptions = {
 		maxAge: app.enabled('cache') ? 5184000000 : 0,
 	};
 
@@ -157,16 +157,16 @@ function addCoreRoutes(app, router, middleware) {
 		statics.unshift({ route: '/assets/uploads', path: nconf.get('upload_path') });
 	}
 
-	statics.forEach(function (obj) {
+	statics.forEach((obj) => {
 		app.use(relativePath + obj.route, middleware.trimUploadTimestamps, express.static(obj.path, staticOptions));
 	});
-	app.use(relativePath + '/uploads', function (req, res) {
-		res.redirect(relativePath + '/assets/uploads' + req.path + '?' + meta.config['cache-buster']);
+	app.use(`${relativePath}/uploads`, (req, res) => {
+		res.redirect(`${relativePath}/assets/uploads${req.path}?${meta.config['cache-buster']}`);
 	});
 
 	// Skins
-	meta.css.supportedSkins.forEach(function (skin) {
-		app.use(relativePath + '/assets/client-' + skin + '.css', middleware.buildSkinAsset);
+	meta.css.supportedSkins.forEach((skin) => {
+		app.use(`${relativePath}/assets/client-${skin}.css`, middleware.buildSkinAsset);
 	});
 
 	app.use(controllers['404'].handle404);

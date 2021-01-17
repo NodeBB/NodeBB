@@ -17,10 +17,10 @@ module.exports = function (User) {
 
 	User.isPasswordCorrect = async function (uid, password, ip) {
 		password = password || '';
-		var {
+		let {
 			password: hashedPassword,
 			'password:shaWrapped': shaWrapped,
-		} = await db.getObjectFields('user:' + uid, ['password', 'password:shaWrapped']);
+		} = await db.getObjectFields(`user:${uid}`, ['password', 'password:shaWrapped']);
 		if (!hashedPassword) {
 			// Non-existant user, submit fake hash for comparison
 			hashedPassword = '';
@@ -36,7 +36,7 @@ module.exports = function (User) {
 	};
 
 	User.hasPassword = async function (uid) {
-		const hashedPassword = await db.getObjectField('user:' + uid, 'password');
+		const hashedPassword = await db.getObjectField(`user:${uid}`, 'password');
 		return !!hashedPassword;
 	};
 };

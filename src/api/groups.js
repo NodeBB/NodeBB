@@ -55,7 +55,7 @@ groupsAPI.delete = async function (caller, data) {
 
 	await groups.destroy(groupName);
 	logGroupEvent(caller, 'group-delete', {
-		groupName: groupName,
+		groupName,
 	});
 };
 
@@ -92,7 +92,7 @@ groupsAPI.join = async function (caller, data) {
 		// all groups are public!
 		await groups.join(groupName, data.uid);
 		logGroupEvent(caller, 'group-join', {
-			groupName: groupName,
+			groupName,
 			targetUid: data.uid,
 		});
 		return;
@@ -105,13 +105,13 @@ groupsAPI.join = async function (caller, data) {
 	if ((!groupData.private && isSelf) || isCallerAdmin || isCallerOwner) {
 		await groups.join(groupName, data.uid);
 		logGroupEvent(caller, 'group-join', {
-			groupName: groupName,
+			groupName,
 			targetUid: data.uid,
 		});
 	} else if (isSelf) {
 		await groups.requestMembership(groupName, caller.uid);
 		logGroupEvent(caller, 'group-request-membership', {
-			groupName: groupName,
+			groupName,
 			targetUid: data.uid,
 		});
 	}
@@ -163,16 +163,16 @@ groupsAPI.leave = async function (caller, data) {
 	const username = await user.getUserField(data.uid, 'username');
 	const notification = await notifications.create({
 		type: 'group-leave',
-		bodyShort: '[[groups:membership.leave.notification_title, ' + username + ', ' + groupName + ']]',
-		nid: 'group:' + validator.escape(groupName) + ':uid:' + data.uid + ':group-leave',
-		path: '/groups/' + slugify(groupName),
+		bodyShort: `[[groups:membership.leave.notification_title, ${username}, ${groupName}]]`,
+		nid: `group:${validator.escape(groupName)}:uid:${data.uid}:group-leave`,
+		path: `/groups/${slugify(groupName)}`,
 		from: data.uid,
 	});
 	const uids = await groups.getOwners(groupName);
 	await notifications.push(notification, uids);
 
 	logGroupEvent(caller, 'group-leave', {
-		groupName: groupName,
+		groupName,
 		targetUid: data.uid,
 	});
 };
@@ -183,7 +183,7 @@ groupsAPI.grant = async (caller, data) => {
 
 	await groups.ownership.grant(data.uid, groupName);
 	logGroupEvent(caller, 'group-owner-grant', {
-		groupName: groupName,
+		groupName,
 		targetUid: data.uid,
 	});
 };
@@ -194,7 +194,7 @@ groupsAPI.rescind = async (caller, data) => {
 
 	await groups.ownership.rescind(data.uid, groupName);
 	logGroupEvent(caller, 'group-owner-rescind', {
-		groupName: groupName,
+		groupName,
 		targetUid: data.uid,
 	});
 };

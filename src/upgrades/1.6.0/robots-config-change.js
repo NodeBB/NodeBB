@@ -1,12 +1,12 @@
 'use strict';
 
-var async = require('async');
-var db = require('../../database');
+const async = require('async');
+const db = require('../../database');
 
 module.exports = {
 	name: 'Fix incorrect robots.txt schema',
 	timestamp: Date.UTC(2017, 6, 10),
-	method: function (callback) {
+	method(callback) {
 		async.waterfall([
 			function (next) {
 				db.getObject('config', next);

@@ -35,7 +35,7 @@ SocketFlags.update = async function (socket, data) {
 	}
 	let payload = {};
 	// Translate form data into object
-	payload = data.data.reduce(function (memo, cur) {
+	payload = data.data.reduce((memo, cur) => {
 		memo[cur.name] = cur.value;
 		return memo;
 	}, payload);
@@ -59,7 +59,7 @@ SocketFlags.appendNote = async function (socket, data) {
 		flags.getNotes(data.flagId),
 		flags.getHistory(data.flagId),
 	]);
-	return { notes: notes, history: history };
+	return { notes, history };
 };
 
 SocketFlags.deleteNote = async function (socket, data) {
@@ -78,7 +78,7 @@ SocketFlags.deleteNote = async function (socket, data) {
 		flags.getNotes(data.flagId),
 		flags.getHistory(data.flagId),
 	]);
-	return { notes: notes, history: history };
+	return { notes, history };
 };
 
 require('../promisify')(SocketFlags);

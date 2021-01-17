@@ -64,10 +64,10 @@ User.getUsersFromSet = async function (set, uid, start, stop) {
 };
 
 User.getUsersWithFields = async function (uids, fields, uid) {
-	let results = await plugins.hooks.fire('filter:users.addFields', { fields: fields });
+	let results = await plugins.hooks.fire('filter:users.addFields', { fields });
 	results.fields = _.uniq(results.fields);
 	const userData = await User.getUsersFields(uids, results.fields);
-	results = await plugins.hooks.fire('filter:userlist.get', { users: userData, uid: uid });
+	results = await plugins.hooks.fire('filter:userlist.get', { users: userData, uid });
 	return results.users;
 };
 
@@ -191,7 +191,7 @@ async function isSelfOrMethod(callerUid, uid, method) {
 
 User.getAdminsandGlobalMods = async function () {
 	const results = await groups.getMembersOfGroups(['administrators', 'Global Moderators']);
-	return await User.getUsersData(_.union.apply(_, results));
+	return await User.getUsersData(_.union(...results));
 };
 
 User.getAdminsandGlobalModsandModerators = async function () {
@@ -200,7 +200,7 @@ User.getAdminsandGlobalModsandModerators = async function () {
 		groups.getMembers('Global Moderators', 0, -1),
 		User.getModeratorUids(),
 	]);
-	return await User.getUsersData(_.union.apply(_, results));
+	return await User.getUsersData(_.union(...results));
 };
 
 User.getModeratorUids = async function () {
@@ -232,7 +232,7 @@ User.addInterstitials = function (callback) {
 				}
 
 				if (data.userData.uid) {
-					const consented = await db.getObjectField('user:' + data.userData.uid, 'gdpr_consent');
+					const consented = await db.getObjectField(`user:${data.userData.uid}`, 'gdpr_consent');
 					if (parseInt(consented, 10)) {
 						return data;
 					}
@@ -244,7 +244,7 @@ User.addInterstitials = function (callback) {
 						digestFrequency: meta.config.dailyDigestFreq,
 						digestEnabled: meta.config.dailyDigestFreq !== 'off',
 					},
-					callback: function (userData, formData, next) {
+					callback(userData, formData, next) {
 						if (formData.gdpr_agree_data === 'on' && formData.gdpr_agree_email === 'on') {
 							userData.gdpr_consent = true;
 						}
@@ -266,7 +266,7 @@ User.addInterstitials = function (callback) {
 				}
 
 				if (data.userData.uid) {
-					const accepted = await db.getObjectField('user:' + data.userData.uid, 'acceptTos');
+					const accepted = await db.getObjectField(`user:${data.userData.uid}`, 'acceptTos');
 					if (parseInt(accepted, 10)) {
 						return data;
 					}
@@ -283,7 +283,7 @@ User.addInterstitials = function (callback) {
 					data: {
 						termsOfUse: termsOfUse.postData.content,
 					},
-					callback: function (userData, formData, next) {
+					callback(userData, formData, next) {
 						if (formData['agree-terms'] === 'on') {
 							userData.acceptTos = true;
 						}

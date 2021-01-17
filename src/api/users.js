@@ -82,7 +82,7 @@ usersAPI.update = async function (caller, data) {
 };
 
 usersAPI.delete = async function (caller, { uid, password }) {
-	await processDeletion({ uid: uid, method: 'delete', password, caller });
+	await processDeletion({ uid, method: 'delete', password, caller });
 };
 
 usersAPI.deleteContent = async function (caller, { uid, password }) {
@@ -117,7 +117,7 @@ usersAPI.updateSettings = async function (caller, data) {
 		acpLang: defaults.acpLang,
 	};
 	// load raw settings without parsing values to booleans
-	const current = await db.getObject('user:' + data.uid + ':settings');
+	const current = await db.getObject(`user:${data.uid}:settings`);
 	const payload = { ...defaults, ...current, ...data.settings };
 	delete payload.uid;
 
@@ -144,10 +144,10 @@ usersAPI.follow = async function (caller, data) {
 	const userData = await user.getUserFields(caller.uid, ['username', 'userslug']);
 	const notifObj = await notifications.create({
 		type: 'follow',
-		bodyShort: '[[notifications:user_started_following_you, ' + userData.username + ']]',
-		nid: 'follow:' + data.uid + ':uid:' + caller.uid,
+		bodyShort: `[[notifications:user_started_following_you, ${userData.username}]]`,
+		nid: `follow:${data.uid}:uid:${caller.uid}`,
 		from: caller.uid,
-		path: '/uid/' + data.uid + '/followers',
+		path: `/uid/${data.uid}/followers`,
 		mergeId: 'notifications:user_started_following_you',
 	});
 	if (!notifObj) {
@@ -173,13 +173,13 @@ usersAPI.ban = async function (caller, data) {
 	}
 
 	const banData = await user.bans.ban(data.uid, data.until, data.reason);
-	await db.setObjectField('uid:' + data.uid + ':ban:' + banData.timestamp, 'fromUid', caller.uid);
+	await db.setObjectField(`uid:${data.uid}:ban:${banData.timestamp}`, 'fromUid', caller.uid);
 
 	if (!data.reason) {
 		data.reason = await translator.translate('[[user:info.banned-no-reason]]');
 	}
 
-	sockets.in('uid_' + data.uid).emit('event:banned', {
+	sockets.in(`uid_${data.uid}`).emit('event:banned', {
 		until: data.until,
 		reason: validator.escape(String(data.reason || '')),
 	});
@@ -223,7 +223,7 @@ usersAPI.unban = async function (caller, data) {
 };
 
 async function isPrivilegedOrSelfAndPasswordMatch(caller, data) {
-	const uid = caller.uid;
+	const { uid } = caller;
 	const isSelf = parseInt(uid, 10) === parseInt(data.uid, 10);
 
 	const [isAdmin, isTargetAdmin, isGlobalMod] = await Promise.all([
@@ -287,7 +287,7 @@ async function processDeletion({ uid, method, password, caller }) {
 
 	plugins.hooks.fire('action:user.delete', {
 		callerUid: caller.uid,
-		uid: uid,
+		uid,
 		ip: caller.ip,
 		user: userData,
 	});
@@ -336,6 +336,6 @@ usersAPI.search = async function (caller, data) {
 		searchBy: data.searchBy || 'username',
 		page: data.page || 1,
 		sortBy: data.sortBy || 'lastonline',
-		filters: filters,
+		filters,
 	});
 };

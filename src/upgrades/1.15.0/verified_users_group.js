@@ -7,12 +7,13 @@ const user = require('../../user');
 const groups = require('../../groups');
 const meta = require('../../meta');
 const privileges = require('../../privileges');
+
 const now = Date.now();
 module.exports = {
 	name: 'Create verified/unverified user groups',
 	timestamp: Date.UTC(2020, 9, 13),
-	method: async function () {
-		const progress = this.progress;
+	async method() {
+		const { progress } = this;
 
 		const maxGroupLength = meta.config.maximumGroupNameLength;
 		meta.config.maximumGroupNameLength = 30;
@@ -41,9 +42,10 @@ module.exports = {
 				timestamp: timestamp + 1,
 			});
 		}
+
 		// restore setting
 		meta.config.maximumGroupNameLength = maxGroupLength;
-		await batch.processSortedSet('users:joindate', async function (uids) {
+		await batch.processSortedSet('users:joindate', async (uids) => {
 			progress.incr(uids.length);
 			const userData = await user.getUsersFields(uids, ['uid', 'email:confirmed']);
 

@@ -9,6 +9,7 @@ const request = require('request-promise-native');
 const nconf = require('nconf');
 const jwt = require('jsonwebtoken');
 const util = require('util');
+
 const wait = util.promisify(setTimeout);
 
 const db = require('./mocks/databasemock');
@@ -84,7 +85,7 @@ describe('API', async () => {
 		// pretend to handle sending emails
 	}
 
-	after(async function () {
+	after(async () => {
 		plugins.unregisterHook('core', 'filter:search.query', dummySearchHook);
 		plugins.unregisterHook('emailer-test', 'filter:email.send');
 	});
@@ -171,9 +172,9 @@ describe('API', async () => {
 
 		// Retrieve CSRF token using cookie, to test Write API
 		const config = await request({
-			url: nconf.get('url') + '/api/config',
+			url: `${nconf.get('url')}/api/config`,
 			json: true,
-			jar: jar,
+			jar,
 		});
 		csrfToken = config.csrf_token;
 
@@ -221,14 +222,12 @@ describe('API', async () => {
 			return _.flatten(paths);
 		};
 
-		let paths = buildPaths(webserver.app._router.stack).filter(Boolean).map(function normalize(pathObj) {
+		let paths = buildPaths(webserver.app._router.stack).filter(Boolean).map((pathObj) => {
 			pathObj.path = pathObj.path.replace(/\/:([^\\/]+)/g, '/{$1}');
 			return pathObj;
 		});
 		const exclusionPrefixes = ['/api/admin/plugins', '/api/compose', '/debug'];
-		paths = paths.filter(function filterExclusions(path) {
-			return path.method !== '_all' && !exclusionPrefixes.some(prefix => path.path.startsWith(prefix));
-		});
+		paths = paths.filter(path => path.method !== '_all' && !exclusionPrefixes.some(prefix => path.path.startsWith(prefix)));
 
 
 		// For each express path, query for existence in read and write api schemas
@@ -287,7 +286,7 @@ describe('API', async () => {
 				});
 
 				it('should have examples when parameters are present', () => {
-					let parameters = context[method].parameters;
+					let { parameters } = context[method];
 					let testPath = path;
 
 					if (parameters) {
@@ -299,7 +298,7 @@ describe('API', async () => {
 
 							switch (param.in) {
 								case 'path':
-									testPath = testPath.replace('{' + param.name + '}', param.example);
+									testPath = testPath.replace(`{${param.name}}`, param.example);
 									break;
 								case 'header':
 									headers[param.name] = param.example;
@@ -351,19 +350,19 @@ describe('API', async () => {
 						if (type === 'json') {
 							// console.log(`calling ${method} ${url} with`, body);
 							response = await request(url, {
-								method: method,
+								method,
 								jar: !unauthenticatedRoutes.includes(path) ? jar : undefined,
 								json: true,
 								followRedirect: false,	// all responses are significant (e.g. 302)
 								simple: false,	// don't throw on non-200 (e.g. 302)
 								resolveWithFullResponse: true,	// send full request back (to check statusCode)
-								headers: headers,
-								qs: qs,
-								body: body,
+								headers,
+								qs,
+								body,
 							});
 						} else if (type === 'form') {
 							response = await new Promise((resolve, reject) => {
-								helpers.uploadFile(url, pathLib.join(__dirname, './files/test.png'), {}, jar, csrfToken, function (err, res) {
+								helpers.uploadFile(url, pathLib.join(__dirname, './files/test.png'), {}, jar, csrfToken, (err, res) => {
 									if (err) {
 										return reject(err);
 									}
@@ -392,11 +391,9 @@ describe('API', async () => {
 							return memo;
 						}, {});
 
-						for (const header in expectedHeaders) {
-							if (expectedHeaders.hasOwnProperty(header)) {
-								assert(response.headers[header.toLowerCase()]);
-								assert.strictEqual(response.headers[header.toLowerCase()], expectedHeaders[header]);
-							}
+						for (const header of Object.keys(expectedHeaders)) {
+							assert(response.headers[header.toLowerCase()]);
+							assert.strictEqual(response.headers[header.toLowerCase()], expectedHeaders[header]);
 						}
 						return;
 					}
@@ -424,9 +421,9 @@ describe('API', async () => {
 
 						// Retrieve CSRF token using cookie, to test Write API
 						const config = await request({
-							url: nconf.get('url') + '/api/config',
+							url: `${nconf.get('url')}/api/config`,
 							json: true,
-							jar: jar,
+							jar,
 						});
 						csrfToken = config.csrf_token;
 					}
@@ -471,7 +468,7 @@ describe('API', async () => {
 		// Compare the schema to the response
 		required.forEach((prop) => {
 			if (schema.hasOwnProperty(prop)) {
-				assert(response.hasOwnProperty(prop), '"' + prop + '" is a required property (path: ' + method + ' ' + path + ', context: ' + context + ')');
+				assert(response.hasOwnProperty(prop), `"${prop}" is a required property (path: ${method} ${path}, context: ${context})`);
 
 				// Don't proceed with type-check if the value could possibly be unset (nullable: true, in spec)
 				if (response[prop] === null && schema[prop].nullable === true) {
@@ -479,25 +476,25 @@ describe('API', async () => {
 				}
 
 				// Therefore, if the value is actually null, that's a problem (nullable is probably missing)
-				assert(response[prop] !== null, '"' + prop + '" was null, but schema does not specify it to be a nullable property (path: ' + method + ' ' + path + ', context: ' + context + ')');
+				assert(response[prop] !== null, `"${prop}" was null, but schema does not specify it to be a nullable property (path: ${method} ${path}, context: ${context})`);
 
 				switch (schema[prop].type) {
 					case 'string':
-						assert.strictEqual(typeof response[prop], 'string', '"' + prop + '" was expected to be a string, but was ' + typeof response[prop] + ' instead (path: ' + method + ' ' + path + ', context: ' + context + ')');
+						assert.strictEqual(typeof response[prop], 'string', `"${prop}" was expected to be a string, but was ${typeof response[prop]} instead (path: ${method} ${path}, context: ${context})`);
 						break;
 					case 'boolean':
-						assert.strictEqual(typeof response[prop], 'boolean', '"' + prop + '" was expected to be a boolean, but was ' + typeof response[prop] + ' instead (path: ' + method + ' ' + path + ', context: ' + context + ')');
+						assert.strictEqual(typeof response[prop], 'boolean', `"${prop}" was expected to be a boolean, but was ${typeof response[prop]} instead (path: ${method} ${path}, context: ${context})`);
 						break;
 					case 'object':
-						assert.strictEqual(typeof response[prop], 'object', '"' + prop + '" was expected to be an object, but was ' + typeof response[prop] + ' instead (path: ' + method + ' ' + path + ', context: ' + context + ')');
+						assert.strictEqual(typeof response[prop], 'object', `"${prop}" was expected to be an object, but was ${typeof response[prop]} instead (path: ${method} ${path}, context: ${context})`);
 						compare(schema[prop], response[prop], method, path, context ? [context, prop].join('.') : prop);
 						break;
 					case 'array':
-						assert.strictEqual(Array.isArray(response[prop]), true, '"' + prop + '" was expected to be an array, but was ' + typeof response[prop] + ' instead (path: ' + method + ' ' + path + ', context: ' + context + ')');
+						assert.strictEqual(Array.isArray(response[prop]), true, `"${prop}" was expected to be an array, but was ${typeof response[prop]} instead (path: ${method} ${path}, context: ${context})`);
 
 						if (schema[prop].items) {
 							// Ensure the array items have a schema defined
-							assert(schema[prop].items.type || schema[prop].items.allOf, '"' + prop + '" is defined to be an array, but its items have no schema defined (path: ' + method + ' ' + path + ', context: ' + context + ')');
+							assert(schema[prop].items.type || schema[prop].items.allOf, `"${prop}" is defined to be an array, but its items have no schema defined (path: ${method} ${path}, context: ${context})`);
 
 							// Compare types
 							if (schema[prop].items.type === 'object' || Array.isArray(schema[prop].items.allOf)) {
@@ -506,7 +503,7 @@ describe('API', async () => {
 								});
 							} else if (response[prop].length) { // for now
 								response[prop].forEach((item) => {
-									assert.strictEqual(typeof item, schema[prop].items.type, '"' + prop + '" should have ' + schema[prop].items.type + ' items, but found ' + typeof items + ' instead (path: ' + method + ' ' + path + ', context: ' + context + ')');
+									assert.strictEqual(typeof item, schema[prop].items.type, `"${prop}" should have ${schema[prop].items.type} items, but found ${typeof items} instead (path: ${method} ${path}, context: ${context})`);
 								});
 							}
 						}
@@ -521,7 +518,7 @@ describe('API', async () => {
 				return;
 			}
 
-			assert(schema[prop], '"' + prop + '" was found in response, but is not defined in schema (path: ' + method + ' ' + path + ', context: ' + context + ')');
+			assert(schema[prop], `"${prop}" was found in response, but is not defined in schema (path: ${method} ${path}, context: ${context})`);
 		});
 	}
 });

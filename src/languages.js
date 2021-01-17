@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const utils = require('./utils');
-const paths = require('./constants').paths;
+const { paths } = require('./constants');
 
 const Languages = module.exports;
 const languagesPath = path.join(__dirname, '../build/public/language');
@@ -12,7 +12,7 @@ const files = fs.readdirSync(path.join(paths.nodeModules, '/timeago/locales'));
 Languages.timeagoCodes = files.filter(f => f.startsWith('jquery.timeago')).map(f => f.split('.')[2]);
 
 Languages.get = async function (language, namespace) {
-	const data = await fs.promises.readFile(path.join(languagesPath, language, namespace + '.json'), 'utf8');
+	const data = await fs.promises.readFile(path.join(languagesPath, language, `${namespace}.json`), 'utf8');
 	return JSON.parse(data) || {};
 };
 
@@ -43,7 +43,7 @@ Languages.list = async function () {
 
 	const codes = await Languages.listCodes();
 
-	let languages = await Promise.all(codes.map(async function (folder) {
+	let languages = await Promise.all(codes.map(async (folder) => {
 		try {
 			const configPath = path.join(languagesPath, folder, 'language.json');
 			const file = await fs.promises.readFile(configPath, 'utf8');

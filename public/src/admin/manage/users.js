@@ -184,7 +184,9 @@ define('admin/manage/users', [
 									data[cur.name] = cur.value;
 									return data;
 								}, {});
-								var until = formData.length > 0 ? (Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))) : 0;
+								var until = formData.length > 0 ? (
+									Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))
+								) : 0;
 
 								Promise.all(uids.map(function (uid) {
 									return api.put('/users/' + uid + '/ban', {
@@ -305,13 +307,13 @@ define('admin/manage/users', [
 
 			bootbox.confirm(confirmMsg, function (confirm) {
 				if (confirm) {
-					Promise.all(uids.map(uid => api.del(`/users/${uid}${path}`, {})
-						.then(() => {
+					Promise.all(
+						uids.map(uid => api.del(`/users/${uid}${path}`, {}).then(() => {
 							if (path !== '/content') {
 								removeRow(uid);
 							}
-						})
-					)).then(() => {
+						}))
+					).then(() => {
 						if (path !== '/content') {
 							app.alertSuccess('[[admin/manage/users:alerts.delete-success]]');
 						} else {

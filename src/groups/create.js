@@ -32,29 +32,29 @@ module.exports = function (Groups) {
 			userTitle: data.userTitle || data.name,
 			userTitleEnabled: parseInt(data.userTitleEnabled, 10) === 1 ? 1 : 0,
 			description: data.description || '',
-			memberCount: memberCount,
+			memberCount,
 			hidden: isHidden ? 1 : 0,
 			system: isSystem ? 1 : 0,
 			private: isPrivate ? 1 : 0,
-			disableJoinRequests: disableJoinRequests,
-			disableLeave: disableLeave,
+			disableJoinRequests,
+			disableLeave,
 		};
 
-		await plugins.hooks.fire('filter:group.create', { group: groupData, data: data });
+		await plugins.hooks.fire('filter:group.create', { group: groupData, data });
 
 		await db.sortedSetAdd('groups:createtime', groupData.createtime, groupData.name);
-		await db.setObject('group:' + groupData.name, groupData);
+		await db.setObject(`group:${groupData.name}`, groupData);
 
 		if (data.hasOwnProperty('ownerUid')) {
-			await db.setAdd('group:' + groupData.name + ':owners', data.ownerUid);
-			await db.sortedSetAdd('group:' + groupData.name + ':members', timestamp, data.ownerUid);
+			await db.setAdd(`group:${groupData.name}:owners`, data.ownerUid);
+			await db.sortedSetAdd(`group:${groupData.name}:members`, timestamp, data.ownerUid);
 		}
 
 		if (!isHidden && !isSystem) {
 			await db.sortedSetAddBulk([
 				['groups:visible:createtime', timestamp, groupData.name],
 				['groups:visible:memberCount', groupData.memberCount, groupData.name],
-				['groups:visible:name', 0, groupData.name.toLowerCase() + ':' + groupData.name],
+				['groups:visible:name', 0, `${groupData.name.toLowerCase()}:${groupData.name}`],
 			]);
 		}
 

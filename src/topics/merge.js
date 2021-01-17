@@ -17,16 +17,16 @@ module.exports = function (Topics) {
 		const otherTids = tids.sort((a, b) => a - b)
 			.filter(tid => tid && parseInt(tid, 10) !== parseInt(mergeIntoTid, 10));
 
-		await async.eachSeries(otherTids, async function (tid) {
+		await async.eachSeries(otherTids, async (tid) => {
 			const pids = await Topics.getPids(tid);
-			await async.eachSeries(pids, function (pid, next) {
+			await async.eachSeries(pids, (pid, next) => {
 				Topics.movePostToTopic(uid, pid, mergeIntoTid, next);
 			});
 
 			await Topics.setTopicField(tid, 'mainPid', 0);
 			await Topics.delete(tid, uid);
 			await Topics.setTopicFields(tid, {
-				mergeIntoTid: mergeIntoTid,
+				mergeIntoTid,
 				mergerUid: uid,
 				mergedTimestamp: Date.now(),
 			});
@@ -35,10 +35,10 @@ module.exports = function (Topics) {
 		await updateViewCount(mergeIntoTid, tids);
 
 		plugins.hooks.fire('action:topic.merge', {
-			uid: uid,
-			tids: tids,
-			mergeIntoTid: mergeIntoTid,
-			otherTids: otherTids,
+			uid,
+			tids,
+			mergeIntoTid,
+			otherTids,
 		});
 		return mergeIntoTid;
 	};
@@ -48,7 +48,7 @@ module.exports = function (Topics) {
 		const tid = await Topics.create({
 			uid: topicData.uid,
 			cid: topicData.cid,
-			title: title,
+			title,
 		});
 		return tid;
 	}

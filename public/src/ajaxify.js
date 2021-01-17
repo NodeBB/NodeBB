@@ -60,7 +60,11 @@ ajaxify = window.ajaxify || {};
 		$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 
 		ajaxify.loadData(url, function (err, data) {
-			if (!err || (err && err.data && (parseInt(err.data.status, 10) !== 302 && parseInt(err.data.status, 10) !== 308))) {
+			if (!err || (
+				err &&
+				err.data &&
+				(parseInt(err.data.status, 10) !== 302 && parseInt(err.data.status, 10) !== 308)
+			)) {
 				ajaxify.updateHistory(url, quiet);
 			}
 
@@ -436,6 +440,7 @@ $(document).ready(function () {
 		}
 	});
 
+	/* eslint-disable no-script-url */
 	function ajaxifyAnchors() {
 		function hrefEmpty(href) {
 			return href === undefined || href === '' || href === 'javascript:;';

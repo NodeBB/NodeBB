@@ -1,22 +1,22 @@
 'use strict';
 
-var express = require('express');
-var nconf = require('nconf');
+const express = require('express');
+const nconf = require('nconf');
 
 const fs = require('fs').promises;
 const path = require('path');
 
 module.exports = function (app) {
-	var router = express.Router();
+	const router = express.Router();
 
-	router.get('/test', function (req, res) {
+	router.get('/test', (req, res) => {
 		res.redirect(404);
 	});
 
 	// Redoc
 	router.get('/spec/:type', async (req, res, next) => {
 		const types = ['read', 'write'];
-		const type = req.params.type;
+		const { type } = req.params;
 		if (!types.includes(type)) {
 			return next();
 		}
@@ -27,9 +27,9 @@ module.exports = function (app) {
 		});
 		await handle.close();
 
-		html = html.replace('apiUrl', nconf.get('relative_path') + '/assets/openapi/' + type + '.yaml');
+		html = html.replace('apiUrl', `${nconf.get('relative_path')}/assets/openapi/${type}.yaml`);
 		res.status(200).type('text/html').send(html);
 	});
 
-	app.use(nconf.get('relative_path') + '/debug', router);
+	app.use(`${nconf.get('relative_path')}/debug`, router);
 };

@@ -1,18 +1,18 @@
 'use strict';
 
-var async = require('async');
-var nconf = require('nconf');
+const async = require('async');
+const nconf = require('nconf');
 
-var packageInstall = require('./package-install');
-var upgrade = require('../upgrade');
-var build = require('../meta/build');
-var db = require('../database');
-var upgradePlugins = require('./upgrade-plugins').upgradePlugins;
+const packageInstall = require('./package-install');
+const upgrade = require('../upgrade');
+const build = require('../meta/build');
+const db = require('../database');
+const { upgradePlugins } = require('./upgrade-plugins');
 
-var steps = {
+const steps = {
 	package: {
 		message: 'Updating package.json file with defaults...',
-		handler: function (next) {
+		handler(next) {
 			packageInstall.updatePackageFile();
 			packageInstall.preserveExtraneousPlugins();
 			process.stdout.write('  OK\n'.green);
@@ -21,7 +21,7 @@ var steps = {
 	},
 	install: {
 		message: 'Bringing base dependencies up to date...',
-		handler: function (next) {
+		handler(next) {
 			process.stdout.write('  started\n'.green);
 			packageInstall.installAll();
 			next();
@@ -29,7 +29,7 @@ var steps = {
 	},
 	plugins: {
 		message: 'Checking installed plugins for updates...',
-		handler: function (next) {
+		handler(next) {
 			async.series([
 				db.init,
 				upgradePlugins,
@@ -38,7 +38,7 @@ var steps = {
 	},
 	schema: {
 		message: 'Updating NodeBB data store schema...',
-		handler: function (next) {
+		handler(next) {
 			async.series([
 				db.init,
 				require('../meta').configs.init,
@@ -53,28 +53,27 @@ var steps = {
 };
 
 function runSteps(tasks) {
-	tasks = tasks.map(function (key, i) {
-		return function (next) {
-			process.stdout.write('\n' + ((i + 1) + '. ').bold + steps[key].message.yellow);
-			return steps[key].handler(function (err) {
-				if (err) { return next(err); }
-				next();
-			});
-		};
+	tasks = tasks.map((key, i) => function (next) {
+		process.stdout.write(`\n${(`${i + 1}. `).bold}${steps[key].message.yellow}`);
+		return steps[key].handler((err) => {
+			if (err) { return next(err); }
+			next();
+		});
 	});
 
-	async.series(tasks, function (err) {
+	async.series(tasks, (err) => {
 		if (err) {
-			console.error('Error occurred during upgrade: ' + err.stack);
+			console.error(`Error occurred during upgrade: ${err.stack}`);
 			throw err;
 		}
 
-		var message = 'NodeBB Upgrade Complete!';
-		// some consoles will return undefined/zero columns, so just use 2 spaces in upgrade script if we can't get our column count
-		var columns = process.stdout.columns;
-		var spaces = columns ? new Array(Math.floor(columns / 2) - (message.length / 2) + 1).join(' ') : '  ';
+		const message = 'NodeBB Upgrade Complete!';
+		// some consoles will return undefined/zero columns,
+		// so just use 2 spaces in upgrade script if we can't get our column count
+		const { columns } = process.stdout;
+		const spaces = columns ? new Array(Math.floor(columns / 2) - (message.length / 2) + 1).join(' ') : '  ';
 
-		console.log('\n\n' + spaces + message.green.bold + '\n'.reset);
+		console.log(`\n\n${spaces}${message.green.bold}${'\n'.reset}`);
 
 		process.exit();
 	});
@@ -87,12 +86,10 @@ function runUpgrade(upgrades, options) {
 	nconf.set('mongo:options:socketTimeoutMS', 0);
 
 	if (upgrades === true) {
-		var tasks = Object.keys(steps);
+		let tasks = Object.keys(steps);
 		if (options.package || options.install ||
 				options.plugins || options.schema || options.build) {
-			tasks = tasks.filter(function (key) {
-				return options[key];
-			});
+			tasks = tasks.filter(key => options[key]);
 		}
 		runSteps(tasks);
 		return;
@@ -104,7 +101,7 @@ function runUpgrade(upgrades, options) {
 		async function () {
 			await upgrade.runParticular(upgrades);
 		},
-	], function (err) {
+	], (err) => {
 		if (err) {
 			throw err;
 		}

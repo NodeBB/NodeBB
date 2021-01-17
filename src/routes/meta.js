@@ -11,7 +11,7 @@ module.exports = function (app, middleware, controllers) {
 	app.get('/manifest.webmanifest', controllers.manifest);
 	app.get('/css/previews/:theme', controllers.admin.themes.get);
 	app.get('/osd.xml', controllers.osd.handle);
-	app.get('/service-worker.js', function (req, res) {
+	app.get('/service-worker.js', (req, res) => {
 		res.status(200).type('application/javascript').sendFile(path.join(__dirname, '../../public/src/service-worker.js'));
 	});
 };

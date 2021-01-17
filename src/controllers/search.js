@@ -57,7 +57,7 @@ searchController.search = async function (req, res, next) {
 		timeFilter: req.query.timeFilter,
 		sortBy: req.query.sortBy || meta.config.searchDefaultSortBy || '',
 		sortDirection: req.query.sortDirection,
-		page: page,
+		page,
 		itemsPerPage: req.query.itemsPerPage,
 		uid: req.uid,
 		qs: req.query,

@@ -57,11 +57,11 @@ module.exports = function (privileges) {
 
 		return await plugins.hooks.fire('filter:privileges.categories.get', {
 			...privData,
-			cid: cid,
-			uid: uid,
+			cid,
+			uid,
 			editable: isAdminOrMod,
 			view_deleted: isAdminOrMod,
-			isAdminOrMod: isAdminOrMod,
+			isAdminOrMod,
 		});
 	};
 
@@ -142,7 +142,7 @@ module.exports = function (privileges) {
 	privileges.categories.give = async function (privileges, cid, members) {
 		await helpers.giveOrRescind(groups.join, privileges, cid, members);
 		plugins.hooks.fire('action:privileges.categories.give', {
-			privileges: privileges,
+			privileges,
 			cids: Array.isArray(cid) ? cid : [cid],
 			members: Array.isArray(members) ? members : [members],
 		});
@@ -151,7 +151,7 @@ module.exports = function (privileges) {
 	privileges.categories.rescind = async function (privileges, cid, members) {
 		await helpers.giveOrRescind(groups.leave, privileges, cid, members);
 		plugins.hooks.fire('action:privileges.categories.rescind', {
-			privileges: privileges,
+			privileges,
 			cids: Array.isArray(cid) ? cid : [cid],
 			members: Array.isArray(members) ? members : [members],
 		});
@@ -167,16 +167,16 @@ module.exports = function (privileges) {
 
 	privileges.categories.userPrivileges = async function (cid, uid) {
 		const tasks = {};
-		privileges.userPrivilegeList.forEach(function (privilege) {
-			tasks[privilege] = groups.isMember(uid, 'cid:' + cid + ':privileges:' + privilege);
+		privileges.userPrivilegeList.forEach((privilege) => {
+			tasks[privilege] = groups.isMember(uid, `cid:${cid}:privileges:${privilege}`);
 		});
 		return await utils.promiseParallel(tasks);
 	};
 
 	privileges.categories.groupPrivileges = async function (cid, groupName) {
 		const tasks = {};
-		privileges.groupPrivilegeList.forEach(function (privilege) {
-			tasks[privilege] = groups.isMember(groupName, 'cid:' + cid + ':privileges:' + privilege);
+		privileges.groupPrivilegeList.forEach((privilege) => {
+			tasks[privilege] = groups.isMember(groupName, `cid:${cid}:privileges:${privilege}`);
 		});
 		return await utils.promiseParallel(tasks);
 	};

@@ -26,15 +26,15 @@ dashboardController.get = async function (req, res) {
 	const version = nconf.get('version');
 
 	res.render('admin/dashboard', {
-		version: version,
+		version,
 		lookupFailed: latestVersion === null,
-		latestVersion: latestVersion,
+		latestVersion,
 		upgradeAvailable: latestVersion && semver.gt(latestVersion, version),
 		currentPrerelease: versions.isPrerelease.test(version),
-		notices: notices,
-		stats: stats,
+		notices,
+		stats,
 		canRestart: !!process.send,
-		lastrestart: lastrestart,
+		lastrestart,
 		showSystemControls: isAdmin,
 	});
 };
@@ -69,7 +69,7 @@ async function getLatestVersion() {
 	try {
 		return await versions.getLatestVersion();
 	} catch (err) {
-		winston.error('[acp] Failed to fetch latest version\n' + err.stack);
+		winston.error(`[acp] Failed to fetch latest version\n${err.stack}`);
 	}
 	return null;
 }
@@ -94,15 +94,15 @@ dashboardController.getAnalytics = async (req, res, next) => {
 	}
 
 	const method = req.query.units === 'days' ? analytics.getDailyStatsForSet : analytics.getHourlyStatsForSet;
-	let payload = await Promise.all(sets.map(set => method('analytics:' + set, until, count)));
+	let payload = await Promise.all(sets.map(set => method(`analytics:${set}`, until, count)));
 	payload = _.zipObject(sets, payload);
 
 	res.json({
 		query: {
 			set: req.query.set,
 			units: req.query.units,
-			until: until,
-			count: count,
+			until,
+			count,
 		},
 		result: payload,
 	});

@@ -83,8 +83,8 @@ function printStartupInfo() {
 	if (nconf.get('isPrimary')) {
 		winston.info('Initializing NodeBB v%s %s', nconf.get('version'), nconf.get('url'));
 
-		const host = nconf.get(nconf.get('database') + ':host');
-		const storeLocation = host ? 'at ' + host + (!host.includes('/') ? ':' + nconf.get(nconf.get('database') + ':port') : '') : '';
+		const host = nconf.get(`${nconf.get('database')}:host`);
+		const storeLocation = host ? `at ${host}${!host.includes('/') ? `:${nconf.get(`${nconf.get('database')}:port`)}` : ''}` : '';
 
 		winston.verbose('* using %s store %s', nconf.get('database'), storeLocation);
 		winston.verbose('* using themes stored in: %s', nconf.get('themes_path'));
@@ -95,13 +95,13 @@ function addProcessHandlers() {
 	process.on('SIGTERM', shutdown);
 	process.on('SIGINT', shutdown);
 	process.on('SIGHUP', restart);
-	process.on('uncaughtException', function (err) {
+	process.on('uncaughtException', (err) => {
 		winston.error(err.stack);
 
 		require('./meta').js.killMinifier();
 		shutdown(1);
 	});
-	process.on('message', function (msg) {
+	process.on('message', (msg) => {
 		if (msg && msg.compiling === 'tpl') {
 			const benchpressjs = require('benchpressjs');
 			benchpressjs.flush();

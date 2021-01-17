@@ -31,7 +31,7 @@ Categories.getAll = async function () {
 		'color', 'bgColor', 'backgroundImage', 'imageClass',
 	];
 	const categoriesData = await categories.getCategoriesFields(cids, fields);
-	const result = await plugins.hooks.fire('filter:admin.categories.get', { categories: categoriesData, fields: fields });
+	const result = await plugins.hooks.fire('filter:admin.categories.get', { categories: categoriesData, fields });
 	return categories.getTree(result.categories, 0);
 };
 
@@ -42,7 +42,7 @@ Categories.getNames = async function () {
 Categories.purge = async function (socket, cid) {
 	sockets.warnDeprecated(socket, 'DELETE /api/v3/categories/:cid');
 
-	await api.categories.delete(socket, { cid: cid });
+	await api.categories.delete(socket, { cid });
 };
 
 Categories.update = async function (socket, data) {

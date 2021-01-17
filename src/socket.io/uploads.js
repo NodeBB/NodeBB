@@ -21,7 +21,7 @@ uploads.upload = async function (socket, data) {
 
 	inProgress[socket.id] = inProgress[socket.id] || {};
 	const socketUploads = inProgress[socket.id];
-	const method = data.params.method;
+	const { method } = data.params;
 
 	socketUploads[method] = socketUploads[method] || { imageData: '' };
 	socketUploads[method].imageData += data.chunk;
@@ -32,7 +32,7 @@ uploads.upload = async function (socket, data) {
 		const size = image.sizeFromBase64(socketUploads[method].imageData);
 
 		if (size > maxSize * 1024) {
-			throw new Error('[[error:file-too-big, ' + maxSize + ']]');
+			throw new Error(`[[error:file-too-big, ${maxSize}]]`);
 		}
 		if (socketUploads[method].imageData.length < data.params.size) {
 			return;

@@ -87,7 +87,7 @@ function checkSetupFlag() {
 }
 
 function checkCIFlag() {
-	var ciVals;
+	let ciVals;
 	try {
 		ciVals = JSON.parse(nconf.get('ci'));
 	} catch (e) {
@@ -129,9 +129,13 @@ async function setupConfig() {
 		const redisQuestions = require('./database/redis').questions;
 		const mongoQuestions = require('./database/mongo').questions;
 		const postgresQuestions = require('./database/postgres').questions;
-		const allQuestions = questions.main.concat(questions.optional).concat(redisQuestions).concat(mongoQuestions).concat(postgresQuestions);
+		const allQuestions = questions.main
+			.concat(questions.optional)
+			.concat(redisQuestions)
+			.concat(mongoQuestions)
+			.concat(postgresQuestions);
 
-		allQuestions.forEach(function (question) {
+		allQuestions.forEach((question) => {
 			if (install.values.hasOwnProperty(question.name)) {
 				config[question.name] = install.values[question.name];
 			} else if (question.hasOwnProperty('default')) {
@@ -150,12 +154,7 @@ async function setupConfig() {
 async function completeConfigSetup(config) {
 	// Add CI object
 	if (install.ciVals) {
-		config.test_database = {};
-		for (var prop in install.ciVals) {
-			if (install.ciVals.hasOwnProperty(prop)) {
-				config.test_database[prop] = install.ciVals[prop];
-			}
-		}
+		config.test_database = { ...install.ciVals };
 	}
 
 	// Add package_manager object if set
@@ -169,9 +168,9 @@ async function completeConfigSetup(config) {
 
 	// Sanity-check/fix url/port
 	if (!/^http(?:s)?:\/\//.test(config.url)) {
-		config.url = 'http://' + config.url;
+		config.url = `http://${config.url}`;
 	}
-	var urlObj = url.parse(config.url);
+	const urlObj = url.parse(config.url);
 	if (urlObj.port) {
 		config.port = urlObj.port;
 	}
@@ -213,7 +212,7 @@ async function enableDefaultTheme() {
 	}
 
 	const defaultTheme = nconf.get('defaultTheme') || 'nodebb-theme-persona';
-	console.log('Enabling default theme: ' + defaultTheme);
+	console.log(`Enabling default theme: ${defaultTheme}`);
 	await meta.themes.set({
 		type: 'local',
 		id: defaultTheme,
@@ -275,7 +274,7 @@ async function createAdmin() {
 		try {
 			User.isPasswordValid(results.password);
 		} catch (err) {
-			winston.warn('Password error, please try again. ' + err.message);
+			winston.warn(`Password error, please try again. ${err.message}`);
 			return await retryPassword(results);
 		}
 
@@ -310,7 +309,8 @@ async function createAdmin() {
 		const results = await promptGet(questions);
 		return await success(results);
 	}
-	// If automated setup did not provide a user password, generate one, it will be shown to the user upon setup completion
+	// If automated setup did not provide a user password,
+	// generate one, it will be shown to the user upon setup completion
 	if (!install.values.hasOwnProperty('admin:password') && !nconf.get('admin:password')) {
 		console.log('Password was not provided during automated setup, generating one...');
 		password = utils.generateUUID().slice(0, 8);
@@ -364,7 +364,7 @@ async function createCategories() {
 	const db = require('./database');
 	const cids = await db.getSortedSetRange('categories:cid', 0, -1);
 	if (Array.isArray(cids) && cids.length) {
-		console.log('Categories OK. Found ' + cids.length + ' categories.');
+		console.log(`Categories OK. Found ${cids.length} categories.`);
 		return;
 	}
 
@@ -406,7 +406,7 @@ async function createWelcomePost() {
 			uid: 1,
 			cid: 2,
 			title: 'Welcome to your NodeBB!',
-			content: content,
+			content,
 		});
 	}
 }
@@ -494,7 +494,7 @@ install.setup = async function () {
 		return data;
 	} catch (err) {
 		if (err) {
-			winston.warn('NodeBB Setup Aborted.\n ' + err.stack);
+			winston.warn(`NodeBB Setup Aborted.\n ${err.stack}`);
 			process.exit(1);
 		}
 	}

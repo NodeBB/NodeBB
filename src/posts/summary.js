@@ -38,8 +38,9 @@ module.exports = function (Posts) {
 		const tidToTopic = toObject('tid', topicsAndCategories.topics);
 		const cidToCategory = toObject('cid', topicsAndCategories.categories);
 
-		posts.forEach(function (post) {
-			// If the post author isn't represented in the retrieved users' data, then it means they were deleted, assume guest.
+		posts.forEach((post) => {
+			// If the post author isn't represented in the retrieved users' data,
+			// then it means they were deleted, assume guest.
 			if (!uidToUser.hasOwnProperty(post.uid)) {
 				post.uid = 0;
 			}
@@ -54,7 +55,7 @@ module.exports = function (Posts) {
 		posts = posts.filter(post => tidToTopic[post.tid]);
 
 		posts = await parsePosts(posts, options);
-		const result = await plugins.hooks.fire('filter:post.getPostSummaryByPids', { posts: posts, uid: uid });
+		const result = await plugins.hooks.fire('filter:post.getPostSummaryByPids', { posts, uid });
 		return result.posts;
 	};
 
@@ -81,8 +82,8 @@ module.exports = function (Posts) {
 	}
 
 	function toObject(key, data) {
-		var obj = {};
-		for (var i = 0; i < data.length; i += 1) {
+		const obj = {};
+		for (let i = 0; i < data.length; i += 1) {
 			obj[data[i][key]] = data[i];
 		}
 		return obj;

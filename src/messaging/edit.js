@@ -17,7 +17,7 @@ module.exports = function (Messaging) {
 		}
 
 		const payload = await plugins.hooks.fire('filter:messaging.edit', {
-			content: content,
+			content,
 			edited: Date.now(),
 		});
 
@@ -32,9 +32,9 @@ module.exports = function (Messaging) {
 			Messaging.getMessagesData([mid], uid, roomId, true),
 		]);
 
-		uids.forEach(function (uid) {
-			sockets.in('uid_' + uid).emit('event:chats.edit', {
-				messages: messages,
+		uids.forEach((uid) => {
+			sockets.in(`uid_${uid}`).emit('event:chats.edit', {
+				messages,
 			});
 		});
 	};
@@ -72,14 +72,14 @@ module.exports = function (Messaging) {
 
 		const chatConfigDuration = meta.config[durationConfig];
 		if (chatConfigDuration && Date.now() - messageData.timestamp > chatConfigDuration * 1000) {
-			throw new Error('[[error:chat-' + type + '-duration-expired, ' + meta.config[durationConfig] + ']]');
+			throw new Error(`[[error:chat-${type}-duration-expired, ${meta.config[durationConfig]}]]`);
 		}
 
 		if (messageData.fromuid === parseInt(uid, 10) && !messageData.system) {
 			return;
 		}
 
-		throw new Error('[[error:cant-' + type + '-chat-message]]');
+		throw new Error(`[[error:cant-${type}-chat-message]]`);
 	};
 
 	Messaging.canEdit = async (messageId, uid) => await canEditDelete(messageId, uid, 'edit');

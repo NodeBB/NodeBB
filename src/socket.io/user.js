@@ -2,6 +2,7 @@
 
 const util = require('util');
 const winston = require('winston');
+
 const sleep = util.promisify(setTimeout);
 
 const api = require('../api');
@@ -76,10 +77,10 @@ SocketUser.reset.send = async function (socket, email) {
 	async function logEvent(text) {
 		await events.log({
 			type: 'password-reset',
-			text: text,
+			text,
 			ip: socket.ip,
 			uid: socket.uid,
-			email: email,
+			email,
 		});
 	}
 	try {
@@ -107,18 +108,18 @@ SocketUser.reset.commit = async function (socket, data) {
 
 	await events.log({
 		type: 'password-reset',
-		uid: uid,
+		uid,
 		ip: socket.ip,
 	});
 
 	const username = await user.getUserField(uid, 'username');
 	const now = new Date();
-	const parsedDate = now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate();
+	const parsedDate = `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}`;
 	emailer.send('reset_notify', uid, {
-		username: username,
+		username,
 		date: parsedDate,
 		subject: '[[email:reset.notify.subject]]',
-	}).catch(err => winston.error('[emailer.send] ' + err.stack));
+	}).catch(err => winston.error(`[emailer.send] ${err.stack}`));
 };
 
 SocketUser.isFollowing = async function (socket, data) {
@@ -243,7 +244,7 @@ SocketUser.gdpr.check = async function (socket, data) {
 	if (!isAdmin) {
 		data.uid = socket.uid;
 	}
-	return await db.getObjectField('user:' + data.uid, 'gdpr_consent');
+	return await db.getObjectField(`user:${data.uid}`, 'gdpr_consent');
 };
 
 require('../promisify')(SocketUser);

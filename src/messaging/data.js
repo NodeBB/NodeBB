@@ -17,10 +17,12 @@ module.exports = function (Messaging) {
 			return [];
 		}
 
-		const keys = mids.map(mid => 'message:' + mid);
+		const keys = mids.map(mid => `message:${mid}`);
 		const messages = await (fields.length ? db.getObjectsFields(keys, fields) : db.getObjects(keys));
 
-		return await Promise.all(messages.map(async (message, idx) => modifyMessage(message, fields, parseInt(mids[idx], 10))));
+		return await Promise.all(
+			messages.map(async (message, idx) => modifyMessage(message, fields, parseInt(mids[idx], 10)))
+		);
 	};
 
 	Messaging.getMessageField = async (mid, field) => {
@@ -34,18 +36,18 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.setMessageField = async (mid, field, content) => {
-		await db.setObjectField('message:' + mid, field, content);
+		await db.setObjectField(`message:${mid}`, field, content);
 	};
 
 	Messaging.setMessageFields = async (mid, data) => {
-		await db.setObject('message:' + mid, data);
+		await db.setObject(`message:${mid}`, data);
 	};
 
 	Messaging.getMessagesData = async (mids, uid, roomId, isNew) => {
 		let messages = await Messaging.getMessagesFields(mids, []);
 		messages = await user.blocks.filter(uid, 'fromuid', messages);
 		messages = messages
-			.map(function (msg, idx) {
+			.map((msg, idx) => {
 				if (msg) {
 					msg.messageId = parseInt(mids[idx], 10);
 					msg.ip = undefined;
@@ -59,12 +61,12 @@ module.exports = function (Messaging) {
 			['uid', 'username', 'userslug', 'picture', 'status', 'banned']
 		);
 
-		messages.forEach(function (message, index) {
+		messages.forEach((message, index) => {
 			message.fromUser = users[index];
 			message.fromUser.banned = !!message.fromUser.banned;
 			message.fromUser.deleted = message.fromuid !== message.fromUser.uid && message.fromUser.uid === 0;
 
-			var self = message.fromuid === parseInt(uid, 10);
+			const self = message.fromuid === parseInt(uid, 10);
 			message.self = self ? 1 : 0;
 
 			message.newSet = false;
@@ -88,7 +90,7 @@ module.exports = function (Messaging) {
 
 		if (messages.length > 1) {
 			// Add a spacer in between messages with time gaps between them
-			messages = messages.map(function (message, index) {
+			messages = messages.map((message, index) => {
 				// Compare timestamps with the previous message, and check if a spacer needs to be added
 				if (index > 0 && message.timestamp > messages[index - 1].timestamp + Messaging.newMessageCutoff) {
 					// If it's been 5 minutes, this is a new set of messages
@@ -104,7 +106,7 @@ module.exports = function (Messaging) {
 			});
 		} else if (messages.length === 1) {
 			// For single messages, we don't know the context, so look up the previous message and compare
-			var key = 'uid:' + uid + ':chat:room:' + roomId + ':mids';
+			const key = `uid:${uid}:chat:room:${roomId}:mids`;
 			const index = await db.sortedSetRank(key, messages[0].messageId);
 			if (index > 0) {
 				const mid = await db.getSortedSetRange(key, index - 1, index - 1);
@@ -122,11 +124,11 @@ module.exports = function (Messaging) {
 		}
 
 		const data = await plugins.hooks.fire('filter:messaging.getMessages', {
-			messages: messages,
-			uid: uid,
-			roomId: roomId,
-			isNew: isNew,
-			mids: mids,
+			messages,
+			uid,
+			roomId,
+			isNew,
+			mids,
 		});
 
 		return data && data.messages;
@@ -145,9 +147,9 @@ async function modifyMessage(message, fields, mid) {
 	}
 
 	const payload = await plugins.hooks.fire('filter:messaging.getFields', {
-		mid: mid,
-		message: message,
-		fields: fields,
+		mid,
+		message,
+		fields,
 	});
 
 	return payload.message;

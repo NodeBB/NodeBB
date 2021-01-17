@@ -90,9 +90,15 @@ define('settings/object', function () {
 						if (value[propertyName] === undefined && attributes['data-new'] !== undefined) {
 							value[propertyName] = attributes['data-new'];
 						}
-						addObjectPropertyElement(element, key, attributes, propertyName, value[propertyName], separator.clone(), function (el) {
-							element.append(el);
-						});
+						addObjectPropertyElement(
+							element,
+							key,
+							attributes,
+							propertyName,
+							value[propertyName],
+							separator.clone(),
+							function (el) { element.append(el); }
+						);
 					}
 				}
 			}

@@ -21,7 +21,7 @@ Sockets.init = function (server) {
 
 	const SocketIO = require('socket.io').Server;
 	const io = new SocketIO({
-		path: nconf.get('relative_path') + '/socket.io',
+		path: `${nconf.get('relative_path')}/socket.io`,
 	});
 
 	if (nconf.get('isCluster')) {
@@ -56,7 +56,7 @@ Sockets.init = function (server) {
 			methods: ['GET', 'POST'],
 			allowedHeaders: ['content-type'],
 		};
-		winston.info('[socket.io] Restricting access to origin: ' + origins);
+		winston.info(`[socket.io] Restricting access to origin: ${origins}`);
 	}
 
 	io.listen(server, opts);
@@ -74,28 +74,28 @@ function onConnection(socket) {
 		onMessage(socket, payload);
 	});
 
-	socket.on('disconnect', function () {
+	socket.on('disconnect', () => {
 		onDisconnect(socket);
 	});
 }
 
 function onDisconnect(socket) {
 	require('./uploads').clear(socket.id);
-	plugins.hooks.fire('action:sockets.disconnect', { socket: socket });
+	plugins.hooks.fire('action:sockets.disconnect', { socket });
 }
 
 function onConnect(socket) {
 	if (socket.uid) {
-		socket.join('uid_' + socket.uid);
+		socket.join(`uid_${socket.uid}`);
 		socket.join('online_users');
 	} else {
 		socket.join('online_guests');
 	}
 
-	socket.join('sess_' + socket.request.signedCookies[nconf.get('sessionKey')]);
+	socket.join(`sess_${socket.request.signedCookies[nconf.get('sessionKey')]}`);
 	socket.emit('checkSession', socket.uid);
 	socket.emit('setHostname', os.hostname());
-	plugins.hooks.fire('action:sockets.connect', { socket: socket });
+	plugins.hooks.fire('action:sockets.connect', { socket });
 }
 
 async function onMessage(socket, payload) {
@@ -113,7 +113,7 @@ async function onMessage(socket, payload) {
 
 	const parts = eventName.toString().split('.');
 	const namespace = parts[0];
-	const methodToCall = parts.reduce(function (prev, cur) {
+	const methodToCall = parts.reduce((prev, cur) => {
 		if (prev !== null && prev[cur]) {
 			return prev[cur];
 		}
@@ -122,7 +122,7 @@ async function onMessage(socket, payload) {
 
 	if (!methodToCall || typeof methodToCall !== 'function') {
 		if (process.env.NODE_ENV === 'development') {
-			winston.warn('[socket.io] Unrecognized message: ' + eventName);
+			winston.warn(`[socket.io] Unrecognized message: ${eventName}`);
 		}
 		return callback({ message: '[[error:invalid-event]]' });
 	}
@@ -134,7 +134,7 @@ async function onMessage(socket, payload) {
 	}
 
 	if (!eventName.startsWith('admin.') && ratelimit.isFlooding(socket)) {
-		winston.warn('[socket.io] Too many emits! Disconnecting uid : ' + socket.uid + '. Events : ' + socket.previousEvents);
+		winston.warn(`[socket.io] Too many emits! Disconnecting uid : ${socket.uid}. Events : ${socket.previousEvents}`);
 		return socket.disconnect();
 	}
 
@@ -150,24 +150,24 @@ async function onMessage(socket, payload) {
 			const result = await methodToCall(socket, params);
 			callback(null, result);
 		} else {
-			methodToCall(socket, params, function (err, result) {
+			methodToCall(socket, params, (err, result) => {
 				callback(err ? { message: err.message } : null, result);
 			});
 		}
 	} catch (err) {
-		winston.error(eventName + '\n' + (err.stack ? err.stack : err.message));
+		winston.error(`${eventName}\n${err.stack ? err.stack : err.message}`);
 		callback({ message: err.message });
 	}
 }
 
 function requireModules() {
-	var modules = ['admin', 'categories', 'groups', 'meta', 'modules',
+	const modules = ['admin', 'categories', 'groups', 'meta', 'modules',
 		'notifications', 'plugins', 'posts', 'topics', 'user', 'blacklist',
 		'flags', 'uploads',
 	];
 
-	modules.forEach(function (module) {
-		Namespaces[module] = require('./' + module);
+	modules.forEach((module) => {
+		Namespaces[module] = require(`./${module}`);
 	});
 }
 
@@ -181,13 +181,15 @@ async function checkMaintenance(socket) {
 		return;
 	}
 	const validator = require('validator');
-	throw new Error('[[pages:maintenance.text, ' + validator.escape(String(meta.config.title || 'NodeBB')) + ']]');
+	throw new Error(`[[pages:maintenance.text, ${validator.escape(String(meta.config.title || 'NodeBB'))}]]`);
 }
 
-const getSessionAsync = util.promisify((sid, callback) => db.sessionStore.get(sid, (err, sessionObj) => callback(err, sessionObj || null)));
+const getSessionAsync = util.promisify(
+	(sid, callback) => db.sessionStore.get(sid, (err, sessionObj) => callback(err, sessionObj || null))
+);
 
 async function validateSession(socket) {
-	var req = socket.request;
+	const req = socket.request;
 	if (!req.signedCookies || !req.signedCookies[nconf.get('sessionKey')]) {
 		return;
 	}
@@ -196,8 +198,8 @@ async function validateSession(socket) {
 		throw new Error('[[error:invalid-session]]');
 	}
 	const result = await plugins.hooks.fire('static:sockets.validateSession', {
-		req: req,
-		socket: socket,
+		req,
+		socket,
 		session: sessionData,
 	});
 	return result;
@@ -206,7 +208,7 @@ async function validateSession(socket) {
 const cookieParserAsync = util.promisify((req, callback) => cookieParser(req, {}, err => callback(err)));
 
 async function authorize(socket, callback) {
-	const request = socket.request;
+	const { request } = socket;
 
 	if (!request) {
 		return callback(new Error('[[error:not-authorized]]'));
@@ -229,7 +231,7 @@ Sockets.in = function (room) {
 };
 
 Sockets.getUserSocketCount = function (uid) {
-	return Sockets.getCountInRoom('uid_' + uid);
+	return Sockets.getCountInRoom(`uid_${uid}`);
 };
 
 Sockets.getCountInRoom = function (room) {
@@ -244,8 +246,8 @@ Sockets.warnDeprecated = (socket, replacement) => {
 	if (socket.previousEvents) {
 		socket.emit('event:deprecated_call', {
 			eventName: socket.previousEvents[socket.previousEvents.length - 1],
-			replacement: replacement,
+			replacement,
 		});
 	}
-	winston.warn('[deprecated]\n ' + (new Error('-').stack.split('\n').slice(2, 5).join('\n')) + '\n     use ' + replacement);
+	winston.warn(`[deprecated]\n ${new Error('-').stack.split('\n').slice(2, 5).join('\n')}\n     use ${replacement}`);
 };

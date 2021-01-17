@@ -21,7 +21,7 @@ connection.getConnectionOptions = function (postgres) {
 		postgres.database = 'nodebb';
 	}
 
-	var connOptions = {
+	const connOptions = {
 		host: postgres.host,
 		port: postgres.port,
 		user: postgres.username,
@@ -34,13 +34,13 @@ connection.getConnectionOptions = function (postgres) {
 };
 
 connection.connect = function (options, callback) {
-	const Pool = require('pg').Pool;
+	const { Pool } = require('pg');
 
 	const connOptions = connection.getConnectionOptions(options);
 
 	const db = new Pool(connOptions);
 
-	db.connect(function (err) {
+	db.connect((err) => {
 		callback(err, db);
 	});
 };

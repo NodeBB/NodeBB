@@ -97,8 +97,12 @@ apiController.loadConfig = async function (req) {
 	config.usePagination = settings.usePagination;
 	config.topicsPerPage = settings.topicsPerPage;
 	config.postsPerPage = settings.postsPerPage;
-	config.userLang = validator.escape(String((req.query.lang ? req.query.lang : null) || settings.userLang || config.defaultLang));
-	config.acpLang = validator.escape(String((req.query.lang ? req.query.lang : null) || settings.acpLang));
+	config.userLang = validator.escape(String(
+		(req.query.lang ? req.query.lang : null) || settings.userLang || config.defaultLang
+	));
+	config.acpLang = validator.escape(String(
+		(req.query.lang ? req.query.lang : null) || settings.acpLang
+	));
 	config.openOutgoingLinksInNewTab = settings.openOutgoingLinksInNewTab;
 	config.topicPostSort = settings.topicPostSort || config.topicPostSort;
 	config.categoryTopicSort = settings.categoryTopicSort || config.categoryTopicSort;
@@ -148,7 +152,7 @@ apiController.getObject = async function (req, res, next) {
 
 apiController.getModerators = async function (req, res) {
 	const moderators = await categories.getModerators(req.params.cid);
-	res.json({ moderators: moderators });
+	res.json({ moderators });
 };
 
 require('../promisify')(apiController, ['getConfig', 'getObject', 'getModerators']);

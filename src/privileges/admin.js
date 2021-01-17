@@ -34,7 +34,7 @@ module.exports = function (privileges) {
 		'admin:settings',
 	];
 
-	privileges.admin.groupPrivilegeList = privileges.admin.userPrivilegeList.map(privilege => 'groups:' + privilege);
+	privileges.admin.groupPrivilegeList = privileges.admin.userPrivilegeList.map(privilege => `groups:${privilege}`);
 
 	// Mapping for a page route (via direct match or regexp) to a privilege
 	privileges.admin.routeMap = {
@@ -190,7 +190,7 @@ module.exports = function (privileges) {
 	privileges.admin.give = async function (privileges, groupName) {
 		await helpers.giveOrRescind(groups.join, privileges, 'admin', groupName);
 		plugins.hooks.fire('action:privileges.admin.give', {
-			privileges: privileges,
+			privileges,
 			groupNames: Array.isArray(groupName) ? groupName : [groupName],
 		});
 	};
@@ -198,7 +198,7 @@ module.exports = function (privileges) {
 	privileges.admin.rescind = async function (privileges, groupName) {
 		await helpers.giveOrRescind(groups.leave, privileges, 'admin', groupName);
 		plugins.hooks.fire('action:privileges.admin.rescind', {
-			privileges: privileges,
+			privileges,
 			groupNames: Array.isArray(groupName) ? groupName : [groupName],
 		});
 	};

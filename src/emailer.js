@@ -85,7 +85,7 @@ const buildCustomTemplates = async (config) => {
 		Benchpress.flush();
 		winston.verbose('[emailer] Built custom email templates');
 	} catch (err) {
-		winston.error('[emailer] Failed to build custom email templates\n' + err.stack);
+		winston.error(`[emailer] Failed to build custom email templates\n${err.stack}`);
 	}
 };
 
@@ -99,11 +99,11 @@ Emailer.getTemplates = async (config) => {
 		const original = await fs.promises.readFile(email, 'utf8');
 
 		return {
-			path: path,
+			path,
 			fullpath: email,
-			text: config['email:custom:' + path] || original,
-			original: original,
-			isCustom: !!config['email:custom:' + path],
+			text: config[`email:custom:${path}`] || original,
+			original,
+			isCustom: !!config[`email:custom:${path}`],
 		};
 	}));
 	return templates;
@@ -239,7 +239,7 @@ Emailer.sendToEmail = async (template, email, language, params) => {
 
 	// Digests and notifications can be one-click unsubbed
 	let payload = {
-		template: template,
+		template,
 		uid: params.uid,
 	};
 
@@ -253,8 +253,8 @@ Emailer.sendToEmail = async (template, email, language, params) => {
 
 		const unsubUrl = [nconf.get('url'), 'email', 'unsubscribe', payload].join('/');
 		params.headers = {
-			'List-Id': '<' + [template, params.uid, getHostname()].join('.') + '>',
-			'List-Unsubscribe': '<' + unsubUrl + '>',
+			'List-Id': `<${[template, params.uid, getHostname()].join('.')}>`,
+			'List-Unsubscribe': `<${unsubUrl}>`,
 			'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
 			...params.headers,
 		};
@@ -262,10 +262,10 @@ Emailer.sendToEmail = async (template, email, language, params) => {
 	}
 
 	const result = await Plugins.hooks.fire('filter:email.params', {
-		template: template,
-		email: email,
+		template,
+		email,
 		language: lang,
-		params: params,
+		params,
 	});
 
 	template = result.template;
@@ -280,14 +280,14 @@ Emailer.sendToEmail = async (template, email, language, params) => {
 	const data = await Plugins.hooks.fire('filter:email.modify', {
 		_raw: params,
 		to: email,
-		from: meta.config['email:from'] || 'no-reply@' + getHostname(),
+		from: meta.config['email:from'] || `no-reply@${getHostname()}`,
 		from_name: meta.config['email:from_name'] || 'NodeBB',
-		subject: '[' + meta.config.title + '] ' + _.unescape(subject),
-		html: html,
+		subject: `[${meta.config.title}] ${_.unescape(subject)}`,
+		html,
 		plaintext: htmlToText(html, {
 			tags: { img: { format: 'skip' } },
 		}),
-		template: template,
+		template,
 		uid: params.uid,
 		pid: params.pid,
 		fromUid: params.fromUid,
@@ -316,15 +316,15 @@ Emailer.sendViaFallback = async (data) => {
 	delete data.plaintext;
 
 	// NodeMailer uses a combined "from"
-	data.from = data.from_name + '<' + data.from + '>';
+	data.from = `${data.from_name}<${data.from}>`;
 	delete data.from_name;
 
-	winston.verbose('[emailer] Sending email to uid ' + data.uid + ' (' + data.to + ')');
+	winston.verbose(`[emailer] Sending email to uid ${data.uid} (${data.to})`);
 	await Emailer.fallbackTransport.sendMail(data);
 };
 
 Emailer.renderAndTranslate = async (template, params, lang) => {
-	const html = await app.renderAsync('emails/' + template, params);
+	const html = await app.renderAsync(`emails/${template}`, params);
 	return await translator.translate(html, lang);
 };
 

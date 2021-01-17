@@ -10,15 +10,15 @@ const batch = require('../../batch');
 module.exports = {
 	name: 'Migrate existing topic thumbnails to new format',
 	timestamp: Date.UTC(2020, 11, 11),
-	method: async function () {
-		const progress = this.progress;
+	async method() {
+		const { progress } = this;
 		const current = await meta.configs.get('topicThumbSize');
 
 		if (parseInt(current, 10) === 120) {
 			await meta.configs.set('topicThumbSize', 512);
 		}
 
-		await batch.processSortedSet('topics:tid', async function (tids) {
+		await batch.processSortedSet('topics:tid', async (tids) => {
 			const keys = tids.map(tid => `topic:${tid}`);
 			const topicThumbs = (await db.getObjectsFields(keys, ['thumb']))
 				.map(obj => (obj.thumb ? obj.thumb.replace(nconf.get('upload_url'), '') : null));
@@ -36,7 +36,7 @@ module.exports = {
 			}));
 		}, {
 			batch: 500,
-			progress: progress,
+			progress,
 		});
 	},
 };

@@ -1,9 +1,9 @@
 'use strict';
 
 module.exports = function (module) {
-	var helpers = require('./helpers');
+	const helpers = require('./helpers');
 	const util = require('util');
-	var Cursor = require('pg-cursor');
+	const Cursor = require('pg-cursor');
 	Cursor.prototype.readAsync = util.promisify(Cursor.prototype.read);
 	const sleep = util.promisify(setTimeout);
 
@@ -41,25 +41,25 @@ module.exports = function (module) {
 			return [];
 		}
 
-		var reverse = false;
+		let reverse = false;
 		if (start === 0 && stop < -1) {
 			reverse = true;
 			sort *= -1;
 			start = Math.abs(stop + 1);
 			stop = -1;
 		} else if (start < 0 && stop > start) {
-			var tmp1 = Math.abs(stop + 1);
+			const tmp1 = Math.abs(stop + 1);
 			stop = Math.abs(start + 1);
 			start = tmp1;
 		}
 
-		var limit = stop - start + 1;
+		let limit = stop - start + 1;
 		if (limit <= 0) {
 			limit = null;
 		}
 
 		const res = await module.pool.query({
-			name: 'getSortedSetRangeWithScores' + (sort > 0 ? 'Asc' : 'Desc'),
+			name: `getSortedSetRangeWithScores${sort > 0 ? 'Asc' : 'Desc'}`,
 			text: `
 SELECT z."value",
        z."score"
@@ -68,7 +68,7 @@ SELECT z."value",
          ON o."_key" = z."_key"
         AND o."type" = z."type"
  WHERE o."_key" = ANY($1::TEXT[])
- ORDER BY z."score" ` + (sort > 0 ? 'ASC' : 'DESC') + `
+ ORDER BY z."score" ${sort > 0 ? 'ASC' : 'DESC'}
  LIMIT $3::INTEGER
 OFFSET $2::INTEGER`,
 			values: [key, start, limit],
@@ -124,7 +124,7 @@ OFFSET $2::INTEGER`,
 		}
 
 		const res = await module.pool.query({
-			name: 'getSortedSetRangeByScoreWithScores' + (sort > 0 ? 'Asc' : 'Desc'),
+			name: `getSortedSetRangeByScoreWithScores${sort > 0 ? 'Asc' : 'Desc'}`,
 			text: `
 SELECT z."value",
        z."score"
@@ -135,7 +135,7 @@ SELECT z."value",
  WHERE o."_key" = ANY($1::TEXT[])
    AND (z."score" >= $4::NUMERIC OR $4::NUMERIC IS NULL)
    AND (z."score" <= $5::NUMERIC OR $5::NUMERIC IS NULL)
- ORDER BY z."score" ` + (sort > 0 ? 'ASC' : 'DESC') + `
+ ORDER BY z."score" ${sort > 0 ? 'ASC' : 'DESC'}
  LIMIT $3::INTEGER
 OFFSET $2::INTEGER`,
 			values: [key, start, count, min, max],
@@ -218,9 +218,7 @@ SELECT o."_key" k,
 			values: [keys],
 		});
 
-		return keys.map(function (k) {
-			return parseInt((res.rows.find(r => r.k === k) || { c: 0 }).c, 10);
-		});
+		return keys.map(k => parseInt((res.rows.find(r => r.k === k) || { c: 0 }).c, 10));
 	};
 
 	module.sortedSetsCardSum = async function (keys) {
@@ -248,13 +246,13 @@ SELECT o."_key" k,
 	async function getSortedSetRank(sort, keys, values) {
 		values = values.map(helpers.valueToString);
 		const res = await module.pool.query({
-			name: 'getSortedSetRank' + sort,
+			name: `getSortedSetRank${sort}`,
 			text: `
 SELECT (SELECT r
           FROM (SELECT z."value" v,
                        RANK() OVER (PARTITION BY o."_key"
-                                        ORDER BY z."score" ` + sort + `,
-                                                 z."value" ` + sort + `) - 1 r
+                                        ORDER BY z."score" ${sort},
+                                                 z."value" ${sort}) - 1 r
                   FROM "legacy_object_live" o
                  INNER JOIN "legacy_zset" z
                          ON o."_key" = z."_key"
@@ -347,8 +345,8 @@ SELECT o."_key" k,
 			values: [keys, value],
 		});
 
-		return keys.map(function (k) {
-			var s = res.rows.find(r => r.k === k);
+		return keys.map((k) => {
+			const s = res.rows.find(r => r.k === k);
 			return s ? parseFloat(s.s) : null;
 		});
 	};
@@ -376,8 +374,8 @@ SELECT z."value" v,
 			values: [key, values],
 		});
 
-		return values.map(function (v) {
-			var s = res.rows.find(r => r.v === v);
+		return values.map((v) => {
+			const s = res.rows.find(r => r.v === v);
 			return s ? parseFloat(s.s) : null;
 		});
 	};
@@ -428,9 +426,7 @@ SELECT z."value" v
 			values: [key, values],
 		});
 
-		return values.map(function (v) {
-			return res.rows.some(r => r.v === v);
-		});
+		return values.map(v => res.rows.some(r => r.v === v));
 	};
 
 	module.isMemberOfSortedSets = async function (keys, value) {
@@ -453,9 +449,7 @@ SELECT o."_key" k
 			values: [keys, value],
 		});
 
-		return keys.map(function (k) {
-			return res.rows.some(r => r.k === k);
-		});
+		return keys.map(k => res.rows.some(r => r.k === k));
 	};
 
 	module.getSortedSetMembers = async function (key) {
@@ -477,9 +471,7 @@ SELECT "_key" k,
 			values: [keys],
 		});
 
-		return keys.map(function (k) {
-			return (res.rows.find(r => r.k === k) || {}).m || [];
-		});
+		return keys.map(k => (res.rows.find(r => r.k === k) || {}).m || []);
 	};
 
 	module.sortedSetIncrBy = async function (key, increment, value) {
@@ -490,7 +482,7 @@ SELECT "_key" k,
 		value = helpers.valueToString(value);
 		increment = parseFloat(increment);
 
-		return await module.transaction(async function (client) {
+		return await module.transaction(async (client) => {
 			await helpers.ensureLegacyObjectType(client, key, 'zset');
 			const res = await client.query({
 				name: 'sortedSetIncrBy',
@@ -515,17 +507,17 @@ RETURNING "score" s`,
 	};
 
 	module.sortedSetLexCount = async function (key, min, max) {
-		var q = buildLexQuery(key, min, max);
+		const q = buildLexQuery(key, min, max);
 
 		const res = await module.pool.query({
-			name: 'sortedSetLexCount' + q.suffix,
+			name: `sortedSetLexCount${q.suffix}`,
 			text: `
 SELECT COUNT(*) c
   FROM "legacy_object_live" o
  INNER JOIN "legacy_zset" z
          ON o."_key" = z."_key"
         AND o."type" = z."type"
- WHERE ` + q.where,
+ WHERE ${q.where}`,
 			values: q.values,
 		});
 
@@ -536,21 +528,21 @@ SELECT COUNT(*) c
 		start = start !== undefined ? start : 0;
 		count = count !== undefined ? count : 0;
 
-		var q = buildLexQuery(key, min, max);
+		const q = buildLexQuery(key, min, max);
 		q.values.push(start);
 		q.values.push(count <= 0 ? null : count);
 		const res = await module.pool.query({
-			name: 'sortedSetLex' + (sort > 0 ? 'Asc' : 'Desc') + q.suffix,
+			name: `sortedSetLex${sort > 0 ? 'Asc' : 'Desc'}${q.suffix}`,
 			text: `
 SELECT z."value" v
   FROM "legacy_object_live" o
  INNER JOIN "legacy_zset" z
          ON o."_key" = z."_key"
         AND o."type" = z."type"
- WHERE ` + q.where + `
- ORDER BY z."value" ` + (sort > 0 ? 'ASC' : 'DESC') + `
- LIMIT $` + q.values.length + `::INTEGER
-OFFSET $` + (q.values.length - 1) + `::INTEGER`,
+ WHERE ${q.where}
+ ORDER BY z."value" ${sort > 0 ? 'ASC' : 'DESC'}
+ LIMIT $${q.values.length}::INTEGER
+OFFSET $${q.values.length - 1}::INTEGER`,
 			values: q.values,
 		});
 
@@ -558,21 +550,21 @@ OFFSET $` + (q.values.length - 1) + `::INTEGER`,
 	}
 
 	module.sortedSetRemoveRangeByLex = async function (key, min, max) {
-		var q = buildLexQuery(key, min, max);
+		const q = buildLexQuery(key, min, max);
 		await module.pool.query({
-			name: 'sortedSetRemoveRangeByLex' + q.suffix,
+			name: `sortedSetRemoveRangeByLex${q.suffix}`,
 			text: `
 DELETE FROM "legacy_zset" z
  USING "legacy_object_live" o
  WHERE o."_key" = z."_key"
    AND o."type" = z."type"
-   AND ` + q.where,
+   AND ${q.where}`,
 			values: q.values,
 		});
 	};
 
 	function buildLexQuery(key, min, max) {
-		var q = {
+		const q = {
 			suffix: '',
 			where: `o."_key" = $1::TEXT`,
 			values: [key],
@@ -582,15 +574,15 @@ DELETE FROM "legacy_zset" z
 			if (min.match(/^\(/)) {
 				q.values.push(min.substr(1));
 				q.suffix += 'GT';
-				q.where += ` AND z."value" > $` + q.values.length + `::TEXT COLLATE "C"`;
+				q.where += ` AND z."value" > $${q.values.length}::TEXT COLLATE "C"`;
 			} else if (min.match(/^\[/)) {
 				q.values.push(min.substr(1));
 				q.suffix += 'GE';
-				q.where += ` AND z."value" >= $` + q.values.length + `::TEXT COLLATE "C"`;
+				q.where += ` AND z."value" >= $${q.values.length}::TEXT COLLATE "C"`;
 			} else {
 				q.values.push(min);
 				q.suffix += 'GE';
-				q.where += ` AND z."value" >= $` + q.values.length + `::TEXT COLLATE "C"`;
+				q.where += ` AND z."value" >= $${q.values.length}::TEXT COLLATE "C"`;
 			}
 		}
 
@@ -598,15 +590,15 @@ DELETE FROM "legacy_zset" z
 			if (max.match(/^\(/)) {
 				q.values.push(max.substr(1));
 				q.suffix += 'LT';
-				q.where += ` AND z."value" < $` + q.values.length + `::TEXT COLLATE "C"`;
+				q.where += ` AND z."value" < $${q.values.length}::TEXT COLLATE "C"`;
 			} else if (max.match(/^\[/)) {
 				q.values.push(max.substr(1));
 				q.suffix += 'LE';
-				q.where += ` AND z."value" <= $` + q.values.length + `::TEXT COLLATE "C"`;
+				q.where += ` AND z."value" <= $${q.values.length}::TEXT COLLATE "C"`;
 			} else {
 				q.values.push(max);
 				q.suffix += 'LE';
-				q.where += ` AND z."value" <= $` + q.values.length + `::TEXT COLLATE "C"`;
+				q.where += ` AND z."value" <= $${q.values.length}::TEXT COLLATE "C"`;
 			}
 		}
 
@@ -614,13 +606,13 @@ DELETE FROM "legacy_zset" z
 	}
 
 	module.getSortedSetScan = async function (params) {
-		let match = params.match;
+		let { match } = params;
 		if (match.startsWith('*')) {
-			match = '%' + match.substring(1);
+			match = `%${match.substring(1)}`;
 		}
 
 		if (match.endsWith('*')) {
-			match = match.substring(0, match.length - 1) + '%';
+			match = `${match.substring(0, match.length - 1)}%`;
 		}
 
 		const res = await module.pool.query({
@@ -644,8 +636,8 @@ SELECT z."value",
 
 	module.processSortedSet = async function (setKey, process, options) {
 		const client = await module.pool.connect();
-		var batchSize = (options || {}).batch || 100;
-		var cursor = client.query(new Cursor(`
+		const batchSize = (options || {}).batch || 100;
+		const cursor = client.query(new Cursor(`
 SELECT z."value", z."score"
   FROM "legacy_object_live" o
  INNER JOIN "legacy_zset" z

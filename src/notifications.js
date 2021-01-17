@@ -61,13 +61,13 @@ Notifications.getMultiple = async function (nids) {
 		return [];
 	}
 
-	const keys = nids.map(nid => 'notifications:' + nid);
+	const keys = nids.map(nid => `notifications:${nid}`);
 	const notifications = await db.getObjects(keys);
 
 	const userKeys = notifications.map(n => n && n.from);
 	const usersData = await User.getUsersFields(userKeys, ['username', 'userslug', 'picture']);
 
-	notifications.forEach(function (notification, index) {
+	notifications.forEach((notification, index) => {
 		if (notification) {
 			if (notification.path && !notification.path.startsWith('http')) {
 				notification.path = nconf.get('relative_path') + notification.path;
@@ -85,7 +85,7 @@ Notifications.getMultiple = async function (nids) {
 					notification.bodyShort = notification.bodyShort.replace(/([\s\S]*?),[\s\S]*?,([\s\S]*?)/, '$1, [[global:guest]], $2');
 				}
 			} else if (notification.image === 'brand:logo' || !notification.image) {
-				notification.image = meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png';
+				notification.image = meta.config['brand:logo'] || `${nconf.get('relative_path')}/logo.png`;
 			}
 		}
 	});
@@ -105,7 +105,7 @@ Notifications.findRelated = async function (mergeIds, set) {
 	// A related notification is one in a zset that has the same mergeId
 	const nids = await db.getSortedSetRevRange(set, 0, -1);
 
-	const keys = nids.map(nid => 'notifications:' + nid);
+	const keys = nids.map(nid => `notifications:${nid}`);
 	const notificationData = await db.getObjectsFields(keys, ['mergeId']);
 	const notificationMergeIds = notificationData.map(notifObj => String(notifObj.mergeId));
 	const mergeSet = new Set(mergeIds.map(id => String(id)));
@@ -117,15 +117,19 @@ Notifications.create = async function (data) {
 		throw new Error('[[error:no-notification-id]]');
 	}
 	data.importance = data.importance || 5;
-	const oldNotif = await db.getObject('notifications:' + data.nid);
-	if (oldNotif && parseInt(oldNotif.pid, 10) === parseInt(data.pid, 10) && parseInt(oldNotif.importance, 10) > parseInt(data.importance, 10)) {
+	const oldNotif = await db.getObject(`notifications:${data.nid}`);
+	if (
+		oldNotif &&
+		parseInt(oldNotif.pid, 10) === parseInt(data.pid, 10) &&
+		parseInt(oldNotif.importance, 10) > parseInt(data.importance, 10)
+	) {
 		return null;
 	}
 	const now = Date.now();
 	data.datetime = now;
 	await Promise.all([
 		db.sortedSetAdd('notifications', now, data.nid),
-		db.setObject('notifications:' + data.nid, data),
+		db.setObject(`notifications:${data.nid}`, data),
 	]);
 	return data;
 };
@@ -139,10 +143,10 @@ Notifications.push = async function (notification, uids) {
 		return;
 	}
 
-	setTimeout(function () {
-		batch.processArray(uids, async function (uids) {
+	setTimeout(() => {
+		batch.processArray(uids, async (uids) => {
 			await pushToUids(uids, notification);
-		}, { interval: 1000 }, function (err) {
+		}, { interval: 1000 }, (err) => {
 			if (err) {
 				winston.error(err.stack);
 			}
@@ -156,16 +160,16 @@ async function pushToUids(uids, notification) {
 			return;
 		}
 		const oneWeekAgo = Date.now() - 604800000;
-		const unreadKeys = uids.map(uid => 'uid:' + uid + ':notifications:unread');
-		const readKeys = uids.map(uid => 'uid:' + uid + ':notifications:read');
+		const unreadKeys = uids.map(uid => `uid:${uid}:notifications:unread`);
+		const readKeys = uids.map(uid => `uid:${uid}:notifications:read`);
 		await db.sortedSetsAdd(unreadKeys, notification.datetime, notification.nid);
 		await db.sortedSetsRemove(readKeys, notification.nid);
 		await db.sortedSetsRemoveRangeByScore(unreadKeys, '-inf', oneWeekAgo);
 		await db.sortedSetsRemoveRangeByScore(readKeys, '-inf', oneWeekAgo);
 		const websockets = require('./socket.io');
 		if (websockets.server) {
-			uids.forEach(function (uid) {
-				websockets.in('uid_' + uid).emit('event:new_notification', notification);
+			uids.forEach((uid) => {
+				websockets.in(`uid_${uid}`).emit('event:new_notification', notification);
 			});
 		}
 	}
@@ -187,10 +191,10 @@ async function pushToUids(uids, notification) {
 				notification_url: notification.path.startsWith('http') ? notification.path : nconf.get('url') + notification.path,
 				subject: utils.stripHTMLTags(notification.subject || '[[notifications:new_notification]]'),
 				intro: utils.stripHTMLTags(notification.bodyShort),
-				body: body,
-				notification: notification,
+				body,
+				notification,
 				showUnsubscribe: true,
-			}).catch(err => winston.error('[emailer.send] ' + err.stack));
+			}).catch(err => winston.error(`[emailer.send] ${err.stack}`));
 		});
 	}
 
@@ -198,8 +202,8 @@ async function pushToUids(uids, notification) {
 		const uidsToNotify = [];
 		const uidsToEmail = [];
 		const usersSettings = await User.getMultipleUserSettings(uids);
-		usersSettings.forEach(function (userSettings) {
-			const setting = userSettings['notificationType_' + notification.type] || 'notification';
+		usersSettings.forEach((userSettings) => {
+			const setting = userSettings[`notificationType_${notification.type}`] || 'notification';
 
 			if (setting === 'notification' || setting === 'notificationemail') {
 				uidsToNotify.push(userSettings.uid);
@@ -209,12 +213,12 @@ async function pushToUids(uids, notification) {
 				uidsToEmail.push(userSettings.uid);
 			}
 		});
-		return { uidsToNotify: uidsToNotify, uidsToEmail: uidsToEmail };
+		return { uidsToNotify, uidsToEmail };
 	}
 
 	// Remove uid from recipients list if they have blocked the user triggering the notification
 	uids = await User.blocks.filterUids(notification.from, uids);
-	const data = await plugins.hooks.fire('filter:notification.push', { notification: notification, uids: uids });
+	const data = await plugins.hooks.fire('filter:notification.push', { notification, uids });
 	if (!data || !data.notification || !data.uids || !data.uids.length) {
 		return;
 	}
@@ -229,7 +233,7 @@ async function pushToUids(uids, notification) {
 		sendEmail(results.uidsToEmail),
 	]);
 	plugins.hooks.fire('action:notification.pushed', {
-		notification: notification,
+		notification,
 		uids: results.uidsToNotify,
 		uidsNotified: results.uidsToNotify,
 		uidsEmailed: results.uidsToEmail,
@@ -256,7 +260,7 @@ Notifications.pushGroups = async function (notification, groupNames) {
 Notifications.rescind = async function (nid) {
 	await Promise.all([
 		db.sortedSetRemove('notifications', nid),
-		db.delete('notifications:' + nid),
+		db.delete(`notifications:${nid}`),
 	]);
 };
 
@@ -271,15 +275,15 @@ Notifications.markUnread = async function (nid, uid) {
 	if (!(parseInt(uid, 10) > 0) || !nid) {
 		return;
 	}
-	const notification = await db.getObject('notifications:' + nid);
+	const notification = await db.getObject(`notifications:${nid}`);
 	if (!notification) {
 		throw new Error('[[error:no-notification]]');
 	}
 	notification.datetime = notification.datetime || Date.now();
 
 	await Promise.all([
-		db.sortedSetRemove('uid:' + uid + ':notifications:read', nid),
-		db.sortedSetAdd('uid:' + uid + ':notifications:unread', notification.datetime, nid),
+		db.sortedSetRemove(`uid:${uid}:notifications:read`, nid),
+		db.sortedSetAdd(`uid:${uid}:notifications:unread`, notification.datetime, nid),
 	]);
 };
 
@@ -289,13 +293,13 @@ Notifications.markReadMultiple = async function (nids, uid) {
 		return;
 	}
 
-	let notificationKeys = nids.map(nid => 'notifications:' + nid);
+	let notificationKeys = nids.map(nid => `notifications:${nid}`);
 	let mergeIds = await db.getObjectsFields(notificationKeys, ['mergeId']);
 	// Isolate mergeIds and find related notifications
 	mergeIds = _.uniq(mergeIds.map(set => set.mergeId));
 
-	const relatedNids = await Notifications.findRelated(mergeIds, 'uid:' + uid + ':notifications:unread');
-	notificationKeys = _.union(nids, relatedNids).map(nid => 'notifications:' + nid);
+	const relatedNids = await Notifications.findRelated(mergeIds, `uid:${uid}:notifications:unread`);
+	notificationKeys = _.union(nids, relatedNids).map(nid => `notifications:${nid}`);
 
 	let notificationData = await db.getObjectsFields(notificationKeys, ['nid', 'datetime']);
 	notificationData = notificationData.filter(n => n && n.nid);
@@ -303,13 +307,13 @@ Notifications.markReadMultiple = async function (nids, uid) {
 	nids = notificationData.map(n => n.nid);
 	const datetimes = notificationData.map(n => (n && n.datetime) || Date.now());
 	await Promise.all([
-		db.sortedSetRemove('uid:' + uid + ':notifications:unread', nids),
-		db.sortedSetAdd('uid:' + uid + ':notifications:read', datetimes, nids),
+		db.sortedSetRemove(`uid:${uid}:notifications:unread`, nids),
+		db.sortedSetAdd(`uid:${uid}:notifications:read`, datetimes, nids),
 	]);
 };
 
 Notifications.markAllRead = async function (uid) {
-	const nids = await db.getSortedSetRevRange('uid:' + uid + ':notifications:unread', 0, 99);
+	const nids = await db.getSortedSetRevRange(`uid:${uid}:notifications:unread`, 0, 99);
 	await Notifications.markReadMultiple(nids, uid);
 };
 
@@ -323,17 +327,17 @@ Notifications.prune = async function () {
 	try {
 		await Promise.all([
 			db.sortedSetRemove('notifications', nids),
-			db.deleteAll(nids.map(nid => 'notifications:' + nid)),
+			db.deleteAll(nids.map(nid => `notifications:${nid}`)),
 		]);
 
-		await batch.processSortedSet('users:joindate', async function (uids) {
-			const unread = uids.map(uid => 'uid:' + uid + ':notifications:unread');
-			const read = uids.map(uid => 'uid:' + uid + ':notifications:read');
+		await batch.processSortedSet('users:joindate', async (uids) => {
+			const unread = uids.map(uid => `uid:${uid}:notifications:unread`);
+			const read = uids.map(uid => `uid:${uid}:notifications:read`);
 			await db.sortedSetsRemoveRangeByScore(unread.concat(read), '-inf', cutoffTime);
 		}, { batch: 500, interval: 100 });
 	} catch (err) {
 		if (err) {
-			winston.error('Encountered error pruning notifications\n' + err.stack);
+			winston.error(`Encountered error pruning notifications\n${err.stack}`);
 		}
 	}
 };
@@ -350,14 +354,14 @@ Notifications.merge = async function (notifications) {
 		'post-queue',
 	];
 
-	notifications = mergeIds.reduce(function (notifications, mergeId) {
+	notifications = mergeIds.reduce((notifications, mergeId) => {
 		const isolated = notifications.filter(n => n && n.hasOwnProperty('mergeId') && n.mergeId.split('|')[0] === mergeId);
 		if (isolated.length <= 1) {
 			return notifications;	// Nothing to merge
 		}
 
 		// Each isolated mergeId may have multiple differentiators, so process each separately
-		const differentiators = isolated.reduce(function (cur, next) {
+		const differentiators = isolated.reduce((cur, next) => {
 			const differentiator = next.mergeId.split('|')[1] || 0;
 			if (!cur.includes(differentiator)) {
 				cur.push(differentiator);
@@ -366,12 +370,12 @@ Notifications.merge = async function (notifications) {
 			return cur;
 		}, []);
 
-		differentiators.forEach(function (differentiator) {
+		differentiators.forEach((differentiator) => {
 			let set;
 			if (differentiator === 0 && differentiators.length === 1) {
 				set = isolated;
 			} else {
-				set = isolated.filter(n => n.mergeId === (mergeId + '|' + differentiator));
+				set = isolated.filter(n => n.mergeId === (`${mergeId}|${differentiator}`));
 			}
 
 			const modifyIndex = notifications.indexOf(set[0]);
@@ -384,35 +388,35 @@ Notifications.merge = async function (notifications) {
 				case 'notifications:user_started_following_you':
 				case 'notifications:user_posted_to':
 				case 'notifications:user_flagged_post_in':
-				case 'notifications:user_flagged_user':
-					var usernames = _.uniq(set.map(notifObj => notifObj && notifObj.user && notifObj.user.username));
-					var numUsers = usernames.length;
+				case 'notifications:user_flagged_user': {
+					const usernames = _.uniq(set.map(notifObj => notifObj && notifObj.user && notifObj.user.username));
+					const numUsers = usernames.length;
 
-					var title = utils.decodeHTMLEntities(notifications[modifyIndex].topicTitle || '');
-					var titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
-					titleEscaped = titleEscaped ? (', ' + titleEscaped) : '';
+					const title = utils.decodeHTMLEntities(notifications[modifyIndex].topicTitle || '');
+					const titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+					const titleFixed = titleEscaped ? (`, ${titleEscaped}`) : '';
 
 					if (numUsers === 2) {
-						notifications[modifyIndex].bodyShort = '[[' + mergeId + '_dual, ' + usernames.join(', ') + titleEscaped + ']]';
+						notifications[modifyIndex].bodyShort = `[[${mergeId}_dual, ${usernames.join(', ')}${titleFixed}]]`;
 					} else if (numUsers > 2) {
-						notifications[modifyIndex].bodyShort = '[[' + mergeId + '_multiple, ' + usernames[0] + ', ' + (numUsers - 1) + titleEscaped + ']]';
+						notifications[modifyIndex].bodyShort = `[[${mergeId}_multiple, ${usernames[0]}, ${numUsers - 1}${titleFixed}]]`;
 					}
 
 					notifications[modifyIndex].path = set[set.length - 1].path;
-					break;
+				}	break;
 
 				case 'new_register':
-					notifications[modifyIndex].bodyShort = '[[notifications:' + mergeId + '_multiple, ' + set.length + ']]';
+					notifications[modifyIndex].bodyShort = `[[notifications:${mergeId}_multiple, ${set.length}]]`;
 					break;
 			}
 
 			// Filter out duplicates
-			notifications = notifications.filter(function (notifObj, idx) {
+			notifications = notifications.filter((notifObj, idx) => {
 				if (!notifObj || !notifObj.mergeId) {
 					return true;
 				}
 
-				return !(notifObj.mergeId === (mergeId + (differentiator ? '|' + differentiator : '')) && idx !== modifyIndex);
+				return !(notifObj.mergeId === (mergeId + (differentiator ? `|${differentiator}` : '')) && idx !== modifyIndex);
 			});
 		});
 
@@ -420,7 +424,7 @@ Notifications.merge = async function (notifications) {
 	}, notifications);
 
 	const data = await plugins.hooks.fire('filter:notifications.merge', {
-		notifications: notifications,
+		notifications,
 	});
 	return data && data.notifications;
 };

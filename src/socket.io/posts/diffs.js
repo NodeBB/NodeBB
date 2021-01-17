@@ -28,9 +28,9 @@ module.exports = function (SocketPosts) {
 		timestamps.push(post.timestamp);
 
 		return {
-			timestamps: timestamps,
+			timestamps,
 			revisions: timestamps.map((timestamp, idx) => ({
-				timestamp: timestamp,
+				timestamp,
 				username: usernames[idx],
 			})),
 			editable: canEdit,
@@ -62,6 +62,6 @@ module.exports = function (SocketPosts) {
 		}
 
 		const edit = await posts.diffs.restore(data.pid, data.since, socket.uid, apiHelpers.buildReqObject(socket));
-		websockets.in('topic_' + edit.topic.tid).emit('event:post_edited', edit);
+		websockets.in(`topic_${edit.topic.tid}`).emit('event:post_edited', edit);
 	};
 };

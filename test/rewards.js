@@ -1,25 +1,25 @@
 'use strict';
 
-var assert = require('assert');
-var async = require('async');
+const assert = require('assert');
+const async = require('async');
 
-var db = require('./mocks/databasemock');
-var meta = require('../src/meta');
-var User = require('../src/user');
-var Groups = require('../src/groups');
+const db = require('./mocks/databasemock');
+const meta = require('../src/meta');
+const User = require('../src/user');
+const Groups = require('../src/groups');
 
-describe('rewards', function () {
-	var adminUid;
-	var bazUid;
-	var herpUid;
+describe('rewards', () => {
+	let adminUid;
+	let bazUid;
+	let herpUid;
 
-	before(function (done) {
+	before((done) => {
 		// Create 3 users: 1 admin, 2 regular
 		async.series([
 			async.apply(User.create, { username: 'foo' }),
 			async.apply(User.create, { username: 'baz' }),
 			async.apply(User.create, { username: 'herp' }),
-		], function (err, uids) {
+		], (err, uids) => {
 			if (err) {
 				return done(err);
 			}
@@ -39,11 +39,11 @@ describe('rewards', function () {
 		});
 	});
 
-	describe('rewards create', function () {
-		var socketAdmin = require('../src/socket.io/admin');
-		var rewards = require('../src/rewards');
-		it('it should save a reward', function (done) {
-			var data = [
+	describe('rewards create', () => {
+		const socketAdmin = require('../src/socket.io/admin');
+		const rewards = require('../src/rewards');
+		it('it should save a reward', (done) => {
+			const data = [
 				{
 					rewards: { groupname: 'Gamers' },
 					condition: 'essentials/user.postcount',
@@ -56,21 +56,21 @@ describe('rewards', function () {
 				},
 			];
 
-			socketAdmin.rewards.save({ uid: adminUid }, data, function (err) {
+			socketAdmin.rewards.save({ uid: adminUid }, data, (err) => {
 				assert.ifError(err);
 				done();
 			});
 		});
 
-		it('should check condition', function (done) {
+		it('should check condition', (done) => {
 			function method(next) {
 				next(null, 1);
 			}
 			rewards.checkConditionAndRewardUser({
 				uid: adminUid,
 				condition: 'essentials/user.postcount',
-				method: method,
-			}, function (err, data) {
+				method,
+			}, (err, data) => {
 				assert.ifError(err);
 				done();
 			});

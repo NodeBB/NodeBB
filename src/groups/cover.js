@@ -31,22 +31,22 @@ module.exports = function (Groups) {
 				tempPath = await image.writeImageDataToTempFile(data.imageData);
 			}
 
-			const filename = 'groupCover-' + data.groupName + path.extname(tempPath);
+			const filename = `groupCover-${data.groupName}${path.extname(tempPath)}`;
 			const uploadData = await image.uploadImage(filename, 'files', {
 				path: tempPath,
-				uid: uid,
+				uid,
 				name: 'groupCover',
 			});
-			const url = uploadData.url;
+			const { url } = uploadData;
 			await Groups.setGroupField(data.groupName, 'cover:url', url);
 
 			await image.resizeImage({
 				path: tempPath,
 				width: 358,
 			});
-			const thumbUploadData = await image.uploadImage('groupCoverThumb-' + data.groupName + path.extname(tempPath), 'files', {
+			const thumbUploadData = await image.uploadImage(`groupCoverThumb-${data.groupName}${path.extname(tempPath)}`, 'files', {
 				path: tempPath,
-				uid: uid,
+				uid,
 				name: 'groupCover',
 			});
 			await Groups.setGroupField(data.groupName, 'cover:thumb:url', thumbUploadData.url);
@@ -55,13 +55,13 @@ module.exports = function (Groups) {
 				await Groups.updateCoverPosition(data.groupName, data.position);
 			}
 
-			return { url: url };
+			return { url };
 		} finally {
 			file.delete(tempPath);
 		}
 	};
 
 	Groups.removeCover = async function (data) {
-		await db.deleteObjectFields('group:' + data.groupName, ['cover:url', 'cover:thumb:url', 'cover:position']);
+		await db.deleteObjectFields(`group:${data.groupName}`, ['cover:url', 'cover:thumb:url', 'cover:position']);
 	};
 };

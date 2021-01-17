@@ -13,6 +13,7 @@ const utils = require('../utils');
 const api = require('../api');
 
 const sockets = require('.');
+
 const SocketPosts = module.exports;
 
 require('./posts/edit')(SocketPosts);
@@ -66,7 +67,7 @@ SocketPosts.getRawPost = async function (socket, pid) {
 		throw new Error('[[error:no-post]]');
 	}
 	postData.pid = pid;
-	const result = await plugins.hooks.fire('filter:post.getRawPost', { uid: socket.uid, postData: postData });
+	const result = await plugins.hooks.fire('filter:post.getRawPost', { uid: socket.uid, postData });
 	return result.postData.content;
 };
 
@@ -78,7 +79,7 @@ SocketPosts.getPostSummaryByIndex = async function (socket, data) {
 	if (data.index === 0) {
 		pid = await topics.getTopicField(data.tid, 'mainPid');
 	} else {
-		pid = await db.getSortedSetRange('tid:' + data.tid + ':posts', data.index - 1, data.index - 1);
+		pid = await db.getSortedSetRange(`tid:${data.tid}:posts`, data.index - 1, data.index - 1);
 	}
 	pid = Array.isArray(pid) ? pid[0] : pid;
 	if (!pid) {
@@ -101,27 +102,27 @@ SocketPosts.getPost = async function (socket, pid) {
 };
 
 SocketPosts.loadMoreBookmarks = async function (socket, data) {
-	return await loadMorePosts('uid:' + data.uid + ':bookmarks', socket.uid, data);
+	return await loadMorePosts(`uid:${data.uid}:bookmarks`, socket.uid, data);
 };
 
 SocketPosts.loadMoreUserPosts = async function (socket, data) {
 	const cids = await categories.getCidsByPrivilege('categories:cid', socket.uid, 'topics:read');
-	const keys = cids.map(c => 'cid:' + c + ':uid:' + data.uid + ':pids');
+	const keys = cids.map(c => `cid:${c}:uid:${data.uid}:pids`);
 	return await loadMorePosts(keys, socket.uid, data);
 };
 
 SocketPosts.loadMoreBestPosts = async function (socket, data) {
 	const cids = await categories.getCidsByPrivilege('categories:cid', socket.uid, 'topics:read');
-	const keys = cids.map(c => 'cid:' + c + ':uid:' + data.uid + ':pids:votes');
+	const keys = cids.map(c => `cid:${c}:uid:${data.uid}:pids:votes`);
 	return await loadMorePosts(keys, socket.uid, data);
 };
 
 SocketPosts.loadMoreUpVotedPosts = async function (socket, data) {
-	return await loadMorePosts('uid:' + data.uid + ':upvote', socket.uid, data);
+	return await loadMorePosts(`uid:${data.uid}:upvote`, socket.uid, data);
 };
 
 SocketPosts.loadMoreDownVotedPosts = async function (socket, data) {
-	return await loadMorePosts('uid:' + data.uid + ':downvote', socket.uid, data);
+	return await loadMorePosts(`uid:${data.uid}:downvote`, socket.uid, data);
 };
 
 async function loadMorePosts(set, uid, data) {
@@ -151,9 +152,9 @@ SocketPosts.getReplies = async function (socket, pid) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	const pids = await posts.getPidsFromSet('pid:' + pid + ':replies', 0, -1, false);
+	const pids = await posts.getPidsFromSet(`pid:${pid}:replies`, 0, -1, false);
 
-	var [postData, postPrivileges] = await Promise.all([
+	let [postData, postPrivileges] = await Promise.all([
 		posts.getPostsByPids(pids, socket.uid),
 		privileges.posts.get(pids, socket.uid),
 	]);

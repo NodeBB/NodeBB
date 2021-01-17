@@ -1,19 +1,19 @@
 'use strict';
 
 
-var	assert = require('assert');
-var path = require('path');
-var nconf = require('nconf');
-var request = require('request');
-var fs = require('fs');
+const	assert = require('assert');
+const path = require('path');
+const nconf = require('nconf');
+const request = require('request');
+const fs = require('fs');
 
-var db = require('./mocks/databasemock');
-var plugins = require('../src/plugins');
+const db = require('./mocks/databasemock');
+const plugins = require('../src/plugins');
 
-describe('Plugins', function () {
-	it('should load plugin data', function (done) {
-		var pluginId = 'nodebb-plugin-markdown';
-		plugins.loadPlugin(path.join(nconf.get('base_dir'), 'node_modules/' + pluginId), function (err) {
+describe('Plugins', () => {
+	it('should load plugin data', (done) => {
+		const pluginId = 'nodebb-plugin-markdown';
+		plugins.loadPlugin(path.join(nconf.get('base_dir'), `node_modules/${pluginId}`), (err) => {
 			assert.ifError(err);
 			assert(plugins.libraries[pluginId]);
 			assert(plugins.loadedHooks['static:app.load']);
@@ -22,12 +22,12 @@ describe('Plugins', function () {
 		});
 	});
 
-	it('should return true if hook has listeners', function (done) {
+	it('should return true if hook has listeners', (done) => {
 		assert(plugins.hasListeners('filter:parse.post'));
 		done();
 	});
 
-	it('should register and fire a filter hook', function (done) {
+	it('should register and fire a filter hook', (done) => {
 		function filterMethod1(data, callback) {
 			data.foo += 1;
 			callback(null, data);
@@ -40,20 +40,20 @@ describe('Plugins', function () {
 		plugins.registerHook('test-plugin', { hook: 'filter:test.hook', method: filterMethod1 });
 		plugins.registerHook('test-plugin', { hook: 'filter:test.hook', method: filterMethod2 });
 
-		plugins.fireHook('filter:test.hook', { foo: 1 }, function (err, data) {
+		plugins.fireHook('filter:test.hook', { foo: 1 }, (err, data) => {
 			assert.ifError(err);
 			assert.equal(data.foo, 7);
 			done();
 		});
 	});
 
-	it('should register and fire a filter hook having 2 methods, one returning a promise and the other calling the callback', function (done) {
+	it('should register and fire a filter hook having 2 methods, one returning a promise and the other calling the callback', (done) => {
 		function method1(data, callback) {
 			data.foo += 1;
 			callback(null, data);
 		}
 		function method2(data) {
-			return new Promise(function (resolve) {
+			return new Promise((resolve) => {
 				data.foo += 5;
 				resolve(data);
 			});
@@ -62,28 +62,28 @@ describe('Plugins', function () {
 		plugins.registerHook('test-plugin', { hook: 'filter:test.hook2', method: method1 });
 		plugins.registerHook('test-plugin', { hook: 'filter:test.hook2', method: method2 });
 
-		plugins.fireHook('filter:test.hook2', { foo: 1 }, function (err, data) {
+		plugins.fireHook('filter:test.hook2', { foo: 1 }, (err, data) => {
 			assert.ifError(err);
 			assert.equal(data.foo, 7);
 			done();
 		});
 	});
 
-	it('should register and fire a filter hook that returns a promise that gets rejected', function (done) {
+	it('should register and fire a filter hook that returns a promise that gets rejected', (done) => {
 		function method(data) {
-			return new Promise(function (resolve, reject) {
+			return new Promise((resolve, reject) => {
 				data.foo += 5;
 				reject(new Error('nope'));
 			});
 		}
-		plugins.registerHook('test-plugin', { hook: 'filter:test.hook3', method: method });
-		plugins.fireHook('filter:test.hook3', { foo: 1 }, function (err) {
+		plugins.registerHook('test-plugin', { hook: 'filter:test.hook3', method });
+		plugins.fireHook('filter:test.hook3', { foo: 1 }, (err) => {
 			assert(err);
 			done();
 		});
 	});
 
-	it('should register and fire an action hook', function (done) {
+	it('should register and fire an action hook', (done) => {
 		function actionMethod(data) {
 			assert.equal(data.bar, 'test');
 			done();
@@ -93,97 +93,95 @@ describe('Plugins', function () {
 		plugins.fireHook('action:test.hook', { bar: 'test' });
 	});
 
-	it('should register and fire a static hook', function (done) {
+	it('should register and fire a static hook', (done) => {
 		function actionMethod(data, callback) {
 			assert.equal(data.bar, 'test');
 			callback();
 		}
 
 		plugins.registerHook('test-plugin', { hook: 'static:test.hook', method: actionMethod });
-		plugins.fireHook('static:test.hook', { bar: 'test' }, function (err) {
+		plugins.fireHook('static:test.hook', { bar: 'test' }, (err) => {
 			assert.ifError(err);
 			done();
 		});
 	});
 
-	it('should register and fire a static hook returning a promise', function (done) {
+	it('should register and fire a static hook returning a promise', (done) => {
 		function method(data) {
 			assert.equal(data.bar, 'test');
 			return new Promise((resolve) => {
 				resolve();
 			});
 		}
-		plugins.registerHook('test-plugin', { hook: 'static:test.hook', method: method });
-		plugins.fireHook('static:test.hook', { bar: 'test' }, function (err) {
+		plugins.registerHook('test-plugin', { hook: 'static:test.hook', method });
+		plugins.fireHook('static:test.hook', { bar: 'test' }, (err) => {
 			assert.ifError(err);
 			done();
 		});
 	});
 
-	it('should register and fire a static hook returning a promise that gets rejected with a error', function (done) {
+	it('should register and fire a static hook returning a promise that gets rejected with a error', (done) => {
 		function method(data) {
 			assert.equal(data.bar, 'test');
-			return new Promise(function (resolve, reject) {
+			return new Promise((resolve, reject) => {
 				reject(new Error('just because'));
 			});
 		}
-		plugins.registerHook('test-plugin', { hook: 'static:test.hook', method: method });
-		plugins.fireHook('static:test.hook', { bar: 'test' }, function (err) {
+		plugins.registerHook('test-plugin', { hook: 'static:test.hook', method });
+		plugins.fireHook('static:test.hook', { bar: 'test' }, (err) => {
 			assert.strictEqual(err.message, 'just because');
 			plugins.unregisterHook('test-plugin', 'static:test.hook', method);
 			done();
 		});
 	});
 
-	it('should register and timeout a static hook returning a promise but takes too long', function (done) {
+	it('should register and timeout a static hook returning a promise but takes too long', (done) => {
 		function method(data) {
 			assert.equal(data.bar, 'test');
-			return new Promise(function (resolve) {
+			return new Promise((resolve) => {
 				setTimeout(resolve, 6000);
 			});
 		}
-		plugins.registerHook('test-plugin', { hook: 'static:test.hook', method: method });
-		plugins.fireHook('static:test.hook', { bar: 'test' }, function (err) {
+		plugins.registerHook('test-plugin', { hook: 'static:test.hook', method });
+		plugins.fireHook('static:test.hook', { bar: 'test' }, (err) => {
 			assert.ifError(err);
 			plugins.unregisterHook('test-plugin', 'static:test.hook', method);
 			done();
 		});
 	});
 
-	it('should get plugin data from nbbpm', function (done) {
-		plugins.get('nodebb-plugin-markdown', function (err, data) {
+	it('should get plugin data from nbbpm', (done) => {
+		plugins.get('nodebb-plugin-markdown', (err, data) => {
 			assert.ifError(err);
-			var keys = ['id', 'name', 'url', 'description', 'latest', 'installed', 'active', 'latest'];
+			const keys = ['id', 'name', 'url', 'description', 'latest', 'installed', 'active', 'latest'];
 			assert.equal(data.name, 'nodebb-plugin-markdown');
 			assert.equal(data.id, 'nodebb-plugin-markdown');
-			keys.forEach(function (key) {
+			keys.forEach((key) => {
 				assert(data.hasOwnProperty(key));
 			});
 			done();
 		});
 	});
 
-	it('should get a list of plugins', function (done) {
-		plugins.list(function (err, data) {
+	it('should get a list of plugins', (done) => {
+		plugins.list((err, data) => {
 			assert.ifError(err);
-			var keys = ['id', 'name', 'url', 'description', 'latest', 'installed', 'active', 'latest'];
+			const keys = ['id', 'name', 'url', 'description', 'latest', 'installed', 'active', 'latest'];
 			assert(Array.isArray(data));
-			keys.forEach(function (key) {
+			keys.forEach((key) => {
 				assert(data[0].hasOwnProperty(key));
 			});
 			done();
 		});
 	});
 
-	it('should show installed plugins', function (done) {
-		var nodeModulesPath = plugins.nodeModulesPath;
+	it('should show installed plugins', (done) => {
+		const { nodeModulesPath } = plugins;
 		plugins.nodeModulesPath = path.join(__dirname, './mocks/plugin_modules');
 
-		plugins.showInstalled(function (err, pluginsData) {
+		plugins.showInstalled((err, pluginsData) => {
 			assert.ifError(err);
-			var paths = pluginsData.map(function (plugin) {
-				return path.relative(plugins.nodeModulesPath, plugin.path).replace(/\\/g, '/');
-			});
+			const paths = pluginsData.map(plugin => path.relative(plugins.nodeModulesPath, plugin.path).replace(/\\/g, '/'));
 			assert(paths.indexOf('nodebb-plugin-xyz') > -1);
 			assert(paths.indexOf('@nodebb/nodebb-plugin-abc') > -1);
 
@@ -192,12 +190,12 @@ describe('Plugins', function () {
 		});
 	});
 
-	describe('install/activate/uninstall', function () {
-		var latest;
-		var pluginName = 'nodebb-plugin-imgur';
+	describe('install/activate/uninstall', () => {
+		let latest;
+		const pluginName = 'nodebb-plugin-imgur';
 		it('should install a plugin', function (done) {
 			this.timeout(0);
-			plugins.toggleInstall(pluginName, '1.0.16', function (err, pluginData) {
+			plugins.toggleInstall(pluginName, '1.0.16', (err, pluginData) => {
 				assert.ifError(err);
 				latest = pluginData.latest;
 
@@ -208,17 +206,17 @@ describe('Plugins', function () {
 				assert.equal(pluginData.active, false);
 				assert.equal(pluginData.installed, true);
 
-				var packageFile = JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8'));
+				const packageFile = JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8'));
 				assert(packageFile.dependencies[pluginName]);
 
 				done();
 			});
 		});
 
-		it('should activate plugin', function (done) {
-			plugins.toggleActive(pluginName, function (err) {
+		it('should activate plugin', (done) => {
+			plugins.toggleActive(pluginName, (err) => {
 				assert.ifError(err);
-				plugins.isActive(pluginName, function (err, isActive) {
+				plugins.isActive(pluginName, (err, isActive) => {
 					assert.ifError(err);
 					assert(isActive);
 					done();
@@ -228,10 +226,10 @@ describe('Plugins', function () {
 
 		it('should upgrade plugin', function (done) {
 			this.timeout(0);
-			plugins.upgrade(pluginName, 'latest', function (err, isActive) {
+			plugins.upgrade(pluginName, 'latest', (err, isActive) => {
 				assert.ifError(err);
 				assert(isActive);
-				plugins.loadPluginInfo(path.join(nconf.get('base_dir'), 'node_modules', pluginName), function (err, pluginInfo) {
+				plugins.loadPluginInfo(path.join(nconf.get('base_dir'), 'node_modules', pluginName), (err, pluginInfo) => {
 					assert.ifError(err);
 					assert.equal(pluginInfo.version, latest);
 					done();
@@ -241,12 +239,12 @@ describe('Plugins', function () {
 
 		it('should uninstall a plugin', function (done) {
 			this.timeout(0);
-			plugins.toggleInstall(pluginName, 'latest', function (err, pluginData) {
+			plugins.toggleInstall(pluginName, 'latest', (err, pluginData) => {
 				assert.ifError(err);
 				assert.equal(pluginData.installed, false);
 				assert.equal(pluginData.active, false);
 
-				var packageFile = JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8'));
+				const packageFile = JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8'));
 				assert(!packageFile.dependencies[pluginName]);
 
 				done();
@@ -254,9 +252,9 @@ describe('Plugins', function () {
 		});
 	});
 
-	describe('static assets', function () {
-		it('should 404 if resource does not exist', function (done) {
-			request.get(nconf.get('url') + '/plugins/doesnotexist/should404.tpl', function (err, res, body) {
+	describe('static assets', () => {
+		it('should 404 if resource does not exist', (done) => {
+			request.get(`${nconf.get('url')}/plugins/doesnotexist/should404.tpl`, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				assert(body);
@@ -264,8 +262,8 @@ describe('Plugins', function () {
 			});
 		});
 
-		it('should 404 if resource does not exist', function (done) {
-			request.get(nconf.get('url') + '/plugins/nodebb-plugin-dbsearch/dbsearch/templates/admin/plugins/should404.tpl', function (err, res, body) {
+		it('should 404 if resource does not exist', (done) => {
+			request.get(`${nconf.get('url')}/plugins/nodebb-plugin-dbsearch/dbsearch/templates/admin/plugins/should404.tpl`, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				assert(body);
@@ -273,8 +271,8 @@ describe('Plugins', function () {
 			});
 		});
 
-		it('should get resource', function (done) {
-			request.get(nconf.get('url') + '/plugins/nodebb-plugin-dbsearch/dbsearch/templates/admin/plugins/dbsearch.tpl', function (err, res, body) {
+		it('should get resource', (done) => {
+			request.get(`${nconf.get('url')}/plugins/nodebb-plugin-dbsearch/dbsearch/templates/admin/plugins/dbsearch.tpl`, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);

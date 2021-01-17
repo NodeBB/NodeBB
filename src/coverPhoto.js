@@ -17,9 +17,9 @@ coverPhoto.getDefaultProfileCover = function (uid) {
 };
 
 function getCover(type, id) {
-	const defaultCover = relative_path + '/assets/images/cover-default.png';
-	if (meta.config[type + ':defaultCovers']) {
-		const covers = String(meta.config[type + ':defaultCovers']).trim().split(/[\s,]+/g);
+	const defaultCover = `${relative_path}/assets/images/cover-default.png`;
+	if (meta.config[`${type}:defaultCovers`]) {
+		const covers = String(meta.config[`${type}:defaultCovers`]).trim().split(/[\s,]+/g);
 		let coverPhoto = defaultCover;
 		if (!covers.length) {
 			return coverPhoto;

@@ -17,7 +17,7 @@ module.exports = function (Posts) {
 			return false;
 		}
 
-		const numDiffs = await db.listLength('post:' + pid + ':diffs');
+		const numDiffs = await db.listLength(`post:${pid}:diffs`);
 		return !!numDiffs;
 	};
 
@@ -29,12 +29,12 @@ module.exports = function (Posts) {
 
 		// Pass those made after `since`, and create keys
 		const keys = timestamps.filter(t => (parseInt(t, 10) || 0) > since)
-			.map(t => 'diff:' + pid + '.' + t);
+			.map(t => `diff:${pid}.${t}`);
 		return await db.getObjects(keys);
 	};
 
 	Diffs.list = async function (pid) {
-		return await db.getListRange('post:' + pid + ':diffs', 0, -1);
+		return await db.getListRange(`post:${pid}:diffs`, 0, -1);
 	};
 
 	Diffs.save = async function (data) {
@@ -42,11 +42,11 @@ module.exports = function (Posts) {
 		const now = Date.now();
 		const patch = diff.createPatch('', newContent, oldContent);
 		await Promise.all([
-			db.listPrepend('post:' + pid + ':diffs', now),
-			db.setObject('diff:' + pid + '.' + now, {
-				uid: uid,
-				pid: pid,
-				patch: patch,
+			db.listPrepend(`post:${pid}:diffs`, now),
+			db.setObject(`diff:${pid}.${now}`, {
+				uid,
+				pid,
+				patch,
 			}),
 		]);
 	};
@@ -64,10 +64,10 @@ module.exports = function (Posts) {
 		const post = await postDiffLoad(pid, since, uid);
 
 		return await Posts.edit({
-			uid: uid,
-			pid: pid,
+			uid,
+			pid,
 			content: post.content,
-			req: req,
+			req,
 		});
 	};
 
@@ -85,7 +85,7 @@ module.exports = function (Posts) {
 		]);
 
 		// Replace content with re-constructed content from that point in time
-		post[0].content = diffs.reduce(function (content, currentDiff) {
+		post[0].content = diffs.reduce((content, currentDiff) => {
 			const result = diff.applyPatch(content, currentDiff.patch, {
 				fuzzFactor: 1,
 			});

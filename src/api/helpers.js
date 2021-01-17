@@ -15,7 +15,7 @@ exports.buildReqObject = (req, payload) => {
 	req = req || {};
 	const headers = req.headers || {};
 	const encrypted = req.connection ? !!req.connection.encrypted : false;
-	let host = headers.host;
+	let { host } = headers;
 	const referer = headers.referer || '';
 
 	if (!host) {
@@ -28,12 +28,12 @@ exports.buildReqObject = (req, payload) => {
 		method: req.method,
 		body: payload || req.body,
 		ip: req.ip,
-		host: host,
+		host,
 		protocol: encrypted ? 'https' : 'http',
 		secure: encrypted,
 		url: referer,
 		path: referer.substr(referer.indexOf(host) + host.length),
-		headers: headers,
+		headers,
 	};
 };
 
@@ -53,7 +53,7 @@ exports.doTopicAction = async function (action, event, caller, { tids }) {
 
 	const uids = await user.getUidsFromSet('users:online', 0, -1);
 
-	await Promise.all(tids.map(async function (tid) {
+	await Promise.all(tids.map(async (tid) => {
 		const title = await topics.getTopicField(tid, 'title');
 		const data = await topics.tools[action](tid, caller.uid);
 		const notifyUids = await privileges.categories.filterUids('topics:read', data.cid, uids);
@@ -63,15 +63,15 @@ exports.doTopicAction = async function (action, event, caller, { tids }) {
 };
 
 async function logTopicAction(action, req, tid, title) {
-	var actionsToLog = ['delete', 'restore', 'purge'];
+	const actionsToLog = ['delete', 'restore', 'purge'];
 	if (!actionsToLog.includes(action)) {
 		return;
 	}
 	await events.log({
-		type: 'topic-' + action,
+		type: `topic-${action}`,
 		uid: req.uid,
 		ip: req.ip,
-		tid: tid,
+		tid,
 		title: String(title),
 	});
 }
@@ -86,7 +86,7 @@ exports.postCommand = async function (caller, command, eventName, notification, 
 	}
 
 	if (!data.room_id) {
-		throw new Error('[[error:invalid-room-id, ' + data.room_id + ' ]]');
+		throw new Error(`[[error:invalid-room-id, ${data.room_id} ]]`);
 	}
 	const [exists, deleted] = await Promise.all([
 		posts.exists(data.pid),
@@ -109,8 +109,8 @@ exports.postCommand = async function (caller, command, eventName, notification, 
 		filter:post.bookmark
 		filter:post.unbookmark
 	 */
-	const filteredData = await plugins.hooks.fire('filter:post.' + command, {
-		data: data,
+	const filteredData = await plugins.hooks.fire(`filter:post.${command}`, {
+		data,
 		uid: caller.uid,
 	});
 	return await executeCommand(caller, command, eventName, notification, filteredData.data);
@@ -119,8 +119,8 @@ exports.postCommand = async function (caller, command, eventName, notification, 
 async function executeCommand(caller, command, eventName, notification, data) {
 	const result = await posts[command](data.pid, caller.uid);
 	if (result && eventName) {
-		websockets.in('uid_' + caller.uid).emit('posts.' + command, result);
-		websockets.in(data.room_id).emit('event:' + eventName, result);
+		websockets.in(`uid_${caller.uid}`).emit(`posts.${command}`, result);
+		websockets.in(data.room_id).emit(`event:${eventName}`, result);
 	}
 	if (result && command === 'upvote') {
 		socketHelpers.upvote(result, notification);

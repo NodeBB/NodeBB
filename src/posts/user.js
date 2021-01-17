@@ -22,7 +22,7 @@ module.exports = function (Posts) {
 
 		const groupsMap = await getGroupsMap(userData);
 
-		userData.forEach(function (userData, index) {
+		userData.forEach((userData, index) => {
 			userData.signature = validator.escape(String(userData.signature || ''));
 			userData.fullname = userSettings[index].showfullname ? validator.escape(String(userData.fullname || '')) : undefined;
 			userData.selectedGroups = [];
@@ -32,7 +32,7 @@ module.exports = function (Posts) {
 			}
 		});
 
-		return await Promise.all(userData.map(async function (userData) {
+		return await Promise.all(userData.map(async (userData) => {
 			const [isMemberOfGroups, signature, customProfileInfo] = await Promise.all([
 				checkGroupMembership(userData.uid, userData.groupTitleArray),
 				parseSignature(userData, uid, canUseSignature),
@@ -40,7 +40,7 @@ module.exports = function (Posts) {
 			]);
 
 			if (isMemberOfGroups && userData.groupTitleArray) {
-				userData.groupTitleArray.forEach(function (userGroup, index) {
+				userData.groupTitleArray.forEach((userGroup, index) => {
 					if (isMemberOfGroups[index] && groupsMap[userGroup]) {
 						userData.selectedGroups.push(groupsMap[userGroup]);
 					}
@@ -72,7 +72,7 @@ module.exports = function (Posts) {
 		const groupTitles = _.uniq(_.flatten(userData.map(u => u && u.groupTitleArray)));
 		const groupsMap = {};
 		const groupsData = await groups.getGroupsData(groupTitles);
-		groupsData.forEach(function (group) {
+		groupsData.forEach((group) => {
 			if (group && group.userTitleEnabled && !group.hidden) {
 				groupsMap[group.name] = {
 					name: group.name,
@@ -95,9 +95,9 @@ module.exports = function (Posts) {
 			'lastonline', 'groupTitle',
 		];
 		const result = await plugins.hooks.fire('filter:posts.addUserFields', {
-			fields: fields,
-			uid: uid,
-			uids: uids,
+			fields,
+			uid,
+			uids,
 		});
 		return await user.getUsersFields(result.uids, _.uniq(result.fields));
 	}
@@ -142,21 +142,21 @@ module.exports = function (Posts) {
 		postData.forEach((post, i) => {
 			post.cid = cids[i];
 			repChange += post.votes;
-			bulkRemove.push(['uid:' + post.uid + ':posts', post.pid]);
-			bulkRemove.push(['cid:' + post.cid + ':uid:' + post.uid + ':pids', post.pid]);
-			bulkRemove.push(['cid:' + post.cid + ':uid:' + post.uid + ':pids:votes', post.pid]);
+			bulkRemove.push([`uid:${post.uid}:posts`, post.pid]);
+			bulkRemove.push([`cid:${post.cid}:uid:${post.uid}:pids`, post.pid]);
+			bulkRemove.push([`cid:${post.cid}:uid:${post.uid}:pids:votes`, post.pid]);
 
-			bulkAdd.push(['uid:' + toUid + ':posts', post.timestamp, post.pid]);
-			bulkAdd.push(['cid:' + post.cid + ':uid:' + toUid + ':pids', post.timestamp, post.pid]);
+			bulkAdd.push([`uid:${toUid}:posts`, post.timestamp, post.pid]);
+			bulkAdd.push([`cid:${post.cid}:uid:${toUid}:pids`, post.timestamp, post.pid]);
 			if (post.votes > 0) {
-				bulkAdd.push(['cid:' + post.cid + ':uid:' + toUid + ':pids:votes', post.votes, post.pid]);
+				bulkAdd.push([`cid:${post.cid}:uid:${toUid}:pids:votes`, post.votes, post.pid]);
 			}
 			postsByUser[post.uid] = postsByUser[post.uid] || [];
 			postsByUser[post.uid].push(post);
 		});
 
 		await Promise.all([
-			db.setObjectField(pids.map(pid => 'post:' + pid), 'uid', toUid),
+			db.setObjectField(pids.map(pid => `post:${pid}`), 'uid', toUid),
 			db.sortedSetRemoveBulk(bulkRemove),
 			db.sortedSetAddBulk(bulkAdd),
 			user.incrementUserPostCountBy(toUid, pids.length),
@@ -168,13 +168,13 @@ module.exports = function (Posts) {
 
 		plugins.hooks.fire('action:post.changeOwner', {
 			posts: _.cloneDeep(postData),
-			toUid: toUid,
+			toUid,
 		});
 		return postData;
 	};
 
 	async function reduceCounters(postsByUser) {
-		await async.eachOfSeries(postsByUser, async function (posts, uid) {
+		await async.eachOfSeries(postsByUser, async (posts, uid) => {
 			const repChange = posts.reduce((acc, val) => acc + val.votes, 0);
 			await Promise.all([
 				user.incrementUserPostCountBy(uid, -posts.length),
@@ -185,11 +185,11 @@ module.exports = function (Posts) {
 
 	async function updateTopicPosters(postData, toUid) {
 		const postsByTopic = _.groupBy(postData, p => parseInt(p.tid, 10));
-		await async.eachOf(postsByTopic, async function (posts, tid) {
+		await async.eachOf(postsByTopic, async (posts, tid) => {
 			const postsByUser = _.groupBy(posts, p => parseInt(p.uid, 10));
-			await db.sortedSetIncrBy('tid:' + tid + ':posters', posts.length, toUid);
-			await async.eachOf(postsByUser, async function (posts, uid) {
-				await db.sortedSetIncrBy('tid:' + tid + ':posters', -posts.length, uid);
+			await db.sortedSetIncrBy(`tid:${tid}:posters`, posts.length, toUid);
+			await async.eachOf(postsByUser, async (posts, uid) => {
+				await db.sortedSetIncrBy(`tid:${tid}:posters`, -posts.length, uid);
 			});
 		});
 	}
@@ -210,17 +210,17 @@ module.exports = function (Posts) {
 		const bulkRemove = [];
 		const postsByUser = {};
 		mainPosts.forEach((post) => {
-			bulkRemove.push(['cid:' + post.cid + ':uid:' + post.uid + ':tids', post.tid]);
-			bulkRemove.push(['uid:' + post.uid + ':topics', post.tid]);
+			bulkRemove.push([`cid:${post.cid}:uid:${post.uid}:tids`, post.tid]);
+			bulkRemove.push([`uid:${post.uid}:topics`, post.tid]);
 
-			bulkAdd.push(['cid:' + post.cid + ':uid:' + toUid + ':tids', tidToTopic[post.tid].timestamp, post.tid]);
-			bulkAdd.push(['uid:' + toUid + ':topics', tidToTopic[post.tid].timestamp, post.tid]);
+			bulkAdd.push([`cid:${post.cid}:uid:${toUid}:tids`, tidToTopic[post.tid].timestamp, post.tid]);
+			bulkAdd.push([`uid:${toUid}:topics`, tidToTopic[post.tid].timestamp, post.tid]);
 			postsByUser[post.uid] = postsByUser[post.uid] || [];
 			postsByUser[post.uid].push(post);
 		});
 
 		await Promise.all([
-			db.setObjectField(mainPosts.map(p => 'topic:' + p.tid), 'uid', toUid),
+			db.setObjectField(mainPosts.map(p => `topic:${p.tid}`), 'uid', toUid),
 			db.sortedSetRemoveBulk(bulkRemove),
 			db.sortedSetAddBulk(bulkAdd),
 			user.incrementUserFieldBy(toUid, 'topiccount', mainPosts.length),
@@ -230,12 +230,12 @@ module.exports = function (Posts) {
 		const changedTopics = mainPosts.map(p => tidToTopic[p.tid]);
 		plugins.hooks.fire('action:topic.changeOwner', {
 			topics: _.cloneDeep(changedTopics),
-			toUid: toUid,
+			toUid,
 		});
 	}
 
 	async function reduceTopicCounts(postsByUser) {
-		await async.eachSeries(Object.keys(postsByUser), async function (uid) {
+		await async.eachSeries(Object.keys(postsByUser), async (uid) => {
 			const posts = postsByUser[uid];
 			const exists = await user.exists(uid);
 			if (exists) {

@@ -1,8 +1,8 @@
 'use strict';
 
 module.exports = function (module) {
-	var helpers = require('../helpers');
-	var utils = require('../../../utils');
+	const helpers = require('../helpers');
+	const utils = require('../../../utils');
 
 	module.sortedSetAdd = async function (key, score, value) {
 		if (!key) {
@@ -13,12 +13,12 @@ module.exports = function (module) {
 			return await sortedSetAddBulk(key, score, value);
 		}
 		if (!utils.isNumber(score)) {
-			throw new Error('[[error:invalid-score, ' + score + ']]');
+			throw new Error(`[[error:invalid-score, ${score}]]`);
 		}
 		value = helpers.valueToString(value);
 		score = parseFloat(score);
 
-		await module.transaction(async function (client) {
+		await module.transaction(async (client) => {
 			await helpers.ensureLegacyObjectType(client, key, 'zset');
 			await client.query({
 				name: 'sortedSetAdd',
@@ -41,7 +41,7 @@ module.exports = function (module) {
 		}
 		for (let i = 0; i < scores.length; i += 1) {
 			if (!utils.isNumber(scores[i])) {
-				throw new Error('[[error:invalid-score, ' + scores[i] + ']]');
+				throw new Error(`[[error:invalid-score, ${scores[i]}]]`);
 			}
 		}
 		values = values.map(helpers.valueToString);
@@ -49,7 +49,7 @@ module.exports = function (module) {
 
 		helpers.removeDuplicateValues(values, scores);
 
-		await module.transaction(async function (client) {
+		await module.transaction(async (client) => {
 			await helpers.ensureLegacyObjectType(client, key, 'zset');
 			await client.query({
 				name: 'sortedSetAddBulk',
@@ -71,7 +71,7 @@ DO UPDATE SET "score" = EXCLUDED."score"`,
 		const isArrayOfScores = Array.isArray(scores);
 		if ((!isArrayOfScores && !utils.isNumber(scores)) ||
 			(isArrayOfScores && scores.map(s => utils.isNumber(s)).includes(false))) {
-			throw new Error('[[error:invalid-score, ' + scores + ']]');
+			throw new Error(`[[error:invalid-score, ${scores}]]`);
 		}
 
 		if (isArrayOfScores && scores.length !== keys.length) {
@@ -81,7 +81,7 @@ DO UPDATE SET "score" = EXCLUDED."score"`,
 		value = helpers.valueToString(value);
 		scores = isArrayOfScores ? scores.map(score => parseFloat(score)) : parseFloat(scores);
 
-		await module.transaction(async function (client) {
+		await module.transaction(async (client) => {
 			await helpers.ensureLegacyObjectsType(client, keys, 'zset');
 			await client.query({
 				name: isArrayOfScores ? 'sortedSetsAddScores' : 'sortedSetsAdd',
@@ -108,15 +108,15 @@ INSERT INTO "legacy_zset" ("_key", "value", "score")
 		const keys = [];
 		const values = [];
 		const scores = [];
-		data.forEach(function (item) {
+		data.forEach((item) => {
 			if (!utils.isNumber(item[1])) {
-				throw new Error('[[error:invalid-score, ' + item[1] + ']]');
+				throw new Error(`[[error:invalid-score, ${item[1]}]]`);
 			}
 			keys.push(item[0]);
 			scores.push(item[1]);
 			values.push(item[2]);
 		});
-		await module.transaction(async function (client) {
+		await module.transaction(async (client) => {
 			await helpers.ensureLegacyObjectsType(client, keys, 'zset');
 			await client.query({
 				name: 'sortedSetAddBulk2',

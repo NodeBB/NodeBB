@@ -1,52 +1,52 @@
 'use strict';
 
-var async = require('async');
-var db = require('../../database');
+const async = require('async');
+const db = require('../../database');
 
 
 module.exports = {
 	name: 'Favourites to Bookmarks',
 	timestamp: Date.UTC(2016, 9, 8),
-	method: function (callback) {
-		var progress = this.progress;
+	method(callback) {
+		const { progress } = this;
 
 		function upgradePosts(next) {
-			var batch = require('../../batch');
+			const batch = require('../../batch');
 
-			batch.processSortedSet('posts:pid', function (ids, next) {
-				async.each(ids, function (id, next) {
+			batch.processSortedSet('posts:pid', (ids, next) => {
+				async.each(ids, (id, next) => {
 					progress.incr();
 
 					async.waterfall([
 						function (next) {
-							db.rename('pid:' + id + ':users_favourited', 'pid:' + id + ':users_bookmarked', next);
+							db.rename(`pid:${id}:users_favourited`, `pid:${id}:users_bookmarked`, next);
 						},
 						function (next) {
-							db.getObjectField('post:' + id, 'reputation', next);
+							db.getObjectField(`post:${id}`, 'reputation', next);
 						},
 						function (reputation, next) {
 							if (parseInt(reputation, 10)) {
-								db.setObjectField('post:' + id, 'bookmarks', reputation, next);
+								db.setObjectField(`post:${id}`, 'bookmarks', reputation, next);
 							} else {
 								next();
 							}
 						},
 						function (next) {
-							db.deleteObjectField('post:' + id, 'reputation', next);
+							db.deleteObjectField(`post:${id}`, 'reputation', next);
 						},
 					], next);
 				}, next);
 			}, {
-				progress: progress,
+				progress,
 			}, next);
 		}
 
 		function upgradeUsers(next) {
-			var batch = require('../../batch');
+			const batch = require('../../batch');
 
-			batch.processSortedSet('users:joindate', function (ids, next) {
-				async.each(ids, function (id, next) {
-					db.rename('uid:' + id + ':favourites', 'uid:' + id + ':bookmarks', next);
+			batch.processSortedSet('users:joindate', (ids, next) => {
+				async.each(ids, (id, next) => {
+					db.rename(`uid:${id}:favourites`, `uid:${id}:bookmarks`, next);
 				}, next);
 			}, {}, next);
 		}

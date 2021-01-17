@@ -11,7 +11,7 @@ const cwd = paths.baseDir;
 function getRunningPid(callback) {
 	fs.readFile(paths.pidfile, {
 		encoding: 'utf-8',
-	}, function (err, pid) {
+	}, (err, pid) => {
 		if (err) {
 			return callback(err);
 		}
@@ -38,23 +38,23 @@ function start(options) {
 		return;
 	}
 	if (options.log) {
-		console.log('\n' + [
+		console.log(`\n${[
 			'Starting NodeBB with logging output'.bold,
 			'Hit '.red + 'Ctrl-C '.bold + 'to exit'.red,
 			'The NodeBB process will continue to run in the background',
-			'Use "' + './nodebb stop'.yellow + '" to stop the NodeBB server',
-		].join('\n'));
+			`Use "${'./nodebb stop'.yellow}" to stop the NodeBB server`,
+		].join('\n')}`);
 	} else if (!options.silent) {
-		console.log('\n' + [
+		console.log(`\n${[
 			'Starting NodeBB'.bold,
-			'  "' + './nodebb stop'.yellow + '" to stop the NodeBB server',
-			'  "' + './nodebb log'.yellow + '" to view server output',
-			'  "' + './nodebb help'.yellow + '" for more commands\n'.reset,
-		].join('\n'));
+			`  "${'./nodebb stop'.yellow}" to stop the NodeBB server`,
+			`  "${'./nodebb log'.yellow}" to view server output`,
+			`  "${'./nodebb help'.yellow}${'" for more commands\n'.reset}`,
+		].join('\n')}`);
 	}
 
 	// Spawn a new NodeBB process
-	var child = fork(paths.loader, process.argv.slice(3), {
+	const child = fork(paths.loader, process.argv.slice(3), {
 		env: process.env,
 		cwd,
 	});
@@ -69,7 +69,7 @@ function start(options) {
 }
 
 function stop() {
-	getRunningPid(function (err, pid) {
+	getRunningPid((err, pid) => {
 		if (!err) {
 			process.kill(pid, 'SIGTERM');
 			console.log('Stopping NodeBB. Goodbye!');
@@ -80,7 +80,7 @@ function stop() {
 }
 
 function restart(options) {
-	getRunningPid(function (err, pid) {
+	getRunningPid((err, pid) => {
 		if (!err) {
 			console.log('\nRestarting NodeBB'.bold);
 			process.kill(pid, 'SIGTERM');
@@ -94,17 +94,17 @@ function restart(options) {
 }
 
 function status() {
-	getRunningPid(function (err, pid) {
+	getRunningPid((err, pid) => {
 		if (!err) {
-			console.log('\n' + [
-				'NodeBB Running '.bold + ('(pid ' + pid.toString() + ')').cyan,
-				'\t"' + './nodebb stop'.yellow + '" to stop the NodeBB server',
-				'\t"' + './nodebb log'.yellow + '" to view server output',
-				'\t"' + './nodebb restart'.yellow + '" to restart NodeBB\n',
-			].join('\n'));
+			console.log(`\n${[
+				'NodeBB Running '.bold + (`(pid ${pid.toString()})`).cyan,
+				`\t"${'./nodebb stop'.yellow}" to stop the NodeBB server`,
+				`\t"${'./nodebb log'.yellow}" to view server output`,
+				`\t"${'./nodebb restart'.yellow}" to restart NodeBB\n`,
+			].join('\n')}`);
 		} else {
 			console.log('\nNodeBB is not running'.bold);
-			console.log('\t"' + './nodebb start'.yellow + '" to launch the NodeBB server\n'.reset);
+			console.log(`\t"${'./nodebb start'.yellow}${'" to launch the NodeBB server\n'.reset}`);
 		}
 	});
 }

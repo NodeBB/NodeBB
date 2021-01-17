@@ -16,7 +16,7 @@ module.exports = function (module) {
 			delete data[''];
 		}
 
-		Object.keys(data).forEach(function (key) {
+		Object.keys(data).forEach((key) => {
 			if (data[key] === undefined || data[key] === null) {
 				delete data[key];
 			}
@@ -89,7 +89,7 @@ module.exports = function (module) {
 			return [];
 		}
 		if (!Array.isArray(fields)) {
-			return keys.map(function () { return {}; });
+			return keys.map(() => ({}));
 		}
 		const cachedData = {};
 		const unCachedKeys = cache.getUnCachedKeys(keys, cachedData);
@@ -103,7 +103,7 @@ module.exports = function (module) {
 			data = [await module.client.async.hgetall(unCachedKeys[0])];
 		}
 
-		unCachedKeys.forEach(function (key, i) {
+		unCachedKeys.forEach((key, i) => {
 			cachedData[key] = data[i] || null;
 			cache.set(key, cachedData[key]);
 		});
@@ -111,7 +111,7 @@ module.exports = function (module) {
 		if (!fields.length) {
 			return keys.map(key => (cachedData[key] ? { ...cachedData[key] } : null));
 		}
-		return keys.map(function (key) {
+		return keys.map((key) => {
 			const item = cachedData[key] || {};
 			const result = {};
 			fields.forEach((field) => {
@@ -183,7 +183,7 @@ module.exports = function (module) {
 		}
 		let result;
 		if (Array.isArray(key)) {
-			var batch = module.client.batch();
+			const batch = module.client.batch();
 			key.forEach(k => batch.hincrby(k, field, value));
 			result = await helpers.execBatch(batch);
 		} else {

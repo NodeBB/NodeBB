@@ -2,6 +2,7 @@
 
 const async = require('async');
 const widgets = require('../../widgets');
+
 const Widgets = module.exports;
 
 Widgets.set = function (socket, data, callback) {

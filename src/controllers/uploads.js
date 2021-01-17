@@ -60,7 +60,7 @@ uploadsController.upload = async function (req, res, filesIterator) {
 };
 
 uploadsController.uploadPost = async function (req, res) {
-	await uploadsController.upload(req, res, async function (uploadedFile) {
+	await uploadsController.upload(req, res, async (uploadedFile) => {
 		const isImage = uploadedFile.type.match(/image./);
 		if (isImage) {
 			return await uploadAsImage(req, uploadedFile);
@@ -112,7 +112,10 @@ async function uploadAsFile(req, uploadedFile) {
 
 async function resizeImage(fileObj) {
 	const imageData = await image.size(fileObj.path);
-	if (imageData.width < meta.config.resizeImageWidthThreshold || meta.config.resizeImageWidth > meta.config.resizeImageWidthThreshold) {
+	if (
+		imageData.width < meta.config.resizeImageWidthThreshold ||
+		meta.config.resizeImageWidth > meta.config.resizeImageWidthThreshold
+	) {
 		return fileObj;
 	}
 
@@ -134,7 +137,7 @@ uploadsController.uploadThumb = async function (req, res) {
 		return helpers.formatApiResponse(503, res, new Error('[[error:topic-thumbnails-are-disabled]]'));
 	}
 
-	return await uploadsController.upload(req, res, async function (uploadedFile) {
+	return await uploadsController.upload(req, res, async (uploadedFile) => {
 		if (!uploadedFile.type.match(/image./)) {
 			throw new Error('[[error:invalid-file]]');
 		}
@@ -163,7 +166,7 @@ uploadsController.uploadFile = async function (uid, uploadedFile) {
 	if (plugins.hooks.hasListeners('filter:uploadFile')) {
 		return await plugins.hooks.fire('filter:uploadFile', {
 			file: uploadedFile,
-			uid: uid,
+			uid,
 			folder: 'files',
 		});
 	}
@@ -173,14 +176,14 @@ uploadsController.uploadFile = async function (uid, uploadedFile) {
 	}
 
 	if (uploadedFile.size > meta.config.maximumFileSize * 1024) {
-		throw new Error('[[error:file-too-big, ' + meta.config.maximumFileSize + ']]');
+		throw new Error(`[[error:file-too-big, ${meta.config.maximumFileSize}]]`);
 	}
 
 	const allowed = file.allowedExtensions();
 
 	const extension = path.extname(uploadedFile.name).toLowerCase();
 	if (allowed.length > 0 && (!extension || extension === '.' || !allowed.includes(extension))) {
-		throw new Error('[[error:invalid-file-type, ' + allowed.join('&#44; ') + ']]');
+		throw new Error(`[[error:invalid-file-type, ${allowed.join('&#44; ')}]]`);
 	}
 
 	return await saveFileToLocal(uid, 'files', uploadedFile);
@@ -190,7 +193,7 @@ async function saveFileToLocal(uid, folder, uploadedFile) {
 	const name = uploadedFile.name || 'upload';
 	const extension = path.extname(name) || '';
 
-	const filename = Date.now() + '-' + validator.escape(name.substr(0, name.length - extension.length)).substr(0, 255) + extension;
+	const filename = `${Date.now()}-${validator.escape(name.substr(0, name.length - extension.length)).substr(0, 255)}${extension}`;
 
 	const upload = await file.saveFileToLocal(filename, folder, uploadedFile.path);
 	const storedFile = {
@@ -199,8 +202,8 @@ async function saveFileToLocal(uid, folder, uploadedFile) {
 		name: uploadedFile.name,
 	};
 	const fileKey = upload.url.replace(nconf.get('upload_url'), '');
-	await db.sortedSetAdd('uid:' + uid + ':uploads', Date.now(), fileKey);
-	const data = await plugins.hooks.fire('filter:uploadStored', { uid: uid, uploadedFile: uploadedFile, storedFile: storedFile });
+	await db.sortedSetAdd(`uid:${uid}:uploads`, Date.now(), fileKey);
+	const data = await plugins.hooks.fire('filter:uploadStored', { uid, uploadedFile, storedFile });
 	return data.storedFile;
 }
 

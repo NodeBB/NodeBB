@@ -1,21 +1,21 @@
 'use strict';
 
-var async = require('async');
-var db = require('../../database');
-var batch = require('../../batch');
+const async = require('async');
+const db = require('../../database');
+const batch = require('../../batch');
 
 
 module.exports = {
 	name: 'Remove relative_path from uploaded profile cover urls',
 	timestamp: Date.UTC(2017, 3, 26),
-	method: function (callback) {
-		var progress = this.progress;
+	method(callback) {
+		const { progress } = this;
 
-		batch.processSortedSet('users:joindate', function (ids, done) {
-			async.each(ids, function (uid, cb) {
+		batch.processSortedSet('users:joindate', (ids, done) => {
+			async.each(ids, (uid, cb) => {
 				async.waterfall([
 					function (next) {
-						db.getObjectField('user:' + uid, 'cover:url', next);
+						db.getObjectField(`user:${uid}`, 'cover:url', next);
 					},
 					function (url, next) {
 						progress.incr();
@@ -24,8 +24,8 @@ module.exports = {
 							return next();
 						}
 
-						var newUrl = url.replace(/^.*?\/uploads\//, '/assets/uploads/');
-						db.setObjectField('user:' + uid, 'cover:url', newUrl, next);
+						const newUrl = url.replace(/^.*?\/uploads\//, '/assets/uploads/');
+						db.setObjectField(`user:${uid}`, 'cover:url', newUrl, next);
 					},
 				], cb);
 			}, done);

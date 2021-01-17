@@ -3,6 +3,8 @@
 		"mocha": true
 	},
 	"rules": {
-		"no-unused-vars": "off"
+		"no-prototype-builtins": "off",
+		"no-unused-vars": "off",
+		"max-len": "off"
 	}
 }

@@ -108,9 +108,10 @@ if (testDbConfig.database === productionDbConfig.database &&
 nconf.set(dbType, testDbConfig);
 
 winston.info('database config %s', dbType, testDbConfig);
-winston.info('environment ' + global.env);
+winston.info(`environment ${global.env}`);
 
 const db = require('../../src/database');
+
 module.exports = db;
 
 before(async function () {
@@ -119,7 +120,7 @@ before(async function () {
 	// Parse out the relative_url and other goodies from the configured URL
 	const urlObject = url.parse(nconf.get('url'));
 	nconf.set('url_parsed', urlObject);
-	nconf.set('base_url', urlObject.protocol + '//' + urlObject.host);
+	nconf.set('base_url', `${urlObject.protocol}//${urlObject.host}`);
 	nconf.set('secure', urlObject.protocol === 'https:');
 	nconf.set('use_port', !!urlObject.port);
 	nconf.set('port', urlObject.port || nconf.get('port') || (nconf.get('PORT_ENV_VAR') ? nconf.get(nconf.get('PORT_ENV_VAR')) : false) || 4567);
@@ -158,9 +159,9 @@ before(async function () {
 	await webserver.listen();
 
 	// Iterate over all of the test suites/contexts
-	this.test.parent.suites.forEach(function (suite) {
+	this.test.parent.suites.forEach((suite) => {
 		// Attach an afterAll listener that resets the defaults
-		suite.afterAll(async function () {
+		suite.afterAll(async () => {
 			await setupMockDefaults();
 		});
 	});

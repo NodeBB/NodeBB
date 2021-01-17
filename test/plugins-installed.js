@@ -7,7 +7,7 @@ const db = require('./mocks/databasemock');
 const installedPlugins = fs.readdirSync(path.join(__dirname, '../node_modules'))
 	.filter(p => p.startsWith('nodebb-'));
 
-describe('Installed Plugins', function () {
+describe('Installed Plugins', () => {
 	installedPlugins.forEach((plugin) => {
 		const pathToTests = path.join(__dirname, '../node_modules', plugin, 'test');
 		try {

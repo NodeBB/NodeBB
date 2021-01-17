@@ -60,7 +60,7 @@ async function searchInContent(data) {
 	]);
 
 	if (data.returnIds) {
-		return { pids: pids, tids: tids };
+		return { pids, tids };
 	}
 
 	const mainPids = await topics.getMainPids(tids);
@@ -87,7 +87,7 @@ async function searchInContent(data) {
 	}
 
 	returnData.posts = await posts.getPostSummaryByPids(metadata.pids, data.uid, {});
-	await plugins.hooks.fire('filter:search.contentGetResult', { result: returnData, data: data });
+	await plugins.hooks.fire('filter:search.contentGetResult', { result: returnData, data });
 	delete metadata.pids;
 	return Object.assign(returnData, metadata);
 }
@@ -108,7 +108,7 @@ async function filterAndSort(pids, data) {
 
 	sortPosts(postsData, data);
 
-	const result = await plugins.hooks.fire('filter:search.filterAndSort', { pids: pids, posts: postsData, data: data });
+	const result = await plugins.hooks.fire('filter:search.filterAndSort', { pids, posts: postsData, data });
 	return result.posts.map(post => post && post.pid);
 }
 
@@ -127,7 +127,7 @@ async function getMatchedPosts(pids, data) {
 
 	const tidToTopic = _.zipObject(tids, topics);
 	const uidToUser = _.zipObject(uids, users);
-	postsData.forEach(function (post) {
+	postsData.forEach((post) => {
 		if (topics && tidToTopic[post.tid]) {
 			post.topic = tidToTopic[post.tid];
 			if (post.topic && post.topic.category) {
@@ -159,7 +159,7 @@ async function getTopics(tids, data) {
 	]);
 
 	const cidToCategory = _.zipObject(cids, categories);
-	topicsData.forEach(function (topic, index) {
+	topicsData.forEach((topic, index) => {
 		if (topic && categories && cidToCategory[topic.cid]) {
 			topic.category = cidToCategory[topic.cid];
 		}
@@ -181,7 +181,7 @@ async function getCategories(cids, data) {
 		return null;
 	}
 
-	return await db.getObjectsFields(cids.map(cid => 'category:' + cid), categoryFields);
+	return await db.getObjectsFields(cids.map(cid => `category:${cid}`), categoryFields);
 }
 
 async function getTags(tids, data) {
@@ -218,8 +218,8 @@ function filterByTimerange(posts, timeRange, timeFilter) {
 
 function filterByTags(posts, hasTags) {
 	if (Array.isArray(hasTags) && hasTags.length) {
-		posts = posts.filter(function (post) {
-			var hasAllTags = false;
+		posts = posts.filter((post) => {
+			let hasAllTags = false;
 			if (post && post.topic && Array.isArray(post.topic.tags) && post.topic.tags.length) {
 				hasAllTags = hasTags.every(tag => post.topic.tags.includes(tag));
 			}
@@ -251,7 +251,7 @@ function sortPosts(posts, data) {
 	if (isNumeric) {
 		posts.sort((p1, p2) => direction * (p2[fields[0]][fields[1]] - p1[fields[0]][fields[1]]));
 	} else {
-		posts.sort(function (p1, p2) {
+		posts.sort((p1, p2) => {
 			if (p1[fields[0]][fields[1]] > p2[fields[0]][fields[1]]) {
 				return direction;
 			} else if (p1[fields[0]][fields[1]] < p2[fields[0]][fields[1]]) {

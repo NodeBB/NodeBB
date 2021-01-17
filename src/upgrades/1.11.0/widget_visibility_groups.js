@@ -1,11 +1,11 @@
 'use strict';
 
-var async = require('async');
+const async = require('async');
 
 module.exports = {
 	name: 'Widget visibility groups',
 	timestamp: Date.UTC(2018, 10, 10),
-	method: function (callback) {
+	method(callback) {
 		const widgetAdmin = require('../../widgets/admin');
 		const widgets = require('../../widgets');
 		async.waterfall([
@@ -13,11 +13,11 @@ module.exports = {
 				widgetAdmin.getAreas(next);
 			},
 			function (areas, next) {
-				async.eachSeries(areas, function (area, next) {
+				async.eachSeries(areas, (area, next) => {
 					if (area.data.length) {
 						// area.data is actually an array of widgets
 						area.widgets = area.data;
-						area.widgets.forEach(function (widget) {
+						area.widgets.forEach((widget) => {
 							if (widget && widget.data) {
 								const groupsToShow = ['administrators', 'Global Moderators'];
 								if (widget.data['hide-guests'] !== 'on') {

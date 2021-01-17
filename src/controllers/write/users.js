@@ -136,7 +136,7 @@ Users.deleteToken = async (req, res) => {
 	}
 };
 
-const getSessionAsync = util.promisify(function (sid, callback) {
+const getSessionAsync = util.promisify((sid, callback) => {
 	db.sessionStore.get(sid, (err, sessionObj) => callback(err, sessionObj || null));
 });
 
@@ -146,7 +146,7 @@ Users.revokeSession = async (req, res) => {
 		return helpers.formatApiResponse(404, res);
 	}
 
-	const sids = await db.getSortedSetRange('uid:' + req.params.uid + ':sessions', 0, -1);
+	const sids = await db.getSortedSetRange(`uid:${req.params.uid}:sessions`, 0, -1);
 	let _id;
 	for (const sid of sids) {
 		/* eslint-disable no-await-in-loop */
@@ -182,7 +182,7 @@ Users.invite = async (req, res) => {
 		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
 	}
 
-	const registrationType = meta.config.registrationType;
+	const { registrationType } = meta.config;
 	const isAdmin = await user.isAdministrator(req.uid);
 	if (registrationType === 'admin-invite-only' && !isAdmin) {
 		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
@@ -204,7 +204,7 @@ Users.invite = async (req, res) => {
 			invites = await user.getInvitesNumber(req.uid);
 		}
 		if (!isAdmin && max && invites >= max) {
-			return helpers.formatApiResponse(403, res, new Error('[[error:invite-maximum-met, ' + invites + ', ' + max + ']]'));
+			return helpers.formatApiResponse(403, res, new Error(`[[error:invite-maximum-met, ${invites}, ${max}]]`));
 		}
 
 		await user.sendInvitationEmail(req.uid, email, groupsToJoin);

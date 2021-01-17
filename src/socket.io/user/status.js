@@ -22,7 +22,7 @@ module.exports = function (SocketUser) {
 			throw new Error('[[error:invalid-user-status]]');
 		}
 
-		const userData = { status: status };
+		const userData = { status };
 		if (status !== 'offline') {
 			userData.lastonline = Date.now();
 		}
@@ -32,7 +32,7 @@ module.exports = function (SocketUser) {
 		}
 		const eventData = {
 			uid: socket.uid,
-			status: status,
+			status,
 		};
 		websockets.server.emit('event:user_status_change', eventData);
 		return eventData;

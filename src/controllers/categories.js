@@ -26,7 +26,7 @@ categoriesController.list = async function (req, res) {
 		categories: tree,
 	};
 
-	if (req.originalUrl.startsWith(nconf.get('relative_path') + '/api/categories') || req.originalUrl.startsWith(nconf.get('relative_path') + '/categories')) {
+	if (req.originalUrl.startsWith(`${nconf.get('relative_path')}/api/categories`) || req.originalUrl.startsWith(`${nconf.get('relative_path')}/categories`)) {
 		data.title = '[[pages:categories]]';
 		data.breadcrumbs = helpers.buildBreadcrumbs([{ text: data.title }]);
 		res.locals.metaTags.push({
@@ -35,10 +35,10 @@ categoriesController.list = async function (req, res) {
 		});
 	}
 
-	data.categories.forEach(function (category) {
+	data.categories.forEach((category) => {
 		if (category && Array.isArray(category.posts) && category.posts.length && category.posts[0]) {
 			category.teaser = {
-				url: nconf.get('relative_path') + '/post/' + category.posts[0].pid,
+				url: `${nconf.get('relative_path')}/post/${category.posts[0].pid}`,
 				timestampISO: category.posts[0].timestampISO,
 				pid: category.posts[0].pid,
 				topic: category.posts[0].topic,

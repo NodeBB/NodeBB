@@ -19,13 +19,13 @@ SocketGroups.before = async (socket, method, data) => {
 SocketGroups.join = async (socket, data) => {
 	sockets.warnDeprecated(socket, 'PUT /api/v3/groups/:slug/membership/:uid');
 	const slug = await groups.getGroupField(data.groupName, 'slug');
-	await api.groups.join(socket, { slug: slug, uid: data.uid || socket.uid });
+	await api.groups.join(socket, { slug, uid: data.uid || socket.uid });
 };
 
 SocketGroups.leave = async (socket, data) => {
 	sockets.warnDeprecated(socket, 'DELETE /api/v3/groups/:slug/membership/:uid');
 	const slug = await groups.getGroupField(data.groupName, 'slug');
-	await api.groups.leave(socket, { slug: slug, uid: data.uid || socket.uid });
+	await api.groups.leave(socket, { slug, uid: data.uid || socket.uid });
 };
 
 SocketGroups.addMember = async (socket, data) => {
@@ -62,7 +62,7 @@ async function isOwner(socket, data) {
 		group: await groups.getGroupData(data.groupName),
 	});
 
-	var isOwner = results.isOwner || results.isAdmin || (results.isGlobalModerator && !results.group.system);
+	const isOwner = results.isOwner || results.isAdmin || (results.isGlobalModerator && !results.group.system);
 	if (!isOwner) {
 		throw new Error('[[error:no-privileges]]');
 	}
@@ -221,7 +221,7 @@ SocketGroups.create = async (socket, data) => {
 SocketGroups.delete = async (socket, data) => {
 	sockets.warnDeprecated(socket, 'DEL /api/v3/groups');
 	const slug = await groups.getGroupField(data.groupName, 'slug');
-	await api.groups.delete(socket, { slug: slug });
+	await api.groups.delete(socket, { slug });
 };
 
 SocketGroups.search = async (socket, data) => {
@@ -271,7 +271,7 @@ SocketGroups.loadMoreMembers = async (socket, data) => {
 	data.after = parseInt(data.after, 10);
 	const users = await groups.getOwnersAndMembers(data.groupName, socket.uid, data.after, data.after + 9);
 	return {
-		users: users,
+		users,
 		nextStart: data.after + 10,
 	};
 };

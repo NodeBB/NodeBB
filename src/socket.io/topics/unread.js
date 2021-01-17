@@ -33,7 +33,7 @@ module.exports = function (SocketTopics) {
 	};
 
 	SocketTopics.markCategoryTopicsRead = async function (socket, cid) {
-		const tids = await topics.getUnreadTids({ cid: cid, uid: socket.uid, filter: '' });
+		const tids = await topics.getUnreadTids({ cid, uid: socket.uid, filter: '' });
 		await SocketTopics.markAsRead(socket, tids);
 	};
 
@@ -66,7 +66,7 @@ module.exports = function (SocketTopics) {
 			}
 			await topics.markAsUnreadForAll(tid);
 			await topics.updateRecent(tid, now);
-			await db.sortedSetAdd('cid:' + topicData.cid + ':tids:lastposttime', now, tid);
+			await db.sortedSetAdd(`cid:${topicData.cid}:tids:lastposttime`, now, tid);
 			await topics.setTopicField(tid, 'lastposttime', now);
 		}));
 		topics.pushUnreadCount(socket.uid);

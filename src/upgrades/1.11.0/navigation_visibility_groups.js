@@ -1,11 +1,11 @@
 'use strict';
 
-var async = require('async');
+const async = require('async');
 
 module.exports = {
 	name: 'Navigation item visibility groups',
 	timestamp: Date.UTC(2018, 10, 10),
-	method: function (callback) {
+	method(callback) {
 		const navigationAdmin = require('../../navigation/admin');
 
 		async.waterfall([
@@ -13,7 +13,7 @@ module.exports = {
 				navigationAdmin.get(next);
 			},
 			function (data, next) {
-				data.forEach(function (navItem) {
+				data.forEach((navItem) => {
 					if (navItem && navItem.properties) {
 						navItem.groups = [];
 						if (navItem.properties.adminOnly) {

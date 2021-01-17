@@ -23,7 +23,7 @@ const authenticationController = module.exports;
 
 async function registerAndLoginUser(req, res, userData) {
 	const data = await plugins.hooks.fire('filter:register.interstitial', {
-		userData: userData,
+		userData,
 		interstitials: [],
 	});
 
@@ -38,14 +38,14 @@ async function registerAndLoginUser(req, res, userData) {
 			req.session.referrer = req.body.referrer;
 		}
 		if (req.body.noscript === 'true') {
-			res.redirect(nconf.get('relative_path') + '/register/complete');
+			res.redirect(`${nconf.get('relative_path')}/register/complete`);
 			return;
 		}
-		res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
+		res.json({ referrer: `${nconf.get('relative_path')}/register/complete` });
 		return;
 	}
 	const queue = await user.shouldQueueUser(req.ip);
-	const result = await plugins.hooks.fire('filter:register.shouldQueue', { req: req, res: res, userData: userData, queue: queue });
+	const result = await plugins.hooks.fire('filter:register.shouldQueue', { req, res, userData, queue });
 	if (result.queue) {
 		return await addToApprovalQueue(req, userData);
 	}
@@ -60,8 +60,8 @@ async function registerAndLoginUser(req, res, userData) {
 		await user.joinGroupsFromInvitation(uid, userData.email);
 	}
 	await user.deleteInvitationKey(userData.email);
-	const referrer = req.body.referrer || req.session.referrer || nconf.get('relative_path') + '/';
-	const complete = await plugins.hooks.fire('filter:register.complete', { uid: uid, referrer: referrer });
+	const referrer = req.body.referrer || req.session.referrer || `${nconf.get('relative_path')}/`;
+	const complete = await plugins.hooks.fire('filter:register.complete', { uid, referrer });
 	req.session.returnTo = complete.referrer;
 	return complete;
 }
@@ -86,7 +86,11 @@ authenticationController.register = async function (req, res) {
 			throw new Error('[[error:invalid-email]]');
 		}
 
-		if (!userData.username || userData.username.length < meta.config.minimumUsernameLength || slugify(userData.username).length < meta.config.minimumUsernameLength) {
+		if (
+			!userData.username ||
+			userData.username.length < meta.config.minimumUsernameLength ||
+			slugify(userData.username).length < meta.config.minimumUsernameLength
+		) {
 			throw new Error('[[error:username-too-short]]');
 		}
 
@@ -105,7 +109,7 @@ authenticationController.register = async function (req, res) {
 		user.isPasswordValid(userData.password);
 
 		res.locals.processLogin = true;	// set it to false in plugin if you wish to just register only
-		await plugins.hooks.fire('filter:register.check', { req: req, res: res, userData: userData });
+		await plugins.hooks.fire('filter:register.check', { req, res, userData });
 
 		const data = await registerAndLoginUser(req, res, userData);
 		if (data) {
@@ -132,7 +136,7 @@ async function addToApprovalQueue(req, userData) {
 	if (meta.config.autoApproveTime > 0) {
 		message += ` [[register:registration-queue-auto-approve-time, ${meta.config.autoApproveTime}]]`;
 	}
-	return { message: message };
+	return { message };
 }
 
 authenticationController.registerComplete = function (req, res, next) {
@@ -140,16 +144,16 @@ authenticationController.registerComplete = function (req, res, next) {
 	plugins.hooks.fire('filter:register.interstitial', {
 		userData: req.session.registration,
 		interstitials: [],
-	}, function (err, data) {
+	}, (err, data) => {
 		if (err) {
 			return next(err);
 		}
 
-		var callbacks = data.interstitials.reduce(function (memo, cur) {
+		const callbacks = data.interstitials.reduce((memo, cur) => {
 			if (cur.hasOwnProperty('callback') && typeof cur.callback === 'function') {
 				req.body.files = req.files;
-				memo.push(function (next) {
-					cur.callback(req.session.registration, req.body, function (err) {
+				memo.push((next) => {
+					cur.callback(req.session.registration, req.body, (err) => {
 						// Pass error as second argument so all callbacks are executed
 						next(null, err);
 					});
@@ -159,30 +163,30 @@ authenticationController.registerComplete = function (req, res, next) {
 			return memo;
 		}, []);
 
-		var done = function (err, data) {
+		const done = function (err, data) {
 			delete req.session.registration;
 			if (err) {
-				return res.redirect(nconf.get('relative_path') + '/?register=' + encodeURIComponent(err.message));
+				return res.redirect(`${nconf.get('relative_path')}/?register=${encodeURIComponent(err.message)}`);
 			}
 
 			if (!err && data && data.message) {
-				return res.redirect(nconf.get('relative_path') + '/?register=' + encodeURIComponent(data.message));
+				return res.redirect(`${nconf.get('relative_path')}/?register=${encodeURIComponent(data.message)}`);
 			}
 			if (req.session.returnTo) {
 				res.redirect(nconf.get('relative_path') + req.session.returnTo);
 			} else {
-				res.redirect(nconf.get('relative_path') + '/');
+				res.redirect(`${nconf.get('relative_path')}/`);
 			}
 		};
 
-		async.parallel(callbacks, async function (_blank, err) {
+		async.parallel(callbacks, async (_blank, err) => {
 			if (err.length) {
 				err = err.filter(Boolean).map(err => err.message);
 			}
 
 			if (err.length) {
 				req.flash('errors', err);
-				return res.redirect(nconf.get('relative_path') + '/register/complete');
+				return res.redirect(`${nconf.get('relative_path')}/register/complete`);
 			}
 
 			if (req.session.registration.register === true) {
@@ -191,7 +195,7 @@ authenticationController.registerComplete = function (req, res, next) {
 			} else {
 				// Update user hash, clear registration data in session
 				const payload = req.session.registration;
-				const uid = payload.uid;
+				const { uid } = payload;
 				delete payload.uid;
 				delete payload.returnTo;
 
@@ -210,9 +214,9 @@ authenticationController.registerComplete = function (req, res, next) {
 
 authenticationController.registerAbort = function (req, res) {
 	// End the session and redirect to home
-	req.session.destroy(function () {
+	req.session.destroy(() => {
 		res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
-		res.redirect(nconf.get('relative_path') + '/');
+		res.redirect(`${nconf.get('relative_path')}/`);
 	});
 };
 
@@ -221,10 +225,10 @@ authenticationController.login = function (req, res, next) {
 		return continueLogin(req, res, next);
 	}
 
-	var loginWith = meta.config.allowLoginWith || 'username-email';
+	const loginWith = meta.config.allowLoginWith || 'username-email';
 	req.body.username = req.body.username.trim();
 
-	plugins.hooks.fire('filter:login.check', { req: req, res: res, userData: req.body }, (err) => {
+	plugins.hooks.fire('filter:login.check', { req, res, userData: req.body }, (err) => {
 		if (err) {
 			return (res.locals.noScriptErrors || helpers.noScriptErrors)(req, res, err.message, 403);
 		}
@@ -241,14 +245,14 @@ authenticationController.login = function (req, res, next) {
 		} else if (loginWith.includes('username') && !validator.isEmail(req.body.username)) {
 			(res.locals.continueLogin || continueLogin)(req, res, next);
 		} else {
-			err = '[[error:wrong-login-type-' + loginWith + ']]';
+			err = `[[error:wrong-login-type-${loginWith}]]`;
 			(res.locals.noScriptErrors || helpers.noScriptErrors)(req, res, err, 400);
 		}
 	});
 };
 
 function continueLogin(req, res, next) {
-	passport.authenticate('local', async function (err, userData, info) {
+	passport.authenticate('local', async (err, userData, info) => {
 		if (err) {
 			return helpers.noScriptErrors(req, res, err.message, 403);
 		}
@@ -262,7 +266,7 @@ function continueLogin(req, res, next) {
 
 		// Alter user cookie depending on passed-in option
 		if (req.body.remember === 'on') {
-			var duration = 1000 * 60 * 60 * 24 * meta.config.loginDays;
+			const duration = 1000 * 60 * 60 * 24 * meta.config.loginDays;
 			req.session.cookie.maxAge = duration;
 			req.session.cookie.expires = new Date(Date.now() + duration);
 		} else {
@@ -271,28 +275,28 @@ function continueLogin(req, res, next) {
 		}
 
 		if (userData.passwordExpiry && userData.passwordExpiry < Date.now()) {
-			winston.verbose('[auth] Triggering password reset for uid ' + userData.uid + ' due to password policy');
+			winston.verbose(`[auth] Triggering password reset for uid ${userData.uid} due to password policy`);
 			req.session.passwordExpired = true;
 
 			const code = await user.reset.generate(userData.uid);
 			res.status(200).send({
-				next: nconf.get('relative_path') + '/reset/' + code,
+				next: `${nconf.get('relative_path')}/reset/${code}`,
 			});
 		} else {
 			delete req.query.lang;
 			await authenticationController.doLogin(req, userData.uid);
-			var destination;
+			let destination;
 			if (req.session.returnTo) {
 				destination = req.session.returnTo.startsWith('http') ?
 					req.session.returnTo :
 					nconf.get('relative_path') + req.session.returnTo;
 				delete req.session.returnTo;
 			} else {
-				destination = nconf.get('relative_path') + '/';
+				destination = `${nconf.get('relative_path')}/`;
 			}
 
 			if (req.body.noscript === 'true') {
-				res.redirect(destination + '?loggedin');
+				res.redirect(`${destination}?loggedin`);
 			} else {
 				res.status(200).send({
 					next: destination,
@@ -307,7 +311,7 @@ authenticationController.doLogin = async function (req, uid) {
 		return;
 	}
 	const loginAsync = util.promisify(req.login).bind(req);
-	await loginAsync({ uid: uid });
+	await loginAsync({ uid });
 	await authenticationController.onSuccessfulLogin(req, uid);
 };
 
@@ -338,7 +342,7 @@ authenticationController.onSuccessfulLogin = async function (req, uid) {
 
 		// Associate metadata retrieved via user-agent
 		req.session.meta = _.extend(req.session.meta, {
-			uuid: uuid,
+			uuid,
 			datetime: Date.now(),
 			platform: req.useragent.platform,
 			browser: req.useragent.browser,
@@ -350,13 +354,13 @@ authenticationController.onSuccessfulLogin = async function (req, uid) {
 			user.updateOnlineUsers(uid),
 		]);
 		if (uid > 0) {
-			await db.setObjectField('uid:' + uid + ':sessionUUID:sessionId', uuid, req.sessionID);
+			await db.setObjectField(`uid:${uid}:sessionUUID:sessionId`, uuid, req.sessionID);
 		}
 
 		// Force session check for all connected socket.io clients with the same session id
-		sockets.in('sess_' + req.sessionID).emit('checkSession', uid);
+		sockets.in(`sess_${req.sessionID}`).emit('checkSession', uid);
 
-		plugins.hooks.fire('action:user.loggedIn', { uid: uid, req: req });
+		plugins.hooks.fire('action:user.loggedIn', { uid, req });
 	} catch (err) {
 		req.session.destroy();
 		throw err;
@@ -415,8 +419,8 @@ authenticationController.logout = async function (req, res, next) {
 		res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
 		return res.status(200).send('not-logged-in');
 	}
-	const uid = req.uid;
-	const sessionID = req.sessionID;
+	const { uid } = req;
+	const { sessionID } = req;
 
 	try {
 		await user.auth.revokeSession(sessionID, uid);
@@ -429,12 +433,12 @@ authenticationController.logout = async function (req, res, next) {
 
 		await user.setUserField(uid, 'lastonline', Date.now() - (meta.config.onlineCutoff * 60000));
 		await db.sortedSetAdd('users:online', Date.now() - (meta.config.onlineCutoff * 60000), uid);
-		await plugins.hooks.fire('static:user.loggedOut', { req: req, res: res, uid: uid, sessionID: sessionID });
+		await plugins.hooks.fire('static:user.loggedOut', { req, res, uid, sessionID });
 
 		// Force session check for all connected socket.io clients with the same session id
-		sockets.in('sess_' + sessionID).emit('checkSession', 0);
+		sockets.in(`sess_${sessionID}`).emit('checkSession', 0);
 		const payload = {
-			next: nconf.get('relative_path') + '/',
+			next: `${nconf.get('relative_path')}/`,
 		};
 		plugins.hooks.fire('filter:user.logout', payload);
 
@@ -455,8 +459,8 @@ async function getBanInfo(uid) {
 			banInfo.reason = await translator.translate('[[user:info.banned-no-reason]]');
 		}
 		return banInfo.banned_until ?
-			'[[error:user-banned-reason-until, ' + banInfo.banned_until_readable + ', ' + banInfo.reason + ']]' :
-			'[[error:user-banned-reason, ' + banInfo.reason + ']]';
+			`[[error:user-banned-reason-until, ${banInfo.banned_until_readable}, ${banInfo.reason}]]` :
+			`[[error:user-banned-reason, ${banInfo.reason}]]`;
 	} catch (err) {
 		if (err.message === 'no-ban-info') {
 			return '[[error:user-banned]]';

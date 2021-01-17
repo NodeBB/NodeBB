@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function (module) {
-	var helpers = require('./helpers');
+	const helpers = require('./helpers');
 
 	module.setObject = async function (key, data) {
 		if (!key || !data) {
@@ -12,7 +12,7 @@ module.exports = function (module) {
 			delete data[''];
 		}
 
-		await module.transaction(async function (client) {
+		await module.transaction(async (client) => {
 			const dataString = JSON.stringify(data);
 			async function setOne(key) {
 				await helpers.ensureLegacyObjectType(client, key, 'hash');
@@ -39,7 +39,7 @@ module.exports = function (module) {
 			return;
 		}
 
-		await module.transaction(async function (client) {
+		await module.transaction(async (client) => {
 			const valueString = JSON.stringify(value);
 			async function setOne(key) {
 				await helpers.ensureLegacyObjectType(client, key, 'hash');
@@ -150,8 +150,8 @@ SELECT (SELECT jsonb_object_agg(f, d."value")
 			return res.rows[0].d;
 		}
 
-		var obj = {};
-		fields.forEach(function (f) {
+		const obj = {};
+		fields.forEach((f) => {
 			obj[f] = null;
 		});
 
@@ -284,7 +284,7 @@ SELECT (h."data" ? $2::TEXT AND h."data"->>$2::TEXT IS NOT NULL) b
 			return null;
 		}
 
-		return await module.transaction(async function (client) {
+		return await module.transaction(async (client) => {
 			if (Array.isArray(key)) {
 				await helpers.ensureLegacyObjectsType(client, key, 'hash');
 			} else {

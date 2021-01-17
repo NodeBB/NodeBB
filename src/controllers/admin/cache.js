@@ -7,7 +7,7 @@ const utils = require('../../utils');
 cacheController.get = function (req, res) {
 	const postCache = require('../../posts/cache');
 	const groupCache = require('../../groups').cache;
-	const objectCache = require('../../database').objectCache;
+	const { objectCache } = require('../../database');
 	const localCache = require('../../cache');
 
 	function getInfo(cache) {
@@ -48,9 +48,9 @@ cacheController.dump = function (req, res, next) {
 	}
 
 	const data = JSON.stringify(caches[req.query.name].dump(), null, 4);
-	res.setHeader('Content-disposition', 'attachment; filename= ' + req.query.name + '-cache.json');
+	res.setHeader('Content-disposition', `attachment; filename= ${req.query.name}-cache.json`);
 	res.setHeader('Content-type', 'application/json');
-	res.write(data, function (err) {
+	res.write(data, (err) => {
 		if (err) {
 			return next(err);
 		}

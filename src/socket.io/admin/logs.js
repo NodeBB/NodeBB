@@ -1,6 +1,7 @@
 'use strict';
 
 const meta = require('../../meta');
+
 const Logs = module.exports;
 
 Logs.get = function (socket, data, callback) {

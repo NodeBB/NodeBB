@@ -49,7 +49,7 @@ module.exports = function (User) {
 		}
 
 		uids = await filterAndSortUids(uids, data);
-		const result = await plugins.hooks.fire('filter:users.search', { uids: uids, uid: uid });
+		const result = await plugins.hooks.fire('filter:users.search', { uids, uid });
 		uids = result.uids;
 
 		const searchResult = {
@@ -81,7 +81,7 @@ module.exports = function (User) {
 		const resultsPerPage = meta.config.userSearchResultsPerPage;
 		hardCap = hardCap || resultsPerPage * 10;
 
-		const data = await db.getSortedSetRangeByLex(searchBy + ':sorted', min, max, 0, hardCap);
+		const data = await db.getSortedSetRangeByLex(`${searchBy}:sorted`, min, max, 0, hardCap);
 		const uids = data.map(data => data.split(':').pop());
 		return uids;
 	}
@@ -96,7 +96,7 @@ module.exports = function (User) {
 			fields.push(data.sortBy);
 		}
 
-		filters.forEach(function (filter) {
+		filters.forEach((filter) => {
 			if (filterFieldMap[filter]) {
 				fields.push(...filterFieldMap[filter]);
 			}
@@ -114,7 +114,7 @@ module.exports = function (User) {
 		fields.push('uid');
 		let userData = await User.getUsersFields(uids, fields);
 
-		filters.forEach(function (filter) {
+		filters.forEach((filter) => {
 			if (filterFnMap[filter]) {
 				userData = userData.filter(filterFnMap[filter]);
 			}
@@ -138,7 +138,7 @@ module.exports = function (User) {
 		if (isNumeric) {
 			userData.sort((u1, u2) => direction * (u2[sortBy] - u1[sortBy]));
 		} else {
-			userData.sort(function (u1, u2) {
+			userData.sort((u1, u2) => {
 				if (u1[sortBy] < u2[sortBy]) {
 					return direction * -1;
 				} else if (u1[sortBy] > u2[sortBy]) {
@@ -150,7 +150,7 @@ module.exports = function (User) {
 	}
 
 	async function searchByIP(ip) {
-		const ipKeys = await db.scan({ match: 'ip:' + ip + '*' });
+		const ipKeys = await db.scan({ match: `ip:${ip}*` });
 		const uids = await db.getSortedSetRevRange(ipKeys, 0, -1);
 		return _.uniq(uids);
 	}

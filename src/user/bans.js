@@ -22,9 +22,9 @@ module.exports = function (User) {
 			throw new Error('[[error:ban-expiry-missing]]');
 		}
 
-		const banKey = 'uid:' + uid + ':ban:' + now;
+		const banKey = `uid:${uid}:ban:${now}`;
 		const banData = {
-			uid: uid,
+			uid,
 			timestamp: now,
 			expire: until > now ? until : 0,
 		};
@@ -34,7 +34,7 @@ module.exports = function (User) {
 
 		await User.setUserField(uid, 'banned', 1);
 		await db.sortedSetAdd('users:banned', now, uid);
-		await db.sortedSetAdd('uid:' + uid + ':bans:timestamp', now, banKey);
+		await db.sortedSetAdd(`uid:${uid}:bans:timestamp`, now, banKey);
 		await db.setObject(banKey, banData);
 		await User.setUserField(uid, 'banned:expire', banData.expire);
 		if (until > now) {
@@ -48,19 +48,19 @@ module.exports = function (User) {
 		const siteTitle = meta.config.title || 'NodeBB';
 
 		const data = {
-			subject: '[[email:banned.subject, ' + siteTitle + ']]',
-			username: username,
+			subject: `[[email:banned.subject, ${siteTitle}]]`,
+			username,
 			until: until ? (new Date(until)).toUTCString().replace(/,/g, '\\,') : false,
-			reason: reason,
+			reason,
 		};
-		await emailer.send('banned', uid, data).catch(err => winston.error('[emailer.send] ' + err.stack));
+		await emailer.send('banned', uid, data).catch(err => winston.error(`[emailer.send] ${err.stack}`));
 
 		return banData;
 	};
 
 	User.bans.unban = async function (uids) {
 		if (Array.isArray(uids)) {
-			await db.setObject(uids.map(uid => 'user:' + uid), { banned: 0, 'banned:expire': 0 });
+			await db.setObject(uids.map(uid => `user:${uid}`), { banned: 0, 'banned:expire': 0 });
 		} else {
 			await User.setUserFields(uids, { banned: 0, 'banned:expire': 0 });
 		}
@@ -84,13 +84,11 @@ module.exports = function (User) {
 	User.bans.calcExpiredFromUserData = function (userData) {
 		const isArray = Array.isArray(userData);
 		userData = isArray ? userData : [userData];
-		userData = userData.map(function (userData) {
-			return {
-				banned: userData && !!userData.banned,
-				'banned:expire': userData && userData['banned:expire'],
-				banExpired: userData && userData['banned:expire'] <= Date.now() && userData['banned:expire'] !== 0,
-			};
-		});
+		userData = userData.map(userData => ({
+			banned: userData && !!userData.banned,
+			'banned:expire': userData && userData['banned:expire'],
+			banExpired: userData && userData['banned:expire'] <= Date.now() && userData['banned:expire'] !== 0,
+		}));
 		return isArray ? userData : userData[0];
 	};
 
@@ -103,7 +101,7 @@ module.exports = function (User) {
 		if (parseInt(uid, 10) <= 0) {
 			return '';
 		}
-		const keys = await db.getSortedSetRevRange('uid:' + uid + ':bans:timestamp', 0, 0);
+		const keys = await db.getSortedSetRevRange(`uid:${uid}:bans:timestamp`, 0, 0);
 		if (!keys.length) {
 			return '';
 		}

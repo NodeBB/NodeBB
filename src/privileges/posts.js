@@ -40,16 +40,16 @@ module.exports = function (privileges) {
 		privData['posts:history'] = _.zipObject(uniqueCids, results['posts:history']);
 		privData['posts:view_deleted'] = _.zipObject(uniqueCids, results['posts:view_deleted']);
 
-		const privileges = cids.map(function (cid, i) {
+		const privileges = cids.map((cid, i) => {
 			const isAdminOrMod = results.isAdmin || isModerator[cid];
 			const editable = (privData['posts:edit'][cid] && (results.isOwner[i] || results.isModerator)) || results.isAdmin;
 			const viewDeletedPosts = results.isOwner[i] || privData['posts:view_deleted'][cid] || results.isAdmin;
 			const viewHistory = results.isOwner[i] || privData['posts:history'][cid] || results.isAdmin;
 
 			return {
-				editable: editable,
+				editable,
 				move: isAdminOrMod,
-				isAdminOrMod: isAdminOrMod,
+				isAdminOrMod,
 				'topics:read': privData['topics:read'][cid] || results.isAdmin,
 				read: privData.read[cid] || results.isAdmin,
 				'posts:history': viewHistory,
@@ -77,7 +77,7 @@ module.exports = function (privileges) {
 
 		const tidToTopic = _.zipObject(tids, topicData);
 
-		let cids = postData.map(function (post, index) {
+		let cids = postData.map((post, index) => {
 			if (post) {
 				post.pid = pids[index];
 				post.topic = tidToTopic[post.tid];
@@ -88,23 +88,26 @@ module.exports = function (privileges) {
 		cids = _.uniq(cids);
 
 		const results = await privileges.categories.getBase(privilege, cids, uid);
-		const allowedCids = cids.filter(function (cid, index) {
-			return !results.categories[index].disabled &&
-				(results.allowedTo[index] || results.isAdmin);
-		});
+		const allowedCids = cids.filter((cid, index) => !results.categories[index].disabled &&
+				(results.allowedTo[index] || results.isAdmin));
 
 		const cidsSet = new Set(allowedCids);
 		const canViewDeleted = _.zipObject(cids, results.view_deleted);
 
-		pids = postData.filter(function (post) {
-			return post.topic && cidsSet.has(post.topic.cid) &&
-				((!post.topic.deleted && !post.deleted) || canViewDeleted[post.topic.cid] || results.isAdmin);
-		}).map(post => post.pid);
+		pids = postData.filter(post => (
+			post.topic &&
+			cidsSet.has(post.topic.cid) &&
+			(
+				(!post.topic.deleted && !post.deleted) ||
+				canViewDeleted[post.topic.cid] ||
+				results.isAdmin
+			)
+		)).map(post => post.pid);
 
 		const data = await plugins.hooks.fire('filter:privileges.posts.filter', {
-			privilege: privilege,
-			uid: uid,
-			pids: pids,
+			privilege,
+			uid,
+			pids,
 		});
 
 		return data ? data.pids : null;
@@ -125,11 +128,20 @@ module.exports = function (privileges) {
 			return { flag: true };
 		}
 
-		if (!results.isMod && meta.config.postEditDuration && (Date.now() - results.postData.timestamp > meta.config.postEditDuration * 1000)) {
-			return { flag: false, message: '[[error:post-edit-duration-expired, ' + meta.config.postEditDuration + ']]' };
+		if (
+			!results.isMod &&
+			meta.config.postEditDuration &&
+			(Date.now() - results.postData.timestamp > meta.config.postEditDuration * 1000)
+		) {
+			return { flag: false, message: `[[error:post-edit-duration-expired, ${meta.config.postEditDuration}]]` };
 		}
-		if (!results.isMod && meta.config.newbiePostEditDuration > 0 && meta.config.newbiePostDelayThreshold > results.userData.reputation && Date.now() - results.postData.timestamp > meta.config.newbiePostEditDuration * 1000) {
-			return { flag: false, message: '[[error:post-edit-duration-expired, ' + meta.config.newbiePostEditDuration + ']]' };
+		if (
+			!results.isMod &&
+			meta.config.newbiePostEditDuration > 0 &&
+			meta.config.newbiePostDelayThreshold > results.userData.reputation &&
+			Date.now() - results.postData.timestamp > meta.config.newbiePostEditDuration * 1000
+		) {
+			return { flag: false, message: `[[error:post-edit-duration-expired, ${meta.config.newbiePostEditDuration}]]` };
 		}
 
 		const isLocked = await topics.isLocked(results.postData.tid);
@@ -166,13 +178,13 @@ module.exports = function (privileges) {
 			return { flag: false, message: '[[error:topic-locked]]' };
 		}
 
-		var postDeleteDuration = meta.config.postDeleteDuration;
+		const { postDeleteDuration } = meta.config;
 		if (!results.isMod && postDeleteDuration && (Date.now() - postData.timestamp > postDeleteDuration * 1000)) {
-			return { flag: false, message: '[[error:post-delete-duration-expired, ' + meta.config.postDeleteDuration + ']]' };
+			return { flag: false, message: `[[error:post-delete-duration-expired, ${meta.config.postDeleteDuration}]]` };
 		}
-		var deleterUid = postData.deleterUid;
-		var flag = results['posts:delete'] && ((results.isOwner && (deleterUid === 0 || deleterUid === postData.uid)) || results.isMod);
-		return { flag: flag, message: '[[error:no-privileges]]' };
+		const { deleterUid } = postData;
+		const flag = results['posts:delete'] && ((results.isOwner && (deleterUid === 0 || deleterUid === postData.uid)) || results.isMod);
+		return { flag, message: '[[error:no-privileges]]' };
 	};
 
 	privileges.posts.canFlag = async function (pid, uid) {

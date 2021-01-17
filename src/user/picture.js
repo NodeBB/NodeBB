@@ -31,7 +31,7 @@ module.exports = function (User) {
 	User.updateCoverPosition = async function (uid, position) {
 		// Reject anything that isn't two percentages
 		if (!/^[\d.]+%\s[\d.]+%$/.test(position)) {
-			winston.warn('[user/updateCoverPosition] Invalid position received: ' + position);
+			winston.warn(`[user/updateCoverPosition] Invalid position received: ${position}`);
 			throw new Error('[[error:invalid-data]]');
 		}
 
@@ -54,7 +54,7 @@ module.exports = function (User) {
 			picture.path = await image.writeImageDataToTempFile(data.imageData);
 
 			const extension = file.typeToExtension(image.mimeFromBase64(data.imageData));
-			const filename = data.uid + '-profilecover-' + Date.now() + extension;
+			const filename = `${data.uid}-profilecover-${Date.now()}${extension}`;
 			const uploadData = await image.uploadImage(filename, 'profile', picture);
 
 			await deleteCurrentPicture(data.uid, 'cover:url');
@@ -80,7 +80,7 @@ module.exports = function (User) {
 		}
 
 		if (userPhoto.size > meta.config.maximumProfileImageSize * 1024) {
-			throw new Error('[[error:file-too-big, ' + meta.config.maximumProfileImageSize + ']]');
+			throw new Error(`[[error:file-too-big, ${meta.config.maximumProfileImageSize}]]`);
 		}
 
 		if (!userPhoto.type || !User.getAllowedImageTypes().includes(userPhoto.type)) {
@@ -175,7 +175,7 @@ module.exports = function (User) {
 		}
 		const size = image.sizeFromBase64(data.imageData);
 		if (size > maxSize * 1024) {
-			throw new Error('[[error:file-too-big, ' + maxSize + ']]');
+			throw new Error(`[[error:file-too-big, ${maxSize}]]`);
 		}
 
 		const type = image.mimeFromBase64(data.imageData);
@@ -196,10 +196,10 @@ module.exports = function (User) {
 
 	function generateProfileImageFilename(uid, extension) {
 		const convertToPNG = meta.config['profile:convertProfileImageToPNG'] === 1;
-		return uid + '-profileavatar-' + Date.now() + (convertToPNG ? '.png' : extension);
+		return `${uid}-profileavatar-${Date.now()}${convertToPNG ? '.png' : extension}`;
 	}
 
 	User.removeCoverPicture = async function (data) {
-		await db.deleteObjectFields('user:' + data.uid, ['cover:url', 'cover:position']);
+		await db.deleteObjectFields(`user:${data.uid}`, ['cover:url', 'cover:position']);
 	};
 };

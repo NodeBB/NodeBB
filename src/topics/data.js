@@ -1,11 +1,11 @@
 'use strict';
 
-var validator = require('validator');
+const validator = require('validator');
 
-var db = require('../database');
-var categories = require('../categories');
-var utils = require('../utils');
-var translator = require('../translator');
+const db = require('../database');
+const categories = require('../categories');
+const utils = require('../utils');
+const translator = require('../translator');
 const plugins = require('../plugins');
 
 const intFields = [
@@ -20,13 +20,13 @@ module.exports = function (Topics) {
 		if (!Array.isArray(tids) || !tids.length) {
 			return [];
 		}
-		const keys = tids.map(tid => 'topic:' + tid);
+		const keys = tids.map(tid => `topic:${tid}`);
 		const topics = await (fields.length ? db.getObjectsFields(keys, fields) : db.getObjects(keys));
 		const result = await plugins.hooks.fire('filter:topic.getFields', {
-			tids: tids,
-			topics: topics,
-			fields: fields,
-			keys: keys,
+			tids,
+			topics,
+			fields,
+			keys,
 		});
 		result.topics.forEach(topic => modifyTopic(topic, fields));
 		return result.topics;
@@ -57,19 +57,19 @@ module.exports = function (Topics) {
 	};
 
 	Topics.setTopicField = async function (tid, field, value) {
-		await db.setObjectField('topic:' + tid, field, value);
+		await db.setObjectField(`topic:${tid}`, field, value);
 	};
 
 	Topics.setTopicFields = async function (tid, data) {
-		await db.setObject('topic:' + tid, data);
+		await db.setObject(`topic:${tid}`, data);
 	};
 
 	Topics.deleteTopicField = async function (tid, field) {
-		await db.deleteObjectField('topic:' + tid, field);
+		await db.deleteObjectField(`topic:${tid}`, field);
 	};
 
 	Topics.deleteTopicFields = async function (tid, fields) {
-		await db.deleteObjectFields('topic:' + tid, fields);
+		await db.deleteObjectFields(`topic:${tid}`, fields);
 	};
 };
 

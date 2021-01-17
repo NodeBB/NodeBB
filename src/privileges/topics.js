@@ -47,13 +47,13 @@ module.exports = function (privileges) {
 			purge: (privData.purge && (isOwner || isModerator)) || isAdministrator,
 
 			view_thread_tools: editable || deletable,
-			editable: editable,
-			deletable: deletable,
+			editable,
+			deletable,
 			view_deleted: isAdminOrMod || isOwner,
-			isAdminOrMod: isAdminOrMod,
-			disabled: disabled,
-			tid: tid,
-			uid: uid,
+			isAdminOrMod,
+			disabled,
+			tid,
+			uid,
 		});
 	};
 
@@ -71,17 +71,23 @@ module.exports = function (privileges) {
 		const cids = _.uniq(topicsData.map(topic => topic.cid));
 		const results = await privileges.categories.getBase(privilege, cids, uid);
 
-		const allowedCids = cids.filter((cid, index) => !results.categories[index].disabled && (results.allowedTo[index] || results.isAdmin));
+		const allowedCids = cids.filter((cid, index) => (
+			!results.categories[index].disabled &&
+			(results.allowedTo[index] || results.isAdmin)
+		));
 
 		const cidsSet = new Set(allowedCids);
 		const canViewDeleted = _.zipObject(cids, results.view_deleted);
 
-		tids = topicsData.filter(t => cidsSet.has(t.cid) &&	(!t.deleted || canViewDeleted[t.cid] || results.isAdmin)).map(t => t.tid);
+		tids = topicsData.filter(t => (
+			cidsSet.has(t.cid) &&
+			(!t.deleted || canViewDeleted[t.cid] || results.isAdmin)
+		)).map(t => t.tid);
 
 		const data = await plugins.hooks.fire('filter:privileges.topics.filter', {
-			privilege: privilege,
-			uid: uid,
-			tids: tids,
+			privilege,
+			uid,
+			tids,
 		});
 		return data ? data.tids : [];
 	};
@@ -98,10 +104,8 @@ module.exports = function (privileges) {
 			helpers.isUsersAllowedTo(privilege, uids, topicData.cid),
 			user.isAdministrator(uids),
 		]);
-		return uids.filter(function (uid, index) {
-			return !disabled &&
-				((allowedTo[index] && !topicData.deleted) || isAdmins[index]);
-		});
+		return uids.filter((uid, index) => !disabled &&
+				((allowedTo[index] && !topicData.deleted) || isAdmins[index]));
 	};
 
 	privileges.topics.canPurge = async function (tid, uid) {
@@ -128,15 +132,15 @@ module.exports = function (privileges) {
 			return true;
 		}
 
-		const preventTopicDeleteAfterReplies = meta.config.preventTopicDeleteAfterReplies;
+		const { preventTopicDeleteAfterReplies } = meta.config;
 		if (!isModerator && preventTopicDeleteAfterReplies && (topicData.postcount - 1) >= preventTopicDeleteAfterReplies) {
 			const langKey = preventTopicDeleteAfterReplies > 1 ?
-				'[[error:cant-delete-topic-has-replies, ' + meta.config.preventTopicDeleteAfterReplies + ']]' :
+				`[[error:cant-delete-topic-has-replies, ${meta.config.preventTopicDeleteAfterReplies}]]` :
 				'[[error:cant-delete-topic-has-reply]]';
 			throw new Error(langKey);
 		}
 
-		const deleterUid = topicData.deleterUid;
+		const { deleterUid } = topicData;
 		return allowedTo[0] && ((isOwner && (deleterUid === 0 || deleterUid === topicData.uid)) || isModerator);
 	};
 

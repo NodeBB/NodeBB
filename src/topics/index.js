@@ -1,20 +1,20 @@
 'use strict';
 
-var _ = require('lodash');
+const _ = require('lodash');
 const validator = require('validator');
 const path = require('path');
 
-var db = require('../database');
-var posts = require('../posts');
-var utils = require('../utils');
-var plugins = require('../plugins');
-var meta = require('../meta');
-var user = require('../user');
-var categories = require('../categories');
-var privileges = require('../privileges');
-var social = require('../social');
+const db = require('../database');
+const posts = require('../posts');
+const utils = require('../utils');
+const plugins = require('../plugins');
+const meta = require('../meta');
+const user = require('../user');
+const categories = require('../categories');
+const privileges = require('../privileges');
+const social = require('../social');
 
-var Topics = module.exports;
+const Topics = module.exports;
 
 require('./data')(Topics);
 require('./create')(Topics);
@@ -35,14 +35,14 @@ require('./bookmarks')(Topics);
 require('./merge')(Topics);
 
 Topics.exists = async function (tid) {
-	return await db.exists('topic:' + tid);
+	return await db.exists(`topic:${tid}`);
 };
 
 Topics.getTopicsFromSet = async function (set, uid, start, stop) {
 	const tids = await db.getSortedSetRevRange(set, start, stop);
 	const topics = await Topics.getTopics(tids, uid);
 	Topics.calculateTopicIndices(topics, start);
-	return { topics: topics, nextStart: stop + 1 };
+	return { topics, nextStart: stop + 1 };
 };
 
 Topics.getTopics = async function (tids, options) {
@@ -112,7 +112,7 @@ Topics.getTopicsByTids = async function (tids, options) {
 	]);
 
 	const sortOldToNew = callerSettings.topicPostSort === 'newest_to_oldest';
-	result.topics.forEach(function (topic, i) {
+	result.topics.forEach((topic, i) => {
 		if (topic) {
 			topic.thumbs = result.thumbs[i];
 			restoreThumbValue(topic);
@@ -139,7 +139,7 @@ Topics.getTopicsByTids = async function (tids, options) {
 
 	const filteredTopics = result.topics.filter(topic => topic && topic.category && !topic.category.disabled);
 
-	const hookResult = await plugins.hooks.fire('filter:topics.get', { topics: filteredTopics, uid: uid });
+	const hookResult = await plugins.hooks.fire('filter:topics.get', { topics: filteredTopics, uid });
 	return hookResult.topics;
 };
 
@@ -175,7 +175,7 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 		getMainPostAndReplies(topicData, set, uid, start, stop, reverse),
 		categories.getCategoryData(topicData.cid),
 		categories.getTagWhitelist([topicData.cid]),
-		plugins.hooks.fire('filter:topic.thread_tools', { topic: topicData, uid: uid, tools: [] }),
+		plugins.hooks.fire('filter:topic.thread_tools', { topic: topicData, uid, tools: [] }),
 		Topics.getFollowData([topicData.tid], uid),
 		Topics.getUserBookmark(topicData.tid, uid),
 		social.getActivePostSharing(),
@@ -210,7 +210,7 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 	topicData.unreplied = topicData.postcount === 1;
 	topicData.icons = [];
 
-	const result = await plugins.hooks.fire('filter:topic.get', { topic: topicData, uid: uid });
+	const result = await plugins.hooks.fire('filter:topic.get', { topic: topicData, uid });
 	return result.topic;
 };
 
@@ -235,7 +235,7 @@ async function getMainPostAndReplies(topic, set, uid, start, stop, reverse) {
 	if (!postData.length) {
 		return [];
 	}
-	var replies = postData;
+	let replies = postData;
 	if (topic.mainPid && start === 0) {
 		postData[0].index = 0;
 		replies = postData.slice(1);
@@ -294,7 +294,7 @@ Topics.getMainPosts = async function (tids, uid) {
 
 async function getMainPosts(mainPids, uid) {
 	const postData = await posts.getPostsByPids(mainPids, uid);
-	postData.forEach(function (post) {
+	postData.forEach((post) => {
 		if (post) {
 			post.index = 0;
 		}
@@ -309,8 +309,8 @@ Topics.isLocked = async function (tid) {
 
 Topics.search = async function (tid, term) {
 	const pids = await plugins.hooks.fire('filter:topic.search', {
-		tid: tid,
-		term: term,
+		tid,
+		term,
 	});
 	return Array.isArray(pids) ? pids : [];
 };

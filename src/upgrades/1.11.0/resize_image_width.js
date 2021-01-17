@@ -1,13 +1,13 @@
 'use strict';
 
-var async = require('async');
-var db = require('../../database');
+const async = require('async');
+const db = require('../../database');
 
 
 module.exports = {
 	name: 'Rename maximumImageWidth to resizeImageWidth',
 	timestamp: Date.UTC(2018, 9, 24),
-	method: function (callback) {
+	method(callback) {
 		const meta = require('../../meta');
 		async.waterfall([
 			function (next) {

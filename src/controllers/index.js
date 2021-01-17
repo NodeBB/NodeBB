@@ -53,9 +53,9 @@ Controllers.reset = async function (req, res) {
 
 	const renderReset = function (code, valid) {
 		res.render('reset_code', {
-			valid: valid,
+			valid,
 			displayExpiryNotice: req.session.passwordExpired,
-			code: code,
+			code,
 			minimumPasswordLength: meta.config.minimumPasswordLength,
 			minimumPasswordStrength: meta.config.minimumPasswordStrength,
 			breadcrumbs: helpers.buildBreadcrumbs([
@@ -113,7 +113,7 @@ Controllers.login = async function (req, res) {
 	data.alternate_logins = loginStrategies.length > 0;
 	data.authentication = loginStrategies;
 	data.allowRegistration = registrationType === 'normal';
-	data.allowLoginWith = '[[login:' + allowLoginWith + ']]';
+	data.allowLoginWith = `[[login:${allowLoginWith}]]`;
 	data.breadcrumbs = helpers.buildBreadcrumbs([{
 		text: '[[global:login]]',
 	}]);
@@ -176,7 +176,7 @@ Controllers.register = async function (req, res, next) {
 
 Controllers.registerInterstitial = async function (req, res, next) {
 	if (!req.session.hasOwnProperty('registration')) {
-		return res.redirect(nconf.get('relative_path') + '/register');
+		return res.redirect(`${nconf.get('relative_path')}/register`);
 	}
 	try {
 		const data = await plugins.hooks.fire('filter:register.interstitial', {
@@ -191,13 +191,15 @@ Controllers.registerInterstitial = async function (req, res, next) {
 			return helpers.redirect(res, returnTo || '/');
 		}
 
-		const renders = data.interstitials.map(interstitial => req.app.renderAsync(interstitial.template, interstitial.data || {}));
+		const renders = data.interstitials.map(
+			interstitial => req.app.renderAsync(interstitial.template, interstitial.data || {})
+		);
 		const sections = await Promise.all(renders);
 
 		res.render('registerComplete', {
 			title: '[[pages:registration-complete]]',
 			errors: req.flash('errors'),
-			sections: sections,
+			sections,
 		});
 	} catch (err) {
 		next(err);
@@ -205,7 +207,7 @@ Controllers.registerInterstitial = async function (req, res, next) {
 };
 
 Controllers.confirmEmail = function (req, res) {
-	user.email.confirmByCode(req.params.code, function (err) {
+	user.email.confirmByCode(req.params.code, (err) => {
 		res.render('confirm', {
 			error: err ? err.message : '',
 			title: '[[pages:confirm]]',
@@ -219,11 +221,11 @@ Controllers.robots = function (req, res) {
 	if (meta.config['robots:txt']) {
 		res.send(meta.config['robots:txt']);
 	} else {
-		res.send('User-agent: *\n' +
-			'Disallow: ' + nconf.get('relative_path') + '/admin/\n' +
-			'Disallow: ' + nconf.get('relative_path') + '/reset/\n' +
-			'Disallow: ' + nconf.get('relative_path') + '/compose\n' +
-			'Sitemap: ' + nconf.get('url') + '/sitemap.xml');
+		res.send(`${'User-agent: *\n' +
+			'Disallow: '}${nconf.get('relative_path')}/admin/\n` +
+			`Disallow: ${nconf.get('relative_path')}/reset/\n` +
+			`Disallow: ${nconf.get('relative_path')}/compose\n` +
+			`Sitemap: ${nconf.get('url')}/sitemap.xml`);
 	}
 };
 
@@ -241,37 +243,37 @@ Controllers.manifest = async function (req, res) {
 
 	if (meta.config['brand:touchIcon']) {
 		manifest.icons.push({
-			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-36.png',
+			src: `${nconf.get('relative_path')}/assets/uploads/system/touchicon-36.png`,
 			sizes: '36x36',
 			type: 'image/png',
 			density: 0.75,
 		}, {
-			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-48.png',
+			src: `${nconf.get('relative_path')}/assets/uploads/system/touchicon-48.png`,
 			sizes: '48x48',
 			type: 'image/png',
 			density: 1.0,
 		}, {
-			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-72.png',
+			src: `${nconf.get('relative_path')}/assets/uploads/system/touchicon-72.png`,
 			sizes: '72x72',
 			type: 'image/png',
 			density: 1.5,
 		}, {
-			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-96.png',
+			src: `${nconf.get('relative_path')}/assets/uploads/system/touchicon-96.png`,
 			sizes: '96x96',
 			type: 'image/png',
 			density: 2.0,
 		}, {
-			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-144.png',
+			src: `${nconf.get('relative_path')}/assets/uploads/system/touchicon-144.png`,
 			sizes: '144x144',
 			type: 'image/png',
 			density: 3.0,
 		}, {
-			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-192.png',
+			src: `${nconf.get('relative_path')}/assets/uploads/system/touchicon-192.png`,
 			sizes: '192x192',
 			type: 'image/png',
 			density: 4.0,
 		}, {
-			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-512.png',
+			src: `${nconf.get('relative_path')}/assets/uploads/system/touchicon-512.png`,
 			sizes: '512x512',
 			type: 'image/png',
 			density: 10.0,
@@ -281,22 +283,22 @@ Controllers.manifest = async function (req, res) {
 
 	if (meta.config['brand:maskableIcon']) {
 		manifest.icons.push({
-			src: nconf.get('relative_path') + '/assets/uploads/system/maskableicon-orig.png',
+			src: `${nconf.get('relative_path')}/assets/uploads/system/maskableicon-orig.png`,
 			type: 'image/png',
 			purpose: 'maskable',
 		});
 	} else if (meta.config['brand:touchIcon']) {
 		manifest.icons.push({
-			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-orig.png',
+			src: `${nconf.get('relative_path')}/assets/uploads/system/touchicon-orig.png`,
 			type: 'image/png',
 			purpose: 'maskable',
 		});
 	}
 
 	const data = await plugins.hooks.fire('filter:manifest.build', {
-		req: req,
-		res: res,
-		manifest: manifest,
+		req,
+		res,
+		manifest,
 	});
 	res.status(200).json(data.manifest);
 };

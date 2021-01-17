@@ -43,9 +43,9 @@ Data.loadPluginInfo = async function (pluginPath) {
 		pluginData.nbbpm = packageData.nbbpm;
 		pluginData.path = pluginPath;
 	} catch (err) {
-		var pluginDir = path.basename(pluginPath);
+		const pluginDir = path.basename(pluginPath);
 
-		winston.error('[plugins/' + pluginDir + '] Error in plugin.json or package.json!' + err.stack);
+		winston.error(`[plugins/${pluginDir}] Error in plugin.json or package.json!${err.stack}`);
 		throw new Error('[[error:parse-error]]');
 	}
 	return pluginData;
@@ -53,7 +53,7 @@ Data.loadPluginInfo = async function (pluginPath) {
 
 function parseLicense(packageData) {
 	try {
-		const licenseData = require('spdx-license-list/licenses/' + packageData.license);
+		const licenseData = require(`spdx-license-list/licenses/${packageData.license}`);
 		return {
 			name: licenseData.name,
 			text: licenseData.licenseText,
@@ -71,7 +71,7 @@ Data.getActive = async function () {
 
 
 Data.getStaticDirectories = async function (pluginData) {
-	var validMappedPath = /^[\w\-_]+$/;
+	const validMappedPath = /^[\w\-_]+$/;
 
 	if (!pluginData.staticDirs) {
 		return;
@@ -86,8 +86,8 @@ Data.getStaticDirectories = async function (pluginData) {
 
 	async function processDir(route) {
 		if (!validMappedPath.test(route)) {
-			winston.warn('[plugins/' + pluginData.id + '] Invalid mapped path specified: ' +
-				route + '. Path must adhere to: ' + validMappedPath.toString());
+			winston.warn(`[plugins/${pluginData.id}] Invalid mapped path specified: ${
+				route}. Path must adhere to: ${validMappedPath.toString()}`);
 			return;
 		}
 
@@ -95,16 +95,16 @@ Data.getStaticDirectories = async function (pluginData) {
 		try {
 			const stats = await fs.promises.stat(dirPath);
 			if (!stats.isDirectory()) {
-				winston.warn('[plugins/' + pluginData.id + '] Mapped path \'' +
-					route + ' => ' + dirPath + '\' is not a directory.');
+				winston.warn(`[plugins/${pluginData.id}] Mapped path '${
+					route} => ${dirPath}' is not a directory.`);
 				return;
 			}
 
-			staticDirs[pluginData.id + '/' + route] = dirPath;
+			staticDirs[`${pluginData.id}/${route}`] = dirPath;
 		} catch (err) {
 			if (err.code === 'ENOENT') {
-				winston.warn('[plugins/' + pluginData.id + '] Mapped path \'' +
-					route + ' => ' + dirPath + '\' not found.');
+				winston.warn(`[plugins/${pluginData.id}] Mapped path '${
+					route} => ${dirPath}' not found.`);
 				return;
 			}
 			throw err;
@@ -112,8 +112,8 @@ Data.getStaticDirectories = async function (pluginData) {
 	}
 
 	await Promise.all(dirs.map(route => processDir(route)));
-	winston.verbose('[plugins] found ' + Object.keys(staticDirs).length +
-			' static directories for ' + pluginData.id);
+	winston.verbose(`[plugins] found ${Object.keys(staticDirs).length
+	} static directories for ${pluginData.id}`);
 	return staticDirs;
 };
 
@@ -123,7 +123,7 @@ Data.getFiles = async function (pluginData, type) {
 		return;
 	}
 
-	winston.verbose('[plugins] Found ' + pluginData[type].length + ' ' + type + ' file(s) for plugin ' + pluginData.id);
+	winston.verbose(`[plugins] Found ${pluginData[type].length} ${type} file(s) for plugin ${pluginData.id}`);
 
 	return pluginData[type].map(file => path.join(pluginData.id, file));
 };
@@ -141,13 +141,13 @@ async function resolveModulePath(basePath, modulePath) {
 		return currentPath;
 	}
 	if (!isNodeModule.test(modulePath)) {
-		winston.warn('[plugins] File not found: ' + currentPath + ' (Ignoring)');
+		winston.warn(`[plugins] File not found: ${currentPath} (Ignoring)`);
 		return;
 	}
 
 	const dirPath = path.dirname(basePath);
 	if (dirPath === basePath) {
-		winston.warn('[plugins] File not found: ' + currentPath + ' (Ignoring)');
+		winston.warn(`[plugins] File not found: ${currentPath} (Ignoring)`);
 		return;
 	}
 
@@ -173,7 +173,7 @@ Data.getScripts = async function getScripts(pluginData, target) {
 		}
 	}
 	if (scripts.length) {
-		winston.verbose('[plugins] Found ' + scripts.length + ' js file(s) for plugin ' + pluginData.id);
+		winston.verbose(`[plugins] Found ${scripts.length} js file(s) for plugin ${pluginData.id}`);
 	}
 	return scripts;
 };
@@ -187,12 +187,12 @@ Data.getModules = async function getModules(pluginData) {
 	let pluginModules = pluginData.modules;
 
 	if (Array.isArray(pluginModules)) {
-		var strip = parseInt(pluginData.modulesStrip, 10) || 0;
+		const strip = parseInt(pluginData.modulesStrip, 10) || 0;
 
-		pluginModules = pluginModules.reduce(function (prev, modulePath) {
-			var key;
+		pluginModules = pluginModules.reduce((prev, modulePath) => {
+			let key;
 			if (strip) {
-				key = modulePath.replace(new RegExp('.?(/[^/]+){' + strip + '}/'), '');
+				key = modulePath.replace(new RegExp(`.?(/[^/]+){${strip}}/`), '');
 			} else {
 				key = path.basename(modulePath);
 			}
@@ -213,7 +213,7 @@ Data.getModules = async function getModules(pluginData) {
 	await Promise.all(Object.keys(pluginModules).map(key => processModule(key)));
 
 	const len = Object.keys(modules).length;
-	winston.verbose('[plugins] Found ' + len + ' AMD-style module(s) for plugin ' + pluginData.id);
+	winston.verbose(`[plugins] Found ${len} AMD-style module(s) for plugin ${pluginData.id}`);
 	return modules;
 };
 
@@ -228,7 +228,7 @@ Data.getLanguageData = async function getLanguageData(pluginData) {
 	const namespaces = [];
 	const languages = [];
 
-	filepaths.forEach(function (p) {
+	filepaths.forEach((p) => {
 		const rel = path.relative(pathToFolder, p).split(/[/\\]/);
 		const language = rel.shift().replace('_', '-').replace('@', '-x-');
 		const namespace = rel.join('/').replace(/\.json$/, '');

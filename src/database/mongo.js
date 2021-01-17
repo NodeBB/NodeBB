@@ -50,7 +50,7 @@ mongoModule.questions = [
 		default: nconf.get('mongo:password') || '',
 		hidden: true,
 		ask: isUriNotSpecified,
-		before: function (value) { value = value || nconf.get('mongo:password') || ''; return value; },
+		before(value) { value = value || nconf.get('mongo:password') || ''; return value; },
 	},
 	{
 		name: 'mongo:database',
@@ -70,7 +70,7 @@ mongoModule.createSessionStore = async function (options) {
 	const meta = require('../meta');
 	const sessionStore = require('connect-mongo')(session);
 	const store = new sessionStore({
-		client: client,
+		client,
 		ttl: meta.getSessionTTLSeconds(),
 	});
 
@@ -135,17 +135,15 @@ mongoModule.info = async function (db) {
 	stats.serverStatusError = serverStatusError;
 	const scale = 1024 * 1024 * 1024;
 
-	listCollections = listCollections.map(function (collectionInfo) {
-		return {
-			name: collectionInfo.ns,
-			count: collectionInfo.count,
-			size: collectionInfo.size,
-			avgObjSize: collectionInfo.avgObjSize,
-			storageSize: collectionInfo.storageSize,
-			totalIndexSize: collectionInfo.totalIndexSize,
-			indexSizes: collectionInfo.indexSizes,
-		};
-	});
+	listCollections = listCollections.map(collectionInfo => ({
+		name: collectionInfo.ns,
+		count: collectionInfo.count,
+		size: collectionInfo.size,
+		avgObjSize: collectionInfo.avgObjSize,
+		storageSize: collectionInfo.storageSize,
+		totalIndexSize: collectionInfo.totalIndexSize,
+		indexSizes: collectionInfo.indexSizes,
+	}));
 
 	stats.mem = serverStatus.mem || { resident: 0, virtual: 0, mapped: 0 };
 	stats.mem.resident = (stats.mem.resident / 1024).toFixed(3);

@@ -17,7 +17,7 @@ module.exports = function (SocketUser) {
 			throw new Error('[[error:invalid-data]]');
 		}
 
-		const type = data.type;
+		const { type } = data;
 		let picture = '';
 		await user.isAdminOrGlobalModOrSelf(socket.uid, data.uid);
 		if (type === 'default') {
@@ -27,7 +27,7 @@ module.exports = function (SocketUser) {
 		} else {
 			const returnData = await plugins.hooks.fire('filter:user.getPicture', {
 				uid: socket.uid,
-				type: type,
+				type,
 				picture: undefined,
 			});
 			picture = returnData && returnData.picture;

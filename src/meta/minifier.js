@@ -21,13 +21,13 @@ const free = [];
 let maxThreads = 0;
 
 Object.defineProperty(Minifier, 'maxThreads', {
-	get: function () {
+	get() {
 		return maxThreads;
 	},
-	set: function (val) {
+	set(val) {
 		maxThreads = val;
 		if (!process.env.minifier_child) {
-			winston.verbose('[minifier] utilizing a maximum of ' + maxThreads + ' additional threads');
+			winston.verbose(`[minifier] utilizing a maximum of ${maxThreads} additional threads`);
 		}
 	},
 	configurable: true,
@@ -37,7 +37,7 @@ Object.defineProperty(Minifier, 'maxThreads', {
 Minifier.maxThreads = os.cpus().length - 1;
 
 Minifier.killAll = function () {
-	pool.forEach(function (child) {
+	pool.forEach((child) => {
 		child.kill('SIGTERM');
 	});
 
@@ -50,7 +50,7 @@ function getChild() {
 		return free.shift();
 	}
 
-	var proc = fork(__filename, [], {
+	const proc = fork(__filename, [], {
 		cwd: __dirname,
 		env: {
 			minifier_child: true,
@@ -67,16 +67,16 @@ function freeChild(proc) {
 }
 
 function removeChild(proc) {
-	var i = pool.indexOf(proc);
+	const i = pool.indexOf(proc);
 	if (i !== -1) {
 		pool.splice(i, 1);
 	}
 }
 
 function forkAction(action, callback) {
-	var proc = getChild();
+	const proc = getChild();
 
-	proc.on('message', function (message) {
+	proc.on('message', (message) => {
 		freeChild(proc);
 
 		if (message.type === 'error') {
@@ -87,7 +87,7 @@ function forkAction(action, callback) {
 			callback(null, message.result);
 		}
 	});
-	proc.on('error', function (err) {
+	proc.on('error', (err) => {
 		proc.kill();
 		removeChild(proc);
 		callback(err);
@@ -95,16 +95,16 @@ function forkAction(action, callback) {
 
 	proc.send({
 		type: 'action',
-		action: action,
+		action,
 	});
 }
 
-var actions = {};
+const actions = {};
 
 if (process.env.minifier_child) {
-	process.on('message', function (message) {
+	process.on('message', (message) => {
 		if (message.type === 'action') {
-			var action = message.action;
+			const { action } = message;
 			if (typeof actions[action.act] !== 'function') {
 				process.send({
 					type: 'error',
@@ -113,7 +113,7 @@ if (process.env.minifier_child) {
 				return;
 			}
 
-			actions[action.act](action, function (err, result) {
+			actions[action.act](action, (err, result) => {
 				if (err) {
 					process.send({
 						type: 'error',
@@ -124,7 +124,7 @@ if (process.env.minifier_child) {
 
 				process.send({
 					type: 'end',
-					result: result,
+					result,
 				});
 			});
 		}
@@ -144,20 +144,20 @@ function executeAction(action, fork, callback) {
 
 function concat(data, callback) {
 	if (data.files && data.files.length) {
-		async.mapLimit(data.files, 1000, function (ref, next) {
-			fs.readFile(ref.srcPath, 'utf8', function (err, file) {
+		async.mapLimit(data.files, 1000, (ref, next) => {
+			fs.readFile(ref.srcPath, 'utf8', (err, file) => {
 				if (err) {
 					return next(err);
 				}
 
 				next(null, file);
 			});
-		}, function (err, files) {
+		}, (err, files) => {
 			if (err) {
 				return callback(err);
 			}
 
-			var output = files.join('\n;');
+			const output = files.join('\n;');
 			fs.writeFile(data.destPath, output, callback);
 		});
 
@@ -169,17 +169,17 @@ function concat(data, callback) {
 actions.concat = concat;
 
 function minifyJS_batch(data, callback) {
-	async.eachLimit(data.files, 100, function (fileObj, next) {
-		fs.readFile(fileObj.srcPath, 'utf8', function (err, source) {
+	async.eachLimit(data.files, 100, (fileObj, next) => {
+		fs.readFile(fileObj.srcPath, 'utf8', (err, source) => {
 			if (err) {
 				return next(err);
 			}
 
-			var filesToMinify = [
+			const filesToMinify = [
 				{
 					srcPath: fileObj.srcPath,
 					filename: fileObj.filename,
-					source: source,
+					source,
 				},
 			];
 			minifyAndSave({
@@ -193,8 +193,8 @@ function minifyJS_batch(data, callback) {
 actions.minifyJS_batch = minifyJS_batch;
 
 function minifyJS(data, callback) {
-	async.mapLimit(data.files, 1000, function (fileObj, next) {
-		fs.readFile(fileObj.srcPath, 'utf8', function (err, source) {
+	async.mapLimit(data.files, 1000, (fileObj, next) => {
+		fs.readFile(fileObj.srcPath, 'utf8', (err, source) => {
 			if (err) {
 				return next(err);
 			}
@@ -202,10 +202,10 @@ function minifyJS(data, callback) {
 			next(null, {
 				srcPath: fileObj.srcPath,
 				filename: fileObj.filename,
-				source: source,
+				source,
 			});
 		});
-	}, function (err, filesToMinify) {
+	}, (err, filesToMinify) => {
 		if (err) {
 			return callback(err);
 		}
@@ -220,8 +220,8 @@ function minifyJS(data, callback) {
 actions.minifyJS = minifyJS;
 
 function minifyAndSave(data, callback) {
-	var scripts = {};
-	data.files.forEach(function (ref) {
+	const scripts = {};
+	data.files.forEach((ref) => {
 		if (!ref) {
 			return;
 		}
@@ -229,22 +229,22 @@ function minifyAndSave(data, callback) {
 		scripts[ref.filename] = ref.source;
 	});
 
-	var minified = uglify.minify(scripts, {
+	const minified = uglify.minify(scripts, {
 		sourceMap: {
 			filename: data.filename,
-			url: String(data.filename).split(/[/\\]/).pop() + '.map',
+			url: `${String(data.filename).split(/[/\\]/).pop()}.map`,
 			includeSources: true,
 		},
 		compress: false,
 	});
 
 	if (minified.error) {
-		return callback({ stack: 'Error minifying ' + minified.error.filename + '\n' + minified.error.stack });
+		return callback({ stack: `Error minifying ${minified.error.filename}\n${minified.error.stack}` });
 	}
 
 	async.parallel([
 		async.apply(fs.writeFile, data.destPath, minified.code),
-		async.apply(fs.writeFile, data.destPath + '.map', minified.map),
+		async.apply(fs.writeFile, `${data.destPath}.map`, minified.map),
 	], callback);
 }
 
@@ -269,7 +269,7 @@ function buildCSS(data, callback) {
 	less.render(data.source, {
 		paths: data.paths,
 		javascriptEnabled: true,
-	}, function (err, lessOutput) {
+	}, (err, lessOutput) => {
 		if (err) {
 			// display less parser errors properly
 			return callback(new Error(String(err)));
@@ -282,9 +282,9 @@ function buildCSS(data, callback) {
 			}),
 		] : [autoprefixer]).process(lessOutput.css, {
 			from: undefined,
-		}).then(function (result) {
+		}).then((result) => {
 			process.nextTick(callback, null, { code: result.css });
-		}).catch(function (err) {
+		}).catch((err) => {
 			process.nextTick(callback, err);
 		});
 	});
@@ -295,9 +295,9 @@ Minifier.css = {};
 Minifier.css.bundle = function (source, paths, minify, fork, callback) {
 	executeAction({
 		act: 'buildCSS',
-		source: source,
-		paths: paths,
-		minify: minify,
+		source,
+		paths,
+		minify,
 	}, fork, callback);
 };
 

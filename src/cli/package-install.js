@@ -29,7 +29,7 @@ function updatePackageFile() {
 	// Sort dependencies alphabetically
 	dependencies = sortDependencies({ ...dependencies, ...defaultPackageContents.dependencies });
 
-	const packageContents = { ...oldPackageContents, ...defaultPackageContents, dependencies: dependencies };
+	const packageContents = { ...oldPackageContents, ...defaultPackageContents, dependencies };
 
 	fs.writeFileSync(paths.currentPackage, JSON.stringify(packageContents, null, 2));
 }
@@ -75,9 +75,9 @@ function installAll() {
 		});
 	} catch (e) {
 		console.log('Error installing dependencies!');
-		console.log('message: ' + e.message);
-		console.log('stdout: ' + e.stdout);
-		console.log('stderr: ' + e.stderr);
+		console.log(`message: ${e.message}`);
+		console.log(`stdout: ${e.stdout}`);
+		console.log(`stderr: ${e.stderr}`);
 		throw e;
 	}
 }
@@ -99,14 +99,14 @@ function preserveExtraneousPlugins() {
 
 	const extraneous = packages
 		// only extraneous plugins (ones not in package.json) which are not links
-		.filter(function (pkgName) {
+		.filter((pkgName) => {
 			const extraneous = !packageContents.dependencies.hasOwnProperty(pkgName);
 			const isLink = fs.lstatSync(path.join(paths.nodeModules, pkgName)).isSymbolicLink();
 
 			return extraneous && !isLink;
 		})
 		// reduce to a map of package names to package versions
-		.reduce(function (map, pkgName) {
+		.reduce((map, pkgName) => {
 			const pkgConfig = JSON.parse(fs.readFileSync(path.join(paths.nodeModules, pkgName, 'package.json'), 'utf8'));
 			map[pkgName] = pkgConfig.version;
 			return map;

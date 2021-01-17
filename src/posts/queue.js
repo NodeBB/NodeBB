@@ -26,8 +26,8 @@ module.exports = function (Posts) {
 			(!userData.uid || userData.reputation < meta.config.postQueueReputationThreshold || userData.postcount <= 0);
 		const result = await plugins.hooks.fire('filter:post.shouldQueue', {
 			shouldQueue: !!shouldQueue,
-			uid: uid,
-			data: data,
+			uid,
+			data,
 		});
 		return result.shouldQueue;
 	};
@@ -51,7 +51,7 @@ module.exports = function (Posts) {
 	}
 
 	async function removeQueueNotification(id) {
-		await notifications.rescind('post-queue-' + id);
+		await notifications.rescind(`post-queue-${id}`);
 		const data = await getParsedObject(id);
 		if (!data) {
 			return;
@@ -72,27 +72,27 @@ module.exports = function (Posts) {
 	Posts.addToQueue = async function (data) {
 		const type = getType(data);
 		const now = Date.now();
-		const id = type + '-' + now;
+		const id = `${type}-${now}`;
 		await canPost(type, data);
 
 		let payload = {
-			id: id,
+			id,
 			uid: data.uid,
-			type: type,
-			data: data,
+			type,
+			data,
 		};
 		payload = await plugins.hooks.fire('filter:post-queue.save', payload);
 		payload.data = JSON.stringify(data);
 
 		await db.sortedSetAdd('post:queue', now, id);
-		await db.setObject('post:queue:' + id, payload);
+		await db.setObject(`post:queue:${id}`, payload);
 		await user.setUserField(data.uid, 'lastqueuetime', now);
 
 		const cid = await getCid(type, data);
 		const uids = await getNotificationUids(cid);
 		const notifObj = await notifications.create({
 			type: 'post-queue',
-			nid: 'post-queue-' + id,
+			nid: `post-queue-${id}`,
 			mergeId: 'post-queue',
 			bodyShort: '[[notifications:post_awaiting_review]]',
 			bodyLong: data.content,
@@ -100,8 +100,8 @@ module.exports = function (Posts) {
 		});
 		await notifications.push(notifObj, uids);
 		return {
-			id: id,
-			type: type,
+			id,
+			type,
 			queued: true,
 			message: '[[success:post-queued]]',
 		};
@@ -143,7 +143,7 @@ module.exports = function (Posts) {
 	Posts.removeFromQueue = async function (id) {
 		await removeQueueNotification(id);
 		await db.sortedSetRemove('post:queue', id);
-		await db.delete('post:queue:' + id);
+		await db.delete(`post:queue:${id}`);
 	};
 
 	Posts.submitFromQueue = async function (id) {
@@ -160,7 +160,7 @@ module.exports = function (Posts) {
 	};
 
 	async function getParsedObject(id) {
-		const data = await db.getObject('post:queue:' + id);
+		const data = await db.getObject(`post:queue:${id}`);
 		if (!data) {
 			return null;
 		}
@@ -202,7 +202,7 @@ module.exports = function (Posts) {
 		if (editData.cid !== undefined) {
 			data.data.cid = editData.cid;
 		}
-		await db.setObjectField('post:queue:' + editData.id, 'data', JSON.stringify(data.data));
+		await db.setObjectField(`post:queue:${editData.id}`, 'data', JSON.stringify(data.data));
 	};
 
 	Posts.canEditQueue = async function (uid, editData) {

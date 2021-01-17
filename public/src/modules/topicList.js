@@ -94,7 +94,11 @@ define('topicList', [
 
 	function onNewTopic(data) {
 		if (
-			(ajaxify.data.selectedCids && ajaxify.data.selectedCids.length && ajaxify.data.selectedCids.indexOf(parseInt(data.cid, 10)) === -1) ||
+			(
+				ajaxify.data.selectedCids &&
+				ajaxify.data.selectedCids.length &&
+				ajaxify.data.selectedCids.indexOf(parseInt(data.cid, 10)) === -1
+			) ||
 			(ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.filter === 'watched') ||
 			(ajaxify.data.template.category && parseInt(ajaxify.data.cid, 10) !== parseInt(data.cid, 10)) ||
 			(!isCategoryVisible(data.cid))
@@ -113,7 +117,11 @@ define('topicList', [
 		}
 		if (!post.topic.isFollowing && (
 			(parseInt(post.topic.mainPid, 10) === parseInt(post.pid, 10)) ||
-			(ajaxify.data.selectedCids && ajaxify.data.selectedCids.length && ajaxify.data.selectedCids.indexOf(parseInt(post.topic.cid, 10)) === -1) ||
+			(
+				ajaxify.data.selectedCids &&
+				ajaxify.data.selectedCids.length &&
+				ajaxify.data.selectedCids.indexOf(parseInt(post.topic.cid, 10)) === -1
+			) ||
 			(ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.filter === 'new') ||
 			(ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.filter === 'watched' && !post.topic.isFollowing) ||
 			(ajaxify.data.template.category && parseInt(ajaxify.data.cid, 10) !== parseInt(post.topic.cid, 10)) ||

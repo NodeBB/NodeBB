@@ -2,24 +2,27 @@
 
 const path = require('path');
 const nconf = require('nconf');
+
 nconf.argv().env({
 	separator: '__',
 });
 const winston = require('winston');
-const fork = require('child_process').fork;
-const env = process.env;
-var worker;
+const { fork } = require('child_process');
+
+const { env } = process;
+let worker;
 
 env.NODE_ENV = env.NODE_ENV || 'development';
 
 const configFile = path.resolve(__dirname, nconf.any(['config', 'CONFIG']) || 'config.json');
 const prestart = require('./src/prestart');
+
 prestart.loadConfig(configFile);
 
-var db = require('./src/database');
+const db = require('./src/database');
 
 module.exports = function (grunt) {
-	var args = [];
+	const args = [];
 
 	if (!grunt.option('verbose')) {
 		args.push('--log-level=info');
@@ -36,7 +39,7 @@ module.exports = function (grunt) {
 	grunt.registerTask('default', ['watch']);
 
 	grunt.registerTask('init', async function () {
-		var done = this.async();
+		const done = this.async();
 		let plugins = [];
 		if (!process.argv.includes('--core')) {
 			await db.init();
@@ -50,22 +53,22 @@ module.exports = function (grunt) {
 			}
 		}
 
-		const styleUpdated_Client = plugins.map(p => 'node_modules/' + p + '/*.less')
-			.concat(plugins.map(p => 'node_modules/' + p + '/*.css'))
-			.concat(plugins.map(p => 'node_modules/' + p + '/+(public|static|less)/**/*.less'))
-			.concat(plugins.map(p => 'node_modules/' + p + '/+(public|static)/**/*.css'));
+		const styleUpdated_Client = plugins.map(p => `node_modules/${p}/*.less`)
+			.concat(plugins.map(p => `node_modules/${p}/*.css`))
+			.concat(plugins.map(p => `node_modules/${p}/+(public|static|less)/**/*.less`))
+			.concat(plugins.map(p => `node_modules/${p}/+(public|static)/**/*.css`));
 
-		const styleUpdated_Admin = plugins.map(p => 'node_modules/' + p + '/*.less')
-			.concat(plugins.map(p => 'node_modules/' + p + '/*.css'))
-			.concat(plugins.map(p => 'node_modules/' + p + '/+(public|static|less)/**/*.less'))
-			.concat(plugins.map(p => 'node_modules/' + p + '/+(public|static)/**/*.css'));
+		const styleUpdated_Admin = plugins.map(p => `node_modules/${p}/*.less`)
+			.concat(plugins.map(p => `node_modules/${p}/*.css`))
+			.concat(plugins.map(p => `node_modules/${p}/+(public|static|less)/**/*.less`))
+			.concat(plugins.map(p => `node_modules/${p}/+(public|static)/**/*.css`));
 
-		const clientUpdated = plugins.map(p => 'node_modules/' + p + '/+(public|static)/**/*.js');
-		const serverUpdated = plugins.map(p => 'node_modules/' + p + '/*.js')
-			.concat(plugins.map(p => 'node_modules/' + p + '/+(lib|src)/**/*.js'));
+		const clientUpdated = plugins.map(p => `node_modules/${p}/+(public|static)/**/*.js`);
+		const serverUpdated = plugins.map(p => `node_modules/${p}/*.js`)
+			.concat(plugins.map(p => `node_modules/${p}/+(lib|src)/**/*.js`));
 
-		const templatesUpdated = plugins.map(p => 'node_modules/' + p + '/+(public|static|templates)/**/*.tpl');
-		const langUpdated = plugins.map(p => 'node_modules/' + p + '/+(public|static|languages)/**/*.json');
+		const templatesUpdated = plugins.map(p => `node_modules/${p}/+(public|static|templates)/**/*.tpl`);
+		const langUpdated = plugins.map(p => `node_modules/${p}/+(public|static|languages)/**/*.json`);
 
 		grunt.config(['watch'], {
 			styleUpdated_Client: {
@@ -161,8 +164,8 @@ module.exports = function (grunt) {
 	grunt.task.run('init');
 
 	grunt.event.removeAllListeners('watch');
-	grunt.event.on('watch', function update(action, filepath, target) {
-		var compiling;
+	grunt.event.on('watch', (action, filepath, target) => {
+		let compiling;
 		if (target === 'styleUpdated_Client') {
 			compiling = 'clientCSS';
 		} else if (target === 'styleUpdated_Admin') {
@@ -180,12 +183,12 @@ module.exports = function (grunt) {
 			return run();
 		}
 
-		require('./src/meta/build').build([compiling], function (err) {
+		require('./src/meta/build').build([compiling], (err) => {
 			if (err) {
 				winston.error(err.stack);
 			}
 			if (worker) {
-				worker.send({ compiling: compiling });
+				worker.send({ compiling });
 			}
 		});
 	});
@@ -199,7 +202,7 @@ function addBaseThemes(plugins) {
 	let baseTheme;
 	do {
 		try {
-			baseTheme = require(themeId + '/theme').baseTheme;
+			baseTheme = require(`${themeId}/theme`).baseTheme;
 		} catch (err) {
 			console.log(err);
 		}

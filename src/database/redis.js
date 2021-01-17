@@ -26,7 +26,7 @@ redisModule.questions = [
 		description: 'Password of your Redis database',
 		hidden: true,
 		default: nconf.get('redis:password') || '',
-		before: function (value) { value = value || nconf.get('redis:password') || ''; return value; },
+		before(value) { value = value || nconf.get('redis:password') || ''; return value; },
 	},
 	{
 		name: 'redis:database',
@@ -38,9 +38,9 @@ redisModule.questions = [
 
 redisModule.init = function (callback) {
 	callback = callback || function () { };
-	redisModule.client = connection.connect(nconf.get('redis'), function (err) {
+	redisModule.client = connection.connect(nconf.get('redis'), (err) => {
 		if (err) {
-			winston.error('NodeBB could not connect to your Redis database. Redis returned the following error\n' + err.stack);
+			winston.error(`NodeBB could not connect to your Redis database. Redis returned the following error\n${err.stack}`);
 			return callback(err);
 		}
 		require('./redis/promisify')(redisModule.client);
@@ -54,7 +54,7 @@ redisModule.createSessionStore = function (options, callback) {
 	const sessionStore = require('connect-redis')(session);
 	const client = connection.connect(options);
 	const store = new sessionStore({
-		client: client,
+		client,
 		ttl: meta.getSessionTTLSeconds(),
 	});
 
@@ -87,7 +87,7 @@ redisModule.checkCompatibilityVersion = function (version, callback) {
 
 redisModule.close = function (callback) {
 	callback = callback || function () {};
-	redisModule.client.quit(function (err) {
+	redisModule.client.quit((err) => {
 		callback(err);
 	});
 };
@@ -106,16 +106,16 @@ redisModule.info = function (cxn, callback) {
 			cxn.info(next);
 		},
 		function (data, next) {
-			var lines = data.toString().split('\r\n').sort();
-			var redisData = {};
-			lines.forEach(function (line) {
-				var parts = line.split(':');
+			const lines = data.toString().split('\r\n').sort();
+			const redisData = {};
+			lines.forEach((line) => {
+				const parts = line.split(':');
 				if (parts[1]) {
 					redisData[parts[0]] = parts[1];
 				}
 			});
 
-			const keyInfo = redisData['db' + nconf.get('redis:database')];
+			const keyInfo = redisData[`db${nconf.get('redis:database')}`];
 			if (keyInfo) {
 				const split = keyInfo.split(',');
 				redisData.keys = (split[0] || '').replace('keys=', '');
@@ -139,11 +139,11 @@ redisModule.info = function (cxn, callback) {
 };
 
 redisModule.socketAdapter = function () {
-	var redisAdapter = require('socket.io-redis');
-	var pub = connection.connect(nconf.get('redis'));
-	var sub = connection.connect(nconf.get('redis'));
+	const redisAdapter = require('socket.io-redis');
+	const pub = connection.connect(nconf.get('redis'));
+	const sub = connection.connect(nconf.get('redis'));
 	return redisAdapter({
-		key: 'db:' + nconf.get('redis:database') + ':adapter_key',
+		key: `db:${nconf.get('redis:database')}:adapter_key`,
 		pubClient: pub,
 		subClient: sub,
 	});

@@ -24,7 +24,7 @@ recentController.get = async function (req, res, next) {
 recentController.getData = async function (req, url, sort) {
 	const page = parseInt(req.query.page, 10) || 1;
 	let term = helpers.terms[req.query.term];
-	const cid = req.query.cid;
+	const { cid } = req.query;
 	const filter = req.query.filter || '';
 
 	if (!term && req.query.term) {
@@ -51,11 +51,11 @@ recentController.getData = async function (req, url, sort) {
 	const data = await topics.getSortedTopics({
 		cids: cid || categoryData.categories.map(c => c.cid),
 		uid: req.uid,
-		start: start,
-		stop: stop,
-		filter: filter,
-		term: term,
-		sort: sort,
+		start,
+		stop,
+		filter,
+		term,
+		sort,
 		floatPinned: req.query.pinned,
 		query: req.query,
 	});
@@ -68,9 +68,9 @@ recentController.getData = async function (req, url, sort) {
 	data.selectedCategory = categoryData.selectedCategory;
 	data.selectedCids = categoryData.selectedCids;
 	data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] || 0;
-	data.rssFeedUrl = nconf.get('relative_path') + '/' + url + '.rss';
+	data.rssFeedUrl = `${nconf.get('relative_path')}/${url}.rss`;
 	if (req.loggedIn) {
-		data.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;
+		data.rssFeedUrl += `?uid=${req.uid}&token=${rssToken}`;
 	}
 	data.title = meta.config.homePageTitle || '[[pages:home]]';
 
@@ -81,11 +81,11 @@ recentController.getData = async function (req, url, sort) {
 
 	const pageCount = Math.max(1, Math.ceil(data.topicCount / settings.topicsPerPage));
 	data.pagination = pagination.create(page, pageCount, req.query);
-	helpers.addLinkTags({ url: url, res: req.res, tags: data.pagination.rel });
+	helpers.addLinkTags({ url, res: req.res, tags: data.pagination.rel });
 
-	if (req.originalUrl.startsWith(nconf.get('relative_path') + '/api/' + url) || req.originalUrl.startsWith(nconf.get('relative_path') + '/' + url)) {
-		data.title = '[[pages:' + url + ']]';
-		data.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[' + url + ':title]]' }]);
+	if (req.originalUrl.startsWith(`${nconf.get('relative_path')}/api/${url}`) || req.originalUrl.startsWith(`${nconf.get('relative_path')}/${url}`)) {
+		data.title = `[[pages:${url}]]`;
+		data.breadcrumbs = helpers.buildBreadcrumbs([{ text: `[[${url}:title]]` }]);
 	}
 
 	return data;

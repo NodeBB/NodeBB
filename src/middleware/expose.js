@@ -41,7 +41,10 @@ module.exports = function (middleware) {
 
 	middleware.exposePrivilegeSet = async (req, res, next) => {
 		// Exposes a user's global/admin privilege set
-		res.locals.privileges = { ...await privileges.global.get(req.user.uid), ...await privileges.admin.get(req.user.uid) };
+		res.locals.privileges = {
+			...await privileges.global.get(req.user.uid),
+			...await privileges.admin.get(req.user.uid),
+		};
 		return next();
 	};
 };

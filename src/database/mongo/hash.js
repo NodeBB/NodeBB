@@ -36,7 +36,7 @@ module.exports = function (module) {
 		if (!field) {
 			return;
 		}
-		var data = {};
+		const data = {};
 		data[field] = value;
 		await module.setObject(key, data);
 	};
@@ -95,7 +95,7 @@ module.exports = function (module) {
 		}
 
 		const map = helpers.toMap(data);
-		unCachedKeys.forEach(function (key) {
+		unCachedKeys.forEach((key) => {
 			cachedData[key] = map[key] || null;
 			cache.set(key, cachedData[key]);
 		});
@@ -103,7 +103,7 @@ module.exports = function (module) {
 		if (!fields.length) {
 			return keys.map(key => (cachedData[key] ? { ...cachedData[key] } : null));
 		}
-		return keys.map(function (key) {
+		return keys.map((key) => {
 			const item = cachedData[key] || {};
 			const result = {};
 			fields.forEach((field) => {
@@ -134,7 +134,7 @@ module.exports = function (module) {
 		}
 
 		const data = {};
-		fields.forEach(function (field) {
+		fields.forEach((field) => {
 			field = helpers.fieldToString(field);
 			data[field] = 1;
 		});
@@ -157,8 +157,8 @@ module.exports = function (module) {
 			return;
 		}
 
-		var data = {};
-		fields.forEach(function (field) {
+		const data = {};
+		fields.forEach((field) => {
 			field = helpers.fieldToString(field);
 			data[field] = '';
 		});
@@ -185,13 +185,13 @@ module.exports = function (module) {
 			return null;
 		}
 
-		var increment = {};
+		const increment = {};
 		field = helpers.fieldToString(field);
 		increment[field] = value;
 
 		if (Array.isArray(key)) {
-			var bulk = module.client.collection('objects').initializeUnorderedBulkOp();
-			key.forEach(function (key) {
+			const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
+			key.forEach((key) => {
 				bulk.find({ _key: key }).upsert().update({ $inc: increment });
 			});
 			await bulk.execute();

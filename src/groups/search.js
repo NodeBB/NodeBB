@@ -51,7 +51,7 @@ module.exports = function (Groups) {
 	Groups.searchMembers = async function (data) {
 		if (!data.query) {
 			const users = await Groups.getOwnersAndMembers(data.groupName, data.uid, 0, 19);
-			return { users: users };
+			return { users };
 		}
 
 		const results = await user.search({
@@ -63,13 +63,13 @@ module.exports = function (Groups) {
 		const uids = results.users.map(user => user && user.uid);
 		const isOwners = await Groups.ownership.isOwners(uids, data.groupName);
 
-		results.users.forEach(function (user, index) {
+		results.users.forEach((user, index) => {
 			if (user) {
 				user.isOwner = isOwners[index];
 			}
 		});
 
-		results.users.sort(function (a, b) {
+		results.users.sort((a, b) => {
 			if (a.isOwner && !b.isOwner) {
 				return -1;
 			} else if (!a.isOwner && b.isOwner) {

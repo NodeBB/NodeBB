@@ -24,7 +24,7 @@ sitemap.render = async function () {
 	};
 	const topicCount = await db.getObjectField('global', 'topicCount');
 	const numPages = Math.ceil(Math.max(0, topicCount / topicsPerPage));
-	for (var x = 1; x <= numPages; x += 1) {
+	for (let x = 1; x <= numPages; x += 1) {
 		returnData.topics.push(x);
 	}
 
@@ -54,7 +54,7 @@ sitemap.getPages = async function () {
 		priority: 0.4,
 	}];
 
-	const data = await plugins.hooks.fire('filter:sitemap.getPages', { urls: urls });
+	const data = await plugins.hooks.fire('filter:sitemap.getPages', { urls });
 
 	const smStream = new SitemapStream({ hostname: nconf.get('url') });
 	data.urls.forEach(url => smStream.write(url));
@@ -72,10 +72,10 @@ sitemap.getCategories = async function () {
 
 	const categoryUrls = [];
 	const categoriesData = await categories.getCategoriesByPrivilege('categories:cid', 0, 'find');
-	categoriesData.forEach(function (category) {
+	categoriesData.forEach((category) => {
 		if (category) {
 			categoryUrls.push({
-				url: `${nconf.get('relative_path')}/category/` + category.slug,
+				url: `${nconf.get('relative_path')}/category/${category.slug}`,
 				changefreq: 'weekly',
 				priority: 0.4,
 			});
@@ -109,10 +109,10 @@ sitemap.getTopicPage = async function (page) {
 	tids = await privileges.topics.filterTids('topics:read', tids, 0);
 	const topicData = await topics.getTopicsFields(tids, ['tid', 'title', 'slug', 'lastposttime']);
 
-	topicData.forEach(function (topic) {
+	topicData.forEach((topic) => {
 		if (topic) {
 			topicUrls.push({
-				url: `${nconf.get('relative_path')}/topic/` + topic.slug,
+				url: `${nconf.get('relative_path')}/topic/${topic.slug}`,
 				lastmodISO: utils.toISOString(topic.lastposttime),
 				changefreq: 'daily',
 				priority: 0.6,

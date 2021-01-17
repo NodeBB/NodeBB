@@ -17,9 +17,9 @@ Blacklist.load = async function () {
 	let rules = await Blacklist.get();
 	rules = Blacklist.validate(rules);
 
-	winston.verbose('[meta/blacklist] Loading ' + rules.valid.length + ' blacklist rule(s)' + (rules.duplicateCount > 0 ? ', ignored ' + rules.duplicateCount + ' duplicate(s)' : ''));
+	winston.verbose(`[meta/blacklist] Loading ${rules.valid.length} blacklist rule(s)${rules.duplicateCount > 0 ? `, ignored ${rules.duplicateCount} duplicate(s)` : ''}`);
 	if (rules.invalid.length) {
-		winston.warn('[meta/blacklist] ' + rules.invalid.length + ' invalid blacklist rule(s) were ignored.');
+		winston.warn(`[meta/blacklist] ${rules.invalid.length} invalid blacklist rule(s) were ignored.`);
 	}
 
 	Blacklist._rules = {
@@ -33,7 +33,7 @@ Blacklist.load = async function () {
 pubsub.on('blacklist:reload', Blacklist.load);
 
 Blacklist.save = async function (rules) {
-	await db.setObject('ip-blacklist-rules', { rules: rules });
+	await db.setObject('ip-blacklist-rules', { rules });
 	await Blacklist.load();
 	pubsub.publish('blacklist:reload');
 };
@@ -53,19 +53,19 @@ Blacklist.test = async function (clientIp) {
 	}
 	clientIp = clientIp.split(':').length === 2 ? clientIp.split(':')[0] : clientIp;
 
-	var addr;
+	let addr;
 	try {
 		addr = ipaddr.parse(clientIp);
 	} catch (err) {
-		winston.error('[meta/blacklist] Error parsing client IP : ' + clientIp);
+		winston.error(`[meta/blacklist] Error parsing client IP : ${clientIp}`);
 		throw err;
 	}
 
 	if (
 		!Blacklist._rules.ipv4.includes(clientIp) &&	// not explicitly specified in ipv4 list
 		!Blacklist._rules.ipv6.includes(clientIp) &&	// not explicitly specified in ipv6 list
-		!Blacklist._rules.cidr.some(function (subnet) {
-			var cidr = ipaddr.parseCIDR(subnet);
+		!Blacklist._rules.cidr.some((subnet) => {
+			const cidr = ipaddr.parseCIDR(subnet);
 			if (addr.kind() !== cidr[0].kind()) {
 				return false;
 			}
@@ -80,7 +80,7 @@ Blacklist.test = async function (clientIp) {
 			throw err;
 		}
 	} else {
-		var err = new Error('[[error:blacklisted-ip]]');
+		const err = new Error('[[error:blacklisted-ip]]');
 		err.code = 'blacklisted-ip';
 
 		analytics.increment('blacklist');
@@ -90,18 +90,18 @@ Blacklist.test = async function (clientIp) {
 
 Blacklist.validate = function (rules) {
 	rules = (rules || '').split('\n');
-	var ipv4 = [];
-	var ipv6 = [];
-	var cidr = [];
-	var invalid = [];
-	var duplicateCount = 0;
+	const ipv4 = [];
+	const ipv6 = [];
+	const cidr = [];
+	const invalid = [];
+	let duplicateCount = 0;
 
-	var inlineCommentMatch = /#.*$/;
-	var whitelist = ['127.0.0.1', '::1', '::ffff:0:127.0.0.1'];
+	const inlineCommentMatch = /#.*$/;
+	const whitelist = ['127.0.0.1', '::1', '::ffff:0:127.0.0.1'];
 
 	// Filter out blank lines and lines starting with the hash character (comments)
 	// Also trim inputs and remove inline comments
-	rules = rules.map(function (rule) {
+	rules = rules.map((rule) => {
 		rule = rule.replace(inlineCommentMatch, '').trim();
 		return rule.length && !rule.startsWith('#') ? rule : null;
 	}).filter(Boolean);
@@ -112,9 +112,9 @@ Blacklist.validate = function (rules) {
 	rules = uniqRules;
 
 	// Filter out invalid rules
-	rules = rules.filter(function (rule) {
-		var addr;
-		var isRange = false;
+	rules = rules.filter((rule) => {
+		let addr;
+		let isRange = false;
 		try {
 			addr = ipaddr.parse(rule);
 		} catch (e) {
@@ -151,23 +151,21 @@ Blacklist.validate = function (rules) {
 
 	return {
 		numRules: rules.length + invalid.length,
-		ipv4: ipv4,
-		ipv6: ipv6,
-		cidr: cidr,
+		ipv4,
+		ipv6,
+		cidr,
 		valid: rules,
-		invalid: invalid,
-		duplicateCount: duplicateCount,
+		invalid,
+		duplicateCount,
 	};
 };
 
 Blacklist.addRule = async function (rule) {
-	var valid;
-	const result = Blacklist.validate(rule);
-	valid = result.valid;
+	const { valid } = Blacklist.validate(rule);
 	if (!valid.length) {
 		throw new Error('[[error:invalid-rule]]');
 	}
 	let rules = await Blacklist.get();
-	rules = rules + '\n' + valid[0];
+	rules = `${rules}\n${valid[0]}`;
 	await Blacklist.save(rules);
 };

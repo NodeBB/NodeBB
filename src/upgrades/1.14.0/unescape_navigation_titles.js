@@ -5,12 +5,12 @@ const db = require('../../database');
 module.exports = {
 	name: 'Unescape navigation titles',
 	timestamp: Date.UTC(2020, 5, 26),
-	method: async function () {
+	async method() {
 		const data = await db.getSortedSetRangeWithScores('navigation:enabled', 0, -1);
 		const translator = require('../../translator');
 		const order = [];
 		const items = [];
-		data.forEach(function (item) {
+		data.forEach((item) => {
 			const navItem = JSON.parse(item.value);
 			if (navItem.hasOwnProperty('title')) {
 				navItem.title = translator.unescape(navItem.title);

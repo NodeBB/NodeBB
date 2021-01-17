@@ -45,7 +45,7 @@ modsController.flags.list = async function (req, res, next) {
 	}
 
 	// Parse query string params for filters, eliminate non-valid filters
-	filters = filters.reduce(function (memo, cur) {
+	filters = filters.reduce((memo, cur) => {
 		if (req.query.hasOwnProperty(cur)) {
 			if (req.query[cur] === '') {
 				delete req.session.flags_filters[cur];
@@ -103,8 +103,8 @@ modsController.flags.list = async function (req, res, next) {
 
 	const [flagsData, analyticsData, categoriesData] = await Promise.all([
 		flags.list({
-			filters: filters,
-			sort: sort,
+			filters,
+			sort,
 			uid: req.uid,
 		}),
 		analytics.getDailyStatsForSet('analytics:flags', Date.now(), 30),
@@ -115,8 +115,8 @@ modsController.flags.list = async function (req, res, next) {
 		flags: flagsData.flags,
 		analytics: analyticsData,
 		categories: filterCategories(res.locals.cids, categoriesData),
-		hasFilter: hasFilter,
-		filters: filters,
+		hasFilter,
+		filters,
 		sort: sort || 'newest',
 		title: '[[pages:flags]]',
 		pagination: pagination.create(flagsData.page, flagsData.pageCount, req.query),
@@ -155,22 +155,23 @@ modsController.flags.detail = async function (req, res, next) {
 
 	res.render('flags/detail', Object.assign(results.flagData, {
 		assignees: results.assignees,
-		type_bool: ['post', 'user', 'empty'].reduce(function (memo, cur) {
+		type_bool: ['post', 'user', 'empty'].reduce((memo, cur) => {
 			if (cur !== 'empty') {
-				memo[cur] = results.flagData.type === cur && (!results.flagData.target || !!Object.keys(results.flagData.target).length);
+				memo[cur] = results.flagData.type === cur &&
+					(!results.flagData.target || !!Object.keys(results.flagData.target).length);
 			} else {
 				memo[cur] = !Object.keys(results.flagData.target).length;
 			}
 
 			return memo;
 		}, {}),
-		title: '[[pages:flag-details, ' + req.params.flagId + ']]',
+		title: `[[pages:flag-details, ${req.params.flagId}]]`,
 		categories: results.categories,
 		filters: req.session.flags_filters || {},
 		privileges: results.privileges,
 		breadcrumbs: helpers.buildBreadcrumbs([
 			{ text: '[[pages:flags]]', url: '/flags' },
-			{ text: '[[pages:flag-details, ' + req.params.flagId + ']]' },
+			{ text: `[[pages:flag-details, ${req.params.flagId}]]` },
 		]),
 	}));
 };
@@ -181,7 +182,7 @@ function filterCategories(moderatedCids, categories) {
 		categories = categories.filter(category => moderatedCids.includes(String(category.cid)));
 	}
 
-	return categories.reduce(function (memo, cur) {
+	return categories.reduce((memo, cur) => {
 		if (!moderatedCids) {
 			memo[cur.cid] = cur.name;
 			return memo;
@@ -202,7 +203,7 @@ modsController.postQueue = async function (req, res, next) {
 	if (!isPrivileged) {
 		return next();
 	}
-	const cid = req.query.cid;
+	const { cid } = req.query;
 	const page = parseInt(req.query.page, 10) || 1;
 	const postsPerPage = 20;
 
@@ -228,7 +229,7 @@ modsController.postQueue = async function (req, res, next) {
 
 	({ posts: postData } = await plugins.hooks.fire('filter:post-queue.get', {
 		posts: postData,
-		req: req,
+		req,
 	}));
 
 	const pageCount = Math.max(1, Math.ceil(postData.length / postsPerPage));
@@ -239,18 +240,18 @@ modsController.postQueue = async function (req, res, next) {
 	res.render('post-queue', {
 		title: '[[pages:post-queue]]',
 		posts: postData,
-		allCategories: allCategories,
+		allCategories,
 		...categoriesData,
-		allCategoriesUrl: 'post-queue' + helpers.buildQueryString(req.query, 'cid', ''),
+		allCategoriesUrl: `post-queue${helpers.buildQueryString(req.query, 'cid', '')}`,
 		pagination: pagination.create(page, pageCount),
 		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[pages:post-queue]]' }]),
 	});
 };
 
 async function getQueuedPosts(ids) {
-	const keys = ids.map(id => 'post:queue:' + id);
+	const keys = ids.map(id => `post:queue:${id}`);
 	const postData = await db.getObjects(keys);
-	postData.forEach(function (data) {
+	postData.forEach((data) => {
 		if (data) {
 			data.data = JSON.parse(data.data);
 			data.data.timestampISO = utils.toISOString(data.data.timestamp);
@@ -258,7 +259,7 @@ async function getQueuedPosts(ids) {
 	});
 	const uids = postData.map(data => data && data.uid);
 	const userData = await user.getUsersFields(uids, ['username', 'userslug', 'picture']);
-	postData.forEach(function (postData, index) {
+	postData.forEach((postData, index) => {
 		if (postData) {
 			postData.user = userData[index];
 			postData.data.rawContent = validator.escape(String(postData.data.content));

@@ -36,8 +36,8 @@ module.exports = function (module) {
 		const index = counts.indexOf(minCount);
 		const smallestSet = sets[index];
 		return {
-			minCount: minCount,
-			smallestSet: smallestSet,
+			minCount,
+			smallestSet,
 		};
 	}
 
@@ -140,7 +140,7 @@ module.exports = function (module) {
 				items.push(nextItem);
 			}
 
-			const members = await Promise.all(otherSets.map(async function (s) {
+			const members = await Promise.all(otherSets.map(async (s) => {
 				const data = await module.client.collection('objects').find({
 					_key: s, value: { $in: items.map(i => i.value) },
 				}, {
@@ -164,13 +164,13 @@ module.exports = function (module) {
 		const aggregate = {};
 
 		if (params.aggregate) {
-			aggregate['$' + params.aggregate.toLowerCase()] = '$score';
+			aggregate[`$${params.aggregate.toLowerCase()}`] = '$score';
 		} else {
 			aggregate.$sum = '$score';
 		}
 		const pipeline = [{ $match: { _key: { $in: params.sets } } }];
 
-		params.weights.forEach(function (weight, index) {
+		params.weights.forEach((weight, index) => {
 			if (weight !== 1) {
 				pipeline.push({
 					$project: {

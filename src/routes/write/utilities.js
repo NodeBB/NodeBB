@@ -5,7 +5,7 @@ const middleware = require('../../middleware');
 const controllers = require('../../controllers');
 const routeHelpers = require('../helpers');
 
-const setupApiRoute = routeHelpers.setupApiRoute;
+const { setupApiRoute } = routeHelpers;
 
 module.exports = function () {
 	// The "ping" routes are mounted at root level, but for organizational purposes, the controllers are in `utilities.js`

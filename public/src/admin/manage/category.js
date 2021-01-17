@@ -271,7 +271,12 @@ define('admin/manage/category', [
 				if (isChild) {
 					parents.push(parseInt(category.cid, 10));
 				}
-				return category && !category.disabled && parseInt(category.cid, 10) !== parseInt(ajaxify.data.category.cid, 10) && !isChild;
+				return (
+					category &&
+					!category.disabled &&
+					parseInt(category.cid, 10) !== parseInt(ajaxify.data.category.cid, 10) &&
+					!isChild
+				);
 			});
 
 			categorySelector.modal(categories, function (parentCid) {

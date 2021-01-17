@@ -44,12 +44,12 @@ module.exports = function (Posts) {
 	};
 
 	Posts.uploads.list = async function (pid) {
-		return await db.getSortedSetMembers('post:' + pid + ':uploads');
+		return await db.getSortedSetMembers(`post:${pid}:uploads`);
 	};
 
 	Posts.uploads.listWithSizes = async function (pid) {
 		const paths = await Posts.uploads.list(pid);
-		const sizes = await db.getObjects(paths.map(path => 'upload:' + md5(path))) || [];
+		const sizes = await db.getObjects(paths.map(path => `upload:${md5(path)}`)) || [];
 
 		return sizes.map((sizeObj, idx) => ({
 			...sizeObj,
@@ -58,7 +58,7 @@ module.exports = function (Posts) {
 	};
 
 	Posts.uploads.isOrphan = async function (filePath) {
-		const length = await db.sortedSetCard('upload:' + md5(filePath) + ':pids');
+		const length = await db.sortedSetCard(`upload:${md5(filePath)}:pids`);
 		return length === 0;
 	};
 
@@ -68,7 +68,7 @@ module.exports = function (Posts) {
 			filePaths = [filePaths];
 		}
 
-		const keys = filePaths.map(fileObj => 'upload:' + md5(fileObj.name.replace('-resized', '')) + ':pids');
+		const keys = filePaths.map(fileObj => `upload:${md5(fileObj.name.replace('-resized', ''))}:pids`);
 		return await Promise.all(keys.map(k => db.getSortedSetRange(k, 0, -1)));
 	};
 
@@ -83,9 +83,9 @@ module.exports = function (Posts) {
 
 		const now = Date.now();
 		const scores = filePaths.map(() => now);
-		const bulkAdd = filePaths.map(path => ['upload:' + md5(path) + ':pids', now, pid]);
+		const bulkAdd = filePaths.map(path => [`upload:${md5(path)}:pids`, now, pid]);
 		await Promise.all([
-			db.sortedSetAdd('post:' + pid + ':uploads', scores, filePaths),
+			db.sortedSetAdd(`post:${pid}:uploads`, scores, filePaths),
 			db.sortedSetAddBulk(bulkAdd),
 			Posts.uploads.saveSize(filePaths),
 		]);
@@ -98,9 +98,9 @@ module.exports = function (Posts) {
 			return;
 		}
 
-		const bulkRemove = filePaths.map(path => ['upload:' + md5(path) + ':pids', pid]);
+		const bulkRemove = filePaths.map(path => [`upload:${md5(path)}:pids`, pid]);
 		await Promise.all([
-			db.sortedSetRemove('post:' + pid + ':uploads', filePaths),
+			db.sortedSetRemove(`post:${pid}:uploads`, filePaths),
 			db.sortedSetRemoveBulk(bulkRemove),
 		]);
 	};
@@ -115,16 +115,16 @@ module.exports = function (Posts) {
 			const type = mime.getType(fileName);
 			return type && type.match(/image./);
 		});
-		await Promise.all(filePaths.map(async function (fileName) {
+		await Promise.all(filePaths.map(async (fileName) => {
 			try {
 				const size = await image.size(path.join(pathPrefix, fileName));
-				winston.verbose('[posts/uploads/' + fileName + '] Saving size');
-				await db.setObject('upload:' + md5(fileName), {
+				winston.verbose(`[posts/uploads/${fileName}] Saving size`);
+				await db.setObject(`upload:${md5(fileName)}`, {
 					width: size.width,
 					height: size.height,
 				});
 			} catch (err) {
-				winston.error('[posts/uploads] Error while saving post upload sizes (' + fileName + '): ' + err.message);
+				winston.error(`[posts/uploads] Error while saving post upload sizes (${fileName}): ${err.message}`);
 			}
 		}));
 	};

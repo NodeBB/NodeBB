@@ -42,8 +42,22 @@ define('settings/key', function () {
 	 @returns Key | null The Key-Object the focused element should be set to.
 	 */
 	function getKey(event) {
-		var anyModChange = event.ctrlKey !== lastKey.c || event.altKey !== lastKey.a || event.shiftKey !== lastKey.s || event.metaKey !== lastKey.m;
-		var modChange = event.ctrlKey + event.altKey + event.shiftKey + event.metaKey - lastKey.c - lastKey.a - lastKey.s - lastKey.m;
+		var anyModChange = (
+			event.ctrlKey !== lastKey.c ||
+			event.altKey !== lastKey.a ||
+			event.shiftKey !== lastKey.s ||
+			event.metaKey !== lastKey.m
+		);
+		var modChange = (
+			event.ctrlKey +
+			event.altKey +
+			event.shiftKey +
+			event.metaKey -
+			lastKey.c -
+			lastKey.a -
+			lastKey.s -
+			lastKey.m
+		);
 		var key = new Key();
 		key.c = event.ctrlKey;
 		key.a = event.altKey;
