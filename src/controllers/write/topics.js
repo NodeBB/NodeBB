@@ -104,8 +104,14 @@ Topics.deleteTags = async (req, res) => {
 };
 
 Topics.getThumbs = async (req, res) => {
-	if (!await privileges.topics.can('topics:read', req.params.tid, req.uid)) {
-		return helpers.formatApiResponse(403, res);
+	if (isFinite(req.params.tid)) {	// post_uuids can be passed in occasionally, in that case no checks are necessary
+		const [exists, canRead] = await Promise.all([
+			topics.exists(req.params.tid),
+			privileges.topics.can('topics:read', req.params.tid, req.uid),
+		]);
+		if (!exists || !canRead) {
+			return helpers.formatApiResponse(403, res);
+		}
 	}
 
 	helpers.formatApiResponse(200, res, await topics.thumbs.get(req.params.tid));
