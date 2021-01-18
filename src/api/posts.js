@@ -13,6 +13,7 @@ const events = require('../events');
 const privileges = require('../privileges');
 const apiHelpers = require('./helpers');
 const websockets = require('../socket.io');
+const socketHelpers = require('../socket.io/helpers');
 
 const postsAPI = module.exports;
 
@@ -194,6 +195,27 @@ async function isMainAndLastPost(pid) {
 		isLast: topicData && topicData.postcount === 1,
 	};
 }
+
+postsAPI.move = async function (caller, data) {
+	const canMove = await Promise.all([
+		privileges.topics.isAdminOrMod(data.tid, caller.uid),
+		privileges.posts.canMove(data.pid, caller.uid),
+	]);
+	if (!canMove.every(Boolean)) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	await topics.movePostToTopic(caller.uid, data.pid, data.tid);
+
+	const [postDeleted, topicDeleted] = await Promise.all([
+		posts.getPostField(data.pid, 'deleted'),
+		topics.getTopicField(data.tid, 'deleted'),
+	]);
+
+	if (!postDeleted && !topicDeleted) {
+		socketHelpers.sendNotificationToPostOwner(data.pid, caller.uid, 'move', 'notifications:moved_your_post');
+	}
+};
 
 postsAPI.upvote = async function (caller, data) {
 	return await apiHelpers.postCommand(caller, 'upvote', 'voted', 'notifications:upvoted_your_post_in', data);

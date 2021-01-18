@@ -2,8 +2,8 @@
 
 
 define('forum/topic/move-post', [
-	'components', 'postSelect', 'translator', 'alerts',
-], function (components, postSelect, translator, alerts) {
+	'components', 'postSelect', 'translator', 'alerts', 'api',
+], function (components, postSelect, translator, alerts, api) {
 	var MovePost = {};
 
 	var moveModal;
@@ -100,10 +100,10 @@ define('forum/topic/move-post', [
 		if (!ajaxify.data.template.topic || !data.tid) {
 			return;
 		}
-		socket.emit('posts.movePosts', { pids: data.pids, tid: data.tid }, function (err) {
-			if (err) {
-				return app.alertError(err.message);
-			}
+
+		Promise.all(data.pids.map(pid => api.put(`/posts/${pid}/move`, {
+			tid: data.tid,
+		}))).then(() => {
 			data.pids.forEach(function (pid) {
 				components.get('post', 'pid', pid).fadeOut(500, function () {
 					$(this).remove();
@@ -111,7 +111,7 @@ define('forum/topic/move-post', [
 			});
 
 			closeMoveModal();
-		});
+		}).catch(app.alertError);
 	}
 
 	function closeMoveModal() {

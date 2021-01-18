@@ -1,0 +1,36 @@
+put:
+  tags:
+    - posts
+  summary: move a post
+  description: This operation moves a post to a different topic.
+  parameters:
+    - in: path
+      name: pid
+      schema:
+        type: number
+      required: true
+      description: a valid post id
+      example: 5
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            tid:
+              type: number
+              description: a valid topic id
+              example: 4
+  responses:
+    '200':
+      description: Post successfully moved
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}
