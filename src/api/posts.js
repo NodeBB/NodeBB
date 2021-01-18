@@ -4,6 +4,7 @@ const validator = require('validator');
 const _ = require('lodash');
 
 const utils = require('../utils');
+const user = require('../user');
 const posts = require('../posts');
 const topics = require('../topics');
 const groups = require('../groups');
@@ -212,4 +213,62 @@ postsAPI.bookmark = async function (caller, data) {
 
 postsAPI.unbookmark = async function (caller, data) {
 	return await apiHelpers.postCommand(caller, 'unbookmark', 'bookmarked', '', data);
+};
+
+async function diffsPrivilegeCheck(pid, uid) {
+	const [deleted, privilegesData] = await Promise.all([
+		posts.getPostField(pid, 'deleted'),
+		privileges.posts.get([pid], uid),
+	]);
+
+	const allowed = privilegesData[0]['posts:history'] && (deleted ? privilegesData[0]['posts:view_deleted'] : true);
+	if (!allowed) {
+		throw new Error('[[error:no-privileges]]');
+	}
+}
+
+postsAPI.getDiffs = async (caller, data) => {
+	await diffsPrivilegeCheck(data.pid, caller.uid);
+	const timestamps = await posts.diffs.list(data.pid);
+	const post = await posts.getPostFields(data.pid, ['timestamp', 'uid']);
+
+	const diffs = await posts.diffs.get(data.pid);
+	const uids = diffs.map(diff => diff.uid || null);
+	uids.push(post.uid);
+	let usernames = await user.getUsersFields(uids, ['username']);
+	usernames = usernames.map(userObj => (userObj.uid ? userObj.username : null));
+
+	let canEdit = true;
+	try {
+		await user.isPrivilegedOrSelf(caller.uid, post.uid);
+	} catch (e) {
+		canEdit = false;
+	}
+
+	timestamps.push(post.timestamp);
+
+	return {
+		timestamps: timestamps,
+		revisions: timestamps.map((timestamp, idx) => ({
+			timestamp: timestamp,
+			username: usernames[idx],
+		})),
+		editable: canEdit,
+	};
+};
+
+postsAPI.loadDiff = async (caller, data) => {
+	await diffsPrivilegeCheck(data.pid, caller.uid);
+	return await posts.diffs.load(data.pid, data.since, caller.uid);
+};
+
+postsAPI.restoreDiff = async (caller, data) => {
+	const cid = await posts.getCidByPid(data.pid);
+	const canEdit = await privileges.categories.can('edit', cid, caller.uid);
+	if (!canEdit) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	const edit = await posts.diffs.restore(data.pid, data.since, caller.uid, apiHelpers.buildReqObject(caller));
+	websockets.in('topic_' + edit.topic.tid).emit('event:post_edited', edit);
 };

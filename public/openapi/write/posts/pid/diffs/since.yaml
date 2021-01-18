@@ -1,0 +1,65 @@
+get:
+  tags:
+    - posts
+  summary: get single post edit history
+  description: This operation retrieves a post's edit history
+  parameters:
+    - in: path
+      name: pid
+      schema:
+        type: string
+      required: true
+      description: a valid post id
+      example: 2
+    - in: path
+      name: since
+      schema:
+        type: number
+      required: true
+      description: a valid UNIX timestamp
+      example: 0
+  responses:
+    '200':
+      description: Post history successfully retrieved.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../../../components/schemas/PostObject.yaml#/PostObject
+put:
+  tags:
+    - posts
+  summary: revert a post
+  description: This operation reverts a post to an earlier version. The revert process will append a new history item to the post's edit history.
+  parameters:
+    - in: path
+      name: pid
+      schema:
+        type: string
+      required: true
+      description: a valid post id
+      example: 2
+    - in: path
+      name: since
+      schema:
+        type: number
+      required: true
+      description: a valid UNIX timestamp
+      example: 0
+  responses:
+    '200':
+      description: Post successfully reverted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}

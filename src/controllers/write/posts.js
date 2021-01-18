@@ -73,3 +73,16 @@ Posts.unbookmark = async (req, res) => {
 	await api.posts.unbookmark(req, data);
 	helpers.formatApiResponse(200, res);
 };
+
+Posts.getDiffs = async (req, res) => {
+	helpers.formatApiResponse(200, res, await api.posts.getDiffs(req, { ...req.params }));
+};
+
+Posts.loadDiff = async (req, res) => {
+	helpers.formatApiResponse(200, res, await api.posts.loadDiff(req, { ...req.params }));
+};
+
+Posts.restoreDiff = async (req, res) => {
+	helpers.formatApiResponse(200, res, await api.posts.restoreDiff(req, { ...req.params }));
+};
+
