@@ -1,6 +1,6 @@
 'use strict';
 
-define('forum/topic/diffs', ['forum/topic/images'], function () {
+define('forum/topic/diffs', ['api', 'forum/topic/images'], function (api) {
 	var Diffs = {};
 
 	Diffs.open = function (pid) {
@@ -10,11 +10,7 @@ define('forum/topic/diffs', ['forum/topic/images'], function () {
 
 		var localeStringOpts = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
 
-		socket.emit('posts.getDiffs', { pid: pid }, function (err, data) {
-			if (err) {
-				return app.alertError(err.message);
-			}
-
+		api.get(`/posts/${pid}/diffs`, {}).then((data) => {
 			app.parseAndTranslate('partials/modals/post_history', {
 				diffs: data.revisions.map(function (revision) {
 					var timestamp = parseInt(revision.timestamp, 10);
@@ -56,7 +52,7 @@ define('forum/topic/diffs', ['forum/topic/images'], function () {
 					revertEl.prop('disabled', true);
 				});
 			});
-		});
+		}).catch(app.alertError);
 	};
 
 	Diffs.load = function (pid, since, postContainer) {
@@ -64,11 +60,7 @@ define('forum/topic/diffs', ['forum/topic/images'], function () {
 			return;
 		}
 
-		socket.emit('posts.showPostAt', { pid: pid, since: since }, function (err, data) {
-			if (err) {
-				return app.alertError(err.message);
-			}
-
+		api.get(`/posts/${pid}/diffs/${since}`, {}).then((data) => {
 			data.deleted = !!parseInt(data.deleted, 10);
 
 			app.parseAndTranslate('partials/posts_list', 'posts', {
@@ -76,7 +68,7 @@ define('forum/topic/diffs', ['forum/topic/images'], function () {
 			}, function (html) {
 				postContainer.empty().append(html);
 			});
-		});
+		}).catch(app.alertError);
 	};
 
 	Diffs.restore = function (pid, since, modal) {
@@ -84,14 +76,10 @@ define('forum/topic/diffs', ['forum/topic/images'], function () {
 			return;
 		}
 
-		socket.emit('posts.restoreDiff', { pid: pid, since: since }, function (err) {
-			if (err) {
-				return app.alertError(err);
-			}
-
+		api.put(`/posts/${pid}/diffs/${since}`, {}).then(() => {
 			modal.modal('hide');
 			app.alertSuccess('[[topic:diffs.post-restored]]');
-		});
+		}).catch(app.alertError);
 	};
 
 	return Diffs;
