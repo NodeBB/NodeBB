@@ -135,6 +135,12 @@ describe('API', async () => {
 			title: 'Test Topic 2',
 			content: 'Test topic 2 content',
 		});
+		await topics.post({
+			uid: unprivUid,
+			cid: testCategory.cid,
+			title: 'Test Topic 3',
+			content: 'Test topic 3 content',
+		});
 
 		// Create a sample flag
 		await flags.create('post', 1, unprivUid, 'sample reasons', Date.now());

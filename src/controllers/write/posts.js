@@ -38,6 +38,14 @@ Posts.delete = async (req, res) => {
 	helpers.formatApiResponse(200, res);
 };
 
+Posts.move = async (req, res) => {
+	await api.posts.move(req, {
+		pid: req.params.pid,
+		tid: req.body.tid,
+	});
+	helpers.formatApiResponse(200, res);
+};
+
 async function mock(req) {
 	const tid = await posts.getPostField(req.params.pid, 'tid');
 	return { pid: req.params.pid, room_id: `topic_${tid}` };

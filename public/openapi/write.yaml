@@ -104,6 +104,8 @@ paths:
     $ref: 'write/posts/pid.yaml'
   /posts/{pid}/state:
     $ref: 'write/posts/pid/state.yaml'
+  /posts/{pid}/move:
+    $ref: 'write/posts/pid/move.yaml'
   /posts/{pid}/vote:
     $ref: 'write/posts/pid/vote.yaml'
   /posts/{pid}/bookmark:
