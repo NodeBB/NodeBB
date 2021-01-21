@@ -37,6 +37,7 @@ events.types = [
 	'user-ban',
 	'user-unban',
 	'user-delete',
+	'user-deleteAccount',
 	'password-change',
 	'email-change',
 	'username-change',
