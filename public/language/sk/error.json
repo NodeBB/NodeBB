@@ -133,6 +133,7 @@
     "chat-delete-duration-expired": "Je Vám umožnené odstrániť správy konverzácie po dobu %1 sekúnd po ich odoslaní",
     "chat-deleted-already": "Táto správa konverzácie už bola odstránená.",
     "chat-restored-already": "This chat message has already been restored.",
+    "chat-room-does-not-exist": "Chat room does not exist.",
     "already-voting-for-this-post": "Za tento príspevok ste už hlasovali.",
     "reputation-system-disabled": "Systém reputácie je zablokovaný.",
     "downvoting-disabled": "Hlasovanie proti je zablokované",

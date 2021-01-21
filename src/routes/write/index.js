@@ -4,6 +4,7 @@ const winston = require('winston');
 const meta = require('../../meta');
 const plugins = require('../../plugins');
 const middleware = require('../../middleware');
+const writeControllers = require('../../controllers/write');
 const helpers = require('../../controllers/helpers');
 
 const Write = module.exports;
@@ -38,19 +39,10 @@ Write.reload = async (params) => {
 	router.use('/api/v3/posts', require('./posts')());
 	router.use('/api/v3/admin', require('./admin')());
 	router.use('/api/v3/files', require('./files')());
+	router.use('/api/v3/utilities', require('./utilities')());
 
-	router.get('/api/v3/ping', function (req, res) {
-		helpers.formatApiResponse(200, res, {
-			pong: true,
-		});
-	});
-
-	router.post('/api/v3/ping', middleware.authenticate, function (req, res) {
-		helpers.formatApiResponse(200, res, {
-			uid: req.user.uid,
-			received: req.body,
-		});
-	});
+	router.get('/api/v3/ping', writeControllers.utilities.ping.get);
+	router.post('/api/v3/ping', middleware.authenticate, writeControllers.utilities.ping.post);
 
 	/**
 	 * Plugins can add routes to the Write API by attaching a listener to the

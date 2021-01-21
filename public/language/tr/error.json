@@ -133,6 +133,7 @@
     "chat-delete-duration-expired": "Gönderildikten sonra yalnızca %1 saniye mesajı(ları) silmene izin verilir",
     "chat-deleted-already": "Bu sohbet mesajı zaten silinmiş.",
     "chat-restored-already": "Bu sohbet mesajı zaten geri yüklendi.",
+    "chat-room-does-not-exist": "Chat room does not exist.",
     "already-voting-for-this-post": "Bu gönderi için zaten oy verdin.",
     "reputation-system-disabled": "İtibar sistemi devre dışı.",
     "downvoting-disabled": "Aşagı oylama kapatılmış",

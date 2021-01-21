@@ -1,3 +1,4 @@
+
 {
 	"post-queue": "貼文隊列",
 	"description": "貼文隊列中暫無新貼文。啟用此功能，請前往設定&rarr;貼文&rarr;貼文隊列，然後啟用貼文隊列。",
@@ -7,5 +8,11 @@
 	"content": "內容",
 	"posted": "發佈",
 	"reply-to": "回覆\"%1\"",
-	"content-editable": "發文前，您可以點擊內容進行編輯。"
+	"content-editable": "Click on content to edit",
+	"category-editable": "Click on category to edit",
+	"title-editable": "Click on title to edit",
+	"reply": "Reply",
+	"topic": "Topic",
+	"accept": "Accept",
+	"reject": "Reject"
 }

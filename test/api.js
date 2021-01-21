@@ -135,6 +135,12 @@ describe('API', async () => {
 			title: 'Test Topic 2',
 			content: 'Test topic 2 content',
 		});
+		await topics.post({
+			uid: unprivUid,
+			cid: testCategory.cid,
+			title: 'Test Topic 3',
+			content: 'Test topic 3 content',
+		});
 
 		// Create a sample flag
 		await flags.create('post', 1, unprivUid, 'sample reasons', Date.now());
@@ -332,7 +338,7 @@ describe('API', async () => {
 					}
 				});
 
-				it('should resolve with a 200 when called', async () => {
+				it('should not error out when called', async () => {
 					await setupData();
 
 					if (csrfToken) {
@@ -372,7 +378,7 @@ describe('API', async () => {
 							});
 						}
 					} catch (e) {
-						assert(!e, `${method.toUpperCase()} ${path} resolved with ${e.message}`);
+						assert(!e, `${method.toUpperCase()} ${path} errored with: ${e.message}`);
 					}
 				});
 

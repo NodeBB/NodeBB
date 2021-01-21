@@ -133,6 +133,7 @@
     "chat-delete-duration-expired": "Вам разрешено удалять сообщения чата за% 1 секунду после публикации",
     "chat-deleted-already": "Это сообщение чата уже удалено.",
     "chat-restored-already": "Это сообщение чата уже было восстановлено.",
+    "chat-room-does-not-exist": "Chat room does not exist.",
     "already-voting-for-this-post": "Вы уже проголосовали за это сообщение.",
     "reputation-system-disabled": "Система репутации отключена.",
     "downvoting-disabled": "Понижение рейтинга отключено",

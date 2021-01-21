@@ -38,6 +38,10 @@ module.exports = function (User) {
 	};
 
 	User.sendInvitationEmail = async function (uid, email, groupsToJoin) {
+		if (!uid) {
+			throw new Error('[[error:invalid-uid]]');
+		}
+
 		const email_exists = await User.getUidByEmail(email);
 		if (email_exists) {
 			throw new Error('[[error:email-taken]]');
@@ -104,6 +108,11 @@ module.exports = function (User) {
 	}
 
 	async function prepareInvitation(uid, email, groupsToJoin) {
+		const inviterExists = await User.exists(uid);
+		if (!inviterExists) {
+			throw new Error('[[error:invalid-uid]]');
+		}
+
 		const token = utils.generateUUID();
 		const registerLink = nconf.get('url') + '/register?token=' + token + '&email=' + encodeURIComponent(email);
 

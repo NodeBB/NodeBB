@@ -94,7 +94,7 @@ describe('Topic thumbs', () => {
 			assert.deepStrictEqual(thumbs, [{
 				id: 1,
 				name: 'test.png',
-				url: `${nconf.get('upload_url')}${relativeThumbPaths[0]}`,
+				url: `${nconf.get('relative_path')}${nconf.get('upload_url')}${relativeThumbPaths[0]}`,
 			}]);
 		});
 
@@ -104,7 +104,7 @@ describe('Topic thumbs', () => {
 				[{
 					id: 1,
 					name: 'test.png',
-					url: `${nconf.get('upload_url')}${relativeThumbPaths[0]}`,
+					url: `${nconf.get('relative_path')}${nconf.get('upload_url')}${relativeThumbPaths[0]}`,
 				}],
 				[],
 			]);
@@ -153,7 +153,7 @@ describe('Topic thumbs', () => {
 				{
 					id: 2,
 					name: 'test.png',
-					url: `${nconf.get('upload_url')}${relativeThumbPaths[0]}`,
+					url: `${nconf.get('relative_path')}${nconf.get('upload_url')}${relativeThumbPaths[0]}`,
 				},
 				{
 					id: 2,
@@ -163,7 +163,7 @@ describe('Topic thumbs', () => {
 				{
 					id: 2,
 					name: 'test2.png',
-					url: `${nconf.get('upload_url')}${relativeThumbPaths[1]}`,
+					url: `${nconf.get('relative_path')}${nconf.get('upload_url')}${relativeThumbPaths[1]}`,
 				},
 			]);
 		});

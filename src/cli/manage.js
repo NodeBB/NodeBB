@@ -2,7 +2,6 @@
 
 const winston = require('winston');
 const childProcess = require('child_process');
-const _ = require('lodash');
 const CliGraph = require('cli-graph');
 
 const build = require('../meta/build');
@@ -12,27 +11,6 @@ const events = require('../events');
 const analytics = require('../analytics');
 const reset = require('./reset');
 const { pluginNamePattern, themeNamePattern } = require('../constants');
-
-function buildTargets() {
-	var aliases = build.aliases;
-	var length = 0;
-	var output = Object.keys(aliases).map(function (name) {
-		var arr = aliases[name];
-		if (name.length > length) {
-			length = name.length;
-		}
-
-		return [name, arr.join(', ')];
-	}).map(function (tuple) {
-		return '     ' + _.padEnd('"' + tuple[0] + '"', length + 2).magenta + '  |  ' + tuple[1];
-	}).join('\n');
-	console.log(
-		'\n\n  Build targets:\n' +
-		('\n     ' + _.padEnd('Target', length + 2) + '  |  Aliases').green +
-		'\n     ------------------------------------------------------\n'.blue +
-		output + '\n'
-	);
-}
 
 async function activate(plugin) {
 	if (themeNamePattern.test(plugin)) {
@@ -63,11 +41,10 @@ async function activate(plugin) {
 			type: 'plugin-activate',
 			text: plugin,
 		});
-		process.exit(0);
 	} catch (err) {
 		winston.error('An error occurred during plugin activation\n' + err.stack);
-		throw err;
 	}
+	process.exit(0);
 }
 
 async function listPlugins() {
@@ -176,7 +153,6 @@ async function buildWrapper(targets, options) {
 }
 
 exports.build = buildWrapper;
-exports.buildTargets = buildTargets;
 exports.activate = activate;
 exports.listPlugins = listPlugins;
 exports.listEvents = listEvents;

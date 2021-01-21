@@ -133,6 +133,7 @@
     "chat-delete-duration-expired": "채팅 메시지를 게시한 뒤 %1초 뒤부터 삭제가 가능합니다.",
     "chat-deleted-already": "이미 삭제된 대화 메시지입니다.",
     "chat-restored-already": "이 채팅 메시지는 이미 복원되었습니다.",
+    "chat-room-does-not-exist": "Chat room does not exist.",
     "already-voting-for-this-post": "이미 이 포스트에 투표하셨습니다.",
     "reputation-system-disabled": "평판 시스템이 비활성화되어있습니다.",
     "downvoting-disabled": "비추천 기능이 비활성 상태입니다.",

@@ -135,6 +135,16 @@ describe('new Translator(language)', function () {
 			});
 		});
 
+		it('should translate escaped translation arguments properly', function () {
+			// https://github.com/NodeBB/NodeBB/issues/9206
+			var translator = Translator.create('en-GB');
+
+			var key = '[[notifications:upvoted_your_post_in, test1, error: Error: &lsqb;&lsqb;error:group-name-too-long&rsqb;&rsqb; on NodeBB Upgrade]]';
+			return translator.translate(key).then(function (translated) {
+				assert.strictEqual(translated, '<strong>test1</strong> has upvoted your post in <strong>error: Error: &lsqb;&lsqb;error:group-name-too-long&rsqb;&rsqb; on NodeBB Upgrade</strong>.');
+			});
+		});
+
 		it('should properly escape and ignore % and \\, in arguments', function () {
 			var translator = Translator.create('en-GB');
 

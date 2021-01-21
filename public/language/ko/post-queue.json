@@ -1,3 +1,4 @@
+
 {
 	"post-queue": "게시 대기열",
 	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
@@ -7,5 +8,11 @@
 	"content": "컨텐츠",
 	"posted": "작성됨",
 	"reply-to": "'%1'에 대한 답글",
-	"content-editable": "게시하기 전에 콘텐츠를 클릭하여 편집 할 수 있습니다."
+	"content-editable": "Click on content to edit",
+	"category-editable": "Click on category to edit",
+	"title-editable": "Click on title to edit",
+	"reply": "Reply",
+	"topic": "Topic",
+	"accept": "Accept",
+	"reject": "Reject"
 }

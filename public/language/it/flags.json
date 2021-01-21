@@ -13,7 +13,7 @@
 	"filter-active": "Ci sono uno o più filtri attivi in questa lista di segnalazioni",
 	"filter-reset": "Rimuovi Filtri",
 	"filters": "Opzioni Filtri",
-	"filter-reporterId": "Segnalatore UID",
+	"filter-reporterId": "UID segnalatore",
 	"filter-targetUid": "UID segnalato",
 	"filter-type": "Tipo Segnalazione",
 	"filter-type-all": "Tutto il Contenuto",

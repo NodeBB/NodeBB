@@ -210,7 +210,9 @@ define('forum/topic/posts', [
 				html.insertBefore(before);
 
 				// Now restore the relative position the user was on prior to new post insertion
-				$(window).scrollTop(scrollTop + ($(document).height() - height));
+				if (scrollTop > 0) {
+					$(window).scrollTop(scrollTop + ($(document).height() - height));
+				}
 			} else {
 				components.get('topic').append(html);
 			}

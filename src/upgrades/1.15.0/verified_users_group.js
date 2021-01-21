@@ -13,6 +13,9 @@ module.exports = {
 	timestamp: Date.UTC(2020, 9, 13),
 	method: async function () {
 		const progress = this.progress;
+
+		const maxGroupLength = meta.config.maximumGroupNameLength;
+		meta.config.maximumGroupNameLength = 30;
 		const timestamp = await db.getObjectField('group:administrators', 'timestamp');
 		const verifiedExists = await groups.exists('verified-users');
 		if (!verifiedExists) {
@@ -38,7 +41,8 @@ module.exports = {
 				timestamp: timestamp + 1,
 			});
 		}
-
+		// restore setting
+		meta.config.maximumGroupNameLength = maxGroupLength;
 		await batch.processSortedSet('users:joindate', async function (uids) {
 			progress.incr(uids.length);
 			const userData = await user.getUsersFields(uids, ['uid', 'email:confirmed']);

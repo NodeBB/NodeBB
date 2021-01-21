@@ -32,7 +32,7 @@ module.exports = {
 				}
 
 				methods.push(
-					db.sortedSetAdd.bind(db, `flag:${flagObj.flagId}:reports`, flagObj.datetime, flagObj.description),
+					db.sortedSetAdd.bind(db, `flag:${flagObj.flagId}:reports`, flagObj.datetime, String(flagObj.description).substr(0, 250)),
 					db.sortedSetAdd.bind(db, `flag:${flagObj.flagId}:reporters`, flagObj.datetime, flagObj.uid)
 				);
 

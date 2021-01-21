@@ -133,6 +133,7 @@
     "chat-delete-duration-expired": "הנך רשאי למחוק הודעת צ'אט עד %1 דק(ות) מרגע פרסום התגובה.",
     "chat-deleted-already": "הודעות הצ'אט הזו כבר נמחקה.",
     "chat-restored-already": "הודעות הצ'אט הזו כבר שוחזרה.",
+    "chat-room-does-not-exist": "Chat room does not exist.",
     "already-voting-for-this-post": "הצבעת כבר בנושא זה",
     "reputation-system-disabled": "מערכת המוניטין לא פעילה.",
     "downvoting-disabled": "היכולת להצביע נגד לא פעילה",

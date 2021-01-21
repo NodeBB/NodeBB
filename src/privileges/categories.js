@@ -106,8 +106,14 @@ module.exports = function (privileges) {
 		}
 
 		cids = _.uniq(cids);
-		const results = await privileges.categories.getBase(privilege, cids, uid);
-		return cids.filter((cid, index) => !!cid && !results.categories[index].disabled && (results.allowedTo[index] || results.isAdmin));
+		const [categoryData, allowedTo, isAdmin] = await Promise.all([
+			categories.getCategoriesFields(cids, ['disabled']),
+			helpers.isAllowedTo(privilege, uid, cids),
+			user.isAdministrator(uid),
+		]);
+		return cids.filter(
+			(cid, index) => !!cid && !categoryData[index].disabled && (allowedTo[index] || isAdmin)
+		);
 	};
 
 	privileges.categories.getBase = async function (privilege, cids, uid) {

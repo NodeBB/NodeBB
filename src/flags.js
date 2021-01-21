@@ -36,7 +36,11 @@ Flags.init = async function () {
 		if (!Array.isArray(value)) {
 			sets.push(prefix + value);
 		} else if (value.length) {
-			value.forEach(x => orSets.push(prefix + x));
+			if (value.length === 1) {
+				sets.push(prefix + value[0]);
+			} else {
+				value.forEach(x => orSets.push(prefix + x));
+			}
 		}
 	}
 
@@ -66,6 +70,10 @@ Flags.init = async function () {
 				switch (key) {
 					case 'mine':
 						sets.push('flags:byAssignee:' + uid);
+						break;
+
+					case 'unresolved':
+						prepareSets(sets, orSets, 'flags:byState:', ['open', 'wip']);
 						break;
 				}
 			},
@@ -113,9 +121,13 @@ Flags.get = async function (flagId) {
 	return data.flag;
 };
 
-Flags.list = async function (data) {
-	const filters = data.filters || {};
+Flags.getCount = async function ({ uid, filters }) {
+	filters = filters || {};
+	const flagIds = await Flags.getFlagIdsWithFilters({ filters, uid });
+	return flagIds.length;
+};
 
+Flags.getFlagIdsWithFilters = async function ({ filters, uid }) {
 	let sets = [];
 	const orSets = [];
 
@@ -126,7 +138,7 @@ Flags.list = async function (data) {
 	for (var type in filters) {
 		if (filters.hasOwnProperty(type)) {
 			if (Flags._filters.hasOwnProperty(type)) {
-				Flags._filters[type](sets, orSets, filters[type], data.uid);
+				Flags._filters[type](sets, orSets, filters[type], uid);
 			} else {
 				winston.warn('[flags/list] No flag filter type found: ' + type);
 			}
@@ -152,6 +164,15 @@ Flags.list = async function (data) {
 		}
 	}
 
+	return flagIds;
+};
+
+Flags.list = async function (data) {
+	const filters = data.filters || {};
+	let flagIds = await Flags.getFlagIdsWithFilters({
+		filters,
+		uid: data.uid,
+	});
 	flagIds = await Flags.sort(flagIds, data.sort);
 
 	// Create subset for parsing based on page number (n=20)

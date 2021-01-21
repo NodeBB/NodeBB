@@ -247,7 +247,7 @@ define('topicList', [
 			}
 
 			if (!topicSelect.getSelectedTids().length) {
-				infinitescroll.removeExtra(topicListEl.find('[component="category/topic"]'), direction, config.topicsPerPage * 3);
+				infinitescroll.removeExtra(topicListEl.find('[component="category/topic"]'), direction, Math.max(60, config.topicsPerPage * 3));
 			}
 
 			html.find('.timeago').timeago();

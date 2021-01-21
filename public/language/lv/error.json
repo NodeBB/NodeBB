@@ -133,6 +133,7 @@
     "chat-delete-duration-expired": "Pēc publicēšanas ir atļauts tikai %1 sekundes laika izdzēst sarunu",
     "chat-deleted-already": "Saruna jau ir izdzēsta.",
     "chat-restored-already": "This chat message has already been restored.",
+    "chat-room-does-not-exist": "Chat room does not exist.",
     "already-voting-for-this-post": "Tu jau balsoji par šo rakstu.",
     "reputation-system-disabled": "Ranga punktu sistēma ir atspējota.",
     "downvoting-disabled": "Balsošana \"pret\" ir atspējota",

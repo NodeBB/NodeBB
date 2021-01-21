@@ -38,6 +38,14 @@ Posts.delete = async (req, res) => {
 	helpers.formatApiResponse(200, res);
 };
 
+Posts.move = async (req, res) => {
+	await api.posts.move(req, {
+		pid: req.params.pid,
+		tid: req.body.tid,
+	});
+	helpers.formatApiResponse(200, res);
+};
+
 async function mock(req) {
 	const tid = await posts.getPostField(req.params.pid, 'tid');
 	return { pid: req.params.pid, room_id: `topic_${tid}` };
@@ -73,3 +81,16 @@ Posts.unbookmark = async (req, res) => {
 	await api.posts.unbookmark(req, data);
 	helpers.formatApiResponse(200, res);
 };
+
+Posts.getDiffs = async (req, res) => {
+	helpers.formatApiResponse(200, res, await api.posts.getDiffs(req, { ...req.params }));
+};
+
+Posts.loadDiff = async (req, res) => {
+	helpers.formatApiResponse(200, res, await api.posts.loadDiff(req, { ...req.params }));
+};
+
+Posts.restoreDiff = async (req, res) => {
+	helpers.formatApiResponse(200, res, await api.posts.restoreDiff(req, { ...req.params }));
+};
+
