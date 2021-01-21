@@ -1,3 +1,90 @@
+#### v1.16.2 (2021-01-21)
+
+##### Breaking Changes
+
+*  unescape header navigation originalRoute [breaking] (6cb5888c)
+*  allow override of local fns in login controller, 400 instead of 500 for wrong login type [breaking] (1cf0032d)
+
+##### Chores
+
+* **deps:**
+  *  update dependency husky to v4.3.8 (a6f5de86)
+  *  update dependency eslint to v7.18.0 (afbef95f)
+  *  update dependency husky to v4.3.7 (d3e041e2)
+*  incrementing version number - v1.16.2-beta.0 (43ff8e41)
+*  incrementing version number - v1.16.1 (e3cd7a23)
+*  update changelog for v1.16.1 (b6d71710)
+
+##### New Features
+
+*  add filter:email.cancel to allow plugins to cancel sending emails (c2e23706)
+*  grant plugins the ability to specify options to the SSO handler (ab11435e)
+*  add unread-count badge if navigator contains /flags route (c07e1e16)
+*  handle HTTP 429 as a response code (8bbb3208)
+*  add write API route for checking login credentials (56f929ed)
+*  #8813, faster category search dropdown (072a0e32)
+* **api:**  schema definition for new credential checking route (0da28432)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency bootbox to v5 (#8751) (b5cb2f8b)
+  *  update dependency nodebb-theme-persona to v10.3.19 (f16cdc9f)
+  *  update socket.io packages to v3.1.0 (3d1224e1)
+  *  update dependency nodebb-theme-slick to v1.3.8 (1901ecb2)
+  *  update dependency sortablejs to v1.13.0 (36069da2)
+  *  update dependency autoprefixer to v10.2.1 (5b3c48fd)
+*  https://github.com/NodeBB/nodebb-plugin-webhooks/issues/3 (c608b0e8)
+*  restored sanity checks for post move socket calls (d85ad10d)
+*  don't chagne scrollTop if at the top of page (0fa4c11e)
+*  #9206, fix double escaped arguments (1590cdf1)
+*  regression caused by 77ab46686db62871f149419a368c35628453884e (f5fcd232)
+*  don't crash if fullname is not a string (4fb90787)
+*  #9204, bypass groupname length check for system group in upgrade script (00ba89b6)
+*  add missing await (9938a139)
+*  ssoState passed to strategies even if not called for (9b289eca)
+*  use max (0a471b76)
+*  keep 60 topics minimum on topic list (c30b40ab)
+*  access checks for tags and thumbs get route (77ab4668)
+*  #9194 global mods unable to pin or unpin topics (c0fb1cb5)
+*  #9192, exit after logging error (ef16cd2e)
+*  make sure inviter user exists (69419571)
+*  #9178 missing language strings (and fallbacks) for post-queue (a407a51d)
+*  #9185, fix string boolean values (89e6c75d)
+*  test for topicThumbs (e817d5be)
+*  #9184 proper relative_path usage in topic thumbs.get (66da6bcd)
+*  #9169, re-adding v2-style behaviour so as to not break the API... yet (b742229e)
+*  #9177, handled multiple deleted users properly (eaf62d39)
+*  broken test caused by errant .pop(), missing await (4ede18ce)
+*  missing error message (d83d40cf)
+*  test for https://github.com/NodeBB/NodeBB/pull/9180 (8ece64ab)
+*  #9176, limit description size (da546970)
+*  broken test due to change in response code (9534d956)
+*  return a user object, not an array of user objects (in v3 login check route) (97d678fd)
+*  bad execution flow in utilities.login (8c86f5bc)
+*  missing breadcrumbs in schema (87a7d85e)
+*  random loadFiles added by errant vscode autocompletion (53422413)
+*  add missing breadcrumb on /user/<slug>/categories (6cbb77af)
+*  `--help` usage info (a51c5698)
+
+##### Performance Improvements
+
+*  use only required calls (f0dd302c)
+
+##### Refactors
+
+* **api:**
+  *  post move to write API (966c4117)
+  *  post diffs to use write API (e118e59c)
+*  change var to const (1374e0ee)
+*  single remove call (25ab99b9)
+*  flags lib to have a separate getFlagIdsWithFilters method (6a1311b4)
+*  split out logic dedicated to calculating unread counts, to a separate local method (03a0e72f)
+
+##### Code Style Changes
+
+*  update codeclimate config to be less sensitive to duplicate code blocks (fdf03472)
+
 #### v1.16.1 (2021-01-06)
 
 ##### Chores

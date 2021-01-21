@@ -2,7 +2,7 @@
     "name": "nodebb",
     "license": "GPL-3.0",
     "description": "NodeBB Forum",
-    "version": "1.16.2-beta.0",
+    "version": "1.16.2",
     "homepage": "http://www.nodebb.org",
     "repository": {
         "type": "git",
@@ -43,7 +43,7 @@
         "bcryptjs": "2.4.3",
         "benchpressjs": "2.4.0",
         "body-parser": "^1.19.0",
-        "bootbox": "4.4.0",
+        "bootbox": "5.5.2",
         "bootstrap": "^3.4.1",
         "chart.js": "^2.9.3",
         "cli-graph": "^3.2.2",
