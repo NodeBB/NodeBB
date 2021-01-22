@@ -35,7 +35,7 @@ async function registerAndLoginUser(req, res, userData) {
 		req.session.registration = userData;
 
 		if (req.body.referrer) {
-			req.session.referrer = req.body.referrer;
+			req.session.returnTo = req.body.referrer;
 		}
 		if (req.body.noscript === 'true') {
 			res.redirect(nconf.get('relative_path') + '/register/complete');
@@ -60,7 +60,7 @@ async function registerAndLoginUser(req, res, userData) {
 		await user.joinGroupsFromInvitation(uid, userData.email);
 	}
 	await user.deleteInvitationKey(userData.email);
-	const referrer = req.body.referrer || req.session.referrer || nconf.get('relative_path') + '/';
+	const referrer = req.body.referrer || req.session.returnTo || nconf.get('relative_path') + '/';
 	const complete = await plugins.hooks.fire('filter:register.complete', { uid: uid, referrer: referrer });
 	req.session.returnTo = complete.referrer;
 	return complete;
