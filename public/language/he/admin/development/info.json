@@ -1,8 +1,8 @@
 {
-	"you-are-on": "You are on <strong>%1:%2</strong>",
+	"you-are-on": "אתה נמצא ב",
 	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "%1 nodes responded within %2ms!",
-	"host": "host",
+	"host": "מנחה",
 	"primary": "primary / run jobs",
 	"pid": "pid",
 	"nodejs": "nodejs",
