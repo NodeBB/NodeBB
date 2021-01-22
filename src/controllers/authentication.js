@@ -140,7 +140,7 @@ authenticationController.registerComplete = function (req, res, next) {
 	plugins.hooks.fire('filter:register.interstitial', {
 		userData: req.session.registration,
 		interstitials: [],
-	}, function (err, data) {
+	}, async (err, data) => {
 		if (err) {
 			return next(err);
 		}
@@ -148,12 +148,7 @@ authenticationController.registerComplete = function (req, res, next) {
 		var callbacks = data.interstitials.reduce(function (memo, cur) {
 			if (cur.hasOwnProperty('callback') && typeof cur.callback === 'function') {
 				req.body.files = req.files;
-				memo.push(function (next) {
-					cur.callback(req.session.registration, req.body, function (err) {
-						// Pass error as second argument so all callbacks are executed
-						next(null, err);
-					});
-				});
+				memo.push(cur.callback && cur.callback.constructor && cur.callback.constructor.name === 'AsyncFunction' ? cur.callback : util.promisify(cur.callback));
 			}
 
 			return memo;
@@ -168,6 +163,7 @@ authenticationController.registerComplete = function (req, res, next) {
 			if (!err && data && data.message) {
 				return res.redirect(nconf.get('relative_path') + '/?register=' + encodeURIComponent(data.message));
 			}
+
 			if (req.session.returnTo) {
 				res.redirect(nconf.get('relative_path') + req.session.returnTo);
 			} else {
@@ -175,36 +171,34 @@ authenticationController.registerComplete = function (req, res, next) {
 			}
 		};
 
-		async.parallel(callbacks, async function (_blank, err) {
-			if (err.length) {
-				err = err.filter(Boolean).map(err => err.message);
-			}
+		const results = await Promise.allSettled(callbacks.map(async (cb) => {
+			await cb(req.session.registration, req.body);
+		}));
+		const errors = results.map(result => result.reason && result.reason.message).filter(Boolean);
+		if (errors.length) {
+			req.flash('errors', errors);
+			return res.redirect(nconf.get('relative_path') + '/register/complete');
+		}
 
-			if (err.length) {
-				req.flash('errors', err);
-				return res.redirect(nconf.get('relative_path') + '/register/complete');
-			}
+		if (req.session.registration.register === true) {
+			res.locals.processLogin = true;
+			registerAndLoginUserCallback(req, res, req.session.registration, done);
+		} else {
+			// Update user hash, clear registration data in session
+			const payload = req.session.registration;
+			const uid = payload.uid;
+			delete payload.uid;
+			delete payload.returnTo;
 
-			if (req.session.registration.register === true) {
-				res.locals.processLogin = true;
-				registerAndLoginUserCallback(req, res, req.session.registration, done);
-			} else {
-				// Update user hash, clear registration data in session
-				const payload = req.session.registration;
-				const uid = payload.uid;
-				delete payload.uid;
-				delete payload.returnTo;
+			Object.keys(payload).forEach((prop) => {
+				if (typeof payload[prop] === 'boolean') {
+					payload[prop] = payload[prop] ? 1 : 0;
+				}
+			});
 
-				Object.keys(payload).forEach((prop) => {
-					if (typeof payload[prop] === 'boolean') {
-						payload[prop] = payload[prop] ? 1 : 0;
-					}
-				});
-
-				await user.setUserFields(uid, payload);
-				done();
-			}
-		});
+			await user.setUserFields(uid, payload);
+			done();
+		}
 	});
 };
 
