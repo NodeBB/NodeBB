@@ -83,6 +83,7 @@ groupsController.getCSV = async function (req, res) {
 		type: 'getGroupCSV',
 		uid: req.uid,
 		ip: req.ip,
+		group: req.params.groupname,
 	});
 	const groupName = req.params.groupname;
 	const members = (await groups.getMembersOfGroups([groupName]))[0];
