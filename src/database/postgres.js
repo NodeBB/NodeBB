@@ -45,32 +45,21 @@ postgresModule.questions = [
 	},
 ];
 
-postgresModule.init = function (callback) {
-	callback = callback || function () { };
-
+postgresModule.init = async function () {
 	const Pool = require('pg').Pool;
-
 	const connOptions = connection.getConnectionOptions();
-
-	const db = new Pool(connOptions);
-
-	db.connect(function (err, client, release) {
-		if (err) {
-			winston.error('NodeBB could not connect to your PostgreSQL database. PostgreSQL returned the following error: ' + err.message);
-			return callback(err);
-		}
-
-		postgresModule.pool = db;
-		postgresModule.client = db;
-
-		checkUpgrade(client).then(function () {
-			release();
-			callback(null);
-		}, function (err) {
-			release();
-			callback(err);
-		});
-	});
+	const pool = new Pool(connOptions);
+	postgresModule.pool = pool;
+	postgresModule.client = pool;
+	const client = await pool.connect();
+	try {
+		await checkUpgrade(client);
+	} catch (err) {
+		winston.error('NodeBB could not connect to your PostgreSQL database. PostgreSQL returned the following error: ' + err.message);
+		throw err;
+	} finally {
+		client.release();
+	}
 };
 
 
@@ -300,27 +289,25 @@ PARALLEL SAFE`);
 	await client.query(`COMMIT`);
 }
 
-postgresModule.createSessionStore = function (options, callback) {
-	var meta = require('../meta');
+postgresModule.createSessionStore = async function (options) {
+	const meta = require('../meta');
 
 	function done(db) {
 		const sessionStore = require('connect-pg-simple')(session);
-		const store = new sessionStore({
+		return new sessionStore({
 			pool: db,
 			ttl: meta.getSessionTTLSeconds(),
 			pruneSessionInterval: nconf.get('isPrimary') ? 60 : false,
 		});
-		callback(null, store);
 	}
 
-	connection.connect(options, function (err, db) {
-		if (err) {
-			return callback(err);
-		}
-		if (!nconf.get('isPrimary')) {
-			return done(db);
-		}
-		db.query(`
+	const db = await connection.connect(options);
+
+	if (!nconf.get('isPrimary')) {
+		return done(db);
+	}
+
+	await db.query(`
 CREATE TABLE IF NOT EXISTS "session" (
 	"sid" CHAR(32) NOT NULL
 		COLLATE "C"
@@ -333,14 +320,9 @@ CREATE INDEX IF NOT EXISTS "session_expire_idx" ON "session"("expire");
 
 ALTER TABLE "session"
 	ALTER "sid" SET STORAGE MAIN,
-	CLUSTER ON "session_expire_idx";`, function (err) {
-			if (err) {
-				return callback(err);
-			}
+	CLUSTER ON "session_expire_idx";`);
 
-			done(db);
-		});
-	});
+	return done(db);
 };
 
 postgresModule.createIndices = function (callback) {
@@ -378,32 +360,21 @@ postgresModule.checkCompatibilityVersion = function (version, callback) {
 	callback();
 };
 
-postgresModule.info = function (db, callback) {
-	async.waterfall([
-		function (next) {
-			if (db) {
-				setImmediate(next, null, db);
-			} else {
-				connection.connect(nconf.get('postgres'), next);
-			}
-		},
-		function (db, next) {
-			postgresModule.pool = postgresModule.pool || db;
-
-			db.query(`
-			SELECT true "postgres",
-				   current_setting('server_version') "version",
-				   EXTRACT(EPOCH FROM NOW() - pg_postmaster_start_time()) * 1000 "uptime"`, next);
-		},
-		function (res, next) {
-			next(null, res.rows[0]);
-		},
-	], callback);
+postgresModule.info = async function (db) {
+	if (!db) {
+		db = await connection.connect(nconf.get('postgres'));
+	}
+	postgresModule.pool = postgresModule.pool || db;
+	const res = await db.query(`
+		SELECT true "postgres",
+		   current_setting('server_version') "version",
+		   EXTRACT(EPOCH FROM NOW() - pg_postmaster_start_time()) * 1000 "uptime"`
+	);
+	return res.rows[0];
 };
 
-postgresModule.close = function (callback) {
-	callback = callback || function () {};
-	postgresModule.pool.end(callback);
+postgresModule.close = async function () {
+	await postgresModule.pool.end();
 };
 
 require('./postgres/main')(postgresModule);
