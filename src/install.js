@@ -165,7 +165,9 @@ async function completeConfigSetup(config) {
 	nconf.overrides(config);
 	const db = require('./database');
 	await db.init();
-	await db.createIndices();
+	if (db.hasOwnProperty('createIndices')) {
+		await db.createIndices();
+	}
 
 	// Sanity-check/fix url/port
 	if (!/^http(?:s)?:\/\//.test(config.url)) {
