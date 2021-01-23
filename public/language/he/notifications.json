@@ -63,7 +63,7 @@
     "notificationType_new-chat": "כשאתה מקבל הודעת צאט",
     "notificationType_new-group-chat": "כשאתה מקבל הודעת צ'אט קבוצתית",
     "notificationType_group-invite": "כשאתה מקבל הזמנה מקבוצה",
-    "notificationType_group-leave": "When a user leaves your group",
+    "notificationType_group-leave": "כאשר משתמש עוזב את הקבוצה שלך",
     "notificationType_group-request-membership": "כשמישהו מבקש להירשם לקבוצה שאתה מנהל",
     "notificationType_new-register": "כאשר מישהו מתווסף לתור הרישום",
     "notificationType_post-queue": "כשהודעה חדשה נכנסת לתור",
