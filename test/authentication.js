@@ -357,7 +357,7 @@ describe('authentication', function () {
 			meta.config.registrationType = 'normal';
 			assert.ifError(err);
 			assert.equal(response.statusCode, 400);
-			assert.equal(body, '[[error:invalid-data]]');
+			assert.equal(body, '[[register:invite.error-invite-only]]');
 			done();
 		});
 	});
