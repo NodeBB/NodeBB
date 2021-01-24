@@ -98,7 +98,9 @@ modsController.flags.list = async function (req, res, next) {
 	hasFilter = hasFilter || !!sort;
 
 	// Save filters and sorting into session unless removed
-	req.session.flags_filters = filters;
+	if (hasFilter) {
+		req.session.flags_filters = filters;
+	}
 	req.session.flags_sort = sort;
 
 	const [flagsData, analyticsData, categoriesData] = await Promise.all([
