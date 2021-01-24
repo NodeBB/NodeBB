@@ -152,7 +152,7 @@ Controllers.register = async function (req, res, next) {
 			try {
 				await user.verifyInvitation(req.query);
 			} catch (e) {
-				res.render('400', {
+				return res.render('400', {
 					error: e.message,
 				});
 			}
