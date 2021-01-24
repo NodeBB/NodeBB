@@ -2205,14 +2205,14 @@ describe('User', function () {
 
 			it('should fail to verify invitation with invalid data', function (done) {
 				User.verifyInvitation({ token: '', email: '' }, function (err) {
-					assert.equal(err.message, '[[error:invalid-data]]');
+					assert.strictEqual(err.message, '[[register:invite.error-invite-only]]');
 					done();
 				});
 			});
 
 			it('should fail to verify invitation with invalid email', function (done) {
 				User.verifyInvitation({ token: 'test', email: 'doesnotexist@test.com' }, function (err) {
-					assert.equal(err.message, '[[error:invalid-token]]');
+					assert.strictEqual(err.message, '[[register:invite.error-invalid-data]]');
 					done();
 				});
 			});
