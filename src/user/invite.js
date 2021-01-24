@@ -58,11 +58,15 @@ module.exports = function (User) {
 
 	User.verifyInvitation = async function (query) {
 		if (!query.token || !query.email) {
-			throw new Error('[[error:invalid-data]]');
+			if (meta.config.registrationType.startsWith('admin-')) {
+				throw new Error('[[register:invite.error-admin-only]]');
+			} else {
+				throw new Error('[[register:invite.error-invite-only]]');
+			}
 		}
 		const token = await db.getObjectField('invitation:email:' + query.email, 'token');
 		if (!token || token !== query.token) {
-			throw new Error('[[error:invalid-token]]');
+			throw new Error('[[register:invite.error-invalid-data]]');
 		}
 	};
 

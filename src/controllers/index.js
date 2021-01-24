@@ -149,7 +149,13 @@ Controllers.register = async function (req, res, next) {
 	}
 	try {
 		if (registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
-			await user.verifyInvitation(req.query);
+			try {
+				await user.verifyInvitation(req.query);
+			} catch (e) {
+				res.render('400', {
+					error: e.message,
+				});
+			}
 		}
 
 		const loginStrategies = require('../routes/authentication').getLoginStrategies();
