@@ -52,7 +52,7 @@
 	"active-users.users": "Users",
 	"active-users.guests": "Guests",
 	"active-users.total": "Total",
-	"active-users.connections": "Connections",
+	"active-users.connections": "Kết nối",
 
 	"anonymous-registered-users": "Anonymous vs Registered Users",
 	"anonymous": "Anonymous",
@@ -74,6 +74,6 @@
 	"graphs.unique-visitors": "Unique Visitors",
 	"graphs.registered-users": "Registered Users",
 	"graphs.anonymous-users": "Anonymous Users",
-	"last-restarted-by": "Last restarted by",
+	"last-restarted-by": "Khởi động lại lần cuối bởi",
 	"no-users-browsing": "No users browsing"
 }

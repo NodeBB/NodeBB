@@ -72,7 +72,7 @@
 	"alert.copy-success": "Settings Copied!",
 	"alert.set-parent-category": "Set Parent Category",
 	"alert.updated": "Updated Categories",
-	"alert.updated-success": "Category IDs %1 successfully updated.",
+	"alert.updated-success": "IDs Chuyên mục %1 đã cập nhật thành công.",
 	"alert.upload-image": "Upload category image",
 	"alert.find-user": "Find a User",
 	"alert.user-search": "Search for a user here...",

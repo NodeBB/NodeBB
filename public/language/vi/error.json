@@ -28,7 +28,7 @@
     "username-taken": "Tên đăng nhập đã tồn tại",
     "email-taken": "Email đã được đăng kí",
     "email-invited": "Email was already invited",
-    "email-not-confirmed": "You are unable to post until your email is confirmed, please click here to confirm your email.",
+    "email-not-confirmed": "Bạn không thể đăng bài cho đến khi email của bạn được xác nhận, vui lòng nhấp vào đây để xác nhận email của bạn.",
     "email-not-confirmed-chat": "Bạn không được quyền chat nếu email của bạn chưa được xác nhận, vui lòng click vào đây để xác nhận email của bạn.",
     "email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email. You won't be able to post or chat until your email is confirmed.",
     "no-email-to-confirm": "Diễn đàn này yêu cầu xác nhận email, vui lòng nhấn vào đây để nhập email.",

@@ -2,7 +2,7 @@
     "register": "Đăng ký",
     "cancel_registration": "Hủy đăng ký",
     "help.email": "Theo mặc định, Email của bạn sẽ được ẩn và public sẽ không thấy được",
-    "help.username_restrictions": "Một tên truy cập duy nhất có từ %1 đến %2 ký tự. Những người khác có thể nhắc đến bạn bằng @<span id='yourUsername'>tên truy cập</span>.",
+    "help.username_restrictions": "Một tên đăng nhập duy nhất giữa %1 và %2 ký tự. Người khác có thể nhắc đến bạn với @<span id='yourUsername'>tên đăng nhập</span>.",
     "help.minimum_password_length": "Mật khẩu của bạn phải có ít nhất %1 ký tự",
     "email_address": "Địa chỉ Email",
     "email_address_placeholder": "Nhập địa chỉ Email",

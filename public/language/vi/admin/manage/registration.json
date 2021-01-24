@@ -11,7 +11,7 @@
 	"list.ip-spam": "Frequency: %1 Appears: %2",
 
 	"invitations": "Invitations",
-	"invitations.description": "Below is a complete list of invitations sent. Use ctrl-f to search through the list by email or username. <br><br>The username will be displayed to the right of the emails for users who have redeemed their invitations.",
+	"invitations.description": "Dưới đây là danh sách hoàn tất các lời mời đã gửi. Bấm ctrl-f để tìm kiếm trong danh sách bằng email hoặc tên đăng nhập. <br><br>Tên đăng nhập sẽ được hiển thị bên phải email cho những người dùng đã đổi lời mời của họ.",
 	"invitations.inviter-username": "Inviter Username",
 	"invitations.invitee-email": "Invitee Email",
 	"invitations.invitee-username": "Invitee Username (if registered)",
