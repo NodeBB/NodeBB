@@ -249,12 +249,17 @@ module.exports = function (middleware) {
 		res.status(403).render('403', { title: '[[global:403.title]]' });
 	};
 
-	middleware.registrationComplete = function registrationComplete(req, res, next) {
+	middleware.registrationComplete = async function registrationComplete(req, res, next) {
 		// If the user's session contains registration data, redirect the user to complete registration
 		if (!req.session.hasOwnProperty('registration')) {
 			return setImmediate(next);
 		}
-		if (!req.path.endsWith('/register/complete')) {
+
+		const path = req.path.startsWith('/api/') ? req.path.replace('/api', '') : req.path;
+		const { allowed } = await plugins.hooks.fire('filter:middleware.registrationComplete', {
+			allowed: ['/register/complete'],
+		});
+		if (!allowed.includes(path)) {
 			// Append user data if present
 			req.session.registration.uid = req.uid;
 
