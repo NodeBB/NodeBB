@@ -134,7 +134,6 @@ modsController.flags.detail = async function (req, res, next) {
 		moderatedCids: user.getModeratedCids(req.uid),
 		flagData: flags.get(req.params.flagId),
 		assignees: user.getAdminsandGlobalModsandModerators(),
-		categories: categories.buildForSelect(req.uid, 'read'),
 		privileges: Promise.all(['global', 'admin'].map(async type => privileges[type].get(req.uid))),
 	});
 	results.privileges = { ...results.privileges[0], ...results.privileges[1] };
@@ -144,12 +143,6 @@ modsController.flags.detail = async function (req, res, next) {
 	} else if (!(results.isAdminOrGlobalMod || !!results.moderatedCids.length)) {
 		return next(new Error('[[error:no-privileges]]'));
 	}
-
-	if (!results.isAdminOrGlobalMod && results.moderatedCids.length) {
-		res.locals.cids = results.moderatedCids;
-	}
-
-	results.categories = filterCategories(res.locals.cids, results.categories);
 
 	if (results.flagData.type === 'user') {
 		results.flagData.type_path = 'uid';
@@ -169,8 +162,6 @@ modsController.flags.detail = async function (req, res, next) {
 			return memo;
 		}, {}),
 		title: '[[pages:flag-details, ' + req.params.flagId + ']]',
-		categories: results.categories,
-		filters: req.session.flags_filters || {},
 		privileges: results.privileges,
 		breadcrumbs: helpers.buildBreadcrumbs([
 			{ text: '[[pages:flags]]', url: '/flags' },

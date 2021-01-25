@@ -205,17 +205,6 @@ get:
                         type: boolean
                   title:
                     type: string
-                  categories:
-                    type: object
-                    additionalProperties:
-                      type: string
-                  filters:
-                    type: object
-                    properties:
-                      page:
-                        type: number
-                      perPage:
-                        type: number
                   privileges:
                     type: object
                     properties: {}
