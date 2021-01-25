@@ -48,7 +48,7 @@
 
 	"section-extend": "Mở rộng",
 	"extend/plugins": "Plugins",
-	"extend/widgets": "Widgets",
+	"extend/widgets": "Tiện ích",
 	"extend/rewards": "Phần thưởng",
 
 	"section-social-auth": "Xác thực xã hội",
@@ -67,7 +67,7 @@
 	"development/info": "Thông tin",
 
 	"rebuild-and-restart-forum": "Xây dựng lại & Khởi động lại diễn đàn",
-	"restart-forum": "Khởi động lại diễn đàn",
+	"restart-forum": "Khởi Động Lại Diễn Đàn",
 	"logout": "Đăng xuất",
 	"view-forum": "Xem diễn đàn",
 

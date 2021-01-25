@@ -18,11 +18,11 @@
     "users/latest": "Thành viên mới nhất",
     "users/sort-posts": "Thành viên có nhiều bài đăng nhất",
     "users/sort-reputation": "Thành viên có điểm tín nhiệm cao nhất",
-    "users/banned": "Thành viên đã bị cấm",
+    "users/banned": "Người dùng bị cấm",
     "users/most-flags": "Những thành viên bị gắn cờ nhiều nhất",
     "users/search": "Tìm kiếm thành viên",
     "notifications": "Thông báo",
-    "tags": "Tag",
+    "tags": "Thẻ",
     "tag": "Các chủ đề được gắn thẻ bên dưới &quot;%1&quot;",
     "register": "Đăng ký một tài khoản mới",
     "registration-complete": "Đăng ký hoàn tất",
@@ -58,7 +58,7 @@
     "account/uploads": "Tải lên bởi %1",
     "account/sessions": "Phiên Đăng Nhập",
     "confirm": "Đã xác nhận email",
-    "maintenance.text": "%1 đang được bảo trì. Xin vui lòng quay lại sau.",
-    "maintenance.messageIntro": "Ban quản lí để lại lời nhắn sau:",
-    "throttled.text": "%1 hiện đang bị quá tải. Vui lòng quay lại sau."
+    "maintenance.text": "%1 hiện đang được bảo trì. Vui lòng quay lại lúc khác.",
+    "maintenance.messageIntro": "Ngoài ra, quản trị viên đã để lại thông báo này:",
+    "throttled.text": "%1 hiện không khả dụng do quá tải. Vui lòng quay lại vào lúc khác."
 }

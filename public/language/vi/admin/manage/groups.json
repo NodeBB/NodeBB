@@ -13,7 +13,7 @@
 	"download-csv": "CSV",
 	"search-placeholder": "Search",
 	"create": "Create Group",
-	"description-placeholder": "A short description about your group",
+	"description-placeholder": "Mô tả ngắn gọn về nhóm của bạn",
 	"create-button": "Create",
 
 	"alerts.create-failure": "<strong>Uh-Oh</strong><p>There was a problem creating your group. Please try again later!</p>",

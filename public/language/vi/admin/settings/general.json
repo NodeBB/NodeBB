@@ -12,7 +12,7 @@
 	"browser-title-help": "If no browser title is specified, the site title will be used",
 	"title-layout": "Title Layout",
 	"title-layout-help": "Define how the browser title will be structured ie. &#123;pageTitle&#125; | &#123;browserTitle&#125;",
-	"description.placeholder": "A short description about your community",
+	"description.placeholder": "Mô tả ngắn gọn về cộng đồng của bạn",
 	"description": "Site Description",
 	"keywords": "Site Keywords",
 	"keywords-placeholder": "Keywords describing your community, comma-separated",

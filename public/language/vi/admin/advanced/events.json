@@ -1,7 +1,7 @@
 {
-	"events": "Events",
-	"no-events": "There are no events",
-	"control-panel": "Events Control Panel",
+	"events": "Sự kiện",
+	"no-events": "Không có sự kiện",
+	"control-panel": "Bảng Điều Khiển Sự Kiện",
 	"delete-events": "Delete Events",
 	"filters": "Filters",
 	"filters-apply": "Apply Filters",

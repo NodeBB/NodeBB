@@ -1,8 +1,8 @@
 {
-	"maintenance-mode": "Chế độ bảo trì",
-	"maintenance-mode.help": "Khi diễn đàn ở chế độ bảo trì, tất cả các yêu cầu sẽ được chuyển hướng đến một trang giữ tĩnh. Quản trị viên được miễn chuyển hướng này và có thể truy cập trang web bình thường.",
-	"maintenance-mode.status": "Mã trạng thái chế độ bảo trì",
-	"maintenance-mode.message": "Thông điệp bảo trì",
+	"maintenance-mode": "Chế Độ Bảo Trì",
+	"maintenance-mode.help": "Khi diễn đàn ở chế độ bảo trì, tất cả các yêu cầu sẽ được chuyển hướng đến một trang giữ tĩnh. Quản trị viên không bị chuyển hướng này và có thể truy cập trang bình thường.",
+	"maintenance-mode.status": "Mã Trạng Thái Chế Độ Bảo Trì",
+	"maintenance-mode.message": "Thông Báo Bảo Trì",
 	"headers": "Headers",
 	"headers.allow-from": "Đặt ALLOW-FROM để đặt NodeBB trong iFrame",
 	"headers.csp-frame-ancestors": "Set Content-Security-Policy frame-ancestors header to Place NodeBB in an iFrame",
@@ -25,9 +25,9 @@
 	"traffic.help": "NodeBB uses a module that automatically denies requests in high-traffic situations. You can tune these settings here, although the defaults are a good starting point.",
 	"traffic.enable": "Bật quản lý lưu lượng",
 	"traffic.event-lag": "Event Loop Lag Threshold (in milliseconds)",
-	"traffic.event-lag-help": "Lowering this value decreases wait times for page loads, but will also show the \"excessive load\" message to more users. (Restart required)",
+	"traffic.event-lag-help": "Giảm giá trị này sẽ giảm thời gian chờ tải trang, nhưng cũng sẽ hiển thị thông báo \"tải quá mức\" cho nhiều người dùng hơn. (Yêu cầu khởi động lại)",
 	"traffic.lag-check-interval": "Check Interval (in milliseconds)",
-	"traffic.lag-check-interval-help": "Lowering this value causes NodeBB to become more sensitive to spikes in load, but may also cause the check to become too sensitive. (Restart required)",
+	"traffic.lag-check-interval-help": "Việc hạ thấp giá trị này khiến NodeBB trở nên nhạy cảm hơn với tải đột biến, nhưng cũng có thể khiến kiểm tra trở nên quá nhạy. (Yêu cầu khởi động lại)",
 
 	"sockets.settings": "WebSocket Settings",
 	"sockets.max-attempts": "Max Reconnection Attempts",
@@ -36,7 +36,7 @@
 
 	"analytics.settings": "Analytics Settings",
 	"analytics.max-cache": "Analytics Cache Max Value",
-	"analytics.max-cache-help": "On high-traffic installs, the cache could be exhausted continuously if there are more concurrent active users than the Max Cache value. (Restart required)",
+	"analytics.max-cache-help": "Cài đặt khi có lưu lượng truy cập cao, bộ nhớ đệm có thể bị cạn liên tục nếu có nhiều người dùng hoạt động đồng thời hơn giá trị Bộ Nhớ Đệm tối đa. (Bắt buộc khởi động lại)",
 	"compression.settings": "Compression Settings",
 	"compression.enable": "Enable Compression",
 	"compression.help": "This setting enables gzip compression. For a high-traffic website in production, the best way to put compression in place is to implement it at a reverse proxy level. You can enable it here for testing purposes."

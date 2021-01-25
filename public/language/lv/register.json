@@ -24,5 +24,8 @@
     "interstitial.errors-found": "Mēs nevarējām pabeigt Tavu reģistrāciju:",
     "gdpr_agree_data": "Es piekrītu manas personas informācijas vākšanai un apstrādei šajā vietnē.",
     "gdpr_agree_email": "Es piekrītu saņemt sakopojumu un paziņojumu e-pastus no šīs vietnes.",
-    "gdpr_consent_denied": "Tev ir jādod piekrišana šai vietnei, lai savāktu / apstrādātu Tavu informāciju un nosūtītu Tev e-pastus."
+    "gdpr_consent_denied": "Tev ir jādod piekrišana šai vietnei, lai savāktu / apstrādātu Tavu informāciju un nosūtītu Tev e-pastus.",
+    "invite.error-admin-only": "Direct user registration has been disabled. Please contact an administrator for more details.",
+    "invite.error-invite-only": "Direct user registration has been disabled. You must be invited by an existing user in order to access this forum.",
+    "invite.error-invalid-data": "The registration data received does not correspond to our records. Please contact an administrator for more details"
 }

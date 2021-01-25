@@ -1,12 +1,12 @@
 {
-	"logger-settings": "Logger Settings",
-	"description": "By enabling the check boxes, you will receive logs to your terminal. If you specify a path, logs will then be saved to a file instead. HTTP logging is useful for collecting statistics about who, when, and what people access on your forum. In addition to logging HTTP requests, we can also log socket.io events. Socket.io logging, in combination with redis-cli monitor, can be very helpful for learning NodeBB's internals.",
-	"explanation": "Simply check/uncheck the logging settings to enable or disable logging on the fly. No restart needed.",
-	"enable-http": "Enable HTTP logging",
-	"enable-socket": "Enable socket.io event logging",
-	"file-path": "Path to log file",
-	"file-path-placeholder": "/path/to/log/file.log ::: leave blank to log to your terminal",
+	"logger-settings": "Cài Đặt Trình Ghi Nhật Ký",
+	"description": "Khi bật lựa chọn này, bạn sẽ nhận nhật ký ở công cụ dòng lệnh của bạn. Nếu bạn chỉ định một đường dẫn, nhật ký sẽ được lưu vào một tệp thay thế. Ghi nhật ký HTTP hữu ích để thu thập số liệu thống kê về ai, khi nào và những gì mọi người truy cập trên diễn đàn của bạn. Ngoài việc ghi nhật ký các yêu cầu HTTP, chúng tôi cũng có thể ghi nhật ký các sự kiện socket.io. Ghi nhật ký Socket.io, kết hợp với màn hình redis-cli, có thể rất hữu ích cho việc tìm hiểu nội bộ của NodeBB.",
+	"explanation": "Chỉ cần chọn/bỏ chọn cài đặt ghi nhật ký để bật hoặc tắt ghi nhật ký một cách nhanh chóng. Không cần khởi động lại.",
+	"enable-http": "Bật ghi nhật ký HTTP",
+	"enable-socket": "Bật ghi nhật ký sự kiện socket.io",
+	"file-path": "Đường dẫn đến tệp nhật ký",
+	"file-path-placeholder": "/path/to/log/file.log ::: để trống để hiện nhật ký trên cửa sổ dòng lệnh",
 
-	"control-panel": "Logger Control Panel",
-	"update-settings": "Update Logger Settings"
+	"control-panel": "Bảng Điều Khiển Trình Ghi Nhật Ký",
+	"update-settings": "Cập Nhật Cài Đặt Trình Ghi Nhật Ký"
 }

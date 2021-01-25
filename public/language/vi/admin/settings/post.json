@@ -31,7 +31,7 @@
 	"restrictions.stale-help": "If a topic is considered \"stale\", then a warning will be shown to users who attempt to reply to that topic.",
 	"timestamp": "Timestamp",
 	"timestamp.cut-off": "Date cut-off (in days)",
-	"timestamp.cut-off-help": "Dates &amp; times will be shown in a relative manner (e.g. \"3 hours ago\" / \"5 days ago\"), and localised into various\n\t\t\t\t\tlanguages. After a certain point, this text can be switched to display the localised date itself\n\t\t\t\t\t(e.g. 5 Nov 2016 15:30).<br /><em>(Default: <code>30</code>, or one month). Set to 0 to always display dates, leave blank to always display relative times.</em>",
+	"timestamp.cut-off-help": "Ngày tháng &amp; thời gian sẽ được hiển thị một cách tương đối (VD: \"3 giờ trước\" / \"5 ngày trước\"), và bản địa hóa thành nhiều\n\t\t\t\t\tngôn ngữ. Sau một thời điểm nhất định, dòng chữ này có thể được chuyển sang hiển thị ngày được bản địa hóa\n\t\t\t\t\t(VD: 5 Tháng 11, 2016 15:30).<br /><em>(Mặc định: <code>30</code>, hoặc một tháng). Đặt là 0 để luôn hiển thị ngày tháng, để trống để luôn hiển thị thời gian tương đối.</em>",
 	"timestamp.necro-threshold": "Necro Threshold (in days)",
 	"timestamp.necro-threshold-help": "A message will be shown between posts if the time between them is longer than the necro threshold. (Default: <code>7</code>, or one week). Set to 0 to disable.</em>",
 	"timestamp.topic-views-interval": "Increment topic views interval (in minutes)",

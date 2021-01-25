@@ -9,7 +9,7 @@
 	"downvotes-per-user-per-day": "Downvotes per user per day (set to 0 for unlimited downvotes)",
 	"min-rep-flag": "Minimum reputation to flag posts",
 	"min-rep-website": "Minimum reputation to add \"Website\" to user profile",
-	"min-rep-aboutme": "Minimum reputation to add \"About me\" to user profile",
+	"min-rep-aboutme": "Uy tín tối thiểu để thêm \"Giới thiệu bản thân\" vào hồ sơ người dùng",
 	"min-rep-signature": "Minimum reputation to add \"Signature\" to user profile",
 	"min-rep-profile-picture": "Minimum reputation to add \"Profile Picture\" to user profile",
 	"min-rep-cover-picture": "Minimum reputation to add \"Cover Picture\" to user profile",

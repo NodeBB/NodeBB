@@ -24,5 +24,8 @@
     "interstitial.errors-found": "شما نمی‌توانید ثبت نام خود را تکمیل کنید:",
     "gdpr_agree_data": "من با جمع آوری و پرداز اطلاعات شخصی در این وبسایت موافقم.",
     "gdpr_agree_email": "من با دریافت ایمیل ها و خلاصه ها از این وبسایت موافقم.",
-    "gdpr_consent_denied": "شما باید رضایت خود را برای جمع آوری/پردازش اطلاعاتتان و دریافت ایمیل را اعلام کنید."
+    "gdpr_consent_denied": "شما باید رضایت خود را برای جمع آوری/پردازش اطلاعاتتان و دریافت ایمیل را اعلام کنید.",
+    "invite.error-admin-only": "Direct user registration has been disabled. Please contact an administrator for more details.",
+    "invite.error-invite-only": "Direct user registration has been disabled. You must be invited by an existing user in order to access this forum.",
+    "invite.error-invalid-data": "The registration data received does not correspond to our records. Please contact an administrator for more details"
 }
