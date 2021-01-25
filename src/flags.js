@@ -39,7 +39,7 @@ Flags.init = async function () {
 			if (value.length === 1) {
 				sets.push(prefix + value[0]);
 			} else {
-				value.forEach(x => orSets.push(prefix + x));
+				orSets.push(value.map(x => prefix + x));
 			}
 		}
 	}
@@ -154,7 +154,12 @@ Flags.getFlagIdsWithFilters = async function ({ filters, uid }) {
 	}
 
 	if (orSets.length) {
-		const _flagIds = await db.getSortedSetRevUnion({ sets: orSets, start: 0, stop: -1, aggregate: 'MAX' });
+		let _flagIds = await Promise.all(orSets.map(async orSet => await db.getSortedSetRevUnion({ sets: orSet, start: 0, stop: -1, aggregate: 'MAX' })));
+
+		// Each individual orSet is ANDed together to construct the final list of flagIds
+		_flagIds = _.intersection(..._flagIds);
+
+		// Merge with flagIds returned by sets
 		if (sets.length) {
 			// If flag ids are already present, return a subset of flags that are in both sets
 			flagIds = _.intersection(flagIds, _flagIds);
