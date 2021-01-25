@@ -628,18 +628,20 @@ Flags.resolveFlag = async function (type, id, uid) {
 };
 
 Flags.resolveUserPostFlags = async function (uid, callerUid) {
-	await batch.processSortedSet('uid:' + uid + ':posts', async function (pids) {
-		let postData = await posts.getPostsFields(pids, ['pid', 'flagId']);
-		postData = postData.filter(p => p && p.flagId);
-		for (const postObj of postData) {
-			if (parseInt(postObj.flagId, 10)) {
-				// eslint-disable-next-line no-await-in-loop
-				await Flags.update(postObj.flagId, callerUid, { state: 'resolved' });
+	if (meta.config['flags:autoResolveOnBan']) {
+		await batch.processSortedSet('uid:' + uid + ':posts', async function (pids) {
+			let postData = await posts.getPostsFields(pids, ['pid', 'flagId']);
+			postData = postData.filter(p => p && p.flagId);
+			for (const postObj of postData) {
+				if (parseInt(postObj.flagId, 10)) {
+					// eslint-disable-next-line no-await-in-loop
+					await Flags.update(postObj.flagId, callerUid, { state: 'resolved' });
+				}
 			}
-		}
-	}, {
-		batch: 500,
-	});
+		}, {
+			batch: 500,
+		});
+	}
 };
 
 Flags.getHistory = async function (flagId) {
