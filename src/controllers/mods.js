@@ -48,7 +48,9 @@ modsController.flags.list = async function (req, res, next) {
 	filters = filters.reduce(function (memo, cur) {
 		if (req.query.hasOwnProperty(cur)) {
 			if (req.query[cur] === '') {
-				delete req.session.flags_filters[cur];
+				if (req.session.hasOwnProperty('flags_filters')) {
+					delete req.session.flags_filters[cur];
+				}
 			} else {
 				memo[cur] = req.query[cur];
 			}
