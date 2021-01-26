@@ -9,6 +9,7 @@ define('hooks', [], () => {
 		Hooks.loaded[hookName] = Hooks.loaded[hookName] || new Set();
 		Hooks.loaded[hookName].add(listener);
 	};
+	Hooks.on = Hooks.register;
 
 	Hooks.hasListeners = hookName => Hooks.loaded[hookName] && Hooks.loaded[hookName].length > 0;
 
@@ -19,6 +20,9 @@ define('hooks', [], () => {
 
 	const _fireActionHook = (hookName, data) => {
 		Hooks.loaded[hookName].forEach(listener => listener(data));
+
+		// Backwards compatibility (remove this when we eventually remove jQuery from NodeBB core)
+		$(window).trigger(hookName, data);
 	};
 
 	const _fireStaticHook = (hookName, data) => {
