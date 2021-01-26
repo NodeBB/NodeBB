@@ -52,7 +52,9 @@ ajaxify = window.ajaxify || {};
 
 		// If any listeners alter url and set it to an empty string, abort the ajaxification
 		if (url === null) {
-			$(window).trigger('action:ajaxify.end', { url: url, tpl_url: ajaxify.data.template.name, title: ajaxify.data.title });
+			require(['hooks'], function (hooks) {
+				hooks.fire('action:ajaxify.end', { url: url, tpl_url: ajaxify.data.template.name, title: ajaxify.data.title });
+			});
 			return false;
 		}
 
@@ -281,7 +283,9 @@ ajaxify = window.ajaxify || {};
 			window.scrollTo(0, 0);
 		}
 		ajaxify.loadScript(tpl_url, function done() {
-			$(window).trigger('action:ajaxify.end', { url: url, tpl_url: tpl_url, title: ajaxify.data.title });
+			require(['hooks'], function (hooks) {
+				hooks.fire('action:ajaxify.end', { url: url, tpl_url: tpl_url, title: ajaxify.data.title });
+			});
 		});
 		ajaxify.widgets.render(tpl_url);
 
