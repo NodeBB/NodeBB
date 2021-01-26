@@ -64,6 +64,7 @@ JS.scripts = {
 
 		'public/src/modules/translator.js',
 		'public/src/modules/components.js',
+		'public/src/modules/hooks.js',
 		'public/src/modules/sort.js',
 		'public/src/modules/navigator.js',
 		'public/src/modules/topicSelect.js',
