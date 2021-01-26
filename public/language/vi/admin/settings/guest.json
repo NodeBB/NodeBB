@@ -1,7 +1,7 @@
 {
 	"settings": "Settings",
 	"handles.enabled": "Allow guest handles",
-	"handles.enabled-help": "This option exposes a new field that allows guests to pick a name to associate with each post they make. If disabled, they will simply be called \"Guest\"",
+	"handles.enabled-help": "Tùy chọn này hiển thị một trường mới cho phép khách chọn tên để liên kết với mỗi bài đăng mà họ thực hiện. Nếu bị tắt, họ sẽ chỉ được gọi là \"Khách\"",
 	"topic-views.enabled": "Allow guests to increase topic view counts",
-	"reply-notifications.enabled": "Allow guests to generate reply notifications"
+	"reply-notifications.enabled": "Cho phép khách tạo thông báo trả lời"
 }

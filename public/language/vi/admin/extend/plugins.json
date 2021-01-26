@@ -20,9 +20,9 @@
 	"order.explanation": "Các plugin tải theo thứ tự được chỉ định ở đây, từ trên xuống dưới",
 
 	"plugin-item.themes": "Giao diện",
-	"plugin-item.deactivate": "Hủy kích hoạt",
+	"plugin-item.deactivate": "Vô Hiệu",
 	"plugin-item.activate": "Kích hoạt",
-	"plugin-item.install": "Install",
+	"plugin-item.install": "Cài đặt",
 	"plugin-item.uninstall": "Gỡ cài đặt",
 	"plugin-item.settings": "Cài đặt",
 	"plugin-item.installed": "Đã Cài Đặt",
@@ -31,8 +31,8 @@
 	"plugin-item.more-info": "Để biết thêm thông tin:",
 	"plugin-item.unknown": "Không Xác Định",
 	"plugin-item.unknown-explanation": "Không thể xác định trạng thái của plugin này, có thể do lỗi định cấu hình sai.",
-	"plugin-item.compatible": "This plugin works on NodeBB %1",
-	"plugin-item.not-compatible": "This plugin has no compatibility data, make sure it works before installing on your production environment.",
+	"plugin-item.compatible": "Plugin này hoạt động trên NodeBB %1",
+	"plugin-item.not-compatible": "Plugin này không có dữ liệu tương thích, hãy đảm bảo rằng nó hoạt động trước khi cài đặt trên môi trường sản phẩm của bạn.",
 
 	"alert.enabled": "Đã Bật Plugin",
 	"alert.disabled": "Plugin Đã Tắt",
@@ -48,10 +48,10 @@
 	"alert.package-manager-unreachable": "<p>NodeBB không thể tiếp cận trình quản lý gói, bản nâng cấp không được đề xuất vào lúc này.</p>",
 	"alert.incompatible": "<p>Phiên bản NodeBB (v%1) của bạn chỉ được xóa để nâng cấp lên v%2 của plugin này. Vui lòng cập nhật NodeBB của bạn nếu muốn cài đặt phiên bản mới hơn của plugin này.</p>",
 	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>Không Có Thông Tin Tương Thích</strong></p><p>Plugin này không đưa ra một phiên bản cụ thể để cài đặt với phiên bản NodeBB của bạn. Không đảm bảo khả năng tương thích hoàn toàn và có thể khiến NodeBB của bạn không hoạt động bình thường.</p></div><p>Trường hợp NodeBB không thể hoạt động đúng:</p><pre><code>$ ./nodebb reset plugin=\"%1\"</code></pre><p>Tiếp tục cài đặt phiên bản mới nhất của plugin này?</p>",
-	"alert.reorder": "Plugins Re-ordered",
+	"alert.reorder": "Các Plugin Đã Được Sắp Xếp Lại",
 	"alert.reorder-success": "Vui lòng xây dựng lại và khởi động lại NodeBB của bạn để hoàn tất quá trình.",
 
-	"license.title": "Plugin License Information",
-	"license.intro": "The plugin <strong>%1</strong> is licensed under the %2. Please read and understand the license terms prior to activating this plugin.",
-	"license.cta": "Do you wish to continue with activating this plugin?"
+	"license.title": "Thông Tin Cấp Phép Plugin",
+	"license.intro": "Plugin <strong>%1</strong> được cấp phép theo %2. Vui lòng đọc và hiểu các điều khoản cấp phép trước khi kích hoạt plugin này.",
+	"license.cta": "Bạn có muốn tiếp tục kích hoạt plugin này không?"
 }

@@ -37,7 +37,7 @@
 	"restart-required": "Yêu cầu khởi động lại",
 	"search-plugin-installed": "Plugin Tìm Kiếm đã được cài đặt",
 	"search-plugin-not-installed": "Plugin Tìm Kiếm chưa được cài đặt",
-	"search-plugin-tooltip": "Install a search plugin from the plugin page in order to activate search functionality",
+	"search-plugin-tooltip": "Cài đặt một plugin tìm kiếm từ trang plugin để kích hoạt chức năng tìm kiếm",
 
 	"control-panel": "Điều khiển hệ thống",
 	"rebuild-and-restart": "Xây Dựng Lại &amp; Khởi Động Lại",
@@ -60,7 +60,7 @@
 
 	"user-presence": "User Presence",
 	"on-categories": "On categories list",
-	"reading-posts": "Reading posts",
+	"reading-posts": "Đọc bài viết",
 	"browsing-topics": "Browsing topics",
 	"recent": "Recent",
 	"unread": "Unread",

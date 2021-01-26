@@ -1,7 +1,7 @@
 {
 	"rewards": "Phần thưởng",
-	"condition-if-users": "If User's",
-	"condition-is": "Is:",
+	"condition-if-users": "Nếu Người Dùng",
+	"condition-is": "Là:",
 	"condition-then": "Sau đó:",
 	"max-claims": "Số lần nhận thưởng có thể nhận được",
 	"zero-infinite": "Nhập 0 cho vô hạn",

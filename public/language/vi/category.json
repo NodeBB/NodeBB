@@ -7,9 +7,9 @@
     "browsing": "đang xem",
     "no_replies": "Chưa có bình luận nào",
     "no_new_posts": "Không có bài mới.",
-    "watch": "Quan tâm",
+    "watch": "Xem",
     "ignore": "Bỏ qua",
-    "watching": "Đang quan tâm",
+    "watching": "Đang xem",
     "not-watching": "Không xem",
     "ignoring": "Bỏ qua",
     "watching.description": "Hiển thị chủ đề chưa đọc và gần đây",
@@ -18,5 +18,5 @@
     "watching.message": "Bây giờ bạn đang xem cập nhật từ danh mục này và tất cả các danh mục phụ",
     "notwatching.message": "Bạn không xem cập nhật từ danh mục này và tất cả các danh mục phụ",
     "ignoring.message": "Bây giờ bạn đang bỏ qua các cập nhật từ danh mục này và tất cả các danh mục phụ",
-    "watched-categories": "Các chuyên mục đã quan tâm"
+    "watched-categories": "Chuyên mục đã xem"
 }

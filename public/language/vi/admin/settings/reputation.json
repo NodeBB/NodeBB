@@ -1,20 +1,22 @@
 {
-	"reputation": "Reputation Settings",
-	"disable": "Disable Reputation System",
+	"reputation": "Cài Đặt Đánh Giá Uy Tín",
+	"disable": "Tắt Hệ Thống Đánh Giá Uy Tín",
 	"disable-down-voting": "Disable Down Voting",
 	"votes-are-public": "All Votes Are Public",
 	"thresholds": "Activity Thresholds",
-	"min-rep-downvote": "Minimum reputation to downvote posts",
+	"min-rep-downvote": "Uy tín tối thiểu để phản đối bài đăng",
 	"downvotes-per-day": "Downvotes per day (set to 0 for unlimited downvotes)",
 	"downvotes-per-user-per-day": "Downvotes per user per day (set to 0 for unlimited downvotes)",
-	"min-rep-flag": "Minimum reputation to flag posts",
-	"min-rep-website": "Minimum reputation to add \"Website\" to user profile",
+	"min-rep-flag": "Uy tín tối thiểu để gắn cờ bài đăng",
+	"min-rep-website": "Uy tín tối thiểu để thêm \"Trang web\" vào hồ sơ người dùng",
 	"min-rep-aboutme": "Uy tín tối thiểu để thêm \"Giới thiệu bản thân\" vào hồ sơ người dùng",
-	"min-rep-signature": "Minimum reputation to add \"Signature\" to user profile",
-	"min-rep-profile-picture": "Minimum reputation to add \"Profile Picture\" to user profile",
-	"min-rep-cover-picture": "Minimum reputation to add \"Cover Picture\" to user profile",
+	"min-rep-signature": "Uy tín tối thiểu để thêm \"Chữ ký\" vào hồ sơ người dùng",
+	"min-rep-profile-picture": "Uy tín tối thiểu để thêm \"Ảnh hồ sơ\" vào hồ sơ người dùng",
+	"min-rep-cover-picture": "Uy tín tối thiểu để thêm \"Ảnh bìa\" vào hồ sơ người dùng",
 
 	"flags": "Flag Settings",
 	"flags.limit-per-target": "Maximum number of times something can be flagged",
-	"flags.limit-per-target-placeholder": "Default: 0"
+	"flags.limit-per-target-placeholder": "Default: 0",
+	"flags.limit-per-target-help": "When a post or user is flagged multiple times, each additional flag is considered a &quot;report&quot; and added to the original flag. Set this option to a number other than zero to limit the number of reports an item can receive.",
+	"flags.auto-resolve-on-ban": "Automatically resolve all of a user's tickets when they are banned"
 }

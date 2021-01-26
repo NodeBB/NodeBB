@@ -47,6 +47,6 @@
 	"redis.raw-info": "Thông Tin Gốc Của Redis",
 
 	"postgres": "Postgres",
-	"postgres.version": "PostgreSQL Version",
-	"postgres.raw-info": "Postgres Raw Info"
+	"postgres.version": "Phiên Bản PostgreSQL",
+	"postgres.raw-info": "Thông tin gốc của Postgres"
 }

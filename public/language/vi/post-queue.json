@@ -1,14 +1,14 @@
 
 {
-	"post-queue": "Post Queue",
-	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
+	"post-queue": "Hàng Đợi Bài Đăng",
+	"description": "Không có bài viết nào trong hàng đợi bài viết. <br> Để bật tính năng này, hãy truy cập <a href=\"%1\">Cài Đặt &rarr; Bài Đăng &rarr; Hàng Đợi Bài Đăng</a> và bật <strong>Hàng Đợi Bài Đăng</strong>.",
 	"user": "User",
 	"category": "Category",
 	"title": "Title",
-	"content": "Content",
+	"content": "Nội dung",
 	"posted": "Đã đăng",
 	"reply-to": "Reply to \"%1\"",
-	"content-editable": "Click on content to edit",
+	"content-editable": "Nhấp vào nội dung để chỉnh sửa",
 	"category-editable": "Click on category to edit",
 	"title-editable": "Click on title to edit",
 	"reply": "Reply",

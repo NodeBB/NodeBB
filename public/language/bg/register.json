@@ -25,7 +25,7 @@
     "gdpr_agree_data": "Съгласявам се това личната ми информация да се съхранява и обработва от този уеб сайт.",
     "gdpr_agree_email": "Съгласявам се да получавам е-писма с резюмета и известия от този уеб сайт.",
     "gdpr_consent_denied": "Трябва да се съгласите с това уеб сайтът да събира/обработва информацията Ви, и да Ви изпраща е-писма.",
-    "invite.error-admin-only": "Direct user registration has been disabled. Please contact an administrator for more details.",
-    "invite.error-invite-only": "Direct user registration has been disabled. You must be invited by an existing user in order to access this forum.",
-    "invite.error-invalid-data": "The registration data received does not correspond to our records. Please contact an administrator for more details"
+    "invite.error-admin-only": "Директното регистриране е изключено. Моля, свържете се с администратор за повече подробности.",
+    "invite.error-invite-only": "Директното регистриране е изключено. Трябва да получите покана от вече регистриран потребител, за да имате достъп до този форум.",
+    "invite.error-invalid-data": "Получените данни за регистрация не съответстват на нашите записи. Моля, свържете се с администратор за повече подробности."
 }
