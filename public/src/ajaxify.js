@@ -334,6 +334,7 @@ ajaxify = window.ajaxify || {};
 		});
 	};
 
+	// TODO: Deprecate in v1.18.0
 	ajaxify.loadExtraScripts = (tpl_url, callback) => {
 		var data = {
 			tpl_url: tpl_url,
