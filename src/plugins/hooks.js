@@ -10,7 +10,6 @@ module.exports = Hooks;
 
 Hooks.deprecatedHooks = {
 	'filter:privileges:isUserAllowedTo': 'filter:privileges:isAllowedTo',	// 👋 @ 1.17.0
-	'filter:admin/header.build': 'filter:middleware.renderAdminHeader',	// 👋 @ 1.17.0
 	'filter:router.page': 'response:router.page',	// 👋 @ 2.0.0
 };
 

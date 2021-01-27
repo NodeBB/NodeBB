@@ -78,8 +78,6 @@ middleware.renderHeader = async (req, res, data) => {
 
 	templateValues.template = { name: res.locals.template };
 	templateValues.template[res.locals.template] = true;
-	// remove @1.17.0
-	({ templateData: templateValues } = await plugins.hooks.fire('filter:admin/header.build', { req, res, templateData: templateValues }));
 	({ templateData: templateValues } = await plugins.hooks.fire('filter:middleware.renderAdminHeader', {
 		req,
 		res,
