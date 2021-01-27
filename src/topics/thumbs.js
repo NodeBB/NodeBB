@@ -28,7 +28,7 @@ Thumbs.get = async function (tids) {
 	}
 
 	if (!meta.config.allowTopicsThumbnail) {
-		return singular ? null : tids.map(() => []);
+		return singular ? [] : tids.map(() => []);
 	}
 
 	const hasTimestampPrefix = /^\d+-/;
