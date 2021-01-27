@@ -312,7 +312,7 @@ async function getBundleScriptList(target) {
 
 	let scripts = JS.scripts.base;
 
-	if (target === 'client' && process.env.NODE_ENV !== 'development') {
+	if (target === 'client') {
 		scripts = scripts.concat(JS.scripts.rjs);
 	} else if (target === 'acp') {
 		scripts = scripts.concat(JS.scripts.admin);
