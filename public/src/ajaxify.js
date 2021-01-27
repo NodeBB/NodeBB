@@ -342,6 +342,10 @@ ajaxify = window.ajaxify || {};
 		// Require and parse modules
 		var outstanding = data.scripts.length;
 
+		if (!outstanding) {
+			return callback();
+		}
+
 		if (outstanding && !app.flags.actionScriptLoadDeprecation) {
 			console.group('Deprecation Notice');
 			console.warn('The "action:script.load" event has been deprecated and will be removed in NodeBB v1.18.0. Please attach a listener to the "static:script.init" client-side hook instead');
