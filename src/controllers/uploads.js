@@ -23,12 +23,9 @@ uploadsController.upload = async function (req, res, filesIterator) {
 		return helpers.formatApiResponse(400, res);
 	}
 
-	// TODO: Remove this (and the usages of isV2 below) in v1.17.0
-	const isV2 = req.originalUrl === `${nconf.get('relative_path')}/api/v2/util/upload`;
-
 	// These checks added because of odd behaviour by request: https://github.com/request/request/issues/2445
 	if (!Array.isArray(files)) {
-		return isV2 ? res.status(500).json('invalid files') : helpers.formatApiResponse(500, res, new Error('[[error:invalid-file]]'));
+		return helpers.formatApiResponse(500, res, new Error('[[error:invalid-file]]'));
 	}
 	if (Array.isArray(files[0])) {
 		files = files[0];
@@ -41,19 +38,11 @@ uploadsController.upload = async function (req, res, filesIterator) {
 			images.push(await filesIterator(fileObj));
 		}
 
-		if (isV2) {
-			res.status(200).json(images);
-		} else {
-			helpers.formatApiResponse(200, res, { images });
-		}
+		helpers.formatApiResponse(200, res, { images });
 
 		return images;
 	} catch (err) {
-		if (isV2) {
-			res.status(500).json({ path: req.path, error: err.message });
-		} else {
-			return helpers.formatApiResponse(500, res, err);
-		}
+		return helpers.formatApiResponse(500, res, err);
 	} finally {
 		deleteTempFiles(files);
 	}
