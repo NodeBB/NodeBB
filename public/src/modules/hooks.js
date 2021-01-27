@@ -5,17 +5,30 @@ define('hooks', [], () => {
 		loaded: {},
 	};
 
-	Hooks.register = (hookName, listener) => {
+	Hooks.register = (hookName, method) => {
 		Hooks.loaded[hookName] = Hooks.loaded[hookName] || new Set();
-		Hooks.loaded[hookName].add(listener);
+		Hooks.loaded[hookName].add(method);
 	};
 	Hooks.on = Hooks.register;
 
 	Hooks.hasListeners = hookName => Hooks.loaded[hookName] && Hooks.loaded[hookName].length > 0;
 
+	const _onHookError = (e, listener, data) => {
+		console.warn(`[hooks] Exception encountered in ${listener.name ? listener.name : 'anonymous function'}, stack trace follows.`);
+		console.error(e);
+		return Promise.resolve(data);
+	};
+
 	const _fireFilterHook = (hookName, data) => {
 		const listeners = Array.from(Hooks.loaded[hookName]);
-		return listeners.reduce((promise, listener) => promise.then(data => listener(data)), Promise.resolve(data));
+		return listeners.reduce((promise, listener) => promise.then((data) => {
+			try {
+				const result = listener(data);
+				return utils.isPromise(result) ? result.then(data => Promise.resolve(data)).catch(e => _onHookError(e, listener, data)) : result;
+			} catch (e) {
+				return _onHookError(e, listener, data);
+			}
+		}), Promise.resolve(data));
 	};
 
 	const _fireActionHook = (hookName, data) => {
@@ -27,7 +40,13 @@ define('hooks', [], () => {
 
 	const _fireStaticHook = (hookName, data) => {
 		const listeners = Array.from(Hooks.loaded[hookName]);
-		return Promise.allSettled(listeners.map(listener => listener(data))).then(() => Promise.resolve(data));
+		return Promise.allSettled(listeners.map((listener) => {
+			try {
+				return listener(data);
+			} catch (e) {
+				return _onHookError(e, listener);
+			}
+		})).then(() => Promise.resolve(data));
 	};
 
 	Hooks.fire = (hookName, data) => {
