@@ -2,11 +2,11 @@
 	"events": "Sự kiện",
 	"no-events": "Không có sự kiện",
 	"control-panel": "Bảng Điều Khiển Sự Kiện",
-	"delete-events": "Delete Events",
+	"delete-events": "Xóa Sự Kiện",
 	"filters": "Filters",
 	"filters-apply": "Apply Filters",
-	"filter-type": "Event Type",
-	"filter-start": "Start Date",
-	"filter-end": "End Date",
+	"filter-type": "Loại Sự Kiện",
+	"filter-start": "Ngày Bắt Đầu",
+	"filter-end": "Ngày Kết Thúc",
 	"filter-perPage": "Per Page"
 }

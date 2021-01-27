@@ -14,9 +14,9 @@
 	"min-rep-profile-picture": "Uy tín tối thiểu để thêm \"Ảnh hồ sơ\" vào hồ sơ người dùng",
 	"min-rep-cover-picture": "Uy tín tối thiểu để thêm \"Ảnh bìa\" vào hồ sơ người dùng",
 
-	"flags": "Flag Settings",
-	"flags.limit-per-target": "Maximum number of times something can be flagged",
+	"flags": "Cài Đặt Gắn Cờ",
+	"flags.limit-per-target": "Số lần tối đa nội dung nào đó có thể được gắn cờ",
 	"flags.limit-per-target-placeholder": "Default: 0",
-	"flags.limit-per-target-help": "When a post or user is flagged multiple times, each additional flag is considered a &quot;report&quot; and added to the original flag. Set this option to a number other than zero to limit the number of reports an item can receive.",
+	"flags.limit-per-target-help": "Khi một bài đăng hoặc người dùng bị gắn cờ nhiều lần, mỗi cờ bổ sung được coi là một &quot;báo cáo&quot; và được thêm vào cờ gốc. Đặt tùy chọn này thành một số khác 0 để giới hạn số lượng báo cáo mà một mục có thể nhận được.",
 	"flags.auto-resolve-on-ban": "Automatically resolve all of a user's tickets when they are banned"
 }

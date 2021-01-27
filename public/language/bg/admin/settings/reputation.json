@@ -17,6 +17,6 @@
 	"flags": "Настройки за докладите",
 	"flags.limit-per-target": "Максимален брой докладвания на едно и също нещо",
 	"flags.limit-per-target-placeholder": "По подразбиране: 0",
-	"flags.limit-per-target-help": "When a post or user is flagged multiple times, each additional flag is considered a &quot;report&quot; and added to the original flag. Set this option to a number other than zero to limit the number of reports an item can receive.",
-	"flags.auto-resolve-on-ban": "Automatically resolve all of a user's tickets when they are banned"
+	"flags.limit-per-target-help": "Когато публикация или потребител бъде докладван няколко пъти, това се добавя към един общ доклад. Задайте на тази настройка стойност по-голяма от нула, за да ограничите броя на докладванията, които могат да бъдат натрупани към една публикация или потребител.",
+	"flags.auto-resolve-on-ban": "Автоматично премахване на всички доклади за потребител, когато той бъде блокиран"
 }

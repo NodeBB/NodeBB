@@ -24,12 +24,12 @@
 
 	"updates": "Cập nhật",
 	"running-version": "Bạn đang chạy <strong>NodeBB v<span id=\"version\">%1</span></strong>.",
-	"keep-updated": "Luôn đảm bảo rằng NodeBB của bạn được cập nhật cho các bản vá bảo mật và sửa lỗi mới nhất.",
-	"up-to-date": "<p>Bạn đang <strong>bản mới nhất</strong> <i class=\"fa fa-check\"></i></p>",
+	"keep-updated": "Đảm bảo NodeBB của bạn luôn cập nhật các bản vá bảo mật và sửa lỗi mới nhất.",
+	"up-to-date": "<p>Bạn đã cập nhật <strong>bản mới nhất</strong> <i class=\"fa fa-check\"></i></p>",
 	"upgrade-available": "<p>Phiên bản mới (v%1) đã được phát hành. Xem xét <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">nâng cấp NodeBB của bạn</a>.</p>",
-	"prerelease-upgrade-available": "<p>This is an outdated pre-release version of NodeBB. A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">upgrading your NodeBB</a>.</p>",
+	"prerelease-upgrade-available": "<p>Đây là bản phát hành NodeBB đã lỗi thời. Phiên bản mới (v%1) đã phát hành. Xem xét <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">nâng cấp NodeBB của bạn</a>.</p>",
 	"prerelease-warning": "<p>This is a <strong>pre-release</strong> version of NodeBB. Unintended bugs may occur. <i class=\"fa fa-exclamation-triangle\"></i></p>",
-	"running-in-development": "<span>Forum is running in development mode. The forum may be open to potential vulnerabilities; please contact your system administrator.</span>",
+	"running-in-development": "<span>Diễn đàn đang chạy ở chế độ phát triển. Diễn đàn có thể mở cho các lỗ hổng tiềm ẩn; Xin vui lòng liên hệ với quản trị hệ thống của bạn.</span>",
 	"latest-lookup-failed": "<p>Failed to look up latest available version of NodeBB</p>",
 
 	"notices": "Thông báo",
@@ -49,7 +49,7 @@
 	"realtime-chart-updates": "Cập Nhật Biểu Đồ Thời Gian Thực",
 
 	"active-users": "Người Dùng Hoạt Động",
-	"active-users.users": "Users",
+	"active-users.users": "Người Dùng",
 	"active-users.guests": "Guests",
 	"active-users.total": "Tổng",
 	"active-users.connections": "Kết nối",
@@ -58,12 +58,12 @@
 	"anonymous": "Ẩn Danh",
 	"registered": "Đã đăng ký",
 
-	"user-presence": "User Presence",
+	"user-presence": "Người Dùng Có Mặt",
 	"on-categories": "On categories list",
 	"reading-posts": "Đọc bài viết",
 	"browsing-topics": "Browsing topics",
-	"recent": "Recent",
-	"unread": "Unread",
+	"recent": "Gần đây",
+	"unread": "Chưa đọc",
 
 	"high-presence-topics": "High Presence Topics",
 

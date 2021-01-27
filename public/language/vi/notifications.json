@@ -62,7 +62,7 @@
     "notificationType_follow": "Khi ai đó theo dõi bạn",
     "notificationType_new-chat": "Khi bạn nhận được một tin nhắn trò chuyện",
     "notificationType_new-group-chat": "Khi bạn nhận được một tin nhắn trò chuyện nhóm",
-    "notificationType_group-invite": "Khi bạn nhận được lời mời gia nhập nhóm",
+    "notificationType_group-invite": "Khi bạn nhận một lời mời nhóm",
     "notificationType_group-leave": "Khi người dùng rời khỏi nhóm của bạn",
     "notificationType_group-request-membership": "Khi ai đó yêu cầu tham gia một nhóm bạn sở hữu",
     "notificationType_new-register": "Khi ai đó được thêm vào lượt chờ đăng ký",

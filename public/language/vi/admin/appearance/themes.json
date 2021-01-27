@@ -5,7 +5,7 @@
     "current-theme": "Giao Diện Hiện Tại",
     "no-themes": "Không tìm thấy giao diện đã cài đặt",
     "revert-confirm": "Bạn có chắc muốn khôi phục giao diện NodeBB mặc định không?",
-    "theme-changed": "Giao Diện Đã Được Đổi",
+    "theme-changed": "Đã Đổi Giao Diện",
     "revert-success": "Bạn đã thành công chuyển lại NodeBB của mình về giao diện mặc định.",
     "restart-to-activate": "Vui lòng xây dựng lại và khởi động lại NodeBB của bạn để kích hoạt đầy đủ giao diện này."
 }

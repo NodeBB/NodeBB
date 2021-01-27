@@ -6,5 +6,5 @@
     "min-length": "Minimum Tag Length",
     "max-length": "Maximum Tag Length",
     "related-topics": "Related Topics",
-    "max-related-topics": "Maximum related topics to display (if supported by theme)"
+    "max-related-topics": "Số chủ đề liên quan tối đa để hiển thị (nếu giao diện hỗ trợ)"
 }

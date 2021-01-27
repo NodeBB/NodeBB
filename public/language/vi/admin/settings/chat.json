@@ -2,7 +2,7 @@
 	"chat-settings": "Cài Đặt Trò Chuyện",
 	"disable": "Tắt trò chuyện",
 	"disable-editing": "Tắt chỉnh sửa / xóa tin nhắn trò chuyện",
-	"disable-editing-help": "Administrators and global moderators are exempt from this restriction",
+	"disable-editing-help": "Quản trị viên và người kiểm duyệt toàn quyền được miễn hạn chế này",
 	"max-length": "Độ dài tối đa của tin nhắn trò chuyện",
 	"max-room-size": "Số lượng người dùng tối đa trong phòng trò chuyện",
 	"delay": "Thời gian giữa các tin nhắn trò chuyện tính bằng mili giây",

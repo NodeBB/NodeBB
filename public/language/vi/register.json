@@ -1,7 +1,7 @@
 {
     "register": "Đăng ký",
     "cancel_registration": "Hủy đăng ký",
-    "help.email": "Theo mặc định, Email của bạn sẽ được ẩn và public sẽ không thấy được",
+    "help.email": "Mặc định, email của bạn sẽ bị ẩn không công khai.",
     "help.username_restrictions": "Một tên đăng nhập duy nhất giữa %1 và %2 ký tự. Người khác có thể nhắc đến bạn với @<span id='yourUsername'>tên đăng nhập</span>.",
     "help.minimum_password_length": "Mật khẩu của bạn phải có ít nhất %1 ký tự",
     "email_address": "Địa chỉ Email",
@@ -17,15 +17,15 @@
     "terms_of_use": "Điều khoản sử dụng",
     "agree_to_terms_of_use": "Tôi đồng ý với các điều khoản sử dụng",
     "terms_of_use_error": "Bạn phải đồng ý với các điều khoản sử dụng",
-    "registration-added-to-queue": "Yêu cầu đăng ký của bạn đang chờ được chấp thuận. Bạn sẽ nhận được email khi tài khoản của bạn đã được chấp thuận bởi quản trị viên.",
-    "registration-queue-average-time": "Our average time for approving memberships is %1 hours %2 minutes.",
+    "registration-added-to-queue": "Đăng ký của bạn đã được thêm vào hàng đợi phê duyệt. Bạn sẽ nhận được email khi quản trị viên chấp nhận yêu cầu.",
+    "registration-queue-average-time": "Thời gian chúng tôi phê duyệt tư cách thành viên là %1 giờ %2 phút.",
     "registration-queue-auto-approve-time": "Your membership to this forum will be fully activated in up to %1 hours.",
-    "interstitial.intro": "Chúng tôi cần thêm một số thông tin trước khi bạn có thể tạo tài khoản.",
+    "interstitial.intro": "Yêu cầu một số thông tin bổ sung trước khi chúng tôi tạo tài khoản của bạn.",
     "interstitial.errors-found": "Chúng tôi không thể hoàn thành đăng ký của bạn:",
     "gdpr_agree_data": "Tôi đồng ý với việc thu thập và xử lý thông tin cá nhân của tôi trên trang web này.",
     "gdpr_agree_email": "Tôi đồng ý nhận email thông báo và thông báo từ trang web này.",
     "gdpr_consent_denied": "Bạn phải đồng ý với trang web này để thu thập/xử lý thông tin của bạn và gửi email cho bạn.",
-    "invite.error-admin-only": "Direct user registration has been disabled. Please contact an administrator for more details.",
+    "invite.error-admin-only": "Đăng ký người dùng trực tiếp đã bị tắt. Vui lòng liên hệ với quản trị viên để biết thêm chi tiết.",
     "invite.error-invite-only": "Direct user registration has been disabled. You must be invited by an existing user in order to access this forum.",
-    "invite.error-invalid-data": "The registration data received does not correspond to our records. Please contact an administrator for more details"
+    "invite.error-invalid-data": "Dữ liệu đăng ký nhận được không tương ứng với hồ sơ của chúng tôi. Vui lòng liên hệ với quản trị viên để biết thêm chi tiết"
 }

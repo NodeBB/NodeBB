@@ -1,7 +1,7 @@
 {
     "chat.chatting_with": "Trò chuyện với",
     "chat.placeholder": "Nhập tin nhắn ở đây, nhấn enter để gửi",
-    "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
+    "chat.scroll-up-alert": "Bạn đang xem các tin nhắn cũ hơn, nhấp vào đây để chuyển đến tin nhắn gần đây nhất.",
     "chat.send": "Gửi",
     "chat.no_active": "Bạn không có cuộc trò chuyện đang hoạt động nào.",
     "chat.user_typing": "%1b đang gõ...",
@@ -36,7 +36,7 @@
     "chat.kick": "Kick",
     "chat.show-ip": "Show IP",
     "chat.owner": "Room Owner",
-    "chat.system.user-join": "%1 has joined the room",
+    "chat.system.user-join": "%1 đã vào phòng",
     "chat.system.user-leave": "%1 has left the room",
     "chat.system.room-rename": "%2 has renamed this room: %1",
     "composer.compose": "Soạn thảo",

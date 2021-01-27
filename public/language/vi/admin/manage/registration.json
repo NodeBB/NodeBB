@@ -1,18 +1,18 @@
 {
 	"queue": "Queue",
-	"description": "There are no users in the registration queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"description": "Không có ai xếp hàng đợi đăng ký. <br> Để bật tính năng này, truy cập <a href=\"%1\">Cài đặt &rarr; Người dùng &rarr; Người dùng đăng ký</a> và đặt <strong>Kiểu Đăng Ký</strong> là \"Phê Duyệt Của Quản Trị Viên\".",
 
 	"list.name": "Name",
 	"list.email": "Email",
 	"list.ip": "IP",
-	"list.time": "Time",
+	"list.time": "Thời gian",
 	"list.username-spam": "Frequency: %1 Appears: %2 Confidence: %3",
 	"list.email-spam": "Frequency: %1 Appears: %2",
 	"list.ip-spam": "Frequency: %1 Appears: %2",
 
 	"invitations": "Invitations",
 	"invitations.description": "Dưới đây là danh sách hoàn tất các lời mời đã gửi. Bấm ctrl-f để tìm kiếm trong danh sách bằng email hoặc tên đăng nhập. <br><br>Tên đăng nhập sẽ được hiển thị bên phải email cho những người dùng đã đổi lời mời của họ.",
-	"invitations.inviter-username": "Inviter Username",
+	"invitations.inviter-username": "Tên Đăng Nhập Người Mời",
 	"invitations.invitee-email": "Invitee Email",
 	"invitations.invitee-username": "Tên Đăng Nhập Người Được Mời (nếu đã đăng ký)",
 
