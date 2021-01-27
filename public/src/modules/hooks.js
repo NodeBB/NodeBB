@@ -11,7 +11,7 @@ define('hooks', [], () => {
 	};
 	Hooks.on = Hooks.register;
 
-	Hooks.hasListeners = hookName => Hooks.loaded[hookName] && Hooks.loaded[hookName].length > 0;
+	Hooks.hasListeners = hookName => Hooks.loaded[hookName] && Hooks.loaded[hookName].size > 0;
 
 	const _onHookError = (e, listener, data) => {
 		console.warn(`[hooks] Exception encountered in ${listener.name ? listener.name : 'anonymous function'}, stack trace follows.`);
@@ -20,6 +20,10 @@ define('hooks', [], () => {
 	};
 
 	const _fireFilterHook = (hookName, data) => {
+		if (!Hooks.hasListeners(hookName)) {
+			return Promise.resolve(data);
+		}
+
 		const listeners = Array.from(Hooks.loaded[hookName]);
 		return listeners.reduce((promise, listener) => promise.then((data) => {
 			try {
@@ -39,6 +43,10 @@ define('hooks', [], () => {
 	};
 
 	const _fireStaticHook = (hookName, data) => {
+		if (!Hooks.hasListeners(hookName)) {
+			return Promise.resolve(data);
+		}
+
 		const listeners = Array.from(Hooks.loaded[hookName]);
 		return Promise.allSettled(listeners.map((listener) => {
 			try {
