@@ -2,7 +2,6 @@
 
 const validator = require('validator');
 const nconf = require('nconf');
-const winston = require('winston');
 
 const meta = require('../meta');
 const user = require('../user');
@@ -10,7 +9,6 @@ const categories = require('../categories');
 const plugins = require('../plugins');
 const translator = require('../translator');
 const languages = require('../languages');
-const api = require('../api');
 
 const apiController = module.exports;
 
@@ -114,36 +112,6 @@ apiController.loadConfig = async function (req) {
 apiController.getConfig = async function (req, res) {
 	const config = await apiController.loadConfig(req);
 	res.json(config);
-};
-
-// TODO: Deprecate these four controllers in 1.17.0
-apiController.getPostData = async (pid, uid) => api.posts.get({ uid }, { pid });
-apiController.getTopicData = async (tid, uid) => api.topics.get({ uid }, { tid });
-apiController.getCategoryData = async (cid, uid) => api.categories.get({ uid }, { cid });
-apiController.getObject = async function (req, res, next) {
-	const methods = {
-		post: apiController.getPostData,
-		topic: apiController.getTopicData,
-		category: apiController.getCategoryData,
-	};
-	const method = methods[req.params.type];
-	if (!method) {
-		return next();
-	}
-
-	winston.warn('[api] This route has been deprecated and will likely be removed in v1.17.0');
-	winston.warn('[api] Use GET /api/v3/(posts|topics|categories)/:id instead');
-
-	try {
-		const result = await method(req.params.id, req.uid);
-		if (!result) {
-			return next();
-		}
-
-		res.json(result);
-	} catch (err) {
-		next(err);
-	}
 };
 
 apiController.getModerators = async function (req, res) {
