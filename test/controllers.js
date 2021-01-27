@@ -754,7 +754,7 @@ describe('Controllers', function () {
 	});
 
 	it('should get post data', function (done) {
-		request(nconf.get('url') + '/api/post/pid/' + pid, function (err, res, body) {
+		request(nconf.get('url') + '/api/v3/posts/' + pid, function (err, res, body) {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -763,7 +763,7 @@ describe('Controllers', function () {
 	});
 
 	it('should get topic data', function (done) {
-		request(nconf.get('url') + '/api/topic/tid/' + tid, function (err, res, body) {
+		request(nconf.get('url') + '/api/v3/topics/' + tid, function (err, res, body) {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -772,7 +772,7 @@ describe('Controllers', function () {
 	});
 
 	it('should get category data', function (done) {
-		request(nconf.get('url') + '/api/category/cid/' + cid, function (err, res, body) {
+		request(nconf.get('url') + '/api/v3/categories/' + cid, function (err, res, body) {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
