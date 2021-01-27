@@ -85,8 +85,8 @@ describe('API', async () => {
 	}
 
 	after(async function () {
-		plugins.unregisterHook('core', 'filter:search.query', dummySearchHook);
-		plugins.unregisterHook('emailer-test', 'filter:email.send');
+		plugins.hooks.unregister('core', 'filter:search.query', dummySearchHook);
+		plugins.hooks.unregister('emailer-test', 'filter:email.send');
 	});
 
 	async function setupData() {
@@ -163,12 +163,12 @@ describe('API', async () => {
 		await wait(5000);
 
 		// Attach a search hook so /api/search is enabled
-		plugins.registerHook('core', {
+		plugins.hooks.register('core', {
 			hook: 'filter:search.query',
 			method: dummySearchHook,
 		});
 		// Attach an emailer hook so related requests do not error
-		plugins.registerHook('emailer-test', {
+		plugins.hooks.register('emailer-test', {
 			hook: 'filter:email.send',
 			method: dummyEmailerHook,
 		});

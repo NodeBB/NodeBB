@@ -2165,7 +2165,7 @@ describe('Topic\'s', function () {
 
 		it('should return results', function (done) {
 			var plugins = require('../src/plugins');
-			plugins.registerHook('myTestPlugin', {
+			plugins.hooks.register('myTestPlugin', {
 				hook: 'filter:topic.search',
 				method: function (data, callback) {
 					callback(null, [1, 2, 3]);

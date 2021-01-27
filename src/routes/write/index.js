@@ -12,7 +12,7 @@ const Write = module.exports;
 Write.reload = async (params) => {
 	const router = params.router;
 	let apiSettings = await meta.settings.get('core.api');
-	plugins.registerHook('core', {
+	plugins.hooks.register('core', {
 		hook: 'action:settings.set',
 		method: async (data) => {
 			if (data.plugin === 'core.api') {

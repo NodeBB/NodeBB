@@ -5,8 +5,7 @@ const async = require('async');
 const utils = require('../utils');
 const plugins = require('.');
 
-const Hooks = {};
-module.exports = Hooks;
+const Hooks = module.exports;
 
 Hooks.deprecatedHooks = {
 	'filter:router.page': 'response:router.page',	// 👋 @ 2.0.0

@@ -247,13 +247,13 @@ describe('socket.io', function () {
 		}
 		before(function () {
 			// Attach an emailer hook so related requests do not error
-			plugins.registerHook('emailer-test', {
+			plugins.hooks.register('emailer-test', {
 				hook: 'filter:email.send',
 				method: dummyEmailerHook,
 			});
 		});
 		after(function () {
-			plugins.unregisterHook('emailer-test', 'filter:email.send');
+			plugins.hooks.unregister('emailer-test', 'filter:email.send');
 		});
 
 		it('should validate emails', function (done) {

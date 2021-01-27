@@ -649,7 +649,7 @@ describe('Admin Controllers', function () {
 			config.script = '</script>';
 			callback(null, config);
 		}
-		plugins.registerHook('somePlugin', { hook: 'filter:config.get', method: onConfigGet });
+		plugins.hooks.register('somePlugin', { hook: 'filter:config.get', method: onConfigGet });
 		request(nconf.get('url') + '/admin', { jar: jar }, function (err, res, body) {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
@@ -664,7 +664,7 @@ describe('Admin Controllers', function () {
 				assert(body.includes('"someValue":"\\\\"foo\\\\""'));
 				assert(body.includes('"otherValue":"\\\'123\\\'"'));
 				assert(body.includes('"script":"<\\/script>"'));
-				plugins.unregisterHook('somePlugin', 'filter:config.get', onConfigGet);
+				plugins.hooks.unregister('somePlugin', 'filter:config.get', onConfigGet);
 				done();
 			});
 		});

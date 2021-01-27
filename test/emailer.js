@@ -48,7 +48,7 @@ describe('emailer', function () {
 	it('plugin hook should work', function (done) {
 		var error = new Error();
 
-		Plugins.registerHook('emailer-test', {
+		Plugins.hooks.register('emailer-test', {
 			hook: 'filter:email.send',
 			method: function (data, next) {
 				assert(data);
@@ -62,7 +62,7 @@ describe('emailer', function () {
 		Emailer.sendToEmail(template, email, language, params, function (err) {
 			assert.equal(err, error);
 
-			Plugins.unregisterHook('emailer-test', 'filter:email.send');
+			Plugins.hooks.unregister('emailer-test', 'filter:email.send');
 			done();
 		});
 	});

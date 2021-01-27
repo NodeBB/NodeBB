@@ -104,7 +104,7 @@ describe('Controllers', function () {
 		var tplPath = path.join(nconf.get('views_dir'), name);
 
 		before(async () => {
-			plugins.registerHook('myTestPlugin', {
+			plugins.hooks.register('myTestPlugin', {
 				hook: 'action:homepage.get:mycustompage',
 				method: hookMethod,
 			});
@@ -255,7 +255,7 @@ describe('Controllers', function () {
 		});
 
 		after(function () {
-			plugins.unregisterHook('myTestPlugin', 'action:homepage.get:custom', hookMethod);
+			plugins.hooks.unregister('myTestPlugin', 'action:homepage.get:custom', hookMethod);
 			fs.unlinkSync(tplPath);
 			fs.unlinkSync(tplPath.replace(/\.tpl$/, '.js'));
 		});
@@ -303,7 +303,7 @@ describe('Controllers', function () {
 			next(null, data);
 		}
 
-		plugins.registerHook('myTestPlugin', {
+		plugins.hooks.register('myTestPlugin', {
 			hook: 'filter:register.interstitial',
 			method: hookMethod,
 		});
@@ -343,7 +343,7 @@ describe('Controllers', function () {
 					assert(body.sections);
 					assert(body.errors);
 					assert(body.title);
-					plugins.unregisterHook('myTestPlugin', 'filter:register.interstitial', hookMethod);
+					plugins.hooks.unregister('myTestPlugin', 'filter:register.interstitial', hookMethod);
 					done();
 				});
 			});
@@ -2244,7 +2244,7 @@ describe('Controllers', function () {
 				callback(null, hookData);
 			}
 
-			plugins.registerHook('myTestPlugin', {
+			plugins.hooks.register('myTestPlugin', {
 				hook: 'filter:composer.build',
 				method: hookMethod,
 			});
@@ -2256,7 +2256,7 @@ describe('Controllers', function () {
 				assert.strictEqual(body.template.name, '');
 				assert.strictEqual(body.url, nconf.get('relative_path') + '/compose');
 
-				plugins.unregisterHook('myTestPlugin', 'filter:composer.build', hookMethod);
+				plugins.hooks.unregister('myTestPlugin', 'filter:composer.build', hookMethod);
 				done();
 			});
 		});
@@ -2266,7 +2266,7 @@ describe('Controllers', function () {
 				hookData.next();
 			}
 
-			plugins.registerHook('myTestPlugin', {
+			plugins.hooks.register('myTestPlugin', {
 				hook: 'filter:composer.build',
 				method: hookMethod,
 			});
@@ -2275,7 +2275,7 @@ describe('Controllers', function () {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 
-				plugins.unregisterHook('myTestPlugin', 'filter:composer.build', hookMethod);
+				plugins.hooks.unregister('myTestPlugin', 'filter:composer.build', hookMethod);
 				done();
 			});
 		});

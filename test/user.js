@@ -32,7 +32,7 @@ describe('User', function () {
 	}
 	before(function (done) {
 		// Attach an emailer hook so related requests do not error
-		plugins.registerHook('emailer-test', {
+		plugins.hooks.register('emailer-test', {
 			hook: 'filter:email.send',
 			method: dummyEmailerHook,
 		});
@@ -51,7 +51,7 @@ describe('User', function () {
 		});
 	});
 	after(function () {
-		plugins.unregisterHook('emailer-test', 'filter:email.send');
+		plugins.hooks.unregister('emailer-test', 'filter:email.send');
 	});
 
 	beforeEach(function () {
@@ -743,12 +743,12 @@ describe('User', function () {
 				callback(null, data);
 			}
 
-			plugins.registerHook('test-plugin', { hook: 'filter:user.whitelistFields', method: filterMethod });
+			plugins.hooks.register('test-plugin', { hook: 'filter:user.whitelistFields', method: filterMethod });
 			User.getUserData(testUid, function (err, userData) {
 				assert.ifError(err);
 				assert(!userData.hasOwnProperty('fb_token'));
 				assert.equal(userData.another_secret, 'abcde');
-				plugins.unregisterHook('test-plugin', 'filter:user.whitelistFields', filterMethod);
+				plugins.hooks.unregister('test-plugin', 'filter:user.whitelistFields', filterMethod);
 				done();
 			});
 		});
