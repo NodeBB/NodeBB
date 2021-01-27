@@ -319,46 +319,15 @@ ajaxify = window.ajaxify || {};
 		if (tpl_url.startsWith('admin')) {
 			location = '';
 		}
-
-		const proceed = (hooks, module) => {
-			if (module && module.init) {
-				module.init();
-			}
-
-			hooks.fire('static:script.init', { tpl_url }).then(ajaxify.loadExtraScripts.bind(null, tpl_url, callback));
-		};
-
-		require(['hooks', location + tpl_url], proceed, () => {
-			// Module doesn't exist or didn't load, proceed without it
-			require(['hooks'], proceed);
-		});
-	};
-
-	// TODO: Deprecate in v1.18.0
-	ajaxify.loadExtraScripts = (tpl_url, callback) => {
 		var data = {
 			tpl_url: tpl_url,
-			scripts: [],
+			scripts: [location + tpl_url],
 		};
 
 		$(window).trigger('action:script.load', data);
 
 		// Require and parse modules
 		var outstanding = data.scripts.length;
-
-		if (!outstanding) {
-			return callback();
-		}
-
-		if (outstanding && !app.flags.actionScriptLoadDeprecation) {
-			console.group('Deprecation Notice');
-			console.warn('The "action:script.load" event has been deprecated and will be removed in NodeBB v1.18.0. Please attach a listener to the "static:script.init" client-side hook instead');
-			data.scripts.forEach((script) => {
-				console.info(`Affected script: ${typeof script === 'function' ? script.name || 'anonymous ' + script.toString() : script}`);
-			});
-			console.groupEnd();
-			app.flags.actionScriptLoadDeprecation = 1;
-		}
 
 		data.scripts.map(function (script) {
 			if (typeof script === 'function') {
@@ -370,6 +339,7 @@ ajaxify = window.ajaxify || {};
 			if (typeof script === 'string') {
 				return function (next) {
 					require([script], function (script) {
+						$(window).trigger('static:script.init', { tpl_url, module: script });
 						if (script && script.init) {
 							script.init();
 						}
