@@ -320,14 +320,17 @@ ajaxify = window.ajaxify || {};
 			location = '';
 		}
 
-		require(['hooks', location + tpl_url], (hooks, module) => {
+		const proceed = (hooks, module) => {
 			if (module && module.init) {
 				module.init();
 			}
 
 			hooks.fire('static:script.init', { tpl_url }).then(ajaxify.loadExtraScripts.bind(null, tpl_url, callback));
-		}, function () {
-			// ignore 404 error
+		};
+
+		require(['hooks', location + tpl_url], proceed, () => {
+			// Module doesn't exist or didn't load, proceed without it
+			require(['hooks'], proceed);
 		});
 	};
 
