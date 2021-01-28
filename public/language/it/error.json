@@ -177,5 +177,6 @@
     "already-unblocked": "Questo utente è già sbloccato",
     "no-connection": "Sembra ci sia un problema con la tua connessione internet",
     "socket-reconnect-failed": "Impossibile raggiungere il server al momento. Clicca qui per riprovare o riprova in un secondo momento",
-    "plugin-not-whitelisted": "Impossibile installare il plug-in &amp; solo i plugin nella whitelist del Gestione Pacchetti di NodeBB possono essere installati tramite ACP"
+    "plugin-not-whitelisted": "Impossibile installare il plug-in &amp; solo i plugin nella whitelist del Gestione Pacchetti di NodeBB possono essere installati tramite ACP",
+    "topic-event-unrecognized": "Topic event '%1' unrecognized"
 }

@@ -93,6 +93,8 @@
     "guest": "訪客",
     "guests": "訪客",
     "former_user": "舊使用者",
+    "system-user": "System",
+    "unknown-user": "Unknown user",
     "updated.title": "論壇已更新",
     "updated.message": "論壇已更新。請點這裡重載頁面。",
     "privacy": "隱私",

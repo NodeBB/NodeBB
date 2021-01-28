@@ -15,7 +15,7 @@
 	"delete": "Xóa <strong>Người Dùng</strong>",
 	"delete-content": "Xóa <strong>Nội Dung</strong> Người Dùng",
 	"purge": "Xóa <strong>Người Dùng</strong> và<strong>Nội Dung</strong>",
-	"download-csv": "Download CSV",
+	"download-csv": "Tải về CSV",
 	"manage-groups": "Quản Lý Nhóm",
 	"add-group": "Thêm Nhóm",
 	"invite": "Invite",
@@ -104,5 +104,5 @@
 	"alerts.email-sent-to": "An invitation email has been sent to %1",
 	"alerts.x-users-found": "Tìm được %1 người dùng (%2 giây)",
 	"export-users-started": "Xuất người dùng dưới dạng csv, quá trình này có thể mất một lúc. Bạn sẽ nhận được thông báo khi hoàn tất.",
-	"export-users-completed": "Users exported as csv, click here to download."
+	"export-users-completed": "Đã xuất người dùng ra csv, bấm vào đây tải xuống."
 }

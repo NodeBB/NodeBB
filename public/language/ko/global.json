@@ -93,6 +93,8 @@
     "guest": "익명 사용자",
     "guests": "익명 사용자",
     "former_user": "이전 사용자",
+    "system-user": "System",
+    "unknown-user": "Unknown user",
     "updated.title": "포럼이 업데이트 되었습니다.",
     "updated.message": "이 포럼은 지금 최신 버전으로 업데이트 되었습니다. 페이지를 새로고침 하시려면 여기를 클릭해주세요.",
     "privacy": "개인정보",

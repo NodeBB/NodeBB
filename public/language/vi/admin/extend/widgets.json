@@ -18,7 +18,7 @@
 	"alert.update-success": "Đã cập nhật thành công các tiện ích",
 	"alert.clone-success": "Successfully cloned widgets",
 
-	"error.select-clone": "Please select a page to clone from",
+	"error.select-clone": "Hãy chọn một trang để sao chép từ đó",
 
 	"title": "Title",
 	"title.placeholder": "Title (only shown on some containers)",

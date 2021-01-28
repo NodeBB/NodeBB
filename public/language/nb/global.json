@@ -93,6 +93,8 @@
     "guest": "Gjest",
     "guests": "Gjester",
     "former_user": "A Former User",
+    "system-user": "System",
+    "unknown-user": "Unknown user",
     "updated.title": "Forum oppdatert",
     "updated.message": "Dette forumet har nettopp blitt oppdatert til den nyeste versjonen. Klikk her for å laste siden på nytt.",
     "privacy": "Personvern",

@@ -93,6 +93,8 @@
     "guest": "অতিথি",
     "guests": "অতিথি",
     "former_user": "A Former User",
+    "system-user": "System",
+    "unknown-user": "Unknown user",
     "updated.title": "ফোরাম আপডেট করা হয়েছে",
     "updated.message": "এই ফোরামে এইমাত্র সর্বশেষ সংস্করণে আপডেট করা হয়েছে। পৃষ্ঠাটি রিফ্রেশ করতে এখানে ক্লিক করুন।",
     "privacy": "নিরাপত্তা",

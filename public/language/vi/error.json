@@ -43,9 +43,9 @@
     "reset-same-password": "Vui lòng sử dụng mật khẩu khác với mật khẩu hiện tại của bạn",
     "user-banned": "Người dùng đã bị cấm",
     "user-banned-reason": "Xin lỗi, tài khoản này đã bị khóa (Lí do: %1)",
-    "user-banned-reason-until": "Rất tiếc, tài khoản này đã bị cấm cho đến %1 (Lý do: %2)",
-    "user-too-new": "Rất tiếc, bạn phải chờ %1 giây để đăng bài viết đầu tiên.",
-    "blacklisted-ip": "Rất tiếc, địa chỉ IP của bạn đã bị cấm khỏi cộng đồng. Nếu bạn cảm thấy có gì không đúng, hãy liên lạc với người quản trị.",
+    "user-banned-reason-until": "Xin lỗi, tài khoản này bị cấm cho đến %1 (Lý do: %2)",
+    "user-too-new": "Xin lỗi, bắt buộc bạn phải đợi %1 giây trước khi đăng bài viết đầu tiên.",
+    "blacklisted-ip": "Xin lỗi, địa chỉ IP bạn bị cấm khỏi cộng đồng. Nếu bạn cảm thấy dây là do lỗi, hãy liên lạc với quản trị viên.",
     "ban-expiry-missing": "Vui lòng cung cấp ngày hết lệnh cấm này",
     "no-category": "Danh mục không tồn tại",
     "no-topic": "Chủ đề không tồn tại",
@@ -118,8 +118,8 @@
     "topic-thumbnails-are-disabled": "Thumbnails cho chủ đề đã bị tắt",
     "invalid-file": "File không hợp lệ",
     "uploads-are-disabled": "Đã khóa lựa chọn tải lên",
-    "signature-too-long": "Rất tiếc, chữ ký của bạn chỉ có thể có tối đa %1 ký tự.",
-    "about-me-too-long": "Rất tiếc, giới thiệu bản thân của bạn không thể dài hơn %1 ký tự.",
+    "signature-too-long": "Xin lỗi, chữ ký của bạn không thể dài hơn %1 ký tự.",
+    "about-me-too-long": "Xin lỗi, giới thiệu bản thân bạn không thể dài hơn %1 ký tự.",
     "cant-chat-with-yourself": "Bạn không thể trò chuyện với chính bạn!",
     "chat-restricted": "Người dùng này đã hạn chế tin nhắn trò chuyện của họ. Họ phải theo dõi bạn trước khi bạn có thể trò chuyện với họ",
     "chat-disabled": "Hệ thống trò chuyện bị tắt",
@@ -177,5 +177,6 @@
     "already-unblocked": "Người dùng này đã được bỏ chặn",
     "no-connection": "Kết nối internet của bạn có vấn đề.",
     "socket-reconnect-failed": "Không thể truy cập máy chủ vào lúc này. Nhấp vào đây để thử lại hoặc thử lại sau",
-    "plugin-not-whitelisted": "Không thể cài đặt plugin &ndash; chỉ những plugin được Trình quản lý gói NodeBB đưa vào danh sách trắng mới có thể được cài đặt qua ACP"
+    "plugin-not-whitelisted": "Không thể cài đặt plugin &ndash; chỉ những plugin được Trình quản lý gói NodeBB đưa vào danh sách trắng mới có thể được cài đặt qua ACP",
+    "topic-event-unrecognized": "Topic event '%1' unrecognized"
 }

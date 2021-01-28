@@ -93,6 +93,8 @@
     "guest": "Svečias",
     "guests": "Svečiai",
     "former_user": "A Former User",
+    "system-user": "System",
+    "unknown-user": "Unknown user",
     "updated.title": "Forumas atnaujintas",
     "updated.message": "Forumas buvo atnaujintas iki naujausios versijos. Paspauskite čia norėdami perkrauti puslapį.",
     "privacy": "Privatumas",

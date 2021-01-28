@@ -93,6 +93,8 @@
     "guest": "Külaline",
     "guests": "Külalised",
     "former_user": "A Former User",
+    "system-user": "System",
+    "unknown-user": "Unknown user",
     "updated.title": "Foorum on uuendatud",
     "updated.message": "See foorum uuendati just kõige uuemale versioonile. Vajuta siia et värskendada veebilehte.",
     "privacy": "Privaatsus",

@@ -93,6 +93,8 @@
     "guest": "Vieras",
     "guests": "Vieraat",
     "former_user": "Entinen käyttäjä",
+    "system-user": "System",
+    "unknown-user": "Unknown user",
     "updated.title": "Foorumi päivitetty",
     "updated.message": "Tämä foorumi on juuri päivitetty uusimpaan versioon. Paina tästä päivittääksesi sivun.",
     "privacy": "Yksityisyys",

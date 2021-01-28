@@ -93,6 +93,8 @@
     "guest": "Gæst",
     "guests": "Gæster",
     "former_user": "A Former User",
+    "system-user": "System",
+    "unknown-user": "Unknown user",
     "updated.title": "Forum opdateret",
     "updated.message": "Dette form er lige blevet opdateret til den seneste version. Klik her for at genindlæse siden.",
     "privacy": "Privatliv",

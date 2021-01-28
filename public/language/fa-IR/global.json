@@ -93,6 +93,8 @@
     "guest": "مهمان",
     "guests": "مهمان‌ها",
     "former_user": "A Former User",
+    "system-user": "System",
+    "unknown-user": "Unknown user",
     "updated.title": "انجمن بروزرسانی شد",
     "updated.message": "این انجمن به آخرین نسخه بروزرسانی شد. برای بارگذاری مجدد صفحه اینجا کلیک کنید.",
     "privacy": "حریم خصوصی",

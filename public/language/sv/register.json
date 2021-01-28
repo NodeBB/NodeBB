@@ -18,14 +18,14 @@
     "agree_to_terms_of_use": "Jag godkänner användarvillkoren",
     "terms_of_use_error": "Du måste godkänna användarvillkoren",
     "registration-added-to-queue": "Din registrering har lagts till i kön. Du kommer att få ett mail när den accepteras av en administratör.",
-    "registration-queue-average-time": "Our average time for approving memberships is %1 hours %2 minutes.",
-    "registration-queue-auto-approve-time": "Your membership to this forum will be fully activated in up to %1 hours.",
+    "registration-queue-average-time": "Snittiden för att godkänna medlemskap är %1 timmar %2 minuter.",
+    "registration-queue-auto-approve-time": "Ditt medlemskap på forumet kommer godkännas om upp till %1 timmar.",
     "interstitial.intro": "Vi behöver ytterligare information innan vi kan skapa ditt konto.",
     "interstitial.errors-found": "Vi kunde inte slutföra din registrering:",
     "gdpr_agree_data": "Jag ger detta forum mitt medgivande att samla in och behandla min personliga information.",
     "gdpr_agree_email": "Jag går med på att få sammanfattningar och notiser från detta forum via e-post.",
     "gdpr_consent_denied": "Du måste ge ditt medgivande för att detta forum ska kunna samla in och behandla din information, samt skicka dig e-post.",
-    "invite.error-admin-only": "Direct user registration has been disabled. Please contact an administrator for more details.",
-    "invite.error-invite-only": "Direct user registration has been disabled. You must be invited by an existing user in order to access this forum.",
-    "invite.error-invalid-data": "The registration data received does not correspond to our records. Please contact an administrator for more details"
+    "invite.error-admin-only": "Direkt användarregistrering har avaktiverats. Vänligen kontakta en administratör för mer information.",
+    "invite.error-invite-only": "Direkt användarregistrering har avaktiverats. Du måste bli inbjuden av en existerande användare för att få tillgång till forumet.",
+    "invite.error-invalid-data": "Erhållen registreringsdata stämmer inte överens med våra uppgifter. Vänligen kontakta en administratör för mer information."
 }

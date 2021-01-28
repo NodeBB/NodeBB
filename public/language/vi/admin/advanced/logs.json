@@ -1,7 +1,7 @@
 {
 	"logs": "Nhật ký",
 	"control-panel": "Bảng điều khiển log",
-	"reload": "Tải lại log",
+	"reload": "Tải Lại Nhật Ký",
 	"clear": "Xóa các log",
 	"clear-success": "Các log đã được xóa!"
 }

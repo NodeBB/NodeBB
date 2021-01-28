@@ -93,6 +93,8 @@
     "guest": "Vizitator",
     "guests": "Vizitatori",
     "former_user": "A Former User",
+    "system-user": "System",
+    "unknown-user": "Unknown user",
     "updated.title": "Forumul a fost actualizat",
     "updated.message": "Acest forum a fost actualizat la ultima version. Apasă aici pentru a reîmprospăta pagina.",
     "privacy": "Intimitate",

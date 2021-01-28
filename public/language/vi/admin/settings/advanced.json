@@ -19,7 +19,7 @@
 	"hsts.enabled": "Enabled HSTS (recommended)",
 	"hsts.maxAge": "HSTS Max Age",
 	"hsts.subdomains": "Include subdomains in HSTS header",
-	"hsts.preload": "Allow preloading of HSTS header",
+	"hsts.preload": "Cho phép tải trước phần đầu HSTS",
 	"hsts.help": "Nếu bật, một phần đầu trang HSTS sẽ được đặt cho trang web này. Bạn có thể chọn bao gồm tên miền phụ và cờ tải trước trong phần đầu trang của mình. Nếu nghi ngờ, bạn có thể bỏ chọn. <a href=\"%1\">Thêm thông tin <i class=\"fa fa-external-link\"></i></a>",
 	"traffic-management": "Quản lý lưu lượng",
 	"traffic.help": "NodeBB uses a module that automatically denies requests in high-traffic situations. You can tune these settings here, although the defaults are a good starting point.",
