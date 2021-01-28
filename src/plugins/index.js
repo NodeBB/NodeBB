@@ -1,6 +1,7 @@
 'use strict';
 
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 const async = require('async');
 const winston = require('winston');
@@ -26,10 +27,21 @@ Plugins.data = require('./data');
 Plugins.hooks = require('./hooks');
 
 // Backwards compatibility for hooks, remove in v1.18.0
-Plugins.registerHook = Plugins.hooks.register;
-Plugins.unregisterHook = Plugins.hooks.unregister;
-Plugins.fireHook = Plugins.hooks.fire;
-Plugins.hasListeners = Plugins.hooks.hasListeners;
+const _deprecate = async function () {
+	const args = Array.from(arguments);
+	const oldMethod = args.shift();
+	const newMethod = args.shift();
+	const method = args.shift();
+	const stack = new Error().stack.toString().split(os.EOL);
+	const context = stack[stack.findIndex(line => line.startsWith('    at Object.wrapperCallback')) + 1];
+	winston.warn(`[plugins/hooks] ${oldMethod} has been deprecated, call ${newMethod} instead.`);
+	winston.warn(`[plugins/hooks] ${context}`);
+	return method.apply(Plugins.hooks, args);
+};
+Plugins.registerHook = _deprecate.bind(null, 'Plugins.registerHook', 'Plugins.hooks.register', Plugins.hooks.register);
+Plugins.unregisterHook = _deprecate.bind(null, 'Plugins.unregisterHook', 'Plugins.hooks.unregister', Plugins.hooks.unregister);
+Plugins.fireHook = _deprecate.bind(null, 'Plugins.fireHook', 'Plugins.hooks.fire', Plugins.hooks.fire);
+Plugins.hasListeners = _deprecate.bind(null, 'Plugins.hasListeners', 'Plugins.hooks.hasListeners', Plugins.hooks.hasListeners);
 // end
 
 Plugins.getPluginPaths = Plugins.data.getPluginPaths;
