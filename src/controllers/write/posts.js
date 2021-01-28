@@ -1,6 +1,7 @@
 'use strict';
 
 const posts = require('../../posts');
+const privileges = require('../../privileges');
 
 const api = require('../../api');
 const helpers = require('../helpers');
@@ -94,3 +95,19 @@ Posts.restoreDiff = async (req, res) => {
 	helpers.formatApiResponse(200, res, await api.posts.restoreDiff(req, { ...req.params }));
 };
 
+Posts.deleteDiff = async (req, res) => {
+	if (!parseInt(req.params.pid, 10)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	const cid = await posts.getCidByPid(req.params.pid);
+	const isModerator = privileges.users.isModerator(cid, req.uid);
+
+	if (!isModerator) {
+		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
+	}
+
+	await posts.diffs.delete(req.params.pid, req.params.timestamp, req.uid);
+
+	helpers.formatApiResponse(200, res);
+};

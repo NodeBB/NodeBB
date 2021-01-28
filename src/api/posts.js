@@ -260,9 +260,14 @@ postsAPI.getDiffs = async (caller, data) => {
 	let usernames = await user.getUsersFields(uids, ['username']);
 	usernames = usernames.map(userObj => (userObj.uid ? userObj.username : null));
 
+	const cid = await posts.getCidByPid(data.pid);
+	const isModerator = await privileges.users.isModerator(cid, caller.uid);
+
 	let canEdit = true;
 	try {
-		await user.isPrivilegedOrSelf(caller.uid, post.uid);
+		if (!isModerator) {
+			await user.isPrivilegedOrSelf(caller.uid, post.uid);
+		}
 	} catch (e) {
 		canEdit = false;
 	}
@@ -276,6 +281,7 @@ postsAPI.getDiffs = async (caller, data) => {
 			username: usernames[idx],
 		})),
 		editable: canEdit,
+		deletable: isModerator,
 	};
 };
 
