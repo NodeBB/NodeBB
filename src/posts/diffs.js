@@ -71,13 +71,53 @@ module.exports = function (Posts) {
 		});
 	};
 
-	async function postDiffLoad(pid, since, uid) {
-		// Retrieves all diffs made since `since` and replays them to reconstruct what the post looked like at `since`
-		since = parseInt(since, 10);
+	Diffs.delete = async function (pid, timestamp, uid) {
+		getValidatedTimestamp(timestamp);
 
-		if (isNaN(since) || since > Date.now()) {
+		const [post, diffs, timestamps] = await Promise.all([
+			Posts.getPostSummaryByPids([pid], uid, { parse: false }),
+			Diffs.get(pid),
+			Diffs.list(pid),
+		]);
+
+		const timestampIndex = timestamps.indexOf(timestamp);
+		const lastTimestampIndex = timestamps.length - 1;
+
+		if (timestamp === String(post[0].timestamp)) {
+			return Promise.all([
+				db.delete(`diff:${pid}.${timestamps[lastTimestampIndex]}`),
+				db.listRemoveAll(`post:${pid}:diffs`, timestamps[lastTimestampIndex]),
+			]);
+		}
+		if (timestampIndex === 0 || timestampIndex === -1) {
 			throw new Error('[[error:invalid-data]]');
 		}
+
+		const postContent = validator.unescape(post[0].content);
+		const versionContents = {};
+		for (let i = 0, content = postContent; i < timestamps.length; ++i) {
+			versionContents[timestamps[i]] = applyPatch(content, diffs[i]);
+			content = versionContents[timestamps[i]];
+		}
+
+		/* eslint-disable no-await-in-loop */
+		for (let i = lastTimestampIndex; i >= timestampIndex; --i) {
+			const newContentIndex = i === timestampIndex ? i - 2 : i - 1;
+			const timestampToUpdate = newContentIndex + 1;
+			const newContent = newContentIndex < 0 ? postContent : versionContents[timestamps[newContentIndex]];
+			const patch = diff.createPatch('', newContent, versionContents[timestamps[i]]);
+			await db.setObject('diff:' + pid + '.' + timestamps[timestampToUpdate], { patch });
+		}
+
+		return Promise.all([
+			db.delete(`diff:${pid}.${timestamp}`),
+			db.listRemoveAll(`post:${pid}:diffs`, timestamp),
+		]);
+	};
+
+	async function postDiffLoad(pid, since, uid) {
+		// Retrieves all diffs made since `since` and replays them to reconstruct what the post looked like at `since`
+		since = getValidatedTimestamp(since);
 
 		const [post, diffs] = await Promise.all([
 			Posts.getPostSummaryByPids([pid], uid, { parse: false }),
@@ -85,14 +125,25 @@ module.exports = function (Posts) {
 		]);
 
 		// Replace content with re-constructed content from that point in time
-		post[0].content = diffs.reduce(function (content, currentDiff) {
-			const result = diff.applyPatch(content, currentDiff.patch, {
-				fuzzFactor: 1,
-			});
-
-			return typeof result === 'string' ? result : content;
-		}, validator.unescape(post[0].content));
+		post[0].content = diffs.reduce(applyPatch, validator.unescape(post[0].content));
 
 		return post[0];
+	}
+
+	function getValidatedTimestamp(timestamp) {
+		timestamp = parseInt(timestamp, 10);
+
+		if (isNaN(timestamp) || timestamp > Date.now()) {
+			throw new Error('[[error:invalid-data]]');
+		}
+
+		return timestamp;
+	}
+
+	function applyPatch(content, aDiff) {
+		const result = diff.applyPatch(content, aDiff.patch, {
+			fuzzFactor: 1,
+		});
+		return typeof result === 'string' ? result : content;
 	}
 };
