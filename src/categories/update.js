@@ -48,7 +48,10 @@ module.exports = function (Categories) {
 			return await updateParent(cid, value);
 		} else if (key === 'tagWhitelist') {
 			return await updateTagWhitelist(cid, value);
+		} else if (key === 'name') {
+			return await updateName(cid, value);
 		}
+
 		await db.setObjectField('category:' + cid, key, value);
 		if (key === 'order') {
 			await updateOrder(cid, value);
@@ -95,4 +98,11 @@ module.exports = function (Categories) {
 		const parsedDescription = await plugins.hooks.fire('filter:parse.raw', description);
 		await Categories.setCategoryField(cid, 'descriptionParsed', parsedDescription);
 	};
+
+	async function updateName(cid, newName) {
+		const oldName = await Categories.getCategoryField(cid, 'name');
+		await db.sortedSetRemove('categories:name', oldName.substr(0, 200).toLowerCase() + ':' + cid);
+		await db.sortedSetAdd('categories:name', 0, newName.substr(0, 200).toLowerCase() + ':' + cid);
+		await db.setObjectField('category:' + cid, 'name', newName);
+	}
 };
