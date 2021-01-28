@@ -15,7 +15,7 @@ module.exports = function (Categories) {
 		const parentCid = data.parentCid ? data.parentCid : 0;
 		const cid = await db.incrObjectField('global', 'nextCid');
 
-		data.name = data.name || 'Category ' + cid;
+		data.name = String(data.name || 'Category ' + cid);
 		const slug = cid + '/' + slugify(data.name);
 		const order = data.order || cid;	// If no order provided, place it at the end
 		const colours = Categories.assignColours();
@@ -53,7 +53,12 @@ module.exports = function (Categories) {
 		if (!category.descriptionParsed) {
 			await Categories.parseDescription(category.cid, category.description);
 		}
-		await db.sortedSetsAdd(['categories:cid', 'cid:' + parentCid + ':children'], category.order, category.cid);
+
+		await db.sortedSetAddBulk([
+			['categories:cid', category.order, category.cid],
+			['cid:' + parentCid + ':children', category.order, category.cid],
+			['categories:name', 0, data.name.substr(0, 200).toLowerCase() + ':' + category.cid],
+		]);
 
 		const defaultPrivileges = [
 			'groups:find',
