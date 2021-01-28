@@ -242,6 +242,19 @@ get:
                         flagId:
                           type: number
                           description: The flag identifier, if this particular post has been flagged before
+                  events:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                        id:
+                          type: number
+                        timestamp:
+                          type: number
+                        timestampISO:
+                          type: string
                   category:
                     $ref: ../../components/schemas/CategoryObject.yaml#/CategoryObject
                   tagWhitelist:

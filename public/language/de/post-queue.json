@@ -1,3 +1,4 @@
+
 {
 	"post-queue": "Beitragswarteschlange",
 	"description": "Es gibt keine Beiträge in der Warteschlange. <br> Um dieses Feature zu aktivieren, gehe auf <a href=\"%1\">Einstellungen &rarr; Posts &rarr; Beitragswarteschlange</a> und aktiviere <strong>Beitragswarteschlange</strong>.",
@@ -7,5 +8,11 @@
 	"content": "Inhalt",
 	"posted": "Gepostet",
 	"reply-to": "Auf \"%1\" antworten",
-	"content-editable": "Du kannst auf den einzelnen Inhalt klicken um ihn zu ändern bevor du ihn postest."
+	"content-editable": "Click on content to edit",
+	"category-editable": "Click on category to edit",
+	"title-editable": "Click on title to edit",
+	"reply": "Reply",
+	"topic": "Topic",
+	"accept": "Accept",
+	"reject": "Reject"
 }

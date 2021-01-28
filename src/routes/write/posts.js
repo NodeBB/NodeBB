@@ -18,11 +18,17 @@ module.exports = function () {
 	setupApiRoute(router, 'put', '/:pid/state', [...middlewares, middleware.assert.post], controllers.write.posts.restore);
 	setupApiRoute(router, 'delete', '/:pid/state', [...middlewares, middleware.assert.post], controllers.write.posts.delete);
 
+	setupApiRoute(router, 'put', '/:pid/move', [...middlewares, middleware.assert.post, middleware.checkRequired.bind(null, ['tid'])], controllers.write.posts.move);
+
 	setupApiRoute(router, 'put', '/:pid/vote', [...middlewares, middleware.checkRequired.bind(null, ['delta']), middleware.assert.post], controllers.write.posts.vote);
 	setupApiRoute(router, 'delete', '/:pid/vote', [...middlewares, middleware.assert.post], controllers.write.posts.unvote);
 
 	setupApiRoute(router, 'put', '/:pid/bookmark', [...middlewares, middleware.assert.post], controllers.write.posts.bookmark);
 	setupApiRoute(router, 'delete', '/:pid/bookmark', [...middlewares, middleware.assert.post], controllers.write.posts.unbookmark);
+
+	setupApiRoute(router, 'get', '/:pid/diffs', [middleware.authenticateOrGuest, middleware.assert.post], controllers.write.posts.getDiffs);
+	setupApiRoute(router, 'get', '/:pid/diffs/:since', [middleware.authenticateOrGuest, middleware.assert.post], controllers.write.posts.loadDiff);
+	setupApiRoute(router, 'put', '/:pid/diffs/:since', [...middlewares, middleware.assert.post], controllers.write.posts.restoreDiff);
 
 	return router;
 };

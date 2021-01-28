@@ -35,10 +35,12 @@ module.exports = function () {
 	setupApiRoute(router, 'put', '/:tid/tags', [...middlewares, middleware.checkRequired.bind(null, ['tags']), middleware.assert.topic], controllers.write.topics.addTags);
 	setupApiRoute(router, 'delete', '/:tid/tags', [...middlewares, middleware.assert.topic], controllers.write.topics.deleteTags);
 
-	setupApiRoute(router, 'get', '/:tid/thumbs', [], controllers.write.topics.getThumbs);
+	setupApiRoute(router, 'get', '/:tid/thumbs', middleware.authenticateOrGuest, controllers.write.topics.getThumbs);
 	setupApiRoute(router, 'post', '/:tid/thumbs', [multipartMiddleware, middleware.validateFiles, ...middlewares], controllers.write.topics.addThumb);
 	setupApiRoute(router, 'put', '/:tid/thumbs', [], controllers.write.topics.migrateThumbs);
 	setupApiRoute(router, 'delete', '/:tid/thumbs', [...middlewares, middleware.checkRequired.bind(null, ['path'])], controllers.write.topics.deleteThumb);
+
+	setupApiRoute(router, 'get', '/:tid/events', [middleware.authenticateOrGuest, middleware.assert.topic], controllers.write.topics.getEvents);
 
 	return router;
 };

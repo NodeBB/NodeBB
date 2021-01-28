@@ -135,7 +135,9 @@ before(async function () {
 
 
 	await db.init();
-	await db.createIndices();
+	if (db.hasOwnProperty('createIndices')) {
+		await db.createIndices();
+	}
 	await setupMockDefaults();
 	await db.initSessionStore();
 

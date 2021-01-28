@@ -24,10 +24,11 @@ module.exports = function (Groups) {
 			values: values,
 		}));
 
-		// Case some values as bool (if not boolean already)
+		// Cast some values as bool (if not boolean already)
+		// 'true' and '1' = true, everything else false
 		['userTitleEnabled', 'private', 'hidden', 'disableJoinRequests', 'disableLeave'].forEach((prop) => {
 			if (values.hasOwnProperty(prop) && typeof values[prop] !== 'boolean') {
-				values[prop] = !!parseInt(values[prop], 10);
+				values[prop] = values[prop] === 'true' || parseInt(values[prop], 10) === 1;
 			}
 		});
 

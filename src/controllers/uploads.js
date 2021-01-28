@@ -16,7 +16,12 @@ const helpers = require('./helpers');
 const uploadsController = module.exports;
 
 uploadsController.upload = async function (req, res, filesIterator) {
-	let files = req.files.files;
+	let files;
+	try {
+		files = req.files.files;
+	} catch (e) {
+		return helpers.formatApiResponse(400, res);
+	}
 
 	// These checks added because of odd behaviour by request: https://github.com/request/request/issues/2445
 	if (!Array.isArray(files)) {
@@ -32,7 +37,9 @@ uploadsController.upload = async function (req, res, filesIterator) {
 			/* eslint-disable no-await-in-loop */
 			images.push(await filesIterator(fileObj));
 		}
+
 		helpers.formatApiResponse(200, res, { images });
+
 		return images;
 	} catch (err) {
 		return helpers.formatApiResponse(500, res, err);

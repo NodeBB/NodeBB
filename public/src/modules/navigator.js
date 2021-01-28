@@ -1,6 +1,6 @@
 'use strict';
 
-define('navigator', ['forum/pagination', 'components'], function (pagination, components) {
+define('navigator', ['forum/pagination', 'components', 'hooks'], function (pagination, components, hooks) {
 	var navigator = {};
 	var index = 0;
 	var count = 0;
@@ -142,7 +142,7 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		}
 
 		var mouseDragging = false;
-		$(window).on('action:ajaxify.end', function () {
+		hooks.on('action:ajaxify.end', function () {
 			renderPostIndex = null;
 		});
 		$('.pagination-block .dropdown-menu').parent().on('shown.bs.dropdown', function () {

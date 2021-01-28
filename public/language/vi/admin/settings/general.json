@@ -12,7 +12,7 @@
 	"browser-title-help": "If no browser title is specified, the site title will be used",
 	"title-layout": "Title Layout",
 	"title-layout-help": "Define how the browser title will be structured ie. &#123;pageTitle&#125; | &#123;browserTitle&#125;",
-	"description.placeholder": "A short description about your community",
+	"description.placeholder": "Mô tả ngắn gọn về cộng đồng của bạn",
 	"description": "Site Description",
 	"keywords": "Site Keywords",
 	"keywords-placeholder": "Keywords describing your community, comma-separated",
@@ -22,7 +22,7 @@
 	"logo.upload": "Upload",
 	"logo.url": "URL",
 	"logo.url-placeholder": "The URL of the site logo",
-	"logo.url-help": "When the logo is clicked, send users to this address. If left blank, user will be sent to the forum index.",
+	"logo.url-help": "Khi nhấp vào logo, ​​hãy đưa người dùng đến địa chỉ này. Nếu để trống, người dùng sẽ được chuyển đến trang chủ diễn đàn.",
 	"logo.alt-text": "Alt Text",
 	"log.alt-text-placeholder": "Alternative text for accessibility",
 	"favicon": "Favicon",
@@ -37,8 +37,8 @@
 	"outgoing-links.warning-page": "Use Outgoing Links Warning Page",
 	"search-default-sort-by": "Search default sort by",
 	"outgoing-links.whitelist": "Domains to whitelist for bypassing the warning page",
-	"site-colors": "Site Color Metadata",
-	"theme-color": "Theme Color",
-	"background-color": "Background Color",
-	"background-color-help": "Color used for splash screen background when website is installed as a PWA"
+	"site-colors": "Dữ Liệu Mô Tả Màu Trang",
+	"theme-color": "Màu Giao Diện",
+	"background-color": "Màu Nền",
+	"background-color-help": "Màu được sử dụng cho nền màn hình khởi động khi trang web được cài đặt làm PWA"
 }

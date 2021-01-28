@@ -1,14 +1,14 @@
 {
-	"figure-x": "Figure %1",
-	"error-events-per-day": "<code>%1</code> events per day",
-	"error.404": "404 Not Found",
-	"error.503": "503 Service Unavailable",
-	"manage-error-log": "Manage Error Log",
-	"export-error-log": "Export Error Log (CSV)",
-	"clear-error-log": "Clear Error Log",
+	"figure-x": "Hình %1",
+	"error-events-per-day": "<code>%1</code> sự kiện mỗi ngày",
+	"error.404": "404 Không Tìm Thấy",
+	"error.503": "503 Dịch Vụ Không Sẵn Có",
+	"manage-error-log": "Quản Lý Nhật Ký Lỗi",
+	"export-error-log": "Xuất Nhật ký Lỗi (CSV)",
+	"clear-error-log": "Xóa Nhật Ký Lỗi",
 	"route": "Route",
-	"count": "Count",
-	"no-routes-not-found": "Hooray! No 404 errors!",
-	"clear404-confirm": "Are you sure you wish to clear the 404 error logs?",
-	"clear404-success": "\"404 Not Found\" errors cleared"
+	"count": "Số lượng",
+	"no-routes-not-found": "Hoan hô! Không có lỗi 404!",
+	"clear404-confirm": "Bạn có chắc chắn muốn xóa nhật ký lỗi 404 không?",
+	"clear404-success": "Đã xóa lỗi \"404 Không Tìm Lấy\""
 }

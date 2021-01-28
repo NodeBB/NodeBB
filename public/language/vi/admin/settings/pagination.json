@@ -1,9 +1,9 @@
 {
 	"pagination": "Pagination Settings",
-	"enable": "Paginate topics and posts instead of using infinite scroll.",
+	"enable": "Phân trang chủ đề và bài đăng thay vì sử dụng cuộn vô hạn.",
 	"topics": "Topic Pagination",
-	"posts-per-page": "Posts per Page",
-	"max-posts-per-page": "Maximum posts per page",
+	"posts-per-page": "Số Bài trên mỗi Trang",
+	"max-posts-per-page": "Số bài đăng tối đa trên mỗi trang",
 	"categories": "Category Pagination",
 	"topics-per-page": "Topics per Page",
 	"max-topics-per-page": "Maximum topics per page"

@@ -133,6 +133,7 @@
     "chat-delete-duration-expired": "Możesz skasować komunikat czatu tylko przez %1 sekund(y) po napisaniu.",
     "chat-deleted-already": "Ten komunikat czatu jest już skasowany",
     "chat-restored-already": "Ta wiadomość została już przywrócona",
+    "chat-room-does-not-exist": "Chat room does not exist.",
     "already-voting-for-this-post": "Już zagłosowałeś na ten post",
     "reputation-system-disabled": "System reputacji jest wyłączony.",
     "downvoting-disabled": "Negatywna ocena postów jest wyłączona",

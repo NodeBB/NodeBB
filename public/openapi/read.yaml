@@ -169,12 +169,6 @@ paths:
     $ref: 'read/user/uid/userslug/export/uploads.yaml'
   "/api/user/uid/{userslug}/export/profile":
     $ref: 'read/user/uid/userslug/export/profile.yaml'
-  "/api/{type}/pid/{id}":
-    $ref: 'read/post/pid/id.yaml'
-  "/api/{type}/tid/{id}":
-    $ref: 'read/topic/tid/id.yaml'
-  "/api/{type}/cid/{id}":
-    $ref: 'read/category/cid/id.yaml'
   /api/categories:
     $ref: 'read/categories.yaml'
   "/api/categories/{cid}/moderators":

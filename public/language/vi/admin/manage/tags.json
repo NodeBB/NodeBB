@@ -14,6 +14,6 @@
 
 	"alerts.editing": "Editing tag(s)",
 	"alerts.confirm-delete": "Do you want to delete the selected tags?",
-	"alerts.update-success": "Tag Updated!",
-	"reset-colors": "Reset colors"
+	"alerts.update-success": "Đã Cập Nhật Thẻ!",
+	"reset-colors": "Đặt lại màu"
 }

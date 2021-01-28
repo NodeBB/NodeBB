@@ -98,6 +98,7 @@ module.exports = function (Topics) {
 			], tid),
 			deleteTopicFromCategoryAndUser(tid),
 			Topics.deleteTopicTags(tid),
+			Topics.events.purge(tid),
 			reduceCounters(tid),
 		]);
 		plugins.hooks.fire('action:topic.purge', { topic: deletedTopic, uid: uid });

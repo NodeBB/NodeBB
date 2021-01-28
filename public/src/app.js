@@ -55,12 +55,14 @@ app.cacheBuster = null;
 				}
 			};
 			document.body.addEventListener('click', earlyClick);
-			$(window).on('action:ajaxify.end', function () {
-				document.body.removeEventListener('click', earlyClick);
-				earlyQueue.forEach(function (el) {
-					el.click();
+			require(['hooks'], function (hooks) {
+				hooks.on('action:ajaxify.end', function () {
+					document.body.removeEventListener('click', earlyClick);
+					earlyQueue.forEach(function (el) {
+						el.click();
+					});
+					earlyQueue = [];
 				});
-				earlyQueue = [];
 			});
 		} else {
 			setTimeout(app.handleEarlyClicks, 50);

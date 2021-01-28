@@ -85,8 +85,8 @@ describe('API', async () => {
 	}
 
 	after(async function () {
-		plugins.unregisterHook('core', 'filter:search.query', dummySearchHook);
-		plugins.unregisterHook('emailer-test', 'filter:email.send');
+		plugins.hooks.unregister('core', 'filter:search.query', dummySearchHook);
+		plugins.hooks.unregister('emailer-test', 'filter:email.send');
 	});
 
 	async function setupData() {
@@ -135,6 +135,12 @@ describe('API', async () => {
 			title: 'Test Topic 2',
 			content: 'Test topic 2 content',
 		});
+		await topics.post({
+			uid: unprivUid,
+			cid: testCategory.cid,
+			title: 'Test Topic 3',
+			content: 'Test topic 3 content',
+		});
 
 		// Create a sample flag
 		await flags.create('post', 1, unprivUid, 'sample reasons', Date.now());
@@ -157,12 +163,12 @@ describe('API', async () => {
 		await wait(5000);
 
 		// Attach a search hook so /api/search is enabled
-		plugins.registerHook('core', {
+		plugins.hooks.register('core', {
 			hook: 'filter:search.query',
 			method: dummySearchHook,
 		});
 		// Attach an emailer hook so related requests do not error
-		plugins.registerHook('emailer-test', {
+		plugins.hooks.register('emailer-test', {
 			hook: 'filter:email.send',
 			method: dummyEmailerHook,
 		});
@@ -332,7 +338,7 @@ describe('API', async () => {
 					}
 				});
 
-				it('should resolve with a 200 when called', async () => {
+				it('should not error out when called', async () => {
 					await setupData();
 
 					if (csrfToken) {
@@ -372,7 +378,7 @@ describe('API', async () => {
 							});
 						}
 					} catch (e) {
-						assert(!e, `${method.toUpperCase()} ${path} resolved with ${e.message}`);
+						assert(!e, `${method.toUpperCase()} ${path} errored with: ${e.message}`);
 					}
 				});
 

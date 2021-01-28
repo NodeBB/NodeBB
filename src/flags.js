@@ -36,7 +36,11 @@ Flags.init = async function () {
 		if (!Array.isArray(value)) {
 			sets.push(prefix + value);
 		} else if (value.length) {
-			value.forEach(x => orSets.push(prefix + x));
+			if (value.length === 1) {
+				sets.push(prefix + value[0]);
+			} else {
+				orSets.push(value.map(x => prefix + x));
+			}
 		}
 	}
 
@@ -66,6 +70,10 @@ Flags.init = async function () {
 				switch (key) {
 					case 'mine':
 						sets.push('flags:byAssignee:' + uid);
+						break;
+
+					case 'unresolved':
+						prepareSets(sets, orSets, 'flags:byState:', ['open', 'wip']);
 						break;
 				}
 			},
@@ -113,9 +121,13 @@ Flags.get = async function (flagId) {
 	return data.flag;
 };
 
-Flags.list = async function (data) {
-	const filters = data.filters || {};
+Flags.getCount = async function ({ uid, filters }) {
+	filters = filters || {};
+	const flagIds = await Flags.getFlagIdsWithFilters({ filters, uid });
+	return flagIds.length;
+};
 
+Flags.getFlagIdsWithFilters = async function ({ filters, uid }) {
 	let sets = [];
 	const orSets = [];
 
@@ -126,7 +138,7 @@ Flags.list = async function (data) {
 	for (var type in filters) {
 		if (filters.hasOwnProperty(type)) {
 			if (Flags._filters.hasOwnProperty(type)) {
-				Flags._filters[type](sets, orSets, filters[type], data.uid);
+				Flags._filters[type](sets, orSets, filters[type], uid);
 			} else {
 				winston.warn('[flags/list] No flag filter type found: ' + type);
 			}
@@ -142,7 +154,12 @@ Flags.list = async function (data) {
 	}
 
 	if (orSets.length) {
-		const _flagIds = await db.getSortedSetRevUnion({ sets: orSets, start: 0, stop: -1, aggregate: 'MAX' });
+		let _flagIds = await Promise.all(orSets.map(async orSet => await db.getSortedSetRevUnion({ sets: orSet, start: 0, stop: -1, aggregate: 'MAX' })));
+
+		// Each individual orSet is ANDed together to construct the final list of flagIds
+		_flagIds = _.intersection(..._flagIds);
+
+		// Merge with flagIds returned by sets
 		if (sets.length) {
 			// If flag ids are already present, return a subset of flags that are in both sets
 			flagIds = _.intersection(flagIds, _flagIds);
@@ -152,6 +169,15 @@ Flags.list = async function (data) {
 		}
 	}
 
+	return flagIds;
+};
+
+Flags.list = async function (data) {
+	const filters = data.filters || {};
+	let flagIds = await Flags.getFlagIdsWithFilters({
+		filters,
+		uid: data.uid,
+	});
 	flagIds = await Flags.sort(flagIds, data.sort);
 
 	// Create subset for parsing based on page number (n=20)
@@ -607,18 +633,20 @@ Flags.resolveFlag = async function (type, id, uid) {
 };
 
 Flags.resolveUserPostFlags = async function (uid, callerUid) {
-	await batch.processSortedSet('uid:' + uid + ':posts', async function (pids) {
-		let postData = await posts.getPostsFields(pids, ['pid', 'flagId']);
-		postData = postData.filter(p => p && p.flagId);
-		for (const postObj of postData) {
-			if (parseInt(postObj.flagId, 10)) {
-				// eslint-disable-next-line no-await-in-loop
-				await Flags.update(postObj.flagId, callerUid, { state: 'resolved' });
+	if (meta.config['flags:autoResolveOnBan']) {
+		await batch.processSortedSet('uid:' + uid + ':posts', async function (pids) {
+			let postData = await posts.getPostsFields(pids, ['pid', 'flagId']);
+			postData = postData.filter(p => p && p.flagId);
+			for (const postObj of postData) {
+				if (parseInt(postObj.flagId, 10)) {
+					// eslint-disable-next-line no-await-in-loop
+					await Flags.update(postObj.flagId, callerUid, { state: 'resolved' });
+				}
 			}
-		}
-	}, {
-		batch: 500,
-	});
+		}, {
+			batch: 500,
+		});
+	}
 };
 
 Flags.getHistory = async function (flagId) {

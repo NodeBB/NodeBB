@@ -23,7 +23,7 @@ describe('Plugins', function () {
 	});
 
 	it('should return true if hook has listeners', function (done) {
-		assert(plugins.hasListeners('filter:parse.post'));
+		assert(plugins.hooks.hasListeners('filter:parse.post'));
 		done();
 	});
 
@@ -37,10 +37,10 @@ describe('Plugins', function () {
 			callback(null, data);
 		}
 
-		plugins.registerHook('test-plugin', { hook: 'filter:test.hook', method: filterMethod1 });
-		plugins.registerHook('test-plugin', { hook: 'filter:test.hook', method: filterMethod2 });
+		plugins.hooks.register('test-plugin', { hook: 'filter:test.hook', method: filterMethod1 });
+		plugins.hooks.register('test-plugin', { hook: 'filter:test.hook', method: filterMethod2 });
 
-		plugins.fireHook('filter:test.hook', { foo: 1 }, function (err, data) {
+		plugins.hooks.fire('filter:test.hook', { foo: 1 }, function (err, data) {
 			assert.ifError(err);
 			assert.equal(data.foo, 7);
 			done();
@@ -59,10 +59,10 @@ describe('Plugins', function () {
 			});
 		}
 
-		plugins.registerHook('test-plugin', { hook: 'filter:test.hook2', method: method1 });
-		plugins.registerHook('test-plugin', { hook: 'filter:test.hook2', method: method2 });
+		plugins.hooks.register('test-plugin', { hook: 'filter:test.hook2', method: method1 });
+		plugins.hooks.register('test-plugin', { hook: 'filter:test.hook2', method: method2 });
 
-		plugins.fireHook('filter:test.hook2', { foo: 1 }, function (err, data) {
+		plugins.hooks.fire('filter:test.hook2', { foo: 1 }, function (err, data) {
 			assert.ifError(err);
 			assert.equal(data.foo, 7);
 			done();
@@ -76,8 +76,8 @@ describe('Plugins', function () {
 				reject(new Error('nope'));
 			});
 		}
-		plugins.registerHook('test-plugin', { hook: 'filter:test.hook3', method: method });
-		plugins.fireHook('filter:test.hook3', { foo: 1 }, function (err) {
+		plugins.hooks.register('test-plugin', { hook: 'filter:test.hook3', method: method });
+		plugins.hooks.fire('filter:test.hook3', { foo: 1 }, function (err) {
 			assert(err);
 			done();
 		});
@@ -89,8 +89,8 @@ describe('Plugins', function () {
 			done();
 		}
 
-		plugins.registerHook('test-plugin', { hook: 'action:test.hook', method: actionMethod });
-		plugins.fireHook('action:test.hook', { bar: 'test' });
+		plugins.hooks.register('test-plugin', { hook: 'action:test.hook', method: actionMethod });
+		plugins.hooks.fire('action:test.hook', { bar: 'test' });
 	});
 
 	it('should register and fire a static hook', function (done) {
@@ -99,8 +99,8 @@ describe('Plugins', function () {
 			callback();
 		}
 
-		plugins.registerHook('test-plugin', { hook: 'static:test.hook', method: actionMethod });
-		plugins.fireHook('static:test.hook', { bar: 'test' }, function (err) {
+		plugins.hooks.register('test-plugin', { hook: 'static:test.hook', method: actionMethod });
+		plugins.hooks.fire('static:test.hook', { bar: 'test' }, function (err) {
 			assert.ifError(err);
 			done();
 		});
@@ -113,8 +113,8 @@ describe('Plugins', function () {
 				resolve();
 			});
 		}
-		plugins.registerHook('test-plugin', { hook: 'static:test.hook', method: method });
-		plugins.fireHook('static:test.hook', { bar: 'test' }, function (err) {
+		plugins.hooks.register('test-plugin', { hook: 'static:test.hook', method: method });
+		plugins.hooks.fire('static:test.hook', { bar: 'test' }, function (err) {
 			assert.ifError(err);
 			done();
 		});
@@ -127,10 +127,10 @@ describe('Plugins', function () {
 				reject(new Error('just because'));
 			});
 		}
-		plugins.registerHook('test-plugin', { hook: 'static:test.hook', method: method });
-		plugins.fireHook('static:test.hook', { bar: 'test' }, function (err) {
+		plugins.hooks.register('test-plugin', { hook: 'static:test.hook', method: method });
+		plugins.hooks.fire('static:test.hook', { bar: 'test' }, function (err) {
 			assert.strictEqual(err.message, 'just because');
-			plugins.unregisterHook('test-plugin', 'static:test.hook', method);
+			plugins.hooks.unregister('test-plugin', 'static:test.hook', method);
 			done();
 		});
 	});
@@ -142,10 +142,10 @@ describe('Plugins', function () {
 				setTimeout(resolve, 6000);
 			});
 		}
-		plugins.registerHook('test-plugin', { hook: 'static:test.hook', method: method });
-		plugins.fireHook('static:test.hook', { bar: 'test' }, function (err) {
+		plugins.hooks.register('test-plugin', { hook: 'static:test.hook', method: method });
+		plugins.hooks.fire('static:test.hook', { bar: 'test' }, function (err) {
 			assert.ifError(err);
-			plugins.unregisterHook('test-plugin', 'static:test.hook', method);
+			plugins.hooks.unregister('test-plugin', 'static:test.hook', method);
 			done();
 		});
 	});

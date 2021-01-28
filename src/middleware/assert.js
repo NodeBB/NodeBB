@@ -46,7 +46,7 @@ Assert.topic = helpers.try(async (req, res, next) => {
 
 Assert.post = helpers.try(async (req, res, next) => {
 	if (!await posts.exists(req.params.pid)) {
-		return controllerHelpers.formatApiResponse(404, res, new Error('[[error:no-topic]]'));
+		return controllerHelpers.formatApiResponse(404, res, new Error('[[error:no-post]]'));
 	}
 
 	next();

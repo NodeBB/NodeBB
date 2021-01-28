@@ -39,6 +39,13 @@
 	"ban-ip": "Ban IP",
 	"view-history": "Edit History",
 
+	"locked-by": "Locked by",
+	"unlocked-by": "Unlocked by",
+	"pinned-by": "Pinned by",
+	"unpinned-by": "Unpinned by",
+	"deleted-by": "Deleted by",
+	"restored-by": "Restored by",
+
 	"bookmark_instructions" : "Click here to return to the last read post in this thread.",
 
 	"flag-post": "Flag this post",

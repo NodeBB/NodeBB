@@ -24,5 +24,8 @@
     "interstitial.errors-found": "Não foi possível concluir o seu cadastro:",
     "gdpr_agree_data": "Eu concordo com a coleta e o processamento de minhas informações pessoais neste site.",
     "gdpr_agree_email": "Eu concordo em receber e-mails de resumo e notificação deste site.",
-    "gdpr_consent_denied": "Você deve autorizar não só que este site colete e processe suas informações, como também de permitir que este envie e-mails para você."
+    "gdpr_consent_denied": "Você deve autorizar não só que este site colete e processe suas informações, como também de permitir que este envie e-mails para você.",
+    "invite.error-admin-only": "Direct user registration has been disabled. Please contact an administrator for more details.",
+    "invite.error-invite-only": "Direct user registration has been disabled. You must be invited by an existing user in order to access this forum.",
+    "invite.error-invalid-data": "The registration data received does not correspond to our records. Please contact an administrator for more details"
 }

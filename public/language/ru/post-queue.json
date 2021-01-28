@@ -1,3 +1,4 @@
+
 {
 	"post-queue": "Очередь на публикацию",
 	"description": "В очереди на публикацию нет сообщений. <br> Чтобы включить эту функцию, перейдите в <a href=\"%1\">Настройки &rarr; Сообщения &rarr; Очередь на публикацию</a> и включите <strong>Очередь на публикацию</strong>.",
@@ -7,5 +8,11 @@
 	"content": "Содержимое",
 	"posted": "Время",
 	"reply-to": "Ответ \"%1\"",
-	"content-editable": "Вы можете отредактировать содержимое сообщения перед публикацией"
+	"content-editable": "Click on content to edit",
+	"category-editable": "Click on category to edit",
+	"title-editable": "Click on title to edit",
+	"reply": "Reply",
+	"topic": "Topic",
+	"accept": "Accept",
+	"reject": "Reject"
 }

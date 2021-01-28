@@ -33,14 +33,12 @@ connection.getConnectionOptions = function (postgres) {
 	return _.merge(connOptions, postgres.options || {});
 };
 
-connection.connect = function (options, callback) {
+connection.connect = async function (options) {
 	const Pool = require('pg').Pool;
-
 	const connOptions = connection.getConnectionOptions(options);
-
 	const db = new Pool(connOptions);
-
-	db.connect(function (err) {
-		callback(err, db);
-	});
+	await db.connect();
+	return db;
 };
+
+require('../../promisify')(connection);

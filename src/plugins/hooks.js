@@ -5,12 +5,9 @@ const async = require('async');
 const utils = require('../utils');
 const plugins = require('.');
 
-const Hooks = {};
-module.exports = Hooks;
+const Hooks = module.exports;
 
 Hooks.deprecatedHooks = {
-	'filter:privileges:isUserAllowedTo': 'filter:privileges:isAllowedTo',	// 👋 @ 1.17.0
-	'filter:admin/header.build': 'filter:middleware.renderAdminHeader',	// 👋 @ 1.17.0
 	'filter:router.page': 'response:router.page',	// 👋 @ 2.0.0
 };
 
@@ -92,7 +89,7 @@ Hooks.unregister = function (id, hook, method) {
 Hooks.fire = async function (hook, params) {
 	const hookList = plugins.loadedHooks[hook];
 	const hookType = hook.split(':')[0];
-	if (global.env === 'development' && hook !== 'action:plugins.fireHook') {
+	if (global.env === 'development' && hook !== 'action:plugins.firehook') {
 		winston.verbose('[plugins/fireHook] ' + hook);
 	}
 
@@ -102,8 +99,8 @@ Hooks.fire = async function (hook, params) {
 	}
 	const result = await hookTypeToMethod[hookType](hook, hookList, params);
 
-	if (hook !== 'action:plugins.fireHook') {
-		Hooks.fire('action:plugins.fireHook', { hook: hook, params: params });
+	if (hook !== 'action:plugins.firehook') {
+		Hooks.fire('action:plugins.firehook', { hook: hook, params: params });
 	}
 	if (result !== undefined) {
 		return result;

@@ -16,5 +16,7 @@
 
 	"flags": "Şikayet Ayarları",
 	"flags.limit-per-target": "Maksimum şikayet edilme sayısı",
-	"flags.limit-per-target-placeholder": "Varsayılan: 0"
+	"flags.limit-per-target-placeholder": "Varsayılan: 0",
+	"flags.limit-per-target-help": "When a post or user is flagged multiple times, each additional flag is considered a &quot;report&quot; and added to the original flag. Set this option to a number other than zero to limit the number of reports an item can receive.",
+	"flags.auto-resolve-on-ban": "Automatically resolve all of a user's tickets when they are banned"
 }

@@ -78,6 +78,15 @@
 			<div class="form-group">
 				<label for="flags:limitPerTarget">[[admin/settings/reputation:flags.limit-per-target]]</label>
 				<input type="text" class="form-control" placeholder="[[admin/settings/reputation:flags.limit-per-target-placeholder]]" data-field="flags:limitPerTarget" id="flags:limitPerTarget">
+				<p class="help-block">
+					[[admin/settings/reputation:flags.limit-per-target-help]]
+				</p>
+			</div>
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input type="checkbox" class="mdl-switch__input" data-field="flags:autoResolveOnBan">
+					<span class="mdl-switch__label"><strong>[[admin/settings/reputation:flags.auto-resolve-on-ban]]</strong></span>
+				</label>
 			</div>
 		</form>
 	</div>

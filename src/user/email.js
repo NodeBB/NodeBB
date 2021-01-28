@@ -2,7 +2,6 @@
 'use strict';
 
 const nconf = require('nconf');
-const winston = require('winston');
 
 const user = require('./index');
 const utils = require('../utils');
@@ -86,12 +85,6 @@ UserEmail.sendValidationEmail = async function (uid, options) {
 		await emailer.send(data.template, uid, data);
 	}
 	return confirm_code;
-};
-
-UserEmail.confirm = async function (code) {
-	// TODO: remove in 1.17.0
-	winston.warn('[deprecated] User.email.confirm deprecated use User.email.confirmByCode');
-	await UserEmail.confirmByCode(code);
 };
 
 // confirm email by code sent by confirmation email

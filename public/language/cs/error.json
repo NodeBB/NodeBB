@@ -133,6 +133,7 @@
     "chat-delete-duration-expired": "Je vám umožněno odstranit konverzační zprávy pod dobu %1 sekund/y po jejich odeslání",
     "chat-deleted-already": "Tato konverzační zpráva již byla odstraněna.",
     "chat-restored-already": "Tato konverzační zpráva již byla obnovena.",
+    "chat-room-does-not-exist": "Chat room does not exist.",
     "already-voting-for-this-post": "Již jste v tomto příspěvku hlasoval.",
     "reputation-system-disabled": "Systém reputací je zakázán.",
     "downvoting-disabled": "Systém nesouhlasu je zakázán",

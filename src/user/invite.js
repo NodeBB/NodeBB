@@ -38,6 +38,10 @@ module.exports = function (User) {
 	};
 
 	User.sendInvitationEmail = async function (uid, email, groupsToJoin) {
+		if (!uid) {
+			throw new Error('[[error:invalid-uid]]');
+		}
+
 		const email_exists = await User.getUidByEmail(email);
 		if (email_exists) {
 			throw new Error('[[error:email-taken]]');
@@ -54,11 +58,15 @@ module.exports = function (User) {
 
 	User.verifyInvitation = async function (query) {
 		if (!query.token || !query.email) {
-			throw new Error('[[error:invalid-data]]');
+			if (meta.config.registrationType.startsWith('admin-')) {
+				throw new Error('[[register:invite.error-admin-only]]');
+			} else {
+				throw new Error('[[register:invite.error-invite-only]]');
+			}
 		}
 		const token = await db.getObjectField('invitation:email:' + query.email, 'token');
 		if (!token || token !== query.token) {
-			throw new Error('[[error:invalid-token]]');
+			throw new Error('[[register:invite.error-invalid-data]]');
 		}
 	};
 
@@ -104,6 +112,11 @@ module.exports = function (User) {
 	}
 
 	async function prepareInvitation(uid, email, groupsToJoin) {
+		const inviterExists = await User.exists(uid);
+		if (!inviterExists) {
+			throw new Error('[[error:invalid-uid]]');
+		}
+
 		const token = utils.generateUUID();
 		const registerLink = nconf.get('url') + '/register?token=' + token + '&email=' + encodeURIComponent(email);
 

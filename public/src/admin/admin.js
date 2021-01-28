@@ -30,9 +30,11 @@
 		}, 3600000);
 	}
 
-	$(window).on('action:ajaxify.end', function () {
-		showCorrectNavTab();
-		startLogoutTimer();
+	require(['hooks'], (hooks) => {
+		hooks.on('action:ajaxify.end', () => {
+			showCorrectNavTab();
+			startLogoutTimer();
+		});
 	});
 
 	function showCorrectNavTab() {
@@ -66,12 +68,12 @@
 	});
 
 	function setupNProgress() {
-		require(['nprogress'], function (NProgress) {
+		require(['nprogress', 'hooks'], function (NProgress, hooks) {
 			$(window).on('action:ajaxify.start', function () {
 				NProgress.set(0.7);
 			});
 
-			$(window).on('action:ajaxify.end', function () {
+			hooks.on('action:ajaxify.end', function () {
 				NProgress.done();
 			});
 		});

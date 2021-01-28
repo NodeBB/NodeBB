@@ -2,7 +2,6 @@
 
 var _ = require('lodash');
 const validator = require('validator');
-const path = require('path');
 
 var db = require('../database');
 var posts = require('../posts');
@@ -33,6 +32,7 @@ require('./tools')(Topics);
 Topics.thumbs = require('./thumbs');
 require('./bookmarks')(Topics);
 require('./merge')(Topics);
+Topics.events = require('./events');
 
 Topics.exists = async function (tid) {
 	return await db.exists('topic:' + tid);
@@ -115,7 +115,6 @@ Topics.getTopicsByTids = async function (tids, options) {
 	result.topics.forEach(function (topic, i) {
 		if (topic) {
 			topic.thumbs = result.thumbs[i];
-			restoreThumbValue(topic);
 			topic.category = result.categoriesMap[topic.cid];
 			topic.user = topic.uid ? result.usersMap[topic.uid] : { ...result.usersMap[topic.uid] };
 			if (result.tidToGuestHandle[topic.tid]) {
@@ -143,21 +142,6 @@ Topics.getTopicsByTids = async function (tids, options) {
 	return hookResult.topics;
 };
 
-// Note: Backwards compatibility with old thumb logic, remove in v1.17.0
-function restoreThumbValue(topic) {
-	const isArray = Array.isArray(topic.thumbs);
-	if (isArray && !topic.thumbs.length && topic.thumb) {
-		topic.thumbs = [{
-			id: topic.tid,
-			name: path.basename(topic.thumb),
-			url: topic.thumb,
-		}];
-	} else if (isArray && topic.thumbs.length) {
-		topic.thumb = topic.thumbs[0].url;
-	}
-}
-// end
-
 Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, reverse) {
 	const [
 		posts,
@@ -171,6 +155,7 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 		merger,
 		related,
 		thumbs,
+		events,
 	] = await Promise.all([
 		getMainPostAndReplies(topicData, set, uid, start, stop, reverse),
 		categories.getCategoryData(topicData.cid),
@@ -183,11 +168,12 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 		getMerger(topicData),
 		getRelated(topicData, uid),
 		Topics.thumbs.get(topicData.tid),
+		Topics.events.get(topicData.tid),
 	]);
 
 	topicData.thumbs = thumbs;
-	restoreThumbValue(topicData);
 	topicData.posts = posts;
+	topicData.events = events;
 	topicData.category = category;
 	topicData.tagWhitelist = tagWhitelist[0];
 	topicData.minTags = category.minTags;

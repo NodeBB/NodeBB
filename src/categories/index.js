@@ -21,6 +21,7 @@ require('./activeusers')(Categories);
 require('./recentreplies')(Categories);
 require('./update')(Categories);
 require('./watch')(Categories);
+require('./search')(Categories);
 
 Categories.exists = async function (cid) {
 	if (Array.isArray(cid)) {

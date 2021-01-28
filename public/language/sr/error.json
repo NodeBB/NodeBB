@@ -133,6 +133,7 @@
     "chat-delete-duration-expired": "Време у којем вам је дозвољено брисање порука ћаскања након објављивања: %1 сек.",
     "chat-deleted-already": "Ова порука ћаскања је већ избрисана.",
     "chat-restored-already": "Ова порука ћаскања је већ обновљена.",
+    "chat-room-does-not-exist": "Chat room does not exist.",
     "already-voting-for-this-post": "Већ сте гласали за ову поруку.",
     "reputation-system-disabled": "Угледи су онемогућени.",
     "downvoting-disabled": "Негативно гласање је онемогућено",

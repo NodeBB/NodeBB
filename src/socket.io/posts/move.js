@@ -1,45 +1,33 @@
 'use strict';
 
-const privileges = require('../../privileges');
-const topics = require('../../topics');
-const posts = require('../../posts');
-const socketHelpers = require('../helpers');
+const api = require('../../api');
+const sockets = require('..');
 
 module.exports = function (SocketPosts) {
-	SocketPosts.movePost = async function (socket, data) {
-		await SocketPosts.movePosts(socket, { pids: [data.pid], tid: data.tid });
-	};
-
-	SocketPosts.movePosts = async function (socket, data) {
+	function moveChecks(socket, typeCheck, data) {
 		if (!socket.uid) {
 			throw new Error('[[error:not-logged-in]]');
 		}
 
-		if (!data || !Array.isArray(data.pids) || !data.tid) {
+		if (!data || !typeCheck || !data.tid) {
 			throw new Error('[[error:invalid-data]]');
 		}
+	}
 
-		const canMove = await privileges.topics.isAdminOrMod(data.tid, socket.uid);
-		if (!canMove) {
-			throw new Error('[[error:no-privileges]]');
-		}
+	SocketPosts.movePost = async function (socket, data) {
+		sockets.warnDeprecated(socket, 'PUT /api/v3/posts/:pid/move');
 
-		for (const pid of data.pids) {
-			/* eslint-disable no-await-in-loop */
-			const canMove = await privileges.posts.canMove(pid, socket.uid);
-			if (!canMove) {
-				throw new Error('[[error:no-privileges]]');
-			}
-			await topics.movePostToTopic(socket.uid, pid, data.tid);
+		moveChecks(socket, isFinite(data.pid), data);
+		await api.posts.move(socket, data);
+	};
 
-			const [postDeleted, topicDeleted] = await Promise.all([
-				posts.getPostField(pid, 'deleted'),
-				topics.getTopicField(data.tid, 'deleted'),
-			]);
+	SocketPosts.movePosts = async function (socket, data) {
+		sockets.warnDeprecated(socket, 'PUT /api/v3/posts/:pid/move');
 
-			if (!postDeleted && !topicDeleted) {
-				socketHelpers.sendNotificationToPostOwner(pid, socket.uid, 'move', 'notifications:moved_your_post');
-			}
-		}
+		moveChecks(socket, !Array.isArray(data.pids), data);
+		await Promise.all(data.pids.map(async pid => api.posts.move(socket, {
+			tid: data.tid,
+			pid,
+		})));
 	};
 };

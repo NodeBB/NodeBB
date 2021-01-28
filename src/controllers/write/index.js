@@ -9,3 +9,4 @@ Write.topics = require('./topics');
 Write.posts = require('./posts');
 Write.admin = require('./admin');
 Write.files = require('./files');
+Write.utilities = require('./utilities');

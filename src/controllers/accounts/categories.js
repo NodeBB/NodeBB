@@ -3,6 +3,7 @@
 const user = require('../../user');
 const categories = require('../../categories');
 const accountHelpers = require('./helpers');
+const helpers = require('../helpers');
 
 const categoriesController = module.exports;
 
@@ -25,5 +26,9 @@ categoriesController.get = async function (req, res, next) {
 	});
 	userData.categories = categoriesData;
 	userData.title = '[[pages:account/watched_categories, ' + userData.username + ']]';
+	userData.breadcrumbs = helpers.buildBreadcrumbs([
+		{ text: userData.username, url: '/user/' + userData.userslug },
+		{ text: '[[pages:categories]]' },
+	]);
 	res.render('account/categories', userData);
 };

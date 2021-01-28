@@ -133,6 +133,7 @@
     "chat-delete-duration-expired": "Het is slechts toegestaan om binnen %1 seconde(n) na plaatsen van het chat bericht, deze te verwijderen.",
     "chat-deleted-already": "Dit chat bericht is al verwijderd.",
     "chat-restored-already": "Dit chat bericht is al hersteld.",
+    "chat-room-does-not-exist": "Chat room does not exist.",
     "already-voting-for-this-post": "Je hebt al gestemd voor deze post.",
     "reputation-system-disabled": "Reputatie systeem is uitgeschakeld.",
     "downvoting-disabled": "Negatief stemmen is uitgeschakeld",

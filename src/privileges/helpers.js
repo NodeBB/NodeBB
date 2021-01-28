@@ -34,7 +34,6 @@ helpers.isAllowedTo = async function (privilege, uidOrGroupName, cid) {
 		allowed = await isAllowedToCids(privilege, uidOrGroupName, cid);
 	}
 	if (allowed) {
-		({ allowed } = await plugins.hooks.fire('filter:privileges:isUserAllowedTo', { allowed: allowed, privilege: privilege, uid: uidOrGroupName, cid: cid }));
 		({ allowed } = await plugins.hooks.fire('filter:privileges:isAllowedTo', { allowed: allowed, privilege: privilege, uid: uidOrGroupName, cid: cid }));
 		return allowed;
 	}

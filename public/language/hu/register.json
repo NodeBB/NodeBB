@@ -24,5 +24,8 @@
     "interstitial.errors-found": "Nem tudtuk teljesíteni a regisztrációd:",
     "gdpr_agree_data": "I consent to the collection and processing of my personal information on this website.",
     "gdpr_agree_email": "I consent to receive digest and notification emails from this website.",
-    "gdpr_consent_denied": "You must give consent to this site to collect/process your information, and to send you emails."
+    "gdpr_consent_denied": "You must give consent to this site to collect/process your information, and to send you emails.",
+    "invite.error-admin-only": "Direct user registration has been disabled. Please contact an administrator for more details.",
+    "invite.error-invite-only": "Direct user registration has been disabled. You must be invited by an existing user in order to access this forum.",
+    "invite.error-invalid-data": "The registration data received does not correspond to our records. Please contact an administrator for more details"
 }

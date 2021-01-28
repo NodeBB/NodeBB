@@ -895,7 +895,7 @@ describe('Categories', function () {
 				callback(null, data);
 			}
 
-			plugins.registerHook('my-test-plugin', {
+			plugins.hooks.register('my-test-plugin', {
 				hook: 'filter:categories.getTopicIds',
 				method: method,
 			});
@@ -907,7 +907,7 @@ describe('Categories', function () {
 			}, function (err, tids) {
 				assert.ifError(err);
 				assert.deepEqual(tids, [1, 2, 3]);
-				plugins.unregisterHook('my-test-plugin', 'filter:categories.getTopicIds', method);
+				plugins.hooks.unregister('my-test-plugin', 'filter:categories.getTopicIds', method);
 				done();
 			});
 		});

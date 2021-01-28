@@ -133,6 +133,7 @@
     "chat-delete-duration-expired": "Du kan endast radera chattmeddelanden %1 sekunder efter att du skrivit dem",
     "chat-deleted-already": "Detta chattmeddelande har redan raderats.",
     "chat-restored-already": "This chat message has already been restored.",
+    "chat-room-does-not-exist": "Chat room does not exist.",
     "already-voting-for-this-post": "Du har redan röstat på det här inlägget.",
     "reputation-system-disabled": "Ryktessystemet är inaktiverat.",
     "downvoting-disabled": "Nedröstning är inaktiverat",

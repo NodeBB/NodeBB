@@ -1,13 +1,13 @@
 {
 	"general": "General",
-	"private-groups": "Private Groups",
-	"private-groups.help": "If enabled, joining of groups requires the approval of the group owner <em>(Default: enabled)</em>",
-	"private-groups.warning": "<strong>Beware!</strong> If this option is disabled and you have private groups, they automatically become public.",
+	"private-groups": "Nhóm Riêng Tư",
+	"private-groups.help": "Nếu bật, tham gia nhóm cần chủ nhóm chấp nhận <em>(Mặc định: được bật)</em>",
+	"private-groups.warning": "<strong>Coi chừng!</strong> Nếu tắt tùy chọn này và bạn có nhóm riêng tư, chúng sẽ tự động trở thành công khai.",
 	"allow-multiple-badges": "Allow Multiple Badges",
-	"allow-multiple-badges-help": "This flag can be used to allow users to select multiple group badges, requires theme support.",
-	"max-name-length": "Maximum Group Name Length",
-	"max-title-length": "Maximum Group Title Length",
-	"cover-image": "Group Cover Image",
+	"allow-multiple-badges-help": "Cờ này có thể được dùng để người dùng chọn nhiều huy hiệu nhóm, yêu cầu hỗ trợ giao diện.",
+	"max-name-length": "Độ Dài Tên Nhóm Tối Đa",
+	"max-title-length": "Độ Dài Tựa Đề Nhóm Tối Đa",
+	"cover-image": "Ảnh Bìa Nhóm",
 	"default-cover": "Default Cover Images",
-	"default-cover-help": "Add comma-separated default cover images for groups that don't have an uploaded cover image"
+	"default-cover-help": "Thêm ảnh bìa mặc định được phân tách bằng dấu phẩy cho các nhóm không tải lên ảnh bìa"
 }

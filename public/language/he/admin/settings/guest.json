@@ -1,7 +1,7 @@
 {
 	"settings": "הגדרות",
-	"handles.enabled": "Allow guest handles",
-	"handles.enabled-help": "This option exposes a new field that allows guests to pick a name to associate with each post they make. If disabled, they will simply be called \"Guest\"",
+	"handles.enabled": "אפשר נקודות אחיזה לאורחים",
+	"handles.enabled-help": "אפשרות זו חושפת שדה חדש המאפשר לאורחים לבחור שם שישויך לכל פוסט שהם מבצעים. אם הם מושבתים, הם פשוט יקראו \"אורח\"",
 	"topic-views.enabled": "הגדל מספר צפיות בנושא על-ידי צפיות של אורחים",
 	"reply-notifications.enabled": "אפשר לאורחים ליצור הודעות תשובה"
 }

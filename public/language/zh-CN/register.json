@@ -24,5 +24,8 @@
     "interstitial.errors-found": "我们无法完成您的注册：",
     "gdpr_agree_data": "我同意此网站对我个人信息的收集与处理。",
     "gdpr_agree_email": "我同意此网站向我发送摘要和通知邮件。",
-    "gdpr_consent_denied": "您需要同意此网站收集与处理您的个人信息，以及向您发送电子邮件。"
+    "gdpr_consent_denied": "您需要同意此网站收集与处理您的个人信息，以及向您发送电子邮件。",
+    "invite.error-admin-only": "Direct user registration has been disabled. Please contact an administrator for more details.",
+    "invite.error-invite-only": "Direct user registration has been disabled. You must be invited by an existing user in order to access this forum.",
+    "invite.error-invalid-data": "The registration data received does not correspond to our records. Please contact an administrator for more details"
 }

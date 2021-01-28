@@ -42,6 +42,8 @@ tags:
 paths:
   /ping:
     $ref: 'write/ping.yaml'
+  /utilities/login:
+    $ref: 'write/login.yaml'
   /users/:
     $ref: 'write/users.yaml'
   /users/{uid}:
@@ -98,14 +100,22 @@ paths:
     $ref: 'write/topics/tid/tags.yaml'
   /topics/{tid}/thumbs:
     $ref: 'write/topics/tid/thumbs.yaml'
+  /topics/{tid}/events:
+    $ref: 'write/topics/tid/events.yaml'
   /posts/{pid}:
     $ref: 'write/posts/pid.yaml'
   /posts/{pid}/state:
     $ref: 'write/posts/pid/state.yaml'
+  /posts/{pid}/move:
+    $ref: 'write/posts/pid/move.yaml'
   /posts/{pid}/vote:
     $ref: 'write/posts/pid/vote.yaml'
   /posts/{pid}/bookmark:
     $ref: 'write/posts/pid/bookmark.yaml'
+  /posts/{pid}/diffs:
+    $ref: 'write/posts/pid/diffs.yaml'
+  /posts/{pid}/diffs/{since}:
+    $ref: 'write/posts/pid/diffs/since.yaml'
   /admin/settings/{setting}:
     $ref: 'write/admin/settings/setting.yaml'
   /files/:

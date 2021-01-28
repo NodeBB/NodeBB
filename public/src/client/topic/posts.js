@@ -210,7 +210,9 @@ define('forum/topic/posts', [
 				html.insertBefore(before);
 
 				// Now restore the relative position the user was on prior to new post insertion
-				$(window).scrollTop(scrollTop + ($(document).height() - height));
+				if (scrollTop > 0) {
+					$(window).scrollTop(scrollTop + ($(document).height() - height));
+				}
 			} else {
 				components.get('topic').append(html);
 			}
@@ -269,7 +271,58 @@ define('forum/topic/posts', [
 		posts.find('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
 		Posts.addBlockquoteEllipses(posts);
 		hidePostToolsForDeletedPosts(posts);
+		Posts.addTopicEvents();
 		addNecroPostMessage();
+	};
+
+	Posts.addTopicEvents = function (events) {
+		events = events || ajaxify.data.events;
+		if (!events || !Array.isArray(events)) {
+			return;
+		}
+
+		if (config.topicPostSort !== 'newest_to_oldest' && config.topicPostSort !== 'oldest_to_newest') {
+			return;
+		}
+
+		// Filter out events already in DOM
+		const eventIdsInDOM = Array.from(document.querySelectorAll('[component="topic/event"]')).map(el => parseInt(el.getAttribute('data-topic-event-id'), 10));
+		events = events.filter(event => !eventIdsInDOM.includes(event.id));
+
+		let postTimestamps = ajaxify.data.posts.map(post => post.timestamp);
+
+		const reverse = config.topicPostSort === 'newest_to_oldest';
+		events = events.slice(0);
+		if (reverse) {
+			events.reverse();
+			postTimestamps = postTimestamps.slice(1);	// OP is always at top, so exclude from calculations
+		}
+
+		Promise.all(events.map((event) => {
+			const beforeIdx = postTimestamps.findIndex(timestamp => (reverse ? (timestamp < event.timestamp) : (timestamp > event.timestamp)));
+			let postEl;
+			if (beforeIdx > -1) {
+				postEl = document.querySelector(`[component="post"][data-pid="${ajaxify.data.posts[beforeIdx + (reverse ? 1 : 0)].pid}"]`);
+			}
+
+			return new Promise((resolve) => {
+				app.parseAndTranslate('partials/topic/event', event, function (html) {
+					html = html.get(0);
+
+					if (postEl) {
+						console.log('insert before', ajaxify.data.posts[beforeIdx].pid);
+						document.querySelector('[component="topic"]').insertBefore(html, postEl);
+					} else {
+						console.log('append to bttom?');
+						document.querySelector('[component="topic"]').append(html);
+					}
+
+					resolve();
+				});
+			});
+		})).then(() => {
+			$('[component="topic/event"] .timeago').timeago();
+		});
 	};
 
 	function addNecroPostMessage() {

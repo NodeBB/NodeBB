@@ -64,6 +64,7 @@ JS.scripts = {
 
 		'public/src/modules/translator.js',
 		'public/src/modules/components.js',
+		'public/src/modules/hooks.js',
 		'public/src/modules/sort.js',
 		'public/src/modules/navigator.js',
 		'public/src/modules/topicSelect.js',
@@ -311,7 +312,7 @@ async function getBundleScriptList(target) {
 
 	let scripts = JS.scripts.base;
 
-	if (target === 'client' && process.env.NODE_ENV !== 'development') {
+	if (target === 'client') {
 		scripts = scripts.concat(JS.scripts.rjs);
 	} else if (target === 'acp') {
 		scripts = scripts.concat(JS.scripts.admin);

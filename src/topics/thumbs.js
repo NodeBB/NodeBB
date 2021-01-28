@@ -28,11 +28,11 @@ Thumbs.get = async function (tids) {
 	}
 
 	if (!meta.config.allowTopicsThumbnail) {
-		return singular ? null : tids.map(() => []);
+		return singular ? [] : tids.map(() => []);
 	}
 
 	const hasTimestampPrefix = /^\d+-/;
-	const upload_url = nconf.get('upload_url');
+	const upload_url = nconf.get('relative_path') + nconf.get('upload_url');
 	const sets = tids.map(tid => `${validator.isUUID(String(tid)) ? 'draft' : 'topic'}:${tid}:thumbs`);
 	const thumbs = await Promise.all(sets.map(set => getThumbs(set)));
 	let response = thumbs.map((thumbSet, idx) => thumbSet.map(thumb => ({
