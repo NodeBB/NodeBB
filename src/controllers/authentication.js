@@ -234,7 +234,10 @@ authenticationController.login = async (req, res, next) => {
 					user.getUsernameByEmail(req.body.username, next);
 				},
 				function (username, next) {
-					req.body.username = username || req.body.username;
+					if (username !== '[[global:guest]]') {
+						req.body.username = username;
+					}
+
 					(res.locals.continueLogin || continueLogin)(strategy, req, res, next);
 				},
 			], next);
