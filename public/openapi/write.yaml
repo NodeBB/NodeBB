@@ -116,6 +116,8 @@ paths:
     $ref: 'write/posts/pid/diffs.yaml'
   /posts/{pid}/diffs/{since}:
     $ref: 'write/posts/pid/diffs/since.yaml'
+  /posts/{pid}/diffs/{timestamp}:
+    $ref: 'write/posts/pid/diffs/timestamp.yaml'
   /admin/settings/{setting}:
     $ref: 'write/admin/settings/setting.yaml'
   /files/:
