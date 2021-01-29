@@ -44,37 +44,36 @@ Settings.getOne = async function (hash, field) {
 Settings.set = async function (hash, values, quiet) {
 	quiet = quiet || false;
 
-	const sortedLists = [];
-
+	const sortedLists = new Map();
 	for (const key in values) {
 		if (values.hasOwnProperty(key)) {
 			if (Array.isArray(values[key]) && typeof values[key][0] !== 'string') {
-				sortedLists.push(key);
+				sortedLists.set(key, values[key]);
+				delete values[key];	// don't save in primary settings hash
 			}
 		}
 	}
+	const sortedListKeys = Array.from(sortedLists.keys());
 
 	({ plugin: hash, settings: values, quiet } = await plugins.hooks.fire('filter:settings.set', { plugin: hash, settings: values, quiet }));
 
-	if (sortedLists.length) {
+	if (sortedLists.size) {
 		await db.delete('settings:' + hash + ':sorted-lists');
-		await db.setAdd('settings:' + hash + ':sorted-lists', sortedLists);
+		await db.setAdd('settings:' + hash + ':sorted-lists', sortedListKeys);
 
-		await Promise.all(sortedLists.map(async function (list) {
+		await Promise.all(sortedListKeys.map(async function (list) {
 			await db.delete('settings:' + hash + ':sorted-list:' + list);
-			await Promise.all(values[list].map(async function (data, order) {
+			await Promise.all(sortedLists.get(list).map(async function (data, order) {
 				await db.delete('settings:' + hash + ':sorted-list:' + list + ':' + order);
 			}));
 		}));
 
 		const ops = [];
 		sortedLists.forEach(function (list) {
-			const arr = values[list];
-			delete values[list];
-
-			arr.forEach(function (data, order) {
-				ops.push(db.sortedSetAdd('settings:' + hash + ':sorted-list:' + list, order, order));
-				ops.push(db.setObject('settings:' + hash + ':sorted-list:' + list + ':' + order, data));
+			list.forEach(function (data, key) {
+				const order = sortedListKeys.indexOf(key);
+				ops.push(db.sortedSetAdd('settings:' + hash + ':sorted-list:' + key, order, order));
+				ops.push(db.setObject('settings:' + hash + ':sorted-list:' + key + ':' + order, data));
 			});
 		});
 
@@ -84,6 +83,9 @@ Settings.set = async function (hash, values, quiet) {
 	if (Object.keys(values).length) {
 		await db.setObject('settings:' + hash, values);
 	}
+
+	// Add back sorted list data
+	values = { ...values, ...Object.fromEntries(sortedLists) };
 
 	cache.del('settings:' + hash);
 
