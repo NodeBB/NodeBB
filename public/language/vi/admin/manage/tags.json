@@ -1,19 +1,19 @@
 {
-	"none": "Your forum does not have any topics with tags yet.",
+	"none": "Diễn đàn của bạn chưa có bất kỳ chủ đề nào gắn thẻ.",
 	"bg-color": "Background Colour",
-	"text-color": "Text Colour",
-	"create-modify": "Create & Modify Tags",
-	"description": "Select tags by clicking or dragging, use <code>CTRL</code> to select multiple tags.",
+	"text-color": "Màu Chữ",
+	"create-modify": "Tạo & Sửa Đổi Thẻ",
+	"description": "Chọn các thẻ bằng cách nhấp hoặc kéo, bấm <code>CTRL</code> để chọn nhiều thẻ.",
 	"create": "Create Tag",
-	"modify": "Modify Tags",
-	"rename": "Rename Tags",
-	"delete": "Delete Selected Tags",
+	"modify": "Sửa Đổi Thẻ",
+	"rename": "Đổi Tên Thẻ",
+	"delete": "Xóa Các Thẻ Đã Chọn",
 	"search": "Search for tags...",
-	"settings": "Tags Settings",
+	"settings": "Cài Đặt Thẻ",
 	"name": "Tag Name",
 
 	"alerts.editing": "Editing tag(s)",
-	"alerts.confirm-delete": "Do you want to delete the selected tags?",
+	"alerts.confirm-delete": "Bạn có muốn xóa các thẻ đã chọn không?",
 	"alerts.update-success": "Đã Cập Nhật Thẻ!",
 	"reset-colors": "Đặt lại màu"
 }

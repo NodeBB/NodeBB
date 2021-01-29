@@ -8,5 +8,6 @@
     "failed_login_attempt": "Falha no Login",
     "login_successful": "Você logou com sucesso!",
     "dont_have_account": "Não tem uma conta?",
-    "logged-out-due-to-inactivity": "Você saiu do Painel de Controle de Administração devido à inatividade"
+    "logged-out-due-to-inactivity": "Você saiu do Painel de Controle de Administração devido à inatividade",
+    "caps-lock-enabled": "Caps Lock is enabled"
 }

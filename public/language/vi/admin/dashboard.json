@@ -28,9 +28,9 @@
 	"up-to-date": "<p>Bạn đã cập nhật <strong>bản mới nhất</strong> <i class=\"fa fa-check\"></i></p>",
 	"upgrade-available": "<p>Phiên bản mới (v%1) đã được phát hành. Xem xét <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">nâng cấp NodeBB của bạn</a>.</p>",
 	"prerelease-upgrade-available": "<p>Đây là bản phát hành NodeBB đã lỗi thời. Phiên bản mới (v%1) đã phát hành. Xem xét <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">nâng cấp NodeBB của bạn</a>.</p>",
-	"prerelease-warning": "<p>This is a <strong>pre-release</strong> version of NodeBB. Unintended bugs may occur. <i class=\"fa fa-exclamation-triangle\"></i></p>",
+	"prerelease-warning": "<p>Đây là phiên bản NodeBB <strong>chuẩn bị công bố</strong>. Lỗi ngoài ý muốn có thể xảy ra. <i class=\"fa fa-exclamation-triangle\"></i></p>",
 	"running-in-development": "<span>Diễn đàn đang chạy ở chế độ phát triển. Diễn đàn có thể mở cho các lỗ hổng tiềm ẩn; Xin vui lòng liên hệ với quản trị hệ thống của bạn.</span>",
-	"latest-lookup-failed": "<p>Failed to look up latest available version of NodeBB</p>",
+	"latest-lookup-failed": "<p>Không tra cứu được phiên bản NodeBB mới nhất</p>",
 
 	"notices": "Thông báo",
 	"restart-not-required": "Không yêu cầu khởi động lại",
@@ -50,7 +50,7 @@
 
 	"active-users": "Người Dùng Hoạt Động",
 	"active-users.users": "Người Dùng",
-	"active-users.guests": "Guests",
+	"active-users.guests": "Khách",
 	"active-users.total": "Tổng",
 	"active-users.connections": "Kết nối",
 
@@ -61,11 +61,11 @@
 	"user-presence": "Người Dùng Có Mặt",
 	"on-categories": "On categories list",
 	"reading-posts": "Đọc bài viết",
-	"browsing-topics": "Browsing topics",
+	"browsing-topics": "Duyệt qua chủ đề",
 	"recent": "Gần đây",
 	"unread": "Chưa đọc",
 
-	"high-presence-topics": "High Presence Topics",
+	"high-presence-topics": "Chủ Đề Hiện Diện Cao",
 
 	"graphs.page-views": "Xem Trang",
 	"graphs.page-views-registered": "Đã Đăng Ký Xem Trang",
@@ -75,5 +75,5 @@
 	"graphs.registered-users": "Người Dùng Đã Đăng Ký",
 	"graphs.anonymous-users": "Người Dùng Ẩn Danh",
 	"last-restarted-by": "Khởi động lại lần cuối bởi",
-	"no-users-browsing": "No users browsing"
+	"no-users-browsing": "Không có người dùng duyệt"
 }

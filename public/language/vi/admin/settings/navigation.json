@@ -1,23 +1,23 @@
 {
-	"icon": "Icon:",
-	"change-icon": "change",
-	"route": "Route:",
+	"icon": "Biểu tượng:",
+	"change-icon": "thay đổi",
+	"route": "Liên kết:",
 	"tooltip": "Tooltip:",
-	"text": "Text:",
-	"text-class": "Text Class: <small>optional</small>",
-	"class": "Class: <small>optional</small>",
-	"id": "ID: <small>optional</small>",
+	"text": "Chữ:",
+	"text-class": "Lớp Chữ: <small>không bắt buộc</small>",
+	"class": "Lớp: <small>không bắt buộc</small>",
+	"id": "ID: <small>không bắt buộc</small>",
 
-	"properties": "Properties:",
+	"properties": "Thuộc tính:",
 	"groups": "Nhóm:",
-	"open-new-window": "Open in a new window",
+	"open-new-window": "Mở trong một cửa sổ mới",
 
-	"btn.delete": "Delete",
-	"btn.disable": "Disable",
-	"btn.enable": "Enable",
+	"btn.delete": "Xóa",
+	"btn.disable": "Tắt",
+	"btn.enable": "Bật",
 
-	"available-menu-items": "Available Menu Items",
-	"custom-route": "Custom Route",
+	"available-menu-items": "Các Mục Menu Sẵn Có",
+	"custom-route": "Tùy Chỉnh Liên Kết",
 	"core": "core",
 	"plugin": "plugin"
 }

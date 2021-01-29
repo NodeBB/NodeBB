@@ -8,5 +8,6 @@
     "failed_login_attempt": "Неправильно указано имя пользователя или электронная почта",
     "login_successful": "Вы успешно вошли!",
     "dont_have_account": "Нет учётной записи?",
-    "logged-out-due-to-inactivity": "Вы вышли из панели управления администратора из-за бездействия"
+    "logged-out-due-to-inactivity": "Вы вышли из панели управления администратора из-за бездействия",
+    "caps-lock-enabled": "Caps Lock is enabled"
 }

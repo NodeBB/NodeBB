@@ -1,6 +1,6 @@
 {
-    "reconnection": "Reconnection Settings",
+    "reconnection": "Cài Đặt Kết Nối Lại",
     "max-attempts": "Max Reconnection Attempts",
-    "default-placeholder": "Default: %1",
+    "default-placeholder": "Mặc định: %1",
     "delay": "Reconnection Delay"
 }

@@ -8,5 +8,6 @@
     "failed_login_attempt": "Login fehlgeschlagen",
     "login_successful": "Du hast dich erfolgreich eingeloggt!",
     "dont_have_account": "Du hast noch kein Konto?",
-    "logged-out-due-to-inactivity": "Du wurdest aufgrund von Inaktivität aus dem Adminbereich ausgeloggt"
+    "logged-out-due-to-inactivity": "Du wurdest aufgrund von Inaktivität aus dem Adminbereich ausgeloggt",
+    "caps-lock-enabled": "Caps Lock is enabled"
 }

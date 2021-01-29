@@ -2,9 +2,9 @@
     "administrators": "Quản Trị Viên",
     "global-moderators": "Người Điều Hành Toàn Quyền",
     "no-global-moderators": "Không Có Người Điều Hành Toàn Quyền",
-    "moderators-of-category": "%1 Moderators",
-    "no-moderators": "No Moderators",
+    "moderators-of-category": "%1 Người điều hành",
+    "no-moderators": "Không Có Người Điều Hành",
     "add-administrator": "Thêm Quản Trị Viên",
-    "add-global-moderator": "Add Global Moderator",
-    "add-moderator": "Add Moderator"
+    "add-global-moderator": "Thêm Người Điều Hành Toàn Quyền",
+    "add-moderator": "Thêm Người Điều Hành"
 }

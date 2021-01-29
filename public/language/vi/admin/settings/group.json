@@ -1,13 +1,13 @@
 {
-	"general": "General",
+	"general": "Chung",
 	"private-groups": "Nhóm Riêng Tư",
 	"private-groups.help": "Nếu bật, tham gia nhóm cần chủ nhóm chấp nhận <em>(Mặc định: được bật)</em>",
 	"private-groups.warning": "<strong>Coi chừng!</strong> Nếu tắt tùy chọn này và bạn có nhóm riêng tư, chúng sẽ tự động trở thành công khai.",
-	"allow-multiple-badges": "Allow Multiple Badges",
+	"allow-multiple-badges": "Cho Phép Nhiều Huy Hiệu",
 	"allow-multiple-badges-help": "Cờ này có thể được dùng để người dùng chọn nhiều huy hiệu nhóm, yêu cầu hỗ trợ giao diện.",
 	"max-name-length": "Độ Dài Tên Nhóm Tối Đa",
 	"max-title-length": "Độ Dài Tựa Đề Nhóm Tối Đa",
 	"cover-image": "Ảnh Bìa Nhóm",
-	"default-cover": "Default Cover Images",
+	"default-cover": "Ảnh Bìa Mặc Định",
 	"default-cover-help": "Thêm ảnh bìa mặc định được phân tách bằng dấu phẩy cho các nhóm không tải lên ảnh bìa"
 }

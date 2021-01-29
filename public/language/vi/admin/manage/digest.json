@@ -1,21 +1,21 @@
 {
 	"lead": "Một danh sách các số liệu thống kê và thời gian phân phối được hiển thị dưới đây.",
 	"disclaimer": "Xin lưu ý rằng việc gửi email không được đảm bảo, do bản chất của công nghệ email. Nhiều yếu tố quyết định đến việc liệu một email được gửi đến máy chủ người nhận cuối cùng có được gửi đến hộp thư đến của người dùng hay không, bao gồm danh tiếng của máy chủ, địa chỉ IP nằm trong danh sách đen và liệu DKIM/SPF/DMARC được cấu hình.",
-	"disclaimer-continued": "A successful delivery means the message was sent successfully by NodeBB and acknowledged by the recipient server. It does not mean the email landed in the inbox. For best results, we recommend using a third-party email delivery service such as <a href=\"https://sendgrid.com/why-sendgrid/\">SendGrid</a>.",
+	"disclaimer-continued": "Gửi thành công nghĩa là tin nhắn được NodeBB gửi thành công và máy chủ người nhận nhận được. Nó không có nghĩa là email đã đến hộp thư đến. Để có kết quả tốt nhất, chúng tôi khuyên bạn nên sử dụng dịch vụ gửi email của bên thứ ba, chẳng hạn như <a href=\"https://sendgrid.com/why-sendgrid/\">SendGrid</a>.",
 
 	"user": "Người dùng",
 	"subscription": "Loại đăng ký",
 	"last-delivery": "Giao hàng thành công lần cuối",
 	"default": "Mặc định hệ thống",
-	"default-help": "<em>System default</em> means the user has not explicitly overridden the global forum setting for digests, which is currently: &quot;<strong>%1</strong>&quot;",
-	"resend": "Resend Digest",
-	"resend-all-confirm": "Are you sure you wish to manually execute this digest run?",
-	"resent-single": "Manual digest resend completed",
-	"resent-day": "Daily digest resent",
-	"resent-week": "Weekly digest resent",
-	"resent-month": "Monthly digest resent",
+	"default-help": "<em>Mặc định hệ thống</em> nghĩa là người dùng không đè lên toàn bộ cài đặt thông báo diễn đàn, hiện là: &quot;<strong>%1</strong>&quot;",
+	"resend": "Gửi Lại Thông Báo",
+	"resend-all-confirm": "Bạn có muốn thực hiện thủ công lần chạy thông báo này không?",
+	"resent-single": "Đã hoàn tất gửi lại thông báo thủ công",
+	"resent-day": "Đã gửi lại thông báo hàng ngày",
+	"resent-week": "Đã gửi lại thông báo hàng tuần",
+	"resent-month": "Đã gửi lại thông báo hàng tháng",
 	"null": "<em>Không bao giờ</em>",
-	"manual-run": "Manual digest run:",
+	"manual-run": "Chạy thông báo thủ công:",
 
 	"no-delivery-data": "Không tìm thấy dữ liệu giao hàng"
 }

@@ -8,5 +8,6 @@
     "failed_login_attempt": "Neuspješna prijava",
     "login_successful": "Uspješno ste prijavljeni!",
     "dont_have_account": "Nemate korisnički račun?",
-    "logged-out-due-to-inactivity": "Odjavljeni ste iz administratorske kontrolne ploče zbog neaktivnosti."
+    "logged-out-due-to-inactivity": "Odjavljeni ste iz administratorske kontrolne ploče zbog neaktivnosti.",
+    "caps-lock-enabled": "Caps Lock is enabled"
 }

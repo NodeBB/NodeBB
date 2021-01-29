@@ -8,5 +8,6 @@
     "failed_login_attempt": "Início de sessão sem sucesso",
     "login_successful": "Iniciaste sessão com sucesso!",
     "dont_have_account": "Não tens uma conta?",
-    "logged-out-due-to-inactivity": "A tua sessão no Painel de Controlo foi terminada devido a inatividade"
+    "logged-out-due-to-inactivity": "A tua sessão no Painel de Controlo foi terminada devido a inatividade",
+    "caps-lock-enabled": "Caps Lock is enabled"
 }

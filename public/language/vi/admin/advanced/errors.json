@@ -6,7 +6,7 @@
 	"manage-error-log": "Quản Lý Nhật Ký Lỗi",
 	"export-error-log": "Xuất Nhật ký Lỗi (CSV)",
 	"clear-error-log": "Xóa Nhật Ký Lỗi",
-	"route": "Route",
+	"route": "Liên kết",
 	"count": "Số lượng",
 	"no-routes-not-found": "Hoan hô! Không có lỗi 404!",
 	"clear404-confirm": "Bạn có chắc chắn muốn xóa nhật ký lỗi 404 không?",

@@ -1,14 +1,14 @@
 {
 	"name": "Tên Nhóm",
 	"badge": "Badge",
-	"properties": "Properties",
+	"properties": "Thuộc tính",
 	"description": "Mô Tả Nhóm",
 	"member-count": "Member Count",
 	"system": "System",
-	"hidden": "Hidden",
+	"hidden": "Đã Ẩn",
 	"private": "Private",
 	"edit": "Edit",
-	"delete": "Delete",
+	"delete": "Xóa",
 	"privileges": "Đặc Quyền",
 	"download-csv": "CSV",
 	"search-placeholder": "Search",
@@ -21,7 +21,7 @@
 
 	"edit.name": "Name",
 	"edit.description": "Description",
-	"edit.user-title": "Title of Members",
+	"edit.user-title": "Chức Danh Thành Viên",
 	"edit.icon": "Biểu Tượng Nhóm",
 	"edit.label-color": "Màu Nhãn Nhóm",
 	"edit.text-color": "Màu Chữ Nhóm",
@@ -30,7 +30,7 @@
 	"edit.private-override": "Cảnh báo: Nhóm riêng tư bị tắt ở cấp độ hệ thống, tùy chọn này sẽ ghi đè.",
 	"edit.disable-join": "Tắt yêu cầu tham gia",
 	"edit.disable-leave": "Không cho phép người dùng rời khỏi nhóm",
-	"edit.hidden": "Hidden",
+	"edit.hidden": "Đã Ẩn",
 	"edit.hidden-details": "Nếu bật, nhóm này hiển thị trong danh sách nhóm và người dùng phải được mời thủ công",
 	"edit.add-user": "Thêm Người Dùng Vào Nhóm",
 	"edit.add-user-search": "Tìm Kiếm Người Dùng",
@@ -39,6 +39,6 @@
 	"revert": "Revert",
 
 	"edit.no-users-found": "Không Tìm Thấy Người Dùng",
-	"edit.confirm-remove-user": "Are you sure you want to remove this user?",
-	"edit.save-success": "Changes saved!"
+	"edit.confirm-remove-user": "Bạn có chắc chắn muốn xóa người dùng này?",
+	"edit.save-success": "Đã lưu thay đổi!"
 }

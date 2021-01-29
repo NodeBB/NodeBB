@@ -1,10 +1,10 @@
 {
-    "tag": "Tag Settings",
+    "tag": "Cài Đặt Thẻ",
     "link-to-manage": "Manage Tags",
-    "min-per-topic": "Minimum Tags per Topic",
-    "max-per-topic": "Maximum Tags per Topic",
-    "min-length": "Minimum Tag Length",
-    "max-length": "Maximum Tag Length",
+    "min-per-topic": "Số Thẻ Ít Nhất Mỗi Chủ Đề",
+    "max-per-topic": "Số Thẻ Tối Đa Mỗi Chủ Đề",
+    "min-length": "Độ Dài Thẻ Tối Thiểu",
+    "max-length": "Độ Dài Thẻ Tối Đa",
     "related-topics": "Related Topics",
     "max-related-topics": "Số chủ đề liên quan tối đa để hiển thị (nếu giao diện hỗ trợ)"
 }

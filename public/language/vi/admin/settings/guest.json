@@ -1,7 +1,7 @@
 {
-	"settings": "Settings",
-	"handles.enabled": "Allow guest handles",
+	"settings": "Cài đặt",
+	"handles.enabled": "Cho phép xử lý khách",
 	"handles.enabled-help": "Tùy chọn này hiển thị một trường mới cho phép khách chọn tên để liên kết với mỗi bài đăng mà họ thực hiện. Nếu bị tắt, họ sẽ chỉ được gọi là \"Khách\"",
-	"topic-views.enabled": "Allow guests to increase topic view counts",
+	"topic-views.enabled": "Cho phép khách tăng lượt xem chủ đề",
 	"reply-notifications.enabled": "Cho phép khách tạo thông báo trả lời"
 }

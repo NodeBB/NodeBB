@@ -8,5 +8,6 @@
     "failed_login_attempt": "Sikertelen belépés",
     "login_successful": "Sikeresen beléptél!",
     "dont_have_account": "Még nincs fiókod?",
-    "logged-out-due-to-inactivity": "Inaktivitás miatt ki lettél jelentkeztetve az Adminisztrációs vezérlőpultból"
+    "logged-out-due-to-inactivity": "Inaktivitás miatt ki lettél jelentkeztetve az Adminisztrációs vezérlőpultból",
+    "caps-lock-enabled": "Caps Lock is enabled"
 }

@@ -1,8 +1,8 @@
 {
-	"home-page": "Home Page",
-	"description": "Choose what page is shown when users navigate to the root URL of your forum.",
-	"home-page-route": "Home Page Route",
-	"custom-route": "Custom Route",
-	"allow-user-home-pages": "Allow User Home Pages",
-	"home-page-title": "Title of the home page (default \"Home\")"
+	"home-page": "Trang Chủ",
+	"description": "Chọn trang hiển thị khi người dùng được chuyển hướng đến URL gốc diễn đàn của bạn.",
+	"home-page-route": "Liên Kết Trang Chủ",
+	"custom-route": "Tùy Chỉnh Liên Kết",
+	"allow-user-home-pages": "Cho Phép Trang Chủ Người Dùng",
+	"home-page-title": "Tiêu đề của trang chủ (mặc định là \"Trang chủ\")"
 }

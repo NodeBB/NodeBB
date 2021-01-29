@@ -17,7 +17,7 @@
 	"docs-info": "Tài liệu đầy đủ về tác giả plugin có thể được tìm thấy trong <a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">Cổng Thông Tin Tài Liệu NodeBB </a>.",
 
 	"order.description": "Một số plugin nhất định hoạt động lý tưởng khi chúng được khởi tạo trước / sau các plugin khác.",
-	"order.explanation": "Các plugin tải theo thứ tự được chỉ định ở đây, từ trên xuống dưới",
+	"order.explanation": "Các plugin tải theo thứ tự đã đặt ra ở đây, từ trên xuống dưới",
 
 	"plugin-item.themes": "Giao diện",
 	"plugin-item.deactivate": "Vô Hiệu",

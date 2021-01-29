@@ -5,13 +5,13 @@
 	"clone-from": "Clone widgets from",
 	"containers.available": "Available Containers",
 	"containers.explanation": "Kéo và thả lên trên bất kỳ tiện ích đang hoạt động",
-	"containers.none": "None",
+	"containers.none": "Không",
 	"container.well": "Tốt",
 	"container.jumbotron": "Jumbotron",
 	"container.panel": "Panel",
 	"container.panel-header": "Panel Header",
 	"container.panel-body": "Panel Body",
-	"container.alert": "Alert",
+	"container.alert": "Cảnh báo",
 
 	"alert.confirm-delete": "Bạn có chắc chắn muốn xóa tiện ích này không?",
 	"alert.updated": "Đã Cập Nhật Tiện Ích",
@@ -20,10 +20,10 @@
 
 	"error.select-clone": "Hãy chọn một trang để sao chép từ đó",
 
-	"title": "Title",
-	"title.placeholder": "Title (only shown on some containers)",
+	"title": "Tiêu đề",
+	"title.placeholder": "Tiêu đề (chỉ hiển thị trên một số vùng chứa)",
 	"container": "Container",
-	"container.placeholder": "Drag and drop a container or enter HTML here.",
+	"container.placeholder": "Kéo và thả một vùng chứa hoặc nhập HTML vào đây.",
 	"show-to-groups": "Hiển thị lên nhóm",
 	"hide-from-groups": "Ẩn khỏi nhóm",
 	"hide-on-mobile": "Hide on mobile"

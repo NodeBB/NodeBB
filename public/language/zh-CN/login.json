@@ -8,5 +8,6 @@
     "failed_login_attempt": "登录失败",
     "login_successful": "您已成功登录！",
     "dont_have_account": "没有帐号？",
-    "logged-out-due-to-inactivity": "由于长时间不活动，您的账号已被管理员从控制面板中注销"
+    "logged-out-due-to-inactivity": "由于长时间不活动，您的账号已被管理员从控制面板中注销",
+    "caps-lock-enabled": "Caps Lock is enabled"
 }
