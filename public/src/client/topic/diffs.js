@@ -67,11 +67,7 @@ define('forum/topic/diffs', ['api', 'bootbox', 'forum/topic/images'], function (
 				if (modalExists) {
 					modal.find('.modal-body').html(html);
 				} else {
-					modal = bootbox.dialog({
-						title: '[[topic:diffs.title]]',
-						message: html,
-						size: 'large',
-					});
+					modal = bootbox.dialog({ title: '[[topic:diffs.title]]', message: html, size: 'large' });
 				}
 
 				if (!data.timestamps.length) {
