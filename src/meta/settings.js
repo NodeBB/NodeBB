@@ -44,15 +44,16 @@ Settings.getOne = async function (hash, field) {
 Settings.set = async function (hash, values, quiet) {
 	quiet = quiet || false;
 
-	const sortedLists = [];
-
+	const sortedListData = {};
 	for (const key in values) {
 		if (values.hasOwnProperty(key)) {
 			if (Array.isArray(values[key]) && typeof values[key][0] !== 'string') {
-				sortedLists.push(key);
+				sortedListData[key] = values[key];
+				delete values[key];
 			}
 		}
 	}
+	const sortedLists = Object.keys(sortedListData);
 
 	({ plugin: hash, settings: values, quiet } = await plugins.hooks.fire('filter:settings.set', { plugin: hash, settings: values, quiet }));
 
@@ -62,16 +63,14 @@ Settings.set = async function (hash, values, quiet) {
 
 		await Promise.all(sortedLists.map(async function (list) {
 			await db.delete('settings:' + hash + ':sorted-list:' + list);
-			await Promise.all(values[list].map(async function (data, order) {
+			await Promise.all(sortedListData[list].map(async function (data, order) {
 				await db.delete('settings:' + hash + ':sorted-list:' + list + ':' + order);
 			}));
 		}));
 
 		const ops = [];
 		sortedLists.forEach(function (list) {
-			const arr = values[list];
-			delete values[list];
-
+			const arr = sortedListData[list];
 			arr.forEach(function (data, order) {
 				ops.push(db.sortedSetAdd('settings:' + hash + ':sorted-list:' + list, order, order));
 				ops.push(db.setObject('settings:' + hash + ':sorted-list:' + list + ':' + order, data));
@@ -89,7 +88,7 @@ Settings.set = async function (hash, values, quiet) {
 
 	plugins.hooks.fire('action:settings.set', {
 		plugin: hash,
-		settings: values,
+		settings: { ...values, ...sortedListData },	// Add back sorted list data to values hash
 	});
 
 	pubsub.publish('action:settings.set.' + hash, values);
