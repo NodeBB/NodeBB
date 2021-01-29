@@ -210,9 +210,15 @@ authenticationController.registerAbort = function (req, res) {
 	});
 };
 
-authenticationController.login = function (req, res, next) {
+authenticationController.login = async (req, res, next) => {
+	let { strategy } = await plugins.hooks.fire('filter:login.override', { req, strategy: 'local' });
+	if (!passport._strategy(strategy)) {
+		winston.error(`[auth/override] Requested login strategy "${strategy}" not found, reverting back to local login strategy.`);
+		strategy = 'local';
+	}
+
 	if (plugins.hooks.hasListeners('action:auth.overrideLogin')) {
-		return continueLogin(req, res, next);
+		return continueLogin(strategy, req, res, next);
 	}
 
 	var loginWith = meta.config.allowLoginWith || 'username-email';
@@ -229,11 +235,11 @@ authenticationController.login = function (req, res, next) {
 				},
 				function (username, next) {
 					req.body.username = username || req.body.username;
-					(res.locals.continueLogin || continueLogin)(req, res, next);
+					(res.locals.continueLogin || continueLogin)(strategy, req, res, next);
 				},
 			], next);
 		} else if (loginWith.includes('username') && !validator.isEmail(req.body.username)) {
-			(res.locals.continueLogin || continueLogin)(req, res, next);
+			(res.locals.continueLogin || continueLogin)(strategy, req, res, next);
 		} else {
 			err = '[[error:wrong-login-type-' + loginWith + ']]';
 			(res.locals.noScriptErrors || helpers.noScriptErrors)(req, res, err, 400);
@@ -241,8 +247,8 @@ authenticationController.login = function (req, res, next) {
 	});
 };
 
-function continueLogin(req, res, next) {
-	passport.authenticate('local', async function (err, userData, info) {
+function continueLogin(strategy, req, res, next) {
+	passport.authenticate(strategy, async function (err, userData, info) {
 		if (err) {
 			return helpers.noScriptErrors(req, res, err.message, 403);
 		}
