@@ -647,6 +647,29 @@ describe('Post\'s', function () {
 				done();
 			});
 		});
+
+		it('should not delete first diff of a post', async function () {
+			const timestamps = await posts.diffs.list(replyPid);
+			await assert.rejects(async () => {
+				await posts.diffs.delete(replyPid, timestamps[0], voterUid);
+			}, {
+				message: '[[error:invalid-data]]',
+			});
+		});
+
+		it('should delete a post diff', async function () {
+			await socketPosts.edit({ uid: voterUid }, { pid: replyPid, content: 'another edit has been made' });
+			await socketPosts.edit({ uid: voterUid }, { pid: replyPid, content: 'most recent edit' });
+			const timestamp = (await posts.diffs.list(replyPid)).pop();
+			await posts.diffs.delete(replyPid, timestamp, voterUid);
+			const differentTimestamp = (await posts.diffs.list(replyPid)).pop();
+			assert.notStrictEqual(timestamp, differentTimestamp);
+		});
+
+		it('should load (oldest) diff and reconstruct post correctly after a diff deletion', async function () {
+			const data = await posts.diffs.load(replyPid, 0, voterUid);
+			assert.strictEqual(data.content, 'A reply to edit');
+		});
 	});
 
 	describe('move', function () {

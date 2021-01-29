@@ -84,6 +84,7 @@ module.exports = function (Posts) {
 		const lastTimestampIndex = timestamps.length - 1;
 
 		if (timestamp === String(post[0].timestamp)) {
+			// Deleting oldest diff, so history rewrite is not needed
 			return Promise.all([
 				db.delete(`diff:${pid}.${timestamps[lastTimestampIndex]}`),
 				db.listRemoveAll(`post:${pid}:diffs`, timestamps[lastTimestampIndex]),
@@ -102,6 +103,7 @@ module.exports = function (Posts) {
 
 		/* eslint-disable no-await-in-loop */
 		for (let i = lastTimestampIndex; i >= timestampIndex; --i) {
+			// Recreate older diffs with skipping the deleted diff
 			const newContentIndex = i === timestampIndex ? i - 2 : i - 1;
 			const timestampToUpdate = newContentIndex + 1;
 			const newContent = newContentIndex < 0 ? postContent : versionContents[timestamps[newContentIndex]];
