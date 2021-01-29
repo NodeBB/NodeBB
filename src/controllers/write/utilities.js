@@ -22,7 +22,7 @@ Utilities.ping.post = (req, res) => {
 };
 
 Utilities.login = (req, res) => {
-	res.locals.continueLogin = async (req, res) => {
+	res.locals.continueLogin = async (strategy, req, res) => {
 		const { username, password } = req.body;
 
 		const userslug = slugify(username);
