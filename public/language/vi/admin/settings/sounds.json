@@ -1,9 +1,9 @@
 {
 	"notifications": "Thông báo",
 	"chat-messages": "Tin Nhắn Trò Chuyện",
-	"play-sound": "Play",
-	"incoming-message": "Incoming Message",
-	"outgoing-message": "Outgoing Message",
+	"play-sound": "Phát",
+	"incoming-message": "Tin Nhắn Đến",
+	"outgoing-message": "Tin Nhắn Gửi Đi",
 	"upload-new-sound": "Tải Lên Âm Thanh Mới",
 	"saved": "Đã Lưu Cài Đặt"
 }

@@ -2,12 +2,12 @@
     "username-email": "Tên đăng nhập / Email",
     "username": "Tên đăng nhập",
     "email": "Thư điện tử",
-    "remember_me": "Ghi nhớ?",
+    "remember_me": "Ghi Nhớ Tôi?",
     "forgot_password": "Quên mật khẩu?",
     "alternative_logins": "Đăng Nhập Thay Thế",
     "failed_login_attempt": "Đăng nhập không thành công",
     "login_successful": "Bạn đã đăng nhập thành công!",
     "dont_have_account": "Chưa có tài khoản?",
-    "logged-out-due-to-inactivity": "Bạn đã đăng xuất khỏi Bảng Điều Khiển Quản Trị Viên do không hoạt động quá lâu",
+    "logged-out-due-to-inactivity": "Đã đăng xuất bạn khỏi Bảng Điều Khiển Quản Trị Viên do không hoạt động quá lâu",
     "caps-lock-enabled": "Caps Lock được bật"
 }

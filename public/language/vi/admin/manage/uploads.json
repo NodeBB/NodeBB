@@ -1,8 +1,8 @@
 {
     "upload-file": "Tải Lên Tệp",
     "filename": "Tên Tệp",
-    "usage": "Post Usage",
-    "orphaned": "Orphaned",
+    "usage": "Đăng sử dụng",
+    "orphaned": "Đơn độc",
     "size/filecount": "Kích cỡ/ Số lượng tệp",
     "confirm-delete": "Bạn có chắc muốn xóa tệp này không?",
     "filecount": "%1 tệp"

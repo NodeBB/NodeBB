@@ -1,18 +1,18 @@
 {
 	"none": "Diễn đàn của bạn chưa có bất kỳ chủ đề nào gắn thẻ.",
-	"bg-color": "Background Colour",
+	"bg-color": "Màu Nền",
 	"text-color": "Màu Chữ",
 	"create-modify": "Tạo & Sửa Đổi Thẻ",
 	"description": "Chọn các thẻ bằng cách nhấp hoặc kéo, bấm <code>CTRL</code> để chọn nhiều thẻ.",
-	"create": "Create Tag",
+	"create": "Tạo Thẻ",
 	"modify": "Sửa Đổi Thẻ",
 	"rename": "Đổi Tên Thẻ",
 	"delete": "Xóa Các Thẻ Đã Chọn",
-	"search": "Search for tags...",
+	"search": "Tìm kiếm thẻ...",
 	"settings": "Cài Đặt Thẻ",
-	"name": "Tag Name",
+	"name": "Tên Thẻ",
 
-	"alerts.editing": "Editing tag(s)",
+	"alerts.editing": "Sửa Thẻ",
 	"alerts.confirm-delete": "Bạn có muốn xóa các thẻ đã chọn không?",
 	"alerts.update-success": "Đã Cập Nhật Thẻ!",
 	"reset-colors": "Đặt lại màu"

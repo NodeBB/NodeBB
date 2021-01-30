@@ -1,11 +1,11 @@
 {
-    "results_matching": "%1 kết quả(s) trùng với \"%2\", (%3 giây)",
+    "results_matching": "%1 kết quả khớp với \"%2\", (%3 giây)",
     "no-matches": "Không tìm thấy kết quả phù hợp",
     "advanced-search": "Tìm kiếm nâng cao",
     "in": "Trong",
     "titles": "Tiêu đề",
     "titles-posts": "Tiêu Đề và Bài Viết",
-    "match-words": "Từ ghép",
+    "match-words": "Khớp các từ",
     "all": "Tất cả",
     "any": "Bất kì",
     "posted-by": "Đăng bởi",

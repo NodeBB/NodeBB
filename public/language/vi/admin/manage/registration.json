@@ -1,8 +1,8 @@
 {
-	"queue": "Queue",
+	"queue": "Hàng đợi",
 	"description": "Không có ai xếp hàng đợi đăng ký. <br> Để bật tính năng này, truy cập <a href=\"%1\">Cài đặt &rarr; Người dùng &rarr; Người dùng đăng ký</a> và đặt <strong>Kiểu Đăng Ký</strong> là \"Phê Duyệt Của Quản Trị Viên\".",
 
-	"list.name": "Name",
+	"list.name": "Tên",
 	"list.email": "Thư điện tử",
 	"list.ip": "IP",
 	"list.time": "Thời gian",
@@ -10,7 +10,7 @@
 	"list.email-spam": "Tần suất: %1 Xuất hiện: %2",
 	"list.ip-spam": "Tần suất: %1 Xuất hiện: %2",
 
-	"invitations": "Invitations",
+	"invitations": "Lời mời",
 	"invitations.description": "Dưới đây là danh sách hoàn tất các lời mời đã gửi. Bấm ctrl-f để tìm kiếm trong danh sách bằng email hoặc tên đăng nhập. <br><br>Tên đăng nhập sẽ được hiển thị bên phải email cho những người dùng đã đổi lời mời của họ.",
 	"invitations.inviter-username": "Tên Đăng Nhập Người Mời",
 	"invitations.invitee-email": "Email của người được mời",

@@ -94,9 +94,9 @@
 	"alerts.delete-content-success": "Đã Xóa Nội Dung Người Dùng!",
 	"alerts.confirm-purge": "<strong>Cảnh báo!</strong><p>Bạn có chắc chắn xóa <strong>người dùng và nội dung của họ</strong>?</p><p>Hành động này không thể khôi phục! Tất cả dữ liệu người dùng và nội dung sẽ bị xóa!</p>",
 	"alerts.create": "Tạo Người Dùng",
-	"alerts.button-create": "Create",
-	"alerts.button-cancel": "Cancel",
-	"alerts.error-passwords-different": "Passwords must match!",
+	"alerts.button-create": "Tạo",
+	"alerts.button-cancel": "Hủy",
+	"alerts.error-passwords-different": "Mật khẩu phải khớp!",
 	"alerts.error-x": "<strong>Lỗi</strong><p>%1</p>",
 	"alerts.create-success": "Đã tạo người dùng!",
 

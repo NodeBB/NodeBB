@@ -2,7 +2,7 @@
 	"icon": "Biểu tượng:",
 	"change-icon": "thay đổi",
 	"route": "Liên kết:",
-	"tooltip": "Tooltip:",
+	"tooltip": "Chú giải công cụ:",
 	"text": "Chữ:",
 	"text-class": "Lớp Chữ: <small>không bắt buộc</small>",
 	"class": "Lớp: <small>không bắt buộc</small>",
@@ -18,6 +18,6 @@
 
 	"available-menu-items": "Các Mục Menu Sẵn Có",
 	"custom-route": "Tùy Chỉnh Liên Kết",
-	"core": "core",
+	"core": "lõi",
 	"plugin": "plugin"
 }

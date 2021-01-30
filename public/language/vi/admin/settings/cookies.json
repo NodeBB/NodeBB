@@ -2,7 +2,7 @@
 	"eu-consent": "Tuân thủ EU",
 	"consent.enabled": "Đã bật",
 	"consent.message": "Tin nhắn thông báo",
-	"consent.acceptance": "Acceptance message",
+	"consent.acceptance": "Tin nhắn chấp nhận",
 	"consent.link-text": "Văn Bản Liên Kết Điều Khoản",
 	"consent.link-url": "Liên Kết URL Điều Khoản",
 	"consent.blank-localised-default": "Để trống để sử dụng mặc định bản địa hóa NodeBB",

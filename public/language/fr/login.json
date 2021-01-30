@@ -9,5 +9,5 @@
     "login_successful": "Vous êtes maintenant connecté !",
     "dont_have_account": "Vous n'avez pas de compte ?",
     "logged-out-due-to-inactivity": "Vous avez été déconnecté du <strong>Tableau de bord</strong> en raison de votre inactivité",
-    "caps-lock-enabled": "Caps Lock is enabled"
+    "caps-lock-enabled": "Le verrouillage des majuscules est activé"
 }

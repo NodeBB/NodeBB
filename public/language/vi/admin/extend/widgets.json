@@ -2,29 +2,29 @@
 	"available": "Tiện ích có sẵn",
 	"explanation": "Chọn một tiện ích từ menu thả xuống, sau đó kéo và thả nó vào khu vực tiện ích của mẫu ở bên trái.",
 	"none-installed": "Không tìm thấy tiện ích nào! Kích hoạt plugin tiện ích cần thiết trong bảng điều khiển<a href=\"%1\">plugins</a> .",
-	"clone-from": "Clone widgets from",
-	"containers.available": "Available Containers",
+	"clone-from": "Sao chép tiện ích từ",
+	"containers.available": "Vùng Chứa Có Sẵn",
 	"containers.explanation": "Kéo và thả lên trên bất kỳ tiện ích đang hoạt động",
 	"containers.none": "Không",
 	"container.well": "Tốt",
-	"container.jumbotron": "Jumbotron",
-	"container.panel": "Panel",
-	"container.panel-header": "Panel Header",
-	"container.panel-body": "Panel Body",
+	"container.jumbotron": "Khung Hiển Thị Lớn",
+	"container.panel": "Bảng",
+	"container.panel-header": "Tiêu Đề Bảng",
+	"container.panel-body": "Thân Bảng",
 	"container.alert": "Cảnh báo",
 
 	"alert.confirm-delete": "Bạn có chắc chắn muốn xóa tiện ích này không?",
 	"alert.updated": "Đã Cập Nhật Tiện Ích",
 	"alert.update-success": "Đã cập nhật thành công các tiện ích",
-	"alert.clone-success": "Successfully cloned widgets",
+	"alert.clone-success": "Đã nhân bản thành công tiện ích",
 
 	"error.select-clone": "Hãy chọn một trang để sao chép từ đó",
 
 	"title": "Tiêu đề",
 	"title.placeholder": "Tiêu đề (chỉ hiển thị trên một số vùng chứa)",
-	"container": "Container",
+	"container": "Vùng chứa",
 	"container.placeholder": "Kéo và thả một vùng chứa hoặc nhập HTML vào đây.",
 	"show-to-groups": "Hiển thị lên nhóm",
 	"hide-from-groups": "Ẩn khỏi nhóm",
-	"hide-on-mobile": "Hide on mobile"
+	"hide-on-mobile": "Ẩn trên thiết bị di động"
 }

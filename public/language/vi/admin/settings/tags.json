@@ -1,10 +1,10 @@
 {
     "tag": "Cài Đặt Thẻ",
-    "link-to-manage": "Manage Tags",
+    "link-to-manage": "Quản Lý Thẻ",
     "min-per-topic": "Số Thẻ Ít Nhất Mỗi Chủ Đề",
     "max-per-topic": "Số Thẻ Tối Đa Mỗi Chủ Đề",
     "min-length": "Độ Dài Thẻ Tối Thiểu",
     "max-length": "Độ Dài Thẻ Tối Đa",
-    "related-topics": "Related Topics",
+    "related-topics": "Chủ Đề Liên Quan",
     "max-related-topics": "Số chủ đề liên quan tối đa để hiển thị (nếu giao diện hỗ trợ)"
 }
