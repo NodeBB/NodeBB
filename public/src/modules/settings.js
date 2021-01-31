@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('settings', function () {
+define('settings', ['hooks'], function (hooks) {
 	var DEFAULT_PLUGINS = [
 		'settings/checkbox',
 		'settings/number',
@@ -501,7 +501,7 @@ define('settings', function () {
 				$(formEl).find('input[type="checkbox"]').each(function () {
 					$(this).parents('.mdl-switch').toggleClass('is-checked', $(this).is(':checked'));
 				});
-				$(window).trigger('action:admin.settingsLoaded');
+				hooks.fire('action:admin.settingsLoaded');
 
 				// Handle unsaved changes
 				$(formEl).on('change', 'input, select, textarea', function () {
