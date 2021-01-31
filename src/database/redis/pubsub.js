@@ -1,31 +1,35 @@
 'use strict';
 
-var nconf = require('nconf');
-var util = require('util');
-var winston = require('winston');
-var EventEmitter = require('events').EventEmitter;
+const nconf = require('nconf');
+const util = require('util');
+const winston = require('winston');
+const EventEmitter = require('events').EventEmitter;
 const connection = require('./connection');
 
-var channelName;
-var PubSub = function () {
-	var self = this;
-	var subClient = connection.connect();
-	this.pubClient = connection.connect();
-
+let channelName;
+const PubSub = function () {
+	const self = this;
 	channelName = 'db:' + nconf.get('redis:database') + ':pubsub_channel';
-	subClient.subscribe(channelName);
 
-	subClient.on('message', function (channel, message) {
-		if (channel !== channelName) {
-			return;
-		}
+	connection.connect().then(function (client) {
+		self.subClient = client;
+		self.subClient.subscribe(channelName);
+		self.subClient.on('message', function (channel, message) {
+			if (channel !== channelName) {
+				return;
+			}
 
-		try {
-			var msg = JSON.parse(message);
-			self.emit(msg.event, msg.data);
-		} catch (err) {
-			winston.error(err.stack);
-		}
+			try {
+				var msg = JSON.parse(message);
+				self.emit(msg.event, msg.data);
+			} catch (err) {
+				winston.error(err.stack);
+			}
+		});
+	});
+
+	connection.connect().then(function (client) {
+		self.pubClient = client;
 	});
 };
 

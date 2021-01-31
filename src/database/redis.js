@@ -103,10 +103,10 @@ redisModule.info = async function (cxn) {
 	return redisData;
 };
 
-redisModule.socketAdapter = function () {
+redisModule.socketAdapter = async function () {
 	const redisAdapter = require('socket.io-redis');
-	const pub = connection.connect(nconf.get('redis'));
-	const sub = connection.connect(nconf.get('redis'));
+	const pub = await connection.connect(nconf.get('redis'));
+	const sub = await connection.connect(nconf.get('redis'));
 	return redisAdapter({
 		key: 'db:' + nconf.get('redis:database') + ':adapter_key',
 		pubClient: pub,

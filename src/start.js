@@ -31,7 +31,8 @@ start.start = async function () {
 		await db.initSessionStore();
 
 		const webserver = require('./webserver');
-		require('./socket.io').init(webserver.server);
+		const sockets = require('./socket.io');
+		await sockets.init(webserver.server);
 
 		if (nconf.get('runJobs')) {
 			require('./notifications').startJobs();

@@ -152,7 +152,7 @@ before(async function () {
 
 	const webserver = require('../../src/webserver');
 	const sockets = require('../../src/socket.io');
-	sockets.init(webserver.server);
+	await sockets.init(webserver.server);
 
 	require('../../src/notifications').startJobs();
 	require('../../src/user').startJobs();
