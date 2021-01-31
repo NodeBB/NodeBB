@@ -42,21 +42,13 @@ categoriesController.list = async function (req, res) {
 		pagination: pagination.create(page, pageCount, req.query),
 	};
 
-	if (req.originalUrl.startsWith(nconf.get('relative_path') + '/api/categories') || req.originalUrl.startsWith(nconf.get('relative_path') + '/categories')) {
-		data.title = '[[pages:categories]]';
-		data.breadcrumbs = helpers.buildBreadcrumbs([{ text: data.title }]);
-		res.locals.metaTags.push({
-			property: 'og:title',
-			content: '[[pages:categories]]',
-		});
-	}
-
 	data.categories.forEach(function (category) {
 		if (category) {
 			if (Array.isArray(category.children)) {
-				// limit amount of children returned
-				// TODO: make this category level setting
-				category.children = category.children.slice(0, 20);
+				category.children = category.children.slice(0, category.subCategoriesPerPage);
+				category.children.forEach(function (child) {
+					child.children = undefined;
+				});
 			}
 			if (Array.isArray(category.posts) && category.posts.length && category.posts[0]) {
 				category.teaser = {
@@ -68,6 +60,15 @@ categoriesController.list = async function (req, res) {
 			}
 		}
 	});
+
+	if (req.originalUrl.startsWith(nconf.get('relative_path') + '/api/categories') || req.originalUrl.startsWith(nconf.get('relative_path') + '/categories')) {
+		data.title = '[[pages:categories]]';
+		data.breadcrumbs = helpers.buildBreadcrumbs([{ text: data.title }]);
+		res.locals.metaTags.push({
+			property: 'og:title',
+			content: '[[pages:categories]]',
+		});
+	}
 
 	res.render('categories', data);
 };

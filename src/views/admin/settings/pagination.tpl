@@ -38,7 +38,7 @@
 	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/pagination:categories]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
-			<strong>[[admin/settings/pagination:categories-per-page]]</strong><br /> <input type="text" class="form-control" value="50" data-field="categoriesPerpage"><br />
+			<strong>[[admin/settings/pagination:categories-per-page]]</strong><br /> <input type="text" class="form-control" value="50" data-field="categoriesPerPage"><br />
 		</form>
 	</div>
 </div>
