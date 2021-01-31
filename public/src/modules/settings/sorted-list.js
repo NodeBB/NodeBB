@@ -2,8 +2,9 @@
 
 define('settings/sorted-list', [
 	'benchpress',
+	'hooks',
 	'jquery-ui/widgets/sortable',
-], function (benchpress) {
+], function (benchpress, hooks) {
 	var SortedList;
 	var Settings;
 
@@ -57,13 +58,14 @@ define('settings/sorted-list', [
 						form.attr('data-sorted-list-object', key);
 						$('#content').append(form.hide());
 
-						parse($container, itemUUID, item);
+						parse($container, itemUUID, item).then(() => {
+							hooks.fire('action:settings.sorted-list.loaded', { element: $list.get(0) });
+						});
 					});
 				}
 			});
 
 			$list.sortable().addClass('pointer');
-			$(window).trigger('action:settings.sorted-list.loaded', { element: $list.get(0) });
 		},
 	};
 
@@ -113,13 +115,16 @@ define('settings/sorted-list', [
 		var $list = $container.find('[data-type="list"]');
 		var itemTpl = $container.attr('data-item-template');
 
-		app.parseAndTranslate(itemTpl, data, function (itemHtml) {
-			itemHtml = $(itemHtml);
-			$list.append(itemHtml);
-			itemHtml.attr('data-sorted-list-uuid', itemUUID);
+		return new Promise((resolve) => {
+			app.parseAndTranslate(itemTpl, data, function (itemHtml) {
+				itemHtml = $(itemHtml);
+				$list.append(itemHtml);
+				itemHtml.attr('data-sorted-list-uuid', itemUUID);
 
-			setupRemoveButton($container, itemUUID);
-			setupEditButton($container, itemUUID);
+				setupRemoveButton($container, itemUUID);
+				setupEditButton($container, itemUUID);
+				resolve();
+			});
 		});
 	}
 
