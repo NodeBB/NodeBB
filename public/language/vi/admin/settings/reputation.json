@@ -1,12 +1,12 @@
 {
 	"reputation": "Cài Đặt Đánh Giá Uy Tín",
 	"disable": "Tắt Hệ Thống Đánh Giá Uy Tín",
-	"disable-down-voting": "Disable Down Voting",
-	"votes-are-public": "All Votes Are Public",
-	"thresholds": "Activity Thresholds",
+	"disable-down-voting": "Tắt Phản Đối",
+	"votes-are-public": "Tất Cả Bình Chọn Là Công Khai",
+	"thresholds": "Ngưỡng hoạt động",
 	"min-rep-downvote": "Uy tín tối thiểu để phản đối bài đăng",
-	"downvotes-per-day": "Downvotes per day (set to 0 for unlimited downvotes)",
-	"downvotes-per-user-per-day": "Downvotes per user per day (set to 0 for unlimited downvotes)",
+	"downvotes-per-day": "Số phản đối mỗi ngày (đặt là 0 không giới hạn phản đối)",
+	"downvotes-per-user-per-day": "Số phản đối mỗi người dùng mỗi ngày (đặt là 0 không giới hạn số phản đối)",
 	"min-rep-flag": "Uy tín tối thiểu để gắn cờ bài đăng",
 	"min-rep-website": "Uy tín tối thiểu để thêm \"Trang web\" vào hồ sơ người dùng",
 	"min-rep-aboutme": "Uy tín tối thiểu để thêm \"Giới thiệu bản thân\" vào hồ sơ người dùng",
@@ -16,7 +16,7 @@
 
 	"flags": "Cài Đặt Gắn Cờ",
 	"flags.limit-per-target": "Số lần tối đa nội dung nào đó có thể được gắn cờ",
-	"flags.limit-per-target-placeholder": "Default: 0",
+	"flags.limit-per-target-placeholder": "Mặc định: 0",
 	"flags.limit-per-target-help": "Khi một bài đăng hoặc người dùng bị gắn cờ nhiều lần, mỗi cờ bổ sung được coi là một &quot;báo cáo&quot; và được thêm vào cờ gốc. Đặt tùy chọn này thành một số khác 0 để giới hạn số lượng báo cáo mà một mục có thể nhận được.",
-	"flags.auto-resolve-on-ban": "Automatically resolve all of a user's tickets when they are banned"
+	"flags.auto-resolve-on-ban": "Tự động giải quyết tất cả các vé của người dùng khi họ bị cấm"
 }

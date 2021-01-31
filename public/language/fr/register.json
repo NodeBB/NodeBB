@@ -25,7 +25,7 @@
     "gdpr_agree_data": "J'accepte la collecte et le traitement de mes données personnelles sur ce site.",
     "gdpr_agree_email": "J'accepte de recevoir des courriels et des notifications de ce site Web.",
     "gdpr_consent_denied": "Vous devez accepter que ce site puisse collecter et traiter vos données, et pour vous envoyer des courriels.",
-    "invite.error-admin-only": "Direct user registration has been disabled. Please contact an administrator for more details.",
-    "invite.error-invite-only": "Direct user registration has been disabled. You must be invited by an existing user in order to access this forum.",
-    "invite.error-invalid-data": "The registration data received does not correspond to our records. Please contact an administrator for more details"
+    "invite.error-admin-only": "Les inscriptions sont désactivés. Veuillez contacter un administrateur pour plus de détails.",
+    "invite.error-invite-only": "Les inscriptions sont désactivés. Seules les invitations sont acceptés pour accéder au forum.",
+    "invite.error-invalid-data": "Renseignements erronées. Veuillez contacter un administrateur pour plus de détails"
 }

@@ -93,6 +93,8 @@
     "guest": "游客",
     "guests": "游客",
     "former_user": "老用户",
+    "system-user": "System",
+    "unknown-user": "Unknown user",
     "updated.title": "论坛已更新",
     "updated.message": "论坛已更新。请点这里刷新页面。",
     "privacy": "隐私",

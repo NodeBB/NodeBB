@@ -71,7 +71,7 @@
 	"modal-body": "Vui lòng nêu rõ lý do bạn gắn cờ %1 %2 để xem xét. Ngoài ra, hãy sử dụng một trong các nút báo cáo nhanh nếu có.",
 	"modal-reason-spam": "Quấy Rối",
 	"modal-reason-offensive": "Phản Cảm",
-	"modal-reason-other": "Lý Do Khác (Ghi Rõ Bên Dưới)",
+	"modal-reason-other": "Khác (Ghi Rõ Bên Dưới)",
 	"modal-reason-custom": "Lý do báo cáo nội dung này...",
 	"modal-submit": "Gửi Báo Cáo",
 	"modal-submit-success": "Nội dung đã được gắn cờ để kiểm duyệt.",

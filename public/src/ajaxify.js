@@ -324,6 +324,7 @@ ajaxify = window.ajaxify || {};
 			scripts: [location + tpl_url],
 		};
 
+		// Hint: useful if you want to load a module on a specific page (append module name to `scripts`)
 		$(window).trigger('action:script.load', data);
 
 		// Require and parse modules
@@ -338,12 +339,14 @@ ajaxify = window.ajaxify || {};
 			}
 			if (typeof script === 'string') {
 				return function (next) {
-					require([script], function (script) {
-						$(window).trigger('static:script.init', { tpl_url, module: script });
-						if (script && script.init) {
-							script.init();
-						}
-						next();
+					require(['hooks', script], function (hooks, module) {
+						// Hint: useful if you want to override a loaded library (e.g. replace core client-side logic), or call a method other than .init()
+						hooks.fire('static:script.init', { tpl_url, name: script, module }).then(() => {
+							if (module && module.init) {
+								module.init();
+							}
+							next();
+						});
 					}, function () {
 						// ignore 404 error
 						next();

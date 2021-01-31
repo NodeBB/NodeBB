@@ -93,6 +93,8 @@
     "guest": "Tamu",
     "guests": "Tamu",
     "former_user": "A Former User",
+    "system-user": "System",
+    "unknown-user": "Unknown user",
     "updated.title": "Forum telah diupdate",
     "updated.message": "Forum ini telah diupdate ke versi terbaru. Klik disini untuk memuat halaman.",
     "privacy": "Privasi",

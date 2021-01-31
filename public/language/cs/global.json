@@ -93,6 +93,8 @@
     "guest": "Host",
     "guests": "Hosté",
     "former_user": "Bývalý uživatel",
+    "system-user": "System",
+    "unknown-user": "Unknown user",
     "updated.title": "Fórum bylo zaktualizováno",
     "updated.message": "Toto fórum bylo právě aktualizováno na poslední verzi. Klikněte zde a obnovte tuto stránku.",
     "privacy": "Soukromí",

@@ -20,7 +20,7 @@
 	"settings/homepage": "Trang Chủ",
 	"settings/navigation": "Điều Hướng",
 	"settings/reputation": "Uy Tín & Gắn Cờ",
-	"settings/email": "Email",
+	"settings/email": "Thư điện tử",
 	"settings/user": "Người dùng",
 	"settings/group": "Nhóm",
 	"settings/guest": "Khách",
@@ -41,7 +41,7 @@
 
 	"settings.page-title": "Cài đặt %1",
 
-	"section-appearance": "Xuất hiện",
+	"section-appearance": "Trực quan",
 	"appearance/themes": "Giao diện",
 	"appearance/skins": "Kiểu dáng",
 	"appearance/customise": "Nội dung tùy chỉnh (HTML/JS/CSS)",
@@ -59,7 +59,7 @@
 	"section-advanced": "Nâng cao",
 	"advanced/database": "Cơ sở dữ liệu",
 	"advanced/events": "Sự kiện",
-	"advanced/hooks": "Hooks",
+	"advanced/hooks": "Móc nối",
 	"advanced/logs": "Nhật ký",
 	"advanced/errors": "Lỗi",
 	"advanced/cache": "Bộ nhớ đệm",
@@ -79,6 +79,6 @@
 
 	"connection-lost": "Kết nối với %1 đã bị mất, cố gắng kết nối lại...",
 
-	"alerts.version": "Đang chạy <strong>1NodeBB v%1</strong>",
+	"alerts.version": "Đang chạy <strong>NodeBB v%1</strong>",
 	"alerts.upgrade": "Nâng cấp lên v%1"
 }

@@ -93,6 +93,8 @@
     "guest": "Гост",
     "guests": "Гости",
     "former_user": "Бивши корисник",
+    "system-user": "System",
+    "unknown-user": "Unknown user",
     "updated.title": "Форум је ажуриран",
     "updated.message": "Форум је управо ажуриран на најновију верзију. Кликните овде да бисте освежили страницу.",
     "privacy": "Приватност",

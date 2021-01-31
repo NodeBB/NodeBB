@@ -93,6 +93,8 @@
     "guest": "Gost",
     "guests": "Gosti",
     "former_user": "A Former User",
+    "system-user": "System",
+    "unknown-user": "Unknown user",
     "updated.title": "Forum je nadograđen",
     "updated.message": "Ovaj forum je upravo nadograđen na posljednju verziju. Klikni ovdje za ponovno učitavanje stranice.",
     "privacy": "Privatnost",

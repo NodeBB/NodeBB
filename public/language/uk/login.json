@@ -8,5 +8,6 @@
     "failed_login_attempt": "Вхід невдався",
     "login_successful": "Ви успішно зайшли!",
     "dont_have_account": "Не маєте акаунту?",
-    "logged-out-due-to-inactivity": "Ви були розлогінені з Адмінської Панелі Керування через неактивність"
+    "logged-out-due-to-inactivity": "Ви були розлогінені з Адмінської Панелі Керування через неактивність",
+    "caps-lock-enabled": "Caps Lock is enabled"
 }

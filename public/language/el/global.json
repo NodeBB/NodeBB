@@ -93,6 +93,8 @@
     "guest": "Επισκέπτης",
     "guests": "Επισκέπτες",
     "former_user": "A Former User",
+    "system-user": "System",
+    "unknown-user": "Unknown user",
     "updated.title": "Το φόρουμ αναβαθμίστηκε",
     "updated.message": "Το φόρουμ μόλις αναβαθμίστηκε στην πιο πρόσφατη έκδοση. Κάνε κλικ εδώ για να ανανεώσεις την σελίδα.",
     "privacy": "Privacy",

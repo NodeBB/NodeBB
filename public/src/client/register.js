@@ -2,8 +2,8 @@
 
 
 define('forum/register', [
-	'translator', 'zxcvbn', 'slugify', 'api', 'jquery-form',
-], function (translator, zxcvbn, slugify, api) {
+	'translator', 'zxcvbn', 'slugify', 'api', 'forum/login', 'jquery-form',
+], function (translator, zxcvbn, slugify, api, Login) {
 	var Register = {};
 	var validationError = false;
 	var successIcon = '';
@@ -64,6 +64,9 @@ define('forum/register', [
 				validateUsername(username.val(), callback);
 			});
 		}
+
+		// Guard against caps lock
+		Login.capsLockCheck(document.querySelector('#password'), document.querySelector('#caps-lock-warning'));
 
 		register.on('click', function (e) {
 			var registerBtn = $(this);

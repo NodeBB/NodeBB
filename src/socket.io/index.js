@@ -16,7 +16,7 @@ const Namespaces = {};
 
 const Sockets = module.exports;
 
-Sockets.init = function (server) {
+Sockets.init = async function (server) {
 	requireModules();
 
 	const SocketIO = require('socket.io').Server;
@@ -30,7 +30,8 @@ Sockets.init = function (server) {
 		// 	io.adapter(require('./single-host-cluster'));
 		// } else if (nconf.get('redis')) {
 		if (nconf.get('redis')) {
-			io.adapter(require('../database/redis').socketAdapter());
+			const adapter = await require('../database/redis').socketAdapter();
+			io.adapter(adapter);
 		} else {
 			winston.warn('clustering detected, you should setup redis!');
 		}

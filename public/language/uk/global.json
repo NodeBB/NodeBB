@@ -93,6 +93,8 @@
     "guest": "Гість",
     "guests": "Гості",
     "former_user": "Колишній користувач",
+    "system-user": "System",
+    "unknown-user": "Unknown user",
     "updated.title": "Форум оновлено",
     "updated.message": "Форум було щойно оновлено до останньої версії. Клікніть тут, щоб оновити сторінку.",
     "privacy": "Приватність",

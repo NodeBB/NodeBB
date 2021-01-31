@@ -47,8 +47,8 @@ const smtpSettingsChanged = (config) => {
 		'email:smtpTransport:host',
 		'email:smtpTransport:security',
 	];
-
-	return settings.some(key => config[key] !== prevConfig[key]);
+	// config only has these properties if settings are saved on /admin/settings/email
+	return settings.some(key => config.hasOwnProperty(key) && config[key] !== prevConfig[key]);
 };
 
 const getHostname = () => {
@@ -59,16 +59,20 @@ const getHostname = () => {
 
 const buildCustomTemplates = async (config) => {
 	try {
-		const [templates, allPaths] = await Promise.all([
-			Emailer.getTemplates(config),
-			file.walk(viewsDir),
-		]);
-
 		// If the new config contains any email override values, re-compile those templates
 		const toBuild = Object
 			.keys(config)
 			.filter(prop => prop.startsWith('email:custom:'))
 			.map(key => key.split(':')[2]);
+
+		if (!toBuild.length) {
+			return;
+		}
+
+		const [templates, allPaths] = await Promise.all([
+			Emailer.getTemplates(config),
+			file.walk(viewsDir),
+		]);
 
 		const templatesToBuild = templates.filter(template => toBuild.includes(template.path));
 		const paths = _.fromPairs(allPaths.map((p) => {
@@ -179,16 +183,18 @@ Emailer.registerApp = (expressApp) => {
 	// which is updated before the pubsub handler is called
 	prevConfig = { ...meta.config };
 
-	// Update default payload if new logo is uploaded
 	pubsub.on('config:update', (config) => {
+		// config object only contains properties for the specific acp settings page
+		// not the entire meta.config object
 		if (config) {
-			if (config['brand:emailLogo']) {
+			// Update default payload if new logo is uploaded
+			if (config.hasOwnProperty('brand:emailLogo')) {
 				Emailer._defaultPayload.logo.src = config['brand:emailLogo'];
 			}
-			if (config['brand:emailLogo:height']) {
+			if (config.hasOwnProperty('brand:emailLogo:height')) {
 				Emailer._defaultPayload.logo.height = config['brand:emailLogo:height'];
 			}
-			if (config['brand:emailLogo:width']) {
+			if (config.hasOwnProperty('brand:emailLogo:width')) {
 				Emailer._defaultPayload.logo.width = config['brand:emailLogo:width'];
 			}
 
@@ -197,7 +203,7 @@ Emailer.registerApp = (expressApp) => {
 			}
 			buildCustomTemplates(config);
 
-			prevConfig = config;
+			prevConfig = { ...prevConfig, ...config };
 		}
 	});
 

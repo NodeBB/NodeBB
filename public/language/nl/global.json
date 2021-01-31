@@ -93,6 +93,8 @@
     "guest": "Gast",
     "guests": "Gasten",
     "former_user": "Een ex-gebruiker",
+    "system-user": "System",
+    "unknown-user": "Unknown user",
     "updated.title": "Site update",
     "updated.message": "Deze site heeft zojuist een update ontvangen. Klik hier om de pagina te verversen.",
     "privacy": "Privé",

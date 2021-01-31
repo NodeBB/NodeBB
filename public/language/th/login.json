@@ -8,5 +8,6 @@
     "failed_login_attempt": "เข้าสู่ระบบสำเร็จ",
     "login_successful": "คุณเข้าสู่ระบบเรียบร้อยแล้ว",
     "dont_have_account": "คุณยังไม่มีบัญชีเข้าระบบ?",
-    "logged-out-due-to-inactivity": "คุณได้ออกจากระบบ  Admin Control Panel  แล้ว เนื่องจากว่าไม่มีกิจกรรมใดๆมาสักระยะ"
+    "logged-out-due-to-inactivity": "คุณได้ออกจากระบบ  Admin Control Panel  แล้ว เนื่องจากว่าไม่มีกิจกรรมใดๆมาสักระยะ",
+    "caps-lock-enabled": "Caps Lock is enabled"
 }

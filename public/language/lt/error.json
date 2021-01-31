@@ -177,5 +177,6 @@
     "already-unblocked": "This user is already unblocked",
     "no-connection": "Panašu, jog yra problema su jūsų interneto prieiga",
     "socket-reconnect-failed": "Unable to reach the server at this time. Click here to try again, or try again later",
-    "plugin-not-whitelisted": "Unable to install plugin &ndash; only plugins whitelisted by the NodeBB Package Manager can be installed via the ACP"
+    "plugin-not-whitelisted": "Unable to install plugin &ndash; only plugins whitelisted by the NodeBB Package Manager can be installed via the ACP",
+    "topic-event-unrecognized": "Topic event '%1' unrecognized"
 }

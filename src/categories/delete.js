@@ -21,12 +21,17 @@ module.exports = function (Categories) {
 		await async.eachLimit(pinnedTids, 10, async function (tid) {
 			await topics.purgePostsAndTopic(tid, uid);
 		});
-		await purgeCategory(cid);
-		plugins.hooks.fire('action:category.delete', { cid: cid, uid: uid });
+		const categoryData = await Categories.getCategoryData(cid);
+		await purgeCategory(categoryData);
+		plugins.hooks.fire('action:category.delete', { cid: cid, uid: uid, category: categoryData });
 	};
 
-	async function purgeCategory(cid) {
-		await db.sortedSetRemove('categories:cid', cid);
+	async function purgeCategory(categoryData) {
+		const cid = categoryData.cid;
+		await db.sortedSetRemoveBulk([
+			['categories:cid', cid],
+			['categories:name', categoryData.name.substr(0, 200).toLowerCase() + ':' + cid],
+		]);
 		await removeFromParent(cid);
 		await deleteTags(cid);
 		await db.deleteAll([

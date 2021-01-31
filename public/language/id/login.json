@@ -8,5 +8,6 @@
     "failed_login_attempt": "Login Tidak Berhasil",
     "login_successful": "Kamu telah berhasil login!",
     "dont_have_account": "Belum memiliki akun?",
-    "logged-out-due-to-inactivity": "Anda sekarang sudah keluar dari Panel Kontrol Admin karena tidak aktif"
+    "logged-out-due-to-inactivity": "Anda sekarang sudah keluar dari Panel Kontrol Admin karena tidak aktif",
+    "caps-lock-enabled": "Caps Lock is enabled"
 }

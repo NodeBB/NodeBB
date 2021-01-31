@@ -93,6 +93,8 @@
     "guest": "زائر",
     "guests": "الزوار",
     "former_user": "A Former User",
+    "system-user": "System",
+    "unknown-user": "Unknown user",
     "updated.title": "تم تحديث المنتدى",
     "updated.message": "لقد تم تحديث المنتدى إلى آخر نسخة للتو. إضغط هنا لإعادة تحميل الصفحة.",
     "privacy": "الخصوصية",

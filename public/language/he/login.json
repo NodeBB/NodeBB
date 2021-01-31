@@ -8,5 +8,6 @@
     "failed_login_attempt": "ההתחברות נכשלה",
     "login_successful": "התחברת בהצלחה!",
     "dont_have_account": "אין לך חשבון עדיין?",
-    "logged-out-due-to-inactivity": "התנתקת מפאנל האדמין בגלל חוסר אקטיביות"
+    "logged-out-due-to-inactivity": "התנתקת מפאנל האדמין בגלל חוסר אקטיביות",
+    "caps-lock-enabled": "Caps Lock is enabled"
 }

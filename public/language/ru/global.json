@@ -93,6 +93,8 @@
     "guest": "Гость",
     "guests": "Гостей",
     "former_user": "Бывший пользователь",
+    "system-user": "System",
+    "unknown-user": "Unknown user",
     "updated.title": "Форум обновлён",
     "updated.message": "Форум был обновлён до последней версии. Нажмите здесь, чтобы обновить страницу.",
     "privacy": "Безопасность",

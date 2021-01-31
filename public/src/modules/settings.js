@@ -531,7 +531,9 @@ define('settings', function () {
 				helper.whenReady(function () {
 					var list = formEl.find('[data-sorted-list]');
 					if (list.length) {
-						getHook(list, 'set').call(Settings, list, values);
+						list.each((idx, item) => {
+							getHook(item, 'set').call(Settings, $(item), values);
+						});
 					}
 				});
 

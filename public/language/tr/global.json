@@ -93,6 +93,8 @@
     "guest": "Ziyaretçi",
     "guests": "Ziyaretçiler",
     "former_user": "Eski Kullanıcı",
+    "system-user": "System",
+    "unknown-user": "Unknown user",
     "updated.title": "Forum Güncellendi",
     "updated.message": "Bu forum şu anda güncellendi. Sayfayı tekrar yüklemek için buraya tıklayın.",
     "privacy": "Gizlilik",

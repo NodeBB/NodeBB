@@ -1,11 +1,11 @@
 {
-    "title": "Mới nhất",
+    "title": "Gần đây",
     "day": "Ngày",
     "week": "Tuần",
     "month": "Tháng",
     "year": "Năm",
     "alltime": "Mọi Lúc",
-    "no_recent_topics": "Không có chủ đề nào gần đây.",
+    "no_recent_topics": "Không có chủ đề gần đây.",
     "no_popular_topics": "Không có chủ đề nào phổ biến.",
     "there-is-a-new-topic": "Có chủ đề mới",
     "there-is-a-new-topic-and-a-new-post": "Có chủ đề mới và bài viết mới",

@@ -8,5 +8,6 @@
     "failed_login_attempt": "Kirjautuminen epäonnistui",
     "login_successful": "Olet onnistuneesti kirjautunut sisään!",
     "dont_have_account": "Ei käyttäjätunnusta?",
-    "logged-out-due-to-inactivity": "Sinut on kirjattu ulos hallintapaneelista liian pitkän toimettomuuden takia."
+    "logged-out-due-to-inactivity": "Sinut on kirjattu ulos hallintapaneelista liian pitkän toimettomuuden takia.",
+    "caps-lock-enabled": "Caps Lock is enabled"
 }

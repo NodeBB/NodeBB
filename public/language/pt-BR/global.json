@@ -93,6 +93,8 @@
     "guest": "Visitante",
     "guests": "Visitantes",
     "former_user": "Um ex-usuário",
+    "system-user": "System",
+    "unknown-user": "Unknown user",
     "updated.title": "Fórum Atualizado",
     "updated.message": "Este fórum foi atualizado para sua última versão. Clique aqui para atualizar a página.",
     "privacy": "Privacidade",

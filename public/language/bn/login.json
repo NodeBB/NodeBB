@@ -8,5 +8,6 @@
     "failed_login_attempt": "Login Unsuccessful",
     "login_successful": "আপনি সফলভাবে প্রবেশ করেছেন!",
     "dont_have_account": "কোন একাউন্ট নেই?",
-    "logged-out-due-to-inactivity": "You have been logged out of the Admin Control Panel due to inactivity"
+    "logged-out-due-to-inactivity": "You have been logged out of the Admin Control Panel due to inactivity",
+    "caps-lock-enabled": "Caps Lock is enabled"
 }

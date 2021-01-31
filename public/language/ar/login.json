@@ -8,5 +8,6 @@
     "failed_login_attempt": "تسجيل الدخول غير ناجح",
     "login_successful": "قمت بتسجيل الدخول بنجاح!",
     "dont_have_account": "لا تملك حساب؟",
-    "logged-out-due-to-inactivity": "لقد تم تسجيل خروجك من لوحة تحكم بسبب عدم نشاطك"
+    "logged-out-due-to-inactivity": "لقد تم تسجيل خروجك من لوحة تحكم بسبب عدم نشاطك",
+    "caps-lock-enabled": "Caps Lock is enabled"
 }

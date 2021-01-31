@@ -93,6 +93,8 @@
     "guest": "Invité",
     "guests": "Invités",
     "former_user": "Un Ancien Utilisateur",
+    "system-user": "Système",
+    "unknown-user": "Utilisateur Inconnu",
     "updated.title": "Forum mis à jour",
     "updated.message": "Ce forum a été mis à jour à la dernière version. Cliquez ici pour recharger la page.",
     "privacy": "Vie privée",

@@ -17,6 +17,6 @@
 	"flags": "Paramètres de signalement",
 	"flags.limit-per-target": "Nombre maximum de fois qu'un élément peut être signalé",
 	"flags.limit-per-target-placeholder": "Défaut: 0",
-	"flags.limit-per-target-help": "When a post or user is flagged multiple times, each additional flag is considered a &quot;report&quot; and added to the original flag. Set this option to a number other than zero to limit the number of reports an item can receive.",
-	"flags.auto-resolve-on-ban": "Automatically resolve all of a user's tickets when they are banned"
+	"flags.limit-per-target-help": "Lorsqu'un message ou un utilisateur a été signalé plusieurs fois, chaque indicateur supplémentaire est considéré comme un \"rapport\". et ajouté au signalement d'origine. Définissez cette option sur un nombre autre que zéro pour limiter le nombre de rapports qu'un signalement peut admettre.",
+	"flags.auto-resolve-on-ban": "Résoudre automatiquement tous les tickets d'un utilisateur lorsqu'il est banni"
 }

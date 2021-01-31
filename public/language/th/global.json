@@ -93,6 +93,8 @@
     "guest": "แขก",
     "guests": "แขก",
     "former_user": "A Former User",
+    "system-user": "System",
+    "unknown-user": "Unknown user",
     "updated.title": "ฟอรั่มที่ถูกอัพเดทแล้ว",
     "updated.message": "ฟอรั่มนี้เพิ่งได้รับการอัพเดทให้เป็นเวอร์ชั่นล่าสุด คลิกที่นี่เพื่อรีเฟรชหน้าเพจ",
     "privacy": "ความเป็นส่วนตัว",

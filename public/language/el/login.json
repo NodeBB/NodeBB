@@ -8,5 +8,6 @@
     "failed_login_attempt": "Login Unsuccessful",
     "login_successful": "Συνδέθηκες επιτυχώς!",
     "dont_have_account": "Δεν έχεις λογαριασμό;",
-    "logged-out-due-to-inactivity": "You have been logged out of the Admin Control Panel due to inactivity"
+    "logged-out-due-to-inactivity": "You have been logged out of the Admin Control Panel due to inactivity",
+    "caps-lock-enabled": "Caps Lock is enabled"
 }

@@ -93,6 +93,8 @@
     "guest": "Anonym",
     "guests": "Anonyma",
     "former_user": "En före detta användare",
+    "system-user": "System",
+    "unknown-user": "Unknown user",
     "updated.title": "Forumet uppdaterades",
     "updated.message": "Det här forumet har nu uppdaterats till senaste versionen. Klicka här för att ladda om sidan.",
     "privacy": "Integritet",

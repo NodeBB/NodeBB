@@ -93,6 +93,8 @@
     "guest": "אורח",
     "guests": "אורחים",
     "former_user": "משתמש שנמחק",
+    "system-user": "System",
+    "unknown-user": "Unknown user",
     "updated.title": "הפורום עודכן",
     "updated.message": "הפורום עודכן לגרסא האחרונה. נא ללחוץ כאן לעדכון הדף.",
     "privacy": "פרטיות",

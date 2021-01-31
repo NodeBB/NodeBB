@@ -8,5 +8,6 @@
     "failed_login_attempt": "Giriş Başarısız",
     "login_successful": "Başarıyla giriş yaptınız!",
     "dont_have_account": "Hesabınız yok mu?",
-    "logged-out-due-to-inactivity": "Hareketsizlik nedeniyle yönetici panelinden çıkış yapıldı"
+    "logged-out-due-to-inactivity": "Hareketsizlik nedeniyle yönetici panelinden çıkış yapıldı",
+    "caps-lock-enabled": "Caps Lock is enabled"
 }
