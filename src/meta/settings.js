@@ -44,6 +44,8 @@ Settings.getOne = async function (hash, field) {
 Settings.set = async function (hash, values, quiet) {
 	quiet = quiet || false;
 
+	({ plugin: hash, settings: values, quiet } = await plugins.hooks.fire('filter:settings.set', { plugin: hash, settings: values, quiet }));
+
 	const sortedListData = {};
 	for (const key in values) {
 		if (values.hasOwnProperty(key)) {
@@ -54,8 +56,6 @@ Settings.set = async function (hash, values, quiet) {
 		}
 	}
 	const sortedLists = Object.keys(sortedListData);
-
-	({ plugin: hash, settings: values, quiet } = await plugins.hooks.fire('filter:settings.set', { plugin: hash, settings: values, quiet }));
 
 	if (sortedLists.length) {
 		await db.delete('settings:' + hash + ':sorted-lists');
