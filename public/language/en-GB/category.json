@@ -24,5 +24,5 @@
 	"ignoring.message": "You are now ignoring updates from this category and all subcategories",
 
 	"watched-categories": "Watched categories",
-	"load-more-subcategories": "Load more subcategories"
+	"x-more-categories": "%1 more categories"
 }

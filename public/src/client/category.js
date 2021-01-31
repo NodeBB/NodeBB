@@ -79,20 +79,25 @@ define('forum/category', [
 	function handleLoadMoreSubcategories() {
 		$('[component="category/load-more-subcategories"]').on('click', function () {
 			var btn = $(this);
-			var start = parseInt(btn.attr('data-next-start'), 10);
 			socket.emit('categories.loadMoreSubCategories', {
 				cid: ajaxify.data.cid,
-				start: start,
+				start: ajaxify.data.nextSubCategoryStart,
 			}, function (err, data) {
 				if (err) {
 					return app.alertError(err);
+				}
+				btn.toggleClass('hidden', !data.length || data.length < ajaxify.data.subCategoriesPerPage);
+				if (!data.length) {
+					return;
 				}
 				app.parseAndTranslate('category', 'children', { children: data }, function (html) {
 					html.find('.timeago').timeago();
 					$('.subcategory .categories').append(html);
 					utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 					app.createUserTooltips(html);
-					btn.attr('data-next-start', start + ajaxify.data.subCategoriesPerPage);
+					ajaxify.data.nextSubCategoryStart += ajaxify.data.subCategoriesPerPage;
+					ajaxify.data.subCategoriesLeft -= data.length;
+					btn.translateText('[[category:x-more-categories, ' + ajaxify.data.subCategoriesLeft + ']]');
 				});
 			});
 			return false;

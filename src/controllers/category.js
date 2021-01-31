@@ -100,6 +100,7 @@ categoryController.get = async function (req, res, next) {
 		const allCategories = [];
 		categories.flattenCategories(allCategories, categoryData.children);
 		await categories.getRecentTopicReplies(allCategories, req.uid, req.query);
+		categoryData.subCategoriesLeft = categoryData.children.length - categoryData.subCategoriesPerPage;
 		categoryData.hasMoreSubCategories = categoryData.children.length > categoryData.subCategoriesPerPage;
 		categoryData.nextSubCategoryStart = categoryData.subCategoriesPerPage;
 		categoryData.children = categoryData.children.slice(0, categoryData.subCategoriesPerPage);
