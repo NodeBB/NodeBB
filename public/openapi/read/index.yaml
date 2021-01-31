@@ -205,4 +205,5 @@ get:
                                       type: string
                             imageClass:
                               type: string
+              - $ref: ../components/schemas/Pagination.yaml#/Pagination
               - $ref: ../components/schemas/CommonProps.yaml#/CommonProps
