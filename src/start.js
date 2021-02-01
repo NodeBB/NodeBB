@@ -38,6 +38,7 @@ start.start = async function () {
 			require('./notifications').startJobs();
 			require('./user').startJobs();
 			require('./plugins').startJobs();
+			await db.delete('locks');
 		}
 
 		await webserver.listen();
