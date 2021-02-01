@@ -58,10 +58,9 @@ Settings.set = async function (hash, values, quiet) {
 	const sortedLists = Object.keys(sortedListData);
 
 	if (sortedLists.length) {
-		await db.setAdd('settings:' + hash + ':sorted-lists', sortedLists);
-
 		// Remove provided (but empty) sorted lists from the hash set
 		await db.setRemove('settings:' + hash + ':sorted-lists', sortedLists.filter(list => !sortedListData[list].length));
+		await db.setAdd('settings:' + hash + ':sorted-lists', sortedLists);
 
 		await Promise.all(sortedLists.map(async function (list) {
 			const numItems = await db.sortedSetCard('settings:' + hash + ':sorted-list:' + list);
