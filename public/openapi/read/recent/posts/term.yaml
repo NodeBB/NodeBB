@@ -8,7 +8,7 @@ get:
       required: true
       schema:
         type: string
-      example: daily
+      example: day, week, month. If not passed the latest posts will be returned without limiting by date.
   responses:
     "200":
       description: ""
