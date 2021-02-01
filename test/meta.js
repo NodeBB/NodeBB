@@ -128,10 +128,10 @@ describe('meta', function () {
 		it('should get setting with sorted list', function (done) {
 			socketAdmin.settings.get({ uid: fooUid }, { hash: 'another:hash' }, function (err, data) {
 				assert.ifError(err);
-				assert.equal(data.foo, '1');
-				assert.equal(data.derp, 'value');
-				assert.deepEqual(data.someList, someList);
-				assert.deepEqual(data.anotherList, anotherList);
+				assert.strictEqual(data.foo, '1');
+				assert.strictEqual(data.derp, 'value');
+				assert.deepStrictEqual(data.someList, someList);
+				assert.deepStrictEqual(data.anotherList, anotherList);
 				done();
 			});
 		});
