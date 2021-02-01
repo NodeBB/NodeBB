@@ -92,7 +92,7 @@ define('forum/category', [
 				}
 				app.parseAndTranslate('category', 'children', { children: data }, function (html) {
 					html.find('.timeago').timeago();
-					$('.subcategory .categories').append(html);
+					$('[component="category/subcategory/container"]').append(html);
 					utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 					app.createUserTooltips(html);
 					ajaxify.data.nextSubCategoryStart += ajaxify.data.subCategoriesPerPage;
