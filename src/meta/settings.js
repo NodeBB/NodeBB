@@ -58,14 +58,18 @@ Settings.set = async function (hash, values, quiet) {
 	const sortedLists = Object.keys(sortedListData);
 
 	if (sortedLists.length) {
-		await db.delete('settings:' + hash + ':sorted-lists');
 		await db.setAdd('settings:' + hash + ':sorted-lists', sortedLists);
 
+		// Remove provided (but empty) sorted lists from the hash set
+		await db.setRemove('settings:' + hash + ':sorted-lists', sortedLists.filter(list => !sortedListData[list].length));
+
 		await Promise.all(sortedLists.map(async function (list) {
-			await db.delete('settings:' + hash + ':sorted-list:' + list);
-			await Promise.all(sortedListData[list].map(async function (data, order) {
-				await db.delete('settings:' + hash + ':sorted-list:' + list + ':' + order);
-			}));
+			const numItems = await db.sortedSetCard('settings:' + hash + ':sorted-list:' + list);
+			const deleteKeys = ['settings:' + hash + ':sorted-list:' + list];
+			for (let x = 0; x < numItems; x++) {
+				deleteKeys.push('settings:' + hash + ':sorted-list:' + list + ':' + x);
+			}
+			await db.deleteAll(deleteKeys);
 		}));
 
 		const ops = [];
