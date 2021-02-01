@@ -19,15 +19,12 @@ categoriesController.list = async function (req, res) {
 		content: 'website',
 	}];
 
-
-	const cidsPerPage = meta.config.categoriesPerPage;
-
 	const allRootCids = await categories.getAllCidsFromSet('cid:0:children');
 	const rootCids = await privileges.categories.filterCids('find', allRootCids, req.uid);
-	const pageCount = Math.max(1, Math.ceil(rootCids.length / cidsPerPage));
+	const pageCount = Math.max(1, Math.ceil(rootCids.length / meta.config.categoriesPerPage));
 	const page = Math.min(parseInt(req.query.page, 10) || 1, pageCount);
-	const start = Math.max(0, (page - 1) * cidsPerPage);
-	const stop = start + cidsPerPage - 1;
+	const start = Math.max(0, (page - 1) * meta.config.categoriesPerPage);
+	const stop = start + meta.config.categoriesPerPage - 1;
 	const pageCids = rootCids.slice(start, stop + 1);
 
 	const allChildCids = (await Promise.all(pageCids.map(cid => categories.getChildrenCids(cid)))).flat();
