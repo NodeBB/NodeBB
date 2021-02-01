@@ -82,7 +82,15 @@
 					</div>
 				</fieldset>
 				<fieldset class="row">
-					<div class="col-sm-6 col-xs-12">
+					<div class="col-sm-4 col-xs-12">
+						<div class="form-group">
+							<label for="cid-subcategories-per-page">
+								[[admin/manage/categories:subcategories-per-page]]
+							</label>
+							<input id="cid-subcategories-per-page" type="text" class="form-control" data-name="subCategoriesPerPage" value="{category.subCategoriesPerPage}" />
+						</div>
+					</div>
+					<div class="col-sm-4 col-xs-12">
 						<div class="form-group">
 							<label for="cid-min-tags">
 								[[admin/settings/tags:min-per-topic]]
@@ -90,7 +98,7 @@
 							<input id="cid-min-tags" type="text" class="form-control" data-name="minTags" value="{category.minTags}" />
 						</div>
 					</div>
-					<div class="col-sm-6 col-xs-12">
+					<div class="col-sm-4 col-xs-12">
 						<div class="form-group">
 							<label for="cid-max-tags">
 								[[admin/settings/tags:max-per-topic]]

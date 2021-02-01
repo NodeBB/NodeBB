@@ -10,7 +10,7 @@ const utils = require('../utils');
 const intFields = [
 	'cid', 'parentCid', 'disabled', 'isSection', 'order',
 	'topic_count', 'post_count', 'numRecentReplies',
-	'minTags', 'maxTags', 'postQueue',
+	'minTags', 'maxTags', 'postQueue', 'subCategoriesPerPage',
 ];
 
 module.exports = function (Categories) {

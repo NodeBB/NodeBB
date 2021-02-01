@@ -100,6 +100,13 @@ categoryController.get = async function (req, res, next) {
 		const allCategories = [];
 		categories.flattenCategories(allCategories, categoryData.children);
 		await categories.getRecentTopicReplies(allCategories, req.uid, req.query);
+		categoryData.subCategoriesLeft = Math.max(0, categoryData.children.length - categoryData.subCategoriesPerPage);
+		categoryData.hasMoreSubCategories = categoryData.children.length > categoryData.subCategoriesPerPage;
+		categoryData.nextSubCategoryStart = categoryData.subCategoriesPerPage;
+		categoryData.children = categoryData.children.slice(0, categoryData.subCategoriesPerPage);
+		categoryData.children.forEach(function (child) {
+			child.children = undefined;
+		});
 	}
 
 	categoryData.title = translator.escape(categoryData.name);

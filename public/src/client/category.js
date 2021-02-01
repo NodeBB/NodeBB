@@ -36,6 +36,8 @@ define('forum/category', [
 
 		handleIgnoreWatch(cid);
 
+		handleLoadMoreSubcategories();
+
 		$(window).trigger('action:topics.loaded', { topics: ajaxify.data.topics });
 		$(window).trigger('action:category.loaded', { cid: ajaxify.data.cid });
 	};
@@ -71,6 +73,34 @@ define('forum/category', [
 
 				app.alertSuccess('[[category:' + state + '.message]]');
 			});
+		});
+	}
+
+	function handleLoadMoreSubcategories() {
+		$('[component="category/load-more-subcategories"]').on('click', function () {
+			var btn = $(this);
+			socket.emit('categories.loadMoreSubCategories', {
+				cid: ajaxify.data.cid,
+				start: ajaxify.data.nextSubCategoryStart,
+			}, function (err, data) {
+				if (err) {
+					return app.alertError(err);
+				}
+				btn.toggleClass('hidden', !data.length || data.length < ajaxify.data.subCategoriesPerPage);
+				if (!data.length) {
+					return;
+				}
+				app.parseAndTranslate('category', 'children', { children: data }, function (html) {
+					html.find('.timeago').timeago();
+					$('[component="category/subcategory/container"]').append(html);
+					utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
+					app.createUserTooltips(html);
+					ajaxify.data.nextSubCategoryStart += ajaxify.data.subCategoriesPerPage;
+					ajaxify.data.subCategoriesLeft -= data.length;
+					btn.translateText('[[category:x-more-categories, ' + ajaxify.data.subCategoriesLeft + ']]');
+				});
+			});
+			return false;
 		});
 	}
 

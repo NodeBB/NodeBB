@@ -39,6 +39,7 @@ module.exports = function (Categories) {
 			class: (data.class ? data.class : 'col-md-3 col-xs-6'),
 			imageClass: 'cover',
 			isSection: 0,
+			subCategoriesPerPage: 10,
 		};
 
 		if (data.backgroundImage) {

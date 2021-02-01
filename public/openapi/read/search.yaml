@@ -25,7 +25,7 @@ get:
                     type: string
                   term:
                     type: string
-                  categories:
+                  allCategories:
                     type: array
                     items:
                       type: object
@@ -36,7 +36,7 @@ get:
                             - type: number
                         text:
                           type: string
-                  categoriesCount:
+                  allCategoriesCount:
                     type: number
                   expandSearch:
                     type: boolean
@@ -64,8 +64,8 @@ get:
                   - time
                   - multiplePages
                   - search_query
-                  - categories
-                  - categoriesCount
+                  - allCategories
+                  - allCategoriesCount
                   - expandSearch
                   - showAsPosts
                   - showAsTopics
