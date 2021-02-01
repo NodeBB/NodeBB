@@ -71,6 +71,15 @@ process.on('message', async function (msg) {
 		archive.pipe(output);
 		winston.verbose('[user/export/uploads] Collating uploads for uid ' + targetUid);
 		await user.collateUploads(targetUid, archive);
+
+		const uploadedPicture = await user.getUserField(targetUid, 'uploadedpicture');
+		if (uploadedPicture) {
+			const filePath = uploadedPicture.replace(nconf.get('upload_url'), '');
+			archive.file(path.join(nconf.get('upload_path'), filePath), {
+				name: path.basename(filePath),
+			});
+		}
+
 		archive.finalize();
 	}
 });
