@@ -261,16 +261,10 @@ postsAPI.getDiffs = async (caller, data) => {
 	usernames = usernames.map(userObj => (userObj.uid ? userObj.username : null));
 
 	const cid = await posts.getCidByPid(data.pid);
-	const isModerator = await privileges.users.isModerator(cid, caller.uid);
-
-	let canEdit = true;
-	try {
-		if (!isModerator) {
-			await user.isPrivilegedOrSelf(caller.uid, post.uid);
-		}
-	} catch (e) {
-		canEdit = false;
-	}
+	const [isAdmin, isModerator] = await Promise.all([
+		user.isAdministrator(caller.uid),
+		privileges.users.isModerator(caller.uid, cid),
+	]);
 
 	timestamps.push(post.timestamp);
 
@@ -280,8 +274,10 @@ postsAPI.getDiffs = async (caller, data) => {
 			timestamp: timestamp,
 			username: usernames[idx],
 		})),
-		editable: canEdit,
-		deletable: isModerator,
+		// Only admins, global mods and moderator of that cid can delete a diff
+		deletable: isAdmin || isModerator,
+		// These and post owners can restore to a different post version
+		editable: isAdmin || isModerator || parseInt(caller.uid, 10) === parseInt(post.uid, 10),
 	};
 };
 
@@ -292,7 +288,7 @@ postsAPI.loadDiff = async (caller, data) => {
 
 postsAPI.restoreDiff = async (caller, data) => {
 	const cid = await posts.getCidByPid(data.pid);
-	const canEdit = await privileges.categories.can('edit', cid, caller.uid);
+	const canEdit = await privileges.categories.can('posts:edit', cid, caller.uid);
 	if (!canEdit) {
 		throw new Error('[[error:no-privileges]]');
 	}
