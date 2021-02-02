@@ -8,7 +8,7 @@ get:
       required: true
       schema:
         type: string
-      example: /api/recent/posts/day
+      example: day
       description: term is used to limit the returned posts to a specific term. Valid values are day, week, month. If you don't pass it in all posts will be returned.
     - name: page
       in: query
