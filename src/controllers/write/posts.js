@@ -109,5 +109,5 @@ Posts.deleteDiff = async (req, res) => {
 
 	await posts.diffs.delete(req.params.pid, req.params.timestamp, req.uid);
 
-	helpers.formatApiResponse(200, res);
+	helpers.formatApiResponse(200, res, await api.posts.getDiffs(req, { ...req.params }));
 };
