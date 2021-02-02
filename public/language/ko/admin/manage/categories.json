@@ -10,6 +10,7 @@
 	"custom-class": "사용자 정의 클래스",
 	"num-recent-replies": "최근 답장 갯수",
 	"ext-link": "외부 링크",
+	"subcategories-per-page": "Subcategories per page",
 	"is-section": "이 게시판을 섹션으로 취급",
 	"post-queue": "Post queue",
 	"tag-whitelist": "Tag Whitelist",

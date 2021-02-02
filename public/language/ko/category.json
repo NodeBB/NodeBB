@@ -18,5 +18,6 @@
     "watching.message": "이 카테고리 및 모든 하위 카테고리의 업데이트를 주시중입니다",
     "notwatching.message": "이 카테고리 및 모든 하위 카테고리의 업데이트를 주시하고 있지 않습니다",
     "ignoring.message": "이 카테고리 및 모든 하위 카테고리의 업데이트를 무시하고 있습니다",
-    "watched-categories": "관심 카테고리"
+    "watched-categories": "관심 카테고리",
+    "x-more-categories": "%1 more categories"
 }

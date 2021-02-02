@@ -18,5 +18,6 @@
     "watching.message": "您关注了此版块和全部子版块的动态。",
     "notwatching.message": "您未关注了此版块和全部子版块的动态。",
     "ignoring.message": "您未关注此版块和全部子版块的动态。",
-    "watched-categories": "已关注的版块"
+    "watched-categories": "已关注的版块",
+    "x-more-categories": "%1 more categories"
 }

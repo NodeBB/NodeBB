@@ -10,6 +10,7 @@
 	"custom-class": "カスタムClass",
 	"num-recent-replies": "# 最近の返信数",
 	"ext-link": "外部リンク",
+	"subcategories-per-page": "Subcategories per page",
 	"is-section": "このカテゴリをセクションとして扱う",
 	"post-queue": "Post queue",
 	"tag-whitelist": "Tag Whitelist",

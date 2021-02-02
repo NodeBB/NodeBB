@@ -18,5 +18,6 @@
     "watching.message": "Bu kategori ve alt kategorilerindeki güncellemeleri artık takip ediyorsunuz",
     "notwatching.message": "Bu kategori ve alt kategorilerindeki güncellemeleri artık takip etmiyorsunuz",
     "ignoring.message": "Bu kategori ve alt kategorilerindeki güncellemeleri artık yok sayıyorsunuz",
-    "watched-categories": "Takip edilen kategoriler"
+    "watched-categories": "Takip edilen kategoriler",
+    "x-more-categories": "%1 more categories"
 }
