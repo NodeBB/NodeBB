@@ -9,6 +9,12 @@ get:
       schema:
         type: string
       example: day, week, month. If not passed the latest posts will be returned without limiting by date.
+    - name: page
+      in: query
+      required: false
+      schema:
+        type: number
+      example: page=1
   responses:
     "200":
       description: ""
