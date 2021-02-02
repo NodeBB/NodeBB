@@ -412,6 +412,8 @@ describe('API', async () => {
 						return;
 					}
 
+					assert.strictEqual(response.statusCode, 200, `HTTP 200 expected (path: ${method} ${path}`);
+
 					const hasJSON = http200.content && http200.content['application/json'];
 					if (hasJSON) {
 						schema = context[method].responses['200'].content['application/json'].schema;
