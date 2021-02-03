@@ -27,14 +27,14 @@ get:
                   timestamps:
                     type: array
                     items:
-                      type: number
+                      type: string
                   revisions:
                     type: array
                     items:
                       type: object
                       properties:
                         timestamp:
-                          type: number
+                          type: string
                         username:
                           type: string
                   editable:

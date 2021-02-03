@@ -266,7 +266,8 @@ postsAPI.getDiffs = async (caller, data) => {
 		privileges.users.isModerator(caller.uid, cid),
 	]);
 
-	timestamps.push(post.timestamp);
+	// timestamps returned by posts.diffs.list are strings
+	timestamps.push(String(post.timestamp));
 
 	return {
 		timestamps: timestamps,
