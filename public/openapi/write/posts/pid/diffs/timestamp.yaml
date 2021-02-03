@@ -22,16 +22,4 @@ delete:
     '200':
       description: Post diff successfully deleted
       content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                $ref: ../../../../components/schemas/Status.yaml#/Status
-              response:
-                type: object
-                properties: {}
-    '400':
-      $ref: ../../../../components/responses/400.yaml#/400
-    '403':
-      $ref: ../../../../components/responses/403.yaml#/403
+        $ref: ../diffs.yaml#/get/responses/200/content

@@ -18,6 +18,7 @@ const user = require('../src/user');
 const groups = require('../src/groups');
 const categories = require('../src/categories');
 const topics = require('../src/topics');
+const posts = require('../src/posts');
 const plugins = require('../src/plugins');
 const flags = require('../src/flags');
 const messaging = require('../src/messaging');
@@ -74,6 +75,18 @@ describe('API', async () => {
 					example: '',	// to be defined below...
 				},
 			],
+			'/posts/{pid}/diffs/{timestamp}': [
+				{
+					in: 'path',
+					name: 'pid',
+					example: '',	// to be defined below...
+				},
+				{
+					in: 'path',
+					name: 'timestamp',
+					example: '',	// to be defined below...
+				},
+			],
 		},
 	};
 
@@ -123,7 +136,7 @@ describe('API', async () => {
 		const testCategory = await categories.create({ name: 'test' });
 
 		// Post a new topic
-		const testTopic = await topics.post({
+		await topics.post({
 			uid: adminUid,
 			cid: testCategory.cid,
 			title: 'Test Topic',
@@ -141,6 +154,16 @@ describe('API', async () => {
 			title: 'Test Topic 3',
 			content: 'Test topic 3 content',
 		});
+
+		// Create a post diff
+		await posts.edit({
+			uid: adminUid,
+			pid: unprivTopic.postData.pid,
+			content: 'Test topic 2 edited content',
+			req: {},
+		});
+		mocks.delete['/posts/{pid}/diffs/{timestamp}'][0].example = unprivTopic.postData.pid;
+		mocks.delete['/posts/{pid}/diffs/{timestamp}'][1].example = (await posts.diffs.list(unprivTopic.postData.pid))[0];
 
 		// Create a sample flag
 		await flags.create('post', 1, unprivUid, 'sample reasons', Date.now());
