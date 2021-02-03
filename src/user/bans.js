@@ -116,13 +116,11 @@ module.exports = function (User) {
 	User.bans.calcExpiredFromUserData = async function (userData) {
 		const isArray = Array.isArray(userData);
 		userData = isArray ? userData : [userData];
-		userData = await Promise.all(userData.map(async function (userData) {
-			const banned = await groups.isMember(userData.uid, groups.BANNED_USERS);
-			return {
-				banned: banned,
-				'banned:expire': userData && userData['banned:expire'],
-				banExpired: userData && userData['banned:expire'] <= Date.now() && userData['banned:expire'] !== 0,
-			};
+		const banned = await groups.isMembers(userData.map(u => u.uid), groups.BANNED_USERS);
+		userData = userData.map((userData, index) => ({
+			banned: banned[index],
+			'banned:expire': userData && userData['banned:expire'],
+			banExpired: userData && userData['banned:expire'] <= Date.now() && userData['banned:expire'] !== 0,
 		}));
 		return isArray ? userData : userData[0];
 	};

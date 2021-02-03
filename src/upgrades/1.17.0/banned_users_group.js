@@ -31,7 +31,7 @@ module.exports = {
 			await db.sortedSetAdd(
 				'group:banned-users:members',
 				uids.map(() => now),
-				uids.map(uid => uid)
+				uids
 			);
 
 			await db.sortedSetRemove(
@@ -41,7 +41,7 @@ module.exports = {
 					'group:unverified-users:members',
 					'group:Global Moderators:members',
 				],
-				uids.map(uid => uid)
+				uids
 			);
 		}, {
 			batch: 500,
