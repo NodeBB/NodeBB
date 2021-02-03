@@ -12,6 +12,10 @@
 	}
 
 	.privilege-table {
+		td:first-child {
+			white-space: nowrap;
+		}
+
 		td[data-delta="true"] > input {
 			&:after {
 				border-color: @state-success-text;

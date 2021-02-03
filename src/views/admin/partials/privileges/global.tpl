@@ -15,10 +15,12 @@
 								<td>
 									{{{ if privileges.groups.isPrivate }}}
 										{{{ if (privileges.groups.name == "banned-users") }}}
-										<i class="fa fa-exclamation-triangle text-muted" title="[[admin/manage/categories:privileges.inheritance-exception]]"></i>
+										<i class="fa fa-fw fa-exclamation-triangle text-muted" title="[[admin/manage/categories:privileges.inheritance-exception]]"></i>
 										{{{ else }}}
-										<i class="fa fa-lock text-muted" title="[[admin/manage/categories:privileges.group-private]]"></i>
+										<i class="fa fa-fw fa-lock text-muted" title="[[admin/manage/categories:privileges.group-private]]"></i>
 										{{{ end }}}
+									{{{ else }}}
+									<i class="fa fa-fw fa-none"></i>
 									{{{ end }}}
 									{privileges.groups.name}
 								</td>
