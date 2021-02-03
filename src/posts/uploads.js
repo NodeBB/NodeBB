@@ -6,9 +6,11 @@ const crypto = require('crypto');
 const path = require('path');
 const winston = require('winston');
 const mime = require('mime');
+const validator = require('validator');
 
 const db = require('../database');
 const image = require('../image');
+const topics = require('../topics');
 const file = require('../file');
 
 module.exports = function (Posts) {
@@ -21,9 +23,10 @@ module.exports = function (Posts) {
 	Posts.uploads.sync = async function (pid) {
 		// Scans a post's content and updates sorted set of uploads
 
-		const [content, currentUploads] = await Promise.all([
+		const [content, currentUploads, isMainPost] = await Promise.all([
 			Posts.getPostField(pid, 'content'),
 			Posts.uploads.list(pid),
+			Posts.isMain(pid),
 		]);
 
 		// Extract upload file paths from post content
@@ -32,6 +35,16 @@ module.exports = function (Posts) {
 		while (match) {
 			uploads.push(match[1].replace('-resized', ''));
 			match = searchRegex.exec(content);
+		}
+
+		// Main posts can contain topic thumbs, which are also tracked by pid
+		if (isMainPost) {
+			const tid = await Posts.getPostField(pid, 'tid');
+			let thumbs = await topics.thumbs.get(tid);
+			thumbs = thumbs.map(thumb => thumb.url.replace(path.join(nconf.get('upload_url'), 'files/'), '')).filter(path => !validator.isURL(path, {
+				require_protocol: true,
+			}));
+			uploads.push(...thumbs);
 		}
 
 		// Create add/remove sets

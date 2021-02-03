@@ -114,6 +114,7 @@ describe('Topic thumbs', () => {
 
 	describe('.associate()', () => {
 		let tid;
+		let mainPid;
 
 		before(async () => {
 			topicObj = await topics.post({
@@ -123,6 +124,7 @@ describe('Topic thumbs', () => {
 				content: 'The content of test topic',
 			});
 			tid = topicObj.topicData.tid;
+			mainPid = topicObj.postData.pid;
 		});
 
 		it('should add an uploaded file to a zset', async () => {
@@ -156,7 +158,12 @@ describe('Topic thumbs', () => {
 		});
 
 		it('should associate the thumbnail with that topic\'s main pid\'s uploads', async () => {
-			const mainPid = (await topics.getMainPids([tid]))[0];
+			const uploads = await posts.uploads.list(mainPid);
+			assert(uploads.includes(path.basename(relativeThumbPaths[0])));
+		});
+
+		it('should maintain state in the topic\'s main pid\'s uploads if posts.uploads.sync() is called', async () => {
+			await posts.uploads.sync(mainPid);
 			const uploads = await posts.uploads.list(mainPid);
 			assert(uploads.includes(path.basename(relativeThumbPaths[0])));
 		});
