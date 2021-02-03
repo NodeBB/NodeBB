@@ -1,10 +1,12 @@
 {
 	"pagination": "Definições de Paginação",
 	"enable": "Paginar tópicos e publicações em vez de usar scroll infinito.",
+	"posts": "Post Pagination",
 	"topics": "Paginação de Tópicos",
 	"posts-per-page": "Publicações por página",
 	"max-posts-per-page": "Máximo de publicações por página",
 	"categories": "Paginação de Categorias",
 	"topics-per-page": "Tópicos por Página",
-	"max-topics-per-page": "Máximo de tópicos por página"
+	"max-topics-per-page": "Máximo de tópicos por página",
+	"categories-per-page": "Categories per page"
 }

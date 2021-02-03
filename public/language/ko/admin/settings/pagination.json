@@ -1,10 +1,12 @@
 {
 	"pagination": "페이지 설정",
 	"enable": "무한 스크롤 대신 페이지로 주제와 포스트 보여주기",
+	"posts": "Post Pagination",
 	"topics": "주제 페이지",
 	"posts-per-page": "페이지 당 포스트",
 	"max-posts-per-page": "페이지당 최대 포스트수",
 	"categories": "카테고리 페이지",
 	"topics-per-page": "페이지 당 주제 수",
-	"max-topics-per-page": "페이지당 최대 게시물 수"
+	"max-topics-per-page": "페이지당 최대 게시물 수",
+	"categories-per-page": "Categories per page"
 }

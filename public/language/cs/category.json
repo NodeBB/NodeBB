@@ -18,5 +18,6 @@
     "watching.message": "Nyní sledujete aktualizace pro tuto kategorii a všech podkategorii",
     "notwatching.message": "Nyní nesledujete aktualizace z této kategorie a všech podkategorií",
     "ignoring.message": "Nyní ignorujete aktualizace této kategorie a všech jejich kategorii",
-    "watched-categories": "Sledované kategorie"
+    "watched-categories": "Sledované kategorie",
+    "x-more-categories": "%1 more categories"
 }

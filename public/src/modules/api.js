@@ -77,6 +77,7 @@ define('api', () => {
 			'x-csrf-token': config.csrf_token,
 		},
 	}, onSuccess);
+	api.delete = api.del;
 
 	return api;
 });

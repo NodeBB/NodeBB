@@ -19,7 +19,8 @@ define('admin/extend/plugins', [
 			return;
 		}
 
-		$('#plugin-search').val('');
+		const searchInputEl = document.querySelector('#plugin-search');
+		searchInputEl.value = '';
 
 		pluginsList.on('click', 'button[data-action="toggleActive"]', function () {
 			var pluginEl = $(this).parents('li');
@@ -147,7 +148,7 @@ define('admin/extend/plugins', [
 			});
 		});
 
-		$('#plugin-search').on('input propertychange', function () {
+		$(searchInputEl).on('input propertychange', function () {
 			var term = $(this).val();
 			$('.plugins li').each(function () {
 				var pluginId = $(this).attr('data-plugin-id');
@@ -226,6 +227,7 @@ define('admin/extend/plugins', [
 
 		populateUpgradeablePlugins();
 		populateActivePlugins();
+		searchInputEl.focus();
 	};
 
 	function confirmInstall(pluginID, callback) {

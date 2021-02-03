@@ -1,10 +1,12 @@
 {
 	"pagination": "Dalīšana pa lapām",
 	"enable": "Tematus un rakstus dalīt pa vairākām lapām un nelikt visus vienā.",
+	"posts": "Post Pagination",
 	"topics": "Tematu dalīšana pa lapām",
 	"posts-per-page": "Rakstu skaits lapā",
 	"max-posts-per-page": "Maksimālais rakstu skaits lapā",
 	"categories": "Kategoriju dalīšana pa lapām",
 	"topics-per-page": "Tematu skaits lapā",
-	"max-topics-per-page": "Maksimālais tematu skaits lapā"
+	"max-topics-per-page": "Maksimālais tematu skaits lapā",
+	"categories-per-page": "Categories per page"
 }

@@ -1,10 +1,12 @@
 {
 	"pagination": "分頁設定",
 	"enable": "在主題和文章使用分頁替代無限滾動瀏覽。",
+	"posts": "Post Pagination",
 	"topics": "主題分頁",
 	"posts-per-page": "每頁文章數",
 	"max-posts-per-page": "每頁最多文章數",
 	"categories": "版面分頁",
 	"topics-per-page": "每頁主題數",
-	"max-topics-per-page": "每頁最多主題數"
+	"max-topics-per-page": "每頁最多主題數",
+	"categories-per-page": "Categories per page"
 }

@@ -18,5 +18,6 @@
     "watching.message": "You are now watching updates from this category and all subcategories",
     "notwatching.message": "You are not watching updates from this category and all subcategories",
     "ignoring.message": "You are now ignoring updates from this category and all subcategories",
-    "watched-categories": "প্রেক্ষিত বিভাগসমূহ"
+    "watched-categories": "প্রেক্ষিত বিভাগসমূহ",
+    "x-more-categories": "%1 more categories"
 }

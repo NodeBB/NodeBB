@@ -26,7 +26,7 @@
 
 	"redis": "Redis",
 	"redis.version": "Phiên bản Redis",
-	"redis.keys": "Keys",
+	"redis.keys": "Chìa khóa",
 	"redis.expires": "Hết hạn",
 	"redis.avg-ttl": "TTL Trung Bình",
 	"redis.connected-clients": "Khách Đã Kết Nối",

@@ -18,5 +18,6 @@
     "watching.message": "Ora stai seguendo gli aggiornamenti di questa categoria e di tutte le sottocategorie",
     "notwatching.message": "Ora non stai seguendo gli aggiornamenti di questa categoria e di tutte le sottocategorie",
     "ignoring.message": "Ora stai ignorando gli aggiornamenti di questa categoria e di tutte le sottocategorie",
-    "watched-categories": "Categorie seguite"
+    "watched-categories": "Categorie seguite",
+    "x-more-categories": "%1 more categories"
 }
