@@ -47,6 +47,8 @@
 	"privileges.no-users": "このカテゴリにはユーザー固有の権限はありません。",
 	"privileges.section-group": "グループ",
 	"privileges.group-private": "このグループはプライベートです",
+  	"privileges.inheritance-exception": "This group does not inherit privileges from registered-users group",
+  	"privileges.banned-user-inheritance": "Banned users inherit privileges from banned-users group",
 	"privileges.search-group": "グループを追加",
 	"privileges.copy-to-children": "子要素にコピーする",
 	"privileges.copy-from-category": "カテゴリからのコピー",

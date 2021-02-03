@@ -47,6 +47,8 @@
 	"privileges.no-users": "V této kategorii není nastaveno žádné oprávnění uživatele.",
 	"privileges.section-group": "Skupina",
 	"privileges.group-private": "Tato skupina je soukromá",
+  	"privileges.inheritance-exception": "This group does not inherit privileges from registered-users group",
+  	"privileges.banned-user-inheritance": "Banned users inherit privileges from banned-users group",
 	"privileges.search-group": "Přidat skupinu",
 	"privileges.copy-to-children": "Kopírovat do podřazené",
 	"privileges.copy-from-category": "Kopírovat z kategorie",

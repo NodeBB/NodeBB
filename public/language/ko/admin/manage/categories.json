@@ -47,6 +47,8 @@
 	"privileges.no-users": "이 게시판에는 사용자 별 권한이 없습니다.",
 	"privileges.section-group": "그룹",
 	"privileges.group-private": "이 그룹은 비공개입니다",
+  	"privileges.inheritance-exception": "This group does not inherit privileges from registered-users group",
+  	"privileges.banned-user-inheritance": "Banned users inherit privileges from banned-users group",
 	"privileges.search-group": "그룹 추가",
 	"privileges.copy-to-children": "하위로 복사",
 	"privileges.copy-from-category": "게시판에서 복사",

@@ -47,6 +47,8 @@
 	"privileges.no-users": "U ovoj kategoriji nema privilegije za korisnika.",
 	"privileges.section-group": "Grupa",
 	"privileges.group-private": "Ova grupa je privatna",
+  	"privileges.inheritance-exception": "This group does not inherit privileges from registered-users group",
+  	"privileges.banned-user-inheritance": "Banned users inherit privileges from banned-users group",
 	"privileges.search-group": "Dodaj grupu",
 	"privileges.copy-to-children": "Kopiraj u dijete",
 	"privileges.copy-from-category": "Kopiraj iz kategorije",

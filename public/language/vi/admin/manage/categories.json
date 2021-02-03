@@ -37,7 +37,7 @@
 
 	"privileges.description": "Bạn có thể cấu hình kiểm soát truy cập các phần của trang web ở phần này. Cấp quyền dựa trên cơ sở mỗi người dùng hoặc mỗi nhóm. Chọn tên miền ảnh hưởng từ menu thả xuống bên dưới.",
 	"privileges.category-selector": "Cấu hình đặc quyền cho",
-	"privileges.warning": "<strong>Ghi chú</strong>: Cài đặt đặc quyền có hiệu lực ngay lập tức. Không cần thiết phải lưu danh mục sau khi điều chỉnh các cài đặt này.",
+	"privileges.warning": "<strong>Ghi chú</strong>: Cài đặt đặc quyền có hiệu lực lập tức. Không cần phải lưu danh mục sau khi điều chỉnh cài đặt này.",
 	"privileges.section-viewing": "Đặc Quyền Xem",
 	"privileges.section-posting": "Đặc Quyền Bài Đăng",
 	"privileges.section-moderation": "Đặc Quyền Kiểm Duyệt",
@@ -47,6 +47,8 @@
 	"privileges.no-users": "Không có đặc quyền riêng cho người dùng trong chuyên mục này.",
 	"privileges.section-group": "Nhóm",
 	"privileges.group-private": "Nhóm này là riêng tư",
+  	"privileges.inheritance-exception": "This group does not inherit privileges from registered-users group",
+  	"privileges.banned-user-inheritance": "Banned users inherit privileges from banned-users group",
 	"privileges.search-group": "Thêm Nhóm",
 	"privileges.copy-to-children": "Sao Chép Đến mục Con",
 	"privileges.copy-from-category": "Sao Chép Từ Chuyên Mục",

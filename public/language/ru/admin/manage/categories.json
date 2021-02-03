@@ -47,6 +47,8 @@
 	"privileges.no-users": "В этой категории нет специально заданных прав пользователя.",
 	"privileges.section-group": "Группа",
 	"privileges.group-private": "Это закрытая группа",
+  	"privileges.inheritance-exception": "This group does not inherit privileges from registered-users group",
+  	"privileges.banned-user-inheritance": "Banned users inherit privileges from banned-users group",
 	"privileges.search-group": "Добавить группу",
 	"privileges.copy-to-children": "Скопировать в дочерние",
 	"privileges.copy-from-category": "Скопировать из категории",

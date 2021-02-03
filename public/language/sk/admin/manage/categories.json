@@ -47,6 +47,8 @@
 	"privileges.no-users": "V tejto kategórií nie je nastavené žiadne oprávnenie používateľa.",
 	"privileges.section-group": "Skupina",
 	"privileges.group-private": "Táto skupina je súkromná",
+  	"privileges.inheritance-exception": "This group does not inherit privileges from registered-users group",
+  	"privileges.banned-user-inheritance": "Banned users inherit privileges from banned-users group",
 	"privileges.search-group": "Pridať skupinu",
 	"privileges.copy-to-children": "Kopírovať do podradených",
 	"privileges.copy-from-category": "Kopírovať z kategórie",

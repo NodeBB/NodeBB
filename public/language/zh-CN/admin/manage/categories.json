@@ -47,6 +47,8 @@
 	"privileges.no-users": "此版块中没有用户特定的权限。",
 	"privileges.section-group": "群组",
 	"privileges.group-private": "这个群组是私密的",
+  	"privileges.inheritance-exception": "This group does not inherit privileges from registered-users group",
+  	"privileges.banned-user-inheritance": "Banned users inherit privileges from banned-users group",
 	"privileges.search-group": "添加群组",
 	"privileges.copy-to-children": "复制到子版块",
 	"privileges.copy-from-category": "从版块复制",
