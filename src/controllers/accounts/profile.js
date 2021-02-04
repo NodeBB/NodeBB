@@ -110,7 +110,7 @@ async function getPosts(callerUid, userData, setSuffix) {
 }
 
 function addMetaTags(res, userData) {
-	var plainAboutMe = userData.aboutme ? utils.stripHTMLTags(utils.decodeHTMLEntities(userData.aboutme)) : '';
+	const plainAboutMe = userData.aboutme ? utils.stripHTMLTags(utils.decodeHTMLEntities(userData.aboutme)) : '';
 	res.locals.metaTags = [
 		{
 			name: 'title',

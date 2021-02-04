@@ -7,11 +7,11 @@ module.exports = function (module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return 0;
 		}
-		var tempSetName = `temp_${Date.now()}`;
+		const tempSetName = `temp_${Date.now()}`;
 
-		var interParams = [tempSetName, keys.length].concat(keys);
+		const interParams = [tempSetName, keys.length].concat(keys);
 
-		var multi = module.client.multi();
+		const multi = module.client.multi();
 		multi.zinterstore(interParams);
 		multi.zcard(tempSetName);
 		multi.del(tempSetName);
@@ -30,14 +30,14 @@ module.exports = function (module) {
 	};
 
 	async function getSortedSetRevIntersect(params) {
-		var sets = params.sets;
-		var start = params.hasOwnProperty('start') ? params.start : 0;
-		var stop = params.hasOwnProperty('stop') ? params.stop : -1;
-		var weights = params.weights || [];
+		const sets = params.sets;
+		const start = params.hasOwnProperty('start') ? params.start : 0;
+		const stop = params.hasOwnProperty('stop') ? params.stop : -1;
+		const weights = params.weights || [];
 
-		var tempSetName = `temp_${Date.now()}`;
+		const tempSetName = `temp_${Date.now()}`;
 
-		var interParams = [tempSetName, sets.length].concat(sets);
+		let interParams = [tempSetName, sets.length].concat(sets);
 		if (weights.length) {
 			interParams = interParams.concat(['WEIGHTS'].concat(weights));
 		}
@@ -46,12 +46,12 @@ module.exports = function (module) {
 			interParams = interParams.concat(['AGGREGATE', params.aggregate]);
 		}
 
-		var rangeParams = [tempSetName, start, stop];
+		const rangeParams = [tempSetName, start, stop];
 		if (params.withScores) {
 			rangeParams.push('WITHSCORES');
 		}
 
-		var multi = module.client.multi();
+		const multi = module.client.multi();
 		multi.zinterstore(interParams);
 		multi[params.method](rangeParams);
 		multi.del(tempSetName);

@@ -17,7 +17,7 @@ module.exports = function (User) {
 
 	User.isPasswordCorrect = async function (uid, password, ip) {
 		password = password || '';
-		var {
+		let {
 			password: hashedPassword,
 			'password:shaWrapped': shaWrapped,
 		} = await db.getObjectFields(`user:${uid}`, ['password', 'password:shaWrapped']);

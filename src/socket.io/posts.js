@@ -154,7 +154,7 @@ SocketPosts.getReplies = async function (socket, pid) {
 
 	const pids = await posts.getPidsFromSet(`pid:${pid}:replies`, 0, -1, false);
 
-	var [postData, postPrivileges] = await Promise.all([
+	let [postData, postPrivileges] = await Promise.all([
 		posts.getPostsByPids(pids, socket.uid),
 		privileges.posts.get(pids, socket.uid),
 	]);

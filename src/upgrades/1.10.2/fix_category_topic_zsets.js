@@ -1,9 +1,9 @@
 'use strict';
 
-var async = require('async');
-var db = require('../../database');
+const async = require('async');
+const db = require('../../database');
 
-var batch = require('../../batch');
+const batch = require('../../batch');
 
 module.exports = {
 	name: 'Fix category topic zsets',
@@ -11,7 +11,7 @@ module.exports = {
 	method: function (callback) {
 		const progress = this.progress;
 
-		var topics = require('../../topics');
+		const topics = require('../../topics');
 		batch.processSortedSet('topics:tid', (tids, next) => {
 			async.eachSeries(tids, (tid, next) => {
 				progress.incr();

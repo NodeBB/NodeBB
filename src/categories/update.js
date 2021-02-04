@@ -30,9 +30,9 @@ module.exports = function (Categories) {
 		const result = await plugins.hooks.fire('filter:category.update', { cid: cid, category: modifiedFields });
 
 		const category = result.category;
-		var fields = Object.keys(category);
+		const fields = Object.keys(category);
 		// move parent to front, so its updated first
-		var parentCidIndex = fields.indexOf('parentCid');
+		const parentCidIndex = fields.indexOf('parentCid');
 		if (parentCidIndex !== -1 && fields.length > 1) {
 			fields.splice(0, 0, fields.splice(parentCidIndex, 1)[0]);
 		}

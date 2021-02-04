@@ -1,10 +1,10 @@
 'use strict';
 
 
-var async = require('async');
-var groups = require('../../groups');
-var privileges = require('../../privileges');
-var db = require('../../database');
+const async = require('async');
+const groups = require('../../groups');
+const privileges = require('../../privileges');
+const db = require('../../database');
 
 module.exports = {
 	name: 'Give upload privilege to registered-users globally if it is given on a category',
@@ -20,7 +20,7 @@ module.exports = {
 						return next(err);
 					}
 
-					var privs = [];
+					const privs = [];
 					if (groupPrivileges['groups:upload:post:image']) {
 						privs.push('groups:upload:post:image');
 					}
@@ -35,7 +35,7 @@ module.exports = {
 };
 
 function getGroupPrivileges(cid, callback) {
-	var tasks = {};
+	const tasks = {};
 
 	['groups:upload:post:image', 'groups:upload:post:file'].forEach((privilege) => {
 		tasks[privilege] = async.apply(groups.isMember, 'registered-users', `cid:${cid}:privileges:${privilege}`);

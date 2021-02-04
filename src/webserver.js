@@ -1,40 +1,40 @@
 
 'use strict';
 
-var fs = require('fs');
+const fs = require('fs');
 const util = require('util');
-var path = require('path');
-var os = require('os');
-var nconf = require('nconf');
-var express = require('express');
+const path = require('path');
+const os = require('os');
+const nconf = require('nconf');
+const express = require('express');
 
-var app = express();
+const app = express();
 app.renderAsync = util.promisify((tpl, data, callback) => app.render(tpl, data, callback));
-var server;
-var winston = require('winston');
-var async = require('async');
-var flash = require('connect-flash');
-var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser');
-var session = require('express-session');
-var useragent = require('express-useragent');
-var favicon = require('serve-favicon');
-var detector = require('spider-detector');
-var helmet = require('helmet');
+let server;
+const winston = require('winston');
+const async = require('async');
+const flash = require('connect-flash');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const useragent = require('express-useragent');
+const favicon = require('serve-favicon');
+const detector = require('spider-detector');
+const helmet = require('helmet');
 
-var Benchpress = require('benchpressjs');
-var db = require('./database');
-var analytics = require('./analytics');
-var file = require('./file');
-var emailer = require('./emailer');
-var meta = require('./meta');
-var logger = require('./logger');
-var plugins = require('./plugins');
-var flags = require('./flags');
-var routes = require('./routes');
-var auth = require('./routes/authentication');
+const Benchpress = require('benchpressjs');
+const db = require('./database');
+const analytics = require('./analytics');
+const file = require('./file');
+const emailer = require('./emailer');
+const meta = require('./meta');
+const logger = require('./logger');
+const plugins = require('./plugins');
+const flags = require('./flags');
+const routes = require('./routes');
+const auth = require('./routes/authentication');
 
-var helpers = require('../public/src/modules/helpers');
+const helpers = require('../public/src/modules/helpers');
 
 if (nconf.get('ssl')) {
 	server = require('https').createServer({
@@ -59,9 +59,9 @@ server.on('error', (err) => {
 });
 
 // see https://github.com/isaacs/server-destroy/blob/master/index.js
-var connections = {};
+const connections = {};
 server.on('connection', (conn) => {
-	var key = `${conn.remoteAddress}:${conn.remotePort}`;
+	const key = `${conn.remoteAddress}:${conn.remotePort}`;
 	connections[key] = conn;
 	conn.on('close', () => {
 		delete connections[key];
@@ -70,7 +70,7 @@ server.on('connection', (conn) => {
 
 exports.destroy = function (callback) {
 	server.close(callback);
-	for (var key in connections) {
+	for (const key in connections) {
 		if (connections.hasOwnProperty(key)) {
 			connections[key].destroy();
 		}
@@ -174,7 +174,7 @@ function setupExpressApp(app) {
 	auth.initialize(app, middleware);
 	app.use(middleware.autoLocale);	// must be added after auth middlewares are added
 
-	var toobusy = require('toobusy-js');
+	const toobusy = require('toobusy-js');
 	toobusy.maxLag(meta.config.eventLoopLagThreshold);
 	toobusy.interval(meta.config.eventLoopInterval);
 }
@@ -201,7 +201,7 @@ function setupHelmet(app) {
 
 
 function setupFavicon(app) {
-	var faviconPath = meta.config['brand:favicon'] || 'favicon.ico';
+	let faviconPath = meta.config['brand:favicon'] || 'favicon.ico';
 	faviconPath = path.join(nconf.get('base_dir'), 'public', faviconPath.replace(/assets\/uploads/, 'uploads'));
 	if (file.existsSync(faviconPath)) {
 		app.use(nconf.get('relative_path'), favicon(faviconPath));
@@ -229,9 +229,9 @@ function setupCookie() {
 
 function listen(callback) {
 	callback = callback || function () { };
-	var port = nconf.get('port');
-	var isSocket = isNaN(port) && !Array.isArray(port);
-	var socketPath = isSocket ? nconf.get('port') : '';
+	let port = nconf.get('port');
+	const isSocket = isNaN(port) && !Array.isArray(port);
+	const socketPath = isSocket ? nconf.get('port') : '';
 
 	if (Array.isArray(port)) {
 		if (!port.length) {
@@ -257,9 +257,9 @@ function listen(callback) {
 		winston.info('Using ports 80 and 443 is not recommend; use a proxy instead. See README.md');
 	}
 
-	var bind_address = ((nconf.get('bind_address') === '0.0.0.0' || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address'));
-	var args = isSocket ? [socketPath] : [port, bind_address];
-	var oldUmask;
+	const bind_address = ((nconf.get('bind_address') === '0.0.0.0' || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address'));
+	const args = isSocket ? [socketPath] : [port, bind_address];
+	let oldUmask;
 
 	args.push((err) => {
 		if (err) {
@@ -294,8 +294,8 @@ exports.testSocket = function (socketPath, callback) {
 	if (typeof socketPath !== 'string') {
 		return callback(new Error(`invalid socket path : ${socketPath}`));
 	}
-	var net = require('net');
-	var file = require('./file');
+	const net = require('net');
+	const file = require('./file');
 	async.series([
 		function (next) {
 			file.exists(socketPath, (err, exists) => {
@@ -307,7 +307,7 @@ exports.testSocket = function (socketPath, callback) {
 			});
 		},
 		function (next) {
-			var testSocket = new net.Socket();
+			const testSocket = new net.Socket();
 			testSocket.on('error', (err) => {
 				next(err.code !== 'ECONNREFUSED' ? err : null);
 			});

@@ -42,7 +42,7 @@ module.exports = function (Plugins) {
 			},
 		};
 
-		var methods = {};
+		let methods = {};
 		if (Array.isArray(fields)) {
 			fields.forEach((field) => {
 				methods[field] = handlers[field];

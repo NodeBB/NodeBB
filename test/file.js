@@ -1,18 +1,18 @@
 'use strict';
 
-var assert = require('assert');
-var fs = require('fs');
-var path = require('path');
-var nconf = require('nconf');
+const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
+const nconf = require('nconf');
 
-var utils = require('../src/utils');
-var file = require('../src/file');
+const utils = require('../src/utils');
+const file = require('../src/file');
 
 describe('file', () => {
-	var filename = `${utils.generateUUID()}.png`;
-	var folder = 'files';
-	var uploadPath = path.join(nconf.get('upload_path'), folder, filename);
-	var tempPath = path.join(__dirname, './files/test.png');
+	const filename = `${utils.generateUUID()}.png`;
+	const folder = 'files';
+	const uploadPath = path.join(nconf.get('upload_path'), folder, filename);
+	const tempPath = path.join(__dirname, './files/test.png');
 
 	afterEach((done) => {
 		fs.unlink(uploadPath, () => {
@@ -27,8 +27,8 @@ describe('file', () => {
 
 				assert(file.existsSync(uploadPath));
 
-				var srcContent = fs.readFileSync(tempPath, 'utf8');
-				var destContent = fs.readFileSync(uploadPath, 'utf8');
+				const srcContent = fs.readFileSync(tempPath, 'utf8');
+				const destContent = fs.readFileSync(uploadPath, 'utf8');
 
 				assert.strictEqual(srcContent, destContent);
 				done();
@@ -43,8 +43,8 @@ describe('file', () => {
 
 				assert(file.existsSync(uploadPath));
 
-				var srcContent = fs.readFileSync(tempPath, 'utf8');
-				var destContent = fs.readFileSync(uploadPath, 'utf8');
+				const srcContent = fs.readFileSync(tempPath, 'utf8');
+				const destContent = fs.readFileSync(uploadPath, 'utf8');
 
 				assert.strictEqual(srcContent, destContent);
 				done();
@@ -80,8 +80,8 @@ describe('file', () => {
 
 				assert(file.existsSync(uploadPath));
 
-				var oldFile = fs.readFileSync(tempPath, 'utf8');
-				var newFile = fs.readFileSync(uploadPath, 'utf8');
+				const oldFile = fs.readFileSync(tempPath, 'utf8');
+				const newFile = fs.readFileSync(uploadPath, 'utf8');
 				assert.strictEqual(oldFile, newFile);
 
 				done();

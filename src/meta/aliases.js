@@ -22,9 +22,9 @@ const aliases = {
 exports.aliases = aliases;
 
 function buildTargets() {
-	var length = 0;
-	var output = Object.keys(aliases).map((name) => {
-		var arr = aliases[name];
+	let length = 0;
+	const output = Object.keys(aliases).map((name) => {
+		const arr = aliases[name];
 		if (name.length > length) {
 			length = name.length;
 		}

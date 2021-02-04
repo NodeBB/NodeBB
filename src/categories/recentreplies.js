@@ -140,7 +140,6 @@ module.exports = function (Categories) {
 				if (category.posts.length) {
 					return;
 				}
-
 				const posts = [];
 				getPostsRecursive(category, posts);
 

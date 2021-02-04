@@ -70,7 +70,7 @@ Digest.getUsersInterval = async (uids) => {
 };
 
 Digest.getSubscribers = async function (interval) {
-	var subscribers = [];
+	let subscribers = [];
 
 	await batch.processSortedSet('users:joindate', async (uids) => {
 		const settings = await user.getMultipleUserSettings(uids);

@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function (module) {
-	var helpers = require('../helpers');
+	const helpers = require('../helpers');
 
 	module.sortedSetRemove = async function (key, value) {
 		if (!key) {
@@ -37,7 +37,7 @@ module.exports = function (module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return;
 		}
-		var query = { _key: { $in: keys } };
+		const query = { _key: { $in: keys } };
 		if (keys.length === 1) {
 			query._key = keys[0];
 		}
@@ -56,7 +56,7 @@ module.exports = function (module) {
 		if (!Array.isArray(data) || !data.length) {
 			return;
 		}
-		var bulk = module.client.collection('objects').initializeUnorderedBulkOp();
+		const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
 		data.forEach(item => bulk.find({ _key: item[0], value: String(item[1]) }).remove());
 		await bulk.execute();
 	};

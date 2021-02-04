@@ -1,10 +1,10 @@
 
 'use strict';
 
-var async = require('async');
+const async = require('async');
 
-var db = require('../database');
-var user = require('../user');
+const db = require('../database');
+const user = require('../user');
 
 module.exports = function (Topics) {
 	Topics.getUserBookmark = async function (tid, uid) {
@@ -37,11 +37,11 @@ module.exports = function (Topics) {
 
 		const bookmarks = await Topics.getTopicBookmarks(tid);
 
-		var uidData = bookmarks.map(b => ({ uid: b.value, bookmark: parseInt(b.score, 10) }))
+		const uidData = bookmarks.map(b => ({ uid: b.value, bookmark: parseInt(b.score, 10) }))
 			.filter(data => data.bookmark >= minIndex);
 
 		await async.eachLimit(uidData, 50, async (data) => {
-			var bookmark = Math.min(data.bookmark, maxIndex);
+			let bookmark = Math.min(data.bookmark, maxIndex);
 
 			postIndices.forEach((i) => {
 				if (i < data.bookmark) {

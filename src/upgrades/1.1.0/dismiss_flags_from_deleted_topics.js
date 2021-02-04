@@ -1,19 +1,19 @@
 'use strict';
 
 
-var async = require('async');
-var winston = require('winston');
-var db = require('../../database');
+const async = require('async');
+const winston = require('winston');
+const db = require('../../database');
 
 module.exports = {
 	name: 'Dismiss flags from deleted topics',
 	timestamp: Date.UTC(2016, 3, 29),
 	method: function (callback) {
-		var posts = require('../../posts');
-		var topics = require('../../topics');
+		const posts = require('../../posts');
+		const topics = require('../../topics');
 
-		var pids;
-		var tids;
+		let pids;
+		let tids;
 
 		async.waterfall([
 			async.apply(db.getSortedSetRange, 'posts:flagged', 0, -1),
@@ -27,7 +27,7 @@ module.exports = {
 				topics.getTopicsFields(tids, ['deleted'], next);
 			},
 			function (state, next) {
-				var toDismiss = state.map((a, idx) => (parseInt(a.deleted, 10) === 1 ? pids[idx] : null)).filter(Boolean);
+				const toDismiss = state.map((a, idx) => (parseInt(a.deleted, 10) === 1 ? pids[idx] : null)).filter(Boolean);
 
 				winston.verbose(`[2016/04/29] ${toDismiss.length} dismissable flags found`);
 				async.each(toDismiss, dismissFlag, next);
@@ -78,7 +78,7 @@ function dismissFlag(pid, callback) {
 								}
 
 								async.each(uids, (uid, next) => {
-									var nid = `post_flag:${pid}:uid:${uid}`;
+									const nid = `post_flag:${pid}:uid:${uid}`;
 									async.parallel([
 										async.apply(db.delete, `notifications:${nid}`),
 										async.apply(db.sortedSetRemove, 'notifications', `post_flag:${pid}:uid:${uid}`),

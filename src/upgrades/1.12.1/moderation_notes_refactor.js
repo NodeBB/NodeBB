@@ -1,15 +1,15 @@
 'use strict';
 
-var async = require('async');
-var db = require('../../database');
-var batch = require('../../batch');
+const async = require('async');
+const db = require('../../database');
+const batch = require('../../batch');
 
 
 module.exports = {
 	name: 'Update moderation notes to hashes',
 	timestamp: Date.UTC(2019, 3, 5),
 	method: function (callback) {
-		var progress = this.progress;
+		const progress = this.progress;
 
 		batch.processSortedSet('users:joindate', (ids, next) => {
 			async.each(ids, (uid, next) => {
@@ -20,7 +20,7 @@ module.exports = {
 					}
 
 					async.eachSeries(notes, (note, next) => {
-						var noteData;
+						let noteData;
 						async.waterfall([
 							function (next) {
 								try {

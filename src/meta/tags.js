@@ -56,7 +56,7 @@ Tags.parse = async (req, data, meta, link) => {
 	}
 
 	// Link Tags
-	var defaultLinks = [{
+	const defaultLinks = [{
 		rel: 'icon',
 		type: 'image/x-icon',
 		href: `${relative_path}/favicon.ico${Meta.config['cache-buster'] ? `?${Meta.config['cache-buster']}` : ''}`,
@@ -160,7 +160,7 @@ Tags.parse = async (req, data, meta, link) => {
 	addSiteOGImage(meta);
 
 	addIfNotExists(meta, 'property', 'og:title', Meta.config.title || 'NodeBB');
-	var ogUrl = url + (req.originalUrl !== '/' ? stripRelativePath(req.originalUrl) : '');
+	const ogUrl = url + (req.originalUrl !== '/' ? stripRelativePath(req.originalUrl) : '');
 	addIfNotExists(meta, 'property', 'og:url', ogUrl);
 	addIfNotExists(meta, 'name', 'description', Meta.config.description);
 	addIfNotExists(meta, 'property', 'og:description', Meta.config.description);
@@ -174,7 +174,7 @@ Tags.parse = async (req, data, meta, link) => {
 };
 
 function addIfNotExists(meta, keyName, tagName, value) {
-	var exists = false;
+	let exists = false;
 	meta.forEach((tag) => {
 		if (tag[keyName] === tagName) {
 			exists = true;
@@ -182,7 +182,7 @@ function addIfNotExists(meta, keyName, tagName, value) {
 	});
 
 	if (!exists && value) {
-		var data = {
+		const data = {
 			content: utils.escapeHTML(String(value)),
 		};
 		data[keyName] = tagName;
@@ -200,7 +200,7 @@ function stripRelativePath(url) {
 
 function addSiteOGImage(meta) {
 	const key = Meta.config['og:image'] ? 'og:image' : 'brand:logo';
-	var ogImage = stripRelativePath(Meta.config[key] || '');
+	let ogImage = stripRelativePath(Meta.config[key] || '');
 	if (ogImage && !ogImage.startsWith('http')) {
 		ogImage = url + ogImage;
 	}

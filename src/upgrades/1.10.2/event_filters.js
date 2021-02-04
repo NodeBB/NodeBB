@@ -1,9 +1,9 @@
 'use strict';
 
-var async = require('async');
-var db = require('../../database');
+const async = require('async');
+const db = require('../../database');
 
-var batch = require('../../batch');
+const batch = require('../../batch');
 
 module.exports = {
 	name: 'add filters to events',

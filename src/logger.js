@@ -4,17 +4,17 @@
  * Logger module: ability to dynamically turn on/off logging for http requests & socket.io events
  */
 
-var fs = require('fs');
-var path = require('path');
-var winston = require('winston');
-var util = require('util');
-var morgan = require('morgan');
+const fs = require('fs');
+const path = require('path');
+const winston = require('winston');
+const util = require('util');
+const morgan = require('morgan');
 
-var file = require('./file');
-var meta = require('./meta');
+const file = require('./file');
+const meta = require('./meta');
 
 
-var opts = {
+const opts = {
 	/*
 	 * state used by Logger
 	 */
@@ -29,7 +29,7 @@ var opts = {
 };
 
 /* -- Logger -- */
-var Logger = module.exports;
+const Logger = module.exports;
 
 Logger.init = function (app) {
 	opts.express.app = app;
@@ -58,7 +58,7 @@ Logger.setup_one_log = function (value) {
 	 * Otherwise, close the current stream
 	 */
 	if (meta.config.loggerStatus > 0 || meta.config.loggerIOStatus) {
-		var stream = Logger.open(value);
+		const stream = Logger.open(value);
 		if (stream) {
 			opts.streams.log.f = stream;
 		} else {
@@ -71,10 +71,10 @@ Logger.setup_one_log = function (value) {
 
 Logger.open = function (value) {
 	/* Open the streams to log to: either a path or stdout */
-	var stream;
+	let stream;
 	if (value) {
 		if (file.existsSync(value)) {
-			var stats = fs.statSync(value);
+			const stats = fs.statSync(value);
 			if (stats) {
 				if (stats.isDirectory()) {
 					stream = fs.createWriteStream(path.join(value, 'nodebb.log'), { flags: 'a' });
@@ -207,11 +207,11 @@ Logger.io_one = function (socket, uid) {
 	if (socket && meta.config.loggerIOStatus > 0) {
 		// courtesy of: http://stackoverflow.com/a/9674248
 		socket.oEmit = socket.emit;
-		var emit = socket.emit;
+		const emit = socket.emit;
 		socket.emit = override(emit, 'emit', 'Logger.io_one: emit.apply: Failed');
 
 		socket.$onvent = socket.onevent;
-		var $onevent = socket.onevent;
+		const $onevent = socket.onevent;
 		socket.onevent = override($onevent, 'on', 'Logger.io_one: $emit.apply: Failed');
 	}
 };

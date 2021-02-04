@@ -241,7 +241,7 @@ function filterLinks(links, states) {
 			canViewInfo: true,
 			...link.visibility };
 
-		var permit = Object.keys(states).some(state => states[state] && link.visibility[state]);
+		const permit = Object.keys(states).some(state => states[state] && link.visibility[state]);
 
 		links[index].public = permit;
 		return permit;

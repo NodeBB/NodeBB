@@ -1,17 +1,17 @@
 'use strict';
 
-var async = require('async');
-var db = require('../../database');
+const async = require('async');
+const db = require('../../database');
 
 
 module.exports = {
 	name: 'Update global and user language keys',
 	timestamp: Date.UTC(2016, 10, 22),
 	method: function (callback) {
-		var user = require('../../user');
-		var meta = require('../../meta');
-		var batch = require('../../batch');
-		var newLanguage;
+		const user = require('../../user');
+		const meta = require('../../meta');
+		const batch = require('../../batch');
+		let newLanguage;
 		async.parallel([
 			function (next) {
 				meta.configs.get('defaultLang', (err, defaultLang) => {

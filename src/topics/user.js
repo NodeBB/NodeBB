@@ -1,6 +1,6 @@
 'use strict';
 
-var db = require('../database');
+const db = require('../database');
 
 module.exports = function (Topics) {
 	Topics.isOwner = async function (tid, uid) {

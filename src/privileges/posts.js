@@ -162,12 +162,12 @@ module.exports = function (privileges) {
 			return { flag: false, message: '[[error:topic-locked]]' };
 		}
 
-		var postDeleteDuration = meta.config.postDeleteDuration;
+		const postDeleteDuration = meta.config.postDeleteDuration;
 		if (!results.isMod && postDeleteDuration && (Date.now() - postData.timestamp > postDeleteDuration * 1000)) {
 			return { flag: false, message: `[[error:post-delete-duration-expired, ${meta.config.postDeleteDuration}]]` };
 		}
-		var deleterUid = postData.deleterUid;
-		var flag = results['posts:delete'] && ((results.isOwner && (deleterUid === 0 || deleterUid === postData.uid)) || results.isMod);
+		const deleterUid = postData.deleterUid;
+		const flag = results['posts:delete'] && ((results.isOwner && (deleterUid === 0 || deleterUid === postData.uid)) || results.isMod);
 		return { flag: flag, message: '[[error:no-privileges]]' };
 	};
 

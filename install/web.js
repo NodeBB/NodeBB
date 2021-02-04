@@ -27,7 +27,7 @@ const formats = [
 ];
 
 const timestampFormat = winston.format((info) => {
-	var dateString = `${new Date().toISOString()} [${global.process.pid}]`;
+	const dateString = `${new Date().toISOString()} [${global.process.pid}]`;
 	info.level = `${dateString} - ${info.level}`;
 	return info;
 });
@@ -117,9 +117,9 @@ function ping(req, res) {
 }
 
 function welcome(req, res) {
-	var dbs = ['redis', 'mongo', 'postgres'];
-	var databases = dbs.map((databaseName) => {
-		var questions = require(`../src/database/${databaseName}`).questions.filter(question => question && !question.hideOnWebInstall);
+	const dbs = ['redis', 'mongo', 'postgres'];
+	const databases = dbs.map((databaseName) => {
+		const questions = require(`../src/database/${databaseName}`).questions.filter(question => question && !question.hideOnWebInstall);
 
 		return {
 			name: databaseName,
@@ -127,7 +127,7 @@ function welcome(req, res) {
 		};
 	});
 
-	var defaults = require('./data/defaults');
+	const defaults = require('./data/defaults');
 
 	res.render('install/index', {
 		url: nconf.get('url') || (`${req.protocol}://${req.get('host')}`),
@@ -150,8 +150,8 @@ function install(req, res) {
 	}
 	req.setTimeout(0);
 	installing = true;
-	var setupEnvVars = nconf.get();
-	for (var i in req.body) {
+	const setupEnvVars = nconf.get();
+	for (const i in req.body) {
 		if (req.body.hasOwnProperty(i) && !process.env.hasOwnProperty(i)) {
 			setupEnvVars[i.replace(':', '__')] = req.body[i];
 		}
@@ -161,7 +161,7 @@ function install(req, res) {
 	const pushToRoot = function (parentKey, key) {
 		setupEnvVars[`${parentKey}__${key}`] = setupEnvVars[parentKey][key];
 	};
-	for (var j in setupEnvVars) {
+	for (const j in setupEnvVars) {
 		if (setupEnvVars.hasOwnProperty(j) && typeof setupEnvVars[j] === 'object' && setupEnvVars[j] !== null && !Array.isArray(setupEnvVars[j])) {
 			Object.keys(setupEnvVars[j]).forEach(pushToRoot.bind(null, j));
 			delete setupEnvVars[j];
@@ -174,7 +174,7 @@ function install(req, res) {
 	winston.info(setupEnvVars);
 	launchUrl = setupEnvVars.url;
 
-	var child = require('child_process').fork('app', ['--setup'], {
+	const child = require('child_process').fork('app', ['--setup'], {
 		env: setupEnvVars,
 	});
 
@@ -192,7 +192,7 @@ async function launch(req, res) {
 		res.json({});
 		server.close();
 		req.setTimeout(0);
-		var child;
+		let child;
 
 		if (!nconf.get('launchCmd')) {
 			child = childProcess.spawn('node', ['loader.js'], {

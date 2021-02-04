@@ -110,8 +110,6 @@
 		// WORKING ON
 		"prefer-rest-params": "off",
 		"prefer-spread": "off",
-		"no-var": "off",
-		"vars-on-top": "off",
 
 		// TODO
 		"consistent-return": "off",

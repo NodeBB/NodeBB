@@ -162,7 +162,7 @@ async function onMessage(socket, payload) {
 }
 
 function requireModules() {
-	var modules = ['admin', 'categories', 'groups', 'meta', 'modules',
+	const modules = ['admin', 'categories', 'groups', 'meta', 'modules',
 		'notifications', 'plugins', 'posts', 'topics', 'user', 'blacklist',
 		'flags', 'uploads',
 	];
@@ -188,7 +188,7 @@ async function checkMaintenance(socket) {
 const getSessionAsync = util.promisify((sid, callback) => db.sessionStore.get(sid, (err, sessionObj) => callback(err, sessionObj || null)));
 
 async function validateSession(socket) {
-	var req = socket.request;
+	const req = socket.request;
 	if (!req.signedCookies || !req.signedCookies[nconf.get('sessionKey')]) {
 		return;
 	}

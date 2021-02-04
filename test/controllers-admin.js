@@ -1,28 +1,28 @@
 'use strict';
 
-var async = require('async');
-var	assert = require('assert');
-var nconf = require('nconf');
-var request = require('request');
+const async = require('async');
+const	assert = require('assert');
+const nconf = require('nconf');
+const request = require('request');
 
-var db = require('./mocks/databasemock');
-var categories = require('../src/categories');
-var topics = require('../src/topics');
-var user = require('../src/user');
-var groups = require('../src/groups');
-var helpers = require('./helpers');
-var meta = require('../src/meta');
+const db = require('./mocks/databasemock');
+const categories = require('../src/categories');
+const topics = require('../src/topics');
+const user = require('../src/user');
+const groups = require('../src/groups');
+const helpers = require('./helpers');
+const meta = require('../src/meta');
 
 describe('Admin Controllers', () => {
-	var tid;
-	var cid;
-	var pid;
+	let tid;
+	let cid;
+	let pid;
 	let regularPid;
-	var adminUid;
-	var regularUid;
+	let adminUid;
+	let regularUid;
 	let regular2Uid;
-	var moderatorUid;
-	var jar;
+	let moderatorUid;
+	let jar;
 
 	before((done) => {
 		async.series({
@@ -360,7 +360,7 @@ describe('Admin Controllers', () => {
 	});
 
 	it('should load /admin/advanced/logs', (done) => {
-		var fs = require('fs');
+		const fs = require('fs');
 		fs.appendFile(meta.logs.path, 'dummy log', (err) => {
 			assert.ifError(err);
 			request(`${nconf.get('url')}/api/admin/advanced/logs`, { jar: jar, json: true }, (err, res, body) => {
@@ -373,8 +373,8 @@ describe('Admin Controllers', () => {
 	});
 
 	it('should load /admin/settings/navigation', (done) => {
-		var navigation = require('../src/navigation/admin');
-		var data = require('../install/data/navigation.json');
+		const navigation = require('../src/navigation/admin');
+		const data = require('../install/data/navigation.json');
 
 		navigation.save(data, (err) => {
 			assert.ifError(err);
@@ -470,7 +470,7 @@ describe('Admin Controllers', () => {
 	});
 
 	it('should load /admin/settings/social', (done) => {
-		var socketAdmin = require('../src/socket.io/admin');
+		const socketAdmin = require('../src/socket.io/admin');
 		socketAdmin.social.savePostSharingNetworks({ uid: adminUid }, ['facebook', 'twitter'], (err) => {
 			assert.ifError(err);
 			request(`${nconf.get('url')}/api/admin/settings/social`, { jar: jar, json: true }, (err, res, body) => {
@@ -559,7 +559,7 @@ describe('Admin Controllers', () => {
 	});
 
 	describe('mods page', () => {
-		var moderatorJar;
+		let moderatorJar;
 
 		before((done) => {
 			helpers.loginUser('moderator', 'modmod', (err, _jar) => {
@@ -598,8 +598,8 @@ describe('Admin Controllers', () => {
 		});
 
 		it('should error when you attempt to flag a privileged user\'s post', async () => {
-			var socketFlags = require('../src/socket.io/flags');
-			var oldValue = meta.config['min:rep:flag'];
+			const socketFlags = require('../src/socket.io/flags');
+			const oldValue = meta.config['min:rep:flag'];
 			try {
 				await socketFlags.create({ uid: regularUid }, { id: pid, type: 'post', reason: 'spam' });
 			} catch (err) {
@@ -608,8 +608,8 @@ describe('Admin Controllers', () => {
 		});
 
 		it('should error with not enough reputation to flag', (done) => {
-			var socketFlags = require('../src/socket.io/flags');
-			var oldValue = meta.config['min:rep:flag'];
+			const socketFlags = require('../src/socket.io/flags');
+			const oldValue = meta.config['min:rep:flag'];
 			meta.config['min:rep:flag'] = 1000;
 			socketFlags.create({ uid: regularUid }, { id: regularPid, type: 'post', reason: 'spam' }, (err) => {
 				assert.strictEqual(err.message, '[[error:not-enough-reputation-to-flag]]');
@@ -619,8 +619,8 @@ describe('Admin Controllers', () => {
 		});
 
 		it('should return flag details', (done) => {
-			var socketFlags = require('../src/socket.io/flags');
-			var oldValue = meta.config['min:rep:flag'];
+			const socketFlags = require('../src/socket.io/flags');
+			const oldValue = meta.config['min:rep:flag'];
 			meta.config['min:rep:flag'] = 0;
 			socketFlags.create({ uid: regularUid }, { id: regularPid, type: 'post', reason: 'spam' }, (err, flagId) => {
 				meta.config['min:rep:flag'] = oldValue;
@@ -638,7 +638,7 @@ describe('Admin Controllers', () => {
 	});
 
 	it('should escape special characters in config', (done) => {
-		var plugins = require('../src/plugins');
+		const plugins = require('../src/plugins');
 		function onConfigGet(config, callback) {
 			config.someValue = '"foo"';
 			config.otherValue = "'123'";

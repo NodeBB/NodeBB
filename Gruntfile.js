@@ -10,7 +10,7 @@ const winston = require('winston');
 const fork = require('child_process').fork;
 
 const env = process.env;
-var worker;
+let worker;
 
 env.NODE_ENV = env.NODE_ENV || 'development';
 
@@ -19,10 +19,10 @@ const prestart = require('./src/prestart');
 
 prestart.loadConfig(configFile);
 
-var db = require('./src/database');
+const db = require('./src/database');
 
 module.exports = function (grunt) {
-	var args = [];
+	const args = [];
 
 	if (!grunt.option('verbose')) {
 		args.push('--log-level=info');
@@ -39,7 +39,7 @@ module.exports = function (grunt) {
 	grunt.registerTask('default', ['watch']);
 
 	grunt.registerTask('init', async function () {
-		var done = this.async();
+		const done = this.async();
 		let plugins = [];
 		if (!process.argv.includes('--core')) {
 			await db.init();
@@ -165,7 +165,7 @@ module.exports = function (grunt) {
 
 	grunt.event.removeAllListeners('watch');
 	grunt.event.on('watch', (action, filepath, target) => {
-		var compiling;
+		let compiling;
 		if (target === 'styleUpdated_Client') {
 			compiling = 'clientCSS';
 		} else if (target === 'styleUpdated_Admin') {

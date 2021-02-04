@@ -112,7 +112,7 @@ helpers.getUserPrivileges = async function (cid, userPrivileges) {
 
 	memberData.forEach((member) => {
 		member.privileges = {};
-		for (var x = 0, numPrivs = userPrivileges.length; x < numPrivs; x += 1) {
+		for (let x = 0, numPrivs = userPrivileges.length; x < numPrivs; x += 1) {
 			member.privileges[userPrivileges[x]] = memberSets[x].includes(parseInt(member.uid, 10));
 		}
 	});
@@ -145,7 +145,7 @@ helpers.getGroupPrivileges = async function (cid, groupPrivileges) {
 	const memberData = groupNames.map((member, index) => {
 		const memberPrivs = {};
 
-		for (var x = 0, numPrivs = groupPrivileges.length; x < numPrivs; x += 1) {
+		for (let x = 0, numPrivs = groupPrivileges.length; x < numPrivs; x += 1) {
 			memberPrivs[groupPrivileges[x]] = memberSets[x].includes(member);
 		}
 		return {

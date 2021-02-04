@@ -1,17 +1,17 @@
 'use strict';
 
-var async = require('async');
-var db = require('../../database');
+const async = require('async');
+const db = require('../../database');
 
 
 module.exports = {
 	name: 'Favourites to Bookmarks',
 	timestamp: Date.UTC(2016, 9, 8),
 	method: function (callback) {
-		var progress = this.progress;
+		const progress = this.progress;
 
 		function upgradePosts(next) {
-			var batch = require('../../batch');
+			const batch = require('../../batch');
 
 			batch.processSortedSet('posts:pid', (ids, next) => {
 				async.each(ids, (id, next) => {
@@ -42,7 +42,7 @@ module.exports = {
 		}
 
 		function upgradeUsers(next) {
-			var batch = require('../../batch');
+			const batch = require('../../batch');
 
 			batch.processSortedSet('users:joindate', (ids, next) => {
 				async.each(ids, (id, next) => {

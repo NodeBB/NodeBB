@@ -50,7 +50,7 @@ const targetHandlers = {
 };
 
 const aliasMap = Object.keys(aliases).reduce((prev, key) => {
-	var arr = aliases[key];
+	const arr = aliases[key];
 	arr.forEach((alias) => {
 		prev[alias] = key;
 	});

@@ -1,16 +1,16 @@
 
 'use strict';
 
-var async = require('async');
-var nconf = require('nconf');
-var validator = require('validator');
+const async = require('async');
+const nconf = require('nconf');
+const validator = require('validator');
 
-var db = require('../database');
-var meta = require('../meta');
-var emailer = require('../emailer');
-var groups = require('../groups');
-var translator = require('../translator');
-var utils = require('../utils');
+const db = require('../database');
+const meta = require('../meta');
+const emailer = require('../emailer');
+const groups = require('../groups');
+const translator = require('../translator');
+const utils = require('../utils');
 
 module.exports = function (User) {
 	User.getInvites = async function (uid) {

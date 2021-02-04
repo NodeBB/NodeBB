@@ -258,8 +258,8 @@ Messaging.hasPrivateChat = async (uid, withUid) => {
 		return 0;
 	}
 
-	var index = 0;
-	var roomId = 0;
+	let index = 0;
+	let roomId = 0;
 	while (index < roomIds.length && !roomId) {
 		/* eslint-disable no-await-in-loop */
 		const count = await Messaging.getUserCountInRoom(roomIds[index]);

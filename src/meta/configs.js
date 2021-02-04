@@ -201,7 +201,7 @@ Configs.cookie = {
 			cookie.secure = true;
 		}
 
-		var relativePath = nconf.get('relative_path');
+		const relativePath = nconf.get('relative_path');
 		if (relativePath !== '') {
 			cookie.path = relativePath;
 		}

@@ -28,19 +28,19 @@ module.exports = function (module) {
 		if (!Array.isArray(params.sets) || !params.sets.length) {
 			return;
 		}
-		var limit = params.stop - params.start + 1;
+		let limit = params.stop - params.start + 1;
 		if (limit <= 0) {
 			limit = 0;
 		}
 
-		var aggregate = {};
+		const aggregate = {};
 		if (params.aggregate) {
 			aggregate[`$${params.aggregate.toLowerCase()}`] = '$score';
 		} else {
 			aggregate.$sum = '$score';
 		}
 
-		var pipeline = [
+		const pipeline = [
 			{ $match: { _key: { $in: params.sets } } },
 			{ $group: { _id: { value: '$value' }, totalScore: aggregate } },
 			{ $sort: { totalScore: params.sort } },
@@ -54,7 +54,7 @@ module.exports = function (module) {
 			pipeline.push({ $limit: limit });
 		}
 
-		var project = { _id: 0, value: '$_id.value' };
+		const project = { _id: 0, value: '$_id.value' };
 		if (params.withScores) {
 			project.score = '$totalScore';
 		}

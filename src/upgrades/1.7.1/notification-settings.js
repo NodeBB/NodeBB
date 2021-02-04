@@ -1,14 +1,14 @@
 'use strict';
 
-var async = require('async');
-var batch = require('../../batch');
-var db = require('../../database');
+const async = require('async');
+const batch = require('../../batch');
+const db = require('../../database');
 
 module.exports = {
 	name: 'Convert old notification digest settings',
 	timestamp: Date.UTC(2017, 10, 15),
 	method: function (callback) {
-		var progress = this.progress;
+		const progress = this.progress;
 
 		batch.processSortedSet('users:joindate', (uids, next) => {
 			async.eachLimit(uids, 500, (uid, next) => {
@@ -21,7 +21,7 @@ module.exports = {
 						if (!userSettings) {
 							return next();
 						}
-						var tasks = [];
+						const tasks = [];
 						if (parseInt(userSettings.sendChatNotifications, 10) === 1) {
 							tasks.push(async.apply(db.setObjectField, `user:${uid}:settings`, 'notificationType_new-chat', 'notificationemail'));
 						}

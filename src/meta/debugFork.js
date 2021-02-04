@@ -1,12 +1,12 @@
 'use strict';
 
-var fork = require('child_process').fork;
+const fork = require('child_process').fork;
 
-var debugArg = process.execArgv.find(arg => /^--(debug|inspect)/.test(arg));
-var debugging = !!debugArg;
+let debugArg = process.execArgv.find(arg => /^--(debug|inspect)/.test(arg));
+const debugging = !!debugArg;
 
 debugArg = debugArg ? debugArg.replace('-brk', '').split('=') : ['--debug', 5859];
-var lastAddress = parseInt(debugArg[1], 10);
+let lastAddress = parseInt(debugArg[1], 10);
 
 /**
  * child-process.fork, but safe for use in debuggers
@@ -15,7 +15,7 @@ var lastAddress = parseInt(debugArg[1], 10);
  * @param {any} [options]
  */
 function debugFork(modulePath, args, options) {
-	var execArgv = [];
+	let execArgv = [];
 	if (global.v8debug || debugging) {
 		lastAddress += 1;
 

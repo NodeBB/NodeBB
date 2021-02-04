@@ -31,11 +31,11 @@ SELECT COUNT(DISTINCT z."value") c
 	};
 
 	async function getSortedSetUnion(params) {
-		var sets = params.sets;
-		var start = params.hasOwnProperty('start') ? params.start : 0;
-		var stop = params.hasOwnProperty('stop') ? params.stop : -1;
-		var weights = params.weights || [];
-		var aggregate = params.aggregate || 'SUM';
+		const sets = params.sets;
+		const start = params.hasOwnProperty('start') ? params.start : 0;
+		const stop = params.hasOwnProperty('stop') ? params.stop : -1;
+		let weights = params.weights || [];
+		const aggregate = params.aggregate || 'SUM';
 
 		if (sets.length < weights.length) {
 			weights = weights.slice(0, sets.length);
@@ -44,7 +44,7 @@ SELECT COUNT(DISTINCT z."value") c
 			weights.push(1);
 		}
 
-		var limit = stop - start + 1;
+		let limit = stop - start + 1;
 		if (limit <= 0) {
 			limit = null;
 		}

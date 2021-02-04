@@ -1,9 +1,9 @@
 'use strict';
 
 
-var	async = require('async');
-var assert = require('assert');
-var db = require('../mocks/databasemock');
+const	async = require('async');
+const assert = require('assert');
+const db = require('../mocks/databasemock');
 
 describe('Key methods', () => {
 	beforeEach((done) => {

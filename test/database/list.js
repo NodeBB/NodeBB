@@ -1,9 +1,9 @@
 'use strict';
 
 
-var	async = require('async');
-var assert = require('assert');
-var db = require('../mocks/databasemock');
+const	async = require('async');
+const assert = require('assert');
+const db = require('../mocks/databasemock');
 
 describe('List methods', () => {
 	describe('listAppend()', () => {
@@ -172,7 +172,7 @@ describe('List methods', () => {
 
 	describe('listTrim()', () => {
 		it('should trim list to a certain range', (done) => {
-			var list = ['1', '2', '3', '4', '5'];
+			const list = ['1', '2', '3', '4', '5'];
 			async.eachSeries(list, (value, next) => {
 				db.listAppend('testList6', value, next);
 			}, (err) => {

@@ -1,6 +1,6 @@
 'use strict';
 
-var privileges = module.exports;
+const privileges = module.exports;
 
 privileges.privilegeLabels = [
 	{ name: '[[admin/manage/privileges:find-category]]' },

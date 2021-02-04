@@ -384,12 +384,12 @@ Notifications.merge = async function (notifications) {
 				case 'notifications:user_started_following_you':
 				case 'notifications:user_posted_to':
 				case 'notifications:user_flagged_post_in':
-				case 'notifications:user_flagged_user':
-					var usernames = _.uniq(set.map(notifObj => notifObj && notifObj.user && notifObj.user.username));
-					var numUsers = usernames.length;
+				case 'notifications:user_flagged_user': {
+					const usernames = _.uniq(set.map(notifObj => notifObj && notifObj.user && notifObj.user.username));
+					const numUsers = usernames.length;
 
-					var title = utils.decodeHTMLEntities(notifications[modifyIndex].topicTitle || '');
-					var titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+					const title = utils.decodeHTMLEntities(notifications[modifyIndex].topicTitle || '');
+					let titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 					titleEscaped = titleEscaped ? (`, ${titleEscaped}`) : '';
 
 					if (numUsers === 2) {
@@ -399,7 +399,7 @@ Notifications.merge = async function (notifications) {
 					}
 
 					notifications[modifyIndex].path = set[set.length - 1].path;
-					break;
+				} break;
 
 				case 'new_register':
 					notifications[modifyIndex].bodyShort = `[[notifications:${mergeId}_multiple, ${set.length}]]`;

@@ -1,8 +1,8 @@
 'use strict';
 
 module.exports = function (module) {
-	var helpers = require('../helpers');
-	var utils = require('../../../utils');
+	const helpers = require('../helpers');
+	const utils = require('../../../utils');
 
 	module.sortedSetAdd = async function (key, score, value) {
 		if (!key) {
@@ -40,8 +40,8 @@ module.exports = function (module) {
 		}
 		values = values.map(helpers.valueToString);
 
-		var bulk = module.client.collection('objects').initializeUnorderedBulkOp();
-		for (var i = 0; i < scores.length; i += 1) {
+		const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
+		for (let i = 0; i < scores.length; i += 1) {
 			bulk.find({ _key: key, value: values[i] }).upsert().updateOne({ $set: { score: parseFloat(scores[i]) } });
 		}
 		await bulk.execute();
@@ -63,8 +63,8 @@ module.exports = function (module) {
 
 		value = helpers.valueToString(value);
 
-		var bulk = module.client.collection('objects').initializeUnorderedBulkOp();
-		for (var i = 0; i < keys.length; i += 1) {
+		const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
+		for (let i = 0; i < keys.length; i += 1) {
 			bulk.find({ _key: keys[i], value: value }).upsert().updateOne({ $set: { score: parseFloat(isArrayOfScores ? scores[i] : scores) } });
 		}
 		await bulk.execute();
@@ -74,7 +74,7 @@ module.exports = function (module) {
 		if (!Array.isArray(data) || !data.length) {
 			return;
 		}
-		var bulk = module.client.collection('objects').initializeUnorderedBulkOp();
+		const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
 		data.forEach((item) => {
 			if (!utils.isNumber(item[1])) {
 				throw new Error(`[[error:invalid-score, ${item[1]}]]`);

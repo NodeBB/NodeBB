@@ -1,17 +1,17 @@
 'use strict';
 
-var async = require('async');
-var db = require('../../database');
+const async = require('async');
+const db = require('../../database');
 
 
 module.exports = {
 	name: 'Migrating flags to new schema',
 	timestamp: Date.UTC(2016, 11, 7),
 	method: function (callback) {
-		var batch = require('../../batch');
-		var posts = require('../../posts');
-		var flags = require('../../flags');
-		var progress = this.progress;
+		const batch = require('../../batch');
+		const posts = require('../../posts');
+		const flags = require('../../flags');
+		const progress = this.progress;
 
 		batch.processSortedSet('posts:pid', (ids, next) => {
 			posts.getPostsByPids(ids, 1, (err, posts) => {
@@ -38,9 +38,9 @@ module.exports = {
 						}
 
 						// Just take the first entry
-						var datetime = data.uids[0].score;
-						var reason = data.reasons[0].split(':')[1];
-						var flagObj;
+						const datetime = data.uids[0].score;
+						const reason = data.reasons[0].split(':')[1];
+						let flagObj;
 
 						async.waterfall([
 							async.apply(flags.create, 'post', post.pid, data.uids[0].value, reason, datetime),
@@ -59,7 +59,7 @@ module.exports = {
 							function (next) {
 								if (post.hasOwnProperty('flag:notes') && post['flag:notes'].length) {
 									try {
-										var history = JSON.parse(post['flag:history']);
+										let history = JSON.parse(post['flag:history']);
 										history = history.filter(event => event.type === 'notes')[0];
 
 										flags.appendNote(flagObj.flagId, history.uid, post['flag:notes'], history.timestamp, next);

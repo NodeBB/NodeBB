@@ -1,14 +1,14 @@
 'use strict';
 
-var async = require('async');
+const async = require('async');
 
-var db = require('../../database');
+const db = require('../../database');
 
 module.exports = {
 	name: 'Changing ip blacklist storage to object',
 	timestamp: Date.UTC(2017, 8, 7),
 	method: function (callback) {
-		var rules;
+		let rules;
 		async.waterfall([
 			function (next) {
 				db.get('ip-blacklist-rules', next);

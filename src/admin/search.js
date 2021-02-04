@@ -61,8 +61,8 @@ const fallbackCache = {};
 async function initFallback(namespace) {
 	const template = await fs.promises.readFile(path.resolve(nconf.get('views_dir'), `${namespace}.tpl`), 'utf8');
 
-	var title = nsToTitle(namespace);
-	var translations = sanitize(template);
+	const title = nsToTitle(namespace);
+	let translations = sanitize(template);
 	translations = Translator.removePatterns(translations);
 	translations = simplify(translations);
 	translations += `\n${title}`;

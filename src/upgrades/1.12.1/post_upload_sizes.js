@@ -1,6 +1,6 @@
 'use strict';
 
-var async = require('async');
+const async = require('async');
 
 const batch = require('../../batch');
 const posts = require('../../posts');

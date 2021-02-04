@@ -1,8 +1,8 @@
 'use strict';
 
-var db = require('../../database');
+const db = require('../../database');
 
-var batch = require('../../batch');
+const batch = require('../../batch');
 
 module.exports = {
 	name: 'Remove uid:<uid>:ignored:cids',

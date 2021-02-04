@@ -142,7 +142,7 @@ authenticationController.registerComplete = function (req, res, next) {
 			return next(err);
 		}
 
-		var callbacks = data.interstitials.reduce((memo, cur) => {
+		const callbacks = data.interstitials.reduce((memo, cur) => {
 			if (cur.hasOwnProperty('callback') && typeof cur.callback === 'function') {
 				req.body.files = req.files;
 				memo.push(cur.callback && cur.callback.constructor && cur.callback.constructor.name === 'AsyncFunction' ? cur.callback : util.promisify(cur.callback));
@@ -151,7 +151,7 @@ authenticationController.registerComplete = function (req, res, next) {
 			return memo;
 		}, []);
 
-		var done = function (err, data) {
+		const done = function (err, data) {
 			delete req.session.registration;
 			if (err) {
 				return res.redirect(`${nconf.get('relative_path')}/?register=${encodeURIComponent(err.message)}`);
@@ -218,7 +218,7 @@ authenticationController.login = async (req, res, next) => {
 		return continueLogin(strategy, req, res, next);
 	}
 
-	var loginWith = meta.config.allowLoginWith || 'username-email';
+	const loginWith = meta.config.allowLoginWith || 'username-email';
 	req.body.username = req.body.username.trim();
 
 	plugins.hooks.fire('filter:login.check', { req: req, res: res, userData: req.body }, (err) => {
@@ -262,7 +262,7 @@ function continueLogin(strategy, req, res, next) {
 
 		// Alter user cookie depending on passed-in option
 		if (req.body.remember === 'on') {
-			var duration = 1000 * 60 * 60 * 24 * meta.config.loginDays;
+			const duration = 1000 * 60 * 60 * 24 * meta.config.loginDays;
 			req.session.cookie.maxAge = duration;
 			req.session.cookie.expires = new Date(Date.now() + duration);
 		} else {
@@ -283,7 +283,7 @@ function continueLogin(strategy, req, res, next) {
 		} else {
 			delete req.query.lang;
 			await authenticationController.doLogin(req, userData.uid);
-			var destination;
+			let destination;
 			if (req.session.returnTo) {
 				destination = req.session.returnTo.startsWith('http') ?
 					req.session.returnTo :

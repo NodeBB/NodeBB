@@ -103,8 +103,8 @@ module.exports = function (SocketPosts) {
 			throw new Error('[[error:no-privileges]]');
 		}
 
-		var postData = await posts.changeOwner(data.pids, data.toUid);
-		var logs = postData.map(({ pid, uid, cid }) => (events.log({
+		const postData = await posts.changeOwner(data.pids, data.toUid);
+		const logs = postData.map(({ pid, uid, cid }) => (events.log({
 			type: 'post-change-owner',
 			uid: socket.uid,
 			ip: socket.ip,

@@ -1,7 +1,7 @@
 'use strict';
 
 
-var groups = require('../../groups');
+const groups = require('../../groups');
 
 module.exports = {
 	name: 'Give chat privilege to registered-users',

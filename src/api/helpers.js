@@ -65,7 +65,7 @@ exports.doTopicAction = async function (action, event, caller, { tids }) {
 
 async function logTopicAction(action, req, tid, title) {
 	// Only log certain actions to system event log
-	var actionsToLog = ['delete', 'restore', 'purge'];
+	const actionsToLog = ['delete', 'restore', 'purge'];
 	if (!actionsToLog.includes(action)) {
 		return;
 	}

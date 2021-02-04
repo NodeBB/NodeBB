@@ -1,15 +1,15 @@
 'use strict';
 
-var async = require('async');
-var assert = require('assert');
+const async = require('async');
+const assert = require('assert');
 
-var db = require('./mocks/databasemock');
-var groups = require('../src/groups');
-var user = require('../src/user');
-var blacklist = require('../src/meta/blacklist');
+const db = require('./mocks/databasemock');
+const groups = require('../src/groups');
+const user = require('../src/user');
+const blacklist = require('../src/meta/blacklist');
 
 describe('blacklist', () => {
-	var adminUid;
+	let adminUid;
 
 	before((done) => {
 		user.create({ username: 'admin' }, (err, uid) => {
@@ -19,8 +19,8 @@ describe('blacklist', () => {
 		});
 	});
 
-	var socketBlacklist = require('../src/socket.io/blacklist');
-	var rules = '1.1.1.1\n2.2.2.2\n::ffff:0:2.2.2.2\n127.0.0.1\n192.168.100.0/22';
+	const socketBlacklist = require('../src/socket.io/blacklist');
+	const rules = '1.1.1.1\n2.2.2.2\n::ffff:0:2.2.2.2\n127.0.0.1\n192.168.100.0/22';
 
 	it('should validate blacklist', (done) => {
 		socketBlacklist.validate({ uid: adminUid }, {

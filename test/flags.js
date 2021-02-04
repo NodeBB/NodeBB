@@ -47,7 +47,7 @@ describe('Flags', () => {
 		it('should create a flag and return its data', (done) => {
 			Flags.create('post', 1, 1, 'Test flag', (err, flagData) => {
 				assert.ifError(err);
-				var compare = {
+				const compare = {
 					flagId: 1,
 					targetId: 1,
 					type: 'post',
@@ -55,7 +55,7 @@ describe('Flags', () => {
 					target_readable: 'Post 1',
 				};
 				assert(flagData);
-				for (var key in compare) {
+				for (const key in compare) {
 					if (compare.hasOwnProperty(key)) {
 						assert.ok(flagData[key], `undefined key ${key}`);
 						assert.equal(flagData[key], compare[key]);
@@ -123,7 +123,7 @@ describe('Flags', () => {
 		it('should retrieve and display a flag\'s data', (done) => {
 			Flags.get(1, (err, flagData) => {
 				assert.ifError(err);
-				var compare = {
+				const compare = {
 					flagId: 1,
 					targetId: 1,
 					type: 'post',
@@ -131,7 +131,7 @@ describe('Flags', () => {
 					target_readable: 'Post 1',
 				};
 				assert(flagData);
-				for (var key in compare) {
+				for (const key in compare) {
 					if (compare.hasOwnProperty(key)) {
 						assert.ok(flagData[key], `undefined key ${key}`);
 						assert.equal(flagData[key], compare[key]);
@@ -477,13 +477,13 @@ describe('Flags', () => {
 		it('should return a post\'s data if queried with type "post"', (done) => {
 			Flags.getTarget('post', 1, 1, (err, data) => {
 				assert.ifError(err);
-				var compare = {
+				const compare = {
 					uid: 1,
 					pid: 1,
 					content: 'This is flaggable content',
 				};
 
-				for (var key in compare) {
+				for (const key in compare) {
 					if (compare.hasOwnProperty(key)) {
 						assert.ok(data[key]);
 						assert.equal(data[key], compare[key]);
@@ -497,13 +497,13 @@ describe('Flags', () => {
 		it('should return a user\'s data if queried with type "user"', (done) => {
 			Flags.getTarget('user', 1, 1, (err, data) => {
 				assert.ifError(err);
-				var compare = {
+				const compare = {
 					uid: 1,
 					username: 'testUser',
 					email: 'b@c.com',
 				};
 
-				for (var key in compare) {
+				for (const key in compare) {
 					if (compare.hasOwnProperty(key)) {
 						assert.ok(data[key]);
 						assert.equal(data[key], compare[key]);
@@ -559,9 +559,9 @@ describe('Flags', () => {
 		});
 
 		it('should not error if user blocked target', (done) => {
-			var SocketFlags = require('../src/socket.io/flags.js');
-			var reporterUid;
-			var reporteeUid;
+			const SocketFlags = require('../src/socket.io/flags.js');
+			let reporterUid;
+			let reporteeUid;
 			async.waterfall([
 				function (next) {
 					User.create({ username: 'reporter' }, next);
@@ -638,13 +638,13 @@ describe('Flags', () => {
 		it('return should match a predefined spec', (done) => {
 			Flags.getNotes(1, (err, notes) => {
 				assert.ifError(err);
-				var compare = {
+				const compare = {
 					uid: 1,
 					content: 'this is my note',
 				};
 
-				var data = notes[1];
-				for (var key in compare) {
+				const data = notes[1];
+				for (const key in compare) {
 					if (compare.hasOwnProperty(key)) {
 						assert.ok(data[key]);
 						assert.strictEqual(data[key], compare[key]);
@@ -666,7 +666,7 @@ describe('Flags', () => {
 	});
 
 	describe('.appendHistory()', () => {
-		var entries;
+		let entries;
 		before((done) => {
 			db.sortedSetCard('flag:1:history', (err, count) => {
 				entries = count;
@@ -704,8 +704,8 @@ describe('Flags', () => {
 	});
 
 	describe('(websockets)', () => {
-		var SocketFlags = require('../src/socket.io/flags.js');
-		var pid;
+		const SocketFlags = require('../src/socket.io/flags.js');
+		let pid;
 
 		before((done) => {
 			Topics.post({

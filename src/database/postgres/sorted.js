@@ -1,9 +1,9 @@
 'use strict';
 
 module.exports = function (module) {
-	var helpers = require('./helpers');
+	const helpers = require('./helpers');
 	const util = require('util');
-	var Cursor = require('pg-cursor');
+	const Cursor = require('pg-cursor');
 	Cursor.prototype.readAsync = util.promisify(Cursor.prototype.read);
 	const sleep = util.promisify(setTimeout);
 
@@ -41,19 +41,19 @@ module.exports = function (module) {
 			return [];
 		}
 
-		var reverse = false;
+		let reverse = false;
 		if (start === 0 && stop < -1) {
 			reverse = true;
 			sort *= -1;
 			start = Math.abs(stop + 1);
 			stop = -1;
 		} else if (start < 0 && stop > start) {
-			var tmp1 = Math.abs(stop + 1);
+			const tmp1 = Math.abs(stop + 1);
 			stop = Math.abs(start + 1);
 			start = tmp1;
 		}
 
-		var limit = stop - start + 1;
+		let limit = stop - start + 1;
 		if (limit <= 0) {
 			limit = null;
 		}
@@ -346,7 +346,7 @@ SELECT o."_key" k,
 		});
 
 		return keys.map((k) => {
-			var s = res.rows.find(r => r.k === k);
+			const s = res.rows.find(r => r.k === k);
 			return s ? parseFloat(s.s) : null;
 		});
 	};
@@ -375,7 +375,7 @@ SELECT z."value" v,
 		});
 
 		return values.map((v) => {
-			var s = res.rows.find(r => r.v === v);
+			const s = res.rows.find(r => r.v === v);
 			return s ? parseFloat(s.s) : null;
 		});
 	};
@@ -507,7 +507,7 @@ RETURNING "score" s`,
 	};
 
 	module.sortedSetLexCount = async function (key, min, max) {
-		var q = buildLexQuery(key, min, max);
+		const q = buildLexQuery(key, min, max);
 
 		const res = await module.pool.query({
 			name: `sortedSetLexCount${q.suffix}`,
@@ -528,7 +528,7 @@ SELECT COUNT(*) c
 		start = start !== undefined ? start : 0;
 		count = count !== undefined ? count : 0;
 
-		var q = buildLexQuery(key, min, max);
+		const q = buildLexQuery(key, min, max);
 		q.values.push(start);
 		q.values.push(count <= 0 ? null : count);
 		const res = await module.pool.query({
@@ -550,7 +550,7 @@ OFFSET $${q.values.length - 1}::INTEGER`,
 	}
 
 	module.sortedSetRemoveRangeByLex = async function (key, min, max) {
-		var q = buildLexQuery(key, min, max);
+		const q = buildLexQuery(key, min, max);
 		await module.pool.query({
 			name: `sortedSetRemoveRangeByLex${q.suffix}`,
 			text: `
@@ -564,7 +564,7 @@ DELETE FROM "legacy_zset" z
 	};
 
 	function buildLexQuery(key, min, max) {
-		var q = {
+		const q = {
 			suffix: '',
 			where: `o."_key" = $1::TEXT`,
 			values: [key],
@@ -636,8 +636,8 @@ SELECT z."value",
 
 	module.processSortedSet = async function (setKey, process, options) {
 		const client = await module.pool.connect();
-		var batchSize = (options || {}).batch || 100;
-		var cursor = client.query(new Cursor(`
+		const batchSize = (options || {}).batch || 100;
+		const cursor = client.query(new Cursor(`
 SELECT z."value", z."score"
   FROM "legacy_object_live" o
  INNER JOIN "legacy_zset" z

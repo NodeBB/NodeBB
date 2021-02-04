@@ -1,11 +1,11 @@
 'use strict';
 
-var assert = require('assert');
-var path = require('path');
+const assert = require('assert');
+const path = require('path');
 
-var db = require('./mocks/databasemock');
-var image = require('../src/image');
-var file = require('../src/file');
+const db = require('./mocks/databasemock');
+const image = require('../src/image');
+const file = require('../src/file');
 
 describe('image', () => {
 	it('should normalise image', (done) => {

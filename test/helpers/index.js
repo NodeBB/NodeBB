@@ -1,17 +1,17 @@
 'use strict';
 
-var request = require('request');
+const request = require('request');
 const requestAsync = require('request-promise-native');
-var nconf = require('nconf');
-var fs = require('fs');
-var winston = require('winston');
+const nconf = require('nconf');
+const fs = require('fs');
+const winston = require('winston');
 
-var utils = require('../../public/src/utils');
+const utils = require('../../public/src/utils');
 
-var helpers = module.exports;
+const helpers = module.exports;
 
 helpers.loginUser = function (username, password, callback) {
-	var jar = request.jar();
+	const jar = request.jar();
 
 	request({
 		url: `${nconf.get('url')}/api/config`,
@@ -66,11 +66,11 @@ helpers.logoutUser = function (jar, callback) {
 };
 
 helpers.connectSocketIO = function (res, callback) {
-	var io = require('socket.io-client');
+	const io = require('socket.io-client');
 	let cookies = res.headers['set-cookie'];
 	cookies = cookies.filter(c => /express.sid=[^;]+;/.test(c));
 	const cookie = cookies[0];
-	var socket = io(nconf.get('base_url'), {
+	const socket = io(nconf.get('base_url'), {
 		path: `${nconf.get('relative_path')}/socket.io`,
 		extraHeaders: {
 			Origin: nconf.get('url'),
@@ -88,7 +88,7 @@ helpers.connectSocketIO = function (res, callback) {
 };
 
 helpers.uploadFile = function (uploadEndPoint, filePath, body, jar, csrf_token, callback) {
-	var formData = {
+	let formData = {
 		files: [
 			fs.createReadStream(filePath),
 			fs.createReadStream(filePath), // see https://github.com/request/request/issues/2445
@@ -115,7 +115,7 @@ helpers.uploadFile = function (uploadEndPoint, filePath, body, jar, csrf_token, 
 };
 
 helpers.registerUser = function (data, callback) {
-	var jar = request.jar();
+	const jar = request.jar();
 	request({
 		url: `${nconf.get('url')}/api/config`,
 		json: true,
@@ -140,13 +140,13 @@ helpers.registerUser = function (data, callback) {
 
 // http://stackoverflow.com/a/14387791/583363
 helpers.copyFile = function (source, target, callback) {
-	var cbCalled = false;
+	let cbCalled = false;
 
-	var rd = fs.createReadStream(source);
+	const rd = fs.createReadStream(source);
 	rd.on('error', (err) => {
 		done(err);
 	});
-	var wr = fs.createWriteStream(target);
+	const wr = fs.createWriteStream(target);
 	wr.on('error', (err) => {
 		done(err);
 	});

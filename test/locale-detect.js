@@ -1,11 +1,11 @@
 'use strict';
 
-var	assert = require('assert');
-var nconf = require('nconf');
-var request = require('request');
+const	assert = require('assert');
+const nconf = require('nconf');
+const request = require('request');
 
-var db = require('./mocks/databasemock');
-var meta = require('../src/meta');
+const db = require('./mocks/databasemock');
+const meta = require('../src/meta');
 
 describe('Language detection', () => {
 	it('should detect the language for a guest', (done) => {

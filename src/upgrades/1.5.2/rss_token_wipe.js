@@ -1,14 +1,14 @@
 'use strict';
 
-var async = require('async');
-var batch = require('../../batch');
-var db = require('../../database');
+const async = require('async');
+const batch = require('../../batch');
+const db = require('../../database');
 
 module.exports = {
 	name: 'Wipe all existing RSS tokens',
 	timestamp: Date.UTC(2017, 6, 5),
 	method: function (callback) {
-		var progress = this.progress;
+		const progress = this.progress;
 
 		batch.processSortedSet('users:joindate', (uids, next) => {
 			async.eachLimit(uids, 500, (uid, next) => {

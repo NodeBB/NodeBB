@@ -1,7 +1,7 @@
 'use strict';
 
-var db = require('../database');
-var sockets = require('../socket.io');
+const db = require('../database');
+const sockets = require('../socket.io');
 
 module.exports = function (Messaging) {
 	Messaging.getUnreadCount = async (uid) => {

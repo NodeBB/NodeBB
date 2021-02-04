@@ -1,8 +1,8 @@
 'use strict';
 
 
-var assert = require('assert');
-var search = require('../src/admin/search');
+const assert = require('assert');
+const search = require('../src/admin/search');
 
 describe('admin search', () => {
 	describe('filterDirectories', () => {

@@ -1,17 +1,17 @@
 
 'use strict';
 
-var winston = require('winston');
-var _ = require('lodash');
+const winston = require('winston');
+const _ = require('lodash');
 
-var db = require('../database');
-var meta = require('../meta');
-var notifications = require('../notifications');
-var privileges = require('../privileges');
-var plugins = require('../plugins');
-var utils = require('../utils');
+const db = require('../database');
+const meta = require('../meta');
+const notifications = require('../notifications');
+const privileges = require('../privileges');
+const plugins = require('../plugins');
+const utils = require('../utils');
 
-var UserNotifications = module.exports;
+const UserNotifications = module.exports;
 
 UserNotifications.get = async function (uid) {
 	if (parseInt(uid, 10) <= 0) {
@@ -46,7 +46,7 @@ UserNotifications.getAll = async function (uid, filter) {
 	], 0, -1);
 	nids = _.uniq(nids);
 	const exists = await db.isSortedSetMembers('notifications', nids);
-	var deleteNids = [];
+	const deleteNids = [];
 
 	nids = nids.filter((nid, index) => {
 		if (!nid || !exists[index]) {
@@ -199,7 +199,7 @@ UserNotifications.sendWelcomeNotification = async function (uid) {
 		return;
 	}
 
-	var path = meta.config.welcomeLink ? meta.config.welcomeLink : '#';
+	const path = meta.config.welcomeLink ? meta.config.welcomeLink : '#';
 	const notifObj = await notifications.create({
 		bodyShort: meta.config.welcomeNotification,
 		path: path,

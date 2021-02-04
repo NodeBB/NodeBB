@@ -87,7 +87,7 @@ function checkSetupFlag() {
 }
 
 function checkCIFlag() {
-	var ciVals;
+	let ciVals;
 	try {
 		ciVals = JSON.parse(nconf.get('ci'));
 	} catch (e) {
@@ -151,7 +151,7 @@ async function completeConfigSetup(config) {
 	// Add CI object
 	if (install.ciVals) {
 		config.test_database = {};
-		for (var prop in install.ciVals) {
+		for (const prop in install.ciVals) {
 			if (install.ciVals.hasOwnProperty(prop)) {
 				config.test_database[prop] = install.ciVals[prop];
 			}
@@ -173,7 +173,7 @@ async function completeConfigSetup(config) {
 	if (!/^http(?:s)?:\/\//.test(config.url)) {
 		config.url = `http://${config.url}`;
 	}
-	var urlObj = url.parse(config.url);
+	const urlObj = url.parse(config.url);
 	if (urlObj.port) {
 		config.port = urlObj.port;
 	}

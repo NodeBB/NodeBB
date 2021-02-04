@@ -193,7 +193,7 @@ module.exports = function (module) {
 		}
 		let result;
 		if (Array.isArray(key)) {
-			var batch = module.client.batch();
+			const batch = module.client.batch();
 			key.forEach(k => batch.hincrby(k, field, value));
 			result = await helpers.execBatch(batch);
 		} else {

@@ -52,7 +52,7 @@ async function rewrite(req, res, next) {
 exports.rewrite = rewrite;
 
 function pluginHook(req, res, next) {
-	var hook = `action:homepage.get:${res.locals.homePageRoute}`;
+	const hook = `action:homepage.get:${res.locals.homePageRoute}`;
 
 	plugins.hooks.fire(hook, {
 		req: req,

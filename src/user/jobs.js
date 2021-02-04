@@ -1,18 +1,18 @@
 'use strict';
 
-var winston = require('winston');
-var cronJob = require('cron').CronJob;
+const winston = require('winston');
+const cronJob = require('cron').CronJob;
 
-var meta = require('../meta');
+const meta = require('../meta');
 
-var jobs = {};
+const jobs = {};
 
 module.exports = function (User) {
 	User.startJobs = function () {
 		winston.verbose('[user/jobs] (Re-)starting jobs...');
 
-		var started = 0;
-		var digestHour = meta.config.digestHour;
+		let started = 0;
+		let digestHour = meta.config.digestHour;
 
 		// Fix digest hour if invalid
 		if (isNaN(digestHour)) {
@@ -44,9 +44,9 @@ module.exports = function (User) {
 	}
 
 	User.stopJobs = function () {
-		var terminated = 0;
+		let terminated = 0;
 		// Terminate any active cron jobs
-		for (var jobId in jobs) {
+		for (const jobId in jobs) {
 			if (jobs.hasOwnProperty(jobId)) {
 				winston.verbose(`[user/jobs] Terminating job (${jobId})`);
 				jobs[jobId].stop();

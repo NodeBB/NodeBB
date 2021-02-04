@@ -1,15 +1,15 @@
 'use strict';
 
-var async = require('async');
-var db = require('../../database');
-var batch = require('../../batch');
+const async = require('async');
+const db = require('../../database');
+const batch = require('../../batch');
 
 
 module.exports = {
 	name: 'Remove relative_path from uploaded profile cover urls',
 	timestamp: Date.UTC(2017, 3, 26),
 	method: function (callback) {
-		var progress = this.progress;
+		const progress = this.progress;
 
 		batch.processSortedSet('users:joindate', (ids, done) => {
 			async.each(ids, (uid, cb) => {
@@ -24,7 +24,7 @@ module.exports = {
 							return next();
 						}
 
-						var newUrl = url.replace(/^.*?\/uploads\//, '/assets/uploads/');
+						const newUrl = url.replace(/^.*?\/uploads\//, '/assets/uploads/');
 						db.setObjectField(`user:${uid}`, 'cover:url', newUrl, next);
 					},
 				], cb);

@@ -21,7 +21,7 @@ connection.getConnectionOptions = function (postgres) {
 		postgres.database = 'nodebb';
 	}
 
-	var connOptions = {
+	const connOptions = {
 		host: postgres.host,
 		port: postgres.port,
 		user: postgres.username,

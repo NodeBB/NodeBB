@@ -1,10 +1,10 @@
 'use strict';
 
 
-var async = require('async');
+const async = require('async');
 
-var groups = require('../../groups');
-var db = require('../../database');
+const groups = require('../../groups');
+const db = require('../../database');
 
 module.exports = {
 	name: 'Give deleted post viewing privilege to moderators on all categories',

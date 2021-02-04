@@ -26,8 +26,8 @@ uploadsController.get = async function (req, res, next) {
 		let files = await fs.promises.readdir(currentFolder);
 		files = files.filter(filename => filename !== '.gitignore');
 		const itemCount = files.length;
-		var start = Math.max(0, (page - 1) * itemsPerPage);
-		var stop = start + itemsPerPage;
+		const start = Math.max(0, (page - 1) * itemsPerPage);
+		const stop = start + itemsPerPage;
 		files = files.slice(start, stop);
 
 		files = await filesToData(currentFolder, files);
@@ -65,11 +65,11 @@ uploadsController.get = async function (req, res, next) {
 };
 
 function buildBreadcrumbs(currentFolder) {
-	var crumbs = [];
-	var parts = currentFolder.replace(nconf.get('upload_path'), '').split(path.sep);
-	var currentPath = '';
+	const crumbs = [];
+	const parts = currentFolder.replace(nconf.get('upload_path'), '').split(path.sep);
+	let currentPath = '';
 	parts.forEach((part) => {
-		var dir = path.join(currentPath, part);
+		const dir = path.join(currentPath, part);
 		crumbs.push({
 			text: part || 'Uploads',
 			url: part ?

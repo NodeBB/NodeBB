@@ -1,17 +1,17 @@
 'use strict';
 
-var nconf = require('nconf');
-var winston = require('winston');
-var validator = require('validator');
-var plugins = require('../plugins');
-var middleware = require('../middleware');
+const nconf = require('nconf');
+const winston = require('winston');
+const validator = require('validator');
+const plugins = require('../plugins');
+const middleware = require('../middleware');
 
 exports.handleURIErrors = async function handleURIErrors(err, req, res, next) {
 	// Handle cases where malformed URIs are passed in
 	if (err instanceof URIError) {
 		const cleanPath = req.path.replace(new RegExp(`^${nconf.get('relative_path')}`), '');
-		var tidMatch = cleanPath.match(/^\/topic\/(\d+)\//);
-		var cidMatch = cleanPath.match(/^\/category\/(\d+)\//);
+		const tidMatch = cleanPath.match(/^\/topic\/(\d+)\//);
+		const cidMatch = cleanPath.match(/^\/category\/(\d+)\//);
 
 		if (tidMatch) {
 			res.redirect(nconf.get('relative_path') + tidMatch[0]);
@@ -36,7 +36,7 @@ exports.handleURIErrors = async function handleURIErrors(err, req, res, next) {
 // this needs to have four arguments or express treats it as `(req, res, next)`
 // don't remove `next`!
 exports.handleErrors = function handleErrors(err, req, res, next) { // eslint-disable-line no-unused-vars
-	var cases = {
+	const cases = {
 		EBADCSRFTOKEN: function () {
 			winston.error(`${req.path}\n${err.message}`);
 			res.sendStatus(403);
@@ -45,9 +45,9 @@ exports.handleErrors = function handleErrors(err, req, res, next) { // eslint-di
 			res.status(403).type('text/plain').send(err.message);
 		},
 	};
-	var defaultHandler = async function () {
+	const defaultHandler = async function () {
 		// Display NodeBB error page
-		var status = parseInt(err.status, 10);
+		const status = parseInt(err.status, 10);
 		if ((status === 302 || status === 308) && err.path) {
 			return res.locals.isAPI ? res.set('X-Redirect', err.path).status(200).json(err.path) : res.redirect(nconf.get('relative_path') + err.path);
 		}
@@ -56,7 +56,7 @@ exports.handleErrors = function handleErrors(err, req, res, next) { // eslint-di
 
 		res.status(status || 500);
 
-		var path = String(req.path || '');
+		const path = String(req.path || '');
 		if (res.locals.isAPI) {
 			res.json({ path: validator.escape(path), error: err.message });
 		} else {

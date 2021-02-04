@@ -1,11 +1,11 @@
 'use strict';
 
 
-var assert = require('assert');
-var shim = require('../public/src/modules/translator.js');
+const assert = require('assert');
+const shim = require('../public/src/modules/translator.js');
 
-var Translator = shim.Translator;
-var db = require('./mocks/databasemock');
+const Translator = shim.Translator;
+const db = require('./mocks/databasemock');
 
 describe('Translator shim', () => {
 	describe('.translate()', () => {
@@ -47,7 +47,7 @@ describe('new Translator(language)', () => {
 
 	describe('.translate()', () => {
 		it('should handle basic translations', () => {
-			var translator = Translator.create('en-GB');
+			const translator = Translator.create('en-GB');
 
 			return translator.translate('[[global:home]]').then((translated) => {
 				assert.strictEqual(translated, 'Home');
@@ -55,7 +55,7 @@ describe('new Translator(language)', () => {
 		});
 
 		it('should handle language keys in regular text', () => {
-			var translator = Translator.create('en-GB');
+			const translator = Translator.create('en-GB');
 
 			return translator.translate('Let\'s go [[global:home]]').then((translated) => {
 				assert.strictEqual(translated, 'Let\'s go Home');
@@ -63,7 +63,7 @@ describe('new Translator(language)', () => {
 		});
 
 		it('should handle language keys in regular text with another language specified', () => {
-			var translator = Translator.create('de');
+			const translator = Translator.create('de');
 
 			return translator.translate('[[global:home]] test').then((translated) => {
 				assert.strictEqual(translated, 'Übersicht test');
@@ -71,7 +71,7 @@ describe('new Translator(language)', () => {
 		});
 
 		it('should handle language keys with parameters', () => {
-			var translator = Translator.create('en-GB');
+			const translator = Translator.create('en-GB');
 
 			return translator.translate('[[global:pagination.out_of, 1, 5]]').then((translated) => {
 				assert.strictEqual(translated, '1 out of 5');
@@ -79,7 +79,7 @@ describe('new Translator(language)', () => {
 		});
 
 		it('should handle language keys inside language keys', () => {
-			var translator = Translator.create('en-GB');
+			const translator = Translator.create('en-GB');
 
 			return translator.translate('[[notifications:outgoing_link_message, [[global:guest]]]]').then((translated) => {
 				assert.strictEqual(translated, 'You are now leaving Guest');
@@ -87,7 +87,7 @@ describe('new Translator(language)', () => {
 		});
 
 		it('should handle language keys inside language keys with multiple parameters', () => {
-			var translator = Translator.create('en-GB');
+			const translator = Translator.create('en-GB');
 
 			return translator.translate('[[notifications:user_posted_to, [[global:guest]], My Topic]]').then((translated) => {
 				assert.strictEqual(translated, '<strong>Guest</strong> has posted a reply to: <strong>My Topic</strong>');
@@ -95,7 +95,7 @@ describe('new Translator(language)', () => {
 		});
 
 		it('should handle language keys inside language keys with all parameters as language keys', () => {
-			var translator = Translator.create('en-GB');
+			const translator = Translator.create('en-GB');
 
 			return translator.translate('[[notifications:user_posted_to, [[global:guest]], [[global:guest]]]]').then((translated) => {
 				assert.strictEqual(translated, '<strong>Guest</strong> has posted a reply to: <strong>Guest</strong>');
@@ -103,7 +103,7 @@ describe('new Translator(language)', () => {
 		});
 
 		it('should properly handle parameters that contain square brackets', () => {
-			var translator = Translator.create('en-GB');
+			const translator = Translator.create('en-GB');
 
 			return translator.translate('[[global:pagination.out_of, [guest], [[global:home]]]]').then((translated) => {
 				assert.strictEqual(translated, '[guest] out of Home');
@@ -111,7 +111,7 @@ describe('new Translator(language)', () => {
 		});
 
 		it('should properly handle parameters that contain parentheses', () => {
-			var translator = Translator.create('en-GB');
+			const translator = Translator.create('en-GB');
 
 			return translator.translate('[[global:pagination.out_of, (foobar), [[global:home]]]]').then((translated) => {
 				assert.strictEqual(translated, '(foobar) out of Home');
@@ -119,18 +119,18 @@ describe('new Translator(language)', () => {
 		});
 
 		it('should escape language key parameters with HTML in them', () => {
-			var translator = Translator.create('en-GB');
+			const translator = Translator.create('en-GB');
 
-			var key = '[[global:403.login, <strong>test</strong>]]';
+			const key = '[[global:403.login, <strong>test</strong>]]';
 			return translator.translate(key).then((translated) => {
 				assert.strictEqual(translated, 'Perhaps you should <a href=\'&lt;strong&gt;test&lt;/strong&gt;/login\'>try logging in</a>?');
 			});
 		});
 
 		it('should not unescape html in parameters', () => {
-			var translator = Translator.create('en-GB');
+			const translator = Translator.create('en-GB');
 
-			var key = '[[pages:tag, some&amp;tag]]';
+			const key = '[[pages:tag, some&amp;tag]]';
 			return translator.translate(key).then((translated) => {
 				assert.strictEqual(translated, 'Topics tagged under &quot;some&amp;tag&quot;');
 			});
@@ -138,78 +138,78 @@ describe('new Translator(language)', () => {
 
 		it('should translate escaped translation arguments properly', () => {
 			// https://github.com/NodeBB/NodeBB/issues/9206
-			var translator = Translator.create('en-GB');
+			const translator = Translator.create('en-GB');
 
-			var key = '[[notifications:upvoted_your_post_in, test1, error: Error: &lsqb;&lsqb;error:group-name-too-long&rsqb;&rsqb; on NodeBB Upgrade]]';
+			const key = '[[notifications:upvoted_your_post_in, test1, error: Error: &lsqb;&lsqb;error:group-name-too-long&rsqb;&rsqb; on NodeBB Upgrade]]';
 			return translator.translate(key).then((translated) => {
 				assert.strictEqual(translated, '<strong>test1</strong> has upvoted your post in <strong>error: Error: &lsqb;&lsqb;error:group-name-too-long&rsqb;&rsqb; on NodeBB Upgrade</strong>.');
 			});
 		});
 
 		it('should properly escape and ignore % and \\, in arguments', () => {
-			var translator = Translator.create('en-GB');
+			const translator = Translator.create('en-GB');
 
-			var title = 'Test 1\\, 2\\, 3 %2 salmon';
-			var key = `[[topic:composer.replying_to, ${title}]]`;
+			const title = 'Test 1\\, 2\\, 3 %2 salmon';
+			const key = `[[topic:composer.replying_to, ${title}]]`;
 			return translator.translate(key).then((translated) => {
 				assert.strictEqual(translated, 'Replying to Test 1&#44; 2&#44; 3 &#37;2 salmon');
 			});
 		});
 
 		it('should not escape regular %', () => {
-			var translator = Translator.create('en-GB');
+			const translator = Translator.create('en-GB');
 
-			var title = '3 % salmon';
-			var key = `[[topic:composer.replying_to, ${title}]]`;
+			const title = '3 % salmon';
+			const key = `[[topic:composer.replying_to, ${title}]]`;
 			return translator.translate(key).then((translated) => {
 				assert.strictEqual(translated, 'Replying to 3 % salmon');
 			});
 		});
 
 		it('should not translate [[derp] some text', () => {
-			var translator = Translator.create('en-GB');
+			const translator = Translator.create('en-GB');
 			return translator.translate('[[derp] some text').then((translated) => {
 				assert.strictEqual('[[derp] some text', translated);
 			});
 		});
 
 		it('should not translate [[derp]] some text', () => {
-			var translator = Translator.create('en-GB');
+			const translator = Translator.create('en-GB');
 			return translator.translate('[[derp]] some text').then((translated) => {
 				assert.strictEqual('[[derp]] some text', translated);
 			});
 		});
 
 		it('should not translate [[derp:xyz] some text', () => {
-			var translator = Translator.create('en-GB');
+			const translator = Translator.create('en-GB');
 			return translator.translate('[[derp:xyz] some text').then((translated) => {
 				assert.strictEqual('[[derp:xyz] some text', translated);
 			});
 		});
 
 		it('should translate keys with slashes properly', () => {
-			var translator = Translator.create('en-GB');
+			const translator = Translator.create('en-GB');
 			return translator.translate('[[pages:users/latest]]').then((translated) => {
 				assert.strictEqual(translated, 'Latest Users');
 			});
 		});
 
 		it('should use key for unknown keys without arguments', () => {
-			var translator = Translator.create('en-GB');
+			const translator = Translator.create('en-GB');
 			return translator.translate('[[unknown:key.without.args]]').then((translated) => {
 				assert.strictEqual(translated, 'key.without.args');
 			});
 		});
 
 		it('should use backup for unknown keys with arguments', () => {
-			var translator = Translator.create('en-GB');
+			const translator = Translator.create('en-GB');
 			return translator.translate('[[unknown:key.with.args, arguments are here, derpity, derp]]').then((translated) => {
 				assert.strictEqual(translated, 'unknown:key.with.args, arguments are here, derpity, derp');
 			});
 		});
 
 		it('should ignore unclosed tokens', () => {
-			var translator = Translator.create('en-GB');
+			const translator = Translator.create('en-GB');
 			return translator.translate('here is some stuff and other things [[abc:xyz, other random stuff should be fine here [[global:home]] and more things [[pages:users/latest]]').then((translated) => {
 				assert.strictEqual(translated, 'here is some stuff and other things abc:xyz, other random stuff should be fine here Home and more things Latest Users');
 			});
@@ -219,20 +219,20 @@ describe('new Translator(language)', () => {
 
 describe('Translator.create()', () => {
 	it('should return an instance of Translator', (done) => {
-		var translator = Translator.create('en-GB');
+		const translator = Translator.create('en-GB');
 
 		assert(translator instanceof Translator);
 		done();
 	});
 	it('should return the same object for the same language', (done) => {
-		var one = Translator.create('de');
-		var two = Translator.create('de');
+		const one = Translator.create('de');
+		const two = Translator.create('de');
 
 		assert.strictEqual(one, two);
 		done();
 	});
 	it('should default to defaultLang', (done) => {
-		var translator = Translator.create();
+		const translator = Translator.create();
 
 		assert.strictEqual(translator.lang, 'en-GB');
 		done();
@@ -241,10 +241,10 @@ describe('Translator.create()', () => {
 
 describe('Translator modules', () => {
 	it('should work before registered', () => {
-		var translator = Translator.create();
+		const translator = Translator.create();
 
 		Translator.registerModule('test-custom-integer-format', lang => function (key, args) {
-			var num = parseInt(args[0], 10) || 0;
+			const num = parseInt(args[0], 10) || 0;
 			if (key === 'binary') {
 				return num.toString(2);
 			}
@@ -263,7 +263,7 @@ describe('Translator modules', () => {
 	});
 
 	it('should work after registered', () => {
-		var translator = Translator.create('de');
+		const translator = Translator.create('de');
 
 		return translator.translate('[[test-custom-integer-format:octal, 23]]').then((translation) => {
 			assert.strictEqual(translation, '27');
@@ -275,7 +275,7 @@ describe('Translator modules', () => {
 			assert.ok(lang);
 		});
 
-		var translator = Translator.create('fr_FR');
+		const translator = Translator.create('fr_FR');
 		done();
 	});
 });

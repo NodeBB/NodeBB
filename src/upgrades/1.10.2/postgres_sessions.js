@@ -1,7 +1,7 @@
 'use strict';
 
-var nconf = require('nconf');
-var db = require('../../database');
+const nconf = require('nconf');
+const db = require('../../database');
 
 module.exports = {
 	name: 'Optimize PostgreSQL sessions',

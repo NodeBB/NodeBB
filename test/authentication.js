@@ -1,22 +1,22 @@
 'use strict';
 
 
-var assert = require('assert');
-var async = require('async');
-var nconf = require('nconf');
-var request = require('request');
+const assert = require('assert');
+const async = require('async');
+const nconf = require('nconf');
+const request = require('request');
 const util = require('util');
 
-var db = require('./mocks/databasemock');
-var user = require('../src/user');
-var utils = require('../src/utils');
-var meta = require('../src/meta');
-var privileges = require('../src/privileges');
-var helpers = require('./helpers');
+const db = require('./mocks/databasemock');
+const user = require('../src/user');
+const utils = require('../src/utils');
+const meta = require('../src/meta');
+const privileges = require('../src/privileges');
+const helpers = require('./helpers');
 
 describe('authentication', () => {
 	function loginUser(username, password, callback) {
-		var jar = request.jar();
+		const jar = request.jar();
 		request({
 			url: `${nconf.get('url')}/api/config`,
 			json: true,
@@ -44,7 +44,7 @@ describe('authentication', () => {
 	const loginUserPromisified = util.promisify(loginUser);
 
 	function registerUser(email, username, password, callback) {
-		var jar = request.jar();
+		const jar = request.jar();
 		request({
 			url: `${nconf.get('url')}/api/config`,
 			json: true,
@@ -73,8 +73,8 @@ describe('authentication', () => {
 		});
 	}
 
-	var jar = request.jar();
-	var regularUid;
+	const jar = request.jar();
+	let regularUid;
 	before((done) => {
 		user.create({ username: 'regular', password: 'regularpwd', email: 'regular@nodebb.org' }, (err, uid) => {
 			assert.ifError(err);
@@ -225,7 +225,7 @@ describe('authentication', () => {
 	});
 
 	it('should revoke all sessions', (done) => {
-		var socketAdmin = require('../src/socket.io/admin');
+		const socketAdmin = require('../src/socket.io/admin');
 		db.sortedSetCard(`uid:${regularUid}:sessions`, (err, count) => {
 			assert.ifError(err);
 			assert(count);
@@ -241,7 +241,7 @@ describe('authentication', () => {
 	});
 
 	it('should fail to login if ip address is invalid', (done) => {
-		var jar = request.jar();
+		const jar = request.jar();
 		request({
 			url: `${nconf.get('url')}/api/config`,
 			json: true,
@@ -319,8 +319,8 @@ describe('authentication', () => {
 	});
 
 	it('should fail to login if password is longer than 4096', (done) => {
-		var longPassword;
-		for (var i = 0; i < 5000; i++) {
+		let longPassword;
+		for (let i = 0; i < 5000; i++) {
 			longPassword += 'a';
 		}
 		loginUser('someuser', longPassword, (err, response, body) => {
@@ -431,7 +431,7 @@ describe('authentication', () => {
 	});
 
 	it('should send 200 if not logged in', (done) => {
-		var jar = request.jar();
+		const jar = request.jar();
 		request({
 			url: `${nconf.get('url')}/api/config`,
 			json: true,
@@ -475,7 +475,7 @@ describe('authentication', () => {
 					assert.equal(body, '[[error:user-banned-reason, spammer]]');
 					user.bans.unban(bannedUser.uid, (err) => {
 						assert.ifError(err);
-						var expiry = Date.now() + 10000;
+						const expiry = Date.now() + 10000;
 						user.bans.ban(bannedUser.uid, expiry, '', (err) => {
 							assert.ifError(err);
 							loginUser(bannedUser.username, bannedUser.pw, (err, res, body) => {
@@ -506,7 +506,7 @@ describe('authentication', () => {
 
 	it('should lockout account on 3 failed login attempts', (done) => {
 		meta.config.loginAttempts = 3;
-		var uid;
+		let uid;
 		async.waterfall([
 			function (next) {
 				user.create({ username: 'lockme', password: '123456' }, next);

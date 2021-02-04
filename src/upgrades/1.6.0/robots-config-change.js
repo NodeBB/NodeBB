@@ -1,7 +1,7 @@
 'use strict';
 
-var async = require('async');
-var db = require('../../database');
+const async = require('async');
+const db = require('../../database');
 
 module.exports = {
 	name: 'Fix incorrect robots.txt schema',

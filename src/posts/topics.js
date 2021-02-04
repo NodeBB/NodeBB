@@ -1,8 +1,8 @@
 
 'use strict';
 
-var topics = require('../topics');
-var utils = require('../utils');
+const topics = require('../topics');
+const utils = require('../utils');
 
 module.exports = function (Posts) {
 	Posts.getPostsFromSet = async function (set, start, stop, uid, reverse) {

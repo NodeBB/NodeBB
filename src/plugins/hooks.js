@@ -80,7 +80,7 @@ Hooks.register = function (id, data) {
 };
 
 Hooks.unregister = function (id, hook, method) {
-	var hooks = plugins.loadedHooks[hook] || [];
+	const hooks = plugins.loadedHooks[hook] || [];
 	plugins.loadedHooks[hook] = hooks.filter(hookData => hookData && hookData.id !== id && hookData.method !== method);
 };
 

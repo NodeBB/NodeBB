@@ -5,7 +5,7 @@ const { execSync } = require('child_process');
 const path = require('path');
 const { readFileSync } = require('fs');
 
-var assert = require('assert');
+const assert = require('assert');
 
 describe('Package install', () => {
 	it('should remove non-`nodebb-` modules not specified in `install/package.json`', () => {

@@ -1,9 +1,9 @@
 'use strict';
 
-var qs = require('querystring');
-var _ = require('lodash');
+const qs = require('querystring');
+const _ = require('lodash');
 
-var pagination = module.exports;
+const pagination = module.exports;
 
 pagination.create = function (currentPage, pageCount, queryObj) {
 	if (pageCount <= 1) {
@@ -19,17 +19,17 @@ pagination.create = function (currentPage, pageCount, queryObj) {
 		};
 	}
 	pageCount = parseInt(pageCount, 10);
-	var pagesToShow = [1, 2, pageCount - 1, pageCount];
+	let pagesToShow = [1, 2, pageCount - 1, pageCount];
 
 	currentPage = parseInt(currentPage, 10) || 1;
-	var previous = Math.max(1, currentPage - 1);
-	var next = Math.min(pageCount, currentPage + 1);
+	const previous = Math.max(1, currentPage - 1);
+	const next = Math.min(pageCount, currentPage + 1);
 
-	var startPage = Math.max(1, currentPage - 2);
+	let startPage = Math.max(1, currentPage - 2);
 	if (startPage > pageCount - 5) {
 		startPage -= 2 - (pageCount - currentPage);
 	}
-	var i;
+	let i;
 	for (i = 0; i < 5; i += 1) {
 		pagesToShow.push(startPage + i);
 	}
@@ -40,7 +40,7 @@ pagination.create = function (currentPage, pageCount, queryObj) {
 
 	delete queryObj._;
 
-	var pages = pagesToShow.map((page) => {
+	const pages = pagesToShow.map((page) => {
 		queryObj.page = page;
 		return { page: page, active: page === currentPage, qs: qs.stringify(queryObj) };
 	});
@@ -53,7 +53,7 @@ pagination.create = function (currentPage, pageCount, queryObj) {
 		}
 	}
 
-	var data = { rel: [], pages: pages, currentPage: currentPage, pageCount: pageCount };
+	const data = { rel: [], pages: pages, currentPage: currentPage, pageCount: pageCount };
 	queryObj.page = previous;
 	data.prev = { page: previous, active: currentPage > 1, qs: qs.stringify(queryObj) };
 	queryObj.page = next;

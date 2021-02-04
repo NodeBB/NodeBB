@@ -1,15 +1,15 @@
 'use strict';
 
-var async = require('async');
-var db = require('../../database');
-var batch = require('../../batch');
+const async = require('async');
+const db = require('../../database');
+const batch = require('../../batch');
 
 
 module.exports = {
 	name: 'Update moderation notes to zset',
 	timestamp: Date.UTC(2017, 2, 22),
 	method: function (callback) {
-		var progress = this.progress;
+		const progress = this.progress;
 
 		batch.processSortedSet('users:joindate', (ids, next) => {
 			async.each(ids, (uid, next) => {
@@ -18,7 +18,7 @@ module.exports = {
 						progress.incr();
 						return next(err);
 					}
-					var note = {
+					const note = {
 						uid: 1,
 						note: moderationNote,
 						timestamp: Date.now(),

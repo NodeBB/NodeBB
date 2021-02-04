@@ -1,13 +1,13 @@
 'use strict';
 
-var async = require('async');
-var db = require('../database');
+const async = require('async');
+const db = require('../database');
 
-var user = require('../user');
-var posts = require('../posts');
+const user = require('../user');
+const posts = require('../posts');
 const categories = require('../categories');
-var plugins = require('../plugins');
-var batch = require('../batch');
+const plugins = require('../plugins');
+const batch = require('../batch');
 
 
 module.exports = function (Topics) {
@@ -38,8 +38,8 @@ module.exports = function (Topics) {
 		]);
 		let postData = await posts.getPostsFields(pids, ['pid', 'timestamp', 'deleted']);
 		postData = postData.filter(post => post && !post.deleted);
-		var pidsToAdd = [];
-		var scores = [];
+		const pidsToAdd = [];
+		const scores = [];
 		postData.forEach((post) => {
 			pidsToAdd.push(post.pid);
 			scores.push(post.timestamp);
@@ -134,10 +134,10 @@ module.exports = function (Topics) {
 	}
 
 	async function reduceCounters(tid) {
-		var incr = -1;
+		const incr = -1;
 		await db.incrObjectFieldBy('global', 'topicCount', incr);
 		const topicData = await Topics.getTopicFields(tid, ['cid', 'postcount']);
-		var postCountChange = incr * topicData.postcount;
+		const postCountChange = incr * topicData.postcount;
 		await Promise.all([
 			db.incrObjectFieldBy('global', 'postCount', postCountChange),
 			db.incrObjectFieldBy(`category:${topicData.cid}`, 'post_count', postCountChange),

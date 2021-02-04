@@ -9,7 +9,7 @@ module.exports = {
 	timestamp: Date.UTC(2019, 2, 25),
 	method: function (callback) {
 		const progress = this.progress;
-		var currentUid = 1;
+		let currentUid = 1;
 		db.getObjectField('global', 'nextUid', (err, nextUid) => {
 			if (err) {
 				return callback(err);

@@ -1,26 +1,26 @@
 'use strict';
 
-var async = require('async');
+const async = require('async');
 
-var db = require('../../database');
+const db = require('../../database');
 
 module.exports = {
 	name: 'Change the schema of simple keys so they don\'t use value field (mongodb only)',
 	timestamp: Date.UTC(2017, 11, 18),
 	method: function (callback) {
-		var configJSON;
+		let configJSON;
 		try {
 			configJSON = require('../../../config.json') || { [process.env.database]: true, database: process.env.database };
 		} catch (err) {
 			configJSON = { [process.env.database]: true, database: process.env.database };
 		}
-		var isMongo = configJSON.hasOwnProperty('mongo') && configJSON.database === 'mongo';
-		var progress = this.progress;
+		const isMongo = configJSON.hasOwnProperty('mongo') && configJSON.database === 'mongo';
+		const progress = this.progress;
 		if (!isMongo) {
 			return callback();
 		}
-		var client = db.client;
-		var cursor;
+		const client = db.client;
+		let cursor;
 		async.waterfall([
 			function (next) {
 				client.collection('objects').countDocuments({
@@ -37,7 +37,7 @@ module.exports = {
 					score: { $exists: false },
 				}).batchSize(1000);
 
-				var done = false;
+				let done = false;
 				async.whilst(
 					(next) => {
 						next(null, !done);

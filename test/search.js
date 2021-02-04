@@ -1,30 +1,30 @@
 'use strict';
 
 
-var	assert = require('assert');
-var async = require('async');
-var request = require('request');
-var nconf = require('nconf');
+const	assert = require('assert');
+const async = require('async');
+const request = require('request');
+const nconf = require('nconf');
 
-var db = require('./mocks/databasemock');
-var topics = require('../src/topics');
-var categories = require('../src/categories');
-var user = require('../src/user');
-var search = require('../src/search');
-var privileges = require('../src/privileges');
+const db = require('./mocks/databasemock');
+const topics = require('../src/topics');
+const categories = require('../src/categories');
+const user = require('../src/user');
+const search = require('../src/search');
+const privileges = require('../src/privileges');
 
 describe('Search', () => {
-	var phoebeUid;
-	var gingerUid;
+	let phoebeUid;
+	let gingerUid;
 
-	var topic1Data;
-	var topic2Data;
-	var post1Data;
-	var post2Data;
-	var post3Data;
-	var cid1;
-	var cid2;
-	var cid3;
+	let topic1Data;
+	let topic2Data;
+	let post1Data;
+	let post2Data;
+	let post3Data;
+	let cid1;
+	let cid2;
+	let cid3;
 
 	before((done) => {
 		async.waterfall([
@@ -105,8 +105,8 @@ describe('Search', () => {
 	});
 
 	it('should search term in titles and posts', (done) => {
-		var meta = require('../src/meta');
-		var qs = `/api/search?term=cucumber&in=titlesposts&categories[]=${cid1}&by=phoebe&replies=1&repliesFilter=atleast&sortBy=timestamp&sortDirection=desc&showAs=posts`;
+		const meta = require('../src/meta');
+		const qs = `/api/search?term=cucumber&in=titlesposts&categories[]=${cid1}&by=phoebe&replies=1&repliesFilter=atleast&sortBy=timestamp&sortDirection=desc&showAs=posts`;
 		privileges.global.give(['groups:search:content'], 'guests', (err) => {
 			assert.ifError(err);
 			request({
@@ -229,7 +229,7 @@ describe('Search', () => {
 	});
 
 	it('should return json search data with no categories', (done) => {
-		var qs = '/api/search?term=cucumber&in=titlesposts&searchOnly=1';
+		const qs = '/api/search?term=cucumber&in=titlesposts&searchOnly=1';
 		privileges.global.give(['groups:search:content'], 'guests', (err) => {
 			assert.ifError(err);
 			request({

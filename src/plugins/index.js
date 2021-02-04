@@ -15,8 +15,8 @@ const meta = require('../meta');
 
 const { pluginNamePattern, themeNamePattern, paths } = require('../constants');
 
-var app;
-var middleware;
+let app;
+let middleware;
 
 const Plugins = module.exports;
 
@@ -136,7 +136,7 @@ Plugins.reload = async function () {
 	if (Plugins.versionWarning.length && nconf.get('isPrimary')) {
 		console.log('');
 		winston.warn('[plugins/load] The following plugins may not be compatible with your version of NodeBB. This may cause unintended behaviour or crashing. In the event of an unresponsive NodeBB caused by this plugin, run `./nodebb reset -p PLUGINNAME` to disable it.');
-		for (var x = 0, numPlugins = Plugins.versionWarning.length; x < numPlugins; x += 1) {
+		for (let x = 0, numPlugins = Plugins.versionWarning.length; x < numPlugins; x += 1) {
 			console.log('  * '.yellow + Plugins.versionWarning[x]);
 		}
 		console.log('');
@@ -156,7 +156,7 @@ Plugins.reload = async function () {
 };
 
 Plugins.reloadRoutes = async function (params) {
-	var controllers = require('../controllers');
+	const controllers = require('../controllers');
 	await Plugins.hooks.fire('static:app.load', { app: app, router: params.router, middleware: middleware, controllers: controllers });
 	winston.verbose('[plugins] All plugins reloaded and rerouted');
 };
@@ -244,7 +244,7 @@ Plugins.normalise = async function (apiReturn) {
 
 	const pluginArray = [];
 
-	for (var key in pluginMap) {
+	for (const key in pluginMap) {
 		if (pluginMap.hasOwnProperty(key)) {
 			pluginArray.push(pluginMap[key]);
 		}
@@ -291,7 +291,7 @@ Plugins.showInstalled = async function () {
 async function findNodeBBModules(dirs) {
 	const pluginPaths = [];
 	await async.each(dirs, (dirname, next) => {
-		var dirPath = path.join(Plugins.nodeModulesPath, dirname);
+		const dirPath = path.join(Plugins.nodeModulesPath, dirname);
 
 		async.waterfall([
 			function (cb) {
@@ -320,7 +320,7 @@ async function findNodeBBModules(dirs) {
 						return next();
 					}
 
-					var subdirPath = path.join(dirPath, subdir);
+					const subdirPath = path.join(dirPath, subdir);
 					fs.stat(subdirPath, (err, stats) => {
 						if (err && err.code !== 'ENOENT') {
 							return next(err);

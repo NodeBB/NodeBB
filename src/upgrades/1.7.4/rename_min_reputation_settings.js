@@ -1,6 +1,6 @@
 'use strict';
 
-var db = require('../../database');
+const db = require('../../database');
 
 module.exports = {
 	name: 'Rename privileges:downvote and privileges:flag to min:rep:downvote, min:rep:flag respectively',

@@ -1,10 +1,10 @@
 'use strict';
 
 
-var async = require('async');
-var groups = require('../../groups');
-var privileges = require('../../privileges');
-var db = require('../../database');
+const async = require('async');
+const groups = require('../../groups');
+const privileges = require('../../privileges');
+const db = require('../../database');
 
 module.exports = {
 	name: 'Give category access privileges to spiders system group',
@@ -20,7 +20,7 @@ module.exports = {
 						return next(err);
 					}
 
-					var privs = [];
+					const privs = [];
 					if (groupPrivileges['groups:find']) {
 						privs.push('groups:find');
 					}
@@ -39,7 +39,7 @@ module.exports = {
 };
 
 function getGroupPrivileges(cid, callback) {
-	var tasks = {};
+	const tasks = {};
 
 	['groups:find', 'groups:read', 'groups:topics:read'].forEach((privilege) => {
 		tasks[privilege] = async.apply(groups.isMember, 'guests', `cid:${cid}:privileges:${privilege}`);

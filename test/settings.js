@@ -1,14 +1,14 @@
 'use strict';
 
-var assert = require('assert');
-var nconf = require('nconf');
+const assert = require('assert');
+const nconf = require('nconf');
 
-var db = require('./mocks/databasemock');
-var settings = require('../src/settings');
+const db = require('./mocks/databasemock');
+const settings = require('../src/settings');
 
 describe('settings v3', () => {
-	var settings1;
-	var settings2;
+	let settings1;
+	let settings2;
 
 	it('should create a new settings object', (done) => {
 		settings1 = new settings('my-plugin', '1.0', { foo: 1, bar: { derp: 2 } }, done);
@@ -52,7 +52,7 @@ describe('settings v3', () => {
 	});
 
 	it('should get value from default value', (done) => {
-		var newSettings = new settings('some-plugin', '1.0', { default: { value: 1 } });
+		const newSettings = new settings('some-plugin', '1.0', { default: { value: 1 } });
 		assert.equal(newSettings.get('default.value'), 1);
 		done();
 	});

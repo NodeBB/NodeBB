@@ -1,23 +1,23 @@
 'use strict';
 
-var assert = require('assert');
-var async = require('async');
-var request = require('request');
-var nconf = require('nconf');
+const assert = require('assert');
+const async = require('async');
+const request = require('request');
+const nconf = require('nconf');
 
-var db = require('./mocks/databasemock');
-var meta = require('../src/meta');
-var User = require('../src/user');
-var Groups = require('../src/groups');
-var Messaging = require('../src/messaging');
-var helpers = require('./helpers');
-var socketModules = require('../src/socket.io/modules');
+const db = require('./mocks/databasemock');
+const meta = require('../src/meta');
+const User = require('../src/user');
+const Groups = require('../src/groups');
+const Messaging = require('../src/messaging');
+const helpers = require('./helpers');
+const socketModules = require('../src/socket.io/modules');
 
 describe('Messaging Library', () => {
-	var fooUid;	// the admin
-	var bazUid;	// the user with chat restriction enabled
-	var herpUid;
-	var roomId;
+	let fooUid;	// the admin
+	let bazUid;	// the user with chat restriction enabled
+	let herpUid;
+	let roomId;
 
 	before((done) => {
 		// Create 3 users: 1 admin, 2 regular
@@ -88,8 +88,8 @@ describe('Messaging Library', () => {
 		});
 
 		it('should return rate limit error on second try', (done) => {
-			var socketMock = { uid: fooUid };
-			var oldValue = meta.config.chatMessageDelay;
+			const socketMock = { uid: fooUid };
+			const oldValue = meta.config.chatMessageDelay;
 			meta.config.chatMessageDelay = 1000;
 			socketModules.chats.newRoom(socketMock, { touid: bazUid }, (err) => {
 				assert.ifError(err);
@@ -345,8 +345,8 @@ describe('Messaging Library', () => {
 		});
 
 		it('should fail to send second message due to rate limit', (done) => {
-			var socketMock = { uid: fooUid };
-			var oldValue = meta.config.chatMessageDelay;
+			const socketMock = { uid: fooUid };
+			const oldValue = meta.config.chatMessageDelay;
 			meta.config.chatMessageDelay = 1000;
 			socketModules.chats.send(socketMock, { roomId: roomId, message: 'first chat message' }, (err) => {
 				assert.ifError(err);
@@ -369,7 +369,7 @@ describe('Messaging Library', () => {
 		});
 
 		it('should return not allowed error if mid is not in room', (done) => {
-			var myRoomId;
+			let myRoomId;
 			User.create({ username: 'dummy' }, (err, uid) => {
 				assert.ifError(err);
 				socketModules.chats.newRoom({ uid: bazUid }, { touid: uid }, (err, _roomId) => {
@@ -404,7 +404,7 @@ describe('Messaging Library', () => {
 						User.notifications.get(herpUid, (err, data) => {
 							assert.ifError(err);
 							assert(data.unread[0]);
-							var notification = data.unread[0];
+							const notification = data.unread[0];
 							assert.equal(notification.bodyShort, '[[notifications:new_message_from, foo]]');
 							assert.equal(notification.nid, `chat_${fooUid}_${roomId}`);
 							assert.equal(notification.path, `${nconf.get('relative_path')}/chats/${roomId}`);
@@ -595,8 +595,8 @@ describe('Messaging Library', () => {
 	});
 
 	describe('edit/delete', () => {
-		var socketModules = require('../src/socket.io/modules');
-		var mid;
+		const socketModules = require('../src/socket.io/modules');
+		let mid;
 		let mid2;
 		before(async () => {
 			await socketModules.chats.addUserToRoom({ uid: fooUid }, { roomId: roomId, username: 'baz' });
@@ -682,7 +682,7 @@ describe('Messaging Library', () => {
 				assert.ifError(err);
 
 				// Reduce messages to their mids
-				var mids = messages.reduce((mids, cur) => {
+				const mids = messages.reduce((mids, cur) => {
 					mids.push(cur.messageId);
 					return mids;
 				}, []);
@@ -790,7 +790,7 @@ describe('Messaging Library', () => {
 	});
 
 	describe('logged in chat controller', () => {
-		var jar;
+		let jar;
 		before((done) => {
 			helpers.loginUser('herp', 'derpderp', (err, _jar) => {
 				assert.ifError(err);

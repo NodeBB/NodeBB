@@ -1,33 +1,33 @@
 'use strict';
 
-var async = require('async');
-var path = require('path');
-var csrf = require('csurf');
-var validator = require('validator');
-var nconf = require('nconf');
-var ensureLoggedIn = require('connect-ensure-login');
-var toobusy = require('toobusy-js');
-var LRU = require('lru-cache');
-var util = require('util');
+const async = require('async');
+const path = require('path');
+const csrf = require('csurf');
+const validator = require('validator');
+const nconf = require('nconf');
+const ensureLoggedIn = require('connect-ensure-login');
+const toobusy = require('toobusy-js');
+const LRU = require('lru-cache');
+const util = require('util');
 
-var plugins = require('../plugins');
-var meta = require('../meta');
-var user = require('../user');
-var groups = require('../groups');
-var analytics = require('../analytics');
-var privileges = require('../privileges');
-var helpers = require('./helpers');
+const plugins = require('../plugins');
+const meta = require('../meta');
+const user = require('../user');
+const groups = require('../groups');
+const analytics = require('../analytics');
+const privileges = require('../privileges');
+const helpers = require('./helpers');
 
-var controllers = {
+const controllers = {
 	api: require('../controllers/api'),
 	helpers: require('../controllers/helpers'),
 };
 
-var delayCache = new LRU({
+const delayCache = new LRU({
 	maxAge: 1000 * 60,
 });
 
-var middleware = module.exports;
+const middleware = module.exports;
 
 const relative_path = nconf.get('relative_path');
 
@@ -66,7 +66,7 @@ require('./expose')(middleware);
 middleware.assert = require('./assert');
 
 middleware.stripLeadingSlashes = function stripLeadingSlashes(req, res, next) {
-	var target = req.originalUrl.replace(relative_path, '');
+	const target = req.originalUrl.replace(relative_path, '');
 	if (target.startsWith('//')) {
 		return res.redirect(relative_path + target.replace(/^\/+/, '/'));
 	}
@@ -118,7 +118,7 @@ middleware.routeTouchIcon = function routeTouchIcon(req, res) {
 	if (meta.config['brand:touchIcon'] && validator.isURL(meta.config['brand:touchIcon'])) {
 		return res.redirect(meta.config['brand:touchIcon']);
 	}
-	var iconPath = '';
+	let iconPath = '';
 	if (meta.config['brand:touchIcon']) {
 		iconPath = path.join(nconf.get('upload_path'), meta.config['brand:touchIcon'].replace(/assets\/uploads/, ''));
 	} else {
@@ -160,8 +160,8 @@ middleware.privateUploads = function privateUploads(req, res, next) {
 	}
 
 	if (req.path.startsWith(`${nconf.get('relative_path')}/assets/uploads/files`)) {
-		var extensions = (meta.config.privateUploadsExtensions || '').split(',').filter(Boolean);
-		var ext = path.extname(req.path);
+		const extensions = (meta.config.privateUploadsExtensions || '').split(',').filter(Boolean);
+		let ext = path.extname(req.path);
 		ext = ext ? ext.replace(/^\./, '') : ext;
 		if (!extensions.length || extensions.includes(ext)) {
 			return res.status(403).json('not-allowed');
@@ -192,7 +192,7 @@ middleware.delayLoading = function delayLoading(req, res, next) {
 	// Introduces an artificial delay during load so that brute force attacks are effectively mitigated
 
 	// Add IP to cache so if too many requests are made, subsequent requests are blocked for a minute
-	var timesSeen = delayCache.get(req.ip) || 0;
+	let timesSeen = delayCache.get(req.ip) || 0;
 	if (timesSeen > 10) {
 		return res.sendStatus(429);
 	}
