@@ -39,11 +39,13 @@ module.exports = function (module) {
 		const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
 
 		for (let i = 0; i < keys.length; i += 1) {
-			bulk.find({ _key: keys[i] }).upsert().updateOne({ $addToSet: {
-				members: {
-					$each: value,
+			bulk.find({ _key: keys[i] }).upsert().updateOne({
+				$addToSet: {
+					members: {
+						$each: value,
+					},
 				},
-			} });
+			});
 		}
 		try {
 			await bulk.execute();

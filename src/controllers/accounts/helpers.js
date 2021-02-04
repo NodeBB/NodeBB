@@ -233,13 +233,15 @@ async function parseAboutMe(userData) {
 function filterLinks(links, states) {
 	return links.filter((link, index) => {
 		// Default visibility
-		link.visibility = { self: true,
+		link.visibility = {
+			self: true,
 			other: true,
 			moderator: true,
 			globalMod: true,
 			admin: true,
 			canViewInfo: true,
-			...link.visibility };
+			...link.visibility,
+		};
 
 		const permit = Object.keys(states).some(state => states[state] && link.visibility[state]);
 
