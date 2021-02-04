@@ -41,7 +41,7 @@
     "user_started_following_you_multiple": "<strong>%1</strong> và %2 người khác đã bắt đầu theo dõi bạn.",
     "new_register": "<strong>%1</strong> đã gửi một yêu cầu tham gia.",
     "new_register_multiple": "Có <strong>%1</strong> đơn đăng ký đang chờ xem xét.",
-    "flag_assigned_to_you": "<strong>Cảnh báo %1</strong> đã được ghi nhận đối với bạn",
+    "flag_assigned_to_you": "<strong>Cờ %1</strong> đã được giao cho bạn",
     "post_awaiting_review": "Bài đăng đang chờ xét duyệt",
     "profile-exported": "<strong>%1</strong> đã xuất hồ sơ, nhấn tải xuống",
     "posts-exported": "<strong>%1</strong> đã xuất bài viết, nhấn tải xuống",

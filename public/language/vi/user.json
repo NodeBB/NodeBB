@@ -20,7 +20,7 @@
     "delete_this_account_confirm": "Bạn có chắc muốn xóa tài khoản này trong khi vẫn để lại nội dung của nó?<br /><strong>Hành động này không thể hoàn tác, các bài viết sẽ được ẩn danh và bạn không thể khôi phục các liên kết bài viết với tài khoản đã xóa</strong><br /><br />",
     "delete_account_content_confirm": "Bạn có chắc chắn muốn xóa nội dung của tài khoản này không (bài viết/chủ đề/tải lên)? <br /><strong>Không thể hoàn tác hành động này và bạn sẽ không thể khôi phục bất kỳ dữ liệu nào</strong><br /><br />",
     "delete_all_confirm": "Bạn có chắc muốn xóa tài khoản này và tất cả nội dung của nó (bài viết/chủ đề/tải lên)? <br /><strong>Không thể hoàn tác hành động này và bạn sẽ không thể khôi phục bất kỳ dữ liệu nào</strong><br /><br />",
-    "account-deleted": " Đã xoá tài khoản",
+    "account-deleted": " Tài khoản đã bị xóa",
     "account-content-deleted": "Nội dung tài khoản đã bị xóa",
     "fullname": "Tên đầy đủ",
     "website": "Trang Web",

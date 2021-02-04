@@ -25,7 +25,7 @@
 	"login-attempts": "Giới hạn đăng nhập mỗi giờ",
 	"login-attempts-help": "Nếu số lần người dùng đăng nhập vào tài khoản vượt ngưỡng này, tài khoản sẽ bị khóa trong một khoảng thời gian đã được cài đặt",
 	"lockout-duration": "Thời Gian Khóa Tài Khoản (phút)",
-	"login-days": "Số ngày ghi nhớ các phiên đăng nhập của người dùng",
+	"login-days": "Số ngày ghi nhớ phiên đăng nhập người dùng",
 	"password-expiry-days": "Buộc đặt lại mật khẩu sau một số ngày đã định",
 	"session-time": "Thời Gian Phiên",
 	"session-time-days": "Ngày",

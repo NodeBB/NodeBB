@@ -42,7 +42,7 @@
 
 	"notes": "Ghi Chú Cờ",
 	"add-note": "Thêm Ghi Chú",
-	"no-notes": "Không có ghi chú được chia sẻ.",
+	"no-notes": "Không có chia sẻ ghi chú.",
 	"delete-note-confirm": "Bạn có chắc muốn xóa ghi chú cờ này không?",
 	"note-added": "Đã Thêm Ghi Chú",
 	"note-deleted": "Đã Xóa Ghi Chú",
@@ -77,7 +77,7 @@
 	"modal-submit-success": "Nội dung đã được gắn cờ để kiểm duyệt.",
 	"modal-submit-confirm": "Xác Nhận Gửi",
 	"modal-submit-confirm-text": "Bạn đã chỉ định một lý do tùy chỉnh. Bạn có chắc chắn muốn gửi qua báo cáo nhanh không?",
-	"modal-submit-confirm-text-help": "Việc gửi báo cáo nhanh sẽ ghi đè lên bất kỳ lý do tùy chỉnh nào đã xác định.",
+	"modal-submit-confirm-text-help": "Gửi báo cáo nhanh sẽ thay thế bất kỳ lý do tùy chỉnh nào đã đưa ra.",
 
 	"bulk-actions": "‎Hành động hàng loạt‎",
 	"bulk-resolve": "Giải Quyết Cờ",

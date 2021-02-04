@@ -27,7 +27,7 @@
 	"edit.text-color": "Màu Chữ Nhóm",
 	"edit.show-badge": "Hiển Thị Huy Hiệu",
 	"edit.private-details": "Nếu bật, tham gia nhóm cần được chủ nhóm chấp nhận.",
-	"edit.private-override": "Cảnh báo: Nhóm riêng tư bị tắt ở cấp độ hệ thống, tùy chọn này sẽ ghi đè.",
+	"edit.private-override": "Cảnh báo: Nhóm riêng tư bị tắt ở cấp độ hệ thống, tùy chọn này sẽ thay thế.",
 	"edit.disable-join": "Tắt yêu cầu tham gia",
 	"edit.disable-leave": "Không cho phép người dùng rời khỏi nhóm",
 	"edit.hidden": "Đã Ẩn",
