@@ -1,6 +1,6 @@
 'use strict';
 
-define('categorySelector', ['benchpress', 'translator', 'categorySearch'], function (Benchpress, translator, categorySearch) {
+define('categorySelector', ['categorySearch2'], function (categorySearch) {
 	var categorySelector = {};
 
 	categorySelector.init = function (el, callback) {
@@ -19,7 +19,9 @@ define('categorySelector', ['benchpress', 'translator', 'categorySearch'], funct
 			callback(selector.selectedCategory);
 		});
 
-		categorySearch.init(el);
+		categorySearch.init(el, {
+			template: 'partials/category-selector',
+		});
 
 		selector.selectCategory = function (cid) {
 			var categoryEl = selector.el.find('[data-cid="' + cid + '"]');
