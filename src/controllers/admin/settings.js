@@ -10,6 +10,7 @@ const social = require('../../social');
 
 const helpers = require('../helpers');
 const translator = require('../../../public/src/modules/translator');
+
 const settingsController = module.exports;
 
 settingsController.get = async function (req, res) {

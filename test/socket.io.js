@@ -6,11 +6,13 @@
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 const util = require('util');
+
 const sleep = util.promisify(setTimeout);
 var assert = require('assert');
 var async = require('async');
 var nconf = require('nconf');
 var request = require('request');
+
 var cookies = request.jar();
 
 var db = require('./mocks/databasemock');

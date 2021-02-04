@@ -116,6 +116,7 @@ winston.info('database config %s', dbType, testDbConfig);
 winston.info('environment ' + global.env);
 
 const db = require('../../src/database');
+
 module.exports = db;
 
 before(async function () {

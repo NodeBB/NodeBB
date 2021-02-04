@@ -10,6 +10,7 @@ const path = require('path');
 const nconf = require('nconf');
 
 const { paths, pluginNamePattern } = require('../constants');
+
 const packageManager = nconf.get('package_manager');
 
 const supportedPackageManagerList = require('./package-install').supportedPackageManager; // load config from src/cli/package-install.js

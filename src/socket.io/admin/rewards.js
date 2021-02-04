@@ -1,6 +1,7 @@
 'use strict';
 
 const rewardsAdmin = require('../../rewards/admin');
+
 const SocketRewards = module.exports;
 
 SocketRewards.save = async function (socket, data) {

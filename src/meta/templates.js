@@ -2,6 +2,7 @@
 
 const util = require('util');
 let mkdirp = require('mkdirp');
+
 mkdirp = mkdirp.hasOwnProperty('native') ? mkdirp : util.promisify(mkdirp);
 const rimraf = require('rimraf');
 const winston = require('winston');

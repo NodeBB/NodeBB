@@ -1,6 +1,7 @@
 'use strict';
 
 const nconf = require('nconf');
+
 nconf.argv().env({
 	separator: '__',
 });
@@ -15,6 +16,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'production';
 // Alternate configuration file support
 const configFile = path.resolve(__dirname, '../../../', nconf.any(['config', 'CONFIG']) || 'config.json');
 const prestart = require('../../prestart');
+
 prestart.loadConfig(configFile);
 prestart.setupWinston();
 

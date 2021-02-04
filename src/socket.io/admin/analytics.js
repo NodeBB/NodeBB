@@ -2,6 +2,7 @@
 
 const async = require('async');
 const analytics = require('../../analytics');
+
 const Analytics = module.exports;
 
 Analytics.get = function (socket, data, callback) {

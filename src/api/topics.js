@@ -7,6 +7,7 @@ const meta = require('../meta');
 const privileges = require('../privileges');
 
 const apiHelpers = require('./helpers');
+
 const doTopicAction = apiHelpers.doTopicAction;
 
 const websockets = require('../socket.io');

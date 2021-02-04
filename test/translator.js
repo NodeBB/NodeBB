@@ -3,6 +3,7 @@
 
 var assert = require('assert');
 var shim = require('../public/src/modules/translator.js');
+
 var Translator = shim.Translator;
 var db = require('./mocks/databasemock');
 

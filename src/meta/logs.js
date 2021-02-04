@@ -2,6 +2,7 @@
 
 const path = require('path');
 const fs = require('fs');
+
 const Logs = module.exports;
 
 Logs.path = path.resolve(__dirname, '../../logs/output.log');

@@ -7,6 +7,7 @@ var path = require('path');
 var os = require('os');
 var nconf = require('nconf');
 var express = require('express');
+
 var app = express();
 app.renderAsync = util.promisify((tpl, data, callback) => app.render(tpl, data, callback));
 var server;

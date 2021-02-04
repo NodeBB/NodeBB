@@ -7,6 +7,7 @@ const user = require('../../user');
 const groups = require('../../groups');
 const meta = require('../../meta');
 const privileges = require('../../privileges');
+
 const now = Date.now();
 module.exports = {
 	name: 'Create verified/unverified user groups',

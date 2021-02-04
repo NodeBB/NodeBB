@@ -2,6 +2,7 @@
 
 const user = require('../user');
 const notifications = require('../notifications');
+
 const SocketNotifs = module.exports;
 
 SocketNotifs.get = async function (socket, data) {

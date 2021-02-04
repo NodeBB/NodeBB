@@ -4,6 +4,7 @@ const winston = require('winston');
 const nconf = require('nconf');
 
 var helpers = require('./helpers');
+
 var setupPageRoute = helpers.setupPageRoute;
 
 module.exports = function (app, middleware, controllers) {

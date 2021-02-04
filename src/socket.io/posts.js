@@ -13,6 +13,7 @@ const utils = require('../utils');
 const api = require('../api');
 
 const sockets = require('.');
+
 const SocketPosts = module.exports;
 
 require('./posts/edit')(SocketPosts);

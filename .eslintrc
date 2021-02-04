@@ -114,7 +114,6 @@
 		"prefer-template": "off",
 		"no-var": "off",
 		"vars-on-top": "off",
-		"import/newline-after-import": "off",
 
 		// TODO
 		"consistent-return": "off",

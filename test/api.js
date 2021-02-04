@@ -9,6 +9,7 @@ const request = require('request-promise-native');
 const nconf = require('nconf');
 const jwt = require('jsonwebtoken');
 const util = require('util');
+
 const wait = util.promisify(setTimeout);
 
 const db = require('./mocks/databasemock');
