@@ -281,22 +281,36 @@ async function getCategoryData(cids, uid, selectedCid, states, privilege) {
 
 helpers.getVisibleCategories = async function (cids, uid, states, privilege) {
 	states = states || [categories.watchStates.watching, categories.watchStates.notwatching];
-	const [allowed, watchState, categoryData, isAdmin] = await Promise.all([
+	let [allowed, watchState, categoriesData, isAdmin, isModerator] = await Promise.all([
 		privileges.categories.isUserAllowedTo(privilege, cids, uid),
 		categories.getWatchState(cids, uid),
 		categories.getCategoriesData(cids),
 		user.isAdministrator(uid),
+		user.isModerator(uid, cids),
 	]);
 
-	categories.getTree(categoryData);
+	const filtered = await plugins.hooks.fire('filter:helpers.getVisibleCategories', {
+		uid: uid,
+		allowed: allowed,
+		watchState: watchState,
+		categoriesData: categoriesData,
+		isModerator: isModerator,
+		isAdmin: isAdmin,
+	});
+	({ allowed, watchState, categoriesData, isModerator, isAdmin } = filtered);
 
-	const cidToAllowed = _.zipObject(cids, allowed.map(allowed => isAdmin || allowed));
-	const cidToCategory = _.zipObject(cids, categoryData);
+	categories.getTree(categoriesData);
+
+	const cidToAllowed = _.zipObject(cids, allowed.map((allowed, i) => isAdmin || isModerator[i] || allowed));
+	const cidToCategory = _.zipObject(cids, categoriesData);
 	const cidToWatchState = _.zipObject(cids, watchState);
 
-	const visibleCategories = categoryData.filter(function (c) {
+	return categoriesData.filter(function (c) {
+		if (!c) {
+			return false;
+		}
 		const hasVisibleChildren = checkVisibleChildren(c, cidToAllowed, cidToWatchState, states);
-		const isCategoryVisible = c && cidToAllowed[c.cid] && !c.link && !c.disabled && states.includes(cidToWatchState[c.cid]);
+		const isCategoryVisible = cidToAllowed[c.cid] && !c.link && !c.disabled && states.includes(cidToWatchState[c.cid]);
 		const shouldBeRemoved = !hasVisibleChildren && !isCategoryVisible;
 		const shouldBeDisaplayedAsDisabled = hasVisibleChildren && !isCategoryVisible;
 
@@ -304,13 +318,12 @@ helpers.getVisibleCategories = async function (cids, uid, states, privilege) {
 			c.disabledClass = true;
 		}
 
-		if (shouldBeRemoved && c && c.parent && c.parent.cid && cidToCategory[c.parent.cid]) {
+		if (shouldBeRemoved && c.parent && c.parent.cid && cidToCategory[c.parent.cid]) {
 			cidToCategory[c.parent.cid].children = cidToCategory[c.parent.cid].children.filter(child => child.cid !== c.cid);
 		}
 
-		return c && !shouldBeRemoved;
+		return !shouldBeRemoved;
 	});
-	return visibleCategories;
 };
 
 helpers.getSelectedCategory = async function (cid) {
@@ -341,7 +354,7 @@ function checkVisibleChildren(c, cidToAllowed, cidToWatchState, states) {
 	if (!c || !Array.isArray(c.children)) {
 		return false;
 	}
-	return c.children.some(c => c && !c.disabled && (
+	return c.children.some(c => !c.disabled && (
 		(cidToAllowed[c.cid] && states.includes(cidToWatchState[c.cid])) || checkVisibleChildren(c, cidToAllowed, cidToWatchState, states)
 	));
 }

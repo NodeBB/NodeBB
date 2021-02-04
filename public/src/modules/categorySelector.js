@@ -51,14 +51,10 @@ define('categorySelector', ['categorySearch2'], function (categorySearch) {
 		return selector;
 	};
 
-	categorySelector.modal = function (categories, callback) {
-		if (typeof categories === 'function') {
-			callback = categories;
-			categories = ajaxify.data.allCategories;
-		}
-		app.parseAndTranslate('admin/partials/categories/select-category', {
-			categories: categories,
-		}, function (html) {
+	categorySelector.modal = function (options) {
+		options = options || {};
+		options.onSelect = options.onSelect || function () {};
+		app.parseAndTranslate('admin/partials/categories/select-category', {}, function (html) {
 			var modal = bootbox.dialog({
 				title: '[[modules:composer.select_category]]',
 				message: html,
@@ -70,16 +66,21 @@ define('categorySelector', ['categorySearch2'], function (categorySearch) {
 					},
 				},
 			});
-			var selector = categorySelector.init(modal.find('[component="category-selector"]'));
+
+			var selector = categorySelector.init(modal.find('[component="category-selector"]'), options);
 			function submit(ev) {
 				ev.preventDefault();
 				if (selector.selectedCategory) {
-					callback(selector.selectedCategory.cid);
+					options.onSelect(selector.selectedCategory);
 					modal.modal('hide');
 				}
 				return false;
 			}
-
+			if (options.openOnLoad) {
+				modal.on('shown.bs.modal', function () {
+					modal.find('.dropdown-toggle').dropdown('toggle');
+				});
+			}
 			modal.find('form').on('submit', submit);
 		});
 	};

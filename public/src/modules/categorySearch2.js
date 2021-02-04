@@ -3,23 +3,13 @@
 define('categorySearch2', function () {
 	var categorySearch = {};
 
-	var categoriesList;
-	var options;
-
-	// copy of ajaxify.data.categories to add custom categories to list
-	// see admin/manage/privileges
-	var localCategories;
-
-	categorySearch.init = function (el, _options) {
-		if (utils.isTouchDevice()) {
-			return;
-		}
-		categoriesList = null;
-		options = _options || {};
+	categorySearch.init = function (el, options) {
+		var categoriesList = null;
+		options = options || {};
 		options.privilege = options.privilege || 'topics:read';
 		options.states = options.states || ['watching', 'notwatching', 'ignoring'];
 
-		localCategories = Array.isArray(ajaxify.data.categories) ? ajaxify.data.categories.map(c => ({ ...c })) : [];
+		var localCategories = Array.isArray(ajaxify.data.categories) ? ajaxify.data.categories.map(c => ({ ...c })) : [];
 
 		var searchEl = el.find('[component="category-selector-search"]');
 		if (!searchEl.length) {
@@ -40,10 +30,10 @@ define('categorySearch2', function () {
 				if (val.length > 1 || (!val && !categoriesList)) {
 					loadList(val, function (categories) {
 						categoriesList = categoriesList || categories;
-						renderList(el, categories);
+						renderList(categories);
 					});
 				} else if (!val && categoriesList) {
-					renderList(el, categoriesList);
+					renderList(categoriesList);
 				}
 			}
 
@@ -68,32 +58,34 @@ define('categorySearch2', function () {
 			searchEl.off('click');
 			searchEl.find('input').off('keyup');
 		});
+
+		function loadList(query, callback) {
+			socket.emit('categories.loadCategoryFilter', {
+				query: query,
+				selectedCids: ajaxify.data.selectedCids,
+				privilege: options.privilege,
+				states: options.states,
+			}, function (err, categories) {
+				if (err) {
+					return app.alertError(err);
+				}
+				callback(localCategories.concat(categories));
+			});
+		}
+
+		function renderList(categories) {
+			app.parseAndTranslate(options.template, {
+				categories: categories.slice(0, 200),
+				selectedCategory: ajaxify.data.selectedCategory,
+				allCategoriesUrl: ajaxify.data.allCategoriesUrl,
+			}, function (html) {
+				el.find('[component="category/list"]')
+					.replaceWith(html.find('[component="category/list"]'));
+				el.find('[component="category/list"] [component="category/no-matches"]')
+					.toggleClass('hidden', !!categories.length);
+			});
+		}
 	};
-
-	function loadList(query, callback) {
-		socket.emit('categories.loadCategoryFilter', {
-			query: query,
-			selectedCids: ajaxify.data.selectedCids,
-			privilege: options.privilege,
-			states: options.states,
-		}, function (err, categories) {
-			if (err) {
-				return app.alertError(err);
-			}
-			callback(localCategories.concat(categories));
-		});
-	}
-
-	function renderList(el, categories) {
-		app.parseAndTranslate(options.template, {
-			categories: categories.slice(0, 200),
-			selectedCategory: ajaxify.data.selectedCategory,
-			allCategoriesUrl: ajaxify.data.allCategoriesUrl,
-		}, function (html) {
-			el.find('[component="category/list"]')
-				.replaceWith(html.find('[component="category/list"]'));
-		});
-	}
 
 	return categorySearch;
 });
