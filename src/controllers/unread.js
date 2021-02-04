@@ -60,17 +60,6 @@ unreadController.get = async function (req, res) {
 	res.render('unread', data);
 };
 
-// async function getWatchedCategories(uid, cid, filter) {
-// 	if (plugins.hooks.hasListeners('filter:unread.categories')) {
-// 		return await plugins.hooks.fire('filter:unread.categories', { uid: uid, cid: cid });
-// 	}
-// 	const states = [categories.watchStates.watching];
-// 	if (filter === 'watched') {
-// 		states.push(categories.watchStates.notwatching, categories.watchStates.ignoring);
-// 	}
-// 	return await helpers.getCategoriesByStates(uid, cid, states);
-// }
-
 unreadController.unreadTotal = async function (req, res, next) {
 	const filter = req.query.filter || '';
 	try {

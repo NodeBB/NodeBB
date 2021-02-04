@@ -244,7 +244,6 @@ async function getCategoryData(cids, uid, selectedCid, states, privilege) {
 		selectedCid = [selectedCid];
 	}
 	selectedCid = selectedCid && selectedCid.map(String);
-	states = states || [categories.watchStates.watching, categories.watchStates.notwatching];
 
 	const visibleCategories = await helpers.getVisibleCategories(cids, uid, states, privilege);
 
@@ -281,6 +280,7 @@ async function getCategoryData(cids, uid, selectedCid, states, privilege) {
 }
 
 helpers.getVisibleCategories = async function (cids, uid, states, privilege) {
+	states = states || [categories.watchStates.watching, categories.watchStates.notwatching];
 	const [allowed, watchState, categoryData, isAdmin] = await Promise.all([
 		privileges.categories.isUserAllowedTo(privilege, cids, uid),
 		categories.getWatchState(cids, uid),

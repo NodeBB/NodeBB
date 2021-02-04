@@ -16,6 +16,8 @@ define('categorySearch2', function () {
 		}
 		categoriesList = null;
 		options = _options || {};
+		options.privilege = options.privilege || 'topics:read';
+		options.states = options.states || ['watching', 'notwatching', 'ignoring'];
 
 		localCategories = Array.isArray(ajaxify.data.categories) ? ajaxify.data.categories.map(c => ({ ...c })) : [];
 
@@ -72,6 +74,8 @@ define('categorySearch2', function () {
 		socket.emit('categories.loadCategoryFilter', {
 			query: query,
 			selectedCids: ajaxify.data.selectedCids,
+			privilege: options.privilege,
+			states: options.states,
 		}, function (err, categories) {
 			if (err) {
 				return app.alertError(err);

@@ -18,8 +18,9 @@ module.exports = function (SocketCategories) {
 			cids = await loadCids(socket.uid);
 		}
 
-		const states = data.states || [categories.watchStates.watching, categories.watchStates.notwatching];
-
+		const states = (data.states || ['watching', 'notwatching', 'ignoring']).map(
+			state => categories.watchStates[state]
+		);
 		const visibleCategories = await controllersHelpers.getVisibleCategories(
 			cids, socket.uid, states, privilege
 		);

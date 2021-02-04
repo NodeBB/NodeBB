@@ -17,11 +17,14 @@ define('admin/manage/privileges', [
 
 		checkboxRowSelector.init('.privilege-table-container');
 
-		categorySelector.init($('[component="category-selector"]'), function (category) {
-			cid = parseInt(category.cid, 10);
-			cid = isNaN(cid) ? 'admin' : cid;
-			Privileges.refreshPrivilegeTable();
-			ajaxify.updateHistory('admin/manage/privileges/' + (cid || ''));
+		categorySelector.init($('[component="category-selector"]'), {
+			onSelect: function (category) {
+				cid = parseInt(category.cid, 10);
+				cid = isNaN(cid) ? 'admin' : cid;
+				Privileges.refreshPrivilegeTable();
+				ajaxify.updateHistory('admin/manage/privileges/' + (cid || ''));
+			},
+			privilege: 'find',
 		});
 
 		Privileges.setupPrivilegeTable();

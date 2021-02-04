@@ -9,7 +9,9 @@ define('forum/post-queue', [
 	PostQueue.init = function () {
 		$('[data-toggle="tooltip"]').tooltip();
 
-		categoryFilter.init($('[component="category/dropdown"]'));
+		categoryFilter.init($('[component="category/dropdown"]'), {
+			privilege: 'moderate',
+		});
 
 		$('.posts-list').on('click', '[data-action]', function () {
 			var parent = $(this).parents('[data-id]');

@@ -37,8 +37,16 @@ define('topicList', [
 		categoryTools.init();
 
 		TopicList.watchForNewPosts();
+		var states = ['watching'];
+		if (ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.filter === 'watched') {
+			states.push('notwatching', 'ignoring');
+		} else if (template !== 'unread') {
+			states.push('notwatching');
+		}
 
-		categoryFilter.init($('[component="category/dropdown"]'));
+		categoryFilter.init($('[component="category/dropdown"]'), {
+			states: states,
+		});
 
 		if (!config.usePagination) {
 			infinitescroll.init(TopicList.loadMoreTopics);

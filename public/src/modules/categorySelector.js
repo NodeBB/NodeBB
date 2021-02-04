@@ -3,24 +3,30 @@
 define('categorySelector', ['categorySearch2'], function (categorySearch) {
 	var categorySelector = {};
 
-	categorySelector.init = function (el, callback) {
-		callback = callback || function () {};
+	categorySelector.init = function (el, options) {
+		var onSelect = options.onSelect || function () {};
+
+		options.states = options.states || ['watching', 'notwatching', 'ignoring'];
+
+		$(window).trigger('action:category.selector.options', { el: el, options: options });
+
+		categorySearch.init(el, {
+			template: 'partials/category-selector',
+			privilege: options.privilege,
+			states: options.states,
+		});
+
 		var selector = {
 			el: el,
 			selectedCategory: null,
 		};
-
 		el.on('click', '[data-cid]', function () {
 			var categoryEl = $(this);
 			if (categoryEl.hasClass('disabled')) {
 				return false;
 			}
 			selector.selectCategory(categoryEl.attr('data-cid'));
-			callback(selector.selectedCategory);
-		});
-
-		categorySearch.init(el, {
-			template: 'partials/category-selector',
+			onSelect(selector.selectedCategory);
 		});
 
 		selector.selectCategory = function (cid) {

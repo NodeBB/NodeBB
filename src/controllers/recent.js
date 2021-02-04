@@ -32,11 +32,6 @@ recentController.getData = async function (req, url, sort) {
 	}
 	term = term || 'alltime';
 
-	const states = [categories.watchStates.watching, categories.watchStates.notwatching];
-	if (filter === 'watched') {
-		states.push(categories.watchStates.ignoring);
-	}
-
 	const [settings, categoryData, rssToken, canPost, isPrivileged] = await Promise.all([
 		user.getSettings(req.uid),
 		helpers.getSelectedCategory(cid),

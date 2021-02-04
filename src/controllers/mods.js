@@ -201,20 +201,16 @@ modsController.postQueue = async function (req, res, next) {
 	const page = parseInt(req.query.page, 10) || 1;
 	const postsPerPage = 20;
 
-	const [ids, isAdminOrGlobalMod, moderatedCids, allCategories, categoriesData] = await Promise.all([
+	const [ids, isAdminOrGlobalMod, moderatedCids, categoriesData] = await Promise.all([
 		db.getSortedSetRange('post:queue', 0, -1),
 		user.isAdminOrGlobalMod(req.uid),
 		user.getModeratedCids(req.uid),
-		categories.buildForSelect(req.uid, 'find', ['disabled', 'link', 'slug']),
-		helpers.getCategoriesByStates(req.uid, cid, null, 'moderate'),
+		helpers.getSelectedCategory(cid),
 	]);
 
 	if (cid && !moderatedCids.includes(String(cid)) && !isAdminOrGlobalMod) {
 		return next();
 	}
-	allCategories.forEach((c) => {
-		c.disabledClass = !isAdminOrGlobalMod && !moderatedCids.includes(String(c.cid));
-	});
 
 	let postData = await getQueuedPosts(ids);
 	postData = postData.filter(p => p &&
@@ -234,7 +230,6 @@ modsController.postQueue = async function (req, res, next) {
 	res.render('post-queue', {
 		title: '[[pages:post-queue]]',
 		posts: postData,
-		allCategories: allCategories,
 		...categoriesData,
 		allCategoriesUrl: 'post-queue' + helpers.buildQueryString(req.query, 'cid', ''),
 		pagination: pagination.create(page, pageCount),

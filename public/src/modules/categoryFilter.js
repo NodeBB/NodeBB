@@ -5,12 +5,19 @@ define('categoryFilter', ['categorySearch2'], function (categorySearch) {
 
 	var selectedCids = [];
 
-	categoryFilter.init = function (el) {
+	categoryFilter.init = function (el, options) {
+		options = options || {};
+		options.states = options.states || ['watching', 'notwatching', 'ignoring'];
+
+		$(window).trigger('action:category.filter.options', { el: el, options: options });
+
 		categorySearch.init(el, {
 			template: 'partials/category-filter',
+			privilege: options.privilege,
+			states: options.states,
 		});
 
-		selectedCids = ajaxify.data.selectedCids.slice();
+		selectedCids = Array.isArray(ajaxify.data.selectedCids) ? ajaxify.data.selectedCids.slice() : [];
 
 		el.on('hidden.bs.dropdown', function () {
 			var changed = ajaxify.data.selectedCids.length !== selectedCids.length;
