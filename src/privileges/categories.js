@@ -77,6 +77,9 @@ module.exports = function (privileges) {
 	};
 
 	privileges.categories.isUserAllowedTo = async function (privilege, cid, uid) {
+		if ((Array.isArray(privilege) && !privilege.length) || (Array.isArray(cid) && !cid.length)) {
+			return [];
+		}
 		if (!cid) {
 			return false;
 		}

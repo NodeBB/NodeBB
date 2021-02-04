@@ -86,18 +86,11 @@ define('topicList', [
 		socket.removeListener('event:new_post', onNewPost);
 	};
 
-	function isCategoryVisible(cid) {
-		return ajaxify.data.categories && ajaxify.data.categories.length && ajaxify.data.categories.some(function (c) {
-			return parseInt(c.cid, 10) === parseInt(cid, 10);
-		});
-	}
-
 	function onNewTopic(data) {
 		if (
 			(ajaxify.data.selectedCids && ajaxify.data.selectedCids.length && ajaxify.data.selectedCids.indexOf(parseInt(data.cid, 10)) === -1) ||
 			(ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.filter === 'watched') ||
-			(ajaxify.data.template.category && parseInt(ajaxify.data.cid, 10) !== parseInt(data.cid, 10)) ||
-			(!isCategoryVisible(data.cid))
+			(ajaxify.data.template.category && parseInt(ajaxify.data.cid, 10) !== parseInt(data.cid, 10))
 		) {
 			return;
 		}
@@ -116,8 +109,7 @@ define('topicList', [
 			(ajaxify.data.selectedCids && ajaxify.data.selectedCids.length && ajaxify.data.selectedCids.indexOf(parseInt(post.topic.cid, 10)) === -1) ||
 			(ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.filter === 'new') ||
 			(ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.filter === 'watched' && !post.topic.isFollowing) ||
-			(ajaxify.data.template.category && parseInt(ajaxify.data.cid, 10) !== parseInt(post.topic.cid, 10)) ||
-			(!isCategoryVisible(post.topic.cid))
+			(ajaxify.data.template.category && parseInt(ajaxify.data.cid, 10) !== parseInt(post.topic.cid, 10))
 		)) {
 			return;
 		}

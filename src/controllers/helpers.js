@@ -246,35 +246,7 @@ async function getCategoryData(cids, uid, selectedCid, states, privilege) {
 	selectedCid = selectedCid && selectedCid.map(String);
 	states = states || [categories.watchStates.watching, categories.watchStates.notwatching];
 
-	const [allowed, watchState, categoryData, isAdmin] = await Promise.all([
-		privileges.categories.isUserAllowedTo(privilege, cids, uid),
-		categories.getWatchState(cids, uid),
-		categories.getCategoriesData(cids),
-		user.isAdministrator(uid),
-	]);
-
-	categories.getTree(categoryData);
-
-	const cidToAllowed = _.zipObject(cids, allowed.map(allowed => isAdmin || allowed));
-	const cidToCategory = _.zipObject(cids, categoryData);
-	const cidToWatchState = _.zipObject(cids, watchState);
-
-	const visibleCategories = categoryData.filter(function (c) {
-		const hasVisibleChildren = checkVisibleChildren(c, cidToAllowed, cidToWatchState, states);
-		const isCategoryVisible = c && cidToAllowed[c.cid] && !c.link && !c.disabled && states.includes(cidToWatchState[c.cid]);
-		const shouldBeRemoved = !hasVisibleChildren && !isCategoryVisible;
-		const shouldBeDisaplayedAsDisabled = hasVisibleChildren && !isCategoryVisible;
-
-		if (shouldBeDisaplayedAsDisabled) {
-			c.disabledClass = true;
-		}
-
-		if (shouldBeRemoved && c && c.parent && c.parent.cid && cidToCategory[c.parent.cid]) {
-			cidToCategory[c.parent.cid].children = cidToCategory[c.parent.cid].children.filter(child => child.cid !== c.cid);
-		}
-
-		return c && !shouldBeRemoved;
-	});
+	const visibleCategories = await helpers.getVisibleCategories(cids, uid, states, privilege);
 
 	const categoriesData = categories.buildForSelectCategories(visibleCategories, ['disabledClass']);
 
@@ -307,6 +279,63 @@ async function getCategoryData(cids, uid, selectedCid, states, privilege) {
 		selectedCids: selectedCids,
 	};
 }
+
+helpers.getVisibleCategories = async function (cids, uid, states, privilege) {
+	const [allowed, watchState, categoryData, isAdmin] = await Promise.all([
+		privileges.categories.isUserAllowedTo(privilege, cids, uid),
+		categories.getWatchState(cids, uid),
+		categories.getCategoriesData(cids),
+		user.isAdministrator(uid),
+	]);
+
+	categories.getTree(categoryData);
+
+	const cidToAllowed = _.zipObject(cids, allowed.map(allowed => isAdmin || allowed));
+	const cidToCategory = _.zipObject(cids, categoryData);
+	const cidToWatchState = _.zipObject(cids, watchState);
+
+	const visibleCategories = categoryData.filter(function (c) {
+		const hasVisibleChildren = checkVisibleChildren(c, cidToAllowed, cidToWatchState, states);
+		const isCategoryVisible = c && cidToAllowed[c.cid] && !c.link && !c.disabled && states.includes(cidToWatchState[c.cid]);
+		const shouldBeRemoved = !hasVisibleChildren && !isCategoryVisible;
+		const shouldBeDisaplayedAsDisabled = hasVisibleChildren && !isCategoryVisible;
+
+		if (shouldBeDisaplayedAsDisabled) {
+			c.disabledClass = true;
+		}
+
+		if (shouldBeRemoved && c && c.parent && c.parent.cid && cidToCategory[c.parent.cid]) {
+			cidToCategory[c.parent.cid].children = cidToCategory[c.parent.cid].children.filter(child => child.cid !== c.cid);
+		}
+
+		return c && !shouldBeRemoved;
+	});
+	return visibleCategories;
+};
+
+helpers.getSelectedCategory = async function (cid) {
+	if (cid && !Array.isArray(cid)) {
+		cid = [cid];
+	}
+	cid = cid && cid.map(cid => parseInt(cid, 10));
+	let selectedCategories = await categories.getCategoriesData(cid);
+
+	if (selectedCategories.length > 1) {
+		selectedCategories = {
+			icon: 'fa-plus',
+			name: '[[unread:multiple-categories-selected]]',
+			bgColor: '#ddd',
+		};
+	} else if (selectedCategories.length === 1) {
+		selectedCategories = selectedCategories[0];
+	} else {
+		selectedCategories = null;
+	}
+	return {
+		selectedCids: cid || [],
+		selectedCategory: selectedCategories,
+	};
+};
 
 function checkVisibleChildren(c, cidToAllowed, cidToWatchState, states) {
 	if (!c || !Array.isArray(c.children)) {
