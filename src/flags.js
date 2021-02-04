@@ -135,13 +135,11 @@ Flags.getFlagIdsWithFilters = async function ({ filters, uid }) {
 	filters.page = filters.hasOwnProperty('page') ? Math.abs(parseInt(filters.page, 10) || 1) : 1;
 	filters.perPage = filters.hasOwnProperty('perPage') ? Math.abs(parseInt(filters.perPage, 10) || 20) : 20;
 
-	for (const type in filters) {
-		if (filters.hasOwnProperty(type)) {
-			if (Flags._filters.hasOwnProperty(type)) {
-				Flags._filters[type](sets, orSets, filters[type], uid);
-			} else {
-				winston.warn(`[flags/list] No flag filter type found: ${type}`);
-			}
+	for (const type of Object.keys(filters)) {
+		if (Flags._filters.hasOwnProperty(type)) {
+			Flags._filters[type](sets, orSets, filters[type], uid);
+		} else {
+			winston.warn(`[flags/list] No flag filter type found: ${type}`);
 		}
 	}
 	sets = (sets.length || orSets.length) ? sets : ['flags:datetime'];	// No filter default
@@ -586,28 +584,26 @@ Flags.update = async function (flagId, uid, changeset) {
 
 	// Retrieve existing flag data to compare for history-saving/reference purposes
 	const tasks = [];
-	for (const prop in changeset) {
-		if (changeset.hasOwnProperty(prop)) {
-			if (current[prop] === changeset[prop]) {
+	for (const prop of Object.keys(changeset)) {
+		if (current[prop] === changeset[prop]) {
+			delete changeset[prop];
+		} else if (prop === 'state') {
+			if (!Flags._constants.states.includes(changeset[prop])) {
 				delete changeset[prop];
-			} else if (prop === 'state') {
-				if (!Flags._constants.states.includes(changeset[prop])) {
-					delete changeset[prop];
-				} else {
-					tasks.push(db.sortedSetAdd(`flags:byState:${changeset[prop]}`, now, flagId));
-					tasks.push(db.sortedSetRemove(`flags:byState:${current[prop]}`, flagId));
-					if (changeset[prop] === 'resolved' || changeset[prop] === 'rejected') {
-						tasks.push(notifications.rescind(`flag:${current.type}:${current.targetId}`));
-					}
+			} else {
+				tasks.push(db.sortedSetAdd(`flags:byState:${changeset[prop]}`, now, flagId));
+				tasks.push(db.sortedSetRemove(`flags:byState:${current[prop]}`, flagId));
+				if (changeset[prop] === 'resolved' || changeset[prop] === 'rejected') {
+					tasks.push(notifications.rescind(`flag:${current.type}:${current.targetId}`));
 				}
-			} else if (prop === 'assignee') {
-				/* eslint-disable-next-line */
-				if (!await isAssignable(parseInt(changeset[prop], 10))) {
-					delete changeset[prop];
-				} else {
-					tasks.push(db.sortedSetAdd(`flags:byAssignee:${changeset[prop]}`, now, flagId));
-					tasks.push(notifyAssignee(changeset[prop]));
-				}
+			}
+		} else if (prop === 'assignee') {
+			/* eslint-disable-next-line */
+			if (!await isAssignable(parseInt(changeset[prop], 10))) {
+				delete changeset[prop];
+			} else {
+				tasks.push(db.sortedSetAdd(`flags:byAssignee:${changeset[prop]}`, now, flagId));
+				tasks.push(notifyAssignee(changeset[prop]));
 			}
 		}
 	}

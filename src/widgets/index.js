@@ -196,13 +196,8 @@ widgets.reset = async function () {
 };
 
 widgets.resetTemplate = async function (template) {
-	let toBeDrafted = [];
 	const area = await db.getObject(`widgets:${template}.tpl`);
-	for (const location in area) {
-		if (area.hasOwnProperty(location)) {
-			toBeDrafted = toBeDrafted.concat(JSON.parse(area[location]));
-		}
-	}
+	const toBeDrafted = _.flatMap(Object.values(area), value => JSON.parse(value));
 	await db.delete(`widgets:${template}.tpl`);
 	let draftWidgets = await db.getObjectField('widgets:global', 'drafts');
 	draftWidgets = JSON.parse(draftWidgets).concat(toBeDrafted);

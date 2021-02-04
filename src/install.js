@@ -150,12 +150,7 @@ async function setupConfig() {
 async function completeConfigSetup(config) {
 	// Add CI object
 	if (install.ciVals) {
-		config.test_database = {};
-		for (const prop in install.ciVals) {
-			if (install.ciVals.hasOwnProperty(prop)) {
-				config.test_database[prop] = install.ciVals[prop];
-			}
-		}
+		config.test_database = { ...install.ciVals };
 	}
 
 	// Add package_manager object if set

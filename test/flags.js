@@ -55,11 +55,9 @@ describe('Flags', () => {
 					target_readable: 'Post 1',
 				};
 				assert(flagData);
-				for (const key in compare) {
-					if (compare.hasOwnProperty(key)) {
-						assert.ok(flagData[key], `undefined key ${key}`);
-						assert.equal(flagData[key], compare[key]);
-					}
+				for (const key of Object.keys(compare)) {
+					assert.ok(flagData[key], `undefined key ${key}`);
+					assert.equal(flagData[key], compare[key]);
 				}
 
 				done();
@@ -131,11 +129,9 @@ describe('Flags', () => {
 					target_readable: 'Post 1',
 				};
 				assert(flagData);
-				for (const key in compare) {
-					if (compare.hasOwnProperty(key)) {
-						assert.ok(flagData[key], `undefined key ${key}`);
-						assert.equal(flagData[key], compare[key]);
-					}
+				for (const key of Object.keys(compare)) {
+					assert.ok(flagData[key], `undefined key ${key}`);
+					assert.equal(flagData[key], compare[key]);
 				}
 
 				done();
@@ -483,11 +479,9 @@ describe('Flags', () => {
 					content: 'This is flaggable content',
 				};
 
-				for (const key in compare) {
-					if (compare.hasOwnProperty(key)) {
-						assert.ok(data[key]);
-						assert.equal(data[key], compare[key]);
-					}
+				for (const key of Object.keys(compare)) {
+					assert.ok(data[key]);
+					assert.equal(data[key], compare[key]);
 				}
 
 				done();
@@ -503,11 +497,9 @@ describe('Flags', () => {
 					email: 'b@c.com',
 				};
 
-				for (const key in compare) {
-					if (compare.hasOwnProperty(key)) {
-						assert.ok(data[key]);
-						assert.equal(data[key], compare[key]);
-					}
+				for (const key of Object.keys(compare)) {
+					assert.ok(data[key]);
+					assert.equal(data[key], compare[key]);
 				}
 
 				done();
@@ -644,11 +636,9 @@ describe('Flags', () => {
 				};
 
 				const data = notes[1];
-				for (const key in compare) {
-					if (compare.hasOwnProperty(key)) {
-						assert.ok(data[key]);
-						assert.strictEqual(data[key], compare[key]);
-					}
+				for (const key of Object.keys(compare)) {
+					assert.ok(data[key]);
+					assert.strictEqual(data[key], compare[key]);
 				}
 
 				done();

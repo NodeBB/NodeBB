@@ -420,11 +420,9 @@ describe('API', async () => {
 							return memo;
 						}, {});
 
-						for (const header in expectedHeaders) {
-							if (expectedHeaders.hasOwnProperty(header)) {
-								assert(response.headers[header.toLowerCase()]);
-								assert.strictEqual(response.headers[header.toLowerCase()], expectedHeaders[header]);
-							}
+						for (const header of Object.keys(expectedHeaders)) {
+							assert(response.headers[header.toLowerCase()]);
+							assert.strictEqual(response.headers[header.toLowerCase()], expectedHeaders[header]);
 						}
 						return;
 					}

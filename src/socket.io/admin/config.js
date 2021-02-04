@@ -32,15 +32,10 @@ Config.setMultiple = async function (socket, data) {
 		}
 	});
 	await meta.configs.setMultiple(data);
-	for (const field in data) {
-		if (data.hasOwnProperty(field)) {
-			const setting = {
-				key: field,
-				value: data[field],
-			};
-			plugins.hooks.fire('action:config.set', setting);
-			logger.monitorConfig({ io: index.server }, setting);
-		}
+	for (const [key, value] of Object.entries(data)) {
+		const setting = { key, value };
+		plugins.hooks.fire('action:config.set', setting);
+		logger.monitorConfig({ io: index.server }, setting);
 	}
 	if (Object.keys(changes).length) {
 		changes.type = 'config-change';

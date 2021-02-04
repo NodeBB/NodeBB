@@ -131,8 +131,8 @@ UserReset.cleanByUid = async function (uid) {
 
 	await batch.processSortedSet('reset:issueDate', async (tokens) => {
 		const results = await db.getObjectFields('reset:uid', tokens);
-		for (const code in results) {
-			if (results.hasOwnProperty(code) && parseInt(results[code], 10) === uid) {
+		for (const [code, result] of Object.entries(results)) {
+			if (parseInt(result, 10) === uid) {
 				tokensToClean.push(code);
 			}
 		}
