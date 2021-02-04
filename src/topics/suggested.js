@@ -1,12 +1,12 @@
 
 'use strict';
 
-var _ = require('lodash');
+const _ = require('lodash');
 
 const db = require('../database');
 const user = require('../user');
-var privileges = require('../privileges');
-var search = require('../search');
+const privileges = require('../privileges');
+const search = require('../search');
 
 module.exports = function (Topics) {
 	Topics.getSuggestedTopics = async function (tid, uid, start, stop) {

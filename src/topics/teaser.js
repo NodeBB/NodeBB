@@ -1,15 +1,15 @@
 
 'use strict';
 
-var async = require('async');
-var _ = require('lodash');
+const async = require('async');
+const _ = require('lodash');
 
-var db = require('../database');
-var meta = require('../meta');
-var user = require('../user');
-var posts = require('../posts');
-var plugins = require('../plugins');
-var utils = require('../utils');
+const db = require('../database');
+const meta = require('../meta');
+const user = require('../user');
+const posts = require('../posts');
+const plugins = require('../plugins');
+const utils = require('../utils');
 
 module.exports = function (Topics) {
 	Topics.getTeasers = async function (topics, options) {
@@ -23,9 +23,9 @@ module.exports = function (Topics) {
 			teaserPost = options.teaserPost || meta.config.teaserPost;
 		}
 
-		var counts = [];
-		var teaserPids = [];
-		var tidToPost = {};
+		const counts = [];
+		const teaserPids = [];
+		const tidToPost = {};
 
 		topics.forEach((topic) => {
 			counts.push(topic && topic.postcount);
@@ -51,7 +51,7 @@ module.exports = function (Topics) {
 
 		const usersData = await user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture']);
 
-		var users = {};
+		const users = {};
 		usersData.forEach((user) => {
 			users[user.uid] = user;
 		});
@@ -69,7 +69,7 @@ module.exports = function (Topics) {
 
 		const { tags } = await plugins.hooks.fire('filter:teasers.configureStripTags', { tags: utils.stripTags.concat(['img']) });
 
-		var teasers = topics.map((topic, index) => {
+		const teasers = topics.map((topic, index) => {
 			if (!topic) {
 				return null;
 			}

@@ -1,9 +1,9 @@
 'use strict';
 
 
-var	assert = require('assert');
-var nconf = require('nconf');
-var db = require('./mocks/databasemock');
+const	assert = require('assert');
+const nconf = require('nconf');
+const db = require('./mocks/databasemock');
 
 
 describe('Test database', () => {
@@ -37,7 +37,7 @@ describe('Test database', () => {
 		});
 
 		it('should return error with a too low version', (done) => {
-			var dbName = nconf.get('database');
+			const dbName = nconf.get('database');
 			if (dbName === 'redis') {
 				db.checkCompatibilityVersion('2.4.0', (err) => {
 					assert.equal(err.message, 'Your Redis version is not new enough to support NodeBB, please upgrade Redis to v2.8.9 or higher.');

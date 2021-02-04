@@ -27,7 +27,7 @@ function setup(initConfig) {
 			return await install.setup();
 		},
 		function (next) {
-			var configFile = paths.config;
+			let configFile = paths.config;
 			if (nconf.get('config')) {
 				configFile = path.resolve(paths.baseDir, nconf.get('config'));
 			}
@@ -44,9 +44,9 @@ function setup(initConfig) {
 		// Disregard build step data
 		data = data[0];
 
-		var separator = '     ';
+		let separator = '     ';
 		if (process.stdout.columns > 10) {
-			for (var x = 0, cols = process.stdout.columns - 10; x < cols; x += 1) {
+			for (let x = 0, cols = process.stdout.columns - 10; x < cols; x += 1) {
 				separator += '=';
 			}
 		}

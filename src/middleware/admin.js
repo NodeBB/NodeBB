@@ -1,19 +1,19 @@
 'use strict';
 
-var winston = require('winston');
-var jsesc = require('jsesc');
-var nconf = require('nconf');
-var semver = require('semver');
+const winston = require('winston');
+const jsesc = require('jsesc');
+const nconf = require('nconf');
+const semver = require('semver');
 
-var user = require('../user');
-var meta = require('../meta');
-var plugins = require('../plugins');
-var privileges = require('../privileges');
-var utils = require('../../public/src/utils');
-var versions = require('../admin/versions');
-var helpers = require('./helpers');
+const user = require('../user');
+const meta = require('../meta');
+const plugins = require('../plugins');
+const privileges = require('../privileges');
+const utils = require('../../public/src/utils');
+const versions = require('../admin/versions');
+const helpers = require('./helpers');
 
-var controllers = {
+const controllers = {
 	api: require('../controllers/api'),
 	helpers: require('../controllers/helpers'),
 };
@@ -27,7 +27,7 @@ middleware.buildHeader = helpers.try(async (req, res, next) => {
 });
 
 middleware.renderHeader = async (req, res, data) => {
-	var custom_header = {
+	const custom_header = {
 		plugins: [],
 		authentication: [],
 	};
@@ -42,21 +42,21 @@ middleware.renderHeader = async (req, res, data) => {
 		privileges: privileges.admin.get(req.uid),
 	});
 
-	var userData = results.userData;
+	const userData = results.userData;
 	userData.uid = req.uid;
 	userData['email:confirmed'] = userData['email:confirmed'] === 1;
 	userData.privileges = results.privileges;
 
-	var acpPath = req.path.slice(1).split('/');
+	let acpPath = req.path.slice(1).split('/');
 	acpPath.forEach((path, i) => {
 		acpPath[i] = path.charAt(0).toUpperCase() + path.slice(1);
 	});
 	acpPath = acpPath.join(' > ');
 
-	var version = nconf.get('version');
+	const version = nconf.get('version');
 
 	res.locals.config.userLang = res.locals.config.acpLang || res.locals.config.userLang;
-	var templateValues = {
+	let templateValues = {
 		config: res.locals.config,
 		configJSON: jsesc(JSON.stringify(res.locals.config), { isScriptContext: true }),
 		relative_path: res.locals.config.relative_path,

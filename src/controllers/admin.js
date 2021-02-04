@@ -3,7 +3,7 @@
 const privileges = require('../privileges');
 const helpers = require('./helpers');
 
-var adminController = {
+const adminController = {
 	dashboard: require('./admin/dashboard'),
 	categories: require('./admin/categories'),
 	privileges: require('./admin/privileges'),

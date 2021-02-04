@@ -50,7 +50,7 @@ process.on('message', async (msg) => {
 
 		let chatData = [];
 		await batch.processSortedSet(`uid:${targetUid}:chat:rooms`, async (roomIds) => {
-			var result = await Promise.all(roomIds.map(roomId => getRoomMessages(targetUid, roomId)));
+			const result = await Promise.all(roomIds.map(roomId => getRoomMessages(targetUid, roomId)));
 			chatData = chatData.concat(_.flatten(result));
 		}, { batch: 100, interval: 1000 });
 

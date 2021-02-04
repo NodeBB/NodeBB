@@ -1,10 +1,10 @@
 'use strict';
 
-var async = require('async');
-var db = require('../../database');
+const async = require('async');
+const db = require('../../database');
 
-var batch = require('../../batch');
-var user = require('../../user');
+const batch = require('../../batch');
+const user = require('../../user');
 
 module.exports = {
 	name: 'Record first entry in username/email history',

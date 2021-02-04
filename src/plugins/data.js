@@ -43,7 +43,7 @@ Data.loadPluginInfo = async function (pluginPath) {
 		pluginData.nbbpm = packageData.nbbpm;
 		pluginData.path = pluginPath;
 	} catch (err) {
-		var pluginDir = path.basename(pluginPath);
+		const pluginDir = path.basename(pluginPath);
 
 		winston.error(`[plugins/${pluginDir}] Error in plugin.json or package.json!${err.stack}`);
 		throw new Error('[[error:parse-error]]');
@@ -71,7 +71,7 @@ Data.getActive = async function () {
 
 
 Data.getStaticDirectories = async function (pluginData) {
-	var validMappedPath = /^[\w\-_]+$/;
+	const validMappedPath = /^[\w\-_]+$/;
 
 	if (!pluginData.staticDirs) {
 		return;
@@ -187,10 +187,10 @@ Data.getModules = async function getModules(pluginData) {
 	let pluginModules = pluginData.modules;
 
 	if (Array.isArray(pluginModules)) {
-		var strip = parseInt(pluginData.modulesStrip, 10) || 0;
+		const strip = parseInt(pluginData.modulesStrip, 10) || 0;
 
 		pluginModules = pluginModules.reduce((prev, modulePath) => {
-			var key;
+			let key;
 			if (strip) {
 				key = modulePath.replace(new RegExp(`.?(/[^/]+){${strip}}/`), '');
 			} else {

@@ -81,8 +81,8 @@ module.exports = function (Posts) {
 	}
 
 	function toObject(key, data) {
-		var obj = {};
-		for (var i = 0; i < data.length; i += 1) {
+		const obj = {};
+		for (let i = 0; i < data.length; i += 1) {
 			obj[data[i][key]] = data[i];
 		}
 		return obj;

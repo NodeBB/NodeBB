@@ -58,7 +58,7 @@ topicsAPI.create = async function (caller, data) {
 };
 
 topicsAPI.reply = async function (caller, data) {
-	var payload = {
+	const payload = {
 		tid: data.tid,
 		uid: caller.uid,
 		req: apiHelpers.buildReqObject(caller),	// For IP recording

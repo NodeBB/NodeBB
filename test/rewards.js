@@ -1,17 +1,17 @@
 'use strict';
 
-var assert = require('assert');
-var async = require('async');
+const assert = require('assert');
+const async = require('async');
 
-var db = require('./mocks/databasemock');
-var meta = require('../src/meta');
-var User = require('../src/user');
-var Groups = require('../src/groups');
+const db = require('./mocks/databasemock');
+const meta = require('../src/meta');
+const User = require('../src/user');
+const Groups = require('../src/groups');
 
 describe('rewards', () => {
-	var adminUid;
-	var bazUid;
-	var herpUid;
+	let adminUid;
+	let bazUid;
+	let herpUid;
 
 	before((done) => {
 		// Create 3 users: 1 admin, 2 regular
@@ -40,10 +40,10 @@ describe('rewards', () => {
 	});
 
 	describe('rewards create', () => {
-		var socketAdmin = require('../src/socket.io/admin');
-		var rewards = require('../src/rewards');
+		const socketAdmin = require('../src/socket.io/admin');
+		const rewards = require('../src/rewards');
 		it('it should save a reward', (done) => {
-			var data = [
+			const data = [
 				{
 					rewards: { groupname: 'Gamers' },
 					condition: 'essentials/user.postcount',

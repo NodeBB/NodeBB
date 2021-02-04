@@ -1,9 +1,9 @@
 'use strict';
 
-var _ = require('lodash');
+const _ = require('lodash');
 
 module.exports = function (module) {
-	var helpers = require('./helpers');
+	const helpers = require('./helpers');
 
 	module.setAdd = async function (key, value) {
 		if (!Array.isArray(value)) {

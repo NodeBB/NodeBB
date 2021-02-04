@@ -1,6 +1,6 @@
 'use strict';
 
-var SocketPlugins = {};
+const SocketPlugins = {};
 
 /*
 	This file is provided exclusively so that plugins can require it and add their own socket listeners.

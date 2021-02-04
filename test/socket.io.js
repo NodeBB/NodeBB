@@ -8,29 +8,29 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 const util = require('util');
 
 const sleep = util.promisify(setTimeout);
-var assert = require('assert');
-var async = require('async');
-var nconf = require('nconf');
-var request = require('request');
+const assert = require('assert');
+const async = require('async');
+const nconf = require('nconf');
+const request = require('request');
 
-var cookies = request.jar();
+const cookies = request.jar();
 
-var db = require('./mocks/databasemock');
-var user = require('../src/user');
-var groups = require('../src/groups');
-var categories = require('../src/categories');
-var helpers = require('./helpers');
-var meta = require('../src/meta');
+const db = require('./mocks/databasemock');
+const user = require('../src/user');
+const groups = require('../src/groups');
+const categories = require('../src/categories');
+const helpers = require('./helpers');
+const meta = require('../src/meta');
 const events = require('../src/events');
 
-var socketAdmin = require('../src/socket.io/admin');
+const socketAdmin = require('../src/socket.io/admin');
 
 describe('socket.io', () => {
-	var io;
-	var cid;
-	var tid;
-	var adminUid;
-	var regularUid;
+	let io;
+	let cid;
+	let tid;
+	let adminUid;
+	let regularUid;
 
 	before((done) => {
 		async.series([
@@ -93,11 +93,11 @@ describe('socket.io', () => {
 	});
 
 	it('should get installed themes', (done) => {
-		var themes = ['nodebb-theme-lavender', 'nodebb-theme-persona', 'nodebb-theme-vanilla'];
+		const themes = ['nodebb-theme-lavender', 'nodebb-theme-persona', 'nodebb-theme-vanilla'];
 		io.emit('admin.themes.getInstalled', (err, data) => {
 			assert.ifError(err);
 			assert(data);
-			var installed = data.map(theme => theme.id);
+			const installed = data.map(theme => theme.id);
 			themes.forEach((theme) => {
 				assert.notEqual(installed.indexOf(theme), -1);
 			});
@@ -135,7 +135,7 @@ describe('socket.io', () => {
 	});
 
 	it('should ban a user', (done) => {
-		var socketUser = require('../src/socket.io/user');
+		const socketUser = require('../src/socket.io/user');
 		socketUser.banUsers({ uid: adminUid }, { uids: [regularUid], reason: 'spammer' }, (err) => {
 			assert.ifError(err);
 			user.getLatestBanInfo(regularUid, (err, data) => {
@@ -159,7 +159,7 @@ describe('socket.io', () => {
 	});
 
 	it('should unban a user', (done) => {
-		var socketUser = require('../src/socket.io/user');
+		const socketUser = require('../src/socket.io/user');
 		socketUser.unbanUsers({ uid: adminUid }, [regularUid], (err) => {
 			assert.ifError(err);
 			user.bans.isBanned(regularUid, (err, isBanned) => {
@@ -239,8 +239,8 @@ describe('socket.io', () => {
 	});
 
 	describe('validation emails', () => {
-		var meta = require('../src/meta');
-		var plugins = require('../src/plugins');
+		const meta = require('../src/meta');
+		const plugins = require('../src/plugins');
 
 		async function dummyEmailerHook(data) {
 			// pretend to handle sending emails
@@ -292,7 +292,7 @@ describe('socket.io', () => {
 	});
 
 	it('should push unread notifications on reconnect', (done) => {
-		var socketMeta = require('../src/socket.io/meta');
+		const socketMeta = require('../src/socket.io/meta');
 		socketMeta.reconnected({ uid: 1 }, {}, (err) => {
 			assert.ifError(err);
 			done();
@@ -308,7 +308,7 @@ describe('socket.io', () => {
 	});
 
 	it('should return if uid is 0', (done) => {
-		var socketMeta = require('../src/socket.io/meta');
+		const socketMeta = require('../src/socket.io/meta');
 		socketMeta.rooms.enter({ uid: 0 }, null, (err) => {
 			assert.ifError(err);
 			done();
@@ -498,7 +498,7 @@ describe('socket.io', () => {
 	});
 
 	it('should order active plugins', (done) => {
-		var data = [
+		const data = [
 			{ name: 'nodebb-theme-persona', order: 0 },
 			{ name: 'nodebb-plugin-dbsearch', order: 1 },
 			{ name: 'nodebb-plugin-markdown', order: 2 },
@@ -530,7 +530,7 @@ describe('socket.io', () => {
 	});
 
 	it('should error with invalid data', (done) => {
-		var data = [{ template: 'global', location: 'sidebar', widgets: [{ widget: 'html', data: { html: 'test', title: 'test', container: '' } }] }];
+		const data = [{ template: 'global', location: 'sidebar', widgets: [{ widget: 'html', data: { html: 'test', title: 'test', container: '' } }] }];
 		socketAdmin.widgets.set({ uid: adminUid }, data, (err) => {
 			assert.ifError(err);
 			db.getObjectField('widgets:global', 'sidebar', (err, widgetData) => {
@@ -557,8 +557,8 @@ describe('socket.io', () => {
 	});
 
 	it('should get logs', (done) => {
-		var fs = require('fs');
-		var path = require('path');
+		const fs = require('fs');
+		const path = require('path');
 		meta.logs.path = path.join(nconf.get('base_dir'), 'test/files', 'output.log');
 		fs.appendFile(meta.logs.path, 'some logs', (err) => {
 			assert.ifError(err);
@@ -619,15 +619,15 @@ describe('socket.io', () => {
 	});
 
 	describe('logger', () => {
-		var logger = require('../src/logger');
-		var index = require('../src/socket.io');
-		var fs = require('fs');
-		var path = require('path');
+		const logger = require('../src/logger');
+		const index = require('../src/socket.io');
+		const fs = require('fs');
+		const path = require('path');
 
 		it('should enable logging', (done) => {
 			meta.config.loggerStatus = 1;
 			meta.config.loggerIOStatus = 1;
-			var loggerPath = path.join(__dirname, '..', 'logs', 'logger.log');
+			const loggerPath = path.join(__dirname, '..', 'logs', 'logger.log');
 			logger.monitorConfig({ io: index.server }, { key: 'loggerPath', value: loggerPath });
 			setTimeout(() => {
 				io.emit('meta.rooms.enter', { enter: 'recent_topics' }, (err) => {

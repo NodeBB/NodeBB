@@ -1,16 +1,16 @@
 'use strict';
 
 
-var async = require('async');
-var winston = require('winston');
-var db = require('../../database');
+const async = require('async');
+const winston = require('winston');
+const db = require('../../database');
 
 module.exports = {
 	name: 'Granting edit/delete/delete topic on existing categories',
 	timestamp: Date.UTC(2016, 7, 7),
 	method: function (callback) {
-		var groupsAPI = require('../../groups');
-		var privilegesAPI = require('../../privileges');
+		const groupsAPI = require('../../groups');
+		const privilegesAPI = require('../../privileges');
 
 		db.getSortedSetRange('categories:cid', 0, -1, (err, cids) => {
 			if (err) {
@@ -23,8 +23,8 @@ module.exports = {
 						return next(err);
 					}
 
-					var groups = data.groups;
-					var users = data.users;
+					const groups = data.groups;
+					const users = data.users;
 
 					async.waterfall([
 						function (next) {

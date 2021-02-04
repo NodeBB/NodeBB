@@ -1,10 +1,10 @@
 'use strict';
 
 
-var user = require('../user');
-var topics = require('../topics');
+const user = require('../user');
+const topics = require('../topics');
 
-var SocketMeta = {
+const SocketMeta = {
 	rooms: {},
 };
 

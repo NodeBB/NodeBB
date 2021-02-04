@@ -1,15 +1,15 @@
 'use strict';
 
-var _ = require('lodash');
+const _ = require('lodash');
 
-var meta = require('../meta');
-var db = require('../database');
-var plugins = require('../plugins');
-var user = require('../user');
-var topics = require('../topics');
-var categories = require('../categories');
-var groups = require('../groups');
-var utils = require('../utils');
+const meta = require('../meta');
+const db = require('../database');
+const plugins = require('../plugins');
+const user = require('../user');
+const topics = require('../topics');
+const categories = require('../categories');
+const groups = require('../groups');
+const utils = require('../utils');
 
 module.exports = function (Posts) {
 	Posts.create = async function (data) {

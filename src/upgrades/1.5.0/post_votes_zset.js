@@ -1,14 +1,14 @@
 'use strict';
 
-var async = require('async');
-var db = require('../../database');
+const async = require('async');
+const db = require('../../database');
 
 
 module.exports = {
 	name: 'New sorted set posts:votes',
 	timestamp: Date.UTC(2017, 1, 27),
 	method: function (callback) {
-		var progress = this.progress;
+		const progress = this.progress;
 
 		require('../../batch').processSortedSet('posts:pid', (pids, next) => {
 			async.each(pids, (pid, next) => {
@@ -18,7 +18,7 @@ module.exports = {
 					}
 
 					progress.incr();
-					var votes = parseInt(postData.upvotes || 0, 10) - parseInt(postData.downvotes || 0, 10);
+					const votes = parseInt(postData.upvotes || 0, 10) - parseInt(postData.downvotes || 0, 10);
 					db.sortedSetAdd('posts:votes', votes, pid, next);
 				});
 			}, next);

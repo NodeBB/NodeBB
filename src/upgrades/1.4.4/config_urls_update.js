@@ -1,7 +1,7 @@
 'use strict';
 
-var async = require('async');
-var db = require('../../database');
+const async = require('async');
+const db = require('../../database');
 
 
 module.exports = {
@@ -17,10 +17,10 @@ module.exports = {
 					return cb();
 				}
 
-				var keys = ['brand:favicon', 'brand:touchicon', 'og:image', 'brand:logo:url', 'defaultAvatar', 'profile:defaultCovers'];
+				const keys = ['brand:favicon', 'brand:touchicon', 'og:image', 'brand:logo:url', 'defaultAvatar', 'profile:defaultCovers'];
 
 				keys.forEach((key) => {
-					var oldValue = config[key];
+					const oldValue = config[key];
 
 					if (!oldValue || typeof oldValue !== 'string') {
 						return;

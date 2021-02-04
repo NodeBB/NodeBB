@@ -6,8 +6,8 @@ const utils = require('../../utils');
 helpers.noop = function () {};
 
 helpers.toMap = function (data) {
-	var map = {};
-	for (var i = 0; i < data.length; i += 1) {
+	const map = {};
+	for (let i = 0; i < data.length; i += 1) {
 		map[data[i]._key] = data[i];
 		delete data[i]._key;
 	}

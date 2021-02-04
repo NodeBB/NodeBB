@@ -1,9 +1,9 @@
 'use strict';
 
-var winston = require('winston');
-var Transport = require('winston-transport');
+const winston = require('winston');
+const Transport = require('winston-transport');
 
-var winstonLogged = [];
+const winstonLogged = [];
 
 class DeferLogger extends Transport {
 	constructor(opts) {

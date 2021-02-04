@@ -1,9 +1,9 @@
 'use strict';
 
-var nconf = require('nconf');
+const nconf = require('nconf');
 
-var databaseName = nconf.get('database');
-var winston = require('winston');
+const databaseName = nconf.get('database');
+const winston = require('winston');
 
 if (!databaseName) {
 	winston.error(new Error('Database type not set! Run ./nodebb setup'));

@@ -1,10 +1,10 @@
 'use strict';
 
 
-var async = require('async');
+const async = require('async');
 
-var privileges = require('../../privileges');
-var db = require('../../database');
+const privileges = require('../../privileges');
+const db = require('../../database');
 
 module.exports = {
 	name: 'Give vote privilege to registered-users on all categories',

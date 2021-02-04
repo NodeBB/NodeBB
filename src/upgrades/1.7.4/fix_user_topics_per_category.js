@@ -1,19 +1,19 @@
 'use strict';
 
-var async = require('async');
-var batch = require('../../batch');
-var db = require('../../database');
+const async = require('async');
+const batch = require('../../batch');
+const db = require('../../database');
 
 module.exports = {
 	name: 'Fix topics in categories per user if they were moved',
 	timestamp: Date.UTC(2018, 0, 22),
 	method: function (callback) {
-		var progress = this.progress;
+		const progress = this.progress;
 
 		batch.processSortedSet('topics:tid', (tids, next) => {
 			async.eachLimit(tids, 500, (tid, _next) => {
 				progress.incr();
-				var topicData;
+				let topicData;
 				async.waterfall([
 					function (next) {
 						db.getObjectFields(`topic:${tid}`, ['cid', 'tid', 'uid', 'oldCid', 'timestamp'], next);

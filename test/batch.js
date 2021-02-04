@@ -1,11 +1,11 @@
 'use strict';
 
-var async = require('async');
-var assert = require('assert');
+const async = require('async');
+const assert = require('assert');
 
-var db = require('./mocks/databasemock');
+const db = require('./mocks/databasemock');
 
-var batch = require('../src/batch');
+const batch = require('../src/batch');
 
 describe('batch', () => {
 	const scores = [];

@@ -23,15 +23,15 @@ const viewsPath = nconf.get('views_dir');
 const Templates = module.exports;
 
 async function processImports(paths, templatePath, source) {
-	var regex = /<!-- IMPORT (.+?) -->/;
+	const regex = /<!-- IMPORT (.+?) -->/;
 
-	var matches = source.match(regex);
+	const matches = source.match(regex);
 
 	if (!matches) {
 		return source;
 	}
 
-	var partial = matches[1];
+	const partial = matches[1];
 	if (paths[partial] && templatePath !== partial) {
 		const partialSource = await fs.promises.readFile(paths[partial], 'utf8');
 		source = source.replace(regex, partialSource);
@@ -72,9 +72,9 @@ async function getTemplateDirs(activePlugins) {
 	themeTemplates.push(nconf.get('base_templates_path'));
 	themeTemplates = _.uniq(themeTemplates.reverse());
 
-	var coreTemplatesPath = nconf.get('core_templates_path');
+	const coreTemplatesPath = nconf.get('core_templates_path');
 
-	var templateDirs = _.uniq([coreTemplatesPath].concat(themeTemplates, pluginTemplates));
+	let templateDirs = _.uniq([coreTemplatesPath].concat(themeTemplates, pluginTemplates));
 
 	templateDirs = await Promise.all(templateDirs.map(async path => (await file.exists(path) ? path : false)));
 	return templateDirs.filter(Boolean);
@@ -90,7 +90,7 @@ async function getTemplateFiles(dirs) {
 		return files;
 	}));
 
-	var dict = {};
+	const dict = {};
 	buckets.forEach((files) => {
 		files.forEach((file) => {
 			dict[file.name] = file.path;
@@ -103,7 +103,7 @@ async function getTemplateFiles(dirs) {
 async function compileTemplate(filename, source) {
 	let paths = await file.walk(viewsPath);
 	paths = _.fromPairs(paths.map((p) => {
-		var relative = path.relative(viewsPath, p).replace(/\\/g, '/');
+		const relative = path.relative(viewsPath, p).replace(/\\/g, '/');
 		return [relative, p];
 	}));
 

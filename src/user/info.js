@@ -1,12 +1,12 @@
 'use strict';
 
-var _ = require('lodash');
-var validator = require('validator');
+const _ = require('lodash');
+const validator = require('validator');
 
-var db = require('../database');
-var posts = require('../posts');
-var topics = require('../topics');
-var utils = require('../../public/src/utils');
+const db = require('../database');
+const posts = require('../posts');
+const topics = require('../topics');
+const utils = require('../../public/src/utils');
 
 module.exports = function (User) {
 	User.getLatestBanInfo = async function (uid) {

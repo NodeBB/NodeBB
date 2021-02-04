@@ -1,12 +1,12 @@
 'use strict';
 
-var validator = require('validator');
+const validator = require('validator');
 
-var db = require('../database');
-var user = require('../user');
-var plugins = require('../plugins');
-var privileges = require('../privileges');
-var meta = require('../meta');
+const db = require('../database');
+const user = require('../user');
+const plugins = require('../plugins');
+const privileges = require('../privileges');
+const meta = require('../meta');
 
 module.exports = function (Messaging) {
 	Messaging.getRoomData = async (roomId) => {
@@ -233,7 +233,7 @@ module.exports = function (Messaging) {
 			user.isAdminOrGlobalMod(uid),
 		]);
 
-		var room = roomData;
+		const room = roomData;
 		room.messages = messages;
 		room.isOwner = parseInt(room.owner, 10) === parseInt(uid, 10);
 		room.users = users.filter(user => user && parseInt(user.uid, 10) && parseInt(user.uid, 10) !== parseInt(uid, 10));

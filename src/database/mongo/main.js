@@ -66,7 +66,7 @@ module.exports = function (module) {
 		const objectData = await module.client.collection('objects').findOne({ _key: key }, { projection: { _id: 0 } });
 
 		// fallback to old field name 'value' for backwards compatibility #6340
-		var value = null;
+		let value = null;
 		if (objectData) {
 			if (objectData.hasOwnProperty('data')) {
 				value = objectData.data;
@@ -105,7 +105,7 @@ module.exports = function (module) {
 			return null;
 		}
 		delete data.expireAt;
-		var keys = Object.keys(data);
+		const keys = Object.keys(data);
 		if (keys.length === 4 && data.hasOwnProperty('_key') && data.hasOwnProperty('score') && data.hasOwnProperty('value')) {
 			return 'zset';
 		} else if (keys.length === 3 && data.hasOwnProperty('_key') && data.hasOwnProperty('members')) {

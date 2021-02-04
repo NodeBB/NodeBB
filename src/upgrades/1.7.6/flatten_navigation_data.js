@@ -1,7 +1,7 @@
 'use strict';
 
-var async = require('async');
-var db = require('../../database');
+const async = require('async');
+const db = require('../../database');
 
 module.exports = {
 	name: 'Flatten navigation data',
@@ -12,11 +12,11 @@ module.exports = {
 				db.getSortedSetRangeWithScores('navigation:enabled', 0, -1, next);
 			},
 			function (data, next) {
-				var order = [];
-				var items = [];
+				const order = [];
+				const items = [];
 				data.forEach((item) => {
-					var navItem = JSON.parse(item.value);
-					var keys = Object.keys(navItem);
+					let navItem = JSON.parse(item.value);
+					const keys = Object.keys(navItem);
 					if (keys.length && parseInt(keys[0], 10) >= 0) {
 						navItem = navItem[keys[0]];
 					}

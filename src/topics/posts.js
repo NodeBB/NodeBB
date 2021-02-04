@@ -1,15 +1,15 @@
 
 'use strict';
 
-var _ = require('lodash');
-var validator = require('validator');
+const _ = require('lodash');
+const validator = require('validator');
 
-var db = require('../database');
-var user = require('../user');
-var posts = require('../posts');
-var meta = require('../meta');
-var plugins = require('../plugins');
-var utils = require('../../public/src/utils');
+const db = require('../database');
+const user = require('../user');
+const posts = require('../posts');
+const meta = require('../meta');
+const plugins = require('../plugins');
+const utils = require('../../public/src/utils');
 
 module.exports = function (Topics) {
 	Topics.onNewPostMade = async function (postData) {
@@ -97,7 +97,7 @@ module.exports = function (Topics) {
 	};
 
 	Topics.addParentPosts = async function (postData) {
-		var parentPids = postData.map(postObj => (postObj && postObj.hasOwnProperty('toPid') ? parseInt(postObj.toPid, 10) : null)).filter(Boolean);
+		let parentPids = postData.map(postObj => (postObj && postObj.hasOwnProperty('toPid') ? parseInt(postObj.toPid, 10) : null)).filter(Boolean);
 
 		if (!parentPids.length) {
 			return;
@@ -107,11 +107,11 @@ module.exports = function (Topics) {
 		const parentUids = _.uniq(parentPosts.map(postObj => postObj && postObj.uid));
 		const userData = await user.getUsersFields(parentUids, ['username']);
 
-		var usersMap = {};
+		const usersMap = {};
 		userData.forEach((user) => {
 			usersMap[user.uid] = user.username;
 		});
-		var parents = {};
+		const parents = {};
 		parentPosts.forEach((post, i) => {
 			parents[parentPids[i]] = { username: usersMap[post.uid] };
 		});
@@ -140,8 +140,8 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getLatestUndeletedReply = async function (tid) {
-		var isDeleted = false;
-		var index = 0;
+		let isDeleted = false;
+		let index = 0;
 		do {
 			/* eslint-disable no-await-in-loop */
 			const pids = await db.getSortedSetRevRange(`tid:${tid}:posts`, index, index);
@@ -189,7 +189,7 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getPids = async function (tid) {
-		var [mainPid, pids] = await Promise.all([
+		let [mainPid, pids] = await Promise.all([
 			Topics.getTopicField(tid, 'mainPid'),
 			db.getSortedSetRange(`tid:${tid}:posts`, 0, -1),
 		]);

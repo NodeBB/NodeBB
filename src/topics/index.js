@@ -1,19 +1,19 @@
 'use strict';
 
-var _ = require('lodash');
+const _ = require('lodash');
 const validator = require('validator');
 
-var db = require('../database');
-var posts = require('../posts');
-var utils = require('../utils');
-var plugins = require('../plugins');
-var meta = require('../meta');
-var user = require('../user');
-var categories = require('../categories');
-var privileges = require('../privileges');
-var social = require('../social');
+const db = require('../database');
+const posts = require('../posts');
+const utils = require('../utils');
+const plugins = require('../plugins');
+const meta = require('../meta');
+const user = require('../user');
+const categories = require('../categories');
+const privileges = require('../privileges');
+const social = require('../social');
 
-var Topics = module.exports;
+const Topics = module.exports;
 
 require('./data')(Topics);
 require('./create')(Topics);
@@ -221,7 +221,7 @@ async function getMainPostAndReplies(topic, set, uid, start, stop, reverse) {
 	if (!postData.length) {
 		return [];
 	}
-	var replies = postData;
+	let replies = postData;
 	if (topic.mainPid && start === 0) {
 		postData[0].index = 0;
 		replies = postData.slice(1);

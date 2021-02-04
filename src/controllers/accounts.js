@@ -1,6 +1,6 @@
 'use strict';
 
-var accountsController = {
+const accountsController = {
 	profile: require('./accounts/profile'),
 	edit: require('./accounts/edit'),
 	info: require('./accounts/info'),

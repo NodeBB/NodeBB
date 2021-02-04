@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function (module) {
-	var helpers = require('./helpers');
+	const helpers = require('./helpers');
 
 	module.setObject = async function (key, data) {
 		if (!key || !data) {
@@ -158,7 +158,7 @@ SELECT (SELECT jsonb_object_agg(f, d."value")
 			return res.rows[0].d;
 		}
 
-		var obj = {};
+		const obj = {};
 		fields.forEach((f) => {
 			obj[f] = null;
 		});

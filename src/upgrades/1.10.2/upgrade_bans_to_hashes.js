@@ -1,9 +1,9 @@
 'use strict';
 
-var async = require('async');
-var db = require('../../database');
+const async = require('async');
+const db = require('../../database');
 
-var batch = require('../../batch');
+const batch = require('../../batch');
 // var user = require('../../user');
 
 module.exports = {
@@ -60,7 +60,7 @@ module.exports = {
 						}
 						const reasonData = findReason(ban.score);
 						const banKey = `uid:${uid}:ban:${ban.score}`;
-						var data = {
+						const data = {
 							uid: uid,
 							timestamp: ban.score,
 							expire: parseInt(ban.value, 10),

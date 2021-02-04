@@ -64,7 +64,7 @@ module.exports = function (Messaging) {
 			message.fromUser.banned = !!message.fromUser.banned;
 			message.fromUser.deleted = message.fromuid !== message.fromUser.uid && message.fromUser.uid === 0;
 
-			var self = message.fromuid === parseInt(uid, 10);
+			const self = message.fromuid === parseInt(uid, 10);
 			message.self = self ? 1 : 0;
 
 			message.newSet = false;
@@ -104,7 +104,7 @@ module.exports = function (Messaging) {
 			});
 		} else if (messages.length === 1) {
 			// For single messages, we don't know the context, so look up the previous message and compare
-			var key = `uid:${uid}:chat:room:${roomId}:mids`;
+			const key = `uid:${uid}:chat:room:${roomId}:mids`;
 			const index = await db.sortedSetRank(key, messages[0].messageId);
 			if (index > 0) {
 				const mid = await db.getSortedSetRange(key, index - 1, index - 1);

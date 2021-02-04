@@ -1,15 +1,15 @@
 'use strict';
 
-var async = require('async');
-var privileges = require('../../privileges');
-var groups = require('../../groups');
-var db = require('../../database');
+const async = require('async');
+const privileges = require('../../privileges');
+const groups = require('../../groups');
+const db = require('../../database');
 
 module.exports = {
 	name: 'Give mods explicit privileges',
 	timestamp: Date.UTC(2019, 4, 28),
 	method: function (callback) {
-		var defaultPrivileges = [
+		const defaultPrivileges = [
 			'find',
 			'read',
 			'topics:read',

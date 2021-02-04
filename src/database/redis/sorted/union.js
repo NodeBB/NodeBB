@@ -4,11 +4,11 @@
 module.exports = function (module) {
 	const helpers = require('../helpers');
 	module.sortedSetUnionCard = async function (keys) {
-		var tempSetName = `temp_${Date.now()}`;
+		const tempSetName = `temp_${Date.now()}`;
 		if (!keys.length) {
 			return 0;
 		}
-		var multi = module.client.multi();
+		const multi = module.client.multi();
 		multi.zunionstore([tempSetName, keys.length].concat(keys));
 		multi.zcard(tempSetName);
 		multi.del(tempSetName);
@@ -31,14 +31,14 @@ module.exports = function (module) {
 			return [];
 		}
 
-		var tempSetName = `temp_${Date.now()}`;
+		const tempSetName = `temp_${Date.now()}`;
 
-		var rangeParams = [tempSetName, params.start, params.stop];
+		const rangeParams = [tempSetName, params.start, params.stop];
 		if (params.withScores) {
 			rangeParams.push('WITHSCORES');
 		}
 
-		var multi = module.client.multi();
+		const multi = module.client.multi();
 		multi.zunionstore([tempSetName, params.sets.length].concat(params.sets));
 		multi[params.method](rangeParams);
 		multi.del(tempSetName);

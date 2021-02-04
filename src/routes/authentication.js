@@ -1,19 +1,19 @@
 'use strict';
 
-var async = require('async');
-var passport = require('passport');
-var passportLocal = require('passport-local').Strategy;
+const async = require('async');
+const passport = require('passport');
+const passportLocal = require('passport-local').Strategy;
 const BearerStrategy = require('passport-http-bearer').Strategy;
-var winston = require('winston');
+const winston = require('winston');
 
 const meta = require('../meta');
-var controllers = require('../controllers');
-var helpers = require('../controllers/helpers');
-var plugins = require('../plugins');
+const controllers = require('../controllers');
+const helpers = require('../controllers/helpers');
+const plugins = require('../plugins');
 
-var loginStrategies = [];
+let loginStrategies = [];
 
-var Auth = module.exports;
+const Auth = module.exports;
 
 Auth.initialize = function (app, middleware) {
 	const passportInitMiddleware = passport.initialize();
@@ -161,9 +161,9 @@ Auth.reloadRoutes = async function (params) {
 		});
 	});
 
-	var multipart = require('connect-multiparty');
-	var multipartMiddleware = multipart();
-	var middlewares = [multipartMiddleware, Auth.middleware.applyCSRF, Auth.middleware.applyBlacklist];
+	const multipart = require('connect-multiparty');
+	const multipartMiddleware = multipart();
+	const middlewares = [multipartMiddleware, Auth.middleware.applyCSRF, Auth.middleware.applyBlacklist];
 
 	router.post('/register', middlewares, controllers.authentication.register);
 	router.post('/register/complete', middlewares, controllers.authentication.registerComplete);

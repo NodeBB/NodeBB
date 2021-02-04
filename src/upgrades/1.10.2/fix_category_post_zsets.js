@@ -1,9 +1,9 @@
 'use strict';
 
-var async = require('async');
-var db = require('../../database');
+const async = require('async');
+const db = require('../../database');
 
-var batch = require('../../batch');
+const batch = require('../../batch');
 
 module.exports = {
 	name: 'Fix category post zsets',
@@ -15,14 +15,14 @@ module.exports = {
 			if (err) {
 				return callback(err);
 			}
-			var keys = cids.map(cid => `cid:${cid}:pids`);
-			var posts = require('../../posts');
+			const keys = cids.map(cid => `cid:${cid}:pids`);
+			const posts = require('../../posts');
 			batch.processSortedSet('posts:pid', (postData, next) => {
 				async.eachSeries(postData, (postData, next) => {
 					progress.incr();
-					var pid = postData.value;
-					var timestamp = postData.score;
-					var cid;
+					const pid = postData.value;
+					const timestamp = postData.score;
+					let cid;
 					async.waterfall([
 						function (next) {
 							posts.getCidByPid(pid, next);
@@ -32,7 +32,7 @@ module.exports = {
 							db.isMemberOfSortedSets(keys, pid, next);
 						},
 						function (isMembers, next) {
-							var memberCids = [];
+							const memberCids = [];
 							isMembers.forEach((isMember, index) => {
 								if (isMember) {
 									memberCids.push(cids[index]);

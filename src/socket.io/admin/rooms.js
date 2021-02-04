@@ -34,8 +34,8 @@ pubsub.on('sync:stats:guests', (eventId) => {
 });
 
 SocketRooms.getTotalGuestCount = function (callback) {
-	var count = 0;
-	var eventId = `sync:stats:guests:end:${utils.generateUUID()}`;
+	let count = 0;
+	const eventId = `sync:stats:guests:end:${utils.generateUUID()}`;
 	pubsub.on(eventId, (guestCount) => {
 		count += guestCount;
 	});
@@ -64,7 +64,7 @@ SocketRooms.getAll = async function () {
 		category: 0,
 	};
 
-	for (var instance in stats) {
+	for (const instance in stats) {
 		if (stats.hasOwnProperty(instance)) {
 			totals.onlineGuestCount += stats[instance].onlineGuestCount;
 			totals.onlineRegisteredCount += stats[instance].onlineRegisteredCount;
@@ -82,14 +82,14 @@ SocketRooms.getAll = async function () {
 		}
 	}
 
-	var topTenTopics = [];
+	let topTenTopics = [];
 	Object.keys(totals.topics).forEach((tid) => {
 		topTenTopics.push({ tid: tid, count: totals.topics[tid].count || 0 });
 	});
 
 	topTenTopics = topTenTopics.sort((a, b) => b.count - a.count).slice(0, 10);
 
-	var topTenTids = topTenTopics.map(topic => topic.tid);
+	const topTenTids = topTenTopics.map(topic => topic.tid);
 
 	const titles = await topics.getTopicsFields(topTenTids, ['title']);
 	totals.topTenTopics = topTenTopics.map((topic, index) => {
@@ -100,7 +100,7 @@ SocketRooms.getAll = async function () {
 };
 
 SocketRooms.getOnlineUserCount = function (io) {
-	var count = 0;
+	let count = 0;
 
 	if (io) {
 		for (const [key] of io.sockets.adapter.rooms) {
@@ -114,10 +114,10 @@ SocketRooms.getOnlineUserCount = function (io) {
 };
 
 SocketRooms.getLocalStats = function () {
-	var Sockets = require('../index');
-	var io = Sockets.server;
+	const Sockets = require('../index');
+	const io = Sockets.server;
 
-	var socketData = {
+	const socketData = {
 		onlineGuestCount: 0,
 		onlineRegisteredCount: 0,
 		socketCount: 0,
@@ -139,8 +139,8 @@ SocketRooms.getLocalStats = function () {
 		socketData.users.recent = Sockets.getCountInRoom('recent_topics');
 		socketData.users.unread = Sockets.getCountInRoom('unread_topics');
 
-		var topTenTopics = [];
-		var tid;
+		let topTenTopics = [];
+		let tid;
 
 		for (const [room, clients] of io.sockets.adapter.rooms) {
 			tid = room.match(/^topic_(\d+)/);

@@ -1,11 +1,11 @@
 'use strict';
 
-var validator = require('validator');
+const validator = require('validator');
 
-var db = require('../database');
-var categories = require('../categories');
-var utils = require('../utils');
-var translator = require('../translator');
+const db = require('../database');
+const categories = require('../categories');
+const utils = require('../utils');
+const translator = require('../translator');
 const plugins = require('../plugins');
 
 const intFields = [

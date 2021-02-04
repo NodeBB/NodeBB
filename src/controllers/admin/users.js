@@ -191,7 +191,7 @@ usersController.registrationQueue = async function (req, res) {
 		customHeaders: plugins.hooks.fire('filter:admin.registrationQueue.customHeaders', { headers: [] }),
 		invites: getInvites(),
 	});
-	var pageCount = Math.max(1, Math.ceil(data.registrationQueueCount / itemsPerPage));
+	const pageCount = Math.max(1, Math.ceil(data.registrationQueueCount / itemsPerPage));
 	data.pagination = pagination.create(page, pageCount);
 	data.customHeaders = data.customHeaders.headers;
 	res.render('admin/manage/registration', data);

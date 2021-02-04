@@ -1,24 +1,24 @@
 'use strict';
 
-var assert = require('assert');
-var async = require('async');
-var request = require('request');
-var nconf = require('nconf');
+const assert = require('assert');
+const async = require('async');
+const request = require('request');
+const nconf = require('nconf');
 
-var db = require('./mocks/databasemock');
-var topics = require('../src/topics');
-var categories = require('../src/categories');
-var groups = require('../src/groups');
-var user = require('../src/user');
-var meta = require('../src/meta');
-var privileges = require('../src/privileges');
-var helpers = require('./helpers');
+const db = require('./mocks/databasemock');
+const topics = require('../src/topics');
+const categories = require('../src/categories');
+const groups = require('../src/groups');
+const user = require('../src/user');
+const meta = require('../src/meta');
+const privileges = require('../src/privileges');
+const helpers = require('./helpers');
 
 describe('feeds', () => {
-	var tid;
-	var pid;
-	var fooUid;
-	var cid;
+	let tid;
+	let pid;
+	let fooUid;
+	let cid;
 	before((done) => {
 		meta.config['feeds:disableRSS'] = 1;
 		async.series({
@@ -48,7 +48,7 @@ describe('feeds', () => {
 
 
 	it('should 404', (done) => {
-		var feedUrls = [
+		const feedUrls = [
 			`${nconf.get('url')}/topic/${tid}.rss`,
 			`${nconf.get('url')}/category/${cid}.rss`,
 			`${nconf.get('url')}/topics.rss`,
@@ -125,8 +125,8 @@ describe('feeds', () => {
 	});
 
 	describe('private feeds and tokens', () => {
-		var jar;
-		var rssToken;
+		let jar;
+		let rssToken;
 		before((done) => {
 			helpers.loginUser('foo', 'barbar', (err, _jar) => {
 				assert.ifError(err);

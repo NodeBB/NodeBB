@@ -50,7 +50,7 @@ function getChild() {
 		return free.shift();
 	}
 
-	var proc = fork(__filename, [], {
+	const proc = fork(__filename, [], {
 		cwd: __dirname,
 		env: {
 			minifier_child: true,
@@ -67,14 +67,14 @@ function freeChild(proc) {
 }
 
 function removeChild(proc) {
-	var i = pool.indexOf(proc);
+	const i = pool.indexOf(proc);
 	if (i !== -1) {
 		pool.splice(i, 1);
 	}
 }
 
 function forkAction(action, callback) {
-	var proc = getChild();
+	const proc = getChild();
 
 	proc.on('message', (message) => {
 		freeChild(proc);
@@ -99,12 +99,12 @@ function forkAction(action, callback) {
 	});
 }
 
-var actions = {};
+const actions = {};
 
 if (process.env.minifier_child) {
 	process.on('message', (message) => {
 		if (message.type === 'action') {
-			var action = message.action;
+			const action = message.action;
 			if (typeof actions[action.act] !== 'function') {
 				process.send({
 					type: 'error',
@@ -157,7 +157,7 @@ function concat(data, callback) {
 				return callback(err);
 			}
 
-			var output = files.join('\n;');
+			const output = files.join('\n;');
 			fs.writeFile(data.destPath, output, callback);
 		});
 
@@ -175,7 +175,7 @@ function minifyJS_batch(data, callback) {
 				return next(err);
 			}
 
-			var filesToMinify = [
+			const filesToMinify = [
 				{
 					srcPath: fileObj.srcPath,
 					filename: fileObj.filename,
@@ -220,7 +220,7 @@ function minifyJS(data, callback) {
 actions.minifyJS = minifyJS;
 
 function minifyAndSave(data, callback) {
-	var scripts = {};
+	const scripts = {};
 	data.files.forEach((ref) => {
 		if (!ref) {
 			return;
@@ -229,7 +229,7 @@ function minifyAndSave(data, callback) {
 		scripts[ref.filename] = ref.source;
 	});
 
-	var minified = uglify.minify(scripts, {
+	const minified = uglify.minify(scripts, {
 		sourceMap: {
 			filename: data.filename,
 			url: `${String(data.filename).split(/[/\\]/).pop()}.map`,

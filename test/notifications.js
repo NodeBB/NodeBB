@@ -1,22 +1,22 @@
 'use strict';
 
 
-var assert = require('assert');
-var async = require('async');
-var nconf = require('nconf');
+const assert = require('assert');
+const async = require('async');
+const nconf = require('nconf');
 
-var db = require('./mocks/databasemock');
-var meta = require('../src/meta');
-var user = require('../src/user');
-var topics = require('../src/topics');
-var categories = require('../src/categories');
-var groups = require('../src/groups');
-var notifications = require('../src/notifications');
-var socketNotifications = require('../src/socket.io/notifications');
+const db = require('./mocks/databasemock');
+const meta = require('../src/meta');
+const user = require('../src/user');
+const topics = require('../src/topics');
+const categories = require('../src/categories');
+const groups = require('../src/groups');
+const notifications = require('../src/notifications');
+const socketNotifications = require('../src/socket.io/notifications');
 
 describe('Notifications', () => {
-	var uid;
-	var notification;
+	let uid;
+	let notification;
 
 	before((done) => {
 		user.create({ username: 'poster' }, (err, _uid) => {
@@ -227,12 +227,12 @@ describe('Notifications', () => {
 	});
 
 	it('should link to the first unread post in a watched topic', (done) => {
-		var categories = require('../src/categories');
-		var topics = require('../src/topics');
-		var watcherUid;
-		var cid;
-		var tid;
-		var pid;
+		const categories = require('../src/categories');
+		const topics = require('../src/topics');
+		let watcherUid;
+		let cid;
+		let tid;
+		let pid;
 
 		async.waterfall([
 			function (next) {
@@ -343,7 +343,7 @@ describe('Notifications', () => {
 	});
 
 	it('should get all notifications and filter', (done) => {
-		var nid = 'willbefiltered';
+		const nid = 'willbefiltered';
 		notifications.create({
 			bodyShort: 'bodyShort',
 			nid: nid,
@@ -404,7 +404,7 @@ describe('Notifications', () => {
 	});
 
 	it('should send notification to followers of user when he posts', (done) => {
-		var followerUid;
+		let followerUid;
 		async.waterfall([
 			function (next) {
 				user.create({ username: 'follower' }, next);
@@ -467,7 +467,7 @@ describe('Notifications', () => {
 			assert.ifError(err);
 			notifications.prune((err) => {
 				assert.ifError(err);
-				var week = 604800000;
+				const week = 604800000;
 				db.sortedSetAdd('notifications', Date.now() - (2 * week), notification.nid, (err) => {
 					assert.ifError(err);
 					notifications.prune((err) => {

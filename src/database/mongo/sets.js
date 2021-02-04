@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function (module) {
-	var helpers = require('./helpers');
+	const helpers = require('./helpers');
 
 	module.setAdd = async function (key, value) {
 		if (!Array.isArray(value)) {
@@ -36,9 +36,9 @@ module.exports = function (module) {
 
 		value = value.map(v => helpers.valueToString(v));
 
-		var bulk = module.client.collection('objects').initializeUnorderedBulkOp();
+		const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
 
-		for (var i = 0; i < keys.length; i += 1) {
+		for (let i = 0; i < keys.length; i += 1) {
 			bulk.find({ _key: keys[i] }).upsert().updateOne({ $addToSet: {
 				members: {
 					$each: value,
@@ -103,7 +103,7 @@ module.exports = function (module) {
 
 		const result = await module.client.collection('objects').find({ _key: { $in: sets }, members: value }, { projection: { _id: 0, members: 0 } }).toArray();
 
-		var map = {};
+		const map = {};
 		result.forEach((item) => {
 			map[item._key] = true;
 		});
@@ -126,7 +126,7 @@ module.exports = function (module) {
 		}
 		const data = await module.client.collection('objects').find({ _key: { $in: keys } }, { projection: { _id: 0 } }).toArray();
 
-		var sets = {};
+		const sets = {};
 		data.forEach((set) => {
 			sets[set._key] = set.members || [];
 		});
@@ -144,7 +144,7 @@ module.exports = function (module) {
 
 	module.setsCount = async function (keys) {
 		const setsMembers = await module.getSetsMembers(keys);
-		var counts = setsMembers.map(members => (members && members.length) || 0);
+		const counts = setsMembers.map(members => (members && members.length) || 0);
 		return counts;
 	};
 
@@ -154,8 +154,8 @@ module.exports = function (module) {
 			return;
 		}
 
-		var randomIndex = Math.floor(Math.random() * data.members.length);
-		var value = data.members[randomIndex];
+		const randomIndex = Math.floor(Math.random() * data.members.length);
+		const value = data.members[randomIndex];
 		await module.setRemove(data._key, value);
 		return value;
 	};

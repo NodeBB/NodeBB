@@ -1,7 +1,7 @@
 'use strict';
 
-var async = require('async');
-var db = require('../../database');
+const async = require('async');
+const db = require('../../database');
 
 
 module.exports = {
@@ -12,7 +12,7 @@ module.exports = {
 			if (err) {
 				return callback(err);
 			}
-			var currentChatRoomId = 1;
+			let currentChatRoomId = 1;
 			async.whilst((next) => {
 				next(null, currentChatRoomId <= nextChatRoomId);
 			}, (next) => {

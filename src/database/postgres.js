@@ -64,7 +64,7 @@ postgresModule.init = async function () {
 
 
 async function checkUpgrade(client) {
-	var res = await client.query(`
+	const res = await client.query(`
 SELECT EXISTS(SELECT *
                 FROM "information_schema"."columns"
                WHERE "table_schema" = 'public'
@@ -331,7 +331,7 @@ postgresModule.createIndices = function (callback) {
 		return callback();
 	}
 
-	var query = postgresModule.pool.query.bind(postgresModule.pool);
+	const query = postgresModule.pool.query.bind(postgresModule.pool);
 
 	winston.info('[database] Checking database indices.');
 	async.series([
@@ -348,7 +348,7 @@ postgresModule.createIndices = function (callback) {
 };
 
 postgresModule.checkCompatibility = function (callback) {
-	var postgresPkg = require('pg/package.json');
+	const postgresPkg = require('pg/package.json');
 	postgresModule.checkCompatibilityVersion(postgresPkg.version, callback);
 };
 

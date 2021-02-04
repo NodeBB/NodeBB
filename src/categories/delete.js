@@ -1,13 +1,13 @@
 'use strict';
 
-var async = require('async');
-var db = require('../database');
-var batch = require('../batch');
-var plugins = require('../plugins');
-var topics = require('../topics');
-var groups = require('../groups');
-var privileges = require('../privileges');
-var cache = require('../cache');
+const async = require('async');
+const db = require('../database');
+const batch = require('../batch');
+const plugins = require('../plugins');
+const topics = require('../topics');
+const groups = require('../groups');
+const privileges = require('../privileges');
+const cache = require('../cache');
 
 module.exports = function (Categories) {
 	Categories.purge = async function (cid, uid) {

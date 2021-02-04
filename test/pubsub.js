@@ -1,10 +1,10 @@
 'use strict';
 
-var assert = require('assert');
-var nconf = require('nconf');
+const assert = require('assert');
+const nconf = require('nconf');
 
-var db = require('./mocks/databasemock');
-var pubsub = require('../src/pubsub');
+const db = require('./mocks/databasemock');
+const pubsub = require('../src/pubsub');
 
 describe('pubsub', () => {
 	it('should use the plain event emitter', (done) => {
@@ -29,7 +29,7 @@ describe('pubsub', () => {
 	});
 
 	it('should use singleHostCluster', (done) => {
-		var oldValue = nconf.get('singleHostCluster');
+		const oldValue = nconf.get('singleHostCluster');
 		nconf.set('singleHostCluster', true);
 		pubsub.on('testEvent', (message) => {
 			assert.equal(message.foo, 3);
@@ -41,7 +41,7 @@ describe('pubsub', () => {
 	});
 
 	it('should use same event emitter', (done) => {
-		var oldValue = nconf.get('singleHostCluster');
+		const oldValue = nconf.get('singleHostCluster');
 		pubsub.on('dummyEvent', (message) => {
 			assert.equal(message.foo, 4);
 			nconf.set('singleHostCluster', oldValue);

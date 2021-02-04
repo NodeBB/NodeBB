@@ -1,19 +1,19 @@
 'use strict';
 
-var assert = require('assert');
-var async = require('async');
-var request = require('request');
-var nconf = require('nconf');
+const assert = require('assert');
+const async = require('async');
+const request = require('request');
+const nconf = require('nconf');
 
-var db = require('./mocks/databasemock');
-var meta = require('../src/meta');
-var User = require('../src/user');
-var Groups = require('../src/groups');
+const db = require('./mocks/databasemock');
+const meta = require('../src/meta');
+const User = require('../src/user');
+const Groups = require('../src/groups');
 
 describe('meta', () => {
-	var fooUid;
-	var bazUid;
-	var herpUid;
+	let fooUid;
+	let bazUid;
+	let herpUid;
 
 	before((done) => {
 		Groups.cache.reset();
@@ -36,7 +36,7 @@ describe('meta', () => {
 	});
 
 	describe('settings', () => {
-		var socketAdmin = require('../src/socket.io/admin');
+		const socketAdmin = require('../src/socket.io/admin');
 		it('it should set setting', (done) => {
 			socketAdmin.settings.set({ uid: fooUid }, { hash: 'some:hash', values: { foo: '1', derp: 'value' } }, (err) => {
 				assert.ifError(err);
@@ -187,7 +187,7 @@ describe('meta', () => {
 
 
 	describe('config', () => {
-		var socketAdmin = require('../src/socket.io/admin');
+		const socketAdmin = require('../src/socket.io/admin');
 		before((done) => {
 			db.setObject('config', { minimumTagLength: 3, maximumTagLength: 15 }, done);
 		});
@@ -436,13 +436,13 @@ describe('meta', () => {
 		});
 
 		it('should parse json package data', (done) => {
-			var pkgData = meta.dependencies.parseModuleData('nodebb-plugin-test', '{"a": 1}');
+			const pkgData = meta.dependencies.parseModuleData('nodebb-plugin-test', '{"a": 1}');
 			assert.equal(pkgData.a, 1);
 			done();
 		});
 
 		it('should return null data with invalid json', (done) => {
-			var pkgData = meta.dependencies.parseModuleData('nodebb-plugin-test', 'asdasd');
+			const pkgData = meta.dependencies.parseModuleData('nodebb-plugin-test', 'asdasd');
 			assert.strictEqual(pkgData, null);
 			done();
 		});
@@ -464,17 +464,17 @@ describe('meta', () => {
 	});
 
 	describe('debugFork', () => {
-		var oldArgv;
+		let oldArgv;
 		before(() => {
 			oldArgv = process.execArgv;
 			process.execArgv = ['--debug=5858', '--foo=1'];
 		});
 
 		it('should detect debugging', (done) => {
-			var debugFork = require('../src/meta/debugFork');
+			let debugFork = require('../src/meta/debugFork');
 			assert(!debugFork.debugging);
 
-			var debugForkPath = require.resolve('../src/meta/debugFork');
+			const debugForkPath = require.resolve('../src/meta/debugFork');
 			delete require.cache[debugForkPath];
 
 			debugFork = require('../src/meta/debugFork');
@@ -490,7 +490,7 @@ describe('meta', () => {
 
 	describe('Access-Control-Allow-Origin', () => {
 		it('Access-Control-Allow-Origin header should be empty', (done) => {
-			var jar = request.jar();
+			const jar = request.jar();
 			request.get(`${nconf.get('url')}/api/search?term=bug`, {
 				form: {},
 				json: true,
@@ -503,8 +503,8 @@ describe('meta', () => {
 		});
 
 		it('should set proper Access-Control-Allow-Origin header', (done) => {
-			var jar = request.jar();
-			var oldValue = meta.config['access-control-allow-origin'];
+			const jar = request.jar();
+			const oldValue = meta.config['access-control-allow-origin'];
 			meta.config['access-control-allow-origin'] = 'test.com, mydomain.com';
 			request.get(`${nconf.get('url')}/api/search?term=bug`, {
 				form: {
@@ -523,8 +523,8 @@ describe('meta', () => {
 		});
 
 		it('Access-Control-Allow-Origin header should be empty if origin does not match', (done) => {
-			var jar = request.jar();
-			var oldValue = meta.config['access-control-allow-origin'];
+			const jar = request.jar();
+			const oldValue = meta.config['access-control-allow-origin'];
 			meta.config['access-control-allow-origin'] = 'test.com, mydomain.com';
 			request.get(`${nconf.get('url')}/api/search?term=bug`, {
 				form: {
@@ -543,8 +543,8 @@ describe('meta', () => {
 		});
 
 		it('should set proper Access-Control-Allow-Origin header', (done) => {
-			var jar = request.jar();
-			var oldValue = meta.config['access-control-allow-origin-regex'];
+			const jar = request.jar();
+			const oldValue = meta.config['access-control-allow-origin-regex'];
 			meta.config['access-control-allow-origin-regex'] = 'match\\.this\\..+\\.domain.com, mydomain\\.com';
 			request.get(`${nconf.get('url')}/api/search?term=bug`, {
 				form: {
@@ -563,8 +563,8 @@ describe('meta', () => {
 		});
 
 		it('Access-Control-Allow-Origin header should be empty if origin does not match', (done) => {
-			var jar = request.jar();
-			var oldValue = meta.config['access-control-allow-origin-regex'];
+			const jar = request.jar();
+			const oldValue = meta.config['access-control-allow-origin-regex'];
 			meta.config['access-control-allow-origin-regex'] = 'match\\.this\\..+\\.domain.com, mydomain\\.com';
 			request.get(`${nconf.get('url')}/api/search?term=bug`, {
 				form: {
@@ -583,8 +583,8 @@ describe('meta', () => {
 		});
 
 		it('should not error with invalid regexp', (done) => {
-			var jar = request.jar();
-			var oldValue = meta.config['access-control-allow-origin-regex'];
+			const jar = request.jar();
+			const oldValue = meta.config['access-control-allow-origin-regex'];
 			meta.config['access-control-allow-origin-regex'] = '[match\\.this\\..+\\.domain.com, mydomain\\.com';
 			request.get(`${nconf.get('url')}/api/search?term=bug`, {
 				form: {

@@ -221,7 +221,7 @@ function filterByTimerange(posts, timeRange, timeFilter) {
 function filterByTags(posts, hasTags) {
 	if (Array.isArray(hasTags) && hasTags.length) {
 		posts = posts.filter((post) => {
-			var hasAllTags = false;
+			let hasAllTags = false;
 			if (post && post.topic && Array.isArray(post.topic.tags) && post.topic.tags.length) {
 				hasAllTags = hasTags.every(tag => post.topic.tags.includes(tag));
 			}

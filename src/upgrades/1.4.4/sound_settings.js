@@ -1,17 +1,17 @@
 'use strict';
 
-var async = require('async');
-var db = require('../../database');
+const async = require('async');
+const db = require('../../database');
 
 
 module.exports = {
 	name: 'Update global and user sound settings',
 	timestamp: Date.UTC(2017, 1, 25),
 	method: function (callback) {
-		var meta = require('../../meta');
-		var batch = require('../../batch');
+		const meta = require('../../meta');
+		const batch = require('../../batch');
 
-		var map = {
+		const map = {
 			'notification.mp3': 'Default | Deedle-dum',
 			'waterdrop-high.mp3': 'Default | Water drop (high)',
 			'waterdrop-low.mp3': 'Default | Water drop (low)',
@@ -19,7 +19,7 @@ module.exports = {
 
 		async.parallel([
 			function (cb) {
-				var keys = ['chat-incoming', 'chat-outgoing', 'notification'];
+				const keys = ['chat-incoming', 'chat-outgoing', 'notification'];
 
 				db.getObject('settings:sounds', (err, settings) => {
 					if (err || !settings) {
@@ -36,7 +36,7 @@ module.exports = {
 				});
 			},
 			function (cb) {
-				var keys = ['notificationSound', 'incomingChatSound', 'outgoingChatSound'];
+				const keys = ['notificationSound', 'incomingChatSound', 'outgoingChatSound'];
 
 				batch.processSortedSet('users:joindate', (ids, next) => {
 					async.each(ids, (uid, next) => {
@@ -44,7 +44,7 @@ module.exports = {
 							if (err || !settings) {
 								return next(err);
 							}
-							var newSettings = {};
+							const newSettings = {};
 							keys.forEach((key) => {
 								if (settings[key] && !settings[key].includes(' | ')) {
 									newSettings[key] = map[settings[key]] || '';

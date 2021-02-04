@@ -1,8 +1,8 @@
 
 'use strict';
 
-var plugins = require('../plugins');
-var db = require('../database');
+const plugins = require('../plugins');
+const db = require('../database');
 
 module.exports = function (User) {
 	User.follow = async function (uid, followuid) {

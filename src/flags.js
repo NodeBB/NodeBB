@@ -135,7 +135,7 @@ Flags.getFlagIdsWithFilters = async function ({ filters, uid }) {
 	filters.page = filters.hasOwnProperty('page') ? Math.abs(parseInt(filters.page, 10) || 1) : 1;
 	filters.perPage = filters.hasOwnProperty('perPage') ? Math.abs(parseInt(filters.perPage, 10) || 20) : 20;
 
-	for (var type in filters) {
+	for (const type in filters) {
 		if (filters.hasOwnProperty(type)) {
 			if (Flags._filters.hasOwnProperty(type)) {
 				Flags._filters[type](sets, orSets, filters[type], uid);
@@ -586,7 +586,7 @@ Flags.update = async function (flagId, uid, changeset) {
 
 	// Retrieve existing flag data to compare for history-saving/reference purposes
 	const tasks = [];
-	for (var prop in changeset) {
+	for (const prop in changeset) {
 		if (changeset.hasOwnProperty(prop)) {
 			if (current[prop] === changeset[prop]) {
 				delete changeset[prop];

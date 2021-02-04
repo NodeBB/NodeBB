@@ -1,11 +1,11 @@
 'use strict';
 
-var express = require('express');
+const express = require('express');
 
-var uploadsController = require('../controllers/uploads');
+const uploadsController = require('../controllers/uploads');
 
 module.exports = function (app, middleware, controllers) {
-	var router = express.Router();
+	const router = express.Router();
 	app.use('/api', router);
 
 	router.get('/config', middleware.applyCSRF, middleware.authenticateOrGuest, controllers.api.getConfig);
@@ -25,9 +25,9 @@ module.exports = function (app, middleware, controllers) {
 	router.get('/topic/teaser/:topic_id', controllers.topics.teaser);
 	router.get('/topic/pagination/:topic_id', controllers.topics.pagination);
 
-	var multipart = require('connect-multiparty');
-	var multipartMiddleware = multipart();
-	var middlewares = [middleware.maintenanceMode, multipartMiddleware, middleware.validateFiles, middleware.applyCSRF];
+	const multipart = require('connect-multiparty');
+	const multipartMiddleware = multipart();
+	const middlewares = [middleware.maintenanceMode, multipartMiddleware, middleware.validateFiles, middleware.applyCSRF];
 	router.post('/post/upload', middlewares, uploadsController.uploadPost);
 
 	router.post('/user/:userslug/uploadpicture', middlewares.concat([middleware.exposeUid, middleware.authenticate, middleware.canViewUsers, middleware.checkAccountPermissions]), controllers.accounts.edit.uploadPicture);

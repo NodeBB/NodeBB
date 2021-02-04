@@ -183,9 +183,9 @@ Upgrade.incrementProgress = function (value) {
 
 	if (this.counter > step || this.current >= this.total) {
 		this.counter -= step;
-		var percentage = 0;
-		var filled = 0;
-		var unfilled = 15;
+		let percentage = 0;
+		let filled = 0;
+		let unfilled = 15;
 		if (this.total) {
 			percentage = `${Math.floor((this.current / this.total) * 100)}%`;
 			filled = Math.floor((this.current / this.total) * 15);

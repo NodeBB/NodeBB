@@ -1,16 +1,16 @@
 'use strict';
 
 
-var async = require('async');
-var winston = require('winston');
-var db = require('../../database');
+const async = require('async');
+const winston = require('winston');
+const db = require('../../database');
 
 module.exports = {
 	name: 'Creating user best post sorted sets',
 	timestamp: Date.UTC(2016, 0, 14),
 	method: function (callback) {
-		var batch = require('../../batch');
-		var progress = this.progress;
+		const batch = require('../../batch');
+		const progress = this.progress;
 
 		batch.processSortedSet('posts:pid', (ids, next) => {
 			async.eachSeries(ids, (id, next) => {

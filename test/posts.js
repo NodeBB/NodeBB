@@ -1,33 +1,33 @@
 'use strict';
 
 
-var	assert = require('assert');
-var async = require('async');
-var request = require('request');
-var nconf = require('nconf');
-var crypto = require('crypto');
-var fs = require('fs');
-var path = require('path');
+const	assert = require('assert');
+const async = require('async');
+const request = require('request');
+const nconf = require('nconf');
+const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
 
-var db = require('./mocks/databasemock');
-var topics = require('../src/topics');
-var posts = require('../src/posts');
-var categories = require('../src/categories');
-var privileges = require('../src/privileges');
-var user = require('../src/user');
-var groups = require('../src/groups');
-var socketPosts = require('../src/socket.io/posts');
-var socketTopics = require('../src/socket.io/topics');
-var meta = require('../src/meta');
-var helpers = require('./helpers');
+const db = require('./mocks/databasemock');
+const topics = require('../src/topics');
+const posts = require('../src/posts');
+const categories = require('../src/categories');
+const privileges = require('../src/privileges');
+const user = require('../src/user');
+const groups = require('../src/groups');
+const socketPosts = require('../src/socket.io/posts');
+const socketTopics = require('../src/socket.io/topics');
+const meta = require('../src/meta');
+const helpers = require('./helpers');
 
 describe('Post\'s', () => {
-	var voterUid;
-	var voteeUid;
-	var globalModUid;
-	var postData;
-	var topicData;
-	var cid;
+	let voterUid;
+	let voteeUid;
+	let globalModUid;
+	let postData;
+	let topicData;
+	let cid;
 
 	before((done) => {
 		async.series({
@@ -347,9 +347,9 @@ describe('Post\'s', () => {
 			});
 		}
 
-		var tid;
-		var mainPid;
-		var replyPid;
+		let tid;
+		let mainPid;
+		let replyPid;
 
 		before((done) => {
 			createTopicWithReply((topicPostData, replyData) => {
@@ -392,7 +392,7 @@ describe('Post\'s', () => {
 				function (next) {
 					helpers.loginUser('global mod', '123456', (err, _jar) => {
 						assert.ifError(err);
-						var jar = _jar;
+						const jar = _jar;
 
 						request(`${nconf.get('url')}/api/topic/${tid}`, { jar: jar, json: true }, (err, res, body) => {
 							assert.ifError(err);
@@ -463,9 +463,9 @@ describe('Post\'s', () => {
 	});
 
 	describe('edit', () => {
-		var pid;
-		var replyPid;
-		var tid;
+		let pid;
+		let replyPid;
+		let tid;
 		before((done) => {
 			topics.post({
 				uid: voterUid,
@@ -511,7 +511,7 @@ describe('Post\'s', () => {
 		});
 
 		it('should error if title is too long', (done) => {
-			var longTitle = new Array(meta.config.maximumTitleLength + 2).join('a');
+			const longTitle = new Array(meta.config.maximumTitleLength + 2).join('a');
 			socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', title: longTitle }, (err) => {
 				assert.equal(err.message, `[[error:title-too-long, ${meta.config.maximumTitleLength}]]`);
 				done();
@@ -519,7 +519,7 @@ describe('Post\'s', () => {
 		});
 
 		it('should error with too few tags', (done) => {
-			var oldValue = meta.config.minimumTagsPerTopic;
+			const oldValue = meta.config.minimumTagsPerTopic;
 			meta.config.minimumTagsPerTopic = 1;
 			socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', tags: [] }, (err) => {
 				assert.equal(err.message, `[[error:not-enough-tags, ${meta.config.minimumTagsPerTopic}]]`);
@@ -529,8 +529,8 @@ describe('Post\'s', () => {
 		});
 
 		it('should error with too many tags', (done) => {
-			var tags = [];
-			for (var i = 0; i < meta.config.maximumTagsPerTopic + 1; i += 1) {
+			const tags = [];
+			for (let i = 0; i < meta.config.maximumTagsPerTopic + 1; i += 1) {
 				tags.push(`tag${i}`);
 			}
 			socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', tags: tags }, (err) => {
@@ -547,7 +547,7 @@ describe('Post\'s', () => {
 		});
 
 		it('should error if content is too long', (done) => {
-			var longContent = new Array(meta.config.maximumPostLength + 2).join('a');
+			const longContent = new Array(meta.config.maximumPostLength + 2).join('a');
 			socketPosts.edit({ uid: voterUid }, { pid: pid, content: longContent }, (err) => {
 				assert.equal(err.message, `[[error:content-too-long, ${meta.config.maximumPostLength}]]`);
 				done();
@@ -673,9 +673,9 @@ describe('Post\'s', () => {
 	});
 
 	describe('move', () => {
-		var replyPid;
-		var tid;
-		var moveTid;
+		let replyPid;
+		let tid;
+		let moveTid;
 
 		before((done) => {
 			async.waterfall([
@@ -809,9 +809,9 @@ describe('Post\'s', () => {
 		});
 
 		it('should store post content in cache', (done) => {
-			var oldValue = global.env;
+			const oldValue = global.env;
 			global.env = 'production';
-			var postData = {
+			const postData = {
 				pid: 9999,
 				content: 'some post content',
 			};
@@ -828,7 +828,7 @@ describe('Post\'s', () => {
 		it('should parse signature and remove links and images', (done) => {
 			meta.config['signatures:disableLinks'] = 1;
 			meta.config['signatures:disableImages'] = 1;
-			var userData = {
+			const userData = {
 				signature: '<img src="boop"/><a href="link">test</a> derp',
 			};
 
@@ -842,17 +842,17 @@ describe('Post\'s', () => {
 		});
 
 		it('should turn relative links in post body to absolute urls', (done) => {
-			var nconf = require('nconf');
-			var content = '<a href="/users">test</a> <a href="youtube.com">youtube</a>';
-			var parsedContent = posts.relativeToAbsolute(content, posts.urlRegex);
+			const nconf = require('nconf');
+			const content = '<a href="/users">test</a> <a href="youtube.com">youtube</a>';
+			const parsedContent = posts.relativeToAbsolute(content, posts.urlRegex);
 			assert.equal(parsedContent, `<a href="${nconf.get('base_url')}/users">test</a> <a href="//youtube.com">youtube</a>`);
 			done();
 		});
 
 		it('should turn relative links in post body to absolute urls', (done) => {
-			var nconf = require('nconf');
-			var content = '<a href="/users">test</a> <a href="youtube.com">youtube</a> some test <img src="/path/to/img"/>';
-			var parsedContent = posts.relativeToAbsolute(content, posts.urlRegex);
+			const nconf = require('nconf');
+			const content = '<a href="/users">test</a> <a href="youtube.com">youtube</a> some test <img src="/path/to/img"/>';
+			let parsedContent = posts.relativeToAbsolute(content, posts.urlRegex);
 			parsedContent = posts.relativeToAbsolute(parsedContent, posts.imgRegex);
 			assert.equal(parsedContent, `<a href="${nconf.get('base_url')}/users">test</a> <a href="//youtube.com">youtube</a> some test <img src="${nconf.get('base_url')}/path/to/img"/>`);
 			done();
@@ -860,7 +860,7 @@ describe('Post\'s', () => {
 	});
 
 	describe('socket methods', () => {
-		var pid;
+		let pid;
 		before((done) => {
 			topics.reply({
 				uid: voterUid,
@@ -1053,10 +1053,10 @@ describe('Post\'s', () => {
 	});
 
 	describe('post queue', () => {
-		var uid;
-		var queueId;
-		var topicQueueId;
-		var jar;
+		let uid;
+		let queueId;
+		let topicQueueId;
+		let jar;
 		before((done) => {
 			meta.config.postQueue = 1;
 			user.create({ username: 'newuser' }, (err, _uid) => {
@@ -1169,7 +1169,7 @@ describe('Post\'s', () => {
 		});
 
 		it('should accept queued posts and submit', (done) => {
-			var ids;
+			let ids;
 			async.waterfall([
 				function (next) {
 					db.getSortedSetRange('post:queue', 0, -1, next);

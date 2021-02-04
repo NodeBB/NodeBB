@@ -53,7 +53,7 @@ Blacklist.test = async function (clientIp) {
 	}
 	clientIp = clientIp.split(':').length === 2 ? clientIp.split(':')[0] : clientIp;
 
-	var addr;
+	let addr;
 	try {
 		addr = ipaddr.parse(clientIp);
 	} catch (err) {
@@ -65,7 +65,7 @@ Blacklist.test = async function (clientIp) {
 		!Blacklist._rules.ipv4.includes(clientIp) &&	// not explicitly specified in ipv4 list
 		!Blacklist._rules.ipv6.includes(clientIp) &&	// not explicitly specified in ipv6 list
 		!Blacklist._rules.cidr.some((subnet) => {
-			var cidr = ipaddr.parseCIDR(subnet);
+			const cidr = ipaddr.parseCIDR(subnet);
 			if (addr.kind() !== cidr[0].kind()) {
 				return false;
 			}
@@ -80,7 +80,7 @@ Blacklist.test = async function (clientIp) {
 			throw err;
 		}
 	} else {
-		var err = new Error('[[error:blacklisted-ip]]');
+		const err = new Error('[[error:blacklisted-ip]]');
 		err.code = 'blacklisted-ip';
 
 		analytics.increment('blacklist');
@@ -90,14 +90,14 @@ Blacklist.test = async function (clientIp) {
 
 Blacklist.validate = function (rules) {
 	rules = (rules || '').split('\n');
-	var ipv4 = [];
-	var ipv6 = [];
-	var cidr = [];
-	var invalid = [];
-	var duplicateCount = 0;
+	const ipv4 = [];
+	const ipv6 = [];
+	const cidr = [];
+	const invalid = [];
+	let duplicateCount = 0;
 
-	var inlineCommentMatch = /#.*$/;
-	var whitelist = ['127.0.0.1', '::1', '::ffff:0:127.0.0.1'];
+	const inlineCommentMatch = /#.*$/;
+	const whitelist = ['127.0.0.1', '::1', '::ffff:0:127.0.0.1'];
 
 	// Filter out blank lines and lines starting with the hash character (comments)
 	// Also trim inputs and remove inline comments
@@ -113,8 +113,8 @@ Blacklist.validate = function (rules) {
 
 	// Filter out invalid rules
 	rules = rules.filter((rule) => {
-		var addr;
-		var isRange = false;
+		let addr;
+		let isRange = false;
 		try {
 			addr = ipaddr.parse(rule);
 		} catch (e) {
@@ -161,9 +161,7 @@ Blacklist.validate = function (rules) {
 };
 
 Blacklist.addRule = async function (rule) {
-	var valid;
-	const result = Blacklist.validate(rule);
-	valid = result.valid;
+	const { valid } = Blacklist.validate(rule);
 	if (!valid.length) {
 		throw new Error('[[error:invalid-rule]]');
 	}

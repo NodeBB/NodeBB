@@ -1,15 +1,15 @@
 'use strict';
 
-var async = require('async');
-var nconf = require('nconf');
+const async = require('async');
+const nconf = require('nconf');
 
-var packageInstall = require('./package-install');
-var upgrade = require('../upgrade');
-var build = require('../meta/build');
-var db = require('../database');
-var upgradePlugins = require('./upgrade-plugins').upgradePlugins;
+const packageInstall = require('./package-install');
+const upgrade = require('../upgrade');
+const build = require('../meta/build');
+const db = require('../database');
+const upgradePlugins = require('./upgrade-plugins').upgradePlugins;
 
-var steps = {
+const steps = {
 	package: {
 		message: 'Updating package.json file with defaults...',
 		handler: function (next) {
@@ -67,10 +67,10 @@ function runSteps(tasks) {
 			throw err;
 		}
 
-		var message = 'NodeBB Upgrade Complete!';
+		const message = 'NodeBB Upgrade Complete!';
 		// some consoles will return undefined/zero columns, so just use 2 spaces in upgrade script if we can't get our column count
-		var columns = process.stdout.columns;
-		var spaces = columns ? new Array(Math.floor(columns / 2) - (message.length / 2) + 1).join(' ') : '  ';
+		const columns = process.stdout.columns;
+		const spaces = columns ? new Array(Math.floor(columns / 2) - (message.length / 2) + 1).join(' ') : '  ';
 
 		console.log(`\n\n${spaces}${message.green.bold}${'\n'.reset}`);
 
@@ -85,7 +85,7 @@ function runUpgrade(upgrades, options) {
 	nconf.set('mongo:options:socketTimeoutMS', 0);
 
 	if (upgrades === true) {
-		var tasks = Object.keys(steps);
+		let tasks = Object.keys(steps);
 		if (options.package || options.install ||
 				options.plugins || options.schema || options.build) {
 			tasks = tasks.filter(key => options[key]);

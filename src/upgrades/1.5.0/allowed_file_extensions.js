@@ -1,6 +1,6 @@
 'use strict';
 
-var db = require('../../database');
+const db = require('../../database');
 
 module.exports = {
 	name: 'Set default allowed file extensions',

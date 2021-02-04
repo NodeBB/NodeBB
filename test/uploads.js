@@ -1,29 +1,29 @@
 'use strict';
 
-var async = require('async');
-var	assert = require('assert');
-var nconf = require('nconf');
-var path = require('path');
-var request = require('request');
+const async = require('async');
+const	assert = require('assert');
+const nconf = require('nconf');
+const path = require('path');
+const request = require('request');
 
-var db = require('./mocks/databasemock');
-var categories = require('../src/categories');
-var topics = require('../src/topics');
-var user = require('../src/user');
-var groups = require('../src/groups');
-var privileges = require('../src/privileges');
-var meta = require('../src/meta');
-var socketUser = require('../src/socket.io/user');
-var helpers = require('./helpers');
-var file = require('../src/file');
-var image = require('../src/image');
+const db = require('./mocks/databasemock');
+const categories = require('../src/categories');
+const topics = require('../src/topics');
+const user = require('../src/user');
+const groups = require('../src/groups');
+const privileges = require('../src/privileges');
+const meta = require('../src/meta');
+const socketUser = require('../src/socket.io/user');
+const helpers = require('./helpers');
+const file = require('../src/file');
+const image = require('../src/image');
 
 describe('Upload Controllers', () => {
-	var tid;
-	var cid;
-	var pid;
-	var adminUid;
-	var regularUid;
+	let tid;
+	let cid;
+	let pid;
+	let adminUid;
+	let regularUid;
 
 	before((done) => {
 		async.series({
@@ -59,8 +59,8 @@ describe('Upload Controllers', () => {
 	});
 
 	describe('regular user uploads', () => {
-		var jar;
-		var csrf_token;
+		let jar;
+		let csrf_token;
 
 		before((done) => {
 			helpers.loginUser('regular', 'zugzug', (err, _jar, _csrf_token) => {
@@ -89,7 +89,7 @@ describe('Upload Controllers', () => {
 				assert(body && body.status && body.response && body.response.images);
 				assert(Array.isArray(body.response.images));
 				assert(body.response.images[0].url);
-				var name = body.response.images[0].url.replace(nconf.get('relative_path') + nconf.get('upload_url'), '');
+				const name = body.response.images[0].url.replace(nconf.get('relative_path') + nconf.get('upload_url'), '');
 				socketUser.deleteUpload({ uid: regularUid }, { uid: regularUid, name: name }, (err) => {
 					assert.ifError(err);
 					db.getSortedSetRange(`uid:${regularUid}:uploads`, 0, -1, (err, uploads) => {
@@ -116,7 +116,7 @@ describe('Upload Controllers', () => {
 		});
 
 		it('should resize and upload an image to a post', (done) => {
-			var oldValue = meta.config.resizeImageWidth;
+			const oldValue = meta.config.resizeImageWidth;
 			meta.config.resizeImageWidth = 10;
 			meta.config.resizeImageWidthThreshold = 10;
 			helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, (err, res, body) => {
@@ -134,7 +134,7 @@ describe('Upload Controllers', () => {
 
 
 		it('should upload a file to a post', (done) => {
-			var oldValue = meta.config.allowedFileExtensions;
+			const oldValue = meta.config.allowedFileExtensions;
 			meta.config.allowedFileExtensions = 'png,jpg,bmp,html';
 			helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/503.html'), {}, jar, csrf_token, (err, res, body) => {
 				meta.config.allowedFileExtensions = oldValue;
@@ -271,10 +271,10 @@ describe('Upload Controllers', () => {
 		});
 
 		it('should delete users uploads if account is deleted', (done) => {
-			var jar;
-			var uid;
-			var url;
-			var file = require('../src/file');
+			let jar;
+			let uid;
+			let url;
+			const file = require('../src/file');
 
 			async.waterfall([
 				function (next) {
@@ -296,7 +296,7 @@ describe('Upload Controllers', () => {
 					user.delete(1, uid, next);
 				},
 				function (userData, next) {
-					var filePath = path.join(nconf.get('upload_path'), url.replace('/assets/uploads', ''));
+					const filePath = path.join(nconf.get('upload_path'), url.replace('/assets/uploads', ''));
 					file.exists(filePath, next);
 				},
 				function (exists, next) {
@@ -308,8 +308,8 @@ describe('Upload Controllers', () => {
 	});
 
 	describe('admin uploads', () => {
-		var jar;
-		var csrf_token;
+		let jar;
+		let csrf_token;
 
 		before((done) => {
 			helpers.loginUser('admin', 'barbar', (err, _jar, _csrf_token) => {
@@ -385,7 +385,7 @@ describe('Upload Controllers', () => {
 		});
 
 		it('should upload touch icon', (done) => {
-			var touchiconAssetPath = '/assets/uploads/system/touchicon-orig.png';
+			const touchiconAssetPath = '/assets/uploads/system/touchicon-orig.png';
 			helpers.uploadFile(`${nconf.get('url')}/api/admin/uploadTouchIcon`, path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);

@@ -1,22 +1,22 @@
 'use strict';
 
 
-var async = require('async');
-var assert = require('assert');
-var nconf = require('nconf');
-var request = require('request');
+const async = require('async');
+const assert = require('assert');
+const nconf = require('nconf');
+const request = require('request');
 
-var db = require('./mocks/databasemock');
-var Categories = require('../src/categories');
-var Topics = require('../src/topics');
-var User = require('../src/user');
-var groups = require('../src/groups');
-var privileges = require('../src/privileges');
+const db = require('./mocks/databasemock');
+const Categories = require('../src/categories');
+const Topics = require('../src/topics');
+const User = require('../src/user');
+const groups = require('../src/groups');
+const privileges = require('../src/privileges');
 
 describe('Categories', () => {
-	var categoryObj;
-	var posterUid;
-	var adminUid;
+	let categoryObj;
+	let posterUid;
+	let adminUid;
 
 	before((done) => {
 		async.series({
@@ -154,8 +154,8 @@ describe('Categories', () => {
 	});
 
 	describe('Categories.moveRecentReplies', () => {
-		var moveCid;
-		var moveTid;
+		let moveCid;
+		let moveTid;
 		before((done) => {
 			async.parallel({
 				category: function (next) {
@@ -201,7 +201,7 @@ describe('Categories', () => {
 	});
 
 	describe('socket methods', () => {
-		var socketCategories = require('../src/socket.io/categories');
+		const socketCategories = require('../src/socket.io/categories');
 
 		before((done) => {
 			Topics.post({
@@ -330,8 +330,8 @@ describe('Categories', () => {
 	});
 
 	describe('admin socket methods', () => {
-		var socketCategories = require('../src/socket.io/admin/categories');
-		var cid;
+		const socketCategories = require('../src/socket.io/admin/categories');
+		let cid;
 		before((done) => {
 			socketCategories.create({ uid: adminUid }, {
 				name: 'update name',
@@ -355,7 +355,7 @@ describe('Categories', () => {
 		});
 
 		it('should error if you try to set parent as self', (done) => {
-			var updateData = {};
+			const updateData = {};
 			updateData[cid] = {
 				parentCid: cid,
 			};
@@ -366,8 +366,8 @@ describe('Categories', () => {
 		});
 
 		it('should error if you try to set child as parent', (done) => {
-			var child1Cid;
-			var parentCid;
+			let child1Cid;
+			let parentCid;
 			async.waterfall([
 				function (next) {
 					Categories.create({ name: 'parent 1', description: 'poor parent' }, next);
@@ -378,7 +378,7 @@ describe('Categories', () => {
 				},
 				function (category, next) {
 					child1Cid = category.cid;
-					var updateData = {};
+					const updateData = {};
 					updateData[parentCid] = {
 						parentCid: child1Cid,
 					};
@@ -391,7 +391,7 @@ describe('Categories', () => {
 		});
 
 		it('should update category data', (done) => {
-			var updateData = {};
+			const updateData = {};
 			updateData[cid] = {
 				name: 'new name',
 				description: 'new description',
@@ -481,9 +481,9 @@ describe('Categories', () => {
 		});
 
 		it('should copy privileges to children', (done) => {
-			var parentCid;
-			var child1Cid;
-			var child2Cid;
+			let parentCid;
+			let child1Cid;
+			let child2Cid;
 			async.waterfall([
 				function (next) {
 					Categories.create({ name: 'parent' }, next);
@@ -514,8 +514,8 @@ describe('Categories', () => {
 		});
 
 		it('should create category with settings from', (done) => {
-			var child1Cid;
-			var parentCid;
+			let child1Cid;
+			let parentCid;
 			async.waterfall([
 				function (next) {
 					Categories.create({ name: 'copy from', description: 'copy me' }, next);
@@ -533,8 +533,8 @@ describe('Categories', () => {
 		});
 
 		it('should copy settings from', (done) => {
-			var child1Cid;
-			var parentCid;
+			let child1Cid;
+			let parentCid;
 			async.waterfall([
 				function (next) {
 					Categories.create({ name: 'parent', description: 'copy me' }, next);
@@ -558,8 +558,8 @@ describe('Categories', () => {
 		});
 
 		it('should copy privileges from another category', (done) => {
-			var child1Cid;
-			var parentCid;
+			let child1Cid;
+			let parentCid;
 			async.waterfall([
 				function (next) {
 					Categories.create({ name: 'parent', description: 'copy me' }, next);
@@ -586,8 +586,8 @@ describe('Categories', () => {
 		});
 
 		it('should copy privileges from another category for a single group', (done) => {
-			var child1Cid;
-			var parentCid;
+			let child1Cid;
+			let parentCid;
 			async.waterfall([
 				function (next) {
 					Categories.create({ name: 'parent', description: 'copy me' }, next);
@@ -636,8 +636,8 @@ describe('Categories', () => {
 	});
 
 	describe('tag whitelist', () => {
-		var cid;
-		var socketTopics = require('../src/socket.io/topics');
+		let cid;
+		const socketTopics = require('../src/socket.io/topics');
 		before((done) => {
 			Categories.create({
 				name: 'test',
@@ -664,7 +664,7 @@ describe('Categories', () => {
 		});
 
 		it('should add tags to category whitelist', (done) => {
-			var data = {};
+			const data = {};
 			data[cid] = {
 				tagWhitelist: 'nodebb,jquery,javascript',
 			};
@@ -711,7 +711,7 @@ describe('Categories', () => {
 
 
 	describe('privileges', () => {
-		var privileges = require('../src/privileges');
+		const privileges = require('../src/privileges');
 
 		it('should return empty array if uids is empty array', (done) => {
 			privileges.categories.filterUids('find', categoryObj.cid, [], (err, uids) => {
@@ -884,7 +884,7 @@ describe('Categories', () => {
 
 
 	describe('getTopicIds', () => {
-		var plugins = require('../src/plugins');
+		const plugins = require('../src/plugins');
 		it('should get topic ids with filter', (done) => {
 			function method(data, callback) {
 				data.tids = [1, 2, 3];

@@ -1,28 +1,28 @@
 'use strict';
 
-var SMTPServer = require('smtp-server').SMTPServer;
-var assert = require('assert');
-var fs = require('fs');
-var path = require('path');
+const SMTPServer = require('smtp-server').SMTPServer;
+const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
 
-var db = require('./mocks/databasemock');
-var Plugins = require('../src/plugins');
-var Emailer = require('../src/emailer');
-var Meta = require('../src/meta');
+const db = require('./mocks/databasemock');
+const Plugins = require('../src/plugins');
+const Emailer = require('../src/emailer');
+const Meta = require('../src/meta');
 
 describe('emailer', () => {
-	var onMail = function (address, session, callback) { callback(); };
-	var onTo = function (address, session, callback) { callback(); };
+	let onMail = function (address, session, callback) { callback(); };
+	let onTo = function (address, session, callback) { callback(); };
 
-	var template = 'test';
-	var email = 'test@example.org';
-	var language = 'en-GB';
-	var params = {
+	const template = 'test';
+	const email = 'test@example.org';
+	const language = 'en-GB';
+	const params = {
 		subject: 'Welcome to NodeBB',
 	};
 
 	before((done) => {
-		var server = new SMTPServer({
+		const server = new SMTPServer({
 			allowInsecureAuth: true,
 			onAuth: function (auth, session, callback) {
 				callback(null, {
@@ -46,7 +46,7 @@ describe('emailer', () => {
 	// TODO: test sendmail here at some point
 
 	it('plugin hook should work', (done) => {
-		var error = new Error();
+		const error = new Error();
 
 		Plugins.hooks.register('emailer-test', {
 			hook: 'filter:email.send',
@@ -68,7 +68,7 @@ describe('emailer', () => {
 	});
 
 	it('should build custom template on config change', (done) => {
-		var text = 'a random string of text';
+		const text = 'a random string of text';
 
 		// make sure it's not already set
 		Emailer.renderAndTranslate('test', {}, 'en-GB', (err, output) => {
@@ -93,8 +93,8 @@ describe('emailer', () => {
 	});
 
 	it('should send via SMTP', (done) => {
-		var from = 'admin@example.org';
-		var username = 'another@example.com';
+		const from = 'admin@example.org';
+		const username = 'another@example.com';
 
 		onMail = function (address, session, callback) {
 			assert.equal(address.address, from);

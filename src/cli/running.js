@@ -54,7 +54,7 @@ function start(options) {
 	}
 
 	// Spawn a new NodeBB process
-	var child = fork(paths.loader, process.argv.slice(3), {
+	const child = fork(paths.loader, process.argv.slice(3), {
 		env: process.env,
 		cwd,
 	});

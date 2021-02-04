@@ -29,9 +29,9 @@ async function getTranslationMetadata() {
 			return;
 		}
 
-		var rel = path.relative(coreLanguagesPath, p).split(/[/\\]/);
-		var language = rel.shift().replace('_', '-').replace('@', '-x-');
-		var namespace = rel.join('/').replace(/\.json$/, '');
+		const rel = path.relative(coreLanguagesPath, p).split(/[/\\]/);
+		const language = rel.shift().replace('_', '-').replace('@', '-x-');
+		const namespace = rel.join('/').replace(/\.json$/, '');
 
 		if (!language || !namespace) {
 			return;

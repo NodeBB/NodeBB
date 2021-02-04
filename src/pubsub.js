@@ -1,18 +1,18 @@
 'use strict';
 
-var EventEmitter = require('events');
-var nconf = require('nconf');
+const EventEmitter = require('events');
+const nconf = require('nconf');
 
-var real;
-var noCluster;
-var singleHost;
+let real;
+let noCluster;
+let singleHost;
 
 function get() {
 	if (real) {
 		return real;
 	}
 
-	var pubsub;
+	let pubsub;
 
 	if (!nconf.get('isCluster')) {
 		if (noCluster) {

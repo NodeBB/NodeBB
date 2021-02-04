@@ -198,7 +198,7 @@ widgets.reset = async function () {
 widgets.resetTemplate = async function (template) {
 	let toBeDrafted = [];
 	const area = await db.getObject(`widgets:${template}.tpl`);
-	for (var location in area) {
+	for (const location in area) {
 		if (area.hasOwnProperty(location)) {
 			toBeDrafted = toBeDrafted.concat(JSON.parse(area[location]));
 		}

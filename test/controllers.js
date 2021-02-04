@@ -1,31 +1,31 @@
 'use strict';
 
-var async = require('async');
-var assert = require('assert');
-var nconf = require('nconf');
-var request = require('request');
-var fs = require('fs');
-var path = require('path');
+const async = require('async');
+const assert = require('assert');
+const nconf = require('nconf');
+const request = require('request');
+const fs = require('fs');
+const path = require('path');
 
-var db = require('./mocks/databasemock');
-var categories = require('../src/categories');
-var topics = require('../src/topics');
-var posts = require('../src/posts');
-var user = require('../src/user');
-var groups = require('../src/groups');
-var meta = require('../src/meta');
-var translator = require('../src/translator');
-var privileges = require('../src/privileges');
-var plugins = require('../src/plugins');
-var utils = require('../src/utils');
-var helpers = require('./helpers');
+const db = require('./mocks/databasemock');
+const categories = require('../src/categories');
+const topics = require('../src/topics');
+const posts = require('../src/posts');
+const user = require('../src/user');
+const groups = require('../src/groups');
+const meta = require('../src/meta');
+const translator = require('../src/translator');
+const privileges = require('../src/privileges');
+const plugins = require('../src/plugins');
+const utils = require('../src/utils');
+const helpers = require('./helpers');
 
 describe('Controllers', () => {
-	var tid;
-	var cid;
-	var pid;
-	var fooUid;
-	var category;
+	let tid;
+	let cid;
+	let pid;
+	let fooUid;
+	let category;
 
 	before((done) => {
 		async.series({
@@ -39,8 +39,8 @@ describe('Controllers', () => {
 				user.create({ username: 'foo', password: 'barbar', email: 'foo@test.com' }, next);
 			},
 			navigation: function (next) {
-				var navigation = require('../src/navigation/admin');
-				var data = require('../install/data/navigation.json');
+				const navigation = require('../src/navigation/admin');
+				const data = require('../install/data/navigation.json');
 
 				navigation.save(data, next);
 			},
@@ -99,9 +99,9 @@ describe('Controllers', () => {
 				works: true,
 			});
 		}
-		var message = utils.generateUUID();
-		var name = 'mycustompage.tpl';
-		var tplPath = path.join(nconf.get('views_dir'), name);
+		const message = utils.generateUUID();
+		const name = 'mycustompage.tpl';
+		const tplPath = path.join(nconf.get('views_dir'), name);
 
 		before(async () => {
 			plugins.hooks.register('myTestPlugin', {
@@ -308,14 +308,14 @@ describe('Controllers', () => {
 			method: hookMethod,
 		});
 
-		var data = {
+		const data = {
 			username: 'interstitial',
 			password: '123456',
 			'password-confirm': '123456',
 			email: 'test@me.com',
 		};
 
-		var jar = request.jar();
+		const jar = request.jar();
 		request({
 			url: `${nconf.get('url')}/api/config`,
 			json: true,
@@ -729,7 +729,7 @@ describe('Controllers', () => {
 	});
 
 	it('should 404 when trying to load group members of hidden group', (done) => {
-		var groups = require('../src/groups');
+		const groups = require('../src/groups');
 		groups.create({
 			name: 'hidden-group',
 			description: 'Foobar!',
@@ -782,9 +782,9 @@ describe('Controllers', () => {
 
 
 	describe('revoke session', () => {
-		var uid;
-		var jar;
-		var csrf_token;
+		let uid;
+		let jar;
+		let csrf_token;
 
 		before((done) => {
 			user.create({ username: 'revokeme', password: 'barbar' }, (err, _uid) => {
@@ -834,7 +834,7 @@ describe('Controllers', () => {
 		it('should revoke user session', (done) => {
 			db.getSortedSetRange(`uid:${uid}:sessions`, 0, -1, (err, sids) => {
 				assert.ifError(err);
-				var sid = sids[0];
+				const sid = sids[0];
 
 				db.sessionStore.get(sid, (err, sessionObj) => {
 					assert.ifError(err);
@@ -861,7 +861,7 @@ describe('Controllers', () => {
 	});
 
 	describe('widgets', () => {
-		var widgets = require('../src/widgets');
+		const widgets = require('../src/widgets');
 
 		before((done) => {
 			async.waterfall([
@@ -869,7 +869,7 @@ describe('Controllers', () => {
 					widgets.reset(next);
 				},
 				function (next) {
-					var data = {
+					const data = {
 						template: 'categories.tpl',
 						location: 'sidebar',
 						widgets: [
@@ -900,7 +900,7 @@ describe('Controllers', () => {
 		});
 
 		it('should render templates', (done) => {
-			var url = `${nconf.get('url')}/api/categories`;
+			const url = `${nconf.get('url')}/api/categories`;
 			request(url, { json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
@@ -926,7 +926,7 @@ describe('Controllers', () => {
 	});
 
 	describe('tags', () => {
-		var tid;
+		let tid;
 		before((done) => {
 			topics.post({
 				uid: fooUid,
@@ -1013,7 +1013,7 @@ describe('Controllers', () => {
 	});
 
 	describe('account pages', () => {
-		var jar;
+		let jar;
 		before((done) => {
 			helpers.loginUser('foo', 'barbar', (err, _jar) => {
 				assert.ifError(err);
@@ -1266,8 +1266,8 @@ describe('Controllers', () => {
 		});
 
 		it('should load notifications page', (done) => {
-			var notifications = require('../src/notifications');
-			var notifData = {
+			const notifications = require('../src/notifications');
+			const notifData = {
 				bodyShort: '[[notifications:user_posted_to, test1, test2]]',
 				bodyLong: 'some post content',
 				pid: 1,
@@ -1294,7 +1294,7 @@ describe('Controllers', () => {
 				function (res, body, next) {
 					assert.equal(res.statusCode, 200);
 					assert(body);
-					var notif = body.notifications[0];
+					const notif = body.notifications[0];
 					assert.equal(notif.bodyShort, notifData.bodyShort);
 					assert.equal(notif.bodyLong, notifData.bodyLong);
 					assert.equal(notif.pid, notifData.pid);
@@ -1472,8 +1472,8 @@ describe('Controllers', () => {
 		});
 
 		it('should only return posts that are not deleted', (done) => {
-			var topicData;
-			var pidToDelete;
+			let topicData;
+			let pidToDelete;
 			async.waterfall([
 				function (next) {
 					topics.post({ uid: fooUid, title: 'visible', content: 'some content', cid: cid }, next);
@@ -1493,7 +1493,7 @@ describe('Controllers', () => {
 					request(`${nconf.get('url')}/api/user/foo`, { json: true }, (err, res, body) => {
 						assert.ifError(err);
 						assert.equal(res.statusCode, 200);
-						var contents = body.posts.map(p => p.content);
+						const contents = body.posts.map(p => p.content);
 						assert(!contents.includes('1st reply'));
 						done();
 					});
@@ -1559,8 +1559,8 @@ describe('Controllers', () => {
 	});
 
 	describe('account follow page', () => {
-		var socketUser = require('../src/socket.io/user');
-		var uid;
+		const socketUser = require('../src/socket.io/user');
+		let uid;
 		before((done) => {
 			user.create({ username: 'follower' }, (err, _uid) => {
 				assert.ifError(err);
@@ -1608,7 +1608,7 @@ describe('Controllers', () => {
 	});
 
 	describe('post redirect', () => {
-		var jar;
+		let jar;
 		before((done) => {
 			helpers.loginUser('foo', 'barbar', (err, _jar) => {
 				assert.ifError(err);
@@ -1650,7 +1650,7 @@ describe('Controllers', () => {
 	describe('cookie consent', () => {
 		it('should return relevant data in configs API route', (done) => {
 			request(`${nconf.get('url')}/api/config`, (err, res, body) => {
-				var parsed;
+				let parsed;
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 
@@ -1674,7 +1674,7 @@ describe('Controllers', () => {
 				assert.ifError(err);
 
 				request(`${nconf.get('url')}/api/config`, (err, res, body) => {
-					var parsed;
+					let parsed;
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 
@@ -1701,7 +1701,7 @@ describe('Controllers', () => {
 	});
 
 	describe('handle errors', () => {
-		var plugins = require('../src/plugins');
+		const plugins = require('../src/plugins');
 		after((done) => {
 			plugins.loadedHooks['filter:router.page'] = undefined;
 			done();
@@ -1747,7 +1747,7 @@ describe('Controllers', () => {
 			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
 			plugins.loadedHooks['filter:router.page'].push({
 				method: function (req, res, next) {
-					var err = new Error('csrf-error');
+					const err = new Error('csrf-error');
 					err.code = 'EBADCSRFTOKEN';
 					next(err);
 				},
@@ -1765,7 +1765,7 @@ describe('Controllers', () => {
 			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
 			plugins.loadedHooks['filter:router.page'].push({
 				method: function (req, res, next) {
-					var err = new Error('blacklist error message');
+					const err = new Error('blacklist error message');
 					err.code = 'blacklisted-ip';
 					next(err);
 				},
@@ -1784,7 +1784,7 @@ describe('Controllers', () => {
 			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
 			plugins.loadedHooks['filter:router.page'].push({
 				method: function (req, res, next) {
-					var err = new Error('redirect');
+					const err = new Error('redirect');
 					err.status = 302;
 					err.path = '/popular';
 					plugins.loadedHooks['filter:router.page'] = [];
@@ -1804,7 +1804,7 @@ describe('Controllers', () => {
 			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
 			plugins.loadedHooks['filter:router.page'].push({
 				method: function (req, res, next) {
-					var err = new Error('redirect');
+					const err = new Error('redirect');
 					err.status = 308;
 					err.path = '/api/popular';
 					plugins.loadedHooks['filter:router.page'] = [];
@@ -1825,7 +1825,7 @@ describe('Controllers', () => {
 			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
 			plugins.loadedHooks['filter:router.page'].push({
 				method: function (req, res, next) {
-					var err = new Error('regular error');
+					const err = new Error('regular error');
 					next(err);
 				},
 			});
@@ -1868,7 +1868,7 @@ describe('Controllers', () => {
 	});
 
 	describe('category', () => {
-		var jar;
+		let jar;
 		before((done) => {
 			helpers.loginUser('foo', 'barbar', (err, _jar) => {
 				assert.ifError(err);
@@ -2065,9 +2065,9 @@ describe('Controllers', () => {
 		});
 
 		it('should get recent topic replies from children categories', (done) => {
-			var parentCategory;
-			var childCategory1;
-			var childCategory2;
+			let parentCategory;
+			let childCategory1;
+			let childCategory2;
 
 			async.waterfall([
 				function (next) {
@@ -2108,8 +2108,8 @@ describe('Controllers', () => {
 					categories.create({ name: 'category with 2 pages' }, next);
 				},
 				function (category, next) {
-					var titles = [];
-					for (var i = 0; i < 30; i++) {
+					const titles = [];
+					for (let i = 0; i < 30; i++) {
 						titles.push(`topic title ${i}`);
 					}
 
@@ -2140,7 +2140,7 @@ describe('Controllers', () => {
 	});
 
 	describe('unread', () => {
-		var jar;
+		let jar;
 		before((done) => {
 			helpers.loginUser('foo', 'barbar', (err, _jar) => {
 				assert.ifError(err);
@@ -2205,8 +2205,8 @@ describe('Controllers', () => {
 	});
 
 	describe('composer', () => {
-		var csrf_token;
-		var jar;
+		let csrf_token;
+		let jar;
 
 		before((done) => {
 			helpers.loginUser('foo', 'barbar', (err, _jar) => {
@@ -2308,7 +2308,7 @@ describe('Controllers', () => {
 		});
 
 		it('should create a new topic and reply by composer route', (done) => {
-			var data = {
+			const data = {
 				cid: cid,
 				title: 'no js is good',
 				content: 'a topic with noscript',
@@ -2341,7 +2341,7 @@ describe('Controllers', () => {
 	});
 
 	after((done) => {
-		var analytics = require('../src/analytics');
+		const analytics = require('../src/analytics');
 		analytics.writeData(done);
 	});
 });

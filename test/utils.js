@@ -1,21 +1,21 @@
 'use strict';
 
 
-var assert = require('assert');
-var JSDOM = require('jsdom').JSDOM;
-var utils = require('../public/src/utils.js');
-var slugify = require('../src/slugify');
+const assert = require('assert');
+const JSDOM = require('jsdom').JSDOM;
+const utils = require('../public/src/utils.js');
+const slugify = require('../src/slugify');
 const db = require('./mocks/databasemock');
 
 describe('Utility Methods', () => {
 	// https://gist.github.com/robballou/9ee108758dc5e0e2d028
 	// create some jsdom magic to allow jQuery to work
-	var dom = new JSDOM('<html><body></body></html>');
-	var window = dom.window;
+	const dom = new JSDOM('<html><body></body></html>');
+	const window = dom.window;
 	global.window = window;
 	global.jQuery = require('jquery');
 	global.$ = global.jQuery;
-	var $ = global.$;
+	const $ = global.$;
 	require('jquery-deserialize');
 	require('jquery-serializeobject');
 
@@ -91,12 +91,12 @@ describe('Utility Methods', () => {
 
 	describe('username validation', () => {
 		it('accepts latin-1 characters', () => {
-			var username = "John\"'-. Doeäâèéë1234";
+			const username = "John\"'-. Doeäâèéë1234";
 			assert(utils.isUserNameValid(username), 'invalid username');
 		});
 
 		it('rejects empty string', () => {
-			var username = '';
+			const username = '';
 			assert.equal(utils.isUserNameValid(username), false, 'accepted as valid username');
 		});
 
@@ -113,7 +113,7 @@ describe('Utility Methods', () => {
 		});
 
 		it('accepts square brackets', () => {
-			var username = '[best clan] julian';
+			const username = '[best clan] julian';
 			assert(utils.isUserNameValid(username), 'invalid username');
 		});
 
@@ -128,26 +128,26 @@ describe('Utility Methods', () => {
 
 	describe('email validation', () => {
 		it('accepts sample address', () => {
-			var email = 'sample@example.com';
+			const email = 'sample@example.com';
 			assert(utils.isEmailValid(email), 'invalid email');
 		});
 		it('rejects empty address', () => {
-			var email = '';
+			const email = '';
 			assert.equal(utils.isEmailValid(email), false, 'accepted as valid email');
 		});
 	});
 
 	describe('UUID generation', () => {
 		it('return unique random value every time', () => {
-			var uuid1 = utils.generateUUID();
-			var uuid2 = utils.generateUUID();
+			const uuid1 = utils.generateUUID();
+			const uuid2 = utils.generateUUID();
 			assert.notEqual(uuid1, uuid2, 'matches');
 		});
 	});
 
 	describe('cleanUpTag', () => {
 		it('should cleanUp a tag', (done) => {
-			var cleanedTag = utils.cleanUpTag(',/#!$%^*;TaG1:{}=_`<>\'"~()?|');
+			const cleanedTag = utils.cleanUpTag(',/#!$%^*;TaG1:{}=_`<>\'"~()?|');
 			assert.equal(cleanedTag, 'tag1');
 			done();
 		});
@@ -163,7 +163,7 @@ describe('Utility Methods', () => {
 	});
 
 	it('should remove punctuation', (done) => {
-		var removed = utils.removePunctuation('some text with , ! punctuation inside "');
+		const removed = utils.removePunctuation('some text with , ! punctuation inside "');
 		assert.equal(removed, 'some text with   punctuation inside ');
 		done();
 	});
@@ -179,9 +179,9 @@ describe('Utility Methods', () => {
 	});
 
 	it('should shallow merge two objects', (done) => {
-		var a = { foo: 1, cat1: 'ginger' };
-		var b = { baz: 2, cat2: 'phoebe' };
-		var obj = utils.merge(a, b);
+		const a = { foo: 1, cat1: 'ginger' };
+		const b = { baz: 2, cat2: 'phoebe' };
+		const obj = utils.merge(a, b);
 		assert.strictEqual(obj.foo, 1);
 		assert.strictEqual(obj.baz, 2);
 		assert.strictEqual(obj.cat1, 'ginger');
@@ -230,7 +230,7 @@ describe('Utility Methods', () => {
 	});
 
 	it('should make numbers human readable on elements', (done) => {
-		var el = $('<div title="100000"></div>');
+		const el = $('<div title="100000"></div>');
 		utils.makeNumbersHumanReadable(el);
 		assert.equal(el.html(), '100.0k');
 		done();
@@ -252,15 +252,15 @@ describe('Utility Methods', () => {
 	});
 
 	it('should add commas to elements', (done) => {
-		var el = $('<div>1000000</div>');
+		const el = $('<div>1000000</div>');
 		utils.addCommasToNumbers(el);
 		assert.equal(el.html(), '1,000,000');
 		done();
 	});
 
 	it('should return passed in value if invalid', (done) => {
-		var bigInt = -111111111111111111;
-		var result = utils.toISOString(bigInt);
+		const bigInt = -111111111111111111;
+		const result = utils.toISOString(bigInt);
 		assert.equal(bigInt, result);
 		done();
 	});
@@ -297,20 +297,20 @@ describe('Utility Methods', () => {
 	});
 
 	it('should check if element is in viewport', (done) => {
-		var el = $('<div>some text</div>');
+		const el = $('<div>some text</div>');
 		assert(utils.isElementInViewport(el));
 		done();
 	});
 
 	it('should get empty object for url params', (done) => {
 		global.document = window.document;
-		var params = utils.params();
+		const params = utils.params();
 		assert.equal(Object.keys(params), 0);
 		done();
 	});
 
 	it('should get url params', (done) => {
-		var params = utils.params({ url: 'http://nodebb.org?foo=1&bar=test&herp=2' });
+		const params = utils.params({ url: 'http://nodebb.org?foo=1&bar=test&herp=2' });
 		assert.equal(params.foo, 1);
 		assert.equal(params.bar, 'test');
 		assert.equal(params.herp, 2);
@@ -345,20 +345,20 @@ describe('Utility Methods', () => {
 		});
 
 		it('should parse json', (done) => {
-			var data = utils.toType('{"a":"1"}');
+			const data = utils.toType('{"a":"1"}');
 			assert.equal(data.a, '1');
 			done();
 		});
 
 		it('should return string as is if its not json,true,false or number', (done) => {
-			var regularStr = 'this is a regular string';
+			const regularStr = 'this is a regular string';
 			assert.equal(regularStr, utils.toType(regularStr));
 			done();
 		});
 	});
 
 	describe('utils.props', () => {
-		var data = {};
+		const data = {};
 
 		it('should set nested data', (done) => {
 			assert.equal(10, utils.props(data, 'a.b.c.d', 10));
@@ -366,7 +366,7 @@ describe('Utility Methods', () => {
 		});
 
 		it('should return nested object', (done) => {
-			var obj = utils.props(data, 'a.b.c');
+			const obj = utils.props(data, 'a.b.c');
 			assert.equal(obj.d, 10);
 			done();
 		});
@@ -383,8 +383,8 @@ describe('Utility Methods', () => {
 	});
 
 	describe('isInternalURI', () => {
-		var target = { host: '', protocol: 'https' };
-		var reference = { host: '', protocol: 'https' };
+		const target = { host: '', protocol: 'https' };
+		const reference = { host: '', protocol: 'https' };
 
 		it('should return true if they match', (done) => {
 			assert(utils.isInternalURI(target, reference, ''));
@@ -413,23 +413,23 @@ describe('Utility Methods', () => {
 	});
 
 	it('escape html', (done) => {
-		var escaped = utils.escapeHTML('&<>');
+		const escaped = utils.escapeHTML('&<>');
 		assert.equal(escaped, '&amp;&lt;&gt;');
 		done();
 	});
 
 	it('should escape regex chars', (done) => {
-		var escaped = utils.escapeRegexChars('some text {}');
+		const escaped = utils.escapeRegexChars('some text {}');
 		assert.equal(escaped, 'some\\ text\\ \\{\\}');
 		done();
 	});
 
 	it('should get hours array', (done) => {
-		var currentHour = new Date().getHours();
-		var hours = utils.getHoursArray();
-		var index = hours.length - 1;
-		for (var i = currentHour, ii = currentHour - 24; i > ii; i -= 1) {
-			var hour = i < 0 ? 24 + i : i;
+		const currentHour = new Date().getHours();
+		const hours = utils.getHoursArray();
+		let index = hours.length - 1;
+		for (let i = currentHour, ii = currentHour - 24; i > ii; i -= 1) {
+			const hour = i < 0 ? 24 + i : i;
 			assert.equal(hours[index], `${hour}:00`);
 			index -= 1;
 		}
@@ -437,12 +437,12 @@ describe('Utility Methods', () => {
 	});
 
 	it('should get days array', (done) => {
-		var currentDay = new Date(Date.now()).getTime();
-		var days = utils.getDaysArray();
-		var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-		var index = 0;
-		for (var x = 29; x >= 0; x -= 1) {
-			var tmpDate = new Date(currentDay - (1000 * 60 * 60 * 24 * x));
+		const currentDay = new Date(Date.now()).getTime();
+		const days = utils.getDaysArray();
+		const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+		let index = 0;
+		for (let x = 29; x >= 0; x -= 1) {
+			const tmpDate = new Date(currentDay - (1000 * 60 * 60 * 24 * x));
 			assert.equal(`${months[tmpDate.getMonth()]} ${tmpDate.getDate()}`, days[index]);
 			index += 1;
 		}
@@ -457,7 +457,7 @@ describe('Utility Methods', () => {
 	});
 
 	it('should profile function', (done) => {
-		var st = process.hrtime();
+		const st = process.hrtime();
 		setTimeout(() => {
 			process.profile('it took', st);
 			done();

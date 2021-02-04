@@ -1,16 +1,16 @@
 'use strict';
 
 
-var async = require('async');
-var winston = require('winston');
-var db = require('../../database');
+const async = require('async');
+const winston = require('winston');
+const db = require('../../database');
 
 module.exports = {
 	name: 'Sorted set for pinned topics',
 	timestamp: Date.UTC(2016, 10, 25),
 	method: function (callback) {
-		var topics = require('../../topics');
-		var batch = require('../../batch');
+		const topics = require('../../topics');
+		const batch = require('../../batch');
 		batch.processSortedSet('topics:tid', (ids, next) => {
 			topics.getTopicsFields(ids, ['tid', 'cid', 'pinned', 'lastposttime'], (err, data) => {
 				if (err) {

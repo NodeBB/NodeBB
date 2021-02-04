@@ -30,8 +30,8 @@ module.exports = function (module) {
 				throw new Error(`[[error:invalid-score, ${scores[i]}]]`);
 			}
 		}
-		var args = [key];
-		for (var i = 0; i < scores.length; i += 1) {
+		const args = [key];
+		for (let i = 0; i < scores.length; i += 1) {
 			args.push(scores[i], String(values[i]));
 		}
 		await module.client.async.zadd(args);
@@ -51,8 +51,8 @@ module.exports = function (module) {
 			throw new Error('[[error:invalid-data]]');
 		}
 
-		var batch = module.client.batch();
-		for (var i = 0; i < keys.length; i += 1) {
+		const batch = module.client.batch();
+		for (let i = 0; i < keys.length; i += 1) {
 			if (keys[i]) {
 				batch.zadd(keys[i], isArrayOfScores ? scores[i] : scores, String(value));
 			}
@@ -64,7 +64,7 @@ module.exports = function (module) {
 		if (!Array.isArray(data) || !data.length) {
 			return;
 		}
-		var batch = module.client.batch();
+		const batch = module.client.batch();
 		data.forEach((item) => {
 			if (!utils.isNumber(item[1])) {
 				throw new Error(`[[error:invalid-score, ${item[1]}]]`);

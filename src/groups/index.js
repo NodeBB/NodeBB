@@ -46,7 +46,7 @@ Groups.getEphemeralGroup = function (groupName) {
 };
 
 Groups.removeEphemeralGroups = function (groups) {
-	for (var x = groups.length; x >= 0; x -= 1) {
+	for (let x = groups.length; x >= 0; x -= 1) {
 		if (Groups.ephemeralGroups.includes(groups[x])) {
 			groups.splice(x, 1);
 		}
@@ -55,7 +55,7 @@ Groups.removeEphemeralGroups = function (groups) {
 	return groups;
 };
 
-var isPrivilegeGroupRegex = /^cid:\d+:privileges:[\w\-:]+$/;
+const isPrivilegeGroupRegex = /^cid:\d+:privileges:[\w\-:]+$/;
 Groups.isPrivilegeGroup = function (groupName) {
 	return isPrivilegeGroupRegex.test(groupName);
 };

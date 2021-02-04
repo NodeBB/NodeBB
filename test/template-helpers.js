@@ -1,20 +1,20 @@
 'use strict';
 
-var nconf = require('nconf');
-var assert = require('assert');
+const nconf = require('nconf');
+const assert = require('assert');
 
-var db = require('./mocks/databasemock');
-var helpers = require('../public/src/modules/helpers');
+const db = require('./mocks/databasemock');
+const helpers = require('../public/src/modules/helpers');
 
 describe('helpers', () => {
 	it('should return false if item doesn\'t exist', (done) => {
-		var flag = helpers.displayMenuItem({ navigation: [] }, 0);
+		const flag = helpers.displayMenuItem({ navigation: [] }, 0);
 		assert(!flag);
 		done();
 	});
 
 	it('should return false if route is /users and user does not have view:users privilege', (done) => {
-		var flag = helpers.displayMenuItem({
+		const flag = helpers.displayMenuItem({
 			navigation: [{ route: '/users' }],
 			user: {
 				privileges: {
@@ -27,7 +27,7 @@ describe('helpers', () => {
 	});
 
 	it('should return false if route is /tags and user does not have view:tags privilege', (done) => {
-		var flag = helpers.displayMenuItem({
+		const flag = helpers.displayMenuItem({
 			navigation: [{ route: '/tags' }],
 			user: {
 				privileges: {
@@ -40,7 +40,7 @@ describe('helpers', () => {
 	});
 
 	it('should return false if route is /groups and user does not have view:groups privilege', (done) => {
-		var flag = helpers.displayMenuItem({
+		const flag = helpers.displayMenuItem({
 			navigation: [{ route: '/groups' }],
 			user: {
 				privileges: {
@@ -53,13 +53,13 @@ describe('helpers', () => {
 	});
 
 	it('should stringify object', (done) => {
-		var str = helpers.stringify({ a: 'herp < derp > and & quote "' });
+		const str = helpers.stringify({ a: 'herp < derp > and & quote "' });
 		assert.equal(str, '{&quot;a&quot;:&quot;herp &lt; derp &gt; and &amp; quote \\&quot;&quot;}');
 		done();
 	});
 
 	it('should escape html', (done) => {
-		var str = helpers.escape('gdkfhgk < some > and &');
+		const str = helpers.escape('gdkfhgk < some > and &');
 		assert.equal(str, 'gdkfhgk &lt; some &gt; and &amp;');
 		done();
 	});
@@ -70,28 +70,28 @@ describe('helpers', () => {
 	});
 
 	it('should generate category background', (done) => {
-		var category = {
+		const category = {
 			bgColor: '#ff0000',
 			color: '#00ff00',
 			backgroundImage: '/assets/uploads/image.png',
 			imageClass: 'auto',
 		};
-		var bg = helpers.generateCategoryBackground(category);
+		const bg = helpers.generateCategoryBackground(category);
 		assert.equal(bg, 'background-color: #ff0000; color: #00ff00; background-image: url(/assets/uploads/image.png); background-size: auto;');
 		done();
 	});
 
 	it('should return empty string if category has no children', (done) => {
-		var category = {
+		const category = {
 			children: [],
 		};
-		var bg = helpers.generateChildrenCategories(category);
+		const bg = helpers.generateChildrenCategories(category);
 		assert.equal(bg, '');
 		done();
 	});
 
 	it('should generate html for children', (done) => {
-		var category = {
+		const category = {
 			children: [
 				{
 					link: '',
@@ -101,137 +101,137 @@ describe('helpers', () => {
 				},
 			],
 		};
-		var html = helpers.generateChildrenCategories(category);
+		const html = helpers.generateChildrenCategories(category);
 		assert.equal(html, `<span class="category-children"><span class="category-children-item pull-left"><div role="presentation" class="icon pull-left" style="background-color: #ff0000; color: #00ff00;"><i class="fa fa-fw undefined"></i></div><a href="${nconf.get('relative_path')}/category/undefined"><small>children</small></a></span></span>`);
 		done();
 	});
 
 	it('should generate topic class', (done) => {
-		var className = helpers.generateTopicClass({ locked: true, pinned: true, deleted: true, unread: true });
+		const className = helpers.generateTopicClass({ locked: true, pinned: true, deleted: true, unread: true });
 		assert.equal(className, 'locked pinned deleted unread');
 		done();
 	});
 
 	it('should show leave button if isMember and group is not administrators', (done) => {
-		var btn = helpers.membershipBtn({ displayName: 'some group', name: 'some group', isMember: true });
+		const btn = helpers.membershipBtn({ displayName: 'some group', name: 'some group', isMember: true });
 		assert.equal(btn, '<button class="btn btn-danger" data-action="leave" data-group="some group"><i class="fa fa-times"></i> [[groups:membership.leave-group]]</button>');
 		done();
 	});
 
 	it('should show pending button if isPending and group is not administrators', (done) => {
-		var btn = helpers.membershipBtn({ displayName: 'some group', name: 'some group', isPending: true });
+		const btn = helpers.membershipBtn({ displayName: 'some group', name: 'some group', isPending: true });
 		assert.equal(btn, '<button class="btn btn-warning disabled"><i class="fa fa-clock-o"></i> [[groups:membership.invitation-pending]]</button>');
 		done();
 	});
 
 	it('should show reject invite button if isInvited', (done) => {
-		var btn = helpers.membershipBtn({ displayName: 'some group', name: 'some group', isInvited: true });
+		const btn = helpers.membershipBtn({ displayName: 'some group', name: 'some group', isInvited: true });
 		assert.equal(btn, '<button class="btn btn-link" data-action="rejectInvite" data-group="some group">[[groups:membership.reject]]</button><button class="btn btn-success" data-action="acceptInvite" data-group="some group"><i class="fa fa-plus"></i> [[groups:membership.accept-invitation]]</button>');
 		done();
 	});
 
 	it('should show join button if join requests are not disabled and group is not administrators', (done) => {
-		var btn = helpers.membershipBtn({ displayName: 'some group', name: 'some group', disableJoinRequests: false });
+		const btn = helpers.membershipBtn({ displayName: 'some group', name: 'some group', disableJoinRequests: false });
 		assert.equal(btn, '<button class="btn btn-success" data-action="join" data-group="some group"><i class="fa fa-plus"></i> [[groups:membership.join-group]]</button>');
 		done();
 	});
 
 	it('should show nothing if group is administrators ', (done) => {
-		var btn = helpers.membershipBtn({ displayName: 'administrators', name: 'administrators' });
+		const btn = helpers.membershipBtn({ displayName: 'administrators', name: 'administrators' });
 		assert.equal(btn, '');
 		done();
 	});
 
 	it('should spawn privilege states', (done) => {
-		var privs = {
+		const privs = {
 			find: true,
 			read: true,
 		};
-		var html = helpers.spawnPrivilegeStates('guests', privs);
+		const html = helpers.spawnPrivilegeStates('guests', privs);
 		assert.equal(html, '<td class="text-center" data-privilege="find" data-value="true"><input autocomplete="off" type="checkbox" checked /></td><td class="text-center" data-privilege="read" data-value="true"><input autocomplete="off" type="checkbox" checked /></td>');
 		done();
 	});
 
 	it('should render thumb as topic image', (done) => {
-		var topicObj = { thumb: '/uploads/1.png', user: { username: 'baris' } };
-		var html = helpers.renderTopicImage(topicObj);
+		const topicObj = { thumb: '/uploads/1.png', user: { username: 'baris' } };
+		const html = helpers.renderTopicImage(topicObj);
 		assert.equal(html, `<img src="${topicObj.thumb}" class="img-circle user-img" title="${topicObj.user.username}" />`);
 		done();
 	});
 
 	it('should render user picture as topic image', (done) => {
-		var topicObj = { thumb: '', user: { uid: 1, username: 'baris', picture: '/uploads/2.png' } };
-		var html = helpers.renderTopicImage(topicObj);
+		const topicObj = { thumb: '', user: { uid: 1, username: 'baris', picture: '/uploads/2.png' } };
+		const html = helpers.renderTopicImage(topicObj);
 		assert.equal(html, `<img component="user/picture" data-uid="${topicObj.user.uid}" src="${topicObj.user.picture}" class="user-img" title="${topicObj.user.username}" />`);
 		done();
 	});
 
 	it('should render digest avatar', (done) => {
-		var block = { teaser: { user: { username: 'baris', picture: '/uploads/1.png' } } };
-		var html = helpers.renderDigestAvatar(block);
+		const block = { teaser: { user: { username: 'baris', picture: '/uploads/1.png' } } };
+		const html = helpers.renderDigestAvatar(block);
 		assert.equal(html, `<img style="vertical-align: middle; width: 32px; height: 32px; border-radius: 50%;" src="${block.teaser.user.picture}" title="${block.teaser.user.username}" />`);
 		done();
 	});
 
 	it('should render digest avatar', (done) => {
-		var block = { teaser: { user: { username: 'baris', 'icon:text': 'B', 'icon:bgColor': '#ff000' } } };
-		var html = helpers.renderDigestAvatar(block);
+		const block = { teaser: { user: { username: 'baris', 'icon:text': 'B', 'icon:bgColor': '#ff000' } } };
+		const html = helpers.renderDigestAvatar(block);
 		assert.equal(html, `<div style="vertical-align: middle; width: 32px; height: 32px; line-height: 32px; font-size: 16px; background-color: ${block.teaser.user['icon:bgColor']}; color: white; text-align: center; display: inline-block; border-radius: 50%;">${block.teaser.user['icon:text']}</div>`);
 		done();
 	});
 
 	it('should render digest avatar', (done) => {
-		var block = { user: { username: 'baris', picture: '/uploads/1.png' } };
-		var html = helpers.renderDigestAvatar(block);
+		const block = { user: { username: 'baris', picture: '/uploads/1.png' } };
+		const html = helpers.renderDigestAvatar(block);
 		assert.equal(html, `<img style="vertical-align: middle; width: 32px; height: 32px; border-radius: 50%;" src="${block.user.picture}" title="${block.user.username}" />`);
 		done();
 	});
 
 	it('should render digest avatar', (done) => {
-		var block = { user: { username: 'baris', 'icon:text': 'B', 'icon:bgColor': '#ff000' } };
-		var html = helpers.renderDigestAvatar(block);
+		const block = { user: { username: 'baris', 'icon:text': 'B', 'icon:bgColor': '#ff000' } };
+		const html = helpers.renderDigestAvatar(block);
 		assert.equal(html, `<div style="vertical-align: middle; width: 32px; height: 32px; line-height: 32px; font-size: 16px; background-color: ${block.user['icon:bgColor']}; color: white; text-align: center; display: inline-block; border-radius: 50%;">${block.user['icon:text']}</div>`);
 		done();
 	});
 
 	it('shoud render user agent/browser icons', (done) => {
-		var html = helpers.userAgentIcons({ platform: 'Linux', browser: 'Chrome' });
+		const html = helpers.userAgentIcons({ platform: 'Linux', browser: 'Chrome' });
 		assert.equal(html, '<i class="fa fa-fw fa-linux"></i><i class="fa fa-fw fa-chrome"></i>');
 		done();
 	});
 
 	it('shoud render user agent/browser icons', (done) => {
-		var html = helpers.userAgentIcons({ platform: 'Microsoft Windows', browser: 'Firefox' });
+		const html = helpers.userAgentIcons({ platform: 'Microsoft Windows', browser: 'Firefox' });
 		assert.equal(html, '<i class="fa fa-fw fa-windows"></i><i class="fa fa-fw fa-firefox"></i>');
 		done();
 	});
 
 	it('shoud render user agent/browser icons', (done) => {
-		var html = helpers.userAgentIcons({ platform: 'Apple Mac', browser: 'Safari' });
+		const html = helpers.userAgentIcons({ platform: 'Apple Mac', browser: 'Safari' });
 		assert.equal(html, '<i class="fa fa-fw fa-apple"></i><i class="fa fa-fw fa-safari"></i>');
 		done();
 	});
 
 	it('shoud render user agent/browser icons', (done) => {
-		var html = helpers.userAgentIcons({ platform: 'Android', browser: 'IE' });
+		const html = helpers.userAgentIcons({ platform: 'Android', browser: 'IE' });
 		assert.equal(html, '<i class="fa fa-fw fa-android"></i><i class="fa fa-fw fa-internet-explorer"></i>');
 		done();
 	});
 
 	it('shoud render user agent/browser icons', (done) => {
-		var html = helpers.userAgentIcons({ platform: 'iPad', browser: 'Edge' });
+		const html = helpers.userAgentIcons({ platform: 'iPad', browser: 'Edge' });
 		assert.equal(html, '<i class="fa fa-fw fa-tablet"></i><i class="fa fa-fw fa-edge"></i>');
 		done();
 	});
 
 	it('shoud render user agent/browser icons', (done) => {
-		var html = helpers.userAgentIcons({ platform: 'iPhone', browser: 'unknow' });
+		const html = helpers.userAgentIcons({ platform: 'iPhone', browser: 'unknow' });
 		assert.equal(html, '<i class="fa fa-fw fa-mobile"></i><i class="fa fa-fw fa-question-circle"></i>');
 		done();
 	});
 
 	it('shoud render user agent/browser icons', (done) => {
-		var html = helpers.userAgentIcons({ platform: 'unknow', browser: 'unknown' });
+		const html = helpers.userAgentIcons({ platform: 'unknow', browser: 'unknown' });
 		assert.equal(html, '<i class="fa fa-fw fa-question-circle"></i><i class="fa fa-fw fa-question-circle"></i>');
 		done();
 	});

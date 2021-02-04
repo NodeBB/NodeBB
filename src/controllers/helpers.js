@@ -487,7 +487,7 @@ async function generateBannedResponse(res) {
 }
 
 helpers.generateError = (statusCode, message) => {
-	var payload = {
+	const payload = {
 		status: {
 			code: 'internal-server-error',
 			message: 'An unexpected error was encountered while attempting to service your request.',

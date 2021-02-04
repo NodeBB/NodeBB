@@ -1,8 +1,8 @@
 'use strict';
 
 module.exports = function (module) {
-	var helpers = require('../helpers');
-	var utils = require('../../../utils');
+	const helpers = require('../helpers');
+	const utils = require('../../../utils');
 
 	module.sortedSetAdd = async function (key, score, value) {
 		if (!key) {

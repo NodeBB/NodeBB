@@ -83,7 +83,7 @@ function saveDatabaseConfig(config, databaseConfig) {
 	}
 
 	const allQuestions = questions.redis.concat(questions.mongo).concat(questions.postgres);
-	for (var x = 0; x < allQuestions.length; x += 1) {
+	for (let x = 0; x < allQuestions.length; x += 1) {
 		delete config[allQuestions[x].name];
 	}
 

@@ -1,10 +1,10 @@
 'use strict';
 
-var async = require('async');
+const async = require('async');
 
-var db = require('../../database');
-var batch = require('../../batch');
-var categories = require('../../categories');
+const db = require('../../database');
+const batch = require('../../batch');
+const categories = require('../../categories');
 
 module.exports = {
 	name: 'Update category watch data',

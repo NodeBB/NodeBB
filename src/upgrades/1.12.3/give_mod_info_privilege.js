@@ -1,9 +1,9 @@
 'use strict';
 
-var async = require('async');
-var db = require('../../database');
-var privileges = require('../../privileges');
-var groups = require('../../groups');
+const async = require('async');
+const db = require('../../database');
+const privileges = require('../../privileges');
+const groups = require('../../groups');
 
 module.exports = {
 	name: 'give mod info privilege',

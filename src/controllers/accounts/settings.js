@@ -219,8 +219,8 @@ async function getHomePageRoutes(userData) {
 	let routes = await helpers.getHomePageRoutes(userData.uid);
 
 	// Set selected for each route
-	var customIdx;
-	var hasSelected = false;
+	let customIdx;
+	let hasSelected = false;
 	routes = routes.map((route, idx) => {
 		if (route.route === userData.settings.homePageRoute) {
 			route.selected = true;

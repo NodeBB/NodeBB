@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function (module) {
-	var helpers = require('../helpers');
+	const helpers = require('../helpers');
 
 	module.sortedSetRemove = async function (key, value) {
 		if (!key) {

@@ -1,6 +1,6 @@
 'use strict';
 
-var async = require('async');
+const async = require('async');
 
 module.exports = {
 	name: 'Widget visibility groups',

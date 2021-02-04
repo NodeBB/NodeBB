@@ -25,11 +25,11 @@ const requestType = util.promisify((type, url, opts, cb) => {
 });
 
 describe('Topic\'s', () => {
-	var topic;
-	var categoryObj;
-	var adminUid;
-	var adminJar;
-	var fooUid;
+	let topic;
+	let categoryObj;
+	let adminUid;
+	let adminJar;
+	let fooUid;
 
 	before(async () => {
 		adminUid = await User.create({ username: 'admin', password: '123456' });
@@ -166,8 +166,8 @@ describe('Topic\'s', () => {
 	});
 
 	describe('.reply', () => {
-		var newTopic;
-		var newPost;
+		let newTopic;
+		let newPost;
 
 		before((done) => {
 			topics.post({ uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId }, (err, result) => {
@@ -261,8 +261,8 @@ describe('Topic\'s', () => {
 	});
 
 	describe('Get methods', () => {
-		var	newTopic;
-		var newPost;
+		let	newTopic;
+		let newPost;
 
 		before((done) => {
 			topics.post({ uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId }, (err, result) => {
@@ -449,8 +449,8 @@ describe('Topic\'s', () => {
 
 	describe('Title escaping', () => {
 		it('should properly escape topic title', (done) => {
-			var title = '"<script>alert(\'ok1\');</script> new topic test';
-			var titleEscaped = validator.escape(title);
+			const title = '"<script>alert(\'ok1\');</script> new topic test';
+			const titleEscaped = validator.escape(title);
 			topics.post({ uid: topic.userId, title: title, content: topic.content, cid: topic.categoryId }, (err, result) => {
 				assert.ifError(err);
 				topics.getTopicData(result.topicData.tid, (err, topicData) => {
@@ -464,9 +464,9 @@ describe('Topic\'s', () => {
 	});
 
 	describe('tools/delete/restore/purge', () => {
-		var newTopic;
-		var followerUid;
-		var moveCid;
+		let newTopic;
+		let followerUid;
+		let moveCid;
 
 		before((done) => {
 			async.waterfall([
@@ -588,13 +588,13 @@ describe('Topic\'s', () => {
 		});
 
 		it('should properly update sets when post is moved', (done) => {
-			var movedPost;
-			var previousPost;
-			var topic2LastReply;
-			var tid1;
-			var tid2;
-			var cid1 = topic.categoryId;
-			var cid2;
+			let movedPost;
+			let previousPost;
+			let topic2LastReply;
+			let tid1;
+			let tid2;
+			const cid1 = topic.categoryId;
+			let cid2;
 			function checkCidSets(post1, post2, callback) {
 				async.waterfall([
 					function (next) {
@@ -625,7 +625,7 @@ describe('Topic\'s', () => {
 						}, next);
 					},
 					function (results, next) {
-						var assertMsg = `${JSON.stringify(results.posts1)}\n${JSON.stringify(results.posts2)}`;
+						const assertMsg = `${JSON.stringify(results.posts1)}\n${JSON.stringify(results.posts2)}`;
 						assert.equal(results.topicData[0].postcount, results.scores1[2], assertMsg);
 						assert.equal(results.topicData[1].postcount, results.scores2[2], assertMsg);
 						assert.equal(results.topicData[0].lastposttime, post1.timestamp, assertMsg);
@@ -702,8 +702,8 @@ describe('Topic\'s', () => {
 		});
 
 		it('should fail to purge topic if user does not have privilege', (done) => {
-			var globalModUid;
-			var tid;
+			let globalModUid;
+			let tid;
 			async.waterfall([
 				function (next) {
 					topics.post({
@@ -761,9 +761,9 @@ describe('Topic\'s', () => {
 	});
 
 	describe('order pinned topics', () => {
-		var tid1;
-		var tid2;
-		var tid3;
+		let tid1;
+		let tid2;
+		let tid3;
 		before((done) => {
 			function createTopic(callback) {
 				topics.post({
@@ -802,7 +802,7 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		var socketTopics = require('../src/socket.io/topics');
+		const socketTopics = require('../src/socket.io/topics');
 		it('should error with invalid data', (done) => {
 			socketTopics.orderPinnedTopics({ uid: adminUid }, null, (err) => {
 				assert.equal(err.message, '[[error:invalid-data]]');
@@ -855,9 +855,9 @@ describe('Topic\'s', () => {
 
 
 	describe('.ignore', () => {
-		var newTid;
-		var uid;
-		var newTopic;
+		let newTid;
+		let uid;
+		let newTopic;
 		before((done) => {
 			uid = topic.userId;
 			async.waterfall([
@@ -887,8 +887,8 @@ describe('Topic\'s', () => {
 					topics.getUnreadTopics({ cid: 0, uid: uid, start: 0, stop: -1, filter: '' }, done);
 				},
 				function (results, done) {
-					var topics = results.topics;
-					var tids = topics.map(topic => topic.tid);
+					const topics = results.topics;
+					const tids = topics.map(topic => topic.tid);
 					assert.equal(tids.indexOf(newTid), -1, 'The topic appeared in the unread list.');
 					done();
 				},
@@ -909,9 +909,9 @@ describe('Topic\'s', () => {
 					}, done);
 				},
 				function (results, done) {
-					var topics = results.topics;
-					var topic;
-					var i;
+					const topics = results.topics;
+					let topic;
+					let i;
 					for (i = 0; i < topics.length; i += 1) {
 						if (topics[i].tid === parseInt(newTid, 10)) {
 							assert.equal(false, topics[i].unread, 'ignored topic was marked as unread in recent list');
@@ -936,8 +936,8 @@ describe('Topic\'s', () => {
 					topics.getUnreadTopics({ cid: 0, uid: uid, start: 0, stop: -1, filter: '' }, done);
 				},
 				function (results, done) {
-					var topics = results.topics;
-					var tids = topics.map(topic => topic.tid);
+					const topics = results.topics;
+					const tids = topics.map(topic => topic.tid);
 					assert.notEqual(tids.indexOf(newTid), -1, 'The topic did not appear in the unread list.');
 					done();
 				},
@@ -956,8 +956,8 @@ describe('Topic\'s', () => {
 					topics.getUnreadTopics({ cid: 0, uid: uid, start: 0, stop: -1, filter: '' }, done);
 				},
 				function (results, done) {
-					var topics = results.topics;
-					var tids = topics.map(topic => topic.tid);
+					const topics = results.topics;
+					const tids = topics.map(topic => topic.tid);
 					assert.notEqual(tids.indexOf(newTid), -1, 'The topic did not appear in the unread list.');
 					done();
 				},
@@ -966,10 +966,10 @@ describe('Topic\'s', () => {
 	});
 
 	describe('.fork', () => {
-		var newTopic;
-		var replies = [];
-		var topicPids;
-		var originalBookmark = 6;
+		let newTopic;
+		const replies = [];
+		let topicPids;
+		const originalBookmark = 6;
 		function postReply(next) {
 			topics.reply({ uid: topic.userId, content: `test post ${replies.length}`, tid: newTopic.tid }, (err, result) => {
 				assert.equal(err, null, 'was created with error');
@@ -1094,7 +1094,7 @@ describe('Topic\'s', () => {
 	});
 
 	describe('controller', () => {
-		var topicData;
+		let topicData;
 
 		before((done) => {
 			topics.post({
@@ -1147,7 +1147,7 @@ describe('Topic\'s', () => {
 		});
 
 		it('should 401 if not allowed to read as guest', (done) => {
-			var privileges = require('../src/privileges');
+			const privileges = require('../src/privileges');
 			privileges.categories.rescind(['groups:topics:read'], topicData.cid, 'guests', (err) => {
 				assert.ifError(err);
 				request(`${nconf.get('url')}/api/topic/${topicData.slug}`, (err, response, body) => {
@@ -1179,7 +1179,7 @@ describe('Topic\'s', () => {
 		});
 
 		it('should 404 if page is out of bounds', (done) => {
-			var meta = require('../src/meta');
+			const meta = require('../src/meta');
 			meta.config.usePagination = 1;
 			request(`${nconf.get('url')}/topic/${topicData.slug}?page=100`, (err, response) => {
 				assert.ifError(err);
@@ -1273,8 +1273,8 @@ describe('Topic\'s', () => {
 
 
 	describe('infinitescroll', () => {
-		var socketTopics = require('../src/socket.io/topics');
-		var tid;
+		const socketTopics = require('../src/socket.io/topics');
+		let tid;
 		before((done) => {
 			topics.post({ uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId }, (err, result) => {
 				assert.ifError(err);
@@ -1354,8 +1354,8 @@ describe('Topic\'s', () => {
 	});
 
 	describe('suggested topics', () => {
-		var tid1;
-		var tid3;
+		let tid1;
+		let tid3;
 		before((done) => {
 			async.series({
 				topic1: function (next) {
@@ -1393,10 +1393,10 @@ describe('Topic\'s', () => {
 	});
 
 	describe('unread', () => {
-		var socketTopics = require('../src/socket.io/topics');
-		var tid;
-		var mainPid;
-		var uid;
+		const socketTopics = require('../src/socket.io/topics');
+		let tid;
+		let mainPid;
+		let uid;
 		before((done) => {
 			async.parallel({
 				topic: function (next) {
@@ -1586,8 +1586,8 @@ describe('Topic\'s', () => {
 		});
 
 		it('should not return topics in category you cant read', (done) => {
-			var privateCid;
-			var privateTid;
+			let privateCid;
+			let privateTid;
 			async.waterfall([
 				function (next) {
 					categories.create({
@@ -1615,8 +1615,8 @@ describe('Topic\'s', () => {
 		});
 
 		it('should not return topics in category you ignored/not watching', (done) => {
-			var ignoredCid;
-			var tid;
+			let ignoredCid;
+			let tid;
 			async.waterfall([
 				function (next) {
 					categories.create({
@@ -1647,8 +1647,8 @@ describe('Topic\'s', () => {
 		});
 
 		it('should not return topic as unread if new post is from blocked user', (done) => {
-			var blockedUid;
-			var topic;
+			let blockedUid;
+			let topic;
 			async.waterfall([
 				function (next) {
 					topics.post({ uid: adminUid, title: 'will not get as unread', content: 'not unread', cid: categoryObj.cid }, next);
@@ -1684,8 +1684,8 @@ describe('Topic\'s', () => {
 	});
 
 	describe('tags', () => {
-		var socketTopics = require('../src/socket.io/topics');
-		var socketAdmin = require('../src/socket.io/admin');
+		const socketTopics = require('../src/socket.io/topics');
+		const socketAdmin = require('../src/socket.io/admin');
 
 		before((done) => {
 			async.series([
@@ -1752,7 +1752,7 @@ describe('Topic\'s', () => {
 				assert.ifError(err);
 				assert.equal(data.matchCount, 3);
 				assert.equal(data.pageCount, 1);
-				var tagData = [
+				const tagData = [
 					{ value: 'nodebb', valueEscaped: 'nodebb', color: '', bgColor: '', score: 3 },
 					{ value: 'nodejs', valueEscaped: 'nodejs', color: '', bgColor: '', score: 1 },
 					{ value: 'nosql', valueEscaped: 'nosql', color: '', bgColor: '', score: 1 },
@@ -1885,9 +1885,9 @@ describe('Topic\'s', () => {
 		});
 
 		it('should return related topics', (done) => {
-			var meta = require('../src/meta');
+			const meta = require('../src/meta');
 			meta.config.maximumRelatedTopics = 2;
-			var topicData = {
+			const topicData = {
 				tags: [{ value: 'javascript' }],
 			};
 			topics.getRelatedTopics(topicData, 0, (err, data) => {
@@ -2090,9 +2090,9 @@ describe('Topic\'s', () => {
 	});
 
 	describe('follow/unfollow', () => {
-		var socketTopics = require('../src/socket.io/topics');
-		var tid;
-		var followerUid;
+		const socketTopics = require('../src/socket.io/topics');
+		let tid;
+		let followerUid;
 		before((done) => {
 			User.create({ username: 'follower' }, (err, uid) => {
 				if (err) {
@@ -2164,7 +2164,7 @@ describe('Topic\'s', () => {
 		});
 
 		it('should return results', (done) => {
-			var plugins = require('../src/plugins');
+			const plugins = require('../src/plugins');
 			plugins.hooks.register('myTestPlugin', {
 				hook: 'filter:topic.search',
 				method: function (data, callback) {
@@ -2188,8 +2188,8 @@ describe('Topic\'s', () => {
 	});
 
 	describe('teasers', () => {
-		var topic1;
-		var topic2;
+		let topic1;
+		let topic2;
 		before((done) => {
 			async.series([
 				function (next) {
@@ -2298,7 +2298,7 @@ describe('Topic\'s', () => {
 		});
 
 		it('should not return teaser if user is blocked', (done) => {
-			var blockedUid;
+			let blockedUid;
 			async.waterfall([
 				function (next) {
 					User.create({ username: 'blocked' }, next);
@@ -2322,8 +2322,8 @@ describe('Topic\'s', () => {
 	});
 
 	describe('tag privilege', () => {
-		var uid;
-		var cid;
+		let uid;
+		let cid;
 		before((done) => {
 			async.waterfall([
 				function (next) {
@@ -2353,7 +2353,7 @@ describe('Topic\'s', () => {
 		it('should fail to edit if user does not have tag privilege', (done) => {
 			topics.post({ uid: uid, cid: cid, title: 'topic with tags', content: 'some content here' }, (err, result) => {
 				assert.ifError(err);
-				var pid = result.postData.pid;
+				const pid = result.postData.pid;
 				posts.edit({ pid: pid, uid: uid, content: 'edited content', tags: ['tag2'] }, (err) => {
 					assert.equal(err.message, '[[error:no-privileges]]');
 					done();
@@ -2368,7 +2368,7 @@ describe('Topic\'s', () => {
 					assert.ifError(err);
 					posts.edit({ pid: result.postData.pid, uid: uid, content: 'edited content', tags: ['tag1', 'tag2'] }, (err, result) => {
 						assert.ifError(err);
-						var tags = result.topic.tags.map(tag => tag.value);
+						const tags = result.topic.tags.map(tag => tag.value);
 						assert(tags.includes('tag1'));
 						assert(tags.includes('tag2'));
 						done();
@@ -2379,9 +2379,9 @@ describe('Topic\'s', () => {
 	});
 
 	describe('topic merge', () => {
-		var uid;
-		var topic1Data;
-		var topic2Data;
+		let uid;
+		let topic1Data;
+		let topic2Data;
 
 		async function getTopic(tid) {
 			const topicData = await topics.getTopicData(tid);
@@ -2518,7 +2518,7 @@ describe('Topic\'s', () => {
 
 	describe('sorted topics', () => {
 		it('should get sorted topics in category', (done) => {
-			var filters = ['', 'watched', 'unreplied', 'new'];
+			const filters = ['', 'watched', 'unreplied', 'new'];
 			async.map(filters, (filter, next) => {
 				topics.getSortedTopics({
 					cids: [topic.categoryId],

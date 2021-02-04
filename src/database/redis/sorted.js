@@ -111,7 +111,7 @@ module.exports = function (module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return [];
 		}
-		var batch = module.client.batch();
+		const batch = module.client.batch();
 		keys.forEach(k => batch.zcard(String(k)));
 		return await helpers.execBatch(batch);
 	};
@@ -138,7 +138,7 @@ module.exports = function (module) {
 
 	module.sortedSetsRanks = async function (keys, values) {
 		const batch = module.client.batch();
-		for (var i = 0; i < values.length; i += 1) {
+		for (let i = 0; i < values.length; i += 1) {
 			batch.zrank(keys[i], String(values[i]));
 		}
 		return await helpers.execBatch(batch);
@@ -146,7 +146,7 @@ module.exports = function (module) {
 
 	module.sortedSetsRevRanks = async function (keys, values) {
 		const batch = module.client.batch();
-		for (var i = 0; i < values.length; i += 1) {
+		for (let i = 0; i < values.length; i += 1) {
 			batch.zrevrank(keys[i], String(values[i]));
 		}
 		return await helpers.execBatch(batch);
@@ -154,7 +154,7 @@ module.exports = function (module) {
 
 	module.sortedSetRanks = async function (key, values) {
 		const batch = module.client.batch();
-		for (var i = 0; i < values.length; i += 1) {
+		for (let i = 0; i < values.length; i += 1) {
 			batch.zrank(key, String(values[i]));
 		}
 		return await helpers.execBatch(batch);
@@ -162,7 +162,7 @@ module.exports = function (module) {
 
 	module.sortedSetRevRanks = async function (key, values) {
 		const batch = module.client.batch();
-		for (var i = 0; i < values.length; i += 1) {
+		for (let i = 0; i < values.length; i += 1) {
 			batch.zrevrank(key, String(values[i]));
 		}
 		return await helpers.execBatch(batch);
@@ -230,7 +230,7 @@ module.exports = function (module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return [];
 		}
-		var batch = module.client.batch();
+		const batch = module.client.batch();
 		keys.forEach(k => batch.zrange(k, 0, -1));
 		return await helpers.execBatch(batch);
 	};
@@ -257,8 +257,8 @@ module.exports = function (module) {
 	};
 
 	async function sortedSetLex(method, reverse, key, min, max, start, count) {
-		var minmin;
-		var maxmax;
+		let minmin;
+		let maxmax;
 		if (reverse) {
 			minmin = '+';
 			maxmax = '-';

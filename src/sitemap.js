@@ -24,7 +24,7 @@ sitemap.render = async function () {
 	};
 	const topicCount = await db.getObjectField('global', 'topicCount');
 	const numPages = Math.ceil(Math.max(0, topicCount / topicsPerPage));
-	for (var x = 1; x <= numPages; x += 1) {
+	for (let x = 1; x <= numPages; x += 1) {
 		returnData.topics.push(x);
 	}
 

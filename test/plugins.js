@@ -1,18 +1,18 @@
 'use strict';
 
 
-var	assert = require('assert');
-var path = require('path');
-var nconf = require('nconf');
-var request = require('request');
-var fs = require('fs');
+const	assert = require('assert');
+const path = require('path');
+const nconf = require('nconf');
+const request = require('request');
+const fs = require('fs');
 
-var db = require('./mocks/databasemock');
-var plugins = require('../src/plugins');
+const db = require('./mocks/databasemock');
+const plugins = require('../src/plugins');
 
 describe('Plugins', () => {
 	it('should load plugin data', (done) => {
-		var pluginId = 'nodebb-plugin-markdown';
+		const pluginId = 'nodebb-plugin-markdown';
 		plugins.loadPlugin(path.join(nconf.get('base_dir'), `node_modules/${pluginId}`), (err) => {
 			assert.ifError(err);
 			assert(plugins.libraries[pluginId]);
@@ -153,7 +153,7 @@ describe('Plugins', () => {
 	it('should get plugin data from nbbpm', (done) => {
 		plugins.get('nodebb-plugin-markdown', (err, data) => {
 			assert.ifError(err);
-			var keys = ['id', 'name', 'url', 'description', 'latest', 'installed', 'active', 'latest'];
+			const keys = ['id', 'name', 'url', 'description', 'latest', 'installed', 'active', 'latest'];
 			assert.equal(data.name, 'nodebb-plugin-markdown');
 			assert.equal(data.id, 'nodebb-plugin-markdown');
 			keys.forEach((key) => {
@@ -166,7 +166,7 @@ describe('Plugins', () => {
 	it('should get a list of plugins', (done) => {
 		plugins.list((err, data) => {
 			assert.ifError(err);
-			var keys = ['id', 'name', 'url', 'description', 'latest', 'installed', 'active', 'latest'];
+			const keys = ['id', 'name', 'url', 'description', 'latest', 'installed', 'active', 'latest'];
 			assert(Array.isArray(data));
 			keys.forEach((key) => {
 				assert(data[0].hasOwnProperty(key));
@@ -176,12 +176,12 @@ describe('Plugins', () => {
 	});
 
 	it('should show installed plugins', (done) => {
-		var nodeModulesPath = plugins.nodeModulesPath;
+		const nodeModulesPath = plugins.nodeModulesPath;
 		plugins.nodeModulesPath = path.join(__dirname, './mocks/plugin_modules');
 
 		plugins.showInstalled((err, pluginsData) => {
 			assert.ifError(err);
-			var paths = pluginsData.map(plugin => path.relative(plugins.nodeModulesPath, plugin.path).replace(/\\/g, '/'));
+			const paths = pluginsData.map(plugin => path.relative(plugins.nodeModulesPath, plugin.path).replace(/\\/g, '/'));
 			assert(paths.indexOf('nodebb-plugin-xyz') > -1);
 			assert(paths.indexOf('@nodebb/nodebb-plugin-abc') > -1);
 
@@ -191,8 +191,8 @@ describe('Plugins', () => {
 	});
 
 	describe('install/activate/uninstall', () => {
-		var latest;
-		var pluginName = 'nodebb-plugin-imgur';
+		let latest;
+		const pluginName = 'nodebb-plugin-imgur';
 		it('should install a plugin', function (done) {
 			this.timeout(0);
 			plugins.toggleInstall(pluginName, '1.0.16', (err, pluginData) => {
@@ -206,7 +206,7 @@ describe('Plugins', () => {
 				assert.equal(pluginData.active, false);
 				assert.equal(pluginData.installed, true);
 
-				var packageFile = JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8'));
+				const packageFile = JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8'));
 				assert(packageFile.dependencies[pluginName]);
 
 				done();
@@ -244,7 +244,7 @@ describe('Plugins', () => {
 				assert.equal(pluginData.installed, false);
 				assert.equal(pluginData.active, false);
 
-				var packageFile = JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8'));
+				const packageFile = JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8'));
 				assert(!packageFile.dependencies[pluginName]);
 
 				done();

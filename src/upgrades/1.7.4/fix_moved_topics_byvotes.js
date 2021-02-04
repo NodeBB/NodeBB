@@ -1,19 +1,19 @@
 'use strict';
 
-var async = require('async');
-var batch = require('../../batch');
-var db = require('../../database');
+const async = require('async');
+const batch = require('../../batch');
+const db = require('../../database');
 
 module.exports = {
 	name: 'Fix sort by votes for moved topics',
 	timestamp: Date.UTC(2018, 0, 8),
 	method: function (callback) {
-		var progress = this.progress;
+		const progress = this.progress;
 
 		batch.processSortedSet('topics:tid', (tids, next) => {
 			async.eachLimit(tids, 500, (tid, _next) => {
 				progress.incr();
-				var topicData;
+				let topicData;
 				async.waterfall([
 					function (next) {
 						db.getObjectFields(`topic:${tid}`, ['cid', 'oldCid', 'upvotes', 'downvotes', 'pinned'], next);
@@ -24,9 +24,9 @@ module.exports = {
 							return _next();
 						}
 
-						var upvotes = parseInt(topicData.upvotes, 10) || 0;
-						var downvotes = parseInt(topicData.downvotes, 10) || 0;
-						var votes = upvotes - downvotes;
+						const upvotes = parseInt(topicData.upvotes, 10) || 0;
+						const downvotes = parseInt(topicData.downvotes, 10) || 0;
+						const votes = upvotes - downvotes;
 
 						async.series([
 							function (next) {

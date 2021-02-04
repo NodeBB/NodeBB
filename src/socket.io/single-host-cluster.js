@@ -1,6 +1,6 @@
 'use strict';
 
-var Client = {
+const Client = {
 	sendMessage: function (channel, message) {
 		process.send({
 			action: 'socket.io',
@@ -49,7 +49,7 @@ process.on('message', (message) => {
 	}
 });
 
-var adapter = require('socket.io-adapter-cluster')({
+const adapter = require('socket.io-adapter-cluster')({
 	client: Client,
 });
 // Otherwise, every node thinks it is the master node and ignores messages

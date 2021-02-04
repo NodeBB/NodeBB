@@ -1,13 +1,13 @@
 'use strict';
 
-var express = require('express');
-var nconf = require('nconf');
+const express = require('express');
+const nconf = require('nconf');
 
 const fs = require('fs').promises;
 const path = require('path');
 
 module.exports = function (app) {
-	var router = express.Router();
+	const router = express.Router();
 
 	router.get('/test', (req, res) => {
 		res.redirect(404);
