@@ -6,16 +6,24 @@ define('categorySearch2', function () {
 	var categoriesList;
 	var options;
 
+	// copy of ajaxify.data.categories to add custom categories to list
+	// see admin/manage/privileges
+	var localCategories;
+
 	categorySearch.init = function (el, _options) {
 		if (utils.isTouchDevice()) {
 			return;
 		}
 		categoriesList = null;
 		options = _options || {};
+
+		localCategories = Array.isArray(ajaxify.data.categories) ? ajaxify.data.categories.map(c => ({ ...c })) : [];
+
 		var searchEl = el.find('[component="category-selector-search"]');
 		if (!searchEl.length) {
 			return;
 		}
+
 		var toggleVisibility = searchEl.parent('[component="category/dropdown"]').length > 0 ||
 			searchEl.parent('[component="category-selector"]').length > 0;
 
@@ -68,7 +76,7 @@ define('categorySearch2', function () {
 			if (err) {
 				return app.alertError(err);
 			}
-			callback(categories);
+			callback(localCategories.concat(categories));
 		});
 	}
 

@@ -9,19 +9,14 @@ privilegesController.get = async function (req, res) {
 	const cid = req.params.cid ? parseInt(req.params.cid, 10) || 0 : 0;
 	const isAdminPriv = req.params.cid === 'admin';
 
-	let method;
+	let privilegesData;
 	if (cid > 0) {
-		method = privileges.categories.list.bind(null, cid);
+		privilegesData = await privileges.categories.list(cid);
 	} else if (cid === 0) {
-		method = isAdminPriv ? privileges.admin.list : privileges.global.list;
+		privilegesData = await (isAdminPriv ? privileges.admin.list(req.uid) : privileges.global.list());
 	}
 
-	const [privilegesData, categoriesData] = await Promise.all([
-		method(isAdminPriv ? req.uid : undefined),
-		categories.buildForSelectAll(),
-	]);
-
-	categoriesData.unshift({
+	const categoriesData = [{
 		cid: 0,
 		name: '[[admin/manage/privileges:global]]',
 		icon: 'fa-list',
@@ -29,7 +24,7 @@ privilegesController.get = async function (req, res) {
 		cid: 'admin',	// what do?
 		name: '[[admin/manage/privileges:admin]]',
 		icon: 'fa-lock',
-	});
+	}];
 
 	let selectedCategory;
 	categoriesData.forEach(function (category) {
@@ -41,6 +36,10 @@ privilegesController.get = async function (req, res) {
 			}
 		}
 	});
+	if (!selectedCategory) {
+		selectedCategory = await categories.getCategoryFields(cid, ['cid', 'name', 'icon', 'bgColor', 'color']);
+	}
+
 	const group = req.query.group ? req.query.group : '';
 	res.render('admin/manage/privileges', {
 		privileges: privilegesData,

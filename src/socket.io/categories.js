@@ -150,7 +150,7 @@ SocketCategories.isModerator = async function (socket, cid) {
 };
 
 SocketCategories.getCategory = async function (socket, cid) {
-	sockets.warnDeprecated(socket, 'GET /api/v3/categories/:tid');
+	sockets.warnDeprecated(socket, 'GET /api/v3/categories/:cid');
 	return await api.categories.get(socket, { cid });
 	// return await apiController.getCategoryData(cid, socket.uid);
 };

@@ -11,6 +11,7 @@ module.exports = function (SocketCategories) {
 	SocketCategories.loadCategoryFilter = async function (socket, data) {
 		let cids = [];
 		let matchedCids = [];
+		const privilege = data.privilege || 'topics:read';
 		if (data.query) {
 			({ cids, matchedCids } = await findMatchedCids(data));
 		} else {
@@ -20,7 +21,7 @@ module.exports = function (SocketCategories) {
 		const states = data.states || [categories.watchStates.watching, categories.watchStates.notwatching];
 
 		const visibleCategories = await controllersHelpers.getVisibleCategories(
-			cids, socket.uid, states, 'topics:read'
+			cids, socket.uid, states, privilege
 		);
 
 		let categoriesData = categories.buildForSelectCategories(visibleCategories, ['disabledClass']);
