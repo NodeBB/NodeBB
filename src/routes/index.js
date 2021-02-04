@@ -93,8 +93,8 @@ function groupRoutes(app, middleware, controllers) {
 
 module.exports = async function (app, middleware) {
 	const router = express.Router();
-	router.render = function () {
-		app.render.apply(app, arguments);
+	router.render = function (...args) {
+		app.render(...args);
 	};
 	const ensureLoggedIn = require('connect-ensure-login');
 

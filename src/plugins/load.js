@@ -12,7 +12,7 @@ const { themeNamePattern } = require('../constants');
 module.exports = function (Plugins) {
 	async function registerPluginAssets(pluginData, fields) {
 		function add(dest, arr) {
-			dest.push.apply(dest, arr || []);
+			dest.push(...(arr || []));
 		}
 
 		const handlers = {

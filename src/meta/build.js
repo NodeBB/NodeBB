@@ -78,7 +78,7 @@ async function beforeBuild(targets) {
 const allTargets = Object.keys(targetHandlers).filter(name => typeof targetHandlers[name] === 'function');
 
 async function buildTargets(targets, parallel) {
-	const length = Math.max.apply(Math, targets.map(name => name.length));
+	const length = Math.max(...targets.map(name => name.length));
 
 	if (parallel) {
 		await Promise.all(

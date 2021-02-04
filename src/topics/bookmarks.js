@@ -33,7 +33,7 @@ module.exports = function (Topics) {
 		const maxIndex = await Topics.getPostCount(tid);
 		const indices = await db.sortedSetRanks(`tid:${tid}:posts`, pids);
 		const postIndices = indices.map(i => (i === null ? 0 : i + 1));
-		const minIndex = Math.min.apply(Math, postIndices);
+		const minIndex = Math.min(...postIndices);
 
 		const bookmarks = await Topics.getTopicBookmarks(tid);
 

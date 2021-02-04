@@ -124,9 +124,9 @@ Settings.prototype.persist = function (callback) {
 	if (typeof conf === 'object') {
 		conf = JSON.stringify(conf);
 	}
-	meta.settings.set(this.hash, this.createWrapper(this.cfg.v, conf), function () {
+	meta.settings.set(this.hash, this.createWrapper(this.cfg.v, conf), (...args) => {
 		if (typeof callback === 'function') {
-			callback.apply(_this, arguments || []);
+			callback.apply(_this, args || []);
 		}
 	});
 	return this;

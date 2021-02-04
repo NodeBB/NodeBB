@@ -191,13 +191,13 @@ Logger.io_one = function (socket, uid) {
 	 * This function replaces a socket's .emit/.on functions in order to intercept events
 	 */
 	function override(method, name, errorMsg) {
-		return function () {
+		return (...args) => {
 			if (opts.streams.log.f) {
-				opts.streams.log.f.write(Logger.prepare_io_string(name, uid, arguments));
+				opts.streams.log.f.write(Logger.prepare_io_string(name, uid, args));
 			}
 
 			try {
-				method.apply(socket, arguments);
+				method.apply(socket, args);
 			} catch (err) {
 				winston.info(errorMsg, err);
 			}

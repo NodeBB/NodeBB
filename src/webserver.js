@@ -283,10 +283,10 @@ function listen(callback) {
 				throw err;
 			}
 
-			server.listen.apply(server, args);
+			server.listen(...args);
 		});
 	} else {
-		server.listen.apply(server, args);
+		server.listen(...args);
 	}
 }
 

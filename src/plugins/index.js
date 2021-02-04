@@ -27,8 +27,7 @@ Plugins.data = require('./data');
 Plugins.hooks = require('./hooks');
 
 // Backwards compatibility for hooks, remove in v1.18.0
-const _deprecate = async function () {
-	const args = Array.from(arguments);
+const _deprecate = async function (...args) {
 	const oldMethod = args.shift();
 	const newMethod = args.shift();
 	const method = args.shift();

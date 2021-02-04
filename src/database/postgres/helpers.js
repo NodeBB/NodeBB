@@ -6,8 +6,7 @@ helpers.valueToString = function (value) {
 	return String(value);
 };
 
-helpers.removeDuplicateValues = function (values) {
-	const others = Array.prototype.slice.call(arguments, 1);
+helpers.removeDuplicateValues = function (values, ...others) {
 	for (let i = 0; i < values.length; i++) {
 		if (values.lastIndexOf(values[i]) !== i) {
 			values.splice(i, 1);

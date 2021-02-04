@@ -31,7 +31,7 @@ module.exports = function (Posts) {
 			return await filterPidsBySingleCid(pids, cid);
 		}
 		const pidsArr = await Promise.all(cid.map(c => Posts.filterPidsByCid(pids, c)));
-		return _.union.apply(_, pidsArr);
+		return _.union(...pidsArr);
 	};
 
 	async function filterPidsBySingleCid(pids, cid) {
