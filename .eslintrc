@@ -104,10 +104,6 @@
 		// allow not using object shorthand
 		"object-shorthand": "off",
 
-		// WORKING ON
-		"prefer-rest-params": "off",
-		"prefer-spread": "off",
-
 		// TODO
 		"consistent-return": "off",
 		"no-restricted-globals": "off",

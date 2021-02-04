@@ -38,8 +38,7 @@ const appPath = path.join(__dirname, 'app.js');
 
 Loader.init = function (callback) {
 	if (silent) {
-		console.log = function () {
-			const args = Array.prototype.slice.call(arguments);
+		console.log = (...args) => {
 			output.write(`${args.join(' ')}\n`);
 		};
 	}
