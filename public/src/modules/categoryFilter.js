@@ -1,6 +1,6 @@
 'use strict';
 
-define('categoryFilter', ['categorySearch2'], function (categorySearch) {
+define('categoryFilter', ['categorySearch'], function (categorySearch) {
 	var categoryFilter = {};
 
 	var selectedCids = [];
