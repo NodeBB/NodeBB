@@ -26,7 +26,10 @@ module.exports = function (SocketTopics) {
 		const reverse = data.topicPostSort === 'newest_to_oldest' || data.topicPostSort === 'most_votes';
 		let start = Math.max(0, parseInt(data.after, 10));
 
-		const infScrollPostsPerPage = Math.max(0, Math.min(meta.config.postsPerPage || 20, parseInt(data.count, 10) || meta.config.postsPerPage || 20));
+		const infScrollPostsPerPage = Math.max(0, Math.min(
+			meta.config.postsPerPage || 20,
+			parseInt(data.count, 10) || meta.config.postsPerPage || 20
+		));
 
 		if (data.direction === -1) {
 			start -= (infScrollPostsPerPage + 1);
@@ -96,7 +99,10 @@ module.exports = function (SocketTopics) {
 	};
 
 	function calculateStartStop(data) {
-		const itemsPerPage = Math.min(meta.config.topicsPerPage || 20, parseInt(data.count, 10) || meta.config.topicsPerPage || 20);
+		const itemsPerPage = Math.min(
+			meta.config.topicsPerPage || 20,
+			parseInt(data.count, 10) || meta.config.topicsPerPage || 20
+		);
 		let start = Math.max(0, parseInt(data.after, 10));
 		if (data.direction === -1) {
 			start -= itemsPerPage;

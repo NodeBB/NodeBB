@@ -43,7 +43,9 @@ define('forum/account/edit', [
 			aboutme: $('#inputAboutMe').val(),
 		};
 
-		userData.groupTitle = JSON.stringify(Array.isArray(userData.groupTitle) ? userData.groupTitle : [userData.groupTitle]);
+		userData.groupTitle = JSON.stringify(
+			Array.isArray(userData.groupTitle) ? userData.groupTitle : [userData.groupTitle]
+		);
 
 		$(window).trigger('action:profile.update', userData);
 

@@ -129,7 +129,13 @@ async function setupConfig() {
 		const redisQuestions = require('./database/redis').questions;
 		const mongoQuestions = require('./database/mongo').questions;
 		const postgresQuestions = require('./database/postgres').questions;
-		const allQuestions = questions.main.concat(questions.optional).concat(redisQuestions).concat(mongoQuestions).concat(postgresQuestions);
+		const allQuestions = [
+			...questions.main,
+			...questions.optional,
+			...redisQuestions,
+			...mongoQuestions,
+			...postgresQuestions,
+		];
 
 		allQuestions.forEach((question) => {
 			if (install.values.hasOwnProperty(question.name)) {
@@ -307,7 +313,8 @@ async function createAdmin() {
 		const results = await promptGet(questions);
 		return await success(results);
 	}
-	// If automated setup did not provide a user password, generate one, it will be shown to the user upon setup completion
+	// If automated setup did not provide a user password, generate one,
+	// it will be shown to the user upon setup completion
 	if (!install.values.hasOwnProperty('admin:password') && !nconf.get('admin:password')) {
 		console.log('Password was not provided during automated setup, generating one...');
 		password = utils.generateUUID().slice(0, 8);

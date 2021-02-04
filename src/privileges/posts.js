@@ -94,8 +94,11 @@ module.exports = function (privileges) {
 		const cidsSet = new Set(allowedCids);
 		const canViewDeleted = _.zipObject(cids, results.view_deleted);
 
-		pids = postData.filter(post => post.topic && cidsSet.has(post.topic.cid) &&
-				((!post.topic.deleted && !post.deleted) || canViewDeleted[post.topic.cid] || results.isAdmin)).map(post => post.pid);
+		pids = postData.filter(post => (
+			post.topic &&
+			cidsSet.has(post.topic.cid) &&
+			((!post.topic.deleted && !post.deleted) || canViewDeleted[post.topic.cid] || results.isAdmin)
+		)).map(post => post.pid);
 
 		const data = await plugins.hooks.fire('filter:privileges.posts.filter', {
 			privilege: privilege,
@@ -121,10 +124,19 @@ module.exports = function (privileges) {
 			return { flag: true };
 		}
 
-		if (!results.isMod && meta.config.postEditDuration && (Date.now() - results.postData.timestamp > meta.config.postEditDuration * 1000)) {
+		if (
+			!results.isMod &&
+			meta.config.postEditDuration &&
+			(Date.now() - results.postData.timestamp > meta.config.postEditDuration * 1000)
+		) {
 			return { flag: false, message: `[[error:post-edit-duration-expired, ${meta.config.postEditDuration}]]` };
 		}
-		if (!results.isMod && meta.config.newbiePostEditDuration > 0 && meta.config.newbiePostDelayThreshold > results.userData.reputation && Date.now() - results.postData.timestamp > meta.config.newbiePostEditDuration * 1000) {
+		if (
+			!results.isMod &&
+			meta.config.newbiePostEditDuration > 0 &&
+			meta.config.newbiePostDelayThreshold > results.userData.reputation &&
+			Date.now() - results.postData.timestamp > meta.config.newbiePostEditDuration * 1000
+		) {
 			return { flag: false, message: `[[error:post-edit-duration-expired, ${meta.config.newbiePostEditDuration}]]` };
 		}
 

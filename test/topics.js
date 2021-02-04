@@ -58,7 +58,12 @@ describe('Topic\'s', () => {
 		});
 
 		it('should create a new topic with proper parameters', (done) => {
-			topics.post({ uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId }, (err, result) => {
+			topics.post({
+				uid: topic.userId,
+				title: topic.title,
+				content: topic.content,
+				cid: topic.categoryId,
+			}, (err, result) => {
 				assert.ifError(err);
 				assert(result);
 				topic.tid = result.topicData.tid;
@@ -170,7 +175,12 @@ describe('Topic\'s', () => {
 		let newPost;
 
 		before((done) => {
-			topics.post({ uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId }, (err, result) => {
+			topics.post({
+				uid: topic.userId,
+				title: topic.title,
+				content: topic.content,
+				cid: topic.categoryId,
+			}, (err, result) => {
 				if (err) {
 					return done(err);
 				}
@@ -265,7 +275,12 @@ describe('Topic\'s', () => {
 		let newPost;
 
 		before((done) => {
-			topics.post({ uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId }, (err, result) => {
+			topics.post({
+				uid: topic.userId,
+				title: topic.title,
+				content: topic.content,
+				cid: topic.categoryId,
+			}, (err, result) => {
 				if (err) {
 					return done(err);
 				}
@@ -471,7 +486,12 @@ describe('Topic\'s', () => {
 		before((done) => {
 			async.waterfall([
 				function (next) {
-					topics.post({ uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId }, (err, result) => {
+					topics.post({
+						uid: topic.userId,
+						title: topic.title,
+						content: topic.content,
+						cid: topic.categoryId,
+					}, (err, result) => {
 						assert.ifError(err);
 						newTopic = result.topicData;
 						next();
@@ -985,7 +1005,12 @@ describe('Topic\'s', () => {
 					groups.join('administrators', topic.userId, next);
 				},
 				function (next) {
-					topics.post({ uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId }, (err, result) => {
+					topics.post({
+						uid: topic.userId,
+						title: topic.title,
+						content: topic.content,
+						cid: topic.categoryId,
+					}, (err, result) => {
 						assert.ifError(err);
 						newTopic = result.topicData;
 						next();
@@ -1276,7 +1301,12 @@ describe('Topic\'s', () => {
 		const socketTopics = require('../src/socket.io/topics');
 		let tid;
 		before((done) => {
-			topics.post({ uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId }, (err, result) => {
+			topics.post({
+				uid: topic.userId,
+				title: topic.title,
+				content: topic.content,
+				cid: topic.categoryId,
+			}, (err, result) => {
 				assert.ifError(err);
 				tid = result.topicData.tid;
 				done();

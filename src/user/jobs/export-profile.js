@@ -33,7 +33,19 @@ process.on('message', async (msg) => {
 		const profilePath = path.join(__dirname, '../../../build/export', profileFile);
 
 		const user = require('../index');
-		const [userData, userSettings, ips, sessions, usernames, emails, bookmarks, watchedTopics, upvoted, downvoted, following] = await Promise.all([
+		const [
+			userData,
+			userSettings,
+			ips,
+			sessions,
+			usernames,
+			emails,
+			bookmarks,
+			watchedTopics,
+			upvoted,
+			downvoted,
+			following,
+		] = await Promise.all([
 			db.getObject(`user:${targetUid}`),
 			db.getObject(`user:${targetUid}:settings`),
 			user.getIPs(targetUid, 9),

@@ -176,7 +176,9 @@ define('pictureCropper', ['cropper'], function (Cropper) {
 	function checkCORS(cropperTool, data) {
 		var imageData;
 		try {
-			imageData = data.imageType ? cropperTool.getCroppedCanvas().toDataURL(data.imageType) : cropperTool.getCroppedCanvas().toDataURL();
+			imageData = data.imageType ?
+				cropperTool.getCroppedCanvas().toDataURL(data.imageType) :
+				cropperTool.getCroppedCanvas().toDataURL();
 		} catch (err) {
 			var corsErrors = [
 				'The operation is insecure.',

@@ -10,7 +10,17 @@ define('forum/groups/details', [
 	'api',
 	'slugify',
 	'categorySelector',
-], function (memberList, iconSelect, components, coverPhoto, pictureCropper, translator, api, slugify, categorySelector) {
+], function (
+	memberList,
+	iconSelect,
+	components,
+	coverPhoto,
+	pictureCropper,
+	translator,
+	api,
+	slugify,
+	categorySelector
+) {
 	var Details = {};
 	var groupName;
 

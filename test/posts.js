@@ -446,7 +446,10 @@ describe('Post\'s', () => {
 
 		it('should purge posts and purge topic', (done) => {
 			createTopicWithReply((topicPostData, replyData) => {
-				socketPosts.purgePosts({ uid: voterUid }, { pids: [replyData.pid, topicPostData.postData.pid], tid: topicPostData.topicData.tid }, (err) => {
+				socketPosts.purgePosts({ uid: voterUid }, {
+					pids: [replyData.pid, topicPostData.postData.pid],
+					tid: topicPostData.topicData.tid,
+				}, (err) => {
 					assert.ifError(err);
 					posts.exists(`post:${replyData.pid}`, (err, exists) => {
 						assert.ifError(err);

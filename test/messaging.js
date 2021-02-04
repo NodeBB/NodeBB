@@ -224,7 +224,10 @@ describe('Messaging Library', () => {
 
 		it('should send not a user-leave system message when a user tries to leave a room they are not in', async () => {
 			await socketModules.chats.leave({ uid: bazUid }, roomId);
-			const messages = await socketModules.chats.getMessages({ uid: fooUid }, { uid: fooUid, roomId: roomId, start: 0 });
+			const messages = await socketModules.chats.getMessages(
+				{ uid: fooUid },
+				{ uid: fooUid, roomId: roomId, start: 0 }
+			);
 			assert.equal(messages.length, 4);
 			const message = messages.pop();
 			assert.strictEqual(message.system, true);

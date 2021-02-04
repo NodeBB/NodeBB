@@ -47,7 +47,12 @@ module.exports = {
 
 					// has no history, but is banned, create plain object with just uid and timestmap
 					if (!results.bans.length && parseInt(results.userData.banned, 10)) {
-						const banTimestamp = results.userData.lastonline || results.userData.lastposttime || results.userData.joindate || Date.now();
+						const banTimestamp = (
+							results.userData.lastonline ||
+							results.userData.lastposttime ||
+							results.userData.joindate ||
+							Date.now()
+						);
 						const banKey = `uid:${uid}:ban:${banTimestamp}`;
 						addBan(banKey, { uid: uid, timestamp: banTimestamp }, next);
 						return;

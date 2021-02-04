@@ -10,8 +10,16 @@ const { setupApiRoute } = routeHelpers;
 module.exports = function () {
 	const middlewares = [middleware.authenticate];
 
-	// setupApiRoute(router, 'put', '/', [...middlewares, middleware.checkRequired.bind(null, ['path']), middleware.assert.folder], controllers.write.files.upload);
-	setupApiRoute(router, 'delete', '/', [...middlewares, middleware.checkRequired.bind(null, ['path']), middleware.assert.path], controllers.write.files.delete);
+	// setupApiRoute(router, 'put', '/', [
+	// 	...middlewares,
+	// 	middleware.checkRequired.bind(null, ['path']),
+	// 	middleware.assert.folder
+	// ], controllers.write.files.upload);
+	setupApiRoute(router, 'delete', '/', [
+		...middlewares,
+		middleware.checkRequired.bind(null, ['path']),
+		middleware.assert.path,
+	], controllers.write.files.delete);
 
 	return router;
 };

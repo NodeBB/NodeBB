@@ -202,7 +202,9 @@ Controllers.registerInterstitial = async function (req, res, next) {
 			return helpers.redirect(res, returnTo || '/');
 		}
 
-		const renders = data.interstitials.map(interstitial => req.app.renderAsync(interstitial.template, interstitial.data || {}));
+		const renders = data.interstitials.map(
+			interstitial => req.app.renderAsync(interstitial.template, interstitial.data || {})
+		);
 		const sections = await Promise.all(renders);
 
 		res.render('registerComplete', {

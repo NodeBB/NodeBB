@@ -62,7 +62,11 @@ ajaxify = window.ajaxify || {};
 		$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 
 		ajaxify.loadData(url, function (err, data) {
-			if (!err || (err && err.data && (parseInt(err.data.status, 10) !== 302 && parseInt(err.data.status, 10) !== 308))) {
+			if (!err || (
+				err &&
+				err.data &&
+				(parseInt(err.data.status, 10) !== 302 && parseInt(err.data.status, 10) !== 308)
+			)) {
 				ajaxify.updateHistory(url, quiet);
 			}
 
@@ -340,7 +344,8 @@ ajaxify = window.ajaxify || {};
 			if (typeof script === 'string') {
 				return function (next) {
 					require(['hooks', script], function (hooks, module) {
-						// Hint: useful if you want to override a loaded library (e.g. replace core client-side logic), or call a method other than .init()
+						// Hint: useful if you want to override a loaded library (e.g. replace core client-side logic),
+						// or call a method other than .init()
 						hooks.fire('static:script.init', { tpl_url, name: script, module }).then(() => {
 							if (module && module.init) {
 								module.init();

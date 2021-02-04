@@ -65,7 +65,10 @@ module.exports = function (module) {
 
 		const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
 		for (let i = 0; i < keys.length; i += 1) {
-			bulk.find({ _key: keys[i], value: value }).upsert().updateOne({ $set: { score: parseFloat(isArrayOfScores ? scores[i] : scores) } });
+			bulk
+				.find({ _key: keys[i], value: value })
+				.upsert()
+				.updateOne({ $set: { score: parseFloat(isArrayOfScores ? scores[i] : scores) } });
 		}
 		await bulk.execute();
 	};

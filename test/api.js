@@ -286,7 +286,8 @@ describe('API', async () => {
 	generateTests(writeApi, Object.keys(writeApi.paths), writeApi.servers[0].url);
 
 	function generateTests(api, paths, prefix) {
-		// Iterate through all documented paths, make a call to it, and compare the result body with what is defined in the spec
+		// Iterate through all documented paths, make a call to it,
+		// and compare the result body with what is defined in the spec
 		const pathLib = path;	// for calling path module from inside this forEach
 		paths.forEach((path) => {
 			const context = api.paths[path];

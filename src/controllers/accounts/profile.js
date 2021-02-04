@@ -65,7 +65,10 @@ async function incrementProfileViews(req, userData) {
 	if (req.uid >= 1) {
 		req.session.uids_viewed = req.session.uids_viewed || {};
 
-		if (req.uid !== userData.uid && (!req.session.uids_viewed[userData.uid] || req.session.uids_viewed[userData.uid] < Date.now() - 3600000)) {
+		if (
+			req.uid !== userData.uid &&
+			(!req.session.uids_viewed[userData.uid] || req.session.uids_viewed[userData.uid] < Date.now() - 3600000)
+		) {
 			await user.incrementUserFieldBy(userData.uid, 'profileviews', 1);
 			req.session.uids_viewed[userData.uid] = Date.now();
 		}
@@ -102,7 +105,9 @@ async function getPosts(callerUid, userData, setSuffix) {
 		}
 		if (pids.length) {
 			const p = await posts.getPostSummaryByPids(pids, callerUid, { stripTags: false });
-			postData.push(...p.filter(p => p && p.topic && (isAdmin || cidToIsMod[p.topic.cid] || (!p.deleted && !p.topic.deleted))));
+			postData.push(...p.filter(
+				p => p && p.topic && (isAdmin || cidToIsMod[p.topic.cid] || (!p.deleted && !p.topic.deleted))
+			));
 		}
 		start += count;
 	} while (postData.length < count && hasMorePosts);

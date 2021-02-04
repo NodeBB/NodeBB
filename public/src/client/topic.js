@@ -130,7 +130,10 @@ define('forum/topic', [
 			if (components.get('post/anchor', postIndex - 1).length) {
 				return navigator.scrollToPostIndex(postIndex - 1, true, 0);
 			}
-		} else if (bookmark && (!config.usePagination || (config.usePagination && ajaxify.data.pagination.currentPage === 1)) && ajaxify.data.postcount > ajaxify.data.bookmarkThreshold) {
+		} else if (bookmark && (
+			!config.usePagination ||
+			(config.usePagination && ajaxify.data.pagination.currentPage === 1)
+		) && ajaxify.data.postcount > ajaxify.data.bookmarkThreshold) {
 			app.alert({
 				alert_id: 'bookmark',
 				message: '[[topic:bookmark_instructions]]',
@@ -250,7 +253,14 @@ define('forum/topic', [
 			index = Math.max(1, ajaxify.data.postcount - index + 2);
 		}
 
-		if (ajaxify.data.postcount > ajaxify.data.bookmarkThreshold && (!currentBookmark || parseInt(index, 10) > parseInt(currentBookmark, 10) || ajaxify.data.postcount < parseInt(currentBookmark, 10))) {
+		if (
+			ajaxify.data.postcount > ajaxify.data.bookmarkThreshold &&
+			(
+				!currentBookmark ||
+				parseInt(index, 10) > parseInt(currentBookmark, 10) ||
+				ajaxify.data.postcount < parseInt(currentBookmark, 10)
+			)
+		) {
 			if (app.user.uid) {
 				socket.emit('topics.bookmark', {
 					tid: ajaxify.data.tid,

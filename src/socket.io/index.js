@@ -185,7 +185,9 @@ async function checkMaintenance(socket) {
 	throw new Error(`[[pages:maintenance.text, ${validator.escape(String(meta.config.title || 'NodeBB'))}]]`);
 }
 
-const getSessionAsync = util.promisify((sid, callback) => db.sessionStore.get(sid, (err, sessionObj) => callback(err, sessionObj || null)));
+const getSessionAsync = util.promisify(
+	(sid, callback) => db.sessionStore.get(sid, (err, sessionObj) => callback(err, sessionObj || null))
+);
 
 async function validateSession(socket) {
 	const req = socket.request;

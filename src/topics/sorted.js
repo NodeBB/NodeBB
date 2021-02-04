@@ -151,7 +151,12 @@ module.exports = function (Topics) {
 		topicData = filtered;
 
 		const cids = params.cids && params.cids.map(String);
-		tids = topicData.filter(t => t && t.cid && !isCidIgnored[t.cid] && (!cids || cids.includes(String(t.cid)))).map(t => t.tid);
+		tids = topicData.filter(t => (
+			t &&
+			t.cid &&
+			!isCidIgnored[t.cid] &&
+			(!cids || cids.includes(String(t.cid)))
+		)).map(t => t.tid);
 
 		const result = await plugins.hooks.fire('filter:topics.filterSortedTids', { tids: tids, params: params });
 		return result.tids;

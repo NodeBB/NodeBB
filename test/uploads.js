@@ -196,36 +196,51 @@ describe('Upload Controllers', () => {
 		});
 
 		// it('should fail if topic thumbs are disabled', function (done) {
-		// 	helpers.uploadFile(nconf.get('url') + '/api/topic/thumb/upload', path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, function (err, res, body) {
-		// 		assert.ifError(err);
-		// 		assert.strictEqual(res.statusCode, 404);
-		// 		console.log(body);
-		// 		assert(body && body.status && body.status.code);
-		// 		assert.strictEqual(body.status.code, '[[error:topic-thumbnails-are-disabled]]');
-		// 		done();
-		// 	});
+		// 	helpers.uploadFile(
+		// 		nconf.get('url') + '/api/topic/thumb/upload',
+		// 		path.join(__dirname, '../test/files/test.png'),
+		// 		{}, jar, csrf_token,
+		// 		function (err, res, body) {
+		// 			assert.ifError(err);
+		// 			assert.strictEqual(res.statusCode, 404);
+		// 			console.log(body);
+		// 			assert(body && body.status && body.status.code);
+		// 			assert.strictEqual(body.status.code, '[[error:topic-thumbnails-are-disabled]]');
+		// 			done();
+		// 		}
+		// 	);
 		// });
 
 		// it('should fail if file is not image', function (done) {
 		// 	meta.config.allowTopicsThumbnail = 1;
-		// 	helpers.uploadFile(nconf.get('url') + '/api/topic/thumb/upload', path.join(__dirname, '../test/files/503.html'), {}, jar, csrf_token, function (err, res, body) {
-		// 		assert.ifError(err);
-		// 		assert.equal(res.statusCode, 500);
-		// 		assert.equal(body.error, '[[error:invalid-file]]');
-		// 		done();
-		// 	});
+		// 	helpers.uploadFile(
+		// 		nconf.get('url') + '/api/topic/thumb/upload',
+		// 		path.join(__dirname, '../test/files/503.html'),
+		// 		{}, jar, csrf_token,
+		// 		function (err, res, body) {
+		// 			assert.ifError(err);
+		// 			assert.equal(res.statusCode, 500);
+		// 			assert.equal(body.error, '[[error:invalid-file]]');
+		// 			done();
+		// 		}
+		// 	);
 		// });
 
 		// it('should upload topic thumb', function (done) {
 		// 	meta.config.allowTopicsThumbnail = 1;
-		// 	helpers.uploadFile(nconf.get('url') + '/api/topic/thumb/upload', path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, function (err, res, body) {
-		// 		assert.ifError(err);
-		// 		assert.equal(res.statusCode, 200);
-		// 		assert(Array.isArray(body));
-		// 		assert(body[0].path);
-		// 		assert(body[0].url);
-		// 		done();
-		// 	});
+		// 	helpers.uploadFile(
+		// 		nconf.get('url') + '/api/topic/thumb/upload',
+		// 		path.join(__dirname, '../test/files/test.png'),
+		// 		{}, jar, csrf_token,
+		// 		function (err, res, body) {
+		// 			assert.ifError(err);
+		// 			assert.equal(res.statusCode, 200);
+		// 			assert(Array.isArray(body));
+		// 			assert(body[0].path);
+		// 			assert(body[0].url);
+		// 			done();
+		// 		}
+		// 	);
 		// });
 
 		it('should not allow non image uploads', (done) => {

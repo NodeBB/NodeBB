@@ -22,10 +22,13 @@ pluginsController.get = async function (req, res) {
 		memo[cur.label] = cur.value;
 		return memo;
 	}, {});
-	const trendingPlugins = all.filter(plugin => plugin && Object.keys(trendingScores).includes(plugin.id)).sort((a, b) => trendingScores[b.id] - trendingScores[a.id]).map((plugin) => {
-		plugin.downloads = trendingScores[plugin.id];
-		return plugin;
-	});
+	const trendingPlugins = all
+		.filter(plugin => plugin && Object.keys(trendingScores).includes(plugin.id))
+		.sort((a, b) => trendingScores[b.id] - trendingScores[a.id])
+		.map((plugin) => {
+			plugin.downloads = trendingScores[plugin.id];
+			return plugin;
+		});
 
 	res.render('admin/extend/plugins', {
 		installed: installedPlugins,
