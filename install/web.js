@@ -289,7 +289,7 @@ async function copyCSS() {
 async function loadDefaults() {
 	const setupDefaultsPath = path.join(__dirname, '../setup.json');
 	try {
-		await fs.promises.access(setupDefaultsPath, fs.constants.F_OK | fs.constants.R_OK);
+		await fs.promises.access(setupDefaultsPath, fs.constants.F_OK + fs.constants.R_OK);
 	} catch (err) {
 		// setup.json not found or inaccessible, proceed with no defaults
 		if (err.code !== 'ENOENT') {
