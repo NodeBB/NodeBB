@@ -11,14 +11,14 @@ module.exports = {
 		const progress = this.progress;
 		const week = 604800000;
 		const cutoffTime = Date.now() - week;
-		await batch.processSortedSet('users:joindate', async function (uids) {
+		await batch.processSortedSet('users:joindate', async (uids) => {
 			progress.incr(uids.length);
 			await Promise.all([
 				db.sortedSetsRemoveRangeByScore(uids.map(uid => `uid:${uid}:notifications:unread`), '-inf', cutoffTime),
 				db.sortedSetsRemoveRangeByScore(uids.map(uid => `uid:${uid}:notifications:read`), '-inf', cutoffTime),
 			]);
 			const userData = await user.getUsersData(uids);
-			await Promise.all(userData.map(async function (user) {
+			await Promise.all(userData.map(async (user) => {
 				if (!user) {
 					return;
 				}

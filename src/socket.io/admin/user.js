@@ -87,7 +87,7 @@ User.sendValidationEmail = async function (socket, uids) {
 
 	const failed = [];
 
-	await async.eachLimit(uids, 50, async function (uid) {
+	await async.eachLimit(uids, 50, async (uid) => {
 		await user.email.sendValidationEmail(uid, { force: true }).catch((err) => {
 			winston.error(`[user.create] Validation email failed to send\n[emailer.send] ${err.stack}`);
 			failed.push(uid);
@@ -106,7 +106,7 @@ User.sendPasswordResetEmail = async function (socket, uids) {
 
 	uids = uids.filter(uid => parseInt(uid, 10));
 
-	await Promise.all(uids.map(async function (uid) {
+	await Promise.all(uids.map(async (uid) => {
 		const userData = await user.getUserFields(uid, ['email', 'username']);
 		if (!userData.email) {
 			throw new Error(`[[error:user-doesnt-have-email, ${userData.username}]]`);
@@ -170,7 +170,7 @@ User.exportUsersCSV = async function (socket) {
 		uid: socket.uid,
 		ip: socket.ip,
 	});
-	setTimeout(async function () {
+	setTimeout(async () => {
 		try {
 			await user.exportUsersCSV();
 			socket.emit('event:export-users-csv');

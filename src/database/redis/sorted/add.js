@@ -65,7 +65,7 @@ module.exports = function (module) {
 			return;
 		}
 		var batch = module.client.batch();
-		data.forEach(function (item) {
+		data.forEach((item) => {
 			if (!utils.isNumber(item[1])) {
 				throw new Error(`[[error:invalid-score, ${item[1]}]]`);
 			}

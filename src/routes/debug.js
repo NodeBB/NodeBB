@@ -9,7 +9,7 @@ const path = require('path');
 module.exports = function (app) {
 	var router = express.Router();
 
-	router.get('/test', function (req, res) {
+	router.get('/test', (req, res) => {
 		res.redirect(404);
 	});
 

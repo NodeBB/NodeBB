@@ -40,10 +40,10 @@ module.exports = function (Topics) {
 		var uidData = bookmarks.map(b => ({ uid: b.value, bookmark: parseInt(b.score, 10) }))
 			.filter(data => data.bookmark >= minIndex);
 
-		await async.eachLimit(uidData, 50, async function (data) {
+		await async.eachLimit(uidData, 50, async (data) => {
 			var bookmark = Math.min(data.bookmark, maxIndex);
 
-			postIndices.forEach(function (i) {
+			postIndices.forEach((i) => {
 				if (i < data.bookmark) {
 					bookmark -= 1;
 				}

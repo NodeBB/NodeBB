@@ -10,7 +10,7 @@ module.exports = {
 		const translator = require('../../translator');
 		const order = [];
 		const items = [];
-		data.forEach(function (item) {
+		data.forEach((item) => {
 			const navItem = JSON.parse(item.value);
 			if (navItem.hasOwnProperty('title')) {
 				navItem.title = translator.unescape(navItem.title);

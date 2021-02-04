@@ -34,7 +34,7 @@ module.exports = function (SocketCategories) {
 		let categoriesData = categories.buildForSelectCategories(visibleCategories, ['disabledClass'], data.parentCid);
 		categoriesData = categoriesData.slice(0, 200);
 
-		categoriesData.forEach(function (category) {
+		categoriesData.forEach((category) => {
 			category.selected = data.selectedCids ? data.selectedCids.includes(category.cid) : false;
 			if (matchedCids.includes(category.cid)) {
 				category.match = true;

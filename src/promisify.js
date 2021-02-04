@@ -22,7 +22,7 @@ module.exports = function (theModule, ignoreKeys) {
 		}
 
 		const keys = Object.keys(module);
-		keys.forEach(function (key) {
+		keys.forEach((key) => {
 			if (ignoreKeys.includes(key)) {
 				return;
 			}
@@ -40,9 +40,7 @@ module.exports = function (theModule, ignoreKeys) {
 		return async function wrapperCallback(...args) {
 			if (arguments.length && typeof arguments[arguments.length - 1] === 'function') {
 				const cb = args.pop();
-				args.push(function (err, res) {
-					return res !== undefined ? cb(err, res) : cb(err);
-				});
+				args.push((err, res) => (res !== undefined ? cb(err, res) : cb(err)));
 				return callbackFn.apply(null, args);
 			}
 			return origFn.apply(null, arguments);

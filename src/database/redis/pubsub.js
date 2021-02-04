@@ -11,10 +11,10 @@ const PubSub = function () {
 	const self = this;
 	channelName = `db:${nconf.get('redis:database')}:pubsub_channel`;
 
-	connection.connect().then(function (client) {
+	connection.connect().then((client) => {
 		self.subClient = client;
 		self.subClient.subscribe(channelName);
-		self.subClient.on('message', function (channel, message) {
+		self.subClient.on('message', (channel, message) => {
 			if (channel !== channelName) {
 				return;
 			}
@@ -28,7 +28,7 @@ const PubSub = function () {
 		});
 	});
 
-	connection.connect().then(function (client) {
+	connection.connect().then((client) => {
 		self.pubClient = client;
 	});
 };

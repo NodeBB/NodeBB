@@ -41,7 +41,7 @@ categoriesController.list = async function (req, res) {
 		pagination: pagination.create(page, pageCount, req.query),
 	};
 
-	data.categories.forEach(function (category) {
+	data.categories.forEach((category) => {
 		if (category) {
 			helpers.trimChildren(category);
 			helpers.setCategoryTeaser(category);

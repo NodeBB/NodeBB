@@ -14,7 +14,7 @@ module.exports = {
 				db.getSortedSetRevRange('categories:cid', 0, -1, next);
 			},
 			function (cids, next) {
-				async.eachSeries(cids, function (cid, next) {
+				async.eachSeries(cids, (cid, next) => {
 					async.waterfall([
 						function (next) {
 							givePrivsToModerators(cid, '', next);
@@ -35,7 +35,7 @@ module.exports = {
 					db.getSortedSetRevRange(`group:cid:${cid}:privileges:${groupPrefix}moderate:members`, 0, -1, next);
 				},
 				function (members, next) {
-					async.eachSeries(members, function (member, next) {
+					async.eachSeries(members, (member, next) => {
 						groups.join(['cid:0:privileges:view:users:info'], member, next);
 					}, next);
 				},

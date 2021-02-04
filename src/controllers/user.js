@@ -95,7 +95,7 @@ function sendExport(filename, type, res, next) {
 			'Content-Type': type,
 			'Content-Disposition': `attachment; filename=${filename}`,
 		},
-	}, function (err) {
+	}, (err) => {
 		if (err) {
 			if (err.code === 'ENOENT') {
 				res.locals.isAPI = false;

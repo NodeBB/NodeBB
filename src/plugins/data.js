@@ -189,7 +189,7 @@ Data.getModules = async function getModules(pluginData) {
 	if (Array.isArray(pluginModules)) {
 		var strip = parseInt(pluginData.modulesStrip, 10) || 0;
 
-		pluginModules = pluginModules.reduce(function (prev, modulePath) {
+		pluginModules = pluginModules.reduce((prev, modulePath) => {
 			var key;
 			if (strip) {
 				key = modulePath.replace(new RegExp(`.?(/[^/]+){${strip}}/`), '');
@@ -228,7 +228,7 @@ Data.getLanguageData = async function getLanguageData(pluginData) {
 	const namespaces = [];
 	const languages = [];
 
-	filepaths.forEach(function (p) {
+	filepaths.forEach((p) => {
 		const rel = path.relative(pathToFolder, p).split(/[/\\]/);
 		const language = rel.shift().replace('_', '-').replace('@', '-x-');
 		const namespace = rel.join('/').replace(/\.json$/, '');

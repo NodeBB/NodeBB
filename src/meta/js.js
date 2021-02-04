@@ -116,7 +116,7 @@ async function linkIfLinux(srcPath, destPath) {
 const basePath = path.resolve(__dirname, '../..');
 
 async function minifyModules(modules, fork) {
-	const moduleDirs = modules.reduce(function (prev, mod) {
+	const moduleDirs = modules.reduce((prev, mod) => {
 		const dir = path.resolve(path.dirname(mod.destPath));
 		if (!prev.includes(dir)) {
 			prev.push(dir);
@@ -126,7 +126,7 @@ async function minifyModules(modules, fork) {
 
 	await Promise.all(moduleDirs.map(dir => mkdirp(dir)));
 
-	const filtered = modules.reduce(function (prev, mod) {
+	const filtered = modules.reduce((prev, mod) => {
 		if (mod.srcPath.endsWith('.min.js') || path.dirname(mod.srcPath).endsWith('min')) {
 			prev.skip.push(mod);
 		} else {
@@ -145,7 +145,7 @@ async function minifyModules(modules, fork) {
 async function linkModules() {
 	const modules = JS.scripts.modules;
 
-	await Promise.all(Object.keys(modules).map(async function (relPath) {
+	await Promise.all(Object.keys(modules).map(async (relPath) => {
 		const srcPath = path.join(__dirname, '../../', modules[relPath]);
 		const destPath = path.join(__dirname, '../../build/public/src/modules', relPath);
 		const [stats] = await Promise.all([
@@ -165,24 +165,20 @@ async function linkModules() {
 const moduleDirs = ['modules', 'admin', 'client'];
 
 async function getModuleList() {
-	let modules = Object.keys(JS.scripts.modules).map(function (relPath) {
-		return {
-			srcPath: path.join(__dirname, '../../', JS.scripts.modules[relPath]),
-			destPath: path.join(__dirname, '../../build/public/src/modules', relPath),
-		};
-	});
+	let modules = Object.keys(JS.scripts.modules).map(relPath => ({
+		srcPath: path.join(__dirname, '../../', JS.scripts.modules[relPath]),
+		destPath: path.join(__dirname, '../../build/public/src/modules', relPath),
+	}));
 
-	const coreDirs = moduleDirs.map(function (dir) {
-		return {
-			srcPath: path.join(__dirname, '../../public/src', dir),
-			destPath: path.join(__dirname, '../../build/public/src', dir),
-		};
-	});
+	const coreDirs = moduleDirs.map(dir => ({
+		srcPath: path.join(__dirname, '../../public/src', dir),
+		destPath: path.join(__dirname, '../../build/public/src', dir),
+	}));
 
 	modules = modules.concat(coreDirs);
 
 	const moduleFiles = [];
-	await Promise.all(modules.map(async function (module) {
+	await Promise.all(modules.map(async (module) => {
 		const srcPath = module.srcPath;
 		const destPath = module.destPath;
 
@@ -196,16 +192,14 @@ async function getModuleList() {
 
 		const mods = files.filter(
 			filePath => path.extname(filePath) === '.js'
-		).map(function (filePath) {
-			return {
-				srcPath: path.normalize(filePath),
-				destPath: path.join(destPath, path.relative(srcPath, filePath)),
-			};
-		});
+		).map(filePath => ({
+			srcPath: path.normalize(filePath),
+			destPath: path.join(destPath, path.relative(srcPath, filePath)),
+		}));
 
 		moduleFiles.push(...mods);
 	}));
-	moduleFiles.forEach(function (mod) {
+	moduleFiles.forEach((mod) => {
 		mod.filename = path.relative(basePath, mod.srcPath).replace(/\\/g, '/');
 	});
 	return moduleFiles;
@@ -265,7 +259,7 @@ async function requirejsOptimize(target) {
 		],
 		client: [],
 	};
-	const optimizeAsync = util.promisify(function (config, cb) {
+	const optimizeAsync = util.promisify((config, cb) => {
 		requirejs.optimize(config, () => cb(), err => cb(err));
 	});
 
@@ -282,7 +276,7 @@ async function requirejsOptimize(target) {
 JS.linkStatics = async function () {
 	await rimrafAsync(path.join(__dirname, '../../build/public/plugins'));
 
-	await Promise.all(Object.keys(plugins.staticDirs).map(async function (mappedPath) {
+	await Promise.all(Object.keys(plugins.staticDirs).map(async (mappedPath) => {
 		const sourceDir = plugins.staticDirs[mappedPath];
 		const destDir = path.join(__dirname, '../../build/public/plugins', mappedPath);
 
@@ -297,7 +291,7 @@ async function getBundleScriptList(target) {
 	if (target === 'admin') {
 		target = 'acp';
 	}
-	let pluginScripts = plugins[`${target}Scripts`].filter(function (path) {
+	let pluginScripts = plugins[`${target}Scripts`].filter((path) => {
 		if (path.endsWith('.js')) {
 			return true;
 		}
@@ -306,7 +300,7 @@ async function getBundleScriptList(target) {
 		return false;
 	});
 
-	await Promise.all(pluginDirectories.map(async function (directory) {
+	await Promise.all(pluginDirectories.map(async (directory) => {
 		const scripts = await file.walk(directory);
 		pluginScripts = pluginScripts.concat(scripts);
 	}));
@@ -319,7 +313,7 @@ async function getBundleScriptList(target) {
 		scripts = scripts.concat(JS.scripts.admin);
 	}
 
-	scripts = scripts.concat(pluginScripts).map(function (script) {
+	scripts = scripts.concat(pluginScripts).map((script) => {
 		const srcPath = path.resolve(basePath, script).replace(/\\/g, '/');
 		return {
 			srcPath: srcPath,

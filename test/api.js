@@ -98,7 +98,7 @@ describe('API', async () => {
 		// pretend to handle sending emails
 	}
 
-	after(async function () {
+	after(async () => {
 		plugins.hooks.unregister('core', 'filter:search.query', dummySearchHook);
 		plugins.hooks.unregister('emailer-test', 'filter:email.send');
 	});
@@ -251,14 +251,12 @@ describe('API', async () => {
 			return _.flatten(paths);
 		};
 
-		let paths = buildPaths(webserver.app._router.stack).filter(Boolean).map(function normalize(pathObj) {
+		let paths = buildPaths(webserver.app._router.stack).filter(Boolean).map((pathObj) => {
 			pathObj.path = pathObj.path.replace(/\/:([^\\/]+)/g, '/{$1}');
 			return pathObj;
 		});
 		const exclusionPrefixes = ['/api/admin/plugins', '/api/compose', '/debug'];
-		paths = paths.filter(function filterExclusions(path) {
-			return path.method !== '_all' && !exclusionPrefixes.some(prefix => path.path.startsWith(prefix));
-		});
+		paths = paths.filter(path => path.method !== '_all' && !exclusionPrefixes.some(prefix => path.path.startsWith(prefix)));
 
 
 		// For each express path, query for existence in read and write api schemas
@@ -393,7 +391,7 @@ describe('API', async () => {
 							});
 						} else if (type === 'form') {
 							response = await new Promise((resolve, reject) => {
-								helpers.uploadFile(url, pathLib.join(__dirname, './files/test.png'), {}, jar, csrfToken, function (err, res) {
+								helpers.uploadFile(url, pathLib.join(__dirname, './files/test.png'), {}, jar, csrfToken, (err, res) => {
 									if (err) {
 										return reject(err);
 									}

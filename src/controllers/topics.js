@@ -102,7 +102,7 @@ topicsController.get = async function getTopic(req, res, callback) {
 	]);
 
 	topicData.pagination = pagination.create(currentPage, pageCount, req.query);
-	topicData.pagination.rel.forEach(function (rel) {
+	topicData.pagination.rel.forEach((rel) => {
 		rel.href = `${url}/topic/${topicData.slug}${rel.href}`;
 		res.locals.linkTags.push(rel);
 	});
@@ -344,7 +344,7 @@ topicsController.pagination = async function (req, res, callback) {
 	const pageCount = Math.max(1, Math.ceil(postCount / settings.postsPerPage));
 
 	const paginationData = pagination.create(currentPage, pageCount);
-	paginationData.rel.forEach(function (rel) {
+	paginationData.rel.forEach((rel) => {
 		rel.href = `${url}/topic/${topic.slug}${rel.href}`;
 	});
 

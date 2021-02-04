@@ -10,8 +10,8 @@ module.exports = {
 	method: function (callback) {
 		var progress = this.progress;
 
-		batch.processSortedSet('users:joindate', function (uids, next) {
-			async.eachLimit(uids, 500, function (uid, next) {
+		batch.processSortedSet('users:joindate', (uids, next) => {
+			async.eachLimit(uids, 500, (uid, next) => {
 				progress.incr();
 				async.waterfall([
 					function (next) {
@@ -32,7 +32,7 @@ module.exports = {
 							return next();
 						}
 
-						async.series(tasks, function (err) {
+						async.series(tasks, (err) => {
 							_next(err);
 						});
 					},

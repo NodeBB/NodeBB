@@ -43,7 +43,7 @@ Languages.list = async function () {
 
 	const codes = await Languages.listCodes();
 
-	let languages = await Promise.all(codes.map(async function (folder) {
+	let languages = await Promise.all(codes.map(async (folder) => {
 		try {
 			const configPath = path.join(languagesPath, folder, 'language.json');
 			const file = await fs.promises.readFile(configPath, 'utf8');

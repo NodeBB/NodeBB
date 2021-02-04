@@ -95,7 +95,7 @@ async function generateForTopic(req, res) {
 			feed.pubDate = new Date(parseInt(topicData.posts[0].timestamp, 10)).toUTCString();
 		}
 		const replies = topicData.posts.slice(1);
-		replies.forEach(function (postData) {
+		replies.forEach((postData) => {
 			if (!postData.deleted) {
 				const dateStamp = new Date(parseInt(parseInt(postData.edited, 10) === 0 ? postData.timestamp : postData.edited, 10)).toUTCString();
 
@@ -361,7 +361,7 @@ function generateForPostsFeed(feedOptions, posts) {
 		feed.pubDate = new Date(parseInt(posts[0].timestamp, 10)).toUTCString();
 	}
 
-	posts.forEach(function (postData) {
+	posts.forEach((postData) => {
 		feed.item({
 			title: postData.topic ? postData.topic.title : '',
 			description: postData.content,

@@ -99,14 +99,14 @@ function preserveExtraneousPlugins() {
 
 	const extraneous = packages
 		// only extraneous plugins (ones not in package.json) which are not links
-		.filter(function (pkgName) {
+		.filter((pkgName) => {
 			const extraneous = !packageContents.dependencies.hasOwnProperty(pkgName);
 			const isLink = fs.lstatSync(path.join(paths.nodeModules, pkgName)).isSymbolicLink();
 
 			return extraneous && !isLink;
 		})
 		// reduce to a map of package names to package versions
-		.reduce(function (map, pkgName) {
+		.reduce((map, pkgName) => {
 			const pkgConfig = JSON.parse(fs.readFileSync(path.join(paths.nodeModules, pkgName, 'package.json'), 'utf8'));
 			map[pkgName] = pkgConfig.version;
 			return map;

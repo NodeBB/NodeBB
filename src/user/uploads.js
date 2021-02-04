@@ -31,8 +31,8 @@ module.exports = function (User) {
 	};
 
 	User.collateUploads = async function (uid, archive) {
-		await batch.processSortedSet(`uid:${uid}:uploads`, function (files, next) {
-			files.forEach(function (file) {
+		await batch.processSortedSet(`uid:${uid}:uploads`, (files, next) => {
+			files.forEach((file) => {
 				archive.file(path.join(nconf.get('upload_path'), file), {
 					name: path.basename(file),
 				});

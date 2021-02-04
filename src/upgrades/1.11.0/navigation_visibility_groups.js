@@ -13,7 +13,7 @@ module.exports = {
 				navigationAdmin.get(next);
 			},
 			function (data, next) {
-				data.forEach(function (navItem) {
+				data.forEach((navItem) => {
 					if (navItem && navItem.properties) {
 						navItem.groups = [];
 						if (navItem.properties.adminOnly) {

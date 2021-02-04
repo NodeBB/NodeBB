@@ -88,9 +88,7 @@ SELECT "_key", "type"
 		throw new Error(`database: cannot insert multiple objects as ${type} because they already exist: ${parts.join(', ')}`);
 	}
 
-	var missing = keys.filter(function (k) {
-		return !res.rows.some(r => r._key === k);
-	});
+	var missing = keys.filter(k => !res.rows.some(r => r._key === k));
 
 	if (missing.length) {
 		throw new Error(`database: failed to insert keys for objects: ${JSON.stringify(missing)}`);

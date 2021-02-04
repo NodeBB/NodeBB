@@ -14,7 +14,7 @@ module.exports = {
 		var newLanguage;
 		async.parallel([
 			function (next) {
-				meta.configs.get('defaultLang', function (err, defaultLang) {
+				meta.configs.get('defaultLang', (err, defaultLang) => {
 					if (err) {
 						return next(err);
 					}
@@ -32,8 +32,8 @@ module.exports = {
 				});
 			},
 			function (next) {
-				batch.processSortedSet('users:joindate', function (ids, next) {
-					async.each(ids, function (uid, next) {
+				batch.processSortedSet('users:joindate', (ids, next) => {
+					async.each(ids, (uid, next) => {
 						async.waterfall([
 							async.apply(db.getObjectField, `user:${uid}:settings`, 'userLang'),
 							function (language, next) {

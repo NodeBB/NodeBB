@@ -12,15 +12,15 @@ module.exports = {
 		var batch = require('../../batch');
 		var topics = require('../../topics');
 		var count = 0;
-		batch.processSortedSet('topics:tid', function (tids, next) {
+		batch.processSortedSet('topics:tid', (tids, next) => {
 			winston.verbose(`upgraded ${count} topics`);
 			count += tids.length;
-			async.each(tids, function (tid, next) {
-				db.delete(`tid:${tid}:posters`, function (err) {
+			async.each(tids, (tid, next) => {
+				db.delete(`tid:${tid}:posters`, (err) => {
 					if (err) {
 						return next(err);
 					}
-					topics.getPids(tid, function (err, pids) {
+					topics.getPids(tid, (err, pids) => {
 						if (err) {
 							return next(err);
 						}
@@ -29,8 +29,8 @@ module.exports = {
 							return next();
 						}
 
-						async.eachSeries(pids, function (pid, next) {
-							db.getObjectField(`post:${pid}`, 'uid', function (err, uid) {
+						async.eachSeries(pids, (pid, next) => {
+							db.getObjectField(`post:${pid}`, 'uid', (err, uid) => {
 								if (err) {
 									return next(err);
 								}

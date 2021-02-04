@@ -98,7 +98,7 @@ module.exports = function (Topics) {
 	};
 
 	Topics.updateTags = async function (data) {
-		await async.eachSeries(data, async function (tagData) {
+		await async.eachSeries(data, async (tagData) => {
 			await db.setObject(`tag:${tagData.value}`, {
 				color: tagData.color,
 				bgColor: tagData.bgColor,
@@ -107,7 +107,7 @@ module.exports = function (Topics) {
 	};
 
 	Topics.renameTags = async function (data) {
-		await async.eachSeries(data, async function (tagData) {
+		await async.eachSeries(data, async (tagData) => {
 			await renameTag(tagData.value, tagData.newName);
 		});
 	};
@@ -128,7 +128,7 @@ module.exports = function (Topics) {
 			});
 		}
 
-		await batch.processSortedSet(`tag:${tag}:topics`, async function (tids) {
+		await batch.processSortedSet(`tag:${tag}:topics`, async (tids) => {
 			const topicData = await Topics.getTopicsFields(tids, ['tid', 'cid']);
 			const cids = topicData.map(t => t.cid);
 			topicData.forEach((t) => { allCids[t.cid] = true; });
@@ -210,7 +210,7 @@ module.exports = function (Topics) {
 	};
 
 	async function removeTagsFromTopics(tags) {
-		await async.eachLimit(tags, 50, async function (tag) {
+		await async.eachLimit(tags, 50, async (tag) => {
 			const tids = await db.getSortedSetRange(`tag:${tag}:topics`, 0, -1);
 			if (!tids.length) {
 				return;
@@ -271,7 +271,7 @@ module.exports = function (Topics) {
 			return [];
 		}
 		const tagData = await db.getObjects(tags.map(tag => `tag:${tag.value}`));
-		tags.forEach(function (tag, index) {
+		tags.forEach((tag, index) => {
 			tag.valueEscaped = validator.escape(String(tag.value));
 			tag.color = tagData[index] ? tagData[index].color : '';
 			tag.bgColor = tagData[index] ? tagData[index].bgColor : '';
@@ -304,7 +304,7 @@ module.exports = function (Topics) {
 		const tagData = await Topics.getTagData(tags);
 		const tagDataMap = _.zipObject(uniqueTopicTags, tagData);
 
-		topicTags.forEach(function (tags, index) {
+		topicTags.forEach((tags, index) => {
 			if (Array.isArray(tags)) {
 				topicTags[index] = tags.map(tag => tagDataMap[tag]);
 				topicTags[index].sort((tag1, tag2) => tag2.value - tag1.value);
@@ -443,7 +443,7 @@ module.exports = function (Topics) {
 			}
 		}
 
-		matches.sort(function (a, b) {
+		matches.sort((a, b) => {
 			if (a.value < b.value) {
 				return -1;
 			} else if (a.value > b.value) {
@@ -468,7 +468,7 @@ module.exports = function (Topics) {
 
 		const tagData = await Topics.getTagData(tags.map(tag => ({ value: tag.value })));
 
-		tagData.forEach(function (tag, index) {
+		tagData.forEach((tag, index) => {
 			tag.score = tags[index].score;
 		});
 		tagData.sort((a, b) => b.score - a.score);

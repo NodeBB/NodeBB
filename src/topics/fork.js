@@ -42,7 +42,7 @@ module.exports = function (Topics) {
 		const tid = await Topics.create({ uid: postData.uid, title: title, cid: cid });
 		await Topics.updateTopicBookmarks(fromTid, pids);
 
-		await async.eachSeries(pids, async function (pid) {
+		await async.eachSeries(pids, async (pid) => {
 			const canEdit = await privileges.posts.canEdit(pid, uid);
 			if (!canEdit.flag) {
 				throw new Error(canEdit.message);

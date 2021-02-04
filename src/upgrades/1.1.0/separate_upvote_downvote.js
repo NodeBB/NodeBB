@@ -14,10 +14,10 @@ module.exports = {
 		var count = 0;
 		var progress = this.progress;
 
-		batch.processSortedSet('posts:pid', function (pids, next) {
+		batch.processSortedSet('posts:pid', (pids, next) => {
 			winston.verbose(`upgraded ${count} posts`);
 			count += pids.length;
-			async.each(pids, function (pid, next) {
+			async.each(pids, (pid, next) => {
 				async.parallel({
 					upvotes: function (next) {
 						db.setCount(`pid:${pid}:upvote`, next);
@@ -25,7 +25,7 @@ module.exports = {
 					downvotes: function (next) {
 						db.setCount(`pid:${pid}:downvote`, next);
 					},
-				}, function (err, results) {
+				}, (err, results) => {
 					if (err) {
 						return next(err);
 					}

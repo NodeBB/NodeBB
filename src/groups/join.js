@@ -74,7 +74,7 @@ module.exports = function (Groups) {
 			return;
 		}
 
-		await async.eachSeries(groupsToCreate, async function (groupName) {
+		await async.eachSeries(groupsToCreate, async (groupName) => {
 			try {
 				await Groups.create({
 					name: groupName,

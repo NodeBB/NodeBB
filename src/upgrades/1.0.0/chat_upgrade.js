@@ -9,7 +9,7 @@ module.exports = {
 	name: 'Upgrading chats',
 	timestamp: Date.UTC(2015, 11, 15),
 	method: function (callback) {
-		db.getObjectFields('global', ['nextMid', 'nextChatRoomId'], function (err, globalData) {
+		db.getObjectFields('global', ['nextMid', 'nextChatRoomId'], (err, globalData) => {
 			if (err) {
 				return callback(err);
 			}
@@ -18,10 +18,10 @@ module.exports = {
 			var roomId = globalData.nextChatRoomId || 1;
 			var currentMid = 1;
 
-			async.whilst(function (next) {
+			async.whilst((next) => {
 				next(null, currentMid <= globalData.nextMid);
-			}, function (next) {
-				db.getObject(`message:${currentMid}`, function (err, message) {
+			}, (next) => {
+				db.getObject(`message:${currentMid}`, (err, message) => {
 					var msgTime;
 
 					function addMessageToUids(roomId, callback) {
@@ -46,7 +46,7 @@ module.exports = {
 
 					if (rooms[pairID]) {
 						winston.verbose(`adding message ${currentMid} to existing roomID ${roomId}`);
-						addMessageToUids(rooms[pairID], function (err) {
+						addMessageToUids(rooms[pairID], (err) => {
 							if (err) {
 								return next(err);
 							}
@@ -68,7 +68,7 @@ module.exports = {
 							function (next) {
 								addMessageToUids(roomId, next);
 							},
-						], function (err) {
+						], (err) => {
 							if (err) {
 								return next(err);
 							}

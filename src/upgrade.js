@@ -26,7 +26,7 @@ Upgrade.getAll = async function () {
 	let files = await file.walk(path.join(__dirname, './upgrades'));
 
 	// Sort the upgrade scripts based on version
-	files = files.filter(file => path.basename(file) !== 'TEMPLATE').sort(function (a, b) {
+	files = files.filter(file => path.basename(file) !== 'TEMPLATE').sort((a, b) => {
 		const versionA = path.dirname(a).split(path.sep).pop();
 		const versionB = path.dirname(b).split(path.sep).pop();
 		const semverCompare = semver.compare(versionA, versionB);
@@ -66,7 +66,7 @@ Upgrade.appendPluginScripts = async function (files) {
 		try {
 			const pluginConfig = require(configPath);
 			if (pluginConfig.hasOwnProperty('upgrades') && Array.isArray(pluginConfig.upgrades)) {
-				pluginConfig.upgrades.forEach(function (script) {
+				pluginConfig.upgrades.forEach((script) => {
 					files.push(path.join(path.dirname(configPath), script));
 				});
 			}
@@ -96,7 +96,7 @@ Upgrade.run = async function () {
 	]);
 
 	let skipped = 0;
-	const queue = available.filter(function (cur) {
+	const queue = available.filter((cur) => {
 		const upgradeRan = completed.includes(path.basename(cur, '.js'));
 		if (upgradeRan) {
 			skipped += 1;

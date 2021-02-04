@@ -54,7 +54,7 @@ module.exports = function (User) {
 		return blocked;
 	};
 
-	pubsub.on('user:blocks:cache:del', function (uid) {
+	pubsub.on('user:blocks:cache:del', (uid) => {
 		User.blocks._cache.del(uid);
 	});
 
@@ -86,7 +86,7 @@ module.exports = function (User) {
 	};
 
 	User.blocks.filterUids = async function (targetUid, uids) {
-		return await async.filter(uids, async function (uid) {
+		return await async.filter(uids, async (uid) => {
 			const isBlocked = await User.blocks.is(targetUid, uid);
 			return !isBlocked;
 		});
@@ -108,9 +108,7 @@ module.exports = function (User) {
 		const blocked_uids = await User.blocks.list(uid);
 		const blockedSet = new Set(blocked_uids);
 
-		set = set.filter(function (item) {
-			return !blockedSet.has(parseInt(isPlain ? item : (item && item[property]), 10));
-		});
+		set = set.filter(item => !blockedSet.has(parseInt(isPlain ? item : (item && item[property]), 10)));
 		const data = await plugins.hooks.fire('filter:user.blocks.filter', { set: set, property: property, uid: uid, blockedSet: blockedSet });
 
 		return data.set;

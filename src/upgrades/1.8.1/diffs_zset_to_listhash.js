@@ -11,9 +11,9 @@ module.exports = {
 	method: function (callback) {
 		var progress = this.progress;
 
-		batch.processSortedSet('posts:pid', function (pids, next) {
-			async.each(pids, function (pid, next) {
-				db.getSortedSetRangeWithScores(`post:${pid}:diffs`, 0, -1, function (err, diffs) {
+		batch.processSortedSet('posts:pid', (pids, next) => {
+			async.each(pids, (pid, next) => {
+				db.getSortedSetRangeWithScores(`post:${pid}:diffs`, 0, -1, (err, diffs) => {
 					if (err) {
 						return next(err);
 					}
@@ -24,7 +24,7 @@ module.exports = {
 					}
 
 					// For each diff, push to list
-					async.each(diffs, function (diff, next) {
+					async.each(diffs, (diff, next) => {
 						async.series([
 							async.apply(db.delete.bind(db), `post:${pid}:diffs`),
 							async.apply(db.listPrepend.bind(db), `post:${pid}:diffs`, diff.score),
@@ -33,7 +33,7 @@ module.exports = {
 								patch: diff.value,
 							}),
 						], next);
-					}, function (err) {
+					}, (err) => {
 						if (err) {
 							return next(err);
 						}
@@ -42,7 +42,7 @@ module.exports = {
 						return next();
 					});
 				});
-			}, function (err) {
+			}, (err) => {
 				if (err) {
 					// Probably type error, ok to incr and continue
 					progress.incr();

@@ -36,13 +36,13 @@ Messaging.getMessages = async (params) => {
 	if (!mids.length) {
 		return [];
 	}
-	mids.forEach(function (mid, index) {
+	mids.forEach((mid, index) => {
 		indices[mid] = start + index;
 	});
 	mids.reverse();
 
 	const messageData = await Messaging.getMessagesData(mids, params.uid, params.roomId, isNew);
-	messageData.forEach(function (messageData) {
+	messageData.forEach((messageData) => {
 		messageData.index = indices[messageData.messageId.toString()];
 		messageData.isOwner = messageData.fromuid === parseInt(params.uid, 10);
 		if (messageData.deleted && !messageData.isOwner) {
@@ -106,21 +106,19 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 		teasers: Promise.all(roomIds.map(async roomId => Messaging.getTeaser(uid, roomId))),
 	});
 
-	results.roomData.forEach(function (room, index) {
+	results.roomData.forEach((room, index) => {
 		if (room) {
 			room.users = results.users[index];
 			room.groupChat = room.hasOwnProperty('groupChat') ? room.groupChat : room.users.length > 2;
 			room.unread = results.unread[index];
 			room.teaser = results.teasers[index];
 
-			room.users.forEach(function (userData) {
+			room.users.forEach((userData) => {
 				if (userData && parseInt(userData.uid, 10)) {
 					userData.status = user.getStatus(userData);
 				}
 			});
-			room.users = room.users.filter(function (user) {
-				return user && parseInt(user.uid, 10);
-			});
+			room.users = room.users.filter(user => user && parseInt(user.uid, 10));
 			room.lastUser = room.users[0];
 
 			room.usernames = Messaging.generateUsernames(room.users, uid);
@@ -254,9 +252,7 @@ Messaging.hasPrivateChat = async (uid, withUid) => {
 		myRooms: db.getSortedSetRevRange(`uid:${uid}:chat:rooms`, 0, -1),
 		theirRooms: db.getSortedSetRevRange(`uid:${withUid}:chat:rooms`, 0, -1),
 	});
-	const roomIds = results.myRooms.filter(function (roomId) {
-		return roomId && results.theirRooms.includes(roomId);
-	});
+	const roomIds = results.myRooms.filter(roomId => roomId && results.theirRooms.includes(roomId));
 
 	if (!roomIds.length) {
 		return 0;

@@ -69,7 +69,7 @@ module.exports = function (User) {
 		await cleanExpiredSessions(uid);
 		const sids = await db.getSortedSetRevRange(`uid:${uid}:sessions`, 0, 19);
 		let sessions = await Promise.all(sids.map(sid => getSessionFromStore(sid)));
-		sessions = sessions.map(function (sessObj, idx) {
+		sessions = sessions.map((sessObj, idx) => {
 			if (sessObj && sessObj.meta) {
 				sessObj.meta.current = curSessionId === sids[idx];
 				sessObj.meta.datetimeISO = new Date(sessObj.meta.datetime).toISOString();
@@ -142,7 +142,7 @@ module.exports = function (User) {
 	};
 
 	User.auth.deleteAllSessions = async function () {
-		await batch.processSortedSet('users:joindate', async function (uids) {
+		await batch.processSortedSet('users:joindate', async (uids) => {
 			const sessionKeys = uids.map(uid => `uid:${uid}:sessions`);
 			const sessionUUIDKeys = uids.map(uid => `uid:${uid}:sessionUUID:sessionId`);
 			const sids = _.flatten(await db.getSortedSetRange(sessionKeys, 0, -1));

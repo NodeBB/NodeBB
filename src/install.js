@@ -131,7 +131,7 @@ async function setupConfig() {
 		const postgresQuestions = require('./database/postgres').questions;
 		const allQuestions = questions.main.concat(questions.optional).concat(redisQuestions).concat(mongoQuestions).concat(postgresQuestions);
 
-		allQuestions.forEach(function (question) {
+		allQuestions.forEach((question) => {
 			if (install.values.hasOwnProperty(question.name)) {
 				config[question.name] = install.values[question.name];
 			} else if (question.hasOwnProperty('default')) {

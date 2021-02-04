@@ -40,24 +40,24 @@ module.exports = function (User) {
 	};
 
 	async function deletePosts(callerUid, uid) {
-		await batch.processSortedSet(`uid:${uid}:posts`, async function (ids) {
-			await async.eachSeries(ids, async function (pid) {
+		await batch.processSortedSet(`uid:${uid}:posts`, async (ids) => {
+			await async.eachSeries(ids, async (pid) => {
 				await posts.purge(pid, callerUid);
 			});
 		}, { alwaysStartAt: 0 });
 	}
 
 	async function deleteTopics(callerUid, uid) {
-		await batch.processSortedSet(`uid:${uid}:topics`, async function (ids) {
-			await async.eachSeries(ids, async function (tid) {
+		await batch.processSortedSet(`uid:${uid}:topics`, async (ids) => {
+			await async.eachSeries(ids, async (tid) => {
 				await topics.purge(tid, callerUid);
 			});
 		}, { alwaysStartAt: 0 });
 	}
 
 	async function deleteUploads(uid) {
-		await batch.processSortedSet(`uid:${uid}:uploads`, async function (uploadNames) {
-			await async.each(uploadNames, async function (uploadName) {
+		await batch.processSortedSet(`uid:${uid}:uploads`, async (uploadNames) => {
+			await async.each(uploadNames, async (uploadName) => {
 				await file.delete(path.join(nconf.get('upload_path'), uploadName));
 			});
 			await db.sortedSetRemove(`uid:${uid}:uploads`, uploadNames);
@@ -66,7 +66,7 @@ module.exports = function (User) {
 
 	async function deleteQueued(uid) {
 		let deleteIds = [];
-		await batch.processSortedSet('post:queue', async function (ids) {
+		await batch.processSortedSet('post:queue', async (ids) => {
 			const data = await db.getObjects(ids.map(id => `post:queue:${id}`));
 			const userQueuedIds = data.filter(d => parseInt(d.uid, 10) === parseInt(uid, 10)).map(d => d.id);
 			deleteIds = deleteIds.concat(userQueuedIds);
@@ -165,7 +165,7 @@ module.exports = function (User) {
 			db.getSortedSetRange(`uid:${uid}:downvote`, 0, -1),
 		]);
 		const pids = _.uniq(upvotedPids.concat(downvotedPids).filter(Boolean));
-		await async.eachSeries(pids, async function (pid) {
+		await async.eachSeries(pids, async (pid) => {
 			await posts.unvote(pid, uid);
 		});
 	}
@@ -199,7 +199,7 @@ module.exports = function (User) {
 		]);
 
 		async function updateCount(uids, name, fieldName) {
-			await async.each(uids, async function (uid) {
+			await async.each(uids, async (uid) => {
 				let count = await db.sortedSetCard(name + uid);
 				count = parseInt(count, 10) || 0;
 				await db.setObjectField(`user:${uid}`, fieldName, count);

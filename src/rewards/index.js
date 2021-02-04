@@ -37,11 +37,11 @@ async function filterCompletedRewards(uid, rewards) {
 	const data = await db.getSortedSetRangeByScoreWithScores(`uid:${uid}:rewards`, 0, -1, 1, '+inf');
 	const userRewards = {};
 
-	data.forEach(function (obj) {
+	data.forEach((obj) => {
 		userRewards[obj.value] = parseInt(obj.score, 10);
 	});
 
-	return rewards.filter(function (reward) {
+	return rewards.filter((reward) => {
 		if (!reward) {
 			return false;
 		}

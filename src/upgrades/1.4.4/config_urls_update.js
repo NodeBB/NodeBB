@@ -19,7 +19,7 @@ module.exports = {
 
 				var keys = ['brand:favicon', 'brand:touchicon', 'og:image', 'brand:logo:url', 'defaultAvatar', 'profile:defaultCovers'];
 
-				keys.forEach(function (key) {
+				keys.forEach((key) => {
 					var oldValue = config[key];
 
 					if (!oldValue || typeof oldValue !== 'string') {

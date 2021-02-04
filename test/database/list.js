@@ -5,9 +5,9 @@ var	async = require('async');
 var assert = require('assert');
 var db = require('../mocks/databasemock');
 
-describe('List methods', function () {
-	describe('listAppend()', function () {
-		it('should append to a list', function (done) {
+describe('List methods', () => {
+	describe('listAppend()', () => {
+		it('should append to a list', (done) => {
 			db.listAppend('testList1', 5, function (err) {
 				assert.ifError(err);
 				assert.equal(arguments.length, 1);
@@ -15,16 +15,16 @@ describe('List methods', function () {
 			});
 		});
 
-		it('should not add anyhing if key is falsy', function (done) {
-			db.listAppend(null, 3, function (err) {
+		it('should not add anyhing if key is falsy', (done) => {
+			db.listAppend(null, 3, (err) => {
 				assert.ifError(err);
 				done();
 			});
 		});
 	});
 
-	describe('listPrepend()', function () {
-		it('should prepend to a list', function (done) {
+	describe('listPrepend()', () => {
+		it('should prepend to a list', (done) => {
 			db.listPrepend('testList2', 3, function (err) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 1);
@@ -32,7 +32,7 @@ describe('List methods', function () {
 			});
 		});
 
-		it('should prepend 2 more elements to a list', function (done) {
+		it('should prepend 2 more elements to a list', (done) => {
 			async.series([
 				function (next) {
 					db.listPrepend('testList2', 2, next);
@@ -40,22 +40,22 @@ describe('List methods', function () {
 				function (next) {
 					db.listPrepend('testList2', 1, next);
 				},
-			], function (err) {
+			], (err) => {
 				assert.equal(err, null);
 				done();
 			});
 		});
 
-		it('should not add anyhing if key is falsy', function (done) {
-			db.listPrepend(null, 3, function (err) {
+		it('should not add anyhing if key is falsy', (done) => {
+			db.listPrepend(null, 3, (err) => {
 				assert.ifError(err);
 				done();
 			});
 		});
 	});
 
-	describe('getListRange()', function () {
-		before(function (done) {
+	describe('getListRange()', () => {
+		before((done) => {
 			async.series([
 				function (next) {
 					db.listAppend('testList3', 7, next);
@@ -69,7 +69,7 @@ describe('List methods', function () {
 			], done);
 		});
 
-		it('should return an empty list', function (done) {
+		it('should return an empty list', (done) => {
 			db.getListRange('doesnotexist', 0, -1, function (err, list) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -79,8 +79,8 @@ describe('List methods', function () {
 			});
 		});
 
-		it('should return a list with one element', function (done) {
-			db.getListRange('testList4', 0, 0, function (err, list) {
+		it('should return a list with one element', (done) => {
+			db.getListRange('testList4', 0, 0, (err, list) => {
 				assert.equal(err, null);
 				assert.equal(Array.isArray(list), true);
 				assert.equal(list[0], 5);
@@ -88,8 +88,8 @@ describe('List methods', function () {
 			});
 		});
 
-		it('should return a list with 2 elements 3, 7', function (done) {
-			db.getListRange('testList3', 0, -1, function (err, list) {
+		it('should return a list with 2 elements 3, 7', (done) => {
+			db.getListRange('testList3', 0, -1, (err, list) => {
 				assert.equal(err, null);
 				assert.equal(Array.isArray(list), true);
 				assert.equal(list.length, 2);
@@ -98,8 +98,8 @@ describe('List methods', function () {
 			});
 		});
 
-		it('should not get anything if key is falsy', function (done) {
-			db.getListRange(null, 0, -1, function (err, data) {
+		it('should not get anything if key is falsy', (done) => {
+			db.getListRange(null, 0, -1, (err, data) => {
 				assert.ifError(err);
 				assert.equal(data, undefined);
 				done();
@@ -107,8 +107,8 @@ describe('List methods', function () {
 		});
 	});
 
-	describe('listRemoveLast()', function () {
-		before(function (done) {
+	describe('listRemoveLast()', () => {
+		before((done) => {
 			async.series([
 				function (next) {
 					db.listAppend('testList7', 12, next);
@@ -119,7 +119,7 @@ describe('List methods', function () {
 			], done);
 		});
 
-		it('should remove the last element of list and return it', function (done) {
+		it('should remove the last element of list and return it', (done) => {
 			db.listRemoveLast('testList7', function (err, lastElement) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -128,16 +128,16 @@ describe('List methods', function () {
 			});
 		});
 
-		it('should not remove anyhing if key is falsy', function (done) {
-			db.listRemoveLast(null, function (err) {
+		it('should not remove anyhing if key is falsy', (done) => {
+			db.listRemoveLast(null, (err) => {
 				assert.ifError(err);
 				done();
 			});
 		});
 	});
 
-	describe('listRemoveAll()', function () {
-		before(function (done) {
+	describe('listRemoveAll()', () => {
+		before((done) => {
 			async.series([
 				async.apply(db.listAppend, 'testList5', 1),
 				async.apply(db.listAppend, 'testList5', 1),
@@ -147,12 +147,12 @@ describe('List methods', function () {
 			], done);
 		});
 
-		it('should remove all the matching elements of list', function (done) {
+		it('should remove all the matching elements of list', (done) => {
 			db.listRemoveAll('testList5', '1', function (err) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 1);
 
-				db.getListRange('testList5', 0, -1, function (err, list) {
+				db.getListRange('testList5', 0, -1, (err, list) => {
 					assert.equal(err, null);
 					assert.equal(Array.isArray(list), true);
 					assert.equal(list.length, 2);
@@ -162,20 +162,20 @@ describe('List methods', function () {
 			});
 		});
 
-		it('should not remove anyhing if key is falsy', function (done) {
-			db.listRemoveAll(null, 3, function (err) {
+		it('should not remove anyhing if key is falsy', (done) => {
+			db.listRemoveAll(null, 3, (err) => {
 				assert.ifError(err);
 				done();
 			});
 		});
 	});
 
-	describe('listTrim()', function () {
-		it('should trim list to a certain range', function (done) {
+	describe('listTrim()', () => {
+		it('should trim list to a certain range', (done) => {
 			var list = ['1', '2', '3', '4', '5'];
-			async.eachSeries(list, function (value, next) {
+			async.eachSeries(list, (value, next) => {
 				db.listAppend('testList6', value, next);
-			}, function (err) {
+			}, (err) => {
 				if (err) {
 					return done(err);
 				}
@@ -183,7 +183,7 @@ describe('List methods', function () {
 				db.listTrim('testList6', 0, 2, function (err) {
 					assert.equal(err, null);
 					assert.equal(arguments.length, 1);
-					db.getListRange('testList6', 0, -1, function (err, list) {
+					db.getListRange('testList6', 0, -1, (err, list) => {
 						assert.equal(err, null);
 						assert.equal(list.length, 3);
 						assert.deepEqual(list, ['1', '2', '3']);
@@ -193,21 +193,21 @@ describe('List methods', function () {
 			});
 		});
 
-		it('should not add anyhing if key is falsy', function (done) {
-			db.listTrim(null, 0, 3, function (err) {
+		it('should not add anyhing if key is falsy', (done) => {
+			db.listTrim(null, 0, 3, (err) => {
 				assert.ifError(err);
 				done();
 			});
 		});
 	});
 
-	describe('listLength', function () {
-		it('should get the length of a list', function (done) {
-			db.listAppend('getLengthList', 1, function (err) {
+	describe('listLength', () => {
+		it('should get the length of a list', (done) => {
+			db.listAppend('getLengthList', 1, (err) => {
 				assert.ifError(err);
-				db.listAppend('getLengthList', 2, function (err) {
+				db.listAppend('getLengthList', 2, (err) => {
 					assert.ifError(err);
-					db.listLength('getLengthList', function (err, length) {
+					db.listLength('getLengthList', (err, length) => {
 						assert.ifError(err);
 						assert.equal(length, 2);
 						done();
@@ -216,8 +216,8 @@ describe('List methods', function () {
 			});
 		});
 
-		it('should return 0 if list does not have any elements', function (done) {
-			db.listLength('doesnotexist', function (err, length) {
+		it('should return 0 if list does not have any elements', (done) => {
+			db.listLength('doesnotexist', (err, length) => {
 				assert.ifError(err);
 				assert.strictEqual(length, 0);
 				done();

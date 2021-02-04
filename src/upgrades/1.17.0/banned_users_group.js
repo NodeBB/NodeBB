@@ -25,7 +25,7 @@ module.exports = {
 			});
 		}
 
-		await batch.processSortedSet('users:banned', async function (uids) {
+		await batch.processSortedSet('users:banned', async (uids) => {
 			progress.incr(uids.length);
 
 			await db.sortedSetAdd(

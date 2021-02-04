@@ -37,7 +37,7 @@ module.exports = function (Categories) {
 			fields.splice(0, 0, fields.splice(parentCidIndex, 1)[0]);
 		}
 
-		await async.eachSeries(fields, async function (key) {
+		await async.eachSeries(fields, async (key) => {
 			await updateCategoryField(cid, key, category[key]);
 		});
 		plugins.hooks.fire('action:category.update', { cid: cid, modified: category });

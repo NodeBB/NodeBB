@@ -75,7 +75,7 @@ function onConnection(socket) {
 		onMessage(socket, payload);
 	});
 
-	socket.on('disconnect', function () {
+	socket.on('disconnect', () => {
 		onDisconnect(socket);
 	});
 }
@@ -114,7 +114,7 @@ async function onMessage(socket, payload) {
 
 	const parts = eventName.toString().split('.');
 	const namespace = parts[0];
-	const methodToCall = parts.reduce(function (prev, cur) {
+	const methodToCall = parts.reduce((prev, cur) => {
 		if (prev !== null && prev[cur]) {
 			return prev[cur];
 		}
@@ -151,7 +151,7 @@ async function onMessage(socket, payload) {
 			const result = await methodToCall(socket, params);
 			callback(null, result);
 		} else {
-			methodToCall(socket, params, function (err, result) {
+			methodToCall(socket, params, (err, result) => {
 				callback(err ? { message: err.message } : null, result);
 			});
 		}
@@ -167,7 +167,7 @@ function requireModules() {
 		'flags', 'uploads',
 	];
 
-	modules.forEach(function (module) {
+	modules.forEach((module) => {
 		Namespaces[module] = require(`./${module}`);
 	});
 }

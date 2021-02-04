@@ -13,19 +13,19 @@ var Messaging = require('../src/messaging');
 var helpers = require('./helpers');
 var socketModules = require('../src/socket.io/modules');
 
-describe('Messaging Library', function () {
+describe('Messaging Library', () => {
 	var fooUid;	// the admin
 	var bazUid;	// the user with chat restriction enabled
 	var herpUid;
 	var roomId;
 
-	before(function (done) {
+	before((done) => {
 		// Create 3 users: 1 admin, 2 regular
 		async.series([
 			async.apply(User.create, { username: 'foo', password: 'barbar' }),	// admin
 			async.apply(User.create, { username: 'baz', password: 'quuxquux' }),	// restricted user
 			async.apply(User.create, { username: 'herp', password: 'derpderp' }),	// regular user
-		], function (err, uids) {
+		], (err, uids) => {
 			if (err) {
 				return done(err);
 			}
@@ -41,20 +41,20 @@ describe('Messaging Library', function () {
 		});
 	});
 
-	describe('.canMessage()', function () {
-		it('should allow messages to be sent to an unrestricted user', function (done) {
-			Messaging.canMessageUser(bazUid, herpUid, function (err) {
+	describe('.canMessage()', () => {
+		it('should allow messages to be sent to an unrestricted user', (done) => {
+			Messaging.canMessageUser(bazUid, herpUid, (err) => {
 				assert.ifError(err);
 				done();
 			});
 		});
 
-		it('should NOT allow messages to be sent to a restricted user', function (done) {
-			User.setSetting(bazUid, 'restrictChat', '1', function (err) {
+		it('should NOT allow messages to be sent to a restricted user', (done) => {
+			User.setSetting(bazUid, 'restrictChat', '1', (err) => {
 				assert.ifError(err);
-				Messaging.canMessageUser(herpUid, bazUid, function (err) {
+				Messaging.canMessageUser(herpUid, bazUid, (err) => {
 					assert.strictEqual(err.message, '[[error:chat-restricted]]');
-					socketModules.chats.addUserToRoom({ uid: herpUid }, { roomId: 1, username: 'baz' }, function (err) {
+					socketModules.chats.addUserToRoom({ uid: herpUid }, { roomId: 1, username: 'baz' }, (err) => {
 						assert.equal(err.message, '[[error:chat-restricted]]');
 						done();
 					});
@@ -62,16 +62,16 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should always allow admins through', function (done) {
-			Messaging.canMessageUser(fooUid, bazUid, function (err) {
+		it('should always allow admins through', (done) => {
+			Messaging.canMessageUser(fooUid, bazUid, (err) => {
 				assert.ifError(err);
 				done();
 			});
 		});
 
-		it('should allow messages to be sent to a restricted user if restricted user follows sender', function (done) {
-			User.follow(bazUid, herpUid, function () {
-				Messaging.canMessageUser(herpUid, bazUid, function (err) {
+		it('should allow messages to be sent to a restricted user if restricted user follows sender', (done) => {
+			User.follow(bazUid, herpUid, () => {
+				Messaging.canMessageUser(herpUid, bazUid, (err) => {
 					assert.ifError(err);
 					done();
 				});
@@ -79,21 +79,21 @@ describe('Messaging Library', function () {
 		});
 	});
 
-	describe('rooms', function () {
-		it('should fail to create a new chat room with invalid data', function (done) {
-			socketModules.chats.newRoom({ uid: fooUid }, null, function (err) {
+	describe('rooms', () => {
+		it('should fail to create a new chat room with invalid data', (done) => {
+			socketModules.chats.newRoom({ uid: fooUid }, null, (err) => {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
-		it('should return rate limit error on second try', function (done) {
+		it('should return rate limit error on second try', (done) => {
 			var socketMock = { uid: fooUid };
 			var oldValue = meta.config.chatMessageDelay;
 			meta.config.chatMessageDelay = 1000;
-			socketModules.chats.newRoom(socketMock, { touid: bazUid }, function (err) {
+			socketModules.chats.newRoom(socketMock, { touid: bazUid }, (err) => {
 				assert.ifError(err);
-				socketModules.chats.newRoom(socketMock, { touid: bazUid }, function (err) {
+				socketModules.chats.newRoom(socketMock, { touid: bazUid }, (err) => {
 					assert.equal(err.message, '[[error:too-many-messages]]');
 					meta.configs.chatMessageDelay = oldValue;
 					done();
@@ -101,12 +101,12 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should create a new chat room', function (done) {
-			socketModules.chats.newRoom({ uid: fooUid }, { touid: bazUid }, function (err, _roomId) {
+		it('should create a new chat room', (done) => {
+			socketModules.chats.newRoom({ uid: fooUid }, { touid: bazUid }, (err, _roomId) => {
 				roomId = _roomId;
 				assert.ifError(err);
 				assert(roomId);
-				socketModules.chats.canMessage({ uid: fooUid }, _roomId, function (err) {
+				socketModules.chats.canMessage({ uid: fooUid }, _roomId, (err) => {
 					assert.ifError(err);
 					done();
 				});
@@ -114,24 +114,24 @@ describe('Messaging Library', function () {
 		});
 
 		it('should send a user-join system message when a chat room is created', (done) => {
-			socketModules.chats.getMessages({ uid: fooUid }, { uid: fooUid, roomId: roomId, start: 0 }, function (err, messages) {
+			socketModules.chats.getMessages({ uid: fooUid }, { uid: fooUid, roomId: roomId, start: 0 }, (err, messages) => {
 				assert.ifError(err);
 				assert.equal(messages.length, 2);
 				assert.strictEqual(messages[0].system, true);
 				assert.strictEqual(messages[0].content, 'user-join');
-				socketModules.chats.edit({ uid: fooUid }, { roomId: roomId, mid: messages[0].messageId, message: 'test' }, function (err) {
+				socketModules.chats.edit({ uid: fooUid }, { roomId: roomId, mid: messages[0].messageId, message: 'test' }, (err) => {
 					assert.equal(err.message, '[[error:cant-edit-chat-message]]');
 					done();
 				});
 			});
 		});
 
-		it('should fail to add user to room with invalid data', function (done) {
-			socketModules.chats.addUserToRoom({ uid: fooUid }, null, function (err) {
+		it('should fail to add user to room with invalid data', (done) => {
+			socketModules.chats.addUserToRoom({ uid: fooUid }, null, (err) => {
 				assert.equal(err.message, '[[error:invalid-data]]');
-				socketModules.chats.addUserToRoom({ uid: fooUid }, { roomId: null }, function (err) {
+				socketModules.chats.addUserToRoom({ uid: fooUid }, { roomId: null }, (err) => {
 					assert.equal(err.message, '[[error:invalid-data]]');
-					socketModules.chats.addUserToRoom({ uid: fooUid }, { roomId: roomId, username: null }, function (err) {
+					socketModules.chats.addUserToRoom({ uid: fooUid }, { roomId: roomId, username: null }, (err) => {
 						assert.equal(err.message, '[[error:invalid-data]]');
 						done();
 					});
@@ -139,10 +139,10 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should add a user to room', function (done) {
-			socketModules.chats.addUserToRoom({ uid: fooUid }, { roomId: roomId, username: 'herp' }, function (err) {
+		it('should add a user to room', (done) => {
+			socketModules.chats.addUserToRoom({ uid: fooUid }, { roomId: roomId, username: 'herp' }, (err) => {
 				assert.ifError(err);
-				Messaging.isUserInRoom(herpUid, roomId, function (err, isInRoom) {
+				Messaging.isUserInRoom(herpUid, roomId, (err, isInRoom) => {
 					assert.ifError(err);
 					assert(isInRoom);
 					done();
@@ -150,12 +150,12 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should get users in room', async function () {
+		it('should get users in room', async () => {
 			const data = await socketModules.chats.getUsersInRoom({ uid: fooUid }, { roomId: roomId });
 			assert(Array.isArray(data) && data.length === 3);
 		});
 
-		it('should throw error if user is not in room', async function () {
+		it('should throw error if user is not in room', async () => {
 			try {
 				const data = await socketModules.chats.getUsersInRoom({ uid: 123123123 }, { roomId: roomId });
 			} catch (err) {
@@ -163,46 +163,46 @@ describe('Messaging Library', function () {
 			}
 		});
 
-		it('should fail to add users to room if max is reached', function (done) {
+		it('should fail to add users to room if max is reached', (done) => {
 			meta.config.maximumUsersInChatRoom = 2;
-			socketModules.chats.addUserToRoom({ uid: fooUid }, { roomId: roomId, username: 'test' }, function (err) {
+			socketModules.chats.addUserToRoom({ uid: fooUid }, { roomId: roomId, username: 'test' }, (err) => {
 				assert.equal(err.message, '[[error:cant-add-more-users-to-chat-room]]');
 				meta.config.maximumUsersInChatRoom = 0;
 				done();
 			});
 		});
 
-		it('should fail to add users to room if user does not exist', function (done) {
-			socketModules.chats.addUserToRoom({ uid: fooUid }, { roomId: roomId, username: 'doesnotexist' }, function (err) {
+		it('should fail to add users to room if user does not exist', (done) => {
+			socketModules.chats.addUserToRoom({ uid: fooUid }, { roomId: roomId, username: 'doesnotexist' }, (err) => {
 				assert.equal(err.message, '[[error:no-user]]');
 				done();
 			});
 		});
 
-		it('should fail to add self to room', function (done) {
-			socketModules.chats.addUserToRoom({ uid: fooUid }, { roomId: roomId, username: 'foo' }, function (err) {
+		it('should fail to add self to room', (done) => {
+			socketModules.chats.addUserToRoom({ uid: fooUid }, { roomId: roomId, username: 'foo' }, (err) => {
 				assert.equal(err.message, '[[error:cant-chat-with-yourself]]');
 				done();
 			});
 		});
 
-		it('should fail to leave room with invalid data', function (done) {
-			socketModules.chats.leave({ uid: null }, roomId, function (err) {
+		it('should fail to leave room with invalid data', (done) => {
+			socketModules.chats.leave({ uid: null }, roomId, (err) => {
 				assert.equal(err.message, '[[error:invalid-data]]');
-				socketModules.chats.leave({ uid: fooUid }, null, function (err) {
+				socketModules.chats.leave({ uid: fooUid }, null, (err) => {
 					assert.equal(err.message, '[[error:invalid-data]]');
 					done();
 				});
 			});
 		});
 
-		it('should leave the chat room', function (done) {
-			socketModules.chats.leave({ uid: bazUid }, roomId, function (err) {
+		it('should leave the chat room', (done) => {
+			socketModules.chats.leave({ uid: bazUid }, roomId, (err) => {
 				assert.ifError(err);
-				Messaging.isUserInRoom(bazUid, roomId, function (err, isUserInRoom) {
+				Messaging.isUserInRoom(bazUid, roomId, (err, isUserInRoom) => {
 					assert.ifError(err);
 					assert.equal(isUserInRoom, false);
-					Messaging.getRoomData(roomId, function (err, data) {
+					Messaging.getRoomData(roomId, (err, data) => {
 						assert.ifError(err);
 						assert.equal(data.owner, fooUid);
 						done();
@@ -212,7 +212,7 @@ describe('Messaging Library', function () {
 		});
 
 		it('should send a user-leave system message when a user leaves the chat room', (done) => {
-			socketModules.chats.getMessages({ uid: fooUid }, { uid: fooUid, roomId: roomId, start: 0 }, function (err, messages) {
+			socketModules.chats.getMessages({ uid: fooUid }, { uid: fooUid, roomId: roomId, start: 0 }, (err, messages) => {
 				assert.ifError(err);
 				assert.equal(messages.length, 4);
 				const message = messages.pop();
@@ -231,14 +231,14 @@ describe('Messaging Library', function () {
 			assert.strictEqual(message.content, 'user-leave');
 		});
 
-		it('should change owner when owner leaves room', function (done) {
-			socketModules.chats.newRoom({ uid: herpUid }, { touid: fooUid }, function (err, roomId) {
+		it('should change owner when owner leaves room', (done) => {
+			socketModules.chats.newRoom({ uid: herpUid }, { touid: fooUid }, (err, roomId) => {
 				assert.ifError(err);
-				socketModules.chats.addUserToRoom({ uid: herpUid }, { roomId: roomId, username: 'baz' }, function (err) {
+				socketModules.chats.addUserToRoom({ uid: herpUid }, { roomId: roomId, username: 'baz' }, (err) => {
 					assert.ifError(err);
-					socketModules.chats.leave({ uid: herpUid }, roomId, function (err) {
+					socketModules.chats.leave({ uid: herpUid }, roomId, (err) => {
 						assert.ifError(err);
-						Messaging.getRoomData(roomId, function (err, data) {
+						Messaging.getRoomData(roomId, (err, data) => {
 							assert.ifError(err);
 							assert.equal(data.owner, fooUid);
 							done();
@@ -248,16 +248,16 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should change owner if owner is deleted', function (done) {
-			User.create({ username: 'deleted_chat_user' }, function (err, sender) {
+		it('should change owner if owner is deleted', (done) => {
+			User.create({ username: 'deleted_chat_user' }, (err, sender) => {
 				assert.ifError(err);
-				User.create({ username: 'receiver' }, function (err, receiver) {
+				User.create({ username: 'receiver' }, (err, receiver) => {
 					assert.ifError(err);
-					socketModules.chats.newRoom({ uid: sender }, { touid: receiver }, function (err, roomId) {
+					socketModules.chats.newRoom({ uid: sender }, { touid: receiver }, (err, roomId) => {
 						assert.ifError(err);
-						User.deleteAccount(sender, function (err) {
+						User.deleteAccount(sender, (err) => {
 							assert.ifError(err);
-							Messaging.getRoomData(roomId, function (err, data) {
+							Messaging.getRoomData(roomId, (err, data) => {
 								assert.ifError(err);
 								assert.equal(data.owner, receiver);
 								done();
@@ -268,36 +268,36 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should fail to remove user from room', function (done) {
-			socketModules.chats.removeUserFromRoom({ uid: fooUid }, null, function (err) {
+		it('should fail to remove user from room', (done) => {
+			socketModules.chats.removeUserFromRoom({ uid: fooUid }, null, (err) => {
 				assert.equal(err.message, '[[error:invalid-data]]');
-				socketModules.chats.removeUserFromRoom({ uid: fooUid }, {}, function (err) {
+				socketModules.chats.removeUserFromRoom({ uid: fooUid }, {}, (err) => {
 					assert.equal(err.message, '[[error:invalid-data]]');
 					done();
 				});
 			});
 		});
 
-		it('should fail to remove user from room if user does not exist', function (done) {
-			socketModules.chats.removeUserFromRoom({ uid: fooUid }, { roomId: roomId, uid: 99 }, function (err) {
+		it('should fail to remove user from room if user does not exist', (done) => {
+			socketModules.chats.removeUserFromRoom({ uid: fooUid }, { roomId: roomId, uid: 99 }, (err) => {
 				assert.equal('[[error:no-user]]', err.message);
 				done();
 			});
 		});
 
-		it('should remove user from room', function (done) {
-			socketModules.chats.newRoom({ uid: fooUid }, { touid: herpUid }, function (err, roomId) {
+		it('should remove user from room', (done) => {
+			socketModules.chats.newRoom({ uid: fooUid }, { touid: herpUid }, (err, roomId) => {
 				assert.ifError(err);
-				Messaging.isUserInRoom(herpUid, roomId, function (err, isInRoom) {
+				Messaging.isUserInRoom(herpUid, roomId, (err, isInRoom) => {
 					assert.ifError(err);
 					assert(isInRoom);
-					socketModules.chats.removeUserFromRoom({ uid: fooUid }, { roomId: roomId, uid: herpUid }, function (err) {
+					socketModules.chats.removeUserFromRoom({ uid: fooUid }, { roomId: roomId, uid: herpUid }, (err) => {
 						assert.equal(err.message, '[[error:cant-remove-last-user]]');
-						socketModules.chats.addUserToRoom({ uid: fooUid }, { roomId: roomId, username: 'baz' }, function (err) {
+						socketModules.chats.addUserToRoom({ uid: fooUid }, { roomId: roomId, username: 'baz' }, (err) => {
 							assert.ifError(err);
-							socketModules.chats.removeUserFromRoom({ uid: fooUid }, { roomId: roomId, uid: herpUid }, function (err) {
+							socketModules.chats.removeUserFromRoom({ uid: fooUid }, { roomId: roomId, uid: herpUid }, (err) => {
 								assert.ifError(err);
-								Messaging.isUserInRoom(herpUid, roomId, function (err, isInRoom) {
+								Messaging.isUserInRoom(herpUid, roomId, (err, isInRoom) => {
 									assert.ifError(err);
 									assert(!isInRoom);
 									done();
@@ -309,12 +309,12 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should fail to send a message to room with invalid data', function (done) {
-			socketModules.chats.send({ uid: fooUid }, null, function (err) {
+		it('should fail to send a message to room with invalid data', (done) => {
+			socketModules.chats.send({ uid: fooUid }, null, (err) => {
 				assert.equal(err.message, '[[error:invalid-data]]');
-				socketModules.chats.send({ uid: fooUid }, { roomId: null }, function (err) {
+				socketModules.chats.send({ uid: fooUid }, { roomId: null }, (err) => {
 					assert.equal(err.message, '[[error:invalid-data]]');
-					socketModules.chats.send({ uid: null }, { roomId: 1 }, function (err) {
+					socketModules.chats.send({ uid: null }, { roomId: 1 }, (err) => {
 						assert.equal(err.message, '[[error:invalid-data]]');
 						done();
 					});
@@ -322,21 +322,21 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should fail to send chat if content is empty', function (done) {
-			socketModules.chats.send({ uid: fooUid }, { roomId: roomId, message: ' ' }, function (err) {
+		it('should fail to send chat if content is empty', (done) => {
+			socketModules.chats.send({ uid: fooUid }, { roomId: roomId, message: ' ' }, (err) => {
 				assert.equal(err.message, '[[error:invalid-chat-message]]');
 				done();
 			});
 		});
 
-		it('should send a message to a room', function (done) {
-			socketModules.chats.send({ uid: fooUid }, { roomId: roomId, message: 'first chat message' }, function (err, messageData) {
+		it('should send a message to a room', (done) => {
+			socketModules.chats.send({ uid: fooUid }, { roomId: roomId, message: 'first chat message' }, (err, messageData) => {
 				assert.ifError(err);
 				assert(messageData);
 				assert.equal(messageData.content, 'first chat message');
 				assert(messageData.fromUser);
 				assert(messageData.roomId, roomId);
-				socketModules.chats.getRaw({ uid: fooUid }, { mid: messageData.mid }, function (err, raw) {
+				socketModules.chats.getRaw({ uid: fooUid }, { mid: messageData.mid }, (err, raw) => {
 					assert.ifError(err);
 					assert.equal(raw, 'first chat message');
 					setTimeout(done, 300);
@@ -344,13 +344,13 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should fail to send second message due to rate limit', function (done) {
+		it('should fail to send second message due to rate limit', (done) => {
 			var socketMock = { uid: fooUid };
 			var oldValue = meta.config.chatMessageDelay;
 			meta.config.chatMessageDelay = 1000;
-			socketModules.chats.send(socketMock, { roomId: roomId, message: 'first chat message' }, function (err) {
+			socketModules.chats.send(socketMock, { roomId: roomId, message: 'first chat message' }, (err) => {
 				assert.ifError(err);
-				socketModules.chats.send(socketMock, { roomId: roomId, message: 'first chat message' }, function (err) {
+				socketModules.chats.send(socketMock, { roomId: roomId, message: 'first chat message' }, (err) => {
 					assert.equal(err.message, '[[error:too-many-messages]]');
 					meta.config.chatMessageDelay = oldValue;
 					done();
@@ -358,30 +358,30 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should return invalid-data error', function (done) {
-			socketModules.chats.getRaw({ uid: fooUid }, null, function (err) {
+		it('should return invalid-data error', (done) => {
+			socketModules.chats.getRaw({ uid: fooUid }, null, (err) => {
 				assert.equal(err.message, '[[error:invalid-data]]');
-				socketModules.chats.getRaw({ uid: fooUid }, {}, function (err) {
+				socketModules.chats.getRaw({ uid: fooUid }, {}, (err) => {
 					assert.equal(err.message, '[[error:invalid-data]]');
 					done();
 				});
 			});
 		});
 
-		it('should return not allowed error if mid is not in room', function (done) {
+		it('should return not allowed error if mid is not in room', (done) => {
 			var myRoomId;
-			User.create({ username: 'dummy' }, function (err, uid) {
+			User.create({ username: 'dummy' }, (err, uid) => {
 				assert.ifError(err);
-				socketModules.chats.newRoom({ uid: bazUid }, { touid: uid }, function (err, _roomId) {
+				socketModules.chats.newRoom({ uid: bazUid }, { touid: uid }, (err, _roomId) => {
 					myRoomId = _roomId;
 					assert.ifError(err);
 					assert(myRoomId);
-					socketModules.chats.getRaw({ uid: bazUid }, { mid: 200 }, function (err) {
+					socketModules.chats.getRaw({ uid: bazUid }, { mid: 200 }, (err) => {
 						assert(err);
 						assert.equal(err.message, '[[error:not-allowed]]');
-						socketModules.chats.send({ uid: bazUid }, { roomId: myRoomId, message: 'admin will see this' }, function (err, message) {
+						socketModules.chats.send({ uid: bazUid }, { roomId: myRoomId, message: 'admin will see this' }, (err, message) => {
 							assert.ifError(err);
-							socketModules.chats.getRaw({ uid: fooUid }, { mid: message.mid }, function (err, raw) {
+							socketModules.chats.getRaw({ uid: fooUid }, { mid: message.mid }, (err, raw) => {
 								assert.ifError(err);
 								assert.equal(raw, 'admin will see this');
 								done();
@@ -393,15 +393,15 @@ describe('Messaging Library', function () {
 		});
 
 
-		it('should notify offline users of message', function (done) {
+		it('should notify offline users of message', (done) => {
 			meta.config.notificationSendDelay = 0.1;
 
-			db.sortedSetAdd('users:online', Date.now() - ((meta.config.onlineCutoff * 60000) + 50000), herpUid, function (err) {
+			db.sortedSetAdd('users:online', Date.now() - ((meta.config.onlineCutoff * 60000) + 50000), herpUid, (err) => {
 				assert.ifError(err);
-				socketModules.chats.send({ uid: fooUid }, { roomId: roomId, message: 'second chat message' }, function (err) {
+				socketModules.chats.send({ uid: fooUid }, { roomId: roomId, message: 'second chat message' }, (err) => {
 					assert.ifError(err);
-					setTimeout(function () {
-						User.notifications.get(herpUid, function (err, data) {
+					setTimeout(() => {
+						User.notifications.get(herpUid, (err, data) => {
 							assert.ifError(err);
 							assert(data.unread[0]);
 							var notification = data.unread[0];
@@ -415,14 +415,14 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should fail to get messages from room with invalid data', function (done) {
-			socketModules.chats.getMessages({ uid: null }, null, function (err) {
+		it('should fail to get messages from room with invalid data', (done) => {
+			socketModules.chats.getMessages({ uid: null }, null, (err) => {
 				assert.equal(err.message, '[[error:invalid-data]]');
-				socketModules.chats.getMessages({ uid: fooUid }, null, function (err) {
+				socketModules.chats.getMessages({ uid: fooUid }, null, (err) => {
 					assert.equal(err.message, '[[error:invalid-data]]');
-					socketModules.chats.getMessages({ uid: fooUid }, { uid: null }, function (err) {
+					socketModules.chats.getMessages({ uid: fooUid }, { uid: null }, (err) => {
 						assert.equal(err.message, '[[error:invalid-data]]');
-						socketModules.chats.getMessages({ uid: fooUid }, { uid: 1, roomId: null }, function (err) {
+						socketModules.chats.getMessages({ uid: fooUid }, { uid: 1, roomId: null }, (err) => {
 							assert.equal(err.message, '[[error:invalid-data]]');
 							done();
 						});
@@ -431,12 +431,12 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should get messages from room', function (done) {
+		it('should get messages from room', (done) => {
 			socketModules.chats.getMessages({ uid: fooUid }, {
 				uid: fooUid,
 				roomId: roomId,
 				start: 0,
-			}, function (err, messages) {
+			}, (err, messages) => {
 				assert.ifError(err);
 				assert(Array.isArray(messages));
 				assert.equal(messages[4].roomId, roomId);
@@ -445,43 +445,43 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should fail to mark read with invalid data', function (done) {
-			socketModules.chats.markRead({ uid: null }, roomId, function (err) {
+		it('should fail to mark read with invalid data', (done) => {
+			socketModules.chats.markRead({ uid: null }, roomId, (err) => {
 				assert.equal(err.message, '[[error:invalid-data]]');
-				socketModules.chats.markRead({ uid: fooUid }, null, function (err) {
+				socketModules.chats.markRead({ uid: fooUid }, null, (err) => {
 					assert.equal(err.message, '[[error:invalid-data]]');
 					done();
 				});
 			});
 		});
 
-		it('should not error if user is not in room', function (done) {
-			socketModules.chats.markRead({ uid: herpUid }, 10, function (err) {
+		it('should not error if user is not in room', (done) => {
+			socketModules.chats.markRead({ uid: herpUid }, 10, (err) => {
 				assert.ifError(err);
 				done();
 			});
 		});
 
-		it('should mark room read', function (done) {
-			socketModules.chats.markRead({ uid: fooUid }, roomId, function (err) {
+		it('should mark room read', (done) => {
+			socketModules.chats.markRead({ uid: fooUid }, roomId, (err) => {
 				assert.ifError(err);
 				done();
 			});
 		});
 
-		it('should mark all rooms read', function (done) {
-			socketModules.chats.markAllRead({ uid: fooUid }, {}, function (err) {
+		it('should mark all rooms read', (done) => {
+			socketModules.chats.markAllRead({ uid: fooUid }, {}, (err) => {
 				assert.ifError(err);
 				done();
 			});
 		});
 
-		it('should fail to rename room with invalid data', function (done) {
-			socketModules.chats.renameRoom({ uid: fooUid }, null, function (err) {
+		it('should fail to rename room with invalid data', (done) => {
+			socketModules.chats.renameRoom({ uid: fooUid }, null, (err) => {
 				assert.equal(err.message, '[[error:invalid-data]]');
-				socketModules.chats.renameRoom({ uid: fooUid }, { roomId: null }, function (err) {
+				socketModules.chats.renameRoom({ uid: fooUid }, { roomId: null }, (err) => {
 					assert.equal(err.message, '[[error:invalid-data]]');
-					socketModules.chats.renameRoom({ uid: fooUid }, { roomId: roomId, newName: null }, function (err) {
+					socketModules.chats.renameRoom({ uid: fooUid }, { roomId: roomId, newName: null }, (err) => {
 						assert.equal(err.message, '[[error:invalid-data]]');
 						done();
 					});
@@ -489,15 +489,15 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should rename room', function (done) {
-			socketModules.chats.renameRoom({ uid: fooUid }, { roomId: roomId, newName: 'new room name' }, function (err) {
+		it('should rename room', (done) => {
+			socketModules.chats.renameRoom({ uid: fooUid }, { roomId: roomId, newName: 'new room name' }, (err) => {
 				assert.ifError(err);
 				done();
 			});
 		});
 
 		it('should send a room-rename system message when a room is renamed', (done) => {
-			socketModules.chats.getMessages({ uid: fooUid }, { uid: fooUid, roomId: roomId, start: 0 }, function (err, messages) {
+			socketModules.chats.getMessages({ uid: fooUid }, { uid: fooUid, roomId: roomId, start: 0 }, (err, messages) => {
 				assert.ifError(err);
 				const message = messages.pop();
 				assert.strictEqual(message.system, true);
@@ -506,25 +506,25 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should fail to load room with invalid-data', function (done) {
-			socketModules.chats.loadRoom({ uid: fooUid }, null, function (err) {
+		it('should fail to load room with invalid-data', (done) => {
+			socketModules.chats.loadRoom({ uid: fooUid }, null, (err) => {
 				assert.equal(err.message, '[[error:invalid-data]]');
-				socketModules.chats.loadRoom({ uid: fooUid }, { roomId: null }, function (err) {
+				socketModules.chats.loadRoom({ uid: fooUid }, { roomId: null }, (err) => {
 					assert.equal(err.message, '[[error:invalid-data]]');
 					done();
 				});
 			});
 		});
 
-		it('should fail to load room if user is not in', function (done) {
-			socketModules.chats.loadRoom({ uid: 0 }, { roomId: roomId }, function (err) {
+		it('should fail to load room if user is not in', (done) => {
+			socketModules.chats.loadRoom({ uid: 0 }, { roomId: roomId }, (err) => {
 				assert.equal(err.message, '[[error:no-privileges]]');
 				done();
 			});
 		});
 
-		it('should load chat room', function (done) {
-			socketModules.chats.loadRoom({ uid: fooUid }, { roomId: roomId }, function (err, data) {
+		it('should load chat room', (done) => {
+			socketModules.chats.loadRoom({ uid: fooUid }, { roomId: roomId }, (err, data) => {
 				assert.ifError(err);
 				assert(data);
 				assert.equal(data.roomName, 'new room name');
@@ -532,10 +532,10 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should return true if user is dnd', function (done) {
-			db.setObjectField(`user:${herpUid}`, 'status', 'dnd', function (err) {
+		it('should return true if user is dnd', (done) => {
+			db.setObjectField(`user:${herpUid}`, 'status', 'dnd', (err) => {
 				assert.ifError(err);
-				socketModules.chats.isDnD({ uid: fooUid }, herpUid, function (err, isDnD) {
+				socketModules.chats.isDnD({ uid: fooUid }, herpUid, (err, isDnD) => {
 					assert.ifError(err);
 					assert(isDnD);
 					done();
@@ -543,12 +543,12 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should fail to load recent chats with invalid data', function (done) {
-			socketModules.chats.getRecentChats({ uid: fooUid }, null, function (err) {
+		it('should fail to load recent chats with invalid data', (done) => {
+			socketModules.chats.getRecentChats({ uid: fooUid }, null, (err) => {
 				assert.equal(err.message, '[[error:invalid-data]]');
-				socketModules.chats.getRecentChats({ uid: fooUid }, { after: null }, function (err) {
+				socketModules.chats.getRecentChats({ uid: fooUid }, { after: null }, (err) => {
 					assert.equal(err.message, '[[error:invalid-data]]');
-					socketModules.chats.getRecentChats({ uid: fooUid }, { after: 0, uid: null }, function (err) {
+					socketModules.chats.getRecentChats({ uid: fooUid }, { after: 0, uid: null }, (err) => {
 						assert.equal(err.message, '[[error:invalid-data]]');
 						done();
 					});
@@ -556,18 +556,18 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should load recent chats of user', function (done) {
-			socketModules.chats.getRecentChats({ uid: fooUid }, { after: 0, uid: fooUid }, function (err, data) {
+		it('should load recent chats of user', (done) => {
+			socketModules.chats.getRecentChats({ uid: fooUid }, { after: 0, uid: fooUid }, (err, data) => {
 				assert.ifError(err);
 				assert(Array.isArray(data.rooms));
 				done();
 			});
 		});
 
-		it('should escape teaser', function (done) {
-			socketModules.chats.send({ uid: fooUid }, { roomId: roomId, message: '<svg/onload=alert(document.location);' }, function (err) {
+		it('should escape teaser', (done) => {
+			socketModules.chats.send({ uid: fooUid }, { roomId: roomId, message: '<svg/onload=alert(document.location);' }, (err) => {
 				assert.ifError(err);
-				socketModules.chats.getRecentChats({ uid: fooUid }, { after: 0, uid: fooUid }, function (err, data) {
+				socketModules.chats.getRecentChats({ uid: fooUid }, { after: 0, uid: fooUid }, (err, data) => {
 					assert.ifError(err);
 					assert.equal(data.rooms[0].teaser.content, '&lt;svg&#x2F;onload=alert(document.location);');
 					done();
@@ -575,18 +575,18 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should fail to check if user has private chat with invalid data', function (done) {
-			socketModules.chats.hasPrivateChat({ uid: null }, null, function (err) {
+		it('should fail to check if user has private chat with invalid data', (done) => {
+			socketModules.chats.hasPrivateChat({ uid: null }, null, (err) => {
 				assert.equal(err.message, '[[error:invalid-data]]');
-				socketModules.chats.hasPrivateChat({ uid: fooUid }, null, function (err) {
+				socketModules.chats.hasPrivateChat({ uid: fooUid }, null, (err) => {
 					assert.equal(err.message, '[[error:invalid-data]]');
 					done();
 				});
 			});
 		});
 
-		it('should check if user has private chat with another uid', function (done) {
-			socketModules.chats.hasPrivateChat({ uid: fooUid }, herpUid, function (err, roomId) {
+		it('should check if user has private chat with another uid', (done) => {
+			socketModules.chats.hasPrivateChat({ uid: fooUid }, herpUid, (err, roomId) => {
 				assert.ifError(err);
 				assert(roomId);
 				done();
@@ -594,11 +594,11 @@ describe('Messaging Library', function () {
 		});
 	});
 
-	describe('edit/delete', function () {
+	describe('edit/delete', () => {
 		var socketModules = require('../src/socket.io/modules');
 		var mid;
 		let mid2;
-		before(async function () {
+		before(async () => {
 			await socketModules.chats.addUserToRoom({ uid: fooUid }, { roomId: roomId, username: 'baz' });
 			mid = (await socketModules.chats.send({ uid: fooUid }, { roomId: roomId, message: 'first chat message' })).mid;
 			mid2 = (await socketModules.chats.send({ uid: bazUid }, { roomId: roomId, message: 'second chat message' })).mid;
@@ -608,12 +608,12 @@ describe('Messaging Library', function () {
 			await socketModules.chats.leave({ uid: bazUid }, roomId);
 		});
 
-		it('should fail to edit message with invalid data', function (done) {
-			socketModules.chats.edit({ uid: fooUid }, null, function (err) {
+		it('should fail to edit message with invalid data', (done) => {
+			socketModules.chats.edit({ uid: fooUid }, null, (err) => {
 				assert.equal(err.message, '[[error:invalid-data]]');
-				socketModules.chats.edit({ uid: fooUid }, { roomId: null }, function (err) {
+				socketModules.chats.edit({ uid: fooUid }, { roomId: null }, (err) => {
 					assert.equal(err.message, '[[error:invalid-data]]');
-					socketModules.chats.edit({ uid: fooUid }, { roomId: 1, message: null }, function (err) {
+					socketModules.chats.edit({ uid: fooUid }, { roomId: 1, message: null }, (err) => {
 						assert.equal(err.message, '[[error:invalid-data]]');
 						done();
 					});
@@ -621,24 +621,24 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should fail to edit message if new content is empty string', function (done) {
-			socketModules.chats.edit({ uid: fooUid }, { mid: mid, roomId: roomId, message: ' ' }, function (err) {
+		it('should fail to edit message if new content is empty string', (done) => {
+			socketModules.chats.edit({ uid: fooUid }, { mid: mid, roomId: roomId, message: ' ' }, (err) => {
 				assert.equal(err.message, '[[error:invalid-chat-message]]');
 				done();
 			});
 		});
 
-		it('should fail to edit message if not own message', function (done) {
-			socketModules.chats.edit({ uid: herpUid }, { mid: mid, roomId: roomId, message: 'message edited' }, function (err) {
+		it('should fail to edit message if not own message', (done) => {
+			socketModules.chats.edit({ uid: herpUid }, { mid: mid, roomId: roomId, message: 'message edited' }, (err) => {
 				assert.equal(err.message, '[[error:cant-edit-chat-message]]');
 				done();
 			});
 		});
 
-		it('should edit message', function (done) {
-			socketModules.chats.edit({ uid: fooUid }, { mid: mid, roomId: roomId, message: 'message edited' }, function (err) {
+		it('should edit message', (done) => {
+			socketModules.chats.edit({ uid: fooUid }, { mid: mid, roomId: roomId, message: 'message edited' }, (err) => {
 				assert.ifError(err);
-				socketModules.chats.getRaw({ uid: fooUid }, { mid: mid }, function (err, raw) {
+				socketModules.chats.getRaw({ uid: fooUid }, { mid: mid }, (err, raw) => {
 					assert.ifError(err);
 					assert.equal(raw, 'message edited');
 					done();
@@ -646,12 +646,12 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should fail to delete message with invalid data', function (done) {
-			socketModules.chats.delete({ uid: fooUid }, null, function (err) {
+		it('should fail to delete message with invalid data', (done) => {
+			socketModules.chats.delete({ uid: fooUid }, null, (err) => {
 				assert.equal(err.message, '[[error:invalid-data]]');
-				socketModules.chats.delete({ uid: fooUid }, { roomId: null }, function (err) {
+				socketModules.chats.delete({ uid: fooUid }, { roomId: null }, (err) => {
 					assert.equal(err.message, '[[error:invalid-data]]');
-					socketModules.chats.delete({ uid: fooUid }, { roomId: 1, messageId: null }, function (err) {
+					socketModules.chats.delete({ uid: fooUid }, { roomId: 1, messageId: null }, (err) => {
 						assert.equal(err.message, '[[error:invalid-data]]');
 						done();
 					});
@@ -659,17 +659,17 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should fail to delete message if not owner', function (done) {
-			socketModules.chats.delete({ uid: herpUid }, { messageId: mid, roomId: roomId }, function (err) {
+		it('should fail to delete message if not owner', (done) => {
+			socketModules.chats.delete({ uid: herpUid }, { messageId: mid, roomId: roomId }, (err) => {
 				assert.equal(err.message, '[[error:cant-delete-chat-message]]');
 				done();
 			});
 		});
 
-		it('should mark the message as deleted', function (done) {
-			socketModules.chats.delete({ uid: fooUid }, { messageId: mid, roomId: roomId }, function (err) {
+		it('should mark the message as deleted', (done) => {
+			socketModules.chats.delete({ uid: fooUid }, { messageId: mid, roomId: roomId }, (err) => {
 				assert.ifError(err);
-				db.getObjectField(`message:${mid}`, 'deleted', function (err, value) {
+				db.getObjectField(`message:${mid}`, 'deleted', (err, value) => {
 					assert.ifError(err);
 					assert.strictEqual(1, parseInt(value, 10));
 					done();
@@ -677,12 +677,12 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should show deleted message to original users', function (done) {
-			socketModules.chats.getMessages({ uid: fooUid }, { uid: fooUid, roomId: roomId, start: 0 }, function (err, messages) {
+		it('should show deleted message to original users', (done) => {
+			socketModules.chats.getMessages({ uid: fooUid }, { uid: fooUid, roomId: roomId, start: 0 }, (err, messages) => {
 				assert.ifError(err);
 
 				// Reduce messages to their mids
-				var mids = messages.reduce(function (mids, cur) {
+				var mids = messages.reduce((mids, cur) => {
 					mids.push(cur.messageId);
 					return mids;
 				}, []);
@@ -692,27 +692,27 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should not show deleted message to other users', function (done) {
-			socketModules.chats.getMessages({ uid: herpUid }, { uid: herpUid, roomId: roomId, start: 0 }, function (err, messages) {
+		it('should not show deleted message to other users', (done) => {
+			socketModules.chats.getMessages({ uid: herpUid }, { uid: herpUid, roomId: roomId, start: 0 }, (err, messages) => {
 				assert.ifError(err);
-				messages.forEach(function (msg) {
+				messages.forEach((msg) => {
 					assert(!msg.deleted || msg.content === '[[modules:chat.message-deleted]]', msg.content);
 				});
 				done();
 			});
 		});
 
-		it('should error out if a message is deleted again', function (done) {
-			socketModules.chats.delete({ uid: fooUid }, { messageId: mid, roomId: roomId }, function (err) {
+		it('should error out if a message is deleted again', (done) => {
+			socketModules.chats.delete({ uid: fooUid }, { messageId: mid, roomId: roomId }, (err) => {
 				assert.strictEqual('[[error:chat-deleted-already]]', err.message);
 				done();
 			});
 		});
 
-		it('should restore the message', function (done) {
-			socketModules.chats.restore({ uid: fooUid }, { messageId: mid, roomId: roomId }, function (err) {
+		it('should restore the message', (done) => {
+			socketModules.chats.restore({ uid: fooUid }, { messageId: mid, roomId: roomId }, (err) => {
 				assert.ifError(err);
-				db.getObjectField(`message:${mid}`, 'deleted', function (err, value) {
+				db.getObjectField(`message:${mid}`, 'deleted', (err, value) => {
 					assert.ifError(err);
 					assert.strictEqual(0, parseInt(value, 10));
 					done();
@@ -720,8 +720,8 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should error out if a message is restored again', function (done) {
-			socketModules.chats.restore({ uid: fooUid }, { messageId: mid, roomId: roomId }, function (err) {
+		it('should error out if a message is restored again', (done) => {
+			socketModules.chats.restore({ uid: fooUid }, { messageId: mid, roomId: roomId }, (err) => {
 				assert.strictEqual('[[error:chat-restored-already]]', err.message);
 				done();
 			});
@@ -760,19 +760,19 @@ describe('Messaging Library', function () {
 		});
 	});
 
-	describe('controller', function () {
-		it('should 404 if chat is disabled', function (done) {
+	describe('controller', () => {
+		it('should 404 if chat is disabled', (done) => {
 			meta.config.disableChat = 1;
-			request(`${nconf.get('url')}/user/baz/chats`, function (err, response) {
+			request(`${nconf.get('url')}/user/baz/chats`, (err, response) => {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 404);
 				done();
 			});
 		});
 
-		it('should 500 for guest with no privilege error', function (done) {
+		it('should 500 for guest with no privilege error', (done) => {
 			meta.config.disableChat = 0;
-			request(`${nconf.get('url')}/api/user/baz/chats`, { json: true }, function (err, response, body) {
+			request(`${nconf.get('url')}/api/user/baz/chats`, { json: true }, (err, response, body) => {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 500);
 				assert.equal(body.error, '[[error:no-privileges]]');
@@ -780,8 +780,8 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should 404 for non-existent user', function (done) {
-			request(`${nconf.get('url')}/user/doesntexist/chats`, function (err, response) {
+		it('should 404 for non-existent user', (done) => {
+			request(`${nconf.get('url')}/user/doesntexist/chats`, (err, response) => {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 404);
 				done();
@@ -789,18 +789,18 @@ describe('Messaging Library', function () {
 		});
 	});
 
-	describe('logged in chat controller', function () {
+	describe('logged in chat controller', () => {
 		var jar;
-		before(function (done) {
-			helpers.loginUser('herp', 'derpderp', function (err, _jar) {
+		before((done) => {
+			helpers.loginUser('herp', 'derpderp', (err, _jar) => {
 				assert.ifError(err);
 				jar = _jar;
 				done();
 			});
 		});
 
-		it('should return chats page data', function (done) {
-			request(`${nconf.get('url')}/api/user/herp/chats`, { json: true, jar: jar }, function (err, response, body) {
+		it('should return chats page data', (done) => {
+			request(`${nconf.get('url')}/api/user/herp/chats`, { json: true, jar: jar }, (err, response, body) => {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 200);
 				assert(Array.isArray(body.rooms));
@@ -810,8 +810,8 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should return room data', function (done) {
-			request(`${nconf.get('url')}/api/user/herp/chats/${roomId}`, { json: true, jar: jar }, function (err, response, body) {
+		it('should return room data', (done) => {
+			request(`${nconf.get('url')}/api/user/herp/chats/${roomId}`, { json: true, jar: jar }, (err, response, body) => {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 200);
 				assert.equal(body.roomId, roomId);
@@ -820,8 +820,8 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should redirect to chats page', function (done) {
-			request(`${nconf.get('url')}/api/chats`, { jar: jar, json: true }, function (err, res, body) {
+		it('should redirect to chats page', (done) => {
+			request(`${nconf.get('url')}/api/chats`, { jar: jar, json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert.equal(res.headers['x-redirect'], '/user/herp/chats');
@@ -830,10 +830,10 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should return 404 if user is not in room', function (done) {
-			helpers.loginUser('baz', 'quuxquux', function (err, jar) {
+		it('should return 404 if user is not in room', (done) => {
+			helpers.loginUser('baz', 'quuxquux', (err, jar) => {
 				assert.ifError(err);
-				request(`${nconf.get('url')}/api/user/baz/chats/${roomId}`, { json: true, jar: jar }, function (err, response) {
+				request(`${nconf.get('url')}/api/user/baz/chats/${roomId}`, { json: true, jar: jar }, (err, response) => {
 					assert.ifError(err);
 					assert.equal(response.statusCode, 404);
 					done();

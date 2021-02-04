@@ -39,8 +39,8 @@ Analytics.get = function (socket, data, callback) {
 			summary: function (next) {
 				analytics.getSummary(next);
 			},
-		}, function (err, data) {
-			data.pastDay = data.pageviews.reduce(function (a, b) { return parseInt(a, 10) + parseInt(b, 10); });
+		}, (err, data) => {
+			data.pastDay = data.pageviews.reduce((a, b) => parseInt(a, 10) + parseInt(b, 10));
 			data.pageviews[data.pageviews.length - 1] = parseInt(data.pageviews[data.pageviews.length - 1], 10) + analytics.getUnwrittenPageviews();
 			callback(err, data);
 		});

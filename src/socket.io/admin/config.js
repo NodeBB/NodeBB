@@ -25,7 +25,7 @@ Config.setMultiple = async function (socket, data) {
 	const changes = {};
 	const newData = meta.configs.serialize(data);
 	const oldData = meta.configs.serialize(meta.config);
-	Object.keys(newData).forEach(function (key) {
+	Object.keys(newData).forEach((key) => {
 		if (newData[key] !== oldData[key]) {
 			changes[key] = newData[key];
 			changes[`${key}_old`] = meta.config[key];

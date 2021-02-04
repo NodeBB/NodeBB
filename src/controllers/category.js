@@ -104,7 +104,7 @@ categoryController.get = async function (req, res, next) {
 		categoryData.hasMoreSubCategories = categoryData.children.length > categoryData.subCategoriesPerPage;
 		categoryData.nextSubCategoryStart = categoryData.subCategoriesPerPage;
 		categoryData.children = categoryData.children.slice(0, categoryData.subCategoriesPerPage);
-		categoryData.children.forEach(function (child) {
+		categoryData.children.forEach((child) => {
 			if (child) {
 				helpers.trimChildren(child);
 				helpers.setCategoryTeaser(child);
@@ -130,7 +130,7 @@ categoryController.get = async function (req, res, next) {
 	categoryData['feeds:disableRSS'] = meta.config['feeds:disableRSS'] || 0;
 	categoryData['reputation:disabled'] = meta.config['reputation:disabled'];
 	categoryData.pagination = pagination.create(currentPage, pageCount, req.query);
-	categoryData.pagination.rel.forEach(function (rel) {
+	categoryData.pagination.rel.forEach((rel) => {
 		rel.href = `${url}/category/${categoryData.slug}${rel.href}`;
 		res.locals.linkTags.push(rel);
 	});

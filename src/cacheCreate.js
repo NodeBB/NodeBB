@@ -55,11 +55,11 @@ module.exports = function (opts) {
 		cache.misses = 0;
 	}
 
-	pubsub.on(`${cache.name}:cache:reset`, function () {
+	pubsub.on(`${cache.name}:cache:reset`, () => {
 		localReset();
 	});
 
-	pubsub.on(`${cache.name}:cache:del`, function (keys) {
+	pubsub.on(`${cache.name}:cache:del`, (keys) => {
 		if (Array.isArray(keys)) {
 			keys.forEach(key => cacheDel.apply(cache, [key]));
 		}
@@ -71,7 +71,7 @@ module.exports = function (opts) {
 		}
 		let data;
 		let isCached;
-		const unCachedKeys = keys.filter(function (key) {
+		const unCachedKeys = keys.filter((key) => {
 			data = cache.get(key);
 			isCached = data !== undefined;
 			if (isCached) {

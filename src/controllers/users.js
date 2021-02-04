@@ -50,7 +50,7 @@ usersController.getOnlineUsers = async function (req, res) {
 
 	let hiddenCount = 0;
 	if (!userData.isAdminOrGlobalMod) {
-		userData.users = userData.users.filter(function (user) {
+		userData.users = userData.users.filter((user) => {
 			if (user && user.status === 'offline') {
 				hiddenCount += 1;
 			}

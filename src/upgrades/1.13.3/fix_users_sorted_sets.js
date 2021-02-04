@@ -25,11 +25,11 @@ module.exports = {
 			'users:flags',
 		], 'null');
 
-		await batch.processArray(allUids, async function (uids) {
+		await batch.processArray(allUids, async (uids) => {
 			progress.incr(uids.length);
 			const userData = await db.getObjects(uids.map(id => `user:${id}`));
 
-			await Promise.all(userData.map(async function (userData, index) {
+			await Promise.all(userData.map(async (userData, index) => {
 				if (!userData || !userData.uid) {
 					await db.sortedSetsRemove([
 						'users:joindate',

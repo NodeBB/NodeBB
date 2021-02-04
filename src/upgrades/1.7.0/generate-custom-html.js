@@ -7,7 +7,7 @@ module.exports = {
 	name: 'Generate customHTML block from old customJS setting',
 	timestamp: Date.UTC(2017, 9, 12),
 	method: function (callback) {
-		db.getObjectField('config', 'customJS', function (err, newHTML) {
+		db.getObjectField('config', 'customJS', (err, newHTML) => {
 			if (err) {
 				return callback(err);
 			}

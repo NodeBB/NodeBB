@@ -25,7 +25,7 @@ module.exports = function (Messaging) {
 		}
 
 		uids = data.uids;
-		uids.forEach(function (uid) {
+		uids.forEach((uid) => {
 			data.self = parseInt(uid, 10) === parseInt(fromUid, 10) ? 1 : 0;
 			Messaging.pushUnreadCount(uid);
 			sockets.in(`uid_${uid}`).emit('event:chats.receive', data);
@@ -45,7 +45,7 @@ module.exports = function (Messaging) {
 			Messaging.notifyQueue[`${fromUid}:${roomId}`] = queueObj;
 		}
 
-		queueObj.timeout = setTimeout(function () {
+		queueObj.timeout = setTimeout(() => {
 			sendNotifications(fromUid, uids, roomId, queueObj.message);
 		}, (parseFloat(meta.config.notificationSendDelay) || 60) * 1000);
 	};

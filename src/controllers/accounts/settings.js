@@ -76,16 +76,16 @@ settingsController.get = async function (req, res, next) {
 		{ name: 'Yeti', value: 'yeti' },
 	];
 
-	userData.bootswatchSkinOptions.forEach(function (skin) {
+	userData.bootswatchSkinOptions.forEach((skin) => {
 		skin.selected = skin.value === userData.settings.bootswatchSkin;
 	});
 
-	userData.languages.forEach(function (language) {
+	userData.languages.forEach((language) => {
 		language.selected = language.code === userData.settings.userLang;
 	});
 
 	if (userData.isAdmin && userData.isSelf) {
-		userData.acpLanguages.forEach(function (language) {
+		userData.acpLanguages.forEach((language) => {
 			language.selected = language.code === userData.settings.acpLang;
 		});
 	}
@@ -122,7 +122,7 @@ settingsController.get = async function (req, res, next) {
 };
 
 const unsubscribable = ['digest', 'notification'];
-const jwtVerifyAsync = util.promisify(function (token, callback) {
+const jwtVerifyAsync = util.promisify((token, callback) => {
 	jwt.verify(token, nconf.get('secret'), (err, payload) => callback(err, payload));
 });
 const doUnsubscribe = async (payload) => {
@@ -221,7 +221,7 @@ async function getHomePageRoutes(userData) {
 	// Set selected for each route
 	var customIdx;
 	var hasSelected = false;
-	routes = routes.map(function (route, idx) {
+	routes = routes.map((route, idx) => {
 		if (route.route === userData.settings.homePageRoute) {
 			route.selected = true;
 			hasSelected = true;

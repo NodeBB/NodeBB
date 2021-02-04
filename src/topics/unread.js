@@ -143,7 +143,7 @@ module.exports = function (Topics) {
 
 		const filterCids = params.cid && params.cid.map(cid => parseInt(cid, 10));
 
-		topicData.forEach(function (topic) {
+		topicData.forEach((topic) => {
 			if (topic && topic.cid && (!filterCids || filterCids.includes(topic.cid)) && !blockedUids.includes(topic.uid)) {
 				if (isTopicsFollowed[topic.tid] || userCidState[topic.cid] === categories.watchStates.watching) {
 					tidsByFilter[''].push(topic.tid);
@@ -210,13 +210,11 @@ module.exports = function (Topics) {
 
 		const userScores = _.zipObject(params.tids, results);
 
-		return await async.filter(params.tids, async function (tid) {
-			return await doesTidHaveUnblockedUnreadPosts(tid, {
-				blockedUids: params.blockedUids,
-				topicTimestamp: topicScores[tid],
-				userLastReadTimestamp: userScores[tid],
-			});
-		});
+		return await async.filter(params.tids, async tid => await doesTidHaveUnblockedUnreadPosts(tid, {
+			blockedUids: params.blockedUids,
+			topicTimestamp: topicScores[tid],
+			userLastReadTimestamp: userScores[tid],
+		}));
 	}
 
 	async function doesTidHaveUnblockedUnreadPosts(tid, params) {
@@ -335,14 +333,14 @@ module.exports = function (Topics) {
 		]);
 
 		const cutoff = await Topics.unreadCutoff(uid);
-		const result = tids.map(function (tid, index) {
+		const result = tids.map((tid, index) => {
 			const read = !tids_unread[index] &&
 				(topicScores[index] < cutoff ||
 				!!(userScores[index] && userScores[index] >= topicScores[index]));
 			return { tid: tid, read: read, index: index };
 		});
 
-		return await async.map(result, async function (data) {
+		return await async.map(result, async (data) => {
 			if (data.read) {
 				return true;
 			}

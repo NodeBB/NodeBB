@@ -40,7 +40,7 @@ module.exports = function (User) {
 		const payload = await db.getObjectsFields(keys, ['type', 'targetId']);
 
 		// Only pass on flag ids from posts
-		flags = payload.reduce(function (memo, cur, idx) {
+		flags = payload.reduce((memo, cur, idx) => {
 			if (cur.type === 'post') {
 				memo.push({
 					value: parseInt(cur.targetId, 10),
@@ -64,7 +64,7 @@ module.exports = function (User) {
 
 	User.getHistory = async function (set) {
 		const data = await db.getSortedSetRevRangeWithScores(set, 0, -1);
-		return data.map(function (set) {
+		return data.map((set) => {
 			set.timestamp = set.score;
 			set.timestampISO = utils.toISOString(set.score);
 			set.value = validator.escape(String(set.value.split(':')[0]));
@@ -79,7 +79,7 @@ module.exports = function (User) {
 		const tids = postData.map(post => post.tid);
 
 		const topicData = await topics.getTopicsFields(tids, ['title']);
-		flags = flags.map(function (flagObj, idx) {
+		flags = flags.map((flagObj, idx) => {
 			flagObj.pid = flagObj.value;
 			flagObj.timestamp = flagObj.score;
 			flagObj.timestampISO = new Date(flagObj.score).toISOString();
@@ -99,7 +99,7 @@ module.exports = function (User) {
 		const banData = await db.getObjects(bans);
 		const uids = banData.map(banData => banData.fromUid);
 		const usersData = await User.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture']);
-		return banData.map(function (banObj, index) {
+		return banData.map((banObj, index) => {
 			banObj.user = usersData[index];
 			banObj.until = parseInt(banObj.expire, 10);
 			banObj.untilReadable = new Date(banObj.until).toString();
@@ -116,7 +116,7 @@ module.exports = function (User) {
 		const notes = await db.getObjects(keys);
 		const uids = [];
 
-		const noteData = notes.map(function (note) {
+		const noteData = notes.map((note) => {
 			if (note) {
 				uids.push(note.uid);
 				note.timestampISO = utils.toISOString(note.timestamp);
@@ -126,7 +126,7 @@ module.exports = function (User) {
 		});
 
 		const userData = await User.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture']);
-		noteData.forEach(function (note, index) {
+		noteData.forEach((note, index) => {
 			if (note) {
 				note.user = userData[index];
 			}

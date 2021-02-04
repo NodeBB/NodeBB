@@ -67,7 +67,7 @@ Notifications.getMultiple = async function (nids) {
 	const userKeys = notifications.map(n => n && n.from);
 	const usersData = await User.getUsersFields(userKeys, ['username', 'userslug', 'picture']);
 
-	notifications.forEach(function (notification, index) {
+	notifications.forEach((notification, index) => {
 		if (notification) {
 			if (notification.path && !notification.path.startsWith('http')) {
 				notification.path = nconf.get('relative_path') + notification.path;
@@ -139,10 +139,10 @@ Notifications.push = async function (notification, uids) {
 		return;
 	}
 
-	setTimeout(function () {
-		batch.processArray(uids, async function (uids) {
+	setTimeout(() => {
+		batch.processArray(uids, async (uids) => {
 			await pushToUids(uids, notification);
-		}, { interval: 1000 }, function (err) {
+		}, { interval: 1000 }, (err) => {
 			if (err) {
 				winston.error(err.stack);
 			}
@@ -164,7 +164,7 @@ async function pushToUids(uids, notification) {
 		await db.sortedSetsRemoveRangeByScore(readKeys, '-inf', oneWeekAgo);
 		const websockets = require('./socket.io');
 		if (websockets.server) {
-			uids.forEach(function (uid) {
+			uids.forEach((uid) => {
 				websockets.in(`uid_${uid}`).emit('event:new_notification', notification);
 			});
 		}
@@ -198,7 +198,7 @@ async function pushToUids(uids, notification) {
 		const uidsToNotify = [];
 		const uidsToEmail = [];
 		const usersSettings = await User.getMultipleUserSettings(uids);
-		usersSettings.forEach(function (userSettings) {
+		usersSettings.forEach((userSettings) => {
 			const setting = userSettings[`notificationType_${notification.type}`] || 'notification';
 
 			if (setting === 'notification' || setting === 'notificationemail') {
@@ -326,7 +326,7 @@ Notifications.prune = async function () {
 			db.deleteAll(nids.map(nid => `notifications:${nid}`)),
 		]);
 
-		await batch.processSortedSet('users:joindate', async function (uids) {
+		await batch.processSortedSet('users:joindate', async (uids) => {
 			const unread = uids.map(uid => `uid:${uid}:notifications:unread`);
 			const read = uids.map(uid => `uid:${uid}:notifications:read`);
 			await db.sortedSetsRemoveRangeByScore(unread.concat(read), '-inf', cutoffTime);
@@ -350,14 +350,14 @@ Notifications.merge = async function (notifications) {
 		'post-queue',
 	];
 
-	notifications = mergeIds.reduce(function (notifications, mergeId) {
+	notifications = mergeIds.reduce((notifications, mergeId) => {
 		const isolated = notifications.filter(n => n && n.hasOwnProperty('mergeId') && n.mergeId.split('|')[0] === mergeId);
 		if (isolated.length <= 1) {
 			return notifications;	// Nothing to merge
 		}
 
 		// Each isolated mergeId may have multiple differentiators, so process each separately
-		const differentiators = isolated.reduce(function (cur, next) {
+		const differentiators = isolated.reduce((cur, next) => {
 			const differentiator = next.mergeId.split('|')[1] || 0;
 			if (!cur.includes(differentiator)) {
 				cur.push(differentiator);
@@ -366,7 +366,7 @@ Notifications.merge = async function (notifications) {
 			return cur;
 		}, []);
 
-		differentiators.forEach(function (differentiator) {
+		differentiators.forEach((differentiator) => {
 			let set;
 			if (differentiator === 0 && differentiators.length === 1) {
 				set = isolated;
@@ -407,7 +407,7 @@ Notifications.merge = async function (notifications) {
 			}
 
 			// Filter out duplicates
-			notifications = notifications.filter(function (notifObj, idx) {
+			notifications = notifications.filter((notifObj, idx) => {
 				if (!notifObj || !notifObj.mergeId) {
 					return true;
 				}

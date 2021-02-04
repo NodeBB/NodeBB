@@ -20,7 +20,7 @@ module.exports = function (Messaging) {
 			Messaging.getMessagesData([mid], uid, roomId, true),
 		]);
 
-		uids.forEach(function (_uid) {
+		uids.forEach((_uid) => {
 			if (parseInt(_uid, 10) !== parseInt(uid, 10)) {
 				if (state === 1) {
 					sockets.in(`uid_${_uid}`).emit('event:chats.delete', mid);

@@ -20,7 +20,7 @@ module.exports = function (SocketTopics) {
 
 		const uids = await user.getUidsFromSet('users:online', 0, -1);
 
-		await async.eachLimit(data.tids, 10, async function (tid) {
+		await async.eachLimit(data.tids, 10, async (tid) => {
 			const canMove = await privileges.topics.isAdminOrMod(tid, socket.uid);
 			if (!canMove) {
 				throw new Error('[[error:no-privileges]]');
@@ -49,7 +49,7 @@ module.exports = function (SocketTopics) {
 
 		const tids = await categories.getAllTopicIds(data.currentCid, 0, -1);
 		data.uid = socket.uid;
-		await async.eachLimit(tids, 50, async function (tid) {
+		await async.eachLimit(tids, 50, async (tid) => {
 			await topics.tools.move(tid, data);
 		});
 	};

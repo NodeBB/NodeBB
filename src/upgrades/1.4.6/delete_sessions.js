@@ -36,9 +36,9 @@ module.exports = {
 						function (sessionKeys, next) {
 							progress.total = sessionKeys.length;
 
-							batch.processArray(sessionKeys, function (keys, next) {
+							batch.processArray(sessionKeys, (keys, next) => {
 								var multi = client.multi();
-								keys.forEach(function (key) {
+								keys.forEach((key) => {
 									progress.incr();
 									multi.del(key);
 								});
@@ -47,11 +47,11 @@ module.exports = {
 								batch: 1000,
 							}, next);
 						},
-					], function (err) {
+					], (err) => {
 						next(err);
 					});
 				} else if (db.client && db.client.collection) {
-					db.client.collection('sessions').deleteMany({}, {}, function (err) {
+					db.client.collection('sessions').deleteMany({}, {}, (err) => {
 						next(err);
 					});
 				} else {

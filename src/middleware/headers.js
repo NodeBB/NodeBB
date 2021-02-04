@@ -9,7 +9,7 @@ const languages = require('../languages');
 const helpers = require('./helpers');
 
 module.exports = function (middleware) {
-	middleware.addHeaders = helpers.try(function addHeaders(req, res, next) {
+	middleware.addHeaders = helpers.try((req, res, next) => {
 		const headers = {
 			'X-Powered-By': encodeURI(meta.config['powered-by'] || 'NodeBB'),
 			'Access-Control-Allow-Methods': encodeURI(meta.config['access-control-allow-methods'] || ''),
@@ -28,9 +28,7 @@ module.exports = function (middleware) {
 
 		if (meta.config['access-control-allow-origin']) {
 			let origins = meta.config['access-control-allow-origin'].split(',');
-			origins = origins.map(function (origin) {
-				return origin && origin.trim();
-			});
+			origins = origins.map(origin => origin && origin.trim());
 
 			if (origins.includes(req.get('origin'))) {
 				headers['Access-Control-Allow-Origin'] = encodeURI(req.get('origin'));
@@ -40,7 +38,7 @@ module.exports = function (middleware) {
 
 		if (meta.config['access-control-allow-origin-regex']) {
 			let originsRegex = meta.config['access-control-allow-origin-regex'].split(',');
-			originsRegex = originsRegex.map(function (origin) {
+			originsRegex = originsRegex.map((origin) => {
 				try {
 					origin = new RegExp(origin.trim());
 				} catch (err) {
@@ -50,7 +48,7 @@ module.exports = function (middleware) {
 				return origin;
 			});
 
-			originsRegex.forEach(function (regex) {
+			originsRegex.forEach((regex) => {
 				if (regex && regex.test(req.get('origin'))) {
 					headers['Access-Control-Allow-Origin'] = encodeURI(req.get('origin'));
 					headers.Vary = headers.Vary ? `${headers.Vary}, Origin` : 'Origin';
@@ -75,7 +73,7 @@ module.exports = function (middleware) {
 		next();
 	});
 
-	middleware.autoLocale = helpers.try(async function autoLocale(req, res, next) {
+	middleware.autoLocale = helpers.try(async (req, res, next) => {
 		let langs;
 		if (req.query.lang) {
 			langs = await listCodes();

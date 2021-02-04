@@ -25,14 +25,14 @@ const events = require('../src/events');
 
 var socketAdmin = require('../src/socket.io/admin');
 
-describe('socket.io', function () {
+describe('socket.io', () => {
 	var io;
 	var cid;
 	var tid;
 	var adminUid;
 	var regularUid;
 
-	before(function (done) {
+	before((done) => {
 		async.series([
 			async.apply(user.create, { username: 'admin', password: 'adminpwd' }),
 			async.apply(user.create, { username: 'regular', password: 'regularpwd', email: 'regular@test.com' }),
@@ -40,7 +40,7 @@ describe('socket.io', function () {
 				name: 'Test Category',
 				description: 'Test category created by testing script',
 			}),
-		], function (err, data) {
+		], (err, data) => {
 			if (err) {
 				return done(err);
 			}
@@ -53,12 +53,12 @@ describe('socket.io', function () {
 	});
 
 
-	it('should connect and auth properly', function (done) {
+	it('should connect and auth properly', (done) => {
 		request.get({
 			url: `${nconf.get('url')}/api/config`,
 			jar: cookies,
 			json: true,
-		}, function (err, res, body) {
+		}, (err, res, body) => {
 			assert.ifError(err);
 
 			request.post(`${nconf.get('url')}/login`, {
@@ -71,10 +71,10 @@ describe('socket.io', function () {
 					'x-csrf-token': body.csrf_token,
 				},
 				json: true,
-			}, function (err, res) {
+			}, (err, res) => {
 				assert.ifError(err);
 
-				helpers.connectSocketIO(res, function (err, _io) {
+				helpers.connectSocketIO(res, (err, _io) => {
 					io = _io;
 					assert.ifError(err);
 
@@ -84,31 +84,29 @@ describe('socket.io', function () {
 		});
 	});
 
-	it('should return error for unknown event', function (done) {
-		io.emit('unknown.event', function (err) {
+	it('should return error for unknown event', (done) => {
+		io.emit('unknown.event', (err) => {
 			assert(err);
 			assert.equal(err.message, '[[error:invalid-event]]');
 			done();
 		});
 	});
 
-	it('should get installed themes', function (done) {
+	it('should get installed themes', (done) => {
 		var themes = ['nodebb-theme-lavender', 'nodebb-theme-persona', 'nodebb-theme-vanilla'];
-		io.emit('admin.themes.getInstalled', function (err, data) {
+		io.emit('admin.themes.getInstalled', (err, data) => {
 			assert.ifError(err);
 			assert(data);
-			var installed = data.map(function (theme) {
-				return theme.id;
-			});
-			themes.forEach(function (theme) {
+			var installed = data.map(theme => theme.id);
+			themes.forEach((theme) => {
 				assert.notEqual(installed.indexOf(theme), -1);
 			});
 			done();
 		});
 	});
 
-	it('should post a topic', function (done) {
-		io.emit('topics.post', { title: 'test topic title', content: 'test topic main post content', uid: adminUid, cid: cid }, function (err, result) {
+	it('should post a topic', (done) => {
+		io.emit('topics.post', { title: 'test topic title', content: 'test topic main post content', uid: adminUid, cid: cid }, (err, result) => {
 			assert.ifError(err);
 			assert.equal(result.user.username, 'admin');
 			assert.equal(result.category.cid, cid);
@@ -118,8 +116,8 @@ describe('socket.io', function () {
 		});
 	});
 
-	it('should reply to topic', function (done) {
-		io.emit('posts.reply', { tid: tid, uid: adminUid, content: 'test post content' }, function (err, result) {
+	it('should reply to topic', (done) => {
+		io.emit('posts.reply', { tid: tid, uid: adminUid, content: 'test post content' }, (err, result) => {
 			assert.ifError(err);
 			assert.equal(result.uid, adminUid);
 			assert.equal(result.user.username, 'admin');
@@ -128,19 +126,19 @@ describe('socket.io', function () {
 		});
 	});
 
-	it('should get more unread topics', function (done) {
-		io.emit('topics.loadMoreSortedTopics', { after: 0, count: 10, direction: 1, sort: 'unread' }, function (err, result) {
+	it('should get more unread topics', (done) => {
+		io.emit('topics.loadMoreSortedTopics', { after: 0, count: 10, direction: 1, sort: 'unread' }, (err, result) => {
 			assert.ifError(err);
 			assert(Array.isArray(result.topics));
 			done();
 		});
 	});
 
-	it('should ban a user', function (done) {
+	it('should ban a user', (done) => {
 		var socketUser = require('../src/socket.io/user');
-		socketUser.banUsers({ uid: adminUid }, { uids: [regularUid], reason: 'spammer' }, function (err) {
+		socketUser.banUsers({ uid: adminUid }, { uids: [regularUid], reason: 'spammer' }, (err) => {
 			assert.ifError(err);
-			user.getLatestBanInfo(regularUid, function (err, data) {
+			user.getLatestBanInfo(regularUid, (err, data) => {
 				assert.ifError(err);
 				assert(data.uid);
 				assert(data.timestamp);
@@ -152,19 +150,19 @@ describe('socket.io', function () {
 		});
 	});
 
-	it('should return ban reason', function (done) {
-		user.bans.getReason(regularUid, function (err, reason) {
+	it('should return ban reason', (done) => {
+		user.bans.getReason(regularUid, (err, reason) => {
 			assert.ifError(err);
 			assert.equal(reason, 'spammer');
 			done();
 		});
 	});
 
-	it('should unban a user', function (done) {
+	it('should unban a user', (done) => {
 		var socketUser = require('../src/socket.io/user');
-		socketUser.unbanUsers({ uid: adminUid }, [regularUid], function (err) {
+		socketUser.unbanUsers({ uid: adminUid }, [regularUid], (err) => {
 			assert.ifError(err);
-			user.bans.isBanned(regularUid, function (err, isBanned) {
+			user.bans.isBanned(regularUid, (err, isBanned) => {
 				assert.ifError(err);
 				assert(!isBanned);
 				done();
@@ -172,10 +170,10 @@ describe('socket.io', function () {
 		});
 	});
 
-	it('should make user admin', function (done) {
-		socketAdmin.user.makeAdmins({ uid: adminUid }, [regularUid], function (err) {
+	it('should make user admin', (done) => {
+		socketAdmin.user.makeAdmins({ uid: adminUid }, [regularUid], (err) => {
 			assert.ifError(err);
-			groups.isMember(regularUid, 'administrators', function (err, isMember) {
+			groups.isMember(regularUid, 'administrators', (err, isMember) => {
 				assert.ifError(err);
 				assert(isMember);
 				done();
@@ -183,10 +181,10 @@ describe('socket.io', function () {
 		});
 	});
 
-	it('should make user non-admin', function (done) {
-		socketAdmin.user.removeAdmins({ uid: adminUid }, [regularUid], function (err) {
+	it('should make user non-admin', (done) => {
+		socketAdmin.user.removeAdmins({ uid: adminUid }, [regularUid], (err) => {
 			assert.ifError(err);
-			groups.isMember(regularUid, 'administrators', function (err, isMember) {
+			groups.isMember(regularUid, 'administrators', (err, isMember) => {
 				assert.ifError(err);
 				assert(!isMember);
 				done();
@@ -194,30 +192,30 @@ describe('socket.io', function () {
 		});
 	});
 
-	describe('user create/delete', function () {
+	describe('user create/delete', () => {
 		let uid;
-		it('should create a user', async function () {
+		it('should create a user', async () => {
 			const userData = await socketAdmin.user.createUser({ uid: adminUid }, { username: 'foo1' });
 			uid = userData.uid;
 			const isMember = await groups.isMember(userData.uid, 'registered-users');
 			assert(isMember);
 		});
 
-		it('should delete users', async function () {
+		it('should delete users', async () => {
 			await socketAdmin.user.deleteUsers({ uid: adminUid }, [uid]);
 			await sleep(500);
 			const isMember = await groups.isMember(uid, 'registered-users');
 			assert(!isMember);
 		});
 
-		it('should error if user does not exist', function (done) {
-			socketAdmin.user.deleteUsersAndContent({ uid: adminUid }, [uid], function (err) {
+		it('should error if user does not exist', (done) => {
+			socketAdmin.user.deleteUsersAndContent({ uid: adminUid }, [uid], (err) => {
 				assert.strictEqual(err.message, '[[error:no-user]]');
 				done();
 			});
 		});
 
-		it('should delete users and their content', async function () {
+		it('should delete users and their content', async () => {
 			const userData = await socketAdmin.user.createUser({ uid: adminUid }, { username: 'foo2' });
 			await socketAdmin.user.deleteUsersAndContent({ uid: adminUid }, [userData.uid]);
 			await sleep(500);
@@ -226,42 +224,42 @@ describe('socket.io', function () {
 		});
 	});
 
-	it('should error with invalid data', function (done) {
-		socketAdmin.user.createUser({ uid: adminUid }, null, function (err) {
+	it('should error with invalid data', (done) => {
+		socketAdmin.user.createUser({ uid: adminUid }, null, (err) => {
 			assert.equal(err.message, '[[error:invalid-data]]');
 			done();
 		});
 	});
 
-	it('should reset lockouts', function (done) {
-		socketAdmin.user.resetLockouts({ uid: adminUid }, [regularUid], function (err) {
+	it('should reset lockouts', (done) => {
+		socketAdmin.user.resetLockouts({ uid: adminUid }, [regularUid], (err) => {
 			assert.ifError(err);
 			done();
 		});
 	});
 
-	describe('validation emails', function () {
+	describe('validation emails', () => {
 		var meta = require('../src/meta');
 		var plugins = require('../src/plugins');
 
 		async function dummyEmailerHook(data) {
 			// pretend to handle sending emails
 		}
-		before(function () {
+		before(() => {
 			// Attach an emailer hook so related requests do not error
 			plugins.hooks.register('emailer-test', {
 				hook: 'filter:email.send',
 				method: dummyEmailerHook,
 			});
 		});
-		after(function () {
+		after(() => {
 			plugins.hooks.unregister('emailer-test', 'filter:email.send');
 		});
 
-		it('should validate emails', function (done) {
-			socketAdmin.user.validateEmail({ uid: adminUid }, [regularUid], function (err) {
+		it('should validate emails', (done) => {
+			socketAdmin.user.validateEmail({ uid: adminUid }, [regularUid], (err) => {
 				assert.ifError(err);
-				user.getUserField(regularUid, 'email:confirmed', function (err, emailConfirmed) {
+				user.getUserField(regularUid, 'email:confirmed', (err, emailConfirmed) => {
 					assert.ifError(err);
 					assert.equal(parseInt(emailConfirmed, 10), 1);
 					done();
@@ -269,23 +267,23 @@ describe('socket.io', function () {
 			});
 		});
 
-		it('should error with invalid uids', function (done) {
-			socketAdmin.user.sendValidationEmail({ uid: adminUid }, null, function (err) {
+		it('should error with invalid uids', (done) => {
+			socketAdmin.user.sendValidationEmail({ uid: adminUid }, null, (err) => {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
-		it('should error if email validation is not required', function (done) {
-			socketAdmin.user.sendValidationEmail({ uid: adminUid }, [regularUid], function (err) {
+		it('should error if email validation is not required', (done) => {
+			socketAdmin.user.sendValidationEmail({ uid: adminUid }, [regularUid], (err) => {
 				assert.equal(err.message, '[[error:email-confirmations-are-disabled]]');
 				done();
 			});
 		});
 
-		it('should send validation email', function (done) {
+		it('should send validation email', (done) => {
 			meta.config.requireEmailConfirmation = 1;
-			socketAdmin.user.sendValidationEmail({ uid: adminUid }, [regularUid], function (err) {
+			socketAdmin.user.sendValidationEmail({ uid: adminUid }, [regularUid], (err) => {
 				assert.ifError(err);
 				meta.config.requireEmailConfirmation = 0;
 				done();
@@ -293,61 +291,61 @@ describe('socket.io', function () {
 		});
 	});
 
-	it('should push unread notifications on reconnect', function (done) {
+	it('should push unread notifications on reconnect', (done) => {
 		var socketMeta = require('../src/socket.io/meta');
-		socketMeta.reconnected({ uid: 1 }, {}, function (err) {
+		socketMeta.reconnected({ uid: 1 }, {}, (err) => {
 			assert.ifError(err);
 			done();
 		});
 	});
 
 
-	it('should error if the room is missing', function (done) {
-		io.emit('meta.rooms.enter', null, function (err) {
+	it('should error if the room is missing', (done) => {
+		io.emit('meta.rooms.enter', null, (err) => {
 			assert.equal(err.message, '[[error:invalid-data]]');
 			done();
 		});
 	});
 
-	it('should return if uid is 0', function (done) {
+	it('should return if uid is 0', (done) => {
 		var socketMeta = require('../src/socket.io/meta');
-		socketMeta.rooms.enter({ uid: 0 }, null, function (err) {
+		socketMeta.rooms.enter({ uid: 0 }, null, (err) => {
 			assert.ifError(err);
 			done();
 		});
 	});
 
-	it('should join a room', function (done) {
-		io.emit('meta.rooms.enter', { enter: 'recent_topics' }, function (err) {
+	it('should join a room', (done) => {
+		io.emit('meta.rooms.enter', { enter: 'recent_topics' }, (err) => {
 			assert.ifError(err);
 			done();
 		});
 	});
 
-	it('should leave current room', function (done) {
-		io.emit('meta.rooms.leaveCurrent', {}, function (err) {
+	it('should leave current room', (done) => {
+		io.emit('meta.rooms.leaveCurrent', {}, (err) => {
 			assert.ifError(err);
 			done();
 		});
 	});
 
-	it('should get server time', function (done) {
-		io.emit('admin.getServerTime', null, function (err, time) {
+	it('should get server time', (done) => {
+		io.emit('admin.getServerTime', null, (err, time) => {
 			assert.ifError(err);
 			assert(time);
 			done();
 		});
 	});
 
-	it('should error to get daily analytics with invalid data', function (done) {
-		io.emit('admin.analytics.get', null, function (err) {
+	it('should error to get daily analytics with invalid data', (done) => {
+		io.emit('admin.analytics.get', null, (err) => {
 			assert.equal(err.message, '[[error:invalid-data]]');
 			done();
 		});
 	});
 
-	it('should get daily analytics', function (done) {
-		io.emit('admin.analytics.get', { graph: 'traffic', units: 'days' }, function (err, data) {
+	it('should get daily analytics', (done) => {
+		io.emit('admin.analytics.get', { graph: 'traffic', units: 'days' }, (err, data) => {
 			assert.ifError(err);
 			assert(data);
 			assert(data.summary);
@@ -355,8 +353,8 @@ describe('socket.io', function () {
 		});
 	});
 
-	it('should get hourly analytics', function (done) {
-		io.emit('admin.analytics.get', { graph: 'traffic', units: 'hours' }, function (err, data) {
+	it('should get hourly analytics', (done) => {
+		io.emit('admin.analytics.get', { graph: 'traffic', units: 'hours' }, (err, data) => {
 			assert.ifError(err);
 			assert(data);
 			assert(data.summary);
@@ -364,8 +362,8 @@ describe('socket.io', function () {
 		});
 	});
 
-	it('should allow a custom date range for traffic graph analytics', function (done) {
-		io.emit('admin.analytics.get', { graph: 'traffic', units: 'days', amount: '7' }, function (err, data) {
+	it('should allow a custom date range for traffic graph analytics', (done) => {
+		io.emit('admin.analytics.get', { graph: 'traffic', units: 'days', amount: '7' }, (err, data) => {
 			assert.ifError(err);
 			assert(data);
 			assert(data.pageviews);
@@ -376,20 +374,20 @@ describe('socket.io', function () {
 		});
 	});
 
-	it('should return error', function (done) {
-		socketAdmin.before({ uid: 10 }, 'someMethod', {}, function (err) {
+	it('should return error', (done) => {
+		socketAdmin.before({ uid: 10 }, 'someMethod', {}, (err) => {
 			assert.equal(err.message, '[[error:no-privileges]]');
 			done();
 		});
 	});
 
-	it('should get room stats', function (done) {
-		io.emit('meta.rooms.enter', { enter: 'topic_1' }, function (err) {
+	it('should get room stats', (done) => {
+		io.emit('meta.rooms.enter', { enter: 'topic_1' }, (err) => {
 			assert.ifError(err);
-			socketAdmin.rooms.getAll({ uid: 10 }, {}, function (err) {
+			socketAdmin.rooms.getAll({ uid: 10 }, {}, (err) => {
 				assert.ifError(err);
-				setTimeout(function () {
-					socketAdmin.rooms.getAll({ uid: 10 }, {}, function (err, data) {
+				setTimeout(() => {
+					socketAdmin.rooms.getAll({ uid: 10 }, {}, (err, data) => {
 						assert.ifError(err);
 						assert(data.hasOwnProperty('onlineGuestCount'));
 						assert(data.hasOwnProperty('onlineRegisteredCount'));
@@ -403,13 +401,13 @@ describe('socket.io', function () {
 		});
 	});
 
-	it('should get room stats', function (done) {
-		io.emit('meta.rooms.enter', { enter: 'category_1' }, function (err) {
+	it('should get room stats', (done) => {
+		io.emit('meta.rooms.enter', { enter: 'category_1' }, (err) => {
 			assert.ifError(err);
-			socketAdmin.rooms.getAll({ uid: 10 }, {}, function (err) {
+			socketAdmin.rooms.getAll({ uid: 10 }, {}, (err) => {
 				assert.ifError(err);
-				setTimeout(function () {
-					socketAdmin.rooms.getAll({ uid: 10 }, {}, function (err, data) {
+				setTimeout(() => {
+					socketAdmin.rooms.getAll({ uid: 10 }, {}, (err, data) => {
 						assert.ifError(err);
 						assert.equal(data.users.category, 1, JSON.stringify(data, null, 4));
 						done();
@@ -419,8 +417,8 @@ describe('socket.io', function () {
 		});
 	});
 
-	it('should get admin search dictionary', function (done) {
-		socketAdmin.getSearchDict({ uid: adminUid }, {}, function (err, data) {
+	it('should get admin search dictionary', (done) => {
+		socketAdmin.getSearchDict({ uid: adminUid }, {}, (err, data) => {
 			assert.ifError(err);
 			assert(Array.isArray(data));
 			assert(data[0].namespace);
@@ -430,31 +428,31 @@ describe('socket.io', function () {
 		});
 	});
 
-	it('should fire event', function (done) {
-		io.on('testEvent', function (data) {
+	it('should fire event', (done) => {
+		io.on('testEvent', (data) => {
 			assert.equal(data.foo, 1);
 			done();
 		});
-		socketAdmin.fireEvent({ uid: adminUid }, { name: 'testEvent', payload: { foo: 1 } }, function (err) {
+		socketAdmin.fireEvent({ uid: adminUid }, { name: 'testEvent', payload: { foo: 1 } }, (err) => {
 			assert.ifError(err);
 		});
 	});
 
-	it('should error with invalid data', function (done) {
-		socketAdmin.themes.set({ uid: adminUid }, null, function (err) {
+	it('should error with invalid data', (done) => {
+		socketAdmin.themes.set({ uid: adminUid }, null, (err) => {
 			assert.equal(err.message, '[[error:invalid-data]]');
 			done();
 		});
 	});
 
-	it('should set theme to bootswatch', function (done) {
+	it('should set theme to bootswatch', (done) => {
 		socketAdmin.themes.set({ uid: adminUid }, {
 			type: 'bootswatch',
 			src: '//maxcdn.bootstrapcdn.com/bootswatch/latest/darkly/bootstrap.min.css',
 			id: 'darkly',
-		}, function (err) {
+		}, (err) => {
 			assert.ifError(err);
-			meta.configs.getFields(['theme:src', 'bootswatchSkin'], function (err, fields) {
+			meta.configs.getFields(['theme:src', 'bootswatchSkin'], (err, fields) => {
 				assert.ifError(err);
 				assert.equal(fields['theme:src'], '//maxcdn.bootstrapcdn.com/bootswatch/latest/darkly/bootstrap.min.css');
 				assert.equal(fields.bootswatchSkin, 'darkly');
@@ -463,10 +461,10 @@ describe('socket.io', function () {
 		});
 	});
 
-	it('should set theme to local persona', function (done) {
-		socketAdmin.themes.set({ uid: adminUid }, { type: 'local', id: 'nodebb-theme-persona' }, function (err) {
+	it('should set theme to local persona', (done) => {
+		socketAdmin.themes.set({ uid: adminUid }, { type: 'local', id: 'nodebb-theme-persona' }, (err) => {
 			assert.ifError(err);
-			meta.configs.get('theme:id', function (err, id) {
+			meta.configs.get('theme:id', (err, id) => {
 				assert.ifError(err);
 				assert.equal(id, 'nodebb-theme-persona');
 				done();
@@ -474,8 +472,8 @@ describe('socket.io', function () {
 		});
 	});
 
-	it('should toggle plugin active', function (done) {
-		socketAdmin.plugins.toggleActive({ uid: adminUid }, 'nodebb-plugin-location-to-map', function (err, data) {
+	it('should toggle plugin active', (done) => {
+		socketAdmin.plugins.toggleActive({ uid: adminUid }, 'nodebb-plugin-location-to-map', (err, data) => {
 			assert.ifError(err);
 			assert.deepEqual(data, { id: 'nodebb-plugin-location-to-map', active: true });
 			done();
@@ -484,31 +482,31 @@ describe('socket.io', function () {
 
 	it('should toggle plugin install', function (done) {
 		this.timeout(0);
-		socketAdmin.plugins.toggleInstall({ uid: adminUid }, { id: 'nodebb-plugin-location-to-map', version: 'latest' }, function (err, data) {
+		socketAdmin.plugins.toggleInstall({ uid: adminUid }, { id: 'nodebb-plugin-location-to-map', version: 'latest' }, (err, data) => {
 			assert.ifError(err);
 			assert.equal(data.name, 'nodebb-plugin-location-to-map');
 			done();
 		});
 	});
 
-	it('should get list of active plugins', function (done) {
-		socketAdmin.plugins.getActive({ uid: adminUid }, {}, function (err, data) {
+	it('should get list of active plugins', (done) => {
+		socketAdmin.plugins.getActive({ uid: adminUid }, {}, (err, data) => {
 			assert.ifError(err);
 			assert(Array.isArray(data));
 			done();
 		});
 	});
 
-	it('should order active plugins', function (done) {
+	it('should order active plugins', (done) => {
 		var data = [
 			{ name: 'nodebb-theme-persona', order: 0 },
 			{ name: 'nodebb-plugin-dbsearch', order: 1 },
 			{ name: 'nodebb-plugin-markdown', order: 2 },
 			{ ignoreme: 'wrong data' },
 		];
-		socketAdmin.plugins.orderActivePlugins({ uid: adminUid }, data, function (err) {
+		socketAdmin.plugins.orderActivePlugins({ uid: adminUid }, data, (err) => {
 			assert.ifError(err);
-			db.sortedSetRank('plugins:active', 'nodebb-plugin-dbsearch', function (err, rank) {
+			db.sortedSetRank('plugins:active', 'nodebb-plugin-dbsearch', (err, rank) => {
 				assert.ifError(err);
 				assert.equal(rank, 1);
 				done();
@@ -518,24 +516,24 @@ describe('socket.io', function () {
 
 	it('should upgrade plugin', function (done) {
 		this.timeout(0);
-		socketAdmin.plugins.upgrade({ uid: adminUid }, { id: 'nodebb-plugin-location-to-map', version: 'latest' }, function (err) {
+		socketAdmin.plugins.upgrade({ uid: adminUid }, { id: 'nodebb-plugin-location-to-map', version: 'latest' }, (err) => {
 			assert.ifError(err);
 			done();
 		});
 	});
 
-	it('should error with invalid data', function (done) {
-		socketAdmin.widgets.set({ uid: adminUid }, null, function (err) {
+	it('should error with invalid data', (done) => {
+		socketAdmin.widgets.set({ uid: adminUid }, null, (err) => {
 			assert.equal(err.message, '[[error:invalid-data]]');
 			done();
 		});
 	});
 
-	it('should error with invalid data', function (done) {
+	it('should error with invalid data', (done) => {
 		var data = [{ template: 'global', location: 'sidebar', widgets: [{ widget: 'html', data: { html: 'test', title: 'test', container: '' } }] }];
-		socketAdmin.widgets.set({ uid: adminUid }, data, function (err) {
+		socketAdmin.widgets.set({ uid: adminUid }, data, (err) => {
 			assert.ifError(err);
-			db.getObjectField('widgets:global', 'sidebar', function (err, widgetData) {
+			db.getObjectField('widgets:global', 'sidebar', (err, widgetData) => {
 				assert.ifError(err);
 
 				assert.equal(JSON.parse(widgetData)[0].data.html, 'test');
@@ -544,28 +542,28 @@ describe('socket.io', function () {
 		});
 	});
 
-	it('should clear sitemap cache', function (done) {
-		socketAdmin.settings.clearSitemapCache({ uid: adminUid }, {}, function (err) {
+	it('should clear sitemap cache', (done) => {
+		socketAdmin.settings.clearSitemapCache({ uid: adminUid }, {}, (err) => {
 			assert.ifError(err);
 			done();
 		});
 	});
 
-	it('should send test email', function (done) {
-		socketAdmin.email.test({ uid: adminUid }, { template: 'digest.tpl' }, function (err) {
+	it('should send test email', (done) => {
+		socketAdmin.email.test({ uid: adminUid }, { template: 'digest.tpl' }, (err) => {
 			assert.ifError(err);
 			done();
 		});
 	});
 
-	it('should get logs', function (done) {
+	it('should get logs', (done) => {
 		var fs = require('fs');
 		var path = require('path');
 		meta.logs.path = path.join(nconf.get('base_dir'), 'test/files', 'output.log');
-		fs.appendFile(meta.logs.path, 'some logs', function (err) {
+		fs.appendFile(meta.logs.path, 'some logs', (err) => {
 			assert.ifError(err);
 
-			socketAdmin.logs.get({ uid: adminUid }, {}, function (err, data) {
+			socketAdmin.logs.get({ uid: adminUid }, {}, (err, data) => {
 				assert.ifError(err);
 				assert(data);
 				done();
@@ -573,10 +571,10 @@ describe('socket.io', function () {
 		});
 	});
 
-	it('should clear logs', function (done) {
-		socketAdmin.logs.clear({ uid: adminUid }, {}, function (err) {
+	it('should clear logs', (done) => {
+		socketAdmin.logs.clear({ uid: adminUid }, {}, (err) => {
 			assert.ifError(err);
-			socketAdmin.logs.get({ uid: adminUid }, {}, function (err, data) {
+			socketAdmin.logs.get({ uid: adminUid }, {}, (err, data) => {
 				assert.ifError(err);
 				assert.equal(data.length, 0);
 				done();
@@ -584,10 +582,10 @@ describe('socket.io', function () {
 		});
 	});
 
-	it('should clear errors', function (done) {
-		socketAdmin.errors.clear({ uid: adminUid }, {}, function (err) {
+	it('should clear errors', (done) => {
+		socketAdmin.errors.clear({ uid: adminUid }, {}, (err) => {
 			assert.ifError(err);
-			db.exists('error:404', function (err, exists) {
+			db.exists('error:404', (err, exists) => {
 				assert.ifError(err);
 				assert(!exists);
 				done();
@@ -595,12 +593,12 @@ describe('socket.io', function () {
 		});
 	});
 
-	it('should delete a single event', function (done) {
-		db.getSortedSetRevRange('events:time', 0, 0, function (err, eids) {
+	it('should delete a single event', (done) => {
+		db.getSortedSetRevRange('events:time', 0, 0, (err, eids) => {
 			assert.ifError(err);
-			events.deleteEvents(eids, function (err) {
+			events.deleteEvents(eids, (err) => {
 				assert.ifError(err);
-				db.isSortedSetMembers('events:time', eids, function (err, isMembers) {
+				db.isSortedSetMembers('events:time', eids, (err, isMembers) => {
 					assert.ifError(err);
 					assert(!isMembers.includes(true));
 					done();
@@ -609,10 +607,10 @@ describe('socket.io', function () {
 		});
 	});
 
-	it('should delete all events', function (done) {
-		events.deleteAll(function (err) {
+	it('should delete all events', (done) => {
+		events.deleteAll((err) => {
 			assert.ifError(err);
-			db.sortedSetCard('events:time', function (err, count) {
+			db.sortedSetCard('events:time', (err, count) => {
 				assert.ifError(err);
 				assert.equal(count, 0);
 				done();
@@ -620,21 +618,21 @@ describe('socket.io', function () {
 		});
 	});
 
-	describe('logger', function () {
+	describe('logger', () => {
 		var logger = require('../src/logger');
 		var index = require('../src/socket.io');
 		var fs = require('fs');
 		var path = require('path');
 
-		it('should enable logging', function (done) {
+		it('should enable logging', (done) => {
 			meta.config.loggerStatus = 1;
 			meta.config.loggerIOStatus = 1;
 			var loggerPath = path.join(__dirname, '..', 'logs', 'logger.log');
 			logger.monitorConfig({ io: index.server }, { key: 'loggerPath', value: loggerPath });
-			setTimeout(function () {
-				io.emit('meta.rooms.enter', { enter: 'recent_topics' }, function (err) {
+			setTimeout(() => {
+				io.emit('meta.rooms.enter', { enter: 'recent_topics' }, (err) => {
 					assert.ifError(err);
-					fs.readFile(loggerPath, 'utf-8', function (err, content) {
+					fs.readFile(loggerPath, 'utf-8', (err, content) => {
 						assert.ifError(err);
 						assert(content);
 						done();
@@ -643,24 +641,24 @@ describe('socket.io', function () {
 			}, 500);
 		});
 
-		after(function (done) {
+		after((done) => {
 			meta.config.loggerStatus = 0;
 			meta.config.loggerIOStatus = 0;
 			done();
 		});
 	});
 
-	describe('password reset', function () {
+	describe('password reset', () => {
 		const socketUser = require('../src/socket.io/user');
 
-		it('should not error on valid email', function (done) {
-			socketUser.reset.send({ uid: 0 }, 'regular@test.com', function (err) {
+		it('should not error on valid email', (done) => {
+			socketUser.reset.send({ uid: 0 }, 'regular@test.com', (err) => {
 				assert.ifError(err);
 
 				async.parallel({
 					count: async.apply(db.sortedSetCount.bind(db), 'reset:issueDate', 0, Date.now()),
 					event: async.apply(events.getEvents, '', 0, 0),
-				}, function (err, data) {
+				}, (err, data) => {
 					assert.ifError(err);
 					assert.strictEqual(data.count, 1);
 
@@ -675,14 +673,14 @@ describe('socket.io', function () {
 			});
 		});
 
-		it('should not generate code if rate limited', function (done) {
-			socketUser.reset.send({ uid: 0 }, 'regular@test.com', function (err) {
+		it('should not generate code if rate limited', (done) => {
+			socketUser.reset.send({ uid: 0 }, 'regular@test.com', (err) => {
 				assert.ifError(err);
 
 				async.parallel({
 					count: async.apply(db.sortedSetCount.bind(db), 'reset:issueDate', 0, Date.now()),
 					event: async.apply(events.getEvents, '', 0, 0),
-				}, function (err, data) {
+				}, (err, data) => {
 					assert.ifError(err);
 					assert.strictEqual(data.count, 1);	// should still equal 1
 
@@ -697,11 +695,11 @@ describe('socket.io', function () {
 			});
 		});
 
-		it('should not error on invalid email (but not generate reset code)', function (done) {
-			socketUser.reset.send({ uid: 0 }, 'irregular@test.com', function (err) {
+		it('should not error on invalid email (but not generate reset code)', (done) => {
+			socketUser.reset.send({ uid: 0 }, 'irregular@test.com', (err) => {
 				assert.ifError(err);
 
-				db.sortedSetCount('reset:issueDate', 0, Date.now(), function (err, count) {
+				db.sortedSetCount('reset:issueDate', 0, Date.now(), (err, count) => {
 					assert.ifError(err);
 					assert.strictEqual(count, 1);
 					done();
@@ -709,8 +707,8 @@ describe('socket.io', function () {
 			});
 		});
 
-		it('should error on no email', function (done) {
-			socketUser.reset.send({ uid: 0 }, '', function (err) {
+		it('should error on no email', (done) => {
+			socketUser.reset.send({ uid: 0 }, '', (err) => {
 				assert(err instanceof Error);
 				assert.strictEqual(err.message, '[[error:invalid-data]]');
 				done();

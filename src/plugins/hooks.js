@@ -55,12 +55,12 @@ Hooks.register = function (id, data) {
 
 	if (Array.isArray(data.method) && data.method.every(method => typeof method === 'function' || typeof method === 'string')) {
 		// Go go gadget recursion!
-		data.method.forEach(function (method) {
+		data.method.forEach((method) => {
 			const singularData = { ...data, method: method };
 			Hooks.register(id, singularData);
 		});
 	} else if (typeof data.method === 'string' && data.method.length > 0) {
-		const method = data.method.split('.').reduce(function (memo, prop) {
+		const method = data.method.split('.').reduce((memo, prop) => {
 			if (memo && memo[prop]) {
 				return memo[prop];
 			}
@@ -81,9 +81,7 @@ Hooks.register = function (id, data) {
 
 Hooks.unregister = function (id, hook, method) {
 	var hooks = plugins.loadedHooks[hook] || [];
-	plugins.loadedHooks[hook] = hooks.filter(function (hookData) {
-		return hookData && hookData.id !== id && hookData.method !== method;
-	});
+	plugins.loadedHooks[hook] = hooks.filter(hookData => hookData && hookData.id !== id && hookData.method !== method);
 };
 
 Hooks.fire = async function (hook, params) {
@@ -116,7 +114,7 @@ async function fireFilterHook(hook, hookList, params) {
 		return params;
 	}
 
-	return await async.reduce(hookList, params, function (params, hookObj, next) {
+	return await async.reduce(hookList, params, (params, hookObj, next) => {
 		if (typeof hookObj.method !== 'function') {
 			if (global.env === 'development') {
 				winston.warn(`[plugins] Expected method for hook '${hook}' in plugin '${hookObj.id}' not found, skipping.`);
@@ -155,13 +153,13 @@ async function fireStaticHook(hook, hookList, params) {
 	}
 	// don't bubble errors from these hooks, so bad plugins don't stop startup
 	const noErrorHooks = ['static:app.load', 'static:assets.prepare', 'static:app.preload'];
-	await async.each(hookList, function (hookObj, next) {
+	await async.each(hookList, (hookObj, next) => {
 		if (typeof hookObj.method !== 'function') {
 			return next();
 		}
 
 		let timedOut = false;
-		const timeoutId = setTimeout(function () {
+		const timeoutId = setTimeout(() => {
 			winston.warn(`[plugins] Callback timed out, hook '${hook}' in plugin '${hookObj.id}'`);
 			timedOut = true;
 			next();

@@ -72,10 +72,10 @@ Digest.getUsersInterval = async (uids) => {
 Digest.getSubscribers = async function (interval) {
 	var subscribers = [];
 
-	await batch.processSortedSet('users:joindate', async function (uids) {
+	await batch.processSortedSet('users:joindate', async (uids) => {
 		const settings = await user.getMultipleUserSettings(uids);
 		let subUids = [];
-		settings.forEach(function (hash) {
+		settings.forEach((hash) => {
 			if (hash.dailyDigestFreq === interval) {
 				subUids.push(hash.uid);
 			}
@@ -100,7 +100,7 @@ Digest.send = async function (data) {
 		return emailsSent;
 	}
 
-	await async.eachLimit(data.subscribers, 100, async function (uid) {
+	await async.eachLimit(data.subscribers, 100, async (uid) => {
 		const userObj = await user.getUserFields(uid, ['uid', 'username', 'userslug', 'lastonline']);
 		const [notifications, topTopics, popularTopics, recentTopics] = await Promise.all([
 			user.notifications.getUnreadInterval(userObj.uid, data.interval),
@@ -114,7 +114,7 @@ Digest.send = async function (data) {
 			return;
 		}
 
-		unreadNotifs.forEach(function (n) {
+		unreadNotifs.forEach((n) => {
 			if (n.image && !n.image.startsWith('http')) {
 				n.image = nconf.get('base_url') + n.image;
 			}
@@ -184,7 +184,7 @@ async function getTermTopics(term, uid, start, stop, sort) {
 		await topics.getLatestTopics(options) :
 		await topics.getSortedTopics(options);
 
-	data.topics.forEach(function (topicObj) {
+	data.topics.forEach((topicObj) => {
 		if (topicObj) {
 			if (topicObj.teaser && topicObj.teaser.content && topicObj.teaser.content.length > 255) {
 				topicObj.teaser.content = `${topicObj.teaser.content.slice(0, 255)}...`;

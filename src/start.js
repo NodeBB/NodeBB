@@ -97,13 +97,13 @@ function addProcessHandlers() {
 	process.on('SIGTERM', shutdown);
 	process.on('SIGINT', shutdown);
 	process.on('SIGHUP', restart);
-	process.on('uncaughtException', function (err) {
+	process.on('uncaughtException', (err) => {
 		winston.error(err.stack);
 
 		require('./meta').js.killMinifier();
 		shutdown(1);
 	});
-	process.on('message', function (msg) {
+	process.on('message', (msg) => {
 		if (msg && msg.compiling === 'tpl') {
 			const benchpressjs = require('benchpressjs');
 			benchpressjs.flush();

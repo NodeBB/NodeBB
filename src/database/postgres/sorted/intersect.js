@@ -79,12 +79,10 @@ OFFSET $3::INTEGER`,
 		});
 
 		if (params.withScores) {
-			res.rows = res.rows.map(function (r) {
-				return {
-					value: r.value,
-					score: parseFloat(r.score),
-				};
-			});
+			res.rows = res.rows.map(r => ({
+				value: r.value,
+				score: parseFloat(r.score),
+			}));
 		} else {
 			res.rows = res.rows.map(r => r.value);
 		}

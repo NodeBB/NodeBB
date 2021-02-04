@@ -9,8 +9,8 @@ var Client = {
 		});
 	},
 	trigger: function (channel, message) {
-		Client.message.concat(Client.pmessage).forEach(function (callback) {
-			setImmediate(function () {
+		Client.message.concat(Client.pmessage).forEach((callback) => {
+			setImmediate(() => {
 				callback.call(Client, channel, message);
 			});
 		});
@@ -36,16 +36,14 @@ var Client = {
 			return;
 		}
 		if (callback) {
-			Client[event] = Client[event].filter(function (c) {
-				return c !== callback;
-			});
+			Client[event] = Client[event].filter(c => c !== callback);
 		} else {
 			Client[event] = [];
 		}
 	},
 };
 
-process.on('message', function (message) {
+process.on('message', (message) => {
 	if (message && typeof message === 'object' && message.action === 'socket.io') {
 		Client.trigger(message.channel, message.message);
 	}

@@ -10,7 +10,7 @@ var Plugins = require('../src/plugins');
 var Emailer = require('../src/emailer');
 var Meta = require('../src/meta');
 
-describe('emailer', function () {
+describe('emailer', () => {
 	var onMail = function (address, session, callback) { callback(); };
 	var onTo = function (address, session, callback) { callback(); };
 
@@ -21,7 +21,7 @@ describe('emailer', function () {
 		subject: 'Welcome to NodeBB',
 	};
 
-	before(function (done) {
+	before((done) => {
 		var server = new SMTPServer({
 			allowInsecureAuth: true,
 			onAuth: function (auth, session, callback) {
@@ -37,7 +37,7 @@ describe('emailer', function () {
 			},
 		});
 
-		server.on('error', function (err) {
+		server.on('error', (err) => {
 			throw err;
 		});
 		server.listen(4000, done);
@@ -45,7 +45,7 @@ describe('emailer', function () {
 
 	// TODO: test sendmail here at some point
 
-	it('plugin hook should work', function (done) {
+	it('plugin hook should work', (done) => {
 		var error = new Error();
 
 		Plugins.hooks.register('emailer-test', {
@@ -59,7 +59,7 @@ describe('emailer', function () {
 			},
 		});
 
-		Emailer.sendToEmail(template, email, language, params, function (err) {
+		Emailer.sendToEmail(template, email, language, params, (err) => {
 			assert.equal(err, error);
 
 			Plugins.hooks.unregister('emailer-test', 'filter:email.send');
@@ -67,21 +67,21 @@ describe('emailer', function () {
 		});
 	});
 
-	it('should build custom template on config change', function (done) {
+	it('should build custom template on config change', (done) => {
 		var text = 'a random string of text';
 
 		// make sure it's not already set
-		Emailer.renderAndTranslate('test', {}, 'en-GB', function (err, output) {
+		Emailer.renderAndTranslate('test', {}, 'en-GB', (err, output) => {
 			assert.ifError(err);
 
 			assert.notEqual(output, text);
 
-			Meta.configs.set('email:custom:test', text, function (err) {
+			Meta.configs.set('email:custom:test', text, (err) => {
 				assert.ifError(err);
 
 				// wait for pubsub stuff
-				setTimeout(function () {
-					Emailer.renderAndTranslate('test', {}, 'en-GB', function (err, output) {
+				setTimeout(() => {
+					Emailer.renderAndTranslate('test', {}, 'en-GB', (err, output) => {
 						assert.ifError(err);
 
 						assert.equal(output, text);
@@ -92,7 +92,7 @@ describe('emailer', function () {
 		});
 	});
 
-	it('should send via SMTP', function (done) {
+	it('should send via SMTP', (done) => {
 		var from = 'admin@example.org';
 		var username = 'another@example.com';
 
@@ -119,21 +119,21 @@ describe('emailer', function () {
 			'email:smtpTransport:host': 'localhost',
 			'email:smtpTransport:security': 'NONE',
 			'email:from': from,
-		}, function (err) {
+		}, (err) => {
 			assert.ifError(err);
 
 			// delay so emailer has a chance to update after config changes
-			setTimeout(function () {
+			setTimeout(() => {
 				assert.equal(Emailer.fallbackTransport, Emailer.transports.smtp);
 
-				Emailer.sendToEmail(template, email, language, params, function (err) {
+				Emailer.sendToEmail(template, email, language, params, (err) => {
 					assert.ifError(err);
 				});
 			}, 200);
 		});
 	});
 
-	after(function (done) {
+	after((done) => {
 		fs.unlinkSync(path.join(__dirname, '../build/public/templates/emails/test.js'));
 		Meta.configs.setMultiple({
 			'email:smtpTransport:enabled': '0',

@@ -147,7 +147,7 @@ Plugins.reload = async function () {
 	meta.configs.registerHooks();
 
 	// Lower priority runs earlier
-	Object.keys(Plugins.loadedHooks).forEach(function (hook) {
+	Object.keys(Plugins.loadedHooks).forEach((hook) => {
 		Plugins.loadedHooks[hook].sort((a, b) => a.priority - b.priority);
 	});
 
@@ -200,7 +200,7 @@ Plugins.normalise = async function (apiReturn) {
 	const pluginMap = {};
 	const dependencies = require(paths.currentPackage).dependencies;
 	apiReturn = Array.isArray(apiReturn) ? apiReturn : [];
-	apiReturn.forEach(function (packageData) {
+	apiReturn.forEach((packageData) => {
 		packageData.id = packageData.name;
 		packageData.installed = false;
 		packageData.active = false;
@@ -211,7 +211,7 @@ Plugins.normalise = async function (apiReturn) {
 	let installedPlugins = await Plugins.showInstalled();
 	installedPlugins = installedPlugins.filter(plugin => plugin && !plugin.system);
 
-	installedPlugins.forEach(function (plugin) {
+	installedPlugins.forEach((plugin) => {
 		// If it errored out because a package.json or plugin.json couldn't be read, no need to do this stuff
 		if (plugin.error) {
 			pluginMap[plugin.id] = pluginMap[plugin.id] || {};
@@ -250,7 +250,7 @@ Plugins.normalise = async function (apiReturn) {
 		}
 	}
 
-	pluginArray.sort(function (a, b) {
+	pluginArray.sort((a, b) => {
 		if (a.name > b.name) {
 			return 1;
 		} else if (a.name < b.name) {
@@ -290,12 +290,12 @@ Plugins.showInstalled = async function () {
 
 async function findNodeBBModules(dirs) {
 	const pluginPaths = [];
-	await async.each(dirs, function (dirname, next) {
+	await async.each(dirs, (dirname, next) => {
 		var dirPath = path.join(Plugins.nodeModulesPath, dirname);
 
 		async.waterfall([
 			function (cb) {
-				fs.stat(dirPath, function (err, stats) {
+				fs.stat(dirPath, (err, stats) => {
 					if (err && err.code !== 'ENOENT') {
 						return cb(err);
 					}
@@ -315,13 +315,13 @@ async function findNodeBBModules(dirs) {
 				});
 			},
 			function (subdirs, cb) {
-				async.each(subdirs, function (subdir, next) {
+				async.each(subdirs, (subdir, next) => {
 					if (!pluginNamePattern.test(subdir)) {
 						return next();
 					}
 
 					var subdirPath = path.join(dirPath, subdir);
-					fs.stat(subdirPath, function (err, stats) {
+					fs.stat(subdirPath, (err, stats) => {
 						if (err && err.code !== 'ENOENT') {
 							return next(err);
 						}

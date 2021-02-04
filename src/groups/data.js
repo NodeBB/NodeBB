@@ -19,7 +19,7 @@ module.exports = function (Groups) {
 			return [];
 		}
 
-		const ephemeralIdx = groupNames.reduce(function (memo, cur, idx) {
+		const ephemeralIdx = groupNames.reduce((memo, cur, idx) => {
 			if (Groups.ephemeralGroups.includes(cur)) {
 				memo.push(idx);
 			}
@@ -29,7 +29,7 @@ module.exports = function (Groups) {
 		const keys = groupNames.map(groupName => `group:${groupName}`);
 		const groupData = await (fields.length ? db.getObjectsFields(keys, fields) : db.getObjects(keys));
 		if (ephemeralIdx.length) {
-			ephemeralIdx.forEach(function (idx) {
+			ephemeralIdx.forEach((idx) => {
 				groupData[idx] = Groups.getEphemeralGroup(groupNames[idx]);
 			});
 		}

@@ -337,7 +337,7 @@ postgresModule.createIndices = function (callback) {
 	async.series([
 		async.apply(query, `CREATE INDEX IF NOT EXISTS "idx__legacy_zset__key__score" ON "legacy_zset"("_key" ASC, "score" DESC)`),
 		async.apply(query, `CREATE INDEX IF NOT EXISTS "idx__legacy_object__expireAt" ON "legacy_object"("expireAt" ASC)`),
-	], function (err) {
+	], (err) => {
 		if (err) {
 			winston.error(`Error creating index ${err.message}`);
 			return callback(err);

@@ -82,7 +82,7 @@ module.exports = function (middleware) {
 		return !res.headersSent;
 	}
 
-	middleware.authenticate = helpers.try(async function middlewareAuthenticate(req, res, next) {
+	middleware.authenticate = helpers.try(async (req, res, next) => {
 		if (!await authenticate(req, res)) {
 			return;
 		}
@@ -92,18 +92,18 @@ module.exports = function (middleware) {
 		next();
 	});
 
-	middleware.authenticateOrGuest = helpers.try(async function authenticateOrGuest(req, res, next) {
+	middleware.authenticateOrGuest = helpers.try(async (req, res, next) => {
 		if (!await authenticate(req, res)) {
 			return;
 		}
 		next();
 	});
 
-	middleware.ensureSelfOrGlobalPrivilege = helpers.try(async function ensureSelfOrGlobalPrivilege(req, res, next) {
+	middleware.ensureSelfOrGlobalPrivilege = helpers.try(async (req, res, next) => {
 		await ensureSelfOrMethod(user.isAdminOrGlobalMod, req, res, next);
 	});
 
-	middleware.ensureSelfOrPrivileged = helpers.try(async function ensureSelfOrPrivileged(req, res, next) {
+	middleware.ensureSelfOrPrivileged = helpers.try(async (req, res, next) => {
 		await ensureSelfOrMethod(user.isPrivileged, req, res, next);
 	});
 
@@ -126,7 +126,7 @@ module.exports = function (middleware) {
 		return next();
 	}
 
-	middleware.canViewUsers = helpers.try(async function canViewUsers(req, res, next) {
+	middleware.canViewUsers = helpers.try(async (req, res, next) => {
 		if (parseInt(res.locals.uid, 10) === req.uid) {
 			return next();
 		}
@@ -137,7 +137,7 @@ module.exports = function (middleware) {
 		controllers.helpers.notAllowed(req, res);
 	});
 
-	middleware.canViewGroups = helpers.try(async function canViewGroups(req, res, next) {
+	middleware.canViewGroups = helpers.try(async (req, res, next) => {
 		const canView = await privileges.global.can('view:groups', req.uid);
 		if (canView) {
 			return next();
@@ -145,7 +145,7 @@ module.exports = function (middleware) {
 		controllers.helpers.notAllowed(req, res);
 	});
 
-	middleware.checkAccountPermissions = helpers.try(async function checkAccountPermissions(req, res, next) {
+	middleware.checkAccountPermissions = helpers.try(async (req, res, next) => {
 		// This middleware ensures that only the requested user and admins can pass
 		if (!await authenticate(req, res)) {
 			return;
@@ -168,7 +168,7 @@ module.exports = function (middleware) {
 		controllers.helpers.notAllowed(req, res);
 	});
 
-	middleware.redirectToAccountIfLoggedIn = helpers.try(async function redirectToAccountIfLoggedIn(req, res, next) {
+	middleware.redirectToAccountIfLoggedIn = helpers.try(async (req, res, next) => {
 		if (req.session.forceLogin || req.uid <= 0) {
 			return next();
 		}
@@ -176,7 +176,7 @@ module.exports = function (middleware) {
 		controllers.helpers.redirect(res, `/user/${userslug}`);
 	});
 
-	middleware.redirectUidToUserslug = helpers.try(async function redirectUidToUserslug(req, res, next) {
+	middleware.redirectUidToUserslug = helpers.try(async (req, res, next) => {
 		const uid = parseInt(req.params.uid, 10);
 		if (uid <= 0) {
 			return next();
@@ -187,11 +187,11 @@ module.exports = function (middleware) {
 		}
 		const path = req.path.replace(/^\/api/, '')
 			.replace('uid', 'user')
-			.replace(uid, function () { return userslug; });
+			.replace(uid, () => userslug);
 		controllers.helpers.redirect(res, path);
 	});
 
-	middleware.redirectMeToUserslug = helpers.try(async function redirectMeToUserslug(req, res) {
+	middleware.redirectMeToUserslug = helpers.try(async (req, res) => {
 		const userslug = await user.getUserField(req.uid, 'userslug');
 		if (!userslug) {
 			return controllers.helpers.notAllowed(req, res);
@@ -200,7 +200,7 @@ module.exports = function (middleware) {
 		controllers.helpers.redirect(res, path);
 	});
 
-	middleware.isAdmin = helpers.try(async function isAdmin(req, res, next) {
+	middleware.isAdmin = helpers.try(async (req, res, next) => {
 		// TODO: Remove in v1.16.0
 		winston.warn('[middleware] middleware.isAdmin deprecated, use middleware.admin.checkPrivileges instead');
 

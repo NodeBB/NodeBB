@@ -116,7 +116,7 @@ module.exports = function (User) {
 
 	function uidsToUsers(uids, uniqueUids, usersData) {
 		const uidToUser = _.zipObject(uniqueUids, usersData);
-		const users = uids.map(function (uid) {
+		const users = uids.map((uid) => {
 			const user = uidToUser[uid] || { ...User.guestData };
 			if (!parseInt(user.uid, 10)) {
 				user.username = (user.hasOwnProperty('oldUid') && parseInt(user.oldUid, 10)) ? '[[global:former_user]]' : '[[global:guest]]';
@@ -157,7 +157,7 @@ module.exports = function (User) {
 			));
 		}
 
-		await Promise.all(users.map(async function (user) {
+		await Promise.all(users.map(async (user) => {
 			if (!user) {
 				return;
 			}
@@ -205,9 +205,7 @@ module.exports = function (User) {
 			// User Icons
 			if (user.hasOwnProperty('picture') && user.username && parseInt(user.uid, 10) && !meta.config.defaultAvatar) {
 				user['icon:text'] = (user.username[0] || '').toUpperCase();
-				user['icon:bgColor'] = iconBackgrounds[Array.prototype.reduce.call(user.username, function (cur, next) {
-					return cur + next.charCodeAt();
-				}, 0) % iconBackgrounds.length];
+				user['icon:bgColor'] = iconBackgrounds[Array.prototype.reduce.call(user.username, (cur, next) => cur + next.charCodeAt(), 0) % iconBackgrounds.length];
 			}
 
 			if (user.hasOwnProperty('joindate')) {

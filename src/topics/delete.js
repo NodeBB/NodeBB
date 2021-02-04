@@ -40,7 +40,7 @@ module.exports = function (Topics) {
 		postData = postData.filter(post => post && !post.deleted);
 		var pidsToAdd = [];
 		var scores = [];
-		postData.forEach(function (post) {
+		postData.forEach((post) => {
 			pidsToAdd.push(post.pid);
 			scores.push(post.timestamp);
 		});
@@ -60,8 +60,8 @@ module.exports = function (Topics) {
 
 	Topics.purgePostsAndTopic = async function (tid, uid) {
 		const mainPid = await Topics.getTopicField(tid, 'mainPid');
-		await batch.processSortedSet(`tid:${tid}:posts`, function (pids, next) {
-			async.eachSeries(pids, function (pid, next) {
+		await batch.processSortedSet(`tid:${tid}:posts`, (pids, next) => {
+			async.eachSeries(pids, (pid, next) => {
 				posts.purge(pid, uid, next);
 			}, next);
 		}, { alwaysStartAt: 0 });

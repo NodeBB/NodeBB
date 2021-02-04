@@ -26,7 +26,7 @@ module.exports = function (Messaging) {
 	};
 
 	function modifyRoomData(rooms) {
-		rooms.forEach(function (data) {
+		rooms.forEach((data) => {
 			if (data) {
 				data.roomName = data.roomName || '';
 				data.roomName = validator.escape(String(data.roomName));
@@ -170,7 +170,7 @@ module.exports = function (Messaging) {
 			db.getObjectField(`chat:room:${roomId}`, 'owner'),
 		]);
 
-		return users.map(function (user) {
+		return users.map((user) => {
 			user.isOwner = parseInt(user.uid, 10) === parseInt(ownerId, 10);
 			return user;
 		});
@@ -236,9 +236,7 @@ module.exports = function (Messaging) {
 		var room = roomData;
 		room.messages = messages;
 		room.isOwner = parseInt(room.owner, 10) === parseInt(uid, 10);
-		room.users = users.filter(function (user) {
-			return user && parseInt(user.uid, 10) && parseInt(user.uid, 10) !== parseInt(uid, 10);
-		});
+		room.users = users.filter(user => user && parseInt(user.uid, 10) && parseInt(user.uid, 10) !== parseInt(uid, 10));
 		room.canReply = canReply;
 		room.groupChat = room.hasOwnProperty('groupChat') ? room.groupChat : users.length > 2;
 		room.usernames = Messaging.generateUsernames(users, uid);

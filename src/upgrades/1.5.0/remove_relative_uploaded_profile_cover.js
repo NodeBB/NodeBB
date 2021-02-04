@@ -11,8 +11,8 @@ module.exports = {
 	method: function (callback) {
 		var progress = this.progress;
 
-		batch.processSortedSet('users:joindate', function (ids, done) {
-			async.each(ids, function (uid, cb) {
+		batch.processSortedSet('users:joindate', (ids, done) => {
+			async.each(ids, (uid, cb) => {
 				async.waterfall([
 					function (next) {
 						db.getObjectField(`user:${uid}`, 'cover:url', next);

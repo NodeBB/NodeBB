@@ -2,9 +2,7 @@
 
 var fork = require('child_process').fork;
 
-var debugArg = process.execArgv.find(function (arg) {
-	return /^--(debug|inspect)/.test(arg);
-});
+var debugArg = process.execArgv.find(arg => /^--(debug|inspect)/.test(arg));
 var debugging = !!debugArg;
 
 debugArg = debugArg ? debugArg.replace('-brk', '').split('=') : ['--debug', 5859];

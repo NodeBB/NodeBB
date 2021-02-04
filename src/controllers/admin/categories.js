@@ -116,7 +116,7 @@ async function buildBreadcrumbs(req, categoryData) {
 	const allCrumbs = await helpers.buildCategoryBreadcrumbs(categoryData.parentCid);
 	const crumbs = allCrumbs.filter(c => c.cid);
 
-	crumbs.forEach(function (c) {
+	crumbs.forEach((c) => {
 		c.url = `/admin/manage/categories?cid=${c.cid}`;
 	});
 	crumbs.unshift({

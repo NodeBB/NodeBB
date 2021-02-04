@@ -7,7 +7,7 @@ const hooksController = module.exports;
 
 hooksController.get = function (req, res) {
 	const hooks = [];
-	Object.keys(plugins.loadedHooks).forEach(function (key, hookIndex) {
+	Object.keys(plugins.loadedHooks).forEach((key, hookIndex) => {
 		const current = {
 			hookName: key,
 			methods: [],
@@ -15,7 +15,7 @@ hooksController.get = function (req, res) {
 			count: plugins.loadedHooks[key].length,
 		};
 
-		plugins.loadedHooks[key].forEach(function (hookData, methodIndex) {
+		plugins.loadedHooks[key].forEach((hookData, methodIndex) => {
 			current.methods.push({
 				id: hookData.id,
 				priority: hookData.priority,

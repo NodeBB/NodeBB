@@ -10,9 +10,9 @@ module.exports = {
 	method: function (callback) {
 		var progress = this.progress;
 
-		require('../../batch').processSortedSet('posts:pid', function (pids, next) {
-			async.each(pids, function (pid, next) {
-				db.getObjectFields(`post:${pid}`, ['upvotes', 'downvotes'], function (err, postData) {
+		require('../../batch').processSortedSet('posts:pid', (pids, next) => {
+			async.each(pids, (pid, next) => {
+				db.getObjectFields(`post:${pid}`, ['upvotes', 'downvotes'], (err, postData) => {
 					if (err || !postData) {
 						return next(err);
 					}

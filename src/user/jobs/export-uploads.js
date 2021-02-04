@@ -22,7 +22,7 @@ prestart.setupWinston();
 
 const db = require('../../database');
 
-process.on('message', async function (msg) {
+process.on('message', async (msg) => {
 	if (msg && msg.uid) {
 		await db.init();
 
@@ -37,7 +37,7 @@ process.on('message', async function (msg) {
 			zlib: { level: 9 }, // Sets the compression level.
 		});
 
-		archive.on('warning', function (err) {
+		archive.on('warning', (err) => {
 			switch (err.code) {
 				case 'ENOENT':
 					winston.warn(`[user/export/uploads] File not found: ${err.path}`);
@@ -49,7 +49,7 @@ process.on('message', async function (msg) {
 			}
 		});
 
-		archive.on('error', function (err) {
+		archive.on('error', (err) => {
 			const trimPath = function (path) {
 				return path.replace(rootDirectory, '');
 			};
@@ -65,7 +65,7 @@ process.on('message', async function (msg) {
 		});
 
 		const output = fs.createWriteStream(archivePath);
-		output.on('close', async function () {
+		output.on('close', async () => {
 			await db.close();
 			process.exit(0);
 		});

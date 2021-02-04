@@ -12,9 +12,9 @@ module.exports = {
 		var batch = require('../../batch');
 		var progress = this.progress;
 
-		batch.processSortedSet('posts:pid', function (ids, next) {
-			async.eachSeries(ids, function (id, next) {
-				db.getObjectFields(`post:${id}`, ['pid', 'uid', 'votes'], function (err, postData) {
+		batch.processSortedSet('posts:pid', (ids, next) => {
+			async.eachSeries(ids, (id, next) => {
+				db.getObjectFields(`post:${id}`, ['pid', 'uid', 'votes'], (err, postData) => {
 					if (err) {
 						return next(err);
 					}

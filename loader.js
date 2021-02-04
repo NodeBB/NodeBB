@@ -60,14 +60,14 @@ Loader.displayStartupMessages = function (callback) {
 };
 
 Loader.addWorkerEvents = function (worker) {
-	worker.on('exit', function (code, signal) {
+	worker.on('exit', (code, signal) => {
 		if (code !== 0) {
 			if (Loader.timesStarted < numProcs * 3) {
 				Loader.timesStarted += 1;
 				if (Loader.crashTimer) {
 					clearTimeout(Loader.crashTimer);
 				}
-				Loader.crashTimer = setTimeout(function () {
+				Loader.crashTimer = setTimeout(() => {
 					Loader.timesStarted = 0;
 				}, 10000);
 			} else {
@@ -84,7 +84,7 @@ Loader.addWorkerEvents = function (worker) {
 		}
 	});
 
-	worker.on('message', function (message) {
+	worker.on('message', (message) => {
 		if (message && typeof message === 'object' && message.action) {
 			switch (message.action) {
 				case 'restart':
@@ -92,12 +92,12 @@ Loader.addWorkerEvents = function (worker) {
 					Loader.restart();
 					break;
 				case 'pubsub':
-					workers.forEach(function (w) {
+					workers.forEach((w) => {
 						w.send(message);
 					});
 					break;
 				case 'socket.io':
-					workers.forEach(function (w) {
+					workers.forEach((w) => {
 						if (w !== worker) {
 							w.send(message);
 						}
@@ -172,7 +172,7 @@ Loader.restart = function () {
 	nconf.remove('file');
 	nconf.use('file', { file: pathToConfig });
 
-	fs.readFile(pathToConfig, { encoding: 'utf-8' }, function (err, configFile) {
+	fs.readFile(pathToConfig, { encoding: 'utf-8' }, (err, configFile) => {
 		if (err) {
 			console.error('Error reading config');
 			throw err;
@@ -201,13 +201,13 @@ Loader.stop = function () {
 };
 
 function killWorkers() {
-	workers.forEach(function (worker) {
+	workers.forEach((worker) => {
 		worker.suicide = true;
 		worker.kill();
 	});
 }
 
-fs.open(pathToConfig, 'r', function (err) {
+fs.open(pathToConfig, 'r', (err) => {
 	if (err) {
 		// No config detected, kickstart web installer
 		fork('app');
@@ -238,7 +238,7 @@ fs.open(pathToConfig, 'r', function (err) {
 		Loader.init,
 		Loader.displayStartupMessages,
 		Loader.start,
-	], function (err) {
+	], (err) => {
 		if (err) {
 			console.error('[loader] Error during startup');
 			throw err;

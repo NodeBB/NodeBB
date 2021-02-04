@@ -29,12 +29,10 @@ module.exports = function (User) {
 	User.getAllInvites = async function () {
 		const uids = await User.getInvitingUsers();
 		const invitations = await async.map(uids, User.getInvites);
-		return invitations.map(function (invites, index) {
-			return {
-				uid: uids[index],
-				invitations: invites,
-			};
-		});
+		return invitations.map((invites, index) => ({
+			uid: uids[index],
+			invitations: invites,
+		}));
 	};
 
 	User.sendInvitationEmail = async function (uid, email, groupsToJoin) {

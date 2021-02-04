@@ -49,7 +49,7 @@ uploadsController.upload = async function (req, res, filesIterator) {
 };
 
 uploadsController.uploadPost = async function (req, res) {
-	await uploadsController.upload(req, res, async function (uploadedFile) {
+	await uploadsController.upload(req, res, async (uploadedFile) => {
 		const isImage = uploadedFile.type.match(/image./);
 		if (isImage) {
 			return await uploadAsImage(req, uploadedFile);
@@ -123,7 +123,7 @@ uploadsController.uploadThumb = async function (req, res) {
 		return helpers.formatApiResponse(503, res, new Error('[[error:topic-thumbnails-are-disabled]]'));
 	}
 
-	return await uploadsController.upload(req, res, async function (uploadedFile) {
+	return await uploadsController.upload(req, res, async (uploadedFile) => {
 		if (!uploadedFile.type.match(/image./)) {
 			throw new Error('[[error:invalid-file]]');
 		}

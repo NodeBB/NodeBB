@@ -140,7 +140,7 @@ module.exports = function (module) {
 				items.push(nextItem);
 			}
 
-			const members = await Promise.all(otherSets.map(async function (s) {
+			const members = await Promise.all(otherSets.map(async (s) => {
 				const data = await module.client.collection('objects').find({
 					_key: s, value: { $in: items.map(i => i.value) },
 				}, {
@@ -170,7 +170,7 @@ module.exports = function (module) {
 		}
 		const pipeline = [{ $match: { _key: { $in: params.sets } } }];
 
-		params.weights.forEach(function (weight, index) {
+		params.weights.forEach((weight, index) => {
 			if (weight !== 1) {
 				pipeline.push({
 					$project: {

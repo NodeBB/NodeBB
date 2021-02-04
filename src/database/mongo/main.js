@@ -22,7 +22,7 @@ module.exports = function (module) {
 			}, { _id: 0, _key: 1 }).toArray();
 
 			const map = {};
-			data.forEach(function (item) {
+			data.forEach((item) => {
 				map[item._key] = true;
 			});
 

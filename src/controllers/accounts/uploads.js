@@ -25,12 +25,10 @@ uploadsController.get = async function (req, res, next) {
 		db.getSortedSetRevRange(`uid:${userData.uid}:uploads`, start, stop),
 	]);
 
-	userData.uploads = uploadNames.map(function (uploadName) {
-		return {
-			name: uploadName,
-			url: nconf.get('upload_url') + uploadName,
-		};
-	});
+	userData.uploads = uploadNames.map(uploadName => ({
+		name: uploadName,
+		url: nconf.get('upload_url') + uploadName,
+	}));
 	const pageCount = Math.ceil(itemCount / itemsPerPage);
 	userData.pagination = pagination.create(page, pageCount, req.query);
 	userData.privateUploads = meta.config.privateUploads === 1;

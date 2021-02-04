@@ -128,7 +128,7 @@ module.exports = function (Posts) {
 			const type = mime.getType(fileName);
 			return type && type.match(/image./);
 		});
-		await Promise.all(filePaths.map(async function (fileName) {
+		await Promise.all(filePaths.map(async (fileName) => {
 			try {
 				const size = await image.size(path.join(pathPrefix, fileName));
 				winston.verbose(`[posts/uploads/${fileName}] Saving size`);

@@ -145,9 +145,7 @@ Themes.setupPaths = async () => {
 		winston.info(`[themes] Using theme ${themeId}`);
 	}
 
-	var themeObj = data.themesData.find(function (themeObj) {
-		return themeObj.id === themeId;
-	});
+	var themeObj = data.themesData.find(themeObj => themeObj.id === themeId);
 
 	if (!themeObj) {
 		throw new Error('[[error:theme-not-found]]');

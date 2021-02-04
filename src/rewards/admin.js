@@ -48,7 +48,7 @@ async function saveConditions(data) {
 	await db.delete('conditions:active');
 	const conditions = [];
 
-	data.forEach(function (reward) {
+	data.forEach((reward) => {
 		conditions.push(reward.condition);
 		rewardsPerCondition[reward.condition] = rewardsPerCondition[reward.condition] || [];
 		rewardsPerCondition[reward.condition].push(reward.id);

@@ -13,8 +13,8 @@ module.exports = {
 		function upgradePosts(next) {
 			var batch = require('../../batch');
 
-			batch.processSortedSet('posts:pid', function (ids, next) {
-				async.each(ids, function (id, next) {
+			batch.processSortedSet('posts:pid', (ids, next) => {
+				async.each(ids, (id, next) => {
 					progress.incr();
 
 					async.waterfall([
@@ -44,8 +44,8 @@ module.exports = {
 		function upgradeUsers(next) {
 			var batch = require('../../batch');
 
-			batch.processSortedSet('users:joindate', function (ids, next) {
-				async.each(ids, function (id, next) {
+			batch.processSortedSet('users:joindate', (ids, next) => {
+				async.each(ids, (id, next) => {
 					db.rename(`uid:${id}:favourites`, `uid:${id}:bookmarks`, next);
 				}, next);
 			}, {}, next);

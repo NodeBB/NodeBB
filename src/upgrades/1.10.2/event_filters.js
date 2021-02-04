@@ -11,11 +11,11 @@ module.exports = {
 	method: function (callback) {
 		const progress = this.progress;
 
-		batch.processSortedSet('events:time', function (eids, next) {
-			async.eachSeries(eids, function (eid, next) {
+		batch.processSortedSet('events:time', (eids, next) => {
+			async.eachSeries(eids, (eid, next) => {
 				progress.incr();
 
-				db.getObject(`event:${eid}`, function (err, eventData) {
+				db.getObject(`event:${eid}`, (err, eventData) => {
 					if (err) {
 						return next(err);
 					}

@@ -100,7 +100,7 @@ Groups.getGroupsAndMembers = async function (groupNames) {
 		Groups.getGroupsData(groupNames),
 		Groups.getMemberUsers(groupNames, 0, 3),
 	]);
-	groups.forEach(function (group, index) {
+	groups.forEach((group, index) => {
 		if (group) {
 			group.members = members[index] || [];
 			group.truncated = group.memberCount > group.members.length;
@@ -157,7 +157,7 @@ Groups.getOwnersAndMembers = async function (groupName, uid, start, stop) {
 	const countToReturn = stop - start + 1;
 	const ownerUidsOnPage = ownerUids.slice(start, stop !== -1 ? stop + 1 : undefined);
 	const owners = await user.getUsers(ownerUidsOnPage, uid);
-	owners.forEach(function (user) {
+	owners.forEach((user) => {
 		if (user) {
 			user.isOwner = true;
 		}

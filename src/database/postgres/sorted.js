@@ -218,9 +218,7 @@ SELECT o."_key" k,
 			values: [keys],
 		});
 
-		return keys.map(function (k) {
-			return parseInt((res.rows.find(r => r.k === k) || { c: 0 }).c, 10);
-		});
+		return keys.map(k => parseInt((res.rows.find(r => r.k === k) || { c: 0 }).c, 10));
 	};
 
 	module.sortedSetsCardSum = async function (keys) {
@@ -347,7 +345,7 @@ SELECT o."_key" k,
 			values: [keys, value],
 		});
 
-		return keys.map(function (k) {
+		return keys.map((k) => {
 			var s = res.rows.find(r => r.k === k);
 			return s ? parseFloat(s.s) : null;
 		});
@@ -376,7 +374,7 @@ SELECT z."value" v,
 			values: [key, values],
 		});
 
-		return values.map(function (v) {
+		return values.map((v) => {
 			var s = res.rows.find(r => r.v === v);
 			return s ? parseFloat(s.s) : null;
 		});
@@ -428,9 +426,7 @@ SELECT z."value" v
 			values: [key, values],
 		});
 
-		return values.map(function (v) {
-			return res.rows.some(r => r.v === v);
-		});
+		return values.map(v => res.rows.some(r => r.v === v));
 	};
 
 	module.isMemberOfSortedSets = async function (keys, value) {
@@ -453,9 +449,7 @@ SELECT o."_key" k
 			values: [keys, value],
 		});
 
-		return keys.map(function (k) {
-			return res.rows.some(r => r.k === k);
-		});
+		return keys.map(k => res.rows.some(r => r.k === k));
 	};
 
 	module.getSortedSetMembers = async function (key) {
@@ -477,9 +471,7 @@ SELECT "_key" k,
 			values: [keys],
 		});
 
-		return keys.map(function (k) {
-			return (res.rows.find(r => r.k === k) || {}).m || [];
-		});
+		return keys.map(k => (res.rows.find(r => r.k === k) || {}).m || []);
 	};
 
 	module.sortedSetIncrBy = async function (key, increment, value) {
@@ -490,7 +482,7 @@ SELECT "_key" k,
 		value = helpers.valueToString(value);
 		increment = parseFloat(increment);
 
-		return await module.transaction(async function (client) {
+		return await module.transaction(async (client) => {
 			await helpers.ensureLegacyObjectType(client, key, 'zset');
 			const res = await client.query({
 				name: 'sortedSetIncrBy',

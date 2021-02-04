@@ -104,7 +104,7 @@ module.exports = function (Categories) {
 
 		children = children[0];
 
-		children.forEach(function (child) {
+		children.forEach((child) => {
 			child.parentCid = parentCid;
 			child.cloneFromCid = child.cid;
 			child.cloneChildren = true;
@@ -195,7 +195,7 @@ module.exports = function (Categories) {
 
 		const currentMembers = await db.getSortedSetsMembers(toGroups.concat(fromGroups));
 		const copyGroups = _.uniq(_.flatten(currentMembers));
-		await async.each(copyGroups, async function (group) {
+		await async.each(copyGroups, async (group) => {
 			await copyPrivilegesByGroup(privileges, fromCid, toCid, group);
 		});
 	}

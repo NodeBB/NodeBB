@@ -15,8 +15,8 @@ module.exports = {
 		var hashed = /[a-f0-9]{32}/;
 		let hash;
 
-		batch.processSortedSet('ip:recent', function (ips, next) {
-			async.each(ips, function (set, next) {
+		batch.processSortedSet('ip:recent', (ips, next) => {
+			async.each(ips, (set, next) => {
 				// Short circuit if already processed
 				if (hashed.test(set.value)) {
 					progress.incr();
@@ -28,7 +28,7 @@ module.exports = {
 				async.series([
 					async.apply(db.sortedSetAdd, 'ip:recent', set.score, hash),
 					async.apply(db.sortedSetRemove, 'ip:recent', set.value),
-				], function (err) {
+				], (err) => {
 					progress.incr();
 					next(err);
 				});

@@ -164,7 +164,7 @@ module.exports = function (grunt) {
 	grunt.task.run('init');
 
 	grunt.event.removeAllListeners('watch');
-	grunt.event.on('watch', function update(action, filepath, target) {
+	grunt.event.on('watch', (action, filepath, target) => {
 		var compiling;
 		if (target === 'styleUpdated_Client') {
 			compiling = 'clientCSS';
@@ -183,7 +183,7 @@ module.exports = function (grunt) {
 			return run();
 		}
 
-		require('./src/meta/build').build([compiling], function (err) {
+		require('./src/meta/build').build([compiling], (err) => {
 			if (err) {
 				winston.error(err.stack);
 			}

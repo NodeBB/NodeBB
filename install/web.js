@@ -72,7 +72,7 @@ web.install = async function (port) {
 	winston.info(`Launching web installer on port ${port}`);
 
 	app.use(express.static('public', {}));
-	app.engine('tpl', function (filepath, options, callback) {
+	app.engine('tpl', (filepath, options, callback) => {
 		filepath = filepath.replace(/\.tpl$/, '.js');
 
 		Benchpress.__express(filepath, options, callback);
@@ -99,7 +99,7 @@ web.install = async function (port) {
 
 
 function launchExpress(port) {
-	server = app.listen(port, function () {
+	server = app.listen(port, () => {
 		winston.info('Web installer listening on http://%s:%s', '0.0.0.0', port);
 	});
 }
@@ -118,10 +118,8 @@ function ping(req, res) {
 
 function welcome(req, res) {
 	var dbs = ['redis', 'mongo', 'postgres'];
-	var databases = dbs.map(function (databaseName) {
-		var questions = require(`../src/database/${databaseName}`).questions.filter(function (question) {
-			return question && !question.hideOnWebInstall;
-		});
+	var databases = dbs.map((databaseName) => {
+		var questions = require(`../src/database/${databaseName}`).questions.filter(question => question && !question.hideOnWebInstall);
 
 		return {
 			name: databaseName,
@@ -180,7 +178,7 @@ function install(req, res) {
 		env: setupEnvVars,
 	});
 
-	child.on('close', function (data) {
+	child.on('close', (data) => {
 		installing = false;
 		success = data === 0;
 		error = data !== 0;

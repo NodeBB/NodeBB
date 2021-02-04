@@ -46,7 +46,7 @@ async function processImports(paths, templatePath, source) {
 Templates.processImports = processImports;
 
 async function getTemplateDirs(activePlugins) {
-	const pluginTemplates = activePlugins.map(function (id) {
+	const pluginTemplates = activePlugins.map((id) => {
 		if (themeNamePattern.test(id)) {
 			return nconf.get('theme_templates_path');
 		}
@@ -83,20 +83,16 @@ async function getTemplateDirs(activePlugins) {
 async function getTemplateFiles(dirs) {
 	const buckets = await Promise.all(dirs.map(async (dir) => {
 		let files = await file.walk(dir);
-		files = files.filter(function (path) {
-			return path.endsWith('.tpl');
-		}).map(function (file) {
-			return {
-				name: path.relative(dir, file).replace(/\\/g, '/'),
-				path: file,
-			};
-		});
+		files = files.filter(path => path.endsWith('.tpl')).map(file => ({
+			name: path.relative(dir, file).replace(/\\/g, '/'),
+			path: file,
+		}));
 		return files;
 	}));
 
 	var dict = {};
-	buckets.forEach(function (files) {
-		files.forEach(function (file) {
+	buckets.forEach((files) => {
+		files.forEach((file) => {
 			dict[file.name] = file.path;
 		});
 	});
@@ -106,7 +102,7 @@ async function getTemplateFiles(dirs) {
 
 async function compileTemplate(filename, source) {
 	let paths = await file.walk(viewsPath);
-	paths = _.fromPairs(paths.map(function (p) {
+	paths = _.fromPairs(paths.map((p) => {
 		var relative = path.relative(viewsPath, p).replace(/\\/g, '/');
 		return [relative, p];
 	}));

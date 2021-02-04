@@ -10,20 +10,22 @@ const file = require('../file');
 const Translator = require('../translator').Translator;
 
 function filterDirectories(directories) {
-	return directories.map(function (dir) {
+	return directories.map(
 		// get the relative path
 		// convert dir to use forward slashes
-		return dir.replace(/^.*(admin.*?).tpl$/, '$1').split(path.sep).join('/');
-	}).filter(function (dir) {
+		dir => dir.replace(/^.*(admin.*?).tpl$/, '$1').split(path.sep).join('/')
+	).filter(
 		// exclude .js files
 		// exclude partials
 		// only include subpaths
 		// exclude category.tpl, group.tpl, category-analytics.tpl
-		return !dir.endsWith('.js') &&
+		dir => (
+			!dir.endsWith('.js') &&
 			!dir.includes('/partials/') &&
 			/\/.*\//.test(dir) &&
-			!/manage\/(category|group|category-analytics)$/.test(dir);
-	});
+			!/manage\/(category|group|category-analytics)$/.test(dir)
+		)
+	);
 }
 
 async function getAdminNamespaces() {
@@ -50,9 +52,7 @@ function simplify(translations) {
 }
 
 function nsToTitle(namespace) {
-	return namespace.replace('admin/', '').split('/').map(function (str) {
-		return str[0].toUpperCase() + str.slice(1);
-	}).join(' > ')
+	return namespace.replace('admin/', '').split('/').map(str => str[0].toUpperCase() + str.slice(1)).join(' > ')
 		.replace(/[^a-zA-Z> ]/g, ' ');
 }
 
@@ -97,9 +97,7 @@ async function buildNamespace(language, namespace) {
 			return await fallback(namespace);
 		}
 		// join all translations into one string separated by newlines
-		let str = Object.keys(translations).map(function (key) {
-			return translations[key];
-		}).join('\n');
+		let str = Object.keys(translations).map(key => translations[key]).join('\n');
 		str = sanitize(str);
 
 		let title = namespace;

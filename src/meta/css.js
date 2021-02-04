@@ -34,9 +34,7 @@ const buildImports = {
 			'@import "../../public/less/mixins.less";',
 			'@import "../../public/less/global.less";',
 			'@import "../../public/less/modals.less";',
-		].map(function (str) {
-			return str.replace(/\//g, path.sep);
-		}).join('\n')}`;
+		].map(str => str.replace(/\//g, path.sep)).join('\n')}`;
 	},
 	admin: function (source) {
 		return `${source}\n${[
@@ -46,9 +44,7 @@ const buildImports = {
 			'@import "../../public/less/jquery-ui.less";',
 			'@import (inline) "../node_modules/@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput.css";',
 			'@import (inline) "../public/vendor/mdl/material.css";',
-		].map(function (str) {
-			return str.replace(/\//g, path.sep);
-		}).join('\n')}`;
+		].map(str => str.replace(/\//g, path.sep)).join('\n')}`;
 	},
 };
 
@@ -69,16 +65,16 @@ async function getImports(files, prefix, extension) {
 	const pluginDirectories = [];
 	let source = '';
 
-	files.forEach(function (styleFile) {
+	files.forEach((styleFile) => {
 		if (styleFile.endsWith(extension)) {
 			source += `${prefix + path.sep + styleFile}";`;
 		} else {
 			pluginDirectories.push(styleFile);
 		}
 	});
-	await Promise.all(pluginDirectories.map(async function (directory) {
+	await Promise.all(pluginDirectories.map(async (directory) => {
 		const styleFiles = await file.walk(directory);
-		styleFiles.forEach(function (styleFile) {
+		styleFiles.forEach((styleFile) => {
 			source += `${prefix + path.sep + styleFile}";`;
 		});
 	}));

@@ -20,7 +20,7 @@ connection.getConnectionOptions = function (redis) {
 };
 
 connection.connect = async function (options) {
-	return new Promise(function (resolve, reject) {
+	return new Promise((resolve, reject) => {
 		options = options || nconf.get('redis');
 		const redis_socket_or_host = options.host;
 		const connOptions = connection.getConnectionOptions(options);
@@ -39,11 +39,11 @@ connection.connect = async function (options) {
 			throw new Error('[[error:no-database-selected]]');
 		}
 
-		cxn.on('error', function (err) {
+		cxn.on('error', (err) => {
 			winston.error(err.stack);
 			reject(err);
 		});
-		cxn.on('ready', function () {
+		cxn.on('ready', () => {
 			resolve(cxn);
 		});
 

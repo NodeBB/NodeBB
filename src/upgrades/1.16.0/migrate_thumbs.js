@@ -18,7 +18,7 @@ module.exports = {
 			await meta.configs.set('topicThumbSize', 512);
 		}
 
-		await batch.processSortedSet('topics:tid', async function (tids) {
+		await batch.processSortedSet('topics:tid', async (tids) => {
 			const keys = tids.map(tid => `topic:${tid}`);
 			const topicThumbs = (await db.getObjectsFields(keys, ['thumb']))
 				.map(obj => (obj.thumb ? obj.thumb.replace(nconf.get('upload_url'), '') : null));

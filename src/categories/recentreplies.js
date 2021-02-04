@@ -95,7 +95,7 @@ module.exports = function (Categories) {
 			tids,
 			['tid', 'mainPid', 'slug', 'title', 'teaserPid', 'cid', 'postcount']
 		);
-		topicData.forEach(function (topic) {
+		topicData.forEach((topic) => {
 			if (topic) {
 				topic.teaserPid = topic.teaserPid || topic.mainPid;
 			}
@@ -108,7 +108,7 @@ module.exports = function (Categories) {
 		]);
 		const cidToRoot = _.zipObject(cids, toRoot);
 
-		teasers.forEach(function (teaser, index) {
+		teasers.forEach((teaser, index) => {
 			if (teaser) {
 				teaser.cid = topicData[index].cid;
 				teaser.parentCids = cidToRoot[teaser.cid];
@@ -124,7 +124,7 @@ module.exports = function (Categories) {
 	}
 
 	function assignTopicsToCategories(categories, topics) {
-		categories.forEach(function (category) {
+		categories.forEach((category) => {
 			if (category) {
 				category.posts = topics.filter(t => t.cid && (t.cid === category.cid || t.parentCids.includes(category.cid)))
 					.sort((a, b) => b.pid - a.pid)
@@ -135,7 +135,7 @@ module.exports = function (Categories) {
 	}
 
 	function bubbleUpChildrenPosts(categoryData) {
-		categoryData.forEach(function (category) {
+		categoryData.forEach((category) => {
 			if (category) {
 				if (category.posts.length) {
 					return;
@@ -168,7 +168,7 @@ module.exports = function (Categories) {
 			topics.getTopicField(tid, 'deleted'),
 		]);
 
-		await batch.processArray(pids, async function (pids) {
+		await batch.processArray(pids, async (pids) => {
 			const postData = await posts.getPostsFields(pids, ['pid', 'deleted', 'uid', 'timestamp', 'upvotes', 'downvotes']);
 
 			const bulkRemove = [];

@@ -10,19 +10,19 @@ var meta = require('../src/meta');
 var User = require('../src/user');
 var Groups = require('../src/groups');
 
-describe('meta', function () {
+describe('meta', () => {
 	var fooUid;
 	var bazUid;
 	var herpUid;
 
-	before(function (done) {
+	before((done) => {
 		Groups.cache.reset();
 		// Create 3 users: 1 admin, 2 regular
 		async.series([
 			async.apply(User.create, { username: 'foo', password: 'barbar' }),	// admin
 			async.apply(User.create, { username: 'baz', password: 'quuxquux' }),	// restricted user
 			async.apply(User.create, { username: 'herp', password: 'derpderp' }),	// regular user
-		], function (err, uids) {
+		], (err, uids) => {
 			if (err) {
 				return done(err);
 			}
@@ -35,12 +35,12 @@ describe('meta', function () {
 		});
 	});
 
-	describe('settings', function () {
+	describe('settings', () => {
 		var socketAdmin = require('../src/socket.io/admin');
-		it('it should set setting', function (done) {
-			socketAdmin.settings.set({ uid: fooUid }, { hash: 'some:hash', values: { foo: '1', derp: 'value' } }, function (err) {
+		it('it should set setting', (done) => {
+			socketAdmin.settings.set({ uid: fooUid }, { hash: 'some:hash', values: { foo: '1', derp: 'value' } }, (err) => {
 				assert.ifError(err);
-				db.getObject('settings:some:hash', function (err, data) {
+				db.getObject('settings:some:hash', (err, data) => {
 					assert.ifError(err);
 					assert.equal(data.foo, '1');
 					assert.equal(data.derp, 'value');
@@ -49,8 +49,8 @@ describe('meta', function () {
 			});
 		});
 
-		it('it should get setting', function (done) {
-			socketAdmin.settings.get({ uid: fooUid }, { hash: 'some:hash' }, function (err, data) {
+		it('it should get setting', (done) => {
+			socketAdmin.settings.get({ uid: fooUid }, { hash: 'some:hash' }, (err, data) => {
 				assert.ifError(err);
 				assert.equal(data.foo, '1');
 				assert.equal(data.derp, 'value');
@@ -58,10 +58,10 @@ describe('meta', function () {
 			});
 		});
 
-		it('should not set setting if not empty', function (done) {
-			meta.settings.setOnEmpty('some:hash', { foo: 2 }, function (err) {
+		it('should not set setting if not empty', (done) => {
+			meta.settings.setOnEmpty('some:hash', { foo: 2 }, (err) => {
 				assert.ifError(err);
-				db.getObject('settings:some:hash', function (err, data) {
+				db.getObject('settings:some:hash', (err, data) => {
 					assert.ifError(err);
 					assert.equal(data.foo, '1');
 					assert.equal(data.derp, 'value');
@@ -70,10 +70,10 @@ describe('meta', function () {
 			});
 		});
 
-		it('should set setting if empty', function (done) {
-			meta.settings.setOnEmpty('some:hash', { empty: '2' }, function (err) {
+		it('should set setting if empty', (done) => {
+			meta.settings.setOnEmpty('some:hash', { empty: '2' }, (err) => {
 				assert.ifError(err);
-				db.getObject('settings:some:hash', function (err, data) {
+				db.getObject('settings:some:hash', (err, data) => {
 					assert.ifError(err);
 					assert.equal(data.foo, '1');
 					assert.equal(data.derp, 'value');
@@ -83,10 +83,10 @@ describe('meta', function () {
 			});
 		});
 
-		it('should set one and get one', function (done) {
-			meta.settings.setOne('some:hash', 'myField', 'myValue', function (err) {
+		it('should set one and get one', (done) => {
+			meta.settings.setOne('some:hash', 'myField', 'myValue', (err) => {
 				assert.ifError(err);
-				meta.settings.getOne('some:hash', 'myField', function (err, myValue) {
+				meta.settings.getOne('some:hash', 'myField', (err, myValue) => {
 					assert.ifError(err);
 					assert.equal(myValue, 'myValue');
 					done();
@@ -94,7 +94,7 @@ describe('meta', function () {
 			});
 		});
 
-		it('should return null if setting field does not exist', async function () {
+		it('should return null if setting field does not exist', async () => {
 			const val = await meta.settings.getOne('some:hash', 'does not exist');
 			assert.strictEqual(val, null);
 		});
@@ -105,13 +105,13 @@ describe('meta', function () {
 		];
 		const anotherList = [];
 
-		it('should set setting with sorted list', function (done) {
-			socketAdmin.settings.set({ uid: fooUid }, { hash: 'another:hash', values: { foo: '1', derp: 'value', someList: someList, anotherList: anotherList } }, function (err) {
+		it('should set setting with sorted list', (done) => {
+			socketAdmin.settings.set({ uid: fooUid }, { hash: 'another:hash', values: { foo: '1', derp: 'value', someList: someList, anotherList: anotherList } }, (err) => {
 				if (err) {
 					return done(err);
 				}
 
-				db.getObject('settings:another:hash', function (err, data) {
+				db.getObject('settings:another:hash', (err, data) => {
 					if (err) {
 						return done(err);
 					}
@@ -125,8 +125,8 @@ describe('meta', function () {
 			});
 		});
 
-		it('should get setting with sorted list', function (done) {
-			socketAdmin.settings.get({ uid: fooUid }, { hash: 'another:hash' }, function (err, data) {
+		it('should get setting with sorted list', (done) => {
+			socketAdmin.settings.get({ uid: fooUid }, { hash: 'another:hash' }, (err, data) => {
 				assert.ifError(err);
 				assert.strictEqual(data.foo, '1');
 				assert.strictEqual(data.derp, 'value');
@@ -136,10 +136,10 @@ describe('meta', function () {
 			});
 		});
 
-		it('should not set setting if not empty', function (done) {
-			meta.settings.setOnEmpty('some:hash', { foo: 2 }, function (err) {
+		it('should not set setting if not empty', (done) => {
+			meta.settings.setOnEmpty('some:hash', { foo: 2 }, (err) => {
 				assert.ifError(err);
-				db.getObject('settings:some:hash', function (err, data) {
+				db.getObject('settings:some:hash', (err, data) => {
 					assert.ifError(err);
 					assert.equal(data.foo, '1');
 					assert.equal(data.derp, 'value');
@@ -148,10 +148,10 @@ describe('meta', function () {
 			});
 		});
 
-		it('should not set setting with sorted list if not empty', function (done) {
-			meta.settings.setOnEmpty('another:hash', { foo: anotherList }, function (err) {
+		it('should not set setting with sorted list if not empty', (done) => {
+			meta.settings.setOnEmpty('another:hash', { foo: anotherList }, (err) => {
 				assert.ifError(err);
-				socketAdmin.settings.get({ uid: fooUid }, { hash: 'another:hash' }, function (err, data) {
+				socketAdmin.settings.get({ uid: fooUid }, { hash: 'another:hash' }, (err, data) => {
 					assert.ifError(err);
 					assert.equal(data.foo, '1');
 					assert.equal(data.derp, 'value');
@@ -160,10 +160,10 @@ describe('meta', function () {
 			});
 		});
 
-		it('should set setting with sorted list if empty', function (done) {
-			meta.settings.setOnEmpty('another:hash', { empty: someList }, function (err) {
+		it('should set setting with sorted list if empty', (done) => {
+			meta.settings.setOnEmpty('another:hash', { empty: someList }, (err) => {
 				assert.ifError(err);
-				socketAdmin.settings.get({ uid: fooUid }, { hash: 'another:hash' }, function (err, data) {
+				socketAdmin.settings.get({ uid: fooUid }, { hash: 'another:hash' }, (err, data) => {
 					assert.ifError(err);
 					assert.equal(data.foo, '1');
 					assert.equal(data.derp, 'value');
@@ -173,10 +173,10 @@ describe('meta', function () {
 			});
 		});
 
-		it('should set one and get one sorted list', function (done) {
-			meta.settings.setOne('another:hash', 'someList', someList, function (err) {
+		it('should set one and get one sorted list', (done) => {
+			meta.settings.setOne('another:hash', 'someList', someList, (err) => {
 				assert.ifError(err);
-				meta.settings.getOne('another:hash', 'someList', function (err, _someList) {
+				meta.settings.getOne('another:hash', 'someList', (err, _someList) => {
 					assert.ifError(err);
 					assert.deepEqual(_someList, someList);
 					done();
@@ -186,14 +186,14 @@ describe('meta', function () {
 	});
 
 
-	describe('config', function () {
+	describe('config', () => {
 		var socketAdmin = require('../src/socket.io/admin');
-		before(function (done) {
+		before((done) => {
 			db.setObject('config', { minimumTagLength: 3, maximumTagLength: 15 }, done);
 		});
 
-		it('should get config fields', function (done) {
-			meta.configs.getFields(['minimumTagLength', 'maximumTagLength'], function (err, data) {
+		it('should get config fields', (done) => {
+			meta.configs.getFields(['minimumTagLength', 'maximumTagLength'], (err, data) => {
 				assert.ifError(err);
 				assert.strictEqual(data.minimumTagLength, 3);
 				assert.strictEqual(data.maximumTagLength, 15);
@@ -201,10 +201,10 @@ describe('meta', function () {
 			});
 		});
 
-		it('should get the correct type and default value', function (done) {
-			meta.configs.set('loginAttempts', '', function (err) {
+		it('should get the correct type and default value', (done) => {
+			meta.configs.set('loginAttempts', '', (err) => {
 				assert.ifError(err);
-				meta.configs.get('loginAttempts', function (err, value) {
+				meta.configs.get('loginAttempts', (err, value) => {
 					assert.ifError(err);
 					assert.strictEqual(value, 5);
 					done();
@@ -212,10 +212,10 @@ describe('meta', function () {
 			});
 		});
 
-		it('should get the correct type and correct value', function (done) {
-			meta.configs.set('loginAttempts', '0', function (err) {
+		it('should get the correct type and correct value', (done) => {
+			meta.configs.set('loginAttempts', '0', (err) => {
 				assert.ifError(err);
-				meta.configs.get('loginAttempts', function (err, value) {
+				meta.configs.get('loginAttempts', (err, value) => {
 					assert.ifError(err);
 					assert.strictEqual(value, 0);
 					done();
@@ -223,10 +223,10 @@ describe('meta', function () {
 			});
 		});
 
-		it('should get the correct value', function (done) {
-			meta.configs.set('title', 123, function (err) {
+		it('should get the correct value', (done) => {
+			meta.configs.set('title', 123, (err) => {
 				assert.ifError(err);
-				meta.configs.get('title', function (err, value) {
+				meta.configs.get('title', (err, value) => {
 					assert.ifError(err);
 					assert.strictEqual(value, '123');
 					done();
@@ -234,10 +234,10 @@ describe('meta', function () {
 			});
 		});
 
-		it('should get the correct value', function (done) {
-			meta.configs.set('title', 0, function (err) {
+		it('should get the correct value', (done) => {
+			meta.configs.set('title', 0, (err) => {
 				assert.ifError(err);
-				meta.configs.get('title', function (err, value) {
+				meta.configs.get('title', (err, value) => {
 					assert.ifError(err);
 					assert.strictEqual(value, '0');
 					done();
@@ -245,10 +245,10 @@ describe('meta', function () {
 			});
 		});
 
-		it('should get the correct value', function (done) {
-			meta.configs.set('title', '', function (err) {
+		it('should get the correct value', (done) => {
+			meta.configs.set('title', '', (err) => {
 				assert.ifError(err);
-				meta.configs.get('title', function (err, value) {
+				meta.configs.get('title', (err, value) => {
 					assert.ifError(err);
 					assert.strictEqual(value, '');
 					done();
@@ -256,10 +256,10 @@ describe('meta', function () {
 			});
 		});
 
-		it('should use default value if value is null', function (done) {
-			meta.configs.set('teaserPost', null, function (err) {
+		it('should use default value if value is null', (done) => {
+			meta.configs.set('teaserPost', null, (err) => {
 				assert.ifError(err);
-				meta.configs.get('teaserPost', function (err, value) {
+				meta.configs.get('teaserPost', (err, value) => {
 					assert.ifError(err);
 					assert.strictEqual(value, 'last-reply');
 					done();
@@ -267,24 +267,24 @@ describe('meta', function () {
 			});
 		});
 
-		it('should fail if field is invalid', function (done) {
-			meta.configs.set('', 'someValue', function (err) {
+		it('should fail if field is invalid', (done) => {
+			meta.configs.set('', 'someValue', (err) => {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
-		it('should fail if data is invalid', function (done) {
-			socketAdmin.config.set({ uid: fooUid }, null, function (err) {
+		it('should fail if data is invalid', (done) => {
+			socketAdmin.config.set({ uid: fooUid }, null, (err) => {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
-		it('should set multiple config values', function (done) {
-			socketAdmin.config.set({ uid: fooUid }, { key: 'someKey', value: 'someValue' }, function (err) {
+		it('should set multiple config values', (done) => {
+			socketAdmin.config.set({ uid: fooUid }, { key: 'someKey', value: 'someValue' }, (err) => {
 				assert.ifError(err);
-				meta.configs.getFields(['someKey'], function (err, data) {
+				meta.configs.getFields(['someKey'], (err, data) => {
 					assert.ifError(err);
 					assert.equal(data.someKey, 'someValue');
 					done();
@@ -292,10 +292,10 @@ describe('meta', function () {
 			});
 		});
 
-		it('should set config value', function (done) {
-			meta.configs.set('someField', 'someValue', function (err) {
+		it('should set config value', (done) => {
+			meta.configs.set('someField', 'someValue', (err) => {
 				assert.ifError(err);
-				meta.configs.getFields(['someField'], function (err, data) {
+				meta.configs.getFields(['someField'], (err, data) => {
 					assert.ifError(err);
 					assert.strictEqual(data.someField, 'someValue');
 					done();
@@ -303,10 +303,10 @@ describe('meta', function () {
 			});
 		});
 
-		it('should get back string if field is not in defaults', function (done) {
-			meta.configs.set('numericField', 123, function (err) {
+		it('should get back string if field is not in defaults', (done) => {
+			meta.configs.set('numericField', 123, (err) => {
 				assert.ifError(err);
-				meta.configs.getFields(['numericField'], function (err, data) {
+				meta.configs.getFields(['numericField'], (err, data) => {
 					assert.ifError(err);
 					assert.strictEqual(data.numericField, 123);
 					done();
@@ -314,10 +314,10 @@ describe('meta', function () {
 			});
 		});
 
-		it('should set boolean config value', function (done) {
-			meta.configs.set('booleanField', true, function (err) {
+		it('should set boolean config value', (done) => {
+			meta.configs.set('booleanField', true, (err) => {
 				assert.ifError(err);
-				meta.configs.getFields(['booleanField'], function (err, data) {
+				meta.configs.getFields(['booleanField'], (err, data) => {
 					assert.ifError(err);
 					assert.strictEqual(data.booleanField, true);
 					done();
@@ -325,10 +325,10 @@ describe('meta', function () {
 			});
 		});
 
-		it('should set boolean config value', function (done) {
-			meta.configs.set('booleanField', 'false', function (err) {
+		it('should set boolean config value', (done) => {
+			meta.configs.set('booleanField', 'false', (err) => {
 				assert.ifError(err);
-				meta.configs.getFields(['booleanField'], function (err, data) {
+				meta.configs.getFields(['booleanField'], (err, data) => {
 					assert.ifError(err);
 					assert.strictEqual(data.booleanField, false);
 					done();
@@ -336,10 +336,10 @@ describe('meta', function () {
 			});
 		});
 
-		it('should set string config value', function (done) {
-			meta.configs.set('stringField', '123', function (err) {
+		it('should set string config value', (done) => {
+			meta.configs.set('stringField', '123', (err) => {
 				assert.ifError(err);
-				meta.configs.getFields(['stringField'], function (err, data) {
+				meta.configs.getFields(['stringField'], (err, data) => {
 					assert.ifError(err);
 					assert.strictEqual(data.stringField, 123);
 					done();
@@ -347,21 +347,21 @@ describe('meta', function () {
 			});
 		});
 
-		it('should fail if data is invalid', function (done) {
-			socketAdmin.config.setMultiple({ uid: fooUid }, null, function (err) {
+		it('should fail if data is invalid', (done) => {
+			socketAdmin.config.setMultiple({ uid: fooUid }, null, (err) => {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
-		it('should set multiple values', function (done) {
+		it('should set multiple values', (done) => {
 			socketAdmin.config.setMultiple({ uid: fooUid }, {
 				someField1: 'someValue1',
 				someField2: 'someValue2',
 				customCSS: '.derp{color:#00ff00;}',
-			}, function (err) {
+			}, (err) => {
 				assert.ifError(err);
-				meta.configs.getFields(['someField1', 'someField2'], function (err, data) {
+				meta.configs.getFields(['someField1', 'someField2'], (err, data) => {
 					assert.ifError(err);
 					assert.equal(data.someField1, 'someValue1');
 					assert.equal(data.someField2, 'someValue2');
@@ -370,10 +370,10 @@ describe('meta', function () {
 			});
 		});
 
-		it('should not set config if not empty', function (done) {
-			meta.configs.setOnEmpty({ someField1: 'foo' }, function (err) {
+		it('should not set config if not empty', (done) => {
+			meta.configs.setOnEmpty({ someField1: 'foo' }, (err) => {
 				assert.ifError(err);
-				meta.configs.get('someField1', function (err, value) {
+				meta.configs.get('someField1', (err, value) => {
 					assert.ifError(err);
 					assert.equal(value, 'someValue1');
 					done();
@@ -381,10 +381,10 @@ describe('meta', function () {
 			});
 		});
 
-		it('should remove config field', function (done) {
-			socketAdmin.config.remove({ uid: fooUid }, 'someField1', function (err) {
+		it('should remove config field', (done) => {
+			socketAdmin.config.remove({ uid: fooUid }, 'someField1', (err) => {
 				assert.ifError(err);
-				db.isObjectField('config', 'someField1', function (err, isObjectField) {
+				db.isObjectField('config', 'someField1', (err, isObjectField) => {
 					assert.ifError(err);
 					assert(!isObjectField);
 					done();
@@ -394,83 +394,83 @@ describe('meta', function () {
 	});
 
 
-	describe('session TTL', function () {
-		it('should return 14 days in seconds', function (done) {
+	describe('session TTL', () => {
+		it('should return 14 days in seconds', (done) => {
 			assert(meta.getSessionTTLSeconds(), 1209600);
 			done();
 		});
 
-		it('should return 7 days in seconds', function (done) {
+		it('should return 7 days in seconds', (done) => {
 			meta.config.loginDays = 7;
 			assert(meta.getSessionTTLSeconds(), 604800);
 			done();
 		});
 
-		it('should return 2 days in seconds', function (done) {
+		it('should return 2 days in seconds', (done) => {
 			meta.config.loginSeconds = 172800;
 			assert(meta.getSessionTTLSeconds(), 172800);
 			done();
 		});
 	});
 
-	describe('dependencies', function () {
-		it('should return ENOENT if module is not found', function (done) {
-			meta.dependencies.checkModule('some-module-that-does-not-exist', function (err) {
+	describe('dependencies', () => {
+		it('should return ENOENT if module is not found', (done) => {
+			meta.dependencies.checkModule('some-module-that-does-not-exist', (err) => {
 				assert.equal(err.code, 'ENOENT');
 				done();
 			});
 		});
 
-		it('should not error if module is a nodebb-plugin-*', function (done) {
-			meta.dependencies.checkModule('nodebb-plugin-somePlugin', function (err) {
+		it('should not error if module is a nodebb-plugin-*', (done) => {
+			meta.dependencies.checkModule('nodebb-plugin-somePlugin', (err) => {
 				assert.ifError(err);
 				done();
 			});
 		});
 
-		it('should not error if module is nodebb-theme-*', function (done) {
-			meta.dependencies.checkModule('nodebb-theme-someTheme', function (err) {
+		it('should not error if module is nodebb-theme-*', (done) => {
+			meta.dependencies.checkModule('nodebb-theme-someTheme', (err) => {
 				assert.ifError(err);
 				done();
 			});
 		});
 
-		it('should parse json package data', function (done) {
+		it('should parse json package data', (done) => {
 			var pkgData = meta.dependencies.parseModuleData('nodebb-plugin-test', '{"a": 1}');
 			assert.equal(pkgData.a, 1);
 			done();
 		});
 
-		it('should return null data with invalid json', function (done) {
+		it('should return null data with invalid json', (done) => {
 			var pkgData = meta.dependencies.parseModuleData('nodebb-plugin-test', 'asdasd');
 			assert.strictEqual(pkgData, null);
 			done();
 		});
 
-		it('should return false if moduleData is falsy', function (done) {
+		it('should return false if moduleData is falsy', (done) => {
 			assert(!meta.dependencies.doesSatisfy(null, '1.0.0'));
 			done();
 		});
 
-		it('should return false if moduleData doesnt not satisfy package.json', function (done) {
+		it('should return false if moduleData doesnt not satisfy package.json', (done) => {
 			assert(!meta.dependencies.doesSatisfy({ name: 'nodebb-plugin-test', version: '0.9.0' }, '1.0.0'));
 			done();
 		});
 
-		it('should return true if _resolved is from github', function (done) {
+		it('should return true if _resolved is from github', (done) => {
 			assert(meta.dependencies.doesSatisfy({ name: 'nodebb-plugin-test', _resolved: 'https://github.com/some/repo', version: '0.9.0' }, '1.0.0'));
 			done();
 		});
 	});
 
-	describe('debugFork', function () {
+	describe('debugFork', () => {
 		var oldArgv;
-		before(function () {
+		before(() => {
 			oldArgv = process.execArgv;
 			process.execArgv = ['--debug=5858', '--foo=1'];
 		});
 
-		it('should detect debugging', function (done) {
+		it('should detect debugging', (done) => {
 			var debugFork = require('../src/meta/debugFork');
 			assert(!debugFork.debugging);
 
@@ -483,26 +483,26 @@ describe('meta', function () {
 			done();
 		});
 
-		after(function () {
+		after(() => {
 			process.execArgv = oldArgv;
 		});
 	});
 
-	describe('Access-Control-Allow-Origin', function () {
-		it('Access-Control-Allow-Origin header should be empty', function (done) {
+	describe('Access-Control-Allow-Origin', () => {
+		it('Access-Control-Allow-Origin header should be empty', (done) => {
 			var jar = request.jar();
 			request.get(`${nconf.get('url')}/api/search?term=bug`, {
 				form: {},
 				json: true,
 				jar: jar,
-			}, function (err, response, body) {
+			}, (err, response, body) => {
 				assert.ifError(err);
 				assert.equal(response.headers['access-control-allow-origin'], undefined);
 				done();
 			});
 		});
 
-		it('should set proper Access-Control-Allow-Origin header', function (done) {
+		it('should set proper Access-Control-Allow-Origin header', (done) => {
 			var jar = request.jar();
 			var oldValue = meta.config['access-control-allow-origin'];
 			meta.config['access-control-allow-origin'] = 'test.com, mydomain.com';
@@ -514,7 +514,7 @@ describe('meta', function () {
 				headers: {
 					origin: 'mydomain.com',
 				},
-			}, function (err, response, body) {
+			}, (err, response, body) => {
 				assert.ifError(err);
 				assert.equal(response.headers['access-control-allow-origin'], 'mydomain.com');
 				meta.config['access-control-allow-origin'] = oldValue;
@@ -522,7 +522,7 @@ describe('meta', function () {
 			});
 		});
 
-		it('Access-Control-Allow-Origin header should be empty if origin does not match', function (done) {
+		it('Access-Control-Allow-Origin header should be empty if origin does not match', (done) => {
 			var jar = request.jar();
 			var oldValue = meta.config['access-control-allow-origin'];
 			meta.config['access-control-allow-origin'] = 'test.com, mydomain.com';
@@ -534,7 +534,7 @@ describe('meta', function () {
 				headers: {
 					origin: 'notallowed.com',
 				},
-			}, function (err, response, body) {
+			}, (err, response, body) => {
 				assert.ifError(err);
 				assert.equal(response.headers['access-control-allow-origin'], undefined);
 				meta.config['access-control-allow-origin'] = oldValue;
@@ -542,7 +542,7 @@ describe('meta', function () {
 			});
 		});
 
-		it('should set proper Access-Control-Allow-Origin header', function (done) {
+		it('should set proper Access-Control-Allow-Origin header', (done) => {
 			var jar = request.jar();
 			var oldValue = meta.config['access-control-allow-origin-regex'];
 			meta.config['access-control-allow-origin-regex'] = 'match\\.this\\..+\\.domain.com, mydomain\\.com';
@@ -554,7 +554,7 @@ describe('meta', function () {
 				headers: {
 					origin: 'match.this.anything123.domain.com',
 				},
-			}, function (err, response, body) {
+			}, (err, response, body) => {
 				assert.ifError(err);
 				assert.equal(response.headers['access-control-allow-origin'], 'match.this.anything123.domain.com');
 				meta.config['access-control-allow-origin-regex'] = oldValue;
@@ -562,7 +562,7 @@ describe('meta', function () {
 			});
 		});
 
-		it('Access-Control-Allow-Origin header should be empty if origin does not match', function (done) {
+		it('Access-Control-Allow-Origin header should be empty if origin does not match', (done) => {
 			var jar = request.jar();
 			var oldValue = meta.config['access-control-allow-origin-regex'];
 			meta.config['access-control-allow-origin-regex'] = 'match\\.this\\..+\\.domain.com, mydomain\\.com';
@@ -574,7 +574,7 @@ describe('meta', function () {
 				headers: {
 					origin: 'notallowed.com',
 				},
-			}, function (err, response, body) {
+			}, (err, response, body) => {
 				assert.ifError(err);
 				assert.equal(response.headers['access-control-allow-origin'], undefined);
 				meta.config['access-control-allow-origin-regex'] = oldValue;
@@ -582,7 +582,7 @@ describe('meta', function () {
 			});
 		});
 
-		it('should not error with invalid regexp', function (done) {
+		it('should not error with invalid regexp', (done) => {
 			var jar = request.jar();
 			var oldValue = meta.config['access-control-allow-origin-regex'];
 			meta.config['access-control-allow-origin-regex'] = '[match\\.this\\..+\\.domain.com, mydomain\\.com';
@@ -594,7 +594,7 @@ describe('meta', function () {
 				headers: {
 					origin: 'mydomain.com',
 				},
-			}, function (err, response, body) {
+			}, (err, response, body) => {
 				assert.ifError(err);
 				assert.equal(response.headers['access-control-allow-origin'], 'mydomain.com');
 				meta.config['access-control-allow-origin-regex'] = oldValue;

@@ -10,7 +10,7 @@ module.exports = {
 	method: async function () {
 		const progress = this.progress;
 
-		await batch.processSortedSet('topics:tid', async function (tids) {
+		await batch.processSortedSet('topics:tid', async (tids) => {
 			progress.incr(tids.length);
 			const keys = tids.map(tid => `tid:${tid}:posters`);
 			await db.sortedSetsRemoveRangeByScore(keys, '-inf', 0);

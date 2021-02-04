@@ -21,12 +21,12 @@ module.exports = {
 			function (cb) {
 				var keys = ['chat-incoming', 'chat-outgoing', 'notification'];
 
-				db.getObject('settings:sounds', function (err, settings) {
+				db.getObject('settings:sounds', (err, settings) => {
 					if (err || !settings) {
 						return cb(err);
 					}
 
-					keys.forEach(function (key) {
+					keys.forEach((key) => {
 						if (settings[key] && !settings[key].includes(' | ')) {
 							settings[key] = map[settings[key]] || '';
 						}
@@ -38,14 +38,14 @@ module.exports = {
 			function (cb) {
 				var keys = ['notificationSound', 'incomingChatSound', 'outgoingChatSound'];
 
-				batch.processSortedSet('users:joindate', function (ids, next) {
-					async.each(ids, function (uid, next) {
-						db.getObject(`user:${uid}:settings`, function (err, settings) {
+				batch.processSortedSet('users:joindate', (ids, next) => {
+					async.each(ids, (uid, next) => {
+						db.getObject(`user:${uid}:settings`, (err, settings) => {
 							if (err || !settings) {
 								return next(err);
 							}
 							var newSettings = {};
-							keys.forEach(function (key) {
+							keys.forEach((key) => {
 								if (settings[key] && !settings[key].includes(' | ')) {
 									newSettings[key] = map[settings[key]] || '';
 								}

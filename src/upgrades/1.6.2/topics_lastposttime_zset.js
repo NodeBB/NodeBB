@@ -10,9 +10,9 @@ module.exports = {
 	method: function (callback) {
 		var progress = this.progress;
 
-		require('../../batch').processSortedSet('topics:tid', function (tids, next) {
-			async.eachSeries(tids, function (tid, next) {
-				db.getObjectFields(`topic:${tid}`, ['cid', 'timestamp', 'lastposttime'], function (err, topicData) {
+		require('../../batch').processSortedSet('topics:tid', (tids, next) => {
+			async.eachSeries(tids, (tid, next) => {
+				db.getObjectFields(`topic:${tid}`, ['cid', 'timestamp', 'lastposttime'], (err, topicData) => {
 					if (err || !topicData) {
 						return next(err);
 					}
