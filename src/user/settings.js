@@ -14,7 +14,7 @@ module.exports = function (User) {
 		if (parseInt(uid, 10) <= 0) {
 			return await onSettingsLoaded(0, {});
 		}
-		let settings = await db.getObject('user:' + uid + ':settings');
+		let settings = await db.getObject(`user:${uid}:settings`);
 		settings = settings || {};
 		settings.uid = uid;
 		return await onSettingsLoaded(uid, settings);
@@ -25,7 +25,7 @@ module.exports = function (User) {
 			return [];
 		}
 
-		const keys = uids.map(uid => 'user:' + uid + ':settings');
+		const keys = uids.map(uid => `user:${uid}:settings`);
 		let settings = await db.getObjects(keys);
 		settings = settings.map(function (userSettings, index) {
 			userSettings = userSettings || {};
@@ -92,12 +92,12 @@ module.exports = function (User) {
 	User.saveSettings = async function (uid, data) {
 		const maxPostsPerPage = meta.config.maxPostsPerPage || 20;
 		if (!data.postsPerPage || parseInt(data.postsPerPage, 10) <= 1 || parseInt(data.postsPerPage, 10) > maxPostsPerPage) {
-			throw new Error('[[error:invalid-pagination-value, 2, ' + maxPostsPerPage + ']]');
+			throw new Error(`[[error:invalid-pagination-value, 2, ${maxPostsPerPage}]]`);
 		}
 
 		const maxTopicsPerPage = meta.config.maxTopicsPerPage || 20;
 		if (!data.topicsPerPage || parseInt(data.topicsPerPage, 10) <= 1 || parseInt(data.topicsPerPage, 10) > maxTopicsPerPage) {
-			throw new Error('[[error:invalid-pagination-value, 2, ' + maxTopicsPerPage + ']]');
+			throw new Error(`[[error:invalid-pagination-value, 2, ${maxTopicsPerPage}]]`);
 		}
 
 		const languageCodes = await languages.listCodes();
@@ -141,7 +141,7 @@ module.exports = function (User) {
 			}
 		});
 		const result = await plugins.hooks.fire('filter:user.saveSettings', { settings: settings, data: data });
-		await db.setObject('user:' + uid + ':settings', result.settings);
+		await db.setObject(`user:${uid}:settings`, result.settings);
 		await User.updateDigestSetting(uid, data.dailyDigestFreq);
 		return await User.getSettings(uid);
 	};
@@ -149,7 +149,7 @@ module.exports = function (User) {
 	User.updateDigestSetting = async function (uid, dailyDigestFreq) {
 		await db.sortedSetsRemove(['digest:day:uids', 'digest:week:uids', 'digest:month:uids'], uid);
 		if (['day', 'week', 'month'].includes(dailyDigestFreq)) {
-			await db.sortedSetAdd('digest:' + dailyDigestFreq + ':uids', Date.now(), uid);
+			await db.sortedSetAdd(`digest:${dailyDigestFreq}:uids`, Date.now(), uid);
 		}
 	};
 
@@ -158,6 +158,6 @@ module.exports = function (User) {
 			return;
 		}
 
-		await db.setObjectField('user:' + uid + ':settings', key, value);
+		await db.setObjectField(`user:${uid}:settings`, key, value);
 	};
 };

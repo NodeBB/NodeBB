@@ -10,7 +10,7 @@ module.exports = {
 		const progress = this.progress;
 
 		await batch.processSortedSet('categories:cid', async function (cids) {
-			const keys = cids.map(cid => 'category:' + cid);
+			const keys = cids.map(cid => `category:${cid}`);
 			await db.setObject(keys, {
 				subCategoriesPerPage: 10,
 			});

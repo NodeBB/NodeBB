@@ -35,7 +35,7 @@ require('./merge')(Topics);
 Topics.events = require('./events');
 
 Topics.exists = async function (tid) {
-	return await db.exists('topic:' + tid);
+	return await db.exists(`topic:${tid}`);
 };
 
 Topics.getTopicsFromSet = async function (set, uid, start, stop) {

@@ -15,26 +15,26 @@ module.exports = function (Categories) {
 		if (!parseInt(count, 10)) {
 			return [];
 		}
-		let pids = await db.getSortedSetRevRange('cid:' + cid + ':pids', 0, count - 1);
+		let pids = await db.getSortedSetRevRange(`cid:${cid}:pids`, 0, count - 1);
 		pids = await privileges.posts.filter('topics:read', pids, uid);
 		return await posts.getPostSummaryByPids(pids, uid, { stripTags: true });
 	};
 
 	Categories.updateRecentTid = async function (cid, tid) {
 		const [count, numRecentReplies] = await Promise.all([
-			db.sortedSetCard('cid:' + cid + ':recent_tids'),
-			db.getObjectField('category:' + cid, 'numRecentReplies'),
+			db.sortedSetCard(`cid:${cid}:recent_tids`),
+			db.getObjectField(`category:${cid}`, 'numRecentReplies'),
 		]);
 
 		if (count >= numRecentReplies) {
-			const data = await db.getSortedSetRangeWithScores('cid:' + cid + ':recent_tids', 0, count - numRecentReplies);
+			const data = await db.getSortedSetRangeWithScores(`cid:${cid}:recent_tids`, 0, count - numRecentReplies);
 			const shouldRemove = !(data.length === 1 && count === 1 && data[0].value === String(tid));
 			if (data.length && shouldRemove) {
-				await db.sortedSetsRemoveRangeByScore(['cid:' + cid + ':recent_tids'], '-inf', data[data.length - 1].score);
+				await db.sortedSetsRemoveRangeByScore([`cid:${cid}:recent_tids`], '-inf', data[data.length - 1].score);
 			}
 		}
 		if (numRecentReplies > 0) {
-			await db.sortedSetAdd('cid:' + cid + ':recent_tids', Date.now(), tid);
+			await db.sortedSetAdd(`cid:${cid}:recent_tids`, Date.now(), tid);
 		}
 		await plugins.hooks.fire('action:categories.updateRecentTid', { cid: cid, tid: tid });
 	};
@@ -45,7 +45,7 @@ module.exports = function (Categories) {
 		let index = 0;
 		do {
 			/* eslint-disable no-await-in-loop */
-			const pids = await db.getSortedSetRevRange('cid:' + cid + ':pids', index, index);
+			const pids = await db.getSortedSetRevRange(`cid:${cid}:pids`, index, index);
 			if (!pids.length) {
 				return;
 			}
@@ -77,7 +77,7 @@ module.exports = function (Categories) {
 			});
 			keys = result.keys;
 		} else {
-			keys = categoriesToLoad.map(c => 'cid:' + c.cid + ':recent_tids');
+			keys = categoriesToLoad.map(c => `cid:${c.cid}:recent_tids`);
 		}
 
 		const results = await db.getSortedSetsMembers(keys);
@@ -174,19 +174,19 @@ module.exports = function (Categories) {
 			const bulkRemove = [];
 			const bulkAdd = [];
 			postData.forEach((post) => {
-				bulkRemove.push(['cid:' + oldCid + ':uid:' + post.uid + ':pids', post.pid]);
-				bulkRemove.push(['cid:' + oldCid + ':uid:' + post.uid + ':pids:votes', post.pid]);
-				bulkAdd.push(['cid:' + cid + ':uid:' + post.uid + ':pids', post.timestamp, post.pid]);
+				bulkRemove.push([`cid:${oldCid}:uid:${post.uid}:pids`, post.pid]);
+				bulkRemove.push([`cid:${oldCid}:uid:${post.uid}:pids:votes`, post.pid]);
+				bulkAdd.push([`cid:${cid}:uid:${post.uid}:pids`, post.timestamp, post.pid]);
 				if (post.votes > 0) {
-					bulkAdd.push(['cid:' + cid + ':uid:' + post.uid + ':pids:votes', post.votes, post.pid]);
+					bulkAdd.push([`cid:${cid}:uid:${post.uid}:pids:votes`, post.votes, post.pid]);
 				}
 			});
 
 			const postsToReAdd = postData.filter(p => !p.deleted && !topicDeleted);
 			const timestamps = postsToReAdd.map(p => p && p.timestamp);
 			await Promise.all([
-				db.sortedSetRemove('cid:' + oldCid + ':pids', pids),
-				db.sortedSetAdd('cid:' + cid + ':pids', timestamps, postsToReAdd.map(p => p.pid)),
+				db.sortedSetRemove(`cid:${oldCid}:pids`, pids),
+				db.sortedSetAdd(`cid:${cid}:pids`, timestamps, postsToReAdd.map(p => p.pid)),
 				db.sortedSetRemoveBulk(bulkRemove),
 				db.sortedSetAddBulk(bulkAdd),
 			]);
@@ -200,8 +200,8 @@ module.exports = function (Categories) {
 		}
 
 		await Promise.all([
-			db.incrObjectFieldBy('category:' + oldCid, 'post_count', -postCount),
-			db.incrObjectFieldBy('category:' + newCid, 'post_count', postCount),
+			db.incrObjectFieldBy(`category:${oldCid}`, 'post_count', -postCount),
+			db.incrObjectFieldBy(`category:${newCid}`, 'post_count', postCount),
 		]);
 	}
 };

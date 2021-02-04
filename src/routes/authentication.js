@@ -93,7 +93,7 @@ Auth.reloadRoutes = async function (params) {
 	try {
 		loginStrategies = await plugins.hooks.fire('filter:auth.init', loginStrategies);
 	} catch (err) {
-		winston.error('[authentication] ' + err.stack);
+		winston.error(`[authentication] ${err.stack}`);
 	}
 	loginStrategies = loginStrategies || [];
 	loginStrategies.forEach(function (strategy) {

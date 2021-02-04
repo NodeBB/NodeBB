@@ -75,9 +75,9 @@ function installAll() {
 		});
 	} catch (e) {
 		console.log('Error installing dependencies!');
-		console.log('message: ' + e.message);
-		console.log('stdout: ' + e.stdout);
-		console.log('stderr: ' + e.stderr);
+		console.log(`message: ${e.message}`);
+		console.log(`stdout: ${e.stdout}`);
+		console.log(`stderr: ${e.stderr}`);
 		throw e;
 	}
 }

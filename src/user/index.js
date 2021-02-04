@@ -232,7 +232,7 @@ User.addInterstitials = function (callback) {
 				}
 
 				if (data.userData.uid) {
-					const consented = await db.getObjectField('user:' + data.userData.uid, 'gdpr_consent');
+					const consented = await db.getObjectField(`user:${data.userData.uid}`, 'gdpr_consent');
 					if (parseInt(consented, 10)) {
 						return data;
 					}
@@ -266,7 +266,7 @@ User.addInterstitials = function (callback) {
 				}
 
 				if (data.userData.uid) {
-					const accepted = await db.getObjectField('user:' + data.userData.uid, 'acceptTos');
+					const accepted = await db.getObjectField(`user:${data.userData.uid}`, 'acceptTos');
 					if (parseInt(accepted, 10)) {
 						return data;
 					}

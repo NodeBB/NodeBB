@@ -126,7 +126,7 @@ function checkPlugins(standalone, callback) {
 
 			request({
 				method: 'GET',
-				url: 'https://packages.nodebb.org/api/v1/suggest?version=' + payload.version + '&package[]=' + toCheck.join('&package[]='),
+				url: `https://packages.nodebb.org/api/v1/suggest?version=${payload.version}&package[]=${toCheck.join('&package[]=')}`,
 				json: true,
 			}, function (err, res, body) {
 				if (err) {
@@ -175,9 +175,9 @@ function upgradePlugins(callback) {
 		}
 
 		if (found && found.length) {
-			process.stdout.write('\n\nA total of ' + String(found.length).bold + ' package(s) can be upgraded:\n\n');
+			process.stdout.write(`\n\nA total of ${String(found.length).bold} package(s) can be upgraded:\n\n`);
 			found.forEach(function (suggestObj) {
-				process.stdout.write('  * '.yellow + suggestObj.name.reset + ' (' + suggestObj.current.yellow + ' -> '.reset + suggestObj.suggested.green + ')\n'.reset);
+				process.stdout.write(`${'  * '.yellow + suggestObj.name.reset} (${suggestObj.current.yellow}${' -> '.reset}${suggestObj.suggested.green}${')\n'.reset}`);
 			});
 		} else {
 			if (standalone) {
@@ -202,7 +202,7 @@ function upgradePlugins(callback) {
 			if (['y', 'Y', 'yes', 'YES'].includes(result.upgrade)) {
 				console.log('\nUpgrading packages...');
 				const args = packageManagerInstallArgs.concat(found.map(function (suggestObj) {
-					return suggestObj.name + '@' + suggestObj.suggested;
+					return `${suggestObj.name}@${suggestObj.suggested}`;
 				}));
 
 				cproc.execFile(packageManagerExecutable, args, { stdio: 'ignore' }, function (err) {

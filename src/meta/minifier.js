@@ -27,7 +27,7 @@ Object.defineProperty(Minifier, 'maxThreads', {
 	set: function (val) {
 		maxThreads = val;
 		if (!process.env.minifier_child) {
-			winston.verbose('[minifier] utilizing a maximum of ' + maxThreads + ' additional threads');
+			winston.verbose(`[minifier] utilizing a maximum of ${maxThreads} additional threads`);
 		}
 	},
 	configurable: true,
@@ -232,19 +232,19 @@ function minifyAndSave(data, callback) {
 	var minified = uglify.minify(scripts, {
 		sourceMap: {
 			filename: data.filename,
-			url: String(data.filename).split(/[/\\]/).pop() + '.map',
+			url: `${String(data.filename).split(/[/\\]/).pop()}.map`,
 			includeSources: true,
 		},
 		compress: false,
 	});
 
 	if (minified.error) {
-		return callback({ stack: 'Error minifying ' + minified.error.filename + '\n' + minified.error.stack });
+		return callback({ stack: `Error minifying ${minified.error.filename}\n${minified.error.stack}` });
 	}
 
 	async.parallel([
 		async.apply(fs.writeFile, data.destPath, minified.code),
-		async.apply(fs.writeFile, data.destPath + '.map', minified.map),
+		async.apply(fs.writeFile, `${data.destPath}.map`, minified.map),
 	], callback);
 }
 

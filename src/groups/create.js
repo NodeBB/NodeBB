@@ -43,18 +43,18 @@ module.exports = function (Groups) {
 		await plugins.hooks.fire('filter:group.create', { group: groupData, data: data });
 
 		await db.sortedSetAdd('groups:createtime', groupData.createtime, groupData.name);
-		await db.setObject('group:' + groupData.name, groupData);
+		await db.setObject(`group:${groupData.name}`, groupData);
 
 		if (data.hasOwnProperty('ownerUid')) {
-			await db.setAdd('group:' + groupData.name + ':owners', data.ownerUid);
-			await db.sortedSetAdd('group:' + groupData.name + ':members', timestamp, data.ownerUid);
+			await db.setAdd(`group:${groupData.name}:owners`, data.ownerUid);
+			await db.sortedSetAdd(`group:${groupData.name}:members`, timestamp, data.ownerUid);
 		}
 
 		if (!isHidden && !isSystem) {
 			await db.sortedSetAddBulk([
 				['groups:visible:createtime', timestamp, groupData.name],
 				['groups:visible:memberCount', groupData.memberCount, groupData.name],
-				['groups:visible:name', 0, groupData.name.toLowerCase() + ':' + groupData.name],
+				['groups:visible:name', 0, `${groupData.name.toLowerCase()}:${groupData.name}`],
 			]);
 		}
 

@@ -29,9 +29,9 @@ module.exports = {
 					const bulk = [];
 					postData.forEach(function (p, index) {
 						if (p && p.uid && p.pid && p.tid && p.timestamp) {
-							bulk.push(['cid:' + topicData[index].cid + ':uid:' + p.uid + ':pids', p.timestamp, p.pid]);
+							bulk.push([`cid:${topicData[index].cid}:uid:${p.uid}:pids`, p.timestamp, p.pid]);
 							if (p.votes > 0) {
-								bulk.push(['cid:' + topicData[index].cid + ':uid:' + p.uid + ':pids:votes', p.votes, p.pid]);
+								bulk.push([`cid:${topicData[index].cid}:uid:${p.uid}:pids:votes`, p.votes, p.pid]);
 							}
 						}
 					});

@@ -150,7 +150,7 @@ module.exports = function (Topics) {
 		var index = 0;
 		do {
 			/* eslint-disable no-await-in-loop */
-			const pids = await db.getSortedSetRevRange('tid:' + tid + ':posts', index, index);
+			const pids = await db.getSortedSetRevRange(`tid:${tid}:posts`, index, index);
 			if (!pids.length) {
 				return null;
 			}
@@ -171,25 +171,25 @@ module.exports = function (Topics) {
 			const downvotes = parseInt(postData.downvotes, 10) || 0;
 			const votes = upvotes - downvotes;
 			await db.sortedSetsAdd([
-				'tid:' + tid + ':posts', 'tid:' + tid + ':posts:votes',
+				`tid:${tid}:posts`, `tid:${tid}:posts:votes`,
 			], [postData.timestamp, votes], postData.pid);
 		}
 		await Topics.increasePostCount(tid);
-		await db.sortedSetIncrBy('tid:' + tid + ':posters', 1, postData.uid);
-		const posterCount = await db.sortedSetCard('tid:' + tid + ':posters');
+		await db.sortedSetIncrBy(`tid:${tid}:posters`, 1, postData.uid);
+		const posterCount = await db.sortedSetCard(`tid:${tid}:posters`);
 		await Topics.setTopicField(tid, 'postercount', posterCount);
 		await Topics.updateTeaser(tid);
 	};
 
 	Topics.removePostFromTopic = async function (tid, postData) {
 		await db.sortedSetsRemove([
-			'tid:' + tid + ':posts',
-			'tid:' + tid + ':posts:votes',
+			`tid:${tid}:posts`,
+			`tid:${tid}:posts:votes`,
 		], postData.pid);
 		await Topics.decreasePostCount(tid);
-		await db.sortedSetIncrBy('tid:' + tid + ':posters', -1, postData.uid);
-		await db.sortedSetsRemoveRangeByScore(['tid:' + tid + ':posters'], '-inf', 0);
-		const posterCount = await db.sortedSetCard('tid:' + tid + ':posters');
+		await db.sortedSetIncrBy(`tid:${tid}:posters`, -1, postData.uid);
+		await db.sortedSetsRemoveRangeByScore([`tid:${tid}:posters`], '-inf', 0);
+		const posterCount = await db.sortedSetCard(`tid:${tid}:posters`);
 		await Topics.setTopicField(tid, 'postercount', posterCount);
 		await Topics.updateTeaser(tid);
 	};
@@ -197,7 +197,7 @@ module.exports = function (Topics) {
 	Topics.getPids = async function (tid) {
 		var [mainPid, pids] = await Promise.all([
 			Topics.getTopicField(tid, 'mainPid'),
-			db.getSortedSetRange('tid:' + tid + ':posts', 0, -1),
+			db.getSortedSetRange(`tid:${tid}:posts`, 0, -1),
 		]);
 		if (parseInt(mainPid, 10)) {
 			pids = [mainPid].concat(pids);
@@ -218,7 +218,7 @@ module.exports = function (Topics) {
 	};
 
 	async function incrementFieldAndUpdateSortedSet(tid, field, by, set) {
-		const value = await db.incrObjectFieldBy('topic:' + tid, field, by);
+		const value = await db.incrObjectFieldBy(`topic:${tid}`, field, by);
 		await db.sortedSetAdd(set, value, tid);
 	}
 
@@ -237,11 +237,11 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getPostCount = async function (tid) {
-		return await db.getObjectField('topic:' + tid, 'postcount');
+		return await db.getObjectField(`topic:${tid}`, 'postcount');
 	};
 
 	async function getPostReplies(pids, callerUid) {
-		const keys = pids.map(pid => 'pid:' + pid + ':replies');
+		const keys = pids.map(pid => `pid:${pid}:replies`);
 		const arrayOfReplyPids = await db.getSortedSetsMembers(keys);
 
 		const uniquePids = _.uniq(_.flatten(arrayOfReplyPids));
@@ -268,7 +268,7 @@ module.exports = function (Topics) {
 			const currentData = {
 				hasMore: false,
 				users: [],
-				text: replyPids.length > 1 ? '[[topic:replies_to_this_post, ' + replyPids.length + ']]' : '[[topic:one_reply_to_this_post]]',
+				text: replyPids.length > 1 ? `[[topic:replies_to_this_post, ${replyPids.length}]]` : '[[topic:one_reply_to_this_post]]',
 				count: replyPids.length,
 				timestampISO: replyPids.length ? utils.toISOString(pidMap[replyPids[0]].timestamp) : undefined,
 			};

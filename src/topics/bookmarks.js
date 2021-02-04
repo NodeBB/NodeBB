@@ -11,27 +11,27 @@ module.exports = function (Topics) {
 		if (parseInt(uid, 10) <= 0) {
 			return null;
 		}
-		return await db.sortedSetScore('tid:' + tid + ':bookmarks', uid);
+		return await db.sortedSetScore(`tid:${tid}:bookmarks`, uid);
 	};
 
 	Topics.getUserBookmarks = async function (tids, uid) {
 		if (parseInt(uid, 10) <= 0) {
 			return tids.map(() => null);
 		}
-		return await db.sortedSetsScore(tids.map(tid => 'tid:' + tid + ':bookmarks'), uid);
+		return await db.sortedSetsScore(tids.map(tid => `tid:${tid}:bookmarks`), uid);
 	};
 
 	Topics.setUserBookmark = async function (tid, uid, index) {
-		await db.sortedSetAdd('tid:' + tid + ':bookmarks', index, uid);
+		await db.sortedSetAdd(`tid:${tid}:bookmarks`, index, uid);
 	};
 
 	Topics.getTopicBookmarks = async function (tid) {
-		return await db.getSortedSetRangeWithScores('tid:' + tid + ':bookmarks', 0, -1);
+		return await db.getSortedSetRangeWithScores(`tid:${tid}:bookmarks`, 0, -1);
 	};
 
 	Topics.updateTopicBookmarks = async function (tid, pids) {
 		const maxIndex = await Topics.getPostCount(tid);
-		const indices = await db.sortedSetRanks('tid:' + tid + ':posts', pids);
+		const indices = await db.sortedSetRanks(`tid:${tid}:posts`, pids);
 		const postIndices = indices.map(i => (i === null ? 0 : i + 1));
 		const minIndex = Math.min.apply(Math, postIndices);
 

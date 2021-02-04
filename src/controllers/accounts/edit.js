@@ -24,7 +24,7 @@ editController.get = async function (req, res, next) {
 	userData.allowProfilePicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:profile-picture'];
 	userData.allowCoverPicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:cover-picture'];
 	userData.allowProfileImageUploads = meta.config.allowProfileImageUploads;
-	userData.allowedProfileImageExtensions = user.getAllowedProfileImageExtensions().map(ext => '.' + ext).join(', ');
+	userData.allowedProfileImageExtensions = user.getAllowedProfileImageExtensions().map(ext => `.${ext}`).join(', ');
 	userData.allowMultipleBadges = meta.config.allowMultipleBadges === 1;
 	userData.allowAccountDelete = meta.config.allowAccountDelete === 1;
 	userData.allowWebsite = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:website'];
@@ -55,11 +55,11 @@ editController.get = async function (req, res, next) {
 	});
 	userData.groupSelectSize = Math.min(10, Math.max(5, userData.groups.length + 1));
 
-	userData.title = '[[pages:account/edit, ' + userData.username + ']]';
+	userData.title = `[[pages:account/edit, ${userData.username}]]`;
 	userData.breadcrumbs = helpers.buildBreadcrumbs([
 		{
 			text: userData.username,
-			url: '/user/' + userData.userslug,
+			url: `/user/${userData.userslug}`,
 		},
 		{
 			text: '[[user:edit]]',
@@ -86,7 +86,7 @@ async function renderRoute(name, req, res, next) {
 	if (!userData) {
 		return next();
 	}
-	if (meta.config[name + ':disableEdit'] && !userData.isAdmin) {
+	if (meta.config[`${name}:disableEdit`] && !userData.isAdmin) {
 		return helpers.notAllowed(req, res);
 	}
 
@@ -95,22 +95,22 @@ async function renderRoute(name, req, res, next) {
 		userData.minimumPasswordStrength = meta.config.minimumPasswordStrength;
 	}
 
-	userData.title = '[[pages:account/edit/' + name + ', ' + userData.username + ']]';
+	userData.title = `[[pages:account/edit/${name}, ${userData.username}]]`;
 	userData.breadcrumbs = helpers.buildBreadcrumbs([
 		{
 			text: userData.username,
-			url: '/user/' + userData.userslug,
+			url: `/user/${userData.userslug}`,
 		},
 		{
 			text: '[[user:edit]]',
-			url: '/user/' + userData.userslug + '/edit',
+			url: `/user/${userData.userslug}/edit`,
 		},
 		{
-			text: '[[user:' + name + ']]',
+			text: `[[user:${name}]]`,
 		},
 	]);
 
-	res.render('account/edit/' + name, userData);
+	res.render(`account/edit/${name}`, userData);
 }
 
 async function getUserData(req) {

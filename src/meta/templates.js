@@ -38,7 +38,7 @@ async function processImports(paths, templatePath, source) {
 		return await processImports(paths, templatePath, source);
 	}
 
-	winston.warn('[meta/templates] Partial not loaded: ' + matches[1]);
+	winston.warn(`[meta/templates] Partial not loaded: ${matches[1]}`);
 	source = source.replace(regex, '');
 
 	return await processImports(paths, templatePath, source);

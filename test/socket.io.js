@@ -55,13 +55,13 @@ describe('socket.io', function () {
 
 	it('should connect and auth properly', function (done) {
 		request.get({
-			url: nconf.get('url') + '/api/config',
+			url: `${nconf.get('url')}/api/config`,
 			jar: cookies,
 			json: true,
 		}, function (err, res, body) {
 			assert.ifError(err);
 
-			request.post(nconf.get('url') + '/login', {
+			request.post(`${nconf.get('url')}/login`, {
 				jar: cookies,
 				form: {
 					username: 'admin',

@@ -10,7 +10,7 @@ if (!databaseName) {
 	process.exit();
 }
 
-const primaryDB = require('./' + databaseName);
+const primaryDB = require(`./${databaseName}`);
 
 primaryDB.parseIntFields = function (data, intFields, requestedFields) {
 	intFields.forEach((field) => {
@@ -25,7 +25,7 @@ primaryDB.initSessionStore = async function () {
 	let sessionStoreDB = primaryDB;
 
 	if (nconf.get('session_store')) {
-		sessionStoreDB = require('./' + sessionStoreConfig.name);
+		sessionStoreDB = require(`./${sessionStoreConfig.name}`);
 	} else if (nconf.get('redis')) {
 		// if redis is specified, use it as session store over others
 		sessionStoreDB = require('./redis');

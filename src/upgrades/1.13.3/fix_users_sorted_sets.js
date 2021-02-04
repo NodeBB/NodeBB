@@ -27,7 +27,7 @@ module.exports = {
 
 		await batch.processArray(allUids, async function (uids) {
 			progress.incr(uids.length);
-			const userData = await db.getObjects(uids.map(id => 'user:' + id));
+			const userData = await db.getObjects(uids.map(id => `user:${id}`));
 
 			await Promise.all(userData.map(async function (userData, index) {
 				if (!userData || !userData.uid) {
@@ -38,7 +38,7 @@ module.exports = {
 						'users:flags',
 					], uids[index]);
 					if (userData && !userData.uid) {
-						await db.delete('user:' + uids[index]);
+						await db.delete(`user:${uids[index]}`);
 					}
 					return;
 				}

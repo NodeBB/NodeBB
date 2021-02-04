@@ -15,7 +15,7 @@ module.exports = {
 			async.eachSeries(eids, function (eid, next) {
 				progress.incr();
 
-				db.getObject('event:' + eid, function (err, eventData) {
+				db.getObject(`event:${eid}`, function (err, eventData) {
 					if (err) {
 						return next(err);
 					}
@@ -27,16 +27,16 @@ module.exports = {
 						eventData.type = 'privilege-change';
 						async.waterfall([
 							function (next) {
-								db.setObjectField('event:' + eid, 'type', 'privilege-change', next);
+								db.setObjectField(`event:${eid}`, 'type', 'privilege-change', next);
 							},
 							function (next) {
-								db.sortedSetAdd('events:time:' + eventData.type, eventData.timestamp, eid, next);
+								db.sortedSetAdd(`events:time:${eventData.type}`, eventData.timestamp, eid, next);
 							},
 						], next);
 						return;
 					}
 
-					db.sortedSetAdd('events:time:' + (eventData.type || ''), eventData.timestamp, eid, next);
+					db.sortedSetAdd(`events:time:${eventData.type || ''}`, eventData.timestamp, eid, next);
 				});
 			}, next);
 		}, {

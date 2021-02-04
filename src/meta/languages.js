@@ -61,7 +61,7 @@ async function getTranslationMetadata() {
 
 async function writeLanguageFile(language, namespace, translations) {
 	const dev = process.env.NODE_ENV === 'development';
-	const filePath = path.join(buildLanguagesPath, language, namespace + '.json');
+	const filePath = path.join(buildLanguagesPath, language, `${namespace}.json`);
 
 	await mkdirp(path.dirname(filePath));
 	await fs.promises.writeFile(filePath, JSON.stringify(translations, null, dev ? 2 : 0));
@@ -91,7 +91,7 @@ async function buildTranslations(ref) {
 async function buildNamespaceLanguage(lang, namespace, plugins) {
 	const translations = {};
 	// core first
-	await assignFileToTranslations(translations, path.join(coreLanguagesPath, lang, namespace + '.json'));
+	await assignFileToTranslations(translations, path.join(coreLanguagesPath, lang, `${namespace}.json`));
 
 	await Promise.all(plugins.map(pluginData => addPlugin(translations, pluginData, lang, namespace)));
 
@@ -118,7 +118,7 @@ async function addPlugin(translations, pluginData, lang, namespace) {
 
 	for (const language of langs) {
 		/* eslint-disable no-await-in-loop */
-		await assignFileToTranslations(translations, path.join(pluginLanguages, language, namespace + '.json'));
+		await assignFileToTranslations(translations, path.join(pluginLanguages, language, `${namespace}.json`));
 	}
 }
 

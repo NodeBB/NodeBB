@@ -102,7 +102,7 @@ describe('helpers', function () {
 			],
 		};
 		var html = helpers.generateChildrenCategories(category);
-		assert.equal(html, '<span class="category-children"><span class="category-children-item pull-left"><div role="presentation" class="icon pull-left" style="background-color: #ff0000; color: #00ff00;"><i class="fa fa-fw undefined"></i></div><a href="' + nconf.get('relative_path') + '/category/undefined"><small>children</small></a></span></span>');
+		assert.equal(html, `<span class="category-children"><span class="category-children-item pull-left"><div role="presentation" class="icon pull-left" style="background-color: #ff0000; color: #00ff00;"><i class="fa fa-fw undefined"></i></div><a href="${nconf.get('relative_path')}/category/undefined"><small>children</small></a></span></span>`);
 		done();
 	});
 
@@ -155,42 +155,42 @@ describe('helpers', function () {
 	it('should render thumb as topic image', function (done) {
 		var topicObj = { thumb: '/uploads/1.png', user: { username: 'baris' } };
 		var html = helpers.renderTopicImage(topicObj);
-		assert.equal(html, '<img src="' + topicObj.thumb + '" class="img-circle user-img" title="' + topicObj.user.username + '" />');
+		assert.equal(html, `<img src="${topicObj.thumb}" class="img-circle user-img" title="${topicObj.user.username}" />`);
 		done();
 	});
 
 	it('should render user picture as topic image', function (done) {
 		var topicObj = { thumb: '', user: { uid: 1, username: 'baris', picture: '/uploads/2.png' } };
 		var html = helpers.renderTopicImage(topicObj);
-		assert.equal(html, '<img component="user/picture" data-uid="' + topicObj.user.uid + '" src="' + topicObj.user.picture + '" class="user-img" title="' + topicObj.user.username + '" />');
+		assert.equal(html, `<img component="user/picture" data-uid="${topicObj.user.uid}" src="${topicObj.user.picture}" class="user-img" title="${topicObj.user.username}" />`);
 		done();
 	});
 
 	it('should render digest avatar', function (done) {
 		var block = { teaser: { user: { username: 'baris', picture: '/uploads/1.png' } } };
 		var html = helpers.renderDigestAvatar(block);
-		assert.equal(html, '<img style="vertical-align: middle; width: 32px; height: 32px; border-radius: 50%;" src="' + block.teaser.user.picture + '" title="' + block.teaser.user.username + '" />');
+		assert.equal(html, `<img style="vertical-align: middle; width: 32px; height: 32px; border-radius: 50%;" src="${block.teaser.user.picture}" title="${block.teaser.user.username}" />`);
 		done();
 	});
 
 	it('should render digest avatar', function (done) {
 		var block = { teaser: { user: { username: 'baris', 'icon:text': 'B', 'icon:bgColor': '#ff000' } } };
 		var html = helpers.renderDigestAvatar(block);
-		assert.equal(html, '<div style="vertical-align: middle; width: 32px; height: 32px; line-height: 32px; font-size: 16px; background-color: ' + block.teaser.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block; border-radius: 50%;">' + block.teaser.user['icon:text'] + '</div>');
+		assert.equal(html, `<div style="vertical-align: middle; width: 32px; height: 32px; line-height: 32px; font-size: 16px; background-color: ${block.teaser.user['icon:bgColor']}; color: white; text-align: center; display: inline-block; border-radius: 50%;">${block.teaser.user['icon:text']}</div>`);
 		done();
 	});
 
 	it('should render digest avatar', function (done) {
 		var block = { user: { username: 'baris', picture: '/uploads/1.png' } };
 		var html = helpers.renderDigestAvatar(block);
-		assert.equal(html, '<img style="vertical-align: middle; width: 32px; height: 32px; border-radius: 50%;" src="' + block.user.picture + '" title="' + block.user.username + '" />');
+		assert.equal(html, `<img style="vertical-align: middle; width: 32px; height: 32px; border-radius: 50%;" src="${block.user.picture}" title="${block.user.username}" />`);
 		done();
 	});
 
 	it('should render digest avatar', function (done) {
 		var block = { user: { username: 'baris', 'icon:text': 'B', 'icon:bgColor': '#ff000' } };
 		var html = helpers.renderDigestAvatar(block);
-		assert.equal(html, '<div style="vertical-align: middle; width: 32px; height: 32px; line-height: 32px; font-size: 16px; background-color: ' + block.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block; border-radius: 50%;">' + block.user['icon:text'] + '</div>');
+		assert.equal(html, `<div style="vertical-align: middle; width: 32px; height: 32px; line-height: 32px; font-size: 16px; background-color: ${block.user['icon:bgColor']}; color: white; text-align: center; display: inline-block; border-radius: 50%;">${block.user['icon:text']}</div>`);
 		done();
 	});
 

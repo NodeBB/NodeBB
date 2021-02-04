@@ -68,7 +68,7 @@ middleware.renderHeader = async (req, res, data) => {
 		scripts: results.scripts,
 		'cache-buster': meta.config['cache-buster'] || '',
 		env: !!process.env.NODE_ENV,
-		title: (acpPath || 'Dashboard') + ' | NodeBB Admin Control Panel',
+		title: `${acpPath || 'Dashboard'} | NodeBB Admin Control Panel`,
 		bodyClass: data.bodyClass,
 		version: version,
 		latestVersion: results.latestVersion,
@@ -100,7 +100,7 @@ async function getLatestVersion() {
 		const result = await versions.getLatestVersion();
 		return result;
 	} catch (err) {
-		winston.error('[acp] Failed to fetch latest version' + err.stack);
+		winston.error(`[acp] Failed to fetch latest version${err.stack}`);
 	}
 	return null;
 }
@@ -151,7 +151,7 @@ middleware.checkPrivileges = helpers.try(async (req, res, next) => {
 
 	let returnTo = req.path;
 	if (nconf.get('relative_path')) {
-		returnTo = req.path.replace(new RegExp('^' + nconf.get('relative_path')), '');
+		returnTo = req.path.replace(new RegExp(`^${nconf.get('relative_path')}`), '');
 	}
 	returnTo = returnTo.replace(/^\/api/, '');
 
@@ -166,6 +166,6 @@ middleware.checkPrivileges = helpers.try(async (req, res, next) => {
 	if (res.locals.isAPI) {
 		res.status(401).json({});
 	} else {
-		res.redirect(nconf.get('relative_path') + '/login?local=1');
+		res.redirect(`${nconf.get('relative_path')}/login?local=1`);
 	}
 });

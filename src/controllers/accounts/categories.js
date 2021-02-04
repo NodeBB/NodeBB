@@ -34,9 +34,9 @@ categoriesController.get = async function (req, res, next) {
 		}
 	});
 	userData.categories = categoriesData;
-	userData.title = '[[pages:account/watched_categories, ' + userData.username + ']]';
+	userData.title = `[[pages:account/watched_categories, ${userData.username}]]`;
 	userData.breadcrumbs = helpers.buildBreadcrumbs([
-		{ text: userData.username, url: '/user/' + userData.userslug },
+		{ text: userData.username, url: `/user/${userData.userslug}` },
 		{ text: '[[pages:categories]]' },
 	]);
 	userData.pagination = pagination.create(page, pageCount, req.query);

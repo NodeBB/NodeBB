@@ -12,7 +12,7 @@ module.exports = function (module) {
 			return await sortedSetAddBulk(key, score, value);
 		}
 		if (!utils.isNumber(score)) {
-			throw new Error('[[error:invalid-score, ' + score + ']]');
+			throw new Error(`[[error:invalid-score, ${score}]]`);
 		}
 		value = helpers.valueToString(value);
 
@@ -35,7 +35,7 @@ module.exports = function (module) {
 		}
 		for (let i = 0; i < scores.length; i += 1) {
 			if (!utils.isNumber(scores[i])) {
-				throw new Error('[[error:invalid-score, ' + scores[i] + ']]');
+				throw new Error(`[[error:invalid-score, ${scores[i]}]]`);
 			}
 		}
 		values = values.map(helpers.valueToString);
@@ -54,7 +54,7 @@ module.exports = function (module) {
 		const isArrayOfScores = Array.isArray(scores);
 		if ((!isArrayOfScores && !utils.isNumber(scores)) ||
 			(isArrayOfScores && scores.map(s => utils.isNumber(s)).includes(false))) {
-			throw new Error('[[error:invalid-score, ' + scores + ']]');
+			throw new Error(`[[error:invalid-score, ${scores}]]`);
 		}
 
 		if (isArrayOfScores && scores.length !== keys.length) {
@@ -77,7 +77,7 @@ module.exports = function (module) {
 		var bulk = module.client.collection('objects').initializeUnorderedBulkOp();
 		data.forEach(function (item) {
 			if (!utils.isNumber(item[1])) {
-				throw new Error('[[error:invalid-score, ' + item[1] + ']]');
+				throw new Error(`[[error:invalid-score, ${item[1]}]]`);
 			}
 			bulk.find({ _key: item[0], value: String(item[2]) }).upsert().updateOne({ $set: { score: parseFloat(item[1]) } });
 		});

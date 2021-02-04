@@ -83,7 +83,7 @@ redisModule.info = async function (cxn) {
 		}
 	});
 
-	const keyInfo = redisData['db' + nconf.get('redis:database')];
+	const keyInfo = redisData[`db${nconf.get('redis:database')}`];
 	if (keyInfo) {
 		const split = keyInfo.split(',');
 		redisData.keys = (split[0] || '').replace('keys=', '');
@@ -108,7 +108,7 @@ redisModule.socketAdapter = async function () {
 	const pub = await connection.connect(nconf.get('redis'));
 	const sub = await connection.connect(nconf.get('redis'));
 	return redisAdapter({
-		key: 'db:' + nconf.get('redis:database') + ':adapter_key',
+		key: `db:${nconf.get('redis:database')}:adapter_key`,
 		pubClient: pub,
 		subClient: sub,
 	});

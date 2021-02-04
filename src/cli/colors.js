@@ -18,18 +18,18 @@ Command.prototype.helpInformation = function () {
 	var desc = [];
 	if (this._description) {
 		desc = [
-			'  ' + this._description,
+			`  ${this._description}`,
 			'',
 		];
 	}
 
 	var cmdName = this._name;
 	if (this._alias) {
-		cmdName = cmdName + ' | ' + this._alias;
+		cmdName = `${cmdName} | ${this._alias}`;
 	}
 	var usage = [
 		'',
-		'  Usage: ' + cmdName[commandColor] + ' '.reset + this.usage(),
+		`  Usage: ${cmdName[commandColor]}${' '.reset}${this.usage()}`,
 		'',
 	];
 
@@ -43,7 +43,7 @@ Command.prototype.helpInformation = function () {
 		'',
 		'  Options:',
 		'',
-		'' + this.optionHelp().replace(/^/gm, '    '),
+		`${this.optionHelp().replace(/^/gm, '    ')}`,
 		'',
 	];
 
@@ -57,7 +57,7 @@ Command.prototype.helpInformation = function () {
 function humanReadableArgName(arg) {
 	var nameOutput = arg.name + (arg.variadic === true ? '...' : '');
 
-	return arg.required ? '<' + nameOutput + '>' : '[' + nameOutput + ']';
+	return arg.required ? `<${nameOutput}>` : `[${nameOutput}]`;
 }
 
 Command.prototype.usage = function () {
@@ -67,7 +67,7 @@ Command.prototype.usage = function () {
 
 	var usage = '[options]'[optionColor] +
 		(this.commands.length ? ' [command]' : '')[subCommandColor] +
-		(this._args.length ? ' ' + args.join(' ') : '')[argColor];
+		(this._args.length ? ` ${args.join(' ')}` : '')[argColor];
 
 	return usage;
 };
@@ -90,10 +90,10 @@ Command.prototype.commandHelp = function () {
 		}).join(' ');
 
 		return [
-			cmd._name[subCommandColor] +
-				(cmd._alias ? ' | ' + cmd._alias : '')[subCommandColor] +
-				(cmd.options.length ? ' [options]' : '')[subOptionColor] +
-				' ' + args[subArgColor],
+			`${cmd._name[subCommandColor] +
+				(cmd._alias ? ` | ${cmd._alias}` : '')[subCommandColor] +
+				(cmd.options.length ? ' [options]' : '')[subOptionColor]
+			} ${args[subArgColor]}`,
 			cmd._description,
 		];
 	});
@@ -107,7 +107,7 @@ Command.prototype.commandHelp = function () {
 		'  Commands:',
 		'',
 		commands.map(function (cmd) {
-			var desc = cmd[1] ? '  ' + cmd[1] : '';
+			var desc = cmd[1] ? `  ${cmd[1]}` : '';
 			return pad(cmd[0], width) + desc;
 		}).join('\n').replace(/^/gm, '    '),
 		'',
@@ -120,8 +120,8 @@ Command.prototype.optionHelp = function () {
 	// Append the help information
 	return this.options
 		.map(function (option) {
-			return pad(option.flags, width)[optionColor] + '  ' + option.description;
+			return `${pad(option.flags, width)[optionColor]}  ${option.description}`;
 		})
-		.concat([pad('-h, --help', width)[optionColor] + '  output usage information'])
+		.concat([`${pad('-h, --help', width)[optionColor]}  output usage information`])
 		.join('\n');
 };

@@ -20,7 +20,7 @@ module.exports = function (Topics) {
 		if (!Array.isArray(tids) || !tids.length) {
 			return [];
 		}
-		const keys = tids.map(tid => 'topic:' + tid);
+		const keys = tids.map(tid => `topic:${tid}`);
 		const topics = await (fields.length ? db.getObjectsFields(keys, fields) : db.getObjects(keys));
 		const result = await plugins.hooks.fire('filter:topic.getFields', {
 			tids: tids,
@@ -57,19 +57,19 @@ module.exports = function (Topics) {
 	};
 
 	Topics.setTopicField = async function (tid, field, value) {
-		await db.setObjectField('topic:' + tid, field, value);
+		await db.setObjectField(`topic:${tid}`, field, value);
 	};
 
 	Topics.setTopicFields = async function (tid, data) {
-		await db.setObject('topic:' + tid, data);
+		await db.setObject(`topic:${tid}`, data);
 	};
 
 	Topics.deleteTopicField = async function (tid, field) {
-		await db.deleteObjectField('topic:' + tid, field);
+		await db.deleteObjectField(`topic:${tid}`, field);
 	};
 
 	Topics.deleteTopicFields = async function (tid, fields) {
-		await db.deleteObjectFields('topic:' + tid, fields);
+		await db.deleteObjectFields(`topic:${tid}`, fields);
 	};
 };
 

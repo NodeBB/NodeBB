@@ -40,12 +40,12 @@ module.exports = function (opts) {
 		if (!Array.isArray(keys)) {
 			keys = [keys];
 		}
-		pubsub.publish(cache.name + ':cache:del', keys);
+		pubsub.publish(`${cache.name}:cache:del`, keys);
 		keys.forEach(key => cacheDel.apply(cache, [key]));
 	};
 
 	cache.reset = function () {
-		pubsub.publish(cache.name + ':cache:reset');
+		pubsub.publish(`${cache.name}:cache:reset`);
 		localReset();
 	};
 
@@ -55,11 +55,11 @@ module.exports = function (opts) {
 		cache.misses = 0;
 	}
 
-	pubsub.on(cache.name + ':cache:reset', function () {
+	pubsub.on(`${cache.name}:cache:reset`, function () {
 		localReset();
 	});
 
-	pubsub.on(cache.name + ':cache:del', function (keys) {
+	pubsub.on(`${cache.name}:cache:del`, function (keys) {
 		if (Array.isArray(keys)) {
 			keys.forEach(key => cacheDel.apply(cache, [key]));
 		}

@@ -9,7 +9,7 @@ var utils = require('../src/utils');
 var file = require('../src/file');
 
 describe('file', function () {
-	var filename = utils.generateUUID() + '.png';
+	var filename = `${utils.generateUUID()}.png`;
 	var folder = 'files';
 	var uploadPath = path.join(nconf.get('upload_path'), folder, filename);
 	var tempPath = path.join(__dirname, './files/test.png');
@@ -52,7 +52,7 @@ describe('file', function () {
 		});
 
 		it('should error if source file does not exist', function (done) {
-			fs.copyFile(tempPath + '0000000000', uploadPath, function (err) {
+			fs.copyFile(`${tempPath}0000000000`, uploadPath, function (err) {
 				assert(err);
 				assert.strictEqual(err.code, 'ENOENT');
 
@@ -89,7 +89,7 @@ describe('file', function () {
 		});
 
 		it('should error if source does not exist', function (done) {
-			file.saveFileToLocal(filename, folder, tempPath + '000000000', function (err) {
+			file.saveFileToLocal(filename, folder, `${tempPath}000000000`, function (err) {
 				assert(err);
 				assert.strictEqual(err.code, 'ENOENT');
 
@@ -98,7 +98,7 @@ describe('file', function () {
 		});
 
 		it('should error if folder is relative', function (done) {
-			file.saveFileToLocal(filename, '../../text', tempPath + '000000000', function (err) {
+			file.saveFileToLocal(filename, '../../text', `${tempPath}000000000`, function (err) {
 				assert(err);
 				assert.strictEqual(err.message, '[[error:invalid-path]]');
 				done();

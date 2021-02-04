@@ -111,7 +111,6 @@
 		"prefer-rest-params": "off",
 		"prefer-spread": "off",
 		"prefer-arrow-callback": "off",
-		"prefer-template": "off",
 		"no-var": "off",
 		"vars-on-top": "off",
 

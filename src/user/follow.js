@@ -33,8 +33,8 @@ module.exports = function (User) {
 			const now = Date.now();
 			await Promise.all([
 				db.sortedSetAddBulk([
-					['following:' + uid, now, theiruid],
-					['followers:' + theiruid, now, uid],
+					[`following:${uid}`, now, theiruid],
+					[`followers:${theiruid}`, now, uid],
 				]),
 			]);
 		} else {
@@ -43,15 +43,15 @@ module.exports = function (User) {
 			}
 			await Promise.all([
 				db.sortedSetRemoveBulk([
-					['following:' + uid, theiruid],
-					['followers:' + theiruid, uid],
+					[`following:${uid}`, theiruid],
+					[`followers:${theiruid}`, uid],
 				]),
 			]);
 		}
 
 		const [followingCount, followerCount] = await Promise.all([
-			db.sortedSetCard('following:' + uid),
-			db.sortedSetCard('followers:' + theiruid),
+			db.sortedSetCard(`following:${uid}`),
+			db.sortedSetCard(`followers:${theiruid}`),
 		]);
 		await Promise.all([
 			User.setUserField(uid, 'followingCount', followingCount),
@@ -71,8 +71,8 @@ module.exports = function (User) {
 		if (parseInt(uid, 10) <= 0) {
 			return [];
 		}
-		const uids = await db.getSortedSetRevRange(type + ':' + uid, start, stop);
-		const data = await plugins.hooks.fire('filter:user.' + type, {
+		const uids = await db.getSortedSetRevRange(`${type}:${uid}`, start, stop);
+		const data = await plugins.hooks.fire(`filter:user.${type}`, {
 			uids: uids,
 			uid: uid,
 			start: start,
@@ -85,6 +85,6 @@ module.exports = function (User) {
 		if (parseInt(uid, 10) <= 0 || parseInt(theirid, 10) <= 0) {
 			return false;
 		}
-		return await db.isSortedSetMember('following:' + uid, theirid);
+		return await db.isSortedSetMember(`following:${uid}`, theirid);
 	};
 };

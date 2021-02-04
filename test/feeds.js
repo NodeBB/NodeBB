@@ -49,17 +49,17 @@ describe('feeds', function () {
 
 	it('should 404', function (done) {
 		var feedUrls = [
-			nconf.get('url') + '/topic/' + tid + '.rss',
-			nconf.get('url') + '/category/' + cid + '.rss',
-			nconf.get('url') + '/topics.rss',
-			nconf.get('url') + '/recent.rss',
-			nconf.get('url') + '/top.rss',
-			nconf.get('url') + '/popular.rss',
-			nconf.get('url') + '/popular/day.rss',
-			nconf.get('url') + '/recentposts.rss',
-			nconf.get('url') + '/category/' + cid + '/recentposts.rss',
-			nconf.get('url') + '/user/foo/topics.rss',
-			nconf.get('url') + '/tags/nodebb.rss',
+			`${nconf.get('url')}/topic/${tid}.rss`,
+			`${nconf.get('url')}/category/${cid}.rss`,
+			`${nconf.get('url')}/topics.rss`,
+			`${nconf.get('url')}/recent.rss`,
+			`${nconf.get('url')}/top.rss`,
+			`${nconf.get('url')}/popular.rss`,
+			`${nconf.get('url')}/popular/day.rss`,
+			`${nconf.get('url')}/recentposts.rss`,
+			`${nconf.get('url')}/category/${cid}/recentposts.rss`,
+			`${nconf.get('url')}/user/foo/topics.rss`,
+			`${nconf.get('url')}/tags/nodebb.rss`,
 		];
 		async.eachSeries(feedUrls, function (url, next) {
 			request(url, function (err, res) {
@@ -75,7 +75,7 @@ describe('feeds', function () {
 	});
 
 	it('should 404 if topic does not exist', function (done) {
-		request(nconf.get('url') + '/topic/' + 1000 + '.rss', function (err, res) {
+		request(`${nconf.get('url')}/topic/${1000}.rss`, function (err, res) {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 404);
 			done();
@@ -83,7 +83,7 @@ describe('feeds', function () {
 	});
 
 	it('should 404 if category id is not a number', function (done) {
-		request(nconf.get('url') + '/category/invalid.rss', function (err, res) {
+		request(`${nconf.get('url')}/category/invalid.rss`, function (err, res) {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 404);
 			done();
@@ -93,7 +93,7 @@ describe('feeds', function () {
 	it('should redirect if we do not have read privilege', function (done) {
 		privileges.categories.rescind(['groups:topics:read'], cid, 'guests', function (err) {
 			assert.ifError(err);
-			request(nconf.get('url') + '/topic/' + tid + '.rss', function (err, res, body) {
+			request(`${nconf.get('url')}/topic/${tid}.rss`, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -104,7 +104,7 @@ describe('feeds', function () {
 	});
 
 	it('should 404 if user is not found', function (done) {
-		request(nconf.get('url') + '/user/doesnotexist/topics.rss', function (err, res) {
+		request(`${nconf.get('url')}/user/doesnotexist/topics.rss`, function (err, res) {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 404);
 			done();
@@ -114,7 +114,7 @@ describe('feeds', function () {
 	it('should redirect if we do not have read privilege', function (done) {
 		privileges.categories.rescind(['groups:read'], cid, 'guests', function (err) {
 			assert.ifError(err);
-			request(nconf.get('url') + '/category/' + cid + '.rss', function (err, res, body) {
+			request(`${nconf.get('url')}/category/${cid}.rss`, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -136,7 +136,7 @@ describe('feeds', function () {
 		});
 
 		it('should load feed if its not private', function (done) {
-			request(nconf.get('url') + '/category/' + cid + '.rss', { }, function (err, res, body) {
+			request(`${nconf.get('url')}/category/${cid}.rss`, { }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -150,10 +150,10 @@ describe('feeds', function () {
 				assert.ifError(err);
 				async.parallel({
 					test1: function (next) {
-						request(nconf.get('url') + '/category/' + cid + '.rss?uid=' + fooUid, { }, next);
+						request(`${nconf.get('url')}/category/${cid}.rss?uid=${fooUid}`, { }, next);
 					},
 					test2: function (next) {
-						request(nconf.get('url') + '/category/' + cid + '.rss?token=sometoken', { }, next);
+						request(`${nconf.get('url')}/category/${cid}.rss?token=sometoken`, { }, next);
 					},
 				}, function (err, results) {
 					assert.ifError(err);
@@ -167,7 +167,7 @@ describe('feeds', function () {
 		});
 
 		it('should not allow access if token is wrong', function (done) {
-			request(nconf.get('url') + '/category/' + cid + '.rss?uid=' + fooUid + '&token=sometoken', { }, function (err, res, body) {
+			request(`${nconf.get('url')}/category/${cid}.rss?uid=${fooUid}&token=sometoken`, { }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body.includes('Login to your account'));
@@ -176,10 +176,10 @@ describe('feeds', function () {
 		});
 
 		it('should allow access if token is correct', function (done) {
-			request(nconf.get('url') + '/api/category/' + cid, { jar: jar, json: true }, function (err, res, body) {
+			request(`${nconf.get('url')}/api/category/${cid}`, { jar: jar, json: true }, function (err, res, body) {
 				assert.ifError(err);
 				rssToken = body.rssFeedUrl.split('token')[1].slice(1);
-				request(nconf.get('url') + '/category/' + cid + '.rss?uid=' + fooUid + '&token=' + rssToken, { }, function (err, res, body) {
+				request(`${nconf.get('url')}/category/${cid}.rss?uid=${fooUid}&token=${rssToken}`, { }, function (err, res, body) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 					assert(body.startsWith('<?xml version="1.0"'));
@@ -191,7 +191,7 @@ describe('feeds', function () {
 		it('should not allow access if token is correct but has no privilege', function (done) {
 			privileges.categories.rescind(['groups:read'], cid, 'registered-users', function (err) {
 				assert.ifError(err);
-				request(nconf.get('url') + '/category/' + cid + '.rss?uid=' + fooUid + '&token=' + rssToken, { }, function (err, res, body) {
+				request(`${nconf.get('url')}/category/${cid}.rss?uid=${fooUid}&token=${rssToken}`, { }, function (err, res, body) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 					assert(body.includes('Login to your account'));

@@ -21,7 +21,7 @@ function debugFork(modulePath, args, options) {
 	if (global.v8debug || debugging) {
 		lastAddress += 1;
 
-		execArgv = [debugArg[0] + '=' + lastAddress, '--nolazy'];
+		execArgv = [`${debugArg[0]}=${lastAddress}`, '--nolazy'];
 	}
 
 	if (!Array.isArray(args)) {

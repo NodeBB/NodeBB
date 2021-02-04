@@ -692,7 +692,7 @@ describe('Groups', function () {
 						assert.ifError(err);
 						User.getUserData(uid, function (err, data) {
 							assert.ifError(err);
-							assert.equal(data.groupTitle, '["' + groupName + '"]');
+							assert.equal(data.groupTitle, `["${groupName}"]`);
 							assert.deepEqual(data.groupTitleArray, [groupName]);
 							done();
 						});

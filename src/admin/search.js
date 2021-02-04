@@ -59,13 +59,13 @@ function nsToTitle(namespace) {
 const fallbackCache = {};
 
 async function initFallback(namespace) {
-	const template = await fs.promises.readFile(path.resolve(nconf.get('views_dir'), namespace + '.tpl'), 'utf8');
+	const template = await fs.promises.readFile(path.resolve(nconf.get('views_dir'), `${namespace}.tpl`), 'utf8');
 
 	var title = nsToTitle(namespace);
 	var translations = sanitize(template);
 	translations = Translator.removePatterns(translations);
 	translations = simplify(translations);
-	translations += '\n' + title;
+	translations += `\n${title}`;
 
 	return {
 		namespace: namespace,
@@ -107,16 +107,16 @@ async function buildNamespace(language, namespace) {
 			title = '[[admin/menu:dashboard]]';
 		} else {
 			title = title.match(/admin\/(.+?)\/(.+?)$/);
-			title = '[[admin/menu:section-' +
-				(title[1] === 'development' ? 'advanced' : title[1]) +
-				']]' + (title[2] ? (' > [[admin/menu:' +
-				title[1] + '/' + title[2] + ']]') : '');
+			title = `[[admin/menu:section-${
+				title[1] === 'development' ? 'advanced' : title[1]
+			}]]${title[2] ? (` > [[admin/menu:${
+				title[1]}/${title[2]}]]`) : ''}`;
 		}
 
 		title = await translator.translate(title);
 		return {
 			namespace: namespace,
-			translations: str + '\n' + title,
+			translations: `${str}\n${title}`,
 			title: title,
 		};
 	} catch (err) {

@@ -27,8 +27,8 @@ const formats = [
 ];
 
 const timestampFormat = winston.format((info) => {
-	var dateString = new Date().toISOString() + ' [' + global.process.pid + ']';
-	info.level = dateString + ' - ' + info.level;
+	var dateString = `${new Date().toISOString()} [${global.process.pid}]`;
+	info.level = `${dateString} - ${info.level}`;
 	return info;
 });
 formats.push(timestampFormat());
@@ -69,7 +69,7 @@ const viewsDir = path.join(paths.baseDir, 'build/public/templates');
 
 web.install = async function (port) {
 	port = port || 4567;
-	winston.info('Launching web installer on port ' + port);
+	winston.info(`Launching web installer on port ${port}`);
 
 	app.use(express.static('public', {}));
 	app.engine('tpl', function (filepath, options, callback) {
@@ -119,7 +119,7 @@ function ping(req, res) {
 function welcome(req, res) {
 	var dbs = ['redis', 'mongo', 'postgres'];
 	var databases = dbs.map(function (databaseName) {
-		var questions = require('../src/database/' + databaseName).questions.filter(function (question) {
+		var questions = require(`../src/database/${databaseName}`).questions.filter(function (question) {
 			return question && !question.hideOnWebInstall;
 		});
 
@@ -132,7 +132,7 @@ function welcome(req, res) {
 	var defaults = require('./data/defaults');
 
 	res.render('install/index', {
-		url: nconf.get('url') || (req.protocol + '://' + req.get('host')),
+		url: nconf.get('url') || (`${req.protocol}://${req.get('host')}`),
 		launchUrl: launchUrl,
 		skipGeneralSetup: !!nconf.get('url'),
 		databases: databases,
@@ -161,7 +161,7 @@ function install(req, res) {
 
 	// Flatten any objects in setupEnvVars
 	const pushToRoot = function (parentKey, key) {
-		setupEnvVars[parentKey + '__' + key] = setupEnvVars[parentKey][key];
+		setupEnvVars[`${parentKey}__${key}`] = setupEnvVars[parentKey][key];
 	};
 	for (var j in setupEnvVars) {
 		if (setupEnvVars.hasOwnProperty(j) && typeof setupEnvVars[j] === 'object' && setupEnvVars[j] !== null && !Array.isArray(setupEnvVars[j])) {
@@ -258,7 +258,7 @@ async function compileLess() {
 		const css = await lessRenderAsync(style, { filename: path.resolve(installSrc) });
 		await fs.promises.writeFile(path.join(__dirname, '../public/installer.css'), css.css);
 	} catch (err) {
-		winston.error('Unable to compile LESS: \n' + err.stack);
+		winston.error(`Unable to compile LESS: \n${err.stack}`);
 		throw err;
 	}
 }

@@ -53,22 +53,22 @@ module.exports = function (grunt) {
 			}
 		}
 
-		const styleUpdated_Client = plugins.map(p => 'node_modules/' + p + '/*.less')
-			.concat(plugins.map(p => 'node_modules/' + p + '/*.css'))
-			.concat(plugins.map(p => 'node_modules/' + p + '/+(public|static|less)/**/*.less'))
-			.concat(plugins.map(p => 'node_modules/' + p + '/+(public|static)/**/*.css'));
+		const styleUpdated_Client = plugins.map(p => `node_modules/${p}/*.less`)
+			.concat(plugins.map(p => `node_modules/${p}/*.css`))
+			.concat(plugins.map(p => `node_modules/${p}/+(public|static|less)/**/*.less`))
+			.concat(plugins.map(p => `node_modules/${p}/+(public|static)/**/*.css`));
 
-		const styleUpdated_Admin = plugins.map(p => 'node_modules/' + p + '/*.less')
-			.concat(plugins.map(p => 'node_modules/' + p + '/*.css'))
-			.concat(plugins.map(p => 'node_modules/' + p + '/+(public|static|less)/**/*.less'))
-			.concat(plugins.map(p => 'node_modules/' + p + '/+(public|static)/**/*.css'));
+		const styleUpdated_Admin = plugins.map(p => `node_modules/${p}/*.less`)
+			.concat(plugins.map(p => `node_modules/${p}/*.css`))
+			.concat(plugins.map(p => `node_modules/${p}/+(public|static|less)/**/*.less`))
+			.concat(plugins.map(p => `node_modules/${p}/+(public|static)/**/*.css`));
 
-		const clientUpdated = plugins.map(p => 'node_modules/' + p + '/+(public|static)/**/*.js');
-		const serverUpdated = plugins.map(p => 'node_modules/' + p + '/*.js')
-			.concat(plugins.map(p => 'node_modules/' + p + '/+(lib|src)/**/*.js'));
+		const clientUpdated = plugins.map(p => `node_modules/${p}/+(public|static)/**/*.js`);
+		const serverUpdated = plugins.map(p => `node_modules/${p}/*.js`)
+			.concat(plugins.map(p => `node_modules/${p}/+(lib|src)/**/*.js`));
 
-		const templatesUpdated = plugins.map(p => 'node_modules/' + p + '/+(public|static|templates)/**/*.tpl');
-		const langUpdated = plugins.map(p => 'node_modules/' + p + '/+(public|static|languages)/**/*.json');
+		const templatesUpdated = plugins.map(p => `node_modules/${p}/+(public|static|templates)/**/*.tpl`);
+		const langUpdated = plugins.map(p => `node_modules/${p}/+(public|static|languages)/**/*.json`);
 
 		grunt.config(['watch'], {
 			styleUpdated_Client: {
@@ -202,7 +202,7 @@ function addBaseThemes(plugins) {
 	let baseTheme;
 	do {
 		try {
-			baseTheme = require(themeId + '/theme').baseTheme;
+			baseTheme = require(`${themeId}/theme`).baseTheme;
 		} catch (err) {
 			console.log(err);
 		}

@@ -45,11 +45,11 @@ module.exports = function (Topics) {
 				tids = await Topics.filterWatchedTids(tids, params.uid);
 			}
 		} else if (params.filter === 'watched') {
-			tids = await db.getSortedSetRevRange('uid:' + params.uid + ':followed_tids', 0, -1);
+			tids = await db.getSortedSetRevRange(`uid:${params.uid}:followed_tids`, 0, -1);
 		} else if (params.cids) {
 			tids = await getCidTids(params);
 		} else {
-			tids = await db.getSortedSetRevRange('topics:' + params.sort, 0, meta.config.recentMaxTopics - 1);
+			tids = await db.getSortedSetRevRange(`topics:${params.sort}`, 0, meta.config.recentMaxTopics - 1);
 		}
 
 		return tids;
@@ -60,11 +60,11 @@ module.exports = function (Topics) {
 		const pinnedSets = [];
 		params.cids.forEach(function (cid) {
 			if (params.sort === 'recent') {
-				sets.push('cid:' + cid + ':tids');
+				sets.push(`cid:${cid}:tids`);
 			} else {
-				sets.push('cid:' + cid + ':tids' + (params.sort ? ':' + params.sort : ''));
+				sets.push(`cid:${cid}:tids${params.sort ? `:${params.sort}` : ''}`);
 			}
-			pinnedSets.push('cid:' + cid + ':tids:pinned');
+			pinnedSets.push(`cid:${cid}:tids:pinned`);
 		});
 		let pinnedTids = await db.getSortedSetRevRange(pinnedSets, 0, -1);
 		pinnedTids = await Topics.tools.checkPinExpiry(pinnedTids);

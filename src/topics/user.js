@@ -13,6 +13,6 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getUids = async function (tid) {
-		return await db.getSortedSetRevRangeByScore('tid:' + tid + ':posters', 0, -1, '+inf', 1);
+		return await db.getSortedSetRevRangeByScore(`tid:${tid}:posters`, 0, -1, '+inf', 1);
 	};
 };

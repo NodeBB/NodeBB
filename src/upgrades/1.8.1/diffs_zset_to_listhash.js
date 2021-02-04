@@ -13,7 +13,7 @@ module.exports = {
 
 		batch.processSortedSet('posts:pid', function (pids, next) {
 			async.each(pids, function (pid, next) {
-				db.getSortedSetRangeWithScores('post:' + pid + ':diffs', 0, -1, function (err, diffs) {
+				db.getSortedSetRangeWithScores(`post:${pid}:diffs`, 0, -1, function (err, diffs) {
 					if (err) {
 						return next(err);
 					}
@@ -26,9 +26,9 @@ module.exports = {
 					// For each diff, push to list
 					async.each(diffs, function (diff, next) {
 						async.series([
-							async.apply(db.delete.bind(db), 'post:' + pid + ':diffs'),
-							async.apply(db.listPrepend.bind(db), 'post:' + pid + ':diffs', diff.score),
-							async.apply(db.setObject.bind(db), 'diff:' + pid + '.' + diff.score, {
+							async.apply(db.delete.bind(db), `post:${pid}:diffs`),
+							async.apply(db.listPrepend.bind(db), `post:${pid}:diffs`, diff.score),
+							async.apply(db.setObject.bind(db), `diff:${pid}.${diff.score}`, {
 								pid: pid,
 								patch: diff.value,
 							}),

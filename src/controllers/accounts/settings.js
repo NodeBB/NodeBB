@@ -116,7 +116,7 @@ settingsController.get = async function (req, res, next) {
 	userData.maxPostsPerPage = meta.config.maxPostsPerPage;
 
 	userData.title = '[[pages:account/settings]]';
-	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[user:settings]]' }]);
+	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: `/user/${userData.userslug}` }, { text: '[[user:settings]]' }]);
 
 	res.render('account/settings', userData);
 };
@@ -132,8 +132,8 @@ const doUnsubscribe = async (payload) => {
 			user.updateDigestSetting(payload.uid, 'off'),
 		]);
 	} else if (payload.template === 'notification') {
-		const current = await db.getObjectField('user:' + payload.uid + ':settings', 'notificationType_' + payload.type);
-		await user.setSetting(payload.uid, 'notificationType_' + payload.type, (current === 'notificationemail' ? 'notification' : 'none'));
+		const current = await db.getObjectField(`user:${payload.uid}:settings`, `notificationType_${payload.type}`);
+		await user.setSetting(payload.uid, `notificationType_${payload.type}`, (current === 'notificationemail' ? 'notification' : 'none'));
 	}
 	return true;
 };
@@ -173,7 +173,7 @@ settingsController.unsubscribePost = async function (req, res) {
 		await doUnsubscribe(payload);
 		res.sendStatus(200);
 	} catch (err) {
-		winston.error('[settings/unsubscribe] One-click unsubscribe failed with error: ' + err.message);
+		winston.error(`[settings/unsubscribe] One-click unsubscribe failed with error: ${err.message}`);
 		res.sendStatus(500);
 	}
 };
@@ -200,7 +200,7 @@ async function getNotificationSettings(userData) {
 		const setting = userData.settings[type];
 		return {
 			name: type,
-			label: '[[notifications:' + type + ']]',
+			label: `[[notifications:${type}]]`,
 			none: setting === 'none',
 			notification: setting === 'notification',
 			email: setting === 'email',

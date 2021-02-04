@@ -49,7 +49,7 @@ infoController.get = function (req, res) {
 pubsub.on('sync:node:info:start', async function () {
 	try {
 		const data = await getNodeInfo();
-		data.id = os.hostname() + ':' + nconf.get('port');
+		data.id = `${os.hostname()}:${nconf.get('port')}`;
 		pubsub.publish('sync:node:info:end', { data: data, id: data.id });
 	} catch (err) {
 		winston.error(err.stack);
@@ -107,13 +107,13 @@ async function getNodeInfo() {
 
 function humanReadableUptime(seconds) {
 	if (seconds < 60) {
-		return Math.floor(seconds) + 's';
+		return `${Math.floor(seconds)}s`;
 	} else if (seconds < 3600) {
-		return Math.floor(seconds / 60) + 'm';
+		return `${Math.floor(seconds / 60)}m`;
 	} else if (seconds < 3600 * 24) {
-		return Math.floor(seconds / (60 * 60)) + 'h';
+		return `${Math.floor(seconds / (60 * 60))}h`;
 	}
-	return Math.floor(seconds / (60 * 60 * 24)) + 'd';
+	return `${Math.floor(seconds / (60 * 60 * 24))}d`;
 }
 
 async function getGitInfo() {

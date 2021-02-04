@@ -52,7 +52,7 @@ middleware.applyCSRF = function (req, res, next) {
 };
 middleware.applyCSRFasync = util.promisify(middleware.applyCSRF);
 
-middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn(relative_path + '/login');
+middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn(`${relative_path}/login`);
 
 Object.assign(middleware, {
 	admin: require('./admin'),
@@ -159,7 +159,7 @@ middleware.privateUploads = function privateUploads(req, res, next) {
 		return next();
 	}
 
-	if (req.path.startsWith(nconf.get('relative_path') + '/assets/uploads/files')) {
+	if (req.path.startsWith(`${nconf.get('relative_path')}/assets/uploads/files`)) {
 		var extensions = (meta.config.privateUploadsExtensions || '').split(',').filter(Boolean);
 		var ext = path.extname(req.path);
 		ext = ext ? ext.replace(/^\./, '') : ext;
@@ -219,7 +219,7 @@ middleware.trimUploadTimestamps = function trimUploadTimestamps(req, res, next) 
 	let basename = path.basename(req.path);
 	if (req.path.startsWith('/uploads/files/') && middleware.regexes.timestampedUpload.test(basename)) {
 		basename = basename.slice(14);
-		res.header('Content-Disposition', 'inline; filename="' + basename + '"');
+		res.header('Content-Disposition', `inline; filename="${basename}"`);
 	}
 
 	next();
@@ -249,5 +249,5 @@ middleware.checkRequired = function (fields, req, res, next) {
 		return next();
 	}
 
-	controllers.helpers.formatApiResponse(400, res, new Error('Required parameters were missing from this API call: ' + missing.join(', ')));
+	controllers.helpers.formatApiResponse(400, res, new Error(`Required parameters were missing from this API call: ${missing.join(', ')}`));
 };

@@ -7,7 +7,7 @@ module.exports = function (module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return 0;
 		}
-		var tempSetName = 'temp_' + Date.now();
+		var tempSetName = `temp_${Date.now()}`;
 
 		var interParams = [tempSetName, keys.length].concat(keys);
 
@@ -35,7 +35,7 @@ module.exports = function (module) {
 		var stop = params.hasOwnProperty('stop') ? params.stop : -1;
 		var weights = params.weights || [];
 
-		var tempSetName = 'temp_' + Date.now();
+		var tempSetName = `temp_${Date.now()}`;
 
 		var interParams = [tempSetName, sets.length].concat(sets);
 		if (weights.length) {

@@ -4,7 +4,7 @@
 module.exports = function (module) {
 	const helpers = require('../helpers');
 	module.sortedSetUnionCard = async function (keys) {
-		var tempSetName = 'temp_' + Date.now();
+		var tempSetName = `temp_${Date.now()}`;
 		if (!keys.length) {
 			return 0;
 		}
@@ -31,7 +31,7 @@ module.exports = function (module) {
 			return [];
 		}
 
-		var tempSetName = 'temp_' + Date.now();
+		var tempSetName = `temp_${Date.now()}`;
 
 		var rangeParams = [tempSetName, params.start, params.stop];
 		if (params.withScores) {

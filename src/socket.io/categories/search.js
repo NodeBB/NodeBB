@@ -75,7 +75,7 @@ module.exports = function (SocketCategories) {
 			const categoryData = await categories.getCategoriesFields(cids, ['subCategoriesPerPage']);
 			const cidToData = _.zipObject(cids, categoryData);
 			await Promise.all(cids.map(async (cid) => {
-				const allChildCids = await categories.getAllCidsFromSet('cid:' + cid + ':children');
+				const allChildCids = await categories.getAllCidsFromSet(`cid:${cid}:children`);
 				if (allChildCids.length) {
 					const childCids = await privileges.categories.filterCids('find', allChildCids, uid);
 					resultCids.push(...childCids.slice(0, cidToData[cid].subCategoriesPerPage));
@@ -84,7 +84,7 @@ module.exports = function (SocketCategories) {
 			}));
 		}
 
-		const allRootCids = await categories.getAllCidsFromSet('cid:' + parentCid + ':children');
+		const allRootCids = await categories.getAllCidsFromSet(`cid:${parentCid}:children`);
 		const rootCids = await privileges.categories.filterCids('find', allRootCids, uid);
 		const pageCids = rootCids.slice(0, meta.config.categoriesPerPage);
 		resultCids = pageCids;

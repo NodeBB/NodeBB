@@ -21,8 +21,8 @@ infoController.get = async function (req, res, next) {
 	const [history, sessions, usernames, emails, notes] = await Promise.all([
 		user.getModerationHistory(userData.uid),
 		user.auth.getSessions(userData.uid, req.sessionID),
-		user.getHistory('user:' + userData.uid + ':usernames'),
-		user.getHistory('user:' + userData.uid + ':emails'),
+		user.getHistory(`user:${userData.uid}:usernames`),
+		user.getHistory(`user:${userData.uid}:emails`),
 		getNotes(userData, start, stop),
 	]);
 
@@ -37,7 +37,7 @@ infoController.get = async function (req, res, next) {
 		userData.pagination = pagination.create(page, pageCount, req.query);
 	}
 	userData.title = '[[pages:account/info]]';
-	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[user:account_info]]' }]);
+	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: `/user/${userData.userslug}` }, { text: '[[user:account_info]]' }]);
 
 	res.render('account/info', userData);
 };
@@ -48,7 +48,7 @@ async function getNotes(userData, start, stop) {
 	}
 	const [notes, count] = await Promise.all([
 		user.getModerationNotes(userData.uid, start, stop),
-		db.sortedSetCard('uid:' + userData.uid + ':moderation:notes'),
+		db.sortedSetCard(`uid:${userData.uid}:moderation:notes`),
 	]);
 	return { notes: notes, count: count };
 }

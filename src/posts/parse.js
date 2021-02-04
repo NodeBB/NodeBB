@@ -91,7 +91,7 @@ module.exports = function (Posts) {
 							absolute = nconf.get('base_url') + current[1];
 						} else {
 							// External link
-							absolute = '//' + current[1];
+							absolute = `//${current[1]}`;
 						}
 
 						content = content.slice(0, current.index + regex.length) + absolute + content.slice(current.index + regex.length + current[1].length);

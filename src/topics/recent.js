@@ -58,12 +58,12 @@ module.exports = function (Topics) {
 		await Topics.setTopicField(tid, 'lastposttime', lastposttime);
 		const topicData = await Topics.getTopicFields(tid, ['cid', 'deleted', 'pinned']);
 
-		await db.sortedSetAdd('cid:' + topicData.cid + ':tids:lastposttime', lastposttime, tid);
+		await db.sortedSetAdd(`cid:${topicData.cid}:tids:lastposttime`, lastposttime, tid);
 
 		await Topics.updateRecent(tid, lastposttime);
 
 		if (!topicData.pinned) {
-			await db.sortedSetAdd('cid:' + topicData.cid + ':tids', lastposttime, tid);
+			await db.sortedSetAdd(`cid:${topicData.cid}:tids`, lastposttime, tid);
 		}
 	};
 

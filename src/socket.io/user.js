@@ -114,12 +114,12 @@ SocketUser.reset.commit = async function (socket, data) {
 
 	const username = await user.getUserField(uid, 'username');
 	const now = new Date();
-	const parsedDate = now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate();
+	const parsedDate = `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}`;
 	emailer.send('reset_notify', uid, {
 		username: username,
 		date: parsedDate,
 		subject: '[[email:reset.notify.subject]]',
-	}).catch(err => winston.error('[emailer.send] ' + err.stack));
+	}).catch(err => winston.error(`[emailer.send] ${err.stack}`));
 };
 
 SocketUser.isFollowing = async function (socket, data) {
@@ -244,7 +244,7 @@ SocketUser.gdpr.check = async function (socket, data) {
 	if (!isAdmin) {
 		data.uid = socket.uid;
 	}
-	return await db.getObjectField('user:' + data.uid, 'gdpr_consent');
+	return await db.getObjectField(`user:${data.uid}`, 'gdpr_consent');
 };
 
 require('../promisify')(SocketUser);

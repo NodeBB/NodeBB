@@ -24,7 +24,7 @@ module.exports = function (User) {
 			throw new Error('[[error:ban-expiry-missing]]');
 		}
 
-		const banKey = 'uid:' + uid + ':ban:' + now;
+		const banKey = `uid:${uid}:ban:${now}`;
 		const banData = {
 			uid: uid,
 			timestamp: now,
@@ -39,7 +39,7 @@ module.exports = function (User) {
 		await groups.leave(systemGroups, uid);
 		await groups.join(groups.BANNED_USERS, uid);
 		await db.sortedSetAdd('users:banned', now, uid);
-		await db.sortedSetAdd('uid:' + uid + ':bans:timestamp', now, banKey);
+		await db.sortedSetAdd(`uid:${uid}:bans:timestamp`, now, banKey);
 		await db.setObject(banKey, banData);
 		await User.setUserField(uid, 'banned:expire', banData.expire);
 		if (until > now) {
@@ -53,12 +53,12 @@ module.exports = function (User) {
 		const siteTitle = meta.config.title || 'NodeBB';
 
 		const data = {
-			subject: '[[email:banned.subject, ' + siteTitle + ']]',
+			subject: `[[email:banned.subject, ${siteTitle}]]`,
 			username: username,
 			until: until ? (new Date(until)).toUTCString().replace(/,/g, '\\,') : false,
 			reason: reason,
 		};
-		await emailer.send('banned', uid, data).catch(err => winston.error('[emailer.send] ' + err.stack));
+		await emailer.send('banned', uid, data).catch(err => winston.error(`[emailer.send] ${err.stack}`));
 
 		return banData;
 	};
@@ -67,7 +67,7 @@ module.exports = function (User) {
 		uids = Array.isArray(uids) ? uids : [uids];
 		const userData = await User.getUsersFields(uids, ['email:confirmed']);
 
-		await db.setObject(uids.map(uid => 'user:' + uid), { 'banned:expire': 0 });
+		await db.setObject(uids.map(uid => `user:${uid}`), { 'banned:expire': 0 });
 
 		/* eslint-disable no-await-in-loop */
 		for (const user of userData) {
@@ -133,7 +133,7 @@ module.exports = function (User) {
 		if (parseInt(uid, 10) <= 0) {
 			return '';
 		}
-		const keys = await db.getSortedSetRevRange('uid:' + uid + ':bans:timestamp', 0, 0);
+		const keys = await db.getSortedSetRevRange(`uid:${uid}:bans:timestamp`, 0, 0);
 		if (!keys.length) {
 			return '';
 		}

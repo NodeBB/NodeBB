@@ -27,7 +27,7 @@ module.exports = function (Topics) {
 			Topics.getTopicField(tid, 'cid'),
 			Topics.getPids(tid),
 		]);
-		await db.sortedSetRemove('cid:' + cid + ':pids', pids);
+		await db.sortedSetRemove(`cid:${cid}:pids`, pids);
 		await categories.updateRecentTidForCid(cid);
 	}
 
@@ -44,7 +44,7 @@ module.exports = function (Topics) {
 			pidsToAdd.push(post.pid);
 			scores.push(post.timestamp);
 		});
-		await db.sortedSetAdd('cid:' + cid + ':pids', scores, pidsToAdd);
+		await db.sortedSetAdd(`cid:${cid}:pids`, scores, pidsToAdd);
 		await categories.updateRecentTidForCid(cid);
 	}
 
@@ -60,7 +60,7 @@ module.exports = function (Topics) {
 
 	Topics.purgePostsAndTopic = async function (tid, uid) {
 		const mainPid = await Topics.getTopicField(tid, 'mainPid');
-		await batch.processSortedSet('tid:' + tid + ':posts', function (pids, next) {
+		await batch.processSortedSet(`tid:${tid}:posts`, function (pids, next) {
 			async.eachSeries(pids, function (pid, next) {
 				posts.purge(pid, uid, next);
 			}, next);
@@ -82,12 +82,12 @@ module.exports = function (Topics) {
 
 		await Promise.all([
 			db.deleteAll([
-				'tid:' + tid + ':followers',
-				'tid:' + tid + ':ignorers',
-				'tid:' + tid + ':posts',
-				'tid:' + tid + ':posts:votes',
-				'tid:' + tid + ':bookmarks',
-				'tid:' + tid + ':posters',
+				`tid:${tid}:followers`,
+				`tid:${tid}:ignorers`,
+				`tid:${tid}:posts`,
+				`tid:${tid}:posts:votes`,
+				`tid:${tid}:bookmarks`,
+				`tid:${tid}:posters`,
 			]),
 			db.sortedSetsRemove([
 				'topics:tid',
@@ -102,16 +102,16 @@ module.exports = function (Topics) {
 			reduceCounters(tid),
 		]);
 		plugins.hooks.fire('action:topic.purge', { topic: deletedTopic, uid: uid });
-		await db.delete('topic:' + tid);
+		await db.delete(`topic:${tid}`);
 	};
 
 	async function deleteFromFollowersIgnorers(tid) {
 		const [followers, ignorers] = await Promise.all([
-			db.getSetMembers('tid:' + tid + ':followers'),
-			db.getSetMembers('tid:' + tid + ':ignorers'),
+			db.getSetMembers(`tid:${tid}:followers`),
+			db.getSetMembers(`tid:${tid}:ignorers`),
 		]);
-		const followerKeys = followers.map(uid => 'uid:' + uid + ':followed_tids');
-		const ignorerKeys = ignorers.map(uid => 'uid:' + uid + 'ignored_tids');
+		const followerKeys = followers.map(uid => `uid:${uid}:followed_tids`);
+		const ignorerKeys = ignorers.map(uid => `uid:${uid}ignored_tids`);
 		await db.sortedSetsRemove(followerKeys.concat(ignorerKeys), tid);
 	}
 
@@ -119,14 +119,14 @@ module.exports = function (Topics) {
 		const topicData = await Topics.getTopicFields(tid, ['cid', 'uid']);
 		await Promise.all([
 			db.sortedSetsRemove([
-				'cid:' + topicData.cid + ':tids',
-				'cid:' + topicData.cid + ':tids:pinned',
-				'cid:' + topicData.cid + ':tids:posts',
-				'cid:' + topicData.cid + ':tids:lastposttime',
-				'cid:' + topicData.cid + ':tids:votes',
-				'cid:' + topicData.cid + ':recent_tids',
-				'cid:' + topicData.cid + ':uid:' + topicData.uid + ':tids',
-				'uid:' + topicData.uid + ':topics',
+				`cid:${topicData.cid}:tids`,
+				`cid:${topicData.cid}:tids:pinned`,
+				`cid:${topicData.cid}:tids:posts`,
+				`cid:${topicData.cid}:tids:lastposttime`,
+				`cid:${topicData.cid}:tids:votes`,
+				`cid:${topicData.cid}:recent_tids`,
+				`cid:${topicData.cid}:uid:${topicData.uid}:tids`,
+				`uid:${topicData.uid}:topics`,
 			], tid),
 			user.decrementUserFieldBy(topicData.uid, 'topiccount', 1),
 		]);
@@ -140,8 +140,8 @@ module.exports = function (Topics) {
 		var postCountChange = incr * topicData.postcount;
 		await Promise.all([
 			db.incrObjectFieldBy('global', 'postCount', postCountChange),
-			db.incrObjectFieldBy('category:' + topicData.cid, 'post_count', postCountChange),
-			db.incrObjectFieldBy('category:' + topicData.cid, 'topic_count', incr),
+			db.incrObjectFieldBy(`category:${topicData.cid}`, 'post_count', postCountChange),
+			db.incrObjectFieldBy(`category:${topicData.cid}`, 'topic_count', incr),
 		]);
 	}
 };

@@ -48,7 +48,7 @@ SELECT "type"
 	});
 
 	if (res.rows[0].type !== type) {
-		throw new Error('database: cannot insert ' + JSON.stringify(key) + ' as ' + type + ' because it already exists as ' + res.rows[0].type);
+		throw new Error(`database: cannot insert ${JSON.stringify(key)} as ${type} because it already exists as ${res.rows[0].type}`);
 	}
 };
 
@@ -84,8 +84,8 @@ SELECT "_key", "type"
 	var invalid = res.rows.filter(r => r.type !== type);
 
 	if (invalid.length) {
-		const parts = invalid.map(r => JSON.stringify(r._key) + ' is ' + r.type);
-		throw new Error('database: cannot insert multiple objects as ' + type + ' because they already exist: ' + parts.join(', '));
+		const parts = invalid.map(r => `${JSON.stringify(r._key)} is ${r.type}`);
+		throw new Error(`database: cannot insert multiple objects as ${type} because they already exist: ${parts.join(', ')}`);
 	}
 
 	var missing = keys.filter(function (k) {
@@ -93,7 +93,7 @@ SELECT "_key", "type"
 	});
 
 	if (missing.length) {
-		throw new Error('database: failed to insert keys for objects: ' + JSON.stringify(missing));
+		throw new Error(`database: failed to insert keys for objects: ${JSON.stringify(missing)}`);
 	}
 };
 

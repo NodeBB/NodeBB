@@ -73,8 +73,8 @@ function buildBreadcrumbs(currentFolder) {
 		crumbs.push({
 			text: part || 'Uploads',
 			url: part ?
-				(nconf.get('relative_path') + '/admin/manage/uploads?dir=' + dir) :
-				nconf.get('relative_path') + '/admin/manage/uploads',
+				(`${nconf.get('relative_path')}/admin/manage/uploads?dir=${dir}`) :
+				`${nconf.get('relative_path')}/admin/manage/uploads`,
 		});
 		currentPath = dir;
 	});
@@ -92,14 +92,14 @@ async function getFileData(currentDir, file) {
 	if (stat.isDirectory()) {
 		filesInDir = await fs.promises.readdir(path.join(currentDir, file));
 	}
-	const url = nconf.get('upload_url') + currentDir.replace(nconf.get('upload_path'), '') + '/' + file;
+	const url = `${nconf.get('upload_url') + currentDir.replace(nconf.get('upload_path'), '')}/${file}`;
 	return {
 		name: file,
 		path: path.join(currentDir, file).replace(nconf.get('upload_path'), ''),
 		url: url,
 		fileCount: Math.max(0, filesInDir.length - 1), // ignore .gitignore
 		size: stat.size,
-		sizeHumanReadable: (stat.size / 1024).toFixed(1) + 'KiB',
+		sizeHumanReadable: `${(stat.size / 1024).toFixed(1)}KiB`,
 		isDirectory: stat.isDirectory(),
 		isFile: stat.isFile(),
 		mtime: stat.mtimeMs,
@@ -118,7 +118,7 @@ uploadsController.uploadCategoryPicture = async function (req, res, next) {
 	}
 
 	if (validateUpload(res, uploadedFile, allowedImageTypes)) {
-		const filename = 'category-' + params.cid + path.extname(uploadedFile.name);
+		const filename = `category-${params.cid}${path.extname(uploadedFile.name)}`;
 		await uploadImage(filename, 'category', uploadedFile, req, res, next);
 	}
 };
@@ -152,7 +152,7 @@ uploadsController.uploadTouchIcon = async function (req, res, next) {
 				/* eslint-disable no-await-in-loop */
 				await image.resizeImage({
 					path: uploadedFile.path,
-					target: path.join(nconf.get('upload_path'), 'system', 'touchicon-' + size + '.png'),
+					target: path.join(nconf.get('upload_path'), 'system', `touchicon-${size}.png`),
 					width: size,
 					height: size,
 				});
@@ -227,7 +227,7 @@ async function upload(name, req, res, next) {
 function validateUpload(res, uploadedFile, allowedTypes) {
 	if (!allowedTypes.includes(uploadedFile.type)) {
 		file.delete(uploadedFile.path);
-		res.json({ error: '[[error:invalid-image-type, ' + allowedTypes.join('&#44; ') + ']]' });
+		res.json({ error: `[[error:invalid-image-type, ${allowedTypes.join('&#44; ')}]]` });
 		return false;
 	}
 

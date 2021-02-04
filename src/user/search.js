@@ -77,7 +77,7 @@ module.exports = function (User) {
 		const resultsPerPage = meta.config.userSearchResultsPerPage;
 		hardCap = hardCap || resultsPerPage * 10;
 
-		const data = await db.getSortedSetRangeByLex(searchBy + ':sorted', min, max, 0, hardCap);
+		const data = await db.getSortedSetRangeByLex(`${searchBy}:sorted`, min, max, 0, hardCap);
 		const uids = data.map(data => data.split(':').pop());
 		return uids;
 	}
@@ -152,7 +152,7 @@ module.exports = function (User) {
 	}
 
 	async function searchByIP(ip) {
-		const ipKeys = await db.scan({ match: 'ip:' + ip + '*' });
+		const ipKeys = await db.scan({ match: `ip:${ip}*` });
 		const uids = await db.getSortedSetRevRange(ipKeys, 0, -1);
 		return _.uniq(uids);
 	}

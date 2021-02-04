@@ -15,7 +15,7 @@ module.exports = {
 				progress.incr();
 				async.waterfall([
 					function (next) {
-						db.getObjectFields('user:' + uid + ':settings', ['sendChatNotifications', 'sendPostNotifications'], next);
+						db.getObjectFields(`user:${uid}:settings`, ['sendChatNotifications', 'sendPostNotifications'], next);
 					},
 					function (userSettings, _next) {
 						if (!userSettings) {
@@ -23,10 +23,10 @@ module.exports = {
 						}
 						var tasks = [];
 						if (parseInt(userSettings.sendChatNotifications, 10) === 1) {
-							tasks.push(async.apply(db.setObjectField, 'user:' + uid + ':settings', 'notificationType_new-chat', 'notificationemail'));
+							tasks.push(async.apply(db.setObjectField, `user:${uid}:settings`, 'notificationType_new-chat', 'notificationemail'));
 						}
 						if (parseInt(userSettings.sendPostNotifications, 10) === 1) {
-							tasks.push(async.apply(db.setObjectField, 'user:' + uid + ':settings', 'notificationType_new-reply', 'notificationemail'));
+							tasks.push(async.apply(db.setObjectField, `user:${uid}:settings`, 'notificationType_new-reply', 'notificationemail'));
 						}
 						if (!tasks.length) {
 							return next();
@@ -37,7 +37,7 @@ module.exports = {
 						});
 					},
 					function (next) {
-						db.deleteObjectFields('user:' + uid + ':settings', ['sendChatNotifications', 'sendPostNotifications'], next);
+						db.deleteObjectFields(`user:${uid}:settings`, ['sendChatNotifications', 'sendPostNotifications'], next);
 					},
 				], next);
 			}, next);

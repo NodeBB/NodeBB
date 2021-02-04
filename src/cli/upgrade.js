@@ -55,7 +55,7 @@ var steps = {
 function runSteps(tasks) {
 	tasks = tasks.map(function (key, i) {
 		return function (next) {
-			process.stdout.write('\n' + ((i + 1) + '. ').bold + steps[key].message.yellow);
+			process.stdout.write(`\n${(`${i + 1}. `).bold}${steps[key].message.yellow}`);
 			return steps[key].handler(function (err) {
 				if (err) { return next(err); }
 				next();
@@ -65,7 +65,7 @@ function runSteps(tasks) {
 
 	async.series(tasks, function (err) {
 		if (err) {
-			console.error('Error occurred during upgrade: ' + err.stack);
+			console.error(`Error occurred during upgrade: ${err.stack}`);
 			throw err;
 		}
 
@@ -74,7 +74,7 @@ function runSteps(tasks) {
 		var columns = process.stdout.columns;
 		var spaces = columns ? new Array(Math.floor(columns / 2) - (message.length / 2) + 1).join(' ') : '  ';
 
-		console.log('\n\n' + spaces + message.green.bold + '\n'.reset);
+		console.log(`\n\n${spaces}${message.green.bold}${'\n'.reset}`);
 
 		process.exit();
 	});

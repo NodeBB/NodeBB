@@ -26,7 +26,7 @@ async function blacklist(socket, method, rule) {
 	}
 	await meta.blacklist[method](rule);
 	await events.log({
-		type: 'ip-blacklist-' + method,
+		type: `ip-blacklist-${method}`,
 		uid: socket.uid,
 		ip: socket.ip,
 		rule: rule,

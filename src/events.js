@@ -77,9 +77,9 @@ events.log = async function (data) {
 	await Promise.all([
 		db.sortedSetsAdd([
 			'events:time',
-			'events:time:' + data.type,
+			`events:time:${data.type}`,
 		], data.timestamp, eid),
-		db.setObject('event:' + eid, data),
+		db.setObject(`event:${eid}`, data),
 	]);
 	plugins.hooks.fire('action:events.log', { data: data });
 };
@@ -93,8 +93,8 @@ events.getEvents = async function (filter, start, stop, from, to) {
 		to = Date.now();
 	}
 
-	const eids = await db.getSortedSetRevRangeByScore('events:time' + (filter ? ':' + filter : ''), start, stop - start + 1, to, from);
-	let eventsData = await db.getObjects(eids.map(eid => 'event:' + eid));
+	const eids = await db.getSortedSetRevRangeByScore(`events:time${filter ? `:${filter}` : ''}`, start, stop - start + 1, to, from);
+	let eventsData = await db.getObjects(eids.map(eid => `event:${eid}`));
 	eventsData = eventsData.filter(Boolean);
 	await addUserData(eventsData, 'uid', 'user');
 	await addUserData(eventsData, 'targetUid', 'targetUser');
@@ -143,9 +143,9 @@ async function addUserData(eventsData, field, objectName) {
 }
 
 events.deleteEvents = async function (eids) {
-	const keys = eids.map(eid => 'event:' + eid);
+	const keys = eids.map(eid => `event:${eid}`);
 	const eventData = await db.getObjectsFields(keys, ['type']);
-	const sets = _.uniq(['events:time'].concat(eventData.map(e => 'events:time:' + e.type)));
+	const sets = _.uniq(['events:time'].concat(eventData.map(e => `events:time:${e.type}`)));
 	await Promise.all([
 		db.deleteAll(keys),
 		db.sortedSetRemove(sets, eids),

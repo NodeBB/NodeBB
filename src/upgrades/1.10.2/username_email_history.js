@@ -18,7 +18,7 @@ module.exports = {
 					function (next) {
 						// Username
 						async.waterfall([
-							async.apply(db.sortedSetCard, 'user:' + uid + ':usernames'),
+							async.apply(db.sortedSetCard, `user:${uid}:usernames`),
 							(count, next) => {
 								if (count > 0) {
 									// User has changed their username before, no record of original username, skip.
@@ -32,14 +32,14 @@ module.exports = {
 									return setImmediate(next);
 								}
 
-								db.sortedSetAdd('user:' + uid + ':usernames', userdata.joindate, [userdata.username, userdata.joindate].join(':'), next);
+								db.sortedSetAdd(`user:${uid}:usernames`, userdata.joindate, [userdata.username, userdata.joindate].join(':'), next);
 							},
 						], next);
 					},
 					function (next) {
 						// Email
 						async.waterfall([
-							async.apply(db.sortedSetCard, 'user:' + uid + ':emails'),
+							async.apply(db.sortedSetCard, `user:${uid}:emails`),
 							(count, next) => {
 								if (count > 0) {
 									// User has changed their email before, no record of original email, skip.
@@ -53,7 +53,7 @@ module.exports = {
 									return setImmediate(next);
 								}
 
-								db.sortedSetAdd('user:' + uid + ':emails', userdata.joindate, [userdata.email, userdata.joindate].join(':'), next);
+								db.sortedSetAdd(`user:${uid}:emails`, userdata.joindate, [userdata.email, userdata.joindate].join(':'), next);
 							},
 						], next);
 					},

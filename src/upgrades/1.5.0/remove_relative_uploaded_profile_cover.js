@@ -15,7 +15,7 @@ module.exports = {
 			async.each(ids, function (uid, cb) {
 				async.waterfall([
 					function (next) {
-						db.getObjectField('user:' + uid, 'cover:url', next);
+						db.getObjectField(`user:${uid}`, 'cover:url', next);
 					},
 					function (url, next) {
 						progress.incr();
@@ -25,7 +25,7 @@ module.exports = {
 						}
 
 						var newUrl = url.replace(/^.*?\/uploads\//, '/assets/uploads/');
-						db.setObjectField('user:' + uid, 'cover:url', newUrl, next);
+						db.setObjectField(`user:${uid}`, 'cover:url', newUrl, next);
 					},
 				], cb);
 			}, done);

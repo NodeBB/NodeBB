@@ -33,15 +33,15 @@ module.exports = function (Posts) {
 		}
 
 		if (isBookmarking) {
-			await db.sortedSetAdd('uid:' + uid + ':bookmarks', Date.now(), pid);
+			await db.sortedSetAdd(`uid:${uid}:bookmarks`, Date.now(), pid);
 		} else {
-			await db.sortedSetRemove('uid:' + uid + ':bookmarks', pid);
+			await db.sortedSetRemove(`uid:${uid}:bookmarks`, pid);
 		}
-		await db[isBookmarking ? 'setAdd' : 'setRemove']('pid:' + pid + ':users_bookmarked', uid);
-		postData.bookmarks = await db.setCount('pid:' + pid + ':users_bookmarked');
+		await db[isBookmarking ? 'setAdd' : 'setRemove'](`pid:${pid}:users_bookmarked`, uid);
+		postData.bookmarks = await db.setCount(`pid:${pid}:users_bookmarked`);
 		await Posts.setPostField(pid, 'bookmarks', postData.bookmarks);
 
-		plugins.hooks.fire('action:post.' + type, {
+		plugins.hooks.fire(`action:post.${type}`, {
 			pid: pid,
 			uid: uid,
 			owner: postData.uid,
@@ -60,9 +60,9 @@ module.exports = function (Posts) {
 		}
 
 		if (Array.isArray(pid)) {
-			const sets = pid.map(pid => 'pid:' + pid + ':users_bookmarked');
+			const sets = pid.map(pid => `pid:${pid}:users_bookmarked`);
 			return await db.isMemberOfSets(sets, uid);
 		}
-		return await db.isSetMember('pid:' + pid + ':users_bookmarked', uid);
+		return await db.isSetMember(`pid:${pid}:users_bookmarked`, uid);
 	};
 };

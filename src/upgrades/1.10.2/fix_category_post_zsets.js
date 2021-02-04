@@ -16,7 +16,7 @@ module.exports = {
 				return callback(err);
 			}
 			var keys = cids.map(function (cid) {
-				return 'cid:' + cid + ':pids';
+				return `cid:${cid}:pids`;
 			});
 			var posts = require('../../posts');
 			batch.processSortedSet('posts:pid', function (postData, next) {
@@ -42,8 +42,8 @@ module.exports = {
 							});
 							if (memberCids.length > 1) {
 								async.waterfall([
-									async.apply(db.sortedSetRemove, memberCids.map(cid => 'cid:' + cid + ':pids'), pid),
-									async.apply(db.sortedSetAdd, 'cid:' + cid + ':pids', timestamp, pid),
+									async.apply(db.sortedSetRemove, memberCids.map(cid => `cid:${cid}:pids`), pid),
+									async.apply(db.sortedSetAdd, `cid:${cid}:pids`, timestamp, pid),
 								], next);
 							} else {
 								next();

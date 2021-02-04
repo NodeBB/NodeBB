@@ -14,15 +14,15 @@ module.exports = {
 			}
 
 			async.eachSeries(cids, function (cid, next) {
-				db.getSortedSetRevRange('cid:' + cid + ':pids', 0, 0, function (err, pid) {
+				db.getSortedSetRevRange(`cid:${cid}:pids`, 0, 0, function (err, pid) {
 					if (err || !pid) {
 						return next(err);
 					}
-					db.getObjectFields('post:' + pid, ['tid', 'timestamp'], function (err, postData) {
+					db.getObjectFields(`post:${pid}`, ['tid', 'timestamp'], function (err, postData) {
 						if (err || !postData || !postData.tid) {
 							return next(err);
 						}
-						db.sortedSetAdd('cid:' + cid + ':recent_tids', postData.timestamp, postData.tid, next);
+						db.sortedSetAdd(`cid:${cid}:recent_tids`, postData.timestamp, postData.tid, next);
 					});
 				});
 			}, callback);

@@ -28,7 +28,7 @@ process.on('message', async function (msg) {
 
 		const targetUid = msg.uid;
 
-		const archivePath = path.join(__dirname, '../../../build/export', targetUid + '_uploads.zip');
+		const archivePath = path.join(__dirname, '../../../build/export', `${targetUid}_uploads.zip`);
 		const rootDirectory = path.join(__dirname, '../../../public/uploads/');
 
 		const user = require('../index');
@@ -40,11 +40,11 @@ process.on('message', async function (msg) {
 		archive.on('warning', function (err) {
 			switch (err.code) {
 				case 'ENOENT':
-					winston.warn('[user/export/uploads] File not found: ' + err.path);
+					winston.warn(`[user/export/uploads] File not found: ${err.path}`);
 					break;
 
 				default:
-					winston.warn('[user/export/uploads] Unexpected warning: ' + err.message);
+					winston.warn(`[user/export/uploads] Unexpected warning: ${err.message}`);
 					break;
 			}
 		});
@@ -55,11 +55,11 @@ process.on('message', async function (msg) {
 			};
 			switch (err.code) {
 				case 'EACCES':
-					winston.error('[user/export/uploads] File inaccessible: ' + trimPath(err.path));
+					winston.error(`[user/export/uploads] File inaccessible: ${trimPath(err.path)}`);
 					break;
 
 				default:
-					winston.error('[user/export/uploads] Unable to construct archive: ' + err.message);
+					winston.error(`[user/export/uploads] Unable to construct archive: ${err.message}`);
 					break;
 			}
 		});
@@ -71,7 +71,7 @@ process.on('message', async function (msg) {
 		});
 
 		archive.pipe(output);
-		winston.verbose('[user/export/uploads] Collating uploads for uid ' + targetUid);
+		winston.verbose(`[user/export/uploads] Collating uploads for uid ${targetUid}`);
 		await user.collateUploads(targetUid, archive);
 
 		const uploadedPicture = await user.getUserField(targetUid, 'uploadedpicture');

@@ -13,7 +13,7 @@ module.exports = {
 
 		batch.processSortedSet('users:joindate', function (ids, next) {
 			async.each(ids, function (uid, next) {
-				db.getObjectField('user:' + uid, 'moderationNote', function (err, moderationNote) {
+				db.getObjectField(`user:${uid}`, 'moderationNote', function (err, moderationNote) {
 					if (err || !moderationNote) {
 						progress.incr();
 						return next(err);
@@ -25,7 +25,7 @@ module.exports = {
 					};
 
 					progress.incr();
-					db.sortedSetAdd('uid:' + uid + ':moderation:notes', note.timestamp, JSON.stringify(note), next);
+					db.sortedSetAdd(`uid:${uid}:moderation:notes`, note.timestamp, JSON.stringify(note), next);
 				});
 			}, next);
 		}, {

@@ -76,7 +76,7 @@ module.exports = function (Posts) {
 		await topics.notifyFollowers(returnPostData, data.uid, {
 			type: 'post-edit',
 			bodyShort: translator.compile('notifications:user_edited_post', editor.username, topic.title),
-			nid: 'edit_post:' + data.pid + ':uid:' + data.uid,
+			nid: `edit_post:${data.pid}:uid:${data.uid}`,
 		});
 
 		plugins.hooks.fire('action:post.edit', { post: _.clone(returnPostData), data: data, uid: data.uid });
@@ -120,7 +120,7 @@ module.exports = function (Posts) {
 		};
 		if (title) {
 			newTopicData.title = title;
-			newTopicData.slug = tid + '/' + (slugify(title) || 'topic');
+			newTopicData.slug = `${tid}/${slugify(title) || 'topic'}`;
 		}
 
 		data.tags = data.tags || [];
@@ -138,7 +138,7 @@ module.exports = function (Posts) {
 			topic: newTopicData,
 			data: data,
 		});
-		await db.setObject('topic:' + tid, results.topic);
+		await db.setObject(`topic:${tid}`, results.topic);
 		await topics.updateTopicTags(tid, data.tags);
 		const tags = await topics.getTopicTagsObjects(tid);
 

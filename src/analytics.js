@@ -131,7 +131,7 @@ Analytics.writeData = async function () {
 	if (Object.keys(counters).length > 0) {
 		for (const key in counters) {
 			if (counters.hasOwnProperty(key)) {
-				dbQueue.push(db.sortedSetIncrBy('analytics:' + key, counters[key], today.getTime()));
+				dbQueue.push(db.sortedSetIncrBy(`analytics:${key}`, counters[key], today.getTime()));
 				delete counters[key];
 			}
 		}
@@ -139,7 +139,7 @@ Analytics.writeData = async function () {
 	try {
 		await Promise.all(dbQueue);
 	} catch (err) {
-		winston.error('[analytics] Encountered error while writing analytics to data store\n' + err.stack);
+		winston.error(`[analytics] Encountered error while writing analytics to data store\n${err.stack}`);
 		throw err;
 	}
 };
@@ -147,7 +147,7 @@ Analytics.writeData = async function () {
 Analytics.getHourlyStatsForSet = async function (set, hour, numHours) {
 	// Guard against accidental ommission of `analytics:` prefix
 	if (!set.startsWith('analytics:')) {
-		set = 'analytics:' + set;
+		set = `analytics:${set}`;
 	}
 
 	const terms = {};
@@ -180,7 +180,7 @@ Analytics.getHourlyStatsForSet = async function (set, hour, numHours) {
 Analytics.getDailyStatsForSet = async function (set, day, numDays) {
 	// Guard against accidental ommission of `analytics:` prefix
 	if (!set.startsWith('analytics:')) {
-		set = 'analytics:' + set;
+		set = `analytics:${set}`;
 	}
 
 	const daysArr = [];
@@ -218,10 +218,10 @@ Analytics.getSummary = async function () {
 
 Analytics.getCategoryAnalytics = async function (cid) {
 	return await utils.promiseParallel({
-		'pageviews:hourly': Analytics.getHourlyStatsForSet('analytics:pageviews:byCid:' + cid, Date.now(), 24),
-		'pageviews:daily': Analytics.getDailyStatsForSet('analytics:pageviews:byCid:' + cid, Date.now(), 30),
-		'topics:daily': Analytics.getDailyStatsForSet('analytics:topics:byCid:' + cid, Date.now(), 7),
-		'posts:daily': Analytics.getDailyStatsForSet('analytics:posts:byCid:' + cid, Date.now(), 7),
+		'pageviews:hourly': Analytics.getHourlyStatsForSet(`analytics:pageviews:byCid:${cid}`, Date.now(), 24),
+		'pageviews:daily': Analytics.getDailyStatsForSet(`analytics:pageviews:byCid:${cid}`, Date.now(), 30),
+		'topics:daily': Analytics.getDailyStatsForSet(`analytics:topics:byCid:${cid}`, Date.now(), 7),
+		'posts:daily': Analytics.getDailyStatsForSet(`analytics:posts:byCid:${cid}`, Date.now(), 7),
 	});
 };
 

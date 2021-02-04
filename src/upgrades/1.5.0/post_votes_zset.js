@@ -12,7 +12,7 @@ module.exports = {
 
 		require('../../batch').processSortedSet('posts:pid', function (pids, next) {
 			async.each(pids, function (pid, next) {
-				db.getObjectFields('post:' + pid, ['upvotes', 'downvotes'], function (err, postData) {
+				db.getObjectFields(`post:${pid}`, ['upvotes', 'downvotes'], function (err, postData) {
 					if (err || !postData) {
 						return next(err);
 					}

@@ -55,7 +55,7 @@ postgresModule.init = async function () {
 	try {
 		await checkUpgrade(client);
 	} catch (err) {
-		winston.error('NodeBB could not connect to your PostgreSQL database. PostgreSQL returned the following error: ' + err.message);
+		winston.error(`NodeBB could not connect to your PostgreSQL database. PostgreSQL returned the following error: ${err.message}`);
 		throw err;
 	} finally {
 		client.release();
@@ -339,7 +339,7 @@ postgresModule.createIndices = function (callback) {
 		async.apply(query, `CREATE INDEX IF NOT EXISTS "idx__legacy_object__expireAt" ON "legacy_object"("expireAt" ASC)`),
 	], function (err) {
 		if (err) {
-			winston.error('Error creating index ' + err.message);
+			winston.error(`Error creating index ${err.message}`);
 			return callback(err);
 		}
 		winston.info('[database] Checking database indices done!');

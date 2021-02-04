@@ -430,7 +430,7 @@ describe('Utility Methods', function () {
 		var index = hours.length - 1;
 		for (var i = currentHour, ii = currentHour - 24; i > ii; i -= 1) {
 			var hour = i < 0 ? 24 + i : i;
-			assert.equal(hours[index], hour + ':00');
+			assert.equal(hours[index], `${hour}:00`);
 			index -= 1;
 		}
 		done();
@@ -443,7 +443,7 @@ describe('Utility Methods', function () {
 		var index = 0;
 		for (var x = 29; x >= 0; x -= 1) {
 			var tmpDate = new Date(currentDay - (1000 * 60 * 60 * 24 * x));
-			assert.equal(months[tmpDate.getMonth()] + ' ' + tmpDate.getDate(), days[index]);
+			assert.equal(`${months[tmpDate.getMonth()]} ${tmpDate.getDate()}`, days[index]);
 			index += 1;
 		}
 		done();

@@ -29,7 +29,7 @@ module.exports = function (Messaging) {
 			throw new Error('[[error:invalid-chat-message]]');
 		}
 		if (length > maximumChatMessageLength) {
-			throw new Error('[[error:chat-message-too-long, ' + maximumChatMessageLength + ']]');
+			throw new Error(`[[error:chat-message-too-long, ${maximumChatMessageLength}]]`);
 		}
 	};
 
@@ -50,9 +50,9 @@ module.exports = function (Messaging) {
 		}
 
 		message = await plugins.hooks.fire('filter:messaging.save', message);
-		await db.setObject('message:' + mid, message);
+		await db.setObject(`message:${mid}`, message);
 		const isNewSet = await Messaging.isNewSet(data.uid, data.roomId, timestamp);
-		let uids = await db.getSortedSetRange('chat:room:' + data.roomId + ':uids', 0, -1);
+		let uids = await db.getSortedSetRange(`chat:room:${data.roomId}:uids`, 0, -1);
 		uids = await user.blocks.filterUids(data.uid, uids);
 
 		await Promise.all([
@@ -88,7 +88,7 @@ module.exports = function (Messaging) {
 			return;
 		}
 
-		const keys = uids.map(uid => 'uid:' + uid + ':chat:rooms');
+		const keys = uids.map(uid => `uid:${uid}:chat:rooms`);
 		await db.sortedSetsAdd(keys, timestamp, roomId);
 	};
 
@@ -96,7 +96,7 @@ module.exports = function (Messaging) {
 		if (!uids.length) {
 			return;
 		}
-		const keys = uids.map(uid => 'uid:' + uid + ':chat:room:' + roomId + ':mids');
+		const keys = uids.map(uid => `uid:${uid}:chat:room:${roomId}:mids`);
 		await db.sortedSetsAdd(keys, timestamp, mid);
 	};
 };

@@ -173,7 +173,7 @@ module.exports = function (middleware) {
 			return next();
 		}
 		const userslug = await user.getUserField(req.uid, 'userslug');
-		controllers.helpers.redirect(res, '/user/' + userslug);
+		controllers.helpers.redirect(res, `/user/${userslug}`);
 	});
 
 	middleware.redirectUidToUserslug = helpers.try(async function redirectUidToUserslug(req, res, next) {
@@ -196,7 +196,7 @@ module.exports = function (middleware) {
 		if (!userslug) {
 			return controllers.helpers.notAllowed(req, res);
 		}
-		const path = req.path.replace(/^(\/api)?\/me/, '/user/' + userslug);
+		const path = req.path.replace(/^(\/api)?\/me/, `/user/${userslug}`);
 		controllers.helpers.redirect(res, path);
 	});
 
@@ -228,7 +228,7 @@ module.exports = function (middleware) {
 
 		let returnTo = req.path;
 		if (nconf.get('relative_path')) {
-			returnTo = req.path.replace(new RegExp('^' + nconf.get('relative_path')), '');
+			returnTo = req.path.replace(new RegExp(`^${nconf.get('relative_path')}`), '');
 		}
 		returnTo = returnTo.replace(/^\/api/, '');
 
@@ -237,7 +237,7 @@ module.exports = function (middleware) {
 		if (res.locals.isAPI) {
 			controllers.helpers.formatApiResponse(401, res);
 		} else {
-			res.redirect(nconf.get('relative_path') + '/login?local=1');
+			res.redirect(`${nconf.get('relative_path')}/login?local=1`);
 		}
 	});
 

@@ -76,7 +76,7 @@ describe('Post\'s', function () {
 	it('should update category teaser properly', async function () {
 		const util = require('util');
 		const getCategoriesAsync = util.promisify(async function getCategories(callback) {
-			request(nconf.get('url') + '/api/categories', { json: true }, function (err, res, body) {
+			request(`${nconf.get('url')}/api/categories`, { json: true }, function (err, res, body) {
 				callback(err, body);
 			});
 		});
@@ -112,11 +112,11 @@ describe('Post\'s', function () {
 		const pid1 = postResult.postData.pid;
 		const pid2 = postData.pid;
 
-		assert.deepStrictEqual(await db.sortedSetScores('tid:' + postResult.topicData.tid + ':posters', [oldUid, newUid]), [2, null]);
+		assert.deepStrictEqual(await db.sortedSetScores(`tid:${postResult.topicData.tid}:posters`, [oldUid, newUid]), [2, null]);
 
 		await posts.changeOwner([pid1, pid2], newUid);
 
-		assert.deepStrictEqual(await db.sortedSetScores('tid:' + postResult.topicData.tid + ':posters', [oldUid, newUid]), [0, 2]);
+		assert.deepStrictEqual(await db.sortedSetScores(`tid:${postResult.topicData.tid}:posters`, [oldUid, newUid]), [0, 2]);
 
 		assert.deepStrictEqual(await posts.isOwner([pid1, pid2], oldUid), [false, false]);
 		assert.deepStrictEqual(await posts.isOwner([pid1, pid2], newUid), [true, true]);
@@ -282,7 +282,7 @@ describe('Post\'s', function () {
 
 	describe('bookmarking', function () {
 		it('should bookmark a post', function (done) {
-			socketPosts.bookmark({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_' + postData.tid }, function (err, data) {
+			socketPosts.bookmark({ uid: voterUid }, { pid: postData.pid, room_id: `topic_${postData.tid}` }, function (err, data) {
 				assert.ifError(err);
 				assert.equal(data.isBookmarked, true);
 				posts.hasBookmarked(postData.pid, voterUid, function (err, hasBookmarked) {
@@ -294,7 +294,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should unbookmark a post', function (done) {
-			socketPosts.unbookmark({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_' + postData.tid }, function (err, data) {
+			socketPosts.unbookmark({ uid: voterUid }, { pid: postData.pid, room_id: `topic_${postData.tid}` }, function (err, data) {
 				assert.ifError(err);
 				assert.equal(data.isBookmarked, false);
 				posts.hasBookmarked([postData.pid], voterUid, function (err, hasBookmarked) {
@@ -394,7 +394,7 @@ describe('Post\'s', function () {
 						assert.ifError(err);
 						var jar = _jar;
 
-						request(nconf.get('url') + '/api/topic/' + tid, { jar: jar, json: true }, function (err, res, body) {
+						request(`${nconf.get('url')}/api/topic/${tid}`, { jar: jar, json: true }, function (err, res, body) {
 							assert.ifError(err);
 							assert.equal(body.posts[1].content, '[[topic:post_is_deleted]]');
 							privileges.categories.give(['groups:posts:view_deleted'], cid, 'Global Moderators', next);
@@ -448,7 +448,7 @@ describe('Post\'s', function () {
 			createTopicWithReply(function (topicPostData, replyData) {
 				socketPosts.purgePosts({ uid: voterUid }, { pids: [replyData.pid, topicPostData.postData.pid], tid: topicPostData.topicData.tid }, function (err) {
 					assert.ifError(err);
-					posts.exists('post:' + replyData.pid, function (err, exists) {
+					posts.exists(`post:${replyData.pid}`, function (err, exists) {
 						assert.ifError(err);
 						assert.equal(exists, false);
 						topics.exists(topicPostData.topicData.tid, function (err, exists) {
@@ -505,7 +505,7 @@ describe('Post\'s', function () {
 
 		it('should error if title is too short', function (done) {
 			socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', title: 'a' }, function (err) {
-				assert.equal(err.message, '[[error:title-too-short, ' + meta.config.minimumTitleLength + ']]');
+				assert.equal(err.message, `[[error:title-too-short, ${meta.config.minimumTitleLength}]]`);
 				done();
 			});
 		});
@@ -513,7 +513,7 @@ describe('Post\'s', function () {
 		it('should error if title is too long', function (done) {
 			var longTitle = new Array(meta.config.maximumTitleLength + 2).join('a');
 			socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', title: longTitle }, function (err) {
-				assert.equal(err.message, '[[error:title-too-long, ' + meta.config.maximumTitleLength + ']]');
+				assert.equal(err.message, `[[error:title-too-long, ${meta.config.maximumTitleLength}]]`);
 				done();
 			});
 		});
@@ -522,7 +522,7 @@ describe('Post\'s', function () {
 			var oldValue = meta.config.minimumTagsPerTopic;
 			meta.config.minimumTagsPerTopic = 1;
 			socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', tags: [] }, function (err) {
-				assert.equal(err.message, '[[error:not-enough-tags, ' + meta.config.minimumTagsPerTopic + ']]');
+				assert.equal(err.message, `[[error:not-enough-tags, ${meta.config.minimumTagsPerTopic}]]`);
 				meta.config.minimumTagsPerTopic = oldValue;
 				done();
 			});
@@ -531,17 +531,17 @@ describe('Post\'s', function () {
 		it('should error with too many tags', function (done) {
 			var tags = [];
 			for (var i = 0; i < meta.config.maximumTagsPerTopic + 1; i += 1) {
-				tags.push('tag' + i);
+				tags.push(`tag${i}`);
 			}
 			socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', tags: tags }, function (err) {
-				assert.equal(err.message, '[[error:too-many-tags, ' + meta.config.maximumTagsPerTopic + ']]');
+				assert.equal(err.message, `[[error:too-many-tags, ${meta.config.maximumTagsPerTopic}]]`);
 				done();
 			});
 		});
 
 		it('should error if content is too short', function (done) {
 			socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'e' }, function (err) {
-				assert.equal(err.message, '[[error:content-too-short, ' + meta.config.minimumPostLength + ']]');
+				assert.equal(err.message, `[[error:content-too-short, ${meta.config.minimumPostLength}]]`);
 				done();
 			});
 		});
@@ -549,7 +549,7 @@ describe('Post\'s', function () {
 		it('should error if content is too long', function (done) {
 			var longContent = new Array(meta.config.maximumPostLength + 2).join('a');
 			socketPosts.edit({ uid: voterUid }, { pid: pid, content: longContent }, function (err) {
-				assert.equal(err.message, '[[error:content-too-long, ' + meta.config.maximumPostLength + ']]');
+				assert.equal(err.message, `[[error:content-too-long, ${meta.config.maximumPostLength}]]`);
 				done();
 			});
 		});
@@ -566,7 +566,7 @@ describe('Post\'s', function () {
 			assert.strictEqual(data.editor, voterUid);
 			assert.strictEqual(data.topic.title, 'edited title');
 			assert.strictEqual(data.topic.tags[0].value, 'edited');
-			const res = await db.getObject('post:' + pid);
+			const res = await db.getObject(`post:${pid}`);
 			assert(!res.hasOwnProperty('bookmarks'));
 		});
 
@@ -845,7 +845,7 @@ describe('Post\'s', function () {
 			var nconf = require('nconf');
 			var content = '<a href="/users">test</a> <a href="youtube.com">youtube</a>';
 			var parsedContent = posts.relativeToAbsolute(content, posts.urlRegex);
-			assert.equal(parsedContent, '<a href="' + nconf.get('base_url') + '/users">test</a> <a href="//youtube.com">youtube</a>');
+			assert.equal(parsedContent, `<a href="${nconf.get('base_url')}/users">test</a> <a href="//youtube.com">youtube</a>`);
 			done();
 		});
 
@@ -854,7 +854,7 @@ describe('Post\'s', function () {
 			var content = '<a href="/users">test</a> <a href="youtube.com">youtube</a> some test <img src="/path/to/img"/>';
 			var parsedContent = posts.relativeToAbsolute(content, posts.urlRegex);
 			parsedContent = posts.relativeToAbsolute(parsedContent, posts.imgRegex);
-			assert.equal(parsedContent, '<a href="' + nconf.get('base_url') + '/users">test</a> <a href="//youtube.com">youtube</a> some test <img src="' + nconf.get('base_url') + '/path/to/img"/>');
+			assert.equal(parsedContent, `<a href="${nconf.get('base_url')}/users">test</a> <a href="//youtube.com">youtube</a> some test <img src="${nconf.get('base_url')}/path/to/img"/>`);
 			done();
 		});
 	});
@@ -1097,7 +1097,7 @@ describe('Post\'s', function () {
 			helpers.loginUser('globalmod', 'globalmodpwd', function (err, _jar) {
 				jar = _jar;
 				assert.ifError(err);
-				request(nconf.get('url') + '/api/post-queue', { jar: jar, json: true }, function (err, res, body) {
+				request(`${nconf.get('url')}/api/post-queue`, { jar: jar, json: true }, function (err, res, body) {
 					assert.ifError(err);
 					assert.equal(body.posts[0].type, 'topic');
 					assert.equal(body.posts[0].data.content, 'queued topic content');
@@ -1118,7 +1118,7 @@ describe('Post\'s', function () {
 		it('should edit post in queue', function (done) {
 			socketPosts.editQueuedContent({ uid: globalModUid }, { id: queueId, content: 'newContent' }, function (err) {
 				assert.ifError(err);
-				request(nconf.get('url') + '/api/post-queue', { jar: jar, json: true }, function (err, res, body) {
+				request(`${nconf.get('url')}/api/post-queue`, { jar: jar, json: true }, function (err, res, body) {
 					assert.ifError(err);
 					assert.equal(body.posts[1].type, 'reply');
 					assert.equal(body.posts[1].data.content, 'newContent');
@@ -1130,7 +1130,7 @@ describe('Post\'s', function () {
 		it('should edit topic title in queue', function (done) {
 			socketPosts.editQueuedContent({ uid: globalModUid }, { id: topicQueueId, title: 'new topic title' }, function (err) {
 				assert.ifError(err);
-				request(nconf.get('url') + '/api/post-queue', { jar: jar, json: true }, function (err, res, body) {
+				request(`${nconf.get('url')}/api/post-queue`, { jar: jar, json: true }, function (err, res, body) {
 					assert.ifError(err);
 					assert.equal(body.posts[0].type, 'topic');
 					assert.equal(body.posts[0].data.title, 'new topic title');
@@ -1142,7 +1142,7 @@ describe('Post\'s', function () {
 		it('should edit topic category in queue', function (done) {
 			socketPosts.editQueuedContent({ uid: globalModUid }, { id: topicQueueId, cid: 2 }, function (err) {
 				assert.ifError(err);
-				request(nconf.get('url') + '/api/post-queue', { jar: jar, json: true }, function (err, res, body) {
+				request(`${nconf.get('url')}/api/post-queue`, { jar: jar, json: true }, function (err, res, body) {
 					assert.ifError(err);
 					assert.equal(body.posts[0].type, 'topic');
 					assert.equal(body.posts[0].data.cid, 2);
@@ -1232,7 +1232,7 @@ describe('Post\'s', function () {
 				posts.uploads.sync(pid, function (err) {
 					assert.ifError(err);
 
-					db.sortedSetCard('post:' + pid + ':uploads', function (err, length) {
+					db.sortedSetCard(`post:${pid}:uploads`, function (err, length) {
 						assert.ifError(err);
 						assert.strictEqual(length, 2);
 						done();
@@ -1252,7 +1252,7 @@ describe('Post\'s', function () {
 					async.apply(posts.uploads.sync, pid),
 				], function (err) {
 					assert.ifError(err);
-					db.sortedSetCard('post:' + pid + ':uploads', function (err, length) {
+					db.sortedSetCard(`post:${pid}:uploads`, function (err, length) {
 						assert.ifError(err);
 						assert.strictEqual(1, length);
 						done();
@@ -1323,7 +1323,7 @@ describe('Post\'s', function () {
 				async.waterfall([
 					async.apply(posts.uploads.associate, pid, ['test.bmp']),
 					function (next) {
-						db.getSortedSetRange('upload:' + md5('test.bmp') + ':pids', 0, -1, next);
+						db.getSortedSetRange(`upload:${md5('test.bmp')}:pids`, 0, -1, next);
 					},
 				], function (err, pids) {
 					assert.ifError(err);
@@ -1426,7 +1426,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should automatically sync uploads on topic create and reply', function (done) {
-			db.sortedSetsCard(['post:' + topic.topicData.mainPid + ':uploads', 'post:' + reply.pid + ':uploads'], function (err, lengths) {
+			db.sortedSetsCard([`post:${topic.topicData.mainPid}:uploads`, `post:${reply.pid}:uploads`], function (err, lengths) {
 				assert.ifError(err);
 				assert.strictEqual(1, lengths[0]);
 				assert.strictEqual(1, lengths[1]);

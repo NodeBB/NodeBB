@@ -34,7 +34,7 @@ module.exports = function (privileges) {
 		'admin:settings',
 	];
 
-	privileges.admin.groupPrivilegeList = privileges.admin.userPrivilegeList.map(privilege => 'groups:' + privilege);
+	privileges.admin.groupPrivilegeList = privileges.admin.userPrivilegeList.map(privilege => `groups:${privilege}`);
 
 	// Mapping for a page route (via direct match or regexp) to a privilege
 	privileges.admin.routeMap = {

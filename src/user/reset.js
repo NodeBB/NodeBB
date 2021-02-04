@@ -51,11 +51,11 @@ UserReset.send = async function (email) {
 	await db.sortedSetAdd('reset:issueDate:uid', Date.now(), uid);
 	const code = await UserReset.generate(uid);
 	await emailer.send('reset', uid, {
-		reset_link: nconf.get('url') + '/reset/' + code,
+		reset_link: `${nconf.get('url')}/reset/${code}`,
 		subject: '[[email:password-reset-requested]]',
 		template: 'reset',
 		uid: uid,
-	}).catch(err => winston.error('[emailer.send] ' + err.stack));
+	}).catch(err => winston.error(`[emailer.send] ${err.stack}`));
 };
 
 UserReset.commit = async function (code, password) {
@@ -69,7 +69,7 @@ UserReset.commit = async function (code, password) {
 		throw new Error('[[error:reset-code-not-valid]]');
 	}
 	const userData = await db.getObjectFields(
-		'user:' + uid,
+		`user:${uid}`,
 		['password', 'passwordExpiry', 'password:shaWrapped']
 	);
 	const ok = await Password.compare(password, userData.password, !!parseInt(userData['password:shaWrapped'], 10));
@@ -97,7 +97,7 @@ UserReset.commit = async function (code, password) {
 	]);
 	await user.reset.updateExpiry(uid);
 	await user.auth.resetLockout(uid);
-	await db.delete('uid:' + uid + ':confirm:email:sent');
+	await db.delete(`uid:${uid}:confirm:email:sent`);
 	await UserReset.cleanByUid(uid);
 };
 
@@ -108,7 +108,7 @@ UserReset.updateExpiry = async function (uid) {
 		const expiry = Date.now() + (oneDay * expireDays);
 		await user.setUserField(uid, 'passwordExpiry', expiry);
 	} else {
-		await db.deleteObjectField('user:' + uid, 'passwordExpiry');
+		await db.deleteObjectField(`user:${uid}`, 'passwordExpiry');
 	}
 };
 
@@ -121,7 +121,7 @@ UserReset.clean = async function () {
 		return;
 	}
 
-	winston.verbose('[UserReset.clean] Removing ' + tokens.length + ' reset tokens from database');
+	winston.verbose(`[UserReset.clean] Removing ${tokens.length} reset tokens from database`);
 	await cleanTokensAndUids(tokens, uids);
 };
 
@@ -139,11 +139,11 @@ UserReset.cleanByUid = async function (uid) {
 	}, { batch: 500 });
 
 	if (!tokensToClean.length) {
-		winston.verbose('[UserReset.cleanByUid] No tokens found for uid (' + uid + ').');
+		winston.verbose(`[UserReset.cleanByUid] No tokens found for uid (${uid}).`);
 		return;
 	}
 
-	winston.verbose('[UserReset.cleanByUid] Found ' + tokensToClean.length + ' token(s), removing...');
+	winston.verbose(`[UserReset.cleanByUid] Found ${tokensToClean.length} token(s), removing...`);
 	await cleanTokensAndUids(tokensToClean, uid);
 };
 

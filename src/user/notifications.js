@@ -18,11 +18,11 @@ UserNotifications.get = async function (uid) {
 		return { read: [], unread: [] };
 	}
 
-	let unread = await getNotificationsFromSet('uid:' + uid + ':notifications:unread', uid, 0, 29);
+	let unread = await getNotificationsFromSet(`uid:${uid}:notifications:unread`, uid, 0, 29);
 	unread = unread.filter(Boolean);
 	let read = [];
 	if (unread.length < 30) {
-		read = await getNotificationsFromSet('uid:' + uid + ':notifications:read', uid, 0, 29 - unread.length);
+		read = await getNotificationsFromSet(`uid:${uid}:notifications:read`, uid, 0, 29 - unread.length);
 	}
 	return {
 		read: read.filter(Boolean),
@@ -34,15 +34,15 @@ async function filterNotifications(nids, filter) {
 	if (!filter) {
 		return nids;
 	}
-	const keys = nids.map(nid => 'notifications:' + nid);
+	const keys = nids.map(nid => `notifications:${nid}`);
 	const notifications = await db.getObjectsFields(keys, ['nid', 'type']);
 	return notifications.filter(n => n && n.nid && n.type === filter).map(n => n.nid);
 }
 
 UserNotifications.getAll = async function (uid, filter) {
 	let nids = await db.getSortedSetRevRange([
-		'uid:' + uid + ':notifications:unread',
-		'uid:' + uid + ':notifications:read',
+		`uid:${uid}:notifications:unread`,
+		`uid:${uid}:notifications:read`,
 	], 0, -1);
 	nids = _.uniq(nids);
 	const exists = await db.isSortedSetMembers('notifications', nids);
@@ -61,8 +61,8 @@ UserNotifications.getAll = async function (uid, filter) {
 
 async function deleteUserNids(nids, uid) {
 	await db.sortedSetRemove([
-		'uid:' + uid + ':notifications:read',
-		'uid:' + uid + ':notifications:unread',
+		`uid:${uid}:notifications:read`,
+		`uid:${uid}:notifications:unread`,
 	], nids);
 }
 
@@ -78,7 +78,7 @@ UserNotifications.getNotifications = async function (nids, uid) {
 
 	const [notifObjs, hasRead] = await Promise.all([
 		notifications.getMultiple(nids),
-		db.isSortedSetMembers('uid:' + uid + ':notifications:read', nids),
+		db.isSortedSetMembers(`uid:${uid}:notifications:read`, nids),
 	]);
 
 	const deletedNids = [];
@@ -114,7 +114,7 @@ UserNotifications.getUnreadInterval = async function (uid, interval) {
 		return [];
 	}
 	const min = Date.now() - times[interval];
-	const nids = await db.getSortedSetRevRangeByScore('uid:' + uid + ':notifications:unread', 0, 20, '+inf', min);
+	const nids = await db.getSortedSetRevRangeByScore(`uid:${uid}:notifications:unread`, 0, 20, '+inf', min);
 	return await UserNotifications.getNotifications(nids, uid);
 };
 
@@ -126,9 +126,9 @@ UserNotifications.getUnreadCount = async function (uid) {
 	if (parseInt(uid, 10) <= 0) {
 		return 0;
 	}
-	let nids = await db.getSortedSetRevRange('uid:' + uid + ':notifications:unread', 0, 99);
+	let nids = await db.getSortedSetRevRange(`uid:${uid}:notifications:unread`, 0, 99);
 	nids = await notifications.filterExists(nids);
-	const keys = nids.map(nid => 'notifications:' + nid);
+	const keys = nids.map(nid => `notifications:${nid}`);
 	const notifData = await db.getObjectsFields(keys, ['mergeId']);
 	const mergeIds = notifData.map(n => n.mergeId);
 
@@ -144,11 +144,11 @@ UserNotifications.getUnreadCount = async function (uid) {
 };
 
 UserNotifications.getUnreadByField = async function (uid, field, values) {
-	const nids = await db.getSortedSetRevRange('uid:' + uid + ':notifications:unread', 0, 99);
+	const nids = await db.getSortedSetRevRange(`uid:${uid}:notifications:unread`, 0, 99);
 	if (!nids.length) {
 		return [];
 	}
-	const keys = nids.map(nid => 'notifications:' + nid);
+	const keys = nids.map(nid => `notifications:${nid}`);
 	const notifData = await db.getObjectsFields(keys, ['nid', field]);
 	const valuesSet = new Set(values.map(value => String(value)));
 	return notifData.filter(n => n && n[field] && valuesSet.has(String(n[field]))).map(n => n.nid);
@@ -159,14 +159,14 @@ UserNotifications.deleteAll = async function (uid) {
 		return;
 	}
 	await db.deleteAll([
-		'uid:' + uid + ':notifications:unread',
-		'uid:' + uid + ':notifications:read',
+		`uid:${uid}:notifications:unread`,
+		`uid:${uid}:notifications:read`,
 	]);
 };
 
 UserNotifications.sendTopicNotificationToFollowers = async function (uid, topicData, postData) {
 	try {
-		let followers = await db.getSortedSetRange('followers:' + uid, 0, -1);
+		let followers = await db.getSortedSetRange(`followers:${uid}`, 0, -1);
 		followers = await privileges.categories.filterUids('read', topicData.cid, followers);
 		if (!followers.length) {
 			return;
@@ -179,11 +179,11 @@ UserNotifications.sendTopicNotificationToFollowers = async function (uid, topicD
 
 		const notifObj = await notifications.create({
 			type: 'new-topic',
-			bodyShort: '[[notifications:user_posted_topic, ' + postData.user.username + ', ' + title + ']]',
+			bodyShort: `[[notifications:user_posted_topic, ${postData.user.username}, ${title}]]`,
 			bodyLong: postData.content,
 			pid: postData.pid,
-			path: '/post/' + postData.pid,
-			nid: 'tid:' + postData.tid + ':uid:' + uid,
+			path: `/post/${postData.pid}`,
+			nid: `tid:${postData.tid}:uid:${uid}`,
 			tid: postData.tid,
 			from: uid,
 		});
@@ -203,7 +203,7 @@ UserNotifications.sendWelcomeNotification = async function (uid) {
 	const notifObj = await notifications.create({
 		bodyShort: meta.config.welcomeNotification,
 		path: path,
-		nid: 'welcome_' + uid,
+		nid: `welcome_${uid}`,
 		from: meta.config.welcomeUid ? meta.config.welcomeUid : null,
 	});
 
@@ -212,9 +212,9 @@ UserNotifications.sendWelcomeNotification = async function (uid) {
 
 UserNotifications.sendNameChangeNotification = async function (uid, username) {
 	const notifObj = await notifications.create({
-		bodyShort: '[[user:username_taken_workaround, ' + username + ']]',
+		bodyShort: `[[user:username_taken_workaround, ${username}]]`,
 		image: 'brand:logo',
-		nid: 'username_taken:' + uid,
+		nid: `username_taken:${uid}`,
 		datetime: Date.now(),
 	});
 
@@ -224,5 +224,5 @@ UserNotifications.sendNameChangeNotification = async function (uid, username) {
 UserNotifications.pushCount = async function (uid) {
 	const websockets = require('../socket.io');
 	const count = await UserNotifications.getUnreadCount(uid);
-	websockets.in('uid_' + uid).emit('event:notifications.updateCount', count);
+	websockets.in(`uid_${uid}`).emit('event:notifications.updateCount', count);
 };

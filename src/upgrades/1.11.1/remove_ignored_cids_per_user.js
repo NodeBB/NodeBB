@@ -12,7 +12,7 @@ module.exports = {
 
 		batch.processSortedSet('users:joindate', function (uids, next) {
 			progress.incr(uids.length);
-			const keys = uids.map(uid => 'uid:' + uid + ':ignored:cids');
+			const keys = uids.map(uid => `uid:${uid}:ignored:cids`);
 			db.deleteAll(keys, next);
 		}, {
 			progress: this.progress,

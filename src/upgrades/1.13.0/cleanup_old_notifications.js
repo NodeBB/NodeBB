@@ -14,8 +14,8 @@ module.exports = {
 		await batch.processSortedSet('users:joindate', async function (uids) {
 			progress.incr(uids.length);
 			await Promise.all([
-				db.sortedSetsRemoveRangeByScore(uids.map(uid => 'uid:' + uid + ':notifications:unread'), '-inf', cutoffTime),
-				db.sortedSetsRemoveRangeByScore(uids.map(uid => 'uid:' + uid + ':notifications:read'), '-inf', cutoffTime),
+				db.sortedSetsRemoveRangeByScore(uids.map(uid => `uid:${uid}:notifications:unread`), '-inf', cutoffTime),
+				db.sortedSetsRemoveRangeByScore(uids.map(uid => `uid:${uid}:notifications:read`), '-inf', cutoffTime),
 			]);
 			const userData = await user.getUsersData(uids);
 			await Promise.all(userData.map(async function (user) {
@@ -40,7 +40,7 @@ module.exports = {
 					fields.push('icon:bgColor');
 				}
 				if (fields.length) {
-					await db.deleteObjectFields('user:' + user.uid, fields);
+					await db.deleteObjectFields(`user:${user.uid}`, fields);
 				}
 			}));
 		}, {

@@ -26,7 +26,7 @@ async function getFollow(tpl, name, req, res, next) {
 	const start = Math.max(0, page - 1) * resultsPerPage;
 	const stop = start + resultsPerPage - 1;
 
-	userData.title = '[[pages:' + tpl + ', ' + userData.username + ']]';
+	userData.title = `[[pages:${tpl}, ${userData.username}]]`;
 
 	const method = name === 'following' ? 'getFollowing' : 'getFollowers';
 	userData.users = await user[method](userData.uid, start, stop);
@@ -35,7 +35,7 @@ async function getFollow(tpl, name, req, res, next) {
 	const pageCount = Math.ceil(count / resultsPerPage);
 	userData.pagination = pagination.create(page, pageCount);
 
-	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[user:' + name + ']]' }]);
+	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: `/user/${userData.userslug}` }, { text: `[[user:${name}]]` }]);
 
 	res.render(tpl, userData);
 }

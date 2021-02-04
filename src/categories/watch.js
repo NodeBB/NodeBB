@@ -25,7 +25,7 @@ module.exports = function (Categories) {
 		if (!Array.isArray(cids) || !cids.length) {
 			return [];
 		}
-		const keys = cids.map(cid => 'cid:' + cid + ':uid:watch:state');
+		const keys = cids.map(cid => `cid:${cid}:uid:watch:state`);
 		const [userSettings, states] = await Promise.all([
 			user.getSettings(uid),
 			db.sortedSetsScore(keys, uid),
@@ -35,7 +35,7 @@ module.exports = function (Categories) {
 
 	Categories.getIgnorers = async function (cid, start, stop) {
 		const count = (stop === -1) ? -1 : (stop - start + 1);
-		return await db.getSortedSetRevRangeByScore('cid:' + cid + ':uid:watch:state', start, count, Categories.watchStates.ignoring, Categories.watchStates.ignoring);
+		return await db.getSortedSetRevRangeByScore(`cid:${cid}:uid:watch:state`, start, count, Categories.watchStates.ignoring, Categories.watchStates.ignoring);
 	};
 
 	Categories.filterIgnoringUids = async function (cid, uids) {
@@ -47,7 +47,7 @@ module.exports = function (Categories) {
 	Categories.getUidsWatchStates = async function (cid, uids) {
 		const [userSettings, states] = await Promise.all([
 			user.getMultipleUserSettings(uids),
-			db.sortedSetScores('cid:' + cid + ':uid:watch:state', uids),
+			db.sortedSetScores(`cid:${cid}:uid:watch:state`, uids),
 		]);
 		return states.map((state, index) => state || Categories.watchStates[userSettings[index].categoryWatchState]);
 	};

@@ -165,7 +165,7 @@ describe('User', function () {
 			for (var i = 0; i < 10; i += 1) {
 				users.push({
 					username: 'Jane Doe',
-					email: 'jane.doe' + i + '@example.com',
+					email: `jane.doe${i}@example.com`,
 				});
 			}
 
@@ -573,7 +573,7 @@ describe('User', function () {
 		});
 
 		it('.validate() should correctly identify an invalid code', function (done) {
-			User.reset.validate(code + 'abcdef', function (err, valid) {
+			User.reset.validate(`${code}abcdef`, function (err, valid) {
 				assert.ifError(err);
 				assert.strictEqual(valid, false);
 				done();
@@ -598,7 +598,7 @@ describe('User', function () {
 						User.getUserData(uid, next);
 					},
 					password: function (next) {
-						db.getObjectField('user:' + uid, 'password', next);
+						db.getObjectField(`user:${uid}`, 'password', next);
 					},
 				}, function (err, results) {
 					assert.ifError(err);
@@ -861,7 +861,7 @@ describe('User', function () {
 					assert.equal(result.userslug, 'updatedusername');
 					assert.equal(result.email, 'updatedEmail@me.com');
 
-					db.getObject('user:' + uid, function (err, userData) {
+					db.getObject(`user:${uid}`, function (err, userData) {
 						assert.ifError(err);
 						Object.keys(data).forEach(function (key) {
 							if (key !== 'password') {
@@ -942,7 +942,7 @@ describe('User', function () {
 		it('should change username', function (done) {
 			socketUser.changeUsernameEmail({ uid: uid }, { uid: uid, username: 'updatedAgain', password: '123456' }, function (err) {
 				assert.ifError(err);
-				db.getObjectField('user:' + uid, 'username', function (err, username) {
+				db.getObjectField(`user:${uid}`, 'username', function (err, username) {
 					assert.ifError(err);
 					assert.equal(username, 'updatedAgain');
 					done();
@@ -952,7 +952,7 @@ describe('User', function () {
 
 		it('should not let setting an empty username', async function () {
 			await socketUser.changeUsernameEmail({ uid: uid }, { uid: uid, username: '', password: '123456' });
-			const username = await db.getObjectField('user:' + uid, 'username');
+			const username = await db.getObjectField(`user:${uid}`, 'username');
 			assert.strictEqual(username, 'updatedAgain');
 		});
 
@@ -961,7 +961,7 @@ describe('User', function () {
 			const longName = new Array(maxLength).fill('a').join('');
 			const uid = await User.create({ username: longName });
 			await socketUser.changeUsernameEmail({ uid: uid }, { uid: uid, username: longName, email: 'verylong@name.com' });
-			const userData = await db.getObject('user:' + uid);
+			const userData = await db.getObject(`user:${uid}`);
 			assert.strictEqual(userData.username, longName);
 			assert.strictEqual(userData.email, 'verylong@name.com');
 		});
@@ -969,7 +969,7 @@ describe('User', function () {
 		it('should not update a user\'s username if it did not change', function (done) {
 			socketUser.changeUsernameEmail({ uid: uid }, { uid: uid, username: 'updatedAgain', password: '123456' }, function (err) {
 				assert.ifError(err);
-				db.getSortedSetRevRange('user:' + uid + ':usernames', 0, -1, function (err, data) {
+				db.getSortedSetRevRange(`user:${uid}:usernames`, 0, -1, function (err, data) {
 					assert.ifError(err);
 					assert.equal(data.length, 2);
 					assert(data[0].startsWith('updatedAgain'));
@@ -995,7 +995,7 @@ describe('User', function () {
 				assert.ifError(err);
 				socketUser.changeUsernameEmail({ uid: uid }, { uid: uid, email: 'updatedAgain@me.com', password: '123456' }, function (err) {
 					assert.ifError(err);
-					db.getObjectField('user:' + uid, 'email', function (err, email) {
+					db.getObjectField(`user:${uid}`, 'email', function (err, email) {
 						assert.ifError(err);
 						assert.equal(email, 'updatedAgain@me.com');
 						done();
@@ -1031,7 +1031,7 @@ describe('User', function () {
 			socketUser.updateCover({ uid: uid }, { uid: uid, imageData: imageData, position: position }, function (err, result) {
 				assert.ifError(err);
 				assert(result.url);
-				db.getObjectFields('user:' + uid, ['cover:url', 'cover:position'], function (err, data) {
+				db.getObjectFields(`user:${uid}`, ['cover:url', 'cover:position'], function (err, data) {
 					assert.ifError(err);
 					assert.equal(data['cover:url'], result.url);
 					assert.equal(data['cover:position'], position);
@@ -1045,7 +1045,7 @@ describe('User', function () {
 			socketUser.uploadCroppedPicture({ uid: uid }, { uid: uid, imageData: imageData }, function (err, result) {
 				assert.ifError(err);
 				assert(result.url);
-				db.getObjectFields('user:' + uid, ['uploadedpicture', 'picture'], function (err, data) {
+				db.getObjectFields(`user:${uid}`, ['uploadedpicture', 'picture'], function (err, data) {
 					assert.ifError(err);
 					assert.equal(result.url, data.uploadedpicture);
 					assert.equal(result.url, data.picture);
@@ -1057,7 +1057,7 @@ describe('User', function () {
 		it('should remove cover image', function (done) {
 			socketUser.removeCover({ uid: uid }, { uid: uid }, function (err) {
 				assert.ifError(err);
-				db.getObjectField('user:' + uid, 'cover:url', function (err, url) {
+				db.getObjectField(`user:${uid}`, 'cover:url', function (err, url) {
 					assert.ifError(err);
 					assert.equal(url, null);
 					done();
@@ -1121,7 +1121,7 @@ describe('User', function () {
 					assert.ifError(err);
 					User.getUserField(uid, 'picture', function (err, picture) {
 						assert.ifError(err);
-						assert.equal(picture, nconf.get('relative_path') + '/test');
+						assert.equal(picture, `${nconf.get('relative_path')}/test`);
 						done();
 					});
 				});
@@ -1248,7 +1248,7 @@ describe('User', function () {
 		});
 
 		it('should load profile page', function (done) {
-			request(nconf.get('url') + '/api/user/updatedagain', { jar: jar, json: true }, function (err, res, body) {
+			request(`${nconf.get('url')}/api/user/updatedagain`, { jar: jar, json: true }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1257,7 +1257,7 @@ describe('User', function () {
 		});
 
 		it('should load settings page', function (done) {
-			request(nconf.get('url') + '/api/user/updatedagain/settings', { jar: jar, json: true }, function (err, res, body) {
+			request(`${nconf.get('url')}/api/user/updatedagain/settings`, { jar: jar, json: true }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body.settings);
@@ -1268,7 +1268,7 @@ describe('User', function () {
 		});
 
 		it('should load edit page', function (done) {
-			request(nconf.get('url') + '/api/user/updatedagain/edit', { jar: jar, json: true }, function (err, res, body) {
+			request(`${nconf.get('url')}/api/user/updatedagain/edit`, { jar: jar, json: true }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1277,7 +1277,7 @@ describe('User', function () {
 		});
 
 		it('should load edit/email page', function (done) {
-			request(nconf.get('url') + '/api/user/updatedagain/edit/email', { jar: jar, json: true }, function (err, res, body) {
+			request(`${nconf.get('url')}/api/user/updatedagain/edit/email`, { jar: jar, json: true }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1293,7 +1293,7 @@ describe('User', function () {
 				assert.ifError(err);
 				groups.join('Test', uid, function (err) {
 					assert.ifError(err);
-					request(nconf.get('url') + '/api/user/updatedagain/groups', { jar: jar, json: true }, function (err, res, body) {
+					request(`${nconf.get('url')}/api/user/updatedagain/groups`, { jar: jar, json: true }, function (err, res, body) {
 						assert.ifError(err);
 						assert.equal(res.statusCode, 200);
 						assert(Array.isArray(body.groups));
@@ -1325,8 +1325,8 @@ describe('User', function () {
 
 		it('should get history from set', async function () {
 			const now = Date.now();
-			await db.sortedSetAdd('user:' + testUserUid + ':usernames', now, 'derp:' + now);
-			const data = await User.getHistory('user:' + testUserUid + ':usernames');
+			await db.sortedSetAdd(`user:${testUserUid}:usernames`, now, `derp:${now}`);
+			const data = await User.getHistory(`user:${testUserUid}:usernames`);
 			assert.equal(data[0].value, 'derp');
 			assert.equal(data[0].timestamp, now);
 		});
@@ -1439,7 +1439,7 @@ describe('User', function () {
 			var testUsers = ['daysub', 'offsub', 'nullsub', 'weeksub'];
 			async.each(testUsers, function (username, next) {
 				async.waterfall([
-					async.apply(User.create, { username: username, email: username + '@example.com' }),
+					async.apply(User.create, { username: username, email: `${username}@example.com` }),
 					function (uid, next) {
 						if (username === 'nullsub') {
 							return setImmediate(next);
@@ -1556,12 +1556,12 @@ describe('User', function () {
 
 				request({
 					method: 'post',
-					url: nconf.get('url') + '/email/unsubscribe/' + token,
+					url: `${nconf.get('url')}/email/unsubscribe/${token}`,
 				}, function (err, res) {
 					assert.ifError(err);
 					assert.strictEqual(res.statusCode, 200);
 
-					db.getObjectField('user:' + uid + ':settings', 'dailyDigestFreq', function (err, value) {
+					db.getObjectField(`user:${uid}:settings`, 'dailyDigestFreq', function (err, value) {
 						assert.ifError(err);
 						assert.strictEqual(value, 'off');
 						done();
@@ -1578,12 +1578,12 @@ describe('User', function () {
 
 				request({
 					method: 'post',
-					url: nconf.get('url') + '/email/unsubscribe/' + token,
+					url: `${nconf.get('url')}/email/unsubscribe/${token}`,
 				}, function (err, res) {
 					assert.ifError(err);
 					assert.strictEqual(res.statusCode, 200);
 
-					db.getObjectField('user:' + uid + ':settings', 'notificationType_test', function (err, value) {
+					db.getObjectField(`user:${uid}:settings`, 'notificationType_test', function (err, value) {
 						assert.ifError(err);
 						assert.strictEqual(value, 'notification');
 						done();
@@ -1598,7 +1598,7 @@ describe('User', function () {
 
 				request({
 					method: 'post',
-					url: nconf.get('url') + '/email/unsubscribe/' + token,
+					url: `${nconf.get('url')}/email/unsubscribe/${token}`,
 				}, function (err, res) {
 					assert.ifError(err);
 					assert.strictEqual(res.statusCode, 404);
@@ -1614,7 +1614,7 @@ describe('User', function () {
 
 				request({
 					method: 'post',
-					url: nconf.get('url') + '/email/unsubscribe/' + token,
+					url: `${nconf.get('url')}/email/unsubscribe/${token}`,
 				}, function (err, res) {
 					assert.ifError(err);
 					assert.strictEqual(res.statusCode, 404);
@@ -1625,7 +1625,7 @@ describe('User', function () {
 			it('should return errors on missing token', function (done) {
 				request({
 					method: 'post',
-					url: nconf.get('url') + '/email/unsubscribe/',
+					url: `${nconf.get('url')}/email/unsubscribe/`,
 				}, function (err, res) {
 					assert.ifError(err);
 					assert.strictEqual(res.statusCode, 404);
@@ -1638,11 +1638,11 @@ describe('User', function () {
 					template: 'notification',
 					type: 'test',
 					uid: uid,
-				}, nconf.get('secret') + 'aababacaba');
+				}, `${nconf.get('secret')}aababacaba`);
 
 				request({
 					method: 'post',
-					url: nconf.get('url') + '/email/unsubscribe/' + token,
+					url: `${nconf.get('url')}/email/unsubscribe/${token}`,
 				}, function (err, res) {
 					assert.ifError(err);
 					assert.strictEqual(res.statusCode, 403);
@@ -1932,7 +1932,7 @@ describe('User', function () {
 				assert.ifError(err);
 				helpers.loginUser('admin', '123456', function (err, jar) {
 					assert.ifError(err);
-					request(nconf.get('url') + '/api/admin/manage/registration', { jar: jar, json: true }, function (err, res, body) {
+					request(`${nconf.get('url')}/api/admin/manage/registration`, { jar: jar, json: true }, function (err, res, body) {
 						assert.ifError(err);
 						assert.equal(body.users[0].username, 'rejectme');
 						assert.equal(body.users[0].email, '&lt;script&gt;alert(&quot;ok&quot;)&lt;script&gt;reject@me.com');
@@ -2066,7 +2066,7 @@ describe('User', function () {
 					jar = _jar;
 
 					request({
-						url: nconf.get('url') + '/api/config',
+						url: `${nconf.get('url')}/api/config`,
 						json: true,
 						jar: jar,
 					}, function (err, response, body) {
@@ -2102,7 +2102,7 @@ describe('User', function () {
 					jar = _jar;
 
 					request({
-						url: nconf.get('url') + '/api/config',
+						url: `${nconf.get('url')}/api/config`,
 						json: true,
 						jar: jar,
 					}, function (err, response, body) {
@@ -2168,7 +2168,7 @@ describe('User', function () {
 				meta.config.maximumInvites = 1;
 				const { res } = await helpers.invite({ emails: 'invite6@test.com', groupsToJoin: [] }, inviterUid, jar, csrf_token);
 				assert.strictEqual(res.statusCode, 403);
-				assert.strictEqual(res.body.status.message, '[[error:invite-maximum-met, ' + 5 + ', ' + 1 + ']]');
+				assert.strictEqual(res.body.status.message, `[[error:invite-maximum-met, ${5}, ${1}]]`);
 				meta.config.maximumInvites = 10;
 			});
 
@@ -2202,7 +2202,7 @@ describe('User', function () {
 					jar = _jar;
 
 					request({
-						url: nconf.get('url') + '/api/config',
+						url: `${nconf.get('url')}/api/config`,
 						json: true,
 						jar: jar,
 					}, function (err, response, body) {
@@ -2231,7 +2231,7 @@ describe('User', function () {
 				User.getInvites(inviterUid, function (err, data) {
 					assert.ifError(err);
 					Array.from(Array(6)).forEach((_, i) => {
-						assert.notEqual(data.indexOf('invite' + (i + 1) + '@test.com'), -1);
+						assert.notEqual(data.indexOf(`invite${i + 1}@test.com`), -1);
 					});
 					done();
 				});
@@ -2246,7 +2246,7 @@ describe('User', function () {
 
 					var inviterData = data.filter(d => parseInt(d.uid, 10) === inviterUid)[0];
 					Array.from(Array(6)).forEach((_, i) => {
-						assert.notEqual(inviterData.invitations.indexOf('invite' + (i + 1) + '@test.com'), -1);
+						assert.notEqual(inviterData.invitations.indexOf(`invite${i + 1}@test.com`), -1);
 					});
 
 					done();
@@ -2269,7 +2269,7 @@ describe('User', function () {
 
 			it('should verify installation with no errors', function (done) {
 				var email = 'invite1@test.com';
-				db.getObjectField('invitation:email:' + email, 'token', function (err, token) {
+				db.getObjectField(`invitation:email:${email}`, 'token', function (err, token) {
 					assert.ifError(err);
 					User.verifyInvitation({ token: token, email: 'invite1@test.com' }, function (err) {
 						assert.ifError(err);
@@ -2289,7 +2289,7 @@ describe('User', function () {
 				var socketUser = require('../src/socket.io/user');
 				socketUser.deleteInvitation({ uid: adminUid }, { invitedBy: 'inviter', email: 'invite1@test.com' }, function (err) {
 					assert.ifError(err);
-					db.isSetMember('invitation:uid:' + inviterUid, 'invite1@test.com', function (err, isMember) {
+					db.isSetMember(`invitation:uid:${inviterUid}`, 'invite1@test.com', function (err, isMember) {
 						assert.ifError(err);
 						assert.equal(isMember, false);
 						done();
@@ -2300,7 +2300,7 @@ describe('User', function () {
 			it('should delete invitation key', function (done) {
 				User.deleteInvitationKey('invite99@test.com', function (err) {
 					assert.ifError(err);
-					db.isSetMember('invitation:uid:' + adminUid, 'invite99@test.com', function (err, isMember) {
+					db.isSetMember(`invitation:uid:${adminUid}`, 'invite99@test.com', function (err, isMember) {
 						assert.ifError(err);
 						assert.equal(isMember, false);
 						db.isSetMember('invitation:uids', adminUid, function (err, isMember) {
@@ -2315,7 +2315,7 @@ describe('User', function () {
 			it('should joined the groups from invitation after registration', async function () {
 				var email = 'invite5@test.com';
 				var groupsToJoin = [PUBLIC_GROUP, OWN_PRIVATE_GROUP];
-				var token = await db.getObjectField('invitation:email:' + email, 'token');
+				var token = await db.getObjectField(`invitation:email:${email}`, 'token');
 
 				await new Promise(function (resolve, reject) {
 					helpers.registerUser({
@@ -2353,7 +2353,7 @@ describe('User', function () {
 					jar = _jar;
 
 					request({
-						url: nconf.get('url') + '/api/config',
+						url: `${nconf.get('url')}/api/config`,
 						json: true,
 						jar: jar,
 					}, function (err, response, body) {
@@ -2417,7 +2417,7 @@ describe('User', function () {
 			assert.strictEqual(unverified, true);
 			await User.email.confirmByCode(code);
 			const [confirmed, isVerified] = await Promise.all([
-				db.getObjectField('user:' + uid, 'email:confirmed'),
+				db.getObjectField(`user:${uid}`, 'email:confirmed'),
 				groups.isMember(uid, 'verified-users', uid),
 			]);
 			assert.strictEqual(parseInt(confirmed, 10), 1);
@@ -2435,7 +2435,7 @@ describe('User', function () {
 			assert.strictEqual(unverified, true);
 			await User.email.confirmByUid(uid);
 			const [confirmed, isVerified] = await Promise.all([
-				db.getObjectField('user:' + uid, 'email:confirmed'),
+				db.getObjectField(`user:${uid}`, 'email:confirmed'),
 				groups.isMember(uid, 'verified-users', uid),
 			]);
 			assert.strictEqual(parseInt(confirmed, 10), 1);
@@ -2484,7 +2484,7 @@ describe('User', function () {
 			}, function (err, _uid) {
 				uid = _uid;
 				assert.ifError(err);
-				request(nconf.get('url') + '/api/user/hiddenemail', { json: true }, function (err, res, body) {
+				request(`${nconf.get('url')}/api/user/hiddenemail`, { json: true }, function (err, res, body) {
 					assert.ifError(err);
 					assert.equal(body.fullname, '');
 					assert.equal(body.email, '');
@@ -2502,10 +2502,10 @@ describe('User', function () {
 				cid: testCid,
 			}, function (err) {
 				assert.ifError(err);
-				request(nconf.get('url') + '/api/recent', { json: true }, function (err, res, body) {
+				request(`${nconf.get('url')}/api/recent`, { json: true }, function (err, res, body) {
 					assert.ifError(err);
 					assert(!body.topics[0].user.hasOwnProperty('fullname'));
-					request(nconf.get('url') + '/api/topic/' + body.topics[0].slug, { json: true }, function (err, res, body) {
+					request(`${nconf.get('url')}/api/topic/${body.topics[0].slug}`, { json: true }, function (err, res, body) {
 						assert.ifError(err);
 						assert(!body.posts[0].user.hasOwnProperty('fullname'));
 						done();

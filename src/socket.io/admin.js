@@ -47,7 +47,7 @@ SocketAdmin.before = async function (socket, method) {
 		return;
 	}
 
-	winston.warn('[socket.io] Call to admin method ( ' + method + ' ) blocked (accessed by uid ' + socket.uid + ')');
+	winston.warn(`[socket.io] Call to admin method ( ${method} ) blocked (accessed by uid ${socket.uid})`);
 	throw new Error('[[error:no-privileges]]');
 };
 
@@ -106,7 +106,7 @@ SocketAdmin.deleteAllSessions = function (socket, data, callback) {
 };
 
 SocketAdmin.reloadAllSessions = function (socket, data, callback) {
-	websockets.in('uid_' + socket.uid).emit('event:livereload');
+	websockets.in(`uid_${socket.uid}`).emit('event:livereload');
 	callback();
 };
 

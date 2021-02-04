@@ -11,7 +11,7 @@ var utils = require('../../public/src/utils');
 module.exports = function (User) {
 	User.getLatestBanInfo = async function (uid) {
 		// Simply retrieves the last record of the user's ban, even if they've been unbanned since then.
-		const record = await db.getSortedSetRevRange('uid:' + uid + ':bans:timestamp', 0, 0);
+		const record = await db.getSortedSetRevRange(`uid:${uid}:bans:timestamp`, 0, 0);
 		if (!record.length) {
 			throw new Error('no-ban-info');
 		}
@@ -31,12 +31,12 @@ module.exports = function (User) {
 
 	User.getModerationHistory = async function (uid) {
 		let [flags, bans] = await Promise.all([
-			db.getSortedSetRevRangeWithScores('flags:byTargetUid:' + uid, 0, 19),
-			db.getSortedSetRevRange('uid:' + uid + ':bans:timestamp', 0, 19),
+			db.getSortedSetRevRangeWithScores(`flags:byTargetUid:${uid}`, 0, 19),
+			db.getSortedSetRevRange(`uid:${uid}:bans:timestamp`, 0, 19),
 		]);
 
 		// Get pids from flag objects
-		const keys = flags.map(flagObj => 'flag:' + flagObj.value);
+		const keys = flags.map(flagObj => `flag:${flagObj.value}`);
 		const payload = await db.getObjectsFields(keys, ['type', 'targetId']);
 
 		// Only pass on flag ids from posts
@@ -111,8 +111,8 @@ module.exports = function (User) {
 	}
 
 	User.getModerationNotes = async function (uid, start, stop) {
-		const noteIds = await db.getSortedSetRevRange('uid:' + uid + ':moderation:notes', start, stop);
-		const keys = noteIds.map(id => 'uid:' + uid + ':moderation:note:' + id);
+		const noteIds = await db.getSortedSetRevRange(`uid:${uid}:moderation:notes`, start, stop);
+		const keys = noteIds.map(id => `uid:${uid}:moderation:note:${id}`);
 		const notes = await db.getObjects(keys);
 		const uids = [];
 
@@ -135,7 +135,7 @@ module.exports = function (User) {
 	};
 
 	User.appendModerationNote = async ({ uid, noteData }) => {
-		await db.sortedSetAdd('uid:' + uid + ':moderation:notes', noteData.timestamp, noteData.timestamp);
-		await db.setObject('uid:' + uid + ':moderation:note:' + noteData.timestamp, noteData);
+		await db.sortedSetAdd(`uid:${uid}:moderation:notes`, noteData.timestamp, noteData.timestamp);
+		await db.setObject(`uid:${uid}:moderation:note:${noteData.timestamp}`, noteData);
 	};
 };

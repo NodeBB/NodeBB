@@ -17,7 +17,7 @@ module.exports = function (middleware) {
 		};
 
 		if (meta.config['csp-frame-ancestors']) {
-			headers['Content-Security-Policy'] = 'frame-ancestors ' + meta.config['csp-frame-ancestors'];
+			headers['Content-Security-Policy'] = `frame-ancestors ${meta.config['csp-frame-ancestors']}`;
 			if (meta.config['csp-frame-ancestors'] === '\'none\'') {
 				headers['X-Frame-Options'] = 'DENY';
 			}
@@ -44,7 +44,7 @@ module.exports = function (middleware) {
 				try {
 					origin = new RegExp(origin.trim());
 				} catch (err) {
-					winston.error('[middleware.addHeaders] Invalid RegExp For access-control-allow-origin ' + origin);
+					winston.error(`[middleware.addHeaders] Invalid RegExp For access-control-allow-origin ${origin}`);
 					origin = null;
 				}
 				return origin;
@@ -102,7 +102,7 @@ module.exports = function (middleware) {
 			const codes = await languages.listCodes();
 			return _.uniq([defaultLang, ...codes]);
 		} catch (err) {
-			winston.error('[middleware/autoLocale] Could not retrieve languages codes list! ' + err.stack);
+			winston.error(`[middleware/autoLocale] Could not retrieve languages codes list! ${err.stack}`);
 			return [defaultLang];
 		}
 	}

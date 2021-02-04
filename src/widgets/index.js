@@ -62,7 +62,7 @@ async function renderWidget(widget, uid, options) {
 
 	const userLang = config.userLang || meta.config.defaultLang || 'en-GB';
 	const templateData = _.assign({ }, options.templateData, { config: config });
-	const data = await plugins.hooks.fire('filter:widget.render:' + widget.widget, {
+	const data = await plugins.hooks.fire(`filter:widget.render:${widget.widget}`, {
 		uid: uid,
 		area: options,
 		templateData: templateData,
@@ -105,7 +105,7 @@ async function checkVisibility(widget, uid) {
 }
 
 widgets.getWidgetDataForTemplates = async function (templates) {
-	const keys = templates.map(tpl => 'widgets:' + tpl);
+	const keys = templates.map(tpl => `widgets:${tpl}`);
 	const data = await db.getObjects(keys);
 
 	const returnData = {};
@@ -121,7 +121,7 @@ widgets.getWidgetDataForTemplates = async function (templates) {
 				try {
 					returnData[template][location] = parseWidgetData(templateWidgetData[location]);
 				} catch (err) {
-					winston.error('can not parse widget data. template:  ' + template + ' location: ' + location);
+					winston.error(`can not parse widget data. template:  ${template} location: ${location}`);
 					returnData[template][location] = [];
 				}
 			} else {
@@ -134,7 +134,7 @@ widgets.getWidgetDataForTemplates = async function (templates) {
 };
 
 widgets.getArea = async function (template, location) {
-	const result = await db.getObjectField('widgets:' + template, location);
+	const result = await db.getObjectField(`widgets:${template}`, location);
 	if (!result) {
 		return [];
 	}
@@ -164,7 +164,7 @@ widgets.setArea = async function (area) {
 		throw new Error('Missing location and template data');
 	}
 
-	await db.setObjectField('widgets:' + area.template, area.location, JSON.stringify(area.widgets));
+	await db.setObjectField(`widgets:${area.template}`, area.location, JSON.stringify(area.widgets));
 };
 
 widgets.reset = async function () {
@@ -197,13 +197,13 @@ widgets.reset = async function () {
 
 widgets.resetTemplate = async function (template) {
 	let toBeDrafted = [];
-	const area = await db.getObject('widgets:' + template + '.tpl');
+	const area = await db.getObject(`widgets:${template}.tpl`);
 	for (var location in area) {
 		if (area.hasOwnProperty(location)) {
 			toBeDrafted = toBeDrafted.concat(JSON.parse(area[location]));
 		}
 	}
-	await db.delete('widgets:' + template + '.tpl');
+	await db.delete(`widgets:${template}.tpl`);
 	let draftWidgets = await db.getObjectField('widgets:global', 'drafts');
 	draftWidgets = JSON.parse(draftWidgets).concat(toBeDrafted);
 	await db.setObjectField('widgets:global', 'drafts', JSON.stringify(draftWidgets));

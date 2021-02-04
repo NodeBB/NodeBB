@@ -19,7 +19,7 @@ pubsub.on('sync:stats:start', function () {
 	const stats = SocketRooms.getLocalStats();
 	pubsub.publish('sync:stats:end', {
 		stats: stats,
-		id: os.hostname() + ':' + nconf.get('port'),
+		id: `${os.hostname()}:${nconf.get('port')}`,
 	});
 });
 
@@ -35,7 +35,7 @@ pubsub.on('sync:stats:guests', function (eventId) {
 
 SocketRooms.getTotalGuestCount = function (callback) {
 	var count = 0;
-	var eventId = 'sync:stats:guests:end:' + utils.generateUUID();
+	var eventId = `sync:stats:guests:end:${utils.generateUUID()}`;
 	pubsub.on(eventId, function (guestCount) {
 		count += guestCount;
 	});

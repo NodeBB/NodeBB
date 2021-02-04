@@ -23,7 +23,7 @@ async function activate(plugin) {
 		await db.init();
 		if (!pluginNamePattern.test(plugin)) {
 			// Allow omission of `nodebb-plugin-`
-			plugin = 'nodebb-plugin-' + plugin;
+			plugin = `nodebb-plugin-${plugin}`;
 		}
 		const isInstalled = await plugins.isInstalled(plugin);
 		if (!isInstalled) {
@@ -42,7 +42,7 @@ async function activate(plugin) {
 			text: plugin,
 		});
 	} catch (err) {
-		winston.error('An error occurred during plugin activation\n' + err.stack);
+		winston.error(`An error occurred during plugin activation\n${err.stack}`);
 	}
 	process.exit(0);
 }
@@ -72,7 +72,7 @@ async function listPlugins() {
 	// Pretty output
 	process.stdout.write('Active plugins:\n');
 	combined.forEach((plugin) => {
-		process.stdout.write('\t* ' + plugin.id + (plugin.version ? '@' + plugin.version : '') + ' (');
+		process.stdout.write(`\t* ${plugin.id}${plugin.version ? `@${plugin.version}` : ''} (`);
 		process.stdout.write(plugin.installed ? 'installed'.green : 'not installed'.red);
 		process.stdout.write(', ');
 		process.stdout.write(plugin.active ? 'enabled'.green : 'disabled'.yellow);
@@ -85,9 +85,9 @@ async function listPlugins() {
 async function listEvents(count) {
 	await db.init();
 	const eventData = await events.getEvents('', 0, (count || 10) - 1);
-	console.log(('\nDisplaying last ' + count + ' administrative events...').bold);
+	console.log((`\nDisplaying last ${count} administrative events...`).bold);
 	eventData.forEach(function (event) {
-		console.log('  * ' + String(event.timestampISO).green + ' ' + String(event.type).yellow + (event.text ? ' ' + event.text : '') + ' (uid: '.reset + (event.uid ? event.uid : 0) + ')');
+		console.log(`  * ${String(event.timestampISO).green} ${String(event.type).yellow}${event.text ? ` ${event.text}` : ''}${' (uid: '.reset}${event.uid ? event.uid : 0})`);
 	});
 	process.exit();
 }
@@ -95,28 +95,28 @@ async function listEvents(count) {
 async function info() {
 	console.log('');
 	const version = require('../../package.json').version;
-	console.log('  version:  ' + version);
+	console.log(`  version:  ${version}`);
 
-	console.log('  Node ver: ' + process.version);
+	console.log(`  Node ver: ${process.version}`);
 
 	const hash = childProcess.execSync('git rev-parse HEAD');
-	console.log('  git hash: ' + hash);
+	console.log(`  git hash: ${hash}`);
 
 	const config = require('../../config.json');
-	console.log('  database: ' + config.database);
+	console.log(`  database: ${config.database}`);
 
 	await db.init();
 	const info = await db.info(db.client);
 
 	switch (config.database) {
 		case 'redis':
-			console.log('        version: ' + info.redis_version);
-			console.log('        disk sync:  ' + info.rdb_last_bgsave_status);
+			console.log(`        version: ${info.redis_version}`);
+			console.log(`        disk sync:  ${info.rdb_last_bgsave_status}`);
 			break;
 
 		case 'mongo':
-			console.log('        version: ' + info.version);
-			console.log('        engine:  ' + info.storageEngine);
+			console.log(`        version: ${info.version}`);
+			console.log(`        engine:  ${info.storageEngine}`);
 			break;
 	}
 
@@ -138,7 +138,7 @@ async function info() {
 
 	console.log('');
 	console.log(graph.toString());
-	console.log('Pageviews, last 24h (min: ' + min + '  max: ' + max + ')');
+	console.log(`Pageviews, last 24h (min: ${min}  max: ${max})`);
 	process.exit();
 }
 

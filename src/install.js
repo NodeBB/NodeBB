@@ -171,7 +171,7 @@ async function completeConfigSetup(config) {
 
 	// Sanity-check/fix url/port
 	if (!/^http(?:s)?:\/\//.test(config.url)) {
-		config.url = 'http://' + config.url;
+		config.url = `http://${config.url}`;
 	}
 	var urlObj = url.parse(config.url);
 	if (urlObj.port) {
@@ -215,7 +215,7 @@ async function enableDefaultTheme() {
 	}
 
 	const defaultTheme = nconf.get('defaultTheme') || 'nodebb-theme-persona';
-	console.log('Enabling default theme: ' + defaultTheme);
+	console.log(`Enabling default theme: ${defaultTheme}`);
 	await meta.themes.set({
 		type: 'local',
 		id: defaultTheme,
@@ -277,7 +277,7 @@ async function createAdmin() {
 		try {
 			User.isPasswordValid(results.password);
 		} catch (err) {
-			winston.warn('Password error, please try again. ' + err.message);
+			winston.warn(`Password error, please try again. ${err.message}`);
 			return await retryPassword(results);
 		}
 
@@ -366,7 +366,7 @@ async function createCategories() {
 	const db = require('./database');
 	const cids = await db.getSortedSetRange('categories:cid', 0, -1);
 	if (Array.isArray(cids) && cids.length) {
-		console.log('Categories OK. Found ' + cids.length + ' categories.');
+		console.log(`Categories OK. Found ${cids.length} categories.`);
 		return;
 	}
 
@@ -496,7 +496,7 @@ install.setup = async function () {
 		return data;
 	} catch (err) {
 		if (err) {
-			winston.warn('NodeBB Setup Aborted.\n ' + err.stack);
+			winston.warn(`NodeBB Setup Aborted.\n ${err.stack}`);
 			process.exit(1);
 		}
 	}

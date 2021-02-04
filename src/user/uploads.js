@@ -11,7 +11,7 @@ const batch = require('../batch');
 module.exports = function (User) {
 	User.deleteUpload = async function (callerUid, uid, uploadName) {
 		const [isUsersUpload, isAdminOrGlobalMod] = await Promise.all([
-			db.isSortedSetMember('uid:' + callerUid + ':uploads', uploadName),
+			db.isSortedSetMember(`uid:${callerUid}:uploads`, uploadName),
 			User.isAdminOrGlobalMod(callerUid),
 		]);
 		if (!isAdminOrGlobalMod && !isUsersUpload) {
@@ -22,16 +22,16 @@ module.exports = function (User) {
 		if (!finalPath.startsWith(nconf.get('upload_path'))) {
 			throw new Error('[[error:invalid-path]]');
 		}
-		winston.verbose('[user/deleteUpload] Deleting ' + uploadName);
+		winston.verbose(`[user/deleteUpload] Deleting ${uploadName}`);
 		await Promise.all([
 			file.delete(finalPath),
 			file.delete(file.appendToFileName(finalPath, '-resized')),
 		]);
-		await db.sortedSetRemove('uid:' + uid + ':uploads', uploadName);
+		await db.sortedSetRemove(`uid:${uid}:uploads`, uploadName);
 	};
 
 	User.collateUploads = async function (uid, archive) {
-		await batch.processSortedSet('uid:' + uid + ':uploads', function (files, next) {
+		await batch.processSortedSet(`uid:${uid}:uploads`, function (files, next) {
 			files.forEach(function (file) {
 				archive.file(path.join(nconf.get('upload_path'), file), {
 					name: path.basename(file),

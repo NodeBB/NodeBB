@@ -13,7 +13,7 @@ module.exports = function (Groups) {
 		if (!Array.isArray(groupNames)) {
 			groupNames = [groupNames];
 		}
-		const keys = groupNames.map(name => uid + ':' + name);
+		const keys = groupNames.map(name => `${uid}:${name}`);
 		Groups.cache.del(keys);
 	};
 };

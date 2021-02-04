@@ -92,24 +92,24 @@ module.exports = function (Categories) {
 
 	Categories.buildTopicsSortedSet = async function (data) {
 		const cid = data.cid;
-		let set = 'cid:' + cid + ':tids';
+		let set = `cid:${cid}:tids`;
 		const sort = data.sort || (data.settings && data.settings.categoryTopicSort) || meta.config.categoryTopicSort || 'newest_to_oldest';
 
 		if (sort === 'most_posts') {
-			set = 'cid:' + cid + ':tids:posts';
+			set = `cid:${cid}:tids:posts`;
 		} else if (sort === 'most_votes') {
-			set = 'cid:' + cid + ':tids:votes';
+			set = `cid:${cid}:tids:votes`;
 		}
 
 		if (data.targetUid) {
-			set = 'cid:' + cid + ':uid:' + data.targetUid + ':tids';
+			set = `cid:${cid}:uid:${data.targetUid}:tids`;
 		}
 
 		if (data.tag) {
 			if (Array.isArray(data.tag)) {
-				set = [set].concat(data.tag.map(tag => 'tag:' + tag + ':topics'));
+				set = [set].concat(data.tag.map(tag => `tag:${tag}:topics`));
 			} else {
-				set = [set, 'tag:' + data.tag + ':topics'];
+				set = [set, `tag:${data.tag}:topics`];
 			}
 		}
 		const result = await plugins.hooks.fire('filter:categories.buildTopicsSortedSet', {
@@ -130,7 +130,7 @@ module.exports = function (Categories) {
 	};
 
 	Categories.getAllTopicIds = async function (cid, start, stop) {
-		return await db.getSortedSetRange(['cid:' + cid + ':tids:pinned', 'cid:' + cid + ':tids'], start, stop);
+		return await db.getSortedSetRange([`cid:${cid}:tids:pinned`, `cid:${cid}:tids`], start, stop);
 	};
 
 	Categories.getPinnedTids = async function (data) {
@@ -141,7 +141,7 @@ module.exports = function (Categories) {
 			});
 			return result && result.pinnedTids;
 		}
-		const pinnedTids = await db.getSortedSetRevRange('cid:' + data.cid + ':tids:pinned', data.start, data.stop);
+		const pinnedTids = await db.getSortedSetRevRange(`cid:${data.cid}:tids:pinned`, data.start, data.stop);
 		return await topics.tools.checkPinExpiry(pinnedTids);
 	};
 
@@ -166,11 +166,11 @@ module.exports = function (Categories) {
 			return;
 		}
 		const promises = [
-			db.sortedSetAdd('cid:' + cid + ':pids', postData.timestamp, postData.pid),
-			db.incrObjectField('category:' + cid, 'post_count'),
+			db.sortedSetAdd(`cid:${cid}:pids`, postData.timestamp, postData.pid),
+			db.incrObjectField(`category:${cid}`, 'post_count'),
 		];
 		if (!pinned) {
-			promises.push(db.sortedSetIncrBy('cid:' + cid + ':tids:posts', 1, postData.tid));
+			promises.push(db.sortedSetIncrBy(`cid:${cid}:tids:posts`, 1, postData.tid));
 		}
 		await Promise.all(promises);
 		await Categories.updateRecentTidForCid(cid);

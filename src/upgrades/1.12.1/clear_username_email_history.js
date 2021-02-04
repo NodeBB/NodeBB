@@ -28,7 +28,7 @@ module.exports = {
 						currentUid += 1;
 						return next();
 					}
-					db.deleteAll(['user:' + currentUid + ':usernames', 'user:' + currentUid + ':emails'], function (err) {
+					db.deleteAll([`user:${currentUid}:usernames`, `user:${currentUid}:emails`], function (err) {
 						if (err) {
 							return next(err);
 						}

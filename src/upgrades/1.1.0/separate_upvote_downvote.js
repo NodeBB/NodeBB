@@ -15,15 +15,15 @@ module.exports = {
 		var progress = this.progress;
 
 		batch.processSortedSet('posts:pid', function (pids, next) {
-			winston.verbose('upgraded ' + count + ' posts');
+			winston.verbose(`upgraded ${count} posts`);
 			count += pids.length;
 			async.each(pids, function (pid, next) {
 				async.parallel({
 					upvotes: function (next) {
-						db.setCount('pid:' + pid + ':upvote', next);
+						db.setCount(`pid:${pid}:upvote`, next);
 					},
 					downvotes: function (next) {
-						db.setCount('pid:' + pid + ':downvote', next);
+						db.setCount(`pid:${pid}:downvote`, next);
 					},
 				}, function (err, results) {
 					if (err) {

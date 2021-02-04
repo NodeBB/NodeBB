@@ -18,13 +18,13 @@ module.exports = {
 
 				async.parallel({
 					bans: function (next) {
-						db.getSortedSetRevRangeWithScores('uid:' + uid + ':bans', 0, -1, next);
+						db.getSortedSetRevRangeWithScores(`uid:${uid}:bans`, 0, -1, next);
 					},
 					reasons: function (next) {
-						db.getSortedSetRevRangeWithScores('banned:' + uid + ':reasons', 0, -1, next);
+						db.getSortedSetRevRangeWithScores(`banned:${uid}:reasons`, 0, -1, next);
 					},
 					userData: function (next) {
-						db.getObjectFields('user:' + uid, ['banned', 'banned:expire', 'joindate', 'lastposttime', 'lastonline'], next);
+						db.getObjectFields(`user:${uid}`, ['banned', 'banned:expire', 'joindate', 'lastposttime', 'lastonline'], next);
 					},
 				}, function (err, results) {
 					function addBan(key, data, callback) {
@@ -33,7 +33,7 @@ module.exports = {
 								db.setObject(key, data, next);
 							},
 							function (next) {
-								db.sortedSetAdd('uid:' + uid + ':bans:timestamp', data.timestamp, key, next);
+								db.sortedSetAdd(`uid:${uid}:bans:timestamp`, data.timestamp, key, next);
 							},
 						], callback);
 					}
@@ -48,7 +48,7 @@ module.exports = {
 					// has no history, but is banned, create plain object with just uid and timestmap
 					if (!results.bans.length && parseInt(results.userData.banned, 10)) {
 						const banTimestamp = results.userData.lastonline || results.userData.lastposttime || results.userData.joindate || Date.now();
-						const banKey = 'uid:' + uid + ':ban:' + banTimestamp;
+						const banKey = `uid:${uid}:ban:${banTimestamp}`;
 						addBan(banKey, { uid: uid, timestamp: banTimestamp }, next);
 						return;
 					}
@@ -61,7 +61,7 @@ module.exports = {
 							});
 						}
 						const reasonData = findReason(ban.score);
-						const banKey = 'uid:' + uid + ':ban:' + ban.score;
+						const banKey = `uid:${uid}:ban:${ban.score}`;
 						var data = {
 							uid: uid,
 							timestamp: ban.score,

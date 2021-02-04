@@ -72,7 +72,7 @@ describe('Upload Controllers', function () {
 		});
 
 		it('should upload an image to a post', function (done) {
-			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body && body.status && body.response && body.response.images);
@@ -83,7 +83,7 @@ describe('Upload Controllers', function () {
 		});
 
 		it('should upload an image to a post and then delete the upload', function (done) {
-			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.strictEqual(res.statusCode, 200);
 				assert(body && body.status && body.response && body.response.images);
@@ -92,7 +92,7 @@ describe('Upload Controllers', function () {
 				var name = body.response.images[0].url.replace(nconf.get('relative_path') + nconf.get('upload_url'), '');
 				socketUser.deleteUpload({ uid: regularUid }, { uid: regularUid, name: name }, function (err) {
 					assert.ifError(err);
-					db.getSortedSetRange('uid:' + regularUid + ':uploads', 0, -1, function (err, uploads) {
+					db.getSortedSetRange(`uid:${regularUid}:uploads`, 0, -1, function (err, uploads) {
 						assert.ifError(err);
 						assert.equal(uploads.includes(name), false);
 						done();
@@ -119,7 +119,7 @@ describe('Upload Controllers', function () {
 			var oldValue = meta.config.resizeImageWidth;
 			meta.config.resizeImageWidth = 10;
 			meta.config.resizeImageWidthThreshold = 10;
-			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body && body.status && body.response && body.response.images);
@@ -136,7 +136,7 @@ describe('Upload Controllers', function () {
 		it('should upload a file to a post', function (done) {
 			var oldValue = meta.config.allowedFileExtensions;
 			meta.config.allowedFileExtensions = 'png,jpg,bmp,html';
-			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/503.html'), {}, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/503.html'), {}, jar, csrf_token, function (err, res, body) {
 				meta.config.allowedFileExtensions = oldValue;
 				assert.ifError(err);
 				assert.strictEqual(res.statusCode, 200);
@@ -148,7 +148,7 @@ describe('Upload Controllers', function () {
 		});
 
 		it('should fail to upload image to post if image dimensions are too big', function (done) {
-			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/toobig.jpg'), {}, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/toobig.jpg'), {}, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.strictEqual(res.statusCode, 500);
 				assert(body && body.status && body.status.message);
@@ -158,7 +158,7 @@ describe('Upload Controllers', function () {
 		});
 
 		it('should fail to upload image to post if image is broken', function (done) {
-			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/brokenimage.png'), {}, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/brokenimage.png'), {}, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.strictEqual(res.statusCode, 500);
 				assert(body && body.status && body.status.message);
@@ -285,7 +285,7 @@ describe('Upload Controllers', function () {
 					helpers.loginUser('uploader', 'barbar', next);
 				},
 				function (jar, csrf_token, next) {
-					helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, next);
+					helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, next);
 				},
 				function (res, body, next) {
 					assert(body && body.status && body.response && body.response.images);
@@ -321,17 +321,17 @@ describe('Upload Controllers', function () {
 		});
 
 		it('should upload site logo', function (done) {
-			helpers.uploadFile(nconf.get('url') + '/api/admin/uploadlogo', path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(`${nconf.get('url')}/api/admin/uploadlogo`, path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
-				assert.equal(body[0].url, nconf.get('relative_path') + '/assets/uploads/system/site-logo.png');
+				assert.equal(body[0].url, `${nconf.get('relative_path')}/assets/uploads/system/site-logo.png`);
 				done();
 			});
 		});
 
 		it('should fail to upload invalid file type', function (done) {
-			helpers.uploadFile(nconf.get('url') + '/api/admin/category/uploadpicture', path.join(__dirname, '../test/files/503.html'), { params: JSON.stringify({ cid: cid }) }, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(`${nconf.get('url')}/api/admin/category/uploadpicture`, path.join(__dirname, '../test/files/503.html'), { params: JSON.stringify({ cid: cid }) }, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(body.error, '[[error:invalid-image-type, image/png&#44; image/jpeg&#44; image/pjpeg&#44; image/jpg&#44; image/gif&#44; image/svg+xml]]');
 				done();
@@ -339,7 +339,7 @@ describe('Upload Controllers', function () {
 		});
 
 		it('should fail to upload category image with invalid json params', function (done) {
-			helpers.uploadFile(nconf.get('url') + '/api/admin/category/uploadpicture', path.join(__dirname, '../test/files/test.png'), { params: 'invalid json' }, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(`${nconf.get('url')}/api/admin/category/uploadpicture`, path.join(__dirname, '../test/files/test.png'), { params: 'invalid json' }, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(body.error, '[[error:invalid-json]]');
 				done();
@@ -347,35 +347,35 @@ describe('Upload Controllers', function () {
 		});
 
 		it('should upload category image', function (done) {
-			helpers.uploadFile(nconf.get('url') + '/api/admin/category/uploadpicture', path.join(__dirname, '../test/files/test.png'), { params: JSON.stringify({ cid: cid }) }, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(`${nconf.get('url')}/api/admin/category/uploadpicture`, path.join(__dirname, '../test/files/test.png'), { params: JSON.stringify({ cid: cid }) }, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
-				assert.equal(body[0].url, nconf.get('relative_path') + '/assets/uploads/category/category-1.png');
+				assert.equal(body[0].url, `${nconf.get('relative_path')}/assets/uploads/category/category-1.png`);
 				done();
 			});
 		});
 
 		it('should upload default avatar', function (done) {
-			helpers.uploadFile(nconf.get('url') + '/api/admin/uploadDefaultAvatar', path.join(__dirname, '../test/files/test.png'), { }, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(`${nconf.get('url')}/api/admin/uploadDefaultAvatar`, path.join(__dirname, '../test/files/test.png'), { }, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
-				assert.equal(body[0].url, nconf.get('relative_path') + '/assets/uploads/system/avatar-default.png');
+				assert.equal(body[0].url, `${nconf.get('relative_path')}/assets/uploads/system/avatar-default.png`);
 				done();
 			});
 		});
 
 		it('should upload og image', function (done) {
-			helpers.uploadFile(nconf.get('url') + '/api/admin/uploadOgImage', path.join(__dirname, '../test/files/test.png'), { }, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(`${nconf.get('url')}/api/admin/uploadOgImage`, path.join(__dirname, '../test/files/test.png'), { }, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
-				assert.equal(body[0].url, nconf.get('relative_path') + '/assets/uploads/system/og-image.png');
+				assert.equal(body[0].url, `${nconf.get('relative_path')}/assets/uploads/system/og-image.png`);
 				done();
 			});
 		});
 
 		it('should upload favicon', function (done) {
-			helpers.uploadFile(nconf.get('url') + '/api/admin/uploadfavicon', path.join(__dirname, '../test/files/favicon.ico'), {}, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(`${nconf.get('url')}/api/admin/uploadfavicon`, path.join(__dirname, '../test/files/favicon.ico'), {}, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
@@ -386,13 +386,13 @@ describe('Upload Controllers', function () {
 
 		it('should upload touch icon', function (done) {
 			var touchiconAssetPath = '/assets/uploads/system/touchicon-orig.png';
-			helpers.uploadFile(nconf.get('url') + '/api/admin/uploadTouchIcon', path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(`${nconf.get('url')}/api/admin/uploadTouchIcon`, path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
 				assert.equal(body[0].url, touchiconAssetPath);
 				meta.config['brand:touchIcon'] = touchiconAssetPath;
-				request(nconf.get('url') + '/apple-touch-icon', function (err, res, body) {
+				request(`${nconf.get('url')}/apple-touch-icon`, function (err, res, body) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 					assert(body);
@@ -402,7 +402,7 @@ describe('Upload Controllers', function () {
 		});
 
 		it('should upload regular file', function (done) {
-			helpers.uploadFile(nconf.get('url') + '/api/admin/upload/file', path.join(__dirname, '../test/files/test.png'), {
+			helpers.uploadFile(`${nconf.get('url')}/api/admin/upload/file`, path.join(__dirname, '../test/files/test.png'), {
 				params: JSON.stringify({
 					folder: 'system',
 				}),
@@ -417,7 +417,7 @@ describe('Upload Controllers', function () {
 		});
 
 		it('should fail to upload regular file in wrong directory', function (done) {
-			helpers.uploadFile(nconf.get('url') + '/api/admin/upload/file', path.join(__dirname, '../test/files/test.png'), {
+			helpers.uploadFile(`${nconf.get('url')}/api/admin/upload/file`, path.join(__dirname, '../test/files/test.png'), {
 				params: JSON.stringify({
 					folder: '../../system',
 				}),

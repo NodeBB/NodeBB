@@ -56,10 +56,10 @@ SELECT COUNT(*) c
 		}
 
 		const res = await module.pool.query({
-			name: 'getSortedSetIntersect' + aggregate + (params.sort > 0 ? 'Asc' : 'Desc') + 'WithScores',
+			name: `getSortedSetIntersect${aggregate}${params.sort > 0 ? 'Asc' : 'Desc'}WithScores`,
 			text: `
 WITH A AS (SELECT z."value",
-                  ` + aggregate + `(z."score" * k."weight") "score",
+                  ${aggregate}(z."score" * k."weight") "score",
                   COUNT(*) c
              FROM UNNEST($1::TEXT[], $2::NUMERIC[]) k("_key", "weight")
             INNER JOIN "legacy_object_live" o
@@ -72,7 +72,7 @@ SELECT A."value",
        A."score"
   FROM A
  WHERE c = array_length($1::TEXT[], 1)
- ORDER BY A."score" ` + (params.sort > 0 ? 'ASC' : 'DESC') + `
+ ORDER BY A."score" ${params.sort > 0 ? 'ASC' : 'DESC'}
  LIMIT $4::INTEGER
 OFFSET $3::INTEGER`,
 			values: [sets, weights, start, limit],

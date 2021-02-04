@@ -21,7 +21,7 @@ profileController.get = async function (req, res, next) {
 		if (res.locals.isAPI) {
 			req.params.userslug = lowercaseSlug;
 		} else {
-			return res.redirect(nconf.get('relative_path') + '/user/' + lowercaseSlug);
+			return res.redirect(`${nconf.get('relative_path')}/user/${lowercaseSlug}`);
 		}
 	}
 
@@ -82,7 +82,7 @@ async function getBestPosts(callerUid, userData) {
 
 async function getPosts(callerUid, userData, setSuffix) {
 	const cids = await categories.getCidsByPrivilege('categories:cid', callerUid, 'topics:read');
-	const keys = cids.map(c => 'cid:' + c + ':uid:' + userData.uid + ':' + setSuffix);
+	const keys = cids.map(c => `cid:${c}:uid:${userData.uid}:${setSuffix}`);
 	let hasMorePosts = true;
 	let start = 0;
 	const count = 10;

@@ -123,7 +123,7 @@ describe('Topic\'s', function () {
 				name: 'Test Category',
 				description: 'Test category created by testing script',
 			});
-			const result = await requestType('post', nconf.get('url') + '/api/v3/topics', {
+			const result = await requestType('post', `${nconf.get('url')}/api/v3/topics`, {
 				form: {
 					title: 'just a title',
 					cid: categoryObj.cid,
@@ -142,7 +142,7 @@ describe('Topic\'s', function () {
 			await privileges.categories.give(['groups:topics:create'], categoryObj.cid, 'guests');
 			await privileges.categories.give(['groups:topics:reply'], categoryObj.cid, 'guests');
 
-			const result = await requestType('post', nconf.get('url') + '/api/v3/topics', {
+			const result = await requestType('post', `${nconf.get('url')}/api/v3/topics`, {
 				form: {
 					title: 'just a title',
 					cid: categoryObj.cid,
@@ -155,7 +155,7 @@ describe('Topic\'s', function () {
 			assert.strictEqual(result.body.response.title, 'just a title');
 			assert.strictEqual(result.body.response.user.username, '[[global:guest]]');
 
-			const replyResult = await requestType('post', nconf.get('url') + '/api/v3/topics/' + result.body.response.tid, {
+			const replyResult = await requestType('post', `${nconf.get('url')}/api/v3/topics/${result.body.response.tid}`, {
 				form: {
 					content: 'a reply by guest',
 				},
@@ -330,13 +330,13 @@ describe('Topic\'s', function () {
 				tid = result.topicData.tid;
 				for (let i = 0; i < 30; i++) {
 					// eslint-disable-next-line no-await-in-loop
-					await topics.reply({ uid: adminUid, content: 'topic reply ' + (i + 1), tid: tid });
+					await topics.reply({ uid: adminUid, content: `topic reply ${i + 1}`, tid: tid });
 				}
 			});
 
 			it('should get a topic with posts and other data', async function () {
 				const topicData = await topics.getTopicData(tid);
-				const data = await topics.getTopicWithPosts(topicData, 'tid:' + tid + ':posts', topic.userId, 0, -1, false);
+				const data = await topics.getTopicWithPosts(topicData, `tid:${tid}:posts`, topic.userId, 0, -1, false);
 				assert(data);
 				assert.equal(data.category.cid, topic.categoryId);
 				assert.equal(data.unreplied, false);
@@ -347,7 +347,7 @@ describe('Topic\'s', function () {
 
 			it('should return first 3 posts including main post', async function () {
 				const topicData = await topics.getTopicData(tid);
-				const data = await topics.getTopicWithPosts(topicData, 'tid:' + tid + ':posts', topic.userId, 0, 2, false);
+				const data = await topics.getTopicWithPosts(topicData, `tid:${tid}:posts`, topic.userId, 0, 2, false);
 				assert.strictEqual(data.posts.length, 3);
 				assert.strictEqual(data.posts[0].content, 'main post');
 				assert.strictEqual(data.posts[1].content, 'topic reply 1');
@@ -360,7 +360,7 @@ describe('Topic\'s', function () {
 			it('should return 3 posts from 1 to 3 excluding main post', async function () {
 				const topicData = await topics.getTopicData(tid);
 				const start = 1;
-				const data = await topics.getTopicWithPosts(topicData, 'tid:' + tid + ':posts', topic.userId, start, 3, false);
+				const data = await topics.getTopicWithPosts(topicData, `tid:${tid}:posts`, topic.userId, start, 3, false);
 				assert.strictEqual(data.posts.length, 3);
 				assert.strictEqual(data.posts[0].content, 'topic reply 1');
 				assert.strictEqual(data.posts[1].content, 'topic reply 2');
@@ -372,7 +372,7 @@ describe('Topic\'s', function () {
 
 			it('should return main post and last 2 posts', async function () {
 				const topicData = await topics.getTopicData(tid);
-				const data = await topics.getTopicWithPosts(topicData, 'tid:' + tid + ':posts', topic.userId, 0, 2, true);
+				const data = await topics.getTopicWithPosts(topicData, `tid:${tid}:posts`, topic.userId, 0, 2, true);
 				assert.strictEqual(data.posts.length, 3);
 				assert.strictEqual(data.posts[0].content, 'main post');
 				assert.strictEqual(data.posts[1].content, 'topic reply 30');
@@ -385,7 +385,7 @@ describe('Topic\'s', function () {
 			it('should return last 3 posts and not main post', async function () {
 				const topicData = await topics.getTopicData(tid);
 				const start = 1;
-				const data = await topics.getTopicWithPosts(topicData, 'tid:' + tid + ':posts', topic.userId, start, 3, true);
+				const data = await topics.getTopicWithPosts(topicData, `tid:${tid}:posts`, topic.userId, start, 3, true);
 				assert.strictEqual(data.posts.length, 3);
 				assert.strictEqual(data.posts[0].content, 'topic reply 30');
 				assert.strictEqual(data.posts[1].content, 'topic reply 29');
@@ -398,7 +398,7 @@ describe('Topic\'s', function () {
 			it('should return posts 29 to 27 posts and not main post', async function () {
 				const topicData = await topics.getTopicData(tid);
 				const start = 2;
-				const data = await topics.getTopicWithPosts(topicData, 'tid:' + tid + ':posts', topic.userId, start, 4, true);
+				const data = await topics.getTopicWithPosts(topicData, `tid:${tid}:posts`, topic.userId, start, 4, true);
 				assert.strictEqual(data.posts.length, 3);
 				assert.strictEqual(data.posts[0].content, 'topic reply 29');
 				assert.strictEqual(data.posts[1].content, 'topic reply 28');
@@ -411,7 +411,7 @@ describe('Topic\'s', function () {
 			it('should return 3 posts in reverse', async function () {
 				const topicData = await topics.getTopicData(tid);
 				const start = 28;
-				const data = await topics.getTopicWithPosts(topicData, 'tid:' + tid + ':posts', topic.userId, start, 30, true);
+				const data = await topics.getTopicWithPosts(topicData, `tid:${tid}:posts`, topic.userId, start, 30, true);
 				assert.strictEqual(data.posts.length, 3);
 				assert.strictEqual(data.posts[0].content, 'topic reply 3');
 				assert.strictEqual(data.posts[1].content, 'topic reply 2');
@@ -423,7 +423,7 @@ describe('Topic\'s', function () {
 
 			it('should get all posts with main post at the start', async function () {
 				const topicData = await topics.getTopicData(tid);
-				const data = await topics.getTopicWithPosts(topicData, 'tid:' + tid + ':posts', topic.userId, 0, -1, false);
+				const data = await topics.getTopicWithPosts(topicData, `tid:${tid}:posts`, topic.userId, 0, -1, false);
 				assert.strictEqual(data.posts.length, 31);
 				assert.strictEqual(data.posts[0].content, 'main post');
 				assert.strictEqual(data.posts[1].content, 'topic reply 1');
@@ -435,7 +435,7 @@ describe('Topic\'s', function () {
 
 			it('should get all posts in reverse with main post at the start followed by reply 30', async function () {
 				const topicData = await topics.getTopicData(tid);
-				const data = await topics.getTopicWithPosts(topicData, 'tid:' + tid + ':posts', topic.userId, 0, -1, true);
+				const data = await topics.getTopicWithPosts(topicData, `tid:${tid}:posts`, topic.userId, 0, -1, true);
 				assert.strictEqual(data.posts.length, 31);
 				assert.strictEqual(data.posts[0].content, 'main post');
 				assert.strictEqual(data.posts[1].content, 'topic reply 30');
@@ -604,28 +604,28 @@ describe('Topic\'s', function () {
 							},
 							scores1: function (next) {
 								db.sortedSetsScore([
-									'cid:' + cid1 + ':tids',
-									'cid:' + cid1 + ':tids:lastposttime',
-									'cid:' + cid1 + ':tids:posts',
+									`cid:${cid1}:tids`,
+									`cid:${cid1}:tids:lastposttime`,
+									`cid:${cid1}:tids:posts`,
 								], tid1, next);
 							},
 							scores2: function (next) {
 								db.sortedSetsScore([
-									'cid:' + cid2 + ':tids',
-									'cid:' + cid2 + ':tids:lastposttime',
-									'cid:' + cid2 + ':tids:posts',
+									`cid:${cid2}:tids`,
+									`cid:${cid2}:tids:lastposttime`,
+									`cid:${cid2}:tids:posts`,
 								], tid2, next);
 							},
 							posts1: function (next) {
-								db.getSortedSetRangeWithScores('tid:' + tid1 + ':posts', 0, -1, next);
+								db.getSortedSetRangeWithScores(`tid:${tid1}:posts`, 0, -1, next);
 							},
 							posts2: function (next) {
-								db.getSortedSetRangeWithScores('tid:' + tid2 + ':posts', 0, -1, next);
+								db.getSortedSetRangeWithScores(`tid:${tid2}:posts`, 0, -1, next);
 							},
 						}, next);
 					},
 					function (results, next) {
-						var assertMsg = JSON.stringify(results.posts1) + '\n' + JSON.stringify(results.posts2);
+						var assertMsg = `${JSON.stringify(results.posts1)}\n${JSON.stringify(results.posts2)}`;
 						assert.equal(results.topicData[0].postcount, results.scores1[2], assertMsg);
 						assert.equal(results.topicData[1].postcount, results.scores2[2], assertMsg);
 						assert.equal(results.topicData[0].lastposttime, post1.timestamp, assertMsg);
@@ -672,7 +672,7 @@ describe('Topic\'s', function () {
 					checkCidSets(movedPost, postData, next);
 				},
 				function (next) {
-					db.isMemberOfSortedSets(['cid:' + cid1 + ':pids', 'cid:' + cid2 + ':pids'], movedPost.pid, next);
+					db.isMemberOfSortedSets([`cid:${cid1}:pids`, `cid:${cid2}:pids`], movedPost.pid, next);
 				},
 				function (isMember, next) {
 					assert.deepEqual(isMember, [true, false]);
@@ -687,7 +687,7 @@ describe('Topic\'s', function () {
 					checkCidSets(previousPost, topic2LastReply, next);
 				},
 				function (next) {
-					db.isMemberOfSortedSets(['cid:' + cid1 + ':pids', 'cid:' + cid2 + ':pids'], movedPost.pid, next);
+					db.isMemberOfSortedSets([`cid:${cid1}:pids`, `cid:${cid2}:pids`], movedPost.pid, next);
 				},
 				function (isMember, next) {
 					assert.deepEqual(isMember, [false, true]);
@@ -736,7 +736,7 @@ describe('Topic\'s', function () {
 		it('should purge the topic', function (done) {
 			socketTopics.purge({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid }, function (err) {
 				assert.ifError(err);
-				db.isSortedSetMember('uid:' + followerUid + ':followed_tids', newTopic.tid, function (err, isMember) {
+				db.isSortedSetMember(`uid:${followerUid}:followed_tids`, newTopic.tid, function (err, isMember) {
 					assert.ifError(err);
 					assert.strictEqual(false, isMember);
 					done();
@@ -827,7 +827,7 @@ describe('Topic\'s', function () {
 		it('should not do anything if topics are not pinned', function (done) {
 			socketTopics.orderPinnedTopics({ uid: adminUid }, [{ tid: tid3 }], function (err) {
 				assert.ifError(err);
-				db.isSortedSetMember('cid:' + topic.categoryId + ':tids:pinned', tid3, function (err, isMember) {
+				db.isSortedSetMember(`cid:${topic.categoryId}:tids:pinned`, tid3, function (err, isMember) {
 					assert.ifError(err);
 					assert(!isMember);
 					done();
@@ -836,13 +836,13 @@ describe('Topic\'s', function () {
 		});
 
 		it('should order pinned topics', function (done) {
-			db.getSortedSetRevRange('cid:' + topic.categoryId + ':tids:pinned', 0, -1, function (err, pinnedTids) {
+			db.getSortedSetRevRange(`cid:${topic.categoryId}:tids:pinned`, 0, -1, function (err, pinnedTids) {
 				assert.ifError(err);
 				assert.equal(pinnedTids[0], tid2);
 				assert.equal(pinnedTids[1], tid1);
 				socketTopics.orderPinnedTopics({ uid: adminUid }, [{ tid: tid1, order: 1 }, { tid: tid2, order: 0 }], function (err) {
 					assert.ifError(err);
-					db.getSortedSetRevRange('cid:' + topic.categoryId + ':tids:pinned', 0, -1, function (err, pinnedTids) {
+					db.getSortedSetRevRange(`cid:${topic.categoryId}:tids:pinned`, 0, -1, function (err, pinnedTids) {
 						assert.ifError(err);
 						assert.equal(pinnedTids[0], tid1);
 						assert.equal(pinnedTids[1], tid2);
@@ -971,7 +971,7 @@ describe('Topic\'s', function () {
 		var topicPids;
 		var originalBookmark = 6;
 		function postReply(next) {
-			topics.reply({ uid: topic.userId, content: 'test post ' + replies.length, tid: newTopic.tid }, function (err, result) {
+			topics.reply({ uid: topic.userId, content: `test post ${replies.length}`, tid: newTopic.tid }, function (err, result) {
 				assert.equal(err, null, 'was created with error');
 				assert.ok(result);
 				replies.push(result);
@@ -1084,11 +1084,11 @@ describe('Topic\'s', function () {
 			await posts.upvote(result.postData.pid, adminUid);
 			await posts.upvote(reply1.pid, adminUid);
 			assert.strictEqual(await db.sortedSetScore('topics:votes', result.topicData.tid), 1);
-			assert.strictEqual(await db.sortedSetScore('cid:' + categoryObj.cid + ':tids:votes', result.topicData.tid), 1);
+			assert.strictEqual(await db.sortedSetScore(`cid:${categoryObj.cid}:tids:votes`, result.topicData.tid), 1);
 			const newTopic = await topics.createTopicFromPosts(adminUid, 'Fork test, vote update', [reply1.pid, reply2.pid], result.topicData.tid);
 
 			assert.strictEqual(await db.sortedSetScore('topics:votes', newTopic.tid), 1);
-			assert.strictEqual(await db.sortedSetScore('cid:' + categoryObj.cid + ':tids:votes', newTopic.tid), 1);
+			assert.strictEqual(await db.sortedSetScore(`cid:${categoryObj.cid}:tids:votes`, newTopic.tid), 1);
 			assert.strictEqual(await topics.getTopicField(newTopic.tid, 'upvotes'), 1);
 		});
 	});
@@ -1112,7 +1112,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should load topic', function (done) {
-			request(nconf.get('url') + '/topic/' + topicData.slug, function (err, response, body) {
+			request(`${nconf.get('url')}/topic/${topicData.slug}`, function (err, response, body) {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 200);
 				assert(body);
@@ -1121,7 +1121,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should load topic api data', function (done) {
-			request(nconf.get('url') + '/api/topic/' + topicData.slug, { json: true }, function (err, response, body) {
+			request(`${nconf.get('url')}/api/topic/${topicData.slug}`, { json: true }, function (err, response, body) {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 200);
 				assert.strictEqual(body._header.tags.meta.find(t => t.name === 'description').content, 'topic content');
@@ -1131,7 +1131,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should 404 if post index is invalid', function (done) {
-			request(nconf.get('url') + '/topic/' + topicData.slug + '/derp', function (err, response) {
+			request(`${nconf.get('url')}/topic/${topicData.slug}/derp`, function (err, response) {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 404);
 				done();
@@ -1139,7 +1139,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should 404 if topic does not exist', function (done) {
-			request(nconf.get('url') + '/topic/123123/does-not-exist', function (err, response) {
+			request(`${nconf.get('url')}/topic/123123/does-not-exist`, function (err, response) {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 404);
 				done();
@@ -1150,7 +1150,7 @@ describe('Topic\'s', function () {
 			var privileges = require('../src/privileges');
 			privileges.categories.rescind(['groups:topics:read'], topicData.cid, 'guests', function (err) {
 				assert.ifError(err);
-				request(nconf.get('url') + '/api/topic/' + topicData.slug, function (err, response, body) {
+				request(`${nconf.get('url')}/api/topic/${topicData.slug}`, function (err, response, body) {
 					assert.ifError(err);
 					assert.equal(response.statusCode, 401);
 					assert(body);
@@ -1160,7 +1160,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should redirect to correct topic if slug is missing', function (done) {
-			request(nconf.get('url') + '/topic/' + topicData.tid + '/herpderp/1?page=2', function (err, response, body) {
+			request(`${nconf.get('url')}/topic/${topicData.tid}/herpderp/1?page=2`, function (err, response, body) {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 200);
 				assert(body);
@@ -1169,11 +1169,11 @@ describe('Topic\'s', function () {
 		});
 
 		it('should redirect if post index is out of range', function (done) {
-			request(nconf.get('url') + '/api/topic/' + topicData.slug + '/-1', { json: true }, function (err, res, body) {
+			request(`${nconf.get('url')}/api/topic/${topicData.slug}/-1`, { json: true }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
-				assert.equal(res.headers['x-redirect'], '/topic/' + topicData.tid + '/topic-for-controller-test');
-				assert.equal(body, '/topic/' + topicData.tid + '/topic-for-controller-test');
+				assert.equal(res.headers['x-redirect'], `/topic/${topicData.tid}/topic-for-controller-test`);
+				assert.equal(body, `/topic/${topicData.tid}/topic-for-controller-test`);
 				done();
 			});
 		});
@@ -1181,7 +1181,7 @@ describe('Topic\'s', function () {
 		it('should 404 if page is out of bounds', function (done) {
 			var meta = require('../src/meta');
 			meta.config.usePagination = 1;
-			request(nconf.get('url') + '/topic/' + topicData.slug + '?page=100', function (err, response) {
+			request(`${nconf.get('url')}/topic/${topicData.slug}?page=100`, function (err, response) {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 404);
 				done();
@@ -1189,7 +1189,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should mark topic read', function (done) {
-			request(nconf.get('url') + '/topic/' + topicData.slug, {
+			request(`${nconf.get('url')}/topic/${topicData.slug}`, {
 				jar: adminJar,
 			}, function (err, res) {
 				assert.ifError(err);
@@ -1203,7 +1203,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should 404 if tid is not a number', function (done) {
-			request(nconf.get('url') + '/api/topic/teaser/nan', { json: true }, function (err, response) {
+			request(`${nconf.get('url')}/api/topic/teaser/nan`, { json: true }, function (err, response) {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 404);
 				done();
@@ -1211,7 +1211,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should 403 if cant read', function (done) {
-			request(nconf.get('url') + '/api/topic/teaser/' + 123123, { json: true }, function (err, response, body) {
+			request(`${nconf.get('url')}/api/topic/teaser/${123123}`, { json: true }, function (err, response, body) {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 403);
 				assert.equal(body, '[[error:no-privileges]]');
@@ -1221,7 +1221,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should load topic teaser', function (done) {
-			request(nconf.get('url') + '/api/topic/teaser/' + topicData.tid, { json: true }, function (err, response, body) {
+			request(`${nconf.get('url')}/api/topic/teaser/${topicData.tid}`, { json: true }, function (err, response, body) {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 200);
 				assert(body);
@@ -1236,7 +1236,7 @@ describe('Topic\'s', function () {
 
 
 		it('should 404 if tid is not a number', function (done) {
-			request(nconf.get('url') + '/api/topic/pagination/nan', { json: true }, function (err, response) {
+			request(`${nconf.get('url')}/api/topic/pagination/nan`, { json: true }, function (err, response) {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 404);
 				done();
@@ -1244,7 +1244,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should 404 if tid does not exist', function (done) {
-			request(nconf.get('url') + '/api/topic/pagination/1231231', { json: true }, function (err, response) {
+			request(`${nconf.get('url')}/api/topic/pagination/1231231`, { json: true }, function (err, response) {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 404);
 				done();
@@ -1252,7 +1252,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should load pagination', function (done) {
-			request(nconf.get('url') + '/api/topic/pagination/' + topicData.tid, { json: true }, function (err, response, body) {
+			request(`${nconf.get('url')}/api/topic/pagination/${topicData.tid}`, { json: true }, function (err, response, body) {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 200);
 				assert(body);
@@ -1344,7 +1344,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should load more from custom set', function (done) {
-			socketTopics.loadMoreFromSet({ uid: adminUid }, { set: 'uid:' + adminUid + ':topics', after: 0, count: 10 }, function (err, data) {
+			socketTopics.loadMoreFromSet({ uid: adminUid }, { set: `uid:${adminUid}:topics`, after: 0, count: 10 }, function (err, data) {
 				assert.ifError(err);
 				assert(data);
 				assert(Array.isArray(data.topics));
@@ -1985,7 +1985,7 @@ describe('Topic\'s', function () {
 			} catch (_err) {
 				err = _err;
 			}
-			assert.equal(err.message, '[[error:not-enough-tags, ' + meta.config.minimumTagsPerTopic + ']]');
+			assert.equal(err.message, `[[error:not-enough-tags, ${meta.config.minimumTagsPerTopic}]]`);
 			meta.config.minimumTagsPerTopic = oldValue;
 		});
 
@@ -1998,7 +1998,7 @@ describe('Topic\'s', function () {
 			} catch (_err) {
 				err = _err;
 			}
-			assert.equal(err.message, '[[error:too-many-tags, ' + meta.config.maximumTagsPerTopic + ']]');
+			assert.equal(err.message, `[[error:too-many-tags, ${meta.config.maximumTagsPerTopic}]]`);
 			meta.config.maximumTagsPerTopic = oldValue;
 		});
 
@@ -2011,8 +2011,8 @@ describe('Topic\'s', function () {
 			} catch (_err) {
 				err = _err;
 			}
-			assert.equal(err.message, '[[error:not-enough-tags, ' + minTags + ']]');
-			await db.deleteObjectField('category:' + topic.categoryId, 'minTags');
+			assert.equal(err.message, `[[error:not-enough-tags, ${minTags}]]`);
+			await db.deleteObjectField(`category:${topic.categoryId}`, 'minTags');
 		});
 
 		it('should respect maxTags per category', async () => {
@@ -2024,8 +2024,8 @@ describe('Topic\'s', function () {
 			} catch (_err) {
 				err = _err;
 			}
-			assert.equal(err.message, '[[error:too-many-tags, ' + maxTags + ']]');
-			await db.deleteObjectField('category:' + topic.categoryId, 'maxTags');
+			assert.equal(err.message, `[[error:too-many-tags, ${maxTags}]]`);
+			await db.deleteObjectField(`category:${topic.categoryId}`, 'maxTags');
 		});
 
 		it('should create and delete category tags properly', async () => {
@@ -2387,7 +2387,7 @@ describe('Topic\'s', function () {
 
 		async function getTopic(tid) {
 			const topicData = await topics.getTopicData(tid);
-			return await topics.getTopicWithPosts(topicData, 'tid:' + topicData.tid + ':posts', adminUid, 0, 19, false);
+			return await topics.getTopicWithPosts(topicData, `tid:${topicData.tid}:posts`, adminUid, 0, 19, false);
 		}
 
 		before(function (done) {
@@ -2449,7 +2449,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should return properly for merged topic', function (done) {
-			request(nconf.get('url') + '/api/topic/' + topic2Data.slug, { jar: adminJar, json: true }, function (err, response, body) {
+			request(`${nconf.get('url')}/api/topic/${topic2Data.slug}`, { jar: adminJar, json: true }, function (err, response, body) {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 200);
 				assert(body);

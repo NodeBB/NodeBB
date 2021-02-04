@@ -162,7 +162,7 @@ Plugins.reloadRoutes = async function (params) {
 };
 
 Plugins.get = async function (id) {
-	const url = (nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugins/' + id;
+	const url = `${nconf.get('registry') || 'https://packages.nodebb.org'}/api/v1/plugins/${id}`;
 	const body = await request(url, {
 		json: true,
 	});
@@ -177,14 +177,14 @@ Plugins.list = async function (matching) {
 		matching = true;
 	}
 	const version = require(paths.currentPackage).version;
-	const url = (nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugins' + (matching !== false ? '?version=' + version : '');
+	const url = `${nconf.get('registry') || 'https://packages.nodebb.org'}/api/v1/plugins${matching !== false ? `?version=${version}` : ''}`;
 	try {
 		const body = await request(url, {
 			json: true,
 		});
 		return await Plugins.normalise(body);
 	} catch (err) {
-		winston.error('Error loading ' + url, err);
+		winston.error(`Error loading ${url}`, err);
 		return await Plugins.normalise([]);
 	}
 };
@@ -330,7 +330,7 @@ async function findNodeBBModules(dirs) {
 							return next();
 						}
 
-						pluginPaths.push(dirname + '/' + subdir);
+						pluginPaths.push(`${dirname}/${subdir}`);
 						next();
 					});
 				}, cb);

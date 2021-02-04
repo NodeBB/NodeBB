@@ -50,7 +50,7 @@ module.exports.app = app;
 
 server.on('error', function (err) {
 	if (err.code === 'EADDRINUSE') {
-		winston.error('NodeBB address in use, exiting...\n' + err.stack);
+		winston.error(`NodeBB address in use, exiting...\n${err.stack}`);
 	} else {
 		winston.error(err.stack);
 	}
@@ -61,7 +61,7 @@ server.on('error', function (err) {
 // see https://github.com/isaacs/server-destroy/blob/master/index.js
 var connections = {};
 server.on('connection', function (conn) {
-	var key = conn.remoteAddress + ':' + conn.remotePort;
+	var key = `${conn.remoteAddress}:${conn.remotePort}`;
 	connections[key] = conn;
 	conn.on('close', function () {
 		delete connections[key];
@@ -139,12 +139,12 @@ function setupExpressApp(app) {
 		app.use(compression());
 	}
 
-	app.get(relativePath + '/ping', pingController.ping);
-	app.get(relativePath + '/sping', pingController.ping);
+	app.get(`${relativePath}/ping`, pingController.ping);
+	app.get(`${relativePath}/sping`, pingController.ping);
 
 	setupFavicon(app);
 
-	app.use(relativePath + '/apple-touch-icon', middleware.routeTouchIcon);
+	app.use(`${relativePath}/apple-touch-icon`, middleware.routeTouchIcon);
 
 	configureBodyParser(app);
 
@@ -240,7 +240,7 @@ function listen(callback) {
 		}
 
 		winston.warn('[startup] If you want to start nodebb on multiple ports please use loader.js');
-		winston.warn('[startup] Defaulting to first port in array, ' + port[0]);
+		winston.warn(`[startup] Defaulting to first port in array, ${port[0]}`);
 		port = port[0];
 		if (!port) {
 			winston.error('[startup] Invalid port, exiting');
@@ -263,11 +263,11 @@ function listen(callback) {
 
 	args.push(function (err) {
 		if (err) {
-			winston.info('[startup] NodeBB was unable to listen on: ' + bind_address + ':' + port);
+			winston.info(`[startup] NodeBB was unable to listen on: ${bind_address}:${port}`);
 			process.exit();
 		}
 
-		winston.info('NodeBB is now listening on: ' + (isSocket ? socketPath : bind_address + ':' + port));
+		winston.info(`NodeBB is now listening on: ${isSocket ? socketPath : `${bind_address}:${port}`}`);
 		if (oldUmask) {
 			process.umask(oldUmask);
 		}
@@ -279,7 +279,7 @@ function listen(callback) {
 		oldUmask = process.umask('0000');
 		module.exports.testSocket(socketPath, function (err) {
 			if (err) {
-				winston.error('[startup] NodeBB was unable to secure domain socket access (' + socketPath + ')\n' + err.stack);
+				winston.error(`[startup] NodeBB was unable to secure domain socket access (${socketPath})\n${err.stack}`);
 				throw err;
 			}
 
@@ -292,7 +292,7 @@ function listen(callback) {
 
 exports.testSocket = function (socketPath, callback) {
 	if (typeof socketPath !== 'string') {
-		return callback(new Error('invalid socket path : ' + socketPath));
+		return callback(new Error(`invalid socket path : ${socketPath}`));
 	}
 	var net = require('net');
 	var file = require('./file');

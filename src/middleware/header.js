@@ -75,7 +75,7 @@ middleware.renderHeader = async function renderHeader(req, res, data) {
 		isModerator: user.isModeratorOfAnyCategory(req.uid),
 		privileges: privileges.global.get(req.uid),
 		user: user.getUserData(req.uid),
-		isEmailConfirmSent: (!meta.config.requireEmailConfirmation || req.uid <= 0) ? false : await db.get('uid:' + req.uid + ':confirm:email:sent'),
+		isEmailConfirmSent: (!meta.config.requireEmailConfirmation || req.uid <= 0) ? false : await db.get(`uid:${req.uid}:confirm:email:sent`),
 		languageDirection: translator.translate('[[language:dir]]', res.locals.config.userLang),
 		timeagoCode: languages.userTimeagoCode(res.locals.config.userLang),
 		browserTitle: translator.translate(controllers.helpers.buildTitle(translator.unescape(data.title))),

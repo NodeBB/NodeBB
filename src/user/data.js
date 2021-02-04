@@ -70,7 +70,7 @@ module.exports = function (User) {
 			fields = fields.filter(value => value !== 'password');
 		}
 
-		const users = await db.getObjectsFields(uniqueUids.map(uid => 'user:' + uid), fields);
+		const users = await db.getObjectsFields(uniqueUids.map(uid => `user:${uid}`), fields);
 		const result = await plugins.hooks.fire('filter:user.getFields', {
 			uids: uniqueUids,
 			users: users,
@@ -152,7 +152,7 @@ module.exports = function (User) {
 		if (meta.config.showFullnameAsDisplayName) {
 			const uids = users.map(user => user.uid);
 			uidToSettings = _.zipObject(uids, await db.getObjectsFields(
-				uids.map(uid => 'user:' + uid + ':settings'),
+				uids.map(uid => `user:${uid}:settings`),
 				['showfullname']
 			));
 		}
@@ -286,7 +286,7 @@ module.exports = function (User) {
 	};
 
 	User.setUserFields = async function (uid, data) {
-		await db.setObject('user:' + uid, data);
+		await db.setObject(`user:${uid}`, data);
 		for (const field in data) {
 			if (data.hasOwnProperty(field)) {
 				plugins.hooks.fire('action:user.set', { uid: uid, field: field, value: data[field], type: 'set' });
@@ -303,7 +303,7 @@ module.exports = function (User) {
 	};
 
 	async function incrDecrUserFieldBy(uid, field, value, type) {
-		const newValue = await db.incrObjectFieldBy('user:' + uid, field, value);
+		const newValue = await db.incrObjectFieldBy(`user:${uid}`, field, value);
 		plugins.hooks.fire('action:user.set', { uid: uid, field: field, value: newValue, type: type });
 		return newValue;
 	}

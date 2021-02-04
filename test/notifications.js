@@ -46,7 +46,7 @@ describe('Notifications', function () {
 			notification = _notification;
 			assert.ifError(err);
 			assert(notification);
-			db.exists('notifications:' + notification.nid, function (err, exists) {
+			db.exists(`notifications:${notification.nid}`, function (err, exists) {
 				assert.ifError(err);
 				assert(exists);
 				db.isSortedSetMember('notifications', notification.nid, function (err, isMember) {
@@ -108,7 +108,7 @@ describe('Notifications', function () {
 		notifications.push(notification, [uid], function (err) {
 			assert.ifError(err);
 			setTimeout(function () {
-				db.isSortedSetMember('uid:' + uid + ':notifications:unread', notification.nid, function (err, isMember) {
+				db.isSortedSetMember(`uid:${uid}:notifications:unread`, notification.nid, function (err, isMember) {
 					assert.ifError(err);
 					assert(isMember);
 					done();
@@ -121,7 +121,7 @@ describe('Notifications', function () {
 		notifications.pushGroup(notification, 'registered-users', function (err) {
 			assert.ifError(err);
 			setTimeout(function () {
-				db.isSortedSetMember('uid:' + uid + ':notifications:unread', notification.nid, function (err, isMember) {
+				db.isSortedSetMember(`uid:${uid}:notifications:unread`, notification.nid, function (err, isMember) {
 					assert.ifError(err);
 					assert(isMember);
 					done();
@@ -134,7 +134,7 @@ describe('Notifications', function () {
 		notifications.pushGroups(notification, ['registered-users', 'administrators'], function (err) {
 			assert.ifError(err);
 			setTimeout(function () {
-				db.isSortedSetMember('uid:' + uid + ':notifications:unread', notification.nid, function (err, isMember) {
+				db.isSortedSetMember(`uid:${uid}:notifications:unread`, notification.nid, function (err, isMember) {
 					assert.ifError(err);
 					assert(isMember);
 					done();
@@ -156,10 +156,10 @@ describe('Notifications', function () {
 	it('should mark a notification read', function (done) {
 		socketNotifications.markRead({ uid: uid }, notification.nid, function (err) {
 			assert.ifError(err);
-			db.isSortedSetMember('uid:' + uid + ':notifications:unread', notification.nid, function (err, isMember) {
+			db.isSortedSetMember(`uid:${uid}:notifications:unread`, notification.nid, function (err, isMember) {
 				assert.ifError(err);
 				assert.equal(isMember, false);
-				db.isSortedSetMember('uid:' + uid + ':notifications:read', notification.nid, function (err, isMember) {
+				db.isSortedSetMember(`uid:${uid}:notifications:read`, notification.nid, function (err, isMember) {
 					assert.ifError(err);
 					assert.equal(isMember, true);
 					done();
@@ -188,10 +188,10 @@ describe('Notifications', function () {
 	it('should mark a notification unread', function (done) {
 		socketNotifications.markUnread({ uid: uid }, notification.nid, function (err) {
 			assert.ifError(err);
-			db.isSortedSetMember('uid:' + uid + ':notifications:unread', notification.nid, function (err, isMember) {
+			db.isSortedSetMember(`uid:${uid}:notifications:unread`, notification.nid, function (err, isMember) {
 				assert.ifError(err);
 				assert.equal(isMember, true);
-				db.isSortedSetMember('uid:' + uid + ':notifications:read', notification.nid, function (err, isMember) {
+				db.isSortedSetMember(`uid:${uid}:notifications:read`, notification.nid, function (err, isMember) {
 					assert.ifError(err);
 					assert.equal(isMember, false);
 					socketNotifications.getCount({ uid: uid }, null, function (err, count) {
@@ -207,10 +207,10 @@ describe('Notifications', function () {
 	it('should mark all notifications read', function (done) {
 		socketNotifications.markAllRead({ uid: uid }, null, function (err) {
 			assert.ifError(err);
-			db.isSortedSetMember('uid:' + uid + ':notifications:unread', notification.nid, function (err, isMember) {
+			db.isSortedSetMember(`uid:${uid}:notifications:unread`, notification.nid, function (err, isMember) {
 				assert.ifError(err);
 				assert.equal(isMember, false);
-				db.isSortedSetMember('uid:' + uid + ':notifications:read', notification.nid, function (err, isMember) {
+				db.isSortedSetMember(`uid:${uid}:notifications:read`, notification.nid, function (err, isMember) {
 					assert.ifError(err);
 					assert.equal(isMember, true);
 					done();
@@ -286,7 +286,7 @@ describe('Notifications', function () {
 			},
 			function (notifications, next) {
 				assert.equal(notifications.unread.length, 1, 'there should be 1 unread notification');
-				assert.equal(nconf.get('relative_path') + '/post/' + pid, notifications.unread[0].path, 'the notification should link to the first unread post');
+				assert.equal(`${nconf.get('relative_path')}/post/${pid}`, notifications.unread[0].path, 'the notification should link to the first unread post');
 				next();
 			},
 		], function (err) {
@@ -300,7 +300,7 @@ describe('Notifications', function () {
 			assert.ifError(err);
 			assert.equal(data[0].bodyShort, 'bodyShort');
 			assert.equal(data[0].nid, 'notification_id');
-			assert.equal(data[0].path, nconf.get('relative_path') + '/notification/path');
+			assert.equal(data[0].path, `${nconf.get('relative_path')}/notification/path`);
 			done();
 		});
 	});
@@ -450,7 +450,7 @@ describe('Notifications', function () {
 					user.notifications.getAll(uid, '', function (err, data) {
 						meta.config.welcomeNotification = '';
 						assert.ifError(err);
-						assert(data.includes('welcome_' + uid), data);
+						assert(data.includes(`welcome_${uid}`), data);
 						done();
 					});
 				}, 2000);
