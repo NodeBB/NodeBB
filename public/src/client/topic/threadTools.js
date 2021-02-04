@@ -321,10 +321,11 @@ define('forum/topic/threadTools', [
 		var icon = $('.topic-header [component="topic/pinned"]');
 		icon.toggleClass('hidden', !data.pinned);
 		if (data.pinned) {
-			icon.translateAttr('title', data.pinExpiry && data.pinExpiryISO ?
-				'[[topic:pinned-with-expiry, ' + data.pinExpiryISO + ']]' :
-				'[[topic:pinned]]'
-			);
+			icon.translateAttr('title', (
+				data.pinExpiry && data.pinExpiryISO ?
+					'[[topic:pinned-with-expiry, ' + data.pinExpiryISO + ']]' :
+					'[[topic:pinned]]'
+			));
 		}
 		ajaxify.data.pinned = data.pinned;
 

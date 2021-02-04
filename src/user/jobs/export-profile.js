@@ -79,8 +79,10 @@ async function getRoomMessages(uid, roomId) {
 	let data = [];
 	await batch.processSortedSet(`uid:${uid}:chat:room:${roomId}:mids`, async (mids) => {
 		const messageData = await db.getObjects(mids.map(mid => `message:${mid}`));
-		data = data.concat(messageData.filter(m => m && m.fromuid === uid && !m.system)
-			.map(m => ({ content: m.content, timestamp: m.timestamp }))
+		data = data.concat(
+			messageData
+				.filter(m => m && m.fromuid === uid && !m.system)
+				.map(m => ({ content: m.content, timestamp: m.timestamp }))
 		);
 	}, { batch: 500, interval: 1000 });
 	return data;

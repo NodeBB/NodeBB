@@ -305,13 +305,15 @@ define('admin/manage/users', [
 
 			bootbox.confirm(confirmMsg, function (confirm) {
 				if (confirm) {
-					Promise.all(uids.map(uid => api.del(`/users/${uid}${path}`, {})
-						.then(() => {
-							if (path !== '/content') {
-								removeRow(uid);
-							}
-						})
-					)).then(() => {
+					Promise.all(
+						uids.map(
+							uid => api.del(`/users/${uid}${path}`, {}).then(() => {
+								if (path !== '/content') {
+									removeRow(uid);
+								}
+							})
+						)
+					).then(() => {
 						if (path !== '/content') {
 							app.alertSuccess('[[admin/manage/users:alerts.delete-success]]');
 						} else {
