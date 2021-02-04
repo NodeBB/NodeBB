@@ -5,136 +5,127 @@
 	},
 
 	"rules": {
-		// Customized
+		// === Configure rules for our style ===
+		// imports must be resolvable
+		"import/no-unresolved": "error",
+		// use single quotes,
+		// unless a different style allows avoiding escapes
+		"quotes": ["error", "single", {
+			"avoidEscape": true,
+			"allowTemplateLiterals": true
+		}],
+		// allow else-if return
+		"no-else-return": [ "error", { "allowElseIf": true } ],
+		// expressions split over multiple lines
+		// should break after the operator
+		"operator-linebreak": [ "error", "after" ],
+		// require arrow parens only when needed
+		// and whenever the body is a block
+		"arrow-parens": ["error", "as-needed", { "requireForBlockBody": true }],
+		// what variables are errors in callbacks
 		"handle-callback-err": [ "error","^(e$|(e|(.*(_e|E)))rr)" ],
+		// allow dangling commas in functions
+		// require them everywhere else
 		"comma-dangle": ["error", {
 			"arrays": "always-multiline",
 			"objects": "always-multiline",
 			"imports": "always-multiline",
 			"exports": "always-multiline",
-			"functions": "never"
+			"functions": "only-multiline"
 		}],
+		// we actually encourage `return await`
 		"no-return-await": "off",
-		"no-constant-condition": "off",
+		// allow `while (true)`
+		"no-constant-condition": ["error", { "checkLoops": false }],
+		// allow ignoring an error with `catch`
 		"no-empty": ["error", { "allowEmptyCatch": true }],
-		"no-underscore-dangle": "off",
-		"no-console": "off",
+		// allow `3 + 5 - 1`, but not `3 * 5 - 1`
 		"no-mixed-operators": ["error", { "allowSamePrecedence": true }],
+		// require `'use strict';`
 		"strict": ["error", "global"],
-		"consistent-return": "off",
-		"func-names": "off",
-		"no-tabs": "off",
+		// we actually use tabs for indentation
 		"indent": ["error", "tab", { "SwitchCase": 1 }],
+		"no-tabs": "off",
+		// we want `== null` to also handle undefined
 		"no-eq-null": "off",
-		"camelcase": "off",
-		"no-new": "off",
-		"no-shadow": "off",
-		"no-use-before-define": ["error", "nofunc"],
-		"no-prototype-builtins": "off",
-		"new-cap": "off",
+		// allow `for (..; i++)`
 		"no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
+		// allow using functions defined later
+		"no-use-before-define": ["error", "nofunc"],
+		// require consistent newlines before and after braces
+		// if contents are multiline
+		// "object-curly-newline": ["error", { "consistent": true, "multiline": true }],
 		"object-curly-newline": "off",
-		"no-restricted-globals": "off",
+		// require consistent linebreaks inline function parenthesis (arguments or params)
+		// "function-paren-newline": ["error", "consistent"],
 		"function-paren-newline": "off",
-		"import/no-unresolved": "error",
-		"quotes": ["error", "single", {
-			"avoidEscape": true,
-			"allowTemplateLiterals": true
-		}],
-		"no-else-return": [ "error", { "allowElseIf": true } ],
-		"operator-linebreak": [ "error", "after" ],
-		"arrow-parens": ["error", "as-needed", { "requireForBlockBody": true }],
+		// only require const if all parts of destructuring can be const
+		"prefer-const": ["error", { "destructuring": "all" }],
+		// don't require destructuring when assigning
+		// "prefer-destructuring": ["error", {
+		// 	"VariableDeclarator": { "array": true, "object": true },
+		// 	"AssignmentExpression": { "array": false, "object": false }
+		// }],
+		"prefer-destructuring": "off",
+		// identical to airbnb rule, except for allowing for..of, because we want to use it
+		// "no-restricted-syntax": [
+		// 	"error",
+		// 	{
+		// 		"selector": "ForInStatement",
+		// 		"message": "for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array."
+		// 	},
+		// 	{
+		// 		"selector": "LabeledStatement",
+		// 		"message": "Labels are a form of GOTO; using them makes code confusing and hard to maintain and understand."
+		// 	},
+		// 	{
+		// 		"selector": "WithStatement",
+		// 		"message": "`with` is disallowed in strict mode because it makes code impossible to predict and optimize."
+		// 	}
+		// ],
+		"no-restricted-syntax": "off",
+		// allow lines of up to 120 characters
+		// "max-len": ["error", { "code": 120, "tabWidth": 2, "ignoreUrls": true, "ignoreStrings": true, "ignoreTemplateLiterals": true, "ignoreRegExpLiterals": true }],
+		"max-len": "off", // do this LAST
 
-		// ES6
+		// === Disable rules ===
+		// more liberal naming
+		"camelcase": "off",
+		"no-underscore-dangle": "off",
+		// don't require anonymous function names
+		"func-names": "off",
+		// allow console
+		"no-console": "off",
+		// allow new for side effects
+		// allow new with non-capitalized
+		"no-new": "off",
+		"new-cap": "off",
+		// allow shadowing variables (usually callbacks)
+		"no-shadow": "off",
+		// allow multiple empty lines in a row
+		"no-multiple-empty-lines": "off",
+		// allow not using object shorthand
+		"object-shorthand": "off",
+
+		// WORKING ON
 		"prefer-rest-params": "off",
 		"prefer-spread": "off",
 		"prefer-arrow-callback": "off",
 		"prefer-template": "off",
 		"no-var": "off",
-		"object-shorthand": "off",
 		"vars-on-top": "off",
-		"prefer-destructuring": "off",
-
-		// TODO
-		"import/no-extraneous-dependencies": "off",
-		"import/no-dynamic-require": "off",
+		"no-script-url": "off",
 		"import/newline-after-import": "off",
 		"no-bitwise": "off",
-		"global-require": "off",
-		"max-len": "off",
-		"no-param-reassign": "off",
-		"no-restricted-syntax": "off",
-		"no-script-url": "off",
-		"default-case": "off",
-		"linebreak-style": "off",
 
-		// "no-multi-assign": "off",
-		// "one-var": "off",
-		// "no-undef": "off",
-		// "max-nested-callbacks": "off",
-		// "no-mixed-requires": "off",
-		// "brace-style": "off",
-		// "max-statements-per-line": "off",
-		// "no-unused-vars": "off",
-		// "no-mixed-spaces-and-tabs": "off",
-		// "no-useless-concat": "off",
-		// "require-jsdoc": "off",
-		// "eqeqeq": "off",
-		// "no-negated-condition": "off",
-		// "one-var-declaration-per-line": "off",
-		// "no-lonely-if": "off",
-		// "radix": "off",
-		// "no-else-return": "off",
-		// "no-useless-escape": "off",
-		// "block-scoped-var": "off",
-		// "operator-assignment": "off",
-		// "yoda": "off",
-		// "no-loop-func": "off",
-		// "no-void": "off",
-		// "valid-jsdoc": "off",
-		// "no-cond-assign": "off",
-		// "no-redeclare": "off",
-		// "no-unreachable": "off",
-		// "no-nested-ternary": "off",
-		// "operator-linebreak": "off",
-		// "guard-for-in": "off",
-		// "no-unneeded-ternary": "off",
-		// "no-sequences": "off",
-		// "no-extend-native": "off",
-		// "no-shadow-restricted-names": "off",
-		// "no-extra-boolean-cast": "off",
-		// "no-path-concat": "off",
-		// "no-unused-expressions": "off",
-		// "no-return-assign": "off",
-		// "no-restricted-modules": "off",
-		// "object-curly-spacing": "off",
-		// "indent": "off",
-		// "padded-blocks": "off",
-		// "eol-last": "off",
-		// "lines-around-directive": "off",
-		// "strict": "off",
-		// "comma-dangle": "off",
-		// "no-multi-spaces": "off",
-		// "quotes": "off",
-		// "keyword-spacing": "off",
-		// "no-mixed-operators": "off",
-		// "comma-spacing": "off",
-		// "no-trailing-spaces": "off",
-		// "key-spacing": "off",
-		"no-multiple-empty-lines": "off"
-		// "spaced-comment": "off",
-		// "space-in-parens": "off",
-		// "block-spacing": "off",
-		// "quote-props": "off",
-		// "space-unary-ops": "off",
-		// "no-empty": "off",
-		// "dot-notation": "off",
-		// "func-call-spacing": "off",
-		// "array-bracket-spacing": "off",
-		// "object-property-newline": "off",
-		// "no-continue": "off",
-		// "no-extra-semi": "off",
-		// "no-spaced-func": "off",
-		// "no-useless-return": "off"
+		// TODO
+		"consistent-return": "off",
+		"no-restricted-globals": "off",
+		"no-prototype-builtins": "off",
+		"import/no-extraneous-dependencies": "off",
+		"import/no-dynamic-require": "off",
+		"global-require": "off",
+		"no-param-reassign": "off",
+		"default-case": "off"
 	}
 }
