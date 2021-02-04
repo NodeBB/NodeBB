@@ -48,7 +48,7 @@ categoriesController.list = async function (req, res) {
 		}
 	});
 
-	if (req.originalUrl.startsWith(nconf.get('relative_path') + '/api/categories') || req.originalUrl.startsWith(nconf.get('relative_path') + '/categories')) {
+	if (req.originalUrl.startsWith(`${nconf.get('relative_path')}/api/categories`) || req.originalUrl.startsWith(`${nconf.get('relative_path')}/categories`)) {
 		data.title = '[[pages:categories]]';
 		data.breadcrumbs = helpers.buildBreadcrumbs([{ text: data.title }]);
 		res.locals.metaTags.push({

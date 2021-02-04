@@ -21,7 +21,7 @@ Sockets.init = async function (server) {
 
 	const SocketIO = require('socket.io').Server;
 	const io = new SocketIO({
-		path: nconf.get('relative_path') + '/socket.io',
+		path: `${nconf.get('relative_path')}/socket.io`,
 	});
 
 	if (nconf.get('isCluster')) {
@@ -57,7 +57,7 @@ Sockets.init = async function (server) {
 			methods: ['GET', 'POST'],
 			allowedHeaders: ['content-type'],
 		};
-		winston.info('[socket.io] Restricting access to origin: ' + origins);
+		winston.info(`[socket.io] Restricting access to origin: ${origins}`);
 	}
 
 	io.listen(server, opts);
@@ -87,13 +87,13 @@ function onDisconnect(socket) {
 
 function onConnect(socket) {
 	if (socket.uid) {
-		socket.join('uid_' + socket.uid);
+		socket.join(`uid_${socket.uid}`);
 		socket.join('online_users');
 	} else {
 		socket.join('online_guests');
 	}
 
-	socket.join('sess_' + socket.request.signedCookies[nconf.get('sessionKey')]);
+	socket.join(`sess_${socket.request.signedCookies[nconf.get('sessionKey')]}`);
 	socket.emit('checkSession', socket.uid);
 	socket.emit('setHostname', os.hostname());
 	plugins.hooks.fire('action:sockets.connect', { socket: socket });
@@ -123,7 +123,7 @@ async function onMessage(socket, payload) {
 
 	if (!methodToCall || typeof methodToCall !== 'function') {
 		if (process.env.NODE_ENV === 'development') {
-			winston.warn('[socket.io] Unrecognized message: ' + eventName);
+			winston.warn(`[socket.io] Unrecognized message: ${eventName}`);
 		}
 		return callback({ message: '[[error:invalid-event]]' });
 	}
@@ -135,7 +135,7 @@ async function onMessage(socket, payload) {
 	}
 
 	if (!eventName.startsWith('admin.') && ratelimit.isFlooding(socket)) {
-		winston.warn('[socket.io] Too many emits! Disconnecting uid : ' + socket.uid + '. Events : ' + socket.previousEvents);
+		winston.warn(`[socket.io] Too many emits! Disconnecting uid : ${socket.uid}. Events : ${socket.previousEvents}`);
 		return socket.disconnect();
 	}
 
@@ -156,7 +156,7 @@ async function onMessage(socket, payload) {
 			});
 		}
 	} catch (err) {
-		winston.error(eventName + '\n' + (err.stack ? err.stack : err.message));
+		winston.error(`${eventName}\n${err.stack ? err.stack : err.message}`);
 		callback({ message: err.message });
 	}
 }
@@ -168,7 +168,7 @@ function requireModules() {
 	];
 
 	modules.forEach(function (module) {
-		Namespaces[module] = require('./' + module);
+		Namespaces[module] = require(`./${module}`);
 	});
 }
 
@@ -182,7 +182,7 @@ async function checkMaintenance(socket) {
 		return;
 	}
 	const validator = require('validator');
-	throw new Error('[[pages:maintenance.text, ' + validator.escape(String(meta.config.title || 'NodeBB')) + ']]');
+	throw new Error(`[[pages:maintenance.text, ${validator.escape(String(meta.config.title || 'NodeBB'))}]]`);
 }
 
 const getSessionAsync = util.promisify((sid, callback) => db.sessionStore.get(sid, (err, sessionObj) => callback(err, sessionObj || null)));
@@ -230,7 +230,7 @@ Sockets.in = function (room) {
 };
 
 Sockets.getUserSocketCount = function (uid) {
-	return Sockets.getCountInRoom('uid_' + uid);
+	return Sockets.getCountInRoom(`uid_${uid}`);
 };
 
 Sockets.getCountInRoom = function (room) {
@@ -248,5 +248,5 @@ Sockets.warnDeprecated = (socket, replacement) => {
 			replacement: replacement,
 		});
 	}
-	winston.warn('[deprecated]\n ' + (new Error('-').stack.split('\n').slice(2, 5).join('\n')) + '\n     use ' + replacement);
+	winston.warn(`[deprecated]\n ${new Error('-').stack.split('\n').slice(2, 5).join('\n')}\n     use ${replacement}`);
 };

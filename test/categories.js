@@ -89,7 +89,7 @@ describe('Categories', function () {
 	});
 
 	it('should load a category route', function (done) {
-		request(nconf.get('url') + '/api/category/' + categoryObj.cid + '/test-category', { json: true }, function (err, response, body) {
+		request(`${nconf.get('url')}/api/category/${categoryObj.cid}/test-category`, { json: true }, function (err, response, body) {
 			assert.ifError(err);
 			assert.equal(response.statusCode, 200);
 			assert.equal(body.name, 'Test Category &amp; NodeBB');
@@ -102,7 +102,7 @@ describe('Categories', function () {
 		it('should not throw', function (done) {
 			Categories.getCategoryById({
 				cid: categoryObj.cid,
-				set: 'cid:' + categoryObj.cid + ':tids',
+				set: `cid:${categoryObj.cid}:tids`,
 				reverse: true,
 				start: 0,
 				stop: -1,
@@ -191,10 +191,10 @@ describe('Categories', function () {
 		it('should move posts from one category to another', function (done) {
 			Categories.moveRecentReplies(moveTid, categoryObj.cid, moveCid, function (err) {
 				assert.ifError(err);
-				db.getSortedSetRange('cid:' + categoryObj.cid + ':pids', 0, -1, function (err, pids) {
+				db.getSortedSetRange(`cid:${categoryObj.cid}:pids`, 0, -1, function (err, pids) {
 					assert.ifError(err);
 					assert.equal(pids.length, 0);
-					db.getSortedSetRange('cid:' + moveCid + ':pids', 0, -1, function (err, pids) {
+					db.getSortedSetRange(`cid:${moveCid}:pids`, 0, -1, function (err, pids) {
 						assert.ifError(err);
 						assert.equal(pids.length, 2);
 						done();
@@ -674,7 +674,7 @@ describe('Categories', function () {
 			};
 			Categories.update(data, function (err) {
 				assert.ifError(err);
-				db.getSortedSetRange('cid:' + cid + ':tag:whitelist', 0, -1, function (err, tagWhitelist) {
+				db.getSortedSetRange(`cid:${cid}:tag:whitelist`, 0, -1, function (err, tagWhitelist) {
 					assert.ifError(err);
 					assert.deepEqual(['nodebb', 'jquery', 'javascript'], tagWhitelist);
 					done();

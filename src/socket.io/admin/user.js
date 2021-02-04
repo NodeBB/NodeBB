@@ -89,7 +89,7 @@ User.sendValidationEmail = async function (socket, uids) {
 
 	await async.eachLimit(uids, 50, async function (uid) {
 		await user.email.sendValidationEmail(uid, { force: true }).catch((err) => {
-			winston.error('[user.create] Validation email failed to send\n[emailer.send] ' + err.stack);
+			winston.error(`[user.create] Validation email failed to send\n[emailer.send] ${err.stack}`);
 			failed.push(uid);
 		});
 	});
@@ -109,7 +109,7 @@ User.sendPasswordResetEmail = async function (socket, uids) {
 	await Promise.all(uids.map(async function (uid) {
 		const userData = await user.getUserFields(uid, ['email', 'username']);
 		if (!userData.email) {
-			throw new Error('[[error:user-doesnt-have-email, ' + userData.username + ']]');
+			throw new Error(`[[error:user-doesnt-have-email, ${userData.username}]]`);
 		}
 		await user.reset.send(userData.email);
 	}));
@@ -122,9 +122,9 @@ User.forcePasswordReset = async function (socket, uids) {
 
 	uids = uids.filter(uid => parseInt(uid, 10));
 
-	await db.setObjectField(uids.map(uid => 'user:' + uid), 'passwordExpiry', Date.now());
+	await db.setObjectField(uids.map(uid => `user:${uid}`), 'passwordExpiry', Date.now());
 	await user.auth.revokeAllSessions(uids);
-	uids.forEach(uid => sockets.in('uid_' + uid).emit('event:logout'));
+	uids.forEach(uid => sockets.in(`uid_${uid}`).emit('event:logout'));
 };
 
 User.deleteUsers = async function (socket, uids) {

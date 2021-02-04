@@ -30,16 +30,16 @@ function generateXML() {
 					height: '16',
 					type: 'image/x-icon',
 				} },
-				nconf.get('url') + '/favicon.ico',
+				`${nconf.get('url')}/favicon.ico`,
 			] },
 			{ Url: {
 				_attr: {
 					type: 'text/html',
 					method: 'get',
-					template: nconf.get('url') + '/search?term={searchTerms}&in=titlesposts',
+					template: `${nconf.get('url')}/search?term={searchTerms}&in=titlesposts`,
 				},
 			} },
-			{ 'moz:SearchForm': nconf.get('url') + '/search' },
+			{ 'moz:SearchForm': `${nconf.get('url')}/search` },
 		],
 	}], { declaration: true, indent: '\t' });
 }

@@ -22,7 +22,7 @@ module.exports = function (SocketTopics) {
 			throw new Error('[[error:no-privileges]]');
 		}
 
-		const set = data.topicPostSort === 'most_votes' ? 'tid:' + data.tid + ':posts:votes' : 'tid:' + data.tid + ':posts';
+		const set = data.topicPostSort === 'most_votes' ? `tid:${data.tid}:posts:votes` : `tid:${data.tid}:posts`;
 		const reverse = data.topicPostSort === 'newest_to_oldest' || data.topicPostSort === 'most_votes';
 		let start = Math.max(0, parseInt(data.after, 10));
 
@@ -91,7 +91,7 @@ module.exports = function (SocketTopics) {
 
 	SocketTopics.loadMoreUserTopics = async function (socket, data) {
 		const cids = await categories.getCidsByPrivilege('categories:cid', socket.uid, 'topics:read');
-		data.set = cids.map(c => 'cid:' + c + ':uid:' + data.uid + ':tids');
+		data.set = cids.map(c => `cid:${c}:uid:${data.uid}:tids`);
 		return await SocketTopics.loadMoreFromSet(socket, data);
 	};
 

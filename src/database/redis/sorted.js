@@ -268,10 +268,10 @@ module.exports = function (module) {
 		}
 
 		if (min !== minmin && !min.match(/^[[(]/)) {
-			min = '[' + min;
+			min = `[${min}`;
 		}
 		if (max !== maxmax && !max.match(/^[[(]/)) {
-			max = '[' + max;
+			max = `[${max}`;
 		}
 		const args = [key, min, max];
 		if (count) {

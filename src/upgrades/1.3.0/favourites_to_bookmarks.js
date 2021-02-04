@@ -19,20 +19,20 @@ module.exports = {
 
 					async.waterfall([
 						function (next) {
-							db.rename('pid:' + id + ':users_favourited', 'pid:' + id + ':users_bookmarked', next);
+							db.rename(`pid:${id}:users_favourited`, `pid:${id}:users_bookmarked`, next);
 						},
 						function (next) {
-							db.getObjectField('post:' + id, 'reputation', next);
+							db.getObjectField(`post:${id}`, 'reputation', next);
 						},
 						function (reputation, next) {
 							if (parseInt(reputation, 10)) {
-								db.setObjectField('post:' + id, 'bookmarks', reputation, next);
+								db.setObjectField(`post:${id}`, 'bookmarks', reputation, next);
 							} else {
 								next();
 							}
 						},
 						function (next) {
-							db.deleteObjectField('post:' + id, 'reputation', next);
+							db.deleteObjectField(`post:${id}`, 'reputation', next);
 						},
 					], next);
 				}, next);
@@ -46,7 +46,7 @@ module.exports = {
 
 			batch.processSortedSet('users:joindate', function (ids, next) {
 				async.each(ids, function (id, next) {
-					db.rename('uid:' + id + ':favourites', 'uid:' + id + ':bookmarks', next);
+					db.rename(`uid:${id}:favourites`, `uid:${id}:bookmarks`, next);
 				}, next);
 			}, {}, next);
 		}

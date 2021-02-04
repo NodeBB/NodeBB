@@ -16,14 +16,14 @@ module.exports = {
 				var topicData;
 				async.waterfall([
 					function (next) {
-						db.getObjectFields('topic:' + tid, ['mainPid', 'cid', 'pinned'], next);
+						db.getObjectFields(`topic:${tid}`, ['mainPid', 'cid', 'pinned'], next);
 					},
 					function (_topicData, next) {
 						topicData = _topicData;
 						if (!topicData.mainPid || !topicData.cid) {
 							return _next();
 						}
-						db.getObject('post:' + topicData.mainPid, next);
+						db.getObject(`post:${topicData.mainPid}`, next);
 					},
 					function (postData, next) {
 						if (!postData) {
@@ -38,14 +38,14 @@ module.exports = {
 						var votes = upvotes - downvotes;
 						async.parallel([
 							function (next) {
-								db.setObject('topic:' + tid, data, next);
+								db.setObject(`topic:${tid}`, data, next);
 							},
 							function (next) {
 								db.sortedSetAdd('topics:votes', votes, tid, next);
 							},
 							function (next) {
 								if (parseInt(topicData.pinned, 10) !== 1) {
-									db.sortedSetAdd('cid:' + topicData.cid + ':tids:votes', votes, tid, next);
+									db.sortedSetAdd(`cid:${topicData.cid}:tids:votes`, votes, tid, next);
 								} else {
 									next();
 								}

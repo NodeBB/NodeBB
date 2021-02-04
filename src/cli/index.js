@@ -43,7 +43,7 @@ try {
 	const checkVersion = function (packageName) {
 		const version = JSON.parse(fs.readFileSync(path.join(paths.nodeModules, packageName, 'package.json'), 'utf8')).version;
 		if (!semver.satisfies(version, defaultPackage.dependencies[packageName])) {
-			const e = new TypeError('Incorrect dependency version: ' + packageName);
+			const e = new TypeError(`Incorrect dependency version: ${packageName}`);
 			e.code = 'DEP_WRONG_VERSION';
 			throw e;
 		}
@@ -194,7 +194,7 @@ program
 	});
 program
 	.command('build [targets...]')
-	.description('Compile static assets ' + '(JS, CSS, templates, languages)'.red)
+	.description(`Compile static assets ${'(JS, CSS, templates, languages)'.red}`)
 	.option('-s, --series', 'Run builds in series without extra processes')
 	.action(function (targets, options) {
 		require('./manage').build(targets.length ? targets : true, options);
@@ -265,12 +265,12 @@ program
 	.option('-s, --schema', 'Update NodeBB data store schema', false)
 	.option('-b, --build', 'Rebuild assets', false)
 	.on('--help', function () {
-		console.log('\n' + [
+		console.log(`\n${[
 			'When running particular upgrade scripts, options are ignored.',
 			'By default all options are enabled. Passing any options disables that default.',
-			'Only package and dependency updates: ' + './nodebb upgrade -mi'.yellow,
-			'Only database update: ' + './nodebb upgrade -s'.yellow,
-		].join('\n'));
+			`Only package and dependency updates: ${'./nodebb upgrade -mi'.yellow}`,
+			`Only database update: ${'./nodebb upgrade -s'.yellow}`,
+		].join('\n')}`);
 	})
 	.action(function (scripts, options) {
 		require('./upgrade').upgrade(scripts.length ? scripts : true, options);

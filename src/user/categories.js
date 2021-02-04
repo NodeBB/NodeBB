@@ -19,7 +19,7 @@ module.exports = function (User) {
 		if (exists.includes(false)) {
 			throw new Error('[[error:no-category]]');
 		}
-		await db.sortedSetsAdd(cids.map(cid => 'cid:' + cid + ':uid:watch:state'), state, uid);
+		await db.sortedSetsAdd(cids.map(cid => `cid:${cid}:uid:watch:state`), state, uid);
 	};
 
 	User.getCategoryWatchState = async function (uid) {

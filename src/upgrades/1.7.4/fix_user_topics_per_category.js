@@ -16,7 +16,7 @@ module.exports = {
 				var topicData;
 				async.waterfall([
 					function (next) {
-						db.getObjectFields('topic:' + tid, ['cid', 'tid', 'uid', 'oldCid', 'timestamp'], next);
+						db.getObjectFields(`topic:${tid}`, ['cid', 'tid', 'uid', 'oldCid', 'timestamp'], next);
 					},
 					function (_topicData, next) {
 						topicData = _topicData;
@@ -24,16 +24,16 @@ module.exports = {
 							return _next();
 						}
 
-						db.isSortedSetMember('cid:' + topicData.oldCid + ':uid:' + topicData.uid, topicData.tid, next);
+						db.isSortedSetMember(`cid:${topicData.oldCid}:uid:${topicData.uid}`, topicData.tid, next);
 					},
 					function (isMember, next) {
 						if (isMember) {
 							async.series([
 								function (next) {
-									db.sortedSetRemove('cid:' + topicData.oldCid + ':uid:' + topicData.uid + ':tids', tid, next);
+									db.sortedSetRemove(`cid:${topicData.oldCid}:uid:${topicData.uid}:tids`, tid, next);
 								},
 								function (next) {
-									db.sortedSetAdd('cid:' + topicData.cid + ':uid:' + topicData.uid + ':tids', topicData.timestamp, tid, next);
+									db.sortedSetAdd(`cid:${topicData.cid}:uid:${topicData.uid}:tids`, topicData.timestamp, tid, next);
 								},
 							], function (err) {
 								next(err);

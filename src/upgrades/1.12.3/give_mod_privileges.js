@@ -57,7 +57,7 @@ module.exports = {
 							givePrivsToModerators(cid, 'groups:', next);
 						},
 						function (next) {
-							privileges.categories.give(modPrivileges.map(p => 'groups:' + p), cid, ['Global Moderators'], next);
+							privileges.categories.give(modPrivileges.map(p => `groups:${p}`), cid, ['Global Moderators'], next);
 						},
 					], next);
 				}, next);
@@ -69,12 +69,12 @@ module.exports = {
 
 		function givePrivsToModerators(cid, groupPrefix, callback) {
 			const privGroups = modPrivileges.map(function (priv) {
-				return 'cid:' + cid + ':privileges:' + groupPrefix + priv;
+				return `cid:${cid}:privileges:${groupPrefix}${priv}`;
 			});
 
 			async.waterfall([
 				function (next) {
-					db.getSortedSetRevRange('group:cid:' + cid + ':privileges:' + groupPrefix + 'moderate:members', 0, -1, next);
+					db.getSortedSetRevRange(`group:cid:${cid}:privileges:${groupPrefix}moderate:members`, 0, -1, next);
 				},
 				function (members, next) {
 					async.eachSeries(members, function (member, next) {

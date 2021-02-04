@@ -50,13 +50,13 @@ postsAPI.edit = async function (caller, data) {
 	const contentLen = utils.stripHTMLTags(data.content).trim().length;
 
 	if (data.title && data.title.length < meta.config.minimumTitleLength) {
-		throw new Error('[[error:title-too-short, ' + meta.config.minimumTitleLength + ']]');
+		throw new Error(`[[error:title-too-short, ${meta.config.minimumTitleLength}]]`);
 	} else if (data.title && data.title.length > meta.config.maximumTitleLength) {
-		throw new Error('[[error:title-too-long, ' + meta.config.maximumTitleLength + ']]');
+		throw new Error(`[[error:title-too-long, ${meta.config.maximumTitleLength}]]`);
 	} else if (meta.config.minimumPostLength !== 0 && contentLen < meta.config.minimumPostLength) {
-		throw new Error('[[error:content-too-short, ' + meta.config.minimumPostLength + ']]');
+		throw new Error(`[[error:content-too-short, ${meta.config.minimumPostLength}]]`);
 	} else if (contentLen > meta.config.maximumPostLength) {
-		throw new Error('[[error:content-too-long, ' + meta.config.maximumPostLength + ']]');
+		throw new Error(`[[error:content-too-long, ${meta.config.maximumPostLength}]]`);
 	}
 
 	data.uid = caller.uid;
@@ -81,19 +81,19 @@ postsAPI.edit = async function (caller, data) {
 	returnData.topic = { ...postObj[0].topic, ...editResult.post.topic };
 
 	if (!editResult.post.deleted) {
-		websockets.in('topic_' + editResult.topic.tid).emit('event:post_edited', editResult);
+		websockets.in(`topic_${editResult.topic.tid}`).emit('event:post_edited', editResult);
 		return returnData;
 	}
 
 	const memberData = await groups.getMembersOfGroups([
 		'administrators',
 		'Global Moderators',
-		'cid:' + editResult.topic.cid + ':privileges:moderate',
-		'cid:' + editResult.topic.cid + ':privileges:groups:moderate',
+		`cid:${editResult.topic.cid}:privileges:moderate`,
+		`cid:${editResult.topic.cid}:privileges:groups:moderate`,
 	]);
 
 	const uids = _.uniq(_.flatten(memberData).concat(String(caller.uid)));
-	uids.forEach(uid =>	websockets.in('uid_' + uid).emit('event:post_edited', editResult));
+	uids.forEach(uid =>	websockets.in(`uid_${uid}`).emit('event:post_edited', editResult));
 	return returnData;
 };
 
@@ -123,7 +123,7 @@ async function deleteOrRestore(caller, data, params) {
 		await deleteOrRestoreTopicOf(params.command, data.pid, caller);
 	}
 
-	websockets.in('topic_' + postData.tid).emit(params.event, postData);
+	websockets.in(`topic_${postData.tid}`).emit(params.event, postData);
 
 	await events.log({
 		type: params.type,
@@ -165,7 +165,7 @@ postsAPI.purge = async function (caller, data) {
 	require('../posts/cache').del(data.pid);
 	await posts.purge(data.pid, caller.uid);
 
-	websockets.in('topic_' + postData.tid).emit('event:post_purged', postData);
+	websockets.in(`topic_${postData.tid}`).emit('event:post_purged', postData);
 	const topicData = await topics.getTopicFields(postData.tid, ['title', 'cid']);
 
 	await events.log({
@@ -295,5 +295,5 @@ postsAPI.restoreDiff = async (caller, data) => {
 	}
 
 	const edit = await posts.diffs.restore(data.pid, data.since, caller.uid, apiHelpers.buildReqObject(caller));
-	websockets.in('topic_' + edit.topic.tid).emit('event:post_edited', edit);
+	websockets.in(`topic_${edit.topic.tid}`).emit('event:post_edited', edit);
 };

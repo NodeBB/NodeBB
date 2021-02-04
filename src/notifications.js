@@ -61,7 +61,7 @@ Notifications.getMultiple = async function (nids) {
 		return [];
 	}
 
-	const keys = nids.map(nid => 'notifications:' + nid);
+	const keys = nids.map(nid => `notifications:${nid}`);
 	const notifications = await db.getObjects(keys);
 
 	const userKeys = notifications.map(n => n && n.from);
@@ -85,7 +85,7 @@ Notifications.getMultiple = async function (nids) {
 					notification.bodyShort = notification.bodyShort.replace(/([\s\S]*?),[\s\S]*?,([\s\S]*?)/, '$1, [[global:guest]], $2');
 				}
 			} else if (notification.image === 'brand:logo' || !notification.image) {
-				notification.image = meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png';
+				notification.image = meta.config['brand:logo'] || `${nconf.get('relative_path')}/logo.png`;
 			}
 		}
 	});
@@ -105,7 +105,7 @@ Notifications.findRelated = async function (mergeIds, set) {
 	// A related notification is one in a zset that has the same mergeId
 	const nids = await db.getSortedSetRevRange(set, 0, -1);
 
-	const keys = nids.map(nid => 'notifications:' + nid);
+	const keys = nids.map(nid => `notifications:${nid}`);
 	const notificationData = await db.getObjectsFields(keys, ['mergeId']);
 	const notificationMergeIds = notificationData.map(notifObj => String(notifObj.mergeId));
 	const mergeSet = new Set(mergeIds.map(id => String(id)));
@@ -117,7 +117,7 @@ Notifications.create = async function (data) {
 		throw new Error('[[error:no-notification-id]]');
 	}
 	data.importance = data.importance || 5;
-	const oldNotif = await db.getObject('notifications:' + data.nid);
+	const oldNotif = await db.getObject(`notifications:${data.nid}`);
 	if (oldNotif && parseInt(oldNotif.pid, 10) === parseInt(data.pid, 10) && parseInt(oldNotif.importance, 10) > parseInt(data.importance, 10)) {
 		return null;
 	}
@@ -125,7 +125,7 @@ Notifications.create = async function (data) {
 	data.datetime = now;
 	await Promise.all([
 		db.sortedSetAdd('notifications', now, data.nid),
-		db.setObject('notifications:' + data.nid, data),
+		db.setObject(`notifications:${data.nid}`, data),
 	]);
 	return data;
 };
@@ -156,8 +156,8 @@ async function pushToUids(uids, notification) {
 			return;
 		}
 		const oneWeekAgo = Date.now() - 604800000;
-		const unreadKeys = uids.map(uid => 'uid:' + uid + ':notifications:unread');
-		const readKeys = uids.map(uid => 'uid:' + uid + ':notifications:read');
+		const unreadKeys = uids.map(uid => `uid:${uid}:notifications:unread`);
+		const readKeys = uids.map(uid => `uid:${uid}:notifications:read`);
 		await db.sortedSetsAdd(unreadKeys, notification.datetime, notification.nid);
 		await db.sortedSetsRemove(readKeys, notification.nid);
 		await db.sortedSetsRemoveRangeByScore(unreadKeys, '-inf', oneWeekAgo);
@@ -165,7 +165,7 @@ async function pushToUids(uids, notification) {
 		const websockets = require('./socket.io');
 		if (websockets.server) {
 			uids.forEach(function (uid) {
-				websockets.in('uid_' + uid).emit('event:new_notification', notification);
+				websockets.in(`uid_${uid}`).emit('event:new_notification', notification);
 			});
 		}
 	}
@@ -190,7 +190,7 @@ async function pushToUids(uids, notification) {
 				body: body,
 				notification: notification,
 				showUnsubscribe: true,
-			}).catch(err => winston.error('[emailer.send] ' + err.stack));
+			}).catch(err => winston.error(`[emailer.send] ${err.stack}`));
 		});
 	}
 
@@ -199,7 +199,7 @@ async function pushToUids(uids, notification) {
 		const uidsToEmail = [];
 		const usersSettings = await User.getMultipleUserSettings(uids);
 		usersSettings.forEach(function (userSettings) {
-			const setting = userSettings['notificationType_' + notification.type] || 'notification';
+			const setting = userSettings[`notificationType_${notification.type}`] || 'notification';
 
 			if (setting === 'notification' || setting === 'notificationemail') {
 				uidsToNotify.push(userSettings.uid);
@@ -256,7 +256,7 @@ Notifications.pushGroups = async function (notification, groupNames) {
 Notifications.rescind = async function (nid) {
 	await Promise.all([
 		db.sortedSetRemove('notifications', nid),
-		db.delete('notifications:' + nid),
+		db.delete(`notifications:${nid}`),
 	]);
 };
 
@@ -271,15 +271,15 @@ Notifications.markUnread = async function (nid, uid) {
 	if (!(parseInt(uid, 10) > 0) || !nid) {
 		return;
 	}
-	const notification = await db.getObject('notifications:' + nid);
+	const notification = await db.getObject(`notifications:${nid}`);
 	if (!notification) {
 		throw new Error('[[error:no-notification]]');
 	}
 	notification.datetime = notification.datetime || Date.now();
 
 	await Promise.all([
-		db.sortedSetRemove('uid:' + uid + ':notifications:read', nid),
-		db.sortedSetAdd('uid:' + uid + ':notifications:unread', notification.datetime, nid),
+		db.sortedSetRemove(`uid:${uid}:notifications:read`, nid),
+		db.sortedSetAdd(`uid:${uid}:notifications:unread`, notification.datetime, nid),
 	]);
 };
 
@@ -289,13 +289,13 @@ Notifications.markReadMultiple = async function (nids, uid) {
 		return;
 	}
 
-	let notificationKeys = nids.map(nid => 'notifications:' + nid);
+	let notificationKeys = nids.map(nid => `notifications:${nid}`);
 	let mergeIds = await db.getObjectsFields(notificationKeys, ['mergeId']);
 	// Isolate mergeIds and find related notifications
 	mergeIds = _.uniq(mergeIds.map(set => set.mergeId));
 
-	const relatedNids = await Notifications.findRelated(mergeIds, 'uid:' + uid + ':notifications:unread');
-	notificationKeys = _.union(nids, relatedNids).map(nid => 'notifications:' + nid);
+	const relatedNids = await Notifications.findRelated(mergeIds, `uid:${uid}:notifications:unread`);
+	notificationKeys = _.union(nids, relatedNids).map(nid => `notifications:${nid}`);
 
 	let notificationData = await db.getObjectsFields(notificationKeys, ['nid', 'datetime']);
 	notificationData = notificationData.filter(n => n && n.nid);
@@ -303,13 +303,13 @@ Notifications.markReadMultiple = async function (nids, uid) {
 	nids = notificationData.map(n => n.nid);
 	const datetimes = notificationData.map(n => (n && n.datetime) || Date.now());
 	await Promise.all([
-		db.sortedSetRemove('uid:' + uid + ':notifications:unread', nids),
-		db.sortedSetAdd('uid:' + uid + ':notifications:read', datetimes, nids),
+		db.sortedSetRemove(`uid:${uid}:notifications:unread`, nids),
+		db.sortedSetAdd(`uid:${uid}:notifications:read`, datetimes, nids),
 	]);
 };
 
 Notifications.markAllRead = async function (uid) {
-	const nids = await db.getSortedSetRevRange('uid:' + uid + ':notifications:unread', 0, 99);
+	const nids = await db.getSortedSetRevRange(`uid:${uid}:notifications:unread`, 0, 99);
 	await Notifications.markReadMultiple(nids, uid);
 };
 
@@ -323,17 +323,17 @@ Notifications.prune = async function () {
 	try {
 		await Promise.all([
 			db.sortedSetRemove('notifications', nids),
-			db.deleteAll(nids.map(nid => 'notifications:' + nid)),
+			db.deleteAll(nids.map(nid => `notifications:${nid}`)),
 		]);
 
 		await batch.processSortedSet('users:joindate', async function (uids) {
-			const unread = uids.map(uid => 'uid:' + uid + ':notifications:unread');
-			const read = uids.map(uid => 'uid:' + uid + ':notifications:read');
+			const unread = uids.map(uid => `uid:${uid}:notifications:unread`);
+			const read = uids.map(uid => `uid:${uid}:notifications:read`);
 			await db.sortedSetsRemoveRangeByScore(unread.concat(read), '-inf', cutoffTime);
 		}, { batch: 500, interval: 100 });
 	} catch (err) {
 		if (err) {
-			winston.error('Encountered error pruning notifications\n' + err.stack);
+			winston.error(`Encountered error pruning notifications\n${err.stack}`);
 		}
 	}
 };
@@ -371,7 +371,7 @@ Notifications.merge = async function (notifications) {
 			if (differentiator === 0 && differentiators.length === 1) {
 				set = isolated;
 			} else {
-				set = isolated.filter(n => n.mergeId === (mergeId + '|' + differentiator));
+				set = isolated.filter(n => n.mergeId === (`${mergeId}|${differentiator}`));
 			}
 
 			const modifyIndex = notifications.indexOf(set[0]);
@@ -390,19 +390,19 @@ Notifications.merge = async function (notifications) {
 
 					var title = utils.decodeHTMLEntities(notifications[modifyIndex].topicTitle || '');
 					var titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
-					titleEscaped = titleEscaped ? (', ' + titleEscaped) : '';
+					titleEscaped = titleEscaped ? (`, ${titleEscaped}`) : '';
 
 					if (numUsers === 2) {
-						notifications[modifyIndex].bodyShort = '[[' + mergeId + '_dual, ' + usernames.join(', ') + titleEscaped + ']]';
+						notifications[modifyIndex].bodyShort = `[[${mergeId}_dual, ${usernames.join(', ')}${titleEscaped}]]`;
 					} else if (numUsers > 2) {
-						notifications[modifyIndex].bodyShort = '[[' + mergeId + '_multiple, ' + usernames[0] + ', ' + (numUsers - 1) + titleEscaped + ']]';
+						notifications[modifyIndex].bodyShort = `[[${mergeId}_multiple, ${usernames[0]}, ${numUsers - 1}${titleEscaped}]]`;
 					}
 
 					notifications[modifyIndex].path = set[set.length - 1].path;
 					break;
 
 				case 'new_register':
-					notifications[modifyIndex].bodyShort = '[[notifications:' + mergeId + '_multiple, ' + set.length + ']]';
+					notifications[modifyIndex].bodyShort = `[[notifications:${mergeId}_multiple, ${set.length}]]`;
 					break;
 			}
 
@@ -412,7 +412,7 @@ Notifications.merge = async function (notifications) {
 					return true;
 				}
 
-				return !(notifObj.mergeId === (mergeId + (differentiator ? '|' + differentiator : '')) && idx !== modifyIndex);
+				return !(notifObj.mergeId === (mergeId + (differentiator ? `|${differentiator}` : '')) && idx !== modifyIndex);
 			});
 		});
 

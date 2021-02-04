@@ -15,7 +15,7 @@ const settingsController = module.exports;
 
 settingsController.get = async function (req, res) {
 	const term = req.params.term || 'general';
-	res.render('admin/settings/' + term);
+	res.render(`admin/settings/${term}`);
 };
 
 settingsController.email = async (req, res) => {
@@ -33,7 +33,7 @@ settingsController.user = async (req, res) => {
 	const notificationSettings = notificationTypes.map(function (type) {
 		return {
 			name: type,
-			label: '[[notifications:' + type + ']]',
+			label: `[[notifications:${type}]]`,
 		};
 	});
 	res.render('admin/settings/user', {

@@ -27,8 +27,8 @@ module.exports = {
 					progress.incr();
 
 					async.parallel({
-						uids: async.apply(db.getSortedSetRangeWithScores, 'pid:' + post.pid + ':flag:uids', 0, -1),
-						reasons: async.apply(db.getSortedSetRange, 'pid:' + post.pid + ':flag:uid:reason', 0, -1),
+						uids: async.apply(db.getSortedSetRangeWithScores, `pid:${post.pid}:flag:uids`, 0, -1),
+						reasons: async.apply(db.getSortedSetRange, `pid:${post.pid}:flag:uid:reason`, 0, -1),
 					}, function (err, data) {
 						if (err) {
 							return next(err);

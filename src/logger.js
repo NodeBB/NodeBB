@@ -143,7 +143,7 @@ Logger.prepare_io_string = function (_type, _uid, _args) {
 	 * The format is: io: <uid> <event> <args>
 	 */
 	try {
-		return 'io: ' + _uid + ' ' + _type + ' ' + util.inspect(Array.prototype.slice.call(_args), { depth: 3 }) + '\n';
+		return `io: ${_uid} ${_type} ${util.inspect(Array.prototype.slice.call(_args), { depth: 3 })}\n`;
 	} catch (err) {
 		winston.info('Logger.prepare_io_string: Failed', err);
 		return 'error';

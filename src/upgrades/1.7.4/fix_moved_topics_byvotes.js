@@ -16,7 +16,7 @@ module.exports = {
 				var topicData;
 				async.waterfall([
 					function (next) {
-						db.getObjectFields('topic:' + tid, ['cid', 'oldCid', 'upvotes', 'downvotes', 'pinned'], next);
+						db.getObjectFields(`topic:${tid}`, ['cid', 'oldCid', 'upvotes', 'downvotes', 'pinned'], next);
 					},
 					function (_topicData, next) {
 						topicData = _topicData;
@@ -30,11 +30,11 @@ module.exports = {
 
 						async.series([
 							function (next) {
-								db.sortedSetRemove('cid:' + topicData.oldCid + ':tids:votes', tid, next);
+								db.sortedSetRemove(`cid:${topicData.oldCid}:tids:votes`, tid, next);
 							},
 							function (next) {
 								if (parseInt(topicData.pinned, 10) !== 1) {
-									db.sortedSetAdd('cid:' + topicData.cid + ':tids:votes', votes, tid, next);
+									db.sortedSetAdd(`cid:${topicData.cid}:tids:votes`, votes, tid, next);
 								} else {
 									next();
 								}

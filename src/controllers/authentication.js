@@ -35,10 +35,10 @@ async function registerAndLoginUser(req, res, userData) {
 		req.session.registration = userData;
 
 		if (req.body.noscript === 'true') {
-			res.redirect(nconf.get('relative_path') + '/register/complete');
+			res.redirect(`${nconf.get('relative_path')}/register/complete`);
 			return;
 		}
-		res.json({ next: nconf.get('relative_path') + '/register/complete' });
+		res.json({ next: `${nconf.get('relative_path')}/register/complete` });
 		return;
 	}
 	const queue = await user.shouldQueueUser(req.ip);
@@ -57,7 +57,7 @@ async function registerAndLoginUser(req, res, userData) {
 		await user.joinGroupsFromInvitation(uid, userData.email);
 	}
 	await user.deleteInvitationKey(userData.email);
-	const next = req.session.returnTo || nconf.get('relative_path') + '/';
+	const next = req.session.returnTo || `${nconf.get('relative_path')}/`;
 	const complete = await plugins.hooks.fire('filter:register.complete', { uid: uid, next: next });
 	req.session.returnTo = complete.next;
 	return complete;
@@ -154,17 +154,17 @@ authenticationController.registerComplete = function (req, res, next) {
 		var done = function (err, data) {
 			delete req.session.registration;
 			if (err) {
-				return res.redirect(nconf.get('relative_path') + '/?register=' + encodeURIComponent(err.message));
+				return res.redirect(`${nconf.get('relative_path')}/?register=${encodeURIComponent(err.message)}`);
 			}
 
 			if (!err && data && data.message) {
-				return res.redirect(nconf.get('relative_path') + '/?register=' + encodeURIComponent(data.message));
+				return res.redirect(`${nconf.get('relative_path')}/?register=${encodeURIComponent(data.message)}`);
 			}
 
 			if (req.session.returnTo) {
 				res.redirect(nconf.get('relative_path') + req.session.returnTo);
 			} else {
-				res.redirect(nconf.get('relative_path') + '/');
+				res.redirect(`${nconf.get('relative_path')}/`);
 			}
 		};
 
@@ -174,7 +174,7 @@ authenticationController.registerComplete = function (req, res, next) {
 		const errors = results.map(result => result.reason && result.reason.message).filter(Boolean);
 		if (errors.length) {
 			req.flash('errors', errors);
-			return res.redirect(nconf.get('relative_path') + '/register/complete');
+			return res.redirect(`${nconf.get('relative_path')}/register/complete`);
 		}
 
 		if (req.session.registration.register === true) {
@@ -203,7 +203,7 @@ authenticationController.registerAbort = function (req, res) {
 	// End the session and redirect to home
 	req.session.destroy(function () {
 		res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
-		res.redirect(nconf.get('relative_path') + '/');
+		res.redirect(`${nconf.get('relative_path')}/`);
 	});
 };
 
@@ -241,7 +241,7 @@ authenticationController.login = async (req, res, next) => {
 		} else if (loginWith.includes('username') && !validator.isEmail(req.body.username)) {
 			(res.locals.continueLogin || continueLogin)(strategy, req, res, next);
 		} else {
-			err = '[[error:wrong-login-type-' + loginWith + ']]';
+			err = `[[error:wrong-login-type-${loginWith}]]`;
 			(res.locals.noScriptErrors || helpers.noScriptErrors)(req, res, err, 400);
 		}
 	});
@@ -273,12 +273,12 @@ function continueLogin(strategy, req, res, next) {
 		plugins.hooks.fire('action:login.continue', { req, userData });
 
 		if (userData.passwordExpiry && userData.passwordExpiry < Date.now()) {
-			winston.verbose('[auth] Triggering password reset for uid ' + userData.uid + ' due to password policy');
+			winston.verbose(`[auth] Triggering password reset for uid ${userData.uid} due to password policy`);
 			req.session.passwordExpired = true;
 
 			const code = await user.reset.generate(userData.uid);
 			res.status(200).send({
-				next: nconf.get('relative_path') + '/reset/' + code,
+				next: `${nconf.get('relative_path')}/reset/${code}`,
 			});
 		} else {
 			delete req.query.lang;
@@ -290,11 +290,11 @@ function continueLogin(strategy, req, res, next) {
 					nconf.get('relative_path') + req.session.returnTo;
 				delete req.session.returnTo;
 			} else {
-				destination = nconf.get('relative_path') + '/';
+				destination = `${nconf.get('relative_path')}/`;
 			}
 
 			if (req.body.noscript === 'true') {
-				res.redirect(destination + '?loggedin');
+				res.redirect(`${destination}?loggedin`);
 			} else {
 				res.status(200).send({
 					next: destination,
@@ -352,11 +352,11 @@ authenticationController.onSuccessfulLogin = async function (req, uid) {
 			user.updateOnlineUsers(uid),
 		]);
 		if (uid > 0) {
-			await db.setObjectField('uid:' + uid + ':sessionUUID:sessionId', uuid, req.sessionID);
+			await db.setObjectField(`uid:${uid}:sessionUUID:sessionId`, uuid, req.sessionID);
 		}
 
 		// Force session check for all connected socket.io clients with the same session id
-		sockets.in('sess_' + req.sessionID).emit('checkSession', uid);
+		sockets.in(`sess_${req.sessionID}`).emit('checkSession', uid);
 
 		plugins.hooks.fire('action:user.loggedIn', { uid: uid, req: req });
 	} catch (err) {
@@ -435,9 +435,9 @@ authenticationController.logout = async function (req, res, next) {
 		await plugins.hooks.fire('static:user.loggedOut', { req: req, res: res, uid: uid, sessionID: sessionID });
 
 		// Force session check for all connected socket.io clients with the same session id
-		sockets.in('sess_' + sessionID).emit('checkSession', 0);
+		sockets.in(`sess_${sessionID}`).emit('checkSession', 0);
 		const payload = {
-			next: nconf.get('relative_path') + '/',
+			next: `${nconf.get('relative_path')}/`,
 		};
 		plugins.hooks.fire('filter:user.logout', payload);
 
@@ -458,8 +458,8 @@ async function getBanInfo(uid) {
 			banInfo.reason = await translator.translate('[[user:info.banned-no-reason]]');
 		}
 		return banInfo.banned_until ?
-			'[[error:user-banned-reason-until, ' + banInfo.banned_until_readable + ', ' + banInfo.reason + ']]' :
-			'[[error:user-banned-reason, ' + banInfo.reason + ']]';
+			`[[error:user-banned-reason-until, ${banInfo.banned_until_readable}, ${banInfo.reason}]]` :
+			`[[error:user-banned-reason, ${banInfo.reason}]]`;
 	} catch (err) {
 		if (err.message === 'no-ban-info') {
 			return '[[error:user-banned]]';

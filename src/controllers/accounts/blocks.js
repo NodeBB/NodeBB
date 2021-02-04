@@ -28,12 +28,12 @@ blocksController.getBlocks = async function (req, res, next) {
 
 	data.uids = data.uids.slice(start, stop + 1);
 	userData.users = await user.getUsers(data.uids, req.uid);
-	userData.title = '[[pages:account/blocks, ' + userData.username + ']]';
+	userData.title = `[[pages:account/blocks, ${userData.username}]]`;
 
 	const pageCount = Math.ceil(userData.counts.blocks / resultsPerPage);
 	userData.pagination = pagination.create(page, pageCount);
 
-	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[user:blocks]]' }]);
+	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: `/user/${userData.userslug}` }, { text: '[[user:blocks]]' }]);
 
 	res.render('account/blocks', userData);
 };

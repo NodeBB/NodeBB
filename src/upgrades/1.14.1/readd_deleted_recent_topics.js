@@ -13,7 +13,7 @@ module.exports = {
 		await batch.processSortedSet('topics:tid', async function (tids) {
 			progress.incr(tids.length);
 			const topicData = await db.getObjectsFields(
-				tids.map(tid => 'topic:' + tid),
+				tids.map(tid => `topic:${tid}`),
 				['tid', 'lastposttime', 'viewcount', 'postcount', 'upvotes', 'downvotes']
 			);
 			if (!topicData.tid) {

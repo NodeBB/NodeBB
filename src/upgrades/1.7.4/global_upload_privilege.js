@@ -38,7 +38,7 @@ function getGroupPrivileges(cid, callback) {
 	var tasks = {};
 
 	['groups:upload:post:image', 'groups:upload:post:file'].forEach(function (privilege) {
-		tasks[privilege] = async.apply(groups.isMember, 'registered-users', 'cid:' + cid + ':privileges:' + privilege);
+		tasks[privilege] = async.apply(groups.isMember, 'registered-users', `cid:${cid}:privileges:${privilege}`);
 	});
 
 	async.parallel(tasks, callback);

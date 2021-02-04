@@ -164,7 +164,7 @@ module.exports = function (module) {
 		const aggregate = {};
 
 		if (params.aggregate) {
-			aggregate['$' + params.aggregate.toLowerCase()] = '$score';
+			aggregate[`$${params.aggregate.toLowerCase()}`] = '$score';
 		} else {
 			aggregate.$sum = '$score';
 		}

@@ -25,7 +25,7 @@ module.exports = function (Categories) {
 
 		if (modifiedFields.hasOwnProperty('name')) {
 			const translated = await translator.translate(modifiedFields.name);
-			modifiedFields.slug = cid + '/' + slugify(translated);
+			modifiedFields.slug = `${cid}/${slugify(translated)}`;
 		}
 		const result = await plugins.hooks.fire('filter:category.update', { cid: cid, category: modifiedFields });
 
@@ -54,7 +54,7 @@ module.exports = function (Categories) {
 			return await updateOrder(cid, value);
 		}
 
-		await db.setObjectField('category:' + cid, key, value);
+		await db.setObjectField(`category:${cid}`, key, value);
 		if (key === 'description') {
 			await Categories.parseDescription(cid, value);
 		}
@@ -71,26 +71,26 @@ module.exports = function (Categories) {
 		}
 		const oldParent = await Categories.getCategoryField(cid, 'parentCid');
 		await Promise.all([
-			db.sortedSetRemove('cid:' + oldParent + ':children', cid),
-			db.sortedSetAdd('cid:' + newParent + ':children', cid, cid),
-			db.setObjectField('category:' + cid, 'parentCid', newParent),
+			db.sortedSetRemove(`cid:${oldParent}:children`, cid),
+			db.sortedSetAdd(`cid:${newParent}:children`, cid, cid),
+			db.setObjectField(`category:${cid}`, 'parentCid', newParent),
 		]);
 
 		cache.del([
-			'cid:' + oldParent + ':children',
-			'cid:' + newParent + ':children',
-			'cid:' + oldParent + ':children:all',
-			'cid:' + newParent + ':children:all',
+			`cid:${oldParent}:children`,
+			`cid:${newParent}:children`,
+			`cid:${oldParent}:children:all`,
+			`cid:${newParent}:children:all`,
 		]);
 	}
 
 	async function updateTagWhitelist(cid, tags) {
 		tags = tags.split(',').map(tag => utils.cleanUpTag(tag, meta.config.maximumTagLength))
 			.filter(Boolean);
-		await db.delete('cid:' + cid + ':tag:whitelist');
+		await db.delete(`cid:${cid}:tag:whitelist`);
 		const scores = tags.map((tag, index) => index);
-		await db.sortedSetAdd('cid:' + cid + ':tag:whitelist', scores, tags);
-		cache.del('cid:' + cid + ':tag:whitelist');
+		await db.sortedSetAdd(`cid:${cid}:tag:whitelist`, scores, tags);
+		cache.del(`cid:${cid}:tag:whitelist`);
 	}
 
 	async function updateOrder(cid, order) {
@@ -98,7 +98,7 @@ module.exports = function (Categories) {
 		await db.sortedSetsAdd('categories:cid', order, cid);
 
 		const childrenCids = await db.getSortedSetRange(
-			'cid:' + parentCid + ':children', 0, -1
+			`cid:${parentCid}:children`, 0, -1
 		);
 
 		const currentIndex = childrenCids.indexOf(String(cid));
@@ -112,20 +112,20 @@ module.exports = function (Categories) {
 
 		// recalculate orders from array indices
 		await db.sortedSetAdd(
-			'cid:' + parentCid + ':children',
+			`cid:${parentCid}:children`,
 			childrenCids.map((cid, index) => index + 1),
 			childrenCids
 		);
 
 		await db.setObjectBulk(
-			childrenCids.map(cid => 'category:' + cid),
+			childrenCids.map(cid => `category:${cid}`),
 			childrenCids.map((cid, index) => ({ order: index + 1 }))
 		);
 
 		cache.del([
 			'categories:cid',
-			'cid:' + parentCid + ':children',
-			'cid:' + parentCid + ':children:all',
+			`cid:${parentCid}:children`,
+			`cid:${parentCid}:children:all`,
 		]);
 	}
 
@@ -136,8 +136,8 @@ module.exports = function (Categories) {
 
 	async function updateName(cid, newName) {
 		const oldName = await Categories.getCategoryField(cid, 'name');
-		await db.sortedSetRemove('categories:name', oldName.substr(0, 200).toLowerCase() + ':' + cid);
-		await db.sortedSetAdd('categories:name', 0, newName.substr(0, 200).toLowerCase() + ':' + cid);
-		await db.setObjectField('category:' + cid, 'name', newName);
+		await db.sortedSetRemove('categories:name', `${oldName.substr(0, 200).toLowerCase()}:${cid}`);
+		await db.sortedSetAdd('categories:name', 0, `${newName.substr(0, 200).toLowerCase()}:${cid}`);
+		await db.setObjectField(`category:${cid}`, 'name', newName);
 	}
 };

@@ -275,7 +275,7 @@ async function requirejsOptimize(target) {
 		// eslint-disable-next-line no-await-in-loop
 		await optimizeAsync({ ...sharedCfg, ...moduleCfg });
 	}
-	const filePath = path.join(__dirname, '../../build/public/rjs-bundle-' + target + '.js');
+	const filePath = path.join(__dirname, `../../build/public/rjs-bundle-${target}.js`);
 	await fs.promises.writeFile(filePath, scriptText);
 }
 
@@ -297,7 +297,7 @@ async function getBundleScriptList(target) {
 	if (target === 'admin') {
 		target = 'acp';
 	}
-	let pluginScripts = plugins[target + 'Scripts'].filter(function (path) {
+	let pluginScripts = plugins[`${target}Scripts`].filter(function (path) {
 		if (path.endsWith('.js')) {
 			return true;
 		}
@@ -339,7 +339,7 @@ JS.buildBundle = async function (target, fork) {
 	const files = await getBundleScriptList(target);
 
 	files.push({
-		srcPath: path.join(__dirname, '../../build/public/rjs-bundle-' + target + '.js'),
+		srcPath: path.join(__dirname, `../../build/public/rjs-bundle-${target}.js`),
 	});
 
 	const minify = process.env.NODE_ENV !== 'development';

@@ -49,7 +49,7 @@ module.exports = function (Posts) {
 
 		let result = await plugins.hooks.fire('filter:post.create', { post: postData, data: data });
 		postData = result.post;
-		await db.setObject('post:' + postData.pid, postData);
+		await db.setObject(`post:${postData.pid}`, postData);
 
 		const topicData = await topics.getTopicFields(tid, ['cid', 'pinned']);
 		postData.cid = topicData.cid;
@@ -76,8 +76,8 @@ module.exports = function (Posts) {
 			return;
 		}
 		await Promise.all([
-			db.sortedSetAdd('pid:' + postData.toPid + ':replies', timestamp, postData.pid),
-			db.incrObjectField('post:' + postData.toPid, 'replies'),
+			db.sortedSetAdd(`pid:${postData.toPid}:replies`, timestamp, postData.pid),
+			db.incrObjectField(`post:${postData.toPid}`, 'replies'),
 		]);
 	}
 };

@@ -51,7 +51,7 @@ module.exports = function (Posts) {
 	}
 
 	async function removeQueueNotification(id) {
-		await notifications.rescind('post-queue-' + id);
+		await notifications.rescind(`post-queue-${id}`);
 		const data = await getParsedObject(id);
 		if (!data) {
 			return;
@@ -72,7 +72,7 @@ module.exports = function (Posts) {
 	Posts.addToQueue = async function (data) {
 		const type = getType(data);
 		const now = Date.now();
-		const id = type + '-' + now;
+		const id = `${type}-${now}`;
 		await canPost(type, data);
 
 		let payload = {
@@ -85,14 +85,14 @@ module.exports = function (Posts) {
 		payload.data = JSON.stringify(data);
 
 		await db.sortedSetAdd('post:queue', now, id);
-		await db.setObject('post:queue:' + id, payload);
+		await db.setObject(`post:queue:${id}`, payload);
 		await user.setUserField(data.uid, 'lastqueuetime', now);
 
 		const cid = await getCid(type, data);
 		const uids = await getNotificationUids(cid);
 		const notifObj = await notifications.create({
 			type: 'post-queue',
-			nid: 'post-queue-' + id,
+			nid: `post-queue-${id}`,
 			mergeId: 'post-queue',
 			bodyShort: '[[notifications:post_awaiting_review]]',
 			bodyLong: data.content,
@@ -143,7 +143,7 @@ module.exports = function (Posts) {
 	Posts.removeFromQueue = async function (id) {
 		await removeQueueNotification(id);
 		await db.sortedSetRemove('post:queue', id);
-		await db.delete('post:queue:' + id);
+		await db.delete(`post:queue:${id}`);
 	};
 
 	Posts.submitFromQueue = async function (id) {
@@ -160,7 +160,7 @@ module.exports = function (Posts) {
 	};
 
 	async function getParsedObject(id) {
-		const data = await db.getObject('post:queue:' + id);
+		const data = await db.getObject(`post:queue:${id}`);
 		if (!data) {
 			return null;
 		}
@@ -202,7 +202,7 @@ module.exports = function (Posts) {
 		if (editData.cid !== undefined) {
 			data.data.cid = editData.cid;
 		}
-		await db.setObjectField('post:queue:' + editData.id, 'data', JSON.stringify(data.data));
+		await db.setObjectField(`post:queue:${editData.id}`, 'data', JSON.stringify(data.data));
 	};
 
 	Posts.canEditQueue = async function (uid, editData) {

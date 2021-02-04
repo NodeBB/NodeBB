@@ -85,8 +85,8 @@ function printStartupInfo() {
 	if (nconf.get('isPrimary')) {
 		winston.info('Initializing NodeBB v%s %s', nconf.get('version'), nconf.get('url'));
 
-		const host = nconf.get(nconf.get('database') + ':host');
-		const storeLocation = host ? 'at ' + host + (!host.includes('/') ? ':' + nconf.get(nconf.get('database') + ':port') : '') : '';
+		const host = nconf.get(`${nconf.get('database')}:host`);
+		const storeLocation = host ? `at ${host}${!host.includes('/') ? `:${nconf.get(`${nconf.get('database')}:port`)}` : ''}` : '';
 
 		winston.verbose('* using %s store %s', nconf.get('database'), storeLocation);
 		winston.verbose('* using themes stored in: %s', nconf.get('themes_path'));

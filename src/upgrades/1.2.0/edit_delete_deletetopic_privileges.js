@@ -31,11 +31,11 @@ module.exports = {
 							async.eachSeries(groups, function (group, next) {
 								if (group.privileges['groups:topics:reply']) {
 									return async.parallel([
-										async.apply(groupsAPI.join, 'cid:' + cid + ':privileges:groups:posts:edit', group.name),
-										async.apply(groupsAPI.join, 'cid:' + cid + ':privileges:groups:posts:delete', group.name),
+										async.apply(groupsAPI.join, `cid:${cid}:privileges:groups:posts:edit`, group.name),
+										async.apply(groupsAPI.join, `cid:${cid}:privileges:groups:posts:delete`, group.name),
 									], function (err) {
 										if (!err) {
-											winston.verbose('cid:' + cid + ':privileges:groups:posts:edit, cid:' + cid + ':privileges:groups:posts:delete granted to gid: ' + group.name);
+											winston.verbose(`cid:${cid}:privileges:groups:posts:edit, cid:${cid}:privileges:groups:posts:delete granted to gid: ${group.name}`);
 										}
 
 										return next(err);
@@ -48,9 +48,9 @@ module.exports = {
 						function (next) {
 							async.eachSeries(groups, function (group, next) {
 								if (group.privileges['groups:topics:create']) {
-									return groupsAPI.join('cid:' + cid + ':privileges:groups:topics:delete', group.name, function (err) {
+									return groupsAPI.join(`cid:${cid}:privileges:groups:topics:delete`, group.name, function (err) {
 										if (!err) {
-											winston.verbose('cid:' + cid + ':privileges:groups:topics:delete granted to gid: ' + group.name);
+											winston.verbose(`cid:${cid}:privileges:groups:topics:delete granted to gid: ${group.name}`);
 										}
 
 										return next(err);
@@ -64,11 +64,11 @@ module.exports = {
 							async.eachSeries(users, function (user, next) {
 								if (user.privileges['topics:reply']) {
 									return async.parallel([
-										async.apply(groupsAPI.join, 'cid:' + cid + ':privileges:posts:edit', user.uid),
-										async.apply(groupsAPI.join, 'cid:' + cid + ':privileges:posts:delete', user.uid),
+										async.apply(groupsAPI.join, `cid:${cid}:privileges:posts:edit`, user.uid),
+										async.apply(groupsAPI.join, `cid:${cid}:privileges:posts:delete`, user.uid),
 									], function (err) {
 										if (!err) {
-											winston.verbose('cid:' + cid + ':privileges:posts:edit, cid:' + cid + ':privileges:posts:delete granted to uid: ' + user.uid);
+											winston.verbose(`cid:${cid}:privileges:posts:edit, cid:${cid}:privileges:posts:delete granted to uid: ${user.uid}`);
 										}
 
 										return next(err);
@@ -81,9 +81,9 @@ module.exports = {
 						function (next) {
 							async.eachSeries(users, function (user, next) {
 								if (user.privileges['topics:create']) {
-									return groupsAPI.join('cid:' + cid + ':privileges:topics:delete', user.uid, function (err) {
+									return groupsAPI.join(`cid:${cid}:privileges:topics:delete`, user.uid, function (err) {
 										if (!err) {
-											winston.verbose('cid:' + cid + ':privileges:topics:delete granted to uid: ' + user.uid);
+											winston.verbose(`cid:${cid}:privileges:topics:delete granted to uid: ${user.uid}`);
 										}
 
 										return next(err);
@@ -95,7 +95,7 @@ module.exports = {
 						},
 					], function (err) {
 						if (!err) {
-							winston.verbose('-- cid ' + cid + ' upgraded');
+							winston.verbose(`-- cid ${cid} upgraded`);
 						}
 
 						next(err);

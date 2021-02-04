@@ -49,7 +49,7 @@ winston.verbose('* using configuration stored in: %s', configFile);
 
 if (!process.send) {
 	// If run using `node app`, log GNU copyright info along with server info
-	winston.info('NodeBB v' + nconf.get('version') + ' Copyright (C) 2013-' + (new Date()).getFullYear() + ' NodeBB Inc.');
+	winston.info(`NodeBB v${nconf.get('version')} Copyright (C) 2013-${(new Date()).getFullYear()} NodeBB Inc.`);
 	winston.info('This program comes with ABSOLUTELY NO WARRANTY.');
 	winston.info('This is free software, and you are welcome to redistribute it under certain conditions.');
 	winston.info('');

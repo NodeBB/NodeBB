@@ -17,7 +17,7 @@ module.exports = function (Messaging) {
 			return [];
 		}
 
-		const keys = mids.map(mid => 'message:' + mid);
+		const keys = mids.map(mid => `message:${mid}`);
 		const messages = await (fields.length ? db.getObjectsFields(keys, fields) : db.getObjects(keys));
 
 		return await Promise.all(messages.map(async (message, idx) => modifyMessage(message, fields, parseInt(mids[idx], 10))));
@@ -34,11 +34,11 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.setMessageField = async (mid, field, content) => {
-		await db.setObjectField('message:' + mid, field, content);
+		await db.setObjectField(`message:${mid}`, field, content);
 	};
 
 	Messaging.setMessageFields = async (mid, data) => {
-		await db.setObject('message:' + mid, data);
+		await db.setObject(`message:${mid}`, data);
 	};
 
 	Messaging.getMessagesData = async (mids, uid, roomId, isNew) => {
@@ -104,7 +104,7 @@ module.exports = function (Messaging) {
 			});
 		} else if (messages.length === 1) {
 			// For single messages, we don't know the context, so look up the previous message and compare
-			var key = 'uid:' + uid + ':chat:room:' + roomId + ':mids';
+			var key = `uid:${uid}:chat:room:${roomId}:mids`;
 			const index = await db.sortedSetRank(key, messages[0].messageId);
 			if (index > 0) {
 				const mid = await db.getSortedSetRange(key, index - 1, index - 1);

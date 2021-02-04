@@ -153,7 +153,7 @@ usersController.search = async function (req, res) {
 			}
 
 			const data = await db.getSortedSetScan({
-				key: searchBy + ':sorted',
+				key: `${searchBy}:sorted`,
 				match: query,
 				limit: hardCap || (resultsPerPage * 10),
 			});
@@ -233,13 +233,13 @@ async function render(req, res, data) {
 
 	data.inviteOnly = registrationType === 'invite-only' || registrationType === 'admin-invite-only';
 	data.adminInviteOnly = registrationType === 'admin-invite-only';
-	data['sort_' + data.sortBy] = true;
+	data[`sort_${data.sortBy}`] = true;
 	if (req.query.searchBy) {
-		data['searchBy_' + validator.escape(String(req.query.searchBy))] = true;
+		data[`searchBy_${validator.escape(String(req.query.searchBy))}`] = true;
 	}
 	const filterBy = Array.isArray(req.query.filters || []) ? (req.query.filters || []) : [req.query.filters];
 	filterBy.forEach(function (filter) {
-		data['filterBy_' + validator.escape(String(filter))] = true;
+		data[`filterBy_${validator.escape(String(filter))}`] = true;
 	});
 	data.userCount = parseInt(await db.getObjectField('global', 'userCount'), 10);
 	if (data.adminInviteOnly) {

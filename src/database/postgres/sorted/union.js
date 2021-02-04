@@ -50,10 +50,10 @@ SELECT COUNT(DISTINCT z."value") c
 		}
 
 		const res = await module.pool.query({
-			name: 'getSortedSetUnion' + aggregate + (params.sort > 0 ? 'Asc' : 'Desc') + 'WithScores',
+			name: `getSortedSetUnion${aggregate}${params.sort > 0 ? 'Asc' : 'Desc'}WithScores`,
 			text: `
 WITH A AS (SELECT z."value",
-                  ` + aggregate + `(z."score" * k."weight") "score"
+                  ${aggregate}(z."score" * k."weight") "score"
              FROM UNNEST($1::TEXT[], $2::NUMERIC[]) k("_key", "weight")
             INNER JOIN "legacy_object_live" o
                     ON o."_key" = k."_key"
@@ -64,7 +64,7 @@ WITH A AS (SELECT z."value",
 SELECT A."value",
        A."score"
   FROM A
- ORDER BY A."score" ` + (params.sort > 0 ? 'ASC' : 'DESC') + `
+ ORDER BY A."score" ${params.sort > 0 ? 'ASC' : 'DESC'}
  LIMIT $4::INTEGER
 OFFSET $3::INTEGER`,
 			values: [sets, weights, start, limit],

@@ -16,9 +16,9 @@ module.exports = {
 			}
 			async.eachSeries(cids, function (cid, next) {
 				async.waterfall([
-					async.apply(db.getSortedSetRange.bind(db), 'group:cid:' + cid + ':privileges:moderate:members', 0, -1),
+					async.apply(db.getSortedSetRange.bind(db), `group:cid:${cid}:privileges:moderate:members`, 0, -1),
 					function (uids, next) {
-						async.eachSeries(uids, (uid, next) => groups.join('cid:' + cid + ':privileges:posts:view_deleted', uid, next), next);
+						async.eachSeries(uids, (uid, next) => groups.join(`cid:${cid}:privileges:posts:view_deleted`, uid, next), next);
 					},
 				], next);
 			}, callback);

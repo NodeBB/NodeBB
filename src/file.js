@@ -25,11 +25,11 @@ file.saveFileToLocal = async function (filename, folder, tempPath) {
 		throw new Error('[[error:invalid-path]]');
 	}
 
-	winston.verbose('Saving file ' + filename + ' to : ' + uploadPath);
+	winston.verbose(`Saving file ${filename} to : ${uploadPath}`);
 	await mkdirp(path.dirname(uploadPath));
 	await fs.promises.copyFile(tempPath, uploadPath);
 	return {
-		url: '/assets/uploads/' + (folder ? folder + '/' : '') + filename,
+		url: `/assets/uploads/${folder ? `${folder}/` : ''}${filename}`,
 		path: uploadPath,
 	};
 };
@@ -63,7 +63,7 @@ file.allowedExtensions = function () {
 	allowedExtensions = allowedExtensions.filter(Boolean).map(function (extension) {
 		extension = extension.trim();
 		if (!extension.startsWith('.')) {
-			extension = '.' + extension;
+			extension = `.${extension}`;
 		}
 		return extension.toLowerCase();
 	});
@@ -135,7 +135,7 @@ file.linkDirs = async function linkDirs(sourceDir, destDir, relative) {
 file.typeToExtension = function (type) {
 	let extension = '';
 	if (type) {
-		extension = '.' + mime.getExtension(type);
+		extension = `.${mime.getExtension(type)}`;
 	}
 	return extension;
 };

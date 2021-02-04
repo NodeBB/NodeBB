@@ -26,7 +26,7 @@ SocketModules.chats.getRaw = async function (socket, data) {
 	const roomId = await Messaging.getMessageField(data.mid, 'roomId');
 	const [isAdmin, hasMessage, inRoom] = await Promise.all([
 		user.isAdministrator(socket.uid),
-		db.isSortedSetMember('uid:' + socket.uid + ':chat:room:' + roomId + ':mids', data.mid),
+		db.isSortedSetMember(`uid:${socket.uid}:chat:room:${roomId}:mids`, data.mid),
 		Messaging.isUserInRoom(socket.uid, roomId),
 	]);
 
@@ -38,7 +38,7 @@ SocketModules.chats.getRaw = async function (socket, data) {
 };
 
 SocketModules.chats.isDnD = async function (socket, uid) {
-	const status = await db.getObjectField('user:' + uid, 'status');
+	const status = await db.getObjectField(`user:${uid}`, 'status');
 	return status === 'dnd';
 };
 
@@ -220,7 +220,7 @@ SocketModules.chats.markRead = async function (socket, roomId) {
 	]);
 
 	Messaging.pushUnreadCount(socket.uid);
-	server.in('uid_' + socket.uid).emit('event:chats.markedAsRead', { roomId: roomId });
+	server.in(`uid_${socket.uid}`).emit('event:chats.markedAsRead', { roomId: roomId });
 
 	if (!uidsInRoom.includes(String(socket.uid))) {
 		return;
@@ -228,7 +228,7 @@ SocketModules.chats.markRead = async function (socket, roomId) {
 
 	// Mark notification read
 	const nids = uidsInRoom.filter(uid => parseInt(uid, 10) !== socket.uid)
-		.map(uid => 'chat_' + uid + '_' + roomId);
+		.map(uid => `chat_${uid}_${roomId}`);
 
 	await notifications.markReadMultiple(nids, socket.uid);
 	await user.notifications.pushCount(socket.uid);
@@ -247,7 +247,7 @@ SocketModules.chats.renameRoom = async function (socket, data) {
 	const uids = await Messaging.getUidsInRoom(data.roomId, 0, -1);
 	const eventData = { roomId: data.roomId, newName: validator.escape(String(data.newName)) };
 	uids.forEach(function (uid) {
-		server.in('uid_' + uid).emit('event:chats.roomRename', eventData);
+		server.in(`uid_${uid}`).emit('event:chats.roomRename', eventData);
 	});
 };
 

@@ -97,8 +97,8 @@ module.exports = function (Topics) {
 			getFollowedTids(params),
 			user.getIgnoredTids(params.uid, 0, -1),
 			getCategoryTids(params),
-			db.getSortedSetRevRangeByScoreWithScores('uid:' + params.uid + ':tids_read', 0, -1, '+inf', params.cutoff),
-			db.getSortedSetRevRangeWithScores('uid:' + params.uid + ':tids_unread', 0, -1),
+			db.getSortedSetRevRangeByScoreWithScores(`uid:${params.uid}:tids_read`, 0, -1, '+inf', params.cutoff),
+			db.getSortedSetRevRangeWithScores(`uid:${params.uid}:tids_unread`, 0, -1),
 		]);
 
 		const userReadTime = _.mapValues(_.keyBy(userScores, 'value'), 'score');
@@ -107,7 +107,7 @@ module.exports = function (Topics) {
 			isTopicsFollowed[t.value] = true;
 		});
 		const unreadFollowed = await db.isSortedSetMembers(
-			'uid:' + params.uid + ':followed_tids', tids_unread.map(t => t.value)
+			`uid:${params.uid}:followed_tids`, tids_unread.map(t => t.value)
 		);
 
 		tids_unread.forEach((t, i) => {
@@ -184,12 +184,12 @@ module.exports = function (Topics) {
 			return [];
 		}
 		const cids = params.cid || await user.getWatchedCategories(params.uid);
-		const keys = cids.map(cid => 'cid:' + cid + ':tids:lastposttime');
+		const keys = cids.map(cid => `cid:${cid}:tids:lastposttime`);
 		return await db.getSortedSetRevRangeByScoreWithScores(keys, 0, -1, '+inf', params.cutoff);
 	}
 
 	async function getFollowedTids(params) {
-		let tids = await db.getSortedSetMembers('uid:' + params.uid + ':followed_tids');
+		let tids = await db.getSortedSetMembers(`uid:${params.uid}:followed_tids`);
 		const filterCids = params.cid && params.cid.map(cid => parseInt(cid, 10));
 		if (filterCids) {
 			const topicData = await Topics.getTopicsFields(tids, ['tid', 'cid']);
@@ -206,7 +206,7 @@ module.exports = function (Topics) {
 		}
 		const topicScores = _.mapValues(_.keyBy(params.recentTids, 'value'), 'score');
 
-		const results = await db.sortedSetScores('uid:' + params.uid + ':tids_read', params.tids);
+		const results = await db.sortedSetScores(`uid:${params.uid}:tids_read`, params.tids);
 
 		const userScores = _.zipObject(params.tids, results);
 
@@ -233,7 +233,7 @@ module.exports = function (Topics) {
 		}
 		while (!done) {
 			/* eslint-disable no-await-in-loop */
-			const pidsSinceLastVisit = await db.getSortedSetRangeByScore('tid:' + tid + ':posts', start, count, userLastReadTimestamp, '+inf');
+			const pidsSinceLastVisit = await db.getSortedSetRangeByScore(`tid:${tid}:posts`, start, count, userLastReadTimestamp, '+inf');
 			if (!pidsSinceLastVisit.length) {
 				return hasUnblockedUnread;
 			}
@@ -252,7 +252,7 @@ module.exports = function (Topics) {
 			return;
 		}
 		const results = await Topics.getUnreadTids({ uid: uid, count: true });
-		require('../socket.io').in('uid_' + uid).emit('event:unread.updateCount', {
+		require('../socket.io').in(`uid_${uid}`).emit('event:unread.updateCount', {
 			unreadTopicCount: results[''],
 			unreadNewTopicCount: results.new,
 			unreadWatchedTopicCount: results.watched,
@@ -276,7 +276,7 @@ module.exports = function (Topics) {
 		}
 		const [topicScores, userScores] = await Promise.all([
 			Topics.getTopicsFields(tids, ['tid', 'lastposttime']),
-			db.sortedSetScores('uid:' + uid + ':tids_read', tids),
+			db.sortedSetScores(`uid:${uid}:tids_read`, tids),
 		]);
 
 		tids = topicScores.filter((t, i) => t.lastposttime && (!userScores[i] || userScores[i] < t.lastposttime))
@@ -290,8 +290,8 @@ module.exports = function (Topics) {
 		const scores = tids.map(() => now);
 		const [topicData] = await Promise.all([
 			Topics.getTopicsFields(tids, ['cid']),
-			db.sortedSetAdd('uid:' + uid + ':tids_read', scores, tids),
-			db.sortedSetRemove('uid:' + uid + ':tids_unread', tids),
+			db.sortedSetAdd(`uid:${uid}:tids_read`, scores, tids),
+			db.sortedSetRemove(`uid:${uid}:tids_unread`, tids),
 		]);
 
 		const cids = _.uniq(topicData.map(t => t && t.cid).filter(Boolean));
@@ -306,7 +306,7 @@ module.exports = function (Topics) {
 		const tids = await db.getSortedSetRevRangeByScore('topics:recent', 0, -1, '+inf', cutoff);
 		Topics.markTopicNotificationsRead(tids, uid);
 		await Topics.markAsRead(tids, uid);
-		await db.delete('uid:' + uid + ':tids_unread');
+		await db.delete(`uid:${uid}:tids_unread`);
 	};
 
 	Topics.markTopicNotificationsRead = async function (tids, uid) {
@@ -329,8 +329,8 @@ module.exports = function (Topics) {
 		}
 		const [topicScores, userScores, tids_unread, blockedUids] = await Promise.all([
 			db.sortedSetScores('topics:recent', tids),
-			db.sortedSetScores('uid:' + uid + ':tids_read', tids),
-			db.sortedSetScores('uid:' + uid + ':tids_unread', tids),
+			db.sortedSetScores(`uid:${uid}:tids_read`, tids),
+			db.sortedSetScores(`uid:${uid}:tids_unread`, tids),
 			user.blocks.list(uid),
 		]);
 
@@ -368,15 +368,15 @@ module.exports = function (Topics) {
 		if (!exists) {
 			throw new Error('[[error:no-topic]]');
 		}
-		await db.sortedSetRemove('uid:' + uid + ':tids_read', tid);
-		await db.sortedSetAdd('uid:' + uid + ':tids_unread', Date.now(), tid);
+		await db.sortedSetRemove(`uid:${uid}:tids_read`, tid);
+		await db.sortedSetAdd(`uid:${uid}:tids_unread`, Date.now(), tid);
 	};
 
 	Topics.filterNewTids = async function (tids, uid) {
 		if (parseInt(uid, 10) <= 0) {
 			return [];
 		}
-		const scores = await db.sortedSetScores('uid:' + uid + ':tids_read', tids);
+		const scores = await db.sortedSetScores(`uid:${uid}:tids_read`, tids);
 		return tids.filter((tid, index) => tid && !scores[index]);
 	};
 

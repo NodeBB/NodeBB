@@ -101,21 +101,21 @@ module.exports = function (Plugins) {
 		}
 		await runPackageManagerCommandAsync(type, id, version || 'latest');
 		const pluginData = await Plugins.get(id);
-		Plugins.hooks.fire('action:plugin.' + type, { id: id, version: version });
+		Plugins.hooks.fire(`action:plugin.${type}`, { id: id, version: version });
 		return pluginData;
 	}
 
 	function runPackageManagerCommand(command, pkgName, version, callback) {
 		cproc.execFile(packageManagerExecutable, [
 			packageManagerCommands[packageManager][command],
-			pkgName + (command === 'install' ? '@' + version : ''),
+			pkgName + (command === 'install' ? `@${version}` : ''),
 			'--save',
 		], function (err, stdout) {
 			if (err) {
 				return callback(err);
 			}
 
-			winston.verbose('[plugins/' + command + '] ' + stdout);
+			winston.verbose(`[plugins/${command}] ${stdout}`);
 			callback();
 		});
 	}

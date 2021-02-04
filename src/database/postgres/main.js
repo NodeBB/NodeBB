@@ -45,10 +45,10 @@ module.exports = function (module) {
 	module.scan = async function (params) {
 		let match = params.match;
 		if (match.startsWith('*')) {
-			match = '%' + match.substring(1);
+			match = `%${match.substring(1)}`;
 		}
 		if (match.endsWith('*')) {
-			match = match.substring(0, match.length - 1) + '%';
+			match = `${match.substring(0, match.length - 1)}%`;
 		}
 
 		const res = await module.pool.query({

@@ -24,7 +24,7 @@ CSS.supportedSkins = [
 
 const buildImports = {
 	client: function (source) {
-		return '@import "./theme";\n' + source + '\n' + [
+		return `@import "./theme";\n${source}\n${[
 			'@import "font-awesome";',
 			'@import "../../public/less/jquery-ui.less";',
 			'@import (inline) "../node_modules/@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput.css";',
@@ -36,10 +36,10 @@ const buildImports = {
 			'@import "../../public/less/modals.less";',
 		].map(function (str) {
 			return str.replace(/\//g, path.sep);
-		}).join('\n');
+		}).join('\n')}`;
 	},
 	admin: function (source) {
-		return source + '\n' + [
+		return `${source}\n${[
 			'@import "font-awesome";',
 			'@import "../public/less/admin/admin";',
 			'@import "../public/less/generics.less";',
@@ -48,7 +48,7 @@ const buildImports = {
 			'@import (inline) "../public/vendor/mdl/material.css";',
 		].map(function (str) {
 			return str.replace(/\//g, path.sep);
-		}).join('\n');
+		}).join('\n')}`;
 	},
 };
 
@@ -57,7 +57,7 @@ async function filterMissingFiles(filepaths) {
 		filepaths.map(async (filepath) => {
 			const exists = await file.exists(path.join(__dirname, '../../node_modules', filepath));
 			if (!exists) {
-				winston.warn('[meta/css] File not found! ' + filepath);
+				winston.warn(`[meta/css] File not found! ${filepath}`);
 			}
 			return exists;
 		})
@@ -71,7 +71,7 @@ async function getImports(files, prefix, extension) {
 
 	files.forEach(function (styleFile) {
 		if (styleFile.endsWith(extension)) {
-			source += prefix + path.sep + styleFile + '";';
+			source += `${prefix + path.sep + styleFile}";`;
 		} else {
 			pluginDirectories.push(styleFile);
 		}
@@ -79,7 +79,7 @@ async function getImports(files, prefix, extension) {
 	await Promise.all(pluginDirectories.map(async function (directory) {
 		const styleFiles = await file.walk(directory);
 		styleFiles.forEach(function (styleFile) {
-			source += prefix + path.sep + styleFile + '";';
+			source += `${prefix + path.sep + styleFile}";`;
 		});
 	}));
 	return source;
@@ -110,8 +110,8 @@ async function getBundleMetadata(target) {
 
 		themeData.bootswatchSkin = skin || themeData.bootswatchSkin;
 		if (themeData && themeData.bootswatchSkin) {
-			skinImport.push('\n@import "./@nodebb/bootswatch/' + themeData.bootswatchSkin + '/variables.less";');
-			skinImport.push('\n@import "./@nodebb/bootswatch/' + themeData.bootswatchSkin + '/bootswatch.less";');
+			skinImport.push(`\n@import "./@nodebb/bootswatch/${themeData.bootswatchSkin}/variables.less";`);
+			skinImport.push(`\n@import "./@nodebb/bootswatch/${themeData.bootswatchSkin}/bootswatch.less";`);
 		}
 		skinImport = skinImport.join('');
 	}
@@ -127,7 +127,7 @@ async function getBundleMetadata(target) {
 		return await getImports(filteredFiles, prefix, extension);
 	}
 
-	let imports = skinImport + '\n' + cssImports + '\n' + lessImports + '\n' + acpLessImports;
+	let imports = `${skinImport}\n${cssImports}\n${lessImports}\n${acpLessImports}`;
 	imports = buildImports[target](imports);
 
 	return { paths: paths, imports: imports };
@@ -142,7 +142,7 @@ CSS.buildBundle = async function (target, fork) {
 	const minify = process.env.NODE_ENV !== 'development';
 	const bundle = await minifier.css.bundle(data.imports, data.paths, minify, fork);
 
-	const filename = target + '.css';
+	const filename = `${target}.css`;
 	await fs.promises.writeFile(path.join(__dirname, '../../build/public', filename), bundle.code);
 	return bundle.code;
 };

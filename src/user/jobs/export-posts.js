@@ -27,16 +27,16 @@ process.on('message', async function (msg) {
 		await db.init();
 
 		const targetUid = msg.uid;
-		const filePath = path.join(__dirname, '../../../build/export', targetUid + '_posts.csv');
+		const filePath = path.join(__dirname, '../../../build/export', `${targetUid}_posts.csv`);
 
 		const posts = require('../../posts');
 
 		let payload = [];
-		await batch.processSortedSet('uid:' + targetUid + ':posts', async function (pids) {
+		await batch.processSortedSet(`uid:${targetUid}:posts`, async function (pids) {
 			let postData = await posts.getPostsData(pids);
 			// Remove empty post references and convert newlines in content
 			postData = postData.filter(Boolean).map(function (post) {
-				post.content = '"' + String(post.content || '').replace(/\n/g, '\\n').replace(/"/g, '\\"') + '"';
+				post.content = `"${String(post.content || '').replace(/\n/g, '\\n').replace(/"/g, '\\"')}"`;
 				return post;
 			});
 			payload = payload.concat(postData);

@@ -17,20 +17,20 @@ module.exports = function (User) {
 		if (!(parseInt(uid, 10) > 0)) {
 			return;
 		}
-		const exists = await db.exists('lockout:' + uid);
+		const exists = await db.exists(`lockout:${uid}`);
 		if (exists) {
 			throw new Error('[[error:account-locked]]');
 		}
-		const attempts = await db.increment('loginAttempts:' + uid);
+		const attempts = await db.increment(`loginAttempts:${uid}`);
 		if (attempts <= meta.config.loginAttempts) {
-			return await db.pexpire('loginAttempts:' + uid, 1000 * 60 * 60);
+			return await db.pexpire(`loginAttempts:${uid}`, 1000 * 60 * 60);
 		}
 		// Lock out the account
-		await db.set('lockout:' + uid, '');
+		await db.set(`lockout:${uid}`, '');
 		const duration = 1000 * 60 * meta.config.lockoutDuration;
 
-		await db.delete('loginAttempts:' + uid);
-		await db.pexpire('lockout:' + uid, duration);
+		await db.delete(`loginAttempts:${uid}`);
+		await db.pexpire(`lockout:${uid}`, duration);
 		await events.log({
 			type: 'account-locked',
 			uid: uid,
@@ -43,7 +43,7 @@ module.exports = function (User) {
 		if (!(parseInt(uid, 10) > 0)) {
 			return;
 		}
-		const _token = await db.getObjectField('user:' + uid, 'rss_token');
+		const _token = await db.getObjectField(`user:${uid}`, 'rss_token');
 		const token = _token || utils.generateUUID();
 		if (!_token) {
 			await User.setUserField(uid, 'rss_token', token);
@@ -52,13 +52,13 @@ module.exports = function (User) {
 	};
 
 	User.auth.clearLoginAttempts = async function (uid) {
-		await db.delete('loginAttempts:' + uid);
+		await db.delete(`loginAttempts:${uid}`);
 	};
 
 	User.auth.resetLockout = async function (uid) {
 		await db.deleteAll([
-			'loginAttempts:' + uid,
-			'lockout:' + uid,
+			`loginAttempts:${uid}`,
+			`lockout:${uid}`,
 		]);
 	};
 
@@ -67,7 +67,7 @@ module.exports = function (User) {
 
 	User.auth.getSessions = async function (uid, curSessionId) {
 		await cleanExpiredSessions(uid);
-		const sids = await db.getSortedSetRevRange('uid:' + uid + ':sessions', 0, 19);
+		const sids = await db.getSortedSetRevRange(`uid:${uid}:sessions`, 0, 19);
 		let sessions = await Promise.all(sids.map(sid => getSessionFromStore(sid)));
 		sessions = sessions.map(function (sessObj, idx) {
 			if (sessObj && sessObj.meta) {
@@ -81,7 +81,7 @@ module.exports = function (User) {
 	};
 
 	async function cleanExpiredSessions(uid) {
-		const uuidMapping = await db.getObject('uid:' + uid + ':sessionUUID:sessionId');
+		const uuidMapping = await db.getObject(`uid:${uid}:sessionUUID:sessionId`);
 		if (!uuidMapping) {
 			return;
 		}
@@ -98,8 +98,8 @@ module.exports = function (User) {
 				expiredSids.push(sid);
 			}
 		}));
-		await db.deleteObjectFields('uid:' + uid + ':sessionUUID:sessionId', expiredUUIDs);
-		await db.sortedSetRemove('uid:' + uid + ':sessions', expiredSids);
+		await db.deleteObjectFields(`uid:${uid}:sessionUUID:sessionId`, expiredUUIDs);
+		await db.sortedSetRemove(`uid:${uid}:sessions`, expiredSids);
 	}
 
 	User.auth.addSession = async function (uid, sessionId) {
@@ -107,12 +107,12 @@ module.exports = function (User) {
 			return;
 		}
 		await cleanExpiredSessions(uid);
-		await db.sortedSetAdd('uid:' + uid + ':sessions', Date.now(), sessionId);
+		await db.sortedSetAdd(`uid:${uid}:sessions`, Date.now(), sessionId);
 		await revokeSessionsAboveThreshold(uid, meta.config.maxUserSessions);
 	};
 
 	async function revokeSessionsAboveThreshold(uid, maxUserSessions) {
-		const activeSessions = await db.getSortedSetRange('uid:' + uid + ':sessions', 0, -1);
+		const activeSessions = await db.getSortedSetRange(`uid:${uid}:sessions`, 0, -1);
 		if (activeSessions.length > maxUserSessions) {
 			const sessionsToRevoke = activeSessions.slice(0, activeSessions.length - maxUserSessions);
 			await Promise.all(sessionsToRevoke.map(sessionId => User.auth.revokeSession(sessionId, uid)));
@@ -120,20 +120,20 @@ module.exports = function (User) {
 	}
 
 	User.auth.revokeSession = async function (sessionId, uid) {
-		winston.verbose('[user.auth] Revoking session ' + sessionId + ' for user ' + uid);
+		winston.verbose(`[user.auth] Revoking session ${sessionId} for user ${uid}`);
 		const sessionObj = await getSessionFromStore(sessionId);
 		if (sessionObj && sessionObj.meta && sessionObj.meta.uuid) {
-			await db.deleteObjectField('uid:' + uid + ':sessionUUID:sessionId', sessionObj.meta.uuid);
+			await db.deleteObjectField(`uid:${uid}:sessionUUID:sessionId`, sessionObj.meta.uuid);
 		}
 		await Promise.all([
-			db.sortedSetRemove('uid:' + uid + ':sessions', sessionId),
+			db.sortedSetRemove(`uid:${uid}:sessions`, sessionId),
 			sessionStoreDestroy(sessionId),
 		]);
 	};
 
 	User.auth.revokeAllSessions = async function (uids) {
 		uids = Array.isArray(uids) ? uids : [uids];
-		const sids = await db.getSortedSetsMembers(uids.map(uid => 'uid:' + uid + ':sessions'));
+		const sids = await db.getSortedSetsMembers(uids.map(uid => `uid:${uid}:sessions`));
 		const promises = [];
 		uids.forEach((uid, index) => {
 			promises.push(sids[index].map(s => User.auth.revokeSession(s, uid)));
@@ -143,8 +143,8 @@ module.exports = function (User) {
 
 	User.auth.deleteAllSessions = async function () {
 		await batch.processSortedSet('users:joindate', async function (uids) {
-			const sessionKeys = uids.map(uid => 'uid:' + uid + ':sessions');
-			const sessionUUIDKeys = uids.map(uid => 'uid:' + uid + ':sessionUUID:sessionId');
+			const sessionKeys = uids.map(uid => `uid:${uid}:sessions`);
+			const sessionUUIDKeys = uids.map(uid => `uid:${uid}:sessionUUID:sessionId`);
 			const sids = _.flatten(await db.getSortedSetRange(sessionKeys, 0, -1));
 
 			await Promise.all([

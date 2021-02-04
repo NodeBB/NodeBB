@@ -48,7 +48,7 @@ module.exports = function (privileges) {
 		'view:users:info',
 	];
 
-	privileges.global.groupPrivilegeList = privileges.global.userPrivilegeList.map(privilege => 'groups:' + privilege);
+	privileges.global.groupPrivilegeList = privileges.global.userPrivilegeList.map(privilege => `groups:${privilege}`);
 
 	privileges.global.list = async function () {
 		async function getLabels() {
@@ -96,7 +96,7 @@ module.exports = function (privileges) {
 	};
 
 	privileges.global.canGroup = async function (privilege, groupName) {
-		return await groups.isMember(groupName, 'cid:0:privileges:groups:' + privilege);
+		return await groups.isMember(groupName, `cid:0:privileges:groups:${privilege}`);
 	};
 
 	privileges.global.give = async function (privileges, groupName) {
@@ -118,7 +118,7 @@ module.exports = function (privileges) {
 	privileges.global.userPrivileges = async function (uid) {
 		const tasks = {};
 		privileges.global.userPrivilegeList.forEach(function (privilege) {
-			tasks[privilege] = groups.isMember(uid, 'cid:0:privileges:' + privilege);
+			tasks[privilege] = groups.isMember(uid, `cid:0:privileges:${privilege}`);
 		});
 		return await utils.promiseParallel(tasks);
 	};
@@ -126,7 +126,7 @@ module.exports = function (privileges) {
 	privileges.global.groupPrivileges = async function (groupName) {
 		const tasks = {};
 		privileges.global.groupPrivilegeList.forEach(function (privilege) {
-			tasks[privilege] = groups.isMember(groupName, 'cid:0:privileges:' + privilege);
+			tasks[privilege] = groups.isMember(groupName, `cid:0:privileges:${privilege}`);
 		});
 		return await utils.promiseParallel(tasks);
 	};

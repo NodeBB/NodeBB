@@ -23,8 +23,8 @@ function setupWinston() {
 		formats.push(winston.format.json());
 	} else {
 		const timestampFormat = winston.format((info) => {
-			var dateString = new Date().toISOString() + ' [' + nconf.get('port') + '/' + global.process.pid + ']';
-			info.level = dateString + ' - ' + info.level;
+			var dateString = `${new Date().toISOString()} [${nconf.get('port')}/${global.process.pid}]`;
+			info.level = `${dateString} - ${info.level}`;
 			return info;
 		});
 		formats.push(timestampFormat());
@@ -90,7 +90,7 @@ function loadConfig(configFile) {
 		// Parse out the relative_url and other goodies from the configured URL
 		const urlObject = url.parse(nconf.get('url'));
 		const relativePath = urlObject.pathname !== '/' ? urlObject.pathname.replace(/\/+$/, '') : '';
-		nconf.set('base_url', urlObject.protocol + '//' + urlObject.host);
+		nconf.set('base_url', `${urlObject.protocol}//${urlObject.host}`);
 		nconf.set('secure', urlObject.protocol === 'https:');
 		nconf.set('use_port', !!urlObject.port);
 		nconf.set('relative_path', relativePath);
@@ -111,7 +111,7 @@ function versionCheck() {
 
 	if (!compatible) {
 		winston.warn('Your version of Node.js is too outdated for NodeBB. Please update your version of Node.js.');
-		winston.warn('Recommended ' + range.green + ', '.reset + version.yellow + ' provided\n'.reset);
+		winston.warn(`Recommended ${range.green}${', '.reset}${version.yellow}${' provided\n'.reset}`);
 	}
 }
 

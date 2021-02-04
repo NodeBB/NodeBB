@@ -126,10 +126,10 @@ module.exports = function (privileges) {
 		}
 
 		if (!results.isMod && meta.config.postEditDuration && (Date.now() - results.postData.timestamp > meta.config.postEditDuration * 1000)) {
-			return { flag: false, message: '[[error:post-edit-duration-expired, ' + meta.config.postEditDuration + ']]' };
+			return { flag: false, message: `[[error:post-edit-duration-expired, ${meta.config.postEditDuration}]]` };
 		}
 		if (!results.isMod && meta.config.newbiePostEditDuration > 0 && meta.config.newbiePostDelayThreshold > results.userData.reputation && Date.now() - results.postData.timestamp > meta.config.newbiePostEditDuration * 1000) {
-			return { flag: false, message: '[[error:post-edit-duration-expired, ' + meta.config.newbiePostEditDuration + ']]' };
+			return { flag: false, message: `[[error:post-edit-duration-expired, ${meta.config.newbiePostEditDuration}]]` };
 		}
 
 		const isLocked = await topics.isLocked(results.postData.tid);
@@ -168,7 +168,7 @@ module.exports = function (privileges) {
 
 		var postDeleteDuration = meta.config.postDeleteDuration;
 		if (!results.isMod && postDeleteDuration && (Date.now() - postData.timestamp > postDeleteDuration * 1000)) {
-			return { flag: false, message: '[[error:post-delete-duration-expired, ' + meta.config.postDeleteDuration + ']]' };
+			return { flag: false, message: `[[error:post-delete-duration-expired, ${meta.config.postDeleteDuration}]]` };
 		}
 		var deleterUid = postData.deleterUid;
 		var flag = results['posts:delete'] && ((results.isOwner && (deleterUid === 0 || deleterUid === postData.uid)) || results.isMod);

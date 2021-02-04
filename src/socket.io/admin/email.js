@@ -41,7 +41,7 @@ Email.test = async function (socket, data) {
 				type: 'test',
 				bodyShort: '[[email:notif.test.short]]',
 				bodyLong: '[[email:notif.test.long]]',
-				nid: 'uid:' + socket.uid + ':test',
+				nid: `uid:${socket.uid}:test`,
 				path: '/',
 				from: socket.uid,
 			});

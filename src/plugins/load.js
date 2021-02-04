@@ -98,7 +98,7 @@ module.exports = function (Plugins) {
 			}
 		});
 
-		winston.verbose('[plugins] loading the following fields from plugin data: ' + fields.join(', '));
+		winston.verbose(`[plugins] loading the following fields from plugin data: ${fields.join(', ')}`);
 		const plugins = await Plugins.data.getActive();
 		await Promise.all(plugins.map(p => registerPluginAssets(p, fields)));
 	};
@@ -123,7 +123,7 @@ module.exports = function (Plugins) {
 			await registerPluginAssets(pluginData);
 		} catch (err) {
 			winston.error(err.stack);
-			winston.verbose('[plugins] Could not load plugin : ' + pluginData.id);
+			winston.verbose(`[plugins] Could not load plugin : ${pluginData.id}`);
 			return;
 		}
 
@@ -134,7 +134,7 @@ module.exports = function (Plugins) {
 			});
 		}
 
-		winston.verbose('[plugins] Loaded plugin: ' + pluginData.id);
+		winston.verbose(`[plugins] Loaded plugin: ${pluginData.id}`);
 	};
 
 	function checkVersion(pluginData) {
@@ -163,7 +163,7 @@ module.exports = function (Plugins) {
 				pluginData.hooks.forEach(hook => Plugins.hooks.register(pluginData.id, hook));
 			}
 		} catch (err) {
-			winston.warn('[plugins] Unable to load library for: ' + pluginData.id);
+			winston.warn(`[plugins] Unable to load library for: ${pluginData.id}`);
 			throw err;
 		}
 	}

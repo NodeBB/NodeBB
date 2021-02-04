@@ -35,7 +35,7 @@ module.exports = function (Posts) {
 	};
 
 	async function filterPidsBySingleCid(pids, cid) {
-		const isMembers = await db.isSortedSetMembers('cid:' + parseInt(cid, 10) + ':pids', pids);
+		const isMembers = await db.isSortedSetMembers(`cid:${parseInt(cid, 10)}:pids`, pids);
 		return pids.filter((pid, index) => pid && isMembers[index]);
 	}
 };

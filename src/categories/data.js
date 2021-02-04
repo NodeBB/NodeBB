@@ -19,7 +19,7 @@ module.exports = function (Categories) {
 			return [];
 		}
 
-		const keys = cids.map(cid => 'category:' + cid);
+		const keys = cids.map(cid => `category:${cid}`);
 		const categories = await (fields.length ? db.getObjectsFields(keys, fields) : db.getObjects(keys));
 		const result = await plugins.hooks.fire('filter:category.getFields', {
 			cids: cids,
@@ -56,11 +56,11 @@ module.exports = function (Categories) {
 	};
 
 	Categories.setCategoryField = async function (cid, field, value) {
-		await db.setObjectField('category:' + cid, field, value);
+		await db.setObjectField(`category:${cid}`, field, value);
 	};
 
 	Categories.incrementCategoryFieldBy = async function (cid, field, value) {
-		await db.incrObjectFieldBy('category:' + cid, field, value);
+		await db.incrObjectFieldBy(`category:${cid}`, field, value);
 	};
 };
 

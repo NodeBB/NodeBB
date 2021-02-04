@@ -17,9 +17,9 @@ Blacklist.load = async function () {
 	let rules = await Blacklist.get();
 	rules = Blacklist.validate(rules);
 
-	winston.verbose('[meta/blacklist] Loading ' + rules.valid.length + ' blacklist rule(s)' + (rules.duplicateCount > 0 ? ', ignored ' + rules.duplicateCount + ' duplicate(s)' : ''));
+	winston.verbose(`[meta/blacklist] Loading ${rules.valid.length} blacklist rule(s)${rules.duplicateCount > 0 ? `, ignored ${rules.duplicateCount} duplicate(s)` : ''}`);
 	if (rules.invalid.length) {
-		winston.warn('[meta/blacklist] ' + rules.invalid.length + ' invalid blacklist rule(s) were ignored.');
+		winston.warn(`[meta/blacklist] ${rules.invalid.length} invalid blacklist rule(s) were ignored.`);
 	}
 
 	Blacklist._rules = {
@@ -57,7 +57,7 @@ Blacklist.test = async function (clientIp) {
 	try {
 		addr = ipaddr.parse(clientIp);
 	} catch (err) {
-		winston.error('[meta/blacklist] Error parsing client IP : ' + clientIp);
+		winston.error(`[meta/blacklist] Error parsing client IP : ${clientIp}`);
 		throw err;
 	}
 
@@ -168,6 +168,6 @@ Blacklist.addRule = async function (rule) {
 		throw new Error('[[error:invalid-rule]]');
 	}
 	let rules = await Blacklist.get();
-	rules = rules + '\n' + valid[0];
+	rules = `${rules}\n${valid[0]}`;
 	await Blacklist.save(rules);
 };

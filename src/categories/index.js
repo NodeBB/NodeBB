@@ -25,9 +25,9 @@ require('./search')(Categories);
 
 Categories.exists = async function (cid) {
 	if (Array.isArray(cid)) {
-		return await db.exists(cid.map(cid => 'category:' + cid));
+		return await db.exists(cid.map(cid => `category:${cid}`));
 	}
-	return await db.exists('category:' + cid);
+	return await db.exists(`category:${cid}`);
 };
 
 Categories.getCategoryById = async function (data) {
@@ -98,8 +98,8 @@ Categories.getModerators = async function (cid) {
 
 Categories.getModeratorUids = async function (cids) {
 	const groupNames = cids.reduce(function (memo, cid) {
-		memo.push('cid:' + cid + ':privileges:moderate');
-		memo.push('cid:' + cid + ':privileges:groups:moderate');
+		memo.push(`cid:${cid}:privileges:moderate`);
+		memo.push(`cid:${cid}:privileges:groups:moderate`);
 		return memo;
 	}, []);
 
@@ -150,7 +150,7 @@ Categories.getTagWhitelist = async function (cids) {
 	const cachedData = {};
 
 	const nonCachedCids = cids.filter((cid) => {
-		const data = cache.get('cid:' + cid + ':tag:whitelist');
+		const data = cache.get(`cid:${cid}:tag:whitelist`);
 		const isInCache = data !== undefined;
 		if (isInCache) {
 			cachedData[cid] = data;
@@ -162,12 +162,12 @@ Categories.getTagWhitelist = async function (cids) {
 		return cids.map(cid => cachedData[cid]);
 	}
 
-	const keys = nonCachedCids.map(cid => 'cid:' + cid + ':tag:whitelist');
+	const keys = nonCachedCids.map(cid => `cid:${cid}:tag:whitelist`);
 	const data = await db.getSortedSetsMembers(keys);
 
 	nonCachedCids.forEach((cid, index) => {
 		cachedData[cid] = data[index];
-		cache.set('cid:' + cid + ':tag:whitelist', data[index]);
+		cache.set(`cid:${cid}:tag:whitelist`, data[index]);
 	});
 	return cids.map(cid => cachedData[cid]);
 };
@@ -252,12 +252,12 @@ Categories.getChildrenCids = async function (rootCid) {
 		if (!childrenCids.length) {
 			return;
 		}
-		keys = childrenCids.map(cid => 'cid:' + cid + ':children');
+		keys = childrenCids.map(cid => `cid:${cid}:children`);
 		childrenCids.forEach(cid => allCids.push(parseInt(cid, 10)));
 		await recursive(keys);
 	}
-	const key = 'cid:' + rootCid + ':children';
-	const cacheKey = key + ':all';
+	const key = `cid:${rootCid}:children`;
+	const cacheKey = `${key}:all`;
 	const childrenCids = cache.get(cacheKey);
 	if (childrenCids) {
 		return childrenCids.slice();
@@ -368,7 +368,7 @@ Categories.buildForSelectCategories = function (categories, fields, parentCid) {
 		category.depth = depth;
 		categoriesData.push(category);
 		if (Array.isArray(category.children)) {
-			category.children.forEach(child => recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level, depth + 1));
+			category.children.forEach(child => recursive(child, categoriesData, `&nbsp;&nbsp;&nbsp;&nbsp;${level}`, depth + 1));
 		}
 	}
 	parentCid = parentCid || 0;

@@ -40,7 +40,7 @@ module.exports = {
 
 				batch.processSortedSet('users:joindate', function (ids, next) {
 					async.each(ids, function (uid, next) {
-						db.getObject('user:' + uid + ':settings', function (err, settings) {
+						db.getObject(`user:${uid}:settings`, function (err, settings) {
 							if (err || !settings) {
 								return next(err);
 							}
@@ -52,7 +52,7 @@ module.exports = {
 							});
 
 							if (Object.keys(newSettings).length) {
-								db.setObject('user:' + uid + ':settings', newSettings, next);
+								db.setObject(`user:${uid}:settings`, newSettings, next);
 							} else {
 								setImmediate(next);
 							}

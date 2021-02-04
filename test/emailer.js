@@ -53,7 +53,7 @@ describe('emailer', function () {
 			method: function (data, next) {
 				assert(data);
 				assert.equal(data.to, email);
-				assert.equal(data.subject, '[NodeBB] ' + params.subject);
+				assert.equal(data.subject, `[NodeBB] ${params.subject}`);
 
 				next(error);
 			},

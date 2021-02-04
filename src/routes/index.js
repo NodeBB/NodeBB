@@ -100,7 +100,7 @@ module.exports = async function (app, middleware) {
 
 	router.all('(/+api|/+api/*?)', middleware.prepareAPI);
 	router.all('(/+api/admin|/+api/admin/*?)', middleware.authenticate, middleware.admin.checkPrivileges);
-	router.all('(/+admin|/+admin/*?)', ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login?local=1'), middleware.applyCSRF, middleware.admin.checkPrivileges);
+	router.all('(/+admin|/+admin/*?)', ensureLoggedIn.ensureLoggedIn(`${nconf.get('relative_path')}/login?local=1`), middleware.applyCSRF, middleware.admin.checkPrivileges);
 
 	app.use(middleware.stripLeadingSlashes);
 
@@ -160,13 +160,13 @@ function addCoreRoutes(app, router, middleware) {
 	statics.forEach(function (obj) {
 		app.use(relativePath + obj.route, middleware.trimUploadTimestamps, express.static(obj.path, staticOptions));
 	});
-	app.use(relativePath + '/uploads', function (req, res) {
-		res.redirect(relativePath + '/assets/uploads' + req.path + '?' + meta.config['cache-buster']);
+	app.use(`${relativePath}/uploads`, function (req, res) {
+		res.redirect(`${relativePath}/assets/uploads${req.path}?${meta.config['cache-buster']}`);
 	});
 
 	// Skins
 	meta.css.supportedSkins.forEach(function (skin) {
-		app.use(relativePath + '/assets/client-' + skin + '.css', middleware.buildSkinAsset);
+		app.use(`${relativePath}/assets/client-${skin}.css`, middleware.buildSkinAsset);
 	});
 
 	app.use(controllers['404'].handle404);

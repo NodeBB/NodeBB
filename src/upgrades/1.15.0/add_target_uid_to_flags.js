@@ -12,7 +12,7 @@ module.exports = {
 
 		await batch.processSortedSet('flags:datetime', async function (flagIds) {
 			progress.incr(flagIds.length);
-			const flagData = await db.getObjects(flagIds.map(id => 'flag:' + id));
+			const flagData = await db.getObjects(flagIds.map(id => `flag:${id}`));
 			for (const flagObj of flagData) {
 				/* eslint-disable no-await-in-loop */
 				if (flagObj) {
@@ -21,10 +21,10 @@ module.exports = {
 						if (flagObj.type === 'post') {
 							const targetUid = await posts.getPostField(targetId, 'uid');
 							if (targetUid) {
-								await db.setObjectField('flag:' + flagObj.flagId, 'targetUid', targetUid);
+								await db.setObjectField(`flag:${flagObj.flagId}`, 'targetUid', targetUid);
 							}
 						} else if (flagObj.type === 'user') {
-							await db.setObjectField('flag:' + flagObj.flagId, 'targetUid', targetId);
+							await db.setObjectField(`flag:${flagObj.flagId}`, 'targetUid', targetId);
 						}
 					}
 				}

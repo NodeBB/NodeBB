@@ -32,7 +32,7 @@ Messaging.getMessages = async (params) => {
 		return;
 	}
 
-	const mids = await db.getSortedSetRevRange('uid:' + params.uid + ':chat:room:' + params.roomId + ':mids', start, stop);
+	const mids = await db.getSortedSetRevRange(`uid:${params.uid}:chat:room:${params.roomId}:mids`, start, stop);
 	if (!mids.length) {
 		return [];
 	}
@@ -80,7 +80,7 @@ Messaging.parse = async (message, fromuid, uid, roomId, isNew) => {
 };
 
 Messaging.isNewSet = async (uid, roomId, timestamp) => {
-	const setKey = 'uid:' + uid + ':chat:room:' + roomId + ':mids';
+	const setKey = `uid:${uid}:chat:room:${roomId}:mids`;
 	const messages = await db.getSortedSetRevRangeWithScores(setKey, 0, 0);
 	if (messages && messages.length) {
 		return parseInt(timestamp, 10) > parseInt(messages[0].score, 10) + Messaging.newMessageCutoff;
@@ -94,12 +94,12 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 		return null;
 	}
 
-	const roomIds = await db.getSortedSetRevRange('uid:' + uid + ':chat:rooms', start, stop);
+	const roomIds = await db.getSortedSetRevRange(`uid:${uid}:chat:rooms`, start, stop);
 	const results = await utils.promiseParallel({
 		roomData: Messaging.getRoomsData(roomIds),
-		unread: db.isSortedSetMembers('uid:' + uid + ':chat:rooms:unread', roomIds),
+		unread: db.isSortedSetMembers(`uid:${uid}:chat:rooms:unread`, roomIds),
 		users: Promise.all(roomIds.map(async (roomId) => {
-			let uids = await db.getSortedSetRevRange('chat:room:' + roomId + ':uids', 0, 9);
+			let uids = await db.getSortedSetRevRange(`chat:room:${roomId}:uids`, 0, 9);
 			uids = uids.filter(_uid => _uid && parseInt(_uid, 10) !== parseInt(uid, 10));
 			return await user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline']);
 		})),
@@ -172,7 +172,7 @@ Messaging.getLatestUndeletedMessage = async (uid, roomId) => {
 
 	while (!done) {
 		/* eslint-disable no-await-in-loop */
-		mids = await db.getSortedSetRevRange('uid:' + uid + ':chat:room:' + roomId + ':mids', index, index);
+		mids = await db.getSortedSetRevRange(`uid:${uid}:chat:room:${roomId}:mids`, index, index);
 		if (mids.length) {
 			const states = await Messaging.getMessageFields(mids[0], ['deleted', 'system']);
 			done = !states.deleted && !states.system;
@@ -251,8 +251,8 @@ Messaging.hasPrivateChat = async (uid, withUid) => {
 	}
 
 	const results = await utils.promiseParallel({
-		myRooms: db.getSortedSetRevRange('uid:' + uid + ':chat:rooms', 0, -1),
-		theirRooms: db.getSortedSetRevRange('uid:' + withUid + ':chat:rooms', 0, -1),
+		myRooms: db.getSortedSetRevRange(`uid:${uid}:chat:rooms`, 0, -1),
+		theirRooms: db.getSortedSetRevRange(`uid:${withUid}:chat:rooms`, 0, -1),
 	});
 	const roomIds = results.myRooms.filter(function (roomId) {
 		return roomId && results.theirRooms.includes(roomId);

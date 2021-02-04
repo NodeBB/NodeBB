@@ -67,9 +67,9 @@ image.normalise = async function (path) {
 		});
 	} else {
 		const sharp = requireSharp();
-		await sharp(path, { failOnError: true }).png().toFile(path + '.png');
+		await sharp(path, { failOnError: true }).png().toFile(`${path}.png`);
 	}
-	return path + '.png';
+	return `${path}.png`;
 };
 
 image.size = async function (path) {

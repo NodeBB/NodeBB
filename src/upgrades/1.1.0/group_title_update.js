@@ -13,7 +13,7 @@ module.exports = {
 		var batch = require('../../batch');
 		var count = 0;
 		batch.processSortedSet('users:joindate', function (uids, next) {
-			winston.verbose('upgraded ' + count + ' users');
+			winston.verbose(`upgraded ${count} users`);
 			user.getMultipleUserSettings(uids, function (err, settings) {
 				if (err) {
 					return next(err);
@@ -24,7 +24,7 @@ module.exports = {
 				});
 
 				async.each(settings, function (setting, next) {
-					db.setObjectField('user:' + setting.uid, 'groupTitle', setting.groupTitle, next);
+					db.setObjectField(`user:${setting.uid}`, 'groupTitle', setting.groupTitle, next);
 				}, next);
 			});
 		}, {}, callback);

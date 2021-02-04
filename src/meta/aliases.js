@@ -31,13 +31,13 @@ function buildTargets() {
 
 		return [name, arr.join(', ')];
 	}).map(function (tuple) {
-		return '     ' + _.padEnd('"' + tuple[0] + '"', length + 2).magenta + '  |  ' + tuple[1];
+		return `     ${_.padEnd(`"${tuple[0]}"`, length + 2).magenta}  |  ${tuple[1]}`;
 	}).join('\n');
 	console.log(
-		'\n\n  Build targets:\n' +
-		('\n     ' + _.padEnd('Target', length + 2) + '  |  Aliases').green +
-		'\n     ------------------------------------------------------\n'.blue +
-		output + '\n'
+		`\n\n  Build targets:\n${
+			(`\n     ${_.padEnd('Target', length + 2)}  |  Aliases`).green
+		}${'\n     ------------------------------------------------------\n'.blue
+		}${output}\n`
 	);
 }
 

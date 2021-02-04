@@ -69,7 +69,7 @@ async function getLatestVersion() {
 	try {
 		return await versions.getLatestVersion();
 	} catch (err) {
-		winston.error('[acp] Failed to fetch latest version\n' + err.stack);
+		winston.error(`[acp] Failed to fetch latest version\n${err.stack}`);
 	}
 	return null;
 }
@@ -94,7 +94,7 @@ dashboardController.getAnalytics = async (req, res, next) => {
 	}
 
 	const method = req.query.units === 'days' ? analytics.getDailyStatsForSet : analytics.getHourlyStatsForSet;
-	let payload = await Promise.all(sets.map(set => method('analytics:' + set, until, count)));
+	let payload = await Promise.all(sets.map(set => method(`analytics:${set}`, until, count)));
 	payload = _.zipObject(sets, payload);
 
 	res.json({

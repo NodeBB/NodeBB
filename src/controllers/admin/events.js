@@ -21,7 +21,7 @@ eventsController.get = async function (req, res) {
 	const currentFilter = req.query.type || '';
 
 	const [eventCount, eventData] = await Promise.all([
-		db.sortedSetCount('events:time' + (currentFilter ? ':' + currentFilter : ''), from || '-inf', to),
+		db.sortedSetCount(`events:time${currentFilter ? `:${currentFilter}` : ''}`, from || '-inf', to),
 		events.getEvents(currentFilter, start, stop, from || '-inf', to),
 	]);
 

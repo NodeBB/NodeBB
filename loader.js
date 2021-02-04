@@ -40,7 +40,7 @@ Loader.init = function (callback) {
 	if (silent) {
 		console.log = function () {
 			var args = Array.prototype.slice.call(arguments);
-			output.write(args.join(' ') + '\n');
+			output.write(`${args.join(' ')}\n`);
 		};
 	}
 
@@ -51,7 +51,7 @@ Loader.init = function (callback) {
 
 Loader.displayStartupMessages = function (callback) {
 	console.log('');
-	console.log('NodeBB v' + pkg.version + ' Copyright (C) 2013-2014 NodeBB Inc.');
+	console.log(`NodeBB v${pkg.version} Copyright (C) 2013-2014 NodeBB Inc.`);
 	console.log('This program comes with ABSOLUTELY NO WARRANTY.');
 	console.log('This is free software, and you are welcome to redistribute it under certain conditions.');
 	console.log('For the full license, please visit: http://www.gnu.org/copyleft/gpl.html');
@@ -71,12 +71,12 @@ Loader.addWorkerEvents = function (worker) {
 					Loader.timesStarted = 0;
 				}, 10000);
 			} else {
-				console.log((numProcs * 3) + ' restarts in 10 seconds, most likely an error on startup. Halting.');
+				console.log(`${numProcs * 3} restarts in 10 seconds, most likely an error on startup. Halting.`);
 				process.exit();
 			}
 		}
 
-		console.log('[cluster] Child Process (' + worker.pid + ') has exited (code: ' + code + ', signal: ' + signal + ')');
+		console.log(`[cluster] Child Process (${worker.pid}) has exited (code: ${code}, signal: ${signal})`);
 		if (!(worker.suicide || code === 0)) {
 			console.log('[cluster] Spinning up another process...');
 
@@ -110,7 +110,7 @@ Loader.addWorkerEvents = function (worker) {
 
 Loader.start = function (callback) {
 	numProcs = getPorts().length;
-	console.log('Clustering enabled: Spinning up ' + numProcs + ' process(es).\n');
+	console.log(`Clustering enabled: Spinning up ${numProcs} process(es).\n`);
 
 	for (var x = 0; x < numProcs; x += 1) {
 		forkWorker(x, x === 0);
@@ -126,7 +126,7 @@ function forkWorker(index, isPrimary) {
 	var args = [];
 
 	if (!ports[index]) {
-		return console.log('[cluster] invalid port for worker : ' + index + ' ports: ' + ports.length);
+		return console.log(`[cluster] invalid port for worker : ${index} ports: ${ports.length}`);
 	}
 
 	process.env.isPrimary = isPrimary;

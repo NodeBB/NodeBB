@@ -57,7 +57,7 @@ describe('Flags', function () {
 				assert(flagData);
 				for (var key in compare) {
 					if (compare.hasOwnProperty(key)) {
-						assert.ok(flagData[key], 'undefined key ' + key);
+						assert.ok(flagData[key], `undefined key ${key}`);
 						assert.equal(flagData[key], compare[key]);
 					}
 				}
@@ -67,7 +67,7 @@ describe('Flags', function () {
 		});
 
 		it('should add the flag to the byCid zset for category 1 if it is of type post', function (done) {
-			db.isSortedSetMember('flags:byCid:' + 1, 1, function (err, isMember) {
+			db.isSortedSetMember(`flags:byCid:${1}`, 1, function (err, isMember) {
 				assert.ifError(err);
 				assert.ok(isMember);
 				done();
@@ -75,7 +75,7 @@ describe('Flags', function () {
 		});
 
 		it('should add the flag to the byPid zset for pid 1 if it is of type post', function (done) {
-			db.isSortedSetMember('flags:byPid:' + 1, 1, function (err, isMember) {
+			db.isSortedSetMember(`flags:byPid:${1}`, 1, function (err, isMember) {
 				assert.ifError(err);
 				assert.ok(isMember);
 				done();
@@ -133,7 +133,7 @@ describe('Flags', function () {
 				assert(flagData);
 				for (var key in compare) {
 					if (compare.hasOwnProperty(key)) {
-						assert.ok(flagData[key], 'undefined key ' + key);
+						assert.ok(flagData[key], `undefined key ${key}`);
 						assert.equal(flagData[key], compare[key]);
 					}
 				}
@@ -424,7 +424,7 @@ describe('Flags', function () {
 		});
 
 		it('should allow assignment if user is a mod of the category, do nothing otherwise', async () => {
-			await Groups.join('cid:' + category.cid + ':privileges:moderate', uid3);
+			await Groups.join(`cid:${category.cid}:privileges:moderate`, uid3);
 
 			await Flags.update(1, uid3, {
 				assignee: uid3,
@@ -438,7 +438,7 @@ describe('Flags', function () {
 			assignee = await db.getObjectField('flag:1', 'assignee');
 			assert.strictEqual(uid3, parseInt(assignee, 10));
 
-			await Groups.leave('cid:' + category.cid + ':privileges:moderate', uid3);
+			await Groups.leave(`cid:${category.cid}:privileges:moderate`, uid3);
 		});
 
 		it('should do nothing when you attempt to set a bogus state', async () => {
@@ -462,14 +462,14 @@ describe('Flags', function () {
 			await sleep(2000);
 
 			let userNotifs = await User.notifications.getAll(adminUid);
-			assert(userNotifs.includes('flag:post:' + result.postData.pid));
+			assert(userNotifs.includes(`flag:post:${result.postData.pid}`));
 
 			await Flags.update(flagId, adminUid, {
 				state: 'resolved',
 			});
 
 			userNotifs = await User.notifications.getAll(adminUid);
-			assert(!userNotifs.includes('flag:post:' + result.postData.pid));
+			assert(!userNotifs.includes(`flag:post:${result.postData.pid}`));
 		});
 	});
 
@@ -658,7 +658,7 @@ describe('Flags', function () {
 		it('should retrieve a list of notes, from newest to oldest', function (done) {
 			Flags.getNotes(1, function (err, notes) {
 				assert.ifError(err);
-				assert(notes[0].datetime > notes[1].datetime, notes[0].datetime + '-' + notes[1].datetime);
+				assert(notes[0].datetime > notes[1].datetime, `${notes[0].datetime}-${notes[1].datetime}`);
 				assert.strictEqual('this is the second note', notes[0].content);
 				done();
 			});

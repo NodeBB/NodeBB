@@ -14,7 +14,7 @@ helpers.loginUser = function (username, password, callback) {
 	var jar = request.jar();
 
 	request({
-		url: nconf.get('url') + '/api/config',
+		url: `${nconf.get('url')}/api/config`,
 		json: true,
 		jar: jar,
 	}, function (err, res, body) {
@@ -22,7 +22,7 @@ helpers.loginUser = function (username, password, callback) {
 			return callback(err || new Error('[[error:invalid-response]]'));
 		}
 
-		request.post(nconf.get('url') + '/login', {
+		request.post(`${nconf.get('url')}/login`, {
 			form: {
 				username: username,
 				password: password,
@@ -44,7 +44,7 @@ helpers.loginUser = function (username, password, callback) {
 
 helpers.logoutUser = function (jar, callback) {
 	request({
-		url: nconf.get('url') + '/api/config',
+		url: `${nconf.get('url')}/api/config`,
 		json: true,
 		jar: jar,
 	}, function (err, response, body) {
@@ -52,7 +52,7 @@ helpers.logoutUser = function (jar, callback) {
 			return callback(err, response, body);
 		}
 
-		request.post(nconf.get('url') + '/logout', {
+		request.post(`${nconf.get('url')}/logout`, {
 			form: {},
 			json: true,
 			jar: jar,
@@ -71,7 +71,7 @@ helpers.connectSocketIO = function (res, callback) {
 	cookies = cookies.filter(c => /express.sid=[^;]+;/.test(c));
 	const cookie = cookies[0];
 	var socket = io(nconf.get('base_url'), {
-		path: nconf.get('relative_path') + '/socket.io',
+		path: `${nconf.get('relative_path')}/socket.io`,
 		extraHeaders: {
 			Origin: nconf.get('url'),
 			Cookie: cookie,
@@ -117,7 +117,7 @@ helpers.uploadFile = function (uploadEndPoint, filePath, body, jar, csrf_token, 
 helpers.registerUser = function (data, callback) {
 	var jar = request.jar();
 	request({
-		url: nconf.get('url') + '/api/config',
+		url: `${nconf.get('url')}/api/config`,
 		json: true,
 		jar: jar,
 	}, function (err, response, body) {
@@ -125,7 +125,7 @@ helpers.registerUser = function (data, callback) {
 			return callback(err);
 		}
 
-		request.post(nconf.get('url') + '/register', {
+		request.post(`${nconf.get('url')}/register`, {
 			form: data,
 			json: true,
 			jar: jar,

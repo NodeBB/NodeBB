@@ -406,8 +406,8 @@ describe('Messaging Library', function () {
 							assert(data.unread[0]);
 							var notification = data.unread[0];
 							assert.equal(notification.bodyShort, '[[notifications:new_message_from, foo]]');
-							assert.equal(notification.nid, 'chat_' + fooUid + '_' + roomId);
-							assert.equal(notification.path, nconf.get('relative_path') + '/chats/' + roomId);
+							assert.equal(notification.nid, `chat_${fooUid}_${roomId}`);
+							assert.equal(notification.path, `${nconf.get('relative_path')}/chats/${roomId}`);
 							done();
 						});
 					}, 1500);
@@ -533,7 +533,7 @@ describe('Messaging Library', function () {
 		});
 
 		it('should return true if user is dnd', function (done) {
-			db.setObjectField('user:' + herpUid, 'status', 'dnd', function (err) {
+			db.setObjectField(`user:${herpUid}`, 'status', 'dnd', function (err) {
 				assert.ifError(err);
 				socketModules.chats.isDnD({ uid: fooUid }, herpUid, function (err, isDnD) {
 					assert.ifError(err);
@@ -669,7 +669,7 @@ describe('Messaging Library', function () {
 		it('should mark the message as deleted', function (done) {
 			socketModules.chats.delete({ uid: fooUid }, { messageId: mid, roomId: roomId }, function (err) {
 				assert.ifError(err);
-				db.getObjectField('message:' + mid, 'deleted', function (err, value) {
+				db.getObjectField(`message:${mid}`, 'deleted', function (err, value) {
 					assert.ifError(err);
 					assert.strictEqual(1, parseInt(value, 10));
 					done();
@@ -712,7 +712,7 @@ describe('Messaging Library', function () {
 		it('should restore the message', function (done) {
 			socketModules.chats.restore({ uid: fooUid }, { messageId: mid, roomId: roomId }, function (err) {
 				assert.ifError(err);
-				db.getObjectField('message:' + mid, 'deleted', function (err, value) {
+				db.getObjectField(`message:${mid}`, 'deleted', function (err, value) {
 					assert.ifError(err);
 					assert.strictEqual(0, parseInt(value, 10));
 					done();
@@ -763,7 +763,7 @@ describe('Messaging Library', function () {
 	describe('controller', function () {
 		it('should 404 if chat is disabled', function (done) {
 			meta.config.disableChat = 1;
-			request(nconf.get('url') + '/user/baz/chats', function (err, response) {
+			request(`${nconf.get('url')}/user/baz/chats`, function (err, response) {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 404);
 				done();
@@ -772,7 +772,7 @@ describe('Messaging Library', function () {
 
 		it('should 500 for guest with no privilege error', function (done) {
 			meta.config.disableChat = 0;
-			request(nconf.get('url') + '/api/user/baz/chats', { json: true }, function (err, response, body) {
+			request(`${nconf.get('url')}/api/user/baz/chats`, { json: true }, function (err, response, body) {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 500);
 				assert.equal(body.error, '[[error:no-privileges]]');
@@ -781,7 +781,7 @@ describe('Messaging Library', function () {
 		});
 
 		it('should 404 for non-existent user', function (done) {
-			request(nconf.get('url') + '/user/doesntexist/chats', function (err, response) {
+			request(`${nconf.get('url')}/user/doesntexist/chats`, function (err, response) {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 404);
 				done();
@@ -800,7 +800,7 @@ describe('Messaging Library', function () {
 		});
 
 		it('should return chats page data', function (done) {
-			request(nconf.get('url') + '/api/user/herp/chats', { json: true, jar: jar }, function (err, response, body) {
+			request(`${nconf.get('url')}/api/user/herp/chats`, { json: true, jar: jar }, function (err, response, body) {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 200);
 				assert(Array.isArray(body.rooms));
@@ -811,7 +811,7 @@ describe('Messaging Library', function () {
 		});
 
 		it('should return room data', function (done) {
-			request(nconf.get('url') + '/api/user/herp/chats/' + roomId, { json: true, jar: jar }, function (err, response, body) {
+			request(`${nconf.get('url')}/api/user/herp/chats/${roomId}`, { json: true, jar: jar }, function (err, response, body) {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 200);
 				assert.equal(body.roomId, roomId);
@@ -821,7 +821,7 @@ describe('Messaging Library', function () {
 		});
 
 		it('should redirect to chats page', function (done) {
-			request(nconf.get('url') + '/api/chats', { jar: jar, json: true }, function (err, res, body) {
+			request(`${nconf.get('url')}/api/chats`, { jar: jar, json: true }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert.equal(res.headers['x-redirect'], '/user/herp/chats');
@@ -833,7 +833,7 @@ describe('Messaging Library', function () {
 		it('should return 404 if user is not in room', function (done) {
 			helpers.loginUser('baz', 'quuxquux', function (err, jar) {
 				assert.ifError(err);
-				request(nconf.get('url') + '/api/user/baz/chats/' + roomId, { json: true, jar: jar }, function (err, response) {
+				request(`${nconf.get('url')}/api/user/baz/chats/${roomId}`, { json: true, jar: jar }, function (err, response) {
 					assert.ifError(err);
 					assert.equal(response.statusCode, 404);
 					done();

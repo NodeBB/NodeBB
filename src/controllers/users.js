@@ -37,7 +37,7 @@ usersController.search = async function (req, res) {
 	const section = req.query.section || 'joindate';
 
 	searchData.pagination = pagination.create(req.query.page, searchData.pageCount, req.query);
-	searchData['section_' + section] = true;
+	searchData[`section_${section}`] = true;
 	searchData.displayUserSearch = true;
 	await render(req, res, searchData);
 };
@@ -141,7 +141,7 @@ usersController.getUsers = async function (set, uid, query) {
 		isAdmin: isAdmin,
 		isGlobalMod: isGlobalMod,
 		displayUserSearch: canSearch,
-		['section_' + (query.section || 'joindate')]: true,
+		[`section_${query.section || 'joindate'}`]: true,
 	};
 };
 

@@ -17,7 +17,7 @@ module.exports = function (Posts) {
 			return false;
 		}
 
-		const numDiffs = await db.listLength('post:' + pid + ':diffs');
+		const numDiffs = await db.listLength(`post:${pid}:diffs`);
 		return !!numDiffs;
 	};
 
@@ -29,12 +29,12 @@ module.exports = function (Posts) {
 
 		// Pass those made after `since`, and create keys
 		const keys = timestamps.filter(t => (parseInt(t, 10) || 0) > since)
-			.map(t => 'diff:' + pid + '.' + t);
+			.map(t => `diff:${pid}.${t}`);
 		return await db.getObjects(keys);
 	};
 
 	Diffs.list = async function (pid) {
-		return await db.getListRange('post:' + pid + ':diffs', 0, -1);
+		return await db.getListRange(`post:${pid}:diffs`, 0, -1);
 	};
 
 	Diffs.save = async function (data) {
@@ -42,8 +42,8 @@ module.exports = function (Posts) {
 		const now = Date.now();
 		const patch = diff.createPatch('', newContent, oldContent);
 		await Promise.all([
-			db.listPrepend('post:' + pid + ':diffs', now),
-			db.setObject('diff:' + pid + '.' + now, {
+			db.listPrepend(`post:${pid}:diffs`, now),
+			db.setObject(`diff:${pid}.${now}`, {
 				uid: uid,
 				pid: pid,
 				patch: patch,
@@ -108,7 +108,7 @@ module.exports = function (Posts) {
 			const timestampToUpdate = newContentIndex + 1;
 			const newContent = newContentIndex < 0 ? postContent : versionContents[timestamps[newContentIndex]];
 			const patch = diff.createPatch('', newContent, versionContents[timestamps[i]]);
-			await db.setObject('diff:' + pid + '.' + timestamps[timestampToUpdate], { patch });
+			await db.setObject(`diff:${pid}.${timestamps[timestampToUpdate]}`, { patch });
 		}
 
 		return Promise.all([

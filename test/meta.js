@@ -491,7 +491,7 @@ describe('meta', function () {
 	describe('Access-Control-Allow-Origin', function () {
 		it('Access-Control-Allow-Origin header should be empty', function (done) {
 			var jar = request.jar();
-			request.get(nconf.get('url') + '/api/search?term=bug', {
+			request.get(`${nconf.get('url')}/api/search?term=bug`, {
 				form: {},
 				json: true,
 				jar: jar,
@@ -506,7 +506,7 @@ describe('meta', function () {
 			var jar = request.jar();
 			var oldValue = meta.config['access-control-allow-origin'];
 			meta.config['access-control-allow-origin'] = 'test.com, mydomain.com';
-			request.get(nconf.get('url') + '/api/search?term=bug', {
+			request.get(`${nconf.get('url')}/api/search?term=bug`, {
 				form: {
 				},
 				json: true,
@@ -526,7 +526,7 @@ describe('meta', function () {
 			var jar = request.jar();
 			var oldValue = meta.config['access-control-allow-origin'];
 			meta.config['access-control-allow-origin'] = 'test.com, mydomain.com';
-			request.get(nconf.get('url') + '/api/search?term=bug', {
+			request.get(`${nconf.get('url')}/api/search?term=bug`, {
 				form: {
 				},
 				json: true,
@@ -546,7 +546,7 @@ describe('meta', function () {
 			var jar = request.jar();
 			var oldValue = meta.config['access-control-allow-origin-regex'];
 			meta.config['access-control-allow-origin-regex'] = 'match\\.this\\..+\\.domain.com, mydomain\\.com';
-			request.get(nconf.get('url') + '/api/search?term=bug', {
+			request.get(`${nconf.get('url')}/api/search?term=bug`, {
 				form: {
 				},
 				json: true,
@@ -566,7 +566,7 @@ describe('meta', function () {
 			var jar = request.jar();
 			var oldValue = meta.config['access-control-allow-origin-regex'];
 			meta.config['access-control-allow-origin-regex'] = 'match\\.this\\..+\\.domain.com, mydomain\\.com';
-			request.get(nconf.get('url') + '/api/search?term=bug', {
+			request.get(`${nconf.get('url')}/api/search?term=bug`, {
 				form: {
 				},
 				json: true,
@@ -586,7 +586,7 @@ describe('meta', function () {
 			var jar = request.jar();
 			var oldValue = meta.config['access-control-allow-origin-regex'];
 			meta.config['access-control-allow-origin-regex'] = '[match\\.this\\..+\\.domain.com, mydomain\\.com';
-			request.get(nconf.get('url') + '/api/search?term=bug', {
+			request.get(`${nconf.get('url')}/api/search?term=bug`, {
 				form: {
 				},
 				json: true,

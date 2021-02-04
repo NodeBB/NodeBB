@@ -18,7 +18,7 @@ ratelimit.isFlooding = function (socket) {
 	socket.elapsedTime += now - socket.lastCallTime;
 
 	if (socket.callsPerSecond > allowedCalls && socket.elapsedTime < timeframe) {
-		winston.warn('Flooding detected! Calls : ' + socket.callsPerSecond + ', Duration : ' + socket.elapsedTime);
+		winston.warn(`Flooding detected! Calls : ${socket.callsPerSecond}, Duration : ${socket.elapsedTime}`);
 		return true;
 	}
 

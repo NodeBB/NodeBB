@@ -21,9 +21,9 @@ module.exports = {
 				if (tags.length) {
 					const cid = topicData.cid;
 					await async.eachSeries(tags, async function (tag) {
-						await db.sortedSetAdd('cid:' + cid + ':tag:' + tag + ':topics', topicData.timestamp, tid);
-						const count = await db.sortedSetCard('cid:' + cid + ':tag:' + tag + ':topics');
-						await db.sortedSetAdd('cid:' + cid + ':tags', count, tag);
+						await db.sortedSetAdd(`cid:${cid}:tag:${tag}:topics`, topicData.timestamp, tid);
+						const count = await db.sortedSetCard(`cid:${cid}:tag:${tag}:topics`);
+						await db.sortedSetAdd(`cid:${cid}:tags`, count, tag);
 					});
 				}
 

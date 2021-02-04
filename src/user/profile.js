@@ -144,7 +144,7 @@ module.exports = function (User) {
 			return;
 		}
 		if (data.aboutme !== undefined && data.aboutme.length > meta.config.maximumAboutMeLength) {
-			throw new Error('[[error:about-me-too-long, ' + meta.config.maximumAboutMeLength + ']]');
+			throw new Error(`[[error:about-me-too-long, ${meta.config.maximumAboutMeLength}]]`);
 		}
 
 		await User.checkMinReputation(callerUid, data.uid, 'min:rep:aboutme');
@@ -155,7 +155,7 @@ module.exports = function (User) {
 			return;
 		}
 		if (data.signature !== undefined && data.signature.length > meta.config.maximumSignatureLength) {
-			throw new Error('[[error:signature-too-long, ' + meta.config.maximumSignatureLength + ']]');
+			throw new Error(`[[error:signature-too-long, ${meta.config.maximumSignatureLength}]]`);
 		}
 		await User.checkMinReputation(callerUid, data.uid, 'min:rep:signature');
 	}
@@ -215,7 +215,7 @@ module.exports = function (User) {
 		}
 		const reputation = await User.getUserField(uid, 'reputation');
 		if (reputation < meta.config[setting]) {
-			throw new Error('[[error:not-enough-reputation-' + setting.replace(/:/g, '-') + ']]');
+			throw new Error(`[[error:not-enough-reputation-${setting.replace(/:/g, '-')}]]`);
 		}
 	};
 
@@ -227,14 +227,14 @@ module.exports = function (User) {
 		}
 
 		await db.sortedSetRemove('email:uid', oldEmail.toLowerCase());
-		await db.sortedSetRemove('email:sorted', oldEmail.toLowerCase() + ':' + uid);
+		await db.sortedSetRemove('email:sorted', `${oldEmail.toLowerCase()}:${uid}`);
 		await User.auth.revokeAllSessions(uid);
 
 		await Promise.all([
 			db.sortedSetAddBulk([
 				['email:uid', uid, newEmail.toLowerCase()],
-				['email:sorted', 0, newEmail.toLowerCase() + ':' + uid],
-				['user:' + uid + ':emails', Date.now(), newEmail + ':' + Date.now()],
+				['email:sorted', 0, `${newEmail.toLowerCase()}:${uid}`],
+				[`user:${uid}:emails`, Date.now(), `${newEmail}:${Date.now()}`],
 			]),
 			User.setUserFields(uid, { email: newEmail, 'email:confirmed': 0 }),
 			groups.leave('verified-users', uid),
@@ -247,7 +247,7 @@ module.exports = function (User) {
 				email: newEmail,
 				subject: '[[email:email.verify-your-email.subject]]',
 				template: 'verify_email',
-			}).catch(err => winston.error('[user.create] Validation email failed to send\n[emailer.send] ' + err.stack));
+			}).catch(err => winston.error(`[user.create] Validation email failed to send\n[emailer.send] ${err.stack}`));
 		}
 	}
 
@@ -264,20 +264,20 @@ module.exports = function (User) {
 		await Promise.all([
 			updateUidMapping('username', uid, newUsername, userData.username),
 			updateUidMapping('userslug', uid, newUserslug, userData.userslug),
-			db.sortedSetAdd('user:' + uid + ':usernames', now, newUsername + ':' + now),
+			db.sortedSetAdd(`user:${uid}:usernames`, now, `${newUsername}:${now}`),
 		]);
-		await db.sortedSetRemove('username:sorted', userData.username.toLowerCase() + ':' + uid);
-		await db.sortedSetAdd('username:sorted', 0, newUsername.toLowerCase() + ':' + uid);
+		await db.sortedSetRemove('username:sorted', `${userData.username.toLowerCase()}:${uid}`);
+		await db.sortedSetAdd('username:sorted', 0, `${newUsername.toLowerCase()}:${uid}`);
 	}
 
 	async function updateUidMapping(field, uid, value, oldValue) {
 		if (value === oldValue) {
 			return;
 		}
-		await db.sortedSetRemove(field + ':uid', oldValue);
+		await db.sortedSetRemove(`${field}:uid`, oldValue);
 		await User.setUserField(uid, field, value);
 		if (value) {
-			await db.sortedSetAdd(field + ':uid', uid, value);
+			await db.sortedSetAdd(`${field}:uid`, uid, value);
 		}
 	}
 
@@ -286,10 +286,10 @@ module.exports = function (User) {
 		await updateUidMapping('fullname', uid, newFullname, fullname);
 		if (newFullname !== fullname) {
 			if (fullname) {
-				await db.sortedSetRemove('fullname:sorted', fullname.toLowerCase() + ':' + uid);
+				await db.sortedSetRemove('fullname:sorted', `${fullname.toLowerCase()}:${uid}`);
 			}
 			if (newFullname) {
-				await db.sortedSetAdd('fullname:sorted', 0, newFullname.toLowerCase() + ':' + uid);
+				await db.sortedSetAdd('fullname:sorted', 0, `${newFullname.toLowerCase()}:${uid}`);
 			}
 		}
 	}

@@ -38,7 +38,7 @@ privileges.userPrivilegeList = [
 	'moderate',
 ];
 
-privileges.groupPrivilegeList = privileges.userPrivilegeList.map(privilege => 'groups:' + privilege);
+privileges.groupPrivilegeList = privileges.userPrivilegeList.map(privilege => `groups:${privilege}`);
 
 privileges.privilegeList = privileges.userPrivilegeList.concat(privileges.groupPrivilegeList);
 

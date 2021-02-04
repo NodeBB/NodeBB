@@ -28,7 +28,7 @@ Config.setMultiple = async function (socket, data) {
 	Object.keys(newData).forEach(function (key) {
 		if (newData[key] !== oldData[key]) {
 			changes[key] = newData[key];
-			changes[key + '_old'] = meta.config[key];
+			changes[`${key}_old`] = meta.config[key];
 		}
 	});
 	await meta.configs.setMultiple(data);

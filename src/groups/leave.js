@@ -22,13 +22,13 @@ module.exports = function (Groups) {
 		}
 
 		await Promise.all([
-			db.sortedSetRemove(groupsToLeave.map(groupName => 'group:' + groupName + ':members'), uid),
-			db.setRemove(groupsToLeave.map(groupName => 'group:' + groupName + ':owners'), uid),
-			db.decrObjectField(groupsToLeave.map(groupName => 'group:' + groupName), 'memberCount'),
+			db.sortedSetRemove(groupsToLeave.map(groupName => `group:${groupName}:members`), uid),
+			db.setRemove(groupsToLeave.map(groupName => `group:${groupName}:owners`), uid),
+			db.decrObjectField(groupsToLeave.map(groupName => `group:${groupName}`), 'memberCount'),
 		]);
 
 		Groups.clearCache(uid, groupsToLeave);
-		cache.del(groupsToLeave.map(name => 'group:' + name + ':members'));
+		cache.del(groupsToLeave.map(name => `group:${name}:members`));
 
 		const groupData = await Groups.getGroupsFields(groupsToLeave, ['name', 'hidden', 'memberCount']);
 		if (!groupData) {
@@ -71,9 +71,9 @@ module.exports = function (Groups) {
 
 		const newTitleArray = userData.groupTitleArray.filter(groupTitle => !groupNames.includes(groupTitle));
 		if (newTitleArray.length) {
-			await db.setObjectField('user:' + uid, 'groupTitle', JSON.stringify(newTitleArray));
+			await db.setObjectField(`user:${uid}`, 'groupTitle', JSON.stringify(newTitleArray));
 		} else {
-			await db.deleteObjectField('user:' + uid, 'groupTitle');
+			await db.deleteObjectField(`user:${uid}`, 'groupTitle');
 		}
 	}
 
@@ -88,7 +88,7 @@ module.exports = function (Groups) {
 	Groups.kick = async function (uid, groupName, isOwner) {
 		if (isOwner) {
 			// If the owners set only contains one member, error out!
-			const numOwners = await db.setCount('group:' + groupName + ':owners');
+			const numOwners = await db.setCount(`group:${groupName}:owners`);
 			if (numOwners <= 1) {
 				throw new Error('[[error:group-needs-owner]]');
 			}

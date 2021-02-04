@@ -53,8 +53,8 @@ module.exports = function (privileges) {
 	async function isModeratorsOfCategory(cid, uids) {
 		const [check1, check2, check3] = await Promise.all([
 			privileges.users.isGlobalModerator(uids),
-			groups.isMembers(uids, 'cid:' + cid + ':privileges:moderate'),
-			groups.isMembersOfGroupList(uids, 'cid:' + cid + ':privileges:groups:moderate'),
+			groups.isMembers(uids, `cid:${cid}:privileges:moderate`),
+			groups.isMembersOfGroupList(uids, `cid:${cid}:privileges:groups:moderate`),
 		]);
 		const isModerator = uids.map((uid, idx) => check1[idx] || check2[idx] || check3[idx]);
 		return await filterIsModerator(cid, uids, isModerator);

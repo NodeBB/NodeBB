@@ -20,8 +20,8 @@ module.exports = function (SocketPosts) {
 			throw new Error('[[error:no-privileges]]');
 		}
 		const [upvoteUids, downvoteUids] = await Promise.all([
-			db.getSetMembers('pid:' + data.pid + ':upvote'),
-			showDownvotes ? db.getSetMembers('pid:' + data.pid + ':downvote') : [],
+			db.getSetMembers(`pid:${data.pid}:upvote`),
+			showDownvotes ? db.getSetMembers(`pid:${data.pid}:downvote`) : [],
 		]);
 
 		const [upvoters, downvoters] = await Promise.all([

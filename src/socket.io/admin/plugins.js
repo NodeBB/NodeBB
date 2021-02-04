@@ -10,7 +10,7 @@ Plugins.toggleActive = async function (socket, plugin_id) {
 	require('../../posts/cache').reset();
 	const data = await plugins.toggleActive(plugin_id);
 	await events.log({
-		type: 'plugin-' + (data.active ? 'activate' : 'deactivate'),
+		type: `plugin-${data.active ? 'activate' : 'deactivate'}`,
 		text: plugin_id,
 		uid: socket.uid,
 	});
@@ -22,7 +22,7 @@ Plugins.toggleInstall = async function (socket, data) {
 	await plugins.checkWhitelist(data.id, data.version);
 	const pluginData = await plugins.toggleInstall(data.id, data.version);
 	await events.log({
-		type: 'plugin-' + (pluginData.installed ? 'install' : 'uninstall'),
+		type: `plugin-${pluginData.installed ? 'install' : 'uninstall'}`,
 		text: data.id,
 		version: data.version,
 		uid: socket.uid,

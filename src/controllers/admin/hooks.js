@@ -11,7 +11,7 @@ hooksController.get = function (req, res) {
 		const current = {
 			hookName: key,
 			methods: [],
-			index: 'hook-' + hookIndex,
+			index: `hook-${hookIndex}`,
 			count: plugins.loadedHooks[key].length,
 		};
 
@@ -20,7 +20,7 @@ hooksController.get = function (req, res) {
 				id: hookData.id,
 				priority: hookData.priority,
 				method: hookData.method ? validator.escape(hookData.method.toString()) : 'No plugin function!',
-				index: hookIndex + '-code-' + methodIndex,
+				index: `${hookIndex}-code-${methodIndex}`,
 			});
 		});
 		hooks.push(current);

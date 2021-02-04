@@ -91,7 +91,7 @@ Configs.serialize = serialize;
 Configs.init = async function () {
 	const config = await Configs.list();
 	const buster = await cacheBuster.read();
-	config['cache-buster'] = 'v=' + (buster || Date.now());
+	config['cache-buster'] = `v=${buster || Date.now()}`;
 	Meta.config = config;
 };
 

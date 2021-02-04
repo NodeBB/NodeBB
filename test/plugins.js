@@ -13,7 +13,7 @@ var plugins = require('../src/plugins');
 describe('Plugins', function () {
 	it('should load plugin data', function (done) {
 		var pluginId = 'nodebb-plugin-markdown';
-		plugins.loadPlugin(path.join(nconf.get('base_dir'), 'node_modules/' + pluginId), function (err) {
+		plugins.loadPlugin(path.join(nconf.get('base_dir'), `node_modules/${pluginId}`), function (err) {
 			assert.ifError(err);
 			assert(plugins.libraries[pluginId]);
 			assert(plugins.loadedHooks['static:app.load']);
@@ -256,7 +256,7 @@ describe('Plugins', function () {
 
 	describe('static assets', function () {
 		it('should 404 if resource does not exist', function (done) {
-			request.get(nconf.get('url') + '/plugins/doesnotexist/should404.tpl', function (err, res, body) {
+			request.get(`${nconf.get('url')}/plugins/doesnotexist/should404.tpl`, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				assert(body);
@@ -265,7 +265,7 @@ describe('Plugins', function () {
 		});
 
 		it('should 404 if resource does not exist', function (done) {
-			request.get(nconf.get('url') + '/plugins/nodebb-plugin-dbsearch/dbsearch/templates/admin/plugins/should404.tpl', function (err, res, body) {
+			request.get(`${nconf.get('url')}/plugins/nodebb-plugin-dbsearch/dbsearch/templates/admin/plugins/should404.tpl`, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				assert(body);
@@ -274,7 +274,7 @@ describe('Plugins', function () {
 		});
 
 		it('should get resource', function (done) {
-			request.get(nconf.get('url') + '/plugins/nodebb-plugin-dbsearch/dbsearch/templates/admin/plugins/dbsearch.tpl', function (err, res, body) {
+			request.get(`${nconf.get('url')}/plugins/nodebb-plugin-dbsearch/dbsearch/templates/admin/plugins/dbsearch.tpl`, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);

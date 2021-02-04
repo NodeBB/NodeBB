@@ -35,7 +35,7 @@ module.exports = {
 				batch.processSortedSet('users:joindate', function (ids, next) {
 					async.each(ids, function (uid, next) {
 						async.waterfall([
-							async.apply(db.getObjectField, 'user:' + uid + ':settings', 'userLang'),
+							async.apply(db.getObjectField, `user:${uid}:settings`, 'userLang'),
 							function (language, next) {
 								if (!language) {
 									return setImmediate(next);

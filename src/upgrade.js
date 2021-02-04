@@ -51,7 +51,7 @@ Upgrade.getAll = async function () {
 		}
 	});
 	if (dupes.length) {
-		winston.error('Found duplicate upgrade scripts\n' + dupes);
+		winston.error(`Found duplicate upgrade scripts\n${dupes}`);
 		throw new Error('[[error:duplicate-upgrade-scripts]]');
 	}
 
@@ -71,7 +71,7 @@ Upgrade.appendPluginScripts = async function (files) {
 				});
 			}
 		} catch (e) {
-			winston.warn('[upgrade/appendPluginScripts] Unable to read plugin.json for plugin `' + plugin + '`. Skipping.');
+			winston.warn(`[upgrade/appendPluginScripts] Unable to read plugin.json for plugin \`${plugin}\`. Skipping.`);
 		}
 	});
 	return files;
@@ -136,7 +136,7 @@ Upgrade.process = async function (files, skipCount) {
 			date: date,
 		};
 
-		process.stdout.write('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '...');
+		process.stdout.write(`${'  → '.white + String(`[${[date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/')}] `).gray + String(scriptExport.name).reset}...`);
 
 		// For backwards compatibility, cross-reference with schemaDate (if found). If a script's date is older, skip it
 		if ((!schemaDate && !schemaLogCount) || (scriptExport.timestamp <= schemaDate && semver.lt(version, '1.5.0'))) {
@@ -187,13 +187,13 @@ Upgrade.incrementProgress = function (value) {
 		var filled = 0;
 		var unfilled = 15;
 		if (this.total) {
-			percentage = Math.floor((this.current / this.total) * 100) + '%';
+			percentage = `${Math.floor((this.current / this.total) * 100)}%`;
 			filled = Math.floor((this.current / this.total) * 15);
 			unfilled = Math.max(0, 15 - filled);
 		}
 
 		readline.cursorTo(process.stdout, 0);
-		process.stdout.write('    [' + (filled ? new Array(filled).join('#') : '') + new Array(unfilled).join(' ') + '] (' + this.current + '/' + (this.total || '??') + ') ' + percentage + ' ');
+		process.stdout.write(`    [${filled ? new Array(filled).join('#') : ''}${new Array(unfilled).join(' ')}] (${this.current}/${this.total || '??'}) ${percentage} `);
 	}
 };
 

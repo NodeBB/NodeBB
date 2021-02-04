@@ -14,7 +14,7 @@ module.exports = {
 		batch.processSortedSet('users:joindate', function (ids, next) {
 			async.each(ids, function (uid, next) {
 				progress.incr();
-				db.getSortedSetRevRange('uid:' + uid + ':moderation:notes', 0, -1, function (err, notes) {
+				db.getSortedSetRevRange(`uid:${uid}:moderation:notes`, 0, -1, function (err, notes) {
 					if (err || !notes.length) {
 						return next(err);
 					}
@@ -32,17 +32,17 @@ module.exports = {
 								}
 							},
 							function (next) {
-								db.sortedSetRemove('uid:' + uid + ':moderation:notes', note, next);
+								db.sortedSetRemove(`uid:${uid}:moderation:notes`, note, next);
 							},
 							function (next) {
-								db.setObject('uid:' + uid + ':moderation:note:' + noteData.timestamp, {
+								db.setObject(`uid:${uid}:moderation:note:${noteData.timestamp}`, {
 									uid: noteData.uid,
 									timestamp: noteData.timestamp,
 									note: noteData.note,
 								}, next);
 							},
 							function (next) {
-								db.sortedSetAdd('uid:' + uid + ':moderation:notes', noteData.timestamp, noteData.timestamp, next);
+								db.sortedSetAdd(`uid:${uid}:moderation:notes`, noteData.timestamp, noteData.timestamp, next);
 							},
 						], next);
 					}, next);

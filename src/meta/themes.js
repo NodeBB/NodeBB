@@ -39,9 +39,9 @@ Themes.get = async () => {
 			// Minor adjustments for API output
 			configObj.type = 'local';
 			if (configObj.screenshot) {
-				configObj.screenshot_url = nconf.get('relative_path') + '/css/previews/' + encodeURIComponent(configObj.id);
+				configObj.screenshot_url = `${nconf.get('relative_path')}/css/previews/${encodeURIComponent(configObj.id)}`;
 			} else {
-				configObj.screenshot_url = nconf.get('relative_path') + '/assets/images/themes/default.png';
+				configObj.screenshot_url = `${nconf.get('relative_path')}/assets/images/themes/default.png`;
 			}
 
 			return configObj;
@@ -50,7 +50,7 @@ Themes.get = async () => {
 				return false;
 			}
 
-			winston.error('[themes] Unable to parse theme.json ' + theme);
+			winston.error(`[themes] Unable to parse theme.json ${theme}`);
 			return false;
 		}
 	}));
@@ -142,7 +142,7 @@ Themes.setupPaths = async () => {
 	var themeId = data.currentThemeId || 'nodebb-theme-persona';
 
 	if (process.env.NODE_ENV === 'development') {
-		winston.info('[themes] Using theme ' + themeId);
+		winston.info(`[themes] Using theme ${themeId}`);
 	}
 
 	var themeObj = data.themesData.find(function (themeObj) {

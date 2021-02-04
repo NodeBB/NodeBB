@@ -12,13 +12,13 @@ module.exports = {
 
 		await batch.processSortedSet('topics:tid', async function (tids) {
 			progress.incr(tids.length);
-			const keys = tids.map(tid => 'tid:' + tid + ':posters');
+			const keys = tids.map(tid => `tid:${tid}:posters`);
 			await db.sortedSetsRemoveRangeByScore(keys, '-inf', 0);
 			const counts = await db.sortedSetsCard(keys);
 			for (let i = 0; i < tids.length; i++) {
 				if (counts[i] > 0) {
 					// eslint-disable-next-line no-await-in-loop
-					await db.setObjectField('topic:' + tids[i], 'postercount', counts[i]);
+					await db.setObjectField(`topic:${tids[i]}`, 'postercount', counts[i]);
 				}
 			}
 		}, {

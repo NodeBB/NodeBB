@@ -9,7 +9,7 @@ const connection = require('./connection');
 let channelName;
 const PubSub = function () {
 	const self = this;
-	channelName = 'db:' + nconf.get('redis:database') + ':pubsub_channel';
+	channelName = `db:${nconf.get('redis:database')}:pubsub_channel`;
 
 	connection.connect().then(function (client) {
 		self.subClient = client;

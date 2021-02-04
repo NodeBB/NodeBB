@@ -146,7 +146,7 @@ Users.revokeSession = async (req, res) => {
 		return helpers.formatApiResponse(404, res);
 	}
 
-	const sids = await db.getSortedSetRange('uid:' + req.params.uid + ':sessions', 0, -1);
+	const sids = await db.getSortedSetRange(`uid:${req.params.uid}:sessions`, 0, -1);
 	let _id;
 	for (const sid of sids) {
 		/* eslint-disable no-await-in-loop */
@@ -204,7 +204,7 @@ Users.invite = async (req, res) => {
 			invites = await user.getInvitesNumber(req.uid);
 		}
 		if (!isAdmin && max && invites >= max) {
-			return helpers.formatApiResponse(403, res, new Error('[[error:invite-maximum-met, ' + invites + ', ' + max + ']]'));
+			return helpers.formatApiResponse(403, res, new Error(`[[error:invite-maximum-met, ${invites}, ${max}]]`));
 		}
 
 		await user.sendInvitationEmail(req.uid, email, groupsToJoin);

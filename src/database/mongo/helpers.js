@@ -60,7 +60,7 @@ helpers.buildMatchQuery = function (match) {
 	}
 	_match = utils.escapeRegexChars(_match);
 	if (!match.startsWith('*')) {
-		_match = '^' + _match;
+		_match = `^${_match}`;
 	}
 	if (!match.endsWith('*')) {
 		_match += '$';

@@ -33,7 +33,7 @@ Tags.parse = async (req, data, meta, link) => {
 		content: Meta.config.title || 'NodeBB',
 	}, {
 		name: 'msapplication-badge',
-		content: 'frequency=30; polling-uri=' + url + '/sitemap.xml',
+		content: `frequency=30; polling-uri=${url}/sitemap.xml`,
 		noEscape: true,
 	}, {
 		name: 'theme-color',
@@ -59,10 +59,10 @@ Tags.parse = async (req, data, meta, link) => {
 	var defaultLinks = [{
 		rel: 'icon',
 		type: 'image/x-icon',
-		href: relative_path + '/favicon.ico' + (Meta.config['cache-buster'] ? '?' + Meta.config['cache-buster'] : ''),
+		href: `${relative_path}/favicon.ico${Meta.config['cache-buster'] ? `?${Meta.config['cache-buster']}` : ''}`,
 	}, {
 		rel: 'manifest',
-		href: relative_path + '/manifest.webmanifest',
+		href: `${relative_path}/manifest.webmanifest`,
 	}];
 
 	if (plugins.hooks.hasListeners('filter:search.query')) {
@@ -70,7 +70,7 @@ Tags.parse = async (req, data, meta, link) => {
 			rel: 'search',
 			type: 'application/opensearchdescription+xml',
 			title: utils.escapeHTML(String(Meta.config.title || Meta.config.browserTitle || 'NodeBB')),
-			href: relative_path + '/osd.xml',
+			href: `${relative_path}/osd.xml`,
 		});
 	}
 
@@ -78,64 +78,64 @@ Tags.parse = async (req, data, meta, link) => {
 	if (Meta.config['brand:touchIcon']) {
 		defaultLinks.push({
 			rel: 'apple-touch-icon',
-			href: relative_path + upload_url + '/system/touchicon-orig.png',
+			href: `${relative_path + upload_url}/system/touchicon-orig.png`,
 		}, {
 			rel: 'icon',
 			sizes: '36x36',
-			href: relative_path + upload_url + '/system/touchicon-36.png',
+			href: `${relative_path + upload_url}/system/touchicon-36.png`,
 		}, {
 			rel: 'icon',
 			sizes: '48x48',
-			href: relative_path + upload_url + '/system/touchicon-48.png',
+			href: `${relative_path + upload_url}/system/touchicon-48.png`,
 		}, {
 			rel: 'icon',
 			sizes: '72x72',
-			href: relative_path + upload_url + '/system/touchicon-72.png',
+			href: `${relative_path + upload_url}/system/touchicon-72.png`,
 		}, {
 			rel: 'icon',
 			sizes: '96x96',
-			href: relative_path + upload_url + '/system/touchicon-96.png',
+			href: `${relative_path + upload_url}/system/touchicon-96.png`,
 		}, {
 			rel: 'icon',
 			sizes: '144x144',
-			href: relative_path + upload_url + '/system/touchicon-144.png',
+			href: `${relative_path + upload_url}/system/touchicon-144.png`,
 		}, {
 			rel: 'icon',
 			sizes: '192x192',
-			href: relative_path + upload_url + '/system/touchicon-192.png',
+			href: `${relative_path + upload_url}/system/touchicon-192.png`,
 		});
 	} else {
 		defaultLinks.push({
 			rel: 'apple-touch-icon',
-			href: relative_path + '/assets/images/touch/512.png',
+			href: `${relative_path}/assets/images/touch/512.png`,
 		}, {
 			rel: 'icon',
 			sizes: '36x36',
-			href: relative_path + '/assets/images/touch/192.png',
+			href: `${relative_path}/assets/images/touch/192.png`,
 		}, {
 			rel: 'icon',
 			sizes: '48x48',
-			href: relative_path + '/assets/images/touch/144.png',
+			href: `${relative_path}/assets/images/touch/144.png`,
 		}, {
 			rel: 'icon',
 			sizes: '72x72',
-			href: relative_path + '/assets/images/touch/96.png',
+			href: `${relative_path}/assets/images/touch/96.png`,
 		}, {
 			rel: 'icon',
 			sizes: '96x96',
-			href: relative_path + '/assets/images/touch/72.png',
+			href: `${relative_path}/assets/images/touch/72.png`,
 		}, {
 			rel: 'icon',
 			sizes: '144x144',
-			href: relative_path + '/assets/images/touch/48.png',
+			href: `${relative_path}/assets/images/touch/48.png`,
 		}, {
 			rel: 'icon',
 			sizes: '192x192',
-			href: relative_path + '/assets/images/touch/36.png',
+			href: `${relative_path}/assets/images/touch/36.png`,
 		}, {
 			rel: 'icon',
 			sizes: '512x512',
-			href: relative_path + '/assets/images/touch/512.png',
+			href: `${relative_path}/assets/images/touch/512.png`,
 		});
 	}
 
@@ -216,24 +216,24 @@ function addSiteOGImage(meta) {
 			noEscape: true,
 		});
 
-		if (Meta.config[key + ':width'] && Meta.config[key + ':height']) {
+		if (Meta.config[`${key}:width`] && Meta.config[`${key}:height`]) {
 			meta.push({
 				property: 'og:image:width',
-				content: String(Meta.config[key + ':width']),
+				content: String(Meta.config[`${key}:width`]),
 			}, {
 				property: 'og:image:height',
-				content: String(Meta.config[key + ':height']),
+				content: String(Meta.config[`${key}:height`]),
 			});
 		}
 	} else {
 		// Push fallback logo
 		meta.push({
 			property: 'og:image',
-			content: url + '/assets/images/logo@3x.png',
+			content: `${url}/assets/images/logo@3x.png`,
 			noEscape: true,
 		}, {
 			property: 'og:image:url',
-			content: url + '/assets/images/logo@3x.png',
+			content: `${url}/assets/images/logo@3x.png`,
 			noEscape: true,
 		}, {
 			property: 'og:image:width',

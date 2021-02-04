@@ -55,17 +55,17 @@ async function notifyUids(uid, uids, type, result) {
 	data.uidsTo.forEach(function (toUid) {
 		post.categoryWatchState = categoryWatchStates[toUid];
 		post.topic.isFollowing = topicFollowState[toUid];
-		websockets.in('uid_' + toUid).emit('event:new_post', result);
+		websockets.in(`uid_${toUid}`).emit('event:new_post', result);
 		if (result.topic && type === 'newTopic') {
-			websockets.in('uid_' + toUid).emit('event:new_topic', result.topic);
+			websockets.in(`uid_${toUid}`).emit('event:new_topic', result.topic);
 		}
 	});
 }
 
 async function getWatchStates(uids, tid, cid) {
 	return await utils.promiseParallel({
-		topicFollowed: db.isSetMembers('tid:' + tid + ':followers', uids),
-		topicIgnored: db.isSetMembers('tid:' + tid + ':ignorers', uids),
+		topicFollowed: db.isSetMembers(`tid:${tid}:followers`, uids),
+		topicIgnored: db.isSetMembers(`tid:${tid}:ignorers`, uids),
 		categoryWatchStates: categories.getUidsWatchStates(cid, uids),
 	});
 }
@@ -101,14 +101,14 @@ SocketHelpers.sendNotificationToPostOwner = async function (pid, fromuid, comman
 
 	const notifObj = await notifications.create({
 		type: command,
-		bodyShort: '[[' + notification + ', ' + username + ', ' + titleEscaped + ']]',
+		bodyShort: `[[${notification}, ${username}, ${titleEscaped}]]`,
 		bodyLong: postObj.content,
 		pid: pid,
 		tid: postData.tid,
-		path: '/post/' + pid,
-		nid: command + ':post:' + pid + ':uid:' + fromuid,
+		path: `/post/${pid}`,
+		nid: `${command}:post:${pid}:uid:${fromuid}`,
 		from: fromuid,
-		mergeId: notification + '|' + pid,
+		mergeId: `${notification}|${pid}`,
 		topicTitle: topicTitle,
 	});
 
@@ -136,9 +136,9 @@ SocketHelpers.sendNotificationToTopicOwner = async function (tid, fromuid, comma
 	const titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 
 	const notifObj = await notifications.create({
-		bodyShort: '[[' + notification + ', ' + username + ', ' + titleEscaped + ']]',
-		path: '/topic/' + topicData.slug,
-		nid: command + ':tid:' + tid + ':uid:' + fromuid,
+		bodyShort: `[[${notification}, ${username}, ${titleEscaped}]]`,
+		path: `/topic/${topicData.slug}`,
+		nid: `${command}:tid:${tid}:uid:${fromuid}`,
 		from: fromuid,
 	});
 
@@ -186,14 +186,14 @@ SocketHelpers.upvote = async function (data, notification) {
 };
 
 SocketHelpers.rescindUpvoteNotification = async function (pid, fromuid) {
-	await notifications.rescind('upvote:post:' + pid + ':uid:' + fromuid);
+	await notifications.rescind(`upvote:post:${pid}:uid:${fromuid}`);
 	const uid = await posts.getPostField(pid, 'uid');
 	const count = await user.notifications.getUnreadCount(uid);
-	websockets.in('uid_' + uid).emit('event:notifications.updateCount', count);
+	websockets.in(`uid_${uid}`).emit('event:notifications.updateCount', count);
 };
 
 SocketHelpers.emitToUids = async function (event, data, uids) {
-	uids.forEach(toUid => websockets.in('uid_' + toUid).emit(event, data));
+	uids.forEach(toUid => websockets.in(`uid_${toUid}`).emit(event, data));
 };
 
 require('../promisify')(SocketHelpers);

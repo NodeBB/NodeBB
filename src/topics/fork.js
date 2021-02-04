@@ -17,9 +17,9 @@ module.exports = function (Topics) {
 		}
 
 		if (title.length < meta.config.minimumTitleLength) {
-			throw new Error('[[error:title-too-short, ' + meta.config.minimumTitleLength + ']]');
+			throw new Error(`[[error:title-too-short, ${meta.config.minimumTitleLength}]]`);
 		} else if (title.length > meta.config.maximumTitleLength) {
-			throw new Error('[[error:title-too-long, ' + meta.config.maximumTitleLength + ']]');
+			throw new Error(`[[error:title-too-long, ${meta.config.maximumTitleLength}]]`);
 		}
 
 		if (!pids || !pids.length) {
@@ -57,7 +57,7 @@ module.exports = function (Topics) {
 				upvotes: postData.upvotes,
 				downvotes: postData.downvotes,
 			}),
-			db.sortedSetsAdd(['topics:votes', 'cid:' + cid + ':tids:votes'], postData.votes, tid),
+			db.sortedSetsAdd(['topics:votes', `cid:${cid}:tids:votes`], postData.votes, tid),
 		]);
 
 		plugins.hooks.fire('action:topic.fork', { tid: tid, fromTid: fromTid, uid: uid });
@@ -104,29 +104,29 @@ module.exports = function (Topics) {
 		}
 
 		if (!topicData[0].pinned) {
-			await db.sortedSetIncrBy('cid:' + topicData[0].cid + ':tids:posts', -1, postData.tid);
+			await db.sortedSetIncrBy(`cid:${topicData[0].cid}:tids:posts`, -1, postData.tid);
 		}
 		if (!topicData[1].pinned) {
-			await db.sortedSetIncrBy('cid:' + topicData[1].cid + ':tids:posts', 1, toTid);
+			await db.sortedSetIncrBy(`cid:${topicData[1].cid}:tids:posts`, 1, toTid);
 		}
 		if (topicData[0].cid === topicData[1].cid) {
 			await categories.updateRecentTidForCid(topicData[0].cid);
 			return;
 		}
 		const removeFrom = [
-			'cid:' + topicData[0].cid + ':pids',
-			'cid:' + topicData[0].cid + ':uid:' + postData.uid + ':pids',
-			'cid:' + topicData[0].cid + ':uid:' + postData.uid + ':pids:votes',
+			`cid:${topicData[0].cid}:pids`,
+			`cid:${topicData[0].cid}:uid:${postData.uid}:pids`,
+			`cid:${topicData[0].cid}:uid:${postData.uid}:pids:votes`,
 		];
 		const tasks = [
-			db.incrObjectFieldBy('category:' + topicData[0].cid, 'post_count', -1),
-			db.incrObjectFieldBy('category:' + topicData[1].cid, 'post_count', 1),
+			db.incrObjectFieldBy(`category:${topicData[0].cid}`, 'post_count', -1),
+			db.incrObjectFieldBy(`category:${topicData[1].cid}`, 'post_count', 1),
 			db.sortedSetRemove(removeFrom, postData.pid),
-			db.sortedSetAdd('cid:' + topicData[1].cid + ':pids', postData.timestamp, postData.pid),
-			db.sortedSetAdd('cid:' + topicData[1].cid + ':uid:' + postData.uid + ':pids', postData.timestamp, postData.pid),
+			db.sortedSetAdd(`cid:${topicData[1].cid}:pids`, postData.timestamp, postData.pid),
+			db.sortedSetAdd(`cid:${topicData[1].cid}:uid:${postData.uid}:pids`, postData.timestamp, postData.pid),
 		];
 		if (postData.votes > 0) {
-			tasks.push(db.sortedSetAdd('cid:' + topicData[1].cid + ':uid:' + postData.uid + ':pids:votes', postData.votes, postData.pid));
+			tasks.push(db.sortedSetAdd(`cid:${topicData[1].cid}:uid:${postData.uid}:pids:votes`, postData.votes, postData.pid));
 		}
 
 		await Promise.all(tasks);

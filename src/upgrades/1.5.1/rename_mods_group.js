@@ -14,14 +14,14 @@ module.exports = {
 		var progress = this.progress;
 		batch.processSortedSet('categories:cid', function (cids, next) {
 			async.eachSeries(cids, function (cid, next) {
-				var groupName = 'cid:' + cid + ':privileges:mods';
-				var newName = 'cid:' + cid + ':privileges:moderate';
+				var groupName = `cid:${cid}:privileges:mods`;
+				var newName = `cid:${cid}:privileges:moderate`;
 				groups.exists(groupName, function (err, exists) {
 					if (err || !exists) {
 						progress.incr();
 						return next(err);
 					}
-					winston.verbose('renaming ' + groupName + ' to ' + newName);
+					winston.verbose(`renaming ${groupName} to ${newName}`);
 					progress.incr();
 					groups.renameGroup(groupName, newName, next);
 				});

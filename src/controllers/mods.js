@@ -138,11 +138,11 @@ modsController.flags.detail = async function (req, res, next) {
 
 			return memo;
 		}, {}),
-		title: '[[pages:flag-details, ' + req.params.flagId + ']]',
+		title: `[[pages:flag-details, ${req.params.flagId}]]`,
 		privileges: results.privileges,
 		breadcrumbs: helpers.buildBreadcrumbs([
 			{ text: '[[pages:flags]]', url: '/flags' },
-			{ text: '[[pages:flag-details, ' + req.params.flagId + ']]' },
+			{ text: `[[pages:flag-details, ${req.params.flagId}]]` },
 		]),
 	}));
 };
@@ -187,14 +187,14 @@ modsController.postQueue = async function (req, res, next) {
 		title: '[[pages:post-queue]]',
 		posts: postData,
 		...categoriesData,
-		allCategoriesUrl: 'post-queue' + helpers.buildQueryString(req.query, 'cid', ''),
+		allCategoriesUrl: `post-queue${helpers.buildQueryString(req.query, 'cid', '')}`,
 		pagination: pagination.create(page, pageCount),
 		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[pages:post-queue]]' }]),
 	});
 };
 
 async function getQueuedPosts(ids) {
-	const keys = ids.map(id => 'post:queue:' + id);
+	const keys = ids.map(id => `post:queue:${id}`);
 	const postData = await db.getObjects(keys);
 	postData.forEach(function (data) {
 		if (data) {

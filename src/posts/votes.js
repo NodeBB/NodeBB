@@ -73,7 +73,7 @@ module.exports = function (Posts) {
 		if (parseInt(uid, 10) <= 0) {
 			return { upvoted: false, downvoted: false };
 		}
-		const hasVoted = await db.isMemberOfSets(['pid:' + pid + ':upvote', 'pid:' + pid + ':downvote'], uid);
+		const hasVoted = await db.isMemberOfSets([`pid:${pid}:upvote`, `pid:${pid}:downvote`], uid);
 		return { upvoted: hasVoted[0], downvoted: hasVoted[1] };
 	};
 
@@ -82,8 +82,8 @@ module.exports = function (Posts) {
 			const data = pids.map(() => false);
 			return { upvotes: data, downvotes: data };
 		}
-		const upvoteSets = pids.map(pid => 'pid:' + pid + ':upvote');
-		const downvoteSets = pids.map(pid => 'pid:' + pid + ':downvote');
+		const upvoteSets = pids.map(pid => `pid:${pid}:upvote`);
+		const downvoteSets = pids.map(pid => `pid:${pid}:downvote`);
 		const data = await db.isMemberOfSets(upvoteSets.concat(downvoteSets), uid);
 		return {
 			upvotes: data.slice(0, pids.length),
@@ -92,7 +92,7 @@ module.exports = function (Posts) {
 	};
 
 	Posts.getUpvotedUidsByPids = async function (pids) {
-		return await db.getSetsMembers(pids.map(pid => 'pid:' + pid + ':upvote'));
+		return await db.getSetsMembers(pids.map(pid => `pid:${pid}:upvote`));
 	};
 
 	function voteInProgress(pid, uid) {
@@ -144,7 +144,7 @@ module.exports = function (Posts) {
 			current = 'unvote';
 		}
 
-		plugins.hooks.fire('action:post.' + hook, {
+		plugins.hooks.fire(`action:post.${hook}`, {
 			pid: pid,
 			uid: uid,
 			owner: owner,
@@ -164,7 +164,7 @@ module.exports = function (Posts) {
 			user.getUserField(uid, 'reputation'),
 			Posts.getPostField(pid, 'uid'),
 			db.getSortedSetRevRangeByScore(
-				'uid:' + uid + ':downvote', 0, -1, '+inf', Date.now() - oneDay
+				`uid:${uid}:downvote`, 0, -1, '+inf', Date.now() - oneDay
 			),
 		]);
 
@@ -173,14 +173,14 @@ module.exports = function (Posts) {
 		}
 
 		if (meta.config.downvotesPerDay && downvotedPids.length >= meta.config.downvotesPerDay) {
-			throw new Error('[[error:too-many-downvotes-today, ' + meta.config.downvotesPerDay + ']]');
+			throw new Error(`[[error:too-many-downvotes-today, ${meta.config.downvotesPerDay}]]`);
 		}
 
 		if (meta.config.downvotesPerUserPerDay) {
 			const postData = await Posts.getPostsFields(downvotedPids, ['uid']);
 			const targetDownvotes = postData.filter(p => p.uid === targetUid).length;
 			if (targetDownvotes >= meta.config.downvotesPerUserPerDay) {
-				throw new Error('[[error:too-many-downvotes-today-user, ' + meta.config.downvotesPerUserPerDay + ']]');
+				throw new Error(`[[error:too-many-downvotes-today-user, ${meta.config.downvotesPerUserPerDay}]]`);
 			}
 		}
 	}
@@ -193,15 +193,15 @@ module.exports = function (Posts) {
 		const now = Date.now();
 
 		if (type === 'upvote' && !unvote) {
-			await db.sortedSetAdd('uid:' + uid + ':upvote', now, pid);
+			await db.sortedSetAdd(`uid:${uid}:upvote`, now, pid);
 		} else {
-			await db.sortedSetRemove('uid:' + uid + ':upvote', pid);
+			await db.sortedSetRemove(`uid:${uid}:upvote`, pid);
 		}
 
 		if (type === 'upvote' || unvote) {
-			await db.sortedSetRemove('uid:' + uid + ':downvote', pid);
+			await db.sortedSetRemove(`uid:${uid}:downvote`, pid);
 		} else {
-			await db.sortedSetAdd('uid:' + uid + ':downvote', now, pid);
+			await db.sortedSetAdd(`uid:${uid}:downvote`, now, pid);
 		}
 
 		const postData = await Posts.getPostFields(pid, ['pid', 'uid', 'tid']);
@@ -223,15 +223,15 @@ module.exports = function (Posts) {
 	async function adjustPostVotes(postData, uid, type, unvote) {
 		const notType = (type === 'upvote' ? 'downvote' : 'upvote');
 		if (unvote) {
-			await db.setRemove('pid:' + postData.pid + ':' + type, uid);
+			await db.setRemove(`pid:${postData.pid}:${type}`, uid);
 		} else {
-			await db.setAdd('pid:' + postData.pid + ':' + type, uid);
+			await db.setAdd(`pid:${postData.pid}:${type}`, uid);
 		}
-		await db.setRemove('pid:' + postData.pid + ':' + notType, uid);
+		await db.setRemove(`pid:${postData.pid}:${notType}`, uid);
 
 		const [upvotes, downvotes] = await Promise.all([
-			db.setCount('pid:' + postData.pid + ':upvote'),
-			db.setCount('pid:' + postData.pid + ':downvote'),
+			db.setCount(`pid:${postData.pid}:upvote`),
+			db.setCount(`pid:${postData.pid}:downvote`),
 		]);
 		postData.upvotes = upvotes;
 		postData.downvotes = downvotes;
@@ -259,14 +259,14 @@ module.exports = function (Posts) {
 
 		if (postData.uid) {
 			if (postData.votes > 0) {
-				await db.sortedSetAdd('cid:' + topicData.cid + ':uid:' + postData.uid + ':pids:votes', postData.votes, postData.pid);
+				await db.sortedSetAdd(`cid:${topicData.cid}:uid:${postData.uid}:pids:votes`, postData.votes, postData.pid);
 			} else {
-				await db.sortedSetRemove('cid:' + topicData.cid + ':uid:' + postData.uid + ':pids:votes', postData.pid);
+				await db.sortedSetRemove(`cid:${topicData.cid}:uid:${postData.uid}:pids:votes`, postData.pid);
 			}
 		}
 
 		if (parseInt(topicData.mainPid, 10) !== parseInt(postData.pid, 10)) {
-			return await db.sortedSetAdd('tid:' + postData.tid + ':posts:votes', postData.votes, postData.pid);
+			return await db.sortedSetAdd(`tid:${postData.tid}:posts:votes`, postData.votes, postData.pid);
 		}
 		const promises = [
 			topics.setTopicFields(postData.tid, {
@@ -276,7 +276,7 @@ module.exports = function (Posts) {
 			db.sortedSetAdd('topics:votes', postData.votes, postData.tid),
 		];
 		if (!topicData.pinned) {
-			promises.push(db.sortedSetAdd('cid:' + topicData.cid + ':tids:votes', postData.votes, postData.tid));
+			promises.push(db.sortedSetAdd(`cid:${topicData.cid}:tids:votes`, postData.votes, postData.tid));
 		}
 		await Promise.all(promises);
 	}

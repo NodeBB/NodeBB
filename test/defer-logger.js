@@ -32,6 +32,6 @@ after(function () {
 	console.log('\n\n');
 
 	winstonLogged.forEach(function (args) {
-		console.log(args[0] + ' ' + args[1]);
+		console.log(`${args[0]} ${args[1]}`);
 	});
 });

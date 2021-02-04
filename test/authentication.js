@@ -18,7 +18,7 @@ describe('authentication', function () {
 	function loginUser(username, password, callback) {
 		var jar = request.jar();
 		request({
-			url: nconf.get('url') + '/api/config',
+			url: `${nconf.get('url')}/api/config`,
 			json: true,
 			jar: jar,
 		}, function (err, response, body) {
@@ -26,7 +26,7 @@ describe('authentication', function () {
 				return callback(err);
 			}
 
-			request.post(nconf.get('url') + '/login', {
+			request.post(`${nconf.get('url')}/login`, {
 				form: {
 					username: username,
 					password: password,
@@ -46,7 +46,7 @@ describe('authentication', function () {
 	function registerUser(email, username, password, callback) {
 		var jar = request.jar();
 		request({
-			url: nconf.get('url') + '/api/config',
+			url: `${nconf.get('url')}/api/config`,
 			json: true,
 			jar: jar,
 		}, function (err, response, body) {
@@ -54,7 +54,7 @@ describe('authentication', function () {
 				return callback(err);
 			}
 
-			request.post(nconf.get('url') + '/register', {
+			request.post(`${nconf.get('url')}/register`, {
 				form: {
 					email: email,
 					username: username,
@@ -142,13 +142,13 @@ describe('authentication', function () {
 
 	it('should register and login a user', function (done) {
 		request({
-			url: nconf.get('url') + '/api/config',
+			url: `${nconf.get('url')}/api/config`,
 			json: true,
 			jar: jar,
 		}, function (err, response, body) {
 			assert.ifError(err);
 
-			request.post(nconf.get('url') + '/register', {
+			request.post(`${nconf.get('url')}/register`, {
 				form: {
 					email: 'admin@nodebb.org',
 					username: 'admin',
@@ -167,7 +167,7 @@ describe('authentication', function () {
 				assert(body);
 
 				request({
-					url: nconf.get('url') + '/api/self',
+					url: `${nconf.get('url')}/api/self`,
 					json: true,
 					jar: jar,
 				}, function (err, response, body) {
@@ -189,7 +189,7 @@ describe('authentication', function () {
 		helpers.logoutUser(jar, function (err) {
 			assert.ifError(err);
 			request({
-				url: nconf.get('url') + '/api/me',
+				url: `${nconf.get('url')}/api/me`,
 				json: true,
 				jar: jar,
 			}, function (err, res, body) {
@@ -206,7 +206,7 @@ describe('authentication', function () {
 			assert.ifError(err);
 			assert(body);
 			request({
-				url: nconf.get('url') + '/api/self',
+				url: `${nconf.get('url')}/api/self`,
 				json: true,
 				jar: jar,
 			}, function (err, response, body) {
@@ -214,7 +214,7 @@ describe('authentication', function () {
 				assert(body);
 				assert.equal(body.username, 'regular');
 				assert.equal(body.email, 'regular@nodebb.org');
-				db.getObject('uid:' + regularUid + ':sessionUUID:sessionId', function (err, sessions) {
+				db.getObject(`uid:${regularUid}:sessionUUID:sessionId`, function (err, sessions) {
 					assert.ifError(err);
 					assert(sessions);
 					assert(Object.keys(sessions).length > 0);
@@ -226,12 +226,12 @@ describe('authentication', function () {
 
 	it('should revoke all sessions', function (done) {
 		var socketAdmin = require('../src/socket.io/admin');
-		db.sortedSetCard('uid:' + regularUid + ':sessions', function (err, count) {
+		db.sortedSetCard(`uid:${regularUid}:sessions`, function (err, count) {
 			assert.ifError(err);
 			assert(count);
 			socketAdmin.deleteAllSessions({ uid: 1 }, {}, function (err) {
 				assert.ifError(err);
-				db.sortedSetCard('uid:' + regularUid + ':sessions', function (err, count) {
+				db.sortedSetCard(`uid:${regularUid}:sessions`, function (err, count) {
 					assert.ifError(err);
 					assert(!count);
 					done();
@@ -243,7 +243,7 @@ describe('authentication', function () {
 	it('should fail to login if ip address is invalid', function (done) {
 		var jar = request.jar();
 		request({
-			url: nconf.get('url') + '/api/config',
+			url: `${nconf.get('url')}/api/config`,
 			json: true,
 			jar: jar,
 		}, function (err, response, body) {
@@ -251,7 +251,7 @@ describe('authentication', function () {
 				return done(err);
 			}
 
-			request.post(nconf.get('url') + '/login', {
+			request.post(`${nconf.get('url')}/login`, {
 				form: {
 					username: 'regular',
 					password: 'regularpwd',
@@ -433,13 +433,13 @@ describe('authentication', function () {
 	it('should send 200 if not logged in', function (done) {
 		var jar = request.jar();
 		request({
-			url: nconf.get('url') + '/api/config',
+			url: `${nconf.get('url')}/api/config`,
 			json: true,
 			jar: jar,
 		}, function (err, response, body) {
 			assert.ifError(err);
 
-			request.post(nconf.get('url') + '/logout', {
+			request.post(`${nconf.get('url')}/logout`, {
 				form: {},
 				json: true,
 				jar: jar,
@@ -481,7 +481,7 @@ describe('authentication', function () {
 							loginUser(bannedUser.username, bannedUser.pw, function (err, res, body) {
 								assert.ifError(err);
 								assert.equal(res.statusCode, 403);
-								assert.equal(body, '[[error:user-banned-reason-until, ' + utils.toISOString(expiry) + ', No reason given.]]');
+								assert.equal(body, `[[error:user-banned-reason-until, ${utils.toISOString(expiry)}, No reason given.]]`);
 								done();
 							});
 						});
@@ -533,7 +533,7 @@ describe('authentication', function () {
 			function (res, body, jar, next) {
 				assert.equal(res.statusCode, 403);
 				assert.equal(body, '[[error:account-locked]]');
-				db.exists('lockout:' + uid, next);
+				db.exists(`lockout:${uid}`, next);
 			},
 			function (locked, next) {
 				assert(locked);

@@ -67,7 +67,7 @@ module.exports = function (Categories) {
 		}
 		const data = await db.getSortedSetScan({
 			key: 'categories:name',
-			match: '*' + String(query).toLowerCase() + '*',
+			match: `*${String(query).toLowerCase()}*`,
 			limit: hardCap || 500,
 		});
 		return data.map(data => parseInt(data.split(':').pop(), 10));

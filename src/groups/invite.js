@@ -15,10 +15,10 @@ module.exports = function (Groups) {
 		const [notification, owners] = await Promise.all([
 			notifications.create({
 				type: 'group-request-membership',
-				bodyShort: '[[groups:request.notification_title, ' + username + ']]',
-				bodyLong: '[[groups:request.notification_text, ' + username + ', ' + groupName + ']]',
-				nid: 'group:' + groupName + ':uid:' + uid + ':request',
-				path: '/groups/' + slugify(groupName),
+				bodyShort: `[[groups:request.notification_title, ${username}]]`,
+				bodyLong: `[[groups:request.notification_text, ${username}, ${groupName}]]`,
+				nid: `group:${groupName}:uid:${uid}:request`,
+				path: `/groups/${slugify(groupName)}`,
 				from: uid,
 			}),
 			Groups.getOwners(groupName),
@@ -28,14 +28,14 @@ module.exports = function (Groups) {
 	};
 
 	Groups.acceptMembership = async function (groupName, uid) {
-		await db.setsRemove(['group:' + groupName + ':pending', 'group:' + groupName + ':invited'], uid);
+		await db.setsRemove([`group:${groupName}:pending`, `group:${groupName}:invited`], uid);
 		await Groups.join(groupName, uid);
 
 		const notification = await notifications.create({
 			type: 'group-invite',
-			bodyShort: '[[groups:membership.accept.notification_title, ' + groupName + ']]',
-			nid: 'group:' + groupName + ':uid:' + uid + ':invite-accepted',
-			path: '/groups/' + slugify(groupName),
+			bodyShort: `[[groups:membership.accept.notification_title, ${groupName}]]`,
+			nid: `group:${groupName}:uid:${uid}:invite-accepted`,
+			path: `/groups/${slugify(groupName)}`,
 		});
 		await notifications.push(notification, [uid]);
 	};
@@ -45,7 +45,7 @@ module.exports = function (Groups) {
 			groupNames = [groupNames];
 		}
 		const sets = [];
-		groupNames.forEach(groupName =>	sets.push('group:' + groupName + ':pending', 'group:' + groupName + ':invited'));
+		groupNames.forEach(groupName =>	sets.push(`group:${groupName}:pending`, `group:${groupName}:invited`));
 		await db.setsRemove(sets, uid);
 	};
 
@@ -55,10 +55,10 @@ module.exports = function (Groups) {
 
 		const notificationData = await Promise.all(uids.map(uid => notifications.create({
 			type: 'group-invite',
-			bodyShort: '[[groups:invited.notification_title, ' + groupName + ']]',
+			bodyShort: `[[groups:invited.notification_title, ${groupName}]]`,
 			bodyLong: '',
-			nid: 'group:' + groupName + ':uid:' + uid + ':invite',
-			path: '/groups/' + slugify(groupName),
+			nid: `group:${groupName}:uid:${uid}:invite`,
+			path: `/groups/${slugify(groupName)}`,
 		})));
 
 		await Promise.all(uids.map((uid, index) => notifications.push(notificationData[index], uid)));
@@ -80,7 +80,7 @@ module.exports = function (Groups) {
 
 		uids = uids.filter((uid, i) => !isMember[i] && ((type === 'invite' && !isInvited[i]) || (type === 'request' && !isPending[i])));
 
-		const set = type === 'invite' ? 'group:' + groupName + ':invited' : 'group:' + groupName + ':pending';
+		const set = type === 'invite' ? `group:${groupName}:invited` : `group:${groupName}:pending`;
 		await db.setAdd(set, uids);
 		const hookName = type === 'invite' ? 'action:group.inviteMember' : 'action:group.requestMembership';
 		plugins.hooks.fire(hookName, {
@@ -91,11 +91,11 @@ module.exports = function (Groups) {
 	}
 
 	Groups.isInvited = async function (uids, groupName) {
-		return await checkInvitePending(uids, 'group:' + groupName + ':invited');
+		return await checkInvitePending(uids, `group:${groupName}:invited`);
 	};
 
 	Groups.isPending = async function (uids, groupName) {
-		return await checkInvitePending(uids, 'group:' + groupName + ':pending');
+		return await checkInvitePending(uids, `group:${groupName}:pending`);
 	};
 
 	async function checkInvitePending(uids, set) {
@@ -111,6 +111,6 @@ module.exports = function (Groups) {
 		if (!groupName) {
 			return [];
 		}
-		return await db.getSetMembers('group:' + groupName + ':pending');
+		return await db.getSetMembers(`group:${groupName}:pending`);
 	};
 };

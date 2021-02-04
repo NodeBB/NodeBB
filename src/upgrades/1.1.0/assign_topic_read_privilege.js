@@ -30,9 +30,9 @@ module.exports = {
 						function (next) {
 							async.eachSeries(groups, function (group, next) {
 								if (group.privileges['groups:read']) {
-									return groupsAPI.join('cid:' + cid + ':privileges:groups:topics:read', group.name, function (err) {
+									return groupsAPI.join(`cid:${cid}:privileges:groups:topics:read`, group.name, function (err) {
 										if (!err) {
-											winston.verbose('cid:' + cid + ':privileges:groups:topics:read granted to gid: ' + group.name);
+											winston.verbose(`cid:${cid}:privileges:groups:topics:read granted to gid: ${group.name}`);
 										}
 
 										return next(err);
@@ -45,9 +45,9 @@ module.exports = {
 						function (next) {
 							async.eachSeries(users, function (user, next) {
 								if (user.privileges.read) {
-									return groupsAPI.join('cid:' + cid + ':privileges:topics:read', user.uid, function (err) {
+									return groupsAPI.join(`cid:${cid}:privileges:topics:read`, user.uid, function (err) {
 										if (!err) {
-											winston.verbose('cid:' + cid + ':privileges:topics:read granted to uid: ' + user.uid);
+											winston.verbose(`cid:${cid}:privileges:topics:read granted to uid: ${user.uid}`);
 										}
 
 										return next(err);
@@ -59,7 +59,7 @@ module.exports = {
 						},
 					], function (err) {
 						if (!err) {
-							winston.verbose('-- cid ' + cid + ' upgraded');
+							winston.verbose(`-- cid ${cid} upgraded`);
 						}
 
 						next(err);

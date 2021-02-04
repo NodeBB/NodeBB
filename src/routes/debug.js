@@ -27,9 +27,9 @@ module.exports = function (app) {
 		});
 		await handle.close();
 
-		html = html.replace('apiUrl', nconf.get('relative_path') + '/assets/openapi/' + type + '.yaml');
+		html = html.replace('apiUrl', `${nconf.get('relative_path')}/assets/openapi/${type}.yaml`);
 		res.status(200).type('text/html').send(html);
 	});
 
-	app.use(nconf.get('relative_path') + '/debug', router);
+	app.use(`${nconf.get('relative_path')}/debug`, router);
 };

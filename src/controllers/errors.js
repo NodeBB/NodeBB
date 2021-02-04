@@ -9,7 +9,7 @@ var middleware = require('../middleware');
 exports.handleURIErrors = async function handleURIErrors(err, req, res, next) {
 	// Handle cases where malformed URIs are passed in
 	if (err instanceof URIError) {
-		const cleanPath = req.path.replace(new RegExp('^' + nconf.get('relative_path')), '');
+		const cleanPath = req.path.replace(new RegExp(`^${nconf.get('relative_path')}`), '');
 		var tidMatch = cleanPath.match(/^\/topic\/(\d+)\//);
 		var cidMatch = cleanPath.match(/^\/category\/(\d+)\//);
 
@@ -18,8 +18,8 @@ exports.handleURIErrors = async function handleURIErrors(err, req, res, next) {
 		} else if (cidMatch) {
 			res.redirect(nconf.get('relative_path') + cidMatch[0]);
 		} else {
-			winston.warn('[controller] Bad request: ' + req.path);
-			if (req.path.startsWith(nconf.get('relative_path') + '/api')) {
+			winston.warn(`[controller] Bad request: ${req.path}`);
+			if (req.path.startsWith(`${nconf.get('relative_path')}/api`)) {
 				res.status(400).json({
 					error: '[[global:400.title]]',
 				});
@@ -38,7 +38,7 @@ exports.handleURIErrors = async function handleURIErrors(err, req, res, next) {
 exports.handleErrors = function handleErrors(err, req, res, next) { // eslint-disable-line no-unused-vars
 	var cases = {
 		EBADCSRFTOKEN: function () {
-			winston.error(req.path + '\n' + err.message);
+			winston.error(`${req.path}\n${err.message}`);
 			res.sendStatus(403);
 		},
 		'blacklisted-ip': function () {
@@ -52,7 +52,7 @@ exports.handleErrors = function handleErrors(err, req, res, next) { // eslint-di
 			return res.locals.isAPI ? res.set('X-Redirect', err.path).status(200).json(err.path) : res.redirect(nconf.get('relative_path') + err.path);
 		}
 
-		winston.error(req.path + '\n' + err.stack);
+		winston.error(`${req.path}\n${err.stack}`);
 
 		res.status(status || 500);
 
@@ -70,7 +70,7 @@ exports.handleErrors = function handleErrors(err, req, res, next) { // eslint-di
 	}, function (_err, data) {
 		if (_err) {
 			// Assume defaults
-			winston.warn('[errors/handle] Unable to retrieve plugin handlers for errors: ' + _err.message);
+			winston.warn(`[errors/handle] Unable to retrieve plugin handlers for errors: ${_err.message}`);
 			data.cases = cases;
 		}
 

@@ -42,7 +42,7 @@ function getGroupPrivileges(cid, callback) {
 	var tasks = {};
 
 	['groups:find', 'groups:read', 'groups:topics:read'].forEach(function (privilege) {
-		tasks[privilege] = async.apply(groups.isMember, 'guests', 'cid:' + cid + ':privileges:' + privilege);
+		tasks[privilege] = async.apply(groups.isMember, 'guests', `cid:${cid}:privileges:${privilege}`);
 	});
 
 	async.parallel(tasks, callback);

@@ -33,7 +33,7 @@ module.exports = {
 					return parseInt(a.deleted, 10) === 1 ? pids[idx] : null;
 				}).filter(Boolean);
 
-				winston.verbose('[2016/04/29] ' + toDismiss.length + ' dismissable flags found');
+				winston.verbose(`[2016/04/29] ${toDismiss.length} dismissable flags found`);
 				async.each(toDismiss, dismissFlag, next);
 			},
 		], callback);
@@ -45,7 +45,7 @@ module.exports = {
 function dismissFlag(pid, callback) {
 	async.waterfall([
 		function (next) {
-			db.getObjectFields('post:' + pid, ['pid', 'uid', 'flags'], next);
+			db.getObjectFields(`post:${pid}`, ['pid', 'uid', 'flags'], next);
 		},
 		function (postData, next) {
 			if (!postData.pid) {
@@ -57,7 +57,7 @@ function dismissFlag(pid, callback) {
 						if (parseInt(postData.flags, 10) > 0) {
 							async.parallel([
 								async.apply(db.sortedSetIncrBy, 'users:flags', -postData.flags, postData.uid),
-								async.apply(db.incrObjectFieldBy, 'user:' + postData.uid, 'flags', -postData.flags),
+								async.apply(db.incrObjectFieldBy, `user:${postData.uid}`, 'flags', -postData.flags),
 							], next);
 						} else {
 							next();
@@ -70,32 +70,32 @@ function dismissFlag(pid, callback) {
 					db.sortedSetsRemove([
 						'posts:flagged',
 						'posts:flags:count',
-						'uid:' + postData.uid + ':flag:pids',
+						`uid:${postData.uid}:flag:pids`,
 					], pid, next);
 				},
 				function (next) {
 					async.series([
 						function (next) {
-							db.getSortedSetRange('pid:' + pid + ':flag:uids', 0, -1, function (err, uids) {
+							db.getSortedSetRange(`pid:${pid}:flag:uids`, 0, -1, function (err, uids) {
 								if (err) {
 									return next(err);
 								}
 
 								async.each(uids, function (uid, next) {
-									var nid = 'post_flag:' + pid + ':uid:' + uid;
+									var nid = `post_flag:${pid}:uid:${uid}`;
 									async.parallel([
-										async.apply(db.delete, 'notifications:' + nid),
-										async.apply(db.sortedSetRemove, 'notifications', 'post_flag:' + pid + ':uid:' + uid),
+										async.apply(db.delete, `notifications:${nid}`),
+										async.apply(db.sortedSetRemove, 'notifications', `post_flag:${pid}:uid:${uid}`),
 									], next);
 								}, next);
 							});
 						},
-						async.apply(db.delete, 'pid:' + pid + ':flag:uids'),
+						async.apply(db.delete, `pid:${pid}:flag:uids`),
 					], next);
 				},
-				async.apply(db.deleteObjectField, 'post:' + pid, 'flags'),
-				async.apply(db.delete, 'pid:' + pid + ':flag:uid:reason'),
-				async.apply(db.deleteObjectFields, 'post:' + pid, ['flag:state', 'flag:assignee', 'flag:notes', 'flag:history']),
+				async.apply(db.deleteObjectField, `post:${pid}`, 'flags'),
+				async.apply(db.delete, `pid:${pid}:flag:uid:reason`),
+				async.apply(db.deleteObjectFields, `post:${pid}`, ['flag:state', 'flag:assignee', 'flag:notes', 'flag:history']),
 			], next);
 		},
 		function (results, next) {

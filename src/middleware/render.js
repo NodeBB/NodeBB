@@ -33,7 +33,7 @@ module.exports = function (middleware) {
 			options.url = (req.baseUrl + req.path.replace(/^\/api/, ''));
 			options.bodyClass = buildBodyClass(req, res, options);
 
-			const buildResult = await plugins.hooks.fire('filter:' + template + '.build', { req: req, res: res, templateData: options });
+			const buildResult = await plugins.hooks.fire(`filter:${template}.build`, { req: req, res: res, templateData: options });
 			const templateToRender = buildResult.templateData.templateToRender || template;
 
 			const renderResult = await plugins.hooks.fire('filter:middleware.render', { req: req, res: res, templateData: buildResult.templateData });
@@ -42,7 +42,7 @@ module.exports = function (middleware) {
 				tags: await meta.tags.parse(req, renderResult, res.locals.metaTags, res.locals.linkTags),
 			};
 			options.widgets = await widgets.render(req.uid, {
-				template: template + '.tpl',
+				template: `${template}.tpl`,
 				url: options.url,
 				templateData: options,
 				req: req,
@@ -65,14 +65,14 @@ module.exports = function (middleware) {
 				footer: renderHeaderFooter('renderFooter', req, res, options),
 			});
 
-			const str = results.header +
+			const str = `${results.header +
 				(res.locals.postHeader || '') +
-				results.content +
-				'<script id="ajaxify-data" type="application/json">' +
-					JSON.stringify(options).replace(/<\//g, '<\\/') +
-				'</script>' +
-				(res.locals.preFooter || '') +
-				results.footer;
+				results.content
+			}<script id="ajaxify-data" type="application/json">${
+				JSON.stringify(options).replace(/<\//g, '<\\/')
+			}</script>${
+				res.locals.preFooter || ''
+			}${results.footer}`;
 
 			if (typeof fn !== 'function') {
 				self.send(str);
@@ -129,22 +129,22 @@ module.exports = function (middleware) {
 				p = '';
 			}
 			p = validator.escape(String(p));
-			parts[index] = index ? parts[0] + '-' + p : 'page-' + (p || 'home');
+			parts[index] = index ? `${parts[0]}-${p}` : `page-${p || 'home'}`;
 		});
 
 		if (templateData.template.topic) {
-			parts.push('page-topic-category-' + templateData.category.cid);
-			parts.push('page-topic-category-' + slugify(templateData.category.name));
+			parts.push(`page-topic-category-${templateData.category.cid}`);
+			parts.push(`page-topic-category-${slugify(templateData.category.name)}`);
 		}
 		if (templateData.breadcrumbs) {
 			templateData.breadcrumbs.forEach(function (crumb) {
 				if (crumb.hasOwnProperty('cid')) {
-					parts.push('parent-category-' + crumb.cid);
+					parts.push(`parent-category-${crumb.cid}`);
 				}
 			});
 		}
 
-		parts.push('page-status-' + res.statusCode);
+		parts.push(`page-status-${res.statusCode}`);
 		return parts.join(' ');
 	}
 };

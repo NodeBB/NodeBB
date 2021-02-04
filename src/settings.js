@@ -78,7 +78,7 @@ function Settings(hash, version, defCfg, callback, forceUpdate, reset) {
 			this.checkStructure(callback, forceUpdate);
 		});
 	}
-	pubsub.on('action:settings.set.' + hash, function (data) {
+	pubsub.on(`action:settings.set.${hash}`, function (data) {
 		try {
 			self.cfg._ = JSON.parse(data._);
 		} catch (err) {}

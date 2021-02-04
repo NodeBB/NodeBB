@@ -183,7 +183,7 @@ async function getCategories(cids, data) {
 		return null;
 	}
 
-	return await db.getObjectsFields(cids.map(cid => 'category:' + cid), categoryFields);
+	return await db.getObjectsFields(cids.map(cid => `category:${cid}`), categoryFields);
 }
 
 async function getTags(tids, data) {

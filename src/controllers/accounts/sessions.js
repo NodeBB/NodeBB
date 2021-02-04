@@ -14,7 +14,7 @@ sessionController.get = async function (req, res, next) {
 
 	userData.sessions = await user.auth.getSessions(userData.uid, req.sessionID);
 	userData.title = '[[pages:account/sessions]]';
-	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[pages:account/sessions]]' }]);
+	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: `/user/${userData.userslug}` }, { text: '[[pages:account/sessions]]' }]);
 
 	res.render('account/sessions', userData);
 };

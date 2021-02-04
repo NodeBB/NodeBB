@@ -158,19 +158,19 @@ module.exports = function (Topics) {
 			Topics.events.log(tid, { type: pin ? 'pin' : 'unpin', uid }),
 		];
 		if (pin) {
-			promises.push(db.sortedSetAdd('cid:' + topicData.cid + ':tids:pinned', Date.now(), tid));
+			promises.push(db.sortedSetAdd(`cid:${topicData.cid}:tids:pinned`, Date.now(), tid));
 			promises.push(db.sortedSetsRemove([
-				'cid:' + topicData.cid + ':tids',
-				'cid:' + topicData.cid + ':tids:posts',
-				'cid:' + topicData.cid + ':tids:votes',
+				`cid:${topicData.cid}:tids`,
+				`cid:${topicData.cid}:tids:posts`,
+				`cid:${topicData.cid}:tids:votes`,
 			], tid));
 		} else {
-			promises.push(db.sortedSetRemove('cid:' + topicData.cid + ':tids:pinned', tid));
+			promises.push(db.sortedSetRemove(`cid:${topicData.cid}:tids:pinned`, tid));
 			promises.push(Topics.deleteTopicField(tid, 'pinExpiry'));
 			promises.push(db.sortedSetAddBulk([
-				['cid:' + topicData.cid + ':tids', topicData.lastposttime, tid],
-				['cid:' + topicData.cid + ':tids:posts', topicData.postcount, tid],
-				['cid:' + topicData.cid + ':tids:votes', parseInt(topicData.votes, 10) || 0, tid],
+				[`cid:${topicData.cid}:tids`, topicData.lastposttime, tid],
+				[`cid:${topicData.cid}:tids:posts`, topicData.postcount, tid],
+				[`cid:${topicData.cid}:tids:votes`, parseInt(topicData.votes, 10) || 0, tid],
 			]));
 			topicData.pinExpiry = undefined;
 			topicData.pinExpiryISO = undefined;
@@ -203,9 +203,9 @@ module.exports = function (Topics) {
 			throw new Error('[[error:no-privileges]]');
 		}
 
-		const isPinned = await db.isSortedSetMembers('cid:' + cid + ':tids:pinned', tids);
+		const isPinned = await db.isSortedSetMembers(`cid:${cid}:tids:pinned`, tids);
 		data = data.filter((topicData, index) => isPinned[index]);
-		const bulk = data.map(topicData => ['cid:' + cid + ':tids:pinned', topicData.order, topicData.tid]);
+		const bulk = data.map(topicData => [`cid:${cid}:tids:pinned`, topicData.order, topicData.tid]);
 		await db.sortedSetAddBulk(bulk);
 	};
 
@@ -220,30 +220,30 @@ module.exports = function (Topics) {
 		}
 		const tags = await Topics.getTopicTags(tid);
 		await db.sortedSetsRemove([
-			'cid:' + topicData.cid + ':tids',
-			'cid:' + topicData.cid + ':tids:pinned',
-			'cid:' + topicData.cid + ':tids:posts',
-			'cid:' + topicData.cid + ':tids:votes',
-			'cid:' + topicData.cid + ':tids:lastposttime',
-			'cid:' + topicData.cid + ':recent_tids',
-			'cid:' + topicData.cid + ':uid:' + topicData.uid + ':tids',
-			...tags.map(tag => 'cid:' + topicData.cid + ':tag:' + tag + ':topics'),
+			`cid:${topicData.cid}:tids`,
+			`cid:${topicData.cid}:tids:pinned`,
+			`cid:${topicData.cid}:tids:posts`,
+			`cid:${topicData.cid}:tids:votes`,
+			`cid:${topicData.cid}:tids:lastposttime`,
+			`cid:${topicData.cid}:recent_tids`,
+			`cid:${topicData.cid}:uid:${topicData.uid}:tids`,
+			...tags.map(tag => `cid:${topicData.cid}:tag:${tag}:topics`),
 		], tid);
 
 		topicData.postcount = topicData.postcount || 0;
 		const votes = topicData.upvotes - topicData.downvotes;
 
 		const bulk = [
-			['cid:' + cid + ':tids:lastposttime', topicData.lastposttime, tid],
-			['cid:' + cid + ':uid:' + topicData.uid + ':tids', topicData.timestamp, tid],
-			...tags.map(tag => ['cid:' + cid + ':tag:' + tag + ':topics', topicData.timestamp, tid]),
+			[`cid:${cid}:tids:lastposttime`, topicData.lastposttime, tid],
+			[`cid:${cid}:uid:${topicData.uid}:tids`, topicData.timestamp, tid],
+			...tags.map(tag => [`cid:${cid}:tag:${tag}:topics`, topicData.timestamp, tid]),
 		];
 		if (topicData.pinned) {
-			bulk.push(['cid:' + cid + ':tids:pinned', Date.now(), tid]);
+			bulk.push([`cid:${cid}:tids:pinned`, Date.now(), tid]);
 		} else {
-			bulk.push(['cid:' + cid + ':tids', topicData.lastposttime, tid]);
-			bulk.push(['cid:' + cid + ':tids:posts', topicData.postcount, tid]);
-			bulk.push(['cid:' + cid + ':tids:votes', votes, tid]);
+			bulk.push([`cid:${cid}:tids`, topicData.lastposttime, tid]);
+			bulk.push([`cid:${cid}:tids:posts`, topicData.postcount, tid]);
+			bulk.push([`cid:${cid}:tids:votes`, votes, tid]);
 		}
 		await db.sortedSetAddBulk(bulk);
 

@@ -10,7 +10,7 @@ module.exports = function (User) {
 		if (!(parseInt(uid, 10) > 0)) {
 			return;
 		}
-		const userData = await db.getObjectFields('user:' + uid, ['status', 'lastonline']);
+		const userData = await db.getObjectFields(`user:${uid}`, ['status', 'lastonline']);
 		const now = Date.now();
 		if (userData.status === 'offline' || now - parseInt(userData.lastonline, 10) < 300000) {
 			return;

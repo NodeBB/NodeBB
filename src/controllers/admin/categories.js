@@ -109,7 +109,7 @@ async function buildBreadcrumbs(req, categoryData) {
 	const breadcrumbs = [
 		{
 			text: categoryData.name,
-			url: nconf.get('relative_path') + '/admin/manage/categories?cid=' + categoryData.cid,
+			url: `${nconf.get('relative_path')}/admin/manage/categories?cid=${categoryData.cid}`,
 			cid: categoryData.cid,
 		},
 	];
@@ -117,7 +117,7 @@ async function buildBreadcrumbs(req, categoryData) {
 	const crumbs = allCrumbs.filter(c => c.cid);
 
 	crumbs.forEach(function (c) {
-		c.url = '/admin/manage/categories?cid=' + c.cid;
+		c.url = `/admin/manage/categories?cid=${c.cid}`;
 	});
 	crumbs.unshift({
 		text: '[[admin/manage/categories:top-level]]',

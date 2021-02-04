@@ -123,7 +123,7 @@ Thumbs.delete = async function (id, relativePath) {
 			const topics = require('.');
 			const numThumbs = await db.sortedSetCard(set);
 			if (!numThumbs) {
-				await db.deleteObjectField('topic:' + id, 'numThumbs');
+				await db.deleteObjectField(`topic:${id}`, 'numThumbs');
 			}
 			const mainPid = (await topics.getMainPids([id]))[0];
 			posts.uploads.dissociate(mainPid, relativePath.replace('/files/', ''));

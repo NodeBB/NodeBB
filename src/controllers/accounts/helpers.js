@@ -93,7 +93,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID) {
 	userData.sso = results.sso.associations;
 	userData.banned = Boolean(userData.banned);
 	userData.website = validator.escape(String(userData.website || ''));
-	userData.websiteLink = !userData.website.startsWith('http') ? 'http://' + userData.website : userData.website;
+	userData.websiteLink = !userData.website.startsWith('http') ? `http://${userData.website}` : userData.website;
 	userData.websiteName = userData.website.replace(validator.escape('http://'), '').replace(validator.escape('https://'), '');
 
 	userData.fullname = validator.escape(String(userData.fullname || ''));
@@ -143,17 +143,17 @@ async function getCounts(userData, callerUID) {
 	const uid = userData.uid;
 	const cids = await categories.getCidsByPrivilege('categories:cid', callerUID, 'topics:read');
 	const promises = {
-		posts: db.sortedSetsCardSum(cids.map(c => 'cid:' + c + ':uid:' + uid + ':pids')),
-		best: db.sortedSetsCardSum(cids.map(c => 'cid:' + c + ':uid:' + uid + ':pids:votes')),
-		topics: db.sortedSetsCardSum(cids.map(c => 'cid:' + c + ':uid:' + uid + ':tids')),
+		posts: db.sortedSetsCardSum(cids.map(c => `cid:${c}:uid:${uid}:pids`)),
+		best: db.sortedSetsCardSum(cids.map(c => `cid:${c}:uid:${uid}:pids:votes`)),
+		topics: db.sortedSetsCardSum(cids.map(c => `cid:${c}:uid:${uid}:tids`)),
 	};
 	if (userData.isAdmin || userData.isSelf) {
-		promises.ignored = db.sortedSetCard('uid:' + uid + ':ignored_tids');
-		promises.watched = db.sortedSetCard('uid:' + uid + ':followed_tids');
-		promises.upvoted = db.sortedSetCard('uid:' + uid + ':upvote');
-		promises.downvoted = db.sortedSetCard('uid:' + uid + ':downvote');
-		promises.bookmarks = db.sortedSetCard('uid:' + uid + ':bookmarks');
-		promises.uploaded = db.sortedSetCard('uid:' + uid + ':uploads');
+		promises.ignored = db.sortedSetCard(`uid:${uid}:ignored_tids`);
+		promises.watched = db.sortedSetCard(`uid:${uid}:followed_tids`);
+		promises.upvoted = db.sortedSetCard(`uid:${uid}:upvote`);
+		promises.downvoted = db.sortedSetCard(`uid:${uid}:downvote`);
+		promises.bookmarks = db.sortedSetCard(`uid:${uid}:bookmarks`);
+		promises.uploaded = db.sortedSetCard(`uid:${uid}:uploads`);
 		promises.categoriesWatched = user.getWatchedCategories(uid);
 		promises.blocks = user.getUserField(userData.uid, 'blocksCount');
 	}

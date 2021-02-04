@@ -12,8 +12,8 @@ module.exports = {
 		var batch = require('../../batch');
 		batch.processSortedSet('users:joindate', function (ids, next) {
 			async.each(ids, function (id, next) {
-				winston.verbose('processing uid ' + id);
-				db.sortedSetsRemoveRangeByScore(['uid:' + id + ':posts:votes'], '-inf', 0, next);
+				winston.verbose(`processing uid ${id}`);
+				db.sortedSetsRemoveRangeByScore([`uid:${id}:posts:votes`], '-inf', 0, next);
 			}, next);
 		}, {}, callback);
 	},

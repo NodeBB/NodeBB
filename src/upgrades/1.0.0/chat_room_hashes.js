@@ -16,7 +16,7 @@ module.exports = {
 			async.whilst(function (next) {
 				next(null, currentChatRoomId <= nextChatRoomId);
 			}, function (next) {
-				db.getSortedSetRange('chat:room:' + currentChatRoomId + ':uids', 0, 0, function (err, uids) {
+				db.getSortedSetRange(`chat:room:${currentChatRoomId}:uids`, 0, 0, function (err, uids) {
 					if (err) {
 						return next(err);
 					}
@@ -25,7 +25,7 @@ module.exports = {
 						return next();
 					}
 
-					db.setObject('chat:room:' + currentChatRoomId, { owner: uids[0], roomId: currentChatRoomId }, function (err) {
+					db.setObject(`chat:room:${currentChatRoomId}`, { owner: uids[0], roomId: currentChatRoomId }, function (err) {
 						if (err) {
 							return next(err);
 						}

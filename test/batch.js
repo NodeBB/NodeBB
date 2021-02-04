@@ -13,7 +13,7 @@ describe('batch', function () {
 	before(function (done) {
 		for (let i = 0; i < 100; i++) {
 			scores.push(i);
-			values.push('val' + i);
+			values.push(`val${i}`);
 		}
 		db.sortedSetAdd('processMe', scores, values, done);
 	});

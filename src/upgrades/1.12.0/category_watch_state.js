@@ -17,12 +17,12 @@ module.exports = {
 				db.getSortedSetRange('categories:cid', 0, -1, next);
 			},
 			function (cids, next) {
-				keys = cids.map(cid => 'cid:' + cid + ':ignorers');
+				keys = cids.map(cid => `cid:${cid}:ignorers`);
 				batch.processSortedSet('users:joindate', function (uids, next) {
 					progress.incr(uids.length);
 
 					async.eachSeries(cids, function (cid, next) {
-						db.isSortedSetMembers('cid:' + cid + ':ignorers', uids, function (err, isMembers) {
+						db.isSortedSetMembers(`cid:${cid}:ignorers`, uids, function (err, isMembers) {
 							if (err) {
 								return next(err);
 							}
@@ -31,7 +31,7 @@ module.exports = {
 								return setImmediate(next);
 							}
 							const states = uids.map(() => categories.watchStates.ignoring);
-							db.sortedSetAdd('cid:' + cid + ':uid:watch:state', states, uids, next);
+							db.sortedSetAdd(`cid:${cid}:uid:watch:state`, states, uids, next);
 						});
 					}, next);
 				}, {
