@@ -9,7 +9,12 @@ define('categorySearch', function () {
 		options.privilege = options.privilege || 'topics:read';
 		options.states = options.states || ['watching', 'notwatching', 'ignoring'];
 
-		var localCategories = Array.isArray(ajaxify.data.categories) ? ajaxify.data.categories.map(c => ({ ...c })) : [];
+		var localCategories = [];
+		if (Array.isArray(options.localCategories)) {
+			localCategories = options.localCategories;
+		} else if (Array.isArray(ajaxify.data.categories)) {
+			localCategories = ajaxify.data.categories.map(c => ({ ...c }));
+		}
 
 		var searchEl = el.find('[component="category-selector-search"]');
 		if (!searchEl.length) {

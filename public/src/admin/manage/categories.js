@@ -99,60 +99,55 @@ define('admin/manage/categories', [
 	}
 
 	Categories.throwCreateModal = function () {
-		socket.emit('categories.getSelectCategories', {}, function (err, categories) {
-			if (err) {
-				return app.alertError(err.message);
+		Benchpress.render('admin/partials/categories/create', {}).then(function (html) {
+			var modal = bootbox.dialog({
+				title: '[[admin/manage/categories:alert.create]]',
+				message: html,
+				buttons: {
+					save: {
+						label: '[[global:save]]',
+						className: 'btn-primary',
+						callback: submit,
+					},
+				},
+			});
+			var options = {
+				localCategories: [
+					{
+						cid: 0,
+						name: '[[admin/manage/categories:parent-category-none]]',
+						icon: 'fa-none',
+					},
+				],
+			};
+			var parentSelector = categorySelector.init(modal.find('#parentCidGroup [component="category-selector"]'), options);
+			var cloneFromSelector = categorySelector.init(modal.find('#cloneFromCidGroup [component="category-selector"]'), options);
+			function submit() {
+				var formData = modal.find('form').serializeObject();
+				formData.description = '';
+				formData.icon = 'fa-comments';
+				formData.uid = app.user.uid;
+				formData.parentCid = parentSelector.getSelectedCid();
+				formData.cloneFromCid = cloneFromSelector.getSelectedCid();
+
+				Categories.create(formData);
+				modal.modal('hide');
+				return false;
 			}
 
-			categories.unshift({
-				cid: 0,
-				name: '[[admin/manage/categories:parent-category-none]]',
-				icon: 'fa-none',
-			});
-			Benchpress.render('admin/partials/categories/create', {
-				categories: categories,
-			}).then(function (html) {
-				var modal = bootbox.dialog({
-					title: '[[admin/manage/categories:alert.create]]',
-					message: html,
-					buttons: {
-						save: {
-							label: '[[global:save]]',
-							className: 'btn-primary',
-							callback: submit,
-						},
-					},
-				});
+			$('#cloneChildren').on('change', function () {
+				var check = $(this);
+				var parentSelect = modal.find('#parentCidGroup [component="category-selector"] .dropdown-toggle');
 
-				var parentSelector = categorySelector.init(modal.find('#parentCidGroup [component="category-selector"]'));
-				var cloneFromSelector = categorySelector.init(modal.find('#cloneFromCidGroup [component="category-selector"]'));
-				function submit() {
-					var formData = modal.find('form').serializeObject();
-					formData.description = '';
-					formData.icon = 'fa-comments';
-					formData.uid = app.user.uid;
-					formData.parentCid = parentSelector.getSelectedCid();
-					formData.cloneFromCid = cloneFromSelector.getSelectedCid();
-
-					Categories.create(formData);
-					modal.modal('hide');
-					return false;
+				if (check.prop('checked')) {
+					parentSelect.attr('disabled', 'disabled');
+					parentSelector.selectCategory(0);
+				} else {
+					parentSelect.removeAttr('disabled');
 				}
-
-				$('#cloneChildren').on('change', function () {
-					var check = $(this);
-					var parentSelect = modal.find('#parentCidGroup [component="category-selector"] .dropdown-toggle');
-
-					if (check.prop('checked')) {
-						parentSelect.attr('disabled', 'disabled');
-						parentSelector.selectCategory(0);
-					} else {
-						parentSelect.removeAttr('disabled');
-					}
-				});
-
-				modal.find('form').on('submit', submit);
 			});
+
+			modal.find('form').on('submit', submit);
 		});
 	};
 

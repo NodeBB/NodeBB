@@ -4,6 +4,7 @@ define('categorySelector', ['categorySearch'], function (categorySearch) {
 	var categorySelector = {};
 
 	categorySelector.init = function (el, options) {
+		options = options || {};
 		var onSelect = options.onSelect || function () {};
 
 		options.states = options.states || ['watching', 'notwatching', 'ignoring'];
@@ -14,6 +15,7 @@ define('categorySelector', ['categorySearch'], function (categorySearch) {
 			template: 'partials/category-selector',
 			privilege: options.privilege,
 			states: options.states,
+			localCategories: options.localCategories,
 		});
 
 		var selector = {
