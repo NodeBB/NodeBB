@@ -219,7 +219,8 @@ module.exports = function (User) {
 			}
 
 			if (user.hasOwnProperty('banned') || user.hasOwnProperty('banned:expire')) {
-				const result = User.bans.calcExpiredFromUserData(user);
+				const result = await User.bans.calcExpiredFromUserData(user);
+				user.banned = result.banned;
 				const unban = result.banned && result.banExpired;
 				user.banned_until = unban ? 0 : user['banned:expire'];
 				user.banned_until_readable = user.banned_until && !unban ? utils.toISOString(user.banned_until) : 'Not Banned';

@@ -47,6 +47,8 @@
 	"privileges.no-users": "В тази категория няма правомощия за отделни потребители.",
 	"privileges.section-group": "Група",
 	"privileges.group-private": "Тази група е частна",
+  	"privileges.inheritance-exception": "Тази група не наследява правомощията от групата на регистрираните потребители",
+  	"privileges.banned-user-inheritance": "Блокираните потребители наследяват правомощията от групата на блокираните потребители",
 	"privileges.search-group": "Добавяне на група",
 	"privileges.copy-to-children": "Копиране в наследниците",
 	"privileges.copy-from-category": "Копиране от категория",

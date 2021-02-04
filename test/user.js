@@ -80,7 +80,7 @@ describe('User', function () {
 			assert.strictEqual(data.postcount, 0);
 			assert.strictEqual(data.topiccount, 0);
 			assert.strictEqual(data.lastposttime, 0);
-			assert.strictEqual(data.banned, 0);
+			assert.strictEqual(data.banned, false);
 		});
 
 		it('should have a valid email, if using an email', function (done) {
@@ -441,15 +441,18 @@ describe('User', function () {
 		it('should filter users', function (done) {
 			User.create({ username: 'ipsearch_filter' }, function (err, uid) {
 				assert.ifError(err);
-				User.setUserFields(uid, { banned: 1, flags: 10 }, function (err) {
+				User.bans.ban(uid, 0, '', function (err) {
 					assert.ifError(err);
-					socketUser.search({ uid: adminUid }, {
-						query: 'ipsearch',
-						filters: ['online', 'banned', 'flagged'],
-					}, function (err, data) {
+					User.setUserFields(uid, { flags: 10 }, function (err) {
 						assert.ifError(err);
-						assert.equal(data.users[0].username, 'ipsearch_filter');
-						done();
+						socketUser.search({ uid: adminUid }, {
+							query: 'ipsearch',
+							filters: ['online', 'banned', 'flagged'],
+						}, function (err, data) {
+							assert.ifError(err);
+							assert.equal(data.users[0].username, 'ipsearch_filter');
+							done();
+						});
 					});
 				});
 			});
@@ -1303,6 +1306,16 @@ describe('User', function () {
 	});
 
 	describe('user info', function () {
+		let testUserUid;
+		let verifiedTestUserUid;
+
+		before(async function () {
+			// Might be the first user thus a verified one if this test part is ran alone
+			verifiedTestUserUid = await User.create({ username: 'bannedUser', password: '123456', email: 'banneduser@example.com' });
+			await User.setUserField(verifiedTestUserUid, 'email:confirmed', 1);
+			testUserUid = await User.create({ username: 'bannedUser2', password: '123456', email: 'banneduser2@example.com' });
+		});
+
 		it('should return error if there is no ban reason', function (done) {
 			User.getLatestBanInfo(123, function (err) {
 				assert.equal(err.message, 'no-ban-info');
@@ -1310,11 +1323,10 @@ describe('User', function () {
 			});
 		});
 
-
 		it('should get history from set', async function () {
 			const now = Date.now();
-			await db.sortedSetAdd('user:' + testUid + ':usernames', now, 'derp:' + now);
-			const data = await User.getHistory('user:' + testUid + ':usernames');
+			await db.sortedSetAdd('user:' + testUserUid + ':usernames', now, 'derp:' + now);
+			const data = await User.getHistory('user:' + testUserUid + ':usernames');
 			assert.equal(data[0].value, 'derp');
 			assert.equal(data[0].timestamp, now);
 		});
@@ -1322,13 +1334,13 @@ describe('User', function () {
 		it('should return the correct ban reason', function (done) {
 			async.series([
 				function (next) {
-					User.bans.ban(testUid, 0, '', function (err) {
+					User.bans.ban(testUserUid, 0, '', function (err) {
 						assert.ifError(err);
 						next(err);
 					});
 				},
 				function (next) {
-					User.getModerationHistory(testUid, function (err, data) {
+					User.getModerationHistory(testUserUid, function (err, data) {
 						assert.ifError(err);
 						assert.equal(data.bans.length, 1, 'one ban');
 						assert.equal(data.bans[0].reason, '[[user:info.banned-no-reason]]', 'no ban reason');
@@ -1338,7 +1350,7 @@ describe('User', function () {
 				},
 			], function (err) {
 				assert.ifError(err);
-				User.bans.unban(testUid, function (err) {
+				User.bans.unban(testUserUid, function (err) {
 					assert.ifError(err);
 					done();
 				});
@@ -1346,28 +1358,28 @@ describe('User', function () {
 		});
 
 		it('should ban user permanently', function (done) {
-			User.bans.ban(testUid, function (err) {
+			User.bans.ban(testUserUid, function (err) {
 				assert.ifError(err);
-				User.bans.isBanned(testUid, function (err, isBanned) {
+				User.bans.isBanned(testUserUid, function (err, isBanned) {
 					assert.ifError(err);
 					assert.equal(isBanned, true);
-					User.bans.unban(testUid, done);
+					User.bans.unban(testUserUid, done);
 				});
 			});
 		});
 
 		it('should ban user temporarily', function (done) {
-			User.bans.ban(testUid, Date.now() + 2000, function (err) {
+			User.bans.ban(testUserUid, Date.now() + 2000, function (err) {
 				assert.ifError(err);
 
-				User.bans.isBanned(testUid, function (err, isBanned) {
+				User.bans.isBanned(testUserUid, function (err, isBanned) {
 					assert.ifError(err);
 					assert.equal(isBanned, true);
 					setTimeout(function () {
-						User.bans.isBanned(testUid, function (err, isBanned) {
+						User.bans.isBanned(testUserUid, function (err, isBanned) {
 							assert.ifError(err);
 							assert.equal(isBanned, false);
-							User.bans.unban(testUid, done);
+							User.bans.unban(testUserUid, done);
 						});
 					}, 3000);
 				});
@@ -1375,10 +1387,48 @@ describe('User', function () {
 		});
 
 		it('should error if until is NaN', function (done) {
-			User.bans.ban(testUid, 'asd', function (err) {
+			User.bans.ban(testUserUid, 'asd', function (err) {
 				assert.equal(err.message, '[[error:ban-expiry-missing]]');
 				done();
 			});
+		});
+
+		it('should be member of "banned-users" system group only after a ban', async function () {
+			await User.bans.ban(testUserUid);
+
+			const systemGroups = groups.systemGroups.filter(group => group !== groups.BANNED_USERS);
+			const isMember = await groups.isMember(testUserUid, groups.BANNED_USERS);
+			const isMemberOfAny = await groups.isMemberOfAny(testUserUid, systemGroups);
+
+			assert.strictEqual(isMember, true);
+			assert.strictEqual(isMemberOfAny, false);
+		});
+
+		it('should restore system group memberships after an unban (for an unverified user)', async function () {
+			await User.bans.unban(testUserUid);
+
+			const isMemberOfGroups = await groups.isMemberOfGroups(testUserUid, groups.systemGroups);
+			const membership = new Map(groups.systemGroups.map((item, index) => [item, isMemberOfGroups[index]]));
+
+			assert.strictEqual(membership.get('registered-users'), true);
+			assert.strictEqual(membership.get('verified-users'), false);
+			assert.strictEqual(membership.get('unverified-users'), true);
+			assert.strictEqual(membership.get(groups.BANNED_USERS), false);
+			// administrators cannot be banned
+			assert.strictEqual(membership.get('administrators'), false);
+			// This will not restored
+			assert.strictEqual(membership.get('Global Moderators'), false);
+		});
+
+		it('should restore system group memberships after an unban (for a verified user)', async function () {
+			await User.bans.ban(verifiedTestUserUid);
+			await User.bans.unban(verifiedTestUserUid);
+
+			const isMemberOfGroups = await groups.isMemberOfGroups(verifiedTestUserUid, groups.systemGroups);
+			const membership = new Map(groups.systemGroups.map((item, index) => [item, isMemberOfGroups[index]]));
+
+			assert.strictEqual(membership.get('verified-users'), true);
+			assert.strictEqual(membership.get('unverified-users'), false);
 		});
 	});
 

@@ -47,6 +47,8 @@
 	"privileges.no-users": "Bu kategoride kullanıcıya-özel ayrıcalıklar yok.",
 	"privileges.section-group": "Grup",
 	"privileges.group-private": "Bu grup gizlidir",
+  	"privileges.inheritance-exception": "This group does not inherit privileges from registered-users group",
+  	"privileges.banned-user-inheritance": "Banned users inherit privileges from banned-users group",
 	"privileges.search-group": "Grup Ekle",
 	"privileges.copy-to-children": "Alttakilere Kopyala",
 	"privileges.copy-from-category": "Kategoriden Kopyala",

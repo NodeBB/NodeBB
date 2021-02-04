@@ -47,6 +47,8 @@
 	"privileges.no-users": "Nincsenek felhasználó-specifikus előjogok ebbe na kategóriában.",
 	"privileges.section-group": "Csoport",
 	"privileges.group-private": "Ez a csoport privát",
+  	"privileges.inheritance-exception": "This group does not inherit privileges from registered-users group",
+  	"privileges.banned-user-inheritance": "Banned users inherit privileges from banned-users group",
 	"privileges.search-group": "Csoport hozzáadása",
 	"privileges.copy-to-children": "Másolás utódokra",
 	"privileges.copy-from-category": "Másolás kategóriűból",

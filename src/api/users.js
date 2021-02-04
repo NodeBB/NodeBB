@@ -200,7 +200,10 @@ usersAPI.ban = async function (caller, data) {
 		until: data.until > 0 ? data.until : undefined,
 		reason: data.reason || undefined,
 	});
-	await user.auth.revokeAllSessions(data.uid);
+	const canLoginIfBanned = await user.bans.canLoginIfBanned(data.uid);
+	if (!canLoginIfBanned) {
+		await user.auth.revokeAllSessions(data.uid);
+	}
 };
 
 usersAPI.unban = async function (caller, data) {
@@ -209,6 +212,9 @@ usersAPI.unban = async function (caller, data) {
 	}
 
 	await user.bans.unban(data.uid);
+
+	sockets.in('uid_' + data.uid).emit('event:unbanned');
+
 	await events.log({
 		type: 'user-unban',
 		uid: caller.uid,

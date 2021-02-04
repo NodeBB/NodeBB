@@ -12,6 +12,7 @@ const meta = require('../src/meta');
 const user = require('../src/user');
 const groups = require('../src/groups');
 const topics = require('../src/topics');
+const posts = require('../src/posts');
 const categories = require('../src/categories');
 const plugins = require('../src/plugins');
 const file = require('../src/file');
@@ -112,10 +113,24 @@ describe('Topic thumbs', () => {
 	});
 
 	describe('.associate()', () => {
+		let tid;
+		let mainPid;
+
+		before(async () => {
+			topicObj = await topics.post({
+				uid: adminUid,
+				cid: categoryObj.cid,
+				title: 'Test Topic Title',
+				content: 'The content of test topic',
+			});
+			tid = topicObj.topicData.tid;
+			mainPid = topicObj.postData.pid;
+		});
+
 		it('should add an uploaded file to a zset', async () => {
 			await topics.thumbs.associate({
-				id: 2,
-				path: thumbPaths[0],
+				id: tid,
+				path: relativeThumbPaths[0],
 			});
 
 			const exists = await db.isSortedSetMember(`topic:2:thumbs`, relativeThumbPaths[0]);
@@ -125,7 +140,7 @@ describe('Topic thumbs', () => {
 		it('should also work with UUIDs', async () => {
 			await topics.thumbs.associate({
 				id: uuid,
-				path: thumbPaths[1],
+				path: relativeThumbPaths[1],
 			});
 
 			const exists = await db.isSortedSetMember(`draft:${uuid}:thumbs`, relativeThumbPaths[1]);
@@ -134,12 +149,23 @@ describe('Topic thumbs', () => {
 
 		it('should also work with a URL', async () => {
 			await topics.thumbs.associate({
-				id: 2,
-				path: thumbPaths[2],
+				id: tid,
+				path: relativeThumbPaths[2],
 			});
 
 			const exists = await db.isSortedSetMember(`topic:2:thumbs`, relativeThumbPaths[2]);
 			assert(exists);
+		});
+
+		it('should associate the thumbnail with that topic\'s main pid\'s uploads', async () => {
+			const uploads = await posts.uploads.list(mainPid);
+			assert(uploads.includes(path.basename(relativeThumbPaths[0])));
+		});
+
+		it('should maintain state in the topic\'s main pid\'s uploads if posts.uploads.sync() is called', async () => {
+			await posts.uploads.sync(mainPid);
+			const uploads = await posts.uploads.list(mainPid);
+			assert(uploads.includes(path.basename(relativeThumbPaths[0])));
 		});
 	});
 
@@ -179,6 +205,12 @@ describe('Topic thumbs', () => {
 
 			assert.strictEqual(await db.isSortedSetMember('topic:1:thumbs', relativeThumbPaths[0]), false);
 			assert.strictEqual(await file.exists(thumbPaths[0]), false);
+		});
+
+		it('should no longer be associated with that topic\'s main pid\'s uploads', async () => {
+			const mainPid = (await topics.getMainPids([1]))[0];
+			const uploads = await posts.uploads.list(mainPid);
+			assert(!uploads.includes(path.basename(relativeThumbPaths[0])));
 		});
 
 		it('should also work with UUIDs', async () => {
@@ -252,7 +284,7 @@ describe('Topic thumbs', () => {
 		});
 
 		it('should fail with a non-existant tid', (done) => {
-			helpers.uploadFile(`${nconf.get('url')}/api/v3/topics/2/thumbs`, path.join(__dirname, './files/test.png'), {}, adminJar, adminCSRF, function (err, res, body) {
+			helpers.uploadFile(`${nconf.get('url')}/api/v3/topics/3/thumbs`, path.join(__dirname, './files/test.png'), {}, adminJar, adminCSRF, function (err, res, body) {
 				assert.ifError(err);
 				assert.strictEqual(res.statusCode, 404);
 				done();

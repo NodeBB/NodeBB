@@ -47,6 +47,8 @@
 	"privileges.no-users": "אין הרשאות ספציפיות למשתמש בקטגוריה זו.",
 	"privileges.section-group": "קבוצה",
 	"privileges.group-private": "קבוצה זו פרטית",
+  	"privileges.inheritance-exception": "This group does not inherit privileges from registered-users group",
+  	"privileges.banned-user-inheritance": "Banned users inherit privileges from banned-users group",
 	"privileges.search-group": "הוסף קבוצה",
 	"privileges.copy-to-children": "העתק לצאצאים",
 	"privileges.copy-from-category": "העתק מקטגוריה",

@@ -202,10 +202,6 @@ Messaging.canMessageUser = async (uid, toUid) => {
 		throw new Error('[[error:no-user]]');
 	}
 
-	const userData = await user.getUserFields(uid, ['banned']);
-	if (userData.banned) {
-		throw new Error('[[error:user-banned]]');
-	}
 	const canChat = await privileges.global.can('chat', uid);
 	if (!canChat) {
 		throw new Error('[[error:no-privileges]]');
@@ -238,10 +234,6 @@ Messaging.canMessageRoom = async (uid, roomId) => {
 		throw new Error('[[error:not-in-room]]');
 	}
 
-	const userData = await user.getUserFields(uid, ['banned']);
-	if (userData.banned) {
-		throw new Error('[[error:user-banned]]');
-	}
 	const canChat = await privileges.global.can('chat', uid);
 	if (!canChat) {
 		throw new Error('[[error:no-privileges]]');

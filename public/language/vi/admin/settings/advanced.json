@@ -20,7 +20,7 @@
 	"hsts.maxAge": "HSTS Tuổi Tối Đa",
 	"hsts.subdomains": "Bao gồm tên miền phụ trong phần đầu HSTS",
 	"hsts.preload": "Cho phép tải trước phần đầu HSTS",
-	"hsts.help": "Nếu bật, một phần đầu trang HSTS sẽ được đặt cho trang web này. Bạn có thể chọn bao gồm tên miền phụ và cờ tải trước trong phần đầu trang của mình. Nếu nghi ngờ, bạn có thể bỏ chọn. <a href=\"%1\">Thêm thông tin <i class=\"fa fa-external-link\"></i></a>",
+	"hsts.help": "Nếu bật, một phần đầu trang HSTS sẽ được đặt cho trang web này. Bạn có thể chọn bao gồm tên miền phụ và cờ tải trước trong phần đầu. Nếu nghi ngờ, bạn có thể bỏ chọn. <a href=\"%1\">Thêm thông tin <i class=\"fa fa-external-link\"></i></a>",
 	"traffic-management": "Quản lý lưu lượng",
 	"traffic.help": "NodeBB dùng mô-đun tự động từ chối yêu cầu trong các tình huống có lưu lượng truy cập cao. Bạn có thể điều chỉnh các cài đặt này ở đây, mặc dù các cài đặt mặc định là một điểm khởi đầu tốt.",
 	"traffic.enable": "Bật quản lý lưu lượng",
@@ -39,5 +39,5 @@
 	"analytics.max-cache-help": "Cài đặt khi có lưu lượng truy cập cao, bộ nhớ đệm có thể bị cạn liên tục nếu có nhiều người dùng hoạt động đồng thời hơn giá trị Bộ Nhớ Đệm tối đa. (Bắt buộc khởi động lại)",
 	"compression.settings": "Cài Đặt Nén",
 	"compression.enable": "Bật Nén",
-	"compression.help": "Cài đặt này cho phép nén gzip. Đối với một trang web có lưu lượng truy cập cao trong quá trình sản xuất, cách tốt nhất để đặt tính năng nén là triển khai nó ở cấp proxy ngược. Bạn có thể kích hoạt nó ở đây cho mục đích thử nghiệm."
+	"compression.help": "Cài đặt này cho phép nén gzip. Đối với trang web có lượng truy cập cao khi vận hành, tốt nhất để đặt tính năng nén là triển khai nó ở cấp độ proxy ngược. Bạn có thể kích hoạt nó ở đây cho việc thử nghiệm."
 }

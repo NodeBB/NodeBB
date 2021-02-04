@@ -118,6 +118,7 @@ Emailer.setupFallbackTransport = (config) => {
 	// Enable SMTP transport if enabled in ACP
 	if (parseInt(config['email:smtpTransport:enabled'], 10) === 1) {
 		const smtpOptions = {
+			name: getHostname(),
 			pool: config['email:smtpTransport:pool'],
 		};
 

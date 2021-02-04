@@ -47,6 +47,8 @@
 	"privileges.no-users": "Nav lietotājiem īpašo privilēģiju šinī kategorijā.",
 	"privileges.section-group": "Grupa",
 	"privileges.group-private": "Grupa ir privāta",
+  	"privileges.inheritance-exception": "This group does not inherit privileges from registered-users group",
+  	"privileges.banned-user-inheritance": "Banned users inherit privileges from banned-users group",
 	"privileges.search-group": "Pievienot grupu",
 	"privileges.copy-to-children": "Kopēt uz apakškategorijām",
 	"privileges.copy-from-category": "Kopēt no kategorijas",

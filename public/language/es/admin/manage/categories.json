@@ -47,6 +47,8 @@
 	"privileges.no-users": "No hay privilegios específicos de usuario en esta categoría.",
 	"privileges.section-group": "Grupo",
 	"privileges.group-private": "Éste grupo es privado",
+  	"privileges.inheritance-exception": "This group does not inherit privileges from registered-users group",
+  	"privileges.banned-user-inheritance": "Banned users inherit privileges from banned-users group",
 	"privileges.search-group": "Añadir Grupo",
 	"privileges.copy-to-children": "Copiar a categorías inferiores",
 	"privileges.copy-from-category": "Copiar de Categoría",

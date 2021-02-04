@@ -47,6 +47,8 @@
 	"privileges.no-users": "Для цієї категорії не задано особливих прав.",
 	"privileges.section-group": "Група",
 	"privileges.group-private": "Це приватна група",
+  	"privileges.inheritance-exception": "This group does not inherit privileges from registered-users group",
+  	"privileges.banned-user-inheritance": "Banned users inherit privileges from banned-users group",
 	"privileges.search-group": "Додати групу",
 	"privileges.copy-to-children": "Копіювати під-категоріям",
 	"privileges.copy-from-category": "Копіювати з категорії",
