@@ -28,7 +28,9 @@ define('hooks', [], () => {
 		return listeners.reduce((promise, listener) => promise.then((data) => {
 			try {
 				const result = listener(data);
-				return utils.isPromise(result) ? result.then(data => Promise.resolve(data)).catch(e => _onHookError(e, listener, data)) : result;
+				return utils.isPromise(result) ?
+					result.then(data => Promise.resolve(data)).catch(e => _onHookError(e, listener, data)) :
+					result;
 			} catch (e) {
 				return _onHookError(e, listener, data);
 			}

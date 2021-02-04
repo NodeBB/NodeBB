@@ -22,7 +22,10 @@ const upload_url = nconf.get('upload_url');
 topicsController.get = async function getTopic(req, res, callback) {
 	const tid = req.params.topic_id;
 
-	if ((req.params.post_index && !utils.isNumber(req.params.post_index) && req.params.post_index !== 'unread') || !utils.isNumber(tid)) {
+	if (
+		(req.params.post_index && !utils.isNumber(req.params.post_index) && req.params.post_index !== 'unread') ||
+		!utils.isNumber(tid)
+	) {
 		return callback();
 	}
 	let postIndex = parseInt(req.params.post_index, 10) || 1;
@@ -40,7 +43,11 @@ topicsController.get = async function getTopic(req, res, callback) {
 
 	let currentPage = parseInt(req.query.page, 10) || 1;
 	const pageCount = Math.max(1, Math.ceil((topicData && topicData.postcount) / settings.postsPerPage));
-	if (!topicData || userPrivileges.disabled || (settings.usePagination && (currentPage < 1 || currentPage > pageCount))) {
+	if (
+		!topicData ||
+		userPrivileges.disabled ||
+		(settings.usePagination && (currentPage < 1 || currentPage > pageCount))
+	) {
 		return callback();
 	}
 

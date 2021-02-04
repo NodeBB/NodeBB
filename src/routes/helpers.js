@@ -11,7 +11,14 @@ helpers.setupPageRoute = function (router, name, middleware, middlewares, contro
 		middleware.pluginHooks,
 	].concat(middlewares);
 
-	router.get(name, middleware.busyCheck, middleware.applyCSRF, middleware.buildHeader, middlewares, helpers.tryRoute(controller));
+	router.get(
+		name,
+		middleware.busyCheck,
+		middleware.applyCSRF,
+		middleware.buildHeader,
+		middlewares,
+		helpers.tryRoute(controller)
+	);
 	router.get(`/api${name}`, middlewares, helpers.tryRoute(controller));
 };
 

@@ -62,8 +62,12 @@ module.exports = function (User) {
 		]);
 	};
 
-	const getSessionFromStore = util.promisify((sid, callback) => db.sessionStore.get(sid, (err, sessObj) => callback(err, sessObj || null)));
-	const sessionStoreDestroy = util.promisify((sid, callback) => db.sessionStore.destroy(sid, err => callback(err)));
+	const getSessionFromStore = util.promisify(
+		(sid, callback) => db.sessionStore.get(sid, (err, sessObj) => callback(err, sessObj || null))
+	);
+	const sessionStoreDestroy = util.promisify(
+		(sid, callback) => db.sessionStore.destroy(sid, err => callback(err))
+	);
 
 	User.auth.getSessions = async function (uid, curSessionId) {
 		await cleanExpiredSessions(uid);

@@ -118,7 +118,11 @@ Notifications.create = async function (data) {
 	}
 	data.importance = data.importance || 5;
 	const oldNotif = await db.getObject(`notifications:${data.nid}`);
-	if (oldNotif && parseInt(oldNotif.pid, 10) === parseInt(data.pid, 10) && parseInt(oldNotif.importance, 10) > parseInt(data.importance, 10)) {
+	if (
+		oldNotif &&
+		parseInt(oldNotif.pid, 10) === parseInt(data.pid, 10) &&
+		parseInt(oldNotif.importance, 10) > parseInt(data.importance, 10)
+	) {
 		return null;
 	}
 	const now = Date.now();

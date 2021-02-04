@@ -131,7 +131,10 @@ modsController.flags.detail = async function (req, res, next) {
 		assignees: results.assignees,
 		type_bool: ['post', 'user', 'empty'].reduce((memo, cur) => {
 			if (cur !== 'empty') {
-				memo[cur] = results.flagData.type === cur && (!results.flagData.target || !!Object.keys(results.flagData.target).length);
+				memo[cur] = results.flagData.type === cur && (
+					!results.flagData.target ||
+					!!Object.keys(results.flagData.target).length
+				);
 			} else {
 				memo[cur] = !Object.keys(results.flagData.target).length;
 			}

@@ -315,7 +315,12 @@ helpers.getVisibleCategories = async function (params) {
 			return false;
 		}
 		const hasVisibleChildren = checkVisibleChildren(c, cidToAllowed, cidToWatchState, states);
-		const isCategoryVisible = cidToAllowed[c.cid] && (showLinks || !c.link) && !c.disabled && states.includes(cidToWatchState[c.cid]);
+		const isCategoryVisible = (
+			cidToAllowed[c.cid] &&
+			(showLinks || !c.link) &&
+			!c.disabled &&
+			states.includes(cidToWatchState[c.cid])
+		);
 		const shouldBeRemoved = !hasVisibleChildren && !isCategoryVisible;
 		const shouldBeDisaplayedAsDisabled = hasVisibleChildren && !isCategoryVisible;
 
@@ -380,7 +385,8 @@ function checkVisibleChildren(c, cidToAllowed, cidToWatchState, states) {
 		return false;
 	}
 	return c.children.some(c => !c.disabled && (
-		(cidToAllowed[c.cid] && states.includes(cidToWatchState[c.cid])) || checkVisibleChildren(c, cidToAllowed, cidToWatchState, states)
+		(cidToAllowed[c.cid] && states.includes(cidToWatchState[c.cid])) ||
+		checkVisibleChildren(c, cidToAllowed, cidToWatchState, states)
 	));
 }
 

@@ -71,12 +71,18 @@ module.exports = function (privileges) {
 		const cids = _.uniq(topicsData.map(topic => topic.cid));
 		const results = await privileges.categories.getBase(privilege, cids, uid);
 
-		const allowedCids = cids.filter((cid, index) => !results.categories[index].disabled && (results.allowedTo[index] || results.isAdmin));
+		const allowedCids = cids.filter((cid, index) => (
+			!results.categories[index].disabled &&
+			(results.allowedTo[index] || results.isAdmin)
+		));
 
 		const cidsSet = new Set(allowedCids);
 		const canViewDeleted = _.zipObject(cids, results.view_deleted);
 
-		tids = topicsData.filter(t => cidsSet.has(t.cid) &&	(!t.deleted || canViewDeleted[t.cid] || results.isAdmin)).map(t => t.tid);
+		tids = topicsData.filter(t => (
+			cidsSet.has(t.cid) &&
+			(!t.deleted || canViewDeleted[t.cid] || results.isAdmin)
+		)).map(t => t.tid);
 
 		const data = await plugins.hooks.fire('filter:privileges.topics.filter', {
 			privilege: privilege,

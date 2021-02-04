@@ -84,7 +84,11 @@ define('forum/topic/events', [
 	}
 
 	function onTopicPurged(data) {
-		if (ajaxify.data.category && ajaxify.data.category.slug && parseInt(data.tid, 10) === parseInt(ajaxify.data.tid, 10)) {
+		if (
+			ajaxify.data.category &&
+			ajaxify.data.category.slug &&
+			parseInt(data.tid, 10) === parseInt(ajaxify.data.tid, 10)
+		) {
 			ajaxify.go('category/' + ajaxify.data.category.slug, null, true);
 		}
 	}

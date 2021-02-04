@@ -81,8 +81,7 @@
 			}
 		],
 		// allow lines of up to 120 characters
-		// "max-len": ["error", { "code": 120, "tabWidth": 2, "ignoreUrls": true, "ignoreStrings": true, "ignoreTemplateLiterals": true, "ignoreRegExpLiterals": true }],
-		"max-len": "off", // do this LAST
+		"max-len": ["error", { "code": 120, "tabWidth": 2, "ignoreUrls": true, "ignoreStrings": true, "ignoreTemplateLiterals": true, "ignoreRegExpLiterals": true }],
 
 		// === Disable rules ===
 		// more liberal naming

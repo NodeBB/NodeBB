@@ -56,7 +56,8 @@ module.exports = function (Topics) {
 			users[user.uid] = user;
 		});
 		postData.forEach((post) => {
-			// If the post author isn't represented in the retrieved users' data, then it means they were deleted, assume guest.
+			// If the post author isn't represented in the retrieved users' data,
+			// then it means they were deleted, assume guest.
 			if (!users.hasOwnProperty(post.uid)) {
 				post.uid = 0;
 			}

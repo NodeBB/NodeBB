@@ -36,7 +36,10 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID) {
 	const { canViewInfo } = results;
 	const isSelf = parseInt(callerUID, 10) === parseInt(userData.uid, 10);
 
-	userData.age = Math.max(0, userData.birthday ? Math.floor((new Date().getTime() - new Date(userData.birthday).getTime()) / 31536000000) : 0);
+	userData.age = Math.max(
+		0,
+		userData.birthday ? Math.floor((new Date().getTime() - new Date(userData.birthday).getTime()) / 31536000000) : 0
+	);
 
 	userData.emailClass = 'hide';
 

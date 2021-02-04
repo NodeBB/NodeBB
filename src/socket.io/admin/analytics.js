@@ -41,7 +41,8 @@ Analytics.get = function (socket, data, callback) {
 			},
 		}, (err, data) => {
 			data.pastDay = data.pageviews.reduce((a, b) => parseInt(a, 10) + parseInt(b, 10));
-			data.pageviews[data.pageviews.length - 1] = parseInt(data.pageviews[data.pageviews.length - 1], 10) + analytics.getUnwrittenPageviews();
+			const last = data.pageviews.length - 1;
+			data.pageviews[last] = parseInt(data.pageviews[last], 10) + analytics.getUnwrittenPageviews();
 			callback(err, data);
 		});
 	}

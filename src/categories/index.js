@@ -118,7 +118,9 @@ Categories.getModeratorUids = async function (cids) {
 	const uniqGroups = _.uniq(_.flatten(sets.groupNames));
 	const groupUids = await groups.getMembersOfGroups(uniqGroups);
 	const map = _.zipObject(uniqGroups, groupUids);
-	const moderatorUids = cids.map((cid, index) => _.uniq(sets.uids[index].concat(_.flatten(sets.groupNames[index].map(g => map[g])))));
+	const moderatorUids = cids.map(
+		(cid, index) => _.uniq(sets.uids[index].concat(_.flatten(sets.groupNames[index].map(g => map[g]))))
+	);
 	return moderatorUids;
 };
 

@@ -101,7 +101,10 @@ async function uploadAsFile(req, uploadedFile) {
 
 async function resizeImage(fileObj) {
 	const imageData = await image.size(fileObj.path);
-	if (imageData.width < meta.config.resizeImageWidthThreshold || meta.config.resizeImageWidth > meta.config.resizeImageWidthThreshold) {
+	if (
+		imageData.width < meta.config.resizeImageWidthThreshold ||
+		meta.config.resizeImageWidth > meta.config.resizeImageWidthThreshold
+	) {
 		return fileObj;
 	}
 

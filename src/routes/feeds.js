@@ -97,7 +97,9 @@ async function generateForTopic(req, res) {
 		const replies = topicData.posts.slice(1);
 		replies.forEach((postData) => {
 			if (!postData.deleted) {
-				const dateStamp = new Date(parseInt(parseInt(postData.edited, 10) === 0 ? postData.timestamp : postData.edited, 10)).toUTCString();
+				const dateStamp = new Date(
+					parseInt(parseInt(postData.edited, 10) === 0 ? postData.timestamp : postData.edited, 10)
+				).toUTCString();
 
 				feed.item({
 					title: `Reply to ${utils.stripHTMLTags(topicData.title, utils.tags)} on ${dateStamp}`,

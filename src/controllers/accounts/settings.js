@@ -99,7 +99,9 @@ settingsController.get = async function (req, res, next) {
 		'disabled',
 	];
 
-	userData.upvoteNotifFreq = notifFreqOptions.map(name => ({ name: name, selected: name === userData.settings.upvoteNotifFreq }));
+	userData.upvoteNotifFreq = notifFreqOptions.map(
+		name => ({ name: name, selected: name === userData.settings.upvoteNotifFreq })
+	);
 
 	userData.categoryWatchState = { [userData.settings.categoryWatchState]: true };
 

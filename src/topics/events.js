@@ -12,7 +12,8 @@ const Events = module.exports;
  * You are able to define additional topic event types here.
  * Register to hook `filter:topicEvents.init` and append your custom type to the `types` object.
  * You can then log a custom topic event by calling `topics.events.log(tid, { type, uid });`
- * `uid` is optional; if you pass in a valid uid in the payload, the user avatar/username will be rendered as part of the event text
+ * `uid` is optional; if you pass in a valid uid in the payload,
+ * the user avatar/username will be rendered as part of the event text
  *
  */
 Events._types = {
