@@ -105,14 +105,12 @@ async function isSystemGroupAllowedToPrivileges(privileges, uid, cid) {
 
 helpers.getUserPrivileges = async function (cid, userPrivileges) {
 	let memberSets = await groups.getMembersOfGroups(userPrivileges.map(privilege => `cid:${cid}:privileges:${privilege}`));
-	memberSets = memberSets.map(function (set) {
-		return set.map(uid => parseInt(uid, 10));
-	});
+	memberSets = memberSets.map(set => set.map(uid => parseInt(uid, 10)));
 
 	const members = _.uniq(_.flatten(memberSets));
 	const memberData = await user.getUsersFields(members, ['picture', 'username', 'banned']);
 
-	memberData.forEach(function (member) {
+	memberData.forEach((member) => {
 		member.privileges = {};
 		for (var x = 0, numPrivs = userPrivileges.length; x < numPrivs; x += 1) {
 			member.privileges[userPrivileges[x]] = memberSets[x].includes(parseInt(member.uid, 10));
@@ -144,7 +142,7 @@ helpers.getGroupPrivileges = async function (cid, groupPrivileges) {
 		groupNames.splice(adminIndex, 1);
 	}
 	const groupData = await groups.getGroupsFields(groupNames, ['private', 'system']);
-	const memberData = groupNames.map(function (member, index) {
+	const memberData = groupNames.map((member, index) => {
 		const memberPrivs = {};
 
 		for (var x = 0, numPrivs = groupPrivileges.length; x < numPrivs; x += 1) {

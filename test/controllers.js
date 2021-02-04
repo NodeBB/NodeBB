@@ -20,14 +20,14 @@ var plugins = require('../src/plugins');
 var utils = require('../src/utils');
 var helpers = require('./helpers');
 
-describe('Controllers', function () {
+describe('Controllers', () => {
 	var tid;
 	var cid;
 	var pid;
 	var fooUid;
 	var category;
 
-	before(function (done) {
+	before((done) => {
 		async.series({
 			category: function (next) {
 				categories.create({
@@ -44,7 +44,7 @@ describe('Controllers', function () {
 
 				navigation.save(data, next);
 			},
-		}, function (err, results) {
+		}, (err, results) => {
 			if (err) {
 				return done(err);
 			}
@@ -52,7 +52,7 @@ describe('Controllers', function () {
 			cid = results.category.cid;
 			fooUid = results.user;
 
-			topics.post({ uid: results.user, title: 'test topic title', content: 'test topic content', cid: results.category.cid }, function (err, result) {
+			topics.post({ uid: results.user, title: 'test topic title', content: 'test topic content', cid: results.category.cid }, (err, result) => {
 				tid = result.topicData.tid;
 				pid = result.postData.pid;
 				done(err);
@@ -60,11 +60,11 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load /config with csrf_token', function (done) {
+	it('should load /config with csrf_token', (done) => {
 		request({
 			url: `${nconf.get('url')}/api/config`,
 			json: true,
-		}, function (err, response, body) {
+		}, (err, response, body) => {
 			assert.ifError(err);
 			assert.equal(response.statusCode, 200);
 			assert(body.csrf_token);
@@ -72,14 +72,14 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load /config with no csrf_token as spider', function (done) {
+	it('should load /config with no csrf_token as spider', (done) => {
 		request({
 			url: `${nconf.get('url')}/api/config`,
 			json: true,
 			headers: {
 				'user-agent': 'yandex',
 			},
-		}, function (err, response, body) {
+		}, (err, response, body) => {
 			assert.ifError(err);
 			assert.equal(response.statusCode, 200);
 			assert.strictEqual(body.csrf_token, false);
@@ -89,7 +89,7 @@ describe('Controllers', function () {
 		});
 	});
 
-	describe('homepage', function () {
+	describe('homepage', () => {
 		function hookMethod(hookData) {
 			assert(hookData.req);
 			assert(hookData.res);
@@ -113,8 +113,8 @@ describe('Controllers', function () {
 			await meta.templates.compileTemplate(name, message);
 		});
 
-		it('should load default', function (done) {
-			request(nconf.get('url'), function (err, res, body) {
+		it('should load default', (done) => {
+			request(nconf.get('url'), (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -122,11 +122,11 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should load unread', function (done) {
-			meta.configs.set('homePageRoute', 'unread', function (err) {
+		it('should load unread', (done) => {
+			meta.configs.set('homePageRoute', 'unread', (err) => {
 				assert.ifError(err);
 
-				request(nconf.get('url'), function (err, res, body) {
+				request(nconf.get('url'), (err, res, body) => {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 					assert(body);
@@ -135,11 +135,11 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should load recent', function (done) {
-			meta.configs.set('homePageRoute', 'recent', function (err) {
+		it('should load recent', (done) => {
+			meta.configs.set('homePageRoute', 'recent', (err) => {
 				assert.ifError(err);
 
-				request(nconf.get('url'), function (err, res, body) {
+				request(nconf.get('url'), (err, res, body) => {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 					assert(body);
@@ -148,11 +148,11 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should load top', function (done) {
-			meta.configs.set('homePageRoute', 'top', function (err) {
+		it('should load top', (done) => {
+			meta.configs.set('homePageRoute', 'top', (err) => {
 				assert.ifError(err);
 
-				request(nconf.get('url'), function (err, res, body) {
+				request(nconf.get('url'), (err, res, body) => {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 					assert(body);
@@ -161,11 +161,11 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should load popular', function (done) {
-			meta.configs.set('homePageRoute', 'popular', function (err) {
+		it('should load popular', (done) => {
+			meta.configs.set('homePageRoute', 'popular', (err) => {
 				assert.ifError(err);
 
-				request(nconf.get('url'), function (err, res, body) {
+				request(nconf.get('url'), (err, res, body) => {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 					assert(body);
@@ -174,11 +174,11 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should load category', function (done) {
-			meta.configs.set('homePageRoute', 'category/1/test-category', function (err) {
+		it('should load category', (done) => {
+			meta.configs.set('homePageRoute', 'category/1/test-category', (err) => {
 				assert.ifError(err);
 
-				request(nconf.get('url'), function (err, res, body) {
+				request(nconf.get('url'), (err, res, body) => {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 					assert(body);
@@ -187,8 +187,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should not load breadcrumbs on home page route', function (done) {
-			request(`${nconf.get('url')}/api`, { json: true }, function (err, res, body) {
+		it('should not load breadcrumbs on home page route', (done) => {
+			request(`${nconf.get('url')}/api`, { json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -197,11 +197,11 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should redirect to custom', function (done) {
-			meta.configs.set('homePageRoute', 'groups', function (err) {
+		it('should redirect to custom', (done) => {
+			meta.configs.set('homePageRoute', 'groups', (err) => {
 				assert.ifError(err);
 
-				request(nconf.get('url'), function (err, res, body) {
+				request(nconf.get('url'), (err, res, body) => {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 					assert(body);
@@ -210,11 +210,11 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should 404 if custom does not exist', function (done) {
-			meta.configs.set('homePageRoute', 'this-route-does-not-exist', function (err) {
+		it('should 404 if custom does not exist', (done) => {
+			meta.configs.set('homePageRoute', 'this-route-does-not-exist', (err) => {
 				assert.ifError(err);
 
-				request(nconf.get('url'), function (err, res, body) {
+				request(nconf.get('url'), (err, res, body) => {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 404);
 					assert(body);
@@ -223,11 +223,11 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('api should work with hook', function (done) {
-			meta.configs.set('homePageRoute', 'mycustompage', function (err) {
+		it('api should work with hook', (done) => {
+			meta.configs.set('homePageRoute', 'mycustompage', (err) => {
 				assert.ifError(err);
 
-				request(`${nconf.get('url')}/api`, { json: true }, function (err, res, body) {
+				request(`${nconf.get('url')}/api`, { json: true }, (err, res, body) => {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 					assert.equal(body.works, true);
@@ -238,11 +238,11 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should render with hook', function (done) {
-			meta.configs.set('homePageRoute', 'mycustompage', function (err) {
+		it('should render with hook', (done) => {
+			meta.configs.set('homePageRoute', 'mycustompage', (err) => {
 				assert.ifError(err);
 
-				request(nconf.get('url'), function (err, res, body) {
+				request(nconf.get('url'), (err, res, body) => {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 					assert.ok(body);
@@ -254,15 +254,15 @@ describe('Controllers', function () {
 			});
 		});
 
-		after(function () {
+		after(() => {
 			plugins.hooks.unregister('myTestPlugin', 'action:homepage.get:custom', hookMethod);
 			fs.unlinkSync(tplPath);
 			fs.unlinkSync(tplPath.replace(/\.tpl$/, '.js'));
 		});
 	});
 
-	it('should load /reset without code', function (done) {
-		request(`${nconf.get('url')}/reset`, function (err, res, body) {
+	it('should load /reset without code', (done) => {
+		request(`${nconf.get('url')}/reset`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -270,8 +270,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load /reset with invalid code', function (done) {
-		request(`${nconf.get('url')}/reset/123123`, function (err, res, body) {
+	it('should load /reset with invalid code', (done) => {
+		request(`${nconf.get('url')}/reset/123123`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -279,8 +279,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load /login', function (done) {
-		request(`${nconf.get('url')}/login`, function (err, res, body) {
+	it('should load /login', (done) => {
+		request(`${nconf.get('url')}/login`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -288,8 +288,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load /register', function (done) {
-		request(`${nconf.get('url')}/register`, function (err, res, body) {
+	it('should load /register', (done) => {
+		request(`${nconf.get('url')}/register`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -297,7 +297,7 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load /register/complete', function (done) {
+	it('should load /register/complete', (done) => {
 		function hookMethod(data, next) {
 			data.interstitials.push({ template: 'topic.tpl', data: {} });
 			next(null, data);
@@ -320,7 +320,7 @@ describe('Controllers', function () {
 			url: `${nconf.get('url')}/api/config`,
 			json: true,
 			jar: jar,
-		}, function (err, response, body) {
+		}, (err, response, body) => {
 			assert.ifError(err);
 
 			request.post(`${nconf.get('url')}/register`, {
@@ -330,14 +330,14 @@ describe('Controllers', function () {
 				headers: {
 					'x-csrf-token': body.csrf_token,
 				},
-			}, function (err, res, body) {
+			}, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert.strictEqual(body.next, `${nconf.get('relative_path')}/register/complete`);
 				request(`${nconf.get('url')}/api/register/complete`, {
 					jar: jar,
 					json: true,
-				}, function (err, res, body) {
+				}, (err, res, body) => {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 					assert(body.sections);
@@ -350,8 +350,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load /robots.txt', function (done) {
-		request(`${nconf.get('url')}/robots.txt`, function (err, res, body) {
+	it('should load /robots.txt', (done) => {
+		request(`${nconf.get('url')}/robots.txt`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -359,8 +359,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load /manifest.webmanifest', function (done) {
-		request(`${nconf.get('url')}/manifest.webmanifest`, function (err, res, body) {
+	it('should load /manifest.webmanifest', (done) => {
+		request(`${nconf.get('url')}/manifest.webmanifest`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -368,8 +368,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load /outgoing?url=<url>', function (done) {
-		request(`${nconf.get('url')}/outgoing?url=http://youtube.com`, function (err, res, body) {
+	it('should load /outgoing?url=<url>', (done) => {
+		request(`${nconf.get('url')}/outgoing?url=http://youtube.com`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -377,8 +377,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should 404 on /outgoing with no url', function (done) {
-		request(`${nconf.get('url')}/outgoing`, function (err, res, body) {
+	it('should 404 on /outgoing with no url', (done) => {
+		request(`${nconf.get('url')}/outgoing`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 404);
 			assert(body);
@@ -386,8 +386,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should 404 on /outgoing with javascript: protocol', function (done) {
-		request(`${nconf.get('url')}/outgoing?url=javascript:alert(1);`, function (err, res, body) {
+	it('should 404 on /outgoing with javascript: protocol', (done) => {
+		request(`${nconf.get('url')}/outgoing?url=javascript:alert(1);`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 404);
 			assert(body);
@@ -395,8 +395,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should 404 on /outgoing with invalid url', function (done) {
-		request(`${nconf.get('url')}/outgoing?url=derp`, function (err, res, body) {
+	it('should 404 on /outgoing with invalid url', (done) => {
+		request(`${nconf.get('url')}/outgoing?url=derp`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 404);
 			assert(body);
@@ -404,9 +404,9 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load /tos', function (done) {
+	it('should load /tos', (done) => {
 		meta.config.termsOfUse = 'please accept our tos';
-		request(`${nconf.get('url')}/tos`, function (err, res, body) {
+		request(`${nconf.get('url')}/tos`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -415,9 +415,9 @@ describe('Controllers', function () {
 	});
 
 
-	it('should load 404 if meta.config.termsOfUse is empty', function (done) {
+	it('should load 404 if meta.config.termsOfUse is empty', (done) => {
 		meta.config.termsOfUse = '';
-		request(`${nconf.get('url')}/tos`, function (err, res, body) {
+		request(`${nconf.get('url')}/tos`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 404);
 			assert(body);
@@ -425,8 +425,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load /sping', function (done) {
-		request(`${nconf.get('url')}/sping`, function (err, res, body) {
+	it('should load /sping', (done) => {
+		request(`${nconf.get('url')}/sping`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert.equal(body, 'healthy');
@@ -434,8 +434,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load /ping', function (done) {
-		request(`${nconf.get('url')}/ping`, function (err, res, body) {
+	it('should load /ping', (done) => {
+		request(`${nconf.get('url')}/ping`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert.equal(body, '200');
@@ -443,8 +443,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should handle 404', function (done) {
-		request(`${nconf.get('url')}/arouteinthevoid`, function (err, res, body) {
+	it('should handle 404', (done) => {
+		request(`${nconf.get('url')}/arouteinthevoid`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 404);
 			assert(body);
@@ -452,8 +452,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load topic rss feed', function (done) {
-		request(`${nconf.get('url')}/topic/${tid}.rss`, function (err, res, body) {
+	it('should load topic rss feed', (done) => {
+		request(`${nconf.get('url')}/topic/${tid}.rss`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -461,8 +461,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load category rss feed', function (done) {
-		request(`${nconf.get('url')}/category/${cid}.rss`, function (err, res, body) {
+	it('should load category rss feed', (done) => {
+		request(`${nconf.get('url')}/category/${cid}.rss`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -470,8 +470,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load topics rss feed', function (done) {
-		request(`${nconf.get('url')}/topics.rss`, function (err, res, body) {
+	it('should load topics rss feed', (done) => {
+		request(`${nconf.get('url')}/topics.rss`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -479,8 +479,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load recent rss feed', function (done) {
-		request(`${nconf.get('url')}/recent.rss`, function (err, res, body) {
+	it('should load recent rss feed', (done) => {
+		request(`${nconf.get('url')}/recent.rss`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -488,8 +488,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load top rss feed', function (done) {
-		request(`${nconf.get('url')}/top.rss`, function (err, res, body) {
+	it('should load top rss feed', (done) => {
+		request(`${nconf.get('url')}/top.rss`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -497,8 +497,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load popular rss feed', function (done) {
-		request(`${nconf.get('url')}/popular.rss`, function (err, res, body) {
+	it('should load popular rss feed', (done) => {
+		request(`${nconf.get('url')}/popular.rss`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -506,8 +506,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load popular rss feed with term', function (done) {
-		request(`${nconf.get('url')}/popular/day.rss`, function (err, res, body) {
+	it('should load popular rss feed with term', (done) => {
+		request(`${nconf.get('url')}/popular/day.rss`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -515,8 +515,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load recent posts rss feed', function (done) {
-		request(`${nconf.get('url')}/recentposts.rss`, function (err, res, body) {
+	it('should load recent posts rss feed', (done) => {
+		request(`${nconf.get('url')}/recentposts.rss`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -524,8 +524,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load category recent posts rss feed', function (done) {
-		request(`${nconf.get('url')}/category/${cid}/recentposts.rss`, function (err, res, body) {
+	it('should load category recent posts rss feed', (done) => {
+		request(`${nconf.get('url')}/category/${cid}/recentposts.rss`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -533,8 +533,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load user topics rss feed', function (done) {
-		request(`${nconf.get('url')}/user/foo/topics.rss`, function (err, res, body) {
+	it('should load user topics rss feed', (done) => {
+		request(`${nconf.get('url')}/user/foo/topics.rss`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -542,8 +542,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load tag rss feed', function (done) {
-		request(`${nconf.get('url')}/tags/nodebb.rss`, function (err, res, body) {
+	it('should load tag rss feed', (done) => {
+		request(`${nconf.get('url')}/tags/nodebb.rss`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -551,8 +551,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load client.css', function (done) {
-		request(`${nconf.get('url')}/assets/client.css`, function (err, res, body) {
+	it('should load client.css', (done) => {
+		request(`${nconf.get('url')}/assets/client.css`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -560,8 +560,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load admin.css', function (done) {
-		request(`${nconf.get('url')}/assets/admin.css`, function (err, res, body) {
+	it('should load admin.css', (done) => {
+		request(`${nconf.get('url')}/assets/admin.css`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -570,8 +570,8 @@ describe('Controllers', function () {
 	});
 
 
-	it('should load nodebb.min.js', function (done) {
-		request(`${nconf.get('url')}/assets/nodebb.min.js`, function (err, res, body) {
+	it('should load nodebb.min.js', (done) => {
+		request(`${nconf.get('url')}/assets/nodebb.min.js`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -579,8 +579,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load acp.min.js', function (done) {
-		request(`${nconf.get('url')}/assets/acp.min.js`, function (err, res, body) {
+	it('should load acp.min.js', (done) => {
+		request(`${nconf.get('url')}/assets/acp.min.js`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -588,8 +588,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load sitemap.xml', function (done) {
-		request(`${nconf.get('url')}/sitemap.xml`, function (err, res, body) {
+	it('should load sitemap.xml', (done) => {
+		request(`${nconf.get('url')}/sitemap.xml`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -597,8 +597,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load sitemap/pages.xml', function (done) {
-		request(`${nconf.get('url')}/sitemap/pages.xml`, function (err, res, body) {
+	it('should load sitemap/pages.xml', (done) => {
+		request(`${nconf.get('url')}/sitemap/pages.xml`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -606,8 +606,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load sitemap/categories.xml', function (done) {
-		request(`${nconf.get('url')}/sitemap/categories.xml`, function (err, res, body) {
+	it('should load sitemap/categories.xml', (done) => {
+		request(`${nconf.get('url')}/sitemap/categories.xml`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -615,8 +615,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load sitemap/topics/1.xml', function (done) {
-		request(`${nconf.get('url')}/sitemap/topics.1.xml`, function (err, res, body) {
+	it('should load sitemap/topics/1.xml', (done) => {
+		request(`${nconf.get('url')}/sitemap/topics.1.xml`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -624,8 +624,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load robots.txt', function (done) {
-		request(`${nconf.get('url')}/robots.txt`, function (err, res, body) {
+	it('should load robots.txt', (done) => {
+		request(`${nconf.get('url')}/robots.txt`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -633,8 +633,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load theme screenshot', function (done) {
-		request(`${nconf.get('url')}/css/previews/nodebb-theme-persona`, function (err, res, body) {
+	it('should load theme screenshot', (done) => {
+		request(`${nconf.get('url')}/css/previews/nodebb-theme-persona`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -642,8 +642,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load users page', function (done) {
-		request(`${nconf.get('url')}/users`, function (err, res, body) {
+	it('should load users page', (done) => {
+		request(`${nconf.get('url')}/users`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -651,8 +651,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load users page', function (done) {
-		request(`${nconf.get('url')}/users?section=online`, function (err, res, body) {
+	it('should load users page', (done) => {
+		request(`${nconf.get('url')}/users?section=online`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -660,8 +660,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should error if guests do not have search privilege', function (done) {
-		request(`${nconf.get('url')}/api/users?query=bar&section=sort-posts`, { json: true }, function (err, res, body) {
+	it('should error if guests do not have search privilege', (done) => {
+		request(`${nconf.get('url')}/api/users?query=bar&section=sort-posts`, { json: true }, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 500);
 			assert(body);
@@ -670,10 +670,10 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load users search page', function (done) {
-		privileges.global.give(['groups:search:users'], 'guests', function (err) {
+	it('should load users search page', (done) => {
+		privileges.global.give(['groups:search:users'], 'guests', (err) => {
 			assert.ifError(err);
-			request(`${nconf.get('url')}/users?query=bar&section=sort-posts`, function (err, res, body) {
+			request(`${nconf.get('url')}/users?query=bar&section=sort-posts`, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -682,8 +682,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load groups page', function (done) {
-		request(`${nconf.get('url')}/groups`, function (err, res, body) {
+	it('should load groups page', (done) => {
+		request(`${nconf.get('url')}/groups`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -691,23 +691,23 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load group details page', function (done) {
+	it('should load group details page', (done) => {
 		groups.create({
 			name: 'group-details',
 			description: 'Foobar!',
 			hidden: 0,
-		}, function (err) {
+		}, (err) => {
 			assert.ifError(err);
-			groups.join('group-details', fooUid, function (err) {
+			groups.join('group-details', fooUid, (err) => {
 				assert.ifError(err);
 				topics.post({
 					uid: fooUid,
 					title: 'topic title',
 					content: 'test topic content',
 					cid: cid,
-				}, function (err) {
+				}, (err) => {
 					assert.ifError(err);
-					request(`${nconf.get('url')}/api/groups/group-details`, { json: true }, function (err, res, body) {
+					request(`${nconf.get('url')}/api/groups/group-details`, { json: true }, (err, res, body) => {
 						assert.ifError(err);
 						assert.equal(res.statusCode, 200);
 						assert(body);
@@ -719,8 +719,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load group members page', function (done) {
-		request(`${nconf.get('url')}/groups/group-details/members`, function (err, res, body) {
+	it('should load group members page', (done) => {
+		request(`${nconf.get('url')}/groups/group-details/members`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -728,15 +728,15 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should 404 when trying to load group members of hidden group', function (done) {
+	it('should 404 when trying to load group members of hidden group', (done) => {
 		var groups = require('../src/groups');
 		groups.create({
 			name: 'hidden-group',
 			description: 'Foobar!',
 			hidden: 1,
-		}, function (err) {
+		}, (err) => {
 			assert.ifError(err);
-			request(`${nconf.get('url')}/groups/hidden-group/members`, function (err, res) {
+			request(`${nconf.get('url')}/groups/hidden-group/members`, (err, res) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				done();
@@ -744,8 +744,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should get recent posts', function (done) {
-		request(`${nconf.get('url')}/api/recent/posts/month`, function (err, res, body) {
+	it('should get recent posts', (done) => {
+		request(`${nconf.get('url')}/api/recent/posts/month`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -753,8 +753,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should get post data', function (done) {
-		request(`${nconf.get('url')}/api/v3/posts/${pid}`, function (err, res, body) {
+	it('should get post data', (done) => {
+		request(`${nconf.get('url')}/api/v3/posts/${pid}`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -762,8 +762,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should get topic data', function (done) {
-		request(`${nconf.get('url')}/api/v3/topics/${tid}`, function (err, res, body) {
+	it('should get topic data', (done) => {
+		request(`${nconf.get('url')}/api/v3/topics/${tid}`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -771,8 +771,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should get category data', function (done) {
-		request(`${nconf.get('url')}/api/v3/categories/${cid}`, function (err, res, body) {
+	it('should get category data', (done) => {
+		request(`${nconf.get('url')}/api/v3/categories/${cid}`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -781,16 +781,16 @@ describe('Controllers', function () {
 	});
 
 
-	describe('revoke session', function () {
+	describe('revoke session', () => {
 		var uid;
 		var jar;
 		var csrf_token;
 
-		before(function (done) {
-			user.create({ username: 'revokeme', password: 'barbar' }, function (err, _uid) {
+		before((done) => {
+			user.create({ username: 'revokeme', password: 'barbar' }, (err, _uid) => {
 				assert.ifError(err);
 				uid = _uid;
-				helpers.loginUser('revokeme', 'barbar', function (err, _jar, _csrf_token) {
+				helpers.loginUser('revokeme', 'barbar', (err, _jar, _csrf_token) => {
 					assert.ifError(err);
 					jar = _jar;
 					csrf_token = _csrf_token;
@@ -799,26 +799,26 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should fail to revoke session with missing uuid', function (done) {
+		it('should fail to revoke session with missing uuid', (done) => {
 			request.del(`${nconf.get('url')}/api/user/revokeme/session`, {
 				jar: jar,
 				headers: {
 					'x-csrf-token': csrf_token,
 				},
-			}, function (err, res) {
+			}, (err, res) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				done();
 			});
 		});
 
-		it('should fail if user doesn\'t exist', function (done) {
+		it('should fail if user doesn\'t exist', (done) => {
 			request.del(`${nconf.get('url')}/api/v3/users/doesnotexist/sessions/1112233`, {
 				jar: jar,
 				headers: {
 					'x-csrf-token': csrf_token,
 				},
-			}, function (err, res, body) {
+			}, (err, res, body) => {
 				assert.ifError(err);
 				assert.strictEqual(res.statusCode, 404);
 				const parsedResponse = JSON.parse(body);
@@ -831,19 +831,19 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should revoke user session', function (done) {
-			db.getSortedSetRange(`uid:${uid}:sessions`, 0, -1, function (err, sids) {
+		it('should revoke user session', (done) => {
+			db.getSortedSetRange(`uid:${uid}:sessions`, 0, -1, (err, sids) => {
 				assert.ifError(err);
 				var sid = sids[0];
 
-				db.sessionStore.get(sid, function (err, sessionObj) {
+				db.sessionStore.get(sid, (err, sessionObj) => {
 					assert.ifError(err);
 					request.del(`${nconf.get('url')}/api/v3/users/${uid}/sessions/${sessionObj.meta.uuid}`, {
 						jar: jar,
 						headers: {
 							'x-csrf-token': csrf_token,
 						},
-					}, function (err, res, body) {
+					}, (err, res, body) => {
 						assert.ifError(err);
 						assert.strictEqual(res.statusCode, 200);
 						assert.deepStrictEqual(JSON.parse(body), {
@@ -860,10 +860,10 @@ describe('Controllers', function () {
 		});
 	});
 
-	describe('widgets', function () {
+	describe('widgets', () => {
 		var widgets = require('../src/widgets');
 
-		before(function (done) {
+		before((done) => {
 			async.waterfall([
 				function (next) {
 					widgets.reset(next);
@@ -889,8 +889,8 @@ describe('Controllers', function () {
 			], done);
 		});
 
-		it('should return {} if there are no widgets', function (done) {
-			request(`${nconf.get('url')}/api/category/${cid}`, { json: true }, function (err, res, body) {
+		it('should return {} if there are no widgets', (done) => {
+			request(`${nconf.get('url')}/api/category/${cid}`, { json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body.widgets);
@@ -899,9 +899,9 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should render templates', function (done) {
+		it('should render templates', (done) => {
 			var url = `${nconf.get('url')}/api/categories`;
-			request(url, { json: true }, function (err, res, body) {
+			request(url, { json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body.widgets);
@@ -911,10 +911,10 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should reset templates', function (done) {
-			widgets.resetTemplates(['categories', 'category'], function (err) {
+		it('should reset templates', (done) => {
+			widgets.resetTemplates(['categories', 'category'], (err) => {
 				assert.ifError(err);
-				request(`${nconf.get('url')}/api/categories`, { json: true }, function (err, res, body) {
+				request(`${nconf.get('url')}/api/categories`, { json: true }, (err, res, body) => {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 					assert(body.widgets);
@@ -925,24 +925,24 @@ describe('Controllers', function () {
 		});
 	});
 
-	describe('tags', function () {
+	describe('tags', () => {
 		var tid;
-		before(function (done) {
+		before((done) => {
 			topics.post({
 				uid: fooUid,
 				title: 'topic title',
 				content: 'test topic content',
 				cid: cid,
 				tags: ['nodebb', 'bug', 'test'],
-			}, function (err, result) {
+			}, (err, result) => {
 				assert.ifError(err);
 				tid = result.topicData.tid;
 				done();
 			});
 		});
 
-		it('should render tags page', function (done) {
-			request(`${nconf.get('url')}/api/tags`, { json: true }, function (err, res, body) {
+		it('should render tags page', (done) => {
+			request(`${nconf.get('url')}/api/tags`, { json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -951,8 +951,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should render tag page with no topics', function (done) {
-			request(`${nconf.get('url')}/api/tags/notag`, { json: true }, function (err, res, body) {
+		it('should render tag page with no topics', (done) => {
+			request(`${nconf.get('url')}/api/tags/notag`, { json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -962,8 +962,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should render tag page with 1 topic', function (done) {
-			request(`${nconf.get('url')}/api/tags/nodebb`, { json: true }, function (err, res, body) {
+		it('should render tag page with 1 topic', (done) => {
+			request(`${nconf.get('url')}/api/tags/nodebb`, { json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -975,26 +975,26 @@ describe('Controllers', function () {
 	});
 
 
-	describe('maintenance mode', function () {
-		before(function (done) {
+	describe('maintenance mode', () => {
+		before((done) => {
 			meta.config.maintenanceMode = 1;
 			done();
 		});
-		after(function (done) {
+		after((done) => {
 			meta.config.maintenanceMode = 0;
 			done();
 		});
 
-		it('should return 503 in maintenance mode', function (done) {
-			request(`${nconf.get('url')}/recent`, { json: true }, function (err, res) {
+		it('should return 503 in maintenance mode', (done) => {
+			request(`${nconf.get('url')}/recent`, { json: true }, (err, res) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 503);
 				done();
 			});
 		});
 
-		it('should return 503 in maintenance mode', function (done) {
-			request(`${nconf.get('url')}/api/recent`, { json: true }, function (err, res, body) {
+		it('should return 503 in maintenance mode', (done) => {
+			request(`${nconf.get('url')}/api/recent`, { json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 503);
 				assert(body);
@@ -1002,8 +1002,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should return 200 in maintenance mode', function (done) {
-			request(`${nconf.get('url')}/api/login`, { json: true }, function (err, res, body) {
+		it('should return 200 in maintenance mode', (done) => {
+			request(`${nconf.get('url')}/api/login`, { json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1012,18 +1012,18 @@ describe('Controllers', function () {
 		});
 	});
 
-	describe('account pages', function () {
+	describe('account pages', () => {
 		var jar;
-		before(function (done) {
-			helpers.loginUser('foo', 'barbar', function (err, _jar) {
+		before((done) => {
+			helpers.loginUser('foo', 'barbar', (err, _jar) => {
 				assert.ifError(err);
 				jar = _jar;
 				done();
 			});
 		});
 
-		it('should redirect to account page with logged in user', function (done) {
-			request(`${nconf.get('url')}/api/login`, { jar: jar, json: true }, function (err, res, body) {
+		it('should redirect to account page with logged in user', (done) => {
+			request(`${nconf.get('url')}/api/login`, { jar: jar, json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert.equal(res.headers['x-redirect'], '/user/foo');
@@ -1032,16 +1032,16 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should 404 if uid is not a number', function (done) {
-			request(`${nconf.get('url')}/api/uid/test`, { json: true }, function (err, res) {
+		it('should 404 if uid is not a number', (done) => {
+			request(`${nconf.get('url')}/api/uid/test`, { json: true }, (err, res) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				done();
 			});
 		});
 
-		it('should redirect to userslug', function (done) {
-			request(`${nconf.get('url')}/api/uid/${fooUid}`, { json: true }, function (err, res, body) {
+		it('should redirect to userslug', (done) => {
+			request(`${nconf.get('url')}/api/uid/${fooUid}`, { json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert.equal(res.headers['x-redirect'], '/user/foo');
@@ -1050,17 +1050,17 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should 404 if user does not exist', function (done) {
-			request(`${nconf.get('url')}/api/uid/123123`, { json: true }, function (err, res) {
+		it('should 404 if user does not exist', (done) => {
+			request(`${nconf.get('url')}/api/uid/123123`, { json: true }, (err, res) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				done();
 			});
 		});
 
-		describe('/me/*', function () {
-			it('should redirect to user profile', function (done) {
-				request(`${nconf.get('url')}/me`, { jar: jar, json: true }, function (err, res, body) {
+		describe('/me/*', () => {
+			it('should redirect to user profile', (done) => {
+				request(`${nconf.get('url')}/me`, { jar: jar, json: true }, (err, res, body) => {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 					assert(body.includes('"template":{"name":"account/profile","account/profile":true}'));
@@ -1068,8 +1068,8 @@ describe('Controllers', function () {
 					done();
 				});
 			});
-			it('api should redirect to /user/[userslug]/bookmarks', function (done) {
-				request(`${nconf.get('url')}/api/me/bookmarks`, { jar: jar, json: true }, function (err, res, body) {
+			it('api should redirect to /user/[userslug]/bookmarks', (done) => {
+				request(`${nconf.get('url')}/api/me/bookmarks`, { jar: jar, json: true }, (err, res, body) => {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 					assert.equal(res.headers['x-redirect'], '/user/foo/bookmarks');
@@ -1077,8 +1077,8 @@ describe('Controllers', function () {
 					done();
 				});
 			});
-			it('api should redirect to /user/[userslug]/edit/username', function (done) {
-				request(`${nconf.get('url')}/api/me/edit/username`, { jar: jar, json: true }, function (err, res, body) {
+			it('api should redirect to /user/[userslug]/edit/username', (done) => {
+				request(`${nconf.get('url')}/api/me/edit/username`, { jar: jar, json: true }, (err, res, body) => {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 					assert.equal(res.headers['x-redirect'], '/user/foo/edit/username');
@@ -1086,8 +1086,8 @@ describe('Controllers', function () {
 					done();
 				});
 			});
-			it('should redirect to login if user is not logged in', function (done) {
-				request(`${nconf.get('url')}/me/bookmarks`, { json: true }, function (err, res, body) {
+			it('should redirect to login if user is not logged in', (done) => {
+				request(`${nconf.get('url')}/me/bookmarks`, { json: true }, (err, res, body) => {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 					assert(body.includes('Login to your account'), body.substr(0, 500));
@@ -1096,24 +1096,24 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should 401 if user is not logged in', function (done) {
-			request(`${nconf.get('url')}/api/admin`, { json: true }, function (err, res) {
+		it('should 401 if user is not logged in', (done) => {
+			request(`${nconf.get('url')}/api/admin`, { json: true }, (err, res) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 401);
 				done();
 			});
 		});
 
-		it('should 403 if user is not admin', function (done) {
-			request(`${nconf.get('url')}/api/admin`, { jar: jar, json: true }, function (err, res) {
+		it('should 403 if user is not admin', (done) => {
+			request(`${nconf.get('url')}/api/admin`, { jar: jar, json: true }, (err, res) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 403);
 				done();
 			});
 		});
 
-		it('should load /user/foo/posts', function (done) {
-			request(`${nconf.get('url')}/api/user/foo/posts`, function (err, res, body) {
+		it('should load /user/foo/posts', (done) => {
+			request(`${nconf.get('url')}/api/user/foo/posts`, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1121,8 +1121,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should 401 if not logged in', function (done) {
-			request(`${nconf.get('url')}/api/user/foo/bookmarks`, function (err, res, body) {
+		it('should 401 if not logged in', (done) => {
+			request(`${nconf.get('url')}/api/user/foo/bookmarks`, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 401);
 				assert(body);
@@ -1130,8 +1130,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should load /user/foo/bookmarks', function (done) {
-			request(`${nconf.get('url')}/api/user/foo/bookmarks`, { jar: jar }, function (err, res, body) {
+		it('should load /user/foo/bookmarks', (done) => {
+			request(`${nconf.get('url')}/api/user/foo/bookmarks`, { jar: jar }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1139,8 +1139,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should load /user/foo/upvoted', function (done) {
-			request(`${nconf.get('url')}/api/user/foo/upvoted`, { jar: jar }, function (err, res, body) {
+		it('should load /user/foo/upvoted', (done) => {
+			request(`${nconf.get('url')}/api/user/foo/upvoted`, { jar: jar }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1148,8 +1148,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should load /user/foo/downvoted', function (done) {
-			request(`${nconf.get('url')}/api/user/foo/downvoted`, { jar: jar }, function (err, res, body) {
+		it('should load /user/foo/downvoted', (done) => {
+			request(`${nconf.get('url')}/api/user/foo/downvoted`, { jar: jar }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1157,8 +1157,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should load /user/foo/best', function (done) {
-			request(`${nconf.get('url')}/api/user/foo/best`, function (err, res, body) {
+		it('should load /user/foo/best', (done) => {
+			request(`${nconf.get('url')}/api/user/foo/best`, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1166,8 +1166,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should load /user/foo/watched', function (done) {
-			request(`${nconf.get('url')}/api/user/foo/watched`, { jar: jar }, function (err, res, body) {
+		it('should load /user/foo/watched', (done) => {
+			request(`${nconf.get('url')}/api/user/foo/watched`, { jar: jar }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1175,8 +1175,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should load /user/foo/ignored', function (done) {
-			request(`${nconf.get('url')}/api/user/foo/ignored`, { jar: jar }, function (err, res, body) {
+		it('should load /user/foo/ignored', (done) => {
+			request(`${nconf.get('url')}/api/user/foo/ignored`, { jar: jar }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1184,8 +1184,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should load /user/foo/topics', function (done) {
-			request(`${nconf.get('url')}/api/user/foo/topics`, function (err, res, body) {
+		it('should load /user/foo/topics', (done) => {
+			request(`${nconf.get('url')}/api/user/foo/topics`, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1193,8 +1193,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should load /user/foo/blocks', function (done) {
-			request(`${nconf.get('url')}/api/user/foo/blocks`, { jar: jar }, function (err, res, body) {
+		it('should load /user/foo/blocks', (done) => {
+			request(`${nconf.get('url')}/api/user/foo/blocks`, { jar: jar }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1202,8 +1202,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should load /user/foo/consent', function (done) {
-			request(`${nconf.get('url')}/api/user/foo/consent`, { jar: jar }, function (err, res, body) {
+		it('should load /user/foo/consent', (done) => {
+			request(`${nconf.get('url')}/api/user/foo/consent`, { jar: jar }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1211,8 +1211,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should load /user/foo/sessions', function (done) {
-			request(`${nconf.get('url')}/api/user/foo/sessions`, { jar: jar }, function (err, res, body) {
+		it('should load /user/foo/sessions', (done) => {
+			request(`${nconf.get('url')}/api/user/foo/sessions`, { jar: jar }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1220,8 +1220,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should load /user/foo/categories', function (done) {
-			request(`${nconf.get('url')}/api/user/foo/categories`, { jar: jar }, function (err, res, body) {
+		it('should load /user/foo/categories', (done) => {
+			request(`${nconf.get('url')}/api/user/foo/categories`, { jar: jar }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1229,8 +1229,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should load /user/foo/uploads', function (done) {
-			request(`${nconf.get('url')}/api/user/foo/uploads`, { jar: jar }, function (err, res, body) {
+		it('should load /user/foo/uploads', (done) => {
+			request(`${nconf.get('url')}/api/user/foo/uploads`, { jar: jar }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1238,8 +1238,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should export users posts', function (done) {
-			request(`${nconf.get('url')}/api/user/uid/foo/export/posts`, { jar: jar }, function (err, res, body) {
+		it('should export users posts', (done) => {
+			request(`${nconf.get('url')}/api/user/uid/foo/export/posts`, { jar: jar }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1247,8 +1247,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should export users uploads', function (done) {
-			request(`${nconf.get('url')}/api/user/uid/foo/export/uploads`, { jar: jar }, function (err, res, body) {
+		it('should export users uploads', (done) => {
+			request(`${nconf.get('url')}/api/user/uid/foo/export/uploads`, { jar: jar }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1256,8 +1256,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should export users profile', function (done) {
-			request(`${nconf.get('url')}/api/user/uid/foo/export/profile`, { jar: jar }, function (err, res, body) {
+		it('should export users profile', (done) => {
+			request(`${nconf.get('url')}/api/user/uid/foo/export/profile`, { jar: jar }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1265,7 +1265,7 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should load notifications page', function (done) {
+		it('should load notifications page', (done) => {
 			var notifications = require('../src/notifications');
 			var notifData = {
 				bodyShort: '[[notifications:user_posted_to, test1, test2]]',
@@ -1305,8 +1305,8 @@ describe('Controllers', function () {
 			], done);
 		});
 
-		it('should 404 if user does not exist', function (done) {
-			request(`${nconf.get('url')}/api/user/email/doesnotexist`, function (err, res, body) {
+		it('should 404 if user does not exist', (done) => {
+			request(`${nconf.get('url')}/api/user/email/doesnotexist`, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				assert(body);
@@ -1314,8 +1314,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should load user by uid', function (done) {
-			request(`${nconf.get('url')}/api/user/uid/${fooUid}`, function (err, res, body) {
+		it('should load user by uid', (done) => {
+			request(`${nconf.get('url')}/api/user/uid/${fooUid}`, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1323,8 +1323,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should load user by username', function (done) {
-			request(`${nconf.get('url')}/api/user/username/foo`, function (err, res, body) {
+		it('should load user by username', (done) => {
+			request(`${nconf.get('url')}/api/user/username/foo`, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1332,8 +1332,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should load user by email', function (done) {
-			request(`${nconf.get('url')}/api/user/email/foo@test.com`, function (err, res, body) {
+		it('should load user by email', (done) => {
+			request(`${nconf.get('url')}/api/user/email/foo@test.com`, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1341,10 +1341,10 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should return 401 if user does not have view:users privilege', function (done) {
-			privileges.global.rescind(['groups:view:users'], 'guests', function (err) {
+		it('should return 401 if user does not have view:users privilege', (done) => {
+			privileges.global.rescind(['groups:view:users'], 'guests', (err) => {
 				assert.ifError(err);
-				request(`${nconf.get('url')}/api/user/foo`, { json: true }, function (err, res, body) {
+				request(`${nconf.get('url')}/api/user/foo`, { json: true }, (err, res, body) => {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 401);
 					assert.deepEqual(body, {
@@ -1359,15 +1359,15 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should return false if user can not edit user', function (done) {
-			user.create({ username: 'regularJoe', password: 'barbar' }, function (err) {
+		it('should return false if user can not edit user', (done) => {
+			user.create({ username: 'regularJoe', password: 'barbar' }, (err) => {
 				assert.ifError(err);
-				helpers.loginUser('regularJoe', 'barbar', function (err, jar) {
+				helpers.loginUser('regularJoe', 'barbar', (err, jar) => {
 					assert.ifError(err);
-					request(`${nconf.get('url')}/api/user/foo/info`, { jar: jar, json: true }, function (err, res) {
+					request(`${nconf.get('url')}/api/user/foo/info`, { jar: jar, json: true }, (err, res) => {
 						assert.ifError(err);
 						assert.equal(res.statusCode, 403);
-						request(`${nconf.get('url')}/api/user/foo/edit`, { jar: jar, json: true }, function (err, res) {
+						request(`${nconf.get('url')}/api/user/foo/edit`, { jar: jar, json: true }, (err, res) => {
 							assert.ifError(err);
 							assert.equal(res.statusCode, 403);
 							done();
@@ -1377,16 +1377,16 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should load correct user', function (done) {
-			request(`${nconf.get('url')}/api/user/FOO`, { jar: jar, json: true }, function (err, res) {
+		it('should load correct user', (done) => {
+			request(`${nconf.get('url')}/api/user/FOO`, { jar: jar, json: true }, (err, res) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				done();
 			});
 		});
 
-		it('should redirect', function (done) {
-			request(`${nconf.get('url')}/user/FOO`, { jar: jar }, function (err, res, body) {
+		it('should redirect', (done) => {
+			request(`${nconf.get('url')}/user/FOO`, { jar: jar }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1394,8 +1394,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should 404 if user does not exist', function (done) {
-			request(`${nconf.get('url')}/api/user/doesnotexist`, { jar: jar }, function (err, res) {
+		it('should 404 if user does not exist', (done) => {
+			request(`${nconf.get('url')}/api/user/doesnotexist`, { jar: jar }, (err, res) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				done();
@@ -1403,11 +1403,11 @@ describe('Controllers', function () {
 		});
 
 		it('should not increase profile view if you visit your own profile', (done) => {
-			request(`${nconf.get('url')}/api/user/foo`, { jar: jar }, function (err, res) {
+			request(`${nconf.get('url')}/api/user/foo`, { jar: jar }, (err, res) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
-				setTimeout(function () {
-					user.getUserField(fooUid, 'profileviews', function (err, viewcount) {
+				setTimeout(() => {
+					user.getUserField(fooUid, 'profileviews', (err, viewcount) => {
 						assert.ifError(err);
 						assert(viewcount === 0);
 						done();
@@ -1417,11 +1417,11 @@ describe('Controllers', function () {
 		});
 
 		it('should not increase profile view if a guest visits a profile', (done) => {
-			request(`${nconf.get('url')}/api/user/foo`, {}, function (err, res) {
+			request(`${nconf.get('url')}/api/user/foo`, {}, (err, res) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
-				setTimeout(function () {
-					user.getUserField(fooUid, 'profileviews', function (err, viewcount) {
+				setTimeout(() => {
+					user.getUserField(fooUid, 'profileviews', (err, viewcount) => {
 						assert.ifError(err);
 						assert(viewcount === 0);
 						done();
@@ -1430,14 +1430,14 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should increase profile view', function (done) {
-			helpers.loginUser('regularJoe', 'barbar', function (err, jar) {
+		it('should increase profile view', (done) => {
+			helpers.loginUser('regularJoe', 'barbar', (err, jar) => {
 				assert.ifError(err);
-				request(`${nconf.get('url')}/api/user/foo`, { jar: jar }, function (err, res) {
+				request(`${nconf.get('url')}/api/user/foo`, { jar: jar }, (err, res) => {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
-					setTimeout(function () {
-						user.getUserField(fooUid, 'profileviews', function (err, viewcount) {
+					setTimeout(() => {
+						user.getUserField(fooUid, 'profileviews', (err, viewcount) => {
 							assert.ifError(err);
 							assert(viewcount > 0);
 							done();
@@ -1447,10 +1447,10 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should parse about me', function (done) {
-			user.setUserFields(fooUid, { picture: '/path/to/picture', aboutme: 'hi i am a bot' }, function (err) {
+		it('should parse about me', (done) => {
+			user.setUserFields(fooUid, { picture: '/path/to/picture', aboutme: 'hi i am a bot' }, (err) => {
 				assert.ifError(err);
-				request(`${nconf.get('url')}/api/user/foo`, { json: true }, function (err, res, body) {
+				request(`${nconf.get('url')}/api/user/foo`, { json: true }, (err, res, body) => {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 					assert.equal(body.aboutme, 'hi i am a bot');
@@ -1460,9 +1460,9 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should not return reputation if reputation is disabled', function (done) {
+		it('should not return reputation if reputation is disabled', (done) => {
 			meta.config['reputation:disabled'] = 1;
-			request(`${nconf.get('url')}/api/user/foo`, { json: true }, function (err, res, body) {
+			request(`${nconf.get('url')}/api/user/foo`, { json: true }, (err, res, body) => {
 				meta.config['reputation:disabled'] = 0;
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
@@ -1471,7 +1471,7 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should only return posts that are not deleted', function (done) {
+		it('should only return posts that are not deleted', (done) => {
 			var topicData;
 			var pidToDelete;
 			async.waterfall([
@@ -1490,12 +1490,10 @@ describe('Controllers', function () {
 					posts.delete(pidToDelete, fooUid, next);
 				},
 				function (next) {
-					request(`${nconf.get('url')}/api/user/foo`, { json: true }, function (err, res, body) {
+					request(`${nconf.get('url')}/api/user/foo`, { json: true }, (err, res, body) => {
 						assert.ifError(err);
 						assert.equal(res.statusCode, 200);
-						var contents = body.posts.map(function (p) {
-							return p.content;
-						});
+						var contents = body.posts.map(p => p.content);
 						assert(!contents.includes('1st reply'));
 						done();
 					});
@@ -1503,16 +1501,16 @@ describe('Controllers', function () {
 			], done);
 		});
 
-		it('should return selected group title', function (done) {
+		it('should return selected group title', (done) => {
 			groups.create({
 				name: 'selectedGroup',
-			}, function (err) {
+			}, (err) => {
 				assert.ifError(err);
-				user.create({ username: 'groupie' }, function (err, uid) {
+				user.create({ username: 'groupie' }, (err, uid) => {
 					assert.ifError(err);
-					groups.join('selectedGroup', uid, function (err) {
+					groups.join('selectedGroup', uid, (err) => {
 						assert.ifError(err);
-						request(`${nconf.get('url')}/api/user/groupie`, { json: true }, function (err, res, body) {
+						request(`${nconf.get('url')}/api/user/groupie`, { json: true }, (err, res, body) => {
 							assert.ifError(err);
 							assert.equal(res.statusCode, 200);
 							assert(Array.isArray(body.selectedGroup));
@@ -1524,10 +1522,10 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should 404 if user does not exist', function (done) {
-			groups.join('administrators', fooUid, function (err) {
+		it('should 404 if user does not exist', (done) => {
+			groups.join('administrators', fooUid, (err) => {
 				assert.ifError(err);
-				request(`${nconf.get('url')}/api/user/doesnotexist/edit`, { jar: jar, json: true }, function (err, res, body) {
+				request(`${nconf.get('url')}/api/user/doesnotexist/edit`, { jar: jar, json: true }, (err, res, body) => {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 404);
 					groups.leave('administrators', fooUid, done);
@@ -1535,24 +1533,24 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should render edit/password', function (done) {
-			request(`${nconf.get('url')}/api/user/foo/edit/password`, { jar: jar, json: true }, function (err, res, body) {
+		it('should render edit/password', (done) => {
+			request(`${nconf.get('url')}/api/user/foo/edit/password`, { jar: jar, json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				done();
 			});
 		});
 
-		it('should render edit/email', function (done) {
-			request(`${nconf.get('url')}/api/user/foo/edit/email`, { jar: jar, json: true }, function (err, res, body) {
+		it('should render edit/email', (done) => {
+			request(`${nconf.get('url')}/api/user/foo/edit/email`, { jar: jar, json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				done();
 			});
 		});
 
-		it('should render edit/username', function (done) {
-			request(`${nconf.get('url')}/api/user/foo/edit/username`, { jar: jar, json: true }, function (err, res, body) {
+		it('should render edit/username', (done) => {
+			request(`${nconf.get('url')}/api/user/foo/edit/username`, { jar: jar, json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				done();
@@ -1560,16 +1558,16 @@ describe('Controllers', function () {
 		});
 	});
 
-	describe('account follow page', function () {
+	describe('account follow page', () => {
 		var socketUser = require('../src/socket.io/user');
 		var uid;
-		before(function (done) {
-			user.create({ username: 'follower' }, function (err, _uid) {
+		before((done) => {
+			user.create({ username: 'follower' }, (err, _uid) => {
 				assert.ifError(err);
 				uid = _uid;
-				socketUser.follow({ uid: uid }, { uid: fooUid }, function (err) {
+				socketUser.follow({ uid: uid }, { uid: fooUid }, (err) => {
 					assert.ifError(err);
-					socketUser.isFollowing({ uid: uid }, { uid: fooUid }, function (err, isFollowing) {
+					socketUser.isFollowing({ uid: uid }, { uid: fooUid }, (err, isFollowing) => {
 						assert.ifError(err);
 						assert(isFollowing);
 						done();
@@ -1578,8 +1576,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should get followers page', function (done) {
-			request(`${nconf.get('url')}/api/user/foo/followers`, { json: true }, function (err, res, body) {
+		it('should get followers page', (done) => {
+			request(`${nconf.get('url')}/api/user/foo/followers`, { json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert.equal(body.users[0].username, 'follower');
@@ -1587,8 +1585,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should get following page', function (done) {
-			request(`${nconf.get('url')}/api/user/follower/following`, { json: true }, function (err, res, body) {
+		it('should get following page', (done) => {
+			request(`${nconf.get('url')}/api/user/follower/following`, { json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert.equal(body.users[0].username, 'foo');
@@ -1596,10 +1594,10 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should return empty after unfollow', function (done) {
-			socketUser.unfollow({ uid: uid }, { uid: fooUid }, function (err) {
+		it('should return empty after unfollow', (done) => {
+			socketUser.unfollow({ uid: uid }, { uid: fooUid }, (err) => {
 				assert.ifError(err);
-				request(`${nconf.get('url')}/api/user/foo/followers`, { json: true }, function (err, res, body) {
+				request(`${nconf.get('url')}/api/user/foo/followers`, { json: true }, (err, res, body) => {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 					assert.equal(body.users.length, 0);
@@ -1609,28 +1607,28 @@ describe('Controllers', function () {
 		});
 	});
 
-	describe('post redirect', function () {
+	describe('post redirect', () => {
 		var jar;
-		before(function (done) {
-			helpers.loginUser('foo', 'barbar', function (err, _jar) {
+		before((done) => {
+			helpers.loginUser('foo', 'barbar', (err, _jar) => {
 				assert.ifError(err);
 				jar = _jar;
 				done();
 			});
 		});
 
-		it('should 404 for invalid pid', function (done) {
-			request(`${nconf.get('url')}/api/post/fail`, function (err, res) {
+		it('should 404 for invalid pid', (done) => {
+			request(`${nconf.get('url')}/api/post/fail`, (err, res) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				done();
 			});
 		});
 
-		it('should 403 if user does not have read privilege', function (done) {
-			privileges.categories.rescind(['groups:topics:read'], category.cid, 'registered-users', function (err) {
+		it('should 403 if user does not have read privilege', (done) => {
+			privileges.categories.rescind(['groups:topics:read'], category.cid, 'registered-users', (err) => {
 				assert.ifError(err);
-				request(`${nconf.get('url')}/api/post/${pid}`, { jar: jar }, function (err, res) {
+				request(`${nconf.get('url')}/api/post/${pid}`, { jar: jar }, (err, res) => {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 403);
 					privileges.categories.give(['groups:topics:read'], category.cid, 'registered-users', done);
@@ -1638,8 +1636,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should return correct post path', function (done) {
-			request(`${nconf.get('url')}/api/post/${pid}`, { json: true }, function (err, res, body) {
+		it('should return correct post path', (done) => {
+			request(`${nconf.get('url')}/api/post/${pid}`, { json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert.equal(res.headers['x-redirect'], '/topic/1/test-topic-title/1');
@@ -1649,9 +1647,9 @@ describe('Controllers', function () {
 		});
 	});
 
-	describe('cookie consent', function () {
-		it('should return relevant data in configs API route', function (done) {
-			request(`${nconf.get('url')}/api/config`, function (err, res, body) {
+	describe('cookie consent', () => {
+		it('should return relevant data in configs API route', (done) => {
+			request(`${nconf.get('url')}/api/config`, (err, res, body) => {
 				var parsed;
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
@@ -1671,11 +1669,11 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('response should be parseable when entries have apostrophes', function (done) {
-			meta.configs.set('cookieConsentMessage', 'Julian\'s Message', function (err) {
+		it('response should be parseable when entries have apostrophes', (done) => {
+			meta.configs.set('cookieConsentMessage', 'Julian\'s Message', (err) => {
 				assert.ifError(err);
 
-				request(`${nconf.get('url')}/api/config`, function (err, res, body) {
+				request(`${nconf.get('url')}/api/config`, (err, res, body) => {
 					var parsed;
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
@@ -1693,8 +1691,8 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should return osd data', function (done) {
-		request(`${nconf.get('url')}/osd.xml`, function (err, res, body) {
+	it('should return osd data', (done) => {
+		request(`${nconf.get('url')}/osd.xml`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -1702,15 +1700,15 @@ describe('Controllers', function () {
 		});
 	});
 
-	describe('handle errors', function () {
+	describe('handle errors', () => {
 		var plugins = require('../src/plugins');
-		after(function (done) {
+		after((done) => {
 			plugins.loadedHooks['filter:router.page'] = undefined;
 			done();
 		});
 
-		it('should handle topic malformed uri', function (done) {
-			request(`${nconf.get('url')}/topic/1/a%AFc`, function (err, res, body) {
+		it('should handle topic malformed uri', (done) => {
+			request(`${nconf.get('url')}/topic/1/a%AFc`, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1718,8 +1716,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should handle category malformed uri', function (done) {
-			request(`${nconf.get('url')}/category/1/a%AFc`, function (err, res, body) {
+		it('should handle category malformed uri', (done) => {
+			request(`${nconf.get('url')}/category/1/a%AFc`, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1727,8 +1725,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should handle malformed uri ', function (done) {
-			request(`${nconf.get('url')}/user/a%AFc`, function (err, res, body) {
+		it('should handle malformed uri ', (done) => {
+			request(`${nconf.get('url')}/user/a%AFc`, (err, res, body) => {
 				assert.ifError(err);
 				assert(body);
 				assert.equal(res.statusCode, 400);
@@ -1736,8 +1734,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should handle malformed uri in api', function (done) {
-			request(`${nconf.get('url')}/api/user/a%AFc`, { json: true }, function (err, res, body) {
+		it('should handle malformed uri in api', (done) => {
+			request(`${nconf.get('url')}/api/user/a%AFc`, { json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 400);
 				assert.equal(body.error, '[[global:400.title]]');
@@ -1745,7 +1743,7 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should handle CSRF error', function (done) {
+		it('should handle CSRF error', (done) => {
 			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
 			plugins.loadedHooks['filter:router.page'].push({
 				method: function (req, res, next) {
@@ -1755,7 +1753,7 @@ describe('Controllers', function () {
 				},
 			});
 
-			request(`${nconf.get('url')}/users`, {}, function (err, res) {
+			request(`${nconf.get('url')}/users`, {}, (err, res) => {
 				plugins.loadedHooks['filter:router.page'] = [];
 				assert.ifError(err);
 				assert.equal(res.statusCode, 403);
@@ -1763,7 +1761,7 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should handle black-list error', function (done) {
+		it('should handle black-list error', (done) => {
 			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
 			plugins.loadedHooks['filter:router.page'].push({
 				method: function (req, res, next) {
@@ -1773,7 +1771,7 @@ describe('Controllers', function () {
 				},
 			});
 
-			request(`${nconf.get('url')}/users`, {}, function (err, res, body) {
+			request(`${nconf.get('url')}/users`, {}, (err, res, body) => {
 				plugins.loadedHooks['filter:router.page'] = [];
 				assert.ifError(err);
 				assert.equal(res.statusCode, 403);
@@ -1782,7 +1780,7 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should handle page redirect through error', function (done) {
+		it('should handle page redirect through error', (done) => {
 			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
 			plugins.loadedHooks['filter:router.page'].push({
 				method: function (req, res, next) {
@@ -1794,7 +1792,7 @@ describe('Controllers', function () {
 				},
 			});
 
-			request(`${nconf.get('url')}/users`, {}, function (err, res, body) {
+			request(`${nconf.get('url')}/users`, {}, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1802,7 +1800,7 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should handle api page redirect through error', function (done) {
+		it('should handle api page redirect through error', (done) => {
 			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
 			plugins.loadedHooks['filter:router.page'].push({
 				method: function (req, res, next) {
@@ -1814,7 +1812,7 @@ describe('Controllers', function () {
 				},
 			});
 
-			request(`${nconf.get('url')}/api/users`, { json: true }, function (err, res, body) {
+			request(`${nconf.get('url')}/api/users`, { json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert.equal(res.headers['x-redirect'], '/api/popular');
@@ -1823,7 +1821,7 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should handle error page', function (done) {
+		it('should handle error page', (done) => {
 			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
 			plugins.loadedHooks['filter:router.page'].push({
 				method: function (req, res, next) {
@@ -1832,7 +1830,7 @@ describe('Controllers', function () {
 				},
 			});
 
-			request(`${nconf.get('url')}/users`, function (err, res, body) {
+			request(`${nconf.get('url')}/users`, (err, res, body) => {
 				plugins.loadedHooks['filter:router.page'] = [];
 				assert.ifError(err);
 				assert.equal(res.statusCode, 500);
@@ -1842,9 +1840,9 @@ describe('Controllers', function () {
 		});
 	});
 
-	describe('timeago locales', function () {
-		it('should load timeago locale', function (done) {
-			request(`${nconf.get('url')}/assets/src/modules/timeago/locales/jquery.timeago.af.js`, function (err, res, body) {
+	describe('timeago locales', () => {
+		it('should load timeago locale', (done) => {
+			request(`${nconf.get('url')}/assets/src/modules/timeago/locales/jquery.timeago.af.js`, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body.includes('"gelede"'));
@@ -1852,16 +1850,16 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should return not found if NodeBB language exists but timeago locale does not exist', function (done) {
-			request(`${nconf.get('url')}/assets/src/modules/timeago/locales/jquery.timeago.ms.js`, function (err, res, body) {
+		it('should return not found if NodeBB language exists but timeago locale does not exist', (done) => {
+			request(`${nconf.get('url')}/assets/src/modules/timeago/locales/jquery.timeago.ms.js`, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				done();
 			});
 		});
 
-		it('should return not found if NodeBB language does not exist', function (done) {
-			request(`${nconf.get('url')}/assets/src/modules/timeago/locales/jquery.timeago.muggle.js`, function (err, res, body) {
+		it('should return not found if NodeBB language does not exist', (done) => {
+			request(`${nconf.get('url')}/assets/src/modules/timeago/locales/jquery.timeago.muggle.js`, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				done();
@@ -1869,46 +1867,46 @@ describe('Controllers', function () {
 		});
 	});
 
-	describe('category', function () {
+	describe('category', () => {
 		var jar;
-		before(function (done) {
-			helpers.loginUser('foo', 'barbar', function (err, _jar) {
+		before((done) => {
+			helpers.loginUser('foo', 'barbar', (err, _jar) => {
 				assert.ifError(err);
 				jar = _jar;
 				done();
 			});
 		});
 
-		it('should return 404 if cid is not a number', function (done) {
-			request(`${nconf.get('url')}/api/category/fail`, function (err, res) {
+		it('should return 404 if cid is not a number', (done) => {
+			request(`${nconf.get('url')}/api/category/fail`, (err, res) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				done();
 			});
 		});
 
-		it('should return 404 if topic index is not a number', function (done) {
-			request(`${nconf.get('url')}/api/category/${category.slug}/invalidtopicindex`, function (err, res) {
+		it('should return 404 if topic index is not a number', (done) => {
+			request(`${nconf.get('url')}/api/category/${category.slug}/invalidtopicindex`, (err, res) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				done();
 			});
 		});
 
-		it('should 404 if category does not exist', function (done) {
-			request(`${nconf.get('url')}/api/category/123123`, function (err, res) {
+		it('should 404 if category does not exist', (done) => {
+			request(`${nconf.get('url')}/api/category/123123`, (err, res) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				done();
 			});
 		});
 
-		it('should 404 if category is disabled', function (done) {
-			categories.create({ name: 'disabled' }, function (err, category) {
+		it('should 404 if category is disabled', (done) => {
+			categories.create({ name: 'disabled' }, (err, category) => {
 				assert.ifError(err);
-				categories.setCategoryField(category.cid, 'disabled', 1, function (err) {
+				categories.setCategoryField(category.cid, 'disabled', 1, (err) => {
 					assert.ifError(err);
-					request(`${nconf.get('url')}/api/category/${category.slug}`, function (err, res) {
+					request(`${nconf.get('url')}/api/category/${category.slug}`, (err, res) => {
 						assert.ifError(err);
 						assert.equal(res.statusCode, 404);
 						done();
@@ -1917,12 +1915,12 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should return 401 if not allowed to read', function (done) {
-			categories.create({ name: 'hidden' }, function (err, category) {
+		it('should return 401 if not allowed to read', (done) => {
+			categories.create({ name: 'hidden' }, (err, category) => {
 				assert.ifError(err);
-				privileges.categories.rescind(['groups:read'], category.cid, 'guests', function (err) {
+				privileges.categories.rescind(['groups:read'], category.cid, 'guests', (err) => {
 					assert.ifError(err);
-					request(`${nconf.get('url')}/api/category/${category.slug}`, function (err, res) {
+					request(`${nconf.get('url')}/api/category/${category.slug}`, (err, res) => {
 						assert.ifError(err);
 						assert.equal(res.statusCode, 401);
 						done();
@@ -1931,8 +1929,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should redirect if topic index is negative', function (done) {
-			request(`${nconf.get('url')}/api/category/${category.slug}/-10`, function (err, res) {
+		it('should redirect if topic index is negative', (done) => {
+			request(`${nconf.get('url')}/api/category/${category.slug}/-10`, (err, res) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert.ok(res.headers['x-redirect']);
@@ -1940,10 +1938,10 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should 404 if page is not found', function (done) {
-			user.setSetting(fooUid, 'usePagination', 1, function (err) {
+		it('should 404 if page is not found', (done) => {
+			user.setSetting(fooUid, 'usePagination', 1, (err) => {
 				assert.ifError(err);
-				request(`${nconf.get('url')}/api/category/${category.slug}?page=100`, { jar: jar, json: true }, function (err, res) {
+				request(`${nconf.get('url')}/api/category/${category.slug}?page=100`, { jar: jar, json: true }, (err, res) => {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 404);
 					done();
@@ -1951,8 +1949,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should load page 1 if req.query.page is not sent', function (done) {
-			request(`${nconf.get('url')}/api/category/${category.slug}`, { jar: jar, json: true }, function (err, res, body) {
+		it('should load page 1 if req.query.page is not sent', (done) => {
+			request(`${nconf.get('url')}/api/category/${category.slug}`, { jar: jar, json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert.equal(body.pagination.currentPage, 1);
@@ -1960,7 +1958,7 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should sort topics by most posts', function (done) {
+		it('should sort topics by most posts', (done) => {
 			async.waterfall([
 				function (next) {
 					categories.create({ name: 'most-posts-category' }, next);
@@ -1977,7 +1975,7 @@ describe('Controllers', function () {
 							topics.reply({ uid: fooUid, content: 'topic 2 reply', tid: data.topicData.tid }, next);
 						},
 						function (postData, next) {
-							request(`${nconf.get('url')}/api/category/${category.slug}?sort=most_posts`, { jar: jar, json: true }, function (err, res, body) {
+							request(`${nconf.get('url')}/api/category/${category.slug}?sort=most_posts`, { jar: jar, json: true }, (err, res, body) => {
 								assert.ifError(err);
 								assert.equal(res.statusCode, 200);
 								assert.equal(body.topics[0].title, 'topic 2');
@@ -1986,14 +1984,14 @@ describe('Controllers', function () {
 								next();
 							});
 						},
-					], function (err) {
+					], (err) => {
 						next(err);
 					});
 				},
 			], done);
 		});
 
-		it('should load a specific users topics from a category with tags', function (done) {
+		it('should load a specific users topics from a category with tags', (done) => {
 			async.waterfall([
 				function (next) {
 					categories.create({ name: 'filtered-category' }, next);
@@ -2010,7 +2008,7 @@ describe('Controllers', function () {
 							topics.post({ uid: fooUid, cid: category.cid, title: 'topic 3', content: 'topic 3 OP', tags: ['java', 'cpp', 'best'] }, next);
 						},
 						function (data, next) {
-							request(`${nconf.get('url')}/api/category/${category.slug}?tag=node&author=foo`, { jar: jar, json: true }, function (err, res, body) {
+							request(`${nconf.get('url')}/api/category/${category.slug}?tag=node&author=foo`, { jar: jar, json: true }, (err, res, body) => {
 								assert.ifError(err);
 								assert.equal(res.statusCode, 200);
 								assert.equal(body.topics[0].title, 'topic 2');
@@ -2018,7 +2016,7 @@ describe('Controllers', function () {
 							});
 						},
 						function (next) {
-							request(`${nconf.get('url')}/api/category/${category.slug}?tag[]=java&tag[]=cpp`, { jar: jar, json: true }, function (err, res, body) {
+							request(`${nconf.get('url')}/api/category/${category.slug}?tag[]=java&tag[]=cpp`, { jar: jar, json: true }, (err, res, body) => {
 								assert.ifError(err);
 								assert.equal(res.statusCode, 200);
 								assert.equal(body.topics[0].title, 'topic 3');
@@ -2026,14 +2024,14 @@ describe('Controllers', function () {
 								next();
 							});
 						},
-					], function (err) {
+					], (err) => {
 						next(err);
 					});
 				},
 			], done);
 		});
 
-		it('should redirect if category is a link', function (done) {
+		it('should redirect if category is a link', (done) => {
 			let cid;
 			let category;
 			async.waterfall([
@@ -2043,7 +2041,7 @@ describe('Controllers', function () {
 				function (_category, next) {
 					category = _category;
 					cid = category.cid;
-					request(`${nconf.get('url')}/api/category/${category.slug}`, { jar: jar, json: true }, function (err, res, body) {
+					request(`${nconf.get('url')}/api/category/${category.slug}`, { jar: jar, json: true }, (err, res, body) => {
 						assert.ifError(err);
 						assert.equal(res.statusCode, 200);
 						assert.equal(res.headers['x-redirect'], 'https://nodebb.org');
@@ -2055,7 +2053,7 @@ describe('Controllers', function () {
 					categories.setCategoryField(cid, 'link', '/recent', next);
 				},
 				function (next) {
-					request(`${nconf.get('url')}/api/category/${category.slug}`, { jar: jar, json: true }, function (err, res, body) {
+					request(`${nconf.get('url')}/api/category/${category.slug}`, { jar: jar, json: true }, (err, res, body) => {
 						assert.ifError(err);
 						assert.equal(res.statusCode, 200);
 						assert.equal(res.headers['x-redirect'], '/recent');
@@ -2066,7 +2064,7 @@ describe('Controllers', function () {
 			], done);
 		});
 
-		it('should get recent topic replies from children categories', function (done) {
+		it('should get recent topic replies from children categories', (done) => {
 			var parentCategory;
 			var childCategory1;
 			var childCategory2;
@@ -2090,21 +2088,21 @@ describe('Controllers', function () {
 							topics.post({ uid: fooUid, cid: childCategory2.cid, title: 'topic 1', content: 'topic 1 OP' }, next);
 						},
 						function (data, next) {
-							request(`${nconf.get('url')}/api/category/${parentCategory.slug}`, { jar: jar, json: true }, function (err, res, body) {
+							request(`${nconf.get('url')}/api/category/${parentCategory.slug}`, { jar: jar, json: true }, (err, res, body) => {
 								assert.ifError(err);
 								assert.equal(res.statusCode, 200);
 								assert.equal(body.children[1].posts[0].content, 'topic 1 OP');
 								next();
 							});
 						},
-					], function (err) {
+					], (err) => {
 						next(err);
 					});
 				},
 			], done);
 		});
 
-		it('should create 2 pages of topics', function (done) {
+		it('should create 2 pages of topics', (done) => {
 			async.waterfall([
 				function (next) {
 					categories.create({ name: 'category with 2 pages' }, next);
@@ -2117,7 +2115,7 @@ describe('Controllers', function () {
 
 					async.waterfall([
 						function (next) {
-							async.eachSeries(titles, function (title, next) {
+							async.eachSeries(titles, (title, next) => {
 								topics.post({ uid: fooUid, cid: category.cid, title: title, content: 'does not really matter' }, next);
 							}, next);
 						},
@@ -2125,7 +2123,7 @@ describe('Controllers', function () {
 							user.getSettings(fooUid, next);
 						},
 						function (settings, next) {
-							request(`${nconf.get('url')}/api/category/${category.slug}`, { jar: jar, json: true }, function (err, res, body) {
+							request(`${nconf.get('url')}/api/category/${category.slug}`, { jar: jar, json: true }, (err, res, body) => {
 								assert.ifError(err);
 								assert.equal(res.statusCode, 200);
 								assert.equal(body.topics.length, settings.topicsPerPage);
@@ -2133,7 +2131,7 @@ describe('Controllers', function () {
 								next();
 							});
 						},
-					], function (err) {
+					], (err) => {
 						next(err);
 					});
 				},
@@ -2141,34 +2139,34 @@ describe('Controllers', function () {
 		});
 	});
 
-	describe('unread', function () {
+	describe('unread', () => {
 		var jar;
-		before(function (done) {
-			helpers.loginUser('foo', 'barbar', function (err, _jar) {
+		before((done) => {
+			helpers.loginUser('foo', 'barbar', (err, _jar) => {
 				assert.ifError(err);
 				jar = _jar;
 				done();
 			});
 		});
 
-		it('should load unread page', function (done) {
-			request(`${nconf.get('url')}/api/unread`, { jar: jar }, function (err, res) {
+		it('should load unread page', (done) => {
+			request(`${nconf.get('url')}/api/unread`, { jar: jar }, (err, res) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				done();
 			});
 		});
 
-		it('should 404 if filter is invalid', function (done) {
-			request(`${nconf.get('url')}/api/unread/doesnotexist`, { jar: jar }, function (err, res) {
+		it('should 404 if filter is invalid', (done) => {
+			request(`${nconf.get('url')}/api/unread/doesnotexist`, { jar: jar }, (err, res) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				done();
 			});
 		});
 
-		it('should return total unread count', function (done) {
-			request(`${nconf.get('url')}/api/unread/total?filter=new`, { jar: jar }, function (err, res, body) {
+		it('should return total unread count', (done) => {
+			request(`${nconf.get('url')}/api/unread/total?filter=new`, { jar: jar }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert.equal(body, 0);
@@ -2176,8 +2174,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should redirect if page is out of bounds', function (done) {
-			request(`${nconf.get('url')}/api/unread?page=-1`, { jar: jar, json: true }, function (err, res, body) {
+		it('should redirect if page is out of bounds', (done) => {
+			request(`${nconf.get('url')}/api/unread?page=-1`, { jar: jar, json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert.equal(res.headers['x-redirect'], '/unread?page=1');
@@ -2187,17 +2185,17 @@ describe('Controllers', function () {
 		});
 	});
 
-	describe('admin middlewares', function () {
-		it('should redirect to login', function (done) {
-			request(`${nconf.get('url')}//api/admin/advanced/database`, { json: true }, function (err, res, body) {
+	describe('admin middlewares', () => {
+		it('should redirect to login', (done) => {
+			request(`${nconf.get('url')}//api/admin/advanced/database`, { json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 401);
 				done();
 			});
 		});
 
-		it('should redirect to login', function (done) {
-			request(`${nconf.get('url')}//admin/advanced/database`, { json: true }, function (err, res, body) {
+		it('should redirect to login', (done) => {
+			request(`${nconf.get('url')}//admin/advanced/database`, { json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body.includes('Login to your account'));
@@ -2206,12 +2204,12 @@ describe('Controllers', function () {
 		});
 	});
 
-	describe('composer', function () {
+	describe('composer', () => {
 		var csrf_token;
 		var jar;
 
-		before(function (done) {
-			helpers.loginUser('foo', 'barbar', function (err, _jar) {
+		before((done) => {
+			helpers.loginUser('foo', 'barbar', (err, _jar) => {
 				assert.ifError(err);
 				jar = _jar;
 
@@ -2219,7 +2217,7 @@ describe('Controllers', function () {
 					url: `${nconf.get('url')}/api/config`,
 					json: true,
 					jar: jar,
-				}, function (err, response, body) {
+				}, (err, response, body) => {
 					assert.ifError(err);
 					csrf_token = body.csrf_token;
 					done();
@@ -2227,8 +2225,8 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should load the composer route', function (done) {
-			request(`${nconf.get('url')}/api/compose`, { json: true }, function (err, res, body) {
+		it('should load the composer route', (done) => {
+			request(`${nconf.get('url')}/api/compose`, { json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body.title);
@@ -2238,7 +2236,7 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should load the composer route if disabled by plugin', function (done) {
+		it('should load the composer route if disabled by plugin', (done) => {
 			function hookMethod(hookData, callback) {
 				hookData.templateData.disabled = true;
 				callback(null, hookData);
@@ -2249,7 +2247,7 @@ describe('Controllers', function () {
 				method: hookMethod,
 			});
 
-			request(`${nconf.get('url')}/api/compose`, { json: true }, function (err, res, body) {
+			request(`${nconf.get('url')}/api/compose`, { json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body.title);
@@ -2261,7 +2259,7 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should 404 if plugin calls next', function (done) {
+		it('should 404 if plugin calls next', (done) => {
 			function hookMethod(hookData, callback) {
 				hookData.next();
 			}
@@ -2271,7 +2269,7 @@ describe('Controllers', function () {
 				method: hookMethod,
 			});
 
-			request(`${nconf.get('url')}/api/compose`, { json: true }, function (err, res, body) {
+			request(`${nconf.get('url')}/api/compose`, { json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 
@@ -2281,7 +2279,7 @@ describe('Controllers', function () {
 		});
 
 
-		it('should error with invalid data', function (done) {
+		it('should error with invalid data', (done) => {
 			request.post(`${nconf.get('url')}/compose`, {
 				form: {
 					content: 'a new reply',
@@ -2290,7 +2288,7 @@ describe('Controllers', function () {
 				headers: {
 					'x-csrf-token': csrf_token,
 				},
-			}, function (err, res, body) {
+			}, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 400);
 				request.post(`${nconf.get('url')}/compose`, {
@@ -2301,7 +2299,7 @@ describe('Controllers', function () {
 					headers: {
 						'x-csrf-token': csrf_token,
 					},
-				}, function (err, res, body) {
+				}, (err, res, body) => {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 400);
 					done();
@@ -2309,7 +2307,7 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should create a new topic and reply by composer route', function (done) {
+		it('should create a new topic and reply by composer route', (done) => {
 			var data = {
 				cid: cid,
 				title: 'no js is good',
@@ -2321,7 +2319,7 @@ describe('Controllers', function () {
 				headers: {
 					'x-csrf-token': csrf_token,
 				},
-			}, function (err, res) {
+			}, (err, res) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 302);
 				request.post(`${nconf.get('url')}/compose`, {
@@ -2333,7 +2331,7 @@ describe('Controllers', function () {
 					headers: {
 						'x-csrf-token': csrf_token,
 					},
-				}, function (err, res, body) {
+				}, (err, res, body) => {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 302);
 					done();
@@ -2342,7 +2340,7 @@ describe('Controllers', function () {
 		});
 	});
 
-	after(function (done) {
+	after((done) => {
 		var analytics = require('../src/analytics');
 		analytics.writeData(done);
 	});

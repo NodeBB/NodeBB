@@ -27,7 +27,7 @@ module.exports = function (Topics) {
 		var teaserPids = [];
 		var tidToPost = {};
 
-		topics.forEach(function (topic) {
+		topics.forEach((topic) => {
 			counts.push(topic && topic.postcount);
 			if (topic) {
 				if (topic.teaserPid === 'null') {
@@ -52,10 +52,10 @@ module.exports = function (Topics) {
 		const usersData = await user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture']);
 
 		var users = {};
-		usersData.forEach(function (user) {
+		usersData.forEach((user) => {
 			users[user.uid] = user;
 		});
-		postData.forEach(function (post) {
+		postData.forEach((post) => {
 			// If the post author isn't represented in the retrieved users' data, then it means they were deleted, assume guest.
 			if (!users.hasOwnProperty(post.uid)) {
 				post.uid = 0;
@@ -69,7 +69,7 @@ module.exports = function (Topics) {
 
 		const { tags } = await plugins.hooks.fire('filter:teasers.configureStripTags', { tags: utils.stripTags.concat(['img']) });
 
-		var teasers = topics.map(function (topic, index) {
+		var teasers = topics.map((topic, index) => {
 			if (!topic) {
 				return null;
 			}
@@ -96,7 +96,7 @@ module.exports = function (Topics) {
 			return teasers;
 		}
 
-		return await async.mapSeries(teasers, async function (postData) {
+		return await async.mapSeries(teasers, async (postData) => {
 			if (blockedUids.includes(parseInt(postData.uid, 10))) {
 				return await getPreviousNonBlockedPost(postData, blockedUids);
 			}

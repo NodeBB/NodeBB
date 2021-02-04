@@ -21,7 +21,7 @@ Write.reload = async (params) => {
 		},
 	});
 
-	router.use('/api/v3', function (req, res, next) {
+	router.use('/api/v3', (req, res, next) => {
 		// Require https if configured so
 		if (apiSettings.requireHttps === 'on') {
 			res.set('Upgrade', 'TLS/1.0, HTTP/1.1');

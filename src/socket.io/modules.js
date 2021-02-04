@@ -246,7 +246,7 @@ SocketModules.chats.renameRoom = async function (socket, data) {
 	await Messaging.renameRoom(socket.uid, data.roomId, data.newName);
 	const uids = await Messaging.getUidsInRoom(data.roomId, 0, -1);
 	const eventData = { roomId: data.roomId, newName: validator.escape(String(data.newName)) };
-	uids.forEach(function (uid) {
+	uids.forEach((uid) => {
 		server.in(`uid_${uid}`).emit('event:chats.roomRename', eventData);
 	});
 };

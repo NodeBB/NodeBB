@@ -9,8 +9,8 @@ module.exports = {
 	method: function (callback) {
 		var progress = this.progress;
 
-		require('../../batch').processSortedSet('posts:pid', function (pids, next) {
-			async.each(pids, function (pid, next) {
+		require('../../batch').processSortedSet('posts:pid', (pids, next) => {
+			async.each(pids, (pid, next) => {
 				posts.uploads.sync(pid, next);
 				progress.incr();
 			}, next);

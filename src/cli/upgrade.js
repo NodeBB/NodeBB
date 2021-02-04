@@ -53,17 +53,15 @@ var steps = {
 };
 
 function runSteps(tasks) {
-	tasks = tasks.map(function (key, i) {
-		return function (next) {
-			process.stdout.write(`\n${(`${i + 1}. `).bold}${steps[key].message.yellow}`);
-			return steps[key].handler(function (err) {
-				if (err) { return next(err); }
-				next();
-			});
-		};
+	tasks = tasks.map((key, i) => function (next) {
+		process.stdout.write(`\n${(`${i + 1}. `).bold}${steps[key].message.yellow}`);
+		return steps[key].handler((err) => {
+			if (err) { return next(err); }
+			next();
+		});
 	});
 
-	async.series(tasks, function (err) {
+	async.series(tasks, (err) => {
 		if (err) {
 			console.error(`Error occurred during upgrade: ${err.stack}`);
 			throw err;
@@ -90,9 +88,7 @@ function runUpgrade(upgrades, options) {
 		var tasks = Object.keys(steps);
 		if (options.package || options.install ||
 				options.plugins || options.schema || options.build) {
-			tasks = tasks.filter(function (key) {
-				return options[key];
-			});
+			tasks = tasks.filter(key => options[key]);
 		}
 		runSteps(tasks);
 		return;
@@ -104,7 +100,7 @@ function runUpgrade(upgrades, options) {
 		async function () {
 			await upgrade.runParticular(upgrades);
 		},
-	], function (err) {
+	], (err) => {
 		if (err) {
 			throw err;
 		}

@@ -9,17 +9,15 @@ module.exports = {
 	method: async function () {
 		const progress = this.progress;
 
-		await batch.processSortedSet('categories:cid', async function (cids) {
+		await batch.processSortedSet('categories:cid', async (cids) => {
 			const keys = cids.map(cid => `category:${cid}`);
 			let categoryData = await db.getObjectsFields(keys, ['cid', 'name']);
 			categoryData = categoryData.filter(c => c.cid && c.name);
-			const bulkAdd = categoryData.map(function (cat) {
-				return [
-					'categories:name',
-					0,
-					`${String(cat.name).substr(0, 200).toLowerCase()}:${cat.cid}`,
-				];
-			});
+			const bulkAdd = categoryData.map(cat => [
+				'categories:name',
+				0,
+				`${String(cat.name).substr(0, 200).toLowerCase()}:${cat.cid}`,
+			]);
 			await db.sortedSetAddBulk(bulkAdd);
 			progress.incr(cids.length);
 		}, {

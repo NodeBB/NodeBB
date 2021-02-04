@@ -15,7 +15,7 @@ const slugify = require('../slugify');
 const translator = require('../translator');
 
 module.exports = function (Posts) {
-	pubsub.on('post:edit', function (pid) {
+	pubsub.on('post:edit', (pid) => {
 		require('./cache').del(pid);
 	});
 

@@ -38,7 +38,7 @@ module.exports = function (Posts) {
 		const tidToTopic = toObject('tid', topicsAndCategories.topics);
 		const cidToCategory = toObject('cid', topicsAndCategories.categories);
 
-		posts.forEach(function (post) {
+		posts.forEach((post) => {
 			// If the post author isn't represented in the retrieved users' data, then it means they were deleted, assume guest.
 			if (!uidToUser.hasOwnProperty(post.uid)) {
 				post.uid = 0;

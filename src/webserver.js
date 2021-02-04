@@ -48,7 +48,7 @@ if (nconf.get('ssl')) {
 module.exports.server = server;
 module.exports.app = app;
 
-server.on('error', function (err) {
+server.on('error', (err) => {
 	if (err.code === 'EADDRINUSE') {
 		winston.error(`NodeBB address in use, exiting...\n${err.stack}`);
 	} else {
@@ -60,10 +60,10 @@ server.on('error', function (err) {
 
 // see https://github.com/isaacs/server-destroy/blob/master/index.js
 var connections = {};
-server.on('connection', function (conn) {
+server.on('connection', (conn) => {
 	var key = `${conn.remoteAddress}:${conn.remotePort}`;
 	connections[key] = conn;
-	conn.on('close', function () {
+	conn.on('close', () => {
 		delete connections[key];
 	});
 });
@@ -117,7 +117,7 @@ function setupExpressApp(app) {
 	const relativePath = nconf.get('relative_path');
 	const viewsDir = nconf.get('views_dir');
 
-	app.engine('tpl', function (filepath, data, next) {
+	app.engine('tpl', (filepath, data, next) => {
 		filepath = filepath.replace(/\.tpl$/, '.js');
 
 		Benchpress.__express(filepath, data, next);
@@ -150,11 +150,11 @@ function setupExpressApp(app) {
 
 	app.use(cookieParser(nconf.get('secret')));
 	const userAgentMiddleware = useragent.express();
-	app.use(function userAgent(req, res, next) {
+	app.use((req, res, next) => {
 		userAgentMiddleware(req, res, next);
 	});
 	const spiderDetectorMiddleware = detector.middleware();
-	app.use(function spiderDetector(req, res, next) {
+	app.use((req, res, next) => {
 		spiderDetectorMiddleware(req, res, next);
 	});
 
@@ -261,7 +261,7 @@ function listen(callback) {
 	var args = isSocket ? [socketPath] : [port, bind_address];
 	var oldUmask;
 
-	args.push(function (err) {
+	args.push((err) => {
 		if (err) {
 			winston.info(`[startup] NodeBB was unable to listen on: ${bind_address}:${port}`);
 			process.exit();
@@ -277,7 +277,7 @@ function listen(callback) {
 	// Alter umask if necessary
 	if (isSocket) {
 		oldUmask = process.umask('0000');
-		module.exports.testSocket(socketPath, function (err) {
+		module.exports.testSocket(socketPath, (err) => {
 			if (err) {
 				winston.error(`[startup] NodeBB was unable to secure domain socket access (${socketPath})\n${err.stack}`);
 				throw err;
@@ -298,7 +298,7 @@ exports.testSocket = function (socketPath, callback) {
 	var file = require('./file');
 	async.series([
 		function (next) {
-			file.exists(socketPath, function (err, exists) {
+			file.exists(socketPath, (err, exists) => {
 				if (exists) {
 					next();
 				} else {
@@ -308,10 +308,10 @@ exports.testSocket = function (socketPath, callback) {
 		},
 		function (next) {
 			var testSocket = new net.Socket();
-			testSocket.on('error', function (err) {
+			testSocket.on('error', (err) => {
 				next(err.code !== 'ECONNREFUSED' ? err : null);
 			});
-			testSocket.connect({ path: socketPath }, function () {
+			testSocket.connect({ path: socketPath }, () => {
 				// Something's listening here, abort
 				callback(new Error('port-in-use'));
 			});

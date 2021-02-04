@@ -39,10 +39,10 @@ module.exports = {
 
 				var done = false;
 				async.whilst(
-					function (next) {
+					(next) => {
 						next(null, !done);
 					},
-					function (next) {
+					(next) => {
 						async.waterfall([
 							function (next) {
 								cursor.next(next);
@@ -60,7 +60,7 @@ module.exports = {
 									next();
 								}
 							},
-						], function (err) {
+						], (err) => {
 							next(err);
 						});
 					},

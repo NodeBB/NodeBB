@@ -37,7 +37,7 @@ Object.defineProperty(Minifier, 'maxThreads', {
 Minifier.maxThreads = os.cpus().length - 1;
 
 Minifier.killAll = function () {
-	pool.forEach(function (child) {
+	pool.forEach((child) => {
 		child.kill('SIGTERM');
 	});
 
@@ -76,7 +76,7 @@ function removeChild(proc) {
 function forkAction(action, callback) {
 	var proc = getChild();
 
-	proc.on('message', function (message) {
+	proc.on('message', (message) => {
 		freeChild(proc);
 
 		if (message.type === 'error') {
@@ -87,7 +87,7 @@ function forkAction(action, callback) {
 			callback(null, message.result);
 		}
 	});
-	proc.on('error', function (err) {
+	proc.on('error', (err) => {
 		proc.kill();
 		removeChild(proc);
 		callback(err);
@@ -102,7 +102,7 @@ function forkAction(action, callback) {
 var actions = {};
 
 if (process.env.minifier_child) {
-	process.on('message', function (message) {
+	process.on('message', (message) => {
 		if (message.type === 'action') {
 			var action = message.action;
 			if (typeof actions[action.act] !== 'function') {
@@ -113,7 +113,7 @@ if (process.env.minifier_child) {
 				return;
 			}
 
-			actions[action.act](action, function (err, result) {
+			actions[action.act](action, (err, result) => {
 				if (err) {
 					process.send({
 						type: 'error',
@@ -144,15 +144,15 @@ function executeAction(action, fork, callback) {
 
 function concat(data, callback) {
 	if (data.files && data.files.length) {
-		async.mapLimit(data.files, 1000, function (ref, next) {
-			fs.readFile(ref.srcPath, 'utf8', function (err, file) {
+		async.mapLimit(data.files, 1000, (ref, next) => {
+			fs.readFile(ref.srcPath, 'utf8', (err, file) => {
 				if (err) {
 					return next(err);
 				}
 
 				next(null, file);
 			});
-		}, function (err, files) {
+		}, (err, files) => {
 			if (err) {
 				return callback(err);
 			}
@@ -169,8 +169,8 @@ function concat(data, callback) {
 actions.concat = concat;
 
 function minifyJS_batch(data, callback) {
-	async.eachLimit(data.files, 100, function (fileObj, next) {
-		fs.readFile(fileObj.srcPath, 'utf8', function (err, source) {
+	async.eachLimit(data.files, 100, (fileObj, next) => {
+		fs.readFile(fileObj.srcPath, 'utf8', (err, source) => {
 			if (err) {
 				return next(err);
 			}
@@ -193,8 +193,8 @@ function minifyJS_batch(data, callback) {
 actions.minifyJS_batch = minifyJS_batch;
 
 function minifyJS(data, callback) {
-	async.mapLimit(data.files, 1000, function (fileObj, next) {
-		fs.readFile(fileObj.srcPath, 'utf8', function (err, source) {
+	async.mapLimit(data.files, 1000, (fileObj, next) => {
+		fs.readFile(fileObj.srcPath, 'utf8', (err, source) => {
 			if (err) {
 				return next(err);
 			}
@@ -205,7 +205,7 @@ function minifyJS(data, callback) {
 				source: source,
 			});
 		});
-	}, function (err, filesToMinify) {
+	}, (err, filesToMinify) => {
 		if (err) {
 			return callback(err);
 		}
@@ -221,7 +221,7 @@ actions.minifyJS = minifyJS;
 
 function minifyAndSave(data, callback) {
 	var scripts = {};
-	data.files.forEach(function (ref) {
+	data.files.forEach((ref) => {
 		if (!ref) {
 			return;
 		}
@@ -269,7 +269,7 @@ function buildCSS(data, callback) {
 	less.render(data.source, {
 		paths: data.paths,
 		javascriptEnabled: true,
-	}, function (err, lessOutput) {
+	}, (err, lessOutput) => {
 		if (err) {
 			// display less parser errors properly
 			return callback(new Error(String(err)));
@@ -282,9 +282,9 @@ function buildCSS(data, callback) {
 			}),
 		] : [autoprefixer]).process(lessOutput.css, {
 			from: undefined,
-		}).then(function (result) {
+		}).then((result) => {
 			process.nextTick(callback, null, { code: result.css });
-		}).catch(function (err) {
+		}).catch((err) => {
 			process.nextTick(callback, err);
 		});
 	});

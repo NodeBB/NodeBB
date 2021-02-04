@@ -14,9 +14,9 @@ const slugify = require('../slugify');
 const plugins = require('../plugins');
 
 module.exports = function (User) {
-	new cronJob('0 * * * *', function () {
+	new cronJob('0 * * * *', (() => {
 		User.autoApprove();
-	}, null, true);
+	}), null, true);
 
 	User.addToApprovalQueue = async function (userData) {
 		userData.username = userData.username.trim();
@@ -120,7 +120,7 @@ module.exports = function (User) {
 		const data = await db.getSortedSetRevRangeWithScores('registration:queue', start, stop);
 		const keys = data.filter(Boolean).map(user => `registration:queue:name:${user.value}`);
 		let users = await db.getObjects(keys);
-		users = users.filter(Boolean).map(function (user, index) {
+		users = users.filter(Boolean).map((user, index) => {
 			user.timestampISO = utils.toISOString(data[index].score);
 			user.email = validator.escape(String(user.email));
 			user.usernameEscaped = validator.escape(String(user.username));

@@ -58,7 +58,7 @@ helpers.addLinkTags = function (params) {
 		href: `${url}/${params.url}`,
 	});
 
-	params.tags.forEach(function (rel) {
+	params.tags.forEach((rel) => {
 		rel.href = `${url}/${params.url}${rel.href}`;
 		params.res.locals.linkTags.push(rel);
 	});
@@ -208,7 +208,7 @@ helpers.buildBreadcrumbs = function (crumbs) {
 		},
 	];
 
-	crumbs.forEach(function (crumb) {
+	crumbs.forEach((crumb) => {
 		if (crumb) {
 			if (crumb.url) {
 				crumb.url = relative_path + crumb.url;
@@ -253,7 +253,7 @@ async function getCategoryData(cids, uid, selectedCid, states, privilege) {
 
 	let selectedCategory = [];
 	const selectedCids = [];
-	categoriesData.forEach(function (category) {
+	categoriesData.forEach((category) => {
 		category.selected = selectedCid ? selectedCid.includes(String(category.cid)) : false;
 		if (category.selected) {
 			selectedCategory.push(category);
@@ -312,7 +312,7 @@ helpers.getVisibleCategories = async function (params) {
 	const cidToCategory = _.zipObject(cids, categoriesData);
 	const cidToWatchState = _.zipObject(cids, watchState);
 
-	return categoriesData.filter(function (c) {
+	return categoriesData.filter((c) => {
 		if (!c) {
 			return false;
 		}
@@ -360,7 +360,7 @@ helpers.getSelectedCategory = async function (cid) {
 helpers.trimChildren = function (category) {
 	if (Array.isArray(category.children)) {
 		category.children = category.children.slice(0, category.subCategoriesPerPage);
-		category.children.forEach(function (child) {
+		category.children.forEach((child) => {
 			child.children = undefined;
 		});
 	}

@@ -12,8 +12,8 @@ module.exports = {
 	method: function (callback) {
 		const progress = this.progress;
 
-		batch.processSortedSet('users:joindate', function (ids, next) {
-			async.each(ids, function (uid, next) {
+		batch.processSortedSet('users:joindate', (ids, next) => {
+			async.each(ids, (uid, next) => {
 				async.parallel([
 					function (next) {
 						// Username
@@ -57,7 +57,7 @@ module.exports = {
 							},
 						], next);
 					},
-				], function (err) {
+				], (err) => {
 					progress.incr();
 					setImmediate(next, err);
 				});

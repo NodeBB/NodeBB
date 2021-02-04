@@ -60,7 +60,7 @@ file.allowedExtensions = function () {
 		return [];
 	}
 	allowedExtensions = allowedExtensions.split(',');
-	allowedExtensions = allowedExtensions.filter(Boolean).map(function (extension) {
+	allowedExtensions = allowedExtensions.filter(Boolean).map((extension) => {
 		extension = extension.trim();
 		if (!extension.startsWith('.')) {
 			extension = `.${extension}`;

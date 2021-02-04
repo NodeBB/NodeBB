@@ -112,7 +112,7 @@ Topics.getTopicsByTids = async function (tids, options) {
 	]);
 
 	const sortOldToNew = callerSettings.topicPostSort === 'newest_to_oldest';
-	result.topics.forEach(function (topic, i) {
+	result.topics.forEach((topic, i) => {
 		if (topic) {
 			topic.thumbs = result.thumbs[i];
 			topic.category = result.categoriesMap[topic.cid];
@@ -280,7 +280,7 @@ Topics.getMainPosts = async function (tids, uid) {
 
 async function getMainPosts(mainPids, uid) {
 	const postData = await posts.getPostsByPids(mainPids, uid);
-	postData.forEach(function (post) {
+	postData.forEach((post) => {
 		if (post) {
 			post.index = 0;
 		}

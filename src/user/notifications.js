@@ -48,7 +48,7 @@ UserNotifications.getAll = async function (uid, filter) {
 	const exists = await db.isSortedSetMembers('notifications', nids);
 	var deleteNids = [];
 
-	nids = nids.filter(function (nid, index) {
+	nids = nids.filter((nid, index) => {
 		if (!nid || !exists[index]) {
 			deleteNids.push(nid);
 		}
@@ -82,7 +82,7 @@ UserNotifications.getNotifications = async function (nids, uid) {
 	]);
 
 	const deletedNids = [];
-	let notificationData = notifObjs.filter(function (notification, index) {
+	let notificationData = notifObjs.filter((notification, index) => {
 		if (!notification || !notification.nid) {
 			deletedNids.push(nids[index]);
 		}
@@ -133,7 +133,7 @@ UserNotifications.getUnreadCount = async function (uid) {
 	const mergeIds = notifData.map(n => n.mergeId);
 
 	// Collapse any notifications with identical mergeIds
-	return mergeIds.reduce(function (count, mergeId, idx, arr) {
+	return mergeIds.reduce((count, mergeId, idx, arr) => {
 		// A missing (null) mergeId means that notification is counted separately.
 		if (mergeId === null || idx === arr.indexOf(mergeId)) {
 			count += 1;

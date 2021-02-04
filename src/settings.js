@@ -78,7 +78,7 @@ function Settings(hash, version, defCfg, callback, forceUpdate, reset) {
 			this.checkStructure(callback, forceUpdate);
 		});
 	}
-	pubsub.on(`action:settings.set.${hash}`, function (data) {
+	pubsub.on(`action:settings.set.${hash}`, (data) => {
 		try {
 			self.cfg._ = JSON.parse(data._);
 		} catch (err) {}
@@ -96,7 +96,7 @@ Settings.prototype.version = '0.0.0';
  */
 Settings.prototype.sync = function (callback) {
 	var _this = this;
-	meta.settings.get(this.hash, function (err, settings) {
+	meta.settings.get(this.hash, (err, settings) => {
 		try {
 			if (settings._) {
 				settings._ = JSON.parse(settings._);

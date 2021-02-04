@@ -21,17 +21,17 @@ class DeferLogger extends Transport {
 	}
 }
 
-before(function () {
+before(() => {
 	// defer winston logs until the end
 	winston.clear();
 
 	winston.add(new DeferLogger({ logged: winstonLogged }));
 });
 
-after(function () {
+after(() => {
 	console.log('\n\n');
 
-	winstonLogged.forEach(function (args) {
+	winstonLogged.forEach((args) => {
 		console.log(`${args[0]} ${args[1]}`);
 	});
 });

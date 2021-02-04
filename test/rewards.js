@@ -8,18 +8,18 @@ var meta = require('../src/meta');
 var User = require('../src/user');
 var Groups = require('../src/groups');
 
-describe('rewards', function () {
+describe('rewards', () => {
 	var adminUid;
 	var bazUid;
 	var herpUid;
 
-	before(function (done) {
+	before((done) => {
 		// Create 3 users: 1 admin, 2 regular
 		async.series([
 			async.apply(User.create, { username: 'foo' }),
 			async.apply(User.create, { username: 'baz' }),
 			async.apply(User.create, { username: 'herp' }),
-		], function (err, uids) {
+		], (err, uids) => {
 			if (err) {
 				return done(err);
 			}
@@ -39,10 +39,10 @@ describe('rewards', function () {
 		});
 	});
 
-	describe('rewards create', function () {
+	describe('rewards create', () => {
 		var socketAdmin = require('../src/socket.io/admin');
 		var rewards = require('../src/rewards');
-		it('it should save a reward', function (done) {
+		it('it should save a reward', (done) => {
 			var data = [
 				{
 					rewards: { groupname: 'Gamers' },
@@ -56,13 +56,13 @@ describe('rewards', function () {
 				},
 			];
 
-			socketAdmin.rewards.save({ uid: adminUid }, data, function (err) {
+			socketAdmin.rewards.save({ uid: adminUid }, data, (err) => {
 				assert.ifError(err);
 				done();
 			});
 		});
 
-		it('should check condition', function (done) {
+		it('should check condition', (done) => {
 			function method(next) {
 				next(null, 1);
 			}
@@ -70,7 +70,7 @@ describe('rewards', function () {
 				uid: adminUid,
 				condition: 'essentials/user.postcount',
 				method: method,
-			}, function (err, data) {
+			}, (err, data) => {
 				assert.ifError(err);
 				done();
 			});

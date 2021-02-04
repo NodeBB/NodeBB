@@ -10,7 +10,7 @@ module.exports = {
 	method: async function () {
 		const progress = this.progress;
 
-		await batch.processSortedSet('flags:datetime', async function (flagIds) {
+		await batch.processSortedSet('flags:datetime', async (flagIds) => {
 			progress.incr(flagIds.length);
 			const flagData = await db.getObjects(flagIds.map(id => `flag:${id}`));
 			for (const flagObj of flagData) {

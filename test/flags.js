@@ -16,7 +16,7 @@ const Groups = require('../src/groups');
 const Meta = require('../src/meta');
 const Privileges = require('../src/privileges');
 
-describe('Flags', function () {
+describe('Flags', () => {
 	let uid1;
 	let adminUid;
 	let uid3;
@@ -43,9 +43,9 @@ describe('Flags', function () {
 		});
 	});
 
-	describe('.create()', function () {
-		it('should create a flag and return its data', function (done) {
-			Flags.create('post', 1, 1, 'Test flag', function (err, flagData) {
+	describe('.create()', () => {
+		it('should create a flag and return its data', (done) => {
+			Flags.create('post', 1, 1, 'Test flag', (err, flagData) => {
 				assert.ifError(err);
 				var compare = {
 					flagId: 1,
@@ -66,16 +66,16 @@ describe('Flags', function () {
 			});
 		});
 
-		it('should add the flag to the byCid zset for category 1 if it is of type post', function (done) {
-			db.isSortedSetMember(`flags:byCid:${1}`, 1, function (err, isMember) {
+		it('should add the flag to the byCid zset for category 1 if it is of type post', (done) => {
+			db.isSortedSetMember(`flags:byCid:${1}`, 1, (err, isMember) => {
 				assert.ifError(err);
 				assert.ok(isMember);
 				done();
 			});
 		});
 
-		it('should add the flag to the byPid zset for pid 1 if it is of type post', function (done) {
-			db.isSortedSetMember(`flags:byPid:${1}`, 1, function (err, isMember) {
+		it('should add the flag to the byPid zset for pid 1 if it is of type post', (done) => {
+			db.isSortedSetMember(`flags:byPid:${1}`, 1, (err, isMember) => {
 				assert.ifError(err);
 				assert.ok(isMember);
 				done();
@@ -83,17 +83,17 @@ describe('Flags', function () {
 		});
 	});
 
-	describe('.exists()', function () {
-		it('should return Boolean True if a flag matching the flag hash already exists', function (done) {
-			Flags.exists('post', 1, 1, function (err, exists) {
+	describe('.exists()', () => {
+		it('should return Boolean True if a flag matching the flag hash already exists', (done) => {
+			Flags.exists('post', 1, 1, (err, exists) => {
 				assert.ifError(err);
 				assert.strictEqual(true, exists);
 				done();
 			});
 		});
 
-		it('should return Boolean False if a flag matching the flag hash does not already exists', function (done) {
-			Flags.exists('post', 1, 2, function (err, exists) {
+		it('should return Boolean False if a flag matching the flag hash does not already exists', (done) => {
+			Flags.exists('post', 1, 2, (err, exists) => {
 				assert.ifError(err);
 				assert.strictEqual(false, exists);
 				done();
@@ -101,17 +101,17 @@ describe('Flags', function () {
 		});
 	});
 
-	describe('.targetExists()', function () {
-		it('should return Boolean True if the targeted element exists', function (done) {
-			Flags.targetExists('post', 1, function (err, exists) {
+	describe('.targetExists()', () => {
+		it('should return Boolean True if the targeted element exists', (done) => {
+			Flags.targetExists('post', 1, (err, exists) => {
 				assert.ifError(err);
 				assert.strictEqual(true, exists);
 				done();
 			});
 		});
 
-		it('should return Boolean False if the targeted element does not exist', function (done) {
-			Flags.targetExists('post', 15, function (err, exists) {
+		it('should return Boolean False if the targeted element does not exist', (done) => {
+			Flags.targetExists('post', 15, (err, exists) => {
 				assert.ifError(err);
 				assert.strictEqual(false, exists);
 				done();
@@ -119,9 +119,9 @@ describe('Flags', function () {
 		});
 	});
 
-	describe('.get()', function () {
-		it('should retrieve and display a flag\'s data', function (done) {
-			Flags.get(1, function (err, flagData) {
+	describe('.get()', () => {
+		it('should retrieve and display a flag\'s data', (done) => {
+			Flags.get(1, (err, flagData) => {
 				assert.ifError(err);
 				var compare = {
 					flagId: 1,
@@ -143,12 +143,12 @@ describe('Flags', function () {
 		});
 	});
 
-	describe('.list()', function () {
-		it('should show a list of flags (with one item)', function (done) {
+	describe('.list()', () => {
+		it('should show a list of flags (with one item)', (done) => {
 			Flags.list({
 				filters: {},
 				uid: 1,
-			}, function (err, payload) {
+			}, (err, payload) => {
 				assert.ifError(err);
 				assert.ok(payload.hasOwnProperty('flags'));
 				assert.ok(payload.hasOwnProperty('page'));
@@ -156,7 +156,7 @@ describe('Flags', function () {
 				assert.ok(Array.isArray(payload.flags));
 				assert.equal(payload.flags.length, 1);
 
-				Flags.get(payload.flags[0].flagId, function (err, flagData) {
+				Flags.get(payload.flags[0].flagId, (err, flagData) => {
 					assert.ifError(err);
 					assert.equal(payload.flags[0].flagId, flagData.flagId);
 					assert.equal(payload.flags[0].description, flagData.description);
@@ -165,14 +165,14 @@ describe('Flags', function () {
 			});
 		});
 
-		describe('(with filters)', function () {
-			it('should return a filtered list of flags if said filters are passed in', function (done) {
+		describe('(with filters)', () => {
+			it('should return a filtered list of flags if said filters are passed in', (done) => {
 				Flags.list({
 					filters: {
 						state: 'open',
 					},
 					uid: 1,
-				}, function (err, payload) {
+				}, (err, payload) => {
 					assert.ifError(err);
 					assert.ok(payload.hasOwnProperty('flags'));
 					assert.ok(payload.hasOwnProperty('page'));
@@ -183,13 +183,13 @@ describe('Flags', function () {
 				});
 			});
 
-			it('should return no flags if a filter with no matching flags is used', function (done) {
+			it('should return no flags if a filter with no matching flags is used', (done) => {
 				Flags.list({
 					filters: {
 						state: 'rejected',
 					},
 					uid: 1,
-				}, function (err, payload) {
+				}, (err, payload) => {
 					assert.ifError(err);
 					assert.ok(payload.hasOwnProperty('flags'));
 					assert.ok(payload.hasOwnProperty('page'));
@@ -200,13 +200,13 @@ describe('Flags', function () {
 				});
 			});
 
-			it('should return a flag when filtered by cid 1', function (done) {
+			it('should return a flag when filtered by cid 1', (done) => {
 				Flags.list({
 					filters: {
 						cid: 1,
 					},
 					uid: 1,
-				}, function (err, payload) {
+				}, (err, payload) => {
 					assert.ifError(err);
 					assert.ok(payload.hasOwnProperty('flags'));
 					assert.ok(payload.hasOwnProperty('page'));
@@ -217,13 +217,13 @@ describe('Flags', function () {
 				});
 			});
 
-			it('shouldn\'t return a flag when filtered by cid 2', function (done) {
+			it('shouldn\'t return a flag when filtered by cid 2', (done) => {
 				Flags.list({
 					filters: {
 						cid: 2,
 					},
 					uid: 1,
-				}, function (err, payload) {
+				}, (err, payload) => {
 					assert.ifError(err);
 					assert.ok(payload.hasOwnProperty('flags'));
 					assert.ok(payload.hasOwnProperty('page'));
@@ -234,13 +234,13 @@ describe('Flags', function () {
 				});
 			});
 
-			it('should return a flag when filtered by both cid 1 and 2', function (done) {
+			it('should return a flag when filtered by both cid 1 and 2', (done) => {
 				Flags.list({
 					filters: {
 						cid: [1, 2],
 					},
 					uid: 1,
-				}, function (err, payload) {
+				}, (err, payload) => {
 					assert.ifError(err);
 					assert.ok(payload.hasOwnProperty('flags'));
 					assert.ok(payload.hasOwnProperty('page'));
@@ -251,14 +251,14 @@ describe('Flags', function () {
 				});
 			});
 
-			it('should return one flag if filtered by both cid 1 and 2 and open state', function (done) {
+			it('should return one flag if filtered by both cid 1 and 2 and open state', (done) => {
 				Flags.list({
 					filters: {
 						cid: [1, 2],
 						state: 'open',
 					},
 					uid: 1,
-				}, function (err, payload) {
+				}, (err, payload) => {
 					assert.ifError(err);
 					assert.ok(payload.hasOwnProperty('flags'));
 					assert.ok(payload.hasOwnProperty('page'));
@@ -269,14 +269,14 @@ describe('Flags', function () {
 				});
 			});
 
-			it('should return no flag if filtered by both cid 1 and 2 and non-open state', function (done) {
+			it('should return no flag if filtered by both cid 1 and 2 and non-open state', (done) => {
 				Flags.list({
 					filters: {
 						cid: [1, 2],
 						state: 'resolved',
 					},
 					uid: 1,
-				}, function (err, payload) {
+				}, (err, payload) => {
 					assert.ifError(err);
 					assert.ok(payload.hasOwnProperty('flags'));
 					assert.ok(payload.hasOwnProperty('page'));
@@ -349,14 +349,14 @@ describe('Flags', function () {
 		});
 	});
 
-	describe('.update()', function () {
-		it('should alter a flag\'s various attributes and persist them to the database', function (done) {
+	describe('.update()', () => {
+		it('should alter a flag\'s various attributes and persist them to the database', (done) => {
 			Flags.update(1, adminUid, {
 				state: 'wip',
 				assignee: adminUid,
-			}, function (err) {
+			}, (err) => {
 				assert.ifError(err);
-				db.getObjectFields('flag:1', ['state', 'assignee'], function (err, data) {
+				db.getObjectFields('flag:1', ['state', 'assignee'], (err, data) => {
 					if (err) {
 						throw err;
 					}
@@ -369,13 +369,13 @@ describe('Flags', function () {
 			});
 		});
 
-		it('should persist to the flag\'s history', function (done) {
-			Flags.getHistory(1, function (err, history) {
+		it('should persist to the flag\'s history', (done) => {
+			Flags.getHistory(1, (err, history) => {
 				if (err) {
 					throw err;
 				}
 
-				history.forEach(function (change) {
+				history.forEach((change) => {
 					switch (change.attribute) {
 						case 'state':
 							assert.strictEqual('[[flags:state-wip]]', change.value);
@@ -473,9 +473,9 @@ describe('Flags', function () {
 		});
 	});
 
-	describe('.getTarget()', function () {
-		it('should return a post\'s data if queried with type "post"', function (done) {
-			Flags.getTarget('post', 1, 1, function (err, data) {
+	describe('.getTarget()', () => {
+		it('should return a post\'s data if queried with type "post"', (done) => {
+			Flags.getTarget('post', 1, 1, (err, data) => {
 				assert.ifError(err);
 				var compare = {
 					uid: 1,
@@ -494,8 +494,8 @@ describe('Flags', function () {
 			});
 		});
 
-		it('should return a user\'s data if queried with type "user"', function (done) {
-			Flags.getTarget('user', 1, 1, function (err, data) {
+		it('should return a user\'s data if queried with type "user"', (done) => {
+			Flags.getTarget('user', 1, 1, (err, data) => {
 				assert.ifError(err);
 				var compare = {
 					uid: 1,
@@ -514,8 +514,8 @@ describe('Flags', function () {
 			});
 		});
 
-		it('should return a plain object with no properties if the target no longer exists', function (done) {
-			Flags.getTarget('user', 15, 1, function (err, data) {
+		it('should return a plain object with no properties if the target no longer exists', (done) => {
+			Flags.getTarget('user', 15, 1, (err, data) => {
 				assert.ifError(err);
 				assert.strictEqual(0, Object.keys(data).length);
 				done();
@@ -523,9 +523,9 @@ describe('Flags', function () {
 		});
 	});
 
-	describe('.validate()', function () {
-		it('should error out if type is post and post is deleted', function (done) {
-			Posts.delete(1, 1, function (err) {
+	describe('.validate()', () => {
+		it('should error out if type is post and post is deleted', (done) => {
+			Posts.delete(1, 1, (err) => {
 				if (err) {
 					throw err;
 				}
@@ -534,7 +534,7 @@ describe('Flags', function () {
 					type: 'post',
 					id: 1,
 					uid: 1,
-				}, function (err) {
+				}, (err) => {
 					assert.ok(err);
 					assert.strictEqual('[[error:post-deleted]]', err.message);
 					Posts.restore(1, 1, done);
@@ -542,15 +542,15 @@ describe('Flags', function () {
 			});
 		});
 
-		it('should not pass validation if flag threshold is set and user rep does not meet it', function (done) {
-			Meta.configs.set('min:rep:flag', '50', function (err) {
+		it('should not pass validation if flag threshold is set and user rep does not meet it', (done) => {
+			Meta.configs.set('min:rep:flag', '50', (err) => {
 				assert.ifError(err);
 
 				Flags.validate({
 					type: 'post',
 					id: 1,
 					uid: 3,
-				}, function (err) {
+				}, (err) => {
 					assert.ok(err);
 					assert.strictEqual('[[error:not-enough-reputation-to-flag]]', err.message);
 					Meta.configs.set('min:rep:flag', 0, done);
@@ -558,7 +558,7 @@ describe('Flags', function () {
 			});
 		});
 
-		it('should not error if user blocked target', function (done) {
+		it('should not error if user blocked target', (done) => {
 			var SocketFlags = require('../src/socket.io/flags.js');
 			var reporterUid;
 			var reporteeUid;
@@ -588,20 +588,20 @@ describe('Flags', function () {
 			], done);
 		});
 
-		it('should send back error if reporter does not exist', function (done) {
-			Flags.validate({ uid: 123123123, id: 1, type: 'post' }, function (err) {
+		it('should send back error if reporter does not exist', (done) => {
+			Flags.validate({ uid: 123123123, id: 1, type: 'post' }, (err) => {
 				assert.equal(err.message, '[[error:no-user]]');
 				done();
 			});
 		});
 	});
 
-	describe('.appendNote()', function () {
-		it('should add a note to a flag', function (done) {
-			Flags.appendNote(1, 1, 'this is my note', function (err) {
+	describe('.appendNote()', () => {
+		it('should add a note to a flag', (done) => {
+			Flags.appendNote(1, 1, 'this is my note', (err) => {
 				assert.ifError(err);
 
-				db.getSortedSetRange('flag:1:notes', 0, -1, function (err, notes) {
+				db.getSortedSetRange('flag:1:notes', 0, -1, (err, notes) => {
 					if (err) {
 						throw err;
 					}
@@ -612,8 +612,8 @@ describe('Flags', function () {
 			});
 		});
 
-		it('should be a JSON string', function (done) {
-			db.getSortedSetRange('flag:1:notes', 0, -1, function (err, notes) {
+		it('should be a JSON string', (done) => {
+			db.getSortedSetRange('flag:1:notes', 0, -1, (err, notes) => {
 				if (err) {
 					throw err;
 				}
@@ -629,14 +629,14 @@ describe('Flags', function () {
 		});
 	});
 
-	describe('.getNotes()', function () {
-		before(function (done) {
+	describe('.getNotes()', () => {
+		before((done) => {
 			// Add a second note
 			Flags.appendNote(1, 1, 'this is the second note', done);
 		});
 
-		it('return should match a predefined spec', function (done) {
-			Flags.getNotes(1, function (err, notes) {
+		it('return should match a predefined spec', (done) => {
+			Flags.getNotes(1, (err, notes) => {
 				assert.ifError(err);
 				var compare = {
 					uid: 1,
@@ -655,8 +655,8 @@ describe('Flags', function () {
 			});
 		});
 
-		it('should retrieve a list of notes, from newest to oldest', function (done) {
-			Flags.getNotes(1, function (err, notes) {
+		it('should retrieve a list of notes, from newest to oldest', (done) => {
+			Flags.getNotes(1, (err, notes) => {
 				assert.ifError(err);
 				assert(notes[0].datetime > notes[1].datetime, `${notes[0].datetime}-${notes[1].datetime}`);
 				assert.strictEqual('this is the second note', notes[0].content);
@@ -665,22 +665,22 @@ describe('Flags', function () {
 		});
 	});
 
-	describe('.appendHistory()', function () {
+	describe('.appendHistory()', () => {
 		var entries;
-		before(function (done) {
-			db.sortedSetCard('flag:1:history', function (err, count) {
+		before((done) => {
+			db.sortedSetCard('flag:1:history', (err, count) => {
 				entries = count;
 				done(err);
 			});
 		});
 
-		it('should add a new entry into a flag\'s history', function (done) {
+		it('should add a new entry into a flag\'s history', (done) => {
 			Flags.appendHistory(1, 1, {
 				state: 'rejected',
-			}, function (err) {
+			}, (err) => {
 				assert.ifError(err);
 
-				Flags.getHistory(1, function (err, history) {
+				Flags.getHistory(1, (err, history) => {
 					if (err) {
 						throw err;
 					}
@@ -693,9 +693,9 @@ describe('Flags', function () {
 		});
 	});
 
-	describe('.getHistory()', function () {
-		it('should retrieve a flag\'s history', function (done) {
-			Flags.getHistory(1, function (err, history) {
+	describe('.getHistory()', () => {
+		it('should retrieve a flag\'s history', (done) => {
+			Flags.getHistory(1, (err, history) => {
 				assert.ifError(err);
 				assert.strictEqual(history[0].fields.state, '[[flags:state-rejected]]');
 				done();
@@ -703,33 +703,33 @@ describe('Flags', function () {
 		});
 	});
 
-	describe('(websockets)', function () {
+	describe('(websockets)', () => {
 		var SocketFlags = require('../src/socket.io/flags.js');
 		var pid;
 
-		before(function (done) {
+		before((done) => {
 			Topics.post({
 				cid: 1,
 				uid: 1,
 				title: 'Another topic',
 				content: 'This is flaggable content',
-			}, function (err, topic) {
+			}, (err, topic) => {
 				pid = topic.postData.pid;
 
 				done(err);
 			});
 		});
 
-		describe('.create()', function () {
-			it('should create a flag with no errors', function (done) {
+		describe('.create()', () => {
+			it('should create a flag with no errors', (done) => {
 				SocketFlags.create({ uid: 2 }, {
 					type: 'post',
 					id: pid,
 					reason: 'foobar',
-				}, function (err) {
+				}, (err) => {
 					assert.ifError(err);
 
-					Flags.exists('post', pid, 1, function (err, exists) {
+					Flags.exists('post', pid, 1, (err, exists) => {
 						assert.ifError(err);
 						assert(true);
 						done();
@@ -737,7 +737,7 @@ describe('Flags', function () {
 				});
 			});
 
-			it('should not allow flagging post in private category', async function () {
+			it('should not allow flagging post in private category', async () => {
 				const category = await Categories.create({ name: 'private category' });
 
 				await Privileges.categories.rescind(['groups:topics:read'], category.cid, 'registered-users');
@@ -756,15 +756,15 @@ describe('Flags', function () {
 			});
 		});
 
-		describe('.update()', function () {
-			it('should update a flag\'s properties', function (done) {
+		describe('.update()', () => {
+			it('should update a flag\'s properties', (done) => {
 				SocketFlags.update({ uid: 2 }, {
 					flagId: 2,
 					data: [{
 						name: 'state',
 						value: 'wip',
 					}],
-				}, function (err, history) {
+				}, (err, history) => {
 					assert.ifError(err);
 					assert(Array.isArray(history));
 					assert(history[0].fields.hasOwnProperty('state'));
@@ -774,12 +774,12 @@ describe('Flags', function () {
 			});
 		});
 
-		describe('.appendNote()', function () {
-			it('should append a note to the flag', function (done) {
+		describe('.appendNote()', () => {
+			it('should append a note to the flag', (done) => {
 				SocketFlags.appendNote({ uid: 2 }, {
 					flagId: 2,
 					note: 'lorem ipsum dolor sit amet',
-				}, function (err, data) {
+				}, (err, data) => {
 					assert.ifError(err);
 					assert(data.hasOwnProperty('notes'));
 					assert(Array.isArray(data.notes));

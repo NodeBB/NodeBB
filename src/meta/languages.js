@@ -24,7 +24,7 @@ async function getTranslationMetadata() {
 	let languages = [];
 	let namespaces = [];
 
-	paths.forEach(function (p) {
+	paths.forEach((p) => {
 		if (!p.endsWith('.json')) {
 			return;
 		}
@@ -73,14 +73,12 @@ async function writeLanguageFile(language, namespace, translations) {
 async function buildTranslations(ref) {
 	const namespaces = ref.namespaces;
 	const languages = ref.languages;
-	const plugins = _.values(Plugins.pluginsData).filter(function (plugin) {
-		return typeof plugin.languages === 'string';
-	});
+	const plugins = _.values(Plugins.pluginsData).filter(plugin => typeof plugin.languages === 'string');
 
 	const promises = [];
 
-	namespaces.forEach(function (namespace) {
-		languages.forEach(function (language) {
+	namespaces.forEach((namespace) => {
+		languages.forEach((language) => {
 			promises.push(buildNamespaceLanguage(language, namespace, plugins));
 		});
 	});

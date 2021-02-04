@@ -110,7 +110,6 @@
 		// WORKING ON
 		"prefer-rest-params": "off",
 		"prefer-spread": "off",
-		"prefer-arrow-callback": "off",
 		"no-var": "off",
 		"vars-on-top": "off",
 

@@ -11,17 +11,15 @@ module.exports = {
 	method: function (callback) {
 		var topics = require('../../topics');
 		var batch = require('../../batch');
-		batch.processSortedSet('topics:tid', function (ids, next) {
-			topics.getTopicsFields(ids, ['tid', 'cid', 'pinned', 'lastposttime'], function (err, data) {
+		batch.processSortedSet('topics:tid', (ids, next) => {
+			topics.getTopicsFields(ids, ['tid', 'cid', 'pinned', 'lastposttime'], (err, data) => {
 				if (err) {
 					return next(err);
 				}
 
-				data = data.filter(function (topicData) {
-					return parseInt(topicData.pinned, 10) === 1;
-				});
+				data = data.filter(topicData => parseInt(topicData.pinned, 10) === 1);
 
-				async.eachSeries(data, function (topicData, next) {
+				async.eachSeries(data, (topicData, next) => {
 					winston.verbose(`processing tid: ${topicData.tid}`);
 
 					async.parallel([

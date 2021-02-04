@@ -115,7 +115,7 @@ module.exports = function (module) {
 		}
 
 		const map = helpers.toMap(data);
-		unCachedKeys.forEach(function (key) {
+		unCachedKeys.forEach((key) => {
 			cachedData[key] = map[key] || null;
 			cache.set(key, cachedData[key]);
 		});
@@ -123,7 +123,7 @@ module.exports = function (module) {
 		if (!fields.length) {
 			return keys.map(key => (cachedData[key] ? { ...cachedData[key] } : null));
 		}
-		return keys.map(function (key) {
+		return keys.map((key) => {
 			const item = cachedData[key] || {};
 			const result = {};
 			fields.forEach((field) => {
@@ -154,7 +154,7 @@ module.exports = function (module) {
 		}
 
 		const data = {};
-		fields.forEach(function (field) {
+		fields.forEach((field) => {
 			field = helpers.fieldToString(field);
 			data[field] = 1;
 		});
@@ -178,7 +178,7 @@ module.exports = function (module) {
 		}
 
 		var data = {};
-		fields.forEach(function (field) {
+		fields.forEach((field) => {
 			field = helpers.fieldToString(field);
 			data[field] = '';
 		});
@@ -211,7 +211,7 @@ module.exports = function (module) {
 
 		if (Array.isArray(key)) {
 			var bulk = module.client.collection('objects').initializeUnorderedBulkOp();
-			key.forEach(function (key) {
+			key.forEach((key) => {
 				bulk.find({ _key: key }).upsert().update({ $inc: increment });
 			});
 			await bulk.execute();

@@ -59,7 +59,7 @@ module.exports = function (User) {
 		await batch.processSortedSet('users:joindate', async (uids) => {
 			const usersData = await User.getUsersFields(uids, data.fields.slice());
 			let line = '';
-			usersData.forEach(function (user) {
+			usersData.forEach((user) => {
 				line += `${data.fields.map(field => user[field]).join(',')}\n`;
 			});
 

@@ -25,8 +25,8 @@ if (process.platform === 'win32') {
 function getModuleVersions(modules, callback) {
 	const versionHash = {};
 
-	async.eachLimit(modules, 50, function (module, next) {
-		fs.readFile(path.join(paths.nodeModules, module, 'package.json'), { encoding: 'utf-8' }, function (err, pkg) {
+	async.eachLimit(modules, 50, (module, next) => {
+		fs.readFile(path.join(paths.nodeModules, module, 'package.json'), { encoding: 'utf-8' }, (err, pkg) => {
 			if (err) {
 				return next(err);
 			}
@@ -39,7 +39,7 @@ function getModuleVersions(modules, callback) {
 				next(err);
 			}
 		});
-	}, function (err) {
+	}, (err) => {
 		callback(err, versionHash);
 	});
 }
@@ -49,14 +49,12 @@ function getInstalledPlugins(callback) {
 		files: async.apply(fs.readdir, paths.nodeModules),
 		deps: async.apply(fs.readFile, paths.currentPackage, { encoding: 'utf-8' }),
 		bundled: async.apply(fs.readFile, paths.installPackage, { encoding: 'utf-8' }),
-	}, function (err, payload) {
+	}, (err, payload) => {
 		if (err) {
 			return callback(err);
 		}
 
-		payload.files = payload.files.filter(function (file) {
-			return pluginNamePattern.test(file);
-		});
+		payload.files = payload.files.filter(file => pluginNamePattern.test(file));
 
 		try {
 			payload.deps = Object.keys(JSON.parse(payload.deps).dependencies);
@@ -65,15 +63,11 @@ function getInstalledPlugins(callback) {
 			return callback(err);
 		}
 
-		payload.bundled = payload.bundled.filter(function (pkgName) {
-			return pluginNamePattern.test(pkgName);
-		});
-		payload.deps = payload.deps.filter(function (pkgName) {
-			return pluginNamePattern.test(pkgName);
-		});
+		payload.bundled = payload.bundled.filter(pkgName => pluginNamePattern.test(pkgName));
+		payload.deps = payload.deps.filter(pkgName => pluginNamePattern.test(pkgName));
 
 		// Whittle down deps to send back only extraneously installed plugins/themes/etc
-		const checklist = payload.deps.filter(function (pkgName) {
+		const checklist = payload.deps.filter((pkgName) => {
 			if (payload.bundled.includes(pkgName)) {
 				return false;
 			}
@@ -92,7 +86,7 @@ function getInstalledPlugins(callback) {
 }
 
 function getCurrentVersion(callback) {
-	fs.readFile(paths.installPackage, { encoding: 'utf-8' }, function (err, pkg) {
+	fs.readFile(paths.installPackage, { encoding: 'utf-8' }, (err, pkg) => {
 		if (err) {
 			return callback(err);
 		}
@@ -128,7 +122,7 @@ function checkPlugins(standalone, callback) {
 				method: 'GET',
 				url: `https://packages.nodebb.org/api/v1/suggest?version=${payload.version}&package[]=${toCheck.join('&package[]=')}`,
 				json: true,
-			}, function (err, res, body) {
+			}, (err, res, body) => {
 				if (err) {
 					process.stdout.write('error'.red + ''.reset);
 					return next(err);
@@ -141,7 +135,7 @@ function checkPlugins(standalone, callback) {
 
 				let current;
 				let suggested;
-				const upgradable = body.map(function (suggestObj) {
+				const upgradable = body.map((suggestObj) => {
 					current = payload.plugins[suggestObj.package];
 					suggested = suggestObj.version;
 
@@ -168,7 +162,7 @@ function upgradePlugins(callback) {
 		standalone = true;
 	}
 
-	checkPlugins(standalone, function (err, found) {
+	checkPlugins(standalone, (err, found) => {
 		if (err) {
 			console.log('Warning'.yellow + ': An unexpected error occured when attempting to verify plugin upgradability'.reset);
 			return callback(err);
@@ -176,7 +170,7 @@ function upgradePlugins(callback) {
 
 		if (found && found.length) {
 			process.stdout.write(`\n\nA total of ${String(found.length).bold} package(s) can be upgraded:\n\n`);
-			found.forEach(function (suggestObj) {
+			found.forEach((suggestObj) => {
 				process.stdout.write(`${'  * '.yellow + suggestObj.name.reset} (${suggestObj.current.yellow}${' -> '.reset}${suggestObj.suggested.green}${')\n'.reset}`);
 			});
 		} else {
@@ -194,18 +188,16 @@ function upgradePlugins(callback) {
 			name: 'upgrade',
 			description: '\nProceed with upgrade (y|n)?'.reset,
 			type: 'string',
-		}, function (err, result) {
+		}, (err, result) => {
 			if (err) {
 				return callback(err);
 			}
 
 			if (['y', 'Y', 'yes', 'YES'].includes(result.upgrade)) {
 				console.log('\nUpgrading packages...');
-				const args = packageManagerInstallArgs.concat(found.map(function (suggestObj) {
-					return `${suggestObj.name}@${suggestObj.suggested}`;
-				}));
+				const args = packageManagerInstallArgs.concat(found.map(suggestObj => `${suggestObj.name}@${suggestObj.suggested}`));
 
-				cproc.execFile(packageManagerExecutable, args, { stdio: 'ignore' }, function (err) {
+				cproc.execFile(packageManagerExecutable, args, { stdio: 'ignore' }, (err) => {
 					callback(err, false);
 				});
 			} else {

@@ -216,11 +216,11 @@ module.exports = function (Groups) {
 	};
 
 	async function updateMemberGroupTitles(oldName, newName) {
-		await batch.processSortedSet(`group:${oldName}:members`, async function (uids) {
+		await batch.processSortedSet(`group:${oldName}:members`, async (uids) => {
 			let usersData = await user.getUsersData(uids);
 			usersData = usersData.filter(userData => userData && userData.groupTitleArray.includes(oldName));
 
-			usersData.forEach(function (userData) {
+			usersData.forEach((userData) => {
 				userData.newTitleArray = userData.groupTitleArray.map(oldTitle => (oldTitle === oldName ? newName : oldTitle));
 			});
 
@@ -242,7 +242,7 @@ module.exports = function (Groups) {
 	async function updateNavigationItems(oldName, newName) {
 		const navigation = require('../navigation/admin');
 		const navItems = await navigation.get();
-		navItems.forEach(function (navItem) {
+		navItems.forEach((navItem) => {
 			if (navItem && Array.isArray(navItem.groups) && navItem.groups.includes(oldName)) {
 				navItem.groups.splice(navItem.groups.indexOf(oldName), 1, newName);
 			}
@@ -257,9 +257,9 @@ module.exports = function (Groups) {
 
 		const data = await admin.get();
 
-		data.areas.forEach(function (area) {
+		data.areas.forEach((area) => {
 			area.widgets = area.data;
-			area.widgets.forEach(function (widget) {
+			area.widgets.forEach((widget) => {
 				if (widget && widget.data && Array.isArray(widget.data.groups) && widget.data.groups.includes(oldName)) {
 					widget.data.groups.splice(widget.data.groups.indexOf(oldName), 1, newName);
 				}

@@ -142,7 +142,7 @@ authenticationController.registerComplete = function (req, res, next) {
 			return next(err);
 		}
 
-		var callbacks = data.interstitials.reduce(function (memo, cur) {
+		var callbacks = data.interstitials.reduce((memo, cur) => {
 			if (cur.hasOwnProperty('callback') && typeof cur.callback === 'function') {
 				req.body.files = req.files;
 				memo.push(cur.callback && cur.callback.constructor && cur.callback.constructor.name === 'AsyncFunction' ? cur.callback : util.promisify(cur.callback));
@@ -201,7 +201,7 @@ authenticationController.registerComplete = function (req, res, next) {
 
 authenticationController.registerAbort = function (req, res) {
 	// End the session and redirect to home
-	req.session.destroy(function () {
+	req.session.destroy(() => {
 		res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
 		res.redirect(`${nconf.get('relative_path')}/`);
 	});
@@ -248,7 +248,7 @@ authenticationController.login = async (req, res, next) => {
 };
 
 function continueLogin(strategy, req, res, next) {
-	passport.authenticate(strategy, async function (err, userData, info) {
+	passport.authenticate(strategy, async (err, userData, info) => {
 		if (err) {
 			return helpers.noScriptErrors(req, res, err.message, 403);
 		}

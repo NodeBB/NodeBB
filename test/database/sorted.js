@@ -5,8 +5,8 @@ var	async = require('async');
 var assert = require('assert');
 var db = require('../mocks/databasemock');
 
-describe('Sorted Set methods', function () {
-	before(function (done) {
+describe('Sorted Set methods', () => {
+	before((done) => {
 		async.parallel([
 			function (next) {
 				db.sortedSetAdd('sortedSetTest1', [1.1, 1.2, 1.3], ['value1', 'value2', 'value3'], next);
@@ -26,7 +26,7 @@ describe('Sorted Set methods', function () {
 		], done);
 	});
 
-	describe('sortedSetScan', function () {
+	describe('sortedSetScan', () => {
 		it('should find matches in sorted set containing substring', async () => {
 			await db.sortedSetAdd('scanzset', [1, 2, 3, 4, 5, 6], ['aaaa', 'bbbb', 'bbcc', 'ddd', 'dddd', 'fghbc']);
 			const data = await db.getSortedSetScan({
@@ -91,8 +91,8 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('sortedSetAdd()', function () {
-		it('should add an element to a sorted set', function (done) {
+	describe('sortedSetAdd()', () => {
+		it('should add an element to a sorted set', (done) => {
 			db.sortedSetAdd('sorted1', 1, 'value1', function (err) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 1);
@@ -100,7 +100,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should add two elements to a sorted set', function (done) {
+		it('should add two elements to a sorted set', (done) => {
 			db.sortedSetAdd('sorted2', [1, 2], ['value1', 'value2'], function (err) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 1);
@@ -108,7 +108,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should gracefully handle adding the same element twice', function (done) {
+		it('should gracefully handle adding the same element twice', (done) => {
 			db.sortedSetAdd('sorted2', [1, 2], ['value1', 'value1'], function (err) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 1);
@@ -123,24 +123,24 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should error if score is null', function (done) {
-			db.sortedSetAdd('errorScore', null, 'value1', function (err) {
+		it('should error if score is null', (done) => {
+			db.sortedSetAdd('errorScore', null, 'value1', (err) => {
 				assert.equal(err.message, '[[error:invalid-score, null]]');
 				done();
 			});
 		});
 
-		it('should error if any score is undefined', function (done) {
-			db.sortedSetAdd('errorScore', [1, undefined], ['value1', 'value2'], function (err) {
+		it('should error if any score is undefined', (done) => {
+			db.sortedSetAdd('errorScore', [1, undefined], ['value1', 'value2'], (err) => {
 				assert.equal(err.message, '[[error:invalid-score, undefined]]');
 				done();
 			});
 		});
 
-		it('should add null value as `null` string', function (done) {
-			db.sortedSetAdd('nullValueZSet', 1, null, function (err) {
+		it('should add null value as `null` string', (done) => {
+			db.sortedSetAdd('nullValueZSet', 1, null, (err) => {
 				assert.ifError(err);
-				db.getSortedSetRange('nullValueZSet', 0, -1, function (err, values) {
+				db.getSortedSetRange('nullValueZSet', 0, -1, (err, values) => {
 					assert.ifError(err);
 					assert.strictEqual(values[0], 'null');
 					done();
@@ -149,8 +149,8 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('sortedSetsAdd()', function () {
-		it('should add an element to two sorted sets', function (done) {
+	describe('sortedSetsAdd()', () => {
+		it('should add an element to two sorted sets', (done) => {
 			db.sortedSetsAdd(['sorted1', 'sorted2'], 3, 'value3', function (err) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 1);
@@ -158,10 +158,10 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should add an element to two sorted sets with different scores', function (done) {
-			db.sortedSetsAdd(['sorted1', 'sorted2'], [4, 5], 'value4', function (err) {
+		it('should add an element to two sorted sets with different scores', (done) => {
+			db.sortedSetsAdd(['sorted1', 'sorted2'], [4, 5], 'value4', (err) => {
 				assert.ifError(err);
-				db.sortedSetsScore(['sorted1', 'sorted2'], 'value4', function (err, scores) {
+				db.sortedSetsScore(['sorted1', 'sorted2'], 'value4', (err, scores) => {
 					assert.ifError(err);
 					assert.deepStrictEqual(scores, [4, 5]);
 					done();
@@ -170,21 +170,21 @@ describe('Sorted Set methods', function () {
 		});
 
 
-		it('should error if keys.length is different than scores.length', function (done) {
-			db.sortedSetsAdd(['sorted1', 'sorted2'], [4], 'value4', function (err) {
+		it('should error if keys.length is different than scores.length', (done) => {
+			db.sortedSetsAdd(['sorted1', 'sorted2'], [4], 'value4', (err) => {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
-		it('should error if score is null', function (done) {
-			db.sortedSetsAdd(['sorted1', 'sorted2'], null, 'value1', function (err) {
+		it('should error if score is null', (done) => {
+			db.sortedSetsAdd(['sorted1', 'sorted2'], null, 'value1', (err) => {
 				assert.equal(err.message, '[[error:invalid-score, null]]');
 				done();
 			});
 		});
 
-		it('should error if scores has null', async function () {
+		it('should error if scores has null', async () => {
 			let err;
 			try {
 				await db.sortedSetsAdd(['sorted1', 'sorted2'], [1, null], 'dontadd');
@@ -197,8 +197,8 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('sortedSetAddMulti()', function () {
-		it('should add elements into multiple sorted sets with different scores', function (done) {
+	describe('sortedSetAddMulti()', () => {
+		it('should add elements into multiple sorted sets with different scores', (done) => {
 			db.sortedSetAddBulk([
 				['bulk1', 1, 'item1'],
 				['bulk2', 2, 'item1'],
@@ -207,7 +207,7 @@ describe('Sorted Set methods', function () {
 			], function (err) {
 				assert.ifError(err);
 				assert.equal(arguments.length, 1);
-				db.getSortedSetRevRangeWithScores(['bulk1', 'bulk2', 'bulk3'], 0, -1, function (err, data) {
+				db.getSortedSetRevRangeWithScores(['bulk1', 'bulk2', 'bulk3'], 0, -1, (err, data) => {
 					assert.ifError(err);
 					assert.deepStrictEqual(data, [{ value: 'item3', score: 4 },
 						{ value: 'item2', score: 3 },
@@ -217,14 +217,14 @@ describe('Sorted Set methods', function () {
 				});
 			});
 		});
-		it('should not error if data is undefined', function (done) {
-			db.sortedSetAddBulk(undefined, function (err) {
+		it('should not error if data is undefined', (done) => {
+			db.sortedSetAddBulk(undefined, (err) => {
 				assert.ifError(err);
 				done();
 			});
 		});
 
-		it('should error if score is null', async function () {
+		it('should error if score is null', async () => {
 			let err;
 			try {
 				await db.sortedSetAddBulk([
@@ -240,8 +240,8 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('getSortedSetRange()', function () {
-		it('should return the lowest scored element', function (done) {
+	describe('getSortedSetRange()', () => {
+		it('should return the lowest scored element', (done) => {
 			db.getSortedSetRange('sortedSetTest1', 0, 0, function (err, value) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -250,7 +250,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return elements sorted by score lowest to highest', function (done) {
+		it('should return elements sorted by score lowest to highest', (done) => {
 			db.getSortedSetRange('sortedSetTest1', 0, -1, function (err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -259,8 +259,8 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return empty array if set does not exist', function (done) {
-			db.getSortedSetRange('doesnotexist', 0, -1, function (err, values) {
+		it('should return empty array if set does not exist', (done) => {
+			db.getSortedSetRange('doesnotexist', 0, -1, (err, values) => {
 				assert.ifError(err);
 				assert(Array.isArray(values));
 				assert.equal(values.length, 0);
@@ -268,10 +268,10 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should handle negative start/stop', function (done) {
-			db.sortedSetAdd('negatives', [1, 2, 3, 4, 5], ['1', '2', '3', '4', '5'], function (err) {
+		it('should handle negative start/stop', (done) => {
+			db.sortedSetAdd('negatives', [1, 2, 3, 4, 5], ['1', '2', '3', '4', '5'], (err) => {
 				assert.ifError(err);
-				db.getSortedSetRange('negatives', -2, -4, function (err, data) {
+				db.getSortedSetRange('negatives', -2, -4, (err, data) => {
 					assert.ifError(err);
 					assert.deepEqual(data, []);
 					done();
@@ -279,54 +279,54 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should handle negative start/stop', function (done) {
-			db.getSortedSetRange('negatives', -4, -2, function (err, data) {
+		it('should handle negative start/stop', (done) => {
+			db.getSortedSetRange('negatives', -4, -2, (err, data) => {
 				assert.ifError(err);
 				assert.deepEqual(data, ['2', '3', '4']);
 				done();
 			});
 		});
 
-		it('should handle negative start/stop', function (done) {
-			db.getSortedSetRevRange('negatives', -4, -2, function (err, data) {
+		it('should handle negative start/stop', (done) => {
+			db.getSortedSetRevRange('negatives', -4, -2, (err, data) => {
 				assert.ifError(err);
 				assert.deepEqual(data, ['4', '3', '2']);
 				done();
 			});
 		});
 
-		it('should handle negative start/stop', function (done) {
-			db.getSortedSetRange('negatives', -5, -1, function (err, data) {
+		it('should handle negative start/stop', (done) => {
+			db.getSortedSetRange('negatives', -5, -1, (err, data) => {
 				assert.ifError(err);
 				assert.deepEqual(data, ['1', '2', '3', '4', '5']);
 				done();
 			});
 		});
 
-		it('should handle negative start/stop', function (done) {
-			db.getSortedSetRange('negatives', 0, -2, function (err, data) {
+		it('should handle negative start/stop', (done) => {
+			db.getSortedSetRange('negatives', 0, -2, (err, data) => {
 				assert.ifError(err);
 				assert.deepEqual(data, ['1', '2', '3', '4']);
 				done();
 			});
 		});
 
-		it('should return empty array if keys is empty array', function (done) {
-			db.getSortedSetRange([], 0, -1, function (err, data) {
+		it('should return empty array if keys is empty array', (done) => {
+			db.getSortedSetRange([], 0, -1, (err, data) => {
 				assert.ifError(err);
 				assert.deepStrictEqual(data, []);
 				done();
 			});
 		});
 
-		it('should return duplicates if two sets have same elements', async function () {
+		it('should return duplicates if two sets have same elements', async () => {
 			await db.sortedSetAdd('dupezset1', [1, 2], ['value 1', 'value 2']);
 			await db.sortedSetAdd('dupezset2', [2, 3], ['value 2', 'value 3']);
 			const data = await db.getSortedSetRange(['dupezset1', 'dupezset2'], 0, -1);
 			assert.deepStrictEqual(data, ['value 1', 'value 2', 'value 2', 'value 3']);
 		});
 
-		it('should return correct number of elements', async function () {
+		it('should return correct number of elements', async () => {
 			await db.sortedSetAdd('dupezset3', [1, 2, 3], ['value 1', 'value 2', 'value3']);
 			await db.sortedSetAdd('dupezset4', [0, 5], ['value 0', 'value5']);
 			const data = await db.getSortedSetRevRange(['dupezset3', 'dupezset4'], 0, 1);
@@ -365,8 +365,8 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('getSortedSetRevRange()', function () {
-		it('should return the highest scored element', function (done) {
+	describe('getSortedSetRevRange()', () => {
+		it('should return the highest scored element', (done) => {
 			db.getSortedSetRevRange('sortedSetTest1', 0, 0, function (err, value) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -375,7 +375,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return elements sorted by score highest to lowest', function (done) {
+		it('should return elements sorted by score highest to lowest', (done) => {
 			db.getSortedSetRevRange('sortedSetTest1', 0, -1, function (err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -385,8 +385,8 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('getSortedSetRangeWithScores()', function () {
-		it('should return array of elements sorted by score lowest to highest with scores', function (done) {
+	describe('getSortedSetRangeWithScores()', () => {
+		it('should return array of elements sorted by score lowest to highest with scores', (done) => {
 			db.getSortedSetRangeWithScores('sortedSetTest1', 0, -1, function (err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -396,8 +396,8 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('getSortedSetRevRangeWithScores()', function () {
-		it('should return array of elements sorted by score highest to lowest with scores', function (done) {
+	describe('getSortedSetRevRangeWithScores()', () => {
+		it('should return array of elements sorted by score highest to lowest with scores', (done) => {
 			db.getSortedSetRevRangeWithScores('sortedSetTest1', 0, -1, function (err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -407,8 +407,8 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('getSortedSetRangeByScore()', function () {
-		it('should get count elements with score between min max sorted by score lowest to highest', function (done) {
+	describe('getSortedSetRangeByScore()', () => {
+		it('should get count elements with score between min max sorted by score lowest to highest', (done) => {
 			db.getSortedSetRangeByScore('sortedSetTest1', 0, -1, '-inf', 1.2, function (err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -417,8 +417,8 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return empty array if set does not exist', function (done) {
-			db.getSortedSetRangeByScore('doesnotexist', 0, -1, '-inf', 0, function (err, values) {
+		it('should return empty array if set does not exist', (done) => {
+			db.getSortedSetRangeByScore('doesnotexist', 0, -1, '-inf', 0, (err, values) => {
 				assert.ifError(err);
 				assert(Array.isArray(values));
 				assert.equal(values.length, 0);
@@ -426,26 +426,26 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return empty array if count is 0', function (done) {
-			db.getSortedSetRevRangeByScore('sortedSetTest1', 0, 0, '+inf', '-inf', function (err, values) {
+		it('should return empty array if count is 0', (done) => {
+			db.getSortedSetRevRangeByScore('sortedSetTest1', 0, 0, '+inf', '-inf', (err, values) => {
 				assert.ifError(err);
 				assert.deepEqual(values, []);
 				done();
 			});
 		});
 
-		it('should return elements from 1 to end', function (done) {
-			db.getSortedSetRevRangeByScore('sortedSetTest1', 1, -1, '+inf', '-inf', function (err, values) {
+		it('should return elements from 1 to end', (done) => {
+			db.getSortedSetRevRangeByScore('sortedSetTest1', 1, -1, '+inf', '-inf', (err, values) => {
 				assert.ifError(err);
 				assert.deepEqual(values, ['value2', 'value1']);
 				done();
 			});
 		});
 
-		it('should return elements from 3 to last', function (done) {
-			db.sortedSetAdd('partialZset', [1, 2, 3, 4, 5], ['value1', 'value2', 'value3', 'value4', 'value5'], function (err) {
+		it('should return elements from 3 to last', (done) => {
+			db.sortedSetAdd('partialZset', [1, 2, 3, 4, 5], ['value1', 'value2', 'value3', 'value4', 'value5'], (err) => {
 				assert.ifError(err);
-				db.getSortedSetRangeByScore('partialZset', 3, 10, '-inf', '+inf', function (err, data) {
+				db.getSortedSetRangeByScore('partialZset', 3, 10, '-inf', '+inf', (err, data) => {
 					assert.ifError(err);
 					assert.deepStrictEqual(data, ['value4', 'value5']);
 					done();
@@ -454,8 +454,8 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('getSortedSetRevRangeByScore()', function () {
-		it('should get count elements with score between max min sorted by score highest to lowest', function (done) {
+	describe('getSortedSetRevRangeByScore()', () => {
+		it('should get count elements with score between max min sorted by score highest to lowest', (done) => {
 			db.getSortedSetRevRangeByScore('sortedSetTest1', 0, -1, '+inf', 1.2, function (err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -465,8 +465,8 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('getSortedSetRangeByScoreWithScores()', function () {
-		it('should get count elements with score between min max sorted by score lowest to highest with scores', function (done) {
+	describe('getSortedSetRangeByScoreWithScores()', () => {
+		it('should get count elements with score between min max sorted by score lowest to highest with scores', (done) => {
 			db.getSortedSetRangeByScoreWithScores('sortedSetTest1', 0, -1, '-inf', 1.2, function (err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -476,8 +476,8 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('getSortedSetRevRangeByScoreWithScores()', function () {
-		it('should get count elements with score between max min sorted by score highest to lowest', function (done) {
+	describe('getSortedSetRevRangeByScoreWithScores()', () => {
+		it('should get count elements with score between max min sorted by score highest to lowest', (done) => {
 			db.getSortedSetRevRangeByScoreWithScores('sortedSetTest1', 0, -1, '+inf', 1.2, function (err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -486,7 +486,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should work with an array of keys', async function () {
+		it('should work with an array of keys', async () => {
 			await db.sortedSetAddBulk([
 				['byScoreWithScoresKeys1', 1, 'value1'],
 				['byScoreWithScoresKeys2', 2, 'value2'],
@@ -496,8 +496,8 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('sortedSetCount()', function () {
-		it('should return 0 for a sorted set that does not exist', function (done) {
+	describe('sortedSetCount()', () => {
+		it('should return 0 for a sorted set that does not exist', (done) => {
 			db.sortedSetCount('doesnotexist', 0, 10, function (err, count) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -506,7 +506,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return number of elements between scores min max inclusive', function (done) {
+		it('should return number of elements between scores min max inclusive', (done) => {
 			db.sortedSetCount('sortedSetTest1', '-inf', 1.2, function (err, count) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -515,7 +515,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return number of elements between scores -inf +inf inclusive', function (done) {
+		it('should return number of elements between scores -inf +inf inclusive', (done) => {
 			db.sortedSetCount('sortedSetTest1', '-inf', '+inf', function (err, count) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -525,8 +525,8 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('sortedSetCard()', function () {
-		it('should return 0 for a sorted set that does not exist', function (done) {
+	describe('sortedSetCard()', () => {
+		it('should return 0 for a sorted set that does not exist', (done) => {
 			db.sortedSetCard('doesnotexist', function (err, count) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -535,7 +535,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return number of elements in a sorted set', function (done) {
+		it('should return number of elements in a sorted set', (done) => {
 			db.sortedSetCard('sortedSetTest1', function (err, count) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -545,8 +545,8 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('sortedSetsCard()', function () {
-		it('should return the number of elements in sorted sets', function (done) {
+	describe('sortedSetsCard()', () => {
+		it('should return the number of elements in sorted sets', (done) => {
 			db.sortedSetsCard(['sortedSetTest1', 'sortedSetTest2', 'doesnotexist'], function (err, counts) {
 				assert.ifError(err);
 				assert.equal(arguments.length, 2);
@@ -555,7 +555,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return empty array if keys is falsy', function (done) {
+		it('should return empty array if keys is falsy', (done) => {
 			db.sortedSetsCard(undefined, function (err, counts) {
 				assert.ifError(err);
 				assert.equal(arguments.length, 2);
@@ -564,7 +564,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return empty array if keys is empty array', function (done) {
+		it('should return empty array if keys is empty array', (done) => {
 			db.sortedSetsCard([], function (err, counts) {
 				assert.ifError(err);
 				assert.equal(arguments.length, 2);
@@ -574,8 +574,8 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('sortedSetsCardSum()', function () {
-		it('should return the total number of elements in sorted sets', function (done) {
+	describe('sortedSetsCardSum()', () => {
+		it('should return the total number of elements in sorted sets', (done) => {
 			db.sortedSetsCardSum(['sortedSetTest1', 'sortedSetTest2', 'doesnotexist'], function (err, sum) {
 				assert.ifError(err);
 				assert.equal(arguments.length, 2);
@@ -584,7 +584,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return 0 if keys is falsy', function (done) {
+		it('should return 0 if keys is falsy', (done) => {
 			db.sortedSetsCardSum(undefined, function (err, counts) {
 				assert.ifError(err);
 				assert.equal(arguments.length, 2);
@@ -593,7 +593,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return 0 if keys is empty array', function (done) {
+		it('should return 0 if keys is empty array', (done) => {
 			db.sortedSetsCardSum([], function (err, counts) {
 				assert.ifError(err);
 				assert.equal(arguments.length, 2);
@@ -602,7 +602,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return the total number of elements in sorted set', function (done) {
+		it('should return the total number of elements in sorted set', (done) => {
 			db.sortedSetsCardSum('sortedSetTest1', function (err, sum) {
 				assert.ifError(err);
 				assert.equal(arguments.length, 2);
@@ -612,8 +612,8 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('sortedSetRank()', function () {
-		it('should return falsy if sorted set does not exist', function (done) {
+	describe('sortedSetRank()', () => {
+		it('should return falsy if sorted set does not exist', (done) => {
 			db.sortedSetRank('doesnotexist', 'value1', function (err, rank) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -622,7 +622,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return falsy if element isnt in sorted set', function (done) {
+		it('should return falsy if element isnt in sorted set', (done) => {
 			db.sortedSetRank('sortedSetTest1', 'value5', function (err, rank) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -631,7 +631,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return the rank of the element in the sorted set sorted by lowest to highest score', function (done) {
+		it('should return the rank of the element in the sorted set sorted by lowest to highest score', (done) => {
 			db.sortedSetRank('sortedSetTest1', 'value1', function (err, rank) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -640,7 +640,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return the rank sorted by the score and then the value (a)', function (done) {
+		it('should return the rank sorted by the score and then the value (a)', (done) => {
 			db.sortedSetRank('sortedSetTest4', 'a', function (err, rank) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -649,7 +649,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return the rank sorted by the score and then the value (b)', function (done) {
+		it('should return the rank sorted by the score and then the value (b)', (done) => {
 			db.sortedSetRank('sortedSetTest4', 'b', function (err, rank) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -658,7 +658,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return the rank sorted by the score and then the value (c)', function (done) {
+		it('should return the rank sorted by the score and then the value (c)', (done) => {
 			db.sortedSetRank('sortedSetTest4', 'c', function (err, rank) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -668,8 +668,8 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('sortedSetRevRank()', function () {
-		it('should return falsy if sorted set doesnot exist', function (done) {
+	describe('sortedSetRevRank()', () => {
+		it('should return falsy if sorted set doesnot exist', (done) => {
 			db.sortedSetRevRank('doesnotexist', 'value1', function (err, rank) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -678,7 +678,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return falsy if element isnt in sorted set', function (done) {
+		it('should return falsy if element isnt in sorted set', (done) => {
 			db.sortedSetRevRank('sortedSetTest1', 'value5', function (err, rank) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -687,7 +687,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return the rank of the element in the sorted set sorted by highest to lowest score', function (done) {
+		it('should return the rank of the element in the sorted set sorted by highest to lowest score', (done) => {
 			db.sortedSetRevRank('sortedSetTest1', 'value1', function (err, rank) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -697,8 +697,8 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('sortedSetsRanks()', function () {
-		it('should return the ranks of values in sorted sets', function (done) {
+	describe('sortedSetsRanks()', () => {
+		it('should return the ranks of values in sorted sets', (done) => {
 			db.sortedSetsRanks(['sortedSetTest1', 'sortedSetTest2'], ['value1', 'value4'], function (err, ranks) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -708,8 +708,8 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('sortedSetRanks()', function () {
-		it('should return the ranks of values in a sorted set', function (done) {
+	describe('sortedSetRanks()', () => {
+		it('should return the ranks of values in a sorted set', (done) => {
 			db.sortedSetRanks('sortedSetTest1', ['value2', 'value1', 'value3', 'value4'], function (err, ranks) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -718,7 +718,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return the ranks of values in a sorted set in reverse', function (done) {
+		it('should return the ranks of values in a sorted set in reverse', (done) => {
 			db.sortedSetRevRanks('sortedSetTest1', ['value2', 'value1', 'value3', 'value4'], function (err, ranks) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -728,8 +728,8 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('sortedSetScore()', function () {
-		it('should return falsy if sorted set does not exist', function (done) {
+	describe('sortedSetScore()', () => {
+		it('should return falsy if sorted set does not exist', (done) => {
 			db.sortedSetScore('doesnotexist', 'value1', function (err, score) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -739,7 +739,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return falsy if element is not in sorted set', function (done) {
+		it('should return falsy if element is not in sorted set', (done) => {
 			db.sortedSetScore('sortedSetTest1', 'value5', function (err, score) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -749,7 +749,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return the score of an element', function (done) {
+		it('should return the score of an element', (done) => {
 			db.sortedSetScore('sortedSetTest1', 'value2', function (err, score) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -758,16 +758,16 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should not error if key is undefined', function (done) {
-			db.sortedSetScore(undefined, 1, function (err, score) {
+		it('should not error if key is undefined', (done) => {
+			db.sortedSetScore(undefined, 1, (err, score) => {
 				assert.ifError(err);
 				assert.strictEqual(score, null);
 				done();
 			});
 		});
 
-		it('should not error if value is undefined', function (done) {
-			db.sortedSetScore('sortedSetTest1', undefined, function (err, score) {
+		it('should not error if value is undefined', (done) => {
+			db.sortedSetScore('sortedSetTest1', undefined, (err, score) => {
 				assert.ifError(err);
 				assert.strictEqual(score, null);
 				done();
@@ -775,8 +775,8 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('sortedSetsScore()', function () {
-		it('should return the scores of value in sorted sets', function (done) {
+	describe('sortedSetsScore()', () => {
+		it('should return the scores of value in sorted sets', (done) => {
 			db.sortedSetsScore(['sortedSetTest1', 'sortedSetTest2', 'doesnotexist'], 'value1', function (err, scores) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -785,7 +785,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return scores even if some keys are undefined', function (done) {
+		it('should return scores even if some keys are undefined', (done) => {
 			db.sortedSetsScore(['sortedSetTest1', undefined, 'doesnotexist'], 'value1', function (err, scores) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -794,7 +794,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return empty array if keys is empty array', function (done) {
+		it('should return empty array if keys is empty array', (done) => {
 			db.sortedSetsScore([], 'value1', function (err, scores) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -804,20 +804,20 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('sortedSetScores()', function () {
-		before(function (done) {
+	describe('sortedSetScores()', () => {
+		before((done) => {
 			db.sortedSetAdd('zeroScore', 0, 'value1', done);
 		});
 
-		it('should return 0 if score is 0', function (done) {
-			db.sortedSetScores('zeroScore', ['value1'], function (err, scores) {
+		it('should return 0 if score is 0', (done) => {
+			db.sortedSetScores('zeroScore', ['value1'], (err, scores) => {
 				assert.ifError(err);
 				assert.strictEqual(scores[0], 0);
 				done();
 			});
 		});
 
-		it('should return the scores of value in sorted sets', function (done) {
+		it('should return the scores of value in sorted sets', (done) => {
 			db.sortedSetScores('sortedSetTest1', ['value2', 'value1', 'doesnotexist'], function (err, scores) {
 				assert.ifError(err);
 				assert.equal(arguments.length, 2);
@@ -826,7 +826,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return scores even if some values are undefined', function (done) {
+		it('should return scores even if some values are undefined', (done) => {
 			db.sortedSetScores('sortedSetTest1', ['value2', undefined, 'doesnotexist'], function (err, scores) {
 				assert.ifError(err);
 				assert.equal(arguments.length, 2);
@@ -835,7 +835,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return empty array if values is an empty array', function (done) {
+		it('should return empty array if values is an empty array', (done) => {
 			db.sortedSetScores('sortedSetTest1', [], function (err, scores) {
 				assert.ifError(err);
 				assert.equal(arguments.length, 2);
@@ -844,7 +844,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return scores properly', function (done) {
+		it('should return scores properly', (done) => {
 			db.sortedSetsScore(['zeroScore', 'sortedSetTest1', 'doesnotexist'], 'value1', function (err, scores) {
 				assert.ifError(err);
 				assert.equal(arguments.length, 2);
@@ -854,12 +854,12 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('isSortedSetMember()', function () {
-		before(function (done) {
+	describe('isSortedSetMember()', () => {
+		before((done) => {
 			db.sortedSetAdd('zeroscore', 0, 'itemwithzeroscore', done);
 		});
 
-		it('should return false if sorted set does not exist', function (done) {
+		it('should return false if sorted set does not exist', (done) => {
 			db.isSortedSetMember('doesnotexist', 'value1', function (err, isMember) {
 				assert.ifError(err);
 				assert.equal(arguments.length, 2);
@@ -868,7 +868,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return false if element is not in sorted set', function (done) {
+		it('should return false if element is not in sorted set', (done) => {
 			db.isSortedSetMember('sorted2', 'value5', function (err, isMember) {
 				assert.ifError(err);
 				assert.equal(arguments.length, 2);
@@ -877,7 +877,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return true if element is in sorted set', function (done) {
+		it('should return true if element is in sorted set', (done) => {
 			db.isSortedSetMember('sortedSetTest1', 'value2', function (err, isMember) {
 				assert.ifError(err);
 				assert.equal(arguments.length, 2);
@@ -886,8 +886,8 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return true if element is in sorted set with score 0', function (done) {
-			db.isSortedSetMember('zeroscore', 'itemwithzeroscore', function (err, isMember) {
+		it('should return true if element is in sorted set with score 0', (done) => {
+			db.isSortedSetMember('zeroscore', 'itemwithzeroscore', (err, isMember) => {
 				assert.ifError(err);
 				assert.strictEqual(isMember, true);
 				done();
@@ -895,8 +895,8 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('isSortedSetMembers()', function () {
-		it('should return an array of booleans indicating membership', function (done) {
+	describe('isSortedSetMembers()', () => {
+		it('should return an array of booleans indicating membership', (done) => {
 			db.isSortedSetMembers('sortedSetTest1', ['value1', 'value2', 'value5'], function (err, isMembers) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -905,7 +905,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return true if element is in sorted set with score 0', function (done) {
+		it('should return true if element is in sorted set with score 0', (done) => {
 			db.isSortedSetMembers('zeroscore', ['itemwithzeroscore'], function (err, isMembers) {
 				assert.ifError(err);
 				assert.equal(arguments.length, 2);
@@ -915,8 +915,8 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('isMemberOfSortedSets', function () {
-		it('should return true for members false for non members', function (done) {
+	describe('isMemberOfSortedSets', () => {
+		it('should return true for members false for non members', (done) => {
 			db.isMemberOfSortedSets(['doesnotexist', 'sortedSetTest1', 'sortedSetTest2'], 'value2', function (err, isMembers) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -925,7 +925,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return empty array if keys is empty array', function (done) {
+		it('should return empty array if keys is empty array', (done) => {
 			db.isMemberOfSortedSets([], 'value2', function (err, isMembers) {
 				assert.ifError(err);
 				assert.equal(arguments.length, 2);
@@ -935,20 +935,20 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('getSortedSetsMembers', function () {
-		it('should return members of a sorted set', async function () {
+	describe('getSortedSetsMembers', () => {
+		it('should return members of a sorted set', async () => {
 			const result = await db.getSortedSetMembers('sortedSetTest1');
-			result.forEach(function (element) {
+			result.forEach((element) => {
 				assert(['value1', 'value2', 'value3'].includes(element));
 			});
 		});
 
-		it('should return members of multiple sorted sets', function (done) {
+		it('should return members of multiple sorted sets', (done) => {
 			db.getSortedSetsMembers(['doesnotexist', 'sortedSetTest1'], function (err, sortedSets) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.deepEqual(sortedSets[0], []);
-				sortedSets[0].forEach(function (element) {
+				sortedSets[0].forEach((element) => {
 					assert.notEqual(['value1', 'value2', 'value3'].indexOf(element), -1);
 				});
 
@@ -957,9 +957,9 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('sortedSetUnionCard', function () {
-		it('should return the number of elements in the union', function (done) {
-			db.sortedSetUnionCard(['sortedSetTest2', 'sortedSetTest3'], function (err, count) {
+	describe('sortedSetUnionCard', () => {
+		it('should return the number of elements in the union', (done) => {
+			db.sortedSetUnionCard(['sortedSetTest2', 'sortedSetTest3'], (err, count) => {
 				assert.ifError(err);
 				assert.equal(count, 3);
 				done();
@@ -967,8 +967,8 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('getSortedSetUnion()', function () {
-		it('should return an array of values from both sorted sets sorted by scores lowest to highest', function (done) {
+	describe('getSortedSetUnion()', () => {
+		it('should return an array of values from both sorted sets sorted by scores lowest to highest', (done) => {
 			db.getSortedSetUnion({ sets: ['sortedSetTest2', 'sortedSetTest3'], start: 0, stop: -1 }, function (err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -977,7 +977,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return an array of values and scores from both sorted sets sorted by scores lowest to highest', function (done) {
+		it('should return an array of values and scores from both sorted sets sorted by scores lowest to highest', (done) => {
 			db.getSortedSetUnion({ sets: ['sortedSetTest2', 'sortedSetTest3'], start: 0, stop: -1, withScores: true }, function (err, data) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -987,8 +987,8 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('getSortedSetRevUnion()', function () {
-		it('should return an array of values from both sorted sets sorted by scores highest to lowest', function (done) {
+	describe('getSortedSetRevUnion()', () => {
+		it('should return an array of values from both sorted sets sorted by scores highest to lowest', (done) => {
 			db.getSortedSetRevUnion({ sets: ['sortedSetTest2', 'sortedSetTest3'], start: 0, stop: -1 }, function (err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
@@ -998,13 +998,13 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('sortedSetIncrBy()', function () {
-		it('should create a sorted set with a field set to 1', function (done) {
+	describe('sortedSetIncrBy()', () => {
+		it('should create a sorted set with a field set to 1', (done) => {
 			db.sortedSetIncrBy('sortedIncr', 1, 'field1', function (err, newValue) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.strictEqual(newValue, 1);
-				db.sortedSetScore('sortedIncr', 'field1', function (err, score) {
+				db.sortedSetScore('sortedIncr', 'field1', (err, score) => {
 					assert.equal(err, null);
 					assert.strictEqual(score, 1);
 					done();
@@ -1012,12 +1012,12 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should increment a field of a sorted set by 5', function (done) {
+		it('should increment a field of a sorted set by 5', (done) => {
 			db.sortedSetIncrBy('sortedIncr', 5, 'field1', function (err, newValue) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.strictEqual(newValue, 6);
-				db.sortedSetScore('sortedIncr', 'field1', function (err, score) {
+				db.sortedSetScore('sortedIncr', 'field1', (err, score) => {
 					assert.equal(err, null);
 					assert.strictEqual(score, 6);
 					done();
@@ -1027,16 +1027,16 @@ describe('Sorted Set methods', function () {
 	});
 
 
-	describe('sortedSetRemove()', function () {
-		before(function (done) {
+	describe('sortedSetRemove()', () => {
+		before((done) => {
 			db.sortedSetAdd('sorted3', [1, 2], ['value1', 'value2'], done);
 		});
 
-		it('should remove an element from a sorted set', function (done) {
+		it('should remove an element from a sorted set', (done) => {
 			db.sortedSetRemove('sorted3', 'value2', function (err) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 1);
-				db.isSortedSetMember('sorted3', 'value2', function (err, isMember) {
+				db.isSortedSetMember('sorted3', 'value2', (err, isMember) => {
 					assert.equal(err, null);
 					assert.equal(isMember, false);
 					done();
@@ -1044,14 +1044,14 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should remove multiple values from multiple keys', function (done) {
-			db.sortedSetAdd('multiTest1', [1, 2, 3, 4], ['one', 'two', 'three', 'four'], function (err) {
+		it('should remove multiple values from multiple keys', (done) => {
+			db.sortedSetAdd('multiTest1', [1, 2, 3, 4], ['one', 'two', 'three', 'four'], (err) => {
 				assert.ifError(err);
-				db.sortedSetAdd('multiTest2', [3, 4, 5, 6], ['three', 'four', 'five', 'six'], function (err) {
+				db.sortedSetAdd('multiTest2', [3, 4, 5, 6], ['three', 'four', 'five', 'six'], (err) => {
 					assert.ifError(err);
-					db.sortedSetRemove(['multiTest1', 'multiTest2'], ['two', 'three', 'four', 'five', 'doesnt exist'], function (err) {
+					db.sortedSetRemove(['multiTest1', 'multiTest2'], ['two', 'three', 'four', 'five', 'doesnt exist'], (err) => {
 						assert.ifError(err);
-						db.getSortedSetsMembers(['multiTest1', 'multiTest2'], function (err, members) {
+						db.getSortedSetsMembers(['multiTest1', 'multiTest2'], (err, members) => {
 							assert.ifError(err);
 							assert.equal(members[0].length, 1);
 							assert.equal(members[1].length, 1);
@@ -1063,7 +1063,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should remove value from multiple keys', async function () {
+		it('should remove value from multiple keys', async () => {
 			await db.sortedSetAdd('multiTest3', [1, 2, 3, 4], ['one', 'two', 'three', 'four']);
 			await db.sortedSetAdd('multiTest4', [3, 4, 5, 6], ['three', 'four', 'five', 'six']);
 			await db.sortedSetRemove(['multiTest3', 'multiTest4'], 'three');
@@ -1071,16 +1071,16 @@ describe('Sorted Set methods', function () {
 			assert.deepStrictEqual(await db.getSortedSetRange('multiTest4', 0, -1), ['four', 'five', 'six']);
 		});
 
-		it('should remove multiple values from multiple keys', function (done) {
-			db.sortedSetAdd('multiTest5', [1], ['one'], function (err) {
+		it('should remove multiple values from multiple keys', (done) => {
+			db.sortedSetAdd('multiTest5', [1], ['one'], (err) => {
 				assert.ifError(err);
-				db.sortedSetAdd('multiTest6', [2], ['two'], function (err) {
+				db.sortedSetAdd('multiTest6', [2], ['two'], (err) => {
 					assert.ifError(err);
-					db.sortedSetAdd('multiTest7', [3], [333], function (err) {
+					db.sortedSetAdd('multiTest7', [3], [333], (err) => {
 						assert.ifError(err);
-						db.sortedSetRemove(['multiTest5', 'multiTest6', 'multiTest7'], ['one', 'two', 333], function (err) {
+						db.sortedSetRemove(['multiTest5', 'multiTest6', 'multiTest7'], ['one', 'two', 333], (err) => {
 							assert.ifError(err);
-							db.getSortedSetsMembers(['multiTest5', 'multiTest6', 'multiTest7'], function (err, members) {
+							db.getSortedSetsMembers(['multiTest5', 'multiTest6', 'multiTest7'], (err, members) => {
 								assert.ifError(err);
 								assert.deepEqual(members, [[], [], []]);
 								done();
@@ -1091,12 +1091,12 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should not remove anything if values is empty array', function (done) {
-			db.sortedSetAdd('removeNothing', [1, 2, 3], ['val1', 'val2', 'val3'], function (err) {
+		it('should not remove anything if values is empty array', (done) => {
+			db.sortedSetAdd('removeNothing', [1, 2, 3], ['val1', 'val2', 'val3'], (err) => {
 				assert.ifError(err);
-				db.sortedSetRemove('removeNothing', [], function (err) {
+				db.sortedSetRemove('removeNothing', [], (err) => {
 					assert.ifError(err);
-					db.getSortedSetRange('removeNothing', 0, -1, function (err, data) {
+					db.getSortedSetRange('removeNothing', 0, -1, (err, data) => {
 						assert.ifError(err);
 						assert.deepStrictEqual(data, ['val1', 'val2', 'val3']);
 						done();
@@ -1105,7 +1105,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should do a bulk remove', async function () {
+		it('should do a bulk remove', async () => {
 			await db.sortedSetAddBulk([
 				['bulkRemove1', 1, 'value1'],
 				['bulkRemove1', 2, 'value2'],
@@ -1121,19 +1121,19 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('sortedSetsRemove()', function () {
-		before(function (done) {
+	describe('sortedSetsRemove()', () => {
+		before((done) => {
 			async.parallel([
 				async.apply(db.sortedSetAdd, 'sorted4', [1, 2], ['value1', 'value2']),
 				async.apply(db.sortedSetAdd, 'sorted5', [1, 2], ['value1', 'value3']),
 			], done);
 		});
 
-		it('should remove element from multiple sorted sets', function (done) {
+		it('should remove element from multiple sorted sets', (done) => {
 			db.sortedSetsRemove(['sorted4', 'sorted5'], 'value1', function (err) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 1);
-				db.sortedSetsScore(['sorted4', 'sorted5'], 'value1', function (err, scores) {
+				db.sortedSetsScore(['sorted4', 'sorted5'], 'value1', (err, scores) => {
 					assert.equal(err, null);
 					assert.deepStrictEqual(scores, [null, null]);
 					done();
@@ -1142,16 +1142,16 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('sortedSetsRemoveRangeByScore()', function () {
-		before(function (done) {
+	describe('sortedSetsRemoveRangeByScore()', () => {
+		before((done) => {
 			db.sortedSetAdd('sorted6', [1, 2, 3, 4, 5], ['value1', 'value2', 'value3', 'value4', 'value5'], done);
 		});
 
-		it('should remove elements with scores between min max inclusive', function (done) {
+		it('should remove elements with scores between min max inclusive', (done) => {
 			db.sortedSetsRemoveRangeByScore(['sorted6'], 4, 5, function (err) {
 				assert.ifError(err);
 				assert.equal(arguments.length, 1);
-				db.getSortedSetRange('sorted6', 0, -1, function (err, values) {
+				db.getSortedSetRange('sorted6', 0, -1, (err, values) => {
 					assert.ifError(err);
 					assert.deepEqual(values, ['value1', 'value2', 'value3']);
 					done();
@@ -1159,12 +1159,12 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should remove elements with if strin score is passed in', function (done) {
-			db.sortedSetAdd('sortedForRemove', [11, 22, 33], ['value1', 'value2', 'value3'], function (err) {
+		it('should remove elements with if strin score is passed in', (done) => {
+			db.sortedSetAdd('sortedForRemove', [11, 22, 33], ['value1', 'value2', 'value3'], (err) => {
 				assert.ifError(err);
-				db.sortedSetsRemoveRangeByScore(['sortedForRemove'], '22', '22', function (err) {
+				db.sortedSetsRemoveRangeByScore(['sortedForRemove'], '22', '22', (err) => {
 					assert.ifError(err);
-					db.getSortedSetRange('sortedForRemove', 0, -1, function (err, values) {
+					db.getSortedSetRange('sortedForRemove', 0, -1, (err, values) => {
 						assert.ifError(err);
 						assert.deepEqual(values, ['value1', 'value3']);
 						done();
@@ -1174,8 +1174,8 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('getSortedSetIntersect', function () {
-		before(function (done) {
+	describe('getSortedSetIntersect', () => {
+		before((done) => {
 			async.parallel([
 				function (next) {
 					db.sortedSetAdd('interSet1', [1, 2, 3], ['value1', 'value2', 'value3'], next);
@@ -1186,110 +1186,110 @@ describe('Sorted Set methods', function () {
 			], done);
 		});
 
-		it('should return the intersection of two sets', function (done) {
+		it('should return the intersection of two sets', (done) => {
 			db.getSortedSetIntersect({
 				sets: ['interSet1', 'interSet2'],
 				start: 0,
 				stop: -1,
-			}, function (err, data) {
+			}, (err, data) => {
 				assert.ifError(err);
 				assert.deepEqual(['value2', 'value3'], data);
 				done();
 			});
 		});
 
-		it('should return the intersection of two sets with scores', function (done) {
+		it('should return the intersection of two sets with scores', (done) => {
 			db.getSortedSetIntersect({
 				sets: ['interSet1', 'interSet2'],
 				start: 0,
 				stop: -1,
 				withScores: true,
-			}, function (err, data) {
+			}, (err, data) => {
 				assert.ifError(err);
 				assert.deepEqual([{ value: 'value2', score: 6 }, { value: 'value3', score: 8 }], data);
 				done();
 			});
 		});
 
-		it('should return the reverse intersection of two sets', function (done) {
+		it('should return the reverse intersection of two sets', (done) => {
 			db.getSortedSetRevIntersect({
 				sets: ['interSet1', 'interSet2'],
 				start: 0,
 				stop: 2,
-			}, function (err, data) {
+			}, (err, data) => {
 				assert.ifError(err);
 				assert.deepEqual(['value3', 'value2'], data);
 				done();
 			});
 		});
 
-		it('should return the intersection of two sets with scores aggregate MIN', function (done) {
+		it('should return the intersection of two sets with scores aggregate MIN', (done) => {
 			db.getSortedSetIntersect({
 				sets: ['interSet1', 'interSet2'],
 				start: 0,
 				stop: -1,
 				withScores: true,
 				aggregate: 'MIN',
-			}, function (err, data) {
+			}, (err, data) => {
 				assert.ifError(err);
 				assert.deepEqual([{ value: 'value2', score: 2 }, { value: 'value3', score: 3 }], data);
 				done();
 			});
 		});
 
-		it('should return the intersection of two sets with scores aggregate MAX', function (done) {
+		it('should return the intersection of two sets with scores aggregate MAX', (done) => {
 			db.getSortedSetIntersect({
 				sets: ['interSet1', 'interSet2'],
 				start: 0,
 				stop: -1,
 				withScores: true,
 				aggregate: 'MAX',
-			}, function (err, data) {
+			}, (err, data) => {
 				assert.ifError(err);
 				assert.deepEqual([{ value: 'value2', score: 4 }, { value: 'value3', score: 5 }], data);
 				done();
 			});
 		});
 
-		it('should return the intersection with scores modified by weights', function (done) {
+		it('should return the intersection with scores modified by weights', (done) => {
 			db.getSortedSetIntersect({
 				sets: ['interSet1', 'interSet2'],
 				start: 0,
 				stop: -1,
 				withScores: true,
 				weights: [1, 0.5],
-			}, function (err, data) {
+			}, (err, data) => {
 				assert.ifError(err);
 				assert.deepEqual([{ value: 'value2', score: 4 }, { value: 'value3', score: 5.5 }], data);
 				done();
 			});
 		});
 
-		it('should return empty array if sets do not exist', function (done) {
+		it('should return empty array if sets do not exist', (done) => {
 			db.getSortedSetIntersect({
 				sets: ['interSet10', 'interSet12'],
 				start: 0,
 				stop: -1,
-			}, function (err, data) {
+			}, (err, data) => {
 				assert.ifError(err);
 				assert.equal(data.length, 0);
 				done();
 			});
 		});
 
-		it('should return empty array if one set does not exist', function (done) {
+		it('should return empty array if one set does not exist', (done) => {
 			db.getSortedSetIntersect({
 				sets: ['interSet1', 'interSet12'],
 				start: 0,
 				stop: -1,
-			}, function (err, data) {
+			}, (err, data) => {
 				assert.ifError(err);
 				assert.equal(data.length, 0);
 				done();
 			});
 		});
 
-		it('should return correct results if sorting by different zset', async function () {
+		it('should return correct results if sorting by different zset', async () => {
 			await db.sortedSetAdd('bigzset', [1, 2, 3, 4, 5, 6], ['a', 'b', 'c', 'd', 'e', 'f']);
 			await db.sortedSetAdd('smallzset', [3, 2, 1], ['b', 'e', 'g']);
 			const data = await db.getSortedSetRevIntersect({
@@ -1310,7 +1310,7 @@ describe('Sorted Set methods', function () {
 			assert.deepStrictEqual(data2, [{ value: 'b', score: 3 }, { value: 'e', score: 2 }]);
 		});
 
-		it('should return correct results when intersecting big zsets', async function () {
+		it('should return correct results when intersecting big zsets', async () => {
 			const scores = [];
 			const values = [];
 			for (let i = 0; i < 30000; i++) {
@@ -1342,8 +1342,8 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('sortedSetIntersectCard', function () {
-		before(function (done) {
+	describe('sortedSetIntersectCard', () => {
+		before((done) => {
 			async.parallel([
 				function (next) {
 					db.sortedSetAdd('interCard1', [0, 0, 0], ['value1', 'value2', 'value3'], next);
@@ -1360,16 +1360,16 @@ describe('Sorted Set methods', function () {
 			], done);
 		});
 
-		it('should return # of elements in intersection', function (done) {
-			db.sortedSetIntersectCard(['interCard1', 'interCard2', 'interCard3'], function (err, count) {
+		it('should return # of elements in intersection', (done) => {
+			db.sortedSetIntersectCard(['interCard1', 'interCard2', 'interCard3'], (err, count) => {
 				assert.ifError(err);
 				assert.strictEqual(count, 1);
 				done();
 			});
 		});
 
-		it('should return 0 if intersection is empty', function (done) {
-			db.sortedSetIntersectCard(['interCard1', 'interCard4'], function (err, count) {
+		it('should return 0 if intersection is empty', (done) => {
+			db.sortedSetIntersectCard(['interCard1', 'interCard4'], (err, count) => {
 				assert.ifError(err);
 				assert.strictEqual(count, 0);
 				done();
@@ -1377,48 +1377,48 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('getSortedSetRangeByLex', function () {
-		it('should return an array of all values', function (done) {
-			db.getSortedSetRangeByLex('sortedSetLex', '-', '+', function (err, data) {
+	describe('getSortedSetRangeByLex', () => {
+		it('should return an array of all values', (done) => {
+			db.getSortedSetRangeByLex('sortedSetLex', '-', '+', (err, data) => {
 				assert.ifError(err);
 				assert.deepEqual(data, ['a', 'b', 'c', 'd']);
 				done();
 			});
 		});
 
-		it('should return an array with an inclusive range by default', function (done) {
-			db.getSortedSetRangeByLex('sortedSetLex', 'a', 'd', function (err, data) {
+		it('should return an array with an inclusive range by default', (done) => {
+			db.getSortedSetRangeByLex('sortedSetLex', 'a', 'd', (err, data) => {
 				assert.ifError(err);
 				assert.deepEqual(data, ['a', 'b', 'c', 'd']);
 				done();
 			});
 		});
 
-		it('should return an array with an inclusive range', function (done) {
-			db.getSortedSetRangeByLex('sortedSetLex', '[a', '[d', function (err, data) {
+		it('should return an array with an inclusive range', (done) => {
+			db.getSortedSetRangeByLex('sortedSetLex', '[a', '[d', (err, data) => {
 				assert.ifError(err);
 				assert.deepEqual(data, ['a', 'b', 'c', 'd']);
 				done();
 			});
 		});
 
-		it('should return an array with an exclusive range', function (done) {
-			db.getSortedSetRangeByLex('sortedSetLex', '(a', '(d', function (err, data) {
+		it('should return an array with an exclusive range', (done) => {
+			db.getSortedSetRangeByLex('sortedSetLex', '(a', '(d', (err, data) => {
 				assert.ifError(err);
 				assert.deepEqual(data, ['b', 'c']);
 				done();
 			});
 		});
 
-		it('should return an array limited to the first two values', function (done) {
-			db.getSortedSetRangeByLex('sortedSetLex', '-', '+', 0, 2, function (err, data) {
+		it('should return an array limited to the first two values', (done) => {
+			db.getSortedSetRangeByLex('sortedSetLex', '-', '+', 0, 2, (err, data) => {
 				assert.ifError(err);
 				assert.deepEqual(data, ['a', 'b']);
 				done();
 			});
 		});
 
-		it('should return correct result', async function () {
+		it('should return correct result', async () => {
 			await db.sortedSetAdd('sortedSetLexSearch', [0, 0, 0], ['baris:usakli:1', 'baris usakli:2', 'baris soner:3']);
 			const query = 'baris:';
 			const min = query;
@@ -1428,41 +1428,41 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('getSortedSetRevRangeByLex', function () {
-		it('should return an array of all values reversed', function (done) {
-			db.getSortedSetRevRangeByLex('sortedSetLex', '+', '-', function (err, data) {
+	describe('getSortedSetRevRangeByLex', () => {
+		it('should return an array of all values reversed', (done) => {
+			db.getSortedSetRevRangeByLex('sortedSetLex', '+', '-', (err, data) => {
 				assert.ifError(err);
 				assert.deepEqual(data, ['d', 'c', 'b', 'a']);
 				done();
 			});
 		});
 
-		it('should return an array with an inclusive range by default reversed', function (done) {
-			db.getSortedSetRevRangeByLex('sortedSetLex', 'd', 'a', function (err, data) {
+		it('should return an array with an inclusive range by default reversed', (done) => {
+			db.getSortedSetRevRangeByLex('sortedSetLex', 'd', 'a', (err, data) => {
 				assert.ifError(err);
 				assert.deepEqual(data, ['d', 'c', 'b', 'a']);
 				done();
 			});
 		});
 
-		it('should return an array with an inclusive range reversed', function (done) {
-			db.getSortedSetRevRangeByLex('sortedSetLex', '[d', '[a', function (err, data) {
+		it('should return an array with an inclusive range reversed', (done) => {
+			db.getSortedSetRevRangeByLex('sortedSetLex', '[d', '[a', (err, data) => {
 				assert.ifError(err);
 				assert.deepEqual(data, ['d', 'c', 'b', 'a']);
 				done();
 			});
 		});
 
-		it('should return an array with an exclusive range reversed', function (done) {
-			db.getSortedSetRevRangeByLex('sortedSetLex', '(d', '(a', function (err, data) {
+		it('should return an array with an exclusive range reversed', (done) => {
+			db.getSortedSetRevRangeByLex('sortedSetLex', '(d', '(a', (err, data) => {
 				assert.ifError(err);
 				assert.deepEqual(data, ['c', 'b']);
 				done();
 			});
 		});
 
-		it('should return an array limited to the first two values reversed', function (done) {
-			db.getSortedSetRevRangeByLex('sortedSetLex', '+', '-', 0, 2, function (err, data) {
+		it('should return an array limited to the first two values reversed', (done) => {
+			db.getSortedSetRevRangeByLex('sortedSetLex', '+', '-', 0, 2, (err, data) => {
 				assert.ifError(err);
 				assert.deepEqual(data, ['d', 'c']);
 				done();
@@ -1470,33 +1470,33 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('sortedSetLexCount', function () {
-		it('should return the count of all values', function (done) {
-			db.sortedSetLexCount('sortedSetLex', '-', '+', function (err, data) {
+	describe('sortedSetLexCount', () => {
+		it('should return the count of all values', (done) => {
+			db.sortedSetLexCount('sortedSetLex', '-', '+', (err, data) => {
 				assert.ifError(err);
 				assert.strictEqual(data, 4);
 				done();
 			});
 		});
 
-		it('should return the count with an inclusive range by default', function (done) {
-			db.sortedSetLexCount('sortedSetLex', 'a', 'd', function (err, data) {
+		it('should return the count with an inclusive range by default', (done) => {
+			db.sortedSetLexCount('sortedSetLex', 'a', 'd', (err, data) => {
 				assert.ifError(err);
 				assert.strictEqual(data, 4);
 				done();
 			});
 		});
 
-		it('should return the count with an inclusive range', function (done) {
-			db.sortedSetLexCount('sortedSetLex', '[a', '[d', function (err, data) {
+		it('should return the count with an inclusive range', (done) => {
+			db.sortedSetLexCount('sortedSetLex', '[a', '[d', (err, data) => {
 				assert.ifError(err);
 				assert.strictEqual(data, 4);
 				done();
 			});
 		});
 
-		it('should return the count with an exclusive range', function (done) {
-			db.sortedSetLexCount('sortedSetLex', '(a', '(d', function (err, data) {
+		it('should return the count with an exclusive range', (done) => {
+			db.sortedSetLexCount('sortedSetLex', '(a', '(d', (err, data) => {
 				assert.ifError(err);
 				assert.strictEqual(data, 2);
 				done();
@@ -1504,16 +1504,16 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
-	describe('sortedSetRemoveRangeByLex', function () {
-		before(function (done) {
+	describe('sortedSetRemoveRangeByLex', () => {
+		before((done) => {
 			db.sortedSetAdd('sortedSetLex2', [0, 0, 0, 0, 0, 0, 0], ['a', 'b', 'c', 'd', 'e', 'f', 'g'], done);
 		});
 
-		it('should remove an inclusive range by default', function (done) {
+		it('should remove an inclusive range by default', (done) => {
 			db.sortedSetRemoveRangeByLex('sortedSetLex2', 'a', 'b', function (err) {
 				assert.ifError(err);
 				assert.equal(arguments.length, 1);
-				db.getSortedSetRangeByLex('sortedSetLex2', '-', '+', function (err, data) {
+				db.getSortedSetRangeByLex('sortedSetLex2', '-', '+', (err, data) => {
 					assert.ifError(err);
 					assert.deepEqual(data, ['c', 'd', 'e', 'f', 'g']);
 					done();
@@ -1521,11 +1521,11 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should remove an inclusive range', function (done) {
+		it('should remove an inclusive range', (done) => {
 			db.sortedSetRemoveRangeByLex('sortedSetLex2', '[c', '[d', function (err) {
 				assert.ifError(err);
 				assert.equal(arguments.length, 1);
-				db.getSortedSetRangeByLex('sortedSetLex2', '-', '+', function (err, data) {
+				db.getSortedSetRangeByLex('sortedSetLex2', '-', '+', (err, data) => {
 					assert.ifError(err);
 					assert.deepEqual(data, ['e', 'f', 'g']);
 					done();
@@ -1533,11 +1533,11 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should remove an exclusive range', function (done) {
+		it('should remove an exclusive range', (done) => {
 			db.sortedSetRemoveRangeByLex('sortedSetLex2', '(e', '(g', function (err) {
 				assert.ifError(err);
 				assert.equal(arguments.length, 1);
-				db.getSortedSetRangeByLex('sortedSetLex2', '-', '+', function (err, data) {
+				db.getSortedSetRangeByLex('sortedSetLex2', '-', '+', (err, data) => {
 					assert.ifError(err);
 					assert.deepEqual(data, ['e', 'g']);
 					done();
@@ -1545,11 +1545,11 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should remove all values', function (done) {
+		it('should remove all values', (done) => {
 			db.sortedSetRemoveRangeByLex('sortedSetLex2', '-', '+', function (err) {
 				assert.ifError(err);
 				assert.equal(arguments.length, 1);
-				db.getSortedSetRangeByLex('sortedSetLex2', '-', '+', function (err, data) {
+				db.getSortedSetRangeByLex('sortedSetLex2', '-', '+', (err, data) => {
 					assert.ifError(err);
 					assert.deepEqual(data, []);
 					done();

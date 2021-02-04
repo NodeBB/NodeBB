@@ -32,18 +32,14 @@ pluginsController.get = async function (req, res) {
 		installedCount: installedPlugins.length,
 		activeCount: activePlugins.length,
 		inactiveCount: Math.max(0, installedPlugins.length - activePlugins.length),
-		upgradeCount: compatible.reduce(function (count, current) {
+		upgradeCount: compatible.reduce((count, current) => {
 			if (current.installed && current.outdated) {
 				count += 1;
 			}
 			return count;
 		}, 0),
-		download: compatible.filter(function (plugin) {
-			return !plugin.installed;
-		}),
-		incompatible: all.filter(function (plugin) {
-			return !compatiblePkgNames.includes(plugin.name);
-		}),
+		download: compatible.filter(plugin => !plugin.installed),
+		incompatible: all.filter(plugin => !compatiblePkgNames.includes(plugin.name)),
 		trending: trendingPlugins,
 		submitPluginUsage: meta.config.submitPluginUsage,
 		version: nconf.get('version'),

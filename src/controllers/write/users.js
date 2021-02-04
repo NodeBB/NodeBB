@@ -136,7 +136,7 @@ Users.deleteToken = async (req, res) => {
 	}
 };
 
-const getSessionAsync = util.promisify(function (sid, callback) {
+const getSessionAsync = util.promisify((sid, callback) => {
 	db.sessionStore.get(sid, (err, sessionObj) => callback(err, sessionObj || null));
 });
 

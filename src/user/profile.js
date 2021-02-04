@@ -35,7 +35,7 @@ module.exports = function (User) {
 
 		const oldData = await User.getUserFields(updateUid, fields);
 
-		await async.each(fields, async function (field) {
+		await async.each(fields, async (field) => {
 			if (!(data[field] !== undefined && typeof data[field] === 'string')) {
 				return;
 			}

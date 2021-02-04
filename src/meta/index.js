@@ -38,7 +38,7 @@ Meta.userOrGroupExists = async function (slug) {
 };
 
 if (nconf.get('isPrimary')) {
-	pubsub.on('meta:restart', function (data) {
+	pubsub.on('meta:restart', (data) => {
 		if (data.hostname !== os.hostname()) {
 			restart();
 		}

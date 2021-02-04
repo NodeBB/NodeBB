@@ -32,7 +32,7 @@ module.exports = function (Messaging) {
 			Messaging.getMessagesData([mid], uid, roomId, true),
 		]);
 
-		uids.forEach(function (uid) {
+		uids.forEach((uid) => {
 			sockets.in(`uid_${uid}`).emit('event:chats.edit', {
 				messages: messages,
 			});

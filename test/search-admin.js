@@ -4,9 +4,9 @@
 var assert = require('assert');
 var search = require('../src/admin/search');
 
-describe('admin search', function () {
-	describe('filterDirectories', function () {
-		it('should resolve all paths to relative paths', function (done) {
+describe('admin search', () => {
+	describe('filterDirectories', () => {
+		it('should resolve all paths to relative paths', (done) => {
 			assert.deepEqual(search.filterDirectories([
 				'hfjksfd/fdsgagag/admin/gdhgfsdg/sggag.tpl',
 			]), [
@@ -14,7 +14,7 @@ describe('admin search', function () {
 			]);
 			done();
 		});
-		it('should exclude .js files', function (done) {
+		it('should exclude .js files', (done) => {
 			assert.deepEqual(search.filterDirectories([
 				'hfjksfd/fdsgagag/admin/gdhgfsdg/sggag.tpl',
 				'dfahdfsgf/admin/hgkfds/fdhsdfh.js',
@@ -23,7 +23,7 @@ describe('admin search', function () {
 			]);
 			done();
 		});
-		it('should exclude partials', function (done) {
+		it('should exclude partials', (done) => {
 			assert.deepEqual(search.filterDirectories([
 				'hfjksfd/fdsgagag/admin/gdhgfsdg/sggag.tpl',
 				'dfahdfsgf/admin/partials/hgkfds/fdhsdfh.tpl',
@@ -32,7 +32,7 @@ describe('admin search', function () {
 			]);
 			done();
 		});
-		it('should exclude files in the admin directory', function (done) {
+		it('should exclude files in the admin directory', (done) => {
 			assert.deepEqual(search.filterDirectories([
 				'hfjksfd/fdsgagag/admin/gdhgfsdg/sggag.tpl',
 				'dfdasg/admin/hjkdfsk.tpl',
@@ -43,8 +43,8 @@ describe('admin search', function () {
 		});
 	});
 
-	describe('sanitize', function () {
-		it('should strip out scripts', function (done) {
+	describe('sanitize', () => {
+		it('should strip out scripts', (done) => {
 			assert.equal(
 				search.sanitize('Pellentesque tristique senectus' +
 					'<script>alert("nope");</script> habitant morbi'),
@@ -53,7 +53,7 @@ describe('admin search', function () {
 			);
 			done();
 		});
-		it('should remove all tags', function (done) {
+		it('should remove all tags', (done) => {
 			assert.equal(
 				search.sanitize('<p>Pellentesque <b>habitant morbi</b> tristique senectus' +
 					'Aenean <i>vitae</i> est.Mauris <a href="placerat">eleifend</a> leo.</p>'),
@@ -64,8 +64,8 @@ describe('admin search', function () {
 		});
 	});
 
-	describe('simplify', function () {
-		it('should remove all mustaches', function (done) {
+	describe('simplify', () => {
+		it('should remove all mustaches', (done) => {
 			assert.equal(
 				search.simplify('Pellentesque tristique {{senectus}}habitant morbi' +
 					'liquam tincidunt {mauris.eu}risus'),
@@ -74,7 +74,7 @@ describe('admin search', function () {
 			);
 			done();
 		});
-		it('should collapse all whitespace', function (done) {
+		it('should collapse all whitespace', (done) => {
 			assert.equal(
 				search.simplify('Pellentesque tristique   habitant morbi' +
 					'  \n\n    liquam tincidunt mauris eu risus.'),

@@ -7,8 +7,8 @@ const { readFileSync } = require('fs');
 
 var assert = require('assert');
 
-describe('Package install', function () {
-	it('should remove non-`nodebb-` modules not specified in `install/package.json`', function () {
+describe('Package install', () => {
+	it('should remove non-`nodebb-` modules not specified in `install/package.json`', () => {
 		const packageFilePath = path.join(__dirname, '../package.json');
 
 		// install an extra package

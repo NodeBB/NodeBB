@@ -135,17 +135,15 @@ mongoModule.info = async function (db) {
 	stats.serverStatusError = serverStatusError;
 	const scale = 1024 * 1024 * 1024;
 
-	listCollections = listCollections.map(function (collectionInfo) {
-		return {
-			name: collectionInfo.ns,
-			count: collectionInfo.count,
-			size: collectionInfo.size,
-			avgObjSize: collectionInfo.avgObjSize,
-			storageSize: collectionInfo.storageSize,
-			totalIndexSize: collectionInfo.totalIndexSize,
-			indexSizes: collectionInfo.indexSizes,
-		};
-	});
+	listCollections = listCollections.map(collectionInfo => ({
+		name: collectionInfo.ns,
+		count: collectionInfo.count,
+		size: collectionInfo.size,
+		avgObjSize: collectionInfo.avgObjSize,
+		storageSize: collectionInfo.storageSize,
+		totalIndexSize: collectionInfo.totalIndexSize,
+		indexSizes: collectionInfo.indexSizes,
+	}));
 
 	stats.mem = serverStatus.mem || { resident: 0, virtual: 0, mapped: 0 };
 	stats.mem.resident = (stats.mem.resident / 1024).toFixed(3);

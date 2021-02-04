@@ -33,9 +33,9 @@ Analytics.init = async function () {
 		maxAge: 0,
 	});
 
-	new cronJob('*/10 * * * * *', function () {
+	new cronJob('*/10 * * * * *', (() => {
 		Analytics.writeData();
-	}, null, true);
+	}), null, true);
 };
 
 Analytics.increment = function (keys, callback) {
@@ -43,7 +43,7 @@ Analytics.increment = function (keys, callback) {
 
 	plugins.hooks.fire('action:analytics.increment', { keys: keys });
 
-	keys.forEach(function (key) {
+	keys.forEach((key) => {
 		counters[key] = counters[key] || 0;
 		counters[key] += 1;
 	});
@@ -163,14 +163,14 @@ Analytics.getHourlyStatsForSet = async function (set, hour, numHours) {
 
 	const counts = await db.sortedSetScores(set, hoursArr);
 
-	hoursArr.forEach(function (term, index) {
+	hoursArr.forEach((term, index) => {
 		terms[term] = parseInt(counts[index], 10) || 0;
 	});
 
 	const termsArr = [];
 
 	hoursArr.reverse();
-	hoursArr.forEach(function (hour) {
+	hoursArr.forEach((hour) => {
 		termsArr.push(terms[hour]);
 	});
 

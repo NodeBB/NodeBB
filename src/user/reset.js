@@ -129,7 +129,7 @@ UserReset.cleanByUid = async function (uid) {
 	const tokensToClean = [];
 	uid = parseInt(uid, 10);
 
-	await batch.processSortedSet('reset:issueDate', async function (tokens) {
+	await batch.processSortedSet('reset:issueDate', async (tokens) => {
 		const results = await db.getObjectFields('reset:uid', tokens);
 		for (var code in results) {
 			if (results.hasOwnProperty(code) && parseInt(results[code], 10) === uid) {

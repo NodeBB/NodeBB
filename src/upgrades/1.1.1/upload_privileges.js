@@ -11,17 +11,17 @@ module.exports = {
 		var privilegesAPI = require('../../privileges');
 		var meta = require('../../meta');
 
-		db.getSortedSetRange('categories:cid', 0, -1, function (err, cids) {
+		db.getSortedSetRange('categories:cid', 0, -1, (err, cids) => {
 			if (err) {
 				return callback(err);
 			}
 
-			async.eachSeries(cids, function (cid, next) {
-				privilegesAPI.categories.list(cid, function (err, data) {
+			async.eachSeries(cids, (cid, next) => {
+				privilegesAPI.categories.list(cid, (err, data) => {
 					if (err) {
 						return next(err);
 					}
-					async.eachSeries(data.groups, function (group, next) {
+					async.eachSeries(data.groups, (group, next) => {
 						if (group.name === 'guests' && parseInt(meta.config.allowGuestUploads, 10) !== 1) {
 							return next();
 						}

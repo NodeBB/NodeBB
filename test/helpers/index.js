@@ -17,7 +17,7 @@ helpers.loginUser = function (username, password, callback) {
 		url: `${nconf.get('url')}/api/config`,
 		json: true,
 		jar: jar,
-	}, function (err, res, body) {
+	}, (err, res, body) => {
 		if (err || res.statusCode !== 200) {
 			return callback(err || new Error('[[error:invalid-response]]'));
 		}
@@ -32,7 +32,7 @@ helpers.loginUser = function (username, password, callback) {
 			headers: {
 				'x-csrf-token': body.csrf_token,
 			},
-		}, function (err, res) {
+		}, (err, res) => {
 			if (err || res.statusCode !== 200) {
 				return callback(err || new Error('[[error:invalid-response]]'));
 			}
@@ -47,7 +47,7 @@ helpers.logoutUser = function (jar, callback) {
 		url: `${nconf.get('url')}/api/config`,
 		json: true,
 		jar: jar,
-	}, function (err, response, body) {
+	}, (err, response, body) => {
 		if (err) {
 			return callback(err, response, body);
 		}
@@ -59,7 +59,7 @@ helpers.logoutUser = function (jar, callback) {
 			headers: {
 				'x-csrf-token': body.csrf_token,
 			},
-		}, function (err, response, body) {
+		}, (err, response, body) => {
 			callback(err, response, body);
 		});
 	});
@@ -78,11 +78,11 @@ helpers.connectSocketIO = function (res, callback) {
 		},
 	});
 
-	socket.on('connect', function () {
+	socket.on('connect', () => {
 		callback(null, socket);
 	});
 
-	socket.on('error', function (err) {
+	socket.on('error', (err) => {
 		callback(err);
 	});
 };
@@ -103,7 +103,7 @@ helpers.uploadFile = function (uploadEndPoint, filePath, body, jar, csrf_token, 
 		headers: {
 			'x-csrf-token': csrf_token,
 		},
-	}, function (err, res, body) {
+	}, (err, res, body) => {
 		if (err) {
 			return callback(err);
 		}
@@ -120,7 +120,7 @@ helpers.registerUser = function (data, callback) {
 		url: `${nconf.get('url')}/api/config`,
 		json: true,
 		jar: jar,
-	}, function (err, response, body) {
+	}, (err, response, body) => {
 		if (err) {
 			return callback(err);
 		}
@@ -132,7 +132,7 @@ helpers.registerUser = function (data, callback) {
 			headers: {
 				'x-csrf-token': body.csrf_token,
 			},
-		}, function (err, response, body) {
+		}, (err, response, body) => {
 			callback(err, jar, response, body);
 		});
 	});
@@ -143,14 +143,14 @@ helpers.copyFile = function (source, target, callback) {
 	var cbCalled = false;
 
 	var rd = fs.createReadStream(source);
-	rd.on('error', function (err) {
+	rd.on('error', (err) => {
 		done(err);
 	});
 	var wr = fs.createWriteStream(target);
-	wr.on('error', function (err) {
+	wr.on('error', (err) => {
 		done(err);
 	});
-	wr.on('close', function () {
+	wr.on('close', () => {
 		done();
 	});
 	rd.pipe(wr);

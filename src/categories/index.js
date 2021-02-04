@@ -97,7 +97,7 @@ Categories.getModerators = async function (cid) {
 };
 
 Categories.getModeratorUids = async function (cids) {
-	const groupNames = cids.reduce(function (memo, cid) {
+	const groupNames = cids.reduce((memo, cid) => {
 		memo.push(`cid:${cid}:privileges:moderate`);
 		memo.push(`cid:${cid}:privileges:groups:moderate`);
 		return memo;
@@ -105,7 +105,7 @@ Categories.getModeratorUids = async function (cids) {
 
 	const memberSets = await groups.getMembersOfGroups(groupNames);
 	// Every other set is actually a list of user groups, not uids, so convert those to members
-	const sets = memberSets.reduce(function (memo, set, idx) {
+	const sets = memberSets.reduce((memo, set, idx) => {
 		if (idx % 2) {
 			memo.groupNames.push(set);
 		} else {
@@ -137,7 +137,7 @@ Categories.getCategories = async function (cids, uid) {
 		Categories.getTagWhitelist(cids),
 		Categories.hasReadCategories(cids, uid),
 	]);
-	categories.forEach(function (category, i) {
+	categories.forEach((category, i) => {
 		if (category) {
 			category.tagWhitelist = tagWhitelist[i];
 			category['unread-class'] = (category.topic_count === 0 || (hasRead[i] && uid !== 0)) ? '' : 'unread';
@@ -180,7 +180,7 @@ function calculateTopicPostCount(category) {
 	let postCount = category.post_count;
 	let topicCount = category.topic_count;
 	if (Array.isArray(category.children)) {
-		category.children.forEach(function (child) {
+		category.children.forEach((child) => {
 			calculateTopicPostCount(child);
 			postCount += parseInt(child.totalPostCount, 10) || 0;
 			topicCount += parseInt(child.totalTopicCount, 10) || 0;
@@ -222,7 +222,7 @@ async function getChildrenTree(category, uid) {
 	childrenData = childrenData.filter(Boolean);
 	childrenCids = childrenData.map(child => child.cid);
 	const hasRead = await Categories.hasReadCategories(childrenCids, uid);
-	childrenData.forEach(function (child, i) {
+	childrenData.forEach((child, i) => {
 		child['unread-class'] = (child.topic_count === 0 || (hasRead[i] && uid !== 0)) ? '' : 'unread';
 	});
 	Categories.getTree([category].concat(childrenData), category.parentCid);
@@ -270,7 +270,7 @@ Categories.getChildrenCids = async function (rootCid) {
 };
 
 Categories.flattenCategories = function (allCategories, categoryData) {
-	categoryData.forEach(function (category) {
+	categoryData.forEach((category) => {
 		if (category) {
 			allCategories.push(category);
 
@@ -302,7 +302,7 @@ Categories.getTree = function (categories, parentCid) {
 
 	const tree = [];
 
-	categories.forEach(function (category) {
+	categories.forEach((category) => {
 		if (category) {
 			category.children = category.children || [];
 			if (!category.cid) {

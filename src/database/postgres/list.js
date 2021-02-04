@@ -8,7 +8,7 @@ module.exports = function (module) {
 			return;
 		}
 
-		await module.transaction(async function (client) {
+		await module.transaction(async (client) => {
 			await helpers.ensureLegacyObjectType(client, key, 'list');
 			await client.query({
 				name: 'listPrepend',
@@ -27,7 +27,7 @@ DO UPDATE SET "array" = ARRAY[$2::TEXT] || "legacy_list"."array"`,
 			return;
 		}
 
-		await module.transaction(async function (client) {
+		await module.transaction(async (client) => {
 			await helpers.ensureLegacyObjectType(client, key, 'list');
 			await client.query({
 				name: 'listAppend',

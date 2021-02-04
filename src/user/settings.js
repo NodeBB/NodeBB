@@ -27,7 +27,7 @@ module.exports = function (User) {
 
 		const keys = uids.map(uid => `user:${uid}:settings`);
 		let settings = await db.getObjects(keys);
-		settings = settings.map(function (userSettings, index) {
+		settings = settings.map((userSettings, index) => {
 			userSettings = userSettings || {};
 			userSettings.uid = uids[index];
 			return userSettings;
@@ -73,7 +73,7 @@ module.exports = function (User) {
 		settings.categoryWatchState = getSetting(settings, 'categoryWatchState', 'notwatching');
 
 		const notificationTypes = await notifications.getAllNotificationTypes();
-		notificationTypes.forEach(function (notificationType) {
+		notificationTypes.forEach((notificationType) => {
 			settings[notificationType] = getSetting(settings, notificationType, 'notification');
 		});
 
@@ -135,7 +135,7 @@ module.exports = function (User) {
 			topicPostSort: data.topicPostSort,
 		};
 		const notificationTypes = await notifications.getAllNotificationTypes();
-		notificationTypes.forEach(function (notificationType) {
+		notificationTypes.forEach((notificationType) => {
 			if (data[notificationType]) {
 				settings[notificationType] = data[notificationType];
 			}

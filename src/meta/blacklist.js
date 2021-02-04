@@ -64,7 +64,7 @@ Blacklist.test = async function (clientIp) {
 	if (
 		!Blacklist._rules.ipv4.includes(clientIp) &&	// not explicitly specified in ipv4 list
 		!Blacklist._rules.ipv6.includes(clientIp) &&	// not explicitly specified in ipv6 list
-		!Blacklist._rules.cidr.some(function (subnet) {
+		!Blacklist._rules.cidr.some((subnet) => {
 			var cidr = ipaddr.parseCIDR(subnet);
 			if (addr.kind() !== cidr[0].kind()) {
 				return false;
@@ -101,7 +101,7 @@ Blacklist.validate = function (rules) {
 
 	// Filter out blank lines and lines starting with the hash character (comments)
 	// Also trim inputs and remove inline comments
-	rules = rules.map(function (rule) {
+	rules = rules.map((rule) => {
 		rule = rule.replace(inlineCommentMatch, '').trim();
 		return rule.length && !rule.startsWith('#') ? rule : null;
 	}).filter(Boolean);
@@ -112,7 +112,7 @@ Blacklist.validate = function (rules) {
 	rules = uniqRules;
 
 	// Filter out invalid rules
-	rules = rules.filter(function (rule) {
+	rules = rules.filter((rule) => {
 		var addr;
 		var isRange = false;
 		try {

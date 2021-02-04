@@ -17,15 +17,15 @@ var Auth = module.exports;
 
 Auth.initialize = function (app, middleware) {
 	const passportInitMiddleware = passport.initialize();
-	app.use(function passportInitialize(req, res, next) {
+	app.use((req, res, next) => {
 		passportInitMiddleware(req, res, next);
 	});
 	const passportSessionMiddleware = passport.session();
-	app.use(function passportSession(req, res, next) {
+	app.use((req, res, next) => {
 		passportSessionMiddleware(req, res, next);
 	});
 
-	app.use(function (req, res, next) {
+	app.use((req, res, next) => {
 		Auth.setAuthVars(req, res);
 		next();
 	});
@@ -96,9 +96,9 @@ Auth.reloadRoutes = async function (params) {
 		winston.error(`[authentication] ${err.stack}`);
 	}
 	loginStrategies = loginStrategies || [];
-	loginStrategies.forEach(function (strategy) {
+	loginStrategies.forEach((strategy) => {
 		if (strategy.url) {
-			router.get(strategy.url, Auth.middleware.applyCSRF, async function (req, res, next) {
+			router.get(strategy.url, Auth.middleware.applyCSRF, async (req, res, next) => {
 				let opts = {
 					scope: strategy.scope,
 					prompt: strategy.prompt || undefined,
@@ -116,21 +116,21 @@ Auth.reloadRoutes = async function (params) {
 			});
 		}
 
-		router[strategy.callbackMethod || 'get'](strategy.callbackURL, function (req, res, next) {
+		router[strategy.callbackMethod || 'get'](strategy.callbackURL, (req, res, next) => {
 			// Ensure the passed-back state value is identical to the saved ssoState (unless explicitly skipped)
 			if (strategy.checkState === false) {
 				return next();
 			}
 
 			next(req.query.state !== req.session.ssoState ? new Error('[[error:csrf-invalid]]') : null);
-		}, function (req, res, next) {
+		}, (req, res, next) => {
 			// Trigger registration interstitial checks
 			req.session.registration = req.session.registration || {};
 			// save returnTo for later usage in /register/complete
 			// passport seems to remove `req.session.returnTo` after it redirects
 			req.session.registration.returnTo = req.session.returnTo;
 
-			passport.authenticate(strategy.name, function (err, user) {
+			passport.authenticate(strategy.name, (err, user) => {
 				if (err) {
 					delete req.session.registration;
 					return next(err);
@@ -151,7 +151,7 @@ Auth.reloadRoutes = async function (params) {
 			async.waterfall([
 				async.apply(req.login.bind(req), res.locals.user),
 				async.apply(controllers.authentication.onSuccessfulLogin, req, req.uid),
-			], function (err) {
+			], (err) => {
 				if (err) {
 					return next(err);
 				}
@@ -172,11 +172,11 @@ Auth.reloadRoutes = async function (params) {
 	router.post('/logout', Auth.middleware.applyCSRF, controllers.authentication.logout);
 };
 
-passport.serializeUser(function (user, done) {
+passport.serializeUser((user, done) => {
 	done(null, user.uid);
 });
 
-passport.deserializeUser(function (uid, done) {
+passport.deserializeUser((uid, done) => {
 	done(null, {
 		uid: uid,
 	});

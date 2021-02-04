@@ -34,7 +34,7 @@ ALTER TABLE "session"
 CLUSTER "session";
 ANALYZE "session";
 
-COMMIT;`, function (err) {
+COMMIT;`, (err) => {
 			callback(err);
 		});
 	},

@@ -11,7 +11,7 @@ const cwd = paths.baseDir;
 function getRunningPid(callback) {
 	fs.readFile(paths.pidfile, {
 		encoding: 'utf-8',
-	}, function (err, pid) {
+	}, (err, pid) => {
 		if (err) {
 			return callback(err);
 		}
@@ -69,7 +69,7 @@ function start(options) {
 }
 
 function stop() {
-	getRunningPid(function (err, pid) {
+	getRunningPid((err, pid) => {
 		if (!err) {
 			process.kill(pid, 'SIGTERM');
 			console.log('Stopping NodeBB. Goodbye!');
@@ -80,7 +80,7 @@ function stop() {
 }
 
 function restart(options) {
-	getRunningPid(function (err, pid) {
+	getRunningPid((err, pid) => {
 		if (!err) {
 			console.log('\nRestarting NodeBB'.bold);
 			process.kill(pid, 'SIGTERM');
@@ -94,7 +94,7 @@ function restart(options) {
 }
 
 function status() {
-	getRunningPid(function (err, pid) {
+	getRunningPid((err, pid) => {
 		if (!err) {
 			console.log(`\n${[
 				'NodeBB Running '.bold + (`(pid ${pid.toString()})`).cyan,

@@ -67,7 +67,7 @@ exports.handleErrors = function handleErrors(err, req, res, next) { // eslint-di
 
 	plugins.hooks.fire('filter:error.handle', {
 		cases: cases,
-	}, function (_err, data) {
+	}, (_err, data) => {
 		if (_err) {
 			// Assume defaults
 			winston.warn(`[errors/handle] Unable to retrieve plugin handlers for errors: ${_err.message}`);

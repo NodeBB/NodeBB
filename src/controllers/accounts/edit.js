@@ -49,7 +49,7 @@ editController.get = async function (req, res, next) {
 		}
 		return i1 - i2;
 	});
-	userData.groups.forEach(function (group) {
+	userData.groups.forEach((group) => {
 		group.userTitle = group.userTitle || group.displayName;
 		group.selected = userData.groupTitleArray.includes(group.name);
 	});

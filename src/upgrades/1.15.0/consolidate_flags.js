@@ -16,7 +16,7 @@ module.exports = {
 		flags = await db.getObjectsFields(flags, ['flagId', 'type', 'targetId', 'uid', 'description', 'datetime']);
 		progress.total = flags.length;
 
-		await batch.processArray(flags, async function (subset) {
+		await batch.processArray(flags, async (subset) => {
 			progress.incr(subset.length);
 
 			await Promise.all(subset.map(async (flagObj) => {

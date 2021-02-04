@@ -164,7 +164,7 @@ usersController.search = async function (req, res) {
 	const uids = searchData.users.map(user => user && user.uid);
 	const userInfo = await user.getUsersFields(uids, ['email', 'flags', 'lastonline', 'joindate']);
 
-	searchData.users.forEach(function (user, index) {
+	searchData.users.forEach((user, index) => {
 		if (user && userInfo[index]) {
 			user.email = userInfo[index].email;
 			user.flags = userInfo[index].flags || 0;
@@ -203,7 +203,7 @@ async function getInvites() {
 	let usernames = await user.getUsersFields(uids, ['username']);
 	usernames = usernames.map(user => user.username);
 
-	invitations.forEach(function (invites, index) {
+	invitations.forEach((invites, index) => {
 		invites.username = usernames[index];
 	});
 
@@ -215,13 +215,11 @@ async function getInvites() {
 
 	usernames = await Promise.all(invitations.map(invites => getUsernamesByEmails(invites.invitations)));
 
-	invitations.forEach(function (invites, index) {
-		invites.invitations = invites.invitations.map(function (email, i) {
-			return {
-				email: email,
-				username: usernames[index][i] === '[[global:guest]]' ? '' : usernames[index][i],
-			};
-		});
+	invitations.forEach((invites, index) => {
+		invites.invitations = invites.invitations.map((email, i) => ({
+			email: email,
+			username: usernames[index][i] === '[[global:guest]]' ? '' : usernames[index][i],
+		}));
 	});
 	return invitations;
 }
@@ -238,7 +236,7 @@ async function render(req, res, data) {
 		data[`searchBy_${validator.escape(String(req.query.searchBy))}`] = true;
 	}
 	const filterBy = Array.isArray(req.query.filters || []) ? (req.query.filters || []) : [req.query.filters];
-	filterBy.forEach(function (filter) {
+	filterBy.forEach((filter) => {
 		data[`filterBy_${validator.escape(String(filter))}`] = true;
 	});
 	data.userCount = parseInt(await db.getObjectField('global', 'userCount'), 10);
@@ -265,7 +263,7 @@ usersController.getCSV = async function (req, res, next) {
 			'Content-Type': 'text/csv',
 			'Content-Disposition': 'attachment; filename=users.csv',
 		},
-	}, function (err) {
+	}, (err) => {
 		if (err) {
 			if (err.code === 'ENOENT') {
 				res.locals.isAPI = false;

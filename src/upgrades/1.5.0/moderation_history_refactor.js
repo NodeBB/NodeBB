@@ -11,9 +11,9 @@ module.exports = {
 	method: function (callback) {
 		var progress = this.progress;
 
-		batch.processSortedSet('users:joindate', function (ids, next) {
-			async.each(ids, function (uid, next) {
-				db.getObjectField(`user:${uid}`, 'moderationNote', function (err, moderationNote) {
+		batch.processSortedSet('users:joindate', (ids, next) => {
+			async.each(ids, (uid, next) => {
+				db.getObjectField(`user:${uid}`, 'moderationNote', (err, moderationNote) => {
 					if (err || !moderationNote) {
 						progress.incr();
 						return next(err);

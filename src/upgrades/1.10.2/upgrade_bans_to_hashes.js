@@ -12,8 +12,8 @@ module.exports = {
 	method: function (callback) {
 		const progress = this.progress;
 
-		batch.processSortedSet('users:joindate', function (uids, next) {
-			async.eachSeries(uids, function (uid, next) {
+		batch.processSortedSet('users:joindate', (uids, next) => {
+			async.eachSeries(uids, (uid, next) => {
 				progress.incr();
 
 				async.parallel({
@@ -26,7 +26,7 @@ module.exports = {
 					userData: function (next) {
 						db.getObjectFields(`user:${uid}`, ['banned', 'banned:expire', 'joindate', 'lastposttime', 'lastonline'], next);
 					},
-				}, function (err, results) {
+				}, (err, results) => {
 					function addBan(key, data, callback) {
 						async.waterfall([
 							function (next) {
@@ -54,11 +54,9 @@ module.exports = {
 					}
 
 					// process ban history
-					async.eachSeries(results.bans, function (ban, next) {
+					async.eachSeries(results.bans, (ban, next) => {
 						function findReason(score) {
-							return results.reasons.find(function (reasonData) {
-								return reasonData.score === score;
-							});
+							return results.reasons.find(reasonData => reasonData.score === score);
 						}
 						const reasonData = findReason(ban.score);
 						const banKey = `uid:${uid}:ban:${ban.score}`;
@@ -71,7 +69,7 @@ module.exports = {
 							data.reason = reasonData.value;
 						}
 						addBan(banKey, data, next);
-					}, function (err) {
+					}, (err) => {
 						next(err);
 					});
 				});

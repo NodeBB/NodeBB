@@ -11,9 +11,9 @@ module.exports = {
 	method: function (callback) {
 		var batch = require('../../batch');
 		var now = Date.now();
-		batch.processSortedSet('users:joindate', function (ids, next) {
-			async.eachSeries(ids, function (id, next) {
-				db.getObjectFields(`user:${id}`, ['uid', 'email:confirmed'], function (err, userData) {
+		batch.processSortedSet('users:joindate', (ids, next) => {
+			async.eachSeries(ids, (id, next) => {
+				db.getObjectFields(`user:${id}`, ['uid', 'email:confirmed'], (err, userData) => {
 					if (err) {
 						return next(err);
 					}

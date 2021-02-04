@@ -235,9 +235,7 @@ Flags.sort = async function (flagIds, sort) {
 			const mapped = heat.map((el, i) => ({
 				index: i, heat: el,
 			}));
-			mapped.sort(function (a, b) {
-				return b.heat - a.heat;
-			});
+			mapped.sort((a, b) => b.heat - a.heat);
 			flagIds = mapped.map(obj => flagIds[obj.index]);
 			break;
 		}
@@ -340,7 +338,7 @@ Flags.getFlagIdByTarget = async function (type, id) {
 
 async function modifyNotes(notes) {
 	const uids = [];
-	notes = notes.map(function (note) {
+	notes = notes.map((note) => {
 		const noteObj = JSON.parse(note.value);
 		uids.push(noteObj[0]);
 		return {
@@ -351,7 +349,7 @@ async function modifyNotes(notes) {
 		};
 	});
 	const userData = await user.getUsersFields(uids, ['username', 'userslug', 'picture']);
-	return notes.map(function (note, idx) {
+	return notes.map((note, idx) => {
 		note.user = userData[idx];
 		note.content = validator.escape(note.content);
 		return note;
@@ -452,7 +450,7 @@ Flags.create = async function (type, id, uid, reason, timestamp) {
 
 Flags.getReports = async function (flagId) {
 	const payload = await db.getSortedSetRevRangeWithScores(`flag:${flagId}:reports`, 0, -1);
-	const [reports, uids] = payload.reduce(function (memo, cur) {
+	const [reports, uids] = payload.reduce((memo, cur) => {
 		const value = cur.value.split(';');
 		memo[1].push(value.shift());
 		cur.value = value.join(';');
@@ -634,7 +632,7 @@ Flags.resolveFlag = async function (type, id, uid) {
 
 Flags.resolveUserPostFlags = async function (uid, callerUid) {
 	if (meta.config['flags:autoResolveOnBan']) {
-		await batch.processSortedSet(`uid:${uid}:posts`, async function (pids) {
+		await batch.processSortedSet(`uid:${uid}:posts`, async (pids) => {
 			let postData = await posts.getPostsFields(pids, ['pid', 'flagId']);
 			postData = postData.filter(p => p && p.flagId);
 			for (const postObj of postData) {
@@ -654,7 +652,7 @@ Flags.getHistory = async function (flagId) {
 	let history = await db.getSortedSetRevRangeWithScores(`flag:${flagId}:history`, 0, -1);
 	const targetUid = await db.getObjectField(`flag:${flagId}`, 'targetUid');
 
-	history = history.map(function (entry) {
+	history = history.map((entry) => {
 		entry.value = JSON.parse(entry.value);
 
 		uids.push(entry.value[0]);

@@ -231,7 +231,7 @@ async function parseAboutMe(userData) {
 }
 
 function filterLinks(links, states) {
-	return links.filter(function (link, index) {
+	return links.filter((link, index) => {
 		// Default visibility
 		link.visibility = { self: true,
 			other: true,
@@ -241,9 +241,7 @@ function filterLinks(links, states) {
 			canViewInfo: true,
 			...link.visibility };
 
-		var permit = Object.keys(states).some(function (state) {
-			return states[state] && link.visibility[state];
-		});
+		var permit = Object.keys(states).some(state => states[state] && link.visibility[state]);
 
 		links[index].public = permit;
 		return permit;

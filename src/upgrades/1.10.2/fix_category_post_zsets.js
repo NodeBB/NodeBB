@@ -11,16 +11,14 @@ module.exports = {
 	method: function (callback) {
 		const progress = this.progress;
 
-		db.getSortedSetRange('categories:cid', 0, -1, function (err, cids) {
+		db.getSortedSetRange('categories:cid', 0, -1, (err, cids) => {
 			if (err) {
 				return callback(err);
 			}
-			var keys = cids.map(function (cid) {
-				return `cid:${cid}:pids`;
-			});
+			var keys = cids.map(cid => `cid:${cid}:pids`);
 			var posts = require('../../posts');
-			batch.processSortedSet('posts:pid', function (postData, next) {
-				async.eachSeries(postData, function (postData, next) {
+			batch.processSortedSet('posts:pid', (postData, next) => {
+				async.eachSeries(postData, (postData, next) => {
 					progress.incr();
 					var pid = postData.value;
 					var timestamp = postData.score;
@@ -35,7 +33,7 @@ module.exports = {
 						},
 						function (isMembers, next) {
 							var memberCids = [];
-							isMembers.forEach(function (isMember, index) {
+							isMembers.forEach((isMember, index) => {
 								if (isMember) {
 									memberCids.push(cids[index]);
 								}

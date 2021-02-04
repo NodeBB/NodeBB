@@ -10,17 +10,17 @@ module.exports = {
 	method: function (callback) {
 		const progress = this.progress;
 		var currentUid = 1;
-		db.getObjectField('global', 'nextUid', function (err, nextUid) {
+		db.getObjectField('global', 'nextUid', (err, nextUid) => {
 			if (err) {
 				return callback(err);
 			}
 			progress.total = nextUid;
-			async.whilst(function (next) {
+			async.whilst((next) => {
 				next(null, currentUid < nextUid);
 			},
-			function (next) {
+			(next) => {
 				progress.incr();
-				user.exists(currentUid, function (err, exists) {
+				user.exists(currentUid, (err, exists) => {
 					if (err) {
 						return next(err);
 					}
@@ -28,7 +28,7 @@ module.exports = {
 						currentUid += 1;
 						return next();
 					}
-					db.deleteAll([`user:${currentUid}:usernames`, `user:${currentUid}:emails`], function (err) {
+					db.deleteAll([`user:${currentUid}:usernames`, `user:${currentUid}:emails`], (err) => {
 						if (err) {
 							return next(err);
 						}
@@ -37,7 +37,7 @@ module.exports = {
 					});
 				});
 			},
-			function (err) {
+			(err) => {
 				callback(err);
 			});
 		});

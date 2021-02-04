@@ -178,7 +178,7 @@ async function getFromUserSet(template, req, res, callback) {
 		{ url: `${baseUrl}?sort=lastpost`, name: '[[global:lastpost]]' },
 		{ url: `${baseUrl}?sort=firstpost`, name: '[[global:firstpost]]' },
 	];
-	userData.sortOptions.forEach(function (option) {
+	userData.sortOptions.forEach((option) => {
 		option.selected = option.url.includes(`sort=${req.query.sort}`);
 	});
 

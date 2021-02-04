@@ -16,10 +16,10 @@ infoController.get = function (req, res) {
 	info = {};
 	pubsub.publish('sync:node:info:start');
 	const timeoutMS = 1000;
-	setTimeout(function () {
+	setTimeout(() => {
 		const data = [];
 		Object.keys(info).forEach(key => data.push(info[key]));
-		data.sort(function (a, b) {
+		data.sort((a, b) => {
 			if (a.id < b.id) {
 				return -1;
 			}
@@ -46,7 +46,7 @@ infoController.get = function (req, res) {
 	}, timeoutMS);
 };
 
-pubsub.on('sync:node:info:start', async function () {
+pubsub.on('sync:node:info:start', async () => {
 	try {
 		const data = await getNodeInfo();
 		data.id = `${os.hostname()}:${nconf.get('port')}`;
@@ -56,7 +56,7 @@ pubsub.on('sync:node:info:start', async function () {
 	}
 });
 
-pubsub.on('sync:node:info:end', function (data) {
+pubsub.on('sync:node:info:end', (data) => {
 	info[data.id] = data.data;
 });
 
@@ -77,7 +77,7 @@ async function getNodeInfo() {
 			platform: os.platform(),
 			arch: os.arch(),
 			release: os.release(),
-			load: os.loadavg().map(function (load) { return load.toFixed(2); }).join(', '),
+			load: os.loadavg().map(load => load.toFixed(2)).join(', '),
 			freemem: os.freemem(),
 			totalmem: os.totalmem(),
 		},
@@ -118,7 +118,7 @@ function humanReadableUptime(seconds) {
 
 async function getGitInfo() {
 	function get(cmd, callback) {
-		exec(cmd, function (err, stdout) {
+		exec(cmd, (err, stdout) => {
 			if (err) {
 				winston.error(err.stack);
 			}

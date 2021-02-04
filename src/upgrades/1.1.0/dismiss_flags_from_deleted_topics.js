@@ -22,16 +22,12 @@ module.exports = {
 				posts.getPostsFields(pids, ['tid'], next);
 			},
 			function (_tids, next) {
-				tids = _tids.map(function (a) {
-					return a.tid;
-				});
+				tids = _tids.map(a => a.tid);
 
 				topics.getTopicsFields(tids, ['deleted'], next);
 			},
 			function (state, next) {
-				var toDismiss = state.map(function (a, idx) {
-					return parseInt(a.deleted, 10) === 1 ? pids[idx] : null;
-				}).filter(Boolean);
+				var toDismiss = state.map((a, idx) => (parseInt(a.deleted, 10) === 1 ? pids[idx] : null)).filter(Boolean);
 
 				winston.verbose(`[2016/04/29] ${toDismiss.length} dismissable flags found`);
 				async.each(toDismiss, dismissFlag, next);
@@ -76,12 +72,12 @@ function dismissFlag(pid, callback) {
 				function (next) {
 					async.series([
 						function (next) {
-							db.getSortedSetRange(`pid:${pid}:flag:uids`, 0, -1, function (err, uids) {
+							db.getSortedSetRange(`pid:${pid}:flag:uids`, 0, -1, (err, uids) => {
 								if (err) {
 									return next(err);
 								}
 
-								async.each(uids, function (uid, next) {
+								async.each(uids, (uid, next) => {
 									var nid = `post_flag:${pid}:uid:${uid}`;
 									async.parallel([
 										async.apply(db.delete, `notifications:${nid}`),

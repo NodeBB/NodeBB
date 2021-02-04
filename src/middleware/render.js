@@ -85,8 +85,8 @@ module.exports = function (middleware) {
 	};
 
 	async function renderContent(render, tpl, req, res, options) {
-		return new Promise(function (resolve, reject) {
-			render.call(res, tpl, options, async function (err, str) {
+		return new Promise((resolve, reject) => {
+			render.call(res, tpl, options, async (err, str) => {
 				if (err) reject(err);
 				else resolve(await translate(str, getLang(req, res)));
 			});
@@ -121,7 +121,7 @@ module.exports = function (middleware) {
 	function buildBodyClass(req, res, templateData) {
 		const clean = req.path.replace(/^\/api/, '').replace(/^\/|\/$/g, '');
 		const parts = clean.split('/').slice(0, 3);
-		parts.forEach(function (p, index) {
+		parts.forEach((p, index) => {
 			try {
 				p = slugify(decodeURIComponent(p));
 			} catch (err) {
@@ -137,7 +137,7 @@ module.exports = function (middleware) {
 			parts.push(`page-topic-category-${slugify(templateData.category.name)}`);
 		}
 		if (templateData.breadcrumbs) {
-			templateData.breadcrumbs.forEach(function (crumb) {
+			templateData.breadcrumbs.forEach((crumb) => {
 				if (crumb.hasOwnProperty('cid')) {
 					parts.push(`parent-category-${crumb.cid}`);
 				}

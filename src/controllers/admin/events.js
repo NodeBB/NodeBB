@@ -25,13 +25,11 @@ eventsController.get = async function (req, res) {
 		events.getEvents(currentFilter, start, stop, from || '-inf', to),
 	]);
 
-	const types = [''].concat(events.types).map(function (type) {
-		return {
-			value: type,
-			name: type || 'all',
-			selected: type === currentFilter,
-		};
-	});
+	const types = [''].concat(events.types).map(type => ({
+		value: type,
+		name: type || 'all',
+		selected: type === currentFilter,
+	}));
 
 	const pageCount = Math.max(1, Math.ceil(eventCount / itemsPerPage));
 

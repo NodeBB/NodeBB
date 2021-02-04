@@ -14,7 +14,7 @@ module.exports = {
 			function (data, next) {
 				var order = [];
 				var items = [];
-				data.forEach(function (item) {
+				data.forEach((item) => {
 					var navItem = JSON.parse(item.value);
 					var keys = Object.keys(navItem);
 					if (keys.length && parseInt(keys[0], 10) >= 0) {

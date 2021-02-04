@@ -34,7 +34,7 @@ module.exports = function (app, middleware, controllers) {
 	setupPageRoute(app, '/user/:userslug/edit/username', middleware, accountMiddlewares, controllers.accounts.edit.username);
 	setupPageRoute(app, '/user/:userslug/edit/email', middleware, accountMiddlewares, controllers.accounts.edit.email);
 	setupPageRoute(app, '/user/:userslug/edit/password', middleware, accountMiddlewares, controllers.accounts.edit.password);
-	app.use('/.well-known/change-password', function (req, res) {
+	app.use('/.well-known/change-password', (req, res) => {
 		res.redirect('/me/edit/password');
 	});
 	setupPageRoute(app, '/user/:userslug/info', middleware, accountMiddlewares, controllers.accounts.info.get);
@@ -43,7 +43,7 @@ module.exports = function (app, middleware, controllers) {
 	setupPageRoute(app, '/user/:userslug/consent', middleware, accountMiddlewares, controllers.accounts.consent.get);
 	setupPageRoute(app, '/user/:userslug/blocks', middleware, accountMiddlewares, controllers.accounts.blocks.getBlocks);
 	setupPageRoute(app, '/user/:userslug/sessions', middleware, accountMiddlewares, controllers.accounts.sessions.get);
-	app.delete('/api/user/:userslug/session/:uuid', [middleware.exposeUid], function (req, res, next) {
+	app.delete('/api/user/:userslug/session/:uuid', [middleware.exposeUid], (req, res, next) => {
 		// TODO: Remove this entire route in v1.16.0
 		winston.warn('[router] `/api/user/:userslug/session/:uuid` has been deprecated, use `DELETE /api/v3/users/:uid/sessions/:uuid` or `DELETE /api/v3/users/bySlug/:userslug/sessions/:uuid` instead');
 		if (!res.locals.uid) {

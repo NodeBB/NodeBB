@@ -73,7 +73,7 @@ middleware.stripLeadingSlashes = function stripLeadingSlashes(req, res, next) {
 	next();
 };
 
-middleware.pageView = helpers.try(async function pageView(req, res, next) {
+middleware.pageView = helpers.try(async (req, res, next) => {
 	if (req.loggedIn) {
 		await Promise.all([
 			user.updateOnlineUsers(req.uid),
@@ -85,9 +85,9 @@ middleware.pageView = helpers.try(async function pageView(req, res, next) {
 	plugins.hooks.fire('action:middleware.pageView', { req: req });
 });
 
-middleware.pluginHooks = helpers.try(async function pluginHooks(req, res, next) {
+middleware.pluginHooks = helpers.try(async (req, res, next) => {
 	// TODO: Deprecate in v2.0
-	await async.each(plugins.loadedHooks['filter:router.page'] || [], function (hookObj, next) {
+	await async.each(plugins.loadedHooks['filter:router.page'] || [], (hookObj, next) => {
 		hookObj.method(req, res, next);
 	});
 
@@ -130,7 +130,7 @@ middleware.routeTouchIcon = function routeTouchIcon(req, res) {
 	});
 };
 
-middleware.privateTagListing = helpers.try(async function privateTagListing(req, res, next) {
+middleware.privateTagListing = helpers.try(async (req, res, next) => {
 	const canView = await privileges.global.can('view:tags', req.uid);
 	if (!canView) {
 		return controllers.helpers.notAllowed(req, res);
@@ -138,11 +138,11 @@ middleware.privateTagListing = helpers.try(async function privateTagListing(req,
 	next();
 });
 
-middleware.exposeGroupName = helpers.try(async function exposeGroupName(req, res, next) {
+middleware.exposeGroupName = helpers.try(async (req, res, next) => {
 	await expose('groupName', groups.getGroupNameByGroupSlug, 'slug', req, res, next);
 });
 
-middleware.exposeUid = helpers.try(async function exposeUid(req, res, next) {
+middleware.exposeUid = helpers.try(async (req, res, next) => {
 	await expose('uid', user.getUidByUserslug, 'userslug', req, res, next);
 });
 
@@ -201,7 +201,7 @@ middleware.delayLoading = function delayLoading(req, res, next) {
 	setTimeout(next, 1000);
 };
 
-middleware.buildSkinAsset = helpers.try(async function buildSkinAsset(req, res, next) {
+middleware.buildSkinAsset = helpers.try(async (req, res, next) => {
 	// If this middleware is reached, a skin was requested, so it is built on-demand
 	const target = path.basename(req.originalUrl).match(/(client-[a-z]+)/);
 	if (!target) {
@@ -225,7 +225,7 @@ middleware.trimUploadTimestamps = function trimUploadTimestamps(req, res, next) 
 	next();
 };
 
-middleware.validateAuth = helpers.try(async function validateAuth(req, res, next) {
+middleware.validateAuth = helpers.try(async (req, res, next) => {
 	try {
 		await plugins.hooks.fire('static:auth.validate', {
 			user: res.locals.user,

@@ -157,15 +157,15 @@ function addCoreRoutes(app, router, middleware) {
 		statics.unshift({ route: '/assets/uploads', path: nconf.get('upload_path') });
 	}
 
-	statics.forEach(function (obj) {
+	statics.forEach((obj) => {
 		app.use(relativePath + obj.route, middleware.trimUploadTimestamps, express.static(obj.path, staticOptions));
 	});
-	app.use(`${relativePath}/uploads`, function (req, res) {
+	app.use(`${relativePath}/uploads`, (req, res) => {
 		res.redirect(`${relativePath}/assets/uploads${req.path}?${meta.config['cache-buster']}`);
 	});
 
 	// Skins
-	meta.css.supportedSkins.forEach(function (skin) {
+	meta.css.supportedSkins.forEach((skin) => {
 		app.use(`${relativePath}/assets/client-${skin}.css`, middleware.buildSkinAsset);
 	});
 

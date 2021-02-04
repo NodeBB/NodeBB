@@ -10,8 +10,8 @@ module.exports = {
 	method: function (callback) {
 		var progress = this.progress;
 
-		batch.processSortedSet('topics:tid', function (tids, next) {
-			async.eachLimit(tids, 500, function (tid, _next) {
+		batch.processSortedSet('topics:tid', (tids, next) => {
+			async.eachLimit(tids, 500, (tid, _next) => {
 				progress.incr();
 				var topicData;
 				async.waterfall([
@@ -39,7 +39,7 @@ module.exports = {
 									next();
 								}
 							},
-						], function (err) {
+						], (err) => {
 							next(err);
 						});
 					},

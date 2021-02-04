@@ -61,9 +61,7 @@ function humanReadableArgName(arg) {
 }
 
 Command.prototype.usage = function () {
-	var args = this._args.map(function (arg) {
-		return humanReadableArgName(arg);
-	});
+	var args = this._args.map(arg => humanReadableArgName(arg));
 
 	var usage = '[options]'[optionColor] +
 		(this.commands.length ? ' [command]' : '')[subCommandColor] +
@@ -82,12 +80,8 @@ Command.prototype.commandHelp = function () {
 		return '';
 	}
 
-	var commands = this.commands.filter(function (cmd) {
-		return !cmd._noHelp;
-	}).map(function (cmd) {
-		var args = cmd._args.map(function (arg) {
-			return humanReadableArgName(arg);
-		}).join(' ');
+	var commands = this.commands.filter(cmd => !cmd._noHelp).map((cmd) => {
+		var args = cmd._args.map(arg => humanReadableArgName(arg)).join(' ');
 
 		return [
 			`${cmd._name[subCommandColor] +
@@ -98,15 +92,13 @@ Command.prototype.commandHelp = function () {
 		];
 	});
 
-	var width = commands.reduce(function (max, command) {
-		return Math.max(max, command[0].length);
-	}, 0);
+	var width = commands.reduce((max, command) => Math.max(max, command[0].length), 0);
 
 	return [
 		'',
 		'  Commands:',
 		'',
-		commands.map(function (cmd) {
+		commands.map((cmd) => {
 			var desc = cmd[1] ? `  ${cmd[1]}` : '';
 			return pad(cmd[0], width) + desc;
 		}).join('\n').replace(/^/gm, '    '),
@@ -119,9 +111,7 @@ Command.prototype.optionHelp = function () {
 
 	// Append the help information
 	return this.options
-		.map(function (option) {
-			return `${pad(option.flags, width)[optionColor]}  ${option.description}`;
-		})
+		.map(option => `${pad(option.flags, width)[optionColor]}  ${option.description}`)
 		.concat([`${pad('-h, --help', width)[optionColor]}  output usage information`])
 		.join('\n');
 };

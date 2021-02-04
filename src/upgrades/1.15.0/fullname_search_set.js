@@ -11,7 +11,7 @@ module.exports = {
 	method: async function () {
 		const progress = this.progress;
 
-		await batch.processSortedSet('users:joindate', async function (uids) {
+		await batch.processSortedSet('users:joindate', async (uids) => {
 			progress.incr(uids.length);
 			const userData = await user.getUsersFields(uids, ['uid', 'fullname']);
 			const bulkAdd = userData

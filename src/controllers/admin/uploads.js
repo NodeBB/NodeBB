@@ -33,7 +33,7 @@ uploadsController.get = async function (req, res, next) {
 		files = await filesToData(currentFolder, files);
 
 		// Float directories to the top
-		files.sort(function (a, b) {
+		files.sort((a, b) => {
 			if (a.isDirectory && !b.isDirectory) {
 				return -1;
 			} else if (!a.isDirectory && b.isDirectory) {
@@ -48,7 +48,7 @@ uploadsController.get = async function (req, res, next) {
 		// Add post usage info if in /files
 		if (['/files', '/files/'].includes(req.query.dir)) {
 			const usage = await posts.uploads.getUsage(files);
-			files.forEach(function (file, idx) {
+			files.forEach((file, idx) => {
 				file.inPids = usage[idx].map(pid => parseInt(pid, 10));
 			});
 		}
@@ -68,7 +68,7 @@ function buildBreadcrumbs(currentFolder) {
 	var crumbs = [];
 	var parts = currentFolder.replace(nconf.get('upload_path'), '').split(path.sep);
 	var currentPath = '';
-	parts.forEach(function (part) {
+	parts.forEach((part) => {
 		var dir = path.join(currentPath, part);
 		crumbs.push({
 			text: part || 'Uploads',

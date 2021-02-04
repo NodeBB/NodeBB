@@ -129,7 +129,7 @@ async function getMatchedPosts(pids, data) {
 
 	const tidToTopic = _.zipObject(tids, topics);
 	const uidToUser = _.zipObject(uids, users);
-	postsData.forEach(function (post) {
+	postsData.forEach((post) => {
 		if (topics && tidToTopic[post.tid]) {
 			post.topic = tidToTopic[post.tid];
 			if (post.topic && post.topic.category) {
@@ -161,7 +161,7 @@ async function getTopics(tids, data) {
 	]);
 
 	const cidToCategory = _.zipObject(cids, categories);
-	topicsData.forEach(function (topic, index) {
+	topicsData.forEach((topic, index) => {
 		if (topic && categories && cidToCategory[topic.cid]) {
 			topic.category = cidToCategory[topic.cid];
 		}
@@ -220,7 +220,7 @@ function filterByTimerange(posts, timeRange, timeFilter) {
 
 function filterByTags(posts, hasTags) {
 	if (Array.isArray(hasTags) && hasTags.length) {
-		posts = posts.filter(function (post) {
+		posts = posts.filter((post) => {
 			var hasAllTags = false;
 			if (post && post.topic && Array.isArray(post.topic.tags) && post.topic.tags.length) {
 				hasAllTags = hasTags.every(tag => post.topic.tags.includes(tag));
@@ -253,7 +253,7 @@ function sortPosts(posts, data) {
 	if (isNumeric) {
 		posts.sort((p1, p2) => direction * (p2[fields[0]][fields[1]] - p1[fields[0]][fields[1]]));
 	} else {
-		posts.sort(function (p1, p2) {
+		posts.sort((p1, p2) => {
 			if (p1[fields[0]][fields[1]] > p2[fields[0]][fields[1]]) {
 				return direction;
 			} else if (p1[fields[0]][fields[1]] < p2[fields[0]][fields[1]]) {

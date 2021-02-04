@@ -41,16 +41,16 @@ module.exports = function (Categories) {
 
 		Categories.getTree(categoryData, 0);
 		await Categories.getRecentTopicReplies(categoryData, uid, data.qs);
-		categoryData.forEach(function (category) {
+		categoryData.forEach((category) => {
 			if (category && Array.isArray(category.children)) {
 				category.children = category.children.slice(0, category.subCategoriesPerPage);
-				category.children.forEach(function (child) {
+				category.children.forEach((child) => {
 					child.children = undefined;
 				});
 			}
 		});
 
-		categoryData.sort(function (c1, c2) {
+		categoryData.sort((c1, c2) => {
 			if (c1.parentCid !== c2.parentCid) {
 				return c1.parentCid - c2.parentCid;
 			}

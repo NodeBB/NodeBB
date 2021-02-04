@@ -8,15 +8,15 @@ module.exports = {
 	name: 'Chat room hashes',
 	timestamp: Date.UTC(2015, 11, 23),
 	method: function (callback) {
-		db.getObjectField('global', 'nextChatRoomId', function (err, nextChatRoomId) {
+		db.getObjectField('global', 'nextChatRoomId', (err, nextChatRoomId) => {
 			if (err) {
 				return callback(err);
 			}
 			var currentChatRoomId = 1;
-			async.whilst(function (next) {
+			async.whilst((next) => {
 				next(null, currentChatRoomId <= nextChatRoomId);
-			}, function (next) {
-				db.getSortedSetRange(`chat:room:${currentChatRoomId}:uids`, 0, 0, function (err, uids) {
+			}, (next) => {
+				db.getSortedSetRange(`chat:room:${currentChatRoomId}:uids`, 0, 0, (err, uids) => {
 					if (err) {
 						return next(err);
 					}
@@ -25,7 +25,7 @@ module.exports = {
 						return next();
 					}
 
-					db.setObject(`chat:room:${currentChatRoomId}`, { owner: uids[0], roomId: currentChatRoomId }, function (err) {
+					db.setObject(`chat:room:${currentChatRoomId}`, { owner: uids[0], roomId: currentChatRoomId }, (err) => {
 						if (err) {
 							return next(err);
 						}

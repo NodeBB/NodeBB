@@ -12,9 +12,9 @@ const meta = require('../meta');
 
 module.exports = function (Plugins) {
 	Plugins.startJobs = function () {
-		new cronJob('0 0 0 * * *', function () {
+		new cronJob('0 0 0 * * *', (() => {
 			Plugins.submitUsageData();
-		}, null, true);
+		}), null, true);
 	};
 
 	Plugins.submitUsageData = function () {
@@ -31,7 +31,7 @@ module.exports = function (Plugins) {
 				plugins: Plugins.loadedPlugins,
 			},
 			timeout: 5000,
-		}, function (err, res, body) {
+		}, (err, res, body) => {
 			if (err) {
 				return winston.error(err.stack);
 			}

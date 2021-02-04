@@ -247,7 +247,7 @@ module.exports = function (module) {
 			return [await getSortedSetRank(reverse, key, values[0])];
 		}
 		const sortedSet = await module[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](key, 0, -1);
-		return values.map(function (value) {
+		return values.map((value) => {
 			if (!value) {
 				return null;
 			}
@@ -272,7 +272,7 @@ module.exports = function (module) {
 		value = helpers.valueToString(value);
 		const result = await module.client.collection('objects').find({ _key: { $in: keys }, value: value }, { projection: { _id: 0, value: 0 } }).toArray();
 		var map = {};
-		result.forEach(function (item) {
+		result.forEach((item) => {
 			if (item) {
 				map[item._key] = item;
 			}
@@ -292,7 +292,7 @@ module.exports = function (module) {
 		const result = await module.client.collection('objects').find({ _key: key, value: { $in: values } }, { projection: { _id: 0, _key: 0 } }).toArray();
 
 		var valueToScore = {};
-		result.forEach(function (item) {
+		result.forEach((item) => {
 			if (item) {
 				valueToScore[item.value] = item.score;
 			}
@@ -329,7 +329,7 @@ module.exports = function (module) {
 		}).toArray();
 
 		var isMember = {};
-		results.forEach(function (item) {
+		results.forEach((item) => {
 			if (item) {
 				isMember[item.value] = true;
 			}
@@ -350,7 +350,7 @@ module.exports = function (module) {
 		}).toArray();
 
 		var isMember = {};
-		results.forEach(function (item) {
+		results.forEach((item) => {
 			if (item) {
 				isMember[item._key] = true;
 			}
@@ -381,7 +381,7 @@ module.exports = function (module) {
 			return [data.map(item => item.value)];
 		}
 		const sets = {};
-		data.forEach(function (item) {
+		data.forEach((item) => {
 			sets[item._key] = sets[item._key] || [];
 			sets[item._key].push(item.value);
 		});

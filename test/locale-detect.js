@@ -7,16 +7,16 @@ var request = require('request');
 var db = require('./mocks/databasemock');
 var meta = require('../src/meta');
 
-describe('Language detection', function () {
-	it('should detect the language for a guest', function (done) {
-		meta.configs.set('autoDetectLang', 1, function (err) {
+describe('Language detection', () => {
+	it('should detect the language for a guest', (done) => {
+		meta.configs.set('autoDetectLang', 1, (err) => {
 			assert.ifError(err);
 			request(`${nconf.get('url')}/api/config`, {
 				headers: {
 					'Accept-Language': 'de-DE,de;q=0.5',
 				},
 				json: true,
-			}, function (err, res, body) {
+			}, (err, res, body) => {
 				assert.ifError(err);
 				assert.ok(body);
 
@@ -26,15 +26,15 @@ describe('Language detection', function () {
 		});
 	});
 
-	it('should do nothing when disabled', function (done) {
-		meta.configs.set('autoDetectLang', 0, function (err) {
+	it('should do nothing when disabled', (done) => {
+		meta.configs.set('autoDetectLang', 0, (err) => {
 			assert.ifError(err);
 			request(`${nconf.get('url')}/api/config`, {
 				headers: {
 					'Accept-Language': 'de-DE,de;q=0.5',
 				},
 				json: true,
-			}, function (err, res, body) {
+			}, (err, res, body) => {
 				assert.ifError(err);
 				assert.ok(body);
 

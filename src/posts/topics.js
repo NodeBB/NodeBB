@@ -37,7 +37,7 @@ module.exports = function (Posts) {
 			topics.getTopicsFields(tids, ['slug']),
 		]);
 
-		const paths = pids.map(function (pid, index) {
+		const paths = pids.map((pid, index) => {
 			const slug = topicData[index] ? topicData[index].slug : null;
 			const postIndex = utils.isNumber(indices[index]) ? parseInt(indices[index], 10) + 1 : null;
 

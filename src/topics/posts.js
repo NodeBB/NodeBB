@@ -44,17 +44,13 @@ module.exports = function (Topics) {
 		] = await Promise.all([
 			posts.hasBookmarked(pids, uid),
 			posts.getVoteStatusByPostIDs(pids, uid),
-			getPostUserData('uid', async function (uids) {
-				return await posts.getUserInfoForPosts(uids, uid);
-			}),
-			getPostUserData('editor', async function (uids) {
-				return await user.getUsersFields(uids, ['uid', 'username', 'userslug']);
-			}),
+			getPostUserData('uid', async uids => await posts.getUserInfoForPosts(uids, uid)),
+			getPostUserData('editor', async uids => await user.getUsersFields(uids, ['uid', 'username', 'userslug'])),
 			getPostReplies(pids, uid),
 			Topics.addParentPosts(postData),
 		]);
 
-		postData.forEach(function (postObj, i) {
+		postData.forEach((postObj, i) => {
 			if (postObj) {
 				postObj.user = postObj.uid ? userData[postObj.uid] : { ...userData[postObj.uid] };
 				postObj.editor = postObj.editor ? editors[postObj.editor] : null;
@@ -82,7 +78,7 @@ module.exports = function (Topics) {
 
 	Topics.modifyPostsByPrivilege = function (topicData, topicPrivileges) {
 		const loggedIn = parseInt(topicPrivileges.uid, 10) > 0;
-		topicData.posts.forEach(function (post) {
+		topicData.posts.forEach((post) => {
 			if (post) {
 				post.topicOwnerPost = parseInt(topicData.uid, 10) === parseInt(post.uid, 10);
 				post.display_edit_tools = topicPrivileges.isAdminOrMod || (post.selfPost && topicPrivileges['posts:edit']);
@@ -101,9 +97,7 @@ module.exports = function (Topics) {
 	};
 
 	Topics.addParentPosts = async function (postData) {
-		var parentPids = postData.map(function (postObj) {
-			return postObj && postObj.hasOwnProperty('toPid') ? parseInt(postObj.toPid, 10) : null;
-		}).filter(Boolean);
+		var parentPids = postData.map(postObj => (postObj && postObj.hasOwnProperty('toPid') ? parseInt(postObj.toPid, 10) : null)).filter(Boolean);
 
 		if (!parentPids.length) {
 			return;
@@ -114,21 +108,21 @@ module.exports = function (Topics) {
 		const userData = await user.getUsersFields(parentUids, ['username']);
 
 		var usersMap = {};
-		userData.forEach(function (user) {
+		userData.forEach((user) => {
 			usersMap[user.uid] = user.username;
 		});
 		var parents = {};
-		parentPosts.forEach(function (post, i) {
+		parentPosts.forEach((post, i) => {
 			parents[parentPids[i]] = { username: usersMap[post.uid] };
 		});
 
-		postData.forEach(function (post) {
+		postData.forEach((post) => {
 			post.parent = parents[post.toPid];
 		});
 	};
 
 	Topics.calculatePostIndices = function (posts, start) {
-		posts.forEach(function (post, index) {
+		posts.forEach((post, index) => {
 			if (post) {
 				post.index = start + index + 1;
 			}
@@ -262,7 +256,7 @@ module.exports = function (Topics) {
 		const uidMap = _.zipObject(uniqueUids, userData);
 		const pidMap = _.zipObject(replyData.map(r => r.pid), replyData);
 
-		const returnData = arrayOfReplyPids.map(function (replyPids) {
+		const returnData = arrayOfReplyPids.map((replyPids) => {
 			replyPids = replyPids.filter(pid => pidMap[pid]);
 			const uidsUsed = {};
 			const currentData = {
@@ -275,7 +269,7 @@ module.exports = function (Topics) {
 
 			replyPids.sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
 
-			replyPids.forEach(function (replyPid) {
+			replyPids.forEach((replyPid) => {
 				const replyData = pidMap[replyPid];
 				if (!uidsUsed[replyData.uid] && currentData.users.length < 6) {
 					currentData.users.push(uidMap[replyData.uid]);

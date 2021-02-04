@@ -22,7 +22,7 @@ prestart.setupWinston();
 const db = require('../../database');
 const batch = require('../../batch');
 
-process.on('message', async function (msg) {
+process.on('message', async (msg) => {
 	if (msg && msg.uid) {
 		await db.init();
 		await db.initSessionStore();

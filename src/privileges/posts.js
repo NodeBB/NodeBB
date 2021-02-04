@@ -40,7 +40,7 @@ module.exports = function (privileges) {
 		privData['posts:history'] = _.zipObject(uniqueCids, results['posts:history']);
 		privData['posts:view_deleted'] = _.zipObject(uniqueCids, results['posts:view_deleted']);
 
-		const privileges = cids.map(function (cid, i) {
+		const privileges = cids.map((cid, i) => {
 			const isAdminOrMod = results.isAdmin || isModerator[cid];
 			const editable = (privData['posts:edit'][cid] && (results.isOwner[i] || results.isModerator)) || results.isAdmin;
 			const viewDeletedPosts = results.isOwner[i] || privData['posts:view_deleted'][cid] || results.isAdmin;
@@ -77,7 +77,7 @@ module.exports = function (privileges) {
 
 		const tidToTopic = _.zipObject(tids, topicData);
 
-		let cids = postData.map(function (post, index) {
+		let cids = postData.map((post, index) => {
 			if (post) {
 				post.pid = pids[index];
 				post.topic = tidToTopic[post.tid];
@@ -88,18 +88,14 @@ module.exports = function (privileges) {
 		cids = _.uniq(cids);
 
 		const results = await privileges.categories.getBase(privilege, cids, uid);
-		const allowedCids = cids.filter(function (cid, index) {
-			return !results.categories[index].disabled &&
-				(results.allowedTo[index] || results.isAdmin);
-		});
+		const allowedCids = cids.filter((cid, index) => !results.categories[index].disabled &&
+				(results.allowedTo[index] || results.isAdmin));
 
 		const cidsSet = new Set(allowedCids);
 		const canViewDeleted = _.zipObject(cids, results.view_deleted);
 
-		pids = postData.filter(function (post) {
-			return post.topic && cidsSet.has(post.topic.cid) &&
-				((!post.topic.deleted && !post.deleted) || canViewDeleted[post.topic.cid] || results.isAdmin);
-		}).map(post => post.pid);
+		pids = postData.filter(post => post.topic && cidsSet.has(post.topic.cid) &&
+				((!post.topic.deleted && !post.deleted) || canViewDeleted[post.topic.cid] || results.isAdmin)).map(post => post.pid);
 
 		const data = await plugins.hooks.fire('filter:privileges.posts.filter', {
 			privilege: privilege,

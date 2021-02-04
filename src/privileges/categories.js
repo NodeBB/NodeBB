@@ -170,7 +170,7 @@ module.exports = function (privileges) {
 
 	privileges.categories.userPrivileges = async function (cid, uid) {
 		const tasks = {};
-		privileges.userPrivilegeList.forEach(function (privilege) {
+		privileges.userPrivilegeList.forEach((privilege) => {
 			tasks[privilege] = groups.isMember(uid, `cid:${cid}:privileges:${privilege}`);
 		});
 		return await utils.promiseParallel(tasks);
@@ -178,7 +178,7 @@ module.exports = function (privileges) {
 
 	privileges.categories.groupPrivileges = async function (cid, groupName) {
 		const tasks = {};
-		privileges.groupPrivilegeList.forEach(function (privilege) {
+		privileges.groupPrivilegeList.forEach((privilege) => {
 			tasks[privilege] = groups.isMember(groupName, `cid:${cid}:privileges:${privilege}`);
 		});
 		return await utils.promiseParallel(tasks);

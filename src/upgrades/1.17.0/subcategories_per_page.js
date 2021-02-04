@@ -9,7 +9,7 @@ module.exports = {
 	method: async function () {
 		const progress = this.progress;
 
-		await batch.processSortedSet('categories:cid', async function (cids) {
+		await batch.processSortedSet('categories:cid', async (cids) => {
 			const keys = cids.map(cid => `category:${cid}`);
 			await db.setObject(keys, {
 				subCategoriesPerPage: 10,

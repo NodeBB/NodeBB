@@ -23,16 +23,14 @@ exports.aliases = aliases;
 
 function buildTargets() {
 	var length = 0;
-	var output = Object.keys(aliases).map(function (name) {
+	var output = Object.keys(aliases).map((name) => {
 		var arr = aliases[name];
 		if (name.length > length) {
 			length = name.length;
 		}
 
 		return [name, arr.join(', ')];
-	}).map(function (tuple) {
-		return `     ${_.padEnd(`"${tuple[0]}"`, length + 2).magenta}  |  ${tuple[1]}`;
-	}).join('\n');
+	}).map(tuple => `     ${_.padEnd(`"${tuple[0]}"`, length + 2).magenta}  |  ${tuple[1]}`).join('\n');
 	console.log(
 		`\n\n  Build targets:\n${
 			(`\n     ${_.padEnd('Target', length + 2)}  |  Aliases`).green

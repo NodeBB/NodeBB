@@ -152,7 +152,7 @@ Topics.migrateThumbs = async (req, res) => {
 
 Topics.deleteThumb = async (req, res) => {
 	if (!req.body.path.startsWith('http')) {
-		await middleware.assert.path(req, res, function () {});
+		await middleware.assert.path(req, res, () => {});
 		if (res.headersSent) {
 			return;
 		}

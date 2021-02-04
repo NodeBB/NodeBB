@@ -58,7 +58,7 @@ module.exports = function (Topics) {
 	async function getCidTids(params) {
 		const sets = [];
 		const pinnedSets = [];
-		params.cids.forEach(function (cid) {
+		params.cids.forEach((cid) => {
 			if (params.sort === 'recent') {
 				sets.push(`cid:${cid}:tids`);
 			} else {

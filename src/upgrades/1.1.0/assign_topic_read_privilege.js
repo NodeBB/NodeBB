@@ -12,13 +12,13 @@ module.exports = {
 		var groupsAPI = require('../../groups');
 		var privilegesAPI = require('../../privileges');
 
-		db.getSortedSetRange('categories:cid', 0, -1, function (err, cids) {
+		db.getSortedSetRange('categories:cid', 0, -1, (err, cids) => {
 			if (err) {
 				return callback(err);
 			}
 
-			async.eachSeries(cids, function (cid, next) {
-				privilegesAPI.categories.list(cid, function (err, data) {
+			async.eachSeries(cids, (cid, next) => {
+				privilegesAPI.categories.list(cid, (err, data) => {
 					if (err) {
 						return next(err);
 					}
@@ -28,9 +28,9 @@ module.exports = {
 
 					async.waterfall([
 						function (next) {
-							async.eachSeries(groups, function (group, next) {
+							async.eachSeries(groups, (group, next) => {
 								if (group.privileges['groups:read']) {
-									return groupsAPI.join(`cid:${cid}:privileges:groups:topics:read`, group.name, function (err) {
+									return groupsAPI.join(`cid:${cid}:privileges:groups:topics:read`, group.name, (err) => {
 										if (!err) {
 											winston.verbose(`cid:${cid}:privileges:groups:topics:read granted to gid: ${group.name}`);
 										}
@@ -43,9 +43,9 @@ module.exports = {
 							}, next);
 						},
 						function (next) {
-							async.eachSeries(users, function (user, next) {
+							async.eachSeries(users, (user, next) => {
 								if (user.privileges.read) {
-									return groupsAPI.join(`cid:${cid}:privileges:topics:read`, user.uid, function (err) {
+									return groupsAPI.join(`cid:${cid}:privileges:topics:read`, user.uid, (err) => {
 										if (!err) {
 											winston.verbose(`cid:${cid}:privileges:topics:read granted to uid: ${user.uid}`);
 										}
@@ -57,7 +57,7 @@ module.exports = {
 								next(null);
 							}, next);
 						},
-					], function (err) {
+					], (err) => {
 						if (!err) {
 							winston.verbose(`-- cid ${cid} upgraded`);
 						}

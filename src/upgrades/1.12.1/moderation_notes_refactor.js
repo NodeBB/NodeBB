@@ -11,15 +11,15 @@ module.exports = {
 	method: function (callback) {
 		var progress = this.progress;
 
-		batch.processSortedSet('users:joindate', function (ids, next) {
-			async.each(ids, function (uid, next) {
+		batch.processSortedSet('users:joindate', (ids, next) => {
+			async.each(ids, (uid, next) => {
 				progress.incr();
-				db.getSortedSetRevRange(`uid:${uid}:moderation:notes`, 0, -1, function (err, notes) {
+				db.getSortedSetRevRange(`uid:${uid}:moderation:notes`, 0, -1, (err, notes) => {
 					if (err || !notes.length) {
 						return next(err);
 					}
 
-					async.eachSeries(notes, function (note, next) {
+					async.eachSeries(notes, (note, next) => {
 						var noteData;
 						async.waterfall([
 							function (next) {

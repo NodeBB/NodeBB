@@ -25,7 +25,7 @@ widgets.render = async function (uid, options) {
 	const widgetData = await Promise.all(locations.map(location => renderLocation(location, data, uid, options)));
 
 	const returnData = {};
-	locations.forEach(function (location, i) {
+	locations.forEach((location, i) => {
 		if (Array.isArray(widgetData[i]) && widgetData[i].length) {
 			returnData[location] = widgetData[i].filter(Boolean);
 		}
@@ -110,13 +110,13 @@ widgets.getWidgetDataForTemplates = async function (templates) {
 
 	const returnData = {};
 
-	templates.forEach(function (template, index) {
+	templates.forEach((template, index) => {
 		returnData[template] = returnData[template] || {};
 
 		const templateWidgetData = data[index] || {};
 		const locations = Object.keys(templateWidgetData);
 
-		locations.forEach(function (location) {
+		locations.forEach((location) => {
 			if (templateWidgetData && templateWidgetData[location]) {
 				try {
 					returnData[template][location] = parseWidgetData(templateWidgetData[location]);
@@ -143,7 +143,7 @@ widgets.getArea = async function (template, location) {
 
 function parseWidgetData(data) {
 	const widgets = JSON.parse(data);
-	widgets.forEach(function (widget) {
+	widgets.forEach((widget) => {
 		if (widget) {
 			widget.data.groups = widget.data.groups || [];
 			if (widget.data.groups && !Array.isArray(widget.data.groups)) {

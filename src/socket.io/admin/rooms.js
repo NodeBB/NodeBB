@@ -15,7 +15,7 @@ const SocketRooms = module.exports;
 SocketRooms.stats = stats;
 SocketRooms.totals = totals;
 
-pubsub.on('sync:stats:start', function () {
+pubsub.on('sync:stats:start', () => {
 	const stats = SocketRooms.getLocalStats();
 	pubsub.publish('sync:stats:end', {
 		stats: stats,
@@ -23,11 +23,11 @@ pubsub.on('sync:stats:start', function () {
 	});
 });
 
-pubsub.on('sync:stats:end', function (data) {
+pubsub.on('sync:stats:end', (data) => {
 	stats[data.id] = data.stats;
 });
 
-pubsub.on('sync:stats:guests', function (eventId) {
+pubsub.on('sync:stats:guests', (eventId) => {
 	const Sockets = require('../index');
 	const guestCount = Sockets.getCountInRoom('online_guests');
 	pubsub.publish(eventId, guestCount);
@@ -36,13 +36,13 @@ pubsub.on('sync:stats:guests', function (eventId) {
 SocketRooms.getTotalGuestCount = function (callback) {
 	var count = 0;
 	var eventId = `sync:stats:guests:end:${utils.generateUUID()}`;
-	pubsub.on(eventId, function (guestCount) {
+	pubsub.on(eventId, (guestCount) => {
 		count += guestCount;
 	});
 
 	pubsub.publish('sync:stats:guests', eventId);
 
-	setTimeout(function () {
+	setTimeout(() => {
 		pubsub.removeAllListeners(eventId);
 		callback(null, count);
 	}, 100);
@@ -75,7 +75,7 @@ SocketRooms.getAll = async function () {
 			totals.users.topics += stats[instance].users.topics;
 			totals.users.category += stats[instance].users.category;
 
-			stats[instance].topics.forEach(function (topic) {
+			stats[instance].topics.forEach((topic) => {
 				totals.topics[topic.tid] = totals.topics[topic.tid] || { count: 0, tid: topic.tid };
 				totals.topics[topic.tid].count += topic.count;
 			});
@@ -83,7 +83,7 @@ SocketRooms.getAll = async function () {
 	}
 
 	var topTenTopics = [];
-	Object.keys(totals.topics).forEach(function (tid) {
+	Object.keys(totals.topics).forEach((tid) => {
 		topTenTopics.push({ tid: tid, count: totals.topics[tid].count || 0 });
 	});
 
@@ -92,7 +92,7 @@ SocketRooms.getAll = async function () {
 	var topTenTids = topTenTopics.map(topic => topic.tid);
 
 	const titles = await topics.getTopicsFields(topTenTids, ['title']);
-	totals.topTenTopics = topTenTopics.map(function (topic, index) {
+	totals.topTenTopics = topTenTopics.map((topic, index) => {
 		topic.title = titles[index].title;
 		return topic;
 	});

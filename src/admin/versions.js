@@ -23,7 +23,7 @@ function getLatestVersion(callback) {
 		json: true,
 		headers: headers,
 		timeout: 2000,
-	}, function (err, res, latestRelease) {
+	}, (err, res, latestRelease) => {
 		if (err) {
 			return callback(err);
 		}

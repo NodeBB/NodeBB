@@ -161,9 +161,9 @@ before(async function () {
 	await webserver.listen();
 
 	// Iterate over all of the test suites/contexts
-	this.test.parent.suites.forEach(function (suite) {
+	this.test.parent.suites.forEach((suite) => {
 		// Attach an afterAll listener that resets the defaults
-		suite.afterAll(async function () {
+		suite.afterAll(async () => {
 			await setupMockDefaults();
 		});
 	});

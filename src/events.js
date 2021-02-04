@@ -98,8 +98,8 @@ events.getEvents = async function (filter, start, stop, from, to) {
 	eventsData = eventsData.filter(Boolean);
 	await addUserData(eventsData, 'uid', 'user');
 	await addUserData(eventsData, 'targetUid', 'targetUser');
-	eventsData.forEach(function (event) {
-		Object.keys(event).forEach(function (key) {
+	eventsData.forEach((event) => {
+		Object.keys(event).forEach((key) => {
 			if (typeof event[key] === 'string') {
 				event[key] = validator.escape(String(event[key] || ''));
 			}
@@ -129,12 +129,12 @@ async function addUserData(eventsData, field, objectName) {
 	]);
 
 	const map = {};
-	userData.forEach(function (user, index) {
+	userData.forEach((user, index) => {
 		user.isAdmin = isAdmin[index];
 		map[user.uid] = user;
 	});
 
-	eventsData.forEach(function (event) {
+	eventsData.forEach((event) => {
 		if (map[event[field]]) {
 			event[objectName] = map[event[field]];
 		}
@@ -153,7 +153,7 @@ events.deleteEvents = async function (eids) {
 };
 
 events.deleteAll = async function () {
-	await batch.processSortedSet('events:time', async function (eids) {
+	await batch.processSortedSet('events:time', async (eids) => {
 		await events.deleteEvents(eids);
 	}, { alwaysStartAt: 0, batch: 500 });
 };

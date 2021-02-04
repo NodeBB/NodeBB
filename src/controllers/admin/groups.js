@@ -42,13 +42,11 @@ groupsController.get = async function (req, res, next) {
 	}
 	group.isOwner = true;
 
-	const groupNameData = groupNames.map(function (name) {
-		return {
-			encodedName: encodeURIComponent(name),
-			displayName: validator.escape(String(name)),
-			selected: name === groupName,
-		};
-	});
+	const groupNameData = groupNames.map(name => ({
+		encodedName: encodeURIComponent(name),
+		displayName: validator.escape(String(name)),
+		selected: name === groupName,
+	}));
 
 	res.render('admin/manage/group', {
 		group: group,

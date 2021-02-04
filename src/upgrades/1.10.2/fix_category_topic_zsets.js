@@ -12,8 +12,8 @@ module.exports = {
 		const progress = this.progress;
 
 		var topics = require('../../topics');
-		batch.processSortedSet('topics:tid', function (tids, next) {
-			async.eachSeries(tids, function (tid, next) {
+		batch.processSortedSet('topics:tid', (tids, next) => {
+			async.eachSeries(tids, (tid, next) => {
 				progress.incr();
 
 				async.waterfall([

@@ -45,7 +45,7 @@ module.exports = function (Messaging) {
 		let messages = await Messaging.getMessagesFields(mids, []);
 		messages = await user.blocks.filter(uid, 'fromuid', messages);
 		messages = messages
-			.map(function (msg, idx) {
+			.map((msg, idx) => {
 				if (msg) {
 					msg.messageId = parseInt(mids[idx], 10);
 					msg.ip = undefined;
@@ -59,7 +59,7 @@ module.exports = function (Messaging) {
 			['uid', 'username', 'userslug', 'picture', 'status', 'banned']
 		);
 
-		messages.forEach(function (message, index) {
+		messages.forEach((message, index) => {
 			message.fromUser = users[index];
 			message.fromUser.banned = !!message.fromUser.banned;
 			message.fromUser.deleted = message.fromuid !== message.fromUser.uid && message.fromUser.uid === 0;
@@ -88,7 +88,7 @@ module.exports = function (Messaging) {
 
 		if (messages.length > 1) {
 			// Add a spacer in between messages with time gaps between them
-			messages = messages.map(function (message, index) {
+			messages = messages.map((message, index) => {
 				// Compare timestamps with the previous message, and check if a spacer needs to be added
 				if (index > 0 && message.timestamp > messages[index - 1].timestamp + Messaging.newMessageCutoff) {
 					// If it's been 5 minutes, this is a new set of messages

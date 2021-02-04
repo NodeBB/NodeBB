@@ -62,7 +62,7 @@ function loadConfig(configFile) {
 	// Explicitly cast as Bool, loader.js passes in isCluster as string 'true'/'false'
 	var castAsBool = ['isCluster', 'isPrimary', 'jobsDisabled'];
 	nconf.stores.env.readOnly = false;
-	castAsBool.forEach(function (prop) {
+	castAsBool.forEach((prop) => {
 		var value = nconf.get(prop);
 		if (value !== undefined) {
 			nconf.set(prop, typeof value === 'boolean' ? value : String(value).toLowerCase() === 'true');

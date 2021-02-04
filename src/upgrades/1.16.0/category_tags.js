@@ -11,8 +11,8 @@ module.exports = {
 	method: async function () {
 		const progress = this.progress;
 
-		await batch.processSortedSet('topics:tid', async function (tids) {
-			await async.eachSeries(tids, async function (tid) {
+		await batch.processSortedSet('topics:tid', async (tids) => {
+			await async.eachSeries(tids, async (tid) => {
 				const [topicData, tags] = await Promise.all([
 					topics.getTopicFields(tid, ['cid', 'timestamp']),
 					topics.getTopicTags(tid),
@@ -20,7 +20,7 @@ module.exports = {
 
 				if (tags.length) {
 					const cid = topicData.cid;
-					await async.eachSeries(tags, async function (tag) {
+					await async.eachSeries(tags, async (tag) => {
 						await db.sortedSetAdd(`cid:${cid}:tag:${tag}:topics`, topicData.timestamp, tid);
 						const count = await db.sortedSetCard(`cid:${cid}:tag:${tag}:topics`);
 						await db.sortedSetAdd(`cid:${cid}:tags`, count, tag);

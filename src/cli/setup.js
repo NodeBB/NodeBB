@@ -40,7 +40,7 @@ function setup(initConfig) {
 				setImmediate(next);
 			}
 		},
-	], function (err, data) {
+	], (err, data) => {
 		// Disregard build step data
 		data = data[0];
 

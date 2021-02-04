@@ -47,7 +47,7 @@ module.exports = function (SocketPosts) {
 			return [];
 		}
 
-		const result = await Promise.all(data.map(async function (uids) {
+		const result = await Promise.all(data.map(async (uids) => {
 			let otherCount = 0;
 			if (uids.length > 6) {
 				otherCount = uids.length - 5;

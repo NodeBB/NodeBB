@@ -8,21 +8,21 @@ var nconf = require('nconf');
 var utils = require('../src/utils');
 var file = require('../src/file');
 
-describe('file', function () {
+describe('file', () => {
 	var filename = `${utils.generateUUID()}.png`;
 	var folder = 'files';
 	var uploadPath = path.join(nconf.get('upload_path'), folder, filename);
 	var tempPath = path.join(__dirname, './files/test.png');
 
-	afterEach(function (done) {
-		fs.unlink(uploadPath, function () {
+	afterEach((done) => {
+		fs.unlink(uploadPath, () => {
 			done();
 		});
 	});
 
-	describe('copyFile', function () {
-		it('should copy a file', function (done) {
-			fs.copyFile(tempPath, uploadPath, function (err) {
+	describe('copyFile', () => {
+		it('should copy a file', (done) => {
+			fs.copyFile(tempPath, uploadPath, (err) => {
 				assert.ifError(err);
 
 				assert(file.existsSync(uploadPath));
@@ -35,10 +35,10 @@ describe('file', function () {
 			});
 		});
 
-		it('should override an existing file', function (done) {
+		it('should override an existing file', (done) => {
 			fs.writeFileSync(uploadPath, 'hsdkjhgkjsfhkgj');
 
-			fs.copyFile(tempPath, uploadPath, function (err) {
+			fs.copyFile(tempPath, uploadPath, (err) => {
 				assert.ifError(err);
 
 				assert(file.existsSync(uploadPath));
@@ -51,8 +51,8 @@ describe('file', function () {
 			});
 		});
 
-		it('should error if source file does not exist', function (done) {
-			fs.copyFile(`${tempPath}0000000000`, uploadPath, function (err) {
+		it('should error if source file does not exist', (done) => {
+			fs.copyFile(`${tempPath}0000000000`, uploadPath, (err) => {
 				assert(err);
 				assert.strictEqual(err.code, 'ENOENT');
 
@@ -60,11 +60,11 @@ describe('file', function () {
 			});
 		});
 
-		it('should error if existing file is read only', function (done) {
+		it('should error if existing file is read only', (done) => {
 			fs.writeFileSync(uploadPath, 'hsdkjhgkjsfhkgj');
 			fs.chmodSync(uploadPath, '444');
 
-			fs.copyFile(tempPath, uploadPath, function (err) {
+			fs.copyFile(tempPath, uploadPath, (err) => {
 				assert(err);
 				assert(err.code === 'EPERM' || err.code === 'EACCES');
 
@@ -73,9 +73,9 @@ describe('file', function () {
 		});
 	});
 
-	describe('saveFileToLocal', function () {
-		it('should work', function (done) {
-			file.saveFileToLocal(filename, folder, tempPath, function (err) {
+	describe('saveFileToLocal', () => {
+		it('should work', (done) => {
+			file.saveFileToLocal(filename, folder, tempPath, (err) => {
 				assert.ifError(err);
 
 				assert(file.existsSync(uploadPath));
@@ -88,8 +88,8 @@ describe('file', function () {
 			});
 		});
 
-		it('should error if source does not exist', function (done) {
-			file.saveFileToLocal(filename, folder, `${tempPath}000000000`, function (err) {
+		it('should error if source does not exist', (done) => {
+			file.saveFileToLocal(filename, folder, `${tempPath}000000000`, (err) => {
 				assert(err);
 				assert.strictEqual(err.code, 'ENOENT');
 
@@ -97,8 +97,8 @@ describe('file', function () {
 			});
 		});
 
-		it('should error if folder is relative', function (done) {
-			file.saveFileToLocal(filename, '../../text', `${tempPath}000000000`, function (err) {
+		it('should error if folder is relative', (done) => {
+			file.saveFileToLocal(filename, '../../text', `${tempPath}000000000`, (err) => {
 				assert(err);
 				assert.strictEqual(err.message, '[[error:invalid-path]]');
 				done();
@@ -106,15 +106,15 @@ describe('file', function () {
 		});
 	});
 
-	it('should walk directory', function (done) {
-		file.walk(__dirname, function (err, data) {
+	it('should walk directory', (done) => {
+		file.walk(__dirname, (err, data) => {
 			assert.ifError(err);
 			assert(Array.isArray(data));
 			done();
 		});
 	});
 
-	it('should convert mime type to extension', function (done) {
+	it('should convert mime type to extension', (done) => {
 		assert.equal(file.typeToExtension('image/png'), '.png');
 		assert.equal(file.typeToExtension(''), '');
 		done();

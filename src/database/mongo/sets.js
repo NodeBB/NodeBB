@@ -104,7 +104,7 @@ module.exports = function (module) {
 		const result = await module.client.collection('objects').find({ _key: { $in: sets }, members: value }, { projection: { _id: 0, members: 0 } }).toArray();
 
 		var map = {};
-		result.forEach(function (item) {
+		result.forEach((item) => {
 			map[item._key] = true;
 		});
 
@@ -127,7 +127,7 @@ module.exports = function (module) {
 		const data = await module.client.collection('objects').find({ _key: { $in: keys } }, { projection: { _id: 0 } }).toArray();
 
 		var sets = {};
-		data.forEach(function (set) {
+		data.forEach((set) => {
 			sets[set._key] = set.members || [];
 		});
 

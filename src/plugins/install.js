@@ -43,13 +43,13 @@ if (process.platform === 'win32') {
 
 module.exports = function (Plugins) {
 	if (nconf.get('isPrimary')) {
-		pubsub.on('plugins:toggleInstall', function (data) {
+		pubsub.on('plugins:toggleInstall', (data) => {
 			if (data.hostname !== os.hostname()) {
 				toggleInstall(data.id, data.version);
 			}
 		});
 
-		pubsub.on('plugins:upgrade', function (data) {
+		pubsub.on('plugins:upgrade', (data) => {
 			if (data.hostname !== os.hostname()) {
 				upgrade(data.id, data.version);
 			}
@@ -110,7 +110,7 @@ module.exports = function (Plugins) {
 			packageManagerCommands[packageManager][command],
 			pkgName + (command === 'install' ? `@${version}` : ''),
 			'--save',
-		], function (err, stdout) {
+		], (err, stdout) => {
 			if (err) {
 				return callback(err);
 			}

@@ -119,7 +119,7 @@ process.env.CONFIG = configFile;
 program
 	.command('start')
 	.description('Start the NodeBB server')
-	.action(function () {
+	.action(() => {
 		require('./running').start(program);
 	});
 program
@@ -127,7 +127,7 @@ program
 		noHelp: true,
 	})
 	.description('Start the NodeBB server and view the live output log')
-	.action(function () {
+	.action(() => {
 		program.log = true;
 		require('./running').start(program);
 	});
@@ -136,7 +136,7 @@ program
 		noHelp: true,
 	})
 	.description('Start NodeBB in verbose development mode')
-	.action(function () {
+	.action(() => {
 		program.dev = true;
 		process.env.NODE_ENV = 'development';
 		global.env = 'development';
@@ -145,25 +145,25 @@ program
 program
 	.command('stop')
 	.description('Stop the NodeBB server')
-	.action(function () {
+	.action(() => {
 		require('./running').stop(program);
 	});
 program
 	.command('restart')
 	.description('Restart the NodeBB server')
-	.action(function () {
+	.action(() => {
 		require('./running').restart(program);
 	});
 program
 	.command('status')
 	.description('Check the running status of the NodeBB server')
-	.action(function () {
+	.action(() => {
 		require('./running').status(program);
 	});
 program
 	.command('log')
 	.description('Open the output log (useful for debugging)')
-	.action(function () {
+	.action(() => {
 		require('./running').log(program);
 	});
 
@@ -172,7 +172,7 @@ program
 	.command('setup [config]')
 	.description('Run the NodeBB setup script, or setup with an initial config')
 	.option('--skip-build', 'Run setup without building assets')
-	.action(function (initConfig) {
+	.action((initConfig) => {
 		if (initConfig) {
 			try {
 				initConfig = JSON.parse(initConfig);
@@ -189,41 +189,41 @@ program
 program
 	.command('install')
 	.description('Launch the NodeBB web installer for configuration setup')
-	.action(function () {
+	.action(() => {
 		require('./setup').webInstall();
 	});
 program
 	.command('build [targets...]')
 	.description(`Compile static assets ${'(JS, CSS, templates, languages)'.red}`)
 	.option('-s, --series', 'Run builds in series without extra processes')
-	.action(function (targets, options) {
+	.action((targets, options) => {
 		require('./manage').build(targets.length ? targets : true, options);
 	})
-	.on('--help', function () {
+	.on('--help', () => {
 		require('../meta/aliases').buildTargets();
 	});
 program
 	.command('activate [plugin]')
 	.description('Activate a plugin for the next startup of NodeBB (nodebb-plugin- prefix is optional)')
-	.action(function (plugin) {
+	.action((plugin) => {
 		require('./manage').activate(plugin);
 	});
 program
 	.command('plugins')
-	.action(function () {
+	.action(() => {
 		require('./manage').listPlugins();
 	})
 	.description('List all installed plugins');
 program
 	.command('events [count]')
 	.description('Outputs the most recent administrative events recorded by NodeBB')
-	.action(function (count) {
+	.action((count) => {
 		require('./manage').listEvents(count);
 	});
 program
 	.command('info')
 	.description('Outputs various system info')
-	.action(function () {
+	.action(() => {
 		require('./manage').info();
 	});
 
@@ -237,16 +237,14 @@ resetCommand
 	.option('-w, --widgets', 'Disable all widgets')
 	.option('-s, --settings', 'Reset settings to their default values')
 	.option('-a, --all', 'All of the above')
-	.action(function (options) {
-		const valid = ['theme', 'plugin', 'widgets', 'settings', 'all'].some(function (x) {
-			return options[x];
-		});
+	.action((options) => {
+		const valid = ['theme', 'plugin', 'widgets', 'settings', 'all'].some(x => options[x]);
 		if (!valid) {
 			console.warn('\n  No valid options passed in, so nothing was reset.'.red);
 			resetCommand.help();
 		}
 
-		require('./reset').reset(options, function (err) {
+		require('./reset').reset(options, (err) => {
 			if (err) {
 				return process.exit(1);
 			}
@@ -264,7 +262,7 @@ program
 	.option('-p, --plugins', 'Check installed plugins for updates', false)
 	.option('-s, --schema', 'Update NodeBB data store schema', false)
 	.option('-b, --build', 'Rebuild assets', false)
-	.on('--help', function () {
+	.on('--help', () => {
 		console.log(`\n${[
 			'When running particular upgrade scripts, options are ignored.',
 			'By default all options are enabled. Passing any options disables that default.',
@@ -272,7 +270,7 @@ program
 			`Only database update: ${'./nodebb upgrade -s'.yellow}`,
 		].join('\n')}`);
 	})
-	.action(function (scripts, options) {
+	.action((scripts, options) => {
 		require('./upgrade').upgrade(scripts.length ? scripts : true, options);
 	});
 
@@ -282,8 +280,8 @@ program
 	})
 	.alias('upgradePlugins')
 	.description('Upgrade plugins')
-	.action(function () {
-		require('./upgrade-plugins').upgradePlugins(function (err) {
+	.action(() => {
+		require('./upgrade-plugins').upgradePlugins((err) => {
 			if (err) {
 				throw err;
 			}
@@ -295,12 +293,12 @@ program
 program
 	.command('help [command]')
 	.description('Display help for [command]')
-	.action(function (name) {
+	.action((name) => {
 		if (!name) {
 			return program.help();
 		}
 
-		const command = program.commands.find(function (command) { return command._name === name; });
+		const command = program.commands.find(command => command._name === name);
 		if (command) {
 			command.help();
 		} else {

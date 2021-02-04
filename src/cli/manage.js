@@ -86,7 +86,7 @@ async function listEvents(count) {
 	await db.init();
 	const eventData = await events.getEvents('', 0, (count || 10) - 1);
 	console.log((`\nDisplaying last ${count} administrative events...`).bold);
-	eventData.forEach(function (event) {
+	eventData.forEach((event) => {
 		console.log(`  * ${String(event.timestampISO).green} ${String(event.type).yellow}${event.text ? ` ${event.text}` : ''}${' (uid: '.reset}${event.uid ? event.uid : 0})`);
 	});
 	process.exit();
@@ -132,7 +132,7 @@ async function info() {
 	const min = Math.min(...analyticsData);
 	const max = Math.max(...analyticsData);
 
-	analyticsData.forEach(function (point, idx) {
+	analyticsData.forEach((point, idx) => {
 		graph.addPoint(idx + 1, Math.round(point / max * 10));
 	});
 

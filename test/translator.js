@@ -7,231 +7,231 @@ var shim = require('../public/src/modules/translator.js');
 var Translator = shim.Translator;
 var db = require('./mocks/databasemock');
 
-describe('Translator shim', function () {
-	describe('.translate()', function () {
-		it('should translate correctly', function (done) {
-			shim.translate('[[global:pagination.out_of, (foobar), [[global:home]]]]', function (translated) {
+describe('Translator shim', () => {
+	describe('.translate()', () => {
+		it('should translate correctly', (done) => {
+			shim.translate('[[global:pagination.out_of, (foobar), [[global:home]]]]', (translated) => {
 				assert.strictEqual(translated, '(foobar) out of Home');
 				done();
 			});
 		});
 
-		it('should accept a language parameter and adjust accordingly', function (done) {
-			shim.translate('[[global:home]]', 'de', function (translated) {
+		it('should accept a language parameter and adjust accordingly', (done) => {
+			shim.translate('[[global:home]]', 'de', (translated) => {
 				assert.strictEqual(translated, 'Übersicht');
 				done();
 			});
 		});
 
-		it('should translate empty string properly', function (done) {
-			shim.translate('', 'en-GB', function (translated) {
+		it('should translate empty string properly', (done) => {
+			shim.translate('', 'en-GB', (translated) => {
 				assert.strictEqual(translated, '');
 				done();
 			});
 		});
 
-		it('should translate empty string properly', async function () {
+		it('should translate empty string properly', async () => {
 			const translated = await shim.translate('', 'en-GB');
 			assert.strictEqual(translated, '');
 		});
 	});
 });
 
-describe('new Translator(language)', function () {
-	it('should throw if not passed a language', function (done) {
-		assert.throws(function () {
+describe('new Translator(language)', () => {
+	it('should throw if not passed a language', (done) => {
+		assert.throws(() => {
 			new Translator();
 		}, /language string/);
 		done();
 	});
 
-	describe('.translate()', function () {
-		it('should handle basic translations', function () {
+	describe('.translate()', () => {
+		it('should handle basic translations', () => {
 			var translator = Translator.create('en-GB');
 
-			return translator.translate('[[global:home]]').then(function (translated) {
+			return translator.translate('[[global:home]]').then((translated) => {
 				assert.strictEqual(translated, 'Home');
 			});
 		});
 
-		it('should handle language keys in regular text', function () {
+		it('should handle language keys in regular text', () => {
 			var translator = Translator.create('en-GB');
 
-			return translator.translate('Let\'s go [[global:home]]').then(function (translated) {
+			return translator.translate('Let\'s go [[global:home]]').then((translated) => {
 				assert.strictEqual(translated, 'Let\'s go Home');
 			});
 		});
 
-		it('should handle language keys in regular text with another language specified', function () {
+		it('should handle language keys in regular text with another language specified', () => {
 			var translator = Translator.create('de');
 
-			return translator.translate('[[global:home]] test').then(function (translated) {
+			return translator.translate('[[global:home]] test').then((translated) => {
 				assert.strictEqual(translated, 'Übersicht test');
 			});
 		});
 
-		it('should handle language keys with parameters', function () {
+		it('should handle language keys with parameters', () => {
 			var translator = Translator.create('en-GB');
 
-			return translator.translate('[[global:pagination.out_of, 1, 5]]').then(function (translated) {
+			return translator.translate('[[global:pagination.out_of, 1, 5]]').then((translated) => {
 				assert.strictEqual(translated, '1 out of 5');
 			});
 		});
 
-		it('should handle language keys inside language keys', function () {
+		it('should handle language keys inside language keys', () => {
 			var translator = Translator.create('en-GB');
 
-			return translator.translate('[[notifications:outgoing_link_message, [[global:guest]]]]').then(function (translated) {
+			return translator.translate('[[notifications:outgoing_link_message, [[global:guest]]]]').then((translated) => {
 				assert.strictEqual(translated, 'You are now leaving Guest');
 			});
 		});
 
-		it('should handle language keys inside language keys with multiple parameters', function () {
+		it('should handle language keys inside language keys with multiple parameters', () => {
 			var translator = Translator.create('en-GB');
 
-			return translator.translate('[[notifications:user_posted_to, [[global:guest]], My Topic]]').then(function (translated) {
+			return translator.translate('[[notifications:user_posted_to, [[global:guest]], My Topic]]').then((translated) => {
 				assert.strictEqual(translated, '<strong>Guest</strong> has posted a reply to: <strong>My Topic</strong>');
 			});
 		});
 
-		it('should handle language keys inside language keys with all parameters as language keys', function () {
+		it('should handle language keys inside language keys with all parameters as language keys', () => {
 			var translator = Translator.create('en-GB');
 
-			return translator.translate('[[notifications:user_posted_to, [[global:guest]], [[global:guest]]]]').then(function (translated) {
+			return translator.translate('[[notifications:user_posted_to, [[global:guest]], [[global:guest]]]]').then((translated) => {
 				assert.strictEqual(translated, '<strong>Guest</strong> has posted a reply to: <strong>Guest</strong>');
 			});
 		});
 
-		it('should properly handle parameters that contain square brackets', function () {
+		it('should properly handle parameters that contain square brackets', () => {
 			var translator = Translator.create('en-GB');
 
-			return translator.translate('[[global:pagination.out_of, [guest], [[global:home]]]]').then(function (translated) {
+			return translator.translate('[[global:pagination.out_of, [guest], [[global:home]]]]').then((translated) => {
 				assert.strictEqual(translated, '[guest] out of Home');
 			});
 		});
 
-		it('should properly handle parameters that contain parentheses', function () {
+		it('should properly handle parameters that contain parentheses', () => {
 			var translator = Translator.create('en-GB');
 
-			return translator.translate('[[global:pagination.out_of, (foobar), [[global:home]]]]').then(function (translated) {
+			return translator.translate('[[global:pagination.out_of, (foobar), [[global:home]]]]').then((translated) => {
 				assert.strictEqual(translated, '(foobar) out of Home');
 			});
 		});
 
-		it('should escape language key parameters with HTML in them', function () {
+		it('should escape language key parameters with HTML in them', () => {
 			var translator = Translator.create('en-GB');
 
 			var key = '[[global:403.login, <strong>test</strong>]]';
-			return translator.translate(key).then(function (translated) {
+			return translator.translate(key).then((translated) => {
 				assert.strictEqual(translated, 'Perhaps you should <a href=\'&lt;strong&gt;test&lt;/strong&gt;/login\'>try logging in</a>?');
 			});
 		});
 
-		it('should not unescape html in parameters', function () {
+		it('should not unescape html in parameters', () => {
 			var translator = Translator.create('en-GB');
 
 			var key = '[[pages:tag, some&amp;tag]]';
-			return translator.translate(key).then(function (translated) {
+			return translator.translate(key).then((translated) => {
 				assert.strictEqual(translated, 'Topics tagged under &quot;some&amp;tag&quot;');
 			});
 		});
 
-		it('should translate escaped translation arguments properly', function () {
+		it('should translate escaped translation arguments properly', () => {
 			// https://github.com/NodeBB/NodeBB/issues/9206
 			var translator = Translator.create('en-GB');
 
 			var key = '[[notifications:upvoted_your_post_in, test1, error: Error: &lsqb;&lsqb;error:group-name-too-long&rsqb;&rsqb; on NodeBB Upgrade]]';
-			return translator.translate(key).then(function (translated) {
+			return translator.translate(key).then((translated) => {
 				assert.strictEqual(translated, '<strong>test1</strong> has upvoted your post in <strong>error: Error: &lsqb;&lsqb;error:group-name-too-long&rsqb;&rsqb; on NodeBB Upgrade</strong>.');
 			});
 		});
 
-		it('should properly escape and ignore % and \\, in arguments', function () {
+		it('should properly escape and ignore % and \\, in arguments', () => {
 			var translator = Translator.create('en-GB');
 
 			var title = 'Test 1\\, 2\\, 3 %2 salmon';
 			var key = `[[topic:composer.replying_to, ${title}]]`;
-			return translator.translate(key).then(function (translated) {
+			return translator.translate(key).then((translated) => {
 				assert.strictEqual(translated, 'Replying to Test 1&#44; 2&#44; 3 &#37;2 salmon');
 			});
 		});
 
-		it('should not escape regular %', function () {
+		it('should not escape regular %', () => {
 			var translator = Translator.create('en-GB');
 
 			var title = '3 % salmon';
 			var key = `[[topic:composer.replying_to, ${title}]]`;
-			return translator.translate(key).then(function (translated) {
+			return translator.translate(key).then((translated) => {
 				assert.strictEqual(translated, 'Replying to 3 % salmon');
 			});
 		});
 
-		it('should not translate [[derp] some text', function () {
+		it('should not translate [[derp] some text', () => {
 			var translator = Translator.create('en-GB');
-			return translator.translate('[[derp] some text').then(function (translated) {
+			return translator.translate('[[derp] some text').then((translated) => {
 				assert.strictEqual('[[derp] some text', translated);
 			});
 		});
 
-		it('should not translate [[derp]] some text', function () {
+		it('should not translate [[derp]] some text', () => {
 			var translator = Translator.create('en-GB');
-			return translator.translate('[[derp]] some text').then(function (translated) {
+			return translator.translate('[[derp]] some text').then((translated) => {
 				assert.strictEqual('[[derp]] some text', translated);
 			});
 		});
 
-		it('should not translate [[derp:xyz] some text', function () {
+		it('should not translate [[derp:xyz] some text', () => {
 			var translator = Translator.create('en-GB');
-			return translator.translate('[[derp:xyz] some text').then(function (translated) {
+			return translator.translate('[[derp:xyz] some text').then((translated) => {
 				assert.strictEqual('[[derp:xyz] some text', translated);
 			});
 		});
 
-		it('should translate keys with slashes properly', function () {
+		it('should translate keys with slashes properly', () => {
 			var translator = Translator.create('en-GB');
-			return translator.translate('[[pages:users/latest]]').then(function (translated) {
+			return translator.translate('[[pages:users/latest]]').then((translated) => {
 				assert.strictEqual(translated, 'Latest Users');
 			});
 		});
 
-		it('should use key for unknown keys without arguments', function () {
+		it('should use key for unknown keys without arguments', () => {
 			var translator = Translator.create('en-GB');
-			return translator.translate('[[unknown:key.without.args]]').then(function (translated) {
+			return translator.translate('[[unknown:key.without.args]]').then((translated) => {
 				assert.strictEqual(translated, 'key.without.args');
 			});
 		});
 
-		it('should use backup for unknown keys with arguments', function () {
+		it('should use backup for unknown keys with arguments', () => {
 			var translator = Translator.create('en-GB');
-			return translator.translate('[[unknown:key.with.args, arguments are here, derpity, derp]]').then(function (translated) {
+			return translator.translate('[[unknown:key.with.args, arguments are here, derpity, derp]]').then((translated) => {
 				assert.strictEqual(translated, 'unknown:key.with.args, arguments are here, derpity, derp');
 			});
 		});
 
-		it('should ignore unclosed tokens', function () {
+		it('should ignore unclosed tokens', () => {
 			var translator = Translator.create('en-GB');
-			return translator.translate('here is some stuff and other things [[abc:xyz, other random stuff should be fine here [[global:home]] and more things [[pages:users/latest]]').then(function (translated) {
+			return translator.translate('here is some stuff and other things [[abc:xyz, other random stuff should be fine here [[global:home]] and more things [[pages:users/latest]]').then((translated) => {
 				assert.strictEqual(translated, 'here is some stuff and other things abc:xyz, other random stuff should be fine here Home and more things Latest Users');
 			});
 		});
 	});
 });
 
-describe('Translator.create()', function () {
-	it('should return an instance of Translator', function (done) {
+describe('Translator.create()', () => {
+	it('should return an instance of Translator', (done) => {
 		var translator = Translator.create('en-GB');
 
 		assert(translator instanceof Translator);
 		done();
 	});
-	it('should return the same object for the same language', function (done) {
+	it('should return the same object for the same language', (done) => {
 		var one = Translator.create('de');
 		var two = Translator.create('de');
 
 		assert.strictEqual(one, two);
 		done();
 	});
-	it('should default to defaultLang', function (done) {
+	it('should default to defaultLang', (done) => {
 		var translator = Translator.create();
 
 		assert.strictEqual(translator.lang, 'en-GB');
@@ -239,41 +239,39 @@ describe('Translator.create()', function () {
 	});
 });
 
-describe('Translator modules', function () {
-	it('should work before registered', function () {
+describe('Translator modules', () => {
+	it('should work before registered', () => {
 		var translator = Translator.create();
 
-		Translator.registerModule('test-custom-integer-format', function (lang) {
-			return function (key, args) {
-				var num = parseInt(args[0], 10) || 0;
-				if (key === 'binary') {
-					return num.toString(2);
-				}
-				if (key === 'hex') {
-					return num.toString(16);
-				}
-				if (key === 'octal') {
-					return num.toString(8);
-				}
-				return num.toString();
-			};
+		Translator.registerModule('test-custom-integer-format', lang => function (key, args) {
+			var num = parseInt(args[0], 10) || 0;
+			if (key === 'binary') {
+				return num.toString(2);
+			}
+			if (key === 'hex') {
+				return num.toString(16);
+			}
+			if (key === 'octal') {
+				return num.toString(8);
+			}
+			return num.toString();
 		});
 
-		return translator.translate('[[test-custom-integer-format:octal, 24]]').then(function (translation) {
+		return translator.translate('[[test-custom-integer-format:octal, 24]]').then((translation) => {
 			assert.strictEqual(translation, '30');
 		});
 	});
 
-	it('should work after registered', function () {
+	it('should work after registered', () => {
 		var translator = Translator.create('de');
 
-		return translator.translate('[[test-custom-integer-format:octal, 23]]').then(function (translation) {
+		return translator.translate('[[test-custom-integer-format:octal, 23]]').then((translation) => {
 			assert.strictEqual(translation, '27');
 		});
 	});
 
-	it('registerModule be passed the language', function (done) {
-		Translator.registerModule('something', function (lang) {
+	it('registerModule be passed the language', (done) => {
+		Translator.registerModule('something', (lang) => {
 			assert.ok(lang);
 		});
 
@@ -282,9 +280,9 @@ describe('Translator modules', function () {
 	});
 });
 
-describe('Translator static methods', function () {
-	describe('.removePatterns', function () {
-		it('should remove translator patterns from text', function (done) {
+describe('Translator static methods', () => {
+	describe('.removePatterns', () => {
+		it('should remove translator patterns from text', (done) => {
 			assert.strictEqual(
 				Translator.removePatterns('Lorem ipsum dolor [[sit:amet]], consectetur adipiscing elit. [[sed:vitae, [[semper:dolor]]]] lorem'),
 				'Lorem ipsum dolor , consectetur adipiscing elit.  lorem'
@@ -292,8 +290,8 @@ describe('Translator static methods', function () {
 			done();
 		});
 	});
-	describe('.escape', function () {
-		it('should escape translation patterns within text', function (done) {
+	describe('.escape', () => {
+		it('should escape translation patterns within text', (done) => {
 			assert.strictEqual(
 				Translator.escape('some nice text [[global:home]] here'),
 				'some nice text &lsqb;&lsqb;global:home&rsqb;&rsqb; here'
@@ -302,8 +300,8 @@ describe('Translator static methods', function () {
 		});
 	});
 
-	describe('.unescape', function () {
-		it('should unescape escaped translation patterns within text', function (done) {
+	describe('.unescape', () => {
+		it('should unescape escaped translation patterns within text', (done) => {
 			assert.strictEqual(
 				Translator.unescape('some nice text \\[\\[global:home\\]\\] here'),
 				'some nice text [[global:home]] here'
@@ -316,8 +314,8 @@ describe('Translator static methods', function () {
 		});
 	});
 
-	describe('.compile', function () {
-		it('should create a translator pattern from a key and list of arguments', function (done) {
+	describe('.compile', () => {
+		it('should create a translator pattern from a key and list of arguments', (done) => {
 			assert.strictEqual(
 				Translator.compile('amazing:cool', 'awesome', 'great'),
 				'[[amazing:cool, awesome, great]]'
@@ -325,7 +323,7 @@ describe('Translator static methods', function () {
 			done();
 		});
 
-		it('should escape `%` and `,` in arguments', function (done) {
+		it('should escape `%` and `,` in arguments', (done) => {
 			assert.strictEqual(
 				Translator.compile('amazing:cool', '100% awesome!', 'one, two, and three'),
 				'[[amazing:cool, 100&#37; awesome!, one&#44; two&#44; and three]]'
@@ -334,16 +332,16 @@ describe('Translator static methods', function () {
 		});
 	});
 
-	describe('add translation', function () {
-		it('should add custom translations', async function () {
+	describe('add translation', () => {
+		it('should add custom translations', async () => {
 			shim.addTranslation('en-GB', 'my-namespace', { foo: 'a custom translation' });
 			const t = await shim.translate('this is best [[my-namespace:foo]]');
 			assert.strictEqual(t, 'this is best a custom translation');
 		});
 	});
 
-	describe('translate nested keys', function () {
-		it('should handle nested translations', async function () {
+	describe('translate nested keys', () => {
+		it('should handle nested translations', async () => {
 			shim.addTranslation('en-GB', 'my-namespace', {
 				key: {
 					key1: 'key1 translated',
@@ -357,7 +355,7 @@ describe('Translator static methods', function () {
 			assert.strictEqual(t1, 'this is best key1 translated');
 			assert.strictEqual(t2, 'this is best key3 translated');
 		});
-		it("should try the defaults if it didn't reach a string in a nested translation", async function () {
+		it("should try the defaults if it didn't reach a string in a nested translation", async () => {
 			shim.addTranslation('en-GB', 'my-namespace', {
 				default1: {
 					default1: 'default1 translated',

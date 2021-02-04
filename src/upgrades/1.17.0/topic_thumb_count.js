@@ -10,7 +10,7 @@ module.exports = {
 	method: async function () {
 		const progress = this.progress;
 
-		await batch.processSortedSet('topics:tid', async function (tids) {
+		await batch.processSortedSet('topics:tid', async (tids) => {
 			const keys = tids.map(tid => `topic:${tid}:thumbs`);
 			const counts = await db.sortedSetsCard(keys);
 			const tidToCount = _.zip(tids, counts);

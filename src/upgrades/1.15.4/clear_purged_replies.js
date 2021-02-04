@@ -11,7 +11,7 @@ module.exports = {
 	method: async function () {
 		const progress = this.progress;
 
-		await batch.processSortedSet('posts:pid', async function (pids) {
+		await batch.processSortedSet('posts:pid', async (pids) => {
 			progress.incr(pids.length);
 			let postData = await db.getObjects(pids.map(pid => `post:${pid}`));
 			postData = postData.filter(p => p && parseInt(p.toPid, 10));

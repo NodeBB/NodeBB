@@ -20,7 +20,7 @@ var controllers = {
 
 const middleware = module.exports;
 
-middleware.buildHeader = helpers.try(async function (req, res, next) {
+middleware.buildHeader = helpers.try(async (req, res, next) => {
 	res.locals.renderAdminHeader = true;
 	res.locals.config = await controllers.api.loadConfig(req);
 	next();
@@ -48,7 +48,7 @@ middleware.renderHeader = async (req, res, data) => {
 	userData.privileges = results.privileges;
 
 	var acpPath = req.path.slice(1).split('/');
-	acpPath.forEach(function (path, i) {
+	acpPath.forEach((path, i) => {
 		acpPath[i] = path.charAt(0).toUpperCase() + path.slice(1);
 	});
 	acpPath = acpPath.join(' > ');
@@ -90,9 +90,7 @@ middleware.renderHeader = async (req, res, data) => {
 
 async function getAdminScripts() {
 	const scripts = await plugins.hooks.fire('filter:admin.scripts.get', []);
-	return scripts.map(function (script) {
-		return { src: script };
-	});
+	return scripts.map(script => ({ src: script }));
 }
 
 async function getLatestVersion() {

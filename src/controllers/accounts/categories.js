@@ -26,7 +26,7 @@ categoriesController.get = async function (req, res, next) {
 	const categoriesData = allCategoriesData.slice(start, stop + 1);
 
 
-	categoriesData.forEach(function (category) {
+	categoriesData.forEach((category) => {
 		if (category) {
 			category.isIgnored = states[category.cid] === categories.watchStates.ignoring;
 			category.isWatched = states[category.cid] === categories.watchStates.watching;

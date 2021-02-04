@@ -44,7 +44,7 @@ notificationsController.get = async function (req, res, next) {
 			{ separator: true },
 		]).concat(filters.moderatorFilters);
 	}
-	const selectedFilter = allFilters.find(function (filterData) {
+	const selectedFilter = allFilters.find((filterData) => {
 		filterData.selected = filterData.filter === filter;
 		return filterData.selected;
 	});

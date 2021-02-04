@@ -7,7 +7,7 @@ var utils = require('../public/src/utils.js');
 var slugify = require('../src/slugify');
 const db = require('./mocks/databasemock');
 
-describe('Utility Methods', function () {
+describe('Utility Methods', () => {
 	// https://gist.github.com/robballou/9ee108758dc5e0e2d028
 	// create some jsdom magic to allow jQuery to work
 	var dom = new JSDOM('<html><body></body></html>');
@@ -19,7 +19,7 @@ describe('Utility Methods', function () {
 	require('jquery-deserialize');
 	require('jquery-serializeobject');
 
-	it('should serialize/deserialize form data properly', function () {
+	it('should serialize/deserialize form data properly', () => {
 		const formSerialize = $(`
 			<form id="form-serialize">
 				<input name="a" value="1">
@@ -56,7 +56,7 @@ describe('Utility Methods', function () {
 	});
 
 	// https://github.com/jprichardson/string.js/blob/master/test/string.test.js
-	it('should decode HTML entities', function (done) {
+	it('should decode HTML entities', (done) => {
 		assert.strictEqual(
 			utils.decodeHTMLEntities('Ken Thompson &amp; Dennis Ritchie'),
 			'Ken Thompson & Dennis Ritchie'
@@ -71,7 +71,7 @@ describe('Utility Methods', function () {
 		);
 		done();
 	});
-	it('should strip HTML tags', function (done) {
+	it('should strip HTML tags', (done) => {
 		assert.strictEqual(utils.stripHTMLTags('<p>just <b>some</b> text</p>'), 'just some text');
 		assert.strictEqual(utils.stripHTMLTags('<p>just <b>some</b> text</p>', ['p']), 'just <b>some</b> text');
 		assert.strictEqual(utils.stripHTMLTags('<i>just</i> some <image/> text', ['i']), 'just some <image/> text');
@@ -79,80 +79,80 @@ describe('Utility Methods', function () {
 		done();
 	});
 
-	it('should preserve case if requested', function (done) {
+	it('should preserve case if requested', (done) => {
 		assert.strictEqual(slugify('UPPER CASE', true), 'UPPER-CASE');
 		done();
 	});
 
-	it('should work if a number is passed in', function (done) {
+	it('should work if a number is passed in', (done) => {
 		assert.strictEqual(slugify(12345), '12345');
 		done();
 	});
 
-	describe('username validation', function () {
-		it('accepts latin-1 characters', function () {
+	describe('username validation', () => {
+		it('accepts latin-1 characters', () => {
 			var username = "John\"'-. Doeäâèéë1234";
 			assert(utils.isUserNameValid(username), 'invalid username');
 		});
 
-		it('rejects empty string', function () {
+		it('rejects empty string', () => {
 			var username = '';
 			assert.equal(utils.isUserNameValid(username), false, 'accepted as valid username');
 		});
 
-		it('should reject new lines', function () {
+		it('should reject new lines', () => {
 			assert.equal(utils.isUserNameValid('myusername\r\n'), false);
 		});
 
-		it('should reject new lines', function () {
+		it('should reject new lines', () => {
 			assert.equal(utils.isUserNameValid('myusername\n'), false);
 		});
 
-		it('should reject tabs', function () {
+		it('should reject tabs', () => {
 			assert.equal(utils.isUserNameValid('myusername\t'), false);
 		});
 
-		it('accepts square brackets', function () {
+		it('accepts square brackets', () => {
 			var username = '[best clan] julian';
 			assert(utils.isUserNameValid(username), 'invalid username');
 		});
 
-		it('accepts regular username', function () {
+		it('accepts regular username', () => {
 			assert(utils.isUserNameValid('myusername'), 'invalid username');
 		});
 
-		it('accepts quotes', function () {
+		it('accepts quotes', () => {
 			assert(utils.isUserNameValid('baris "the best" usakli'), 'invalid username');
 		});
 	});
 
-	describe('email validation', function () {
-		it('accepts sample address', function () {
+	describe('email validation', () => {
+		it('accepts sample address', () => {
 			var email = 'sample@example.com';
 			assert(utils.isEmailValid(email), 'invalid email');
 		});
-		it('rejects empty address', function () {
+		it('rejects empty address', () => {
 			var email = '';
 			assert.equal(utils.isEmailValid(email), false, 'accepted as valid email');
 		});
 	});
 
-	describe('UUID generation', function () {
-		it('return unique random value every time', function () {
+	describe('UUID generation', () => {
+		it('return unique random value every time', () => {
 			var uuid1 = utils.generateUUID();
 			var uuid2 = utils.generateUUID();
 			assert.notEqual(uuid1, uuid2, 'matches');
 		});
 	});
 
-	describe('cleanUpTag', function () {
-		it('should cleanUp a tag', function (done) {
+	describe('cleanUpTag', () => {
+		it('should cleanUp a tag', (done) => {
 			var cleanedTag = utils.cleanUpTag(',/#!$%^*;TaG1:{}=_`<>\'"~()?|');
 			assert.equal(cleanedTag, 'tag1');
 			done();
 		});
 
-		it('should return empty string for invalid tags', function (done) {
+		it('should return empty string for invalid tags', (done) => {
 			assert.strictEqual(utils.cleanUpTag(undefined), '');
 			assert.strictEqual(utils.cleanUpTag(null), '');
 			assert.strictEqual(utils.cleanUpTag(false), '');
@@ -162,23 +162,23 @@ describe('Utility Methods', function () {
 		});
 	});
 
-	it('should remove punctuation', function (done) {
+	it('should remove punctuation', (done) => {
 		var removed = utils.removePunctuation('some text with , ! punctuation inside "');
 		assert.equal(removed, 'some text with   punctuation inside ');
 		done();
 	});
 
-	it('should return true if string has language key', function (done) {
+	it('should return true if string has language key', (done) => {
 		assert.equal(utils.hasLanguageKey('some text [[topic:title]] and [[user:reputaiton]]'), true);
 		done();
 	});
 
-	it('should return false if string does not have language key', function (done) {
+	it('should return false if string does not have language key', (done) => {
 		assert.equal(utils.hasLanguageKey('some text with no language keys'), false);
 		done();
 	});
 
-	it('should shallow merge two objects', function (done) {
+	it('should shallow merge two objects', (done) => {
 		var a = { foo: 1, cat1: 'ginger' };
 		var b = { baz: 2, cat2: 'phoebe' };
 		var obj = utils.merge(a, b);
@@ -189,83 +189,83 @@ describe('Utility Methods', function () {
 		done();
 	});
 
-	it('should return the file extesion', function (done) {
+	it('should return the file extesion', (done) => {
 		assert.equal(utils.fileExtension('/path/to/some/file.png'), 'png');
 		done();
 	});
 
-	it('should return file mime type', function (done) {
+	it('should return file mime type', (done) => {
 		assert.equal(utils.fileMimeType('/path/to/some/file.png'), 'image/png');
 		done();
 	});
 
-	it('should check if url is relative', function (done) {
+	it('should check if url is relative', (done) => {
 		assert.equal(utils.isRelativeUrl('/topic/1/slug'), true);
 		done();
 	});
 
-	it('should check if url is relative', function (done) {
+	it('should check if url is relative', (done) => {
 		assert.equal(utils.isRelativeUrl('https://nodebb.org'), false);
 		done();
 	});
 
-	it('should make number human readable', function (done) {
+	it('should make number human readable', (done) => {
 		assert.equal(utils.makeNumberHumanReadable('1000'), '1.0k');
 		done();
 	});
 
-	it('should make number human readable', function (done) {
+	it('should make number human readable', (done) => {
 		assert.equal(utils.makeNumberHumanReadable('1100000'), '1.1m');
 		done();
 	});
 
-	it('should make number human readable', function (done) {
+	it('should make number human readable', (done) => {
 		assert.equal(utils.makeNumberHumanReadable('100'), '100');
 		done();
 	});
 
-	it('should make number human readable', function (done) {
+	it('should make number human readable', (done) => {
 		assert.equal(utils.makeNumberHumanReadable(null), null);
 		done();
 	});
 
-	it('should make numbers human readable on elements', function (done) {
+	it('should make numbers human readable on elements', (done) => {
 		var el = $('<div title="100000"></div>');
 		utils.makeNumbersHumanReadable(el);
 		assert.equal(el.html(), '100.0k');
 		done();
 	});
 
-	it('should add commas to numbers', function (done) {
+	it('should add commas to numbers', (done) => {
 		assert.equal(utils.addCommas('100'), '100');
 		done();
 	});
 
-	it('should add commas to numbers', function (done) {
+	it('should add commas to numbers', (done) => {
 		assert.equal(utils.addCommas('1000'), '1,000');
 		done();
 	});
 
-	it('should add commas to numbers', function (done) {
+	it('should add commas to numbers', (done) => {
 		assert.equal(utils.addCommas('1000000'), '1,000,000');
 		done();
 	});
 
-	it('should add commas to elements', function (done) {
+	it('should add commas to elements', (done) => {
 		var el = $('<div>1000000</div>');
 		utils.addCommasToNumbers(el);
 		assert.equal(el.html(), '1,000,000');
 		done();
 	});
 
-	it('should return passed in value if invalid', function (done) {
+	it('should return passed in value if invalid', (done) => {
 		var bigInt = -111111111111111111;
 		var result = utils.toISOString(bigInt);
 		assert.equal(bigInt, result);
 		done();
 	});
 
-	it('should return false if browser is not android', function (done) {
+	it('should return false if browser is not android', (done) => {
 		global.navigator = {
 			userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.96 Safari/537.36',
 		};
@@ -273,7 +273,7 @@ describe('Utility Methods', function () {
 		done();
 	});
 
-	it('should return true if browser is android', function (done) {
+	it('should return true if browser is android', (done) => {
 		global.navigator = {
 			userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Android /58.0.3029.96 Safari/537.36',
 		};
@@ -281,14 +281,14 @@ describe('Utility Methods', function () {
 		done();
 	});
 
-	it('should return false if not touch device', function (done) {
+	it('should return false if not touch device', (done) => {
 		global.document = global.document || {};
 		global.document.documentElement = {};
 		assert(!utils.isTouchDevice());
 		done();
 	});
 
-	it('should return true if touch device', function (done) {
+	it('should return true if touch device', (done) => {
 		global.document.documentElement = {
 			ontouchstart: 1,
 		};
@@ -296,20 +296,20 @@ describe('Utility Methods', function () {
 		done();
 	});
 
-	it('should check if element is in viewport', function (done) {
+	it('should check if element is in viewport', (done) => {
 		var el = $('<div>some text</div>');
 		assert(utils.isElementInViewport(el));
 		done();
 	});
 
-	it('should get empty object for url params', function (done) {
+	it('should get empty object for url params', (done) => {
 		global.document = window.document;
 		var params = utils.params();
 		assert.equal(Object.keys(params), 0);
 		done();
 	});
 
-	it('should get url params', function (done) {
+	it('should get url params', (done) => {
 		var params = utils.params({ url: 'http://nodebb.org?foo=1&bar=test&herp=2' });
 		assert.equal(params.foo, 1);
 		assert.equal(params.bar, 'test');
@@ -317,94 +317,94 @@ describe('Utility Methods', function () {
 		done();
 	});
 
-	it('should get a single param', function (done) {
+	it('should get a single param', (done) => {
 		assert.equal(utils.param('somekey'), undefined);
 		done();
 	});
 
 
-	describe('toType', function () {
-		it('should return param as is if not string', function (done) {
+	describe('toType', () => {
+		it('should return param as is if not string', (done) => {
 			assert.equal(123, utils.toType(123));
 			done();
 		});
 
-		it('should convert return string numbers as numbers', function (done) {
+		it('should convert return string numbers as numbers', (done) => {
 			assert.equal(123, utils.toType('123'));
 			done();
 		});
 
-		it('should convert string "false" to boolean false', function (done) {
+		it('should convert string "false" to boolean false', (done) => {
 			assert.strictEqual(false, utils.toType('false'));
 			done();
 		});
 
-		it('should convert string "true" to boolean true', function (done) {
+		it('should convert string "true" to boolean true', (done) => {
 			assert.strictEqual(true, utils.toType('true'));
 			done();
 		});
 
-		it('should parse json', function (done) {
+		it('should parse json', (done) => {
 			var data = utils.toType('{"a":"1"}');
 			assert.equal(data.a, '1');
 			done();
 		});
 
-		it('should return string as is if its not json,true,false or number', function (done) {
+		it('should return string as is if its not json,true,false or number', (done) => {
 			var regularStr = 'this is a regular string';
 			assert.equal(regularStr, utils.toType(regularStr));
 			done();
 		});
 	});
 
-	describe('utils.props', function () {
+	describe('utils.props', () => {
 		var data = {};
 
-		it('should set nested data', function (done) {
+		it('should set nested data', (done) => {
 			assert.equal(10, utils.props(data, 'a.b.c.d', 10));
 			done();
 		});
 
-		it('should return nested object', function (done) {
+		it('should return nested object', (done) => {
 			var obj = utils.props(data, 'a.b.c');
 			assert.equal(obj.d, 10);
 			done();
 		});
 
-		it('should returned undefined without throwing', function (done) {
+		it('should returned undefined without throwing', (done) => {
 			assert.equal(utils.props(data, 'a.b.c.foo.bar'), undefined);
 			done();
 		});
 
-		it('should return undefined if second param is null', function (done) {
+		it('should return undefined if second param is null', (done) => {
 			assert.equal(utils.props(undefined, null), undefined);
 			done();
 		});
 	});
 
-	describe('isInternalURI', function () {
+	describe('isInternalURI', () => {
 		var target = { host: '', protocol: 'https' };
 		var reference = { host: '', protocol: 'https' };
 
-		it('should return true if they match', function (done) {
+		it('should return true if they match', (done) => {
 			assert(utils.isInternalURI(target, reference, ''));
 			done();
 		});
 
-		it('should return true if they match', function (done) {
+		it('should return true if they match', (done) => {
 			target.host = 'nodebb.org';
 			reference.host = 'nodebb.org';
 			assert(utils.isInternalURI(target, reference, ''));
 			done();
 		});
 
-		it('should handle relative path', function (done) {
+		it('should handle relative path', (done) => {
 			target.pathname = '/forum';
 			assert(utils.isInternalURI(target, reference, '/forum'));
 			done();
 		});
 
-		it('should return false if they do not match', function (done) {
+		it('should return false if they do not match', (done) => {
 			target.pathname = '';
 			reference.host = 'designcreateplay.com';
 			assert(!utils.isInternalURI(target, reference));
@@ -412,19 +412,19 @@ describe('Utility Methods', function () {
 		});
 	});
 
-	it('escape html', function (done) {
+	it('escape html', (done) => {
 		var escaped = utils.escapeHTML('&<>');
 		assert.equal(escaped, '&amp;&lt;&gt;');
 		done();
 	});
 
-	it('should escape regex chars', function (done) {
+	it('should escape regex chars', (done) => {
 		var escaped = utils.escapeRegexChars('some text {}');
 		assert.equal(escaped, 'some\\ text\\ \\{\\}');
 		done();
 	});
 
-	it('should get hours array', function (done) {
+	it('should get hours array', (done) => {
 		var currentHour = new Date().getHours();
 		var hours = utils.getHoursArray();
 		var index = hours.length - 1;
@@ -436,7 +436,7 @@ describe('Utility Methods', function () {
 		done();
 	});
 
-	it('should get days array', function (done) {
+	it('should get days array', (done) => {
 		var currentDay = new Date(Date.now()).getTime();
 		var days = utils.getDaysArray();
 		var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -449,22 +449,22 @@ describe('Utility Methods', function () {
 		done();
 	});
 
-	it('`utils.rtrim` should remove trailing space', function (done) {
+	it('`utils.rtrim` should remove trailing space', (done) => {
 		assert.strictEqual(utils.rtrim('  thing   '), '  thing');
 		assert.strictEqual(utils.rtrim('\tthing\t\t'), '\tthing');
 		assert.strictEqual(utils.rtrim('\t thing \t'), '\t thing');
 		done();
 	});
 
-	it('should profile function', function (done) {
+	it('should profile function', (done) => {
 		var st = process.hrtime();
-		setTimeout(function () {
+		setTimeout(() => {
 			process.profile('it took', st);
 			done();
 		}, 500);
 	});
 
-	it('should return object with data', async function () {
+	it('should return object with data', async () => {
 		const user = require('../src/user');
 		const uid1 = await user.create({ username: 'promise1' });
 		const uid2 = await user.create({ username: 'promise2' });

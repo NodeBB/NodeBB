@@ -144,7 +144,7 @@ Tags.parse = async (req, data, meta, link) => {
 		links: plugins.hooks.fire('filter:meta.getLinkTags', { req: req, data: data, links: defaultLinks }),
 	});
 
-	meta = results.tags.tags.concat(meta || []).map(function (tag) {
+	meta = results.tags.tags.concat(meta || []).map((tag) => {
 		if (!tag || typeof tag.content !== 'string') {
 			winston.warn('Invalid meta tag. ', tag);
 			return tag;
@@ -175,7 +175,7 @@ Tags.parse = async (req, data, meta, link) => {
 
 function addIfNotExists(meta, keyName, tagName, value) {
 	var exists = false;
-	meta.forEach(function (tag) {
+	meta.forEach((tag) => {
 		if (tag[keyName] === tagName) {
 			exists = true;
 		}

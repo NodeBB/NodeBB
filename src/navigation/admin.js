@@ -9,13 +9,13 @@ const pubsub = require('../pubsub');
 const admin = module.exports;
 let cache = null;
 
-pubsub.on('admin:navigation:save', function () {
+pubsub.on('admin:navigation:save', () => {
 	cache = null;
 });
 
 admin.save = async function (data) {
 	const order = Object.keys(data);
-	const items = data.map(function (item, index) {
+	const items = data.map((item, index) => {
 		item.order = order[index];
 		return JSON.stringify(item);
 	});
@@ -40,7 +40,7 @@ admin.escapeFields = navItems => toggleEscape(navItems, true);
 admin.unescapeFields = navItems => toggleEscape(navItems, false);
 
 function toggleEscape(navItems, flag) {
-	navItems.forEach(function (item) {
+	navItems.forEach((item) => {
 		if (item) {
 			fieldsToEscape.forEach((field) => {
 				if (item.hasOwnProperty(field)) {
@@ -56,7 +56,7 @@ admin.get = async function () {
 		return cache.map(item => ({ ...item }));
 	}
 	const data = await db.getSortedSetRange('navigation:enabled', 0, -1);
-	cache = data.map(function (item) {
+	cache = data.map((item) => {
 		item = JSON.parse(item);
 		item.groups = item.groups || [];
 		if (item.groups && !Array.isArray(item.groups)) {
@@ -70,7 +70,7 @@ admin.get = async function () {
 };
 
 async function getAvailable() {
-	const core = require('../../install/data/navigation.json').map(function (item) {
+	const core = require('../../install/data/navigation.json').map((item) => {
 		item.core = true;
 		item.id = item.id || '';
 		item.properties = item.properties || { targetBlank: false };

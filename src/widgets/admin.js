@@ -45,7 +45,7 @@ async function getAvailableWidgets() {
 		plugins.hooks.fire('filter:widgets.getWidgets', []),
 		renderAdminTemplate(),
 	]);
-	availableWidgets.forEach(function (w) {
+	availableWidgets.forEach((w) => {
 		w.content += adminTemplate;
 	});
 	return availableWidgets;
@@ -62,7 +62,7 @@ function buildTemplatesFromAreas(areas) {
 	const list = {};
 	let index = 0;
 
-	areas.forEach(function (area) {
+	areas.forEach((area) => {
 		if (typeof list[area.template] === 'undefined') {
 			list[area.template] = index;
 			templates.push({

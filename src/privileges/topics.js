@@ -98,10 +98,8 @@ module.exports = function (privileges) {
 			helpers.isUsersAllowedTo(privilege, uids, topicData.cid),
 			user.isAdministrator(uids),
 		]);
-		return uids.filter(function (uid, index) {
-			return !disabled &&
-				((allowedTo[index] && !topicData.deleted) || isAdmins[index]);
-		});
+		return uids.filter((uid, index) => !disabled &&
+				((allowedTo[index] && !topicData.deleted) || isAdmins[index]));
 	};
 
 	privileges.topics.canPurge = async function (tid, uid) {

@@ -117,7 +117,7 @@ module.exports = function (privileges) {
 
 	privileges.global.userPrivileges = async function (uid) {
 		const tasks = {};
-		privileges.global.userPrivilegeList.forEach(function (privilege) {
+		privileges.global.userPrivilegeList.forEach((privilege) => {
 			tasks[privilege] = groups.isMember(uid, `cid:0:privileges:${privilege}`);
 		});
 		return await utils.promiseParallel(tasks);
@@ -125,7 +125,7 @@ module.exports = function (privileges) {
 
 	privileges.global.groupPrivileges = async function (groupName) {
 		const tasks = {};
-		privileges.global.groupPrivilegeList.forEach(function (privilege) {
+		privileges.global.groupPrivilegeList.forEach((privilege) => {
 			tasks[privilege] = groups.isMember(groupName, `cid:0:privileges:${privilege}`);
 		});
 		return await utils.promiseParallel(tasks);

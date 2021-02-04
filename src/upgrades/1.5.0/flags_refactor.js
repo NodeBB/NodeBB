@@ -13,23 +13,21 @@ module.exports = {
 		var flags = require('../../flags');
 		var progress = this.progress;
 
-		batch.processSortedSet('posts:pid', function (ids, next) {
-			posts.getPostsByPids(ids, 1, function (err, posts) {
+		batch.processSortedSet('posts:pid', (ids, next) => {
+			posts.getPostsByPids(ids, 1, (err, posts) => {
 				if (err) {
 					return next(err);
 				}
 
-				posts = posts.filter(function (post) {
-					return post.hasOwnProperty('flags');
-				});
+				posts = posts.filter(post => post.hasOwnProperty('flags'));
 
-				async.each(posts, function (post, next) {
+				async.each(posts, (post, next) => {
 					progress.incr();
 
 					async.parallel({
 						uids: async.apply(db.getSortedSetRangeWithScores, `pid:${post.pid}:flag:uids`, 0, -1),
 						reasons: async.apply(db.getSortedSetRange, `pid:${post.pid}:flag:uid:reason`, 0, -1),
-					}, function (err, data) {
+					}, (err, data) => {
 						if (err) {
 							return next(err);
 						}
@@ -62,9 +60,7 @@ module.exports = {
 								if (post.hasOwnProperty('flag:notes') && post['flag:notes'].length) {
 									try {
 										var history = JSON.parse(post['flag:history']);
-										history = history.filter(function (event) {
-											return event.type === 'notes';
-										})[0];
+										history = history.filter(event => event.type === 'notes')[0];
 
 										flags.appendNote(flagObj.flagId, history.uid, post['flag:notes'], history.timestamp, next);
 									} catch (e) {
@@ -74,7 +70,7 @@ module.exports = {
 									setImmediate(next);
 								}
 							},
-						], function (err) {
+						], (err) => {
 							if (err && err.message === '[[error:post-already-flagged]]') {
 								// Already flagged, no need to parse, but not an error
 								next();

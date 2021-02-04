@@ -7,7 +7,7 @@ const user = require('../user');
 const helpers = require('./helpers');
 
 module.exports = function (middleware) {
-	middleware.maintenanceMode = helpers.try(async function maintenanceMode(req, res, next) {
+	middleware.maintenanceMode = helpers.try(async (req, res, next) => {
 		if (!meta.config.maintenanceMode) {
 			return next();
 		}

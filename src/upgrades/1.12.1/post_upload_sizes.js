@@ -11,8 +11,8 @@ module.exports = {
 	method: function (callback) {
 		const progress = this.progress;
 
-		batch.processSortedSet('posts:pid', function (postData, next) {
-			async.eachSeries(postData, async function (pid) {
+		batch.processSortedSet('posts:pid', (postData, next) => {
+			async.eachSeries(postData, async (pid) => {
 				const uploads = await posts.uploads.list(pid);
 				await posts.uploads.saveSize(uploads);
 				progress.incr();

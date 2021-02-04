@@ -49,9 +49,9 @@ const targetHandlers = {
 	},
 };
 
-const aliasMap = Object.keys(aliases).reduce(function (prev, key) {
+const aliasMap = Object.keys(aliases).reduce((prev, key) => {
 	var arr = aliases[key];
-	arr.forEach(function (alias) {
+	arr.forEach((alias) => {
 		prev[alias] = key;
 	});
 	prev[key] = key;
@@ -75,9 +75,7 @@ async function beforeBuild(targets) {
 	}
 }
 
-const allTargets = Object.keys(targetHandlers).filter(function (name) {
-	return typeof targetHandlers[name] === 'function';
-});
+const allTargets = Object.keys(targetHandlers).filter(name => typeof targetHandlers[name] === 'function');
 
 async function buildTargets(targets, parallel) {
 	const length = Math.max.apply(Math, targets.map(name => name.length));
@@ -132,7 +130,7 @@ exports.build = async function (targets, options) {
 
 	targets = targets
 		// get full target name
-		.map(function (target) {
+		.map((target) => {
 			target = target.toLowerCase().replace(/-/g, '');
 			if (!aliasMap[target]) {
 				winston.warn(`[build] Unknown target: ${target}`);

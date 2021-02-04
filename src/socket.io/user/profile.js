@@ -128,11 +128,11 @@ module.exports = function (SocketUser) {
 			env: process.env,
 		});
 		child.send({ uid: data.uid });
-		child.on('error', async function (err) {
+		child.on('error', async (err) => {
 			winston.error(err.stack);
 			await db.deleteObjectField('locks', `export:${data.uid}${type}`);
 		});
-		child.on('exit', async function () {
+		child.on('exit', async () => {
 			await db.deleteObjectField('locks', `export:${data.uid}${type}`);
 			const userData = await user.getUserFields(data.uid, ['username', 'userslug']);
 			const n = await notifications.create({

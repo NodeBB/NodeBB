@@ -18,11 +18,11 @@ module.exports = {
 			},
 			function (cids, next) {
 				keys = cids.map(cid => `cid:${cid}:ignorers`);
-				batch.processSortedSet('users:joindate', function (uids, next) {
+				batch.processSortedSet('users:joindate', (uids, next) => {
 					progress.incr(uids.length);
 
-					async.eachSeries(cids, function (cid, next) {
-						db.isSortedSetMembers(`cid:${cid}:ignorers`, uids, function (err, isMembers) {
+					async.eachSeries(cids, (cid, next) => {
+						db.isSortedSetMembers(`cid:${cid}:ignorers`, uids, (err, isMembers) => {
 							if (err) {
 								return next(err);
 							}
