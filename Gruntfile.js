@@ -2,11 +2,13 @@
 
 const path = require('path');
 const nconf = require('nconf');
+
 nconf.argv().env({
 	separator: '__',
 });
 const winston = require('winston');
 const fork = require('child_process').fork;
+
 const env = process.env;
 var worker;
 
@@ -14,6 +16,7 @@ env.NODE_ENV = env.NODE_ENV || 'development';
 
 const configFile = path.resolve(__dirname, nconf.any(['config', 'CONFIG']) || 'config.json');
 const prestart = require('./src/prestart');
+
 prestart.loadConfig(configFile);
 
 var db = require('./src/database');

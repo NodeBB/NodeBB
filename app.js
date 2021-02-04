@@ -22,6 +22,7 @@
 require('./require-main');
 
 const nconf = require('nconf');
+
 nconf.argv().env({
 	separator: '__',
 });
@@ -40,6 +41,7 @@ const configFile = path.resolve(__dirname, nconf.any(['config', 'CONFIG']) || 'c
 const configExists = file.existsSync(configFile) || (nconf.get('url') && nconf.get('secret') && nconf.get('database'));
 
 const prestart = require('./src/prestart');
+
 prestart.loadConfig(configFile);
 prestart.setupWinston();
 prestart.versionCheck();

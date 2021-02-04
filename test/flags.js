@@ -3,6 +3,7 @@
 const assert = require('assert');
 const async = require('async');
 const util = require('util');
+
 const sleep = util.promisify(setTimeout);
 
 const db = require('./mocks/databasemock');

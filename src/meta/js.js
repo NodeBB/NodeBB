@@ -10,6 +10,7 @@ if (!mkdirp.hasOwnProperty('native')) {
 }
 
 const rimraf = require('rimraf');
+
 const rimrafAsync = util.promisify(rimraf);
 
 const file = require('../file');

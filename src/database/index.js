@@ -1,6 +1,7 @@
 'use strict';
 
 var nconf = require('nconf');
+
 var databaseName = nconf.get('database');
 var winston = require('winston');
 

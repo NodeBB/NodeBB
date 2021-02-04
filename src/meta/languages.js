@@ -6,8 +6,10 @@ const path = require('path');
 const fs = require('fs');
 const util = require('util');
 let mkdirp = require('mkdirp');
+
 mkdirp = mkdirp.hasOwnProperty('native') ? mkdirp : util.promisify(mkdirp);
 const rimraf = require('rimraf');
+
 const rimrafAsync = util.promisify(rimraf);
 
 const file = require('../file');
