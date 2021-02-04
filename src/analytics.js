@@ -128,13 +128,9 @@ Analytics.writeData = async function () {
 		uniqueIPCount = 0;
 	}
 
-	if (Object.keys(counters).length > 0) {
-		for (const key in counters) {
-			if (counters.hasOwnProperty(key)) {
-				dbQueue.push(db.sortedSetIncrBy(`analytics:${key}`, counters[key], today.getTime()));
-				delete counters[key];
-			}
-		}
+	for (const [key, value] of Object.entries(counters)) {
+		dbQueue.push(db.sortedSetIncrBy(`analytics:${key}`, value, today.getTime()));
+		delete counters[key];
 	}
 	try {
 		await Promise.all(dbQueue);

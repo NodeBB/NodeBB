@@ -64,22 +64,20 @@ SocketRooms.getAll = async function () {
 		category: 0,
 	};
 
-	for (const instance in stats) {
-		if (stats.hasOwnProperty(instance)) {
-			totals.onlineGuestCount += stats[instance].onlineGuestCount;
-			totals.onlineRegisteredCount += stats[instance].onlineRegisteredCount;
-			totals.socketCount += stats[instance].socketCount;
-			totals.users.categories += stats[instance].users.categories;
-			totals.users.recent += stats[instance].users.recent;
-			totals.users.unread += stats[instance].users.unread;
-			totals.users.topics += stats[instance].users.topics;
-			totals.users.category += stats[instance].users.category;
+	for (const instance of Object.values(stats)) {
+		totals.onlineGuestCount += instance.onlineGuestCount;
+		totals.onlineRegisteredCount += instance.onlineRegisteredCount;
+		totals.socketCount += instance.socketCount;
+		totals.users.categories += instance.users.categories;
+		totals.users.recent += instance.users.recent;
+		totals.users.unread += instance.users.unread;
+		totals.users.topics += instance.users.topics;
+		totals.users.category += instance.users.category;
 
-			stats[instance].topics.forEach((topic) => {
-				totals.topics[topic.tid] = totals.topics[topic.tid] || { count: 0, tid: topic.tid };
-				totals.topics[topic.tid].count += topic.count;
-			});
-		}
+		instance.topics.forEach((topic) => {
+			totals.topics[topic.tid] = totals.topics[topic.tid] || { count: 0, tid: topic.tid };
+			totals.topics[topic.tid].count += topic.count;
+		});
 	}
 
 	let topTenTopics = [];

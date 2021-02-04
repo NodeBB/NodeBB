@@ -46,13 +46,11 @@ module.exports = function (User) {
 	User.stopJobs = function () {
 		let terminated = 0;
 		// Terminate any active cron jobs
-		for (const jobId in jobs) {
-			if (jobs.hasOwnProperty(jobId)) {
-				winston.verbose(`[user/jobs] Terminating job (${jobId})`);
-				jobs[jobId].stop();
-				delete jobs[jobId];
-				terminated += 1;
-			}
+		for (const jobId of Object.keys(jobs)) {
+			winston.verbose(`[user/jobs] Terminating job (${jobId})`);
+			jobs[jobId].stop();
+			delete jobs[jobId];
+			terminated += 1;
 		}
 		if (terminated > 0) {
 			winston.verbose(`[user/jobs] ${terminated} jobs terminated`);

@@ -47,12 +47,10 @@ Settings.set = async function (hash, values, quiet) {
 	({ plugin: hash, settings: values, quiet } = await plugins.hooks.fire('filter:settings.set', { plugin: hash, settings: values, quiet }));
 
 	const sortedListData = {};
-	for (const key in values) {
-		if (values.hasOwnProperty(key)) {
-			if (Array.isArray(values[key]) && typeof values[key][0] !== 'string') {
-				sortedListData[key] = values[key];
-				delete values[key];
-			}
+	for (const [key, value] of Object.entries(values)) {
+		if (Array.isArray(value) && typeof value[0] !== 'string') {
+			sortedListData[key] = value;
+			delete values[key];
 		}
 	}
 	const sortedLists = Object.keys(sortedListData);

@@ -241,13 +241,7 @@ Plugins.normalise = async function (apiReturn) {
 		pluginMap[plugin.id].outdated = semver.gt(pluginMap[plugin.id].latest, pluginMap[plugin.id].version);
 	});
 
-	const pluginArray = [];
-
-	for (const key in pluginMap) {
-		if (pluginMap.hasOwnProperty(key)) {
-			pluginArray.push(pluginMap[key]);
-		}
-	}
+	const pluginArray = Object.values(pluginMap);
 
 	pluginArray.sort((a, b) => {
 		if (a.name > b.name) {

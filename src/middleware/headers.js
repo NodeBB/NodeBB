@@ -64,9 +64,9 @@ module.exports = function (middleware) {
 			headers['X-Upstream-Hostname'] = os.hostname();
 		}
 
-		for (const key in headers) {
-			if (headers.hasOwnProperty(key) && headers[key]) {
-				res.setHeader(key, headers[key]);
+		for (const [key, value] of Object.entries(headers)) {
+			if (value) {
+				res.setHeader(key, value);
 			}
 		}
 

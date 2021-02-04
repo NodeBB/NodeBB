@@ -70,10 +70,8 @@ server.on('connection', (conn) => {
 
 exports.destroy = function (callback) {
 	server.close(callback);
-	for (const key in connections) {
-		if (connections.hasOwnProperty(key)) {
-			connections[key].destroy();
-		}
+	for (const connection of Object.values(connections)) {
+		connection.destroy();
 	}
 };
 

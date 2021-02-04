@@ -28,9 +28,9 @@ helpers.fieldToString = function (field) {
 
 helpers.serializeData = function (data) {
 	const serialized = {};
-	for (const field in data) {
-		if (data.hasOwnProperty(field) && field !== '') {
-			serialized[helpers.fieldToString(field)] = data[field];
+	for (const [field, value] of Object.entries(data)) {
+		if (field !== '') {
+			serialized[helpers.fieldToString(field)] = value;
 		}
 	}
 	return serialized;
@@ -38,10 +38,8 @@ helpers.serializeData = function (data) {
 
 helpers.deserializeData = function (data) {
 	const deserialized = {};
-	for (const field in data) {
-		if (data.hasOwnProperty(field)) {
-			deserialized[field.replace(/\uff0E/g, '.')] = data[field];
-		}
+	for (const [field, value] of Object.entries(data)) {
+		deserialized[field.replace(/\uff0E/g, '.')] = value;
 	}
 	return deserialized;
 };

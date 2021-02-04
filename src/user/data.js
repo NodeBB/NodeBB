@@ -285,10 +285,8 @@ module.exports = function (User) {
 
 	User.setUserFields = async function (uid, data) {
 		await db.setObject(`user:${uid}`, data);
-		for (const field in data) {
-			if (data.hasOwnProperty(field)) {
-				plugins.hooks.fire('action:user.set', { uid: uid, field: field, value: data[field], type: 'set' });
-			}
+		for (const [field, value] of Object.entries(data)) {
+			plugins.hooks.fire('action:user.set', { uid, field, value, type: 'set' });
 		}
 	};
 

@@ -151,9 +151,9 @@ function install(req, res) {
 	req.setTimeout(0);
 	installing = true;
 	const setupEnvVars = nconf.get();
-	for (const i in req.body) {
-		if (req.body.hasOwnProperty(i) && !process.env.hasOwnProperty(i)) {
-			setupEnvVars[i.replace(':', '__')] = req.body[i];
+	for (const [key, value] of Object.entries(req.body)) {
+		if (!process.env.hasOwnProperty(key)) {
+			setupEnvVars[key.replace(':', '__')] = value;
 		}
 	}
 
@@ -161,12 +161,12 @@ function install(req, res) {
 	const pushToRoot = function (parentKey, key) {
 		setupEnvVars[`${parentKey}__${key}`] = setupEnvVars[parentKey][key];
 	};
-	for (const j in setupEnvVars) {
-		if (setupEnvVars.hasOwnProperty(j) && typeof setupEnvVars[j] === 'object' && setupEnvVars[j] !== null && !Array.isArray(setupEnvVars[j])) {
-			Object.keys(setupEnvVars[j]).forEach(pushToRoot.bind(null, j));
-			delete setupEnvVars[j];
-		} else if (Array.isArray(setupEnvVars[j])) {
-			setupEnvVars[j] = JSON.stringify(setupEnvVars[j]);
+	for (const [parentKey, value] of Object.entries(setupEnvVars)) {
+		if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+			Object.keys(value).forEach(key => pushToRoot(parentKey, key));
+			delete setupEnvVars[parentKey];
+		} else if (Array.isArray(value)) {
+			setupEnvVars[parentKey] = JSON.stringify(value);
 		}
 	}
 
