@@ -28,7 +28,10 @@ define('forum/topic/move', ['categorySelector', 'alerts'], function (categorySel
 				modal.find('.modal-header h3').translateText('[[topic:move_topics]]');
 			}
 
-			categorySelector.init(modal.find('[component="category-selector"]'), onCategorySelected);
+			categorySelector.init(modal.find('[component="category-selector"]'), {
+				onSelect: onCategorySelected,
+				privilege: 'moderate',
+			});
 
 			modal.find('#move_thread_commit').on('click', onCommitClicked);
 
