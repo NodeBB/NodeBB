@@ -54,8 +54,7 @@
 		"no-use-before-define": ["error", "nofunc"],
 		// require consistent newlines before and after braces
 		// if contents are multiline
-		// "object-curly-newline": ["error", { "consistent": true, "multiline": true }],
-		"object-curly-newline": "off",
+		"object-curly-newline": ["error", { "consistent": true, "multiline": true }],
 		// require consistent linebreaks inline function parenthesis (arguments or params)
 		"function-paren-newline": ["error", "consistent"],
 		// only require const if all parts of destructuring can be const
