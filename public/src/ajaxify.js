@@ -446,6 +446,7 @@ $(document).ready(function () {
 
 	function ajaxifyAnchors() {
 		function hrefEmpty(href) {
+			// eslint-disable-next-line no-script-url
 			return href === undefined || href === '' || href === 'javascript:;';
 		}
 		var location = document.location || window.location;
@@ -516,6 +517,7 @@ $(document).ready(function () {
 				return;
 			}
 
+			// eslint-disable-next-line no-script-url
 			if (hrefEmpty(this.href) ||	this.protocol === 'javascript:' || href === '#' || href === '') {
 				return e.preventDefault();
 			}
