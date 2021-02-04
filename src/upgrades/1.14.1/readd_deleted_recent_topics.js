@@ -25,22 +25,26 @@ module.exports = {
 				}
 			});
 
-			await db.sortedSetAdd('topics:recent',
+			await db.sortedSetAdd(
+				'topics:recent',
 				topicData.map(t => t.lastposttime || 0),
 				topicData.map(t => t.tid)
 			);
 
-			await db.sortedSetAdd('topics:views',
+			await db.sortedSetAdd(
+				'topics:views',
 				topicData.map(t => t.viewcount || 0),
 				topicData.map(t => t.tid)
 			);
 
-			await db.sortedSetAdd('topics:posts',
+			await db.sortedSetAdd(
+				'topics:posts',
 				topicData.map(t => t.postcount || 0),
 				topicData.map(t => t.tid)
 			);
 
-			await db.sortedSetAdd('topics:votes',
+			await db.sortedSetAdd(
+				'topics:votes',
 				topicData.map(t => t.votes || 0),
 				topicData.map(t => t.tid)
 			);

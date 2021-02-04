@@ -18,7 +18,8 @@ module.exports = function (Groups) {
 		}
 		const keys = [];
 		groupNames.forEach((groupName) => {
-			keys.push(`group:${groupName}`,
+			keys.push(
+				`group:${groupName}`,
 				`group:${groupName}:members`,
 				`group:${groupName}:pending`,
 				`group:${groupName}:invited`,

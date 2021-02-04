@@ -12,10 +12,11 @@ define('api', () => {
 		function doAjax(cb) {
 			$.ajax(options)
 				.done((res) => {
-					cb(null,
-						res && res.hasOwnProperty('status') && res.hasOwnProperty('response') ?
-							res.response : (res || {})
-					);
+					cb(null, (
+						res &&
+						res.hasOwnProperty('status') &&
+						res.hasOwnProperty('response') ? res.response : (res || {})
+					));
 				})
 				.fail((ev) => {
 					let errMessage;

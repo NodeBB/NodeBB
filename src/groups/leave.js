@@ -43,7 +43,9 @@ module.exports = function (Groups) {
 			promises.push(Groups.destroy, emptyPrivilegeGroups);
 		}
 		if (visibleGroups.length) {
-			promises.push(db.sortedSetAdd, 'groups:visible:memberCount',
+			promises.push(
+				db.sortedSetAdd,
+				'groups:visible:memberCount',
 				visibleGroups.map(groupData => groupData.memberCount),
 				visibleGroups.map(groupData => groupData.name)
 			);

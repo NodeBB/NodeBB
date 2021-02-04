@@ -55,7 +55,8 @@ module.exports = function (Groups) {
 		const visibleGroups = groupData.filter(groupData => groupData && !groupData.hidden);
 
 		if (visibleGroups.length) {
-			await db.sortedSetAdd('groups:visible:memberCount',
+			await db.sortedSetAdd(
+				'groups:visible:memberCount',
 				visibleGroups.map(groupData => groupData.memberCount),
 				visibleGroups.map(groupData => groupData.name)
 			);

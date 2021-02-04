@@ -137,7 +137,8 @@ async function deleteOrRestore(caller, data, params) {
 async function deleteOrRestoreTopicOf(command, pid, caller) {
 	const topic = await posts.getTopicFields(pid, ['tid', 'cid', 'deleted']);
 	// command: delete/restore
-	await apiHelpers.doTopicAction(command,
+	await apiHelpers.doTopicAction(
+		command,
 		topic.deleted ? 'event:topic_restored' : 'event:topic_deleted',
 		caller,
 		{ tids: [topic.tid], cid: topic.cid }
@@ -178,7 +179,9 @@ postsAPI.purge = async function (caller, data) {
 	});
 
 	if (isMainAndLast) {
-		await apiHelpers.doTopicAction('purge', 'event:topic_purged',
+		await apiHelpers.doTopicAction(
+			'purge',
+			'event:topic_purged',
 			caller,
 			{ tids: [postData.tid], cid: topicData.cid }
 		);

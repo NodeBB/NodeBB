@@ -57,8 +57,7 @@
 		// "object-curly-newline": ["error", { "consistent": true, "multiline": true }],
 		"object-curly-newline": "off",
 		// require consistent linebreaks inline function parenthesis (arguments or params)
-		// "function-paren-newline": ["error", "consistent"],
-		"function-paren-newline": "off",
+		"function-paren-newline": ["error", "consistent"],
 		// only require const if all parts of destructuring can be const
 		"prefer-const": ["error", { "destructuring": "all" }],
 		// don't require destructuring when assigning
