@@ -116,7 +116,6 @@
 		"vars-on-top": "off",
 		"no-script-url": "off",
 		"import/newline-after-import": "off",
-		"no-bitwise": "off",
 
 		// TODO
 		"consistent-return": "off",

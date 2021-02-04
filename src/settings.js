@@ -13,7 +13,7 @@ function expandObjBy(obj1, obj2) {
 		if (obj2.hasOwnProperty(key)) {
 			val2 = obj2[key];
 			val1 = obj1[key];
-			xorValIsArray = Array.isArray(val1) ^ Array.isArray(val2);
+			xorValIsArray = Array.isArray(val1) === Array.isArray(val2);
 			if (xorValIsArray || !obj1.hasOwnProperty(key) || typeof val2 !== typeof val1) {
 				obj1[key] = val2;
 				changed = true;
