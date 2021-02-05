@@ -270,6 +270,8 @@ function continueLogin(strategy, req, res, next) {
 			req.session.cookie.expires = false;
 		}
 
+		plugins.hooks.fire('action:login.continue', { req, userData });
+
 		if (userData.passwordExpiry && userData.passwordExpiry < Date.now()) {
 			winston.verbose('[auth] Triggering password reset for uid ' + userData.uid + ' due to password policy');
 			req.session.passwordExpired = true;
