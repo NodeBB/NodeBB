@@ -61,6 +61,8 @@ get:
                         cover:position:
                           type: string
                         memberPostCids:
+                          type: string
+                        memberPostCidsArray:
                           type: array
                           items:
                             type: number

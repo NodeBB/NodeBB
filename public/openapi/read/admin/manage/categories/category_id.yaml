@@ -31,60 +31,8 @@ get:
                             type: string
                           parent:
                             $ref: ../../../../components/schemas/CategoryObject.yaml#/CategoryObject
-                  categories:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        cid:
-                          type: number
-                          description: A category identifier
-                        name:
-                          type: string
-                        icon:
-                          type: string
-                        selected:
-                          type: boolean
-                        level:
-                          type: string
-                        parentCid:
-                          type: number
-                          description: The category identifier for the category that is the immediate
-                            ancestor of the current category
-                        color:
-                          type: string
-                        bgColor:
-                          type: string
-                        imageClass:
-                          type: string
-                      required:
-                        - cid
-                        - name
-                        - icon
                   selectedCategory:
-                    type: object
-                    properties:
-                      cid:
-                        type: number
-                        description: A category identifier
-                      name:
-                        type: string
-                      level:
-                        type: string
-                      icon:
-                        type: string
-                      parentCid:
-                        type: number
-                        description: The category identifier for the category that is the immediate
-                          ancestor of the current category
-                      color:
-                        type: string
-                      bgColor:
-                        type: string
-                      imageClass:
-                        type: string
-                      selected:
-                        type: boolean
+                    $ref: ../../../../components/schemas/CategoryObject.yaml#/CategoryObject
                   customClasses:
                     type: array
                     items:
