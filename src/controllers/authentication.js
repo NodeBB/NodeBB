@@ -34,14 +34,11 @@ async function registerAndLoginUser(req, res, userData) {
 		userData.register = true;
 		req.session.registration = userData;
 
-		if (req.body.referrer) {
-			req.session.returnTo = req.body.referrer;
-		}
 		if (req.body.noscript === 'true') {
 			res.redirect(nconf.get('relative_path') + '/register/complete');
 			return;
 		}
-		res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
+		res.json({ next: nconf.get('relative_path') + '/register/complete' });
 		return;
 	}
 	const queue = await user.shouldQueueUser(req.ip);
@@ -60,9 +57,9 @@ async function registerAndLoginUser(req, res, userData) {
 		await user.joinGroupsFromInvitation(uid, userData.email);
 	}
 	await user.deleteInvitationKey(userData.email);
-	const referrer = req.body.referrer || req.session.returnTo || nconf.get('relative_path') + '/';
-	const complete = await plugins.hooks.fire('filter:register.complete', { uid: uid, referrer: referrer });
-	req.session.returnTo = complete.referrer;
+	const next = req.session.returnTo || nconf.get('relative_path') + '/';
+	const complete = await plugins.hooks.fire('filter:register.complete', { uid: uid, next: next });
+	req.session.returnTo = complete.next;
 	return complete;
 }
 

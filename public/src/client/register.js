@@ -17,7 +17,6 @@ define('forum/register', [
 
 		handleLanguageOverride();
 
-		$('#referrer').val(app.previousUrl);
 		$('#content #noscript').val('false');
 
 		email.on('blur', function () {
@@ -89,10 +88,10 @@ define('forum/register', [
 						if (!data) {
 							return;
 						}
-						if (data.referrer) {
-							var pathname = utils.urlToLocation(data.referrer).pathname;
+						if (data.next) {
+							var pathname = utils.urlToLocation(data.next).pathname;
 
-							var params = utils.params({ url: data.referrer });
+							var params = utils.params({ url: data.next });
 							params.registered = true;
 							var qs = decodeURIComponent($.param(params));
 
