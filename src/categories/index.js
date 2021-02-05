@@ -243,7 +243,7 @@ Categories.getChildrenCids = async function (rootCid) {
 		await recursive(keys);
 	}
 	const key = 'cid:' + rootCid + ':children';
-	const cacheKey = 'cache:' + key;
+	const cacheKey = key + ':all';
 	const childrenCids = cache.get(cacheKey);
 	if (childrenCids) {
 		return childrenCids.slice();
@@ -311,7 +311,12 @@ Categories.getTree = function (categories, parentCid) {
 		}
 	});
 	function sortTree(tree) {
-		tree.sort((a, b) => a.order - b.order);
+		tree.sort((a, b) => {
+			if (a.order !== b.order) {
+				return a.order - b.order;
+			}
+			return a.cid - b.cid;
+		});
 		if (tree.children) {
 			sortTree(tree.children);
 		}

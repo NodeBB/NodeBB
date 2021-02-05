@@ -73,7 +73,9 @@ module.exports = function (Categories) {
 			'categories:cid',
 			'cid:0:children',
 			'cid:' + parentCid + ':children',
+			'cid:' + parentCid + ':children:all',
 			'cid:' + cid + ':children',
+			'cid:' + cid + ':children:all',
 			'cid:' + cid + ':tag:whitelist',
 		]);
 	}

@@ -1,5 +1,6 @@
 'use strict';
 
+const _ = require('lodash');
 const categories = require('../../categories');
 const analytics = require('../../analytics');
 const plugins = require('../../plugins');
@@ -41,17 +42,50 @@ categoriesController.get = async function (req, res, next) {
 };
 
 categoriesController.getAll = async function (req, res) {
+	const rootCid = parseInt(req.query.cid, 10) || 0;
+	async function getRootAndChildren() {
+		const rootChildren = await categories.getAllCidsFromSet(`cid:${rootCid}:children`);
+		const childCids = _.flatten(await Promise.all(rootChildren.map(cid => categories.getChildrenCids(cid))));
+		return [rootCid].concat(rootChildren.concat(childCids));
+	}
+
 	// Categories list will be rendered on client side with recursion, etc.
-	const cids = await categories.getAllCidsFromSet('categories:cid');
+	const cids = await (rootCid ? getRootAndChildren() : categories.getAllCidsFromSet('categories:cid'));
+
+	let rootParent = 0;
+	if (rootCid) {
+		rootParent = await categories.getCategoryField(rootCid, 'parentCid') || 0;
+	}
+
 	const fields = [
 		'cid', 'name', 'icon', 'parentCid', 'disabled', 'link',
-		'color', 'bgColor', 'backgroundImage', 'imageClass',
+		'color', 'bgColor', 'backgroundImage', 'imageClass', 'subCategoriesPerPage',
 	];
 	const categoriesData = await categories.getCategoriesFields(cids, fields);
 	const result = await plugins.hooks.fire('filter:admin.categories.get', { categories: categoriesData, fields: fields });
-	const tree = categories.getTree(result.categories, 0);
+	let tree = categories.getTree(result.categories, rootParent);
+
+	function trim(c) {
+		if (c.children) {
+			c.children = c.children.slice(0, c.subCategoriesPerPage);
+			c.children.forEach(c => trim(c));
+		}
+	}
+	if (rootCid && tree[0] && Array.isArray(tree[0].children)) {
+		tree[0].children = tree[0].children.slice(0, 200);
+		tree[0].children.forEach(trim);
+	} else {
+		tree = tree.slice(0, 200);
+		tree.forEach(trim);
+	}
+
+	let selectedCategory;
+	if (rootCid) {
+		selectedCategory = await categories.getCategoryData(rootCid);
+	}
 	res.render('admin/manage/categories', {
-		categories: tree,
+		categoriesTree: tree,
+		selectedCategory: selectedCategory,
 	});
 };
 

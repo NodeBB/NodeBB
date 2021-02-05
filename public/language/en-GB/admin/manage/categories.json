@@ -19,6 +19,7 @@
 	"category-image": "Category Image",
 	"parent-category": "Parent Category",
 	"optional-parent-category": "(Optional) Parent Category",
+	"top-level": "Top Level",
 	"parent-category-none": "(None)",
 	"copy-parent": "Copy Parent",
 	"copy-settings": "Copy Settings From",

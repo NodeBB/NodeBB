@@ -76,7 +76,12 @@ module.exports = function (Categories) {
 			db.setObjectField('category:' + cid, 'parentCid', newParent),
 		]);
 
-		cache.del(['cid:' + oldParent + ':children', 'cid:' + newParent + ':children']);
+		cache.del([
+			'cid:' + oldParent + ':children',
+			'cid:' + newParent + ':children',
+			'cid:' + oldParent + ':children:all',
+			'cid:' + newParent + ':children:all',
+		]);
 	}
 
 	async function updateTagWhitelist(cid, tags) {
@@ -91,7 +96,11 @@ module.exports = function (Categories) {
 	async function updateOrder(cid, order) {
 		const parentCid = await Categories.getCategoryField(cid, 'parentCid');
 		await db.sortedSetsAdd(['categories:cid', 'cid:' + parentCid + ':children'], order, cid);
-		cache.del(['categories:cid', 'cid:' + parentCid + ':children']);
+		cache.del([
+			'categories:cid',
+			'cid:' + parentCid + ':children',
+			'cid:' + parentCid + ':children:all',
+		]);
 	}
 
 	Categories.parseDescription = async function (cid, description) {

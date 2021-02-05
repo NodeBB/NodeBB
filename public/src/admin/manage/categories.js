@@ -12,7 +12,19 @@ define('admin/manage/categories', [
 	var sortables;
 
 	Categories.init = function () {
-		Categories.render(ajaxify.data.categories);
+		categorySelector.init($('.category [component="category-selector"]'), {
+			onSelect: function (selectedCategory) {
+				ajaxify.go('/admin/manage/categories' + (selectedCategory.cid ? '?cid=' + selectedCategory.cid : ''));
+			},
+			localCategories: [
+				{
+					cid: 0,
+					name: '[[admin/manage/categories:top-level]]',
+					icon: 'fa-list',
+				},
+			],
+		});
+		Categories.render(ajaxify.data.categoriesTree);
 
 		$('button[data-action="create"]').on('click', Categories.throwCreateModal);
 
@@ -49,54 +61,7 @@ define('admin/manage/categories', [
 			el.find('i').toggleClass('fa-minus', expand).toggleClass('fa-plus', !expand);
 			el.closest('[data-cid]').find('> ul[data-cid]').toggleClass('hidden', !expand);
 		}
-
-		$('#category-search').on('keyup', function () {
-			searchCategory();
-		});
 	};
-
-	function searchCategory() {
-		var container = $('#content .categories');
-		function revealParents(cid) {
-			var parentCid = container.find('li[data-cid="' + cid + '"]').attr('data-parent-cid');
-			if (parentCid) {
-				container.find('li[data-cid="' + parentCid + '"]').removeClass('hidden');
-				revealParents(parentCid);
-			}
-		}
-
-		function revealChildren(cid) {
-			var els = container.find('li[data-parent-cid="' + cid + '"]');
-			els.each(function (index, el) {
-				var $el = $(el);
-				$el.removeClass('hidden');
-				revealChildren($el.attr('data-cid'));
-			});
-		}
-
-		var categoryEls = container.find('li[data-cid]');
-		var val = $('#category-search').val().toLowerCase();
-		var noMatch = true;
-		var cids = [];
-		categoryEls.each(function () {
-			var liEl = $(this);
-			var isMatch = liEl.attr('data-name').toLowerCase().indexOf(val) !== -1;
-			if (noMatch && isMatch) {
-				noMatch = false;
-			}
-			if (isMatch && val) {
-				cids.push(liEl.attr('data-cid'));
-			}
-			liEl.toggleClass('hidden', !isMatch);
-		});
-
-		cids.forEach(function (cid) {
-			revealParents(cid);
-			revealChildren(cid);
-		});
-
-		$('[component="category/no-matches"]').toggleClass('hidden', !noMatch);
-	}
 
 	Categories.throwCreateModal = function () {
 		Benchpress.render('admin/partials/categories/create', {}).then(function (html) {
@@ -222,7 +187,7 @@ define('admin/manage/categories', [
 			}
 
 			newCategoryId = -1;
-
+			// TODO: this makes 200+ put requests for each category
 			Object.keys(modified).map(cid => api.put('/categories/' + cid, modified[cid]));
 		}
 	}
