@@ -16,8 +16,11 @@ define('admin/manage/category', [
 			$this.val($this.attr('data-value'));
 		});
 
-		categorySelector.init($('[component="category-selector"]'), function (selectedCategory) {
-			ajaxify.go('admin/manage/categories/' + selectedCategory.cid);
+		categorySelector.init($('[component="category-selector"]'), {
+			onSelect: function (selectedCategory) {
+				ajaxify.go('admin/manage/categories/' + selectedCategory.cid);
+			},
+			showLinks: true,
 		});
 
 		handleTags();
@@ -114,55 +117,50 @@ define('admin/manage/category', [
 		});
 
 		$('.copy-settings').on('click', function () {
-			socket.emit('categories.getSelectCategories', {}, function (err, allCategories) {
-				if (err) {
-					return app.alertError(err.message);
-				}
+			Benchpress.render('admin/partials/categories/copy-settings', {}).then(function (html) {
+				var selectedCid;
+				var modal = bootbox.dialog({
+					title: '[[modules:composer.select_category]]',
+					message: html,
+					buttons: {
+						save: {
+							label: '[[modules:bootbox.confirm]]',
+							className: 'btn-primary',
+							callback: function () {
+								if (!selectedCid || parseInt(selectedCid, 10) === parseInt(ajaxify.data.category.cid, 10)) {
+									return;
+								}
 
-				Benchpress.render('admin/partials/categories/copy-settings', {
-					categories: allCategories,
-				}).then(function (html) {
-					var selectedCid;
-					var modal = bootbox.dialog({
-						title: '[[modules:composer.select_category]]',
-						message: html,
-						buttons: {
-							save: {
-								label: '[[modules:bootbox.confirm]]',
-								className: 'btn-primary',
-								callback: function () {
-									if (!selectedCid || parseInt(selectedCid, 10) === parseInt(ajaxify.data.category.cid, 10)) {
-										return;
+								socket.emit('admin.categories.copySettingsFrom', {
+									fromCid: selectedCid,
+									toCid: ajaxify.data.category.cid,
+									copyParent: modal.find('#copyParent').prop('checked'),
+								}, function (err) {
+									if (err) {
+										return app.alertError(err.message);
 									}
 
-									socket.emit('admin.categories.copySettingsFrom', {
-										fromCid: selectedCid,
-										toCid: ajaxify.data.category.cid,
-										copyParent: modal.find('#copyParent').prop('checked'),
-									}, function (err) {
-										if (err) {
-											return app.alertError(err.message);
-										}
-
-										modal.modal('hide');
-										app.alertSuccess('[[admin/manage/categories:alert.copy-success]]');
-										ajaxify.refresh();
-									});
-									return false;
-								},
+									modal.modal('hide');
+									app.alertSuccess('[[admin/manage/categories:alert.copy-success]]');
+									ajaxify.refresh();
+								});
+								return false;
 							},
 						},
-					});
-					modal.find('.modal-footer button').prop('disabled', true);
-					categorySelector.init(modal.find('[component="category-selector"]'), function (selectedCategory) {
+					},
+				});
+				modal.find('.modal-footer button').prop('disabled', true);
+				categorySelector.init(modal.find('[component="category-selector"]'), {
+					onSelect: function (selectedCategory) {
 						selectedCid = selectedCategory && selectedCategory.cid;
 						if (selectedCid) {
 							modal.find('.modal-footer button').prop('disabled', false);
 						}
-					});
+					},
+					showLinks: true,
 				});
-				return false;
 			});
+			return false;
 		});
 
 		$('.upload-button').on('click', function () {
@@ -261,34 +259,27 @@ define('admin/manage/category', [
 	}
 
 	Category.launchParentSelector = function () {
-		socket.emit('categories.getSelectCategories', {}, function (err, allCategories) {
-			if (err) {
-				return app.alertError(err.message);
-			}
-			var parents = [parseInt(ajaxify.data.category.cid, 10)];
-			var categories = allCategories.filter(function (category) {
-				var isChild = parents.includes(parseInt(category.parentCid, 10));
-				if (isChild) {
-					parents.push(parseInt(category.cid, 10));
+		categorySelector.modal({
+			onSubmit: function (selectedCategory) {
+				var parentCid = selectedCategory.cid;
+				if (!parentCid) {
+					return;
 				}
-				return category && !category.disabled && parseInt(category.cid, 10) !== parseInt(ajaxify.data.category.cid, 10) && !isChild;
-			});
-
-			categorySelector.modal(categories, function (parentCid) {
 				api.put('/categories/' + ajaxify.data.category.cid, {
 					parentCid: parentCid,
 				}).then(() => {
-					var parent = allCategories.filter(function (category) {
-						return category && parseInt(category.cid, 10) === parseInt(parentCid, 10);
+					api.get(`/category/${parentCid}`).then(function (parent) {
+						if (parent && parent.icon && parent.name) {
+							var buttonHtml = '<i class="fa ' + parent.icon + '"></i> ' + parent.name;
+							$('button[data-action="changeParent"]').html(buttonHtml).parent().removeClass('hide');
+						}
 					});
-					parent = parent[0];
 
 					$('button[data-action="removeParent"]').parent().removeClass('hide');
 					$('button[data-action="setParent"]').addClass('hide');
-					var buttonHtml = '<i class="fa ' + parent.icon + '"></i> ' + parent.name;
-					$('button[data-action="changeParent"]').html(buttonHtml).parent().removeClass('hide');
 				}).catch(app.alertError);
-			});
+			},
+			showLinks: true,
 		});
 	};
 

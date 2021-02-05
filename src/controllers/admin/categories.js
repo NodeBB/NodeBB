@@ -5,14 +5,15 @@ const analytics = require('../../analytics');
 const plugins = require('../../plugins');
 const translator = require('../../translator');
 const meta = require('../../meta');
+const helpers = require('../helpers');
 
 const categoriesController = module.exports;
 
 categoriesController.get = async function (req, res, next) {
-	const [categoryData, parent, allCategories] = await Promise.all([
+	const [categoryData, parent, selectedData] = await Promise.all([
 		categories.getCategories([req.params.category_id], req.uid),
 		categories.getParents([req.params.category_id]),
-		categories.buildForSelectAll(),
+		helpers.getSelectedCategory(req.params.category_id),
 	]);
 
 	const category = categoryData[0];
@@ -21,27 +22,19 @@ categoriesController.get = async function (req, res, next) {
 	}
 
 	category.parent = parent[0];
-	allCategories.forEach(function (category) {
-		if (category) {
-			category.selected = parseInt(category.cid, 10) === parseInt(req.params.category_id, 10);
-		}
-	});
-	const selectedCategory = allCategories.find(c => c.selected);
 
 	const data = await plugins.hooks.fire('filter:admin.category.get', {
 		req: req,
 		res: res,
 		category: category,
 		customClasses: [],
-		allCategories: allCategories,
 	});
 	data.category.name = translator.escape(String(data.category.name));
 	data.category.description = translator.escape(String(data.category.description));
 
 	res.render('admin/manage/category', {
 		category: data.category,
-		categories: data.allCategories,
-		selectedCategory: selectedCategory,
+		selectedCategory: selectedData.selectedCategory,
 		customClasses: data.customClasses,
 		postQueueEnabled: !!meta.config.postQueue,
 	});

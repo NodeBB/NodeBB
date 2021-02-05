@@ -25,6 +25,7 @@ define('admin/manage/privileges', [
 				ajaxify.updateHistory('admin/manage/privileges/' + (cid || ''));
 			},
 			privilege: 'find',
+			showLinks: true,
 		});
 
 		Privileges.setupPrivilegeTable();
@@ -265,13 +266,21 @@ define('admin/manage/privileges', [
 	};
 
 	Privileges.copyPrivilegesFromCategory = function (cid, group) {
-		categorySelector.modal(ajaxify.data.categories.slice(1), function (fromCid) {
-			socket.emit('admin.categories.copyPrivilegesFrom', { toCid: cid, fromCid: fromCid, group: group }, function (err) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-				ajaxify.refresh();
-			});
+		categorySelector.modal({
+			localCategories: [],
+			showLinks: true,
+			onSubmit: function (selectedCategory) {
+				socket.emit('admin.categories.copyPrivilegesFrom', {
+					toCid: cid,
+					fromCid: selectedCategory.cid,
+					group: group,
+				}, function (err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					ajaxify.refresh();
+				});
+			},
 		});
 	};
 

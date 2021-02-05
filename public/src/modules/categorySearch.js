@@ -70,6 +70,7 @@ define('categorySearch', function () {
 				selectedCids: ajaxify.data.selectedCids,
 				privilege: options.privilege,
 				states: options.states,
+				showLinks: options.showLinks,
 			}, function (err, categories) {
 				if (err) {
 					return app.alertError(err);

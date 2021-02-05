@@ -57,8 +57,11 @@ define('admin/manage/group', [
 			});
 		});
 
-		categorySelector.init($('[component="category-selector"]'), function (selectedCategory) {
-			navigateToCategory(selectedCategory.cid);
+		categorySelector.init($('[component="category-selector"]'), {
+			onSelect: function (selectedCategory) {
+				navigateToCategory(selectedCategory.cid);
+			},
+			showLinks: true,
 		});
 
 		groupSearch.init($('[component="group-selector"]'));

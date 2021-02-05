@@ -5,7 +5,6 @@ const validator = require('validator');
 
 const db = require('../../database');
 const user = require('../../user');
-const categories = require('../../categories');
 const groups = require('../../groups');
 const meta = require('../../meta');
 const pagination = require('../../pagination');
@@ -23,22 +22,19 @@ groupsController.list = async function (req, res) {
 	const stop = start + groupsPerPage - 1;
 	groupNames = groupNames.slice(start, stop + 1);
 
-	const allCategories = await categories.buildForSelectAll();
 	const groupData = await groups.getGroupsData(groupNames);
 	res.render('admin/manage/groups', {
 		groups: groupData,
 		pagination: pagination.create(page, pageCount),
 		yourid: req.uid,
-		categories: allCategories,
 	});
 };
 
 groupsController.get = async function (req, res, next) {
 	const groupName = req.params.name;
-	const [groupNames, group, allCategories] = await Promise.all([
+	const [groupNames, group] = await Promise.all([
 		getGroupNames(),
 		groups.get(groupName, { uid: req.uid, truncateUserList: true, userListCount: 20 }),
-		categories.buildForSelectAll(),
 	]);
 
 	if (!group || groupName === groups.BANNED_USERS) {
@@ -60,7 +56,6 @@ groupsController.get = async function (req, res, next) {
 		allowPrivateGroups: meta.config.allowPrivateGroups,
 		maximumGroupNameLength: meta.config.maximumGroupNameLength,
 		maximumGroupTitleLength: meta.config.maximumGroupTitleLength,
-		categories: allCategories,
 	});
 };
 

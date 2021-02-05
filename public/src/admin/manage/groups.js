@@ -75,8 +75,11 @@ define('admin/manage/groups', [
 	function enableCategorySelectors() {
 		$('.groups-list [component="category-selector"]').each(function () {
 			var nameEncoded = $(this).parents('[data-name-encoded]').attr('data-name-encoded');
-			categorySelector.init($(this), function (selectedCategory) {
-				ajaxify.go('admin/manage/privileges/' + selectedCategory.cid + '?group=' + nameEncoded);
+			categorySelector.init($(this), {
+				onSelect: function (selectedCategory) {
+					ajaxify.go('admin/manage/privileges/' + selectedCategory.cid + '?group=' + nameEncoded);
+				},
+				showLinks: true,
 			});
 		});
 	}

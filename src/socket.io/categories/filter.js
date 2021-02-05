@@ -21,9 +21,9 @@ module.exports = function (SocketCategories) {
 		const states = (data.states || ['watching', 'notwatching', 'ignoring']).map(
 			state => categories.watchStates[state]
 		);
-		const visibleCategories = await controllersHelpers.getVisibleCategories(
-			cids, socket.uid, states, privilege
-		);
+		const visibleCategories = await controllersHelpers.getVisibleCategories({
+			cids, uid: socket.uid, states, privilege, showLinks: data.showLinks,
+		});
 
 		let categoriesData = categories.buildForSelectCategories(visibleCategories, ['disabledClass']);
 
@@ -73,6 +73,7 @@ module.exports = function (SocketCategories) {
 		const allRootCids = await categories.getAllCidsFromSet('cid:0:children');
 		const rootCids = await privileges.categories.filterCids('find', allRootCids, uid);
 		const pageCids = rootCids.slice(0, meta.config.categoriesPerPage);
+		// TODO: returns all children of a root, should only return some
 		const allChildCids = _.flatten(await Promise.all(pageCids.map(cid => categories.getChildrenCids(cid))));
 		const childCids = await privileges.categories.filterCids('find', allChildCids, uid);
 		return pageCids.concat(childCids);

@@ -213,5 +213,8 @@
 
 	"plugin-not-whitelisted": "Unable to install plugin &ndash; only plugins whitelisted by the NodeBB Package Manager can be installed via the ACP",
 
-	"topic-event-unrecognized": "Topic event '%1' unrecognized"
+	"topic-event-unrecognized": "Topic event '%1' unrecognized",
+
+	"cant-set-child-as-parent": "Can't set child as parent category",
+	"cant-set-self-as-parent": "Can't set self as parent category"
 }

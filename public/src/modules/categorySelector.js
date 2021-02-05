@@ -16,6 +16,7 @@ define('categorySelector', ['categorySearch'], function (categorySearch) {
 			privilege: options.privilege,
 			states: options.states,
 			localCategories: options.localCategories,
+			showLinks: options.showLinks,
 		});
 
 		var selector = {
@@ -56,6 +57,7 @@ define('categorySelector', ['categorySearch'], function (categorySearch) {
 	categorySelector.modal = function (options) {
 		options = options || {};
 		options.onSelect = options.onSelect || function () {};
+		options.onSubmit = options.onSubmit || function () {};
 		app.parseAndTranslate('admin/partials/categories/select-category', {}, function (html) {
 			var modal = bootbox.dialog({
 				title: '[[modules:composer.select_category]]',
@@ -73,7 +75,7 @@ define('categorySelector', ['categorySearch'], function (categorySearch) {
 			function submit(ev) {
 				ev.preventDefault();
 				if (selector.selectedCategory) {
-					options.onSelect(selector.selectedCategory);
+					options.onSubmit(selector.selectedCategory);
 					modal.modal('hide');
 				}
 				return false;

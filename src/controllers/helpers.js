@@ -245,7 +245,9 @@ async function getCategoryData(cids, uid, selectedCid, states, privilege) {
 	}
 	selectedCid = selectedCid && selectedCid.map(String);
 
-	const visibleCategories = await helpers.getVisibleCategories(cids, uid, states, privilege);
+	const visibleCategories = await helpers.getVisibleCategories({
+		cids, uid, states, privilege, showLinks: false,
+	});
 
 	const categoriesData = categories.buildForSelectCategories(visibleCategories, ['disabledClass']);
 
@@ -279,8 +281,13 @@ async function getCategoryData(cids, uid, selectedCid, states, privilege) {
 	};
 }
 
-helpers.getVisibleCategories = async function (cids, uid, states, privilege) {
-	states = states || [categories.watchStates.watching, categories.watchStates.notwatching];
+helpers.getVisibleCategories = async function (params) {
+	const cids = params.cids;
+	const uid = params.uid;
+	const states = params.states || [categories.watchStates.watching, categories.watchStates.notwatching];
+	const privilege = params.privilege;
+	const showLinks = !!params.showLinks;
+
 	let [allowed, watchState, categoriesData, isAdmin, isModerator] = await Promise.all([
 		privileges.categories.isUserAllowedTo(privilege, cids, uid),
 		categories.getWatchState(cids, uid),
@@ -310,7 +317,7 @@ helpers.getVisibleCategories = async function (cids, uid, states, privilege) {
 			return false;
 		}
 		const hasVisibleChildren = checkVisibleChildren(c, cidToAllowed, cidToWatchState, states);
-		const isCategoryVisible = cidToAllowed[c.cid] && !c.link && !c.disabled && states.includes(cidToWatchState[c.cid]);
+		const isCategoryVisible = cidToAllowed[c.cid] && (showLinks || !c.link) && !c.disabled && states.includes(cidToWatchState[c.cid]);
 		const shouldBeRemoved = !hasVisibleChildren && !isCategoryVisible;
 		const shouldBeDisaplayedAsDisabled = hasVisibleChildren && !isCategoryVisible;
 
