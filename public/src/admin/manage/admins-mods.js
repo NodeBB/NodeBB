@@ -1,8 +1,8 @@
 'use strict';
 
 define('admin/manage/admins-mods', [
-	'translator', 'benchpress', 'autocomplete', 'api', 'bootbox',
-], function (translator, Benchpress, autocomplete, api, bootbox) {
+	'autocomplete', 'api', 'bootbox', 'categorySelector',
+], function (autocomplete, api, bootbox, categorySelector) {
 	var AdminsMods = {};
 
 	AdminsMods.init = function () {
@@ -76,6 +76,13 @@ define('admin/manage/admins-mods', [
 			});
 		});
 
+
+		categorySelector.init($('[component="category-selector"]'), {
+			onSelect: function (selectedCategory) {
+				ajaxify.go('admin/manage/admins-mods' + (selectedCategory.cid ? '?cid=' + selectedCategory.cid : ''));
+			},
+			localCategories: [],
+		});
 
 		autocomplete.user($('.moderator-search'), function (ev, ui) {
 			var input = $(ev.target);
