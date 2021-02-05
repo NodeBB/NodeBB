@@ -11,8 +11,6 @@ const privileges = require('../privileges');
 module.exports = function (User) {
 	User.bans = {};
 
-	const systemGroups = groups.systemGroups.filter(group => group !== groups.BANNED_USERS);
-
 	User.bans.ban = async function (uid, until, reason) {
 		// "until" (optional) is unix timestamp in milliseconds
 		// "reason" (optional) is a string
@@ -37,6 +35,7 @@ module.exports = function (User) {
 		}
 
 		// Leaving all other system groups to have privileges constrained to the "banned-users" group
+		const systemGroups = groups.systemGroups.filter(group => group !== groups.BANNED_USERS);
 		await groups.leave(systemGroups, uid);
 		await groups.join(groups.BANNED_USERS, uid);
 		await db.sortedSetAdd('users:banned', now, uid);
