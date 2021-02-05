@@ -41,7 +41,7 @@ modsController.flags.list = async function (req, res, next) {
 	}
 
 	if (!isAdminOrGlobalMod && moderatedCids.length) {
-		res.locals.cids = moderatedCids;
+		res.locals.cids = moderatedCids.map(cid => String(cid));
 	}
 
 	// Parse query string params for filters, eliminate non-valid filters
