@@ -1,7 +1,6 @@
 'use strict';
 
 const user = require('../user');
-const categories = require('../categories');
 const db = require('../database');
 const plugins = require('../plugins');
 const slugify = require('../slugify');
@@ -121,10 +120,9 @@ Groups.get = async function (groupName, options) {
 		stop = (parseInt(options.userListCount, 10) || 4) - 1;
 	}
 
-	const [groupData, members, selectCategories, pending, invited, isMember, isPending, isInvited, isOwner] = await Promise.all([
+	const [groupData, members, pending, invited, isMember, isPending, isInvited, isOwner] = await Promise.all([
 		Groups.getGroupData(groupName),
 		Groups.getOwnersAndMembers(groupName, options.uid, 0, stop),
-		categories.buildForSelect(groupName, 'topics:read', []),
 		Groups.getUsersFromSet('group:' + groupName + ':pending', ['username', 'userslug', 'picture']),
 		Groups.getUsersFromSet('group:' + groupName + ':invited', ['username', 'userslug', 'picture']),
 		Groups.isMember(options.uid, groupName),
@@ -138,10 +136,6 @@ Groups.get = async function (groupName, options) {
 	}
 	const descriptionParsed = await plugins.hooks.fire('filter:parse.raw', groupData.description);
 	groupData.descriptionParsed = descriptionParsed;
-	groupData.categories = selectCategories.map((category) => {
-		category.selected = groupData.memberPostCids.includes(category.cid);
-		return category;
-	});
 	groupData.members = members;
 	groupData.membersNextStart = stop + 1;
 	groupData.pending = pending.filter(Boolean);

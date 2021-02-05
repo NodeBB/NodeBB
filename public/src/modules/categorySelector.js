@@ -28,14 +28,14 @@ define('categorySelector', ['categorySearch'], function (categorySearch) {
 			if (categoryEl.hasClass('disabled')) {
 				return false;
 			}
-			selector.selectCategory(categoryEl.attr('data-cid'));
+			selector.selectCategory(parseInt(categoryEl.attr('data-cid'), 10));
 			onSelect(selector.selectedCategory);
 		});
 
 		selector.selectCategory = function (cid) {
 			var categoryEl = selector.el.find('[data-cid="' + cid + '"]');
 			selector.selectedCategory = {
-				cid: cid,
+				cid: parseInt(cid, 10),
 				name: categoryEl.attr('data-name'),
 			};
 
