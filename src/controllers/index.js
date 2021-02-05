@@ -144,6 +144,7 @@ Controllers.register = async function (req, res, next) {
 	}
 
 	let errorText;
+	const returnTo = (req.headers['x-return-to'] || '').replace(nconf.get('base_url') + nconf.get('relative_path'), '');
 	if (req.query.error === 'csrf-invalid') {
 		errorText = '[[error:csrf-invalid]]';
 	}
@@ -156,6 +157,10 @@ Controllers.register = async function (req, res, next) {
 					error: e.message,
 				});
 			}
+		}
+
+		if (returnTo) {
+			req.session.returnTo = returnTo;
 		}
 
 		const loginStrategies = require('../routes/authentication').getLoginStrategies();

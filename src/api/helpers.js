@@ -27,6 +27,7 @@ exports.buildReqObject = (req, payload) => {
 		params: req.params,
 		method: req.method,
 		body: payload || req.body,
+		session: req.session,
 		ip: req.ip,
 		host: host,
 		protocol: encrypted ? 'https' : 'http',

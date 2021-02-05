@@ -333,7 +333,7 @@ describe('Controllers', function () {
 			}, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
-				assert.equal(body.referrer, nconf.get('relative_path') + '/register/complete');
+				assert.strictEqual(body.next, nconf.get('relative_path') + '/register/complete');
 				request(nconf.get('url') + '/api/register/complete', {
 					jar: jar,
 					json: true,
