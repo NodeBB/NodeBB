@@ -149,7 +149,7 @@
 	"homepage": "Homepage",
 	"homepage_description": "Select a page to use as the forum homepage or 'None' to use the default homepage.",
 	"custom_route": "Custom Homepage Route",
-	"custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\", or \"popular\")",
+	"custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
 
 	"sso.title": "Single Sign-on Services",
 	"sso.associated": "Associated with",

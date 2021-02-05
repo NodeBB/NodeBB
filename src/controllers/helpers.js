@@ -367,16 +367,6 @@ function checkVisibleChildren(c, cidToAllowed, cidToWatchState, states) {
 }
 
 helpers.getHomePageRoutes = async function (uid) {
-	let cids = await categories.getAllCidsFromSet('categories:cid');
-	cids = await privileges.categories.filterCids('find', cids, uid);
-	const categoryData = await categories.getCategoriesFields(cids, ['name', 'slug']);
-
-	const categoryRoutes = categoryData.map(function (category) {
-		return {
-			route: 'category/' + category.slug,
-			name: 'Category: ' + category.name,
-		};
-	});
 	const routes = [
 		{
 			route: 'categories',
@@ -398,13 +388,15 @@ helpers.getHomePageRoutes = async function (uid) {
 			route: 'popular',
 			name: 'Popular',
 		},
-	].concat(categoryRoutes, [
 		{
 			route: 'custom',
 			name: 'Custom',
 		},
-	]);
-	const data = await plugins.hooks.fire('filter:homepage.get', { routes: routes });
+	];
+	const data = await plugins.hooks.fire('filter:homepage.get', {
+		uid: uid,
+		routes: routes,
+	});
 	return data.routes;
 };
 
