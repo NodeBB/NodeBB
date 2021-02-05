@@ -243,14 +243,15 @@ Categories.getChildrenCids = async function (rootCid) {
 		await recursive(keys);
 	}
 	const key = 'cid:' + rootCid + ':children';
-	const childrenCids = cache.get(key);
+	const cacheKey = 'cache:' + key;
+	const childrenCids = cache.get(cacheKey);
 	if (childrenCids) {
 		return childrenCids.slice();
 	}
 
 	await recursive(key);
 	allCids = _.uniq(allCids);
-	cache.set(key, allCids);
+	cache.set(cacheKey, allCids);
 	return allCids.slice();
 };
 
