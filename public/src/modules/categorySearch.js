@@ -15,6 +15,7 @@ define('categorySearch', function () {
 		} else if (Array.isArray(ajaxify.data.categories)) {
 			localCategories = ajaxify.data.categories.map(c => ({ ...c }));
 		}
+		options.cids = options.cids || ajaxify.data.selectedCids || [];
 
 		var searchEl = el.find('[component="category-selector-search"]');
 		if (!searchEl.length) {
@@ -67,7 +68,7 @@ define('categorySearch', function () {
 		function loadList(query, callback) {
 			socket.emit('categories.loadCategoryFilter', {
 				query: query,
-				selectedCids: ajaxify.data.selectedCids,
+				selectedCids: options.cids,
 				privilege: options.privilege,
 				states: options.states,
 				showLinks: options.showLinks,

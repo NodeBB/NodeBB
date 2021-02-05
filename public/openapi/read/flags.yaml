@@ -46,12 +46,6 @@ get:
                     type: array
                     items:
                       type: number
-                  categories:
-                    type: object
-                    properties: {}
-                    additionalProperties:
-                      type: string
-                      description: All categories will be listed here, with the `cid` as the key, and the category name as the value
                   hasFilter:
                     type: boolean
                   filters:
@@ -65,6 +59,16 @@ get:
                     type: string
                   title:
                     type: string
+                  selectedCategory:
+                    type: object
+                    properties:
+                      icon:
+                        type: string
+                      name:
+                        type: string
+                      bgColor:
+                        type: string
+                    nullable: true
               - $ref: ../components/schemas/Pagination.yaml#/Pagination
               - $ref: ../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
               - $ref: ../components/schemas/CommonProps.yaml#/CommonProps

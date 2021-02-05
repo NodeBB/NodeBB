@@ -21,12 +21,6 @@ modsController.flags.list = async function (req, res, next) {
 	const validFilters = ['assignee', 'state', 'reporterId', 'type', 'targetUid', 'cid', 'quick', 'page', 'perPage'];
 	const validSorts = ['newest', 'oldest', 'reports', 'upvotes', 'downvotes', 'replies'];
 
-	// Reset filters if explicitly requested
-	if (parseInt(req.query.reset, 10) === 1) {
-		delete req.session.flags_filters;
-		delete req.session.flags_sort;
-	}
-
 	const results = await Promise.all([
 		user.isAdminOrGlobalMod(req.uid),
 		user.getModeratedCids(req.uid),
@@ -47,24 +41,15 @@ modsController.flags.list = async function (req, res, next) {
 	// Parse query string params for filters, eliminate non-valid filters
 	filters = filters.reduce(function (memo, cur) {
 		if (req.query.hasOwnProperty(cur)) {
-			if (req.query[cur] === '') {
-				if (req.session.hasOwnProperty('flags_filters')) {
-					delete req.session.flags_filters[cur];
-				}
-			} else {
+			if (req.query[cur] !== '') {
 				memo[cur] = req.query[cur];
 			}
 		}
 
 		return memo;
 	}, {});
-	let hasFilter = !!Object.keys(filters).length;
 
-	if (!hasFilter && req.session.hasOwnProperty('flags_filters')) {
-		// Load filters from session object
-		filters = req.session.flags_filters;
-		hasFilter = true;
-	}
+	let hasFilter = !!Object.keys(filters).length;
 
 	if (res.locals.cids) {
 		if (!filters.cid) {
@@ -89,9 +74,7 @@ modsController.flags.list = async function (req, res, next) {
 
 	// Parse sort from query string
 	let sort;
-	if (!req.query.sort && req.session.hasOwnProperty('flags_sort')) {
-		sort = req.session.flags_sort;
-	} else {
+	if (req.query.sort) {
 		sort = sorts.includes(req.query.sort) ? req.query.sort : null;
 	}
 	if (sort === 'newest') {
@@ -99,26 +82,20 @@ modsController.flags.list = async function (req, res, next) {
 	}
 	hasFilter = hasFilter || !!sort;
 
-	// Save filters and sorting into session unless removed
-	if (hasFilter) {
-		req.session.flags_filters = filters;
-	}
-	req.session.flags_sort = sort;
-
-	const [flagsData, analyticsData, categoriesData] = await Promise.all([
+	const [flagsData, analyticsData, selectData] = await Promise.all([
 		flags.list({
 			filters: filters,
 			sort: sort,
 			uid: req.uid,
 		}),
 		analytics.getDailyStatsForSet('analytics:flags', Date.now(), 30),
-		categories.buildForSelect(req.uid, 'read'),
+		helpers.getSelectedCategory(filters.cid),
 	]);
 
 	res.render('flags/list', {
 		flags: flagsData.flags,
 		analytics: analyticsData,
-		categories: filterCategories(res.locals.cids, categoriesData),
+		selectedCategory: selectData.selectedCategory,
 		hasFilter: hasFilter,
 		filters: filters,
 		sort: sort || 'newest',
@@ -169,27 +146,6 @@ modsController.flags.detail = async function (req, res, next) {
 		]),
 	}));
 };
-
-function filterCategories(moderatedCids, categories) {
-	// If cids is populated, then slim down the categories list
-	if (moderatedCids) {
-		categories = categories.filter(category => moderatedCids.includes(String(category.cid)));
-	}
-
-	return categories.reduce(function (memo, cur) {
-		if (!moderatedCids) {
-			memo[cur.cid] = cur.name;
-			return memo;
-		}
-
-		// If mod, remove categories they can't moderate
-		if (moderatedCids.includes(String(cur.cid))) {
-			memo[cur.cid] = cur.name;
-		}
-
-		return memo;
-	}, {});
-}
 
 modsController.postQueue = async function (req, res, next) {
 	// Admins, global mods, and individual mods only

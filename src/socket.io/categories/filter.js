@@ -32,6 +32,9 @@ module.exports = function (SocketCategories) {
 		const stop = start + 200 - 1;
 
 		categoriesData = categoriesData.slice(start, stop);
+		if (Array.isArray(data.selectedCids)) {
+			data.selectedCids = data.selectedCids.map(cid => parseInt(cid, 10));
+		}
 		categoriesData.forEach(function (category) {
 			category.selected = data.selectedCids ? data.selectedCids.includes(category.cid) : false;
 			if (matchedCids.includes(category.cid)) {
