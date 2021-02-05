@@ -11,7 +11,7 @@ get:
             allOf:
               - type : object
                 properties:
-                  categories:
+                  categoriesTree:
                     type: array
                     items:
                       type: object
@@ -40,6 +40,8 @@ get:
                           nullable: true
                         imageClass:
                           type: string
+                        subCategoriesPerPage:
+                          type: number
                         children:
                           type: array
                           description: Array of children categories
