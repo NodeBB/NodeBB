@@ -18,6 +18,9 @@ get:
                   title:
                     type: string
                     description: The page title
+                  selectCategoryLabel:
+                    type: string
+                    description: Label to use for the category selector
                   categories:
                     description: A collection of category data objects
                     type: array
