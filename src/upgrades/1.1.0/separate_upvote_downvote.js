@@ -12,7 +12,7 @@ module.exports = {
 		const batch = require('../../batch');
 		const posts = require('../../posts');
 		let count = 0;
-		const progress = this.progress;
+		const { progress } = this;
 
 		batch.processSortedSet('posts:pid', (pids, next) => {
 			winston.verbose(`upgraded ${count} posts`);

@@ -153,7 +153,7 @@ modsController.postQueue = async function (req, res, next) {
 	if (!isPrivileged) {
 		return next();
 	}
-	const cid = req.query.cid;
+	const { cid } = req.query;
 	const page = parseInt(req.query.page, 10) || 1;
 	const postsPerPage = 20;
 

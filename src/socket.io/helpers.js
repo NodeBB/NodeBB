@@ -36,8 +36,8 @@ SocketHelpers.notifyNew = async function (uid, type, result) {
 
 async function notifyUids(uid, uids, type, result) {
 	const post = result.posts[0];
-	const tid = post.topic.tid;
-	const cid = post.topic.cid;
+	const { tid } = post.topic;
+	const { cid } = post.topic;
 	uids = await privileges.topics.filterUids('topics:read', tid, uids);
 	const watchStateUids = uids;
 
@@ -150,10 +150,10 @@ SocketHelpers.upvote = async function (data, notification) {
 		return;
 	}
 
-	const votes = data.post.votes;
+	const { votes } = data.post;
 	const touid = data.post.uid;
-	const fromuid = data.fromuid;
-	const pid = data.post.pid;
+	const { fromuid } = data;
+	const { pid } = data.post;
 
 	const shouldNotify = {
 		all: function () {

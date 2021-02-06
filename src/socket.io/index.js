@@ -207,7 +207,7 @@ async function validateSession(socket) {
 const cookieParserAsync = util.promisify((req, callback) => cookieParser(req, {}, err => callback(err)));
 
 async function authorize(socket, callback) {
-	const request = socket.request;
+	const { request } = socket;
 
 	if (!request) {
 		return callback(new Error('[[error:not-authorized]]'));

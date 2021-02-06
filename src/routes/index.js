@@ -18,7 +18,7 @@ const authRoutes = require('./authentication');
 const writeRoutes = require('./write');
 const helpers = require('./helpers');
 
-const setupPageRoute = helpers.setupPageRoute;
+const { setupPageRoute } = helpers;
 
 function mainRoutes(app, middleware, controllers) {
 	const loginRegisterMiddleware = [middleware.redirectToAccountIfLoggedIn];

@@ -8,7 +8,7 @@ module.exports = {
 	name: 'Fix sort by votes for moved topics',
 	timestamp: Date.UTC(2018, 0, 8),
 	method: function (callback) {
-		const progress = this.progress;
+		const { progress } = this;
 
 		batch.processSortedSet('topics:tid', (tids, next) => {
 			async.eachLimit(tids, 500, (tid, _next) => {

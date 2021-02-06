@@ -55,7 +55,7 @@ module.exports = function (Categories) {
 			return result && result.tids;
 		}
 
-		let start = data.start;
+		let { start } = data;
 		if (start > 0 && totalPinnedCount) {
 			start -= totalPinnedCount - pinnedCountOnPage;
 		}
@@ -91,7 +91,7 @@ module.exports = function (Categories) {
 	};
 
 	Categories.buildTopicsSortedSet = async function (data) {
-		const cid = data.cid;
+		const { cid } = data;
 		let set = `cid:${cid}:tids`;
 		const sort = data.sort || (data.settings && data.settings.categoryTopicSort) || meta.config.categoryTopicSort || 'newest_to_oldest';
 

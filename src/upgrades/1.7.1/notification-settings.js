@@ -8,7 +8,7 @@ module.exports = {
 	name: 'Convert old notification digest settings',
 	timestamp: Date.UTC(2017, 10, 15),
 	method: function (callback) {
-		const progress = this.progress;
+		const { progress } = this;
 
 		batch.processSortedSet('users:joindate', (uids, next) => {
 			async.eachLimit(uids, 500, (uid, next) => {

@@ -183,7 +183,7 @@ authenticationController.registerComplete = function (req, res, next) {
 		} else {
 			// Update user hash, clear registration data in session
 			const payload = req.session.registration;
-			const uid = payload.uid;
+			const { uid } = payload;
 			delete payload.uid;
 			delete payload.returnTo;
 
@@ -418,8 +418,8 @@ authenticationController.logout = async function (req, res, next) {
 		res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
 		return res.status(200).send('not-logged-in');
 	}
-	const uid = req.uid;
-	const sessionID = req.sessionID;
+	const { uid } = req;
+	const { sessionID } = req;
 
 	try {
 		await user.auth.revokeSession(sessionID, uid);

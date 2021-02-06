@@ -17,7 +17,7 @@ module.exports = function (Topics) {
 			return [];
 		}
 		let uid = options;
-		let teaserPost = meta.config.teaserPost;
+		let { teaserPost } = meta.config;
 		if (typeof options === 'object') {
 			uid = options.uid;
 			teaserPost = options.teaserPost || meta.config.teaserPost;

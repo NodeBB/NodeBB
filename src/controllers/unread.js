@@ -13,7 +13,7 @@ const helpers = require('./helpers');
 const unreadController = module.exports;
 
 unreadController.get = async function (req, res) {
-	const cid = req.query.cid;
+	const { cid } = req.query;
 	const filter = req.query.filter || '';
 
 	const [categoryData, userSettings, isPrivileged] = await Promise.all([

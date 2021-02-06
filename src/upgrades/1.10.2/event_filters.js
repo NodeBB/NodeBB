@@ -9,7 +9,7 @@ module.exports = {
 	name: 'add filters to events',
 	timestamp: Date.UTC(2018, 9, 4),
 	method: function (callback) {
-		const progress = this.progress;
+		const { progress } = this;
 
 		batch.processSortedSet('events:time', (eids, next) => {
 			async.eachSeries(eids, (eid, next) => {

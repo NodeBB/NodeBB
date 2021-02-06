@@ -11,7 +11,7 @@ module.exports = {
 	name: 'Migrate existing topic thumbnails to new format',
 	timestamp: Date.UTC(2020, 11, 11),
 	method: async function () {
-		const progress = this.progress;
+		const { progress } = this;
 		const current = await meta.configs.get('topicThumbSize');
 
 		if (parseInt(current, 10) === 120) {

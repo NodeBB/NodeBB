@@ -157,7 +157,7 @@ module.exports = function (Topics) {
 			return;
 		}
 
-		let title = postData.topic.title;
+		let { title } = postData.topic;
 		if (title) {
 			title = utils.decodeHTMLEntities(title);
 		}

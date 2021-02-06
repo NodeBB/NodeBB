@@ -21,7 +21,7 @@ uploads.upload = async function (socket, data) {
 
 	inProgress[socket.id] = inProgress[socket.id] || {};
 	const socketUploads = inProgress[socket.id];
-	const method = data.params.method;
+	const { method } = data.params;
 
 	socketUploads[method] = socketUploads[method] || { imageData: '' };
 	socketUploads[method].imageData += data.chunk;

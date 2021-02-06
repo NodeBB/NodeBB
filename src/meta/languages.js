@@ -71,8 +71,8 @@ async function writeLanguageFile(language, namespace, translations) {
 // run through core and all plugins to generate
 // a full translation hash
 async function buildTranslations(ref) {
-	const namespaces = ref.namespaces;
-	const languages = ref.languages;
+	const { namespaces } = ref;
+	const { languages } = ref;
 	const plugins = _.values(Plugins.pluginsData).filter(plugin => typeof plugin.languages === 'string');
 
 	const promises = [];

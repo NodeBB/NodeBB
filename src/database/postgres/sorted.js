@@ -606,7 +606,7 @@ DELETE FROM "legacy_zset" z
 	}
 
 	module.getSortedSetScan = async function (params) {
-		let match = params.match;
+		let { match } = params;
 		if (match.startsWith('*')) {
 			match = `%${match.substring(1)}`;
 		}

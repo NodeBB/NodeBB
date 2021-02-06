@@ -104,7 +104,7 @@ const actions = {};
 if (process.env.minifier_child) {
 	process.on('message', (message) => {
 		if (message.type === 'action') {
-			const action = message.action;
+			const { action } = message;
 			if (typeof actions[action.act] !== 'function') {
 				process.send({
 					type: 'error',

@@ -106,7 +106,7 @@ module.exports = function (User) {
 	}
 
 	User.shouldQueueUser = async function (ip) {
-		const registrationApprovalType = meta.config.registrationApprovalType;
+		const { registrationApprovalType } = meta.config;
 		if (registrationApprovalType === 'admin-approval') {
 			return true;
 		} else if (registrationApprovalType === 'admin-approval-ip') {

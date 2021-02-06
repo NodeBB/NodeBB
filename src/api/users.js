@@ -229,7 +229,7 @@ usersAPI.unban = async function (caller, data) {
 };
 
 async function isPrivilegedOrSelfAndPasswordMatch(caller, data) {
-	const uid = caller.uid;
+	const { uid } = caller;
 	const isSelf = parseInt(uid, 10) === parseInt(data.uid, 10);
 
 	const [isAdmin, isTargetAdmin, isGlobalMod] = await Promise.all([

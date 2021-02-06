@@ -62,7 +62,7 @@ const templateToData = {
 			return `uid:${userData.uid}:followed_tids`;
 		},
 		getTopics: async function (set, req, start, stop) {
-			const sort = req.query.sort;
+			const { sort } = req.query;
 			const map = {
 				votes: 'topics:votes',
 				posts: 'topics:posts',

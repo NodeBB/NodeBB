@@ -315,7 +315,7 @@ describe('API', async () => {
 				});
 
 				it('should have examples when parameters are present', () => {
-					let parameters = context[method].parameters;
+					let { parameters } = context[method];
 					let testPath = path;
 
 					if (parameters) {

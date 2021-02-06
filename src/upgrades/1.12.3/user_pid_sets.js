@@ -11,7 +11,7 @@ module.exports = {
 	name: 'Create zsets for user posts per category',
 	timestamp: Date.UTC(2019, 5, 23),
 	method: function (callback) {
-		const progress = this.progress;
+		const { progress } = this;
 
 		batch.processSortedSet('posts:pid', (pids, next) => {
 			progress.incr(pids.length);

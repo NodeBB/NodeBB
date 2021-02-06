@@ -8,7 +8,7 @@ const privileges = require('../privileges');
 
 const apiHelpers = require('./helpers');
 
-const doTopicAction = apiHelpers.doTopicAction;
+const { doTopicAction } = apiHelpers;
 
 const websockets = require('../socket.io');
 const socketHelpers = require('../socket.io/helpers');

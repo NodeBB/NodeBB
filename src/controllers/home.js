@@ -37,7 +37,7 @@ async function rewrite(req, res, next) {
 		return next(err);
 	}
 
-	const pathname = parsedUrl.pathname;
+	const { pathname } = parsedUrl;
 	const hook = `action:homepage.get:${pathname}`;
 	if (!plugins.hooks.hasListeners(hook)) {
 		req.url = req.path + (!req.path.endsWith('/') ? '/' : '') + pathname;

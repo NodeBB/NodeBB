@@ -8,7 +8,7 @@ module.exports = {
 	name: 'New sorted set cid:<cid>:tids:lastposttime',
 	timestamp: Date.UTC(2017, 9, 30),
 	method: function (callback) {
-		const progress = this.progress;
+		const { progress } = this;
 
 		require('../../batch').processSortedSet('topics:tid', (tids, next) => {
 			async.eachSeries(tids, (tid, next) => {

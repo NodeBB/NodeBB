@@ -8,7 +8,7 @@ module.exports = {
 	name: 'Wipe all existing RSS tokens',
 	timestamp: Date.UTC(2017, 6, 5),
 	method: function (callback) {
-		const progress = this.progress;
+		const { progress } = this;
 
 		batch.processSortedSet('users:joindate', (uids, next) => {
 			async.eachLimit(uids, 500, (uid, next) => {

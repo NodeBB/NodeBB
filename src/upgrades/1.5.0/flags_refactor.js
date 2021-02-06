@@ -11,7 +11,7 @@ module.exports = {
 		const batch = require('../../batch');
 		const posts = require('../../posts');
 		const flags = require('../../flags');
-		const progress = this.progress;
+		const { progress } = this;
 
 		batch.processSortedSet('posts:pid', (ids, next) => {
 			posts.getPostsByPids(ids, 1, (err, posts) => {

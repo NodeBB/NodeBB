@@ -1,6 +1,6 @@
 'use strict';
 
-const SMTPServer = require('smtp-server').SMTPServer;
+const { SMTPServer } = require('smtp-server');
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');

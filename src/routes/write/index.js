@@ -10,7 +10,7 @@ const helpers = require('../../controllers/helpers');
 const Write = module.exports;
 
 Write.reload = async (params) => {
-	const router = params.router;
+	const { router } = params;
 	let apiSettings = await meta.settings.get('core.api');
 	plugins.hooks.register('core', {
 		hook: 'action:settings.set',

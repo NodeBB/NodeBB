@@ -41,7 +41,7 @@ try {
 	const defaultPackage = require('../../install/package.json');
 
 	const checkVersion = function (packageName) {
-		const version = JSON.parse(fs.readFileSync(path.join(paths.nodeModules, packageName, 'package.json'), 'utf8')).version;
+		const { version } = JSON.parse(fs.readFileSync(path.join(paths.nodeModules, packageName, 'package.json'), 'utf8'));
 		if (!semver.satisfies(version, defaultPackage.dependencies[packageName])) {
 			const e = new TypeError(`Incorrect dependency version: ${packageName}`);
 			e.code = 'DEP_WRONG_VERSION';

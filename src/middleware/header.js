@@ -190,7 +190,7 @@ async function appendUnreadCounts({ uid, navigation, unreadData }) {
 		}
 	});
 
-	const tidsByFilter = results.unreadData.tidsByFilter;
+	const { tidsByFilter } = results.unreadData;
 	navigation = navigation.map((item) => {
 		function modifyNavItem(item, route, filter, content) {
 			if (item && item.originalRoute === route) {

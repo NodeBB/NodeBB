@@ -18,7 +18,7 @@ module.exports = {
 		}
 
 		const isRedisSessionStore = configJSON.hasOwnProperty('redis');
-		const progress = this.progress;
+		const { progress } = this;
 
 		async.waterfall([
 			function (next) {

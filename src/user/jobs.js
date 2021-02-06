@@ -12,7 +12,7 @@ module.exports = function (User) {
 		winston.verbose('[user/jobs] (Re-)starting jobs...');
 
 		let started = 0;
-		let digestHour = meta.config.digestHour;
+		let { digestHour } = meta.config;
 
 		// Fix digest hour if invalid
 		if (isNaN(digestHour)) {

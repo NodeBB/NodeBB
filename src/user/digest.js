@@ -21,7 +21,7 @@ Digest.execute = async function (payload) {
 		winston.info(`[user/jobs] Did not send digests (${payload.interval}) because subscription system is disabled.`);
 		return;
 	}
-	let subscribers = payload.subscribers;
+	let { subscribers } = payload;
 	if (!subscribers) {
 		subscribers = await Digest.getSubscribers(payload.interval);
 	}

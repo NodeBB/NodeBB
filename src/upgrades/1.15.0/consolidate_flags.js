@@ -9,7 +9,7 @@ module.exports = {
 	name: 'Consolidate multiple flags reports, going forward',
 	timestamp: Date.UTC(2020, 6, 16),
 	method: async function () {
-		const progress = this.progress;
+		const { progress } = this;
 
 		let flags = await db.getSortedSetRange('flags:datetime', 0, -1);
 		flags = flags.map(flagId => `flag:${flagId}`);

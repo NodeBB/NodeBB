@@ -37,7 +37,7 @@ module.exports = function (Groups) {
 				uid: uid,
 				name: 'groupCover',
 			});
-			const url = uploadData.url;
+			const { url } = uploadData;
 			await Groups.setGroupField(data.groupName, 'cover:url', url);
 
 			await image.resizeImage({

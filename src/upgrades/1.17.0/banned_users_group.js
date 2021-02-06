@@ -10,7 +10,7 @@ module.exports = {
 	name: 'Move banned users to banned-users group',
 	timestamp: Date.UTC(2020, 11, 13),
 	method: async function () {
-		const progress = this.progress;
+		const { progress } = this;
 		const timestamp = await db.getObjectField('group:administrators', 'timestamp');
 		const bannedExists = await groups.exists('banned-users');
 		if (!bannedExists) {

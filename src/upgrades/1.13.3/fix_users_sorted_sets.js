@@ -7,7 +7,7 @@ module.exports = {
 	name: 'Fix user sorted sets',
 	timestamp: Date.UTC(2020, 4, 2),
 	method: async function () {
-		const progress = this.progress;
+		const { progress } = this;
 		const nextUid = await db.getObjectField('global', 'nextUid');
 		const allUids = [];
 		for (let i = 1; i <= nextUid; i++) {

@@ -5,7 +5,7 @@ const middleware = require('../../middleware');
 const controllers = require('../../controllers');
 const routeHelpers = require('../helpers');
 
-const setupApiRoute = routeHelpers.setupApiRoute;
+const { setupApiRoute } = routeHelpers;
 
 module.exports = function () {
 	const middlewares = [middleware.authenticate];

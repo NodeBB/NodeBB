@@ -10,7 +10,7 @@ module.exports = {
 	name: 'Update category watch data',
 	timestamp: Date.UTC(2018, 11, 13),
 	method: function (callback) {
-		const progress = this.progress;
+		const { progress } = this;
 		let keys;
 		async.waterfall([
 			function (next) {

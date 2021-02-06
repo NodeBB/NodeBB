@@ -2,7 +2,7 @@
 
 
 const assert = require('assert');
-const JSDOM = require('jsdom').JSDOM;
+const { JSDOM } = require('jsdom');
 const utils = require('../public/src/utils.js');
 const slugify = require('../src/slugify');
 const db = require('./mocks/databasemock');
@@ -11,11 +11,11 @@ describe('Utility Methods', () => {
 	// https://gist.github.com/robballou/9ee108758dc5e0e2d028
 	// create some jsdom magic to allow jQuery to work
 	const dom = new JSDOM('<html><body></body></html>');
-	const window = dom.window;
+	const { window } = dom;
 	global.window = window;
 	global.jQuery = require('jquery');
 	global.$ = global.jQuery;
-	const $ = global.$;
+	const { $ } = global;
 	require('jquery-deserialize');
 	require('jquery-serializeobject');
 

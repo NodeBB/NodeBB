@@ -9,7 +9,7 @@ module.exports = {
 	name: 'Fix category post zsets',
 	timestamp: Date.UTC(2018, 9, 10),
 	method: function (callback) {
-		const progress = this.progress;
+		const { progress } = this;
 
 		db.getSortedSetRange('categories:cid', 0, -1, (err, cids) => {
 			if (err) {

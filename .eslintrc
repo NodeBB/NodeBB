@@ -59,12 +59,11 @@
 		"function-paren-newline": ["error", "consistent"],
 		// only require const if all parts of destructuring can be const
 		"prefer-const": ["error", { "destructuring": "all" }],
-		// don't require destructuring when assigning
-		// "prefer-destructuring": ["error", {
-		// 	"VariableDeclarator": { "array": true, "object": true },
-		// 	"AssignmentExpression": { "array": false, "object": false }
-		// }],
-		"prefer-destructuring": "off",
+		// don't require destructuring for arrays or assignment
+		"prefer-destructuring": ["error", {
+			"VariableDeclarator": { "array": false, "object": true },
+			"AssignmentExpression": { "array": false, "object": false }
+		}],
 		// identical to airbnb rule, except for allowing for..of, because we want to use it
 		// "no-restricted-syntax": [
 		// 	"error",

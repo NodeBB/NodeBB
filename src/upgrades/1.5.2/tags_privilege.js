@@ -8,7 +8,7 @@ module.exports = {
 	name: 'Give tag privilege to registered-users on all categories',
 	timestamp: Date.UTC(2017, 5, 16),
 	method: function (callback) {
-		const progress = this.progress;
+		const { progress } = this;
 		const privileges = require('../../privileges');
 		batch.processSortedSet('categories:cid', (cids, next) => {
 			async.eachSeries(cids, (cid, next) => {

@@ -8,7 +8,7 @@ module.exports = {
 	name: 'Favourites to Bookmarks',
 	timestamp: Date.UTC(2016, 9, 8),
 	method: function (callback) {
-		const progress = this.progress;
+		const { progress } = this;
 
 		function upgradePosts(next) {
 			const batch = require('../../batch');

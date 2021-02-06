@@ -227,7 +227,7 @@ async function getInvites() {
 async function render(req, res, data) {
 	data.pagination = pagination.create(data.page, data.pageCount, req.query);
 
-	const registrationType = meta.config.registrationType;
+	const { registrationType } = meta.config;
 
 	data.inviteOnly = registrationType === 'invite-only' || registrationType === 'admin-invite-only';
 	data.adminInviteOnly = registrationType === 'admin-invite-only';

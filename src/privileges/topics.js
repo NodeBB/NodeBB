@@ -126,7 +126,7 @@ module.exports = function (privileges) {
 			return true;
 		}
 
-		const preventTopicDeleteAfterReplies = meta.config.preventTopicDeleteAfterReplies;
+		const { preventTopicDeleteAfterReplies } = meta.config;
 		if (!isModerator && preventTopicDeleteAfterReplies && (topicData.postcount - 1) >= preventTopicDeleteAfterReplies) {
 			const langKey = preventTopicDeleteAfterReplies > 1 ?
 				`[[error:cant-delete-topic-has-replies, ${meta.config.preventTopicDeleteAfterReplies}]]` :
@@ -134,7 +134,7 @@ module.exports = function (privileges) {
 			throw new Error(langKey);
 		}
 
-		const deleterUid = topicData.deleterUid;
+		const { deleterUid } = topicData;
 		return allowedTo[0] && ((isOwner && (deleterUid === 0 || deleterUid === topicData.uid)) || isModerator);
 	};
 

@@ -7,9 +7,9 @@ nconf.argv().env({
 	separator: '__',
 });
 const winston = require('winston');
-const fork = require('child_process').fork;
+const { fork } = require('child_process');
 
-const env = process.env;
+const { env } = process;
 let worker;
 
 env.NODE_ENV = env.NODE_ENV || 'development';

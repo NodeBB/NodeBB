@@ -7,7 +7,7 @@ const nconf = require('nconf');
 const winston = require('winston');
 
 const file = require('../file');
-const Translator = require('../translator').Translator;
+const { Translator } = require('../translator');
 
 function filterDirectories(directories) {
 	return directories.map(

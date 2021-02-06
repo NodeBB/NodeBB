@@ -23,8 +23,8 @@ module.exports = {
 						return next(err);
 					}
 
-					const groups = data.groups;
-					const users = data.users;
+					const { groups } = data;
+					const { users } = data;
 
 					async.waterfall([
 						function (next) {

@@ -11,7 +11,7 @@ module.exports = {
 	name: 'Hash all IP addresses stored in Recent IPs zset',
 	timestamp: Date.UTC(2018, 5, 22),
 	method: function (callback) {
-		const progress = this.progress;
+		const { progress } = this;
 		const hashed = /[a-f0-9]{32}/;
 		let hash;
 

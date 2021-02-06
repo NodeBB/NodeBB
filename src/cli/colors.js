@@ -5,7 +5,7 @@
 // to include color styling in the output
 // so the CLI looks nice
 
-const Command = require('commander').Command;
+const { Command } = require('commander');
 
 const commandColor = 'yellow';
 const optionColor = 'cyan';

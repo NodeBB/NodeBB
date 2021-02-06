@@ -8,7 +8,7 @@ module.exports = {
 	name: 'Store poster count in topic hash',
 	timestamp: Date.UTC(2020, 9, 24),
 	method: async function () {
-		const progress = this.progress;
+		const { progress } = this;
 
 		await batch.processSortedSet('topics:tid', async (tids) => {
 			progress.incr(tids.length);

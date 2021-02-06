@@ -9,7 +9,7 @@ module.exports = {
 	name: 'Fix category topic zsets',
 	timestamp: Date.UTC(2018, 9, 11),
 	method: function (callback) {
-		const progress = this.progress;
+		const { progress } = this;
 
 		const topics = require('../../topics');
 		batch.processSortedSet('topics:tid', (tids, next) => {

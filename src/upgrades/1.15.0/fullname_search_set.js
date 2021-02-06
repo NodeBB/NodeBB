@@ -9,7 +9,7 @@ module.exports = {
 	name: 'Create fullname search set',
 	timestamp: Date.UTC(2020, 8, 11),
 	method: async function () {
-		const progress = this.progress;
+		const { progress } = this;
 
 		await batch.processSortedSet('users:joindate', async (uids) => {
 			progress.incr(uids.length);

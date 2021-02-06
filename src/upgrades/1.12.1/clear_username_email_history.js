@@ -8,7 +8,7 @@ module.exports = {
 	name: 'Delete username email history for deleted users',
 	timestamp: Date.UTC(2019, 2, 25),
 	method: function (callback) {
-		const progress = this.progress;
+		const { progress } = this;
 		let currentUid = 1;
 		db.getObjectField('global', 'nextUid', (err, nextUid) => {
 			if (err) {

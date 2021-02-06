@@ -411,7 +411,7 @@ module.exports = function (Topics) {
 	}
 
 	async function findMatches(data) {
-		let query = data.query;
+		let { query } = data;
 		let tagWhitelist = [];
 		if (parseInt(data.cid, 10)) {
 			tagWhitelist = await categories.getTagWhitelist([data.cid]);

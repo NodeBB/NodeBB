@@ -16,7 +16,7 @@ module.exports = function (app) {
 	// Redoc
 	router.get('/spec/:type', async (req, res, next) => {
 		const types = ['read', 'write'];
-		const type = req.params.type;
+		const { type } = req.params;
 		if (!types.includes(type)) {
 			return next();
 		}

@@ -143,7 +143,7 @@ async function minifyModules(modules, fork) {
 }
 
 async function linkModules() {
-	const modules = JS.scripts.modules;
+	const { modules } = JS.scripts;
 
 	await Promise.all(Object.keys(modules).map(async (relPath) => {
 		const srcPath = path.join(__dirname, '../../', modules[relPath]);
@@ -179,8 +179,8 @@ async function getModuleList() {
 
 	const moduleFiles = [];
 	await Promise.all(modules.map(async (module) => {
-		const srcPath = module.srcPath;
-		const destPath = module.destPath;
+		const { srcPath } = module;
+		const { destPath } = module;
 
 		const stats = await fs.promises.stat(srcPath);
 		if (!stats.isDirectory()) {

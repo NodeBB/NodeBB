@@ -282,10 +282,8 @@ async function getCategoryData(cids, uid, selectedCid, states, privilege) {
 }
 
 helpers.getVisibleCategories = async function (params) {
-	const cids = params.cids;
-	const uid = params.uid;
+	const { cids, uid, privilege } = params;
 	const states = params.states || [categories.watchStates.watching, categories.watchStates.notwatching];
-	const privilege = params.privilege;
 	const showLinks = !!params.showLinks;
 
 	let [allowed, watchState, categoriesData, isAdmin, isModerator] = await Promise.all([
@@ -434,7 +432,7 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 			response: payload || {},
 		});
 	} else if (payload instanceof Error) {
-		const message = payload.message;
+		const { message } = payload;
 		const response = {};
 
 		// Update status code based on some common error codes
