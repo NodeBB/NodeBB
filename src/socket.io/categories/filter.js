@@ -73,12 +73,25 @@ module.exports = function (SocketCategories) {
 	}
 
 	async function loadCids(uid) {
+		let resultCids = [];
+		async function getCidsRecursive(cids) {
+			const categoryData = await categories.getCategoriesFields(cids, ['subCategoriesPerPage']);
+			const cidToData = _.zipObject(cids, categoryData);
+			await Promise.all(cids.map(async (cid) => {
+				const allChildCids = await categories.getAllCidsFromSet('cid:' + cid + ':children');
+				if (allChildCids.length) {
+					const childCids = await privileges.categories.filterCids('find', allChildCids, uid);
+					resultCids.push(...childCids.slice(0, cidToData[cid].subCategoriesPerPage));
+					await getCidsRecursive(childCids);
+				}
+			}));
+		}
+
 		const allRootCids = await categories.getAllCidsFromSet('cid:0:children');
 		const rootCids = await privileges.categories.filterCids('find', allRootCids, uid);
 		const pageCids = rootCids.slice(0, meta.config.categoriesPerPage);
-		// TODO: returns all children of a root, should only return some
-		const allChildCids = _.flatten(await Promise.all(pageCids.map(cid => categories.getChildrenCids(cid))));
-		const childCids = await privileges.categories.filterCids('find', allChildCids, uid);
-		return pageCids.concat(childCids);
+		resultCids = pageCids;
+		await getCidsRecursive(pageCids);
+		return resultCids;
 	}
 };

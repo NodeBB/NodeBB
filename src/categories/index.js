@@ -71,7 +71,8 @@ Categories.getAllCidsFromSet = async function (key) {
 	}
 
 	cids = await db.getSortedSetRange(key, 0, -1);
-	cache.set(key, cids.map(cid => parseInt(cid, 10)));
+	cids = cids.map(cid => parseInt(cid, 10));
+	cache.set(key, cids);
 	return cids.slice();
 };
 
