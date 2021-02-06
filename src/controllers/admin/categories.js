@@ -58,7 +58,7 @@ categoriesController.getAll = async function (req, res) {
 	}
 
 	const fields = [
-		'cid', 'name', 'icon', 'parentCid', 'disabled', 'link',
+		'cid', 'name', 'icon', 'parentCid', 'disabled', 'link', 'order',
 		'color', 'bgColor', 'backgroundImage', 'imageClass', 'subCategoriesPerPage',
 	];
 	const categoriesData = await categories.getCategoriesFields(cids, fields);
@@ -72,7 +72,7 @@ categoriesController.getAll = async function (req, res) {
 		}
 	}
 	if (rootCid && tree[0] && Array.isArray(tree[0].children)) {
-		tree[0].children = tree[0].children.slice(0, 200);
+		tree[0].children = tree[0].children.slice(0, Math.max(200, tree[0].subCategoriesPerPage));
 		tree[0].children.forEach(trim);
 	} else {
 		tree = tree.slice(0, 200);

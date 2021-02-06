@@ -318,9 +318,11 @@ Categories.getTree = function (categories, parentCid) {
 			}
 			return a.cid - b.cid;
 		});
-		if (tree.children) {
-			sortTree(tree.children);
-		}
+		tree.forEach((category) => {
+			if (category && Array.isArray(category.children)) {
+				sortTree(category.children);
+			}
+		});
 	}
 	sortTree(tree);
 

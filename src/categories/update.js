@@ -50,12 +50,12 @@ module.exports = function (Categories) {
 			return await updateTagWhitelist(cid, value);
 		} else if (key === 'name') {
 			return await updateName(cid, value);
+		} else if (key === 'order') {
+			return await updateOrder(cid, value);
 		}
 
 		await db.setObjectField('category:' + cid, key, value);
-		if (key === 'order') {
-			await updateOrder(cid, value);
-		} else if (key === 'description') {
+		if (key === 'description') {
 			await Categories.parseDescription(cid, value);
 		}
 	}
@@ -95,7 +95,41 @@ module.exports = function (Categories) {
 
 	async function updateOrder(cid, order) {
 		const parentCid = await Categories.getCategoryField(cid, 'parentCid');
-		await db.sortedSetsAdd(['categories:cid', 'cid:' + parentCid + ':children'], order, cid);
+		await db.sortedSetsAdd('categories:cid', order, cid);
+
+		const childCategories = await db.getSortedSetRangeWithScores(
+			'cid:' + parentCid + ':children', 0, -1
+		);
+
+		let foundIndex = -1;
+		childCategories.forEach((category, index) => {
+			if (parseInt(category.value, 10) === parseInt(cid, 10)) {
+				foundIndex = index;
+			}
+		});
+		if (foundIndex === -1) {
+			throw new Error('[[error:no-category]]');
+		}
+		// moves category(cid) to index order-1 in the array
+		if (foundIndex !== -1 && childCategories.length > 1) {
+			childCategories.splice(Math.max(1, order - 1), 0, childCategories.splice(foundIndex, 1)[0]);
+		}
+		// recalculate orders from array indices
+		childCategories.forEach((item, index) => {
+			item.score = index + 1;
+		});
+
+		await db.sortedSetAdd(
+			'cid:' + parentCid + ':children',
+			childCategories.map(item => item.score),
+			childCategories.map(item => item.value)
+		);
+
+		// TODO: use db.setObjectBulk
+		await Promise.all(childCategories.map(async (category) => {
+			await db.setObjectField('category:' + category.value, 'order', category.score);
+		}));
+
 		cache.del([
 			'categories:cid',
 			'cid:' + parentCid + ':children',

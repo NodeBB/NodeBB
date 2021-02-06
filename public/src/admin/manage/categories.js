@@ -6,7 +6,8 @@ define('admin/manage/categories', [
 	'categorySelector',
 	'api',
 	'Sortable',
-], function (translator, Benchpress, categorySelector, api, Sortable) {
+	'bootbox',
+], function (translator, Benchpress, categorySelector, api, Sortable, bootbox) {
 	var	Categories = {};
 	var newCategoryId = -1;
 	var sortables;
@@ -46,6 +47,33 @@ define('admin/manage/categories', [
 			var el = $(this);
 			el.find('i').toggleClass('fa-minus').toggleClass('fa-plus');
 			el.closest('[data-cid]').find('> ul[data-cid]').toggleClass('hidden');
+		});
+
+		$('.categories').on('click', '.set-order', function () {
+			var cid = $(this).attr('data-cid');
+			var modal = bootbox.dialog({
+				title: '[[admin/manage/categories:set-order]]',
+				message: '<input class="form-control input-lg" />',
+				show: true,
+				buttons: {
+					save: {
+						label: '[[modules:bootbox.confirm]]',
+						className: 'btn-primary',
+						callback: function () {
+							var val = modal.find('input').val();
+							if (val && cid) {
+								var modified = {};
+								modified[cid] = { order: Math.max(1, parseInt(val, 10)) };
+								api.put('/categories/' + cid, modified[cid]).then(function () {
+									ajaxify.refresh();
+								}).catch(err => app.alertError(err));
+							} else {
+								return false;
+							}
+						},
+					},
+				},
+			});
 		});
 
 		$('#collapse-all').on('click', function () {
@@ -170,25 +198,18 @@ define('admin/manage/categories', [
 
 		// Update needed?
 		if ((e.newIndex != null && parseInt(e.oldIndex, 10) !== parseInt(e.newIndex, 10)) || isCategoryUpdate) {
-			var parentCategory = isCategoryUpdate ? sortables[newCategoryId] : sortables[e.from.dataset.cid];
+			var cid = e.item.dataset.cid;
 			var modified = {};
-			var i = 0;
-			var list = parentCategory.toArray();
-			var len = list.length;
-
-			for (i; i < len; i += 1) {
-				modified[list[i]] = {
-					order: (i + 1),
-				};
-			}
+			modified[cid] = {
+				order: e.newIndex + 1,
+			};
 
 			if (isCategoryUpdate) {
-				modified[e.item.dataset.cid].parentCid = newCategoryId;
+				modified[cid].parentCid = newCategoryId;
 			}
 
 			newCategoryId = -1;
-			// TODO: this makes 200+ put requests for each category
-			Object.keys(modified).map(cid => api.put('/categories/' + cid, modified[cid]));
+			api.put('/categories/' + cid, modified[cid]);
 		}
 	}
 
