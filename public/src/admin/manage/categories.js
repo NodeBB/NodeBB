@@ -196,8 +196,11 @@ define('admin/manage/categories', [
 		if ((e.newIndex != null && parseInt(e.oldIndex, 10) !== parseInt(e.newIndex, 10)) || isCategoryUpdate) {
 			var cid = e.item.dataset.cid;
 			var modified = {};
+			// on page 1 baseIndex is 0, on page n baseIndex is (n - 1) * ajaxify.data.categoriesPerPage
+			// this makes sure order is correct when drag & drop is used on pages > 1
+			var baseIndex = (ajaxify.data.pagination.currentPage - 1) * ajaxify.data.categoriesPerPage;
 			modified[cid] = {
-				order: e.newIndex + 1,
+				order: baseIndex + e.newIndex + 1,
 			};
 
 			if (isCategoryUpdate) {

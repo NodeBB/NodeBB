@@ -11,6 +11,8 @@ get:
             allOf:
               - type : object
                 properties:
+                  categoriesPerPage:
+                    type: number
                   categoriesTree:
                     type: array
                     items:

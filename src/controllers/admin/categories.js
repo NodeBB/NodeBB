@@ -68,11 +68,11 @@ categoriesController.getAll = async function (req, res) {
 	let tree = categories.getTree(result.categories, rootParent);
 
 	const cidsCount = rootCid ? cids.length - 1 : tree.length;
-	const cidsPerPage = 200;
-	const pageCount = Math.max(1, Math.ceil(cidsCount / cidsPerPage));
+
+	const pageCount = Math.max(1, Math.ceil(cidsCount / meta.config.categoriesPerPage));
 	const page = Math.min(parseInt(req.query.page, 10) || 1, pageCount);
-	const start = Math.max(0, (page - 1) * cidsPerPage);
-	const stop = start + cidsPerPage;
+	const start = Math.max(0, (page - 1) * meta.config.categoriesPerPage);
+	const stop = start + meta.config.categoriesPerPage;
 
 	function trim(c) {
 		if (c.children) {
@@ -98,6 +98,7 @@ categoriesController.getAll = async function (req, res) {
 		selectedCategory: selectedCategory,
 		breadcrumbs: crumbs,
 		pagination: pagination.create(page, pageCount, req.query),
+		categoriesPerPage: meta.config.categoriesPerPage,
 	});
 };
 
