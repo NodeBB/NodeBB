@@ -14,16 +14,11 @@ define('admin/manage/categories', [
 
 	Categories.init = function () {
 		categorySelector.init($('.category [component="category-selector"]'), {
+			parentCid: ajaxify.data.selectedCategory ? ajaxify.data.selectedCategory.cid : 0,
 			onSelect: function (selectedCategory) {
 				ajaxify.go('/admin/manage/categories' + (selectedCategory.cid ? '?cid=' + selectedCategory.cid : ''));
 			},
-			localCategories: [
-				{
-					cid: 0,
-					name: '[[admin/manage/categories:top-level]]',
-					icon: 'fa-list',
-				},
-			],
+			localCategories: [],
 		});
 		Categories.render(ajaxify.data.categoriesTree);
 

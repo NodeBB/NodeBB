@@ -24,6 +24,7 @@ define('admin/manage/privileges', [
 				Privileges.refreshPrivilegeTable();
 				ajaxify.updateHistory('admin/manage/privileges/' + (cid || ''));
 			},
+			localCategories: ajaxify.data.categories,
 			privilege: 'find',
 			showLinks: true,
 		});

@@ -8,33 +8,32 @@ const privileges = require('../../privileges');
 const controllersHelpers = require('../../controllers/helpers');
 
 module.exports = function (SocketCategories) {
-	SocketCategories.loadCategoryFilter = async function (socket, data) {
+	// used by categorySeach module
+	SocketCategories.categorySearch = async function (socket, data) {
 		let cids = [];
 		let matchedCids = [];
 		const privilege = data.privilege || 'topics:read';
 		if (data.query) {
 			({ cids, matchedCids } = await findMatchedCids(data));
 		} else {
-			cids = await loadCids(socket.uid);
+			cids = await loadCids(socket.uid, data.parentCid);
 		}
 
 		const states = (data.states || ['watching', 'notwatching', 'ignoring']).map(
 			state => categories.watchStates[state]
 		);
+
 		const visibleCategories = await controllersHelpers.getVisibleCategories({
-			cids, uid: socket.uid, states, privilege, showLinks: data.showLinks,
+			cids, uid: socket.uid, states, privilege, showLinks: data.showLinks, parentCid: data.parentCid,
 		});
 
-		let categoriesData = categories.buildForSelectCategories(visibleCategories, ['disabledClass']);
-
-		// TODO: send start for pagination from dropdown
-		const start = 0;
-		const stop = start + 200 - 1;
-
-		categoriesData = categoriesData.slice(start, stop);
 		if (Array.isArray(data.selectedCids)) {
 			data.selectedCids = data.selectedCids.map(cid => parseInt(cid, 10));
 		}
+
+		let categoriesData = categories.buildForSelectCategories(visibleCategories, ['disabledClass'], data.parentCid);
+		categoriesData = categoriesData.slice(0, 200);
+
 		categoriesData.forEach(function (category) {
 			category.selected = data.selectedCids ? data.selectedCids.includes(category.cid) : false;
 			if (matchedCids.includes(category.cid)) {
@@ -72,7 +71,7 @@ module.exports = function (SocketCategories) {
 		};
 	}
 
-	async function loadCids(uid) {
+	async function loadCids(uid, parentCid) {
 		let resultCids = [];
 		async function getCidsRecursive(cids) {
 			const categoryData = await categories.getCategoriesFields(cids, ['subCategoriesPerPage']);
@@ -87,7 +86,7 @@ module.exports = function (SocketCategories) {
 			}));
 		}
 
-		const allRootCids = await categories.getAllCidsFromSet('cid:0:children');
+		const allRootCids = await categories.getAllCidsFromSet('cid:' + parentCid + ':children');
 		const rootCids = await privileges.categories.filterCids('find', allRootCids, uid);
 		const pageCids = rootCids.slice(0, meta.config.categoriesPerPage);
 		resultCids = pageCids;

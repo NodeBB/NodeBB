@@ -12,8 +12,6 @@ define('categorySearch', function () {
 		var localCategories = [];
 		if (Array.isArray(options.localCategories)) {
 			localCategories = options.localCategories.map(c => ({ ...c }));
-		} else if (Array.isArray(ajaxify.data.categories)) {
-			localCategories = ajaxify.data.categories.map(c => ({ ...c }));
 		}
 		options.selectedCids = options.selectedCids || ajaxify.data.selectedCids || [];
 
@@ -47,7 +45,7 @@ define('categorySearch', function () {
 				ev.preventDefault();
 				ev.stopPropagation();
 			});
-			searchEl.find('input').val('').on('keyup', utils.debounce(doSearch, 200));
+			searchEl.find('input').val('').on('keyup', utils.debounce(doSearch, 300));
 			doSearch();
 		});
 
@@ -66,8 +64,9 @@ define('categorySearch', function () {
 		});
 
 		function loadList(query, callback) {
-			socket.emit('categories.loadCategoryFilter', {
+			socket.emit('categories.categorySearch', {
 				query: query,
+				parentCid: options.parentCid || 0,
 				selectedCids: options.selectedCids,
 				privilege: options.privilege,
 				states: options.states,
@@ -82,7 +81,7 @@ define('categorySearch', function () {
 
 		function renderList(categories) {
 			app.parseAndTranslate(options.template, {
-				categories: categories.slice(0, 200),
+				categoryItems: categories.slice(0, 200),
 				selectedCategory: ajaxify.data.selectedCategory,
 				allCategoriesUrl: ajaxify.data.allCategoriesUrl,
 			}, function (html) {

@@ -36,6 +36,7 @@ categoriesController.list = async function (req, res) {
 
 	const data = {
 		title: meta.config.homePageTitle || '[[pages:home]]',
+		selectCategoryLabel: '[[pages:categories]]',
 		categories: tree,
 		pagination: pagination.create(page, pageCount, req.query),
 	};

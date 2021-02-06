@@ -346,7 +346,7 @@ async function getSelectData(cids, fields) {
 	return Categories.buildForSelectCategories(tree, fields);
 }
 
-Categories.buildForSelectCategories = function (categories, fields) {
+Categories.buildForSelectCategories = function (categories, fields, parentCid) {
 	function recursive(category, categoriesData, level, depth) {
 		const bullet = level ? '&bull; ' : '';
 		category.value = category.cid;
@@ -358,10 +358,10 @@ Categories.buildForSelectCategories = function (categories, fields) {
 			category.children.forEach(child => recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level, depth + 1));
 		}
 	}
-
+	parentCid = parentCid || 0;
 	const categoriesData = [];
 
-	const rootCategories = categories.filter(category => category && !category.parentCid);
+	const rootCategories = categories.filter(category => category && category.parentCid === parentCid);
 
 	rootCategories.forEach(category => recursive(category, categoriesData, '', 0));
 

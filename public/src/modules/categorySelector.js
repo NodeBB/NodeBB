@@ -4,6 +4,9 @@ define('categorySelector', ['categorySearch'], function (categorySearch) {
 	var categorySelector = {};
 
 	categorySelector.init = function (el, options) {
+		if (!el || !el.length) {
+			return;
+		}
 		options = options || {};
 		var onSelect = options.onSelect || function () {};
 
@@ -22,14 +25,14 @@ define('categorySelector', ['categorySearch'], function (categorySearch) {
 			if (categoryEl.hasClass('disabled')) {
 				return false;
 			}
-			selector.selectCategory(parseInt(categoryEl.attr('data-cid'), 10));
+			selector.selectCategory(categoryEl.attr('data-cid'));
 			onSelect(selector.selectedCategory);
 		});
 
 		selector.selectCategory = function (cid) {
 			var categoryEl = selector.el.find('[data-cid="' + cid + '"]');
 			selector.selectedCategory = {
-				cid: parseInt(cid, 10),
+				cid: cid,
 				name: categoryEl.attr('data-name'),
 			};
 

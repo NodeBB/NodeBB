@@ -306,7 +306,7 @@ helpers.getVisibleCategories = async function (params) {
 	});
 	({ allowed, watchState, categoriesData, isModerator, isAdmin } = filtered);
 
-	categories.getTree(categoriesData);
+	categories.getTree(categoriesData, params.parentCid);
 
 	const cidToAllowed = _.zipObject(cids, allowed.map((allowed, i) => isAdmin || isModerator[i] || allowed));
 	const cidToCategory = _.zipObject(cids, categoriesData);

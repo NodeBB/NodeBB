@@ -1,6 +1,7 @@
 'use strict';
 
 const _ = require('lodash');
+const nconf = require('nconf');
 const categories = require('../../categories');
 const analytics = require('../../analytics');
 const plugins = require('../../plugins');
@@ -83,11 +84,38 @@ categoriesController.getAll = async function (req, res) {
 	if (rootCid) {
 		selectedCategory = await categories.getCategoryData(rootCid);
 	}
+	const crumbs = await buildBreadcrumbs(req, selectedCategory);
 	res.render('admin/manage/categories', {
 		categoriesTree: tree,
 		selectedCategory: selectedCategory,
+		breadcrumbs: crumbs,
 	});
 };
+
+async function buildBreadcrumbs(req, categoryData) {
+	if (!categoryData) {
+		return;
+	}
+	const breadcrumbs = [
+		{
+			text: categoryData.name,
+			url: nconf.get('relative_path') + '/admin/manage/categories?cid=' + categoryData.cid,
+			cid: categoryData.cid,
+		},
+	];
+	const allCrumbs = await helpers.buildCategoryBreadcrumbs(categoryData.parentCid);
+	const crumbs = allCrumbs.filter(c => c.cid);
+
+	crumbs.forEach(function (c) {
+		c.url = '/admin/manage/categories?cid=' + c.cid;
+	});
+	crumbs.unshift({
+		text: '[[admin/manage/categories:top-level]]',
+		url: '/admin/manage/categories',
+	});
+
+	return crumbs.concat(breadcrumbs);
+}
 
 categoriesController.getAnalytics = async function (req, res) {
 	const [name, analyticsData] = await Promise.all([

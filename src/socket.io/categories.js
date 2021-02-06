@@ -9,7 +9,7 @@ const sockets = require('.');
 
 const SocketCategories = module.exports;
 
-require('./categories/filter')(SocketCategories);
+require('./categories/search')(SocketCategories);
 
 SocketCategories.getRecentReplies = async function (socket, cid) {
 	return await categories.getRecentReplies(cid, socket.uid, 4);

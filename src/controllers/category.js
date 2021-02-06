@@ -110,6 +110,7 @@ categoryController.get = async function (req, res, next) {
 	}
 
 	categoryData.title = translator.escape(categoryData.name);
+	categoryData.selectCategoryLabel = '[[category:subcategories]]';
 	categoryData.description = translator.escape(categoryData.description);
 	categoryData.privileges = userPrivileges;
 	categoryData.showSelect = userPrivileges.editable;

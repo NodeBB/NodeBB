@@ -4,6 +4,9 @@ define('categoryFilter', ['categorySearch'], function (categorySearch) {
 	var categoryFilter = {};
 
 	categoryFilter.init = function (el, options) {
+		if (!el || !el.length) {
+			return;
+		}
 		options = options || {};
 		options.states = options.states || ['watching', 'notwatching', 'ignoring'];
 		options.template = 'partials/category-filter';
