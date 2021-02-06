@@ -165,7 +165,7 @@ usersController.getUsersAndCount = async function (set, uid, start, stop) {
 };
 
 async function render(req, res, data) {
-	const registrationType = meta.config.registrationType;
+	const { registrationType } = meta.config;
 
 	data.maximumInvites = meta.config.maximumInvites;
 	data.inviteOnly = registrationType === 'invite-only' || registrationType === 'admin-invite-only';

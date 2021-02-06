@@ -9,7 +9,7 @@ module.exports = {
 	name: 'Clear purged replies and toPid',
 	timestamp: Date.UTC(2020, 10, 26),
 	method: async function () {
-		const progress = this.progress;
+		const { progress } = this;
 
 		await batch.processSortedSet('posts:pid', async (pids) => {
 			progress.incr(pids.length);

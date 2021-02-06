@@ -7,7 +7,7 @@ const packageInstall = require('./package-install');
 const upgrade = require('../upgrade');
 const build = require('../meta/build');
 const db = require('../database');
-const upgradePlugins = require('./upgrade-plugins').upgradePlugins;
+const { upgradePlugins } = require('./upgrade-plugins');
 
 const steps = {
 	package: {
@@ -69,7 +69,7 @@ function runSteps(tasks) {
 
 		const message = 'NodeBB Upgrade Complete!';
 		// some consoles will return undefined/zero columns, so just use 2 spaces in upgrade script if we can't get our column count
-		const columns = process.stdout.columns;
+		const { columns } = process.stdout;
 		const spaces = columns ? new Array(Math.floor(columns / 2) - (message.length / 2) + 1).join(' ') : '  ';
 
 		console.log(`\n\n${spaces}${message.green.bold}${'\n'.reset}`);

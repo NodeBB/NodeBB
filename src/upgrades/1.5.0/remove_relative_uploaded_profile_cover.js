@@ -9,7 +9,7 @@ module.exports = {
 	name: 'Remove relative_path from uploaded profile cover urls',
 	timestamp: Date.UTC(2017, 3, 26),
 	method: function (callback) {
-		const progress = this.progress;
+		const { progress } = this;
 
 		batch.processSortedSet('users:joindate', (ids, done) => {
 			async.each(ids, (uid, cb) => {

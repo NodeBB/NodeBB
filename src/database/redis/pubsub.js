@@ -3,7 +3,7 @@
 const nconf = require('nconf');
 const util = require('util');
 const winston = require('winston');
-const EventEmitter = require('events').EventEmitter;
+const { EventEmitter } = require('events');
 const connection = require('./connection');
 
 let channelName;

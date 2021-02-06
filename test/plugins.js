@@ -176,7 +176,7 @@ describe('Plugins', () => {
 	});
 
 	it('should show installed plugins', (done) => {
-		const nodeModulesPath = plugins.nodeModulesPath;
+		const { nodeModulesPath } = plugins;
 		plugins.nodeModulesPath = path.join(__dirname, './mocks/plugin_modules');
 
 		plugins.showInstalled((err, pluginsData) => {

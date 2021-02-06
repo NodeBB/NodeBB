@@ -9,7 +9,7 @@ module.exports = {
 	name: 'Update moderation notes to zset',
 	timestamp: Date.UTC(2017, 2, 22),
 	method: function (callback) {
-		const progress = this.progress;
+		const { progress } = this;
 
 		batch.processSortedSet('users:joindate', (ids, next) => {
 			async.each(ids, (uid, next) => {

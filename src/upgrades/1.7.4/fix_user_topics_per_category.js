@@ -8,7 +8,7 @@ module.exports = {
 	name: 'Fix topics in categories per user if they were moved',
 	timestamp: Date.UTC(2018, 0, 22),
 	method: function (callback) {
-		const progress = this.progress;
+		const { progress } = this;
 
 		batch.processSortedSet('topics:tid', (tids, next) => {
 			async.eachLimit(tids, 500, (tid, _next) => {

@@ -34,7 +34,7 @@ connection.getConnectionOptions = function (postgres) {
 };
 
 connection.connect = async function (options) {
-	const Pool = require('pg').Pool;
+	const { Pool } = require('pg');
 	const connOptions = connection.getConnectionOptions(options);
 	const db = new Pool(connOptions);
 	await db.connect();

@@ -15,11 +15,11 @@ module.exports = {
 			configJSON = { [process.env.database]: true, database: process.env.database };
 		}
 		const isMongo = configJSON.hasOwnProperty('mongo') && configJSON.database === 'mongo';
-		const progress = this.progress;
+		const { progress } = this;
 		if (!isMongo) {
 			return callback();
 		}
-		const client = db.client;
+		const { client } = db;
 		let cursor;
 		async.waterfall([
 			function (next) {

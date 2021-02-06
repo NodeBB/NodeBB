@@ -1,6 +1,6 @@
 'use strict';
 
-const fork = require('child_process').fork;
+const { fork } = require('child_process');
 
 let debugArg = process.execArgv.find(arg => /^--(debug|inspect)/.test(arg));
 const debugging = !!debugArg;

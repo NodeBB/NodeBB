@@ -37,7 +37,7 @@ SELECT COUNT(*) c
 	};
 
 	async function getSortedSetIntersect(params) {
-		const sets = params.sets;
+		const { sets } = params;
 		const start = params.hasOwnProperty('start') ? params.start : 0;
 		const stop = params.hasOwnProperty('stop') ? params.stop : -1;
 		let weights = params.weights || [];

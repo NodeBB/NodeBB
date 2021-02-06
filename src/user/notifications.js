@@ -171,7 +171,7 @@ UserNotifications.sendTopicNotificationToFollowers = async function (uid, topicD
 		if (!followers.length) {
 			return;
 		}
-		let title = topicData.title;
+		let { title } = topicData;
 		if (title) {
 			title = utils.decodeHTMLEntities(title);
 			title = title.replace(/,/g, '\\,');

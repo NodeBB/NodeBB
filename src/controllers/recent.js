@@ -24,7 +24,7 @@ recentController.get = async function (req, res, next) {
 recentController.getData = async function (req, url, sort) {
 	const page = parseInt(req.query.page, 10) || 1;
 	let term = helpers.terms[req.query.term];
-	const cid = req.query.cid;
+	const { cid } = req.query;
 	const filter = req.query.filter || '';
 
 	if (!term && req.query.term) {

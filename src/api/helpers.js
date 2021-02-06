@@ -15,7 +15,7 @@ exports.buildReqObject = (req, payload) => {
 	req = req || {};
 	const headers = req.headers || {};
 	const encrypted = req.connection ? !!req.connection.encrypted : false;
-	let host = headers.host;
+	let { host } = headers;
 	const referer = headers.referer || '';
 
 	if (!host) {

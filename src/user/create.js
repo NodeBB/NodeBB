@@ -186,7 +186,7 @@ module.exports = function (User) {
 
 	User.uniqueUsername = async function (userData) {
 		let numTries = 0;
-		let username = userData.username;
+		let { username } = userData;
 		while (true) {
 			/* eslint-disable no-await-in-loop */
 			const exists = await meta.userOrGroupExists(username);

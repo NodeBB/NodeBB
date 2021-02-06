@@ -9,7 +9,7 @@ module.exports = {
 	name: 'Reformatting post diffs to be stored in lists and hash instead of single zset',
 	timestamp: Date.UTC(2018, 2, 15),
 	method: function (callback) {
-		const progress = this.progress;
+		const { progress } = this;
 
 		batch.processSortedSet('posts:pid', (pids, next) => {
 			async.each(pids, (pid, next) => {

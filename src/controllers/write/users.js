@@ -182,7 +182,7 @@ Users.invite = async (req, res) => {
 		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
 	}
 
-	const registrationType = meta.config.registrationType;
+	const { registrationType } = meta.config;
 	const isAdmin = await user.isAdministrator(req.uid);
 	if (registrationType === 'admin-invite-only' && !isAdmin) {
 		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));

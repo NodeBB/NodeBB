@@ -176,7 +176,7 @@ Plugins.list = async function (matching) {
 	if (matching === undefined) {
 		matching = true;
 	}
-	const version = require(paths.currentPackage).version;
+	const { version } = require(paths.currentPackage);
 	const url = `${nconf.get('registry') || 'https://packages.nodebb.org'}/api/v1/plugins${matching !== false ? `?version=${version}` : ''}`;
 	try {
 		const body = await request(url, {
@@ -198,7 +198,7 @@ Plugins.listTrending = async () => {
 
 Plugins.normalise = async function (apiReturn) {
 	const pluginMap = {};
-	const dependencies = require(paths.currentPackage).dependencies;
+	const { dependencies } = require(paths.currentPackage);
 	apiReturn = Array.isArray(apiReturn) ? apiReturn : [];
 	apiReturn.forEach((packageData) => {
 		packageData.id = packageData.name;

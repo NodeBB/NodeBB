@@ -8,7 +8,7 @@ module.exports = {
 	name: 'Re-add deleted topics to topics:recent',
 	timestamp: Date.UTC(2018, 9, 11),
 	method: async function () {
-		const progress = this.progress;
+		const { progress } = this;
 
 		await batch.processSortedSet('topics:tid', async (tids) => {
 			progress.incr(tids.length);

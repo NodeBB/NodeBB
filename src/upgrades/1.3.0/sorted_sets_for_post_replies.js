@@ -11,7 +11,7 @@ module.exports = {
 	method: function (callback) {
 		const posts = require('../../posts');
 		const batch = require('../../batch');
-		const progress = this.progress;
+		const { progress } = this;
 
 		batch.processSortedSet('posts:pid', (ids, next) => {
 			posts.getPostsFields(ids, ['pid', 'toPid', 'timestamp'], (err, data) => {

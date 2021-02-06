@@ -42,7 +42,7 @@ middleware.renderHeader = async (req, res, data) => {
 		privileges: privileges.admin.get(req.uid),
 	});
 
-	const userData = results.userData;
+	const { userData } = results;
 	userData.uid = req.uid;
 	userData['email:confirmed'] = userData['email:confirmed'] === 1;
 	userData.privileges = results.privileges;

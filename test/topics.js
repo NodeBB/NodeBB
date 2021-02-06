@@ -887,7 +887,7 @@ describe('Topic\'s', () => {
 					topics.getUnreadTopics({ cid: 0, uid: uid, start: 0, stop: -1, filter: '' }, done);
 				},
 				function (results, done) {
-					const topics = results.topics;
+					const { topics } = results;
 					const tids = topics.map(topic => topic.tid);
 					assert.equal(tids.indexOf(newTid), -1, 'The topic appeared in the unread list.');
 					done();
@@ -909,7 +909,7 @@ describe('Topic\'s', () => {
 					}, done);
 				},
 				function (results, done) {
-					const topics = results.topics;
+					const { topics } = results;
 					let topic;
 					let i;
 					for (i = 0; i < topics.length; i += 1) {
@@ -936,7 +936,7 @@ describe('Topic\'s', () => {
 					topics.getUnreadTopics({ cid: 0, uid: uid, start: 0, stop: -1, filter: '' }, done);
 				},
 				function (results, done) {
-					const topics = results.topics;
+					const { topics } = results;
 					const tids = topics.map(topic => topic.tid);
 					assert.notEqual(tids.indexOf(newTid), -1, 'The topic did not appear in the unread list.');
 					done();
@@ -956,7 +956,7 @@ describe('Topic\'s', () => {
 					topics.getUnreadTopics({ cid: 0, uid: uid, start: 0, stop: -1, filter: '' }, done);
 				},
 				function (results, done) {
-					const topics = results.topics;
+					const { topics } = results;
 					const tids = topics.map(topic => topic.tid);
 					assert.notEqual(tids.indexOf(newTid), -1, 'The topic did not appear in the unread list.');
 					done();
@@ -1941,7 +1941,7 @@ describe('Topic\'s', () => {
 
 		it('should delete category tag as well', async () => {
 			const category = await categories.create({ name: 'delete category' });
-			const cid = category.cid;
+			const { cid } = category;
 			await topics.post({ uid: adminUid, tags: ['willbedeleted', 'notthis'], title: 'tag topic', content: 'topic 1 content', cid: cid });
 			let categoryTags = await topics.getCategoryTags(cid, 0, -1);
 			assert(categoryTags.includes('willbedeleted'));
@@ -1954,9 +1954,9 @@ describe('Topic\'s', () => {
 
 		it('should add and remove tags from topics properly', async () => {
 			const category = await categories.create({ name: 'add/remove category' });
-			const cid = category.cid;
+			const { cid } = category;
 			const result = await topics.post({ uid: adminUid, tags: ['tag4', 'tag2', 'tag1', 'tag3'], title: 'tag topic', content: 'topic 1 content', cid: cid });
-			const tid = result.topicData.tid;
+			const { tid } = result.topicData;
 
 			let tags = await topics.getTopicTags(tid);
 			let categoryTags = await topics.getCategoryTags(cid, 0, -1);
@@ -2030,7 +2030,7 @@ describe('Topic\'s', () => {
 
 		it('should create and delete category tags properly', async () => {
 			const category = await categories.create({ name: 'tag category 2' });
-			const cid = category.cid;
+			const { cid } = category;
 			const title = 'test title';
 			const postResult = await topics.post({ uid: adminUid, tags: ['cattag1', 'cattag2', 'cattag3'], title: title, content: 'topic 1 content', cid: cid });
 			await topics.post({ uid: adminUid, tags: ['cattag1', 'cattag2'], title: title, content: 'topic 1 content', cid: cid });
@@ -2353,7 +2353,7 @@ describe('Topic\'s', () => {
 		it('should fail to edit if user does not have tag privilege', (done) => {
 			topics.post({ uid: uid, cid: cid, title: 'topic with tags', content: 'some content here' }, (err, result) => {
 				assert.ifError(err);
-				const pid = result.postData.pid;
+				const { pid } = result.postData;
 				posts.edit({ pid: pid, uid: uid, content: 'edited content', tags: ['tag2'] }, (err) => {
 					assert.equal(err.message, '[[error:no-privileges]]');
 					done();

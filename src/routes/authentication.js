@@ -76,7 +76,7 @@ Auth.verifyToken = async function (token, done) {
 
 Auth.reloadRoutes = async function (params) {
 	loginStrategies.length = 0;
-	const router = params.router;
+	const { router } = params;
 
 	// Local Logins
 	if (plugins.hooks.hasListeners('action:auth.overrideLogin')) {

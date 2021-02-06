@@ -10,7 +10,7 @@ module.exports = {
 	name: 'Upgrade bans to hashes',
 	timestamp: Date.UTC(2018, 8, 24),
 	method: function (callback) {
-		const progress = this.progress;
+		const { progress } = this;
 
 		batch.processSortedSet('users:joindate', (uids, next) => {
 			async.eachSeries(uids, (uid, next) => {

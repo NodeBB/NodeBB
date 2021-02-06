@@ -41,7 +41,7 @@ module.exports = function (module) {
 	};
 
 	module.scan = async function (params) {
-		let match = params.match;
+		let { match } = params;
 		if (match.startsWith('*')) {
 			match = `%${match.substring(1)}`;
 		}

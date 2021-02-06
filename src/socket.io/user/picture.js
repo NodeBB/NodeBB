@@ -17,7 +17,7 @@ module.exports = function (SocketUser) {
 			throw new Error('[[error:invalid-data]]');
 		}
 
-		const type = data.type;
+		const { type } = data;
 		let picture = '';
 		await user.isAdminOrGlobalModOrSelf(socket.uid, data.uid);
 		if (type === 'default') {

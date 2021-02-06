@@ -7,7 +7,7 @@ module.exports = {
 	name: 'Clean up post hash data',
 	timestamp: Date.UTC(2019, 9, 7),
 	method: async function () {
-		const progress = this.progress;
+		const { progress } = this;
 		await cleanPost(progress);
 		await cleanTopic(progress);
 	},

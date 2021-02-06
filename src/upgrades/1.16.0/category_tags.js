@@ -9,7 +9,7 @@ module.exports = {
 	name: 'Create category tags sorted sets',
 	timestamp: Date.UTC(2020, 10, 23),
 	method: async function () {
-		const progress = this.progress;
+		const { progress } = this;
 
 		await batch.processSortedSet('topics:tid', async (tids) => {
 			await async.eachSeries(tids, async (tid) => {
@@ -19,7 +19,7 @@ module.exports = {
 				]);
 
 				if (tags.length) {
-					const cid = topicData.cid;
+					const { cid } = topicData;
 					await async.eachSeries(tags, async (tag) => {
 						await db.sortedSetAdd(`cid:${cid}:tag:${tag}:topics`, topicData.timestamp, tid);
 						const count = await db.sortedSetCard(`cid:${cid}:tag:${tag}:topics`);

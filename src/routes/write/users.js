@@ -5,7 +5,7 @@ const middleware = require('../../middleware');
 const controllers = require('../../controllers');
 const routeHelpers = require('../helpers');
 
-const setupApiRoute = routeHelpers.setupApiRoute;
+const { setupApiRoute } = routeHelpers;
 
 // eslint-disable-next-line no-unused-vars
 function guestRoutes() {

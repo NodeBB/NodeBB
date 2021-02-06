@@ -3,7 +3,7 @@
 const os = require('os');
 const winston = require('winston');
 const nconf = require('nconf');
-const exec = require('child_process').exec;
+const { exec } = require('child_process');
 
 const pubsub = require('../../pubsub');
 const rooms = require('../../socket.io/admin/rooms');

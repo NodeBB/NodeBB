@@ -10,7 +10,7 @@ module.exports = {
 	timestamp: Date.UTC(2016, 0, 14),
 	method: function (callback) {
 		const batch = require('../../batch');
-		const progress = this.progress;
+		const { progress } = this;
 
 		batch.processSortedSet('posts:pid', (ids, next) => {
 			async.eachSeries(ids, (id, next) => {

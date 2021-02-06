@@ -54,7 +54,7 @@ module.exports = function (SocketUser) {
 	};
 
 	async function isPrivilegedOrSelfAndPasswordMatch(socket, data) {
-		const uid = socket.uid;
+		const { uid } = socket;
 		const isSelf = parseInt(uid, 10) === parseInt(data.uid, 10);
 
 		const [isAdmin, isTargetAdmin, isGlobalMod] = await Promise.all([

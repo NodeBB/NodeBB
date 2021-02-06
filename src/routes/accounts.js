@@ -5,7 +5,7 @@ const nconf = require('nconf');
 
 const helpers = require('./helpers');
 
-const setupPageRoute = helpers.setupPageRoute;
+const { setupPageRoute } = helpers;
 
 module.exports = function (app, middleware, controllers) {
 	const middlewares = [middleware.exposeUid, middleware.canViewUsers];

@@ -11,7 +11,7 @@ module.exports = {
 	name: 'rename user mod privileges group',
 	timestamp: Date.UTC(2017, 4, 26),
 	method: function (callback) {
-		const progress = this.progress;
+		const { progress } = this;
 		batch.processSortedSet('categories:cid', (cids, next) => {
 			async.eachSeries(cids, (cid, next) => {
 				const groupName = `cid:${cid}:privileges:mods`;

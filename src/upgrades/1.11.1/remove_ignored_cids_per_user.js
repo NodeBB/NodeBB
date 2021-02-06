@@ -8,7 +8,7 @@ module.exports = {
 	name: 'Remove uid:<uid>:ignored:cids',
 	timestamp: Date.UTC(2018, 11, 11),
 	method: function (callback) {
-		const progress = this.progress;
+		const { progress } = this;
 
 		batch.processSortedSet('users:joindate', (uids, next) => {
 			progress.incr(uids.length);

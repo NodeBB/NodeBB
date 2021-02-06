@@ -39,7 +39,7 @@ module.exports = function (app, middleware) {
 
 async function validateTokenIfRequiresLogin(requiresLogin, cid, req, res) {
 	const uid = parseInt(req.query.uid, 10) || 0;
-	const token = req.query.token;
+	const { token } = req.query;
 
 	if (!requiresLogin) {
 		return true;
@@ -379,7 +379,7 @@ async function generateForUserTopics(req, res, next) {
 		return controllers404.send404(req, res);
 	}
 
-	const userslug = req.params.userslug;
+	const { userslug } = req.params;
 	const uid = await user.getUidByUserslug(userslug);
 	if (!uid) {
 		return next();

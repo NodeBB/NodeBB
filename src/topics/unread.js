@@ -218,7 +218,7 @@ module.exports = function (Topics) {
 	}
 
 	async function doesTidHaveUnblockedUnreadPosts(tid, params) {
-		const userLastReadTimestamp = params.userLastReadTimestamp;
+		const { userLastReadTimestamp } = params;
 		if (!userLastReadTimestamp) {
 			return true;
 		}

@@ -7,7 +7,7 @@ module.exports = {
 	name: 'Clean flag byCid zsets',
 	timestamp: Date.UTC(2019, 8, 24),
 	method: async function () {
-		const progress = this.progress;
+		const { progress } = this;
 
 		await batch.processSortedSet('flags:datetime', async (flagIds) => {
 			progress.incr(flagIds.length);

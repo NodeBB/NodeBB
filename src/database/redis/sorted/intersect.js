@@ -30,7 +30,7 @@ module.exports = function (module) {
 	};
 
 	async function getSortedSetRevIntersect(params) {
-		const sets = params.sets;
+		const { sets } = params;
 		const start = params.hasOwnProperty('start') ? params.start : 0;
 		const stop = params.hasOwnProperty('stop') ? params.stop : -1;
 		const weights = params.weights || [];

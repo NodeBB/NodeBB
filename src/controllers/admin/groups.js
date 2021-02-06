@@ -69,7 +69,7 @@ async function getGroupNames() {
 }
 
 groupsController.getCSV = async function (req, res) {
-	const referer = req.headers.referer;
+	const { referer } = req.headers;
 
 	if (!referer || !referer.replace(nconf.get('url'), '').startsWith('/admin/manage/groups')) {
 		return res.status(403).send('[[error:invalid-origin]]');

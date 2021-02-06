@@ -13,7 +13,7 @@ module.exports = {
 	name: 'Create verified/unverified user groups',
 	timestamp: Date.UTC(2020, 9, 13),
 	method: async function () {
-		const progress = this.progress;
+		const { progress } = this;
 
 		const maxGroupLength = meta.config.maximumGroupNameLength;
 		meta.config.maximumGroupNameLength = 30;

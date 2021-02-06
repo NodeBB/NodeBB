@@ -207,7 +207,7 @@ Logger.io_one = function (socket, uid) {
 	if (socket && meta.config.loggerIOStatus > 0) {
 		// courtesy of: http://stackoverflow.com/a/9674248
 		socket.oEmit = socket.emit;
-		const emit = socket.emit;
+		const { emit } = socket;
 		socket.emit = override(emit, 'emit', 'Logger.io_one: emit.apply: Failed');
 
 		socket.$onvent = socket.onevent;

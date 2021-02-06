@@ -62,7 +62,7 @@ module.exports = function (Topics) {
 	};
 
 	Topics.post = async function (data) {
-		const uid = data.uid;
+		const { uid } = data;
 		data.title = String(data.title).trim();
 		data.tags = data.tags || [];
 		if (data.content) {
@@ -133,8 +133,8 @@ module.exports = function (Topics) {
 	};
 
 	Topics.reply = async function (data) {
-		const tid = data.tid;
-		const uid = data.uid;
+		const { tid } = data;
+		const { uid } = data;
 
 		const topicData = await Topics.getTopicData(tid);
 		if (!topicData) {
@@ -199,8 +199,8 @@ module.exports = function (Topics) {
 	};
 
 	async function onNewPost(postData, data) {
-		const tid = postData.tid;
-		const uid = postData.uid;
+		const { tid } = postData;
+		const { uid } = postData;
 		await Topics.markAsUnreadForAll(tid);
 		await Topics.markAsRead([tid], uid);
 		const [

@@ -94,7 +94,7 @@ module.exports = function (Posts) {
 	};
 
 	async function editMainPost(data, postData) {
-		const tid = postData.tid;
+		const { tid } = postData;
 		const title = data.title ? data.title.trim() : '';
 
 		const [topicData, isMain] = await Promise.all([

@@ -7,7 +7,7 @@ module.exports = {
 	name: 'Create subCategoriesPerPage property for categories',
 	timestamp: Date.UTC(2021, 0, 31),
 	method: async function () {
-		const progress = this.progress;
+		const { progress } = this;
 
 		await batch.processSortedSet('categories:cid', async (cids) => {
 			const keys = cids.map(cid => `category:${cid}`);

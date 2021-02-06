@@ -6,7 +6,7 @@ const userDigest = require('../../user/digest');
 const Digest = module.exports;
 
 Digest.resend = async (socket, data) => {
-	const uid = data.uid;
+	const { uid } = data;
 	const interval = data.action.startsWith('resend-') ? data.action.slice(7) : await userDigest.getUsersInterval(uid);
 
 	if (!interval && meta.config.dailyDigestFreq === 'off') {

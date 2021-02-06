@@ -8,7 +8,7 @@ module.exports = {
 	name: 'Add target uid to flag objects',
 	timestamp: Date.UTC(2020, 7, 22),
 	method: async function () {
-		const progress = this.progress;
+		const { progress } = this;
 
 		await batch.processSortedSet('flags:datetime', async (flagIds) => {
 			progress.incr(flagIds.length);
@@ -16,7 +16,7 @@ module.exports = {
 			for (const flagObj of flagData) {
 				/* eslint-disable no-await-in-loop */
 				if (flagObj) {
-					const targetId = flagObj.targetId;
+					const { targetId } = flagObj;
 					if (targetId) {
 						if (flagObj.type === 'post') {
 							const targetUid = await posts.getPostField(targetId, 'uid');

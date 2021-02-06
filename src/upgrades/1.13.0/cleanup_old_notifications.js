@@ -8,7 +8,7 @@ module.exports = {
 	name: 'Clean up old notifications and hash data',
 	timestamp: Date.UTC(2019, 9, 7),
 	method: async function () {
-		const progress = this.progress;
+		const { progress } = this;
 		const week = 604800000;
 		const cutoffTime = Date.now() - week;
 		await batch.processSortedSet('users:joindate', async (uids) => {

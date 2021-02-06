@@ -75,7 +75,7 @@ async function renderWidget(widget, uid, options) {
 		return;
 	}
 
-	let html = data.html;
+	let { html } = data;
 
 	if (widget.data.container && widget.data.container.match('{body}')) {
 		html = await Benchpress.compileRender(widget.data.container, {

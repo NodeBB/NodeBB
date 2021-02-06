@@ -7,7 +7,7 @@ const utils = require('../../utils');
 cacheController.get = function (req, res) {
 	const postCache = require('../../posts/cache');
 	const groupCache = require('../../groups').cache;
-	const objectCache = require('../../database').objectCache;
+	const { objectCache } = require('../../database');
 	const localCache = require('../../cache');
 
 	function getInfo(cache) {

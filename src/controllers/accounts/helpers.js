@@ -28,12 +28,12 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID) {
 	}
 	await parseAboutMe(results.userData);
 
-	const userData = results.userData;
-	const userSettings = results.userSettings;
-	const isAdmin = results.isAdmin;
-	const isGlobalModerator = results.isGlobalModerator;
-	const isModerator = results.isModerator;
-	const canViewInfo = results.canViewInfo;
+	const { userData } = results;
+	const { userSettings } = results;
+	const { isAdmin } = results;
+	const { isGlobalModerator } = results;
+	const { isModerator } = results;
+	const { canViewInfo } = results;
 	const isSelf = parseInt(callerUID, 10) === parseInt(userData.uid, 10);
 
 	userData.age = Math.max(0, userData.birthday ? Math.floor((new Date().getTime() - new Date(userData.birthday).getTime()) / 31536000000) : 0);
@@ -140,7 +140,7 @@ async function getAllData(uid, callerUID) {
 }
 
 async function getCounts(userData, callerUID) {
-	const uid = userData.uid;
+	const { uid } = userData;
 	const cids = await categories.getCidsByPrivilege('categories:cid', callerUID, 'topics:read');
 	const promises = {
 		posts: db.sortedSetsCardSum(cids.map(c => `cid:${c}:uid:${uid}:pids`)),
