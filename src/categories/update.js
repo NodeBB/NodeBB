@@ -112,7 +112,7 @@ module.exports = function (Categories) {
 		}
 		// moves category(cid) to index order-1 in the array
 		if (foundIndex !== -1 && childCategories.length > 1) {
-			childCategories.splice(Math.max(1, order - 1), 0, childCategories.splice(foundIndex, 1)[0]);
+			childCategories.splice(Math.max(0, order - 1), 0, childCategories.splice(foundIndex, 1)[0]);
 		}
 		// recalculate orders from array indices
 		childCategories.forEach((item, index) => {
