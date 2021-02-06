@@ -42,8 +42,8 @@
 	"redis.total-input": "Tổng Đầu Vào",
 	"redis.total-output": "Tổng Đầu Ra",
 
-	"redis.keyspace-hits": "Keyspace Hits",
-	"redis.keyspace-misses": "Keyspace Misses",
+	"redis.keyspace-hits": "Truy Cập Keyspace",
+	"redis.keyspace-misses": "Bỏ Lỡ Keyspace",
 	"redis.raw-info": "Thông Tin Gốc Của Redis",
 
 	"postgres": "Postgres",

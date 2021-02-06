@@ -47,7 +47,7 @@
 	"privileges.no-users": "Không có đặc quyền riêng cho người dùng trong chuyên mục này.",
 	"privileges.section-group": "Nhóm",
 	"privileges.group-private": "Nhóm này là riêng tư",
-  	"privileges.inheritance-exception": "Nhóm này không kế thừa các đặc quyền từ nhóm người dùng đã đăng ký",
+  	"privileges.inheritance-exception": "Nhóm này không kế thừa các đặc quyền từ nhóm registered-users",
   	"privileges.banned-user-inheritance": "Người dùng bị cấm kế thừa các đặc quyền từ nhóm người dùng bị cấm",
 	"privileges.search-group": "Thêm Nhóm",
 	"privileges.copy-to-children": "Sao Chép Đến mục Con",
@@ -56,7 +56,7 @@
 	"privileges.copy-group-privileges-to-children": "Sao chép các quyền của nhóm này cho chuyên mục con của chuyên mục này.",
 	"privileges.copy-group-privileges-to-all-categories": "Sao chép các quyền của nhóm này vào tất cả chuyên mục.",
 	"privileges.copy-group-privileges-from": "Sao chép các quyền của nhóm này từ một chuyên mục khác.",
-	"privileges.inherit": "Nếu nhóm <code>người dùng đã đăng ký </code> được cấp đặc quyền cụ thể, tất cả các nhóm khác nhận được <strong> đặc quyền ngầm </strong>, ngay cả khi không xác định/kiểm tra. Đặc quyền ngầm này được hiển thị cho bạn bởi vì tất cả người dùng là một phần của nhóm <code> người dùng đã đăng ký </code>, vì thế, các nhóm bổ sung không cần cấp quyền rõ ràng.",
+	"privileges.inherit": "Nếu nhóm <code>registered-users</code> được cấp đặc quyền cụ thể, tất cả các nhóm khác nhận được <strong> đặc quyền ngầm </strong>, ngay cả khi không xác định/kiểm tra. Đặc quyền ngầm này được hiển thị cho bạn bởi vì tất cả người dùng là một phần của nhóm <code>registered-users</code>, vì thế, các nhóm bổ sung không cần cấp quyền rõ ràng.",
 	"privileges.copy-success": "Đã sao chép các đặc quyền!",
 
 	"analytics.back": "Trờ Về Danh Sách Chuyên Mục",

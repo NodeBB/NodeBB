@@ -5,7 +5,7 @@
 
 	"user": "Người dùng",
 	"subscription": "Loại đăng ký",
-	"last-delivery": "Giao hàng thành công lần cuối",
+	"last-delivery": "Gửi thành công lần cuối",
 	"default": "Mặc định hệ thống",
 	"default-help": "<em>Mặc định hệ thống</em> nghĩa là người dùng không đè lên toàn bộ cài đặt thông báo diễn đàn, hiện là: &quot;<strong>%1</strong>&quot;",
 	"resend": "Gửi Lại Thông Báo",
@@ -14,8 +14,8 @@
 	"resent-day": "Đã gửi lại thông báo hàng ngày",
 	"resent-week": "Đã gửi lại thông báo hàng tuần",
 	"resent-month": "Đã gửi lại thông báo hàng tháng",
-	"null": "<em>Không bao giờ</em>",
+	"null": "<em>Không</em>",
 	"manual-run": "Chạy thông báo thủ công:",
 
-	"no-delivery-data": "Không tìm thấy dữ liệu giao hàng"
+	"no-delivery-data": "Không tìm thấy dữ liệu để gửi"
 }
