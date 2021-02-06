@@ -113,13 +113,13 @@ module.exports = function (Categories) {
 		// recalculate orders from array indices
 		await db.sortedSetAdd(
 			'cid:' + parentCid + ':children',
-			childrenCids.map((cid, order) => order),
+			childrenCids.map((cid, index) => index + 1),
 			childrenCids
 		);
 
 		await db.setObjectBulk(
 			childrenCids.map(cid => 'category:' + cid),
-			childrenCids.map((cid, order) => ({ order: order }))
+			childrenCids.map((cid, index) => ({ order: index + 1 }))
 		);
 
 		cache.del([
