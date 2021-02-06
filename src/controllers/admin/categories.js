@@ -8,6 +8,7 @@ const plugins = require('../../plugins');
 const translator = require('../../translator');
 const meta = require('../../meta');
 const helpers = require('../helpers');
+const pagination = require('../../pagination');
 
 const categoriesController = module.exports;
 
@@ -66,6 +67,13 @@ categoriesController.getAll = async function (req, res) {
 	const result = await plugins.hooks.fire('filter:admin.categories.get', { categories: categoriesData, fields: fields });
 	let tree = categories.getTree(result.categories, rootParent);
 
+	const cidsCount = rootCid ? cids.length - 1 : tree.length;
+	const cidsPerPage = 200;
+	const pageCount = Math.max(1, Math.ceil(cidsCount / cidsPerPage));
+	const page = Math.min(parseInt(req.query.page, 10) || 1, pageCount);
+	const start = Math.max(0, (page - 1) * cidsPerPage);
+	const stop = start + cidsPerPage;
+
 	function trim(c) {
 		if (c.children) {
 			c.children = c.children.slice(0, c.subCategoriesPerPage);
@@ -73,10 +81,10 @@ categoriesController.getAll = async function (req, res) {
 		}
 	}
 	if (rootCid && tree[0] && Array.isArray(tree[0].children)) {
-		tree[0].children = tree[0].children.slice(0, Math.max(200, tree[0].subCategoriesPerPage));
+		tree[0].children = tree[0].children.slice(start, stop);
 		tree[0].children.forEach(trim);
 	} else {
-		tree = tree.slice(0, 200);
+		tree = tree.slice(start, stop);
 		tree.forEach(trim);
 	}
 
@@ -89,6 +97,7 @@ categoriesController.getAll = async function (req, res) {
 		categoriesTree: tree,
 		selectedCategory: selectedCategory,
 		breadcrumbs: crumbs,
+		pagination: pagination.create(page, pageCount, req.query),
 	});
 };
 

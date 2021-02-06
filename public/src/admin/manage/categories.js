@@ -46,9 +46,10 @@ define('admin/manage/categories', [
 
 		$('.categories').on('click', '.set-order', function () {
 			var cid = $(this).attr('data-cid');
+			var order = $(this).attr('data-order');
 			var modal = bootbox.dialog({
 				title: '[[admin/manage/categories:set-order]]',
-				message: '<input class="form-control input-lg" />',
+				message: '<input class="form-control input-lg" value=' + order + ' />',
 				show: true,
 				buttons: {
 					save: {

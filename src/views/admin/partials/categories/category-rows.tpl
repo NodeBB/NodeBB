@@ -42,7 +42,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="#" class="set-order" data-cid="{categories.cid}">[[admin/manage/categories:set-order]]</a>
+                                <a href="#" class="set-order" data-cid="{categories.cid}" data-order="{categories.order}">[[admin/manage/categories:set-order]]</a>
                             </li>
                         </ul>
                     </div>

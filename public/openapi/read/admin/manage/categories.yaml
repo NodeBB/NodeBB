@@ -47,4 +47,5 @@ get:
                         children:
                           type: array
                           description: Array of children categories
+              - $ref: ../../../components/schemas/Pagination.yaml#/Pagination
               - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps
