@@ -125,10 +125,10 @@ module.exports = function (Categories) {
 			childCategories.map(item => item.value)
 		);
 
-		// TODO: use db.setObjectBulk
-		await Promise.all(childCategories.map(async (category) => {
-			await db.setObjectField('category:' + category.value, 'order', category.score);
-		}));
+		await db.setObjectBulk(
+			childCategories.map(c => 'category:' + c.value),
+			childCategories.map(c => ({ order: c.score }))
+		);
 
 		cache.del([
 			'categories:cid',

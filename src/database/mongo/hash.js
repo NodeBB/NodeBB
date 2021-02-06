@@ -32,6 +32,26 @@ module.exports = function (module) {
 		cache.del(key);
 	};
 
+	module.setObjectBulk = async function (keys, data) {
+		if (!keys.length || !data.length) {
+			return;
+		}
+
+		const writeData = data.map(helpers.serializeData);
+		try {
+			const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
+			keys.forEach((key, i) => bulk.find({ _key: key }).upsert().updateOne({ $set: writeData[i] }));
+			await bulk.execute();
+		} catch (err) {
+			if (err && err.message.startsWith('E11000 duplicate key error')) {
+				return await module.setObjectBulk(keys, data);
+			}
+			throw err;
+		}
+
+		cache.del(keys);
+	};
+
 	module.setObjectField = async function (key, field, value) {
 		if (!field) {
 			return;

@@ -36,6 +36,16 @@ module.exports = function (module) {
 		cache.del(key);
 	};
 
+	module.setObjectBulk = async function (keys, data) {
+		if (!keys.length || !data.length) {
+			return;
+		}
+		const batch = module.client.batch();
+		keys.forEach((k, i) => batch.hmset(k, data[i]));
+		await helpers.execBatch(batch);
+		cache.del(keys);
+	};
+
 	module.setObjectField = async function (key, field, value) {
 		if (!field) {
 			return;
