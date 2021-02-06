@@ -40,6 +40,8 @@ get:
                           nullable: true
                         imageClass:
                           type: string
+                        order:
+                          type: number
                         subCategoriesPerPage:
                           type: number
                         children:
