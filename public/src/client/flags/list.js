@@ -18,7 +18,7 @@ define('forum/flags/list', ['components', 'Chart', 'categoryFilter'], function (
 
 		categoryFilter.init($('[component="category/dropdown"]'), {
 			privilege: 'moderate',
-			cids: selectedCids,
+			selectedCids: selectedCids,
 			onHidden: function (data) {
 				selectedCids = data.selectedCids;
 			},

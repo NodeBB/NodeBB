@@ -6,20 +6,15 @@ define('categoryFilter', ['categorySearch'], function (categorySearch) {
 	categoryFilter.init = function (el, options) {
 		options = options || {};
 		options.states = options.states || ['watching', 'notwatching', 'ignoring'];
-
+		options.template = 'partials/category-filter';
 		$(window).trigger('action:category.filter.options', { el: el, options: options });
 
-		categorySearch.init(el, {
-			template: 'partials/category-filter',
-			privilege: options.privilege,
-			states: options.states,
-			cids: options.cids,
-		});
+		categorySearch.init(el, options);
 
 		var selectedCids = [];
 		var initialCids = [];
-		if (Array.isArray(options.cids)) {
-			selectedCids = options.cids.map(cid => parseInt(cid, 10));
+		if (Array.isArray(options.selectedCids)) {
+			selectedCids = options.selectedCids.map(cid => parseInt(cid, 10));
 		} else if (Array.isArray(ajaxify.data.selectedCids)) {
 			selectedCids = ajaxify.data.selectedCids.map(cid => parseInt(cid, 10));
 		}

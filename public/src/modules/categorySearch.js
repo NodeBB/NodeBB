@@ -11,11 +11,11 @@ define('categorySearch', function () {
 
 		var localCategories = [];
 		if (Array.isArray(options.localCategories)) {
-			localCategories = options.localCategories;
+			localCategories = options.localCategories.map(c => ({ ...c }));
 		} else if (Array.isArray(ajaxify.data.categories)) {
 			localCategories = ajaxify.data.categories.map(c => ({ ...c }));
 		}
-		options.cids = options.cids || ajaxify.data.selectedCids || [];
+		options.selectedCids = options.selectedCids || ajaxify.data.selectedCids || [];
 
 		var searchEl = el.find('[component="category-selector-search"]');
 		if (!searchEl.length) {
@@ -68,7 +68,7 @@ define('categorySearch', function () {
 		function loadList(query, callback) {
 			socket.emit('categories.loadCategoryFilter', {
 				query: query,
-				selectedCids: options.cids,
+				selectedCids: options.selectedCids,
 				privilege: options.privilege,
 				states: options.states,
 				showLinks: options.showLinks,

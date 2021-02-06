@@ -8,16 +8,10 @@ define('categorySelector', ['categorySearch'], function (categorySearch) {
 		var onSelect = options.onSelect || function () {};
 
 		options.states = options.states || ['watching', 'notwatching', 'ignoring'];
-
+		options.template = 'partials/category-selector';
 		$(window).trigger('action:category.selector.options', { el: el, options: options });
 
-		categorySearch.init(el, {
-			template: 'partials/category-selector',
-			privilege: options.privilege,
-			states: options.states,
-			localCategories: options.localCategories,
-			showLinks: options.showLinks,
-		});
+		categorySearch.init(el, options);
 
 		var selector = {
 			el: el,
