@@ -97,37 +97,29 @@ module.exports = function (Categories) {
 		const parentCid = await Categories.getCategoryField(cid, 'parentCid');
 		await db.sortedSetsAdd('categories:cid', order, cid);
 
-		const childCategories = await db.getSortedSetRangeWithScores(
+		const childrenCids = await db.getSortedSetRange(
 			'cid:' + parentCid + ':children', 0, -1
 		);
 
-		let foundIndex = -1;
-		childCategories.forEach((category, index) => {
-			if (parseInt(category.value, 10) === parseInt(cid, 10)) {
-				foundIndex = index;
-			}
-		});
-		if (foundIndex === -1) {
+		const currentIndex = childrenCids.indexOf(String(cid));
+		if (currentIndex === -1) {
 			throw new Error('[[error:no-category]]');
 		}
-		// moves category(cid) to index order-1 in the array
-		if (foundIndex !== -1 && childCategories.length > 1) {
-			childCategories.splice(Math.max(0, order - 1), 0, childCategories.splice(foundIndex, 1)[0]);
+		// moves cid to index order-1 in the array
+		if (childrenCids.length > 1) {
+			childrenCids.splice(Math.max(0, order - 1), 0, childrenCids.splice(currentIndex, 1)[0]);
 		}
-		// recalculate orders from array indices
-		childCategories.forEach((item, index) => {
-			item.score = index + 1;
-		});
 
+		// recalculate orders from array indices
 		await db.sortedSetAdd(
 			'cid:' + parentCid + ':children',
-			childCategories.map(item => item.score),
-			childCategories.map(item => item.value)
+			childrenCids.map((cid, order) => order),
+			childrenCids
 		);
 
 		await db.setObjectBulk(
-			childCategories.map(c => 'category:' + c.value),
-			childCategories.map(c => ({ order: c.score }))
+			childrenCids.map(cid => 'category:' + cid),
+			childrenCids.map((cid, order) => ({ order: order }))
 		);
 
 		cache.del([
