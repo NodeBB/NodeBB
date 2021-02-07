@@ -57,8 +57,21 @@ define('admin/manage/group', [
 			});
 		});
 
-		categorySelector.init($('[component="category-selector"]'), function (selectedCategory) {
-			navigateToCategory(selectedCategory.cid);
+		categorySelector.init($('.edit-privileges-selector [component="category-selector"]'), {
+			onSelect: function (selectedCategory) {
+				navigateToCategory(selectedCategory.cid);
+			},
+			showLinks: true,
+		});
+
+		var cidSelector = categorySelector.init($('.member-post-cids-selector [component="category-selector"]'), {
+			onSelect: function (selectedCategory) {
+				var cids = ($('#memberPostCids').val() || '').split(',').map(cid => parseInt(cid, 10));
+				cids.push(selectedCategory.cid);
+				cids = cids.filter((cid, index, array) => array.indexOf(cid) === index);
+				$('#memberPostCids').val(cids.join(','));
+				cidSelector.selectCategory(0);
+			},
 		});
 
 		groupSearch.init($('[component="group-selector"]'));

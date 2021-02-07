@@ -77,7 +77,8 @@ module.exports = function (Groups) {
 
 		if (values.hasOwnProperty('memberPostCids')) {
 			const validCids = await categories.getCidsByPrivilege('categories:cid', groupName, 'topics:read');
-			payload.memberPostCids = values.memberPostCids.filter(cid => validCids.includes(cid)).join(',') || '';
+			const cidsArray = values.memberPostCids.split(',').map(cid => parseInt(cid.trim(), 10)).filter(Boolean);
+			payload.memberPostCids = cidsArray.filter(cid => validCids.includes(cid)).join(',') || '';
 		}
 
 		await db.setObject('group:' + groupName, payload);

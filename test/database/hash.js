@@ -71,6 +71,15 @@ describe('Hash methods', function () {
 				});
 			});
 		});
+
+		it('should set multiple keys to different okjects', async function () {
+			const keys = ['bulkKey1', 'bulkKey2'];
+			const data = [{ foo: '1' }, { baz: 'baz' }];
+
+			await db.setObjectBulk(keys, data);
+			const result = await db.getObjects(keys);
+			assert.deepStrictEqual(result, data);
+		});
 	});
 
 	describe('setObjectField()', function () {

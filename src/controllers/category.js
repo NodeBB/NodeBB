@@ -105,11 +105,15 @@ categoryController.get = async function (req, res, next) {
 		categoryData.nextSubCategoryStart = categoryData.subCategoriesPerPage;
 		categoryData.children = categoryData.children.slice(0, categoryData.subCategoriesPerPage);
 		categoryData.children.forEach(function (child) {
-			child.children = undefined;
+			if (child) {
+				helpers.trimChildren(child);
+				helpers.setCategoryTeaser(child);
+			}
 		});
 	}
 
 	categoryData.title = translator.escape(categoryData.name);
+	categoryData.selectCategoryLabel = '[[category:subcategories]]';
 	categoryData.description = translator.escape(categoryData.description);
 	categoryData.privileges = userPrivileges;
 	categoryData.showSelect = userPrivileges.editable;

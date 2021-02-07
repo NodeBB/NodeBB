@@ -18,6 +18,9 @@ get:
                   title:
                     type: string
                     description: The page title
+                  selectCategoryLabel:
+                    type: string
+                    description: Label to use for the category selector
                   categories:
                     description: A collection of category data objects
                     type: array
@@ -175,10 +178,6 @@ get:
                                   cid:
                                     type: number
                                     description: A category identifier
-                                  parentCid:
-                                    type: number
-                                    description: The category identifier for the category that is the immediate
-                                      ancestor of the current category
                                   topic:
                                     type: object
                                     properties:

@@ -2,14 +2,16 @@
 
 
 define('forum/post-queue', [
-	'categoryFilter', 'categorySelector',
-], function (categoryFilter, categorySelector) {
+	'categoryFilter', 'categorySelector', 'api',
+], function (categoryFilter, categorySelector, api) {
 	var PostQueue = {};
 
 	PostQueue.init = function () {
 		$('[data-toggle="tooltip"]').tooltip();
 
-		categoryFilter.init($('[component="category/dropdown"]'));
+		categoryFilter.init($('[component="category/dropdown"]'), {
+			privilege: 'moderate',
+		});
 
 		$('.posts-list').on('click', '[data-action]', function () {
 			var parent = $(this).parents('[data-id]');
@@ -42,30 +44,32 @@ define('forum/post-queue', [
 		$('.posts-list').on('click', '.topic-category[data-editable]', function () {
 			var $this = $(this);
 			var id = $this.parents('[data-id]').attr('data-id');
-			categorySelector.modal(ajaxify.data.allCategories, function (cid) {
-				var category = ajaxify.data.allCategories.find(function (c) {
-					return parseInt(c.cid, 10) === parseInt(cid, 10);
-				});
-				socket.emit('posts.editQueuedContent', {
-					id: id,
-					cid: cid,
-				}, function (err) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-					app.parseAndTranslate('post-queue', 'posts', {
-						posts: [{
-							category: category,
-						}],
-					}, function (html) {
-						if ($this.find('.category-text').length) {
-							$this.find('.category-text').text(html.find('.topic-category .category-text').text());
-						} else {
-							// for backwards compatibility, remove in 1.16.0
-							$this.replaceWith(html.find('.topic-category'));
-						}
+			categorySelector.modal({
+				onSubmit: function (selectedCategory) {
+					Promise.all([
+						api.get(`/categories/${selectedCategory.cid}`, {}),
+						socket.emit('posts.editQueuedContent', {
+							id: id,
+							cid: selectedCategory.cid,
+						}),
+					]).then(function (result) {
+						var category = result[0];
+						app.parseAndTranslate('post-queue', 'posts', {
+							posts: [{
+								category: category,
+							}],
+						}, function (html) {
+							if ($this.find('.category-text').length) {
+								$this.find('.category-text').text(html.find('.topic-category .category-text').text());
+							} else {
+								// for backwards compatibility, remove in 1.16.0
+								$this.replaceWith(html.find('.topic-category'));
+							}
+						});
+					}).catch(function (err) {
+						app.alertError(err);
 					});
-				});
+				},
 			});
 			return false;
 		});

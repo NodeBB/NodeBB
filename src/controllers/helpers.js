@@ -244,36 +244,9 @@ async function getCategoryData(cids, uid, selectedCid, states, privilege) {
 		selectedCid = [selectedCid];
 	}
 	selectedCid = selectedCid && selectedCid.map(String);
-	states = states || [categories.watchStates.watching, categories.watchStates.notwatching];
 
-	const [allowed, watchState, categoryData, isAdmin] = await Promise.all([
-		privileges.categories.isUserAllowedTo(privilege, cids, uid),
-		categories.getWatchState(cids, uid),
-		categories.getCategoriesData(cids),
-		user.isAdministrator(uid),
-	]);
-
-	categories.getTree(categoryData);
-
-	const cidToAllowed = _.zipObject(cids, allowed.map(allowed => isAdmin || allowed));
-	const cidToCategory = _.zipObject(cids, categoryData);
-	const cidToWatchState = _.zipObject(cids, watchState);
-
-	const visibleCategories = categoryData.filter(function (c) {
-		const hasVisibleChildren = checkVisibleChildren(c, cidToAllowed, cidToWatchState, states);
-		const isCategoryVisible = c && cidToAllowed[c.cid] && !c.link && !c.disabled && states.includes(cidToWatchState[c.cid]);
-		const shouldBeRemoved = !hasVisibleChildren && !isCategoryVisible;
-		const shouldBeDisaplayedAsDisabled = hasVisibleChildren && !isCategoryVisible;
-
-		if (shouldBeDisaplayedAsDisabled) {
-			c.disabledClass = true;
-		}
-
-		if (shouldBeRemoved && c && c.parent && c.parent.cid && cidToCategory[c.parent.cid]) {
-			cidToCategory[c.parent.cid].children = cidToCategory[c.parent.cid].children.filter(child => child.cid !== c.cid);
-		}
-
-		return c && !shouldBeRemoved;
+	const visibleCategories = await helpers.getVisibleCategories({
+		cids, uid, states, privilege, showLinks: false,
 	});
 
 	const categoriesData = categories.buildForSelectCategories(visibleCategories, ['disabledClass']);
@@ -308,26 +281,112 @@ async function getCategoryData(cids, uid, selectedCid, states, privilege) {
 	};
 }
 
+helpers.getVisibleCategories = async function (params) {
+	const cids = params.cids;
+	const uid = params.uid;
+	const states = params.states || [categories.watchStates.watching, categories.watchStates.notwatching];
+	const privilege = params.privilege;
+	const showLinks = !!params.showLinks;
+
+	let [allowed, watchState, categoriesData, isAdmin, isModerator] = await Promise.all([
+		privileges.categories.isUserAllowedTo(privilege, cids, uid),
+		categories.getWatchState(cids, uid),
+		categories.getCategoriesData(cids),
+		user.isAdministrator(uid),
+		user.isModerator(uid, cids),
+	]);
+
+	const filtered = await plugins.hooks.fire('filter:helpers.getVisibleCategories', {
+		uid: uid,
+		allowed: allowed,
+		watchState: watchState,
+		categoriesData: categoriesData,
+		isModerator: isModerator,
+		isAdmin: isAdmin,
+	});
+	({ allowed, watchState, categoriesData, isModerator, isAdmin } = filtered);
+
+	categories.getTree(categoriesData, params.parentCid);
+
+	const cidToAllowed = _.zipObject(cids, allowed.map((allowed, i) => isAdmin || isModerator[i] || allowed));
+	const cidToCategory = _.zipObject(cids, categoriesData);
+	const cidToWatchState = _.zipObject(cids, watchState);
+
+	return categoriesData.filter(function (c) {
+		if (!c) {
+			return false;
+		}
+		const hasVisibleChildren = checkVisibleChildren(c, cidToAllowed, cidToWatchState, states);
+		const isCategoryVisible = cidToAllowed[c.cid] && (showLinks || !c.link) && !c.disabled && states.includes(cidToWatchState[c.cid]);
+		const shouldBeRemoved = !hasVisibleChildren && !isCategoryVisible;
+		const shouldBeDisaplayedAsDisabled = hasVisibleChildren && !isCategoryVisible;
+
+		if (shouldBeDisaplayedAsDisabled) {
+			c.disabledClass = true;
+		}
+
+		if (shouldBeRemoved && c.parent && c.parent.cid && cidToCategory[c.parent.cid]) {
+			cidToCategory[c.parent.cid].children = cidToCategory[c.parent.cid].children.filter(child => child.cid !== c.cid);
+		}
+
+		return !shouldBeRemoved;
+	});
+};
+
+helpers.getSelectedCategory = async function (cid) {
+	if (cid && !Array.isArray(cid)) {
+		cid = [cid];
+	}
+	cid = cid && cid.map(cid => parseInt(cid, 10));
+	let selectedCategories = await categories.getCategoriesData(cid);
+
+	if (selectedCategories.length > 1) {
+		selectedCategories = {
+			icon: 'fa-plus',
+			name: '[[unread:multiple-categories-selected]]',
+			bgColor: '#ddd',
+		};
+	} else if (selectedCategories.length === 1) {
+		selectedCategories = selectedCategories[0];
+	} else {
+		selectedCategories = null;
+	}
+	return {
+		selectedCids: cid || [],
+		selectedCategory: selectedCategories,
+	};
+};
+
+helpers.trimChildren = function (category) {
+	if (Array.isArray(category.children)) {
+		category.children = category.children.slice(0, category.subCategoriesPerPage);
+		category.children.forEach(function (child) {
+			child.children = undefined;
+		});
+	}
+};
+
+helpers.setCategoryTeaser = function (category) {
+	if (Array.isArray(category.posts) && category.posts.length && category.posts[0]) {
+		category.teaser = {
+			url: nconf.get('relative_path') + '/post/' + category.posts[0].pid,
+			timestampISO: category.posts[0].timestampISO,
+			pid: category.posts[0].pid,
+			topic: category.posts[0].topic,
+		};
+	}
+};
+
 function checkVisibleChildren(c, cidToAllowed, cidToWatchState, states) {
 	if (!c || !Array.isArray(c.children)) {
 		return false;
 	}
-	return c.children.some(c => c && !c.disabled && (
+	return c.children.some(c => !c.disabled && (
 		(cidToAllowed[c.cid] && states.includes(cidToWatchState[c.cid])) || checkVisibleChildren(c, cidToAllowed, cidToWatchState, states)
 	));
 }
 
 helpers.getHomePageRoutes = async function (uid) {
-	let cids = await categories.getAllCidsFromSet('categories:cid');
-	cids = await privileges.categories.filterCids('find', cids, uid);
-	const categoryData = await categories.getCategoriesFields(cids, ['name', 'slug']);
-
-	const categoryRoutes = categoryData.map(function (category) {
-		return {
-			route: 'category/' + category.slug,
-			name: 'Category: ' + category.name,
-		};
-	});
 	const routes = [
 		{
 			route: 'categories',
@@ -349,13 +408,15 @@ helpers.getHomePageRoutes = async function (uid) {
 			route: 'popular',
 			name: 'Popular',
 		},
-	].concat(categoryRoutes, [
 		{
 			route: 'custom',
 			name: 'Custom',
 		},
-	]);
-	const data = await plugins.hooks.fire('filter:homepage.get', { routes: routes });
+	];
+	const data = await plugins.hooks.fire('filter:homepage.get', {
+		uid: uid,
+		routes: routes,
+	});
 	return data.routes;
 };
 

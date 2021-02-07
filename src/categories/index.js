@@ -71,6 +71,7 @@ Categories.getAllCidsFromSet = async function (key) {
 	}
 
 	cids = await db.getSortedSetRange(key, 0, -1);
+	cids = cids.map(cid => parseInt(cid, 10));
 	cache.set(key, cids);
 	return cids.slice();
 };
@@ -229,6 +230,19 @@ async function getChildrenTree(category, uid) {
 
 Categories.getChildrenTree = getChildrenTree;
 
+Categories.getParentCids = async function (currentCid) {
+	let cid = currentCid;
+	const parents = [];
+	while (parseInt(cid, 10)) {
+		// eslint-disable-next-line
+		cid = await Categories.getCategoryField(cid, 'parentCid');
+		if (cid) {
+			parents.unshift(cid);
+		}
+	}
+	return parents;
+};
+
 Categories.getChildrenCids = async function (rootCid) {
 	let allCids = [];
 	async function recursive(keys) {
@@ -243,7 +257,7 @@ Categories.getChildrenCids = async function (rootCid) {
 		await recursive(keys);
 	}
 	const key = 'cid:' + rootCid + ':children';
-	const cacheKey = 'cache:' + key;
+	const cacheKey = key + ':all';
 	const childrenCids = cache.get(cacheKey);
 	if (childrenCids) {
 		return childrenCids.slice();
@@ -311,10 +325,17 @@ Categories.getTree = function (categories, parentCid) {
 		}
 	});
 	function sortTree(tree) {
-		tree.sort((a, b) => a.order - b.order);
-		if (tree.children) {
-			sortTree(tree.children);
-		}
+		tree.sort((a, b) => {
+			if (a.order !== b.order) {
+				return a.order - b.order;
+			}
+			return a.cid - b.cid;
+		});
+		tree.forEach((category) => {
+			if (category && Array.isArray(category.children)) {
+				sortTree(category.children);
+			}
+		});
 	}
 	sortTree(tree);
 
@@ -338,7 +359,7 @@ async function getSelectData(cids, fields) {
 	return Categories.buildForSelectCategories(tree, fields);
 }
 
-Categories.buildForSelectCategories = function (categories, fields) {
+Categories.buildForSelectCategories = function (categories, fields, parentCid) {
 	function recursive(category, categoriesData, level, depth) {
 		const bullet = level ? '&bull; ' : '';
 		category.value = category.cid;
@@ -350,10 +371,10 @@ Categories.buildForSelectCategories = function (categories, fields) {
 			category.children.forEach(child => recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level, depth + 1));
 		}
 	}
-
+	parentCid = parentCid || 0;
 	const categoriesData = [];
 
-	const rootCategories = categories.filter(category => category && !category.parentCid);
+	const rootCategories = categories.filter(category => category && category.parentCid === parentCid);
 
 	rootCategories.forEach(category => recursive(category, categoriesData, '', 0));
 

@@ -58,6 +58,9 @@ get:
                     type: boolean
                   title:
                     type: string
+                  selectCategoryLabel:
+                    type: string
+                    description: Label to use for the category selector
                   privileges:
                     type: object
                     properties:

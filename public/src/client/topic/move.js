@@ -12,18 +12,12 @@ define('forum/topic/move', ['categorySelector', 'alerts'], function (categorySel
 		Move.onComplete = onComplete;
 		Move.moveAll = !tids;
 
-		socket.emit('categories.getMoveCategories', onCategoriesLoaded);
+		showModal();
 	};
 
-	function onCategoriesLoaded(err, categories) {
-		if (err) {
-			return app.alertError(err.message);
-		}
-
-		app.parseAndTranslate('partials/move_thread_modal', {
-			categories: categories,
-		}, function (html) {
-			modal = $(html);
+	function showModal() {
+		app.parseAndTranslate('partials/move_thread_modal', {}, function (html) {
+			modal = html;
 			modal.on('hidden.bs.modal', function () {
 				modal.remove();
 			});
@@ -34,7 +28,10 @@ define('forum/topic/move', ['categorySelector', 'alerts'], function (categorySel
 				modal.find('.modal-header h3').translateText('[[topic:move_topics]]');
 			}
 
-			categorySelector.init(modal.find('[component="category-selector"]'), onCategorySelected);
+			categorySelector.init(modal.find('[component="category-selector"]'), {
+				onSelect: onCategorySelected,
+				privilege: 'moderate',
+			});
 
 			modal.find('#move_thread_commit').on('click', onCommitClicked);
 

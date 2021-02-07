@@ -1,12 +1,28 @@
 'use strict';
 
-define('forum/flags/list', ['components', 'Chart'], function (components, Chart) {
+define('forum/flags/list', ['components', 'Chart', 'categoryFilter'], function (components, Chart, categoryFilter) {
 	var Flags = {};
+
+	var selectedCids;
 
 	Flags.init = function () {
 		Flags.enableFilterForm();
 		Flags.enableCheckboxes();
 		Flags.handleBulkActions();
+
+		selectedCids = [];
+		if (ajaxify.data.filters.hasOwnProperty('cid')) {
+			selectedCids = Array.isArray(ajaxify.data.filters.cid) ?
+				ajaxify.data.filters.cid : [ajaxify.data.filters.cid];
+		}
+
+		categoryFilter.init($('[component="category/dropdown"]'), {
+			privilege: 'moderate',
+			selectedCids: selectedCids,
+			onHidden: function (data) {
+				selectedCids = data.selectedCids;
+			},
+		});
 
 		components.get('flags/list')
 			.on('click', '[data-flag-id]', function (e) {
@@ -39,6 +55,11 @@ define('forum/flags/list', ['components', 'Chart'], function (components, Chart)
 
 		document.getElementById('apply-filters').addEventListener('click', function () {
 			var payload = filtersEl.serializeArray();
+			// cid is special comes from categoryFilter module
+			selectedCids.forEach(function (cid) {
+				payload.push({ name: 'cid', value: cid });
+			});
+
 			ajaxify.go('flags?' + (payload.length ? $.param(payload) : 'reset=1'));
 		});
 	};

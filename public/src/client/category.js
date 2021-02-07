@@ -6,7 +6,8 @@ define('forum/category', [
 	'navigator',
 	'topicList',
 	'sort',
-], function (infinitescroll, share, navigator, topicList, sort) {
+	'categorySelector',
+], function (infinitescroll, share, navigator, topicList, sort, categorySelector) {
 	var Category = {};
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
@@ -37,6 +38,14 @@ define('forum/category', [
 		handleIgnoreWatch(cid);
 
 		handleLoadMoreSubcategories();
+
+		categorySelector.init($('[component="category-selector"]'), {
+			privilege: 'find',
+			parentCid: ajaxify.data.cid,
+			onSelect: function (category) {
+				ajaxify.go('/category/' + category.cid);
+			},
+		});
 
 		$(window).trigger('action:topics.loaded', { topics: ajaxify.data.topics });
 		$(window).trigger('action:category.loaded', { cid: ajaxify.data.cid });

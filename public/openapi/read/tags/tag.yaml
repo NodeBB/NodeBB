@@ -227,32 +227,6 @@ get:
                     type: string
                   title:
                     type: string
-                  categories:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        cid:
-                          type: number
-                          description: A category identifier
-                        name:
-                          type: string
-                        level:
-                          type: string
-                        icon:
-                          type: string
-                        parentCid:
-                          type: number
-                          description: The category identifier for the category that is the immediate
-                            ancestor of the current category
-                        color:
-                          type: string
-                        bgColor:
-                          type: string
-                        selected:
-                          type: boolean
-                        imageClass:
-                          type: string
                   rssFeedUrl:
                     type: string
                   feeds:disableRSS:

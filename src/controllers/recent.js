@@ -32,14 +32,9 @@ recentController.getData = async function (req, url, sort) {
 	}
 	term = term || 'alltime';
 
-	const states = [categories.watchStates.watching, categories.watchStates.notwatching];
-	if (filter === 'watched') {
-		states.push(categories.watchStates.ignoring);
-	}
-
 	const [settings, categoryData, rssToken, canPost, isPrivileged] = await Promise.all([
 		user.getSettings(req.uid),
-		helpers.getCategoriesByStates(req.uid, cid, states),
+		helpers.getSelectedCategory(cid),
 		user.auth.getFeedToken(req.uid),
 		canPostTopic(req.uid),
 		user.isPrivileged(req.uid),
@@ -49,7 +44,7 @@ recentController.getData = async function (req, url, sort) {
 	const stop = start + settings.topicsPerPage - 1;
 
 	const data = await topics.getSortedTopics({
-		cids: cid || categoryData.categories.map(c => c.cid),
+		cids: cid,
 		uid: req.uid,
 		start: start,
 		stop: stop,
@@ -63,7 +58,6 @@ recentController.getData = async function (req, url, sort) {
 	data.canPost = canPost;
 	data.showSelect = isPrivileged;
 	data.showTopicTools = isPrivileged;
-	data.categories = categoryData.categories;
 	data.allCategoriesUrl = url + helpers.buildQueryString(req.query, 'cid', '');
 	data.selectedCategory = categoryData.selectedCategory;
 	data.selectedCids = categoryData.selectedCids;

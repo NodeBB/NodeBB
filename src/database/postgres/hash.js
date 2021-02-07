@@ -34,6 +34,14 @@ module.exports = function (module) {
 		});
 	};
 
+	module.setObjectBulk = async function (keys, data) {
+		if (!keys.length || !data.length) {
+			return;
+		}
+		// TODO: single query?
+		await Promise.all(keys.map((k, i) => module.setObject(k, data[i])));
+	};
+
 	module.setObjectField = async function (key, field, value) {
 		if (!field) {
 			return;

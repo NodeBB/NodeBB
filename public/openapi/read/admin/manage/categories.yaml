@@ -11,7 +11,9 @@ get:
             allOf:
               - type : object
                 properties:
-                  categories:
+                  categoriesPerPage:
+                    type: number
+                  categoriesTree:
                     type: array
                     items:
                       type: object
@@ -40,7 +42,12 @@ get:
                           nullable: true
                         imageClass:
                           type: string
+                        order:
+                          type: number
+                        subCategoriesPerPage:
+                          type: number
                         children:
                           type: array
                           description: Array of children categories
+              - $ref: ../../../components/schemas/Pagination.yaml#/Pagination
               - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

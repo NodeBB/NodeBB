@@ -17,11 +17,16 @@ define('admin/manage/privileges', [
 
 		checkboxRowSelector.init('.privilege-table-container');
 
-		categorySelector.init($('[component="category-selector"]'), function (category) {
-			cid = parseInt(category.cid, 10);
-			cid = isNaN(cid) ? 'admin' : cid;
-			Privileges.refreshPrivilegeTable();
-			ajaxify.updateHistory('admin/manage/privileges/' + (cid || ''));
+		categorySelector.init($('[component="category-selector"]'), {
+			onSelect: function (category) {
+				cid = parseInt(category.cid, 10);
+				cid = isNaN(cid) ? 'admin' : cid;
+				Privileges.refreshPrivilegeTable();
+				ajaxify.updateHistory('admin/manage/privileges/' + (cid || ''));
+			},
+			localCategories: ajaxify.data.categories,
+			privilege: 'find',
+			showLinks: true,
 		});
 
 		Privileges.setupPrivilegeTable();
@@ -262,13 +267,21 @@ define('admin/manage/privileges', [
 	};
 
 	Privileges.copyPrivilegesFromCategory = function (cid, group) {
-		categorySelector.modal(ajaxify.data.categories.slice(1), function (fromCid) {
-			socket.emit('admin.categories.copyPrivilegesFrom', { toCid: cid, fromCid: fromCid, group: group }, function (err) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-				ajaxify.refresh();
-			});
+		categorySelector.modal({
+			localCategories: [],
+			showLinks: true,
+			onSubmit: function (selectedCategory) {
+				socket.emit('admin.categories.copyPrivilegesFrom', {
+					toCid: cid,
+					fromCid: selectedCategory.cid,
+					group: group,
+				}, function (err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					ajaxify.refresh();
+				});
+			},
 		});
 	};
 

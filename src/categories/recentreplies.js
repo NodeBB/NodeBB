@@ -91,25 +91,27 @@ module.exports = function (Categories) {
 	};
 
 	async function getTopics(tids, uid) {
-		const topicData = await topics.getTopicsFields(tids, ['tid', 'mainPid', 'slug', 'title', 'teaserPid', 'cid', 'postcount']);
+		const topicData = await topics.getTopicsFields(
+			tids,
+			['tid', 'mainPid', 'slug', 'title', 'teaserPid', 'cid', 'postcount']
+		);
 		topicData.forEach(function (topic) {
 			if (topic) {
 				topic.teaserPid = topic.teaserPid || topic.mainPid;
 			}
 		});
-		var cids = _.uniq(topicData.map(topic => topic && topic.cid).filter(cid => parseInt(cid, 10)));
-		const [categoryData, teasers] = await Promise.all([
-			Categories.getCategoriesFields(cids, ['cid', 'parentCid']),
+		const cids = _.uniq(topicData.map(t => t && t.cid).filter(cid => parseInt(cid, 10)));
+		const getToRoot = async () => await Promise.all(cids.map(Categories.getParentCids));
+		const [toRoot, teasers] = await Promise.all([
+			getToRoot(),
 			topics.getTeasers(topicData, uid),
 		]);
-		var parentCids = {};
-		categoryData.forEach(function (category) {
-			parentCids[category.cid] = category.parentCid;
-		});
+		const cidToRoot = _.zipObject(cids, toRoot);
+
 		teasers.forEach(function (teaser, index) {
 			if (teaser) {
 				teaser.cid = topicData[index].cid;
-				teaser.parentCid = parseInt(parentCids[teaser.cid], 10) || 0;
+				teaser.parentCids = cidToRoot[teaser.cid];
 				teaser.tid = undefined;
 				teaser.uid = undefined;
 				teaser.topic = {
@@ -124,11 +126,12 @@ module.exports = function (Categories) {
 	function assignTopicsToCategories(categories, topics) {
 		categories.forEach(function (category) {
 			if (category) {
-				category.posts = topics.filter(topic => topic.cid && (topic.cid === category.cid || topic.parentCid === category.cid))
+				category.posts = topics.filter(t => t.cid && (t.cid === category.cid || t.parentCids.includes(category.cid)))
 					.sort((a, b) => b.pid - a.pid)
 					.slice(0, parseInt(category.numRecentReplies, 10));
 			}
 		});
+		topics.forEach((t) => { t.parentCids = undefined; });
 	}
 
 	function bubbleUpChildrenPosts(categoryData) {
@@ -137,7 +140,8 @@ module.exports = function (Categories) {
 				if (category.posts.length) {
 					return;
 				}
-				var posts = [];
+
+				const posts = [];
 				getPostsRecursive(category, posts);
 
 				posts.sort((a, b) => b.pid - a.pid);
@@ -150,15 +154,12 @@ module.exports = function (Categories) {
 
 	function getPostsRecursive(category, posts) {
 		if (Array.isArray(category.posts)) {
-			category.posts.forEach(function (p) {
-				posts.push(p);
-			});
+			category.posts.forEach(p =>	posts.push(p));
 		}
 
-		category.children.forEach(function (child) {
-			getPostsRecursive(child, posts);
-		});
+		category.children.forEach(child => getPostsRecursive(child, posts));
 	}
+
 	// terrible name, should be topics.moveTopicPosts
 	Categories.moveRecentReplies = async function (tid, oldCid, cid) {
 		await updatePostCount(tid, oldCid, cid);

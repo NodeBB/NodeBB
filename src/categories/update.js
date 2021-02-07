@@ -50,12 +50,12 @@ module.exports = function (Categories) {
 			return await updateTagWhitelist(cid, value);
 		} else if (key === 'name') {
 			return await updateName(cid, value);
+		} else if (key === 'order') {
+			return await updateOrder(cid, value);
 		}
 
 		await db.setObjectField('category:' + cid, key, value);
-		if (key === 'order') {
-			await updateOrder(cid, value);
-		} else if (key === 'description') {
+		if (key === 'description') {
 			await Categories.parseDescription(cid, value);
 		}
 	}
@@ -76,7 +76,12 @@ module.exports = function (Categories) {
 			db.setObjectField('category:' + cid, 'parentCid', newParent),
 		]);
 
-		cache.del(['cid:' + oldParent + ':children', 'cid:' + newParent + ':children']);
+		cache.del([
+			'cid:' + oldParent + ':children',
+			'cid:' + newParent + ':children',
+			'cid:' + oldParent + ':children:all',
+			'cid:' + newParent + ':children:all',
+		]);
 	}
 
 	async function updateTagWhitelist(cid, tags) {
@@ -90,8 +95,38 @@ module.exports = function (Categories) {
 
 	async function updateOrder(cid, order) {
 		const parentCid = await Categories.getCategoryField(cid, 'parentCid');
-		await db.sortedSetsAdd(['categories:cid', 'cid:' + parentCid + ':children'], order, cid);
-		cache.del(['categories:cid', 'cid:' + parentCid + ':children']);
+		await db.sortedSetsAdd('categories:cid', order, cid);
+
+		const childrenCids = await db.getSortedSetRange(
+			'cid:' + parentCid + ':children', 0, -1
+		);
+
+		const currentIndex = childrenCids.indexOf(String(cid));
+		if (currentIndex === -1) {
+			throw new Error('[[error:no-category]]');
+		}
+		// moves cid to index order-1 in the array
+		if (childrenCids.length > 1) {
+			childrenCids.splice(Math.max(0, order - 1), 0, childrenCids.splice(currentIndex, 1)[0]);
+		}
+
+		// recalculate orders from array indices
+		await db.sortedSetAdd(
+			'cid:' + parentCid + ':children',
+			childrenCids.map((cid, index) => index + 1),
+			childrenCids
+		);
+
+		await db.setObjectBulk(
+			childrenCids.map(cid => 'category:' + cid),
+			childrenCids.map((cid, index) => ({ order: index + 1 }))
+		);
+
+		cache.del([
+			'categories:cid',
+			'cid:' + parentCid + ':children',
+			'cid:' + parentCid + ':children:all',
+		]);
 	}
 
 	Categories.parseDescription = async function (cid, description) {

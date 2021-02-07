@@ -5,7 +5,7 @@
 			[[admin/settings/homepage:description]]
 		</p>
 		<form class="row">
-			<div class="col-sm-6">
+			<div class="col-sm-12">
 				<label>[[admin/settings/homepage:home-page-route]]</label>
 				<select class="form-control" data-field="homePageRoute">
 					<!-- BEGIN routes -->
@@ -16,6 +16,7 @@
 					<br>
 					<label>[[admin/settings/homepage:custom-route]]</label>
 					<input type="text" class="form-control" data-field="homePageCustom"/>
+					<p class="help-block">[[user:custom_route_help]]</p>
 				</div>
 				<br>
 				<div class="checkbox">

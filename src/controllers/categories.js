@@ -28,7 +28,7 @@ categoriesController.list = async function (req, res) {
 	const stop = start + meta.config.categoriesPerPage - 1;
 	const pageCids = rootCids.slice(start, stop + 1);
 
-	const allChildCids = _.flatten(await Promise.all(pageCids.map(cid => categories.getChildrenCids(cid))));
+	const allChildCids = _.flatten(await Promise.all(pageCids.map(categories.getChildrenCids)));
 	const childCids = await privileges.categories.filterCids('find', allChildCids, req.uid);
 	const categoryData = await categories.getCategories(pageCids.concat(childCids), req.uid);
 	const tree = categories.getTree(categoryData, 0);
@@ -36,26 +36,15 @@ categoriesController.list = async function (req, res) {
 
 	const data = {
 		title: meta.config.homePageTitle || '[[pages:home]]',
+		selectCategoryLabel: '[[pages:categories]]',
 		categories: tree,
 		pagination: pagination.create(page, pageCount, req.query),
 	};
 
 	data.categories.forEach(function (category) {
 		if (category) {
-			if (Array.isArray(category.children)) {
-				category.children = category.children.slice(0, category.subCategoriesPerPage);
-				category.children.forEach(function (child) {
-					child.children = undefined;
-				});
-			}
-			if (Array.isArray(category.posts) && category.posts.length && category.posts[0]) {
-				category.teaser = {
-					url: nconf.get('relative_path') + '/post/' + category.posts[0].pid,
-					timestampISO: category.posts[0].timestampISO,
-					pid: category.posts[0].pid,
-					topic: category.posts[0].topic,
-				};
-			}
+			helpers.trimChildren(category);
+			helpers.setCategoryTeaser(category);
 		}
 	});
 

@@ -1,18 +1,22 @@
 'use strict';
 
+const _ = require('lodash');
+const nconf = require('nconf');
 const categories = require('../../categories');
 const analytics = require('../../analytics');
 const plugins = require('../../plugins');
 const translator = require('../../translator');
 const meta = require('../../meta');
+const helpers = require('../helpers');
+const pagination = require('../../pagination');
 
 const categoriesController = module.exports;
 
 categoriesController.get = async function (req, res, next) {
-	const [categoryData, parent, allCategories] = await Promise.all([
+	const [categoryData, parent, selectedData] = await Promise.all([
 		categories.getCategories([req.params.category_id], req.uid),
 		categories.getParents([req.params.category_id]),
-		categories.buildForSelectAll(),
+		helpers.getSelectedCategory(req.params.category_id),
 	]);
 
 	const category = categoryData[0];
@@ -21,46 +25,107 @@ categoriesController.get = async function (req, res, next) {
 	}
 
 	category.parent = parent[0];
-	allCategories.forEach(function (category) {
-		if (category) {
-			category.selected = parseInt(category.cid, 10) === parseInt(req.params.category_id, 10);
-		}
-	});
-	const selectedCategory = allCategories.find(c => c.selected);
 
 	const data = await plugins.hooks.fire('filter:admin.category.get', {
 		req: req,
 		res: res,
 		category: category,
 		customClasses: [],
-		allCategories: allCategories,
 	});
 	data.category.name = translator.escape(String(data.category.name));
 	data.category.description = translator.escape(String(data.category.description));
 
 	res.render('admin/manage/category', {
 		category: data.category,
-		categories: data.allCategories,
-		selectedCategory: selectedCategory,
+		selectedCategory: selectedData.selectedCategory,
 		customClasses: data.customClasses,
 		postQueueEnabled: !!meta.config.postQueue,
 	});
 };
 
 categoriesController.getAll = async function (req, res) {
+	const rootCid = parseInt(req.query.cid, 10) || 0;
+	async function getRootAndChildren() {
+		const rootChildren = await categories.getAllCidsFromSet(`cid:${rootCid}:children`);
+		const childCids = _.flatten(await Promise.all(rootChildren.map(cid => categories.getChildrenCids(cid))));
+		return [rootCid].concat(rootChildren.concat(childCids));
+	}
+
 	// Categories list will be rendered on client side with recursion, etc.
-	const cids = await categories.getAllCidsFromSet('categories:cid');
+	const cids = await (rootCid ? getRootAndChildren() : categories.getAllCidsFromSet('categories:cid'));
+
+	let rootParent = 0;
+	if (rootCid) {
+		rootParent = await categories.getCategoryField(rootCid, 'parentCid') || 0;
+	}
+
 	const fields = [
-		'cid', 'name', 'icon', 'parentCid', 'disabled', 'link',
-		'color', 'bgColor', 'backgroundImage', 'imageClass',
+		'cid', 'name', 'icon', 'parentCid', 'disabled', 'link', 'order',
+		'color', 'bgColor', 'backgroundImage', 'imageClass', 'subCategoriesPerPage',
 	];
 	const categoriesData = await categories.getCategoriesFields(cids, fields);
 	const result = await plugins.hooks.fire('filter:admin.categories.get', { categories: categoriesData, fields: fields });
-	const tree = categories.getTree(result.categories, 0);
+	let tree = categories.getTree(result.categories, rootParent);
+
+	const cidsCount = rootCid ? cids.length - 1 : tree.length;
+
+	const pageCount = Math.max(1, Math.ceil(cidsCount / meta.config.categoriesPerPage));
+	const page = Math.min(parseInt(req.query.page, 10) || 1, pageCount);
+	const start = Math.max(0, (page - 1) * meta.config.categoriesPerPage);
+	const stop = start + meta.config.categoriesPerPage;
+
+	function trim(c) {
+		if (c.children) {
+			c.children = c.children.slice(0, c.subCategoriesPerPage);
+			c.children.forEach(c => trim(c));
+		}
+	}
+	if (rootCid && tree[0] && Array.isArray(tree[0].children)) {
+		tree[0].children = tree[0].children.slice(start, stop);
+		tree[0].children.forEach(trim);
+	} else {
+		tree = tree.slice(start, stop);
+		tree.forEach(trim);
+	}
+
+	let selectedCategory;
+	if (rootCid) {
+		selectedCategory = await categories.getCategoryData(rootCid);
+	}
+	const crumbs = await buildBreadcrumbs(req, selectedCategory);
 	res.render('admin/manage/categories', {
-		categories: tree,
+		categoriesTree: tree,
+		selectedCategory: selectedCategory,
+		breadcrumbs: crumbs,
+		pagination: pagination.create(page, pageCount, req.query),
+		categoriesPerPage: meta.config.categoriesPerPage,
 	});
 };
+
+async function buildBreadcrumbs(req, categoryData) {
+	if (!categoryData) {
+		return;
+	}
+	const breadcrumbs = [
+		{
+			text: categoryData.name,
+			url: nconf.get('relative_path') + '/admin/manage/categories?cid=' + categoryData.cid,
+			cid: categoryData.cid,
+		},
+	];
+	const allCrumbs = await helpers.buildCategoryBreadcrumbs(categoryData.parentCid);
+	const crumbs = allCrumbs.filter(c => c.cid);
+
+	crumbs.forEach(function (c) {
+		c.url = '/admin/manage/categories?cid=' + c.cid;
+	});
+	crumbs.unshift({
+		text: '[[admin/manage/categories:top-level]]',
+		url: '/admin/manage/categories',
+	});
+
+	return crumbs.concat(breadcrumbs);
+}
 
 categoriesController.getAnalytics = async function (req, res) {
 	const [name, analyticsData] = await Promise.all([

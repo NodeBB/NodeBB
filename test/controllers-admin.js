@@ -585,9 +585,7 @@ describe('Admin Controllers', function () {
 				assert.ifError(err);
 				assert(body);
 				assert(body.flags);
-				assert(body.categories);
 				assert(body.filters);
-				assert.equal(body.categories[cid], 'Test Category');
 				assert.equal(body.filters.cid.indexOf(cid), -1);
 				done();
 			});
