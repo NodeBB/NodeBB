@@ -234,7 +234,7 @@ Categories.getParentCids = async function (currentCid) {
 	let cid = currentCid;
 	const parents = [];
 	while (parseInt(cid, 10)) {
-		/* eslint-disable no-await-in-loop */
+		// eslint-disable-next-line
 		cid = await Categories.getCategoryField(cid, 'parentCid');
 		if (cid) {
 			parents.unshift(cid);
