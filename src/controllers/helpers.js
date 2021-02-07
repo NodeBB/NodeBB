@@ -357,6 +357,26 @@ helpers.getSelectedCategory = async function (cid) {
 	};
 };
 
+helpers.trimChildren = function (category) {
+	if (Array.isArray(category.children)) {
+		category.children = category.children.slice(0, category.subCategoriesPerPage);
+		category.children.forEach(function (child) {
+			child.children = undefined;
+		});
+	}
+};
+
+helpers.setCategoryTeaser = function (category) {
+	if (Array.isArray(category.posts) && category.posts.length && category.posts[0]) {
+		category.teaser = {
+			url: nconf.get('relative_path') + '/post/' + category.posts[0].pid,
+			timestampISO: category.posts[0].timestampISO,
+			pid: category.posts[0].pid,
+			topic: category.posts[0].topic,
+		};
+	}
+};
+
 function checkVisibleChildren(c, cidToAllowed, cidToWatchState, states) {
 	if (!c || !Array.isArray(c.children)) {
 		return false;

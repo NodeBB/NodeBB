@@ -230,6 +230,19 @@ async function getChildrenTree(category, uid) {
 
 Categories.getChildrenTree = getChildrenTree;
 
+Categories.getParentCids = async function (currentCid) {
+	let cid = currentCid;
+	const parents = [];
+	while (parseInt(cid, 10)) {
+		/* eslint-disable no-await-in-loop */
+		cid = await Categories.getCategoryField(cid, 'parentCid');
+		if (cid) {
+			parents.unshift(cid);
+		}
+	}
+	return parents;
+};
+
 Categories.getChildrenCids = async function (rootCid) {
 	let allCids = [];
 	async function recursive(keys) {

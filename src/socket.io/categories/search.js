@@ -48,18 +48,7 @@ module.exports = function (SocketCategories) {
 			query: data.query,
 			paginate: false,
 		});
-		async function addParentsToRoot(currentCid) {
-			let cid = currentCid;
-			const toParent = [];
-			while (parseInt(cid, 10)) {
-				/* eslint-disable no-await-in-loop */
-				cid = await categories.getCategoryField(cid, 'parentCid');
-				if (cid) {
-					toParent.push(cid);
-				}
-			}
-			return toParent;
-		}
+
 
 		let matchedCids = result.categories.map(c => c.cid);
 		// no need to filter if all 3 states are used
@@ -71,8 +60,8 @@ module.exports = function (SocketCategories) {
 			matchedCids = matchedCids.filter((cid, index) => data.states.includes(states[index]));
 		}
 
-		const rootCids = _.uniq(_.flatten(await Promise.all(matchedCids.map(addParentsToRoot))));
-		const allChildCids = _.uniq(_.flatten(await Promise.all(matchedCids.map(cid => categories.getChildrenCids(cid)))));
+		const rootCids = _.uniq(_.flatten(await Promise.all(matchedCids.map(categories.getParentCids))));
+		const allChildCids = _.uniq(_.flatten(await Promise.all(matchedCids.map(categories.getChildrenCids))));
 
 		return {
 			cids: _.uniq(rootCids.concat(allChildCids).concat(matchedCids)),

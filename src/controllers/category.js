@@ -105,7 +105,10 @@ categoryController.get = async function (req, res, next) {
 		categoryData.nextSubCategoryStart = categoryData.subCategoriesPerPage;
 		categoryData.children = categoryData.children.slice(0, categoryData.subCategoriesPerPage);
 		categoryData.children.forEach(function (child) {
-			child.children = undefined;
+			if (child) {
+				helpers.trimChildren(child);
+				helpers.setCategoryTeaser(child);
+			}
 		});
 	}
 

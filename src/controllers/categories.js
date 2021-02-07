@@ -43,20 +43,8 @@ categoriesController.list = async function (req, res) {
 
 	data.categories.forEach(function (category) {
 		if (category) {
-			if (Array.isArray(category.children)) {
-				category.children = category.children.slice(0, category.subCategoriesPerPage);
-				category.children.forEach(function (child) {
-					child.children = undefined;
-				});
-			}
-			if (Array.isArray(category.posts) && category.posts.length && category.posts[0]) {
-				category.teaser = {
-					url: nconf.get('relative_path') + '/post/' + category.posts[0].pid,
-					timestampISO: category.posts[0].timestampISO,
-					pid: category.posts[0].pid,
-					topic: category.posts[0].topic,
-				};
-			}
+			helpers.trimChildren(category);
+			helpers.setCategoryTeaser(category);
 		}
 	});
 
