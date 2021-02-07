@@ -28,7 +28,7 @@ categoriesController.list = async function (req, res) {
 	const stop = start + meta.config.categoriesPerPage - 1;
 	const pageCids = rootCids.slice(start, stop + 1);
 
-	const allChildCids = _.flatten(await Promise.all(pageCids.map(cid => categories.getChildrenCids(cid))));
+	const allChildCids = _.flatten(await Promise.all(pageCids.map(categories.getChildrenCids)));
 	const childCids = await privileges.categories.filterCids('find', allChildCids, req.uid);
 	const categoryData = await categories.getCategories(pageCids.concat(childCids), req.uid);
 	const tree = categories.getTree(categoryData, 0);
