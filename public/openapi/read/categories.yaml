@@ -115,10 +115,6 @@ get:
                                             cid:
                                               type: number
                                               description: A category identifier
-                                            parentCid:
-                                              type: number
-                                              description: The category identifier for the category that is the immediate
-                                                ancestor of the current category
                                             topic:
                                               type: object
                                               properties:
@@ -180,10 +176,6 @@ get:
                                   cid:
                                     type: number
                                     description: A category identifier
-                                  parentCid:
-                                    type: number
-                                    description: The category identifier for the category that is the immediate
-                                      ancestor of the current category
                                   topic:
                                     type: object
                                     properties:

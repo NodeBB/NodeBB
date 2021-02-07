@@ -131,6 +131,7 @@ module.exports = function (Categories) {
 					.slice(0, parseInt(category.numRecentReplies, 10));
 			}
 		});
+		topics.forEach((t) => { t.parentCids = undefined; });
 	}
 
 	function bubbleUpChildrenPosts(categoryData) {
