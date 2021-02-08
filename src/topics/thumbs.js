@@ -1,6 +1,7 @@
 
 'use strict';
 
+const _ = require('lodash');
 const nconf = require('nconf');
 const path = require('path');
 const validator = require('validator');
@@ -19,6 +20,14 @@ Thumbs.exists = async function (tid, path) {
 	return db.isSortedSetMember(`topic:${tid}:thumbs`, path);
 };
 
+Thumbs.load = async function (topicData) {
+	const topicsWithThumbs = topicData.filter(t => parseInt(t.numThumbs, 10) > 0);
+	const tidsWithThumbs = topicsWithThumbs.map(t => t.tid);
+	const thumbs = await Thumbs.get(tidsWithThumbs);
+	const tidToThumbs = _.zipObject(tidsWithThumbs, thumbs);
+	return topicData.map(t => tidToThumbs[t.tid] || []);
+};
+
 Thumbs.get = async function (tids) {
 	// Allow singular or plural usage
 	let singular = false;
@@ -27,14 +36,14 @@ Thumbs.get = async function (tids) {
 		singular = true;
 	}
 
-	if (!meta.config.allowTopicsThumbnail) {
+	if (!meta.config.allowTopicsThumbnail || !tids.length) {
 		return singular ? [] : tids.map(() => []);
 	}
 
 	const hasTimestampPrefix = /^\d+-/;
 	const upload_url = nconf.get('relative_path') + nconf.get('upload_url');
 	const sets = tids.map(tid => `${validator.isUUID(String(tid)) ? 'draft' : 'topic'}:${tid}:thumbs`);
-	const thumbs = await Promise.all(sets.map(set => getThumbs(set)));
+	const thumbs = await Promise.all(sets.map(getThumbs));
 	let response = thumbs.map((thumbSet, idx) => thumbSet.map(thumb => ({
 		id: tids[idx],
 		name: (() => {
@@ -69,13 +78,15 @@ Thumbs.associate = async function ({ id, path: relativePath, url }) {
 	if (relativePath) {
 		value = value.replace(nconf.get('upload_path'), '');
 	}
-
+	const topics = require('.');
 	await db.sortedSetAdd(set, numThumbs, value);
+	if (!isDraft) {
+		await topics.setTopicField(id, 'numThumbs', numThumbs);
+	}
 	cache.del(set);
 
 	// Associate thumbnails with the main pid (only on local upload)
 	if (!isDraft && relativePath) {
-		const topics = require('.');
 		const mainPid = (await topics.getMainPids([id]))[0];
 		posts.uploads.associate(mainPid, relativePath.replace('/files/', ''));
 	}
@@ -110,6 +121,10 @@ Thumbs.delete = async function (id, relativePath) {
 		// Dissociate thumbnails with the main pid
 		if (!isDraft) {
 			const topics = require('.');
+			const numThumbs = await db.sortedSetCard(set);
+			if (!numThumbs) {
+				await db.deleteObjectField('topic:' + id, 'numThumbs');
+			}
 			const mainPid = (await topics.getMainPids([id]))[0];
 			posts.uploads.dissociate(mainPid, relativePath.replace('/files/', ''));
 		}

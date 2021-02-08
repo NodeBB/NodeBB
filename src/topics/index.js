@@ -82,7 +82,7 @@ Topics.getTopicsByTids = async function (tids, options) {
 			user.getMultipleUserSettings(uids),
 			categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'backgroundImage', 'imageClass', 'bgColor', 'color', 'disabled']),
 			loadGuestHandles(),
-			Topics.thumbs.get(tids),
+			Topics.thumbs.load(topics),
 		]);
 
 		users.forEach((userObj, idx) => {
@@ -167,11 +167,11 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 		getDeleter(topicData),
 		getMerger(topicData),
 		getRelated(topicData, uid),
-		Topics.thumbs.get(topicData.tid),
+		Topics.thumbs.load([topicData]),
 		Topics.events.get(topicData.tid),
 	]);
 
-	topicData.thumbs = thumbs;
+	topicData.thumbs = thumbs[0];
 	topicData.posts = posts;
 	topicData.events = events;
 	topicData.category = category;
