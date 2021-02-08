@@ -90,14 +90,8 @@ define('forum/login', ['jquery-form'], function () {
 				Login._capsState = !Login._capsState;
 				return;
 			}
-
-			if (e.getModifierState('CapsLock')) {
-				toggle(true);
-			} else {
-				toggle(false);
-			}
-
-			Login._capsState = e.getModifierState('CapsLock');
+			Login._capsState = e.getModifierState && e.getModifierState('CapsLock');
+			toggle(Login._capsState);
 		});
 
 		if (Login._capsState) {
