@@ -92,7 +92,7 @@ define('forum/topic/posts', [
 							(ajaxify.data.pagination.currentPage === 1 && direction === -1);
 
 		if (isPostVisible) {
-			createNewPosts(data, components.get('post').not('[data-index=0]'), direction, scrollToPost);
+			createNewPosts(data, components.get('post').not('[data-index=0]'), direction, false, scrollToPost);
 		} else if (ajaxify.data.scrollToMyPost && parseInt(posts[0].uid, 10) === parseInt(app.user.uid, 10)) {
 			// https://github.com/NodeBB/NodeBB/issues/5004#issuecomment-247157441
 			setTimeout(function () {
@@ -112,7 +112,7 @@ define('forum/topic/posts', [
 	}
 
 	function onNewPostInfiniteScroll(data) {
-		var direction = config.topicPostSort === 'oldest_to_newest' || config.topicPostSort === 'most_votes' ? 1 : -1;
+		var direction = (config.topicPostSort === 'oldest_to_newest' || config.topicPostSort === 'most_votes') ? 1 : -1;
 
 		var isPreviousPostAdded = $('[component="post"][data-index="' + (data.posts[0].index - 1) + '"]').length;
 		if (!isPreviousPostAdded && (!data.posts[0].selfPost || !ajaxify.data.scrollToMyPost)) {
@@ -123,7 +123,7 @@ define('forum/topic/posts', [
 			return ajaxify.go('post/' + data.posts[0].pid);
 		}
 
-		createNewPosts(data, components.get('post').not('[data-index=0]'), direction, function (html) {
+		createNewPosts(data, components.get('post').not('[data-index=0]'), direction, false, function (html) {
 			if (html) {
 				html.addClass('new');
 			}
@@ -137,7 +137,7 @@ define('forum/topic/posts', [
 		}
 	}
 
-	function createNewPosts(data, repliesSelector, direction, callback) {
+	function createNewPosts(data, repliesSelector, direction, userScrolled, callback) {
 		callback = callback || function () {};
 		if (!data || (data.posts && !data.posts.length)) {
 			return callback();
@@ -210,7 +210,7 @@ define('forum/topic/posts', [
 				html.insertBefore(before);
 
 				// Now restore the relative position the user was on prior to new post insertion
-				if (scrollTop > 0) {
+				if (userScrolled || scrollTop > 0) {
 					$(window).scrollTop(scrollTop + ($(document).height() - height));
 				}
 			} else {
@@ -256,7 +256,7 @@ define('forum/topic/posts', [
 			indicatorEl.fadeOut();
 
 			if (data && data.posts && data.posts.length) {
-				createNewPosts(data, replies, direction, done);
+				createNewPosts(data, replies, direction, true, done);
 			} else {
 				navigator.update();
 				done();
@@ -310,10 +310,8 @@ define('forum/topic/posts', [
 					html = html.get(0);
 
 					if (postEl) {
-						console.log('insert before', ajaxify.data.posts[beforeIdx].pid);
 						document.querySelector('[component="topic"]').insertBefore(html, postEl);
 					} else {
-						console.log('append to bttom?');
 						document.querySelector('[component="topic"]').append(html);
 					}
 
