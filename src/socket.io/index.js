@@ -4,6 +4,7 @@ const os = require('os');
 const nconf = require('nconf');
 const winston = require('winston');
 const util = require('util');
+const validator = require('validator');
 const cookieParser = require('cookie-parser')(nconf.get('secret'));
 
 const db = require('../database');
@@ -125,7 +126,8 @@ async function onMessage(socket, payload) {
 		if (process.env.NODE_ENV === 'development') {
 			winston.warn(`[socket.io] Unrecognized message: ${eventName}`);
 		}
-		return callback({ message: '[[error:invalid-event]]' });
+		const escapedName = validator.escape(String(eventName));
+		return callback({ message: `[[error:invalid-event, ${escapedName}]]` });
 	}
 
 	socket.previousEvents = socket.previousEvents || [];

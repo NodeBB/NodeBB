@@ -87,7 +87,7 @@ describe('socket.io', () => {
 	it('should return error for unknown event', (done) => {
 		io.emit('unknown.event', (err) => {
 			assert(err);
-			assert.equal(err.message, '[[error:invalid-event]]');
+			assert.equal(err.message, '[[error:invalid-event, unknown.event]]');
 			done();
 		});
 	});
