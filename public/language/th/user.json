@@ -135,7 +135,7 @@
     "homepage": "หน้าแรก",
     "homepage_description": "เลือกหน้าที่จะใช้เป็นหน้าแรกของฟอรั่ม หรือเลือก None เพื่อใช้ค่าเริ่มต้น",
     "custom_route": "กำหนดเส้นทางไปหน้าแรกเอง",
-    "custom_route_help": "กรอกเส้นทางที่นี่ โดยไม่มีเครื่องหมาย ทับ  (เช่น \"recent\" หรือ \"popular\")",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "บริการ Single Sign-on ",
     "sso.associated": "เกี่ยวข้องกับ",
     "sso.not-associated": "คลิกที่นี่เพื่อเชื่อมโยงกับ",

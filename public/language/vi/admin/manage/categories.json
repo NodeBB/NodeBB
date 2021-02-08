@@ -10,7 +10,7 @@
 	"custom-class": "Lớp Tùy Chỉnh",
 	"num-recent-replies": "# của Trả Lời Gần Đây",
 	"ext-link": "Liên Kết Bên Ngoài",
-	"subcategories-per-page": "Danh mục phụ trên mỗi trang",
+	"subcategories-per-page": "Danh mục phụ mỗi trang",
 	"is-section": "Coi danh mục này như một phần",
 	"post-queue": "Hàng đợi bài đăng",
 	"tag-whitelist": "Danh Sách Trắng Gắn Thẻ ",
@@ -19,6 +19,7 @@
 	"category-image": "Ảnh Chuyên Mục",
 	"parent-category": "Chuyên Mục Chính",
 	"optional-parent-category": "(Không Bắt Buộc) Chuyên Mục Chính",
+	"top-level": "Cấp Độ Hàng Đầu",
 	"parent-category-none": "(Không)",
 	"copy-parent": "Sao Chép Mục Chính",
 	"copy-settings": "Sao Chép Cài Đặt Từ",
@@ -31,6 +32,7 @@
 	"edit": "Sửa",
 	"analytics": "Phân tích",
 	"view-category": "Xem chuyên mục",
+	"set-order": "Đặt thứ tự",
 
 	"select-category": "Chọn Chuyên Mục",
 	"set-parent-category": "Đặt Chuyên Mục Chính",
@@ -64,7 +66,7 @@
 	"analytics.pageviews-hourly": "<strong>Hình 1</strong> &ndash; Số lượt xem trang hàng giờ cho chuyên mục này</small>",
 	"analytics.pageviews-daily": "<strong>Hình 2</strong> &ndash; Số lượt xem trang hàng ngày cho chuyên mục này</small>",
 	"analytics.topics-daily": "<strong>Hình 3</strong> &ndash; Chủ đề được tạo hằng ngày trong chuyên mục này</small>",
-	"analytics.posts-daily": "<strong>Hình 4</strong> &ndash; Bài viết hàng ngày được thực hiện trong danh mục này</small>",
+	"analytics.posts-daily": "<strong>Hình 4</strong> &ndash; Bài viết hàng ngày được thực hiện trong chuyên mục này</small>",
 
 	"alert.created": "Đã tạo",
 	"alert.create-success": "Đã tạo chuyên mục thành công!",

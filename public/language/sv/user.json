@@ -135,7 +135,7 @@
     "homepage": "Startsida",
     "homepage_description": "Välj en sida som ska användas som forumets startsida eller 'Ingen' för att använda standardstartsidan.",
     "custom_route": "Sökväg till egen startsida",
-    "custom_route_help": "Skriv in ett sökvägsnamn här, utan föregående slash. (tex \"recent\" eller \"popular\")",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Single Sign-on-tjänster",
     "sso.associated": "Associerad med",
     "sso.not-associated": "Klicka här för att associera med",

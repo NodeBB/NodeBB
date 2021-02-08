@@ -135,7 +135,7 @@
     "homepage": "Домашня сторінка",
     "homepage_description": "Вкажіть сторінку в якості першої сторінки форуму або \"None\", для використання сторінки за замовчуванням.",
     "custom_route": "Шлях першої сторінки",
-    "custom_route_help": "Уведіть тут шлях, без слешу попереду (наприклад \"recent\" або \"popular\")",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Сервіси єдиного входу",
     "sso.associated": "Зв'язані з",
     "sso.not-associated": "Натисніть тут, щоб зв'язати з",

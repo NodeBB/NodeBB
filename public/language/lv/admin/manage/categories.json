@@ -19,6 +19,7 @@
 	"category-image": "Kategorijas bilde",
 	"parent-category": "Virskategorija",
 	"optional-parent-category": "(Neobligāts) virskategorija",
+	"top-level": "Top Level",
 	"parent-category-none": "(Nav)",
 	"copy-parent": "Copy Parent",
 	"copy-settings": "Kopēt iestatījumus no",
@@ -31,6 +32,7 @@
 	"edit": "Rediģēt",
 	"analytics": "Analytics",
 	"view-category": "View category",
+	"set-order": "Set order",
 
 	"select-category": "Atlasīt kategoriju",
 	"set-parent-category": "Iestatīt virskategoriju",

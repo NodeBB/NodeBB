@@ -47,14 +47,14 @@
     "user-too-new": "Xin lỗi, bắt buộc bạn phải đợi %1 giây trước khi đăng bài viết đầu tiên.",
     "blacklisted-ip": "Xin lỗi, địa chỉ IP bạn bị cấm khỏi cộng đồng. Nếu bạn cảm thấy dây là do lỗi, hãy liên lạc với quản trị viên.",
     "ban-expiry-missing": "Vui lòng cung cấp ngày hết lệnh cấm này",
-    "no-category": "Danh mục không tồn tại",
+    "no-category": "Chuyên mục không tồn tại",
     "no-topic": "Chủ đề không tồn tại",
     "no-post": "Bài viết không tồn tại",
     "no-group": "Nhóm không tồn tại",
     "no-user": "Người dùng không tồn tại",
     "no-teaser": "Đoạn giới thiệu không tồn tại",
     "no-privileges": "Bạn không đủ quyền để thực thi hành động này",
-    "category-disabled": "Danh mục bị khóa",
+    "category-disabled": "Chuyên mục bị khóa",
     "topic-locked": "Chủ đề bị khóa",
     "post-edit-duration-expired": "Bạn chỉ được phép sửa bài viết sau khi đăng %1 giây.",
     "post-edit-duration-expired-minutes": "Bạn chỉ được phép sửa các bài viết sau khi đăng %1 phút(s)",
@@ -178,5 +178,7 @@
     "no-connection": "Kết nối internet của bạn có vấn đề.",
     "socket-reconnect-failed": "Không thể truy cập máy chủ vào lúc này. Nhấp vào đây để thử lại hoặc thử lại sau",
     "plugin-not-whitelisted": "Không thể cài đặt plugin &ndash; chỉ những plugin được Trình quản lý gói NodeBB đưa vào danh sách trắng mới có thể được cài đặt qua ACP",
-    "topic-event-unrecognized": "Sự kiện chủ đề '%1' không được công nhận"
+    "topic-event-unrecognized": "Sự kiện chủ đề '%1' không được công nhận",
+    "cant-set-child-as-parent": "Không thể đặt con làm chuyên mục chính",
+    "cant-set-self-as-parent": "Không thể tự đặt mình là chuyên mục chính"
 }

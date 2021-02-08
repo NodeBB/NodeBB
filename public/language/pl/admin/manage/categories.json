@@ -19,6 +19,7 @@
 	"category-image": "Obrazek kategorii",
 	"parent-category": "Kategoria nadrzędna",
 	"optional-parent-category": "(Opcjonalne) Kategoria nadrzędna",
+	"top-level": "Top Level",
 	"parent-category-none": "(Żadna)",
 	"copy-parent": "Skopiuj od rodzica",
 	"copy-settings": "Skopiuj ustawienia z",
@@ -31,6 +32,7 @@
 	"edit": "Edytuj",
 	"analytics": "Analityka",
 	"view-category": "Wyświetl kategorię",
+	"set-order": "Set order",
 
 	"select-category": "Wybierz kategorię",
 	"set-parent-category": "Ustaw nadrzędną kategorie",

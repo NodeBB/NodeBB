@@ -135,7 +135,7 @@
     "homepage": "Startpagina",
     "homepage_description": "Selecteer een pagina om te gebruiken als startpagina, of selecteer geen om de standaard pagina te gebruiken.",
     "custom_route": "Aangepaste startpagina route",
-    "custom_route_help": "Voer een route naam hier, zonder enige voorafgaande schuine streep (zoals, \"recente\" of \"populaire\")",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Single Sign-on Services",
     "sso.associated": "Geassocieerd met",
     "sso.not-associated": "Klik hier om geassocieerd te worden met",

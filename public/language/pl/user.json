@@ -135,7 +135,7 @@
     "homepage": "Strona startowa",
     "homepage_description": "Wybierz preferowaną stronę startową lub „None”, jeśli chcesz używać strony domyślnej. ",
     "custom_route": "Niestandardowa strona startowa",
-    "custom_route_help": "Wpisz nazwę strony, bez ukośnika (np. „Ostatnie” lub „Popularne”)",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Usługi Pojedynczego Logowania",
     "sso.associated": "Powiązane z",
     "sso.not-associated": "Kliknij tutaj, aby powiązać z",

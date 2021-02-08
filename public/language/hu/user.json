@@ -135,7 +135,7 @@
     "homepage": "Kezdőlap",
     "homepage_description": "Válasz egy oldalt a fórum kezdőlapjához, vagy az alapértelmezett kezdőlaphoz a 'Nincs' lehetőséget.",
     "custom_route": "Egyéni kezdőlap útvonal",
-    "custom_route_help": "Adj meg egy útvonalnevet (pl. \"legújabb\", vagy \"népszerű\")",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Egyszeri bejelentkezési szolgáltatás",
     "sso.associated": "Társítás",
     "sso.not-associated": "Kattints ide a társításhoz",

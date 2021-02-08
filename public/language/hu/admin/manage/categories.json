@@ -19,6 +19,7 @@
 	"category-image": "Kategóriakép",
 	"parent-category": "Szülő kategória",
 	"optional-parent-category": "(Nem kötelező) Szülő kategória",
+	"top-level": "Top Level",
 	"parent-category-none": "(Nincs)",
 	"copy-parent": "Copy Parent",
 	"copy-settings": "Beállítások másolása",
@@ -31,6 +32,7 @@
 	"edit": "Szerkesztés",
 	"analytics": "Analytics",
 	"view-category": "View category",
+	"set-order": "Set order",
 
 	"select-category": "Kategória kiválasztása",
 	"set-parent-category": "Szülő kategória beállítása",

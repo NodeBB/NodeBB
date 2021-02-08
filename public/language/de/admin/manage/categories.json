@@ -19,6 +19,7 @@
 	"category-image": "Kategoriebild",
 	"parent-category": "Übergeordnete Kategorie",
 	"optional-parent-category": "(Optional) Übergeordnete Kategorie",
+	"top-level": "Top Level",
 	"parent-category-none": "(Keine)",
 	"copy-parent": "Copy Parent",
 	"copy-settings": "Kopiere Einstellungen von",
@@ -31,6 +32,7 @@
 	"edit": "Bearbeiten",
 	"analytics": "Analytics",
 	"view-category": "View category",
+	"set-order": "Set order",
 
 	"select-category": "Kategorie auswählen",
 	"set-parent-category": "Übergeordnete Kategorie festlegen",

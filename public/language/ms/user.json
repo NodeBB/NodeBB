@@ -135,7 +135,7 @@
     "homepage": "Laman Utama",
     "homepage_description": "Pilih satu halaman untuk digunakan sebagai Laman Utama forum atau 'Tiada' untuk guna tetapan lalai",
     "custom_route": "Laluan Laman Utama Tersuai",
-    "custom_route_help": "Masukkan nama laluan disini, tanpa garis miring (cth: \"terkini\", atau \"popular\")",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Servis Satu Log Masuk",
     "sso.associated": "Associated with",
     "sso.not-associated": "Click here to associate with",

@@ -135,7 +135,7 @@
     "homepage": "Главная страница",
     "homepage_description": "Выберите, на какую страницу вы будете попадать после авторизации и использовать как главную, или оставьте стандартную настройку.",
     "custom_route": "Ваш маршрут для главной страницы",
-    "custom_route_help": "Введите адрес страницы, например, recent или popular — без слешей.",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Сервисы единого входа",
     "sso.associated": "Связан с",
     "sso.not-associated": "Нажмите здесь, что бы связать учётную запись с",

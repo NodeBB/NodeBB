@@ -135,7 +135,7 @@
     "homepage": "Почетна страница",
     "homepage_description": "Изаберите страницу која ће се користити као почетна страница форума или \"None\" да би се користила подразумевана почетна страница.",
     "custom_route": "Прилагођена путања почетне странице",
-    "custom_route_help": "Овде унесите назив путање, без икакве претходне косе црте (нпр. \"недавно\" или \"популарно\")",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Једноструки Sign-on сервиси",
     "sso.associated": "Повезано са",
     "sso.not-associated": "Кликните овде за повезивање са",

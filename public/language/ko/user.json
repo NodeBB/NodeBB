@@ -135,7 +135,7 @@
     "homepage": "홈페이지",
     "homepage_description": "포럼 홈페이지로 사용할 페이지를 선택하거나 'None'으로 설정하여 기본 홈페이지를 사용합니다.",
     "custom_route": "사용자 지정 홈페이지 라우트",
-    "custom_route_help": "라우트 이름을 앞쪽 '/' 없이 입력해주세요 (예: \"/recent\" => \"recent\", \"/popular\" => \"popular\")",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "통합 인증 서비스",
     "sso.associated": "와/과 연동된",
     "sso.not-associated": "이 곳을 클릭하여 연동시키세요.",

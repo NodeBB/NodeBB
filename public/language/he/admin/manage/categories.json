@@ -19,6 +19,7 @@
 	"category-image": "תמונת קטגוריה",
 	"parent-category": "קטגוריית אב",
 	"optional-parent-category": "(אופציונלי) קטגוריית הורים",
+	"top-level": "Top Level",
 	"parent-category-none": "(ללא)",
 	"copy-parent": "העתק אב",
 	"copy-settings": "העתק הגדרות מ:",
@@ -31,6 +32,7 @@
 	"edit": "ערוך",
 	"analytics": "נתח",
 	"view-category": "הצג קטגוריה",
+	"set-order": "Set order",
 
 	"select-category": "בחר קטגוריה",
 	"set-parent-category": "הגדר קטגוריית אב",

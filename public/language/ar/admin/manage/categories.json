@@ -19,6 +19,7 @@
 	"category-image": "Category Image",
 	"parent-category": "Parent Category",
 	"optional-parent-category": "(Optional) Parent Category",
+	"top-level": "Top Level",
 	"parent-category-none": "(None)",
 	"copy-parent": "Copy Parent",
 	"copy-settings": "Copy Settings From",
@@ -31,6 +32,7 @@
 	"edit": "Edit",
 	"analytics": "Analytics",
 	"view-category": "View category",
+	"set-order": "Set order",
 
 	"select-category": "Select Category",
 	"set-parent-category": "Set Parent Category",

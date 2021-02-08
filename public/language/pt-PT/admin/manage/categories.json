@@ -19,6 +19,7 @@
 	"category-image": "Imagem da Categoria",
 	"parent-category": "Categoria Pai",
 	"optional-parent-category": "(Opcional) Categoria Pai",
+	"top-level": "Top Level",
 	"parent-category-none": "(Nenhuma)",
 	"copy-parent": "Copiar Pai",
 	"copy-settings": "Copiar Definições de ",
@@ -31,6 +32,7 @@
 	"edit": "Editar",
 	"analytics": "Analytics",
 	"view-category": "View category",
+	"set-order": "Set order",
 
 	"select-category": "Selecionar Categoria",
 	"set-parent-category": "Definir uma Categoria Pai",

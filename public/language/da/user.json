@@ -135,7 +135,7 @@
     "homepage": "Hjemmeside",
     "homepage_description": "Vælg en side som forummets hjemmeside, eller 'Ingen' for at bruge standard hjemmesiden.",
     "custom_route": "Brugerdefinerede hjemme rute",
-    "custom_route_help": "Indtast et rute navn her, uden nogle foregående skråstreg (f.eks. \"nyligt\" eller \"populært\")",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Enkeltgangs Sign-on Servicer",
     "sso.associated": "Forbundet med",
     "sso.not-associated": "Klik her for at forbinde med",

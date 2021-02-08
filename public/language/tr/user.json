@@ -135,7 +135,7 @@
     "homepage": "Anasayfa",
     "homepage_description": "Anasayfa olarak kullanacağınız sayfayı seçin veya \"Hiçbiri\" diyerek varsayılan sayfayı kullanın.",
     "custom_route": "Özel anasayfa yolu",
-    "custom_route_help": "Herhangi bir eğik çizgi olmadan, burada bir yol adını girin (örneğin \"yeniler\" veya \"popüler\")",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Tek tuşla giriş uygulamaları",
     "sso.associated": "Birleştirilmiş",
     "sso.not-associated": "Birleştirmek için buraya tıklayın",

@@ -19,6 +19,7 @@
 	"category-image": "Obrázok kategórie",
 	"parent-category": "Nadriadená kategória",
 	"optional-parent-category": "Nadriadená kategória (odporúčané)",
+	"top-level": "Top Level",
 	"parent-category-none": "(nič)",
 	"copy-parent": "Copy Parent",
 	"copy-settings": "Kopírovať nastavenia z",
@@ -31,6 +32,7 @@
 	"edit": "Upraviť",
 	"analytics": "Analytics",
 	"view-category": "View category",
+	"set-order": "Set order",
 
 	"select-category": "Vyberte kategóriu",
 	"set-parent-category": "Nastaviť nadradenú kategóriu",

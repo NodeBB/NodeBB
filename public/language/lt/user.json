@@ -135,7 +135,7 @@
     "homepage": "Pagrindinis puslapis",
     "homepage_description": "Pasirinkite puslapį kaip savo pagrindinį, arba pasirinkite \"Joks\" norėdami naudoti standartinį pagrindinį puslapį.",
     "custom_route": "Pagrindinio puslapio vieta",
-    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\", or \"popular\")",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Single Sign-on Services",
     "sso.associated": "Associated with",
     "sso.not-associated": "Click here to associate with",

@@ -135,7 +135,7 @@
     "homepage": "首頁",
     "homepage_description": "選擇一個頁面作為論壇的首頁，否則設置為 ‘空’ 使用預設首頁。",
     "custom_route": "自訂首頁路徑",
-    "custom_route_help": "輸入路由名稱，前面不需要斜線 ( 例如, \"recent\" 或 \"popular\" )",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "單一簽入服務",
     "sso.associated": "已關聯到",
     "sso.not-associated": "點擊這裡來關聯",

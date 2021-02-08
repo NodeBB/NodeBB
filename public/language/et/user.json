@@ -135,7 +135,7 @@
     "homepage": "Avaleht",
     "homepage_description": "Valige leht, mida kasutada foorumi esilehena või 'None', et kasutada vaikimisi esilehte.",
     "custom_route": "Kohandatud Esilehe Teekond",
-    "custom_route_help": "Sisestage tee nimi siia, ilma eelnevate kaldkriipsudeta (nt. \"recent\", või \"popular\")",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Ühekordse sisselogimisega teenused",
     "sso.associated": "Seotud koos",
     "sso.not-associated": "Kliki siia, et siduda koos",

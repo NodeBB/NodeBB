@@ -135,7 +135,7 @@
     "homepage": "Startseite",
     "homepage_description": "Wähle eine Seite die als Forumstartseite benutzt werden soll aus oder 'Keine' um die Standardstartseite zu verwenden.",
     "custom_route": "Eigener Startseitenpfad",
-    "custom_route_help": "Gib hier einen Pfadnamen ohne vorangehenden Schrägstrich ein (z.B. \"recent\" oder \"popular\")",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Single Sign-on Dienste",
     "sso.associated": "Verbunden mit",
     "sso.not-associated": "Verbinde dich mit",

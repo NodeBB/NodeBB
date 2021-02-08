@@ -19,6 +19,7 @@
 	"category-image": "カテゴリ画像",
 	"parent-category": "親カテゴリ",
 	"optional-parent-category": "(任意)親カテゴリ",
+	"top-level": "Top Level",
 	"parent-category-none": "(なし)",
 	"copy-parent": "親をコピー",
 	"copy-settings": "設定をコピー",
@@ -31,6 +32,7 @@
 	"edit": "編集",
 	"analytics": "Analytics",
 	"view-category": "View category",
+	"set-order": "Set order",
 
 	"select-category": "カテゴリを選択",
 	"set-parent-category": "親カテゴリとして設定",

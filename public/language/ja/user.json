@@ -135,7 +135,7 @@
     "homepage": "ホームページ",
     "homepage_description": "フォーラムのホームに指定するページを選んで下さい。デフォルトのホームページを使用する場合は’None’を選んで下さい。",
     "custom_route": "カスタムホームページルート",
-    "custom_route_help": "ここにルート名を入れます。手前にスラッシュを入れないようにして下さい。(例：\"recent\"、\"popular\"など)",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "シングルサインオンサービス",
     "sso.associated": "関連付けられています",
     "sso.not-associated": "ここを押して、関連付けられています",

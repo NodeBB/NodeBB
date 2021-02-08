@@ -135,7 +135,7 @@
     "homepage": "Naslovna",
     "homepage_description": "Izaberi stranicu ",
     "custom_route": "Uobičajena putanja naslovnice",
-    "custom_route_help": "Izaberi ime putanje ovdje",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Jednokratne usluge prijave",
     "sso.associated": "Povezano sa",
     "sso.not-associated": "Klikni ovdje za povezivanje sa",

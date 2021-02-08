@@ -135,7 +135,7 @@
     "homepage": "Trang chủ",
     "homepage_description": "Chọn một trang dùng cho trang chủ diễn đàn hoặc chọn \"Không\" để dùng trang chủ mặc định.",
     "custom_route": "Đường dẫn trang chủ tuỳ chọn",
-    "custom_route_help": "Nhập tên đường dẫn ở đây, mà không có dấu gạch chéo ở trước (VD: \"recent\" hoặc \"popular)",
+    "custom_route_help": "Nhập tên đường dẫn ở đây, không có dấu gạch chéo trước (VD: \"gan-day\" hoặc \"chuyen-muc/2/thao-luan-chung\")",
     "sso.title": "Đăng nhập một lần",
     "sso.associated": "Đã liên kết với",
     "sso.not-associated": "Nhấn vào đây để liên kết với",

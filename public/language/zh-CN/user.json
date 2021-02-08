@@ -135,7 +135,7 @@
     "homepage": "首页",
     "homepage_description": "选择一个页面作为论坛的首页，否则设置为 ‘空’ 使用默认首页。",
     "custom_route": "自定义首页路由",
-    "custom_route_help": "输入路由名称，前面不需要斜杠 ( 例如, \"recent\" 或 \"popular\" )",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "单点登录服务",
     "sso.associated": "已关联到",
     "sso.not-associated": "点击这里来关联",

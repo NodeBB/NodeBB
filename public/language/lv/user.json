@@ -135,7 +135,7 @@
     "homepage": "Sākumlapa",
     "homepage_description": "Izvēlies lapu, kuru izmantot kā foruma sākumlapu vai \"Nav\", lai izmantotu noklusējuma sākumlapu.",
     "custom_route": "Pielāgotais sākumlapas ceļš",
-    "custom_route_help": "Ievadīt ceļu bez sākotnējās slīpsvītras (piemēram, \"recent\" vai \"popular\").",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Vienotās ielogošanās pakalpojumi",
     "sso.associated": "Saistīts ar",
     "sso.not-associated": "Sasaistīt ar",

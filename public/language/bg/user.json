@@ -135,7 +135,7 @@
     "homepage": "Начална страница",
     "homepage_description": "Изберете страница, която да използвате като начална за форума, или „Нищо“, за да използвате тази по подразбиране.",
     "custom_route": "Път до персонализираната начална страница",
-    "custom_route_help": "Въведете името на пътя тук, без наклонена черта пред него (пример: „recent“ или „popular“)",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Услуги за еднократно вписване",
     "sso.associated": "Свързан с",
     "sso.not-associated": "Натиснете тук, за да свържете с",

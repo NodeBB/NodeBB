@@ -19,6 +19,7 @@
 	"category-image": "Зображення категорії",
 	"parent-category": "Батьківська категорія",
 	"optional-parent-category": "(Необов'язково) Батьківська категорія",
+	"top-level": "Top Level",
 	"parent-category-none": "(Жодна)",
 	"copy-parent": "Copy Parent",
 	"copy-settings": "Взяти налаштування з",
@@ -31,6 +32,7 @@
 	"edit": "Редагувати",
 	"analytics": "Analytics",
 	"view-category": "View category",
+	"set-order": "Set order",
 
 	"select-category": "Вибрати категорію",
 	"set-parent-category": "Встановити батьківську категорію",

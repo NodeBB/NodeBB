@@ -19,6 +19,7 @@
 	"category-image": "Изображение категории",
 	"parent-category": "Родительская категория",
 	"optional-parent-category": "(Не обязательно) Родительская категория\n",
+	"top-level": "Top Level",
 	"parent-category-none": "(Не указана)",
 	"copy-parent": "Скопировать из родительской",
 	"copy-settings": "Копировать настройки из",
@@ -31,6 +32,7 @@
 	"edit": "Редактировать",
 	"analytics": "Analytics",
 	"view-category": "View category",
+	"set-order": "Set order",
 
 	"select-category": "Указать категорию",
 	"set-parent-category": "Указать родительскую категорию",

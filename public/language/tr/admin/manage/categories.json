@@ -19,6 +19,7 @@
 	"category-image": "Kategori Görseli",
 	"parent-category": "Üst Kategori",
 	"optional-parent-category": "(Opsiyonel) Üst Kategori",
+	"top-level": "Top Level",
 	"parent-category-none": "(Hiçbiri)",
 	"copy-parent": "Üst Kategoriyi Kopyala",
 	"copy-settings": "Ayarları Başka Bir Yerden Kopyala",
@@ -31,6 +32,7 @@
 	"edit": "Düzenle",
 	"analytics": "Analiz",
 	"view-category": "Kategori Görüntüle",
+	"set-order": "Set order",
 
 	"select-category": "Kategori Seç",
 	"set-parent-category": "Ana Kategori Ayarla",

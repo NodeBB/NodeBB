@@ -135,7 +135,7 @@
     "homepage": "Paji y'Imbere",
     "homepage_description": "Hitamo paji yo kugaragaza imbere cyangwa ntuyihitemo kugirango hakoreshwe paji uru rubuga rwagennye",
     "custom_route": "Umurongo Wundi wa Paji y'Imbere",
-    "custom_route_help": "Shyiramo izina ry'inzira, utiriwe ushyiraho akarongo (ni ukuvuga ni nko kwandika gusa \"ibiheruka\" cyangwa \"ibikunzwe\")",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Kwinjiramo ukoreshe serivisi za SSO",
     "sso.associated": "Bisanishijwe na",
     "sso.not-associated": "Click here to associate with",

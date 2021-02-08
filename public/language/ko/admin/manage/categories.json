@@ -19,6 +19,7 @@
 	"category-image": "게시판 이미지",
 	"parent-category": "상위 카테고리",
 	"optional-parent-category": "(선택) 상위 게시판",
+	"top-level": "Top Level",
 	"parent-category-none": "(없음)",
 	"copy-parent": "Copy Parent",
 	"copy-settings": "에서 설정 복사",
@@ -31,6 +32,7 @@
 	"edit": "편집",
 	"analytics": "Analytics",
 	"view-category": "View category",
+	"set-order": "Set order",
 
 	"select-category": "게시판 선택",
 	"set-parent-category": "상위 게시판 설정",

@@ -178,5 +178,7 @@
     "no-connection": "Il semble y avoir un problème avec votre connexion Internet",
     "socket-reconnect-failed": "Serveur inaccessible pour le moment. Cliquez ici pour réessayer ou réessayez plus tard",
     "plugin-not-whitelisted": "Impossible d'installer le plug-in &ndash; seuls les plugins mis en liste blanche dans le gestionnaire de packages NodeBB peuvent être installés via l'ACP",
-    "topic-event-unrecognized": "Événement du sujet '%1' non reconnu"
+    "topic-event-unrecognized": "Événement du sujet '%1' non reconnu",
+    "cant-set-child-as-parent": "Can't set child as parent category",
+    "cant-set-self-as-parent": "Can't set self as parent category"
 }

@@ -135,7 +135,7 @@
     "homepage": "Domovská stránka",
     "homepage_description": "Vyberte stránku, která má být domovskou stránkou fóra nebo vyberte „Nic” a bude použita výchozí domovská stránka.",
     "custom_route": "Cesta k uživatelské domovské stránce",
-    "custom_route_help": "Zde zadejte název cesty - bez předcházejícího lomítka (např.: „Poslední” nebo „oblíbené”)",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Služby jednotného přihlášení",
     "sso.associated": "Přiřazeno k",
     "sso.not-associated": "Zde klikněte pro přiřazení k",

@@ -135,7 +135,7 @@
     "homepage": "الصفحة الرئيسية",
     "homepage_description": "حدد صفحة لاستخدامها كصفحة رئيسية للمنتدى أو \"لا شيء\" لاستخدام الصفحة الرئيسية الافتراضية.",
     "custom_route": "مسار الصفحة الرئيسية المخصصة",
-    "custom_route_help": "أدخل اسم مسار هنا، بدون أي شرطة مائلة (على سبيل المثال \"حديثة\" أو \"شائعة\")",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "خدمات تسجيل الدخول الموحد",
     "sso.associated": "مرتبط مع",
     "sso.not-associated": "انقر هنا لربط مع",

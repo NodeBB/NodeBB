@@ -19,6 +19,7 @@
 	"category-image": "版面圖片",
 	"parent-category": "上層版面",
 	"optional-parent-category": "(可選)上層版面",
+	"top-level": "Top Level",
 	"parent-category-none": "(無)",
 	"copy-parent": "複製 上層版面",
 	"copy-settings": "複製設定",
@@ -31,6 +32,7 @@
 	"edit": "編輯",
 	"analytics": "Analytics",
 	"view-category": "View category",
+	"set-order": "Set order",
 
 	"select-category": "選擇版面",
 	"set-parent-category": "設置上層版面",

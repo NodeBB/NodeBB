@@ -135,7 +135,7 @@
     "homepage": "Página de inicio",
     "homepage_description": "Seleccione una página para su uso habitual como la página principal del foro o 'Ninguno' para utilizar la página de inicio.",
     "custom_route": "Pagina de inicio personalizada",
-    "custom_route_help": "Introduzca un nombre de ruta aquí, sin ninguna barra anterior (por ejemplo, \"reciente\", o \"popular\")",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Servicios de Inicio de sesión Único",
     "sso.associated": "Asociado con",
     "sso.not-associated": "Da clic aquí para asociarse con",

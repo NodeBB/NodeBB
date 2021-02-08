@@ -135,7 +135,7 @@
     "homepage": "Pagina Iniziale",
     "homepage_description": "Seleziona una pagina da usare come pagina iniziale o \"Nessuna\" per usare quella di default.",
     "custom_route": "Percorso Pagina Iniziale Personalizzato",
-    "custom_route_help": "Inserisci qui un nome percorso, senza nessuno slash precedente (p.es. \"recent\", o \"popular\")",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Servizi Single-Sign-On",
     "sso.associated": "Associa con",
     "sso.not-associated": "Clicca qui per associare con",

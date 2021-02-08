@@ -19,6 +19,7 @@
 	"category-image": "版块图片",
 	"parent-category": "父版块",
 	"optional-parent-category": "(可选)父版块",
+	"top-level": "Top Level",
 	"parent-category-none": "(无)",
 	"copy-parent": "复制 父类",
 	"copy-settings": "复制设置",
@@ -31,6 +32,7 @@
 	"edit": "编辑",
 	"analytics": "分析",
 	"view-category": "查看版块",
+	"set-order": "Set order",
 
 	"select-category": "选择版块",
 	"set-parent-category": "设置父版块",

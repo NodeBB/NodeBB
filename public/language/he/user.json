@@ -135,7 +135,7 @@
     "homepage": "דף הבית",
     "homepage_description": "בחר דף שיוגדר כדף הבית של הפורום או בחר ב\"כלום\" על מנת להשתמש בדף הבית הברירת מחדל.",
     "custom_route": "נתיב דף הבית המותאם-אישית",
-    "custom_route_help": "הכנס שם נתיב כאן, ללא לוכסן לפני (לדוגמא \"recent\" לאחרונים, או \"popular\" לפופולארי)",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Single Sign-on Services",
     "sso.associated": "משוייך עם",
     "sso.not-associated": "לחץ כאן כדי לשייך",
