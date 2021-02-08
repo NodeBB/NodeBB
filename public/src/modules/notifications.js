@@ -7,10 +7,22 @@ define('notifications', [
 	'navigator',
 	'benchpress',
 	'tinycon',
-], function (translator, components, navigator, Benchpress, Tinycon) {
+	'hooks',
+], function (translator, components, navigator, Benchpress, Tinycon, hooks) {
 	var Notifications = {};
 
 	var unreadNotifs = {};
+
+	const _addShortTimeagoString = ({ notifications: notifs }) => new Promise((resolve) => {
+		translator.toggleTimeagoShorthand(function () {
+			for (var i = 0; i < notifs.length; i += 1) {
+				notifs[i].timeago = $.timeago(new Date(parseInt(notifs[i].datetime, 10)));
+			}
+			translator.toggleTimeagoShorthand();
+			resolve({ notifications: notifs });
+		});
+	});
+	hooks.on('filter:notifications.load', _addShortTimeagoString);
 
 	Notifications.loadNotifications = function (notifList) {
 		socket.emit('notifications.get', null, function (err, data) {
@@ -22,12 +34,8 @@ define('notifications', [
 				return parseInt(a.datetime, 10) > parseInt(b.datetime, 10) ? -1 : 1;
 			});
 
-			translator.toggleTimeagoShorthand(function () {
-				for (var i = 0; i < notifs.length; i += 1) {
-					notifs[i].timeago = $.timeago(new Date(parseInt(notifs[i].datetime, 10)));
-				}
-				translator.toggleTimeagoShorthand();
-				app.parseAndTranslate('partials/notifications_list', { notifications: notifs }, function (html) {
+			hooks.fire('filter:notifications.load', { notifications: notifs }).then(({ notifications }) => {
+				app.parseAndTranslate('partials/notifications_list', { notifications }, function (html) {
 					notifList.html(html);
 					notifList.off('click').on('click', '[data-nid]', function (ev) {
 						var notifEl = $(this);
@@ -54,6 +62,11 @@ define('notifications', [
 							liEl.toggleClass('unread');
 						});
 						return false;
+					});
+
+					hooks.fire('action:notifications.loaded', {
+						notifications: notifs,
+						list: notifList.get(0),
 					});
 				});
 			});
