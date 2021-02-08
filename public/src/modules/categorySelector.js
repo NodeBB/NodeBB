@@ -1,6 +1,8 @@
 'use strict';
 
-define('categorySelector', ['categorySearch'], function (categorySearch) {
+define('categorySelector', [
+	'categorySearch', 'bootbox',
+], function (categorySearch, bootbox) {
 	var categorySelector = {};
 
 	categorySelector.init = function (el, options) {
