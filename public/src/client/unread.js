@@ -1,7 +1,9 @@
 'use strict';
 
 
-define('forum/unread', ['topicSelect', 'components', 'topicList'], function (topicSelect, components, topicList) {
+define('forum/unread', [
+	'topicSelect', 'components', 'topicList', 'categorySelector',
+], function (topicSelect, components, topicList, categorySelector) {
 	var Unread = {};
 
 	var watchStates = {
@@ -13,25 +15,15 @@ define('forum/unread', ['topicSelect', 'components', 'topicList'], function (top
 	Unread.init = function () {
 		app.enterRoom('unread_topics');
 
+		handleMarkRead();
+
 		topicList.init('unread');
 
 		updateUnreadTopicCount('/' + ajaxify.data.selectedFilter.url, ajaxify.data.topicCount);
+	};
 
-		$('#markSelectedRead').on('click', function () {
-			var tids = topicSelect.getSelectedTids();
-			if (!tids.length) {
-				return;
-			}
-			socket.emit('topics.markAsRead', tids, function (err) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-
-				doneRemovingTids(tids);
-			});
-		});
-
-		$('#markAllRead').on('click', function () {
+	function handleMarkRead() {
+		function markAllRead() {
 			socket.emit('topics.markAllRead', function (err) {
 				if (err) {
 					return app.alertError(err.message);
@@ -44,9 +36,23 @@ define('forum/unread', ['topicSelect', 'components', 'topicList'], function (top
 				$('#category-no-topics').removeClass('hidden');
 				$('.markread').addClass('hidden');
 			});
-		});
+		}
 
-		$('.markread').on('click', '.category', function () {
+		function markSelectedRead() {
+			var tids = topicSelect.getSelectedTids();
+			if (!tids.length) {
+				return;
+			}
+			socket.emit('topics.markAsRead', tids, function (err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+
+				doneRemovingTids(tids);
+			});
+		}
+
+		function markCategoryRead(cid) {
 			function getCategoryTids(cid) {
 				var tids = [];
 				components.get('category/topic', 'cid', cid).each(function () {
@@ -54,7 +60,6 @@ define('forum/unread', ['topicSelect', 'components', 'topicList'], function (top
 				});
 				return tids;
 			}
-			var cid = $(this).attr('data-cid');
 			var tids = getCategoryTids(cid);
 
 			socket.emit('topics.markCategoryTopicsRead', cid, function (err) {
@@ -64,8 +69,35 @@ define('forum/unread', ['topicSelect', 'components', 'topicList'], function (top
 
 				doneRemovingTids(tids);
 			});
+		}
+
+		var selector = categorySelector.init($('[component="category-selector"]'), {
+			onSelect: function (category) {
+				console.log(category);
+				selector.selectCategory(0);
+				if (category.cid === 'all') {
+					markAllRead();
+				} else if (category.cid === 'selected') {
+					markSelectedRead();
+				} else if (parseInt(category.cid, 10) > 0) {
+					markCategoryRead(category.cid);
+				}
+			},
+			selectCategoryLabel: ajaxify.data.selectCategoryLabel || '[[unread:mark_as_read]]',
+			localCategories: [
+				{
+					cid: 'selected',
+					name: '[[unread:selected]]',
+					icon: '',
+				},
+				{
+					cid: 'all',
+					name: '[[unread:all]]',
+					icon: '',
+				},
+			],
 		});
-	};
+	}
 
 	function doneRemovingTids(tids) {
 		removeTids(tids);

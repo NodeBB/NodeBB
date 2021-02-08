@@ -48,6 +48,7 @@ unreadController.get = async function (req, res) {
 	data.allCategoriesUrl = 'unread' + helpers.buildQueryString(req.query, 'cid', '');
 	data.selectedCategory = categoryData.selectedCategory;
 	data.selectedCids = categoryData.selectedCids;
+	data.selectCategoryLabel = '[[unread:mark_as_read]]';
 	if (req.originalUrl.startsWith(nconf.get('relative_path') + '/api/unread') || req.originalUrl.startsWith(nconf.get('relative_path') + '/unread')) {
 		data.title = '[[pages:unread]]';
 		data.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[unread:title]]' }]);

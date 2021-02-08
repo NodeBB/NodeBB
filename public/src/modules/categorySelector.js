@@ -37,9 +37,13 @@ define('categorySelector', ['categorySearch'], function (categorySearch) {
 			};
 
 			if (categoryEl.length) {
-				selector.el.find('[component="category-selector-selected"]').html(categoryEl.find('[component="category-markup"]').html());
+				selector.el.find('[component="category-selector-selected"]').html(
+					categoryEl.find('[component="category-markup"]').html()
+				);
 			} else {
-				selector.el.find('[component="category-selector-selected"]').translateHtml('[[topic:thread_tools.select_category]]');
+				selector.el.find('[component="category-selector-selected"]').translateHtml(
+					options.selectCategoryLabel || '[[topic:thread_tools.select_category]]'
+				);
 			}
 		};
 		selector.getSelectedCategory = function () {
