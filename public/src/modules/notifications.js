@@ -66,7 +66,7 @@ define('notifications', [
 
 					hooks.fire('action:notifications.loaded', {
 						notifications: notifs,
-						list: notifList.get(0),
+						list: notifList,
 					});
 				});
 			});
