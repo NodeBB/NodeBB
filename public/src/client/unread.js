@@ -73,7 +73,6 @@ define('forum/unread', [
 
 		var selector = categorySelector.init($('[component="category-selector"]'), {
 			onSelect: function (category) {
-				console.log(category);
 				selector.selectCategory(0);
 				if (category.cid === 'all') {
 					markAllRead();
