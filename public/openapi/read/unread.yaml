@@ -212,6 +212,8 @@ get:
                       bgColor:
                         type: string
                     nullable: true
+                  selectCategoryLabel:
+                    type: string
                   selectedCids:
                     type: array
                     items:
