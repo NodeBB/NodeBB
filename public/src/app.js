@@ -788,7 +788,7 @@ app.cacheBuster = null;
 
 	function registerServiceWorker() {
 		if ('serviceWorker' in navigator) {
-			navigator.serviceWorker.register(config.relative_path + '/assets/src/service-worker.js', { scope: config.relative_path + '/' })
+			navigator.serviceWorker.register(config.relative_path + '/service-worker.js', { scope: config.relative_path + '/' })
 				.then(function () {
 					console.info('ServiceWorker registration succeeded.');
 				}).catch(function (err) {

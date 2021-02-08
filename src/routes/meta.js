@@ -12,7 +12,7 @@ module.exports = function (app, middleware, controllers) {
 	app.get('/manifest.webmanifest', controllers.manifest);
 	app.get('/css/previews/:theme', controllers.admin.themes.get);
 	app.get('/osd.xml', controllers.osd.handle);
-	app.get('/assets/src/service-worker.js', function (req, res) {
+	app.get('/service-worker.js', function (req, res) {
 		res.status(200).type('application/javascript').set('Service-Worker-Allowed', nconf.get('relative_path') + '/').sendFile(path.join(__dirname, '../../public/src/service-worker.js'));
 	});
 };
