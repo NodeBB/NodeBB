@@ -43,6 +43,7 @@ exports.send404 = async function (req, res) {
 	if (res.locals.isAPI) {
 		return res.json({ path: validator.escape(path.replace(/^\/api/, '')), title: '[[global:404.title]]' });
 	}
+	await middleware.applyCSRFasync(req, res);
 	await middleware.buildHeaderAsync(req, res);
 	res.render('404', { path: validator.escape(path), title: '[[global:404.title]]' });
 };
