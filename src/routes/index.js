@@ -59,10 +59,10 @@ _mounts.topic = (app, mount, middleware, controllers) => {
 	setupPageRoute(app, `/${mount}/:topic_id/:slug?`, middleware, [], controllers.topics.get);
 };
 
-_mounts.post = (app, middleware, controllers) => {
+_mounts.post = (app, mount, middleware, controllers) => {
 	const middlewares = [middleware.maintenanceMode, middleware.registrationComplete, middleware.pluginHooks];
-	app.get('/post/:pid', middleware.busyCheck, middlewares, controllers.posts.redirectToPost);
-	app.get('/api/post/:pid', middlewares, controllers.posts.redirectToPost);
+	app.get(`/${mount}/:pid`, middleware.busyCheck, middlewares, controllers.posts.redirectToPost);
+	app.get(`/api/${mount}/:pid`, middlewares, controllers.posts.redirectToPost);
 };
 
 _mounts.tag = (app, middleware, controllers) => {
@@ -123,14 +123,11 @@ module.exports = async function (app, middleware) {
 };
 
 async function addCoreRoutes(app, router, middleware) {
-	_mounts.admin(router, middleware, controllers);
 	_mounts.meta(router, middleware, controllers);
 	_mounts.api(router, middleware, controllers);
 	_mounts.feed(router, middleware, controllers);
 
 	_mounts.main(router, middleware, controllers);
-	// _mounts.topic(router, middleware, controllers);
-	_mounts.post(router, middleware, controllers);
 	_mounts.mod(router, middleware, controllers);
 	_mounts.globalMod(router, middleware, controllers);
 	_mounts.tag(router, middleware, controllers);
@@ -140,16 +137,18 @@ async function addCoreRoutes(app, router, middleware) {
 	_mounts.group(router, middleware, controllers);
 
 	// Allow plugins/themes to mount some routes elsewhere
-	const remountable = ['topic'];
+	const remountable = ['admin', 'topic', 'post'];
 	await Promise.all(remountable.map(async (mount) => {
 		const original = mount;
 		({ mount } = await plugins.hooks.fire('filter:router.add', { mount }));
 		if (mount === null) {	// do not mount at all
+			winston.warn(`[router] Not mounting /${original}`);
 			return;
 		}
 
 		if (mount !== original) {
 			// Set up redirect for fallback handling (some js/tpls may still refer to the traditional mount point)
+			winston.info(`[router] /${original} prefix re-mounted to /${mount}. Requests to /${original}/* will now redirect to /${mount}`);
 			router.use(new RegExp(`/(api/)?${original}`), (req, res) => {
 				controllerHelpers.redirect(res, `${nconf.get('relative_path')}/${mount}${req.path}`);
 			});
