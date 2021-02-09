@@ -104,7 +104,7 @@
         "nodebb-theme-persona": "10.5.5",
         "nodebb-theme-slick": "1.4.3",
         "nodebb-theme-vanilla": "11.4.4",
-        "nodebb-widget-essentials": "5.0.2",
+        "nodebb-widget-essentials": "5.0.3",
         "nodemailer": "^6.4.6",
         "nprogress": "0.2.0",
         "passport": "^0.4.1",
