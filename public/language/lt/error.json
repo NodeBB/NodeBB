@@ -22,6 +22,7 @@
     "invalid-username-or-password": "Prašome nurodyti tiek vartotojo vardą, tiek ir slaptažodį",
     "invalid-search-term": "Neteisingas paieškos terminas",
     "invalid-url": "Neteisingas URL",
+    "invalid-event": "Invalid event: %1",
     "local-login-disabled": "Vietinė prisijungimo sistema išjungta neprivilegijuotoms paskyroms.",
     "csrf-invalid": "Nepavyko jūsų prijungti tikriausiai dėl pasibaigusios sesijos. Bandykite dar kartą",
     "invalid-pagination-value": "Bloga puslapių išdėstymo reikšmė. Ji turėtų būti ne mažesnė nei %1 ir ne didesnė nei %2",

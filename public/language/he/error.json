@@ -22,6 +22,7 @@
     "invalid-username-or-password": "אנא הגדר שם משתמש וסיסמה",
     "invalid-search-term": "מילת חיפוש לא תקינה",
     "invalid-url": "שגיאה בכתובת URL",
+    "invalid-event": "Invalid event: %1",
     "local-login-disabled": "מערכת הכניסה המקומית הושבתה עבור חשבונות שאינם מורשים.",
     "csrf-invalid": "אין באפשרותנו לחבר אותך למערכת, מכיוון שעבר זמן רב מידי. אנא נסה שנית.",
     "invalid-pagination-value": "ערך דף לא חוקי, חייב להיות לפחות %1 ולא מעל %2",

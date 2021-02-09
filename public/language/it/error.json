@@ -22,6 +22,7 @@
     "invalid-username-or-password": "Si prega di specificare sia un nome utente sia la password",
     "invalid-search-term": "Termine di ricerca non valido",
     "invalid-url": "URL non valido",
+    "invalid-event": "Invalid event: %1",
     "local-login-disabled": "Il sistema di accesso locale è stato disabilitato per gli account senza privilegi.",
     "csrf-invalid": "Non siamo riusciti a farti accedere, probabilmente perché la sessione è scaduta. Per favore riprova.",
     "invalid-pagination-value": "Valore di impaginazione non valido, deve essere almeno %1 ed al massimo %2",
@@ -179,6 +180,6 @@
     "socket-reconnect-failed": "Impossibile raggiungere il server al momento. Clicca qui per riprovare o riprova in un secondo momento",
     "plugin-not-whitelisted": "Impossibile installare il plug-in &amp; solo i plugin nella whitelist del Gestione Pacchetti di NodeBB possono essere installati tramite ACP",
     "topic-event-unrecognized": "Evento discussione '%1' non riconosciuto",
-    "cant-set-child-as-parent": "Can't set child as parent category",
-    "cant-set-self-as-parent": "Can't set self as parent category"
+    "cant-set-child-as-parent": "Impossibile impostare figlio come categoria padre",
+    "cant-set-self-as-parent": "Impossibile impostare se stessi come categoria padre"
 }

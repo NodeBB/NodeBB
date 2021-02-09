@@ -22,6 +22,7 @@
     "invalid-username-or-password": "لطفا هم نام کاربری و هم کلمه عبور را مشخص کنید",
     "invalid-search-term": "کلمه جستجو نامعتبر است",
     "invalid-url": "URL نامعتبر",
+    "invalid-event": "Invalid event: %1",
     "local-login-disabled": "Local login system has been disabled for non-privileged accounts.",
     "csrf-invalid": "اجازه ورود شما تمام شده است، لطفا دوباره وارد شوید.",
     "invalid-pagination-value": "ارزش گذاری صفحه نامعتبر است، کمترین مقدار <strong>%1</strong> و بیشترین مقدار <strong>%2</strong> باید باشد",

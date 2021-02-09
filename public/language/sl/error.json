@@ -22,6 +22,7 @@
     "invalid-username-or-password": "Prosimo, vpišite uporabniško ime in geslo.",
     "invalid-search-term": "Napačen iskalni izraz",
     "invalid-url": "Invalid URL",
+    "invalid-event": "Invalid event: %1",
     "local-login-disabled": "Local login system has been disabled for non-privileged accounts.",
     "csrf-invalid": "Prijava ni mogoča, verjetno zaradi potekle seje. Poskusite znova.",
     "invalid-pagination-value": "Napačna vrednost za številčenje strani. Vrednost mora biti najmanj %1 in največ %2.",

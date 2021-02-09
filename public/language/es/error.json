@@ -22,6 +22,7 @@
     "invalid-username-or-password": "Por favor especifica tanto un usuario como contraseña",
     "invalid-search-term": "Término de búsqueda inválido",
     "invalid-url": "URL inválida",
+    "invalid-event": "Invalid event: %1",
     "local-login-disabled": "El sistema de acceso local ha sido desactivado para usuarios con cuentas no privilegiadas.",
     "csrf-invalid": "El acceso ha fallado porque tu sesión ha expirado. Por favor prueba otra vez.",
     "invalid-pagination-value": "Número de página inválido, debe estar entre %1 y %2",

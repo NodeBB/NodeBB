@@ -22,6 +22,7 @@
     "invalid-username-or-password": "Especifica ámbolos dous por favor, nome de usuario e contrasinal",
     "invalid-search-term": "Termo de búsqueda inválido",
     "invalid-url": "Invalid URL",
+    "invalid-event": "Invalid event: %1",
     "local-login-disabled": "Local login system has been disabled for non-privileged accounts.",
     "csrf-invalid": "Non fomos capaces de entrar, probablemente porque a que a sesión expirou. Por favor, téntao de novo",
     "invalid-pagination-value": "Valor de paxinación incorreto, ten que estar entre %1 e %2",

@@ -22,6 +22,7 @@
     "invalid-username-or-password": "Παρακαλώ γράψε το όνομα χρήστη και τον κωδικό",
     "invalid-search-term": "Άκυρος όρος αναζήτησης",
     "invalid-url": "Invalid URL",
+    "invalid-event": "Invalid event: %1",
     "local-login-disabled": "Local login system has been disabled for non-privileged accounts.",
     "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
     "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",

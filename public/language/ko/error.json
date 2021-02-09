@@ -22,6 +22,7 @@
     "invalid-username-or-password": "사용자명과 패스워드를 모두 설정해주세요.",
     "invalid-search-term": "올바르지 않은 검색어입니다.",
     "invalid-url": "올바르지 않은 URL 입니다.",
+    "invalid-event": "Invalid event: %1",
     "local-login-disabled": "계정의 권한이 없어 로컬 로그인 시스템이 비활성화 되었습니다.",
     "csrf-invalid": "세션이 만료되어 로그인에 실패하였습니다. 다시 시도해 주세요.",
     "invalid-pagination-value": "올바르지 않은 페이지 값입니다. 최소 1% 에서 최대 2% 사이로 설정해야 합니다.",

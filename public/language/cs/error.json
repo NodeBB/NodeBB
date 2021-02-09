@@ -22,6 +22,7 @@
     "invalid-username-or-password": "Zadejte prosím uživatelské jméno a i heslo",
     "invalid-search-term": "Neplatný výraz pro vyhledávání",
     "invalid-url": "Neplatné URL",
+    "invalid-event": "Invalid event: %1",
     "local-login-disabled": "Systém přihlášení pro místní účty byl zakázán pro neoprávněné účty.",
     "csrf-invalid": "Není možné vás přihlásit, díky vypršení relace. Zkuste to prosím znovu.",
     "invalid-pagination-value": "Neplatná hodnota stránkování, musí být alespoň %1 a nejvýše %2",

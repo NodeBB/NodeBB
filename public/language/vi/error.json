@@ -22,6 +22,7 @@
     "invalid-username-or-password": "Hãy nhập tên đăng nhập và mật khẩu cụ thể",
     "invalid-search-term": "Cụm từ tìm kiếm không hợp lệ",
     "invalid-url": "Đường dẫn không chính xác",
+    "invalid-event": "Invalid event: %1",
     "local-login-disabled": "Hệ thống đăng nhập nội bộ đã bị vô hiệu hóa với các tài khoản không đủ quyền.",
     "csrf-invalid": "Chúng tôi không thể đăng nhập cho bạn, có thể do một phiên đã hết hạn. Vui lòng thử lại",
     "invalid-pagination-value": "Giá trị trang không hợp lệ, tối thiểu phải là %1 và tối đa là %2",

@@ -22,6 +22,7 @@
     "invalid-username-or-password": "請確認使用者名稱和密碼",
     "invalid-search-term": "無效的搜尋關鍵字",
     "invalid-url": "無效的 URL",
+    "invalid-event": "Invalid event: %1",
     "local-login-disabled": "已停用非管理帳戶的本地登入。",
     "csrf-invalid": "可能是由於會話過期，登入失敗。請重試。",
     "invalid-pagination-value": "無效的分頁數，必須介於 %1 和 %2 之間",

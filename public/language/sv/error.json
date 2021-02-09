@@ -22,6 +22,7 @@
     "invalid-username-or-password": "Specificera både användarnamn och lösenord",
     "invalid-search-term": "Ogiltig sökterm",
     "invalid-url": "Ogiltig URL",
+    "invalid-event": "Invalid event: %1",
     "local-login-disabled": "Lokala inloggningssystem har stängts av för icke-privilegierade konton.",
     "csrf-invalid": "Det gick inte att logga in dig, sannolikt på grund av en utgången session. Var god försök igen",
     "invalid-pagination-value": "Ogiltigt värde för siduppdelning. Värdet måste vara mellan %1 och %2",

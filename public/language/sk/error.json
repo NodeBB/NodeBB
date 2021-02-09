@@ -22,6 +22,7 @@
     "invalid-username-or-password": "Prosím upresnite používateľské meno a heslo",
     "invalid-search-term": "Neplatný výraz pre vyhľadávanie",
     "invalid-url": "Neplatná URL",
+    "invalid-event": "Invalid event: %1",
     "local-login-disabled": "Systém prihlásenia pre miestne účty bol zablokovaný pre neoprávnené účty.",
     "csrf-invalid": "Nie sme schopný Vás znova prihlásiť, pravdepodobne kvôli uplynutiu relácie. Zopakujte to neskôr prosím.",
     "invalid-pagination-value": "Neplatná stránkovania hodnota, musí byť najmenej %1 a najviac %2",
