@@ -70,15 +70,15 @@ _mounts.tag = (app, middleware, controllers) => {
 	setupPageRoute(app, '/tags', middleware, [middleware.privateTagListing], controllers.tags.getTags);
 };
 
-_mounts.category = (app, middleware, controllers) => {
+_mounts.category = (app, name, middleware, controllers) => {
 	setupPageRoute(app, '/categories', middleware, [], controllers.categories.list);
 	setupPageRoute(app, '/popular', middleware, [], controllers.popular.get);
 	setupPageRoute(app, '/recent', middleware, [], controllers.recent.get);
 	setupPageRoute(app, '/top', middleware, [], controllers.top.get);
 	setupPageRoute(app, '/unread', middleware, [middleware.authenticate], controllers.unread.get);
 
-	setupPageRoute(app, '/category/:category_id/:slug/:topic_index', middleware, [], controllers.category.get);
-	setupPageRoute(app, '/category/:category_id/:slug?', middleware, [], controllers.category.get);
+	setupPageRoute(app, `/${name}/:category_id/:slug/:topic_index`, middleware, [], controllers.category.get);
+	setupPageRoute(app, `/${name}/:category_id/:slug?`, middleware, [], controllers.category.get);
 };
 
 _mounts.user = (app, middleware, controllers) => {
@@ -131,15 +131,18 @@ async function addCoreRoutes(app, router, middleware) {
 	_mounts.mod(router, middleware, controllers);
 	_mounts.globalMod(router, middleware, controllers);
 	_mounts.tag(router, middleware, controllers);
-	_mounts.category(router, middleware, controllers);
-	_mounts.account(router, middleware, controllers);
 	_mounts.user(router, middleware, controllers);
 	_mounts.group(router, middleware, controllers);
 
 	// Allow plugins/themes to mount some routes elsewhere
-	const remountable = ['admin', 'topic', 'post'];
+	const remountable = ['admin', 'category', 'topic', 'post', 'account'];
+	const mountHash = {	// some mounts are named differently for organizational purposes
+		account: 'user',
+	};
 	await Promise.all(remountable.map(async (mount) => {
 		const original = mount;
+		mount = mountHash[mount] || mount;
+
 		({ mount } = await plugins.hooks.fire('filter:router.add', { mount }));
 		if (mount === null) {	// do not mount at all
 			winston.warn(`[router] Not mounting /${original}`);
@@ -149,7 +152,7 @@ async function addCoreRoutes(app, router, middleware) {
 		if (mount !== original) {
 			// Set up redirect for fallback handling (some js/tpls may still refer to the traditional mount point)
 			winston.info(`[router] /${original} prefix re-mounted to /${mount}. Requests to /${original}/* will now redirect to /${mount}`);
-			router.use(new RegExp(`/(api/)?${original}`), (req, res) => {
+			router.use(new RegExp(`/(api/)?${mountHash[original] || original}`), (req, res) => {
 				controllerHelpers.redirect(res, `${nconf.get('relative_path')}/${mount}${req.path}`);
 			});
 		}
