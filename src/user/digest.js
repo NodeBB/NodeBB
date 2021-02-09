@@ -1,6 +1,5 @@
 'use strict';
 
-const async = require('async');
 const winston = require('winston');
 const nconf = require('nconf');
 
@@ -29,7 +28,7 @@ Digest.execute = async function (payload) {
 		return;
 	}
 	try {
-		winston.info(`[user/jobs] Digest (${payload.interval}) scheduling completed. Sending emails; this may take some time...`);
+		winston.info(`[user/jobs] Digest (${payload.interval}) scheduling completed (${subscribers.length} subscribers). Sending emails; this may take some time...`);
 		await Digest.send({
 			interval: payload.interval,
 			subscribers: subscribers,
@@ -100,46 +99,55 @@ Digest.send = async function (data) {
 		return emailsSent;
 	}
 
-	await async.eachLimit(data.subscribers, 100, async (uid) => {
-		const userObj = await user.getUserFields(uid, ['uid', 'username', 'userslug', 'lastonline']);
-		const [notifications, topTopics, popularTopics, recentTopics] = await Promise.all([
-			user.notifications.getUnreadInterval(userObj.uid, data.interval),
-			getTermTopics(data.interval, userObj.uid, 0, 9, 'votes'),
-			getTermTopics(data.interval, userObj.uid, 0, 9, 'posts'),
-			getTermTopics(data.interval, userObj.uid, 0, 9, 'recent'),
-		]);
-		const unreadNotifs = notifications.filter(Boolean);
-		// If there are no notifications and no new topics, don't bother sending a digest
-		if (!unreadNotifs.length && !topTopics.length && !popularTopics.length && !recentTopics.length) {
+	await batch.processArray(data.subscribers, async (uids) => {
+		let userData = await user.getUsersFields(uids, ['uid', 'email', 'email:confirmed', 'username', 'userslug', 'lastonline']);
+		userData = userData.filter(u => u && u.email && (!meta.config.requireEmailConfirmation || userData['email:confirmed']));
+		if (!userData.length) {
 			return;
 		}
-
-		unreadNotifs.forEach((n) => {
-			if (n.image && !n.image.startsWith('http')) {
-				n.image = nconf.get('base_url') + n.image;
+		await Promise.all(userData.map(async (userObj) => {
+			const [notifications, topTopics, popularTopics, recentTopics] = await Promise.all([
+				user.notifications.getUnreadInterval(userObj.uid, data.interval),
+				getTermTopics(data.interval, userObj.uid, 0, 9, 'votes'),
+				getTermTopics(data.interval, userObj.uid, 0, 9, 'posts'),
+				getTermTopics(data.interval, userObj.uid, 0, 9, 'recent'),
+			]);
+			const unreadNotifs = notifications.filter(Boolean);
+			// If there are no notifications and no new topics, don't bother sending a digest
+			if (!unreadNotifs.length && !topTopics.length && !popularTopics.length && !recentTopics.length) {
+				return;
 			}
-			if (n.path) {
-				n.notification_url = n.path.startsWith('http') ? n.path : nconf.get('base_url') + n.path;
+
+			unreadNotifs.forEach((n) => {
+				if (n.image && !n.image.startsWith('http')) {
+					n.image = nconf.get('base_url') + n.image;
+				}
+				if (n.path) {
+					n.notification_url = n.path.startsWith('http') ? n.path : nconf.get('base_url') + n.path;
+				}
+			});
+
+			emailsSent += 1;
+			const now = new Date();
+			await emailer.send('digest', userObj.uid, {
+				subject: `[[email:digest.subject, ${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}]]`,
+				username: userObj.username,
+				userslug: userObj.userslug,
+				notifications: unreadNotifs,
+				recent: recentTopics,
+				topTopics: topTopics,
+				popularTopics: popularTopics,
+				interval: data.interval,
+				showUnsubscribe: true,
+			}).catch(err => winston.error(`[user/jobs] Could not send digest email\n[emailer.send] ${err.stack}`));
+
+			if (data.interval !== 'alltime') {
+				await db.sortedSetAdd('digest:delivery', now.getTime(), userObj.uid);
 			}
-		});
-
-		emailsSent += 1;
-		const now = new Date();
-		await emailer.send('digest', userObj.uid, {
-			subject: `[[email:digest.subject, ${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}]]`,
-			username: userObj.username,
-			userslug: userObj.userslug,
-			notifications: unreadNotifs,
-			recent: recentTopics,
-			topTopics: topTopics,
-			popularTopics: popularTopics,
-			interval: data.interval,
-			showUnsubscribe: true,
-		}).catch(err => winston.error(`[user/jobs] Could not send digest email\n[emailer.send] ${err.stack}`));
-
-		if (data.interval !== 'alltime') {
-			await db.sortedSetAdd('digest:delivery', now.getTime(), userObj.uid);
-		}
+		}));
+	}, {
+		interval: 1000,
+		batch: 100,
 	});
 	winston.info(`[user/jobs] Digest (${data.interval}) sending completed. ${emailsSent} emails sent.`);
 };

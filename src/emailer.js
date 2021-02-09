@@ -216,22 +216,22 @@ Emailer.send = async (template, uid, params) => {
 		throw Error('[emailer] App not ready!');
 	}
 
-	const [userData, userSettings] = await Promise.all([
-		User.getUserFields(uid, ['email', 'username', 'email:confirmed']),
-		User.getSettings(uid),
-	]);
-
+	const userData = await User.getUserFields(uid, ['email', 'username', 'email:confirmed']);
 	if (!userData || !userData.email) {
-		winston.warn(`uid : ${uid} has no email, not sending "${template}" email.`);
+		if (process.env.NODE_ENV === 'development') {
+			winston.warn(`uid : ${uid} has no email, not sending "${template}" email.`);
+		}
 		return;
 	}
 
 	const allowedTpls = ['verify_email', 'welcome', 'registration_accepted'];
 	if (meta.config.requireEmailConfirmation && !userData['email:confirmed'] && !allowedTpls.includes(template)) {
-		winston.warn(`uid : ${uid} (${userData.email}) has not confirmed email, not sending "${template}" email.`);
+		if (process.env.NODE_ENV === 'development') {
+			winston.warn(`uid : ${uid} (${userData.email}) has not confirmed email, not sending "${template}" email.`);
+		}
 		return;
 	}
-
+	const userSettings = await User.getSettings(uid);
 	// Combined passed-in payload with default values
 	params = { ...Emailer._defaultPayload, ...params };
 	params.uid = uid;
