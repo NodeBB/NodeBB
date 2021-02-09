@@ -95,7 +95,7 @@ module.exports = function (Posts) {
 			nid: `post-queue-${id}`,
 			mergeId: 'post-queue',
 			bodyShort: '[[notifications:post_awaiting_review]]',
-			bodyLong: data.content,
+			bodyLong: await plugins.hooks.fire('filter:parse.raw', data.content),
 			path: '/post-queue',
 		});
 		await notifications.push(notifObj, uids);

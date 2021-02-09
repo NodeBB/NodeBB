@@ -75,7 +75,7 @@ Notifications.getMultiple = async function (nids) {
 			notification.datetimeISO = utils.toISOString(notification.datetime);
 
 			if (notification.bodyLong) {
-				notification.bodyLong = utils.escapeHTML(notification.bodyLong);
+				notification.bodyLong = utils.stripHTMLTags(notification.bodyLong, ['img', 'p', 'a']);
 			}
 
 			notification.user = usersData[index];
