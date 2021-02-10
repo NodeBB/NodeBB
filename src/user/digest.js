@@ -140,11 +140,11 @@ Digest.send = async function (data) {
 				interval: data.interval,
 				showUnsubscribe: true,
 			}).catch(err => winston.error(`[user/jobs] Could not send digest email\n[emailer.send] ${err.stack}`));
-
-			if (data.interval !== 'alltime') {
-				await db.sortedSetAdd('digest:delivery', now.getTime(), userObj.uid);
-			}
 		}));
+		if (data.interval !== 'alltime') {
+			const now = Date.now();
+			await db.sortedSetAdd('digest:delivery', userData.map(() => now), userData.map(u => u.uid));
+		}
 	}, {
 		interval: 1000,
 		batch: 100,
