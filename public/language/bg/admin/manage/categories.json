@@ -19,7 +19,7 @@
 	"category-image": "Изображение на категорията",
 	"parent-category": "Базова категория",
 	"optional-parent-category": "(Незадължително) Базова категория",
-	"top-level": "Top Level",
+	"top-level": "Най-горно ниво",
 	"parent-category-none": "(Няма)",
 	"copy-parent": "Копиране на базовата",
 	"copy-settings": "Копиране на настройките от",
@@ -32,7 +32,7 @@
 	"edit": "Редактиране",
 	"analytics": "Анализи",
 	"view-category": "Преглед на категорията",
-	"set-order": "Set order",
+	"set-order": "Задайте реда",
 
 	"select-category": "Изберете категория",
 	"set-parent-category": "Задайте базова категория",
