@@ -106,15 +106,13 @@ Digest.send = async function (data) {
 			return;
 		}
 		await Promise.all(userData.map(async (userObj) => {
-			const [notifications, topTopics, popularTopics, recentTopics] = await Promise.all([
+			const [notifications, topics] = await Promise.all([
 				user.notifications.getUnreadInterval(userObj.uid, data.interval),
-				getTermTopics(data.interval, userObj.uid, 0, 9, 'votes'),
-				getTermTopics(data.interval, userObj.uid, 0, 9, 'posts'),
-				getTermTopics(data.interval, userObj.uid, 0, 9, 'recent'),
+				getTermTopics(data.interval, userObj.uid),
 			]);
 			const unreadNotifs = notifications.filter(Boolean);
 			// If there are no notifications and no new topics, don't bother sending a digest
-			if (!unreadNotifs.length && !topTopics.length && !popularTopics.length && !recentTopics.length) {
+			if (!unreadNotifs.length && !topics.top.length && !topics.popular.length && !topics.recent.length) {
 				return;
 			}
 
@@ -134,9 +132,9 @@ Digest.send = async function (data) {
 				username: userObj.username,
 				userslug: userObj.userslug,
 				notifications: unreadNotifs,
-				recent: recentTopics,
-				topTopics: topTopics,
-				popularTopics: popularTopics,
+				recent: topics.recent,
+				topTopics: topics.top,
+				popularTopics: topics.popular,
 				interval: data.interval,
 				showUnsubscribe: true,
 			}).catch(err => winston.error(`[user/jobs] Could not send digest email\n[emailer.send] ${err.stack}`));
@@ -179,20 +177,32 @@ Digest.getDeliveryTimes = async (start, stop) => {
 	};
 };
 
-async function getTermTopics(term, uid, start, stop, sort) {
-	const options = {
+async function getTermTopics(term, uid) {
+	const data = await topics.getSortedTopics({
 		uid: uid,
-		start: start,
-		stop: stop,
+		start: 0,
+		stop: 199,
 		term: term,
-		sort: sort,
-		teaserPost: 'last-post',
-	};
-	const data = sort === 'recent' ?
-		await topics.getLatestTopics(options) :
-		await topics.getSortedTopics(options);
+		sort: 'votes',
+		teaserPost: 'first',
+	});
+	data.topics = data.topics.filter(topic => topic && !topic.deleted);
 
-	data.topics.forEach((topicObj) => {
+	const top = data.topics.filter(t => t.votes > 0).slice(0, 10);
+	const topTids = top.map(t => t.tid);
+
+	const popular = data.topics
+		.filter(t => t.postcount > 1 && !topTids.includes(t.tid))
+		.sort((a, b) => b.postcount - a.postcount)
+		.slice(0, 10);
+	const popularTids = popular.map(t => t.tid);
+
+	const recent = data.topics
+		.filter(t => !topTids.includes(t.tid) && !popularTids.includes(t.tid))
+		.sort((a, b) => b.lastposttime - a.lastposttime)
+		.slice(0, 10);
+
+	[...top, ...popular, ...recent].forEach((topicObj) => {
 		if (topicObj) {
 			if (topicObj.teaser && topicObj.teaser.content && topicObj.teaser.content.length > 255) {
 				topicObj.teaser.content = `${topicObj.teaser.content.slice(0, 255)}...`;
@@ -205,5 +215,5 @@ async function getTermTopics(term, uid, start, stop, sort) {
 			}
 		}
 	});
-	return data.topics.filter(topic => topic && !topic.deleted);
+	return { top, popular, recent };
 }
