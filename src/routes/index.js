@@ -17,7 +17,7 @@ const helpers = require('./helpers');
 const { setupPageRoute } = helpers;
 
 const _mounts = {
-	account: require('./accounts'),
+	user: require('./user'),
 	meta: require('./meta'),
 	api: require('./api'),
 	admin: require('./admin'),
@@ -81,10 +81,10 @@ _mounts.category = (app, name, middleware, controllers) => {
 	setupPageRoute(app, `/${name}/:category_id/:slug?`, middleware, [], controllers.category.get);
 };
 
-_mounts.user = (app, middleware, controllers) => {
+_mounts.users = (app, name, middleware, controllers) => {
 	const middlewares = [middleware.canViewUsers];
 
-	setupPageRoute(app, '/users', middleware, middlewares, controllers.users.index);
+	setupPageRoute(app, `/${name}`, middleware, middlewares, controllers.users.index);
 };
 
 _mounts.group = (app, middleware, controllers) => {
@@ -131,14 +131,12 @@ async function addCoreRoutes(app, router, middleware) {
 	_mounts.mod(router, middleware, controllers);
 	_mounts.globalMod(router, middleware, controllers);
 	_mounts.tag(router, middleware, controllers);
-	_mounts.user(router, middleware, controllers);
 	_mounts.group(router, middleware, controllers);
 
 	// Allow plugins/themes to mount some routes elsewhere
-	const remountable = ['admin', 'category', 'topic', 'post', 'account'];
-	const mountHash = {	// some mounts are named differently for organizational purposes
-		account: 'user',
-	};
+	const remountable = ['admin', 'category', 'topic', 'post', 'users', 'user'];
+	const mountHash = {};	// if a mount is named differently for organizational purposes, add the change here
+
 	await Promise.all(remountable.map(async (mount) => {
 		const method = mount;
 		const original = mountHash[mount] || mount;
