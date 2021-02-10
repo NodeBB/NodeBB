@@ -53,19 +53,18 @@ SocketAdmin.before = async function (socket, method) {
 	throw new Error('[[error:no-privileges]]');
 };
 
-SocketAdmin.restart = function (socket, data, callback) {
-	logRestart(socket);
+SocketAdmin.restart = async function (socket) {
+	await logRestart(socket);
 	meta.restart();
-	callback();
 };
 
-function logRestart(socket) {
-	events.log({
+async function logRestart(socket) {
+	await events.log({
 		type: 'restart',
 		uid: socket.uid,
 		ip: socket.ip,
 	});
-	db.setObject('lastrestart', {
+	await db.setObject('lastrestart', {
 		uid: socket.uid,
 		ip: socket.ip,
 		timestamp: Date.now(),
@@ -80,7 +79,7 @@ SocketAdmin.reload = async function (socket) {
 		ip: socket.ip,
 	});
 
-	logRestart(socket);
+	await logRestart(socket);
 	meta.restart();
 };
 
