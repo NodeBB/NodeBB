@@ -102,9 +102,31 @@ module.exports = async function (app, middleware) {
 	};
 	const ensureLoggedIn = require('connect-ensure-login');
 
+	// Allow plugins/themes to mount some routes elsewhere
+	const remountable = ['admin', 'category', 'topic', 'post', 'users', 'user', 'groups', 'tags'];
+	const { mounts } = await plugins.hooks.fire('filter:router.add', {
+		mounts: remountable.reduce((memo, mount) => {
+			memo[mount] = mount;
+			return memo;
+		}, {}),
+	});
+	// Guard against plugins sending back missing/extra mounts
+	Object.keys(mounts).forEach((mount) => {
+		if (!remountable.includes(mount)) {
+			delete mounts[mount];
+		} else if (typeof mount !== 'string') {
+			mounts[mount] = mount;
+		}
+	});
+	remountable.forEach((mount) => {
+		if (!mounts.hasOwnProperty(mount)) {
+			mounts[mount] = mount;
+		}
+	});
+
 	router.all('(/+api|/+api/*?)', middleware.prepareAPI);
-	router.all('(/+api/admin|/+api/admin/*?)', middleware.authenticate, middleware.admin.checkPrivileges);
-	router.all('(/+admin|/+admin/*?)', ensureLoggedIn.ensureLoggedIn(`${nconf.get('relative_path')}/login?local=1`), middleware.applyCSRF, middleware.admin.checkPrivileges);
+	router.all(`(/+api/admin|/+api/admin/*?${mounts.admin !== 'admin' ? `|/+api/${mounts.admin}|/+api/${mounts.admin}/*?` : ''})`, middleware.authenticate, middleware.admin.checkPrivileges);
+	router.all(`(/+admin|/+admin/*?${mounts.admin !== 'admin' ? `|/+${mounts.admin}|/+${mounts.admin}/*?` : ''})`, ensureLoggedIn.ensureLoggedIn(`${nconf.get('relative_path')}/login?local=1`), middleware.applyCSRF, middleware.admin.checkPrivileges);
 
 	app.use(middleware.stripLeadingSlashes);
 
@@ -117,12 +139,12 @@ module.exports = async function (app, middleware) {
 	await plugins.reloadRoutes({ router: router });
 	await authRoutes.reloadRoutes({ router: router });
 	await writeRoutes.reload({ router: router });
-	await addCoreRoutes(app, router, middleware);
+	addCoreRoutes(app, router, middleware, mounts);
 
-	winston.info('Routes added');
+	winston.info('[router] Routes added');
 };
 
-async function addCoreRoutes(app, router, middleware) {
+function addCoreRoutes(app, router, middleware, mounts) {
 	_mounts.meta(router, middleware, controllers);
 	_mounts.api(router, middleware, controllers);
 	_mounts.feed(router, middleware, controllers);
@@ -131,7 +153,7 @@ async function addCoreRoutes(app, router, middleware) {
 	_mounts.mod(router, middleware, controllers);
 	_mounts.globalMod(router, middleware, controllers);
 
-	await addRemountableRoutes(app, router, middleware);
+	addRemountableRoutes(app, router, middleware, mounts);
 
 	const relativePath = nconf.get('relative_path');
 	app.use(relativePath || '/', router);
@@ -172,15 +194,12 @@ async function addCoreRoutes(app, router, middleware) {
 	app.use(controllers.errors.handleErrors);
 }
 
-async function addRemountableRoutes(app, router, middleware) {
-	// Allow plugins/themes to mount some routes elsewhere
-	const remountable = ['admin', 'category', 'topic', 'post', 'users', 'user', 'groups', 'tags'];
-
-	await Promise.all(remountable.map(async (mount) => {
+function addRemountableRoutes(app, router, middleware, mounts) {
+	Object.keys(mounts).map(async (mount) => {
 		const original = mount;
-		({ mount } = await plugins.hooks.fire('filter:router.add', { mount }));
+		mount = mounts[original];
 
-		if (mount === null) {	// do not mount at all
+		if (!mount) {	// do not mount at all
 			winston.warn(`[router] Not mounting /${original}`);
 			return;
 		}
@@ -194,5 +213,5 @@ async function addRemountableRoutes(app, router, middleware) {
 		}
 
 		_mounts[original](router, mount, middleware, controllers);
-	}));
+	});
 }
