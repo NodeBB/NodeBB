@@ -103,7 +103,7 @@ Digest.send = async function (data) {
 
 	await batch.processArray(data.subscribers, async (uids) => {
 		let userData = await user.getUsersFields(uids, ['uid', 'email', 'email:confirmed', 'username', 'userslug', 'lastonline']);
-		userData = userData.filter(u => u && u.email && (!meta.config.requireEmailConfirmation || userData['email:confirmed']));
+		userData = userData.filter(u => u && u.email && (!meta.config.requireEmailConfirmation || u['email:confirmed']));
 		if (!userData.length) {
 			return;
 		}
