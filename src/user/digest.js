@@ -14,6 +14,8 @@ const utils = require('../utils');
 
 const Digest = module.exports;
 
+const baseUrl = nconf.get('base_url');
+
 Digest.execute = async function (payload) {
 	const digestsDisabled = meta.config.disableEmailSubscriptions === 1;
 	if (digestsDisabled) {
@@ -118,10 +120,10 @@ Digest.send = async function (data) {
 
 			unreadNotifs.forEach((n) => {
 				if (n.image && !n.image.startsWith('http')) {
-					n.image = nconf.get('base_url') + n.image;
+					n.image = baseUrl + n.image;
 				}
 				if (n.path) {
-					n.notification_url = n.path.startsWith('http') ? n.path : nconf.get('base_url') + n.path;
+					n.notification_url = n.path.startsWith('http') ? n.path : baseUrl + n.path;
 				}
 			});
 
@@ -211,7 +213,7 @@ async function getTermTopics(term, uid) {
 			const user = topicObj.hasOwnProperty('teaser') && topicObj.teaser && topicObj.teaser.user ?
 				topicObj.teaser.user : topicObj.user;
 			if (user && user.picture && utils.isRelativeUrl(user.picture)) {
-				user.picture = nconf.get('base_url') + user.picture;
+				user.picture = baseUrl + user.picture;
 			}
 		}
 	});
