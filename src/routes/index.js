@@ -140,8 +140,9 @@ async function addCoreRoutes(app, router, middleware) {
 		account: 'user',
 	};
 	await Promise.all(remountable.map(async (mount) => {
-		const original = mount;
-		mount = mountHash[mount] || mount;
+		const method = mount;
+		const original = mountHash[mount] || mount;
+		mount = original;
 
 		({ mount } = await plugins.hooks.fire('filter:router.add', { mount }));
 		if (mount === null) {	// do not mount at all
@@ -152,12 +153,12 @@ async function addCoreRoutes(app, router, middleware) {
 		if (mount !== original) {
 			// Set up redirect for fallback handling (some js/tpls may still refer to the traditional mount point)
 			winston.info(`[router] /${original} prefix re-mounted to /${mount}. Requests to /${original}/* will now redirect to /${mount}`);
-			router.use(new RegExp(`/(api/)?${mountHash[original] || original}`), (req, res) => {
+			router.use(new RegExp(`/(api/)?${original}`), (req, res) => {
 				controllerHelpers.redirect(res, `${nconf.get('relative_path')}/${mount}${req.path}`);
 			});
 		}
 
-		_mounts[original](router, mount, middleware, controllers);
+		_mounts[method](router, mount, middleware, controllers);
 	}));
 
 	const relativePath = nconf.get('relative_path');
