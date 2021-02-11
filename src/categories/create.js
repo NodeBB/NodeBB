@@ -141,7 +141,12 @@ module.exports = function (Categories) {
 		if (copyParent && newParent !== parseInt(toCid, 10)) {
 			await db.sortedSetRemove(`cid:${oldParent}:children`, toCid);
 			await db.sortedSetAdd(`cid:${newParent}:children`, source.order, toCid);
-			cache.del([`cid:${oldParent}:children`, `cid:${newParent}:children`]);
+			cache.del([
+				`cid:${oldParent}:children`,
+				`cid:${oldParent}:children:all`,
+				`cid:${newParent}:children`,
+				`cid:${newParent}:children:all`,
+			]);
 		}
 
 		destination.description = source.description;
