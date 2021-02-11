@@ -13,11 +13,15 @@ const cache = require('../cache');
 module.exports = function (Categories) {
 	Categories.create = async function (data) {
 		const parentCid = data.parentCid ? data.parentCid : 0;
-		const cid = await db.incrObjectField('global', 'nextCid');
+		const [cid, firstChild] = await Promise.all([
+			db.incrObjectField('global', 'nextCid'),
+			db.getSortedSetRangeWithScores(`cid:${parentCid}:children`, 0, 0),
+		]);
 
 		data.name = String(data.name || `Category ${cid}`);
 		const slug = `${cid}/${slugify(data.name)}`;
-		const order = data.order || cid;	// If no order provided, place it at the end
+		const smallestOrder = firstChild.length ? firstChild[0].score - 1 : 1;
+		const order = data.order || smallestOrder;	// If no order provided, place it at the top
 		const colours = Categories.assignColours();
 
 		let category = {
