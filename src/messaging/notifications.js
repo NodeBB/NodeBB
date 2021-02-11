@@ -62,7 +62,7 @@ module.exports = function (Messaging) {
 			type: isGroupChat ? 'new-group-chat' : 'new-chat',
 			subject: `[[email:notif.chat.subject, ${messageObj.fromUser.username}]]`,
 			bodyShort: `[[notifications:new_message_from, ${messageObj.fromUser.username}]]`,
-			bodyLong: await plugins.hooks.fire('filter:parse.raw', messageObj.content),
+			bodyLong: messageObj.content,
 			nid: `chat_${fromuid}_${roomId}`,
 			from: fromuid,
 			path: `/chats/${messageObj.roomId}`,

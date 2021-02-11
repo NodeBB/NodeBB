@@ -4,6 +4,9 @@ const assert = require('assert');
 const async = require('async');
 const request = require('request');
 const nconf = require('nconf');
+const util = require('util');
+
+const sleep = util.promisify(setTimeout);
 
 const db = require('./mocks/databasemock');
 const meta = require('../src/meta');
@@ -396,26 +399,22 @@ describe('Messaging Library', () => {
 		});
 
 
-		it('should notify offline users of message', (done) => {
+		it('should notify offline users of message', async () => {
 			meta.config.notificationSendDelay = 0.1;
 
-			db.sortedSetAdd('users:online', Date.now() - ((meta.config.onlineCutoff * 60000) + 50000), herpUid, (err) => {
-				assert.ifError(err);
-				socketModules.chats.send({ uid: fooUid }, { roomId: roomId, message: 'second chat message' }, (err) => {
-					assert.ifError(err);
-					setTimeout(() => {
-						User.notifications.get(herpUid, (err, data) => {
-							assert.ifError(err);
-							assert(data.unread[0]);
-							const notification = data.unread[0];
-							assert.equal(notification.bodyShort, '[[notifications:new_message_from, foo]]');
-							assert.equal(notification.nid, `chat_${fooUid}_${roomId}`);
-							assert.equal(notification.path, `${nconf.get('relative_path')}/chats/${roomId}`);
-							done();
-						});
-					}, 1500);
-				});
-			});
+			const roomId = await socketModules.chats.newRoom({ uid: fooUid }, { touid: bazUid });
+			assert(roomId);
+			await socketModules.chats.addUserToRoom({ uid: fooUid }, { roomId: roomId, username: 'herp' });
+			await db.sortedSetAdd('users:online', Date.now() - ((meta.config.onlineCutoff * 60000) + 50000), herpUid);
+			await socketModules.chats.send({ uid: fooUid }, { roomId: roomId, message: 'second chat message **bold** text' });
+
+			await sleep(1500);
+			const data = await User.notifications.get(herpUid);
+			assert(data.unread[0]);
+			const notification = data.unread[0];
+			assert.strictEqual(notification.bodyShort, '[[notifications:new_message_from, foo]]');
+			assert.strictEqual(notification.nid, `chat_${fooUid}_${roomId}`);
+			assert.strictEqual(notification.path, `${nconf.get('relative_path')}/chats/${roomId}`);
 		});
 
 		it('should fail to get messages from room with invalid data', (done) => {
@@ -807,7 +806,7 @@ describe('Messaging Library', () => {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 200);
 				assert(Array.isArray(body.rooms));
-				assert.equal(body.rooms.length, 1);
+				assert.equal(body.rooms.length, 2);
 				assert.equal(body.title, '[[pages:chats]]');
 				done();
 			});
