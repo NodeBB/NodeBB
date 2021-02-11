@@ -1,7 +1,6 @@
 'use strict';
 
 const topics = require('../../topics');
-const categories = require('../../categories');
 const privileges = require('../../privileges');
 const meta = require('../../meta');
 const utils = require('../../utils');
@@ -90,12 +89,6 @@ module.exports = function (SocketTopics) {
 		}
 		const { start, stop } = calculateStartStop(data);
 		return await topics.getTopicsFromSet(data.set, socket.uid, start, stop);
-	};
-
-	SocketTopics.loadMoreUserTopics = async function (socket, data) {
-		const cids = await categories.getCidsByPrivilege('categories:cid', socket.uid, 'topics:read');
-		data.set = cids.map(c => `cid:${c}:uid:${data.uid}:tids`);
-		return await SocketTopics.loadMoreFromSet(socket, data);
 	};
 
 	function calculateStartStop(data) {

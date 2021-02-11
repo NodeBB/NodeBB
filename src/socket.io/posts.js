@@ -6,7 +6,6 @@ const privileges = require('../privileges');
 const plugins = require('../plugins');
 const meta = require('../meta');
 const topics = require('../topics');
-const categories = require('../categories');
 const user = require('../user');
 const socketHelpers = require('./helpers');
 const utils = require('../utils');
@@ -100,41 +99,6 @@ SocketPosts.getPost = async function (socket, pid) {
 	sockets.warnDeprecated(socket, 'GET /api/v3/posts/:pid');
 	return await api.posts.get(socket, { pid });
 };
-
-SocketPosts.loadMoreBookmarks = async function (socket, data) {
-	return await loadMorePosts(`uid:${data.uid}:bookmarks`, socket.uid, data);
-};
-
-SocketPosts.loadMoreUserPosts = async function (socket, data) {
-	const cids = await categories.getCidsByPrivilege('categories:cid', socket.uid, 'topics:read');
-	const keys = cids.map(c => `cid:${c}:uid:${data.uid}:pids`);
-	return await loadMorePosts(keys, socket.uid, data);
-};
-
-SocketPosts.loadMoreBestPosts = async function (socket, data) {
-	const cids = await categories.getCidsByPrivilege('categories:cid', socket.uid, 'topics:read');
-	const keys = cids.map(c => `cid:${c}:uid:${data.uid}:pids:votes`);
-	return await loadMorePosts(keys, socket.uid, data);
-};
-
-SocketPosts.loadMoreUpVotedPosts = async function (socket, data) {
-	return await loadMorePosts(`uid:${data.uid}:upvote`, socket.uid, data);
-};
-
-SocketPosts.loadMoreDownVotedPosts = async function (socket, data) {
-	return await loadMorePosts(`uid:${data.uid}:downvote`, socket.uid, data);
-};
-
-async function loadMorePosts(set, uid, data) {
-	if (!data || !utils.isNumber(data.uid) || !utils.isNumber(data.after)) {
-		throw new Error('[[error:invalid-data]]');
-	}
-
-	const start = Math.max(0, parseInt(data.after, 10));
-	const stop = start + 9;
-
-	return await posts.getPostSummariesFromSet(set, uid, start, stop);
-}
 
 SocketPosts.getCategory = async function (socket, pid) {
 	return await posts.getCidByPid(pid);

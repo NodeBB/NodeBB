@@ -9,7 +9,7 @@ define('forum/account/best', ['forum/account/header', 'forum/account/posts'], fu
 
 		$('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
 
-		posts.handleInfiniteScroll('posts.loadMoreBestPosts', 'account/best');
+		posts.handleInfiniteScroll('account/best');
 	};
 
 	return Best;
