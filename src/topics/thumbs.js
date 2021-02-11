@@ -25,7 +25,7 @@ Thumbs.load = async function (topicData) {
 	const tidsWithThumbs = topicsWithThumbs.map(t => t.tid);
 	const thumbs = await Thumbs.get(tidsWithThumbs);
 	const tidToThumbs = _.zipObject(tidsWithThumbs, thumbs);
-	return topicData.map(t => tidToThumbs[t.tid] || []);
+	return topicData.map(t => (t && t.tid ? (tidToThumbs[t.tid] || []) : []));
 };
 
 Thumbs.get = async function (tids) {
