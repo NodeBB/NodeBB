@@ -2091,7 +2091,7 @@ describe('Controllers', () => {
 							request(`${nconf.get('url')}/api/category/${parentCategory.slug}`, { jar: jar, json: true }, (err, res, body) => {
 								assert.ifError(err);
 								assert.equal(res.statusCode, 200);
-								assert.equal(body.children[1].posts[0].content, 'topic 1 OP');
+								assert.equal(body.children[0].posts[0].content, 'topic 1 OP');
 								next();
 							});
 						},
