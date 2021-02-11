@@ -83,7 +83,11 @@ module.exports = function (Categories) {
 		await privileges.categories.give(modPrivileges, category.cid, ['administrators', 'Global Moderators']);
 		await privileges.categories.give(['groups:find', 'groups:read', 'groups:topics:read'], category.cid, ['guests', 'spiders']);
 
-		cache.del(['categories:cid', `cid:${parentCid}:children`]);
+		cache.del([
+			'categories:cid',
+			`cid:${parentCid}:children`,
+			`cid:${parentCid}:children:all`,
+		]);
 		if (data.cloneFromCid && parseInt(data.cloneFromCid, 10)) {
 			category = await Categories.copySettingsFrom(data.cloneFromCid, category.cid, !data.parentCid);
 		}
