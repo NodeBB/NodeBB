@@ -21,7 +21,7 @@ Thumbs.exists = async function (tid, path) {
 };
 
 Thumbs.load = async function (topicData) {
-	const topicsWithThumbs = topicData.filter(t => parseInt(t.numThumbs, 10) > 0);
+	const topicsWithThumbs = topicData.filter(t => t && parseInt(t.numThumbs, 10) > 0);
 	const tidsWithThumbs = topicsWithThumbs.map(t => t.tid);
 	const thumbs = await Thumbs.get(tidsWithThumbs);
 	const tidToThumbs = _.zipObject(tidsWithThumbs, thumbs);
