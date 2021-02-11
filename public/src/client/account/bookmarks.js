@@ -9,7 +9,7 @@ define('forum/account/bookmarks', ['forum/account/header', 'forum/account/posts'
 
 		$('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
 
-		posts.handleInfiniteScroll('posts.loadMoreBookmarks', 'account/bookmarks');
+		posts.handleInfiniteScroll('account/bookmarks');
 	};
 
 	return Bookmarks;

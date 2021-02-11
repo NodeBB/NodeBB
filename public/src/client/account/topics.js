@@ -3,21 +3,19 @@
 
 define('forum/account/topics', ['forum/account/header', 'forum/infinitescroll'], function (header, infinitescroll) {
 	var AccountTopics = {};
-	var method;
+
 	var template;
-	var set;
+	var page = 1;
 
 	AccountTopics.init = function () {
 		header.init();
 
-		AccountTopics.handleInfiniteScroll('topics.loadMoreUserTopics', 'account/topics');
+		AccountTopics.handleInfiniteScroll('account/topics');
 	};
 
-	AccountTopics.handleInfiniteScroll = function (_method, _template, _set) {
-		method = _method;
+	AccountTopics.handleInfiniteScroll = function (_template) {
 		template = _template;
-		set = _set;
-
+		page = ajaxify.data.pagination.currentPage;
 		if (!config.usePagination) {
 			infinitescroll.init(loadMore);
 		}
@@ -27,20 +25,16 @@ define('forum/account/topics', ['forum/account/header', 'forum/infinitescroll'],
 		if (direction < 0) {
 			return;
 		}
+		var params = utils.params();
+		page += 1;
+		params.page = page;
 
-		infinitescroll.loadMore(method, {
-			set: set,
-			uid: ajaxify.data.theirid,
-			after: $('[component="category"]').attr('data-nextstart'),
-			count: config.topicsPerPage,
-		}, function (data, done) {
+		infinitescroll.loadMoreXhr(params, function (data, done) {
 			if (data.topics && data.topics.length) {
 				onTopicsLoaded(data.topics, done);
 			} else {
 				done();
 			}
-
-			$('[component="category"]').attr('data-nextstart', data.nextStart);
 		});
 	}
 

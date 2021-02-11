@@ -901,55 +901,8 @@ describe('Post\'s', function () {
 			});
 		});
 
-		it('shold error with invalid data', function (done) {
-			socketPosts.loadMoreBookmarks({ uid: voterUid }, { uid: voterUid, after: null }, function (err) {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
-		});
-
-		it('should load more bookmarks', function (done) {
-			socketPosts.loadMoreBookmarks({ uid: voterUid }, { uid: voterUid, after: 0 }, function (err, data) {
-				assert.ifError(err);
-				assert(data);
-				done();
-			});
-		});
-
-		it('should load more user posts', function (done) {
-			socketPosts.loadMoreUserPosts({ uid: voterUid }, { uid: voterUid, after: 0 }, function (err, data) {
-				assert.ifError(err);
-				assert(data);
-				done();
-			});
-		});
-
-		it('should load more best posts', function (done) {
-			socketPosts.loadMoreBestPosts({ uid: voterUid }, { uid: voterUid, after: 0 }, function (err, data) {
-				assert.ifError(err);
-				assert(data);
-				done();
-			});
-		});
-
-		it('should load more up voted posts', function (done) {
-			socketPosts.loadMoreUpVotedPosts({ uid: voterUid }, { uid: voterUid, after: 0 }, function (err, data) {
-				assert.ifError(err);
-				assert(data);
-				done();
-			});
-		});
-
-		it('should load more down voted posts', function (done) {
-			socketPosts.loadMoreDownVotedPosts({ uid: voterUid }, { uid: voterUid, after: 0 }, function (err, data) {
-				assert.ifError(err);
-				assert(data);
-				done();
-			});
-		});
-
-		it('should get post category', function (done) {
-			socketPosts.getCategory({ uid: voterUid }, pid, function (err, postCid) {
+		it('should get post category', (done) => {
+			socketPosts.getCategory({ uid: voterUid }, pid, (err, postCid) => {
 				assert.ifError(err);
 				assert.equal(cid, postCid);
 				done();

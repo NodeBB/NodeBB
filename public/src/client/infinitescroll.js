@@ -78,6 +78,25 @@ define('forum/infinitescroll', function () {
 		});
 	};
 
+	scroll.loadMoreXhr = function (data, callback) {
+		if (loadingMore) {
+			return;
+		}
+		loadingMore = true;
+		var url = config.relative_path + '/api' + location.pathname;
+		var hookData = { url: url, data: data };
+		$(window).trigger('action:infinitescroll.loadmore.xhr', hookData);
+
+		$.get(url, data, function (data) {
+			callback(data, function () {
+				loadingMore = false;
+			});
+		}).fail(function (jqXHR) {
+			loadingMore = false;
+			app.alertError(String(jqXHR.responseJSON || jqXHR.statusText));
+		});
+	};
+
 	scroll.removeExtra = function (els, direction, count) {
 		if (els.length <= count) {
 			return;

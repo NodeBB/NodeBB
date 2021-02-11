@@ -9,7 +9,7 @@ define('forum/account/downvoted', ['forum/account/header', 'forum/account/posts'
 
 		$('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
 
-		posts.handleInfiniteScroll('posts.loadMoreDownVotedPosts', 'account/downvoted');
+		posts.handleInfiniteScroll('account/downvoted');
 	};
 
 	return Downvoted;
