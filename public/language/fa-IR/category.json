@@ -10,7 +10,7 @@
     "watch": "پیگیری",
     "ignore": "نادیده گرفتن",
     "watching": "درحال پیگیری",
-    "not-watching": "Not Watching",
+    "not-watching": "درحال پیگیری نیستید",
     "ignoring": "در حال نادیده گرفتن",
     "watching.description": "Show topics in unread and recent",
     "not-watching.description": "Do not show topics in unread, show in recent",
