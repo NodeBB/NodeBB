@@ -42,19 +42,19 @@ Events._types = {
 		text: '[[topic:restored-by]]',
 	},
 };
-Events._ready = false;
 
-Events.init = async () => {
-	if (!Events._ready) {
-		// Allow plugins to define additional topic event types
-		const { types } = await plugins.hooks.fire('filter:topicEvents.init', { types: Events._types });
-		Events._types = types;
-		Events._ready = true;
+async function init() {
+	if (!plugins.hooks) {
+		return setImmediate(init);
 	}
-};
+
+	// Allow plugins to define additional topic event types
+	const { types } = await plugins.hooks.fire('filter:topicEvents.init', { types: Events._types });
+	Events._types = types;
+}
+init();
 
 Events.get = async (tid) => {
-	await Events.init();
 	const topics = require('.');
 
 	if (!await topics.exists(tid)) {
@@ -104,7 +104,6 @@ async function modifyEvent({ eventIds, timestamps, events }) {
 }
 
 Events.log = async (tid, payload) => {
-	await Events.init();
 	const topics = require('.');
 	const { type } = payload;
 	const now = Date.now();
