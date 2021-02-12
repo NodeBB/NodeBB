@@ -67,28 +67,28 @@ async function getThumbs(set) {
 	return thumbs.slice();
 }
 
-Thumbs.associate = async function ({ id, path: relativePath, url }) {
+Thumbs.associate = async function ({ id, path }) {
 	// Associates a newly uploaded file as a thumb to the passed-in draft or topic
 	const isDraft = validator.isUUID(String(id));
-	let value = relativePath || url;
+	const isLocal = !path.startsWith('http');
 	const set = `${isDraft ? 'draft' : 'topic'}:${id}:thumbs`;
 	const numThumbs = await db.sortedSetCard(set);
 
 	// Normalize the path to allow for changes in upload_path (and so upload_url can be appended if needed)
-	if (relativePath) {
-		value = value.replace(nconf.get('upload_path'), '');
+	if (isLocal) {
+		path = path.replace(nconf.get('upload_path'), '');
 	}
 	const topics = require('.');
-	await db.sortedSetAdd(set, numThumbs, value);
+	await db.sortedSetAdd(set, numThumbs, path);
 	if (!isDraft) {
 		await topics.setTopicField(id, 'numThumbs', numThumbs);
 	}
 	cache.del(set);
 
 	// Associate thumbnails with the main pid (only on local upload)
-	if (!isDraft && relativePath) {
+	if (!isDraft && isLocal) {
 		const mainPid = (await topics.getMainPids([id]))[0];
-		posts.uploads.associate(mainPid, relativePath.replace('/files/', ''));
+		posts.uploads.associate(mainPid, path.replace('/files/', ''));
 	}
 };
 
