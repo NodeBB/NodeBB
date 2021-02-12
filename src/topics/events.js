@@ -45,6 +45,7 @@ Events._types = {
 	'post-queue': {
 		icon: 'fa-history',
 		text: '[[topic:queued-by]]',
+		href: '/post-queue',
 	},
 };
 
