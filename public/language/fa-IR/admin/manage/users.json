@@ -60,11 +60,11 @@
 	"create.password": "Password",
 	"create.password-confirm": "Confirm Password",
 
-	"temp-ban.length": "Ban Length",
-	"temp-ban.reason": "Reason <span class=\"text-muted\">(Optional)</span>",
-	"temp-ban.hours": "Hours",
-	"temp-ban.days": "Days",
-	"temp-ban.explanation": "Enter the length of time for the ban. Note that a time of 0 will be a considered a permanent ban.",
+	"temp-ban.length": "میزان مدت اخراج",
+	"temp-ban.reason": "علت <span class=\"text-muted\">(اختیاری)</span>",
+	"temp-ban.hours": "ساعت",
+	"temp-ban.days": "روز",
+	"temp-ban.explanation": "میزان مدت زمان اخراج را وارد کنید. توجه داشته باشید که مقدار 0 به عنوان اخراج مادام العمر در نظر گرفته خواهد شد.",
 
 	"alerts.confirm-ban": "Do you really want to ban this user <strong>permanently</strong>?",
 	"alerts.confirm-ban-multi": "Do you really want to ban these users <strong>permanently</strong>?",

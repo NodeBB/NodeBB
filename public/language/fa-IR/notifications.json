@@ -57,8 +57,8 @@
     "notification_and_email": "اعلان و ایمیل",
     "notificationType_upvote": "هنگامی که شخصی به پست شما رای مثبت می دهد",
     "notificationType_new-topic": "هنگامی که شخصی که شما دنبال می کنید موضوعی ایجاد نماید",
-    "notificationType_new-reply": "هنگامی که پاسخ جدید در تاپیکی که شما پیگیری می کنید فرستاده می شود",
-    "notificationType_post-edit": "When a post is edited in a topic you are watching",
+    "notificationType_new-reply": "هنگامی که پاسخ جدید در موضوعی که شما پیگیری می کنید فرستاده می شود",
+    "notificationType_post-edit": "وقتی در موضوعی که شما پیگیری می کنید پستی ویرایش می شود",
     "notificationType_follow": "هنگامی که کسی شما را دنبال می کند",
     "notificationType_new-chat": "هنگامی که شما پیام خصوصی دریافت می کنید",
     "notificationType_new-group-chat": "هنگامی که شما پیام چت گروهی دریافت می کنید",
@@ -66,7 +66,7 @@
     "notificationType_group-leave": "هنگامی که کاربری گروه شما را ترک می کند",
     "notificationType_group-request-membership": "هنگامی که کسی درخواست ملحق شدن به گروه شما را می دهد",
     "notificationType_new-register": "وقتی کسی به صف ثبت نام اضافه می شود",
-    "notificationType_post-queue": "هنگامی که یک پست جدید در صف قرار می گیرد",
+    "notificationType_post-queue": "هنگامی که پست جدیدی در صف قرار می گیرد",
     "notificationType_new-post-flag": "هنگامی که پستی گزارش می شود",
     "notificationType_new-user-flag": "هنگامی که کاربری گزارش می شود"
 }

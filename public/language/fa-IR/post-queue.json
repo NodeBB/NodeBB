@@ -1,7 +1,7 @@
 
 {
-	"post-queue": "Post Queue",
-	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
+	"post-queue": "صف پست",
+	"description": "پستی در صف پست وجود ندارد. <br> برای فعال سازی این قابلیت، به <a href=\"%1\"> تنظیمات &rarr; پست &rarr; صف پست </a> بروید و <strong>صف پست</strong> را فعال کنید.",
 	"user": "User",
 	"category": "Category",
 	"title": "Title",
