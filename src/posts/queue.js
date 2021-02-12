@@ -13,30 +13,47 @@ const notifications = require('../notifications');
 const privileges = require('../privileges');
 const plugins = require('../plugins');
 const utils = require('../utils');
+const cache = require('../cache');
 const socketHelpers = require('../socket.io/helpers');
 
 module.exports = function (Posts) {
-	Posts.getQueuedPosts = async () => {
-		const ids = await db.getSortedSetRange('post:queue', 0, -1);
-		const keys = ids.map(id => `post:queue:${id}`);
-		const postData = await db.getObjects(keys);
-		postData.forEach((data) => {
-			if (data) {
-				data.data = JSON.parse(data.data);
-				data.data.timestampISO = utils.toISOString(data.data.timestamp);
-			}
-		});
-		const uids = postData.map(data => data && data.uid);
-		const userData = await user.getUsersFields(uids, ['username', 'userslug', 'picture']);
-		postData.forEach((postData, index) => {
-			if (postData) {
-				postData.user = userData[index];
-				postData.data.rawContent = validator.escape(String(postData.data.content));
-				postData.data.title = validator.escape(String(postData.data.title || ''));
-			}
-		});
+	Posts.getQueuedPosts = async (filter = {}, options = {}) => {
+		options = { metadata: true, ...options };	// defaults
+		let postData;
+		if (cache.has('post-queue')) {
+			postData = cache.get('post-queue');
+		} else {
+			const ids = await db.getSortedSetRange('post:queue', 0, -1);
+			const keys = ids.map(id => `post:queue:${id}`);
+			postData = await db.getObjects(keys);
+			postData.forEach((data) => {
+				if (data) {
+					data.data = JSON.parse(data.data);
+					data.data.timestampISO = utils.toISOString(data.data.timestamp);
+				}
+			});
+			const uids = postData.map(data => data && data.uid);
+			const userData = await user.getUsersFields(uids, ['username', 'userslug', 'picture']);
+			postData.forEach((postData, index) => {
+				if (postData) {
+					postData.user = userData[index];
+					postData.data.rawContent = validator.escape(String(postData.data.content));
+					postData.data.title = validator.escape(String(postData.data.title || ''));
+				}
+			});
+			cache.set('post-queue', postData);
+		}
 
-		await Promise.all(postData.map(p => addMetaData(p)));
+		if (options.metadata) {
+			await Promise.all(postData.map(p => addMetaData(p)));
+		}
+
+		// Filter by tid if present
+		if (isFinite(filter.tid)) {
+			const tid = parseInt(filter.tid, 10);
+			postData = postData.filter(item => item.data.tid && parseInt(item.data.tid, 10) === tid);
+		}
+
 		return postData;
 	};
 
