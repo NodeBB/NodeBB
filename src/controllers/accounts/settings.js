@@ -33,11 +33,13 @@ settingsController.get = async function (req, res, next) {
 		userData.acpLanguages = _.cloneDeep(languagesData);
 	}
 
+	console.log('dorp');
 	const data = await plugins.hooks.fire('filter:user.customSettings', {
 		settings: settings,
 		customSettings: [],
 		uid: req.uid,
 	});
+	console.log(data.customSettings);
 
 	const [notificationSettings, routes] = await Promise.all([
 		getNotificationSettings(userData),
