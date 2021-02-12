@@ -1,11 +1,7 @@
 'use strict';
 
-const validator = require('validator');
-
-const db = require('../database');
 const user = require('../user');
-const topics = require('../topics');
-const categories = require('../categories');
+const posts = require('../posts');
 const flags = require('../flags');
 const analytics = require('../analytics');
 const plugins = require('../plugins');
@@ -160,8 +156,8 @@ modsController.postQueue = async function (req, res, next) {
 	const page = parseInt(req.query.page, 10) || 1;
 	const postsPerPage = 20;
 
-	const [ids, isAdminOrGlobalMod, moderatedCids, categoriesData] = await Promise.all([
-		db.getSortedSetRange('post:queue', 0, -1),
+	let postData = await posts.getQueuedPosts();
+	const [isAdminOrGlobalMod, moderatedCids, categoriesData] = await Promise.all([
 		user.isAdminOrGlobalMod(req.uid),
 		user.getModeratedCids(req.uid),
 		helpers.getSelectedCategory(cid),
@@ -171,7 +167,6 @@ modsController.postQueue = async function (req, res, next) {
 		return next();
 	}
 
-	let postData = await getQueuedPosts(ids);
 	postData = postData.filter(p => p &&
 		(!categoriesData.selectedCids.length || categoriesData.selectedCids.includes(p.category.cid)) &&
 		(isAdminOrGlobalMod || moderatedCids.includes(String(p.category.cid))));
@@ -195,41 +190,3 @@ modsController.postQueue = async function (req, res, next) {
 		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[pages:post-queue]]' }]),
 	});
 };
-
-async function getQueuedPosts(ids) {
-	const keys = ids.map(id => `post:queue:${id}`);
-	const postData = await db.getObjects(keys);
-	postData.forEach((data) => {
-		if (data) {
-			data.data = JSON.parse(data.data);
-			data.data.timestampISO = utils.toISOString(data.data.timestamp);
-		}
-	});
-	const uids = postData.map(data => data && data.uid);
-	const userData = await user.getUsersFields(uids, ['username', 'userslug', 'picture']);
-	postData.forEach((postData, index) => {
-		if (postData) {
-			postData.user = userData[index];
-			postData.data.rawContent = validator.escape(String(postData.data.content));
-			postData.data.title = validator.escape(String(postData.data.title || ''));
-		}
-	});
-
-	await Promise.all(postData.map(p => addMetaData(p)));
-	return postData;
-}
-
-async function addMetaData(postData) {
-	if (!postData) {
-		return;
-	}
-	postData.topic = { cid: 0 };
-	if (postData.data.cid) {
-		postData.topic = { cid: parseInt(postData.data.cid, 10) };
-	} else if (postData.data.tid) {
-		postData.topic = await topics.getTopicFields(postData.data.tid, ['title', 'cid']);
-	}
-	postData.category = await categories.getCategoryData(postData.topic.cid);
-	const result = await plugins.hooks.fire('filter:parse.post', { postData: postData.data });
-	postData.data.content = result.postData.content;
-}

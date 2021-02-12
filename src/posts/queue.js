@@ -1,6 +1,7 @@
 'use strict';
 
 const _ = require('lodash');
+const validator = require('validator');
 
 const db = require('../database');
 const user = require('../user');
@@ -11,9 +12,49 @@ const categories = require('../categories');
 const notifications = require('../notifications');
 const privileges = require('../privileges');
 const plugins = require('../plugins');
+const utils = require('../utils');
 const socketHelpers = require('../socket.io/helpers');
 
 module.exports = function (Posts) {
+	Posts.getQueuedPosts = async () => {
+		const ids = await db.getSortedSetRange('post:queue', 0, -1);
+		const keys = ids.map(id => `post:queue:${id}`);
+		const postData = await db.getObjects(keys);
+		postData.forEach((data) => {
+			if (data) {
+				data.data = JSON.parse(data.data);
+				data.data.timestampISO = utils.toISOString(data.data.timestamp);
+			}
+		});
+		const uids = postData.map(data => data && data.uid);
+		const userData = await user.getUsersFields(uids, ['username', 'userslug', 'picture']);
+		postData.forEach((postData, index) => {
+			if (postData) {
+				postData.user = userData[index];
+				postData.data.rawContent = validator.escape(String(postData.data.content));
+				postData.data.title = validator.escape(String(postData.data.title || ''));
+			}
+		});
+
+		await Promise.all(postData.map(p => addMetaData(p)));
+		return postData;
+	};
+
+	async function addMetaData(postData) {
+		if (!postData) {
+			return;
+		}
+		postData.topic = { cid: 0 };
+		if (postData.data.cid) {
+			postData.topic = { cid: parseInt(postData.data.cid, 10) };
+		} else if (postData.data.tid) {
+			postData.topic = await topics.getTopicFields(postData.data.tid, ['title', 'cid']);
+		}
+		postData.category = await categories.getCategoryData(postData.topic.cid);
+		const result = await plugins.hooks.fire('filter:parse.post', { postData: postData.data });
+		postData.data.content = result.postData.content;
+	}
+
 	Posts.shouldQueue = async function (uid, data) {
 		const [userData, isMemberOfExempt, categoryQueueEnabled] = await Promise.all([
 			user.getUserFields(uid, ['uid', 'reputation', 'postcount']),
