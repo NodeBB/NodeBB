@@ -168,7 +168,7 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 		getMerger(topicData),
 		getRelated(topicData, uid),
 		Topics.thumbs.load([topicData]),
-		Topics.events.get(topicData.tid),
+		Topics.events.get(topicData.tid, uid),
 	]);
 
 	topicData.thumbs = thumbs[0];
