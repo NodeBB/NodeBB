@@ -31,6 +31,7 @@ const meta = require('./meta');
 const logger = require('./logger');
 const plugins = require('./plugins');
 const flags = require('./flags');
+const topicEvents = require('./topics/events');
 const routes = require('./routes');
 const auth = require('./routes/authentication');
 
@@ -106,6 +107,7 @@ async function initializeNodeBB() {
 	await meta.blacklist.load();
 	await flags.init();
 	await analytics.init();
+	await topicEvents.init();
 }
 
 function setupExpressApp(app) {

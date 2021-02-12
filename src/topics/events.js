@@ -43,16 +43,11 @@ Events._types = {
 	},
 };
 
-async function init() {
-	if (!plugins.hooks) {
-		return setImmediate(init);
-	}
-
+Events.init = async () => {
 	// Allow plugins to define additional topic event types
 	const { types } = await plugins.hooks.fire('filter:topicEvents.init', { types: Events._types });
 	Events._types = types;
-}
-init();
+};
 
 Events.get = async (tid) => {
 	const topics = require('.');

@@ -55,24 +55,6 @@ describe('Topic Events', () => {
 				quux: 'quux',
 			});
 		});
-
-		it('should do nothing if called a second time', async () => {
-			await plugins.hooks.register('core', {
-				hook: 'filter:topicEvents.init',
-				method: async ({ types }) => {
-					types.bar = {
-						icon: 'bar',
-						text: 'baz',
-						quux: 'quux',
-					};
-
-					return { types };
-				},
-			});
-
-			await topics.events.init();
-			assert(!topics.events._types.bar);	// bar is explicitly not available
-		});
 	});
 
 	describe('.log()', () => {
