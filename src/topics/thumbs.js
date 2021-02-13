@@ -89,7 +89,7 @@ Thumbs.associate = async function ({ id, path, score }) {
 	// Associate thumbnails with the main pid (only on local upload)
 	if (!isDraft && isLocal) {
 		const mainPid = (await topics.getMainPids([id]))[0];
-		posts.uploads.associate(mainPid, path.replace('/files/', ''));
+		await posts.uploads.associate(mainPid, path.replace('/files/', ''));
 	}
 };
 
@@ -131,7 +131,7 @@ Thumbs.delete = async function (id, relativePath) {
 				await db.deleteObjectField(`topic:${id}`, 'numThumbs');
 			}
 			const mainPid = (await topics.getMainPids([id]))[0];
-			posts.uploads.dissociate(mainPid, relativePath.replace('/files/', ''));
+			await posts.uploads.dissociate(mainPid, relativePath.replace('/files/', ''));
 		}
 	}
 };
