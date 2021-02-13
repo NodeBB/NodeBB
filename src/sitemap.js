@@ -22,7 +22,13 @@ sitemap.render = async function () {
 		url: nconf.get('url'),
 		topics: [],
 	};
-	const topicCount = await db.getObjectField('global', 'topicCount');
+	const [topicCount, categories, pages] = await Promise.all([
+		db.getObjectField('global', 'topicCount'),
+		getSitemapCategories(),
+		getSitemapPages(),
+	]);
+	returnData.categories = categories.length > 0;
+	returnData.pages = pages.length > 0;
 	const numPages = Math.ceil(Math.max(0, topicCount / topicsPerPage));
 	for (let x = 1; x <= numPages; x += 1) {
 		returnData.topics.push(x);
@@ -31,11 +37,7 @@ sitemap.render = async function () {
 	return returnData;
 };
 
-sitemap.getPages = async function () {
-	if (sitemap.maps.pages && Date.now() < sitemap.maps.pagesCacheExpireTimestamp) {
-		return sitemap.maps.pages.toString();
-	}
-
+async function getSitemapPages() {
 	const urls = [{
 		url: '',
 		changefreq: 'weekly',
@@ -55,23 +57,38 @@ sitemap.getPages = async function () {
 	}];
 
 	const data = await plugins.hooks.fire('filter:sitemap.getPages', { urls: urls });
+	return data.urls;
+}
 
-	const smStream = new SitemapStream({ hostname: nconf.get('url') });
-	data.urls.forEach(url => smStream.write(url));
-	smStream.end();
+sitemap.getPages = async function () {
+	if (sitemap.maps.pages && Date.now() < sitemap.maps.pagesCacheExpireTimestamp) {
+		return sitemap.maps.pages;
+	}
 
-	sitemap.maps.pages = await streamToPromise(smStream);
+	const urls = await getSitemapPages();
+	if (!urls.length) {
+		sitemap.maps.pages = '';
+		sitemap.maps.pagesCacheExpireTimestamp = Date.now() + (1000 * 60 * 60 * 24);
+		return sitemap.maps.pages;
+	}
+
+	sitemap.maps.pages = await urlsToSitemap(urls);
 	sitemap.maps.pagesCacheExpireTimestamp = Date.now() + (1000 * 60 * 60 * 24);
-	return sitemap.maps.pages.toString();
+	return sitemap.maps.pages;
 };
+
+async function getSitemapCategories() {
+	const cids = await categories.getCidsByPrivilege('categories:cid', 0, 'find');
+	return await categories.getCategoriesFields(cids, ['slug']);
+}
 
 sitemap.getCategories = async function () {
 	if (sitemap.maps.categories && Date.now() < sitemap.maps.categoriesCacheExpireTimestamp) {
-		return sitemap.maps.categories.toString();
+		return sitemap.maps.categories;
 	}
 
 	const categoryUrls = [];
-	const categoriesData = await categories.getCategoriesByPrivilege('categories:cid', 0, 'find');
+	const categoriesData = await getSitemapCategories();
 	categoriesData.forEach((category) => {
 		if (category) {
 			categoryUrls.push({
@@ -82,13 +99,15 @@ sitemap.getCategories = async function () {
 		}
 	});
 
-	const smStream = new SitemapStream({ hostname: nconf.get('url') });
-	categoryUrls.forEach(url => smStream.write(url));
-	smStream.end();
+	if (!categoryUrls.length) {
+		sitemap.maps.categories = '';
+		sitemap.maps.categoriesCacheExpireTimestamp = Date.now() + (1000 * 60 * 60 * 24);
+		return sitemap.maps.categories;
+	}
 
-	sitemap.maps.categories = await streamToPromise(smStream);
+	sitemap.maps.categories = await urlsToSitemap(categoryUrls);
 	sitemap.maps.categoriesCacheExpireTimestamp = Date.now() + (1000 * 60 * 60 * 24);
-	return sitemap.maps.categories.toString();
+	return sitemap.maps.categories;
 };
 
 sitemap.getTopicPage = async function (page) {
@@ -97,17 +116,25 @@ sitemap.getTopicPage = async function (page) {
 	}
 
 	const numTopics = meta.config.sitemapTopics;
-	const min = (parseInt(page, 10) - 1) * numTopics;
-	const max = min + numTopics;
+	const start = (parseInt(page, 10) - 1) * numTopics;
+	const stop = start + numTopics - 1;
 
 	if (sitemap.maps.topics[page - 1] && Date.now() < sitemap.maps.topics[page - 1].cacheExpireTimestamp) {
-		return sitemap.maps.topics[page - 1].sm.toString();
+		return sitemap.maps.topics[page - 1].sm;
 	}
 
 	const topicUrls = [];
-	let tids = await db.getSortedSetRange('topics:tid', min, max);
+	let tids = await db.getSortedSetRange('topics:tid', start, stop);
 	tids = await privileges.topics.filterTids('topics:read', tids, 0);
 	const topicData = await topics.getTopicsFields(tids, ['tid', 'title', 'slug', 'lastposttime']);
+
+	if (!topicData.length) {
+		sitemap.maps.topics[page - 1] = {
+			sm: '',
+			cacheExpireTimestamp: Date.now() + (1000 * 60 * 60 * 24),
+		};
+		return sitemap.maps.topics[page - 1].sm;
+	}
 
 	topicData.forEach((topic) => {
 		if (topic) {
@@ -120,17 +147,23 @@ sitemap.getTopicPage = async function (page) {
 		}
 	});
 
-	const smStream = new SitemapStream({ hostname: nconf.get('url') });
-	topicUrls.forEach(url => smStream.write(url));
-	smStream.end();
-
 	sitemap.maps.topics[page - 1] = {
-		sm: await streamToPromise(smStream),
+		sm: await urlsToSitemap(topicUrls),
 		cacheExpireTimestamp: Date.now() + (1000 * 60 * 60 * 24),
 	};
 
-	return sitemap.maps.topics[page - 1].sm.toString();
+	return sitemap.maps.topics[page - 1].sm;
 };
+
+async function urlsToSitemap(urls) {
+	if (!urls.length) {
+		return '';
+	}
+	const smStream = new SitemapStream({ hostname: nconf.get('url') });
+	urls.forEach(url => smStream.write(url));
+	smStream.end();
+	return (await streamToPromise(smStream)).toString();
+}
 
 sitemap.clearCache = function () {
 	if (sitemap.maps.pages) {
