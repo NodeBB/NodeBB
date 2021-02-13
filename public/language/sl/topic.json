@@ -41,6 +41,7 @@
     "unpinned-by": "Unpinned by",
     "deleted-by": "Deleted by",
     "restored-by": "Restored by",
+    "queued-by": "Post queued for approval &rarr;",
     "bookmark_instructions": "Klikni tukaj za vrnitev na zadnje prebrano objavo v tej niti",
     "flag-post": "Flag this post",
     "flag-user": "Flag this user",

@@ -41,6 +41,7 @@
     "unpinned-by": "Откачена от",
     "deleted-by": "Изтрита от",
     "restored-by": "Възстановена от",
+    "queued-by": "Post queued for approval &rarr;",
     "bookmark_instructions": "Щракнете тук, за да се върнете към последно прочетената публикация в тази тема.",
     "flag-post": "Докладване на тази публикация",
     "flag-user": "Докладване на този потребител",

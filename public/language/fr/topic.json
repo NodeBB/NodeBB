@@ -41,6 +41,7 @@
     "unpinned-by": "Désépinglé par",
     "deleted-by": "Effacé par",
     "restored-by": "Restauré par",
+    "queued-by": "Message en attente d'approbation &rarr;",
     "bookmark_instructions": "Cliquez ici pour retourner au dernier message lu de ce fil.",
     "flag-post": "Signaler ce message",
     "flag-user": "Signaler cet utilisateur",

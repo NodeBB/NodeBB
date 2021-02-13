@@ -22,7 +22,7 @@
 	"filter-state": "وضعیت",
 	"filter-assignee": "UID رسیدگی کننده",
 	"filter-cid": "دسته بندی",
-	"filter-quick-mine": "اختصاص داده شده به من",
+	"filter-quick-mine": "رسیدگی شده توسط من",
 	"filter-cid-all": "همه دسته بندی ها",
 	"apply-filters": "اعمال فیلتر ها",
 	"more-filters": "فیلترهای بیشتر",
@@ -79,7 +79,7 @@
 	"modal-submit-confirm-text": "شما همواره علت دیگری را مشخص کردید. آیا مطمئن هستید که می خواهید از طریق گزینه های گزارش سریع ارسال کنید؟",
 	"modal-submit-confirm-text-help": "ارسال از طریق گزارش سریع جایگزین علت های مشخص شده دیگر می شود.",
 
-	"bulk-actions": "اعمال گروهی",
+	"bulk-actions": "عملیات گروهی",
 	"bulk-resolve": "Resolve Flag(s)",
 	"bulk-success": "%1 گزارش بروزرسانی شد",
 	"flagged-timeago-readable": "گزارش شده <span class=\"timeago\" title=\"%1\"></span> (%2)"

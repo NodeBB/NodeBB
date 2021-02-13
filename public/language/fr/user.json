@@ -135,7 +135,7 @@
     "homepage": "Page d'accueil",
     "homepage_description": "Sélectionnez une page à utiliser comme page d'accueil du forum, ou \"Aucune\" pour utiliser la page d'accueil par défaut.",
     "custom_route": "Chemin personnalisé de la page d'accueil",
-    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
+    "custom_route_help": "Saisissez un nom de chemin ici, sans barre oblique précédente (par exemple, \"récent\" ou \"catégorie/2/discussion-générale\")",
     "sso.title": "Services d'authentification unique",
     "sso.associated": "Associé avec",
     "sso.not-associated": "Cliquez ici pour associer",

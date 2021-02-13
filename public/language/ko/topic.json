@@ -41,6 +41,7 @@
     "unpinned-by": "Unpinned by",
     "deleted-by": "Deleted by",
     "restored-by": "Restored by",
+    "queued-by": "Post queued for approval &rarr;",
     "bookmark_instructions": "이 스레드에서 읽은 마지막 포스트로 이동하시려면 여기를 클릭 하세요.",
     "flag-post": "이 포스트를 신고",
     "flag-user": "이 유저를 신고",
