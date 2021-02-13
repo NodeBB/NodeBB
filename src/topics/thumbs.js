@@ -67,7 +67,7 @@ async function getThumbs(set) {
 	return thumbs.slice();
 }
 
-Thumbs.associate = async function ({ id, path }) {
+Thumbs.associate = async function ({ id, path, score }) {
 	// Associates a newly uploaded file as a thumb to the passed-in draft or topic
 	const isDraft = validator.isUUID(String(id));
 	const isLocal = !path.startsWith('http');
@@ -79,7 +79,7 @@ Thumbs.associate = async function ({ id, path }) {
 		path = path.replace(nconf.get('upload_path'), '');
 	}
 	const topics = require('.');
-	await db.sortedSetAdd(set, numThumbs, path);
+	await db.sortedSetAdd(set, score || numThumbs, path);
 	if (!isDraft) {
 		const numThumbs = await db.sortedSetCard(set);
 		await topics.setTopicField(id, 'numThumbs', numThumbs);
@@ -96,8 +96,12 @@ Thumbs.associate = async function ({ id, path }) {
 Thumbs.migrate = async function (uuid, id) {
 	// Converts the draft thumb zset to the topic zset (combines thumbs if applicable)
 	const set = `draft:${uuid}:thumbs`;
-	const thumbs = await db.getSortedSetRange(set, 0, -1);
-	await Promise.all(thumbs.map(async path => await Thumbs.associate({ id, path })));
+	const thumbs = await db.getSortedSetRangeWithScores(set, 0, -1);
+	await Promise.all(thumbs.map(async thumb => await Thumbs.associate({
+		id,
+		path: thumb.value,
+		score: thumb.score,
+	})));
 	await db.delete(set);
 	cache.del(set);
 };

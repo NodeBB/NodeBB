@@ -157,6 +157,16 @@ describe('Topic thumbs', () => {
 			assert(exists);
 		});
 
+		it('should have a score equal to the number of thumbs prior to addition', async () => {
+			const scores = await db.sortedSetScores('topic:2:thumbs', [relativeThumbPaths[0], relativeThumbPaths[2]]);
+			assert.deepStrictEqual(scores, [0, 1]);
+		});
+
+		it('should update the relevant topic hash with the number of thumbnails', async () => {
+			const numThumbs = await topics.getTopicField(2, 'numThumbs');
+			assert.strictEqual(parseInt(numThumbs, 10), 2);
+		});
+
 		it('should associate the thumbnail with that topic\'s main pid\'s uploads', async () => {
 			const uploads = await posts.uploads.list(mainPid);
 			assert(uploads.includes(path.basename(relativeThumbPaths[0])));
