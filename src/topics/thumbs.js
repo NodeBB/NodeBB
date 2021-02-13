@@ -97,7 +97,6 @@ Thumbs.migrate = async function (uuid, id) {
 	// Converts the draft thumb zset to the topic zset (combines thumbs if applicable)
 	const set = `draft:${uuid}:thumbs`;
 	const thumbs = await db.getSortedSetRangeWithScores(set, 0, -1);
-	console.log(thumbs);
 	await Promise.all(thumbs.map(async thumb => await Thumbs.associate({
 		id,
 		path: thumb.value,
