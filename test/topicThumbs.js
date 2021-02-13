@@ -141,6 +141,7 @@ describe('Topic thumbs', () => {
 			await topics.thumbs.associate({
 				id: uuid,
 				path: relativeThumbPaths[1],
+				score: 5,
 			});
 
 			const exists = await db.isSortedSetMember(`draft:${uuid}:thumbs`, relativeThumbPaths[1]);
@@ -218,13 +219,13 @@ describe('Topic thumbs', () => {
 				},
 				{
 					id: 2,
-					name: 'test2.png',
-					url: `${nconf.get('relative_path')}${nconf.get('upload_url')}${relativeThumbPaths[1]}`,
+					name: 'example.org',
+					url: 'https://example.org',
 				},
 				{
 					id: 2,
-					name: 'example.org',
-					url: 'https://example.org',
+					name: 'test2.png',
+					url: `${nconf.get('relative_path')}${nconf.get('upload_url')}${relativeThumbPaths[1]}`,
 				},
 			]);
 		});
