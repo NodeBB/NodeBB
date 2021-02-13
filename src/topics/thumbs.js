@@ -62,7 +62,7 @@ async function getThumbs(set) {
 	if (cached !== undefined) {
 		return cached.slice();
 	}
-	const thumbs = await db.getSortedSetRange(set, 0, -1);
+	const thumbs = await db.getSortedSetRangeByScore(set, 0, -1, '-inf', '+inf');
 	cache.set(set, thumbs);
 	return thumbs.slice();
 }
@@ -79,7 +79,7 @@ Thumbs.associate = async function ({ id, path, score }) {
 		path = path.replace(nconf.get('upload_path'), '');
 	}
 	const topics = require('.');
-	await db.sortedSetAdd(set, score || numThumbs, path);
+	await db.sortedSetAdd(set, isFinite(score) ? score : numThumbs, path);
 	if (!isDraft) {
 		const numThumbs = await db.sortedSetCard(set);
 		await topics.setTopicField(id, 'numThumbs', numThumbs);
@@ -97,6 +97,7 @@ Thumbs.migrate = async function (uuid, id) {
 	// Converts the draft thumb zset to the topic zset (combines thumbs if applicable)
 	const set = `draft:${uuid}:thumbs`;
 	const thumbs = await db.getSortedSetRangeWithScores(set, 0, -1);
+	console.log(thumbs);
 	await Promise.all(thumbs.map(async thumb => await Thumbs.associate({
 		id,
 		path: thumb.value,

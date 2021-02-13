@@ -167,6 +167,31 @@ describe('Topic thumbs', () => {
 			assert.strictEqual(parseInt(numThumbs, 10), 2);
 		});
 
+		it('should successfully associate a thumb with a topic even if it already contains that thumbnail (updates score)', async () => {
+			await topics.thumbs.associate({
+				id: tid,
+				path: relativeThumbPaths[0],
+			});
+
+			const score = await db.sortedSetScore(`topic:2:thumbs`, relativeThumbPaths[0]);
+
+			assert(isFinite(score));	// exists in set
+			assert.strictEqual(score, 2);
+		});
+
+		it('should update the score to be passed in as the third argument', async () => {
+			await topics.thumbs.associate({
+				id: tid,
+				path: relativeThumbPaths[0],
+				score: 0,
+			});
+
+			const score = await db.sortedSetScore(`topic:2:thumbs`, relativeThumbPaths[0]);
+
+			assert(isFinite(score));	// exists in set
+			assert.strictEqual(score, 0);
+		});
+
 		it('should associate the thumbnail with that topic\'s main pid\'s uploads', async () => {
 			const uploads = await posts.uploads.list(mainPid);
 			assert(uploads.includes(path.basename(relativeThumbPaths[0])));
@@ -193,13 +218,13 @@ describe('Topic thumbs', () => {
 				},
 				{
 					id: 2,
-					name: 'example.org',
-					url: 'https://example.org',
+					name: 'test2.png',
+					url: `${nconf.get('relative_path')}${nconf.get('upload_url')}${relativeThumbPaths[1]}`,
 				},
 				{
 					id: 2,
-					name: 'test2.png',
-					url: `${nconf.get('relative_path')}${nconf.get('upload_url')}${relativeThumbPaths[1]}`,
+					name: 'example.org',
+					url: 'https://example.org',
 				},
 			]);
 		});
