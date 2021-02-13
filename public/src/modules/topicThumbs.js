@@ -49,6 +49,10 @@ define('topicThumbs', ['api', 'bootbox', 'uploader', 'benchpress', 'translator']
 						title: '[[modules:thumbs.modal.title]]',
 						message: html,
 						buttons: {
+							close: {
+								label: '[[global:close]]',
+								className: 'btn-default',
+							},
 							add: {
 								label: '<i class="fa fa-plus"></i> [[modules:thumbs.modal.add]]',
 								className: 'btn-primary',
