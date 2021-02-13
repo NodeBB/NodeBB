@@ -81,7 +81,8 @@ Thumbs.associate = async function ({ id, path }) {
 	const topics = require('.');
 	await db.sortedSetAdd(set, numThumbs, path);
 	if (!isDraft) {
-		await topics.setTopicField(id, 'numThumbs', numThumbs + 1);
+		const numThumbs = await db.sortedSetCard(set);
+		await topics.setTopicField(id, 'numThumbs', numThumbs);
 	}
 	cache.del(set);
 
