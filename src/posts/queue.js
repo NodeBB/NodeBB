@@ -145,6 +145,7 @@ module.exports = function (Posts) {
 		await db.sortedSetAdd('post:queue', now, id);
 		await db.setObject(`post:queue:${id}`, payload);
 		await user.setUserField(data.uid, 'lastqueuetime', now);
+		cache.del('post-queue');
 
 		const cid = await getCid(type, data);
 		const uids = await getNotificationUids(cid);
@@ -202,6 +203,7 @@ module.exports = function (Posts) {
 		await removeQueueNotification(id);
 		await db.sortedSetRemove('post:queue', id);
 		await db.delete(`post:queue:${id}`);
+		cache.del('post-queue');
 	};
 
 	Posts.submitFromQueue = async function (id) {
@@ -261,6 +263,7 @@ module.exports = function (Posts) {
 			data.data.cid = editData.cid;
 		}
 		await db.setObjectField(`post:queue:${editData.id}`, 'data', JSON.stringify(data.data));
+		cache.del('post-queue');
 	};
 
 	Posts.canEditQueue = async function (uid, editData) {
