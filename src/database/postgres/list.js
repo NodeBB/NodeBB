@@ -9,16 +9,28 @@ module.exports = function (module) {
 		}
 
 		await module.transaction(async (client) => {
+			async function doPrepend(value) {
+				await client.query({
+					name: 'listPrepend',
+					text: `
+	INSERT INTO "legacy_list" ("_key", "array")
+	VALUES ($1::TEXT, ARRAY[$2::TEXT])
+	ON CONFLICT ("_key")
+	DO UPDATE SET "array" = ARRAY[$2::TEXT] || "legacy_list"."array"`,
+					values: [key, value],
+				});
+			}
+
 			await helpers.ensureLegacyObjectType(client, key, 'list');
-			await client.query({
-				name: 'listPrepend',
-				text: `
-INSERT INTO "legacy_list" ("_key", "array")
-VALUES ($1::TEXT, ARRAY[$2::TEXT])
-ON CONFLICT ("_key")
-DO UPDATE SET "array" = ARRAY[$2::TEXT] || "legacy_list"."array"`,
-				values: [key, value],
-			});
+			if (Array.isArray(value)) {
+				// TODO: perf make single query
+				for (const v of value) {
+					// eslint-disable-next-line
+					await doPrepend(v);
+				}
+				return;
+			}
+			await doPrepend(value);
 		});
 	};
 
@@ -26,18 +38,28 @@ DO UPDATE SET "array" = ARRAY[$2::TEXT] || "legacy_list"."array"`,
 		if (!key) {
 			return;
 		}
-
 		await module.transaction(async (client) => {
+			async function doAppend(value) {
+				await client.query({
+					name: 'listAppend',
+					text: `
+	INSERT INTO "legacy_list" ("_key", "array")
+	VALUES ($1::TEXT, ARRAY[$2::TEXT])
+	ON CONFLICT ("_key")
+	DO UPDATE SET "array" = "legacy_list"."array" || ARRAY[$2::TEXT]`,
+					values: [key, value],
+				});
+			}
 			await helpers.ensureLegacyObjectType(client, key, 'list');
-			await client.query({
-				name: 'listAppend',
-				text: `
-INSERT INTO "legacy_list" ("_key", "array")
-VALUES ($1::TEXT, ARRAY[$2::TEXT])
-ON CONFLICT ("_key")
-DO UPDATE SET "array" = "legacy_list"."array" || ARRAY[$2::TEXT]`,
-				values: [key, value],
-			});
+			if (Array.isArray(value)) {
+				// TODO: perf make single query
+				for (const v of value) {
+					// eslint-disable-next-line
+					await doAppend(v);
+				}
+				return;
+			}
+			await doAppend(value);
 		});
 	};
 
