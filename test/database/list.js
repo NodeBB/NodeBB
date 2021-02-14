@@ -24,8 +24,12 @@ describe('List methods', () => {
 
 		it('should append each element to list', async () => {
 			await db.listAppend('arrayListAppend', ['a', 'b', 'c']);
-			const values = await db.getListRange('arrayListAppend', 0, -1);
+			let values = await db.getListRange('arrayListAppend', 0, -1);
 			assert.deepStrictEqual(values, ['a', 'b', 'c']);
+
+			await db.listAppend('arrayListAppend', ['d', 'e']);
+			values = await db.getListRange('arrayListAppend', 0, -1);
+			assert.deepStrictEqual(values, ['a', 'b', 'c', 'd', 'e']);
 		});
 	});
 
@@ -61,8 +65,12 @@ describe('List methods', () => {
 
 		it('should prepend each element to list', async () => {
 			await db.listPrepend('arrayListPrepend', ['a', 'b', 'c']);
-			const values = await db.getListRange('arrayListPrepend', 0, -1);
+			let values = await db.getListRange('arrayListPrepend', 0, -1);
 			assert.deepStrictEqual(values, ['c', 'b', 'a']);
+
+			await db.listPrepend('arrayListPrepend', ['d', 'e']);
+			values = await db.getListRange('arrayListPrepend', 0, -1);
+			assert.deepStrictEqual(values, ['e', 'd', 'c', 'b', 'a']);
 		});
 	});
 
