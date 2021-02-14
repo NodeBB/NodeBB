@@ -21,6 +21,12 @@ describe('List methods', () => {
 				done();
 			});
 		});
+
+		it('should append each element to list', async () => {
+			await db.listAppend('arrayListAppend', ['a', 'b', 'c']);
+			const values = await db.getListRange('arrayListAppend', 0, -1);
+			assert.deepStrictEqual(values, ['a', 'b', 'c']);
+		});
 	});
 
 	describe('listPrepend()', () => {
@@ -51,6 +57,12 @@ describe('List methods', () => {
 				assert.ifError(err);
 				done();
 			});
+		});
+
+		it('should prepend each element to list', async () => {
+			await db.listPrepend('arrayListPrepend', ['a', 'b', 'c']);
+			const values = await db.getListRange('arrayListPrepend', 0, -1);
+			assert.deepStrictEqual(values, ['c', 'b', 'a']);
 		});
 	});
 
