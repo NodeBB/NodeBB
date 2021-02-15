@@ -2,6 +2,7 @@
 
 const _ = require('lodash');
 const validator = require('validator');
+const nconf = require('nconf');
 
 const db = require('../database');
 const user = require('../user');
@@ -149,12 +150,14 @@ module.exports = function (Posts) {
 
 		const cid = await getCid(type, data);
 		const uids = await getNotificationUids(cid);
+		const bodyLong = await parseBodyLong(cid, type, data);
+
 		const notifObj = await notifications.create({
 			type: 'post-queue',
 			nid: `post-queue-${id}`,
 			mergeId: 'post-queue',
 			bodyShort: '[[notifications:post_awaiting_review]]',
-			bodyLong: await plugins.hooks.fire('filter:parse.raw', data.content),
+			bodyLong: bodyLong,
 			path: '/post-queue',
 		});
 		await notifications.push(notifObj, uids);
@@ -165,6 +168,33 @@ module.exports = function (Posts) {
 			message: '[[success:post-queued]]',
 		};
 	};
+
+	async function parseBodyLong(cid, type, data) {
+		const url = nconf.get('url');
+		const [content, category, userData] = await Promise.all([
+			plugins.hooks.fire('filter:parse.raw', data.content),
+			categories.getCategoryFields(cid, ['name', 'slug']),
+			user.getUserFields(data.uid, ['uid', 'username']),
+		]);
+
+		category.url = `${url}/category/${category.slug}`;
+		if (userData.uid > 0) {
+			userData.url = `${url}/uid/${userData.uid}`;
+		}
+
+		const topic = { cid: cid, title: data.title, tid: data.tid };
+		if (type === 'reply') {
+			topic.title = await topics.getTopicField(data.tid, 'title');
+			topic.url = `${url}/topic/${data.tid}`;
+		}
+		const { app } = require('../webserver');
+		return await app.renderAsync('emails/partials/post-queue-body', {
+			content: content,
+			category: category,
+			user: userData,
+			topic: topic,
+		});
+	}
 
 	async function getCid(type, data) {
 		if (type === 'topic') {
