@@ -175,7 +175,7 @@ async function completeConfigSetup(config) {
 		config.url = `http://${config.url}`;
 	}
 	const urlObj = url.parse(config.url);
-	if (urlObj.port) {
+	if (urlObj.port && (!install.values || !install.values.hasOwnProperty('port'))) {
 		config.port = urlObj.port;
 	}
 
