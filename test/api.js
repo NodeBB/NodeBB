@@ -176,6 +176,12 @@ describe('API', async () => {
 		fs.closeSync(fs.openSync(path.resolve(nconf.get('upload_path'), 'files/test.txt'), 'w'));
 		fs.closeSync(fs.openSync(path.resolve(nconf.get('upload_path'), 'files/test.png'), 'w'));
 
+		// Associate thumb with topic to test thumb reordering
+		await topics.thumbs.associate({
+			id: 2,
+			path: 'files/test.png',
+		});
+
 		const socketUser = require('../src/socket.io/user');
 		const socketAdmin = require('../src/socket.io/admin');
 		// export data for admin user
