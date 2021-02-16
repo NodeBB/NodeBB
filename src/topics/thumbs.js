@@ -15,9 +15,11 @@ const cache = require('../cache');
 
 const Thumbs = module.exports;
 
-Thumbs.exists = async function (tid, path) {
-	// TODO: tests
-	return db.isSortedSetMember(`topic:${tid}:thumbs`, path);
+Thumbs.exists = async function (id, path) {
+	const isDraft = validator.isUUID(String(id));
+	const set = `${isDraft ? 'draft' : 'topic'}:${id}:thumbs`;
+
+	return db.isSortedSetMember(set, path);
 };
 
 Thumbs.load = async function (topicData) {

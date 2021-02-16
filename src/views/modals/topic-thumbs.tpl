@@ -14,7 +14,7 @@
 			<button class="btn btn-danger" data-action="remove"><i class="fa fa-times"></i> [[modules:thumbs.modal.remove]]</button>
 		</div>
 	</div>
-	<hr />
 	{{{ end }}}
+	<hr />
 	<p class="help-block">[[modules:thumbs.modal.resize-note, {config.thumbs.size}]]</p>
 </div>
