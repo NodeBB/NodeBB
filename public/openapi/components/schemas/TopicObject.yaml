@@ -10,6 +10,12 @@ TopicObject:
           items:
             type: object
             properties:
+              id:
+                type: number
+                description: The topic id
+              name:
+                type: string
+                description: The topic thumbnail filename
               url:
                 type: string
                 description: Relative path to the topic thumbnail
