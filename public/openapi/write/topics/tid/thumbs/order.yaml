@@ -1,0 +1,41 @@
+put:
+  tags:
+    - topics
+  summary: reorder topic thumbnail
+  description: This operation sets the order for a topic thumbnail. It can handle either topics (if a valid `tid` is passed in), or drafts. A 404 is returned if the topic or draft does not actually contain that thumbnail path. Paths passed in should **not** contain the path to the uploads folder (`config.upload_url` on client side)
+  parameters:
+    - in: path
+      name: tid
+      schema:
+        type: string
+      required: true
+      description: a valid topic id or draft uuid
+      example: 2
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            path:
+              type: string
+              description: Relative path to the topic thumbnail
+              example: files/test.png
+            order:
+              type: number
+              description: The order of topic thumbnails. Lower numbers are loaded first.
+              example: 0
+  responses:
+    '200':
+      description: Topic thumbnail re-ordered
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}
