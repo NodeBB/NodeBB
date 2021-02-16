@@ -8,7 +8,7 @@
     "email.verify-your-email.subject": "Vui lòng xác thực tài khoản của bạn",
     "email.verify.text1": "Địa chỉ email của bạn đã được thay đổi !",
     "welcome.text1": "Cảm ơn bạn đã đăng ký tại %1!",
-    "welcome.text2": "Để kích hoạt đầy đủ tính năng của tài khoản, chúng tôi cần xác nhận bạn là chủ của địa chỉ email mà bạn đã đăng ký.",
+    "welcome.text2": "Để kích hoạt đầy đủ tính năng của tài khoản, chúng tôi cần xác nhận địa chỉ email mà bạn đã đăng ký.",
     "welcome.text3": "Quản trị viên đã chấp nhận đơn đăng ký của bạn. Bạn có thể đăng nhập với tên đăng nhập/mật khẩu ngay bây giờ.",
     "welcome.cta": "Nhấn vào đây để xác nhận địa chỉ email",
     "invitation.text1": "%1 đã mời bạn tham gia %2",
