@@ -5,20 +5,6 @@ TopicObject:
       properties:
         lastposttime:
           type: number
-        thumbs:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: number
-                description: The topic id
-              name:
-                type: string
-                description: The topic thumbnail filename
-              url:
-                type: string
-                description: Relative path to the topic thumbnail
         category:
           type: object
           properties:
@@ -202,66 +188,92 @@ TopicObject:
         - tid
 TopicObjectSlim:
   description: The output of a call to `Topics.getTopicField`, these properties are always present no matter the fields passed in
-  type: object
-  properties:
-    tid:
-      type: number
-      description: A topic identifier
-    uid:
-      type: number
-      description: A user identifier
-    cid:
-      type: number
-      description: A category identifier
-    title:
-      type: string
-    slug:
-      type: string
-    mainPid:
-      type: number
-      description: The post id of the first post in this topic (also called the "original post")
-    postcount:
-      type: number
-    viewcount:
-      type: number
-    postercount:
-      type: number
-    deleted:
-      type: number
-    deleterUid:
-      type: number
-    titleRaw:
-      type: string
-    locked:
-      type: number
-    pinned:
-      type: number
-      description: Whether or not this particular topic is pinned to the top of the
-        category
-    timestamp:
-      type: number
-    timestampISO:
-      type: string
-      description: An ISO 8601 formatted date string (complementing `timestamp`)
-    lastposttime:
-      type: number
-    lastposttimeISO:
-      type: string
-      description: An ISO 8601 formatted date string (complementing `lastposttime`)
-    pinExpiry:
-      type: number
-      description: A UNIX timestamp indicating when a pinned topic will no longer be pinned (i.e. the pin has expired)
-    pinExpiryISO:
-      type: string
-      description: "`pinExpiry` rendered as an ISO 8601 format"
-    upvotes:
-      type: number
-    downvotes:
-      type: number
-    votes:
-      type: number
-    teaserPid:
-      oneOf:
-        - type: number
-        - type: string
-      nullable: true
+  allOf:
+    - type: object
+      properties:
+        tid:
+          type: number
+          description: A topic identifier
+        uid:
+          type: number
+          description: A user identifier
+        cid:
+          type: number
+          description: A category identifier
+        title:
+          type: string
+        slug:
+          type: string
+        mainPid:
+          type: number
+          description: The post id of the first post in this topic (also called the "original post")
+        postcount:
+          type: number
+        viewcount:
+          type: number
+        postercount:
+          type: number
+        deleted:
+          type: number
+        deleterUid:
+          type: number
+        titleRaw:
+          type: string
+        locked:
+          type: number
+        pinned:
+          type: number
+          description: Whether or not this particular topic is pinned to the top of the
+            category
+        timestamp:
+          type: number
+        timestampISO:
+          type: string
+          description: An ISO 8601 formatted date string (complementing `timestamp`)
+        lastposttime:
+          type: number
+        lastposttimeISO:
+          type: string
+          description: An ISO 8601 formatted date string (complementing `lastposttime`)
+        pinExpiry:
+          type: number
+          description: A UNIX timestamp indicating when a pinned topic will no longer be pinned (i.e. the pin has expired)
+        pinExpiryISO:
+          type: string
+          description: "`pinExpiry` rendered as an ISO 8601 format"
+        upvotes:
+          type: number
+        downvotes:
+          type: number
+        votes:
+          type: number
+        teaserPid:
+          oneOf:
+            - type: number
+            - type: string
+          nullable: true
+        thumbs:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: number
+                description: The topic id
+              name:
+                type: string
+                description: The topic thumbnail filename
+              url:
+                type: string
+                description: Relative path to the topic thumbnail
+    - type: object
+      description: Optional properties that may or may not be present (except for `tid`, which is always present, and is only here as a hack to pass validation)
+      properties:
+        tid:
+          type: number
+          description: A topic identifier
+        numThumbs:
+          type: number
+          description: The number of thumbnails associated with this topic
+      required:
+        - tid

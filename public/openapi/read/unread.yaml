@@ -35,14 +35,6 @@ get:
                               nullable: true
                             titleRaw:
                               type: string
-                            thumbs:
-                              type: array
-                              items:
-                                type: object
-                                properties:
-                                  url:
-                                    type: string
-                                    description: Relative path to the topic thumbnail
                             category:
                               type: object
                               properties:
