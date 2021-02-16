@@ -7,7 +7,7 @@ function expandObjBy(obj1, obj2) {
 	let changed = false;
 	for (const [key, val2] of Object.entries(obj2)) {
 		const val1 = obj1[key];
-		const xorIsArray = Array.isArray(val1) === Array.isArray(val2);
+		const xorIsArray = Array.isArray(val1) !== Array.isArray(val2);
 		if (xorIsArray || !obj1.hasOwnProperty(key) || typeof val2 !== typeof val1) {
 			obj1[key] = val2;
 			changed = true;
