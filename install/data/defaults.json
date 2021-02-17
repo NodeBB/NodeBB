@@ -25,6 +25,7 @@
     "groupsExemptFromPostQueue": ["administrators", "Global Moderators"],
     "minimumPostLength": 8,
     "maximumPostLength": 32767,
+    "systemTags": "",
     "minimumTagsPerTopic": 0,
     "maximumTagsPerTopic": 5,
     "minimumTagLength": 3,

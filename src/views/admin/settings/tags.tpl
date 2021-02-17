@@ -11,6 +11,13 @@
 				</a>
 			</div>
 			<div class="form-group">
+				<label for="systemTags">[[admin/settings/tags:system-tags]]</label>
+				<input type="text" class="form-control" value="" data-field="systemTags" data-field-type="tagsinput" />
+				<p class="help-block">
+					[[admin/settings/tags:system-tags-help]]
+				</p>
+			</div>
+			<div class="form-group">
 				<label for="minimumTagsPerTopics">[[admin/settings/tags:min-per-topic]]</label>
 				<input id="minimumTagsPerTopics" type="text" class="form-control" value="0" data-field="minimumTagsPerTopic">
 			</div>

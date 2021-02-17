@@ -7,6 +7,7 @@ const _ = require('lodash');
 
 const db = require('../database');
 const meta = require('../meta');
+const user = require('../user');
 const categories = require('../categories');
 const plugins = require('../plugins');
 const utils = require('../utils');
@@ -60,16 +61,24 @@ module.exports = function (Topics) {
 		);
 	};
 
-	Topics.validateTags = async function (tags, cid) {
+	Topics.validateTags = async function (tags, cid, uid) {
 		if (!Array.isArray(tags)) {
 			throw new Error('[[error:invalid-data]]');
 		}
 		tags = _.uniq(tags);
-		const categoryData = await categories.getCategoryFields(cid, ['minTags', 'maxTags']);
+		const [categoryData, isPrivileged] = await Promise.all([
+			categories.getCategoryFields(cid, ['minTags', 'maxTags']),
+			user.isPrivileged(uid),
+		]);
 		if (tags.length < parseInt(categoryData.minTags, 10)) {
 			throw new Error(`[[error:not-enough-tags, ${categoryData.minTags}]]`);
 		} else if (tags.length > parseInt(categoryData.maxTags, 10)) {
 			throw new Error(`[[error:too-many-tags, ${categoryData.maxTags}]]`);
+		}
+
+		const systemTags = (meta.config.systemTags || '').split(',');
+		if (!isPrivileged && systemTags.length && tags.some(tag => systemTags.includes(tag))) {
+			throw new Error('[[error:cant-use-system-tag]]');
 		}
 	};
 

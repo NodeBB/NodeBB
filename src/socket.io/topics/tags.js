@@ -1,5 +1,7 @@
 'use strict';
 
+const meta = require('../../meta');
+const user = require('../../user');
 const topics = require('../../topics');
 const categories = require('../../categories');
 const privileges = require('../../privileges');
@@ -11,8 +13,16 @@ module.exports = function (SocketTopics) {
 			throw new Error('[[error:invalid-data]]');
 		}
 
-		const tagWhitelist = await categories.getTagWhitelist([data.cid]);
-		return !tagWhitelist[0].length || tagWhitelist[0].includes(data.tag);
+		const systemTags = (meta.config.systemTags || '').split(',');
+		const [tagWhitelist, isPrivileged] = await Promise.all([
+			categories.getTagWhitelist([data.cid]),
+			user.isPrivileged(socket.uid),
+		]);
+		return isPrivileged ||
+			(
+				!systemTags.includes(data.tag) &&
+				(!tagWhitelist[0].length || tagWhitelist[0].includes(data.tag))
+			);
 	};
 
 	SocketTopics.autocompleteTags = async function (socket, data) {

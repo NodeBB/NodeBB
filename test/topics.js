@@ -2117,6 +2117,39 @@ describe('Topic\'s', () => {
 				{ value: 'movedtag1', score: 1, bgColor: '', color: '', valueEscaped: 'movedtag1' },
 			]);
 		});
+
+		it('should not allow regular user to use system tags', async () => {
+			const oldValue = meta.config.systemTags;
+			meta.config.systemTags = 'moved,locked';
+			let err;
+			try {
+				await topics.post({
+					uid: fooUid,
+					tags: ['locked'],
+					title: 'i cant use this',
+					content: 'topic 1 content',
+					cid: categoryObj.cid,
+				});
+			} catch (_err) {
+				err = _err;
+			}
+			assert.strictEqual(err.message, '[[error:cant-use-system-tag]]');
+			meta.config.systemTags = oldValue;
+		});
+
+		it('should allow admin user to use system tags', async () => {
+			const oldValue = meta.config.systemTags;
+			meta.config.systemTags = 'moved,locked';
+			const result = await topics.post({
+				uid: adminUid,
+				tags: ['locked'],
+				title: 'I can use this tag',
+				content: 'topic 1 content',
+				cid: categoryObj.cid,
+			});
+			assert.strictEqual(result.topicData.tags[0].value, 'locked');
+			meta.config.systemTags = oldValue;
+		});
 	});
 
 	describe('follow/unfollow', () => {

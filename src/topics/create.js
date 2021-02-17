@@ -69,7 +69,7 @@ module.exports = function (Topics) {
 			data.content = utils.rtrim(data.content);
 		}
 		Topics.checkTitle(data.title);
-		await Topics.validateTags(data.tags, data.cid);
+		await Topics.validateTags(data.tags, data.cid, uid);
 		Topics.checkContent(data.content);
 
 		const [categoryExists, canCreate, canTag] = await Promise.all([
