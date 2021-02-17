@@ -209,6 +209,7 @@ define('topicList', [
 			sort: tplToSort[templateName],
 			count: config.topicsPerPage,
 			cid: query.cid,
+			tags: query.tags,
 			query: query,
 			term: ajaxify.data.selectedTerm && ajaxify.data.selectedTerm.term,
 			filter: ajaxify.data.selectedFilter.filter,

@@ -24,7 +24,7 @@ recentController.get = async function (req, res, next) {
 recentController.getData = async function (req, url, sort) {
 	const page = parseInt(req.query.page, 10) || 1;
 	let term = helpers.terms[req.query.term];
-	const { cid } = req.query;
+	const { cid, tags } = req.query;
 	const filter = req.query.filter || '';
 
 	if (!term && req.query.term) {
@@ -45,6 +45,7 @@ recentController.getData = async function (req, url, sort) {
 
 	const data = await topics.getSortedTopics({
 		cids: cid,
+		tags: tags,
 		uid: req.uid,
 		start: start,
 		stop: stop,

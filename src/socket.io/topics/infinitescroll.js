@@ -78,6 +78,7 @@ module.exports = function (SocketTopics) {
 			return await topics.getUnreadTopics(params);
 		}
 		params.cids = data.cid;
+		params.tags = data.tags;
 		params.sort = data.sort;
 		params.term = data.term;
 		return await topics.getSortedTopics(params);

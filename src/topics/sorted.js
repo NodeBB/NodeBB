@@ -24,6 +24,10 @@ module.exports = function (Topics) {
 		if (params.hasOwnProperty('cids') && params.cids && !Array.isArray(params.cids)) {
 			params.cids = [params.cids];
 		}
+		params.tags = params.tags || [];
+		if (params.tags && !Array.isArray(params.tags)) {
+			params.tags = [params.tags];
+		}
 		data.tids = await getTids(params);
 		data.tids = await sortTids(data.tids, params);
 		data.tids = await filterTids(data.tids.slice(0, meta.config.recentMaxTopics), params);
@@ -48,6 +52,8 @@ module.exports = function (Topics) {
 			tids = await db.getSortedSetRevRange(`uid:${params.uid}:followed_tids`, 0, -1);
 		} else if (params.cids) {
 			tids = await getCidTids(params);
+		} else if (params.tags.length) {
+			tids = await getTagTids(params);
 		} else {
 			tids = await db.getSortedSetRevRange(`topics:${params.sort}`, 0, meta.config.recentMaxTopics - 1);
 		}
@@ -55,7 +61,27 @@ module.exports = function (Topics) {
 		return tids;
 	}
 
+	async function getTagTids(params) {
+		const sets = [
+			`topics:${params.sort}`,
+			...params.tags.map(tag => `tag:${tag}:topics`),
+		];
+		return await db.getSortedSetRevIntersect({
+			sets: sets,
+			start: 0,
+			stop: meta.config.recentMaxTopics - 1,
+			weights: sets.map((s, index) => (index ? 0 : 1)),
+		});
+	}
+
 	async function getCidTids(params) {
+		if (params.tags.length) {
+			return _.intersection(...await Promise.all(params.tags.map(async (tag) => {
+				const sets = params.cids.map(cid => `cid:${cid}:tag:${tag}:topics`);
+				return await db.getSortedSetRevRange(sets, 0, -1);
+			})));
+		}
+
 		const sets = [];
 		const pinnedSets = [];
 		params.cids.forEach((cid) => {
@@ -73,7 +99,7 @@ module.exports = function (Topics) {
 	}
 
 	async function sortTids(tids, params) {
-		if (params.term === 'alltime' && !params.cids && params.filter !== 'watched' && !params.floatPinned) {
+		if (params.term === 'alltime' && !params.cids && !params.tags.length && params.filter !== 'watched' && !params.floatPinned) {
 			return tids;
 		}
 		const topicData = await Topics.getTopicsFields(tids, ['tid', 'lastposttime', 'upvotes', 'downvotes', 'postcount', 'pinned']);
@@ -94,12 +120,7 @@ module.exports = function (Topics) {
 	}
 
 	function floatPinned(topicData, sortFn) {
-		topicData.sort((a, b) => {
-			if (a.pinned !== b.pinned) {
-				return b.pinned - a.pinned;
-			}
-			return sortFn(a, b);
-		});
+		topicData.sort((a, b) => (a.pinned !== b.pinned ? b.pinned - a.pinned : sortFn(a, b)));
 	}
 
 	function sortRecent(a, b) {
