@@ -64,7 +64,7 @@ async function getThumbs(set) {
 	if (cached !== undefined) {
 		return cached.slice();
 	}
-	const thumbs = await db.getSortedSetRangeByScore(set, 0, -1, '-inf', '+inf');
+	const thumbs = await db.getSortedSetRange(set, 0, -1);
 	cache.set(set, thumbs);
 	return thumbs.slice();
 }
