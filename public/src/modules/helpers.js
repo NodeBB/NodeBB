@@ -284,6 +284,11 @@
 		 * component: overrides the default component (optional, default none)
 		 */
 
+		// Try to use root context if passed-in userObj is undefined
+		if (!userObj) {
+			userObj = this;
+		}
+
 		var attributes = [
 			'alt="' + userObj.username + '"',
 			'title="' + userObj.username + '"',
