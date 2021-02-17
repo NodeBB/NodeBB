@@ -49,5 +49,5 @@ exports.send404 = async function (req, res) {
 	}
 
 	await middleware.buildHeaderAsync(req, res);
-	res.render('404', { path: validator.escape(path), title: '[[global:404.title]]' });
+	await res.render('404', { path: validator.escape(path), title: '[[global:404.title]]' });
 };
