@@ -8,22 +8,10 @@ module.exports = function (module) {
 			return;
 		}
 		value = Array.isArray(value) ? value : [value];
-		value = value.map(helpers.valueToString);
 		value.reverse();
 		const exists = await module.isObjectField(key, 'array');
 		if (exists) {
-			await module.client.collection('objects').updateOne({
-				_key: key,
-			}, {
-				$push: {
-					array: {
-						$each: value,
-						$position: 0,
-					},
-				},
-			}, {
-				upsert: true,
-			});
+			await listPush(key, value, { $position: 0 });
 		} else {
 			await module.listAppend(key, value);
 		}
@@ -34,19 +22,24 @@ module.exports = function (module) {
 			return;
 		}
 		value = Array.isArray(value) ? value : [value];
-		value = value.map(helpers.valueToString);
+		await listPush(key, value);
+	};
+
+	async function listPush(key, values, position) {
+		values = values.map(helpers.valueToString);
 		await module.client.collection('objects').updateOne({
 			_key: key,
 		}, {
 			$push: {
 				array: {
-					$each: value,
+					$each: values,
+					...(position || {}),
 				},
 			},
 		}, {
 			upsert: true,
 		});
-	};
+	}
 
 	module.listRemoveLast = async function (key) {
 		if (!key) {
