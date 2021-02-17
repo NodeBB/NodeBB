@@ -174,6 +174,8 @@ async function completeConfigSetup(config) {
 	if (!/^http(?:s)?:\/\//.test(config.url)) {
 		config.url = `http://${config.url}`;
 	}
+
+	// If port is explicitly passed via install vars, use it. Otherwise, glean from url if set.
 	const urlObj = url.parse(config.url);
 	if (urlObj.port && (!install.values || !install.values.hasOwnProperty('port'))) {
 		config.port = urlObj.port;
