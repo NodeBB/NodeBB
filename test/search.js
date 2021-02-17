@@ -155,6 +155,23 @@ describe('Search', () => {
 		});
 	});
 
+	it('should search for a category', async () => {
+		await categories.create({
+			name: 'foo category',
+			description: 'Test category created by testing script',
+		});
+		await categories.create({
+			name: 'baz category',
+			description: 'Test category created by testing script',
+		});
+		const result = await search.search({
+			query: 'baz',
+			searchIn: 'categories',
+		});
+		assert.strictEqual(result.matchCount, 1);
+		assert.strictEqual(result.categories[0].name, 'baz category');
+	});
+
 	it('should fail if searchIn is wrong', (done) => {
 		search.search({
 			query: 'plug',
