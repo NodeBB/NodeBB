@@ -84,6 +84,7 @@
     "tag-too-long": "Lūdzu, ievadi īsāku birku. Birkā nevar būt vairāk kā %1 rakstzīmes.",
     "not-enough-tags": "Nav pietiekami daudz birku. Tematiem jābūt vismaz %1 birkām",
     "too-many-tags": "Pārāk daudz birku. Tematiem nevar būt vairāk kā %1 birkas",
+    "cant-use-system-tag": "You can not use this system tag.",
     "still-uploading": "Lūdzu, uzgaidi, līdz augšupielādes beidzas.",
     "file-too-big": "Maksimālais atļautais faila lielums ir %1 kB - lūdzu, augšupielādē mazāku failu",
     "guest-upload-disabled": "Viesu failu augšupielāde ir atspējota",

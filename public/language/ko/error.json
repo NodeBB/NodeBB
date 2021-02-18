@@ -84,6 +84,7 @@
     "tag-too-long": "태그가 너무 깁니다. 태그는 최대 %1자 이내로 사용가능합니다.",
     "not-enough-tags": "태그가 없거나 부족합니다. 게시물은 %1개 이상의 태그를 사용해야 합니다.",
     "too-many-tags": "태그가 너무 많습니다. 게시물은 %1개 이하의 태그를 사용할 수 있습니다.",
+    "cant-use-system-tag": "You can not use this system tag.",
     "still-uploading": "업로드가 끝날 때까지 기다려주세요.",
     "file-too-big": "업로드 가능한 파일크기는 최대 %1 KB 입니다 - 파일의 용량을 줄이거나 압축을 활용하세요.",
     "guest-upload-disabled": "미가입 사용자의 파일 업로드는 제한되어 있습니다.",

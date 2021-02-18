@@ -84,6 +84,7 @@
     "tag-too-long": "Unesite kraću oznaku. Oznake moraju sadržavati maksimalno %1 znakova",
     "not-enough-tags": "Nema dovoljno oznaka. Teme moraju imate bar %1 oznaku",
     "too-many-tags": "Previše oznaka. Teme ne mogu imati više od %1 oznaka",
+    "cant-use-system-tag": "You can not use this system tag.",
     "still-uploading": "Pričekajte da se prijenos završi.",
     "file-too-big": "Maksimalna veličina datoteke je %1 kB - učitajte manju datoteku",
     "guest-upload-disabled": "Učitavanje datoteka za goste je isključeno",

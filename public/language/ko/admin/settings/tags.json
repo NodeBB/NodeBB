@@ -1,6 +1,8 @@
 {
     "tag": "태그 설정",
     "link-to-manage": "Manage Tags",
+    "system-tags": "System Tags",
+    "system-tags-help": "Only privileged users will be able to use these tags.",
     "min-per-topic": "주제별 최소 태그",
     "max-per-topic": "주제별 최대 태그",
     "min-length": "태그 최소 길이",

@@ -84,6 +84,7 @@
     "tag-too-long": "Fyll i en kortare tagg. Taggar kan ej vara längre än %1 tecken långa",
     "not-enough-tags": "Otillräckligt antal taggar. Ämnen måste ha minst %1 taggar",
     "too-many-tags": "För många taggar. Ämnen kan ej har mer än %1 tagg(ar)",
+    "cant-use-system-tag": "You can not use this system tag.",
     "still-uploading": "Vänta medan uppladdningen slutförs.",
     "file-too-big": "Den maximalt tillåtna filstorleken är %1 kB - var god ladda upp en mindre fil",
     "guest-upload-disabled": "Uppladdningar av oregistrerade användare har inaktiverats",

@@ -84,6 +84,7 @@
     "tag-too-long": "Por favor digite uma tag menor. Tags não podem conter mais que %1 caractere(s)",
     "not-enough-tags": "Sem tags suficientes. Tópicos devem ter no mínimo %1 tag(s)",
     "too-many-tags": "Muitas tags. Tópicos não podem ter mais que %1 tag(s)",
+    "cant-use-system-tag": "You can not use this system tag.",
     "still-uploading": "Aguarde a conclusão dos uploads.",
     "file-too-big": "O tamanho máximo permitido de arquivo é de %1 kB - por favor faça upload de um arquivo menor",
     "guest-upload-disabled": "O upload por visitantes foi desabilitado",

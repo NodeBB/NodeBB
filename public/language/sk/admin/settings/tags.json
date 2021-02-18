@@ -1,6 +1,8 @@
 {
     "tag": "Nastavenie značky",
     "link-to-manage": "Manage Tags",
+    "system-tags": "System Tags",
+    "system-tags-help": "Only privileged users will be able to use these tags.",
     "min-per-topic": "Minimálny počet značiek pre jednotlivé témy",
     "max-per-topic": "Maximálny počet značiek na tému",
     "min-length": "Minimálna dĺžka značky",

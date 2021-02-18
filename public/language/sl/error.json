@@ -84,6 +84,7 @@
     "tag-too-long": "Prosimo, vnesite krajšo oznako. Največje število znakov: %1.",
     "not-enough-tags": "Ni dovolj oznak. Obvezno število oznak: %1. ",
     "too-many-tags": "Preveč oznak. Največje število oznak: %1.",
+    "cant-use-system-tag": "You can not use this system tag.",
     "still-uploading": "Prosimo, počakajte, da se prenosi končajo.",
     "file-too-big": "Največja dovoljena velikost datoteke je %1 kB - prosimo, naložite manjšo datoteko.",
     "guest-upload-disabled": "Gostom je prenašanje onemogočeno.",

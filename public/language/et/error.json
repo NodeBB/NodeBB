@@ -84,6 +84,7 @@
     "tag-too-long": "Palun sisestage lühem märksõna. Märksõna pikkus peab olema vähem kui %1 tähemärk(i).",
     "not-enough-tags": "Liiga vähe märksõnu. Teemadel peab olemalt vähemalt %1 märksõna",
     "too-many-tags": "Liiga palju märksõnu. Teemadel ei tohi olla rohkem kui %1 märksõna",
+    "cant-use-system-tag": "You can not use this system tag.",
     "still-uploading": "Palun oota, kuni üleslaadimised on laetud.",
     "file-too-big": "Maksimaalne üleslaetava faili suurus on %1 kB - valige väiksema mahuga fail.",
     "guest-upload-disabled": "Külaliste üleslaadimine on keelatud.",

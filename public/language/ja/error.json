@@ -84,6 +84,7 @@
     "tag-too-long": "%1文字(s)以内でタグを入力してください。",
     "not-enough-tags": "タグが足りません。スレッドはせめて%1のタグ(s)が必要です。",
     "too-many-tags": "タグが多すぎます。スレッドは%1のタグ(s)以上が許されません。",
+    "cant-use-system-tag": "You can not use this system tag.",
     "still-uploading": "アップロードが完成するまでお待ちください。",
     "file-too-big": "%1kBより大きいサイズファイルが許されません－より小さいファイルをアップして下さい。",
     "guest-upload-disabled": "ゲストさんからのアップを無効にしています",

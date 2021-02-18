@@ -84,6 +84,7 @@
     "tag-too-long": "Por favor introduce una etiqueta más corta. Las etiquetas no pueden exceder los %1 caractere(s)",
     "not-enough-tags": "Etiquetas insuficientes. El tema debe tener al menos %1 etiqueta(s).",
     "too-many-tags": "Demasiadas etiquetas. El tema no puede tener mas de %1 etiqueta(s)",
+    "cant-use-system-tag": "You can not use this system tag.",
     "still-uploading": "Por favor, espera a que terminen las subidas.",
     "file-too-big": "El tamaño de fichero máximo es de %1 kB - por favor, suba un fichero más pequeño",
     "guest-upload-disabled": "Las subidas están deshabilitadas para los invitados",

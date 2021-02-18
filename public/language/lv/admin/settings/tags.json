@@ -1,6 +1,8 @@
 {
     "tag": "Birku iestatījumi",
     "link-to-manage": "Manage Tags",
+    "system-tags": "System Tags",
+    "system-tags-help": "Only privileged users will be able to use these tags.",
     "min-per-topic": "Minimālais birku skaits tematā",
     "max-per-topic": "Maksimālais birku skaits tematā",
     "min-length": "Minimālais birkas nosaukuma garums",

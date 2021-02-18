@@ -1,6 +1,8 @@
 {
     "tag": "Настройки меток",
     "link-to-manage": "Управление метками",
+    "system-tags": "System Tags",
+    "system-tags-help": "Only privileged users will be able to use these tags.",
     "min-per-topic": "Минимальное количество меток в теме",
     "max-per-topic": "Максимальное количество меток в теме",
     "min-length": "Минимальная длина метки",

@@ -84,6 +84,7 @@
     "tag-too-long": "Zadejte kratší značku. Značky nesmí být delší než %1 znaků",
     "not-enough-tags": "Málo značek. Téma musí obsahovat alespoň %1 značek",
     "too-many-tags": "Příliš mnoho značek. Téma nesmí mít více než %1 značek",
+    "cant-use-system-tag": "You can not use this system tag.",
     "still-uploading": "Vyčkejte, než se vše kompletně nahraje.",
     "file-too-big": "Maximální povolená velikost je %1 kB – nahrajte menší soubor",
     "guest-upload-disabled": "Nahrávání od hostů nebylo povoleno",

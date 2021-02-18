@@ -84,6 +84,7 @@
     "tag-too-long": "標籤太長，不能超過 %1 個字元",
     "not-enough-tags": "沒有足夠的主題標籤。主題必須至少有 %1 個標籤",
     "too-many-tags": "過多主題標籤。主題不能超過 %1 個標籤",
+    "cant-use-system-tag": "You can not use this system tag.",
     "still-uploading": "請等待上傳完成",
     "file-too-big": "上傳檔案的大小限制為 %1 KB - 請縮減檔案大小",
     "guest-upload-disabled": "訪客不允許上傳",

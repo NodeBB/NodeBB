@@ -84,6 +84,7 @@
     "tag-too-long": "Vennligst skriv et kortere emneord. Disse kan ikke være lengre enn %1 tegn",
     "not-enough-tags": "Ikke nok emneord. Emner må ha minst %1.",
     "too-many-tags": "For mange emneord. Emner kan ikke ha flere enn %1.",
+    "cant-use-system-tag": "You can not use this system tag.",
     "still-uploading": "Vennligst vent til opplastingene er fullført.",
     "file-too-big": "Største tillatte filstørrelse er %1 kB – vennligst last opp en mindre fil",
     "guest-upload-disabled": "Guest uploading has been disabled",

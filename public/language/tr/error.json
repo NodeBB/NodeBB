@@ -84,6 +84,7 @@
     "tag-too-long": "Lütfen daha kısa bir etiket girin. Etiketler %1 karakterden uzun olamaz.",
     "not-enough-tags": "Yeterince etiket yok. Başlılar en az %1 etikete sahip olmalıdır",
     "too-many-tags": "Etiket sayısı çok fazla. Başlıklar en fazla %1 etikete sahip olabilir",
+    "cant-use-system-tag": "You can not use this system tag.",
     "still-uploading": "Lütfen yüklemelerin bitmesini bekleyin.",
     "file-too-big": "İzin verilen en büyük dosya boyutu %1 kb - lütfen daha küçük bir dosya yükleyin",
     "guest-upload-disabled": "Ziyaretçilerin yükleme yapması devre dışı bırakıldı",

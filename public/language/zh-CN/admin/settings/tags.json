@@ -1,6 +1,8 @@
 {
     "tag": "话题设置",
     "link-to-manage": "管理话题",
+    "system-tags": "System Tags",
+    "system-tags-help": "Only privileged users will be able to use these tags.",
     "min-per-topic": "每个主题的最少话题数",
     "max-per-topic": "每话题的最大话题数",
     "min-length": "最短话题长度",

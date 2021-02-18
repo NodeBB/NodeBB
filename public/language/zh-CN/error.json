@@ -84,6 +84,7 @@
     "tag-too-long": "话题太长，不能超过 %1 个字符",
     "not-enough-tags": "没有足够的话题标签。主题必须有至少 %1 个话题标签",
     "too-many-tags": "过多话题标签。主题不能超过 %1 个话题标签",
+    "cant-use-system-tag": "You can not use this system tag.",
     "still-uploading": "请等待上传完成",
     "file-too-big": "上传文件的大小限制为 %1 KB - 请缩减文件大小",
     "guest-upload-disabled": "未登录用户不允许上传",

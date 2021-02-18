@@ -1,6 +1,8 @@
 {
     "tag": "Impostazioni Tag",
     "link-to-manage": "Gestisci tag",
+    "system-tags": "Tag del sistema",
+    "system-tags-help": "Solo gli utenti privilegiati potranno usare questi tag.",
     "min-per-topic": "Tag minimi per discussione",
     "max-per-topic": "Tag massimi per discussione",
     "min-length": "Lunghezza minima tag",

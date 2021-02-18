@@ -1,6 +1,8 @@
 {
     "tag": "Configuración de Etiqueta (tag)",
     "link-to-manage": "Manage Tags",
+    "system-tags": "System Tags",
+    "system-tags-help": "Only privileged users will be able to use these tags.",
     "min-per-topic": "Etiquetas (tags) mínimas por tema",
     "max-per-topic": "Etiquetas (tags) Máximas por Tema",
     "min-length": "Longitud Mínima de Etiqueta (tag)",

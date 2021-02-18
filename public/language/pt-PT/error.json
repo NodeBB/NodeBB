@@ -84,6 +84,7 @@
     "tag-too-long": "Por favor introduz um marcador mais curto. Os marcadores devem ter no máximo %1 caracter(es)",
     "not-enough-tags": "Não existem marcadores suficientes. Os tópicos devem ter pelo menos %1 marcador(es)",
     "too-many-tags": "Existem marcadores a mais. Os tópicos não podem ter mais do que 1% marcador(es)",
+    "cant-use-system-tag": "You can not use this system tag.",
     "still-uploading": "Por favor aguarda até todos os carregamentos estarem completos.",
     "file-too-big": "O tamanho máximo permitido para um ficheiro é de %1 kB - por favor carrega um ficheiro mais pequeno",
     "guest-upload-disabled": "Os carregamentos por parte de convidados foram desativados",

@@ -84,6 +84,7 @@
     "tag-too-long": "Prosím, zadajte kratšiu značku. Značky nemôžu obsahovať viac ako %1 znak(ov)",
     "not-enough-tags": "Príliš malo značiek. Témy musia mať minimálne %1 značku(y)",
     "too-many-tags": "Príliš veľa značiek. Témy nemôžu mať viac ako %1 značku(y)",
+    "cant-use-system-tag": "You can not use this system tag.",
     "still-uploading": "Prosím čakajte na dokončenie nahrávania",
     "file-too-big": "Najväčšia povolená veľkosť obrázka je %1 kB - prosím nahrajte menší súbor",
     "guest-upload-disabled": "Nahrávanie pre hostí bolo zablokované",

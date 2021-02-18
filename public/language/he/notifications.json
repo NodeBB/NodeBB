@@ -46,7 +46,7 @@
     "profile-exported": "<strong>%1</strong> פרופיל יוצא, לחץ כדי להוריד.",
     "posts-exported": "<strong>%1</strong> פוסטים יוצאו, לחץ כדי להוריד.",
     "uploads-exported": "<strong>%1</strong> העלאות יוצאו, לחץ כדי להוריד.",
-    "users-csv-exported": "Users csv exported, click to download",
+    "users-csv-exported": "משתמשים יוצאו כ-csv, לחץ כאן להורדה.",
     "email-confirmed": "כתובת המייל אושרה",
     "email-confirmed-message": "תודה שאישרת את כתובת המייל שלך. החשבון שלך פעיל כעת.",
     "email-confirm-error-message": "אירעה שגיאה בעת אישור המייל שלך. ייתכן כי הקוד היה שגוי או פג תוקף.",

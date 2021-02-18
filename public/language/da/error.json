@@ -84,6 +84,7 @@
     "tag-too-long": "Indtast et længere tag. Tags kan ikke være længere end %1 karakter(er).",
     "not-enough-tags": "Ikke nok tags. Tråde skal have mindst %1 tag(s)",
     "too-many-tags": "For mange tags. Tråde kan ikke have mere end %1 tag(s)",
+    "cant-use-system-tag": "You can not use this system tag.",
     "still-uploading": "Venligst vent til overførslen er færdig",
     "file-too-big": "Maksimum filstørrelse er %1 kB - venligst overfør en mindre fil",
     "guest-upload-disabled": "Gæsteupload er deaktiveret",

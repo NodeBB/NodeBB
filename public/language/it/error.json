@@ -84,6 +84,7 @@
     "tag-too-long": "Per favore inserisci un tag più corto. I tags non dovrebbero essere più lunghi di %1 caratteri",
     "not-enough-tags": "Tag non sufficienti. Le discussioni devono avere almeno %1 Tag",
     "too-many-tags": "Troppi Tag. Le discussioni non possono avere più di %1 Tag",
+    "cant-use-system-tag": "Non puoi usare questo tag di sistema.",
     "still-uploading": "Per favore attendere il completamento degli uploads.",
     "file-too-big": "La dimensione massima consentita è di %1 kB - si prega di caricare un file più piccolo",
     "guest-upload-disabled": "Il caricamento da ospite è stato disattivato",

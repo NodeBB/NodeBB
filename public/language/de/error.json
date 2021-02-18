@@ -84,6 +84,7 @@
     "tag-too-long": "Bitte gebe ein kürzeres Schlagwort ein. Schlagworte können nicht länger als %1 Zeichen sein.",
     "not-enough-tags": "Nicht genügend Schlagworte. Themen müssen mindestens %1 Schlagwort(e) enthalten",
     "too-many-tags": "Zu viele Schlagworte. Themen dürfen nicht mehr als %1 Schlagwort(e) enthalten",
+    "cant-use-system-tag": "You can not use this system tag.",
     "still-uploading": "Bitte warte bis der Vorgang abgeschlossen ist.",
     "file-too-big": "Die maximale Dateigröße ist %1 kB, bitte lade eine kleinere Datei hoch.",
     "guest-upload-disabled": "Uploads für Gäste wurden deaktiviert.",

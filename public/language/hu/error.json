@@ -84,6 +84,7 @@
     "tag-too-long": "Please enter a shorter tag. Tags can't be longer than %1 character(s)",
     "not-enough-tags": "Not enough tags. Topics must have at least %1 tag(s)",
     "too-many-tags": "Too many tags. Topics can't have more than %1 tag(s)",
+    "cant-use-system-tag": "You can not use this system tag.",
     "still-uploading": "Kérlek várj, amíg a feltöltés befejeződik.",
     "file-too-big": "Maximum allowed file size is %1 kB - please upload a smaller file",
     "guest-upload-disabled": "Guest uploading has been disabled",

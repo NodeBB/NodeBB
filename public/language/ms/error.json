@@ -84,6 +84,7 @@
     "tag-too-long": "Sila masukkan tag yang lebih pendek. Tag mesti mengandungi tidak lebih %1 aksara()",
     "not-enough-tags": "Tag tidak mencukupi. Topik memerlukan sekurang-kurangnya %1 tag()",
     "too-many-tags": "Tag terlalu banyak. Topik tidak boleh lebih %1 tag()",
+    "cant-use-system-tag": "You can not use this system tag.",
     "still-uploading": "Sila tunggu muatnaik untuk siap.",
     "file-too-big": "Maksimum saiz fail yang dibenarkan ialah %1 kB - sila muatnaik fail yang lebih kecil",
     "guest-upload-disabled": "Tetamu tidak dibenarkan memuatnaik fail",

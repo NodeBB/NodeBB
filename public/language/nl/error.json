@@ -84,6 +84,7 @@
     "tag-too-long": "Geef een kortere tag op. Tags mogen niet langer dan %1 teken(s) zijn",
     "not-enough-tags": "Niet genoeg labels. Onderwerp moeten tenminste %1 label(s) hebben",
     "too-many-tags": "Teveel labels. Onderwerpen kunnen niet meer dan %1 label(s) hebben",
+    "cant-use-system-tag": "You can not use this system tag.",
     "still-uploading": "Een moment geduld tot alle bestanden overgebracht zijn...",
     "file-too-big": "Maximum toegestane bestandsgrootte is %1 kB - probeer een kleiner bestand te verzenden",
     "guest-upload-disabled": "Uploads voor gasten zijn uitgeschaleld ",

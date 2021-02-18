@@ -1,6 +1,8 @@
 {
     "tag": "Tag Settings",
     "link-to-manage": "Manage Tags",
+    "system-tags": "System Tags",
+    "system-tags-help": "Only privileged users will be able to use these tags.",
     "min-per-topic": "Minimum Tags per Topic",
     "max-per-topic": "Maximum Tags per Topic",
     "min-length": "Minimum Tag Length",

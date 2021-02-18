@@ -84,6 +84,7 @@
     "tag-too-long": "Please enter a shorter tag. Tags can't be longer than %1 character(s)",
     "not-enough-tags": "Not enough tags. Topics must have at least %1 tag(s)",
     "too-many-tags": "Too many tags. Topics can't have more than %1 tag(s)",
+    "cant-use-system-tag": "You can not use this system tag.",
     "still-uploading": "الرجاء الانتظار حتى يكتمل الرفع.",
     "file-too-big": "الحد الأقصى لرفع الملفات %1 كيلو بت. رجاءًا ارفع ملف أصغر",
     "guest-upload-disabled": "خاصية رفع الملفات غير مفعلة للزوار.",

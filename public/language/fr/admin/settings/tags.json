@@ -1,6 +1,8 @@
 {
     "tag": "Paramètres des mots-clés",
     "link-to-manage": "Gérer les mots-clés",
+    "system-tags": "System Tags",
+    "system-tags-help": "Only privileged users will be able to use these tags.",
     "min-per-topic": "Nombre minimum de mots-clés par sujet",
     "max-per-topic": "Nombre maximum de mots-clés par sujet",
     "min-length": "Longueur minimum des mots-clés",

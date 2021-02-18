@@ -1,6 +1,8 @@
 {
     "tag": "הגדרות תגיות",
     "link-to-manage": "נהל תגיות",
+    "system-tags": "System Tags",
+    "system-tags-help": "Only privileged users will be able to use these tags.",
     "min-per-topic": "מינימום תגיות לנושא",
     "max-per-topic": "מקסימום תגיות לנושא",
     "min-length": "אורך תגית מינימלי",

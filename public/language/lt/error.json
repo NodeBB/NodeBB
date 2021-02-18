@@ -84,6 +84,7 @@
     "tag-too-long": "Prašome įvesti trumpesnę žymą. Žyma turi būti ne ilgesni negu %1 simboli(us)",
     "not-enough-tags": "Neužteka žymių. Temos turi turėti mažiausiai %1 žyme(s)",
     "too-many-tags": "Per daug žymių. Temos turi turėti daugiausiai %1 žyme(s)",
+    "cant-use-system-tag": "You can not use this system tag.",
     "still-uploading": "Prašome palaukti kol bus baigti visi kėlimai į serverį",
     "file-too-big": "Didžiausias įkelimo dydis yra %1 kB - prašome kelti mažesni failą",
     "guest-upload-disabled": "Failų įkėlimas svečiams išjungtas",
