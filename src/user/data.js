@@ -19,12 +19,6 @@ const intFields = [
 ];
 
 module.exports = function (User) {
-	const iconBackgrounds = [
-		'#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3',
-		'#009688', '#1b5e20', '#33691e', '#827717', '#e65100', '#ff5722',
-		'#795548', '#607d8b',
-	];
-
 	const fieldWhitelist = [
 		'uid', 'username', 'userslug', 'email', 'email:confirmed', 'joindate',
 		'lastonline', 'picture', 'fullname', 'location', 'birthday', 'website',
@@ -203,7 +197,8 @@ module.exports = function (User) {
 			}
 
 			// User Icons
-			if (user.hasOwnProperty('picture') && user.username && parseInt(user.uid, 10) && !meta.config.defaultAvatar) {
+			if (requestedFields.includes('picture') && user.username && parseInt(user.uid, 10) && !meta.config.defaultAvatar) {
+				const iconBackgrounds = await User.getIconBackgrounds(user.uid);
 				user['icon:text'] = (user.username[0] || '').toUpperCase();
 				user['icon:bgColor'] = iconBackgrounds[Array.prototype.reduce.call(user.username, (cur, next) => cur + next.charCodeAt(), 0) % iconBackgrounds.length];
 			}
@@ -271,6 +266,17 @@ module.exports = function (User) {
 			user.groupTitleArray = [user.groupTitleArray[0]];
 		}
 	}
+
+	User.getIconBackgrounds = async (uid = 0) => {
+		let iconBackgrounds = [
+			'#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3',
+			'#009688', '#1b5e20', '#33691e', '#827717', '#e65100', '#ff5722',
+			'#795548', '#607d8b',
+		];
+
+		({ iconBackgrounds } = await plugins.hooks.fire('filter:user.iconBackgrounds', { uid, iconBackgrounds }));
+		return iconBackgrounds;
+	};
 
 	User.getDefaultAvatar = function () {
 		if (!meta.config.defaultAvatar) {
