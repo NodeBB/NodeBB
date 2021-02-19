@@ -29,14 +29,12 @@ module.exports = function (SocketPosts) {
 			canFlag: privileges.posts.canFlag(data.pid, socket.uid),
 			flagged: flags.exists('post', data.pid, socket.uid),	// specifically, whether THIS calling user flagged
 			bookmarked: posts.hasBookmarked(data.pid, socket.uid),
-			tools: plugins.hooks.fire('filter:post.tools', { pid: data.pid, uid: socket.uid, tools: [] }),
 			postSharing: social.getActivePostSharing(),
 			history: posts.diffs.exists(data.pid),
 			canViewInfo: privileges.global.can('view:users:info', socket.uid),
 		});
 
 		const postData = results.posts;
-		postData.tools = results.tools.tools;
 		postData.bookmarked = results.bookmarked;
 		postData.selfPost = socket.uid && socket.uid === postData.uid;
 		postData.display_edit_tools = results.canEdit.flag;
@@ -58,6 +56,13 @@ module.exports = function (SocketPosts) {
 		if (!results.isAdmin && !results.canViewInfo) {
 			postData.ip = undefined;
 		}
+		const tools = await plugins.hooks.fire('filter:post.tools', {
+			pid: data.pid,
+			post: postData,
+			uid: socket.uid,
+			tools: [],
+		});
+		postData.tools = tools.tools;
 		return results;
 	};
 
