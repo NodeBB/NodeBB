@@ -199,8 +199,13 @@ module.exports = function (User) {
 			// User Icons
 			if (requestedFields.includes('picture') && user.username && parseInt(user.uid, 10) && !meta.config.defaultAvatar) {
 				const iconBackgrounds = await User.getIconBackgrounds(user.uid);
+				let bgColor = await User.getUserField(user.uid, 'icon:bgColor');
+				if (!iconBackgrounds.includes(bgColor)) {
+					bgColor = Array.prototype.reduce.call(user.username, (cur, next) => cur + next.charCodeAt(), 0);
+					bgColor = iconBackgrounds[bgColor % iconBackgrounds.length];
+				}
 				user['icon:text'] = (user.username[0] || '').toUpperCase();
-				user['icon:bgColor'] = await User.getUserField(user.uid, 'icon:bgColor') || iconBackgrounds[Array.prototype.reduce.call(user.username, (cur, next) => cur + next.charCodeAt(), 0) % iconBackgrounds.length];
+				user['icon:bgColor'] = bgColor;
 			}
 
 			if (user.hasOwnProperty('joindate')) {

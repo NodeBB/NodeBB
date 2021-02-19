@@ -138,3 +138,9 @@ get:
                 type: boolean
               enableQuickReply:
                 type: boolean
+              iconBackgrounds:
+                type: array
+                items:
+                  type: string
+                  description: A valid CSS colour code
+                  example: '#fff'
