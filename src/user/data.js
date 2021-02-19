@@ -21,7 +21,7 @@ const intFields = [
 module.exports = function (User) {
 	const fieldWhitelist = [
 		'uid', 'username', 'userslug', 'email', 'email:confirmed', 'joindate',
-		'lastonline', 'picture', 'fullname', 'location', 'birthday', 'website',
+		'lastonline', 'picture', 'icon:bgColor', 'fullname', 'location', 'birthday', 'website',
 		'aboutme', 'signature', 'uploadedpicture', 'profileviews', 'reputation',
 		'postcount', 'topiccount', 'lastposttime', 'banned', 'banned:expire',
 		'status', 'flags', 'followerCount', 'followingCount', 'cover:url',
@@ -200,7 +200,7 @@ module.exports = function (User) {
 			if (requestedFields.includes('picture') && user.username && parseInt(user.uid, 10) && !meta.config.defaultAvatar) {
 				const iconBackgrounds = await User.getIconBackgrounds(user.uid);
 				user['icon:text'] = (user.username[0] || '').toUpperCase();
-				user['icon:bgColor'] = iconBackgrounds[Array.prototype.reduce.call(user.username, (cur, next) => cur + next.charCodeAt(), 0) % iconBackgrounds.length];
+				user['icon:bgColor'] = await User.getUserField(user.uid, 'icon:bgColor') || iconBackgrounds[Array.prototype.reduce.call(user.username, (cur, next) => cur + next.charCodeAt(), 0) % iconBackgrounds.length];
 			}
 
 			if (user.hasOwnProperty('joindate')) {

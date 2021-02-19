@@ -33,7 +33,15 @@ module.exports = function (SocketUser) {
 			picture = returnData && returnData.picture;
 		}
 
-		await user.setUserField(data.uid, 'picture', picture);
+		const validBackgrounds = await user.getIconBackgrounds(socket.uid);
+		if (!validBackgrounds.includes(data.bgColor)) {
+			data.bgColor = validBackgrounds[0];
+		}
+
+		await user.setUserFields(data.uid, {
+			picture,
+			'icon:bgColor': data.bgColor,
+		});
 	};
 
 	SocketUser.removeUploadedPicture = async function (socket, data) {

@@ -62,7 +62,7 @@ define('forum/account/edit', [
 		return false;
 	}
 
-	function updateHeader(picture) {
+	function updateHeader(picture, iconBgColor) {
 		if (parseInt(ajaxify.data.theirid, 10) !== parseInt(ajaxify.data.yourid, 10)) {
 			return;
 		}
@@ -73,6 +73,12 @@ define('forum/account/edit', [
 		$('#header [component="avatar/icon"]')[!picture ? 'show' : 'hide']();
 		if (picture) {
 			$('#header [component="avatar/picture"]').attr('src', picture);
+		}
+
+		if (iconBgColor) {
+			document.querySelectorAll('[component="navbar"] [component="avatar/icon"]').forEach((el) => {
+				el.style['background-color'] = iconBgColor;
+			});
 		}
 	}
 
@@ -96,6 +102,7 @@ define('forum/account/edit', [
 					icon: { text: ajaxify.data['icon:text'], bgColor: ajaxify.data['icon:bgColor'] },
 					defaultAvatar: ajaxify.data.defaultAvatar,
 					allowProfileImageUploads: ajaxify.data.allowProfileImageUploads,
+					iconBackgrounds: config.iconBackgrounds,
 				}, function (html) {
 					var modal = bootbox.dialog({
 						className: 'picture-switcher',
@@ -120,6 +127,10 @@ define('forum/account/edit', [
 						modal.find('.list-group-item').removeClass('active');
 						$(this).addClass('active');
 					});
+					modal.on('change', 'input[type="radio"][name="icon:bgColor"]', (e) => {
+						const value = e.target.value;
+						modal.find('.user-icon').css('background-color', value);
+					});
 
 					handleImageUpload(modal);
 
@@ -134,17 +145,27 @@ define('forum/account/edit', [
 								}
 							});
 						}
+
+						// Update avatar background colour
+						const radioEl = document.querySelector(`.modal input[type="radio"][value="${ajaxify.data['icon:bgColor']}"]`);
+						if (radioEl) {
+							radioEl.checked = true;
+						} else {
+							// Check the first one
+							document.querySelector('.modal input[type="radio"]').checked = true;
+						}
 					}
 
 					function saveSelection() {
 						var type = modal.find('.list-group-item.active').attr('data-type');
+						const iconBgColor = document.querySelector('.modal.picture-switcher input[type="radio"]:checked').value || 'transparent';
 
-						changeUserPicture(type, function (err) {
+						changeUserPicture(type, iconBgColor, function (err) {
 							if (err) {
 								return app.alertError(err.message);
 							}
 
-							updateHeader(type === 'default' ? '' : modal.find('.list-group-item.active img').attr('src'));
+							updateHeader(type === 'default' ? '' : modal.find('.list-group-item.active img').attr('src'), iconBgColor);
 							ajaxify.refresh();
 						});
 					}
@@ -300,9 +321,10 @@ define('forum/account/edit', [
 		});
 	}
 
-	function changeUserPicture(type, callback) {
+	function changeUserPicture(type, bgColor, callback) {
 		socket.emit('user.changePicture', {
-			type: type,
+			type,
+			bgColor,
 			uid: ajaxify.data.theirid,
 		}, callback);
 	}
