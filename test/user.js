@@ -740,6 +740,23 @@ describe('User', () => {
 			});
 		});
 
+		it('should return an icon text and valid background if username and picture is explicitly requested', async () => {
+			const payload = await User.getUserFields(testUid, ['username', 'picture']);
+			const validBackgrounds = await User.getIconBackgrounds(testUid);
+			assert.strictEqual(payload['icon:text'], userData.username.slice(0, 1).toUpperCase());
+			assert(payload['icon:bgColor']);
+			assert(validBackgrounds.includes(payload['icon:bgColor']));
+		});
+
+		it('should return a valid background, even if an invalid background colour is set', async () => {
+			await User.setUserField(testUid, 'icon:bgColor', 'teal');
+			const payload = await User.getUserFields(testUid, ['username', 'picture']);
+			const validBackgrounds = await User.getIconBackgrounds(testUid);
+
+			assert(payload['icon:bgColor']);
+			assert(validBackgrounds.includes(payload['icon:bgColor']));
+		});
+
 		it('should return private data if field is whitelisted', (done) => {
 			function filterMethod(data, callback) {
 				data.whitelist.push('another_secret');
