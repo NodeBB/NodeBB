@@ -1,8 +1,8 @@
 {
     "tag": "Cài Đặt Thẻ",
     "link-to-manage": "Quản Lý Thẻ",
-    "system-tags": "System Tags",
-    "system-tags-help": "Only privileged users will be able to use these tags.",
+    "system-tags": "Thẻ Hệ Thống",
+    "system-tags-help": "Chỉ người dùng đặc quyền mới có thể dùng thẻ này.",
     "min-per-topic": "Số Thẻ Ít Nhất Mỗi Chủ Đề",
     "max-per-topic": "Số Thẻ Tối Đa Mỗi Chủ Đề",
     "min-length": "Độ Dài Thẻ Tối Thiểu",

@@ -2,7 +2,7 @@
     "tag": "Настройки за етикетите",
     "link-to-manage": "Управление на етикетите",
     "system-tags": "Системни етикети",
-    "system-tags-help": "Only privileged users will be able to use these tags.",
+    "system-tags-help": "Само потребителите с по-високи правомощия ще могат да използват тези етикети.",
     "min-per-topic": "Минимален брой етикети за тема",
     "max-per-topic": "Максимален брой етикети за тема",
     "min-length": "Минимална дължина на етикетите",
