@@ -25,6 +25,13 @@ define('accounts/picture', [
 				defaultAvatar: ajaxify.data.defaultAvatar,
 				allowProfileImageUploads: ajaxify.data.allowProfileImageUploads,
 				iconBackgrounds: config.iconBackgrounds,
+				user: {
+					uid: ajaxify.data.uid,
+					username: ajaxify.data.username,
+					picture: ajaxify.data.picture,
+					'icon:text': ajaxify.data['icon:text'],
+					'icon:bgColor': ajaxify.data['icon:bgColor'],
+				},
 			}, function (html) {
 				var modal = bootbox.dialog({
 					className: 'picture-switcher',
