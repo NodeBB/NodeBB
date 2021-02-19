@@ -172,6 +172,14 @@ describe('Search', () => {
 		assert.strictEqual(result.categories[0].name, 'baz category');
 	});
 
+	it('should search for categories', async () => {
+		const socketCategories = require('../src/socket.io/categories');
+		let data = await socketCategories.categorySearch({ uid: phoebeUid }, { query: 'baz', parentCid: 0 });
+		assert.strictEqual(data[0].name, 'baz category');
+		data = await socketCategories.categorySearch({ uid: phoebeUid }, { query: '', parentCid: 0 });
+		assert.strictEqual(data.length, 5);
+	});
+
 	it('should fail if searchIn is wrong', (done) => {
 		search.search({
 			query: 'plug',
