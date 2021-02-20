@@ -53,12 +53,11 @@ define('forum/account/settings', ['forum/account/header', 'components', 'transla
 			}
 
 			switch (input.attr('type')) {
-				case 'text':
-				case 'textarea':
-					settings[setting] = input.val();
-					break;
 				case 'checkbox':
 					settings[setting] = input.is(':checked') ? 1 : 0;
+					break;
+				default:
+					settings[setting] = input.val();
 					break;
 			}
 		});
