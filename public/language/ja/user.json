@@ -84,6 +84,7 @@
     "remove_cover_picture_confirm": "カバー写真を削除してもよろしいですか？",
     "crop_picture": "画像を切り抜く",
     "upload_cropped_picture": "切り抜いてアップロード",
+    "avatar-background-colour": "Avatar background colour",
     "settings": "設定",
     "show_email": "メールアドレスを表示",
     "show_fullname": "フルネームで表示",

@@ -84,7 +84,7 @@
     "tag-too-long": "Veuillez entrer un mot-clé plus court. Les mot-clés ne peuvent excéder %1 caractère(s).",
     "not-enough-tags": "Pas assez de mots-clés. Les sujets doivent avoir au moins %1 mots-clé(s).",
     "too-many-tags": "Trop de mots-clés. Les sujets ne peuvent avoir au plus que %1 mots-clé(s).",
-    "cant-use-system-tag": "You can not use this system tag.",
+    "cant-use-system-tag": "Vous ne pouvez gérer les mots-clés.",
     "still-uploading": "Veuillez patienter pendant l'envoi des fichiers.",
     "file-too-big": "La taille maximale autorisée pour un fichier est de %1 ko. Veuillez envoyer un fichier plus petit.",
     "guest-upload-disabled": "L'envoi de fichiers a été désactivé pour les invités",
