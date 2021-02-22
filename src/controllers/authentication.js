@@ -352,6 +352,7 @@ authenticationController.onSuccessfulLogin = async function (req, uid) {
 			version: req.useragent.version,
 		});
 		await Promise.all([
+			new Promise(resolve => req.session.save(resolve)),
 			user.auth.addSession(uid, req.sessionID),
 			user.updateLastOnlineTime(uid),
 			user.updateOnlineUsers(uid),
