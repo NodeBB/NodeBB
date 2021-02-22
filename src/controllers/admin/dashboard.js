@@ -231,7 +231,6 @@ async function getLastRestart() {
 
 dashboardController.getLogins = async (req, res) => {
 	let stats = await getStats();
-	const dataset = await analytics.getHourlyStatsForSet('analytics:logins', Date.now(), 24);
 	stats = stats.filter(stat => stat.name === '[[admin/dashboard:logins]]').map(({ ...stat }) => {
 		delete stat.href;
 		return stat;
@@ -244,15 +243,14 @@ dashboardController.getLogins = async (req, res) => {
 
 	res.render('admin/dashboard/logins', {
 		set: 'logins',
+		query: req.query,
 		stats,
-		dataset,
 		summary,
 	});
 };
 
 dashboardController.getUsers = async (req, res) => {
 	let stats = await getStats();
-	const dataset = await analytics.getHourlyStatsForSet('analytics:registrations', Date.now(), 24);
 	stats = stats.filter(stat => stat.name === '[[admin/dashboard:new-users]]').map(({ ...stat }) => {
 		delete stat.href;
 		return stat;
@@ -263,17 +261,18 @@ dashboardController.getUsers = async (req, res) => {
 		month: stats[0].thismonth,
 	};
 
+	// List of recently registered users
+
 	res.render('admin/dashboard/users', {
 		set: 'registrations',
+		query: req.query,
 		stats,
-		dataset,
 		summary,
 	});
 };
 
 dashboardController.getTopics = async (req, res) => {
 	let stats = await getStats();
-	const dataset = await analytics.getHourlyStatsForSet('analytics:topics', Date.now(), 24);
 	stats = stats.filter(stat => stat.name === '[[admin/dashboard:topics]]').map(({ ...stat }) => {
 		delete stat.href;
 		return stat;
@@ -286,8 +285,8 @@ dashboardController.getTopics = async (req, res) => {
 
 	res.render('admin/dashboard/topics', {
 		set: 'topics',
+		query: req.query,
 		stats,
-		dataset,
 		summary,
 	});
 };

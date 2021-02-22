@@ -29,7 +29,7 @@ define('admin/modules/dashboard-line-graph', ['Chart', 'translator', 'benchpress
 						pointHoverBackgroundColor: 'rgba(151,187,205,1)',
 						pointBorderColor: '#fff',
 						pointHoverBorderColor: 'rgba(151,187,205,1)',
-						data: dataset,
+						data: dataset || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 					},
 				],
 			};
@@ -66,6 +66,10 @@ define('admin/modules/dashboard-line-graph', ['Chart', 'translator', 'benchpress
 					},
 				},
 			});
+
+			if (!dataset) {
+				Graph.update(set);
+			}
 		});
 
 		$('[data-action="updateGraph"]:not([data-units="custom"])').on('click', function () {
@@ -146,7 +150,12 @@ define('admin/modules/dashboard-line-graph', ['Chart', 'translator', 'benchpress
 		});
 	};
 
-	Graph.update = (set, units, until, amount) => {
+	Graph.update = (
+		set,
+		units = ajaxify.data.query.units || 'hours',
+		until = ajaxify.data.query.until,
+		amount = ajaxify.data.query.amount
+	) => {
 		if (!Graph._current) {
 			return;
 		}
@@ -162,7 +171,7 @@ define('admin/modules/dashboard-line-graph', ['Chart', 'translator', 'benchpress
 			Graph._current.data.labels = Graph._current.data.xLabels;
 			Graph._current.update();
 
-			// Update the View as JSON button url
+			// Update address bar and "View as JSON" button url
 			var apiEl = $('#view-as-json');
 			var newHref = $.param({
 				units: units || 'hours',
@@ -170,6 +179,7 @@ define('admin/modules/dashboard-line-graph', ['Chart', 'translator', 'benchpress
 				count: amount,
 			});
 			apiEl.attr('href', `${config.relative_path}/api/v3/admin/analytics/${ajaxify.data.set}?${newHref}`);
+			ajaxify.updateHistory(`${ajaxify.data.url.slice(1)}?${newHref}`, true);
 		});
 	};
 
