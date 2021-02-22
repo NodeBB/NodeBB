@@ -4,7 +4,6 @@
 
 const winston = require('winston');
 const nconf = require('nconf');
-const session = require('express-session');
 const semver = require('semver');
 const prompt = require('prompt');
 const utils = require('../utils');
@@ -66,15 +65,15 @@ mongoModule.init = async function () {
 };
 
 mongoModule.createSessionStore = async function (options) {
-	const client = await connection.connect(options);
+	const connString = connection.getConnectionString(options);
 	const meta = require('../meta');
-	const sessionStore = require('connect-mongo')(session);
-	const store = new sessionStore({
-		client: client,
+	const MongoStore = require('connect-mongo').default;
+	return MongoStore.create({
+		mongoUrl: connString,
+		mongoOptions: options,
 		ttl: meta.getSessionTTLSeconds(),
+		createAutoRemoveIdx: false,
 	});
-
-	return store;
 };
 
 mongoModule.createIndices = async function () {
@@ -88,6 +87,10 @@ mongoModule.createIndices = async function () {
 	await collection.createIndex({ _key: 1, score: -1 }, { background: true });
 	await collection.createIndex({ _key: 1, value: -1 }, { background: true, unique: true, sparse: true });
 	await collection.createIndex({ expireAt: 1 }, { expireAfterSeconds: 0, background: true });
+
+	// sessions index
+	const sessionsCol = mongoModule.client.collection('sessions');
+	await sessionsCol.createIndex({ expires: 1 }, { expireAfterSeconds: 0 });
 	winston.info('[database] Checking database indices done!');
 };
 
