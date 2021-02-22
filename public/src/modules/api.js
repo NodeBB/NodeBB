@@ -55,7 +55,8 @@ define('api', () => {
 	api.post = (route, payload, onSuccess) => call({
 		url: route,
 		method: 'post',
-		data: payload,
+		data: JSON.stringify(payload),
+		contentType: 'application/json; charset=utf-8',
 		headers: {
 			'x-csrf-token': config.csrf_token,
 		},
@@ -64,7 +65,8 @@ define('api', () => {
 	api.put = (route, payload, onSuccess) => call({
 		url: route,
 		method: 'put',
-		data: payload,
+		data: JSON.stringify(payload),
+		contentType: 'application/json; charset=utf-8',
 		headers: {
 			'x-csrf-token': config.csrf_token,
 		},
@@ -73,7 +75,8 @@ define('api', () => {
 	api.del = (route, payload, onSuccess) => call({
 		url: route,
 		method: 'delete',
-		data: payload,
+		data: JSON.stringify(payload),
+		contentType: 'application/json; charset=utf-8',
 		headers: {
 			'x-csrf-token': config.csrf_token,
 		},

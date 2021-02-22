@@ -179,7 +179,7 @@ app.cacheBuster = null;
 	};
 
 	app.alertError = function (message, timeout) {
-		message = message.message || message;
+		message = (message && message.message) || message;
 
 		if (message === '[[error:invalid-session]]') {
 			app.handleInvalidSession();

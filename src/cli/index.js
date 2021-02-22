@@ -95,10 +95,6 @@ nconf.argv(opts).env({
 	separator: '__',
 });
 
-const env = program.dev ? 'development' : (process.env.NODE_ENV || 'production');
-process.env.NODE_ENV = env;
-global.env = env;
-
 prestart.setupWinston();
 
 // Alternate configuration file support
@@ -197,6 +193,10 @@ program
 	.description(`Compile static assets ${'(JS, CSS, templates, languages)'.red}`)
 	.option('-s, --series', 'Run builds in series without extra processes')
 	.action((targets, options) => {
+		if (program.dev) {
+			process.env.NODE_ENV = 'development';
+			global.env = 'development';
+		}
 		require('./manage').build(targets.length ? targets : true, options);
 	})
 	.on('--help', () => {
