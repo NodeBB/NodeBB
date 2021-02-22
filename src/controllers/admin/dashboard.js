@@ -115,9 +115,9 @@ async function getStats() {
 		return cachedStats;
 	}
 
-	const results = await Promise.all([
+	let results = await Promise.all([
 		getStatsForSet('ip:recent', 'uniqueIPCount'),
-		getStatsForSet('sessions:recent', 'loginCount'),
+		getStatsFromAnalytics('logins', 'loginCount'),
 		getStatsForSet('users:joindate', 'userCount'),
 		getStatsForSet('posts:pid', 'postCount'),
 		getStatsForSet('topics:tid', 'topicCount'),
@@ -127,6 +127,12 @@ async function getStats() {
 	results[2].name = '[[admin/dashboard:new-users]]';
 	results[3].name = '[[admin/dashboard:posts]]';
 	results[4].name = '[[admin/dashboard:topics]]';
+
+	({ results } = await plugins.hooks.fire('filter:admin.getStats', {
+		results,
+		helpers: { getStatsForSet, getStatsFromAnalytics },
+	}));
+
 	cache.set('admin:stats', results, 600000);
 	return results;
 }
@@ -149,6 +155,29 @@ async function getStatsForSet(set, field) {
 		alltime: getGlobalField(field),
 	});
 
+	return calculateDeltas(results);
+}
+
+async function getStatsFromAnalytics(set, field) {
+	const today = new Date();
+	today.setHours(0, 0, 0, 0);
+
+	const data = await analytics.getDailyStatsForSet(`analytics:${set}`, today, 60);
+	const sum = arr => arr.reduce((memo, cur) => memo + cur, 0);
+	const results = {
+		yesterday: sum(data.slice(-2)),
+		today: data.slice(-1),
+		lastweek: sum(data.slice(-14)),
+		thisweek: sum(data.slice(-7)),
+		lastmonth: sum(data.slice(0)),	// entire set
+		thismonth: sum(data.slice(-30)),
+		alltime: await getGlobalField(field),
+	};
+
+	return calculateDeltas(results);
+}
+
+function calculateDeltas(results) {
 	function textClass(num) {
 		if (num > 0) {
 			return 'text-success';
