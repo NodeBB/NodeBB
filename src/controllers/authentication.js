@@ -357,6 +357,7 @@ authenticationController.onSuccessfulLogin = async function (req, uid) {
 			user.updateLastOnlineTime(uid),
 			user.updateOnlineUsers(uid),
 			analytics.increment('logins'),
+			db.incrObjectFieldBy('global', 'loginCount', 1),
 		]);
 		if (uid > 0) {
 			await db.setObjectField(`uid:${uid}:sessionUUID:sessionId`, uuid, req.sessionID);

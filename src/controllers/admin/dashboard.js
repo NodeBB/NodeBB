@@ -117,14 +117,16 @@ async function getStats() {
 
 	const results = await Promise.all([
 		getStatsForSet('ip:recent', 'uniqueIPCount'),
+		getStatsForSet('sessions:recent', 'loginCount'),
 		getStatsForSet('users:joindate', 'userCount'),
 		getStatsForSet('posts:pid', 'postCount'),
 		getStatsForSet('topics:tid', 'topicCount'),
 	]);
 	results[0].name = '[[admin/dashboard:unique-visitors]]';
-	results[1].name = '[[admin/dashboard:new-users]]';
-	results[2].name = '[[admin/dashboard:posts]]';
-	results[3].name = '[[admin/dashboard:topics]]';
+	results[1].name = '[[admin/dashboard:logins]]';
+	results[2].name = '[[admin/dashboard:new-users]]';
+	results[3].name = '[[admin/dashboard:posts]]';
+	results[4].name = '[[admin/dashboard:topics]]';
 	cache.set('admin:stats', results, 600000);
 	return results;
 }
