@@ -12,5 +12,7 @@ module.exports = function () {
 
 	setupApiRoute(router, 'put', '/settings/:setting', [...middlewares, middleware.checkRequired.bind(null, ['value'])], controllers.write.admin.updateSetting);
 
+	setupApiRoute(router, 'get', '/analytics/:set', [...middlewares], controllers.write.admin.getAnalytics);
+
 	return router;
 };
