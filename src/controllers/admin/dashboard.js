@@ -123,10 +123,17 @@ async function getStats() {
 		getStatsForSet('topics:tid', 'topicCount'),
 	]);
 	results[0].name = '[[admin/dashboard:unique-visitors]]';
+
 	results[1].name = '[[admin/dashboard:logins]]';
+	results[1].href = `${nconf.get('relative_path')}/admin/dashboard/logins`;
+
 	results[2].name = '[[admin/dashboard:new-users]]';
+	results[2].href = `${nconf.get('relative_path')}/admin/dashboard/users`;
+
 	results[3].name = '[[admin/dashboard:posts]]';
+
 	results[4].name = '[[admin/dashboard:topics]]';
+	results[4].href = `${nconf.get('relative_path')}/admin/dashboard/topics`;
 
 	({ results } = await plugins.hooks.fire('filter:admin.getStats', {
 		results,
@@ -221,3 +228,66 @@ async function getLastRestart() {
 	lastrestart.timestampISO = utils.toISOString(lastrestart.timestamp);
 	return lastrestart;
 }
+
+dashboardController.getLogins = async (req, res) => {
+	let stats = await getStats();
+	const dataset = await analytics.getHourlyStatsForSet('analytics:logins', Date.now(), 24);
+	stats = stats.filter(stat => stat.name === '[[admin/dashboard:logins]]').map(({ ...stat }) => {
+		delete stat.href;
+		return stat;
+	});
+	const summary = {
+		day: stats[0].today,
+		week: stats[0].thisweek,
+		month: stats[0].thismonth,
+	};
+
+	res.render('admin/dashboard/logins', {
+		set: 'logins',
+		stats,
+		dataset,
+		summary,
+	});
+};
+
+dashboardController.getUsers = async (req, res) => {
+	let stats = await getStats();
+	const dataset = await analytics.getHourlyStatsForSet('analytics:registrations', Date.now(), 24);
+	stats = stats.filter(stat => stat.name === '[[admin/dashboard:new-users]]').map(({ ...stat }) => {
+		delete stat.href;
+		return stat;
+	});
+	const summary = {
+		day: stats[0].today,
+		week: stats[0].thisweek,
+		month: stats[0].thismonth,
+	};
+
+	res.render('admin/dashboard/users', {
+		set: 'registrations',
+		stats,
+		dataset,
+		summary,
+	});
+};
+
+dashboardController.getTopics = async (req, res) => {
+	let stats = await getStats();
+	const dataset = await analytics.getHourlyStatsForSet('analytics:topics', Date.now(), 24);
+	stats = stats.filter(stat => stat.name === '[[admin/dashboard:topics]]').map(({ ...stat }) => {
+		delete stat.href;
+		return stat;
+	});
+	const summary = {
+		day: stats[0].today,
+		week: stats[0].thisweek,
+		month: stats[0].thismonth,
+	};
+
+	res.render('admin/dashboard/topics', {
+		set: 'topics',
+		stats,
+		dataset,
+		summary,
+	});
+};

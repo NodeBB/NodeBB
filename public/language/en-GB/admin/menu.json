@@ -1,5 +1,10 @@
 {
 	"dashboard": "Dashboard",
+
+	"section-dashboard": "Dashboard",
+	"dashboard/logins": "Logins",
+	"dashboard/users": "Users",
+	"dashboard/topics": "Topics",
 	"section-general": "General",
 
 	"section-manage": "Manage",

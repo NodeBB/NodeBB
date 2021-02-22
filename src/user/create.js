@@ -9,6 +9,7 @@ const slugify = require('../slugify');
 const plugins = require('../plugins');
 const groups = require('../groups');
 const meta = require('../meta');
+const analytics = require('../analytics');
 
 module.exports = function (User) {
 	User.create = async function (data) {
@@ -108,6 +109,7 @@ module.exports = function (User) {
 
 		await Promise.all([
 			db.incrObjectField('global', 'userCount'),
+			analytics.increment('registrations'),
 			db.sortedSetAddBulk(bulkAdd),
 			groups.join(groupsToJoin, userData.uid),
 			User.notifications.sendWelcomeNotification(userData.uid),
