@@ -10,6 +10,7 @@ const util = require('util');
 
 const db = require('../database');
 const meta = require('../meta');
+const analytics = require('../analytics');
 const user = require('../user');
 const plugins = require('../plugins');
 const utils = require('../utils');
@@ -351,9 +352,12 @@ authenticationController.onSuccessfulLogin = async function (req, uid) {
 			version: req.useragent.version,
 		});
 		await Promise.all([
+			new Promise(resolve => req.session.save(resolve)),
 			user.auth.addSession(uid, req.sessionID),
 			user.updateLastOnlineTime(uid),
 			user.updateOnlineUsers(uid),
+			analytics.increment('logins'),
+			db.incrObjectFieldBy('global', 'loginCount', 1),
 		]);
 		if (uid > 0) {
 			await db.setObjectField(`uid:${uid}:sessionUUID:sessionId`, uuid, req.sessionID);
