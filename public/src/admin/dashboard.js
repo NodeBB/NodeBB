@@ -330,8 +330,6 @@ define('admin/dashboard', ['Chart', 'translator', 'benchpress'], function (Chart
 				}
 				until = until.getTime();
 				updateTrafficGraph($(this).attr('data-units'), until, amount);
-				$('[data-action="updateGraph"]').removeClass('active');
-				$(this).addClass('active');
 
 				require(['translator'], function (translator) {
 					translator.translate('[[admin/dashboard:page-views-custom]]', function (translated) {
@@ -373,8 +371,6 @@ define('admin/dashboard', ['Chart', 'translator', 'benchpress'], function (Chart
 						if (!formData.startRange && !formData.endRange) {
 							// No range? Assume last 30 days
 							updateTrafficGraph('days');
-							$('[data-action="updateGraph"]').removeClass('active');
-							$('[data-action="updateGraph"][data-units="days"]').addClass('active');
 							return;
 						} else if (!validRegexp.test(formData.startRange) || !validRegexp.test(formData.endRange)) {
 							// Invalid Input
@@ -388,8 +384,6 @@ define('admin/dashboard', ['Chart', 'translator', 'benchpress'], function (Chart
 						var amount = (until - new Date(formData.startRange).getTime()) / (1000 * 60 * 60 * 24);
 
 						updateTrafficGraph('days', until, amount);
-						$('[data-action="updateGraph"]').removeClass('active');
-						targetEl.addClass('active');
 
 						// Update "custom range" label
 						targetEl.attr('data-startRange', formData.startRange);

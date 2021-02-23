@@ -22,7 +22,7 @@
 			</div>
 			<div class="col-sm-3 hidden-xs text-center pageview-stats">
 				<div><strong id="pageViewsPastDay">{{{ if summary.day }}}{./summary.day}{{{ else }}}0{{{ end }}}</strong></div>
-				<div><a href="#" class="updatePageviewsGraph active" data-action="updateGraph" data-units="hours">[[admin/dashboard:page-views-last-day]]</a></div>
+				<div><a href="#" class="updatePageviewsGraph" data-action="updateGraph" data-units="hours" data-amount="24">[[admin/dashboard:page-views-last-day]]</a></div>
 			</div>
 			<div class="col-sm-3 text-center pageview-stats">
 				<div><strong><i class="fa fa-clock-o"></i></strong></div>
