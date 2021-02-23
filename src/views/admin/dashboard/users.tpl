@@ -2,7 +2,7 @@
 	<!-- IMPORT admin/partials/dashboard/graph.tpl -->
 	<!-- IMPORT admin/partials/dashboard/stats.tpl -->
 
-	<table class="table table-striped">
+	<table class="table table-striped users-list">
 		<thead>
 			<th class="text-muted">[[admin/manage/users:users.uid]]</th>
 			<th class="text-muted">[[admin/manage/users:users.username]]</th>
