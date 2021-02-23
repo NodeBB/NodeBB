@@ -595,7 +595,7 @@
 		},
 
 		getDaysArray: function (from, amount) {
-			var currentDay = new Date(from || Date.now()).getTime();
+			var currentDay = new Date(parseInt(from, 10) || Date.now()).getTime();
 			var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 			var labels = [];
 			var tmpDate;

@@ -80,8 +80,6 @@ define('admin/modules/dashboard-line-graph', ['Chart', 'translator', 'benchpress
 			}
 			until = until.getTime();
 			Graph.update(set, $(this).attr('data-units'), until, amount);
-			$('[data-action="updateGraph"]').removeClass('active');
-			$(this).addClass('active');
 
 			require(['translator'], function (translator) {
 				translator.translate('[[admin/dashboard:page-views-custom]]', function (translated) {
@@ -123,8 +121,6 @@ define('admin/modules/dashboard-line-graph', ['Chart', 'translator', 'benchpress
 					if (!formData.startRange && !formData.endRange) {
 						// No range? Assume last 30 days
 						Graph.update(set, 'days');
-						$('[data-action="updateGraph"]').removeClass('active');
-						$('[data-action="updateGraph"][data-units="days"]').addClass('active');
 						return;
 					} else if (!validRegexp.test(formData.startRange) || !validRegexp.test(formData.endRange)) {
 						// Invalid Input
@@ -138,8 +134,6 @@ define('admin/modules/dashboard-line-graph', ['Chart', 'translator', 'benchpress
 					var amount = (until - new Date(formData.startRange).getTime()) / (1000 * 60 * 60 * 24);
 
 					Graph.update(set, 'days', until, amount);
-					$('[data-action="updateGraph"]').removeClass('active');
-					targetEl.addClass('active');
 
 					// Update "custom range" label
 					targetEl.attr('data-startRange', formData.startRange);
@@ -154,7 +148,7 @@ define('admin/modules/dashboard-line-graph', ['Chart', 'translator', 'benchpress
 		set,
 		units = ajaxify.data.query.units || 'hours',
 		until = ajaxify.data.query.until,
-		amount = ajaxify.data.query.amount
+		amount = ajaxify.data.query.count
 	) => {
 		if (!Graph._current) {
 			return;
