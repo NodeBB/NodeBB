@@ -1,6 +1,6 @@
 'use strict';
 
-define('admin/modules/dashboard-line-graph', ['Chart', 'translator', 'benchpress', 'api'], function (Chart, translator, Benchpress, api) {
+define('admin/modules/dashboard-line-graph', ['Chart', 'translator', 'benchpress', 'api', 'hooks'], function (Chart, translator, Benchpress, api, hooks) {
 	const Graph = {
 		_current: null,
 	};
@@ -16,62 +16,70 @@ define('admin/modules/dashboard-line-graph', ['Chart', 'translator', 'benchpress
 			Chart.defaults.global.tooltips.enabled = false;
 		}
 
+		Graph.handleUpdateControls({ set });
+
 		var t = translator.Translator.create();
-		t.translateKey(`admin/menu:${ajaxify.data.template.name.replace('admin/', '')}`, []).then((key) => {
-			const data = {
-				labels: trafficLabels,
-				datasets: [
-					{
-						label: key,
-						backgroundColor: 'rgba(151,187,205,0.2)',
-						borderColor: 'rgba(151,187,205,1)',
-						pointBackgroundColor: 'rgba(151,187,205,1)',
-						pointHoverBackgroundColor: 'rgba(151,187,205,1)',
-						pointBorderColor: '#fff',
-						pointHoverBorderColor: 'rgba(151,187,205,1)',
-						data: dataset || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-					},
-				],
-			};
+		return new Promise((resolve) => {
+			t.translateKey(`admin/menu:${ajaxify.data.template.name.replace('admin/', '')}`, []).then((key) => {
+				const data = {
+					labels: trafficLabels,
+					datasets: [
+						{
+							label: key,
+							backgroundColor: 'rgba(151,187,205,0.2)',
+							borderColor: 'rgba(151,187,205,1)',
+							pointBackgroundColor: 'rgba(151,187,205,1)',
+							pointHoverBackgroundColor: 'rgba(151,187,205,1)',
+							pointBorderColor: '#fff',
+							pointHoverBorderColor: 'rgba(151,187,205,1)',
+							data: dataset || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+						},
+					],
+				};
 
-			canvas.width = $(canvas).parent().width();
+				canvas.width = $(canvas).parent().width();
 
-			data.datasets[0].yAxisID = 'left-y-axis';
+				data.datasets[0].yAxisID = 'left-y-axis';
 
-			Graph._current = new Chart(canvasCtx, {
-				type: 'line',
-				data: data,
-				options: {
-					responsive: true,
-					legend: {
-						display: true,
+				Graph._current = new Chart(canvasCtx, {
+					type: 'line',
+					data: data,
+					options: {
+						responsive: true,
+						legend: {
+							display: true,
+						},
+						scales: {
+							yAxes: [{
+								id: 'left-y-axis',
+								ticks: {
+									beginAtZero: true,
+									precision: 0,
+								},
+								type: 'linear',
+								position: 'left',
+								scaleLabel: {
+									display: true,
+									labelString: key,
+								},
+							}],
+						},
+						tooltips: {
+							mode: 'x',
+						},
 					},
-					scales: {
-						yAxes: [{
-							id: 'left-y-axis',
-							ticks: {
-								beginAtZero: true,
-								precision: 0,
-							},
-							type: 'linear',
-							position: 'left',
-							scaleLabel: {
-								display: true,
-								labelString: key,
-							},
-						}],
-					},
-					tooltips: {
-						mode: 'x',
-					},
-				},
+				});
+
+				if (!dataset) {
+					Graph.update(set).then(resolve);
+				} else {
+					resolve(Graph._current);
+				}
 			});
-
-			if (!dataset) {
-				Graph.update(set);
-			}
 		});
+	};
 
+	Graph.handleUpdateControls = ({ set }) => {
 		$('[data-action="updateGraph"]:not([data-units="custom"])').on('click', function () {
 			var until = new Date();
 			var amount = $(this).attr('data-amount');
@@ -151,29 +159,35 @@ define('admin/modules/dashboard-line-graph', ['Chart', 'translator', 'benchpress
 		amount = ajaxify.data.query.count
 	) => {
 		if (!Graph._current) {
-			return;
+			return Promise.reject(new Error('[[error:invalid-data]]'));
 		}
 
-		api.get(`/admin/analytics/${set}`, { units, until, amount }).then((dataset) => {
-			if (units === 'days') {
-				Graph._current.data.xLabels = utils.getDaysArray(until, amount);
-			} else {
-				Graph._current.data.xLabels = utils.getHoursArray();
-			}
+		return new Promise((resolve) => {
+			api.get(`/admin/analytics/${set}`, { units, until, amount }).then((dataset) => {
+				if (units === 'days') {
+					Graph._current.data.xLabels = utils.getDaysArray(until, amount);
+				} else {
+					Graph._current.data.xLabels = utils.getHoursArray();
+				}
 
-			Graph._current.data.datasets[0].data = dataset;
-			Graph._current.data.labels = Graph._current.data.xLabels;
-			Graph._current.update();
+				Graph._current.data.datasets[0].data = dataset;
+				Graph._current.data.labels = Graph._current.data.xLabels;
+				Graph._current.update();
 
-			// Update address bar and "View as JSON" button url
-			var apiEl = $('#view-as-json');
-			var newHref = $.param({
-				units: units || 'hours',
-				until: until,
-				count: amount,
+				// Update address bar and "View as JSON" button url
+				var apiEl = $('#view-as-json');
+				var newHref = $.param({
+					units: units || 'hours',
+					until: until,
+					count: amount,
+				});
+				apiEl.attr('href', `${config.relative_path}/api/v3/admin/analytics/${ajaxify.data.set}?${newHref}`);
+				ajaxify.updateHistory(`${ajaxify.data.url.slice(1)}?${newHref}`, true);
+				hooks.fire('action:admin.dashboard.updateGraph', {
+					graph: Graph._current,
+				});
+				resolve(Graph._current);
 			});
-			apiEl.attr('href', `${config.relative_path}/api/v3/admin/analytics/${ajaxify.data.set}?${newHref}`);
-			ajaxify.updateHistory(`${ajaxify.data.url.slice(1)}?${newHref}`, true);
 		});
 	};
 
