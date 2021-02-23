@@ -3,13 +3,38 @@
 define('hooks', [], () => {
 	const Hooks = {
 		loaded: {},
+		temporary: new Set(),
 	};
 
 	Hooks.register = (hookName, method) => {
 		Hooks.loaded[hookName] = Hooks.loaded[hookName] || new Set();
 		Hooks.loaded[hookName].add(method);
+		console.debug(`[hooks] Registered ${hookName}`, method);
 	};
 	Hooks.on = Hooks.register;
+
+	// registerPage/onPage takes care of unregistering the listener on ajaxify
+	Hooks.registerPage = (hookName, method) => {
+		Hooks.temporary.add({ hookName, method });
+		Hooks.register(hookName, method);
+	};
+	Hooks.onPage = Hooks.registerPage;
+	Hooks.register('action:ajaxify.start', () => {
+		Hooks.temporary.forEach((pair) => {
+			Hooks.unregister(pair.hookName, pair.method);
+			Hooks.temporary.delete(pair);
+		});
+	});
+
+	Hooks.unregister = (hookName, method) => {
+		if (Hooks.loaded[hookName] && Hooks.loaded[hookName].has(method)) {
+			Hooks.loaded[hookName].delete(method);
+			console.debug(`[hooks] Unregistered ${hookName}`, method);
+		} else {
+			console.debug(`[hooks] Unregistration of ${hookName} failed, passed-in method is not a registered listener or the hook itself has no listeners, currently.`);
+		}
+	};
+	Hooks.off = Hooks.unregister;
 
 	Hooks.hasListeners = hookName => Hooks.loaded[hookName] && Hooks.loaded[hookName].size > 0;
 

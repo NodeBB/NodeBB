@@ -113,7 +113,9 @@ ajaxify = window.ajaxify || {};
 			url: url,
 		};
 
-		$(window).trigger('action:ajaxify.start', payload);
+		require(['hooks'], function (hooks) {
+			hooks.fire('action:ajaxify.start', payload);
+		});
 
 		ajaxify.count += 1;
 
