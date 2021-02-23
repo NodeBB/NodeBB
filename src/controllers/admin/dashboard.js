@@ -262,12 +262,17 @@ dashboardController.getUsers = async (req, res) => {
 	};
 
 	// List of recently registered users
+	const end = parseInt(req.query.until, 10) || Date.now();
+	const start = end - (1000 * 60 * 60 * (req.query.units === 'days' ? 24 : 1) * (req.query.count || (req.query.units === 'days' ? 30 : 24)));
+	const uids = await db.getSortedSetRangeByScore('users:joindate', 0, 500, start, end);
+	const users = await user.getUsersFields(uids, ['uid', 'username', 'email', 'joindate']);
 
 	res.render('admin/dashboard/users', {
 		set: 'registrations',
 		query: req.query,
 		stats,
 		summary,
+		users,
 	});
 };
 
