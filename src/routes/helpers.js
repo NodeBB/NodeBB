@@ -15,8 +15,8 @@ helpers.setupPageRoute = function (router, name, middleware, middlewares, contro
 		name,
 		middleware.busyCheck,
 		middleware.applyCSRF,
-		middleware.buildHeader,
 		middlewares,
+		middleware.buildHeader,
 		helpers.tryRoute(controller)
 	);
 	router.get(`/api${name}`, middlewares, helpers.tryRoute(controller));
