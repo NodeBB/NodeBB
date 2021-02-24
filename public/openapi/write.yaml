@@ -122,5 +122,7 @@ paths:
     $ref: 'write/posts/pid/diffs/timestamp.yaml'
   /admin/settings/{setting}:
     $ref: 'write/admin/settings/setting.yaml'
+  /admin/analytics/{set}:
+    $ref: 'write/admin/analytics/set.yaml'
   /files/:
     $ref: 'write/files.yaml'

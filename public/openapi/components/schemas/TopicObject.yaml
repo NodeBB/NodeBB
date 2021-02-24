@@ -168,8 +168,6 @@ TopicObject:
           items:
             type: string
             description: HTML injected into the theme
-        index:
-          type: number
     - type: object
       description: Optional properties that may or may not be present (except for `tid`, which is always present, and is only here as a hack to pass validation)
       properties:
@@ -184,6 +182,8 @@ TopicObject:
         pinExpiryISO:
           type: string
           description: "`pinExpiry` rendered as an ISO 8601 format"
+        index:
+          type: number
       required:
         - tid
 TopicObjectSlim:

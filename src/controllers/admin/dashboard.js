@@ -174,7 +174,7 @@ async function getStatsFromAnalytics(set, field) {
 	const sum = arr => arr.reduce((memo, cur) => memo + cur, 0);
 	const results = {
 		yesterday: sum(data.slice(-2)),
-		today: data.slice(-1),
+		today: data.slice(-1)[0],
 		lastweek: sum(data.slice(-14)),
 		thisweek: sum(data.slice(-7)),
 		lastmonth: sum(data.slice(0)),	// entire set
@@ -282,7 +282,7 @@ dashboardController.getUsers = async (req, res) => {
 	const end = parseInt(req.query.until, 10) || Date.now();
 	const start = end - (1000 * 60 * 60 * (req.query.units === 'days' ? 24 : 1) * (req.query.count || (req.query.units === 'days' ? 30 : 24)));
 	const uids = await db.getSortedSetRangeByScore('users:joindate', 0, 500, start, end);
-	const users = await user.getUsersFields(uids, ['uid', 'username', 'email', 'joindate']);
+	const users = await user.getUsersData(uids);
 
 	res.render('admin/dashboard/users', {
 		set: 'registrations',

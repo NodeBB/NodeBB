@@ -486,7 +486,11 @@ describe('API', async () => {
 				if (obj.allOf) {
 					obj = { properties: flattenAllOf(obj.allOf) };
 				} else {
-					required = required.concat(obj.required ? obj.required : Object.keys(obj.properties));
+					try {
+						required = required.concat(obj.required ? obj.required : Object.keys(obj.properties));
+					} catch (e) {
+						assert.fail(`Syntax error re: allOf, perhaps you allOf'd an array? (path: ${method} ${path}, context: ${context})`);
+					}
 				}
 
 				return { ...memo, ...obj.properties };

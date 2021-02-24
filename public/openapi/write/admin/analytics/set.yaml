@@ -1,0 +1,46 @@
+get:
+  tags:
+    - admin
+  summary: get analytics data
+  description: This operation retrieves analytics data from NodeBB. It is only accessible to administrators.
+  parameters:
+    - in: path
+      name: set
+      schema:
+        type: string
+      required: true
+      description: analytics set to retrieve
+      example: topics
+    - in: query
+      name: units
+      schema:
+        type: string
+        enum: [hours, days]
+      description: Whether to display dashboard data segmented daily or hourly
+      example: days
+    - in: query
+      name: until
+      schema:
+        type: number
+      description: A UNIX timestamp denoting the end of the analytics reporting period
+      example: ''
+    - in: query
+      name: count
+      schema:
+        type: number
+      description: The number of entries to return (e.g. if `units` is `hourly`, and `count` is `24`, the result set will contain 24 hours' worth of analytics)
+      example: 20
+  responses:
+    '200':
+      description: Analytics set retrieved
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: array
+                items:
+                  type: number
