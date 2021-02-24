@@ -242,11 +242,27 @@ dashboardController.getLogins = async (req, res) => {
 		month: stats[0].thismonth,
 	};
 
+	// List recent sessions
+	const start = Date.now() - (1000 * 60 * 60 * 24 * meta.config.loginDays);
+	const uids = await db.getSortedSetRangeByScore('users:online', 0, 500, start, Date.now());
+	const usersData = await user.getUsersData(uids);
+	let sessions = await Promise.all(uids.map(async (uid) => {
+		const sessions = await user.auth.getSessions(uid);
+		sessions.forEach((session) => {
+			session.user = usersData[uids.indexOf(uid)];
+		});
+
+		return sessions;
+	}));
+	sessions = _.flatten(sessions).sort((a, b) => b.datetime - a.datetime);
+
 	res.render('admin/dashboard/logins', {
 		set: 'logins',
 		query: req.query,
 		stats,
 		summary,
+		sessions,
+		loginDays: meta.config.loginDays,
 	});
 };
 
