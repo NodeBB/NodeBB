@@ -21,6 +21,8 @@ define('admin/dashboard/users', ['admin/modules/dashboard-line-graph', 'hooks'],
 							const tbodyEl = document.querySelector('.users-list tbody');
 							tbodyEl.innerHTML = '';
 							tbodyEl.append(...html.map((idx, el) => el));
+
+							html.find('.timeago').timeago();
 						});
 					});
 				}
