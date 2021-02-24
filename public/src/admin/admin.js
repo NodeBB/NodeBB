@@ -109,10 +109,7 @@
 
 			var mainTitle;
 			var pageTitle;
-			if (/admin\/general\/dashboard$/.test(url)) {
-				pageTitle = '[[admin/menu:general/dashboard]]';
-				mainTitle = pageTitle;
-			} else if (/admin\/plugins\//.test(url)) {
+			if (/admin\/plugins\//.test(url)) {
 				mainTitle = fallback;
 				pageTitle = '[[admin/menu:section-plugins]] > ' + mainTitle;
 			} else {
@@ -126,8 +123,8 @@
 						mainTitle = translator.compile('admin/menu:settings.page-title', mainTitle);
 					}
 				} else {
-					mainTitle = '[[admin/menu:dashboard]]';
-					pageTitle = '[[admin/menu:dashboard]]';
+					mainTitle = '[[admin/menu:section-dashboard]]';
+					pageTitle = '[[admin/menu:section-dashboard]]';
 				}
 			}
 

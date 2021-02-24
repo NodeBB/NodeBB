@@ -177,8 +177,14 @@
 
 		<ul id="main-menu">
 			{{{ if user.privileges.admin:dashboard }}}
-			<li class="menu-item">
-				<a href="{relative_path}/admin/dashboard">[[admin/menu:dashboard]]</a>
+			<li class="dropdown menu-item">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin/menu:section-dashboard]]</a>
+				<ul class="dropdown-menu" role="menu">
+					<li><a href="{relative_path}/admin/dashboard">[[admin/menu:dashboard/overview]]</a></li>
+					<li><a href="{relative_path}/admin/dashboard/logins">[[admin/menu:dashboard/logins]]</a></li>
+					<li><a href="{relative_path}/admin/dashboard/users">[[admin/menu:dashboard/users]]</a></li>
+					<li><a href="{relative_path}/admin/dashboard/topics">[[admin/menu:dashboard/topics]]</a></li>
+				</ul>
 			</li>
 			{{{ end }}}
 

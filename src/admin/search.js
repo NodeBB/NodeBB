@@ -101,15 +101,11 @@ async function buildNamespace(language, namespace) {
 		str = sanitize(str);
 
 		let title = namespace;
-		if (/admin\/general\/dashboard$/.test(title)) {
-			title = '[[admin/menu:dashboard]]';
-		} else {
-			title = title.match(/admin\/(.+?)\/(.+?)$/);
-			title = `[[admin/menu:section-${
-				title[1] === 'development' ? 'advanced' : title[1]
-			}]]${title[2] ? (` > [[admin/menu:${
-				title[1]}/${title[2]}]]`) : ''}`;
-		}
+		title = title.match(/admin\/(.+?)\/(.+?)$/);
+		title = `[[admin/menu:section-${
+			title[1] === 'development' ? 'advanced' : title[1]
+		}]]${title[2] ? (` > [[admin/menu:${
+			title[1]}/${title[2]}]]`) : ''}`;
 
 		title = await translator.translate(title);
 		return {
