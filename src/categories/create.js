@@ -190,7 +190,9 @@ module.exports = function (Categories) {
 		group = group || '';
 
 		const data = await plugins.hooks.fire('filter:categories.copyPrivilegesFrom', {
-			privileges: group ? privileges.groupPrivilegeList.slice() : privileges.privilegeList.slice(),
+			privileges: group ?
+				privileges.categories.groupPrivilegeList.slice() :
+				privileges.categories.privilegeList.slice(),
 			fromCid: fromCid,
 			toCid: toCid,
 			group: group,

@@ -30,7 +30,7 @@ AdminsMods.get = async function (req, res, next) {
 		globalMods: globalMods,
 		categoryMods: [moderators],
 		selectedCategory: selectedCategory,
-		allPrivileges: privileges.userPrivilegeList,
+		allPrivileges: privileges.categories.userPrivilegeList,
 	});
 };
 
