@@ -48,7 +48,7 @@ module.exports = function (Categories) {
 			`cid:${cid}:tag:whitelist`,
 			`category:${cid}`,
 		]);
-		await groups.destroy(privileges.privilegeList.map(privilege => `cid:${cid}:privileges:${privilege}`));
+		await groups.destroy(privileges.categories.privilegeList.map(privilege => `cid:${cid}:privileges:${privilege}`));
 	}
 
 	async function removeFromParent(cid) {

@@ -753,7 +753,7 @@ describe('Post\'s', () => {
 			const cat2 = await categories.create({ name: 'Test Category', description: 'Test category created by testing script' });
 			const result = await socketTopics.post({ uid: globalModUid }, { title: 'target topic', content: 'queued topic', cid: cat2.cid });
 			const modUid = await user.create({ username: 'modofcat1' });
-			await privileges.categories.give(privileges.userPrivilegeList, cat1.cid, modUid);
+			await privileges.categories.give(privileges.categories.userPrivilegeList, cat1.cid, modUid);
 			let err;
 			try {
 				await socketPosts.movePost({ uid: modUid }, { pid: replyPid, tid: result.tid });

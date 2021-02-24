@@ -8,6 +8,7 @@ const groups = require('../groups');
 const user = require('../user');
 const plugins = require('../plugins');
 const translator = require('../translator');
+const utils = require('../utils');
 
 const helpers = module.exports;
 
@@ -181,6 +182,14 @@ helpers.giveOrRescind = async function (method, privileges, cids, members) {
 		/* eslint-disable no-await-in-loop */
 		await method(groupKeys, member);
 	}
+};
+
+helpers.userOrGroupPrivileges = async function (cid, uidOrGroup, privilegeList) {
+	const tasks = {};
+	privilegeList.forEach((privilege) => {
+		tasks[privilege] = groups.isMember(uidOrGroup, `cid:${cid}:privileges:${privilege}`);
+	});
+	return await utils.promiseParallel(tasks);
 };
 
 require('../promisify')(helpers);
