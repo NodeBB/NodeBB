@@ -24,10 +24,12 @@ UserNotifications.get = async function (uid) {
 	if (unread.length < 30) {
 		read = await getNotificationsFromSet(`uid:${uid}:notifications:read`, uid, 0, 29 - unread.length);
 	}
-	return {
+
+	return await plugins.hooks.fire('filter:user.notifications.get', {
+		uid,
 		read: read.filter(Boolean),
 		unread: unread,
-	};
+	});
 };
 
 async function filterNotifications(nids, filter) {
@@ -133,7 +135,7 @@ UserNotifications.getUnreadCount = async function (uid) {
 	const mergeIds = notifData.map(n => n.mergeId);
 
 	// Collapse any notifications with identical mergeIds
-	return mergeIds.reduce((count, mergeId, idx, arr) => {
+	let count = mergeIds.reduce((count, mergeId, idx, arr) => {
 		// A missing (null) mergeId means that notification is counted separately.
 		if (mergeId === null || idx === arr.indexOf(mergeId)) {
 			count += 1;
@@ -141,6 +143,9 @@ UserNotifications.getUnreadCount = async function (uid) {
 
 		return count;
 	}, 0);
+
+	({ count } = await plugins.hooks.fire('filter:user.notifications.getCount', { uid, count }));
+	return count;
 };
 
 UserNotifications.getUnreadByField = async function (uid, field, values) {
