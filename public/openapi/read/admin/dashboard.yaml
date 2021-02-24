@@ -40,39 +40,6 @@ get:
                           type: string
                       required:
                         - done
-                  stats:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        yesterday:
-                          type: number
-                        today:
-                          type: number
-                        lastweek:
-                          type: number
-                        thisweek:
-                          type: number
-                        lastmonth:
-                          type: number
-                        thismonth:
-                          type: number
-                        alltime:
-                          type: number
-                        dayIncrease:
-                          type: string
-                        dayTextClass:
-                          type: string
-                        weekIncrease:
-                          type: string
-                        weekTextClass:
-                          type: string
-                        monthIncrease:
-                          type: string
-                        monthTextClass:
-                          type: string
-                        name:
-                          type: string
                   canRestart:
                     type: boolean
                   lastrestart:
@@ -93,4 +60,5 @@ get:
                         description: An ISO 8601 formatted date string (complementing `timestamp`)
                   showSystemControls:
                     type: boolean
+              - $ref: ../../components/schemas/admin/dashboard.yaml#/Stats
               - $ref: ../../components/schemas/CommonProps.yaml#/CommonProps

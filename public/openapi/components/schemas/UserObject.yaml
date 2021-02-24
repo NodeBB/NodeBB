@@ -127,6 +127,7 @@ UserObject:
     groupTitle:
       type: string
       example: '["administrators","Staff"]'
+      nullable: true
     groupTitleArray:
       type: array
       example:

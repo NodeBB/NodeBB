@@ -1,0 +1,47 @@
+Stats:
+  type: object
+  properties:
+    stats:
+      type: array
+      items:
+        allOf:
+          - type: object
+            properties:
+              yesterday:
+                type: number
+              today:
+                type: number
+              lastweek:
+                type: number
+              thisweek:
+                type: number
+              lastmonth:
+                type: number
+              thismonth:
+                type: number
+              alltime:
+                type: number
+              dayIncrease:
+                type: string
+              dayTextClass:
+                type: string
+              weekIncrease:
+                type: string
+              weekTextClass:
+                type: string
+              monthIncrease:
+                type: string
+              monthTextClass:
+                type: string
+              name:
+                type: string
+          - type: object
+            description: Optional properties that may or may not be present (except for `cid`, which is always present, and is only here as a hack to pass validation)
+            properties:
+              name:
+                type: string
+              href:
+                type: string
+                description: Relative path to dashboard analytics sub-page, if applicable.
+            required:
+              - name
