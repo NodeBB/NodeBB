@@ -11,6 +11,7 @@ const meta = require('../../meta');
 const analytics = require('../../analytics');
 const plugins = require('../../plugins');
 const user = require('../../user');
+const topics = require('../../topics');
 const utils = require('../../utils');
 
 const dashboardController = module.exports;
@@ -261,7 +262,7 @@ dashboardController.getUsers = async (req, res) => {
 		month: stats[0].thismonth,
 	};
 
-	// List of recently registered users
+	// List of users registered within time frame
 	const end = parseInt(req.query.until, 10) || Date.now();
 	const start = end - (1000 * 60 * 60 * (req.query.units === 'days' ? 24 : 1) * (req.query.count || (req.query.units === 'days' ? 30 : 24)));
 	const uids = await db.getSortedSetRangeByScore('users:joindate', 0, 500, start, end);
@@ -288,10 +289,17 @@ dashboardController.getTopics = async (req, res) => {
 		month: stats[0].thismonth,
 	};
 
+	// List of topics created within time frame
+	const end = parseInt(req.query.until, 10) || Date.now();
+	const start = end - (1000 * 60 * 60 * (req.query.units === 'days' ? 24 : 1) * (req.query.count || (req.query.units === 'days' ? 30 : 24)));
+	const tids = await db.getSortedSetRangeByScore('topics:tid', 0, 500, start, end);
+	const topicData = await topics.getTopicsByTids(tids);
+
 	res.render('admin/dashboard/topics', {
 		set: 'topics',
 		query: req.query,
 		stats,
 		summary,
+		topics: topicData,
 	});
 };
