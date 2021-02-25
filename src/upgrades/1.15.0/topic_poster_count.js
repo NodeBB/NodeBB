@@ -15,12 +15,15 @@ module.exports = {
 			const keys = tids.map(tid => `tid:${tid}:posters`);
 			await db.sortedSetsRemoveRangeByScore(keys, '-inf', 0);
 			const counts = await db.sortedSetsCard(keys);
+			const setKeys = [];
+			const data = [];
 			for (let i = 0; i < tids.length; i++) {
 				if (counts[i] > 0) {
-					// eslint-disable-next-line no-await-in-loop
-					await db.setObjectField(`topic:${tids[i]}`, 'postercount', counts[i]);
+					setKeys.push(`topic:${tids[i]}`);
+					data.push({ postercount: counts[i] });
 				}
 			}
+			await db.setObjectBulk(setKeys, data);
 		}, {
 			progress: progress,
 			batchSize: 500,
