@@ -153,6 +153,7 @@ Upgrade.process = async function (files, skipCount) {
 		}
 
 		// Do the upgrade...
+		const upgradeStart = Date.now();
 		try {
 			await scriptExport.method.bind({
 				progress: progress,
@@ -161,8 +162,8 @@ Upgrade.process = async function (files, skipCount) {
 			console.error('Error occurred');
 			throw err;
 		}
-
-		process.stdout.write(' OK\n'.green);
+		const upgradeDuration = ((Date.now() - upgradeStart) / 1000).toFixed(2);
+		process.stdout.write(` OK (${upgradeDuration} seconds)\n`.green);
 
 		// Record success in schemaLog
 		await db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
