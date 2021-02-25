@@ -8,6 +8,7 @@ const plugins = require('.');
 const Hooks = module.exports;
 
 Hooks.deprecatedHooks = {
+	'filter:email.send': 'static:email.send',	// 👋 @ 1.18.0
 	'filter:router.page': 'response:router.page',	// 👋 @ 2.0.0
 };
 
