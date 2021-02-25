@@ -1,5 +1,9 @@
 {
-	"dashboard": "Pulpit menedżerski",
+	"section-dashboard": "Dashboards",
+	"dashboard/overview": "Overview",
+	"dashboard/logins": "Logins",
+	"dashboard/users": "Users",
+	"dashboard/topics": "Topics",
 	"section-general": "Ogólne",
 
 	"section-manage": "Zarządzanie",

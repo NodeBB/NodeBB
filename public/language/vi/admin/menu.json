@@ -1,5 +1,9 @@
 {
-	"dashboard": "Bảng điều khiển",
+	"section-dashboard": "Bảng điều khiển",
+	"dashboard/overview": "Tổng quát",
+	"dashboard/logins": "Đăng nhập",
+	"dashboard/users": "Người dùng",
+	"dashboard/topics": "Chủ đề",
 	"section-general": "Chung",
 
 	"section-manage": "Quản lý",

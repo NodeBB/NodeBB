@@ -1,5 +1,9 @@
 {
-	"dashboard": "לוח מחוונים",
+	"section-dashboard": "Dashboards",
+	"dashboard/overview": "Overview",
+	"dashboard/logins": "Logins",
+	"dashboard/users": "Users",
+	"dashboard/topics": "Topics",
 	"section-general": "כללי",
 
 	"section-manage": "ניהול",

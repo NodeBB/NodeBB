@@ -1,5 +1,9 @@
 {
-	"dashboard": "儀表板",
+	"section-dashboard": "Dashboards",
+	"dashboard/overview": "Overview",
+	"dashboard/logins": "Logins",
+	"dashboard/users": "Users",
+	"dashboard/topics": "Topics",
 	"section-general": "基本",
 
 	"section-manage": "管理",

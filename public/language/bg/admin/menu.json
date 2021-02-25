@@ -1,5 +1,9 @@
 {
-	"dashboard": "Табло",
+	"section-dashboard": "Табла",
+	"dashboard/overview": "Общ преглед",
+	"dashboard/logins": "Вписвания",
+	"dashboard/users": "Потребители",
+	"dashboard/topics": "Теми",
 	"section-general": "Общи",
 
 	"section-manage": "Управление",

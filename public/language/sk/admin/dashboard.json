@@ -76,5 +76,12 @@
 	"graphs.registered-users": "Zarestrovaný užívatelia",
 	"graphs.anonymous-users": "Neznámy užívatelia",
 	"last-restarted-by": "Posledná obnova od",
-	"no-users-browsing": "Žiadni používatelia neprehliadajú"
+	"no-users-browsing": "Žiadni používatelia neprehliadajú",
+
+	"back-to-dashboard": "Back to Dashboard",
+	"details.no-users": "No users have joined within the selected timeframe",
+	"details.no-topics": "No topics have been posted within the selected timeframe",
+	"details.no-logins": "No logins have been recorded within the selected timeframe",
+	"details.logins-static": "NodeBB only saves session data for %1 days, and so this table below will only show the most recently active sessions",
+	"details.logins-login-time": "Login Time"
 }

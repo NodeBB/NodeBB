@@ -29,14 +29,14 @@
 	"up-to-date": "<p>Bạn đã cập nhật <strong>bản mới nhất</strong> <i class=\"fa fa-check\"></i></p>",
 	"upgrade-available": "<p>Phiên bản mới (v%1) đã được phát hành. Xem xét <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">nâng cấp NodeBB của bạn</a>.</p>",
 	"prerelease-upgrade-available": "<p>Đây là bản phát hành NodeBB đã lỗi thời. Phiên bản mới (v%1) đã phát hành. Xem xét <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">nâng cấp NodeBB của bạn</a>.</p>",
-	"prerelease-warning": "<p>Đây là phiên bản NodeBB <strong>chuẩn bị công bố</strong>. Lỗi ngoài ý muốn có thể xảy ra. <i class=\"fa fa-exclamation-triangle\"></i></p>",
+	"prerelease-warning": "<p>Đây là phiên bản NodeBB <strong>trước phát hành</strong>. Lỗi ngoài ý muốn có thể xảy ra. <i class=\"fa fa-exclamation-triangle\"></i></p>",
 	"running-in-development": "<span>Diễn đàn đang chạy ở chế độ phát triển. Diễn đàn có thể mở cho các lỗ hổng tiềm ẩn; Xin vui lòng liên hệ với quản trị hệ thống của bạn.</span>",
 	"latest-lookup-failed": "<p>Không tra cứu được phiên bản NodeBB mới nhất</p>",
 
 	"notices": "Thông báo",
-	"restart-not-required": "Không yêu cầu khởi động lại",
+	"restart-not-required": "Không cần khởi động lại",
 	"restart-required": "Yêu cầu khởi động lại",
-	"search-plugin-installed": "Plugin Tìm Kiếm đã được cài đặt",
+	"search-plugin-installed": "Đã cài đặt plugin tìm kiếm",
 	"search-plugin-not-installed": "Plugin Tìm Kiếm chưa được cài đặt",
 	"search-plugin-tooltip": "Cài đặt một plugin tìm kiếm từ trang plugin để kích hoạt chức năng tìm kiếm",
 
@@ -76,5 +76,12 @@
 	"graphs.registered-users": "Thành Viên Chính Thức",
 	"graphs.anonymous-users": "Người Dùng Ẩn Danh",
 	"last-restarted-by": "Khởi động lại lần cuối bởi",
-	"no-users-browsing": "Người không xem bài"
+	"no-users-browsing": "Người không xem bài",
+
+	"back-to-dashboard": "Quay lại Bảng điều khiển",
+	"details.no-users": "Không có người dùng nào tham gia trong khung thời gian đã chọn",
+	"details.no-topics": "Không có chủ đề nào được đăng trong khung thời gian đã chọn",
+	"details.no-logins": "Không có thông tin đăng nhập nào được ghi lại trong khung thời gian đã chọn",
+	"details.logins-static": "NodeBB chỉ lưu dữ liệu phiên trong %1 ngày và do đó, bảng này bên dưới sẽ chỉ hiển thị các phiên hoạt động gần đây nhất",
+	"details.logins-login-time": "Thời gian đăng nhập"
 }
