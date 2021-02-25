@@ -216,7 +216,8 @@ Emailer.send = async (template, uid, params) => {
 		throw Error('[emailer] App not ready!');
 	}
 
-	const userData = await User.getUserFields(uid, ['email', 'username', 'email:confirmed']);
+	let userData = await User.getUserFields(uid, ['email', 'username', 'email:confirmed']);
+	({ template, userData, params } = await Plugins.hooks.fire('filter:email.prepare', { template, userData, params }));
 	if (!userData || !userData.email) {
 		if (process.env.NODE_ENV === 'development') {
 			winston.warn(`uid : ${uid} has no email, not sending "${template}" email.`);
