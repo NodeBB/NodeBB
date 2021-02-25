@@ -470,7 +470,9 @@ define('settings', ['hooks'], function (hooks) {
 		},
 		load: function (hash, formEl, callback) {
 			callback = callback || function () {};
-			socket.emit('admin.settings.get', {
+			var call = formEl.attr('data-socket-get');
+
+			socket.emit(call || 'admin.settings.get', {
 				hash: hash,
 			}, function (err, values) {
 				if (err) {
@@ -489,7 +491,7 @@ define('settings', ['hooks'], function (hooks) {
 				});
 
 				// Save loaded settings into ajaxify.data for use client-side
-				ajaxify.data.settings = values;
+				ajaxify.data[call ? hash : 'settings'] = values;
 
 				helper.whenReady(function () {
 					$(formEl).find('[data-sorted-list]').each(function (idx, el) {
@@ -537,7 +539,8 @@ define('settings', ['hooks'], function (hooks) {
 					}
 				});
 
-				socket.emit('admin.settings.set', {
+				var call = formEl.attr('data-socket-set');
+				socket.emit(call || 'admin.settings.set', {
 					hash: hash,
 					values: values,
 				}, function (err) {
@@ -545,7 +548,7 @@ define('settings', ['hooks'], function (hooks) {
 					app.flags._unsaved = false;
 
 					// Also save to local ajaxify.data
-					ajaxify.data.settings = values;
+					ajaxify.data[call ? hash : 'settings'] = values;
 
 					if (typeof callback === 'function') {
 						callback(err);

@@ -25,7 +25,7 @@ define('settings/sorted-list', [
 				values[key].push(Settings.helper.serializeForm(formData));
 			});
 		},
-		get: function ($container) {
+		get: function ($container, hash) {
 			var $list = $container.find('[data-type="list"]');
 			var key = $container.attr('data-sorted-list');
 			var formTpl = $container.attr('data-form-template');
@@ -49,7 +49,9 @@ define('settings/sorted-list', [
 					});
 				});
 
-				var list = ajaxify.data.settings[key];
+				var call = $container.parents('form').attr('data-socket-get');
+				var list = ajaxify.data[call ? hash : 'settings'][key];
+
 				if (Array.isArray(list) && typeof list[0] !== 'string') {
 					list.forEach(function (item) {
 						var itemUUID = utils.generateUUID();
