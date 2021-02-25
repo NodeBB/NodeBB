@@ -12,23 +12,26 @@ module.exports = {
 		const { progress } = this;
 
 		await batch.processSortedSet('topics:tid', async (tids) => {
-			await async.eachSeries(tids, async (tid) => {
-				const [topicData, tags] = await Promise.all([
-					topics.getTopicFields(tid, ['cid', 'timestamp']),
-					topics.getTopicTags(tid),
-				]);
+			const [topicData, tags] = await Promise.all([
+				topics.getTopicsFields(tids, ['tid', 'cid', 'timestamp']),
+				topics.getTopicsTags(tids),
+			]);
+			const topicsWithTags = topicData.map((t, i) => {
+				t.tags = tags[i];
+				return t;
+			}).filter(t => t && t.tags.length);
 
-				if (tags.length) {
-					const { cid } = topicData;
-					await async.eachSeries(tags, async (tag) => {
-						await db.sortedSetAdd(`cid:${cid}:tag:${tag}:topics`, topicData.timestamp, tid);
-						const count = await db.sortedSetCard(`cid:${cid}:tag:${tag}:topics`);
-						await db.sortedSetAdd(`cid:${cid}:tags`, count, tag);
-					});
-				}
-
-				progress.incr();
+			await async.eachSeries(topicsWithTags, async (topicObj) => {
+				const { cid, tags } = topicObj;
+				await db.sortedSetsAdd(
+					tags.map(tag => `cid:${cid}:tag:${tag}:topics`),
+					topicObj.timestamp,
+					topicObj.tid
+				);
+				const counts = await db.sortedSetsCard(tags.map(tag => `cid:${cid}:tag:${tag}:topics`));
+				await db.sortedSetAdd(`cid:${cid}:tags`, counts, tags);
 			});
+			progress.incr(tids.length);
 		}, {
 			batch: 500,
 			progress: progress,
