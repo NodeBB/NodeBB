@@ -1,6 +1,5 @@
 'use strict';
 
-const async = require('async');
 const db = require('../../database');
 const posts = require('../../posts');
 const topics = require('../../topics');
