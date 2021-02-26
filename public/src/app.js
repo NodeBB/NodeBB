@@ -412,10 +412,10 @@ app.cacheBuster = null;
 	};
 
 	app.toggleNavbar = function (state) {
-		var navbarEl = $('.navbar');
-		if (navbarEl) {
+		require(['components'], (components) => {
+			const navbarEl = components.get('navbar');
 			navbarEl[state ? 'show' : 'hide']();
-		}
+		});
 	};
 
 	function createHeaderTooltips() {
