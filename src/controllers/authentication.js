@@ -150,7 +150,14 @@ authenticationController.registerComplete = function (req, res, next) {
 		const callbacks = data.interstitials.reduce((memo, cur) => {
 			if (cur.hasOwnProperty('callback') && typeof cur.callback === 'function') {
 				req.body.files = req.files;
-				memo.push(cur.callback && cur.callback.constructor && cur.callback.constructor.name === 'AsyncFunction' ? cur.callback : util.promisify(cur.callback));
+				if (
+					(cur.callback.constructor && cur.callback.constructor.name === 'AsyncFunction') ||
+					cur.callback.length === 2	// non-async function w/o callback
+				) {
+					memo.push(cur.callback);
+				} else {
+					memo.push(util.promisify(cur.callback));
+				}
 			}
 
 			return memo;
