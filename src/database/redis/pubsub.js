@@ -10,7 +10,7 @@ let channelName;
 const PubSub = function () {
 	const self = this;
 	channelName = `db:${nconf.get('redis:database')}:pubsub_channel`;
-
+	self.queue = [];
 	connection.connect().then((client) => {
 		self.subClient = client;
 		self.subClient.subscribe(channelName);
@@ -30,13 +30,20 @@ const PubSub = function () {
 
 	connection.connect().then((client) => {
 		self.pubClient = client;
+		self.queue.forEach(payload => client.publish(channelName, payload));
+		self.queue.length = 0;
 	});
 };
 
 util.inherits(PubSub, EventEmitter);
 
 PubSub.prototype.publish = function (event, data) {
-	this.pubClient.publish(channelName, JSON.stringify({ event: event, data: data }));
+	const payload = JSON.stringify({ event: event, data: data });
+	if (this.pubClient) {
+		this.pubClient.publish(channelName, payload);
+	} else {
+		this.queue.push(payload);
+	}
 };
 
 module.exports = new PubSub();
