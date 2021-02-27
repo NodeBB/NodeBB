@@ -467,8 +467,8 @@ describe('Notifications', () => {
 			assert.ifError(err);
 			notifications.prune((err) => {
 				assert.ifError(err);
-				const week = 604800000;
-				db.sortedSetAdd('notifications', Date.now() - (2 * week), notification.nid, (err) => {
+				const month = 2592000000;
+				db.sortedSetAdd('notifications', Date.now() - (2 * month), notification.nid, (err) => {
 					assert.ifError(err);
 					notifications.prune((err) => {
 						assert.ifError(err);
