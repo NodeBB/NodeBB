@@ -318,8 +318,8 @@ Notifications.markAllRead = async function (uid) {
 };
 
 Notifications.prune = async function () {
-	const week = 604800000;
-	const cutoffTime = Date.now() - week;
+	const month = 2592000000;
+	const cutoffTime = Date.now() - month;
 	const nids = await db.getSortedSetRangeByScore('notifications', 0, 500, '-inf', cutoffTime);
 	if (!nids.length) {
 		return;

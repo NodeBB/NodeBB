@@ -18,11 +18,11 @@ UserNotifications.get = async function (uid) {
 		return { read: [], unread: [] };
 	}
 
-	let unread = await getNotificationsFromSet(`uid:${uid}:notifications:unread`, uid, 0, 29);
+	let unread = await getNotificationsFromSet(`uid:${uid}:notifications:unread`, uid, 0, 49);
 	unread = unread.filter(Boolean);
 	let read = [];
-	if (unread.length < 30) {
-		read = await getNotificationsFromSet(`uid:${uid}:notifications:read`, uid, 0, 29 - unread.length);
+	if (unread.length < 50) {
+		read = await getNotificationsFromSet(`uid:${uid}:notifications:read`, uid, 0, 49 - unread.length);
 	}
 
 	return await plugins.hooks.fire('filter:user.notifications.get', {
