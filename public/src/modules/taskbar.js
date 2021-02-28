@@ -156,7 +156,7 @@ define('taskbar', ['benchpress', 'translator'], function (Benchpress, translator
 				.addClass(data.options.className)
 				.html('<a href="#"' + (data.options.image ? ' style="background-image: url(\'' + data.options.image + '\'); background-size: cover;"' : '') + '>' +
 					(data.options.icon ? '<i class="fa ' + data.options.icon + '"></i> ' : '') +
-					'<span component="taskbar/title">' + title + '</span>' +
+					'<span aria-label="' + title + '" component="taskbar/title">' + title + '</span>' +
 					'</a>')
 				.attr({
 					title: title,
