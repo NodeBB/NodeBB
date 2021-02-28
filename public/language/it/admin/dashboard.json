@@ -78,10 +78,10 @@
 	"last-restarted-by": "Ultimo riavvio di",
 	"no-users-browsing": "Nessun utente sta navigando",
 
-	"back-to-dashboard": "Back to Dashboard",
-	"details.no-users": "No users have joined within the selected timeframe",
-	"details.no-topics": "No topics have been posted within the selected timeframe",
-	"details.no-logins": "No logins have been recorded within the selected timeframe",
-	"details.logins-static": "NodeBB only saves session data for %1 days, and so this table below will only show the most recently active sessions",
-	"details.logins-login-time": "Login Time"
+	"back-to-dashboard": "Torna alla dashboard",
+	"details.no-users": "Nessun utente si è iscritto nell'arco di tempo selezionato",
+	"details.no-topics": "Nessuna discussione è stata postata nell'arco di tempo selezionato",
+	"details.no-logins": "Non sono stati registrati accessi nell'arco di tempo selezionato",
+	"details.logins-static": "NodeBB salva solo i dati di sessione per %1 giorni, quindi la tabella qui sotto mostrerà solo le sessioni attive più recenti",
+	"details.logins-login-time": "Tempo di accesso"
 }
