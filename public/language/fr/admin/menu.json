@@ -1,9 +1,9 @@
 {
-	"section-dashboard": "Dashboards",
-	"dashboard/overview": "Overview",
-	"dashboard/logins": "Logins",
-	"dashboard/users": "Users",
-	"dashboard/topics": "Topics",
+	"section-dashboard": "Tableau de bord",
+	"dashboard/overview": "Aperçu",
+	"dashboard/logins": "Connexions",
+	"dashboard/users": "Utilisateurs",
+	"dashboard/topics": "Sujets",
 	"section-general": "Général",
 
 	"section-manage": "Gestion",

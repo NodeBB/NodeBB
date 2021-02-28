@@ -2,7 +2,7 @@
 	"forum-traffic": "Forum Traffic",
 	"page-views": "Seitenaufrufe",
 	"unique-visitors": "Individuelle Besucher",
-	"logins": "Logins",
+	"logins": "Anmeldungen",
 	"new-users": "Neue nutzende Person",
 	"posts": "Beiträge",
 	"topics": "Themen",
@@ -15,12 +15,12 @@
 	"page-views-custom-help": "Gib eine Zeitspanne an, in dem du die Besichtigungszahlen ansehen willst. Sollte keine Kalenderauswahl verfügbar sein ist das akzeptierte format <code>YYYY-MM-DD</code>",
 	"page-views-custom-error": "Bitte gib eine gültige Zeitspanne im Format <code>YYYY-MM-DD</code> an",
 
-	"stats.yesterday": "Yesterday",
-	"stats.today": "Today",
-	"stats.last-week": "Last Week",
-	"stats.this-week": "This Week",
-	"stats.last-month": "Last Month",
-	"stats.this-month": "This Month",
+	"stats.yesterday": "Gestern",
+	"stats.today": "Heute",
+	"stats.last-week": "Letzte Woche",
+	"stats.this-week": "Diese Woche",
+	"stats.last-month": "Letzter Monat",
+	"stats.this-month": "Dieser Monat",
 	"stats.all": "Alle",
 
 	"updates": "Updates",
@@ -78,10 +78,10 @@
 	"last-restarted-by": "Zuletzt Neugestartet von: ",
 	"no-users-browsing": "Keine aktiven Benutzer",
 
-	"back-to-dashboard": "Back to Dashboard",
-	"details.no-users": "No users have joined within the selected timeframe",
-	"details.no-topics": "No topics have been posted within the selected timeframe",
-	"details.no-logins": "No logins have been recorded within the selected timeframe",
-	"details.logins-static": "NodeBB only saves session data for %1 days, and so this table below will only show the most recently active sessions",
-	"details.logins-login-time": "Login Time"
+	"back-to-dashboard": "Zurück zur Übersicht",
+	"details.no-users": "Keine Benutzer sind im gewählten Zeitraum beigetreten",
+	"details.no-topics": "Keine Themen wurden im gewählten Zeitraum beigetreten",
+	"details.no-logins": "Keine Logins wurden im gewählten Zeitraum festgestellt",
+	"details.logins-static": "NodeBB speichert Sitzungsdaten nur für %1 Tage, deshalb zeigt die untere Tabelle nur die neuesten, aktiven Sitzungen",
+	"details.logins-login-time": "Anmelde Zeit"
 }
