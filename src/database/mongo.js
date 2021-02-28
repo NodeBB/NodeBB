@@ -4,7 +4,6 @@
 
 const winston = require('winston');
 const nconf = require('nconf');
-const session = require('express-session');
 const semver = require('semver');
 const prompt = require('prompt');
 const utils = require('../utils');
@@ -66,11 +65,11 @@ mongoModule.init = async function () {
 };
 
 mongoModule.createSessionStore = async function (options) {
-	const client = await connection.connect(options);
+	const { default: MongoStore } = require('connect-mongo');
 	const meta = require('../meta');
-	const sessionStore = require('connect-mongo')(session);
-	const store = new sessionStore({
-		client: client,
+
+	const store = MongoStore.create({
+		clientPromise: connection.connect(options),
 		ttl: meta.getSessionTTLSeconds(),
 	});
 
