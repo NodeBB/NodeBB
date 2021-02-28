@@ -38,6 +38,8 @@ Notifications.privilegedTypes = [
 	'notificationType_new-user-flag',
 ];
 
+const notificationPruneCutoff = 2592000000; // one month
+
 Notifications.getAllNotificationTypes = async function () {
 	const results = await plugins.hooks.fire('filter:user.notificationTypes', {
 		types: Notifications.baseTypes.slice(),
@@ -159,13 +161,12 @@ async function pushToUids(uids, notification) {
 		if (!uids.length) {
 			return;
 		}
-		const oneWeekAgo = Date.now() - 604800000;
+		const cutoff = Date.now() - notificationPruneCutoff;
 		const unreadKeys = uids.map(uid => `uid:${uid}:notifications:unread`);
 		const readKeys = uids.map(uid => `uid:${uid}:notifications:read`);
 		await db.sortedSetsAdd(unreadKeys, notification.datetime, notification.nid);
 		await db.sortedSetsRemove(readKeys, notification.nid);
-		await db.sortedSetsRemoveRangeByScore(unreadKeys, '-inf', oneWeekAgo);
-		await db.sortedSetsRemoveRangeByScore(readKeys, '-inf', oneWeekAgo);
+		await db.sortedSetsRemoveRangeByScore(unreadKeys.concat(readKeys), '-inf', cutoff);
 		const websockets = require('./socket.io');
 		if (websockets.server) {
 			uids.forEach((uid) => {
@@ -318,8 +319,7 @@ Notifications.markAllRead = async function (uid) {
 };
 
 Notifications.prune = async function () {
-	const month = 2592000000;
-	const cutoffTime = Date.now() - month;
+	const cutoffTime = Date.now() - notificationPruneCutoff;
 	const nids = await db.getSortedSetRangeByScore('notifications', 0, 500, '-inf', cutoffTime);
 	if (!nids.length) {
 		return;
