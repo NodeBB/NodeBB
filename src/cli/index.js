@@ -116,7 +116,7 @@ program
 	.command('start')
 	.description('Start the NodeBB server')
 	.action(() => {
-		require('./running').start(program);
+		require('./running').start(program.opts());
 	});
 program
 	.command('slog', null, {
@@ -124,8 +124,7 @@ program
 	})
 	.description('Start the NodeBB server and view the live output log')
 	.action(() => {
-		program.log = true;
-		require('./running').start(program);
+		require('./running').start({ ...program.opts(), log: true });
 	});
 program
 	.command('dev', null, {
@@ -133,34 +132,33 @@ program
 	})
 	.description('Start NodeBB in verbose development mode')
 	.action(() => {
-		program.dev = true;
 		process.env.NODE_ENV = 'development';
 		global.env = 'development';
-		require('./running').start(program);
+		require('./running').start({ ...program.opts(), dev: true });
 	});
 program
 	.command('stop')
 	.description('Stop the NodeBB server')
 	.action(() => {
-		require('./running').stop(program);
+		require('./running').stop(program.opts());
 	});
 program
 	.command('restart')
 	.description('Restart the NodeBB server')
 	.action(() => {
-		require('./running').restart(program);
+		require('./running').restart(program.opts());
 	});
 program
 	.command('status')
 	.description('Check the running status of the NodeBB server')
 	.action(() => {
-		require('./running').status(program);
+		require('./running').status(program.opts());
 	});
 program
 	.command('log')
 	.description('Open the output log (useful for debugging)')
 	.action(() => {
-		require('./running').log(program);
+		require('./running').log(program.opts());
 	});
 
 // management commands
@@ -193,7 +191,7 @@ program
 	.description(`Compile static assets ${'(JS, CSS, templates, languages)'.red}`)
 	.option('-s, --series', 'Run builds in series without extra processes')
 	.action((targets, options) => {
-		if (program.dev) {
+		if (program.opts().dev) {
 			process.env.NODE_ENV = 'development';
 			global.env = 'development';
 		}
