@@ -22,16 +22,9 @@
             "test/*"
         ]
     },
-    "husky": {
-        "hooks": {
-            "pre-commit": "npx lint-staged",
-            "commit-msg": "npx commitlint -E HUSKY_GIT_PARAMS"
-        }
-    },
     "lint-staged": {
         "*.js": [
-            "eslint --fix",
-            "git add"
+            "eslint --fix"
         ]
     },
     "dependencies": {
