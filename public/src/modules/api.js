@@ -1,6 +1,6 @@
 'use strict';
 
-define('api', () => {
+define('api', ['hooks'], (hooks) => {
 	const api = {};
 	const baseUrl = config.relative_path + '/api/v3';
 
@@ -9,7 +9,10 @@ define('api', () => {
 			config.relative_path + options.url :
 			baseUrl + options.url;
 
-		function doAjax(cb) {
+		async function doAjax(cb) {
+			// Allow options to be modified by plugins, etc.
+			({ options } = await hooks.fire('filter:api.options', { options }));
+
 			$.ajax(options)
 				.done((res) => {
 					cb(null, (
