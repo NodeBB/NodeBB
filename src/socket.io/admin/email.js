@@ -10,6 +10,7 @@ const Email = module.exports;
 
 Email.test = async function (socket, data) {
 	const payload = {
+		...(data.payload || {}),
 		subject: '[[email:test-email.subject]]',
 	};
 
