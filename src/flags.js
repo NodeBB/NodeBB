@@ -443,7 +443,10 @@ Flags.create = async function (type, id, uid, reason, timestamp) {
 		Flags.update(flagId, uid, { state: 'open' });
 	}
 
-	return await Flags.get(flagId);
+	const flagObj = await Flags.get(flagId);
+
+	plugins.hooks.fire('action:flags.create', { flag: flagObj });
+	return flagObj;
 };
 
 Flags.getReports = async function (flagId) {
@@ -474,6 +477,8 @@ Flags.addReport = async function (flagId, type, id, uid, reason, timestamp) {
 
 		['flags:hash', flagId, [type, id, uid].join(':')],
 	]);
+
+	plugins.fireHook('action:flags.addReport', { flagId, type, id, uid, reason, timestamp });
 };
 
 Flags.exists = async function (type, id, uid) {
@@ -743,9 +748,11 @@ Flags.notify = async function (flagObj, uid) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	plugins.hooks.fire('action:flags.create', {
+	plugins.hooks.fire('action:flags.notify', {
 		flag: flagObj,
-		uid: uid,
+		notification: notifObj,
+		from: uid,
+		to: uids,
 	});
 	uids = uids.filter(_uid => parseInt(_uid, 10) !== parseInt(uid, 10));
 	await notifications.push(notifObj, uids);
