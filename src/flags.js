@@ -745,6 +745,7 @@ Flags.notify = async function (flagObj, uid) {
 
 	plugins.hooks.fire('action:flags.create', {
 		flag: flagObj,
+		uid: uid,
 	});
 	uids = uids.filter(_uid => parseInt(_uid, 10) !== parseInt(uid, 10));
 	await notifications.push(notifObj, uids);
