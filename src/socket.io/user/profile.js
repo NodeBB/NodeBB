@@ -36,6 +36,7 @@ module.exports = function (SocketUser) {
 		}
 		await user.isAdminOrGlobalModOrSelf(socket.uid, data.uid);
 		await user.checkMinReputation(socket.uid, data.uid, 'min:rep:profile-picture');
+		data.callerUid = socket.uid;
 		return await user.uploadCroppedPicture(data);
 	};
 

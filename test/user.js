@@ -1156,6 +1156,7 @@ describe('User', () => {
 				type: 'image/png',
 			};
 			User.uploadCroppedPicture({
+				callerUid: uid,
 				uid: uid,
 				file: picture,
 			}, (err) => {
@@ -1167,6 +1168,7 @@ describe('User', () => {
 
 		it('should return error if profile image has no mime type', (done) => {
 			User.uploadCroppedPicture({
+				callerUid: uid,
 				uid: uid,
 				imageData: 'data:image/invalid;base64,R0lGODlhPQBEAPeoAJosM/',
 			}, (err) => {
@@ -1189,6 +1191,7 @@ describe('User', () => {
 				const temp = meta.config.maximumProfileImageSize;
 				meta.config.maximumProfileImageSize = 1;
 				User.uploadCroppedPicture({
+					callerUid: uid,
 					uid: 1,
 					imageData: goodImage,
 				}, (err) => {
@@ -1202,6 +1205,7 @@ describe('User', () => {
 
 			it('should not allow image data with bad MIME type to be passed in', (done) => {
 				User.uploadCroppedPicture({
+					callerUid: uid,
 					uid: 1,
 					imageData: badImage,
 				}, (err) => {
