@@ -274,7 +274,7 @@ function continueLogin(strategy, req, res, next) {
 
 		// Alter user cookie depending on passed-in option
 		if (req.body.remember === 'on') {
-			const duration = 1000 * 60 * 60 * 24 * meta.config.loginDays;
+			const duration = meta.getSessionTTLSeconds() * 1000;
 			req.session.cookie.maxAge = duration;
 			req.session.cookie.expires = new Date(Date.now() + duration);
 		} else {
