@@ -1,6 +1,7 @@
 
 'use strict';
 
+const _ = require('lodash');
 const async = require('async');
 const validator = require('validator');
 const winston = require('winston');
@@ -13,11 +14,14 @@ const groups = require('../groups');
 const plugins = require('../plugins');
 
 module.exports = function (User) {
-	User.updateProfile = async function (uid, data) {
+	User.updateProfile = async function (uid, data, extraFields) {
 		let fields = [
 			'username', 'email', 'fullname', 'website', 'location',
 			'groupTitle', 'birthday', 'signature', 'aboutme',
 		];
+		if (Array.isArray(extraFields)) {
+			fields = _.uniq(fields.concat(extraFields));
+		}
 		if (!data.uid) {
 			throw new Error('[[error:invalid-update-uid]]');
 		}

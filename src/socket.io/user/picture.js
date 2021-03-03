@@ -38,10 +38,11 @@ module.exports = function (SocketUser) {
 			data.bgColor = validBackgrounds[0];
 		}
 
-		await user.setUserFields(data.uid, {
-			picture,
+		await user.updateProfile(socket.uid, {
+			uid: data.uid,
+			picture: picture,
 			'icon:bgColor': data.bgColor,
-		});
+		}, ['picture', 'icon:bgColor']);
 	};
 
 	SocketUser.removeUploadedPicture = async function (socket, data) {

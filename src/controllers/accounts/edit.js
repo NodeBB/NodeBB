@@ -134,6 +134,7 @@ editController.uploadPicture = async function (req, res, next) {
 		await user.checkMinReputation(req.uid, updateUid, 'min:rep:profile-picture');
 
 		const image = await user.uploadCroppedPictureFile({
+			callerUid: req.uid,
 			uid: updateUid,
 			file: userPhoto,
 		});

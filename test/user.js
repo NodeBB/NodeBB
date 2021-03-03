@@ -871,7 +871,7 @@ describe('User', () => {
 					signature: 'nodebb is good',
 					password: '123456',
 				};
-				socketUser.updateProfile({ uid: uid }, { ...data, password: '123456' }, (err, result) => {
+				socketUser.updateProfile({ uid: uid }, { ...data, password: '123456', invalid: 'field' }, (err, result) => {
 					assert.ifError(err);
 
 					assert.equal(result.username, 'updatedUserName');
@@ -887,6 +887,8 @@ describe('User', () => {
 								assert(userData[key].startsWith('$2a$'));
 							}
 						});
+						// updateProfile only saves valid fields
+						assert.strictEqual(userData.invalid, undefined);
 						done();
 					});
 				});

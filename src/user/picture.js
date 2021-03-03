@@ -108,10 +108,11 @@ module.exports = function (User) {
 		});
 
 		await deleteCurrentPicture(data.uid, 'uploadedpicture');
-		await User.setUserFields(data.uid, {
+		await User.updateProfile(data.callerUid, {
+			uid: data.uid,
 			uploadedpicture: uploadedImage.url,
 			picture: uploadedImage.url,
-		});
+		}, ['uploadedpicture', 'picture']);
 		return uploadedImage;
 	};
 
