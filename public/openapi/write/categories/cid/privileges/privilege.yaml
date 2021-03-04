@@ -80,7 +80,7 @@ put:
 delete:
   tags:
     - categories
-  summary: Resvinds category privilege for user/group
+  summary: Rescinds category privilege for user/group
   description: This operation rescinds a category privilege for a specific user or group
   parameters:
     - in: path
