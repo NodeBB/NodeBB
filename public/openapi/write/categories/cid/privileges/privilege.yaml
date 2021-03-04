@@ -1,0 +1,158 @@
+put:
+  tags:
+    - categories
+  summary: Grant category privilege for user/group
+  description: This operation grants a category privilege for a specific user or group
+  parameters:
+    - in: path
+      name: cid
+      schema:
+        type: string
+      required: true
+      description: a valid category id, `0` for global privileges, `admin` for admin privileges
+      example: 1
+    - in: path
+      name: privilege
+      schema:
+        type: string
+      required: true
+      description: The specific privilege you would like to grant. Privileges for groups must be prefixed `group:`
+      example: 'groups:ban'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            member:
+              type: string
+              description: A valid user id or group name
+              example: 'guests'
+  responses:
+    '200':
+      description: Privilege successfully granted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        nameEscaped:
+                          type: string
+                        privileges:
+                          type: object
+                          additionalProperties:
+                            type: boolean
+                            description: A set of privileges with either true or false
+                        isPrivate:
+                          type: boolean
+                        isSystem:
+                          type: boolean
+                  groups:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        nameEscaped:
+                          type: string
+                        privileges:
+                          type: object
+                          additionalProperties:
+                            type: boolean
+                            description: A set of privileges with either true or false
+                        isPrivate:
+                          type: boolean
+                        isSystem:
+                          type: boolean
+delete:
+  tags:
+    - categories
+  summary: Resvinds category privilege for user/group
+  description: This operation rescinds a category privilege for a specific user or group
+  parameters:
+    - in: path
+      name: cid
+      schema:
+        type: string
+      required: true
+      description: a valid category id, `0` for global privileges, `admin` for admin privileges
+      example: 1
+    - in: path
+      name: privilege
+      schema:
+        type: string
+      required: true
+      description: The specific privilege you would like to rescind. Privileges for groups must be prefixed `group:`
+      example: 'groups:ban'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            member:
+              type: string
+              description: A valid user id or group name
+              example: 'guests'
+  responses:
+    '200':
+      description: Privilege successfully rescinded
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        nameEscaped:
+                          type: string
+                        privileges:
+                          type: object
+                          additionalProperties:
+                            type: boolean
+                            description: A set of privileges with either true or false
+                        isPrivate:
+                          type: boolean
+                        isSystem:
+                          type: boolean
+                  groups:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        nameEscaped:
+                          type: string
+                        privileges:
+                          type: object
+                          additionalProperties:
+                            type: boolean
+                            description: A set of privileges with either true or false
+                        isPrivate:
+                          type: boolean
+                        isSystem:
+                          type: boolean

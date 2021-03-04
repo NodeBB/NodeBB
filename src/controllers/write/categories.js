@@ -42,3 +42,27 @@ Categories.delete = async (req, res) => {
 	await api.categories.delete(req, { cid: req.params.cid });
 	helpers.formatApiResponse(200, res);
 };
+
+Categories.getPrivileges = async (req, res) => {
+	if (!await privileges.admin.can('admin:privileges', req.uid)) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	const privilegeSet = await api.categories.getPrivileges(req, req.params.cid);
+	helpers.formatApiResponse(200, res, privilegeSet);
+};
+
+Categories.setPrivilege = async (req, res) => {
+	if (!await privileges.admin.can('admin:privileges', req.uid)) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	await api.categories.setPrivilege(req, {
+		...req.params,
+		member: req.body.member,
+		set: req.method === 'PUT',
+	});
+
+	const privilegeSet = await api.categories.getPrivileges(req, req.params.cid);
+	helpers.formatApiResponse(200, res, privilegeSet);
+};

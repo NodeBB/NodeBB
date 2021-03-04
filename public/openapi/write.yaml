@@ -82,6 +82,10 @@ paths:
     $ref: 'write/categories.yaml'
   /categories/{cid}:
     $ref: 'write/categories/cid.yaml'
+  /categories/{cid}/privileges:
+    $ref: 'write/categories/cid/privileges.yaml'
+  /categories/{cid}/privileges/{privilege}:
+    $ref: 'write/categories/cid/privileges/privilege.yaml'
   /topics/:
     $ref: 'write/topics.yaml'
   /topics/{tid}:

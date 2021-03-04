@@ -29,6 +29,8 @@
 								{function.spawnPrivilegeStates, privileges.groups.name, ../privileges}
 							</tr>
 							<!-- END privileges.groups -->
+						</tbody>
+						<tfoot>
 							<tr>
 								<td colspan="{privileges.columnCount}">
 									<div class="btn-toolbar">
@@ -39,7 +41,7 @@
 									</div>
 								</td>
 							</tr>
-						</tbody>
+						</tfoot>
 					</table>
 					<div class="help-block">
 						[[admin/manage/categories:privileges.inherit]]

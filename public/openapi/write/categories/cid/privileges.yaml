@@ -1,0 +1,62 @@
+get:
+  tags:
+    - categories
+  summary: get a category's privilege set
+  description: This operation retrieves a category's privilege set.
+  parameters:
+    - in: path
+      name: cid
+      schema:
+        type: string
+      required: true
+      description: a valid category id, `0` for global privileges, `admin` for admin privileges
+      example: 1
+  responses:
+    '200':
+      description: Category privileges successfully retrieved
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        nameEscaped:
+                          type: string
+                        privileges:
+                          type: object
+                          additionalProperties:
+                            type: boolean
+                            description: A set of privileges with either true or false
+                        isPrivate:
+                          type: boolean
+                        isSystem:
+                          type: boolean
+                  groups:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        nameEscaped:
+                          type: string
+                        privileges:
+                          type: object
+                          additionalProperties:
+                            type: boolean
+                            description: A set of privileges with either true or false
+                        isPrivate:
+                          type: boolean
+                        isSystem:
+                          type: boolean

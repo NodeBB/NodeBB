@@ -1,13 +1,14 @@
 'use strict';
 
 define('admin/manage/privileges', [
+	'api',
 	'autocomplete',
 	'bootbox',
 	'translator',
 	'categorySelector',
 	'mousetrap',
 	'admin/modules/checkboxRowSelector',
-], function (autocomplete, bootbox, translator, categorySelector, mousetrap, checkboxRowSelector) {
+], function (api, autocomplete, bootbox, translator, categorySelector, mousetrap, checkboxRowSelector) {
 	var Privileges = {};
 
 	var cid;
@@ -141,9 +142,17 @@ define('admin/manage/privileges', [
 			return Privileges.setPrivilege(member, privilege, state);
 		});
 
-		Promise.allSettled(requests).then(function () {
+		Promise.allSettled(requests).then((results) => {
 			Privileges.refreshPrivilegeTable();
-			app.alertSuccess('[[admin/manage/privileges:alert.saved]]');
+
+			const rejects = results.filter(r => r.status === 'rejected');
+			if (rejects.length) {
+				rejects.forEach((result) => {
+					app.alertError(result.reason);
+				});
+			} else {
+				app.alertSuccess('[[admin/manage/privileges:alert.saved]]');
+			}
 		});
 	};
 
@@ -153,23 +162,21 @@ define('admin/manage/privileges', [
 	};
 
 	Privileges.refreshPrivilegeTable = function (groupToHighlight) {
-		socket.emit('admin.categories.getPrivilegeSettings', cid, function (err, privileges) {
-			if (err) {
-				return app.alertError(err.message);
-			}
-
-			ajaxify.data.privileges = privileges;
+		api.get(`/categories/${cid}/privileges`, {}).then((privileges) => {
+			ajaxify.data.privileges = { ...ajaxify.data.privileges, ...privileges };
 			var tpl = parseInt(cid, 10) ? 'admin/partials/privileges/category' : 'admin/partials/privileges/global';
-			app.parseAndTranslate(tpl, {
-				privileges: privileges,
-			}, function (html) {
-				$('.privilege-table-container').html(html);
+			Promise.all([
+				app.parseAndTranslate(tpl, 'privileges.groups', { privileges }),
+				app.parseAndTranslate(tpl, 'privileges.users', { privileges }),
+			]).then((html) => {
+				$('.privilege-table-container tbody').first().html(html[0]);
+				$('.privilege-table-container tbody').last().html(html[1]);
 				Privileges.exposeAssumedPrivileges();
 				checkboxRowSelector.updateAll();
 
 				hightlightRowByDataAttr('data-group-name', groupToHighlight);
 			});
-		});
+		}).catch(app.alertError);
 	};
 
 	Privileges.exposeAssumedPrivileges = function (isBanned) {
@@ -195,23 +202,7 @@ define('admin/manage/privileges', [
 		applyPrivileges(registeredUsersPrivs, getRegisteredUsersInputSelector);
 	};
 
-	Privileges.setPrivilege = function (member, privilege, state) {
-		return new Promise(function (resolve, reject) {
-			socket.emit('admin.categories.setPrivilege', {
-				cid: isNaN(cid) ? 0 : cid,
-				privilege: privilege,
-				set: state,
-				member: member,
-			}, function (err) {
-				if (err) {
-					reject(err);
-					return app.alertError(err.message);
-				}
-
-				resolve();
-			});
-		});
-	};
+	Privileges.setPrivilege = (member, privilege, state) => api[state ? 'put' : 'delete'](`/categories/${isNaN(cid) ? 0 : cid}/privileges/${privilege}`, { member });
 
 	Privileges.addUserToPrivilegeTable = function () {
 		var modal = bootbox.dialog({
