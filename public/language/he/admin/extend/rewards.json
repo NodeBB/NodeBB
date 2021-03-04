@@ -1,7 +1,7 @@
 {
 	"rewards": "תגמולים",
-	"condition-if-users": "אם משתמש",
-	"condition-is": "לערך:",
+	"condition-if-users": "אם",
+	"condition-is": "הינו:",
 	"condition-then": "תגמל ב:",
 	"max-claims": "מספר פעמים בה ניתן לדרוש תגמול",
 	"zero-infinite": "הזן 0 ללא הגבלה",
