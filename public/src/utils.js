@@ -769,27 +769,5 @@
 		},
 	};
 
-	/* eslint "no-extend-native": "off" */
-	if (typeof String.prototype.startsWith !== 'function') {
-		String.prototype.startsWith = function (prefix) {
-			if (this.length < prefix.length) {
-				return false;
-			}
-			return this.slice(0, prefix.length) === prefix;
-		};
-	}
-
-	if (typeof String.prototype.endsWith !== 'function') {
-		String.prototype.endsWith = function (suffix) {
-			if (this.length < suffix.length) {
-				return false;
-			}
-			if (suffix.length === 0) {
-				return true;
-			}
-			return this.slice(-suffix.length) === suffix;
-		};
-	}
-
 	return utils;
 }));
