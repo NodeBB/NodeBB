@@ -110,7 +110,7 @@ Controllers.login = async function (req, res) {
 	}
 
 	// Occasionally, x-return-to is passed a full url. Also, connect-ensure-login passes the relative path. Strip both.
-	req.session.returnTo = req.session.returnTo.replace(nconf.get('base_url'), '').replace(nconf.get('relative_path'), '');
+	req.session.returnTo = req.session.returnTo && req.session.returnTo.replace(nconf.get('base_url'), '').replace(nconf.get('relative_path'), '');
 
 	data.alternate_logins = loginStrategies.length > 0;
 	data.authentication = loginStrategies;
