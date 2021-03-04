@@ -21,7 +21,6 @@ const JS = module.exports;
 
 JS.scripts = {
 	base: [
-		'node_modules/promise-polyfill/dist/polyfill.js',
 		'node_modules/socket.io-client/dist/socket.io.js',
 		'node_modules/requirejs/require.js',
 		'public/src/require-config.js',
