@@ -97,7 +97,6 @@ Controllers.login = async function (req, res) {
 	const loginStrategies = require('../routes/authentication').getLoginStrategies();
 	const registrationType = meta.config.registrationType || 'normal';
 	const allowLoginWith = (meta.config.allowLoginWith || 'username-email');
-	const returnTo = (req.headers['x-return-to'] || '').replace(nconf.get('base_url') + nconf.get('relative_path'), '');
 
 	let errorText;
 	if (req.query.error === 'csrf-invalid') {
@@ -106,9 +105,12 @@ Controllers.login = async function (req, res) {
 		errorText = validator.escape(String(req.query.error));
 	}
 
-	if (returnTo) {
-		req.session.returnTo = returnTo;
+	if (req.headers['x-return-to']) {
+		req.session.returnTo = req.headers['x-return-to'];
 	}
+
+	// Occasionally, x-return-to is passed a full url. Also, connect-ensure-login passes the relative path. Strip both.
+	req.session.returnTo = req.session.returnTo.replace(nconf.get('base_url'), '').replace(nconf.get('relative_path'), '');
 
 	data.alternate_logins = loginStrategies.length > 0;
 	data.authentication = loginStrategies;
