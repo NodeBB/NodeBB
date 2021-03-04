@@ -63,11 +63,9 @@ define('hooks', [], () => {
 	};
 
 	const _fireActionHook = (hookName, data) => {
-		if (!Hooks.hasListeners(hookName)) {
-			return;
+		if (Hooks.hasListeners(hookName)) {
+			Hooks.loaded[hookName].forEach(listener => listener(data));
 		}
-
-		Hooks.loaded[hookName].forEach(listener => listener(data));
 
 		// Backwards compatibility (remove this when we eventually remove jQuery from NodeBB core)
 		$(window).trigger(hookName, data);
