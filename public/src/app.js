@@ -736,21 +736,29 @@ app.cacheBuster = null;
 	};
 
 	app.parseAndTranslate = function (template, blockName, data, callback) {
-		require(['translator', 'benchpress'], function (translator, Benchpress) {
-			if (typeof blockName !== 'string') {
-				callback = data;
-				data = blockName;
-				blockName = undefined;
-			}
+		if (typeof blockName !== 'string') {
+			callback = data;
+			data = blockName;
+			blockName = undefined;
+		}
 
-			Benchpress.render(template, data, blockName)
-				.then(rendered => translator.translate(rendered))
-				.then(translated => translator.unescape(translated))
-				.then(
-					result => setTimeout(callback, 0, $(result)),
-					err => console.error(err)
-				);
-		});
+		const execute = (resolve, reject) => {
+			require(['translator', 'benchpress'], function (translator, Benchpress) {
+				Benchpress.render(template, data, blockName)
+					.then(rendered => translator.translate(rendered))
+					.then(translated => translator.unescape(translated))
+					.then(resolve, reject);
+			});
+		};
+
+		if (callback) {
+			execute(
+				result => setTimeout(callback, 0, $(result)),
+				err => console.error(err)
+			);
+		} else {
+			return new Promise(execute).then(html => $(html));
+		}
 	};
 
 	app.showCookieWarning = function () {
