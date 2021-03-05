@@ -273,7 +273,7 @@ async function listen() {
 		server.listen(...args.concat([function (err) {
 			const onText = `${isSocket ? socketPath : `${bind_address}:${port}`}`;
 			if (err) {
-				winston.info(`[startup] NodeBB was unable to listen on: ${onText}`);
+				winston.error(`[startup] NodeBB was unable to listen on: ${onText}`);
 				reject(err);
 			}
 
