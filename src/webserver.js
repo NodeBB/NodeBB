@@ -12,7 +12,6 @@ const app = express();
 app.renderAsync = util.promisify((tpl, data, callback) => app.render(tpl, data, callback));
 let server;
 const winston = require('winston');
-const async = require('async');
 const flash = require('connect-flash');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
@@ -91,7 +90,7 @@ exports.listen = async function () {
 
 	plugins.hooks.fire('action:nodebb.ready');
 
-	await util.promisify(listen)();
+	await listen();
 };
 
 async function initializeNodeBB() {
@@ -227,8 +226,7 @@ function setupCookie() {
 	return cookie;
 }
 
-function listen(callback) {
-	callback = callback || function () { };
+async function listen() {
 	let port = nconf.get('port');
 	const isSocket = isNaN(port) && !Array.isArray(port);
 	const socketPath = isSocket ? nconf.get('port') : '';
@@ -261,63 +259,59 @@ function listen(callback) {
 	const args = isSocket ? [socketPath] : [port, bind_address];
 	let oldUmask;
 
-	args.push((err) => {
-		if (err) {
-			winston.info(`[startup] NodeBB was unable to listen on: ${bind_address}:${port}`);
-			process.exit();
-		}
-
-		winston.info(`NodeBB is now listening on: ${isSocket ? socketPath : `${bind_address}:${port}`}`);
-		if (oldUmask) {
-			process.umask(oldUmask);
-		}
-		callback();
-	});
-
-	// Alter umask if necessary
 	if (isSocket) {
 		oldUmask = process.umask('0000');
-		module.exports.testSocket(socketPath, (err) => {
+		try {
+			await exports.testSocket(socketPath);
+		} catch (err) {
+			winston.error(`[startup] NodeBB was unable to secure domain socket access (${socketPath})\n${err.stack}`);
+			throw err;
+		}
+	}
+
+	return new Promise((resolve, reject) => {
+		server.listen(...args.concat([function (err) {
+			const onText = `${isSocket ? socketPath : `${bind_address}:${port}`}`;
 			if (err) {
-				winston.error(`[startup] NodeBB was unable to secure domain socket access (${socketPath})\n${err.stack}`);
-				throw err;
+				winston.info(`[startup] NodeBB was unable to listen on: ${onText}`);
+				reject(err);
 			}
 
-			server.listen(...args);
-		});
-	} else {
-		server.listen(...args);
-	}
+			winston.info(`NodeBB is now listening on: ${onText}`);
+			if (oldUmask) {
+				process.umask(oldUmask);
+			}
+			resolve();
+		}]));
+	});
 }
 
-exports.testSocket = function (socketPath, callback) {
+exports.testSocket = async function (socketPath) {
 	if (typeof socketPath !== 'string') {
-		return callback(new Error(`invalid socket path : ${socketPath}`));
+		throw new Error(`invalid socket path : ${socketPath}`);
 	}
 	const net = require('net');
 	const file = require('./file');
-	async.series([
-		function (next) {
-			file.exists(socketPath, (err, exists) => {
-				if (exists) {
-					next();
-				} else {
-					callback(err);
-				}
+	const exists = await file.exists(socketPath);
+	if (!exists) {
+		return;
+	}
+	return new Promise((resolve, reject) => {
+		const testSocket = new net.Socket();
+		testSocket.on('error', (err) => {
+			if (err.code !== 'ECONNREFUSED') {
+				return reject(err);
+			}
+			// The socket was stale, kick it out of the way
+			fs.unlink(socketPath, (err) => {
+				if (err) reject(err); else resolve();
 			});
-		},
-		function (next) {
-			const testSocket = new net.Socket();
-			testSocket.on('error', (err) => {
-				next(err.code !== 'ECONNREFUSED' ? err : null);
-			});
-			testSocket.connect({ path: socketPath }, () => {
-				// Something's listening here, abort
-				callback(new Error('port-in-use'));
-			});
-		},
-		async.apply(fs.unlink, socketPath),	// The socket was stale, kick it out of the way
-	], callback);
+		});
+		testSocket.connect({ path: socketPath }, () => {
+			// Something's listening here, abort
+			reject(new Error('port-in-use'));
+		});
+	});
 };
 
 require('./promisify')(exports);
