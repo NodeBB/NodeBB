@@ -742,23 +742,21 @@ app.cacheBuster = null;
 			blockName = undefined;
 		}
 
-		const execute = (resolve, reject) => {
+		return new Promise((resolve, reject) => {
 			require(['translator', 'benchpress'], function (translator, Benchpress) {
 				Benchpress.render(template, data, blockName)
 					.then(rendered => translator.translate(rendered))
 					.then(translated => translator.unescape(translated))
 					.then(resolve, reject);
 			});
-		};
+		}).then((html) => {
+			html = $(html);
+			if (callback && typeof callback === 'function') {
+				setTimeout(callback, 0, html);
+			}
 
-		if (callback) {
-			execute(
-				result => setTimeout(callback, 0, $(result)),
-				err => console.error(err)
-			);
-		} else {
-			return new Promise(execute).then(html => $(html));
-		}
+			return html;
+		});
 	};
 
 	app.showCookieWarning = function () {
