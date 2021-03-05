@@ -81,6 +81,8 @@
 								{function.spawnPrivilegeStates, privileges.users.username, ../privileges}
 							</tr>
 							<!-- END privileges.users -->
+						</tbody>
+						<tfoot>
 							<tr>
 								<td colspan="{privileges.columnCount}">
 									<button type="button" class="btn btn-default pull-right" data-ajaxify="false" data-action="search.user">
@@ -89,5 +91,5 @@
 									</button>
 								</td>
 							</tr>
-						</tbody>
+						</tfoot>
 					</table>
