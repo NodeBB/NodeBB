@@ -106,9 +106,13 @@ module.exports = function (User) {
 			return;
 		}
 		data.username = data.username.trim();
-		const userData = await User.getUserFields(uid, ['username', 'userslug']);
-		if (userData.username === data.username) {
-			return;
+
+		let userData;
+		if (uid) {
+			userData = await User.getUserFields(uid, ['username', 'userslug']);
+			if (userData.username === data.username) {
+				return;
+			}
 		}
 
 		if (data.username.length < meta.config.minimumUsernameLength) {
@@ -124,14 +128,23 @@ module.exports = function (User) {
 			throw new Error('[[error:invalid-username]]');
 		}
 
-		if (userslug === userData.userslug) {
+		if (uid && userslug === userData.userslug) {
 			return;
 		}
 		const exists = await User.existsBySlug(userslug);
 		if (exists) {
 			throw new Error('[[error:username-taken]]');
 		}
+
+		const { error } = await plugins.hooks.fire('filter:username.check', {
+			username: data.username,
+			error: undefined,
+		});
+		if (error) {
+			throw error;
+		}
 	}
+	User.checkUsername = async username => isUsernameAvailable({ username });
 
 	async function isWebsiteValid(callerUid, data) {
 		if (!data.website) {
