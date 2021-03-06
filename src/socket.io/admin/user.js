@@ -86,10 +86,14 @@ User.sendValidationEmail = async function (socket, uids) {
 	}
 
 	const failed = [];
-
+	let errorLogged = false;
 	await async.eachLimit(uids, 50, async (uid) => {
 		await user.email.sendValidationEmail(uid, { force: true }).catch((err) => {
-			winston.error(`[user.create] Validation email failed to send\n[emailer.send] ${err.stack}`);
+			if (!errorLogged) {
+				winston.error(`[user.create] Validation email failed to send\n[emailer.send] ${err.stack}`);
+				errorLogged = true;
+			}
+
 			failed.push(uid);
 		});
 	});

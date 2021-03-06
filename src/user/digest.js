@@ -100,7 +100,7 @@ Digest.send = async function (data) {
 	if (!data || !data.subscribers || !data.subscribers.length) {
 		return emailsSent;
 	}
-
+	let errorLogged = false;
 	await batch.processArray(data.subscribers, async (uids) => {
 		let userData = await user.getUsersFields(uids, ['uid', 'email', 'email:confirmed', 'username', 'userslug', 'lastonline']);
 		userData = userData.filter(u => u && u.email && (!meta.config.requireEmailConfirmation || u['email:confirmed']));
@@ -139,7 +139,12 @@ Digest.send = async function (data) {
 				popularTopics: topics.popular,
 				interval: data.interval,
 				showUnsubscribe: true,
-			}).catch(err => winston.error(`[user/jobs] Could not send digest email\n[emailer.send] ${err.stack}`));
+			}).catch((err) => {
+				if (!errorLogged) {
+					winston.error(`[user/jobs] Could not send digest email\n[emailer.send] ${err.stack}`);
+					errorLogged = true;
+				}
+			});
 		}));
 		if (data.interval !== 'alltime') {
 			const now = Date.now();

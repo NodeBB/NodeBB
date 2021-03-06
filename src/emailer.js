@@ -25,6 +25,8 @@ const Emailer = module.exports;
 let prevConfig;
 let app;
 
+Emailer.fallbackNotFound = false;
+
 Emailer.transports = {
 	sendmail: nodemailer.createTransport({
 		sendmail: true,
@@ -312,7 +314,8 @@ Emailer.sendToEmail = async (template, email, language, params) => {
 		headers: params.headers,
 		rtl: params.rtl,
 	});
-
+	const usingFallback = !Plugins.hooks.hasListeners('filter:email.send') &&
+		!Plugins.hooks.hasListeners('static:email.send');
 	try {
 		if (Plugins.hooks.hasListeners('filter:email.send')) {
 			// Deprecated, remove in v1.18.0
@@ -323,7 +326,8 @@ Emailer.sendToEmail = async (template, email, language, params) => {
 			await Emailer.sendViaFallback(data);
 		}
 	} catch (err) {
-		if (err && err.code === 'ENOENT') {
+		if (err.code === 'ENOENT' && usingFallback) {
+			Emailer.fallbackNotFound = true;
 			throw new Error('[[error:sendmail-not-found]]');
 		} else {
 			throw err;

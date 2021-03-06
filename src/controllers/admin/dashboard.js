@@ -13,6 +13,7 @@ const plugins = require('../../plugins');
 const user = require('../../user');
 const topics = require('../../topics');
 const utils = require('../../utils');
+const emailer = require('../../emailer');
 
 const dashboardController = module.exports;
 
@@ -55,6 +56,13 @@ async function getNotices() {
 			link: '/admin/extend/plugins',
 		},
 	];
+
+	if (emailer.fallbackNotFound) {
+		notices.push({
+			done: false,
+			notDoneText: '[[admin/dashboard:fallback-emailer-not-found]]',
+		});
+	}
 
 	if (global.env !== 'production') {
 		notices.push({
