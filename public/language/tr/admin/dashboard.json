@@ -30,6 +30,7 @@
 	"upgrade-available": "<p>Yeni bir sürüm (v% 1) yayımlandı. <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">NodeBB yükseltmeyi</a> göz önünde bulundurun</p>",
 	"prerelease-upgrade-available": "<p>Bu, NodeBB'nin eski bir sürümü. Yeni bir sürüm (v% 1) yayımlandı. <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">NodeBB’nizi yükseltmeyi </a>düşünün.</p>",
 	"prerelease-warning": "<p>Bu, NodeBB'nin bir <strong>önsürüm</strong> versiyonudur. İstenmeyen hatalar oluşabilir. <i class=\"fa fa-exclamation-triangle\"></i></p>",
+	"fallback-emailer-not-found": "Fallback emailer not found!",
 	"running-in-development": "<span>Forum, geliştirici modunda çalışıyor. Forum, potansiyel güvenlik açıklarına açık olabilir; lütfen sistem yöneticinize başvurun.</span>",
 	"latest-lookup-failed": "<p>En güncel kullanılabilecek NodeBB sürümü görüntülenemedi</p>",
 

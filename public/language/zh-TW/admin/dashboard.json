@@ -30,6 +30,7 @@
 	"upgrade-available": "<p>新的版本 (v%1) 已經發布。建議您 <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">升級 NodeBB</a>。</p>",
 	"prerelease-upgrade-available": "<p>這是一個已經過期的預發佈版本的 NodeBB，新的版本 (v%1) 已經發布。建議您 <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">升級 NodeBB</a>。</p>",
 	"prerelease-warning": "<p>正在使用<strong>測試版</strong> NodeBB。可能會出現意外的 Bug。<i class=\"fa fa-exclamation-triangle\"></i></p>",
+	"fallback-emailer-not-found": "Fallback emailer not found!",
 	"running-in-development": "<span>論壇正處於開發模式，這可能使其暴露於潛在的危險之中；請聯繫您的系統管理員。</span>",
 	"latest-lookup-failed": "<p>無法找到 NodeBB 的最新可用版本</p>",
 

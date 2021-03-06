@@ -30,6 +30,7 @@
 	"upgrade-available": "<p>Uma nova versão (v%1) foi lançada. Considere <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">atualizar o seu NodeBB</a>.</p>",
 	"prerelease-upgrade-available": "<p>Esta é uma versão de pré-lançamento desatualizada do NodeBB. Uma nova versão (v%1) foi lançada. Considere <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">atualizar o seu NodeBB</a>.</p>",
 	"prerelease-warning": "<p>Esta é uma versão de <strong>pré-lançamento</strong> do NodeBB. Bugs inesperados podem ocorrer. <i class=\"fa fa-exclamation-triangle\"></i></p>",
+	"fallback-emailer-not-found": "Fallback emailer not found!",
 	"running-in-development": "<span>O fórum está sendo executado em modo de desenvolvedor. O fórum pode estar sujeito a potenciais vulnerabilidades; por favor, entre em contato com o seu administrador de sistemas.</span>",
 	"latest-lookup-failed": "<p>Falha ao procurar a versão mais recente disponível do NodeBB</p>",
 

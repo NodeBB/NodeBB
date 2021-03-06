@@ -30,6 +30,7 @@
 	"upgrade-available": "<p>Nová verzia (v%1) bola zverejnená. Zvážte <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">aktualizáciu vášho NodeBB</a>.</p>",
 	"prerelease-upgrade-available": "<p>Toto je zastaralá testovacia verzia NodeBB. Nová verzia (v%1) bola zverejnená. Zvážte <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">aktualizáciu vášho NodeBB</a>.</p>",
 	"prerelease-warning": "<p>Toto je <strong>skúšobná</strong> verzia NodeBB. Môžu sa vyskytnúť rôzne chyby.<i class=\"fa fa-exclamation-triangle\"></i></p>",
+	"fallback-emailer-not-found": "Fallback emailer not found!",
 	"running-in-development": "<span>Fórum beží vo vývojárskom režime a môže byť potenciálne zraniteľné. Kontaktujte správcu systému.</span>",
 	"latest-lookup-failed": "<p>Chyba pri zistení poslednej dostupnej verzie NodeBB</p>",
 

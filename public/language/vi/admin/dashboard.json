@@ -30,6 +30,7 @@
 	"upgrade-available": "<p>Phiên bản mới (v%1) đã được phát hành. Xem xét <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">nâng cấp NodeBB của bạn</a>.</p>",
 	"prerelease-upgrade-available": "<p>Đây là bản phát hành NodeBB đã lỗi thời. Phiên bản mới (v%1) đã phát hành. Xem xét <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">nâng cấp NodeBB của bạn</a>.</p>",
 	"prerelease-warning": "<p>Đây là phiên bản NodeBB <strong>trước phát hành</strong>. Lỗi ngoài ý muốn có thể xảy ra. <i class=\"fa fa-exclamation-triangle\"></i></p>",
+	"fallback-emailer-not-found": "Không tìm thấy trình gửi email dự phòng!",
 	"running-in-development": "<span>Diễn đàn đang chạy ở chế độ phát triển. Diễn đàn có thể mở cho các lỗ hổng tiềm ẩn; Xin vui lòng liên hệ với quản trị hệ thống của bạn.</span>",
 	"latest-lookup-failed": "<p>Không tra cứu được phiên bản NodeBB mới nhất</p>",
 

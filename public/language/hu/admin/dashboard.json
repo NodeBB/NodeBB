@@ -30,6 +30,7 @@
 	"upgrade-available": "<p>Kiadásra került egy új verzió (v%1). Vedd fontolóra a <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">NodeBB frissítését</a>.</p>",
 	"prerelease-upgrade-available": "<p>This is an outdated pre-release version of NodeBB. A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">upgrading your NodeBB</a>.</p>",
 	"prerelease-warning": "<p>This is a <strong>pre-release</strong> version of NodeBB. Unintended bugs may occur. <i class=\"fa fa-exclamation-triangle\"></i></p>",
+	"fallback-emailer-not-found": "Fallback emailer not found!",
 	"running-in-development": "<span>Forum is running in development mode. The forum may be open to potential vulnerabilities; please contact your system administrator.</span>",
 	"latest-lookup-failed": "<p>Failed to look up latest available version of NodeBB</p>",
 

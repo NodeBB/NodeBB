@@ -30,6 +30,7 @@
 	"upgrade-available": "<p>גרסה חדשה (v%1) שוחררה. שקול  <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">האם לעדכן את הפורום שלך</a>.</p>",
 	"prerelease-upgrade-available": "<p>זוהי גירסת קדם-הפצה מיושנת של NodeBB. גרסה חדשה (v%1) שוחרר. שקול <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">האם לעדכן את ה-NodeBB שלך</a>.</p>",
 	"prerelease-warning": "<p>זוהי <strong>גירסת קדם-הפצה</strong> של NodeBB. באגים בלתי צפויים עלולים להתרחש. <i class=\"fa fa-exclamation-triangle\"></i> </p>",
+	"fallback-emailer-not-found": "Fallback emailer not found!",
 	"running-in-development": "<span>הפורום פועל במצב פיתוח. הפורום עשוי להיות חשוף לפגיעות פוטנציאליות; פנה אל מנהל המערכת שלך.</span>",
 	"latest-lookup-failed": "<p>נכשל בבדיקת זמינות גרסה חדשה של הפורום</p>",
 

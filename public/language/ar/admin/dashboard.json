@@ -30,6 +30,7 @@
 	"upgrade-available": "<p>A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">upgrading your NodeBB</a>.</p>",
 	"prerelease-upgrade-available": "<p>This is an outdated pre-release version of NodeBB. A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">upgrading your NodeBB</a>.</p>",
 	"prerelease-warning": "<p>هذه نسخة <strong>ماقبل الإصدار</strong> من NodeBB. قد تحدث أخطاء غير مقصودة. <i class=\"fa fa-exclamation-triangle\"></i></p>",
+	"fallback-emailer-not-found": "Fallback emailer not found!",
 	"running-in-development": "المنتدى قيد التشغيل في وضع \"المطورين\". وقد تكون هناك ثغرات أمنية مفتوحة؛ من فضلك تواصل مع مسؤول نظامك.",
 	"latest-lookup-failed": "<p>Failed to look up latest available version of NodeBB</p>",
 
