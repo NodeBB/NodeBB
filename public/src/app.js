@@ -547,19 +547,25 @@ app.cacheBuster = null;
 			}, 250);
 		});
 
+		var mousedownOnResults = false;
+		quickSearchResults.on('mousedown', function () {
+			$(window).one('mouseup', function () {
+				quickSearchResults.addClass('hidden');
+			});
+			mousedownOnResults = true;
+		});
 		inputEl.on('blur', function () {
-			setTimeout(function () {
-				if (!inputEl.is(':focus')) {
-					quickSearchResults.addClass('hidden');
-				}
-			}, 200);
+			if (!inputEl.is(':focus') && !mousedownOnResults && !quickSearchResults.hasClass('hidden')) {
+				quickSearchResults.addClass('hidden');
+			}
 		});
 
 		inputEl.on('focus', function () {
+			mousedownOnResults = false;
 			oldValue = inputEl.val();
 			if (inputEl.val() && quickSearchResults.find('#quick-search-results').children().length) {
 				updateCategoryFilterName();
-				quickSearchResults.removeClass('hidden');
+				doSearch();
 				inputEl[0].setSelectionRange(0, inputEl.val().length);
 			}
 		});
