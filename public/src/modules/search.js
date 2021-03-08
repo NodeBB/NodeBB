@@ -34,7 +34,7 @@ define('search', ['navigator', 'translator', 'storage'], function (nav, translat
 	};
 
 	function createQueryString(data) {
-		var searchIn = data.in || 'titlesposts';
+		var searchIn = data.in || 'titles';
 		var postedBy = data.by || '';
 		var term = data.term.replace(/^[ ?#]*/, '');
 		try {
