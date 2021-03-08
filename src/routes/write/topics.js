@@ -8,14 +8,14 @@ const routeHelpers = require('../helpers');
 const { setupApiRoute } = routeHelpers;
 
 module.exports = function () {
-	const middlewares = [middleware.authenticate];
+	const middlewares = [middleware.ensureLoggedIn];
 
 	const multipart = require('connect-multiparty');
 	const multipartMiddleware = multipart();
 
-	setupApiRoute(router, 'post', '/', [middleware.authenticateOrGuest, middleware.checkRequired.bind(null, ['cid', 'title', 'content'])], controllers.write.topics.create);
-	setupApiRoute(router, 'get', '/:tid', [middleware.authenticateOrGuest], controllers.write.topics.get);
-	setupApiRoute(router, 'post', '/:tid', [middleware.authenticateOrGuest, middleware.checkRequired.bind(null, ['content']), middleware.assert.topic], controllers.write.topics.reply);
+	setupApiRoute(router, 'post', '/', [middleware.checkRequired.bind(null, ['cid', 'title', 'content'])], controllers.write.topics.create);
+	setupApiRoute(router, 'get', '/:tid', [], controllers.write.topics.get);
+	setupApiRoute(router, 'post', '/:tid', [middleware.checkRequired.bind(null, ['content']), middleware.assert.topic], controllers.write.topics.reply);
 	setupApiRoute(router, 'delete', '/:tid', [...middlewares], controllers.write.topics.purge);
 
 	setupApiRoute(router, 'put', '/:tid/state', [...middlewares], controllers.write.topics.restore);
@@ -35,13 +35,13 @@ module.exports = function () {
 	setupApiRoute(router, 'put', '/:tid/tags', [...middlewares, middleware.checkRequired.bind(null, ['tags']), middleware.assert.topic], controllers.write.topics.addTags);
 	setupApiRoute(router, 'delete', '/:tid/tags', [...middlewares, middleware.assert.topic], controllers.write.topics.deleteTags);
 
-	setupApiRoute(router, 'get', '/:tid/thumbs', middleware.authenticateOrGuest, controllers.write.topics.getThumbs);
+	setupApiRoute(router, 'get', '/:tid/thumbs', [], controllers.write.topics.getThumbs);
 	setupApiRoute(router, 'post', '/:tid/thumbs', [multipartMiddleware, middleware.validateFiles, ...middlewares], controllers.write.topics.addThumb);
 	setupApiRoute(router, 'put', '/:tid/thumbs', [...middlewares, middleware.checkRequired.bind(null, ['tid'])], controllers.write.topics.migrateThumbs);
 	setupApiRoute(router, 'delete', '/:tid/thumbs', [...middlewares, middleware.checkRequired.bind(null, ['path'])], controllers.write.topics.deleteThumb);
 	setupApiRoute(router, 'put', '/:tid/thumbs/order', [...middlewares, middleware.checkRequired.bind(null, ['path', 'order'])], controllers.write.topics.reorderThumbs);
 
-	setupApiRoute(router, 'get', '/:tid/events', [middleware.authenticateOrGuest, middleware.assert.topic], controllers.write.topics.getEvents);
+	setupApiRoute(router, 'get', '/:tid/events', [middleware.assert.topic], controllers.write.topics.getEvents);
 
 	return router;
 };

@@ -5,7 +5,6 @@ const path = require('path');
 const csrf = require('csurf');
 const validator = require('validator');
 const nconf = require('nconf');
-const ensureLoggedIn = require('connect-ensure-login');
 const toobusy = require('toobusy-js');
 const LRU = require('lru-cache');
 const util = require('util');
@@ -52,7 +51,13 @@ middleware.applyCSRF = function (req, res, next) {
 };
 middleware.applyCSRFasync = util.promisify(middleware.applyCSRF);
 
-middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn(`${relative_path}/login`);
+middleware.ensureLoggedIn = (req, res, next) => {
+	if (!req.loggedIn) {
+		return controllers.helpers.notAllowed(req, res);
+	}
+
+	setImmediate(next);
+};
 
 Object.assign(middleware, {
 	admin: require('./admin'),

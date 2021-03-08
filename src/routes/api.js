@@ -8,7 +8,7 @@ module.exports = function (app, middleware, controllers) {
 	const router = express.Router();
 	app.use('/api', router);
 
-	router.get('/config', middleware.applyCSRF, middleware.authenticateOrGuest, controllers.api.getConfig);
+	router.get('/config', middleware.applyCSRF, middleware.authenticateRequest, controllers.api.getConfig);
 
 	router.get('/self', controllers.user.getCurrentUser);
 	router.get('/user/uid/:uid', middleware.canViewUsers, controllers.user.getUserByUID);
@@ -21,7 +21,7 @@ module.exports = function (app, middleware, controllers) {
 
 	router.get('/categories/:cid/moderators', controllers.api.getModerators);
 	router.get('/recent/posts/:term?', controllers.posts.getRecentPosts);
-	router.get('/unread/total', middleware.authenticate, controllers.unread.unreadTotal);
+	router.get('/unread/total', middleware.authenticateRequest, middleware.ensureLoggedIn, controllers.unread.unreadTotal);
 	router.get('/topic/teaser/:topic_id', controllers.topics.teaser);
 	router.get('/topic/pagination/:topic_id', controllers.topics.pagination);
 
@@ -30,5 +30,5 @@ module.exports = function (app, middleware, controllers) {
 	const middlewares = [middleware.maintenanceMode, multipartMiddleware, middleware.validateFiles, middleware.applyCSRF];
 	router.post('/post/upload', middlewares, uploadsController.uploadPost);
 
-	router.post('/user/:userslug/uploadpicture', middlewares.concat([middleware.exposeUid, middleware.authenticate, middleware.canViewUsers, middleware.checkAccountPermissions]), controllers.accounts.edit.uploadPicture);
+	router.post('/user/:userslug/uploadpicture', middlewares.concat([middleware.exposeUid, middleware.authenticateRequest, middleware.ensureLoggedIn, middleware.canViewUsers, middleware.checkAccountPermissions]), controllers.accounts.edit.uploadPicture);
 };
