@@ -13,7 +13,7 @@ function guestRoutes() {
 }
 
 function authenticatedRoutes() {
-	const middlewares = [middleware.authenticate];
+	const middlewares = [middleware.ensureLoggedIn];
 
 	setupApiRoute(router, 'post', '/', [...middlewares, middleware.checkRequired.bind(null, ['username'])], controllers.write.users.create);
 	setupApiRoute(router, 'delete', '/', [...middlewares, middleware.checkRequired.bind(null, ['uids'])], controllers.write.users.deleteMany);

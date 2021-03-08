@@ -52,7 +52,7 @@ module.exports = function (app, name, middleware, controllers) {
 		res.redirect(`${nconf.get('relative_path')}/api/v3/users/${res.locals.uid}/sessions/${req.params.uuid}`);
 	});
 
-	setupPageRoute(app, '/notifications', middleware, [middleware.authenticate], controllers.accounts.notifications.get);
+	setupPageRoute(app, '/notifications', middleware, [middleware.ensureLoggedIn], controllers.accounts.notifications.get);
 	setupPageRoute(app, `/${name}/:userslug/chats/:roomid?`, middleware, middlewares, controllers.accounts.chats.get);
-	setupPageRoute(app, '/chats/:roomid?', middleware, [middleware.authenticate], controllers.accounts.chats.redirectToChat);
+	setupPageRoute(app, '/chats/:roomid?', middleware, [middleware.ensureLoggedIn], controllers.accounts.chats.redirectToChat);
 };

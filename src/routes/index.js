@@ -75,7 +75,7 @@ _mounts.category = (app, name, middleware, controllers) => {
 	setupPageRoute(app, '/popular', middleware, [], controllers.popular.get);
 	setupPageRoute(app, '/recent', middleware, [], controllers.recent.get);
 	setupPageRoute(app, '/top', middleware, [], controllers.top.get);
-	setupPageRoute(app, '/unread', middleware, [middleware.authenticate], controllers.unread.get);
+	setupPageRoute(app, '/unread', middleware, [middleware.ensureLoggedIn], controllers.unread.get);
 
 	setupPageRoute(app, `/${name}/:category_id/:slug/:topic_index`, middleware, [], controllers.category.get);
 	setupPageRoute(app, `/${name}/:category_id/:slug?`, middleware, [], controllers.category.get);
@@ -125,7 +125,7 @@ module.exports = async function (app, middleware) {
 	});
 
 	router.all('(/+api|/+api/*?)', middleware.prepareAPI);
-	router.all(`(/+api/admin|/+api/admin/*?${mounts.admin !== 'admin' ? `|/+api/${mounts.admin}|/+api/${mounts.admin}/*?` : ''})`, middleware.authenticate, middleware.admin.checkPrivileges);
+	router.all(`(/+api/admin|/+api/admin/*?${mounts.admin !== 'admin' ? `|/+api/${mounts.admin}|/+api/${mounts.admin}/*?` : ''})`, middleware.authenticateRequest, middleware.ensureLoggedIn, middleware.admin.checkPrivileges);
 	router.all(`(/+admin|/+admin/*?${mounts.admin !== 'admin' ? `|/+${mounts.admin}|/+${mounts.admin}/*?` : ''})`, ensureLoggedIn.ensureLoggedIn(`${nconf.get('relative_path')}/login?local=1`), middleware.applyCSRF, middleware.admin.checkPrivileges);
 
 	app.use(middleware.stripLeadingSlashes);

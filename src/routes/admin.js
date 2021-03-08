@@ -61,15 +61,15 @@ module.exports = function (app, name, middleware, controllers) {
 
 
 function apiRoutes(router, name, middleware, controllers) {
-	router.get(`/api/${name}/users/csv`, middleware.authenticate, helpers.tryRoute(controllers.admin.users.getCSV));
-	router.get(`/api/${name}/groups/:groupname/csv`, middleware.authenticate, helpers.tryRoute(controllers.admin.groups.getCSV));
-	router.get(`/api/${name}/analytics`, middleware.authenticate, helpers.tryRoute(controllers.admin.dashboard.getAnalytics));
-	router.get(`/api/${name}/advanced/cache/dump`, middleware.authenticate, helpers.tryRoute(controllers.admin.cache.dump));
+	router.get(`/api/${name}/users/csv`, middleware.ensureLoggedIn, helpers.tryRoute(controllers.admin.users.getCSV));
+	router.get(`/api/${name}/groups/:groupname/csv`, middleware.ensureLoggedIn, helpers.tryRoute(controllers.admin.groups.getCSV));
+	router.get(`/api/${name}/analytics`, middleware.ensureLoggedIn, helpers.tryRoute(controllers.admin.dashboard.getAnalytics));
+	router.get(`/api/${name}/advanced/cache/dump`, middleware.ensureLoggedIn, helpers.tryRoute(controllers.admin.cache.dump));
 
 	const multipart = require('connect-multiparty');
 	const multipartMiddleware = multipart();
 
-	const middlewares = [multipartMiddleware, middleware.validateFiles, middleware.applyCSRF, middleware.authenticate];
+	const middlewares = [multipartMiddleware, middleware.validateFiles, middleware.applyCSRF, middleware.ensureLoggedIn];
 
 	router.post(`/api/${name}/category/uploadpicture`, middlewares, helpers.tryRoute(controllers.admin.uploads.uploadCategoryPicture));
 	router.post(`/api/${name}/uploadfavicon`, middlewares, helpers.tryRoute(controllers.admin.uploads.uploadFavicon));

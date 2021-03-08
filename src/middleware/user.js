@@ -83,6 +83,7 @@ module.exports = function (middleware) {
 	}
 
 	middleware.authenticate = helpers.try(async (req, res, next) => {
+		winston.warn(`[middleware] middleware.authenticate has been deprecated, page and API routes are now automatically authenticated via setup(Page|API)Route. Use middleware.authenticateRequest (if not using route helper) and middleware.ensureLoggedIn instead. (request path: ${req.path})`);
 		if (!await authenticate(req, res)) {
 			return;
 		}
@@ -92,7 +93,7 @@ module.exports = function (middleware) {
 		next();
 	});
 
-	middleware.authenticateOrGuest = helpers.try(async (req, res, next) => {
+	middleware.authenticateRequest = helpers.try(async (req, res, next) => {
 		if (!await authenticate(req, res)) {
 			return;
 		}
