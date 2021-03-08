@@ -100,6 +100,12 @@ module.exports = function (middleware) {
 		next();
 	});
 
+	// TODO: Remove in v1.18.0
+	middleware.authenticateOrGuest = (req, res, next) => {
+		winston.warn(`[middleware] middleware.authenticateOrGuest has been renamed, use middleware.authenticateRequest instead. (request path: ${req.path})`);
+		middleware.authenticateRequest(req, res, next);
+	};
+
 	middleware.ensureSelfOrGlobalPrivilege = helpers.try(async (req, res, next) => {
 		await ensureSelfOrMethod(user.isAdminOrGlobalMod, req, res, next);
 	});
