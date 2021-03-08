@@ -99,7 +99,7 @@ Hooks.fire = async function (hook, params) {
 	const result = await hookTypeToMethod[hookType](hook, hookList, params);
 
 	if (hook !== 'action:plugins.firehook') {
-		Hooks.fire('action:plugins.firehook', { hook: hook, params: params });
+		Hooks.fire('action:plugins.firehook', { hook: hook, params: result || params });
 	}
 	if (result !== undefined) {
 		return result;
