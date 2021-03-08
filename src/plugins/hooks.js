@@ -96,13 +96,14 @@ Hooks.fire = async function (hook, params) {
 		winston.warn(`[plugins] Unknown hookType: ${hookType}, hook : ${hook}`);
 		return;
 	}
-	const result = await hookTypeToMethod[hookType](hook, hookList, params);
+
+	params = await hookTypeToMethod[hookType](hook, hookList, params);
 
 	if (hook !== 'action:plugins.firehook') {
 		Hooks.fire('action:plugins.firehook', { hook: hook, params: params });
 	}
-	if (result !== undefined) {
-		return result;
+	if (params !== undefined) {
+		return params;
 	}
 };
 
