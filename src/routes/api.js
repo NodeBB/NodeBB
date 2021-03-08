@@ -15,9 +15,9 @@ module.exports = function (app, middleware, controllers) {
 	router.get('/user/username/:username', middleware.canViewUsers, controllers.user.getUserByUsername);
 	router.get('/user/email/:email', middleware.canViewUsers, controllers.user.getUserByEmail);
 
-	router.get('/user/uid/:userslug/export/posts', middleware.checkAccountPermissions, middleware.exposeUid, controllers.user.exportPosts);
-	router.get('/user/uid/:userslug/export/uploads', middleware.checkAccountPermissions, middleware.exposeUid, controllers.user.exportUploads);
-	router.get('/user/uid/:userslug/export/profile', middleware.checkAccountPermissions, middleware.exposeUid, controllers.user.exportProfile);
+	router.get('/user/uid/:userslug/export/posts', middleware.authenticateRequest, middleware.ensureLoggedIn, middleware.checkAccountPermissions, middleware.exposeUid, controllers.user.exportPosts);
+	router.get('/user/uid/:userslug/export/uploads', middleware.authenticateRequest, middleware.ensureLoggedIn, middleware.checkAccountPermissions, middleware.exposeUid, controllers.user.exportUploads);
+	router.get('/user/uid/:userslug/export/profile', middleware.authenticateRequest, middleware.ensureLoggedIn, middleware.checkAccountPermissions, middleware.exposeUid, controllers.user.exportProfile);
 
 	router.get('/categories/:cid/moderators', controllers.api.getModerators);
 	router.get('/recent/posts/:term?', controllers.posts.getRecentPosts);

@@ -148,12 +148,12 @@ module.exports = function (middleware) {
 
 	middleware.checkAccountPermissions = helpers.try(async (req, res, next) => {
 		// This middleware ensures that only the requested user and admins can pass
-		if (!await authenticate(req, res)) {
-			return;
-		}
+
+		// This check if left behind for legacy purposes. Older plugins may call this middleware without ensureLoggedIn
 		if (!req.loggedIn) {
 			return controllers.helpers.notAllowed(req, res);
 		}
+
 		const uid = await user.getUidByUserslug(req.params.userslug);
 		let allowed = await privileges.users.canEdit(req.uid, uid);
 		if (allowed) {
