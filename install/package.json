@@ -45,7 +45,6 @@
         "commander": "^7.1.0",
         "compare-versions": "3.6.0",
         "compression": "^1.7.4",
-        "connect-ensure-login": "^0.1.1",
         "connect-flash": "^0.1.1",
         "connect-mongo": "4.3.0",
         "connect-multiparty": "^2.2.0",
