@@ -1,12 +1,12 @@
 {
 	"pagination": "Sayfalama Ayarları",
 	"enable": "Sonsuz kaydırma yerine konu ve gönderileri sayfalandır.",
-	"posts": "Post Pagination",
+	"posts": "İleti Sayfalama",
 	"topics": "Başlık Sayfalama",
 	"posts-per-page": "Sayfa başına İletiler",
 	"max-posts-per-page": "Sayfa başına azami gönderi sayısı",
 	"categories": "Kategori Sayfalama",
 	"topics-per-page": "Sayfa başına Konular",
 	"max-topics-per-page": "Sayfa başına azami konu",
-	"categories-per-page": "Categories per page"
+	"categories-per-page": "Sayfa başına Kategoriler"
 }
