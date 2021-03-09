@@ -221,11 +221,43 @@ describe('Admin Controllers', () => {
 	it('should load /admin/manage/users', (done) => {
 		request(`${nconf.get('url')}/api/admin/manage/users`, { jar: jar, json: true }, (err, res, body) => {
 			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
+			assert.strictEqual(res.statusCode, 200);
 			assert(body);
+			assert(body.users.length > 0);
 			done();
 		});
 	});
+
+
+	it('should load /admin/manage/users?filters=banned', (done) => {
+		request(`${nconf.get('url')}/api/admin/manage/users?filters=banned`, { jar: jar, json: true }, (err, res, body) => {
+			assert.ifError(err);
+			assert.strictEqual(res.statusCode, 200);
+			assert(body);
+			assert.strictEqual(body.users.length, 0);
+			done();
+		});
+	});
+
+	it('should load /admin/manage/users?query=admin', (done) => {
+		request(`${nconf.get('url')}/api/admin/manage/users?query=admin`, { jar: jar, json: true }, (err, res, body) => {
+			assert.ifError(err);
+			assert.strictEqual(res.statusCode, 200);
+			assert(body);
+			assert.strictEqual(body.users[0].username, 'admin');
+			done();
+		});
+	});
+
+	it('should return empty results if query is too short', (done) => {
+		request(`${nconf.get('url')}/api/admin/manage/users?query=a`, { jar: jar, json: true }, (err, res, body) => {
+			assert.ifError(err);
+			assert.strictEqual(res.statusCode, 200);
+			assert(body);
+			assert.strictEqual(body.users.length, 0);
+			done();
+		});
+	})
 
 	it('should load /admin/manage/registration', (done) => {
 		request(`${nconf.get('url')}/api/admin/manage/registration`, { jar: jar, json: true }, (err, res, body) => {
