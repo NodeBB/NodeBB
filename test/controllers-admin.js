@@ -257,7 +257,7 @@ describe('Admin Controllers', () => {
 			assert.strictEqual(body.users.length, 0);
 			done();
 		});
-	})
+	});
 
 	it('should load /admin/manage/registration', (done) => {
 		request(`${nconf.get('url')}/api/admin/manage/registration`, { jar: jar, json: true }, (err, res, body) => {
