@@ -4,14 +4,29 @@ const helpers = module.exports;
 const middleware = require('../middleware');
 const controllerHelpers = require('../controllers/helpers');
 
-helpers.setupPageRoute = function (router, name, middleware, middlewares, controller) {
+function _handleArgs(middleware, middlewares, controller) {
+	if (typeof middlewares === 'function') {
+		if (controller) {
+			middlewares = [middlewares];
+		} else {
+			controller = middlewares;
+			middlewares = [];
+		}
+	}
+
 	middlewares = [
 		middleware.maintenanceMode,
 		middleware.registrationComplete,
 		middleware.authenticateRequest,
 		middleware.pluginHooks,
-		middleware.pageView,
 		...middlewares];
+
+	return { middlewares, controller };
+}
+
+helpers.setupPageRoute = function (router, name, middleware, middlewares, controller) {
+	({ middlewares, controller } = _handleArgs(middleware, middlewares, controller));
+	middlewares.push(middleware.pageView);
 
 	router.get(
 		name,
@@ -30,13 +45,7 @@ helpers.setupAdminPageRoute = function (router, name, middleware, middlewares, c
 };
 
 helpers.setupApiRoute = function (router, verb, name, middlewares, controller) {
-	middlewares = [
-		middleware.maintenanceMode,
-		middleware.registrationComplete,
-		middleware.authenticateRequest,
-		middleware.pluginHooks,
-		...middlewares,
-	];
+	({ middlewares, controller } = _handleArgs(middleware, middlewares, controller));
 
 	router[verb](name, middlewares, helpers.tryRoute(controller, (err, res) => {
 		controllerHelpers.formatApiResponse(400, res, err);
