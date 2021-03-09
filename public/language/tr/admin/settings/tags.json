@@ -1,8 +1,8 @@
 {
     "tag": "Etiket Ayarları",
     "link-to-manage": "Etiketleri Düzenle",
-    "system-tags": "System Tags",
-    "system-tags-help": "Only privileged users will be able to use these tags.",
+    "system-tags": "Sistem etiketleri",
+    "system-tags-help": "Sadece ayrıcalıklı üyeler bu etiketleri görebilir.",
     "min-per-topic": "Konu Başına Minimum Etiket Sayısı",
     "max-per-topic": "Konu Başına Maksimum Etiket Sayısı",
     "min-length": "Minimum Etiket Uzunluğu",

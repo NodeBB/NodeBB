@@ -8,11 +8,11 @@
 	"content": "İçerik",
 	"posted": "Gönderildi",
 	"reply-to": "\"%1\"'e Cevap Ver",
-	"content-editable": "Click on content to edit",
-	"category-editable": "Click on category to edit",
-	"title-editable": "Click on title to edit",
-	"reply": "Reply",
-	"topic": "Topic",
-	"accept": "Accept",
-	"reject": "Reject"
+	"content-editable": "Düzenlemek için içeriğe tıklayın",
+	"category-editable": "Düzenlemek için kategoriye tıklayın",
+	"title-editable": "Düzenlemek için başlığa tıklayın",
+	"reply": "Yanıtla",
+	"topic": "Başlık",
+	"accept": "Onayla",
+	"reject": "Reddet"
 }
