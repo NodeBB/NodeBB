@@ -239,6 +239,16 @@ describe('Admin Controllers', () => {
 		});
 	});
 
+	it('should load /admin/manage/users?filters=banned&filters=verified', (done) => {
+		request(`${nconf.get('url')}/api/admin/manage/users?filters=banned&filters=verified`, { jar: jar, json: true }, (err, res, body) => {
+			assert.ifError(err);
+			assert.strictEqual(res.statusCode, 200);
+			assert(body);
+			assert.strictEqual(body.users.length, 0);
+			done();
+		});
+	});
+
 	it('should load /admin/manage/users?query=admin', (done) => {
 		request(`${nconf.get('url')}/api/admin/manage/users?query=admin`, { jar: jar, json: true }, (err, res, body) => {
 			assert.ifError(err);
