@@ -1,5 +1,6 @@
 {
     "topic": "נושא",
+    "title": "Title",
     "no_topics_found": "לא נמצאו נושאים!",
     "no_posts_found": "לא נמצאו פוסטים!",
     "post_is_deleted": "פוסט זה נמחק!",
@@ -111,6 +112,7 @@
     "move_post": "הזז פוסט",
     "post_moved": "הפוסט הועבר!",
     "fork_topic": "פצל נושא",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "לחץ על הפוסטים שברצונך לפצל",
     "fork_no_pids": "לא נבחרו פוסטים!",
     "no-posts-selected": "לא נבחרו פוסטים!",

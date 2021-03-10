@@ -1,5 +1,6 @@
 {
     "topic": "Başlık",
+    "title": "Başlık",
     "no_topics_found": "Hiç başlık bulunamadı!",
     "no_posts_found": "Hiç ileti bulunamadı!",
     "post_is_deleted": "Bu ileti silindi!",
@@ -111,6 +112,7 @@
     "move_post": "İletiyi Taşı",
     "post_moved": "İleti taşındı!",
     "fork_topic": "Başlığı Ayır",
+    "enter-new-topic-title": "Oluşturulacak Yeni Başlığı Buraya Giriniz",
     "fork_topic_instruction": "Ayırmak istediğiniz iletileri seçiniz!",
     "fork_no_pids": "Hiçbir ileti seçilmedi!",
     "no-posts-selected": "Hiçbir ileti seçili değil!",

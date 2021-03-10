@@ -1,5 +1,6 @@
 {
     "topic": "Subiect",
+    "title": "Title",
     "no_topics_found": "Nu a fost găsit nici un subiect!",
     "no_posts_found": "Nu a fost găsit nici un mesaj!",
     "post_is_deleted": "Acest mesaj a fost șters!",
@@ -111,6 +112,7 @@
     "move_post": "Mută Mesaj",
     "post_moved": "Mesaj mutat!",
     "fork_topic": "Bifurcă Subiect",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "Apasă pe mesajele care vrei sa le bifurci",
     "fork_no_pids": "Nu a fost selectat nici un mesaj!",
     "no-posts-selected": "No posts selected!",

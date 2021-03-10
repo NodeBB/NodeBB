@@ -1,7 +1,7 @@
 {
-	"settings": "Settings",
+	"settings": "Настройки",
 	"handles.enabled": "Разрешить гостям выбирать имена",
 	"handles.enabled-help": "Эта настройка добавляет поле, в котором гость сможет указать имя, под которым он хочет оставить сообщение. Когда она выключена, вместо имени будет написано просто &laquo;Гость&raquo;.",
-	"topic-views.enabled": "Allow guests to increase topic view counts",
-	"reply-notifications.enabled": "Allow guests to generate reply notifications"
+	"topic-views.enabled": "Разрешить гостям увеличивать количество просмотров тем",
+	"reply-notifications.enabled": "Разрешить гостям создавать уведомления об ответах"
 }

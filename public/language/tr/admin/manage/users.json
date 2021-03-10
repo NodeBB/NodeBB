@@ -103,6 +103,6 @@
 	"alerts.prompt-email": "Eposta:",
 	"alerts.email-sent-to": "%1'e bir davet e-postası gönderildi",
 	"alerts.x-users-found": "%1 kullanıcı bulundu, (%2 saniye)",
-	"export-users-started": "Exporting users as csv, this might take a while. You will receive a notification when it is complete.",
-	"export-users-completed": "Users exported as csv, click here to download."
+	"export-users-started": "Kullanıcılar csv olarak aktarılmak üzere hazırlanıyor, bu işlem zaman alabilir. İşlem tamamlandığında bildirim alacaksınız!",
+	"export-users-completed": "Kullanıcılar csv olarak hazırlandı, indirmek için tıklayınız"
 }

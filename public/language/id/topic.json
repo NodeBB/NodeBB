@@ -1,5 +1,6 @@
 {
     "topic": "Topik",
+    "title": "Title",
     "no_topics_found": "Topik tidak ditemukan!",
     "no_posts_found": "Tidak ada posting yang ditemukan!",
     "post_is_deleted": "Posting ini telah dihapus!",
@@ -111,6 +112,7 @@
     "move_post": "Pindahkan Posting",
     "post_moved": "Posting dipindahkan!",
     "fork_topic": "Cabangkan Topik",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "Klik posting yang kamu ingin cabangkan",
     "fork_no_pids": "Tidak ada posting yang dipilih!",
     "no-posts-selected": "No posts selected!",

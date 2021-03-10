@@ -1,5 +1,6 @@
 {
     "topic": "Tråd",
+    "title": "Title",
     "no_topics_found": "Ingen tråde fundet",
     "no_posts_found": "Ingen indlæg fundet!",
     "post_is_deleted": "Dette indlæg er slettet!",
@@ -111,6 +112,7 @@
     "move_post": "Flyt indlæg",
     "post_moved": "Indlæg flyttet!",
     "fork_topic": "Fraskil tråd",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "Klik på indlæg du ønsker at fraskille",
     "fork_no_pids": "Ingen indlæg valgt",
     "no-posts-selected": "No posts selected!",

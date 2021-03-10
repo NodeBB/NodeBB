@@ -1,11 +1,11 @@
 {
 	"tokens": "Jetonlar (Tokens)",
-	"settings": "Settings",
+	"settings": "Ayarlar",
 	"lead-text": "Bu sayfadan NodeBB'deki \"Write API\"e erişimi yapılandırabilirsiniz.",
 	"intro": "By default, the Write API authenticates users based on their session cookie, but NodeBB also supports Bearer authentication via tokens generated via this page.",
 	"docs": "Tüm API özeliklerine erişmek için buraya tıklayın. ",
 
-	"require-https": "Require API usage via HTTPS only",
+	"require-https": "API kullanımı için HTTPS kısıtlaması gerektir",
 	"require-https-caveat": "<strong>Note</strong>: Some installations involving load balancers may proxy their requests to NodeBB using HTTP, in which case this option should remain disabled.",
 
 	"uid": "Kullanıcı ID",

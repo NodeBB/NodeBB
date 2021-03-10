@@ -1,5 +1,6 @@
 {
     "topic": "Chủ đề",
+    "title": "Tiêu đề",
     "no_topics_found": "Không tìm thấy chủ đề nào!",
     "no_posts_found": "Không tìm thấy bài gửi nào",
     "post_is_deleted": "Bài gửi này đã bị xóa!",
@@ -111,6 +112,7 @@
     "move_post": "Chuyển bài gửi",
     "post_moved": "Đã chuyển bài gửi!",
     "fork_topic": "Tạo bản sao chủ đề",
+    "enter-new-topic-title": "Nhập tiêu đề chủ đề mới",
     "fork_topic_instruction": "Nhấp vào bài viết bạn muốn tách",
     "fork_no_pids": "Chưa chọn bài gửi nào!",
     "no-posts-selected": "Không bài viết nào được chọn!",
@@ -149,7 +151,7 @@
     "newest_to_oldest": "Mới đến cũ",
     "most_votes": "\bBình chọn nhiều nhất",
     "most_posts": "Các bài viết phổ biến",
-    "stale.title": "Tạo chủ đề mới?",
+    "stale.title": "Tạo chủ đề mới thay thế?",
     "stale.warning": "Chủ đề bạn đang trả lời đã khá cũ. Bạn có muốn tạo chủ đề mới, và liên kết với chủ đề hiện tại trong bài viết trả lời của bạn?",
     "stale.create": "Tạo chủ đề mới",
     "stale.reply_anyway": "Trả lời chủ đề này",

@@ -1,5 +1,6 @@
 {
     "topic": "Tópico",
+    "title": "Title",
     "no_topics_found": "Tópicos não encontrados!",
     "no_posts_found": "Publicações não encontradas!",
     "post_is_deleted": "Esta publicação foi eliminada!",
@@ -111,6 +112,7 @@
     "move_post": "Mover publicação",
     "post_moved": "Publicação movida!",
     "fork_topic": "Clonar tópico",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "Carrega nas publicações que queres clonar",
     "fork_no_pids": "Sem publicações selecionadas!",
     "no-posts-selected": "No posts selected!",

@@ -8,6 +8,6 @@
 	"consent.blank-localised-default": "Оставьте пустым, чтобы использовать стандартные настройки NodeBB",
 	"settings": "Настройки",
 	"cookie-domain": "Домен для cookie сессии",
-	"max-user-sessions": "Max active sessions per user",
+	"max-user-sessions": "Максимальное количество сессий на пользователя",
 	"blank-default": "Оставьте пустым для настроек по умолчанию"
 }

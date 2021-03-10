@@ -1,5 +1,6 @@
 {
     "topic": "主題",
+    "title": "Title",
     "no_topics_found": "沒有找到主題！",
     "no_posts_found": "沒有找到回覆！",
     "post_is_deleted": "此回覆已被刪除！",
@@ -111,6 +112,7 @@
     "move_post": "移動貼文",
     "post_moved": "回覆已移動！",
     "fork_topic": "分割主題",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "點擊將分割的貼文",
     "fork_no_pids": "未選中貼文！",
     "no-posts-selected": "No posts selected!",

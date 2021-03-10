@@ -1,5 +1,6 @@
 {
     "topic": "Tópico",
+    "title": "Title",
     "no_topics_found": "Nenhum tópico encontrado!",
     "no_posts_found": "Nenhum post encontrado!",
     "post_is_deleted": "Este post está deletado!",
@@ -111,6 +112,7 @@
     "move_post": "Mover Post",
     "post_moved": "Post movido!",
     "fork_topic": "Ramificar Tópico",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "Clique nos posts que você quer ramificar",
     "fork_no_pids": "Nenhum post selecionado!",
     "no-posts-selected": "No posts selected!",

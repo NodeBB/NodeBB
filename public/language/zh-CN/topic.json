@@ -1,5 +1,6 @@
 {
     "topic": "主题",
+    "title": "Title",
     "no_topics_found": "没有找到主题！",
     "no_posts_found": "没有找到回复！",
     "post_is_deleted": "此回复已被删除！",
@@ -111,6 +112,7 @@
     "move_post": "移动帖子",
     "post_moved": "回复已移动！",
     "fork_topic": "分割主题",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "点击将分割的帖子",
     "fork_no_pids": "未选中帖子！",
     "no-posts-selected": "未选中帖子！",

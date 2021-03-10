@@ -1,5 +1,6 @@
 {
     "topic": "Тема",
+    "title": "Title",
     "no_topics_found": "Тем не знайдено!",
     "no_posts_found": "Постів не знайдено!",
     "post_is_deleted": "Цей пост був видалений!",
@@ -111,6 +112,7 @@
     "move_post": "Перемістити пост",
     "post_moved": "Пост переміщено!",
     "fork_topic": "Відгалужити тему",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "Тисніть пости які ви бажаєте відгалужити",
     "fork_no_pids": "Не вибрано жодного поста!",
     "no-posts-selected": "No posts selected!",

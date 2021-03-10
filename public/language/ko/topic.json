@@ -1,5 +1,6 @@
 {
     "topic": "게시물",
+    "title": "Title",
     "no_topics_found": "게시물을 찾을 수 없습니다!",
     "no_posts_found": "포스트를 찾을 수 없습니다!",
     "post_is_deleted": "이 포스트는 삭제됐습니다!",
@@ -111,6 +112,7 @@
     "move_post": "포스트 이동",
     "post_moved": "포스트가 이동되었습니다.",
     "fork_topic": "게시물 분리",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "분리할 포스트를 선택하세요.",
     "fork_no_pids": "선택된 포스트가 없습니다.",
     "no-posts-selected": "No posts selected!",

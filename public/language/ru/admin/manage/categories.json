@@ -10,9 +10,9 @@
 	"custom-class": "Свой класс",
 	"num-recent-replies": "# последних ответов",
 	"ext-link": "Внешняя ссылка",
-	"subcategories-per-page": "Subcategories per page",
+	"subcategories-per-page": "Подкатегории на страницу",
 	"is-section": "Рассматривать эту категорию как секцию",
-	"post-queue": "Post queue",
+	"post-queue": "Очередь на публикацию",
 	"tag-whitelist": "Разрешенный список меток",
 	"upload-image": "Загрузить изображение",
 	"delete-image": "Удалить",
@@ -30,8 +30,8 @@
 	"enable": "Включить",
 	"disable": "Отключить",
 	"edit": "Редактировать",
-	"analytics": "Analytics",
-	"view-category": "View category",
+	"analytics": "Аналитика",
+	"view-category": "Перейти в категорию",
 	"set-order": "Set order",
 
 	"select-category": "Указать категорию",
@@ -49,8 +49,8 @@
 	"privileges.no-users": "В этой категории нет специально заданных прав пользователя.",
 	"privileges.section-group": "Группа",
 	"privileges.group-private": "Это закрытая группа",
-  	"privileges.inheritance-exception": "This group does not inherit privileges from registered-users group",
-  	"privileges.banned-user-inheritance": "Banned users inherit privileges from banned-users group",
+  	"privileges.inheritance-exception": "Эта группа не наследует привилегии от группы зарегистрированных пользователей",
+  	"privileges.banned-user-inheritance": "Забаненные пользователи наследуют привилегии из группы забаненных пользователей",
 	"privileges.search-group": "Добавить группу",
 	"privileges.copy-to-children": "Скопировать в дочерние",
 	"privileges.copy-from-category": "Скопировать из категории",
@@ -87,5 +87,5 @@
 	"collapse-all": "Свернуть всё",
 	"expand-all": "Развернуть всё",
 	"disable-on-create": "Отключить при создании",
-	"no-matches": "No matches"
+	"no-matches": "Нет совпадений"
 }

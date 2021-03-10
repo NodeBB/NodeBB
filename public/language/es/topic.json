@@ -1,5 +1,6 @@
 {
     "topic": "Tema",
+    "title": "Title",
     "no_topics_found": "¡No se encontraron temas!",
     "no_posts_found": "¡No se encontraron publicaciones!",
     "post_is_deleted": "¡Esta publicación está eliminada!",
@@ -111,6 +112,7 @@
     "move_post": "Mover mensaje",
     "post_moved": "¡Mensaje movido!",
     "fork_topic": "Dividir tema",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "Pulsa en los mensajes que quieres dividir",
     "fork_no_pids": "¡No has seleccionado ningún mensaje!",
     "no-posts-selected": "No posts selected!",

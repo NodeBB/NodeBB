@@ -1,5 +1,6 @@
 {
     "topic": "Ämne",
+    "title": "Title",
     "no_topics_found": "Inga ämnen hittades!",
     "no_posts_found": "Inga inlägg hittades!",
     "post_is_deleted": "Detta inlägg är raderat!",
@@ -111,6 +112,7 @@
     "move_post": "Flytta inlägg",
     "post_moved": "Inlägget flyttades.",
     "fork_topic": "Grena ämne",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "Klicka på de inlägg du vill grena",
     "fork_no_pids": "Inga inlägg valda!",
     "no-posts-selected": "No posts selected!",

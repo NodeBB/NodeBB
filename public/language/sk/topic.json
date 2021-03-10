@@ -1,5 +1,6 @@
 {
     "topic": "Téma",
+    "title": "Title",
     "no_topics_found": "Neboli nájdené žiadne témy.",
     "no_posts_found": "Neboli nájdené žiadne príspevky",
     "post_is_deleted": "Tento príspevok bol odstránený!",
@@ -111,6 +112,7 @@
     "move_post": "Presunúť príspevok",
     "post_moved": "Príspevok presunutý!",
     "fork_topic": "Rozdeliť príspevok",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "Vyber príspevky, ktoré chceš oddeliť",
     "fork_no_pids": "Žiadne príspevky neboli vybraté!",
     "no-posts-selected": "No posts selected!",

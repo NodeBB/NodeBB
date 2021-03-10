@@ -1,5 +1,6 @@
 {
     "topic": "Téma",
+    "title": "Title",
     "no_topics_found": "Nebyla nalezena žádná témata.",
     "no_posts_found": "Nebyly nalezeny žádné příspěvky.",
     "post_is_deleted": "Tento příspěvek je vymazán.",
@@ -111,6 +112,7 @@
     "move_post": "Přesunout příspěvek",
     "post_moved": "Příspěvek přesunut.",
     "fork_topic": "Rozdělit příspěvek",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "Vyberte příspěvky, které chcete oddělit",
     "fork_no_pids": "Nebyly vybrány žádné příspěvky.",
     "no-posts-selected": "No posts selected!",

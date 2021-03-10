@@ -1,5 +1,6 @@
 {
     "topic": "Discussione",
+    "title": "Title",
     "no_topics_found": "Nessuna discussione trovata!",
     "no_posts_found": "Nessun post trovato!",
     "post_is_deleted": "Questo post è eliminato!",
@@ -111,6 +112,7 @@
     "move_post": "Sposta Post",
     "post_moved": "Post spostato!",
     "fork_topic": "Dividi Discussione",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "Clicca sui post che vuoi dividere",
     "fork_no_pids": "Nessun post selezionato!",
     "no-posts-selected": "Nessun post selezionato!",

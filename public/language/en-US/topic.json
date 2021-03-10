@@ -1,5 +1,6 @@
 {
     "topic": "Topic",
+    "title": "Title",
     "no_topics_found": "No topics found!",
     "no_posts_found": "No posts found!",
     "post_is_deleted": "This post is deleted!",
@@ -111,6 +112,7 @@
     "move_post": "Move Post",
     "post_moved": "Post moved!",
     "fork_topic": "Fork Topic",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "Click the posts you want to fork",
     "fork_no_pids": "No posts selected!",
     "no-posts-selected": "No posts selected!",

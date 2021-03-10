@@ -1,5 +1,6 @@
 {
     "topic": "Aihe",
+    "title": "Title",
     "no_topics_found": "Aiheita ei löytynyt!",
     "no_posts_found": "Viestejä ei löytynyt!",
     "post_is_deleted": "Tämä viesti poistettiin!",
@@ -111,6 +112,7 @@
     "move_post": "Siirrä viesti",
     "post_moved": "Viestit siirretty!",
     "fork_topic": "Haaroita keskustelu",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "Napsauta viestejä, jotka haluat haaroittaa",
     "fork_no_pids": "Ei valittuja viestejä!",
     "no-posts-selected": "No posts selected!",

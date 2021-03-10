@@ -1,5 +1,6 @@
 {
     "topic": "กระทู้",
+    "title": "Title",
     "no_topics_found": "ไม่พบกระทู้",
     "no_posts_found": "ไม่พบโพส",
     "post_is_deleted": "ลบ Post นี้เรียบร้อยแล้ว!",
@@ -111,6 +112,7 @@
     "move_post": "ย้ายโพส",
     "post_moved": "โพสต์ถูกย้ายแล้ว!",
     "fork_topic": "แยกกระทู้",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "คลิกที่โพสที่คุณต้องการที่จะแยก",
     "fork_no_pids": "ไม่มีโพสต์ที่เลือก!",
     "no-posts-selected": "No posts selected!",
