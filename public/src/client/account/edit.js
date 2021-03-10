@@ -5,7 +5,8 @@ define('forum/account/edit', [
 	'accounts/picture',
 	'translator',
 	'api',
-], function (header, picture, translator, api) {
+	'hooks',
+], function (header, picture, translator, api, hooks) {
 	var AccountEdit = {};
 
 	AccountEdit.init = function () {
@@ -31,22 +32,13 @@ define('forum/account/edit', [
 	};
 
 	function updateProfile() {
-		var userData = {
-			uid: $('#inputUID').val(),
-			fullname: $('#inputFullname').val(),
-			website: $('#inputWebsite').val(),
-			birthday: $('#inputBirthday').val(),
-			location: $('#inputLocation').val(),
-			groupTitle: $('#groupTitle').val(),
-			signature: $('#inputSignature').val(),
-			aboutme: $('#inputAboutMe').val(),
-		};
-
+		const userData = $('form[component="profile/edit/form"]').serializeObject();
+		userData.uid = ajaxify.data.uid;
 		userData.groupTitle = JSON.stringify(
 			Array.isArray(userData.groupTitle) ? userData.groupTitle : [userData.groupTitle]
 		);
 
-		$(window).trigger('action:profile.update', userData);
+		hooks.fire('action:profile.update', userData);
 
 		api.put('/users/' + userData.uid, userData).then((res) => {
 			app.alertSuccess('[[user:profile_update_success]]');
@@ -128,7 +120,7 @@ define('forum/account/edit', [
 	}
 
 	function updateSignature() {
-		var el = $('#inputSignature');
+		var el = $('#signature');
 		$('#signatureCharCountLeft').html(getCharsLeft(el, ajaxify.data.maximumSignatureLength));
 
 		el.on('keyup change', function () {
@@ -137,7 +129,7 @@ define('forum/account/edit', [
 	}
 
 	function updateAboutMe() {
-		var el = $('#inputAboutMe');
+		var el = $('#aboutme');
 		$('#aboutMeCharCountLeft').html(getCharsLeft(el, ajaxify.data.maximumAboutMeLength));
 
 		el.on('keyup change', function () {
