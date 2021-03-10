@@ -1,5 +1,6 @@
 {
     "topic": "Thema",
+    "title": "Title",
     "no_topics_found": "Keine passenden Themen gefunden!",
     "no_posts_found": "Keine Beiträge gefunden!",
     "post_is_deleted": "Dieser Beitrag wurde gelöscht!",
@@ -111,6 +112,7 @@
     "move_post": "Beitrag verschieben",
     "post_moved": "Beitrag wurde verschoben!",
     "fork_topic": "Thema aufspalten",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "Klicke auf die Beiträge, die abgespalten werden sollen",
     "fork_no_pids": "Keine Beiträge ausgewählt!",
     "no-posts-selected": "No posts selected!",

@@ -1,5 +1,6 @@
 {
     "topic": "Temats",
+    "title": "Title",
     "no_topics_found": "Nav tematu!",
     "no_posts_found": "Nav rakstu!",
     "post_is_deleted": "Raksts izdzēsts!",
@@ -111,6 +112,7 @@
     "move_post": "Pārvietot rakstu",
     "post_moved": "Raksts pārvietots!",
     "fork_topic": "Nozarot tematu",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "Noklikšķini uz rakstiem, kurus nozarot",
     "fork_no_pids": "Nav atlasīto rakstu!",
     "no-posts-selected": "No posts selected!",

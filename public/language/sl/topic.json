@@ -1,5 +1,6 @@
 {
     "topic": "Tema",
+    "title": "Title",
     "no_topics_found": "Ni najdenih tem!",
     "no_posts_found": "Ni najdenih objav!",
     "post_is_deleted": "Ta objava je izbrisana!",
@@ -111,6 +112,7 @@
     "move_post": "Premakni objavo",
     "post_moved": "Objava premaknjena!",
     "fork_topic": "Razcepi temo",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "Klikni na objavo, ki o želiš odcepiti",
     "fork_no_pids": "Ni izbranih objav!",
     "no-posts-selected": "No posts selected!",

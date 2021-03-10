@@ -1,5 +1,6 @@
 {
     "topic": "Тема",
+    "title": "Title",
     "no_topics_found": "Няма намерени теми!",
     "no_posts_found": "Няма намерени публикации!",
     "post_is_deleted": "Публикацията е изтрита!",
@@ -111,6 +112,7 @@
     "move_post": "Преместване на публикацията",
     "post_moved": "Публикацията беше преместена!",
     "fork_topic": "Разделяне на темата",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "Натиснете публикациите, които искате да отделите",
     "fork_no_pids": "Няма избрани публикации!",
     "no-posts-selected": "Няма избрани публикации!",

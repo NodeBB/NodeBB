@@ -2,7 +2,7 @@
 	"forum-traffic": "Трафик ",
 	"page-views": "Просмотров",
 	"unique-visitors": "Посетителей",
-	"logins": "Logins",
+	"logins": "Авторизаций",
 	"new-users": "Новых пользователей",
 	"posts": "Сообщений",
 	"topics": "Тем",
@@ -30,7 +30,7 @@
 	"upgrade-available": "<p>Вышла новая версия NodeBB (v%1). Хотите <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">установить обновление</a>?</p>",
 	"prerelease-upgrade-available": "<p>Вы используете устаревшую предрелизную версию NodeBB. Вышла новая (v%1). Хотите <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">установить обновление</a>?</p>",
 	"prerelease-warning": "<p>Вы используете <strong>предрелизную</strong> версию NodeBB. Вы можете столкнуться с разнообразными ошибками в её работе.<i class=\"fa fa-exclamation-triangle\"></i></p>",
-	"fallback-emailer-not-found": "Fallback emailer not found!",
+	"fallback-emailer-not-found": "Резервная почта не найдена!",
 	"running-in-development": "<span>Форум работает в режиме для разработчиков. Это значит, что он может быть более уязвим для внешних угроз; пожалуйста, свяжитесь с вашим сисадмином.</span>",
 	"latest-lookup-failed": "<p>Не удалось проверить наличие обновлений NodeBB</p>",
 
@@ -79,7 +79,7 @@
 	"last-restarted-by": "Последний перезапуск:",
 	"no-users-browsing": "Просмотров нет",
 
-	"back-to-dashboard": "Back to Dashboard",
+	"back-to-dashboard": "Вернуться на Панель управления",
 	"details.no-users": "No users have joined within the selected timeframe",
 	"details.no-topics": "No topics have been posted within the selected timeframe",
 	"details.no-logins": "No logins have been recorded within the selected timeframe",

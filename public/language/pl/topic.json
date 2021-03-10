@@ -1,5 +1,6 @@
 {
     "topic": "Temat",
+    "title": "Title",
     "no_topics_found": "Nie znaleziono żadnych tematów.",
     "no_posts_found": "Nie znaleziono żadnych postów.",
     "post_is_deleted": "Ten post został usunięty!",
@@ -111,6 +112,7 @@
     "move_post": "Przenieś post",
     "post_moved": "Post został przeniesiony!",
     "fork_topic": "Skopiuj temat",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "Zaznacz posty, które chcesz skopiować",
     "fork_no_pids": "Nie zaznaczono żadnych postów!",
     "no-posts-selected": "No posts selected!",

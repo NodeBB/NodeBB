@@ -16,7 +16,7 @@
 	"allow-account-deletion": "Разрешить удалять учётную запись",
 	"hide-fullname": "Скрывать полное имя от других пользователей",
 	"hide-email": "Скрывать e-mail от других пользователей",
-	"show-fullname-as-displayname": "Show user's full name as their display name if available",
+	"show-fullname-as-displayname": "Показывать полное имя пользователя в качестве отображаемого имени, если доступно",
 	"themes": "Оформление",
 	"disable-user-skins": "Запретить пользователям выбирать стиль темы",
 	"account-protection": "Защита учётных записей",

@@ -1,5 +1,6 @@
 {
     "topic": "Topik",
+    "title": "Title",
     "no_topics_found": "Tiada topik yang ditemui",
     "no_posts_found": "Tiada kirim yang dijumpai",
     "post_is_deleted": "Kiriman ini dipadam!",
@@ -111,6 +112,7 @@
     "move_post": "Pindahkan kiriman",
     "post_moved": "Kiriman dipindahkan",
     "fork_topic": "Salin topik",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "Klik kiriman yang anda hendak salin",
     "fork_no_pids": "Tiada kiriman yang dipilih",
     "no-posts-selected": "No posts selected!",

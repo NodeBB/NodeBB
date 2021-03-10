@@ -1,5 +1,6 @@
 {
     "topic": "টপিক",
+    "title": "Title",
     "no_topics_found": "কোন টপিক পাওয়া যায়নি!",
     "no_posts_found": "কোন পোস্ট পাওয়া যায়নি",
     "post_is_deleted": "এই পোস্টটি মুছে ফেলা হয়েছে!",
@@ -111,6 +112,7 @@
     "move_post": "পোষ্ট সরান",
     "post_moved": "পোষ্ট সরানো হয়েছে",
     "fork_topic": "টপিক ফর্ক করুন",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "যে পোষ্টটি ফর্ক করতে চান সেটি ক্লিক করুন",
     "fork_no_pids": "কোন পোষ্ট সিলেক্ট করা হয় নি",
     "no-posts-selected": "No posts selected!",

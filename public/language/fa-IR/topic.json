@@ -1,5 +1,6 @@
 {
     "topic": "جُستار",
+    "title": "Title",
     "no_topics_found": "هیچ موضوعی یافت نشد!",
     "no_posts_found": "پستی یافت نشد!",
     "post_is_deleted": "این پست پاک شده!",
@@ -111,6 +112,7 @@
     "move_post": "جابه‌جایی موضوع",
     "post_moved": "پست جابه‌جا شد!",
     "fork_topic": "شاخه ساختن از موضوع",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "پست‌هایی را که می‌خواهید به موضوع تازه ببرید، انتخاب کنید",
     "fork_no_pids": "هیچ پستی انتخاب نشده!",
     "no-posts-selected": "هیچ پستی انتخاب نشده!",

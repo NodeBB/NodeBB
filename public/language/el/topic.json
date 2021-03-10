@@ -1,5 +1,6 @@
 {
     "topic": "Θέμα",
+    "title": "Title",
     "no_topics_found": "Δεν βρέθηκαν θέματα!",
     "no_posts_found": "Δεν βρέθηκαν δημοσιεύσεις!",
     "post_is_deleted": "Αυτή η δημοσίευση έχει διαγραφεί!",
@@ -111,6 +112,7 @@
     "move_post": "Μετακίνηση Δημοσίευσης",
     "post_moved": "Η δημοσίευση μετακινήθηκε!",
     "fork_topic": "Διαχωρισμός Θέματος",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "Κάνε κλικ στις δημοσιεύσεις που θέλεις να διαχωρίσεις",
     "fork_no_pids": "Δεν έχουν επιλεχθεί δημοσιεύσεις!",
     "no-posts-selected": "No posts selected!",

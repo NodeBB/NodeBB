@@ -1,5 +1,6 @@
 {
     "topic": "Sujet",
+    "title": "Title",
     "no_topics_found": "Aucun sujet n'a été trouvé !",
     "no_posts_found": "Aucun message trouvé !",
     "post_is_deleted": "Ce message a été supprimé !",
@@ -111,6 +112,7 @@
     "move_post": "Déplacer",
     "post_moved": "Message déplacé !",
     "fork_topic": "Scinder le sujet",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "Cliquez sur les postes à scinder",
     "fork_no_pids": "Aucun post sélectionné !",
     "no-posts-selected": "Aucun(s) message(s) sélectionné(s) !",

@@ -1,5 +1,6 @@
 {
     "topic": "Onderwerp",
+    "title": "Title",
     "no_topics_found": "Geen onderwerpen gevonden!",
     "no_posts_found": "Geen berichten gevonden!",
     "post_is_deleted": "Dit bericht is verwijderd!",
@@ -111,6 +112,7 @@
     "move_post": "Bericht verplaatsen",
     "post_moved": "Bericht verplaatst!",
     "fork_topic": "Afgesplitst onderwerp ",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "Klik op de berichten die afgesplitst moeten worden",
     "fork_no_pids": "Geen berichten geselecteerd!",
     "no-posts-selected": "Geen berichten geselecteerd!",

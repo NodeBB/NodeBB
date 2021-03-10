@@ -1,5 +1,6 @@
 {
     "topic": "Tema",
+    "title": "Title",
     "no_topics_found": "Tema nije pronađena!",
     "no_posts_found": "Objave nisu pronađene!",
     "post_is_deleted": "Ova objava je obrisana!",
@@ -111,6 +112,7 @@
     "move_post": "Pomakni objavu",
     "post_moved": "Objava pomaknuta!",
     "fork_topic": "Dupliraj temu",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "Označi objave koje želite duplirati",
     "fork_no_pids": "Objave nisu odabrane!",
     "no-posts-selected": "No posts selected!",

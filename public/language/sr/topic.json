@@ -1,5 +1,6 @@
 {
     "topic": "Тема",
+    "title": "Title",
     "no_topics_found": "Нема пронађених тема!",
     "no_posts_found": "Нису пронађене поруке!",
     "post_is_deleted": "Ова порука је избрисана!",
@@ -111,6 +112,7 @@
     "move_post": "Премести поруку",
     "post_moved": "Порука је премештена!",
     "fork_topic": "Рачвај тему",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "Кликните на поруке које желите да рачвате",
     "fork_no_pids": "Нема одабраних порука!",
     "no-posts-selected": "No posts selected!",

@@ -1,5 +1,6 @@
 {
     "topic": "Emne",
+    "title": "Title",
     "no_topics_found": "Ingen emner funnet!",
     "no_posts_found": "Ingen innlegg funnet!",
     "post_is_deleted": "Dette innlegget er slettet!",
@@ -111,6 +112,7 @@
     "move_post": "Flytt innlegg",
     "post_moved": "Innlegg flyttet!",
     "fork_topic": "Forgren Emne",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "Trykk på innleggene du vil forgrene",
     "fork_no_pids": "Ingen innlegg valgt!",
     "no-posts-selected": "No posts selected!",

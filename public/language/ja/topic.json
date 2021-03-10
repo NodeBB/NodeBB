@@ -1,5 +1,6 @@
 {
     "topic": "スレッド",
+    "title": "Title",
     "no_topics_found": "スレッドが見つかりません！",
     "no_posts_found": "投稿はありません！",
     "post_is_deleted": "この投稿が削除されました！",
@@ -111,6 +112,7 @@
     "move_post": "投稿を移動",
     "post_moved": "投稿を移動しました！",
     "fork_topic": "スレッドをフォーク",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "フォークしたい投稿をクリックして",
     "fork_no_pids": "投稿が選択されていません！",
     "no-posts-selected": "No posts selected!",

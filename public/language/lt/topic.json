@@ -1,5 +1,6 @@
 {
     "topic": "Tema",
+    "title": "Title",
     "no_topics_found": "Temų nerasta!",
     "no_posts_found": "Įrašų nerasta!",
     "post_is_deleted": "Šis įrašas ištrintas!",
@@ -111,6 +112,7 @@
     "move_post": "Perkelti įrašą",
     "post_moved": "Pranešimas perkeltas!",
     "fork_topic": "Išskaidyti temą",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "Pažymėkite ant įrašų, kuriuos norite perkelti į naują temą",
     "fork_no_pids": "Nepasirinktas joks įrašas!",
     "no-posts-selected": "No posts selected!",

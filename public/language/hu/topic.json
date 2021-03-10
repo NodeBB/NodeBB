@@ -1,5 +1,6 @@
 {
     "topic": "Témakör",
+    "title": "Title",
     "no_topics_found": "Nem található témakör!",
     "no_posts_found": "Nem található hozzászólás!",
     "post_is_deleted": "A hozzászólás törlésre került!",
@@ -111,6 +112,7 @@
     "move_post": "Hozzászólás áthelyezése",
     "post_moved": "Hozzászólás áthelyezve!",
     "fork_topic": "Témakör szétszedése",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "Kattints a hozzászólásokra, melyeket szét akarsz szedni",
     "fork_no_pids": "Nincs hozzászólás kiválasztva!",
     "no-posts-selected": "No posts selected!",

@@ -1,5 +1,6 @@
 {
     "topic": "Arresonada",
+    "title": "Title",
     "no_topics_found": "Peruna arresonada agatada!",
     "no_posts_found": "Perunu arresonu agatadu!",
     "post_is_deleted": "This post is deleted!",
@@ -111,6 +112,7 @@
     "move_post": "Move Arresonu",
     "post_moved": "Post moved!",
     "fork_topic": "Partzi Arresonada",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "Sèbera is arresonos chi boles partzire",
     "fork_no_pids": "Perunu arresonu seberadu!",
     "no-posts-selected": "No posts selected!",

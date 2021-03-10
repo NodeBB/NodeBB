@@ -1,5 +1,6 @@
 {
     "topic": "موضوع",
+    "title": "Title",
     "no_topics_found": "لا توجد مواضيع !",
     "no_posts_found": "لا  توجد مشاركات!",
     "post_is_deleted": "هذه المشاركة محذوفة!",
@@ -111,6 +112,7 @@
     "move_post": "نقل المشاركة",
     "post_moved": "تم نقل المشاركة",
     "fork_topic": "فرع الموضوع",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "إضغط على المشاركات التي تريد تفريعها",
     "fork_no_pids": "لم تختر أي مشاركة",
     "no-posts-selected": "No posts selected!",

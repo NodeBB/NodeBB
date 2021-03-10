@@ -1,5 +1,6 @@
 {
     "topic": "Ikiganiro",
+    "title": "Title",
     "no_topics_found": "Nta kiganiro cyabonetse!",
     "no_posts_found": "Nta cyashyizweho cyabonetse!",
     "post_is_deleted": "Ibyari byanditse byakuweho!",
@@ -111,6 +112,7 @@
     "move_post": "Imura Icyashyizweho",
     "post_moved": "Icyashizweho kirimuwe!",
     "fork_topic": "Gabanyaho ku Kiganiro",
+    "enter-new-topic-title": "Enter new topic title",
     "fork_topic_instruction": "Kanda ku byashizweho ushaka kugabanyaho",
     "fork_no_pids": "Nta kintu wahisemo!",
     "no-posts-selected": "No posts selected!",
