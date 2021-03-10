@@ -6,7 +6,6 @@ const winston = require('winston');
 const plugins = require('../plugins');
 const Meta = require('./index');
 const utils = require('../utils');
-const file = require('./src/file');
 
 const Tags = module.exports;
 
@@ -56,14 +55,14 @@ Tags.parse = async (req, data, meta, link) => {
 		});
 	}
 
-	const uploadedFaviconPath = `${relative_path}/assets/uploads/system/favicon.ico`;
-	const faviconPath = await file.exists(uploadedFaviconPath) ? uploadedFaviconPath : `${relative_path}/favicon.ico`;
+	const faviconPath = `${relative_path}/assets/uploads/system/favicon.ico`;
+	const cacheBuster = `${Meta.config['cache-buster'] ? `?${Meta.config['cache-buster']}` : ''}`;
 
 	// Link Tags
 	const defaultLinks = [{
 		rel: 'icon',
 		type: 'image/x-icon',
-		href: `${faviconPath}${Meta.config['cache-buster'] ? `?${Meta.config['cache-buster']}` : ''}`,
+		href: `${faviconPath}${cacheBuster}`,
 	}, {
 		rel: 'manifest',
 		href: `${relative_path}/manifest.webmanifest`,
