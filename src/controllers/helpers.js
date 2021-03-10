@@ -140,7 +140,7 @@ helpers.notAllowed = async function (req, res, error) {
 		helpers.formatApiResponse(401, res, error);
 	} else {
 		req.session.returnTo = req.url;
-		res.redirect(`${relative_path}/login`);
+		res.redirect(`${relative_path}/login${req.path.startsWith('/admin') ? '?local=1' : ''}`);
 	}
 };
 
