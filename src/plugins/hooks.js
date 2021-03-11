@@ -88,7 +88,7 @@ Hooks.unregister = function (id, hook, method) {
 Hooks.fire = async function (hook, params) {
 	const hookList = plugins.loadedHooks[hook];
 	const hookType = hook.split(':')[0];
-	if (global.env === 'development' && hook !== 'action:plugins.firehook') {
+	if (global.env === 'development' && hook !== 'action:plugins.firehook' && hook !== 'filter:plugins.firehook') {
 		winston.verbose(`[plugins/fireHook] ${hook}`);
 	}
 
@@ -98,8 +98,9 @@ Hooks.fire = async function (hook, params) {
 	}
 	const result = await hookTypeToMethod[hookType](hook, hookList, params);
 
-	if (hook !== 'action:plugins.firehook') {
-		Hooks.fire('action:plugins.firehook', { hook: hook, params: result || params });
+	if (hook !== 'action:plugins.firehook' && hook !== 'filter:plugins.firehook') {
+		const payload = await Hooks.fire('filter:plugins.firehook', { hook: hook, params: result || params });
+		Hooks.fire('action:plugins.firehook', payload);
 	}
 	if (result !== undefined) {
 		return result;
