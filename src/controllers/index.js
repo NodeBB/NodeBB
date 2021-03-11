@@ -204,15 +204,16 @@ Controllers.registerInterstitial = async function (req, res, next) {
 			return helpers.redirect(res, returnTo || '/');
 		}
 
+		const errors = req.flash('errors');
 		const renders = data.interstitials.map(
-			interstitial => req.app.renderAsync(interstitial.template, interstitial.data || {})
+			interstitial => req.app.renderAsync(interstitial.template, { ...interstitial.data || {}, errors })
 		);
 		const sections = await Promise.all(renders);
 
 		res.render('registerComplete', {
 			title: '[[pages:registration-complete]]',
-			errors: req.flash('errors'),
 			sections: sections,
+			errors,
 		});
 	} catch (err) {
 		next(err);
