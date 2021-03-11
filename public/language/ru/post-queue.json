@@ -8,11 +8,11 @@
 	"content": "Содержимое",
 	"posted": "Время",
 	"reply-to": "Ответ \"%1\"",
-	"content-editable": "Click on content to edit",
-	"category-editable": "Click on category to edit",
-	"title-editable": "Click on title to edit",
-	"reply": "Reply",
-	"topic": "Topic",
-	"accept": "Accept",
-	"reject": "Reject"
+	"content-editable": "Нажмите на содержимое для редактирования",
+	"category-editable": "Нажмите на категорию для редактирования",
+	"title-editable": "Нажмите на название для редактирования",
+	"reply": "Ответить",
+	"topic": "Тема",
+	"accept": "Подтвердить",
+	"reject": "Отклонить"
 }
