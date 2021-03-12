@@ -478,7 +478,7 @@ Flags.addReport = async function (flagId, type, id, uid, reason, timestamp) {
 		['flags:hash', flagId, [type, id, uid].join(':')],
 	]);
 
-	plugins.fireHook('action:flags.addReport', { flagId, type, id, uid, reason, timestamp });
+	plugins.hooks.fire('action:flags.addReport', { flagId, type, id, uid, reason, timestamp });
 };
 
 Flags.exists = async function (type, id, uid) {
