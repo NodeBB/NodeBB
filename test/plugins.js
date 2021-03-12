@@ -52,7 +52,7 @@ describe('Plugins', () => {
 			data.foo += 1;
 			callback(null, data);
 		}
-		function method2(data) {
+		async function method2(data) {
 			return new Promise((resolve) => {
 				data.foo += 5;
 				resolve(data);
@@ -70,7 +70,7 @@ describe('Plugins', () => {
 	});
 
 	it('should register and fire a filter hook that returns a promise that gets rejected', (done) => {
-		function method(data) {
+		async function method(data) {
 			return new Promise((resolve, reject) => {
 				data.foo += 5;
 				reject(new Error('nope'));
@@ -107,7 +107,7 @@ describe('Plugins', () => {
 	});
 
 	it('should register and fire a static hook returning a promise', (done) => {
-		function method(data) {
+		async function method(data) {
 			assert.equal(data.bar, 'test');
 			return new Promise((resolve) => {
 				resolve();
@@ -121,7 +121,7 @@ describe('Plugins', () => {
 	});
 
 	it('should register and fire a static hook returning a promise that gets rejected with a error', (done) => {
-		function method(data) {
+		async function method(data) {
 			assert.equal(data.bar, 'test');
 			return new Promise((resolve, reject) => {
 				reject(new Error('just because'));
@@ -130,21 +130,6 @@ describe('Plugins', () => {
 		plugins.hooks.register('test-plugin', { hook: 'static:test.hook', method: method });
 		plugins.hooks.fire('static:test.hook', { bar: 'test' }, (err) => {
 			assert.strictEqual(err.message, 'just because');
-			plugins.hooks.unregister('test-plugin', 'static:test.hook', method);
-			done();
-		});
-	});
-
-	it('should register and timeout a static hook returning a promise but takes too long', (done) => {
-		function method(data) {
-			assert.equal(data.bar, 'test');
-			return new Promise((resolve) => {
-				setTimeout(resolve, 6000);
-			});
-		}
-		plugins.hooks.register('test-plugin', { hook: 'static:test.hook', method: method });
-		plugins.hooks.fire('static:test.hook', { bar: 'test' }, (err) => {
-			assert.ifError(err);
 			plugins.hooks.unregister('test-plugin', 'static:test.hook', method);
 			done();
 		});
