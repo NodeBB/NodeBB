@@ -1,8 +1,7 @@
 'use strict';
 
+const util = require('util');
 const winston = require('winston');
-const async = require('async');
-const utils = require('../utils');
 const plugins = require('.');
 
 const Hooks = module.exports;
@@ -116,21 +115,21 @@ async function fireFilterHook(hook, hookList, params) {
 		return params;
 	}
 
-	return await async.reduce(hookList, params, (params, hookObj, next) => {
+	for (const hookObj of hookList) {
 		if (typeof hookObj.method !== 'function') {
 			if (global.env === 'development') {
 				winston.warn(`[plugins] Expected method for hook '${hook}' in plugin '${hookObj.id}' not found, skipping.`);
 			}
-			return next(null, params);
+		} else {
+			let hookFn = hookObj.method;
+			if (hookFn.constructor && hookFn.constructor.name !== 'AsyncFunction') {
+				hookFn = util.promisify(hookFn);
+			}
+			// eslint-disable-next-line
+			params = await hookFn(params);
 		}
-		const returned = hookObj.method(params, next);
-		if (utils.isPromise(returned)) {
-			returned.then(
-				payload => setImmediate(next, null, payload),
-				err => setImmediate(next, err)
-			);
-		}
-	});
+	}
+	return params;
 }
 
 async function fireActionHook(hook, hookList, params) {
@@ -143,7 +142,7 @@ async function fireActionHook(hook, hookList, params) {
 				winston.warn(`[plugins] Expected method for hook '${hook}' in plugin '${hookObj.id}' not found, skipping.`);
 			}
 		} else {
-			/* eslint-disable no-await-in-loop */
+			// eslint-disable-next-line
 			await hookObj.method(params);
 		}
 	}
@@ -155,59 +154,46 @@ async function fireStaticHook(hook, hookList, params) {
 	}
 	// don't bubble errors from these hooks, so bad plugins don't stop startup
 	const noErrorHooks = ['static:app.load', 'static:assets.prepare', 'static:app.preload'];
-	await async.each(hookList, (hookObj, next) => {
+
+	for (const hookObj of hookList) {
 		if (typeof hookObj.method !== 'function') {
-			return next();
+			if (global.env === 'development') {
+				winston.warn(`[plugins] Expected method for hook '${hook}' in plugin '${hookObj.id}' not found, skipping.`);
+			}
+		} else {
+			let hookFn = hookObj.method;
+			if (hookFn.constructor && hookFn.constructor.name !== 'AsyncFunction') {
+				hookFn = util.promisify(hookFn);
+			}
+			try {
+				// eslint-disable-next-line
+				await hookFn(params);
+			} catch (err) {
+				winston.error(`[plugins] Error executing '${hook}' in plugin '${hookObj.id}'\n${err.stack}`);
+				if (!noErrorHooks.includes(hook)) {
+					throw err;
+				}
+			}
 		}
-
-		let timedOut = false;
-		const timeoutId = setTimeout(() => {
-			winston.warn(`[plugins] Callback timed out, hook '${hook}' in plugin '${hookObj.id}'`);
-			timedOut = true;
-			next();
-		}, 5000);
-
-		const callback = (err) => {
-			clearTimeout(timeoutId);
-			if (err) {
-				winston.error(`[plugins] Error executing '${hook}' in plugin '${hookObj.id}'`);
-				winston.error(err.stack);
-			}
-			if (!timedOut) {
-				next(noErrorHooks.includes(hook) ? null : err);
-			}
-		};
-		try {
-			const returned = hookObj.method(params, callback);
-			if (utils.isPromise(returned)) {
-				returned.then(
-					payload => setImmediate(callback, null, payload),
-					err => setImmediate(callback, err)
-				);
-			}
-		} catch (err) {
-			callback(err);
-		}
-	});
+	}
 }
 
 async function fireResponseHook(hook, hookList, params) {
 	if (!Array.isArray(hookList) || !hookList.length) {
 		return;
 	}
-	await async.eachSeries(hookList, async (hookObj) => {
+	for (const hookObj of hookList) {
 		if (typeof hookObj.method !== 'function') {
 			if (global.env === 'development') {
 				winston.warn(`[plugins] Expected method for hook '${hook}' in plugin '${hookObj.id}' not found, skipping.`);
 			}
-			return;
+		} else {
+			// Skip remaining hooks if headers have been sent
+			if (params.res.headersSent) {
+				return;
+			}
+			// eslint-disable-next-line
+			await hookObj.method(params);
 		}
-
-		// Skip remaining hooks if headers have been sent
-		if (params.res.headersSent) {
-			return;
-		}
-
-		await hookObj.method(params);
-	});
+	}
 }
