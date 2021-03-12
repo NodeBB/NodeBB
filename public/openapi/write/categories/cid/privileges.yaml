@@ -24,6 +24,25 @@ get:
               response:
                 type: object
                 properties:
+                  labels:
+                    type: object
+                    properties:
+                      users:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              description: Language key of the privilege name's user-friendly name
+                      groups:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              description: Language key of the privilege name's user-friendly name
                   users:
                     type: array
                     items:
@@ -60,3 +79,22 @@ get:
                           type: boolean
                         isSystem:
                           type: boolean
+                  keys:
+                    type: object
+                    properties:
+                      users:
+                        type: array
+                        items:
+                          type: string
+                          description: "Privilege name"
+                      groups:
+                        type: array
+                        items:
+                          type: string
+                          description: "Privilege name"
+                  columnCountUserOther:
+                    type: number
+                    description: "The number of additional user privileges added by plugins"
+                  columnCountGroupOther:
+                    type: number
+                    description: "The number of additional group privileges added by plugins"

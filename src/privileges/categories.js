@@ -54,12 +54,10 @@ privsCategories.privilegeList = privsCategories.userPrivilegeList.concat(privsCa
 
 // Method used in admin/category controller to show all users/groups with privs in that given cid
 privsCategories.list = async function (cid) {
-	async function getLabels() {
-		return await utils.promiseParallel({
-			users: plugins.hooks.fire('filter:privileges.list_human', privsCategories.privilegeLabels.slice()),
-			groups: plugins.hooks.fire('filter:privileges.groups.list_human', privsCategories.privilegeLabels.slice()),
-		});
-	}
+	const labels = await utils.promiseParallel({
+		users: plugins.hooks.fire('filter:privileges.list_human', privsCategories.privilegeLabels.slice()),
+		groups: plugins.hooks.fire('filter:privileges.groups.list_human', privsCategories.privilegeLabels.slice()),
+	});
 
 	const keys = await utils.promiseParallel({
 		users: plugins.hooks.fire('filter:privileges.list', privsCategories.userPrivilegeList.slice()),
@@ -67,17 +65,15 @@ privsCategories.list = async function (cid) {
 	});
 
 	const payload = await utils.promiseParallel({
-		labels: getLabels(),
+		labels,
 		users: helpers.getUserPrivileges(cid, keys.users),
 		groups: helpers.getGroupPrivileges(cid, keys.groups),
 	});
 	payload.keys = keys;
 
-	// This is a hack because I can't do {labels.users.length} to echo the count in templates.js
-	payload.columnCountUser = payload.labels.users.length + 3;
 	payload.columnCountUserOther = payload.labels.users.length - privsCategories.privilegeLabels.length;
-	payload.columnCountGroup = payload.labels.groups.length + 3;
 	payload.columnCountGroupOther = payload.labels.groups.length - privsCategories.privilegeLabels.length;
+
 	return payload;
 };
 

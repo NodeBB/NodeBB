@@ -60,7 +60,8 @@
 						</tbody>
 						<tfoot>
 							<tr>
-								<td colspan="{privileges.columnCountGroup}">
+								<td colspan="3"></td>
+								<td colspan="{privileges.keys.groups.length}">
 									<div class="btn-toolbar">
 										<button type="button" class="btn btn-default pull-right" data-ajaxify="false" data-action="search.group">
 											<i class="fa fa-users"></i>
@@ -138,7 +139,8 @@
 						</tbody>
 						<tfoot>
 							<tr>
-								<td colspan="{privileges.columnCountUser}">
+								<td colspan="3"></td>
+								<td colspan="{privileges.keys.users.length}">
 									<button type="button" class="btn btn-default pull-right" data-ajaxify="false" data-action="search.user">
 										<i class="fa fa-user"></i>
 										[[admin/manage/categories:privileges.search-user]]

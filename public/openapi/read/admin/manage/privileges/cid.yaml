@@ -81,11 +81,7 @@ get:
                               type: boolean
                             isSystem:
                               type: boolean
-                      columnCountUser:
-                        type: number
                       columnCountUserOther:
-                        type: number
-                      columnCountGroup:
                         type: number
                       columnCountGroupOther:
                         type: number

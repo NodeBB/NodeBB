@@ -174,12 +174,8 @@ define('admin/manage/privileges', [
 		api.get(`/categories/${cid}/privileges`, {}).then((privileges) => {
 			ajaxify.data.privileges = { ...ajaxify.data.privileges, ...privileges };
 			var tpl = parseInt(cid, 10) ? 'admin/partials/privileges/category' : 'admin/partials/privileges/global';
-			Promise.all([
-				app.parseAndTranslate(tpl, 'privileges.groups', { privileges }),
-				app.parseAndTranslate(tpl, 'privileges.users', { privileges }),
-			]).then((html) => {
-				$('.privilege-table-container tbody').first().html(html[0]);
-				$('.privilege-table-container tbody').last().html(html[1]);
+			app.parseAndTranslate(tpl, { privileges }).then((html) => {
+				$('.privilege-table-container').html(html);
 				Privileges.exposeAssumedPrivileges();
 				checkboxRowSelector.updateAll();
 

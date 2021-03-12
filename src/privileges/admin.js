@@ -137,12 +137,10 @@ privsAdmin.list = async function (uid) {
 		groupPrivilegeList.splice(idx, 1);
 	}
 
-	async function getLabels() {
-		return await utils.promiseParallel({
-			users: plugins.hooks.fire('filter:privileges.admin.list_human', privilegeLabels.slice()),
-			groups: plugins.hooks.fire('filter:privileges.admin.groups.list_human', privilegeLabels.slice()),
-		});
-	}
+	const labels = await utils.promiseParallel({
+		users: plugins.hooks.fire('filter:privileges.admin.list_human', privilegeLabels.slice()),
+		groups: plugins.hooks.fire('filter:privileges.admin.groups.list_human', privilegeLabels.slice()),
+	});
 
 	const keys = await utils.promiseParallel({
 		users: plugins.hooks.fire('filter:privileges.admin.list', userPrivilegeList.slice()),
@@ -150,14 +148,12 @@ privsAdmin.list = async function (uid) {
 	});
 
 	const payload = await utils.promiseParallel({
-		labels: getLabels(),
+		labels,
 		users: helpers.getUserPrivileges(0, keys.users),
 		groups: helpers.getGroupPrivileges(0, keys.groups),
 	});
 	payload.keys = keys;
 
-	// This is a hack because I can't do {labels.users.length} to echo the count in templates.js
-	payload.columnCount = payload.labels.users.length + 3;
 	return payload;
 };
 

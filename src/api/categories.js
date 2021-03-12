@@ -53,14 +53,6 @@ categoriesAPI.getPrivileges = async (caller, cid) => {
 		responsePayload = await privileges.categories.list(cid);
 	}
 
-	// The various privilege .list() methods return superfluous data for the template, return only a minimal set
-	const validKeys = ['users', 'groups'];
-	Object.keys(responsePayload).forEach((key) => {
-		if (!validKeys.includes(key)) {
-			delete responsePayload[key];
-		}
-	});
-
 	return responsePayload;
 };
 
