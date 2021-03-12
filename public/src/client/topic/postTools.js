@@ -141,6 +141,13 @@ define('forum/topic/postTools', [
 			});
 		});
 
+		postContainer.on('click', '[component="post/flagResolve"]', function () {
+			var flagId = $(this).attr('data-flagId');
+			require(['flags'], function (flags) {
+				flags.resolve(flagId);
+			});
+		});
+
 		postContainer.on('click', '[component="post/edit"]', function () {
 			var btn = $(this);
 

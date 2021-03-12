@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('flags', function () {
+define('flags', ['hooks'], function (hooks) {
 	var Flag = {};
 	var flagModal;
 	var flagCommit;
@@ -56,6 +56,21 @@ define('flags', function () {
 			});
 
 			flagModal.find('#flag-reason-custom').on('keyup blur change', checkFlagButtonEnable);
+		});
+	};
+
+	Flag.resolve = function (flagId) {
+		socket.emit('flags.update', {
+			flagId: flagId,
+			data: [
+				{ name: 'state', value: 'resolved' },
+			],
+		}, function (err) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+			app.alertSuccess('[[flags:resolved]]');
+			hooks.fire('action:flag.resolved', { flagId: flagId });
 		});
 	};
 

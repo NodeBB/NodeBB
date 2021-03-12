@@ -1,5 +1,6 @@
 'use strict';
 
+const db = require('../../database');
 const posts = require('../../posts');
 const flags = require('../../flags');
 const events = require('../../events');
@@ -51,6 +52,7 @@ module.exports = function (SocketPosts) {
 			can: results.canFlag.flag,
 			exists: !!results.posts.flagId,
 			flagged: results.flagged,
+			state: await db.getObjectField(`flag:${postData.flagId}`, 'state'),
 		};
 
 		if (!results.isAdmin && !results.canViewInfo) {
