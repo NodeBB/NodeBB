@@ -43,12 +43,15 @@ module.exports = function (Topics) {
 			}
 		});
 
-		let postData = await posts.getPostsFields(teaserPids, ['pid', 'uid', 'timestamp', 'tid', 'content']);
-		postData = postData.filter(post => post && post.pid);
+		const [allPostData, callerSettings] = await Promise.all([
+			posts.getPostsFields(teaserPids, ['pid', 'uid', 'timestamp', 'tid', 'content']),
+			user.getSettings(uid),
+		]);
+		let postData = allPostData.filter(post => post && post.pid);
 		postData = await handleBlocks(uid, postData);
 		postData = postData.filter(Boolean);
 		const uids = _.uniq(postData.map(post => post.uid));
-
+		const sortNewToOld = callerSettings.topicPostSort === 'newest_to_oldest';
 		const usersData = await user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture']);
 
 		const users = {};
@@ -75,7 +78,7 @@ module.exports = function (Topics) {
 				return null;
 			}
 			if (tidToPost[topic.tid]) {
-				tidToPost[topic.tid].index = meta.config.teaserPost === 'first' ? 1 : counts[index];
+				tidToPost[topic.tid].index = calcTeaserIndex(teaserPost, counts[index], sortNewToOld);
 				if (tidToPost[topic.tid].content) {
 					tidToPost[topic.tid].content = utils.stripHTMLTags(replaceImgWithAltText(tidToPost[topic.tid].content), tags);
 				}
@@ -86,6 +89,17 @@ module.exports = function (Topics) {
 		const result = await plugins.hooks.fire('filter:teasers.get', { teasers: teasers, uid: uid });
 		return result.teasers;
 	};
+
+	function calcTeaserIndex(teaserPost, postCountInTopic, sortNewToOld) {
+		if (teaserPost === 'first') {
+			return 1;
+		}
+
+		if (sortNewToOld) {
+			return Math.min(2, postCountInTopic);
+		}
+		return postCountInTopic;
+	}
 
 	function replaceImgWithAltText(str) {
 		return String(str).replace(/<img .*?alt="(.*?)"[^>]*>/gi, '$1');
