@@ -165,18 +165,34 @@ async function fireStaticHook(hook, hookList, params) {
 			if (hookFn.constructor && hookFn.constructor.name !== 'AsyncFunction') {
 				hookFn = util.promisify(hookFn);
 			}
+
 			try {
 				// eslint-disable-next-line
-				await hookFn(params);
+				await timeout(hookFn(params), 5000, 'timeout');
 			} catch (err) {
-				winston.error(`[plugins] Error executing '${hook}' in plugin '${hookObj.id}'\n${err.stack}`);
-				if (!noErrorHooks.includes(hook)) {
-					throw err;
+				if (err && err.message === 'timeout') {
+					winston.warn(`[plugins] Callback timed out, hook '${hook}' in plugin '${hookObj.id}'`);
+				} else {
+					winston.error(`[plugins] Error executing '${hook}' in plugin '${hookObj.id}'\n${err.stack}`);
+					if (!noErrorHooks.includes(hook)) {
+						throw err;
+					}
 				}
 			}
 		}
 	}
 }
+
+// https://advancedweb.hu/how-to-add-timeout-to-a-promise-in-javascript/
+const timeout = (prom, time, error) => {
+	let timer;
+	return Promise.race([
+		prom,
+		new Promise((resolve, reject) => {
+			timer = setTimeout(reject, time, new Error(error));
+		}),
+	]).finally(() => clearTimeout(timer));
+};
 
 async function fireResponseHook(hook, hookList, params) {
 	if (!Array.isArray(hookList) || !hookList.length) {

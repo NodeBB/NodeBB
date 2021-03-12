@@ -135,6 +135,21 @@ describe('Plugins', () => {
 		});
 	});
 
+	it('should register and timeout a static hook returning a promise but takes too long', (done) => {
+		async function method(data) {
+			assert.equal(data.bar, 'test');
+			return new Promise((resolve) => {
+				setTimeout(resolve, 6000);
+			});
+		}
+		plugins.hooks.register('test-plugin', { hook: 'static:test.hook', method: method });
+		plugins.hooks.fire('static:test.hook', { bar: 'test' }, (err) => {
+			assert.ifError(err);
+			plugins.hooks.unregister('test-plugin', 'static:test.hook', method);
+			done();
+		});
+	});
+
 	it('should get plugin data from nbbpm', (done) => {
 		plugins.get('nodebb-plugin-markdown', (err, data) => {
 			assert.ifError(err);
