@@ -134,7 +134,7 @@ define('notifications', [
 			count: count,
 			updateFavicon: true,
 		};
-		$(window).trigger('action:notification.updateCount', payload);
+		hooks.fire('action:notification.updateCount', payload);
 
 		if (payload.updateFavicon) {
 			Tinycon.setBubble(count > 99 ? '99+' : count);
