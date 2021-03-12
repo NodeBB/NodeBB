@@ -91,6 +91,15 @@ define('admin/manage/privileges', [
 			throwConfirmModal('discard', Privileges.discard);
 		});
 
+		// Expose discard button as necessary
+		const containerEl = document.querySelector('.privilege-table-container');
+		containerEl.addEventListener('change', (e) => {
+			const subselector = e.target.closest('td[data-privilege] input');
+			if (subselector) {
+				document.getElementById('discard').style.display = containerEl.querySelectorAll('td[data-delta]').length ? 'unset' : 'none';
+			}
+		});
+
 		$('.privilege-table-container').on('click', '[data-action="search.user"]', Privileges.addUserToPrivilegeTable);
 		$('.privilege-table-container').on('click', '[data-action="search.group"]', Privileges.addGroupToPrivilegeTable);
 		$('.privilege-table-container').on('click', '[data-action="copyToChildren"]', function () {

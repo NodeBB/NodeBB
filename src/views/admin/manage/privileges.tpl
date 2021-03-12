@@ -22,8 +22,8 @@
 </div>
 
 <div class="floating-button">
-	<button id="discard" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
-		<i class="material-icons">delete</i>
+	<button id="discard" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" style="display: none;">
+		<i class="material-icons">undo</i>
 	</button>
 
 	<button id="save" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored primary">
