@@ -1,8 +1,10 @@
 'use strict';
 
+const async = require('async');
 const util = require('util');
 const winston = require('winston');
 const plugins = require('.');
+const utils = require('../utils');
 
 const Hooks = module.exports;
 
@@ -114,22 +116,37 @@ async function fireFilterHook(hook, hookList, params) {
 	if (!Array.isArray(hookList) || !hookList.length) {
 		return params;
 	}
-
-	for (const hookObj of hookList) {
+	return await async.reduce(hookList, params, (params, hookObj, next) => {
 		if (typeof hookObj.method !== 'function') {
 			if (global.env === 'development') {
 				winston.warn(`[plugins] Expected method for hook '${hook}' in plugin '${hookObj.id}' not found, skipping.`);
 			}
-		} else {
-			let hookFn = hookObj.method;
-			if (hookFn.constructor && hookFn.constructor.name !== 'AsyncFunction') {
-				hookFn = util.promisify(hookFn);
-			}
-			// eslint-disable-next-line
-			params = await hookFn(params);
+			return next(null, params);
 		}
-	}
-	return params;
+		const returned = hookObj.method(params, next);
+		if (utils.isPromise(returned)) {
+			returned.then(
+				payload => setImmediate(next, null, payload),
+				err => setImmediate(next, err)
+			);
+		}
+	});
+	// breaks plugins that use a non-async function ie emoji-one parse.raw
+	// for (const hookObj of hookList) {
+	// 	if (typeof hookObj.method !== 'function') {
+	// 		if (global.env === 'development') {
+	// 			winston.warn(`[plugins] Expected method for hook '${hook}' in plugin '${hookObj.id}' not found, skipping.`);
+	// 		}
+	// 	} else {
+	// 		let hookFn = hookObj.method;
+	// 		if (hookFn.constructor && hookFn.constructor.name !== 'AsyncFunction') {
+	// 			hookFn = util.promisify(hookFn);
+	// 		}
+	// 		// eslint-disable-next-line
+	// 		params = await hookFn(params);
+	// 	}
+	// }
+	// return params;
 }
 
 async function fireActionHook(hook, hookList, params) {
