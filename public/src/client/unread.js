@@ -129,7 +129,7 @@ define('forum/unread', [
 		var unreadTopics = app.user.unreadData;
 
 		function onNewPost(data) {
-			if (data && data.posts && data.posts.length) {
+			if (data && data.posts && data.posts.length && unreadTopics) {
 				var post = data.posts[0];
 				if (parseInt(post.uid, 10) === parseInt(app.user.uid, 10) ||
 					(!post.topic.isFollowing && post.categoryWatchState !== watchStates.watching)
