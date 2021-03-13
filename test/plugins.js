@@ -47,7 +47,7 @@ describe('Plugins', () => {
 		});
 	});
 
-	it('should register and fire a filter hook having 2 methods, one returning a promise and the other calling the callback', (done) => {
+	it('should register and fire a filter hook having 3 methods, one returning a promise, one calling the callback and one just returning', async () => {
 		function method1(data, callback) {
 			data.foo += 1;
 			callback(null, data);
@@ -58,15 +58,17 @@ describe('Plugins', () => {
 				resolve(data);
 			});
 		}
+		function method3(data) {
+			data.foo += 1;
+			return data;
+		}
 
 		plugins.hooks.register('test-plugin', { hook: 'filter:test.hook2', method: method1 });
 		plugins.hooks.register('test-plugin', { hook: 'filter:test.hook2', method: method2 });
+		plugins.hooks.register('test-plugin', { hook: 'filter:test.hook2', method: method3 });
 
-		plugins.hooks.fire('filter:test.hook2', { foo: 1 }, (err, data) => {
-			assert.ifError(err);
-			assert.equal(data.foo, 7);
-			done();
-		});
+		const data = await plugins.hooks.fire('filter:test.hook2', { foo: 1 });
+		assert.strictEqual(data.foo, 8);
 	});
 
 	it('should register and fire a filter hook that returns a promise that gets rejected', (done) => {
