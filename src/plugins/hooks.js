@@ -1,5 +1,6 @@
 'use strict';
 
+const async = require('async');
 const util = require('util');
 const winston = require('winston');
 const plugins = require('.');
@@ -115,38 +116,37 @@ async function fireFilterHook(hook, hookList, params) {
 	if (!Array.isArray(hookList) || !hookList.length) {
 		return params;
 	}
-
-	async function fireMethod(hookObj, params) {
+	return await async.reduce(hookList, params, (params, hookObj, next) => {
 		if (typeof hookObj.method !== 'function') {
 			if (global.env === 'development') {
 				winston.warn(`[plugins] Expected method for hook '${hook}' in plugin '${hookObj.id}' not found, skipping.`);
 			}
-			return params;
+			return next(null, params);
 		}
-
-		if (hookObj.method.constructor && hookObj.method.constructor.name === 'AsyncFunction') {
-			return await hookObj.method(params);
+		const returned = hookObj.method(params, next);
+		if (utils.isPromise(returned)) {
+			returned.then(
+				payload => setImmediate(next, null, payload),
+				err => setImmediate(next, err)
+			);
 		}
-		return new Promise((resolve, reject) => {
-			const returned = hookObj.method(params, (err, result) => {
-				if (err) reject(err); else resolve(result);
-			});
-
-			if (utils.isPromise(returned)) {
-				returned.then(
-					payload => resolve(payload),
-					err => reject(err)
-				);
-				return;
-			}
-			resolve(returned);
-		});
-	}
-	for (const hookObj of hookList) {
-		// eslint-disable-next-line
-		params = await fireMethod(hookObj, params);
-	}
-	return params;
+	});
+	// breaks plugins that use a non-async function ie emoji-one parse.raw
+	// for (const hookObj of hookList) {
+	// 	if (typeof hookObj.method !== 'function') {
+	// 		if (global.env === 'development') {
+	// 			winston.warn(`[plugins] Expected method for hook '${hook}' in plugin '${hookObj.id}' not found, skipping.`);
+	// 		}
+	// 	} else {
+	// 		let hookFn = hookObj.method;
+	// 		if (hookFn.constructor && hookFn.constructor.name !== 'AsyncFunction') {
+	// 			hookFn = util.promisify(hookFn);
+	// 		}
+	// 		// eslint-disable-next-line
+	// 		params = await hookFn(params);
+	// 	}
+	// }
+	// return params;
 }
 
 async function fireActionHook(hook, hookList, params) {
