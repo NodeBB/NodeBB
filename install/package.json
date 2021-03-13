@@ -121,7 +121,7 @@
         "socket.io": "4.0.0",
         "socket.io-adapter-cluster": "^1.0.1",
         "socket.io-client": "4.0.0",
-        "socket.io-redis": "6.0.1",
+        "socket.io-redis": "6.1.0",
         "sortablejs": "1.13.0",
         "spdx-license-list": "^6.4.0",
         "spider-detector": "2.0.0",
