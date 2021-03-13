@@ -6,6 +6,7 @@
 	"assignee": "المحال إليه",
 	"update": "تحديث",
 	"updated": "تم التحديث",
+	"resolved": "Resolved",
 	"target-purged": "The content this flag referred to has been purged and is no longer available.",
 
 	"graph-label": "Daily Flags",

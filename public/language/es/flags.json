@@ -6,6 +6,7 @@
 	"assignee": "Asignado",
 	"update": "Actualizar",
 	"updated": "Actualizado",
+	"resolved": "Resolved",
 	"target-purged": "El contenido al que se refiere este indicador ha sido purgado y ya no está disponible.",
 
 	"graph-label": "Daily Flags",

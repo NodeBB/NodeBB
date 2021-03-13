@@ -6,6 +6,7 @@
 	"assignee": "Responsável",
 	"update": "Atualizar",
 	"updated": "Atualizado",
+	"resolved": "Resolved",
 	"target-purged": "O conteúdo ao qual essa sinalização se referia foi removido e não está mais disponível.",
 
 	"graph-label": "Sinalizações Diárias",

@@ -48,6 +48,7 @@
     "flag-user": "Flag this user",
     "already-flagged": "Already Flagged",
     "view-flag-report": "View Flag Report",
+    "resolve-flag": "Resolve Flag",
     "merged_message": "This topic has been merged into <a href=\"%1\">%2</a>",
     "deleted_message": "此主題已被刪除。只有擁有主題管理權限的使用者可以查看。",
     "following_topic.message": "當有人回覆此主題時，您會收到通知。",

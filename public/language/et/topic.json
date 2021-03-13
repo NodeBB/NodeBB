@@ -48,6 +48,7 @@
     "flag-user": "Flag this user",
     "already-flagged": "Already Flagged",
     "view-flag-report": "View Flag Report",
+    "resolve-flag": "Resolve Flag",
     "merged_message": "This topic has been merged into <a href=\"%1\">%2</a>",
     "deleted_message": "See teema on kustutatud. Ainult kasutajad kellel on piisavalt õigusi saavad seda näha.",
     "following_topic.message": "Sulle ei edastata enam teateid uutest postitustest kui keegi postitab siia teemasse.",

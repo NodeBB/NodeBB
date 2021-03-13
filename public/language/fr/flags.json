@@ -6,6 +6,7 @@
 	"assignee": "Assigné",
 	"update": "Mettre à jour",
 	"updated": "Mis à jour",
+	"resolved": "Resolved",
 	"target-purged": "Le rapport pour ce signalement a été supprimé et n'est plus accessible",
 
 	"graph-label": "Signalements du jour",

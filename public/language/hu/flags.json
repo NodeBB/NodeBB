@@ -6,6 +6,7 @@
 	"assignee": "Assignee",
 	"update": "Frissítés",
 	"updated": "Frissítve",
+	"resolved": "Resolved",
 	"target-purged": "The content this flag referred to has been purged and is no longer available.",
 
 	"graph-label": "Daily Flags",

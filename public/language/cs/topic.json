@@ -48,6 +48,7 @@
     "flag-user": "Flag this user",
     "already-flagged": "Already Flagged",
     "view-flag-report": "View Flag Report",
+    "resolve-flag": "Resolve Flag",
     "merged_message": "This topic has been merged into <a href=\"%1\">%2</a>",
     "deleted_message": "Toto téma bylo odstraněno. Jen uživatelé s oprávněním správy témat ho mohou vidět.",
     "following_topic.message": "Nyní budete dostávat upozornění, jakmile někdo přidá příspěvek do tohoto tématu.",

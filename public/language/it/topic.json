@@ -48,6 +48,7 @@
     "flag-user": "Segnala questo utente",
     "already-flagged": "Già segnalato",
     "view-flag-report": "Visualizza rapporto segnalazione",
+    "resolve-flag": "Resolve Flag",
     "merged_message": "Questa discussione è stata unita a <a href=\"%1\">%2</a>",
     "deleted_message": "Questa discussione è stata eliminata. Solo gli utenti con diritti di gestione possono vederla.",
     "following_topic.message": "Da ora riceverai notifiche quando qualcuno posterà in questa discussione.",

@@ -6,6 +6,7 @@
 	"assignee": "受委托人",
 	"update": "更新",
 	"updated": "已更新",
+	"resolved": "Resolved",
 	"target-purged": "被举报的内容已经被清除，不再可用。",
 
 	"graph-label": "日举报",

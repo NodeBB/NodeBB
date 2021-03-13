@@ -6,6 +6,7 @@
 	"assignee": "受指派人",
 	"update": "更新",
 	"updated": "已更新",
+	"resolved": "Resolved",
 	"target-purged": "被舉報的內容已經被清除，不再可用。",
 
 	"graph-label": "日舉報",

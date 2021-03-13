@@ -6,6 +6,7 @@
 	"assignee": "譲受人",
 	"update": "更新",
 	"updated": "更新されました",
+	"resolved": "Resolved",
 	"target-purged": "このフラグが参照しているコンテンツは切り離されており、利用できません。",
 
 	"graph-label": "Daily Flags",

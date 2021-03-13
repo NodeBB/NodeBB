@@ -48,6 +48,7 @@
     "flag-user": "이 유저를 신고",
     "already-flagged": "이미 신고 처리됨",
     "view-flag-report": "신고 기록 보기",
+    "resolve-flag": "Resolve Flag",
     "merged_message": "This topic has been merged into <a href=\"%1\">%2</a>",
     "deleted_message": "이 게시물은 삭제됐습니다. 게시물 관리 권한이 있는 사용자만 볼 수 있습니다.",
     "following_topic.message": "이제 이 게시물에 새 답글이 달리면 알림을 받습니다.",

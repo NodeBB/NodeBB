@@ -48,6 +48,7 @@
     "flag-user": "Flag this user",
     "already-flagged": "Already Flagged",
     "view-flag-report": "View Flag Report",
+    "resolve-flag": "Resolve Flag",
     "merged_message": "This topic has been merged into <a href=\"%1\">%2</a>",
     "deleted_message": "هذه المشاركة محذوفة. فقط من لهم صلاحية الإشراف على ا لمشاركات يمكنهم معاينتها.",
     "following_topic.message": "ستستلم تنبيها عند كل مشاركة جديدة في هذا الموضوع.",

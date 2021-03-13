@@ -48,6 +48,7 @@
     "flag-user": "Diesen Benutzer melden",
     "already-flagged": "Bereits gemeldet",
     "view-flag-report": "Meldungs-Report anzeigen",
+    "resolve-flag": "Resolve Flag",
     "merged_message": "Diese Thema wurde mit <a href=\"%1\">%2</a> fusioniert",
     "deleted_message": "Dieses Thema wurde gelöscht. Nur Nutzer mit entsprechenden Rechten können es sehen.",
     "following_topic.message": "Du erhältst nun eine Benachrichtigung, wenn jemand einen Beitrag zu diesem Thema verfasst.",
