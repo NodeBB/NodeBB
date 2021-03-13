@@ -1,6 +1,5 @@
 'use strict';
 
-const async = require('async');
 const util = require('util');
 const winston = require('winston');
 const plugins = require('.');
