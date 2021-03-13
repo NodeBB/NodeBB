@@ -83,7 +83,9 @@ define('forum/login', ['jquery-form'], function () {
 			warningEl.classList[state ? 'remove' : 'add']('hidden');
 			warningEl.parentNode.classList[state ? 'add' : 'remove']('has-warning');
 		};
-
+		if (!inputEl) {
+			return;
+		}
 		inputEl.addEventListener('keyup', function (e) {
 			if (Login._capsState && e.key === 'CapsLock') {
 				toggle(false);
