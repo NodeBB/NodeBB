@@ -6,6 +6,7 @@
 	"assignee": "Tilldelad",
 	"update": "Uppdatera",
 	"updated": "Uppdatering",
+	"resolved": "Resolved",
 	"target-purged": "Innehållet denna flagga refererar till har rensats bort och är inte längre tillgängligt.",
 
 	"graph-label": "Dagliga flaggningar",

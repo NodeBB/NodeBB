@@ -48,6 +48,7 @@
     "flag-user": "Bu kullanıcıyı şikayet et",
     "already-flagged": "Halihazırda şikayet edilmiş",
     "view-flag-report": "Şikayet raporunu görüntüle",
+    "resolve-flag": "Resolve Flag",
     "merged_message": "Bu başlık <a href=\"/topic/%1\">%2</a> ile birleştirildi",
     "deleted_message": "Bu başlık silindi. Sadece başlık düzenleme yetkisi olan kullanıcılar görebilir.",
     "following_topic.message": "Artık bir kullanıcı bu konuya yeni ileti gönderdiğinde siz de bildirim alacaksınız.",

@@ -18,14 +18,14 @@
     "agree_to_terms_of_use": "我同意使用条款",
     "terms_of_use_error": "您必须同意使用条款",
     "registration-added-to-queue": "您的注册正在等待批准。一旦通过，管理员会发送邮件通知您。",
-    "registration-queue-average-time": "Our average time for approving memberships is %1 hours %2 minutes.",
-    "registration-queue-auto-approve-time": "Your membership to this forum will be fully activated in up to %1 hours.",
+    "registration-queue-average-time": "我们通常的注册批准时间为 %1 小时 %2 分钟。",
+    "registration-queue-auto-approve-time": "您在此论坛的帐号将会在最迟  %1  小时后被完全激活。",
     "interstitial.intro": "在创建您的账户前我们需要一些额外信息。",
     "interstitial.errors-found": "我们无法完成您的注册：",
     "gdpr_agree_data": "我同意此网站对我个人信息的收集与处理。",
     "gdpr_agree_email": "我同意此网站向我发送摘要和通知邮件。",
     "gdpr_consent_denied": "您需要同意此网站收集与处理您的个人信息，以及向您发送电子邮件。",
-    "invite.error-admin-only": "Direct user registration has been disabled. Please contact an administrator for more details.",
-    "invite.error-invite-only": "Direct user registration has been disabled. You must be invited by an existing user in order to access this forum.",
-    "invite.error-invalid-data": "The registration data received does not correspond to our records. Please contact an administrator for more details"
+    "invite.error-admin-only": "开放的用户注册已被禁用，详情请联系管理员。",
+    "invite.error-invite-only": "开放的用户注册已被禁用，您必须被其他用户邀请才能访问此论坛。",
+    "invite.error-invalid-data": "您的注册资料与我们的记录不符，详情请联系管理员。"
 }

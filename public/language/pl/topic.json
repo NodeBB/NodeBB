@@ -48,6 +48,7 @@
     "flag-user": "Zgłoś tego użytkownika",
     "already-flagged": "Już zgłoszono",
     "view-flag-report": "Zobacz zgłoszenie",
+    "resolve-flag": "Resolve Flag",
     "merged_message": "Ten temat został połączony z <a href=\"%1\">%2</a>",
     "deleted_message": "Ten temat został usunięty. Mogą go zobaczyć tylko użytkownicy upoważnieni do zarządzania tematami.",
     "following_topic.message": "Będziesz teraz otrzymywać powiadomienia o nowych odpowiedziach w tym temacie.",

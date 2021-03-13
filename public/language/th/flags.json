@@ -6,6 +6,7 @@
 	"assignee": "ผู้ได้รับมอบหมาย",
 	"update": "อัพเดท",
 	"updated": "ได้รับการอัพเดท",
+	"resolved": "Resolved",
 	"target-purged": "เนื้อหาที่ธงนี้อ้างถึงถูกลบออกและไม่มีอยู่ในระบบอีกต่อไป",
 
 	"graph-label": "Daily Flags",

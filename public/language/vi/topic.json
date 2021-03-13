@@ -48,6 +48,7 @@
     "flag-user": "Gắn cờ người dùng này",
     "already-flagged": "Đã Được Gắn Cờ",
     "view-flag-report": "Xem Báo Cáo Gắn Cờ",
+    "resolve-flag": "Xử Lý Cờ",
     "merged_message": "Chủ đề này đã được gộp chung thành <a href=\"%1\">%2</a>",
     "deleted_message": "Chủ đề này đã bị xóa. Chỉ người dùng có quyền quản lý chủ đề mới được xem.",
     "following_topic.message": "Bạn sẽ nhận được thông báo khi có ai đó gửi bài viết trong chủ đề này.",

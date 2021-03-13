@@ -48,6 +48,7 @@
     "flag-user": "گزارش این کاربر",
     "already-flagged": "قبلا گزارش شده",
     "view-flag-report": "View Flag Report",
+    "resolve-flag": "Resolve Flag",
     "merged_message": "This topic has been merged into <a href=\"%1\">%2</a>",
     "deleted_message": "این موضوع پاک شده است. تنها کاربرانِ با حق مدیریت موضوع می‌توانند آن را ببینند.",
     "following_topic.message": "از این پس اگر کسی در این موضوع پست بگذارد، شما آگاه خواهید شد.",

@@ -6,6 +6,7 @@
 	"assignee": "담당자",
 	"update": "업데이트",
 	"updated": "업데이트 되었습니다.",
+	"resolved": "Resolved",
 	"target-purged": "해당 신고된 컨텐츠는 완전 삭제 되었으며, 더이상 존재하지 않습니다.",
 
 	"graph-label": "Daily Flags",

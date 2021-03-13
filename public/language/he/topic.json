@@ -48,6 +48,7 @@
     "flag-user": "דווח על משתמש זה",
     "already-flagged": "דווח כבר",
     "view-flag-report": "הצג דוח דיווחים",
+    "resolve-flag": "Resolve Flag",
     "merged_message": "נושא זה מוזג בתוך <a href=\"%1\">%2</a>",
     "deleted_message": "נושא זה נמחק. רק משתמשים עם הרשאות מתאימות יוכלו לצפות בו.",
     "following_topic.message": "מעתה, תקבל התראה כאשר מישהו יעלה פוסט לנושא זה.",

@@ -48,6 +48,7 @@
     "flag-user": "Flag this user",
     "already-flagged": "Already Flagged",
     "view-flag-report": "View Flag Report",
+    "resolve-flag": "Resolve Flag",
     "merged_message": "Este tópico foi fundido com <a href=\"%1\">%2</a>",
     "deleted_message": "Este tópico foi eliminado. Apenas utilizadores com privilégios de moderação do tópico podem vê-lo.",
     "following_topic.message": "A partir de agora receberás uma notificação sempre que alguém publicar neste tópico.",

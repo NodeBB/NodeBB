@@ -48,6 +48,7 @@
     "flag-user": "Rapporteer deze gebruiker",
     "already-flagged": "Al gerapporteerd",
     "view-flag-report": "Rapportage inzien",
+    "resolve-flag": "Resolve Flag",
     "merged_message": "Dit onderwerp is samengevoegd met <a href=\"%1\">%2</a>",
     "deleted_message": "Dit onderwerp is verwijderd. Alleen gebruikers met beheerrechten op onderwerpniveau kunnen dit inzien.",
     "following_topic.message": "Vanaf nu worden meldingen ontvangen zodra iemand een reactie op dit onderwerp geeft.",

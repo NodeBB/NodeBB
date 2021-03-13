@@ -6,6 +6,7 @@
 	"assignee": "Người được ủy nhiệm",
 	"update": "Cập nhật",
 	"updated": "Đã cập nhật",
+	"resolved": "Đã Xử Lý",
 	"target-purged": "Nội dung mà cờ này đề cập đến đã bị xóa và không còn nữa.",
 
 	"graph-label": "Cờ Hàng Ngày",
@@ -80,7 +81,7 @@
 	"modal-submit-confirm-text-help": "Gửi báo cáo nhanh sẽ thay thế bất kỳ lý do tùy chỉnh nào đã đưa ra.",
 
 	"bulk-actions": "‎Hành động hàng loạt‎",
-	"bulk-resolve": "Giải Quyết Cờ",
+	"bulk-resolve": "Xử Lý Cờ",
 	"bulk-success": "%1 cờ đã cập nhật",
 	"flagged-timeago-readable": "Đã Gắn Cờ <span class=\"timeago\" title=\"%1\"></span> (%2)"
 }

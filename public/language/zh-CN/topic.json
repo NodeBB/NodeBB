@@ -48,6 +48,7 @@
     "flag-user": "举报此用户",
     "already-flagged": "已举报",
     "view-flag-report": "查看举报报告",
+    "resolve-flag": "Resolve Flag",
     "merged_message": "此主题已并入<a href=\"/topic/%1\">%2</a>",
     "deleted_message": "此主题已被删除。只有拥有主题管理权限的用户可以查看。",
     "following_topic.message": "当有人回复此主题时，您会收到通知。",

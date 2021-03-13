@@ -48,6 +48,7 @@
     "flag-user": "Отметить этого пользователя",
     "already-flagged": "Already Flagged",
     "view-flag-report": "View Flag Report",
+    "resolve-flag": "Resolve Flag",
     "merged_message": "Эта тема была объединена с <a href=\"%1\">%2</a>",
     "deleted_message": "Эта тема была удалена. Только пользователи с правом управления темами могут её видеть.",
     "following_topic.message": "Теперь вы будете получать уведомления каждый раз, когда кто-нибудь напишет сообщение в эту тему.",
