@@ -16,7 +16,7 @@ module.exports = function (Posts) {
 			return [];
 		}
 		const keys = pids.map(pid => `post:${pid}`);
-		const postData = await (fields.length ? db.getObjectsFields(keys, fields) : db.getObjects(keys));
+		const postData = await db.getObjects(keys, fields);
 		const result = await plugins.hooks.fire('filter:post.getFields', {
 			pids: pids,
 			posts: postData,

@@ -18,7 +18,7 @@ module.exports = function (Messaging) {
 		}
 
 		const keys = mids.map(mid => `message:${mid}`);
-		const messages = await (fields.length ? db.getObjectsFields(keys, fields) : db.getObjects(keys));
+		const messages = await db.getObjects(keys, fields);
 
 		return await Promise.all(messages.map(
 			async (message, idx) => modifyMessage(message, fields, parseInt(mids[idx], 10))

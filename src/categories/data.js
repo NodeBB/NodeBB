@@ -20,7 +20,7 @@ module.exports = function (Categories) {
 		}
 
 		const keys = cids.map(cid => `category:${cid}`);
-		const categories = await (fields.length ? db.getObjectsFields(keys, fields) : db.getObjects(keys));
+		const categories = await db.getObjects(keys, fields);
 		const result = await plugins.hooks.fire('filter:category.getFields', {
 			cids: cids,
 			categories: categories,

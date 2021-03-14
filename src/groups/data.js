@@ -27,7 +27,7 @@ module.exports = function (Groups) {
 		}, []);
 
 		const keys = groupNames.map(groupName => `group:${groupName}`);
-		const groupData = await (fields.length ? db.getObjectsFields(keys, fields) : db.getObjects(keys));
+		const groupData = await db.getObjects(keys, fields);
 		if (ephemeralIdx.length) {
 			ephemeralIdx.forEach((idx) => {
 				groupData[idx] = Groups.getEphemeralGroup(groupNames[idx]);

@@ -61,17 +61,17 @@ module.exports = function (module) {
 		await module.setObject(key, data);
 	};
 
-	module.getObject = async function (key) {
+	module.getObject = async function (key, fields = []) {
 		if (!key) {
 			return null;
 		}
 
-		const data = await module.getObjects([key]);
+		const data = await module.getObjects([key], fields);
 		return data && data.length ? data[0] : null;
 	};
 
-	module.getObjects = async function (keys) {
-		return await module.getObjectsFields(keys, []);
+	module.getObjects = async function (keys, fields = []) {
+		return await module.getObjectsFields(keys, fields);
 	};
 
 	module.getObjectField = async function (key, field) {

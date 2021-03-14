@@ -161,6 +161,12 @@ describe('Hash methods', () => {
 				done();
 			});
 		});
+
+		it('should return fields if given', async () => {
+			const data = await db.getObject('hashTestObject', ['name', 'age']);
+			assert.strictEqual(data.name, 'baris');
+			assert.strictEqual(parseInt(data.age, 10), 99);
+		});
 	});
 
 	describe('getObjects()', () => {
@@ -181,6 +187,18 @@ describe('Hash methods', () => {
 				assert.equal(!!objects[2], false);
 				done();
 			});
+		});
+
+		it('should return fields if given', async () => {
+			await db.setObject('fieldsObj1', { foo: 'foo', baz: 'baz', herp: 'herp' });
+			await db.setObject('fieldsObj2', { foo: 'foo2', baz: 'baz2', herp: 'herp2', onlyin2: 'onlyin2' });
+			const data = await db.getObjects(['fieldsObj1', 'fieldsObj2'], ['baz', 'doesnotexist', 'onlyin2']);
+			assert.strictEqual(data[0].baz, 'baz');
+			assert.strictEqual(data[0].doesnotexist, null);
+			assert.strictEqual(data[0].onlyin2, null);
+			assert.strictEqual(data[1].baz, 'baz2');
+			assert.strictEqual(data[1].doesnotexist, null);
+			assert.strictEqual(data[1].onlyin2, 'onlyin2');
 		});
 	});
 
@@ -294,6 +312,17 @@ describe('Hash methods', () => {
 				assert.equal(data[1].age, null);
 				done();
 			});
+		});
+
+		it('should return all fields if fields is empty array', async () => {
+			const objects = await db.getObjectsFields(['testObject8', 'testObject9', 'doesnotexist'], []);
+			assert(Array.isArray(objects));
+			assert.strict(objects.length, 3);
+			assert.strictEqual(objects[0].name, 'baris');
+			assert.strictEqual(Number(objects[0].age), 99);
+			assert.strictEqual(objects[1].name, 'ginger');
+			assert.strictEqual(Number(objects[1].age), 3);
+			assert.strictEqual(!!objects[2], false);
 		});
 	});
 
