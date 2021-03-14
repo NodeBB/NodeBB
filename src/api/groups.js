@@ -98,7 +98,7 @@ groupsAPI.join = async function (caller, data) {
 		return;
 	}
 
-	if (isSelf && groupData.private && groupData.disableJoinRequests) {
+	if (!isCallerAdmin && isSelf && groupData.private && groupData.disableJoinRequests) {
 		throw new Error('[[error:group-join-disabled]]');
 	}
 

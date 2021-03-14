@@ -723,6 +723,12 @@ describe('Groups', () => {
 			}
 			meta.config.allowPrivateGroups = oldValue;
 		});
+
+		it('should allow admins to join private groups', async () => {
+			const groupsAPI = require('../src/api/groups');
+			await groupsAPI.join({ uid: adminUid }, { uid: adminUid, slug: 'global-moderators' });
+			assert(await Groups.isMember(adminUid, 'Global Moderators'));
+		});
 	});
 
 	describe('.leave()', () => {
