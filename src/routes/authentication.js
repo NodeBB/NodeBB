@@ -51,7 +51,7 @@ Auth.getLoginStrategies = function () {
 };
 
 Auth.verifyToken = async function (token, done) {
-	let { tokens } = await meta.settings.get('core.api');
+	let { tokens = [] } = await meta.settings.get('core.api');
 	tokens = tokens.reduce((memo, cur) => {
 		memo[cur.token] = cur.uid;
 		return memo;
