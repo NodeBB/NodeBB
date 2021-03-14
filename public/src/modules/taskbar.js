@@ -189,7 +189,7 @@ define('taskbar', ['benchpress', 'translator'], function (Benchpress, translator
 				element.find('i').attr('class', 'fa fa-' + value);
 				break;
 			case 'image':
-				element.find('a').css('background-image', 'url("' + value + '")');
+				element.find('a').css('background-image', value ? 'url("' + value + '")' : '');
 				break;
 			case 'background-color':
 				element.find('a').css('background-color', value);
