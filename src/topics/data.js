@@ -21,7 +21,7 @@ module.exports = function (Topics) {
 			return [];
 		}
 		const keys = tids.map(tid => `topic:${tid}`);
-		const topics = await (fields.length ? db.getObjectsFields(keys, fields) : db.getObjects(keys));
+		const topics = await db.getObjects(keys, fields);
 		const result = await plugins.hooks.fire('filter:topic.getFields', {
 			tids: tids,
 			topics: topics,
