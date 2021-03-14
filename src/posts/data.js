@@ -23,7 +23,7 @@ module.exports = function (Posts) {
 			fields: fields,
 		});
 		result.posts.forEach(post => modifyPost(post, fields));
-		return Array.isArray(result.posts) ? result.posts : null;
+		return result.posts;
 	};
 
 	Posts.getPostData = async function (pid) {
