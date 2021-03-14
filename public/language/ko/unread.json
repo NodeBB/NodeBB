@@ -1,15 +1,15 @@
 {
     "title": "읽지 않음",
-    "no_unread_topics": "읽지 않은 게시물이 없습니다.",
+    "no_unread_topics": "읽지 않은 화제가 없습니다.",
     "load_more": "더 보기",
     "mark_as_read": "읽음으로 표시",
-    "selected": "선택된 게시물",
+    "selected": "선택됨",
     "all": "전체",
-    "all_categories": "모든 게시판",
-    "topics_marked_as_read.success": "게시물들을 읽음으로 표시했습니다.",
-    "all-topics": "모든 게시물",
-    "new-topics": "새 게시물",
-    "watched-topics": "관심있는 게시물",
-    "unreplied-topics": "댓글 없는 게시물",
+    "all_categories": "모든 카테고리",
+    "topics_marked_as_read.success": "화제들을 읽음으로 표시했습니다.",
+    "all-topics": "모든 화제",
+    "new-topics": "새 화제",
+    "watched-topics": "읽은 화제",
+    "unreplied-topics": "답글이 없는 화제",
     "multiple-categories-selected": "다중선택됨"
 }

@@ -1,7 +1,7 @@
 {
     "success": "성공",
-    "topic-post": "성공적으로 게시물을 작성했습니다.",
-    "post-queued": "게시물이 승인 대기 중입니다.",
+    "topic-post": "성공적으로 작성했습니다.",
+    "post-queued": "글이 승인 대기 중입니다.",
     "authentication-successful": "인증에 성공했습니다.",
     "settings-saved": "설정이 저장되었습니다!"
 }

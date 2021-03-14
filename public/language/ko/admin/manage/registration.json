@@ -1,6 +1,6 @@
 {
 	"queue": "큐",
-	"description": "가입 대기 큐에 사용자가 없습니다. <br>이 기능을 사용하려면, <a href=\"%1\">설정 &rarr; 사용자 &rarr; 사용자 가입</a>으로 가서, <strong>가입 종류</strong>를 \"관리자 승인\"으로 바꾸세요.",
+	"description": "가입 대기 큐에 사용자가 없습니다. <br>이 기능을 사용하려면, <a href=\"%1\">설정 &rarr; 사용자 &rarr; 사용자 등록</a>으로 가서, <strong>가입 유형</strong>을 \"관리자 승인\"으로 바꾸세요.",
 
 	"list.name": "이름",
 	"list.email": "이메일",
@@ -12,9 +12,9 @@
 
 	"invitations": "초대",
 	"invitations.description": "발송된 초대의 목록을 아래에서 보실 수 있습니다. ctrl-f을 이용해서 이메일이나 사용자명으로 목록을 검색하세요. <br><br>초대에 응답한 사용자들은 이메일 옆에 사용자명이 표시됩니다.",
-	"invitations.inviter-username": "초대 발송인 사용자 이름",
+	"invitations.inviter-username": "초대자 사용자명",
 	"invitations.invitee-email": "초대 수신인 이메일",
-	"invitations.invitee-username": "초대 수신인 사용자 이름 (가입 시)",
+	"invitations.invitee-username": "초대 수신인 사용자명 (가입 시)",
 
 	"invitations.confirm-delete": "이 초대를 삭제하시겠습니까?"
 } 

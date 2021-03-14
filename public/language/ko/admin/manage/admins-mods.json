@@ -1,10 +1,10 @@
 {
-    "administrators": "최고관리자",
-    "global-moderators": "글로벌 관리자",
-    "no-global-moderators": "글로벌 관리자가 없습니다",
-    "moderators-of-category": "%1 명의 관리자",
-    "no-moderators": "관리자 없음",
-    "add-administrator": "최고관리자 추가",
-    "add-global-moderator": "글로벌 관리자 추가",
-    "add-moderator": "관리자 추가"
+    "administrators": "관리자",
+    "global-moderators": "통합 조정자",
+    "no-global-moderators": "통합 조정자 없음",
+    "moderators-of-category": "%1명의 조정자",
+    "no-moderators": "조정자 없음",
+    "add-administrator": "관리자 추가",
+    "add-global-moderator": "통합 조정자 추가",
+    "add-moderator": "조정자 추가"
 }

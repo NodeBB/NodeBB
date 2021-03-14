@@ -22,8 +22,8 @@
 	"smtp-transport.username": "Имя пользователя",
 	"smtp-transport.username-help": "<b>Для Gmail</b> нужно указать полный адрес электронной почты, особенно если вы используете Google Apps.",
 	"smtp-transport.password": "Пароль",
-	"smtp-transport.pool": "Enable pooled connections",
-	"smtp-transport.pool-help": "Pooling connections prevents NodeBB from creating a new connection for every email. This option only applies if SMTP Transport is enabled.",
+	"smtp-transport.pool": "Включить объединенные подключения",
+	"smtp-transport.pool-help": "Объединение соединений не позволяет NodeBB создавать новое соединение для каждой электронной почты. Этот параметр применяется только в том случае, если включен транспортный протокол SMTP.",
 
 	"template": "Шаблоны писем",
 	"template.select": "Выберите шаблон письма",
@@ -36,6 +36,6 @@
 	"subscriptions.disable": "Отключить новостные рассылки",
 	"subscriptions.hour": "Час отправки",
 	"subscriptions.hour-help": "Введите число, соответствующее номеру часа (например, <code>0</code> для полуночи, <code>17</code> для 17:00). Имейте в виду, что время определяется по часовому поясу сервера.<br /> Текущее время сервера: <span id=\"serverTime\"></span><br /> Следующая рассылка запланирована на  <span id=\"nextDigestTime\"></span>",
-	"notifications.settings": "Email notification settings",
-	"notifications.remove-images": "Remove images from email notifications"
+	"notifications.settings": "Настройки уведомлений по электронной почте",
+	"notifications.remove-images": "Удалить изображения из уведомлений по электронной почте"
 }

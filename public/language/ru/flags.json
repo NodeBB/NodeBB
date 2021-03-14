@@ -1,12 +1,12 @@
 {
 	"state": "Состояние",
-	"reports": "Reports",
-	"first-reported": "First Reported",
+	"reports": "Жалобы",
+	"first-reported": "Первая жалоба",
 	"no-flags": "Ура! Жалоб нет.",
 	"assignee": "Исполнитель",
 	"update": "Обновить",
 	"updated": "Обновлено",
-	"resolved": "Resolved",
+	"resolved": "Решено",
 	"target-purged": "Сообщение, на которое поступила жалоба, было удалено и больше не доступно.",
 
 	"graph-label": "Жалоб в день",
@@ -26,7 +26,7 @@
 	"filter-quick-mine": "Назначено мне",
 	"filter-cid-all": "Все категории",
 	"apply-filters": "Применить фильтры",
-	"more-filters": "More Filters",
+	"more-filters": "Больше фильтров",
 
 	"quick-actions": "Быстрые действия",
 	"flagged-user": "Отмеченный пользователь",
@@ -44,9 +44,9 @@
 	"notes": "Примечания к жалобе",
 	"add-note": "Добавить примечание",
 	"no-notes": "Нет примечаний.",
-	"delete-note-confirm": "Are you sure you want to delete this flag note?",
+	"delete-note-confirm": "Вы уверены, что хотите удалить это примечание к жалобе?",
 	"note-added": "Примечание добавлено",
-	"note-deleted": "Note Deleted",
+	"note-deleted": "Примечание удалено",
 
 	"history": "История жалоб участника",
 	"no-history": "Нет истории жалобы.",
@@ -58,17 +58,17 @@
 	"state-rejected": "Отклонена",
 	"no-assignee": "Не назначена",
 
-	"sort": "Sort by",
-	"sort-newest": "Newest first",
-	"sort-oldest": "Oldest first",
-	"sort-reports": "Most reports",
-	"sort-all": "All flag types...",
-	"sort-posts-only": "Posts only...",
-	"sort-downvotes": "Most downvotes",
-	"sort-upvotes": "Most upvotes",
-	"sort-replies": "Most replies",
+	"sort": "Сортировано по",
+	"sort-newest": "Сначала свежие",
+	"sort-oldest": "Сначала старые",
+	"sort-reports": "Большинство жалоб",
+	"sort-all": "Все виды жалоб",
+	"sort-posts-only": "Только сообщения",
+	"sort-downvotes": "Большинство голосов против",
+	"sort-upvotes": "Большинство голосов за",
+	"sort-replies": "Большинство ответов",
 
-	"modal-title": "Report Content",
+	"modal-title": "Содержание жалобы",
 	"modal-body": "Укажите причину для жалобы на %1 %2. Вы можете использовать одну из подходящих стандартных причин.",
 	"modal-reason-spam": "Спам",
 	"modal-reason-offensive": "Оскорбительное содержимое",
@@ -80,8 +80,8 @@
 	"modal-submit-confirm-text": "Вы уже выбрали причину. Вы уверены, что хотите отправить жалобу через быстрый отчёт?",
 	"modal-submit-confirm-text-help": "Отправка быстрого отчёта перезапишет указанную ранее причину.",
 
-	"bulk-actions": "Bulk Actions",
-	"bulk-resolve": "Resolve Flag(s)",
-	"bulk-success": "%1 flags updated",
-	"flagged-timeago-readable": "Flagged <span class=\"timeago\" title=\"%1\"></span> (%2)"
+	"bulk-actions": "Жалоба %1 обновлена",
+	"bulk-resolve": "Решить жалобы",
+	"bulk-success": "Жалоба %1 обновлена",
+	"flagged-timeago-readable": "Получена жалоба <span class=\"timeago\" title=\"%1\"></span>(%2)"
 }
