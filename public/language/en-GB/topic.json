@@ -155,6 +155,7 @@
 	"composer.submit": "Submit",
 	"composer.replying_to": "Replying to %1",
 	"composer.new_topic": "New Topic",
+	"composer.editing": "Editing",
 
 	"composer.uploading": "uploading...",
 	"composer.thumb_url_label": "Paste a topic thumbnail URL",
