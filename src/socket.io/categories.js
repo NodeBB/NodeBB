@@ -74,7 +74,7 @@ SocketCategories.loadMore = async function (socket, data) {
 		tag: data.query.tag,
 		targetUid: targetUid,
 	});
-	categories.modifyTopicsByPrivilege(data.topics, userPrivileges);
+	categories.modifyTopicsByPrivilege(result.topics, userPrivileges);
 
 	result.privileges = userPrivileges;
 	result.template = {

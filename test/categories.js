@@ -203,14 +203,21 @@ describe('Categories', () => {
 	describe('socket methods', () => {
 		const socketCategories = require('../src/socket.io/categories');
 
-		before((done) => {
-			Topics.post({
+		before(async () => {
+			await Topics.post({
 				uid: posterUid,
 				cid: categoryObj.cid,
 				title: 'Test Topic Title',
 				content: 'The content of test topic',
 				tags: ['nodebb'],
-			}, done);
+			});
+			const data = await Topics.post({
+				uid: posterUid,
+				cid: categoryObj.cid,
+				title: 'will delete',
+				content: 'The content of deleted topic',
+			});
+			await Topics.delete(data.topicData.tid, adminUid);
 		});
 
 		it('should get recent replies in category', (done) => {
@@ -255,10 +262,22 @@ describe('Categories', () => {
 			});
 		});
 
+		it('should not show deleted topic titles', async () => {
+			const data = await socketCategories.loadMore({ uid: 0 }, {
+				cid: categoryObj.cid,
+				after: 0,
+			});
+
+			assert.deepStrictEqual(
+				data.topics.map(t => t.title),
+				['[[topic:topic_is_deleted]]', 'Test Topic Title', 'Test Topic Title'],
+			);
+		});
+
 		it('should load topic count', (done) => {
 			socketCategories.getTopicCount({ uid: posterUid }, categoryObj.cid, (err, topicCount) => {
 				assert.ifError(err);
-				assert.equal(topicCount, 2);
+				assert.strictEqual(topicCount, 3);
 				done();
 			});
 		});
