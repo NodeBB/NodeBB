@@ -2,7 +2,6 @@
 'use strict';
 
 const _ = require('lodash');
-const validator = require('validator');
 
 const db = require('../database');
 const utils = require('../utils');
