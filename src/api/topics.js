@@ -34,10 +34,7 @@ topicsAPI.create = async function (caller, data) {
 
 	const payload = { ...data };
 	payload.tags = payload.tags || [];
-	payload.uid = caller.uid;
-	payload.req = apiHelpers.buildReqObject(caller);
-	payload.timestamp = Date.now();
-	payload.fromQueue = false;
+	apiHelpers.setDefaultPostData(caller, payload);
 
 	// Blacklist & Post Queue
 	await meta.blacklist.test(caller.ip);
@@ -58,19 +55,8 @@ topicsAPI.create = async function (caller, data) {
 };
 
 topicsAPI.reply = async function (caller, data) {
-	const payload = {
-		tid: data.tid,
-		uid: caller.uid,
-		req: apiHelpers.buildReqObject(caller),	// For IP recording
-		content: data.content,
-		timestamp: Date.now(),
-		fromQueue: false,
-	};
-
-	if (data.toPid) { payload.toPid = data.toPid; }
-	if (data.handle && !parseInt(caller.uid, 10)) {
-		payload.handle = data.handle;
-	}
+	const payload = { ...data };
+	apiHelpers.setDefaultPostData(caller, payload);
 
 	// Blacklist & Post Queue
 	await meta.blacklist.test(caller.ip);

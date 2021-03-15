@@ -10,6 +10,7 @@ const user = require('../user');
 const socketHelpers = require('./helpers');
 const utils = require('../utils');
 const api = require('../api');
+const apiHelpers = require('../api/helpers');
 
 const sockets = require('.');
 
@@ -29,7 +30,7 @@ SocketPosts.reply = async function (socket, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	socketHelpers.setDefaultPostData(data, socket);
+	apiHelpers.setDefaultPostData(socket, data);
 	await meta.blacklist.test(data.req.ip);
 	const shouldQueue = await posts.shouldQueue(socket.uid, data);
 	if (shouldQueue) {
