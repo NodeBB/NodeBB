@@ -18,10 +18,8 @@ const apiHelpers = require('../api/helpers');
 const SocketHelpers = module.exports;
 
 SocketHelpers.setDefaultPostData = function (data, socket) {
-	data.uid = socket.uid;
-	data.req = apiHelpers.buildReqObject(socket);
-	data.timestamp = Date.now();
-	data.fromQueue = false;
+	websockets.warnDeprecated(socket, 'apiHelpers.setDefaultPostData');
+	apiHelpers.setDefaultPostData(socket, data);
 };
 
 SocketHelpers.notifyNew = async function (uid, type, result) {
