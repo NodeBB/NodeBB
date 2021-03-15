@@ -21,7 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        node: [10, 12, 14]
+        node: [12, 14]
         database: [mongo-dev, mongo, redis, postgres]
         include:
           # only run coverage once
@@ -192,7 +192,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           flag-name: ${{ matrix.os }}-node-${{ matrix.node }}-db-${{ matrix.database }}
           parallel: true
-  
+
   finish:
     needs: test
     runs-on: ubuntu-latest
