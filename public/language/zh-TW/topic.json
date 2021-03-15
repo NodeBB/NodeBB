@@ -136,6 +136,7 @@
     "composer.submit": "提交",
     "composer.replying_to": "正在回覆 %1",
     "composer.new_topic": "新主題",
+    "composer.editing": "Editing",
     "composer.uploading": "正在上傳...",
     "composer.thumb_url_label": "添加主題縮圖網址",
     "composer.thumb_title": "給此主題添加縮圖",

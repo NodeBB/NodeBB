@@ -136,6 +136,7 @@
     "composer.submit": "সাবমিট",
     "composer.replying_to": "%1 এর উত্তরে:",
     "composer.new_topic": "নতুন টপিক",
+    "composer.editing": "Editing",
     "composer.uploading": "আপলোডিং",
     "composer.thumb_url_label": "টপিকে থাম্বনেইল URL পেষ্ট করুন",
     "composer.thumb_title": "এই টপিকে থাম্বনেইল যোগ করুন",

@@ -4,9 +4,9 @@
 	"route": "경로:",
 	"tooltip": "툴팁:",
 	"text": "텍스트:",
-	"text-class": "텍스트 클래스: <small>선택 사항</small>",
-	"class": "Class: <small>optional</small>",
-	"id": "ID: <small>선택 사항</small>",
+	"text-class": "텍스트 클래스: <small>선택사항</small>",
+	"class": "클래스: <small>선택사항</small>",
+	"id": "ID: <small>선택사항</small>",
 
 	"properties": "속성:",
 	"groups": "그룹:",
@@ -17,7 +17,7 @@
 	"btn.enable": "활성화",
 
 	"available-menu-items": "이용 가능한 메뉴 항목",
-	"custom-route": "사용자 지정 경로",
-	"core": "핵심",
+	"custom-route": "사용자 정의 경로",
+	"core": "코어",
 	"plugin": "플러그인"
 }

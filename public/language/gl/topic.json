@@ -136,6 +136,7 @@
     "composer.submit": "Enviar",
     "composer.replying_to": "En resposta a %1",
     "composer.new_topic": "Novo tema",
+    "composer.editing": "Editing",
     "composer.uploading": "subindo...",
     "composer.thumb_url_label": "Agrega unha URL de miniatura para o tema",
     "composer.thumb_title": "Agregar miniatura a este tema",

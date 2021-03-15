@@ -1,10 +1,10 @@
 {
-	"available": "사용 가능 위젯",
-	"explanation": "드롭다운 메뉴에서 위젯을 고르고 왼쪽에 있는 템플렛의 위젯 위치로 드래그하여 옮기십시오.",
-	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",
-	"clone-from": "복제할 위젯을 선택",
+	"available": "사용 가능한 위젯",
+	"explanation": "드롭다운 메뉴에서 위젯을 선택하고 왼쪽에 있는 템플릿의 위젯 위치로 드래그하여 옮기세요.",
+	"none-installed": "위젯이 없습니다! <a href=\"%1\">플러그인</a> 설정 메뉴에서 widget essentials 플러그인을 설치하세요.",
+	"clone-from": "복제할 위젯 선택",
 	"containers.available": "사용 가능한 컨테이너",
-	"containers.explanation": "아무 활성화된 위젯 위로 드래그해서 옮겨주십시오.",
+	"containers.explanation": "활성화된 위젯 위로 드래그앤드롭하세요.",
 	"containers.none": "없음",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",
@@ -14,17 +14,17 @@
 	"container.alert": "경고",
 
 	"alert.confirm-delete": "정말 이 위젯을 삭제하시겠습니까?",
-	"alert.updated": "위젯 업데이트 됨",
-	"alert.update-success": "성공적으로 업데이트 된 위젯",
-	"alert.clone-success": "성공적으로 위젯을 복제 했습니다",
+	"alert.updated": "위젯 업데이트 완료",
+	"alert.update-success": "위젯 업데이트 완료",
+	"alert.clone-success": "위젯 복제 완료",
 
-	"error.select-clone": "복제할 페이지를 선택",
+	"error.select-clone": "복제할 페이지 선택",
 
-	"title": "Title",
-	"title.placeholder": "Title (only shown on some containers)",
-	"container": "Container",
-	"container.placeholder": "Drag and drop a container or enter HTML here.",
-	"show-to-groups": "Show to groups",
-	"hide-from-groups": "Hide from groups",
-	"hide-on-mobile": "Hide on mobile"
+	"title": "제목",
+	"title.placeholder": "제목 (일부 컨테이너에서만 표시)",
+	"container": "컨테이너",
+	"container.placeholder": "컨테이너를 드래그앤드롭하거나 HTML을 입력하세요.",
+	"show-to-groups": "해당 그룹에 표시",
+	"hide-from-groups": "해당 그룹에 숨김",
+	"hide-on-mobile": "모바일에서 숨김"
 }

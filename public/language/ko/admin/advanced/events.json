@@ -2,10 +2,10 @@
 	"events": "이벤트",
 	"no-events": "이벤트가 없습니다",
 	"control-panel": "이벤트 제어판",
-	"delete-events": "Delete Events",
+	"delete-events": "이벤트 삭제",
 	"filters": "필터",
 	"filters-apply": "필터 적용",
-	"filter-type": "이벤트 타입",
+	"filter-type": "이벤트 유형",
 	"filter-start": "시작일",
 	"filter-end": "종료일",
 	"filter-perPage": "페이지 당"

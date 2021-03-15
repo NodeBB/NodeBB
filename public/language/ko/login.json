@@ -3,11 +3,11 @@
     "username": "사용자명",
     "email": "이메일",
     "remember_me": "로그인 유지",
-    "forgot_password": "비밀번호 재설정",
+    "forgot_password": "비밀번호 초기화",
     "alternative_logins": "다른 방법으로 로그인",
     "failed_login_attempt": "로그인 실패",
     "login_successful": "성공적으로 로그인했습니다.",
     "dont_have_account": "계정이 없으신가요?",
     "logged-out-due-to-inactivity": "일정시간 활동하지 않아 관리자 제어판에서 로그아웃 되었습니다.",
-    "caps-lock-enabled": "Caps Lock is enabled"
+    "caps-lock-enabled": "Caps Lock 활성화"
 }

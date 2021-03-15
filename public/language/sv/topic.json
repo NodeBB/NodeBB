@@ -136,6 +136,7 @@
     "composer.submit": "Skicka",
     "composer.replying_to": "Svarar till %1",
     "composer.new_topic": "Nytt ämne",
+    "composer.editing": "Editing",
     "composer.uploading": "laddar upp...",
     "composer.thumb_url_label": "Klistra in URL till tumnagel för ämnet",
     "composer.thumb_title": "Lägg till tumnagel för detta ämne",

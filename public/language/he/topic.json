@@ -136,6 +136,7 @@
     "composer.submit": "שלח",
     "composer.replying_to": "מגיב ל%1",
     "composer.new_topic": "נושא חדש",
+    "composer.editing": "Editing",
     "composer.uploading": "מעלה...",
     "composer.thumb_url_label": "הדבק את כתובת ה-URL לתמונה מוקטנת עבור הנושא",
     "composer.thumb_title": "הוסף תמונה מוקטנת לנושא זה",

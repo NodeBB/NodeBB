@@ -136,6 +136,7 @@
     "composer.submit": "Отправить",
     "composer.replying_to": "Ответ %1",
     "composer.new_topic": "Создать тему",
+    "composer.editing": "Editing",
     "composer.uploading": "загрузка...",
     "composer.thumb_url_label": "Вставьте ссылку на картинку с иконкой темы.",
     "composer.thumb_title": "Добавить иконку к этой теме",

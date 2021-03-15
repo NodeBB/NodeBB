@@ -136,6 +136,7 @@
     "composer.submit": "保存する",
     "composer.replying_to": "%1へ返答中",
     "composer.new_topic": "新規スレッド",
+    "composer.editing": "Editing",
     "composer.uploading": "アップロード中...",
     "composer.thumb_url_label": "スレッドのサムネイルのURLを入力して",
     "composer.thumb_title": "スレッドにサムネイルを追加",

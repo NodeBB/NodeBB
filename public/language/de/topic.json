@@ -136,6 +136,7 @@
     "composer.submit": "Absenden",
     "composer.replying_to": "Antworte auf %1",
     "composer.new_topic": "Neues Thema",
+    "composer.editing": "Editing",
     "composer.uploading": "Lade hoch...",
     "composer.thumb_url_label": "Vorschaubild-URL hier einfügen",
     "composer.thumb_title": "Vorschaubild zu diesem Thema hinzufügen",

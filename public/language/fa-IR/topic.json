@@ -136,6 +136,7 @@
     "composer.submit": "ارسال",
     "composer.replying_to": "پاسخ به %1",
     "composer.new_topic": "موضوع تازه",
+    "composer.editing": "Editing",
     "composer.uploading": "بارگذاری...",
     "composer.thumb_url_label": "چسباندن نشانی چهرک یک موضوع",
     "composer.thumb_title": "افزودن یک چهرک به این موضوع",

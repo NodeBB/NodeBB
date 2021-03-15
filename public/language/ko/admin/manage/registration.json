@@ -1,6 +1,6 @@
 {
-	"queue": "큐",
-	"description": "가입 대기 큐에 사용자가 없습니다. <br>이 기능을 사용하려면, <a href=\"%1\">설정 &rarr; 사용자 &rarr; 사용자 등록</a>으로 가서, <strong>가입 유형</strong>을 \"관리자 승인\"으로 바꾸세요.",
+	"queue": "대기열",
+	"description": "가입 대기열에 사용자가 없습니다. <br>이 기능을 사용하려면, <a href=\"%1\">설정 &rarr; 사용자 &rarr; 사용자 등록</a>으로 가서, <strong>가입 유형</strong>을 \"관리자 승인\"으로 바꾸세요.",
 
 	"list.name": "이름",
 	"list.email": "이메일",

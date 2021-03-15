@@ -1,12 +1,12 @@
 {
 	"pagination": "페이지 설정",
-	"enable": "무한 스크롤 대신 페이지로 주제와 포스트 보여주기",
-	"posts": "Post Pagination",
-	"topics": "주제 페이지",
+	"enable": "무한 스크롤 대신 페이지로 화제와 포스트 보여주기",
+	"posts": "포스트 페이지",
+	"topics": "화제 페이지",
 	"posts-per-page": "페이지 당 포스트",
-	"max-posts-per-page": "페이지당 최대 포스트수",
+	"max-posts-per-page": "페이지 당 최대 포스트",
 	"categories": "카테고리 페이지",
-	"topics-per-page": "페이지 당 주제 수",
-	"max-topics-per-page": "페이지당 최대 게시물 수",
-	"categories-per-page": "Categories per page"
+	"topics-per-page": "페이지 당 화제",
+	"max-topics-per-page": "페이지 당 최대 화제",
+	"categories-per-page": "페이지 당 카테고리"
 }

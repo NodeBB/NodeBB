@@ -136,6 +136,7 @@
     "composer.submit": "Trimite",
     "composer.replying_to": "Îi raspunde lui %1",
     "composer.new_topic": "Subiect Nou",
+    "composer.editing": "Editing",
     "composer.uploading": "se uploadează ...",
     "composer.thumb_url_label": "Lipește un link pentru pictogramă subiect",
     "composer.thumb_title": "Adaugă o pictogramă la acest subiect",

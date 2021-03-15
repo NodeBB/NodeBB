@@ -136,6 +136,7 @@
     "composer.submit": "حفظ",
     "composer.replying_to": "الرد على %1",
     "composer.new_topic": "موضوع جديد",
+    "composer.editing": "Editing",
     "composer.uploading": "جاري الرفع",
     "composer.thumb_url_label": "ألصق رابط الصورة المصغرة للموضوع",
     "composer.thumb_title": "إضافة صورة مصغرة للموضوع",

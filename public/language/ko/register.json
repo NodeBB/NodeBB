@@ -18,14 +18,14 @@
     "agree_to_terms_of_use": "이용약관에 동의합니다.",
     "terms_of_use_error": "이용약관에 동의하셔야 합니다.",
     "registration-added-to-queue": "회원가입이 요청되었습니다. 관리자의 승인 후 메일이 발송됩니다.",
-    "registration-queue-average-time": "Our average time for approving memberships is %1 hours %2 minutes.",
-    "registration-queue-auto-approve-time": "Your membership to this forum will be fully activated in up to %1 hours.",
+    "registration-queue-average-time": "가입 승인에는 평균적으로 %1시간 %2분이 소요됩니다.",
+    "registration-queue-auto-approve-time": "%1시간 내로 이 포럼에서 사용자의 계정이 완전히 활성화될 예정입니다.",
     "interstitial.intro": "계정을 생성하기 전 추가 정보가 더 필요합니다.",
     "interstitial.errors-found": "회원가입을 완료하지 못했습니다.",
-    "gdpr_agree_data": "나는 이 웹 사이트에서 개인 정보를 수집하고 처리하는데 동의합니다.",
-    "gdpr_agree_email": "나는 이 웹 사이트에서 다이제스트 및 알림 메일을 수신하는데 동의합니다.",
-    "gdpr_consent_denied": "사용자님은 이 사이트가 사용자님의 정보를 수집/처리하고 이메일을 보내는것에 동의해야합니다.",
-    "invite.error-admin-only": "Direct user registration has been disabled. Please contact an administrator for more details.",
-    "invite.error-invite-only": "Direct user registration has been disabled. You must be invited by an existing user in order to access this forum.",
-    "invite.error-invalid-data": "The registration data received does not correspond to our records. Please contact an administrator for more details"
+    "gdpr_agree_data": "나는 이 웹사이트에서 개인 정보를 수집하고 처리하는데 동의합니다.",
+    "gdpr_agree_email": "나는 이 웹사이트에서 포럼 메일 및 알림 메일을 수신하는데 동의합니다.",
+    "gdpr_consent_denied": "사용자는 이 사이트가 사용자의 정보를 수집/처리하고 이메일을 보내는 것에 동의해야 합니다.",
+    "invite.error-admin-only": "회원가입이 비활성화되었습니다. 포럼 관리 팀에 연락해보세요.",
+    "invite.error-invite-only": "회원가입이 비활성화되었습니다. 가입하고 이 포럼에 접속하려면 기존 가입자의 초대가 필요합니다.",
+    "invite.error-invalid-data": "입력된 가입 데이터가 가입 조건을 충족하지 못합니다. 포럼 관리 팀에 연락해보세요."
 }

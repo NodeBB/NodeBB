@@ -4,10 +4,10 @@
 	"consent.message": "알림 메세지",
 	"consent.acceptance": "허가 메세지",
 	"consent.link-text": "약관 조항 링크에 표시할 텍스트",
-	"consent.link-url": "Policy Link URL",
-	"consent.blank-localised-default": "NodeBB 의 번역을 사용하시려면 빈칸으로 두세요",
+	"consent.link-url": "약관 조항 링크",
+	"consent.blank-localised-default": "NodeBB의 번역을 사용하려면 빈칸으로 두세요.",
 	"settings": "설정",
 	"cookie-domain": "세션 쿠키 도메인",
-	"max-user-sessions": "Max active sessions per user",
-	"blank-default": "기본값을 사용하시려면 빈칸으로 두세요"
+	"max-user-sessions": "사용자 당 최대 활성 세션",
+	"blank-default": "기본값을 사용하려면 빈칸으로 두세요."
 }

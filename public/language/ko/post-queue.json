@@ -1,18 +1,18 @@
 
 {
 	"post-queue": "게시 대기열",
-	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
+	"description": "게시 대기열에 글이 없습니다. <br> 이 기능을 활성화하기 위해서는 <a href=\"%1\">설정 &rarr; 포스트 &rarr; 게시 대기열</a>로 이동해서 <strong>게시 대기열</strong> 기능을 활성화해주세요.",
 	"user": "사용자",
 	"category": "카테고리",
 	"title": "제목",
-	"content": "컨텐츠",
-	"posted": "작성됨",
+	"content": "내용",
+	"posted": "게시됨",
 	"reply-to": "'%1'에 대한 답글",
-	"content-editable": "Click on content to edit",
-	"category-editable": "Click on category to edit",
-	"title-editable": "Click on title to edit",
-	"reply": "Reply",
-	"topic": "Topic",
-	"accept": "Accept",
-	"reject": "Reject"
+	"content-editable": "내용을 눌러 편집",
+	"category-editable": "카테고리를 눌러 편집",
+	"title-editable": "제목을 눌러 편집",
+	"reply": "답글",
+	"topic": "화제",
+	"accept": "승인",
+	"reject": "거절"
 }

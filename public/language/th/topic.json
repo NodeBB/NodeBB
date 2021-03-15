@@ -136,6 +136,7 @@
     "composer.submit": "ส่ง",
     "composer.replying_to": "ตอบไปยัง  %1",
     "composer.new_topic": "กระทู้ใหม่",
+    "composer.editing": "Editing",
     "composer.uploading": "กำลังอัพโหลด ...",
     "composer.thumb_url_label": "วาง URL ของภาพของกระทู้นี้",
     "composer.thumb_title": "เพิ่มภาพให้กับกระทู้นี้",

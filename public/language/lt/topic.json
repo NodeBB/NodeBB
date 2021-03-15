@@ -136,6 +136,7 @@
     "composer.submit": "Patvirtinti",
     "composer.replying_to": "Atsakymas %1",
     "composer.new_topic": "Nauja tema",
+    "composer.editing": "Editing",
     "composer.uploading": "įkeliama...",
     "composer.thumb_url_label": "Įklijuokite temos paveikslėlio URL",
     "composer.thumb_title": "Pridėti paveikslėlį šiai temai",

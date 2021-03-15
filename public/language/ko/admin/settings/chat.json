@@ -1,12 +1,12 @@
 {
 	"chat-settings": "채팅 설정",
 	"disable": "채팅 비활성화",
-	"disable-editing": "채팅 메세지 수정/삭제 비활성화",
-	"disable-editing-help": "관리자는 이 제한에서 면제됩니다.",
-	"max-length": "채팅 메세지의 최대 길이",
-	"max-room-size": "채팅방의 최대 인원 수",
-	"delay": "채팅 메세지 간 시간 간격(단위: 1/1000초)",
-	"notification-delay": "Notification delay for chat messages. (0 for no delay)",
-	"restrictions.seconds-edit-after": "Number of seconds a chat message will remain editable. (0 disabled)",
-	"restrictions.seconds-delete-after": "Number of seconds a chat message will remain deletable. (0 disabled)"
+	"disable-editing": "채팅 메시지 수정/삭제 비활성화",
+	"disable-editing-help": "관리자와 조정자는 제한되지 않습니다.",
+	"max-length": "채팅 메시지의 최대 길이",
+	"max-room-size": "채팅방 최대 인원",
+	"delay": "채팅 메시지 발송 지연 (단위: 1/1000초)",
+	"notification-delay": "채팅 메시지 알림 지연 (0으로 놔둘 경우 지연 없음)",
+	"restrictions.seconds-edit-after": "채팅 메시지 수정 허용 시간 (0일 경우 비활성화)",
+	"restrictions.seconds-delete-after": "채팅 메시지 삭제 허용 시간 (0일 경우 비활성화)"
 }

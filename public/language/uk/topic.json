@@ -136,6 +136,7 @@
     "composer.submit": "Надіслати",
     "composer.replying_to": "Відповідь для %1",
     "composer.new_topic": "Cтворити тему",
+    "composer.editing": "Editing",
     "composer.uploading": "завантаження...",
     "composer.thumb_url_label": "Вставте URL мініатюри теми",
     "composer.thumb_title": "Додати мініатюру цій темі",

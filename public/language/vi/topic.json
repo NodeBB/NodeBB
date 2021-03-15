@@ -136,6 +136,7 @@
     "composer.submit": "Gửi",
     "composer.replying_to": "Đang trả lời %1",
     "composer.new_topic": "Chủ đề mới",
+    "composer.editing": "Sửa",
     "composer.uploading": "đang tải lên...",
     "composer.thumb_url_label": "Dán URL hình mô tả chủ đề",
     "composer.thumb_title": "Thêm ảnh mô tả cho chủ đề này",

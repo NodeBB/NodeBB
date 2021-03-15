@@ -1,12 +1,12 @@
 {
     "tag": "태그 설정",
-    "link-to-manage": "Manage Tags",
-    "system-tags": "System Tags",
-    "system-tags-help": "Only privileged users will be able to use these tags.",
-    "min-per-topic": "주제별 최소 태그",
-    "max-per-topic": "주제별 최대 태그",
+    "link-to-manage": "태그 관리",
+    "system-tags": "시스템 태그",
+    "system-tags-help": "관리자와 조정자들만 해당 태그들을 사용할 수 있습니다.",
+    "min-per-topic": "화제 별 최소 태그",
+    "max-per-topic": "화제 별 최대 태그",
     "min-length": "태그 최소 길이",
     "max-length": "태그 최대 길이",
-    "related-topics": "관련된 주제들",
-    "max-related-topics": "테마가 지원하는 보여질 관련된 주제들의 최대 개수"
+    "related-topics": "관련 화제",
+    "max-related-topics": "(테마가 지원할 경우) 보여질 화제의 최대 개수"
 }

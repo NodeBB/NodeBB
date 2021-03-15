@@ -136,6 +136,7 @@
     "composer.submit": "Send",
     "composer.replying_to": "Svare til %1",
     "composer.new_topic": "Ny tråd",
+    "composer.editing": "Editing",
     "composer.uploading": "uploader...",
     "composer.thumb_url_label": "Indsæt en tråd miniature URL",
     "composer.thumb_title": "Tilføj en miniature til denne tråd",

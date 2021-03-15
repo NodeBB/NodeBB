@@ -30,7 +30,7 @@
 	"upgrade-available": "<p>Une nouvelle version (v%1) est disponible. Veuillez <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">mettre à jour NodeBB</a>.</p>",
 	"prerelease-upgrade-available": "<p>Votre version est dépassée. Une nouvelle version (v%1) est disponible. Veuillez <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">mettre à jour NodeBB</a>.</p>",
 	"prerelease-warning": "<p>Ceci est une version <strong>préliminaire</strong> de NodeBB. Des bugs inattendus peuvent se produire. <i class=\"fa fa-exclamation-triangle\"></i></p>",
-	"fallback-emailer-not-found": "Fallback emailer not found!",
+	"fallback-emailer-not-found": "Email de secours introuvable!",
 	"running-in-development": "<span>Le forum est en mode développement. Il peut être sujet à certaines vulnérabilités, veuillez contacter votre administrateur système.</span>",
 	"latest-lookup-failed": "<p>Erreur de vérification de la dernière version disponible de NodeBB</p>",
 
@@ -80,9 +80,9 @@
 	"no-users-browsing": "Aucun utilisateur connecté",
 
 	"back-to-dashboard": "Retour au Tableau de bord",
-	"details.no-users": "No users have joined within the selected timeframe",
-	"details.no-topics": "No topics have been posted within the selected timeframe",
-	"details.no-logins": "No logins have been recorded within the selected timeframe",
-	"details.logins-static": "NodeBB only saves session data for %1 days, and so this table below will only show the most recently active sessions",
-	"details.logins-login-time": "Login Time"
+	"details.no-users": "Aucun utilisateur ne s'est joint dans le délai sélectionné",
+	"details.no-topics": "Aucun sujet n'a été publié dans la période sélectionnée",
+	"details.no-logins": "Aucune connexion n'a été enregistrée dans le délai sélectionné",
+	"details.logins-static": "NodeBB n'enregistre que les données de session pendant %1 jours, et le tableau ci-dessous n'affichera donc que les dernières sessions actives",
+	"details.logins-login-time": "Heure de connexion"
 }

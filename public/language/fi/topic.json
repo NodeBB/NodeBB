@@ -136,6 +136,7 @@
     "composer.submit": "Lähetä",
     "composer.replying_to": "Vastaus viestiin %1",
     "composer.new_topic": "Uusi aihe",
+    "composer.editing": "Editing",
     "composer.uploading": "ladataan palvelimelle...",
     "composer.thumb_url_label": "Liitä aiheen aiheen kuvakkeen URL",
     "composer.thumb_title": "Lisää kuvake tähän aiheeseen",

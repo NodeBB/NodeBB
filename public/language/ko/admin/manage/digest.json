@@ -1,21 +1,21 @@
 {
-	"lead": "A listing of digest delivery stats and times is displayed below.",
-	"disclaimer": "Please be advised that email delivery is not guaranteed, due to the nature of email technology. Many variables factor into whether an email sent to the recipient server is ultimately delivered into the user's inbox, including server reputation, blacklisted IP addresses, and whether DKIM/SPF/DMARC is configured.",
-	"disclaimer-continued": "A successful delivery means the message was sent successfully by NodeBB and acknowledged by the recipient server. It does not mean the email landed in the inbox. For best results, we recommend using a third-party email delivery service such as <a href=\"https://sendgrid.com/why-sendgrid/\">SendGrid</a>.",
+	"lead": "포럼 메일 통계 및 시간 목록이 아래에 표시됩니다.",
+	"disclaimer": "이메일 기술의 특성상 이메일 전송이 보장되지 않습니다. 서버 평판, 블랙리스트로 설정된 IP 주소, DKIM/SPF/DMARC 구성 여부 등 사용자의 이메일 서버에서 받은 편지함으로의 전송 여부를 결정하는 변수가 많습니다.",
+	"disclaimer-continued": "전송이 성공됐다는 것은 메일이 NodeBB에 의해 성공적으로 전송되고 수신자의 이메일 서버가 이를 수신했음을 의미합니다. 이는 이메일이 수신자의 받은 편지함에 도착했다는 것을 의미하지 않습니다. 최상의 결과를 얻으려면 <a href=\"https://sendgrid.com/why-sendgrid/\">SendGrid</a>와 같은 서드파티 이메일 서비스를 이용하는 것이 좋습니다.",
 
-	"user": "User",
-	"subscription": "Subscription Type",
-	"last-delivery": "Last successful delivery",
-	"default": "System default",
-	"default-help": "<em>System default</em> means the user has not explicitly overridden the global forum setting for digests, which is currently: &quot;<strong>%1</strong>&quot;",
-	"resend": "Resend Digest",
-	"resend-all-confirm": "Are you sure you wish to manually execute this digest run?",
-	"resent-single": "Manual digest resend completed",
-	"resent-day": "Daily digest resent",
-	"resent-week": "Weekly digest resent",
-	"resent-month": "Monthly digest resent",
-	"null": "<em>Never</em>",
-	"manual-run": "Manual digest run:",
+	"user": "사용자",
+	"subscription": "구독 유형",
+	"last-delivery": "최근 전송 성공 시각",
+	"default": "시스템 기본 설정",
+	"default-help": "<em>시스템 기본 설정</em>은 사용자가 현재 &quot;<strong>%1</strong>&quot;로 설정되어있는 포럼 메일의 기본 구독 설정을 변경하지 않았다는 뜻입니다.",
+	"resend": "포럼 메일 재전송",
+	"resend-all-confirm": "정말 포럼 메일 전송을 수동으로 진행합니까?",
+	"resent-single": "포럼 메일 수동 전송 완료",
+	"resent-day": "일간 포럼 메일 재전송 완료",
+	"resent-week": "주간 포럼 메일 재전송 완료",
+	"resent-month": "월간 포럼 메일 재전송 완료",
+	"null": "<em>기록 없음</em>",
+	"manual-run": "포럼 메일 수동 전송",
 
-	"no-delivery-data": "No delivery data found"
+	"no-delivery-data": "전송 데이터 없음"
 }

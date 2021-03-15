@@ -136,6 +136,7 @@
     "composer.submit": "Pošlji",
     "composer.replying_to": "Odgovor na %1",
     "composer.new_topic": "Nova tema",
+    "composer.editing": "Editing",
     "composer.uploading": "nalagam...",
     "composer.thumb_url_label": "Prilepite URL sličice teme",
     "composer.thumb_title": "Dodajte sličico tej temi",

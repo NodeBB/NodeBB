@@ -136,6 +136,7 @@
     "composer.submit": "Odeslat",
     "composer.replying_to": "Odpovídání na %1",
     "composer.new_topic": "Nové téma",
+    "composer.editing": "Editing",
     "composer.uploading": "nahrávání…",
     "composer.thumb_url_label": "Vložit URL náhledu tématu",
     "composer.thumb_title": "Přidat k tématu náhled",
