@@ -134,7 +134,7 @@ Groups.get = async function (groupName, options) {
 	if (!groupData) {
 		return null;
 	}
-	const descriptionParsed = await plugins.hooks.fire('filter:parse.raw', groupData.description);
+	const descriptionParsed = await plugins.hooks.fire('filter:parse.raw', String(groupData.description || ''));
 	groupData.descriptionParsed = descriptionParsed;
 	groupData.members = members;
 	groupData.membersNextStart = stop + 1;

@@ -440,7 +440,7 @@ Flags.create = async function (type, id, uid, reason, timestamp) {
 	await Promise.all(batched);
 
 	if (doHistoryAppend) {
-		Flags.update(flagId, uid, { state: 'open' });
+		await Flags.update(flagId, uid, { state: 'open' });
 	}
 
 	const flagObj = await Flags.get(flagId);
@@ -725,7 +725,7 @@ Flags.notify = async function (flagObj, uid) {
 		notifObj = await notifications.create({
 			type: 'new-post-flag',
 			bodyShort: `[[notifications:user_flagged_post_in, ${flagObj.reports[flagObj.reports.length - 1].reporter.username}, ${titleEscaped}]]`,
-			bodyLong: await plugins.hooks.fire('filter:parse.raw', flagObj.description),
+			bodyLong: await plugins.hooks.fire('filter:parse.raw', String(flagObj.description || '')),
 			pid: flagObj.targetId,
 			path: `/flags/${flagObj.flagId}`,
 			nid: `flag:post:${flagObj.targetId}`,
@@ -738,7 +738,7 @@ Flags.notify = async function (flagObj, uid) {
 		notifObj = await notifications.create({
 			type: 'new-user-flag',
 			bodyShort: `[[notifications:user_flagged_user, ${flagObj.reports[flagObj.reports.length - 1].reporter.username}, ${flagObj.target.username}]]`,
-			bodyLong: await plugins.hooks.fire('filter:parse.raw', flagObj.description),
+			bodyLong: await plugins.hooks.fire('filter:parse.raw', String(flagObj.description || '')),
 			path: `/flags/${flagObj.flagId}`,
 			nid: `flag:user:${flagObj.targetId}`,
 			from: uid,
