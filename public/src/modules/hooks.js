@@ -4,11 +4,28 @@ define('hooks', [], () => {
 	const Hooks = {
 		loaded: {},
 		temporary: new Set(),
+		deprecated: {
+			'action:script.load': 'filter:script.load',	// 👋 @ 1.18.0
+		},
 	};
 
 	Hooks.register = (hookName, method) => {
 		Hooks.loaded[hookName] = Hooks.loaded[hookName] || new Set();
 		Hooks.loaded[hookName].add(method);
+
+		if (Hooks.deprecated.hasOwnProperty(hookName)) {
+			const deprecated = Hooks.deprecated[hookName];
+
+			if (deprecated) {
+				console.groupCollapsed(`[hooks] Hook "${hookName}" is deprecated, please use "${deprecated}" instead.`);
+			} else {
+				console.groupCollapsed(`[hooks] Hook "${hookName}" is deprecated, there is no alternative.`);
+			}
+
+			console.info(method);
+			console.groupEnd();
+		}
+
 		console.debug(`[hooks] Registered ${hookName}`, method);
 	};
 	Hooks.on = Hooks.register;

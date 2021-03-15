@@ -320,53 +320,56 @@ ajaxify = window.ajaxify || {};
 	};
 
 	ajaxify.loadScript = function (tpl_url, callback) {
-		var location = !app.inAdmin ? 'forum/' : '';
+		require(['hooks'], (hooks) => {
+			var location = !app.inAdmin ? 'forum/' : '';
 
-		if (tpl_url.startsWith('admin')) {
-			location = '';
-		}
-		var data = {
-			tpl_url: tpl_url,
-			scripts: [location + tpl_url],
-		};
-
-		// Hint: useful if you want to load a module on a specific page (append module name to `scripts`)
-		$(window).trigger('action:script.load', data);
-
-		// Require and parse modules
-		var outstanding = data.scripts.length;
-
-		data.scripts.map(function (script) {
-			if (typeof script === 'function') {
-				return function (next) {
-					script();
-					next();
-				};
+			if (tpl_url.startsWith('admin')) {
+				location = '';
 			}
-			if (typeof script === 'string') {
-				return function (next) {
-					require(['hooks', script], function (hooks, module) {
-						// Hint: useful if you want to override a loaded library (e.g. replace core client-side logic),
-						// or call a method other than .init()
-						hooks.fire('static:script.init', { tpl_url, name: script, module }).then(() => {
-							if (module && module.init) {
-								module.init();
-							}
+			const data = {
+				tpl_url: tpl_url,
+				scripts: [location + tpl_url],
+			};
+
+			// Hint: useful if you want to load a module on a specific page (append module name to `scripts`)
+			hooks.fire('action:script.load', data);
+			hooks.fire('filter:script.load', data).then((data) => {
+				// Require and parse modules
+				var outstanding = data.scripts.length;
+
+				data.scripts.map(function (script) {
+					if (typeof script === 'function') {
+						return function (next) {
+							script();
 							next();
-						});
-					}, function () {
-						// ignore 404 error
-						next();
+						};
+					}
+					if (typeof script === 'string') {
+						return function (next) {
+							require([script], function (module) {
+								// Hint: useful if you want to override a loaded library (e.g. replace core client-side logic),
+								// or call a method other than .init()
+								hooks.fire('static:script.init', { tpl_url, name: script, module }).then(() => {
+									if (module && module.init) {
+										module.init();
+									}
+									next();
+								});
+							}, function () {
+								// ignore 404 error
+								next();
+							});
+						};
+					}
+					return null;
+				}).filter(Boolean).forEach(function (fn) {
+					fn(function () {
+						outstanding -= 1;
+						if (outstanding === 0) {
+							callback();
+						}
 					});
-				};
-			}
-			return null;
-		}).filter(Boolean).forEach(function (fn) {
-			fn(function () {
-				outstanding -= 1;
-				if (outstanding === 0) {
-					callback();
-				}
+				});
 			});
 		});
 	};
