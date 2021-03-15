@@ -10,7 +10,7 @@ const socketHelpers = require('../socket.io/helpers');
 const websockets = require('../socket.io');
 const events = require('../events');
 
-exports.setDefaultPostData = function (data, reqOrSocket) {
+exports.setDefaultPostData = function (reqOrSocket, data) {
 	data.uid = reqOrSocket.uid;
 	data.req = exports.buildReqObject(reqOrSocket, { ...data });
 	data.timestamp = Date.now();

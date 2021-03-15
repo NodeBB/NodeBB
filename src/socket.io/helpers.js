@@ -19,7 +19,7 @@ const SocketHelpers = module.exports;
 
 SocketHelpers.setDefaultPostData = function (data, socket) {
 	websockets.warnDeprecated(socket, 'apiHelpers.setDefaultPostData');
-	apiHelpers.setDefaultPostData(data, socket);
+	apiHelpers.setDefaultPostData(socket, data);
 };
 
 SocketHelpers.notifyNew = async function (uid, type, result) {

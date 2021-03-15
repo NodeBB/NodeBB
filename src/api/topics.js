@@ -34,7 +34,7 @@ topicsAPI.create = async function (caller, data) {
 
 	const payload = { ...data };
 	payload.tags = payload.tags || [];
-	apiHelpers.setDefaultPostData(payload, caller);
+	apiHelpers.setDefaultPostData(caller, payload);
 
 	// Blacklist & Post Queue
 	await meta.blacklist.test(caller.ip);
@@ -56,7 +56,7 @@ topicsAPI.create = async function (caller, data) {
 
 topicsAPI.reply = async function (caller, data) {
 	const payload = { ...data };
-	apiHelpers.setDefaultPostData(payload, caller);
+	apiHelpers.setDefaultPostData(caller, payload);
 
 	// Blacklist & Post Queue
 	await meta.blacklist.test(caller.ip);
