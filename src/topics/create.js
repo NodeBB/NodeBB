@@ -217,10 +217,7 @@ module.exports = function (Topics) {
 		postData.topic = topicInfo;
 		postData.index = topicInfo.postcount - 1;
 
-		// Username override for guests, if enabled
-		if (meta.config.allowGuestHandles && postData.uid === 0 && data.handle) {
-			postData.user.username = validator.escape(String(data.handle));
-		}
+		posts.overrideGuestHandle(postData, data.handle);
 
 		postData.votes = 0;
 		postData.bookmarked = false;

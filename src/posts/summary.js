@@ -20,7 +20,7 @@ module.exports = function (Posts) {
 		options.parse = options.hasOwnProperty('parse') ? options.parse : true;
 		options.extraFields = options.hasOwnProperty('extraFields') ? options.extraFields : [];
 
-		const fields = ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted', 'upvotes', 'downvotes', 'replies'].concat(options.extraFields);
+		const fields = ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted', 'upvotes', 'downvotes', 'replies', 'handle'].concat(options.extraFields);
 
 		let posts = await Posts.getPostsFields(pids, fields);
 		posts = posts.filter(Boolean);
@@ -45,6 +45,8 @@ module.exports = function (Posts) {
 				post.uid = 0;
 			}
 			post.user = uidToUser[post.uid];
+			Posts.overrideGuestHandle(post, post.handle);
+			post.handle = undefined;
 			post.topic = tidToTopic[post.tid];
 			post.category = post.topic && cidToCategory[post.topic.cid];
 			post.isMainPost = post.topic && post.pid === post.topic.mainPid;
@@ -60,7 +62,7 @@ module.exports = function (Posts) {
 	};
 
 	async function parsePosts(posts, options) {
-		async function parse(post) {
+		return await Promise.all(posts.map(async (post) => {
 			if (!post.content || !options.parse) {
 				post.content = post.content ? validator.escape(String(post.content)) : post.content;
 				return post;
@@ -70,8 +72,7 @@ module.exports = function (Posts) {
 				post.content = stripTags(post.content);
 			}
 			return post;
-		}
-		return await Promise.all(posts.map(p => parse(p)));
+		}));
 	}
 
 	async function getTopicAndCategories(tids) {

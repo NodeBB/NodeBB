@@ -167,6 +167,44 @@ describe('Topic\'s', () => {
 				json: true,
 			});
 			assert.strictEqual(replyResult.body.response.content, 'a reply by guest');
+			assert.strictEqual(replyResult.body.response.user.username, '[[global:guest]]');
+		});
+
+		it('should post a topic/reply as guest with handle if guest group has privileges', async () => {
+			const categoryObj = await categories.create({
+				name: 'Test Category',
+				description: 'Test category created by testing script',
+			});
+			await privileges.categories.give(['groups:topics:create'], categoryObj.cid, 'guests');
+			await privileges.categories.give(['groups:topics:reply'], categoryObj.cid, 'guests');
+			const oldValue = meta.config.allowGuestHandles;
+			meta.config.allowGuestHandles = 1;
+			const result = await requestType('post', `${nconf.get('url')}/api/v3/topics`, {
+				form: {
+					title: 'just a title',
+					cid: categoryObj.cid,
+					content: 'content for the main post',
+					handle: 'guest123',
+				},
+				json: true,
+			});
+
+			assert.strictEqual(result.body.status.code, 'ok');
+			assert.strictEqual(result.body.response.title, 'just a title');
+			assert.strictEqual(result.body.response.user.username, 'guest123');
+			assert.strictEqual(result.body.response.user.displayname, 'guest123');
+
+			const replyResult = await requestType('post', `${nconf.get('url')}/api/v3/topics/${result.body.response.tid}`, {
+				form: {
+					content: 'a reply by guest',
+					handle: 'guest124',
+				},
+				json: true,
+			});
+			assert.strictEqual(replyResult.body.response.content, 'a reply by guest');
+			assert.strictEqual(replyResult.body.response.user.username, 'guest124');
+			assert.strictEqual(replyResult.body.response.user.displayname, 'guest124');
+			meta.config.allowGuestHandles = oldValue;
 		});
 	});
 

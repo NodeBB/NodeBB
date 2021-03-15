@@ -53,6 +53,16 @@ module.exports = function (Posts) {
 		}));
 	};
 
+	Posts.overrideGuestHandle = function (postData, handle) {
+		if (meta.config.allowGuestHandles && postData && postData.user && parseInt(postData.uid, 10) === 0 && handle) {
+			postData.user.username = validator.escape(String(handle));
+			if (postData.user.hasOwnProperty('fullname')) {
+				postData.user.fullname = postData.user.username;
+			}
+			postData.user.displayname = postData.user.username;
+		}
+	};
+
 	async function checkGroupMembership(uid, groupTitleArray) {
 		if (!Array.isArray(groupTitleArray) || !groupTitleArray.length) {
 			return null;

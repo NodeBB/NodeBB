@@ -68,6 +68,9 @@ topicsAPI.reply = async function (caller, data) {
 	};
 
 	if (data.toPid) { payload.toPid = data.toPid; }
+	if (data.handle && !parseInt(caller.uid, 10)) {
+		payload.handle = data.handle;
+	}
 
 	// Blacklist & Post Queue
 	await meta.blacklist.test(caller.ip);
