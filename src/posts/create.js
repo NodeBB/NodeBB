@@ -24,7 +24,7 @@ module.exports = function (Posts) {
 			throw new Error('[[error:invalid-uid]]');
 		}
 
-		if (data.hasOwnProperty('toPid') && !utils.isNumber(data.toPid)) {
+		if (data.toPid && !utils.isNumber(data.toPid)) {
 			throw new Error('[[error:invalid-pid]]');
 		}
 
