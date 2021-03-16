@@ -83,7 +83,7 @@ define('forum/infinitescroll', function () {
 			return;
 		}
 		loadingMore = true;
-		var url = config.relative_path + '/api' + location.pathname;
+		var url = config.relative_path + '/api' + location.pathname.replace(new RegExp('^' + config.relative_path), '');
 		var hookData = { url: url, data: data };
 		$(window).trigger('action:infinitescroll.loadmore.xhr', hookData);
 
