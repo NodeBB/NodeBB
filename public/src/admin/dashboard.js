@@ -517,7 +517,6 @@ define('admin/dashboard', ['Chart', 'translator', 'benchpress'], function (Chart
 		});
 
 		function buildTopicsLegend() {
-			var legend = $('#topics-legend').html('');
 			var html = '';
 			topics.forEach(function (t, i) {
 				var link = t.tid ? '<a title="' + t.title + '"href="' + config.relative_path + '/topic/' + t.tid + '" target="_blank"> ' + t.title + '</a>' : t.title;
@@ -528,7 +527,7 @@ define('admin/dashboard', ['Chart', 'translator', 'benchpress'], function (Chart
 					'<span> (' + t.count + ') ' + label + '</span>' +
 					'</li>';
 			});
-			legend.translateHtml(html);
+			$('#topics-legend').translateHtml(html);
 		}
 
 		buildTopicsLegend();
