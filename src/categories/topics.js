@@ -101,10 +101,6 @@ module.exports = function (Categories) {
 			set = `cid:${cid}:tids:votes`;
 		}
 
-		if (data.targetUid) {
-			set = `cid:${cid}:uid:${data.targetUid}:tids`;
-		}
-
 		if (data.tag) {
 			if (Array.isArray(data.tag)) {
 				set = [set].concat(data.tag.map(tag => `tag:${tag}:topics`));
@@ -112,6 +108,11 @@ module.exports = function (Categories) {
 				set = [set, `tag:${data.tag}:topics`];
 			}
 		}
+
+		if (data.targetUid) {
+			set = (Array.isArray(set) ? set : [set]).concat([`cid:${cid}:uid:${data.targetUid}:tids`]);
+		}
+
 		const result = await plugins.hooks.fire('filter:categories.buildTopicsSortedSet', {
 			set: set,
 			data: data,
