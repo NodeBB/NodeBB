@@ -266,7 +266,9 @@ function continueLogin(strategy, req, res, next) {
 		}
 
 		if (!userData) {
-			if (typeof info === 'object') {
+			if (info instanceof Error) {
+				info = info.message;
+			} else if (typeof info === 'object') {
 				info = '[[error:invalid-username-or-password]]';
 			}
 			return helpers.noScriptErrors(req, res, info, 403);
