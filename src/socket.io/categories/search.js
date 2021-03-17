@@ -45,6 +45,7 @@ module.exports = function (SocketCategories) {
 
 	async function findMatchedCids(uid, data) {
 		const result = await categories.search({
+			uid: uid,
 			query: data.query,
 			paginate: false,
 		});
