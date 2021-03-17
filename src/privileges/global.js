@@ -98,6 +98,11 @@ privsGlobal.canGroup = async function (privilege, groupName) {
 	return await groups.isMember(groupName, `cid:0:privileges:groups:${privilege}`);
 };
 
+privsGlobal.filterUids = async function (privilege, uids) {
+	const privCategories = require('./categories');
+	return await privCategories.filterUids(privilege, 0, uids);
+};
+
 privsGlobal.give = async function (privileges, groupName) {
 	await helpers.giveOrRescind(groups.join, privileges, 0, groupName);
 	plugins.hooks.fire('action:privileges.global.give', {

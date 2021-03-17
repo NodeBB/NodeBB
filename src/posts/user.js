@@ -14,12 +14,12 @@ const privileges = require('../privileges');
 
 module.exports = function (Posts) {
 	Posts.getUserInfoForPosts = async function (uids, uid) {
-		const [userData, userSettings, canUseSignature] = await Promise.all([
+		const [userData, userSettings, signatureUids] = await Promise.all([
 			getUserData(uids, uid),
 			user.getMultipleUserSettings(uids),
-			privileges.global.can('signature', uid),
+			privileges.global.filterUids('signature', uids),
 		]);
-
+		const uidsSignatureSet = new Set(signatureUids.map(uid => parseInt(uid, 10)));
 		const groupsMap = await getGroupsMap(userData);
 
 		userData.forEach((userData, index) => {
@@ -35,7 +35,7 @@ module.exports = function (Posts) {
 		return await Promise.all(userData.map(async (userData) => {
 			const [isMemberOfGroups, signature, customProfileInfo] = await Promise.all([
 				checkGroupMembership(userData.uid, userData.groupTitleArray),
-				parseSignature(userData, uid, canUseSignature),
+				parseSignature(userData, uid, uidsSignatureSet),
 				plugins.hooks.fire('filter:posts.custom_profile_info', { profile: [], uid: userData.uid }),
 			]);
 
@@ -70,8 +70,8 @@ module.exports = function (Posts) {
 		return await groups.isMemberOfGroups(uid, groupTitleArray);
 	}
 
-	async function parseSignature(userData, uid, canUseSignature) {
-		if (!userData.signature || !canUseSignature || meta.config.disableSignatures) {
+	async function parseSignature(userData, uid, signatureUids) {
+		if (!userData.signature || !signatureUids.has(userData.uid) || meta.config.disableSignatures) {
 			return '';
 		}
 		const result = await Posts.parseSignature(userData, uid);
