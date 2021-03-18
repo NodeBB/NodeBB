@@ -67,7 +67,7 @@
 	"advanced/logs": "로그",
 	"advanced/errors": "에러",
 	"advanced/cache": "캐시",
-	"development/logger": "로거",
+	"development/logger": "로그 설정",
 	"development/info": "정보",
 
 	"rebuild-and-restart-forum": "리빌드 & 포럼 재시작",
