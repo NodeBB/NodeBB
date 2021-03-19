@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('flags', ['hooks'], function (hooks) {
+define('flags', ['hooks', 'components'], function (hooks, components) {
 	var Flag = {};
 	var flagModal;
 	var flagCommit;
@@ -9,8 +9,7 @@ define('flags', ['hooks'], function (hooks) {
 
 	Flag.showFlagModal = function (data) {
 		app.parseAndTranslate('partials/modals/flag_modal', data, function (html) {
-			flagModal = $(html);
-
+			flagModal = html;
 			flagModal.on('hidden.bs.modal', function () {
 				flagModal.remove();
 			});
@@ -86,6 +85,11 @@ define('flags', ['hooks'], function (hooks) {
 
 			flagModal.modal('hide');
 			app.alertSuccess('[[flags:modal-submit-success]]');
+			if (type === 'post') {
+				var postEl = components.get('post', 'pid', id);
+				postEl.find('[component="post/flag"]').addClass('hidden').parent().attr('hidden', '');
+				postEl.find('[component="post/already-flagged"]').removeClass('hidden').parent().attr('hidden', null);
+			}
 			$(window).trigger('action:flag.create', { flagId: flagId, data: data });
 		});
 	}
