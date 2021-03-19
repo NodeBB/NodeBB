@@ -54,7 +54,8 @@ Email.test = async function (socket, data) {
 				notification,
 				showUnsubscribe: true,
 			});
-		} break;
+			break;
+		}
 
 		default:
 			await emailer.send(data.template, socket.uid, payload);
