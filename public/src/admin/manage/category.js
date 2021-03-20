@@ -268,7 +268,7 @@ define('admin/manage/category', [
 				api.put('/categories/' + ajaxify.data.category.cid, {
 					parentCid: parentCid,
 				}).then(() => {
-					api.get(`/category/${parentCid}`).then(function (parent) {
+					api.get(`/categories/${parentCid}`, {}).then(function (parent) {
 						if (parent && parent.icon && parent.name) {
 							var buttonHtml = '<i class="fa ' + parent.icon + '"></i> ' + parent.name;
 							$('button[data-action="changeParent"]').html(buttonHtml).parent().removeClass('hide');
