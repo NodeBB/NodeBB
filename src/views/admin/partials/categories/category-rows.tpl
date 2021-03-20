@@ -17,7 +17,7 @@
                         ">
                             <i data-name="icon" value="{categories.icon}" class="fa {categories.icon}"></i>
                         </div>
-                        <h5 class="category-header"><a href="{config.relative_path}/admin/manage/categories/{categories.cid}">{categories.name}</a></h5>
+                        <h5 class="category-header"><a href="{config.relative_path}/admin/manage/categories/{categories.cid}">{categories.name}</a> {{{ if categories.link }}}<small><a class="text-muted" href="{categories.link}"><i class="fa fa-link"></i> {categories.link}</a></small>{{{ end }}}</h5>
                     </div>
                 </div>
             </div>
