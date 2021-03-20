@@ -23,7 +23,7 @@ module.exports = function (Messaging) {
 
 		const maximumChatMessageLength = meta.config.maximumChatMessageLength || 1000;
 		content = String(content).trim();
-		let length = String(content.length).trim();
+		let { length } = content;
 		({ content, length } = await plugins.hooks.fire('filter:messaging.checkContent', { content, length }));
 		if (!content) {
 			throw new Error('[[error:invalid-chat-message]]');

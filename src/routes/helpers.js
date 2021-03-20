@@ -19,7 +19,8 @@ function _handleArgs(middleware, middlewares, controller) {
 		middleware.registrationComplete,
 		middleware.authenticateRequest,
 		middleware.pluginHooks,
-		...middlewares];
+		...middlewares,
+	];
 
 	return { middlewares, controller };
 }
