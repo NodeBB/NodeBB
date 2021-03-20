@@ -69,10 +69,11 @@ module.exports = function (Categories) {
 		if (childrenCids.includes(newParent)) {
 			throw new Error('[[error:cant-set-child-as-parent]]');
 		}
-		const oldParent = await Categories.getCategoryField(cid, 'parentCid');
+		const categoryData = await Categories.getCategoryFields(cid, ['parentCid', 'order']);
+		const oldParent = categoryData.parentCid;
 		await Promise.all([
 			db.sortedSetRemove(`cid:${oldParent}:children`, cid),
-			db.sortedSetAdd(`cid:${newParent}:children`, cid, cid),
+			db.sortedSetAdd(`cid:${newParent}:children`, categoryData.order, cid),
 			db.setObjectField(`category:${cid}`, 'parentCid', newParent),
 		]);
 
