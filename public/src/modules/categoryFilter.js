@@ -1,6 +1,6 @@
 'use strict';
 
-define('categoryFilter', ['categorySearch'], function (categorySearch) {
+define('categoryFilter', ['categorySearch', 'api'], function (categorySearch, api) {
 	var categoryFilter = {};
 
 	categoryFilter.init = function (el, options) {
@@ -30,6 +30,9 @@ define('categoryFilter', ['categorySearch'], function (categorySearch) {
 					changed = true;
 				}
 			});
+			if (changed) {
+				updateFilterButton(el, selectedCids);
+			}
 			if (options.onHidden) {
 				options.onHidden({ changed: changed, selectedCids: selectedCids.slice() });
 				return;
@@ -63,6 +66,7 @@ define('categoryFilter', ['categorySearch'], function (categorySearch) {
 			selectedCids.sort(function (a, b) {
 				return a - b;
 			});
+			options.selectedCids = selectedCids;
 
 			icon.toggleClass('invisible');
 			listEl.find('li[data-all="all"] i').toggleClass('invisible', !!selectedCids.length);
@@ -72,6 +76,27 @@ define('categoryFilter', ['categorySearch'], function (categorySearch) {
 			return false;
 		});
 	};
+
+	function updateFilterButton(el, selectedCids) {
+		if (selectedCids.length > 1) {
+			renderButton({
+				icon: 'fa-plus',
+				name: '[[unread:multiple-categories-selected]]',
+				bgColor: '#ddd',
+			});
+		} else if (selectedCids.length === 1) {
+			api.get(`/categories/${selectedCids[0]}`, {}).then(renderButton);
+		} else {
+			renderButton();
+		}
+		function renderButton(category) {
+			app.parseAndTranslate('partials/category-filter-content', {
+				selectedCategory: category,
+			}, function (html) {
+				el.find('button').replaceWith($('<div/>').html(html).find('button'));
+			});
+		}
+	}
 
 	return categoryFilter;
 });

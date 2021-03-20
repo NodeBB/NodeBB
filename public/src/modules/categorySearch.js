@@ -37,6 +37,9 @@ define('categorySearch', function () {
 						renderList(categories);
 					});
 				} else if (!val && categoriesList) {
+					categoriesList.forEach(function (c) {
+						c.selected = options.selectedCids.includes(c.cid);
+					});
 					renderList(categoriesList);
 				}
 			}
