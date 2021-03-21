@@ -32,7 +32,7 @@
 	"plugin-item.unknown": "לא ידוע",
 	"plugin-item.unknown-explanation": "לא היתה דרך לקבוע מצב תוסף זה, כנראה עקב שגיאת קביעת תצורה שגויה.",
 	"plugin-item.compatible": "תוסף זה פועל ב- NodeBB %1",
-	"plugin-item.not-compatible": "תוסף זה אינו כולל נתוני תאימות, ודא שהוא פועל לפני ההתקנה בסביבת הייצור שלך.",
+	"plugin-item.not-compatible": "ג",
 
 	"alert.enabled": "תוסף מופעל",
 	"alert.disabled": "תוסף מושבת",
