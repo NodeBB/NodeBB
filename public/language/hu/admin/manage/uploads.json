@@ -1,9 +1,9 @@
 {
-    "upload-file": "Upload File",
-    "filename": "Filename",
-    "usage": "Post Usage",
-    "orphaned": "Orphaned",
-    "size/filecount": "Size / Filecount",
-    "confirm-delete": "Do you really want to delete this file?",
-    "filecount": "%1 files"
+    "upload-file": "Fájl feltöltése",
+    "filename": "Fájlnév",
+    "usage": "Használat hozzászólásban",
+    "orphaned": "Elárvult",
+    "size/filecount": "Méret / fájlok száma",
+    "confirm-delete": "Biztosan törölni szeretnéd ezt a fájlt?",
+    "filecount": "%1 fájl"
 }

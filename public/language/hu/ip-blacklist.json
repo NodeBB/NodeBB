@@ -1,19 +1,19 @@
 {
-	"lead": "Configure your IP blacklist here.",
-	"description": "Occasionally, a user account ban is not enough of a deterrant. Other times, restricting access to the forum to a specific IP or a range of IPs is the best way to protect a forum. In these scenarios, you can add troublesome IP addresses or entire CIDR blocks to this blacklist, and they will be prevented from logging in to or registering a new account.",
-	"active-rules": "Active Rules",
-	"validate": "Validate Blacklist",
-	"apply": "Apply Blacklist",
-	"hints": "Syntax Hints",
-	"hint-1": "Define a single IP addresses per line. You can add IP blocks as long as they follow the CIDR format (e.g. <code>192.168.100.0/22</code>).",
-	"hint-2": "You can add in comments by starting lines with the <code>#</code> symbol.",
+	"lead": "Az IP cím által tiltottak listájának szerkesztése.",
+	"description": "Esetenként a felhasználói fiók tiltása nem elég visszatartó erejű . Időnként megvonni a fórumhoz való hozzáférést egy IP címtől vagy egy körzetbe tartozó IP címtől sokkal hatásosabb. Ezekben az esetekben a problémás IP címeket vagy egész CIDR tömböket adhatsz hozzá a tiltólistához és tőlük meg lesz vonva az új fiók készítése vagy a bejelentkezés.",
+	"active-rules": "Aktív szabályok",
+	"validate": "Tiltólista átvizsgálása",
+	"apply": "Tiltólista engedélyezése",
+	"hints": "Szintaxis tippek",
+	"hint-1": "Soronként egy IP címet tüntess fel. Megadhatsz IP cím blokkokat is amíg azok követik a CIDR formátumot (e.g. <code>192.168.100.0/22</code>).",
+	"hint-2": "Adhatsz hozzá megjegyzést, hogyha a <code>#</code> szimbólumot a szöveg elé rakod.",
 
-	"validate.x-valid": "<strong>%1</strong> out of <strong>%2</strong> rule(s) valid.",
-	"validate.x-invalid": "The following <strong>%1</strong> rules are invalid:",
+	"validate.x-valid": "<strong>%1</strong> kívül <strong>%2</strong> szabály(ok) érvényesek.",
+	"validate.x-invalid": "A következő szabályok érvénytelenek: <strong>%1</strong> ",
 
-	"alerts.applied-success": "Blacklist Applied",
+	"alerts.applied-success": "Tiltólista alkalmazva",
 
-	"analytics.blacklist-hourly": "<strong>Figure 1</strong> &ndash; Blacklist hits per hour",
-	"analytics.blacklist-daily": "<strong>Figure 2</strong> &ndash; Blacklist hits per day",
-	"ip-banned": "IP banned"
+	"analytics.blacklist-hourly": "<strong>1. ábra</strong> &ndash; Óránként a feketelista találatai ",
+	"analytics.blacklist-daily": "<strong>2. ábra</strong> &ndash; Napi feketelista találatok ",
+	"ip-banned": "IP cím letiltva"
 }

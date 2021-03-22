@@ -1,18 +1,18 @@
 
 {
 	"post-queue": "Hozzászólási várósor",
-	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
+	"description": "Nem várakozik egy bejegyzés sem a sorban. <br> Hogy bekapcsold ezt a funckiót, menj a <a href=\"%1\">Beállítások &rarr; Bejegyzés &rarr; Bejegyzés sor</a> és fogadd el a <strong>Bejegyzés sor</strong>. -t",
 	"user": "Felhasználó",
 	"category": "Kategória",
 	"title": "Cím",
 	"content": "Tartalom",
-	"posted": "Posted",
-	"reply-to": "Reply to \"%1\"",
-	"content-editable": "Click on content to edit",
-	"category-editable": "Click on category to edit",
-	"title-editable": "Click on title to edit",
-	"reply": "Reply",
-	"topic": "Topic",
-	"accept": "Accept",
-	"reject": "Reject"
+	"posted": "Bejegyzés létrehozva",
+	"reply-to": "Válasz neki \"%1\"",
+	"content-editable": "Kattints a tartalomra, hogy szerkeszthesd",
+	"category-editable": "Kattints a kategóriára, hogy szerkeszthesd",
+	"title-editable": "Kattints a címre, hogy szerkeszthesd",
+	"reply": "Válasz",
+	"topic": "Témakör",
+	"accept": "Elfogad",
+	"reject": "Elutasít"
 }

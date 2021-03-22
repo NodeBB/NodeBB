@@ -1,21 +1,21 @@
 {
-	"lead": "A listing of digest delivery stats and times is displayed below.",
-	"disclaimer": "Please be advised that email delivery is not guaranteed, due to the nature of email technology. Many variables factor into whether an email sent to the recipient server is ultimately delivered into the user's inbox, including server reputation, blacklisted IP addresses, and whether DKIM/SPF/DMARC is configured.",
-	"disclaimer-continued": "A successful delivery means the message was sent successfully by NodeBB and acknowledged by the recipient server. It does not mean the email landed in the inbox. For best results, we recommend using a third-party email delivery service such as <a href=\"https://sendgrid.com/why-sendgrid/\">SendGrid</a>.",
+	"lead": "Alább láthatóak az összefoglalók kézbesítési statisztikáinak és idejeinek listája",
+	"disclaimer": "Kérjük vegye figyelembe, hogy az email kézbesítés nem garantált az email technológia természete miatt. Sok változó tényező befolyásolja, hogy egy email elküldése a címzettnek végül valóban sikeresen megérkezik-e a felhasználó postaládájába. Ide értendő a szerver ismertsége, a feketelistázott IP címek és hogy a DKIM/SPD/DMARC konfigurált-e.",
+	"disclaimer-continued": "A sikeres kézbesítést azt jelenti, hogy az üzenet elküldésre került a NodeBB által és a címzett szerver azt tudomásul vette. Azt nem jelenti, hogy az email megérkezett a felhasználó postafiókjába. A legjobb eredmény elérésének érdekében ajánljuk harmadik féltől származó email kézbesítő rendszer használatát, mint például a <a href=\"https://sendgrid.com/why-sendgrid/\">SendGrid</a>.",
 
-	"user": "User",
-	"subscription": "Subscription Type",
-	"last-delivery": "Last successful delivery",
-	"default": "System default",
-	"default-help": "<em>System default</em> means the user has not explicitly overridden the global forum setting for digests, which is currently: &quot;<strong>%1</strong>&quot;",
-	"resend": "Resend Digest",
-	"resend-all-confirm": "Are you sure you wish to manually execute this digest run?",
-	"resent-single": "Manual digest resend completed",
-	"resent-day": "Daily digest resent",
-	"resent-week": "Weekly digest resent",
-	"resent-month": "Monthly digest resent",
+	"user": "Felhasználó",
+	"subscription": "Feliratkozás típusa",
+	"last-delivery": "Utolsó sikeres kézbesítés",
+	"default": "Rendszer alapértelmezés",
+	"default-help": "<em>Rendszer alapértelmezés</em> azt jelenti, hogy a felhasználó nem írta felül a globális fórum beállítást, ami jelenleg az alábbi: &quot;<strong>%1</strong>&quot;",
+	"resend": "Összefoglaló újra küldése",
+	"resend-all-confirm": "Biztosan szeretnéd manuálisan futtatni ezt az összefoglalást?",
+	"resent-single": "Manuális összefoglaló küldés sikeres",
+	"resent-day": "Napi összefoglaló újraküldés sikeres",
+	"resent-week": "Heti összefoglaló újraküldés sikeres",
+	"resent-month": "Havi összefoglaló újraküldés sikeres",
 	"null": "<em>Soha</em>",
-	"manual-run": "Manual digest run:",
+	"manual-run": "Manuális összefoglaló futtatás:",
 
-	"no-delivery-data": "No delivery data found"
+	"no-delivery-data": "Nincs elérhető kézbesítési információ"
 }

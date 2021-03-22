@@ -2,11 +2,11 @@
 	"events": "Események",
 	"no-events": "Nem voltak események",
 	"control-panel": "Esemény vezérlőpult",
-	"delete-events": "Delete Events",
-	"filters": "Filters",
-	"filters-apply": "Apply Filters",
-	"filter-type": "Event Type",
-	"filter-start": "Start Date",
-	"filter-end": "End Date",
-	"filter-perPage": "Per Page"
+	"delete-events": "Események törlése",
+	"filters": "Szűrők",
+	"filters-apply": "Szűrők érvényesítése",
+	"filter-type": "Esemény típus",
+	"filter-start": "Kezdő dátum",
+	"filter-end": "Befejező dátum",
+	"filter-perPage": "Oldalanként"
 }

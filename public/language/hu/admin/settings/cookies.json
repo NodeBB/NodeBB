@@ -1,13 +1,13 @@
 {
-	"eu-consent": "EU Consent",
-	"consent.enabled": "Enabled",
-	"consent.message": "Notification message",
-	"consent.acceptance": "Acceptance message",
-	"consent.link-text": "Policy Link Text",
-	"consent.link-url": "Policy Link URL",
-	"consent.blank-localised-default": "Leave blank to use NodeBB localised defaults",
-	"settings": "Settings",
-	"cookie-domain": "Session cookie domain",
-	"max-user-sessions": "Max active sessions per user",
-	"blank-default": "Leave blank for default"
+	"eu-consent": "EU hozzájárulás",
+	"consent.enabled": "Engedélyezve",
+	"consent.message": "Értesítés szövege",
+	"consent.acceptance": "Elfogadás szövege",
+	"consent.link-text": "Irányelv link felirata",
+	"consent.link-url": "Irányelv link URL-je",
+	"consent.blank-localised-default": "Hagyd üresen a NodeBB alapértelmezett használatához (lefordított)",
+	"settings": "Beállítások",
+	"cookie-domain": "Munkamenet süti domain",
+	"max-user-sessions": "Aktív munkamenetek maximális száma felhasználónként",
+	"blank-default": "Hagyd üresen az alapértelmezett beállítás használatához"
 }

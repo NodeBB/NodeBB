@@ -10,14 +10,14 @@
     "watch": "Figyelés",
     "ignore": "Mellőzés",
     "watching": "Figyelés",
-    "not-watching": "Not Watching",
+    "not-watching": "Nem megfigyelt",
     "ignoring": "Mellőzés",
-    "watching.description": "Show topics in unread and recent",
-    "not-watching.description": "Do not show topics in unread, show in recent",
-    "ignoring.description": "Do not show topics in unread and recent",
-    "watching.message": "You are now watching updates from this category and all subcategories",
-    "notwatching.message": "You are not watching updates from this category and all subcategories",
-    "ignoring.message": "You are now ignoring updates from this category and all subcategories",
+    "watching.description": "Témakörök mutatása a friss és olvasatlanok között",
+    "not-watching.description": "Olvasatlan témakörök elrejtése, csak a friss témák mutatása",
+    "ignoring.description": "Olvasatlan és friss témakörök elrejtése",
+    "watching.message": "Most már figyeled ennek a kategóriának és az alkategóriáinak a frissítéseit",
+    "notwatching.message": "Nem figyeled ennek a kategóriának és alkategóriáinak frissítéseit",
+    "ignoring.message": "Nem kapsz most már frissítéseket erről a kategóriáról és az alkategóriáiról",
     "watched-categories": "Figyelt kategóriák",
-    "x-more-categories": "%1 more categories"
+    "x-more-categories": "%1 további kategória"
 }

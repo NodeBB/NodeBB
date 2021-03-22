@@ -1,5 +1,5 @@
 {
-	"trending": "Trending",
+	"trending": "Népszerűek",
 	"installed": "Telepített",
 	"active": "Aktív",
 	"inactive": "Inaktív",
@@ -10,14 +10,14 @@
 
 	"plugin-search": "Beépülő keresés",
 	"plugin-search-placeholder": "Beépülő keresése...",
-	"submit-anonymous-usage": "Submit anonymous plugin usage data.",
+	"submit-anonymous-usage": "Névtelen belépülő használati statisztika küldése.",
 	"reorder-plugins": "Beépülők átrendezése",
 	"order-active": "Aktív beépülők elrendezése",
 	"dev-interested": "Szeretnél beépülő modulokat írni a NodeBB-hez?",
-	"docs-info": "Full documentation regarding plugin authoring can be found in the <a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">NodeBB Docs Portal</a>.",
+	"docs-info": "Beépülő készítéshez tartozó teljes dokumentáció elérhető a <a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">NodeBB dokumentációs portálon</a>.",
 
-	"order.description": "Certain plugins work ideally when they are initialised before/after other plugins.",
-	"order.explanation": "Plugins load in the order specified here, from top to bottom",
+	"order.description": "Némely beépülők akkor működnek jól, ha más beépülők előtt/után töltődnek be.",
+	"order.explanation": "A beépülők az itt megadott sorrendben töltődnek be fentről lefelé haladva",
 
 	"plugin-item.themes": "Témák",
 	"plugin-item.deactivate": "Deaktiválás",
@@ -31,8 +31,8 @@
 	"plugin-item.more-info": "További információért:",
 	"plugin-item.unknown": "Ismeretlen",
 	"plugin-item.unknown-explanation": "A beépülő állapotát nem lehet meghatározni, valószínűleg egy konfigurációs hiba következtében.",
-	"plugin-item.compatible": "This plugin works on NodeBB %1",
-	"plugin-item.not-compatible": "This plugin has no compatibility data, make sure it works before installing on your production environment.",
+	"plugin-item.compatible": "Ez a beépülő működik a NodeBB %1 verziójával",
+	"plugin-item.not-compatible": "Ennek a beépülőnek nincs kompatibilitási információja. Győződj meg róla, hogy működik mielőtt produkciós környezetben telepíted.",
 
 	"alert.enabled": "Beépülő engedélyezve",
 	"alert.disabled": "Beépülő letiltva",
@@ -44,14 +44,14 @@
 	"alert.upgrade-success": "A beépülő teljes frissítéséhez kérlek építsd újra majd indítsd újra a NodeBB-t.",
 	"alert.install-success": "A beépülő sikeresen telepítve, kérlek aktiváld.",
 	"alert.uninstall-success": "A beépülő sikeresen deaktiválásra majd eltávolításra került.",
-	"alert.suggest-error": "<p>NodeBB could not reach the package manager, proceed with installation of latest version?</p><div class=\"alert alert-danger\"><strong>Server returned (%1)</strong>: %2</div>",
-	"alert.package-manager-unreachable": "<p>NodeBB could not reach the package manager, an upgrade is not suggested at this time.</p>",
-	"alert.incompatible": "<p>Your version of NodeBB (v%1) is only cleared to upgrade to v%2 of this plugin. Please update your NodeBB if you wish to install a newer version of this plugin.</p>",
-	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>No Compatibility Information Found</strong></p><p>This plugin did not specify a specific version for installation given your NodeBB version. Full compatibility cannot be guaranteed, and may cause your NodeBB to no longer start properly.</p></div><p>In the event that NodeBB cannot boot properly:</p><pre><code>$ ./nodebb reset plugin=\"%1\"</code></pre><p>Continue installation of latest version of this plugin?</p>",
+	"alert.suggest-error": "<p>A NodeBB nem tudta elérni a csomagkezelőt, a telepítéssel haladjunk tovább az előző verzió alapján?</p><div class=\"alert alert-danger\"><strong>A szerver ezt válaszolta: (%1)</strong>: %2</div>",
+	"alert.package-manager-unreachable": "<p>A NodeBB nem tudta elérni a csomagkezelőt, nem javasolt frissítés futtatása most.</p>",
+	"alert.incompatible": "<p>Az általad futtatott NodeBB verzió (v%1) ennek a beépülőnek csak a v%2 verzióját támogatja. Kérjük frissítsd a NodeBB-det, hogy telepíthesd a beépülő újabb verzióit.</p>",
+	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>Nem található kompatibilitási információ</strong></p><p>Ez a beépülő nem adja meg, hogy milyen NodeBB verziókkal képes működni. A teljes kompatibilitás nem garantált és meggátolhatja a NodeBB-t a helyes indulásban.</p></div><p>Abban az esetben, ha a NodeBB nem indul el megfelelően:</p><pre><code>$ ./nodebb reset plugin=\"%1\"</code></pre><p>Foyltassuk a beépülő legfrissebb verziójának telepítését?</p>",
 	"alert.reorder": "Beépülők átrendezve",
-	"alert.reorder-success": "A folyamat teljes befejezéséhez kérlek építsd újra majd indítsd újra a NodeBB-t.",
+	"alert.reorder-success": "A folyamat teljes befejezéséhez kérlek építsd újra és indítsd újra a NodeBB-t.",
 
 	"license.title": "Beépülő licencinformáció",
-	"license.intro": "The plugin <strong>%1</strong> is licensed under the %2. Please read and understand the license terms prior to activating this plugin.",
+	"license.intro": "A <strong>%1</strong> beépülő a %2 liszensz szerződést használja. Kérjük olvasd el és vedd tudomásul a szerződésben leírtakat, mielőtt használatba veszed a beépülőt.",
 	"license.cta": "Biztosan szeretnéd folytatni a beépülő aktiválását?"
 }
