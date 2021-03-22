@@ -5,7 +5,6 @@ const winston = require('winston');
 const { CronJob } = require('cron');
 
 const db = require('../database');
-const categories = require('../categories');
 const posts = require('../posts');
 const socketHelpers = require('../socket.io/helpers');
 const topics = require('./index');

@@ -43,10 +43,11 @@ topicsController.get = async function getTopic(req, res, callback) {
 
 	let currentPage = parseInt(req.query.page, 10) || 1;
 	const pageCount = Math.max(1, Math.ceil((topicData && topicData.postcount) / settings.postsPerPage));
+	const validPagination = (settings.usePagination && (currentPage < 1 || currentPage > pageCount));
 	if (
 		!topicData ||
 		userPrivileges.disabled ||
-		(settings.usePagination && (currentPage < 1 || currentPage > pageCount)) ||
+		validPagination ||
 		(topicData.scheduled && !userPrivileges.view_scheduled)
 	) {
 		return callback();

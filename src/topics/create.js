@@ -148,33 +148,10 @@ module.exports = function (Topics) {
 		const { uid } = data;
 
 		const topicData = await Topics.getTopicData(tid);
-		if (!topicData) {
-			throw new Error('[[error:no-topic]]');
-		}
+
+		await canReply(data, topicData);
 
 		data.cid = topicData.cid;
-
-		const [canReply, canSchedule, isAdminOrMod] = await Promise.all([
-			privileges.topics.can('topics:reply', tid, uid),
-			privileges.topics.can('topics:schedule', tid, uid),
-			privileges.categories.isAdminOrMod(data.cid, uid),
-		]);
-
-		if (topicData.locked && !isAdminOrMod) {
-			throw new Error('[[error:topic-locked]]');
-		}
-
-		if (!topicData.scheduled && topicData.deleted && !isAdminOrMod) {
-			throw new Error('[[error:topic-deleted]]');
-		}
-
-		if (topicData.scheduled && !canSchedule) {
-			throw new Error('[[error:no-privileges]]');
-		}
-
-		if (!canReply) {
-			throw new Error('[[error:no-privileges]]');
-		}
 
 		await guestHandleValid(data);
 		if (!data.fromQueue) {
@@ -283,6 +260,36 @@ module.exports = function (Topics) {
 			if (exists) {
 				throw new Error('[[error:username-taken]]');
 			}
+		}
+	}
+
+	async function canReply(data, topicData) {
+		if (!topicData) {
+			throw new Error('[[error:no-topic]]');
+		}
+		const { tid, uid } = data;
+		const { cid, deleted, locked, scheduled } = topicData;
+
+		const [canReply, canSchedule, isAdminOrMod] = await Promise.all([
+			privileges.topics.can('topics:reply', tid, uid),
+			privileges.topics.can('topics:schedule', tid, uid),
+			privileges.categories.isAdminOrMod(cid, uid),
+		]);
+
+		if (locked && !isAdminOrMod) {
+			throw new Error('[[error:topic-locked]]');
+		}
+
+		if (!scheduled && deleted && !isAdminOrMod) {
+			throw new Error('[[error:topic-deleted]]');
+		}
+
+		if (scheduled && !canSchedule) {
+			throw new Error('[[error:no-privileges]]');
+		}
+
+		if (!canReply) {
+			throw new Error('[[error:no-privileges]]');
 		}
 	}
 };
