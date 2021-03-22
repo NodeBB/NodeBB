@@ -27,6 +27,10 @@ module.exports = function (Topics) {
 		if (!topicData) {
 			throw new Error('[[error:no-topic]]');
 		}
+		// Scheduled topics can only be purged
+		if (topicData.scheduled) {
+			throw new Error('[[error:invalid-data]]');
+		}
 		const canDelete = await privileges.topics.canDelete(tid, uid);
 
 		const data = await plugins.hooks.fire(isDelete ? 'filter:topic.delete' : 'filter:topic.restore', { topicData: topicData, uid: uid, isDelete: isDelete, canDelete: canDelete, canRestore: canDelete });
@@ -147,6 +151,10 @@ module.exports = function (Topics) {
 		const topicData = await Topics.getTopicData(tid);
 		if (!topicData) {
 			throw new Error('[[error:no-topic]]');
+		}
+
+		if (topicData.scheduled) {
+			throw new Error('[[error:cant-pin-scheduled]]');
 		}
 
 		if (uid !== 'system' && !await privileges.topics.isAdminOrMod(tid, uid)) {

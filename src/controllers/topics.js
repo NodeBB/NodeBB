@@ -46,12 +46,13 @@ topicsController.get = async function getTopic(req, res, callback) {
 	if (
 		!topicData ||
 		userPrivileges.disabled ||
-		(settings.usePagination && (currentPage < 1 || currentPage > pageCount))
+		(settings.usePagination && (currentPage < 1 || currentPage > pageCount)) ||
+		(topicData.scheduled && !userPrivileges.view_scheduled)
 	) {
 		return callback();
 	}
 
-	if (!userPrivileges['topics:read'] || (topicData.deleted && !userPrivileges.view_deleted)) {
+	if (!userPrivileges['topics:read'] || (!topicData.scheduled && topicData.deleted && !userPrivileges.view_deleted)) {
 		return helpers.notAllowed(req, res);
 	}
 
@@ -343,7 +344,7 @@ topicsController.pagination = async function (req, res, callback) {
 		return callback();
 	}
 
-	if (!userPrivileges.read || (topic.deleted && !userPrivileges.view_deleted)) {
+	if (!userPrivileges.read || !privileges.topics.canViewDeletedScheduled(topic, userPrivileges)) {
 		return helpers.notAllowed(req, res);
 	}
 

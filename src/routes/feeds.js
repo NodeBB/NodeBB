@@ -72,7 +72,7 @@ async function generateForTopic(req, res) {
 		topics.getTopicData(tid),
 	]);
 
-	if (!topic || (topic.deleted && !userPrivileges.view_deleted)) {
+	if (!privileges.topics.canViewDeletedScheduled(topic, userPrivileges)) {
 		return controllers404.send404(req, res);
 	}
 

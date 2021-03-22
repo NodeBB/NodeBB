@@ -38,12 +38,12 @@ module.exports = function (Posts) {
 	};
 
 	Diffs.save = async function (data) {
-		const { pid, uid, oldContent, newContent } = data;
-		const now = Date.now();
+		const { pid, uid, oldContent, newContent, edited } = data;
+		const editTimestamp = edited || Date.now();
 		const patch = diff.createPatch('', newContent, oldContent);
 		await Promise.all([
-			db.listPrepend(`post:${pid}:diffs`, now),
-			db.setObject(`diff:${pid}.${now}`, {
+			db.listPrepend(`post:${pid}:diffs`, editTimestamp),
+			db.setObject(`diff:${pid}.${editTimestamp}`, {
 				uid: uid,
 				pid: pid,
 				patch: patch,
@@ -135,7 +135,7 @@ module.exports = function (Posts) {
 	function getValidatedTimestamp(timestamp) {
 		timestamp = parseInt(timestamp, 10);
 
-		if (isNaN(timestamp) || timestamp > Date.now()) {
+		if (isNaN(timestamp)) {
 			throw new Error('[[error:invalid-data]]');
 		}
 

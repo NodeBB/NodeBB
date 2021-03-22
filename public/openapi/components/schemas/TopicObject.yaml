@@ -213,6 +213,8 @@ TopicObjectSlim:
           type: number
         postercount:
           type: number
+        scheduled:
+          type: number
         deleted:
           type: number
         deleterUid:

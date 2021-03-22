@@ -76,7 +76,7 @@ module.exports = function (Posts) {
 	}
 
 	async function getTopicAndCategories(tids) {
-		const topicsData = await topics.getTopicsFields(tids, ['uid', 'tid', 'title', 'cid', 'slug', 'deleted', 'postcount', 'mainPid', 'teaserPid']);
+		const topicsData = await topics.getTopicsFields(tids, ['uid', 'tid', 'title', 'cid', 'slug', 'deleted', 'scheduled', 'postcount', 'mainPid', 'teaserPid']);
 		const cids = _.uniq(topicsData.map(topic => topic && topic.cid));
 		const categoriesData = await categories.getCategoriesFields(cids, ['cid', 'name', 'icon', 'slug', 'parentCid', 'bgColor', 'color', 'backgroundImage', 'imageClass']);
 		return { topics: topicsData, categories: categoriesData };

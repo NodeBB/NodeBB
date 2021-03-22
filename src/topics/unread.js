@@ -101,7 +101,7 @@ module.exports = function (Topics) {
 			db.getSortedSetRevRangeWithScores(`uid:${params.uid}:tids_unread`, 0, -1),
 		]);
 
-		const userReadTime = _.mapValues(_.keyBy(userScores, 'value'), 'score');
+		const userReadTimes = _.mapValues(_.keyBy(userScores, 'value'), 'score');
 		const isTopicsFollowed = {};
 		followedTids.forEach((t) => {
 			isTopicsFollowed[t.value] = true;
@@ -115,7 +115,7 @@ module.exports = function (Topics) {
 		});
 
 		const unreadTopics = _.unionWith(categoryTids, followedTids, (a, b) => a.value === b.value)
-			.filter(t => !ignoredTids.includes(t.value) && (!userReadTime[t.value] || t.score > userReadTime[t.value]))
+			.filter(t => !ignoredTids.includes(t.value) && (!userReadTimes[t.value] || t.score > userReadTimes[t.value]))
 			.concat(tids_unread.filter(t => !ignoredTids.includes(t.value)))
 			.sort((a, b) => b.score - a.score);
 
@@ -135,7 +135,8 @@ module.exports = function (Topics) {
 		});
 
 		tids = await privileges.topics.filterTids('topics:read', tids, params.uid);
-		const topicData = (await Topics.getTopicsFields(tids, ['tid', 'cid', 'uid', 'postcount', 'deleted'])).filter(t => !t.deleted);
+		const topicData = (await Topics.getTopicsFields(tids, ['tid', 'cid', 'uid', 'postcount', 'deleted', 'scheduled']))
+			.filter(t => t.scheduled || !t.deleted);
 		const topicCids = _.uniq(topicData.map(topic => topic.cid)).filter(Boolean);
 
 		const categoryWatchState = await categories.getWatchState(topicCids, params.uid);
@@ -157,7 +158,7 @@ module.exports = function (Topics) {
 					tidsByFilter.unreplied.push(topic.tid);
 				}
 
-				if (!userReadTime[topic.tid]) {
+				if (!userReadTimes[topic.tid]) {
 					tidsByFilter.new.push(topic.tid);
 				}
 			}
@@ -273,19 +274,19 @@ module.exports = function (Topics) {
 			return false;
 		}
 		const [topicScores, userScores] = await Promise.all([
-			Topics.getTopicsFields(tids, ['tid', 'lastposttime']),
+			Topics.getTopicsFields(tids, ['tid', 'lastposttime', 'scheduled']),
 			db.sortedSetScores(`uid:${uid}:tids_read`, tids),
 		]);
 
-		tids = topicScores.filter((t, i) => t.lastposttime && (!userScores[i] || userScores[i] < t.lastposttime))
-			.map(t => t.tid);
+		const topics = topicScores.filter((t, i) => t.lastposttime && (!userScores[i] || userScores[i] < t.lastposttime));
+		tids = topics.map(t => t.tid);
 
 		if (!tids.length) {
 			return false;
 		}
 
 		const now = Date.now();
-		const scores = tids.map(() => now);
+		const scores = topics.map(topic => (topic.scheduled ? topic.lastposttime : now));
 		const [topicData] = await Promise.all([
 			Topics.getTopicsFields(tids, ['cid']),
 			db.sortedSetAdd(`uid:${uid}:tids_read`, scores, tids),

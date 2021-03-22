@@ -190,16 +190,20 @@ define('forum/category/tools', [
 		var areAllDeleted = areAll(isTopicDeleted, tids);
 		var isAnyPinned = isAny(isTopicPinned, tids);
 		var isAnyLocked = isAny(isTopicLocked, tids);
+		const isAnyScheduled = isAny(isTopicScheduled, tids);
+		const areAllScheduled = areAll(isTopicScheduled, tids);
 
 		components.get('topic/delete').toggleClass('hidden', isAnyDeleted);
-		components.get('topic/restore').toggleClass('hidden', !isAnyDeleted);
+		components.get('topic/restore').toggleClass('hidden', isAnyScheduled || !isAnyDeleted);
 		components.get('topic/purge').toggleClass('hidden', !areAllDeleted);
 
 		components.get('topic/lock').toggleClass('hidden', isAnyLocked);
 		components.get('topic/unlock').toggleClass('hidden', !isAnyLocked);
 
-		components.get('topic/pin').toggleClass('hidden', isAnyPinned);
-		components.get('topic/unpin').toggleClass('hidden', !isAnyPinned);
+		components.get('topic/pin').toggleClass('hidden', areAllScheduled || isAnyPinned);
+		components.get('topic/unpin').toggleClass('hidden', areAllScheduled || !isAnyPinned);
+
+		components.get('topic/merge').toggleClass('hidden', isAnyScheduled);
 	}
 
 	function isAny(method, tids) {
@@ -230,6 +234,10 @@ define('forum/category/tools', [
 
 	function isTopicPinned(tid) {
 		return getTopicEl(tid).hasClass('pinned');
+	}
+
+	function isTopicScheduled(tid) {
+		return getTopicEl(tid).hasClass('scheduled');
 	}
 
 	function getTopicEl(tid) {

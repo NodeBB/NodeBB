@@ -23,6 +23,8 @@ define('topicList', [
 	var loadTopicsCallback;
 	var topicListEl;
 
+	const scheduledTopics = [];
+
 	$(window).on('action:ajaxify.start', function () {
 		TopicList.removeListeners();
 		categoryTools.removeListeners();
@@ -108,11 +110,15 @@ define('topicList', [
 			(
 				ajaxify.data.template.category &&
 				parseInt(ajaxify.data.cid, 10) !== parseInt(data.cid, 10)
-			)
+			) ||
+			scheduledTopics.includes(data.tid)
 		) {
 			return;
 		}
 
+		if (data.scheduled && data.tid) {
+			scheduledTopics.push(data.tid);
+		}
 		newTopicCount += 1;
 		updateAlertText();
 	}

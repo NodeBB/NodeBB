@@ -95,6 +95,7 @@ module.exports = function (Topics) {
 				'topics:posts',
 				'topics:views',
 				'topics:votes',
+				'topics:scheduled',
 			], tid),
 			deleteTopicFromCategoryAndUser(tid),
 			Topics.deleteTopicTags(tid),

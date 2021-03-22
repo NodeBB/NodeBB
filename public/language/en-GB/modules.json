@@ -62,6 +62,11 @@
 	"composer.zen_mode": "Zen Mode",
 	"composer.select_category": "Select a category",
 	"composer.textarea.placeholder": "Enter your post content here, drag and drop images",
+	"composer.schedule-for": "Schedule topic for",
+	"composer.schedule-date": "Date",
+	"composer.schedule-time": "Time",
+	"composer.cancel-scheduling": "Cancel Scheduling",
+	"composer.set-schedule-date": "Set Date",
 
 
 	"bootbox.ok": "OK",

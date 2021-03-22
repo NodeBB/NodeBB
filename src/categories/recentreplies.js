@@ -55,7 +55,7 @@ module.exports = function (Categories) {
 				topicData = await topics.getTopicData(postData.tid);
 			}
 			index += 1;
-		} while (!topicData || topicData.deleted);
+		} while (!topicData || topicData.deleted || topicData.scheduled);
 
 		if (postData && postData.tid) {
 			await Categories.updateRecentTid(cid, postData.tid);

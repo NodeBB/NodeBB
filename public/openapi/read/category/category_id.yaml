@@ -70,6 +70,8 @@ get:
                         type: boolean
                       topics:tag:
                         type: boolean
+                      topics:schedule:
+                        type: boolean
                       read:
                         type: boolean
                       posts:view_deleted:

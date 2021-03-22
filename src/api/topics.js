@@ -20,7 +20,12 @@ topicsAPI.get = async function (caller, data) {
 		privileges.topics.get(data.tid, caller.uid),
 		topics.getTopicData(data.tid),
 	]);
-	if (!topic || !userPrivileges.read || !userPrivileges['topics:read'] || (topic.deleted && !userPrivileges.view_deleted)) {
+	if (
+		!topic ||
+		!userPrivileges.read ||
+		!userPrivileges['topics:read'] ||
+		!privileges.topics.canViewDeletedScheduled(topic, userPrivileges)
+	) {
 		return null;
 	}
 

@@ -38,22 +38,30 @@ module.exports = function (Topics) {
 		topicData = result.topic;
 		await db.setObject(`topic:${topicData.tid}`, topicData);
 
+		const timestampedSortedSetKeys = [
+			'topics:tid',
+			`cid:${topicData.cid}:tids`,
+			`cid:${topicData.cid}:uid:${topicData.uid}:tids`,
+		];
+
+		const scheduled = timestamp > Date.now();
+		if (scheduled) {
+			timestampedSortedSetKeys.push('topics:scheduled');
+		}
+
 		await Promise.all([
-			db.sortedSetsAdd([
-				'topics:tid',
-				`cid:${topicData.cid}:tids`,
-				`cid:${topicData.cid}:uid:${topicData.uid}:tids`,
-			], timestamp, topicData.tid),
+			db.sortedSetsAdd(timestampedSortedSetKeys, timestamp, topicData.tid),
 			db.sortedSetsAdd([
 				'topics:views', 'topics:posts', 'topics:votes',
 				`cid:${topicData.cid}:tids:votes`,
 				`cid:${topicData.cid}:tids:posts`,
 			], 0, topicData.tid),
-			categories.updateRecentTid(topicData.cid, topicData.tid),
 			user.addTopicIdToUser(topicData.uid, topicData.tid, timestamp),
 			db.incrObjectField(`category:${topicData.cid}`, 'topic_count'),
 			db.incrObjectField('global', 'topicCount'),
 			Topics.createTags(data.tags, topicData.tid, timestamp),
+			scheduled ? Promise.resolve() : categories.updateRecentTid(topicData.cid, topicData.tid),
+			scheduled ? Topics.scheduled.pin(tid, topicData) : Promise.resolve(),
 		]);
 
 		plugins.hooks.fire('action:topic.save', { topic: _.clone(topicData), data: data });
@@ -118,10 +126,14 @@ module.exports = function (Topics) {
 		topicData.index = 0;
 		postData.index = 0;
 
+		if (topicData.scheduled) {
+			await Topics.delete(tid);
+		}
+
 		analytics.increment(['topics', `topics:byCid:${topicData.cid}`]);
 		plugins.hooks.fire('action:topic.post', { topic: topicData, post: postData, data: data });
 
-		if (parseInt(uid, 10)) {
+		if (parseInt(uid, 10) && !topicData.scheduled) {
 			user.notifications.sendTopicNotificationToFollowers(uid, topicData, postData);
 		}
 
@@ -142,8 +154,9 @@ module.exports = function (Topics) {
 
 		data.cid = topicData.cid;
 
-		const [canReply, isAdminOrMod] = await Promise.all([
+		const [canReply, canSchedule, isAdminOrMod] = await Promise.all([
 			privileges.topics.can('topics:reply', tid, uid),
+			privileges.topics.can('topics:schedule', tid, uid),
 			privileges.categories.isAdminOrMod(data.cid, uid),
 		]);
 
@@ -151,8 +164,12 @@ module.exports = function (Topics) {
 			throw new Error('[[error:topic-locked]]');
 		}
 
-		if (topicData.deleted && !isAdminOrMod) {
+		if (!topicData.scheduled && topicData.deleted && !isAdminOrMod) {
 			throw new Error('[[error:topic-deleted]]');
+		}
+
+		if (topicData.scheduled && !canSchedule) {
+			throw new Error('[[error:no-privileges]]');
 		}
 
 		if (!canReply) {
@@ -168,6 +185,11 @@ module.exports = function (Topics) {
 			data.content = utils.rtrim(data.content);
 		}
 		Topics.checkContent(data.content);
+
+		// For replies to scheduled topics, don't have a timestamp older than topic's itself
+		if (topicData.scheduled) {
+			data.timestamp = topicData.lastposttime + 1;
+		}
 
 		data.ip = data.req ? data.req.ip : null;
 		let postData = await posts.create(data);
@@ -207,7 +229,7 @@ module.exports = function (Topics) {
 			topicInfo,
 		] = await Promise.all([
 			posts.getUserInfoForPosts([postData.uid], uid),
-			Topics.getTopicFields(tid, ['tid', 'uid', 'title', 'slug', 'cid', 'postcount', 'mainPid']),
+			Topics.getTopicFields(tid, ['tid', 'uid', 'title', 'slug', 'cid', 'postcount', 'mainPid', 'scheduled']),
 			Topics.addParentPosts([postData]),
 			posts.parsePost(postData),
 		]);

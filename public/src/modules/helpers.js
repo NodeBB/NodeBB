@@ -155,6 +155,10 @@
 			style.push('unread');
 		}
 
+		if (topic.scheduled) {
+			style.push('scheduled');
+		}
+
 		return style.join(' ');
 	}
 

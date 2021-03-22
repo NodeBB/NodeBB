@@ -4,6 +4,7 @@ const db = require('../database');
 const topics = require('../topics');
 const plugins = require('../plugins');
 const meta = require('../meta');
+const privileges = require('../privileges');
 const user = require('../user');
 
 module.exports = function (Categories) {
@@ -142,7 +143,12 @@ module.exports = function (Categories) {
 			});
 			return result && result.pinnedTids;
 		}
-		const pinnedTids = await db.getSortedSetRevRange(`cid:${data.cid}:tids:pinned`, data.start, data.stop);
+		const [allPinnedTids, canSchedule] = await Promise.all([
+			db.getSortedSetRevRange(`cid:${data.cid}:tids:pinned`, data.start, data.stop),
+			privileges.categories.can('topics:schedule', data.cid, data.uid),
+		]);
+		const pinnedTids = canSchedule ? allPinnedTids : await filterScheduledTids(allPinnedTids);
+
 		return await topics.tools.checkPinExpiry(pinnedTids);
 	};
 
@@ -152,7 +158,7 @@ module.exports = function (Categories) {
 		}
 
 		topics.forEach((topic) => {
-			if (topic.deleted && !topic.isOwner) {
+			if (!topic.scheduled && topic.deleted && !topic.isOwner) {
 				topic.title = '[[topic:topic_is_deleted]]';
 				topic.slug = topic.tid;
 				topic.teaser = null;
@@ -176,4 +182,10 @@ module.exports = function (Categories) {
 		await Promise.all(promises);
 		await Categories.updateRecentTidForCid(cid);
 	};
+
+	async function filterScheduledTids(tids) {
+		const scores = await db.sortedSetScores('topics:scheduled', tids);
+		const now = Date.now();
+		return tids.filter((tid, index) => tid && (!scores[index] || scores[index] <= now));
+	}
 };

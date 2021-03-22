@@ -80,6 +80,7 @@ module.exports = function (Categories) {
 			'groups:topics:delete',
 		];
 		const modPrivileges = defaultPrivileges.concat([
+			'groups:topics:schedule',
 			'groups:posts:view_deleted',
 			'groups:purge',
 		]);

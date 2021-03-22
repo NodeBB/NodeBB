@@ -76,6 +76,13 @@ PostObject:
           type: string
         deleted:
           type: number
+        scheduled:
+          type: number
+        timestamp:
+          type: number
+        timestampISO:
+          type: string
+          description: An ISO 8601 formatted date string (complementing `timestamp`)
         postcount:
           type: number
         mainPid:
