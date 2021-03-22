@@ -147,7 +147,7 @@ module.exports = function (Categories) {
 	};
 
 	Categories.modifyTopicsByPrivilege = function (topics, privileges) {
-		if (!Array.isArray(topics) || !topics.length || privileges.isAdminOrMod) {
+		if (!Array.isArray(topics) || !topics.length || privileges.view_deleted) {
 			return;
 		}
 

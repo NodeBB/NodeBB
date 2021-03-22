@@ -78,7 +78,10 @@ privsCategories.list = async function (cid) {
 };
 
 privsCategories.get = async function (cid, uid) {
-	const privs = ['topics:create', 'topics:read', 'topics:tag', 'read'];
+	const privs = [
+		'topics:create', 'topics:read', 'topics:tag',
+		'read', 'posts:view_deleted',
+	];
 
 	const [userPrivileges, isAdministrator, isModerator] = await Promise.all([
 		helpers.isAllowedTo(privs, uid, cid),
@@ -95,7 +98,7 @@ privsCategories.get = async function (cid, uid) {
 		cid: cid,
 		uid: uid,
 		editable: isAdminOrMod,
-		view_deleted: isAdminOrMod,
+		view_deleted: isAdminOrMod || privData['posts:view_deleted'],
 		isAdminOrMod: isAdminOrMod,
 	});
 };

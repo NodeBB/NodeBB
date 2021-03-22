@@ -72,6 +72,8 @@ get:
                         type: boolean
                       read:
                         type: boolean
+                      posts:view_deleted:
+                        type: boolean
                       cid:
                         type: string
                       uid:
