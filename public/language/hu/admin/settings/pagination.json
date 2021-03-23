@@ -1,12 +1,12 @@
 {
-	"pagination": "Pagination Settings",
-	"enable": "Paginate topics and posts instead of using infinite scroll.",
+	"pagination": "Lapozási beállítások",
+	"enable": "Témakörök és hozzászólások lapozása végtelen görgetés helyett.",
 	"posts": "Post Pagination",
-	"topics": "Topic Pagination",
-	"posts-per-page": "Posts per Page",
-	"max-posts-per-page": "Maximum posts per page",
-	"categories": "Category Pagination",
-	"topics-per-page": "Topics per Page",
-	"max-topics-per-page": "Maximum topics per page",
+	"topics": "Témakör lapozás",
+	"posts-per-page": "Hozzászólások oldalanként",
+	"max-posts-per-page": "Hhozzászólások maximális száma oldalanként",
+	"categories": "Kategória lapozás",
+	"topics-per-page": "Témakörök oldalanként",
+	"max-topics-per-page": "Témakörök maximális száma oldalanként",
 	"categories-per-page": "Categories per page"
 }

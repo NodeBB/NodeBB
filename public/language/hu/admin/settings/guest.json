@@ -1,7 +1,7 @@
 {
-	"settings": "Settings",
-	"handles.enabled": "Allow guest handles",
-	"handles.enabled-help": "This option exposes a new field that allows guests to pick a name to associate with each post they make. If disabled, they will simply be called \"Guest\"",
-	"topic-views.enabled": "Allow guests to increase topic view counts",
-	"reply-notifications.enabled": "Allow guests to generate reply notifications"
+	"settings": "Beállítások",
+	"handles.enabled": "Vendég név beállítás engedélyezése",
+	"handles.enabled-help": "Ez a beállítás engedélyez egy új mezőt, amivel a vendégek minden hozzászólásnál választhatnak egy nevet ami megjelenik ott. Ha nincs engedélyezve, egyszerűen \"Vendég\"-ként jelennek meg.",
+	"topic-views.enabled": "Témakör látogatások számának növelésének engedélyezése vendégek számára",
+	"reply-notifications.enabled": "Válasz értesítések generálásának engedélyezése vendégek számára"
 }

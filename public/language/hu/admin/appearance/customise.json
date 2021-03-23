@@ -8,7 +8,7 @@
 	"custom-js.enable": "Egyéni Javascript engedélyezése",
 
 	"custom-header": "Egyéni fejléc",
-	"custom-header.description": "Adj meg egyéni HTML-t (pl. &lt;/meta&gt; tag-ek, stb.), amik közvetlenül <code>&lt;head&gt;</code> szekció után kerülnek be a fórum kódjába. Script tag-ek használata engedélyezett, azonban erősen ellenjavallott, mivel az <a href=\"#custom-js\" data-toggle=\"tab\">Egyedi Javascript</a> panel elérhető.",
+	"custom-header.description": "Adj meg egyéni HTML-t (pl. &lt;/meta&gt; tag-ek, stb.), amik közvetlenül <code>&lt;head&gt;</code> szekció után kerülnek be a fórum kódjába. Script tag-ek használata engedélyezett, azonban erősen ellenjavallott, mivel az <a href=\"#custom-js\" data-toggle=\"tab\">Egyéni Javascript</a> panel elérhető.",
 	"custom-header.enable": "Egyéni fejléc engedélyezése",
 
 	"custom-css.livereload": "Élő újratöltés engedélyezése",

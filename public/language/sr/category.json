@@ -19,5 +19,5 @@
     "notwatching.message": "Не надгледате ажурирања из ове категорије и свих поткатегорија",
     "ignoring.message": "Сада игноришете ажурирања из ове категорије и свих поткатегорија",
     "watched-categories": "Надгледане категорије",
-    "x-more-categories": "%1 more categories"
+    "x-more-categories": "Још %1 категорије/а"
 }

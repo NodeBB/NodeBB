@@ -1,6 +1,6 @@
 {
-    "reconnection": "Reconnection Settings",
-    "max-attempts": "Max Reconnection Attempts",
-    "default-placeholder": "Default: %1",
-    "delay": "Reconnection Delay"
+    "reconnection": "Újracsatlakozási beállítások",
+    "max-attempts": "Újracsatlakozási próbálkozások maximális száma",
+    "default-placeholder": "Alapértelmezett: %1",
+    "delay": "Újracsatlakozási késleltetés"
 }

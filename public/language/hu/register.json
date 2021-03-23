@@ -25,7 +25,7 @@
     "gdpr_agree_data": "Hozzájárulok ahhoz, hogy személyes adataimat ez a weboldal gyűjtse és feldolgozza.",
     "gdpr_agree_email": "Hozzájárulok, hogy kapjak erről az oldalról összefoglalókat és értesítő emaileket.",
     "gdpr_consent_denied": "Hozzá kell járulnod ahhoz, hogy ez a feboldal megkapja a személyes információidat és emaileket küldhessen neked.",
-    "invite.error-admin-only": "Direct user registration has been disabled. Please contact an administrator for more details.",
-    "invite.error-invite-only": "Direct user registration has been disabled. You must be invited by an existing user in order to access this forum.",
-    "invite.error-invalid-data": "The registration data received does not correspond to our records. Please contact an administrator for more details"
+    "invite.error-admin-only": "Közvetlen felhasználó regisztráció letiltva. Kérjük vegye fel a kapcsolatot egy adminisztrátorral további információkért.",
+    "invite.error-invite-only": "Közvetlen felhasználó regisztráció letiltva. Egy már regisztrált felhasználó meg kell hívjon téged, hogy hozzáférhess ehhez a fórumhoz.",
+    "invite.error-invalid-data": "A regisztrációs adatok nem egyeznek a mi adatainkkal. Kérjük vegye fel a kapcsolatot egy adminisztrátorral további információkért."
 }

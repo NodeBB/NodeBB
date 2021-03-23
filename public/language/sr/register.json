@@ -18,14 +18,14 @@
     "agree_to_terms_of_use": "Слажем се са условима коришћења",
     "terms_of_use_error": "Морате се сложити са условима коришћења",
     "registration-added-to-queue": "Ваша регистрација је додата у ред одобравања. Добићете е-пошту када администратор прихвати вашу регистрацију.",
-    "registration-queue-average-time": "Our average time for approving memberships is %1 hours %2 minutes.",
-    "registration-queue-auto-approve-time": "Your membership to this forum will be fully activated in up to %1 hours.",
+    "registration-queue-average-time": "Наше просечно време за одобравање чланства је %1 сата/и и %2 минут/а.",
+    "registration-queue-auto-approve-time": "Ваше чланство на овом форуму биће у потпуности активирано за %1 сата/и.",
     "interstitial.intro": "Захтевамо неке додатне информације пре него што отворимо ваш налог.",
     "interstitial.errors-found": "Нисмо могли комплетирати вашу регистрацију:",
     "gdpr_agree_data": "Пристајем на прикупљање и обраду мојих личних података на овој веб страници.",
     "gdpr_agree_email": "Пристајем на примање сажетака и обавештења путем е-поште са ове веб странице.",
     "gdpr_consent_denied": "Морате дати пристанак овом сајту да прикупља/обрађује ваше информације и да вам шаље е-пошту.",
-    "invite.error-admin-only": "Direct user registration has been disabled. Please contact an administrator for more details.",
-    "invite.error-invite-only": "Direct user registration has been disabled. You must be invited by an existing user in order to access this forum.",
-    "invite.error-invalid-data": "The registration data received does not correspond to our records. Please contact an administrator for more details"
+    "invite.error-admin-only": "Директна регистрација корисника је онемогућена. За више детаља контактирајте администратора.",
+    "invite.error-invite-only": "Директна регистрација корисника је онемогућена. Да бисте приступили овом форуму, мора вас позвати постојећи корисник.",
+    "invite.error-invalid-data": "Примљени подаци о регистрацији не одговарају нашој евиденцији. За више детаља контактирајте администратора"
 }

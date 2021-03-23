@@ -1,12 +1,12 @@
 {
-    "tag": "Tag Settings",
-    "link-to-manage": "Manage Tags",
+    "tag": "Címke beállítások",
+    "link-to-manage": "Címkék kezelése",
     "system-tags": "System Tags",
     "system-tags-help": "Only privileged users will be able to use these tags.",
-    "min-per-topic": "Minimum Tags per Topic",
-    "max-per-topic": "Maximum Tags per Topic",
-    "min-length": "Minimum Tag Length",
-    "max-length": "Maximum Tag Length",
-    "related-topics": "Related Topics",
-    "max-related-topics": "Maximum related topics to display (if supported by theme)"
+    "min-per-topic": "Címkék minimum száma témakörönként",
+    "max-per-topic": "Címkék maximális száma témakörönként",
+    "min-length": "Címke minimális hossza",
+    "max-length": "Címke maximális hossza",
+    "related-topics": "Kapcsolódó témakörök",
+    "max-related-topics": "Megjelenítendő kapcsolódó témakörök maximális száma (ha a téma támogatja)"
 }
