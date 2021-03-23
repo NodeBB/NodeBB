@@ -2780,6 +2780,11 @@ describe('Topic\'s', () => {
 			assert.strictEqual(response.res.statusCode, 200);
 		});
 
+		it('should remove from topics:scheduled on purge', async () => {
+			const score = await db.sortedSetScore('topics:scheduled', topicData.tid);
+			assert(!score);
+		});
+
 		it('should able to publish a scheduled topic', async () => {
 			topicData = (await topics.post(topic)).topicData;
 			// Manually trigger publishing
@@ -2790,9 +2795,12 @@ describe('Topic\'s', () => {
 			topicData = await topics.getTopicData(topicData.tid);
 			assert(!topicData.pinned);
 			assert(!topicData.deleted);
+			// Should remove from topics:scheduled upon publishing
 			const score = await db.sortedSetScore('topics:scheduled', topicData.tid);
 			assert(!score);
-			// Check if poster's lastposttime is updated
+		});
+
+		it('should update poster\'s lastposttime after a ST published', async () => {
 			const data = await User.getUsersFields([adminUid], ['lastposttime']);
 			assert.strictEqual(data[0].lastposttime, topicData.lastposttime);
 		});

@@ -32,19 +32,19 @@ Scheduled.handleExpired = async function () {
 
 	// Restore first to be not filtered for being deleted
 	// Restoring handles "updateRecentTid"
-	await topicsData.map(topicData => topics.restore(topicData.tid));
+	await Promise.all(topicsData.map(topicData => topics.restore(topicData.tid)));
 
 	await Promise.all([].concat(
 		sendNotifications(uids, topicsData),
 		updateUserLastposttimes(uids, topicsData),
-		topicsData.map(topicData => unpin(topicData.tid, topicData)),
+		...topicsData.map(topicData => unpin(topicData.tid, topicData)),
 		db.sortedSetsRemoveRangeByScore([`topics:scheduled`], '-inf', now)
 	));
 };
 
 // topics/tools.js#pin/unpin would block non-admins/mods, thus the local versions
 Scheduled.pin = async function (tid, topicData) {
-	return [
+	return Promise.all([
 		topics.setTopicField(tid, 'pinned', 1),
 		db.sortedSetAdd(`cid:${topicData.cid}:tids:pinned`, Date.now(), tid),
 		db.sortedSetsRemove([
@@ -52,10 +52,10 @@ Scheduled.pin = async function (tid, topicData) {
 			`cid:${topicData.cid}:tids:posts`,
 			`cid:${topicData.cid}:tids:votes`,
 		], tid),
-	];
+	]);
 };
 
-async function unpin(tid, topicData) {
+function unpin(tid, topicData) {
 	return [
 		topics.setTopicField(tid, 'pinned', 0),
 		topics.deleteTopicField(tid, 'pinExpiry'),
