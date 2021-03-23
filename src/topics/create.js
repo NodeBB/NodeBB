@@ -61,8 +61,10 @@ module.exports = function (Topics) {
 			db.incrObjectField('global', 'topicCount'),
 			Topics.createTags(data.tags, topicData.tid, timestamp),
 			scheduled ? Promise.resolve() : categories.updateRecentTid(topicData.cid, topicData.tid),
-			scheduled ? Topics.scheduled.pin(tid, topicData) : Promise.resolve(),
 		]);
+		if (scheduled) {
+			await Topics.scheduled.pin(tid, topicData);
+		}
 
 		plugins.hooks.fire('action:topic.save', { topic: _.clone(topicData), data: data });
 		return topicData.tid;

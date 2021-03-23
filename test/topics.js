@@ -2686,6 +2686,13 @@ describe('Topic\'s', () => {
 			assert(topicData.timestamp > Date.now());
 			const score = await db.sortedSetScore('topics:scheduled', topicData.tid);
 			assert(score);
+			// should not be in regular category zsets
+			const isMember = await db.isMemberOfSortedSets([
+				`cid:${categoryObj.cid}:tids`,
+				`cid:${categoryObj.cid}:tids:votes`,
+				`cid:${categoryObj.cid}:tids:posts`,
+			], topicData.tid);
+			assert.deepStrictEqual(isMember, [false, false, false]);
 		});
 
 		it('should not update poster\'s lastposttime', async () => {
