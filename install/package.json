@@ -46,7 +46,7 @@
         "compare-versions": "3.6.0",
         "compression": "^1.7.4",
         "connect-flash": "^0.1.1",
-        "connect-mongo": "4.4.0",
+        "connect-mongo": "4.4.1",
         "connect-multiparty": "^2.2.0",
         "connect-pg-simple": "^6.2.1",
         "connect-redis": "5.1.0",
