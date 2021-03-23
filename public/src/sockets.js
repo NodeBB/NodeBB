@@ -124,11 +124,11 @@ socket = window.socket;
 
 		if (reconnecting) {
 			var reconnectEl = $('#reconnect');
-			var reconnectAlert = $('#reconnect-alert');
+			var reconnectAlert = document.getElementById('reconnect-alert');
 
 			reconnectEl.tooltip('destroy');
 			reconnectEl.html('<i class="fa fa-check text-success"></i>');
-			reconnectAlert.fadeOut(500);
+			reconnectAlert.classList.add('hide');
 			reconnecting = false;
 
 			reJoinCurrentRoom();
@@ -180,11 +180,11 @@ socket = window.socket;
 	function onReconnecting() {
 		reconnecting = true;
 		var reconnectEl = $('#reconnect');
-		var reconnectAlert = $('#reconnect-alert');
+		var reconnectAlert = document.getElementById('reconnect-alert');
 
 		if (!reconnectEl.hasClass('active')) {
 			reconnectEl.html('<i class="fa fa-spinner fa-spin"></i>');
-			reconnectAlert.fadeIn(500).removeClass('hide');
+			reconnectAlert.classList.remove('hide');
 		}
 
 		reconnectEl.addClass('active').removeClass('hide').tooltip({

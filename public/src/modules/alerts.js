@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('alerts', ['translator', 'components'], function (translator, components) {
+define('alerts', ['translator', 'components', 'hooks'], function (translator, components, hooks) {
 	var module = {};
 
 	module.alert = function (params) {
@@ -52,7 +52,7 @@ define('alerts', ['translator', 'components'], function (translator, components)
 					});
 			}
 
-			$(window).trigger('action:alert.new', { alert: alert, params: params });
+			hooks.fire('action:alert.new', { alert, params });
 		});
 	}
 
@@ -74,7 +74,7 @@ define('alerts', ['translator', 'components'], function (translator, components)
 		translator.translate(alert.html(), function (translatedHTML) {
 			alert.children().fadeIn(100);
 			alert.html(translatedHTML);
-			$(window).trigger('action:alert.update', { alert: alert, params: params });
+			hooks.fire('action:alert.update', { alert, params });
 		});
 
 		// Handle changes in the clickfn
@@ -118,6 +118,7 @@ define('alerts', ['translator', 'components'], function (translator, components)
 			alert.css('transition-property', '');
 			alert.css('transition', 'width ' + (timeout + 450) + 'ms linear, background-color ' + (timeout + 450) + 'ms ease-in');
 			alert.addClass('animate');
+			hooks.fire('action:alert.animate', { alert, params });
 		}, 50);
 
 		// Handle mouseenter/mouseleave
