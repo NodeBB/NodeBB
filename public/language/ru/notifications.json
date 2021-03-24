@@ -28,7 +28,7 @@
     "user_flagged_post_in": "Пользователь <strong>%1</strong> пожаловался на сообщение в <strong>%2</strong>",
     "user_flagged_post_in_dual": "Пользователи <strong>%1</strong> и <strong>%2</strong> пожаловались на сообщение в <strong>%3</strong>",
     "user_flagged_post_in_multiple": "<strong>%1</strong> и %2 других пользователя пожаловались на сообщение в <strong>%3</strong>",
-    "user_flagged_user": "Пользователь <strong> %1 </strong> пожаловался на профиль пользователя (%3)",
+    "user_flagged_user": "Пользователь <strong> %1 </strong> пожаловался на профиль пользователя (%2)",
     "user_flagged_user_dual": "Пользователи <strong>%1</strong> и <strong>%2</strong> пожаловались на профиль пользователя (%3)",
     "user_flagged_user_multiple": "<strong>%1</strong> и %2 других пользователя пожаловались на профиль пользователя (%3)",
     "user_posted_to": "Пользователь <strong>%1</strong> ответил на сообщение в <strong>%2</strong>",

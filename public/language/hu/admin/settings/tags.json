@@ -1,8 +1,8 @@
 {
     "tag": "Címke beállítások",
     "link-to-manage": "Címkék kezelése",
-    "system-tags": "System Tags",
-    "system-tags-help": "Only privileged users will be able to use these tags.",
+    "system-tags": "Rendszer címkék",
+    "system-tags-help": "Csak jogosultsággal rendelkező felhasználók láthatják ezeket a címkéket.",
     "min-per-topic": "Címkék minimum száma témakörönként",
     "max-per-topic": "Címkék maximális száma témakörönként",
     "min-length": "Címke minimális hossza",

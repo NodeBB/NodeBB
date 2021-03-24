@@ -1,12 +1,12 @@
 {
 	"pagination": "Lapozási beállítások",
 	"enable": "Témakörök és hozzászólások lapozása végtelen görgetés helyett.",
-	"posts": "Post Pagination",
+	"posts": "Hozzászólás lapozás",
 	"topics": "Témakör lapozás",
 	"posts-per-page": "Hozzászólások oldalanként",
 	"max-posts-per-page": "Hhozzászólások maximális száma oldalanként",
 	"categories": "Kategória lapozás",
 	"topics-per-page": "Témakörök oldalanként",
 	"max-topics-per-page": "Témakörök maximális száma oldalanként",
-	"categories-per-page": "Categories per page"
+	"categories-per-page": "Kategóriák oldalanként"
 }
