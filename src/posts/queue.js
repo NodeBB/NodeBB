@@ -20,10 +20,9 @@ const socketHelpers = require('../socket.io/helpers');
 module.exports = function (Posts) {
 	Posts.getQueuedPosts = async (filter = {}, options = {}) => {
 		options = { metadata: true, ...options };	// defaults
-		let postData;
-		if (cache.has('post-queue')) {
-			postData = cache.get('post-queue');
-		} else {
+		let postData = _.cloneDeep(cache.get('post-queue'));
+		console.log('gg', postData);
+		if (!postData) {
 			const ids = await db.getSortedSetRange('post:queue', 0, -1);
 			const keys = ids.map(id => `post:queue:${id}`);
 			postData = await db.getObjects(keys);
@@ -42,7 +41,7 @@ module.exports = function (Posts) {
 					postData.data.title = validator.escape(String(postData.data.title || ''));
 				}
 			});
-			cache.set('post-queue', postData);
+			cache.set('post-queue', _.cloneDeep(postData));
 		}
 
 		if (options.metadata) {
