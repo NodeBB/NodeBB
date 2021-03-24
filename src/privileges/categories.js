@@ -18,6 +18,7 @@ privsCategories.privilegeLabels = [
 	{ name: '[[admin/manage/privileges:access-topics]]' },
 	{ name: '[[admin/manage/privileges:create-topics]]' },
 	{ name: '[[admin/manage/privileges:reply-to-topics]]' },
+	{ name: '[[admin/manage/privileges:schedule-topics]]' },
 	{ name: '[[admin/manage/privileges:tag-topics]]' },
 	{ name: '[[admin/manage/privileges:edit-posts]]' },
 	{ name: '[[admin/manage/privileges:view-edit-history]]' },
@@ -36,6 +37,7 @@ privsCategories.userPrivilegeList = [
 	'topics:read',
 	'topics:create',
 	'topics:reply',
+	'topics:schedule',
 	'topics:tag',
 	'posts:edit',
 	'posts:history',
@@ -79,8 +81,8 @@ privsCategories.list = async function (cid) {
 
 privsCategories.get = async function (cid, uid) {
 	const privs = [
-		'topics:create', 'topics:read', 'topics:tag',
-		'read', 'posts:view_deleted',
+		'topics:create', 'topics:read', 'topics:schedule',
+		'topics:tag', 'read', 'posts:view_deleted',
 	];
 
 	const [userPrivileges, isAdministrator, isModerator] = await Promise.all([
@@ -162,6 +164,7 @@ privsCategories.getBase = async function (privilege, cids, uid) {
 		categories: categories.getCategoriesFields(cids, ['disabled']),
 		allowedTo: helpers.isAllowedTo(privilege, uid, cids),
 		view_deleted: helpers.isAllowedTo('posts:view_deleted', uid, cids),
+		view_scheduled: helpers.isAllowedTo('topics:schedule', uid, cids),
 		isAdmin: user.isAdministrator(uid),
 	});
 };

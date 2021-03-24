@@ -43,15 +43,17 @@ topicsController.get = async function getTopic(req, res, callback) {
 
 	let currentPage = parseInt(req.query.page, 10) || 1;
 	const pageCount = Math.max(1, Math.ceil((topicData && topicData.postcount) / settings.postsPerPage));
+	const validPagination = (settings.usePagination && (currentPage < 1 || currentPage > pageCount));
 	if (
 		!topicData ||
 		userPrivileges.disabled ||
-		(settings.usePagination && (currentPage < 1 || currentPage > pageCount))
+		validPagination ||
+		(topicData.scheduled && !userPrivileges.view_scheduled)
 	) {
 		return callback();
 	}
 
-	if (!userPrivileges['topics:read'] || (topicData.deleted && !userPrivileges.view_deleted)) {
+	if (!userPrivileges['topics:read'] || (!topicData.scheduled && topicData.deleted && !userPrivileges.view_deleted)) {
 		return helpers.notAllowed(req, res);
 	}
 
@@ -343,7 +345,7 @@ topicsController.pagination = async function (req, res, callback) {
 		return callback();
 	}
 
-	if (!userPrivileges.read || (topic.deleted && !userPrivileges.view_deleted)) {
+	if (!userPrivileges.read || !privileges.topics.canViewDeletedScheduled(topic, userPrivileges)) {
 		return helpers.notAllowed(req, res);
 	}
 

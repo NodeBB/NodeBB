@@ -13,7 +13,7 @@ const events = require('../events');
 exports.setDefaultPostData = function (reqOrSocket, data) {
 	data.uid = reqOrSocket.uid;
 	data.req = exports.buildReqObject(reqOrSocket, { ...data });
-	data.timestamp = Date.now();
+	data.timestamp = parseInt(data.timestamp, 10) || Date.now();
 	data.fromQueue = false;
 };
 

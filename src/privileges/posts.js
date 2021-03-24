@@ -11,6 +11,7 @@ const helpers = require('./helpers');
 const plugins = require('../plugins');
 const utils = require('../utils');
 const privsCategories = require('./categories');
+const privsTopics = require('./topics');
 
 const privsPosts = module.exports;
 
@@ -73,7 +74,7 @@ privsPosts.filter = async function (privilege, pids, uid) {
 	pids = _.uniq(pids);
 	const postData = await posts.getPostsFields(pids, ['uid', 'tid', 'deleted']);
 	const tids = _.uniq(postData.map(post => post && post.tid).filter(Boolean));
-	const topicData = await topics.getTopicsFields(tids, ['deleted', 'cid']);
+	const topicData = await topics.getTopicsFields(tids, ['deleted', 'scheduled', 'cid']);
 
 	const tidToTopic = _.zipObject(tids, topicData);
 
@@ -93,11 +94,15 @@ privsPosts.filter = async function (privilege, pids, uid) {
 
 	const cidsSet = new Set(allowedCids);
 	const canViewDeleted = _.zipObject(cids, results.view_deleted);
+	const canViewScheduled = _.zipObject(cids, results.view_scheduled);
 
 	pids = postData.filter(post => (
 		post.topic &&
 		cidsSet.has(post.topic.cid) &&
-		((!post.topic.deleted && !post.deleted) || canViewDeleted[post.topic.cid] || results.isAdmin)
+		(privsTopics.canViewDeletedScheduled({
+			deleted: post.topic.deleted || post.deleted,
+			scheduled: post.topic.scheduled,
+		}, {}, canViewDeleted[post.topic.cid], canViewScheduled[post.topic.cid]) || results.isAdmin)
 	)).map(post => post.pid);
 
 	const data = await plugins.hooks.fire('filter:privileges.posts.filter', {

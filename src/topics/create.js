@@ -38,23 +38,33 @@ module.exports = function (Topics) {
 		topicData = result.topic;
 		await db.setObject(`topic:${topicData.tid}`, topicData);
 
+		const timestampedSortedSetKeys = [
+			'topics:tid',
+			`cid:${topicData.cid}:tids`,
+			`cid:${topicData.cid}:uid:${topicData.uid}:tids`,
+		];
+
+		const scheduled = timestamp > Date.now();
+		if (scheduled) {
+			timestampedSortedSetKeys.push('topics:scheduled');
+		}
+
 		await Promise.all([
-			db.sortedSetsAdd([
-				'topics:tid',
-				`cid:${topicData.cid}:tids`,
-				`cid:${topicData.cid}:uid:${topicData.uid}:tids`,
-			], timestamp, topicData.tid),
+			db.sortedSetsAdd(timestampedSortedSetKeys, timestamp, topicData.tid),
 			db.sortedSetsAdd([
 				'topics:views', 'topics:posts', 'topics:votes',
 				`cid:${topicData.cid}:tids:votes`,
 				`cid:${topicData.cid}:tids:posts`,
 			], 0, topicData.tid),
-			categories.updateRecentTid(topicData.cid, topicData.tid),
 			user.addTopicIdToUser(topicData.uid, topicData.tid, timestamp),
 			db.incrObjectField(`category:${topicData.cid}`, 'topic_count'),
 			db.incrObjectField('global', 'topicCount'),
 			Topics.createTags(data.tags, topicData.tid, timestamp),
+			scheduled ? Promise.resolve() : categories.updateRecentTid(topicData.cid, topicData.tid),
 		]);
+		if (scheduled) {
+			await Topics.scheduled.pin(tid, topicData);
+		}
 
 		plugins.hooks.fire('action:topic.save', { topic: _.clone(topicData), data: data });
 		return topicData.tid;
@@ -118,10 +128,14 @@ module.exports = function (Topics) {
 		topicData.index = 0;
 		postData.index = 0;
 
+		if (topicData.scheduled) {
+			await Topics.delete(tid);
+		}
+
 		analytics.increment(['topics', `topics:byCid:${topicData.cid}`]);
 		plugins.hooks.fire('action:topic.post', { topic: topicData, post: postData, data: data });
 
-		if (parseInt(uid, 10)) {
+		if (parseInt(uid, 10) && !topicData.scheduled) {
 			user.notifications.sendTopicNotificationToFollowers(uid, topicData, postData);
 		}
 
@@ -136,28 +150,10 @@ module.exports = function (Topics) {
 		const { uid } = data;
 
 		const topicData = await Topics.getTopicData(tid);
-		if (!topicData) {
-			throw new Error('[[error:no-topic]]');
-		}
+
+		await canReply(data, topicData);
 
 		data.cid = topicData.cid;
-
-		const [canReply, isAdminOrMod] = await Promise.all([
-			privileges.topics.can('topics:reply', tid, uid),
-			privileges.categories.isAdminOrMod(data.cid, uid),
-		]);
-
-		if (topicData.locked && !isAdminOrMod) {
-			throw new Error('[[error:topic-locked]]');
-		}
-
-		if (topicData.deleted && !isAdminOrMod) {
-			throw new Error('[[error:topic-deleted]]');
-		}
-
-		if (!canReply) {
-			throw new Error('[[error:no-privileges]]');
-		}
 
 		await guestHandleValid(data);
 		if (!data.fromQueue) {
@@ -168,6 +164,11 @@ module.exports = function (Topics) {
 			data.content = utils.rtrim(data.content);
 		}
 		Topics.checkContent(data.content);
+
+		// For replies to scheduled topics, don't have a timestamp older than topic's itself
+		if (topicData.scheduled) {
+			data.timestamp = topicData.lastposttime + 1;
+		}
 
 		data.ip = data.req ? data.req.ip : null;
 		let postData = await posts.create(data);
@@ -207,7 +208,7 @@ module.exports = function (Topics) {
 			topicInfo,
 		] = await Promise.all([
 			posts.getUserInfoForPosts([postData.uid], uid),
-			Topics.getTopicFields(tid, ['tid', 'uid', 'title', 'slug', 'cid', 'postcount', 'mainPid']),
+			Topics.getTopicFields(tid, ['tid', 'uid', 'title', 'slug', 'cid', 'postcount', 'mainPid', 'scheduled']),
 			Topics.addParentPosts([postData]),
 			posts.parsePost(postData),
 		]);
@@ -261,6 +262,36 @@ module.exports = function (Topics) {
 			if (exists) {
 				throw new Error('[[error:username-taken]]');
 			}
+		}
+	}
+
+	async function canReply(data, topicData) {
+		if (!topicData) {
+			throw new Error('[[error:no-topic]]');
+		}
+		const { tid, uid } = data;
+		const { cid, deleted, locked, scheduled } = topicData;
+
+		const [canReply, canSchedule, isAdminOrMod] = await Promise.all([
+			privileges.topics.can('topics:reply', tid, uid),
+			privileges.topics.can('topics:schedule', tid, uid),
+			privileges.categories.isAdminOrMod(cid, uid),
+		]);
+
+		if (locked && !isAdminOrMod) {
+			throw new Error('[[error:topic-locked]]');
+		}
+
+		if (!scheduled && deleted && !isAdminOrMod) {
+			throw new Error('[[error:topic-deleted]]');
+		}
+
+		if (scheduled && !canSchedule) {
+			throw new Error('[[error:no-privileges]]');
+		}
+
+		if (!canReply) {
+			throw new Error('[[error:no-privileges]]');
 		}
 	}
 };

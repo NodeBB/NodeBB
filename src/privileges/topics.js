@@ -17,11 +17,11 @@ privsTopics.get = async function (tid, uid) {
 	uid = parseInt(uid, 10);
 
 	const privs = [
-		'topics:reply', 'topics:read', 'topics:tag',
+		'topics:reply', 'topics:read', 'topics:schedule', 'topics:tag',
 		'topics:delete', 'posts:edit', 'posts:history',
 		'posts:delete', 'posts:view_deleted', 'read', 'purge',
 	];
-	const topicData = await topics.getTopicFields(tid, ['cid', 'uid', 'locked', 'deleted']);
+	const topicData = await topics.getTopicFields(tid, ['cid', 'uid', 'locked', 'deleted', 'scheduled']);
 	const [userPrivileges, isAdministrator, isModerator, disabled] = await Promise.all([
 		helpers.isAllowedTo(privs, uid, topicData.cid),
 		user.isAdministrator(uid),
@@ -33,9 +33,10 @@ privsTopics.get = async function (tid, uid) {
 	const isAdminOrMod = isAdministrator || isModerator;
 	const editable = isAdminOrMod;
 	const deletable = (privData['topics:delete'] && (isOwner || isModerator)) || isAdministrator;
+	const mayReply = privsTopics.canViewDeletedScheduled(topicData, {}, false, privData['topics:schedule']);
 
 	return await plugins.hooks.fire('filter:privileges.topics.get', {
-		'topics:reply': (privData['topics:reply'] && ((!topicData.locked && !topicData.deleted) || isModerator)) || isAdministrator,
+		'topics:reply': (privData['topics:reply'] && ((!topicData.locked && mayReply) || isModerator)) || isAdministrator,
 		'topics:read': privData['topics:read'] || isAdministrator,
 		'topics:tag': privData['topics:tag'] || isAdministrator,
 		'topics:delete': (privData['topics:delete'] && (isOwner || isModerator)) || isAdministrator,
@@ -50,6 +51,7 @@ privsTopics.get = async function (tid, uid) {
 		editable: editable,
 		deletable: deletable,
 		view_deleted: isAdminOrMod || isOwner || privData['posts:view_deleted'],
+		view_scheduled: privData['topics:schedule'] || isAdministrator,
 		isAdminOrMod: isAdminOrMod,
 		disabled: disabled,
 		tid: tid,
@@ -67,7 +69,7 @@ privsTopics.filterTids = async function (privilege, tids, uid) {
 		return [];
 	}
 
-	const topicsData = await topics.getTopicsFields(tids, ['tid', 'cid', 'deleted']);
+	const topicsData = await topics.getTopicsFields(tids, ['tid', 'cid', 'deleted', 'scheduled']);
 	const cids = _.uniq(topicsData.map(topic => topic.cid));
 	const results = await privsCategories.getBase(privilege, cids, uid);
 
@@ -78,10 +80,11 @@ privsTopics.filterTids = async function (privilege, tids, uid) {
 
 	const cidsSet = new Set(allowedCids);
 	const canViewDeleted = _.zipObject(cids, results.view_deleted);
+	const canViewScheduled = _.zipObject(cids, results.view_scheduled);
 
 	tids = topicsData.filter(t => (
 		cidsSet.has(t.cid) &&
-		(!t.deleted || canViewDeleted[t.cid] || results.isAdmin)
+		(results.isAdmin || privsTopics.canViewDeletedScheduled(t, {}, canViewDeleted[t.cid], canViewScheduled[t.cid]))
 	)).map(t => t.tid);
 
 	const data = await plugins.hooks.fire('filter:privileges.topics.filter', {
@@ -98,14 +101,20 @@ privsTopics.filterUids = async function (privilege, tid, uids) {
 	}
 
 	uids = _.uniq(uids);
-	const topicData = await topics.getTopicFields(tid, ['tid', 'cid', 'deleted']);
+	const topicData = await topics.getTopicFields(tid, ['tid', 'cid', 'deleted', 'scheduled']);
 	const [disabled, allowedTo, isAdmins] = await Promise.all([
 		categories.getCategoryField(topicData.cid, 'disabled'),
 		helpers.isUsersAllowedTo(privilege, uids, topicData.cid),
 		user.isAdministrator(uids),
 	]);
+
+	if (topicData.scheduled) {
+		const canViewScheduled = await helpers.isUsersAllowedTo('topics:schedule', uids, topicData.cid);
+		uids = uids.filter((uid, index) => canViewScheduled[index]);
+	}
+
 	return uids.filter((uid, index) => !disabled &&
-			((allowedTo[index] && !topicData.deleted) || isAdmins[index]));
+			((allowedTo[index] && (topicData.scheduled || !topicData.deleted)) || isAdmins[index]));
 };
 
 privsTopics.canPurge = async function (tid, uid) {
@@ -162,4 +171,21 @@ privsTopics.isAdminOrMod = async function (tid, uid) {
 	}
 	const cid = await topics.getTopicField(tid, 'cid');
 	return await privsCategories.isAdminOrMod(cid, uid);
+};
+
+privsTopics.canViewDeletedScheduled = function (topic, privileges = {}, viewDeleted = false, viewScheduled = false) {
+	if (!topic) {
+		return false;
+	}
+	const { deleted = false, scheduled = false } = topic;
+	const { view_deleted = viewDeleted, view_scheduled = viewScheduled } = privileges;
+
+	// conceptually exclusive, scheduled topics deemed to be not deleted (they can only be purged)
+	if (scheduled) {
+		return view_scheduled;
+	} else if (deleted) {
+		return view_deleted;
+	}
+
+	return true;
 };

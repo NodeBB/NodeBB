@@ -99,6 +99,9 @@ define('forum/topic/move-post', [
 					if (!data || !data.tid) {
 						return app.alertError('[[error:no-topic]]');
 					}
+					if (data.scheduled) {
+						return app.alertError('[[error:cant-move-posts-to-scheduled]]');
+					}
 					var translateStr = translator.compile('topic:x-posts-will-be-moved-to-y', postSelect.pids.length, data.title);
 					moveModal.find('#pids').translateHtml(translateStr);
 				});

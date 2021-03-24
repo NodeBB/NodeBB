@@ -29,6 +29,7 @@ describe('Topic\'s', () => {
 	let categoryObj;
 	let adminUid;
 	let adminJar;
+	let csrf_token;
 	let fooUid;
 
 	before(async () => {
@@ -36,6 +37,7 @@ describe('Topic\'s', () => {
 		fooUid = await User.create({ username: 'foo' });
 		await groups.join('administrators', adminUid);
 		adminJar = await helpers.loginUser('admin', '123456');
+		csrf_token = (await requestType('get', `${nconf.get('url')}/api/config`, { json: true, jar: adminJar })).body.csrf_token;
 
 		categoryObj = await categories.create({
 			name: 'Test Category',
@@ -2637,6 +2639,177 @@ describe('Topic\'s', () => {
 				});
 				done();
 			});
+		});
+	});
+
+	describe('scheduled topics', () => {
+		let categoryObj;
+		let topicData;
+		let topic;
+		let adminApiOpts;
+		let postData;
+		const replyData = {
+			form: {
+				content: 'a reply by guest',
+			},
+			json: true,
+		};
+
+		before(async () => {
+			adminApiOpts = {
+				json: true,
+				jar: adminJar,
+				headers: {
+					'x-csrf-token': csrf_token,
+				},
+			};
+			categoryObj = await categories.create({
+				name: 'Another Test Category',
+				description: 'Another test category created by testing script',
+			});
+			topic = {
+				uid: adminUid,
+				cid: categoryObj.cid,
+				title: 'Scheduled Test Topic Title',
+				content: 'The content of scheduled test topic',
+				timestamp: new Date(Date.now() + 86400000).getTime(),
+			};
+		});
+
+		it('should create a scheduled topic as pinned, deleted, included in "topics:scheduled" zset and with a timestamp in future', async () => {
+			topicData = (await topics.post(topic)).topicData;
+			topicData = await topics.getTopicData(topicData.tid);
+
+			assert(topicData.pinned);
+			assert(topicData.deleted);
+			assert(topicData.scheduled);
+			assert(topicData.timestamp > Date.now());
+			const score = await db.sortedSetScore('topics:scheduled', topicData.tid);
+			assert(score);
+			// should not be in regular category zsets
+			const isMember = await db.isMemberOfSortedSets([
+				`cid:${categoryObj.cid}:tids`,
+				`cid:${categoryObj.cid}:tids:votes`,
+				`cid:${categoryObj.cid}:tids:posts`,
+			], topicData.tid);
+			assert.deepStrictEqual(isMember, [false, false, false]);
+		});
+
+		it('should not update poster\'s lastposttime', async () => {
+			const data = await User.getUsersFields([adminUid], ['lastposttime']);
+			assert.notStrictEqual(data[0].lastposttime, topicData.lastposttime);
+		});
+
+		it('should not load topic for an unprivileged user', async () => {
+			const response = await requestType('get', `${nconf.get('url')}/topic/${topicData.slug}`);
+			assert.strictEqual(response.statusCode, 404);
+			assert(response.body);
+		});
+
+		it('should load topic for a privileged user', async () => {
+			const response = (await requestType('get', `${nconf.get('url')}/topic/${topicData.slug}`, { jar: adminJar })).res;
+			assert.strictEqual(response.statusCode, 200);
+			assert(response.body);
+		});
+
+		it('should not be amongst topics of the category for an unprivileged user', async () => {
+			const response = await requestType('get', `${nconf.get('url')}/api/category/${categoryObj.slug}`, { json: true });
+			assert.strictEqual(response.body.topics.filter(topic => topic.tid === topicData.tid).length, 0);
+		});
+
+		it('should be amongst topics of the category for a privileged user', async () => {
+			const response = await requestType('get', `${nconf.get('url')}/api/category/${categoryObj.slug}`, { json: true, jar: adminJar });
+			const topic = response.body.topics.filter(topic => topic.tid === topicData.tid)[0];
+			assert.strictEqual(topic && topic.tid, topicData.tid);
+		});
+
+		it('should load topic for guests if privilege is given', async () => {
+			await privileges.categories.give(['groups:topics:schedule'], categoryObj.cid, 'guests');
+			const response = await requestType('get', `${nconf.get('url')}/topic/${topicData.slug}`);
+			assert.strictEqual(response.statusCode, 200);
+			assert(response.body);
+		});
+
+		it('should be amongst topics of the category for guests if privilege is given', async () => {
+			const response = await requestType('get', `${nconf.get('url')}/api/category/${categoryObj.slug}`, { json: true });
+			const topic = response.body.topics.filter(topic => topic.tid === topicData.tid)[0];
+			assert.strictEqual(topic && topic.tid, topicData.tid);
+		});
+
+		it('should not allow deletion of a scheduled topic', async () => {
+			const response = await requestType('delete', `${nconf.get('url')}/api/v3/topics/${topicData.tid}/state`, adminApiOpts);
+			assert.strictEqual(response.res.statusCode, 400);
+		});
+
+		it('should not allow to unpin a scheduled topic', async () => {
+			const response = await requestType('delete', `${nconf.get('url')}/api/v3/topics/${topicData.tid}/pin`, adminApiOpts);
+			assert.strictEqual(response.res.statusCode, 400);
+		});
+
+		it('should not allow to restore a scheduled topic', async () => {
+			const response = await requestType('put', `${nconf.get('url')}/api/v3/topics/${topicData.tid}/state`, adminApiOpts);
+			assert.strictEqual(response.res.statusCode, 400);
+		});
+
+		it('should not allow unprivileged to reply', async () => {
+			await privileges.categories.rescind(['groups:topics:schedule'], categoryObj.cid, 'guests');
+			await privileges.categories.give(['groups:topics:reply'], categoryObj.cid, 'guests');
+			const response = await requestType('post', `${nconf.get('url')}/api/v3/topics/${topicData.tid}`, replyData);
+			assert.strictEqual(response.res.statusCode, 403);
+		});
+
+		it('should allow guests to reply if privilege is given', async () => {
+			await privileges.categories.give(['groups:topics:schedule'], categoryObj.cid, 'guests');
+			const response = await requestType('post', `${nconf.get('url')}/api/v3/topics/${topicData.tid}`, replyData);
+			assert.strictEqual(response.body.response.content, 'a reply by guest');
+			assert.strictEqual(response.body.response.user.username, '[[global:guest]]');
+		});
+
+		it('should have replies with greater timestamp than the scheduled topics itself', async () => {
+			const response = await requestType('get', `${nconf.get('url')}/api/topic/${topicData.slug}`, { json: true });
+			postData = response.body.posts[1];
+			assert(postData.timestamp > response.body.posts[0].timestamp);
+		});
+
+		it('should have post edits with greater timestamp than the original', async () => {
+			const editData = { ...adminApiOpts, form: { content: 'an edit by the admin' } };
+			const result = await requestType('put', `${nconf.get('url')}/api/v3/posts/${postData.pid}`, editData);
+			assert(result.body.response.edited > postData.timestamp);
+
+			const diffsResult = await requestType('get', `${nconf.get('url')}/api/v3/posts/${postData.pid}/diffs`, adminApiOpts);
+			const { revisions } = diffsResult.body.response;
+			// diffs are LIFO
+			assert(revisions[0].timestamp > revisions[1].timestamp);
+		});
+
+		it('should allow to purge a scheduled topic', async () => {
+			const response = await requestType('delete', `${nconf.get('url')}/api/v3/topics/${topicData.tid}`, adminApiOpts);
+			assert.strictEqual(response.res.statusCode, 200);
+		});
+
+		it('should remove from topics:scheduled on purge', async () => {
+			const score = await db.sortedSetScore('topics:scheduled', topicData.tid);
+			assert(!score);
+		});
+
+		it('should able to publish a scheduled topic', async () => {
+			topicData = (await topics.post(topic)).topicData;
+			// Manually trigger publishing
+			await db.sortedSetRemove('topics:scheduled', topicData.tid);
+			await db.sortedSetAdd('topics:scheduled', Date.now() - 1000, topicData.tid);
+			await topics.scheduled.handleExpired();
+
+			topicData = await topics.getTopicData(topicData.tid);
+			assert(!topicData.pinned);
+			assert(!topicData.deleted);
+			// Should remove from topics:scheduled upon publishing
+			const score = await db.sortedSetScore('topics:scheduled', topicData.tid);
+			assert(!score);
+		});
+
+		it('should update poster\'s lastposttime after a ST published', async () => {
+			const data = await User.getUsersFields([adminUid], ['lastposttime']);
+			assert.strictEqual(data[0].lastposttime, topicData.lastposttime);
 		});
 	});
 });

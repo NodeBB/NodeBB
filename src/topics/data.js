@@ -20,6 +20,12 @@ module.exports = function (Topics) {
 		if (!Array.isArray(tids) || !tids.length) {
 			return [];
 		}
+
+		// "scheduled" is derived from "timestamp"
+		if (fields.includes('scheduled') && !fields.includes('timestamp')) {
+			fields.push('timestamp');
+		}
+
 		const keys = tids.map(tid => `topic:${tid}`);
 		const topics = await db.getObjects(keys, fields);
 		const result = await plugins.hooks.fire('filter:topic.getFields', {
@@ -100,6 +106,9 @@ function modifyTopic(topic, fields) {
 
 	if (topic.hasOwnProperty('timestamp')) {
 		topic.timestampISO = utils.toISOString(topic.timestamp);
+		if (!fields.length || fields.includes('scheduled')) {
+			topic.scheduled = topic.timestamp > Date.now();
+		}
 	}
 
 	if (topic.hasOwnProperty('lastposttime')) {

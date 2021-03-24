@@ -23,6 +23,8 @@ define('topicList', [
 	var loadTopicsCallback;
 	var topicListEl;
 
+	const scheduledTopics = [];
+
 	$(window).on('action:ajaxify.start', function () {
 		TopicList.removeListeners();
 		categoryTools.removeListeners();
@@ -95,54 +97,48 @@ define('topicList', [
 	};
 
 	function onNewTopic(data) {
-		if (
-			(
-				ajaxify.data.selectedCids &&
-				ajaxify.data.selectedCids.length &&
-				ajaxify.data.selectedCids.indexOf(parseInt(data.cid, 10)) === -1
-			) ||
-			(
-				ajaxify.data.selectedFilter &&
-				ajaxify.data.selectedFilter.filter === 'watched'
-			) ||
-			(
-				ajaxify.data.template.category &&
-				parseInt(ajaxify.data.cid, 10) !== parseInt(data.cid, 10)
-			)
-		) {
+		const d = ajaxify.data;
+
+		const categories = d.selectedCids &&
+			d.selectedCids.length &&
+			d.selectedCids.indexOf(parseInt(data.cid, 10)) === -1;
+		const filterWatched = d.selectedFilter &&
+			d.selectedFilter.filter === 'watched';
+		const category = d.template.category &&
+			parseInt(d.cid, 10) !== parseInt(data.cid, 10);
+
+		if (categories || filterWatched || category || scheduledTopics.includes(data.tid)) {
 			return;
 		}
 
+		if (data.scheduled && data.tid) {
+			scheduledTopics.push(data.tid);
+		}
 		newTopicCount += 1;
 		updateAlertText();
 	}
 
 	function onNewPost(data) {
 		var post = data.posts[0];
-		if (!post || !post.topic) {
+		if (!post || !post.topic || post.topic.isFollowing) {
 			return;
 		}
-		if (!post.topic.isFollowing && (
-			parseInt(post.topic.mainPid, 10) === parseInt(post.pid, 10) ||
-			(
-				ajaxify.data.selectedCids &&
-				ajaxify.data.selectedCids.length &&
-				ajaxify.data.selectedCids.indexOf(parseInt(post.topic.cid, 10)) === -1
-			) ||
-			(
-				ajaxify.data.selectedFilter &&
-				ajaxify.data.selectedFilter.filter === 'new'
-			) ||
-			(
-				ajaxify.data.selectedFilter &&
-				ajaxify.data.selectedFilter.filter === 'watched' &&
-				!post.topic.isFollowing
-			) ||
-			(
-				ajaxify.data.template.category &&
-				parseInt(ajaxify.data.cid, 10) !== parseInt(post.topic.cid, 10)
-			)
-		)) {
+
+		const d = ajaxify.data;
+
+		const isMain = parseInt(post.topic.mainPid, 10) === parseInt(post.pid, 10);
+		const categories = d.selectedCids &&
+			d.selectedCids.length &&
+			d.selectedCids.indexOf(parseInt(post.topic.cid, 10)) === -1;
+		const filterNew = d.selectedFilter &&
+			d.selectedFilter.filter === 'new';
+		const filterWatched = d.selectedFilter &&
+			d.selectedFilter.filter === 'watched' &&
+			!post.topic.isFollowing;
+		const category = d.template.category &&
+			parseInt(d.cid, 10) !== parseInt(post.topic.cid, 10);
+
+		if (isMain || categories || filterNew || filterWatched || category) {
 			return;
 		}
 

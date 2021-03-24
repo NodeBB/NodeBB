@@ -8,6 +8,7 @@ const user = require('../../user');
 const posts = require('../../posts');
 const categories = require('../../categories');
 const meta = require('../../meta');
+const privileges = require('../../privileges');
 const accountHelpers = require('./helpers');
 const helpers = require('../helpers');
 const utils = require('../../utils');
@@ -91,11 +92,13 @@ async function getPosts(callerUid, userData, setSuffix) {
 	const count = 10;
 	const postData = [];
 
-	const [isAdmin, isModOfCids] = await Promise.all([
+	const [isAdmin, isModOfCids, canSchedule] = await Promise.all([
 		user.isAdministrator(callerUid),
 		user.isModerator(callerUid, cids),
+		privileges.categories.isUserAllowedTo('topics:schedule', cids, callerUid),
 	]);
 	const cidToIsMod = _.zipObject(cids, isModOfCids);
+	const cidToCanSchedule = _.zipObject(cids, canSchedule);
 
 	do {
 		/* eslint-disable no-await-in-loop */
@@ -106,7 +109,8 @@ async function getPosts(callerUid, userData, setSuffix) {
 		if (pids.length) {
 			const p = await posts.getPostSummaryByPids(pids, callerUid, { stripTags: false });
 			postData.push(...p.filter(
-				p => p && p.topic && (isAdmin || cidToIsMod[p.topic.cid] || (!p.deleted && !p.topic.deleted))
+				p => p && p.topic && (isAdmin || cidToIsMod[p.topic.cid] ||
+					(p.topic.scheduled && cidToCanSchedule[p.topic.cid]) || (!p.deleted && !p.topic.deleted))
 			));
 		}
 		start += count;

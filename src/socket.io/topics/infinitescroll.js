@@ -14,10 +14,10 @@ module.exports = function (SocketTopics) {
 
 		const [userPrivileges, topicData] = await Promise.all([
 			privileges.topics.get(data.tid, socket.uid),
-			topics.getTopicFields(data.tid, ['postcount', 'deleted', 'uid']),
+			topics.getTopicFields(data.tid, ['postcount', 'deleted', 'scheduled', 'uid']),
 		]);
 
-		if (!userPrivileges['topics:read'] || (topicData.deleted && !userPrivileges.view_deleted)) {
+		if (!userPrivileges['topics:read'] || !privileges.topics.canViewDeletedScheduled(topicData, userPrivileges)) {
 			throw new Error('[[error:no-privileges]]');
 		}
 

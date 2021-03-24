@@ -29,11 +29,13 @@ module.exports = function (Posts) {
 			throw new Error('[[error:no-post]]');
 		}
 
+		const topicData = await topics.getTopicFields(postData.tid, ['cid', 'title', 'timestamp', 'scheduled']);
 		const oldContent = postData.content; // for diffing purposes
-		const now = Date.now();
+		// For posts in scheduled topics, if edited before, use edit timestamp
+		const postTimestamp = topicData.scheduled ? (postData.edited || postData.timestamp) + 1 : Date.now();
 		const editPostData = {
 			content: data.content,
-			edited: now,
+			edited: postTimestamp,
 			editor: data.uid,
 		};
 		if (data.handle) {
@@ -49,7 +51,7 @@ module.exports = function (Posts) {
 
 		const [editor, topic] = await Promise.all([
 			user.getUserFields(data.uid, ['username', 'userslug']),
-			editMainPost(data, postData),
+			editMainPost(data, postData, topicData),
 		]);
 
 		await Posts.setPostFields(data.pid, result.post);
@@ -60,6 +62,7 @@ module.exports = function (Posts) {
 				uid: data.uid,
 				oldContent: oldContent,
 				newContent: data.content,
+				edited: postTimestamp,
 			});
 		}
 		await Posts.uploads.sync(data.pid);
@@ -70,7 +73,7 @@ module.exports = function (Posts) {
 		const returnPostData = { ...postData, ...result.post };
 		returnPostData.cid = topic.cid;
 		returnPostData.topic = topic;
-		returnPostData.editedISO = utils.toISOString(now);
+		returnPostData.editedISO = utils.toISOString(postTimestamp);
 		returnPostData.changed = oldContent !== data.content;
 
 		await topics.notifyFollowers(returnPostData, data.uid, {
@@ -93,15 +96,11 @@ module.exports = function (Posts) {
 		};
 	};
 
-	async function editMainPost(data, postData) {
+	async function editMainPost(data, postData, topicData) {
 		const { tid } = postData;
 		const title = data.title ? data.title.trim() : '';
 
-		const [topicData, isMain] = await Promise.all([
-			topics.getTopicFields(tid, ['cid', 'title', 'timestamp']),
-			Posts.isMain(data.pid),
-		]);
-
+		const isMain = await Posts.isMain(data.pid);
 		if (!isMain) {
 			return {
 				tid: tid,

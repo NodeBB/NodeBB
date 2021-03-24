@@ -335,6 +335,8 @@ get:
                         type: boolean
                       view_deleted:
                         type: boolean
+                      view_scheduled:
+                        type: boolean
                       isAdminOrMod:
                         type: boolean
                       disabled:

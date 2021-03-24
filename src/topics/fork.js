@@ -39,7 +39,14 @@ module.exports = function (Topics) {
 		if (!isAdminOrMod) {
 			throw new Error('[[error:no-privileges]]');
 		}
-		const tid = await Topics.create({ uid: postData.uid, title: title, cid: cid });
+
+		const scheduled = postData.timestamp > Date.now();
+		const tid = await Topics.create({
+			uid: postData.uid,
+			title: title,
+			cid: cid,
+			timestamp: scheduled && postData.timestamp,
+		});
 		await Topics.updateTopicBookmarks(fromTid, pids);
 
 		await async.eachSeries(pids, async (pid) => {
@@ -47,10 +54,10 @@ module.exports = function (Topics) {
 			if (!canEdit.flag) {
 				throw new Error(canEdit.message);
 			}
-			await Topics.movePostToTopic(uid, pid, tid);
+			await Topics.movePostToTopic(uid, pid, tid, scheduled);
 		});
 
-		await Topics.updateLastPostTime(tid, Date.now());
+		await Topics.updateLastPostTime(tid, scheduled ? (postData.timestamp + 1) : Date.now());
 
 		await Promise.all([
 			Topics.setTopicFields(tid, {
@@ -65,15 +72,23 @@ module.exports = function (Topics) {
 		return await Topics.getTopicData(tid);
 	};
 
-	Topics.movePostToTopic = async function (callerUid, pid, tid) {
+	Topics.movePostToTopic = async function (callerUid, pid, tid, forceScheduled = false) {
 		tid = parseInt(tid, 10);
-		const exists = await Topics.exists(tid);
-		if (!exists) {
+		const topicData = await Topics.getTopicFields(tid, ['tid', 'scheduled']);
+		if (!topicData.tid) {
 			throw new Error('[[error:no-topic]]');
+		}
+		if (!forceScheduled && topicData.scheduled) {
+			throw new Error('[[error:cant-move-posts-to-scheduled]]');
 		}
 		const postData = await posts.getPostFields(pid, ['tid', 'uid', 'timestamp', 'upvotes', 'downvotes']);
 		if (!postData || !postData.tid) {
 			throw new Error('[[error:no-post]]');
+		}
+
+		const isSourceTopicScheduled = await Topics.getTopicField(postData.tid, 'scheduled');
+		if (!forceScheduled && isSourceTopicScheduled) {
+			throw new Error('[[error:cant-move-from-scheduled-to-existing]]');
 		}
 
 		if (postData.tid === tid) {

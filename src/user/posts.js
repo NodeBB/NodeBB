@@ -53,9 +53,12 @@ module.exports = function (User) {
 	}
 
 	User.onNewPostMade = async function (postData) {
+		// For scheduled posts, use "action" time. It'll be updated in related cron job when post is published
+		const lastposttime = postData.timestamp > Date.now() ? Date.now() : postData.timestamp;
+
 		await User.addPostIdToUser(postData);
 		await User.incrementUserPostCountBy(postData.uid, 1);
-		await User.setUserField(postData.uid, 'lastposttime', postData.timestamp);
+		await User.setUserField(postData.uid, 'lastposttime', lastposttime);
 		await User.updateLastOnlineTime(postData.uid);
 	};
 
