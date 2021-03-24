@@ -6,7 +6,7 @@
 								<th class="arrowed" colspan="3">
 									[[admin/manage/categories:privileges.section-viewing]]
 								</th>
-								<th class="arrowed" colspan="9">
+								<th class="arrowed" colspan="10">
 									[[admin/manage/categories:privileges.section-posting]]
 								</th>
 								<th class="arrowed" colspan="3">
@@ -96,7 +96,7 @@
 								<th class="arrowed" colspan="3">
 									[[admin/manage/categories:privileges.section-viewing]]
 								</th>
-								<th class="arrowed" colspan="9">
+								<th class="arrowed" colspan="10">
 									[[admin/manage/categories:privileges.section-posting]]
 								</th>
 								<th class="arrowed" colspan="3">
