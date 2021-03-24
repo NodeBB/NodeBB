@@ -89,7 +89,7 @@ async function sendNotifications(uids, topicsData) {
 }
 
 async function updateUserLastposttimes(uids, topicsData) {
-	const lastposttimes = await Promise.all(uids.map(uid => user.getUserField(uid, 'lastposttime')));
+	const lastposttimes = (await user.getUsersFields(uids, ['lastposttime'])).map(u => u.lastposttime);
 
 	let timestampByUid = {};
 	topicsData.forEach((tD) => {
