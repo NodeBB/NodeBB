@@ -84,7 +84,7 @@
         "multiparty": "4.2.2",
         "@nodebb/bootswatch": "3.4.2",
         "nconf": "^0.11.2",
-        "nodebb-plugin-composer-default": "6.5.22",
+        "nodebb-plugin-composer-default": "6.5.23",
         "nodebb-plugin-dbsearch": "4.2.0",
         "nodebb-plugin-emoji": "^3.5.0",
         "nodebb-plugin-emoji-android": "2.0.5",
