@@ -51,11 +51,12 @@ notificationsController.get = async function (req, res, next) {
 	if (!selectedFilter) {
 		return next();
 	}
-	let nids = await user.notifications.getAll(req.uid, selectedFilter.filter);
-	const pageCount = Math.max(1, Math.ceil(nids.length / itemsPerPage));
-	nids = nids.slice(start, stop + 1);
 
-	const notifications = await user.notifications.getNotifications(nids, req.uid);
+	const nids = await user.notifications.getAll(req.uid, selectedFilter.filter);
+	let notifications = await user.notifications.getNotifications(nids, req.uid);
+
+	const pageCount = Math.max(1, Math.ceil(notifications.length / itemsPerPage));
+	notifications = notifications.slice(start, stop + 1);
 
 	res.render('notifications', {
 		notifications: notifications,
