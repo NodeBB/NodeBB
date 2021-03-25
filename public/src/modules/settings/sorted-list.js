@@ -36,15 +36,7 @@ define('settings/sorted-list', [
 				addBtn.on('click', function () {
 					var modal = bootbox.confirm(formHtml, function (save) {
 						if (save) {
-							var itemUUID = utils.generateUUID();
-							var form = $('<form class="" data-sorted-list-uuid="' + itemUUID + '" data-sorted-list-object="' + key + '"></form>');
-							form.append(modal.find('form').children());
-
-							$('#content').append(form.hide());
-
-
-							var data = Settings.helper.serializeForm(form);
-							parse($container, itemUUID, data);
+							SortedList.addItem(modal.find('form').children(), $container);
 						}
 					});
 				});
@@ -68,6 +60,17 @@ define('settings/sorted-list', [
 			});
 
 			$list.sortable().addClass('pointer');
+		},
+		addItem: function ($formElements, $target) {
+			const key = $target.attr('data-sorted-list');
+			const itemUUID = utils.generateUUID();
+			const form = $('<form class="" data-sorted-list-uuid="' + itemUUID + '" data-sorted-list-object="' + key + '"></form>');
+			form.append($formElements);
+
+			$('#content').append(form.hide());
+
+			const data = Settings.helper.serializeForm(form);
+			parse($target, itemUUID, data);
 		},
 	};
 
