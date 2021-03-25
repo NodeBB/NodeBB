@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const utils = require('./utils');
 const { paths } = require('./constants');
+const plugins = require('./plugins');
 
 const Languages = module.exports;
 const languagesPath = path.join(__dirname, '../build/public/language');
@@ -13,7 +14,13 @@ Languages.timeagoCodes = files.filter(f => f.startsWith('jquery.timeago')).map(f
 
 Languages.get = async function (language, namespace) {
 	const data = await fs.promises.readFile(path.join(languagesPath, language, `${namespace}.json`), 'utf8');
-	return JSON.parse(data) || {};
+	const parsed = JSON.parse(data) || {};
+	const result = await plugins.hooks.fire('filter:languages.get', {
+		language,
+		namespace,
+		data: parsed,
+	});
+	return result.data;
 };
 
 let codeCache = null;
