@@ -148,7 +148,7 @@ Notifications.push = async function (notification, uids) {
 	setTimeout(() => {
 		batch.processArray(uids, async (uids) => {
 			await pushToUids(uids, notification);
-		}, { interval: 1000 }, (err) => {
+		}, { interval: 1000, batch: 500 }, (err) => {
 			if (err) {
 				winston.error(err.stack);
 			}
@@ -164,8 +164,10 @@ async function pushToUids(uids, notification) {
 		const cutoff = Date.now() - notificationPruneCutoff;
 		const unreadKeys = uids.map(uid => `uid:${uid}:notifications:unread`);
 		const readKeys = uids.map(uid => `uid:${uid}:notifications:read`);
-		await db.sortedSetsAdd(unreadKeys, notification.datetime, notification.nid);
-		await db.sortedSetsRemove(readKeys, notification.nid);
+		await Promise.all([
+			db.sortedSetsAdd(unreadKeys, notification.datetime, notification.nid),
+			db.sortedSetsRemove(readKeys, notification.nid),
+		]);
 		await db.sortedSetsRemoveRangeByScore(unreadKeys.concat(readKeys), '-inf', cutoff);
 		const websockets = require('./socket.io');
 		if (websockets.server) {
