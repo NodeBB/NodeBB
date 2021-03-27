@@ -77,6 +77,8 @@ const pkg = require('../../package.json');
 const file = require('../file');
 const prestart = require('../prestart');
 
+program.configureHelp(require('./colors'));
+
 program
 	.name('./nodebb')
 	.description('Welcome to NodeBB')
@@ -304,8 +306,6 @@ program
 			program.help();
 		}
 	});
-
-require('./colors');
 
 if (process.argv.length === 2) {
 	program.help();
