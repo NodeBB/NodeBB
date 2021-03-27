@@ -118,6 +118,7 @@ program
 	.action(() => {
 		require('./running').start(program.opts());
 	});
+
 program
 	.command('slog', null, {
 		noHelp: true,
@@ -304,6 +305,20 @@ program
 			program.help();
 		}
 	});
+
+// Plugin Commands
+program
+	.command('cmd <plugin:command|ls> [args...]')
+	.description('Run a plugin command')
+	.action(function (command, args) {
+		require('./cmd').start(command, args, program);
+	});
+
+// Invalid command
+program.on('command:*', function () {
+	console.error('Invalid command: %s\nSee --help for a list of available commands.', program.args.join(' '));
+	process.exit(1);
+});
 
 require('./colors');
 
