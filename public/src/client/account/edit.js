@@ -88,7 +88,7 @@ define('forum/account/edit', [
 						}
 
 						confirmBtn.html('<i class="fa fa-check"></i>');
-						window.location.href = config.relative_path + '/';
+						app.logout();
 					});
 
 					return false;
