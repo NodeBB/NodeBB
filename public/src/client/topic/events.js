@@ -114,6 +114,10 @@ define('forum/topic/events', [
 		var navbarTitle = components.get('navbar/title').find('span');
 		var breadCrumb = components.get('breadcrumb/current');
 
+		if (data.topic.rescheduled) {
+			return ajaxify.go('topic/' + data.topic.slug, null, true);
+		}
+
 		if (topicTitle.length && data.topic.title && data.topic.renamed) {
 			ajaxify.data.title = data.topic.title;
 			var newUrl = 'topic/' + data.topic.slug + (window.location.search ? window.location.search : '');

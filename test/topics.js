@@ -3,6 +3,7 @@
 const async = require('async');
 const assert = require('assert');
 const validator = require('validator');
+const mockdate = require('mockdate');
 const nconf = require('nconf');
 const request = require('request');
 const util = require('util');
@@ -2695,7 +2696,8 @@ describe('Topic\'s', () => {
 			assert.deepStrictEqual(isMember, [false, false, false]);
 		});
 
-		it('should not update poster\'s lastposttime', async () => {
+		it('should update poster\'s lastposttime with "action time"', async () => {
+			// src/user/posts.js:56
 			const data = await User.getUsersFields([adminUid], ['lastposttime']);
 			assert.notStrictEqual(data[0].lastposttime, topicData.lastposttime);
 		});
@@ -2782,21 +2784,30 @@ describe('Topic\'s', () => {
 			assert(revisions[0].timestamp > revisions[1].timestamp);
 		});
 
-		it('should allow to purge a scheduled topic', async () => {
-			const response = await requestType('delete', `${nconf.get('url')}/api/v3/topics/${topicData.tid}`, adminApiOpts);
-			assert.strictEqual(response.res.statusCode, 200);
-		});
+		it('should able to reschedule', async () => {
+			const newDate = new Date(Date.now() + (5 * 86400000)).getTime();
+			const editData = { ...adminApiOpts, form: { ...topic, pid: topicData.mainPid, timestamp: newDate } };
+			const response = await requestType('put', `${nconf.get('url')}/api/v3/posts/${topicData.mainPid}`, editData);
 
-		it('should remove from topics:scheduled on purge', async () => {
-			const score = await db.sortedSetScore('topics:scheduled', topicData.tid);
-			assert(!score);
+			const editedTopic = await topics.getTopicFields(topicData.tid, ['lastposttime', 'timestamp']);
+			const editedPost = await posts.getPostFields(postData.pid, ['timestamp']);
+			assert(editedTopic.timestamp === newDate);
+			assert(editedPost.timestamp > editedTopic.timestamp);
+
+			const scores = await db.sortedSetsScore([
+				'topics:scheduled',
+				`uid:${adminUid}:topics`,
+				'topics:tid',
+				`cid:${topicData.cid}:tids`,
+				`cid:${topicData.cid}:uid:${adminUid}:tids`,
+			], topicData.tid);
+			assert(scores.every(publishTime => publishTime === editedTopic.timestamp));
 		});
 
 		it('should able to publish a scheduled topic', async () => {
-			topicData = (await topics.post(topic)).topicData;
-			// Manually trigger publishing
-			await db.sortedSetRemove('topics:scheduled', topicData.tid);
-			await db.sortedSetAdd('topics:scheduled', Date.now() - 1000, topicData.tid);
+			const topicTimestamp = await topics.getTopicField(topicData.tid, 'timestamp');
+
+			mockdate.set(topicTimestamp);
 			await topics.scheduled.handleExpired();
 
 			topicData = await topics.getTopicData(topicData.tid);
@@ -2809,7 +2820,28 @@ describe('Topic\'s', () => {
 
 		it('should update poster\'s lastposttime after a ST published', async () => {
 			const data = await User.getUsersFields([adminUid], ['lastposttime']);
+			assert.strictEqual(adminUid, topicData.uid);
 			assert.strictEqual(data[0].lastposttime, topicData.lastposttime);
+		});
+
+		it('should not be able to schedule a "published" topic', async () => {
+			const newDate = new Date(Date.now() + 86400000).getTime();
+			const editData = { ...adminApiOpts, form: { ...topic, pid: topicData.mainPid, timestamp: newDate } };
+			const response = await requestType('put', `${nconf.get('url')}/api/v3/posts/${topicData.mainPid}`, editData);
+			assert.strictEqual(response.body.response.timestamp, Date.now());
+
+			mockdate.reset();
+		});
+
+		it('should allow to purge a scheduled topic', async () => {
+			topicData = (await topics.post(topic)).topicData;
+			const response = await requestType('delete', `${nconf.get('url')}/api/v3/topics/${topicData.tid}`, adminApiOpts);
+			assert.strictEqual(response.res.statusCode, 200);
+		});
+
+		it('should remove from topics:scheduled on purge', async () => {
+			const score = await db.sortedSetScore('topics:scheduled', topicData.tid);
+			assert(!score);
 		});
 	});
 });
