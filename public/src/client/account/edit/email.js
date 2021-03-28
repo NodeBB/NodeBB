@@ -29,7 +29,12 @@ define('forum/account/edit/email', ['forum/account/header', 'api'], function (he
 			api.put('/users/' + userData.uid, userData).then((res) => {
 				btn.removeClass('disabled').find('i').addClass('hide');
 				ajaxify.go('user/' + res.userslug + '/edit');
-			}).catch(app.alertError);
+			}).catch((err) => {
+				setTimeout(() => {
+					btn.removeClass('disabled').find('i').addClass('hide');
+					app.alertError(err);
+				}, 300); // for UX: this call is too fast.
+			});
 
 			return false;
 		});
