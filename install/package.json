@@ -116,7 +116,7 @@
         "sanitize-html": "^2.3.2",
         "semver": "^7.3.4",
         "serve-favicon": "^2.5.0",
-        "sharp": "0.27.2",
+        "sharp": "0.28.0",
         "sitemap": "^6.4.0",
         "slideout": "1.0.1",
         "socket.io": "4.0.0",
