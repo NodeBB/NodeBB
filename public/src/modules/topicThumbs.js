@@ -60,7 +60,10 @@ define('topicThumbs', ['api', 'bootbox', 'uploader', 'benchpress', 'translator',
 								callback: () => {
 									Thumbs.upload(id).then(() => {
 										Thumbs.modal.open({ ...payload, modal });
-										resolve();
+										require(['composer'], (composer) => {
+											composer.updateThumbCount(id, $(`[component="composer"][data-uuid="${id}"]`));
+											resolve();
+										});
 									});
 									return false;
 								},
