@@ -52,6 +52,7 @@ module.exports = function (Posts) {
 	};
 
 	Diffs.load = async function (pid, since, uid) {
+		since = getValidatedTimestamp(since);
 		const post = await postDiffLoad(pid, since, uid);
 		post.content = String(post.content || '');
 
@@ -61,6 +62,7 @@ module.exports = function (Posts) {
 	};
 
 	Diffs.restore = async function (pid, since, uid, req) {
+		since = getValidatedTimestamp(since);
 		const post = await postDiffLoad(pid, since, uid);
 
 		return await Posts.edit({
@@ -68,6 +70,7 @@ module.exports = function (Posts) {
 			pid: pid,
 			content: post.content,
 			req: req,
+			timestamp: since,
 		});
 	};
 
@@ -119,8 +122,6 @@ module.exports = function (Posts) {
 
 	async function postDiffLoad(pid, since, uid) {
 		// Retrieves all diffs made since `since` and replays them to reconstruct what the post looked like at `since`
-		since = getValidatedTimestamp(since);
-
 		const [post, diffs] = await Promise.all([
 			Posts.getPostSummaryByPids([pid], uid, { parse: false }),
 			Posts.diffs.get(pid, since),

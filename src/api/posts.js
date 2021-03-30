@@ -61,6 +61,7 @@ postsAPI.edit = async function (caller, data) {
 
 	data.uid = caller.uid;
 	data.req = apiHelpers.buildReqObject(caller);
+	data.timestamp = parseInt(data.timestamp, 10) || Date.now();
 
 	const editResult = await posts.edit(data);
 	if (editResult.topic.isMainPost) {
