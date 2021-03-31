@@ -40,8 +40,12 @@ require('./online')(User);
 require('./blocks')(User);
 require('./uploads')(User);
 
-User.exists = async function (uid) {
-	return await db.isSortedSetMember('users:joindate', uid);
+User.exists = async function (uids) {
+	return await (
+		Array.isArray(uids) ?
+			db.isSortedSetMembers('users:joindate', uids) :
+			db.isSortedSetMember('users:joindate', uids)
+	);
 };
 
 User.existsBySlug = async function (userslug) {

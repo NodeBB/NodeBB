@@ -23,11 +23,10 @@ require('./update')(Categories);
 require('./watch')(Categories);
 require('./search')(Categories);
 
-Categories.exists = async function (cid) {
-	if (Array.isArray(cid)) {
-		return await db.exists(cid.map(cid => `category:${cid}`));
-	}
-	return await db.exists(`category:${cid}`);
+Categories.exists = async function (cids) {
+	return await db.exists(
+		Array.isArray(cids) ? cids.map(cid => `category:${cid}`) : `category:${cids}`
+	);
 };
 
 Categories.getCategoryById = async function (data) {
