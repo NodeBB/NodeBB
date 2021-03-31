@@ -58,9 +58,11 @@ Categories.getCategoryById = async function (data) {
 	category.isIgnored = watchState[0] === Categories.watchStates.ignoring;
 	category.parent = parent;
 
-
 	calculateTopicPostCount(category);
-	const result = await plugins.hooks.fire('filter:category.get', { category: category, uid: data.uid });
+	const result = await plugins.hooks.fire('filter:category.get', {
+		category: category,
+		...data,
+	});
 	return result.category;
 };
 
