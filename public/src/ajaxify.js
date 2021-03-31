@@ -46,7 +46,9 @@ ajaxify = window.ajaxify || {};
 			apiXHR.abort();
 		}
 
-		app.previousUrl = !['reset'].includes(ajaxify.currentPage) ? window.location.pathname.slice(config.relative_path.length) : app.previousUrl;
+		app.previousUrl = !['reset'].includes(ajaxify.currentPage) ?
+			window.location.pathname.slice(config.relative_path.length) + window.location.search :
+			app.previousUrl;
 
 		url = ajaxify.start(url);
 
