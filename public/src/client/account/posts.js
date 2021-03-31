@@ -47,6 +47,7 @@ define('forum/account/posts', ['forum/account/header', 'forum/infinitescroll'], 
 			html.find('.timeago').timeago();
 			app.createUserTooltips();
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
+			$(window).trigger('action:posts.loaded', { posts: posts });
 			callback();
 		});
 	}
