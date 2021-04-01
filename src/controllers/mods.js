@@ -37,8 +37,8 @@ modsController.flags.list = async function (req, res, next) {
 	// Parse query string params for filters, eliminate non-valid filters
 	filters = filters.reduce((memo, cur) => {
 		if (req.query.hasOwnProperty(cur)) {
-			if (req.query[cur] !== '') {
-				memo[cur] = req.query[cur];
+			if (req.query[cur].trim() !== '') {
+				memo[cur] = req.query[cur].trim();
 			}
 		}
 
@@ -94,6 +94,7 @@ modsController.flags.list = async function (req, res, next) {
 		selectedCategory: selectData.selectedCategory,
 		hasFilter: hasFilter,
 		filters: filters,
+		expanded: !!(filters.assignee || filters.reporterId || filters.targetUid),
 		sort: sort || 'newest',
 		title: '[[pages:flags]]',
 		pagination: pagination.create(flagsData.page, flagsData.pageCount, req.query),

@@ -1,6 +1,6 @@
 'use strict';
 
-define('forum/flags/list', ['components', 'Chart', 'categoryFilter'], function (components, Chart, categoryFilter) {
+define('forum/flags/list', ['components', 'Chart', 'categoryFilter', 'autocomplete'], function (components, Chart, categoryFilter, autocomplete) {
 	var Flags = {};
 
 	var selectedCids;
@@ -34,12 +34,11 @@ define('forum/flags/list', ['components', 'Chart', 'categoryFilter'], function (
 				ajaxify.go('flags/' + flagId);
 			});
 
-		var graphWrapper = $('#flags-daily-wrapper');
-		var graphFooter = graphWrapper.siblings('.panel-footer');
 		$('#flags-daily-wrapper').one('shown.bs.collapse', function () {
 			Flags.handleGraphs();
 		});
-		graphFooter.on('click', graphWrapper.collapse.bind(graphWrapper, 'toggle'));
+
+		autocomplete.user($('#filter-assignee, #filter-targetUid, #filter-reporterId'));
 	};
 
 	Flags.enableFilterForm = function () {

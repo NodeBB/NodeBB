@@ -135,9 +135,11 @@ Flags.getFlagIdsWithFilters = async function ({ filters, uid }) {
 	filters.page = filters.hasOwnProperty('page') ? Math.abs(parseInt(filters.page, 10) || 1) : 1;
 	filters.perPage = filters.hasOwnProperty('perPage') ? Math.abs(parseInt(filters.perPage, 10) || 20) : 20;
 
-	for (const type of Object.keys(filters)) {
+	const parsedFilters = await parseUsernameFilters(filters);
+
+	for (const type of Object.keys(parsedFilters)) {
 		if (Flags._filters.hasOwnProperty(type)) {
-			Flags._filters[type](sets, orSets, filters[type], uid);
+			Flags._filters[type](sets, orSets, parsedFilters[type], uid);
 		} else {
 			winston.warn(`[flags/list] No flag filter type found: ${type}`);
 		}
@@ -823,6 +825,20 @@ async function mergeUsernameEmailChanges(history, targetUid, uids) {
 
 		return memo;
 	}, []));
+}
+
+async function parseUsernameFilters(filters) {
+	const usernameFilters = ['assignee', 'reporterId', 'targetUid'];
+	const filtersClone = { ...filters };
+
+	await Promise.all(usernameFilters.map(async (filterKey) => {
+		if (!filtersClone[filterKey] || Number.isInteger(Number(filtersClone[filterKey]))) {
+			return;
+		}
+		filtersClone[filterKey] = (await user.getUidByUsername(filtersClone[filterKey])) || 0;
+	}));
+
+	return filtersClone;
 }
 
 require('./promisify')(Flags);

@@ -55,6 +55,8 @@ get:
                         type: number
                       perPage:
                         type: number
+                  expanded:
+                    type: boolean
                   sort:
                     type: string
                   title:
