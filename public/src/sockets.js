@@ -124,11 +124,11 @@ socket = window.socket;
 
 		if (reconnecting) {
 			var reconnectEl = $('#reconnect');
-			var reconnectAlert = document.getElementById('reconnect-alert');
+			var reconnectAlert = $('#reconnect-alert');
 
 			reconnectEl.tooltip('destroy');
 			reconnectEl.html('<i class="fa fa-check text-success"></i>');
-			reconnectAlert.classList.add('hide');
+			reconnectAlert.addClass('hide');
 			reconnecting = false;
 
 			reJoinCurrentRoom();
