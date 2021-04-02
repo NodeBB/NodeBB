@@ -3,7 +3,7 @@
 	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "Узлов: %1. Время ответа %2мс!",
 	"host": "хост",
-	"primary": "primary / run jobs",
+	"primary": "первичный",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "онлайн",
