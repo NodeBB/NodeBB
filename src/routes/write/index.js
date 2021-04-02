@@ -63,3 +63,7 @@ Write.reload = async (params) => {
 		helpers.formatApiResponse(404, res);
 	});
 };
+
+Write.cleanup = (req) => {
+	req.session.destroy();
+};

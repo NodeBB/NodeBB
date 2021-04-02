@@ -11,6 +11,7 @@ const privileges = require('../privileges');
 const plugins = require('../plugins');
 const helpers = require('./helpers');
 const auth = require('../routes/authentication');
+const writeRouter = require('../routes/write');
 
 const controllers = {
 	helpers: require('../controllers/helpers'),
@@ -19,11 +20,12 @@ const controllers = {
 
 const passportAuthenticateAsync = function (req, res) {
 	return new Promise((resolve, reject) => {
-		passport.authenticate('core.api', { session: false }, (err, user) => {
+		passport.authenticate('core.api', (err, user) => {
 			if (err) {
 				reject(err);
 			} else {
 				resolve(user);
+				res.on('finish', writeRouter.cleanup.bind(null, req));
 			}
 		})(req, res);
 	});
