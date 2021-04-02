@@ -38,7 +38,7 @@
         "body-parser": "^1.19.0",
         "bootbox": "5.5.2",
         "bootstrap": "^3.4.1",
-        "chart.js": "^2.9.4",
+        "chart.js": "^3.0.0",
         "cli-graph": "^3.2.2",
         "clipboard": "^2.0.6",
         "colors": "^1.4.0",
