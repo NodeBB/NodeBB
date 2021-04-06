@@ -2621,11 +2621,20 @@ describe('Topic\'s', () => {
 	});
 
 	describe('sorted topics', () => {
+		let category;
+		before(async () => {
+			category = await categories.create({ name: 'sorted' });
+			const topic1Result = await topics.post({ uid: topic.userId, cid: category.cid, title: 'old replied', content: 'topic 1 OP' });
+			const topic2Result = await topics.post({ uid: topic.userId, cid: category.cid, title: 'most recent replied', content: 'topic 2 OP' });
+			await topics.reply({ uid: topic.userId, content: 'topic 1 reply', tid: topic1Result.topicData.tid });
+			await topics.reply({ uid: topic.userId, content: 'topic 2 reply', tid: topic2Result.topicData.tid });
+		});
+
 		it('should get sorted topics in category', (done) => {
 			const filters = ['', 'watched', 'unreplied', 'new'];
 			async.map(filters, (filter, next) => {
 				topics.getSortedTopics({
-					cids: [topic.categoryId],
+					cids: [category.cid],
 					uid: topic.userId,
 					start: 0,
 					stop: -1,
@@ -2640,6 +2649,29 @@ describe('Topic\'s', () => {
 				});
 				done();
 			});
+		});
+		it('should get topics recent replied first', async () => {
+			const data = await topics.getSortedTopics({
+				cids: [category.cid],
+				uid: topic.userId,
+				start: 0,
+				stop: -1,
+				sort: 'recent',
+			});
+			assert.strictEqual(data.topics[0].title, 'most recent replied');
+			assert.strictEqual(data.topics[1].title, 'old replied');
+		});
+
+		it('should get topics recent replied last', async () => {
+			const data = await topics.getSortedTopics({
+				cids: [category.cid],
+				uid: topic.userId,
+				start: 0,
+				stop: -1,
+				sort: 'old',
+			});
+			assert.strictEqual(data.topics[0].title, 'old replied');
+			assert.strictEqual(data.topics[1].title, 'most recent replied');
 		});
 	});
 
