@@ -180,11 +180,11 @@ socket = window.socket;
 	function onReconnecting() {
 		reconnecting = true;
 		var reconnectEl = $('#reconnect');
-		var reconnectAlert = document.getElementById('reconnect-alert');
+		var reconnectAlert = $('#reconnect-alert');
 
 		if (!reconnectEl.hasClass('active')) {
 			reconnectEl.html('<i class="fa fa-spinner fa-spin"></i>');
-			reconnectAlert.classList.remove('hide');
+			reconnectAlert.removeClass('hide');
 		}
 
 		reconnectEl.addClass('active').removeClass('hide').tooltip({
