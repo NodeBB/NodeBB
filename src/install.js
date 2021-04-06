@@ -464,6 +464,22 @@ async function setCopyrightWidget() {
 	}
 }
 
+async function copyFavicon() {
+	const file = require('./file');
+	const pathToIco = path.join(nconf.get('upload_path'), 'system', 'favicon.ico');
+	const defaultIco = path.join(nconf.get('base_dir'), 'public', 'favicon.ico');
+	const targetExists = await file.exists(pathToIco);
+	const defaultExists = await file.exists(defaultIco);
+
+	if (defaultExists && !targetExists) {
+		try {
+			await fs.promises.copyFile(defaultIco, pathToIco);
+		} catch (err) {
+			winston.error(`Cannot copy favicon.ico\n${err.stack}`);
+		}
+	}
+}
+
 async function checkUpgrade() {
 	const upgrade = require('./upgrade');
 	try {
@@ -492,6 +508,7 @@ install.setup = async function () {
 		await createWelcomePost();
 		await enableDefaultPlugins();
 		await setCopyrightWidget();
+		await copyFavicon();
 		await checkUpgrade();
 
 		const data = {
