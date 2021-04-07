@@ -262,6 +262,7 @@ authenticationController.login = async (req, res, next) => {
 function continueLogin(strategy, req, res, next) {
 	passport.authenticate(strategy, async (err, userData, info) => {
 		if (err) {
+			plugins.hooks.fire('action:login.continue', { req, strategy, userData, error: err });
 			return helpers.noScriptErrors(req, res, err.message, 403);
 		}
 
@@ -271,6 +272,8 @@ function continueLogin(strategy, req, res, next) {
 			} else if (typeof info === 'object') {
 				info = '[[error:invalid-username-or-password]]';
 			}
+
+			plugins.hooks.fire('action:login.continue', { req, strategy, userData, error: new Error(info) });
 			return helpers.noScriptErrors(req, res, info, 403);
 		}
 
@@ -284,7 +287,7 @@ function continueLogin(strategy, req, res, next) {
 			req.session.cookie.expires = false;
 		}
 
-		plugins.hooks.fire('action:login.continue', { req, userData });
+		plugins.hooks.fire('action:login.continue', { req, strategy, userData, error: null });
 
 		if (userData.passwordExpiry && userData.passwordExpiry < Date.now()) {
 			winston.verbose(`[auth] Triggering password reset for uid ${userData.uid} due to password policy`);
