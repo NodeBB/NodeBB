@@ -25,6 +25,8 @@ get:
                 type: string
               showSiteTitle:
                 type: boolean
+              maintenanceMode:
+                type: boolean
               minimumTitleLength:
                 type: number
               maximumTitleLength:
