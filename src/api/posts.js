@@ -136,7 +136,11 @@ async function deleteOrRestore(caller, data, params) {
 }
 
 async function deleteOrRestoreTopicOf(command, pid, caller) {
-	const topic = await posts.getTopicFields(pid, ['tid', 'cid', 'deleted']);
+	const topic = await posts.getTopicFields(pid, ['tid', 'cid', 'deleted', 'scheduled']);
+	// exempt scheduled topics from being deleted/restored
+	if (topic.scheduled) {
+		return;
+	}
 	// command: delete/restore
 	await apiHelpers.doTopicAction(
 		command,
