@@ -231,7 +231,7 @@ app.cacheBuster = null;
 	};
 
 	app.leaveCurrentRoom = function () {
-		if (!socket) {
+		if (!socket || config.maintenanceMode) {
 			return;
 		}
 		var previousRoom = app.currentRoom;

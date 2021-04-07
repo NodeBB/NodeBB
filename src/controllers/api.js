@@ -27,6 +27,7 @@ apiController.loadConfig = async function (req) {
 		browserTitle: validator.escape(String(meta.config.browserTitle || meta.config.title || 'NodeBB')),
 		titleLayout: (meta.config.titleLayout || '{pageTitle} | {browserTitle}').replace(/{/g, '&#123;').replace(/}/g, '&#125;'),
 		showSiteTitle: meta.config.showSiteTitle === 1,
+		maintenanceMode: meta.config.maintenanceMode === 1,
 		minimumTitleLength: meta.config.minimumTitleLength,
 		maximumTitleLength: meta.config.maximumTitleLength,
 		minimumPostLength: meta.config.minimumPostLength,
