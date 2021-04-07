@@ -50,7 +50,7 @@ async function renderWidget(widget, uid, options) {
 		return;
 	}
 
-	const isVisible = await checkVisibility(widget, uid);
+	const isVisible = await widgets.checkVisibility(widget.data, uid);
 	if (!isVisible) {
 		return;
 	}
@@ -92,17 +92,17 @@ async function renderWidget(widget, uid, options) {
 	return { html };
 }
 
-async function checkVisibility(widget, uid) {
+widgets.checkVisibility = async function (data, uid) {
 	let isVisible = true;
 	let isHidden = false;
-	if (widget.data.groups.length) {
-		isVisible = await groups.isMemberOfAny(uid, widget.data.groups);
+	if (data.groups.length) {
+		isVisible = await groups.isMemberOfAny(uid, data.groups);
 	}
-	if (widget.data.groupsHideFrom.length) {
-		isHidden = await groups.isMemberOfAny(uid, widget.data.groupsHideFrom);
+	if (data.groupsHideFrom.length) {
+		isHidden = await groups.isMemberOfAny(uid, data.groupsHideFrom);
 	}
 	return isVisible && !isHidden;
-}
+};
 
 widgets.getWidgetDataForTemplates = async function (templates) {
 	const keys = templates.map(tpl => `widgets:${tpl}`);
