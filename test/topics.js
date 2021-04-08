@@ -2031,19 +2031,19 @@ describe('Topic\'s', () => {
 
 			let tags = await topics.getTopicTags(tid);
 			let categoryTags = await topics.getCategoryTags(cid, 0, -1);
-			assert.deepStrictEqual(tags, ['tag1', 'tag2', 'tag3', 'tag4']);
+			assert.deepStrictEqual(tags.sort(), ['tag1', 'tag2', 'tag3', 'tag4']);
 			assert.deepStrictEqual(categoryTags.sort(), ['tag1', 'tag2', 'tag3', 'tag4']);
 
 			await topics.addTags(['tag7', 'tag6', 'tag5'], [tid]);
 			tags = await topics.getTopicTags(tid);
 			categoryTags = await topics.getCategoryTags(cid, 0, -1);
-			assert.deepStrictEqual(tags, ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag6', 'tag7']);
+			assert.deepStrictEqual(tags.sort(), ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag6', 'tag7']);
 			assert.deepStrictEqual(categoryTags.sort(), ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag6', 'tag7']);
 
 			await topics.removeTags(['tag1', 'tag3', 'tag5', 'tag7'], [tid]);
 			tags = await topics.getTopicTags(tid);
 			categoryTags = await topics.getCategoryTags(cid, 0, -1);
-			assert.deepStrictEqual(tags, ['tag2', 'tag4', 'tag6']);
+			assert.deepStrictEqual(tags.sort(), ['tag2', 'tag4', 'tag6']);
 			assert.deepStrictEqual(categoryTags.sort(), ['tag2', 'tag4', 'tag6']);
 		});
 

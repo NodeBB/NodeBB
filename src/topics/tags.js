@@ -289,15 +289,13 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getTopicTags = async function (tid) {
-		const tags = await db.getSetMembers(`topic:${tid}:tags`);
-		return tags.sort();
+		return await db.getSetMembers(`topic:${tid}:tags`);
 	};
 
 	Topics.getTopicsTags = async function (tids) {
-		const keys = tids.map(tid => `topic:${tid}:tags`);
-		const tags = await db.getSetsMembers(keys);
-		tags.forEach(tags => tags.sort());
-		return tags;
+		return await db.getSetsMembers(
+			tids.map(tid => `topic:${tid}:tags`)
+		);
 	};
 
 	Topics.getTopicTagsObjects = async function (tid) {
@@ -316,7 +314,6 @@ module.exports = function (Topics) {
 		topicTags.forEach((tags, index) => {
 			if (Array.isArray(tags)) {
 				topicTags[index] = tags.map(tag => tagDataMap[tag]);
-				topicTags[index].sort((tag1, tag2) => tag2.value - tag1.value);
 			}
 		});
 
