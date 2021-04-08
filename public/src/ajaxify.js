@@ -13,6 +13,11 @@ ajaxify = window.ajaxify || {};
 	ajaxify.count = 0;
 	ajaxify.currentPage = null;
 
+	var hooks;
+	require(['hooks'], function (_hooks) {
+		hooks = _hooks;
+	});
+
 	ajaxify.go = function (url, callback, quiet) {
 		// Automatically reconnect to socket and re-ajaxify on success
 		if (!socket.connected) {
@@ -54,9 +59,7 @@ ajaxify = window.ajaxify || {};
 
 		// If any listeners alter url and set it to an empty string, abort the ajaxification
 		if (url === null) {
-			require(['hooks'], function (hooks) {
-				hooks.fire('action:ajaxify.end', { url: url, tpl_url: ajaxify.data.template.name, title: ajaxify.data.title });
-			});
+			hooks.fire('action:ajaxify.end', { url: url, tpl_url: ajaxify.data.template.name, title: ajaxify.data.title });
 			return false;
 		}
 
@@ -115,9 +118,7 @@ ajaxify = window.ajaxify || {};
 			url: url,
 		};
 
-		require(['hooks'], function (hooks) {
-			hooks.fire('action:ajaxify.start', payload);
-		});
+		hooks.fire('action:ajaxify.start', payload);
 
 		ajaxify.count += 1;
 
@@ -291,9 +292,7 @@ ajaxify = window.ajaxify || {};
 			window.scrollTo(0, 0);
 		}
 		ajaxify.loadScript(tpl_url, function done() {
-			require(['hooks'], function (hooks) {
-				hooks.fire('action:ajaxify.end', { url: url, tpl_url: tpl_url, title: ajaxify.data.title });
-			});
+			hooks.fire('action:ajaxify.end', { url: url, tpl_url: tpl_url, title: ajaxify.data.title });
 		});
 		ajaxify.widgets.render(tpl_url);
 
@@ -322,55 +321,53 @@ ajaxify = window.ajaxify || {};
 	};
 
 	ajaxify.loadScript = function (tpl_url, callback) {
-		require(['hooks'], (hooks) => {
-			var location = !app.inAdmin ? 'forum/' : '';
+		var location = !app.inAdmin ? 'forum/' : '';
 
-			if (tpl_url.startsWith('admin')) {
-				location = '';
-			}
-			const data = {
-				tpl_url: tpl_url,
-				scripts: [location + tpl_url],
-			};
+		if (tpl_url.startsWith('admin')) {
+			location = '';
+		}
+		const data = {
+			tpl_url: tpl_url,
+			scripts: [location + tpl_url],
+		};
 
-			// Hint: useful if you want to load a module on a specific page (append module name to `scripts`)
-			hooks.fire('action:script.load', data);
-			hooks.fire('filter:script.load', data).then((data) => {
-				// Require and parse modules
-				var outstanding = data.scripts.length;
+		// Hint: useful if you want to load a module on a specific page (append module name to `scripts`)
+		hooks.fire('action:script.load', data);
+		hooks.fire('filter:script.load', data).then((data) => {
+			// Require and parse modules
+			var outstanding = data.scripts.length;
 
-				data.scripts.map(function (script) {
-					if (typeof script === 'function') {
-						return function (next) {
-							script();
-							next();
-						};
-					}
-					if (typeof script === 'string') {
-						return function (next) {
-							require([script], function (module) {
-								// Hint: useful if you want to override a loaded library (e.g. replace core client-side logic),
-								// or call a method other than .init()
-								hooks.fire('static:script.init', { tpl_url, name: script, module }).then(() => {
-									if (module && module.init) {
-										module.init();
-									}
-									next();
-								});
-							}, function () {
-								// ignore 404 error
+			data.scripts.map(function (script) {
+				if (typeof script === 'function') {
+					return function (next) {
+						script();
+						next();
+					};
+				}
+				if (typeof script === 'string') {
+					return function (next) {
+						require([script], function (module) {
+							// Hint: useful if you want to override a loaded library (e.g. replace core client-side logic),
+							// or call a method other than .init()
+							hooks.fire('static:script.init', { tpl_url, name: script, module }).then(() => {
+								if (module && module.init) {
+									module.init();
+								}
 								next();
 							});
-						};
+						}, function () {
+							// ignore 404 error
+							next();
+						});
+					};
+				}
+				return null;
+			}).filter(Boolean).forEach(function (fn) {
+				fn(function () {
+					outstanding -= 1;
+					if (outstanding === 0) {
+						callback();
 					}
-					return null;
-				}).filter(Boolean).forEach(function (fn) {
-					fn(function () {
-						outstanding -= 1;
-						if (outstanding === 0) {
-							callback();
-						}
-					});
 				});
 			});
 		});
