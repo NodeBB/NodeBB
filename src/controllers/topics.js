@@ -127,7 +127,7 @@ function calculateStartStop(page, postIndex, settings) {
 	let startSkip = 0;
 
 	if (!settings.usePagination) {
-		if (postIndex !== 0) {
+		if (postIndex > 1) {
 			page = 1;
 		}
 		startSkip = Math.max(0, postIndex - Math.ceil(settings.postsPerPage / 2));
