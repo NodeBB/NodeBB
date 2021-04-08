@@ -42,12 +42,13 @@ module.exports = function (Topics) {
 			const counts = await db.sortedSetsCard(
 				tags.map(tag => `cid:${cid}:tag:${tag}:topics`)
 			);
+			const tagToCount = _.zipObject(tags, counts);
 			const set = `cid:${cid}:tags`;
 
-			const bulkAdd = tags.filter((tag, index) => counts[index] > 0)
-				.map((tag, index) => [set, counts[index], tag]);
+			const bulkAdd = tags.filter(tag => tagToCount[tag] > 0)
+				.map(tag => [set, tagToCount[tag], tag]);
 
-			const bulkRemove = tags.filter((tag, index) => counts[index] <= 0)
+			const bulkRemove = tags.filter(tag => tagToCount[tag] <= 0)
 				.map(tag => [set, tag]);
 
 			await Promise.all([
@@ -289,13 +290,15 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getTopicTags = async function (tid) {
-		return await db.getSetMembers(`topic:${tid}:tags`);
+		const tags = await db.getSetMembers(`topic:${tid}:tags`);
+		return tags.sort();
 	};
 
 	Topics.getTopicsTags = async function (tids) {
-		return await db.getSetsMembers(
-			tids.map(tid => `topic:${tid}:tags`)
-		);
+		const keys = tids.map(tid => `topic:${tid}:tags`);
+		const tags = await db.getSetsMembers(keys);
+		tags.forEach(tags => tags.sort());
+		return tags;
 	};
 
 	Topics.getTopicTagsObjects = async function (tid) {
@@ -314,6 +317,7 @@ module.exports = function (Topics) {
 		topicTags.forEach((tags, index) => {
 			if (Array.isArray(tags)) {
 				topicTags[index] = tags.map(tag => tagDataMap[tag]);
+				topicTags[index].sort((tag1, tag2) => tag2.value - tag1.value);
 			}
 		});
 
