@@ -119,9 +119,9 @@ define('admin/manage/category', [
 					return app.alertError(err.message);
 				}
 
-				Benchpress.render('admin/partials/categories/copy-settings', {
+				app.parseAndTranslate('admin/partials/categories/copy-settings', {
 					categories: allCategories,
-				}).then(function (html) {
+				}, function (html) {
 					var selectedCid;
 					var modal = bootbox.dialog({
 						title: '[[modules:composer.select_category]]',
