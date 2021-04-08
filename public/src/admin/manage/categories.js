@@ -109,9 +109,9 @@ define('admin/manage/categories', [
 				name: '[[admin/manage/categories:parent-category-none]]',
 				icon: 'fa-none',
 			});
-			Benchpress.render('admin/partials/categories/create', {
+			app.parseAndTranslate('admin/partials/categories/create', {
 				categories: categories,
-			}).then(function (html) {
+			}, function (html) {
 				var modal = bootbox.dialog({
 					title: '[[admin/manage/categories:alert.create]]',
 					message: html,
