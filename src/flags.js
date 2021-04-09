@@ -454,7 +454,7 @@ Flags.getReports = async function (flagId) {
 	const [reports, uids] = payload.reduce((memo, cur) => {
 		const value = cur.value.split(';');
 		memo[1].push(value.shift());
-		cur.value = value.join(';');
+		cur.value = validator.escape(String(value.join(';')));
 		memo[0].push(cur);
 
 		return memo;

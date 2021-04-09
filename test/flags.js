@@ -696,16 +696,16 @@ describe('Flags', () => {
 	describe('(websockets)', () => {
 		const SocketFlags = require('../src/socket.io/flags.js');
 		let pid;
-
+		let tid;
 		before((done) => {
 			Topics.post({
 				cid: 1,
 				uid: 1,
 				title: 'Another topic',
 				content: 'This is flaggable content',
-			}, (err, topic) => {
-				pid = topic.postData.pid;
-
+			}, (err, result) => {
+				pid = result.postData.pid;
+				tid = result.topicData.tid;
 				done(err);
 			});
 		});
@@ -725,6 +725,23 @@ describe('Flags', () => {
 						done();
 					});
 				});
+			});
+
+			it('should escape flag reason', async () => {
+				const postData = await Topics.reply({
+					tid: tid,
+					uid: 1,
+					content: 'This is flaggable content',
+				});
+
+				const flagId = await SocketFlags.create({ uid: 2 }, {
+					type: 'post',
+					id: postData.pid,
+					reason: '"<script>alert(\'ok\');</script>',
+				});
+
+				const flagData = await Flags.get(flagId);
+				assert.strictEqual(flagData.reports[0].value, '&quot;&lt;script&gt;alert(&#x27;ok&#x27;);&lt;&#x2F;script&gt;');
 			});
 
 			it('should not allow flagging post in private category', async () => {
