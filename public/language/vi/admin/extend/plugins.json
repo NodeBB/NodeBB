@@ -39,7 +39,7 @@
 	"alert.upgraded": "Đã Nâng Cấp Plugin",
 	"alert.installed": "Đã Cài Đặt Plugin",
 	"alert.uninstalled": "Đã Gỡ Bỏ Plugin",
-	"alert.activate-success": "Vui lòng khởi động lại NodeBB của bạn để kích hoạt hoàn toàn plugin này",
+	"alert.activate-success": "Vui lòng xây dựng lại và khởi động lại NodeBB của bạn để kích hoạt hoàn toàn plugin này",
 	"alert.deactivate-success": "Đã hủy kích hoạt plugin thành công",
 	"alert.upgrade-success": "Vui lòng xây dựng lại và khởi động lại NodeBB của bạn để nâng cấp đầy đủ plugin này.",
 	"alert.install-success": "Đã cài đặt thành công plugin, vui lòng kích hoạt plugin.",

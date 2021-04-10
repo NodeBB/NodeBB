@@ -39,7 +39,7 @@
 	"alert.upgraded": "Rozšírenie bolo aktualizované",
 	"alert.installed": "Rozšírenie bolo nainštalované",
 	"alert.uninstalled": "Rozšírenie bolo odinštalované",
-	"alert.activate-success": "Pre úplnú aktiváciu tohto rozšírenia, reštartujte NodeBB",
+	"alert.activate-success": "Please rebuild and restart your NodeBB to fully activate this plugin",
 	"alert.deactivate-success": "Rozšírenie bolo úspešne deaktivované",
 	"alert.upgrade-success": "Pre úplnú aktualizáciu tohto rozšírenia, znovu zostavte a reštartujte NodeBB.",
 	"alert.install-success": "Rozšírenie bolo úspešne nainštalované, môžete ho aktivovať.",

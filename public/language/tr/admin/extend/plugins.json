@@ -39,7 +39,7 @@
 	"alert.upgraded": "Eklendi Güncellendi",
 	"alert.installed": "Eklenti Kuruldu",
 	"alert.uninstalled": "Eklenti Kaldırıldı",
-	"alert.activate-success": "Bu eklentiyi tamamen etkinleştirmek için lütfen NodeBB'yi yeniden başlatın",
+	"alert.activate-success": "Please rebuild and restart your NodeBB to fully activate this plugin",
 	"alert.deactivate-success": "Eklenti başarıyla etkinsizleştirildi",
 	"alert.upgrade-success": "Lütfen bu eklentiyi tamamen yükseltmek için NodeBB'nizi yeniden oluşturun ve yeniden başlatın.",
 	"alert.install-success": "Eklenti başarıyla kuruldu, lütfen eklentiyi etkinleştirin.",

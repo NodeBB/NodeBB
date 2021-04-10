@@ -39,7 +39,7 @@
 	"alert.upgraded": "Beépülő frissítve",
 	"alert.installed": "Beépülő telepítve",
 	"alert.uninstalled": "Beépülő eltávolítva",
-	"alert.activate-success": "A beépülő teljes aktiválásához kérlek indítsd újra a NodeBB-t.",
+	"alert.activate-success": "Please rebuild and restart your NodeBB to fully activate this plugin",
 	"alert.deactivate-success": "A beépülő sikeresen deaktiválva",
 	"alert.upgrade-success": "A beépülő teljes frissítéséhez kérlek építsd újra majd indítsd újra a NodeBB-t.",
 	"alert.install-success": "A beépülő sikeresen telepítve, kérlek aktiváld.",

@@ -39,7 +39,7 @@
 	"alert.upgraded": "Плагин обновлен",
 	"alert.installed": "Плагин установлен",
 	"alert.uninstalled": "Плагин удалён",
-	"alert.activate-success": "Пожалуйста, перезапустите NodeBB чтобы полностью активировать этот плагин",
+	"alert.activate-success": "Please rebuild and restart your NodeBB to fully activate this plugin",
 	"alert.deactivate-success": "Плагин успешно отключен",
 	"alert.upgrade-success": "Пожалуйста, пересоберите и перезапустите NodeBB чтобы полностью активировать этот плагин",
 	"alert.install-success": "Плагин успешно установлен. Пожалуйста, активируйте его.",

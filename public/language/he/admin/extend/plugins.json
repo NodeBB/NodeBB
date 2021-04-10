@@ -39,7 +39,7 @@
 	"alert.upgraded": "תוסף שודרג",
 	"alert.installed": "תוסף הותקן",
 	"alert.uninstalled": "תוסף הוסר",
-	"alert.activate-success": "אנא הפעל מחדש את NodeBB בכדי להפעיל תוסף זה באופן מלא.",
+	"alert.activate-success": "Please rebuild and restart your NodeBB to fully activate this plugin",
 	"alert.deactivate-success": "התוסף הושבת בהצלחה",
 	"alert.upgrade-success": "בנה והפעל מחדש את NodeBB בכדי לשדרג תוסף זה במלואו.",
 	"alert.install-success": "תוסף הותקן בהצלחה, אנא הפעל את התוסף.",

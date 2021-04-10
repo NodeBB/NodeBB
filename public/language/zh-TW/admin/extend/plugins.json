@@ -39,7 +39,7 @@
 	"alert.upgraded": "外掛已升級",
 	"alert.installed": "外掛已安裝",
 	"alert.uninstalled": "外掛已卸載",
-	"alert.activate-success": "請 部署 & 重啟 NodeBB 來完全啟用此外掛",
+	"alert.activate-success": "Please rebuild and restart your NodeBB to fully activate this plugin",
 	"alert.deactivate-success": "外掛停用成功",
 	"alert.upgrade-success": "請部署並重啟您的 NodeBB 來完成更新此外掛。",
 	"alert.install-success": "外掛安裝成功，請啟用外掛。",
