@@ -82,9 +82,9 @@ async function listPlugins() {
 	process.exit();
 }
 
-async function listEvents(count) {
+async function listEvents(count = 10) {
 	await db.init();
-	const eventData = await events.getEvents('', 0, (count || 10) - 1);
+	const eventData = await events.getEvents('', 0, count - 1);
 	console.log((`\nDisplaying last ${count} administrative events...`).bold);
 	eventData.forEach((event) => {
 		console.log(`  * ${String(event.timestampISO).green} ${String(event.type).yellow}${event.text ? ` ${event.text}` : ''}${' (uid: '.reset}${event.uid ? event.uid : 0})`);
