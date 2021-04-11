@@ -39,7 +39,7 @@
 	"alert.upgraded": "Добавката е обновена",
 	"alert.installed": "Добавката е инсталирана",
 	"alert.uninstalled": "Добавката е деинсталирана",
-	"alert.activate-success": "Please rebuild and restart your NodeBB to fully activate this plugin",
+	"alert.activate-success": "Моля, изградете повторно и презаредете NodeBB, за да активирате напълно тази добавка.",
 	"alert.deactivate-success": "Добавката е изключена успешно.",
 	"alert.upgrade-success": "Моля, изградете повторно и презаредете NodeBB, за да обновите тази добавка напълно.",
 	"alert.install-success": "Добавката е инсталирана успешно, моля, включете я",
