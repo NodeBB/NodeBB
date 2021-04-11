@@ -116,8 +116,8 @@ SocketPosts.getReplies = async function (socket, pid) {
 	if (!utils.isNumber(pid)) {
 		throw new Error('[[error:invalid-data]]');
 	}
-
-	const pids = await posts.getPidsFromSet(`pid:${pid}:replies`, 0, -1, false);
+	const { topicPostSort } = await user.getSettings(socket.uid);
+	const pids = await posts.getPidsFromSet(`pid:${pid}:replies`, 0, -1, topicPostSort === 'newest_to_oldest');
 
 	let [postData, postPrivileges] = await Promise.all([
 		posts.getPostsByPids(pids, socket.uid),

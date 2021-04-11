@@ -66,7 +66,11 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], 
 		app.parseAndTranslate('topic', 'posts', data, function (html) {
 			var replies = $('[component="post"][data-pid="' + post.toPid + '"] [component="post/replies"]').first();
 			if (replies.length) {
-				replies.append(html);
+				if (config.topicPostSort === 'newest_to_oldest') {
+					replies.prepend(html);
+				} else {
+					replies.append(html);
+				}
 				posts.onNewPostsAddedToDom(html);
 			}
 		});
