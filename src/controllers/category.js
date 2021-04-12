@@ -49,8 +49,8 @@ categoryController.get = async function (req, res, next) {
 		return helpers.notAllowed(req, res);
 	}
 
-	if (!res.locals.isAPI && (!req.params.slug || categoryFields.slug !== cid + '/' + req.params.slug) && (categoryFields.slug && categoryFields.slug !== cid + '/')) {
-		return helpers.redirect(res, '/category/' + categoryFields.slug, true);
+	if (!res.locals.isAPI && !req.params.slug && (categoryFields.slug && categoryFields.slug !== `${cid}/`)) {
+		return helpers.redirect(res, `/category/${categoryFields.slug}`, true);
 	}
 
 	if (categoryFields.link) {
