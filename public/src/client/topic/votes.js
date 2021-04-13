@@ -63,7 +63,8 @@ define('forum/topic/votes', [
 			delta: delta,
 		}, function (err) {
 			if (err) {
-				if (err.message === '[[error:not-logged-in]]') {
+				// TODO: err.message is currently hardcoded in helpers/api.js
+				if (err.message === 'A valid login session was not found. Please log in and try again.') {
 					ajaxify.go('login');
 					return;
 				}
