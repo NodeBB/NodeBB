@@ -21,8 +21,11 @@ define('settings/sorted-list', [
 			$container.find('[data-type="item"]').each(function (idx, item) {
 				var itemUUID = $(item).attr('data-sorted-list-uuid');
 
-				var formData = $('[data-sorted-list-object="' + key + '"][data-sorted-list-uuid="' + itemUUID + '"]');
-				values[key].push(Settings.helper.serializeForm(formData));
+				var formData = Settings.helper.serializeForm($('[data-sorted-list-object="' + key + '"][data-sorted-list-uuid="' + itemUUID + '"]'));
+				for (const [field, value] of Object.entries(formData)) {
+					formData[field] = utils.stripHTMLTags(value, utils.stripTags);
+				}
+				values[key].push(formData);
 			});
 		},
 		get: function ($container, hash) {
@@ -119,6 +122,10 @@ define('settings/sorted-list', [
 	function parse($container, itemUUID, data) {
 		var $list = $container.find('[data-type="list"]');
 		var itemTpl = $container.attr('data-item-template');
+
+		for (const [field, value] of Object.entries(data)) {
+			data[field] = utils.stripHTMLTags(value, utils.stripTags);
+		}
 
 		return new Promise((resolve) => {
 			app.parseAndTranslate(itemTpl, data, function (itemHtml) {
