@@ -22,9 +22,9 @@ define('settings/sorted-list', [
 				var itemUUID = $(item).attr('data-sorted-list-uuid');
 
 				var formData = Settings.helper.serializeForm($('[data-sorted-list-object="' + key + '"][data-sorted-list-uuid="' + itemUUID + '"]'));
-				for (const [field, value] of Object.entries(formData)) {
+				Object.entries(formData || {}).forEach(([field, value]) => {
 					formData[field] = utils.stripHTMLTags(value, utils.stripTags);
-				}
+				});
 				values[key].push(formData);
 			});
 		},
@@ -123,9 +123,9 @@ define('settings/sorted-list', [
 		var $list = $container.find('[data-type="list"]');
 		var itemTpl = $container.attr('data-item-template');
 
-		for (const [field, value] of Object.entries(data)) {
+		Object.entries(data || {}).forEach(([field, value]) => {
 			data[field] = utils.stripHTMLTags(value, utils.stripTags);
-		}
+		});
 
 		return new Promise((resolve) => {
 			app.parseAndTranslate(itemTpl, data, function (itemHtml) {
