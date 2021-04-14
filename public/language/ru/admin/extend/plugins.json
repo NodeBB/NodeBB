@@ -36,7 +36,7 @@
 
 	"alert.enabled": "Плагин включен",
 	"alert.disabled": "Плагин выключен",
-	"alert.upgraded": "Плагин обновлен",
+	"alert.upgraded": "Плагин обновлён",
 	"alert.installed": "Плагин установлен",
 	"alert.uninstalled": "Плагин удалён",
 	"alert.activate-success": "Please rebuild and restart your NodeBB to fully activate this plugin",
