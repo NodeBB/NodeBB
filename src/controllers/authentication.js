@@ -183,7 +183,7 @@ authenticationController.registerComplete = function (req, res, next) {
 		const results = await Promise.allSettled(callbacks.map(async (cb) => {
 			await cb(req.session.registration, req.body);
 		}));
-		const errors = results.map(result => result.reason && result.reason.message).filter(Boolean);
+		const errors = results.map(result => result.status === 'rejected').filter(Boolean);
 		if (errors.length) {
 			req.flash('errors', errors);
 			return res.redirect(`${nconf.get('relative_path')}/register/complete`);
