@@ -38,28 +38,39 @@ define('forum/flags/list', ['components', 'Chart', 'categoryFilter', 'autocomple
 			Flags.handleGraphs();
 		});
 
-		autocomplete.user($('#filter-assignee, #filter-targetUid, #filter-reporterId'));
+		autocomplete.user($('#filter-assignee, #filter-targetUid, #filter-reporterId'), (ev, ui) => {
+			setTimeout(() => { ev.target.value = ui.item.user.uid; });
+		});
 	};
 
 	Flags.enableFilterForm = function () {
-		var filtersEl = components.get('flags/filters');
+		const $filtersEl = components.get('flags/filters');
 
 		// Parse ajaxify data to set form values to reflect current filters
-		for (var filter in ajaxify.data.filters) {
+		for (const filter in ajaxify.data.filters) {
 			if (ajaxify.data.filters.hasOwnProperty(filter)) {
-				filtersEl.find('[name="' + filter + '"]').val(ajaxify.data.filters[filter]);
+				$filtersEl.find('[name="' + filter + '"]').val(ajaxify.data.filters[filter]);
 			}
 		}
-		filtersEl.find('[name="sort"]').val(ajaxify.data.sort);
+		$filtersEl.find('[name="sort"]').val(ajaxify.data.sort);
 
 		document.getElementById('apply-filters').addEventListener('click', function () {
-			var payload = filtersEl.serializeArray();
+			const payload = $filtersEl.serializeArray();
 			// cid is special comes from categoryFilter module
 			selectedCids.forEach(function (cid) {
 				payload.push({ name: 'cid', value: cid });
 			});
 
 			ajaxify.go('flags?' + (payload.length ? $.param(payload) : 'reset=1'));
+		});
+
+		$filtersEl.find('button[data-target="#more-filters"]').click((ev) => {
+			const textVariant = ev.target.getAttribute('data-text-variant');
+			if (!textVariant) {
+				return;
+			}
+			ev.target.setAttribute('data-text-variant', ev.target.textContent);
+			ev.target.firstChild.textContent = textVariant;
 		});
 	};
 
