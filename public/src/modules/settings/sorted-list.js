@@ -22,9 +22,7 @@ define('settings/sorted-list', [
 				var itemUUID = $(item).attr('data-sorted-list-uuid');
 
 				var formData = Settings.helper.serializeForm($('[data-sorted-list-object="' + key + '"][data-sorted-list-uuid="' + itemUUID + '"]'));
-				Object.entries(formData || {}).forEach(([field, value]) => {
-					formData[field] = utils.stripHTMLTags(value, utils.stripTags);
-				});
+				stripTags(formData);
 				values[key].push(formData);
 			});
 		},
@@ -103,6 +101,7 @@ define('settings/sorted-list', [
 
 
 					var data = Settings.helper.serializeForm(form);
+					stripTags(data);
 
 					app.parseAndTranslate(itemTpl, data, function (itemHtml) {
 						itemHtml = $(itemHtml);
@@ -123,9 +122,7 @@ define('settings/sorted-list', [
 		var $list = $container.find('[data-type="list"]');
 		var itemTpl = $container.attr('data-item-template');
 
-		Object.entries(data || {}).forEach(([field, value]) => {
-			data[field] = utils.stripHTMLTags(value, utils.stripTags);
-		});
+		stripTags(data);
 
 		return new Promise((resolve) => {
 			app.parseAndTranslate(itemTpl, data, function (itemHtml) {
@@ -137,6 +134,12 @@ define('settings/sorted-list', [
 				setupEditButton($container, itemUUID);
 				resolve();
 			});
+		});
+	}
+
+	function stripTags(data) {
+		return Object.entries(data || {}).forEach(([field, value]) => {
+			data[field] = utils.stripHTMLTags(value, utils.stripTags);
 		});
 	}
 
