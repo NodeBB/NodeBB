@@ -2,6 +2,7 @@
 
 
 const assert = require('assert');
+const url = require('url');
 const async = require('async');
 const nconf = require('nconf');
 const request = require('request');
@@ -228,11 +229,12 @@ describe('authentication', () => {
 		const login = util.promisify(helpers.loginUser);
 		const logout = util.promisify(helpers.logoutUser);
 		const matchRegexp = /express\.sid=s%3A(.+?);/;
+		const { hostname, path } = url.parse(nconf.get('url'));
 
-		const sid = String(jar._jar.store.idx.localhost['/']['express.sid']).match(matchRegexp)[1];
+		const sid = String(jar._jar.store.idx[hostname][path]['express.sid']).match(matchRegexp)[1];
 		await logout(jar);
 		const newJar = await login('regular', 'regularpwd');
-		const newSid = String(newJar._jar.store.idx.localhost['/']['express.sid']).match(matchRegexp)[1];
+		const newSid = String(newJar._jar.store.idx[hostname][path]['express.sid']).match(matchRegexp)[1];
 
 		assert.notStrictEqual(newSid, sid);
 	});
