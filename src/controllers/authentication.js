@@ -328,7 +328,12 @@ authenticationController.doLogin = async function (req, uid) {
 	const loginAsync = util.promisify(req.login).bind(req);
 	const regenerateSession = util.promisify(req.session.regenerate).bind(req.session);
 
+	const sessionData = { ...req.session };
 	await regenerateSession();
+	for (const [prop, value] of Object.entries(sessionData)) {
+		req.session[prop] = value;
+	}
+
 	await loginAsync({ uid: uid });
 	await authenticationController.onSuccessfulLogin(req, uid);
 };
