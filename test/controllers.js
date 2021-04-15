@@ -1050,8 +1050,18 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should 404 if user does not exist', function (done) {
-			request(nconf.get('url') + '/api/uid/123123', { json: true }, function (err, res) {
+		it('should redirect to userslug and keep query params', (done) => {
+			request(`${nconf.get('url')}/api/uid/${fooUid}/topics?foo=bar`, { json: true }, (err, res, body) => {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert.equal(res.headers['x-redirect'], '/user/foo/topics?foo=bar');
+				assert.equal(body, '/user/foo/topics?foo=bar');
+				done();
+			});
+		});
+
+		it('should 404 if user does not exist', (done) => {
+			request(`${nconf.get('url')}/api/uid/123123`, { json: true }, (err, res) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				done();
