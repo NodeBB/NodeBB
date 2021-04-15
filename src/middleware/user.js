@@ -194,9 +194,8 @@ module.exports = function (middleware) {
 		if (!userslug) {
 			return next();
 		}
-		const path = req.path.replace(/^\/api/, '')
-			.replace('uid', 'user')
-			.replace(uid, () => userslug);
+		const path = req.url.replace(/^\/api/, '')
+			.replace(`/uid/${uid}`, () => `/user/${userslug}`);
 		controllers.helpers.redirect(res, path);
 	});
 
