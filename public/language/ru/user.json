@@ -139,7 +139,7 @@
     "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Сервисы единого входа",
     "sso.associated": "Связан с",
-    "sso.not-associated": "Нажмите здесь, что бы связать учётную запись с",
+    "sso.not-associated": "Нажмите здесь, чтобы связать учётную запись с",
     "sso.dissociate": "Открепить",
     "sso.dissociate-confirm-title": "Подтверждение открепления",
     "sso.dissociate-confirm": "Вы уверены, что хотите открепить свою учётную запись от %1?",
