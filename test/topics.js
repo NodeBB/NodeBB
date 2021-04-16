@@ -2830,7 +2830,6 @@ describe('Topic\'s', () => {
 				'topics:scheduled',
 				`uid:${adminUid}:topics`,
 				'topics:tid',
-				`cid:${topicData.cid}:tids`,
 				`cid:${topicData.cid}:uid:${adminUid}:tids`,
 			], topicData.tid);
 			assert(scores.every(publishTime => publishTime === editedTopic.timestamp));
