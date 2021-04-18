@@ -51,7 +51,7 @@
 	"alert.saved": "Изменения прав доступа сохранены и применены",
 	"alert.confirm-discard": "Are you sure you wish to discard your privilege changes?",
 	"alert.discarded": "Изменения прав доступа отменены",
-	"alert.confirm-copyToAll": "Are you sure you wish to apply this privilege set to <strong>all categories</strong>?",
+	"alert.confirm-copyToAll": "Вы уверены, что хотите применить этот набор привилегий ко <strong>всем категориям</strong>?",
 	"alert.confirm-copyToAllGroup": "Are you sure you wish to apply this group's privilege set to <strong>all categories</strong>?",
 	"alert.confirm-copyToChildren": "Are you sure you wish to apply this privilege set to <strong>all descendant (child) categories</strong>?",
 	"alert.confirm-copyToChildrenGroup": "Are you sure you wish to apply this group's privilege set to <strong>all descendant (child) categories</strong>?",
