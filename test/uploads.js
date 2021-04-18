@@ -63,11 +63,53 @@ describe('Upload Controllers', () => {
 		});
 	});
 
+	describe('regular user uploads rate limits', () => {
+		let jar;
+		let csrf_token;
+
+		before((done) => {
+			helpers.loginUser('malicioususer', 'herpderp', (err, _jar, _csrf_token) => {
+				assert.ifError(err);
+				jar = _jar;
+				csrf_token = _csrf_token;
+				privileges.global.give(['groups:upload:post:file'], 'registered-users', done);
+			});
+		});
+
+		it('should fail if the user exceeds the upload rate limit threshold', (done) => {
+			const oldValue = meta.config.allowedFileExtensions;
+			meta.config.allowedFileExtensions = 'png,jpg,bmp,html';
+
+			// why / 2? see: helpers.uploadFile for a weird quirk where we actually upload 2 files per upload in our tests.
+			async.times(meta.config.uploadRateLimitThreshold / 2, (i, next) => {
+				helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/503.html'), {}, jar, csrf_token, (err, res, body) => {
+					if (i + 1 > meta.config.uploadRateLimitThreshold / 2) {
+						assert.strictEqual(res.statusCode, 500);
+						assert.strictEqual(body.error, '[[error:upload-ratelimit-reached]]');
+					} else {
+						assert.ifError(err);
+						assert.strictEqual(res.statusCode, 200);
+						assert(body && body.status && body.response && body.response.images);
+						assert(Array.isArray(body.response.images));
+						assert(body.response.images[0].url);
+					}
+
+					next(err);
+				});
+			}, (err) => {
+				meta.config.allowedFileExtensions = oldValue;
+				assert.ifError(err);
+				done();
+			});
+		});
+	});
+
 	describe('regular user uploads', () => {
 		let jar;
 		let csrf_token;
 
 		before((done) => {
+			meta.config.uploadRateLimitThreshold = 1000;
 			helpers.loginUser('regular', 'zugzug', (err, _jar, _csrf_token) => {
 				assert.ifError(err);
 				jar = _jar;
@@ -151,22 +193,22 @@ describe('Upload Controllers', () => {
 			});
 		});
 
-		it('should fail to upload image to post if image is broken', (done) => {
-			helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/brokenimage.png'), {}, jar, csrf_token, (err, res, body) => {
-				assert.ifError(err);
-				assert.strictEqual(res.statusCode, 500);
-				assert(body && body.status && body.status.message);
-				assert(body.status.message.startsWith('Input file has corrupt header: pngload: end of stream'));
-				done();
-			});
-		});
-
 		it('should fail to upload image to post if image dimensions are too big', (done) => {
 			helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/toobig.jpg'), {}, jar, csrf_token, (err, res, body) => {
 				assert.ifError(err);
 				assert.strictEqual(res.statusCode, 500);
 				assert(body && body.status && body.status.message);
 				assert.strictEqual(body.status.message, 'Input image exceeds pixel limit');
+				done();
+			});
+		});
+
+		it('should fail to upload image to post if image is broken', (done) => {
+			helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/brokenimage.png'), {}, jar, csrf_token, (err, res, body) => {
+				assert.ifError(err);
+				assert.strictEqual(res.statusCode, 500);
+				assert(body && body.status && body.status.message);
+				assert(body.status.message.startsWith('pngload_buffer: non-recoverable state'));
 				done();
 			});
 		});
@@ -323,47 +365,6 @@ describe('Upload Controllers', () => {
 					done();
 				},
 			], done);
-		});
-	});
-
-	describe('regular user uploads rate limits', () => {
-		let jar;
-		let csrf_token;
-
-		before((done) => {
-			helpers.loginUser('malicioususer', 'herpderp', (err, _jar, _csrf_token) => {
-				assert.ifError(err);
-				jar = _jar;
-				csrf_token = _csrf_token;
-				privileges.global.give(['groups:upload:post:file'], 'registered-users', done);
-			});
-		});
-
-		it('should fail if the user exceeds the upload rate limit threshold', (done) => {
-			const oldValue = meta.config.allowedFileExtensions;
-			meta.config.allowedFileExtensions = 'png,jpg,bmp,html';
-
-			// why / 2? see: helpers.uploadFile for a weird quirk where we actually upload 2 files per upload in our tests.
-			async.times(meta.config.uploadRateLimitThreshold / 2, (i, next) => {
-				helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/503.html'), {}, jar, csrf_token, (err, res, body) => {
-					if (i + 1 > meta.config.uploadRateLimitThreshold / 2) {
-						assert.strictEqual(res.statusCode, 500);
-						assert.strictEqual(body.error, '[[error:upload-ratelimit-reached]]');
-					} else {
-						assert.ifError(err);
-						assert.strictEqual(res.statusCode, 200);
-						assert(body && body.status && body.response && body.response.images);
-						assert(Array.isArray(body.response.images));
-						assert(body.response.images[0].url);
-					}
-
-					next(err);
-				});
-			}, (err) => {
-				meta.config.allowedFileExtensions = oldValue;
-				assert.ifError(err);
-				done();
-			});
 		});
 	});
 
