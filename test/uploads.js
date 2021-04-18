@@ -151,6 +151,16 @@ describe('Upload Controllers', () => {
 			});
 		});
 
+		it('should fail to upload image to post if image is broken', (done) => {
+			helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/brokenimage.png'), {}, jar, csrf_token, (err, res, body) => {
+				assert.ifError(err);
+				assert.strictEqual(res.statusCode, 500);
+				assert(body && body.status && body.status.message);
+				assert(body.status.message.startsWith('Input file has corrupt header: pngload: end of stream'));
+				done();
+			});
+		});
+
 		it('should fail to upload image to post if image dimensions are too big', (done) => {
 			helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/toobig.jpg'), {}, jar, csrf_token, (err, res, body) => {
 				assert.ifError(err);
