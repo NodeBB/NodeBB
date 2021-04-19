@@ -17,7 +17,7 @@ module.exports = function (middleware) {
 		}
 
 		const count = (cache.peek(`${req.ip}:uploaded_file_count`) || 0) + req.files.files.length;
-
+		console.log('req.ip', req.ip, count, req.files.files.length, meta.config.uploadRateLimitThreshold);
 		if (count > meta.config.uploadRateLimitThreshold) {
 			return next(new Error(['[[error:upload-ratelimit-reached]]']));
 		}
