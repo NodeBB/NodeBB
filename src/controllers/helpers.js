@@ -11,7 +11,6 @@ const privileges = require('../privileges');
 const categories = require('../categories');
 const plugins = require('../plugins');
 const meta = require('../meta');
-const middleware = require('../middleware');
 
 const helpers = module.exports;
 
@@ -22,7 +21,7 @@ helpers.noScriptErrors = async function (req, res, error, httpStatus) {
 	if (req.body.noscript !== 'true') {
 		return res.status(httpStatus).send(error);
 	}
-
+	const middleware = require('../middleware');
 	const httpStatusString = httpStatus.toString();
 	await middleware.buildHeaderAsync(req, res);
 	res.status(httpStatus).render(httpStatusString, {
@@ -127,6 +126,7 @@ helpers.notAllowed = async function (req, res, error) {
 		if (res.locals.isAPI) {
 			helpers.formatApiResponse(403, res, error);
 		} else {
+			const middleware = require('../middleware');
 			await middleware.buildHeaderAsync(req, res);
 			res.status(403).render('403', {
 				path: req.path,

@@ -79,7 +79,7 @@ describe('Upload Controllers', () => {
 		it('should fail if the user exceeds the upload rate limit threshold', (done) => {
 			const oldValue = meta.config.allowedFileExtensions;
 			meta.config.allowedFileExtensions = 'png,jpg,bmp,html';
-
+			require('../src/middleware/uploads').clearCache();
 			// why / 2? see: helpers.uploadFile for a weird quirk where we actually upload 2 files per upload in our tests.
 			console.log('times', (meta.config.uploadRateLimitThreshold / 2) + 1);
 			const times = (meta.config.uploadRateLimitThreshold / 2) + 1;

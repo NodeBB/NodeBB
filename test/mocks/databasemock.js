@@ -176,6 +176,7 @@ async function setupMockDefaults() {
 	require('../../src/groups').cache.reset();
 	require('../../src/posts/cache').reset();
 	require('../../src/cache').reset();
+	require('../../src/middleware/uploads').clearCache();
 
 	winston.info('test_database flushed');
 	await setupDefaultConfigs(meta);
@@ -185,6 +186,7 @@ async function setupMockDefaults() {
 	meta.config.initialPostDelay = 0;
 	meta.config.newbiePostDelay = 0;
 	meta.config.autoDetectLang = 0;
+	// meta.config.uploadRateLimitCooldown = 1;
 
 	await enableDefaultPlugins();
 
