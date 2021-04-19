@@ -81,9 +81,9 @@ describe('Upload Controllers', () => {
 			meta.config.allowedFileExtensions = 'png,jpg,bmp,html';
 
 			// why / 2? see: helpers.uploadFile for a weird quirk where we actually upload 2 files per upload in our tests.
-			async.times(meta.config.uploadRateLimitThreshold / 2, (i, next) => {
+			async.timesSeries(meta.config.uploadRateLimitThreshold / 2, (i, next) => {
 				helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/503.html'), {}, jar, csrf_token, (err, res, body) => {
-					console.log(i, res.statusCode, meta.config.uploadRateLimitThreshold, Date.now());
+					console.log('limit upload', i, res.statusCode, meta.config.uploadRateLimitThreshold, Date.now());
 					if (i + 1 > meta.config.uploadRateLimitThreshold / 2) {
 						assert.strictEqual(res.statusCode, 500);
 						assert.strictEqual(body.error, '[[error:upload-ratelimit-reached]]');
