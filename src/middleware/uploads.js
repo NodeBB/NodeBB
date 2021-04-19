@@ -6,7 +6,7 @@ const helpers = require('./helpers');
 const user = require('../user');
 
 const cache = new LRU({
-	maxAge: meta.config.uploadRateLimitThreshold * 1000,
+	maxAge: meta.config.uploadRateLimitCooldown * 1000,
 });
 
 module.exports = function (middleware) {
