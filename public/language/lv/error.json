@@ -89,6 +89,7 @@
     "file-too-big": "Maksimālais atļautais faila lielums ir %1 kB - lūdzu, augšupielādē mazāku failu",
     "guest-upload-disabled": "Viesu failu augšupielāde ir atspējota",
     "cors-error": "Neizdevās augšupielādēt bildi nepareizo CORS iestatījumu dēļ",
+    "upload-ratelimit-reached": "You have uploaded too many files at one time. Please try again later.",
     "scheduling-to-past": "Please select a date in the future.",
     "invalid-schedule-date": "Please enter a valid date and time.",
     "cant-pin-scheduled": "Scheduled topics cannot be (un)pinned.",

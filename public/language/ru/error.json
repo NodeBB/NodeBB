@@ -89,6 +89,7 @@
     "file-too-big": "Слишком большой файл. Максимальный размер: %1 Кбайт.",
     "guest-upload-disabled": "Загрузка файлов для гостей отключена. Чтобы загрузить файл, пожалуйста, войдите или зарегистрируйтесь на сайте.",
     "cors-error": "Невозможно загрузить изображение из-за некорректного CORS",
+    "upload-ratelimit-reached": "You have uploaded too many files at one time. Please try again later.",
     "scheduling-to-past": "Please select a date in the future.",
     "invalid-schedule-date": "Please enter a valid date and time.",
     "cant-pin-scheduled": "Scheduled topics cannot be (un)pinned.",

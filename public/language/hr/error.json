@@ -89,6 +89,7 @@
     "file-too-big": "Maksimalna veličina datoteke je %1 kB - učitajte manju datoteku",
     "guest-upload-disabled": "Učitavanje datoteka za goste je isključeno",
     "cors-error": "Unable to upload image due to misconfigured CORS",
+    "upload-ratelimit-reached": "You have uploaded too many files at one time. Please try again later.",
     "scheduling-to-past": "Please select a date in the future.",
     "invalid-schedule-date": "Please enter a valid date and time.",
     "cant-pin-scheduled": "Scheduled topics cannot be (un)pinned.",

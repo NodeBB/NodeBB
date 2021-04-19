@@ -89,6 +89,7 @@
     "file-too-big": "O tamanho máximo permitido para um ficheiro é de %1 kB - por favor carrega um ficheiro mais pequeno",
     "guest-upload-disabled": "Os carregamentos por parte de convidados foram desativados",
     "cors-error": "Impossível carregar a imagem devido ao CORS mal configurado",
+    "upload-ratelimit-reached": "You have uploaded too many files at one time. Please try again later.",
     "scheduling-to-past": "Please select a date in the future.",
     "invalid-schedule-date": "Please enter a valid date and time.",
     "cant-pin-scheduled": "Scheduled topics cannot be (un)pinned.",

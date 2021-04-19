@@ -89,6 +89,7 @@
     "file-too-big": "%1kBより大きいサイズファイルが許されません－より小さいファイルをアップして下さい。",
     "guest-upload-disabled": "ゲストさんからのアップを無効にしています",
     "cors-error": "CORSの設定が誤っているため、画像をアップロードできません",
+    "upload-ratelimit-reached": "You have uploaded too many files at one time. Please try again later.",
     "scheduling-to-past": "Please select a date in the future.",
     "invalid-schedule-date": "Please enter a valid date and time.",
     "cant-pin-scheduled": "Scheduled topics cannot be (un)pinned.",

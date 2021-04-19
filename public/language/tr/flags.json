@@ -6,7 +6,7 @@
 	"assignee": "Vekil",
 	"update": "Güncelle",
 	"updated": "Güncellendi",
-	"resolved": "Resolved",
+	"resolved": "Çözüldü",
 	"target-purged": "Şikayet edilen içerik temizlendi ve artık mevcut değil.",
 
 	"graph-label": "Günlük Şikayetler",
@@ -27,7 +27,7 @@
 	"filter-cid-all": "Tüm kategoriler",
 	"apply-filters": "Filtreleri Onayla",
 	"more-filters": "Daha Fazla Filtre",
-	"fewer-filters": "Fewer Filters",
+	"fewer-filters": "Daha az filtre",
 
 	"quick-actions": "Hızlı Eylemler",
 	"flagged-user": "Şikayet Edilen Kullanıcı",

@@ -89,6 +89,7 @@
     "file-too-big": "Najväčšia povolená veľkosť obrázka je %1 kB - prosím nahrajte menší súbor",
     "guest-upload-disabled": "Nahrávanie pre hostí bolo zablokované",
     "cors-error": "Nieje možné nahrať obrázok kvôli zle nastavenému „Cross-Origin Resource Sharing (CORS)”",
+    "upload-ratelimit-reached": "You have uploaded too many files at one time. Please try again later.",
     "scheduling-to-past": "Please select a date in the future.",
     "invalid-schedule-date": "Please enter a valid date and time.",
     "cant-pin-scheduled": "Scheduled topics cannot be (un)pinned.",

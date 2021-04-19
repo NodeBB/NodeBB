@@ -89,6 +89,7 @@
     "file-too-big": "Maximum toegestane bestandsgrootte is %1 kB - probeer een kleiner bestand te verzenden",
     "guest-upload-disabled": "Uploads voor gasten zijn uitgeschaleld ",
     "cors-error": "Kan plaatje niet uploaden door verkeerd geconfigureerd CORS",
+    "upload-ratelimit-reached": "You have uploaded too many files at one time. Please try again later.",
     "scheduling-to-past": "Please select a date in the future.",
     "invalid-schedule-date": "Please enter a valid date and time.",
     "cant-pin-scheduled": "Scheduled topics cannot be (un)pinned.",

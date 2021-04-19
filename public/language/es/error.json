@@ -89,6 +89,7 @@
     "file-too-big": "El tamaño de fichero máximo es de %1 kB - por favor, suba un fichero más pequeño",
     "guest-upload-disabled": "Las subidas están deshabilitadas para los invitados",
     "cors-error": "No se puede subir la imágen debido a CORS mal configurado",
+    "upload-ratelimit-reached": "You have uploaded too many files at one time. Please try again later.",
     "scheduling-to-past": "Please select a date in the future.",
     "invalid-schedule-date": "Please enter a valid date and time.",
     "cant-pin-scheduled": "Scheduled topics cannot be (un)pinned.",

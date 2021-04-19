@@ -89,6 +89,7 @@
     "file-too-big": "Највећа дозвољена величина датотеке је %1 kB - отпремите мању датотеку.",
     "guest-upload-disabled": "Гостима је онемогућено отпремање",
     "cors-error": "Није могуће отпремити слику због погрешно конфигурисаног CORS",
+    "upload-ratelimit-reached": "You have uploaded too many files at one time. Please try again later.",
     "scheduling-to-past": "Please select a date in the future.",
     "invalid-schedule-date": "Please enter a valid date and time.",
     "cant-pin-scheduled": "Scheduled topics cannot be (un)pinned.",

@@ -89,6 +89,7 @@
     "file-too-big": "הגודל המקסימלי של הקובץ הוא %1 קילובייט - אנא העלה קובץ קטן יותר",
     "guest-upload-disabled": "העלאת אורחים אינה מאופשרת",
     "cors-error": "לא ניתן להעלות את התמונה עקב שגיאת CORS.",
+    "upload-ratelimit-reached": "You have uploaded too many files at one time. Please try again later.",
     "scheduling-to-past": "Please select a date in the future.",
     "invalid-schedule-date": "Please enter a valid date and time.",
     "cant-pin-scheduled": "Scheduled topics cannot be (un)pinned.",

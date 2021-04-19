@@ -89,6 +89,7 @@
     "file-too-big": "上传文件的大小限制为 %1 KB - 请缩减文件大小",
     "guest-upload-disabled": "未登录用户不允许上传",
     "cors-error": "由于CORS配置错误，无法上传图片。",
+    "upload-ratelimit-reached": "You have uploaded too many files at one time. Please try again later.",
     "scheduling-to-past": "Please select a date in the future.",
     "invalid-schedule-date": "Please enter a valid date and time.",
     "cant-pin-scheduled": "Scheduled topics cannot be (un)pinned.",

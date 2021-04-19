@@ -89,6 +89,7 @@
     "file-too-big": "La dimensione massima consentita è di %1 kB - si prega di caricare un file più piccolo",
     "guest-upload-disabled": "Il caricamento da ospite è stato disattivato",
     "cors-error": "Impossibile caricare immagine a causa di CORS non configurato opportunamente",
+    "upload-ratelimit-reached": "You have uploaded too many files at one time. Please try again later.",
     "scheduling-to-past": "Si prega di selezionare una data nel futuro.",
     "invalid-schedule-date": "Si prega di inserire una data e ora valida.",
     "cant-pin-scheduled": "Le discussioni pianificate non possono essere (s)bloccate.",

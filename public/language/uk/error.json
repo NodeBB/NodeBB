@@ -89,6 +89,7 @@
     "file-too-big": "Максимальний розмір файлу %1 кБ — завантажте менший файл, будь ласка.",
     "guest-upload-disabled": "Гостьове завантаження вимкнено.",
     "cors-error": "Неможливо завантажити зображення через неправильно налаштований CORS",
+    "upload-ratelimit-reached": "You have uploaded too many files at one time. Please try again later.",
     "scheduling-to-past": "Please select a date in the future.",
     "invalid-schedule-date": "Please enter a valid date and time.",
     "cant-pin-scheduled": "Scheduled topics cannot be (un)pinned.",

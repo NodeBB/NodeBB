@@ -89,6 +89,7 @@
     "file-too-big": "Maksimum filstørrelse er %1 kB - venligst overfør en mindre fil",
     "guest-upload-disabled": "Gæsteupload er deaktiveret",
     "cors-error": "Unable to upload image due to misconfigured CORS",
+    "upload-ratelimit-reached": "You have uploaded too many files at one time. Please try again later.",
     "scheduling-to-past": "Please select a date in the future.",
     "invalid-schedule-date": "Please enter a valid date and time.",
     "cant-pin-scheduled": "Scheduled topics cannot be (un)pinned.",

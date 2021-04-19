@@ -89,6 +89,7 @@
     "file-too-big": "A maximális megengedett fájl méret %1 kB - kérlek kisebb méretű fájlt tölts fel",
     "guest-upload-disabled": "Vendég általi feltöltés kikapcsolva",
     "cors-error": "Nem sikerült a kép feltöltés a rosszul konfigurált CORS miatt",
+    "upload-ratelimit-reached": "You have uploaded too many files at one time. Please try again later.",
     "scheduling-to-past": "Kérlek adj meg egy jövőbeli időpontot.",
     "invalid-schedule-date": "Kérlek valós dátumot és időt adj meg.",
     "cant-pin-scheduled": "Időzített témakörök rögzítése nem oldható fel.",
