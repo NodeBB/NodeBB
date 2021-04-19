@@ -186,7 +186,6 @@ async function setupMockDefaults() {
 	meta.config.initialPostDelay = 0;
 	meta.config.newbiePostDelay = 0;
 	meta.config.autoDetectLang = 0;
-	// meta.config.uploadRateLimitCooldown = 1;
 
 	await enableDefaultPlugins();
 

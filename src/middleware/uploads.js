@@ -5,7 +5,6 @@ const meta = require('../meta');
 const helpers = require('./helpers');
 const user = require('../user');
 
-console.log('----cooldown', meta.config.uploadRateLimitCooldown * 1000, new Error('a').stack);
 const cache = new LRU({
 	maxAge: meta.config.uploadRateLimitCooldown * 1000,
 });
@@ -21,7 +20,6 @@ exports.ratelimit = helpers.try(async (req, res, next) => {
 	}
 
 	const count = (cache.peek(`${req.ip}:uploaded_file_count`) || 0) + req.files.files.length;
-	console.log('req.ip', req.ip, count, req.files.files.length, meta.config.uploadRateLimitThreshold);
 	if (count > meta.config.uploadRateLimitThreshold) {
 		return next(new Error(['[[error:upload-ratelimit-reached]]']));
 	}
