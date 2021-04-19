@@ -31,7 +31,7 @@ module.exports = function (app, middleware, controllers) {
 		middleware.maintenanceMode,
 		multipartMiddleware,
 		middleware.validateFiles,
-		middleware.ratelimitUploads,
+		middleware.uploads.ratelimit,
 		middleware.applyCSRF,
 	];
 

@@ -66,7 +66,7 @@ Object.assign(middleware, {
 require('./render')(middleware);
 require('./maintenance')(middleware);
 require('./user')(middleware);
-require('./uploads')(middleware);
+middleware.uploads = require('./uploads');
 require('./headers')(middleware);
 require('./expose')(middleware);
 middleware.assert = require('./assert');
