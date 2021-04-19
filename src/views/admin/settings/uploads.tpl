@@ -108,15 +108,12 @@
 					<div class="col-xs-2">
 						<input type="text" class="form-control" data-field="uploadRateLimitThreshold" />
 					</div>
-					<div class="col-xs-1">
-						<label style="vertical-align: -5px;">[[admin/settings/uploads:upload-limit-threshold-per]]</label>
-					</div>
 					<div class="col-xs-2">
 						<select class="form-control" data-field="uploadRateLimitCooldown">
-							<option value="60">1 [[admin/settings/uploads:upload-limit-threshold-per-minute]]</option>
-							<option value="300">5 [[admin/settings/uploads:upload-limit-threshold-per-minutes]]</option>
-							<option value="900">15 [[admin/settings/uploads:upload-limit-threshold-per-minutes]]</option>
-							<option value="3600">60 [[admin/settings/uploads:upload-limit-threshold-per-minutes]]</option>
+							<option value="60">[[admin/settings/uploads:upload-limit-threshold-per-minute, 1]]</option>
+							<option value="300">[[admin/settings/uploads:upload-limit-threshold-per-minutes, 5]]</option>
+							<option value="900">[[admin/settings/uploads:upload-limit-threshold-per-minutes, 15]]</option>
+							<option value="3600">[[admin/settings/uploads:upload-limit-threshold-per-minutes, 60]]</option>
 						</select>
 					</div>
 				</div>
