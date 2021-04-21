@@ -64,7 +64,6 @@ Scheduled.reschedule = async function ({ cid, tid, timestamp, uid }) {
 			'topics:scheduled',
 			`uid:${uid}:topics`,
 			'topics:tid',
-			`cid:${cid}:tids`,
 			`cid:${cid}:uid:${uid}:tids`,
 		], timestamp, tid),
 		shiftPostTimes(tid, timestamp),
