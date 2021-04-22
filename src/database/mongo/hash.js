@@ -120,7 +120,7 @@ module.exports = function (module) {
 			cache.set(key, cachedData[key]);
 		});
 
-		if (!fields.length) {
+		if (!Array.isArray(fields) || !fields.length) {
 			return keys.map(key => (cachedData[key] ? { ...cachedData[key] } : null));
 		}
 		return keys.map((key) => {
