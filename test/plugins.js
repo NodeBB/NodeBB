@@ -63,7 +63,7 @@ describe('Plugins', () => {
 		plugins.hooks.register('test-plugin', { hook: 'filter:test.hook2', method: method2 });
 
 		const data = await plugins.hooks.fire('filter:test.hook2', { foo: 1 });
-		assert.strictEqual(data.foo, 8);
+		assert.strictEqual(data.foo, 7);
 	});
 
 	it('should register and fire a filter hook that returns a promise that gets rejected', (done) => {
