@@ -137,10 +137,6 @@ async function fireFilterHook(hook, hookList, params) {
 					payload => resolve(payload),
 					err => reject(err)
 				);
-				return;
-			}
-			if (returned) {
-				resolve(returned);
 			}
 		});
 	}
