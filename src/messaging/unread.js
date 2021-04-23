@@ -31,7 +31,7 @@ module.exports = function (Messaging) {
 	Messaging.markUnread = async (uids, roomId) => {
 		const exists = await Messaging.roomExists(roomId);
 		if (!exists) {
-			throw new Error('[[error:chat-room-does-not-exist]]');
+			return;
 		}
 		const keys = uids.map(uid => `uid:${uid}:chat:rooms:unread`);
 		return await db.sortedSetsAdd(keys, Date.now(), roomId);

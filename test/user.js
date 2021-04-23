@@ -541,6 +541,17 @@ describe('User', () => {
 			await Posts.upvote(result.postData.pid, 1);
 			assert(!await db.isSortedSetMember('users:reputation', uid));
 		});
+
+		it('should delete user even if they started a chat', async () => {
+			const socketModules = require('../src/socket.io/modules');
+			const uid1 = await User.create({ username: 'chatuserdelete1' });
+			const uid2 = await User.create({ username: 'chatuserdelete2' });
+			const roomId = await socketModules.chats.newRoom({ uid: uid1 }, { touid: uid2 });
+			await socketModules.chats.send({ uid: uid1 }, { roomId: roomId, message: 'hello' });
+			await socketModules.chats.leave({ uid: uid2 }, roomId);
+			await User.delete(1, uid1);
+			assert.strictEqual(await User.exists(uid1), false);
+		});
 	});
 
 	describe('passwordReset', () => {
