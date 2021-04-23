@@ -8,7 +8,7 @@ const privileges = require('../../privileges');
 const controllersHelpers = require('../../controllers/helpers');
 
 module.exports = function (SocketCategories) {
-	// used by categorySeach module
+	// used by categorySearch module
 	SocketCategories.categorySearch = async function (socket, data) {
 		let cids = [];
 		let matchedCids = [];

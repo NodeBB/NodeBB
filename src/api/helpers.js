@@ -20,7 +20,7 @@ exports.setDefaultPostData = function (reqOrSocket, data) {
 // creates a slimmed down version of the request object
 exports.buildReqObject = (req, payload) => {
 	req = req || {};
-	const headers = req.headers || {};
+	const headers = req.headers || (req.client && req.client.request && req.client.request.headers) || {};
 	const encrypted = req.connection ? !!req.connection.encrypted : false;
 	let { host } = headers;
 	const referer = headers.referer || '';
