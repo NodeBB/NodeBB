@@ -469,7 +469,9 @@
 
 		makeNumbersHumanReadable: function (elements) {
 			elements.each(function () {
-				$(this).html(utils.makeNumberHumanReadable($(this).attr('title')));
+				$(this)
+					.html(utils.makeNumberHumanReadable($(this).attr('title')))
+					.removeClass('hidden');
 			});
 		},
 
@@ -488,7 +490,9 @@
 
 		addCommasToNumbers: function (elements) {
 			elements.each(function (index, element) {
-				$(element).html(utils.addCommas($(element).html()));
+				$(element)
+					.html(utils.addCommas($(element).html()))
+					.removeClass('hidden');
 			});
 		},
 
