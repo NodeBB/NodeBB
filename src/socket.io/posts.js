@@ -7,6 +7,7 @@ const plugins = require('../plugins');
 const meta = require('../meta');
 const topics = require('../topics');
 const user = require('../user');
+const notifications = require('../notifications');
 const socketHelpers = require('./helpers');
 const utils = require('../utils');
 const api = require('../api');
@@ -130,11 +131,13 @@ SocketPosts.getReplies = async function (socket, pid) {
 };
 
 SocketPosts.accept = async function (socket, data) {
-	await acceptOrReject(posts.submitFromQueue, socket, data);
+	const result = await acceptOrReject(posts.submitFromQueue, socket, data);
+	await sendQueueNotification('post-queue-accepted', result.uid, `/post/${result.pid}`);
 };
 
 SocketPosts.reject = async function (socket, data) {
-	await acceptOrReject(posts.removeFromQueue, socket, data);
+	const result = await acceptOrReject(posts.removeFromQueue, socket, data);
+	await sendQueueNotification('post-queue-rejected', result.uid, '/');
 };
 
 async function acceptOrReject(method, socket, data) {
@@ -142,7 +145,18 @@ async function acceptOrReject(method, socket, data) {
 	if (!canEditQueue) {
 		throw new Error('[[error:no-privileges]]');
 	}
-	await method(data.id);
+	return await method(data.id);
+}
+
+async function sendQueueNotification(type, targetUid, path) {
+	const notifObj = await notifications.create({
+		type: type,
+		nid: `${type}-${targetUid}-${path}`,
+		bodyShort: type === 'post-queue-accepted' ?
+			'[[notifications:post-queue-accepted]]' : '[[notifications:post-queue-rejected]]',
+		path: path,
+	});
+	await notifications.push(notifObj, [targetUid]);
 }
 
 SocketPosts.editQueuedContent = async function (socket, data) {

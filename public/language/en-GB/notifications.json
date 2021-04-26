@@ -51,6 +51,8 @@
 	"posts-exported": "<strong>%1</strong> posts exported, click to download",
 	"uploads-exported": "<strong>%1</strong> uploads exported, click to download",
 	"users-csv-exported": "Users csv exported, click to download",
+	"post-queue-accepted": "Your queued post has been accepted. Click here to see your post.",
+	"post-queue-rejected": "Your queued post has been rejected.",
 
 	"email-confirmed": "Email Confirmed",
 	"email-confirmed-message": "Thank you for validating your email. Your account is now fully activated.",
