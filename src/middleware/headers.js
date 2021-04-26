@@ -7,6 +7,7 @@ const _ = require('lodash');
 const meta = require('../meta');
 const languages = require('../languages');
 const helpers = require('./helpers');
+const plugins = require('../plugins');
 
 module.exports = function (middleware) {
 	middleware.addHeaders = helpers.try((req, res, next) => {
@@ -74,9 +75,12 @@ module.exports = function (middleware) {
 	});
 
 	middleware.autoLocale = helpers.try(async (req, res, next) => {
-		let langs;
+		await plugins.hooks.fire('filter:middleware.autoLocale', {
+			req: req,
+			res: res,
+		});
 		if (req.query.lang) {
-			langs = await listCodes();
+			const langs = await listCodes();
 			if (!langs.includes(req.query.lang)) {
 				req.query.lang = meta.config.defaultLang;
 			}
@@ -85,7 +89,7 @@ module.exports = function (middleware) {
 		if (parseInt(req.uid, 10) > 0 || !meta.config.autoDetectLang) {
 			return next();
 		}
-		langs = await listCodes();
+		const langs = await listCodes();
 		const lang = req.acceptsLanguages(langs);
 		if (!lang) {
 			return next();
