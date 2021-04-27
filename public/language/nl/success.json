@@ -1,7 +1,7 @@
 {
     "success": "Geslaagd",
     "topic-post": "Je bericht is met succes geplaatst.",
-    "post-queued": "Je bericht wacht op goedkeuring.",
+    "post-queued": "Your post is queued for approval. You will get a notification when it is accepted or rejected.",
     "authentication-successful": "Aanmelden geslaagd",
     "settings-saved": "Instellingen opgeslagen!"
 }

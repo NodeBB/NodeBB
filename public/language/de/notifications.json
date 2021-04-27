@@ -47,6 +47,8 @@
     "posts-exported": "<strong>%1</strong> Posts exportiert, klicke zum downloaden",
     "uploads-exported": "<strong>%1</strong> Uploads exportiert, klicke zum downloaden",
     "users-csv-exported": "Users csv exported, click to download",
+    "post-queue-accepted": "Your queued post has been accepted. Click here to see your post.",
+    "post-queue-rejected": "Your queued post has been rejected.",
     "email-confirmed": "E-Mail bestätigt",
     "email-confirmed-message": "Vielen Dank für Ihre E-Mail-Validierung. Ihr Konto ist nun vollständig aktiviert.",
     "email-confirm-error-message": "Es gab ein Problem bei der Validierung Ihrer E-Mail-Adresse. Möglicherweise ist der Code ungültig oder abgelaufen.",

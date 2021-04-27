@@ -1,7 +1,7 @@
 {
     "success": "Onnistui",
     "topic-post": "Viestin lähettäminen onnistui.",
-    "post-queued": "Viestisi on jonossa odottamassa hyväksyntää",
+    "post-queued": "Your post is queued for approval. You will get a notification when it is accepted or rejected.",
     "authentication-successful": "Tunnistautuminen onnistui",
     "settings-saved": "Asetukset tallennettu!"
 }

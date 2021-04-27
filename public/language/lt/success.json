@@ -1,7 +1,7 @@
 {
     "success": "Pavyko",
     "topic-post": "Sėkmingai parašėte pranešimą",
-    "post-queued": "Your post is queued for approval.",
+    "post-queued": "Your post is queued for approval. You will get a notification when it is accepted or rejected.",
     "authentication-successful": "Autentifikacija sėkminga",
     "settings-saved": "Nustatymai išsaugoti!"
 }

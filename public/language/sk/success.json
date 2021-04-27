@@ -1,7 +1,7 @@
 {
     "success": "Úspech",
     "topic-post": "Úspešne ste pridali nový príspevok.",
-    "post-queued": "Váš príspevok bol pridaný do fronty sa schválenie.",
+    "post-queued": "Your post is queued for approval. You will get a notification when it is accepted or rejected.",
     "authentication-successful": "Overovanie úspešné",
     "settings-saved": "Nastavenia boli uložené."
 }

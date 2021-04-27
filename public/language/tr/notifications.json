@@ -47,6 +47,8 @@
     "posts-exported": "<strong>%1</strong> iletileri hazırlandı, indirmek için tıklayınız",
     "uploads-exported": "<strong>%1</strong> yüklemeleri hazırlandı, indirmek için tıklayınız",
     "users-csv-exported": "Kullanıcılar csv hazırlandı, indirmek için tıklayınız",
+    "post-queue-accepted": "Your queued post has been accepted. Click here to see your post.",
+    "post-queue-rejected": "Your queued post has been rejected.",
     "email-confirmed": "E-posta onaylandı",
     "email-confirmed-message": "E-postanızı onayladığınız için teşekkürler. Hesabınız tamamen aktif edildi.",
     "email-confirm-error-message": "E-posta adresinizi onaylarken bir hata oluştu. Kodunuz geçersiz ya da eski olabilir.",

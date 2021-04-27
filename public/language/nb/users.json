@@ -14,9 +14,9 @@
     "groups-to-join": "Groups to be joined when invite is accepted:",
     "invitation-email-sent": "En invitasjons-epost ble sendt til %1",
     "user_list": "Brukerliste",
-    "recent_topics": "Seneste emner",
-    "popular_topics": "Populære emnter",
-    "unread_topics": "Uleste emner",
+    "recent_topics": "Seneste tråder",
+    "popular_topics": "Populære tråder",
+    "unread_topics": "Uleste tråder",
     "categories": "Kategorier",
     "tags": "Tagger",
     "no-users-found": "No users found!"

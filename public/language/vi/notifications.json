@@ -47,6 +47,8 @@
     "posts-exported": "<strong>%1</strong> đã xuất bài viết, nhấn tải xuống",
     "uploads-exported": "<strong>%1</strong> đã xuất tải lên, nhấn tải xuống",
     "users-csv-exported": "Đã xuất csv người dùng, nhấp để tải xuống",
+    "post-queue-accepted": "Bài đăng trong hàng đợi của bạn đã được chấp nhận. Nhấn vào đây để xem bài viết của bạn.",
+    "post-queue-rejected": "Bài đăng trong hàng đợi của bạn đã bị từ chối",
     "email-confirmed": "Đã Xác Nhận Email",
     "email-confirmed-message": "Cảm ơn bạn đã xác nhận địa chỉ email của bạn. Tài khoản của bạn đã được kích hoạt đầy đủ.",
     "email-confirm-error-message": "Đã có lỗi khi xác nhận địa chỉ email. Có thể đoạn mã không đúng hoặc đã hết hạn.",

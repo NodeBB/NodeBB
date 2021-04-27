@@ -1,7 +1,7 @@
 {
     "success": "Başarılı",
     "topic-post": "Başarıyla gönderim yaptınız.",
-    "post-queued": "İletiniz onay için sıraya alındı.",
+    "post-queued": "Your post is queued for approval. You will get a notification when it is accepted or rejected.",
     "authentication-successful": "Doğrulama Başarılı",
     "settings-saved": "Ayarlar kaydedildi!"
 }
