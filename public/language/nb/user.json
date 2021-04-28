@@ -107,7 +107,7 @@
     "has_no_blocks": "You have blocked no users.",
     "email_hidden": "E-post skjult",
     "hidden": "skjult",
-    "paginate_description": "Bruk sidevelger for emner og innlegg istedet for uendelig scrolling",
+    "paginate_description": "Bruk sidevelger for tråder og innlegg istedet for uendelig scrolling",
     "topics_per_page": "Tråd per side",
     "posts_per_page": "Innlegg per side",
     "max_items_per_page": "Maximum %1",

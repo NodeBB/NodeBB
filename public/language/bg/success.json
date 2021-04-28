@@ -1,7 +1,7 @@
 {
     "success": "Готово",
     "topic-post": "Вие публикувахте успешно.",
-    "post-queued": "Your post is queued for approval. You will get a notification when it is accepted or rejected.",
+    "post-queued": "Публикацията Ви е поставена в опашка за одобрение. Ще получите известие, когато тя бъде одобрена или отхвърлена.",
     "authentication-successful": "Успешно удостоверяване",
     "settings-saved": "Настройките са запазени!"
 }

@@ -48,7 +48,7 @@
     "uploads-exported": "<strong>%1</strong> caricamenti esportati, clicca per scaricare",
     "users-csv-exported": "Utenti esportati in CSV, clicca per scaricare",
     "post-queue-accepted": "Your queued post has been accepted. Click here to see your post.",
-    "post-queue-rejected": "Your queued post has been rejected.",
+    "post-queue-rejected": "Il tuo post in coda è stato rifiutato.",
     "email-confirmed": "Email Confermata",
     "email-confirmed-message": "Grazie per aver validato la tua email. Il tuo account è ora completamente attivato.",
     "email-confirm-error-message": "C'è stato un problema nella validazione del tuo indirizzo email. Potrebbe essere il codice non valido o scaduto.",
