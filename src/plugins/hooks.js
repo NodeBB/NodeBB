@@ -137,9 +137,14 @@ async function fireFilterHook(hook, hookList, params) {
 					payload => resolve(payload),
 					err => reject(err)
 				);
+				return;
+			}
+			if (returned) {
+				resolve(returned);
 			}
 		});
 	}
+
 	for (const hookObj of hookList) {
 		// eslint-disable-next-line
 		params = await fireMethod(hookObj, params);
