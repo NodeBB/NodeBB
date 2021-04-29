@@ -128,19 +128,28 @@ async function fireFilterHook(hook, hookList, params) {
 			return await hookObj.method(params);
 		}
 		return new Promise((resolve, reject) => {
+			let resolved = false;
+			function _resolve(result) {
+				if (resolved) {
+					winston.warn(`[plugins] ${hook} already resolved in plugin ${hookObj.id}`);
+					return;
+				}
+				resolved = true;
+				resolve(result);
+			}
 			const returned = hookObj.method(params, (err, result) => {
-				if (err) reject(err); else resolve(result);
+				if (err) reject(err); else _resolve(result);
 			});
 
 			if (utils.isPromise(returned)) {
 				returned.then(
-					payload => resolve(payload),
+					payload => _resolve(payload),
 					err => reject(err)
 				);
 				return;
 			}
 			if (returned) {
-				resolve(returned);
+				_resolve(returned);
 			}
 		});
 	}
