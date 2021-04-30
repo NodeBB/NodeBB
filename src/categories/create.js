@@ -150,6 +150,11 @@ module.exports = function (Categories) {
 		if (copyParent) {
 			destination.parentCid = source.parentCid || 0;
 		}
+		await plugins.hooks.fire('filter:categories.copySettingsFrom', {
+			source: source,
+			destination: destination,
+			copyParent: copyParent,
+		});
 
 		await db.setObject('category:' + toCid, destination);
 
