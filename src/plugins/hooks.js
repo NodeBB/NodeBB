@@ -96,6 +96,17 @@ Hooks.fire = async function (hook, params) {
 		winston.warn(`[plugins] Unknown hookType: ${hookType}, hook : ${hook}`);
 		return;
 	}
+
+	if (params === undefined) {	// can't be simpler falsy check, empty strings can be passed e.g. filter:parse.raw
+		params = {};
+	}
+	if (typeof params === 'object') {
+		params._hook = Object.freeze({
+			name: hook,
+			type: hookType,
+			listeners: hookList && Array.isArray(hookList) ? hookList.length : 0,
+		});
+	}
 	const result = await hookTypeToMethod[hookType](hook, hookList, params);
 
 	if (hook !== 'action:plugins.firehook' && hook !== 'filter:plugins.firehook') {
