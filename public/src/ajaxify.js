@@ -473,10 +473,11 @@ $(document).ready(function () {
 			var href = $this.attr('href');
 			var internalLink = utils.isInternalURI(this, window.location, config.relative_path);
 
+			const rootAndPath = new RegExp(`^${rootUrl}${config.relative_path}/?`);
 			var process = function () {
 				if (!e.ctrlKey && !e.shiftKey && !e.metaKey && e.which === 1) {
 					if (internalLink) {
-						var pathname = this.href.replace(rootUrl + config.relative_path + '/', '');
+						var pathname = this.href.replace(rootAndPath, '');
 
 						// Special handling for urls with hashes
 						if (window.location.pathname === this.pathname && this.hash.length) {
