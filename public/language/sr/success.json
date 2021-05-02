@@ -1,7 +1,7 @@
 {
     "success": "Успешно",
     "topic-post": "Успешно сте послали поруку.",
-    "post-queued": "Your post is queued for approval. You will get a notification when it is accepted or rejected.",
+    "post-queued": "Ваша порука је на чекању за одобрење. Добићете обавештење када буде прихваћена или одбијена.",
     "authentication-successful": "Успешна аутентификација",
     "settings-saved": "Подешавања су сачувана!"
 }
