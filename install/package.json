@@ -137,7 +137,7 @@
         "winston": "3.3.3",
         "xml": "^1.0.1",
         "xregexp": "^5.0.1",
-        "yargs": "16.2.0",
+        "yargs": "17.0.1",
         "zxcvbn": "^4.4.2"
     },
     "devDependencies": {
