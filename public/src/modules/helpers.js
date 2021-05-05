@@ -32,6 +32,8 @@
 		buildAvatar: buildAvatar,
 		register: register,
 		__escape: identity,
+		isEqual: isEqual,
+		isNotEqual: isNotEqual,
 	};
 
 	function identity(str) {
@@ -320,6 +322,14 @@
 
 		styles.push('background-color: ' + userObj['icon:bgColor'] + ';');
 		return '<span ' + attributes.join(' ') + ' style="' + styles.join(' ') + '">' + userObj['icon:text'] + '</span>';
+	}
+
+	function isEqual(a, b) {
+		return a === b;
+	}
+
+	function isNotEqual(a, b) {
+		return a !== b;
 	}
 
 	function register() {
