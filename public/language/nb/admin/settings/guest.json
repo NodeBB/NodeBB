@@ -1,7 +1,7 @@
 {
-	"settings": "Settings",
+	"settings": "Innstillinger ",
 	"handles.enabled": "Allow guest handles",
-	"handles.enabled-help": "This option exposes a new field that allows guests to pick a name to associate with each post they make. If disabled, they will simply be called \"Guest\"",
-	"topic-views.enabled": "Allow guests to increase topic view counts",
-	"reply-notifications.enabled": "Allow guests to generate reply notifications"
+	"handles.enabled-help": "Dette alternativet viser et nytt felt som lar gjestene velge et navn som kan knyttes til hvert innlegg de lager. Hvis de er deaktivert, vil de bare bli kalt \"Gjest\"",
+	"topic-views.enabled": "La gjestene øke antall visninger av emner",
+	"reply-notifications.enabled": "La gjestene generere varsler på svar"
 }
