@@ -37,7 +37,7 @@
         "benchpressjs": "2.4.3",
         "body-parser": "^1.19.0",
         "bootbox": "5.5.2",
-        "bootstrap": "^3.4.1",
+        "bootstrap": "^5.0.0",
         "chart.js": "^2.9.4",
         "cli-graph": "^3.2.2",
         "clipboard": "^2.0.6",
