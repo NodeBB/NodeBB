@@ -406,6 +406,11 @@ describe('Hash methods', () => {
 				done();
 			});
 		});
+
+		it('should not error if field is falsy', async () => {
+			const value = await db.isObjectField('hashTestObjectEmpty', '');
+			assert.strictEqual(value, false);
+		});
 	});
 
 
@@ -426,6 +431,11 @@ describe('Hash methods', () => {
 				assert.deepEqual(values, [true, true, false]);
 				done();
 			});
+		});
+
+		it('should not error if one field is falsy', async () => {
+			const values = await db.isObjectFields('hashTestObject', ['name', '']);
+			assert.deepStrictEqual(values, [true, false]);
 		});
 	});
 
