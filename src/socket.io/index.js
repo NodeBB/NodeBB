@@ -88,7 +88,7 @@ function onDisconnect(socket) {
 
 async function onConnect(socket) {
 	try {
-		await validateSession(socket, false);
+		await validateSession(socket, '[[error:invalid-session]]');
 	} catch (e) {
 		socket.emit('event:invalid_session');
 		return;
@@ -150,7 +150,7 @@ async function onMessage(socket, payload) {
 
 	try {
 		await checkMaintenance(socket);
-		await validateSession(socket, true);
+		await validateSession(socket, '[[error:revalidate-failure]]');
 
 		if (Namespaces[namespace].before) {
 			await Namespaces[namespace].before(socket, eventName, params);
@@ -198,18 +198,14 @@ const getSessionAsync = util.promisify(
 	(sid, callback) => db.sessionStore.get(sid, (err, sessionObj) => callback(err, sessionObj || null))
 );
 
-async function validateSession(socket, isRevalidate) {
+async function validateSession(socket, errorMsg) {
 	const req = socket.request;
 	if (!req.signedCookies || !req.signedCookies[nconf.get('sessionKey')]) {
 		return;
 	}
 	const sessionData = await getSessionAsync(req.signedCookies[nconf.get('sessionKey')]);
 	if (!sessionData) {
-		if (isRevalidate) {
-			throw new Error('[[error:revalidate-failure]]');
-		} else {
-			throw new Error('[[error:invalid-session]]');
-		}
+		throw new Error(errorMsg);
 	}
 	const result = await plugins.hooks.fire('static:sockets.validateSession', {
 		req: req,
