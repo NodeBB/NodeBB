@@ -91,6 +91,7 @@ async function onConnect(socket) {
 		await validateSession(socket, false);
 	} catch (e) {
 		socket.emit('event:invalid_session');
+		return;
 	}
 
 	if (socket.uid) {
