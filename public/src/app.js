@@ -181,9 +181,9 @@ app.cacheBuster = null;
 	app.alertError = function (message, timeout) {
 		message = (message && message.message) || message;
 
-		if (message === '[[error:invalid-session]]') {
-			app.handleInvalidSession();
-			app.logout(false);
+		if (message === '[[error:revalidate-failure]]') {
+			socket.disconnect();
+			app.reconnect();
 			return;
 		}
 
@@ -202,9 +202,22 @@ app.cacheBuster = null;
 		}
 
 		socket.disconnect();
+		app.logout(false);
 		bootbox.alert({
 			title: '[[error:invalid-session]]',
 			message: '[[error:invalid-session-text]]',
+			closeButton: false,
+			callback: function () {
+				window.location.reload();
+			},
+		});
+	};
+
+	app.handleSessionMismatch = () => {
+		socket.disconnect();
+		bootbox.alert({
+			title: '[[error:session-mismatch]]',
+			message: '[[error:session-mismatch-text]]',
 			closeButton: false,
 			callback: function () {
 				window.location.reload();
