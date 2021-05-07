@@ -197,10 +197,6 @@ app.cacheBuster = null;
 	};
 
 	app.handleInvalidSession = function () {
-		if (app.flags._login || app.flags._logout) {
-			return;
-		}
-
 		socket.disconnect();
 		app.logout(false);
 		bootbox.alert({
@@ -214,6 +210,10 @@ app.cacheBuster = null;
 	};
 
 	app.handleSessionMismatch = () => {
+		if (app.flags._login || app.flags._logout) {
+			return;
+		}
+
 		socket.disconnect();
 		bootbox.alert({
 			title: '[[error:session-mismatch]]',
