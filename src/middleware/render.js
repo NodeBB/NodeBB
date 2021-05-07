@@ -34,9 +34,15 @@ module.exports = function (middleware) {
 			options.bodyClass = buildBodyClass(req, res, options);
 
 			const buildResult = await plugins.hooks.fire(`filter:${template}.build`, { req: req, res: res, templateData: options });
+			if (res.headersSent) {
+				return;
+			}
 			const templateToRender = buildResult.templateData.templateToRender || template;
 
 			const renderResult = await plugins.hooks.fire('filter:middleware.render', { req: req, res: res, templateData: buildResult.templateData });
+			if (res.headersSent) {
+				return;
+			}
 			options = renderResult.templateData;
 			options._header = {
 				tags: await meta.tags.parse(req, renderResult, res.locals.metaTags, res.locals.linkTags),
