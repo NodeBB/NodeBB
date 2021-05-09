@@ -89,7 +89,7 @@
     "file-too-big": "업로드 가능한 파일크기는 최대 %1 KB 입니다. 파일의 용량을 줄이거나 압축을 활용하세요.",
     "guest-upload-disabled": "비회원의 파일 업로드는 제한되어 있습니다.",
     "cors-error": "잘못 구성된 CORS로 인해 이미지를 업로드 할 수 없습니다.",
-    "upload-ratelimit-reached": "You have uploaded too many files at one time. Please try again later.",
+    "upload-ratelimit-reached": "한 번에 너무 많은 파일을 업로드하셨습니다. 나중에 다시 시도해주세요.",
     "scheduling-to-past": "내일 이후의 날짜를 선택해주세요.",
     "invalid-schedule-date": "적합한 형식의 날짜와 시간을 입력해주세요.",
     "cant-pin-scheduled": "예약된 화제는 상단에 고정(해제)할 수 없습니다.",

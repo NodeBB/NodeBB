@@ -39,7 +39,7 @@
 	"alert.upgraded": "플러그인 업그레이드 완료",
 	"alert.installed": "플러그인 설치 완료",
 	"alert.uninstalled": "플러그인 제거 완료",
-	"alert.activate-success": "Please rebuild and restart your NodeBB to fully activate this plugin",
+	"alert.activate-success": "해당 플러그인을 완벽하게 활성화하기 위해 NodeBB를 리빌드하고 다시 시작해주세요.",
 	"alert.deactivate-success": "플러그인이 성공적으로 비활성화됐습니다.",
 	"alert.upgrade-success": "이 플러그인을 업그레이드 하려면 NodeBB를 리빌드하고 다시 시작해주세요.",
 	"alert.install-success": "플러그인이 성공적으로 설치됐습니다. 플러그인을 활성화 해주세요.",

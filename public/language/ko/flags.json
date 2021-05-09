@@ -26,8 +26,8 @@
 	"filter-quick-mine": "나에게 배정된 신고",
 	"filter-cid-all": "모든 카테고리",
 	"apply-filters": "필터 적용",
-	"more-filters": "필터 추가",
-	"fewer-filters": "Fewer Filters",
+	"more-filters": "더 많은 필터",
+	"fewer-filters": "기본 필터",
 
 	"quick-actions": "빠른 신고",
 	"flagged-user": "신고된 사용자",
