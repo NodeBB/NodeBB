@@ -74,8 +74,11 @@ socket = window.socket;
 
 		socket.on('checkSession', function (uid) {
 			if (parseInt(uid, 10) !== parseInt(app.user.uid, 10)) {
-				app.handleInvalidSession();
+				app.handleSessionMismatch();
 			}
+		});
+		socket.on('event:invalid_session', () => {
+			app.handleInvalidSession();
 		});
 
 		socket.on('setHostname', function (hostname) {

@@ -86,7 +86,16 @@ function onDisconnect(socket) {
 	plugins.hooks.fire('action:sockets.disconnect', { socket: socket });
 }
 
-function onConnect(socket) {
+async function onConnect(socket) {
+	try {
+		await validateSession(socket, '[[error:invalid-session]]');
+	} catch (e) {
+		if (e.message === 'error:invalid-session') {
+			socket.emit('event:invalid_session');
+			return;
+		}
+	}
+
 	if (socket.uid) {
 		socket.join(`uid_${socket.uid}`);
 		socket.join('online_users');
@@ -143,7 +152,7 @@ async function onMessage(socket, payload) {
 
 	try {
 		await checkMaintenance(socket);
-		await validateSession(socket);
+		await validateSession(socket, '[[error:revalidate-failure]]');
 
 		if (Namespaces[namespace].before) {
 			await Namespaces[namespace].before(socket, eventName, params);
@@ -191,14 +200,14 @@ const getSessionAsync = util.promisify(
 	(sid, callback) => db.sessionStore.get(sid, (err, sessionObj) => callback(err, sessionObj || null))
 );
 
-async function validateSession(socket) {
+async function validateSession(socket, errorMsg) {
 	const req = socket.request;
 	if (!req.signedCookies || !req.signedCookies[nconf.get('sessionKey')]) {
 		return;
 	}
 	const sessionData = await getSessionAsync(req.signedCookies[nconf.get('sessionKey')]);
 	if (!sessionData) {
-		throw new Error('[[error:invalid-session]]');
+		throw new Error(errorMsg);
 	}
 	const result = await plugins.hooks.fire('static:sockets.validateSession', {
 		req: req,
