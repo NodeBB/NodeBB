@@ -90,7 +90,7 @@ async function onConnect(socket) {
 	try {
 		await validateSession(socket, '[[error:invalid-session]]');
 	} catch (e) {
-		if (e.message === 'error:invalid-session') {
+		if (e.message === '[[error:invalid-session]]') {
 			socket.emit('event:invalid_session');
 			return;
 		}
