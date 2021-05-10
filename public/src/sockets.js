@@ -70,6 +70,8 @@ socket = window.socket;
 				.find('p')
 				.translateText('[[error:socket-reconnect-failed]]')
 				.one('click', app.reconnect);
+
+			$(window).one('focus', app.reconnect);
 		});
 
 		socket.on('checkSession', function (uid) {
