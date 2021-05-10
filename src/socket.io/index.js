@@ -94,6 +94,7 @@ async function onConnect(socket) {
 			socket.emit('event:invalid_session');
 			return;
 		}
+		throw e;
 	}
 
 	if (socket.uid) {
