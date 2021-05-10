@@ -31,6 +31,13 @@ info:
 
       * Up until v1.14.3, this is provided by [`nodebb-plugin-write-api`](https://github.com/NodeBB/nodebb-plugin-write-api). The Write API plugin needs to be installed before authentication via bearer token is enabled on routes provided by the Read API.
       * From NodeBB v1.15.0 onwards, the Write API is available in core, and bearer authentication is available out-of-the-box
+
+    In both cases, a bearer token is issued in the NodeBB admin panel in order to grant access to the API.
+
+    There are two types of tokens:
+      * A *user token* is associated with a specific uid, and all calls made are made in the name of that user
+      * A *master token* is not associated with any specific uid, though a `_uid` parameter is required in the request, and then all calls are made in the name of *that* user.
+        This is the only difference between the two tokens. A master token with `_uid` set to a non-administrator will not allow you to make administrative calls.
 tags:
   - name: home
     description: Routes used at the forum index only
