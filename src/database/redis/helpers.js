@@ -1,14 +1,17 @@
 'use strict';
 
-const util = require('util');
-
 const helpers = module.exports;
 
 helpers.noop = function () {};
 
 helpers.execBatch = async function (batch) {
-	const proFn = util.promisify(batch.exec).bind(batch);
-	return await proFn();
+	const results = await batch.exec();
+	return results.map(([err, res]) => {
+		if (err) {
+			throw err;
+		}
+		return res;
+	});
 };
 
 helpers.resultsToBool = function (results) {

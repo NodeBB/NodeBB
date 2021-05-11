@@ -107,7 +107,7 @@
         "postcss": "8.2.15",
         "postcss-clean": "1.2.0",
         "prompt": "^1.1.0",
-        "redis": "3.1.2",
+        "ioredis": "4.27.2",
         "request": "2.88.2",
         "request-promise-native": "^1.0.9",
         "requirejs": "2.3.6",
