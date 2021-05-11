@@ -29,6 +29,9 @@ module.exports = function (module) {
 		if (!Array.isArray(key)) {
 			key = [key];
 		}
+		if (!value.length) {
+			return;
+		}
 
 		const batch = module.client.batch();
 		key.forEach(k => batch.srem(String(k), value));
