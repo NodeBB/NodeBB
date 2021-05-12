@@ -2,7 +2,7 @@
 	"forum-traffic": "论坛流量",
 	"page-views": "页面浏览量",
 	"unique-visitors": "单一访客",
-	"logins": "Logins",
+	"logins": "登录",
 	"new-users": "新用户",
 	"posts": "发帖",
 	"topics": "主题",
@@ -30,7 +30,7 @@
 	"upgrade-available": "<p>新的版本 (v%1) 已经发布。建议您 <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">升级 NodeBB</a>。</p>",
 	"prerelease-upgrade-available": "<p>这是一个已经过期的预发布版本的 NodeBB，新的版本 (v%1) 已经发布。建议您 <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">升级 NodeBB</a>。</p>",
 	"prerelease-warning": "<p>正在使用<strong>测试版</strong> NodeBB。可能会出现意外的 Bug。<i class=\"fa fa-exclamation-triangle\"></i></p>",
-	"fallback-emailer-not-found": "Fallback emailer not found!",
+	"fallback-emailer-not-found": "找不到备用邮箱",
 	"running-in-development": "<span>论坛正处于开发模式，这可能使其暴露于潜在的危险之中；请联系您的系统管理员。</span>",
 	"latest-lookup-failed": "<p>无法查找 NodeBB 的最新可用版本</p>",
 
@@ -79,10 +79,10 @@
 	"last-restarted-by": "上次重启管理员/时间",
 	"no-users-browsing": "没有用户正在浏览",
 
-	"back-to-dashboard": "Back to Dashboard",
-	"details.no-users": "No users have joined within the selected timeframe",
-	"details.no-topics": "No topics have been posted within the selected timeframe",
-	"details.no-logins": "No logins have been recorded within the selected timeframe",
-	"details.logins-static": "NodeBB only saves session data for %1 days, and so this table below will only show the most recently active sessions",
-	"details.logins-login-time": "Login Time"
+	"back-to-dashboard": "返回控制面板",
+	"details.no-users": "选定的时间内没有用户加入",
+	"details.no-topics": "选定的时间内没有发布主题",
+	"details.no-logins": "选定的时间内没有登录记录",
+	"details.logins-static": "NodeBB只保留%1天登录数据，下列表格显示最近活动的登录。",
+	"details.logins-login-time": "登录时间"
 }

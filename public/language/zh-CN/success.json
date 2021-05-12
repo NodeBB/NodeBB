@@ -1,7 +1,7 @@
 {
     "success": "成功",
     "topic-post": "您已成功发布。",
-    "post-queued": "Your post is queued for approval. You will get a notification when it is accepted or rejected.",
+    "post-queued": "你的帖子正在等待批准。帖子被批准或者拒绝的时候，你会收到一个通知。",
     "authentication-successful": "验证成功",
     "settings-saved": "设置已保存！"
 }

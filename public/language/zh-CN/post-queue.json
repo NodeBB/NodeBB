@@ -8,11 +8,11 @@
 	"content": "内容",
 	"posted": "发布",
 	"reply-to": "回复\"%1\"",
-	"content-editable": "Click on content to edit",
-	"category-editable": "Click on category to edit",
-	"title-editable": "Click on title to edit",
-	"reply": "Reply",
-	"topic": "Topic",
-	"accept": "Accept",
-	"reject": "Reject"
+	"content-editable": "点击内容开始编辑",
+	"category-editable": "点击版块开始编辑",
+	"title-editable": "点击标题开始编辑",
+	"reply": "回复",
+	"topic": "主题",
+	"accept": "接受",
+	"reject": "拒绝"
 }
