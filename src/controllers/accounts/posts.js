@@ -175,9 +175,7 @@ async function getPostsFromUserSet(template, req, res, callback) {
 			itemData: getItemData(sets, data, req, start, stop),
 		});
 	}
-	const itemCount = result.itemCount;
-	const itemData = result.itemData;
-
+	const { itemCount, itemData } = result;
 	userData[data.type] = itemData[data.type];
 	userData.nextStart = itemData.nextStart;
 
