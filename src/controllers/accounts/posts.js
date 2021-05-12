@@ -160,6 +160,7 @@ async function getPostsFromUserSet(template, req, res, callback) {
 	if (plugins.hasListeners('filter:account.getPostsFromUserSet')) {
 		result = await plugins.hooks.fire('filter:account.getPostsFromUserSet', {
 			req: req,
+			template: template,
 			userData: userData,
 			settings: settings,
 			data: data,
