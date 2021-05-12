@@ -157,7 +157,7 @@ async function getPostsFromUserSet(template, req, res, callback) {
 	const stop = start + itemsPerPage - 1;
 	const sets = await data.getSets(req.uid, userData);
 	let result;
-	if (plugins.hasListeners('filter:account.getPostsFromUserSet')) {
+	if (plugins.hooks.hasListeners('filter:account.getPostsFromUserSet')) {
 		result = await plugins.hooks.fire('filter:account.getPostsFromUserSet', {
 			req: req,
 			template: template,
@@ -170,7 +170,7 @@ async function getPostsFromUserSet(template, req, res, callback) {
 			itemData: [],
 		});
 	} else {
-		result = utils.promiseParallel({
+		result = await utils.promiseParallel({
 			itemCount: settings.usePagination ? db.sortedSetsCardSum(sets) : 0,
 			itemData: getItemData(sets, data, req, start, stop),
 		});
