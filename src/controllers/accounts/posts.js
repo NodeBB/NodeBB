@@ -166,8 +166,8 @@ async function getPostsFromUserSet(template, req, res, callback) {
 			data: data,
 			start: start,
 			stop: stop,
-			itemCount: itemCount,
-			itemData: itemData,
+			itemCount: 0,
+			itemData: [],
 		});
 	} else {
 		result = utils.promiseParallel({
