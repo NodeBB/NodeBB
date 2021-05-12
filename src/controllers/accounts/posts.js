@@ -8,6 +8,8 @@ const categories = require('../../categories');
 const pagination = require('../../pagination');
 const helpers = require('../helpers');
 const accountHelpers = require('./helpers');
+const plugins = require('../../plugins');
+const utils = require('../../utils');
 
 const postsController = module.exports;
 
@@ -107,38 +109,38 @@ const templateToData = {
 };
 
 postsController.getBookmarks = async function (req, res, next) {
-	await getFromUserSet('account/bookmarks', req, res, next);
+	await getPostsFromUserSet('account/bookmarks', req, res, next);
 };
 
 postsController.getPosts = async function (req, res, next) {
-	await getFromUserSet('account/posts', req, res, next);
+	await getPostsFromUserSet('account/posts', req, res, next);
 };
 
 postsController.getUpVotedPosts = async function (req, res, next) {
-	await getFromUserSet('account/upvoted', req, res, next);
+	await getPostsFromUserSet('account/upvoted', req, res, next);
 };
 
 postsController.getDownVotedPosts = async function (req, res, next) {
-	await getFromUserSet('account/downvoted', req, res, next);
+	await getPostsFromUserSet('account/downvoted', req, res, next);
 };
 
 postsController.getBestPosts = async function (req, res, next) {
-	await getFromUserSet('account/best', req, res, next);
+	await getPostsFromUserSet('account/best', req, res, next);
 };
 
 postsController.getWatchedTopics = async function (req, res, next) {
-	await getFromUserSet('account/watched', req, res, next);
+	await getPostsFromUserSet('account/watched', req, res, next);
 };
 
 postsController.getIgnoredTopics = async function (req, res, next) {
-	await getFromUserSet('account/ignored', req, res, next);
+	await getPostsFromUserSet('account/ignored', req, res, next);
 };
 
 postsController.getTopics = async function (req, res, next) {
-	await getFromUserSet('account/topics', req, res, next);
+	await getPostsFromUserSet('account/topics', req, res, next);
 };
 
-async function getFromUserSet(template, req, res, callback) {
+async function getPostsFromUserSet(template, req, res, callback) {
 	const data = templateToData[template];
 	const page = Math.max(1, parseInt(req.query.page, 10) || 1);
 
@@ -154,11 +156,26 @@ async function getFromUserSet(template, req, res, callback) {
 	const start = (page - 1) * itemsPerPage;
 	const stop = start + itemsPerPage - 1;
 	const sets = await data.getSets(req.uid, userData);
-
-	const [itemCount, itemData] = await Promise.all([
-		settings.usePagination ? db.sortedSetsCardSum(sets) : 0,
-		getItemData(sets, data, req, start, stop),
-	]);
+	let result;
+	if (plugins.hasListeners('filter:account.getPostsFromUserSet')) {
+		result = await plugins.hooks.fire('filter:account.getPostsFromUserSet', {
+			req: req,
+			userData: userData,
+			settings: settings,
+			data: data,
+			start: start,
+			stop: stop,
+			itemCount: itemCount,
+			itemData: itemData,
+		});
+	} else {
+		result = utils.promiseParallel({
+			itemCount: settings.usePagination ? db.sortedSetsCardSum(sets) : 0,
+			itemData: getItemData(sets, data, req, start, stop),
+		});
+	}
+	const itemCount = result.itemCount;
+	const itemData = result.itemData;
 
 	userData[data.type] = itemData[data.type];
 	userData.nextStart = itemData.nextStart;
