@@ -34,6 +34,8 @@
 		__escape: identity,
 		isEqual: isEqual,
 		isNotEqual: isNotEqual,
+		logicalOr: logicalOr,
+		logicalAnd: logicalAnd,
 	};
 
 	function identity(str) {
@@ -330,6 +332,14 @@
 
 	function isNotEqual(a, b) {
 		return a !== b;
+	}
+
+	function logicalOr(...args) {
+		return args.some(el => !!el);
+	}
+
+	function logicalAnd(...args) {
+		return args.every(el => !!el);
 	}
 
 	function register() {
