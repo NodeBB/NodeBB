@@ -2,7 +2,7 @@
     "latest_users": "Seneste brukere",
     "top_posters": "Flest innlegg",
     "most_reputation": "Best rykte",
-    "most_flags": "Most Flags",
+    "most_flags": "Flest flagg",
     "search": "Søk",
     "enter_username": "Skriv inn et brukernavn for å søke",
     "load_more": "Last flere",
@@ -10,8 +10,8 @@
     "filter-by": "Filtrer etter",
     "online-only": "Bare påloggede",
     "invite": "Invitér",
-    "prompt-email": "Emails:",
-    "groups-to-join": "Groups to be joined when invite is accepted:",
+    "prompt-email": "E-poster:",
+    "groups-to-join": "Grupper som en kan bli med i når invitasjonen godtas:",
     "invitation-email-sent": "En invitasjons-epost ble sendt til %1",
     "user_list": "Brukerliste",
     "recent_topics": "Seneste tråder",
@@ -19,5 +19,5 @@
     "unread_topics": "Uleste tråder",
     "categories": "Kategorier",
     "tags": "Tagger",
-    "no-users-found": "No users found!"
+    "no-users-found": "Ingen brukere funnet"
 }

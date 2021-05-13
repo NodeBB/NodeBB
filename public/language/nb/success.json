@@ -1,7 +1,7 @@
 {
     "success": "Suksess",
     "topic-post": "Du har nå publisert.",
-    "post-queued": "Your post is queued for approval. You will get a notification when it is accepted or rejected.",
+    "post-queued": "Innlegget ditt er satt i kø for godkjenning. Du vil få en melding når den har blitt godkjent eller avvist. ",
     "authentication-successful": "Innlogging vellykket!",
     "settings-saved": "Innstillinger lagret!"
 }
