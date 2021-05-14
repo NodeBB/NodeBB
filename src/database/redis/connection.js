@@ -12,7 +12,9 @@ connection.connect = async function (options) {
 		const redis_socket_or_host = options.host;
 
 		let cxn;
-		if (redis_socket_or_host && String(redis_socket_or_host).indexOf('/') >= 0) {
+		if (options.cluster) {
+			cxn = new Redis.Cluster(options.cluster, options.options);
+		} else if (redis_socket_or_host && String(redis_socket_or_host).indexOf('/') >= 0) {
 			// If redis.host contains a path name character, use the unix dom sock connection. ie, /tmp/redis.sock
 			cxn = new Redis({
 				...options.options,
