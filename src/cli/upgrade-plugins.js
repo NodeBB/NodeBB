@@ -1,7 +1,7 @@
 'use strict';
 
 const prompt = require('prompt');
-const request = require('request');
+const request = require('request-promise-native');
 const cproc = require('child_process');
 const semver = require('semver');
 const fs = require('fs');
@@ -76,22 +76,17 @@ async function getCurrentVersion() {
 	return pkg.version;
 }
 
-const getSuggestedModules = util.promisify((nbbVersion, toCheck, cb) => {
-	request({
+async function getSuggestedModules(nbbVersion, toCheck) {
+	let body = await request({
 		method: 'GET',
 		url: `https://packages.nodebb.org/api/v1/suggest?version=${nbbVersion}&package[]=${toCheck.join('&package[]=')}`,
 		json: true,
-	}, (err, res, body) => {
-		if (err) {
-			process.stdout.write('error'.red + ''.reset);
-			return cb(err);
-		}
-		if (!Array.isArray(body) && toCheck.length === 1) {
-			body = [body];
-		}
-		cb(null, body);
 	});
-});
+	if (!Array.isArray(body) && toCheck.length === 1) {
+		body = [body];
+	}
+	return body;
+}
 
 async function checkPlugins() {
 	process.stdout.write('Checking installed plugins and themes for updates... ');
