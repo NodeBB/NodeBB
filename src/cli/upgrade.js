@@ -81,7 +81,7 @@ async function runUpgrade(upgrades, options) {
 				options.plugins || options.schema || options.build) {
 			tasks = tasks.filter(key => options[key]);
 		}
-		runSteps(tasks);
+		await runSteps(tasks);
 		return;
 	}
 
