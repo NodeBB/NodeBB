@@ -4,6 +4,7 @@ const _ = require('lodash');
 
 const db = require('../database');
 const categories = require('../categories');
+const plugins = require('../plugins');
 
 module.exports = function (User) {
 	User.setCategoryWatchState = async function (uid, cids, state) {
@@ -36,14 +37,24 @@ module.exports = function (User) {
 		if (!(parseInt(uid, 10) > 0)) {
 			return [];
 		}
-		return await User.getCategoriesByStates(uid, [categories.watchStates.ignoring]);
+		const cids = await User.getCategoriesByStates(uid, [categories.watchStates.ignoring]);
+		const result = await plugins.hooks.fire('filter:user.getIgnoredCategories', {
+			uid: uid,
+			cids: cids,
+		});
+		return result.cids;
 	};
 
 	User.getWatchedCategories = async function (uid) {
 		if (!(parseInt(uid, 10) > 0)) {
 			return [];
 		}
-		return await User.getCategoriesByStates(uid, [categories.watchStates.watching]);
+		const cids = await User.getCategoriesByStates(uid, [categories.watchStates.watching]);
+		const result = await plugins.hooks.fire('filter:user.getWatchedCategories', {
+			uid: uid,
+			cids: cids,
+		});
+		return result.cids;
 	};
 
 	User.getCategoriesByStates = async function (uid, states) {
