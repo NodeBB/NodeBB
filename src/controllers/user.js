@@ -14,7 +14,7 @@ userController.getCurrentUser = async function (req, res) {
 		return res.status(401).json('not-authorized');
 	}
 	const userslug = await user.getUserField(req.uid, 'userslug');
-	const userData = await accountHelpers.getUserDataByUserSlug(userslug, req.uid);
+	const userData = await accountHelpers.getUserDataByUserSlug(userslug, req.uid, req.query);
 	res.json(userData);
 };
 

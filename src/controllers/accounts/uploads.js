@@ -11,7 +11,7 @@ const accountHelpers = require('./helpers');
 const uploadsController = module.exports;
 
 uploadsController.get = async function (req, res, next) {
-	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid);
+	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
 	if (!userData) {
 		return next();
 	}

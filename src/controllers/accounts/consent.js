@@ -12,7 +12,7 @@ consentController.get = async function (req, res, next) {
 		return next();
 	}
 
-	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid);
+	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
 	if (!userData) {
 		return next();
 	}

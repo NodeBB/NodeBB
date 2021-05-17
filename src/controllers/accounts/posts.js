@@ -145,7 +145,7 @@ async function getPostsFromUserSet(template, req, res, callback) {
 	const page = Math.max(1, parseInt(req.query.page, 10) || 1);
 
 	const [userData, settings] = await Promise.all([
-		accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid),
+		accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query),
 		user.getSettings(req.uid),
 	]);
 
