@@ -4,9 +4,6 @@ const async = require('async');
 const nconf = require('nconf');
 
 const packageInstall = require('./package-install');
-const upgrade = require('../upgrade');
-const build = require('../meta/build');
-const db = require('../database');
 const { upgradePlugins } = require('./upgrade-plugins');
 
 const steps = {
@@ -31,7 +28,7 @@ const steps = {
 		message: 'Checking installed plugins for updates...',
 		handler: function (next) {
 			async.series([
-				db.init,
+				require('../database').init,
 				upgradePlugins,
 			], next);
 		},
@@ -40,15 +37,15 @@ const steps = {
 		message: 'Updating NodeBB data store schema...',
 		handler: function (next) {
 			async.series([
-				db.init,
+				require('../database').init,
 				require('../meta').configs.init,
-				upgrade.run,
+				require('../upgrade').run,
 			], next);
 		},
 	},
 	build: {
 		message: 'Rebuilding assets...',
-		handler: build.buildAll,
+		handler: require('../meta/build').buildAll,
 	},
 };
 
@@ -96,10 +93,10 @@ function runUpgrade(upgrades, options) {
 	}
 
 	async.series([
-		db.init,
+		require('../database').init,
 		require('../meta').configs.init,
 		async function () {
-			await upgrade.runParticular(upgrades);
+			await require('../upgrade').runParticular(upgrades);
 		},
 	], (err) => {
 		if (err) {
