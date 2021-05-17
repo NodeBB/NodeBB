@@ -12,7 +12,7 @@ const editController = module.exports;
 
 editController.get = async function (req, res, next) {
 	const [userData, canUseSignature] = await Promise.all([
-		accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid),
+		accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query),
 		privileges.global.can('signature', req.uid),
 	]);
 	if (!userData) {
@@ -114,7 +114,7 @@ async function renderRoute(name, req, res, next) {
 }
 
 async function getUserData(req) {
-	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid);
+	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
 	if (!userData) {
 		return null;
 	}
