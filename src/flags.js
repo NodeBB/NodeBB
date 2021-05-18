@@ -164,7 +164,12 @@ Flags.getFlagIdsWithFilters = async function ({ filters, uid }) {
 		}
 	}
 
-	return flagIds;
+	const result = await plugins.hooks.fire('filter:flags.getFlagIdsWithFilters', {
+		filters,
+		uid,
+		flagIds,
+	});
+	return result.flagIds;
 };
 
 Flags.list = async function (data) {
