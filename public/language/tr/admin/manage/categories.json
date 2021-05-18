@@ -33,6 +33,7 @@
 	"analytics": "Analiz",
 	"view-category": "Kategori Görüntüle",
 	"set-order": "Bir sıra ayarla",
+	"set-order-help": "Setting the order of the category will move this category to that order and update the order of other categories as necessary. Minimum order is 1 which puts the category at the top.",
 
 	"select-category": "Kategori Seç",
 	"set-parent-category": "Ana Kategori Ayarla",
