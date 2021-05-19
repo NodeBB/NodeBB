@@ -109,6 +109,7 @@ middleware.renderHeader = async function renderHeader(req, res, data) {
 		unreadCount: templateValues.unreadCount,
 	} = await appendUnreadCounts({
 		uid: req.uid,
+		query: req.query,
 		navigation: results.navigation,
 		unreadData,
 	}));
@@ -152,7 +153,7 @@ middleware.renderHeader = async function renderHeader(req, res, data) {
 	return await req.app.renderAsync('header', hookReturn.templateValues);
 };
 
-async function appendUnreadCounts({ uid, navigation, unreadData }) {
+async function appendUnreadCounts({ uid, navigation, unreadData, query }) {
 	const originalRoutes = navigation.map(nav => nav.originalRoute);
 	const calls = {
 		unreadData: topics.getUnreadData({ uid: uid }),
@@ -162,6 +163,7 @@ async function appendUnreadCounts({ uid, navigation, unreadData }) {
 			if (originalRoutes.includes('/flags') && await user.isPrivileged(uid)) {
 				return flags.getCount({
 					uid,
+					query,
 					filters: {
 						quick: 'unresolved',
 						cid: (await user.isAdminOrGlobalMod(uid)) ? [] : (await user.getModeratedCids(uid)),
