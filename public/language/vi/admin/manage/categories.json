@@ -33,7 +33,7 @@
 	"analytics": "Phân tích",
 	"view-category": "Xem chuyên mục",
 	"set-order": "Đặt thứ tự",
-	"set-order-help": "Setting the order of the category will move this category to that order and update the order of other categories as necessary. Minimum order is 1 which puts the category at the top.",
+	"set-order-help": "Đặt thứ tự của danh mục sẽ chuyển danh mục này sang thứ tự đó và cập nhật thứ tự của các danh mục khác khi cần thiết. Thứ tự tối thiểu là 1 đặt danh mục ở trên cùng.",
 
 	"select-category": "Chọn Chuyên Mục",
 	"set-parent-category": "Đặt Chuyên Mục Chính",

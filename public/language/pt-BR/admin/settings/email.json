@@ -22,8 +22,8 @@
 	"smtp-transport.username": "Nome de usuário",
 	"smtp-transport.username-help": "<b>Para o serviço do Gmail,</b> entre com o endereço de e-mail completo aqui, principalmente se você estiver usando um domínio administrado pelo Google Apps.",
 	"smtp-transport.password": "Senha",
-	"smtp-transport.pool": "Enable pooled connections",
-	"smtp-transport.pool-help": "Pooling connections prevents NodeBB from creating a new connection for every email. This option only applies if SMTP Transport is enabled.",
+	"smtp-transport.pool": "Habilitar conexões em pool",
+	"smtp-transport.pool-help": "O pool de conexões evita que o NodeBB crie uma nova conexão para cada e-mail. Esta opção se aplica apenas se o Transporte SMTP estiver habilitado.",
 
 	"template": "Editar Modelo do E-mail",
 	"template.select": "Escolher Modelo do E-mail",
@@ -32,10 +32,10 @@
 	"testing.select": "Escolher Modelo do E-mail",
 	"testing.send": "Enviar E-mail de Teste",
 	"testing.send-help": "O e-mail de teste será enviado para o seu endereço de e-mail.",
-	"subscriptions": "Email Digests",
-	"subscriptions.disable": "Disable email digests",
+	"subscriptions": "Resumos por Email",
+	"subscriptions.disable": "Desabilitar resumos por email",
 	"subscriptions.hour": "Hora de Envio dos Resumos",
 	"subscriptions.hour-help": "Por favor, entre um número representando a hora para enviar os resumos agendados via e-mail (por exemplo: <code>0</code> para meia-noite, <code>17</code> para 5:00pm). Tenha em mente que esta é a hora de acordo com o servidor e pode não combinar exatamente com o relógio do seu sistema.<br /> O horário aproximado do servidor é: <span id=\"serverTime\"></span><br /> O próximo resumo diário está agendado para ser enviado <span id=\"nextDigestTime\"></span>",
-	"notifications.settings": "Email notification settings",
-	"notifications.remove-images": "Remove images from email notifications"
+	"notifications.settings": "Configurações de notificação por email",
+	"notifications.remove-images": "Remover imagens de notificações por e-mail"
 }

@@ -3,17 +3,17 @@
 	"bg-color": "Cor de Fundo",
 	"text-color": "Cor do Text",
 	"create-modify": "Criar & Modificar Tags",
-	"description": "Select tags by clicking or dragging, use <code>CTRL</code> to select multiple tags.",
+	"description": "Selecione as tags clicando ou arrastando, use <code>CTRL</code> para selecionar várias tags.",
 	"create": "Criar Tag",
 	"modify": "Modificar Tags",
 	"rename": "Renomear Tags",
 	"delete": "Excluir Tags Selecionadas",
 	"search": "Pesquisar por tags...",
-	"settings": "Tags Settings",
+	"settings": "Configurações de Tags",
 	"name": "Nome da Tag",
 
-	"alerts.editing": "Editing tag(s)",
+	"alerts.editing": "Editando tag(s)",
 	"alerts.confirm-delete": "Você deseja excluir as tags selecionadas?",
 	"alerts.update-success": "Tag Atualizada!",
-	"reset-colors": "Reset colors"
+	"reset-colors": "Redefinir cores"
 }

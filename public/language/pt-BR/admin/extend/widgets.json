@@ -1,7 +1,7 @@
 {
 	"available": "Widgets Disponíveis",
 	"explanation": "Escolha um widget do menu de dropdown e então arraste e solte numa área de widget do template à esquerda.",
-	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",
+	"none-installed": "Nenhum widget encontrado! Ative o plug-in de widgets básicos no  <a href=\"%1\"> painel de controle de plugins</a>.",
 	"clone-from": "Copiar widgets de",
 	"containers.available": "Contêineres Disponíveis",
 	"containers.explanation": "Arrastar e soltar em cima de qualquer widget ativo",
@@ -20,11 +20,11 @@
 
 	"error.select-clone": "Por favor, selecione a página a ser copiada",
 
-	"title": "Title",
-	"title.placeholder": "Title (only shown on some containers)",
-	"container": "Container",
-	"container.placeholder": "Drag and drop a container or enter HTML here.",
-	"show-to-groups": "Show to groups",
-	"hide-from-groups": "Hide from groups",
-	"hide-on-mobile": "Hide on mobile"
+	"title": "Título",
+	"title.placeholder": "Título (mostrado apenas em alguns contêineres)",
+	"container": "Contêiner",
+	"container.placeholder": "Arraste e solte um contêiner ou insira HTML aqui.",
+	"show-to-groups": "Mostrar para grupos",
+	"hide-from-groups": "Esconder dos grupos",
+	"hide-on-mobile": "Esconder no móvel"
 }
