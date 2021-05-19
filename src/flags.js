@@ -121,13 +121,13 @@ Flags.get = async function (flagId) {
 	return data.flag;
 };
 
-Flags.getCount = async function ({ uid, filters }) {
+Flags.getCount = async function ({ uid, filters, query }) {
 	filters = filters || {};
-	const flagIds = await Flags.getFlagIdsWithFilters({ filters, uid });
+	const flagIds = await Flags.getFlagIdsWithFilters({ filters, uid, query });
 	return flagIds.length;
 };
 
-Flags.getFlagIdsWithFilters = async function ({ filters, uid }) {
+Flags.getFlagIdsWithFilters = async function ({ filters, uid, query }) {
 	let sets = [];
 	const orSets = [];
 
@@ -167,6 +167,7 @@ Flags.getFlagIdsWithFilters = async function ({ filters, uid }) {
 	const result = await plugins.hooks.fire('filter:flags.getFlagIdsWithFilters', {
 		filters,
 		uid,
+		query,
 		flagIds,
 	});
 	return result.flagIds;
@@ -177,6 +178,7 @@ Flags.list = async function (data) {
 	let flagIds = await Flags.getFlagIdsWithFilters({
 		filters,
 		uid: data.uid,
+		query: data.query,
 	});
 	flagIds = await Flags.sort(flagIds, data.sort);
 
