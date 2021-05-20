@@ -27,7 +27,6 @@ define('forum/account/edit/username', [
 			btn.addClass('disabled').find('i').removeClass('hide');
 
 			api.put('/users/' + userData.uid, userData).then((response) => {
-				btn.removeClass('disabled').find('i').addClass('hide');
 				var userslug = slugify(userData.username);
 				if (userData.username && userslug && parseInt(userData.uid, 10) === parseInt(app.user.uid, 10)) {
 					$('[component="header/profilelink"]').attr('href', config.relative_path + '/user/' + userslug);
@@ -38,7 +37,10 @@ define('forum/account/edit/username', [
 				}
 
 				ajaxify.go('user/' + userslug + '/edit');
-			}).catch(app.alertError);
+			}).catch(app.alertError)
+			.finally(() => {
+				btn.removeClass('disabled').find('i').addClass('hide');
+			});
 
 			return false;
 		});
