@@ -38,9 +38,9 @@ define('forum/account/edit/username', [
 
 				ajaxify.go('user/' + userslug + '/edit');
 			}).catch(app.alertError)
-			.finally(() => {
-				btn.removeClass('disabled').find('i').addClass('hide');
-			});
+				.finally(() => {
+					btn.removeClass('disabled').find('i').addClass('hide');
+				});
 
 			return false;
 		});
