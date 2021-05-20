@@ -13,6 +13,7 @@ const helpers = require('../controllers/helpers');
 const privileges = require('../privileges');
 const db = require('../database');
 const utils = require('../utils');
+const controllers404 = require('../controllers/404');
 
 const terms = {
 	daily: 'day',
@@ -320,9 +321,9 @@ async function generateForRecentPosts(req, res, next) {
 	sendFeed(feed, res);
 }
 
-async function generateForCategoryRecentPosts(req, res, next) {
+async function generateForCategoryRecentPosts(req, res) {
 	if (meta.config['feeds:disableRSS']) {
-		return next();
+		return controllers404.handle404(req, res);
 	}
 	const cid = req.params.category_id;
 
@@ -333,7 +334,7 @@ async function generateForCategoryRecentPosts(req, res, next) {
 	]);
 
 	if (!category) {
-		return next();
+		return controllers404.handle404(req, res);
 	}
 
 	if (await validateTokenIfRequiresLogin(!userPrivileges.read, cid, req, res)) {
@@ -392,9 +393,9 @@ async function generateForUserTopics(req, res, next) {
 	}, `uid:${userData.uid}:topics`, res);
 }
 
-async function generateForTag(req, res, next) {
+async function generateForTag(req, res) {
 	if (meta.config['feeds:disableRSS']) {
-		return next();
+		return controllers404.handle404(req, res);
 	}
 	const tag = validator.escape(String(req.params.tag));
 	const page = parseInt(req.query.page, 10) || 1;
