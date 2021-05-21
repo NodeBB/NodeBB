@@ -36,7 +36,7 @@ modsController.flags.list = async function (req, res, next) {
 
 	// Parse query string params for filters, eliminate non-valid filters
 	filters = filters.reduce((memo, cur) => {
-		if (req.query.hasOwnProperty(cur)) {
+		if (req.query.hasOwnProperty(cur) && typeof req.query[cur] === 'string') {
 			if (req.query[cur].trim() !== '') {
 				memo[cur] = req.query[cur].trim();
 			}
