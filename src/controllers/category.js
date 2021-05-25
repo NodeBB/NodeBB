@@ -3,6 +3,7 @@
 
 const nconf = require('nconf');
 const validator = require('validator');
+const qs = require('querystring');
 
 const db = require('../database');
 const privileges = require('../privileges');
@@ -14,7 +15,6 @@ const helpers = require('./helpers');
 const utils = require('../utils');
 const translator = require('../translator');
 const analytics = require('../analytics');
-const qs = require('querystring');
 
 const categoryController = module.exports;
 
