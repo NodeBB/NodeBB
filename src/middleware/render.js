@@ -2,14 +2,14 @@
 
 const nconf = require('nconf');
 const validator = require('validator');
-const winston = require('winston');
+
 
 const plugins = require('../plugins');
 const meta = require('../meta');
 const translator = require('../translator');
 const widgets = require('../widgets');
 const utils = require('../utils');
-const slugify = require('../slugify');
+const helpers = require('./helpers');
 
 const relative_path = nconf.get('relative_path');
 
@@ -31,7 +31,7 @@ module.exports = function (middleware) {
 			options.relative_path = relative_path;
 			options.template = { name: template, [template]: true };
 			options.url = (req.baseUrl + req.path.replace(/^\/api/, ''));
-			options.bodyClass = buildBodyClass(req, res, options);
+			options.bodyClass = helpers.buildBodyClass(req, res, options);
 
 			const buildResult = await plugins.hooks.fire(`filter:${template}.build`, { req: req, res: res, templateData: options });
 			if (res.headersSent) {
@@ -122,35 +122,5 @@ module.exports = function (middleware) {
 	async function translate(str, language) {
 		const translated = await translator.translate(str, language);
 		return translator.unescape(translated);
-	}
-
-	function buildBodyClass(req, res, templateData) {
-		const clean = req.path.replace(/^\/api/, '').replace(/^\/|\/$/g, '');
-		const parts = clean.split('/').slice(0, 3);
-		parts.forEach(function (p, index) {
-			try {
-				p = slugify(decodeURIComponent(p));
-			} catch (err) {
-				winston.error(err.stack);
-				p = '';
-			}
-			p = validator.escape(String(p));
-			parts[index] = index ? parts[0] + '-' + p : 'page-' + (p || 'home');
-		});
-
-		if (templateData.template.topic) {
-			parts.push('page-topic-category-' + templateData.category.cid);
-			parts.push('page-topic-category-' + slugify(templateData.category.name));
-		}
-		if (templateData.breadcrumbs) {
-			templateData.breadcrumbs.forEach(function (crumb) {
-				if (crumb.hasOwnProperty('cid')) {
-					parts.push('parent-category-' + crumb.cid);
-				}
-			});
-		}
-
-		parts.push('page-status-' + res.statusCode);
-		return parts.join(' ');
 	}
 };
