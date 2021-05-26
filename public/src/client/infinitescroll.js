@@ -10,15 +10,20 @@ define('forum/infinitescroll', function () {
 	var scrollTimeout = 0;
 
 	scroll.init = function (el, cb) {
+		const $body = $('body');
 		if (typeof el === 'function') {
 			callback = el;
-			container = $('body');
+			container = $body;
 		} else {
 			callback = cb;
-			container = el || $('body');
+			container = el || $body;
 		}
 		previousScrollTop = $(window).scrollTop();
 		$(window).off('scroll', startScrollTimeout).on('scroll', startScrollTimeout);
+
+		if ($body.height() <= $(window).height()) {
+			callback(1);
+		}
 	};
 
 	function startScrollTimeout() {

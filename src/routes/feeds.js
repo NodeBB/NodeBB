@@ -13,7 +13,7 @@ const helpers = require('../controllers/helpers');
 const privileges = require('../privileges');
 const db = require('../database');
 const utils = require('../utils');
-const controllers404 = require('../controllers/404.js');
+const controllers404 = require('../controllers/404');
 
 const terms = {
 	daily: 'day',
@@ -60,9 +60,9 @@ async function validateTokenIfRequiresLogin(requiresLogin, cid, req, res) {
 	return true;
 }
 
-async function generateForTopic(req, res) {
+async function generateForTopic(req, res, next) {
 	if (meta.config['feeds:disableRSS']) {
-		return controllers404.send404(req, res);
+		return next();
 	}
 
 	const tid = req.params.topic_id;
@@ -73,7 +73,7 @@ async function generateForTopic(req, res) {
 	]);
 
 	if (!privileges.topics.canViewDeletedScheduled(topic, userPrivileges)) {
-		return controllers404.send404(req, res);
+		return next();
 	}
 
 	if (await validateTokenIfRequiresLogin(!userPrivileges['topics:read'], topic.cid, req, res)) {
@@ -116,11 +116,8 @@ async function generateForTopic(req, res) {
 }
 
 async function generateForCategory(req, res, next) {
-	if (meta.config['feeds:disableRSS']) {
-		return controllers404.send404(req, res);
-	}
 	const cid = req.params.category_id;
-	if (!parseInt(cid, 10)) {
+	if (meta.config['feeds:disableRSS'] || !parseInt(cid, 10)) {
 		return next();
 	}
 
@@ -153,9 +150,9 @@ async function generateForCategory(req, res, next) {
 	}
 }
 
-async function generateForTopics(req, res) {
+async function generateForTopics(req, res, next) {
 	if (meta.config['feeds:disableRSS']) {
-		return controllers404.send404(req, res);
+		return next();
 	}
 	let token = null;
 	if (req.query.token && req.query.uid) {
@@ -171,9 +168,9 @@ async function generateForTopics(req, res) {
 	}, 'topics:tid', res);
 }
 
-async function generateForRecent(req, res) {
+async function generateForRecent(req, res, next) {
 	if (meta.config['feeds:disableRSS']) {
-		return controllers404.send404(req, res);
+		return next();
 	}
 	let token = null;
 	if (req.query.token && req.query.uid) {
@@ -189,9 +186,9 @@ async function generateForRecent(req, res) {
 	}, 'topics:recent', res);
 }
 
-async function generateForTop(req, res) {
+async function generateForTop(req, res, next) {
 	if (meta.config['feeds:disableRSS']) {
-		return controllers404.send404(req, res);
+		return next();
 	}
 	const term = terms[req.params.term] || 'day';
 
@@ -221,9 +218,9 @@ async function generateForTop(req, res) {
 	sendFeed(feed, res);
 }
 
-async function generateForPopular(req, res) {
+async function generateForPopular(req, res, next) {
 	if (meta.config['feeds:disableRSS']) {
-		return controllers404.send404(req, res);
+		return next();
 	}
 
 	const term = terms[req.params.term] || 'day';
@@ -309,9 +306,9 @@ async function generateTopicsFeed(feedOptions, feedTopics) {
 	return feed;
 }
 
-async function generateForRecentPosts(req, res) {
+async function generateForRecentPosts(req, res, next) {
 	if (meta.config['feeds:disableRSS']) {
-		return controllers404.send404(req, res);
+		return next();
 	}
 	const postData = await posts.getRecentPosts(req.uid, 0, 19, 'month');
 	const feed = generateForPostsFeed({
@@ -326,7 +323,7 @@ async function generateForRecentPosts(req, res) {
 
 async function generateForCategoryRecentPosts(req, res) {
 	if (meta.config['feeds:disableRSS']) {
-		return controllers404.send404(req, res);
+		return controllers404.handle404(req, res);
 	}
 	const cid = req.params.category_id;
 
@@ -337,7 +334,7 @@ async function generateForCategoryRecentPosts(req, res) {
 	]);
 
 	if (!category) {
-		return controllers404.send404(req, res);
+		return controllers404.handle404(req, res);
 	}
 
 	if (await validateTokenIfRequiresLogin(!userPrivileges.read, cid, req, res)) {
@@ -378,7 +375,7 @@ function generateForPostsFeed(feedOptions, posts) {
 
 async function generateForUserTopics(req, res, next) {
 	if (meta.config['feeds:disableRSS']) {
-		return controllers404.send404(req, res);
+		return next();
 	}
 
 	const { userslug } = req.params;
@@ -398,7 +395,7 @@ async function generateForUserTopics(req, res, next) {
 
 async function generateForTag(req, res) {
 	if (meta.config['feeds:disableRSS']) {
-		return controllers404.send404(req, res);
+		return controllers404.handle404(req, res);
 	}
 	const tag = validator.escape(String(req.params.tag));
 	const page = parseInt(req.query.page, 10) || 1;

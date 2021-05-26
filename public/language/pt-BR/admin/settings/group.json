@@ -3,7 +3,7 @@
 	"private-groups": "Grupos Privados",
 	"private-groups.help": "Se habilitado, a entrada nos grupos exigirá a apovação do dono do grupo <em>(Padrão: ligado)</em>",
 	"private-groups.warning": "<strong>Atenção!</strong> Se esta opção estiver desabilitada e você tiver grupos privados, eles automaticamente se tornarão públicos.",
-	"allow-multiple-badges": "Allow Multiple Badges",
+	"allow-multiple-badges": "Permitir Vários Emblemas",
 	"allow-multiple-badges-help": "Esta opção pode ser usada para permitir que os usuários selecionem várias insígnias de grupo, requer suporte ao tema.",
 	"max-name-length": "Tamanho Máximo do Nome do Grupo",
 	"max-title-length": "Tamanho Máximo do Título do Grupo",

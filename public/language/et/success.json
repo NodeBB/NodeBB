@@ -1,7 +1,7 @@
 {
     "success": "Õnnestus",
     "topic-post": "Edukalt postitatud.",
-    "post-queued": "Your post is queued for approval.",
+    "post-queued": "Your post is queued for approval. You will get a notification when it is accepted or rejected.",
     "authentication-successful": "Sisse logimine õnnestus!",
     "settings-saved": "Seaded salvestatud!"
 }

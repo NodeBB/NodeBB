@@ -66,7 +66,7 @@ function installAll() {
 			}
 		}
 	} catch (e) {
-		// ignore
+		console.error(e);
 	}
 	try {
 		cproc.execSync(command + (prod ? ' --production' : ''), {

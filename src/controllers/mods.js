@@ -83,6 +83,7 @@ modsController.flags.list = async function (req, res, next) {
 			filters: filters,
 			sort: sort,
 			uid: req.uid,
+			query: req.query,
 		}),
 		analytics.getDailyStatsForSet('analytics:flags', Date.now(), 30),
 		helpers.getSelectedCategory(filters.cid),

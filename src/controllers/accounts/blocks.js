@@ -14,7 +14,7 @@ blocksController.getBlocks = async function (req, res, next) {
 	const start = Math.max(0, page - 1) * resultsPerPage;
 	const stop = start + resultsPerPage - 1;
 
-	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid);
+	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
 	if (!userData) {
 		return next();
 	}

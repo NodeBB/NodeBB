@@ -1,7 +1,7 @@
 {
     "success": "Riuscito",
     "topic-post": "Hai postato correttamente.",
-    "post-queued": "Il tuo post è in attesa di approvazione.",
+    "post-queued": "Il tuo post è in coda per l'approvazione. Riceverai una notifica quando sarà accettato o rifiutato.",
     "authentication-successful": "Autenticazione Riuscita",
     "settings-saved": "Impostazioni salvate!"
 }

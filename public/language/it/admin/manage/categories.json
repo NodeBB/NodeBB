@@ -33,6 +33,7 @@
 	"analytics": "Analitica",
 	"view-category": "Visualizza categoria",
 	"set-order": "Imposta ordine",
+	"set-order-help": "L'impostazione dell'ordine della categoria sposterà questa categoria in quell'ordine e aggiornerà l'ordine delle altre categorie, se necessario. L'ordine minimo è 1 che mette la categoria in cima.",
 
 	"select-category": "Seleziona Categoria",
 	"set-parent-category": "Imposta la Categoria Padre",

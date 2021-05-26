@@ -33,6 +33,7 @@
 	"analytics": "Analityka",
 	"view-category": "Wyświetl kategorię",
 	"set-order": "Set order",
+	"set-order-help": "Setting the order of the category will move this category to that order and update the order of other categories as necessary. Minimum order is 1 which puts the category at the top.",
 
 	"select-category": "Wybierz kategorię",
 	"set-parent-category": "Ustaw nadrzędną kategorie",

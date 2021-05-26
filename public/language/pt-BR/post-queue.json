@@ -1,18 +1,18 @@
 
 {
 	"post-queue": "Fila de Posts",
-	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
+	"description": "Não há posts na fila de posts. <br> Para habilitar essa função, vá até <a href=\"%1\">Configurações → Post → Fila de Posts</a> e habilite <strong>Fila de Posts</strong>.",
 	"user": "Usuário",
 	"category": "Categoria",
 	"title": "Título",
 	"content": "Conteúdo",
 	"posted": "Postado",
 	"reply-to": "Resposta para \"%1\"",
-	"content-editable": "Click on content to edit",
-	"category-editable": "Click on category to edit",
-	"title-editable": "Click on title to edit",
-	"reply": "Reply",
-	"topic": "Topic",
-	"accept": "Accept",
-	"reject": "Reject"
+	"content-editable": "Clique no conteúdo para editar",
+	"category-editable": "Clique na categoria para editar",
+	"title-editable": "Clique no título para editar",
+	"reply": "Responder",
+	"topic": "Tópico",
+	"accept": "Aceitar",
+	"reject": "Rejeitar"
 }

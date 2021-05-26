@@ -98,9 +98,7 @@ module.exports = function (module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return [];
 		}
-		if (!Array.isArray(fields)) {
-			return keys.map(() => ({}));
-		}
+
 		const cachedData = {};
 		const unCachedKeys = cache.getUnCachedKeys(keys, cachedData);
 
@@ -113,12 +111,20 @@ module.exports = function (module) {
 			data = [await module.client.async.hgetall(unCachedKeys[0])];
 		}
 
+		// convert empty objects into null for back-compat with node_redis
+		data = data.map((elem) => {
+			if (!Object.keys(elem).length) {
+				return null;
+			}
+			return elem;
+		});
+
 		unCachedKeys.forEach((key, i) => {
 			cachedData[key] = data[i] || null;
 			cache.set(key, cachedData[key]);
 		});
 
-		if (!fields.length) {
+		if (!Array.isArray(fields) || !fields.length) {
 			return keys.map(key => (cachedData[key] ? { ...cachedData[key] } : null));
 		}
 		return keys.map((key) => {

@@ -1,7 +1,7 @@
 {
     "success": "¡Éxito!",
     "topic-post": "Mensaje publicado satisfactoriamente.",
-    "post-queued": "Tu post está en cola para su aprobación.",
+    "post-queued": "Your post is queued for approval. You will get a notification when it is accepted or rejected.",
     "authentication-successful": "Identificado satisfactoriamente",
     "settings-saved": "¡Ajustes guardados satisfactoriamente!"
 }

@@ -70,12 +70,17 @@ socket = window.socket;
 				.find('p')
 				.translateText('[[error:socket-reconnect-failed]]')
 				.one('click', app.reconnect);
+
+			$(window).one('focus', app.reconnect);
 		});
 
 		socket.on('checkSession', function (uid) {
 			if (parseInt(uid, 10) !== parseInt(app.user.uid, 10)) {
-				app.handleInvalidSession();
+				app.handleSessionMismatch();
 			}
+		});
+		socket.on('event:invalid_session', () => {
+			app.handleInvalidSession();
 		});
 
 		socket.on('setHostname', function (hostname) {

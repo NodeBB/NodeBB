@@ -15,6 +15,10 @@ info:
     Years prior to this determination, many users of NodeBB had asked for a RESTful API to call against NodeBB, which led to the creation of [`nodebb-plugin-write-api`](https://github.com/NodeBB/nodebb-plugin-write-api). In tandem with the above decision, the Write API was merged into NodeBB core in late 2020.
 
     v3 of the Write API (this document) achieves rough feature parity with v2 of the Write API plugin.
+
+    # Authentication
+
+    Please see the ["Authentication" section under the Read API](../read/#section/Overview/Authentication) for more information on how to authenticate against this API in order to make calls.
   version: 1.15.0
   contact:
     email: support@nodebb.org

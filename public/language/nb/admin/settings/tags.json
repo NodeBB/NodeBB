@@ -3,10 +3,10 @@
     "link-to-manage": "Manage Tags",
     "system-tags": "System Tags",
     "system-tags-help": "Only privileged users will be able to use these tags.",
-    "min-per-topic": "Minimum Tags per Topic",
-    "max-per-topic": "Maximum Tags per Topic",
+    "min-per-topic": "Minimalt antall emneord per tråd",
+    "max-per-topic": "Maksimalt antall emneord per tråd",
     "min-length": "Minimum Tag Length",
     "max-length": "Maximum Tag Length",
-    "related-topics": "Related Topics",
-    "max-related-topics": "Maximum related topics to display (if supported by theme)"
+    "related-topics": "Relaterte tråder",
+    "max-related-topics": "Maks antall relaterte tråder å vise (hvis støttet av tema)"
 }

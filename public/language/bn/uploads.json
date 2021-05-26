@@ -1,6 +1,6 @@
 {
-    "uploading-file": "Uploading the file...",
-    "select-file-to-upload": "Select a file to upload!",
+    "uploading-file": "ফাইল পাঠানো হচ্ছে...",
+    "select-file-to-upload": "পাঠানোর জন্য নথি নির্বাচন",
     "upload-success": "File uploaded successfully!",
     "maximum-file-size": "Maximum %1 kb",
     "no-uploads-found": "No uploads found",

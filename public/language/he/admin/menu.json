@@ -1,9 +1,9 @@
 {
-	"section-dashboard": "Dashboards",
-	"dashboard/overview": "Overview",
-	"dashboard/logins": "Logins",
-	"dashboard/users": "Users",
-	"dashboard/topics": "Topics",
+	"section-dashboard": "לוח מחוונים",
+	"dashboard/overview": "סקירה כללית",
+	"dashboard/logins": "כניסות",
+	"dashboard/users": "משתמשים",
+	"dashboard/topics": "נושאים",
 	"section-general": "כללי",
 
 	"section-manage": "ניהול",

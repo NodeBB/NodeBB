@@ -284,7 +284,7 @@ async function getWatchedCids(data) {
 	if (!data.categories.includes('watched')) {
 		return [];
 	}
-	return await user.getCategoriesByStates(data.uid, [categories.watchStates.watching]);
+	return await user.getWatchedCategories(data.uid);
 }
 
 async function getChildrenCids(data) {

@@ -7,9 +7,9 @@
     "all": "Alle",
     "all_categories": "Alle kategorier",
     "topics_marked_as_read.success": "Emner merket som lest!",
-    "all-topics": "All Topics",
-    "new-topics": "New Topics",
-    "watched-topics": "Watched Topics",
-    "unreplied-topics": "Unreplied Topics",
-    "multiple-categories-selected": "Multiple Selected"
+    "all-topics": "Alle tråder",
+    "new-topics": "Nye tråder",
+    "watched-topics": "Fulgte tråder",
+    "unreplied-topics": "Emner som ikke er svart på",
+    "multiple-categories-selected": "Flere valg"
 }

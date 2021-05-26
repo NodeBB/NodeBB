@@ -3,6 +3,7 @@
 
 const nconf = require('nconf');
 const validator = require('validator');
+const qs = require('querystring');
 
 const db = require('../database');
 const privileges = require('../privileges');
@@ -42,7 +43,7 @@ categoryController.get = async function (req, res, next) {
 		return next();
 	}
 	if (topicIndex < 0) {
-		return helpers.redirect(res, `/category/${categoryFields.slug}`);
+		return helpers.redirect(res, `/category/${categoryFields.slug}?${qs.stringify(req.query)}`);
 	}
 
 	if (!userPrivileges.read) {
@@ -50,7 +51,7 @@ categoryController.get = async function (req, res, next) {
 	}
 
 	if (!res.locals.isAPI && !req.params.slug && (categoryFields.slug && categoryFields.slug !== `${cid}/`)) {
-		return helpers.redirect(res, `/category/${categoryFields.slug}`, true);
+		return helpers.redirect(res, `/category/${categoryFields.slug}?${qs.stringify(req.query)}`, true);
 	}
 
 	if (categoryFields.link) {
@@ -86,7 +87,7 @@ categoryController.get = async function (req, res, next) {
 	}
 
 	if (topicIndex > Math.max(categoryData.topic_count - 1, 0)) {
-		return helpers.redirect(res, `/category/${categoryData.slug}/${categoryData.topic_count}`);
+		return helpers.redirect(res, `/category/${categoryData.slug}/${categoryData.topic_count}?${qs.stringify(req.query)}`);
 	}
 	const pageCount = Math.max(1, Math.ceil(categoryData.topic_count / userSettings.topicsPerPage));
 	if (userSettings.usePagination && currentPage > pageCount) {

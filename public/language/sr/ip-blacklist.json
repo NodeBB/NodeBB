@@ -1,19 +1,19 @@
 {
-	"lead": "Configure your IP blacklist here.",
-	"description": "Occasionally, a user account ban is not enough of a deterrant. Other times, restricting access to the forum to a specific IP or a range of IPs is the best way to protect a forum. In these scenarios, you can add troublesome IP addresses or entire CIDR blocks to this blacklist, and they will be prevented from logging in to or registering a new account.",
-	"active-rules": "Active Rules",
-	"validate": "Validate Blacklist",
-	"apply": "Apply Blacklist",
-	"hints": "Syntax Hints",
-	"hint-1": "Define a single IP addresses per line. You can add IP blocks as long as they follow the CIDR format (e.g. <code>192.168.100.0/22</code>).",
-	"hint-2": "You can add in comments by starting lines with the <code>#</code> symbol.",
+	"lead": "Овде конфигуришите своју црну листу IP-а.",
+	"description": "Забрана корисничког налога некад није довољно средство за одвраћање. Понекад је ограничавање приступа форуму одређеној IP адреси или низу IP адреса најбољи начин да се форум заштити. У овим сценаријима можете додати проблематичне IP адресе или читаве CIDR блокове на ову црну листу и биће им онемогућено да се пријаве или региструју нови налог.",
+	"active-rules": "Активна правила",
+	"validate": "Потврдите црну листу",
+	"apply": "Примени црну листу",
+	"hints": "Савети за синтаксу",
+	"hint-1": "Дефинишите једну IP адресу по реду. Можете додати IP блокове све док следе формат CIDR  (нпр. <code>192.168.100.0/22</code>).",
+	"hint-2": "У коментаре можете додавати почетне редове са симболом <code>#</code>.",
 
-	"validate.x-valid": "<strong>%1</strong> out of <strong>%2</strong> rule(s) valid.",
-	"validate.x-invalid": "The following <strong>%1</strong> rules are invalid:",
+	"validate.x-valid": "<strong>%1</strong> од <strong>%2</strong> правила важеће.",
+	"validate.x-invalid": "Следећа правила (укупно <strong>%1</strong>) су неважећа:",
 
-	"alerts.applied-success": "Blacklist Applied",
+	"alerts.applied-success": "Црна листа је примењена",
 
-	"analytics.blacklist-hourly": "<strong>Figure 1</strong> &ndash; Blacklist hits per hour",
-	"analytics.blacklist-daily": "<strong>Figure 2</strong> &ndash; Blacklist hits per day",
-	"ip-banned": "IP banned"
+	"analytics.blacklist-hourly": "<strong>Figure 1</strong> &ndash; број посета са црне листе на сат",
+	"analytics.blacklist-daily": "<strong>Figure 1</strong> &ndash; број посета са црне листе на дан",
+	"ip-banned": "IP је забрањен"
 }

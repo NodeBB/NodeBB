@@ -120,7 +120,7 @@ module.exports = function (module) {
 			cache.set(key, cachedData[key]);
 		});
 
-		if (!fields.length) {
+		if (!Array.isArray(fields) || !fields.length) {
 			return keys.map(key => (cachedData[key] ? { ...cachedData[key] } : null));
 		}
 		return keys.map((key) => {
@@ -156,7 +156,9 @@ module.exports = function (module) {
 		const data = {};
 		fields.forEach((field) => {
 			field = helpers.fieldToString(field);
-			data[field] = 1;
+			if (field) {
+				data[field] = 1;
+			}
 		});
 
 		const item = await module.client.collection('objects').findOne({ _key: key }, { projection: data });

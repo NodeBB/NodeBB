@@ -13,7 +13,7 @@ info:
 
     ## Shortcomings
 
-    The Read API is named because its primary use is by NodeBB itself when navigating between pages. Therefore, the routes almost universally always follow the same path as actual pages on NodeBB itself. There are also a small number of non-`GET` routes, which doesn't necessarily make sense in a Read API. These will be merged into the Write API in time.
+    The Read API is named because its primary use is by NodeBB itself when navigating between pages. Therefore, the routes almost universally always follow the same path as actual pages on NodeBB itself. There are also a small number of non-`GET` routes, which do not make sense in a Read API. These will be merged into the Write API in time.
 
     ## Authentication
 
@@ -21,14 +21,23 @@ info:
 
     ### Cookie Authentication
 
-    This default authentication behaviour of this API is via cookie jar to find a valid session. A valid login session is required for API calls that pertain to operations involving a logged-in user. For example, `/api/unread` is a route showing unread topics, and is not accessible by guest users.
+    By default, the API will attempt to find a valid session in the browser's cookies. A valid login session is required for API calls that pertain to operations involving a logged-in user. For example, `/api/unread` is a route showing unread topics, and is not accessible by guest users.
+
+    Most data transfer utilities like cURL will allow you to construct something like a cookie, to be sent alongside the request, to function much like a browser cookie. This should work with the API.
 
     ### Bearer Authentication
 
-    Both the Read API and Write API offers bearer authentication, as administered through the administration panel.
+    Both the Read API and Write API offer bearer authentication, as administered through the administration panel.
 
-      * For NodeBB v1.x, this is provided by [`nodebb-plugin-write-api`](https://github.com/NodeBB/nodebb-plugin-write-api). The Write API plugin needs to be installed before authentication via bearer token is enabled on routes provided by the Read API.
-      * For NodeBB v2.x+ (in development), the Write API is available in core, and bearer authentication is available out-of-the-box
+      * Up until v1.14.3, this is provided by [`nodebb-plugin-write-api`](https://github.com/NodeBB/nodebb-plugin-write-api). The Write API plugin needs to be installed before authentication via bearer token is enabled on routes provided by the Read API.
+      * From NodeBB v1.15.0 onwards, the Write API is available in core, and bearer authentication is available out-of-the-box
+
+    In both cases, a bearer token is issued in the NodeBB admin panel in order to grant access to the API.
+
+    There are two types of tokens:
+      * A *user token* is associated with a specific uid, and all calls made are made in the name of that user
+      * A *master token* is not associated with any specific uid, though a `_uid` parameter is required in the request, and then all calls are made in the name of *that* user.
+        This is the only difference between the two tokens. A master token with `_uid` set to a non-administrator will not allow you to make administrative calls.
 tags:
   - name: home
     description: Routes used at the forum index only

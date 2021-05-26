@@ -1,7 +1,7 @@
 {
     "success": "Terminé",
     "topic-post": "Le message a bien été envoyé.",
-    "post-queued": "Votre message est en attente d'approbation.",
+    "post-queued": "Votre message est en attente d'approbation. Vous recevrez une notification lorsqu'il sera accepté ou rejeté.",
     "authentication-successful": "Authentification réussie",
     "settings-saved": "Paramètres enregistrés !"
 }

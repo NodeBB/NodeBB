@@ -33,6 +33,7 @@
 	"analytics": "애널리틱스",
 	"view-category": "카테고리 보기",
 	"set-order": "순서 설정",
+	"set-order-help": "카테고리의 순서를 설정하면 해당 위치로 순서가 변경되며 다른 카테고리의 순서도 함께 변경됩니다. 최소 설정값은 1이며 최상단에 위치됩니다.",
 
 	"select-category": "카테고리 선택",
 	"set-parent-category": "상위 카테고리 설정",

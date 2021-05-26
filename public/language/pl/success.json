@@ -1,7 +1,7 @@
 {
     "success": "Udało się",
     "topic-post": "Twój post został wysłany.",
-    "post-queued": "Post został dodany do kolejki oczekujących na zatwierdzenie.",
+    "post-queued": "Your post is queued for approval. You will get a notification when it is accepted or rejected.",
     "authentication-successful": "Uwierzytelnienie powiodło się.",
     "settings-saved": "Ustawienia zostały zapisane."
 }

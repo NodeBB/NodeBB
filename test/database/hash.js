@@ -324,6 +324,15 @@ describe('Hash methods', () => {
 			assert.strictEqual(Number(objects[1].age), 3);
 			assert.strictEqual(!!objects[2], false);
 		});
+
+		it('should return objects if fields is not an array', async () => {
+			const objects = await db.getObjectsFields(['testObject8', 'testObject9', 'doesnotexist'], undefined);
+			assert.strictEqual(objects[0].name, 'baris');
+			assert.strictEqual(Number(objects[0].age), 99);
+			assert.strictEqual(objects[1].name, 'ginger');
+			assert.strictEqual(Number(objects[1].age), 3);
+			assert.strictEqual(!!objects[2], false);
+		});
 	});
 
 	describe('getObjectKeys()', () => {
@@ -397,6 +406,11 @@ describe('Hash methods', () => {
 				done();
 			});
 		});
+
+		it('should not error if field is falsy', async () => {
+			const value = await db.isObjectField('hashTestObjectEmpty', '');
+			assert.strictEqual(value, false);
+		});
 	});
 
 
@@ -417,6 +431,11 @@ describe('Hash methods', () => {
 				assert.deepEqual(values, [true, true, false]);
 				done();
 			});
+		});
+
+		it('should not error if one field is falsy', async () => {
+			const values = await db.isObjectFields('hashTestObject', ['name', '']);
+			assert.deepStrictEqual(values, [true, false]);
 		});
 	});
 

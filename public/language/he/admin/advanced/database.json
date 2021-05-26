@@ -21,8 +21,8 @@
 	"mongo.bytes-in": "ביטים נכנסים",
 	"mongo.bytes-out": "ביטים יוצאים",
 	"mongo.num-requests": "מספר בקשות",
-	"mongo.raw-info": "מידע לא מעובד מMongoDB",
-	"mongo.unauthorized": "NodeBB לא הצליחה לקבל את המידע הדרוש מMongoDB. אנא בדוק שלמשתמש יש הרשאת clusterMonitor לadmin database.",
+	"mongo.raw-info": "מידע לא מעובד מ-MongoDB",
+	"mongo.unauthorized": "NodeBB לא הצליחה לקבל את המידע הדרוש מ-MongoDB. אנא בדוק שלמשתמש יש הרשאת clusterMonitor ל-admin database.",
 
 	"redis": "Redis",
 	"redis.version": "גרסת Redis",
@@ -37,8 +37,8 @@
 	"redis.total-connections-recieved": "סך כל החיבורים שהתקבלו",
 	"redis.total-commands-processed": "סך כל הפקודות שעובדו",
 	"redis.iops": "אפשרויות מידיות לשניה",
-	"redis.iinput": "Instantaneous Input Per Second",
-	"redis.ioutput": "Instantaneous Output Per Second",
+	"redis.iinput": "קלט מיידי לשנייה",
+	"redis.ioutput": "פלט מיידי לשנייה",
 	"redis.total-input": "סך הכל  מידע נכנס",
 	"redis.total-output": "סך הכל מידע יוצא",
 

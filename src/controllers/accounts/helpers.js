@@ -16,7 +16,7 @@ const categories = require('../../categories');
 
 const helpers = module.exports;
 
-helpers.getUserDataByUserSlug = async function (userslug, callerUID) {
+helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {}) {
 	const uid = await user.getUidByUserslug(userslug);
 	if (!uid) {
 		return null;
@@ -117,7 +117,11 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID) {
 
 	await getCounts(userData, callerUID);
 
-	const hookData = await plugins.hooks.fire('filter:helpers.getUserDataByUserSlug', { userData: userData, callerUID: callerUID });
+	const hookData = await plugins.hooks.fire('filter:helpers.getUserDataByUserSlug', {
+		userData: userData,
+		callerUID: callerUID,
+		query: query,
+	});
 	return hookData.userData;
 };
 

@@ -1,7 +1,7 @@
 {
     "success": "Veiksme",
     "topic-post": "Veiksmīgi publicēts.",
-    "post-queued": "Tavs raksts gaida apstiprināšanu.",
+    "post-queued": "Your post is queued for approval. You will get a notification when it is accepted or rejected.",
     "authentication-successful": "Veiksmīgi autentificējies",
     "settings-saved": "Iestatījumi saglabāti!"
 }

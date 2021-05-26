@@ -33,6 +33,7 @@
 	"analytics": "Statistiques",
 	"view-category": "Voir la catégorie",
 	"set-order": "Définir l'ordre",
+	"set-order-help": "Configuration des catégories. Vous pouvez déplacer vos catégories dans l'ordre que vous le souhaitez. La commande minimum est de 1, ce qui place la catégorie au sommet.",
 
 	"select-category": "Sélectionner une catégorie",
 	"set-parent-category": "Définissez une catégorie parente",

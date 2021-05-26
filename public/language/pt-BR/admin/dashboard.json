@@ -30,7 +30,7 @@
 	"upgrade-available": "<p>Uma nova versão (v%1) foi lançada. Considere <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">atualizar o seu NodeBB</a>.</p>",
 	"prerelease-upgrade-available": "<p>Esta é uma versão de pré-lançamento desatualizada do NodeBB. Uma nova versão (v%1) foi lançada. Considere <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">atualizar o seu NodeBB</a>.</p>",
 	"prerelease-warning": "<p>Esta é uma versão de <strong>pré-lançamento</strong> do NodeBB. Bugs inesperados podem ocorrer. <i class=\"fa fa-exclamation-triangle\"></i></p>",
-	"fallback-emailer-not-found": "Fallback emailer not found!",
+	"fallback-emailer-not-found": "Emailer substituto não encontrado!",
 	"running-in-development": "<span>O fórum está sendo executado em modo de desenvolvedor. O fórum pode estar sujeito a potenciais vulnerabilidades; por favor, entre em contato com o seu administrador de sistemas.</span>",
 	"latest-lookup-failed": "<p>Falha ao procurar a versão mais recente disponível do NodeBB</p>",
 
@@ -79,10 +79,10 @@
 	"last-restarted-by": "Última vez reiniciado por",
 	"no-users-browsing": "Nenhum usuário navegando",
 
-	"back-to-dashboard": "Back to Dashboard",
-	"details.no-users": "No users have joined within the selected timeframe",
-	"details.no-topics": "No topics have been posted within the selected timeframe",
-	"details.no-logins": "No logins have been recorded within the selected timeframe",
-	"details.logins-static": "NodeBB only saves session data for %1 days, and so this table below will only show the most recently active sessions",
-	"details.logins-login-time": "Login Time"
+	"back-to-dashboard": "De volta ao Painel",
+	"details.no-users": "Nenhum usuário ingressou dentro do período de tempo selecionado",
+	"details.no-topics": "Nenhum tópico foi postado dentro do período de tempo selecionado",
+	"details.no-logins": "Nenhum login foi registrado dentro do período de tempo selecionado",
+	"details.logins-static": "O NodeBB só salva os dados da sessão por %1 dias, então esta tabela abaixo mostrará apenas as sessões ativas mais recentemente",
+	"details.logins-login-time": "Hora de Login"
 }

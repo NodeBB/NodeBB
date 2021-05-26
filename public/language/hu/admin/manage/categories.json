@@ -33,6 +33,7 @@
 	"analytics": "Analitika",
 	"view-category": "Kategória megtekintése",
 	"set-order": "Sorrend beállítása",
+	"set-order-help": "Setting the order of the category will move this category to that order and update the order of other categories as necessary. Minimum order is 1 which puts the category at the top.",
 
 	"select-category": "Kategória kiválasztása",
 	"set-parent-category": "Szülő kategória beállítása",

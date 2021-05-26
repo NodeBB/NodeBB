@@ -1,7 +1,7 @@
 {
     "success": "Udført",
     "topic-post": "Du har indsendt et indlæg.",
-    "post-queued": "Your post is queued for approval.",
+    "post-queued": "Your post is queued for approval. You will get a notification when it is accepted or rejected.",
     "authentication-successful": "Du blev autentificeret",
     "settings-saved": "Indstillinger gemt!"
 }

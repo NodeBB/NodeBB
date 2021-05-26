@@ -1,9 +1,9 @@
 {
-	"lead": "Configure your IP blacklist here.",
-	"description": "Occasionally, a user account ban is not enough of a deterrant. Other times, restricting access to the forum to a specific IP or a range of IPs is the best way to protect a forum. In these scenarios, you can add troublesome IP addresses or entire CIDR blocks to this blacklist, and they will be prevented from logging in to or registering a new account.",
+	"lead": "Konfigurer IP-svartelisten din her.",
+	"description": "Noen ganger er blokkering av brukerkontoer ikke tilstrekkelig avskrekkende. Andre ganger er derfor den beste måten å beskytte et forum på å begrense tilgangen til forumet for en bestemt IP eller en rekke IP-er. I disse scenariene kan du legge til  IP-adresser eller hele CIDR-blokker i denne svartelisten, og de vil bli forhindret fra å logge på eller registrere en ny konto.",
 	"active-rules": "Active Rules",
-	"validate": "Validate Blacklist",
-	"apply": "Apply Blacklist",
+	"validate": "Valider svartelisten",
+	"apply": "Bruk svarteliste",
 	"hints": "Syntax Hints",
 	"hint-1": "Define a single IP addresses per line. You can add IP blocks as long as they follow the CIDR format (e.g. <code>192.168.100.0/22</code>).",
 	"hint-2": "You can add in comments by starting lines with the <code>#</code> symbol.",
@@ -15,5 +15,5 @@
 
 	"analytics.blacklist-hourly": "<strong>Figure 1</strong> &ndash; Blacklist hits per hour",
 	"analytics.blacklist-daily": "<strong>Figure 2</strong> &ndash; Blacklist hits per day",
-	"ip-banned": "IP banned"
+	"ip-banned": "IP er utestengt"
 }

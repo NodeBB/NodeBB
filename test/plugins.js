@@ -71,6 +71,25 @@ describe('Plugins', () => {
 		assert.strictEqual(data.foo, 8);
 	});
 
+	it('should not error with invalid hooks', async () => {
+		function method1(data, callback) {
+			data.foo += 1;
+			return data;
+		}
+		function method2(data, callback) {
+			data.foo += 2;
+			// this is invalid
+			callback(null, data);
+			return data;
+		}
+
+		plugins.hooks.register('test-plugin', { hook: 'filter:test.hook3', method: method1 });
+		plugins.hooks.register('test-plugin', { hook: 'filter:test.hook3', method: method2 });
+
+		const data = await plugins.hooks.fire('filter:test.hook3', { foo: 1 });
+		assert.strictEqual(data.foo, 4);
+	});
+
 	it('should register and fire a filter hook that returns a promise that gets rejected', (done) => {
 		async function method(data) {
 			return new Promise((resolve, reject) => {
@@ -78,8 +97,8 @@ describe('Plugins', () => {
 				reject(new Error('nope'));
 			});
 		}
-		plugins.hooks.register('test-plugin', { hook: 'filter:test.hook3', method: method });
-		plugins.hooks.fire('filter:test.hook3', { foo: 1 }, (err) => {
+		plugins.hooks.register('test-plugin', { hook: 'filter:test.hook4', method: method });
+		plugins.hooks.fire('filter:test.hook4', { foo: 1 }, (err) => {
 			assert(err);
 			done();
 		});

@@ -142,7 +142,9 @@ SELECT h."data"->>$2::TEXT f
 		if (!key) {
 			return null;
 		}
-
+		if (!Array.isArray(fields) || !fields.length) {
+			return await module.getObject(key);
+		}
 		const res = await module.pool.query({
 			name: 'getObjectFields',
 			text: `
@@ -174,7 +176,8 @@ SELECT (SELECT jsonb_object_agg(f, d."value")
 		if (!Array.isArray(keys) || !keys.length) {
 			return [];
 		}
-		if (!fields.length) {
+
+		if (!Array.isArray(fields) || !fields.length) {
 			return await module.getObjects(keys);
 		}
 		const res = await module.pool.query({

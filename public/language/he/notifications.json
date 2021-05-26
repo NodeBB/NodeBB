@@ -47,6 +47,8 @@
     "posts-exported": "<strong>%1</strong> פוסטים יוצאו, לחץ כדי להוריד.",
     "uploads-exported": "<strong>%1</strong> העלאות יוצאו, לחץ כדי להוריד.",
     "users-csv-exported": "משתמשים יוצאו כ-csv, לחץ כאן להורדה.",
+    "post-queue-accepted": "Your queued post has been accepted. Click here to see your post.",
+    "post-queue-rejected": "Your queued post has been rejected.",
     "email-confirmed": "כתובת המייל אושרה",
     "email-confirmed-message": "תודה שאישרת את כתובת המייל שלך. החשבון שלך פעיל כעת.",
     "email-confirm-error-message": "אירעה שגיאה בעת אישור המייל שלך. ייתכן כי הקוד היה שגוי או פג תוקף.",

@@ -1,7 +1,7 @@
 {
     "success": "הצלחה",
     "topic-post": "העלת פוסט בהצלחה.",
-    "post-queued": "הפוסט שלך ממתין לאישור.",
+    "post-queued": "Your post is queued for approval. You will get a notification when it is accepted or rejected.",
     "authentication-successful": "הנתונים אומתו בהצלחה",
     "settings-saved": "הנתונים נשמרו!"
 }

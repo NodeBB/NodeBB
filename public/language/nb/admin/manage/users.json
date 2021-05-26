@@ -88,7 +88,7 @@
 	"alerts.validate-email-success": "Emails validated",
 	"alerts.validate-force-password-reset-success": "User(s) passwords have been reset and their existing sessions have been revoked.",
 	"alerts.password-reset-confirm": "Do you want to send password reset email(s) to these user(s)?",
-	"alerts.confirm-delete": "<strong>Warning!</strong><p>Do you really want to delete <strong>user(s)</strong>?</p><p>This action is not reversible! Only the user account will be deleted, their posts and topics will remain.</p>",
+	"alerts.confirm-delete": "<strong>Advarsel!</strong><p> Vil du virkelig slette <strong>bruker(e)</strong>?</p><p>Denne handlingen kan ikke angres! Kun brukerkontoen vil bli slettet, deres innlegg og tråder påvirkes ikke.</p>",
 	"alerts.delete-success": "User(s) Deleted!",
 	"alerts.confirm-delete-content": "<strong>Warning!</strong><p>Do you really want to delete these user(s) <strong>content</strong>?</p><p>This action is not reversible! The users' accounts will remain, but their posts and topics will be deleted.</p>",
 	"alerts.delete-content-success": "User(s) Content Deleted!",
