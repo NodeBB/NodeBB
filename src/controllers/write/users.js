@@ -43,6 +43,10 @@ Users.exists = async (req, res) => {
 	helpers.formatApiResponse(200, res);
 };
 
+Users.get = async (req, res) => {
+	helpers.formatApiResponse(200, res, await user.getUserData(req.params.uid));
+};
+
 Users.update = async (req, res) => {
 	const userObj = await api.users.update(req, { ...req.body, uid: req.params.uid });
 	helpers.formatApiResponse(200, res, userObj);

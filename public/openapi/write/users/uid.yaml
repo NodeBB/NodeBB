@@ -15,6 +15,30 @@ head:
       description: user found
     '404':
       description: user not found
+get:
+  tags:
+    - users
+  summary: get a single user account
+  parameters:
+    - in: path
+      name: uid
+      schema:
+        type: integer
+      required: true
+      description: uid of the user to check
+      example: 3
+  responses:
+    '200':
+      description: successfully retrieved user profile
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../components/schemas/UserObj.yaml#/UserObj
 delete:
   tags:
     - users
