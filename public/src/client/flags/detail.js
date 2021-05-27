@@ -35,7 +35,7 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 					socket.emit('flags.appendNote', {
 						flagId: ajaxify.data.flagId,
 						note: noteEl.value,
-						datetime: parseInt(noteEl.getAttribute('data-datetime')),
+						datetime: parseInt(noteEl.getAttribute('data-datetime'), 10),
 					}, function (err, payload) {
 						if (err) {
 							return app.alertError(err.message);
@@ -82,7 +82,7 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 					break;
 
 				case 'delete-note':
-					var datetime = parseInt(this.closest('[data-datetime]').getAttribute('data-datetime'));
+					var datetime = parseInt(this.closest('[data-datetime]').getAttribute('data-datetime'), 10);
 					bootbox.confirm('[[flags:delete-note-confirm]]', function (ok) {
 						if (ok) {
 							socket.emit('flags.deleteNote', {
