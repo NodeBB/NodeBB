@@ -156,7 +156,7 @@ middleware.renderHeader = async function renderHeader(req, res, data) {
 async function appendUnreadCounts({ uid, navigation, unreadData, query }) {
 	const originalRoutes = navigation.map(nav => nav.originalRoute);
 	const calls = {
-		unreadData: topics.getUnreadData({ uid: uid }),
+		unreadData: topics.getUnreadData({ uid: uid, query: query }),
 		unreadChatCount: messaging.getUnreadCount(uid),
 		unreadNotificationCount: user.notifications.getUnreadCount(uid),
 		unreadFlagCount: (async function () {
