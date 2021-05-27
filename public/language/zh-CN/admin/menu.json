@@ -1,9 +1,9 @@
 {
-	"section-dashboard": "Dashboards",
+	"section-dashboard": "仪表盘",
 	"dashboard/overview": "Overview",
-	"dashboard/logins": "Logins",
-	"dashboard/users": "Users",
-	"dashboard/topics": "Topics",
+	"dashboard/logins": "登录",
+	"dashboard/users": "用户",
+	"dashboard/topics": "主题",
 	"section-general": "基本",
 
 	"section-manage": "管理",
