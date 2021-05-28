@@ -447,7 +447,7 @@ describe('Flags', () => {
 		});
 
 		it('should rescind notification if flag is resolved', async () => {
-			const SocketFlags = require('../src/socket.io/flags.js');
+			const SocketFlags = require('../src/socket.io/flags');
 			const result = await Topics.post({
 				cid: category.cid,
 				uid: uid3,
@@ -551,7 +551,7 @@ describe('Flags', () => {
 		});
 
 		it('should not error if user blocked target', (done) => {
-			const SocketFlags = require('../src/socket.io/flags.js');
+			const SocketFlags = require('../src/socket.io/flags');
 			let reporterUid;
 			let reporteeUid;
 			async.waterfall([
@@ -694,7 +694,7 @@ describe('Flags', () => {
 	});
 
 	describe('(websockets)', () => {
-		const SocketFlags = require('../src/socket.io/flags.js');
+		const SocketFlags = require('../src/socket.io/flags');
 		let pid;
 		let tid;
 		before((done) => {

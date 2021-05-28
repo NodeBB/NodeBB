@@ -3,7 +3,7 @@
 
 const assert = require('assert');
 const { JSDOM } = require('jsdom');
-const utils = require('../public/src/utils.js');
+const utils = require('../public/src/utils');
 const slugify = require('../src/slugify');
 const db = require('./mocks/databasemock');
 
