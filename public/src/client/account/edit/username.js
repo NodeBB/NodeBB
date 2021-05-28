@@ -34,6 +34,7 @@ define('forum/account/edit/username', [
 					$('[component="header/profilelink/settings"]').attr('href', config.relative_path + '/user/' + userslug + '/settings');
 					$('[component="header/username"]').text(userData.username);
 					$('[component="header/usericon"]').css('background-color', response['icon:bgColor']).text(response['icon:text']);
+					$('[component="avatar/icon"]').css('background-color', response['icon:bgColor']).text(response['icon:text']);
 				}
 
 				ajaxify.go('user/' + userslug + '/edit');
