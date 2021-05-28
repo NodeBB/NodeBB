@@ -123,6 +123,12 @@ Notifications.create = async function (data) {
 	}
 	const now = Date.now();
 	data.datetime = now;
+	const result = await plugins.hooks.fire('filter:notifications.create', {
+		data: data,
+	});
+	if (!result.data) {
+		return;
+	}
 	await Promise.all([
 		db.sortedSetAdd('notifications', now, data.nid),
 		db.setObject('notifications:' + data.nid, data),
