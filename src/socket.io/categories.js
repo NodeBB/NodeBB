@@ -6,6 +6,7 @@ const user = require('../user');
 const topics = require('../topics');
 const api = require('../api');
 const sockets = require('.');
+const plugins = require('../plugins');
 
 const SocketCategories = module.exports;
 
@@ -94,12 +95,17 @@ SocketCategories.getMoveCategories = async function (socket, data) {
 	return await SocketCategories.getSelectCategories(socket, data);
 };
 
-SocketCategories.getSelectCategories = async function (socket) {
+SocketCategories.getSelectCategories = async function (socket, data) {
 	const [isAdmin, categoriesData] = await Promise.all([
 		user.isAdministrator(socket.uid),
 		categories.buildForSelect(socket.uid, 'find', ['disabled', 'link']),
 	]);
-	return categoriesData.filter(category => category && (!category.disabled || isAdmin) && !category.link);
+	const result = await plugins.hooks.fire('filter:categories.getSelectCategories', {
+		categories: categoriesData,
+		isAdmin: isAdmin,
+		query: data.query || {},
+	});
+	return result.categories.filter(category => category && (!category.disabled || isAdmin) && !category.link);
 };
 
 SocketCategories.setWatchState = async function (socket, data) {

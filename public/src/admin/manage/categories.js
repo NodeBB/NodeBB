@@ -99,7 +99,7 @@ define('admin/manage/categories', [
 	}
 
 	Categories.throwCreateModal = function () {
-		socket.emit('categories.getSelectCategories', {}, function (err, categories) {
+		socket.emit('categories.getSelectCategories', { query: utils.params() }, function (err, categories) {
 			if (err) {
 				return app.alertError(err.message);
 			}

@@ -12,7 +12,7 @@ define('forum/topic/move', ['categorySelector', 'alerts'], function (categorySel
 		Move.onComplete = onComplete;
 		Move.moveAll = !tids;
 
-		socket.emit('categories.getMoveCategories', onCategoriesLoaded);
+		socket.emit('categories.getMoveCategories', { query: utils.params() }, onCategoriesLoaded);
 	};
 
 	function onCategoriesLoaded(err, categories) {

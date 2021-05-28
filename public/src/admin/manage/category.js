@@ -114,7 +114,7 @@ define('admin/manage/category', [
 		});
 
 		$('.copy-settings').on('click', function () {
-			socket.emit('categories.getSelectCategories', {}, function (err, allCategories) {
+			socket.emit('categories.getSelectCategories', { query: utils.params() }, function (err, allCategories) {
 				if (err) {
 					return app.alertError(err.message);
 				}
@@ -261,7 +261,7 @@ define('admin/manage/category', [
 	}
 
 	Category.launchParentSelector = function () {
-		socket.emit('categories.getSelectCategories', {}, function (err, allCategories) {
+		socket.emit('categories.getSelectCategories', { query: utils.params() }, function (err, allCategories) {
 			if (err) {
 				return app.alertError(err.message);
 			}
