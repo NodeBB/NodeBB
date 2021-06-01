@@ -44,7 +44,6 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 						Detail.reloadNotes(payload.notes);
 						Detail.reloadHistory(payload.history);
 
-						noteEl.setAttribute('data-action', 'appendNote');
 						noteEl.removeAttribute('data-datetime');
 					});
 					break;
