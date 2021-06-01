@@ -50,7 +50,7 @@ module.exports = function (Categories) {
 			category.backgroundImage = data.backgroundImage;
 		}
 
-		let defaultPrivileges = [
+		const defaultPrivileges = [
 			'groups:find',
 			'groups:read',
 			'groups:topics:read',
@@ -64,12 +64,12 @@ module.exports = function (Categories) {
 			'groups:posts:downvote',
 			'groups:topics:delete',
 		];
-		let modPrivileges = defaultPrivileges.concat([
+		const modPrivileges = defaultPrivileges.concat([
 			'groups:topics:schedule',
 			'groups:posts:view_deleted',
 			'groups:purge',
 		]);
-		let guestPrivileges = ['groups:find', 'groups:read', 'groups:topics:read'];
+		const guestPrivileges = ['groups:find', 'groups:read', 'groups:topics:read'];
 
 		const result = await plugins.hooks.fire('filter:category.create', {
 			category: category,
