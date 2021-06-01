@@ -59,7 +59,7 @@ SocketFlags.appendNote = async function (socket, data) {
 		if (note.uid !== socket.uid) {
   			throw new Error('[[error:no-privileges]]'));
 		}
-	  }
+	}
 	
 	await flags.appendNote(data.flagId, socket.uid, data.note, data.datetime);
 
