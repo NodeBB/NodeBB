@@ -131,12 +131,16 @@ Auth.reloadRoutes = async function (params) {
 
 			passport.authenticate(strategy.name, (err, user) => {
 				if (err) {
-					delete req.session.registration;
+					if (req.session && req.session.registration) {
+						delete req.session.registration;
+					}
 					return next(err);
 				}
 
 				if (!user) {
-					delete req.session.registration;
+					if (req.session && req.session.registration) {
+						delete req.session.registration;
+					}
 					return helpers.redirect(res, strategy.failureUrl !== undefined ? strategy.failureUrl : '/login');
 				}
 
