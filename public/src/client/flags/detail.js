@@ -35,7 +35,7 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 					socket.emit('flags.appendNote', {
 						flagId: ajaxify.data.flagId,
 						note: noteEl.value,
-						datetime: noteEl.getAttribute('data-datetime'),
+						datetime: parseInt(noteEl.getAttribute('data-datetime'), 10),
 					}, function (err, payload) {
 						if (err) {
 							return app.alertError(err.message);
@@ -44,7 +44,6 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 						Detail.reloadNotes(payload.notes);
 						Detail.reloadHistory(payload.history);
 
-						noteEl.setAttribute('data-action', 'appendNote');
 						noteEl.removeAttribute('data-datetime');
 					});
 					break;
@@ -82,7 +81,7 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 					break;
 
 				case 'delete-note':
-					var datetime = this.closest('[data-datetime]').getAttribute('data-datetime');
+					var datetime = parseInt(this.closest('[data-datetime]').getAttribute('data-datetime'), 10);
 					bootbox.confirm('[[flags:delete-note-confirm]]', function (ok) {
 						if (ok) {
 							socket.emit('flags.deleteNote', {
@@ -144,9 +143,9 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 
 	Detail.reloadNotes = function (notes) {
 		ajaxify.data.notes = notes;
-		Benchpress.render('flags/detail', 'notes', {
+		Benchpress.render('flags/detail', {
 			notes: notes,
-		}).then(function (html) {
+		}, 'notes').then(function (html) {
 			var wrapperEl = components.get('flag/notes');
 			wrapperEl.empty();
 			wrapperEl.html(html);
