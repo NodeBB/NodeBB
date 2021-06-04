@@ -91,6 +91,14 @@ describe('User', () => {
 			});
 		});
 
+		it('should not error if username and email are identical', async () => {
+			try {
+				await User.create({ username: 'testusername223@example.org', password: 'loremipsum', email: 'testusername223@example.org' });
+			} catch (e) {
+				assert.ifError(e);
+			}
+		});
+
 		it('should error with invalid password', (done) => {
 			User.create({ username: 'test', password: '1' }, (err) => {
 				assert.equal(err.message, '[[reset_password:password_too_short]]');
