@@ -326,12 +326,16 @@ authenticationController.doLogin = async function (req, uid) {
 		return;
 	}
 	const loginAsync = util.promisify(req.login).bind(req);
-	const regenerateSession = util.promisify(req.session.regenerate).bind(req.session);
 
-	const sessionData = { ...req.session };
-	await regenerateSession();
-	for (const [prop, value] of Object.entries(sessionData)) {
-		req.session[prop] = value;
+	const { reroll } = req.res.locals;
+	if (reroll !== false) {
+		const regenerateSession = util.promisify(req.session.regenerate).bind(req.session);
+
+		const sessionData = { ...req.session };
+		await regenerateSession();
+		for (const [prop, value] of Object.entries(sessionData)) {
+			req.session[prop] = value;
+		}
 	}
 
 	await loginAsync({ uid: uid });
