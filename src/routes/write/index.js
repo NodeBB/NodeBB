@@ -65,5 +65,7 @@ Write.reload = async (params) => {
 };
 
 Write.cleanup = (req) => {
-	req.session.destroy();
+	if (req && req.session) {
+		req.session.destroy();
+	}
 };
