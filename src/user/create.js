@@ -21,7 +21,7 @@ module.exports = function (User) {
 
 		try {
 			await lock(data.username, '[[error:username-taken]]');
-			if (data.email) {
+			if (data.email && data.email !== data.username) {
 				await lock(data.email, '[[error:email-taken]]');
 			}
 
