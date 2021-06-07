@@ -41,6 +41,8 @@ get:
                 type: number
               minimumTagLength:
                 type: number
+              undoTimeout:
+                type: number
               maximumTagLength:
                 type: number
               useOutgoingLinksPage:
