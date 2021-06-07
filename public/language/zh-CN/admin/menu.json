@@ -43,7 +43,7 @@
 	"settings/sockets": "套接字",
 	"settings/advanced": "高级",
 
-	"settings.page-title": "1% 设置",
+	"settings.page-title": "%1 设置",
 
 	"section-appearance": "界面",
 	"appearance/themes": "主题",

@@ -70,7 +70,7 @@
 	"sort-replies": "Flest kommentarer",
 
 	"modal-title": "Rapporter innhold",
-	"modal-body": "Oppgi årsaken til at du rapporterer% 1% 2. Alternativt kan du bruke en av hurtigrapportknappene hvis det er aktuelt.",
+	"modal-body": "Oppgi årsaken til at du rapporterer %1 %2. Alternativt kan du bruke en av hurtigrapportknappene hvis det er aktuelt.",
 	"modal-reason-spam": "Spam",
 	"modal-reason-offensive": "Støtende",
 	"modal-reason-other": "Other (specify below)",

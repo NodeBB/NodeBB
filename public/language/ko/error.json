@@ -25,7 +25,7 @@
     "invalid-event": "올바르지 않은 이벤트: %1",
     "local-login-disabled": "권한이 없는 계정에서의 로컬 로그인이 비활성화 되었습니다.",
     "csrf-invalid": "세션이 만료되어 로그인에 실패하였습니다. 다시 시도해주세요.",
-    "invalid-pagination-value": "올바르지 않은 페이지 값입니다. 최소 1%에서 최대 2% 사이로 설정해야 합니다.",
+    "invalid-pagination-value": "올바르지 않은 페이지 값입니다. 최소 %1에서 최대 2% 사이로 설정해야 합니다.",
     "username-taken": "이미 사용 중인 사용자명입니다.",
     "email-taken": "이미 사용 중인 이메일입니다.",
     "email-invited": "해당 이메일의 사용자는 이미 초대되었습니다.",

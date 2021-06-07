@@ -110,7 +110,7 @@
     "paginate_description": "Paginar tópicos ao invés de utilizar em vez de usar rolagem infinita.",
     "topics_per_page": "Tópicos por Página",
     "posts_per_page": "Posts por Página",
-    "max_items_per_page": "No máximo 1%",
+    "max_items_per_page": "No máximo %1",
     "acp_language": "Idioma da Página de Administrador",
     "notifications": "Notificações",
     "upvote-notif-freq": "Frequência de Notificação de Votos Positivos",

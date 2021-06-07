@@ -5,7 +5,7 @@
     "chat.send": "Send",
     "chat.no_active": "Du har ingen aktive chats.",
     "chat.user_typing": "%1 skriver ...",
-    "chat.user_has_messaged_you": "1% har skrevet til dig.",
+    "chat.user_has_messaged_you": "%1 har skrevet til dig.",
     "chat.see_all": "Se alle chats",
     "chat.mark_all_read": "Mark all chats read",
     "chat.no-messages": "Vælg en modtager for at se beskedhistorikken",

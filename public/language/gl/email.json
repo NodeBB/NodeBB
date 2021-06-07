@@ -28,7 +28,7 @@
     "digest.day": "día",
     "digest.week": "semana",
     "digest.month": "mes",
-    "digest.subject": "Resumo de 1%",
+    "digest.subject": "Resumo de %1",
     "digest.title.day": "Your Daily Digest",
     "digest.title.week": "Your Weekly Digest",
     "digest.title.month": "Your Monthly Digest",

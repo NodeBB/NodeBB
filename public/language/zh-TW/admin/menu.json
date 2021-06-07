@@ -43,7 +43,7 @@
 	"settings/sockets": "網路接口",
 	"settings/advanced": "進階",
 
-	"settings.page-title": "1% 設置",
+	"settings.page-title": "%1 設置",
 
 	"section-appearance": "外觀",
 	"appearance/themes": "佈景主題",

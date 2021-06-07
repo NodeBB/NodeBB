@@ -147,7 +147,7 @@
     "info.no-flags": "Non se atopou ninguna mensaxe reportada",
     "info.ban-history": "Histórico recente de bans",
     "info.no-ban-history": "Este usuario nunca foi baneado",
-    "info.banned-until": "Baneado hasta 1%",
+    "info.banned-until": "Baneado hasta %1",
     "info.banned-expiry": "Expiry",
     "info.banned-permanently": "Baneado permanentemente",
     "info.banned-reason-label": "Motivo",
