@@ -40,5 +40,8 @@
 	"site-colors": "站点颜色元数据",
 	"theme-color": "主题色",
 	"background-color": "背景色",
-	"background-color-help": "当网站安装为 PWA 时用于启动屏幕背景的颜色"
+	"background-color-help": "当网站安装为 PWA 时用于启动屏幕背景的颜色",
+	"undo-timeout": "Undo Timeout",
+	"undo-timeout-help": "Some operations such as moving topics will allow for the moderator to undo their action within a certain timeframe. Set to 0 to disable undo completely.",
+	"topic-tools": "Topic Tools"
 }

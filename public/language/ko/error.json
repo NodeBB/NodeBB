@@ -173,7 +173,7 @@
     "not-in-room": "채팅방에 사용자 없음",
     "cant-kick-self": "스스로 이 그룹을 탈퇴할 수 없습니다.",
     "no-users-selected": "선택된 사용자가 없습니다.",
-    "invalid-home-page-route": "올바르지 않은 홈페이지 경로입니다. ",
+    "invalid-home-page-route": "올바르지 않은 홈페이지 경로입니다.",
     "invalid-session": "세션 오류",
     "invalid-session-text": "로그인 세션이 종료됐습니다. 페이지를 새로고침 해주세요.",
     "session-mismatch": "세션 불일치",

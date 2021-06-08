@@ -40,5 +40,8 @@
 	"site-colors": "Weboldal szín metainformáció",
 	"theme-color": "Téma színe",
 	"background-color": "Háttér színe",
-	"background-color-help": "A szín ami akkor jelenik meg alkalmazás indulásnál, ha a weboldal egy okostelefonon PWA-ként van telepítve"
+	"background-color-help": "A szín ami akkor jelenik meg alkalmazás indulásnál, ha a weboldal egy okostelefonon PWA-ként van telepítve",
+	"undo-timeout": "Undo Timeout",
+	"undo-timeout-help": "Some operations such as moving topics will allow for the moderator to undo their action within a certain timeframe. Set to 0 to disable undo completely.",
+	"topic-tools": "Topic Tools"
 }
