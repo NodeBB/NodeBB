@@ -149,6 +149,7 @@ usersController.search = async function (req, res) {
 	searchData.users = await loadUserInfo(req.uid, uids);
 
 	searchData.query = validator.escape(String(req.query.query || ''));
+	searchData.page = page;
 	searchData.resultsPerPage = resultsPerPage;
 	searchData.sortBy = req.query.sortBy;
 	searchData.reverse = reverse;
