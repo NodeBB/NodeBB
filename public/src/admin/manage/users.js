@@ -426,7 +426,15 @@ define('admin/manage/users', [
 		params.page = query.page;
 		params.sortBy = params.sortBy || 'lastonline';
 		var qs = decodeURIComponent($.param(params));
-		$.get(config.relative_path + '/api/admin/manage/users?' + qs, renderSearchResults).fail(function (xhrErr) {
+		$.get(config.relative_path + '/api/admin/manage/users?' + qs, function (data) {
+			renderSearchResults(data);
+			const url = config.relative_path + '/admin/manage/users?' + qs;
+			if (history.pushState) {
+				history.pushState({
+					url: url,
+				}, null, window.location.protocol + '//' + window.location.host + url);
+			}
+		}).fail(function (xhrErr) {
 			if (xhrErr && xhrErr.responseJSON && xhrErr.responseJSON.error) {
 				app.alertError(xhrErr.responseJSON.error);
 			}

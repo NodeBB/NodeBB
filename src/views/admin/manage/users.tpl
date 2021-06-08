@@ -89,6 +89,7 @@
 						<th class="text-right text-muted">[[admin/manage/users:users.uid]]</th>
 						<th class="text-muted">[[admin/manage/users:users.username]]</th>
 						<th class="text-muted">[[admin/manage/users:users.email]]</th>
+						<th class="text-muted">[[admin/manage/users:users.ip]]</th>
 						<th data-sort="postcount" class="text-right pointer">[[admin/manage/users:users.postcount]] {{{if sort_postcount}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
 						<th data-sort="reputation" class="text-right pointer">[[admin/manage/users:users.reputation]] {{{if sort_reputation}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
 						<th data-sort="flags" class="text-right pointer">[[admin/manage/users:users.flags]] {{{if sort_flags}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
@@ -107,6 +108,7 @@
 						<i class="validated fa fa-check text-success<!-- IF !users.email:confirmed --> hidden<!-- ENDIF !users.email:confirmed -->" title="validated"></i>
 						<i class="notvalidated fa fa-check text-muted<!-- IF users.email:confirmed --> hidden<!-- ENDIF users.email:confirmed -->" title="not validated"></i>
 						 {users.email}</td>
+						<td>{users.ip}</td>
 						<td class="text-right">{users.postcount}</td>
 						<td class="text-right">{users.reputation}</td>
 						<td class="text-right"><!-- IF users.flags -->{users.flags}<!-- ELSE -->0<!-- ENDIF users.flags --></td>

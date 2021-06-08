@@ -147,7 +147,11 @@ usersController.search = async function (req, res) {
 
 	const uids = searchData.users.map(user => user && user.uid);
 	searchData.users = await loadUserInfo(req.uid, uids);
-
+	if (req.query.searchBy === 'ip') {
+		searchData.users.forEach((user) => {
+			user.ip = user.ips.find(ip => ip.includes(String(req.query.query)));
+		});
+	}
 	searchData.query = validator.escape(String(req.query.query || ''));
 	searchData.page = page;
 	searchData.resultsPerPage = resultsPerPage;
@@ -157,10 +161,14 @@ usersController.search = async function (req, res) {
 };
 
 async function loadUserInfo(callerUid, uids) {
-	const [isAdmin, userData, lastonline] = await Promise.all([
+	async function getIPs() {
+		return await Promise.all(uids.map(uid => db.getSortedSetRevRange(`uid:${uid}:ip`, 0, -1)));
+	}
+	const [isAdmin, userData, lastonline, ips] = await Promise.all([
 		user.isAdministrator(uids),
 		user.getUsersWithFields(uids, userFields, callerUid),
 		db.sortedSetScores('users:online', uids),
+		getIPs(),
 	]);
 	userData.forEach((user, index) => {
 		if (user) {
@@ -169,6 +177,8 @@ async function loadUserInfo(callerUid, uids) {
 			const timestamp = lastonline[index] || user.joindate;
 			user.lastonline = timestamp;
 			user.lastonlineISO = utils.toISOString(timestamp);
+			user.ips = ips[index];
+			user.ip = ips[index] && ips[index][0] ? ips[index][0] : null;
 		}
 	});
 	return userData;
