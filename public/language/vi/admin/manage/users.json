@@ -47,6 +47,7 @@
 	"users.uid": "uid",
 	"users.username": "tên đăng nhập",
 	"users.email": "thư điện tử",
+	"users.ip": "IP",
 	"users.postcount": "số lượng bài viết",
 	"users.reputation": "uy tín",
 	"users.flags": "gắn cờ",

@@ -47,6 +47,7 @@
 	"users.uid": "потр. ид.",
 	"users.username": "потребителско име",
 	"users.email": "е-поща",
+	"users.ip": "IP",
 	"users.postcount": "брой публикации",
 	"users.reputation": "репутация",
 	"users.flags": "доклади",

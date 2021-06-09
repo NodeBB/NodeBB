@@ -47,6 +47,7 @@
 	"users.uid": "uid",
 	"users.username": "Kasutajanimi",
 	"users.email": "email",
+	"users.ip": "IP",
 	"users.postcount": "Postituste arv",
 	"users.reputation": "Reputatsioon",
 	"users.flags": "Raporteerimised",

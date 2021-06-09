@@ -47,6 +47,7 @@
 	"users.uid": "UID",
 	"users.username": "使用者名",
 	"users.email": "電子郵件",
+	"users.ip": "IP",
 	"users.postcount": "發文數",
 	"users.reputation": "聲望",
 	"users.flags": "舉報",

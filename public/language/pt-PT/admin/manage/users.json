@@ -47,6 +47,7 @@
 	"users.uid": "uid",
 	"users.username": "nome de utilizador",
 	"users.email": "e-mail",
+	"users.ip": "IP",
 	"users.postcount": "publicações",
 	"users.reputation": "reputação",
 	"users.flags": "denúncias",

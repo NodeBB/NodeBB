@@ -47,6 +47,7 @@
 	"users.uid": "uid",
 	"users.username": "používateľské meno",
 	"users.email": "e-mail",
+	"users.ip": "IP",
 	"users.postcount": "počet príspevkov",
 	"users.reputation": "reputácia",
 	"users.flags": "príznaky",

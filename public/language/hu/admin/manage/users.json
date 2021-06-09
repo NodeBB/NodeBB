@@ -47,6 +47,7 @@
 	"users.uid": "uid",
 	"users.username": "felhasználónév",
 	"users.email": "email",
+	"users.ip": "IP",
 	"users.postcount": "hozzászólások száma",
 	"users.reputation": "hírnév",
 	"users.flags": "megjelölések",

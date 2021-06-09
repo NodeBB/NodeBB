@@ -47,6 +47,7 @@
 	"users.uid": "uid",
 	"users.username": "lietotājvārds",
 	"users.email": "e-pasta adrese",
+	"users.ip": "IP",
 	"users.postcount": "raksti",
 	"users.reputation": "ranga punkti",
 	"users.flags": "atzīmes",

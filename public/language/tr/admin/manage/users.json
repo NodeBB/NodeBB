@@ -47,6 +47,7 @@
 	"users.uid": "benzersiz id",
 	"users.username": "kullanıcı adı",
 	"users.email": "e-posta",
+	"users.ip": "IP",
 	"users.postcount": "ileti sayısı",
 	"users.reputation": "itibar",
 	"users.flags": "bayraklar",
