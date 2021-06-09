@@ -22,14 +22,6 @@
 					<input id="cid-{category.cid}-description" data-name="description" placeholder="[[admin/manage/categories:description]]" value="{category.description}" class="form-control category_description description" /><br />
 				</fieldset>
 
-				<fieldset>
-					<label for="cid-{category.cid}-name">
-						derp
-					</label>
-					<input id="cid-{category.cid}-name" type="text" class="form-control" placeholder="[[admin/manage/categories:name]]" data-name="derp[val1][val2]" value="{category.name}" /><br />
-
-				</fieldset>
-
 				<fieldset class="row">
 					<div class="col-sm-4 col-xs-12">
 						<div class="form-group">
