@@ -235,8 +235,27 @@ define('admin/manage/category', [
 		} else {
 			value = $(el).val();
 		}
+		var dataName = $(el).attr('data-name');
+		var fields = dataName.match(/[^\][.]+/g);
 
-		updateHash[$(el).attr('data-name')] = value;
+		function setNestedFields(obj, index) {
+			if (index === fields.length) {
+				return;
+			}
+			obj[fields[index]] = obj[fields[index]] || {};
+			if (index === fields.length - 1) {
+				obj[fields[index]] = value;
+			}
+			setNestedFields(obj[fields[index]], index + 1);
+		}
+
+		if (fields && fields.length) {
+			if (fields.length === 1) { // simple field name ie data-name="name"
+				updateHash[fields[0]] = value;
+			} else if (fields.length > 1) { // nested field name ie data-name="name[sub1][sub2]"
+				setNestedFields(updateHash, 0);
+			}
+		}
 
 		app.flags = app.flags || {};
 		app.flags._unsaved = true;
