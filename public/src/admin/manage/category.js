@@ -52,8 +52,6 @@ define('admin/manage/category', [
 			}
 
 			var cid = ajaxify.data.category.cid;
-			console.log(updateHash);
-			return;
 			api.put('/categories/' + cid, updateHash).then((res) => {
 				app.flags._unsaved = false;
 				app.alert({
