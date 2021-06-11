@@ -41,7 +41,7 @@
 	"theme-color": "Màu Giao Diện",
 	"background-color": "Màu Nền",
 	"background-color-help": "Màu được sử dụng cho nền màn hình khởi động khi trang web được cài đặt làm PWA",
-	"undo-timeout": "Undo Timeout",
-	"undo-timeout-help": "Some operations such as moving topics will allow for the moderator to undo their action within a certain timeframe. Set to 0 to disable undo completely.",
-	"topic-tools": "Topic Tools"
+	"undo-timeout": "Hoàn tác thời gian chờ",
+	"undo-timeout-help": "Một số thao tác như chuyển chủ đề sẽ cho phép người kiểm duyệt hoàn tác hành động của họ trong một khung thời gian nhất định. Đặt thành 0 để tắt hoàn toàn hoàn tác.",
+	"topic-tools": "Công cụ chủ đề"
 }
