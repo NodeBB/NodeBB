@@ -66,9 +66,10 @@ define('categorySearch', function () {
 			searchEl.find('input').off('keyup');
 		});
 
-		function loadList(query, callback) {
+		function loadList(search, callback) {
 			socket.emit('categories.categorySearch', {
-				query: query,
+				search: search,
+				query: utils.params(),
 				parentCid: options.parentCid || 0,
 				selectedCids: options.selectedCids,
 				privilege: options.privilege,
