@@ -45,7 +45,7 @@ module.exports = function (SocketCategories) {
 			categories: categoriesData,
 			...data,
 			uid: socket.uid,
-		})
+		});
 		return result.categories;
 	};
 
