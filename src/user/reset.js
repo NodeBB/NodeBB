@@ -28,6 +28,10 @@ UserReset.validate = async function (code) {
 
 UserReset.generate = async function (uid) {
 	const code = utils.generateUUID();
+
+	// Invalidate past tokens (must be done prior)
+	await UserReset.cleanByUid(uid);
+
 	await Promise.all([
 		db.setObjectField('reset:uid', code, uid),
 		db.sortedSetAdd('reset:issueDate', Date.now(), code),
