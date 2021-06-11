@@ -575,6 +575,14 @@ describe('User', () => {
 			});
 		});
 
+		it('.generate() should invalidate a previous generated reset code', async () => {
+			const _code = await User.reset.generate(uid);
+			const valid = await User.reset.validate(code);
+			assert.strictEqual(valid, false);
+
+			code = _code;
+		});
+
 		it('.validate() should ensure that this new code is valid', (done) => {
 			User.reset.validate(code, (err, valid) => {
 				assert.ifError(err);
@@ -591,13 +599,8 @@ describe('User', () => {
 			});
 		});
 
-		it('.send() should create a new reset code and reset password', (done) => {
-			User.reset.send('reset@me.com', (err) => {
-				if (err) {
-					console.log(err);
-				}
-				done();
-			});
+		it('.send() should create a new reset code and reset password', async () => {
+			code = await User.reset.send('reset@me.com');
 		});
 
 		it('.commit() should update the user\'s password and confirm their email', (done) => {
@@ -621,40 +624,6 @@ describe('User', () => {
 					});
 				});
 			});
-		});
-
-		it('.commit() should invalidate old codes', (done) => {
-			let code1;
-			let code2;
-			let uid;
-			async.waterfall([
-				function (next) {
-					User.create({ username: 'doublereseter', email: 'sorry@forgot.com', password: '123456' }, next);
-				},
-				function (_uid, next) {
-					uid = _uid;
-					User.reset.generate(uid, next);
-				},
-				function (code, next) {
-					code1 = code;
-					User.reset.generate(uid, next);
-				},
-				function (code, next) {
-					code2 = code;
-					User.reset.validate(code1, next);
-				},
-				function (isValid, next) {
-					assert(isValid);
-					User.reset.commit(code2, 'newPwd123', next);
-				},
-				function (next) {
-					User.reset.validate(code1, next);
-				},
-				function (isValid, next) {
-					assert(!isValid);
-					next();
-				},
-			], done);
 		});
 
 		it('.should error if same password is used for reset', async () => {

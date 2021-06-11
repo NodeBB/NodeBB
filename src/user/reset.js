@@ -60,6 +60,8 @@ UserReset.send = async function (email) {
 		template: 'reset',
 		uid: uid,
 	}).catch(err => winston.error(`[emailer.send] ${err.stack}`));
+
+	return code;
 };
 
 UserReset.commit = async function (code, password) {
@@ -102,7 +104,6 @@ UserReset.commit = async function (code, password) {
 	await user.reset.updateExpiry(uid);
 	await user.auth.resetLockout(uid);
 	await db.delete(`uid:${uid}:confirm:email:sent`);
-	await UserReset.cleanByUid(uid);
 };
 
 UserReset.updateExpiry = async function (uid) {
