@@ -556,4 +556,11 @@ describe('authentication', () => {
 			},
 		], done);
 	});
+
+	it('should clear all reset tokens upon successful login', async () => {
+		const code = await user.reset.generate(regularUid);
+		await loginUserPromisified('regular', 'regularpwd');
+		const valid = await user.reset.validate(code);
+		assert.strictEqual(valid, false);
+	});
 });
