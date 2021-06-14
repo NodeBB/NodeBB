@@ -131,22 +131,8 @@ define('forum/register', [
 			return callback();
 		}
 
-		socket.emit('user.emailExists', {
-			email: email,
-		}, function (err, exists) {
-			if (err) {
-				app.alertError(err.message);
-				return callback();
-			}
-
-			if (exists) {
-				showError(email_notify, '[[error:email-taken]]');
-			} else {
-				showSuccess(email_notify, successIcon);
-			}
-
-			callback();
-		});
+		showSuccess(email_notify, successIcon);
+		callback();
 	}
 
 	function validateUsername(username, callback) {
