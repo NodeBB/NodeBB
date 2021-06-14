@@ -163,10 +163,12 @@ module.exports = function (User) {
 		if (meta.config['profile:keepAllUserImages']) {
 			return;
 		}
-		const value = await User.getUserField(uid, field);
-		if (value && value.startsWith('/assets/uploads/profile/')) {
-			const filename = value.split('/').pop();
-			const uploadPath = path.join(nconf.get('upload_path'), 'profile', filename);
+		await deletePicture(uid, field);
+	}
+
+	async function deletePicture(uid, field) {
+		const uploadPath = await getPicturePath(uid, field);
+		if (uploadPath) {
 			await file.delete(uploadPath);
 		}
 	}
@@ -202,6 +204,35 @@ module.exports = function (User) {
 	}
 
 	User.removeCoverPicture = async function (data) {
+		await deletePicture(data.uid, 'cover:url');
 		await db.deleteObjectFields(`user:${data.uid}`, ['cover:url', 'cover:position']);
 	};
+
+	User.removeProfileImage = async function (uid) {
+		const userData = await User.getUserFields(uid, ['uploadedpicture', 'picture']);
+		await deletePicture(uid, 'uploadedpicture');
+		await User.setUserFields(uid, {
+			uploadedpicture: '',
+			// if current picture is uploaded picture, reset to user icon
+			picture: userData.uploadedpicture === userData.picture ? '' : userData.picture,
+		});
+		return userData;
+	};
+
+	User.getLocalCoverPath = async function (uid) {
+		return getPicturePath(uid, 'cover:url');
+	};
+
+	User.getLocalAvatarPath = async function (uid) {
+		return getPicturePath(uid, 'uploadedpicture');
+	};
+
+	async function getPicturePath(uid, field) {
+		const value = await User.getUserField(uid, field);
+		if (!value || !value.startsWith('/assets/uploads/profile/')) {
+			return false;
+		}
+		const filename = value.split('/').pop();
+		return path.join(nconf.get('upload_path'), 'profile', filename);
+	}
 };
