@@ -104,7 +104,7 @@ Auth.reloadRoutes = async function (params) {
 					prompt: strategy.prompt || undefined,
 				};
 
-				if (strategy.checkState) {
+				if (strategy.checkState !== false) {
 					req.session.ssoState = req.csrfToken && req.csrfToken();
 					opts.state = req.session.ssoState;
 				}
