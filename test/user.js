@@ -1766,29 +1766,6 @@ describe('User', () => {
 			meta.config.allowAccountDeletion = oldValue;
 		});
 
-		it('should fail if data is invalid', (done) => {
-			socketUser.emailExists({ uid: testUid }, null, (err) => {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
-		});
-
-		it('should return true if email exists', (done) => {
-			socketUser.emailExists({ uid: testUid }, { email: 'john@example.com' }, (err, exists) => {
-				assert.ifError(err);
-				assert(exists);
-				done();
-			});
-		});
-
-		it('should return false if email does not exist', (done) => {
-			socketUser.emailExists({ uid: testUid }, { email: 'does@not.exist' }, (err, exists) => {
-				assert.ifError(err);
-				assert(!exists);
-				done();
-			});
-		});
-
 		it('should error if requireEmailConfirmation is disabled', (done) => {
 			socketUser.emailConfirm({ uid: testUid }, {}, (err) => {
 				assert.equal(err.message, '[[error:email-confirmations-are-disabled]]');

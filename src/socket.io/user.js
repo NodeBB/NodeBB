@@ -43,13 +43,6 @@ SocketUser.deleteAccount = async function (socket, data) {
 	await api.users.deleteAccount(socket, data);
 };
 
-SocketUser.emailExists = async function (socket, data) {
-	if (!data || !data.email) {
-		throw new Error('[[error:invalid-data]]');
-	}
-	return await user.email.exists(data.email);
-};
-
 SocketUser.emailConfirm = async function (socket) {
 	if (!socket.uid) {
 		throw new Error('[[error:no-privileges]]');
