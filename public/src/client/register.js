@@ -9,7 +9,6 @@ define('forum/register', [
 	var successIcon = '';
 
 	Register.init = function () {
-		var email = $('#email');
 		var username = $('#username');
 		var password = $('#password');
 		var password_confirm = $('#password-confirm');
@@ -19,17 +18,12 @@ define('forum/register', [
 
 		$('#content #noscript').val('false');
 
-		email.on('blur', function () {
-			if (email.val().length) {
-				validateEmail(email.val());
-			}
-		});
-
-		var query = utils.params();
-		if (query.email && query.token) {
-			email.val(decodeURIComponent(query.email));
-			$('#token').val(query.token);
-		}
+		// TODO: #9607
+		// var query = utils.params();
+		// if (query.email && query.token) {
+		// 	email.val(decodeURIComponent(query.email));
+		// 	$('#token').val(query.token);
+		// }
 
 		// Update the "others can mention you via" text
 		username.on('keyup', function () {
@@ -58,10 +52,7 @@ define('forum/register', [
 			validationError = false;
 			validatePassword(password.val(), password_confirm.val());
 			validatePasswordConfirm(password.val(), password_confirm.val());
-
-			validateEmail(email.val(), function () {
-				validateUsername(username.val(), callback);
-			});
+			validateUsername(username.val(), callback);
 		}
 
 		// Guard against caps lock
@@ -119,21 +110,8 @@ define('forum/register', [
 		});
 
 		// Set initial focus
-		$('#email').focus();
+		$('#username').focus();
 	};
-
-	function validateEmail(email, callback) {
-		callback = callback || function () {};
-		var email_notify = $('#email-notify');
-
-		if (!utils.isEmailValid(email)) {
-			showError(email_notify, '[[error:invalid-email]]');
-			return callback();
-		}
-
-		showSuccess(email_notify, successIcon);
-		callback();
-	}
 
 	function validateUsername(username, callback) {
 		callback = callback || function () {};
@@ -175,8 +153,6 @@ define('forum/register', [
 			showError(password_notify, '[[user:change_password_error]]');
 		} else if (password === $('#username').val()) {
 			showError(password_notify, '[[user:password_same_as_username]]');
-		} else if (password === $('#email').val()) {
-			showError(password_notify, '[[user:password_same_as_email]]');
 		} else if (passwordStrength.score < ajaxify.data.minimumPasswordStrength) {
 			showError(password_notify, '[[user:weak_password]]');
 		} else {

@@ -53,11 +53,12 @@ async function registerAndLoginUser(req, res, userData) {
 		await authenticationController.doLogin(req, uid);
 	}
 
-	// Distinguish registrations through invites from direct ones
-	if (userData.token) {
-		await user.joinGroupsFromInvitation(uid, userData.email);
-	}
-	await user.deleteInvitationKey(userData.email);
+	// TODO: #9607
+	// // Distinguish registrations through invites from direct ones
+	// if (userData.token) {
+	// 	await user.joinGroupsFromInvitation(uid, userData.email);
+	// }
+	// await user.deleteInvitationKey(userData.email);
 	const next = req.session.returnTo || `${nconf.get('relative_path')}/`;
 	const complete = await plugins.hooks.fire('filter:register.complete', { uid: uid, next: next });
 	req.session.returnTo = complete.next;
@@ -78,10 +79,6 @@ authenticationController.register = async function (req, res) {
 	try {
 		if (userData.token || registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
 			await user.verifyInvitation(userData);
-		}
-
-		if (!userData.email) {
-			throw new Error('[[error:invalid-email]]');
 		}
 
 		if (
