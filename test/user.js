@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 const async = require('async');
-const fs = require('fs').promises;
+const fs = require('fs');
 const path = require('path');
 const nconf = require('nconf');
 const request = require('request');
@@ -1045,12 +1045,7 @@ describe('User', () => {
 			await socketUser.removeCover({ uid: uid }, { uid: uid });
 			const coverUrlNow = await db.getObjectField(`user:${uid}`, 'cover:url');
 			assert.strictEqual(coverUrlNow, null);
-			try {
-				await fs.access(coverPath);
-				assert.fail();
-			} catch (err) {
-				assert.strictEqual(err.code, 'ENOENT');
-			}
+			assert.strictEqual(fs.existsSync(coverPath), false);
 		});
 
 		it('should set user status', (done) => {
@@ -1253,12 +1248,7 @@ describe('User', () => {
 				await socketUser.removeUploadedPicture({ uid: uid }, { uid: uid });
 				const uploadedPicture = await User.getUserField(uid, 'uploadedpicture');
 				assert.strictEqual(uploadedPicture, '');
-				try {
-					await fs.access(avatarPath);
-					assert.fail();
-				} catch (err) {
-					assert.strictEqual(err.code, 'ENOENT');
-				}
+				assert.strictEqual(fs.existsSync(avatarPath), false);
 			});
 
 			it('should fail to remove uploaded picture with invalid-data', (done) => {
@@ -1737,8 +1727,8 @@ describe('User', () => {
 			assert(!exists);
 		});
 
-		it('should clean profile images after account deletion', async () => {
-			const allProfileFiles = await fs.readdir(path.join(nconf.get('upload_path'), 'profile'));
+		it('should clean profile images after account deletion', () => {
+			const allProfileFiles = fs.readdirSync(path.join(nconf.get('upload_path'), 'profile'));
 			const deletedUserImages = allProfileFiles.filter(
 				f => f.startsWith(`${delUid}-profilecover`) || f.startsWith(`${delUid}-profileavatar`)
 			);

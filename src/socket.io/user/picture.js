@@ -1,11 +1,7 @@
 'use strict';
 
-const path = require('path');
-const nconf = require('nconf');
-
 const user = require('../../user');
 const plugins = require('../../plugins');
-const file = require('../../file');
 
 module.exports = function (SocketUser) {
 	SocketUser.changePicture = async function (socket, data) {

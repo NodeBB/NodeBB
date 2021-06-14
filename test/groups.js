@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 const async = require('async');
-const fs = require('fs').promises;
+const fs = require('fs');
 const path = require('path');
 const nconf = require('nconf');
 
@@ -1537,16 +1537,11 @@ describe('Groups', () => {
 			const values = await Groups.getGroupFields('Test', fields);
 			await socketGroups.cover.remove({ uid: adminUid }, { groupName: 'Test' });
 
-			await Promise.all(fields.map(async (field) => {
+			fields.forEach((field) => {
 				const filename = values[field].split('/').pop();
 				const filePath = path.join(nconf.get('upload_path'), 'files', filename);
-				try {
-					await fs.access(filePath);
-					assert.fail();
-				} catch (err) {
-					assert.strictEqual(err.code, 'ENOENT');
-				}
-			}));
+				assert.strictEqual(fs.existsSync(filePath), false);
+			});
 
 			const groupData = await db.getObjectFields('group:Test', ['cover:url']);
 			assert(!groupData['cover:url']);
