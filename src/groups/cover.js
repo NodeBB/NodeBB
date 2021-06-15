@@ -67,7 +67,7 @@ module.exports = function (Groups) {
 		const fields = ['cover:url', 'cover:thumb:url'];
 		const values = await Groups.getGroupFields(data.groupName, fields);
 		await Promise.all(fields.map((field) => {
-			if (!values[field] || !values[field].startsWith('/assets/uploads/files/')) {
+			if (!values[field] || !values[field].startsWith(`${nconf.get('relative_path')}/assets/uploads/files/`)) {
 				return;
 			}
 			const filename = values[field].split('/').pop();

@@ -229,7 +229,7 @@ module.exports = function (User) {
 
 	async function getPicturePath(uid, field) {
 		const value = await User.getUserField(uid, field);
-		if (!value || !value.startsWith('/assets/uploads/profile/')) {
+		if (!value || !value.startsWith(`${nconf.get('relative_path')}/assets/uploads/profile/`)) {
 			return false;
 		}
 		const filename = value.split('/').pop();

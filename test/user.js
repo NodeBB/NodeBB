@@ -1245,6 +1245,7 @@ describe('User', () => {
 
 			it('should remove uploaded picture', async () => {
 				const avatarPath = await User.getLocalAvatarPath(uid);
+				assert.notStrictEqual(avatarPath, false);
 				await socketUser.removeUploadedPicture({ uid: uid }, { uid: uid });
 				const uploadedPicture = await User.getUserField(uid, 'uploadedpicture');
 				assert.strictEqual(uploadedPicture, '');
