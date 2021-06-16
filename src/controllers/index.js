@@ -212,7 +212,8 @@ Controllers.registerInterstitial = async function (req, res, next) {
 
 		res.render('registerComplete', {
 			title: '[[pages:registration-complete]]',
-			sections: sections,
+			register: data.userData.register,
+			sections,
 			errors,
 		});
 	} catch (err) {
