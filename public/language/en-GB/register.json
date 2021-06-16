@@ -22,7 +22,7 @@
     "registration-queue-auto-approve-time": "Your membership to this forum will be fully activated in up to %1 hours.",
     "interstitial.intro": "We'd like some additional information in order to update your account&hellip;",
     "interstitial.intro-new": "We'd like some additional information before we can create your account&hellip;",
-    "interstitial.errors-found": "We could not complete your registration:",
+    "interstitial.errors-found": "Please review the entered information:",
     "gdpr_agree_data": "I consent to the collection and processing of my personal information on this website.",
     "gdpr_agree_email": "I consent to receive digest and notification emails from this website.",
     "gdpr_consent_denied": "You must give consent to this site to collect/process your information, and to send you emails.",

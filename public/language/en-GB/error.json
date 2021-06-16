@@ -33,6 +33,7 @@
 
 	"username-taken": "Username taken",
 	"email-taken": "Email taken",
+	"email-nochange": "The email entered is the same as the email already on file.",
 	"email-invited": "Email was already invited",
 	"email-not-confirmed": "You are unable to post until your email is confirmed, please click here to confirm your email.",
 	"email-not-confirmed-chat": "You are unable to chat until your email is confirmed, please click here to confirm your email.",

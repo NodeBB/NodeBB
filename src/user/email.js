@@ -93,15 +93,27 @@ UserEmail.confirmByCode = async function (code) {
 	if (!confirmObj || !confirmObj.uid || !confirmObj.email) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const currentEmail = await user.getUserField(confirmObj.uid, 'email');
-	if (!currentEmail || currentEmail.toLowerCase() !== confirmObj.email) {
-		throw new Error('[[error:invalid-email]]');
+
+	let oldEmail = await user.getUserField(confirmObj.uid, 'email');
+	if (oldEmail) {
+		oldEmail = oldEmail || '';
+		if (oldEmail === confirmObj.email) {
+			return;
+		}
+
+		await db.sortedSetRemove('email:uid', oldEmail.toLowerCase());
+		await db.sortedSetRemove('email:sorted', `${oldEmail.toLowerCase()}:${confirmObj.uid}`);
+		await user.auth.revokeAllSessions(confirmObj.uid);
 	}
-	await UserEmail.confirmByUid(confirmObj.uid);
-	await db.delete(`confirm:${code}`);
+
+	await Promise.all([
+		user.setUserField('email', confirmObj.email),
+		UserEmail.confirmByUid(confirmObj.uid),
+		db.delete(`confirm:${code}`),
+	]);
 };
 
-// confirm uid's email
+// confirm uid's email via ACP
 UserEmail.confirmByUid = async function (uid) {
 	if (!(parseInt(uid, 10) > 0)) {
 		throw new Error('[[error:invalid-uid]]');
@@ -110,11 +122,18 @@ UserEmail.confirmByUid = async function (uid) {
 	if (!currentEmail) {
 		throw new Error('[[error:invalid-email]]');
 	}
+
 	await Promise.all([
+		db.sortedSetAddBulk([
+			['email:uid', uid, currentEmail.toLowerCase()],
+			['email:sorted', 0, `${currentEmail.toLowerCase()}:${uid}`],
+			[`user:${uid}:emails`, Date.now(), `${currentEmail}:${Date.now()}`],
+		]),
 		user.setUserField(uid, 'email:confirmed', 1),
 		groups.join('verified-users', uid),
 		groups.leave('unverified-users', uid),
 		db.delete(`uid:${uid}:confirm:email:sent`),
+		user.reset.cleanByUid(uid),
 	]);
 	await plugins.hooks.fire('action:user.email.confirmed', { uid: uid, email: currentEmail });
 };

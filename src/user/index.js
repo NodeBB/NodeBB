@@ -229,6 +229,53 @@ User.addInterstitials = function (callback) {
 	plugins.hooks.register('core', {
 		hook: 'filter:register.interstitial',
 		method: [
+			// Email address (for password reset + digest)
+			async (data) => {
+				if (!data.userData) {
+					throw new Error('[[error:invalid-data]]');
+				}
+				if (!data.userData.updateEmail) {
+					return data;
+				}
+
+				let email;
+				if (data.userData.uid) {
+					email = await User.getUserField(data.userData.uid, 'email');
+				}
+
+				data.interstitials.push({
+					template: 'partials/email_update',
+					data: { email },
+					callback: async (userData, formData) => {
+						// Validate and send email confirmation
+						if (formData.email && formData.email.length) {
+							if (!utils.isEmailValid(formData.email)) {
+								throw new Error('[[error:invalid-email]]');
+							}
+
+							if (userData.uid) {
+								const current = await User.getUserField(userData.uid, 'email');
+								if (formData.email === current) {
+									throw new Error('[[error:email-nochange]]');
+								}
+
+								await User.email.sendValidationEmail(userData.uid, {
+									email: formData.email,
+									force: true,
+								});
+							} else {
+								// New registrants have the confirm email sent from user.create()
+								userData.email = formData.email;
+							}
+						}
+
+						delete userData.updateEmail;
+					},
+				});
+
+				return data;
+			},
+
 			// GDPR information collection/processing consent + email consent
 			async function (data) {
 				if (!meta.config.gdpr_enabled || (data.userData && data.userData.gdpr_consent)) {

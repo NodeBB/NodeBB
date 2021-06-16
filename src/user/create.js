@@ -117,7 +117,7 @@ module.exports = function (User) {
 			User.updateDigestSetting(userData.uid, meta.config.dailyDigestFreq),
 		]);
 
-		if (userData.email && userData.uid > 1 && meta.config.requireEmailConfirmation) {
+		if (userData.email && userData.uid > 1) {
 			User.email.sendValidationEmail(userData.uid, {
 				email: userData.email,
 			}).catch(err => winston.error(`[user.create] Validation email failed to send\n[emailer.send] ${err.stack}`));
