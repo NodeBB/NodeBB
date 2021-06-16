@@ -33,6 +33,7 @@ async function registerAndLoginUser(req, res, userData) {
 
 	if (deferRegistration) {
 		userData.register = true;
+		userData.updateEmail = true;
 		req.session.registration = userData;
 
 		if (req.body.noscript === 'true') {
@@ -209,11 +210,17 @@ authenticationController.registerComplete = function (req, res, next) {
 };
 
 authenticationController.registerAbort = function (req, res) {
-	// End the session and redirect to home
-	req.session.destroy(() => {
-		res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
+	if (req.uid) {
+		// Clear interstitial data and go home
+		delete req.session.registration;
 		res.redirect(`${nconf.get('relative_path')}/`);
-	});
+	} else {
+		// End the session and redirect to home
+		req.session.destroy(() => {
+			res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
+			res.redirect(`${nconf.get('relative_path')}/`);
+		});
+	}
 };
 
 authenticationController.login = async (req, res, next) => {

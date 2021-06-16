@@ -77,8 +77,11 @@ editController.username = async function (req, res, next) {
 	await renderRoute('username', req, res, next);
 };
 
-editController.email = async function (req, res, next) {
-	await renderRoute('email', req, res, next);
+editController.email = async function (req, res) {
+	req.session.registration = req.session.registration || {};
+	req.session.registration.updateEmail = true;
+	req.session.registration.uid = req.uid;
+	helpers.redirect(res, '/register/complete');
 };
 
 async function renderRoute(name, req, res, next) {
