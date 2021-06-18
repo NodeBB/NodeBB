@@ -11,12 +11,50 @@
 				</p>
 				<input type="text" class="form-control input-lg" id="email:from" data-field="email:from" placeholder="info@example.org" /><br />
 			</div>
+
 			<div class="form-group">
 				<label for="email:from_name"><strong>From Name</strong></label>
 				<p class="help-block">
 					[[admin/settings/email:from-help]]
 				</p>
 				<input type="text" class="form-control input-lg" id="email:from_name" data-field="email:from_name" placeholder="NodeBB" /><br />
+			</div>
+
+			<div class="checkbox">
+				<label for="removeEmailNotificationImages" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" id="removeEmailNotificationImages" data-field="removeEmailNotificationImages" name="removeEmailNotificationImages" />
+					<span class="mdl-switch__label">[[admin/settings/email:notifications.remove-images]]</span>
+				</label>
+			</div>
+
+			<div class="checkbox">
+				<label for="includeUnverifiedEmails" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" id="includeUnverifiedEmails" data-field="includeUnverifiedEmails" name="includeUnverifiedEmails" />
+					<span class="mdl-switch__label">[[admin/settings/email:include-unverified-emails]]</span>
+				</label>
+			</div>
+			<p class="help-block">[[admin/settings/email:include-unverified-warning]]</p>
+		</form>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/email:subscriptions]]</div>
+	<div class="col-sm-10 col-xs-12">
+		<form>
+			<div class="checkbox">
+				<label for="disableEmailSubscriptions" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" id="disableEmailSubscriptions" data-field="disableEmailSubscriptions" name="disableEmailSubscriptions" />
+					<span class="mdl-switch__label">[[admin/settings/email:subscriptions.disable]]</span>
+				</label>
+			</div>
+
+			<div class="form-group">
+				<label for="digestHour"><strong>[[admin/settings/email:subscriptions.hour]]</strong></label>
+				<input type="number" class="form-control input-lg" id="digestHour" data-field="digestHour" placeholder="17" min="0" max="24" />
+				<p class="help-block">
+					[[admin/settings/email:subscriptions.hour-help]]
+				</p>
 			</div>
 		</form>
 	</div>
@@ -129,42 +167,6 @@
 		<p class="help-block">
 			[[admin/settings/email:testing.send-help]]
 		</p>
-	</div>
-</div>
-
-<div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/email:subscriptions]]</div>
-	<div class="col-sm-10 col-xs-12">
-		<form>
-			<div class="checkbox">
-				<label for="disableEmailSubscriptions" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" id="disableEmailSubscriptions" data-field="disableEmailSubscriptions" name="disableEmailSubscriptions" />
-					<span class="mdl-switch__label">[[admin/settings/email:subscriptions.disable]]</span>
-				</label>
-			</div>
-
-			<div class="form-group">
-				<label for="digestHour"><strong>[[admin/settings/email:subscriptions.hour]]</strong></label>
-				<input type="number" class="form-control input-lg" id="digestHour" data-field="digestHour" placeholder="17" min="0" max="24" />
-				<p class="help-block">
-					[[admin/settings/email:subscriptions.hour-help]]
-				</p>
-			</div>
-		</form>
-	</div>
-</div>
-
-<div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/email:notifications.settings]]</div>
-	<div class="col-sm-10 col-xs-12">
-		<form>
-			<div class="checkbox">
-				<label for="removeEmailNotificationImages" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" id="removeEmailNotificationImages" data-field="removeEmailNotificationImages" name="removeEmailNotificationImages" />
-					<span class="mdl-switch__label">[[admin/settings/email:notifications.remove-images]]</span>
-				</label>
-			</div>
-		</form>
 	</div>
 </div>
 
