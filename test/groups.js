@@ -2,6 +2,7 @@
 
 const assert = require('assert');
 const async = require('async');
+const fs = require('fs');
 const path = require('path');
 const nconf = require('nconf');
 
@@ -1531,15 +1532,19 @@ describe('Groups', () => {
 			});
 		});
 
-		it('should remove cover', (done) => {
-			socketGroups.cover.remove({ uid: adminUid }, { groupName: 'Test' }, (err) => {
-				assert.ifError(err);
-				db.getObjectFields('group:Test', ['cover:url'], (err, groupData) => {
-					assert.ifError(err);
-					assert(!groupData['cover:url']);
-					done();
-				});
+		it('should remove cover', async () => {
+			const fields = ['cover:url', 'cover:thumb:url'];
+			const values = await Groups.getGroupFields('Test', fields);
+			await socketGroups.cover.remove({ uid: adminUid }, { groupName: 'Test' });
+
+			fields.forEach((field) => {
+				const filename = values[field].split('/').pop();
+				const filePath = path.join(nconf.get('upload_path'), 'files', filename);
+				assert.strictEqual(fs.existsSync(filePath), false);
 			});
+
+			const groupData = await db.getObjectFields('group:Test', ['cover:url']);
+			assert(!groupData['cover:url']);
 		});
 	});
 });
