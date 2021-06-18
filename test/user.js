@@ -858,7 +858,6 @@ describe('User', () => {
 					};
 					socketUser.updateProfile({ uid: uid }, { ...data, password: '123456', invalid: 'field' }, (err, result) => {
 						assert.ifError(err);
-						console.log(result);
 
 						assert.equal(result.username, 'updatedUserName');
 						assert.equal(result.userslug, 'updatedusername');
@@ -884,13 +883,8 @@ describe('User', () => {
 			});
 
 			it('should also generate an email confirmation code for the changed email', async () => {
-				const confirmSent = await db.get(`uid:${uid}:confirm:email:sent`);
-				const event = (await events.getEvents('email-confirmation-sent', 0, 0)).pop();
-				console.log(event);
-				assert.strictEqual(parseInt(confirmSent, 10), 1);
-				assert(event);
-				assert.strictEqual(event.email, 'updatedEmail@me.com');
-				assert.strictEqual(parseInt(event.uid, 10), uid);
+				const confirmSent = await User.email.isValidationPending(uid, 'updatedemail@me.com');
+				assert.strictEqual(confirmSent, true);
 			});
 		});
 
@@ -1013,11 +1007,10 @@ describe('User', () => {
 
 		it('should send validation email', async () => {
 			const uid = await User.create({ username: 'pooremailupdate', email: 'poor@update.me', password: '123456' });
+			await User.email.expireValidation(uid);
 			await socketUser.changeUsernameEmail({ uid: uid }, { uid: uid, email: 'updatedAgain@me.com', password: '123456' });
 
-			const event = (await events.getEvents('email-confirmation-sent', 0, 0)).pop();
-			assert.strictEqual(parseInt(event.uid, 10), uid);
-			assert.strictEqual(event.email, 'updatedAgain@me.com');
+			assert.strictEqual(await User.email.isValidationPending(uid), true);
 		});
 
 		it('should error if email is identical', async () => {
@@ -1329,12 +1322,9 @@ describe('User', () => {
 				name: 'Test',
 				description: 'Foobar!',
 			});
-			const derp = await User.getUserData(uid);
-			console.log(derp);
 
 			await groups.join('Test', uid);
 			const body = await requestAsync(`${nconf.get('url')}/api/user/updatedagain/groups`, { jar: jar, json: true });
-			console.log(body);
 
 			assert(Array.isArray(body.groups));
 			assert.equal(body.groups[0].name, 'Test');
@@ -1784,7 +1774,7 @@ describe('User', () => {
 		});
 
 		it('should send email confirm', async () => {
-			await db.delete(`uid:${testUid}:confirm:email:sent`);
+			await User.email.expireValidation(testUid);
 			await socketUser.emailConfirm({ uid: testUid }, {});
 		});
 
