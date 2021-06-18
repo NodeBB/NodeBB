@@ -17,7 +17,7 @@ module.exports = function (middleware) {
 	middleware.processRender = function processRender(req, res, next) {
 		// res.render post-processing, modified from here: https://gist.github.com/mrlannigan/5051687
 		const { render } = res;
-		res.render = async function renderOverride(template, options, fn) {
+		async function renderMethod(template, options, fn) {
 			const self = this;
 			const { req } = this;
 
@@ -84,6 +84,14 @@ module.exports = function (middleware) {
 				self.send(str);
 			} else {
 				fn(null, str);
+			}
+		}
+
+		res.render = async function renderOverride(template, options, fn) {
+			try {
+				await renderMethod(template, options, fn);
+			} catch (err) {
+				next(err);
 			}
 		};
 
