@@ -466,6 +466,18 @@ describe('API', async () => {
 						csrfToken = config.csrf_token;
 					}
 				});
+
+				it('should back out of a registration interstitial if needed', async () => {
+					const affectedPaths = ['GET /api/user/{userslug}/edit/email'];
+					if (affectedPaths.includes(`${method.toUpperCase()} ${path}`)) {
+						await request({
+							uri: `${nconf.get('url')}/register/abort`,
+							method: 'POST',
+							jar,
+							simple: false,
+						});
+					}
+				});
 			});
 		});
 	}

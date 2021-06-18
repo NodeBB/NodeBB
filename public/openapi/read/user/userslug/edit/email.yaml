@@ -13,15 +13,15 @@ get:
     "200":
       description: ""
       content:
-        application/json:
+        text/plain:
           schema:
-            allOf:
-              - $ref: ../../../../components/schemas/UserObject.yaml#/UserObjectFull
-              - type: object
-                properties:
-                  hasPassword:
-                    type: boolean
-                  title:
-                    type: string
-              - $ref: ../../../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
-              - $ref: ../../../../components/schemas/CommonProps.yaml#/CommonProps
+              type: string
+              description: A relative path to the registration interstitial page so they can add or update an email for their account
+              example: /register/complete
+    "302":
+      description: Redirects the user to a registration interstitial page so they can add or update an email for their account
+      headers:
+        Location:
+          schema:
+            type: string
+            example: /register/complete
