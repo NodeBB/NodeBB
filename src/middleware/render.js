@@ -16,8 +16,8 @@ const relative_path = nconf.get('relative_path');
 module.exports = function (middleware) {
 	middleware.processRender = function processRender(req, res, next) {
 		// res.render post-processing, modified from here: https://gist.github.com/mrlannigan/5051687
-		const render = res.render;
-		res.render = async function renderOverride(template, options, fn) {
+		const { render } = res;
+		async function renderMethod(template, options, fn) {
 			const self = this;
 			const req = this.req;
 
@@ -84,6 +84,14 @@ module.exports = function (middleware) {
 				self.send(str);
 			} else {
 				fn(null, str);
+			}
+		}
+
+		res.render = async function renderOverride(template, options, fn) {
+			try {
+				await renderMethod(template, options, fn);
+			} catch (err) {
+				next(err);
 			}
 		};
 
