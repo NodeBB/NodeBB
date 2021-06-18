@@ -60,7 +60,6 @@ apiController.loadConfig = async function (req) {
 		loggedIn: !!req.user,
 		uid: req.uid,
 		'cache-buster': meta.config['cache-buster'] || '',
-		requireEmailConfirmation: meta.config.requireEmailConfirmation === 1,
 		topicPostSort: meta.config.topicPostSort || 'oldest_to_newest',
 		categoryTopicSort: meta.config.categoryTopicSort || 'newest_to_oldest',
 		csrf_token: req.uid >= 0 && req.csrfToken && req.csrfToken(),

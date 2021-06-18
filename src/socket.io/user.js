@@ -48,10 +48,6 @@ SocketUser.emailConfirm = async function (socket) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	if (!meta.config.requireEmailConfirmation) {
-		throw new Error('[[error:email-confirmations-are-disabled]]');
-	}
-
 	return await user.email.sendValidationEmail(socket.uid);
 };
 

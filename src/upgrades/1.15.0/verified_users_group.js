@@ -81,6 +81,8 @@ async function updatePrivilges() {
 	// if email confirmation is required
 	//   give chat, posting privs to "verified-users" group
 	//   remove chat, posting privs from "registered-users" group
+
+	// This config property has been removed from v1.18.0+, but is still present in old datasets
 	if (meta.config.requireEmailConfirmation) {
 		const cids = await db.getSortedSetRevRange('categories:cid', 0, -1);
 		const canChat = await privileges.global.canGroup('chat', 'registered-users');

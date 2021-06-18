@@ -92,8 +92,6 @@ get:
                 description: A user identifier
               cache-buster:
                 type: string
-              requireEmailConfirmation:
-                type: boolean
               topicPostSort:
                 type: string
               categoryTopicSort:

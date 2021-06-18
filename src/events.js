@@ -40,6 +40,7 @@ events.types = [
 	'user-deleteAccount',
 	'user-deleteContent',
 	'password-change',
+	'email-confirmation-sent',
 	'email-change',
 	'username-change',
 	'ip-blacklist-save',

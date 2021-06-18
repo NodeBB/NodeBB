@@ -4,13 +4,6 @@
 	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/user:authentication]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form role="form">
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="requireEmailConfirmation">
-					<span class="mdl-switch__label"><strong>[[admin/settings/user:require-email-confirmation]]</strong></span>
-				</label>
-			</div>
-
 			<div class="form-group form-inline">
 				<label for="emailConfirmInterval">[[admin/settings/user:email-confirm-interval]]</label>
 				<input class="form-control" data-field="emailConfirmInterval" type="number" id="emailConfirmInterval" placeholder="Default: 10"

@@ -23,8 +23,12 @@ const sockets = require('../socket.io');
 const authenticationController = module.exports;
 
 async function registerAndLoginUser(req, res, userData) {
+	if (!userData.email) {
+		userData.updateEmail = true;
+	}
+
 	const data = await plugins.hooks.fire('filter:register.interstitial', {
-		userData: userData,
+		userData,
 		interstitials: [],
 	});
 
@@ -33,7 +37,6 @@ async function registerAndLoginUser(req, res, userData) {
 
 	if (deferRegistration) {
 		userData.register = true;
-		userData.updateEmail = true;
 		req.session.registration = userData;
 
 		if (req.body.noscript === 'true') {
