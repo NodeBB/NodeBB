@@ -274,18 +274,9 @@ describe('socket.io', () => {
 			});
 		});
 
-		it('should error if email validation is not required', (done) => {
-			socketAdmin.user.sendValidationEmail({ uid: adminUid }, [regularUid], (err) => {
-				assert.equal(err.message, '[[error:email-confirmations-are-disabled]]');
-				done();
-			});
-		});
-
 		it('should send validation email', (done) => {
-			meta.config.requireEmailConfirmation = 1;
 			socketAdmin.user.sendValidationEmail({ uid: adminUid }, [regularUid], (err) => {
 				assert.ifError(err);
-				meta.config.requireEmailConfirmation = 0;
 				done();
 			});
 		});
