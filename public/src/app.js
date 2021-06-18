@@ -719,7 +719,7 @@ app.cacheBuster = null;
 	};
 
 	app.showEmailConfirmWarning = function (err) {
-		if (!config.requireEmailConfirmation || !app.user.uid) {
+		if (!app.user.uid) {
 			return;
 		}
 		var msg = {

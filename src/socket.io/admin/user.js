@@ -8,7 +8,6 @@ const api = require('../../api');
 const groups = require('../../groups');
 const user = require('../../user');
 const events = require('../../events');
-const meta = require('../../meta');
 const translator = require('../../translator');
 const sockets = require('..');
 
@@ -79,10 +78,6 @@ User.validateEmail = async function (socket, uids) {
 User.sendValidationEmail = async function (socket, uids) {
 	if (!Array.isArray(uids)) {
 		throw new Error('[[error:invalid-data]]');
-	}
-
-	if (!meta.config.requireEmailConfirmation) {
-		throw new Error('[[error:email-confirmations-are-disabled]]');
 	}
 
 	const failed = [];

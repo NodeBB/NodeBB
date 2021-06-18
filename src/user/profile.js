@@ -244,6 +244,7 @@ module.exports = function (User) {
 		}
 
 		if (newEmail) {
+			await db.delete(`uid:${uid}:confirm:email:sent`);
 			await User.email.sendValidationEmail(uid, {
 				email: newEmail,
 				subject: '[[email:email.verify-your-email.subject]]',

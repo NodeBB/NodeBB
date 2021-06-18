@@ -10,6 +10,7 @@ const db = require('../database');
 const meta = require('../meta');
 const emailer = require('../emailer');
 const groups = require('../groups');
+const events = require('../events');
 
 const UserEmail = module.exports;
 
@@ -69,6 +70,13 @@ UserEmail.sendValidationEmail = async function (uid, options) {
 	await db.expireAt(`confirm:${confirm_code}`, Math.floor((Date.now() / 1000) + (60 * 60 * 24)));
 	const username = await user.getUserField(uid, 'username');
 
+	events.log({
+		type: 'email-confirmation-sent',
+		uid,
+		confirm_code,
+		...options,
+	});
+
 	const data = {
 		username: username,
 		confirm_link: confirm_link,
@@ -104,6 +112,7 @@ UserEmail.confirmByCode = async function (code) {
 		await db.sortedSetRemove('email:uid', oldEmail.toLowerCase());
 		await db.sortedSetRemove('email:sorted', `${oldEmail.toLowerCase()}:${confirmObj.uid}`);
 		await user.auth.revokeAllSessions(confirmObj.uid);
+		await events.log('email-change', { oldEmail, newEmail: confirmObj.email });
 	}
 
 	await Promise.all([

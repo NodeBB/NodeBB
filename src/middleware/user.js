@@ -264,6 +264,8 @@ module.exports = function (middleware) {
 			return setImmediate(next);
 		}
 
+		console.log('middleware hit', req.session);
+
 		const path = req.path.startsWith('/api/') ? req.path.replace('/api', '') : req.path;
 		const { allowed } = await plugins.hooks.fire('filter:middleware.registrationComplete', {
 			allowed: ['/register/complete'],

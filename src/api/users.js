@@ -71,10 +71,6 @@ usersAPI.update = async function (caller, data) {
 		await events.log(eventData);
 	}
 
-	if (userData.email !== oldUserData.email) {
-		await log('email-change', { oldEmail: oldUserData.email, newEmail: userData.email });
-	}
-
 	if (userData.username !== oldUserData.username) {
 		await log('username-change', { oldUsername: oldUserData.username, newUsername: userData.username });
 	}

@@ -65,7 +65,6 @@
     "profileImageDimension": 200,
     "profile:convertProfileImageToPNG": 0,
     "profile:keepAllUserImages": 0,
-    "requireEmailConfirmation": 0,
     "gdpr_enabled": 1,
     "allowProfileImageUploads": 1,
     "teaserPost": "last-reply",
