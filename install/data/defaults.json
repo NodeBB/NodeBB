@@ -133,6 +133,7 @@
     "disableEmailSubscriptions": 0,
     "emailConfirmInterval": 10,
     "removeEmailNotificationImages": 0,
+    "includeUnverifiedEmails": 0,
     "inviteExpiration": 7,
     "dailyDigestFreq": "off",
     "digestHour": 17,
