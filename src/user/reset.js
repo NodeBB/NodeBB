@@ -103,7 +103,7 @@ UserReset.commit = async function (code, password) {
 	]);
 	await user.reset.updateExpiry(uid);
 	await user.auth.resetLockout(uid);
-	await db.delete(`uid:${uid}:confirm:email:sent`);
+	await user.email.expireValidation(uid);
 };
 
 UserReset.updateExpiry = async function (uid) {

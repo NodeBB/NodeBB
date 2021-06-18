@@ -6,7 +6,6 @@ const _ = require('lodash');
 const validator = require('validator');
 const util = require('util');
 
-const db = require('../database');
 const user = require('../user');
 const topics = require('../topics');
 const messaging = require('../messaging');
@@ -75,7 +74,7 @@ middleware.renderHeader = async function renderHeader(req, res, data) {
 		isModerator: user.isModeratorOfAnyCategory(req.uid),
 		privileges: privileges.global.get(req.uid),
 		user: user.getUserData(req.uid),
-		isEmailConfirmSent: req.uid <= 0 ? false : await db.get(`uid:${req.uid}:confirm:email:sent`),
+		isEmailConfirmSent: req.uid <= 0 ? false : await user.email.isValidationPending(req.uid),
 		languageDirection: translator.translate('[[language:dir]]', res.locals.config.userLang),
 		timeagoCode: languages.userTimeagoCode(res.locals.config.userLang),
 		browserTitle: translator.translate(controllers.helpers.buildTitle(translator.unescape(data.title))),
