@@ -141,6 +141,27 @@ module.exports = function (User) {
 		return await User.getUsersFields(uids, []);
 	};
 
+	User.hidePrivateData = async function (userData, callerUID) {
+		const _userData = { ...userData };
+
+		const isSelf = parseInt(callerUID, 10) === parseInt(_userData.uid, 10);
+		const [userSettings, isAdmin, isGlobalModerator] = await Promise.all([
+			User.getSettings(_userData.uid),
+			User.isAdministrator(callerUID),
+			User.isGlobalModerator(callerUID),
+		]);
+		const privilegedOrSelf = isAdmin || isGlobalModerator || isSelf;
+
+		if (!privilegedOrSelf && (!userSettings.showemail || meta.config.hideEmail)) {
+			_userData.email = '';
+		}
+		if (!privilegedOrSelf && (!userSettings.showfullname || meta.config.hideFullname)) {
+			_userData.fullname = '';
+		}
+
+		return _userData;
+	};
+
 	async function modifyUserData(users, requestedFields, fieldsToRemove) {
 		let uidToSettings = {};
 		if (meta.config.showFullnameAsDisplayName) {

@@ -2509,32 +2509,48 @@ describe('User', () => {
 	});
 
 	describe('hideEmail/hideFullname', () => {
+		const COMMON_PW = '123456';
 		let uid;
+		let jar;
+		let regularUserUid;
+
+		before(async () => {
+			uid = await User.create({
+				username: 'hiddenemail',
+				email: 'should@be.hidden',
+				fullname: 'baris soner usakli',
+			});
+			regularUserUid = await User.create({
+				username: 'regularUser',
+				password: COMMON_PW,
+			});
+			jar = await new Promise((resolve, reject) => {
+				helpers.loginUser('regularUser', COMMON_PW, async (err, _jar) => {
+					if (err) {
+						reject(err);
+					}
+					resolve(_jar);
+				});
+			});
+		});
+
 		after((done) => {
 			meta.config.hideEmail = 0;
 			meta.config.hideFullname = 0;
 			done();
 		});
 
-		it('should hide email and fullname', (done) => {
+		it('should hide email and fullname', async () => {
 			meta.config.hideEmail = 1;
 			meta.config.hideFullname = 1;
 
-			User.create({
-				username: 'hiddenemail',
-				email: 'should@be.hidden',
-				fullname: 'baris soner usakli',
-			}, (err, _uid) => {
-				uid = _uid;
-				assert.ifError(err);
-				request(`${nconf.get('url')}/api/user/hiddenemail`, { json: true }, (err, res, body) => {
-					assert.ifError(err);
-					assert.equal(body.fullname, '');
-					assert.equal(body.email, '');
+			const userData1 = await requestAsync(`${nconf.get('url')}/api/user/hiddenemail`, { json: true });
+			assert.strictEqual(userData1.fullname, '');
+			assert.strictEqual(userData1.email, '');
 
-					done();
-				});
-			});
+			const { response } = await requestAsync(`${nconf.get('url')}/api/v3/users/${uid}`, { json: true, jar: jar });
+			assert.strictEqual(response.fullname, '');
+			assert.strictEqual(response.email, '');
 		});
 
 		it('should hide fullname in topic list and topic', (done) => {
