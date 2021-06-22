@@ -25,6 +25,16 @@ module.exports = function (SocketTopics) {
 			);
 	};
 
+	SocketTopics.canRemoveTag = async function (socket, data) {
+		if (!data || !data.tag) {
+			throw new Error('[[error:invalid-data]]');
+		}
+
+		const systemTags = (meta.config.systemTags || '').split(',');
+		const isPrivileged = await user.isPrivileged(socket.uid);
+		return isPrivileged || !systemTags.includes(data.tag);
+	};
+
 	SocketTopics.autocompleteTags = async function (socket, data) {
 		if (data.cid) {
 			const canRead = await privileges.categories.can('topics:read', data.cid, socket.uid);

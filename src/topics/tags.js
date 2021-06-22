@@ -62,14 +62,15 @@ module.exports = function (Topics) {
 		);
 	};
 
-	Topics.validateTags = async function (tags, cid, uid) {
+	Topics.validateTags = async function (tags, cid, uid, tid = null) {
 		if (!Array.isArray(tags)) {
 			throw new Error('[[error:invalid-data]]');
 		}
 		tags = _.uniq(tags);
-		const [categoryData, isPrivileged] = await Promise.all([
+		const [categoryData, isPrivileged, currentTags] = await Promise.all([
 			categories.getCategoryFields(cid, ['minTags', 'maxTags']),
 			user.isPrivileged(uid),
+			tid ? Topics.getTopicTags(tid) : [],
 		]);
 		if (tags.length < parseInt(categoryData.minTags, 10)) {
 			throw new Error(`[[error:not-enough-tags, ${categoryData.minTags}]]`);
@@ -77,9 +78,16 @@ module.exports = function (Topics) {
 			throw new Error(`[[error:too-many-tags, ${categoryData.maxTags}]]`);
 		}
 
+		const addedTags = tags.filter(tag => !currentTags.includes(tag));
+		const removedTags = currentTags.filter(tag => !tags.includes(tag));
 		const systemTags = (meta.config.systemTags || '').split(',');
-		if (!isPrivileged && systemTags.length && tags.some(tag => systemTags.includes(tag))) {
+
+		if (!isPrivileged && systemTags.length && addedTags.length && addedTags.some(tag => systemTags.includes(tag))) {
 			throw new Error('[[error:cant-use-system-tag]]');
+		}
+
+		if (!isPrivileged && systemTags.length && removedTags.length && removedTags.some(tag => systemTags.includes(tag))) {
+			throw new Error('[[error:cant-remove-system-tag]]');
 		}
 	};
 
