@@ -159,6 +159,9 @@ User.getPrivileges = async function (uid) {
 };
 
 User.isPrivileged = async function (uid) {
+	if (!(parseInt(uid, 10) > 0)) {
+		return false;
+	}
 	const results = await User.getPrivileges(uid);
 	return results ? (results.isAdmin || results.isGlobalModerator || results.isModeratorOfAnyCategory) : false;
 };
