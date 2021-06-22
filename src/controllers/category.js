@@ -95,6 +95,7 @@ categoryController.get = async function (req, res, next) {
 	}
 
 	categories.modifyTopicsByPrivilege(categoryData.topics, userPrivileges);
+	categoryData.tagWhitelist = categories.filterTagWhitelist(categoryData.tagWhitelist, userPrivileges.isAdminOrMod);
 
 	await buildBreadcrumbs(req, categoryData);
 	if (categoryData.children.length) {
