@@ -32,7 +32,7 @@ module.exports = function (SocketTopics) {
 
 		const systemTags = (meta.config.systemTags || '').split(',');
 		const isPrivileged = await user.isPrivileged(socket.uid);
-		return isPrivileged || !systemTags.includes(data.tag);
+		return isPrivileged || !systemTags.includes(String(data.tag).trim());
 	};
 
 	SocketTopics.autocompleteTags = async function (socket, data) {
