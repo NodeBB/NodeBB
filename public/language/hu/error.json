@@ -85,6 +85,7 @@
     "not-enough-tags": "Nincs elég címke. A bejegyzésnek legalább %1 címkét kell tartalmaznia",
     "too-many-tags": "Túl sok címke. A bejegyzés nem tartalmazhat több címkét mint %1",
     "cant-use-system-tag": "Nem használhatod ezt a rendszer címkét.",
+    "cant-remove-system-tag": "You can not remove this system tag.",
     "still-uploading": "Kérlek várj, amíg a feltöltés befejeződik.",
     "file-too-big": "A maximális megengedett fájl méret %1 kB - kérlek kisebb méretű fájlt tölts fel",
     "guest-upload-disabled": "Vendég általi feltöltés kikapcsolva",
