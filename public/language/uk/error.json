@@ -85,6 +85,7 @@
     "not-enough-tags": "Замало тегів. Тема повинна мати щонайменше %1 тег(и)",
     "too-many-tags": "Забагато тегів. Тема не може мати більше %1 тег(и)",
     "cant-use-system-tag": "You can not use this system tag.",
+    "cant-remove-system-tag": "You can not remove this system tag.",
     "still-uploading": "Зачекайте, будь ласка, доки завантаження завершиться.",
     "file-too-big": "Максимальний розмір файлу %1 кБ — завантажте менший файл, будь ласка.",
     "guest-upload-disabled": "Гостьове завантаження вимкнено.",
