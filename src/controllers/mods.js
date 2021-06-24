@@ -165,13 +165,13 @@ modsController.postQueue = async function (req, res, next) {
 		helpers.getSelectedCategory(cid),
 	]);
 
-	if (cid && !moderatedCids.includes(String(cid)) && !isAdminOrGlobalMod) {
+	if (cid && !moderatedCids.includes(Number(cid)) && !isAdminOrGlobalMod) {
 		return next();
 	}
 
 	postData = postData.filter(p => p &&
 		(!categoriesData.selectedCids.length || categoriesData.selectedCids.includes(p.category.cid)) &&
-		(isAdminOrGlobalMod || moderatedCids.includes(String(p.category.cid))));
+		(isAdminOrGlobalMod || moderatedCids.includes(Number(p.category.cid))));
 
 	({ posts: postData } = await plugins.hooks.fire('filter:post-queue.get', {
 		posts: postData,
