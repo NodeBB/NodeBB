@@ -66,7 +66,8 @@ function installAll() {
 			}
 		}
 	} catch (e) {
-		console.error(e);
+		// No error handling is required here.
+		// If nconf is not installed, regular package installation via npm is carried out.
 	}
 	try {
 		cproc.execSync(command + (prod ? ' --production' : ''), {
