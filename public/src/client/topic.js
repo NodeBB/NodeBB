@@ -12,7 +12,12 @@ define('forum/topic', [
 	'sort',
 	'components',
 	'storage',
-], function (infinitescroll, threadTools, postTools, events, posts, images, navigator, sort, components, storage) {
+	'hooks',
+], function (
+	infinitescroll, threadTools, postTools,
+	events, posts, images, navigator, sort,
+	components, storage, hooks
+) {
 	var	Topic = {};
 	var currentUrl = '';
 
@@ -70,7 +75,7 @@ define('forum/topic', [
 
 		handleTopicSearch();
 
-		$(window).trigger('action:topic.loaded', ajaxify.data);
+		hooks.fire('action:topic.loaded', ajaxify.data);
 	};
 
 	function handleTopicSearch() {

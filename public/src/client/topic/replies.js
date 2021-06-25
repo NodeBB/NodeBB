@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], function (navigator, components, posts) {
+define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts', 'hooks'], function (navigator, components, posts, hooks) {
 	var Replies = {};
 
 	Replies.init = function (button) {
@@ -43,7 +43,7 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], 
 
 					repliesEl.slideDown('fast');
 					posts.onNewPostsAddedToDom(html);
-					$(window).trigger('action:posts.loaded', { posts: data });
+					hooks.fire('action:posts.loaded', { posts: data });
 				});
 			});
 		} else if (close.is(':not(.hidden)')) {
