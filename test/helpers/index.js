@@ -125,6 +125,10 @@ helpers.registerUser = function (data, callback) {
 			return callback(err);
 		}
 
+		if (!data.hasOwnProperty('password-confirm')) {
+			data['password-confirm'] = data.password;
+		}
+
 		request.post(`${nconf.get('url')}/register`, {
 			form: data,
 			json: true,

@@ -44,36 +44,6 @@ describe('authentication', () => {
 	}
 	const loginUserPromisified = util.promisify(loginUser);
 
-	function registerUser(email, username, password, callback) {
-		const jar = request.jar();
-		request({
-			url: `${nconf.get('url')}/api/config`,
-			json: true,
-			jar: jar,
-		}, (err, response, body) => {
-			if (err) {
-				return callback(err);
-			}
-
-			request.post(`${nconf.get('url')}/register`, {
-				form: {
-					email: email,
-					username: username,
-					password: password,
-					'password-confirm': password,
-					gdpr_consent: true,
-				},
-				json: true,
-				jar: jar,
-				headers: {
-					'x-csrf-token': body.csrf_token,
-				},
-			}, (err, response, body) => {
-				callback(err, response, body, jar);
-			});
-		});
-	}
-
 	const jar = request.jar();
 	let regularUid;
 	before((done) => {
@@ -88,8 +58,6 @@ describe('authentication', () => {
 		helpers.registerUser({
 			username: 'a',
 			password: '123456',
-			'password-confirm': '123456',
-			email: 'should@error1.com',
 		}, (err, jar, response, body) => {
 			assert.ifError(err);
 			assert.equal(response.statusCode, 400);
@@ -102,8 +70,6 @@ describe('authentication', () => {
 		helpers.registerUser({
 			username: '----a-----',
 			password: '123456',
-			'password-confirm': '123456',
-			email: 'should@error2.com',
 		}, (err, jar, response, body) => {
 			assert.ifError(err);
 			assert.equal(response.statusCode, 400);
@@ -116,8 +82,6 @@ describe('authentication', () => {
 		helpers.registerUser({
 			username: '     a',
 			password: '123456',
-			'password-confirm': '123456',
-			email: 'should@error3.com',
 		}, (err, jar, response, body) => {
 			assert.ifError(err);
 			assert.equal(response.statusCode, 400);
@@ -130,8 +94,6 @@ describe('authentication', () => {
 		helpers.registerUser({
 			username: 'a      ',
 			password: '123456',
-			'password-confirm': '123456',
-			email: 'should@error4.com',
 		}, (err, jar, response, body) => {
 			assert.ifError(err);
 			assert.equal(response.statusCode, 400);
@@ -139,7 +101,6 @@ describe('authentication', () => {
 			done();
 		});
 	});
-
 
 	it('should register and login a user', (done) => {
 		request({
@@ -360,7 +321,10 @@ describe('authentication', () => {
 
 	it('should fail to register if registraton is disabled', (done) => {
 		meta.config.registrationType = 'disabled';
-		registerUser('some@user.com', 'someuser', 'somepassword', (err, response, body) => {
+		helpers.registerUser({
+			username: 'someuser',
+			password: 'somepassword',
+		}, (err, jar, response, body) => {
 			assert.ifError(err);
 			assert.equal(response.statusCode, 403);
 			assert.equal(body, 'Forbidden');
@@ -370,7 +334,10 @@ describe('authentication', () => {
 
 	it('should return error if invitation is not valid', (done) => {
 		meta.config.registrationType = 'invite-only';
-		registerUser('some@user.com', 'someuser', 'somepassword', (err, response, body) => {
+		helpers.registerUser({
+			username: 'someuser',
+			password: 'somepassword',
+		}, (err, jar, response, body) => {
 			meta.config.registrationType = 'normal';
 			assert.ifError(err);
 			assert.equal(response.statusCode, 400);
@@ -379,21 +346,18 @@ describe('authentication', () => {
 		});
 	});
 
-	it('should fail to register if email is falsy', (done) => {
-		registerUser('', 'someuser', 'somepassword', (err, response, body) => {
-			assert.ifError(err);
-			assert.equal(response.statusCode, 400);
-			assert.equal(body, '[[error:invalid-email]]');
-			done();
-		});
-	});
-
 	it('should fail to register if username is falsy or too short', (done) => {
-		registerUser('some@user.com', '', 'somepassword', (err, response, body) => {
+		helpers.registerUser({
+			username: '',
+			password: 'somepassword',
+		}, (err, jar, response, body) => {
 			assert.ifError(err);
 			assert.equal(response.statusCode, 400);
 			assert.equal(body, '[[error:username-too-short]]');
-			registerUser('some@user.com', 'a', 'somepassword', (err, response, body) => {
+			helpers.registerUser({
+				username: 'a',
+				password: 'somepassword',
+			}, (err, jar, response, body) => {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 400);
 				assert.equal(body, '[[error:username-too-short]]');
@@ -403,7 +367,10 @@ describe('authentication', () => {
 	});
 
 	it('should fail to register if username is too long', (done) => {
-		registerUser('some@user.com', 'thisisareallylongusername', '123456', (err, response, body) => {
+		helpers.registerUser({
+			username: 'thisisareallylongusername',
+			password: '123456',
+		}, (err, jar, response, body) => {
 			assert.ifError(err);
 			assert.equal(response.statusCode, 400);
 			assert.equal(body, '[[error:username-too-long]]');
@@ -413,7 +380,12 @@ describe('authentication', () => {
 
 	it('should queue user if ip is used before', (done) => {
 		meta.config.registrationApprovalType = 'admin-approval-ip';
-		registerUser('another@user.com', 'anotheruser', 'anotherpwd', (err, response, body) => {
+		helpers.registerUser({
+			email: 'another@user.com',
+			username: 'anotheruser',
+			password: 'anotherpwd',
+			gdpr_consent: 1,
+		}, (err, jar, response, body) => {
 			meta.config.registrationApprovalType = 'normal';
 			assert.ifError(err);
 			assert.equal(response.statusCode, 200);
@@ -423,15 +395,11 @@ describe('authentication', () => {
 	});
 
 
-	it('should be able to login with email', (done) => {
-		user.create({ username: 'ginger', password: '123456', email: 'ginger@nodebb.org' }, (err) => {
-			assert.ifError(err);
-			loginUser('ginger@nodebb.org', '123456', (err, response) => {
-				assert.ifError(err);
-				assert.equal(response.statusCode, 200);
-				done();
-			});
-		});
+	it('should be able to login with email', async () => {
+		const uid = await user.create({ username: 'ginger', password: '123456', email: 'ginger@nodebb.org' });
+		await user.email.confirmByUid(uid);
+		const response = await loginUserPromisified('ginger@nodebb.org', '123456');
+		assert.equal(response.statusCode, 200);
 	});
 
 	it('should fail to login if login type is username and an email is sent', (done) => {
