@@ -68,13 +68,8 @@
 	}
 
 	function buildLinkTag(tag) {
-		var link = tag.link ? 'link="' + tag.link + '" ' : '';
-		var rel = tag.rel ? 'rel="' + tag.rel + '" ' : '';
-		var as = tag.as ? 'as="' + tag.as + '" ' : '';
-		var type = tag.type ? 'type="' + tag.type + '" ' : '';
-		var href = tag.href ? 'href="' + tag.href + '" ' : '';
-		var sizes = tag.sizes ? 'sizes="' + tag.sizes + '" ' : '';
-		var title = tag.title ? 'title="' + tag.title + '" ' : '';
+		const attributes = ['link', 'rel', 'as', 'type', 'href', 'sizes', 'title'];
+		const [link, rel, as, type, href, sizes, title] = attributes.map(attr => (tag[attr] ? `${attr}="${tag[attr]}" ` : ''));
 
 		return '<link ' + link + rel + as + type + sizes + title + href + '/>\n\t';
 	}
