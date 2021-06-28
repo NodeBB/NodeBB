@@ -93,12 +93,6 @@ module.exports = function (User) {
 			['users:reputation', 0, userData.uid],
 		];
 
-		if (userData.email) {
-			bulkAdd.push(['email:uid', userData.uid, userData.email.toLowerCase()]);
-			bulkAdd.push(['email:sorted', 0, `${userData.email.toLowerCase()}:${userData.uid}`]);
-			bulkAdd.push([`user:${userData.uid}:emails`, timestamp, `${userData.email}:${timestamp}`]);
-		}
-
 		if (userData.fullname) {
 			bulkAdd.push(['fullname:sorted', 0, `${userData.fullname.toLowerCase()}:${userData.uid}`]);
 		}
