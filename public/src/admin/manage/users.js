@@ -299,6 +299,20 @@ define('admin/manage/users', [
 			handleDelete('[[admin/manage/users:alerts.confirm-purge]]', '');
 		});
 
+		const tableEl = document.querySelector('.users-table');
+		const actionBtn = document.getElementById('action-dropdown');
+		tableEl.addEventListener('change', (e) => {
+			const subselector = e.target.closest('[component="user/select/single"]') || e.target.closest('[component="user/select/all"]');
+			if (subselector) {
+				var uids = getSelectedUids();
+				if (uids.length) {
+					actionBtn.removeAttribute('disabled');
+				} else {
+					actionBtn.setAttribute('disabled', 'disabled');
+				}
+			}
+		});
+
 		function handleDelete(confirmMsg, path) {
 			var uids = getSelectedUids();
 			if (!uids.length) {
