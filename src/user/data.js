@@ -7,6 +7,7 @@ const _ = require('lodash');
 const db = require('../database');
 const meta = require('../meta');
 const plugins = require('../plugins');
+const privileges = require('../privileges');
 const utils = require('../utils');
 
 const relative_path = nconf.get('relative_path');
@@ -145,10 +146,14 @@ module.exports = function (User) {
 		const _userData = { ...userData };
 
 		const isSelf = parseInt(callerUID, 10) === parseInt(_userData.uid, 10);
-		const [userSettings, isAdmin, isGlobalModerator] = await Promise.all([
+		const [userSettings, isAdmin, isGlobalModerator, isModerator, isTargetAdmin, canViewInfo, ips] = await Promise.all([
 			User.getSettings(_userData.uid),
 			User.isAdministrator(callerUID),
 			User.isGlobalModerator(callerUID),
+			User.isModeratorOfAnyCategory(callerUID),
+			User.isAdministrator(_userData.uid),
+			privileges.global.can('view:users:info', callerUID),
+			User.getIPs(_userData.uid, 4),
 		]);
 		const privilegedOrSelf = isAdmin || isGlobalModerator || isSelf;
 
@@ -157,6 +162,12 @@ module.exports = function (User) {
 		}
 		if (!privilegedOrSelf && (!userSettings.showfullname || meta.config.hideFullname)) {
 			_userData.fullname = '';
+		}
+		if (isAdmin || isSelf || (canViewInfo && !isTargetAdmin)) {
+			_userData.ips = ips;
+		}
+		if (!isAdmin && !isGlobalModerator && !isModerator) {
+			_userData.moderationNote = undefined;
 		}
 
 		return _userData;

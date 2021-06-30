@@ -28,7 +28,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	}
 	await parseAboutMe(results.userData);
 
-	const { userData } = results;
+	const userData = await user.hidePrivateData(results.userData, callerUID);
 	const { userSettings } = results;
 	const { isAdmin } = results;
 	const { isGlobalModerator } = results;
@@ -41,26 +41,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 		userData.birthday ? Math.floor((new Date().getTime() - new Date(userData.birthday).getTime()) / 31536000000) : 0
 	);
 
-	userData.emailClass = 'hide';
-
-	if (!isAdmin && !isGlobalModerator && !isSelf && (!userSettings.showemail || meta.config.hideEmail)) {
-		userData.email = '';
-	} else if (!userSettings.showemail) {
-		userData.emailClass = '';
-	}
-
-	if (!isAdmin && !isGlobalModerator && !isSelf && (!userSettings.showfullname || meta.config.hideFullname)) {
-		userData.fullname = '';
-	}
-
-	if (isAdmin || isSelf || (canViewInfo && !results.isTargetAdmin)) {
-		userData.ips = results.ips;
-	}
-
-	if (!isAdmin && !isGlobalModerator && !isModerator) {
-		userData.moderationNote = undefined;
-	}
-
+	userData.emailClass = userSettings.showemail ? 'hide' : ''; // This is for hiding an eye-slash icon
 	userData.isBlocked = results.isBlocked;
 	userData.yourid = callerUID;
 	userData.theirid = userData.uid;
