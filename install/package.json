@@ -123,7 +123,7 @@
         "socket.io-adapter-cluster": "^1.0.1",
         "socket.io-client": "4.1.2",
         "@socket.io/redis-adapter": "7.0.0",
-        "sortablejs": "1.13.0",
+        "sortablejs": "1.14.0",
         "spdx-license-list": "^6.4.0",
         "spider-detector": "2.0.0",
         "textcomplete": "^0.18.0",
