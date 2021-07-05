@@ -39,7 +39,18 @@ module.exports = function (Topics) {
 		if (!isAdminOrMod) {
 			throw new Error('[[error:no-privileges]]');
 		}
-		const tid = await Topics.create({ uid: postData.uid, title: title, cid: cid });
+
+		const params = {
+			uid: postData.uid,
+			title: title,
+			cid: cid,
+		};
+		const result = await plugins.hooks.fire('filter:topic.fork', {
+			params: params,
+			tid: postData.tid,
+		});
+
+		const tid = await Topics.create(result.params);
 		await Topics.updateTopicBookmarks(fromTid, pids);
 
 		await async.eachSeries(pids, async function (pid) {
