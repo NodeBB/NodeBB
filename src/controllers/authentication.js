@@ -28,6 +28,7 @@ async function registerAndLoginUser(req, res, userData) {
 	}
 
 	const data = await plugins.hooks.fire('filter:register.interstitial', {
+		req,
 		userData,
 		interstitials: [],
 	});
@@ -141,6 +142,7 @@ async function addToApprovalQueue(req, userData) {
 authenticationController.registerComplete = function (req, res, next) {
 	// For the interstitials that respond, execute the callback with the form body
 	plugins.hooks.fire('filter:register.interstitial', {
+		req,
 		userData: req.session.registration,
 		interstitials: [],
 	}, async (err, data) => {
