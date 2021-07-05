@@ -51,11 +51,16 @@ module.exports = function (Topics) {
 
 	async function createNewTopic(title, oldestTid) {
 		const topicData = await Topics.getTopicFields(oldestTid, ['uid', 'cid']);
-		const tid = await Topics.create({
+		const params = {
 			uid: topicData.uid,
 			cid: topicData.cid,
 			title: title,
+		};
+		const result = await plugins.hooks.fire('filter:topic.mergeCreateNewTopic', {
+			oldestTid: oldestTid,
+			params: params,
 		});
+		const tid = await Topics.create(result.params);
 		return tid;
 	}
 
