@@ -229,22 +229,25 @@ ajaxify = window.ajaxify || {};
 			.forEach(function (el) {
 				document.head.removeChild(el);
 			});
-
-		// Add new meta tags
-		ajaxify.data._header.tags.meta
-			.filter(function (tagObj) {
-				var name = tagObj.name || tagObj.property;
-				return metaWhitelist.some(function (exp) {
-					return !!exp.test(name);
+		require(['translator'], function (translator) {
+			// Add new meta tags
+			ajaxify.data._header.tags.meta
+				.filter(function (tagObj) {
+					var name = tagObj.name || tagObj.property;
+					return metaWhitelist.some(function (exp) {
+						return !!exp.test(name);
+					});
+				}).forEach(async function (tagObj) {
+					if (tagObj.content) {
+						tagObj.content = await translator.translate(tagObj.content);
+					}
+					var metaEl = document.createElement('meta');
+					Object.keys(tagObj).forEach(function (prop) {
+						metaEl.setAttribute(prop, tagObj[prop]);
+					});
+					document.head.appendChild(metaEl);
 				});
-			})
-			.forEach(function (tagObj) {
-				var metaEl = document.createElement('meta');
-				Object.keys(tagObj).forEach(function (prop) {
-					metaEl.setAttribute(prop, tagObj[prop]);
-				});
-				document.head.appendChild(metaEl);
-			});
+		});
 
 		// Delete the old link tags
 		Array.prototype.slice
