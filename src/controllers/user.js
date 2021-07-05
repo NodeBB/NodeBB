@@ -46,6 +46,12 @@ userController.getUserDataByField = async function (callerUid, field, fieldValue
 		uid = await user.getUidByUsername(fieldValue);
 	} else if (field === 'email') {
 		uid = await user.getUidByEmail(fieldValue);
+		if (uid) {
+			const settings = await user.getSettings(uid);
+			if (settings && !settings.showemail) {
+				uid = 0;
+			}
+		}
 	}
 	if (!uid) {
 		return null;
