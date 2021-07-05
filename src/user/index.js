@@ -259,10 +259,22 @@ User.addInterstitials = function (callback) {
 									throw new Error('[[error:email-nochange]]');
 								}
 
-								await User.email.sendValidationEmail(userData.uid, {
-									email: formData.email,
-									force: true,
-								});
+								const [isAdminOrGlobalMod, canEdit] = await Promise.all([
+									User.isAdminOrGlobalMod(data.req.uid),
+									privileges.users.canEdit(data.req.uid, userData.uid),
+								]);
+								if (isAdminOrGlobalMod) {
+									await User.setUserField(userData.uid, 'email', formData.email);
+									await User.email.confirmByUid(userData.uid);
+								} else if (canEdit) {
+									await User.email.sendValidationEmail(userData.uid, {
+										email: formData.email,
+										force: true,
+									});
+								} else {
+									// User attempting to edit another user's email -- not allowed
+									throw new Error('[[error:no-privileges]]');
+								}
 							} else {
 								// New registrants have the confirm email sent from user.create()
 								userData.email = formData.email;
