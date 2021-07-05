@@ -193,6 +193,7 @@ Controllers.registerInterstitial = async function (req, res, next) {
 	}
 	try {
 		const data = await plugins.hooks.fire('filter:register.interstitial', {
+			req,
 			userData: req.session.registration,
 			interstitials: [],
 		});
