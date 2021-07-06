@@ -186,7 +186,7 @@ jobs:
         run: npm run coverage
 
       - name: Test coverage
-        uses: coverallsapp/github-action@v1.1.2
+        uses: coverallsapp/github-action@1.1.3
         if: matrix.coverage
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -198,7 +198,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Coveralls Finished
-        uses: coverallsapp/github-action@v1.1.2
+        uses: coverallsapp/github-action@1.1.3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           parallel-finished: true
