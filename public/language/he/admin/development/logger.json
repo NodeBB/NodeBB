@@ -5,7 +5,7 @@
 	"enable-http": "הפעל רישום HTTP",
 	"enable-socket": "הפעל רישום אירועים ב-socket.io",
 	"file-path": "נתיב קובץ יומן רישום",
-	"file-path-placeholder": "/path/to/log/file.log ::: leave blank to log to your terminal",
+	"file-path-placeholder": "/path/to/log/file.log ::: השאר ריק כדי להיכנס לטרמינל שלך",
 
 	"control-panel": "לוח בקרת מנהל רישום",
 	"update-settings": "עדכן הגדרות מנהל רישום"
