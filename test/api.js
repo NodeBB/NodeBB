@@ -207,6 +207,7 @@ describe('API', async () => {
 			method: dummyEmailerHook,
 		});
 
+		// All tests run as admin user
 		jar = await helpers.loginUser('admin', '123456');
 
 		// Retrieve CSRF token using cookie, to test Write API

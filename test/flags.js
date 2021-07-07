@@ -685,8 +685,8 @@ describe('Flags', () => {
 						throw err;
 					}
 
-					// 1 for the new event appended, 2 for username and email change
-					assert.strictEqual(entries + 3, history.length);
+					// 1 for the new event appended, 1 for username change (email not changed immediately)
+					assert.strictEqual(entries + 2, history.length);
 					done();
 				});
 			});

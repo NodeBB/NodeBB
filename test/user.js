@@ -69,8 +69,11 @@ describe('User', () => {
 
 	describe('.create(), when created', () => {
 		it('should be created properly', async () => {
-			testUid = await User.create({ username: userData.username, password: userData.password, email: userData.email });
+			testUid = await User.create({ username: userData.username, password: userData.password });
 			assert.ok(testUid);
+
+			await User.setUserField(testUid, 'email', userData.email);
+			await User.email.confirmByUid(testUid);
 		});
 
 		it('should be created properly', async () => {
@@ -559,12 +562,10 @@ describe('User', () => {
 	describe('passwordReset', () => {
 		let uid;
 		let code;
-		before((done) => {
-			User.create({ username: 'resetuser', password: '123456', email: 'reset@me.com' }, (err, newUid) => {
-				assert.ifError(err);
-				uid = newUid;
-				done();
-			});
+		before(async () => {
+			uid = await User.create({ username: 'resetuser', password: '123456' });
+			await User.setUserField(uid, 'email', 'reset@me.com');
+			await User.email.confirmByUid(uid);
 		});
 
 		it('.generate() should generate a new reset code', (done) => {
@@ -1011,27 +1012,6 @@ describe('User', () => {
 			await socketUser.changeUsernameEmail({ uid: uid }, { uid: uid, email: 'updatedAgain@me.com', password: '123456' });
 
 			assert.strictEqual(await User.email.isValidationPending(uid), true);
-		});
-
-		it('should error if email is identical', async () => {
-			await User.create({
-				username: 'trimtest1',
-				email: 'trim1@trim.com',
-			});
-			const uid2 = await User.create({
-				username: 'trimtest2',
-				email: 'trim2@trim.com',
-			});
-			let err;
-			try {
-				await socketUser.changeUsernameEmail({ uid: uid2 }, {
-					uid: uid2,
-					email: '  trim1@trim.com',
-				});
-			} catch (_err) {
-				err = _err;
-			}
-			assert.strictEqual(err.message, '[[error:email-taken]]');
 		});
 
 		it('should update cover image', (done) => {

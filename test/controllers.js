@@ -4,6 +4,7 @@ const async = require('async');
 const assert = require('assert');
 const nconf = require('nconf');
 const request = require('request');
+const requestAsync = require('request-promise-native');
 const fs = require('fs');
 const path = require('path');
 
@@ -35,8 +36,11 @@ describe('Controllers', () => {
 					description: 'Test category created by testing script',
 				}, next);
 			},
-			user: function (next) {
-				user.create({ username: 'foo', password: 'barbar', email: 'foo@test.com' }, next);
+			user: async () => {
+				const uid = await user.create({ username: 'foo', password: 'barbar', gdpr_consent: true });
+				await user.setUserField(uid, 'email', 'foo@test.com');
+				await user.email.confirmByUid(uid);
+				return uid;
 			},
 			navigation: function (next) {
 				const navigation = require('../src/navigation/admin');
@@ -1342,13 +1346,23 @@ describe('Controllers', () => {
 			});
 		});
 
-		it('should load user by email', (done) => {
-			request(`${nconf.get('url')}/api/user/email/foo@test.com`, (err, res, body) => {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 200);
-				assert(body);
-				done();
+		it('should NOT load user by email (by default)', async () => {
+			const res = await requestAsync(`${nconf.get('url')}/api/user/email/foo@test.com`, {
+				resolveWithFullResponse: true,
+				simple: false,
 			});
+
+			assert.strictEqual(res.statusCode, 404);
+		});
+
+		it('should load user by email if user has elected to show their email', async () => {
+			await user.setSetting(fooUid, 'showemail', 1);
+			const res = await requestAsync(`${nconf.get('url')}/api/user/email/foo@test.com`, {
+				resolveWithFullResponse: true,
+			});
+			assert.strictEqual(res.statusCode, 200);
+			assert(res.body);
+			await user.setSetting(fooUid, 'showemail', 0);
 		});
 
 		it('should return 401 if user does not have view:users privilege', (done) => {
@@ -1551,11 +1565,21 @@ describe('Controllers', () => {
 			});
 		});
 
-		it('should render edit/email', (done) => {
-			request(`${nconf.get('url')}/api/user/foo/edit/email`, { jar: jar, json: true }, (err, res, body) => {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 200);
-				done();
+		it('should render edit/email', async () => {
+			const res = await requestAsync(`${nconf.get('url')}/api/user/foo/edit/email`, {
+				jar,
+				json: true,
+				resolveWithFullResponse: true,
+			});
+
+			assert.strictEqual(res.statusCode, 200);
+			assert.strictEqual(res.body, '/register/complete');
+
+			await requestAsync({
+				uri: `${nconf.get('url')}/register/abort`,
+				method: 'post',
+				jar,
+				simple: false,
 			});
 		});
 
