@@ -79,10 +79,21 @@ Topics.getTopicsByTids = async function (tids, options) {
 			return postData.map(p => p.handle);
 		}
 
+		async function loadShowfullnameSettings() {
+			if (meta.config.hideFullname) {
+				return uids.map(() => ({ showfullname: false }));
+			}
+			const data = await db.getObjectsFields(uids.map(uid => `user:${uid}:settings`), ['showfullname']);
+			data.forEach((settings) => {
+				settings.showfullname = parseInt(settings.showfullname, 10) === 1;
+			});
+			return data;
+		}
+
 		const [teasers, users, userSettings, categoriesData, guestHandles, thumbs] = await Promise.all([
 			Topics.getTeasers(topics, options),
 			user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status']),
-			user.getMultipleUserSettings(uids),
+			loadShowfullnameSettings(),
 			categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'backgroundImage', 'imageClass', 'bgColor', 'color', 'disabled']),
 			loadGuestHandles(),
 			Topics.thumbs.load(topics),
@@ -90,7 +101,7 @@ Topics.getTopicsByTids = async function (tids, options) {
 
 		users.forEach((userObj, idx) => {
 			// Hide fullname if needed
-			if (meta.config.hideFullname || !userSettings[idx].showfullname) {
+			if (!userSettings[idx].showfullname) {
 				userObj.fullname = undefined;
 			}
 		});
