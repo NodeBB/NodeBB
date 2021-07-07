@@ -1,3 +1,115 @@
+#### v1.17.2 (2021-07-07)
+
+##### Chores
+
+* **deps:**
+  *  update coverallsapp/github-action action to v1.1.3 (99c23037)
+  *  update dependency eslint to v7.30.0 (725e70e9)
+  *  update dependency coveralls to v3.1.1 (edefac96)
+  *  update dependency eslint to v7.29.0 (2700f717)
+  *  update dependency eslint to v7.28.0 (fac0bcbd)
+  *  update dependency smtp-server to v3.9.0 (86723292)
+  *  update dependency eslint-plugin-import to v2.23.4 (886d65f6)
+  *  update dependency eslint-plugin-import to v2.23.3 (c3b0e2fa)
+*  lint (2b42e7ed)
+*  fix indentation (d07229aa)
+*  up rewards (ca9ca876)
+*  incrementing version number - v1.17.1 (0aad1312)
+*  update changelog for v1.17.1 (1e6ed0ad)
+
+##### Documentation Changes
+
+*  add undoTimeout (2db77b0c)
+
+##### New Features
+
+*  add merge/fork hooks (c9348efb)
+*  #9628, allow setting custom icon names (2fe30b6f)
+*  #9617 update fa link (52596902)
+*  add bodyClass to 500 page (46a454f1)
+*  clear reset tokens on successful login (f9728aff)
+*  add filter:categories.categorySearch (be19f27f)
+*  allow nested properties on category page (#9601) (cc0cf99f)
+*  show ip on acp manage users (8ea58432)
+*  add undoTimeout to moving posts as well #9599 (e588948f)
+*  make undoTimeout configurable, closes #9599 (05cc7ccb)
+*  introduce boolean res.locals flag to bypass session reroll (used by session-sharing) (816856b0)
+*  allow modifying default category privileges (57e46e41)
+*  add filter:notifications.create (ac7b093f)
+*  pass req.query to getUnreadData (3d5fef6e)
+*  added GET user route for api v3 (d2960aeb)
+
+##### Bug Fixes
+
+* **docs:**  #9648 (e03782f2)
+* **deps:**
+  *  update dependency mongodb to v3.6.10 (f17625fb)
+  *  update dependency nodebb-theme-persona to v11.0.25 (c11927c5)
+  *  update dependency sortablejs to v1.14.0 (5ff9319f)
+  *  update dependency nodebb-theme-persona to v11.0.24 (c7feea56)
+  *  update dependency nodebb-plugin-composer-default to v6.5.33 (3611b04e)
+  *  update dependency nodebb-plugin-markdown to v8.14.0 (e40f648f)
+  *  update dependency nodebb-plugin-markdown to v8.13.1 (cf6fcc21)
+  *  update dependency nodebb-plugin-composer-default to v6.5.32 (#9626) (90e3f5ac)
+  *  update dependency nodebb-plugin-composer-default to v6.5.30 (#9624) (2060dc61)
+  *  update dependency postcss to v8.3.5 (09aebbda)
+  *  update dependency postcss to v8.3.4 (520050da)
+  *  update dependency postcss to v8.3.3 (c7006ec6)
+  *  update dependency ioredis to v4.27.6 (82b33dc4)
+  *  bump persona (f4eb336a)
+  *  update dependency postcss to v8.3.2 (88f21e91)
+  *  update dependency postcss to v8.3.1 (71b4d634)
+  *  update dependency ioredis to v4.27.5 (9f74caf6)
+  *  update dependency connect-redis to v6 (#9590) (6632b2b6)
+  *  update dependency ioredis to v4.27.4 (4ffd234f)
+  *  update dependency nodebb-theme-persona to v11.0.21 (062928d2)
+  *  update dependency mongodb to v3.6.9 (d8c64479)
+  *  update dependency autoprefixer to v10.2.6 (3aeac357)
+*  #9634, re-jig top bar of Admin > Manage > Users (b8964843)
+*  hide private user data in api/v3/users/[uid] (97c8569a)
+*  numThumb upgrade script (d9e2190a)
+*  acp dashboard sometimes not loading on cold load (fee782c4)
+*  #9636, sanitize all attributes in meta and link tags (84904976)
+*  convert some hooks to use hooks module (09bac6bd)
+*  #9627 (acdbd049)
+*  #9629, translate content property of meta tags (561ce7d3)
+*  prevent crash in expandObjBy #9618 (ab6f062f)
+*  dont show system tags in whitelist dropdown to regular users (0d975bc4)
+*  #9622 (#9623) (84e06575)
+*  #9620, fix notif delay (73f40e96)
+*  #9619, add group chat filter to /notifications (c92fc19b)
+*  scope (3cd9434b)
+*  #9615, catch exceptions in renderOverride (1eda538d)
+*  purge uploaded images accordingly #9606 (#9611) (8168c6c4)
+*  keep query params when switching chat (7b4c0a16)
+*  accidental unnecessarily strict conditional that effectively rendered SSO state checking opt-in instead of opt-out (a2400f6b)
+*  introduce artificial delay + delay fudging on invalid email during reset token generation (f6c14d6b)
+*  #9605, expire all active reset tokens for a uid if that uid generates a new one (229f96f8)
+*  lint (8c952aa3)
+*  schema (39e13591)
+*  pagination on acp users search (6695927e)
+*  #9596, incorrect placeholder string in some translations (93d94564)
+*  extra ')' (6f732611)
+*  disallow editing of other users' notes (edcba61a)
+*  #9592, check session (286644d0)
+*  don't crash if session doesn't exist (3717df61)
+*  lint (66cae54e)
+*  improper use of filename extensions (16e0bca5)
+*  return null (d8d6c989)
+*  updates navigation menu user icon (f9b248b8)
+*  returnOriginal deprecation (3fb74445)
+*  error when trying to trim an object (48b8e3bb)
+* **post-queue:**  moderatedCids is an array of numbers (#9631) (db65360c)
+
+##### Performance Improvements
+
+*  cache Topics.getTopicsTags (8e0561f2)
+*  bypass getMultipleUserSettings (10ddfff3)
+
+##### Tests
+
+*  fixed broken tests from #9605, removed token clean on token usage as it is superceded by token clean on generation (+ associated test) (5c42b3ea)
+
 #### v1.17.1 (2021-05-26)
 
 ##### Chores
