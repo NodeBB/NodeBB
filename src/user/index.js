@@ -263,10 +263,7 @@ User.addInterstitials = function (callback) {
 									User.isAdminOrGlobalMod(data.req.uid),
 									privileges.users.canEdit(data.req.uid, userData.uid),
 								]);
-								if (isAdminOrGlobalMod) {
-									await User.setUserField(userData.uid, 'email', formData.email);
-									await User.email.confirmByUid(userData.uid);
-								} else if (canEdit) {
+								if (isAdminOrGlobalMod || canEdit) {
 									await User.email.sendValidationEmail(userData.uid, {
 										email: formData.email,
 										force: true,

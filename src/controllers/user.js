@@ -47,8 +47,9 @@ userController.getUserDataByField = async function (callerUid, field, fieldValue
 	} else if (field === 'email') {
 		uid = await user.getUidByEmail(fieldValue);
 		if (uid) {
+			const isPrivileged = await user.isAdminOrGlobalMod(callerUid);
 			const settings = await user.getSettings(uid);
-			if (settings && !settings.showemail) {
+			if (!isPrivileged && (settings && !settings.showemail)) {
 				uid = 0;
 			}
 		}
