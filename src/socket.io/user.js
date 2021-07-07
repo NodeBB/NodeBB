@@ -148,7 +148,7 @@ SocketUser.saveSettings = async function (socket, data) {
 };
 
 SocketUser.setTopicSort = async function (socket, sort) {
-	sockets.warnDeprecated(socket, 'PUT /api/v3/users/:uid/setting/topicPostSort');
+	sockets.warnDeprecated(socket, 'PUT /api/v3/users/:uid/settings');
 	await api.users.updateSetting(socket, {
 		uid: socket.uid,
 		setting: 'topicPostSort',
@@ -157,7 +157,7 @@ SocketUser.setTopicSort = async function (socket, sort) {
 };
 
 SocketUser.setCategorySort = async function (socket, sort) {
-	sockets.warnDeprecated(socket, 'PUT /api/v3/users/:uid/setting/categoryTopicSort');
+	sockets.warnDeprecated(socket, 'PUT /api/v3/users/:uid/settings');
 	await api.users.updateSetting(socket, {
 		uid: socket.uid,
 		setting: 'categoryTopicSort',
