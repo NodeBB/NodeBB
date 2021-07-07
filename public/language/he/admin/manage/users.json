@@ -1,6 +1,6 @@
 {
 	"users": "משתמשים",
-	"edit": "ערוך",
+	"edit": "Actions",
 	"make-admin": "הפוך למנהל",
 	"remove-admin": "הסר הרשאת מנהל",
 	"validate-email": "סמן את דוא\"ל המשתמש/ים כמאומת",
@@ -47,6 +47,7 @@
 	"users.uid": "מזהה משתמש (ID)",
 	"users.username": "שם משתמש",
 	"users.email": "דוא\"ל",
+	"users.ip": "IP",
 	"users.postcount": "מספר פוסטים",
 	"users.reputation": "מוניטין",
 	"users.flags": "דגלים",

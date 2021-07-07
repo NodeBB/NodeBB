@@ -1,6 +1,6 @@
 {
 	"users": "Korisnici",
-	"edit": "Uredi",
+	"edit": "Actions",
 	"make-admin": "Dodaj administratora",
 	"remove-admin": "Makni administratora",
 	"validate-email": "Potvrdite email",
@@ -47,6 +47,7 @@
 	"users.uid": "uid",
 	"users.username": "korisničko ime",
 	"users.email": "email",
+	"users.ip": "IP",
 	"users.postcount": "postcount",
 	"users.reputation": "reputacija",
 	"users.flags": "flags",

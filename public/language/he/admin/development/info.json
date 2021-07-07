@@ -1,7 +1,7 @@
 {
-	"you-are-on": "אתה נמצא ב",
+	"you-are-on": "אתה נמצא ב <strong>%1:%2</strong>",
 	"ip": "IP <strong>%1</strong>",
-	"nodes-responded": "%1 nodes responded within %2ms!",
+	"nodes-responded": "%1 צמתים הגיבו בתוך %2מילי שניות!",
 	"host": "מנחה",
 	"primary": "primary / run jobs",
 	"pid": "pid",

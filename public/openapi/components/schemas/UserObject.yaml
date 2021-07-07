@@ -654,3 +654,8 @@ UserObjectACP:
       example: Not Banned
     administrator:
       type: boolean
+    ip:
+      type: string
+      nullable: true
+    ips:
+      type: array

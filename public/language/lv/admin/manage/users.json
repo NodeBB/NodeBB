@@ -1,6 +1,6 @@
 {
 	"users": "Lietotāji",
-	"edit": "Rediģēt",
+	"edit": "Actions",
 	"make-admin": "Apstiprināt kā administratoru",
 	"remove-admin": "Noņemt administratora tiesības",
 	"validate-email": "Apstiprināt e-pasta adresi",
@@ -47,6 +47,7 @@
 	"users.uid": "uid",
 	"users.username": "lietotājvārds",
 	"users.email": "e-pasta adrese",
+	"users.ip": "IP",
 	"users.postcount": "raksti",
 	"users.reputation": "ranga punkti",
 	"users.flags": "atzīmes",

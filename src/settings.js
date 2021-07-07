@@ -5,6 +5,9 @@ const pubsub = require('./pubsub');
 
 function expandObjBy(obj1, obj2) {
 	let changed = false;
+	if (!obj1 || !obj2) {
+		return changed;
+	}
 	for (const [key, val2] of Object.entries(obj2)) {
 		const val1 = obj1[key];
 		const xorIsArray = Array.isArray(val1) !== Array.isArray(val2);

@@ -90,7 +90,12 @@ module.exports = function (module) {
 		}
 		const result = await module.client.collection('objects').findOneAndUpdate({
 			_key: key,
-		}, { $inc: { data: 1 } }, { returnOriginal: false, upsert: true });
+		}, {
+			$inc: { data: 1 },
+		}, {
+			returnDocument: 'after',
+			upsert: true,
+		});
 		return result && result.value ? result.value.data : null;
 	};
 

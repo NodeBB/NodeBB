@@ -1,7 +1,7 @@
 {
     "success": "موفقیت‌آمیز",
     "topic-post": "پست شما باموفقیت فرستاده شد.",
-    "post-queued": "Your post is queued for approval. You will get a notification when it is accepted or rejected.",
+    "post-queued": "پست شما در صف تایید قرار گرفت. شما اعلانی بعد پذیرفته یا رد شدن آن دریافت خواهید کرد.",
     "authentication-successful": "اعتبارسنجی موفق",
     "settings-saved": "تنظیمات ذخیره شد."
 }

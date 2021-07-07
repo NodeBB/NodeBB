@@ -1,6 +1,6 @@
 {
 	"users": "사용자",
-	"edit": "편집",
+	"edit": "Actions",
 	"make-admin": "관리자 등록",
 	"remove-admin": "관리자 해제",
 	"validate-email": "이메일 인증",
@@ -47,6 +47,7 @@
 	"users.uid": "uid",
 	"users.username": "사용자명",
 	"users.email": "이메일",
+	"users.ip": "IP",
 	"users.postcount": "글 개수",
 	"users.reputation": "인지도",
 	"users.flags": "신고",

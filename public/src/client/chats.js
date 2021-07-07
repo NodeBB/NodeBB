@@ -416,7 +416,7 @@ define('forum/chats', [
 			roomid = '';
 		}
 
-		var url = 'user/' + ajaxify.data.userslug + '/chats/' + roomid;
+		var url = 'user/' + ajaxify.data.userslug + '/chats/' + roomid + window.location.search;
 		if (self.fetch) {
 			fetch(config.relative_path + '/api/' + url, { credentials: 'include' })
 				.then(function (response) {

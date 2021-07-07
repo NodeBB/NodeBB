@@ -85,6 +85,7 @@
     "not-enough-tags": "Không đủ thẻ. Chủ đề phải có ít nhất %1 thẻ.",
     "too-many-tags": "Quá nhiều tag. Chủ đề chỉ có thể có tối đa %1 tag.",
     "cant-use-system-tag": "Bạn không thể dùng thẻ hệ thống này.",
+    "cant-remove-system-tag": "Bạn không thể xóa thẻ hệ thống này.",
     "still-uploading": "Vui lòng đợi quá trình tải lên hoàn tất.",
     "file-too-big": "Kích thước tệp cho phép tối đa là %1 kB - vui lòng tải lên một tệp nhỏ hơn",
     "guest-upload-disabled": "Tải lên của khách đã bị tắt",

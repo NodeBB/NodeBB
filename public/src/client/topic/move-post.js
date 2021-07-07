@@ -44,21 +44,25 @@ define('forum/topic/move-post', [
 					pids: postSelect.pids.slice(),
 					tid: targetTid,
 				};
-				alerts.alert({
-					alert_id: 'pids_move_' + postSelect.pids.join('-'),
-					title: '[[topic:thread_tools.move-posts]]',
-					message: '[[topic:topic_move_posts_success]]',
-					type: 'success',
-					timeout: 10000,
-					timeoutfn: function () {
-						movePosts(data);
-					},
-					clickfn: function (alert, params) {
-						delete params.timeoutfn;
-						app.alertSuccess('[[topic:topic_move_posts_undone]]');
-						moveCommit.removeAttr('disabled');
-					},
-				});
+				if (config.undoTimeout > 0) {
+					return alerts.alert({
+						alert_id: 'pids_move_' + postSelect.pids.join('-'),
+						title: '[[topic:thread_tools.move-posts]]',
+						message: '[[topic:topic_move_posts_success]]',
+						type: 'success',
+						timeout: 10000,
+						timeoutfn: function () {
+							movePosts(data);
+						},
+						clickfn: function (alert, params) {
+							delete params.timeoutfn;
+							app.alertSuccess('[[topic:topic_move_posts_undone]]');
+							moveCommit.removeAttr('disabled');
+						},
+					});
+				}
+
+				movePosts(data);
 			});
 		});
 	};

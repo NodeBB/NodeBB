@@ -41,12 +41,18 @@ module.exports = function (Topics) {
 		}
 
 		const scheduled = postData.timestamp > Date.now();
-		const tid = await Topics.create({
+		const params = {
 			uid: postData.uid,
 			title: title,
 			cid: cid,
 			timestamp: scheduled && postData.timestamp,
+		};
+		const result = await plugins.hooks.fire('filter:topic.fork', {
+			params: params,
+			tid: postData.tid,
 		});
+
+		const tid = await Topics.create(result.params);
 		await Topics.updateTopicBookmarks(fromTid, pids);
 
 		await async.eachSeries(pids, async (pid) => {

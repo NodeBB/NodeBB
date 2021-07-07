@@ -47,7 +47,7 @@ module.exports = function (Messaging) {
 
 		queueObj.timeout = setTimeout(() => {
 			sendNotifications(fromUid, uids, roomId, queueObj.message);
-		}, (parseFloat(meta.config.notificationSendDelay) || 60) * 1000);
+		}, meta.config.notificationSendDelay * 1000);
 	};
 
 	async function sendNotifications(fromuid, uids, roomId, messageObj) {

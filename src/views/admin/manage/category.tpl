@@ -39,6 +39,7 @@
 							<input type="color" id="cid-{category.cid}-color" placeholder="#ffffff" data-name="color" value="{category.color}" class="form-control category_color" />
 						</div>
 					</div>
+
 					<div class="col-sm-4 col-xs-12">
 						<div class="form-group">
 							<label for="cid-{category.cid}-imageClass">

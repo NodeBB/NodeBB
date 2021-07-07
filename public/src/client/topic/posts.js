@@ -9,7 +9,8 @@ define('forum/topic/posts', [
 	'navigator',
 	'components',
 	'translator',
-], function (pagination, infinitescroll, postTools, images, navigator, components, translator) {
+	'hooks',
+], function (pagination, infinitescroll, postTools, images, navigator, components, translator, hooks) {
 	var Posts = { };
 
 	Posts.onNewPost = function (data) {
@@ -226,7 +227,7 @@ define('forum/topic/posts', [
 
 			infinitescroll.removeExtra($('[component="post"]'), direction, Math.max(20, config.postsPerPage * 2));
 
-			$(window).trigger('action:posts.loaded', { posts: data.posts });
+			hooks.fire('action:posts.loaded', { posts: data.posts });
 
 			Posts.onNewPostsAddedToDom(html);
 

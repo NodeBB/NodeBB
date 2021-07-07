@@ -32,8 +32,8 @@
 	"edit": "Редактировать",
 	"analytics": "Аналитика",
 	"view-category": "Перейти в категорию",
-	"set-order": "Set order",
-	"set-order-help": "Setting the order of the category will move this category to that order and update the order of other categories as necessary. Minimum order is 1 which puts the category at the top.",
+	"set-order": "Установить порядковый номер",
+	"set-order-help": "Установка порядка категории переместит эту категорию в этот порядок и при необходимости обновит порядок других категорий. Минимальный порядок - 1, что ставит категорию на первое место.",
 
 	"select-category": "Указать категорию",
 	"set-parent-category": "Указать родительскую категорию",

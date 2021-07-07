@@ -1,6 +1,6 @@
 {
 	"users": "Uživatelé",
-	"edit": "Upravit",
+	"edit": "Actions",
 	"make-admin": "Učinit správcem",
 	"remove-admin": "Odebrat správce",
 	"validate-email": "Ověřit e-mail",
@@ -47,6 +47,7 @@
 	"users.uid": "uid",
 	"users.username": "jméno",
 	"users.email": "e-mail",
+	"users.ip": "IP",
 	"users.postcount": "počet příspěvků",
 	"users.reputation": "reputace",
 	"users.flags": "označení",

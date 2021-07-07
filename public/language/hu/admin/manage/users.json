@@ -1,6 +1,6 @@
 {
 	"users": "Felhasználók",
-	"edit": "Szerkesztés",
+	"edit": "Actions",
 	"make-admin": "Adminná léptetés",
 	"remove-admin": "Admin törlése",
 	"validate-email": "Email érvényesítése",
@@ -47,6 +47,7 @@
 	"users.uid": "uid",
 	"users.username": "felhasználónév",
 	"users.email": "email",
+	"users.ip": "IP",
 	"users.postcount": "hozzászólások száma",
 	"users.reputation": "hírnév",
 	"users.flags": "megjelölések",

@@ -6,6 +6,7 @@ const meta = require('../../meta');
 const categories = require('../../categories');
 const privileges = require('../../privileges');
 const controllersHelpers = require('../../controllers/helpers');
+const plugins = require('../../plugins');
 
 module.exports = function (SocketCategories) {
 	// used by categorySearch module
@@ -17,7 +18,7 @@ module.exports = function (SocketCategories) {
 			state => categories.watchStates[state]
 		);
 
-		if (data.query) {
+		if (data.search) {
 			({ cids, matchedCids } = await findMatchedCids(socket.uid, data));
 		} else {
 			cids = await loadCids(socket.uid, data.parentCid);
@@ -40,13 +41,18 @@ module.exports = function (SocketCategories) {
 				category.match = true;
 			}
 		});
-		return categoriesData;
+		const result = await plugins.hooks.fire('filter:categories.categorySearch', {
+			categories: categoriesData,
+			...data,
+			uid: socket.uid,
+		});
+		return result.categories;
 	};
 
 	async function findMatchedCids(uid, data) {
 		const result = await categories.search({
 			uid: uid,
-			query: data.query,
+			query: data.search,
 			paginate: false,
 		});
 

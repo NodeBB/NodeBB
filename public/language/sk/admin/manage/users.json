@@ -1,6 +1,6 @@
 {
 	"users": "Používatelia",
-	"edit": "Upraviť",
+	"edit": "Actions",
 	"make-admin": "Urobiť správcom",
 	"remove-admin": "Odobrať správcu",
 	"validate-email": "Overiť e-mail",
@@ -47,6 +47,7 @@
 	"users.uid": "uid",
 	"users.username": "používateľské meno",
 	"users.email": "e-mail",
+	"users.ip": "IP",
 	"users.postcount": "počet príspevkov",
 	"users.reputation": "reputácia",
 	"users.flags": "príznaky",

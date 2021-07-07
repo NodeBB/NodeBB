@@ -1,6 +1,6 @@
 {
 	"users": "Użytkownicy",
-	"edit": "Edytuj",
+	"edit": "Actions",
 	"make-admin": "Nadaj uprawnienia administratora",
 	"remove-admin": "Odbierz uprawnienia administratora",
 	"validate-email": "Zweryfikuj e-mail",
@@ -47,6 +47,7 @@
 	"users.uid": "uid",
 	"users.username": "nazwa użytkownika",
 	"users.email": "adres e-mail",
+	"users.ip": "IP",
 	"users.postcount": "liczba postów",
 	"users.reputation": "reputacja",
 	"users.flags": "flagi",

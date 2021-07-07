@@ -1,3 +1,119 @@
+#### v1.17.1 (2021-05-26)
+
+##### Chores
+
+* **deps:**
+  *  update dependency grunt to v1.4.1 (0e37bbfd)
+  *  update dependency jsdom to v16.6.0 (60170ad6)
+  *  update dependency eslint to v7.27.0 (298af98d)
+  *  update dependency eslint-plugin-import to v2.23.0 (1623ba4f)
+  *  update commitlint monorepo to v12.1.4 (4a01313d)
+  *  update commitlint monorepo to v12.1.3 (b82774c5)
+  *  update dependency eslint to v7.26.0 (d1418210)
+  *  update dependency lint-staged to v11 (1bf57d40)
+  *  update dependency mocha to v8.4.0 (461e187b)
+  *  update dependency eslint to v7.25.0 (32c20806)
+  *  update dependency grunt to v1.4.0 (a30deef3)
+*  incrementing version number - v1.17.0 (75f7972b)
+*  update changelog for v1.17.0 (4c441a1b)
+
+##### Documentation Changes
+
+*  update API docs to better outline authentication options (6ef0c8e9)
+*  update API authentication verbiage (d08d0c42)
+
+##### New Features
+
+*  keep query string when redirecting category (77dde41f)
+*  add req.query to flags.list/getCount (3d6bdeb3)
+*  add filter:flags.getFlagIdsWithFilters (d35c64b1)
+*  #9559, set order help text (f5847f4f)
+*  add filter:user.getWatchedCategories (4afca690)
+*  pass req.query to getUserDataByUserSlug (518157d9)
+*  #9508, add cluster support (94c12e37)
+*  #9551 (a3d6c56e)
+*  add template to hook (1f3e6601)
+*  add filter:account.getPostsFromUserSet (a2442ee9)
+*  automatically attempt reconnection on window focus (8cc61f11)
+*  #9533, allow redirect in build hooks (f6b583bb)
+*  add _hooks metadata object to all hooks that have object-type params (46899cca)
+*  add filter:categories.copySettingsFrom (d8e4fd4c)
+*  guard against multiple resolves (084c9851)
+*  #9511 send notifications on accept/reject (b40fc4b6)
+*  `hidden` class to FOUC (2bfa63ae)
+*  add filter:middleware.autoLocale (a478dc7e)
+*  remove sync hooks support (01956af4)
+
+##### Bug Fixes
+
+*  #9580, proper 404 when ajaxifying (9ebfdeb7)
+*  lint (09f51792)
+*  #9567 fix tests (951e71a0)
+*  #9567, use regular 404 (5215c30a)
+*  ioredis upgrade fix, maybe (1ce59508)
+*  bug where interstitial errors were not properly passed to the front-end via req.flash (1d9cfe1e)
+*  #9553, use same fields for user search results in acp (0551642a)
+*  lint (e8c5c18a)
+*  lint (ffa80163)
+*  tests (fad5988e)
+*  tests (074ee859)
+*  wrong error message checked (a9bb1088)
+*  #9507 session reroll causes socket.io to become confused (#9534) (ec6d1e23)
+*  isObjectField(s) empty field (2c22b06f)
+*  do not register SW for Safari until upstream fixes #9193 (ce5fea2a)
+*  infinite scroll with small number of items #9524 (#9525) (cb1dd0a3)
+*  #9519 unable to properly ajaxify to home on subfolder installs if anchor did not have a trailing slash (db48b952)
+*  #9512, fix chat icon if no privileges (6ed8890c)
+*  #9503, dont error in markUnread if room doesnt exist (308252f5)
+*  use socket.request.headers (9e07efc1)
+*  buildReqObject headers for socket.io calls (ed534f34)
+* **deps:**
+  *  update dependency sharp to v0.28.3 (963a9fe6)
+  *  update dependency ioredis to v4.27.3 (075dab27)
+  *  update dependency nodebb-theme-vanilla to v12.0.8 (#9574) (10290f54)
+  *  update dependency mongodb to v3.6.8 (#9573) (64935787)
+  *  update dependency postcss to v8.3.0 (ad4afd59)
+  *  update dependency nodebb-theme-persona to v11.0.20 (403bcfac)
+  *  update dependency nodebb-plugin-composer-default to v6.5.29 (8d7e4420)
+  *  update dependency mongodb to v3.6.7 (f29e4e87)
+  *  update dependency textcomplete to ^0.18.0 (9b7653cc)
+  *  update socket.io packages to v4.1.2 (#9563) (ca7c77bc)
+  *  update dependency nodebb-plugin-dbsearch to v5.0.2 (#9562) (2d0564cb)
+  *  update dependency nodebb-theme-slick to v1.4.7 (bf4aa50c)
+  *  update dependency nodebb-plugin-composer-default to v6.5.28 (4164b322)
+  *  update socket.io packages to v4.1.1 (155a7fb6)
+  *  update socket.io packages to v4.1.0 (53335677)
+  *  update dependency sharp to v0.28.2 (4bc07a08)
+  *  update dependency postcss to v8.2.15 (7770c2a1)
+  *  update dependency nodebb-theme-persona to v11.0.19 (3145c7d5)
+  *  update dependency nodebb-plugin-mentions to v2.13.11 (7e2ea4df)
+  *  update dependency nodebb-plugin-markdown to v8.12.10 (2ac5a085)
+  *  update dependency nodebb-plugin-markdown to v8.12.9 (ee3634cc)
+  *  update socket.io packages to v4.0.2 (ff98f854)
+  *  update dependency postcss to v8.2.14 (22ec1ea5)
+  *  update dependency sitemap to v7 (0389dd96)
+  *  update dependency nodebb-widget-essentials to v5.0.4 (19f1cbfc)
+  *  update dependency nodebb-theme-persona to v11.0.18 (33d91fde)
+  *  update dependency connect-redis to v5.2.0 (c0d54a06)
+  *  update dependency postcss to v8.2.13 (831e5c26)
+  *  update dependency postcss to v8.2.12 (38454df9)
+* **#9508:**  switch to ioredis (#9545) (dd81dd03)
+
+##### Refactors
+
+*  cli/upgrade async/await (#9558) (ac86937c)
+*  bubble other errors (0096cf17)
+
+##### Reverts
+
+*  sync hooks (5fe97b9c)
+
+##### Tests
+
+*  fix tests (1029a06a)
+*  fix redis tests (4e490f60)
+*  add test for undefined fields in getObjectsFields (92de49be)
+
 #### v1.17.0 (2021-04-22)
 
 ##### Breaking Changes

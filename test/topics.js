@@ -2191,6 +2191,33 @@ describe('Topic\'s', () => {
 			assert.strictEqual(result.topicData.tags[0].value, 'locked');
 			meta.config.systemTags = oldValue;
 		});
+
+		it('should not error if regular user edits topic after admin adds system tags', async () => {
+			const oldValue = meta.config.systemTags;
+			meta.config.systemTags = 'moved,locked';
+			const result = await topics.post({
+				uid: fooUid,
+				tags: ['one', 'two'],
+				title: 'topic with 2 tags',
+				content: 'topic content',
+				cid: categoryObj.cid,
+			});
+			await posts.edit({
+				pid: result.postData.pid,
+				uid: adminUid,
+				content: 'edited content',
+				tags: ['one', 'two', 'moved'],
+			});
+			await posts.edit({
+				pid: result.postData.pid,
+				uid: fooUid,
+				content: 'edited content',
+				tags: ['one', 'moved', 'two'],
+			});
+			const tags = await topics.getTopicTags(result.topicData.tid);
+			assert.deepStrictEqual(tags.sort(), ['moved', 'one', 'two']);
+			meta.config.systemTags = oldValue;
+		});
 	});
 
 	describe('follow/unfollow', () => {

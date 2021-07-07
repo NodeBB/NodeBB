@@ -1,6 +1,6 @@
 {
 	"users": "用户",
-	"edit": "编辑",
+	"edit": "Actions",
 	"make-admin": "设为管理",
 	"remove-admin": "取消管理员",
 	"validate-email": "验证邮箱",
@@ -47,6 +47,7 @@
 	"users.uid": "UID",
 	"users.username": "用户名",
 	"users.email": "电子邮件",
+	"users.ip": "IP",
 	"users.postcount": "发帖数",
 	"users.reputation": "声望",
 	"users.flags": "举报",

@@ -63,20 +63,24 @@ define('forum/topic/move', ['categorySelector', 'alerts'], function (categorySel
 				currentCid: Move.currentCid,
 				onComplete: Move.onComplete,
 			};
-			alerts.alert({
-				alert_id: 'tids_move_' + (Move.tids ? Move.tids.join('-') : 'all'),
-				title: '[[topic:thread_tools.move]]',
-				message: message,
-				type: 'success',
-				timeout: 10000,
-				timeoutfn: function () {
-					moveTopics(data);
-				},
-				clickfn: function (alert, params) {
-					delete params.timeoutfn;
-					app.alertSuccess('[[topic:topic_move_undone]]');
-				},
-			});
+			if (config.undoTimeout > 0) {
+				return alerts.alert({
+					alert_id: 'tids_move_' + (Move.tids ? Move.tids.join('-') : 'all'),
+					title: '[[topic:thread_tools.move]]',
+					message: message,
+					type: 'success',
+					timeout: config.undoTimeout,
+					timeoutfn: function () {
+						moveTopics(data);
+					},
+					clickfn: function (alert, params) {
+						delete params.timeoutfn;
+						app.alertSuccess('[[topic:topic_move_undone]]');
+					},
+				});
+			}
+
+			moveTopics(data);
 		}
 	}
 

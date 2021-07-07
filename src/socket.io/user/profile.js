@@ -46,6 +46,7 @@ module.exports = function (SocketUser) {
 		}
 		await user.isAdminOrGlobalModOrSelf(socket.uid, data.uid);
 		const userData = await user.getUserFields(data.uid, ['cover:url']);
+		// 'keepAllUserImages' is ignored, since there is explicit user intent
 		await user.removeCoverPicture(data);
 		plugins.hooks.fire('action:user.removeCoverPicture', {
 			callerUid: socket.uid,
@@ -114,7 +115,7 @@ module.exports = function (SocketUser) {
 			throw new Error('[[error:invalid-uid]]');
 		}
 
-		if (!data || !(parseInt(data.uid, 10) > 0)) {
+		if (!data || parseInt(data.uid, 10) <= 0) {
 			throw new Error('[[error:invalid-data]]');
 		}
 

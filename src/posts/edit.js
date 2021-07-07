@@ -129,7 +129,7 @@ module.exports = function (Posts) {
 				throw new Error('[[error:no-privileges]]');
 			}
 		}
-		await topics.validateTags(data.tags, topicData.cid, data.uid);
+		await topics.validateTags(data.tags, topicData.cid, data.uid, tid);
 
 		const results = await plugins.hooks.fire('filter:topic.edit', {
 			req: data.req,

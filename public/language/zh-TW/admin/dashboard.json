@@ -2,7 +2,7 @@
 	"forum-traffic": "論壇流量",
 	"page-views": "頁面瀏覽量",
 	"unique-visitors": "不重複訪客",
-	"logins": "Logins",
+	"logins": "登入",
 	"new-users": "新使用者",
 	"posts": "貼文",
 	"topics": "主題",
@@ -79,10 +79,10 @@
 	"last-restarted-by": "上次重啟管理員/時間",
 	"no-users-browsing": "沒有使用者正在瀏覽",
 
-	"back-to-dashboard": "Back to Dashboard",
-	"details.no-users": "No users have joined within the selected timeframe",
-	"details.no-topics": "No topics have been posted within the selected timeframe",
+	"back-to-dashboard": "回到儀表板",
+	"details.no-users": "沒有使用者有在選定的時間內註冊",
+	"details.no-topics": "沒有新增的主題在選定的時間內",
 	"details.no-logins": "No logins have been recorded within the selected timeframe",
 	"details.logins-static": "NodeBB only saves session data for %1 days, and so this table below will only show the most recently active sessions",
-	"details.logins-login-time": "Login Time"
+	"details.logins-login-time": "登入時間"
 }

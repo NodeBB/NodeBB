@@ -36,6 +36,7 @@ apiController.loadConfig = async function (req) {
 		maximumTagsPerTopic: meta.config.maximumTagsPerTopic || 5,
 		minimumTagLength: meta.config.minimumTagLength || 3,
 		maximumTagLength: meta.config.maximumTagLength || 15,
+		undoTimeout: meta.config.undoTimeout || 0,
 		useOutgoingLinksPage: meta.config.useOutgoingLinksPage === 1,
 		outgoingLinksWhitelist: meta.config.useOutgoingLinksPage === 1 ? meta.config['outgoingLinks:whitelist'] : undefined,
 		allowGuestHandles: meta.config.allowGuestHandles === 1,

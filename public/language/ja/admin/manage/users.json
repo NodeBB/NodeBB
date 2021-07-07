@@ -1,6 +1,6 @@
 {
 	"users": "ユーザー",
-	"edit": "編集",
+	"edit": "Actions",
 	"make-admin": "管理者にする",
 	"remove-admin": "管理者を削除",
 	"validate-email": "電子メールの",
@@ -47,6 +47,7 @@
 	"users.uid": "ユーザーID",
 	"users.username": "ユーザー名",
 	"users.email": "メール",
+	"users.ip": "IP",
 	"users.postcount": "投稿カウント",
 	"users.reputation": "評価",
 	"users.flags": "フラグ",

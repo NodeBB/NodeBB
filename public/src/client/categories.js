@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/categories', ['components', 'categorySelector'], function (components, categorySelector) {
+define('forum/categories', ['components', 'categorySelector', 'hooks'], function (components, categorySelector, hooks) {
 	var	categories = {};
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
@@ -63,7 +63,7 @@ define('forum/categories', ['components', 'categorySelector'], function (compone
 				recentPosts.last().remove();
 			}
 
-			$(window).trigger('action:posts.loaded', { posts: [post] });
+			hooks.fire('action:posts.loaded', { posts: [post] });
 		});
 	}
 

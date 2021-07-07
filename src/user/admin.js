@@ -55,12 +55,14 @@ module.exports = function (User) {
 			path.join(baseDir, 'build/export', 'users.csv'),
 			'w'
 		);
-		fs.promises.appendFile(fd, `${data.fields.join(',')}\n`);
+		fs.promises.appendFile(fd, `${data.fields.join(',')},ip\n`);
 		await batch.processSortedSet('users:joindate', async (uids) => {
 			const usersData = await User.getUsersFields(uids, data.fields.slice());
+			const ips = await Promise.all(uids.map(uid => db.getSortedSetRevRange(`uid:${uid}:ip`, 0, -1)));
 			let line = '';
-			usersData.forEach((user) => {
-				line += `${data.fields.map(field => user[field]).join(',')}\n`;
+			usersData.forEach((user, index) => {
+				const userIPs = ips[index] ? ips[index].join(',') : '';
+				line += `${data.fields.map(field => user[field]).join(',')},"${userIPs}"\n`;
 			});
 
 			await fs.promises.appendFile(fd, line);

@@ -1,6 +1,6 @@
 {
     "topic": "主题",
-    "title": "Title",
+    "title": "标题",
     "no_topics_found": "没有找到主题！",
     "no_posts_found": "没有找到回复！",
     "post_is_deleted": "此回复已被删除！",
@@ -33,7 +33,7 @@
     "pinned-with-expiry": "Pinned until %1",
     "scheduled": "Scheduled",
     "moved": "已移动",
-    "moved-from": "移自1%版 ",
+    "moved-from": "移自%1版 ",
     "copy-ip": "复制IP",
     "ban-ip": "封禁IP",
     "view-history": "编辑历史",

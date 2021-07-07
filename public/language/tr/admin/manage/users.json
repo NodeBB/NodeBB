@@ -1,6 +1,6 @@
 {
 	"users": "Kullanıcılar",
-	"edit": "Düzenle",
+	"edit": "Actions",
 	"make-admin": "Yönetici Yap",
 	"remove-admin": "Yöneticiliği Sil",
 	"validate-email": "E-postayı Doğrula",
@@ -47,6 +47,7 @@
 	"users.uid": "benzersiz id",
 	"users.username": "kullanıcı adı",
 	"users.email": "e-posta",
+	"users.ip": "IP",
 	"users.postcount": "ileti sayısı",
 	"users.reputation": "itibar",
 	"users.flags": "bayraklar",

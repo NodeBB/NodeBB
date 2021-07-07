@@ -1,6 +1,6 @@
 {
 	"users": "المستخدمين",
-	"edit": "تحرير",
+	"edit": "Actions",
 	"make-admin": "Make Admin",
 	"remove-admin": "Remove Admin",
 	"validate-email": "Validate Email",
@@ -47,6 +47,7 @@
 	"users.uid": "uid",
 	"users.username": "username",
 	"users.email": "email",
+	"users.ip": "IP",
 	"users.postcount": "postcount",
 	"users.reputation": "reputation",
 	"users.flags": "flags",

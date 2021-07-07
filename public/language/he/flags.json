@@ -6,7 +6,7 @@
 	"assignee": "מוקצה",
 	"update": "עדכון",
 	"updated": "עודכן",
-	"resolved": "Resolved",
+	"resolved": "הושלם",
 	"target-purged": "התוכן שסומן נוקה ולא קיים יותר.",
 
 	"graph-label": "דיווחים יומיים",
@@ -82,7 +82,7 @@
 	"modal-submit-confirm-text-help": "שליחת דיווח מהיר תבטל כל סיבה קודמת שהוגדרה.",
 
 	"bulk-actions": "פעולות כלליות",
-	"bulk-resolve": "השלם דיווחים",
+	"bulk-resolve": "השלם דיווח(ים)",
 	"bulk-success": "%1 דיווחים עודכנו",
-	"flagged-timeago-readable": "Flagged <span class=\"timeago\" title=\"%1\"></span> (%2)"
+	"flagged-timeago-readable": "מדווחים <span class=\"timeago\" title=\"%1\"></span> (%2)"
 }

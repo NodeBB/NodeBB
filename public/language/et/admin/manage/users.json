@@ -1,6 +1,6 @@
 {
 	"users": "Kasutajad",
-	"edit": "Muuda",
+	"edit": "Actions",
 	"make-admin": "Ülenda administraatoriks",
 	"remove-admin": "Eemalda administraator",
 	"validate-email": "Kinnita email",
@@ -47,6 +47,7 @@
 	"users.uid": "uid",
 	"users.username": "Kasutajanimi",
 	"users.email": "email",
+	"users.ip": "IP",
 	"users.postcount": "Postituste arv",
 	"users.reputation": "Reputatsioon",
 	"users.flags": "Raporteerimised",

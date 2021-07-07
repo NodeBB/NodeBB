@@ -1,11 +1,7 @@
 'use strict';
 
-const path = require('path');
-const nconf = require('nconf');
-
 const user = require('../../user');
 const plugins = require('../../plugins');
-const file = require('../../file');
 
 module.exports = function (SocketUser) {
 	SocketUser.changePicture = async function (socket, data) {
@@ -50,18 +46,8 @@ module.exports = function (SocketUser) {
 			throw new Error('[[error:invalid-data]]');
 		}
 		await user.isAdminOrSelf(socket.uid, data.uid);
-		const userData = await user.getUserFields(data.uid, ['uploadedpicture', 'picture']);
-		if (userData.uploadedpicture && !userData.uploadedpicture.startsWith('http')) {
-			const pathToFile = path.join(nconf.get('base_dir'), 'public', userData.uploadedpicture);
-			if (pathToFile.startsWith(nconf.get('upload_path'))) {
-				file.delete(pathToFile);
-			}
-		}
-		await user.setUserFields(data.uid, {
-			uploadedpicture: '',
-			// if current picture is uploaded picture, reset to user icon
-			picture: userData.uploadedpicture === userData.picture ? '' : userData.picture,
-		});
+		// 'keepAllUserImages' is ignored, since there is explicit user intent
+		const userData = await user.removeProfileImage(data.uid);
 		plugins.hooks.fire('action:user.removeUploadedPicture', {
 			callerUid: socket.uid,
 			uid: data.uid,

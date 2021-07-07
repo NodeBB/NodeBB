@@ -2,13 +2,9 @@
 	<div class="col-lg-12">
 		<div class="clearfix">
 
-			<div class="pull-left">
-				<!-- IF showInviteButton -->
-				<button component="user/invite" class="btn btn-success"><i class="fa fa-users"></i> [[admin/manage/users:invite]]</button>
-				<!-- ENDIF showInviteButton -->
-				<a target="_blank" href="#" class="btn btn-primary export-csv">[[admin/manage/users:download-csv]]</a>
+			<div class="pull-right">
 				<div class="btn-group">
-					<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">[[admin/manage/users:edit]] <span class="caret"></span></button>
+					<button class="btn btn-primary dropdown-toggle" id="action-dropdown" data-toggle="dropdown" type="button" disabled="disabled">[[admin/manage/users:edit]] <span class="caret"></span></button>
 					<ul class="dropdown-menu">
 						<li><a href="#" class="validate-email"><i class="fa fa-fw fa-check"></i> [[admin/manage/users:validate-email]]</a></li>
 						<li><a href="#" class="send-validation-email"><i class="fa fa-fw fa-mail-forward"></i> [[admin/manage/users:send-validation-email]]</a></li>
@@ -26,26 +22,16 @@
 						<li><a href="#" class="delete-user-and-content"><i class="fa fa-fw fa-trash-o"></i> [[admin/manage/users:purge]]</a></li>
 					</ul>
 				</div>
-
-				<div class="btn-group" id="filter-by">
-					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-						[[admin/manage/users:filter-by]] <span class="caret"></span>
-					</button>
-					<ul class="dropdown-menu" role="menu">
-						<li data-filter-by="unverified" role="presentation">
-							<a role="menu-item" href="#"><i class="fa fa-fw {{{ if filterBy_unverified }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.unvalidated]]</a>
-						</li>
-						<li data-filter-by="verified" role="presentation">
-							<a role="menu-item" href="#"><i class="fa fa-fw {{{ if filterBy_verified }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.validated]]</a>
-						</li>
-						<li data-filter-by="banned" role="presentation">
-							<a role="menu-item" href="#"><i class="fa fa-fw {{{ if filterBy_banned }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.banned]]</a>
-						</li>
+				<div class="btn-group">
+					<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button"><i class="fa fa-ellipsis-v"></i></button>
+					<ul class="dropdown-menu">
+						{{{ if showInviteButton }}}<li><a href="#" component="user/invite">[[admin/manage/users:invite]]</a></li>{{{ end }}}
+						<li><a target="_blank" href="#" class="export-csv">[[admin/manage/users:download-csv]]</a></li>
 					</ul>
 				</div>
 			</div>
 
-			<form class="form-inline pull-right">
+			<form class="form-inline pull-left">
 				<div class="input-group">
 					<input type="text" class="form-control" placeholder="[[global:search]]" id="user-search" value="{query}">
 					<span class="input-group-addon search-button"><i class="fa fa-search"></i></span>
@@ -62,6 +48,23 @@
 					<option value="250">[[admin/manage/users:250-per-page]]</option>
 					<option value="500">[[admin/manage/users:500-per-page]]</option>
 				</select>
+
+				<div class="btn-group" id="filter-by">
+					<button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown">
+						[[admin/manage/users:filter-by]] <span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" role="menu">
+						<li data-filter-by="unverified" role="presentation">
+							<a role="menu-item" href="#"><i class="fa fa-fw {{{ if filterBy_unverified }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.unvalidated]]</a>
+						</li>
+						<li data-filter-by="verified" role="presentation">
+							<a role="menu-item" href="#"><i class="fa fa-fw {{{ if filterBy_verified }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.validated]]</a>
+						</li>
+						<li data-filter-by="banned" role="presentation">
+							<a role="menu-item" href="#"><i class="fa fa-fw {{{ if filterBy_banned }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.banned]]</a>
+						</li>
+					</ul>
+				</div>
 			</form>
 		</div>
 
@@ -89,6 +92,7 @@
 						<th class="text-right text-muted">[[admin/manage/users:users.uid]]</th>
 						<th class="text-muted">[[admin/manage/users:users.username]]</th>
 						<th class="text-muted">[[admin/manage/users:users.email]]</th>
+						<th class="text-muted">[[admin/manage/users:users.ip]]</th>
 						<th data-sort="postcount" class="text-right pointer">[[admin/manage/users:users.postcount]] {{{if sort_postcount}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
 						<th data-sort="reputation" class="text-right pointer">[[admin/manage/users:users.reputation]] {{{if sort_reputation}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
 						<th data-sort="flags" class="text-right pointer">[[admin/manage/users:users.flags]] {{{if sort_flags}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
@@ -107,6 +111,7 @@
 						<i class="validated fa fa-check text-success<!-- IF !users.email:confirmed --> hidden<!-- ENDIF !users.email:confirmed -->" title="validated"></i>
 						<i class="notvalidated fa fa-check text-muted<!-- IF users.email:confirmed --> hidden<!-- ENDIF users.email:confirmed -->" title="not validated"></i>
 						 {users.email}</td>
+						<td>{users.ip}</td>
 						<td class="text-right">{users.postcount}</td>
 						<td class="text-right">{users.reputation}</td>
 						<td class="text-right"><!-- IF users.flags -->{users.flags}<!-- ELSE -->0<!-- ENDIF users.flags --></td>

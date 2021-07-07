@@ -1,6 +1,6 @@
 {
 	"users": "使用者",
-	"edit": "編輯",
+	"edit": "Actions",
 	"make-admin": "設為管理員",
 	"remove-admin": "撤銷管理員",
 	"validate-email": "驗證電郵地址",
@@ -47,6 +47,7 @@
 	"users.uid": "UID",
 	"users.username": "使用者名",
 	"users.email": "電子郵件",
+	"users.ip": "IP",
 	"users.postcount": "發文數",
 	"users.reputation": "聲望",
 	"users.flags": "舉報",

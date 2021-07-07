@@ -1,6 +1,6 @@
 {
 	"users": "ผู้ใช้",
-	"edit": "แก้ไข",
+	"edit": "Actions",
 	"make-admin": "ทำให้เป็นแอดมิน",
 	"remove-admin": "ยกเลิกการเป็นแอดมิน",
 	"validate-email": "ยืนยันอีเมล",
@@ -47,6 +47,7 @@
 	"users.uid": "uid",
 	"users.username": "ชื่อผู้ใช้",
 	"users.email": "อีเมล",
+	"users.ip": "IP",
 	"users.postcount": "จำนวนกระทู้",
 	"users.reputation": "ชื่อเสียง",
 	"users.flags": "ติดตาม",

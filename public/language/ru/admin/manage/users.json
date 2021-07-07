@@ -1,6 +1,6 @@
 {
 	"users": "Пользователи",
-	"edit": "Редактировать",
+	"edit": "Actions",
 	"make-admin": "Сделать администратором",
 	"remove-admin": "Удалить администратора",
 	"validate-email": "Подтвердить адрес электронной почты",
@@ -47,6 +47,7 @@
 	"users.uid": "ID",
 	"users.username": "Логин",
 	"users.email": "E-mail",
+	"users.ip": "IP",
 	"users.postcount": "Сообщения",
 	"users.reputation": "Репутация",
 	"users.flags": "Жалобы",

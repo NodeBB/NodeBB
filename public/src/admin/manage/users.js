@@ -299,6 +299,20 @@ define('admin/manage/users', [
 			handleDelete('[[admin/manage/users:alerts.confirm-purge]]', '');
 		});
 
+		const tableEl = document.querySelector('.users-table');
+		const actionBtn = document.getElementById('action-dropdown');
+		tableEl.addEventListener('change', (e) => {
+			const subselector = e.target.closest('[component="user/select/single"]') || e.target.closest('[component="user/select/all"]');
+			if (subselector) {
+				var uids = getSelectedUids();
+				if (uids.length) {
+					actionBtn.removeAttribute('disabled');
+				} else {
+					actionBtn.setAttribute('disabled', 'disabled');
+				}
+			}
+		});
+
 		function handleDelete(confirmMsg, path) {
 			var uids = getSelectedUids();
 			if (!uids.length) {
@@ -426,7 +440,15 @@ define('admin/manage/users', [
 		params.page = query.page;
 		params.sortBy = params.sortBy || 'lastonline';
 		var qs = decodeURIComponent($.param(params));
-		$.get(config.relative_path + '/api/admin/manage/users?' + qs, renderSearchResults).fail(function (xhrErr) {
+		$.get(config.relative_path + '/api/admin/manage/users?' + qs, function (data) {
+			renderSearchResults(data);
+			const url = config.relative_path + '/admin/manage/users?' + qs;
+			if (history.pushState) {
+				history.pushState({
+					url: url,
+				}, null, window.location.protocol + '//' + window.location.host + url);
+			}
+		}).fail(function (xhrErr) {
 			if (xhrErr && xhrErr.responseJSON && xhrErr.responseJSON.error) {
 				app.alertError(xhrErr.responseJSON.error);
 			}

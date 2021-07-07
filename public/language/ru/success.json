@@ -1,7 +1,7 @@
 {
     "success": "Готово",
     "topic-post": "Вы успешно отправили сообщение.",
-    "post-queued": "Your post is queued for approval. You will get a notification when it is accepted or rejected.",
+    "post-queued": "Ваше сообщение поставлено в очередь на утверждение. Вы получите уведомление, когда оно будет принято или отклонено.",
     "authentication-successful": "Авторизация выполнена успешно",
     "settings-saved": "Настройки сохранены!"
 }

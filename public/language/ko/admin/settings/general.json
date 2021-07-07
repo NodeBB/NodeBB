@@ -40,5 +40,8 @@
 	"site-colors": "사이트 색상 설정",
 	"theme-color": "테마 색상",
 	"background-color": "배경 색상",
-	"background-color-help": "사이트가 PWA로 설치될 때 스플래시 화면 배경에 사용되는 색상"
+	"background-color-help": "사이트가 PWA로 설치될 때 스플래시 화면 배경에 사용되는 색상",
+	"undo-timeout": "되돌리기 시간 초과",
+	"undo-timeout-help": "조정자는 주제 이동과 같은 일부 작업을 통해 특정 기간 내에 작업을 취소할 수 있습니다. 되돌리기를 완전히 비활성화하려면 0으로 설정합니다.",
+	"topic-tools": "주제 도구"
 }

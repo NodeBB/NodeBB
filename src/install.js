@@ -11,7 +11,7 @@ const util = require('util');
 
 const promptGet = util.promisify((schema, callback) => prompt.get(schema, callback));
 
-const utils = require('./utils.js');
+const utils = require('./utils');
 
 const install = module.exports;
 const questions = {};

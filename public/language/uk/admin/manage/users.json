@@ -1,6 +1,6 @@
 {
 	"users": "Користувачі",
-	"edit": "Редагувати",
+	"edit": "Actions",
 	"make-admin": "Створити адміна",
 	"remove-admin": "Видалити адміна",
 	"validate-email": "Підтвердити електронну адресу",
@@ -47,6 +47,7 @@
 	"users.uid": "uid",
 	"users.username": "ім'я",
 	"users.email": "email",
+	"users.ip": "IP",
 	"users.postcount": "постів",
 	"users.reputation": "репутація",
 	"users.flags": "скарги",

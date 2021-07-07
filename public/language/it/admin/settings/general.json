@@ -40,5 +40,8 @@
 	"site-colors": "Colore Metadati del Sito",
 	"theme-color": "Colore del Tema",
 	"background-color": "Colore di sfondo",
-	"background-color-help": "Colore utilizzato per lo sfondo della schermata iniziale quando il sito Web è installato come PWA"
+	"background-color-help": "Colore utilizzato per lo sfondo della schermata iniziale quando il sito Web è installato come PWA",
+	"undo-timeout": "Annulla timeout",
+	"undo-timeout-help": "Alcune operazioni come lo spostamento delle discussioni permetteranno al moderatore di annullare la sua azione entro un certo periodo di tempo. Imposta a 0 per disabilitare completamente l'annullamento.",
+	"topic-tools": "Strumenti discussione"
 }

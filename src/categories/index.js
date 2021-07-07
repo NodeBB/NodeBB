@@ -9,6 +9,7 @@ const groups = require('../groups');
 const plugins = require('../plugins');
 const privileges = require('../privileges');
 const cache = require('../cache');
+const meta = require('../meta');
 
 const Categories = module.exports;
 
@@ -173,6 +174,15 @@ Categories.getTagWhitelist = async function (cids) {
 		cache.set(`cid:${cid}:tag:whitelist`, data[index]);
 	});
 	return cids.map(cid => cachedData[cid]);
+};
+
+// remove system tags from tag whitelist for non privileged user
+Categories.filterTagWhitelist = function (tagWhitelist, isAdminOrMod) {
+	const systemTags = (meta.config.systemTags || '').split(',');
+	if (!isAdminOrMod && systemTags.length) {
+		return tagWhitelist.filter(tag => !systemTags.includes(tag));
+	}
+	return tagWhitelist;
 };
 
 function calculateTopicPostCount(category) {

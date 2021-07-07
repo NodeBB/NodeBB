@@ -5,6 +5,7 @@ const winston = require('winston');
 const validator = require('validator');
 const plugins = require('../plugins');
 const middleware = require('../middleware');
+const helpers = require('../middleware/helpers');
 
 exports.handleURIErrors = async function handleURIErrors(err, req, res, next) {
 	// Handle cases where malformed URIs are passed in
@@ -57,11 +58,16 @@ exports.handleErrors = function handleErrors(err, req, res, next) { // eslint-di
 		res.status(status || 500);
 
 		const path = String(req.path || '');
+		const data = {
+			path: validator.escape(path),
+			error: validator.escape(String(err.message)),
+			bodyClass: helpers.buildBodyClass(req, res),
+		};
 		if (res.locals.isAPI) {
-			res.json({ path: validator.escape(path), error: err.message });
+			res.json(data);
 		} else {
 			await middleware.buildHeaderAsync(req, res);
-			res.render('500', { path: validator.escape(path), error: validator.escape(String(err.message)) });
+			res.render('500', data);
 		}
 	};
 

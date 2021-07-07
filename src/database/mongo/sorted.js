@@ -400,7 +400,15 @@ module.exports = function (module) {
 		data.score = parseFloat(increment);
 
 		try {
-			const result = await module.client.collection('objects').findOneAndUpdate({ _key: key, value: value }, { $inc: data }, { returnOriginal: false, upsert: true });
+			const result = await module.client.collection('objects').findOneAndUpdate({
+				_key: key,
+				value: value,
+			}, {
+				$inc: data,
+			}, {
+				returnDocument: 'after',
+				upsert: true,
+			});
 			return result && result.value ? result.value.score : null;
 		} catch (err) {
 			// if there is duplicate key error retry the upsert
