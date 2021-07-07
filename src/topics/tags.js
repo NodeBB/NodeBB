@@ -32,6 +32,7 @@ module.exports = function (Topics) {
 			db.setAdd('topic:' + tid + ':tags', tags),
 			db.sortedSetsAdd(topicSets, timestamp, tid),
 		]);
+		cache.del(`topic:${tid}:tags`);
 		await Topics.updateCategoryTagsCount([cid], tags);
 		await Promise.all(tags.map(tag => updateTagCount(tag)));
 	};
@@ -147,6 +148,7 @@ module.exports = function (Topics) {
 			const keys = tids.map(tid => 'topic:' + tid + ':tags');
 			await db.setsRemove(keys, tag);
 			await db.setsAdd(keys, newTagName);
+			cache.del(keys);
 		}, {});
 		await Topics.deleteTag(tag);
 		await updateTagCount(newTagName);
@@ -217,6 +219,7 @@ module.exports = function (Topics) {
 			}
 			const keys = tids.map(tid => 'topic:' + tid + ':tags');
 			await db.setsRemove(keys, tag);
+			cache.del(keys);
 		});
 	}
 
@@ -280,15 +283,29 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getTopicTags = async function (tid) {
-		const tags = await db.getSetMembers('topic:' + tid + ':tags');
-		return tags.sort();
+		const data = await Topics.getTopicsTags([tid]);
+		return data && data[0];
 	};
 
 	Topics.getTopicsTags = async function (tids) {
-		const keys = tids.map(tid => 'topic:' + tid + ':tags');
-		const tags = await db.getSetsMembers(keys);
-		tags.forEach(tags => tags.sort());
-		return tags;
+		const cachedData = {};
+		const uncachedKeys = cache.getUnCachedKeys(
+			tids.map(tid => `topic:${tid}:tags`),
+			cachedData
+		);
+
+		if (!uncachedKeys.length) {
+			return tids.map(tid => cachedData[`topic:${tid}:tags`].slice());
+		}
+
+		const tagData = await db.getSetsMembers(
+			uncachedKeys,
+		);
+		uncachedKeys.forEach((uncachedKey, index) => {
+			cachedData[uncachedKey] = tagData[index];
+			cache.set(uncachedKey, tagData[index]);
+		});
+		return tids.map(tid => cachedData[`topic:${tid}:tags`].slice());
 	};
 
 	Topics.getTopicTagsObjects = async function (tid) {
@@ -331,6 +348,7 @@ module.exports = function (Topics) {
 			await updateTagCount(tags[i]);
 		}
 		await Topics.updateCategoryTagsCount(_.uniq(topicData.map(t => t.cid)), tags);
+		cache.del(sets);
 	};
 
 	Topics.removeTags = async function (tags, tids) {
@@ -350,6 +368,7 @@ module.exports = function (Topics) {
 			await updateTagCount(tags[i]);
 		}
 		await Topics.updateCategoryTagsCount(_.uniq(topicData.map(t => t.cid)), tags);
+		cache.del(sets);
 	};
 
 	Topics.updateTopicTags = async function (tid, tags) {
@@ -363,7 +382,8 @@ module.exports = function (Topics) {
 			Topics.getTopicTags(tid),
 			Topics.getTopicField(tid, 'cid'),
 		]);
-		await db.delete('topic:' + tid + ':tags');
+		await db.delete(`topic:${tid}:tags`);
+		cache.del(`topic:${tid}:tags`);
 
 		const sets = tags.map(tag => 'tag:' + tag + ':topics')
 			.concat(tags.map(tag => 'cid:' + cid + ':tag:' + tag + ':topics'));
