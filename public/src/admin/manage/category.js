@@ -25,7 +25,7 @@ define('admin/manage/category', [
 
 		handleTags();
 
-		$('#category-settings input, #category-settings select').on('change', function (ev) {
+		$('#category-settings input, #category-settings select, #category-settings textarea').on('change', function (ev) {
 			modified(ev.target);
 		});
 

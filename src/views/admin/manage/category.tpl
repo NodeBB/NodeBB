@@ -19,7 +19,7 @@
 					<label for="cid-{category.cid}-description">
 						[[admin/manage/categories:description]]
 					</label>
-					<input id="cid-{category.cid}-description" data-name="description" placeholder="[[admin/manage/categories:description]]" value="{category.description}" class="form-control category_description description" /><br />
+					<textarea id="cid-{category.cid}-description" data-name="description" placeholder="[[admin/manage/categories:description]]" class="form-control category_description description" />{category.description}</textarea><br />
 				</fieldset>
 
 				<fieldset class="row">
