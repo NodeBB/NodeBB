@@ -1,5 +1,5 @@
 {
-	"trending": "Trending",
+	"trending": "Популярные",
 	"installed": "Установлены",
 	"active": "Включены",
 	"inactive": "Отключены",
@@ -39,7 +39,7 @@
 	"alert.upgraded": "Плагин обновлён",
 	"alert.installed": "Плагин установлен",
 	"alert.uninstalled": "Плагин удалён",
-	"alert.activate-success": "Please rebuild and restart your NodeBB to fully activate this plugin",
+	"alert.activate-success": "Пожалуйста пересоберите и перезапустите ваш экземпляр NodeBB  для полной активации этого плагина ",
 	"alert.deactivate-success": "Плагин успешно отключен",
 	"alert.upgrade-success": "Пожалуйста, пересоберите и перезапустите NodeBB чтобы полностью активировать этот плагин",
 	"alert.install-success": "Плагин успешно установлен. Пожалуйста, активируйте его.",
