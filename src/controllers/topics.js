@@ -1,6 +1,7 @@
 'use strict';
 
 const nconf = require('nconf');
+const qs = require('querystring');
 
 const user = require('../user');
 const meta = require('../meta');
@@ -58,7 +59,7 @@ topicsController.get = async function getTopic(req, res, callback) {
 	}
 
 	if (!res.locals.isAPI && (!req.params.slug || topicData.slug !== `${tid}/${req.params.slug}`) && (topicData.slug && topicData.slug !== `${tid}/`)) {
-		return helpers.redirect(res, `/topic/${topicData.slug}${postIndex ? `/${postIndex}` : ''}${currentPage > 1 ? `?page=${currentPage}` : ''}`, true);
+		return helpers.redirect(res, `/topic/${topicData.slug}${postIndex ? `/${postIndex}` : ''}?${qs.stringify(req.query)}`, true);
 	}
 
 	if (postIndex === 'unread') {
@@ -66,7 +67,7 @@ topicsController.get = async function getTopic(req, res, callback) {
 	}
 
 	if (utils.isNumber(postIndex) && topicData.postcount > 0 && (postIndex < 1 || postIndex > topicData.postcount)) {
-		return helpers.redirect(res, `/topic/${req.params.topic_id}/${req.params.slug}${postIndex > topicData.postcount ? `/${topicData.postcount}` : ''}`);
+		return helpers.redirect(res, `/topic/${tid}/${req.params.slug}${postIndex > topicData.postcount ? `/${topicData.postcount}` : ''}?${qs.stringify(req.query)}`);
 	}
 	postIndex = Math.max(1, postIndex);
 	const sort = req.query.sort || settings.topicPostSort;
