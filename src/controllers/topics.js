@@ -122,7 +122,7 @@ topicsController.get = async function getTopic(req, res, callback) {
 };
 
 function generateQueryString(query) {
-	let qString = qs.stringify(query);
+	const qString = qs.stringify(query);
 	return qString.length ? `?${qString}` : '';
 }
 
