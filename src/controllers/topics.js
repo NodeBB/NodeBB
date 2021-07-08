@@ -59,7 +59,7 @@ topicsController.get = async function getTopic(req, res, callback) {
 	}
 
 	if (!res.locals.isAPI && (!req.params.slug || topicData.slug !== `${tid}/${req.params.slug}`) && (topicData.slug && topicData.slug !== `${tid}/`)) {
-		return helpers.redirect(res, `/topic/${topicData.slug}${postIndex ? `/${postIndex}` : ''}?${qs.stringify(req.query)}`, true);
+		return helpers.redirect(res, `/topic/${topicData.slug}${postIndex ? `/${postIndex}` : ''}${generateQueryString(req.query)}`, true);
 	}
 
 	if (postIndex === 'unread') {
@@ -67,7 +67,7 @@ topicsController.get = async function getTopic(req, res, callback) {
 	}
 
 	if (utils.isNumber(postIndex) && topicData.postcount > 0 && (postIndex < 1 || postIndex > topicData.postcount)) {
-		return helpers.redirect(res, `/topic/${tid}/${req.params.slug}${postIndex > topicData.postcount ? `/${topicData.postcount}` : ''}?${qs.stringify(req.query)}`);
+		return helpers.redirect(res, `/topic/${tid}/${req.params.slug}${postIndex > topicData.postcount ? `/${topicData.postcount}` : ''}${generateQueryString(req.query)}`);
 	}
 	postIndex = Math.max(1, postIndex);
 	const sort = req.query.sort || settings.topicPostSort;
@@ -120,6 +120,11 @@ topicsController.get = async function getTopic(req, res, callback) {
 
 	res.render('topic', topicData);
 };
+
+function generateQueryString(query) {
+	let qString = qs.stringify(query);
+	return qString.length ? `?${qString}` : '';
+}
 
 function calculatePageFromIndex(postIndex, settings) {
 	return 1 + Math.floor((postIndex - 1) / settings.postsPerPage);
