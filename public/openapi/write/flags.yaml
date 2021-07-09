@@ -1,0 +1,38 @@
+post:
+  tags:
+    - flags
+  summary: create a flag
+  description: This operation creates a new flag (with a report). If a flag already exists for a given user or post, a report will be appended to the existing flag. The response will change depending on the privilege level of the calling uid. Privileged users (moderators and up) will see the full flag details, whereas regular users will see an empty (but successful) response.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            type:
+              type: string
+              enum: ['post', 'user']
+              example: 'post'
+            id:
+              type: number
+              example: 2
+            reason:
+              type: string
+              example: 'Spam'
+          required:
+            - type
+            - id
+            - reason
+  responses:
+    '200':
+      description: flag successfully created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../components/schemas/FlagObject.yaml#/FlagObject

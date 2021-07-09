@@ -128,6 +128,10 @@ paths:
     $ref: 'write/posts/pid/diffs/since.yaml'
   /posts/{pid}/diffs/{timestamp}:
     $ref: 'write/posts/pid/diffs/timestamp.yaml'
+  /flags/:
+    $ref: 'write/flags.yaml'
+  /flags/{flagId}:
+    $ref: 'write/flags/flagId.yaml'
   /admin/settings/{setting}:
     $ref: 'write/admin/settings/setting.yaml'
   /admin/analytics/{set}:

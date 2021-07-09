@@ -288,7 +288,7 @@ describe('API', async () => {
 		});
 	});
 
-	generateTests(readApi, Object.keys(readApi.paths));
+	// generateTests(readApi, Object.keys(readApi.paths));
 	generateTests(writeApi, Object.keys(writeApi.paths), writeApi.servers[0].url);
 
 	function generateTests(api, paths, prefix) {
@@ -384,7 +384,6 @@ describe('API', async () => {
 
 					try {
 						if (type === 'json') {
-							// console.log(`calling ${method} ${url} with`, body);
 							response = await request(url, {
 								method: method,
 								jar: !unauthenticatedRoutes.includes(path) ? jar : undefined,

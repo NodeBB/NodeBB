@@ -27,5 +27,5 @@ Flags.update = async (req, res) => {
 		...req.body,
 	});
 
-	helpers.formatApiResponse(200, res, history);
+	helpers.formatApiResponse(200, res, { history });
 };
