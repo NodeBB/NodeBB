@@ -162,6 +162,9 @@ async function getTopics(tids, data) {
 		if (topic && categories && cidToCategory[topic.cid]) {
 			topic.category = cidToCategory[topic.cid];
 		}
+		if (topic && topic.tags) {
+			topic.tags = topic.tags.map(tag => tag.value);
+		}
 	});
 
 	return topicsData;
