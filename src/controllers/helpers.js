@@ -493,6 +493,10 @@ async function generateBannedResponse(res) {
 }
 
 helpers.generateError = async (statusCode, message) => {
+	if (message && message.startsWith('[[')) {
+		message = await translator.translate(message);
+	}
+
 	const payload = {
 		status: {
 			code: 'internal-server-error',
