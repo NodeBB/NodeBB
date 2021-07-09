@@ -93,7 +93,6 @@ privsAdmin.socketMap = {
 	'admin.user.invite': 'admin:users',
 
 	'admin.tags.create': 'admin:tags',
-	'admin.tags.update': 'admin:tags',
 	'admin.tags.rename': 'admin:tags',
 	'admin.tags.deleteTags': 'admin:tags',
 

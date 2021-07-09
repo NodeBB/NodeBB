@@ -3,7 +3,6 @@
 		<div class="panel panel-default tag-management">
 			<div class="panel-body">
 				<div class="alert alert-info">
-					<strong>[[admin/manage/tags:create-modify]]</strong>
 					<p>[[admin/manage/tags:description]]</p>
 				</div>
 
@@ -48,7 +47,6 @@
 		<div class="panel panel-default">
 			<div class="panel-body">
 				<button class="btn btn-primary btn-block" id="create">[[admin/manage/tags:create]]</button>
-				<button class="btn btn-primary btn-block" id="modify">[[admin/manage/tags:modify]]</button>
 				<button class="btn btn-primary btn-block" id="rename">[[admin/manage/tags:rename]]</button>
 				<button class="btn btn-warning btn-block" id="deleteSelected">[[admin/manage/tags:delete]]</button>
 				<hr />

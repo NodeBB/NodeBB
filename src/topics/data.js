@@ -126,4 +126,12 @@ function modifyTopic(topic, fields) {
 	if (fields.includes('teaserPid') || !fields.length) {
 		topic.teaserPid = topic.teaserPid || null;
 	}
+
+	if (fields.includes('tags') || !fields.length) {
+		const tags = String(topic.tags || '');
+		topic.tags = tags.split(',').filter(Boolean).map(tag => ({
+			value: tag,
+			valueEscaped: validator.escape(String(tag)),
+		}));
+	}
 }

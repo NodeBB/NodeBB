@@ -13,7 +13,6 @@ define('admin/manage/tags', [
 
 		handleCreate();
 		handleSearch();
-		handleModify();
 		handleRename();
 		handleDeleteSelected();
 	};
@@ -79,54 +78,6 @@ define('admin/manage/tags', [
 					});
 				});
 			}, 250);
-		});
-	}
-
-	function handleModify() {
-		$('#modify').on('click', function () {
-			var tagsToModify = $('.tag-row.ui-selected');
-			if (!tagsToModify.length) {
-				return;
-			}
-
-			var firstTag = $(tagsToModify[0]);
-			bootbox.dialog({
-				title: '[[admin/manage/tags:alerts.editing]]',
-				message: firstTag.find('.tag-modal').html(),
-				buttons: {
-					success: {
-						label: 'Save',
-						className: 'btn-primary save',
-						callback: function () {
-							var modal = $('.bootbox');
-							var resetColors = modal.find('#reset-colors').is(':checked');
-							var bgColor = resetColors ? '' : modal.find('[data-name="bgColor"]').val();
-							var color = resetColors ? '' : modal.find('[data-name="color"]').val();
-
-							var data = [];
-							tagsToModify.each(function (idx, tag) {
-								tag = $(tag);
-								data.push({
-									value: tag.attr('data-tag'),
-									color: color,
-									bgColor: bgColor,
-								});
-
-								tag.find('[data-name="bgColor"]').val(bgColor);
-								tag.find('[data-name="color"]').val(color);
-								tag.find('.tag-item').css('background-color', bgColor).css('color', color);
-							});
-
-							socket.emit('admin.tags.update', data, function (err) {
-								if (err) {
-									return app.alertError(err.message);
-								}
-								app.alertSuccess('[[admin/manage/tags:alerts.update-success]]');
-							});
-						},
-					},
-				},
-			});
 		});
 	}
 

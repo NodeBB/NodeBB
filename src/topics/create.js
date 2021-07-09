@@ -34,6 +34,11 @@ module.exports = function (Topics) {
 			postcount: 0,
 			viewcount: 0,
 		};
+
+		if (Array.isArray(data.tags) && data.tags.length) {
+			topicData.tags = data.tags.join(',');
+		}
+
 		const result = await plugins.hooks.fire('filter:topic.create', { topic: topicData, data: data });
 		topicData = result.topic;
 		await db.setObject(`topic:${topicData.tid}`, topicData);
@@ -79,6 +84,7 @@ module.exports = function (Topics) {
 		}
 		Topics.checkTitle(data.title);
 		await Topics.validateTags(data.tags, data.cid, uid);
+		data.tags = await Topics.filterTags(data.tags, data.cid);
 		Topics.checkContent(data.content);
 
 		const [categoryExists, canCreate, canTag] = await Promise.all([

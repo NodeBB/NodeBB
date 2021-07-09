@@ -1824,9 +1824,9 @@ describe('Topic\'s', () => {
 				assert.equal(data.matchCount, 3);
 				assert.equal(data.pageCount, 1);
 				const tagData = [
-					{ value: 'nodebb', valueEscaped: 'nodebb', color: '', bgColor: '', score: 3 },
-					{ value: 'nodejs', valueEscaped: 'nodejs', color: '', bgColor: '', score: 1 },
-					{ value: 'nosql', valueEscaped: 'nosql', color: '', bgColor: '', score: 1 },
+					{ value: 'nodebb', valueEscaped: 'nodebb', score: 3 },
+					{ value: 'nodejs', valueEscaped: 'nodejs', score: 1 },
+					{ value: 'nosql', valueEscaped: 'nosql', score: 1 },
 				];
 				assert.deepEqual(data.tags, tagData);
 
@@ -1893,66 +1893,24 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it('should error if data is invalid', (done) => {
-			socketAdmin.tags.update({ uid: adminUid }, null, (err) => {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
-		});
 
-		it('should error if data is not an array', (done) => {
-			socketAdmin.tags.update({ uid: adminUid }, {
-				bgColor: '#ff0000',
-				color: '#00ff00',
-			}, (err) => {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
-		});
+		it('should rename tags', async () => {
+			const result1 = await topics.post({ uid: adminUid, tags: ['plugins'], title: 'topic tagged with plugins', content: 'topic 1 content', cid: topic.categoryId });
+			const result2 = await topics.post({ uid: adminUid, tags: ['plugin'], title: 'topic tagged with plugin', content: 'topic 2 content', cid: topic.categoryId });
+			const data1 = await topics.getTopicData(result2.topicData.tid);
 
-		it('should update tag', (done) => {
-			socketAdmin.tags.update({ uid: adminUid }, [{
-				value: 'emptytag',
-				bgColor: '#ff0000',
-				color: '#00ff00',
-			}], (err) => {
-				assert.ifError(err);
-				db.getObject('tag:emptytag', (err, data) => {
-					assert.ifError(err);
-					assert.equal(data.bgColor, '#ff0000');
-					assert.equal(data.color, '#00ff00');
-					done();
-				});
-			});
-		});
+			await socketAdmin.tags.rename({ uid: adminUid }, [{
+				value: 'plugin',
+				newName: 'plugins',
+			}]);
 
-		it('should rename tags', (done) => {
-			async.series({
-				topic1: function (next) {
-					topics.post({ uid: adminUid, tags: ['plugins'], title: 'topic tagged with plugins', content: 'topic 1 content', cid: topic.categoryId }, next);
-				},
-				topic2: function (next) {
-					topics.post({ uid: adminUid, tags: ['plugin'], title: 'topic tagged with plugin', content: 'topic 2 content', cid: topic.categoryId }, next);
-				},
-			}, (err, result) => {
-				assert.ifError(err);
-				socketAdmin.tags.rename({ uid: adminUid }, [{
-					value: 'plugin',
-					newName: 'plugins',
-				}], (err) => {
-					assert.ifError(err);
-					topics.getTagTids('plugins', 0, -1, (err, tids) => {
-						assert.ifError(err);
-						assert.equal(tids.length, 2);
-						topics.getTopicTags(result.topic2.topicData.tid, (err, tags) => {
-							assert.ifError(err);
-							assert.equal(tags.length, 1);
-							assert.equal(tags[0], 'plugins');
-							done();
-						});
-					});
-				});
-			});
+			const tids = await topics.getTagTids('plugins', 0, -1);
+			assert.strictEqual(tids.length, 2);
+			const tags = await topics.getTopicTags(result2.topicData.tid);
+
+			const data = await topics.getTopicData(result2.topicData.tid);
+			assert.strictEqual(tags.length, 1);
+			assert.strictEqual(tags[0], 'plugins');
 		});
 
 		it('should return related topics', (done) => {
@@ -2108,18 +2066,17 @@ describe('Topic\'s', () => {
 			await topics.post({ uid: adminUid, tags: ['cattag1'], title: title, content: 'topic 1 content', cid: cid });
 			let result = await topics.getCategoryTagsData(cid, 0, -1);
 			assert.deepStrictEqual(result, [
-				{ value: 'cattag1', score: 3, bgColor: '', color: '', valueEscaped: 'cattag1' },
-				{ value: 'cattag2', score: 2, bgColor: '', color: '', valueEscaped: 'cattag2' },
-				{ value: 'cattag3', score: 1, bgColor: '', color: '', valueEscaped: 'cattag3' },
+				{ value: 'cattag1', score: 3, valueEscaped: 'cattag1' },
+				{ value: 'cattag2', score: 2, valueEscaped: 'cattag2' },
+				{ value: 'cattag3', score: 1, valueEscaped: 'cattag3' },
 			]);
 
 			// after purging values should update properly
 			await topics.purge(postResult.topicData.tid, adminUid);
 			result = await topics.getCategoryTagsData(cid, 0, -1);
-
 			assert.deepStrictEqual(result, [
-				{ value: 'cattag1', score: 2, bgColor: '', color: '', valueEscaped: 'cattag1' },
-				{ value: 'cattag2', score: 1, bgColor: '', color: '', valueEscaped: 'cattag2' },
+				{ value: 'cattag1', score: 2, valueEscaped: 'cattag1' },
+				{ value: 'cattag2', score: 1, valueEscaped: 'cattag2' },
 			]);
 		});
 
@@ -2138,11 +2095,11 @@ describe('Topic\'s', () => {
 			let result1 = await topics.getCategoryTagsData(cid1, 0, -1);
 			let result2 = await topics.getCategoryTagsData(cid2, 0, -1);
 			assert.deepStrictEqual(result1, [
-				{ value: 'movedtag1', score: 2, bgColor: '', color: '', valueEscaped: 'movedtag1' },
-				{ value: 'movedtag2', score: 1, bgColor: '', color: '', valueEscaped: 'movedtag2' },
+				{ value: 'movedtag1', score: 2, valueEscaped: 'movedtag1' },
+				{ value: 'movedtag2', score: 1, valueEscaped: 'movedtag2' },
 			]);
 			assert.deepStrictEqual(result2, [
-				{ value: 'movedtag2', score: 1, bgColor: '', color: '', valueEscaped: 'movedtag2' },
+				{ value: 'movedtag2', score: 1, valueEscaped: 'movedtag2' },
 			]);
 
 			// after moving values should update properly
@@ -2151,11 +2108,11 @@ describe('Topic\'s', () => {
 			result1 = await topics.getCategoryTagsData(cid1, 0, -1);
 			result2 = await topics.getCategoryTagsData(cid2, 0, -1);
 			assert.deepStrictEqual(result1, [
-				{ value: 'movedtag1', score: 1, bgColor: '', color: '', valueEscaped: 'movedtag1' },
+				{ value: 'movedtag1', score: 1, valueEscaped: 'movedtag1' },
 			]);
 			assert.deepStrictEqual(result2, [
-				{ value: 'movedtag2', score: 2, bgColor: '', color: '', valueEscaped: 'movedtag2' },
-				{ value: 'movedtag1', score: 1, bgColor: '', color: '', valueEscaped: 'movedtag1' },
+				{ value: 'movedtag2', score: 2, valueEscaped: 'movedtag2' },
+				{ value: 'movedtag1', score: 1, valueEscaped: 'movedtag1' },
 			]);
 		});
 
