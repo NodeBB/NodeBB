@@ -1,6 +1,6 @@
 'use strict';
 
-define('forum/flags/list', ['components', 'Chart', 'categoryFilter', 'autocomplete'], function (components, Chart, categoryFilter, autocomplete) {
+define('forum/flags/list', ['components', 'Chart', 'categoryFilter', 'autocomplete', 'api'], function (components, Chart, categoryFilter, autocomplete, api) {
 	var Flags = {};
 
 	var selectedCids;
@@ -149,26 +149,14 @@ define('forum/flags/list', ['components', 'Chart', 'categoryFilter', 'autocomple
 
 						switch (action) {
 							case 'bulk-assign':
-								socket.emit('flags.update', {
-									flagId: flagId,
-									data: [
-										{
-											name: 'assignee',
-											value: app.user.uid,
-										},
-									],
+								api.put(`/flags/${flagId}`, {
+									assignee: app.user.uid,
 								}, handler);
 								break;
 
 							case 'bulk-mark-resolved':
-								socket.emit('flags.update', {
-									flagId: flagId,
-									data: [
-										{
-											name: 'state',
-											value: 'resolved',
-										},
-									],
+								api.put(`/flags/${flagId}`, {
+									state: 'resolved',
 								}, handler);
 								break;
 						}

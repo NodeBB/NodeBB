@@ -102,7 +102,6 @@ Flags.get = async function (flagId) {
 	if (!base) {
 		return;
 	}
-
 	const flagObj = {
 		state: 'open',
 		assignee: null,
@@ -610,8 +609,10 @@ Flags.update = async function (flagId, uid, changeset) {
 				}
 			}
 		} else if (prop === 'assignee') {
+			if (changeset[prop] === '') {
+				tasks.push(db.sortedSetRemove(`flags:byAssignee:${changeset[prop]}`, flagId));
 			/* eslint-disable-next-line */
-			if (!await isAssignable(parseInt(changeset[prop], 10))) {
+			} else if (!await isAssignable(parseInt(changeset[prop], 10))) {
 				delete changeset[prop];
 			} else {
 				tasks.push(db.sortedSetAdd(`flags:byAssignee:${changeset[prop]}`, now, flagId));

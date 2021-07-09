@@ -2,46 +2,33 @@
 
 const user = require('../user');
 const flags = require('../flags');
+const sockets = require('.');
+const api = require('../api');
 
 const SocketFlags = module.exports;
 
 SocketFlags.create = async function (socket, data) {
-	if (!socket.uid) {
-		throw new Error('[[error:not-logged-in]]');
+	sockets.warnDeprecated(socket, 'POST /api/v3/flags');
+	const response = await api.flags.create(socket, data);
+	if (response) {
+		return response.flagId;
 	}
-
-	if (!data || !data.type || !data.id || !data.reason) {
-		throw new Error('[[error:invalid-data]]');
-	}
-	await flags.validate({
-		uid: socket.uid,
-		type: data.type,
-		id: data.id,
-	});
-
-	const flagObj = await flags.create(data.type, data.id, socket.uid, data.reason);
-	await flags.notify(flagObj, socket.uid);
-	return flagObj.flagId;
 };
 
 SocketFlags.update = async function (socket, data) {
-	if (!data || !(data.flagId && data.data)) {
+	sockets.warnDeprecated(socket, 'PUT /api/v3/flags/:flagId');
+	if (!data || !(data.flagId && data.data)) {	// check only req'd in socket.io
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	const allowed = await user.isPrivileged(socket.uid);
-	if (!allowed) {
-		throw new Error('[[no-privileges]]');
-	}
+	// Old socket method took input directly from .serializeArray(), v3 expects fully-formed obj.
 	let payload = {};
-	// Translate form data into object
 	payload = data.data.reduce((memo, cur) => {
 		memo[cur.name] = cur.value;
 		return memo;
 	}, payload);
 
-	await flags.update(data.flagId, socket.uid, payload);
-	return await flags.getHistory(data.flagId);
+	return api.flags.update(socket, payload);
 };
 
 SocketFlags.appendNote = async function (socket, data) {

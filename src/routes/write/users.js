@@ -40,11 +40,11 @@ function authenticatedRoutes() {
 
 	setupApiRoute(router, 'delete', '/:uid/sessions/:uuid', [...middlewares, middleware.assert.user], controllers.write.users.revokeSession);
 
-	// Shorthand route to access user routes by userslug
-	router.all('/+bySlug/:userslug*?', [], controllers.write.users.redirectBySlug);
-
 	setupApiRoute(router, 'post', '/:uid/invites', middlewares, controllers.write.users.invite);
 	setupApiRoute(router, 'get', '/:uid/invites/groups', [...middlewares, middleware.assert.user], controllers.write.users.getInviteGroups);
+
+	// Shorthand route to access user routes by userslug
+	router.all('/+bySlug/:userslug*?', [], controllers.write.users.redirectBySlug);
 }
 
 module.exports = function () {

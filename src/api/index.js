@@ -6,4 +6,5 @@ module.exports = {
 	topics: require('./topics'),
 	posts: require('./posts'),
 	categories: require('./categories'),
+	flags: require('./flags'),
 };
