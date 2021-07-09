@@ -3,6 +3,7 @@
 const nconf = require('nconf');
 const winston = require('winston');
 const validator = require('validator');
+const translator = require('../translator');
 const plugins = require('../plugins');
 const middleware = require('../middleware');
 const middlewareHelpers = require('../middleware/helpers');
@@ -57,7 +58,12 @@ exports.handleErrors = function handleErrors(err, req, res, next) { // eslint-di
 		const path = String(req.path || '');
 
 		if (path.startsWith(`${nconf.get('relative_path')}/api/v3`)) {
-			return helpers.formatApiResponse(err.message.startsWith('[[') ? 400 : 500, res, err);
+			let status = 500;
+			if (err.message.startsWith('[[')) {
+				status = 400;
+				err.message = await translator.translate(err.message);
+			}
+			return helpers.formatApiResponse(status, res, err);
 		}
 
 		winston.error(`${req.path}\n${err.stack}`);
