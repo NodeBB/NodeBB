@@ -65,7 +65,7 @@ module.exports = function (middleware) {
 					return true;
 				}
 
-				throw new Error('[[errors:api.master-token-no-uid]]');
+				throw new Error('[[error:api.master-token-no-uid]]');
 			} else {
 				winston.warn('[api/authenticate] Unable to find user after verifying token');
 				return true;
