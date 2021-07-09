@@ -825,7 +825,7 @@ describe('Controllers', () => {
 				assert.deepStrictEqual(parsedResponse.response, {});
 				assert.deepStrictEqual(parsedResponse.status, {
 					code: 'not-found',
-					message: '[[error:no-user]]',
+					message: 'User does not exist',
 				});
 				done();
 			});

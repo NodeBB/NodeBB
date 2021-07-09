@@ -139,7 +139,7 @@ describe('Topic\'s', () => {
 				},
 				json: true,
 			});
-			assert.strictEqual(result.body.status.message, '[[error:no-privileges]]');
+			assert.strictEqual(result.body.status.message, 'You do not have enough privileges for this action.');
 		});
 
 		it('should post a topic as guest if guest group has privileges', async () => {
