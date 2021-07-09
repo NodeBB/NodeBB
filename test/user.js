@@ -2123,14 +2123,14 @@ describe('User', () => {
 			it('should error if user does not have invite privilege', async () => {
 				const { res } = await helpers.invite({ emails: 'invite1@test.com', groupsToJoin: [] }, notAnInviterUid, jar, csrf_token);
 				assert.strictEqual(res.statusCode, 403);
-				assert.strictEqual(res.body.status.message, '[[error:no-privileges]]');
+				assert.strictEqual(res.body.status.message, 'You do not have enough privileges for this action.');
 			});
 
 			it('should error out if user tries to use an inviter\'s uid via the API', async () => {
 				const { res } = await helpers.invite({ emails: 'invite1@test.com', groupsToJoin: [] }, inviterUid, jar, csrf_token);
 				const numInvites = await User.getInvitesNumber(inviterUid);
 				assert.strictEqual(res.statusCode, 403);
-				assert.strictEqual(res.body.status.message, '[[error:no-privileges]]');
+				assert.strictEqual(res.body.status.message, 'You do not have enough privileges for this action.');
 				assert.strictEqual(numInvites, 0);
 			});
 		});
@@ -2159,14 +2159,14 @@ describe('User', () => {
 			it('should error with invalid data', async () => {
 				const { res } = await helpers.invite({}, inviterUid, jar, csrf_token);
 				assert.strictEqual(res.statusCode, 400);
-				assert.strictEqual(res.body.status.message, '[[error:invalid-data]]');
+				assert.strictEqual(res.body.status.message, 'Invalid Data');
 			});
 
 			it('should error if user is not admin and type is admin-invite-only', async () => {
 				meta.config.registrationType = 'admin-invite-only';
 				const { res } = await helpers.invite({ emails: 'invite1@test.com', groupsToJoin: [] }, inviterUid, jar, csrf_token);
 				assert.strictEqual(res.statusCode, 403);
-				assert.strictEqual(res.body.status.message, '[[error:no-privileges]]');
+				assert.strictEqual(res.body.status.message, 'You do not have enough privileges for this action.');
 			});
 
 			it('should send invitation email (without groups to be joined)', async () => {
@@ -2183,13 +2183,13 @@ describe('User', () => {
 			it('should error if the user has not permission to invite to the group', async () => {
 				const { res } = await helpers.invite({ emails: 'invite4@test.com', groupsToJoin: [PRIVATE_GROUP] }, inviterUid, jar, csrf_token);
 				assert.strictEqual(res.statusCode, 403);
-				assert.strictEqual(res.body.status.message, '[[error:no-privileges]]');
+				assert.strictEqual(res.body.status.message, 'You do not have enough privileges for this action.');
 			});
 
 			it('should error if a non-admin tries to invite to the administrators group', async () => {
 				const { res } = await helpers.invite({ emails: 'invite4@test.com', groupsToJoin: ['administrators'] }, inviterUid, jar, csrf_token);
 				assert.strictEqual(res.statusCode, 403);
-				assert.strictEqual(res.body.status.message, '[[error:no-privileges]]');
+				assert.strictEqual(res.body.status.message, 'You do not have enough privileges for this action.');
 			});
 
 			it('should to invite to own private group', async () => {
@@ -2211,7 +2211,7 @@ describe('User', () => {
 				meta.config.maximumInvites = 1;
 				const { res } = await helpers.invite({ emails: 'invite6@test.com', groupsToJoin: [] }, inviterUid, jar, csrf_token);
 				assert.strictEqual(res.statusCode, 403);
-				assert.strictEqual(res.body.status.message, `[[error:invite-maximum-met, ${5}, ${1}]]`);
+				assert.strictEqual(res.body.status.message, `You have invited the maximum amount of people (${5} out of ${1}).`);
 				meta.config.maximumInvites = 10;
 			});
 
@@ -2224,14 +2224,14 @@ describe('User', () => {
 				const { res } = await helpers.invite({ emails: 'inviter@nodebb.org', groupsToJoin: [] }, adminUid, jar, csrf_token);
 				const numInvites = await User.getInvitesNumber(adminUid);
 				assert.strictEqual(res.statusCode, 403);
-				assert.strictEqual(res.body.status.message, '[[error:no-privileges]]');
+				assert.strictEqual(res.body.status.message, 'You do not have enough privileges for this action.');
 				assert.strictEqual(numInvites, 0);
 			});
 
 			it('should error if email exists', async () => {
 				const { res } = await helpers.invite({ emails: 'inviter@nodebb.org', groupsToJoin: [] }, inviterUid, jar, csrf_token);
 				assert.strictEqual(res.statusCode, 400);
-				assert.strictEqual(res.body.status.message, '[[error:email-taken]]');
+				assert.strictEqual(res.body.status.message, 'Email taken');
 			});
 		});
 

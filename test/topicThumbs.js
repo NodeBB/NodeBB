@@ -350,7 +350,7 @@ describe('Topic thumbs', () => {
 				assert.ifError(err);
 				assert.strictEqual(res.statusCode, 503);
 				assert(body && body.status);
-				assert.strictEqual(body.status.message, '[[error:topic-thumbnails-are-disabled]]');
+				assert.strictEqual(body.status.message, 'Topic thumbnails are disabled.');
 				done();
 			});
 		});
@@ -362,7 +362,7 @@ describe('Topic thumbs', () => {
 				assert.ifError(err);
 				assert.strictEqual(res.statusCode, 500);
 				assert(body && body.status);
-				assert.strictEqual(body.status.message, '[[error:invalid-file]]');
+				assert.strictEqual(body.status.message, 'Invalid File');
 				done();
 			});
 		});
