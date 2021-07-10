@@ -3,9 +3,11 @@
 const nconf = require('nconf');
 const winston = require('winston');
 const validator = require('validator');
+const translator = require('../translator');
 const plugins = require('../plugins');
 const middleware = require('../middleware');
-const helpers = require('../middleware/helpers');
+const middlewareHelpers = require('../middleware/helpers');
+const helpers = require('./helpers');
 
 exports.handleURIErrors = async function handleURIErrors(err, req, res, next) {
 	// Handle cases where malformed URIs are passed in
@@ -53,15 +55,23 @@ exports.handleErrors = function handleErrors(err, req, res, next) { // eslint-di
 			return res.locals.isAPI ? res.set('X-Redirect', err.path).status(200).json(err.path) : res.redirect(nconf.get('relative_path') + err.path);
 		}
 
-		winston.error(`${req.path}\n${err.stack}`);
-
-		res.status(status || 500);
-
 		const path = String(req.path || '');
+
+		if (path.startsWith(`${nconf.get('relative_path')}/api/v3`)) {
+			let status = 500;
+			if (err.message.startsWith('[[')) {
+				status = 400;
+				err.message = await translator.translate(err.message);
+			}
+			return helpers.formatApiResponse(status, res, err);
+		}
+
+		winston.error(`${req.path}\n${err.stack}`);
+		res.status(status || 500);
 		const data = {
 			path: validator.escape(path),
 			error: validator.escape(String(err.message)),
-			bodyClass: helpers.buildBodyClass(req, res),
+			bodyClass: middlewareHelpers.buildBodyClass(req, res),
 		};
 		if (res.locals.isAPI) {
 			res.json(data);

@@ -6,6 +6,7 @@ const validator = require('validator');
 const querystring = require('querystring');
 const _ = require('lodash');
 
+const translator = require('../translator');
 const user = require('../user');
 const privileges = require('../privileges');
 const categories = require('../categories');
@@ -456,7 +457,7 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 				break;
 		}
 
-		const returnPayload = helpers.generateError(statusCode, message);
+		const returnPayload = await helpers.generateError(statusCode, message);
 		returnPayload.response = response;
 
 		if (global.env === 'development') {
@@ -467,7 +468,8 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 		res.status(statusCode).json(returnPayload);
 	} else if (!payload) {
 		// Non-2xx statusCode, generate predefined error
-		res.status(statusCode).json(helpers.generateError(statusCode));
+		const returnPayload = await helpers.generateError(statusCode);
+		res.status(statusCode).json(returnPayload);
 	}
 };
 
@@ -490,60 +492,54 @@ async function generateBannedResponse(res) {
 	return response;
 }
 
-helpers.generateError = (statusCode, message) => {
+helpers.generateError = async (statusCode, message) => {
+	if (message && message.startsWith('[[')) {
+		message = await translator.translate(message);
+	}
+
 	const payload = {
 		status: {
 			code: 'internal-server-error',
-			message: 'An unexpected error was encountered while attempting to service your request.',
+			message: message || await translator.translate(`[[error:api.${statusCode}]]`),
 		},
 		response: {},
 	};
 
-	// Need to turn all these into translation strings
 	switch (statusCode) {
 		case 400:
 			payload.status.code = 'bad-request';
-			payload.status.message = message || 'Something was wrong with the request payload you passed in.';
 			break;
 
 		case 401:
 			payload.status.code = 'not-authorised';
-			payload.status.message = message || 'A valid login session was not found. Please log in and try again.';
 			break;
 
 		case 403:
 			payload.status.code = 'forbidden';
-			payload.status.message = message || 'You are not authorised to make this call';
 			break;
 
 		case 404:
 			payload.status.code = 'not-found';
-			payload.status.message = message || 'Invalid API call';
 			break;
 
 		case 426:
 			payload.status.code = 'upgrade-required';
-			payload.status.message = message || 'HTTPS is required for requests to the write api, please re-send your request via HTTPS';
 			break;
 
 		case 429:
 			payload.status.code = 'too-many-requests';
-			payload.status.message = message || 'You have made too many requests, please try again later';
 			break;
 
 		case 500:
 			payload.status.code = 'internal-server-error';
-			payload.status.message = message || payload.status.message;
 			break;
 
 		case 501:
 			payload.status.code = 'not-implemented';
-			payload.status.message = message || 'The route you are trying to call is not implemented yet, please try again tomorrow';
 			break;
 
 		case 503:
 			payload.status.code = 'service-unavailable';
-			payload.status.message = message || 'The route you are trying to call is not currently available due to a server configuration';
 			break;
 	}
 

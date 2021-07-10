@@ -65,7 +65,7 @@ module.exports = function (middleware) {
 					return true;
 				}
 
-				throw new Error('A master token was received without a corresponding `_uid` in the request body');
+				throw new Error('[[error:api.master-token-no-uid]]');
 			} else {
 				winston.warn('[api/authenticate] Unable to find user after verifying token');
 				return true;
@@ -84,6 +84,7 @@ module.exports = function (middleware) {
 		return !res.headersSent;
 	}
 
+	// TODO: Remove in v1.18.0
 	middleware.authenticate = helpers.try(async (req, res, next) => {
 		winston.warn(`[middleware] middleware.authenticate has been deprecated, page and API routes are now automatically authenticated via setup(Page|API)Route. Use middleware.authenticateRequest (if not using route helper) and middleware.ensureLoggedIn instead. (request path: ${req.path})`);
 		if (!await authenticate(req, res)) {
