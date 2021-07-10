@@ -192,5 +192,15 @@
     "plugin-not-whitelisted": "Không thể cài đặt plugin &ndash; chỉ những plugin được Trình quản lý gói NodeBB đưa vào danh sách trắng mới có thể được cài đặt qua ACP",
     "topic-event-unrecognized": "Sự kiện chủ đề '%1' không được công nhận",
     "cant-set-child-as-parent": "Không thể đặt con làm chuyên mục chính",
-    "cant-set-self-as-parent": "Không thể tự đặt mình là chuyên mục chính"
+    "cant-set-self-as-parent": "Không thể tự đặt mình là chuyên mục chính",
+    "api.master-token-no-uid": "Mã thông báo chính đã được nhận mà không có `_uid` tương ứng trong nội dung yêu cầu",
+    "api.400": "Đã xảy ra lỗi với tải trọng yêu cầu mà bạn đã chuyển vào.",
+    "api.401": "Một phiên đăng nhập hợp lệ không được tìm thấy. Hãy đăng nhập và thử lại.",
+    "api.403": "Bạn không được phép thực hiện lệnh gọi này",
+    "api.404": "Lệnh gọi API không hợp lệ",
+    "api.426": "HTTPS là bắt buộc đối với các yêu cầu đối với api viết, vui lòng gửi lại yêu cầu của bạn qua HTTPS",
+    "api.429": "Bạn đã đưa ra quá nhiều yêu cầu, vui lòng thử lại sau",
+    "api.500": "Đã xảy ra lỗi không mong muốn khi cố gắng thực hiện yêu cầu của bạn.",
+    "api.501": "Định tuyến bạn đang cố gắng gọi chưa được triển khai, vui lòng thử lại vào ngày mai",
+    "api.503": "Định tuyến bạn đang cố gọi hiện không khả dụng do cấu hình máy chủ"
 }

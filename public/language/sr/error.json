@@ -192,5 +192,15 @@
     "plugin-not-whitelisted": "Инсталација додатне компоненте &ndash није могућа; преко ACP-а могу се инсталирати само додатне компоненте које је на белој листи ставио NodeBB Package Manager",
     "topic-event-unrecognized": "Догађај из теме „%1“ није препознат",
     "cant-set-child-as-parent": "Није могуће поставити подређену категорију као надређену",
-    "cant-set-self-as-parent": "Није могуће поставити себе као надређену категорију"
+    "cant-set-self-as-parent": "Није могуће поставити себе као надређену категорију",
+    "api.master-token-no-uid": "A master token was received without a corresponding `_uid` in the request body",
+    "api.400": "Something was wrong with the request payload you passed in.",
+    "api.401": "A valid login session was not found. Please log in and try again.",
+    "api.403": "You are not authorised to make this call",
+    "api.404": "Invalid API call",
+    "api.426": "HTTPS is required for requests to the write api, please re-send your request via HTTPS",
+    "api.429": "You have made too many requests, please try again later",
+    "api.500": "An unexpected error was encountered while attempting to service your request.",
+    "api.501": "The route you are trying to call is not implemented yet, please try again tomorrow",
+    "api.503": "The route you are trying to call is not currently available due to a server configuration"
 }

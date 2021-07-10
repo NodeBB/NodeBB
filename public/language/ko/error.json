@@ -192,5 +192,15 @@
     "plugin-not-whitelisted": "플러그인을 설치할 수 없습니다. &ndash; ACP에서는 NodeBB 패키지 관리자에 의해 승인된 플러그인만 설치할 수 있습니다.",
     "topic-event-unrecognized": "화제 이벤트 '%1'를 인식할 수 없습니다.",
     "cant-set-child-as-parent": "하위 카테고리를 상위로 등록할 수 없습니다.",
-    "cant-set-self-as-parent": "같은 카테고리를 상위로 등록할 수 없습니다."
+    "cant-set-self-as-parent": "같은 카테고리를 상위로 등록할 수 없습니다.",
+    "api.master-token-no-uid": "A master token was received without a corresponding `_uid` in the request body",
+    "api.400": "Something was wrong with the request payload you passed in.",
+    "api.401": "A valid login session was not found. Please log in and try again.",
+    "api.403": "You are not authorised to make this call",
+    "api.404": "Invalid API call",
+    "api.426": "HTTPS is required for requests to the write api, please re-send your request via HTTPS",
+    "api.429": "You have made too many requests, please try again later",
+    "api.500": "An unexpected error was encountered while attempting to service your request.",
+    "api.501": "The route you are trying to call is not implemented yet, please try again tomorrow",
+    "api.503": "The route you are trying to call is not currently available due to a server configuration"
 }

@@ -192,5 +192,15 @@
     "plugin-not-whitelisted": "Impossibile installare il plug-in &amp; solo i plugin nella whitelist del Gestione Pacchetti di NodeBB possono essere installati tramite ACP",
     "topic-event-unrecognized": "Evento discussione '%1' non riconosciuto",
     "cant-set-child-as-parent": "Impossibile impostare figlio come categoria padre",
-    "cant-set-self-as-parent": "Impossibile impostare se stessi come categoria padre"
+    "cant-set-self-as-parent": "Impossibile impostare se stessi come categoria padre",
+    "api.master-token-no-uid": "A master token was received without a corresponding `_uid` in the request body",
+    "api.400": "Something was wrong with the request payload you passed in.",
+    "api.401": "A valid login session was not found. Please log in and try again.",
+    "api.403": "You are not authorised to make this call",
+    "api.404": "Invalid API call",
+    "api.426": "HTTPS is required for requests to the write api, please re-send your request via HTTPS",
+    "api.429": "You have made too many requests, please try again later",
+    "api.500": "An unexpected error was encountered while attempting to service your request.",
+    "api.501": "The route you are trying to call is not implemented yet, please try again tomorrow",
+    "api.503": "The route you are trying to call is not currently available due to a server configuration"
 }
