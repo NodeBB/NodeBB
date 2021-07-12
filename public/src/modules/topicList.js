@@ -279,7 +279,7 @@ define('topicList', [
 			$(window).trigger('action:topics.loaded', { topics: topics, template: templateName });
 			callback();
 		});
-	};
+	}
 
 	return TopicList;
 });
