@@ -116,9 +116,8 @@ Topics.getTopicsByTids = async function (tids, options) {
 		};
 	}
 
-	const [result, tags, hasRead, isIgnored, bookmarks, callerSettings] = await Promise.all([
+	const [result, hasRead, isIgnored, bookmarks, callerSettings] = await Promise.all([
 		loadTopics(),
-		Topics.getTopicsTagsObjects(tids),
 		Topics.hasReadTopics(tids, uid),
 		Topics.isIgnoring(tids, uid),
 		Topics.getUserBookmarks(tids, uid),
@@ -136,8 +135,6 @@ Topics.getTopicsByTids = async function (tids, options) {
 				topic.user.displayname = topic.user.username;
 			}
 			topic.teaser = result.teasers[i] || null;
-			topic.tags = tags[i];
-
 			topic.isOwner = topic.uid === parseInt(uid, 10);
 			topic.ignored = isIgnored[i];
 			topic.unread = parseInt(uid, 10) > 0 && !hasRead[i] && !isIgnored[i];
@@ -180,7 +177,7 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 		social.getActivePostSharing(),
 		getDeleter(topicData),
 		getMerger(topicData),
-		getRelated(topicData, uid),
+		Topics.getRelatedTopics(topicData, uid),
 		Topics.thumbs.load([topicData]),
 		Topics.events.get(topicData.tid, uid),
 	]);
@@ -266,12 +263,6 @@ async function getMerger(topicData) {
 	]);
 	merger.mergedIntoTitle = mergedIntoTitle;
 	return merger;
-}
-
-async function getRelated(topicData, uid) {
-	const tags = await Topics.getTopicTagsObjects(topicData.tid);
-	topicData.tags = tags;
-	return await Topics.getRelatedTopics(topicData, uid);
 }
 
 Topics.getMainPost = async function (tid, uid) {

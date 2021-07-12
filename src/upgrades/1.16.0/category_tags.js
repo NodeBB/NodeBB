@@ -11,10 +11,16 @@ module.exports = {
 	method: async function () {
 		const { progress } = this;
 
+		async function getTopicsTags(tids) {
+			return await db.getSetsMembers(
+				tids.map(tid => `topic:${tid}:tags`),
+			);
+		}
+
 		await batch.processSortedSet('topics:tid', async (tids) => {
 			const [topicData, tags] = await Promise.all([
 				topics.getTopicsFields(tids, ['tid', 'cid', 'timestamp']),
-				topics.getTopicsTags(tids),
+				getTopicsTags(tids),
 			]);
 			const topicsWithTags = topicData.map((t, i) => {
 				t.tags = tags[i];

@@ -89,8 +89,11 @@ Topics.addTags = async (req, res) => {
 	if (!await privileges.topics.canEdit(req.params.tid, req.user.uid)) {
 		return helpers.formatApiResponse(403, res);
 	}
+	const cid = await topics.getTopicField(req.params.tid, 'cid');
+	await topics.validateTags(req.body.tags, cid, req.user.uid, req.params.tid);
+	const tags = await topics.filterTags(req.body.tags);
 
-	await topics.createTags(req.body.tags, req.params.tid, Date.now());
+	await topics.addTags(tags, [req.params.tid]);
 	helpers.formatApiResponse(200, res);
 };
 

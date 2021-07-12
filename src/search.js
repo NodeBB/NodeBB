@@ -155,18 +155,15 @@ async function getUsers(uids, data) {
 async function getTopics(tids, data) {
 	const topicsData = await topics.getTopicsData(tids);
 	const cids = _.uniq(topicsData.map(topic => topic && topic.cid));
-	const [categories, tags] = await Promise.all([
-		getCategories(cids, data),
-		getTags(tids, data),
-	]);
+	const categories = await getCategories(cids, data);
 
 	const cidToCategory = _.zipObject(cids, categories);
-	topicsData.forEach((topic, index) => {
+	topicsData.forEach((topic) => {
 		if (topic && categories && cidToCategory[topic.cid]) {
 			topic.category = cidToCategory[topic.cid];
 		}
-		if (topic && tags && tags[index]) {
-			topic.tags = tags[index];
+		if (topic && topic.tags) {
+			topic.tags = topic.tags.map(tag => tag.value);
 		}
 	});
 
@@ -184,13 +181,6 @@ async function getCategories(cids, data) {
 	}
 
 	return await db.getObjectsFields(cids.map(cid => `category:${cid}`), categoryFields);
-}
-
-async function getTags(tids, data) {
-	if (Array.isArray(data.hasTags) && data.hasTags.length) {
-		return await topics.getTopicsTags(tids);
-	}
-	return null;
 }
 
 function filterByPostcount(posts, postCount, repliesFilter) {
