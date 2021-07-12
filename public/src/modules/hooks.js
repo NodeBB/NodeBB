@@ -6,6 +6,8 @@ define('hooks', [], () => {
 		temporary: new Set(),
 		deprecated: {
 			'action:script.load': 'filter:script.load',	// 👋 @ 1.18.0
+			'action:category.loaded': 'action:topics.loaded',
+			'action:category.loading': 'action:topics.loading',
 		},
 	};
 
