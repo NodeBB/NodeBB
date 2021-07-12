@@ -166,7 +166,7 @@
     "diffs.current-revision": "גרסה נוכחית",
     "diffs.original-revision": "גרסה מקורית",
     "diffs.restore": "שחזר גרסה זו",
-    "diffs.restore-description": "A new revision will be appended to this post's edit history after restoring.",
+    "diffs.restore-description": "יתווסף גרסה חדשה להיסטוריית העריכה אחרי השיחזור",
     "diffs.post-restored": "הפוסט שוחזר בהצלחה לגרסה קודמת",
     "diffs.delete": "מחק גרסה זו",
     "diffs.deleted": "גרסה זו נמחקה",
