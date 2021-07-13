@@ -2,7 +2,6 @@
 	"none": "Forumda henüz etiketli herhangi bir başlık yok.",
 	"bg-color": "Arkaplan Rengi",
 	"text-color": "Yazı Rengi",
-	"create-modify": "Etiketleri Oluştur & Düzenle",
 	"description": "Etiketleri tıklayarak veya sürükleyerek seçin, birden fazla etiket seçmek için <code>CTRL</code> tuşunu kullanabilirsiniz. ",
 	"create": "Etiket Oluştur",
 	"modify": "Etiketleri Düzenle",

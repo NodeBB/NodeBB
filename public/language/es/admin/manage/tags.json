@@ -2,7 +2,6 @@
 	"none": "Tu foro todavía no tiene ningún tema con etiquetas (tags)",
 	"bg-color": "Color de Fondo",
 	"text-color": "Color del Texto",
-	"create-modify": "Crear & Modificar Etiquetas (tags)",
 	"description": "Select tags by clicking or dragging, use <code>CTRL</code> to select multiple tags.",
 	"create": "Crear Etiqueta (tag)",
 	"modify": "Modificar Etiquetas (tags)",

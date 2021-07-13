@@ -2,7 +2,6 @@
 	"none": "Ditt forum har inte några ämnen med etiketter ännu.",
 	"bg-color": "Bakgrundsfärg",
 	"text-color": "Textfärg",
-	"create-modify": "Skapa & Redigera Etiketter",
 	"description": "Välj etiketter genom att klicka eller dra. Använd <code>CTRL</code> för att välja flera etiketter.",
 	"create": "Skapa Etikett",
 	"modify": "Redigera Etikett",

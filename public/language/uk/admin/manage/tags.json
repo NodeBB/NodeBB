@@ -2,7 +2,6 @@
 	"none": "Жодна тема на вашому форумі ще не має тегів.",
 	"bg-color": "Колір фону",
 	"text-color": "Колір тексту",
-	"create-modify": "Створити та змінити теги",
 	"description": "Select tags by clicking or dragging, use <code>CTRL</code> to select multiple tags.",
 	"create": "Створити тег",
 	"modify": "Змінити тег",

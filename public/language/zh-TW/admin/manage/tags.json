@@ -2,7 +2,6 @@
 	"none": "您的論壇目前沒有帶有標籤的主題。",
 	"bg-color": "背景顏色",
 	"text-color": "文字顏色",
-	"create-modify": "建立或修改標籤",
 	"description": "透過點擊或者拖拉方式選擇標籤, 可同時使用 <code>CTRL</code> 來選擇多個標籤。",
 	"create": "建立標籤",
 	"modify": "修改標籤",

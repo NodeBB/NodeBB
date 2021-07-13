@@ -2,7 +2,6 @@
 	"none": "현재 포럼에 태그가 달린 화제가 없습니다.",
 	"bg-color": "배경 색상",
 	"text-color": "텍스트 색상",
-	"create-modify": "태그 생성/수정",
 	"description": "클릭이나 드래그로 태그를 선택하고, <code>CTRL</code>로 여러 개의 태그를 선택하세요.",
 	"create": "태그 생성",
 	"modify": "태그 수정",

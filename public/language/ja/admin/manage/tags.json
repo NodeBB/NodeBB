@@ -2,7 +2,6 @@
 	"none": "あなたのフォーラムにはまだタグが付いていません。",
 	"bg-color": "背景カラー",
 	"text-color": "テキストカラー",
-	"create-modify": "タグの作成と変更",
 	"description": "Select tags by clicking or dragging, use <code>CTRL</code> to select multiple tags.",
 	"create": "タグを作成",
 	"modify": "タグを変更",

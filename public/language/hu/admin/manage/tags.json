@@ -2,7 +2,6 @@
 	"none": "Fórumod még nem rendelkezik egy címkékkel ellátott témakörrel sem.",
 	"bg-color": "Háttérszín",
 	"text-color": "Szövegszín",
-	"create-modify": "Címkék létrehozása és módosítása",
 	"description": "Válassz ki címkéket kattintással vagy húzással, használd a <code>CTRL-t</code> több cí>mke kiválasztásához.",
 	"create": "Címke létrehozása",
 	"modify": "Címkék módosítása",

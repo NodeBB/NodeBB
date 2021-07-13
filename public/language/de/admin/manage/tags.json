@@ -2,7 +2,6 @@
 	"none": "Das Forum hat bisher noch keine Themen mit Tags.",
 	"bg-color": "Hintergrundfarbe",
 	"text-color": "Textfarbe",
-	"create-modify": "Tags erstellen & bearbeiten",
 	"description": "Select tags by clicking or dragging, use <code>CTRL</code> to select multiple tags.",
 	"create": "Tag erstellen",
 	"modify": "Tag bearbeiten",

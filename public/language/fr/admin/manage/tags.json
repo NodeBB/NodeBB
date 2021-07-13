@@ -2,7 +2,6 @@
 	"none": "Votre forum n'a pour l'instant aucun sujet avec mots-clés.",
 	"bg-color": "Couleur d'arrière plan",
 	"text-color": "Couleur du texte",
-	"create-modify": "Créer et modifier les mots-clés",
 	"description": "Pour une sélection multiple :\nSélectionnez des mots-clés en cliquant ou en sélectionnant avec votre souris ou utilisez la touche <code>CTRL</code> .",
 	"create": "Créer le mot-clés",
 	"modify": "Modifier les mots-clés",

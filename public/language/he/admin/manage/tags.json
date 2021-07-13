@@ -2,7 +2,6 @@
 	"none": "בפורום שלך אין עדיין נושאים עם תגים.\n",
 	"bg-color": "צבע רקע\n",
 	"text-color": "צבע טקסט\n",
-	"create-modify": "צור ושנה תגים",
 	"description": "Select tags by clicking or dragging, use <code>CTRL</code> to select multiple tags.",
 	"create": "צור תג",
 	"modify": "שנה תג",

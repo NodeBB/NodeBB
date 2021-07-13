@@ -2,7 +2,6 @@
 	"none": "Vaš forum nema tema sa oznakama",
 	"bg-color": "Pozadinska boja",
 	"text-color": "Boja teksta",
-	"create-modify": "Napravi i uredi oznake",
 	"description": "Select tags by clicking or dragging, use <code>CTRL</code> to select multiple tags.",
 	"create": "Napravi oznaku",
 	"modify": "Uredi oznake",
