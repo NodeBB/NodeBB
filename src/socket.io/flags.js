@@ -22,13 +22,15 @@ SocketFlags.update = async function (socket, data) {
 	}
 
 	// Old socket method took input directly from .serializeArray(), v3 expects fully-formed obj.
-	let payload = {};
+	let payload = {
+		flagId: data.flagId,
+	};
 	payload = data.data.reduce((memo, cur) => {
 		memo[cur.name] = cur.value;
 		return memo;
 	}, payload);
 
-	return api.flags.update(socket, payload);
+	return await api.flags.update(socket, payload);
 };
 
 SocketFlags.appendNote = async function (socket, data) {
