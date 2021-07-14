@@ -30,7 +30,7 @@
 	"session-time": "זמן סשן",
 	"session-time-days": "ימים",
 	"session-time-seconds": "שניות",
-	"session-time-help": "These values are used to govern how long a user stays logged in when they check &quot;Remember Me&quot; on login. Note that only one of these values will be used. If there is no <i>seconds</i> value we fall back to <i>days</i>. If there is no <i>days</i> value we default to <i>14 days</i>.",
+	"session-time-help": "ערכים אלו משמשים כדי להגדיר כמה זמן משתמשים יישארו מחוברים כאשר הם סימנו &quot;זכור אותי&quot; בהתחברות. שים לב שייעשה שימוש רק באחד מהערכים האלו. אם אין ערך <i>שניות</i> נשתמש בערך <i>ימים</i>. אם אין ערך <i>ימים</i> הערך יחזור לברירת מחדל <i>14 יום</i>.",
 	"online-cutoff": "דקות אחרי שהמשתמש נחשב לא פעיל",
 	"online-cutoff-help": "אם משתמש אינו מבצע פעולות במשך זמן זה, הוא נחשב כלא פעיל ואינו מקבל עדכונים בזמן אמת.",
 	"registration": "רישום משתמש",

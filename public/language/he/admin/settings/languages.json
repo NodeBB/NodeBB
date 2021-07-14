@@ -1,6 +1,6 @@
 {
 	"language-settings": "הגדרות שפה",
-	"description": "The default language determines the language settings for all users who are visiting your forum. <br />Individual users can override the default language on their account settings page.",
+	"description": "שפת ברירת מחדל מתייחס להגדרות שפה לכל המשתמשים המבקרים בפורום. <br />עדיין המשתמשים יכולים לשנות את שפת ברירת המחדל בדף הגדרות המשתמש.",
 	"default-language": "שפת ברירת מחדל",
 	"auto-detect": "זיהוי הגדרת שפה אוטומטית לאורחים"
 }

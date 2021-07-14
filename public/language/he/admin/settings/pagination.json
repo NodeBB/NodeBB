@@ -1,12 +1,12 @@
 {
-	"pagination": "Pagination Settings",
-	"enable": "Paginate topics and posts instead of using infinite scroll.",
-	"posts": "Post Pagination",
-	"topics": "Topic Pagination",
-	"posts-per-page": "Posts per Page",
-	"max-posts-per-page": "Maximum posts per page",
-	"categories": "Category Pagination",
-	"topics-per-page": "Topics per Page",
-	"max-topics-per-page": "Maximum topics per page",
-	"categories-per-page": "Categories per page"
+	"pagination": "הגדרת חלוקת עמודים",
+	"enable": "חלק נושאים ופוסטים במקום עמוד גלילה אינסופית",
+	"posts": "חלוקת פוסטים",
+	"topics": "חלוקת נושאים",
+	"posts-per-page": "פוסטים לעמוד",
+	"max-posts-per-page": "מקסימום פוסטים לעמוד",
+	"categories": "חלוקת קטגוריות",
+	"topics-per-page": "נושאים לעמוד",
+	"max-topics-per-page": "מקסימום נושאים לעמוד",
+	"categories-per-page": "קטגוריות לעמוד"
 }
