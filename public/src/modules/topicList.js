@@ -6,7 +6,8 @@ define('topicList', [
 	'topicSelect',
 	'categoryFilter',
 	'forum/category/tools',
-], function (infinitescroll, handleBack, topicSelect, categoryFilter, categoryTools) {
+	'hooks',
+], function (infinitescroll, handleBack, topicSelect, categoryFilter, categoryTools, hooks) {
 	var TopicList = {};
 	var templateName = '';
 
@@ -250,7 +251,7 @@ define('topicList', [
 		};
 		tplData.template[templateName] = true;
 
-		$(window).trigger('action:topics.loading', { topics: topics, after: after, before: before });
+		hooks.fire('action:topics.loading', { topics: topics, after: after, before: before });
 
 		app.parseAndTranslate(templateName, 'topics', tplData, function (html) {
 			topicListEl.removeClass('hidden');
