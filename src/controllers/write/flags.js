@@ -31,7 +31,6 @@ Flags.update = async (req, res) => {
 };
 
 Flags.appendNote = async (req, res) => {
-	console.log('appending note', req.params, req.body);
 	const payload = await api.flags.appendNote(req, {
 		flagId: req.params.flagId,
 		...req.body,
