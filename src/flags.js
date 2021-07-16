@@ -313,6 +313,11 @@ Flags.getNotes = async function (flagId) {
 };
 
 Flags.getNote = async function (flagId, datetime) {
+	datetime = parseInt(datetime, 10);
+	if (isNaN(datetime)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
 	let notes = await db.getSortedSetRangeByScoreWithScores(`flag:${flagId}:notes`, 0, 1, datetime, datetime);
 	if (!notes.length) {
 		throw new Error('[[error:invalid-data]]');
@@ -361,6 +366,11 @@ async function modifyNotes(notes) {
 }
 
 Flags.deleteNote = async function (flagId, datetime) {
+	datetime = parseInt(datetime, 10);
+	if (isNaN(datetime)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
 	const note = await db.getSortedSetRangeByScore(`flag:${flagId}:notes`, 0, 1, datetime, datetime);
 	if (!note.length) {
 		throw new Error('[[error:invalid-data]]');

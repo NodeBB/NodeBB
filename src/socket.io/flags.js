@@ -1,7 +1,5 @@
 'use strict';
 
-const user = require('../user');
-const flags = require('../flags');
 const sockets = require('.');
 const api = require('../api');
 

@@ -811,6 +811,10 @@ describe('Flags', () => {
 					resolveWithFullResponse: true,
 				});
 				assert.strictEqual(statusCode, 403);
+
+				// Handle dev mode test
+				delete body.stack;
+
 				assert.deepStrictEqual(body, {
 					status: {
 						code: 'forbidden',
