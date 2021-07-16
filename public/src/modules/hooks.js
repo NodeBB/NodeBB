@@ -91,19 +91,21 @@ define('hooks', [], () => {
 		$(window).trigger(hookName, data);
 	};
 
-	const _fireStaticHook = (hookName, data) => {
+	const _fireStaticHook = async (hookName, data) => {
 		if (!Hooks.hasListeners(hookName)) {
 			return Promise.resolve(data);
 		}
 
 		const listeners = Array.from(Hooks.loaded[hookName]);
-		return Promise.allSettled(listeners.map((listener) => {
+		await Promise.allSettled(listeners.map((listener) => {
 			try {
 				return listener(data);
 			} catch (e) {
 				return _onHookError(e, listener);
 			}
-		})).then(() => Promise.resolve(data));
+		}));
+
+		return await Promise.resolve(data);
 	};
 
 	Hooks.fire = (hookName, data) => {
