@@ -34,25 +34,12 @@ SocketFlags.update = async function (socket, data) {
 };
 
 SocketFlags.appendNote = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'POST /api/v3/flags/:flagId/notes');
 	if (!data || !(data.flagId && data.note)) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const allowed = await user.isPrivileged(socket.uid);
-	if (!allowed) {
-		throw new Error('[[error:no-privileges]]');
-	}
-	if (data.datetime && data.flagId) {
-		const note = await flags.getNote(data.flagId, data.datetime);
-		if (note.uid !== socket.uid) {
-			throw new Error('[[error:no-privileges]]');
-		}
-	}
-	await flags.appendNote(data.flagId, socket.uid, data.note, data.datetime);
-	const [notes, history] = await Promise.all([
-		flags.getNotes(data.flagId),
-		flags.getHistory(data.flagId),
-	]);
-	return { notes: notes, history: history };
+
+	return await api.flags.appendNote(socket, data);
 };
 
 SocketFlags.deleteNote = async function (socket, data) {
@@ -60,18 +47,7 @@ SocketFlags.deleteNote = async function (socket, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	const note = await flags.getNote(data.flagId, data.datetime);
-	if (note.uid !== socket.uid) {
-		throw new Error('[[error:no-privileges]]');
-	}
-
-	await flags.deleteNote(data.flagId, data.datetime);
-
-	const [notes, history] = await Promise.all([
-		flags.getNotes(data.flagId),
-		flags.getHistory(data.flagId),
-	]);
-	return { notes: notes, history: history };
+	return await api.flags.deleteNote(socket, data);
 };
 
 require('../promisify')(SocketFlags);

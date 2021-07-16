@@ -132,6 +132,10 @@ paths:
     $ref: 'write/flags.yaml'
   /flags/{flagId}:
     $ref: 'write/flags/flagId.yaml'
+  /flags/{flagId}/notes:
+    $ref: 'write/flags/flagId/notes.yaml'
+  /flags/{flagId}/notes/{datetime}:
+    $ref: 'write/flags/flagId/notes/datetime.yaml'
   /admin/settings/{setting}:
     $ref: 'write/admin/settings/setting.yaml'
   /admin/analytics/{set}:

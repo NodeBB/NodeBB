@@ -702,7 +702,14 @@ Flags.appendHistory = async function (flagId, uid, changeset) {
 
 Flags.appendNote = async function (flagId, uid, note, datetime) {
 	if (datetime) {
-		await Flags.deleteNote(flagId, datetime);
+		try {
+			await Flags.deleteNote(flagId, datetime);
+		} catch (e) {
+			// Do not throw if note doesn't exist
+			if (!e.message === '[[error:invalid-data]]') {
+				throw e;
+			}
+		}
 	}
 	datetime = datetime || Date.now();
 

@@ -623,6 +623,12 @@ describe('Flags', () => {
 				done();
 			});
 		});
+
+		it('should insert a note in the past if a datetime is passed in', async () => {
+			await Flags.appendNote(1, 1, 'this is the first note', 1626446956652);
+			const note = (await db.getSortedSetRange('flag:1:notes', 0, 0)).pop();
+			assert.strictEqual('[1,"this is the first note"]', note);
+		});
 	});
 
 	describe('.getNotes()', () => {
@@ -697,7 +703,7 @@ describe('Flags', () => {
 		});
 	});
 
-	describe('(websockets)', () => {
+	describe('(v3 API)', () => {
 		const SocketFlags = require('../src/socket.io/flags');
 		let pid;
 		let tid;
@@ -838,23 +844,48 @@ describe('Flags', () => {
 		});
 
 		describe('.appendNote()', () => {
-			it('should append a note to the flag', (done) => {
-				SocketFlags.appendNote({ uid: 2 }, {
-					flagId: 2,
-					note: 'lorem ipsum dolor sit amet',
-				}, (err, data) => {
-					assert.ifError(err);
-					assert(data.hasOwnProperty('notes'));
-					assert(Array.isArray(data.notes));
-					assert.strictEqual('lorem ipsum dolor sit amet', data.notes[0].content);
-					assert.strictEqual(2, data.notes[0].uid);
-
-					assert(data.hasOwnProperty('history'));
-					assert(Array.isArray(data.history));
-					assert.strictEqual(1, Object.keys(data.history[0].fields).length);
-					assert(data.history[0].fields.hasOwnProperty('notes'));
-					done();
+			it('should append a note to the flag', async () => {
+				const { response } = await request({
+					method: 'post',
+					uri: `${nconf.get('url')}/api/v3/flags/2/notes`,
+					jar,
+					headers: {
+						'x-csrf-token': csrfToken,
+					},
+					body: {
+						note: 'lorem ipsum dolor sit amet',
+						datetime: 1626446956652,
+					},
+					json: true,
 				});
+
+				assert(response.hasOwnProperty('notes'));
+				assert(Array.isArray(response.notes));
+				assert.strictEqual('lorem ipsum dolor sit amet', response.notes[0].content);
+				assert.strictEqual(2, response.notes[0].uid);
+
+				assert(response.hasOwnProperty('history'));
+				assert(Array.isArray(response.history));
+				assert.strictEqual(1, Object.keys(response.history[response.history.length - 1].fields).length);
+				assert(response.history[response.history.length - 1].fields.hasOwnProperty('notes'));
+			});
+		});
+
+		describe('.deleteNote()', () => {
+			it('should delete a note from a flag', async () => {
+				const { response } = await request({
+					method: 'delete',
+					uri: `${nconf.get('url')}/api/v3/flags/2/notes/1626446956652`,
+					jar,
+					headers: {
+						'x-csrf-token': csrfToken,
+					},
+					json: true,
+				});
+
+				assert(Array.isArray(response.history));
+				assert(Array.isArray(response.notes));
+				assert.strictEqual(response.notes.length, 0);
 			});
 		});
 	});

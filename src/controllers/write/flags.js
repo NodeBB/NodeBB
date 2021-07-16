@@ -29,3 +29,21 @@ Flags.update = async (req, res) => {
 
 	helpers.formatApiResponse(200, res, { history });
 };
+
+Flags.appendNote = async (req, res) => {
+	console.log('appending note', req.params, req.body);
+	const payload = await api.flags.appendNote(req, {
+		flagId: req.params.flagId,
+		...req.body,
+	});
+
+	helpers.formatApiResponse(200, res, payload);
+};
+
+Flags.deleteNote = async (req, res) => {
+	const payload = await api.flags.deleteNote(req, {
+		...req.params,
+	});
+
+	helpers.formatApiResponse(200, res, payload);
+};
