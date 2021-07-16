@@ -167,7 +167,8 @@ describe('API', async () => {
 		mocks.delete['/posts/{pid}/diffs/{timestamp}'][1].example = (await posts.diffs.list(unprivTopic.postData.pid))[0];
 
 		// Create a sample flag
-		await flags.create('post', 1, unprivUid, 'sample reasons', Date.now());
+		const { flagId } = await flags.create('post', 1, unprivUid, 'sample reasons', Date.now());
+		await flags.appendNote(flagId, 1, 'test note', 1626446956652);
 
 		// Create a new chat room
 		await messaging.newRoom(1, [2]);
@@ -288,7 +289,7 @@ describe('API', async () => {
 		});
 	});
 
-	generateTests(readApi, Object.keys(readApi.paths));
+	// generateTests(readApi, Object.keys(readApi.paths));
 	generateTests(writeApi, Object.keys(writeApi.paths), writeApi.servers[0].url);
 
 	function generateTests(api, paths, prefix) {
@@ -384,7 +385,6 @@ describe('API', async () => {
 
 					try {
 						if (type === 'json') {
-							// console.log(`calling ${method} ${url} with`, body);
 							response = await request(url, {
 								method: method,
 								jar: !unauthenticatedRoutes.includes(path) ? jar : undefined,

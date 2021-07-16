@@ -1,6 +1,6 @@
 'use strict';
 
-define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'benchpress', 'forum/account/header', 'accounts/delete'], function (FlagsList, components, translator, Benchpress, AccountHeader, AccountsDelete) {
+define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'benchpress', 'forum/account/header', 'accounts/delete', 'api'], function (FlagsList, components, translator, Benchpress, AccountHeader, AccountsDelete, api) {
 	var Detail = {};
 
 	Detail.init = function () {
@@ -18,18 +18,18 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 					$('#assignee').val(app.user.uid);
 					// falls through
 
-				case 'update':
-					socket.emit('flags.update', {
-						flagId: ajaxify.data.flagId,
-						data: $('#attributes').serializeArray(),
-					}, function (err, history) {
-						if (err) {
-							return app.alertError(err.message);
-						}
+				case 'update': {
+					const data = $('#attributes').serializeArray().reduce((memo, cur) => {
+						memo[cur.name] = cur.value;
+						return memo;
+					}, {});
+
+					api.put(`/flags/${ajaxify.data.flagId}`, data).then((history) => {
 						app.alertSuccess('[[flags:updated]]');
 						Detail.reloadHistory(history);
-					});
+					}).catch(app.alertError);
 					break;
+				}
 
 				case 'appendNote':
 					socket.emit('flags.appendNote', {

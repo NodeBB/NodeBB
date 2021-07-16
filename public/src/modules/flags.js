@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('flags', ['hooks', 'components'], function (hooks, components) {
+define('flags', ['hooks', 'components', 'api'], function (hooks, components, api) {
 	var Flag = {};
 	var flagModal;
 	var flagCommit;
@@ -59,18 +59,12 @@ define('flags', ['hooks', 'components'], function (hooks, components) {
 	};
 
 	Flag.resolve = function (flagId) {
-		socket.emit('flags.update', {
-			flagId: flagId,
-			data: [
-				{ name: 'state', value: 'resolved' },
-			],
-		}, function (err) {
-			if (err) {
-				return app.alertError(err.message);
-			}
+		api.put(`/flags/${flagId}`, {
+			state: 'resolved',
+		}).then(() => {
 			app.alertSuccess('[[flags:resolved]]');
 			hooks.fire('action:flag.resolved', { flagId: flagId });
-		});
+		}).catch(app.alertError);
 	};
 
 	function createFlag(type, id, reason) {
@@ -78,7 +72,7 @@ define('flags', ['hooks', 'components'], function (hooks, components) {
 			return;
 		}
 		var data = { type: type, id: id, reason: reason };
-		socket.emit('flags.create', data, function (err, flagId) {
+		api.post('/flags', data, function (err, flagId) {
 			if (err) {
 				return app.alertError(err.message);
 			}

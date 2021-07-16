@@ -1,0 +1,67 @@
+get:
+  tags:
+    - flags
+  summary: get a flag
+  description: This operation retrieve a flag's details. It is only available to privileged users (that is, moderators, global moderators, and administrators).
+  parameters:
+    - in: path
+      name: flagId
+      schema:
+        type: number
+      required: true
+      description: a valid flag id
+      example: 1
+  responses:
+    '200':
+      description: flag successfully retrieved
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../components/schemas/FlagObject.yaml#/FlagObject
+put:
+  tags:
+    - flags
+  summary: update a flag
+  description: This operation updates a flag's details. It is only available to privileged users (that is, moderators, global moderators, and administrators).
+  parameters:
+    - in: path
+      name: flagId
+      schema:
+        type: number
+      required: true
+      description: a valid flag id
+      example: 1
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            datetime:
+              type: number
+              example: 1625859990035
+            state:
+              type: string
+              enum: ['open', 'wip', 'resolved', 'rejected']
+              example: 'wip'
+            assignee:
+              type: number
+              example: 1
+  responses:
+    '200':
+      description: flag successfully updated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../components/schemas/FlagObject.yaml#/FlagHistoryObject

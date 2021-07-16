@@ -1,12 +1,16 @@
 'use strict';
 
 const assert = require('assert');
+const nconf = require('nconf');
 const async = require('async');
+const request = require('request-promise-native');
 const util = require('util');
 
 const sleep = util.promisify(setTimeout);
 
 const db = require('./mocks/databasemock');
+const helpers = require('./helpers');
+
 const Flags = require('../src/flags');
 const Categories = require('../src/categories');
 const Topics = require('../src/topics');
@@ -619,6 +623,12 @@ describe('Flags', () => {
 				done();
 			});
 		});
+
+		it('should insert a note in the past if a datetime is passed in', async () => {
+			await Flags.appendNote(1, 1, 'this is the first note', 1626446956652);
+			const note = (await db.getSortedSetRange('flag:1:notes', 0, 0)).pop();
+			assert.strictEqual('[1,"this is the first note"]', note);
+		});
 	});
 
 	describe('.getNotes()', () => {
@@ -693,38 +703,51 @@ describe('Flags', () => {
 		});
 	});
 
-	describe('(websockets)', () => {
+	describe('(v3 API)', () => {
 		const SocketFlags = require('../src/socket.io/flags');
 		let pid;
 		let tid;
-		before((done) => {
-			Topics.post({
+		let jar;
+		let csrfToken;
+		before(async () => {
+			const login = util.promisify(helpers.loginUser);
+			jar = await login('testUser2', 'abcdef');
+			const config = await request({
+				url: `${nconf.get('url')}/api/config`,
+				json: true,
+				jar: jar,
+			});
+			csrfToken = config.csrf_token;
+
+			const result = await Topics.post({
 				cid: 1,
 				uid: 1,
 				title: 'Another topic',
 				content: 'This is flaggable content',
-			}, (err, result) => {
-				pid = result.postData.pid;
-				tid = result.topicData.tid;
-				done(err);
 			});
+			pid = result.postData.pid;
+			tid = result.topicData.tid;
 		});
 
 		describe('.create()', () => {
-			it('should create a flag with no errors', (done) => {
-				SocketFlags.create({ uid: 2 }, {
-					type: 'post',
-					id: pid,
-					reason: 'foobar',
-				}, (err) => {
-					assert.ifError(err);
-
-					Flags.exists('post', pid, 1, (err, exists) => {
-						assert.ifError(err);
-						assert(true);
-						done();
-					});
+			it('should create a flag with no errors', async () => {
+				await request({
+					method: 'post',
+					uri: `${nconf.get('url')}/api/v3/flags`,
+					jar,
+					headers: {
+						'x-csrf-token': csrfToken,
+					},
+					body: {
+						type: 'post',
+						id: pid,
+						reason: 'foobar',
+					},
+					json: true,
 				});
+
+				const exists = await Flags.exists('post', pid, 2);
+				assert(exists);
 			});
 
 			it('should escape flag reason', async () => {
@@ -734,13 +757,22 @@ describe('Flags', () => {
 					content: 'This is flaggable content',
 				});
 
-				const flagId = await SocketFlags.create({ uid: 2 }, {
-					type: 'post',
-					id: postData.pid,
-					reason: '"<script>alert(\'ok\');</script>',
+				const { response } = await request({
+					method: 'post',
+					uri: `${nconf.get('url')}/api/v3/flags`,
+					jar,
+					headers: {
+						'x-csrf-token': csrfToken,
+					},
+					body: {
+						type: 'post',
+						id: postData.pid,
+						reason: '"<script>alert(\'ok\');</script>',
+					},
+					json: true,
 				});
 
-				const flagData = await Flags.get(flagId);
+				const flagData = await Flags.get(response.flagId);
 				assert.strictEqual(flagData.reports[0].value, '&quot;&lt;script&gt;alert(&#x27;ok&#x27;);&lt;&#x2F;script&gt;');
 			});
 
@@ -755,50 +787,109 @@ describe('Flags', () => {
 					title: 'private topic',
 					content: 'private post',
 				});
-				try {
-					await SocketFlags.create({ uid: uid3 }, { type: 'post', id: result.postData.pid, reason: 'foobar' });
-				} catch (err) {
-					assert.equal(err.message, '[[error:no-privileges]]');
-				}
+				const jar3 = await util.promisify(helpers.loginUser)('unprivileged', 'abcdef');
+				const config = await request({
+					url: `${nconf.get('url')}/api/config`,
+					json: true,
+					jar: jar3,
+				});
+				const csrfToken = config.csrf_token;
+				const { statusCode, body } = await request({
+					method: 'post',
+					uri: `${nconf.get('url')}/api/v3/flags`,
+					jar: jar3,
+					headers: {
+						'x-csrf-token': csrfToken,
+					},
+					body: {
+						type: 'post',
+						id: result.postData.pid,
+						reason: 'foobar',
+					},
+					json: true,
+					simple: false,
+					resolveWithFullResponse: true,
+				});
+				assert.strictEqual(statusCode, 403);
+
+				// Handle dev mode test
+				delete body.stack;
+
+				assert.deepStrictEqual(body, {
+					status: {
+						code: 'forbidden',
+						message: 'You do not have enough privileges for this action.',
+					},
+					response: {},
+				});
 			});
 		});
 
 		describe('.update()', () => {
-			it('should update a flag\'s properties', (done) => {
-				SocketFlags.update({ uid: 2 }, {
-					flagId: 2,
-					data: [{
-						name: 'state',
-						value: 'wip',
-					}],
-				}, (err, history) => {
-					assert.ifError(err);
-					assert(Array.isArray(history));
-					assert(history[0].fields.hasOwnProperty('state'));
-					assert.strictEqual('[[flags:state-wip]]', history[0].fields.state);
-					done();
+			it('should update a flag\'s properties', async () => {
+				const { response } = await request({
+					method: 'put',
+					uri: `${nconf.get('url')}/api/v3/flags/2`,
+					jar,
+					headers: {
+						'x-csrf-token': csrfToken,
+					},
+					body: {
+						state: 'wip',
+					},
+					json: true,
 				});
+
+				const { history } = response;
+				assert(Array.isArray(history));
+				assert(history[0].fields.hasOwnProperty('state'));
+				assert.strictEqual('[[flags:state-wip]]', history[0].fields.state);
 			});
 		});
 
 		describe('.appendNote()', () => {
-			it('should append a note to the flag', (done) => {
-				SocketFlags.appendNote({ uid: 2 }, {
-					flagId: 2,
-					note: 'lorem ipsum dolor sit amet',
-				}, (err, data) => {
-					assert.ifError(err);
-					assert(data.hasOwnProperty('notes'));
-					assert(Array.isArray(data.notes));
-					assert.strictEqual('lorem ipsum dolor sit amet', data.notes[0].content);
-					assert.strictEqual(2, data.notes[0].uid);
-
-					assert(data.hasOwnProperty('history'));
-					assert(Array.isArray(data.history));
-					assert.strictEqual(1, Object.keys(data.history[0].fields).length);
-					assert(data.history[0].fields.hasOwnProperty('notes'));
-					done();
+			it('should append a note to the flag', async () => {
+				const { response } = await request({
+					method: 'post',
+					uri: `${nconf.get('url')}/api/v3/flags/2/notes`,
+					jar,
+					headers: {
+						'x-csrf-token': csrfToken,
+					},
+					body: {
+						note: 'lorem ipsum dolor sit amet',
+						datetime: 1626446956652,
+					},
+					json: true,
 				});
+
+				assert(response.hasOwnProperty('notes'));
+				assert(Array.isArray(response.notes));
+				assert.strictEqual('lorem ipsum dolor sit amet', response.notes[0].content);
+				assert.strictEqual(2, response.notes[0].uid);
+
+				assert(response.hasOwnProperty('history'));
+				assert(Array.isArray(response.history));
+				assert.strictEqual(1, Object.keys(response.history[response.history.length - 1].fields).length);
+				assert(response.history[response.history.length - 1].fields.hasOwnProperty('notes'));
+			});
+		});
+
+		describe('.deleteNote()', () => {
+			it('should delete a note from a flag', async () => {
+				const { response } = await request({
+					method: 'delete',
+					uri: `${nconf.get('url')}/api/v3/flags/2/notes/1626446956652`,
+					jar,
+					headers: {
+						'x-csrf-token': csrfToken,
+					},
+					json: true,
+				});
+
+				assert(Array.isArray(response.history));
+				assert(Array.isArray(response.notes));
+				assert.strictEqual(response.notes.length, 0);
 			});
 		});
 	});
