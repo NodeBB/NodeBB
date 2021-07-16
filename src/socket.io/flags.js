@@ -41,6 +41,7 @@ SocketFlags.appendNote = async function (socket, data) {
 };
 
 SocketFlags.deleteNote = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'DELETE /api/v3/flags/:flagId/notes/:datetime');
 	if (!data || !(data.flagId && data.datetime)) {
 		throw new Error('[[error:invalid-data]]');
 	}
