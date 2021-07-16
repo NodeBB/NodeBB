@@ -32,19 +32,29 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 				}
 
 				case 'appendNote':
-					socket.emit('flags.appendNote', {
-						flagId: ajaxify.data.flagId,
+					// socket.emit('flags.appendNote', {
+					api.post(`/flags/${ajaxify.data.flagId}/notes`, {
 						note: noteEl.value,
 						datetime: parseInt(noteEl.getAttribute('data-datetime'), 10),
-					}, function (err, payload) {
-						if (err) {
-							return app.alertError(err.message);
-						}
+					}).then((payload) => {
 						app.alertSuccess('[[flags:note-added]]');
 						Detail.reloadNotes(payload.notes);
 						Detail.reloadHistory(payload.history);
 
 						noteEl.removeAttribute('data-datetime');
+					}).catch(app.alertError);
+					break;
+
+				case 'delete-note':
+					var datetime = parseInt(this.closest('[data-datetime]').getAttribute('data-datetime'), 10);
+					bootbox.confirm('[[flags:delete-note-confirm]]', function (ok) {
+						if (ok) {
+							api.delete(`/flags/${ajaxify.data.flagId}/notes/${datetime}`, {}).then((payload) => {
+								app.alertSuccess('[[flags:note-deleted]]');
+								Detail.reloadNotes(payload.notes);
+								Detail.reloadHistory(payload.history);
+							}).catch(app.alertError);
+						}
 					});
 					break;
 
@@ -78,26 +88,6 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 
 				case 'restore-post':
 					postAction('restore', ajaxify.data.target.pid, ajaxify.data.target.tid);
-					break;
-
-				case 'delete-note':
-					var datetime = parseInt(this.closest('[data-datetime]').getAttribute('data-datetime'), 10);
-					bootbox.confirm('[[flags:delete-note-confirm]]', function (ok) {
-						if (ok) {
-							socket.emit('flags.deleteNote', {
-								flagId: ajaxify.data.flagId,
-								datetime: datetime,
-							}, function (err, payload) {
-								if (err) {
-									return app.alertError(err.message);
-								}
-
-								app.alertSuccess('[[flags:note-deleted]]');
-								Detail.reloadNotes(payload.notes);
-								Detail.reloadHistory(payload.history);
-							});
-						}
-					});
 					break;
 
 				case 'prepare-edit':
