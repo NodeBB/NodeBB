@@ -54,7 +54,7 @@
     "email-confirmed-message": "Cảm ơn bạn đã xác nhận địa chỉ email của bạn. Tài khoản của bạn đã được kích hoạt đầy đủ.",
     "email-confirm-error-message": "Đã có lỗi khi xác nhận địa chỉ email. Có thể đoạn mã không đúng hoặc đã hết hạn.",
     "email-confirm-sent": "Đã gửi email xác nhận.",
-    "none": "Không",
+    "none": "Trống",
     "notification_only": "Chỉ Thông Báo",
     "email_only": "Chỉ email",
     "notification_and_email": "Thông Báo & Email",

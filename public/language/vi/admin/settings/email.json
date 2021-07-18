@@ -18,7 +18,7 @@
 	"smtp-transport.security": "Bảo mật kết nối",
 	"smtp-transport.security-encrypted": "Được mã hóa",
 	"smtp-transport.security-starttls": "StartTLS",
-	"smtp-transport.security-none": "Không",
+	"smtp-transport.security-none": "Trống",
 	"smtp-transport.username": "Tên đăng nhập",
 	"smtp-transport.username-help": "<b>Đối với dịch vụ Gmail,</b> nhập địa chỉ email đầy đủ tại đây, đặc biệt nếu bạn đang sử dụng tên miền được Google Apps quản lý.",
 	"smtp-transport.password": "Mật Khẩu",
