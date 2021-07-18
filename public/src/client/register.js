@@ -18,12 +18,10 @@ define('forum/register', [
 
 		$('#content #noscript').val('false');
 
-		// TODO: #9607
-		// var query = utils.params();
-		// if (query.email && query.token) {
-		// 	email.val(decodeURIComponent(query.email));
-		// 	$('#token').val(query.token);
-		// }
+		var query = utils.params();
+		if (query.token) {
+			$('#token').val(query.token);
+		}
 
 		// Update the "others can mention you via" text
 		username.on('keyup', function () {
