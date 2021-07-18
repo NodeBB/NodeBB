@@ -2265,7 +2265,7 @@ describe('User', () => {
 
 			it('should verify installation with no errors', (done) => {
 				const email = 'invite1@test.com';
-				db.getObjectField(`invitation:email:${email}`, 'token', (err, token) => {
+				db.get(`invitation:uid:${inviterUid}:invited:${email}`, 'token', (err, token) => {
 					assert.ifError(err);
 					User.verifyInvitation({ token: token, email: 'invite1@test.com' }, (err) => {
 						assert.ifError(err);
@@ -2311,7 +2311,7 @@ describe('User', () => {
 			it('should joined the groups from invitation after registration', async () => {
 				const email = 'invite5@test.com';
 				const groupsToJoin = [PUBLIC_GROUP, OWN_PRIVATE_GROUP];
-				const token = await db.getObjectField(`invitation:email:${email}`, 'token');
+				const token = await db.get(`invitation:uid:${inviterUid}:invited:${email}`);
 
 				await new Promise((resolve, reject) => {
 					helpers.registerUser({

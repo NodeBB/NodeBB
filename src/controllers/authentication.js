@@ -58,12 +58,15 @@ async function registerAndLoginUser(req, res, userData) {
 		await authenticationController.doLogin(req, uid);
 	}
 
-	// TODO: #9607
-	// // Distinguish registrations through invites from direct ones
-	// if (userData.token) {
-	// 	await user.joinGroupsFromInvitation(uid, userData.email);
-	// }
-	// await user.deleteInvitationKey(userData.email);
+	// Distinguish registrations through invites from direct ones
+	if (userData.token) {
+		// Token has to be verified at this point
+		await Promise.all([
+			user.confirmIfInviteEmailIsUsed(userData.token, userData.email, uid),
+			user.joinGroupsFromInvitation(uid, userData.token),
+		]);
+	}
+	await user.deleteInvitationKey(userData.email, userData.token);
 	const next = req.session.returnTo || `${nconf.get('relative_path')}/`;
 	const complete = await plugins.hooks.fire('filter:register.complete', { uid: uid, next: next });
 	req.session.returnTo = complete.next;
