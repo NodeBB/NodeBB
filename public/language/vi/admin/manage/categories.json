@@ -73,7 +73,7 @@
 	"alert.create-success": "Đã tạo chuyên mục thành công!",
 	"alert.none-active": "Bạn không có chuyên mục hoạt động.",
 	"alert.create": "Tạo Chuyên Mục",
-	"alert.confirm-purge": "<p class=\"lead\">Bạn có thực sự muốn xóa danh mục \"%1\" này không?</p><h5><strong class=\"text-danger\">Cảnh báo!</strong> Tất cả các chủ đề và bài đăng trong danh mục này sẽ bị xóa hẳn!</h5> <p class=\"help-block\">Xóa danh mục sẽ xóa tất cả các chủ đề và bài đăng, đồng thời xóa danh mục khỏi cơ sở dữ liệu. Nếu bạn muốn xóa một danh mục<em>tạm thời</em>, thay vào đó bạn sẽ muốn \"vô hiệu hóa\" danh mục.</p>",
+	"alert.confirm-purge": "<p class=\"lead\">Bạn có thực sự muốn xóa danh mục \"%1\" này không?</p><h5><strong class=\"text-danger\">Cảnh báo!</strong> Tất cả chủ đề và bài đăng trong danh mục này sẽ bị xóa!</h5> <p class=\"help-block\">Xóa danh mục sẽ xóa tất cả các chủ đề và bài đăng, đồng thời xóa danh mục khỏi cơ sở dữ liệu. Nếu bạn muốn xóa một danh mục<em>tạm thời</em>, thay vào đó bạn sẽ muốn \"vô hiệu hóa\" danh mục.</p>",
 	"alert.purge-success": "Đã loại bỏ chuyên mục!",
 	"alert.copy-success": "Đã Sao Chép Cài Đặt!",
 	"alert.set-parent-category": "Đặt Chuyên Mục Chính",
