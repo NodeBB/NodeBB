@@ -975,11 +975,10 @@ describe('User', () => {
 			const uid = await User.create({ username: longName });
 			await socketUser.changeUsernameEmail({ uid: uid }, { uid: uid, username: longName, email: 'verylong@name.com' });
 			const userData = await db.getObject(`user:${uid}`);
-			assert.strictEqual(userData.username, longName);
+			const awaitingValidation = await User.email.isValidationPending(uid, 'verylong@name.com');
 
-			const event = (await events.getEvents('email-confirmation-sent', 0, 0)).pop();
-			assert.strictEqual(parseInt(event.uid, 10), uid);
-			assert.strictEqual(event.email, 'verylong@name.com');
+			assert.strictEqual(userData.username, longName);
+			assert.strictEqual(awaitingValidation, true);
 		});
 
 		it('should not update a user\'s username if it did not change', (done) => {
@@ -2048,6 +2047,7 @@ describe('User', () => {
 					async.apply(groups.create, { name: OWN_PRIVATE_GROUP, ownerUid: inviterUid, private: 1 }),
 					async.apply(groups.join, 'administrators', adminUid),
 					async.apply(groups.join, 'cid:0:privileges:invite', inviterUid),
+					async.apply(User.email.confirmByUid, inviterUid),
 				], done);
 			});
 		});
@@ -2181,10 +2181,12 @@ describe('User', () => {
 				assert.strictEqual(numInvites, 0);
 			});
 
-			it('should error if email exists', async () => {
+			it('should succeed if email exists but not actually send an invite', async () => {
 				const { res } = await helpers.invite({ emails: 'inviter@nodebb.org', groupsToJoin: [] }, inviterUid, jar, csrf_token);
-				assert.strictEqual(res.statusCode, 400);
-				assert.strictEqual(res.body.status.message, 'Email taken');
+				const numInvites = await User.getInvitesNumber(adminUid);
+
+				assert.strictEqual(res.statusCode, 200);
+				assert.strictEqual(numInvites, 0);
 			});
 		});
 

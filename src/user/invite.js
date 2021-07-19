@@ -42,7 +42,8 @@ module.exports = function (User) {
 
 		const email_exists = await User.getUidByEmail(email);
 		if (email_exists) {
-			throw new Error('[[error:email-taken]]');
+			// Silently drop the invitation if the invited email already exists locally
+			return true;
 		}
 
 		const invitation_exists = await db.exists(`invitation:uid:${uid}:invited:${email}`);
