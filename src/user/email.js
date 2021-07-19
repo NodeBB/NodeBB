@@ -126,14 +126,12 @@ UserEmail.confirmByCode = async function (code) {
 	let oldEmail = await user.getUserField(confirmObj.uid, 'email');
 	if (oldEmail) {
 		oldEmail = oldEmail || '';
-		if (oldEmail === confirmObj.email) {
-			return;
+		if (oldEmail !== confirmObj.email) {
+			await db.sortedSetRemove('email:uid', oldEmail.toLowerCase());
+			await db.sortedSetRemove('email:sorted', `${oldEmail.toLowerCase()}:${confirmObj.uid}`);
+			await user.auth.revokeAllSessions(confirmObj.uid);
+			await events.log('email-change', { oldEmail, newEmail: confirmObj.email });
 		}
-
-		await db.sortedSetRemove('email:uid', oldEmail.toLowerCase());
-		await db.sortedSetRemove('email:sorted', `${oldEmail.toLowerCase()}:${confirmObj.uid}`);
-		await user.auth.revokeAllSessions(confirmObj.uid);
-		await events.log('email-change', { oldEmail, newEmail: confirmObj.email });
 	}
 
 	await Promise.all([
