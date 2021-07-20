@@ -1,12 +1,12 @@
 {
-	"events": "Events",
-	"no-events": "There are no events",
-	"control-panel": "Events Control Panel",
-	"delete-events": "Delete Events",
-	"filters": "Filters",
-	"filters-apply": "Apply Filters",
-	"filter-type": "Event Type",
-	"filter-start": "Start Date",
-	"filter-end": "End Date",
-	"filter-perPage": "Per Page"
+	"events": "Tapahtumat",
+	"no-events": "Ei tapahtumia.",
+	"control-panel": "Tapahtumien hallintapaneeli",
+	"delete-events": "Poista tapahtumia",
+	"filters": "Suodattimet",
+	"filters-apply": "Lisää suodattimia",
+	"filter-type": "Tapahtuman tyyppi",
+	"filter-start": "Aloituspäivä",
+	"filter-end": "Lopetuspäivä",
+	"filter-perPage": "Per Sivu"
 }

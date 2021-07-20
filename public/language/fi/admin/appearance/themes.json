@@ -1,11 +1,11 @@
 {
-    "checking-for-installed": "Checking for installed themes...",
-    "homepage": "Homepage",
-    "select-theme": "Select Theme",
-    "current-theme": "Current Theme",
-    "no-themes": "No installed themes found",
-    "revert-confirm": "Are you sure you wish to restore the default NodeBB theme?",
-    "theme-changed": "Theme Changed",
-    "revert-success": "You have successfully reverted your NodeBB back to it's default theme.",
-    "restart-to-activate": "Please rebuild and restart your NodeBB to fully activate this theme."
+    "checking-for-installed": "Haetaan asennettuja teemoja...",
+    "homepage": "Kotisivu",
+    "select-theme": "Valitse teema",
+    "current-theme": "Nykyinen teema",
+    "no-themes": "Asennettuja teemoja ei löytynyt.",
+    "revert-confirm": "Oletko varma, että haluat palauttaa foorumisi teeman NodeBB-oletusteemaan?",
+    "theme-changed": "Teema vaihdettu.",
+    "revert-success": "Palautit foorumisi onnistuneesti NodeBB-oletusteemalle.",
+    "restart-to-activate": "Sinun on uudelleenrakennettava ja -käynnistettävä NodeBB, jotta teeman aktivointi saadaan suoritettua loppuun."
 }

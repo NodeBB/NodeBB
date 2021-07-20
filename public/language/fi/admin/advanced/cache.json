@@ -1,6 +1,6 @@
 {
-	"post-cache": "Post Cache",
-	"percent-full": "%1% Full",
-	"post-cache-size": "Post Cache Size",
-	"items-in-cache": "Items in Cache"
+	"post-cache": "Viestivälimuisti",
+	"percent-full": "%1% Täynnä",
+	"post-cache-size": "Viestivälimuistin koko",
+	"items-in-cache": "Asioita välimuistissa"
 }
