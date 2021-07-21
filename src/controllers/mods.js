@@ -13,7 +13,7 @@ const helpers = require('./helpers');
 const modsController = module.exports;
 modsController.flags = {};
 
-modsController.flags.list = async function (req, res, next) {
+modsController.flags.list = async function (req, res) {
 	const validFilters = ['assignee', 'state', 'reporterId', 'type', 'targetUid', 'cid', 'quick', 'page', 'perPage'];
 	const validSorts = ['newest', 'oldest', 'reports', 'upvotes', 'downvotes', 'replies'];
 
