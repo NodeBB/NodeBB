@@ -646,11 +646,7 @@ describe('Admin Controllers', () => {
 				},
 			}, (err, res, body) => {
 				assert.ifError(err);
-				assert.deepStrictEqual(body, {
-					path: '&#x2F;flags&#x2F;123123123',
-					title: '[[global:404.title]]',
-					bodyClass: 'page-flags page-flags-123123123 page-status-404',
-				});
+				assert.strictEqual(res.statusCode, 404);
 				done();
 			});
 		});
