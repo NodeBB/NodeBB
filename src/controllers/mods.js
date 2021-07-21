@@ -27,7 +27,7 @@ modsController.flags.list = async function (req, res, next) {
 	let [,, { filters }] = results;
 
 	if (!(isAdminOrGlobalMod || !!moderatedCids.length)) {
-		return next(new Error('[[error:no-privileges]]'));
+		return helpers.notAllowed(req, res);
 	}
 
 	if (!isAdminOrGlobalMod && moderatedCids.length) {
@@ -113,10 +113,8 @@ modsController.flags.detail = async function (req, res, next) {
 	});
 	results.privileges = { ...results.privileges[0], ...results.privileges[1] };
 
-	if (!results.flagData) {
-		return next(new Error('[[error:invalid-data]]'));
-	} else if (!(results.isAdminOrGlobalMod || !!results.moderatedCids.length)) {
-		return next(new Error('[[error:no-privileges]]'));
+	if (!results.flagData || (!(results.isAdminOrGlobalMod || !!results.moderatedCids.length))) {
+		return next();	// 404
 	}
 
 	if (results.flagData.type === 'user') {

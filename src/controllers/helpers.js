@@ -117,11 +117,7 @@ helpers.buildTerms = function (url, term, query) {
 };
 
 helpers.notAllowed = async function (req, res, error) {
-	const data = await plugins.hooks.fire('filter:helpers.notAllowed', {
-		req: req,
-		res: res,
-		error: error,
-	});
+	({ error } = await plugins.hooks.fire('filter:helpers.notAllowed', { req, res, error }));
 
 	if (req.loggedIn || req.uid === -1) {
 		if (res.locals.isAPI) {
@@ -132,7 +128,7 @@ helpers.notAllowed = async function (req, res, error) {
 			res.status(403).render('403', {
 				path: req.path,
 				loggedIn: req.loggedIn,
-				error: data.error,
+				error,
 				title: '[[global:403.title]]',
 			});
 		}
