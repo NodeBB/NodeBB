@@ -615,7 +615,13 @@ describe('Admin Controllers', () => {
 		it('should error with no privileges', (done) => {
 			request(`${nconf.get('url')}/api/flags`, { json: true }, (err, res, body) => {
 				assert.ifError(err);
-				assert.equal(body.error, '[[error:no-privileges]]');
+				assert.deepStrictEqual(body, {
+					status: {
+						code: 'not-authorised',
+						message: 'A valid login session was not found. Please log in and try again.',
+					},
+					response: {},
+				});
 				done();
 			});
 		});
@@ -631,10 +637,20 @@ describe('Admin Controllers', () => {
 			});
 		});
 
-		it('should return invalid data if flag does not exist', (done) => {
-			request(`${nconf.get('url')}/api/flags/123123123`, { jar: moderatorJar, json: true }, (err, res, body) => {
+		it('should return a 404 if flag does not exist', (done) => {
+			request(`${nconf.get('url')}/api/flags/123123123`, {
+				jar: moderatorJar,
+				json: true,
+				headers: {
+					Accept: 'text/html, application/json',
+				},
+			}, (err, res, body) => {
 				assert.ifError(err);
-				assert.equal(body.error, '[[error:invalid-data]]');
+				assert.deepStrictEqual(body, {
+					path: '&#x2F;flags&#x2F;123123123',
+					title: '[[global:404.title]]',
+					bodyClass: 'page-flags page-flags-123123123 page-status-404',
+				});
 				done();
 			});
 		});
