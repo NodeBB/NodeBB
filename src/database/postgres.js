@@ -370,7 +370,10 @@ postgresModule.info = async function (db) {
 		   current_setting('server_version') "version",
 			 EXTRACT(EPOCH FROM NOW() - pg_postmaster_start_time()) * 1000 "uptime"
 	`);
-	return res.rows[0];
+	return {
+		...res.rows[0],
+		raw: JSON.stringify(res.rows[0], null, 4),
+	};
 };
 
 postgresModule.close = async function () {
