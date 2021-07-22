@@ -31,7 +31,7 @@
 
 	"sockets.settings": "WebSocket Settings",
 	"sockets.max-attempts": "Max Reconnection Attempts",
-	"sockets.default-placeholder": "Default: %1",
+	"sockets.default-placeholder": "ברירת מחדל: %1",
 	"sockets.delay": "Reconnection Delay",
 
 	"analytics.settings": "Analytics Settings",

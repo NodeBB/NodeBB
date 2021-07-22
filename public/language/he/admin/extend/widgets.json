@@ -1,7 +1,7 @@
 {
 	"available": "יישומונים זמינים",
 	"explanation": "בחר יישומון מהתפריט הנפתח ואז גרור ושחרר אותו לאזור הווידג'ט של התבנית משמאל.",
-	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",
+	"none-installed": "לא נמצאו וידג'טים! הפעל את תוספי הוידג'טים ב <a href=\"%1\">תוספים</a> בלוח הבקרה.",
 	"clone-from": "יישומונים משוכפלים מ",
 	"containers.available": "גורמים מכילים זמינים",
 	"containers.explanation": "גרור ושחרר מעל כל יישומון פעיל",
@@ -16,9 +16,9 @@
 	"alert.confirm-delete": "האם אתה בטוח שאתה רוצה למחוק את הווידג'ט?",
 	"alert.updated": "העלאת ווידג'טים",
 	"alert.update-success": "הווידג'טים הועלו בהצלחה",
-	"alert.clone-success": "Successfully cloned widgets",
+	"alert.clone-success": "הוידג'טים שוכפלו בהצלחה",
 
-	"error.select-clone": "Please select a page to clone from",
+	"error.select-clone": "בחר דף לשכפל ממנו",
 
 	"title": "כותרת",
 	"title.placeholder": "Title (only shown on some containers)",
