@@ -246,8 +246,6 @@ module.exports = function (User) {
 		if (newEmail) {
 			await User.email.sendValidationEmail(uid, {
 				email: newEmail,
-				subject: '[[email:email.verify-your-email.subject]]',
-				template: 'verify_email',
 				force: 1,
 			}).catch(err => winston.error(`[user.create] Validation email failed to send\n[emailer.send] ${err.stack}`));
 		}

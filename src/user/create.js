@@ -114,6 +114,8 @@ module.exports = function (User) {
 		if (userData.email && userData.uid > 1) {
 			User.email.sendValidationEmail(userData.uid, {
 				email: userData.email,
+				template: 'welcome',
+				subject: `[[email:welcome-to, ${meta.config.title || meta.config.browserTitle || 'NodeBB'}]]`,
 			}).catch(err => winston.error(`[user.create] Validation email failed to send\n[emailer.send] ${err.stack}`));
 		}
 		if (userNameChanged) {
