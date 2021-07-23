@@ -262,8 +262,14 @@ User.addInterstitials = function (callback) {
 								const [isAdminOrGlobalMod, canEdit] = await Promise.all([
 									User.isAdminOrGlobalMod(data.req.uid),
 									privileges.users.canEdit(data.req.uid, userData.uid),
+
 								]);
-								if (isAdminOrGlobalMod || canEdit) {
+
+								// Admins editing will auto-confirm, unless editing their own email
+								if (isAdminOrGlobalMod && userData.uid !== data.req.uid) {
+									await User.setUserField(userData.uid, 'email', formData.email);
+									await User.email.confirmByUid(userData.uid);
+								} else if (canEdit) {
 									await User.email.sendValidationEmail(userData.uid, {
 										email: formData.email,
 										force: true,

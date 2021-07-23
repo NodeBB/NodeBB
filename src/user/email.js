@@ -99,13 +99,14 @@ UserEmail.sendValidationEmail = async function (uid, options) {
 	});
 
 	const data = {
-		username: username,
-		confirm_link: confirm_link,
-		confirm_code: confirm_code,
+		uid,
+		username,
+		confirm_link,
+		confirm_code,
+		email: options.email,
 
-		subject: options.subject || `[[email:welcome-to, ${meta.config.title || meta.config.browserTitle || 'NodeBB'}]]`,
-		template: options.template || 'welcome',
-		uid: uid,
+		subject: options.subject || '[[email:email.verify-your-email.subject]]',
+		template: options.template || 'verify-email',
 	};
 
 	if (plugins.hooks.hasListeners('action:user.verify')) {
@@ -134,8 +135,8 @@ UserEmail.confirmByCode = async function (code) {
 		}
 	}
 
+	await user.setUserField(confirmObj.uid, 'email', confirmObj.email);
 	await Promise.all([
-		user.setUserField('email', confirmObj.email),
 		UserEmail.confirmByUid(confirmObj.uid),
 		db.delete(`confirm:${code}`),
 	]);
