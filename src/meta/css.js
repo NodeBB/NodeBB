@@ -25,7 +25,11 @@ CSS.supportedSkins = [
 const buildImports = {
 	client: function (source) {
 		return `@import "./theme";\n${source}\n${[
-			'@import "font-awesome";',
+			'@import "../public/vendor/fontawesome/less/regular.less";',
+			'@import "../public/vendor/fontawesome/less/solid.less";',
+			'@import "../public/vendor/fontawesome/less/brands.less";',
+			'@import "../public/vendor/fontawesome/less/fontawesome.less";',
+			'@import "../public/vendor/fontawesome/less/v4-shims.less";',
 			'@import "../../public/less/jquery-ui.less";',
 			'@import (inline) "../node_modules/@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput.css";',
 			'@import (inline) "../node_modules/cropperjs/dist/cropper.css";',
@@ -38,7 +42,11 @@ const buildImports = {
 	},
 	admin: function (source) {
 		return `${source}\n${[
-			'@import "font-awesome";',
+			'@import "../public/vendor/fontawesome/less/regular.less";',
+			'@import "../public/vendor/fontawesome/less/solid.less";',
+			'@import "../public/vendor/fontawesome/less/brands.less";',
+			'@import "../public/vendor/fontawesome/less/fontawesome.less";',
+			'@import "../public/vendor/fontawesome/less/v4-shims.less";',
 			'@import "../public/less/admin/admin";',
 			'@import "../public/less/generics.less";',
 			'@import "../../public/less/jquery-ui.less";',
