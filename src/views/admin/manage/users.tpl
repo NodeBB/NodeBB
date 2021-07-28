@@ -105,12 +105,21 @@
 					<tr class="user-row">
 						<th><input component="user/select/single" data-uid="{users.uid}" type="checkbox"/></th>
 						<td class="text-right">{users.uid}</td>
-						<td><i title="[[admin/manage/users:users.banned]]" class="ban fa fa-gavel text-danger<!-- IF !users.banned --> hidden<!-- ENDIF !users.banned -->"></i><i class="administrator fa fa-shield text-success<!-- IF !users.administrator --> hidden<!-- ENDIF !users.administrator -->"></i><a href="{config.relative_path}/user/{users.userslug}"> {users.username}</a></td>
-
 						<td>
-						<i class="validated fa fa-check text-success<!-- IF !users.email:confirmed --> hidden<!-- ENDIF !users.email:confirmed -->" title="validated"></i>
-						<i class="notvalidated fa fa-check text-muted<!-- IF users.email:confirmed --> hidden<!-- ENDIF users.email:confirmed -->" title="not validated"></i>
-						 {users.email}</td>
+							<i title="[[admin/manage/users:users.banned]]" class="ban fa fa-gavel text-danger<!-- IF !users.banned --> hidden<!-- ENDIF !users.banned -->"></i>
+							<i class="administrator fa fa-shield text-success<!-- IF !users.administrator --> hidden<!-- ENDIF !users.administrator -->"></i>
+							<a href="{config.relative_path}/user/{users.userslug}"> {users.username}</a>
+						</td>
+						<td>
+							{{{ if ../email }}}
+							<i class="validated fa fa-check text-success<!-- IF !users.email:confirmed --> hidden<!-- ENDIF !users.email:confirmed -->" title="validated"></i>
+							<i class="notvalidated fa fa-check text-muted<!-- IF users.email:confirmed --> hidden<!-- ENDIF users.email:confirmed -->" title="not validated"></i>
+							{../email}
+							{{{ else }}}
+							<i class="notvalidated fa fa-check text-muted" title="not validated"></i>
+							<em class="text-muted">[[admin/manage/users:users.no-email]]</em>
+							{{{ end }}}
+						</td>
 						<td>{users.ip}</td>
 						<td class="text-right">{users.postcount}</td>
 						<td class="text-right">{users.reputation}</td>
