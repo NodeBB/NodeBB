@@ -52,6 +52,7 @@ Interstitials.email = async (data) => {
 							email: formData.email,
 							force: true,
 						});
+						data.req.session.emailChanged = 1;
 					} else {
 						// User attempting to edit another user's email -- not allowed
 						throw new Error('[[error:no-privileges]]');

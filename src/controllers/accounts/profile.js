@@ -50,6 +50,10 @@ profileController.get = async function (req, res, next) {
 	userData.title = userData.username;
 	userData.allowCoverPicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:cover-picture'];
 
+	// Show email changed modal on first access after said change
+	userData.emailChanged = req.session.emailChanged;
+	delete req.session.emailChanged;
+
 	if (!userData.profileviews) {
 		userData.profileviews = 1;
 	}
