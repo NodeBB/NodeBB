@@ -233,7 +233,7 @@ Emailer.send = async (template, uid, params) => {
 		return;
 	}
 
-	const allowedTpls = ['verify_email', 'welcome', 'registration_accepted'];
+	const allowedTpls = ['verify-email', 'welcome', 'registration_accepted', 'reset', 'reset_notify'];
 	if (!meta.config.includeUnverifiedEmails && !userData['email:confirmed'] && !allowedTpls.includes(template)) {
 		if (process.env.NODE_ENV === 'development') {
 			winston.warn(`uid : ${uid} (${userData.email}) has not confirmed email, not sending "${template}" email.`);
