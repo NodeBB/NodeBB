@@ -222,12 +222,19 @@ Controllers.registerInterstitial = async function (req, res, next) {
 	}
 };
 
-Controllers.confirmEmail = function (req, res) {
-	user.email.confirmByCode(req.params.code, (err) => {
-		res.render('confirm', {
-			error: err ? err.message : '',
-			title: '[[pages:confirm]]',
-		});
+Controllers.confirmEmail = async (req, res, next) => {
+	try {
+		await user.email.confirmByCode(req.params.code, req.session.id);
+	} catch (e) {
+		if (e.message === '[[error:invalid-data]]') {
+			return next();
+		}
+
+		throw e;
+	}
+
+	res.render('confirm', {
+		title: '[[pages:confirm]]',
 	});
 };
 
