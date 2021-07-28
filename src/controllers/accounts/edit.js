@@ -92,6 +92,7 @@ editController.email = async function (req, res, next) {
 		return next();
 	}
 
+	req.session.returnTo = `/uid/${targetUid}`;
 	req.session.registration = req.session.registration || {};
 	req.session.registration.updateEmail = true;
 	req.session.registration.uid = targetUid;
