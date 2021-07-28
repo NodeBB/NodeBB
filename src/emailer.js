@@ -219,6 +219,12 @@ Emailer.send = async (template, uid, params) => {
 	}
 
 	let userData = await User.getUserFields(uid, ['email', 'username', 'email:confirmed']);
+
+	// 'welcome' and 'verify-email' explicitly used passed-in email address
+	if (['welcome', 'verify-email'].includes(template)) {
+		userData.email = params.email;
+	}
+
 	({ template, userData, params } = await Plugins.hooks.fire('filter:email.prepare', { template, uid, userData, params }));
 	if (!userData || !userData.email) {
 		if (process.env.NODE_ENV === 'development') {
