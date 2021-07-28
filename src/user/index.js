@@ -279,7 +279,7 @@ User.addInterstitials = function (callback) {
 								}
 							} else {
 								// User explicitly clearing their email
-								await User.email.remove(userData.uid);
+								await User.email.remove(userData.uid, data.req.session.id);
 							}
 						} else {
 							// New registrants have the confirm email sent from user.create()
