@@ -16,6 +16,7 @@ User.email = require('./email');
 User.notifications = require('./notifications');
 User.reset = require('./reset');
 User.digest = require('./digest');
+User.interstitials = require('./interstitials');
 
 require('./data')(User);
 require('./auth')(User);
@@ -229,141 +230,9 @@ User.addInterstitials = function (callback) {
 	plugins.hooks.register('core', {
 		hook: 'filter:register.interstitial',
 		method: [
-			// Email address (for password reset + digest)
-			async (data) => {
-				if (!data.userData) {
-					throw new Error('[[error:invalid-data]]');
-				}
-				if (!data.userData.updateEmail) {
-					return data;
-				}
-
-				let email;
-				if (data.userData.uid) {
-					email = await User.getUserField(data.userData.uid, 'email');
-				}
-
-				data.interstitials.push({
-					template: 'partials/email_update',
-					data: { email },
-					callback: async (userData, formData) => {
-						// Validate and send email confirmation
-						if (userData.uid) {
-							const [isAdminOrGlobalMod, canEdit] = await Promise.all([
-								User.isAdminOrGlobalMod(data.req.uid),
-								privileges.users.canEdit(data.req.uid, userData.uid),
-							]);
-
-							if (formData.email && formData.email.length) {
-								if (!utils.isEmailValid(formData.email)) {
-									throw new Error('[[error:invalid-email]]');
-								}
-
-								const current = await User.getUserField(userData.uid, 'email');
-								if (formData.email === current) {
-									throw new Error('[[error:email-nochange]]');
-								}
-
-								// Admins editing will auto-confirm, unless editing their own email
-								if (isAdminOrGlobalMod && userData.uid !== data.req.uid) {
-									await User.setUserField(userData.uid, 'email', formData.email);
-									await User.email.confirmByUid(userData.uid);
-								} else if (canEdit) {
-									await User.email.sendValidationEmail(userData.uid, {
-										email: formData.email,
-										force: true,
-									});
-								} else {
-									// User attempting to edit another user's email -- not allowed
-									throw new Error('[[error:no-privileges]]');
-								}
-							} else {
-								// User explicitly clearing their email
-								await User.email.remove(userData.uid, data.req.session.id);
-							}
-						} else {
-							// New registrants have the confirm email sent from user.create()
-							userData.email = formData.email;
-						}
-
-						delete userData.updateEmail;
-					},
-				});
-
-				return data;
-			},
-
-			// GDPR information collection/processing consent + email consent
-			async function (data) {
-				if (!meta.config.gdpr_enabled || (data.userData && data.userData.gdpr_consent)) {
-					return data;
-				}
-				if (!data.userData) {
-					throw new Error('[[error:invalid-data]]');
-				}
-
-				if (data.userData.uid) {
-					const consented = await db.getObjectField(`user:${data.userData.uid}`, 'gdpr_consent');
-					if (parseInt(consented, 10)) {
-						return data;
-					}
-				}
-
-				data.interstitials.push({
-					template: 'partials/gdpr_consent',
-					data: {
-						digestFrequency: meta.config.dailyDigestFreq,
-						digestEnabled: meta.config.dailyDigestFreq !== 'off',
-					},
-					callback: function (userData, formData, next) {
-						if (formData.gdpr_agree_data === 'on' && formData.gdpr_agree_email === 'on') {
-							userData.gdpr_consent = true;
-						}
-
-						next(userData.gdpr_consent ? null : new Error('[[register:gdpr_consent_denied]]'));
-					},
-				});
-				return data;
-			},
-
-			// Forum Terms of Use
-			async function (data) {
-				if (!data.userData) {
-					throw new Error('[[error:invalid-data]]');
-				}
-				if (!meta.config.termsOfUse || data.userData.acceptTos) {
-					// no ToS or ToS accepted, nothing to do
-					return data;
-				}
-
-				if (data.userData.uid) {
-					const accepted = await db.getObjectField(`user:${data.userData.uid}`, 'acceptTos');
-					if (parseInt(accepted, 10)) {
-						return data;
-					}
-				}
-
-				const termsOfUse = await plugins.hooks.fire('filter:parse.post', {
-					postData: {
-						content: meta.config.termsOfUse || '',
-					},
-				});
-
-				data.interstitials.push({
-					template: 'partials/acceptTos',
-					data: {
-						termsOfUse: termsOfUse.postData.content,
-					},
-					callback: function (userData, formData, next) {
-						if (formData['agree-terms'] === 'on') {
-							userData.acceptTos = true;
-						}
-
-						next(userData.acceptTos ? null : new Error('[[register:terms_of_use_error]]'));
-					},
-				});
-				return data;
-			},
+			User.interstitials.email,	// Email address (for password reset + digest)
+			User.interstitials.gdpr,	// GDPR information collection/processing consent + email consent
+			User.interstitials.tou,		// Forum Terms of Use
 		],
 	});
 
