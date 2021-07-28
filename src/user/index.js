@@ -248,22 +248,21 @@ User.addInterstitials = function (callback) {
 					data: { email },
 					callback: async (userData, formData) => {
 						// Validate and send email confirmation
-						if (formData.email && formData.email.length) {
-							if (!utils.isEmailValid(formData.email)) {
-								throw new Error('[[error:invalid-email]]');
-							}
+						if (userData.uid) {
+							const [isAdminOrGlobalMod, canEdit] = await Promise.all([
+								User.isAdminOrGlobalMod(data.req.uid),
+								privileges.users.canEdit(data.req.uid, userData.uid),
+							]);
 
-							if (userData.uid) {
+							if (formData.email && formData.email.length) {
+								if (!utils.isEmailValid(formData.email)) {
+									throw new Error('[[error:invalid-email]]');
+								}
+
 								const current = await User.getUserField(userData.uid, 'email');
 								if (formData.email === current) {
 									throw new Error('[[error:email-nochange]]');
 								}
-
-								const [isAdminOrGlobalMod, canEdit] = await Promise.all([
-									User.isAdminOrGlobalMod(data.req.uid),
-									privileges.users.canEdit(data.req.uid, userData.uid),
-
-								]);
 
 								// Admins editing will auto-confirm, unless editing their own email
 								if (isAdminOrGlobalMod && userData.uid !== data.req.uid) {
@@ -279,9 +278,12 @@ User.addInterstitials = function (callback) {
 									throw new Error('[[error:no-privileges]]');
 								}
 							} else {
-								// New registrants have the confirm email sent from user.create()
-								userData.email = formData.email;
+								// User explicitly clearing their email
+								await User.email.remove(userData.uid);
 							}
+						} else {
+							// New registrants have the confirm email sent from user.create()
+							userData.email = formData.email;
 						}
 
 						delete userData.updateEmail;

@@ -24,6 +24,25 @@ UserEmail.available = async function (email) {
 	return !exists;
 };
 
+UserEmail.remove = async function (uid) {
+	const email = await user.getUserField(uid, 'email');
+	if (!email) {
+		return;
+	}
+
+	await Promise.all([
+		user.setUserFields(uid, {
+			email: '',
+			'email:confirmed': 0,
+		}),
+		db.sortedSetRemove('email:uid', email.toLowerCase()),
+		db.sortedSetRemove('email:sorted', `${email.toLowerCase()}:${uid}`),
+		user.email.expireValidation(uid),
+		user.auth.revokeAllSessions(uid),
+		events.log({ type: 'email-change', email, newEmail: '' }),
+	]);
+};
+
 UserEmail.isValidationPending = async (uid, email) => {
 	const code = await db.get(`confirm:byUid:${uid}`);
 
@@ -124,21 +143,16 @@ UserEmail.confirmByCode = async function (code) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	let oldEmail = await user.getUserField(confirmObj.uid, 'email');
-	if (oldEmail) {
-		oldEmail = oldEmail || '';
-		if (oldEmail !== confirmObj.email) {
-			await db.sortedSetRemove('email:uid', oldEmail.toLowerCase());
-			await db.sortedSetRemove('email:sorted', `${oldEmail.toLowerCase()}:${confirmObj.uid}`);
-			await user.auth.revokeAllSessions(confirmObj.uid);
-			await events.log('email-change', { oldEmail, newEmail: confirmObj.email });
-		}
+	const oldEmail = await user.getUserField(confirmObj.uid, 'email');
+	if (oldEmail && confirmObj.email !== oldEmail) {
+		UserEmail.remove(confirmObj.uid);
 	}
 
 	await user.setUserField(confirmObj.uid, 'email', confirmObj.email);
 	await Promise.all([
 		UserEmail.confirmByUid(confirmObj.uid),
 		db.delete(`confirm:${code}`),
+		events.log({ type: 'email-change', oldEmail, newEmail: confirmObj.email }),
 	]);
 };
 
