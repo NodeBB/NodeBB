@@ -51,9 +51,11 @@ define('forum/search', ['search', 'autocomplete', 'storage'], function (searchMo
 			searchData.showAs = form.find('#show-as-topics').is(':checked') ? 'topics' : 'posts';
 		}
 
-		$(window).trigger('action:search.getSearchDataFromDOM', {
-			form: form,
-			data: searchData,
+		require(['hooks'], function (hooks) {
+			hooks.fire('action:search.getSearchDataFromDOM', {
+				form: form,
+				data: searchData,
+			});
 		});
 
 		return searchData;
@@ -128,8 +130,10 @@ define('forum/search', ['search', 'autocomplete', 'storage'], function (searchMo
 				$('#show-as-posts').prop('checked', isPost).parent().toggleClass('active', isPost);
 			}
 
-			$(window).trigger('action:search.fillOutForm', {
-				form: formData,
+			require(['hooks'], function (hooks) {
+				hooks.fire('action:search.fillOutForm', {
+					form: formData,
+				});
 			});
 		}
 	}

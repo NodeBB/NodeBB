@@ -70,10 +70,12 @@ define('forum/topic/votes', [
 				}
 				return app.alertError(err.message);
 			}
-			$(window).trigger('action:post.toggleVote', {
-				pid: pid,
-				delta: delta,
-				unvote: method === 'del',
+			require(['hooks'], function (hooks) {
+				hooks.fire('action:post.toggleVote', {
+					pid: pid,
+					delta: delta,
+					unvote: method === 'del',
+				});
 			});
 		});
 

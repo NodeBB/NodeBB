@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('share', function () {
+define('share', ['hooks'], function (hooks) {
 	var module = {};
 
 	module.addShareHandlers = function (name) {
@@ -9,7 +9,7 @@ define('share', function () {
 
 		function openShare(url, urlToPost, width, height) {
 			window.open(url + encodeURIComponent(baseUrl + config.relative_path + urlToPost), '_blank', 'width=' + width + ',height=' + height + ',scrollbars=no,status=no');
-			$(window).trigger('action:share.open', {
+			hooks.fire('action:share.open', {
 				url: url,
 				urlToPost: urlToPost,
 			});
@@ -43,7 +43,7 @@ define('share', function () {
 			return openShare('https://plus.google.com/share?url=', getPostUrl($(this)), 500, 570);
 		});
 
-		$(window).trigger('action:share.addHandlers', { openShare: openShare });
+		hooks.fire('action:share.addHandlers', { openShare: openShare });
 	};
 
 	function addHandler(selector, callback) {

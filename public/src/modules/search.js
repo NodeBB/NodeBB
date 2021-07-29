@@ -90,9 +90,11 @@ define('search', ['navigator', 'translator', 'storage'], function (nav, translat
 			query.searchOnly = data.searchOnly;
 		}
 
-		$(window).trigger('action:search.createQueryString', {
-			query: query,
-			data: data,
+		require(['hooks'], function (hooks) {
+			hooks.fire('action:search.createQueryString', {
+				query: query,
+				data: data,
+			});
 		});
 
 		return decodeURIComponent($.param(query));

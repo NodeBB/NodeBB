@@ -140,7 +140,9 @@ define('forum/topic/threadTools', [
 					timeout: 5000,
 				});
 
-				$(window).trigger('action:topics.changeWatching', { tid: tid, type: type });
+				require(['hooks'], function (hooks) {
+					hooks.fire('action:topics.changeWatching', { tid: tid, type: type });
+				});
 			}, () => {
 				app.alert({
 					type: 'danger',
@@ -169,8 +171,10 @@ define('forum/topic/threadTools', [
 				}
 				app.parseAndTranslate('partials/topic/topic-menu-list', data, function (html) {
 					dropdownMenu.html(html);
-					$(window).trigger('action:topic.tools.load', {
-						element: dropdownMenu,
+					require(['hooks'], function (hooks) {
+						hooks.fire('action:topic.tools.load', {
+							element: dropdownMenu,
+						});
 					});
 				});
 			});

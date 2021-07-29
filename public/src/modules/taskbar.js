@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('taskbar', ['benchpress', 'translator'], function (Benchpress, translator) {
+define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, translator, hooks) {
 	var taskbar = {};
 
 	taskbar.init = function () {
@@ -89,7 +89,7 @@ define('taskbar', ['benchpress', 'translator'], function (Benchpress, translator
 			element: element,
 		};
 
-		$(window).trigger('filter:taskbar.push', data);
+		hooks.fire('filter:taskbar.push', data);
 
 		if (!element.length && data.module) {
 			createTaskbarItem(data, callback);
@@ -116,7 +116,7 @@ define('taskbar', ['benchpress', 'translator'], function (Benchpress, translator
 		btnEl.toggleClass('new', state);
 
 		if (!silent) {
-			$(window).trigger('action:taskbar.toggleNew', uuid);
+			hooks.fire('action:taskbar.toggleNew', uuid);
 		}
 	};
 
@@ -175,7 +175,7 @@ define('taskbar', ['benchpress', 'translator'], function (Benchpress, translator
 			data.element = taskbarEl;
 
 			taskbarEl.data(data);
-			$(window).trigger('action:taskbar.pushed', data);
+			hooks.fire('action:taskbar.pushed', data);
 			callback(taskbarEl);
 		});
 	}

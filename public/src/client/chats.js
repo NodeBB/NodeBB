@@ -10,7 +10,8 @@ define('forum/chats', [
 	'forum/chats/messages',
 	'benchpress',
 	'composer/autocomplete',
-], function (components, translator, mousetrap, recentChats, search, messages, Benchpress, autocomplete) {
+	'hooks',
+], function (components, translator, mousetrap, recentChats, search, messages, Benchpress, autocomplete, hooks) {
 	var Chats = {
 		initialised: false,
 	};
@@ -35,7 +36,7 @@ define('forum/chats', [
 		}
 
 		$(document).ready(function () {
-			$(window).trigger('action:chat.loaded', $('.chats-full'));
+			hooks.fire('action:chat.loaded', $('.chats-full'));
 		});
 
 		Chats.initialised = true;
@@ -384,7 +385,7 @@ define('forum/chats', [
 			},
 		};
 
-		$(window).trigger('chat:autocomplete:init', data);
+		hooks.fire('chat:autocomplete:init', data);
 		if (data.strategies.length) {
 			autocomplete.setup(data);
 		}
@@ -429,7 +430,7 @@ define('forum/chats', [
 								ajaxify.data = payload;
 								Chats.setActive();
 								Chats.addEventListeners();
-								$(window).trigger('action:chat.loaded', $('.chats-full'));
+								hooks.fire('action:chat.loaded', $('.chats-full'));
 								messages.scrollToBottom($('.expanded-chat ul.chat-content'));
 								if (history.pushState) {
 									history.pushState({

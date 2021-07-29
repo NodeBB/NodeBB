@@ -10,7 +10,10 @@ define('categoryFilter', ['categorySearch', 'api'], function (categorySearch, ap
 		options = options || {};
 		options.states = options.states || ['watching', 'notwatching', 'ignoring'];
 		options.template = 'partials/category-filter';
-		$(window).trigger('action:category.filter.options', { el: el, options: options });
+
+		require(['hooks'], function (hooks) {
+			hooks.fire('action:category.filter.options', { el: el, options: options });
+		});
 
 		categorySearch.init(el, options);
 

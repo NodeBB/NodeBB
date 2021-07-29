@@ -54,7 +54,9 @@ define('forum/account/blocks', [
 					$('#users-container').html(html);
 					$('#users-container').siblings('div.alert')[html.length ? 'hide' : 'show']();
 				});
-				$(window).trigger('action:user.blocks.toggle', { data: payload });
+				require(['hooks'], function (hooks) {
+					hooks.fire('action:user.blocks.toggle', { data: payload });
+				});
 			})
 			.fail(function () {
 				ajaxify.go(ajaxify.currentPage);

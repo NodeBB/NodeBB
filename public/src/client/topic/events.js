@@ -150,11 +150,15 @@ define('forum/topic/events', [
 				app.parseAndTranslate('partials/topic/post-editor', editData, function (html) {
 					editorEl.replaceWith(html);
 					$('[data-pid="' + data.post.pid + '"] [component="post/editor"] .timeago').timeago();
-					$(window).trigger('action:posts.edited', data);
+					require(['hooks'], function (hooks) {
+						hooks.fire('action:posts.edited', data);
+					});
 				});
 			});
 		} else {
-			$(window).trigger('action:posts.edited', data);
+			require(['hooks'], function (hooks) {
+				hooks.fire('action:posts.edited', data);
+			});
 		}
 
 		if (data.topic.tags && tagsUpdated(data.topic.tags)) {

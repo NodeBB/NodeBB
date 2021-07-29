@@ -14,7 +14,9 @@ define('categorySelector', [
 
 		options.states = options.states || ['watching', 'notwatching', 'ignoring'];
 		options.template = 'partials/category-selector';
-		$(window).trigger('action:category.selector.options', { el: el, options: options });
+		require(['hooks'], function (hooks) {
+			hooks.fire('action:category.selector.options', { el: el, options: options });
+		});
 
 		categorySearch.init(el, options);
 

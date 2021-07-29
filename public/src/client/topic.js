@@ -44,7 +44,7 @@ define('forum/topic', [
 	Topic.init = function () {
 		var tid = ajaxify.data.tid;
 		currentUrl = ajaxify.currentPage;
-		$(window).trigger('action:topic.loading');
+		hooks.fire('action:topic.loading');
 
 		app.enterRoom('topic_' + tid);
 

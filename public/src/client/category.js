@@ -7,7 +7,8 @@ define('forum/category', [
 	'topicList',
 	'sort',
 	'categorySelector',
-], function (infinitescroll, share, navigator, topicList, sort, categorySelector) {
+	'hooks',
+], function (infinitescroll, share, navigator, topicList, sort, categorySelector, hooks) {
 	var Category = {};
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
@@ -47,8 +48,8 @@ define('forum/category', [
 			},
 		});
 
-		$(window).trigger('action:topics.loaded', { topics: ajaxify.data.topics });
-		$(window).trigger('action:category.loaded', { cid: ajaxify.data.cid });
+		hooks.fire('action:topics.loaded', { topics: ajaxify.data.topics });
+		hooks.fire('action:category.loaded', { cid: ajaxify.data.cid });
 	};
 
 	function handleScrollToTopicIndex() {
@@ -134,7 +135,7 @@ define('forum/category', [
 	function loadTopicsAfter(after, direction, callback) {
 		callback = callback || function () {};
 
-		$(window).trigger('action:category.loading');
+		hooks.fire('action:category.loading');
 		var params = utils.params();
 		infinitescroll.loadMore('categories.loadMore', {
 			cid: ajaxify.data.cid,
@@ -143,7 +144,7 @@ define('forum/category', [
 			query: params,
 			categoryTopicSort: config.categoryTopicSort,
 		}, function (data, done) {
-			$(window).trigger('action:category.loaded');
+			hooks.fire('action:category.loaded');
 			callback(data, done);
 		});
 	}

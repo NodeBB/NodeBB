@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/settings', ['uploader', 'mousetrap'], function (uploader, mousetrap) {
+define('admin/settings', ['uploader', 'mousetrap', 'hooks'], function (uploader, mousetrap, hooks) {
 	var Settings = {};
 
 	Settings.populateTOC = function () {
@@ -87,7 +87,7 @@ define('admin/settings', ['uploader', 'mousetrap'], function (uploader, mousetra
 					type: 'success',
 				});
 
-				$(window).trigger('action:admin.settingsSaved');
+				hooks.fire('action:admin.settingsSaved');
 			});
 		});
 
@@ -111,7 +111,7 @@ define('admin/settings', ['uploader', 'mousetrap'], function (uploader, mousetra
 		}
 
 		setTimeout(function () {
-			$(window).trigger('action:admin.settingsLoaded');
+			hooks.fire('action:admin.settingsLoaded');
 		}, 0);
 	};
 

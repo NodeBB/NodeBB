@@ -72,7 +72,7 @@ define('topicList', [
 			TopicList.loadMoreTopics(1);
 		});
 
-		$(window).trigger('action:topics.loaded', { topics: ajaxify.data.topics });
+		hooks.fire('action:topics.loaded', { topics: ajaxify.data.topics });
 	};
 
 	function findTopicListElement() {
@@ -277,7 +277,7 @@ define('topicList', [
 			html.find('.timeago').timeago();
 			app.createUserTooltips(html);
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
-			$(window).trigger('action:topics.loaded', { topics: topics, template: templateName });
+			hooks.fire('action:topics.loaded', { topics: topics, template: templateName });
 			callback();
 		});
 	}

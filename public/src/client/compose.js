@@ -8,8 +8,10 @@ define('forum/compose', [], function () {
 		var container = $('.composer');
 
 		if (container.length) {
-			$(window).trigger('action:composer.enhance', {
-				container: container,
+			require(['hooks'], function (hooks) {
+				hooks.fire('action:composer.enhance', {
+					container: container,
+				});
 			});
 		}
 	};

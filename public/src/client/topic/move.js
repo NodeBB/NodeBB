@@ -85,7 +85,9 @@ define('forum/topic/move', ['categorySelector', 'alerts'], function (categorySel
 	}
 
 	function moveTopics(data) {
-		$(window).trigger('action:topic.move', data);
+		require(['hooks'], function (hooks) {
+			hooks.fire('action:topic.move', data);
+		});
 
 		socket.emit(!data.tids ? 'topics.moveAll' : 'topics.move', data, function (err) {
 			if (err) {
