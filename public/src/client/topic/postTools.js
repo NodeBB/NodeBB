@@ -259,8 +259,9 @@ define('forum/topic/postTools', [
 			}
 
 			var toPid = button.is('[component="post/reply"]') ? getData(button, 'data-pid') : null;
+			var isQuoteToPid = !toPid || !selectedNode.pid || toPid === selectedNode.pid;
 
-			if (selectedNode.text && (!toPid || !selectedNode.pid || toPid === selectedNode.pid)) {
+			if (selectedNode.text && isQuoteToPid) {
 				username = username || selectedNode.username;
 				hooks.fire('action:composer.addQuote', {
 					tid: tid,
