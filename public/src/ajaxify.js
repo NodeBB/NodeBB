@@ -440,6 +440,11 @@ ajaxify = window.ajaxify || {};
 }());
 
 $(document).ready(function () {
+	var hooks;
+	require(['hooks'], function (_hooks) {
+		hooks = _hooks;
+	});
+
 	$(window).on('popstate', function (ev) {
 		ev = ev.originalEvent;
 
@@ -449,11 +454,9 @@ $(document).ready(function () {
 					url: ev.state.returnPath,
 				}, ev.state.returnPath, config.relative_path + '/' + ev.state.returnPath);
 			} else if (ev.state.url !== undefined) {
-				require(['hooks'], function (hooks) {
-					ajaxify.go(ev.state.url, function () {
-						hooks.fire('action:popstate', { url: ev.state.url });
-					}, true);
-				});
+				ajaxify.go(ev.state.url, function () {
+					hooks.fire('action:popstate', { url: ev.state.url });
+				}, true);
 			}
 		}
 	});

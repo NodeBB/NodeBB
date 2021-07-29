@@ -7,7 +7,8 @@ define('forum/topic/threadTools', [
 	'handleBack',
 	'forum/topic/posts',
 	'api',
-], function (components, translator, handleBack, posts, api) {
+	'hooks',
+], function (components, translator, handleBack, posts, api, hooks) {
 	var ThreadTools = {};
 
 	ThreadTools.init = function (tid, topicContainer) {
@@ -140,9 +141,7 @@ define('forum/topic/threadTools', [
 					timeout: 5000,
 				});
 
-				require(['hooks'], function (hooks) {
-					hooks.fire('action:topics.changeWatching', { tid: tid, type: type });
-				});
+				hooks.fire('action:topics.changeWatching', { tid: tid, type: type });
 			}, () => {
 				app.alert({
 					type: 'danger',
@@ -171,10 +170,8 @@ define('forum/topic/threadTools', [
 				}
 				app.parseAndTranslate('partials/topic/topic-menu-list', data, function (html) {
 					dropdownMenu.html(html);
-					require(['hooks'], function (hooks) {
-						hooks.fire('action:topic.tools.load', {
-							element: dropdownMenu,
-						});
+					hooks.fire('action:topic.tools.load', {
+						element: dropdownMenu,
 					});
 				});
 			});

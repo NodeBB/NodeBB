@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/topic/move', ['categorySelector', 'alerts'], function (categorySelector, alerts) {
+define('forum/topic/move', ['categorySelector', 'alerts', 'hooks'], function (categorySelector, alerts, hooks) {
 	var Move = {};
 	var modal;
 	var selectedCategory;
@@ -85,9 +85,7 @@ define('forum/topic/move', ['categorySelector', 'alerts'], function (categorySel
 	}
 
 	function moveTopics(data) {
-		require(['hooks'], function (hooks) {
-			hooks.fire('action:topic.move', data);
-		});
+		hooks.fire('action:topic.move', data);
 
 		socket.emit(!data.tids ? 'topics.moveAll' : 'topics.move', data, function (err) {
 			if (err) {

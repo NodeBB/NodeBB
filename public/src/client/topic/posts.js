@@ -9,7 +9,8 @@ define('forum/topic/posts', [
 	'navigator',
 	'components',
 	'translator',
-], function (pagination, infinitescroll, postTools, images, navigator, components, translator) {
+	'hooks',
+], function (pagination, infinitescroll, postTools, images, navigator, components, translator, hooks) {
 	var Posts = { };
 
 	Posts.onNewPost = function (data) {
@@ -199,9 +200,7 @@ define('forum/topic/posts', [
 			before = repliesSelector.first();
 		}
 
-		require(['hooks'], function (hooks) {
-			hooks.fire('action:posts.loading', { posts: data.posts, after: after, before: before });
-		});
+		hooks.fire('action:posts.loading', { posts: data.posts, after: after, before: before });
 
 		app.parseAndTranslate('topic', 'posts', Object.assign({}, ajaxify.data, data), function (html) {
 			html = html.filter(function () {
@@ -228,9 +227,7 @@ define('forum/topic/posts', [
 
 			infinitescroll.removeExtra($('[component="post"]'), direction, Math.max(20, config.postsPerPage * 2));
 
-			require(['hooks'], function (hooks) {
-				hooks.fire('action:posts.loaded', { posts: data.posts });
-			});
+			hooks.fire('action:posts.loaded', { posts: data.posts });
 
 			Posts.onNewPostsAddedToDom(html);
 

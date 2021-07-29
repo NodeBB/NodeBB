@@ -1,8 +1,8 @@
 'use strict';
 
 define('categorySelector', [
-	'categorySearch', 'bootbox',
-], function (categorySearch, bootbox) {
+	'categorySearch', 'bootbox', 'hooks',
+], function (categorySearch, bootbox, hooks) {
 	var categorySelector = {};
 
 	categorySelector.init = function (el, options) {
@@ -14,9 +14,7 @@ define('categorySelector', [
 
 		options.states = options.states || ['watching', 'notwatching', 'ignoring'];
 		options.template = 'partials/category-selector';
-		require(['hooks'], function (hooks) {
-			hooks.fire('action:category.selector.options', { el: el, options: options });
-		});
+		hooks.fire('action:category.selector.options', { el: el, options: options });
 
 		categorySearch.init(el, options);
 

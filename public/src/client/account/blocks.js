@@ -3,7 +3,8 @@
 define('forum/account/blocks', [
 	'forum/account/header',
 	'api',
-], function (header, api) {
+	'hooks',
+], function (header, api, hooks) {
 	var Blocks = {};
 
 	Blocks.init = function () {
@@ -54,9 +55,7 @@ define('forum/account/blocks', [
 					$('#users-container').html(html);
 					$('#users-container').siblings('div.alert')[html.length ? 'hide' : 'show']();
 				});
-				require(['hooks'], function (hooks) {
-					hooks.fire('action:user.blocks.toggle', { data: payload });
-				});
+				hooks.fire('action:user.blocks.toggle', { data: payload });
 			})
 			.fail(function () {
 				ajaxify.go(ajaxify.currentPage);

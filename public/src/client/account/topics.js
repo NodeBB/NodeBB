@@ -1,7 +1,11 @@
 'use strict';
 
 
-define('forum/account/topics', ['forum/account/header', 'forum/infinitescroll'], function (header, infinitescroll) {
+define('forum/account/topics', [
+	'forum/account/header',
+	'forum/infinitescroll',
+	'hooks',
+], function (header, infinitescroll, hooks) {
 	var AccountTopics = {};
 
 	var template;
@@ -44,9 +48,7 @@ define('forum/account/topics', ['forum/account/header', 'forum/infinitescroll'],
 			html.find('.timeago').timeago();
 			app.createUserTooltips();
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
-			require(['hooks'], function (hooks) {
-				hooks.fire('action:topics.loaded', { topics: topics });
-			});
+			hooks.fire('action:topics.loaded', { topics: topics });
 			callback();
 		});
 	}

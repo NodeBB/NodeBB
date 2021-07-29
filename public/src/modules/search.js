@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('search', ['navigator', 'translator', 'storage'], function (nav, translator, storage) {
+define('search', ['navigator', 'translator', 'storage', 'hooks'], function (nav, translator, storage, hooks) {
 	var Search = {
 		current: {},
 	};
@@ -90,11 +90,9 @@ define('search', ['navigator', 'translator', 'storage'], function (nav, translat
 			query.searchOnly = data.searchOnly;
 		}
 
-		require(['hooks'], function (hooks) {
-			hooks.fire('action:search.createQueryString', {
-				query: query,
-				data: data,
-			});
+		hooks.fire('action:search.createQueryString', {
+			query: query,
+			data: data,
 		});
 
 		return decodeURIComponent($.param(query));

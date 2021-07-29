@@ -10,7 +10,8 @@ define('forum/topic/events', [
 	'components',
 	'translator',
 	'benchpress',
-], function (postTools, threadTools, posts, images, components, translator, Benchpress) {
+	'hooks',
+], function (postTools, threadTools, posts, images, components, translator, Benchpress, hooks) {
 	var Events = {};
 
 	var events = {
@@ -150,15 +151,11 @@ define('forum/topic/events', [
 				app.parseAndTranslate('partials/topic/post-editor', editData, function (html) {
 					editorEl.replaceWith(html);
 					$('[data-pid="' + data.post.pid + '"] [component="post/editor"] .timeago').timeago();
-					require(['hooks'], function (hooks) {
-						hooks.fire('action:posts.edited', data);
-					});
+					hooks.fire('action:posts.edited', data);
 				});
 			});
 		} else {
-			require(['hooks'], function (hooks) {
-				hooks.fire('action:posts.edited', data);
-			});
+			hooks.fire('action:posts.edited', data);
 		}
 
 		if (data.topic.tags && tagsUpdated(data.topic.tags)) {
