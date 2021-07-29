@@ -190,7 +190,7 @@
     "no-connection": "נראה שיש בעיות בחיבור האינטרנט שלך..",
     "socket-reconnect-failed": "לא ניתן להגיע לשרת בשלב זה. לחץ כאן כדי לנסות שוב, או נסה שוב מאוחר יותר",
     "plugin-not-whitelisted": "לא ניתן להתקין את התוסף &ndash; ניתן להתקין דרך הניהול רק תוספים שנמצאים ברשימה הלבנה של מנהל החבילות של NodeBB.",
-    "topic-event-unrecognized": "Topic event '%1' unrecognized",
+    "topic-event-unrecognized": "אירוע הנושא '%1' לא מזוהה",
     "cant-set-child-as-parent": "לא ניתן להגדיר קטגוריה משנה לקטגוריית אב",
     "cant-set-self-as-parent": "Can't set self as parent category",
     "api.master-token-no-uid": "A master token was received without a corresponding `_uid` in the request body",
