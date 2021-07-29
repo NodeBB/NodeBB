@@ -53,5 +53,11 @@ helpers.buildBodyClass = function (req, res, templateData = {}) {
 	}
 
 	parts.push(`page-status-${res.statusCode}`);
+
+	if (req.loggedIn) {
+		parts.push('user-loggedin');
+	} else {
+		parts.push('user-guest');
+	}
 	return parts.join(' ');
 };
