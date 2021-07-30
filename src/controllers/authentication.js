@@ -23,7 +23,7 @@ const sockets = require('../socket.io');
 const authenticationController = module.exports;
 
 async function registerAndLoginUser(req, res, userData) {
-	if (!userData.email) {
+	if (!userData.hasOwnProperty('email')) {
 		userData.updateEmail = true;
 	}
 
@@ -198,8 +198,10 @@ authenticationController.registerComplete = function (req, res, next) {
 
 			const data = await registerAndLoginUser(req, res, req.session.registration);
 			if (!data) {
-				winston.warn('[register] Interstitial callbacks processed with no errors, but one or more interstitials remain. This is likely an issue with one of the interstitials not properly handling a null case or invalid value.');
+				return winston.warn('[register] Interstitial callbacks processed with no errors, but one or more interstitials remain. This is likely an issue with one of the interstitials not properly handling a null case or invalid value.');
 			}
+
+			done();
 		} else {
 			// Update user hash, clear registration data in session
 			const payload = req.session.registration;
