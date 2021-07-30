@@ -36,6 +36,7 @@
 	"subscriptions.disable": "Изключване на резюметата по е-пощата",
 	"subscriptions.hour": "Време за разпращане",
 	"subscriptions.hour-help": "Моля, въведете число, представляващо часа, в който да се разпращат е-писма с подготвеното резюме (напр.. <code>0</code> за полунощ, <code>17</code> за 5 следобед). Имайте предвид, че този час е според часовата зона на сървъра и може да не съвпада с часовника на системата Ви.<br /> Приблизителното време на сървъра е: <span id=\"serverTime\"></span><br /> Изпращането на следващия ежедневен бюлетин е планирано за   <span id=\"nextDigestTime\"></span>",
-	"notifications.settings": "Настройки за известията по е-поща",
-	"notifications.remove-images": "Премахване на изображенията от известията по е-поща"
+	"notifications.remove-images": "Премахване на изображенията от известията по е-поща",
+	"include-unverified-emails": "Send emails to recipients who have not explicitly confirmed their emails",
+	"include-unverified-warning": "By default, users with emails associated with their account have already been verified, but there are situations where this is not the case (e.g. SSO logins, grandfathered users, etc). <strong>Enable this setting at your own risk</strong> &ndash; sending emails to unverified addresses may be a violation of regional anti-spam laws."
 }

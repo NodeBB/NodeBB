@@ -36,6 +36,7 @@
 	"subscriptions.disable": "Disable email digests",
 	"subscriptions.hour": "Kopsavilkumu nosūtīšanas stunda",
 	"subscriptions.hour-help": "Ievadīt skaitli, kas norāda stundu, kurā nosūtītu e-pasta rakstu apkopojumu (piemēram, <code>0</code> nozīmē pusnakts, <code>17</code> nozīmē plkst.1700). Paturēt prātā, ka šī ir stunda servera laikā, un tā var neatbilst Tavam pulkstenim. Aptuvens servera laiks ir: <span id=\"serverTime\"></span><br />Nākamais ikdienas apkopojums tiks nosūtīts <span id=\"nextDigestTime\"></span>",
-	"notifications.settings": "Email notification settings",
-	"notifications.remove-images": "Remove images from email notifications"
+	"notifications.remove-images": "Remove images from email notifications",
+	"include-unverified-emails": "Send emails to recipients who have not explicitly confirmed their emails",
+	"include-unverified-warning": "By default, users with emails associated with their account have already been verified, but there are situations where this is not the case (e.g. SSO logins, grandfathered users, etc). <strong>Enable this setting at your own risk</strong> &ndash; sending emails to unverified addresses may be a violation of regional anti-spam laws."
 }

@@ -36,6 +36,7 @@
 	"subscriptions.disable": "Tắt thông báo email",
 	"subscriptions.hour": "Giờ Thông Báo",
 	"subscriptions.hour-help": "Vui lòng nhập một số đại diện cho giờ để gửi thông báo email đã lên lịch (VD: <code>0</code> cho nửa đêm, <code>17</code> cho 5h chiều). Hãy nhớ rằng đây là giờ theo chính máy chủ và có thể không khớp chính xác với đồng hồ hệ thống của bạn.<br /> Thời gian máy chủ gần đúng là: <span id=\"serverTime\"></span><br /> Thông báo hàng ngày kế tiếp được lên lịch để gửi <span id=\"nextDigestTime\"></span>",
-	"notifications.settings": "Cài dặt thông báo email",
-	"notifications.remove-images": "Xóa hình ảnh khỏi thông báo email"
+	"notifications.remove-images": "Xóa hình ảnh khỏi thông báo email",
+	"include-unverified-emails": "Send emails to recipients who have not explicitly confirmed their emails",
+	"include-unverified-warning": "By default, users with emails associated with their account have already been verified, but there are situations where this is not the case (e.g. SSO logins, grandfathered users, etc). <strong>Enable this setting at your own risk</strong> &ndash; sending emails to unverified addresses may be a violation of regional anti-spam laws."
 }

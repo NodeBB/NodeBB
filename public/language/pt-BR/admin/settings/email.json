@@ -36,6 +36,7 @@
 	"subscriptions.disable": "Desabilitar resumos por email",
 	"subscriptions.hour": "Hora de Envio dos Resumos",
 	"subscriptions.hour-help": "Por favor, entre um número representando a hora para enviar os resumos agendados via e-mail (por exemplo: <code>0</code> para meia-noite, <code>17</code> para 5:00pm). Tenha em mente que esta é a hora de acordo com o servidor e pode não combinar exatamente com o relógio do seu sistema.<br /> O horário aproximado do servidor é: <span id=\"serverTime\"></span><br /> O próximo resumo diário está agendado para ser enviado <span id=\"nextDigestTime\"></span>",
-	"notifications.settings": "Configurações de notificação por email",
-	"notifications.remove-images": "Remover imagens de notificações por e-mail"
+	"notifications.remove-images": "Remover imagens de notificações por e-mail",
+	"include-unverified-emails": "Send emails to recipients who have not explicitly confirmed their emails",
+	"include-unverified-warning": "By default, users with emails associated with their account have already been verified, but there are situations where this is not the case (e.g. SSO logins, grandfathered users, etc). <strong>Enable this setting at your own risk</strong> &ndash; sending emails to unverified addresses may be a violation of regional anti-spam laws."
 }

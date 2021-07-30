@@ -36,6 +36,7 @@
 	"subscriptions.disable": "Disabilita email riepilogo",
 	"subscriptions.hour": "Orario riepilogo",
 	"subscriptions.hour-help": "Si prega di inserire un numero che rappresenta l'ora per l'invio dell'email programmate (es. <code>0</code>per mezzanotte, <code>17</code>per le 17: 00). Tieni presente che questa è l'ora secondo il server stesso, e potrebbe non combaciare esattamente al tuo orologio di sistema.<br /> L'orario approssimativo del server è: <span id=\"serverTime\"></span> <br /> La prossima trasmissione giornaliera è prevista alle <span id=\"nextDigestTime\"></span>",
-	"notifications.settings": "Impostazioni di notifica email",
-	"notifications.remove-images": "Rimuovi le immagini dalle notifiche email"
+	"notifications.remove-images": "Rimuovi le immagini dalle notifiche email",
+	"include-unverified-emails": "Send emails to recipients who have not explicitly confirmed their emails",
+	"include-unverified-warning": "By default, users with emails associated with their account have already been verified, but there are situations where this is not the case (e.g. SSO logins, grandfathered users, etc). <strong>Enable this setting at your own risk</strong> &ndash; sending emails to unverified addresses may be a violation of regional anti-spam laws."
 }

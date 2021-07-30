@@ -36,6 +36,7 @@
 	"subscriptions.disable": "Disable email digests",
 	"subscriptions.hour": "Година дайджесту",
 	"subscriptions.hour-help": "Вкажіть, будь ласка, годину о котрій кожного дня буде надсилатися дайджест (наприклад <code>0</code> — це північ, а <code>17</code> — п'ята година вечора). Зверніть увагу, що година визначається згідно налаштувань сервера і може не співпадати з часом вашого комп'ютера. <br /> Приблизний час сервера: <span id=\"serverTime\"></span><br /> Наступний дайджест заплановано до відправки <span id=\"nextDigestTime\"></span>",
-	"notifications.settings": "Email notification settings",
-	"notifications.remove-images": "Remove images from email notifications"
+	"notifications.remove-images": "Remove images from email notifications",
+	"include-unverified-emails": "Send emails to recipients who have not explicitly confirmed their emails",
+	"include-unverified-warning": "By default, users with emails associated with their account have already been verified, but there are situations where this is not the case (e.g. SSO logins, grandfathered users, etc). <strong>Enable this setting at your own risk</strong> &ndash; sending emails to unverified addresses may be a violation of regional anti-spam laws."
 }

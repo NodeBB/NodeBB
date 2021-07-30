@@ -180,5 +180,8 @@
     "consent.export_uploads": "업로드한 컨텐츠 내보내기 (.zip)",
     "consent.export-uploads-success": "업로드한 컨텐츠를 내보내기 합니다. 완료되면 알림을 수신합니다.",
     "consent.export_posts": "포스트 내보내기 (.csv)",
-    "consent.export-posts-success": "포스트를 내보내기 합니다. 완료되면 알림을 수신합니다."
+    "consent.export-posts-success": "포스트를 내보내기 합니다. 완료되면 알림을 수신합니다.",
+    "emailUpdate.intro": "Please enter your email address below. This forum uses your email address for scheduled digest and notifications, as well as for account recovery in the event of a lost password.",
+    "emailUpdate.optional": "<strong>This field is optional</strong>. You are not obligated to provide your email address, but without a validated email, you will not be able to recover your account.",
+    "emailUpdate.change-instructions": "A confirmation email will be sent to the entered email address with a unique link. Accessing that link will confirm your ownership of the email address and it will become active on your account. At any time, you are able to update your email on file from within your account page."
 }

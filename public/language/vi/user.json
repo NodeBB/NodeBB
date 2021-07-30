@@ -180,5 +180,8 @@
     "consent.export_uploads": "Xuất nội dung đã tải lên (.zip)",
     "consent.export-uploads-success": "Đang xuất tải lên, bạn sẽ nhận được thông báo khi hoàn tất.",
     "consent.export_posts": "Xuất bài viết (.csv)",
-    "consent.export-posts-success": "Đang xuất bài viết, bạn sẽ nhận được thông báo khi hoàn tất."
+    "consent.export-posts-success": "Đang xuất bài viết, bạn sẽ nhận được thông báo khi hoàn tất.",
+    "emailUpdate.intro": "Please enter your email address below. This forum uses your email address for scheduled digest and notifications, as well as for account recovery in the event of a lost password.",
+    "emailUpdate.optional": "<strong>This field is optional</strong>. You are not obligated to provide your email address, but without a validated email, you will not be able to recover your account.",
+    "emailUpdate.change-instructions": "A confirmation email will be sent to the entered email address with a unique link. Accessing that link will confirm your ownership of the email address and it will become active on your account. At any time, you are able to update your email on file from within your account page."
 }

@@ -36,6 +36,7 @@
 	"subscriptions.disable": "Minden email összefoglalás letiltása",
 	"subscriptions.hour": "Összefoglalások küldési időpontja",
 	"subscriptions.hour-help": "Kérjük adj meg egy számot, ami azt az órát jelenti, amikor az ütemezett összefoglalókat kiküldi a rendszer (<code>0</code> az éjfél, <code>17</code> a délután 5 óra). Tartsd észben, hogy ez az időpont a szerver idejét veszi figyelembe és előfordulhat, hogy nem egyezik meg a Te gépeden jelzett idővel. A becsült szerver idő jelenleg: <span id=\"serverTime\"></span><br /> A következő napi összefoglalás tervezett kiküldési ideje <span id=\"nextDigestTime\"></span>",
-	"notifications.settings": "Email értesítés beállítások",
-	"notifications.remove-images": "Képek eltávolítása az email értesítésekből"
+	"notifications.remove-images": "Képek eltávolítása az email értesítésekből",
+	"include-unverified-emails": "Send emails to recipients who have not explicitly confirmed their emails",
+	"include-unverified-warning": "By default, users with emails associated with their account have already been verified, but there are situations where this is not the case (e.g. SSO logins, grandfathered users, etc). <strong>Enable this setting at your own risk</strong> &ndash; sending emails to unverified addresses may be a violation of regional anti-spam laws."
 }
