@@ -732,21 +732,26 @@ app.cacheBuster = null;
 		});
 	};
 
-	app.showEmailConfirmWarning = function (err) {
-		if (!app.user.uid) {
+	app.showEmailConfirmWarning = async (err) => {
+		const storage = await app.require('storage');
+
+		if (!app.user.uid || parseInt(storage.getItem('email-confirm-dismiss'), 10) === 1) {
 			return;
 		}
 		var msg = {
 			alert_id: 'email_confirm',
 			type: 'warning',
 			timeout: 0,
+			closefn: () => {
+				storage.setItem('email-confirm-dismiss', 1);
+			},
 		};
 
 		if (!app.user.email) {
 			msg.message = '[[error:no-email-to-confirm]]';
 			msg.clickfn = function () {
 				app.removeAlert('email_confirm');
-				ajaxify.go('user/' + app.user.userslug + '/edit');
+				ajaxify.go('user/' + app.user.userslug + '/edit/email');
 			};
 			app.alert(msg);
 		} else if (!app.user['email:confirmed'] && !app.user.isEmailConfirmSent) {
