@@ -130,6 +130,20 @@ app.cacheBuster = null;
 		});
 	};
 
+	app.require = async (modules) => {	// allows you to await require.js modules
+		let single = false;
+		if (!Array.isArray(modules)) {
+			modules = [modules];
+			single = true;
+		}
+
+		return new Promise((resolve, reject) => {
+			require(modules, (...exports) => {
+				resolve(single ? exports.pop() : exports);
+			}, reject);
+		});
+	};
+
 	app.logout = function (redirect) {
 		redirect = redirect === undefined ? true : redirect;
 		$(window).trigger('action:app.logout');
