@@ -1168,7 +1168,7 @@ describe('Post\'s', () => {
 			], globalModUid, { mainTid: result2.tid });
 
 			let postData = await posts.getQueuedPosts();
-			postData = postData.filter(p => p.data.tid === result2.tid);
+			postData = postData.filter(p => parseInt(p.data.tid, 10) === parseInt(result2.tid, 10));
 			assert.strictEqual(postData.length, 1);
 			assert.strictEqual(postData[0].data.content, 'the moved queued post');
 			assert.strictEqual(postData[0].data.tid, result2.tid);
