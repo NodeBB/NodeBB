@@ -2,6 +2,7 @@
 
 const async = require('async');
 const plugins = require('../plugins');
+const posts = require('../posts');
 
 module.exports = function (Topics) {
 	Topics.merge = async function (tids, uid, options) {
@@ -38,7 +39,10 @@ module.exports = function (Topics) {
 			});
 		});
 
-		await updateViewCount(mergeIntoTid, tids);
+		await Promise.all([
+			posts.updateQueuedPostsTopic(mergeIntoTid, otherTids),
+			updateViewCount(mergeIntoTid, tids),
+		]);
 
 		plugins.hooks.fire('action:topic.merge', {
 			uid: uid,

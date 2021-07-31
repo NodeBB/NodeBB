@@ -48,8 +48,9 @@ async function postReply(socket, data) {
 		'downvote:disabled': meta.config['downvote:disabled'] === 1,
 	};
 
-	socket.emit('event:new_post', result);
-
+	if (socket.emit) {
+		socket.emit('event:new_post', result);
+	}
 	user.updateOnlineUsers(socket.uid);
 
 	socketHelpers.notifyNew(socket.uid, 'newPost', result);

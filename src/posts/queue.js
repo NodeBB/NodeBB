@@ -48,9 +48,14 @@ module.exports = function (Posts) {
 		}
 
 		// Filter by tid if present
-		if (isFinite(filter.tid)) {
+		if (utils.isNumber(filter.tid)) {
 			const tid = parseInt(filter.tid, 10);
 			postData = postData.filter(item => item.data.tid && parseInt(item.data.tid, 10) === tid);
+		} else if (Array.isArray(filter.tid)) {
+			const tids = filter.tid.map(tid => parseInt(tid, 10));
+			postData = postData.filter(
+				item => item.data.tid && tids.includes(parseInt(item.data.tid, 10))
+			);
 		}
 
 		return postData;
@@ -329,5 +334,19 @@ module.exports = function (Posts) {
 			isModeratorOfTargetCid = await user.isModerator(uid, editData.cid);
 		}
 		return isModerator && isModeratorOfTargetCid;
+	};
+
+	Posts.updateQueuedPostsTopic = async function (newTid, tids) {
+		const postData = await Posts.getQueuedPosts({ tid: tids }, { metadata: false });
+		if (postData.length) {
+			postData.forEach((post) => {
+				post.data.tid = newTid;
+			});
+			await db.setObjectBulk(
+				postData.map(p => `post:queue:${p.id}`),
+				postData.map(p => ({ data: JSON.stringify(p.data) }))
+			);
+			cache.del('post-queue');
+		}
 	};
 };
