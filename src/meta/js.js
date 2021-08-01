@@ -3,12 +3,7 @@
 const path = require('path');
 const fs = require('fs');
 const util = require('util');
-let mkdirp = require('mkdirp');
-// TODO: remove in 1.16.0
-if (!mkdirp.hasOwnProperty('native')) {
-	mkdirp = util.promisify(mkdirp);
-}
-
+const mkdirp = require('mkdirp');
 const rimraf = require('rimraf');
 
 const rimrafAsync = util.promisify(rimraf);
