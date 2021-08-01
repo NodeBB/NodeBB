@@ -1,11 +1,9 @@
 'use strict';
 
-const nconf = require('nconf');
 const winston = require('winston');
 const passport = require('passport');
 const util = require('util');
 
-const meta = require('../meta');
 const user = require('../user');
 const privileges = require('../privileges');
 const plugins = require('../plugins');

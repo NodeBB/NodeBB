@@ -1,8 +1,5 @@
 'use strict';
 
-const winston = require('winston');
-const nconf = require('nconf');
-
 const helpers = require('./helpers');
 
 const { setupPageRoute } = helpers;
