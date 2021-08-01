@@ -37,6 +37,6 @@
 	"subscriptions.hour": "Giờ Thông Báo",
 	"subscriptions.hour-help": "Vui lòng nhập một số đại diện cho giờ để gửi thông báo email đã lên lịch (VD: <code>0</code> cho nửa đêm, <code>17</code> cho 5h chiều). Hãy nhớ rằng đây là giờ theo chính máy chủ và có thể không khớp chính xác với đồng hồ hệ thống của bạn.<br /> Thời gian máy chủ gần đúng là: <span id=\"serverTime\"></span><br /> Thông báo hàng ngày kế tiếp được lên lịch để gửi <span id=\"nextDigestTime\"></span>",
 	"notifications.remove-images": "Xóa hình ảnh khỏi thông báo email",
-	"include-unverified-emails": "Send emails to recipients who have not explicitly confirmed their emails",
-	"include-unverified-warning": "By default, users with emails associated with their account have already been verified, but there are situations where this is not the case (e.g. SSO logins, grandfathered users, etc). <strong>Enable this setting at your own risk</strong> &ndash; sending emails to unverified addresses may be a violation of regional anti-spam laws."
+	"include-unverified-emails": "Gửi email đến những người nhận chưa xác nhận rõ ràng email của họ",
+	"include-unverified-warning": "Theo mặc định, người dùng có email được liên kết với tài khoản của họ đã được xác minh, nhưng có những trường hợp không phải như vậy (ví dụ: đăng nhập SSO, người dùng phổ thông, v.v.). <strong>Bạn tự chịu rủi ro khi bật cài đặt này</strong> &ndash; gửi email đến các địa chỉ chưa được xác minh có thể vi phạm luật chống thư rác trong khu vực."
 }
