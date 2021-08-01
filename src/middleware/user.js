@@ -209,47 +209,6 @@ module.exports = function (middleware) {
 		controllers.helpers.redirect(res, path);
 	});
 
-	middleware.isAdmin = helpers.try(async (req, res, next) => {
-		// TODO: Remove in v1.16.0
-		winston.warn('[middleware] middleware.isAdmin deprecated, use middleware.admin.checkPrivileges instead');
-
-		const isAdmin = await user.isAdministrator(req.uid);
-
-		if (!isAdmin) {
-			return controllers.helpers.notAllowed(req, res);
-		}
-		const hasPassword = await user.hasPassword(req.uid);
-		if (!hasPassword) {
-			return next();
-		}
-
-		const loginTime = req.session.meta ? req.session.meta.datetime : 0;
-		const adminReloginDuration = meta.config.adminReloginDuration * 60000;
-		const disabled = meta.config.adminReloginDuration === 0;
-		if (disabled || (loginTime && parseInt(loginTime, 10) > Date.now() - adminReloginDuration)) {
-			const timeLeft = parseInt(loginTime, 10) - (Date.now() - adminReloginDuration);
-			if (req.session.meta && timeLeft < Math.min(300000, adminReloginDuration)) {
-				req.session.meta.datetime += Math.min(300000, adminReloginDuration);
-			}
-
-			return next();
-		}
-
-		let returnTo = req.path;
-		if (nconf.get('relative_path')) {
-			returnTo = req.path.replace(new RegExp(`^${nconf.get('relative_path')}`), '');
-		}
-		returnTo = returnTo.replace(/^\/api/, '');
-
-		req.session.returnTo = returnTo;
-		req.session.forceLogin = 1;
-		if (res.locals.isAPI) {
-			controllers.helpers.formatApiResponse(401, res);
-		} else {
-			res.redirect(`${nconf.get('relative_path')}/login?local=1`);
-		}
-	});
-
 	middleware.requireUser = function (req, res, next) {
 		if (req.loggedIn) {
 			return next();
