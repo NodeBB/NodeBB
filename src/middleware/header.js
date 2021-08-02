@@ -101,7 +101,6 @@ middleware.renderHeader = async function renderHeader(req, res, data) {
 	results.user.isEmailConfirmSent = !!results.isEmailConfirmSent;
 
 	templateValues.bootswatchSkin = (parseInt(meta.config.disableCustomUserSkins, 10) !== 1 ? res.locals.config.bootswatchSkin : '') || meta.config.bootswatchSkin || '';
-	templateValues.config.bootswatchSkin = templateValues.bootswatchSkin || 'noskin';	// TODO remove in v1.12.0+
 	templateValues.browserTitle = results.browserTitle;
 	({
 		navigation: templateValues.navigation,
