@@ -1,8 +1,8 @@
 {
 	"site-settings": "הגדרות האתר",
 	"title": "כותרת האתר",
-	"title.short": "Short Title",
-	"title.short-placeholder": "If no short title is specified, the site title will be used",
+	"title.short": "כותרת קצרה",
+	"title.short-placeholder": "אם לא הוגדר כותרת קצרה, כותרת האתר ישמש ככותרת",
 	"title.url": "כתובת האתר",
 	"title.url-placeholder": "כתובת אתר זה",
 	"title.url-help": "בעת לחיצה על הכותרת, המשתמשים ינותבו לכתובת הזו. אם תשאיר ריק, המשתמשים ינותבו לאינדקס",
