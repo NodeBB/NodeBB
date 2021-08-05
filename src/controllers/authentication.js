@@ -248,31 +248,29 @@ authenticationController.login = async (req, res, next) => {
 
 	const loginWith = meta.config.allowLoginWith || 'username-email';
 	req.body.username = req.body.username.trim();
-
-	plugins.hooks.fire('filter:login.check', { req: req, res: res, userData: req.body }, (err) => {
-		if (err) {
-			return (res.locals.noScriptErrors || helpers.noScriptErrors)(req, res, err.message, 403);
+	const errorHandler = res.locals.noScriptErrors || helpers.noScriptErrors;
+	try {
+		await plugins.hooks.fire('filter:login.check', { req: req, res: res, userData: req.body });
+	} catch (err) {
+		return errorHandler(req, res, err.message, 403);
+	}
+	try {
+		const isEmailLogin = loginWith.includes('email') && req.body.username && utils.isEmailValid(req.body.username);
+		const isUsernameLogin = loginWith.includes('username') && !validator.isEmail(req.body.username);
+		if (isEmailLogin) {
+			const username = await user.getUsernameByEmail(req.body.username);
+			if (username !== '[[global:guest]]') {
+				req.body.username = username;
+			}
 		}
-		if (req.body.username && utils.isEmailValid(req.body.username) && loginWith.includes('email')) {
-			async.waterfall([
-				function (next) {
-					user.getUsernameByEmail(req.body.username, next);
-				},
-				function (username, next) {
-					if (username !== '[[global:guest]]') {
-						req.body.username = username;
-					}
-
-					(res.locals.continueLogin || continueLogin)(strategy, req, res, next);
-				},
-			], next);
-		} else if (loginWith.includes('username') && !validator.isEmail(req.body.username)) {
+		if (isEmailLogin || isUsernameLogin) {
 			(res.locals.continueLogin || continueLogin)(strategy, req, res, next);
 		} else {
-			err = `[[error:wrong-login-type-${loginWith}]]`;
-			(res.locals.noScriptErrors || helpers.noScriptErrors)(req, res, err, 400);
+			errorHandler(req, res, `[[error:wrong-login-type-${loginWith}]]`, 400);
 		}
-	});
+	} catch (err) {
+		return errorHandler(req, res, err.message, 500);
+	}
 };
 
 function continueLogin(strategy, req, res, next) {
