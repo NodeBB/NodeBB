@@ -1,6 +1,5 @@
 'use strict';
 
-const async = require('async');
 const winston = require('winston');
 const passport = require('passport');
 const nconf = require('nconf');
