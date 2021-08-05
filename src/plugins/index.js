@@ -3,7 +3,6 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const async = require('async');
 const winston = require('winston');
 const semver = require('semver');
 const nconf = require('nconf');
@@ -283,54 +282,45 @@ Plugins.showInstalled = async function () {
 
 async function findNodeBBModules(dirs) {
 	const pluginPaths = [];
-	await async.each(dirs, (dirname, next) => {
+	await Promise.all(dirs.map(async (dirname) => {
 		const dirPath = path.join(Plugins.nodeModulesPath, dirname);
+		const isDir = await isDirectory(dirPath);
+		if (!isDir) {
+			return;
+		}
+		if (pluginNamePattern.test(dirname)) {
+			pluginPaths.push(dirname);
+			return;
+		}
 
-		async.waterfall([
-			function (cb) {
-				fs.stat(dirPath, (err, stats) => {
-					if (err && err.code !== 'ENOENT') {
-						return cb(err);
-					}
-					if (err || !stats.isDirectory()) {
-						return next();
-					}
+		if (dirname[0] === '@') {
+			const subdirs = await fs.promises.readdir(dirPath);
+			await Promise.all(subdirs.map(async (subdir) => {
+				if (!pluginNamePattern.test(subdir)) {
+					return;
+				}
 
-					if (pluginNamePattern.test(dirname)) {
-						pluginPaths.push(dirname);
-						return next();
-					}
-
-					if (dirname[0] !== '@') {
-						return next();
-					}
-					fs.readdir(dirPath, cb);
-				});
-			},
-			function (subdirs, cb) {
-				async.each(subdirs, (subdir, next) => {
-					if (!pluginNamePattern.test(subdir)) {
-						return next();
-					}
-
-					const subdirPath = path.join(dirPath, subdir);
-					fs.stat(subdirPath, (err, stats) => {
-						if (err && err.code !== 'ENOENT') {
-							return next(err);
-						}
-
-						if (err || !stats.isDirectory()) {
-							return next();
-						}
-
-						pluginPaths.push(`${dirname}/${subdir}`);
-						next();
-					});
-				}, cb);
-			},
-		], next);
-	});
+				const subdirPath = path.join(dirPath, subdir);
+				const isDir = await isDirectory(subdirPath);
+				if (isDir) {
+					pluginPaths.push(`${dirname}/${subdir}`);
+				}
+			}));
+		}
+	}));
 	return pluginPaths;
+}
+
+async function isDirectory(dirPath) {
+	try {
+		const stats = await fs.promises.stat(dirPath);
+		return stats.isDirectory();
+	} catch (err) {
+		if (err.code !== 'ENOENT') {
+			throw err;
+		}
+		return false;
+	}
 }
 
 require('../promisify')(Plugins);
