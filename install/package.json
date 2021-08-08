@@ -147,7 +147,7 @@
         "coveralls": "3.1.1",
         "eslint": "7.32.0",
         "eslint-config-nodebb": "0.0.1",
-        "eslint-plugin-import": "2.23.4",
+        "eslint-plugin-import": "2.24.0",
         "grunt": "1.4.1",
         "grunt-contrib-watch": "1.1.0",
         "husky": "7.0.1",
