@@ -268,6 +268,7 @@ module.exports = function (Topics) {
 				oldCid: oldCid,
 			}),
 			Topics.updateCategoryTagsCount([oldCid, cid], tags),
+			Topics.events.log(tid, { type: 'move', uid: data.uid, fromCid: oldCid }),
 		]);
 		const hookData = _.clone(data);
 		hookData.fromCid = oldCid;

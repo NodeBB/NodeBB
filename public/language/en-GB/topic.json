@@ -23,6 +23,7 @@
 	"login-to-view": "🔒 Log in to view",
 	"edit": "Edit",
 	"delete": "Delete",
+	"delete-event": "Delete Event",
 	"purge": "Purge",
 	"restore": "Restore",
 	"move": "Move",
@@ -47,6 +48,7 @@
 	"unpinned-by": "Unpinned by",
 	"deleted-by": "Deleted by",
 	"restored-by": "Restored by",
+	"moved-from-by": "Moved from %1 by",
 	"queued-by": "Post queued for approval &rarr;",
 
 	"bookmark_instructions" : "Click here to return to the last read post in this thread.",

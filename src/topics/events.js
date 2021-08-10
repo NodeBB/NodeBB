@@ -1,8 +1,10 @@
 'use strict';
 
+const _ = require('lodash');
 const db = require('../database');
 const user = require('../user');
 const posts = require('../posts');
+const categories = require('../categories');
 const plugins = require('../plugins');
 
 const Events = module.exports;
@@ -41,6 +43,10 @@ Events._types = {
 	restore: {
 		icon: 'fa-trash-o',
 		text: '[[topic:restored-by]]',
+	},
+	move: {
+		icon: 'fa-arrow-circle-right',
+		// text: '[[topic:moved-from-by]]',
 	},
 	'post-queue': {
 		icon: 'fa-history',
@@ -83,6 +89,12 @@ async function getUserInfo(uids) {
 	return userMap;
 }
 
+async function getCategoryInfo(cids) {
+	const uniqCids = _.uniq(cids);
+	const catData = await categories.getCategoriesFields(uniqCids, ['name', 'slug', 'icon', 'color', 'bgColor']);
+	return _.zipObject(uniqCids, catData);
+}
+
 async function modifyEvent({ tid, uid, eventIds, timestamps, events }) {
 	// Add posts from post queue
 	const isPrivileged = await user.isPrivileged(uid);
@@ -98,7 +110,10 @@ async function modifyEvent({ tid, uid, eventIds, timestamps, events }) {
 		});
 	}
 
-	const users = await getUserInfo(events.map(event => event.uid).filter(Boolean));
+	const [users, fromCategories] = await Promise.all([
+		getUserInfo(events.map(event => event.uid).filter(Boolean)),
+		getCategoryInfo(events.map(event => event.fromCid).filter(Boolean)),
+	]);
 
 	// Remove events whose types no longer exist (e.g. plugin uninstalled)
 	events = events.filter(event => Events._types.hasOwnProperty(event.type));
@@ -110,6 +125,10 @@ async function modifyEvent({ tid, uid, eventIds, timestamps, events }) {
 		event.timestampISO = new Date(timestamps[idx]).toISOString();
 		if (event.hasOwnProperty('uid')) {
 			event.user = users.get(event.uid === 'system' ? 'system' : parseInt(event.uid, 10));
+		}
+		if (event.hasOwnProperty('fromCid')) {
+			event.fromCategory = fromCategories[event.fromCid];
+			event.text = `[[topic:moved-from-by, ${event.fromCategory.name}]]`;
 		}
 
 		Object.assign(event, Events._types[event.type]);
@@ -149,11 +168,19 @@ Events.log = async (tid, payload) => {
 	return events;
 };
 
-Events.purge = async (tid) => {
-	// Should only be called on topic purge
-	const keys = [`topic:${tid}:events`];
-	const eventIds = await db.getSortedSetRange(keys[0], 0, -1);
-	keys.push(...eventIds.map(id => `topicEvent:${id}`));
+Events.purge = async (tid, eventIds = []) => {
+	if (eventIds.length) {
+		const isTopicEvent = await db.isSortedSetMembers(`topic:${tid}:events`, eventIds);
+		eventIds = eventIds.filter((id, index) => isTopicEvent[index]);
+		await Promise.all([
+			db.sortedSetRemove(`topic:${tid}:events`, eventIds),
+			db.deleteAll(eventIds.map(id => `topicEvent:${id}`)),
+		]);
+	} else {
+		const keys = [`topic:${tid}:events`];
+		const eventIds = await db.getSortedSetRange(keys[0], 0, -1);
+		keys.push(...eventIds.map(id => `topicEvent:${id}`));
 
-	await db.deleteAll(keys);
+		await db.deleteAll(keys);
+	}
 };

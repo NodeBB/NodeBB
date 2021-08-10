@@ -211,3 +211,11 @@ Topics.getEvents = async (req, res) => {
 
 	helpers.formatApiResponse(200, res, await topics.events.get(req.params.tid));
 };
+
+Topics.deleteEvent = async (req, res) => {
+	if (!await privileges.topics.isAdminOrMod(req.params.tid, req.uid)) {
+		return helpers.formatApiResponse(403, res);
+	}
+	await topics.events.purge(req.params.tid, [req.params.eventId]);
+	helpers.formatApiResponse(200, res);
+};

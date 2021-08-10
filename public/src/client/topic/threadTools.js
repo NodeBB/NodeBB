@@ -49,6 +49,17 @@ define('forum/topic/threadTools', [
 			return false;
 		});
 
+		topicContainer.on('click', '[component="topic/event/delete"]', function () {
+			const eventId = $(this).attr('data-topic-event-id');
+			const eventEl = $(this).parents('[component="topic/event"]');
+			api.del(`/topics/${tid}/events/${eventId}`, {})
+				.then(function () {
+					eventEl.remove();
+				})
+				.catch(app.alertError);
+			return false;
+		});
+
 		// todo: should also use topicCommand, but no write api call exists for this yet
 		topicContainer.on('click', '[component="topic/mark-unread"]', function () {
 			socket.emit('topics.markUnread', tid, function (err) {
