@@ -378,7 +378,9 @@ define('forum/topic/posts', [
 				}
 			});
 		})).then(function () {
-			callback && callback();
+			if (typeof callback === 'function') {
+				callback();
+			}
 		});
 	}
 
