@@ -378,9 +378,11 @@ define('admin/manage/privileges', [
 			},
 		}, function (html) {
 			var tbodyEl = document.querySelector('.privilege-table tbody');
+			const btnIdx = $('.privilege-filters').first().find('button.btn-warning').index();
 			tbodyEl.append(html.get(0));
 			Privileges.exposeAssumedPrivileges();
 			hightlightRowByDataAttr('data-group-name', group);
+			document.querySelector('.privilege-filters').querySelectorAll('button')[btnIdx].click();
 			cb();
 		});
 	}
@@ -415,9 +417,11 @@ define('admin/manage/privileges', [
 		});
 
 		var tbodyEl = document.querySelectorAll('.privilege-table tbody');
+		const btnIdx = $('.privilege-filters').last().find('button.btn-warning').index();
 		tbodyEl[1].append(html.get(0));
 		Privileges.exposeAssumedPrivileges();
 		hightlightRowByDataAttr('data-uid', user.uid);
+		document.querySelectorAll('.privilege-filters')[1].querySelectorAll('button')[btnIdx].click();
 		cb();
 	}
 
