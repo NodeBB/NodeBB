@@ -33,6 +33,7 @@ define('admin/manage/privileges', [
 		Privileges.setupPrivilegeTable();
 
 		highlightRow();
+		$('.privilege-filters button:last-child').click();
 	};
 
 	Privileges.setupPrivilegeTable = function () {
@@ -100,31 +101,34 @@ define('admin/manage/privileges', [
 			}
 		});
 
-		$('.privilege-table-container').on('click', '[data-action="search.user"]', Privileges.addUserToPrivilegeTable);
-		$('.privilege-table-container').on('click', '[data-action="search.group"]', Privileges.addGroupToPrivilegeTable);
-		$('.privilege-table-container').on('click', '[data-action="copyToChildren"]', function () {
+		const privTableCon = $('.privilege-table-container');
+		privTableCon.on('click', '[data-action="search.user"]', Privileges.addUserToPrivilegeTable);
+		privTableCon.on('click', '[data-action="search.group"]', Privileges.addGroupToPrivilegeTable);
+		privTableCon.on('click', '[data-action="copyToChildren"]', function () {
 			throwConfirmModal('copyToChildren', Privileges.copyPrivilegesToChildren.bind(null, cid, ''));
 		});
-		$('.privilege-table-container').on('click', '[data-action="copyToChildrenGroup"]', function () {
+		privTableCon.on('click', '[data-action="copyToChildrenGroup"]', function () {
 			var groupName = $(this).parents('[data-group-name]').attr('data-group-name');
 			throwConfirmModal('copyToChildrenGroup', Privileges.copyPrivilegesToChildren.bind(null, cid, groupName));
 		});
 
-		$('.privilege-table-container').on('click', '[data-action="copyPrivilegesFrom"]', function () {
+		privTableCon.on('click', '[data-action="copyPrivilegesFrom"]', function () {
 			Privileges.copyPrivilegesFromCategory(cid, '');
 		});
-		$('.privilege-table-container').on('click', '[data-action="copyPrivilegesFromGroup"]', function () {
+		privTableCon.on('click', '[data-action="copyPrivilegesFromGroup"]', function () {
 			var groupName = $(this).parents('[data-group-name]').attr('data-group-name');
 			Privileges.copyPrivilegesFromCategory(cid, groupName);
 		});
 
-		$('.privilege-table-container').on('click', '[data-action="copyToAll"]', function () {
+		privTableCon.on('click', '[data-action="copyToAll"]', function () {
 			throwConfirmModal('copyToAll', Privileges.copyPrivilegesToAllCategories.bind(null, cid, ''));
 		});
-		$('.privilege-table-container').on('click', '[data-action="copyToAllGroup"]', function () {
+		privTableCon.on('click', '[data-action="copyToAllGroup"]', function () {
 			var groupName = $(this).parents('[data-group-name]').attr('data-group-name');
 			throwConfirmModal('copyToAllGroup', Privileges.copyPrivilegesToAllCategories.bind(null, cid, groupName));
 		});
+
+		privTableCon.on('click', '.privilege-filters > button', filterPrivileges);
 
 		mousetrap.bind('ctrl+s', function (ev) {
 			throwConfirmModal('save', Privileges.commit);
@@ -175,9 +179,14 @@ define('admin/manage/privileges', [
 			ajaxify.data.privileges = { ...ajaxify.data.privileges, ...privileges };
 			var tpl = parseInt(cid, 10) ? 'admin/partials/privileges/category' : 'admin/partials/privileges/global';
 			app.parseAndTranslate(tpl, { privileges }).then((html) => {
+				// Get currently selected filters
+				const btnIndexes = $('.privilege-filters button.btn-warning').map((idx, el) => $(el).index()).get();
 				$('.privilege-table-container').html(html);
 				Privileges.exposeAssumedPrivileges();
-				checkboxRowSelector.updateAll();
+				document.querySelectorAll('.privilege-filters').forEach((con, i) => {
+					const idx = btnIndexes[i] === undefined ? 2 : btnIndexes[i]; // Three buttons, placed in reverse order
+					con.querySelectorAll('button')[idx].click();
+				});
 
 				hightlightRowByDataAttr('data-group-name', groupToHighlight);
 			});
@@ -410,6 +419,24 @@ define('admin/manage/privileges', [
 		Privileges.exposeAssumedPrivileges();
 		hightlightRowByDataAttr('data-uid', user.uid);
 		cb();
+	}
+
+	function filterPrivileges(ev) {
+		const [startIdx, endIdx] = ev.target.getAttribute('data-filter').split(',').map(i => parseInt(i, 10));
+		const rows = $(ev.target).closest('table')[0].querySelectorAll('thead tr:last-child, tbody tr ');
+		const SKIP_COLS = 3;
+		rows.forEach((tr) => {
+			tr.querySelectorAll('td, th').forEach((el, idx) => {
+				const offset = el.tagName.toUpperCase() === 'TH' ? 1 : 0;
+				if (idx < (SKIP_COLS - offset)) {
+					return;
+				}
+				el.classList.toggle('hidden', !(idx >= (startIdx - offset) && idx <= (endIdx - offset)));
+			});
+		});
+		checkboxRowSelector.updateAll();
+		$(ev.target).siblings('button').toArray().forEach(btn => btn.classList.remove('btn-warning'));
+		ev.target.classList.add('btn-warning');
 	}
 
 	return Privileges;

@@ -21,7 +21,7 @@ define('admin/modules/checkboxRowSelector', function () {
 		if (self.toggling) {
 			return;
 		}
-		const checkboxes = $checkboxEl.closest('tr').find('input:not([disabled])').toArray();
+		const checkboxes = $checkboxEl.closest('tr').find('input:not([disabled]):visible').toArray();
 		const $toggler = $(checkboxes.shift());
 		const rowState = checkboxes.length && checkboxes.every(el => el.checked);
 		$toggler.prop('checked', rowState);
@@ -35,7 +35,7 @@ define('admin/modules/checkboxRowSelector', function () {
 	function toggleAll($checkboxEl) {
 		self.toggling = true;
 		const state = $checkboxEl.prop('checked');
-		$checkboxEl.closest('tr').find('input:not(.checkbox-helper)').each((idx, el) => {
+		$checkboxEl.closest('tr').find('input:not(.checkbox-helper):visible').each((idx, el) => {
 			const $checkbox = $(el);
 			if ($checkbox.prop('checked') === state) {
 				return;
