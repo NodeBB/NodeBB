@@ -27,7 +27,8 @@ Users.redirectBySlug = async (req, res) => {
 
 	if (uid) {
 		const path = req.path.split('/').slice(3).join('/');
-		res.redirect(308, nconf.get('relative_path') + encodeURI(`/api/v3/users/${uid}/${path}`));
+		const urlObj = new URL(nconf.get('url') + req.url);
+		res.redirect(308, nconf.get('relative_path') + encodeURI(`/api/v3/users/${uid}/${path}${urlObj.search}`));
 	} else {
 		helpers.formatApiResponse(404, res);
 	}
