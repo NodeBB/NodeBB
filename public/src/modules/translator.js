@@ -11,8 +11,8 @@
 				};
 				require(['hooks'], function (hooks) {
 					hooks.fire('action:translator.loadClient', payload);
+					resolve(payload.promise ? Promise.resolve(payload.promise) : data);
 				});
-				resolve(payload.promise ? Promise.resolve(payload.promise) : data);
 			}).fail(function (jqxhr, textStatus, error) {
 				reject(new Error(textStatus + ', ' + error));
 			});
