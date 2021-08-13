@@ -12,6 +12,7 @@ define('admin/manage/privileges', [
 	var Privileges = {};
 
 	var cid;
+	const SKIP_PRIV_COLS = 3;
 
 	Privileges.init = function () {
 		cid = isNaN(parseInt(ajaxify.data.selectedCategory.cid, 10)) ? 'admin' : ajaxify.data.selectedCategory.cid;
@@ -180,11 +181,11 @@ define('admin/manage/privileges', [
 			var tpl = parseInt(cid, 10) ? 'admin/partials/privileges/category' : 'admin/partials/privileges/global';
 			app.parseAndTranslate(tpl, { privileges }).then((html) => {
 				// Get currently selected filters
-				const btnIndexes = $('.privilege-filters button.btn-warning').map((idx, el) => $(el).index()).get();
+				const btnIndices = $('.privilege-filters button.btn-warning').map((idx, el) => $(el).index()).get();
 				$('.privilege-table-container').html(html);
 				Privileges.exposeAssumedPrivileges();
 				document.querySelectorAll('.privilege-filters').forEach((con, i) => {
-					const idx = btnIndexes[i] === undefined ? 2 : btnIndexes[i]; // Three buttons, placed in reverse order
+					const idx = btnIndices[i] === undefined ? 2 : btnIndices[i]; // Three buttons, placed in reverse order
 					con.querySelectorAll('button')[idx].click();
 				});
 
@@ -263,7 +264,8 @@ define('admin/manage/privileges', [
 	};
 
 	Privileges.copyPrivilegesToChildren = function (cid, group) {
-		socket.emit('admin.categories.copyPrivilegesToChildren', { cid: cid, group: group }, function (err) {
+		const filter = getPrivilegeFilter();
+		socket.emit('admin.categories.copyPrivilegesToChildren', { cid, group, filter }, function (err) {
 			if (err) {
 				return app.alertError(err.message);
 			}
@@ -278,6 +280,7 @@ define('admin/manage/privileges', [
 			onSubmit: function (selectedCategory) {
 				socket.emit('admin.categories.copyPrivilegesFrom', {
 					toCid: cid,
+					filter: getPrivilegeFilter(),
 					fromCid: selectedCategory.cid,
 					group: group,
 				}, function (err) {
@@ -291,7 +294,8 @@ define('admin/manage/privileges', [
 	};
 
 	Privileges.copyPrivilegesToAllCategories = function (cid, group) {
-		socket.emit('admin.categories.copyPrivilegesToAllCategories', { cid: cid, group: group }, function (err) {
+		const filter = getPrivilegeFilter();
+		socket.emit('admin.categories.copyPrivilegesToAllCategories', { cid, group, filter }, function (err) {
 			if (err) {
 				return app.alertError(err.message);
 			}
@@ -428,11 +432,10 @@ define('admin/manage/privileges', [
 	function filterPrivileges(ev) {
 		const [startIdx, endIdx] = ev.target.getAttribute('data-filter').split(',').map(i => parseInt(i, 10));
 		const rows = $(ev.target).closest('table')[0].querySelectorAll('thead tr:last-child, tbody tr ');
-		const SKIP_COLS = 3;
 		rows.forEach((tr) => {
 			tr.querySelectorAll('td, th').forEach((el, idx) => {
 				const offset = el.tagName.toUpperCase() === 'TH' ? 1 : 0;
-				if (idx < (SKIP_COLS - offset)) {
+				if (idx < (SKIP_PRIV_COLS - offset)) {
 					return;
 				}
 				el.classList.toggle('hidden', !(idx >= (startIdx - offset) && idx <= (endIdx - offset)));
@@ -441,6 +444,16 @@ define('admin/manage/privileges', [
 		checkboxRowSelector.updateAll();
 		$(ev.target).siblings('button').toArray().forEach(btn => btn.classList.remove('btn-warning'));
 		ev.target.classList.add('btn-warning');
+	}
+
+	function getPrivilegeFilter() {
+		const indices = document.querySelector('.privilege-filters .btn-warning')
+			.getAttribute('data-filter')
+			.split(',')
+			.map(i => parseInt(i, 10));
+		indices[0] -= SKIP_PRIV_COLS;
+		indices[1] = indices[1] - SKIP_PRIV_COLS + 1;
+		return indices;
 	}
 
 	return Privileges;
