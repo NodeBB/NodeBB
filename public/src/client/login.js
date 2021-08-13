@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/login', ['jquery-form'], function () {
+define('forum/login', ['hooks', 'jquery-form'], function (hooks) {
 	var	Login = {
 		_capsState: false,
 	};
@@ -26,7 +26,7 @@ define('forum/login', ['jquery-form'], function () {
 
 				submitEl.addClass('disabled');
 
-				$(window).trigger('action:app.login');
+				hooks.fire('action:app.login');
 				formEl.ajaxSubmit({
 					headers: {
 						'x-csrf-token': config.csrf_token,
@@ -35,7 +35,7 @@ define('forum/login', ['jquery-form'], function () {
 						app.flags._login = true;
 					},
 					success: function (data) {
-						$(window).trigger('action:app.loggedIn', data);
+						hooks.fire('action:app.loggedIn', data);
 						var pathname = utils.urlToLocation(data.next).pathname;
 						var params = utils.params({ url: data.next });
 						params.loggedin = true;

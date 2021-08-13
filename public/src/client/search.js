@@ -1,7 +1,12 @@
 'use strict';
 
 
-define('forum/search', ['search', 'autocomplete', 'storage'], function (searchModule, autocomplete, storage) {
+define('forum/search', [
+	'search',
+	'autocomplete',
+	'storage',
+	'hooks',
+], function (searchModule, autocomplete, storage, hooks) {
 	var	Search = {};
 
 	Search.init = function () {
@@ -51,7 +56,7 @@ define('forum/search', ['search', 'autocomplete', 'storage'], function (searchMo
 			searchData.showAs = form.find('#show-as-topics').is(':checked') ? 'topics' : 'posts';
 		}
 
-		$(window).trigger('action:search.getSearchDataFromDOM', {
+		hooks.fire('action:search.getSearchDataFromDOM', {
 			form: form,
 			data: searchData,
 		});
@@ -128,7 +133,7 @@ define('forum/search', ['search', 'autocomplete', 'storage'], function (searchMo
 				$('#show-as-posts').prop('checked', isPost).parent().toggleClass('active', isPost);
 			}
 
-			$(window).trigger('action:search.fillOutForm', {
+			hooks.fire('action:search.fillOutForm', {
 				form: formData,
 			});
 		}

@@ -1,6 +1,6 @@
 'use strict';
 
-define('categoryFilter', ['categorySearch', 'api'], function (categorySearch, api) {
+define('categoryFilter', ['categorySearch', 'api', 'hooks'], function (categorySearch, api, hooks) {
 	var categoryFilter = {};
 
 	categoryFilter.init = function (el, options) {
@@ -10,7 +10,8 @@ define('categoryFilter', ['categorySearch', 'api'], function (categorySearch, ap
 		options = options || {};
 		options.states = options.states || ['watching', 'notwatching', 'ignoring'];
 		options.template = 'partials/category-filter';
-		$(window).trigger('action:category.filter.options', { el: el, options: options });
+
+		hooks.fire('action:category.filter.options', { el: el, options: options });
 
 		categorySearch.init(el, options);
 

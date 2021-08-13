@@ -1,14 +1,14 @@
 'use strict';
 
 
-define('forum/compose', [], function () {
+define('forum/compose', ['hooks'], function (hooks) {
 	var Compose = {};
 
 	Compose.init = function () {
 		var container = $('.composer');
 
 		if (container.length) {
-			$(window).trigger('action:composer.enhance', {
+			hooks.fire('action:composer.enhance', {
 				container: container,
 			});
 		}

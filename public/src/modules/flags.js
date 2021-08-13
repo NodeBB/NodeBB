@@ -48,7 +48,7 @@ define('flags', ['hooks', 'components', 'api'], function (hooks, components, api
 			});
 
 			flagModal.modal('show');
-			$(window).trigger('action:flag.showModal', {
+			hooks.fire('action:flag.showModal', {
 				modalEl: flagModal,
 				type: data.type,
 				id: data.id,
@@ -84,7 +84,7 @@ define('flags', ['hooks', 'components', 'api'], function (hooks, components, api
 				postEl.find('[component="post/flag"]').addClass('hidden').parent().attr('hidden', '');
 				postEl.find('[component="post/already-flagged"]').removeClass('hidden').parent().attr('hidden', null);
 			}
-			$(window).trigger('action:flag.create', { flagId: flagId, data: data });
+			hooks.fire('action:flag.create', { flagId: flagId, data: data });
 		});
 	}
 

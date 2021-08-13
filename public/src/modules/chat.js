@@ -4,7 +4,8 @@ define('chat', [
 	'components',
 	'taskbar',
 	'translator',
-], function (components, taskbar, translator) {
+	'hooks',
+], function (components, taskbar, translator, hooks) {
 	var module = {};
 	var newMessage = false;
 
@@ -123,7 +124,7 @@ define('chat', [
 		taskbar.update('chat', modal.attr('data-uuid'), {
 			title: newTitle,
 		});
-		$(window).trigger('action:chat.renamed', Object.assign(data, {
+		hooks.fire('action:chat.renamed', Object.assign(data, {
 			modal: modal,
 		}));
 	};
@@ -249,7 +250,7 @@ define('chat', [
 					isSelf: data.isSelf,
 				}, function () {
 					taskbar.toggleNew(chatModal.attr('data-uuid'), !data.isSelf);
-					$(window).trigger('action:chat.loaded', chatModal);
+					hooks.fire('action:chat.loaded', chatModal);
 
 					if (typeof callback === 'function') {
 						callback(chatModal);
@@ -275,7 +276,7 @@ define('chat', [
 			module.disableMobileBehaviour(chatModal);
 		}
 
-		$(window).trigger('action:chat.closed', {
+		hooks.fire('action:chat.closed', {
 			uuid: uuid,
 			modal: chatModal,
 		});
@@ -352,7 +353,7 @@ define('chat', [
 		taskbar.minimize('chat', uuid);
 		clearInterval(chatModal.attr('intervalId'));
 		chatModal.attr('intervalId', 0);
-		$(window).trigger('action:chat.minimized', {
+		hooks.fire('action:chat.minimized', {
 			uuid: uuid,
 			modal: chatModal,
 		});

@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/infinitescroll', function () {
+define('forum/infinitescroll', ['hooks'], function (hooks) {
 	var scroll = {};
 	var callback;
 	var previousScrollTop = 0;
@@ -70,7 +70,7 @@ define('forum/infinitescroll', function () {
 		loadingMore = true;
 
 		var hookData = { method: method, data: data };
-		$(window).trigger('action:infinitescroll.loadmore', hookData);
+		hooks.fire('action:infinitescroll.loadmore', hookData);
 
 		socket.emit(hookData.method, hookData.data, function (err, data) {
 			if (err) {
@@ -90,7 +90,7 @@ define('forum/infinitescroll', function () {
 		loadingMore = true;
 		var url = config.relative_path + '/api' + location.pathname.replace(new RegExp('^' + config.relative_path), '');
 		var hookData = { url: url, data: data };
-		$(window).trigger('action:infinitescroll.loadmore.xhr', hookData);
+		hooks.fire('action:infinitescroll.loadmore.xhr', hookData);
 
 		$.get(url, data, function (data) {
 			callback(data, function () {

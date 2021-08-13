@@ -2,8 +2,8 @@
 
 
 define('forum/topic/votes', [
-	'components', 'translator', 'benchpress', 'api',
-], function (components, translator, Benchpress, api) {
+	'components', 'translator', 'benchpress', 'api', 'hooks',
+], function (components, translator, Benchpress, api, hooks) {
 	var Votes = {};
 
 	Votes.addVoteHandler = function () {
@@ -70,7 +70,7 @@ define('forum/topic/votes', [
 				}
 				return app.alertError(err.message);
 			}
-			$(window).trigger('action:post.toggleVote', {
+			hooks.fire('action:post.toggleVote', {
 				pid: pid,
 				delta: delta,
 				unvote: method === 'del',

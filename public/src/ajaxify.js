@@ -92,7 +92,7 @@ ajaxify = window.ajaxify || {};
 		var url = ajaxify.start(window.location.pathname.slice(1) + window.location.search + window.location.hash);
 		ajaxify.updateHistory(url, true);
 		ajaxify.end(url, ajaxify.data.template.name);
-		$(window).trigger('action:ajaxify.coldLoad');
+		hooks.fire('action:ajaxify.coldLoad');
 	};
 
 	ajaxify.isCold = function () {
@@ -179,7 +179,7 @@ ajaxify = window.ajaxify || {};
 	}
 
 	function renderTemplate(url, tpl_url, data, callback) {
-		$(window).trigger('action:ajaxify.loadingTemplates', {});
+		hooks.fire('action:ajaxify.loadingTemplates', {});
 		require(['translator', 'benchpress'], function (translator, Benchpress) {
 			Benchpress.render(tpl_url, data)
 				.then(rendered => translator.translate(rendered))
@@ -215,7 +215,7 @@ ajaxify = window.ajaxify || {};
 			// Allow translation strings in title on ajaxify (#5927)
 			title = translator.unescape(title);
 			var data = { title: title };
-			$(window).trigger('action:ajaxify.updateTitle', data);
+			hooks.fire('action:ajaxify.updateTitle', data);
 			translator.translate(data.title, function (translated) {
 				window.document.title = $('<div></div>').html(translated).text();
 			});
@@ -299,7 +299,7 @@ ajaxify = window.ajaxify || {};
 		});
 		ajaxify.widgets.render(tpl_url);
 
-		$(window).trigger('action:ajaxify.contentLoaded', { url: url, tpl: tpl_url });
+		hooks.fire('action:ajaxify.contentLoaded', { url: url, tpl: tpl_url });
 
 		app.processPage();
 	};
@@ -379,7 +379,7 @@ ajaxify = window.ajaxify || {};
 	ajaxify.loadData = function (url, callback) {
 		url = ajaxify.removeRelativePath(url);
 
-		$(window).trigger('action:ajaxify.loadingData', { url: url });
+		hooks.fire('action:ajaxify.loadingData', { url: url });
 
 		apiXHR = $.ajax({
 			url: config.relative_path + '/api/' + url,
@@ -405,7 +405,7 @@ ajaxify = window.ajaxify || {};
 				ajaxify.data = data;
 				data.config = config;
 
-				$(window).trigger('action:ajaxify.dataLoaded', { url: url, data: data });
+				hooks.fire('action:ajaxify.dataLoaded', { url: url, data: data });
 
 				callback(null, data);
 			},
@@ -440,6 +440,11 @@ ajaxify = window.ajaxify || {};
 }());
 
 $(document).ready(function () {
+	var hooks;
+	require(['hooks'], function (_hooks) {
+		hooks = _hooks;
+	});
+
 	$(window).on('popstate', function (ev) {
 		ev = ev.originalEvent;
 
@@ -450,7 +455,7 @@ $(document).ready(function () {
 				}, ev.state.returnPath, config.relative_path + '/' + ev.state.returnPath);
 			} else if (ev.state.url !== undefined) {
 				ajaxify.go(ev.state.url, function () {
-					$(window).trigger('action:popstate', { url: ev.state.url });
+					hooks.fire('action:popstate', { url: ev.state.url });
 				}, true);
 			}
 		}

@@ -18,6 +18,11 @@ app.cacheBuster = null;
 
 	app.cacheBuster = config['cache-buster'];
 
+	var hooks;
+	require(['hooks'], function (_hooks) {
+		hooks = _hooks;
+	});
+
 	$(document).ready(function () {
 		ajaxify.parseData();
 		app.load();
@@ -117,7 +122,7 @@ app.cacheBuster = null;
 				unread.initUnreadTopics();
 			}
 			function finishLoad() {
-				$(window).trigger('action:app.load');
+				hooks.fire('action:app.load');
 				app.showMessages();
 				appLoaded = true;
 			}
@@ -146,7 +151,7 @@ app.cacheBuster = null;
 
 	app.logout = function (redirect) {
 		redirect = redirect === undefined ? true : redirect;
-		$(window).trigger('action:app.logout');
+		hooks.fire('action:app.logout');
 
 		$.ajax(config.relative_path + '/logout', {
 			type: 'POST',
@@ -157,7 +162,7 @@ app.cacheBuster = null;
 				app.flags._logout = true;
 			},
 			success: function (data) {
-				$(window).trigger('action:app.loggedOut', data);
+				hooks.fire('action:app.loggedOut', data);
 				if (redirect) {
 					if (data.next) {
 						window.location.href = data.next;
@@ -513,7 +518,7 @@ app.cacheBuster = null;
 
 				quickSearchResults.removeClass('hidden').find('.quick-search-results-container').html('');
 				quickSearchResults.find('.loading-indicator').removeClass('hidden');
-				$(window).trigger('action:search.quick.start', options);
+				hooks.fire('action:search.quick.start', options);
 				options.searchOptions.searchOnly = 1;
 				search.api(options.searchOptions, function (data) {
 					quickSearchResults.find('.loading-indicator').addClass('hidden');
@@ -538,7 +543,7 @@ app.cacheBuster = null;
 							'.quick-search-results .quick-search-title, .quick-search-results .snippet'
 						);
 						search.highlightMatches(options.searchOptions.term, highlightEls);
-						$(window).trigger('action:search.quick.complete', {
+						hooks.fire('action:search.quick.complete', {
 							data: data,
 							options: options,
 						});
@@ -658,7 +663,7 @@ app.cacheBuster = null;
 			require(['search'], function (search) {
 				var data = search.getSearchPreferences();
 				data.term = input.val();
-				$(window).trigger('action:search.submit', {
+				hooks.fire('action:search.submit', {
 					searchOptions: data,
 					searchElements: searchElements,
 				});
@@ -711,7 +716,7 @@ app.cacheBuster = null;
 	};
 
 	app.newTopic = function (cid, tags) {
-		$(window).trigger('action:composer.topic.new', {
+		hooks.fire('action:composer.topic.new', {
 			cid: cid || ajaxify.data.cid || 0,
 			tags: tags || (ajaxify.data.tag ? [ajaxify.data.tag] : []),
 		});

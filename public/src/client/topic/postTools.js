@@ -9,7 +9,8 @@ define('forum/topic/postTools', [
 	'forum/topic/votes',
 	'api',
 	'bootbox',
-], function (share, navigator, components, translator, votes, api, bootbox) {
+	'hooks',
+], function (share, navigator, components, translator, votes, api, bootbox, hooks) {
 	var PostTools = {};
 
 	var staleReplyAnyway = false;
@@ -50,7 +51,7 @@ define('forum/topic/postTools', [
 					require(['clipboard'], function (clipboard) {
 						new clipboard('[data-clipboard-text]');
 					});
-					$(window).trigger('action:post.tools.load');
+					hooks.fire('action:post.tools.load');
 				});
 			});
 		});
@@ -98,7 +99,7 @@ define('forum/topic/postTools', [
 
 		$('.topic').on('click', '[component="topic/reply-as-topic"]', function () {
 			translator.translate('[[topic:link_back, ' + ajaxify.data.titleRaw + ', ' + config.relative_path + '/topic/' + ajaxify.data.slug + ']]', function (body) {
-				$(window).trigger('action:composer.topic.new', {
+				hooks.fire('action:composer.topic.new', {
 					cid: ajaxify.data.cid,
 					body: body,
 				});
@@ -155,7 +156,7 @@ define('forum/topic/postTools', [
 			var postEditDuration = parseInt(ajaxify.data.postEditDuration, 10);
 
 			if (checkDuration(postEditDuration, timestamp, 'post-edit-duration-expired')) {
-				$(window).trigger('action:composer.post.edit', {
+				hooks.fire('action:composer.post.edit', {
 					pid: getData(btn, 'data-pid'),
 				});
 			}
@@ -258,10 +259,11 @@ define('forum/topic/postTools', [
 			}
 
 			var toPid = button.is('[component="post/reply"]') ? getData(button, 'data-pid') : null;
+			var isQuoteToPid = !toPid || !selectedNode.pid || toPid === selectedNode.pid;
 
-			if (selectedNode.text && (!toPid || !selectedNode.pid || toPid === selectedNode.pid)) {
+			if (selectedNode.text && isQuoteToPid) {
 				username = username || selectedNode.username;
-				$(window).trigger('action:composer.addQuote', {
+				hooks.fire('action:composer.addQuote', {
 					tid: tid,
 					pid: toPid,
 					topicName: ajaxify.data.titleRaw,
@@ -270,7 +272,7 @@ define('forum/topic/postTools', [
 					selectedPid: selectedNode.pid,
 				});
 			} else {
-				$(window).trigger('action:composer.post.new', {
+				hooks.fire('action:composer.post.new', {
 					tid: tid,
 					pid: toPid,
 					topicName: ajaxify.data.titleRaw,
@@ -288,7 +290,7 @@ define('forum/topic/postTools', [
 			var toPid = getData(button, 'data-pid');
 
 			function quote(text) {
-				$(window).trigger('action:composer.addQuote', {
+				hooks.fire('action:composer.addQuote', {
 					tid: tid,
 					pid: toPid,
 					username: username,
@@ -351,7 +353,7 @@ define('forum/topic/postTools', [
 				return app.alertError(err);
 			}
 			var type = method === 'put' ? 'bookmark' : 'unbookmark';
-			$(window).trigger('action:post.' + type, { pid: pid });
+			hooks.fire('action:post.' + type, { pid: pid });
 		});
 		return false;
 	}
@@ -440,7 +442,7 @@ define('forum/topic/postTools', [
 					className: 'btn-primary',
 					callback: function () {
 						translator.translate('[[topic:link_back, ' + ajaxify.data.title + ', ' + config.relative_path + '/topic/' + ajaxify.data.slug + ']]', function (body) {
-							$(window).trigger('action:composer.topic.new', {
+							hooks.fire('action:composer.topic.new', {
 								cid: ajaxify.data.cid,
 								body: body,
 								fromStaleTopic: true,
