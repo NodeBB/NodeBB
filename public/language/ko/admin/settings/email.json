@@ -16,10 +16,10 @@
 	"smtp-transport.host": "SMTP 호스트",
 	"smtp-transport.port": "SMTP 포트",
 	"smtp-transport.security": "연결 보안",
-	"smtp-transport.security-encrypted": "Encrypted",
+	"smtp-transport.security-encrypted": "암호화됨",
 	"smtp-transport.security-starttls": "StartTLS",
 	"smtp-transport.security-none": "None",
-	"smtp-transport.username": "계정",
+	"smtp-transport.username": "사용자명",
 	"smtp-transport.username-help": "<b>Gmail로 등록할 경우</b> 이메일 주소를 입력하세요. Google Apps에서 관리하는 도메인을 사용할 경우에는 필수입니다.",
 	"smtp-transport.password": "비밀번호",
 	"smtp-transport.pool": "Connection pool 활성화",
@@ -37,6 +37,6 @@
 	"subscriptions.hour": "포럼 메일 발송 시간",
 	"subscriptions.hour-help": "정기 포럼 메일을 보낼 시간을 입력해주세요. (예: <code>0</code>은 자정, <code>17</code>은 오후 5시 입니다. 이 시간은 서버 시간 기준이며, 사용자의 시스템 시간과 일치하지 않을 수 있습니다. <br />서버 시간은 <span id=\"serverTime\"></span> 입니다. <br /> 다음 정기 포럼 메일은 <span id=\"nextDigestTime\"></span> 에 발송 예정입니다.",
 	"notifications.remove-images": "이메일 알림에서 이미지 제거",
-	"include-unverified-emails": "Send emails to recipients who have not explicitly confirmed their emails",
-	"include-unverified-warning": "By default, users with emails associated with their account have already been verified, but there are situations where this is not the case (e.g. SSO logins, grandfathered users, etc). <strong>Enable this setting at your own risk</strong> &ndash; sending emails to unverified addresses may be a violation of regional anti-spam laws."
+	"include-unverified-emails": "전자 메일을 명시적으로 확인하지 않은 수신자에게 전자 메일 보내기",
+	"include-unverified-warning": "기본적으로 계정과 연결된 전자 메일이 있는 사용자는 이미 확인되었지만 그렇지 않은 경우가 있습니다(예: SSO 로그인, 약관으로부터 제외된 사용자 등). <strong>사용자가 위험을 감수하고 이 설정을 사용하도록 설정합니다.</strong> &ndash; 확인되지 않은 주소로 이메일을 보내는 것은 지역별 스팸 방지법을 위반하는 것일 수 있습니다."
 }

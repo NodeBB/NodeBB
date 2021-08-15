@@ -1,7 +1,7 @@
 {
-    "topic": "화제",
+    "topic": "토픽",
     "title": "제목",
-    "no_topics_found": "화제가 없습니다!",
+    "no_topics_found": "토픽이 없습니다!",
     "no_posts_found": "포스트가 없습니다!",
     "post_is_deleted": "이 포스트는 삭제됐습니다!",
     "topic_is_deleted": "이 화제는 삭제됐습니다!",
