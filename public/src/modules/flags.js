@@ -17,33 +17,28 @@ define('flags', ['hooks', 'components', 'api'], function (hooks, components, api
 			flagCommit = flagModal.find('#flag-post-commit');
 			flagReason = flagModal.find('#flag-reason-custom');
 
-			// Quick-report buttons
-			flagModal.on('click', '.flag-reason', function () {
-				var reportText = $(this).text();
-
-				if (flagReason.val().length === 0) {
-					return createFlag(data.type, data.id, reportText);
+			flagModal.on('click', 'input[name="flag-reason"]', function () {
+				if ($(this).attr('id') === 'flag-reason-other') {
+					flagReason.removeAttr('disabled');
+					if (!flagReason.val().length) {
+						flagCommit.attr('disabled', true);
+					}
+				} else {
+					flagReason.attr('disabled', true);
+					flagCommit.removeAttr('disabled');
 				}
-
-				// Custom reason has text, confirm submission
-				bootbox.confirm({
-					title: '[[flags:modal-submit-confirm]]',
-					message: '<p>[[flags:modal-submit-confirm-text]]</p><p class="help-block">[[flags:modal-submit-confirm-text-help]]</p>',
-					callback: function (result) {
-						if (result) {
-							createFlag(data.type, data.id, reportText);
-						}
-					},
-				});
 			});
 
-			// Custom reason report submission
 			flagCommit.on('click', function () {
-				createFlag(data.type, data.id, flagModal.find('#flag-reason-custom').val());
+				var selected = $('input[name="flag-reason"]:checked');
+				var reason = selected.val();
+				if (selected.attr('id') === 'flag-reason-other') {
+					reason = flagReason.val();
+				}
+				createFlag(data.type, data.id, reason);
 			});
 
-			flagModal.on('click', '.toggle-custom', function () {
-				flagReason.prop('disabled', false);
+			flagModal.on('click', '#flag-reason-other', function () {
 				flagReason.focus();
 			});
 
