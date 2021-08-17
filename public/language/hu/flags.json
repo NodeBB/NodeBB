@@ -77,9 +77,6 @@
 	"modal-reason-custom": "Tartalom jelentésének az indoka...",
 	"modal-submit": "Jelentés beküldése",
 	"modal-submit-success": "A tartalom meg lett jelölve egy moderátornak.",
-	"modal-submit-confirm": "A benyújtás megerősítése",
-	"modal-submit-confirm-text": "Már megadtad az egyéni indokást. Biztosan jelenteni szeretnéd gyors jelentés által?",
-	"modal-submit-confirm-text-help": "A gyors jelentés felülír bármilyen megadott indoklást.",
 
 	"bulk-actions": "Tömeges műveletek",
 	"bulk-resolve": "Megoldott jelölés",

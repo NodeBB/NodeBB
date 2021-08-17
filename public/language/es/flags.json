@@ -77,9 +77,6 @@
 	"modal-reason-custom": "Razón para reportar este contenido...",
 	"modal-submit": "Enviar reporte",
 	"modal-submit-success": "El contenido se ha reportado para moderación.",
-	"modal-submit-confirm": "Confirmar envío",
-	"modal-submit-confirm-text": "Ya tienes una razón personalizada. ¿Estás seguro/a de que deseas enviar mediante reporte rápido?",
-	"modal-submit-confirm-text-help": "Enviar un reporte rápido sobreescribirá cualquier razón personalizada definida.",
 
 	"bulk-actions": "Bulk Actions",
 	"bulk-resolve": "Resolve Flag(s)",

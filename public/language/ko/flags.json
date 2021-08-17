@@ -77,9 +77,6 @@
 	"modal-reason-custom": "신고 사유",
 	"modal-submit": "신고 제출",
 	"modal-submit-success": "이 컨텐츠는 신고되었습니다.",
-	"modal-submit-confirm": "제출 확인",
-	"modal-submit-confirm-text": "기타 사유를 작성하였습니다. 빠른 신고를 사용하시겠습니까?",
-	"modal-submit-confirm-text-help": "빠른 신고 기능은 기타 사유를 기록하지 않습니다.",
 
 	"bulk-actions": "대량 작업",
 	"bulk-resolve": "해결된 신고",

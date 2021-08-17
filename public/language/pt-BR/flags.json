@@ -77,9 +77,6 @@
 	"modal-reason-custom": "Motivo para reportar este conteúdo...",
 	"modal-submit": "Enviar Denúncia",
 	"modal-submit-success": "O conteúdo foi sinalizado para moderação.",
-	"modal-submit-confirm": "Cofirmar Envio",
-	"modal-submit-confirm-text": "Você já especificou um motivo individual. Tem certeza de que deseja enviar uma denúncia rápida?",
-	"modal-submit-confirm-text-help": "O envio de uma denúncia rápida substituirá os motivos individuais especificados.",
 
 	"bulk-actions": "Ações em Massa",
 	"bulk-resolve": "Resolver Sinalização(ões)",

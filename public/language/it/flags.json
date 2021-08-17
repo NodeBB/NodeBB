@@ -77,9 +77,6 @@
 	"modal-reason-custom": "Motivo per cui segnali questo contenuto...",
 	"modal-submit": "Invia segnalazione",
 	"modal-submit-success": "Il contenuto è stato segnalato per la moderazione.",
-	"modal-submit-confirm": "Conferma richiesta",
-	"modal-submit-confirm-text": "Hai già specificato un motivo personalizzato. Sei sicuro di voler inviare una segnalazione rapida?",
-	"modal-submit-confirm-text-help": "L'invio di una segnalazione rapida sovrascrive qualsiasi motivo personalizzato definito.",
 
 	"bulk-actions": "Azioni in blocco",
 	"bulk-resolve": "Risolvi segnalazione(i)",

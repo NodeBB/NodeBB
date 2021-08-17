@@ -77,9 +77,6 @@
 	"modal-reason-custom": "علت گزارش این محتوا...",
 	"modal-submit": "ارسال گزارش",
 	"modal-submit-success": "محتوا برای بررسی گزارش شد",
-	"modal-submit-confirm": "تأیید ارسال",
-	"modal-submit-confirm-text": "شما همواره علت دیگری را مشخص کردید. آیا مطمئن هستید که می خواهید از طریق گزینه های گزارش سریع ارسال کنید؟",
-	"modal-submit-confirm-text-help": "ارسال از طریق گزارش سریع جایگزین علت های مشخص شده دیگر می شود.",
 
 	"bulk-actions": "عملیات گروهی",
 	"bulk-resolve": "Resolve Flag(s)",

@@ -77,9 +77,6 @@
 	"modal-reason-custom": "Powód zgłaszania treści",
 	"modal-submit": "Wyślij zgłoszenie",
 	"modal-submit-success": "Treści zostały oflagowane i zgłoszone do moderacji.",
-	"modal-submit-confirm": "Potwierdź wysłanie",
-	"modal-submit-confirm-text": "Wskazałeś już własny powód. Czy na pewno chcesz skorzystać z szybkiego zgłoszenia?",
-	"modal-submit-confirm-text-help": "Wysłanie szybkiego zgłoszenia spowoduje nadpisanie wszelkich własnych powodów",
 
 	"bulk-actions": "Bulk Actions",
 	"bulk-resolve": "Oznacz flagi jako rozwiązane",

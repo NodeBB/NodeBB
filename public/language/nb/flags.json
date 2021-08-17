@@ -77,9 +77,6 @@
 	"modal-reason-custom": "Årsak til rapportering av dette innholdet ...",
 	"modal-submit": "Send inn rapporten",
 	"modal-submit-success": "Innholdet er flagget for moderering.",
-	"modal-submit-confirm": "Bekreft innlevering",
-	"modal-submit-confirm-text": "Du har allerede angitt en egendefinert grunn. Er du sikker på at du vil sende inn via hurtigrapport?",
-	"modal-submit-confirm-text-help": "Hvis du sender inn en hurtigrapport, overskriver du de definerte årsakene. ",
 
 	"bulk-actions": "Massehandlinger",
 	"bulk-resolve": "Løse Flagg(ene).",

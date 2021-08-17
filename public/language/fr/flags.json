@@ -77,9 +77,6 @@
 	"modal-reason-custom": "Motif du signalement...",
 	"modal-submit": "Soumettre",
 	"modal-submit-success": "Le contenu a été soumis pour examen.",
-	"modal-submit-confirm": "Confirmer l'envoi",
-	"modal-submit-confirm-text": "Vous avez déjà spécifié une raison personnalisée. Êtes-vous sûr de vouloir soumettre via un rapport rapide?",
-	"modal-submit-confirm-text-help": "La soumission d'une demande écrase tous les signalements définis.",
 
 	"bulk-actions": "Actions",
 	"bulk-resolve": "Signalement(s) résolu(s)",

@@ -77,9 +77,6 @@
 	"modal-reason-custom": "Lý do báo cáo nội dung này...",
 	"modal-submit": "Gửi Báo Cáo",
 	"modal-submit-success": "Nội dung đã được gắn cờ để kiểm duyệt.",
-	"modal-submit-confirm": "Xác Nhận Gửi",
-	"modal-submit-confirm-text": "Bạn đã chỉ định một lý do tùy chỉnh. Bạn có chắc chắn muốn gửi qua báo cáo nhanh không?",
-	"modal-submit-confirm-text-help": "Gửi báo cáo nhanh sẽ thay thế bất kỳ lý do tùy chỉnh nào đã đưa ra.",
 
 	"bulk-actions": "‎Hành động hàng loạt‎",
 	"bulk-resolve": "Xử Lý Cờ",
